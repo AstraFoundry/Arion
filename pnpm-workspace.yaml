@@ -1,0 +1,5 @@
+packages:
+  - tools/*
+
+packageManagerStrict: true
+packageManagerStrictVersion: true

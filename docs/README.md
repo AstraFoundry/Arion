@@ -2,6 +2,12 @@
 
 This directory is the single source of truth for how this project is built, organized, and evolved by agents.
 
+## Product implementation
+
+- [Specifications](../specs/README.md) — normative workflows and acceptance IDs.
+- [Agent handoff](project/agent-handoff.md) — implementation tasks and dependencies.
+- [Research](research/README.md) — shipped-artifact evidence and local frameworks.
+
 ## Domain map
 
 - [`project/`](project/README.md) — project overview, goals, architecture, and boundaries.

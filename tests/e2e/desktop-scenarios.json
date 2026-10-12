@@ -1,0 +1,637 @@
+{
+  "version": 1,
+  "scenarios": [
+    {
+      "id": "shortcut-offline-once",
+      "acceptance": [
+        "DSK-A02",
+        "CTR-A06",
+        "SPH-A06",
+        "PRV-A01"
+      ],
+      "capabilities": [
+        "shortcut",
+        "audio-fixture",
+        "target-editor",
+        "network-monitor"
+      ],
+      "actions": [
+        {
+          "op": "reset-owned-fixtures"
+        },
+        {
+          "op": "disable-network"
+        },
+        {
+          "op": "focus-editor",
+          "id": "A"
+        },
+        {
+          "op": "toggle-recording"
+        },
+        {
+          "op": "play-audio",
+          "fixture": "hello-world"
+        },
+        {
+          "op": "stop-recording"
+        },
+        {
+          "op": "confirm"
+        },
+        {
+          "op": "confirm"
+        }
+      ],
+      "assertions": {
+        "editors.A.text": "Hello world",
+        "commitCount": 1,
+        "network.outboundRequests": 0,
+        "session.state": "completed"
+      }
+    },
+    {
+      "id": "cancel-stale-callback",
+      "acceptance": [
+        "DSK-A04",
+        "CTR-A04"
+      ],
+      "capabilities": [
+        "shortcut",
+        "delayed-inference",
+        "target-editor"
+      ],
+      "actions": [
+        {
+          "op": "reset-owned-fixtures"
+        },
+        {
+          "op": "focus-editor",
+          "id": "A"
+        },
+        {
+          "op": "toggle-recording"
+        },
+        {
+          "op": "delay-final-callback"
+        },
+        {
+          "op": "cancel"
+        },
+        {
+          "op": "release-final-callback"
+        },
+        {
+          "op": "drain-callbacks"
+        }
+      ],
+      "assertions": {
+        "editors.A.text": "",
+        "commitCount": 0,
+        "session.state": "cancelled"
+      }
+    },
+    {
+      "id": "focus-change-blocks-commit",
+      "acceptance": [
+        "DSK-A03"
+      ],
+      "capabilities": [
+        "shortcut",
+        "audio-fixture",
+        "target-editor"
+      ],
+      "actions": [
+        {
+          "op": "reset-owned-fixtures"
+        },
+        {
+          "op": "focus-editor",
+          "id": "A"
+        },
+        {
+          "op": "dictate-fixture",
+          "fixture": "hello-world"
+        },
+        {
+          "op": "focus-editor",
+          "id": "B"
+        },
+        {
+          "op": "confirm"
+        }
+      ],
+      "assertions": {
+        "editors.A.text": "",
+        "editors.B.text": "",
+        "commitCount": 0,
+        "commit.status": "not_applied"
+      }
+    },
+    {
+      "id": "secure-field-context-denied",
+      "acceptance": [
+        "PRV-A05",
+        "DSK-A07"
+      ],
+      "capabilities": [
+        "shortcut",
+        "secure-editor",
+        "context-monitor"
+      ],
+      "actions": [
+        {
+          "op": "reset-owned-fixtures"
+        },
+        {
+          "op": "focus-secure-editor"
+        },
+        {
+          "op": "toggle-recording"
+        },
+        {
+          "op": "capture-context"
+        },
+        {
+          "op": "cancel"
+        }
+      ],
+      "assertions": {
+        "context.characterCount": 0,
+        "context.retainedBytes": 0,
+        "commitCount": 0
+      }
+    },
+    {
+      "id": "microphone-denied",
+      "acceptance": [
+        "DSK-A01"
+      ],
+      "capabilities": [
+        "shortcut",
+        "microphone-denied-profile"
+      ],
+      "actions": [
+        {
+          "op": "reset-owned-fixtures"
+        },
+        {
+          "op": "toggle-recording"
+        }
+      ],
+      "assertions": {
+        "session.state": "failed",
+        "error.code": "microphone_denied",
+        "commitCount": 0
+      }
+    },
+    {
+      "id": "ime-unicode-composition",
+      "acceptance": [
+        "IME-A02",
+        "IME-A05",
+        "CTR-A05"
+      ],
+      "capabilities": [
+        "system-ime",
+        "ime-host-editor",
+        "deterministic-candidates"
+      ],
+      "actions": [
+        {
+          "op": "reset-owned-fixtures"
+        },
+        {
+          "op": "set-input-mode",
+          "mode": "system_ime"
+        },
+        {
+          "op": "focus-ime-editor",
+          "text": "A😀Z",
+          "utf16Selection": [
+            3,
+            0
+          ]
+        },
+        {
+          "op": "compose-fixture",
+          "fixture": "zh-name"
+        },
+        {
+          "op": "choose-candidate",
+          "producerId": "zh-name-2"
+        },
+        {
+          "op": "confirm"
+        }
+      ],
+      "assertions": {
+        "imeEditor.text": "A😀张伟Z",
+        "ime.markedUtf16Length": 0,
+        "ime.editOutsideOwnedRangeCount": 0,
+        "commitCount": 1
+      }
+    },
+    {
+      "id": "ime-deactivate-discards-late-result",
+      "acceptance": [
+        "IME-A03",
+        "CTR-A04"
+      ],
+      "capabilities": [
+        "system-ime",
+        "ime-host-editor",
+        "delayed-inference"
+      ],
+      "actions": [
+        {
+          "op": "reset-owned-fixtures"
+        },
+        {
+          "op": "set-input-mode",
+          "mode": "system_ime"
+        },
+        {
+          "op": "begin-composition"
+        },
+        {
+          "op": "delay-final-callback"
+        },
+        {
+          "op": "deactivate-ime"
+        },
+        {
+          "op": "release-final-callback"
+        },
+        {
+          "op": "drain-callbacks"
+        }
+      ],
+      "assertions": {
+        "ime.markedUtf16Length": 0,
+        "commitCount": 0,
+        "ime.active": false
+      }
+    },
+    {
+      "id": "input-mode-switch-cancels",
+      "acceptance": [
+        "DSK-A06"
+      ],
+      "capabilities": [
+        "shortcut",
+        "system-ime",
+        "delayed-inference"
+      ],
+      "actions": [
+        {
+          "op": "reset-owned-fixtures"
+        },
+        {
+          "op": "toggle-recording"
+        },
+        {
+          "op": "delay-final-callback"
+        },
+        {
+          "op": "set-input-mode",
+          "mode": "system_ime"
+        },
+        {
+          "op": "release-final-callback"
+        },
+        {
+          "op": "drain-callbacks"
+        }
+      ],
+      "assertions": {
+        "commitCount": 0,
+        "input.mode": "system_ime",
+        "capture.active": false
+      }
+    },
+    {
+      "id": "candidate-provenance-and-selection",
+      "acceptance": [
+        "RNK-A01",
+        "RNK-A02"
+      ],
+      "capabilities": [
+        "local-ranker",
+        "deterministic-candidates",
+        "target-editor"
+      ],
+      "actions": [
+        {
+          "op": "reset-owned-fixtures"
+        },
+        {
+          "op": "focus-editor",
+          "id": "A"
+        },
+        {
+          "op": "produce-candidates",
+          "fixture": "zh-name"
+        },
+        {
+          "op": "rank-candidates"
+        },
+        {
+          "op": "choose-candidate",
+          "producerId": "zh-name-2"
+        },
+        {
+          "op": "confirm"
+        }
+      ],
+      "assertions": {
+        "ranking.addedIds": [],
+        "ranking.removedIds": [],
+        "editors.A.text": "张伟",
+        "commitCount": 1
+      }
+    },
+    {
+      "id": "uncertain-commit-no-retry",
+      "acceptance": [
+        "CTR-A06"
+      ],
+      "capabilities": [
+        "shortcut",
+        "target-editor",
+        "uncertain-commit-injection"
+      ],
+      "actions": [
+        {
+          "op": "reset-owned-fixtures"
+        },
+        {
+          "op": "focus-editor",
+          "id": "A"
+        },
+        {
+          "op": "dictate-fixture",
+          "fixture": "hello-world"
+        },
+        {
+          "op": "lose-commit-ack"
+        },
+        {
+          "op": "confirm"
+        },
+        {
+          "op": "confirm"
+        }
+      ],
+      "assertions": {
+        "commit.status": "unknown",
+        "insertionAttemptCount": 1
+      }
+    },
+    {
+      "id": "memory-sync-ciphertext-conflict",
+      "acceptance": [
+        "MEM-A02",
+        "MEM-A05",
+        "PRV-A04"
+      ],
+      "capabilities": [
+        "two-owned-devices",
+        "self-hosted-relay",
+        "relay-storage-inspection"
+      ],
+      "actions": [
+        {
+          "op": "reset-owned-fixtures"
+        },
+        {
+          "op": "approve-memory-canary",
+          "device": "A"
+        },
+        {
+          "op": "sync"
+        },
+        {
+          "op": "create-sibling-edits",
+          "devices": [
+            "A",
+            "B"
+          ]
+        },
+        {
+          "op": "replay-outbox"
+        },
+        {
+          "op": "sync"
+        },
+        {
+          "op": "inspect-relay"
+        }
+      ],
+      "assertions": {
+        "relay.plaintextCanaryOccurrences": 0,
+        "sync.siblingCount": 2,
+        "sync.duplicateOperationCount": 0,
+        "sync.unapprovedRecordCount": 0
+      }
+    },
+    {
+      "id": "sync-tamper-revocation-tombstone",
+      "acceptance": [
+        "MEM-A03",
+        "MEM-A06",
+        "MEM-A07",
+        "MEM-A08"
+      ],
+      "capabilities": [
+        "two-owned-devices",
+        "self-hosted-relay",
+        "tamper-injection"
+      ],
+      "actions": [
+        {
+          "op": "reset-owned-fixtures"
+        },
+        {
+          "op": "sync-memory-fixture"
+        },
+        {
+          "op": "tamper-ciphertext-metadata"
+        },
+        {
+          "op": "pull",
+          "device": "B"
+        },
+        {
+          "op": "revoke-device",
+          "device": "B"
+        },
+        {
+          "op": "delete-memory",
+          "device": "A"
+        },
+        {
+          "op": "pull",
+          "device": "B"
+        }
+      ],
+      "assertions": {
+        "sync.tamperedRecordAcceptedCount": 0,
+        "sync.revokedDeviceReadCount": 0,
+        "sync.resurrectedRecordCount": 0
+      }
+    },
+    {
+      "id": "ime-register-select-remove",
+      "acceptance": [
+        "IME-A01"
+      ],
+      "capabilities": [
+        "system-ime",
+        "ime-registration-fixture"
+      ],
+      "actions": [
+        {
+          "op": "reset-owned-fixtures"
+        },
+        {
+          "op": "install-owned-ime"
+        },
+        {
+          "op": "select-owned-ime"
+        },
+        {
+          "op": "uninstall-owned-ime"
+        }
+      ],
+      "assertions": {
+        "ime.registrationLeftovers": 0,
+        "ime.processLeftovers": 0,
+        "ime.installationCycleCompleted": true
+      }
+    },
+    {
+      "id": "ime-user-edit-invalidates-range",
+      "acceptance": [
+        "IME-A04"
+      ],
+      "capabilities": [
+        "system-ime",
+        "ime-host-editor",
+        "delayed-inference"
+      ],
+      "actions": [
+        {
+          "op": "reset-owned-fixtures"
+        },
+        {
+          "op": "begin-composition"
+        },
+        {
+          "op": "delay-final-callback"
+        },
+        {
+          "op": "user-type-and-navigate",
+          "text": "USER"
+        },
+        {
+          "op": "release-final-callback"
+        },
+        {
+          "op": "drain-callbacks"
+        }
+      ],
+      "assertions": {
+        "imeEditor.text": "USER",
+        "ime.editOutsideOwnedRangeCount": 0,
+        "commitCount": 0
+      }
+    },
+    {
+      "id": "ranking-stale-result-selection",
+      "acceptance": [
+        "RNK-A02",
+        "RNK-A03"
+      ],
+      "capabilities": [
+        "local-ranker",
+        "deterministic-candidates",
+        "delayed-inference"
+      ],
+      "actions": [
+        {
+          "op": "reset-owned-fixtures"
+        },
+        {
+          "op": "produce-candidates",
+          "fixture": "zh-name"
+        },
+        {
+          "op": "choose-candidate",
+          "producerId": "zh-name-2"
+        },
+        {
+          "op": "delay-ranker-callback"
+        },
+        {
+          "op": "advance-composition-generation"
+        },
+        {
+          "op": "release-ranker-callback"
+        },
+        {
+          "op": "drain-callbacks"
+        }
+      ],
+      "assertions": {
+        "ranking.staleResultAppliedCount": 0,
+        "ranking.unexpectedSelectionReplacementCount": 0
+      }
+    },
+    {
+      "id": "sync-offline-outbox-restart",
+      "acceptance": [
+        "MEM-A01",
+        "MEM-A04"
+      ],
+      "capabilities": [
+        "self-hosted-relay",
+        "owned-device-restart",
+        "network-monitor"
+      ],
+      "actions": [
+        {
+          "op": "reset-owned-fixtures"
+        },
+        {
+          "op": "disable-network"
+        },
+        {
+          "op": "approve-memory-canary",
+          "device": "A"
+        },
+        {
+          "op": "restart-owned-device",
+          "device": "A"
+        },
+        {
+          "op": "inspect-outbox"
+        },
+        {
+          "op": "enable-owned-relay-network"
+        },
+        {
+          "op": "sync"
+        },
+        {
+          "op": "replay-outbox"
+        }
+      ],
+      "assertions": {
+        "sync.outboxSurvivedRestart": true,
+        "sync.uniqueAppliedOperations": 1,
+        "sync.duplicateOperationCount": 0
+      }
+    }
+  ]
+}

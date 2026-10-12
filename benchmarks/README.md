@@ -1,0 +1,10 @@
+# Benchmarks
+
+- [Factorial experiment](configs/desktop-factorial.json): 8 feature treatments × 3 seeds × 2 cache states = 48 blocks per corpus.
+- [Streaming experiment](configs/desktop-streaming.json): 5 chunk sizes × 3 endpoint thresholds × 3 seeds = 45 warm blocks per corpus.
+- [Pinned Hugging Face catalog](datasets.json): dataset metadata only; permissions and import limits recorded.
+- [Runner and exact driver/corpus protocol](../tools/evaluation/README.md).
+- [Paper-grounded methodology](../docs/research/benchmark-methodology.md).
+- [Streaming dataset/import plan](../docs/research/streaming-datasets.md).
+
+No benchmark score is recorded for the current shell. Plans are reproducible without weights/audio; actual runs require licensed local fixtures and a reviewed live adapter. Audio, transcripts, weights and generated reports stay in `.workspace/`. Public ASR corpora test recognition; approved-memory relevance, dictionary candidates, safe IME insertion and semantic corrections need additional consented product fixtures.

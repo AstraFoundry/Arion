@@ -1,6 +1,6 @@
 # Agentic Coding Guidelines
 
-> Language- and framework-agnostic template for agent-driven projects.  
+> Arion: local-first voice input for macOS and Windows using MyGo native UI.
 > Read this file first. Then follow the documentation map below before writing any code.
 
 ---
@@ -18,8 +18,15 @@
 ### Understand the project
 
 - [`docs/README.md`](docs/README.md) — top-level index and domain map.
-- [`docs/project/README.md`](docs/project/README.md) — project overview, goals, and tech-stack placeholders.
+- [`docs/project/README.md`](docs/project/README.md) — product scope, goals, and selected stack.
 - [`docs/project/architecture.md`](docs/project/architecture.md) — system architecture, module boundaries, and data flow.
+
+### Start implementation
+
+- [`specs/README.md`](specs/README.md) — normative product requirements and acceptance criteria.
+- [`docs/project/agent-handoff.md`](docs/project/agent-handoff.md) — task dependencies and implementation entry points.
+- [`docs/research/README.md`](docs/research/README.md) — competitor evidence and framework research.
+- [`docs/project/repository.md`](docs/project/repository.md) — Go monorepo ownership and package boundaries.
 
 ### Write frontend code
 
@@ -47,6 +54,8 @@
 ### Operations and quality
 
 - [`docs/operations/README.md`](docs/operations/README.md) — local development, CI/CD, deployment.
+- [`tools/evaluation/README.md`](tools/evaluation/README.md) — pnpm/Make evaluation commands and live driver protocol.
+- [`docs/quality/e2e.md`](docs/quality/e2e.md) — actual native window and product OS scenarios.
 - [`docs/quality/README.md`](docs/quality/README.md) — testing strategy and code-review expectations.
 - [`docs/quality/agent-skills.md`](docs/quality/agent-skills.md) — installed Agent Skills (`.agents/skills/`).
 - [`docs/decisions/README.md`](docs/decisions/README.md) — architecture decision records (ADRs).
@@ -85,7 +94,7 @@
 - An entity owns domain data and rules (e.g., `User`, `Order`). It has no UI and no HTTP client logic.
 - `shared` contains framework-agnostic utilities, UI primitives, and configuration that can be used by any layer.
 - Imports go only downward: `app` → `pages` → `widgets` → `features` → `entities` → `shared`.
-- Each slice exposes a public API through `index.ts`. Do not import internals of another slice.
+- Each Go UI slice exposes exported symbols from its package; any future TypeScript slice uses `index.ts`. Do not import internals of another slice.
 
 See [`docs/frontend/`](docs/frontend/README.md) for the full rules.
 
@@ -157,3 +166,16 @@ Create a todo file for long tasks and mark items with `[ ]` / `[x]`. Clean up wh
 - ❌ Do not estimate durations ("3 days", "Week 1").
 - ✅ Describe task order and dependencies only.
 - ✅ Use priorities `P0/P1/P2` to indicate importance.
+
+## Arion desktop conventions
+
+- MyGo native Go UI is the selected desktop shell. Do not introduce Electron, React, or a webview without a new decision.
+- Read `specs/` before implementing a feature. Proposed model selections and unresolved deployment choices are not production commitments.
+- Keep recognition drafts and correction candidates separate from committed target text. Cancellation and focus changes must invalidate stale work.
+- Dictation must work offline after model provisioning; never silently route content to cloud inference.
+- Imported competitor strings are static evidence, not verified execution. Preserve evidence limitations.
+- Use Go package exports as FSD public APIs; the TypeScript examples in frontend docs are illustrative only.
+
+## Project automation
+
+Use pnpm exactly as pinned in `package.json`; install with the frozen lockfile. Common workflows belong in Makefile and portable Node entry points. Native tests require their actual target OS. Benchmark fixtures/weights/raw traces remain private in `.workspace/`; never substitute mock output for inference evidence. Read [008 Evaluation](specs/008-evaluation.md) before changing experiments or drivers.

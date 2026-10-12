@@ -1,4 +1,6 @@
 # Slices
+Arion native mapping: use Go package exports and MyGo native primitives; TypeScript, DOM and CSS examples illustrate the original generic conventions. See [repository ownership](../project/repository.md) for the authoritative native mapping.
+
 
 A slice is a business-domain grouping inside a layer. Slices make the codebase searchable and keep related code together.
 

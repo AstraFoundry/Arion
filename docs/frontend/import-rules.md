@@ -1,4 +1,6 @@
 # Import Rules
+Arion native mapping: use Go package exports and MyGo native primitives; TypeScript, DOM and CSS examples illustrate the original generic conventions. See [repository ownership](../project/repository.md) for the authoritative native mapping.
+
 
 FSD is only useful if imports are enforced. Follow these rules strictly.
 

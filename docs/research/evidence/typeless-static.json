@@ -1,0 +1,628 @@
+{
+  "schema_version": 1,
+  "scope": "Static shipped-artifact analysis. No target execution, decompilation, private databases, user audio or network interception. TL-* observations are ordinary shell facts; REA Evidence IDs are separately identified.",
+  "target_root": "/Applications/Typeless.app",
+  "version": "2.8.1",
+  "build": "2.8.1.130",
+  "rea": {
+    "version": "6.4.0",
+    "parent_evidence_id": "ev_17708dd83c71fab9ced0d18a4df9036551e5e4aca46326f121f929f1cbaa2ccb",
+    "summary_view_evidence_id": "ev_154207074f88942945c0fffd0602428fae26bd75741a0f17c0b74a19d2f8113f",
+    "root_artifact_sha256": "eb9bcc842478b12a7488d90778ad6b08e6788c8fa5e875782ec2af0387c6c80b",
+    "inventory_manifest_id": "agm_f4fd148c1a45a06cada26c7eee97ac8e4376413f0bed174235ff1a2b68ff0733",
+    "statistics": {
+      "relevant_files": 10499,
+      "nested_asar_containers": 0,
+      "text_bytes_read": 145353457,
+      "invalid_utf8_files": 0,
+      "parsed_javascript_files": 6007,
+      "visited_ast_nodes": 8889930,
+      "findings": 35366,
+      "modules": 6,
+      "parse_failures": 3
+    },
+    "summary": {
+      "browser_windows": 4,
+      "explicit_web_preferences": 8,
+      "preload_entrypoints": 0,
+      "context_bridge_apis": 6,
+      "exposed_api_members": 2,
+      "ipc": {
+        "operations": 88,
+        "literal_channels": 10,
+        "dynamic_channel_operations": 74,
+        "renderer_transmissions": 27,
+        "renderer_listeners": 2,
+        "main_handlers": 59,
+        "paired_renderer_transmissions": 1,
+        "ambiguous_renderer_transmissions": 2,
+        "unpaired_literal_renderer_transmissions": 0
+      },
+      "sender_validation_observations": 0,
+      "utility_processes": 0,
+      "resolved_utility_entrypoints": 0,
+      "native_addon_bindings": 1,
+      "resolved_native_addon_bindings": 1
+    },
+    "coverage_status": "partial",
+    "coverage_truncated": false,
+    "integrity_contradictions": [
+      {
+        "contradiction_id": "ic_240cb4793c24dff66c8bdecd3a2391a1cdb638ecb786c7a1cde150b56fe0eefa",
+        "occurrence_id": "occ_9f5a3da7c7b99db8908f6bc405c4b5dde5c06b2882fa9277e547cb45ad54be95",
+        "parent_artifact_id": "art_3a0e851feaede4bc239e76d2d35f18be17c45c9d2a768f87faf5f5a971b9cd5f",
+        "logical_path": "node_modules/better-sqlite3/build/Release/better_sqlite3.node",
+        "declared_sha256": "4c79e15889405bf635a16889b1f1c6945b4b2b65502919c8788ccc654c402bdd",
+        "observed_sha256": "4c67d2910bdec92c967117f5e0497c87d925ccd6d6648c373c46a69ef5af8a9b",
+        "entry_kind": "file",
+        "unpacked": true,
+        "trust": "observed-untrusted",
+        "provenance": "container-integrity-metadata-versus-observed-bytes",
+        "limitations": [
+          "Observed bytes contradict declared integrity metadata and cannot support equivalence."
+        ]
+      },
+      {
+        "contradiction_id": "ic_4aa77ceaa0e65411359f4d605b0dab60be77242754f062ebedb2847b31dffae1",
+        "occurrence_id": "occ_45b0fab18c134d2f012d31e356ab60ecc29395b3f0f3091b84bb683743f48ac8",
+        "parent_artifact_id": "art_d1314d5971618a52f242de6316e6f70cbe04f72daad0915ae686acf4db05ddae",
+        "logical_path": "node_modules/koffi/build/koffi/darwin_arm64/koffi.node",
+        "declared_sha256": "5026553cce305549fa7d4c03079dbc8f6e5179aab9e3ba9dfde9eeaaa96fb1ec",
+        "observed_sha256": "7993589bf9db65732a39d066fb3e0a9d67a62abcf87ce4fe8ec8eaa79a706045",
+        "entry_kind": "file",
+        "unpacked": true,
+        "trust": "observed-untrusted",
+        "provenance": "container-integrity-metadata-versus-observed-bytes",
+        "limitations": [
+          "Observed bytes contradict declared integrity metadata and cannot support equivalence."
+        ]
+      }
+    ],
+    "limitations": [
+      "Observed native companion bytes contradict their ASAR-declared digests; equivalence is unproven.",
+      "Analysis rerun used record-and-continue; affected bytes are observed-untrusted.",
+      "Graph coverage is partial, with 3 parse failures and result-budget constrained relationships; omitted facts do not establish absence.",
+      "Dynamic IPC, obfuscated lookup calls and backend model/runtime behavior remain unproven.",
+      "Complete immutable REA record and view are retained locally, not committed."
+    ],
+    "reproduction_commands": [
+      "npx -y rea-agents@6.4.0 analyze-javascript-application '/Applications/Typeless.app/Contents/Resources/app.asar' --integrity-policy record-and-continue --analysis-timeout-ms 60000 --json > .workspace/research/typeless-rea.json",
+      "Create a complete inline Evidence summary view input as documented by REA, then: npx -y rea-agents@6.4.0 inspect-analysis-view .workspace/research/typeless-view-input.json --json"
+    ]
+  },
+  "rea_module_nodes": [
+    {
+      "node_id": "jag_node_3dbf5aea6f4f225b78ace33d622574682cac821b2338de754ef592e929b21fb9",
+      "kind": "asar-entry",
+      "identity": {
+        "strategy": "canonical-path",
+        "stability": "artifact-version",
+        "artifact_sha256": "eb9bcc842478b12a7488d90778ad6b08e6788c8fa5e875782ec2af0387c6c80b",
+        "path": "dist/renderer/static/js/C7lI2ZxR.js"
+      }
+    },
+    {
+      "node_id": "jag_node_73c1df8b1c59f34a379619a00ec4f607f85a6f408742ff027075db43e06c8e51",
+      "kind": "asar-entry",
+      "identity": {
+        "strategy": "canonical-path",
+        "stability": "artifact-version",
+        "artifact_sha256": "eb9bcc842478b12a7488d90778ad6b08e6788c8fa5e875782ec2af0387c6c80b",
+        "path": "dist/preload/index.mjs"
+      }
+    },
+    {
+      "node_id": "jag_node_8269a3f38b41084a77aae72117e324664436aed3e7d18c9728f610f0ab68e1d0",
+      "kind": "asar-entry",
+      "identity": {
+        "strategy": "canonical-path",
+        "stability": "artifact-version",
+        "artifact_sha256": "eb9bcc842478b12a7488d90778ad6b08e6788c8fa5e875782ec2af0387c6c80b",
+        "path": "dist/renderer/static/js/UfR9-a2Z.js"
+      }
+    },
+    {
+      "node_id": "jag_node_9ec539e0fbf01986c4d10f185847231440b1527124ac955d67d173abcb85d5ca",
+      "kind": "asar-entry",
+      "identity": {
+        "strategy": "canonical-path",
+        "stability": "artifact-version",
+        "artifact_sha256": "eb9bcc842478b12a7488d90778ad6b08e6788c8fa5e875782ec2af0387c6c80b",
+        "path": "dist/main/index.js"
+      }
+    },
+    {
+      "node_id": "jag_node_aa113a265a9f201cd458bf7bf976e0ffcf6c6ffa24a31767259dd1dd5c7cf9e0",
+      "kind": "asar-entry",
+      "identity": {
+        "strategy": "canonical-path",
+        "stability": "artifact-version",
+        "artifact_sha256": "eb9bcc842478b12a7488d90778ad6b08e6788c8fa5e875782ec2af0387c6c80b",
+        "path": "dist/main/worker/opusWorker.js"
+      }
+    },
+    {
+      "node_id": "jag_node_d9cd83e03c05478cf0260a55e457cb3ee96b095471884e7eddcbb61d83e7c3d0",
+      "kind": "asar-entry",
+      "identity": {
+        "strategy": "canonical-path",
+        "stability": "artifact-version",
+        "artifact_sha256": "eb9bcc842478b12a7488d90778ad6b08e6788c8fa5e875782ec2af0387c6c80b",
+        "path": "dist/main/worker/chunkSessionWorker.js"
+      }
+    }
+  ],
+  "artifacts": [
+    {
+      "relative_path": "Contents/Resources/app.asar",
+      "size_bytes": 292792179,
+      "sha256": "eb9bcc842478b12a7488d90778ad6b08e6788c8fa5e875782ec2af0387c6c80b"
+    },
+    {
+      "relative_path": "Contents/Resources/lib/context-helper/build/libContextHelper.dylib",
+      "size_bytes": 426208,
+      "sha256": "521e38bbf92eca7186a853b621784e9c0fcce998f624500c97e27eba6732aa56"
+    },
+    {
+      "relative_path": "Contents/Resources/lib/input-helper/build/libInputHelper.dylib",
+      "size_bytes": 401808,
+      "sha256": "4cd6ba0205e0e7a0d7e6a3706102cb7e98e09d626fbfd738311f05e2cdb0ad47"
+    },
+    {
+      "relative_path": "Contents/Resources/lib/keyboard-helper/build/libKeyboardHelper.dylib",
+      "size_bytes": 491616,
+      "sha256": "c5620b51b2cc5cfd5bb7b9f9cf48beb8883ea9adebb52edadcaa83ea1f41d5ca"
+    },
+    {
+      "relative_path": "Contents/Resources/lib/libopuschunk/build/macos/arm64/libopuschunk.dylib",
+      "size_bytes": 507120,
+      "sha256": "2a4bd5d84a0f209f9e5d77a8170204e126586d22abce0593c57365cc95e17dbe"
+    }
+  ],
+  "shell_observations": [
+    {
+      "id": "TL-01",
+      "member": "dist/main/index.js",
+      "member_sha256": "7b87e1578597b6fce6b6589a2f8aa18496e9513f0e74d0b8b26186a641b59ade",
+      "literal": "getFocusedAppInfo",
+      "byte_offsets": [
+        290031,
+        310036,
+        312070,
+        437213,
+        441277
+      ],
+      "match_count": 5,
+      "evidence_type": "inert-source literal, not executed callgraph"
+    },
+    {
+      "id": "TL-02",
+      "member": "dist/main/index.js",
+      "member_sha256": "7b87e1578597b6fce6b6589a2f8aa18496e9513f0e74d0b8b26186a641b59ade",
+      "literal": "text_insertion_point",
+      "byte_offsets": [
+        204353,
+        320295,
+        320865,
+        402416,
+        549339,
+        550521,
+        551911
+      ],
+      "match_count": 7,
+      "evidence_type": "inert-source literal, not executed callgraph"
+    },
+    {
+      "id": "TL-03",
+      "member": "dist/main/index.js",
+      "member_sha256": "7b87e1578597b6fce6b6589a2f8aa18496e9513f0e74d0b8b26186a641b59ade",
+      "literal": "cursor_state",
+      "byte_offsets": [
+        204448,
+        307950,
+        317494,
+        397991,
+        545266,
+        549480,
+        550295,
+        550872
+      ],
+      "match_count": 8,
+      "evidence_type": "inert-source literal, not executed callgraph"
+    },
+    {
+      "id": "TL-04",
+      "member": "dist/main/index.js",
+      "member_sha256": "7b87e1578597b6fce6b6589a2f8aa18496e9513f0e74d0b8b26186a641b59ade",
+      "literal": "keyboard-input:insert-text",
+      "byte_offsets": [
+        409016
+      ],
+      "match_count": 1,
+      "evidence_type": "inert-source literal, not executed callgraph"
+    },
+    {
+      "id": "TL-05",
+      "member": "dist/main/index.js",
+      "member_sha256": "7b87e1578597b6fce6b6589a2f8aa18496e9513f0e74d0b8b26186a641b59ade",
+      "literal": "libInsertText",
+      "byte_offsets": [
+        397957
+      ],
+      "match_count": 1,
+      "evidence_type": "inert-source literal, not executed callgraph"
+    },
+    {
+      "id": "TL-06",
+      "member": "dist/main/index.js",
+      "member_sha256": "7b87e1578597b6fce6b6589a2f8aa18496e9513f0e74d0b8b26186a641b59ade",
+      "literal": "transcription-history-sync-state",
+      "byte_offsets": [
+        224495
+      ],
+      "match_count": 1,
+      "evidence_type": "inert-source literal, not executed callgraph"
+    },
+    {
+      "id": "TL-07",
+      "member": "dist/main/index.js",
+      "member_sha256": "7b87e1578597b6fce6b6589a2f8aa18496e9513f0e74d0b8b26186a641b59ade",
+      "literal": "/transcription_history/push",
+      "byte_offsets": [
+        408447
+      ],
+      "match_count": 1,
+      "evidence_type": "inert-source literal, not executed callgraph"
+    },
+    {
+      "id": "TL-08",
+      "member": "dist/main/index.js",
+      "member_sha256": "7b87e1578597b6fce6b6589a2f8aa18496e9513f0e74d0b8b26186a641b59ade",
+      "literal": "/transcription_history/pull",
+      "byte_offsets": [
+        250351
+      ],
+      "match_count": 1,
+      "evidence_type": "inert-source literal, not executed callgraph"
+    },
+    {
+      "id": "TL-09",
+      "member": "dist/main/index.js",
+      "member_sha256": "7b87e1578597b6fce6b6589a2f8aa18496e9513f0e74d0b8b26186a641b59ade",
+      "literal": "/transcription_history/sync_status",
+      "byte_offsets": [
+        225768
+      ],
+      "match_count": 1,
+      "evidence_type": "inert-source literal, not executed callgraph"
+    },
+    {
+      "id": "TL-10",
+      "member": "dist/main/index.js",
+      "member_sha256": "7b87e1578597b6fce6b6589a2f8aa18496e9513f0e74d0b8b26186a641b59ade",
+      "literal": "auto_add_dictionary",
+      "byte_offsets": [
+        411998
+      ],
+      "match_count": 1,
+      "evidence_type": "inert-source literal, not executed callgraph"
+    },
+    {
+      "id": "TL-11",
+      "member": "dist/main/index.js",
+      "member_sha256": "7b87e1578597b6fce6b6589a2f8aa18496e9513f0e74d0b8b26186a641b59ade",
+      "literal": "audio_context",
+      "byte_offsets": [
+        188192,
+        191549,
+        199936,
+        199955,
+        201564,
+        206738,
+        206818,
+        370071,
+        400435,
+        421151,
+        431864,
+        431913
+      ],
+      "match_count": 14,
+      "evidence_type": "inert-source literal, not executed callgraph"
+    },
+    {
+      "id": "TL-12",
+      "member": "dist/main/index.js",
+      "member_sha256": "7b87e1578597b6fce6b6589a2f8aa18496e9513f0e74d0b8b26186a641b59ade",
+      "literal": "refined_text",
+      "byte_offsets": [
+        188085,
+        190776,
+        199824,
+        199842,
+        201003,
+        234016,
+        234041,
+        235117,
+        235150,
+        241656,
+        245910,
+        245935
+      ],
+      "match_count": 14,
+      "evidence_type": "inert-source literal, not executed callgraph"
+    },
+    {
+      "id": "TL-13",
+      "member": "dist/main/worker/chunkSessionWorker.js",
+      "member_sha256": "018268d7e61fac37b5b1d92fc3ccdc54b47d80b72773a79e13af6daf11581320",
+      "literal": "createSession",
+      "byte_offsets": [
+        1684
+      ],
+      "match_count": 1,
+      "evidence_type": "inert-source literal, not executed callgraph"
+    },
+    {
+      "id": "TL-14",
+      "member": "dist/main/worker/chunkSessionWorker.js",
+      "member_sha256": "018268d7e61fac37b5b1d92fc3ccdc54b47d80b72773a79e13af6daf11581320",
+      "literal": "session_start_failed",
+      "byte_offsets": [
+        1609,
+        6232,
+        6427,
+        6679,
+        6914
+      ],
+      "match_count": 5,
+      "evidence_type": "inert-source literal, not executed callgraph"
+    },
+    {
+      "id": "TL-15",
+      "member": "dist/main/worker/chunkSessionWorker.js",
+      "member_sha256": "018268d7e61fac37b5b1d92fc3ccdc54b47d80b72773a79e13af6daf11581320",
+      "literal": "bitrateBps",
+      "byte_offsets": [
+        1550,
+        7100
+      ],
+      "match_count": 2,
+      "evidence_type": "inert-source literal, not executed callgraph"
+    },
+    {
+      "id": "TL-16",
+      "member": "dist/main/worker/chunkSessionWorker.js",
+      "member_sha256": "018268d7e61fac37b5b1d92fc3ccdc54b47d80b72773a79e13af6daf11581320",
+      "literal": "libopuschunk",
+      "byte_offsets": [
+        1202,
+        1300,
+        1389,
+        1429,
+        1858,
+        1889,
+        1927,
+        2491,
+        3712,
+        3851,
+        4282
+      ],
+      "match_count": 11,
+      "evidence_type": "inert-source literal, not executed callgraph"
+    },
+    {
+      "id": "TL-17",
+      "member": "dist/main/worker/opusWorker.js",
+      "member_sha256": "dc1ea6bac27ddb215acf4688a0daabf66465da726531f71690f2b1a25b59a718",
+      "literal": "libopusenc",
+      "byte_offsets": [
+        632,
+        1367,
+        1573,
+        3662,
+        3786,
+        3836
+      ],
+      "match_count": 6,
+      "evidence_type": "inert-source literal, not executed callgraph"
+    },
+    {
+      "id": "TL-18",
+      "member": "dist/main/worker/opusWorker.js",
+      "member_sha256": "dc1ea6bac27ddb215acf4688a0daabf66465da726531f71690f2b1a25b59a718",
+      "literal": "encode",
+      "byte_offsets": [
+        1264,
+        7577,
+        9007
+      ],
+      "match_count": 3,
+      "evidence_type": "inert-source literal, not executed callgraph"
+    },
+    {
+      "id": "TL-19",
+      "member": "dist/main/worker/opusWorker.js",
+      "member_sha256": "dc1ea6bac27ddb215acf4688a0daabf66465da726531f71690f2b1a25b59a718",
+      "literal": "OPUS_TEMPORARY_PATH",
+      "byte_offsets": [
+        754
+      ],
+      "match_count": 1,
+      "evidence_type": "inert-source literal, not executed callgraph"
+    },
+    {
+      "id": "TL-20",
+      "member": "dist/renderer/static/js/UfR9-a2Z.js",
+      "member_sha256": "efba7d2db84c1da476b521c84cd38446d594ffd4f0d8e59cac85e7ec7d6ae49a",
+      "literal": "getUserMedia",
+      "byte_offsets": [
+        374723,
+        385292
+      ],
+      "match_count": 2,
+      "evidence_type": "inert-source literal, not executed callgraph"
+    },
+    {
+      "id": "TL-21",
+      "member": "dist/renderer/static/js/UfR9-a2Z.js",
+      "member_sha256": "efba7d2db84c1da476b521c84cd38446d594ffd4f0d8e59cac85e7ec7d6ae49a",
+      "literal": "AudioWorkletNode",
+      "byte_offsets": [
+        303747
+      ],
+      "match_count": 1,
+      "evidence_type": "inert-source literal, not executed callgraph"
+    },
+    {
+      "id": "TL-22",
+      "member": "dist/renderer/static/js/UfR9-a2Z.js",
+      "member_sha256": "efba7d2db84c1da476b521c84cd38446d594ffd4f0d8e59cac85e7ec7d6ae49a",
+      "literal": "WebSocket",
+      "byte_offsets": [
+        272201,
+        272267,
+        272324,
+        272386,
+        276481,
+        290508
+      ],
+      "match_count": 6,
+      "evidence_type": "inert-source literal, not executed callgraph"
+    },
+    {
+      "id": "TL-23",
+      "member": "dist/renderer/static/js/UfR9-a2Z.js",
+      "member_sha256": "efba7d2db84c1da476b521c84cd38446d594ffd4f0d8e59cac85e7ec7d6ae49a",
+      "literal": "set_audio_chunk_info",
+      "byte_offsets": [
+        272743,
+        278980
+      ],
+      "match_count": 2,
+      "evidence_type": "inert-source literal, not executed callgraph"
+    },
+    {
+      "id": "TL-24",
+      "member": "dist/renderer/static/js/UfR9-a2Z.js",
+      "member_sha256": "efba7d2db84c1da476b521c84cd38446d594ffd4f0d8e59cac85e7ec7d6ae49a",
+      "literal": "audio_session_started",
+      "byte_offsets": [
+        272837
+      ],
+      "match_count": 1,
+      "evidence_type": "inert-source literal, not executed callgraph"
+    },
+    {
+      "id": "TL-25",
+      "member": "dist/renderer/static/js/UfR9-a2Z.js",
+      "member_sha256": "efba7d2db84c1da476b521c84cd38446d594ffd4f0d8e59cac85e7ec7d6ae49a",
+      "literal": "refine_text",
+      "byte_offsets": [
+        281101,
+        281284,
+        281428,
+        281731,
+        282302,
+        287240,
+        287349,
+        287450,
+        288018,
+        292367
+      ],
+      "match_count": 10,
+      "evidence_type": "inert-source literal, not executed callgraph"
+    },
+    {
+      "id": "TL-26",
+      "member": "dist/renderer/static/js/UfR9-a2Z.js",
+      "member_sha256": "efba7d2db84c1da476b521c84cd38446d594ffd4f0d8e59cac85e7ec7d6ae49a",
+      "literal": "refined_text",
+      "byte_offsets": [
+        281706,
+        292313,
+        294981,
+        295096
+      ],
+      "match_count": 4,
+      "evidence_type": "inert-source literal, not executed callgraph"
+    },
+    {
+      "id": "TL-27",
+      "member": "dist/renderer/static/js/UfR9-a2Z.js",
+      "member_sha256": "efba7d2db84c1da476b521c84cd38446d594ffd4f0d8e59cac85e7ec7d6ae49a",
+      "literal": "audio_processing_completed",
+      "byte_offsets": [
+        273317,
+        281655,
+        292717,
+        293352
+      ],
+      "match_count": 4,
+      "evidence_type": "inert-source literal, not executed callgraph"
+    },
+    {
+      "id": "TL-28",
+      "member": "dist/renderer/static/js/UfR9-a2Z.js",
+      "member_sha256": "efba7d2db84c1da476b521c84cd38446d594ffd4f0d8e59cac85e7ec7d6ae49a",
+      "literal": "selected_text",
+      "byte_offsets": [
+        40618,
+        40804,
+        272693,
+        273538,
+        273642,
+        292798,
+        293392,
+        293565
+      ],
+      "match_count": 8,
+      "evidence_type": "inert-source literal, not executed callgraph"
+    },
+    {
+      "id": "TL-29",
+      "member": "dist/renderer/static/js/C7lI2ZxR.js",
+      "member_sha256": "16b410cfb49a6230243117417c87a4fe754e0b6b08db5dc83918ca54fd75d558",
+      "literal": "typeless-audio-capture",
+      "byte_offsets": [
+        79
+      ],
+      "match_count": 1,
+      "evidence_type": "inert-source literal, not executed callgraph"
+    },
+    {
+      "id": "TL-30",
+      "member": "dist/renderer/static/js/C7lI2ZxR.js",
+      "member_sha256": "16b410cfb49a6230243117417c87a4fe754e0b6b08db5dc83918ca54fd75d558",
+      "literal": "SAMPLES_PER_MESSAGE = 1024",
+      "byte_offsets": [
+        109
+      ],
+      "match_count": 1,
+      "evidence_type": "inert-source literal, not executed callgraph"
+    },
+    {
+      "id": "TL-31",
+      "member": "dist/renderer/static/js/C7lI2ZxR.js",
+      "member_sha256": "16b410cfb49a6230243117417c87a4fe754e0b6b08db5dc83918ca54fd75d558",
+      "literal": "registerProcessor",
+      "byte_offsets": [
+        33,
+        3141
+      ],
+      "match_count": 2,
+      "evidence_type": "inert-source literal, not executed callgraph"
+    },
+    {
+      "id": "TL-32",
+      "member": "dist/renderer/static/js/C7lI2ZxR.js",
+      "member_sha256": "16b410cfb49a6230243117417c87a4fe754e0b6b08db5dc83918ca54fd75d558",
+      "literal": "Float32Array",
+      "byte_offsets": [
+        293,
+        1062
+      ],
+      "match_count": 2,
+      "evidence_type": "inert-source literal, not executed callgraph"
+    }
+  ]
+}

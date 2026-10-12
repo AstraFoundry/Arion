@@ -14,3 +14,17 @@ out/
 *.swp
 *.swo
 *~
+
+# Native artifacts and private evaluation material
+*.onnx
+*.gguf
+*.safetensors
+*.wav
+*.pcm
+*.dylib
+*.dll
+*.exe
+*.app/
+*.db
+*.db-wal
+*.db-shm

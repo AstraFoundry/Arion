@@ -1,4 +1,6 @@
 # Layers
+Arion native mapping: use Go package exports and MyGo native primitives; TypeScript, DOM and CSS examples illustrate the original generic conventions. See [repository ownership](../project/repository.md) for the authoritative native mapping.
+
 
 FSD uses six layers. Each layer has a single responsibility and a strict downward dependency direction.
 

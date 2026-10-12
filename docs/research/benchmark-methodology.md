@@ -1,0 +1,52 @@
+# Benchmark methodology
+
+This is an Arion protocol informed by research, not an exact reproduction of any paper's checkpoint, corpus preprocessing or published score. [008 Evaluation](../../specs/008-evaluation.md) is normative. [Runner](../../tools/evaluation/README.md) is executable; local production-model results do not exist yet.
+
+## Paper-to-implementation mapping
+
+| Primary source | Relevant method | Arion implementation and difference |
+| --- | --- | --- |
+| [Koehn: Statistical Significance Tests for Machine Translation Evaluation](https://aclanthology.org/W04-3250/) | Paired bootstrap on the same observations | Seeded percentile CI of treatment-minus-baseline corpus error or latency; adapt sampling unit from sentences to speakers, retaining all utterances and repetitions together |
+| [Arivazhagan et al.: Re-translation versus Streaming for Simultaneous Translation, §3.3](https://arxiv.org/html/2004.03643v2) | Normalized erasure via longest common prefixes | Apply suffix-withdrawal formula to ASR and rendered-preview unit sequences; use CER/WER/MER units, not translation model subwords |
+| [Weller et al.: Streaming Models for Joint Speech Recognition and Translation](https://aclanthology.org/2021.eacl-main.216/) | Joint quality, latency and output flicker evaluation | Separate final error, erasure and user-preview delay; no BLEU or translation Average Lagging used for same-language dictation |
+| [Winata et al.: Towards End-to-End Code-Switching Speech Recognition](https://arxiv.org/abs/1810.13091) | Mixed recognition evaluation on SEAME | Mandarin Han characters plus non-Han whitespace words; explicit normalization version, not a claim of SEAME official score parity |
+| [Huang et al.: Contextualized End-to-End Speech Recognition with Contextual Phrase Prediction Network](https://www.isca-archive.org/interspeech_2023/huang23d_interspeech.html) | Contextual vocabulary and bias/non-bias error evaluation | Approved-memory on/off, distractor and candidate-oracle controls; exact protected-span and candidate metrics are proxies, not B-WER/U-WER |
+| [Ma et al.: SimulEval](https://aclanthology.org/2020.emnlp-demos.19/) | Separate evaluator and system with quality/latency traces | Local JSONL driver boundary withholding gold labels; no SimulEval dependency or translation latency formula |
+| [Hallucinations in Neural Automatic Speech Recognition](https://arxiv.org/abs/2401.01572) | Recognition error rates alone miss some hallucinations | Silence false emission, harmful-edit and exact protected-span tests; these do not replace human semantic hallucination/intent review |
+| [Going Beyond Your Expectations in Latency Metrics for Simultaneous Speech Translation](https://aclanthology.org/2025.findings-acl.937/) | Latency distributions and tail behavior matter | Type-7 p50/p95/p99, cold/warm separation, replay/timer evidence; no direct reuse of translation-specific latency scores |
+
+## Frozen units and denominators
+
+Normalization ID `arion-nfkc-lower-punctuation-space-v1`: Unicode NFKC, lowercase, punctuation/symbols replaced by spaces, whitespace collapsed. CER removes remaining whitespace and uses Unicode code points; WER uses whitespace words; MER separates each Han character and otherwise whitespace words. Apostrophes/hyphens become separators; numbers are not verbalized. Emoji/punctuation fidelity therefore needs raw span/UI tests separately. Do not silently switch to a corpus's official normalizer.
+
+For each stage, Levenshtein alignment yields substitutions + deletions + insertions. Corpus rate is **sum errors / sum reference units**, not mean utterance rates. Insertions can make a rate exceed 1. Ties prefer substitution, deletion, insertion; total error distance is unchanged. Report raw ASR, automatic top-1 selection and post-correction stages separately. Silence has zero reference denominator, so its error rate is null and false-emission fraction is separate and counts any non-whitespace output, including punctuation. Language/condition strata accompany aggregates; compare erasure within a declared unit stratum.
+
+Candidate oracle recall is the fraction of reference-bearing requests whose actual producer candidates contain a normalized acceptable text. Top-1 and MRR retain oracle misses in the denominator; conditional top-1 divides by oracle hits and is explicitly labeled. Empty/one-candidate sources remain visible. A missing n-best interface cannot be replaced by invented candidates. Source-order vs Laya comparisons with changed candidate content/IDs/order are marked `candidate_set_mismatch`; compare checkpoints and producer policies in separate experiments.
+
+Correction harmful-edit rate counts requests whose corrected edit distance exceeds selected-input edit distance. Exact protected-span recall checks names/numbers/URLs/negation against raw strings; it can miss semantic reordering, intent changes, extra contradictory facts and word-boundary errors. Preserve this limitation and obtain blinded human intent review before shipping model correction.
+
+## Streaming traces
+
+Replay decoded local audio as 16 kHz input in the configured chunks with a monotonic realtime scheduler. Supply elapsed audio only: no future chunks or offline full-audio lookahead. The runner checks request wall time against audio duration with 2% scheduling tolerance; a slow offline recognizer can still pass that bound, so audit its incremental feed and emission traces. Retain final callbacks rather than deleting unfavorable transitions.
+
+For emissions `o_i`, erased units are `len(o_(i-1)) - LCP(o_i,o_(i-1))`. Sum them and divide by final output units. Final-empty output has undefined per-sample NE; erased numerator is retained. Appending without editing produces zero NE. Compare engine emissions and actual rendered native-preview events separately, including final raw ASR preview. Holding back all output may reduce NE while increasing first partial/stable latency; inspect all metrics together.
+
+First-partial latency is first nonempty nonfinal output minus speech onset. Stop-to-review is review-ready minus speech end. Engine-reported timestamps are separate from independently reviewed audio onset/end; streaming primary metrics use the latter plus measured audio-start offset. Missing nonempty partials are counted explicitly; never assign them zero latency. Percentiles use type-7 linear interpolation and report observation count. Annotation uncertainty is reported with the importer/fixture provenance.
+
+Intended-turn annotations include thinking pauses. An endpoint before the final 50 ms of an intended turn is premature, even in internal silence. Match each intended turn to one observed endpoint between end−50 ms and `min(end + configured silence + 500 ms, next turn start)`; unmatched turns are misses. Constants are Arion scoring tolerances, not paper-derived optimal defaults. Report premature count, missed fraction, endpoint lag and all trace events; do not train/calibrate VAD from test turn labels.
+
+Optional normalized reference-unit timestamps support stable latency: for a finally exact-correct sequence, find each unit's earliest prefix that is never withdrawn afterward and subtract its annotated acoustic end. Report p50/p95/p99 **and fraction of annotated units eligible**. Wrong-final sequences are excluded from that conditional latency and reduce coverage; they remain in CER/WER/MER. Negative delays may reflect predictive output or alignment uncertainty. This metric is not a calibrated confidence estimate.
+
+Final-three-unit exact match is a tail preservation proxy and includes substitutions as well as deletions. Diagnose actual tail clipping with aligned waveform/phonetic inspection. Queue maximum age, processed/dropped sample counts and process peak RSS accompany long-form quality. Full recording/session state must be maintained. Utterance-reset replay cannot establish long-form behavior or memory boundedness. RSS is not accelerator memory; future drivers should retain native CPU/GPU/thermal traces and resource time series for drift analysis.
+
+RTF is inference-active elapsed wall time / audio duration; cold compute includes loading. Overlapping workers use union elapsed time, not sum of overlapping clocks. Replay sleeps and user review dwell are excluded. Report corpus duration-weighted RTF and per-sample distribution, plus separate load cost. Pace, power mode, hardware, concurrency and checkpoints stay fixed within a comparison.
+
+## Ablations and uncertainty
+
+The factorial matrix isolates memory, source/Laya ranking and none/local correction. All eight treatments use identical cases and seeds; block order is seeded and shuffled, and case order is paired. Cold/warm are separate strata. Two held-out warmup fixtures per block are retained but excluded. Test references cannot enter inference requests, dictionaries, memory, context or calibration. Pretrained-model contamination cannot be disproved merely by local split checks; disclose checkpoint training provenance.
+
+Bootstrap 2000 draws with fixed seed, resampling speaker clusters with replacement and recomputing corpus ratios/p95 for both conditions on the same drawn clusters. Output delta = treatment − baseline and percentile 95% interval; negative error/latency deltas and positive accuracy deltas are favorable. Fewer than two clusters or undefined strata produce explicit unavailable status. More seeds are repeated measurements, not more independent speakers. Report cluster count; tiny sets cannot support generalization.
+
+The runner compares full variants against baseline and ranker-only pairs. Per-factor memory/correction effects can be read from matched summary strata; averaged factorial main effects/interactions, a context-size/distractor sweep, candidate-order permutation controls, wrong/stale memory and offline-vs-streaming oracle are follow-up protocols requiring explicit configurations. Do not claim those experiments ran from the existing matrix alone.
+
+CIs across many comparisons are exploratory and unadjusted. No p-value or family-wise significance claim is emitted. Before confirmatory evaluation, preregister primary metrics, minimum effect, sample-size rationale and a multiple-comparison procedure, then freeze a fresh test set. Tune chunk/endpoint/Pareto operating point on development data; evaluate the frozen choice on test once. Current latency budgets are provisional engineering goals, not measured scientific baselines.

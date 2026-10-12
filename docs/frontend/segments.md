@@ -1,4 +1,6 @@
 # Segments
+Arion native mapping: use Go package exports and MyGo native primitives; TypeScript, DOM and CSS examples illustrate the original generic conventions. See [repository ownership](../project/repository.md) for the authoritative native mapping.
+
 
 Segments group files inside a slice by technical responsibility. Not every slice needs every segment.
 

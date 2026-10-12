@@ -42,17 +42,17 @@ Sources are pinned in [`skills-lock.json`](../../skills-lock.json).
 Install into this repository (not globally):
 
 ```sh
-npx skills@latest add <owner/repo> --skill '*' -a cursor -y --copy
+pnpm dlx skills@latest add <owner/repo> --skill '*' -a cursor -y --copy
 ```
 
 Refresh installed skills:
 
 ```sh
-npx skills update
+pnpm dlx skills update
 ```
 
 List what is installed:
 
 ```sh
-npx skills list
+pnpm dlx skills list
 ```

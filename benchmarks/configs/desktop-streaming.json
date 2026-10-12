@@ -1,0 +1,214 @@
+{
+  "version": 1,
+  "id": "desktop-streaming-v1",
+  "split": "test",
+  "baseline": "chunk40-end500",
+  "seeds": [
+    11,
+    23,
+    47
+  ],
+  "orderSeed": 1729,
+  "warmupCount": 2,
+  "cacheStates": [
+    "warm"
+  ],
+  "pipeline": {
+    "asr": "sherpa-streaming-pinned",
+    "sampleRate": 16000,
+    "chunkMs": 40,
+    "endpoint": "pinned-v1",
+    "pace": "realtime",
+    "threads": 2,
+    "endpointSilenceMs": 500,
+    "streamingMetrics": true,
+    "stabilityHoldMs": 0,
+    "preview": "native"
+  },
+  "bootstrap": {
+    "iterations": 2000,
+    "seed": 1729
+  },
+  "variants": [
+    {
+      "id": "chunk20-end200",
+      "features": {
+        "memory": false,
+        "ranker": "source",
+        "correction": "none"
+      },
+      "pipelineOverrides": {
+        "chunkMs": 20,
+        "endpointSilenceMs": 200
+      }
+    },
+    {
+      "id": "chunk20-end500",
+      "features": {
+        "memory": false,
+        "ranker": "source",
+        "correction": "none"
+      },
+      "pipelineOverrides": {
+        "chunkMs": 20,
+        "endpointSilenceMs": 500
+      }
+    },
+    {
+      "id": "chunk20-end800",
+      "features": {
+        "memory": false,
+        "ranker": "source",
+        "correction": "none"
+      },
+      "pipelineOverrides": {
+        "chunkMs": 20,
+        "endpointSilenceMs": 800
+      }
+    },
+    {
+      "id": "chunk40-end200",
+      "features": {
+        "memory": false,
+        "ranker": "source",
+        "correction": "none"
+      },
+      "pipelineOverrides": {
+        "chunkMs": 40,
+        "endpointSilenceMs": 200
+      }
+    },
+    {
+      "id": "chunk40-end500",
+      "features": {
+        "memory": false,
+        "ranker": "source",
+        "correction": "none"
+      },
+      "pipelineOverrides": {
+        "chunkMs": 40,
+        "endpointSilenceMs": 500
+      }
+    },
+    {
+      "id": "chunk40-end800",
+      "features": {
+        "memory": false,
+        "ranker": "source",
+        "correction": "none"
+      },
+      "pipelineOverrides": {
+        "chunkMs": 40,
+        "endpointSilenceMs": 800
+      }
+    },
+    {
+      "id": "chunk80-end200",
+      "features": {
+        "memory": false,
+        "ranker": "source",
+        "correction": "none"
+      },
+      "pipelineOverrides": {
+        "chunkMs": 80,
+        "endpointSilenceMs": 200
+      }
+    },
+    {
+      "id": "chunk80-end500",
+      "features": {
+        "memory": false,
+        "ranker": "source",
+        "correction": "none"
+      },
+      "pipelineOverrides": {
+        "chunkMs": 80,
+        "endpointSilenceMs": 500
+      }
+    },
+    {
+      "id": "chunk80-end800",
+      "features": {
+        "memory": false,
+        "ranker": "source",
+        "correction": "none"
+      },
+      "pipelineOverrides": {
+        "chunkMs": 80,
+        "endpointSilenceMs": 800
+      }
+    },
+    {
+      "id": "chunk160-end200",
+      "features": {
+        "memory": false,
+        "ranker": "source",
+        "correction": "none"
+      },
+      "pipelineOverrides": {
+        "chunkMs": 160,
+        "endpointSilenceMs": 200
+      }
+    },
+    {
+      "id": "chunk160-end500",
+      "features": {
+        "memory": false,
+        "ranker": "source",
+        "correction": "none"
+      },
+      "pipelineOverrides": {
+        "chunkMs": 160,
+        "endpointSilenceMs": 500
+      }
+    },
+    {
+      "id": "chunk160-end800",
+      "features": {
+        "memory": false,
+        "ranker": "source",
+        "correction": "none"
+      },
+      "pipelineOverrides": {
+        "chunkMs": 160,
+        "endpointSilenceMs": 800
+      }
+    },
+    {
+      "id": "chunk320-end200",
+      "features": {
+        "memory": false,
+        "ranker": "source",
+        "correction": "none"
+      },
+      "pipelineOverrides": {
+        "chunkMs": 320,
+        "endpointSilenceMs": 200
+      }
+    },
+    {
+      "id": "chunk320-end500",
+      "features": {
+        "memory": false,
+        "ranker": "source",
+        "correction": "none"
+      },
+      "pipelineOverrides": {
+        "chunkMs": 320,
+        "endpointSilenceMs": 500
+      }
+    },
+    {
+      "id": "chunk320-end800",
+      "features": {
+        "memory": false,
+        "ranker": "source",
+        "correction": "none"
+      },
+      "pipelineOverrides": {
+        "chunkMs": 320,
+        "endpointSilenceMs": 800
+      }
+    }
+  ]
+}

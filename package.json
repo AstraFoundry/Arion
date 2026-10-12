@@ -1,17 +1,28 @@
 {
-  "name": "agentic-coding-template",
+  "name": "arion-monorepo",
   "version": "0.0.0",
   "private": true,
-  "description": "Language- and framework-agnostic template for agent-driven projects.",
+  "description": "Native desktop voice input foundation and specifications.",
   "scripts": {
-    "check": "echo 'Replace with typecheck + lint + test commands'",
-    "test": "echo 'Replace with test runner command'",
-    "lint": "echo 'Replace with linter command'",
-    "format": "echo 'Replace with formatter command'",
-    "docs:check": "echo 'Replace with markdown link checker command'"
+    "check": "node scripts/check-repository.mjs",
+    "docs:check": "node scripts/check-repository.mjs",
+    "lint": "node scripts/check-repository.mjs",
+    "test": "node scripts/test.mjs",
+    "core:check": "node scripts/check-go.mjs core",
+    "desktop:check": "node scripts/check-go.mjs desktop",
+    "format": "node scripts/check-go.mjs format",
+    "preinstall": "node scripts/require-pnpm.mjs",
+    "test:tooling": "pnpm --filter @arion/evaluation test",
+    "e2e:native": "node scripts/run-native-e2e.mjs",
+    "e2e:scenarios": "node tools/evaluation/cli.mjs e2e",
+    "bench:plan": "node tools/evaluation/cli.mjs plan",
+    "bench:run": "node tools/evaluation/cli.mjs run",
+    "bench:report": "node tools/evaluation/cli.mjs report",
+    "bench:validate": "node tools/evaluation/cli.mjs validate",
+    "datasets:check": "node scripts/check-datasets.mjs"
   },
   "engines": {
     "node": ">=20.0.0"
   },
-  "packageManager": "pnpm@9.0.0"
+  "packageManager": "pnpm@10.33.0"
 }

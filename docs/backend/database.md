@@ -1,41 +1,9 @@
-# Database
+# Persistence
 
-This document describes database conventions. Fill in concrete technology choices in [`docs/project/architecture.md`](../project/architecture.md).
+Local SQLite with encrypted sensitive values is a proposed adapter, not an implemented database. The concrete driver, migration runner and encryption provider require review before MEM-01. Encrypt content before it reaches SQL/WAL/backups; OS-kept keys and schema metadata have distinct trust boundaries.
 
-## Technology placeholders
+Allowed local records: approved memory, user preferences, tombstones, encrypted outbox and noncontent model metadata. Audio and temporary context are RAM-only by default. Dictation history requires separate opt-in and is not part of initial sync.
 
-- Database: `__DATABASE__`
-- Migration tool: `__MIGRATION_TOOL__`
-- ORM / query builder: `__ORM__`
+IDs are opaque stable identifiers. Domain revision/parent references determine conflicts; wall-clock timestamps do not pick winners. Repository adapters implement transactions for local memory + outbox. Migrations are versioned, tested against prior snapshots and never modify applied revisions.
 
-## ID strategy
-
-- Use UUIDs or ULIDs for primary identifiers by default.
-- Do not expose auto-increment database IDs to clients.
-- Use domain-specific value objects for IDs (e.g., `OrderId`) instead of raw strings.
-
-## Schema rules
-
-- One table per aggregate root.
-- Keep tables normalized until read performance justifies denormalization.
-- Document any intentional denormalization in [`docs/decisions/`](../decisions/README.md).
-- Use explicit foreign keys and constraints at the database level.
-
-## Migrations
-
-- Store migrations in a dedicated directory (e.g., `infrastructure/persistence/migrations`).
-- Migrations must be reversible when possible.
-- Never modify an already-applied migration. Add a new migration to fix a mistake.
-- Run migrations automatically in CI and on deployment, but backup production data first.
-
-## Query conventions
-
-- Keep query logic in repository implementations.
-- Do not write raw SQL in application services or controllers.
-- Use indexes for columns that are frequently filtered or sorted.
-- Document slow queries and optimization decisions.
-
-## Mapping
-
-- Map between persistence models and domain entities in the repository.
-- Do not let ORM annotations pollute domain entities.
+The future relay stores ciphertext envelopes, device authorization, operation deduplication and server cursors. Do not assume an ORM, PostgreSQL or broker; SQLite is an initial deployment candidate subject to concurrency/backup evaluation. See [memory sync](../../specs/003-memory-sync.md).

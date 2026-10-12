@@ -1,4 +1,7 @@
-# Frontend
+# Native desktop UI
+
+Arion uses MyGo native Go packages under `apps/desktop/ui`. FSD responsibilities and downward imports remain; Go exported package symbols replace `index.ts`. Existing TypeScript/CSS examples below and in linked convention docs are illustrative, not a requirement to add a web frontend. See [repository mapping](../project/repository.md).
+
 
 This section defines how the frontend is organized using **Feature-Sliced Design (FSD)**.
 

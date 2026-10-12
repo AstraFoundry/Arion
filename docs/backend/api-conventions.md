@@ -1,78 +1,9 @@
-# API Conventions
+# API conventions
 
-This document defines how the backend exposes and formats its API.
+The current desktop uses in-process typed Go ports, not HTTP. [004 Contracts](../../specs/004-contracts.md) owns versioned local semantics. Native worker/IME IPC requires explicit framing/version/capability checks when introduced.
 
-## Transport
+The planned self-hosted relay uses authenticated versioned HTTP `/v1/sync/…`; exact wire schemas and enrollment/key flow are an implementation gate. Success responses return operation IDs, revisions/cursors and ciphertext records as appropriate. Errors use stable machine codes and a content-free message; UI maps codes to centralized copy.
 
-The default transport is HTTP/REST. If the project uses gRPC, GraphQL, or events, document the deviations here and in [`docs/project/architecture.md`](../project/architecture.md).
+Planned status mapping: invalid envelope 400; unauthorized/revoked 401/403; conflicting revision 409; expired cursor 410 with explicit resync procedure; bounded payload exceeded 413; rate limited 429; internal failure 500 without private details. Idempotent retries retain operation identity. Never retry a desktop `unknown` insertion through this network policy.
 
-## Response envelope
-
-All responses follow a consistent envelope:
-
-```json
-{
-  "success": true,
-  "data": { ... },
-  "error": null
-}
-```
-
-For errors:
-
-```json
-{
-  "success": false,
-  "data": null,
-  "error": {
-    "code": "ORDER_EMPTY",
-    "message": "Cannot submit an empty order"
-  }
-}
-```
-
-## HTTP status codes
-
-| Code | Use case |
-|------|----------|
-| 200  | Successful read or update. |
-| 201  | Successful creation. |
-| 204  | Successful deletion or no-content action. |
-| 400  | Validation error or malformed request. |
-| 401  | Unauthenticated. |
-| 403  | Forbidden. |
-| 404  | Resource not found. |
-| 409  | Conflict (e.g., duplicate unique value). |
-| 422  | Semantic validation error. |
-| 500  | Unexpected server error. |
-
-## Error codes
-
-- Use machine-readable `code` values in `SCREAMING_SNAKE_CASE`.
-- Keep `message` concise and safe for end users.
-- Do not include stack traces or internal identifiers in production error responses.
-
-## Versioning
-
-- Prefix routes with `/api/v1/` by default.
-- Document breaking changes in [`docs/decisions/`](../decisions/README.md).
-
-## Pagination
-
-Use cursor-based pagination when possible. If offset-based pagination is required, use:
-
-```json
-{
-  "data": [ ... ],
-  "pagination": {
-    "page": 1,
-    "pageSize": 20,
-    "total": 100
-  }
-}
-```
-
-## Idempotency
-
-- Mutating endpoints that may be retried should accept an idempotency key header, e.g., `Idempotency-Key`.
-- Document which endpoints are idempotent by default (e.g., `PUT` with full replacement).
+Contracts must be round-trip tested before shipping. Additive compatible fields retain v1; changing identity/conflict/crypto semantics requires a version migration and ADR. See [003 Memory sync](../../specs/003-memory-sync.md).

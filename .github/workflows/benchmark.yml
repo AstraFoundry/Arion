@@ -1,0 +1,52 @@
+name: Controlled benchmark
+
+on:
+  workflow_dispatch:
+    inputs:
+      config:
+        description: Experiment configuration in this checkout
+        required: true
+        default: benchmarks/configs/desktop-factorial.json
+      corpus:
+        description: Absolute path to the pre-provisioned licensed corpus manifest
+        required: true
+      driver:
+        description: Absolute path to the reviewed local inference driver configuration
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  evaluate:
+    runs-on: [self-hosted, arion-benchmark]
+    env:
+      CONFIG: ${{ inputs.config }}
+      CORPUS: ${{ inputs.corpus }}
+      DRIVER: ${{ inputs.driver }}
+      OUT: .workspace/benchmarks/ci-${{ github.run_id }}-${{ github.run_attempt }}
+      RESULTS: .workspace/benchmarks/ci-${{ github.run_id }}-${{ github.run_attempt }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          run_install: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test:tooling
+      - name: Validate private corpus
+        run: node scripts/evaluation-command.mjs validate
+      - name: Run reviewed local driver
+        run: node scripts/evaluation-command.mjs run
+      - name: Produce aggregate report
+        run: node scripts/evaluation-command.mjs report
+      - uses: actions/upload-artifact@v4
+        with:
+          name: aggregate-benchmark-${{ github.run_id }}
+          path: |
+            .workspace/benchmarks/ci-${{ github.run_id }}-${{ github.run_attempt }}/summary.json
+            .workspace/benchmarks/ci-${{ github.run_id }}-${{ github.run_attempt }}/summary.md
+          if-no-files-found: error

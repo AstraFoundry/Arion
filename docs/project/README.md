@@ -1,41 +1,37 @@
-# Project
+# Arion product
 
-This section describes the project at a high level: what it is, what it is not, and how the major parts fit together.
+Arion is a voice input product with a native Go desktop shell. macOS and Windows are the initial implementation targets; mobile work must preserve portable contracts without creating mobile apps yet.
 
-## Documents
+## Confirmed scope
 
-- [`architecture.md`](architecture.md) — system architecture, module boundaries, and data flow.
+- Local streaming speech recognition and live correction, initially evaluated on Mandarin, English, and mixed technical vocabulary.
+- Configurable input modes: global shortcut dictation and system IME. IMK/TSF are separate OS adapters sharing the same core.
+- Local ranking of actual candidate words/segments, preserving candidate identity and text.
+- User-controlled personal vocabulary, correction rules, and contextual preferences.
+- Self-hosted encrypted memory sync, with offline dictation independent of account or server availability.
+- MyGo native Go UI; no web frontend is required.
 
-## Project overview
+Language coverage and latency are evaluation targets, not measured product claims. User-facing UI copy remains English under repository conventions.
 
-This repository is an **agentic-coding template**. It is meant to be copied at the start of a new project so that coding agents can immediately understand the conventions and boundaries.
+## Explicit boundaries
 
-Because it is a template, concrete technology choices are intentionally left as placeholders. When you copy this template, fill in:
+Raw microphone audio and temporary foreign-window context stay on the device. Persisting dictation history is separately opt-in and is not in the initial sync scope. Candidate sorting must not introduce unseen text or overwrite committed content. A full conventional Pinyin keyboard, cloud recognition, voice chat, autonomous commands, and mobile keyboard extensions require their own scope decision.
 
-- Programming language and runtime version.
-- Frontend framework and state-management approach.
-- Backend framework and transport (HTTP, gRPC, events, CLI).
-- Database, cache, and message broker.
-- Hosting and deployment target.
+Jev is TypeSafe’s System One typed decision model. Laya Multilingual is the proposed independent local Choice implementation; exact checkpoint, native conversion and candidate accuracy require evaluation.
 
-## Boundaries
+## Stack and decision status
 
-The template enforces two architectural boundaries:
+| Area | Choice | Status |
+| --- | --- | --- |
+| Desktop UI | MyGo v0.4.6 native, Go 1.27.1 | Selected by user; pinned shell dependency |
+| Shared domain/application | Portable Go module | Foundation |
+| macOS | CoreAudio/AVFoundation capture; AX context; IMK composition | Adapter design, implementation pending |
+| Windows | WASAPI capture; UI Automation context; TSF composition | Adapter design, implementation pending |
+| ASR | sherpa-onnx streaming evaluation adapter | Proposed; production weights require benchmark/license gates |
+| Correction | Conservative rules, optional local text model | Evaluation required |
+| Candidate ranking | Laya Multilingual local Choice evaluation adapter | Proposed; production checkpoint/export requires evaluation |
+| Local storage | SQLite with encrypted sensitive values and OS-kept keys | Proposed; concrete driver/migrations pending |
+| Sync service | Self-hosted Go relay; ciphertext records | Selected deployment priority; protocol specified |
+| Cryptography | Vetted AEAD/key lifecycle implementation | Provider decision pending; do not invent crypto |
 
-- **Frontend:** [Feature-Sliced Design (FSD)](../frontend/README.md).
-- **Backend:** [Domain-Driven Design (DDD) layered architecture](../backend/README.md).
-
-Anything that crosses both boundaries — for example, a shared type contract between frontend and backend — should be documented in [`architecture.md`](architecture.md).
-
-## What belongs here
-
-- Project goals and non-goals.
-- High-level architecture and module relationships.
-- Technology-stack decisions.
-- Cross-cutting concerns that touch both frontend and backend.
-
-## What does not belong here
-
-- Detailed layer rules (those live in [`frontend/`](../frontend/README.md) and [`backend/`](../backend/README.md)).
-- Operational procedures (those live in [`operations/`](../operations/README.md)).
-- Testing or code-review policy (those live in [`quality/`](../quality/README.md)).
+See [specs](../../specs/README.md), [research](../research/README.md), [repository](repository.md), and [agent handoff](agent-handoff.md).

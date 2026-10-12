@@ -1,39 +1,11 @@
 # Operations
 
-This section covers how the project is run, built, deployed, and monitored.
+- [Local development](local-dev.md) — actual repository commands and module toolchains.
+- [Evaluation commands](../../tools/evaluation/README.md) — Make/pnpm benchmarks and real drivers.
+- [Deployment](deployment.md) — desktop/model/IME and self-hosted relay release gates.
 
-## Documents
+The foundation uses Node 24 and pinned pnpm 10.33.0 for workspace/check/evaluation tooling, Go 1.25.7+ for isolated portable core checks, and Go 1.27.1+ for MyGo desktop. Go automatic toolchain selection may download the pinned newer toolchain. Native shell compilation is distinct from functional speech/IME support.
 
-- [`local-dev.md`](local-dev.md) — local development setup.
-- [`deployment.md`](deployment.md) — deployment guide.
+No database/server/cache or environment credentials are needed for the current shell. Do not start placeholder cloud services. Future self-hosted sync needs its own concrete module, config and runbook before deployment.
 
-## Environment
-
-Fill in concrete environment requirements here once the technology stack is chosen:
-
-- Runtime version: `__RUNTIME_VERSION__`
-- Required environment variables: `DATABASE_URL`, `PORT`, `LOG_LEVEL`, etc.
-- Local services: database, cache, message broker.
-
-## Commands
-
-Define the standard commands for this project. Placeholders:
-
-```sh
-# Install dependencies
-__INSTALL_COMMAND__
-
-# Run tests
-__TEST_COMMAND__
-
-# Run type checks
-__TYPECHECK_COMMAND__
-
-# Start the backend
-__START_BACKEND__
-
-# Start the frontend
-__START_FRONTEND__
-```
-
-Replace these with real commands when the stack is selected.
+CI installs with a frozen pnpm lockfile. Native jobs run actual window E2E. The manual [benchmark workflow](../../.github/workflows/benchmark.yml) requires an explicitly provisioned `self-hosted, arion-benchmark` runner, reviewed local driver and licensed private corpus; no hosted-runner hardware score or automatic weights download is implied. Restrict access to the self-hosted runner and retain raw traces privately.

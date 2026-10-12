@@ -1,46 +1,25 @@
-# Deployment
+# Distribution and deployment
 
-> How the project is built and deployed.
+## Current capability
 
-## Deployment target
-
-- Hosting: `__HOSTING__`
-- CI/CD platform: `__CI_CD__`
-- Container registry: `__REGISTRY__`
-
-## Build
+The native shell can be built with the pinned MyGo CLI. No microphone, model, IME installer, updater or sync service is implemented. A successful shell build is not a releasable input method.
 
 ```sh
-__BUILD_COMMAND__
+make desktop-build
 ```
 
-## Deploy
+## Desktop release gates
 
-```sh
-__DEPLOY_COMMAND__
-```
+1. Validate the compatibility matrix, model artifact checksums/licenses and privacy/latency gates on macOS and Windows.
+2. Assign controlled bundle/package identifiers and secret signing identities outside the repository.
+3. Package native inference libraries/tokenizers/approved weights consistently for each supported architecture; load verified assets from controlled paths.
+4. Declare microphone and relevant entitlements/permission descriptions only for implemented features. Sign all executable hosts/frameworks.
+5. macOS: sign/notarize app and IMK bundle, validate input-source registration and clean removal. Windows: sign app/TSF native host, validate architecture/registry registration and clean removal under actual user privilege boundaries.
+6. Prove mode switching, host crashes, shutdown and update/uninstall clean owned composition and don't strand OS registrations.
+7. Provide update trust, rollback and model migration checks before shipping automatic updates.
 
-Deployment assets (Dockerfiles, Kubernetes manifests) live in [`deploy/`](../../deploy/README.md). They are placeholders and must be adjusted to the project's actual stack and hosting environment.
+## Self-hosted relay gates
 
-## Database migrations
+Implement SYNC-01 before deploying anything. Specify server auth/enrollment, TLS/reverse proxy, ciphertext database migrations, size/rate limits, durable cursor/revision behavior, backup/restore and key-epoch tests. Keep private keys on clients; operators back up encrypted records/routing metadata. A restore cannot invent plaintext or silently discard client conflicts.
 
-- Run migrations as part of the deployment pipeline.
-- Back up production data before running destructive migrations.
-- Migrations should be idempotent and reversible when possible.
-
-## Rollback
-
-- Keep the previous release available for quick rollback.
-- Document the rollback command and expected recovery time.
-
-## Health checks
-
-- Expose a `/health` endpoint.
-- Health checks should verify database connectivity and critical dependencies.
-- Do not include dependency details in the public health response that could aid attackers.
-
-## Monitoring
-
-- Collect logs with structured JSON.
-- Set up alerts for error rate, latency, and dependency failures.
-- Use correlation IDs to trace requests across services.
+Docker/Kubernetes assets are reserved under [deploy](../../deploy/README.md); no image, host, ingress or database credentials are invented by this foundation.

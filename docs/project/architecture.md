@@ -1,73 +1,53 @@
 # Architecture
 
-> High-level system architecture. Update this file when the project grows or when major modules are added.
+## Data flow
 
-## Overview
-
-This project follows a clean separation between:
-
-- **Frontend** — structured with [Feature-Sliced Design (FSD)](../frontend/README.md).
-- **Backend** — structured with [Domain-Driven Design (DDD)](../backend/README.md) layered architecture.
-
-The two sides communicate through well-defined contracts. The backend exposes the domain through adapters in the `interfaces` layer; the frontend consumes those contracts in the `features` and `entities` layers.
-
-## Context diagram
-
-```text
-+-----------+        HTTP / events        +-----------------------------+
-|  Frontend |  <------------------------->  |  Backend interfaces layer   |
-|   (FSD)   |                             |  (controllers / adapters)   |
-+-----------+                             +-----------------------------+
-                                                      |
-                                                      v
-+-----------+                             +-----------------------------+
-|   User    |                             |  Application layer          |
-|           |                             |  (use cases / services)     |
-+-----------+                             +-----------------------------+
-                                                      |
-                                                      v
-                                          +-----------------------------+
-                                          |  Domain layer               |
-                                          |  (entities / value objects) |
-                                          +-----------------------------+
-                                                      ^
-                                                      |
-                                          +-----------------------------+
-                                          |  Infrastructure layer       |
-                                          |  (DB / external services)   |
-                                          +-----------------------------+
+```mermaid
+flowchart LR
+    Hotkey[Shortcut adapter] --> Session[Desktop application session]
+    IME[IMK or TSF host] --> Session
+    Mic[OS microphone capture] --> PCM[Bounded PCM buffer / resampler]
+    PCM --> VAD[VAD and streaming ASR]
+    Session --> VAD
+    Context[Consent-gated target context] --> Memory[Local memory snapshot]
+    Memory --> Rank[Local candidate ranker]
+    VAD --> Draft[Revisioned recognition draft]
+    Draft --> Rank
+    Rank --> Correct[Conservative correction candidate]
+    Correct --> Preview[Native preview or owned IME composition]
+    Preview --> Commit[Explicit session-bound commit]
+    Commit --> Target[Captured target editor]
+    Memory <--> Vault[Local encrypted values]
+    Vault <--> Sync[Client encryption and outbox]
+    Sync <--> Relay[Self-hosted ciphertext relay]
 ```
 
-## Module boundaries
+This is Arion's design, not a verified competitor call graph. Ranking requires real alternatives from its producer; a single ASR hypothesis remains a single candidate. Rule correction and ranking are separate operations. Streaming drafts are never treated as committed target content.
 
-| Module | Responsibility | Example |
-|--------|----------------|---------|
-| Frontend `app` | Application setup, providers, routing entry | bootstrapping the SPA |
-| Frontend `pages` | Page composition and routing parameter handling | `/orders` page |
-| Frontend `widgets` | Self-contained UI blocks composed of features | order summary card |
-| Frontend `features` | End-to-end user scenarios | place order, cancel order |
-| Frontend `entities` | Domain data and rules | `Order`, `User` |
-| Frontend `shared` | Reusable primitives and utilities | button, date formatter |
-| Backend `interfaces` | Transport adapters | HTTP controller |
-| Backend `application` | Use-case orchestration | `PlaceOrderService` |
-| Backend `domain` | Business rules | `Order`, `OrderStatus` |
-| Backend `infrastructure` | Concrete implementations | repository using PostgreSQL |
+## Modules
 
-## Cross-cutting concerns
+- `apps/desktop`: composition root, MyGo UI, OS adapter wiring and packaging. FSD packages are under `ui/`; native/platform code is under `infrastructure/`.
+- `packages/core`: framework-free Go domain, transport-neutral value contracts, domain-owned ports and application use cases. No MyGo, CGo, SQL, OS permissions, HTTP client, or vendor model SDK imports.
+- `services/sync`: reserved service boundary for Go DDD relay code. No implemented relay in this foundation.
+- `packages/contracts`: language-neutral examples and contract ownership; portable Go DTOs live in core rather than duplicate type implementations.
+- `models`: reviewed model metadata only. Weights, user corpora and commercial app binaries are never committed.
 
-- **Authentication / authorization** — document the chosen strategy here once it is decided.
-- **Error handling** — both sides must use the contract defined in [`backend/api-conventions.md`](../backend/api-conventions.md).
-- **Logging and observability** — see [`backend/logging.md`](../backend/logging.md).
-- **Validation** — backend validates at the boundary; frontend validates for immediate UX feedback, but the backend is the source of truth.
+See [repository ownership](repository.md) for import rules and [contract](../../specs/004-contracts.md) for versioning.
 
-## Technology-stack placeholders
+## Input ownership
 
-Replace these with real decisions:
+Shortcut mode captures a target capability token at start, previews in Arion, and commits once through a verified insertion path. A focus change or unsupported editor stops automatic insertion. Clipboard delivery is a visible, explicit operation with restoration and ownership checks, not a silent bypass.
 
-- Runtime: `__RUNTIME__`
-- Frontend framework: `__FRONTEND_FRAMEWORK__`
-- Backend framework: `__BACKEND_FRAMEWORK__`
-- Database: `__DATABASE__`
-- Cache: `__CACHE__`
-- Message broker: `__MESSAGE_BROKER__`
-- Hosting: `__HOSTING__`
+IME mode uses host-owned composition ranges. IMK and TSF manage provisional marked text, candidate selection and final commit. The UI process and recognition worker must not access client pointers across process boundaries. User switching modes invalidates the old generation, clears owned composition safely, and requires a new session.
+
+## Process and execution constraints
+
+MyGo and OS UI calls run on their required UI thread. Capture callbacks enqueue bounded frames and never run inference or network calls. ASR, ranker and correction workers are cancellable and tagged with session/revision/generation. A stopped session cannot receive a late write. The core does not require a process split; isolate native inference crashes where supported and document IPC before introducing a worker process.
+
+IMK/TSF integration must be proven with small OS-native harnesses before linking the production host. Windows TSF may require a small native COM host/in-process DLL; a Go/MyGo process is not automatically a TSF text service. macOS input source packaging similarly requires an IMK server bundle. These adapters are separate from the normal shortcut app lifecycle.
+
+## Privacy and sync
+
+Model provisioning and encrypted memory sync are explicit network surfaces; dictation and ranking have no cloud inference route. Audio is memory-only by default. Context is bounded, expires with the session and is excluded from logs/sync. Vetted encryption seals allowed memory before it enters the outbox; the relay cannot access plaintext. Failure never downgrades to plaintext or remotely processed speech.
+
+See [privacy](../../specs/005-privacy.md), [memory sync](../../specs/003-memory-sync.md), and [ADRs](../decisions/README.md).

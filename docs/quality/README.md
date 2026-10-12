@@ -5,6 +5,9 @@ This section defines testing strategy, code-review expectations, and quality gat
 ## Documents
 
 - [`testing.md`](testing.md) — testing strategy and test types.
+- [Native and product E2E](e2e.md) — real window lifecycle and future OS scenario driver.
+- [Evaluation tooling](../../tools/evaluation/README.md) — executable benchmarks and driver contracts.
+- [Foundation validation](validation.md) — actual local results and remaining coverage.
 - [`code-review.md`](code-review.md) — code-review checklist.
 - [`agent-skills.md`](agent-skills.md) — installed Agent Skills for UI craft and anti-slop.
 
@@ -22,3 +25,7 @@ This section defines testing strategy, code-review expectations, and quality gat
 - Integration tests cover repository and external-service boundaries.
 - Documentation is updated if behavior or conventions changed.
 - No hardcoded strings, redundant copy, duplicated code, or fallback cleverness.
+
+## Arion release evidence
+
+Stable acceptance IDs live in [specs](../../specs/README.md). Current checks cover foundation invariants, links/imports and shell compilation; they do not establish functional speech or IME support. OS host lifecycle, offline/privacy, checkpoint provenance and concurrent ASR/ranking performance are required before a feature is declared releasable. See [testing](testing.md) and [evaluation](../research/evaluation.md).

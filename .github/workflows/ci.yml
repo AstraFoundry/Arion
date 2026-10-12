@@ -6,26 +6,57 @@ on:
   pull_request:
     branches: [main]
 
+permissions:
+  contents: read
+
 jobs:
-  check:
+  portable:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup runtime
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          run_install: false
+      - uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.25.7'
+          cache: false
+      - run: pnpm check
+      - run: pnpm test
 
-      - name: Install dependencies
-        run: echo 'Replace with install command'
-
-      - name: Lint
-        run: echo 'Replace with lint command'
-
-      - name: Type check
-        run: echo 'Replace with typecheck command'
-
-      - name: Test
-        run: echo 'Replace with test command'
+  native-shell:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-14, windows-2022]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          run_install: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.27.1'
+          cache-dependency-path: apps/desktop/go.sum
+      - run: pnpm desktop:check
+      - run: pnpm e2e:native
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: native-content-${{ matrix.os }}
+          path: .workspace/e2e/
+          if-no-files-found: ignore
+      - name: Package native shell
+        working-directory: apps/desktop
+        run: go tool mygo build

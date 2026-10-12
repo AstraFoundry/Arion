@@ -1,4 +1,6 @@
 # Public API
+Arion native mapping: use Go package exports and MyGo native primitives; TypeScript, DOM and CSS examples illustrate the original generic conventions. See [repository ownership](../project/repository.md) for the authoritative native mapping.
+
 
 Every slice exposes a public API through its root `index.ts`. Other slices must import only from this public API.
 

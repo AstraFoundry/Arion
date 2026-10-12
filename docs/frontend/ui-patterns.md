@@ -1,4 +1,6 @@
 # UI Patterns
+Arion native mapping: use Go package exports and MyGo native primitives; TypeScript, DOM and CSS examples illustrate the original generic conventions. See [repository ownership](../project/repository.md) for the authoritative native mapping.
+
 
 This document defines how UI is written in this project. The goal is a consistent, maintainable, and accessible interface.
 

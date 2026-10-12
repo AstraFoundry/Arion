@@ -1,0 +1,1298 @@
+{
+  "schema_version": 1,
+  "evidence_scope": "Read-only local shipped artifacts. Not REA evidence; no native engine, callgraph, decompilation, runtime tracing, logs, user data, credentials, target launch, or interception. Locally assigned DS-* identifiers.",
+  "target_root": "/Library/Input Methods/DoubaoIme.app",
+  "artifacts": {
+    "main": {
+      "relative_path": "Contents/MacOS/DoubaoIme",
+      "size_bytes": 42723680,
+      "sha256": "4b3836dcb8a3e06b01b4c95390c757b71f623c1f7c4141c059e49284f7f6442d"
+    },
+    "plist": {
+      "relative_path": "Contents/Info.plist",
+      "size_bytes": 3993,
+      "sha256": "82e6c717df702b7ec5688f99459fef1db39a9a936edb24ce808aedb5684d05dd"
+    },
+    "settings_plist": {
+      "relative_path": "Contents/Applications/DoubaoImeSettings.app/Contents/Info.plist",
+      "size_bytes": 2304,
+      "sha256": "95cfdd83b50be6b640d0ac8d3422c6b5606ad078ede623884a24a65e02aac3d4"
+    },
+    "common": {
+      "relative_path": "Contents/Frameworks/OimeCommon.framework/Versions/A/OimeCommon",
+      "size_bytes": 1084144,
+      "sha256": "e32fe772173cf8a52865152ab0e07d8bec2354ea317ce61f6ec8e2fc1a805606"
+    },
+    "engine": {
+      "relative_path": "Contents/Frameworks/OimeEngine.framework/Versions/A/OimeEngine",
+      "size_bytes": 14474480,
+      "sha256": "d1cebd7c9a9d888acc2a6d2f4aad372cb3b31570ff68a7e631cba930517f5db8"
+    },
+    "onnx": {
+      "relative_path": "Contents/Frameworks/libonnxruntime.1.16.2.dylib",
+      "size_bytes": 46113280,
+      "sha256": "322c0184619afd696c29911cfc430ef75a4f29d0515eb3fa98f78edc68a184db"
+    }
+  },
+  "DS-identity": {
+    "main_plist": {
+      "CFBundleIdentifier": "com.bytedance.inputmethod.doubaoime",
+      "CFBundleExecutable": "DoubaoIme",
+      "CFBundleShortVersionString": "1.0.2",
+      "CFBundleVersion": "1",
+      "InputMethodConnectionName": "DoubaoIme_Connection",
+      "InputMethodServerControllerClass": "DoubaoImeInputController",
+      "LSBackgroundOnly": true,
+      "ComponentInputModeDict": {
+        "tsInputModeListKey": {
+          "com.bytedance.inputmethod.doubaoime.pinyin": {
+            "TISInputSourceID": "com.bytedance.inputmethod.doubaoime.pinyin",
+            "tsInputModeDefaultStateKey": true,
+            "tsInputModeIsVisibleKey": true,
+            "tsInputModeKeyEquivalentKey": "",
+            "tsInputModeKeyEquivalentModifiersKey": 4608,
+            "tsInputModeMenuIconFileKey": "menu_icon.pdf",
+            "tsInputModePaletteIconFileKey": "menu_icon.pdf",
+            "tsInputModePrimaryInScriptKey": true,
+            "tsInputModeScriptKey": "smSimpChinese"
+          }
+        },
+        "tsVisibleInputModeOrderedArrayKey": [
+          "com.bytedance.inputmethod.doubaoime.pinyin"
+        ]
+      }
+    },
+    "settings_plist": {
+      "CFBundleIdentifier": "com.bytedance.inputmethod.doubaoime.settings",
+      "CFBundleExecutable": "DoubaoImeSettings",
+      "CFBundleShortVersionString": "1.0.2",
+      "LSUIElement": true
+    },
+    "main_file": "Mach-O universal binary with 2 architectures: [x86_64:Mach-O 64-bit executable x86_64] [arm64]\n/Library/Input Methods/DoubaoIme.app/Contents/MacOS/DoubaoIme (for architecture x86_64):\tMach-O 64-bit executable x86_64\n/Library/Input Methods/DoubaoIme.app/Contents/MacOS/DoubaoIme (for architecture arm64):\tMach-O 64-bit executable arm64"
+  },
+  "DS-links": {
+    "architecture": "arm64",
+    "selected_dylib_loads": [
+      "@rpath/libime_net_sdk.dylib (compatibility version 0.0.0, current version 0.0.0)",
+      "@rpath/libonnxruntime.1.16.2.dylib (compatibility version 0.0.0, current version 1.16.2)",
+      "/System/Library/Frameworks/Accelerate.framework/Versions/A/Accelerate (compatibility version 1.0.0, current version 4.0.0)",
+      "/System/Library/Frameworks/AudioToolbox.framework/Versions/A/AudioToolbox (compatibility version 1.0.0, current version 1000.0.0)",
+      "/System/Library/Frameworks/MetalPerformanceShaders.framework/Versions/A/MetalPerformanceShaders (compatibility version 1.0.0, current version 129.0.19)",
+      "@rpath/OimeCommon.framework/Versions/A/OimeCommon (compatibility version 1.0.0, current version 1.0.0)",
+      "@rpath/OimeEngine.framework/Versions/A/OimeEngine (compatibility version 1.0.0, current version 1.0.0)",
+      "@rpath/WCDBSwift.framework/Versions/A/WCDBSwift (compatibility version 1.0.0, current version 1.0.0)",
+      "@rpath/sqlcipher.framework/Versions/A/sqlcipher (compatibility version 1.0.0, current version 1.0.0)",
+      "/System/Library/Frameworks/AVFoundation.framework/Versions/A/AVFoundation (compatibility version 1.0.0, current version 2.0.0)",
+      "/System/Library/Frameworks/CoreAudio.framework/Versions/A/CoreAudio (compatibility version 1.0.0, current version 1.0.0)",
+      "/System/Library/Frameworks/InputMethodKit.framework/Versions/A/InputMethodKit (compatibility version 1.0.0, current version 506.0.0)",
+      "/System/Library/Frameworks/Metal.framework/Versions/A/Metal (compatibility version 1.0.0, current version 370.63.1)",
+      "/usr/lib/swift/libswiftAVFoundation.dylib (compatibility version 1.0.0, current version 2360.79.5)",
+      "/usr/lib/swift/libswiftAccelerate.dylib (compatibility version 1.0.0, current version 75.0.0)",
+      "/usr/lib/swift/libswiftCoreAudio.dylib (compatibility version 1.0.0, current version 411.106.0)",
+      "/usr/lib/swift/libswiftMetal.dylib (compatibility version 1.0.0, current version 370.63.1)"
+    ],
+    "selected_undefined_imports": [
+      "U _$s10OimeCommon27ASRPunctuationTextProcessorO7process_4mode7keyTypeAC6ResultVSS_AA0C18PostProcessingModeOAA09ReturnKeyI0OtFZ",
+      "U _$s10OimeCommon30ASRTextDisplayWindowControllerC9applyDiff11deleteCount10insertTextySi_SStF",
+      "U _$s10OimeCommon9ASRResultC14completeResult15recentVADResult03tbdE09isFullVAD0i7OfflineE02pt6taskId14vadModifyPairsACSS_S2SS2bSSSgALSayAA13VADModifyPairVGtcfc",
+      "U _OBJC_CLASS_$_AVAudioEngine",
+      "U _OBJC_CLASS_$_IMKInputController",
+      "U _OBJC_METACLASS_$_IMKInputController"
+    ],
+    "note": "Linkage/imports do not establish executed call sites."
+  },
+  "observations": [
+    {
+      "id": "DS-capture",
+      "kind": "static-ascii-strings",
+      "artifact": "main",
+      "items": [
+        {
+          "value": "ASRAudioEngine",
+          "file_offsets_decimal": [
+            16077173,
+            36082453
+          ]
+        },
+        {
+          "value": "ASRManager",
+          "file_offsets_decimal": [
+            16081421,
+            36086925
+          ]
+        },
+        {
+          "value": "ASRAudioEngine startRecording.",
+          "file_offsets_decimal": [
+            17213664,
+            37215888
+          ]
+        },
+        {
+          "value": "ASRAudioEngine failed to start recording: ",
+          "file_offsets_decimal": [
+            17213904,
+            37216128
+          ]
+        },
+        {
+          "value": "ASRAudioEngine recording started successfully",
+          "file_offsets_decimal": [
+            17214080,
+            37216336
+          ]
+        },
+        {
+          "value": "BuildFramedSpeechOpus",
+          "file_offsets_decimal": [
+            17349315,
+            37349804
+          ]
+        },
+        {
+          "value": "CacheRawAudio",
+          "file_offsets_decimal": [
+            17352005,
+            37352482
+          ]
+        },
+        {
+          "value": "CMSampleBufferCopyPCMDataIntoAudioBufferList",
+          "file_offsets_decimal": [
+            19000176,
+            39872480
+          ]
+        }
+      ],
+      "requested_literals_not_found": []
+    },
+    {
+      "id": "DS-online_offline",
+      "kind": "static-ascii-strings",
+      "artifact": "main",
+      "items": [
+        {
+          "value": "SAMICore_WebSocketConnectionEvent",
+          "file_offsets_decimal": [
+            16064592,
+            36070378
+          ]
+        },
+        {
+          "value": "SAMICore_WSocketConnectPoolParameter",
+          "file_offsets_decimal": [
+            16064741,
+            36070527
+          ]
+        },
+        {
+          "value": "ASROfflineModelIPCClient",
+          "file_offsets_decimal": [
+            16923328,
+            19021840,
+            36918384,
+            39894144
+          ]
+        },
+        {
+          "value": "ASROfflineModelManager",
+          "file_offsets_decimal": [
+            16923664,
+            19021872,
+            36918720,
+            39894176
+          ]
+        },
+        {
+          "value": "ASROfflineModelManifest",
+          "file_offsets_decimal": [
+            16925184,
+            36920240
+          ]
+        },
+        {
+          "value": "ASROfflineModelStorageHealth",
+          "file_offsets_decimal": [
+            16928144,
+            36923216
+          ]
+        },
+        {
+          "value": "SAMIWebsocketTTNetCallback",
+          "file_offsets_decimal": [
+            17314367,
+            37314570
+          ]
+        },
+        {
+          "value": "[SAMICORE: %s@%s:%d] asr model path is empty will use online asr",
+          "file_offsets_decimal": [
+            17344276,
+            37344783
+          ]
+        },
+        {
+          "value": "ExecuteSwitchTask",
+          "file_offsets_decimal": [
+            17346316,
+            37346805
+          ]
+        },
+        {
+          "value": "[SAMICORE: %s@%s:%d] ExecuteSwitchTask cur_online_vad_result_: %s",
+          "file_offsets_decimal": [
+            17346334,
+            37346823
+          ]
+        },
+        {
+          "value": "ExecuteOnlyOfflineTask",
+          "file_offsets_decimal": [
+            17346547,
+            37347036
+          ]
+        },
+        {
+          "value": "[SAMICORE: %s@%s:%d] send asr offline finish, receive audio length: %d",
+          "file_offsets_decimal": [
+            17347128,
+            37347617
+          ]
+        },
+        {
+          "value": "offline_model_manifest.json",
+          "file_offsets_decimal": [
+            19022512,
+            39894816
+          ]
+        },
+        {
+          "value": "asr_model.model",
+          "file_offsets_decimal": [
+            21073208,
+            42051440
+          ]
+        }
+      ],
+      "requested_literals_not_found": []
+    },
+    {
+      "id": "DS-local_kernel",
+      "kind": "static-ascii-strings",
+      "artifact": "main",
+      "items": [
+        {
+          "value": "[ImeAsrQwen3][Init] provider->type=%d (0=CPU,4=Metal)%s",
+          "file_offsets_decimal": [
+            17486792,
+            37487488
+          ]
+        },
+        {
+          "value": "W4A8ImeAsrQwen3TransformerBlock",
+          "file_offsets_decimal": [
+            17566307,
+            37566963
+          ]
+        },
+        {
+          "value": "[Qwen3Decoder] quant_bmm=1: INT8 KV cache + dynamic INT8 BMM",
+          "file_offsets_decimal": [
+            17620117,
+            37622432
+          ]
+        },
+        {
+          "value": "W4A8ImeAsrQwen3Transformer attention type only support qwen3",
+          "file_offsets_decimal": [
+            17620340,
+            37622729
+          ]
+        },
+        {
+          "value": "GetW4A8ImeAsrQwen3TransformerKernel failed",
+          "file_offsets_decimal": [
+            17620489,
+            37622878
+          ]
+        },
+        {
+          "value": "[Qwen3Decoder] provider: %s",
+          "file_offsets_decimal": [
+            37622598
+          ]
+        },
+        {
+          "value": "W4A8ImeAsrQwen3Transformer Metal execution failed after CPU weights were released",
+          "file_offsets_decimal": [
+            37623459
+          ]
+        }
+      ],
+      "requested_literals_not_found": []
+    },
+    {
+      "id": "DS-context",
+      "kind": "static-ascii-strings",
+      "artifact": "main",
+      "items": [
+        {
+          "value": "HotwordContext",
+          "file_offsets_decimal": [
+            16906765,
+            36901725
+          ]
+        },
+        {
+          "value": "ASRGlobalContextManager",
+          "file_offsets_decimal": [
+            16906784,
+            36901744
+          ]
+        },
+        {
+          "value": "AXSelectedTextRange",
+          "file_offsets_decimal": [
+            17221776,
+            37223968
+          ]
+        },
+        {
+          "value": "AXTextInputMarkedTextMarkerRange",
+          "file_offsets_decimal": [
+            17221840,
+            37224032
+          ]
+        },
+        {
+          "value": "AXStringForTextMarkerRange",
+          "file_offsets_decimal": [
+            17222400,
+            37224592
+          ]
+        },
+        {
+          "value": "[ASR][Context] hotwordsCount=",
+          "file_offsets_decimal": [
+            17226672,
+            37228864
+          ]
+        },
+        {
+          "value": "_TtCC9OimeAudio23ASRGlobalContextManager26AccountAwareContextRequest",
+          "file_offsets_decimal": [
+            18997856,
+            39870160
+          ]
+        },
+        {
+          "value": "_TtCC9OimeAudio23ASRGlobalContextManager22UserWordsUploadRequest",
+          "file_offsets_decimal": [
+            18997936,
+            39870240
+          ]
+        },
+        {
+          "value": "_TtCC9OimeAudio23ASRGlobalContextManager23ModifyPairUploadRequest",
+          "file_offsets_decimal": [
+            18998128,
+            39870432
+          ]
+        },
+        {
+          "value": "_TtCC9OimeAudio23ASRGlobalContextManager14TextNERRequest",
+          "file_offsets_decimal": [
+            18998208,
+            39870512
+          ]
+        }
+      ],
+      "requested_literals_not_found": []
+    },
+    {
+      "id": "DS-results",
+      "kind": "static-ascii-strings",
+      "artifact": "common",
+      "items": [
+        {
+          "value": "ASRPunctuationPostProcessingMode",
+          "file_offsets_decimal": [
+            330352,
+            851072
+          ]
+        },
+        {
+          "value": "ASRPunctuationTextProcessor",
+          "file_offsets_decimal": [
+            330400,
+            851120
+          ]
+        },
+        {
+          "value": "VADModifyPair",
+          "file_offsets_decimal": [
+            330480,
+            851200
+          ]
+        },
+        {
+          "value": "ASRResult",
+          "file_offsets_decimal": [
+            330494,
+            512953,
+            513203,
+            851214,
+            1045741,
+            1045991
+          ]
+        },
+        {
+          "value": "context.db",
+          "file_offsets_decimal": [
+            335400,
+            855664
+          ]
+        },
+        {
+          "value": "completeResult",
+          "file_offsets_decimal": [
+            338507,
+            366337,
+            507916,
+            858779,
+            886513,
+            1040716
+          ]
+        },
+        {
+          "value": "recentVADResult",
+          "file_offsets_decimal": [
+            338523,
+            366352,
+            858795,
+            886528
+          ]
+        },
+        {
+          "value": "isFullVAD",
+          "file_offsets_decimal": [
+            338549,
+            366378,
+            858821,
+            886554
+          ]
+        },
+        {
+          "value": "isOfflineResult",
+          "file_offsets_decimal": [
+            338559,
+            366388,
+            858831,
+            886564
+          ]
+        },
+        {
+          "value": "vadModifyPairs",
+          "file_offsets_decimal": [
+            338585,
+            366414,
+            858857,
+            886590
+          ]
+        },
+        {
+          "value": "context_aux_model",
+          "file_offsets_decimal": [
+            348640,
+            868912
+          ]
+        },
+        {
+          "value": "applyDiff11deleteCount10insertTextySi_SStF",
+          "file_offsets_decimal": [
+            493120,
+            1025930
+          ]
+        }
+      ],
+      "requested_literals_not_found": []
+    },
+    {
+      "id": "DS-commit",
+      "kind": "static-ascii-strings",
+      "artifact": "main",
+      "items": [
+        {
+          "value": "ASRFinalCommitTarget",
+          "file_offsets_decimal": [
+            16078096
+          ]
+        },
+        {
+          "value": "ASRFinalWriteReceipt",
+          "file_offsets_decimal": [
+            16078160,
+            36083440
+          ]
+        },
+        {
+          "value": "ASRFinalCommitTransaction",
+          "file_offsets_decimal": [
+            16078720,
+            36084000
+          ]
+        },
+        {
+          "value": "ASRResultDelivery",
+          "file_offsets_decimal": [
+            16083504,
+            36088976
+          ]
+        },
+        {
+          "value": "ASRPendingResult",
+          "file_offsets_decimal": [
+            16084848,
+            36090432
+          ]
+        },
+        {
+          "value": "ASRCommitOwnership",
+          "file_offsets_decimal": [
+            16086320,
+            36091888
+          ]
+        },
+        {
+          "value": "[ASR][Lifecycle] finish_vad_requested logID=",
+          "file_offsets_decimal": [
+            17225328,
+            37227520
+          ]
+        },
+        {
+          "value": "[ASR][Lifecycle] finish_audio_send logID=",
+          "file_offsets_decimal": [
+            17236384,
+            37238576
+          ]
+        },
+        {
+          "value": "[ASR][FinalCommit] clear marked before paste session=",
+          "file_offsets_decimal": [
+            17268352,
+            37270512
+          ]
+        },
+        {
+          "value": "[ASR][FinalCommit] skip pasteboard restore, reason=changedAfterPaste, trigger=",
+          "file_offsets_decimal": [
+            17271056,
+            37273216
+          ]
+        },
+        {
+          "value": "[ASR][FinalCommit] pending latest result while paste in-flight, session=",
+          "file_offsets_decimal": [
+            17273696,
+            37275856
+          ]
+        },
+        {
+          "value": "[ASR][FinalCommit] target_rejected reason=ownership, transaction=",
+          "file_offsets_decimal": [
+            17275840,
+            37278000
+          ]
+        },
+        {
+          "value": "[ASR][FinalCommit] transaction_begin transaction=",
+          "file_offsets_decimal": [
+            17276448,
+            37278608
+          ]
+        },
+        {
+          "value": "[ASR][FinalCommit] pass synthetic Command-V source=imkit, type=",
+          "file_offsets_decimal": [
+            17284944,
+            37287104
+          ]
+        },
+        {
+          "value": "commitComposition:",
+          "file_offsets_decimal": [
+            19156484,
+            40028802
+          ]
+        },
+        {
+          "value": "insertText:replacementRange:",
+          "file_offsets_decimal": [
+            19170820,
+            40043370
+          ]
+        },
+        {
+          "value": "setMarkedText:selectedRange:replacementRange:",
+          "file_offsets_decimal": [
+            19190831,
+            40063782
+          ]
+        }
+      ],
+      "requested_literals_not_found": []
+    },
+    {
+      "id": "DS-correction",
+      "kind": "static-ascii-strings",
+      "artifact": "engine",
+      "items": [
+        {
+          "value": "asr_char_error_dict.dat",
+          "file_offsets_decimal": [
+            4339488,
+            4340592,
+            4342160,
+            4343216,
+            4344464,
+            4345296,
+            4346128,
+            4348368,
+            4349200,
+            4350704,
+            4351584,
+            4353008,
+            4353872,
+            4357888,
+            4359616,
+            4360544,
+            4363136,
+            4364016,
+            4365424,
+            4366528,
+            4368304,
+            5318720,
+            5320112,
+            5322080,
+            5322944,
+            5323968,
+            5368320,
+            5370240,
+            5371072,
+            5371904,
+            5372736,
+            5373568,
+            5374736,
+            5375568,
+            5376400,
+            5377360,
+            5378880,
+            5379776,
+            5381440,
+            5382352,
+            5383264,
+            5387264,
+            5415696,
+            5416768,
+            5417616,
+            5420048,
+            5469488,
+            5471472,
+            5472736,
+            5473760,
+            5477504,
+            5478432,
+            5479344,
+            5480192,
+            5481120,
+            5482000,
+            5485792,
+            5486720,
+            5487584,
+            5488416,
+            5489264,
+            5490128,
+            5491664,
+            5493056,
+            5497904,
+            5498992,
+            5500992,
+            5502048,
+            5503296,
+            5504224,
+            5505104,
+            5510432,
+            5514240,
+            5515728,
+            5516560,
+            5517440,
+            5518352,
+            5519392,
+            5520320,
+            11442783,
+            11443651,
+            11444939,
+            11445803,
+            11446932,
+            11447584,
+            11448259,
+            11450127,
+            11450788,
+            11452124,
+            11452835,
+            11454211,
+            11454956,
+            11458684,
+            11460186,
+            11460900,
+            11463228,
+            11463964,
+            11465198,
+            11465884,
+            11467372,
+            12417540,
+            12418732,
+            12420568,
+            12421268,
+            12422124,
+            12466084,
+            12467859,
+            12468565,
+            12469217,
+            12469869,
+            12470521,
+            12471495,
+            12472147,
+            12472799,
+            12473460,
+            12474804,
+            12475559,
+            12476972,
+            12477708,
+            12478527,
+            12482343,
+            12511564,
+            12512476,
+            12513128,
+            12515395,
+            12564665,
+            12566540,
+            12567587,
+            12568460,
+            12571860,
+            12572628,
+            12573373,
+            12574052,
+            12574820,
+            12575523,
+            12579140,
+            12579885,
+            12580596,
+            12581248,
+            12581907,
+            12582675,
+            12584035,
+            12585115,
+            12589846,
+            12590667,
+            12592446,
+            12593203,
+            12594325,
+            12594980,
+            12595652,
+            12600747,
+            12604467,
+            12605825,
+            12606492,
+            12607203,
+            12607916,
+            12608739,
+            12609491
+          ]
+        },
+        {
+          "value": "asr_ngram_dict.dat",
+          "file_offsets_decimal": [
+            4339520,
+            4340624,
+            4342192,
+            4343248,
+            4344496,
+            4345328,
+            4346160,
+            4348400,
+            4349232,
+            4350736,
+            4351616,
+            4353040,
+            4353904,
+            4357920,
+            4359648,
+            4360576,
+            4363168,
+            4364048,
+            4365456,
+            4366560,
+            4368336,
+            5318752,
+            5320144,
+            5322112,
+            5322976,
+            5324000,
+            5368352,
+            5370272,
+            5371104,
+            5371936,
+            5372768,
+            5373600,
+            5374768,
+            5375600,
+            5376432,
+            5377392,
+            5378912,
+            5379808,
+            5381472,
+            5382384,
+            5383296,
+            5387296,
+            5415728,
+            5416800,
+            5417648,
+            5420080,
+            5469520,
+            5471504,
+            5472768,
+            5473792,
+            5477536,
+            5478464,
+            5479376,
+            5480224,
+            5481152,
+            5482032,
+            5485824,
+            5486752,
+            5487616,
+            5488448,
+            5489296,
+            5490160,
+            5491696,
+            5493088,
+            5497936,
+            5499024,
+            5501024,
+            5502080,
+            5503328,
+            5504256,
+            5505136,
+            5510464,
+            5514272,
+            5515760,
+            5516592,
+            5517472,
+            5518384,
+            5519424,
+            5520352,
+            11442807,
+            11443675,
+            11444963,
+            11445827,
+            11446956,
+            11447608,
+            11448283,
+            11450151,
+            11450812,
+            11452148,
+            11452859,
+            11454235,
+            11454980,
+            11458708,
+            11460210,
+            11460924,
+            11463252,
+            11463988,
+            11465222,
+            11465908,
+            11467396,
+            12417564,
+            12418756,
+            12420592,
+            12421292,
+            12422148,
+            12466108,
+            12467883,
+            12468589,
+            12469241,
+            12469893,
+            12470545,
+            12471519,
+            12472171,
+            12472823,
+            12473484,
+            12474828,
+            12475583,
+            12476996,
+            12477732,
+            12478551,
+            12482367,
+            12511588,
+            12512500,
+            12513152,
+            12515419,
+            12564689,
+            12566564,
+            12567611,
+            12568484,
+            12571884,
+            12572652,
+            12573397,
+            12574076,
+            12574844,
+            12575547,
+            12579164,
+            12579909,
+            12580620,
+            12581272,
+            12581931,
+            12582699,
+            12584059,
+            12585139,
+            12589870,
+            12590691,
+            12592470,
+            12593227,
+            12594349,
+            12595004,
+            12595676,
+            12600771,
+            12604491,
+            12605849,
+            12606516,
+            12607227,
+            12607940,
+            12608763,
+            12609515
+          ]
+        },
+        {
+          "value": "asr_modify_exempt_word.dat",
+          "file_offsets_decimal": [
+            4339552,
+            4340656,
+            4342224,
+            4343280,
+            4344528,
+            4345360,
+            4346192,
+            4348432,
+            4349264,
+            4350768,
+            4351648,
+            4353072,
+            4353936,
+            4357952,
+            4359680,
+            4360608,
+            4363200,
+            4364080,
+            4365488,
+            4366592,
+            4368368,
+            5318784,
+            5320176,
+            5322144,
+            5323008,
+            5324032,
+            5368384,
+            5370304,
+            5371136,
+            5371968,
+            5372800,
+            5373632,
+            5374800,
+            5375632,
+            5376464,
+            5377424,
+            5378944,
+            5379840,
+            5381504,
+            5382416,
+            5383328,
+            5387328,
+            5415760,
+            5416832,
+            5417680,
+            5420112,
+            5469552,
+            5471536,
+            5472800,
+            5473824,
+            5477568,
+            5478496,
+            5479408,
+            5480256,
+            5481184,
+            5482064,
+            5485856,
+            5486784,
+            5487648,
+            5488480,
+            5489328,
+            5490192,
+            5491728,
+            5493120,
+            5497968,
+            5499056,
+            5501056,
+            5502112,
+            5503360,
+            5504288,
+            5505168,
+            5510496,
+            5514304,
+            5515792,
+            5516624,
+            5517504,
+            5518416,
+            5519456,
+            5520384,
+            11442826,
+            11443694,
+            11444982,
+            11445846,
+            11446975,
+            11447627,
+            11448302,
+            11450170,
+            11450831,
+            11452167,
+            11452878,
+            11454254,
+            11454999,
+            11458727,
+            11460229,
+            11460943,
+            11463271,
+            11464007,
+            11465241,
+            11465927,
+            11467415,
+            12417583,
+            12418775,
+            12420611,
+            12421311,
+            12422167,
+            12466127,
+            12467902,
+            12468608,
+            12469260,
+            12469912,
+            12470564,
+            12471538,
+            12472190,
+            12472842,
+            12473503,
+            12474847,
+            12475602,
+            12477015,
+            12477751,
+            12478570,
+            12482386,
+            12511607,
+            12512519,
+            12513171,
+            12515438,
+            12564708,
+            12566583,
+            12567630,
+            12568503,
+            12571903,
+            12572671,
+            12573416,
+            12574095,
+            12574863,
+            12575566,
+            12579183,
+            12579928,
+            12580639,
+            12581291,
+            12581950,
+            12582718,
+            12584078,
+            12585158,
+            12589889,
+            12590710,
+            12592489,
+            12593246,
+            12594368,
+            12595023,
+            12595695,
+            12600790,
+            12604510,
+            12605868,
+            12606535,
+            12607246,
+            12607959,
+            12608782,
+            12609534
+          ]
+        },
+        {
+          "value": "asr_user_correct_dict.dat",
+          "file_offsets_decimal": [
+            5490560,
+            6072787,
+            12583016,
+            13160896
+          ]
+        },
+        {
+          "value": "asr_user_ner_dict.dat",
+          "file_offsets_decimal": [
+            5492096,
+            6068400,
+            12584371,
+            13156563
+          ]
+        },
+        {
+          "value": "AsrUserCorrectDict::Add failed, original_word == modify_word",
+          "file_offsets_decimal": [
+            6079513,
+            13167580
+          ]
+        },
+        {
+          "value": "AsrUserCorrectDict::Add failed, length not equal",
+          "file_offsets_decimal": [
+            6079614,
+            13167681
+          ]
+        },
+        {
+          "value": "AsrGetUserWordEPv",
+          "file_offsets_decimal": [
+            6580747,
+            13629907
+          ]
+        },
+        {
+          "value": "AsrGetGlobalContextEPv",
+          "file_offsets_decimal": [
+            6582980,
+            13632126
+          ]
+        },
+        {
+          "value": "AsrUserCorrectDict",
+          "file_offsets_decimal": [
+            6709197,
+            13758314
+          ]
+        }
+      ],
+      "requested_literals_not_found": []
+    },
+    {
+      "id": "DS-organize",
+      "kind": "static-ascii-strings",
+      "artifact": "main",
+      "items": [
+        {
+          "value": "ASRSmartOrganizeUndoRecord",
+          "file_offsets_decimal": [
+            16086160,
+            36091728
+          ]
+        },
+        {
+          "value": "ASRSmartOrganizeContext",
+          "file_offsets_decimal": [
+            16086704,
+            36092272
+          ]
+        },
+        {
+          "value": "ASRSmartOrganizeUndoAXTextSnapshot",
+          "file_offsets_decimal": [
+            16087040,
+            36092672
+          ]
+        },
+        {
+          "value": "OimeSmartOrganize",
+          "file_offsets_decimal": [
+            16936128,
+            36931424
+          ]
+        },
+        {
+          "value": "SmartOrganizeClient",
+          "file_offsets_decimal": [
+            16936400,
+            19054384,
+            36931696,
+            39926688
+          ]
+        },
+        {
+          "value": "SmartOrganizeMemoryCache",
+          "file_offsets_decimal": [
+            16937104,
+            36932400
+          ]
+        },
+        {
+          "value": "finishSmartOrganize(action:context:closeASRPanelAfterCommit:trackingFailureReasonOverride:)",
+          "file_offsets_decimal": [
+            17291168,
+            37293328
+          ]
+        }
+      ],
+      "requested_literals_not_found": []
+    }
+  ],
+  "DS-resource-headers": [
+    {
+      "relative_path": "Contents/Frameworks/OimeEngine.framework/Versions/A/Resources/OimeEngineResources.bundle/asr/281be8420195",
+      "size_bytes": 9292,
+      "sha256": "ce04ead1db78f5a8e1a0bf1dc27f0dfc7a471d138ad71333a2c08c91f34db926",
+      "prefix_hex_24_bytes": "fd2e0000cbfe3401300000004c240000ea01000030000000",
+      "file_identification": "data",
+      "format": "unknown; no parser or model metadata recovered"
+    },
+    {
+      "relative_path": "Contents/Frameworks/OimeEngine.framework/Versions/A/Resources/OimeEngineResources.bundle/asr/2c57d1948fe3",
+      "size_bytes": 14134,
+      "sha256": "33a6aeaddaef015b5f18b2aa971d3dee2c870a51982eadfc82b8131cf69ac011",
+      "prefix_hex_24_bytes": "102f0000cc27350130000000363700005103000030000000",
+      "file_identification": "data",
+      "format": "unknown; no parser or model metadata recovered"
+    },
+    {
+      "relative_path": "Contents/Frameworks/OimeEngine.framework/Versions/A/Resources/OimeEngineResources.bundle/asr/90afacc4f089",
+      "size_bytes": 7235000,
+      "sha256": "4f62dd763c0e464463dd5442c7e15b21f34284ec2777b29314809c31bceaaf0f",
+      "prefix_hex_24_bytes": "002f00009bff340130000000b8656e00d0f8070030000000",
+      "file_identification": "data",
+      "format": "unknown; no parser or model metadata recovered"
+    }
+  ],
+  "reproduction": {
+    "hashes": "shasum -a 256 /path/to/selected/file",
+    "plist": "python3: plistlib.loads(Path(path).read_bytes()), selecting the retained keys",
+    "strings": "python3: re.finditer(rb\"[\\x20-\\x7e]{5,}\", Path(path).read_bytes()); match complete literal values against items, preserve match.start() as original fat-file byte offset",
+    "links": [
+      "otool -arch arm64 -L \"/Library/Input Methods/DoubaoIme.app/Contents/MacOS/DoubaoIme\"",
+      "nm -arch arm64 -g \"/Library/Input Methods/DoubaoIme.app/Contents/MacOS/DoubaoIme\""
+    ],
+    "headers": "python3: b = Path(path).read_bytes(); b[:24].hex(); hashlib.sha256(b).hexdigest()"
+  },
+  "limitations": [
+    "String scanning covers printable ASCII runs of length >= 5 only. UTF-8, compressed and encrypted payloads are not decoded.",
+    "The original main binary is universal; string offsets refer to the whole file, not an architecture-specific function address.",
+    "Resource headers remain opaque. Resource directory names do not establish model family, purpose, or execution.",
+    "No session calls were made through REA and no native target session needs closing."
+  ]
+}
