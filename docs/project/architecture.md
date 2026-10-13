@@ -24,6 +24,10 @@ flowchart LR
 
 This is Arion's design, not a verified competitor call graph. Ranking requires real alternatives from its producer; a single ASR hypothesis remains a single candidate. Rule correction and ranking are separate operations. Streaming drafts are never treated as committed target content.
 
+## Contextual rewrite evaluation boundary
+
+An optional local generative stage is specified in [009](../../specs/009-contextual-rewrite.md) and [proposed ADR 008](../decisions/008-contextual-rewrite-evaluation.md). Its evaluation path is source/rule text + declared scene + bounded opted-in context + approved memory → pinned prompt/tokenizer → local prefill/decode → preservation checks → revision-owned native candidate preview. It shares the existing final commit gate; model tokens never write directly to a target. This stage is not implemented in the production runtime. The dedicated [rewrite evaluator](../research/rewrite-evaluation.md) measures it separately from ASR and Laya ranking.
+
 ## Modules
 
 - `apps/desktop`: composition root (`bootstrap`), MyGo UI, OS adapter wiring and packaging. FSD packages are under `ui/`; native/platform code is under `infrastructure/`.

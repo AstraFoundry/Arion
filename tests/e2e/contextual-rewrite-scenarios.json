@@ -1,0 +1,375 @@
+{
+  "version": 1,
+  "scenarios": [
+    {
+      "id": "rewrite-offline-review-before-once",
+      "acceptance": [
+        "RWT-A01",
+        "RWT-A05",
+        "CTR-A06"
+      ],
+      "capabilities": [
+        "local-rewrite",
+        "target-editor",
+        "native-preview",
+        "audio-fixture",
+        "network-monitor",
+        "rewrite-invariant-inspection"
+      ],
+      "actions": [
+        {
+          "op": "reset-owned-fixtures"
+        },
+        {
+          "op": "disable-network"
+        },
+        {
+          "op": "set-rewrite-policy",
+          "enabled": true,
+          "scenario": "email"
+        },
+        {
+          "op": "focus-editor",
+          "id": "A"
+        },
+        {
+          "op": "dictate-fixture",
+          "fixture": "rewrite-protected-entities"
+        },
+        {
+          "op": "wait-rewrite-review"
+        },
+        {
+          "op": "inspect-owned-editor",
+          "id": "A",
+          "checkpoint": "before-confirm"
+        },
+        {
+          "op": "confirm"
+        },
+        {
+          "op": "confirm"
+        }
+      ],
+      "assertions": {
+        "rewrite.previewObserved": true,
+        "rewrite.protectedConstraintsPassed": true,
+        "editors.A.beforeConfirmText": "",
+        "rewrite.committedCandidateMatchesPreview": true,
+        "commitCount": 1,
+        "network.outboundRequests": 0
+      }
+    },
+    {
+      "id": "rewrite-cancel-late-token",
+      "acceptance": [
+        "RWT-A02"
+      ],
+      "capabilities": [
+        "local-rewrite",
+        "target-editor",
+        "native-preview",
+        "audio-fixture",
+        "delayed-rewrite"
+      ],
+      "actions": [
+        {
+          "op": "reset-owned-fixtures"
+        },
+        {
+          "op": "focus-editor",
+          "id": "A"
+        },
+        {
+          "op": "dictate-fixture",
+          "fixture": "rewrite-protected-entities"
+        },
+        {
+          "op": "delay-rewrite-token-callback"
+        },
+        {
+          "op": "cancel"
+        },
+        {
+          "op": "release-rewrite-token-callback"
+        },
+        {
+          "op": "drain-callbacks"
+        }
+      ],
+      "assertions": {
+        "rewrite.stalePreviewCount": 0,
+        "editors.A.text": "",
+        "commitCount": 0,
+        "rewrite.active": false
+      }
+    },
+    {
+      "id": "rewrite-focus-change-blocks-confirm",
+      "acceptance": [
+        "RWT-A03"
+      ],
+      "capabilities": [
+        "local-rewrite",
+        "target-editor",
+        "native-preview",
+        "audio-fixture"
+      ],
+      "actions": [
+        {
+          "op": "reset-owned-fixtures"
+        },
+        {
+          "op": "focus-editor",
+          "id": "A"
+        },
+        {
+          "op": "dictate-fixture",
+          "fixture": "rewrite-protected-entities"
+        },
+        {
+          "op": "wait-rewrite-review"
+        },
+        {
+          "op": "focus-editor",
+          "id": "B"
+        },
+        {
+          "op": "confirm"
+        }
+      ],
+      "assertions": {
+        "editors.A.text": "",
+        "editors.B.text": "",
+        "commitCount": 0,
+        "commit.status": "not_applied"
+      }
+    },
+    {
+      "id": "rewrite-ime-host-edit-invalidates",
+      "acceptance": [
+        "RWT-A03"
+      ],
+      "capabilities": [
+        "local-rewrite",
+        "system-ime",
+        "ime-host-editor",
+        "delayed-rewrite"
+      ],
+      "actions": [
+        {
+          "op": "reset-owned-fixtures"
+        },
+        {
+          "op": "set-input-mode",
+          "mode": "system_ime"
+        },
+        {
+          "op": "begin-composition"
+        },
+        {
+          "op": "delay-rewrite-token-callback"
+        },
+        {
+          "op": "user-type-and-navigate",
+          "text": "USER"
+        },
+        {
+          "op": "release-rewrite-token-callback"
+        },
+        {
+          "op": "drain-callbacks"
+        }
+      ],
+      "assertions": {
+        "imeEditor.text": "USER",
+        "ime.editOutsideOwnedRangeCount": 0,
+        "rewrite.stalePreviewCount": 0,
+        "commitCount": 0
+      }
+    },
+    {
+      "id": "rewrite-mode-switch-discards",
+      "acceptance": [
+        "RWT-A03"
+      ],
+      "capabilities": [
+        "local-rewrite",
+        "target-editor",
+        "native-preview",
+        "audio-fixture",
+        "system-ime",
+        "delayed-rewrite"
+      ],
+      "actions": [
+        {
+          "op": "reset-owned-fixtures"
+        },
+        {
+          "op": "focus-editor",
+          "id": "A"
+        },
+        {
+          "op": "dictate-fixture",
+          "fixture": "rewrite-protected-entities"
+        },
+        {
+          "op": "delay-rewrite-token-callback"
+        },
+        {
+          "op": "set-input-mode",
+          "mode": "system_ime"
+        },
+        {
+          "op": "release-rewrite-token-callback"
+        },
+        {
+          "op": "drain-callbacks"
+        }
+      ],
+      "assertions": {
+        "rewrite.stalePreviewCount": 0,
+        "commitCount": 0,
+        "input.mode": "system_ime"
+      }
+    },
+    {
+      "id": "rewrite-context-denied-before-read",
+      "acceptance": [
+        "RWT-A04"
+      ],
+      "capabilities": [
+        "local-rewrite",
+        "secure-editor",
+        "context-monitor",
+        "prompt-inspection"
+      ],
+      "actions": [
+        {
+          "op": "reset-owned-fixtures"
+        },
+        {
+          "op": "focus-secure-editor"
+        },
+        {
+          "op": "set-rewrite-policy",
+          "enabled": true,
+          "scenario": "generic"
+        },
+        {
+          "op": "toggle-recording"
+        },
+        {
+          "op": "capture-context"
+        },
+        {
+          "op": "cancel"
+        },
+        {
+          "op": "inspect-owned-prompt"
+        }
+      ],
+      "assertions": {
+        "context.readAttemptCount": 0,
+        "context.retainedBytes": 0,
+        "rewrite.promptSensitiveCanaryOccurrences": 0,
+        "commitCount": 0
+      }
+    },
+    {
+      "id": "rewrite-untrusted-context-no-actions",
+      "acceptance": [
+        "RWT-A04",
+        "RWT-A05"
+      ],
+      "capabilities": [
+        "local-rewrite",
+        "target-editor",
+        "native-preview",
+        "audio-fixture",
+        "context-fixture",
+        "command-monitor",
+        "prompt-inspection"
+      ],
+      "actions": [
+        {
+          "op": "reset-owned-fixtures"
+        },
+        {
+          "op": "focus-editor",
+          "id": "A"
+        },
+        {
+          "op": "set-owned-context",
+          "fixture": "rewrite-injection-attack"
+        },
+        {
+          "op": "dictate-fixture",
+          "fixture": "rewrite-protected-entities"
+        },
+        {
+          "op": "wait-rewrite-terminal"
+        },
+        {
+          "op": "inspect-owned-prompt"
+        },
+        {
+          "op": "inspect-owned-command-monitor"
+        }
+      ],
+      "assertions": {
+        "commands.executionCount": 0,
+        "rewrite.attackMarkerDeliveredCount": 0,
+        "commitCount": 0,
+        "rewrite.contextIsData": true
+      }
+    },
+    {
+      "id": "rewrite-missing-model-explicit",
+      "acceptance": [
+        "RWT-A06"
+      ],
+      "capabilities": [
+        "local-rewrite",
+        "target-editor",
+        "native-preview",
+        "audio-fixture",
+        "isolated-model-store",
+        "network-monitor"
+      ],
+      "actions": [
+        {
+          "op": "reset-owned-fixtures"
+        },
+        {
+          "op": "disable-network"
+        },
+        {
+          "op": "remove-owned-rewrite-model"
+        },
+        {
+          "op": "set-rewrite-policy",
+          "enabled": true,
+          "scenario": "generic"
+        },
+        {
+          "op": "focus-editor",
+          "id": "A"
+        },
+        {
+          "op": "dictate-fixture",
+          "fixture": "rewrite-protected-entities"
+        },
+        {
+          "op": "wait-rewrite-terminal"
+        }
+      ],
+      "assertions": {
+        "rewrite.capability": "model_missing",
+        "rewrite.cloudRequests": 0,
+        "rewrite.sourceRetained": true,
+        "commitCount": 0
+      }
+    }
+  ]
+}

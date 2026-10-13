@@ -1,0 +1,3252 @@
+{
+  "version": 1,
+  "scope": "Supplied installer and its extracted regular-file payload only; no execution, user databases, live audio, credentials or service calls",
+  "identity": {
+    "installer": {
+      "name": "Chatterfly_V1.0.6.13398.app",
+      "directoryManifestSha256": "0f3fe308c62824816f38f91d10baf50de46c52213d17b7a3443ec99d179366bd",
+      "reaEvidence": "ev_e86f7a8a483ab5d40506a8aadc00d715761d84afe030d451ac85c0ba46f38d70"
+    },
+    "archive": {
+      "member": "Contents/Resources/ChatterFly.zip",
+      "sha256": "3392e95b4d2d6aac9b09c3d28490ad15798c2075be7b2eb2c1e4b278960f9563",
+      "reaEvidence": "ev_d7b75b5f00fcbb8469fe6c48e8050a0c2699c71754343e3c858052dbc139272d"
+    },
+    "main": {
+      "member": "Chatterfly.app/Contents/MacOS/Chatterfly",
+      "size": 112951952,
+      "sha256": "1063fbb5b0e18dc323ec4a14487456795b359b9330cfeee14b78454a00791e50",
+      "reaEvidence": "ev_357f2213ffae36932ca3c1c489824db2b8487a33c049894dba6808dca0e0d91e"
+    },
+    "derivedArm64": {
+      "sha256": "2ea312f6324accd6194e6c612608870321bc62c286aa2cdbccf8288ae19a2433",
+      "size": 54198928,
+      "sourceSliceOffset": 58753024,
+      "method": "system lipo -thin arm64; byte equality to original slice independently checked"
+    },
+    "plist": {
+      "member": "Chatterfly.app/Contents/Info.plist",
+      "sha256": "f88657237cee0c241b572b9a2e6df2c231f27a70258143175be005d0705fe20c",
+      "bundleIdentifier": "com.tencent.inputmethod.chatterfly",
+      "version": "1.0.6.13398",
+      "connectionName": "Yuanbao_InputMethod_Connection",
+      "controllerClass": "YuanbaoInputController"
+    }
+  },
+  "observations": [
+    {
+      "id": "CF-context-schema",
+      "kind": "ordinary-static-bytes",
+      "observation": "Shipped names and serialized-key literals describe a rich context schema; names alone do not show which fields are populated or transmitted.",
+      "locations": [
+        {
+          "value": "SGSpeechPostProcessContext",
+          "fileOffsets": [
+            30463055,
+            30463094,
+            30525157,
+            33759724,
+            33831420,
+            33834157,
+            33834200,
+            44201988,
+            44308097,
+            47414285,
+            47414330,
+            47414382,
+            47414442,
+            47414479,
+            47414518,
+            47414561,
+            47414595,
+            47414633,
+            47414676,
+            47414723,
+            47414762,
+            47414805,
+            47414849,
+            47414897,
+            47414937,
+            47414981,
+            47415024,
+            47415071,
+            47415114,
+            47415161,
+            47415199,
+            47415241,
+            47415281,
+            47415325,
+            47415362,
+            47415403,
+            51172715,
+            51688071,
+            51735660,
+            52918540,
+            52918595,
+            52918641,
+            52918686,
+            53170478,
+            53170528,
+            53170573,
+            53170627,
+            53170677,
+            53170732,
+            53170783,
+            53170837,
+            53170891,
+            53170940,
+            53170991,
+            53540699,
+            53540836
+          ],
+          "utf8Bytes": 26
+        },
+        {
+          "value": "before_cursor",
+          "fileOffsets": [
+            29869156,
+            30155288,
+            30199226,
+            30208767,
+            30208891
+          ],
+          "utf8Bytes": 13
+        },
+        {
+          "value": "after_cursor",
+          "fileOffsets": [
+            29869170,
+            30155307
+          ],
+          "utf8Bytes": 12
+        },
+        {
+          "value": "selected_text",
+          "fileOffsets": [
+            29869183
+          ],
+          "utf8Bytes": 13
+        },
+        {
+          "value": "input_history",
+          "fileOffsets": [
+            29867123,
+            29869275
+          ],
+          "utf8Bytes": 13
+        },
+        {
+          "value": "screen_content",
+          "fileOffsets": [
+            29869260
+          ],
+          "utf8Bytes": 14
+        },
+        {
+          "value": "chat_history",
+          "fileOffsets": [
+            29869211
+          ],
+          "utf8Bytes": 12
+        }
+      ]
+    },
+    {
+      "id": "CF-scene-and-rewrite",
+      "kind": "ordinary-static-bytes",
+      "observation": "Separate scene and enhanced/baseline result structures exist; no server model or prompt is established.",
+      "locations": [
+        {
+          "value": "SGSpeechPostProcessSceneResult",
+          "fileOffsets": [
+            30525733,
+            33759969,
+            33834793,
+            44202640,
+            44308809,
+            47423702,
+            47423742,
+            47423786,
+            47423827,
+            47423872,
+            47423911,
+            47423954,
+            47423999,
+            47424048,
+            47424088,
+            47424132,
+            51736492,
+            52920828,
+            52920887,
+            52920937,
+            52920986,
+            53173566,
+            53173617,
+            53173669,
+            53173719,
+            53173775
+          ],
+          "utf8Bytes": 30
+        },
+        {
+          "value": "baseline_output",
+          "fileOffsets": [
+            29871693
+          ],
+          "utf8Bytes": 15
+        },
+        {
+          "value": "enhanced_output",
+          "fileOffsets": [
+            29871709
+          ],
+          "utf8Bytes": 15
+        },
+        {
+          "value": "cmode_error",
+          "fileOffsets": [
+            29871734
+          ],
+          "utf8Bytes": 11
+        },
+        {
+          "value": "cmode_ms",
+          "fileOffsets": [
+            29866569
+          ],
+          "utf8Bytes": 8
+        }
+      ]
+    },
+    {
+      "id": "CF-stream-control",
+      "kind": "ordinary-static-bytes",
+      "observation": "Selectors identify SSE dispatch and distinct packet/control handlers; call order and active mode require native function analysis.",
+      "locations": [
+        {
+          "value": "handleSSEMessage:eventSource:",
+          "fileOffsets": [
+            29870580,
+            30743123,
+            47419499,
+            51362312
+          ],
+          "utf8Bytes": 29
+        },
+        {
+          "value": "handleScenePacket:finish:",
+          "fileOffsets": [
+            29871063,
+            30743300,
+            47419874,
+            51362545
+          ],
+          "utf8Bytes": 25
+        },
+        {
+          "value": "handleCModePacket:delta:finish:eventSource:",
+          "fileOffsets": [
+            29870904,
+            30739328,
+            47419743,
+            51357163
+          ],
+          "utf8Bytes": 43
+        },
+        {
+          "value": "handlePausePacket:finish:eventSource:",
+          "fileOffsets": [
+            29871401,
+            30742289,
+            47420290,
+            47420361,
+            51361074
+          ],
+          "utf8Bytes": 37
+        },
+        {
+          "value": "handleSkillPacket:finish:",
+          "fileOffsets": [
+            29871293,
+            30743956,
+            47420038,
+            47420097,
+            51363292
+          ],
+          "utf8Bytes": 25
+        },
+        {
+          "value": "handleGuidePacket:finish:",
+          "fileOffsets": [
+            29871347,
+            30741166,
+            47420164,
+            47420223,
+            51359520
+          ],
+          "utf8Bytes": 25
+        },
+        {
+          "value": "cancelCurrentEventSource",
+          "fileOffsets": [
+            30656475,
+            47420594,
+            51263726
+          ],
+          "utf8Bytes": 24
+        }
+      ]
+    },
+    {
+      "id": "CF-history-schema",
+      "kind": "ordinary-static-bytes",
+      "observation": "Packaged database schema contains encrypted-named LLM configuration/result columns and an audio path. No user database was opened; this does not prove active history settings or encryption strength.",
+      "locations": [
+        {
+          "value": "llm_config_enc",
+          "fileOffsets": [
+            29900921,
+            29901975,
+            29902331,
+            29902545,
+            29902874,
+            29903126
+          ],
+          "utf8Bytes": 14
+        },
+        {
+          "value": "llm_result_enc",
+          "fileOffsets": [
+            29900975,
+            29902008,
+            29902363,
+            29902577,
+            29903073
+          ],
+          "utf8Bytes": 14
+        },
+        {
+          "value": "audio_relpath",
+          "fileOffsets": [
+            29900830,
+            29901257,
+            29901936,
+            29902217,
+            29902292,
+            29902506,
+            29903357,
+            29903426,
+            29903471,
+            29903538,
+            29903625
+          ],
+          "utf8Bytes": 13
+        }
+      ]
+    },
+    {
+      "id": "CF-ipc",
+      "kind": "ordinary-static-bytes",
+      "observation": "Cross-process speech and retry names separate ASR and LLM configuration; this is a static protocol surface.",
+      "locations": [
+        {
+          "value": "speech.ipc.startSpeech",
+          "fileOffsets": [
+            29650765
+          ],
+          "utf8Bytes": 22
+        },
+        {
+          "value": "speech.ipc.stopSpeech",
+          "fileOffsets": [
+            29650788
+          ],
+          "utf8Bytes": 21
+        },
+        {
+          "value": "speech.ipc.retryVoice",
+          "fileOffsets": [
+            29651676,
+            29651698,
+            29651723,
+            29651753
+          ],
+          "utf8Bytes": 21
+        },
+        {
+          "value": "asrConfigJson",
+          "fileOffsets": [
+            29651799,
+            30440571,
+            30502625,
+            30570165,
+            30570180,
+            30641339,
+            30641353,
+            47327630,
+            47439818,
+            47443015,
+            47529666,
+            47530494,
+            51243889,
+            51243917,
+            53147712,
+            53178646,
+            53179313,
+            53198335,
+            53198849
+          ],
+          "utf8Bytes": 13
+        },
+        {
+          "value": "llmConfigJson",
+          "fileOffsets": [
+            29651813,
+            30444874,
+            30601783,
+            30784520,
+            47439896,
+            47443095,
+            47449637,
+            47529734,
+            47530558,
+            47531550,
+            51409443,
+            53178694,
+            53179362,
+            53180131,
+            53198378,
+            53198890,
+            53199501
+          ],
+          "utf8Bytes": 13
+        }
+      ]
+    }
+  ],
+  "decompiledFunctions": [],
+  "limitations": [
+    "CF identifiers are local observations, not REA Evidence IDs.",
+    "REA analyze_function hit provider_timeout at 1200000 ms before returning any native dossier. Queued native requests were cancelled. Focused instruction analysis is ordinary static evidence, not successful REA decompilation.",
+    "String/schema presence does not establish active settings, request transmission, model/provider identity, prompt or runtime latency.",
+    "Extracted regular files do not materialize archive symlinks; binaries were not executed."
+  ],
+  "privateEvidenceRoot": ".workspace/research/chatterfly",
+  "instructionAnalysis": {
+    "tool": "Apple LLVM llvm-objdump 21.0.0 Mach-O disassembler; system nm symbol boundaries",
+    "validation": "Selected instruction bytes matched derived arm64 file; names/constants are metadata observations. Branch/dataflow conclusions are analyst static inferences, not target execution.",
+    "functions": [
+      {
+        "id": "CF-asm-payload",
+        "kind": "ordinary-static-arm64-instructions",
+        "method": "-[SGSpeechPostProcessorSSE buildPayloadWithAsrText:vpTrigger:enablePauseDetect:uid:]",
+        "entry": "0x100415348",
+        "exclusiveEndFromNextTextSymbol": "0x100415778",
+        "sourceFileOffset": 4281160,
+        "functionBytesSha256": "e55bea93f59cf53dfba7a2ea1360d611c4de9dff1792c5f4084e76169df6e3a8",
+        "assemblySha256": "7b869e674291feb4cffb5f1c9f5462b1b28248b10968c981e0f383ee5ca233a4",
+        "observation": "Builds dictionary with request_id, asr_text, session_id, enable_pause_detect, vp_trigger; conditionally includes uid/debug, audit_only from shortUtterance, context from contextDict or Context.toDict, ext_config and guide_ctx. This is client serialization, not observed transmission or a recovered server prompt.",
+        "callAnchors": [
+          {
+            "address": "0x10041539c",
+            "fileOffset": 4281244,
+            "target": "_objc_msgSend$contextDict"
+          },
+          {
+            "address": "0x1004153b8",
+            "fileOffset": 4281272,
+            "target": "_objc_msgSend$contextDict"
+          },
+          {
+            "address": "0x1004153cc",
+            "fileOffset": 4281292,
+            "target": "_objc_msgSend$context"
+          },
+          {
+            "address": "0x1004153e8",
+            "fileOffset": 4281320,
+            "target": "_objc_msgSend$context"
+          },
+          {
+            "address": "0x100415400",
+            "fileOffset": 4281344,
+            "target": "_objc_msgSend$defaultContext"
+          },
+          {
+            "address": "0x100415410",
+            "fileOffset": 4281360,
+            "target": "_objc_msgSend$toDict"
+          },
+          {
+            "address": "0x100415450",
+            "fileOffset": 4281424,
+            "target": "_objc_msgSend$dictionary"
+          },
+          {
+            "address": "0x100415464",
+            "fileOffset": 4281444,
+            "target": "_objc_msgSend$requestId"
+          },
+          {
+            "address": "0x100415484",
+            "fileOffset": 4281476,
+            "target": "_objc_msgSend$setObject:forKeyedSubscript:"
+          },
+          {
+            "address": "0x1004154a0",
+            "fileOffset": 4281504,
+            "target": "_objc_msgSend$setObject:forKeyedSubscript:"
+          },
+          {
+            "address": "0x1004154b0",
+            "fileOffset": 4281520,
+            "target": "_objc_msgSend$sessionId"
+          },
+          {
+            "address": "0x1004154d0",
+            "fileOffset": 4281552,
+            "target": "_objc_msgSend$setObject:forKeyedSubscript:"
+          },
+          {
+            "address": "0x1004154e8",
+            "fileOffset": 4281576,
+            "target": "_objc_msgSend$numberWithBool:"
+          },
+          {
+            "address": "0x100415508",
+            "fileOffset": 4281608,
+            "target": "_objc_msgSend$setObject:forKeyedSubscript:"
+          },
+          {
+            "address": "0x100415524",
+            "fileOffset": 4281636,
+            "target": "_objc_msgSend$setObject:forKeyedSubscript:"
+          },
+          {
+            "address": "0x100415534",
+            "fileOffset": 4281652,
+            "target": "_objc_msgSend$length"
+          },
+          {
+            "address": "0x10041554c",
+            "fileOffset": 4281676,
+            "target": "_objc_msgSend$setObject:forKeyedSubscript:"
+          },
+          {
+            "address": "0x100415554",
+            "fileOffset": 4281684,
+            "target": "_objc_msgSend$debug"
+          },
+          {
+            "address": "0x100415564",
+            "fileOffset": 4281700,
+            "target": "_objc_msgSend$numberWithInt:"
+          },
+          {
+            "address": "0x100415584",
+            "fileOffset": 4281732,
+            "target": "_objc_msgSend$setObject:forKeyedSubscript:"
+          },
+          {
+            "address": "0x100415598",
+            "fileOffset": 4281752,
+            "target": "_objc_msgSend$shortUtterance"
+          },
+          {
+            "address": "0x1004155a4",
+            "fileOffset": 4281764,
+            "target": "_objc_msgSend$numberWithBool:"
+          },
+          {
+            "address": "0x1004155c4",
+            "fileOffset": 4281796,
+            "target": "_objc_msgSend$setObject:forKeyedSubscript:"
+          },
+          {
+            "address": "0x1004155d4",
+            "fileOffset": 4281812,
+            "target": "_objc_msgSend$count"
+          },
+          {
+            "address": "0x1004155ec",
+            "fileOffset": 4281836,
+            "target": "_objc_msgSend$setObject:forKeyedSubscript:"
+          },
+          {
+            "address": "0x1004155f4",
+            "fileOffset": 4281844,
+            "target": "_objc_msgSend$extConfig"
+          },
+          {
+            "address": "0x100415610",
+            "fileOffset": 4281872,
+            "target": "_objc_msgSend$extConfig"
+          },
+          {
+            "address": "0x100415624",
+            "fileOffset": 4281892,
+            "target": "_objc_msgSend$toDictWithSmartPuncPref:"
+          },
+          {
+            "address": "0x100415644",
+            "fileOffset": 4281924,
+            "target": "_objc_msgSend$setObject:forKeyedSubscript:"
+          },
+          {
+            "address": "0x10041565c",
+            "fileOffset": 4281948,
+            "target": "_objc_msgSend$extConfig"
+          },
+          {
+            "address": "0x10041566c",
+            "fileOffset": 4281964,
+            "target": "_objc_msgSend$smartPuncPref"
+          },
+          {
+            "address": "0x100415690",
+            "fileOffset": 4282000,
+            "target": "_objc_msgSend$extConfig"
+          },
+          {
+            "address": "0x1004156a0",
+            "fileOffset": 4282016,
+            "target": "_objc_msgSend$smartPuncPref"
+          },
+          {
+            "address": "0x1004156c0",
+            "fileOffset": 4282048,
+            "target": "_objc_msgSend$setObject:forKeyedSubscript:"
+          },
+          {
+            "address": "0x1004156d8",
+            "fileOffset": 4282072,
+            "target": "_objc_msgSend$guideCtx"
+          },
+          {
+            "address": "0x1004156e8",
+            "fileOffset": 4282088,
+            "target": "_objc_msgSend$count"
+          },
+          {
+            "address": "0x100415700",
+            "fileOffset": 4282112,
+            "target": "_objc_msgSend$guideCtx"
+          },
+          {
+            "address": "0x100415720",
+            "fileOffset": 4282144,
+            "target": "_objc_msgSend$setObject:forKeyedSubscript:"
+          },
+          {
+            "address": "0x100415730",
+            "fileOffset": 4282160,
+            "target": "_objc_msgSend$copy"
+          }
+        ],
+        "constantAnchors": [
+          {
+            "address": "0x100415478",
+            "reference": "@\"request_id\""
+          },
+          {
+            "address": "0x100415494",
+            "reference": "@\"asr_text\""
+          },
+          {
+            "address": "0x1004154c4",
+            "reference": "@\"session_id\""
+          },
+          {
+            "address": "0x1004154fc",
+            "reference": "@\"enable_pause_detect\""
+          },
+          {
+            "address": "0x100415518",
+            "reference": "@\"vp_trigger\""
+          },
+          {
+            "address": "0x100415540",
+            "reference": "@\"uid\""
+          },
+          {
+            "address": "0x100415578",
+            "reference": "@\"debug\""
+          },
+          {
+            "address": "0x1004155b8",
+            "reference": "@\"audit_only\""
+          },
+          {
+            "address": "0x1004155e0",
+            "reference": "@\"context\""
+          },
+          {
+            "address": "0x100415638",
+            "reference": "@\"ext_config\""
+          },
+          {
+            "address": "0x1004156b4",
+            "reference": "@\"smart_punc_pref\""
+          },
+          {
+            "address": "0x100415714",
+            "reference": "@\"guide_ctx\""
+          }
+        ]
+      },
+      {
+        "id": "CF-asm-fast-fields",
+        "kind": "ordinary-static-arm64-instructions",
+        "method": "-[SGMacSpeechContextBuilder p_buildContextFastFields:earlyReturn:]",
+        "entry": "0x1003c2c9c",
+        "exclusiveEndFromNextTextSymbol": "0x1003c31e0",
+        "sourceFileOffset": 3943580,
+        "functionBytesSha256": "bc5fbd9dac9ca95bf7e4a01d8592830e19ab10e6208405e45d79ab0294304002",
+        "assemblySha256": "d6ece41714a2f44860e1fa8d28b1891ad7233cc1e01c8ec5a01cb4464d6c03df",
+        "observation": "Queries IsSecureEventInputEnabled, sets isPassword, and returns early on that branch before clipboard/text acquisition. Other path obtains clipboard text, before-cursor text bounded to 200 units and an AX snapshot requested with maxLength 200. Selection-cache use depends on AX confirmed-no-selection versus unavailable. Static control flow does not establish actual authorization or execution.",
+        "callAnchors": [
+          {
+            "address": "0x1003c2ce4",
+            "fileOffset": 3943652,
+            "target": "_objc_msgSend$defaultContext"
+          },
+          {
+            "address": "0x1003c2d00",
+            "fileOffset": 3943680,
+            "target": "_objc_msgSend$init"
+          },
+          {
+            "address": "0x1003c2d08",
+            "fileOffset": 3943688,
+            "target": "_IsSecureEventInputEnabled"
+          },
+          {
+            "address": "0x1003c2d18",
+            "fileOffset": 3943704,
+            "target": "_objc_msgSend$setIsPassword:"
+          },
+          {
+            "address": "0x1003c2d24",
+            "fileOffset": 3943716,
+            "target": "_objc_msgSend$setInputEnv:"
+          },
+          {
+            "address": "0x1003c2d2c",
+            "fileOffset": 3943724,
+            "target": "_objc_msgSend$isPassword"
+          },
+          {
+            "address": "0x1003c2d38",
+            "fileOffset": 3943736,
+            "target": "_objc_msgSend$currentClipboardText"
+          },
+          {
+            "address": "0x1003c2d50",
+            "fileOffset": 3943760,
+            "target": "_objc_msgSend$setClipboard:"
+          },
+          {
+            "address": "0x1003c2d68",
+            "fileOffset": 3943784,
+            "target": "_objc_msgSend$init"
+          },
+          {
+            "address": "0x1003c2d78",
+            "fileOffset": 3943800,
+            "target": "_objc_msgSend$provider"
+          },
+          {
+            "address": "0x1003c2d88",
+            "fileOffset": 3943816,
+            "target": "_objc_msgSend$currentTextInputSender"
+          },
+          {
+            "address": "0x1003c2da8",
+            "fileOffset": 3943848,
+            "target": "_objc_msgSend$selectedRange"
+          },
+          {
+            "address": "0x1003c2de4",
+            "fileOffset": 3943908,
+            "target": "_objc_msgSend$stringFromRange:actualRange:"
+          },
+          {
+            "address": "0x1003c2e00",
+            "fileOffset": 3943936,
+            "target": "_objc_msgSend$p_safeText:maxLength:"
+          },
+          {
+            "address": "0x1003c2e18",
+            "fileOffset": 3943960,
+            "target": "_objc_msgSend$setBeforeCursor:"
+          },
+          {
+            "address": "0x1003c2e38",
+            "fileOffset": 3943992,
+            "target": "_objc_msgSend$sharedInstance"
+          },
+          {
+            "address": "0x1003c2e54",
+            "fileOffset": 3944020,
+            "target": "_objc_msgSend$snapshotWithMaxLength:timeout:"
+          },
+          {
+            "address": "0x1003c2e70",
+            "fileOffset": 3944048,
+            "target": "_objc_msgSend$valid"
+          },
+          {
+            "address": "0x1003c2e7c",
+            "fileOffset": 3944060,
+            "target": "_objc_msgSend$after"
+          },
+          {
+            "address": "0x1003c2e8c",
+            "fileOffset": 3944076,
+            "target": "_objc_msgSend$length"
+          },
+          {
+            "address": "0x1003c2ea4",
+            "fileOffset": 3944100,
+            "target": "_objc_msgSend$after"
+          },
+          {
+            "address": "0x1003c2ec0",
+            "fileOffset": 3944128,
+            "target": "_objc_msgSend$p_safeText:maxLength:"
+          },
+          {
+            "address": "0x1003c2ed8",
+            "fileOffset": 3944152,
+            "target": "_objc_msgSend$setAfterCursor:"
+          },
+          {
+            "address": "0x1003c2ef0",
+            "fileOffset": 3944176,
+            "target": "_objc_msgSend$role"
+          },
+          {
+            "address": "0x1003c2f04",
+            "fileOffset": 3944196,
+            "target": "_objc_msgSend$subrole"
+          },
+          {
+            "address": "0x1003c2f20",
+            "fileOffset": 3944224,
+            "target": "_objc_msgSend$p_inputTypeFromAXRole:subrole:"
+          },
+          {
+            "address": "0x1003c2f38",
+            "fileOffset": 3944248,
+            "target": "_objc_msgSend$setType:"
+          },
+          {
+            "address": "0x1003c2f64",
+            "fileOffset": 3944292,
+            "target": "_objc_msgSend$p_selectedTextFromAXSnapshot:confirmedNoSelection:"
+          },
+          {
+            "address": "0x1003c2f74",
+            "fileOffset": 3944308,
+            "target": "_objc_msgSend$length"
+          },
+          {
+            "address": "0x1003c2fc8",
+            "fileOffset": 3944392,
+            "target": "_objc_msgSend$length"
+          },
+          {
+            "address": "0x1003c2fe8",
+            "fileOffset": 3944424,
+            "target": "_objc_msgSend$length"
+          },
+          {
+            "address": "0x1003c3018",
+            "fileOffset": 3944472,
+            "target": "_objc_msgSend$log:tag:file:func:line:format:"
+          },
+          {
+            "address": "0x1003c3028",
+            "fileOffset": 3944488,
+            "target": "_objc_msgSend$sharedInstance"
+          },
+          {
+            "address": "0x1003c3038",
+            "fileOffset": 3944504,
+            "target": "_objc_msgSend$cachedSelectedText"
+          },
+          {
+            "address": "0x1003c3070",
+            "fileOffset": 3944560,
+            "target": "_objc_msgSend$length"
+          },
+          {
+            "address": "0x1003c30a0",
+            "fileOffset": 3944608,
+            "target": "_objc_msgSend$log:tag:file:func:line:format:"
+          },
+          {
+            "address": "0x1003c30ac",
+            "fileOffset": 3944620,
+            "target": "_objc_msgSend$length"
+          },
+          {
+            "address": "0x1003c30c0",
+            "fileOffset": 3944640,
+            "target": "_objc_msgSend$p_safeText:maxLength:"
+          },
+          {
+            "address": "0x1003c30d8",
+            "fileOffset": 3944664,
+            "target": "_objc_msgSend$setSelectedText:"
+          },
+          {
+            "address": "0x1003c30ec",
+            "fileOffset": 3944684,
+            "target": "_objc_msgSend$setInputContent:"
+          },
+          {
+            "address": "0x1003c30f8",
+            "fileOffset": 3944696,
+            "target": "_objc_msgSend$provider"
+          },
+          {
+            "address": "0x1003c3108",
+            "fileOffset": 3944712,
+            "target": "_objc_msgSend$currentAppBundleID"
+          },
+          {
+            "address": "0x1003c3124",
+            "fileOffset": 3944740,
+            "target": "_objc_msgSend$length"
+          },
+          {
+            "address": "0x1003c3130",
+            "fileOffset": 3944752,
+            "target": "_objc_msgSend$appBundleID"
+          }
+        ],
+        "constantAnchors": [
+          {
+            "address": "0x1003c2fb4",
+            "reference": "@\"[sel-precache] consume: AX confirmed no selection, skip cache\""
+          },
+          {
+            "address": "0x1003c3004",
+            "reference": "@\"[sel-precache] consume: AX hit, len=%lu\""
+          },
+          {
+            "address": "0x1003c308c",
+            "reference": "@\"[sel-precache] consume: AX unavailable, cache len=%lu\""
+          }
+        ]
+      },
+      {
+        "id": "CF-asm-context-builder",
+        "kind": "ordinary-static-arm64-instructions",
+        "method": "-[SGMacSpeechContextBuilder buildPostProcessContext]",
+        "entry": "0x1003c2ac0",
+        "exclusiveEndFromNextTextSymbol": "0x1003c2c9c",
+        "sourceFileOffset": 3943104,
+        "functionBytesSha256": "4eef9b8c94f2e11cf07a008e7d6e5ec82e2f0017f924338a9c745537830e9d87",
+        "assemblySha256": "a30d89d6bb819d1c32f1371b4dcd3ddef0de6869ee4af76223bfdf85c45fc118",
+        "observation": "Calls fast fields and observes earlyReturn. Checks keyVoiceEnhancedRecognitionEnabled before loading cached recent records for the current app. This function does not establish screen/chat/memory acquisition.",
+        "callAnchors": [
+          {
+            "address": "0x1003c2aec",
+            "fileOffset": 3943148,
+            "target": "_objc_msgSend$timeIntervalSinceReferenceDate"
+          },
+          {
+            "address": "0x1003c2b08",
+            "fileOffset": 3943176,
+            "target": "_objc_msgSend$p_buildContextFastFields:earlyReturn:"
+          },
+          {
+            "address": "0x1003c2b4c",
+            "fileOffset": 3943244,
+            "target": "_objc_msgSend$sharedInstance"
+          },
+          {
+            "address": "0x1003c2b64",
+            "fileOffset": 3943268,
+            "target": "_objc_msgSend$boolObjectForKey:"
+          },
+          {
+            "address": "0x1003c2b80",
+            "fileOffset": 3943296,
+            "target": "_objc_msgSend$sharedInstance"
+          },
+          {
+            "address": "0x1003c2b98",
+            "fileOffset": 3943320,
+            "target": "_objc_msgSend$cachedRecentRecordsForApp:state:"
+          },
+          {
+            "address": "0x1003c2bb8",
+            "fileOffset": 3943352,
+            "target": "_objc_msgSend$p_recordsFromHistoryDicts:"
+          },
+          {
+            "address": "0x1003c2bd4",
+            "fileOffset": 3943380,
+            "target": "_objc_msgSend$count"
+          },
+          {
+            "address": "0x1003c2be4",
+            "fileOffset": 3943396,
+            "target": "_objc_msgSend$setInputHistory:"
+          },
+          {
+            "address": "0x1003c2bfc",
+            "fileOffset": 3943420,
+            "target": "_objc_msgSend$timeIntervalSinceReferenceDate"
+          },
+          {
+            "address": "0x1003c2c2c",
+            "fileOffset": 3943468,
+            "target": "_objc_msgSend$count"
+          },
+          {
+            "address": "0x1003c2c64",
+            "fileOffset": 3943524,
+            "target": "_objc_msgSend$log:tag:file:func:line:format:"
+          }
+        ],
+        "constantAnchors": [
+          {
+            "address": "0x1003c2b60",
+            "reference": "@\"keyVoiceEnhancedRecognitionEnabled\""
+          },
+          {
+            "address": "0x1003c2c50",
+            "reference": "@\"[ctx-cost] total cost=%.1fms, cacheState=%ld, history=%lu\""
+          }
+        ]
+      },
+      {
+        "id": "CF-asm-context-dict",
+        "kind": "ordinary-static-arm64-instructions",
+        "method": "-[SGSpeechPostProcessContext toDict]",
+        "entry": "0x10041205c",
+        "exclusiveEndFromNextTextSymbol": "0x1004125b4",
+        "sourceFileOffset": 4268124,
+        "functionBytesSha256": "a5c604597682ab11dac3d84ac2626127f02840940e735694e975cf0ee9fa160b",
+        "assemblySha256": "5842a73a8386d43a03006e3d68a697bd625d993ec01c386c073939cae40e4752",
+        "observation": "Conditionally serializes platform, app, input_content, input_env, screen_content, clipboard, input_history, scene_context, event_id, timestamp and memory; availability is separate from actual population.",
+        "callAnchors": [
+          {
+            "address": "0x100412098",
+            "fileOffset": 4268184,
+            "target": "_objc_msgSend$dictionary"
+          },
+          {
+            "address": "0x1004120ac",
+            "fileOffset": 4268204,
+            "target": "_objc_msgSend$platform"
+          },
+          {
+            "address": "0x1004120bc",
+            "fileOffset": 4268220,
+            "target": "_objc_msgSend$length"
+          },
+          {
+            "address": "0x1004120d4",
+            "fileOffset": 4268244,
+            "target": "_objc_msgSend$platform"
+          },
+          {
+            "address": "0x1004120f4",
+            "fileOffset": 4268276,
+            "target": "_objc_msgSend$setObject:forKeyedSubscript:"
+          },
+          {
+            "address": "0x100412104",
+            "fileOffset": 4268292,
+            "target": "_objc_msgSend$app"
+          },
+          {
+            "address": "0x100412120",
+            "fileOffset": 4268320,
+            "target": "_objc_msgSend$app"
+          },
+          {
+            "address": "0x100412130",
+            "fileOffset": 4268336,
+            "target": "_objc_msgSend$toDict"
+          },
+          {
+            "address": "0x100412150",
+            "fileOffset": 4268368,
+            "target": "_objc_msgSend$setObject:forKeyedSubscript:"
+          },
+          {
+            "address": "0x100412168",
+            "fileOffset": 4268392,
+            "target": "_objc_msgSend$inputContent"
+          },
+          {
+            "address": "0x100412184",
+            "fileOffset": 4268420,
+            "target": "_objc_msgSend$inputContent"
+          },
+          {
+            "address": "0x100412194",
+            "fileOffset": 4268436,
+            "target": "_objc_msgSend$toDict"
+          },
+          {
+            "address": "0x1004121b0",
+            "fileOffset": 4268464,
+            "target": "_objc_msgSend$count"
+          },
+          {
+            "address": "0x1004121c8",
+            "fileOffset": 4268488,
+            "target": "_objc_msgSend$setObject:forKeyedSubscript:"
+          },
+          {
+            "address": "0x1004121d8",
+            "fileOffset": 4268504,
+            "target": "_objc_msgSend$inputEnv"
+          },
+          {
+            "address": "0x1004121f4",
+            "fileOffset": 4268532,
+            "target": "_objc_msgSend$inputEnv"
+          },
+          {
+            "address": "0x100412204",
+            "fileOffset": 4268548,
+            "target": "_objc_msgSend$toDict"
+          },
+          {
+            "address": "0x100412224",
+            "fileOffset": 4268580,
+            "target": "_objc_msgSend$setObject:forKeyedSubscript:"
+          },
+          {
+            "address": "0x10041223c",
+            "fileOffset": 4268604,
+            "target": "_objc_msgSend$screenContent"
+          },
+          {
+            "address": "0x10041224c",
+            "fileOffset": 4268620,
+            "target": "_objc_msgSend$length"
+          },
+          {
+            "address": "0x100412264",
+            "fileOffset": 4268644,
+            "target": "_objc_msgSend$screenContent"
+          },
+          {
+            "address": "0x100412284",
+            "fileOffset": 4268676,
+            "target": "_objc_msgSend$setObject:forKeyedSubscript:"
+          },
+          {
+            "address": "0x100412294",
+            "fileOffset": 4268692,
+            "target": "_objc_msgSend$clipboard"
+          },
+          {
+            "address": "0x1004122a4",
+            "fileOffset": 4268708,
+            "target": "_objc_msgSend$length"
+          },
+          {
+            "address": "0x1004122bc",
+            "fileOffset": 4268732,
+            "target": "_objc_msgSend$clipboard"
+          },
+          {
+            "address": "0x1004122dc",
+            "fileOffset": 4268764,
+            "target": "_objc_msgSend$setObject:forKeyedSubscript:"
+          },
+          {
+            "address": "0x1004122ec",
+            "fileOffset": 4268780,
+            "target": "_objc_msgSend$inputHistory"
+          },
+          {
+            "address": "0x1004122fc",
+            "fileOffset": 4268796,
+            "target": "_objc_msgSend$count"
+          },
+          {
+            "address": "0x100412318",
+            "fileOffset": 4268824,
+            "target": "_objc_msgSend$array"
+          },
+          {
+            "address": "0x100412338",
+            "fileOffset": 4268856,
+            "target": "_objc_msgSend$inputHistory"
+          },
+          {
+            "address": "0x100412354",
+            "fileOffset": 4268884,
+            "target": "_objc_msgSend$countByEnumeratingWithState:objects:count:"
+          },
+          {
+            "address": "0x10041238c",
+            "fileOffset": 4268940,
+            "target": "_objc_msgSend$toDict"
+          },
+          {
+            "address": "0x1004123a4",
+            "fileOffset": 4268964,
+            "target": "_objc_msgSend$addObject:"
+          },
+          {
+            "address": "0x1004123cc",
+            "fileOffset": 4269004,
+            "target": "_objc_msgSend$countByEnumeratingWithState:objects:count:"
+          },
+          {
+            "address": "0x1004123f0",
+            "fileOffset": 4269040,
+            "target": "_objc_msgSend$setObject:forKeyedSubscript:"
+          },
+          {
+            "address": "0x100412400",
+            "fileOffset": 4269056,
+            "target": "_objc_msgSend$sceneContext"
+          },
+          {
+            "address": "0x10041241c",
+            "fileOffset": 4269084,
+            "target": "_objc_msgSend$sceneContext"
+          },
+          {
+            "address": "0x10041242c",
+            "fileOffset": 4269100,
+            "target": "_objc_msgSend$toDict"
+          },
+          {
+            "address": "0x100412448",
+            "fileOffset": 4269128,
+            "target": "_objc_msgSend$count"
+          },
+          {
+            "address": "0x100412460",
+            "fileOffset": 4269152,
+            "target": "_objc_msgSend$setObject:forKeyedSubscript:"
+          },
+          {
+            "address": "0x100412470",
+            "fileOffset": 4269168,
+            "target": "_objc_msgSend$eventId"
+          },
+          {
+            "address": "0x100412480",
+            "fileOffset": 4269184,
+            "target": "_objc_msgSend$length"
+          },
+          {
+            "address": "0x100412498",
+            "fileOffset": 4269208,
+            "target": "_objc_msgSend$eventId"
+          },
+          {
+            "address": "0x1004124b8",
+            "fileOffset": 4269240,
+            "target": "_objc_msgSend$setObject:forKeyedSubscript:"
+          },
+          {
+            "address": "0x1004124c8",
+            "fileOffset": 4269256,
+            "target": "_objc_msgSend$timestamp"
+          },
+          {
+            "address": "0x1004124d8",
+            "fileOffset": 4269272,
+            "target": "_objc_msgSend$length"
+          },
+          {
+            "address": "0x1004124f0",
+            "fileOffset": 4269296,
+            "target": "_objc_msgSend$timestamp"
+          },
+          {
+            "address": "0x100412510",
+            "fileOffset": 4269328,
+            "target": "_objc_msgSend$setObject:forKeyedSubscript:"
+          },
+          {
+            "address": "0x100412520",
+            "fileOffset": 4269344,
+            "target": "_objc_msgSend$memory"
+          },
+          {
+            "address": "0x100412530",
+            "fileOffset": 4269360,
+            "target": "_objc_msgSend$length"
+          },
+          {
+            "address": "0x100412548",
+            "fileOffset": 4269384,
+            "target": "_objc_msgSend$memory"
+          },
+          {
+            "address": "0x100412568",
+            "fileOffset": 4269416,
+            "target": "_objc_msgSend$setObject:forKeyedSubscript:"
+          }
+        ],
+        "constantAnchors": [
+          {
+            "address": "0x1004120e8",
+            "reference": "@\"platform\""
+          },
+          {
+            "address": "0x100412144",
+            "reference": "@\"app\""
+          },
+          {
+            "address": "0x1004121bc",
+            "reference": "@\"input_content\""
+          },
+          {
+            "address": "0x100412218",
+            "reference": "@\"input_env\""
+          },
+          {
+            "address": "0x100412278",
+            "reference": "@\"screen_content\""
+          },
+          {
+            "address": "0x1004122d0",
+            "reference": "@\"clipboard\""
+          },
+          {
+            "address": "0x1004123e4",
+            "reference": "@\"input_history\""
+          },
+          {
+            "address": "0x100412454",
+            "reference": "@\"scene_context\""
+          },
+          {
+            "address": "0x1004124ac",
+            "reference": "@\"event_id\""
+          },
+          {
+            "address": "0x100412504",
+            "reference": "@\"timestamp\""
+          },
+          {
+            "address": "0x10041255c",
+            "reference": "@\"memory\""
+          }
+        ]
+      },
+      {
+        "id": "CF-asm-llm-orchestrator",
+        "kind": "ordinary-static-arm64-instructions",
+        "method": "-[SGMacSpeechLLMProcessor startPostProcessWithSessionData:userId:userToken:completion:]",
+        "entry": "0x1003c3860",
+        "exclusiveEndFromNextTextSymbol": "0x1003c3e3c",
+        "sourceFileOffset": 3946592,
+        "functionBytesSha256": "87dd3081502ec49e8da4c78a1a0a0f68f2e23b1d36148a68dfccedd79b09191e",
+        "assemblySha256": "421a7d0887835cb4dbf5a5b2cad1fa043ef2b4990a4cb964ca24777dce474f4e",
+        "observation": "Cancels old post-process; creates processor by mode/session; attaches context, contextDict from llmConfigDict, extended settings, short-utterance policy and callbacks; passes asrStableText into processWithAsrText. Authentication providers are referenced but no values were read.",
+        "callAnchors": [
+          {
+            "address": "0x1003c38dc",
+            "fileOffset": 3946716,
+            "target": "_objc_msgSend$asrSessionID"
+          },
+          {
+            "address": "0x1003c3920",
+            "fileOffset": 3946784,
+            "target": "_objc_msgSend$log:tag:file:func:line:format:"
+          },
+          {
+            "address": "0x1003c3930",
+            "fileOffset": 3946800,
+            "target": "_objc_msgSend$cancelPostProcess"
+          },
+          {
+            "address": "0x1003c393c",
+            "fileOffset": 3946812,
+            "target": "_objc_msgSend$setIsPostProcessing:"
+          },
+          {
+            "address": "0x1003c394c",
+            "fileOffset": 3946828,
+            "target": "_objc_msgSend$asrSessionID"
+          },
+          {
+            "address": "0x1003c3968",
+            "fileOffset": 3946856,
+            "target": "_objc_msgSend$processorWithMode:sessionId:"
+          },
+          {
+            "address": "0x1003c3980",
+            "fileOffset": 3946880,
+            "target": "_objc_msgSend$setPostProcessor:"
+          },
+          {
+            "address": "0x1003c3998",
+            "fileOffset": 3946904,
+            "target": "_objc_msgSend$onSkill"
+          },
+          {
+            "address": "0x1003c39b0",
+            "fileOffset": 3946928,
+            "target": "_objc_msgSend$postProcessor"
+          },
+          {
+            "address": "0x1003c39c8",
+            "fileOffset": 3946952,
+            "target": "_objc_msgSend$respondsToSelector:"
+          },
+          {
+            "address": "0x1003c39e8",
+            "fileOffset": 3946984,
+            "target": "_objc_msgSend$onSkill"
+          },
+          {
+            "address": "0x1003c39fc",
+            "fileOffset": 3947004,
+            "target": "_objc_msgSend$postProcessor"
+          },
+          {
+            "address": "0x1003c3a10",
+            "fileOffset": 3947024,
+            "target": "_objc_msgSend$setOnSkill:"
+          },
+          {
+            "address": "0x1003c3a28",
+            "fileOffset": 3947048,
+            "target": "_objc_msgSend$onGuide"
+          },
+          {
+            "address": "0x1003c3a40",
+            "fileOffset": 3947072,
+            "target": "_objc_msgSend$postProcessor"
+          },
+          {
+            "address": "0x1003c3a58",
+            "fileOffset": 3947096,
+            "target": "_objc_msgSend$respondsToSelector:"
+          },
+          {
+            "address": "0x1003c3a78",
+            "fileOffset": 3947128,
+            "target": "_objc_msgSend$onGuide"
+          },
+          {
+            "address": "0x1003c3a8c",
+            "fileOffset": 3947148,
+            "target": "_objc_msgSend$postProcessor"
+          },
+          {
+            "address": "0x1003c3aa0",
+            "fileOffset": 3947168,
+            "target": "_objc_msgSend$setOnGuide:"
+          },
+          {
+            "address": "0x1003c3abc",
+            "fileOffset": 3947196,
+            "target": "_objc_msgSend$guideCtxPayload"
+          },
+          {
+            "address": "0x1003c3ad0",
+            "fileOffset": 3947216,
+            "target": "_objc_msgSend$postProcessor"
+          },
+          {
+            "address": "0x1003c3ae4",
+            "fileOffset": 3947236,
+            "target": "_objc_msgSend$setGuideCtx:"
+          },
+          {
+            "address": "0x1003c3afc",
+            "fileOffset": 3947260,
+            "target": "_objc_msgSend$postProcessContext"
+          },
+          {
+            "address": "0x1003c3b10",
+            "fileOffset": 3947280,
+            "target": "_objc_msgSend$postProcessor"
+          },
+          {
+            "address": "0x1003c3b24",
+            "fileOffset": 3947300,
+            "target": "_objc_msgSend$setContext:"
+          },
+          {
+            "address": "0x1003c3b3c",
+            "fileOffset": 3947324,
+            "target": "_objc_msgSend$llmConfigDict"
+          },
+          {
+            "address": "0x1003c3b50",
+            "fileOffset": 3947344,
+            "target": "_objc_msgSend$postProcessor"
+          },
+          {
+            "address": "0x1003c3b64",
+            "fileOffset": 3947364,
+            "target": "_objc_msgSend$setContextDict:"
+          },
+          {
+            "address": "0x1003c3b7c",
+            "fileOffset": 3947388,
+            "target": "_objc_msgSend$extConfig"
+          },
+          {
+            "address": "0x1003c3b90",
+            "fileOffset": 3947408,
+            "target": "_objc_msgSend$postProcessor"
+          },
+          {
+            "address": "0x1003c3ba4",
+            "fileOffset": 3947428,
+            "target": "_objc_msgSend$setExtConfig:"
+          },
+          {
+            "address": "0x1003c3bbc",
+            "fileOffset": 3947452,
+            "target": "_objc_msgSend$shortUtterance"
+          },
+          {
+            "address": "0x1003c3bcc",
+            "fileOffset": 3947468,
+            "target": "_objc_msgSend$shortUtteranceSkipLLMEnabled"
+          },
+          {
+            "address": "0x1003c3be0",
+            "fileOffset": 3947488,
+            "target": "_objc_msgSend$postProcessor"
+          },
+          {
+            "address": "0x1003c3bf4",
+            "fileOffset": 3947508,
+            "target": "_objc_msgSend$setShortUtterance:"
+          },
+          {
+            "address": "0x1003c3c14",
+            "fileOffset": 3947540,
+            "target": "_objc_msgSend$currentSCookie2"
+          },
+          {
+            "address": "0x1003c3c34",
+            "fileOffset": 3947572,
+            "target": "_objc_msgSend$currentSCookie"
+          },
+          {
+            "address": "0x1003c3c60",
+            "fileOffset": 3947616,
+            "target": "_objc_msgSend$dictionaryWithObjects:forKeys:count:"
+          },
+          {
+            "address": "0x1003c3c74",
+            "fileOffset": 3947636,
+            "target": "_objc_msgSend$postProcessor"
+          },
+          {
+            "address": "0x1003c3c88",
+            "fileOffset": 3947656,
+            "target": "_objc_msgSend$setExtraHeaders:"
+          },
+          {
+            "address": "0x1003c3cb0",
+            "fileOffset": 3947696,
+            "target": "_objc_msgSend$postProcessor"
+          },
+          {
+            "address": "0x1003c3cc4",
+            "fileOffset": 3947716,
+            "target": "_objc_msgSend$setDebug:"
+          },
+          {
+            "address": "0x1003c3ce0",
+            "fileOffset": 3947744,
+            "target": "_objc_msgSend$postProcessor"
+          },
+          {
+            "address": "0x1003c3cf4",
+            "fileOffset": 3947764,
+            "target": "_objc_msgSend$asrStableText"
+          },
+          {
+            "address": "0x1003c3d08",
+            "fileOffset": 3947784,
+            "target": "_objc_msgSend$triggerType"
+          },
+          {
+            "address": "0x1003c3d80",
+            "fileOffset": 3947904,
+            "target": "_objc_msgSend$processWithAsrText:vpTrigger:enablePauseDetect:uid:userToken:completion:"
+          }
+        ],
+        "constantAnchors": [
+          {
+            "address": "0x1003c3910",
+            "reference": "@\"[LLMProcessor] postProcess begin, sessionID=%@\""
+          },
+          {
+            "address": "0x1003c3c04",
+            "reference": "@\"S-COOKIE2\""
+          },
+          {
+            "address": "0x1003c3c28",
+            "reference": "@\"S-COOKIE\""
+          }
+        ]
+      },
+      {
+        "id": "CF-asm-do-post",
+        "kind": "ordinary-static-arm64-instructions",
+        "method": "-[SGMacSpeechService doPostProcessing]",
+        "entry": "0x1003c81e8",
+        "exclusiveEndFromNextTextSymbol": "0x1003c83d4",
+        "sourceFileOffset": 3965416,
+        "functionBytesSha256": "01145e9f4f1ef37273d80b6787402e2f2af3526276382d00d1168c2ea2b70d1e",
+        "assemblySha256": "b85a2175d314ba0c665939bae6a714cf86d7f869aa3601178852784cdda85024",
+        "observation": "Changes processing state, cancels previous LLM tasks and calls startPostProcessWithSessionData. Numeric state values are not assigned semantic enum names.",
+        "callAnchors": [
+          {
+            "address": "0x1003c8218",
+            "fileOffset": 3965464,
+            "target": "_objc_msgSend$state"
+          },
+          {
+            "address": "0x1003c8224",
+            "fileOffset": 3965476,
+            "target": "_objc_msgSend$sessionData"
+          },
+          {
+            "address": "0x1003c8234",
+            "fileOffset": 3965492,
+            "target": "_objc_msgSend$asrSessionID"
+          },
+          {
+            "address": "0x1003c8274",
+            "fileOffset": 3965556,
+            "target": "_objc_msgSend$log:tag:file:func:line:format:"
+          },
+          {
+            "address": "0x1003c8290",
+            "fileOffset": 3965584,
+            "target": "_objc_msgSend$setState:"
+          },
+          {
+            "address": "0x1003c8298",
+            "fileOffset": 3965592,
+            "target": "_objc_msgSend$llmProcessor"
+          },
+          {
+            "address": "0x1003c82a8",
+            "fileOffset": 3965608,
+            "target": "_objc_msgSend$cancelAll"
+          },
+          {
+            "address": "0x1003c82c4",
+            "fileOffset": 3965636,
+            "target": "_objc_msgSend$llmProcessor"
+          },
+          {
+            "address": "0x1003c82d8",
+            "fileOffset": 3965656,
+            "target": "_objc_msgSend$sessionData"
+          },
+          {
+            "address": "0x1003c82f0",
+            "fileOffset": 3965680,
+            "target": "_objc_msgSend$currentUserId"
+          },
+          {
+            "address": "0x1003c8304",
+            "fileOffset": 3965700,
+            "target": "_objc_msgSend$currentAccessToken"
+          },
+          {
+            "address": "0x1003c8364",
+            "fileOffset": 3965796,
+            "target": "_objc_msgSend$startPostProcessWithSessionData:userId:userToken:completion:"
+          }
+        ],
+        "constantAnchors": [
+          {
+            "address": "0x1003c8260",
+            "reference": "@\"startLLMProcessing state=%ld, sessionID=%@\""
+          }
+        ]
+      },
+      {
+        "id": "CF-asm-sse-network",
+        "kind": "ordinary-static-arm64-instructions",
+        "method": "-[SGSpeechPostProcessorSSE startSSEConnectionWithBody:headers:completion:payload:asrText:]",
+        "entry": "0x10041498c",
+        "exclusiveEndFromNextTextSymbol": "0x100414e88",
+        "sourceFileOffset": 4278668,
+        "functionBytesSha256": "84f260a52245d8c0225898f07a11b1048d086b5f48d6e10873c97a361b4db839",
+        "assemblySha256": "6ace3858671663caeb9ec03bbb97c2995aad7fd2f1a921ed94050ceb4b541bb7",
+        "observation": "Constructs SGEventSource with URL/headers/timeout/method/body, installs message/error/ready-state handlers and timeout, sets reconnect policy and calls open. Traffic and reachability were not observed.",
+        "callAnchors": [
+          {
+            "address": "0x100414a28",
+            "fileOffset": 4278824,
+            "target": "_objc_msgSend$URLWithString:"
+          },
+          {
+            "address": "0x100414a4c",
+            "fileOffset": 4278860,
+            "target": "_objc_msgSend$copy"
+          },
+          {
+            "address": "0x100414a78",
+            "fileOffset": 4278904,
+            "target": "_objc_msgSend$initWithSourceWithURL:HTTPHeaders:timeoutInterval:requestMethod:requestBody:"
+          },
+          {
+            "address": "0x100414a90",
+            "fileOffset": 4278928,
+            "target": "_objc_msgSend$setReconnectWhenClosed:"
+          },
+          {
+            "address": "0x100414a9c",
+            "fileOffset": 4278940,
+            "target": "_objc_msgSend$setNeedsSynchronousProcessHandler:"
+          },
+          {
+            "address": "0x100414aac",
+            "fileOffset": 4278956,
+            "target": "_objc_msgSend$length"
+          },
+          {
+            "address": "0x100414ab8",
+            "fileOffset": 4278968,
+            "target": "_objc_msgSend$sessionId"
+          },
+          {
+            "address": "0x100414acc",
+            "fileOffset": 4278988,
+            "target": "_objc_msgSend$requestId"
+          },
+          {
+            "address": "0x100414ae8",
+            "fileOffset": 4279016,
+            "target": "_objc_msgSend$useEncryptWall"
+          },
+          {
+            "address": "0x100414af4",
+            "fileOffset": 4279028,
+            "target": "_objc_msgSend$numberWithBool:"
+          },
+          {
+            "address": "0x100414b40",
+            "fileOffset": 4279104,
+            "target": "_objc_msgSend$log:tag:file:func:line:format:"
+          },
+          {
+            "address": "0x100414b74",
+            "fileOffset": 4279156,
+            "target": "_objc_msgSend$setCurrentEventSource:"
+          },
+          {
+            "address": "0x100414b80",
+            "fileOffset": 4279168,
+            "target": "_objc_msgSend$setCurrentCompletion:"
+          },
+          {
+            "address": "0x100414b9c",
+            "fileOffset": 4279196,
+            "target": "_objc_msgSend$scheduleTimeoutForEventSource:"
+          },
+          {
+            "address": "0x100414c08",
+            "fileOffset": 4279304,
+            "target": "_objc_msgSend$onMessage:"
+          },
+          {
+            "address": "0x100414c44",
+            "fileOffset": 4279364,
+            "target": "_objc_msgSend$onError:"
+          },
+          {
+            "address": "0x100414c80",
+            "fileOffset": 4279424,
+            "target": "_objc_msgSend$onReadyStateChanged:"
+          },
+          {
+            "address": "0x100414c8c",
+            "fileOffset": 4279436,
+            "target": "_objc_msgSend$sharedLogger"
+          },
+          {
+            "address": "0x100414c9c",
+            "fileOffset": 4279452,
+            "target": "_objc_msgSend$resetAccumulatedBytes"
+          },
+          {
+            "address": "0x100414cb0",
+            "fileOffset": 4279472,
+            "target": "_objc_msgSend$date"
+          },
+          {
+            "address": "0x100414cc8",
+            "fileOffset": 4279496,
+            "target": "_objc_msgSend$setOptStartDate:"
+          },
+          {
+            "address": "0x100414cd8",
+            "fileOffset": 4279512,
+            "target": "_objc_msgSend$sharedLogger"
+          },
+          {
+            "address": "0x100414d00",
+            "fileOffset": 4279552,
+            "target": "_objc_msgSend$length"
+          },
+          {
+            "address": "0x100414d0c",
+            "fileOffset": 4279564,
+            "target": "_objc_msgSend$numberWithUnsignedInteger:"
+          },
+          {
+            "address": "0x100414d34",
+            "fileOffset": 4279604,
+            "target": "_objc_msgSend$dictionaryWithObjects:forKeys:count:"
+          },
+          {
+            "address": "0x100414d54",
+            "fileOffset": 4279636,
+            "target": "_objc_msgSend$logEvent:payload:"
+          },
+          {
+            "address": "0x100414d74",
+            "fileOffset": 4279668,
+            "target": "_objc_msgSend$open"
+          }
+        ],
+        "constantAnchors": [
+          {
+            "address": "0x100414b2c",
+            "reference": "@\"P\""
+          },
+          {
+            "address": "0x100414cec",
+            "reference": "@\"up_bytes\""
+          },
+          {
+            "address": "0x100414d48",
+            "reference": "@\"opt_req_sent\""
+          }
+        ]
+      },
+      {
+        "id": "CF-asm-sse-dispatch",
+        "kind": "ordinary-static-arm64-instructions",
+        "method": "-[SGSpeechPostProcessorSSE handleSSEMessage:eventSource:]",
+        "entry": "0x100415778",
+        "exclusiveEndFromNextTextSymbol": "0x100415e48",
+        "sourceFileOffset": 4282232,
+        "functionBytesSha256": "fafc2c226dd6c29898ad9e6978bdd5f18fa475f00cf1a4d84c3c4559ebd90f0b",
+        "assemblySha256": "f98b35d5cda82f37b82f4f5914c921ea5e70153433a32455e215c3bb69586f2d",
+        "observation": "After optional frame decryption and JSON/type checks, reads seq/finish/delta and dispatches cmode/error/scene/step_info/skill/guide/pause/perf.",
+        "callAnchors": [
+          {
+            "address": "0x1004157c0",
+            "fileOffset": 4282304,
+            "target": "_objc_msgSend$data"
+          },
+          {
+            "address": "0x1004157d0",
+            "fileOffset": 4282320,
+            "target": "_objc_msgSend$length"
+          },
+          {
+            "address": "0x1004157e8",
+            "fileOffset": 4282344,
+            "target": "_objc_msgSend$completed"
+          },
+          {
+            "address": "0x1004157f4",
+            "fileOffset": 4282356,
+            "target": "_objc_msgSend$data"
+          },
+          {
+            "address": "0x100415808",
+            "fileOffset": 4282376,
+            "target": "_objc_msgSend$encryptor"
+          },
+          {
+            "address": "0x100415824",
+            "fileOffset": 4282404,
+            "target": "_objc_msgSend$encryptor"
+          },
+          {
+            "address": "0x100415838",
+            "fileOffset": 4282424,
+            "target": "_objc_msgSend$decryptFrame:"
+          },
+          {
+            "address": "0x100415854",
+            "fileOffset": 4282452,
+            "target": "_objc_msgSend$length"
+          },
+          {
+            "address": "0x100415870",
+            "fileOffset": 4282480,
+            "target": "_objc_msgSend$sharedLogger"
+          },
+          {
+            "address": "0x100415884",
+            "fileOffset": 4282500,
+            "target": "_objc_msgSend$length"
+          },
+          {
+            "address": "0x100415890",
+            "fileOffset": 4282512,
+            "target": "_objc_msgSend$accumulateBytes:"
+          },
+          {
+            "address": "0x1004158a4",
+            "fileOffset": 4282532,
+            "target": "_objc_msgSend$dataUsingEncoding:"
+          },
+          {
+            "address": "0x1004158d0",
+            "fileOffset": 4282576,
+            "target": "_objc_msgSend$JSONObjectWithData:options:error:"
+          },
+          {
+            "address": "0x1004158f4",
+            "fileOffset": 4282612,
+            "target": "_objc_msgSend$class"
+          },
+          {
+            "address": "0x100415900",
+            "fileOffset": 4282624,
+            "target": "_objc_msgSend$isKindOfClass:"
+          },
+          {
+            "address": "0x100415918",
+            "fileOffset": 4282648,
+            "target": "_objc_msgSend$objectForKeyedSubscript:"
+          },
+          {
+            "address": "0x100415930",
+            "fileOffset": 4282672,
+            "target": "_objc_msgSend$class"
+          },
+          {
+            "address": "0x10041593c",
+            "fileOffset": 4282684,
+            "target": "_objc_msgSend$isKindOfClass:"
+          },
+          {
+            "address": "0x100415950",
+            "fileOffset": 4282704,
+            "target": "_objc_msgSend$objectForKeyedSubscript:"
+          },
+          {
+            "address": "0x1004159d8",
+            "fileOffset": 4282840,
+            "target": "_objc_msgSend$log:tag:file:func:line:format:"
+          },
+          {
+            "address": "0x1004159f8",
+            "fileOffset": 4282872,
+            "target": "_objc_msgSend$length"
+          },
+          {
+            "address": "0x100415a28",
+            "fileOffset": 4282920,
+            "target": "_objc_msgSend$log:tag:file:func:line:format:"
+          },
+          {
+            "address": "0x100415a48",
+            "fileOffset": 4282952,
+            "target": "_objc_msgSend$objectForKeyedSubscript:"
+          },
+          {
+            "address": "0x100415a60",
+            "fileOffset": 4282976,
+            "target": "_objc_msgSend$class"
+          },
+          {
+            "address": "0x100415a6c",
+            "fileOffset": 4282988,
+            "target": "_objc_msgSend$isKindOfClass:"
+          },
+          {
+            "address": "0x100415a80",
+            "fileOffset": 4283008,
+            "target": "_objc_msgSend$objectForKeyedSubscript:"
+          },
+          {
+            "address": "0x100415aac",
+            "fileOffset": 4283052,
+            "target": "_objc_msgSend$objectForKeyedSubscript:"
+          },
+          {
+            "address": "0x100415ac0",
+            "fileOffset": 4283072,
+            "target": "_objc_msgSend$class"
+          },
+          {
+            "address": "0x100415acc",
+            "fileOffset": 4283084,
+            "target": "_objc_msgSend$isKindOfClass:"
+          },
+          {
+            "address": "0x100415ae0",
+            "fileOffset": 4283104,
+            "target": "_objc_msgSend$objectForKeyedSubscript:"
+          },
+          {
+            "address": "0x100415b08",
+            "fileOffset": 4283144,
+            "target": "_objc_msgSend$boolValue"
+          },
+          {
+            "address": "0x100415b1c",
+            "fileOffset": 4283164,
+            "target": "_objc_msgSend$objectForKeyedSubscript:"
+          },
+          {
+            "address": "0x100415b30",
+            "fileOffset": 4283184,
+            "target": "_objc_msgSend$class"
+          },
+          {
+            "address": "0x100415b3c",
+            "fileOffset": 4283196,
+            "target": "_objc_msgSend$isKindOfClass:"
+          },
+          {
+            "address": "0x100415b50",
+            "fileOffset": 4283216,
+            "target": "_objc_msgSend$objectForKeyedSubscript:"
+          },
+          {
+            "address": "0x100415b74",
+            "fileOffset": 4283252,
+            "target": "_objc_msgSend$length"
+          },
+          {
+            "address": "0x100415b8c",
+            "fileOffset": 4283276,
+            "target": "_objc_msgSend$substringToIndex:"
+          },
+          {
+            "address": "0x100415bd4",
+            "fileOffset": 4283348,
+            "target": "_objc_msgSend$numberWithBool:"
+          },
+          {
+            "address": "0x100415c2c",
+            "fileOffset": 4283436,
+            "target": "_objc_msgSend$log:tag:file:func:line:format:"
+          },
+          {
+            "address": "0x100415c44",
+            "fileOffset": 4283460,
+            "target": "_objc_msgSend$isEqualToString:"
+          },
+          {
+            "address": "0x100415c64",
+            "fileOffset": 4283492,
+            "target": "_objc_msgSend$handleCModePacket:delta:finish:eventSource:"
+          },
+          {
+            "address": "0x100415c7c",
+            "fileOffset": 4283516,
+            "target": "_objc_msgSend$isEqualToString:"
+          },
+          {
+            "address": "0x100415c98",
+            "fileOffset": 4283544,
+            "target": "_objc_msgSend$handleErrorPacket:eventSource:"
+          },
+          {
+            "address": "0x100415d24",
+            "fileOffset": 4283684,
+            "target": "_objc_msgSend$isEqualToString:"
+          },
+          {
+            "address": "0x100415d3c",
+            "fileOffset": 4283708,
+            "target": "_objc_msgSend$handleScenePacket:finish:"
+          },
+          {
+            "address": "0x100415d50",
+            "fileOffset": 4283728,
+            "target": "_objc_msgSend$isEqualToString:"
+          },
+          {
+            "address": "0x100415d64",
+            "fileOffset": 4283748,
+            "target": "_objc_msgSend$handleStepInfoPacket:finish:"
+          },
+          {
+            "address": "0x100415d78",
+            "fileOffset": 4283768,
+            "target": "_objc_msgSend$isEqualToString:"
+          },
+          {
+            "address": "0x100415d8c",
+            "fileOffset": 4283788,
+            "target": "_objc_msgSend$handleSkillPacket:finish:"
+          },
+          {
+            "address": "0x100415da0",
+            "fileOffset": 4283808,
+            "target": "_objc_msgSend$isEqualToString:"
+          },
+          {
+            "address": "0x100415db4",
+            "fileOffset": 4283828,
+            "target": "_objc_msgSend$handleGuidePacket:finish:"
+          },
+          {
+            "address": "0x100415dc8",
+            "fileOffset": 4283848,
+            "target": "_objc_msgSend$isEqualToString:"
+          },
+          {
+            "address": "0x100415de0",
+            "fileOffset": 4283872,
+            "target": "_objc_msgSend$handlePausePacket:finish:eventSource:"
+          },
+          {
+            "address": "0x100415df4",
+            "fileOffset": 4283892,
+            "target": "_objc_msgSend$isEqualToString:"
+          },
+          {
+            "address": "0x100415e08",
+            "fileOffset": 4283912,
+            "target": "_objc_msgSend$handlePerfPacket:finish:"
+          },
+          {
+            "address": "0x100415e40",
+            "fileOffset": 4283968,
+            "target": "_objc_msgSend$log:tag:file:func:line:format:"
+          }
+        ],
+        "constantAnchors": [
+          {
+            "address": "0x100415910",
+            "reference": "@\"type\""
+          },
+          {
+            "address": "0x100415948",
+            "reference": "@\"type\""
+          },
+          {
+            "address": "0x100415990",
+            "reference": "@\"P\""
+          },
+          {
+            "address": "0x1004159cc",
+            "reference": "@\"P\""
+          },
+          {
+            "address": "0x100415a14",
+            "reference": "@\"P\""
+          },
+          {
+            "address": "0x100415a40",
+            "reference": "@\"seq\""
+          },
+          {
+            "address": "0x100415a78",
+            "reference": "@\"seq\""
+          },
+          {
+            "address": "0x100415aa4",
+            "reference": "@\"finish\""
+          },
+          {
+            "address": "0x100415ad8",
+            "reference": "@\"finish\""
+          },
+          {
+            "address": "0x100415b14",
+            "reference": "@\"delta\""
+          },
+          {
+            "address": "0x100415b48",
+            "reference": "@\"delta\""
+          },
+          {
+            "address": "0x100415ba0",
+            "reference": "@\"\""
+          },
+          {
+            "address": "0x100415c00",
+            "reference": "@\"P\""
+          },
+          {
+            "address": "0x100415c3c",
+            "reference": "@\"cmode\""
+          },
+          {
+            "address": "0x100415c74",
+            "reference": "@\"error\""
+          },
+          {
+            "address": "0x100415d1c",
+            "reference": "@\"scene\""
+          },
+          {
+            "address": "0x100415d48",
+            "reference": "@\"step_info\""
+          },
+          {
+            "address": "0x100415d70",
+            "reference": "@\"skill\""
+          },
+          {
+            "address": "0x100415d98",
+            "reference": "@\"guide\""
+          },
+          {
+            "address": "0x100415dc0",
+            "reference": "@\"pause\""
+          },
+          {
+            "address": "0x100415dec",
+            "reference": "@\"perf\""
+          },
+          {
+            "address": "0x100415e30",
+            "reference": "@\"P\""
+          }
+        ]
+      },
+      {
+        "id": "CF-asm-scene-packet",
+        "kind": "ordinary-static-arm64-instructions",
+        "method": "-[SGSpeechPostProcessorSSE handleScenePacket:finish:]",
+        "entry": "0x100416bec",
+        "exclusiveEndFromNextTextSymbol": "0x100417070",
+        "sourceFileOffset": 4287468,
+        "functionBytesSha256": "5a45344524214dde8ac3cb9079ea7139ce02c8b6cbd76b933ea54d9260cf9423",
+        "assemblySha256": "91d63221ce95a2f727a549dbd4f055303c984ef7265402208db4a07f37254809",
+        "observation": "Parses a finished scene packet into route/reason/path/confidence/label on pending-response step-info. No local scene-model inference is established here.",
+        "callAnchors": [
+          {
+            "address": "0x100416c2c",
+            "fileOffset": 4287532,
+            "target": "_objc_msgSend$objectForKeyedSubscript:"
+          },
+          {
+            "address": "0x100416c44",
+            "fileOffset": 4287556,
+            "target": "_objc_msgSend$class"
+          },
+          {
+            "address": "0x100416c50",
+            "fileOffset": 4287568,
+            "target": "_objc_msgSend$isKindOfClass:"
+          },
+          {
+            "address": "0x100416c64",
+            "fileOffset": 4287588,
+            "target": "_objc_msgSend$objectForKeyedSubscript:"
+          },
+          {
+            "address": "0x100416c84",
+            "fileOffset": 4287620,
+            "target": "_objc_msgSend$pendingResponse"
+          },
+          {
+            "address": "0x100416c94",
+            "fileOffset": 4287636,
+            "target": "_objc_msgSend$stepInfo"
+          },
+          {
+            "address": "0x100416cc0",
+            "fileOffset": 4287680,
+            "target": "_objc_msgSend$init"
+          },
+          {
+            "address": "0x100416ccc",
+            "fileOffset": 4287692,
+            "target": "_objc_msgSend$pendingResponse"
+          },
+          {
+            "address": "0x100416ce0",
+            "fileOffset": 4287712,
+            "target": "_objc_msgSend$setStepInfo:"
+          },
+          {
+            "address": "0x100416d00",
+            "fileOffset": 4287744,
+            "target": "_objc_msgSend$init"
+          },
+          {
+            "address": "0x100416d14",
+            "fileOffset": 4287764,
+            "target": "_objc_msgSend$objectForKeyedSubscript:"
+          },
+          {
+            "address": "0x100416d2c",
+            "fileOffset": 4287788,
+            "target": "_objc_msgSend$class"
+          },
+          {
+            "address": "0x100416d38",
+            "fileOffset": 4287800,
+            "target": "_objc_msgSend$isKindOfClass:"
+          },
+          {
+            "address": "0x100416d4c",
+            "fileOffset": 4287820,
+            "target": "_objc_msgSend$objectForKeyedSubscript:"
+          },
+          {
+            "address": "0x100416d64",
+            "fileOffset": 4287844,
+            "target": "_objc_msgSend$setRoute:"
+          },
+          {
+            "address": "0x100416d84",
+            "fileOffset": 4287876,
+            "target": "_objc_msgSend$setRoute:"
+          },
+          {
+            "address": "0x100416d9c",
+            "fileOffset": 4287900,
+            "target": "_objc_msgSend$objectForKeyedSubscript:"
+          },
+          {
+            "address": "0x100416db0",
+            "fileOffset": 4287920,
+            "target": "_objc_msgSend$class"
+          },
+          {
+            "address": "0x100416dbc",
+            "fileOffset": 4287932,
+            "target": "_objc_msgSend$isKindOfClass:"
+          },
+          {
+            "address": "0x100416dd0",
+            "fileOffset": 4287952,
+            "target": "_objc_msgSend$objectForKeyedSubscript:"
+          },
+          {
+            "address": "0x100416de8",
+            "fileOffset": 4287976,
+            "target": "_objc_msgSend$setReason:"
+          },
+          {
+            "address": "0x100416e00",
+            "fileOffset": 4288000,
+            "target": "_objc_msgSend$setReason:"
+          },
+          {
+            "address": "0x100416e18",
+            "fileOffset": 4288024,
+            "target": "_objc_msgSend$objectForKeyedSubscript:"
+          },
+          {
+            "address": "0x100416e2c",
+            "fileOffset": 4288044,
+            "target": "_objc_msgSend$class"
+          },
+          {
+            "address": "0x100416e38",
+            "fileOffset": 4288056,
+            "target": "_objc_msgSend$isKindOfClass:"
+          },
+          {
+            "address": "0x100416e4c",
+            "fileOffset": 4288076,
+            "target": "_objc_msgSend$objectForKeyedSubscript:"
+          },
+          {
+            "address": "0x100416e64",
+            "fileOffset": 4288100,
+            "target": "_objc_msgSend$setPath:"
+          },
+          {
+            "address": "0x100416e7c",
+            "fileOffset": 4288124,
+            "target": "_objc_msgSend$setPath:"
+          },
+          {
+            "address": "0x100416e94",
+            "fileOffset": 4288148,
+            "target": "_objc_msgSend$objectForKeyedSubscript:"
+          },
+          {
+            "address": "0x100416eac",
+            "fileOffset": 4288172,
+            "target": "_objc_msgSend$class"
+          },
+          {
+            "address": "0x100416eb8",
+            "fileOffset": 4288184,
+            "target": "_objc_msgSend$isKindOfClass:"
+          },
+          {
+            "address": "0x100416ecc",
+            "fileOffset": 4288204,
+            "target": "_objc_msgSend$objectForKeyedSubscript:"
+          },
+          {
+            "address": "0x100416edc",
+            "fileOffset": 4288220,
+            "target": "_objc_msgSend$doubleValue"
+          },
+          {
+            "address": "0x100416ee4",
+            "fileOffset": 4288228,
+            "target": "_objc_msgSend$setConfidence:"
+          },
+          {
+            "address": "0x100416efc",
+            "fileOffset": 4288252,
+            "target": "_objc_msgSend$setConfidence:"
+          },
+          {
+            "address": "0x100416f14",
+            "fileOffset": 4288276,
+            "target": "_objc_msgSend$objectForKeyedSubscript:"
+          },
+          {
+            "address": "0x100416f28",
+            "fileOffset": 4288296,
+            "target": "_objc_msgSend$class"
+          },
+          {
+            "address": "0x100416f34",
+            "fileOffset": 4288308,
+            "target": "_objc_msgSend$isKindOfClass:"
+          },
+          {
+            "address": "0x100416f48",
+            "fileOffset": 4288328,
+            "target": "_objc_msgSend$objectForKeyedSubscript:"
+          },
+          {
+            "address": "0x100416f60",
+            "fileOffset": 4288352,
+            "target": "_objc_msgSend$setLabel:"
+          },
+          {
+            "address": "0x100416f78",
+            "fileOffset": 4288376,
+            "target": "_objc_msgSend$setLabel:"
+          },
+          {
+            "address": "0x100416f88",
+            "fileOffset": 4288392,
+            "target": "_objc_msgSend$pendingResponse"
+          },
+          {
+            "address": "0x100416f98",
+            "fileOffset": 4288408,
+            "target": "_objc_msgSend$stepInfo"
+          },
+          {
+            "address": "0x100416fac",
+            "fileOffset": 4288428,
+            "target": "_objc_msgSend$setScene:"
+          },
+          {
+            "address": "0x100416fd8",
+            "fileOffset": 4288472,
+            "target": "_objc_msgSend$route"
+          },
+          {
+            "address": "0x100416fec",
+            "fileOffset": 4288492,
+            "target": "_objc_msgSend$path"
+          },
+          {
+            "address": "0x10041702c",
+            "fileOffset": 4288556,
+            "target": "_objc_msgSend$log:tag:file:func:line:format:"
+          }
+        ],
+        "constantAnchors": [
+          {
+            "address": "0x100416c24",
+            "reference": "@\"data\""
+          },
+          {
+            "address": "0x100416c5c",
+            "reference": "@\"data\""
+          },
+          {
+            "address": "0x100416d0c",
+            "reference": "@\"route\""
+          },
+          {
+            "address": "0x100416d44",
+            "reference": "@\"route\""
+          },
+          {
+            "address": "0x100416d94",
+            "reference": "@\"reason\""
+          },
+          {
+            "address": "0x100416dc8",
+            "reference": "@\"reason\""
+          },
+          {
+            "address": "0x100416e10",
+            "reference": "@\"path\""
+          },
+          {
+            "address": "0x100416e44",
+            "reference": "@\"path\""
+          },
+          {
+            "address": "0x100416e8c",
+            "reference": "@\"confidence\""
+          },
+          {
+            "address": "0x100416ec4",
+            "reference": "@\"confidence\""
+          },
+          {
+            "address": "0x100416f0c",
+            "reference": "@\"label\""
+          },
+          {
+            "address": "0x100416f40",
+            "reference": "@\"label\""
+          },
+          {
+            "address": "0x100417018",
+            "reference": "@\"P\""
+          }
+        ]
+      },
+      {
+        "id": "CF-asm-cmode",
+        "kind": "ordinary-static-arm64-instructions",
+        "method": "-[SGSpeechPostProcessorSSE handleCModePacket:delta:finish:eventSource:]",
+        "entry": "0x1004164c0",
+        "exclusiveEndFromNextTextSymbol": "0x1004168d4",
+        "sourceFileOffset": 4285632,
+        "functionBytesSha256": "0465d0633a6f81ea32a7515f25b56b571fcbc916c95f047fdc821ecbd1992a6b",
+        "assemblySha256": "8341e07eafeb92a48f0cc3a42b3d84ef69ea894a5b5be8bbbb838b4d6c2ae74f",
+        "observation": "Accumulates deltas and invokes onDelta for nonfinal packets. Finished data stores text or accumulated deltas plus tips/raw_tail on pending response. This does not prove inference on each ASR revision.",
+        "callAnchors": [
+          {
+            "address": "0x100416504",
+            "fileOffset": 4285700,
+            "target": "_objc_msgSend$length"
+          },
+          {
+            "address": "0x100416510",
+            "fileOffset": 4285712,
+            "target": "_objc_msgSend$deltaBuffer"
+          },
+          {
+            "address": "0x100416524",
+            "fileOffset": 4285732,
+            "target": "_objc_msgSend$appendString:"
+          },
+          {
+            "address": "0x100416540",
+            "fileOffset": 4285760,
+            "target": "_objc_msgSend$objectForKeyedSubscript:"
+          },
+          {
+            "address": "0x100416558",
+            "fileOffset": 4285784,
+            "target": "_objc_msgSend$class"
+          },
+          {
+            "address": "0x100416564",
+            "fileOffset": 4285796,
+            "target": "_objc_msgSend$isKindOfClass:"
+          },
+          {
+            "address": "0x100416578",
+            "fileOffset": 4285816,
+            "target": "_objc_msgSend$objectForKeyedSubscript:"
+          },
+          {
+            "address": "0x100416590",
+            "fileOffset": 4285840,
+            "target": "_objc_msgSend$onDelta"
+          },
+          {
+            "address": "0x1004165ac",
+            "fileOffset": 4285868,
+            "target": "_objc_msgSend$deltaBuffer"
+          },
+          {
+            "address": "0x1004165bc",
+            "fileOffset": 4285884,
+            "target": "_objc_msgSend$copy"
+          },
+          {
+            "address": "0x1004165d0",
+            "fileOffset": 4285904,
+            "target": "_objc_msgSend$onDelta"
+          },
+          {
+            "address": "0x100416618",
+            "fileOffset": 4285976,
+            "target": "_objc_msgSend$init"
+          },
+          {
+            "address": "0x100416630",
+            "fileOffset": 4286000,
+            "target": "_objc_msgSend$objectForKeyedSubscript:"
+          },
+          {
+            "address": "0x100416648",
+            "fileOffset": 4286024,
+            "target": "_objc_msgSend$class"
+          },
+          {
+            "address": "0x100416654",
+            "fileOffset": 4286036,
+            "target": "_objc_msgSend$isKindOfClass:"
+          },
+          {
+            "address": "0x100416668",
+            "fileOffset": 4286056,
+            "target": "_objc_msgSend$objectForKeyedSubscript:"
+          },
+          {
+            "address": "0x100416680",
+            "fileOffset": 4286080,
+            "target": "_objc_msgSend$setText:"
+          },
+          {
+            "address": "0x10041668c",
+            "fileOffset": 4286092,
+            "target": "_objc_msgSend$deltaBuffer"
+          },
+          {
+            "address": "0x10041669c",
+            "fileOffset": 4286108,
+            "target": "_objc_msgSend$copy"
+          },
+          {
+            "address": "0x1004166ac",
+            "fileOffset": 4286124,
+            "target": "_objc_msgSend$setText:"
+          },
+          {
+            "address": "0x1004166b8",
+            "fileOffset": 4286136,
+            "target": "_objc_msgSend$deltaBuffer"
+          },
+          {
+            "address": "0x1004166c8",
+            "fileOffset": 4286152,
+            "target": "_objc_msgSend$copy"
+          },
+          {
+            "address": "0x1004166d8",
+            "fileOffset": 4286168,
+            "target": "_objc_msgSend$setText:"
+          },
+          {
+            "address": "0x100416700",
+            "fileOffset": 4286208,
+            "target": "_objc_msgSend$objectForKeyedSubscript:"
+          },
+          {
+            "address": "0x100416714",
+            "fileOffset": 4286228,
+            "target": "_objc_msgSend$class"
+          },
+          {
+            "address": "0x100416720",
+            "fileOffset": 4286240,
+            "target": "_objc_msgSend$isKindOfClass:"
+          },
+          {
+            "address": "0x100416734",
+            "fileOffset": 4286260,
+            "target": "_objc_msgSend$objectForKeyedSubscript:"
+          },
+          {
+            "address": "0x10041674c",
+            "fileOffset": 4286284,
+            "target": "_objc_msgSend$setTips:"
+          },
+          {
+            "address": "0x100416764",
+            "fileOffset": 4286308,
+            "target": "_objc_msgSend$setTips:"
+          },
+          {
+            "address": "0x10041677c",
+            "fileOffset": 4286332,
+            "target": "_objc_msgSend$objectForKeyedSubscript:"
+          },
+          {
+            "address": "0x100416790",
+            "fileOffset": 4286352,
+            "target": "_objc_msgSend$class"
+          },
+          {
+            "address": "0x10041679c",
+            "fileOffset": 4286364,
+            "target": "_objc_msgSend$isKindOfClass:"
+          },
+          {
+            "address": "0x1004167b0",
+            "fileOffset": 4286384,
+            "target": "_objc_msgSend$objectForKeyedSubscript:"
+          },
+          {
+            "address": "0x1004167c8",
+            "fileOffset": 4286408,
+            "target": "_objc_msgSend$setRawTextTail:"
+          },
+          {
+            "address": "0x1004167e0",
+            "fileOffset": 4286432,
+            "target": "_objc_msgSend$setRawTextTail:"
+          },
+          {
+            "address": "0x1004167f0",
+            "fileOffset": 4286448,
+            "target": "_objc_msgSend$pendingResponse"
+          },
+          {
+            "address": "0x100416804",
+            "fileOffset": 4286468,
+            "target": "_objc_msgSend$setData:"
+          },
+          {
+            "address": "0x100416828",
+            "fileOffset": 4286504,
+            "target": "_objc_msgSend$text"
+          },
+          {
+            "address": "0x100416838",
+            "fileOffset": 4286520,
+            "target": "_objc_msgSend$length"
+          },
+          {
+            "address": "0x100416844",
+            "fileOffset": 4286532,
+            "target": "_objc_msgSend$requestId"
+          },
+          {
+            "address": "0x100416884",
+            "fileOffset": 4286596,
+            "target": "_objc_msgSend$log:tag:file:func:line:format:"
+          }
+        ],
+        "constantAnchors": [
+          {
+            "address": "0x100416538",
+            "reference": "@\"data\""
+          },
+          {
+            "address": "0x100416570",
+            "reference": "@\"data\""
+          },
+          {
+            "address": "0x1004165e4",
+            "reference": "@\"\""
+          },
+          {
+            "address": "0x100416628",
+            "reference": "@\"text\""
+          },
+          {
+            "address": "0x100416660",
+            "reference": "@\"text\""
+          },
+          {
+            "address": "0x1004166f8",
+            "reference": "@\"tips\""
+          },
+          {
+            "address": "0x10041672c",
+            "reference": "@\"tips\""
+          },
+          {
+            "address": "0x100416774",
+            "reference": "@\"raw_tail\""
+          },
+          {
+            "address": "0x1004167a8",
+            "reference": "@\"raw_tail\""
+          },
+          {
+            "address": "0x100416870",
+            "reference": "@\"P\""
+          }
+        ]
+      },
+      {
+        "id": "CF-asm-live-result",
+        "kind": "ordinary-static-arm64-instructions",
+        "method": "-[SGMacSpeechService handleLivePostProcessResult:error:]",
+        "entry": "0x1003c8530",
+        "exclusiveEndFromNextTextSymbol": "0x1003c8ac4",
+        "sourceFileOffset": 3966256,
+        "functionBytesSha256": "a5a86b22a5c8b69605e428e2817e5c65637c65d5d63f3e4234575f051783da1a",
+        "assemblySha256": "f3a87bc7d32791bff5464ef4514903a7ff13db1a1334d94c491f2ab9bd02cffd",
+        "observation": "Stores LLM response, branches on errors/result codes, obtains response data.text as enhancedText, calls history helper and commitFinalSpeechText. Delivery-helper host strategy is outside this bounded analysis.",
+        "callAnchors": [
+          {
+            "address": "0x1003c8574",
+            "fileOffset": 3966324,
+            "target": "_objc_msgSend$date"
+          },
+          {
+            "address": "0x1003c8588",
+            "fileOffset": 3966344,
+            "target": "_objc_msgSend$sessionData"
+          },
+          {
+            "address": "0x1003c859c",
+            "fileOffset": 3966364,
+            "target": "_objc_msgSend$setLlmEndTime:"
+          },
+          {
+            "address": "0x1003c85b4",
+            "fileOffset": 3966388,
+            "target": "_objc_msgSend$sessionData"
+          },
+          {
+            "address": "0x1003c85c8",
+            "fileOffset": 3966408,
+            "target": "_objc_msgSend$setLlmResponse:"
+          },
+          {
+            "address": "0x1003c85d8",
+            "fileOffset": 3966424,
+            "target": "_objc_msgSend$perf"
+          },
+          {
+            "address": "0x1003c85f4",
+            "fileOffset": 3966452,
+            "target": "_objc_msgSend$perf"
+          },
+          {
+            "address": "0x1003c8608",
+            "fileOffset": 3966472,
+            "target": "_objc_msgSend$sessionData"
+          },
+          {
+            "address": "0x1003c861c",
+            "fileOffset": 3966492,
+            "target": "_objc_msgSend$setPerfInfo:"
+          },
+          {
+            "address": "0x1003c8638",
+            "fileOffset": 3966520,
+            "target": "_objc_msgSend$code"
+          },
+          {
+            "address": "0x1003c865c",
+            "fileOffset": 3966556,
+            "target": "_objc_msgSend$code"
+          },
+          {
+            "address": "0x1003c8670",
+            "fileOffset": 3966576,
+            "target": "_objc_msgSend$code"
+          },
+          {
+            "address": "0x1003c868c",
+            "fileOffset": 3966604,
+            "target": "_objc_msgSend$showLLMErrorUI:"
+          },
+          {
+            "address": "0x1003c8694",
+            "fileOffset": 3966612,
+            "target": "_objc_msgSend$sessionData"
+          },
+          {
+            "address": "0x1003c86a8",
+            "fileOffset": 3966632,
+            "target": "_objc_msgSend$setSessionError:"
+          },
+          {
+            "address": "0x1003c86b8",
+            "fileOffset": 3966648,
+            "target": "_objc_msgSend$sessionData"
+          },
+          {
+            "address": "0x1003c86cc",
+            "fileOffset": 3966668,
+            "target": "_objc_msgSend$setSessionState:"
+          },
+          {
+            "address": "0x1003c871c",
+            "fileOffset": 3966748,
+            "target": "_objc_msgSend$log:tag:file:func:line:format:"
+          },
+          {
+            "address": "0x1003c8728",
+            "fileOffset": 3966760,
+            "target": "_objc_msgSend$sessionData"
+          },
+          {
+            "address": "0x1003c875c",
+            "fileOffset": 3966812,
+            "target": "_objc_msgSend$log:tag:file:func:line:format:"
+          },
+          {
+            "address": "0x1003c8774",
+            "fileOffset": 3966836,
+            "target": "_objc_msgSend$sessionData"
+          },
+          {
+            "address": "0x1003c8790",
+            "fileOffset": 3966864,
+            "target": "_objc_msgSend$reportSuccessWithSessionData:extraParams:"
+          },
+          {
+            "address": "0x1003c87a4",
+            "fileOffset": 3966884,
+            "target": "_objc_msgSend$saveLiveSessionDataToHistory:"
+          },
+          {
+            "address": "0x1003c87b0",
+            "fileOffset": 3966896,
+            "target": "_objc_msgSend$setState:"
+          },
+          {
+            "address": "0x1003c87bc",
+            "fileOffset": 3966908,
+            "target": "_objc_msgSend$setRecognizeStartTime:"
+          },
+          {
+            "address": "0x1003c87c8",
+            "fileOffset": 3966920,
+            "target": "_objc_msgSend$setSpeechSwitchEnabled:"
+          },
+          {
+            "address": "0x1003c87d4",
+            "fileOffset": 3966932,
+            "target": "_objc_msgSend$sharedInstance"
+          },
+          {
+            "address": "0x1003c87e8",
+            "fileOffset": 3966952,
+            "target": "_objc_msgSend$sessionData"
+          },
+          {
+            "address": "0x1003c8800",
+            "fileOffset": 3966976,
+            "target": "_objc_msgSend$reportSessionDiscardWithSessionData:"
+          },
+          {
+            "address": "0x1003c8810",
+            "fileOffset": 3966992,
+            "target": "_objc_msgSend$code"
+          },
+          {
+            "address": "0x1003c8828",
+            "fileOffset": 3967016,
+            "target": "_objc_msgSend$sessionData"
+          },
+          {
+            "address": "0x1003c883c",
+            "fileOffset": 3967036,
+            "target": "_objc_msgSend$setSecurityResult:"
+          },
+          {
+            "address": "0x1003c884c",
+            "fileOffset": 3967052,
+            "target": "_objc_msgSend$sessionData"
+          },
+          {
+            "address": "0x1003c885c",
+            "fileOffset": 3967068,
+            "target": "_objc_msgSend$asrStableText"
+          },
+          {
+            "address": "0x1003c8870",
+            "fileOffset": 3967088,
+            "target": "_objc_msgSend$sessionData"
+          },
+          {
+            "address": "0x1003c8898",
+            "fileOffset": 3967128,
+            "target": "_objc_msgSend$sessionData"
+          },
+          {
+            "address": "0x1003c88ac",
+            "fileOffset": 3967148,
+            "target": "_objc_msgSend$setSessionError:"
+          },
+          {
+            "address": "0x1003c88bc",
+            "fileOffset": 3967164,
+            "target": "_objc_msgSend$data"
+          },
+          {
+            "address": "0x1003c88cc",
+            "fileOffset": 3967180,
+            "target": "_objc_msgSend$text"
+          },
+          {
+            "address": "0x1003c88f0",
+            "fileOffset": 3967216,
+            "target": "_objc_msgSend$sessionData"
+          },
+          {
+            "address": "0x1003c8904",
+            "fileOffset": 3967236,
+            "target": "_objc_msgSend$setEnhancedText:"
+          },
+          {
+            "address": "0x1003c8924",
+            "fileOffset": 3967268,
+            "target": "_objc_msgSend$sessionData"
+          },
+          {
+            "address": "0x1003c8938",
+            "fileOffset": 3967288,
+            "target": "_objc_msgSend$setSessionState:"
+          },
+          {
+            "address": "0x1003c894c",
+            "fileOffset": 3967308,
+            "target": "_objc_msgSend$saveLiveSessionDataToHistory:"
+          },
+          {
+            "address": "0x1003c8958",
+            "fileOffset": 3967320,
+            "target": "_objc_msgSend$setState:"
+          },
+          {
+            "address": "0x1003c8964",
+            "fileOffset": 3967332,
+            "target": "_objc_msgSend$setRecognizeStartTime:"
+          },
+          {
+            "address": "0x1003c8970",
+            "fileOffset": 3967344,
+            "target": "_objc_msgSend$setSpeechSwitchEnabled:"
+          },
+          {
+            "address": "0x1003c898c",
+            "fileOffset": 3967372,
+            "target": "_objc_msgSend$sessionData"
+          },
+          {
+            "address": "0x1003c89c8",
+            "fileOffset": 3967432,
+            "target": "_objc_msgSend$log:tag:file:func:line:format:"
+          },
+          {
+            "address": "0x1003c89dc",
+            "fileOffset": 3967452,
+            "target": "_objc_msgSend$sharedInstance"
+          },
+          {
+            "address": "0x1003c89f0",
+            "fileOffset": 3967472,
+            "target": "_objc_msgSend$sessionData"
+          },
+          {
+            "address": "0x1003c8a08",
+            "fileOffset": 3967496,
+            "target": "_objc_msgSend$reportLLMFinalWithSessionData:"
+          },
+          {
+            "address": "0x1003c8a20",
+            "fileOffset": 3967520,
+            "target": "_objc_msgSend$commitFinalSpeechText"
+          },
+          {
+            "address": "0x1003c8a30",
+            "fileOffset": 3967536,
+            "target": "_objc_msgSend$sessionData"
+          },
+          {
+            "address": "0x1003c8a4c",
+            "fileOffset": 3967564,
+            "target": "_objc_msgSend$reportSuccessWithSessionData:extraParams:"
+          },
+          {
+            "address": "0x1003c8a5c",
+            "fileOffset": 3967580,
+            "target": "_objc_msgSend$sharedInstance"
+          },
+          {
+            "address": "0x1003c8a70",
+            "fileOffset": 3967600,
+            "target": "_objc_msgSend$sessionData"
+          },
+          {
+            "address": "0x1003c8a88",
+            "fileOffset": 3967624,
+            "target": "_objc_msgSend$reportSessionCommitWithSessionData:"
+          }
+        ],
+        "constantAnchors": [
+          {
+            "address": "0x1003c8704",
+            "reference": "@\"L\""
+          },
+          {
+            "address": "0x1003c8740",
+            "reference": "@\"L\""
+          },
+          {
+            "address": "0x1003c88e0",
+            "reference": "@\"\""
+          },
+          {
+            "address": "0x1003c89b4",
+            "reference": "@\"LLM done, sessionData=%@\""
+          }
+        ]
+      },
+      {
+        "id": "CF-asm-factory",
+        "kind": "ordinary-static-arm64-instructions",
+        "method": "+[SGSpeechPostProcessorFactory processorWithMode:sessionId:]",
+        "entry": "0x100413fb4",
+        "exclusiveEndFromNextTextSymbol": "0x100414014",
+        "sourceFileOffset": 4276148,
+        "functionBytesSha256": "9b3a798162eeeae69ace6a873acda443d6a17c0747e559fbef86bdc13f93bd0a",
+        "assemblySha256": "ce311ec1e29356d7cdd10551e73bc1d962d5b70d6c16b90650319dfe6f6413f0",
+        "observation": "Mode equal to 1 selects SGSpeechPostProcessorSSE, otherwise SGSpeechPostProcessor. Both ship; active mode was not observed.",
+        "callAnchors": [
+          {
+            "address": "0x100413ff4",
+            "fileOffset": 4276212,
+            "target": "_objc_msgSend$initWithSessionID:"
+          }
+        ],
+        "constantAnchors": []
+      },
+      {
+        "id": "CF-asm-context-input-content",
+        "kind": "ordinary-static-arm64-instructions",
+        "method": "-[SGSpeechPostProcessInputContent toDict]",
+        "entry": "0x100411420",
+        "exclusiveEndFromNextTextSymbol": "0x100411544",
+        "sourceFileOffset": 4264992,
+        "functionBytesSha256": "da68aaecf6bc93b7a4c258028b020d3fbab9403b25226f897aa99004c9f73fa6",
+        "assemblySha256": "c03010b0a922211156d983de451e3c6e20dc33fd34601671a0cbec224a44a9f0",
+        "observation": "Conditionally serializes before_cursor, after_cursor and selected_text.",
+        "callAnchors": [
+          {
+            "address": "0x10041143c",
+            "fileOffset": 4265020,
+            "target": "_objc_msgSend$dictionary"
+          },
+          {
+            "address": "0x100411450",
+            "fileOffset": 4265040,
+            "target": "_objc_msgSend$beforeCursor"
+          },
+          {
+            "address": "0x10041146c",
+            "fileOffset": 4265068,
+            "target": "_objc_msgSend$beforeCursor"
+          },
+          {
+            "address": "0x10041148c",
+            "fileOffset": 4265100,
+            "target": "_objc_msgSend$setObject:forKeyedSubscript:"
+          },
+          {
+            "address": "0x10041149c",
+            "fileOffset": 4265116,
+            "target": "_objc_msgSend$afterCursor"
+          },
+          {
+            "address": "0x1004114b8",
+            "fileOffset": 4265144,
+            "target": "_objc_msgSend$afterCursor"
+          },
+          {
+            "address": "0x1004114d8",
+            "fileOffset": 4265176,
+            "target": "_objc_msgSend$setObject:forKeyedSubscript:"
+          },
+          {
+            "address": "0x1004114e8",
+            "fileOffset": 4265192,
+            "target": "_objc_msgSend$selectedText"
+          },
+          {
+            "address": "0x100411504",
+            "fileOffset": 4265220,
+            "target": "_objc_msgSend$selectedText"
+          },
+          {
+            "address": "0x100411524",
+            "fileOffset": 4265252,
+            "target": "_objc_msgSend$setObject:forKeyedSubscript:"
+          }
+        ],
+        "constantAnchors": [
+          {
+            "address": "0x100411480",
+            "reference": "@\"before_cursor\""
+          },
+          {
+            "address": "0x1004114cc",
+            "reference": "@\"after_cursor\""
+          },
+          {
+            "address": "0x100411518",
+            "reference": "@\"selected_text\""
+          }
+        ]
+      },
+      {
+        "id": "CF-asm-context-input-env",
+        "kind": "ordinary-static-arm64-instructions",
+        "method": "-[SGSpeechPostProcessInputEnv toDict]",
+        "entry": "0x1004115b0",
+        "exclusiveEndFromNextTextSymbol": "0x100411648",
+        "sourceFileOffset": 4265392,
+        "functionBytesSha256": "080d83a6094b83b8d3ec0113ca857e2082be0de28d10df3f57c1d5e1bd398e9f",
+        "assemblySha256": "19d0d39a701054f5ae3a806b32159356aef8f8ce2e4d3fe7c12253db7cd2b0f8",
+        "observation": "Serializes type and is_password.",
+        "callAnchors": [
+          {
+            "address": "0x1004115cc",
+            "fileOffset": 4265420,
+            "target": "_objc_msgSend$dictionary"
+          },
+          {
+            "address": "0x1004115e0",
+            "fileOffset": 4265440,
+            "target": "_objc_msgSend$type"
+          },
+          {
+            "address": "0x1004115f0",
+            "fileOffset": 4265456,
+            "target": "_objc_msgSend$length"
+          },
+          {
+            "address": "0x100411608",
+            "fileOffset": 4265480,
+            "target": "_objc_msgSend$type"
+          },
+          {
+            "address": "0x100411628",
+            "fileOffset": 4265512,
+            "target": "_objc_msgSend$setObject:forKeyedSubscript:"
+          }
+        ],
+        "constantAnchors": [
+          {
+            "address": "0x10041161c",
+            "reference": "@\"type\""
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -2,9 +2,11 @@
 CONFIG ?= benchmarks/configs/desktop-factorial.json
 PLAN ?= .workspace/benchmarks/plan.json
 SUITE ?= tests/e2e/desktop-scenarios.json
-export CORPUS DRIVER OUT RESULTS CONFIG PLAN SUITE
+REWRITE_CONFIG ?= benchmarks/configs/desktop-rewrite.json
+REWRITE_PLAN ?= .workspace/benchmarks/rewrite-plan.json
+export CORPUS DRIVER OUT RESULTS CONFIG PLAN SUITE REWRITE_CONFIG REWRITE_PLAN REVIEW RATINGS RATERS RATING_SEED
 
-.PHONY: install check test lint format docs core-check tooling-test desktop-check desktop-libs desktop-build desktop-dev e2e e2e-macos e2e-scenarios bench-plan ablation-plan bench-validate bench-run bench-report datasets-check i18n-check stream-plan stream-bench help
+.PHONY: install check test lint format docs core-check tooling-test desktop-check desktop-libs desktop-build desktop-dev e2e e2e-macos e2e-scenarios bench-plan ablation-plan bench-validate bench-run bench-report datasets-check i18n-check stream-plan stream-bench rewrite-plan rewrite-validate rewrite-run rewrite-report rewrite-human-export rewrite-human-report rewrite-e2e help
 
 install: ## Install the pinned pnpm workspace with its frozen lockfile
 	@pnpm install --frozen-lockfile
@@ -81,6 +83,27 @@ bench-run: ## Run real inference matrix; requires CORPUS, DRIVER and OUT
 
 bench-report: ## Produce aggregate metrics and paired CIs; requires RESULTS
 	@node scripts/evaluation-command.mjs report
+
+rewrite-plan: ## Plan contextual rewrite ablations; REWRITE_CONFIG and REWRITE_PLAN optional
+	@node scripts/evaluation-command.mjs rewrite-plan
+
+rewrite-validate: ## Validate reviewed rewrite corpus and content hashes; requires CORPUS
+	@node scripts/evaluation-command.mjs rewrite-validate
+
+rewrite-run: ## Run actual native local rewriting; requires CORPUS, DRIVER and OUT
+	@node scripts/evaluation-command.mjs rewrite-run
+
+rewrite-report: ## Report rewrite proxies, latency and paired CIs; requires RESULTS
+	@node scripts/evaluation-command.mjs rewrite-report
+
+rewrite-human-export: ## Export private blind rating tasks; requires RESULTS and OUT
+	@node scripts/evaluation-command.mjs rewrite-human-export
+
+rewrite-human-report: ## Validate independent votes; requires RESULTS, REVIEW and RATINGS
+	@node scripts/evaluation-command.mjs rewrite-human-report
+
+rewrite-e2e: SUITE = tests/e2e/contextual-rewrite-scenarios.json
+rewrite-e2e: e2e-scenarios ## Run rewrite ownership/privacy cases on actual macOS/Windows
 
 help: ## Show available commands
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z0-9_-]+:.*?## / {printf "  %-18s %s\n", $$1, $$2}' $(MAKEFILE_LIST)

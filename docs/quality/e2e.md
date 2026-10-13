@@ -30,6 +30,8 @@ Capabilities missing from the hello handshake fail explicitly. Current shell imp
 
 ## Coverage ownership
 
+[Contextual rewrite scenarios](../../tests/e2e/contextual-rewrite-scenarios.json) add eight owned cases for offline review-before-insert, late-token cancellation, focus changes, IME host edits, mode changes, secure-field reads, untrusted context and missing models. Run `make rewrite-e2e DRIVER=... OUT=...` or `pnpm rewrite:e2e --driver ... --out ...`. These require new `local-rewrite`, `native-preview` and declared observation capabilities; existing drivers cannot pass by reusing ASR-only results. The final candidate is checked against observed review text and protected constraints, not a hardcoded fluent sentence. Real inference and independently observed host/editor/IPC traces remain required. This suite has not run: the production LLM adapter is not implemented.
+
 OS drivers belong to MAC-01/WIN-01/IMK-01/TSF-01 with EVAL-01 integration. Application tests still need complete accepted scenarios, including clipboard races, unplug/sleep, missing ranker model, PCM cleanup and key loss. The suite provides concrete boundary cases; it is not a claim that every spec is covered. Expand it alongside each adapter and use acceptance IDs accurately.
 
 On Windows without GNU Make, use pnpm scripts directly. Host claims require actual target OS execution; cross-compiling a test executable is build evidence only.

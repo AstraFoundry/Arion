@@ -25,8 +25,10 @@ Report p50/p95 rather than fastest examples. Choice confidence is conditional on
 
 ## Competitor follow-up boundaries
 
-Installed-package evidence cannot prove latency, server models, traffic or successful insertion. If later runtime investigation is needed, use a controlled synthetic text editor/utterance, observe only the selected target, avoid personal logs/credentials and preserve exact app version/evidence. Native decompilation remains unperformed without a configured engine. Never describe endpoints/symbols as observed uploads.
+Installed-package evidence cannot prove latency, server models, traffic or successful insertion. If later runtime investigation is needed, use a controlled synthetic text editor/utterance, observe only the selected target, avoid personal logs/credentials and preserve exact app version/evidence. Focused native decompilation is recorded in the competitor evidence ledgers; it does not establish execution. Never describe endpoints/symbols as observed uploads.
 
 ## Executable automation
 
 The [evaluation workspace](../../tools/evaluation/README.md) implements plans, corpus/hash validation, a live driver protocol, metric reports and paired bootstrap. See [paper methodology](benchmark-methodology.md), [streaming dataset research](streaming-datasets.md) and [008 Evaluation](../../specs/008-evaluation.md). `make ablation-plan` and `make stream-plan` perform no inference; `make bench-run`/`make stream-bench` require provisioned audio/models and a reviewed driver.
+
+The [rewrite chain](rewrite-evaluation.md) adds optional scene-aware LLM experiments with evaluator-only intent labels and blind human rating export/import. No ONNX candidate is selected by a plan, a file inventory or a synthetic protocol test.

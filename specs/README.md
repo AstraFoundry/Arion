@@ -12,6 +12,7 @@ These documents are normative for implementation. Research recommendations requi
 | [006 Models and evaluation](006-models.md) | Model provenance and measurable release gates |
 | [007 IME and candidate ranking](007-ime-ranking.md) | IMK/TSF composition, local candidate scoring |
 | [008 Evaluation](008-evaluation.md) | pnpm/Make automation, real OS E2E, streaming benchmarks and ablations |
+| [009 Contextual rewriting](009-contextual-rewrite.md) | Optional local scene-aware rewrite candidates, preservation and evaluation gates |
 
 ## Product choices
 

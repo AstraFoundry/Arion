@@ -25,7 +25,23 @@ Arion's own drivers live in `apps/desktop/cmd`: `arion-eval-driver` runs the pro
 
 The private corpus is built by [`data/build_corpus.py`](data/build_corpus.py) (run with `python3 -I`; needs pyarrow and ffmpeg, and macOS `say` for the synthetic set) from pinned downloads: AISHELL-1 test speakers (recovered by unique transcript match, partitioned into dev/test speaker groups), LibriSpeech validation/test clean, synthetic Mandarin–English technical prompts read by system voices (voices split by split), and generated silence/noise. It refuses to overwrite an existing corpus. Runs require a new output directory. No inference driver, dataset audio or production weights are bundled. No command auto-downloads them. See `make help` for fixed flows. Without Make, use `pnpm bench:run --config ... --corpus ... --driver ... --out ...`, `pnpm e2e:scenarios --suite tests/e2e/desktop-scenarios.json --driver ... --out ...` and the other package scripts directly.
 
-## Corpus protocol v1
+## Contextual rewrite commands
+
+The separate [rewrite contract and complete fixture/driver schemas](../../docs/research/rewrite-evaluation.md) extend the JSONL transport without changing the ASR protocol. Plans and tests do not run an LLM. Corpus annotations, prompt versions, native drivers and model bytes must be provisioned and independently reviewed before a live run.
+
+```sh
+make rewrite-plan
+make rewrite-validate CORPUS=/absolute/private/rewrite-corpus.json
+make rewrite-run CORPUS=/absolute/private/rewrite-corpus.json DRIVER=/absolute/private/rewrite-driver.json OUT=.workspace/benchmarks/rewrite-a
+make rewrite-report RESULTS=.workspace/benchmarks/rewrite-a
+make rewrite-human-export RESULTS=.workspace/benchmarks/rewrite-a OUT=.workspace/benchmarks/rewrite-review-a RATERS=3
+make rewrite-human-report RESULTS=.workspace/benchmarks/rewrite-a REVIEW=.workspace/benchmarks/rewrite-review-a RATINGS=/absolute/private/ratings.json
+make rewrite-e2e DRIVER=/absolute/private/rewrite-os-driver.json OUT=.workspace/e2e/rewrite-a
+```
+
+Use `REWRITE_CONFIG` and `REWRITE_PLAN` to select another experiment or a new plan path. Output directories are exclusive; keep raw source/prompt/token/preview and human task files private. Raters receive `tasks.json`, never `mapping-private.json`. The automatic report marks semantic quality pending until independent ratings are imported. On Windows without Make, use `pnpm rewrite:plan --config benchmarks/configs/desktop-rewrite.json --out ...` and the matching `rewrite:validate`, `rewrite:run`, `rewrite:report`, `rewrite:human-export`, `rewrite:human-report`, `rewrite:e2e` scripts with the documented arguments.
+
+## ASR corpus protocol v1
 
 A JSON manifest contains `version: 1`, a nonempty `license`, explicit `consent: true` for the evaluator's authorized fixture use, and `samples`. Consent is a provenance assertion, not a mechanism to obtain third-party rights. Include source card/revision/access-review records alongside private manifests.
 

@@ -20,7 +20,14 @@
     "bench:run": "node tools/evaluation/cli.mjs run",
     "bench:report": "node tools/evaluation/cli.mjs report",
     "bench:validate": "node tools/evaluation/cli.mjs validate",
-    "datasets:check": "node scripts/check-datasets.mjs"
+    "datasets:check": "node scripts/check-datasets.mjs",
+    "rewrite:plan": "node tools/evaluation/rewrite-cli.mjs plan",
+    "rewrite:validate": "node tools/evaluation/rewrite-cli.mjs validate",
+    "rewrite:run": "node tools/evaluation/rewrite-cli.mjs run",
+    "rewrite:report": "node tools/evaluation/rewrite-cli.mjs report",
+    "rewrite:human-export": "node tools/evaluation/rewrite-cli.mjs human-export",
+    "rewrite:human-report": "node tools/evaluation/rewrite-cli.mjs human-report",
+    "rewrite:e2e": "node tools/evaluation/cli.mjs e2e --suite tests/e2e/contextual-rewrite-scenarios.json"
   },
   "engines": {
     "node": ">=20.0.0"

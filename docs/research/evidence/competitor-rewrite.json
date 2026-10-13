@@ -1,0 +1,565 @@
+{
+  "schema_version": 1,
+  "scope": "Installed Typeless and Doubao focused rewrite research. No app launch, content upload, private endpoint fetch, user DB or audio access. CR-* IDs are local observations, not REA Evidence IDs.",
+  "artifacts": [
+    {
+      "id": "typeless-asar",
+      "path": "/Applications/Typeless.app/Contents/Resources/app.asar",
+      "version": "2.8.1 (2.8.1.130)",
+      "sha256": "eb9bcc842478b12a7488d90778ad6b08e6788c8fa5e875782ec2af0387c6c80b"
+    },
+    {
+      "id": "doubao-main-universal",
+      "path": "/Library/Input Methods/DoubaoIme.app/Contents/MacOS/DoubaoIme",
+      "version": "1.0.2 (1)",
+      "sha256": "4b3836dcb8a3e06b01b4c95390c757b71f623c1f7c4141c059e49284f7f6442d"
+    }
+  ],
+  "members": [
+    {
+      "member": "dist/main/index.js",
+      "sha256": "7b87e1578597b6fce6b6589a2f8aa18496e9513f0e74d0b8b26186a641b59ade"
+    },
+    {
+      "member": "dist/renderer/static/js/UfR9-a2Z.js",
+      "sha256": "efba7d2db84c1da476b521c84cd38446d594ffd4f0d8e59cac85e7ec7d6ae49a"
+    }
+  ],
+  "reused_rea": [
+    {
+      "ledger": "typeless-static.json",
+      "evidence_id": "ev_17708dd83c71fab9ced0d18a4df9036551e5e4aca46326f121f929f1cbaa2ccb",
+      "scope": "Matching ASAR graph; partial coverage and native companion integrity contradictions retained."
+    },
+    {
+      "ledger": "doubao-decompiled.json",
+      "evidence_ids": [
+        "ev_7813c9cf5cfd974f88db927e1d3ec7e857a490b646f2b4d8968d44ded8cdb348",
+        "ev_3af76376fc6472a824bed1678d3f5b5a2975d70d8a2733140195b4be57bbb3c7"
+      ],
+      "scope": "Matching arm64 main slice; actual decompiled commit guards, not organization request body."
+    }
+  ],
+  "method": {
+    "static_literal_lookup": {
+      "array_count": 2843,
+      "unique_rotation": 190,
+      "equation_target": 516275,
+      "target_js_executed": false,
+      "scope": "Python parses inert string literals, solves one declared arithmetic rotation and substitutes direct decoder aliases; interpreted bodies checked against original anchors. Not an equivalence guarantee."
+    },
+    "provider_limit": "REA recover-javascript-sources returned capability_unavailable: Wakaru Linux x64 provider absent on this Mac; no provider installation or client configuration changes.",
+    "private_reproduction_dir": ".workspace/research/competitor-rewrite/"
+  },
+  "observations": [
+    {
+      "id": "CR-TL-context",
+      "evidence_kind": "ordinary-shell-static-source",
+      "location": {
+        "member": "dist/main/index.js",
+        "file_byte_range_half_open": [
+          318738,
+          321297
+        ],
+        "anchor": "async[\"collectFullContext\"]",
+        "inspection": "inert shipped JavaScript body with deterministic literal lookup; not executed"
+      },
+      "observed": {
+        "calls": [
+          "prepareAccessibility",
+          "getSystemInfo",
+          "getFocusedAppInfoAsync",
+          "isTextCaptureBlockedByBlacklist",
+          "collectFocusedAppInfo",
+          "collectFocusedInputInfo"
+        ],
+        "return_fields": [
+          "device_environment",
+          "active_application",
+          "text_insertion_point",
+          "context_metadata"
+        ],
+        "parallel": "collectFocusedAppInfo and collectFocusedInputInfo share appInfo and blacklist decision"
+      },
+      "limits": [
+        "Call site observation, not runtime reachability. Blacklist flag suppresses visible/related content in inspected branches; it does not establish all cursor reads are blocked."
+      ]
+    },
+    {
+      "id": "CR-TL-context-shape",
+      "evidence_kind": "ordinary-shell-static-source",
+      "location": {
+        "member": "dist/main/index.js",
+        "file_byte_range_half_open": [
+          313553,
+          318116
+        ],
+        "anchor": "async[\"collectFocusedInputInfo\"]",
+        "inspection": "inert shipped JavaScript body with deterministic literal lookup; not executed"
+      },
+      "observed": {
+        "native_surfaces": [
+          "getFocusedElementInfoAsync",
+          "getCurrentInputState",
+          "getFocusedElementRelatedContentAsync"
+        ],
+        "return_fields": [
+          "input_area_type",
+          "accessibility_role",
+          "input_capabilities",
+          "cursor_state",
+          "surrounding_context"
+        ],
+        "cursor_fields": [
+          "cursor_position",
+          "has_text_selected",
+          "selected_text",
+          "text_before_cursor",
+          "text_after_cursor",
+          "full_field_content"
+        ]
+      },
+      "limits": [
+        "Native helper implementation was not traced. Captured contents depend on supplied options. Onboarding fixture branches are present and are not observations of third-party apps."
+      ]
+    },
+    {
+      "id": "CR-TL-http",
+      "evidence_kind": "ordinary-shell-static-source",
+      "location": {
+        "member": "dist/main/index.js",
+        "file_byte_range_half_open": [
+          560804,
+          565232
+        ],
+        "anchor": "_0x579c03[\"handle\"](\"audio:ai-voice-flow\"",
+        "inspection": "inert shipped JavaScript body with deterministic literal lookup; not executed"
+      },
+      "observed": {
+        "calls": [
+          "Oa.getById(audioId)",
+          "sa(audio_context)",
+          "ye.post(/ai/voice_flow)"
+        ],
+        "form_fields": [
+          "audio_id",
+          "mode",
+          "audio_file",
+          "audio_context",
+          "audio_metadata",
+          "user_over_time",
+          "send_time",
+          "is_retry",
+          "device_name",
+          "parameters"
+        ],
+        "file_type": "audio/ogg",
+        "mode_mapping": {
+          "voice_transcript": "transcript",
+          "voice_command": "ask_anything",
+          "voice_translation": "translation"
+        },
+        "parameters_by_mode": {
+          "voice_command": [
+            "selected_text"
+          ],
+          "voice_translation": [
+            "output_language"
+          ]
+        },
+        "response_fields": [
+          "refine_text",
+          "delivery",
+          "user_prompt",
+          "web_metadata",
+          "external_action",
+          "debug"
+        ],
+        "timeout_ms": 40000,
+        "abort": "AbortController signal passed to request and tested before/after"
+      },
+      "limits": [
+        "Server prompt, model, temperature, ASR/refinement ordering and actual network request are unknown. Server-readable encryption wrapper is not proof of peer-to-peer end-to-end encryption."
+      ]
+    },
+    {
+      "id": "CR-TL-feedback",
+      "evidence_kind": "ordinary-shell-static-source",
+      "location": {
+        "member": "dist/main/index.js",
+        "file_byte_range_half_open": [
+          546895,
+          548735
+        ],
+        "anchor": "async[\"sendTrackResultToServer\"]",
+        "inspection": "inert shipped JavaScript body with deterministic literal lookup; not executed"
+      },
+      "observed": {
+        "request_route": "/user/traits",
+        "payload_fields": [
+          "refined_inserted_text",
+          "original_input_box",
+          "edited_input_box",
+          "active_application",
+          "device_environment",
+          "mode"
+        ],
+        "wrapper": "sa(payload, context=user_traits) then JSON body log",
+        "response": "auto_add_dictionary term/user_dictionary_id forwarded via dictionary:word-auto-added"
+      },
+      "limits": [
+        "Automatic feedback call-site capability does not prove defaults, user consent or live uploads. Server learning algorithm/model unknown. No user database or logs read."
+      ]
+    },
+    {
+      "id": "CR-TL-race",
+      "evidence_kind": "ordinary-shell-static-source",
+      "location": {
+        "member": "dist/renderer/static/js/UfR9-a2Z.js",
+        "file_byte_range_half_open": [
+          277067,
+          284913
+        ],
+        "anchor": "['sendMessage']",
+        "inspection": "inert shipped JavaScript"
+      },
+      "observed": {
+        "end_audio": "sendMessage invokes startRefineRace",
+        "race": "Promise.race(wsPromise, fallbackPromise)",
+        "weak_network": "need_weak_network_downgrade selects HTTP recovery without sending the end message on this branch",
+        "completion": "completedAudioIds and pendingRefinePromises; websocket winner cancels fallback request",
+        "cleanup": "audio:clean-opus-audio-file in finally"
+      },
+      "limits": [
+        "This is the inspected race implementation, not a timing measurement. Cancellation/target safety of every downstream handler was not established."
+      ]
+    },
+    {
+      "id": "CR-TL-results",
+      "evidence_kind": "ordinary-shell-static-source",
+      "location": {
+        "member": "dist/renderer/static/js/UfR9-a2Z.js",
+        "file_byte_range_half_open": [
+          294516,
+          295829
+        ],
+        "anchor": "}['handleTranscriptionChunk']",
+        "inspection": "inert shipped JavaScript"
+      },
+      "observed": {
+        "raw": "handleTranscriptionChunk appends text/chunk_index/audio_id to transcriptionChunks",
+        "refined": "handleRefineCompleted writes refinedResult and resolves/invokes onRefineCompleted",
+        "extra_response_fields": [
+          "delivery",
+          "user_prompt",
+          "web_metadata",
+          "external_action"
+        ],
+        "dedup": "completedAudioIds tested by audio_id"
+      },
+      "limits": [
+        "No partial token-level LLM stream was established. Chunked transcription and completed rewrite result are different stages."
+      ]
+    },
+    {
+      "id": "CR-DB-request",
+      "evidence_kind": "ordinary-shell-native-strings",
+      "location": {
+        "artifact": "doubao-main-universal",
+        "items": [
+          {
+            "literal": "SmartOrganizeRequestConfig",
+            "file_byte_offsets": [
+              16936240,
+              36931536
+            ]
+          },
+          {
+            "literal": "startOnMainThread(query:contextID:spacingOptions:requestID:)",
+            "file_byte_offsets": [
+              19055120,
+              39927424
+            ]
+          },
+          {
+            "literal": "/api/v2/ai/text_organization",
+            "file_byte_offsets": [
+              19056544,
+              39928848
+            ]
+          },
+          {
+            "literal": "space_at_cn_en_nb",
+            "file_byte_offsets": [
+              19056576,
+              39928880
+            ]
+          },
+          {
+            "literal": "space_at_newline",
+            "file_byte_offsets": [
+              18995735,
+              19011689,
+              19056608,
+              39868039,
+              39883993,
+              39928912
+            ]
+          }
+        ]
+      },
+      "observed": {
+        "request_interface_fields": [
+          "query",
+          "contextID",
+          "spacingOptions",
+          "requestID"
+        ],
+        "route_literal": "/api/v2/ai/text_organization",
+        "configuration_fields": [
+          "resultTimeout",
+          "doneTimeout"
+        ],
+        "spacing_fields": [
+          "spaceAtChineseEnglishOrNumber",
+          "spaceAtNewline"
+        ]
+      },
+      "limits": [
+        "Static ASCII and Swift reflection names only; no demonstrated call order, payload serialization or runtime event. Universal slices duplicate many names."
+      ]
+    },
+    {
+      "id": "CR-DB-stream",
+      "evidence_kind": "ordinary-shell-native-strings",
+      "location": {
+        "artifact": "doubao-main-universal",
+        "items": [
+          {
+            "literal": "handleServerSentEvent(_:requestID:generationID:)",
+            "file_byte_offsets": [
+              19055952,
+              39928256
+            ]
+          },
+          {
+            "literal": "handleDelta(payload:requestID:)",
+            "file_byte_offsets": [
+              19056208,
+              39928512
+            ]
+          },
+          {
+            "literal": "handleCompleted(payload:requestID:)",
+            "file_byte_offsets": [
+              19056320,
+              39928624
+            ]
+          },
+          {
+            "literal": "format.completed",
+            "file_byte_offsets": [
+              19056016,
+              39928320
+            ]
+          },
+          {
+            "literal": "scene.completed.empty_content",
+            "file_byte_offsets": [
+              19056368,
+              39928672
+            ]
+          },
+          {
+            "literal": "transport_closed_before_completed",
+            "file_byte_offsets": [
+              19055632,
+              39927936
+            ]
+          },
+          {
+            "literal": "missing_completed",
+            "file_byte_offsets": [
+              19055680,
+              39927984
+            ]
+          }
+        ]
+      },
+      "observed": {
+        "transport_surface": "SSE",
+        "stages": [
+          "delta",
+          "completed",
+          "streamFinished",
+          "failed",
+          "cancelled"
+        ],
+        "state_fields": [
+          "phase",
+          "rewriteDecision",
+          "didReceiveNoRewriteCompleted",
+          "encryptionValidated",
+          "cancelStream",
+          "resultTimeoutWorkItem",
+          "doneTimeoutWorkItem"
+        ],
+        "phase_names": [
+          "waitingForCompleted",
+          "waitingForDone"
+        ],
+        "decision_names": [
+          "pending",
+          "noRewrite",
+          "willRewrite"
+        ]
+      },
+      "limits": [
+        "Static ASCII and Swift reflection names only; no demonstrated call order, payload serialization or runtime event. Universal slices duplicate many names."
+      ]
+    },
+    {
+      "id": "CR-DB-coordinator",
+      "evidence_kind": "ordinary-shell-native-strings",
+      "location": {
+        "artifact": "doubao-main-universal",
+        "items": [
+          {
+            "literal": "SmartOrganizeVoiceCoordinator",
+            "file_byte_offsets": [
+              16940336,
+              19056729,
+              36935632,
+              39929033
+            ]
+          },
+          {
+            "literal": "startSmartOrganizeIfEligible(result:deletedPunc:baseCommitParams:)",
+            "file_byte_offsets": [
+              17290032,
+              37292192
+            ]
+          },
+          {
+            "literal": "startSmartOrganizeRequestAfterTypeWriterReset(context:)",
+            "file_byte_offsets": [
+              17290512,
+              37292672
+            ]
+          },
+          {
+            "literal": "finishSmartOrganize(action:context:closeASRPanelAfterCommit:trackingFailureReasonOverride:)",
+            "file_byte_offsets": [
+              17291168,
+              37293328
+            ]
+          },
+          {
+            "literal": "smartOrganizeFailureFallback",
+            "file_byte_offsets": [
+              17291088,
+              37293248
+            ]
+          },
+          {
+            "literal": "smartOrganizeTimeoutFallback",
+            "file_byte_offsets": [
+              17291360,
+              37293520
+            ]
+          },
+          {
+            "literal": "smartOrganizeNoRewrite",
+            "file_byte_offsets": [
+              17291424,
+              37293584
+            ]
+          }
+        ]
+      },
+      "observed": {
+        "coordinator_fields": [
+          "originalText",
+          "contextID",
+          "generation",
+          "activeRequest",
+          "completedTextTransform",
+          "handler"
+        ],
+        "action_names": [
+          "organizing",
+          "rewriteConfirmed",
+          "commitOrganized",
+          "commitOriginal",
+          "failed"
+        ],
+        "delivery_context_fields": [
+          "sessionToken",
+          "inputTargetPID",
+          "selectedRange",
+          "markedRange",
+          "ownership",
+          "originalResult",
+          "contextBeforeRequest",
+          "contextAfterRequest",
+          "finalCommitGeneration"
+        ]
+      },
+      "limits": [
+        "Static ASCII and Swift reflection names only; no demonstrated call order, payload serialization or runtime event. Universal slices duplicate many names."
+      ]
+    },
+    {
+      "id": "CR-DB-cache",
+      "evidence_kind": "ordinary-shell-native-strings",
+      "location": {
+        "artifact": "doubao-main-universal",
+        "items": [
+          {
+            "literal": "SmartOrganizeMemoryCache",
+            "file_byte_offsets": [
+              16937008,
+              16937040,
+              16937104,
+              19056665,
+              36932304,
+              36932336,
+              36932400,
+              39928969
+            ]
+          },
+          {
+            "literal": "SmartOrganizeMemoryCacheSource",
+            "file_byte_offsets": [
+              16937008,
+              36932304
+            ]
+          }
+        ]
+      },
+      "observed": {
+        "cache_fields": [
+          "inputText",
+          "organizedText",
+          "messageID",
+          "source"
+        ],
+        "source_names": [
+          "manual",
+          "voiceAuto"
+        ]
+      },
+      "limits": [
+        "Static ASCII and Swift reflection names only; no demonstrated call order, payload serialization or runtime event. Universal slices duplicate many names."
+      ]
+    }
+  ],
+  "unresolved": [
+    "Server prompts/model checkpoints/weights and decode settings",
+    "Actual active defaults and user consent",
+    "Per-application rewrite policy or learned style algorithm",
+    "Exact Doubao serialized query/context fields and runtime SSE order",
+    "Offline availability of semantic organization",
+    "Runtime latency, failure rates and network retention"
+  ]
+}

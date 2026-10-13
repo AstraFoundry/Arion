@@ -25,6 +25,11 @@ Verification results and their limits are recorded in [validation](../quality/va
 | IMK-01 acceptance | P0 | A test profile or VM | IME-A01 install/select/remove and IME-A04/A05 host edits measured on a real input-source list |
 | RNK-01 | P0 | A candidate producer exposing real alternatives | Laya Choice vs source order; the current recognizers expose one hypothesis, so no ranking is shown |
 | COR-01 (model) | P1 | Correction evaluation fixtures | Optional bounded local LLM correction with harmful-edit and intent review |
+| RWT-DATA-01 | P0 | Authorized public/private sources + independent annotation | Gold-text/frozen-ASR, scene, protected intent and attack fixtures pass rewrite hash/split validation; timestamped speech cases use existing streaming annotations |
+| RWT-ABI-01 | P0 | Pinned research candidates + native host | Verify reference tokenizer/logit/stop/cache parity and explicit native teardown; resolve sherpa/GenAI shared-library coexistence or specify isolated IPC |
+| RWT-DRIVER-01 | P0 | RWT-DATA-01 + RWT-ABI-01 | Reviewed native benchmark driver emits real tokens/preview/lifecycle, warm/cold reset, concurrent ASR and cleanup; preserves evaluator-only labels |
+| RWT-EVAL-01 | P0 | RWT-DRIVER-01 | Run gold-text and frozen-ASR strata with full ablations, concurrent-ASR evidence and blind human ratings per [009](../../specs/009-contextual-rewrite.md); select model/provider using held-out results |
+| RWT-RUN-01 | P1 | RWT-EVAL-01 + selected export/provider | Integrate optional rewriting into production coordinator/settings; offline/cancellation/preservation gates on macOS and Windows separately; no direct model-token commit |
 | STR (streaming sweep) | P1 | Reviewed timestamp annotations | Chunk/endpoint sweep with annotated onsets (STR-A01–A04) |
 | MEM-01 (sync parts) | P1 | Crypto/pairing ADR | Outbox, approval provenance UI, export/delete |
 | SYNC-01 | P1 | MEM-01 | Self-hosted relay per 003 |

@@ -27,6 +27,8 @@ Paired speaker-cluster bootstrap CIs are exploratory. Seeds/repeats are not inde
 
 ## Acceptance
 
+Scenario-aware generative rewriting uses the separate [009 contract](009-contextual-rewrite.md) and [rewrite methodology](../docs/research/rewrite-evaluation.md). Its plans and reports do not change ASR accuracy, Laya candidate producer gates or existing streaming metrics. Gold-text and frozen-ASR quality strata, native token/preview latency, concurrent ASR, prompt/model provenance and blind meaning/style review are distinct required evidence.
+
 | ID | Scenario |
 | --- | --- |
 | EVAL-A01 | Frozen pnpm workspace and portable automation tests pass on CI |
