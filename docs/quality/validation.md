@@ -13,6 +13,17 @@ What was actually run, on which host, and what remains unverified. Host: Apple M
 | Native window E2E (`make e2e`) | Pass: overlay explicit failure without taking focus, settings and onboarding window lifecycle |
 | Windows amd64 cross-build with cgo (MinGW-w64 14) | `go vet` clean; `Arion.exe` and the native E2E test binary link against `sherpa-onnx-c-api.dll` |
 
+## Windows (CI, GitHub-hosted windows-2022)
+
+CI run [38343240111](https://github.com/stvlynn/Arion/actions/runs/38343240111) executed the native E2E suite on an interactive Windows Server 2022 desktop and packaged `Arion.exe`:
+
+| Test | Result |
+| --- | --- |
+| Overlay explicit failure without taking focus | Pass |
+| Settings and onboarding window lifecycle (open, draw nonblank, resize, close once, release) | Pass |
+| Production `SendInput` route types "Arion 中文 test" into an owned Notepad exactly once | Pass |
+| Focus moved to a second Notepad before commit: `not_applied/TARGET_CHANGED`, no text in either | Pass |
+
 ## Model selection run (`models-dev-2`)
 
 Real-time replay of 118 dev fixtures per bundle through the production pipeline (coordinator, sherpa-onnx streaming recognizer, finalizer; correction off), warm, 4 threads, AC power. Report: [`benchmarks/results/models-dev-2`](../../benchmarks/results/models-dev-2/summary.json). Rates are corpus micro-averages; latency is stop (end of audio) to review-ready.
@@ -48,7 +59,7 @@ The first-run path was also exercised on the real profile: onboarding completed,
 ## Not verified
 
 - The live microphone path with real speech (capture → recognition → insertion) was not exercised by automation; scenarios replay fixture audio into the production pipeline.
-- Nothing has run on Windows: capture, insertion, DPAPI and windows lifecycle are compiled only.
+- On Windows, microphone capture, recognition, clipboard delivery, DPAPI, tray and the global shortcut have not run; only the tests above did. No Windows scenario replays audio through the packaged app.
 - IME-A01 (install/select/remove on a real input-source list) and host-edit scenarios IME-A04/A05 need a person or a dedicated test profile; IMK composition was not exercised in a host application.
 - Microphone denial (DSK-A01 with a denied consent database) needs a test profile; it is covered by unit tests and the native E2E's untrusted-Accessibility path only.
 - Streaming latency claims with annotated speech onsets (STR-A01–A04) need reviewed timestamp labels; first-partial values above are measured from audio start, not speech onset.
