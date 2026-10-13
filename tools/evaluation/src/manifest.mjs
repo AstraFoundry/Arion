@@ -79,7 +79,9 @@ export function validateExperiment(config) {
   for (const variant of config.variants) {
     requireValue(typeof variant.id === 'string' && /^[\w-]+$/.test(variant.id) && !ids.has(variant.id), 'Duplicate or unsafe variant ID');
     ids.add(variant.id);
-    if (variant.pipelineOverrides !== undefined) requireValue(Object.entries(variant.pipelineOverrides).every(([key, value]) => ['chunkMs', 'endpointSilenceMs', 'stabilityHoldMs'].includes(key) && Number.isFinite(value) && value >= 0 && (key !== 'chunkMs' || value > 0)), 'Invalid controlled streaming override');
+    // `asr` selects a pinned recognition bundle for model-comparison runs; the
+    // other overrides are numeric streaming controls.
+    if (variant.pipelineOverrides !== undefined) requireValue(Object.entries(variant.pipelineOverrides).every(([key, value]) => key === 'asr' ? typeof value === 'string' && /^[\w.-]+$/.test(value) : ['chunkMs', 'endpointSilenceMs', 'stabilityHoldMs'].includes(key) && Number.isFinite(value) && value >= 0 && (key !== 'chunkMs' || value > 0)), 'Invalid controlled streaming override');
     requireValue(typeof variant.features?.memory === 'boolean' && ['source', 'laya'].includes(variant.features.ranker) && ['none', 'local'].includes(variant.features.correction), 'Unknown feature treatment');
   }
   requireValue(ids.has(config.baseline), 'Baseline not present');

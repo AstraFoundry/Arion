@@ -96,7 +96,8 @@ for (const name of files.filter(name => name.endsWith('.go'))) {
     if (target) {
       const current = layers.indexOf(ui[1]);
       const imported = layers.indexOf(target[1]);
-      if (current < 0 || imported < 0 || imported > current || (imported === current && ui[2] !== target[2])) errors.push(`${name}: upward/cross-slice UI import: ${dependency}`);
+      // `shared` has segments, not slices: its segments may import each other.
+      if (current < 0 || imported < 0 || imported > current || (imported === current && ui[2] !== target[2] && ui[1] !== 'shared')) errors.push(`${name}: upward/cross-slice UI import: ${dependency}`);
     }
     if (dependency.startsWith('arion.local/core/') && ui[1] !== 'shared') errors.push(`${name}: core values must enter UI through shared boundary: ${dependency}`);
   }

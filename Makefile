@@ -4,7 +4,7 @@ PLAN ?= .workspace/benchmarks/plan.json
 SUITE ?= tests/e2e/desktop-scenarios.json
 export CORPUS DRIVER OUT RESULTS CONFIG PLAN SUITE
 
-.PHONY: install check test lint format docs core-check tooling-test desktop-check desktop-build desktop-dev e2e e2e-scenarios bench-plan ablation-plan bench-validate bench-run bench-report datasets-check stream-plan stream-bench help
+.PHONY: install check test lint format docs core-check tooling-test desktop-check desktop-libs desktop-build desktop-dev e2e e2e-macos e2e-scenarios bench-plan ablation-plan bench-validate bench-run bench-report datasets-check stream-plan stream-bench help
 
 install: ## Install the pinned pnpm workspace with its frozen lockfile
 	@pnpm install --frozen-lockfile
@@ -23,11 +23,19 @@ tooling-test: ## Test benchmark metrics, leakage guards and driver conformance
 desktop-check: ## Compile/check native shell for current host
 	@pnpm desktop:check
 
-desktop-build: ## Package native shell for current host
-	@cd apps/desktop && go tool mygo build
+# Speech runtimes are cgo libraries packaged in Contents/Resources/lib.
+DESKTOP_ENV = CGO_ENABLED=1 CGO_LDFLAGS="-Wl,-rpath,@executable_path/../Resources/lib"
 
-desktop-dev: ## Launch native development shell
-	@cd apps/desktop && go tool mygo dev
+desktop-libs: ## Stage pinned speech runtime libraries and the macOS input method into desktop resources
+	@node scripts/stage-native-libs.mjs
+	@node scripts/build-input-method.mjs
+
+desktop-build: desktop-libs ## Package the native app for current host
+	@cd apps/desktop && $(DESKTOP_ENV) go tool mygo build -skip-dmg
+	@node scripts/finalize-macos-app.mjs
+
+desktop-dev: desktop-libs ## Launch the native app in development mode
+	@cd apps/desktop && $(DESKTOP_ENV) go tool mygo dev
 
 test: ## Run core and evaluation tooling tests
 	@pnpm test
@@ -39,6 +47,9 @@ format: ## Format Go modules
 
 e2e: ## Run production native window lifecycle on macOS/Windows
 	@pnpm e2e:native
+
+e2e-macos: ## Run owned macOS product scenarios against the packaged Arion.app
+	@node scripts/run-macos-scenarios.mjs
 
 e2e-scenarios: ## Run OS product scenarios; requires DRIVER and OUT
 	@node scripts/evaluation-command.mjs e2e

@@ -19,7 +19,11 @@ make bench-report RESULTS=.workspace/benchmarks/run-a
 make e2e-scenarios DRIVER=/absolute/private/os-driver.json OUT=.workspace/e2e/product-a
 ```
 
-Plans write with exclusive creation; choose `PLAN` explicitly for another plan. Runs require a new output directory. No inference driver, dataset audio or production weights are bundled. No command auto-downloads them. See `make help` for fixed flows. Without Make, use `pnpm bench:run --config ... --corpus ... --driver ... --out ...`, `pnpm e2e:scenarios --suite tests/e2e/desktop-scenarios.json --driver ... --out ...` and the other package scripts directly.
+Plans write with exclusive creation; choose `PLAN` explicitly for another plan.
+
+Arion's own drivers live in `apps/desktop/cmd`: `arion-eval-driver` runs the production dictation pipeline (coordinator, sherpa-onnx recognizer and finalizer, correction) on real-time fixture replay; `arion-e2e-driver` runs owned product scenarios against the packaged `Arion.app` and an AppKit editor fixture. [`benchmarks/configs/desktop-models.json`](../../benchmarks/configs/desktop-models.json) compares recognition bundles: variants differ only by `pipelineOverrides.asr`, a pinned bundle ID; the other overrides remain numeric streaming controls. `node scripts/catalog-evaluation.mjs <run>` copies a completed, checksum-verified report's aggregates into `models/catalog.json` and `benchmarks/results/`.
+
+The private corpus is built by [`data/build_corpus.py`](data/build_corpus.py) (run with `python3 -I`; needs pyarrow and ffmpeg, and macOS `say` for the synthetic set) from pinned downloads: AISHELL-1 test speakers (recovered by unique transcript match, partitioned into dev/test speaker groups), LibriSpeech validation/test clean, synthetic Mandarin–English technical prompts read by system voices (voices split by split), and generated silence/noise. It refuses to overwrite an existing corpus. Runs require a new output directory. No inference driver, dataset audio or production weights are bundled. No command auto-downloads them. See `make help` for fixed flows. Without Make, use `pnpm bench:run --config ... --corpus ... --driver ... --out ...`, `pnpm e2e:scenarios --suite tests/e2e/desktop-scenarios.json --driver ... --out ...` and the other package scripts directly.
 
 ## Corpus protocol v1
 

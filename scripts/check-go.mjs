@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const mode = process.argv[2];
 if (!['core', 'desktop', 'format'].includes(mode)) throw new Error('Use core, desktop, or format');
-const modules = mode === 'format' ? ['packages/core', 'apps/desktop'] : [mode === 'core' ? 'packages/core' : 'apps/desktop'];
+const modules = mode === 'format' ? ['packages/core', 'models', 'apps/desktop'] : mode === 'core' ? ['packages/core', 'models'] : ['apps/desktop'];
 function sourceFiles(directory) {
   return readdirSync(directory, { withFileTypes: true }).flatMap(entry => {
     if (['build', 'dist'].includes(entry.name)) return [];
@@ -25,7 +25,8 @@ function run(command, args, cwd, env, capture = false) {
 }
 for (const module of modules) {
   const cwd = path.join(root, module);
-  const env = { ...process.env, ...(module === 'packages/core' ? { GOWORK: 'off' } : {}) };
+  // Portable modules build without the workspace; the desktop links cgo speech runtimes.
+  const env = { ...process.env, ...(module === 'apps/desktop' ? { CGO_ENABLED: '1' } : { GOWORK: 'off' }) };
   const files = sourceFiles(cwd);
   if (mode === 'format') run('gofmt', ['-w', ...files], cwd, env);
   else {

@@ -1,0 +1,342 @@
+{
+  "version": 1,
+  "purpose": "macOS shortcut-mode product scenarios run against the packaged Arion.app and an owned AppKit editor fixture. Expected texts are the selected bundle's recognized output for fixed TTS fixtures; they test insertion mechanics, not ASR accuracy.",
+  "scenarios": [
+    {
+      "id": "shortcut-offline-once",
+      "acceptance": [
+        "DSK-A02",
+        "CTR-A06",
+        "SPH-A06",
+        "PRV-A01"
+      ],
+      "capabilities": [
+        "shortcut",
+        "audio-fixture",
+        "target-editor",
+        "network-monitor"
+      ],
+      "actions": [
+        {
+          "op": "reset-owned-fixtures"
+        },
+        {
+          "op": "disable-network"
+        },
+        {
+          "op": "focus-editor",
+          "id": "A"
+        },
+        {
+          "op": "toggle-recording"
+        },
+        {
+          "op": "play-audio",
+          "fixture": "hello-world"
+        },
+        {
+          "op": "stop-recording"
+        },
+        {
+          "op": "wait-settled"
+        },
+        {
+          "op": "confirm"
+        },
+        {
+          "op": "confirm"
+        }
+      ],
+      "assertions": {
+        "editors.A.text": "Hello world.",
+        "editors.B.text": "",
+        "commitCount": 1,
+        "commit.status": "applied",
+        "network.outboundRequests": 0,
+        "session.state": "completed"
+      }
+    },
+    {
+      "id": "mixed-language-dictation",
+      "acceptance": [
+        "DSK-A02",
+        "SPH-A03"
+      ],
+      "capabilities": [
+        "shortcut",
+        "audio-fixture",
+        "target-editor"
+      ],
+      "actions": [
+        {
+          "op": "reset-owned-fixtures"
+        },
+        {
+          "op": "focus-editor",
+          "id": "B"
+        },
+        {
+          "op": "dictate-fixture",
+          "fixture": "mixed"
+        },
+        {
+          "op": "wait-settled"
+        }
+      ],
+      "assertions": {
+        "editors.B.text": "请把这个 PR merge 到 main 分支。",
+        "editors.A.text": "",
+        "commitCount": 1,
+        "session.state": "completed"
+      }
+    },
+    {
+      "id": "cancel-stale-callback",
+      "acceptance": [
+        "DSK-A04",
+        "CTR-A04",
+        "SPH-A02"
+      ],
+      "capabilities": [
+        "shortcut",
+        "audio-fixture",
+        "delayed-inference",
+        "target-editor"
+      ],
+      "actions": [
+        {
+          "op": "reset-owned-fixtures"
+        },
+        {
+          "op": "focus-editor",
+          "id": "A"
+        },
+        {
+          "op": "delay-final-callback"
+        },
+        {
+          "op": "dictate-fixture",
+          "fixture": "hello-world"
+        },
+        {
+          "op": "cancel"
+        },
+        {
+          "op": "release-final-callback"
+        },
+        {
+          "op": "drain-callbacks"
+        }
+      ],
+      "assertions": {
+        "editors.A.text": "",
+        "commitCount": 0,
+        "session.state": "cancelled"
+      }
+    },
+    {
+      "id": "focus-change-blocks-commit",
+      "acceptance": [
+        "DSK-A03",
+        "DSK-06"
+      ],
+      "capabilities": [
+        "shortcut",
+        "audio-fixture",
+        "delayed-inference",
+        "target-editor"
+      ],
+      "actions": [
+        {
+          "op": "reset-owned-fixtures"
+        },
+        {
+          "op": "focus-editor",
+          "id": "A"
+        },
+        {
+          "op": "delay-final-callback"
+        },
+        {
+          "op": "dictate-fixture",
+          "fixture": "hello-world"
+        },
+        {
+          "op": "focus-editor",
+          "id": "B"
+        },
+        {
+          "op": "release-final-callback"
+        },
+        {
+          "op": "drain-callbacks"
+        }
+      ],
+      "assertions": {
+        "editors.A.text": "",
+        "editors.B.text": "",
+        "commitCount": 1,
+        "commit.status": "not_applied",
+        "error.code": "TARGET_CHANGED",
+        "session.state": "failed"
+      }
+    },
+    {
+      "id": "secure-field-blocked",
+      "acceptance": [
+        "DSK-A07",
+        "DSK-08",
+        "PRV-A05"
+      ],
+      "capabilities": [
+        "shortcut",
+        "secure-editor"
+      ],
+      "actions": [
+        {
+          "op": "reset-owned-fixtures"
+        },
+        {
+          "op": "focus-secure-editor"
+        },
+        {
+          "op": "toggle-recording"
+        },
+        {
+          "op": "wait-settled"
+        }
+      ],
+      "assertions": {
+        "error.code": "SECURE_FIELD_BLOCKED",
+        "capture.starts": 0,
+        "commitCount": 0,
+        "editors.secure.length": 0,
+        "session.state": "failed"
+      }
+    },
+    {
+      "id": "uncertain-commit-no-retry",
+      "acceptance": [
+        "CTR-A06",
+        "DSK-06"
+      ],
+      "capabilities": [
+        "shortcut",
+        "audio-fixture",
+        "commit-ack-fault",
+        "target-editor"
+      ],
+      "actions": [
+        {
+          "op": "reset-owned-fixtures"
+        },
+        {
+          "op": "focus-editor",
+          "id": "A"
+        },
+        {
+          "op": "lose-commit-ack"
+        },
+        {
+          "op": "dictate-fixture",
+          "fixture": "hello-world"
+        },
+        {
+          "op": "wait-settled"
+        },
+        {
+          "op": "confirm"
+        },
+        {
+          "op": "confirm"
+        }
+      ],
+      "assertions": {
+        "editors.A.text": "Hello world.",
+        "commit.status": "unknown",
+        "insertionAttemptCount": 1,
+        "session.state": "completed"
+      }
+    },
+    {
+      "id": "input-mode-switch-cancels",
+      "acceptance": [
+        "DSK-A06",
+        "DSK-01"
+      ],
+      "capabilities": [
+        "shortcut",
+        "audio-fixture",
+        "delayed-inference",
+        "input-mode"
+      ],
+      "actions": [
+        {
+          "op": "reset-owned-fixtures"
+        },
+        {
+          "op": "focus-editor",
+          "id": "A"
+        },
+        {
+          "op": "delay-final-callback"
+        },
+        {
+          "op": "dictate-fixture",
+          "fixture": "hello-world"
+        },
+        {
+          "op": "set-input-mode",
+          "mode": "system_ime"
+        },
+        {
+          "op": "release-final-callback"
+        },
+        {
+          "op": "drain-callbacks"
+        }
+      ],
+      "assertions": {
+        "editors.A.text": "",
+        "commitCount": 0,
+        "input.mode": "system_ime",
+        "capture.active": false,
+        "session.state": "cancelled"
+      }
+    },
+    {
+      "id": "silence-no-commit",
+      "acceptance": [
+        "SPH-A07",
+        "SPH-09"
+      ],
+      "capabilities": [
+        "shortcut",
+        "audio-fixture",
+        "target-editor"
+      ],
+      "actions": [
+        {
+          "op": "reset-owned-fixtures"
+        },
+        {
+          "op": "focus-editor",
+          "id": "A"
+        },
+        {
+          "op": "dictate-fixture",
+          "fixture": "silence"
+        },
+        {
+          "op": "wait-settled"
+        }
+      ],
+      "assertions": {
+        "editors.A.text": "",
+        "commitCount": 0,
+        "error.code": "NO_SPEECH",
+        "session.state": "failed"
+      }
+    }
+  ]
+}
