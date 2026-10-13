@@ -45,7 +45,7 @@ Limits: one seed and the warm stratum only; 48 Mandarin/40 English/30 synthetic 
 
 ## Product scenarios (`make e2e-macos`)
 
-All eight scenarios in [`macos-shortcut-scenarios.json`](../../tests/e2e/macos-shortcut-scenarios.json) passed against the packaged `Arion.app` (binary SHA-256 `e28ce58a…`), with Accessibility and microphone consent granted by a person through onboarding, an isolated profile, `ARION_OFFLINE=1` and the AppKit editor fixture:
+All eight scenarios in [`macos-shortcut-scenarios.json`](../../tests/e2e/macos-shortcut-scenarios.json) passed against the packaged `Arion.app` rebuilt from commit `585488d` (binary SHA-256 `fc74ffac…`, run `run-2026-10-13T06-45-28-709Z`), with Accessibility re-granted by a person for that build and microphone consent from onboarding, an isolated profile, `ARION_OFFLINE=1` and the AppKit editor fixture:
 
 | Scenario | Observed |
 | --- | --- |
@@ -58,7 +58,7 @@ All eight scenarios in [`macos-shortcut-scenarios.json`](../../tests/e2e/macos-s
 | input-mode-switch-cancels | Switch to `system_ime` during finalization cancels; capture inactive, no commit |
 | silence-no-commit | `NO_SPEECH`, no text |
 
-The first-run path was also exercised on the real profile: onboarding completed, and the app downloaded, verified and installed the two archives of the default bundle (only listed members, archives removed). The E2E harness's error-message change in `bootstrap/e2e.go` was made after this binary was built; it affects E2E-mode error reporting only.
+The first-run path was also exercised on the real profile: onboarding completed, and the app downloaded, verified and installed the two archives of the default bundle (only listed members, archives removed). An earlier run (binary `e28ce58a…`) predated the hold-to-talk and bilingual-interface changes and passed the same eight scenarios.
 
 ## Hold-to-talk (DSK-02, DSK-A10)
 
@@ -67,7 +67,7 @@ The first-run path was also exercised on the real profile: onboarding completed,
 | Gesture rules: hold stops on release, tap latches hands-free, chord cancels, busy ignores presses, preference normalization | `packages/core/application/hold_test.go` | Pass |
 | Raw event interpretation: fn/right Option/right Command device bits, auto-repeat, AltGr's synthetic left Ctrl | `infrastructure/holdkey` (any OS) | Pass |
 | Settings picker, missing Input Monitoring explanation and grant action, fn/🌐 hint, pill "release to finish" | `ui/app` headless view test | Pass |
-| Low-level keyboard hook on a real desktop; hold key through the production app starts a session and release ends it | `e2e/windows_hold_test.go` (Windows CI) | See the CI run for this change |
+| Low-level keyboard hook on a real desktop; hold key through the production app starts a session and release ends it | `e2e/windows_hold_test.go` (Windows CI run [38358017734](https://github.com/stvlynn/Arion/actions/runs/38358017734)) | Pass |
 
 The macOS event tap needs Input Monitoring consent, which CI cannot grant to a test binary; the tap was compiled and vetted but not exercised on a desktop.
 
