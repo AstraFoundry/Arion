@@ -3,6 +3,7 @@
 package settings
 
 import (
+	"arion.local/desktop/ui/features/holdkey"
 	"arion.local/desktop/ui/features/inputmode"
 	"arion.local/desktop/ui/features/microphone"
 	"arion.local/desktop/ui/features/modelchoice"
@@ -145,6 +146,11 @@ func (p *Page) section(c *ui.Context, store runtime.Store, tokens theme.Tokens) 
 			kit.Row(c, tokens, messages.Text(copy.ShortcutLabel), messages.Text(copy.ShortcutDetail), func() {
 				shortcut.Field(c, store, tokens, &p.recorder)
 			})
+			kit.Divider(c, tokens)
+			kit.Row(c, tokens, messages.Text(copy.HoldKeyLabel), messages.Text(copy.HoldKeyDetail), func() {
+				holdkey.Picker(c, store)
+			})
+			holdkey.Notes(c, store, tokens)
 		})
 		kit.Group(c, tokens, messages.Text(copy.ModeLabel), func() { inputmode.Choice(c, store, tokens, &p.mode) })
 		// Insertion routes apply to shortcut mode; the input method commits

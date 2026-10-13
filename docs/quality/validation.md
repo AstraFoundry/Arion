@@ -60,6 +60,17 @@ All eight scenarios in [`macos-shortcut-scenarios.json`](../../tests/e2e/macos-s
 
 The first-run path was also exercised on the real profile: onboarding completed, and the app downloaded, verified and installed the two archives of the default bundle (only listed members, archives removed). The E2E harness's error-message change in `bootstrap/e2e.go` was made after this binary was built; it affects E2E-mode error reporting only.
 
+## Hold-to-talk (DSK-02, DSK-A10)
+
+| Check | Where | Result |
+| --- | --- | --- |
+| Gesture rules: hold stops on release, tap latches hands-free, chord cancels, busy ignores presses, preference normalization | `packages/core/application/hold_test.go` | Pass |
+| Raw event interpretation: fn/right Option/right Command device bits, auto-repeat, AltGr's synthetic left Ctrl | `infrastructure/holdkey` (any OS) | Pass |
+| Settings picker, missing Input Monitoring explanation and grant action, fn/🌐 hint, pill "release to finish" | `ui/app` headless view test | Pass |
+| Low-level keyboard hook on a real desktop; hold key through the production app starts a session and release ends it | `e2e/windows_hold_test.go` (Windows CI) | See the CI run for this change |
+
+The macOS event tap needs Input Monitoring consent, which CI cannot grant to a test binary; the tap was compiled and vetted but not exercised on a desktop.
+
 ## Not verified
 
 - The live microphone path with real speech (capture → recognition → insertion) was not exercised by automation; scenarios replay fixture audio into the production pipeline.
@@ -67,4 +78,5 @@ The first-run path was also exercised on the real profile: onboarding completed,
 - IME-A01 (install/select/remove on a real input-source list) and host-edit scenarios IME-A04/A05 need a person or a dedicated test profile; IMK composition was not exercised in a host application.
 - Microphone denial (DSK-A01 with a denied consent database) needs a test profile; it is covered by unit tests and the native E2E's untrusted-Accessibility path only.
 - Streaming latency claims with annotated speech onsets (STR-A01–A04) need reviewed timestamp labels; first-partial values above are measured from audio start, not speech onset.
+- The macOS hold-key event tap with real key presses (needs Input Monitoring granted to the app by a person).
 - No Developer ID signing, notarization or updater.

@@ -11,6 +11,7 @@ import (
 	"testing"
 	"time"
 
+	"arion.local/desktop/ui/features/holdkey"
 	"arion.local/desktop/ui/pages/menubar"
 	"arion.local/desktop/ui/pages/onboarding"
 	"arion.local/desktop/ui/pages/overlay"
@@ -47,6 +48,11 @@ func (r *recorder) Quit()                       { r.call("quit") }
 func (r *recorder) SuspendShortcut(s bool)      { r.call("suspend") }
 func (r *recorder) TestShortcut(testing bool)   { r.call("test-shortcut") }
 func (r *recorder) RemoveReplacement(id string) { r.call("remove:" + id) }
+func (r *recorder) RequestInputMonitoring()     { r.call("request-monitoring") }
+func (r *recorder) SetHoldKey(key runtime.HoldKey) {
+	r.call("hold:" + string(key))
+	r.state.Preferences.HoldKey = key
+}
 func (r *recorder) InstallInputMethod() error {
 	r.call("install-ime")
 	r.state.InputMethod = runtime.InputMethodInstalled
@@ -137,6 +143,19 @@ func settle(tt *ui.Tester) {
 	for i := 0; i < 40; i++ {
 		tt.Frame()
 	}
+}
+
+// reveal scrolls the settings content until text is inside the viewport.
+func reveal(t *testing.T, tt *ui.Tester, text string) {
+	t.Helper()
+	for i := 0; i < 20; i++ {
+		if r, ok := tt.Find(text); ok && r.Y >= 0 && r.Y+r.H <= SettingsHeight {
+			return
+		}
+		tt.Scroll(SettingsWidth*0.7, SettingsHeight/2, 0, 120)
+		settle(tt)
+	}
+	t.Fatalf("%q not reachable: %q", text, tt.Texts())
 }
 
 func hasText(tt *ui.Tester, text string) bool {
@@ -326,6 +345,7 @@ func TestSettingsSections(t *testing.T) {
 	// Switching insertion to paste persists through the preferences action.
 	tt.Key(0, ui.KeyEscape)
 	settle(tt)
+	reveal(t, tt, copy.For(copy.English).Text(copy.DeliveryClipboard))
 	if err := tt.Click(copy.For(copy.English).Text(copy.DeliveryClipboard)); err != nil {
 		t.Fatal(err)
 	}
@@ -590,4 +610,62 @@ func modifierHint() copy.Key {
 		return copy.ShortcutNeedsModifierWindows
 	}
 	return copy.ShortcutNeedsModifier
+}
+
+// Hold-to-talk: the Dictation section offers this platform's keys, explains
+// missing Input Monitoring with a way to grant it, and the pill says to
+// release the key while a hold dictates.
+func TestHoldKeySettingsAndPill(t *testing.T) {
+	state, actions, store := fixture()
+	en := copy.For(copy.English)
+	page := settings.NewPage()
+	tt := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, SettingsWidth, SettingsHeight)
+	if err := tt.Click(en.Text(copy.NavDictation)); err != nil {
+		t.Fatal(err)
+	}
+	settle(tt)
+	if !hasText(tt, en.Text(copy.HoldKeyLabel)) {
+		t.Fatalf("hold row missing: %q", tt.Texts())
+	}
+	choice := holdkey.Choices()[1]
+	if err := tt.Click(en.Text(copy.HoldKeyOff)); err != nil {
+		t.Fatal(err)
+	}
+	settle(tt)
+	if err := tt.Click(holdkey.Name(en, choice)); err != nil {
+		t.Fatal(err)
+	}
+	settle(tt)
+	if !actions.called("hold:"+string(choice)) || state.Preferences.HoldKey != choice {
+		t.Fatalf("hold key not chosen: %v", actions.calls)
+	}
+	state.Shortcut.HoldFailure = runtime.CodePermissionDenied
+	settle(tt)
+	if !hasText(tt, en.Text(copy.HoldKeyNeedsMonitoring)) {
+		t.Fatalf("missing consent not explained: %q", tt.Texts())
+	}
+	if err := tt.Click(en.Text(copy.Allow)); err != nil {
+		t.Fatal(err)
+	}
+	if !actions.called("request-monitoring") {
+		t.Fatalf("consent not requested: %v", actions.calls)
+	}
+	if choice == runtime.HoldFn && !hasText(tt, en.Text(copy.HoldKeyFnHint)) {
+		t.Fatalf("globe key hint missing: %q", tt.Texts())
+	}
+	snapshot(t, tt, "settings-dictation-hold")
+
+	pill := ui.NewTester(func(c *ui.Context) { overlay.Render(c, store) }, OverlayWidth, OverlayHeight)
+	state.Dictation = runtime.Dictation{SessionID: "h", State: runtime.StateCapturing, Levels: levels(40), Changed: time.Now()}
+	state.Shortcut.Holding = true
+	settle(pill)
+	if !hasText(pill, en.Text(copy.PillReleaseHint)) || !hasText(pill, holdkey.Name(en, choice)) {
+		t.Fatalf("release hint missing: %q", pill.Texts())
+	}
+	snapshot(t, pill, "overlay-holding")
+	state.Shortcut.Holding = false
+	settle(pill)
+	if !hasText(pill, en.Text(copy.PillShortcutHint)) {
+		t.Fatalf("toggle hint missing after tap: %q", pill.Texts())
+	}
 }

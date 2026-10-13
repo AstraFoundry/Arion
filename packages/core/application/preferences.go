@@ -27,6 +27,7 @@ type Preferences struct {
 	OnboardingCompleted bool             `json:"onboardingCompleted"`
 	Mode                domain.InputMode `json:"mode"`
 	Shortcut            string           `json:"shortcut"`
+	HoldKey             HoldKey          `json:"holdKey"`
 	Delivery            Delivery         `json:"delivery"`
 	RemoveFillers       bool             `json:"removeFillers"`
 	Sounds              bool             `json:"sounds"`
@@ -77,6 +78,10 @@ func (p Preferences) Normalize() (Preferences, []string) {
 	if strings.TrimSpace(p.Shortcut) == "" {
 		p.Shortcut = defaults.Shortcut
 		repaired = append(repaired, "shortcut")
+	}
+	if !knownHoldKey(p.HoldKey) {
+		p.HoldKey = HoldOff
+		repaired = append(repaired, "holdKey")
 	}
 	if p.Delivery != DeliveryAutomatic && p.Delivery != DeliveryClipboard {
 		p.Delivery = defaults.Delivery

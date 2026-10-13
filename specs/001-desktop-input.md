@@ -3,7 +3,7 @@
 ## Requirements
 
 - DSK-01: Users MUST choose `shortcut` or `system_ime` mode. Changing mode cancels the current session and invalidates its generation.
-- DSK-02: Shortcut mode MUST offer explicit toggle activation first. Hold-to-talk requires a tested native key-down/key-up adapter; MyGo activation callbacks alone are insufficient.
+- DSK-02: Shortcut mode MUST offer explicit toggle activation. An optional hold key, off by default, MAY dictate while held through a tested native key-down/key-up adapter (macOS listen-only event tap with Input Monitoring consent; Windows low-level keyboard hook); MyGo activation callbacks alone are insufficient. Holding past the threshold (300 ms) stops on release; a shorter tap keeps dictating until the next press; another key during a hold that started the session cancels it. A hold key that cannot listen MUST report why without disabling the toggle shortcut.
 - DSK-03: The user MUST see recording, processing, candidate preview, permission failure and insertion failure states. Permission requests occur only for enabled capabilities.
 - DSK-04: Capture starts only after microphone consent and ends on stop, cancellation, OS suspend or device removal. Quit releases microphone, hotkeys and owned IME composition.
 - DSK-05: A target snapshot MUST include stable platform identity, editor capability, selection/range ownership, generation and sensitive-field status. The portable token is opaque; native handles stay in the adapter.
@@ -26,5 +26,6 @@
 | DSK-A07 | Secure field or unknown field safety → no context, no automatic memory learning |
 | DSK-A08 | Sleep, microphone unplug, hotkey conflict or adapter loss → capture stops with explicit reason |
 | DSK-A09 | Choose Simplified Chinese → settings/onboarding/panel/overlay and native window titles update → restart retains the choice → switch back to English; existing drafts, forms and recognition preferences remain intact |
+| DSK-A10 | Choose a hold key → hold, speak, release → final commit exactly once; tap → dictation continues until the next press; hold key + another key → session cancelled, nothing inserted; missing Input Monitoring on macOS → explicit status and a grant action, toggle shortcut unaffected |
 
 Compatibility must be recorded per app/version/input mode on both OSes: native editor, browser editable field, Electron editor, office document, terminal, noneditable field and elevated Windows app. These are test categories, not established support claims. Never auto-send Enter or execute a terminal command.

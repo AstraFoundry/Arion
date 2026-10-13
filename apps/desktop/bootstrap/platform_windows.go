@@ -4,6 +4,7 @@ package bootstrap
 
 import (
 	"arion.local/core/application"
+	"arion.local/desktop/infrastructure/holdkey"
 	"arion.local/desktop/infrastructure/windows"
 	"arion.local/desktop/ui/shared/runtime"
 )
@@ -24,6 +25,14 @@ func (windowsPlatform) OpenMicrophoneSettings() {
 	windows.OpenSettings("ms-settings:privacy-microphone")
 }
 func (windowsPlatform) OpenAccessibilitySettings() {}
+
+// A low-level keyboard hook needs no consent.
+func (windowsPlatform) InputMonitoring() runtime.Consent { return runtime.ConsentGranted }
+func (windowsPlatform) RequestInputMonitoring()          {}
+func (windowsPlatform) StartHoldKey(key application.HoldKey, sink func(holdkey.Event)) error {
+	return windows.StartHold(key, sink)
+}
+func (windowsPlatform) StopHoldKey() { windows.StopHold() }
 
 func (windowsPlatform) NewTargets(delivery func() application.Delivery) Targets {
 	return windows.NewTargets(func() windows.Delivery {

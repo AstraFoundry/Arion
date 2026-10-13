@@ -74,6 +74,18 @@ func (x actions) SetShortcut(accelerator string) error {
 	return nil
 }
 
+// SetHoldKey persists the hold-to-talk key and restarts its listener.
+func (x actions) SetHoldKey(key application.HoldKey) {
+	x.UpdatePreferences(func(p *application.Preferences) { p.HoldKey = key })
+	x.a.startHoldKey()
+}
+
+// RequestInputMonitoring asks for the consent a macOS hold key needs.
+func (x actions) RequestInputMonitoring() {
+	x.a.platform.RequestInputMonitoring()
+	x.a.refreshPermissions()
+}
+
 func (x actions) SuspendShortcut(suspend bool) {
 	a := x.a
 	if suspend && a.shortcutActive {

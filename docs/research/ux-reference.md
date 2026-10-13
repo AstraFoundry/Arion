@@ -33,7 +33,7 @@ No app was launched, no account or user data was read, and no network traffic wa
 
 - **Typeless:** sections for general (appearance, launch at login, dock icon, hardware acceleration), audio (microphone, interaction sounds, muting other audio), keyboard shortcuts with conflict and reserved-key validation, languages, personalization and history sync.
 - **Doubao:** a sidebar (`SettingsSidebarButton`, `SettingsTab`) of grouped sections (`SettingsSection`, `SettingSwitch`, single/multi-select groups), a shortcut recorder with conflict detection (`InputSourceShortcutConflictDetector`), feature highlights, and an offline-model area with `DisableOfflineVoiceModal`.
-- **Arion choice:** sidebar sections General (permissions, launch at login, sounds), Dictation (shortcut recorder rejecting modifier-less keys and taken shortcuts, insertion method, filler removal), Microphone (device picker and live meter), Model, Vocabulary (encrypted approved replacements), Privacy and About.
+- **Arion choice:** sidebar sections General (permissions, launch at login, sounds), Dictation (shortcut recorder rejecting modifier-less keys and taken shortcuts, an optional hold-to-talk key modeled on Doubao's separate fn long-press profile (`DD-shortcut-fn`), insertion method, filler removal), Microphone (device picker and live meter), Model, Vocabulary (encrypted approved replacements), Privacy and About.
 
 ### Floating surface and motion
 

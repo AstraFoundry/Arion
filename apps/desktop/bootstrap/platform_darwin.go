@@ -6,6 +6,7 @@ import (
 	"path/filepath"
 
 	"arion.local/core/application"
+	"arion.local/desktop/infrastructure/holdkey"
 	"arion.local/desktop/infrastructure/macos"
 	"arion.local/desktop/ui/shared/runtime"
 	"github.com/egoist/mygo"
@@ -36,6 +37,15 @@ func (p darwinPlatform) RequestMicrophone()         { p.permissions.RequestMicro
 func (p darwinPlatform) RequestAccessibility()      { p.permissions.RequestAccessibility() }
 func (p darwinPlatform) OpenMicrophoneSettings()    { p.permissions.Open(macos.PaneMicrophone) }
 func (p darwinPlatform) OpenAccessibilitySettings() { p.permissions.Open(macos.PaneAccessibility) }
+
+func (p darwinPlatform) InputMonitoring() runtime.Consent {
+	return consent(p.permissions.InputMonitoring())
+}
+func (p darwinPlatform) RequestInputMonitoring() { p.permissions.RequestInputMonitoring() }
+func (darwinPlatform) StartHoldKey(key application.HoldKey, sink func(holdkey.Event)) error {
+	return macos.StartHold(key, sink)
+}
+func (darwinPlatform) StopHoldKey() { macos.StopHold() }
 
 func (p darwinPlatform) NewTargets(delivery func() application.Delivery) Targets {
 	return macos.NewTargets(func() macos.Delivery {

@@ -75,6 +75,7 @@ type App struct {
 	testingShortcut bool
 	shortcutActive  bool
 	escapeActive    bool
+	hold            application.HoldGesture
 	harness         *harness
 	monitor         ports.AudioStream
 	vocab           *vocabulary.Store
@@ -253,6 +254,8 @@ func (a *App) ready() {
 	}
 	a.loadVocabulary(false)
 	a.registerShortcut(a.state.Preferences.Shortcut)
+	a.startHoldKey()
+	mygo.App.OnQuit(a.platform.StopHoldKey)
 	a.createTray()
 	a.createOverlay()
 	a.state.Model.Bundles = a.bundles()
@@ -414,12 +417,15 @@ func (a *App) onShortcut() {
 }
 
 func (a *App) refreshPermissions() bool {
-	next := arion.Permissions{Microphone: a.platform.Microphone(), Accessibility: a.platform.Accessibility()}
-	changed := next != a.state.Permissions
-	if changed && next.Microphone == arion.ConsentGranted && a.state.Permissions.Microphone != arion.ConsentGranted {
+	next := arion.Permissions{Microphone: a.platform.Microphone(), Accessibility: a.platform.Accessibility(),
+		InputMonitoring: a.platform.InputMonitoring()}
+	previous := a.state.Permissions
+	changed := next != previous
+	if changed && next.Microphone == arion.ConsentGranted && previous.Microphone != arion.ConsentGranted {
 		go a.refreshDevicesAsync()
 	}
 	a.state.Permissions = next
+	a.refreshHoldConsent(previous.InputMonitoring)
 	return changed
 }
 

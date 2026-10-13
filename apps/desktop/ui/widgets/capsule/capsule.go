@@ -4,6 +4,7 @@
 package capsule
 
 import (
+	"arion.local/desktop/ui/features/holdkey"
 	"hash/fnv"
 	"time"
 	"unicode/utf8"
@@ -85,6 +86,11 @@ func listening(c *ui.Context, state *runtime.State, tokens theme.Tokens, prepari
 		ui.Text(c, messages.Text(copy.PillListening)).FontSize(theme.Body).TextColor(tokens.PillMuted)
 	}
 	ui.Row(c).Gap(6).AlignItems(ui.Center).Margin(0, 0, 0, 4).Children(func() {
+		if state.Shortcut.Holding {
+			kit.Keycap(c, tokens, holdkey.Name(messages, state.Preferences.HoldKey), true)
+			ui.Text(c, messages.Text(copy.PillReleaseHint)).FontSize(theme.Caption).TextColor(tokens.PillMuted).SingleLine()
+			return
+		}
 		kit.Keycaps(c, tokens, state.Shortcut.Accelerator, true)
 		ui.Text(c, messages.Text(copy.PillShortcutHint)).FontSize(theme.Caption).TextColor(tokens.PillMuted).SingleLine()
 	})

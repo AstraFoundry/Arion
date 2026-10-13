@@ -21,6 +21,7 @@ type (
 	Preferences   = application.Preferences
 	Delivery      = application.Delivery
 	UILanguage    = application.UILanguage
+	HoldKey       = application.HoldKey
 )
 
 const (
@@ -42,7 +43,17 @@ const (
 	DeliveryClipboard = application.DeliveryClipboard
 	LanguageEnglish   = application.English
 	LanguageChinese   = application.SimplifiedChinese
+
+	HoldOff          = application.HoldOff
+	HoldFn           = application.HoldFn
+	HoldRightOption  = application.HoldRightOption
+	HoldRightCommand = application.HoldRightCommand
+	HoldRightAlt     = application.HoldRightAlt
+	HoldRightCtrl    = application.HoldRightCtrl
 )
+
+// HoldKeysFor lists the hold keys a platform supports.
+func HoldKeysFor(platform string) []HoldKey { return application.HoldKeysFor(platform) }
 
 // Error codes the UI explains.
 const (
@@ -149,6 +160,8 @@ const (
 type Permissions struct {
 	Microphone    Consent
 	Accessibility Consent
+	// InputMonitoring is needed only for a hold key on macOS.
+	InputMonitoring Consent
 }
 
 // Device is a capture endpoint.
@@ -187,6 +200,13 @@ type Shortcut struct {
 	Registered  bool
 	// Pressed is when the shortcut last fired, for the onboarding test.
 	Pressed time.Time
+	// HoldActive reports the hold-key listener is running.
+	HoldActive bool
+	// HoldFailure explains why a chosen hold key is not listening:
+	// PERMISSION_DENIED means Input Monitoring consent is missing.
+	HoldFailure ErrorCode
+	// Holding marks a session that dictates until the hold key is released.
+	Holding bool
 }
 
 // State is everything views read. The composition root mutates it only on
@@ -221,6 +241,9 @@ type Actions interface {
 	UseRecommendedBundle()
 	UpdatePreferences(func(*Preferences))
 	SetShortcut(accelerator string) error
+	// SetHoldKey chooses the hold-to-talk key, or HoldOff.
+	SetHoldKey(key HoldKey)
+	RequestInputMonitoring()
 	// SuspendShortcut releases the global hotkey while a recorder listens.
 	SuspendShortcut(suspend bool)
 	// TestShortcut makes hotkey presses only report Shortcut.Pressed, for
