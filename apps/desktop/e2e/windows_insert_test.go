@@ -97,7 +97,9 @@ func (n *notepad) text() string {
 	return syscall.UTF16ToString(buffer)
 }
 
-func identity() contracts.Identity { return contracts.Identity{SessionID: "windows-e2e", Generation: 1} }
+func identity() contracts.Identity {
+	return contracts.Identity{SessionID: "windows-e2e", Generation: 1}
+}
 
 // DSK-A02 on Windows: the production adapter types Unicode text, including
 // CJK, into the captured editor exactly once.

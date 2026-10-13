@@ -1,0 +1,4 @@
+# Go sources and scripts keep LF on every platform (gofmt rejects CRLF).
+* text=auto eol=lf
+*.png binary
+*.bz2 binary
