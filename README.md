@@ -33,3 +33,7 @@ make e2e-macos      # owned product scenarios against the packaged app
 ```
 
 JavaScript tooling uses pinned pnpm 10.33.0 and Node 24; npm installation is rejected. Native desktop builds use Go 1.27.1 with cgo and the pinned MyGo CLI. Model selection evidence comes from the [evaluation runners](tools/evaluation/README.md) and [paper-grounded metrics](docs/research/benchmark-methodology.md); aggregate reports are in [`benchmarks/results`](benchmarks/README.md). See [repository ownership](docs/project/repository.md) for the workspace layout and [release gates](docs/operations/deployment.md) before distribution.
+
+## License
+
+Arion is developed by [AstraFoundry](https://github.com/AstraFoundry) and licensed under [AGPL-3.0](LICENSE) ([ADR 009](docs/decisions/009-agpl-license.md)). Report bugs in [GitHub Issues](https://github.com/AstraFoundry/Arion/issues).

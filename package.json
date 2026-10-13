@@ -2,6 +2,7 @@
   "name": "arion-monorepo",
   "version": "0.0.0",
   "private": true,
+  "license": "AGPL-3.0-only",
   "description": "Native desktop voice input foundation and specifications.",
   "scripts": {
     "check": "node scripts/check-repository.mjs",
