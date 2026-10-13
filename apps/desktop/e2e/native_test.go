@@ -55,16 +55,23 @@ func TestMain(m *testing.M) {
 	os.Exit(int(code.Load()))
 }
 
-func eventually(t *testing.T, what string, predicate func() bool) {
-	t.Helper()
-	deadline := time.Now().Add(5 * time.Second)
+// within polls predicate until it holds or the timeout passes.
+func within(timeout time.Duration, predicate func() bool) bool {
+	deadline := time.Now().Add(timeout)
 	for time.Now().Before(deadline) {
 		if predicate() {
-			return
+			return true
 		}
 		time.Sleep(10 * time.Millisecond)
 	}
-	t.Fatalf("native condition not met: %s", what)
+	return false
+}
+
+func eventually(t *testing.T, what string, predicate func() bool) {
+	t.Helper()
+	if !within(5*time.Second, predicate) {
+		t.Fatalf("native condition not met: %s", what)
+	}
 }
 
 // capture checks a window renders nonblank native content and saves it.
@@ -149,7 +156,10 @@ func TestSettingsWindowLifecycle(t *testing.T) {
 		t.Fatal("settings content blank")
 	}
 	settings.SetContentSize(820, 600)
-	eventually(t, "settings resized", func() bool { w, h := settings.ContentSize(); return w == 820 && h == 600 })
+	if !within(5*time.Second, func() bool { w, h := settings.ContentSize(); return w == 820 && h == 600 }) {
+		w, h := settings.ContentSize()
+		t.Fatalf("settings content size %dx%d after resize to 820x600", w, h)
+	}
 	var closed atomic.Int32
 	settings.OnClosed(func() { closed.Add(1) })
 	settings.Close()

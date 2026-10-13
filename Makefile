@@ -27,7 +27,7 @@ desktop-check: ## Compile/check native shell for current host
 DESKTOP_ENV = CGO_ENABLED=1 CGO_LDFLAGS="-Wl,-rpath,@executable_path/../Resources/lib"
 
 desktop-libs: ## Stage pinned speech runtime libraries and the macOS input method into desktop resources
-	@node scripts/stage-native-libs.mjs
+	@node scripts/stage-native-libs.mjs darwin
 	@node scripts/build-input-method.mjs
 
 desktop-build: desktop-libs ## Package the native app for current host

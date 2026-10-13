@@ -4,7 +4,7 @@
 
 `make e2e` / `pnpm e2e:native` runs build-tagged Go tests in an actual macOS/Windows desktop session. The test hosts the production composition root (`bootstrap.App`) in an isolated temporary profile on MyGo's native loop.
 
-Checks: the click-through overlay exists, stays unfocused and draws an explicit failure when dictation starts in a fresh profile (PERMISSION_DENIED with the capability named when Accessibility is not granted, otherwise MODEL_MISSING); settings and onboarding windows show native Content, render nonblank captures, resize, close once and release their views. A missing OS/session is a failure, not a success-shaped skip. Ordinary `pnpm test` excludes interactive tests; CI native jobs explicitly run them.
+Checks: the click-through overlay exists, stays unfocused and draws an explicit failure when dictation starts in a fresh profile (PERMISSION_DENIED with the capability named when Accessibility is not granted, otherwise MODEL_MISSING); settings and onboarding windows show native Content, render nonblank captures, resize, close once and release their views. On Windows the tests also type Unicode text (including CJK) into an owned Notepad through the production `SendInput` route and check that a focus change before commit inserts nothing. Go test binaries carry no manifest, so the Windows runner compiles the test executable and places [`e2e/windows.manifest`](../../apps/desktop/e2e/windows.manifest) beside it; it mirrors the manifest `mygo build` embeds (Windows 8+ compatibility for the hidden-title-bar controls, per-monitor DPI awareness, UTF-8). A missing OS/session is a failure, not a success-shaped skip. Ordinary `pnpm test` excludes interactive tests; CI native jobs explicitly run them.
 
 ## Headless view tests
 

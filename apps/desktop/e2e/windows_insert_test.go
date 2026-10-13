@@ -31,7 +31,7 @@ var (
 const (
 	wmGetText       = 0x000D
 	wmGetTextLength = 0x000E
-	vkMenu          = 0x12
+	vkShift         = 0x10
 	keyUp           = 0x0002
 )
 
@@ -72,12 +72,13 @@ func startNotepad(t *testing.T) *notepad {
 }
 
 // focus brings the window forward. Windows only lets a process take the
-// foreground after input, so the test taps Alt first, then focuses the edit
-// control through the window's input thread.
+// foreground after input, so the test taps Shift first (a lone Alt would put
+// Notepad's menu bar in keyboard mode and swallow the typed text), then
+// focuses the edit control through the window's input thread.
 func (n *notepad) focus(t *testing.T) {
 	t.Helper()
-	procKeybdEvent.Call(vkMenu, 0, 0, 0)
-	procKeybdEvent.Call(vkMenu, 0, keyUp, 0)
+	procKeybdEvent.Call(vkShift, 0, 0, 0)
+	procKeybdEvent.Call(vkShift, 0, keyUp, 0)
 	procSetForegroundWindow.Call(n.window)
 	thread, _, _ := procGetWindowThreadPID.Call(n.window, 0)
 	self, _, _ := procGetCurrentThreadId.Call()
@@ -116,7 +117,9 @@ func TestWindowsInsertsIntoNotepad(t *testing.T) {
 	if err != nil || result.Outcome == contracts.NotApplied {
 		t.Fatalf("commit: %+v %v", result, err)
 	}
-	eventually(t, "text typed", func() bool { return editor.text() == text })
+	if !within(5*time.Second, func() bool { return editor.text() == text }) {
+		t.Fatalf("editor text %q after commit %+v", editor.text(), result)
+	}
 	time.Sleep(300 * time.Millisecond)
 	if got := editor.text(); got != text {
 		t.Fatalf("editor text %q", got)
