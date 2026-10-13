@@ -10,7 +10,8 @@ Scope: onboarding, menu bar presence, settings structure, the floating dictation
 | Typeless onboarding surface | REA `trace_application_feature`, seed `onboarding` | `ev_9c42a0d9540c1ace96bd8e1b96b2b6e57010d020f1ee30e8e9b9a12677bb85ab`: a separate `onboarding.html` renderer, two renderer modules, onboarding copy-config and progress routes |
 | Typeless renderer windows and copy keys | Inert reading of the extracted bundle | Renderer entries `floating-bar.html`, `hub.html`, `onboarding.html`, `sidebar.html`, `interactive-card.html`, `login.html`; English locale key namespaces |
 | Doubao IME 1.0.2 `Info.plist` | REA `inspect_plist` | `ev_6429b2b9888383020d5a2a363a70917fbb568aea466a42413a6e11e52613d0a0`: background-only IMK server, separate settings and installer bundle IDs, microphone and Bluetooth usage strings |
-| Doubao settings and IME binaries | `strings` over the Mach-O files | Type names only; REA native analysis was unavailable (no Ghidra/Hopper/IDA configured), so no call graph, ordering or runtime behavior is claimed |
+| Doubao settings and IME binaries | `strings` over the Mach-O files | Type names only; no call graph, ordering or runtime behavior is claimed from them |
+| Doubao IME main executable (arm64) | REA 6.4.0 + Ghidra 12.1.4 decompilation | Five functions: paste gate, clipboard handoff, host-commit resolution, fn long-press profile ([ledger](evidence/doubao-decompiled.json), [findings](doubao.md#decompiled-insertion-and-shortcut-paths)) |
 
 No app was launched, no account or user data was read, and no network traffic was observed. Locale strings and type names show what surfaces exist, not how often or under which conditions they appear.
 
@@ -48,9 +49,9 @@ No app was launched, no account or user data was read, and no network traffic wa
 ### Insertion
 
 - **Typeless:** an insert-text IPC to a native helper, accessibility context and paste-related surfaces; its permission copy says Accessibility lets it "paste text into any textbox".
-- **Doubao:** IMK `insertText`, synthetic Command-V diagnostics and clipboard-restoration guards, delayed-paste cancellation and target ownership rejection diagnostics.
+- **Doubao:** IMK `insertText`, synthetic Command-V diagnostics and clipboard-restoration guards, delayed-paste cancellation and target ownership rejection diagnostics. Decompiled: Command-V is posted only while session, generation and commit sequence still match and nothing was written yet; the clipboard is handed back only if `changeCount` is unchanged; Excel waits for mouse release; a host that already committed gets zero writes (`DD-paste-gate`, `DD-paste-handoff`, `DD-commit-strategy`).
 - **Arion choice:** see [ADR 003](../decisions/003-insertion-routes.md): one route chosen at capture time (Accessibility for native editors, Unicode keystrokes for Chromium/Electron editors, or user-selected paste with guarded clipboard restore), focus revalidation before the single commit, and no automatic second attempt.
 
 ## Limits
 
-Static strings cannot show default settings, ordering, timing, retry policy or which branch a session takes. Doubao conclusions rest on type names only. Re-run REA native analysis when a decompiler provider is configured before relying on Doubao behavior details.
+Static strings cannot show default settings, ordering, timing, retry policy or which branch a session takes. Doubao behavior claims are limited to the decompiled functions in the ledger; everything else rests on type names.
