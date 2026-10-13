@@ -33,7 +33,10 @@ type Preferences struct {
 	Sounds              bool             `json:"sounds"`
 	LaunchAtLogin       bool             `json:"launchAtLogin"`
 	Microphone          string           `json:"microphone"`
-	ModelOverride       string           `json:"modelOverride"`
+	// MicrophoneGain is one of GainStops' decibels; profiles written before
+	// it existed load 0 dB, the device's own level.
+	MicrophoneGain int    `json:"microphoneGain"`
+	ModelOverride  string `json:"modelOverride"`
 	// CheckUpdates asks the release feed for a newer version at launch and
 	// periodically. Profiles written before it existed load the default.
 	CheckUpdates bool `json:"checkUpdates"`
@@ -89,6 +92,10 @@ func (p Preferences) Normalize() (Preferences, []string) {
 	if p.Delivery != DeliveryAutomatic && p.Delivery != DeliveryClipboard {
 		p.Delivery = defaults.Delivery
 		repaired = append(repaired, "delivery")
+	}
+	if !knownGain(p.MicrophoneGain) {
+		p.MicrophoneGain = defaults.MicrophoneGain
+		repaired = append(repaired, "microphoneGain")
 	}
 	return p, repaired
 }

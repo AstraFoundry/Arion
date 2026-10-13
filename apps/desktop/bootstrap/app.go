@@ -125,6 +125,7 @@ func New(opts Options) (*App, error) {
 	a.manager = modelruntime.NewManager(catalog, a.store, opts.Threads)
 	a.mic = audio.NewMicrophone(a.platform)
 	a.mic.Select(prefs.Microphone)
+	a.mic.SetGain(prefs.MicrophoneGain)
 	a.targets = a.platform.NewTargets(func() application.Delivery { return a.preferences().Delivery })
 	a.vocabPath = filepath.Join(opts.DataDir, "vocabulary.bin")
 	capture := opts.Audio

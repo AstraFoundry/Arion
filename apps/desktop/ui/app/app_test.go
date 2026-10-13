@@ -394,6 +394,32 @@ func TestSettingsSections(t *testing.T) {
 }
 
 // TestDarkAppearance renders the main surfaces with the dark tokens.
+func TestMicrophoneGain(t *testing.T) {
+	for _, locale := range []runtime.UILanguage{runtime.LanguageEnglish, runtime.LanguageChinese} {
+		state, actions, store := fixture()
+		state.Preferences.UILanguage = locale
+		messages := store.Copy()
+		page := settings.NewPage()
+		page.Section = settings.Microphone
+		tt := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, SettingsWidth, SettingsHeight)
+		settle(tt)
+		if !hasText(tt, messages.Text(copy.MicGainDetail)) || !hasText(tt, messages.Decibels(0)) {
+			t.Fatalf("%s: gain row missing: %q", locale, tt.Texts())
+		}
+		snapshot(t, tt, "settings-microphone-gain-"+string(locale))
+		// The slider spans the card under its row; its far end is the loudest stop.
+		detail, _ := tt.Find(messages.Text(copy.MicGainDetail))
+		readout, _ := tt.Find(messages.Decibels(0))
+		tt.ClickAt(readout.X+readout.W-14, detail.Y+detail.H+12+14)
+		settle(tt)
+		loudest := runtime.GainStops[len(runtime.GainStops)-1]
+		if state.Preferences.MicrophoneGain != loudest.DB || !actions.called("prefs") || !hasText(tt, messages.Decibels(loudest.DB)) {
+			t.Fatalf("%s: gain %d, texts %q", locale, state.Preferences.MicrophoneGain, tt.Texts())
+		}
+		snapshot(t, tt, "settings-microphone-gain-loudest-"+string(locale))
+	}
+}
+
 func TestAboutLinks(t *testing.T) {
 	_, _, store := fixture()
 	page := settings.NewPage()

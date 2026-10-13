@@ -176,6 +176,10 @@ func (p *Page) section(c *ui.Context, store runtime.Store, tokens theme.Tokens) 
 		kit.Card(c, tokens).Children(func() {
 			kit.Row(c, tokens, messages.Text(copy.MicDevice), "", func() { microphone.Picker(c, store) })
 			kit.Divider(c, tokens)
+			kit.Row(c, tokens, messages.Text(copy.MicGain), messages.Text(copy.MicGainDetail), func() { microphone.GainValue(c, store, tokens) })
+			// Inset so the end labels, centered on the end ticks, align with the row's text.
+			ui.Column(c).Padding(0, 28, 14, 28).Children(func() { microphone.Gain(c, store, tokens) })
+			kit.Divider(c, tokens)
 			ui.Column(c).Padding(16).Gap(10).AlignItems(ui.Center).Children(func() {
 				if store.State.Permissions.Microphone == runtime.ConsentGranted {
 					microphone.Meter(c, store, tokens)

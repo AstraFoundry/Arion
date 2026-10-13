@@ -56,6 +56,12 @@ const (
 // HoldKeysFor lists the hold keys a platform supports.
 func HoldKeysFor(platform string) []HoldKey { return application.HoldKeysFor(platform) }
 
+// GainStops are the selectable microphone gains, GainStep dB apart, and
+// the speaking distances they suit.
+var GainStops = application.GainStops
+
+const GainStep = application.GainStep
+
 // Error codes the UI explains.
 const (
 	CodePermissionDenied   = domain.CodePermissionDenied

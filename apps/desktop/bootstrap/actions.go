@@ -67,6 +67,9 @@ func (x actions) UpdatePreferences(change func(*application.Preferences)) {
 			a.startMonitor()
 		}
 	}
+	if next.MicrophoneGain != before.MicrophoneGain {
+		a.mic.SetGain(next.MicrophoneGain)
+	}
 	if next.Mode != before.Mode {
 		a.core.SetMode(next.Mode)
 	}

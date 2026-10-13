@@ -8,6 +8,7 @@ import (
 	"sync"
 	"sync/atomic"
 
+	"arion.local/core/application"
 	"arion.local/core/contracts"
 	"arion.local/core/domain"
 	"arion.local/core/domain/ports"
@@ -40,15 +41,28 @@ type Microphone struct {
 	permission Permission
 	mu         sync.Mutex
 	deviceID   string
+	// gain holds the float32 bits of the factor samples are scaled by; an
+	// open stream picks a change up at its next callback.
+	gain atomic.Uint32
 }
 
-func NewMicrophone(permission Permission) *Microphone { return &Microphone{permission: permission} }
+func NewMicrophone(permission Permission) *Microphone {
+	m := &Microphone{permission: permission}
+	m.SetGain(0)
+	return m
+}
 
 // Select chooses a device by ID; empty selects the system default.
 func (m *Microphone) Select(id string) {
 	m.mu.Lock()
 	m.deviceID = id
 	m.mu.Unlock()
+}
+
+// SetGain sets the software gain in decibels. It scales Arion's capture
+// only; the OS input volume is unchanged.
+func (m *Microphone) SetGain(db int) {
+	m.gain.Store(math.Float32bits(application.GainFactor(db)))
 }
 
 // Devices lists capture devices.
@@ -120,9 +134,11 @@ func (m *Microphone) Start(_ context.Context, id contracts.Identity, sink ports.
 	var sequence, offset uint64
 	callbacks := malgo.DeviceCallbacks{
 		Data: func(_, input []byte, frames uint32) {
+			gain := math.Float32frombits(m.gain.Load())
 			samples := make([]float32, frames)
 			for i := range samples {
-				samples[i] = math.Float32frombits(binary.LittleEndian.Uint32(input[i*4:]))
+				// Amplified samples clip at full scale, as the recognizers expect.
+				samples[i] = max(-1, min(1, gain*math.Float32frombits(binary.LittleEndian.Uint32(input[i*4:]))))
 			}
 			sink(contracts.Frame{Identity: id, Sequence: sequence, SampleOffset: offset, SampleRate: SampleRate, Channels: 1, Samples: samples})
 			sequence++

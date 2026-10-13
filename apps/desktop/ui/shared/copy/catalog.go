@@ -191,6 +191,24 @@ func (c Catalog) Version(version string) string {
 	return c.format(FormatVersion, "version", version)
 }
 
+// Decibels signs a gain, except 0 dB.
+func (c Catalog) Decibels(db int) string {
+	value := strconv.Itoa(db)
+	if db > 0 {
+		value = "+" + value
+	}
+	return c.format(FormatDecibels, "value", value)
+}
+
+func (c Catalog) Centimeters(cm int) string {
+	return c.format(FormatCentimeters, "value", strconv.Itoa(cm))
+}
+
+// GainStop names a gain and the speaking distance it suits.
+func (c Catalog) GainStop(db, cm int) string {
+	return c.format(FormatGainStop, "gain", c.Decibels(db), "distance", c.Centimeters(cm))
+}
+
 // UpdateAvailable and UpdateTo name a newer release.
 func (c Catalog) UpdateAvailable(version string) string {
 	return c.format(FormatUpdateAvailable, "version", version)

@@ -13,6 +13,7 @@
 - DSK-09: Model missing/unsupported hardware/permission denied MUST be actionable explicit errors; never silently use cloud inference.
 - DSK-10: The interface MUST offer English (default) and Simplified Chinese in settings and onboarding, persist the choice, and update existing windows without restarting recognition or altering user content. UI language MUST remain independent of recognition/model selection.
 - DSK-11: On macOS, a packaged Arion asking for Accessibility or Input Monitoring MUST open that privacy pane in System Settings with a nonactivating guide under its window that offers Arion's app to drag into the list. The guide follows the window, shows only while System Settings is frontmost, and closes on consent (returning focus to the Arion window that asked), on its close button, or when System Settings quits. Microphone keeps the system prompt; an unbundled build keeps the system prompts. The guide never changes consent itself.
+- DSK-12: Settings › Microphone MUST offer a stepped software input gain from −6 dB to +12 dB in 3 dB steps, 0 dB by default, labeling each step with the speaking distance it suits (15 cm at −6 dB to 120 cm at +12 dB; speech level falls 6 dB per doubling of distance from a 30 cm reference). Gain scales only Arion's capture, clipping at full scale, applies to the live meter and to dictation without reopening the device, persists, and never changes the OS input volume.
 
 ## Acceptance
 
@@ -29,5 +30,6 @@
 | DSK-A09 | Choose Simplified Chinese → settings/onboarding/panel/overlay and native window titles update → restart retains the choice → switch back to English; existing drafts, forms and recognition preferences remain intact |
 | DSK-A10 | Choose a hold key → hold, speak, release → final commit exactly once; tap → dictation continues until the next press; hold key + another key → session cancelled, nothing inserted; missing Input Monitoring on macOS → explicit status and a grant action, toggle shortcut unaffected |
 | DSK-A11 | macOS, packaged app, consent missing → grant Accessibility (or Input Monitoring) → pane opens with the guide under it → switch apps: guide hides; return: it reappears → drag Arion into the list and switch it on → guide closes and the asking window is frontmost; quitting System Settings closes the guide |
+| DSK-A12 | Open Settings › Microphone → every gain step shows its distance under its tick → drag to +12 dB → the meter responds louder at once, the next dictation captures at that gain → restart retains it; a stored gain outside the steps is repaired to 0 dB and reported |
 
 Compatibility must be recorded per app/version/input mode on both OSes: native editor, browser editable field, Electron editor, office document, terminal, noneditable field and elevated Windows app. These are test categories, not established support claims. Never auto-send Enter or execute a terminal command.
