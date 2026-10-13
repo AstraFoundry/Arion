@@ -83,6 +83,7 @@ type App struct {
 	startCue        *mygoaudio.Sound
 	stopCue         *mygoaudio.Sound
 	recommended     string
+	updates         *updates
 
 	// Snapshot read by worker goroutines (correction policy, delivery).
 	snapshot   sync.Mutex
@@ -254,6 +255,13 @@ func (a *App) ready() {
 		a.state.InputMethod = a.ime.State()
 	}
 	a.loadVocabulary(false)
+	// Offline and scripted profiles never reach the release feed.
+	var source updateSource = mygoUpdates{}
+	if a.opts.Offline || a.harness != nil {
+		source = nil
+	}
+	a.updates = newUpdates(source, &a.state.Update, a.post)
+	a.scheduleUpdates()
 	a.registerShortcut(a.state.Preferences.Shortcut)
 	a.startHoldKey()
 	mygo.App.OnQuit(a.platform.StopHoldKey)

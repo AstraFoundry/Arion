@@ -10,7 +10,10 @@ import (
 	"arion.local/desktop/ui/features/permissions"
 	"arion.local/desktop/ui/features/shortcut"
 	"arion.local/desktop/ui/features/uilanguage"
+	"arion.local/desktop/ui/features/update"
 	"arion.local/desktop/ui/features/vocabulary"
+	"arion.local/desktop/ui/shared/assets"
+	"arion.local/desktop/ui/shared/config"
 	"arion.local/desktop/ui/shared/copy"
 	"arion.local/desktop/ui/shared/icons"
 	"arion.local/desktop/ui/shared/kit"
@@ -28,7 +31,6 @@ const (
 	Microphone = "microphone"
 	Model      = "model"
 	Vocabulary = "vocabulary"
-	Privacy    = "privacy"
 	About      = "about"
 )
 
@@ -40,6 +42,7 @@ type Page struct {
 	draft      vocabulary.Draft
 	delivery   runtime.Delivery
 	mode       inputmode.State
+	focus      int
 }
 
 func NewPage() *Page { return &Page{Section: General} }
@@ -47,6 +50,9 @@ func NewPage() *Page { return &Page{Section: General} }
 // Render draws the settings window.
 func (p *Page) Render(c *ui.Context, store runtime.Store) {
 	tokens := theme.Apply(c)
+	if focus := store.State.Focus; focus.Seq != p.focus {
+		p.focus, p.Section = focus.Seq, focus.Section
+	}
 	p.syncMonitor(store)
 	bar := c.TitleBar()
 	ui.Row(c).Fill().AlignItems(ui.Stretch).Children(func() {
@@ -102,7 +108,7 @@ func (p *Page) Close(store runtime.Store) {
 
 func title(section string, messages copy.Catalog) string {
 	return map[string]string{General: messages.Text(copy.NavGeneral), Dictation: messages.Text(copy.NavDictation), Microphone: messages.Text(copy.NavMicrophone),
-		Model: messages.Text(copy.NavModel), Vocabulary: messages.Text(copy.NavVocabulary), Privacy: messages.Text(copy.NavPrivacy), About: messages.Text(copy.NavAbout)}[section]
+		Model: messages.Text(copy.NavModel), Vocabulary: messages.Text(copy.NavVocabulary), About: messages.Text(copy.NavAbout)}[section]
 }
 
 func (p *Page) section(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
@@ -186,44 +192,70 @@ func (p *Page) section(c *ui.Context, store runtime.Store, tokens theme.Tokens) 
 		}
 	case Vocabulary:
 		vocabulary.Editor(c, store, tokens, &p.draft)
-	case Privacy:
-		kit.Card(c, tokens).Children(func() {
-			for i, item := range []struct {
-				icon          *ui.SVG
-				title, detail string
-			}{{icons.Cpu, messages.Text(copy.PrivacyLocal), messages.Text(copy.PrivacyLocalTxt)}, {icons.MicOff, messages.Text(copy.PrivacyAudio), messages.Text(copy.PrivacyAudioTxt)},
-				{icons.Lock, messages.Text(copy.PrivacyLogs), messages.Text(copy.PrivacyLogsTxt)}, {icons.HardDriveDownload, messages.Text(copy.PrivacyNetwork), messages.Text(copy.PrivacyNetTxt)}} {
-				if i > 0 {
-					kit.Divider(c, tokens)
-				}
-				ui.Row(c).Gap(12).Padding(12, 16).Children(func() {
-					ui.Icon(c, item.icon).FontSize(16).TextColor(tokens.Muted).Margin(2, 0, 0, 0)
-					ui.Column(c).Gap(2).Grow(1).Children(func() {
-						ui.Text(c, item.title).FontSize(theme.Body).FontWeight(500)
-						ui.Text(c, item.detail).FontSize(theme.Caption).TextColor(tokens.Muted)
-					})
-				})
-			}
-		})
 	case About:
 		kit.Card(c, tokens).Children(func() {
 			ui.Column(c).Height(200).Children(func() {
 				// The banner's top corners nest inside the card's border.
 				inner := float32(theme.RadiusCard - 1)
-				showcase.Render(c, tokens, store.Copy(), showcase.Inserted, store.State.Shortcut.Accelerator, nil, inner, inner, 0, 0)
+				showcase.Render(c, tokens, store.Copy(), showcase.Dictating, store.State.Shortcut.Accelerator, nil, inner, inner, 0, 0)
 			})
-			ui.Column(c).Padding(16).Gap(12).Children(func() {
-				ui.Row(c).Gap(10).AlignItems(ui.Center).Children(func() {
-					kit.Mark(c, 44).Margin(-4)
-					ui.Column(c).Gap(2).Children(func() {
-						ui.Text(c, messages.Text(copy.Title)).FontSize(theme.Heading).FontWeight(600)
-						ui.Text(c, messages.Version(store.State.Version)).FontSize(theme.Caption).TextColor(tokens.Muted).Selectable()
-					})
+			ui.Row(c).Padding(16).Gap(10).AlignItems(ui.Center).Children(func() {
+				kit.Mark(c, 44).Margin(-4)
+				ui.Column(c).Gap(2).Children(func() {
+					ui.Text(c, messages.Text(copy.Title)).FontSize(theme.Heading).FontWeight(600)
+					ui.Text(c, messages.Version(store.State.Version)).FontSize(theme.Caption).TextColor(tokens.Muted).Selectable()
 				})
-				ui.Text(c, messages.Text(copy.AboutCredits)).FontSize(theme.Caption).TextColor(tokens.Muted)
 			})
 		})
+		update.Card(c, store, tokens)
+		kit.Group(c, tokens, messages.Text(copy.NavPrivacy), func() { privacy(c, messages, tokens) })
+		aboutLinks(c, messages, tokens)
 	}
+}
+
+// privacy states what stays on this device and the network's two uses.
+func privacy(c *ui.Context, messages copy.Catalog, tokens theme.Tokens) {
+	kit.Card(c, tokens).Children(func() {
+		for i, item := range []struct {
+			icon          *ui.SVG
+			title, detail string
+		}{{icons.Cpu, messages.Text(copy.PrivacyLocal), messages.Text(copy.PrivacyLocalTxt)}, {icons.MicOff, messages.Text(copy.PrivacyAudio), messages.Text(copy.PrivacyAudioTxt)},
+			{icons.Lock, messages.Text(copy.PrivacyLogs), messages.Text(copy.PrivacyLogsTxt)}, {icons.HardDriveDownload, messages.Text(copy.PrivacyNetwork), messages.Text(copy.PrivacyNetTxt)}} {
+			if i > 0 {
+				kit.Divider(c, tokens)
+			}
+			ui.Row(c).Gap(12).Padding(12, 16).Children(func() {
+				ui.Icon(c, item.icon).FontSize(16).TextColor(tokens.Muted).Margin(2, 0, 0, 0)
+				ui.Column(c).Gap(2).Grow(1).Children(func() {
+					ui.Text(c, item.title).FontSize(theme.Body).FontWeight(500)
+					ui.Text(c, item.detail).FontSize(theme.Caption).TextColor(tokens.Muted)
+				})
+			})
+		}
+	})
+}
+
+// aboutLinks names the team and where the project, its news, bug reports
+// and license live.
+func aboutLinks(c *ui.Context, messages copy.Catalog, tokens theme.Tokens) {
+	kit.Card(c, tokens).Children(func() {
+		kit.Row(c, tokens, messages.Text(copy.AboutTeam), "", func() {
+			ui.Row(c).Gap(8).AlignItems(ui.Center).Children(func() {
+				// The avatar keeps GitHub's white tile so the dark mark reads in both appearances.
+				ui.Image(c, assets.Team).Size(20, 20).Fit(ui.Cover).Radius(theme.RadiusMD).Border(1, tokens.Hairline).Clip()
+				ui.Link(c, config.Team, config.TeamURL)
+			})
+		})
+		for _, link := range []struct{ title, label, url string }{
+			{messages.Text(copy.AboutSource), config.Repository, config.RepositoryURL},
+			{messages.Text(copy.AboutX), config.XHandle, config.XURL},
+			{messages.Text(copy.AboutFeedback), messages.Text(copy.AboutFeedbackLink), config.IssuesURL},
+			{messages.Text(copy.AboutLicense), config.License, config.LicenseURL},
+		} {
+			kit.Divider(c, tokens)
+			kit.Row(c, tokens, link.title, "", func() { ui.Link(c, link.label, link.url) })
+		}
+	})
 }
 
 func hasOthers(store runtime.Store) bool {
@@ -269,7 +301,6 @@ func (p *Page) nav(c *ui.Context, messages copy.Catalog) {
 		ui.SidebarItem(c, Microphone, icons.Mic, messages.Text(copy.NavMicrophone))
 		ui.SidebarItem(c, Model, icons.Cpu, messages.Text(copy.NavModel))
 		ui.SidebarItem(c, Vocabulary, icons.BookOpen, messages.Text(copy.NavVocabulary))
-		ui.SidebarItem(c, Privacy, icons.ShieldCheck, messages.Text(copy.NavPrivacy))
 		ui.SidebarItem(c, About, icons.Info, messages.Text(copy.NavAbout))
 	}).Grow(1)
 }

@@ -8,7 +8,7 @@ Read [AGENTS.md](../../AGENTS.md), [architecture](architecture.md), [repository]
 - **MAC-01:** microphone consent and capture (miniaudio/CoreAudio, 16 kHz mono, device loss as discontinuity), Accessibility consent, target capture with secure-field detection, one-route insertion ([ADR 003](../decisions/003-insertion-routes.md)), global toggle shortcut with Escape cancellation, sleep/lock cancellation.
 - **ASR-01 / model provisioning:** sherpa-onnx streaming and offline adapters, pinned catalog with member digests, verified resumable downloads with atomic publish, evaluation-driven automatic bundle selection ([ADR 004](../decisions/004-automatic-model-selection.md)).
 - **COR-01 (rules):** `arion-rules-v1` conservative corrections (spacing, recognizer casing, standalone fillers, approved vocabulary) keeping raw and corrected text separate. No local LLM correction.
-- **UI-01:** menu bar icon and popover panel, click-through overlay pill with spring motion, settings (permissions, shortcut recorder, input mode, insertion, microphone meter, model, vocabulary, privacy, about), first-run onboarding with permission gates and model download; headless view tests and native window E2E; persisted English/Simplified Chinese interface language with live switching, typed catalogs and localized macOS permission resources ([i18n](../frontend/i18n.md), DSK-A09).
+- **UI-01:** menu bar icon and popover panel, click-through overlay pill with spring motion, settings (permissions, shortcut recorder, input mode, insertion, microphone meter, model, vocabulary, about with updates, privacy and project links), first-run onboarding with permission gates and model download; headless view tests and native window E2E; persisted English/Simplified Chinese interface language with live switching, typed catalogs and localized macOS permission resources ([i18n](../frontend/i18n.md), DSK-A09).
 - **IMK-01:** `ArionInput.app` InputMethodKit host with marked-text composition over local IPC ([ADR 006](../decisions/006-macos-input-method-host.md)); explicit install/remove in settings.
 - **MEM-01 (local):** approved vocabulary encrypted with AES-256-GCM, key in the Keychain/DPAPI ([ADR 005](../decisions/005-local-encryption.md)); no outbox or sync yet.
 - **EVAL-01 / DATA-01 (partial):** production-pipeline benchmark driver, corpus builder, model-comparison experiment and catalog recording; macOS product scenario driver with an owned editor fixture.
@@ -34,7 +34,7 @@ Verification results and their limits are recorded in [validation](../quality/va
 | MEM-01 (sync parts) | P1 | Crypto/pairing ADR | Outbox, approval provenance UI, export/delete |
 | SYNC-01 | P1 | MEM-01 | Self-hosted relay per 003 |
 | Hold-to-talk | P1 | Key-up adapter (event tap) | Tested native key-down/key-up adapter (DSK-02) |
-| REL-01 | P1 | Signing identities | Developer ID signing/notarization, controlled bundle ID, updater |
+| REL-01 | P1 | Signing identities | Developer ID signing/notarization, controlled bundle ID; the signed updater exists ([ADR 010](../decisions/010-in-app-updates.md)) and keeps consent across updates only once Developer ID signing lands |
 | MOBILE-01 | P2 | Desktop contract stabilization | Native keyboard constraints research only |
 
 RNK-01 cannot fabricate n-best from a recognizer that exposes a single hypothesis. A dictionary/phonetic candidate source must declare its provenance and scope.

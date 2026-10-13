@@ -28,17 +28,18 @@ tooling-test: ## Test benchmark metrics, leakage guards and driver conformance
 desktop-check: ## Compile/check native shell for current host
 	@pnpm desktop:check
 
-# Speech runtimes are cgo libraries packaged in Contents/Resources/lib.
-DESKTOP_ENV = CGO_ENABLED=1 CGO_LDFLAGS="-Wl,-rpath,@executable_path/../Resources/lib"
+# Speech runtimes are cgo libraries packaged in Contents/Resources/lib; the
+# compiler wrapper drops the module cache rpath the speech bindings link with.
+DESKTOP_ENV = CGO_ENABLED=1 CC="$(CURDIR)/scripts/cc-relocatable.sh" CGO_LDFLAGS="-Wl,-rpath,@executable_path/../Resources/lib"
 
 desktop-libs: ## Stage speech runtimes, localized permission copy and the macOS input method
 	@node scripts/stage-desktop-localizations.mjs
 	@node scripts/stage-native-libs.mjs darwin
 	@node scripts/build-input-method.mjs
 
-desktop-build: desktop-libs ## Package the native app for current host
-	@cd apps/desktop && $(DESKTOP_ENV) go tool mygo build -skip-dmg
-	@node scripts/finalize-macos-app.mjs
+desktop-build: desktop-libs ## Package the native app, its disk image and (with MYGO_UPDATER_PRIVATE_KEY) signed updates
+	@cd apps/desktop && $(DESKTOP_ENV) go tool mygo build
+	@node scripts/verify-macos-app.mjs
 
 desktop-dev: desktop-libs ## Launch the native app in development mode
 	@cd apps/desktop && $(DESKTOP_ENV) go tool mygo dev

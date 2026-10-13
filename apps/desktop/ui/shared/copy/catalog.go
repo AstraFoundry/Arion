@@ -191,6 +191,15 @@ func (c Catalog) Version(version string) string {
 	return c.format(FormatVersion, "version", version)
 }
 
+// UpdateAvailable and UpdateTo name a newer release.
+func (c Catalog) UpdateAvailable(version string) string {
+	return c.format(FormatUpdateAvailable, "version", version)
+}
+
+func (c Catalog) UpdateTo(version string) string {
+	return c.format(FormatUpdateTo, "version", version)
+}
+
 func (c Catalog) Step(index, total int) string {
 	return c.format(FormatStep, "index", strconv.Itoa(index), "total", strconv.Itoa(total))
 }

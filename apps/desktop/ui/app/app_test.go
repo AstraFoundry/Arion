@@ -17,6 +17,7 @@ import (
 	"arion.local/desktop/ui/pages/onboarding"
 	"arion.local/desktop/ui/pages/overlay"
 	"arion.local/desktop/ui/pages/settings"
+	"arion.local/desktop/ui/shared/config"
 	"arion.local/desktop/ui/shared/copy"
 	"arion.local/desktop/ui/shared/runtime"
 	"github.com/egoist/mygo/transfer"
@@ -52,6 +53,13 @@ func (r *recorder) TestShortcut(testing bool)   { r.call("test-shortcut") }
 func (r *recorder) RemoveReplacement(id string) { r.call("remove:" + id) }
 func (r *recorder) RequestInputMonitoring()     { r.call("request-monitoring") }
 func (r *recorder) CloseGuide()                 { r.call("close-guide") }
+func (r *recorder) CheckForUpdates()            { r.call("check-update") }
+func (r *recorder) InstallUpdate()              { r.call("install-update") }
+func (r *recorder) RestartToUpdate()            { r.call("restart-update") }
+func (r *recorder) OpenUpdate() {
+	r.call("open-update")
+	r.state.Focus = runtime.SettingsFocus{Section: settings.About, Seq: r.state.Focus.Seq + 1}
+}
 func (r *recorder) SetHoldKey(key runtime.HoldKey) {
 	r.call("hold:" + string(key))
 	r.state.Preferences.HoldKey = key
@@ -104,7 +112,7 @@ func fixture() (*runtime.State, *recorder, runtime.Store) {
 	state := &runtime.State{
 		Version:     "0.1.0",
 		Permissions: runtime.Permissions{Microphone: runtime.ConsentGranted, Accessibility: runtime.ConsentGranted},
-		Preferences: runtime.Preferences{Mode: runtime.ModeShortcut, Shortcut: "Alt+Space", Delivery: runtime.DeliveryAutomatic, RemoveFillers: true, Sounds: true},
+		Preferences: runtime.Preferences{Mode: runtime.ModeShortcut, Shortcut: "Alt+Space", Delivery: runtime.DeliveryAutomatic, RemoveFillers: true, Sounds: true, CheckUpdates: true},
 		InputMethod: runtime.InputMethodAbsent,
 		Shortcut:    runtime.Shortcut{Accelerator: "Alt+Space", Registered: true},
 		Model:       runtime.Model{State: runtime.ModelReady, Active: recommended, Automatic: true, LatencyMeasured: true, Bundles: []runtime.Bundle{recommended, other}},
@@ -286,8 +294,7 @@ func TestSettingsSections(t *testing.T) {
 		{settings.Microphone, copy.For(copy.English).Text(copy.NavMicrophone), copy.For(copy.English).Text(copy.MicTest)},
 		{settings.Model, copy.For(copy.English).Text(copy.NavModel), copy.For(copy.English).Text(copy.ModelReason)},
 		{settings.Vocabulary, copy.For(copy.English).Text(copy.NavVocabulary), copy.For(copy.English).Text(copy.VocabEmpty)},
-		{settings.Privacy, copy.For(copy.English).Text(copy.NavPrivacy), copy.For(copy.English).Text(copy.PrivacyLocal)},
-		{settings.About, copy.For(copy.English).Text(copy.NavAbout), copy.For(copy.English).Text(copy.AboutCredits)},
+		{settings.About, copy.For(copy.English).Text(copy.NavAbout), copy.For(copy.English).Text(copy.PrivacyLocal)},
 	} {
 		if err := tt.Click(section.label); err != nil {
 			t.Fatal(err)
@@ -387,6 +394,123 @@ func TestSettingsSections(t *testing.T) {
 }
 
 // TestDarkAppearance renders the main surfaces with the dark tokens.
+func TestAboutLinks(t *testing.T) {
+	_, _, store := fixture()
+	page := settings.NewPage()
+	page.Section = settings.About
+	tt := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, SettingsWidth, SettingsHeight)
+	settle(tt)
+	en := copy.For(copy.English)
+	links := []struct{ label, url string }{
+		{config.Team, config.TeamURL}, {config.Repository, config.RepositoryURL}, {config.XHandle, config.XURL},
+		{en.Text(copy.AboutFeedbackLink), config.IssuesURL}, {config.License, config.LicenseURL},
+	}
+	// The links close the section, below the fold.
+	tt.Scroll(SettingsWidth/2, SettingsHeight/2, 0, 2000)
+	settle(tt)
+	var want []string
+	for _, link := range links {
+		if err := tt.Click(link.label); err != nil {
+			t.Fatalf("%s: %v %q", link.label, err, tt.Texts())
+		}
+		want = append(want, link.url)
+	}
+	if got := tt.OpenedURLs(); strings.Join(got, " ") != strings.Join(want, " ") {
+		t.Errorf("opened %q, want %q", got, want)
+	}
+	snapshot(t, tt, "settings-about-links")
+	// The banner loops a dictation; reduced motion holds its final frame.
+	tt.SetPreferences(ui.Preferences{ReduceMotion: true})
+	settle(tt)
+	if !hasText(tt, en.Text(copy.PillInserted)) {
+		t.Errorf("reduced motion: %q", tt.Texts())
+	}
+	tt.SetDark(true)
+	settle(tt)
+	snapshot(t, tt, "dark-about")
+}
+
+func TestUpdateStates(t *testing.T) {
+	state, actions, store := fixture()
+	page := settings.NewPage()
+	page.Section = settings.About
+	tt := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, SettingsWidth, SettingsHeight)
+	en := copy.For(copy.English)
+	for _, step := range []struct {
+		update runtime.Update
+		want   string
+		click  string
+		call   string
+	}{
+		{runtime.Update{Phase: runtime.UpdateUnsupported}, en.Text(copy.UpdateUnsupported), "", ""},
+		{runtime.Update{Phase: runtime.UpdateIdle}, en.Text(copy.AboutUpdates), en.Text(copy.UpdateCheck), "check-update"},
+		{runtime.Update{Phase: runtime.UpdateCurrent}, en.Text(copy.UpdateCurrent), en.Text(copy.UpdateCheck), "check-update"},
+		{runtime.Update{Phase: runtime.UpdateAvailable, Version: "0.2.0"}, en.UpdateAvailable("0.2.0"), en.Text(copy.UpdateInstall), "install-update"},
+		{runtime.Update{Phase: runtime.UpdateDownloading, Version: "0.2.0", Downloaded: 3 << 20, Total: 12 << 20}, en.Progress(3<<20, 12<<20), "", ""},
+		{runtime.Update{Phase: runtime.UpdateReady, Version: "0.2.0"}, en.Text(copy.UpdateReady), en.Text(copy.UpdateRestart), "restart-update"},
+		{runtime.Update{Phase: runtime.UpdateFailed, Failed: runtime.UpdateStepCheck}, en.Text(copy.UpdateCheckFailed), en.Text(copy.Retry), "check-update"},
+		{runtime.Update{Phase: runtime.UpdateFailed, Failed: runtime.UpdateStepInstall, Version: "0.2.0"}, en.Text(copy.UpdateInstallFailed), en.Text(copy.Retry), "install-update"},
+	} {
+		state.Update = step.update
+		actions.calls = nil
+		settle(tt)
+		if !hasText(tt, step.want) {
+			t.Errorf("%s: want %q in %q", step.update.Phase, step.want, tt.Texts())
+		}
+		// The automatic check is offered wherever the build can update.
+		if hasText(tt, en.Text(copy.UpdateAuto)) == (step.update.Phase == runtime.UpdateUnsupported) {
+			t.Errorf("%s: automatic check row %q", step.update.Phase, tt.Texts())
+		}
+		if step.click != "" {
+			if err := tt.Click(step.click); err != nil || !actions.called(step.call) {
+				t.Errorf("%s: click %q: %v %q", step.update.Phase, step.click, err, actions.calls)
+			}
+		}
+		snapshot(t, tt, "settings-about-update-"+string(step.update.Phase)+string(step.update.Failed))
+	}
+	state.Update = runtime.Update{Phase: runtime.UpdateCurrent}
+	settle(tt)
+	// The switch sits at the row's trailing edge, level with its title and detail.
+	title, ok := tt.Find(en.Text(copy.UpdateAuto))
+	if !ok {
+		t.Fatalf("no automatic check row: %q", tt.Texts())
+	}
+	tt.ClickAt(SettingsWidth-60, title.Y+title.H)
+	settle(tt)
+	if state.Preferences.CheckUpdates {
+		t.Error("automatic check not turned off")
+	}
+}
+
+func TestUpdateNotice(t *testing.T) {
+	state, actions, store := fixture()
+	panel := &menubar.Panel{}
+	tt := ui.NewTester(func(c *ui.Context) { panel.Render(c, store) }, PanelWidth, PanelHeight)
+	en := copy.For(copy.English)
+	settle(tt)
+	if hasText(tt, en.UpdateTo("0.2.0")) {
+		t.Fatal("notice without an update")
+	}
+	state.Update = runtime.Update{Phase: runtime.UpdateAvailable, Version: "0.2.0"}
+	settle(tt)
+	snapshot(t, tt, "panel-update")
+	if err := tt.Click(en.UpdateTo("0.2.0")); err != nil || !actions.called("open-update") {
+		t.Fatalf("notice: %v %q", err, actions.calls)
+	}
+	// The settings window follows the request to the update.
+	page := settings.NewPage()
+	settingsTester := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, SettingsWidth, SettingsHeight)
+	settle(settingsTester)
+	if page.Section != settings.About {
+		t.Fatalf("section %q", page.Section)
+	}
+	page.Section = settings.General
+	settle(settingsTester)
+	if page.Section != settings.General {
+		t.Fatal("an applied request moved the page again")
+	}
+}
+
 func TestDarkAppearance(t *testing.T) {
 	_, _, store := fixture()
 	panel := &menubar.Panel{}
@@ -543,7 +667,7 @@ func TestChineseSettingsAndTransientErrors(t *testing.T) {
 	}{
 		{settings.General, copy.LanguageLabel}, {settings.Dictation, copy.ShortcutLabel},
 		{settings.Microphone, copy.MicTest}, {settings.Model, copy.ModelReason},
-		{settings.Vocabulary, copy.VocabEmpty}, {settings.Privacy, copy.PrivacyLocal}, {settings.About, copy.AboutCredits},
+		{settings.Vocabulary, copy.VocabEmpty}, {settings.About, copy.PrivacyLocal},
 	} {
 		page.Section = section.id
 		settle(tt)

@@ -13,6 +13,8 @@ var (
 	markPNG []byte
 	//go:embed backdrop.jpg
 	backdropJPEG []byte
+	//go:embed astrafoundry.png
+	teamPNG []byte
 )
 
 // Mark is the app icon, drawn wherever Arion names itself.
@@ -20,6 +22,9 @@ var Mark = mustDecode(markPNG)
 
 // Backdrop is the motion-blurred photograph under illustrated mock UI.
 var Backdrop = mustDecode(backdropJPEG)
+
+// Team is the AstraFoundry organization avatar, as GitHub shows it.
+var Team = mustDecode(teamPNG)
 
 // mustDecode decodes an embedded image; one that does not decode is a
 // build defect, not a runtime condition.

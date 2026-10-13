@@ -8,9 +8,12 @@
 | Approved vocabulary/correction/preferences | Encrypted local values | Client-encrypted sync only when enabled |
 | Group/device keys and auth tokens | OS credential store | Never logs/config/export without explicit protected flow |
 | Models | Per-user verified model cache | Public artifact downloads only; no speech payload |
+| App updates | Signed archive replaces the installed app | Release manifest and archive downloads from GitHub releases only; no content payload; checks can be turned off |
 | Performance diagnostics | Local content-free metrics | No remote telemetry enabled by this foundation |
 
 PRV-01: Dictation and ranking have no cloud inference route. Model downloads and encrypted self-hosted sync are separately enabled surfaces; test their destinations and payload classes.
+
+PRV-07: Update checks request only the public release manifest and archive of the configured GitHub repository. They carry no audio, text, vocabulary, preference or device identifier, run only while the user's automatic-check preference is on or on an explicit request, and an archive whose Ed25519 signature does not match the built-in key is never installed ([ADR 010](../docs/decisions/010-in-app-updates.md)).
 
 PRV-02: Context read is limited to the focused opted-in application/field and bounded text. No broad screen capture, keystroke history or full document scraping. Secure/unknown fields disable reads/learning. User denylist overrides per-app preferences.
 
@@ -24,4 +27,4 @@ PRV-06: A self-hosted operator can observe timing, IP/device/group routing metad
 
 ## Acceptance
 
-PRV-A01: offline capture/rank/correction generates no content network traffic; PRV-A02: artifact/log scan excludes synthetic sensitive canaries; PRV-A03: cancel/restart leaves no temporary PCM files; PRV-A04: relay backup contains ciphertext only; PRV-A05: denylist/password/unknown field blocks context; PRV-A06: lost keys cannot silently create plaintext data or replace old encrypted records.
+PRV-A01: offline capture/rank/correction generates no content network traffic; PRV-A02: artifact/log scan excludes synthetic sensitive canaries; PRV-A03: cancel/restart leaves no temporary PCM files; PRV-A04: relay backup contains ciphertext only; PRV-A05: denylist/password/unknown field blocks context; PRV-A06: lost keys cannot silently create plaintext data or replace old encrypted records; PRV-A07: with automatic checks off, or in the offline profile, the app makes no update request, and a tampered update archive is rejected.

@@ -31,3 +31,6 @@ out/
 
 # Generated native permission localizations (source: shared copy catalogs)
 /apps/desktop/resources/darwin/*.lproj/
+
+# Update signing keys never enter the repository.
+mygo-update.key

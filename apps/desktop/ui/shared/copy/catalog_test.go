@@ -86,15 +86,17 @@ func TestFormatting(t *testing.T) {
 	for _, tc := range []struct {
 		locale                          Locale
 		progress, millis, version, step string
+		available, updateTo             string
 	}{
-		{English, "63 MB of 134 MB", "312 ms", "Version 0.1.0", "Step 2 of 7"},
-		{SimplifiedChinese, "63 MB / 134 MB", "312 毫秒", "版本 0.1.0", "第 2 步，共 7 步"},
+		{English, "63 MB of 134 MB", "312 ms", "Version 0.1.0", "Step 2 of 7", "Version 0.2.0 is available", "Update to 0.2.0"},
+		{SimplifiedChinese, "63 MB / 134 MB", "312 毫秒", "版本 0.1.0", "第 2 步，共 7 步", "新版本 0.2.0 可用", "更新到 0.2.0"},
 	} {
 		t.Run(string(tc.locale), func(t *testing.T) {
 			c := For(tc.locale)
 			for _, pair := range [][2]string{
 				{c.Progress(63<<20, 134<<20), tc.progress}, {c.Millis(312.4), tc.millis},
 				{c.Version("0.1.0"), tc.version}, {c.Step(2, 7), tc.step},
+				{c.UpdateAvailable("0.2.0"), tc.available}, {c.UpdateTo("0.2.0"), tc.updateTo},
 				{c.Percent(0.041), "4.1%"}, {c.Bytes(1 << 30), "1.0 GB"},
 				{c.Bytes(0), "0 MB"}, {c.Bytes(1 << 19), "1 MB"}, {c.Text(""), ""},
 			} {

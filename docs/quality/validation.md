@@ -89,4 +89,4 @@ DSK-A11 needs a packaged `Arion.app` and a person: the drop of Arion's file URL 
 - Streaming latency claims with annotated speech onsets (STR-A01–A04) need reviewed timestamp labels; first-partial values above are measured from audio start, not speech onset.
 - The macOS hold-key event tap with real key presses (needs Input Monitoring granted to the app by a person).
 - The consent guide against real System Settings (DSK-A11), including on macOS 27, where the Accessibility pane is renamed but keeps its URL.
-- No Developer ID signing, notarization or updater.
+- No Developer ID signing or notarization. The updater is covered by state and schedule unit tests and a locally signed archive; installing a published release has not run, since none is published.

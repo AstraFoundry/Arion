@@ -22,7 +22,7 @@ type Scene int
 
 const (
 	// Dictating loops through a dictation: the draft streams in the pill,
-	// then lands in the editor.
+	// then lands in the editor. Reduced motion shows Inserted instead.
 	Dictating Scene = iota
 	// Listening holds the pill open over an empty editor.
 	Listening
@@ -48,6 +48,11 @@ const Window = 248
 // gradients square under a parent's rounded clip.
 func Render(c *ui.Context, tokens theme.Tokens, messages copy.Catalog, scene Scene, accelerator string, levels []float32, radius ...float32) {
 	now := c.Now()
+	// The dictation loop is decoration: with reduced motion it holds its
+	// final frame.
+	if scene == Dictating && c.Preferences().ReduceMotion {
+		scene = Inserted
+	}
 	if scene != Inserted {
 		c.AnimationFrame()
 	}

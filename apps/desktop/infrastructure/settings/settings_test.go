@@ -27,7 +27,7 @@ func TestLanguagePersistenceAndLegacyProfiles(t *testing.T) {
 		t.Fatal(err)
 	}
 	loaded, repairs, err = store.Load()
-	if err != nil || len(repairs) != 0 || loaded.UILanguage != application.English || loaded.Sounds || loaded.Shortcut != "Cmd+Shift+D" {
+	if err != nil || len(repairs) != 0 || loaded.UILanguage != application.English || loaded.Sounds || loaded.Shortcut != "Cmd+Shift+D" || !loaded.CheckUpdates {
 		t.Fatalf("legacy profile: %v %v %v", loaded, repairs, err)
 	}
 	if err := os.WriteFile(store.Path, []byte(`{"version":1,"uiLanguage":"fr"}`), 0600); err != nil {

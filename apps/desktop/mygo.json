@@ -4,6 +4,10 @@
   "version": "0.1.0",
   "copyright": "Arion contributors",
   "out": "build",
+  "updates": {
+    "publicKey": "WEZ2tNHPgq2KP405pHaCZU7hxPtss2P9lQ7nFqP7evk=",
+    "github": "AstraFoundry/Arion"
+  },
   "macos": {
     "minimumSystemVersion": "13.0",
     "entitlements": "entitlements.plist",

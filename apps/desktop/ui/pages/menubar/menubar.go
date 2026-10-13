@@ -7,6 +7,7 @@ import (
 	"arion.local/desktop/ui/features/dictate"
 	"arion.local/desktop/ui/features/provision"
 	"arion.local/desktop/ui/features/transcript"
+	"arion.local/desktop/ui/features/update"
 	"arion.local/desktop/ui/shared/copy"
 	"arion.local/desktop/ui/shared/icons"
 	"arion.local/desktop/ui/shared/kit"
@@ -53,6 +54,9 @@ func (p *Panel) Render(c *ui.Context, store arion.Store) {
 		}
 		ui.Row(c).Gap(4).AlignItems(ui.Center).Children(func() {
 			footerButton(c, tokens, icons.Settings, messages.Text(copy.SettingsMenu), store.Actions.OpenSettings)
+			if label, ok := update.Notice(store); ok {
+				footerButton(c, tokens, icons.Download, label, store.Actions.OpenUpdate)
+			}
 			ui.Spacer(c)
 			footerButton(c, tokens, icons.Power, messages.Text(copy.Quit), store.Actions.Quit)
 		})

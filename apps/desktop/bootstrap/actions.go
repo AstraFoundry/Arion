@@ -2,8 +2,10 @@ package bootstrap
 
 import (
 	"strings"
+	"time"
 
 	"arion.local/core/application"
+	"arion.local/desktop/ui/pages/settings"
 	arion "arion.local/desktop/ui/shared/runtime"
 	"github.com/egoist/mygo"
 )
@@ -11,17 +13,26 @@ import (
 // actions implements runtime.Actions. Views call it on the main thread.
 type actions struct{ a *App }
 
-func (x actions) ToggleDictation()          { x.a.core.Toggle() }
-func (x actions) CancelDictation()          { x.a.core.Cancel() }
-func (x actions) RequestMicrophone()        { x.a.platform.RequestMicrophone() }
-func (x actions) OpenMicrophoneSettings()   { x.a.platform.OpenMicrophoneSettings() }
-func (x actions) CloseGuide()               { x.a.closeGuide(true) }
-func (x actions) RetryModel()               { go x.a.activate(x.a.state.Preferences.ModelOverride) }
-func (x actions) StartLevelMonitor()        { x.a.startMonitor() }
-func (x actions) StopLevelMonitor()         { x.a.stopMonitor() }
-func (x actions) RefreshDevices()           { go x.a.refreshDevicesAsync() }
-func (x actions) CopyText(text string)      { mygo.Clipboard.WriteText(text) }
-func (x actions) OpenSettings()             { x.a.openSettings() }
+func (x actions) ToggleDictation()        { x.a.core.Toggle() }
+func (x actions) CancelDictation()        { x.a.core.Cancel() }
+func (x actions) RequestMicrophone()      { x.a.platform.RequestMicrophone() }
+func (x actions) OpenMicrophoneSettings() { x.a.platform.OpenMicrophoneSettings() }
+func (x actions) CloseGuide()             { x.a.closeGuide(true) }
+func (x actions) RetryModel()             { go x.a.activate(x.a.state.Preferences.ModelOverride) }
+func (x actions) StartLevelMonitor()      { x.a.startMonitor() }
+func (x actions) StopLevelMonitor()       { x.a.stopMonitor() }
+func (x actions) RefreshDevices()         { go x.a.refreshDevicesAsync() }
+func (x actions) CopyText(text string)    { mygo.Clipboard.WriteText(text) }
+func (x actions) OpenSettings()           { x.a.openSettings() }
+func (x actions) CheckForUpdates()        { x.a.updates.check(time.Now(), true) }
+func (x actions) InstallUpdate()          { x.a.updates.install() }
+func (x actions) RestartToUpdate()        { mygo.App.Relaunch() }
+
+// OpenUpdate shows Settings › About, where the update is installed.
+func (x actions) OpenUpdate() {
+	x.a.state.Focus = arion.SettingsFocus{Section: settings.About, Seq: x.a.state.Focus.Seq + 1}
+	x.a.openSettings()
+}
 func (x actions) Quit()                     { mygo.App.Quit() }
 func (x actions) TestShortcut(testing bool) { x.a.testingShortcut = testing }
 
@@ -58,6 +69,9 @@ func (x actions) UpdatePreferences(change func(*application.Preferences)) {
 	}
 	if next.Mode != before.Mode {
 		a.core.SetMode(next.Mode)
+	}
+	if next.CheckUpdates && !before.CheckUpdates && a.updates.due(time.Now()) {
+		a.updates.check(time.Now(), false)
 	}
 }
 

@@ -34,6 +34,9 @@ type Preferences struct {
 	LaunchAtLogin       bool             `json:"launchAtLogin"`
 	Microphone          string           `json:"microphone"`
 	ModelOverride       string           `json:"modelOverride"`
+	// CheckUpdates asks the release feed for a newer version at launch and
+	// periodically. Profiles written before it existed load the default.
+	CheckUpdates bool `json:"checkUpdates"`
 }
 
 // PreferencesVersion is the current schema; older files are migrated.
@@ -54,7 +57,7 @@ const DefaultShortcut = "Alt+Space"
 func DefaultPreferences() Preferences {
 	return Preferences{
 		Version: PreferencesVersion, UILanguage: English, Mode: domain.ShortcutMode, Shortcut: DefaultShortcut,
-		Delivery: DeliveryAutomatic, RemoveFillers: true, Sounds: true,
+		Delivery: DeliveryAutomatic, RemoveFillers: true, Sounds: true, CheckUpdates: true,
 	}
 }
 

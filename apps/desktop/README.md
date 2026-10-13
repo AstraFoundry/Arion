@@ -18,6 +18,8 @@ MyGo native Go module: the menu bar app, its windows (overlay pill, menu bar pan
 
 Speech runtimes are cgo libraries: build with `make desktop-build` / `make desktop-dev`, which stage the pinned dylibs/DLLs into `resources/` and set the rpath. See [local development](../../docs/operations/local-dev.md) and [architecture](../../docs/project/architecture.md).
 
+Settings › About checks for updates and installs them: the latest published [GitHub release](https://github.com/AstraFoundry/Arion/releases) is the only source, and an archive must carry the Ed25519 signature of the key in `mygo.json` ([ADR 010](../../docs/decisions/010-in-app-updates.md)). Checks run at launch and every 6 hours while "Check automatically" is on; the menu bar panel shows a pending update. Development runs and offline/E2E profiles never check.
+
 The interface defaults to English; choose English or Simplified Chinese in General settings or onboarding. The choice persists and updates existing windows without restarting dictation. Copy keys, formatting, native permission resources and verification commands are documented in [i18n](../../docs/frontend/i18n.md).
 
 Dictation starts from the toggle shortcut (default ⌥Space / Alt+Space) or, optionally, a hold key chosen in Dictation settings: fn, right Option or right Command on macOS; right Alt or right Ctrl on Windows. Holding the key past 300 ms dictates until release; a shorter tap keeps dictating until the next press; another key pressed during a hold that started the session cancels it (a chord such as fn+arrow inserts nothing). On macOS the hold key needs Input Monitoring consent; without it settings shows the missing consent with a way to grant it, and the toggle shortcut keeps working.

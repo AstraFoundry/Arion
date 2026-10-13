@@ -9,6 +9,7 @@ import (
 	"runtime"
 
 	uiapp "arion.local/desktop/ui/app"
+	"arion.local/desktop/ui/features/update"
 	"arion.local/desktop/ui/shared/copy"
 	arion "arion.local/desktop/ui/shared/runtime"
 	"github.com/egoist/mygo"
@@ -61,12 +62,16 @@ func (a *App) createTray() {
 		if a.state.Dictation.State == arion.StateCapturing {
 			label = a.ui.Copy().Text(copy.TrayStop)
 		}
-		menu := mygo.NewMenu([]*mygo.MenuItem{
+		items := []*mygo.MenuItem{
 			{Label: label, Accelerator: a.state.Shortcut.Accelerator, Click: func(*mygo.MenuItem, *mygo.Window) { a.core.Toggle() }},
 			mygo.Separator(),
 			{Label: a.ui.Copy().Text(copy.TraySettings), Accelerator: "CmdOrCtrl+,", Click: func(*mygo.MenuItem, *mygo.Window) { a.openSettings() }},
-			{Label: a.ui.Copy().Text(copy.TrayQuit), Accelerator: "CmdOrCtrl+Q", Click: func(*mygo.MenuItem, *mygo.Window) { mygo.App.Quit() }},
-		})
+		}
+		if notice, ok := update.Notice(a.ui); ok {
+			items = append(items, &mygo.MenuItem{Label: notice, Click: func(*mygo.MenuItem, *mygo.Window) { actions{a}.OpenUpdate() }})
+		}
+		items = append(items, &mygo.MenuItem{Label: a.ui.Copy().Text(copy.TrayQuit), Accelerator: "CmdOrCtrl+Q", Click: func(*mygo.MenuItem, *mygo.Window) { mygo.App.Quit() }})
+		menu := mygo.NewMenu(items)
 		tray.SetMenu(menu)
 		defer tray.SetMenu(nil)
 		tray.PopUpMenu()

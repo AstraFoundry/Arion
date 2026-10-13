@@ -229,6 +229,58 @@ type Shortcut struct {
 	Holding bool
 }
 
+// UpdatePhase is where the app is in updating itself.
+type UpdatePhase string
+
+const (
+	// UpdateUnsupported: this build cannot replace itself (a development
+	// build, or an install location the user cannot write).
+	UpdateUnsupported UpdatePhase = "unsupported"
+	UpdateIdle        UpdatePhase = "idle"
+	UpdateChecking    UpdatePhase = "checking"
+	UpdateCurrent     UpdatePhase = "current"
+	UpdateAvailable   UpdatePhase = "available"
+	UpdateDownloading UpdatePhase = "downloading"
+	// UpdateReady: the new version replaced the app on disk and runs after
+	// a restart.
+	UpdateReady  UpdatePhase = "ready"
+	UpdateFailed UpdatePhase = "failed"
+)
+
+// Update is the newest release known and how far installing it got.
+type Update struct {
+	Phase UpdatePhase
+	// Version and Notes (Markdown) describe the newer release.
+	Version string
+	Notes   string
+	// Downloaded and Total count bytes while Phase is UpdateDownloading.
+	Downloaded, Total int64
+	// Checked is when the release feed last answered.
+	Checked time.Time
+	// Failed is the step that failed while Phase is UpdateFailed.
+	Failed UpdateStep
+}
+
+// UpdateStep is a step of updating that can fail.
+type UpdateStep string
+
+const (
+	UpdateStepCheck   UpdateStep = "check"
+	UpdateStepInstall UpdateStep = "install"
+)
+
+// Pending reports a newer version the user has not restarted into yet.
+func (u Update) Pending() bool {
+	return u.Phase == UpdateAvailable || u.Phase == UpdateDownloading || u.Phase == UpdateReady
+}
+
+// SettingsFocus asks the settings window to show a section. Seq increases
+// with each request, so a page applies each one once.
+type SettingsFocus struct {
+	Section string
+	Seq     int
+}
+
 // State is everything views read. The composition root mutates it only on
 // the main thread and then invalidates windows.
 type State struct {
@@ -242,6 +294,9 @@ type State struct {
 	Shortcut    Shortcut
 	InputMethod InputMethodState
 	Guide       Guide
+	Update      Update
+	// Focus is the settings section last asked for from outside settings.
+	Focus SettingsFocus
 	// MonitorLevels feed the microphone test meter, newest last.
 	MonitorLevels []float32
 	LastText      string
@@ -281,6 +336,14 @@ type Actions interface {
 	RemoveReplacement(id string)
 	CopyText(text string)
 	OpenSettings()
+	// OpenUpdate shows the update in Settings › About.
+	OpenUpdate()
+	// CheckForUpdates asks the release feed now.
+	CheckForUpdates()
+	// InstallUpdate downloads, verifies and installs the available version.
+	InstallUpdate()
+	// RestartToUpdate relaunches into the installed version.
+	RestartToUpdate()
 	CompleteOnboarding()
 	Quit()
 }

@@ -71,8 +71,9 @@ Use these instead of `ui.Button` / `ui.PrimaryButton`. MyGo's stock switches, ra
 
 `widgets/showcase` draws mock UI (another app's editor window and the dictation pill) floating on a photograph from `ui/shared/assets`. Its scenes follow the real flow: `Dictating` loops the draft streaming in the pill and then landing in the editor, `Listening` holds the pill open (with live levels when the microphone is allowed), and `Inserted` shows the outcome.
 
-- Only onboarding (the left pane) and Settings › About use illustrations.
-- Photos are already soft (motion blur or shallow focus), downscaled to 1000 px at most, under 200 KB, under the Unsplash License or equivalent, and credited in `copy.AboutCredits`. See `ui/shared/assets/README.md`.
+- Only onboarding (the left pane) and Settings › About use illustrations. Settings › About loops `Dictating`; with Reduce Motion every `Dictating` scene holds the `Inserted` frame.
+- Photos are already soft (motion blur or shallow focus), downscaled to 1000 px at most, under 200 KB, and under the Unsplash License or equivalent. See `ui/shared/assets/README.md`.
+- Settings › About holds, in order: the illustration with name and version, software update (`features/update`), the Privacy group, and the team, source, X account, bug reports and license. Their URLs and proper names live in `ui/shared/config`; only the row titles are copy keys.
 - Mock surfaces are solid with real elevation; no glass panes, glows or tinted gradients. Scrims are ink gradients only where text or controls overlap the photo.
 - Mock copy comes from `copy` (`ShowcaseSentence` mixes Chinese and English, as real dictation does), and the illustration is labeled for assistive technology (`ShowcaseLabel`).
 
