@@ -155,10 +155,13 @@ func TestSettingsWindowLifecycle(t *testing.T) {
 	if !nonblank(capture(t, settings, "settings", 640, 440)) {
 		t.Fatal("settings content blank")
 	}
-	settings.SetContentSize(820, 600)
-	if !within(5*time.Second, func() bool { w, h := settings.ContentSize(); return w == 820 && h == 600 }) {
-		w, h := settings.ContentSize()
-		t.Fatalf("settings content size %dx%d after resize to 820x600", w, h)
+	// Outer bounds: MyGo v0.4.6 on Windows maps content size to the outer
+	// size of a hidden-title-bar window, which Windows 10 then narrows by
+	// the resize frame (docs/research/mygo.md).
+	settings.SetSize(820, 600)
+	if !within(5*time.Second, func() bool { w, h := settings.Size(); return w == 820 && h == 600 }) {
+		w, h := settings.Size()
+		t.Fatalf("settings size %dx%d after resize to 820x600", w, h)
 	}
 	var closed atomic.Int32
 	settings.OnClosed(func() { closed.Add(1) })

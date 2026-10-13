@@ -176,3 +176,10 @@ does not establish that they already exist.
 ## Arion foundation validation
 
 The repository subsequently resolved MyGo v0.4.6 with automatic Go 1.27.1 selection. Its minimal native module passed Go compile/tests/vet on this macOS arm64 host, and the pinned CLI produced an ad hoc signed `.app` and DMG. Direct Windows amd64 cross-compilation and the pinned CLI executable build also passed; NSIS installer creation was skipped on this host. The generated shell plist declares macOS 12.0 minimum; this is not a minimum-version promise for future inference/IME adapters. No interactive UI, microphone, IMK/TSF or Windows runtime behavior was exercised. CI native jobs are configured but have not run remotely in this investigation. See [local development](../operations/local-dev.md).
+
+### Observed on Windows (CI, windows-2022)
+
+The native E2E job runs on the GitHub-hosted Windows Server 2022 desktop. Overlay, settings and onboarding windows open, draw and close; Notepad insertion through `SendInput` and the focus-change guard pass. Two platform facts surfaced:
+
+- Layered child windows, which MyGo uses for the controls of a hidden title bar, need the Windows 8+ `supportedOS` entry in the executable manifest. `mygo build` embeds it; a bare `go test` binary needs the external `e2e/windows.manifest`.
+- `Window.SetContentSize` on a `TitleBarHidden` window sets the outer size without frame adjustment, and Windows 10 still excludes the 8 px resize frame from the client area: a request for 820x600 yields 804x592 content. Arion does not resize windows programmatically; the E2E test resizes by outer bounds.
