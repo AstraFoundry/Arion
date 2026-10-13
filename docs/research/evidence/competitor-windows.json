@@ -1,0 +1,143 @@
+{
+  "schema_version": 1,
+  "scope": "Bounded shipped-artifact window configuration study. No competitor execution, user data, audio or network interception. CW identifiers are local observations from inert literal decoding, Mach-O Objective-C metadata and system otool disassembly, not REA Evidence IDs.",
+  "targets": {
+    "typeless": {
+      "root": "/Applications/Typeless.app",
+      "version": "2.8.1",
+      "build": "2.8.1.130",
+      "source": "Contents/Resources/app.asar:dist/main/index.js",
+      "source_sha256": "7b87e1578597b6fce6b6589a2f8aa18496e9513f0e74d0b8b26186a641b59ade",
+      "decode_method": "Existing deterministic Python lookup-array rotation and substitution; bootstrap JavaScript never executed.",
+      "local_decode_script": ".workspace/research/competitor-rewrite/decode-typeless.py"
+    },
+    "doubao": {
+      "root": "/Library/Input Methods/DoubaoIme.app",
+      "version": "1.0.2",
+      "arm64_sha256": "266f49f6bcb62e43c5170620d4b86e2e4c4ef873bcce624ef1a90b9c46244983"
+    }
+  },
+  "observations": [
+    {
+      "id": "CW-typeless-floating",
+      "authority": "shipped-artifact",
+      "confidence": "observed",
+      "source_character_start": 182200,
+      "source_utf8_byte_start": 182455,
+      "fullscreen_option_utf8_byte_offset": 183984,
+      "window_route": "FLOATING_BAR",
+      "configuration": {
+        "type": "panel",
+        "focusable": false,
+        "transparent": true,
+        "frame": false,
+        "setHiddenInMissionControl": true,
+        "setAlwaysOnTop": {
+          "enabled": true,
+          "level": "screen-saver",
+          "relativeLevel": 1
+        },
+        "setVisibleOnAllWorkspaces": {
+          "enabled": true,
+          "visibleOnFullScreen": true,
+          "skipTransformProcessType": true
+        },
+        "setFullScreenable": false
+      },
+      "display_selection": "Cursor nearest display, refreshed every 100 ms.",
+      "limitations": [
+        "Static installed source config; actual Electron native flags and full-screen execution unobserved."
+      ]
+    },
+    {
+      "id": "CW-doubao-panel-hierarchy",
+      "authority": "shipped-artifact",
+      "confidence": "observed",
+      "locations": {
+        "ASRPanel_class": "0x10132ec70",
+        "BaseCapsulePanel_class": "0x10132e9e0",
+        "ASRTipPanel_class": "0x10132e8d8"
+      },
+      "hierarchy": "ASRPanel -> BaseCapsulePanel -> NSPanel; ASRTipPanel -> NSPanel",
+      "limitations": [
+        "Class hierarchy does not establish runtime presentation."
+      ]
+    },
+    {
+      "id": "CW-doubao-asr-init",
+      "authority": "shipped-artifact",
+      "confidence": "derived",
+      "function_range": {
+        "start": "0x1000ff188",
+        "end_exclusive": "0x1000ff678"
+      },
+      "instructions": {
+        "super_init_styleMask": "0x1000ff4a8: w2=0x80; objc_msgSendSuper2 at 0x1000ff4b4",
+        "floatingPanel": "0x1000ff538: w2=1; objc_msgSend at 0x1000ff53c",
+        "level": "0x1000ff554: w2=3; objc_msgSend at 0x1000ff558"
+      },
+      "selector_references": {
+        "initWithContentRect:styleMask:backing:defer:": "0x1013245e8",
+        "setFloatingPanel:": "0x1013245f8",
+        "setLevel:": "0x1013245f0"
+      },
+      "configuration": {
+        "styleMask_raw": 128,
+        "styleMask_interpretation": "nonactivatingPanel",
+        "floatingPanel": true,
+        "level_raw": 3
+      },
+      "limitations": [
+        "No setCollectionBehavior call was observed inside this constructor. Later configuration, framework changes and runtime full-screen visibility are unresolved."
+      ]
+    },
+    {
+      "id": "CW-doubao-tip-create",
+      "authority": "shipped-artifact",
+      "confidence": "derived",
+      "function_range": {
+        "start": "0x100035ae8",
+        "end_exclusive": "0x100036840"
+      },
+      "instructions": {
+        "ASRTipPanel_type_metadata": "call 0x1000f962c at 0x100036410; metadata loads 0x10132e8d8",
+        "init_styleMask": "0x100036430: w2=0x80",
+        "level": "0x100036454: w2=3",
+        "floatingPanel": "0x100036468: w2=1",
+        "collectionBehavior": "0x10003647c: w2=0x101; objc_msgSend at 0x100036480",
+        "hidesOnDeactivate": "0x1000364f8: w2=0"
+      },
+      "selector_references": {
+        "setCollectionBehavior:": "0x101324600",
+        "setHidesOnDeactivate:": "0x101324628"
+      },
+      "configuration": {
+        "styleMask_raw": 128,
+        "floatingPanel": true,
+        "level_raw": 3,
+        "collectionBehavior_raw": 257,
+        "collectionBehavior_interpretation": [
+          "canJoinAllSpaces",
+          "fullScreenAuxiliary"
+        ],
+        "hidesOnDeactivate": false
+      },
+      "limitations": [
+        "This is the ASR tip panel creation path, not proof all ASR windows share its collection behavior."
+      ]
+    }
+  ],
+  "reproduction": [
+    "Read documented installed artifact and SHA-256 identities before continuing.",
+    "Decode Typeless inert literals using .workspace/research/competitor-rewrite/decode-typeless.py.",
+    "otool -ov .workspace/research/doubao-rea/DoubaoIme-arm64",
+    "otool -tvV .workspace/research/doubao-rea/DoubaoIme-arm64",
+    "Map Mach-O segment addresses and __objc_selrefs to selector literals; confirm arm64 x2 arguments at the listed call sites.",
+    "python3 .workspace/research/doubao-rea/unwind_starts.py .workspace/research/doubao-rea/DoubaoIme-arm64 19026440 0x1000ff530 0x100036474"
+  ],
+  "limitations": [
+    "macOS SDK constant names interpret observed numeric arguments; no competitor runtime experiment was performed.",
+    "The bounded ASR constructor inspection cannot exclude configuration elsewhere.",
+    "Full installed app execution, focus behavior and multi-display fullscreen transitions remain unverified."
+  ]
+}

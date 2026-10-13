@@ -5,12 +5,13 @@
 #include <sys/socket.h>
 #include <sys/un.h>
 
-@interface Fixture : NSObject <NSApplicationDelegate, NSTextViewDelegate>
+@interface Fixture : NSObject <NSApplicationDelegate, NSTextViewDelegate, NSWindowDelegate>
 @property(strong) NSWindow *window;
 @property(strong) NSTextView *editorA;
 @property(strong) NSTextView *editorB;
 @property(strong) NSSecureTextField *secure;
 @property(assign) NSInteger editsA, editsB;
+@property(assign) BOOL transitioning;
 @end
 
 static NSTextView *makeEditor(NSRect frame, NSString *name) {
@@ -28,9 +29,10 @@ static NSTextView *makeEditor(NSRect frame, NSString *name) {
 @implementation Fixture
 - (void)applicationDidFinishLaunching:(NSNotification *)note {
     self.window = [[NSWindow alloc] initWithContentRect:NSMakeRect(200, 200, 520, 360)
-                                              styleMask:NSWindowStyleMaskTitled | NSWindowStyleMaskClosable
+                                              styleMask:NSWindowStyleMaskTitled | NSWindowStyleMaskClosable | NSWindowStyleMaskResizable
                                                 backing:NSBackingStoreBuffered defer:NO];
     self.window.title = @"Arion E2E Editor";
+    self.window.delegate = self;
     NSView *content = self.window.contentView;
     self.editorA = makeEditor(NSMakeRect(20, 200, 480, 140), @"Editor A");
     self.editorB = makeEditor(NSMakeRect(20, 50, 480, 140), @"Editor B");
@@ -51,6 +53,11 @@ static NSTextView *makeEditor(NSRect frame, NSString *name) {
     if (note.object == self.editorB) self.editsB++;
 }
 
+- (void)windowWillEnterFullScreen:(NSNotification *)note { self.transitioning = YES; }
+- (void)windowDidEnterFullScreen:(NSNotification *)note { self.transitioning = NO; }
+- (void)windowWillExitFullScreen:(NSNotification *)note { self.transitioning = YES; }
+- (void)windowDidExitFullScreen:(NSNotification *)note { self.transitioning = NO; }
+
 - (NSDictionary *)state {
     NSRange a = self.editorA.selectedRange, b = self.editorB.selectedRange;
     NSResponder *first = self.window.firstResponder;
@@ -62,6 +69,8 @@ static NSTextView *makeEditor(NSRect frame, NSString *name) {
         @"focused": focused,
         @"active": @(NSApp.isActive),
         @"pid": @(NSProcessInfo.processInfo.processIdentifier),
+        @"fullscreen": @((BOOL)((self.window.styleMask & NSWindowStyleMaskFullScreen) != 0)),
+        @"transitioning": @(self.transitioning),
     };
 }
 
@@ -73,6 +82,23 @@ static NSTextView *makeEditor(NSRect frame, NSString *name) {
         [self.window makeKeyAndOrderFront:nil];
         NSResponder *responder = [target isEqual:@"A"] ? self.editorA : [target isEqual:@"B"] ? self.editorB : self.secure;
         [self.window makeFirstResponder:responder];
+    } else if ([op isEqual:@"fullscreen"]) {
+        BOOL requested = [command[@"enabled"] boolValue];
+        BOOL current = (self.window.styleMask & NSWindowStyleMaskFullScreen) != 0;
+        if (requested != current) {
+            if (requested) {
+                // Match the overlay's display under the pointer, including
+                // hosts whose pointer is currently on a secondary display.
+                NSPoint pointer = NSEvent.mouseLocation;
+                for (NSScreen *screen in NSScreen.screens) {
+                    if (!NSPointInRect(pointer, screen.frame)) continue;
+                    [self.window setFrameOrigin:NSMakePoint(NSMidX(screen.frame) - self.window.frame.size.width / 2,
+                                                           NSMidY(screen.frame) - self.window.frame.size.height / 2)];
+                    break;
+                }
+            }
+            [self.window toggleFullScreen:nil];
+        }
     } else if ([op isEqual:@"reset"]) {
         self.editorA.string = @"";
         self.editorB.string = @"";

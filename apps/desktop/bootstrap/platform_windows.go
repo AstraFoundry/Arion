@@ -7,6 +7,7 @@ import (
 	"arion.local/desktop/infrastructure/holdkey"
 	"arion.local/desktop/infrastructure/windows"
 	"arion.local/desktop/ui/shared/runtime"
+	"github.com/egoist/mygo"
 )
 
 // windowsPlatform: Windows grants microphone access per app in Settings and
@@ -15,6 +16,8 @@ import (
 type windowsPlatform struct{}
 
 func newPlatform() Platform { return windowsPlatform{} }
+
+func configureOverlay(*mygo.Window) {}
 
 func (windowsPlatform) Microphone() runtime.Consent    { return runtime.ConsentGranted }
 func (windowsPlatform) Accessibility() runtime.Consent { return runtime.ConsentGranted }

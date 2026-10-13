@@ -126,6 +126,7 @@ func (a *App) createOverlay() {
 	})
 	a.overlay.SetIgnoreMouseEvents(true)
 	a.overlay.SetVisibleOnAllWorkspaces(true)
+	configureOverlay(a.overlay)
 	a.track(a.overlay, view, func() { a.overlay = nil })
 }
 

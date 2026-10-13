@@ -16,6 +16,10 @@ type darwinPlatform struct{ permissions macos.Permissions }
 
 func newPlatform() Platform { return darwinPlatform{} }
 
+func configureOverlay(window *mygo.Window) {
+	macos.ConfigureOverlay(window.NativeHandle())
+}
+
 func consent(status macos.AuthStatus) runtime.Consent {
 	switch status {
 	case macos.AuthGranted:

@@ -48,6 +48,19 @@ flowchart LR
 
 This is a static reconstruction with inferred edges, not a traced call graph. It does not imply every session takes every branch or that ASR/refinement both run on the same server/model.
 
+## Full-screen Spaces and the floating bar
+
+A focused inert-literal decoding pass recovered the installed floating-bar window configuration (`CW-typeless-floating` in [the window ledger](evidence/competitor-windows.json)). Its `FLOATING_BAR` window uses `type: "panel"`, `focusable: false`, a transparent background and no frame. Creation explicitly sets:
+
+- `setHiddenInMissionControl(true)`.
+- `setAlwaysOnTop(true, "screen-saver", 1)`.
+- `setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true, skipTransformProcessType: true })`.
+- `setFullScreenable(false)`.
+
+The interactive-card creation path also sets the same full-screen/workspace visibility and topmost level. The floating bar selects the display nearest the cursor and refreshes that selection every 100 ms. This separates placement from visibility across Spaces.
+
+These are static configuration calls from packaged `dist/main/index.js`, recovered by deterministic lookup-array substitution without executing the application bootstrap. They establish that Typeless explicitly handles full-screen Spaces in addition to always-on-top behavior. They do not establish the underlying Electron/AppKit flags, actual focus preservation, or successful presentation on this device. Arion should verify its native window policy against another app's actual full-screen Space; a high window level alone does not validate that behavior.
+
 ## Public documentation corroboration
 
 Typeless's current policy describes cloud processing of voice and limited app/text context, with optional history synchronization. That is a **vendor statement**, not proof of installed-client enforcement or server behavior. [Official privacy policy](https://www.typeless.com/privacy). Its personalization guide describes abstract style learning rather than retaining specific writing content; the actual algorithm is not established. [Official personalization guide](https://www.typeless.com/help/quickstart/personalization).

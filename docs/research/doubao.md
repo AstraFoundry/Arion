@@ -77,6 +77,16 @@ The executable is stripped, but Ghidra recovered Swift stored-property offset sy
 
 Unresolved: the routing condition between direct `insertText` and paste (its function entry was not isolated), the stale offline-model callback path, the `OimeCommon`/`OimeEngine` frameworks (including the text-display `applyDiff`, `DD-text-display`), and any runtime ordering or host behavior.
 
+## Native ASR windows and full-screen Spaces
+
+A focused read-only Mach-O metadata and arm64 disassembly pass recovered native window configuration; its local `CW-*` observations are in [the window ledger](evidence/competitor-windows.json), separately from the earlier REA decompilation evidence.
+
+`ASRPanel` inherits `BaseCapsulePanel`, which inherits `NSPanel`. The inspected ASR constructor at `0x1000ff188` initializes its superclass with style mask `0x80` (`nonactivatingPanel`), then calls `setFloatingPanel(true)` and `setLevel(3)`. It does not contain a `setCollectionBehavior:` call in the inspected constructor range; later configuration and framework changes remain unresolved. This bounded finding must not be generalized into a claim that the recording panel lacks a full-screen policy.
+
+The distinct `ASRTipPanel` creation path at `0x100035ae8` does explicitly combine style mask `0x80`, floating-panel mode, level `3`, collection behavior `0x101` (`canJoinAllSpaces | fullScreenAuxiliary`) and `hidesOnDeactivate: false`. Its Objective-C class metadata also declares `canBecomeKeyWindow` and `canBecomeMainWindow` properties. Their actual behavior and presentation were not exercised.
+
+This supports a native nonactivating-panel design and explicit full-screen/Space eligibility for the tip window. It does not establish identical flags for every Doubao voice window or runtime success in a particular host. The main IMK bundle is background-only, so its application identity also differs from Arion's settings-capable desktop shell; copying only a window level would ignore that boundary.
+
 ## Public-source corroboration
 
 The [official desktop product page](https://ime.doubao.com/pc) describes dialect and mixed Chinese/English voice input, keyboard prediction/correction, optional text organization, and cross-device clipboard transfer. These are vendor descriptions, not measurements of the installed package. The page was retrieved successfully; its claims do not identify model internals or memory-sync behavior.
