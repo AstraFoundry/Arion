@@ -1,5 +1,8 @@
 # Portable core
 
-This standalone Go module contains session/candidate invariants, portable DTOs and domain-owned ports. It has no native or third-party dependencies. Run `GOWORK=off go test ./...` here for portable checks.
+Standalone Go module with no native or third-party dependencies. Run `GOWORK=off go test ./...` here.
 
-Only lifecycle transitions and candidate permutation validation are implemented. Streaming orchestration, cancellation/revision reducers, memory and use cases remain explicit tasks in the [handoff](../../docs/project/agent-handoff.md). No microphone or model is attached.
+- `domain`: the dictation session aggregate (state machine, monotonic revisions, exactly-once commit claim), stable error codes, conservative correction rules (`arion-rules-v1`), candidate permutation validation and evaluation-driven model selection.
+- `contracts`: versioned transport-neutral DTOs and UI events.
+- `domain/ports`: audio capture, recognizer, finalizer, corrector, ranker, target and composition boundaries.
+- `application`: the dictation coordinator (generations, bounded queues, cancellation, finalization, correction and single commit) and persisted preferences.

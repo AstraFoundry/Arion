@@ -1,0 +1,486 @@
+{
+  "version": 1,
+  "artifacts": [
+    {
+      "id": "zipformer-bilingual-zh-en-streaming-int8-2023-02-20",
+      "purpose": "streaming-asr",
+      "kind": "online-transducer",
+      "runtime": {
+        "engine": "sherpa-onnx",
+        "version": "1.13.8"
+      },
+      "source": {
+        "url": "https://github.com/k2-fsa/sherpa-onnx/releases/download/asr-models/sherpa-onnx-streaming-zipformer-bilingual-zh-en-2023-02-20.tar.bz2",
+        "release": "k2-fsa/sherpa-onnx asr-models",
+        "published": "2024-05-28T03:50:08Z",
+        "sha256": "27ffbd9ee24ad186d99acc2f6354d7992b27bcab490812510665fa8f9389c5f8",
+        "sizeBytes": 511274346,
+        "modelCard": "https://huggingface.co/csukuangfj/k2fsa-zipformer-chinese-english-mixed",
+        "repository": "https://k2-fsa.github.io/sherpa/onnx/pretrained_models/online-transducer/zipformer-transducer-models.html"
+      },
+      "license": {
+        "model": "Apache-2.0 (model card)",
+        "runtime": "Apache-2.0 (sherpa-onnx), MIT (onnxruntime)",
+        "reference": "https://huggingface.co/csukuangfj/k2fsa-zipformer-chinese-english-mixed",
+        "status": "model-card-reviewed; original training revision not pinned"
+      },
+      "languages": [
+        "zh",
+        "en",
+        "mixed"
+      ],
+      "platforms": [
+        "darwin-arm64",
+        "darwin-amd64",
+        "windows-amd64"
+      ],
+      "audio": {
+        "sampleRate": 16000,
+        "channels": 1
+      },
+      "files": {
+        "encoder": {
+          "member": "sherpa-onnx-streaming-zipformer-bilingual-zh-en-2023-02-20/encoder-epoch-99-avg-1.int8.onnx",
+          "sha256": "8fa764187a261844f859d7143ebaa563af5d10adfece4c18a8f414c88cba2a9b",
+          "sizeBytes": 181895032
+        },
+        "decoder": {
+          "member": "sherpa-onnx-streaming-zipformer-bilingual-zh-en-2023-02-20/decoder-epoch-99-avg-1.int8.onnx",
+          "sha256": "1a70c593d71e53f023f5f55b0b4cfff5055abb786ee3992e5f63dc2e273cc4fa",
+          "sizeBytes": 13091040
+        },
+        "joiner": {
+          "member": "sherpa-onnx-streaming-zipformer-bilingual-zh-en-2023-02-20/joiner-epoch-99-avg-1.int8.onnx",
+          "sha256": "1ed689c5ed19dbaa725d9d191bb4822b5f4855a39e1ffd28cbc1f340d25b2ee0",
+          "sizeBytes": 3228404
+        },
+        "tokens": {
+          "member": "sherpa-onnx-streaming-zipformer-bilingual-zh-en-2023-02-20/tokens.txt",
+          "sha256": "a8e0e4ec53810e433789b54a5c0134a7eaa2ffca595a6334d54c00da858841d3",
+          "sizeBytes": 56317
+        }
+      },
+      "modelingUnit": "",
+      "latinCase": "upper",
+      "punctuation": false,
+      "quantization": "int8",
+      "conversion": "Community Chinese-English mixed Zipformer exported to ONNX by the sherpa-onnx project",
+      "notes": {
+        "research": "Baseline proposed in docs/research/on-device-speech.md",
+        "download": "The archive also contains fp32 weights, so the download is larger than the loaded files"
+      }
+    },
+    {
+      "id": "x-asr-zh-en-160ms-streaming-punct-int8-2026-06-05",
+      "purpose": "streaming-asr",
+      "kind": "online-transducer",
+      "runtime": {
+        "engine": "sherpa-onnx",
+        "version": "1.13.8"
+      },
+      "source": {
+        "url": "https://github.com/k2-fsa/sherpa-onnx/releases/download/asr-models/sherpa-onnx-x-asr-160ms-streaming-zipformer-transducer-zh-en-punct-int8-2026-06-05.tar.bz2",
+        "release": "k2-fsa/sherpa-onnx asr-models",
+        "published": "2026-06-29T08:32:31Z",
+        "sha256": "8a6fca056e1a342546edd78be4d50274e2c01898e7b8ae8fc336f6410319c399",
+        "sizeBytes": 133898007,
+        "modelCard": "https://huggingface.co/GilgameshWind/X-ASR-zh-en",
+        "repository": "https://github.com/Gilgamesh-J/X-ASR/tree/838297cd47fed858e6cf72eaf5a52f948a3edd73"
+      },
+      "license": {
+        "model": "Apache-2.0",
+        "runtime": "Apache-2.0 (sherpa-onnx), MIT (onnxruntime)",
+        "reference": "https://github.com/Gilgamesh-J/X-ASR/blob/838297cd47fed858e6cf72eaf5a52f948a3edd73/LICENSE",
+        "status": "upstream-repository-reviewed"
+      },
+      "languages": [
+        "zh",
+        "en",
+        "mixed"
+      ],
+      "platforms": [
+        "darwin-arm64",
+        "darwin-amd64",
+        "windows-amd64"
+      ],
+      "audio": {
+        "sampleRate": 16000,
+        "channels": 1
+      },
+      "files": {
+        "encoder": {
+          "member": "sherpa-onnx-x-asr-160ms-streaming-zipformer-transducer-zh-en-punct-int8-2026-06-05/encoder.int8.onnx",
+          "sha256": "68633dced8b8891be5b9309496cd939bbeba9188f1c1774957196f11a491aa25",
+          "sizeBytes": 155278641
+        },
+        "decoder": {
+          "member": "sherpa-onnx-x-asr-160ms-streaming-zipformer-transducer-zh-en-punct-int8-2026-06-05/decoder.onnx",
+          "sha256": "a1cbc9eac2d5e3fb6617a218c67ad6daaa7f4e0fd225f08b2c22ab0413c8c257",
+          "sizeBytes": 11309084
+        },
+        "joiner": {
+          "member": "sherpa-onnx-x-asr-160ms-streaming-zipformer-transducer-zh-en-punct-int8-2026-06-05/joiner.int8.onnx",
+          "sha256": "aedb7fa697b2ab43f20499826fff7c997eea7d67db77be97769aeeeb726e63b3",
+          "sizeBytes": 2581422
+        },
+        "tokens": {
+          "member": "sherpa-onnx-x-asr-160ms-streaming-zipformer-transducer-zh-en-punct-int8-2026-06-05/tokens.txt",
+          "sha256": "b818a60878b9aae978cbb8ad594acbd403d76d1af2e31ef4197c84e2dbdba27c",
+          "sizeBytes": 58806
+        }
+      },
+      "modelingUnit": "",
+      "latinCase": "natural",
+      "punctuation": true,
+      "quantization": "int8 encoder and joiner",
+      "conversion": "Upstream icefall Zipformer2 transducer exported to ONNX by the sherpa-onnx project; chunk 160 ms export",
+      "notes": {
+        "training": "Vendor reports about 1M hours of open-source and collected speech; test-set exposure is undisclosed"
+      }
+    },
+    {
+      "id": "x-asr-zh-en-480ms-streaming-punct-int8-2026-06-05",
+      "purpose": "streaming-asr",
+      "kind": "online-transducer",
+      "runtime": {
+        "engine": "sherpa-onnx",
+        "version": "1.13.8"
+      },
+      "source": {
+        "url": "https://github.com/k2-fsa/sherpa-onnx/releases/download/asr-models/sherpa-onnx-x-asr-480ms-streaming-zipformer-transducer-zh-en-punct-int8-2026-06-05.tar.bz2",
+        "release": "k2-fsa/sherpa-onnx asr-models",
+        "published": "2026-06-29T08:32:03Z",
+        "sha256": "fa5f63d618e5a01526e275a358bb7772e403f84808a4769fba52cffd8160bf74",
+        "sizeBytes": 133895136,
+        "modelCard": "https://huggingface.co/GilgameshWind/X-ASR-zh-en",
+        "repository": "https://github.com/Gilgamesh-J/X-ASR/tree/838297cd47fed858e6cf72eaf5a52f948a3edd73"
+      },
+      "license": {
+        "model": "Apache-2.0",
+        "runtime": "Apache-2.0 (sherpa-onnx), MIT (onnxruntime)",
+        "reference": "https://github.com/Gilgamesh-J/X-ASR/blob/838297cd47fed858e6cf72eaf5a52f948a3edd73/LICENSE",
+        "status": "upstream-repository-reviewed"
+      },
+      "languages": [
+        "zh",
+        "en",
+        "mixed"
+      ],
+      "platforms": [
+        "darwin-arm64",
+        "darwin-amd64",
+        "windows-amd64"
+      ],
+      "audio": {
+        "sampleRate": 16000,
+        "channels": 1
+      },
+      "files": {
+        "encoder": {
+          "member": "sherpa-onnx-x-asr-480ms-streaming-zipformer-transducer-zh-en-punct-int8-2026-06-05/encoder.int8.onnx",
+          "sha256": "908596dcc137a73b95be908ca55e88caa1b3dbbe8027c171615f4b0609c5eb1e",
+          "sizeBytes": 155278641
+        },
+        "decoder": {
+          "member": "sherpa-onnx-x-asr-480ms-streaming-zipformer-transducer-zh-en-punct-int8-2026-06-05/decoder.onnx",
+          "sha256": "a1cbc9eac2d5e3fb6617a218c67ad6daaa7f4e0fd225f08b2c22ab0413c8c257",
+          "sizeBytes": 11309084
+        },
+        "joiner": {
+          "member": "sherpa-onnx-x-asr-480ms-streaming-zipformer-transducer-zh-en-punct-int8-2026-06-05/joiner.int8.onnx",
+          "sha256": "aedb7fa697b2ab43f20499826fff7c997eea7d67db77be97769aeeeb726e63b3",
+          "sizeBytes": 2581422
+        },
+        "tokens": {
+          "member": "sherpa-onnx-x-asr-480ms-streaming-zipformer-transducer-zh-en-punct-int8-2026-06-05/tokens.txt",
+          "sha256": "b818a60878b9aae978cbb8ad594acbd403d76d1af2e31ef4197c84e2dbdba27c",
+          "sizeBytes": 58806
+        }
+      },
+      "modelingUnit": "",
+      "latinCase": "natural",
+      "punctuation": true,
+      "quantization": "int8 encoder and joiner",
+      "conversion": "Upstream icefall Zipformer2 transducer exported to ONNX by the sherpa-onnx project; chunk 480 ms export",
+      "notes": {
+        "training": "Vendor reports about 1M hours of open-source and collected speech; test-set exposure is undisclosed"
+      }
+    },
+    {
+      "id": "x-asr-zh-en-offline-punct-int8-2026-06-03",
+      "purpose": "offline-asr",
+      "kind": "offline-transducer",
+      "runtime": {
+        "engine": "sherpa-onnx",
+        "version": "1.13.8"
+      },
+      "source": {
+        "url": "https://github.com/k2-fsa/sherpa-onnx/releases/download/asr-models/sherpa-onnx-x-asr-zipformer-transducer-zh-en-punct-int8-2026-06-03.tar.bz2",
+        "release": "k2-fsa/sherpa-onnx asr-models",
+        "published": "2026-06-29T08:32:39Z",
+        "sha256": "5d02c36d7b44e886b7c8f0d8e051f8713acab96c264bb6ef9e718be39a6a2224",
+        "sizeBytes": 136396739,
+        "modelCard": "https://huggingface.co/GilgameshWind/X-ASR-zh-en",
+        "repository": "https://github.com/Gilgamesh-J/X-ASR/tree/838297cd47fed858e6cf72eaf5a52f948a3edd73"
+      },
+      "license": {
+        "model": "Apache-2.0",
+        "runtime": "Apache-2.0 (sherpa-onnx), MIT (onnxruntime)",
+        "reference": "https://github.com/Gilgamesh-J/X-ASR/blob/838297cd47fed858e6cf72eaf5a52f948a3edd73/LICENSE",
+        "status": "upstream-repository-reviewed"
+      },
+      "languages": [
+        "zh",
+        "en",
+        "mixed"
+      ],
+      "platforms": [
+        "darwin-arm64",
+        "darwin-amd64",
+        "windows-amd64"
+      ],
+      "audio": {
+        "sampleRate": 16000,
+        "channels": 1
+      },
+      "files": {
+        "encoder": {
+          "member": "sherpa-onnx-x-asr-zipformer-transducer-zh-en-punct-int8-2026-06-03/encoder-epoch-99-avg-1.int8.onnx",
+          "sha256": "7f6aa62056efd8af9da13e0faa81cd3f284d2fb2e3b63de56fd2dfd3450910dc",
+          "sizeBytes": 161015713
+        },
+        "decoder": {
+          "member": "sherpa-onnx-x-asr-zipformer-transducer-zh-en-punct-int8-2026-06-03/decoder-epoch-99-avg-1.onnx",
+          "sha256": "72f47405d3c1033bebccbef82f90071e7b4ba3e71b9c986f2b74244b25723aed",
+          "sizeBytes": 11309084
+        },
+        "joiner": {
+          "member": "sherpa-onnx-x-asr-zipformer-transducer-zh-en-punct-int8-2026-06-03/joiner-epoch-99-avg-1.int8.onnx",
+          "sha256": "aedb7fa697b2ab43f20499826fff7c997eea7d67db77be97769aeeeb726e63b3",
+          "sizeBytes": 2581422
+        },
+        "tokens": {
+          "member": "sherpa-onnx-x-asr-zipformer-transducer-zh-en-punct-int8-2026-06-03/tokens.txt",
+          "sha256": "b818a60878b9aae978cbb8ad594acbd403d76d1af2e31ef4197c84e2dbdba27c",
+          "sizeBytes": 58806
+        }
+      },
+      "modelingUnit": "",
+      "latinCase": "natural",
+      "punctuation": true,
+      "quantization": "int8 encoder and joiner",
+      "conversion": "Upstream icefall Zipformer2 transducer (offline mode) exported to ONNX by the sherpa-onnx project",
+      "notes": {
+        "training": "Vendor reports about 1M hours of open-source and collected speech; test-set exposure is undisclosed"
+      }
+    },
+    {
+      "id": "sense-voice-small-int8-2025-09-09",
+      "purpose": "offline-asr",
+      "kind": "offline-sense-voice",
+      "runtime": {
+        "engine": "sherpa-onnx",
+        "version": "1.13.8"
+      },
+      "source": {
+        "url": "https://github.com/k2-fsa/sherpa-onnx/releases/download/asr-models/sherpa-onnx-sense-voice-zh-en-ja-ko-yue-int8-2025-09-09.tar.bz2",
+        "release": "k2-fsa/sherpa-onnx asr-models",
+        "published": "2025-09-09T13:14:24Z",
+        "sha256": "7305f7905bfcf77fa0b39388a313f3da35c68d971661a65475b56fb2162c8e63",
+        "sizeBytes": 165783878,
+        "modelCard": "https://huggingface.co/FunAudioLLM/SenseVoiceSmall",
+        "repository": "https://github.com/FunAudioLLM/SenseVoice"
+      },
+      "license": {
+        "model": "FunASR MODEL_LICENSE (model card: model-license)",
+        "runtime": "Apache-2.0 (sherpa-onnx), MIT (onnxruntime)",
+        "reference": "https://github.com/modelscope/FunASR/blob/main/MODEL_LICENSE",
+        "status": "redistribution-requires-review; user-initiated download only"
+      },
+      "languages": [
+        "zh",
+        "en",
+        "mixed"
+      ],
+      "platforms": [
+        "darwin-arm64",
+        "darwin-amd64",
+        "windows-amd64"
+      ],
+      "audio": {
+        "sampleRate": 16000,
+        "channels": 1
+      },
+      "files": {
+        "model": {
+          "member": "sherpa-onnx-sense-voice-zh-en-ja-ko-yue-int8-2025-09-09/model.int8.onnx",
+          "sha256": "12ca1a2ae7ecf3e0019ef2822307ee0b5cadc9196569e379b4c4026f8205276d",
+          "sizeBytes": 237115547
+        },
+        "tokens": {
+          "member": "sherpa-onnx-sense-voice-zh-en-ja-ko-yue-int8-2025-09-09/tokens.txt",
+          "sha256": "f449eb28dc567533d7fa59be34e2abca8784f771850c78a47fb731a31429a1dc",
+          "sizeBytes": 315894
+        }
+      },
+      "modelingUnit": "",
+      "latinCase": "upper",
+      "punctuation": true,
+      "quantization": "int8",
+      "conversion": "SenseVoiceSmall exported to ONNX and int8-quantized by the sherpa-onnx project; inverse text normalization enabled",
+      "notes": {
+        "mixed": "Mixed Mandarin-English is measured by Arion, not claimed by the vendor",
+        "casing": "Observed: English output is uppercase; the rule corrector naturalizes it"
+      }
+    }
+  ],
+  "bundles": [
+    {
+      "id": "zipformer-2023",
+      "name": "Zipformer bilingual (2023)",
+      "streaming": "zipformer-bilingual-zh-en-streaming-int8-2023-02-20",
+      "chunkMs": 20,
+      "endpointSilenceMs": 800,
+      "evaluations": [
+        {
+          "runId": "models-dev-2",
+          "report": "benchmarks/results/models-dev-2/summary.json",
+          "hardware": "darwin-arm64",
+          "split": "dev",
+          "errorRates": {
+            "zh": 0.37480314960629924,
+            "en": 0.1064516129032258,
+            "mixed": 1.2826086956521738
+          },
+          "stopToReviewP95Ms": 50.86049999999984,
+          "firstPartialP95Ms": 2045.0639999999999,
+          "realTimeFactor": 0.08559479725252943,
+          "observations": 118
+        }
+      ]
+    },
+    {
+      "id": "xasr-160",
+      "name": "X-ASR streaming 160 ms",
+      "streaming": "x-asr-zh-en-160ms-streaming-punct-int8-2026-06-05",
+      "chunkMs": 20,
+      "endpointSilenceMs": 800,
+      "evaluations": [
+        {
+          "runId": "models-dev-2",
+          "report": "benchmarks/results/models-dev-2/summary.json",
+          "hardware": "darwin-arm64",
+          "split": "dev",
+          "errorRates": {
+            "zh": 0.09606299212598425,
+            "en": 0.06129032258064516,
+            "mixed": 0.358695652173913
+          },
+          "stopToReviewP95Ms": 1019.3725499999986,
+          "firstPartialP95Ms": 1630.71715,
+          "realTimeFactor": 0.30739544370084354,
+          "observations": 118
+        }
+      ]
+    },
+    {
+      "id": "xasr-480",
+      "name": "X-ASR streaming 480 ms",
+      "streaming": "x-asr-zh-en-480ms-streaming-punct-int8-2026-06-05",
+      "chunkMs": 20,
+      "endpointSilenceMs": 800,
+      "evaluations": [
+        {
+          "runId": "models-dev-2",
+          "report": "benchmarks/results/models-dev-2/summary.json",
+          "hardware": "darwin-arm64",
+          "split": "dev",
+          "errorRates": {
+            "zh": 0.12598425196850394,
+            "en": 0.06774193548387097,
+            "mixed": 0.33695652173913043
+          },
+          "stopToReviewP95Ms": 44.225249999999676,
+          "firstPartialP95Ms": 1642.7531999999999,
+          "realTimeFactor": 0.07511876646837096,
+          "observations": 118
+        }
+      ]
+    },
+    {
+      "id": "xasr-160-xasr-final",
+      "name": "X-ASR 160 ms + X-ASR final pass",
+      "streaming": "x-asr-zh-en-160ms-streaming-punct-int8-2026-06-05",
+      "chunkMs": 20,
+      "endpointSilenceMs": 800,
+      "evaluations": [
+        {
+          "runId": "models-dev-2",
+          "report": "benchmarks/results/models-dev-2/summary.json",
+          "hardware": "darwin-arm64",
+          "split": "dev",
+          "errorRates": {
+            "zh": 0.07086614173228346,
+            "en": 0.037096774193548385,
+            "mixed": 0.25271739130434784
+          },
+          "stopToReviewP95Ms": 189.84054999999935,
+          "firstPartialP95Ms": 1628.1184500000002,
+          "realTimeFactor": 0.1875782868242217,
+          "observations": 118
+        }
+      ],
+      "finalizer": "x-asr-zh-en-offline-punct-int8-2026-06-03"
+    },
+    {
+      "id": "xasr-480-xasr-final",
+      "name": "X-ASR 480 ms + X-ASR final pass",
+      "streaming": "x-asr-zh-en-480ms-streaming-punct-int8-2026-06-05",
+      "chunkMs": 20,
+      "endpointSilenceMs": 800,
+      "evaluations": [
+        {
+          "runId": "models-dev-2",
+          "report": "benchmarks/results/models-dev-2/summary.json",
+          "hardware": "darwin-arm64",
+          "split": "dev",
+          "errorRates": {
+            "zh": 0.07086614173228346,
+            "en": 0.037096774193548385,
+            "mixed": 0.25271739130434784
+          },
+          "stopToReviewP95Ms": 156.74499999999986,
+          "firstPartialP95Ms": 1641.769,
+          "realTimeFactor": 0.09607427164460113,
+          "observations": 118
+        }
+      ],
+      "finalizer": "x-asr-zh-en-offline-punct-int8-2026-06-03"
+    },
+    {
+      "id": "xasr-160-sensevoice-final",
+      "name": "X-ASR 160 ms + SenseVoice final pass",
+      "streaming": "x-asr-zh-en-160ms-streaming-punct-int8-2026-06-05",
+      "chunkMs": 20,
+      "endpointSilenceMs": 800,
+      "evaluations": [
+        {
+          "runId": "models-dev-2",
+          "report": "benchmarks/results/models-dev-2/summary.json",
+          "hardware": "darwin-arm64",
+          "split": "dev",
+          "errorRates": {
+            "zh": 0.07244094488188976,
+            "en": 0.13064516129032258,
+            "mixed": 0.3804347826086957
+          },
+          "stopToReviewP95Ms": 248.3387000000003,
+          "firstPartialP95Ms": 1623.97525,
+          "realTimeFactor": 0.1986135262143497,
+          "observations": 118
+        }
+      ],
+      "finalizer": "sense-voice-small-int8-2025-09-09"
+    }
+  ]
+}

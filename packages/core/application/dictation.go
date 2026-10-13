@@ -1,0 +1,574 @@
+// Package application orchestrates dictation sessions over domain-owned ports.
+package application
+
+import (
+	"context"
+	"errors"
+	"math"
+	"strings"
+	"sync"
+	"sync/atomic"
+	"time"
+
+	"arion.local/core/contracts"
+	"arion.local/core/domain"
+	"arion.local/core/domain/ports"
+)
+
+// Dependencies are the adapters wired by a composition root. Targets and
+// Input are required only when Options.AutoCommit or CommitReviewed is used.
+// The IME adapters serve system_ime sessions: the input method owns the
+// marked-text range, receives every draft and commits the reviewed text.
+type Dependencies struct {
+	Audio       ports.AudioCapture
+	Recognizers ports.RecognizerFactory
+	Finalizer   ports.Finalizer
+	Targets     ports.TargetProvider
+	Input       ports.InputTarget
+	IMETargets  ports.TargetProvider
+	IMEInput    ports.InputTarget
+	Composition ports.CompositionTarget
+	NewID       func() string
+}
+
+// Options configure one coordinator. Policy is read when a session finalizes,
+// so settings changes apply to the next review without restarting.
+type Options struct {
+	Mode        domain.InputMode
+	AutoCommit  bool
+	Correction  bool
+	Policy      func() domain.CorrectionPolicy
+	QueueFrames int
+	MaxAudio    time.Duration
+}
+
+const (
+	defaultQueueFrames = 256
+	defaultMaxAudio    = 5 * time.Minute
+)
+
+// Listener receives events in sequence order. It must return quickly.
+type Listener func(contracts.Event)
+
+// Coordinator owns at most one active dictation session. Every public method
+// is safe for concurrent use; callbacks from stale generations are dropped.
+type Coordinator struct {
+	deps Dependencies
+	opts Options
+
+	mu         sync.Mutex
+	generation uint64
+	current    *run
+
+	emitMu    sync.Mutex
+	listeners []Listener
+}
+
+type run struct {
+	session  *domain.Session
+	identity contracts.Identity
+	ctx      context.Context
+	cancel   context.CancelFunc
+	started  time.Time
+	sequence atomic.Uint64
+
+	frames    chan contracts.Frame
+	overflow  atomic.Bool
+	stopOnce  sync.Once
+	stream    ports.AudioStream
+	pumpDone  chan struct{}
+	stopAsked bool
+
+	recognizer ports.Recognizer
+	target     contracts.TargetSnapshot
+	hasTarget  bool
+
+	// Owned by the pump goroutine.
+	samples    []float32
+	sampleRate int
+	lastText   string
+
+	// Guarded by Coordinator.mu.
+	draft string
+	raw   string
+	final string
+}
+
+// NewCoordinator validates its configuration.
+func NewCoordinator(deps Dependencies, opts Options) (*Coordinator, error) {
+	if deps.Audio == nil || deps.Recognizers == nil || deps.NewID == nil {
+		return nil, domain.Fail(domain.CodeContractUnsupported, "audio, recognizer and id adapters are required")
+	}
+	if opts.AutoCommit && (deps.Targets == nil || deps.Input == nil) {
+		return nil, domain.Fail(domain.CodeContractUnsupported, "auto commit requires target adapters")
+	}
+	if opts.Mode == "" {
+		opts.Mode = domain.ShortcutMode
+	}
+	if opts.QueueFrames <= 0 {
+		opts.QueueFrames = defaultQueueFrames
+	}
+	if opts.MaxAudio <= 0 {
+		opts.MaxAudio = defaultMaxAudio
+	}
+	if opts.Policy == nil {
+		opts.Policy = func() domain.CorrectionPolicy { return domain.CorrectionPolicy{} }
+	}
+	return &Coordinator{deps: deps, opts: opts}, nil
+}
+
+// Subscribe registers a listener and returns a function removing it.
+func (c *Coordinator) Subscribe(listener Listener) func() {
+	c.emitMu.Lock()
+	defer c.emitMu.Unlock()
+	c.listeners = append(c.listeners, listener)
+	index := len(c.listeners) - 1
+	return func() {
+		c.emitMu.Lock()
+		defer c.emitMu.Unlock()
+		c.listeners[index] = nil
+	}
+}
+
+// Snapshot is the current session state for views that attach late.
+type Snapshot struct {
+	Identity contracts.Identity
+	State    domain.SessionState
+	Draft    string
+	Final    string
+	Failure  domain.ErrorCode
+	Active   bool
+}
+
+func (c *Coordinator) Snapshot() Snapshot {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	r := c.current
+	if r == nil {
+		return Snapshot{State: domain.Idle}
+	}
+	return Snapshot{Identity: r.identity, State: r.session.State(), Draft: r.draft, Final: r.final,
+		Failure: r.session.Failure(), Active: !r.session.Terminal()}
+}
+
+// SetMode switches input mode. It closes the current generation (DSK-01/A06).
+func (c *Coordinator) SetMode(mode domain.InputMode) {
+	c.Cancel()
+	c.mu.Lock()
+	c.opts.Mode = mode
+	c.mu.Unlock()
+}
+
+// Toggle starts a session when idle, stops capture while capturing and
+// cancels one still preparing. Toggling during finalization reports busy.
+func (c *Coordinator) Toggle() {
+	c.mu.Lock()
+	r := c.current
+	state := domain.Idle
+	if r != nil {
+		state = r.session.State()
+	}
+	c.mu.Unlock()
+	switch {
+	case r == nil || domain.IsTerminal(state):
+		c.Start()
+	case state == domain.Capturing:
+		c.Stop()
+	case state == domain.Preparing:
+		c.Cancel()
+	default:
+		c.emit(r, contracts.Event{Envelope: contracts.Envelope{Kind: contracts.ErrorOccurred}, State: state, Error: domain.CodeSessionBusy})
+	}
+}
+
+// Start begins a new session in a new generation. Adapter calls that may
+// block run off the caller's thread; failures are delivered as events.
+func (c *Coordinator) Start() {
+	c.mu.Lock()
+	if c.current != nil && !c.current.session.Terminal() {
+		r := c.current
+		c.mu.Unlock()
+		c.emit(r, contracts.Event{Envelope: contracts.Envelope{Kind: contracts.ErrorOccurred}, State: r.session.State(), Error: domain.CodeSessionBusy})
+		return
+	}
+	c.generation++
+	session, err := domain.NewSession(c.deps.NewID(), c.generation, c.opts.Mode)
+	if err != nil {
+		c.mu.Unlock()
+		return
+	}
+	ctx, cancel := context.WithCancel(context.Background())
+	r := &run{session: session, identity: contracts.Identity{SessionID: session.ID(), Generation: session.Generation()},
+		ctx: ctx, cancel: cancel, started: time.Now(), frames: make(chan contracts.Frame, c.opts.QueueFrames), pumpDone: make(chan struct{})}
+	_ = session.Advance(domain.Preparing)
+	c.current = r
+	needTarget := c.opts.AutoCommit
+	c.mu.Unlock()
+	c.emitState(r, domain.Preparing)
+	go c.prepare(r, needTarget)
+}
+
+// targets returns the capture and commit adapters for the session's mode.
+func (c *Coordinator) targets(r *run) (ports.TargetProvider, ports.InputTarget) {
+	if r.session.Mode() == domain.SystemIMEMode {
+		return c.deps.IMETargets, c.deps.IMEInput
+	}
+	return c.deps.Targets, c.deps.Input
+}
+
+// composing reports whether drafts are mirrored into an owned IME range.
+func (c *Coordinator) composing(r *run) bool {
+	return r.session.Mode() == domain.SystemIMEMode && c.deps.Composition != nil && r.hasTarget
+}
+
+func (c *Coordinator) prepare(r *run, needTarget bool) {
+	if needTarget {
+		provider, _ := c.targets(r)
+		if provider == nil {
+			c.failDetail(r, domain.CodeTargetUnsupported, "input mode unavailable")
+			return
+		}
+		target, err := provider.Capture(r.ctx, r.identity)
+		if err != nil {
+			c.failErr(r, err, domain.CodePermissionDenied)
+			return
+		}
+		if target.Sensitive {
+			c.fail(r, domain.CodeSecureFieldBlocked)
+			return
+		}
+		r.target, r.hasTarget = target, true
+	}
+	recognizer, err := c.deps.Recognizers.NewRecognizer(r.ctx, r.identity)
+	if err != nil {
+		c.failErr(r, err, domain.CodeModelMissing)
+		return
+	}
+	r.recognizer = recognizer
+	stream, err := c.deps.Audio.Start(r.ctx, r.identity, func(frame contracts.Frame) {
+		if r.overflow.Load() {
+			return
+		}
+		select {
+		case r.frames <- frame:
+		default:
+			// SPH-02: never conceal dropped audio.
+			if !r.overflow.Swap(true) {
+				go c.fail(r, domain.CodeAudioDiscontinuity)
+			}
+		}
+	})
+	if err != nil {
+		_ = recognizer.Close()
+		c.failErr(r, err, domain.CodeDeviceUnavailable)
+		return
+	}
+	c.mu.Lock()
+	r.stream = stream
+	if c.current != r || r.session.Terminal() {
+		c.mu.Unlock()
+		r.stopAudio()
+		_ = recognizer.Close()
+		return
+	}
+	_ = r.session.Advance(domain.Capturing)
+	c.mu.Unlock()
+	c.emitState(r, domain.Capturing)
+	go c.pump(r)
+}
+
+func (r *run) stopAudio() {
+	r.stopOnce.Do(func() {
+		if r.stream != nil {
+			_ = r.stream.Stop()
+		}
+		close(r.frames)
+	})
+}
+
+// pump is the only goroutine that touches the recognizer after capture
+// starts, so native resources are never freed while decoding.
+func (c *Coordinator) pump(r *run) {
+	defer close(r.pumpDone)
+	maxSamples := 0
+	for frame := range r.frames {
+		if r.ctx.Err() != nil {
+			continue
+		}
+		if frame.Discontinuity || r.overflow.Load() {
+			c.fail(r, domain.CodeAudioDiscontinuity)
+			continue
+		}
+		if r.sampleRate == 0 {
+			r.sampleRate = int(frame.SampleRate)
+			maxSamples = int(c.opts.MaxAudio.Seconds() * float64(frame.SampleRate) * float64(max(frame.Channels, 1)))
+		}
+		r.samples = append(r.samples, frame.Samples...)
+		c.emit(r, contracts.Event{Envelope: contracts.Envelope{Kind: contracts.AudioLevel}, Level: Level(frame.Samples)})
+		if err := r.recognizer.Accept(r.ctx, frame); err != nil {
+			c.failErr(r, err, domain.CodeModelUnsupported)
+			continue
+		}
+		draft, err := r.recognizer.Partial(r.ctx)
+		if err != nil {
+			c.failErr(r, err, domain.CodeModelUnsupported)
+			continue
+		}
+		if draft.Text != r.lastText {
+			r.lastText = draft.Text
+			c.acceptDraft(r, draft.Text)
+		}
+		if len(r.samples) >= maxSamples {
+			go c.Stop()
+		}
+	}
+	if r.overflow.Load() {
+		c.fail(r, domain.CodeAudioDiscontinuity)
+	}
+	c.mu.Lock()
+	finalize := r.stopAsked && c.current == r && r.session.State() == domain.Finalizing
+	c.mu.Unlock()
+	if finalize && r.ctx.Err() == nil {
+		c.finalize(r)
+	}
+	_ = r.recognizer.Close()
+	r.samples = nil // SPH-09: session audio is discarded when processing ends.
+}
+
+func (c *Coordinator) acceptDraft(r *run, text string) {
+	c.mu.Lock()
+	if c.current != r {
+		c.mu.Unlock()
+		return
+	}
+	revision := r.session.Revision() + 1
+	if err := r.session.AcceptRevision(revision); err != nil {
+		c.mu.Unlock()
+		return
+	}
+	r.draft = text
+	state := r.session.State()
+	c.mu.Unlock()
+	if c.composing(r) {
+		// IME-A02: drafts update only the owned marked range; failures end
+		// the session explicitly instead of continuing without composition.
+		if err := c.deps.Composition.Update(r.ctx, r.target.Target, contracts.Draft{Identity: r.identity, Revision: revision, Text: text}); err != nil {
+			c.failErr(r, err, domain.CodeTargetChanged)
+			return
+		}
+	}
+	c.emit(r, contracts.Event{Envelope: contracts.Envelope{Kind: contracts.DraftReplaced, Revision: revision}, State: state, Text: text})
+}
+
+// Stop ends capture; finalization, correction and commit continue on the
+// session's own goroutine.
+func (c *Coordinator) Stop() {
+	c.mu.Lock()
+	r := c.current
+	if r == nil || r.session.State() != domain.Capturing {
+		c.mu.Unlock()
+		return
+	}
+	_ = r.session.Advance(domain.Finalizing)
+	r.stopAsked = true
+	c.mu.Unlock()
+	c.emitState(r, domain.Finalizing)
+	go r.stopAudio()
+}
+
+// Cancel invalidates the active generation. Late results cannot update the
+// UI, learn or insert (DSK-A04, SPH-A02).
+func (c *Coordinator) Cancel() {
+	c.mu.Lock()
+	r := c.current
+	if r == nil || r.session.Terminal() {
+		c.mu.Unlock()
+		return
+	}
+	c.generation++
+	_ = r.session.Advance(domain.Cancelled)
+	r.cancel()
+	started := r.stream != nil
+	c.mu.Unlock()
+	c.releaseComposition(r)
+	c.emitState(r, domain.Cancelled)
+	if started {
+		go r.stopAudio()
+	}
+}
+
+func (c *Coordinator) fail(r *run, code domain.ErrorCode) { c.failDetail(r, code, "") }
+
+// failErr fails with the error's code (or fallback) and its diagnostic detail.
+func (c *Coordinator) failErr(r *run, err error, fallback domain.ErrorCode) {
+	detail := ""
+	var coded *domain.Error
+	if errors.As(err, &coded) {
+		detail = coded.Detail
+	}
+	c.failDetail(r, codeOr(err, fallback), detail)
+}
+
+func (c *Coordinator) failDetail(r *run, code domain.ErrorCode, detail string) {
+	c.mu.Lock()
+	if c.current != r || r.session.FailWith(code) != nil {
+		c.mu.Unlock()
+		return
+	}
+	r.cancel()
+	started := r.stream != nil
+	text := r.final
+	if text == "" {
+		text = r.draft
+	}
+	c.mu.Unlock()
+	c.releaseComposition(r)
+	c.emit(r, contracts.Event{Envelope: contracts.Envelope{Kind: contracts.ErrorOccurred}, State: domain.Failed, Error: code, Detail: detail, Text: text})
+	if started {
+		go r.stopAudio()
+	}
+}
+
+// releaseComposition clears the owned IME range of an ended session
+// (IME-A03); it never touches text outside that range.
+func (c *Coordinator) releaseComposition(r *run) {
+	if c.composing(r) {
+		_ = c.deps.Composition.Cancel(context.Background(), r.identity, r.target.Target)
+	}
+}
+
+func (c *Coordinator) finalize(r *run) {
+	draft, err := r.recognizer.Finish(r.ctx)
+	if err != nil {
+		c.failErr(r, err, domain.CodeModelUnsupported)
+		return
+	}
+	raw := draft.Text
+	if c.deps.Finalizer != nil && len(r.samples) > 0 {
+		second, err := c.deps.Finalizer.Finalize(r.ctx, ports.FinalizeRequest{Identity: r.identity, SampleRate: r.sampleRate, Samples: r.samples, Draft: raw})
+		if err != nil {
+			c.failErr(r, err, domain.CodeModelUnsupported)
+			return
+		}
+		raw = second
+	}
+	c.mu.Lock()
+	if c.current != r || r.ctx.Err() != nil {
+		c.mu.Unlock()
+		return
+	}
+	revision := r.session.Revision() + 1
+	if err := r.session.AcceptRevision(revision); err != nil {
+		c.mu.Unlock()
+		return
+	}
+	text := raw
+	if c.opts.Correction {
+		text = domain.Correct(raw, c.opts.Policy()).Text
+	}
+	r.raw, r.draft = raw, raw
+	if strings.TrimSpace(text) == "" {
+		// SPH-09 / SPH-A07: silence never commits text.
+		_ = r.session.FailWith(domain.CodeNoSpeech)
+		c.mu.Unlock()
+		c.releaseComposition(r)
+		c.emit(r, contracts.Event{Envelope: contracts.Envelope{Kind: contracts.ErrorOccurred}, State: domain.Failed, Error: domain.CodeNoSpeech})
+		return
+	}
+	_ = r.session.Advance(domain.Reviewing)
+	r.final = text
+	c.mu.Unlock()
+	c.emit(r, contracts.Event{Envelope: contracts.Envelope{Kind: contracts.CorrectionReady, Revision: revision}, State: domain.Reviewing, Raw: raw, Text: text})
+	if c.opts.AutoCommit {
+		c.commit(r, revision, text)
+	}
+}
+
+// CommitReviewed commits the reviewed text of the current session once, for
+// review-before-insert workflows.
+func (c *Coordinator) CommitReviewed() {
+	c.mu.Lock()
+	r := c.current
+	if r == nil || r.session.State() != domain.Reviewing || !r.hasTarget {
+		c.mu.Unlock()
+		return
+	}
+	revision, text := r.session.Revision(), r.final
+	c.mu.Unlock()
+	c.commit(r, revision, text)
+}
+
+func (c *Coordinator) commit(r *run, revision uint64, text string) {
+	c.mu.Lock()
+	if c.current != r || r.session.ClaimCommit(revision) != nil {
+		c.mu.Unlock()
+		return
+	}
+	c.mu.Unlock()
+	c.emitState(r, domain.Committing)
+	_, input := c.targets(r)
+	result, err := input.Commit(context.Background(), contracts.CommitRequest{
+		Identity: r.identity, Target: r.target.Target, SourceRevision: revision, Text: text})
+	if err != nil {
+		result = contracts.CommitResult{Identity: r.identity, Outcome: contracts.NotApplied, Failure: codeOr(err, domain.CodeTargetUnsupported)}
+	}
+	c.mu.Lock()
+	var event contracts.Event
+	switch result.Outcome {
+	case contracts.Applied, contracts.Unknown:
+		// CTR-A06: an unknown outcome is final; it is never retried.
+		_ = r.session.Advance(domain.Completed)
+		event = contracts.Event{Envelope: contracts.Envelope{Kind: contracts.CommitResultReady, Revision: revision}, State: domain.Completed, Outcome: result.Outcome, Text: text}
+	default:
+		code := result.Failure
+		if code == "" {
+			code = domain.CodeTargetUnsupported
+		}
+		_ = r.session.FailWith(code)
+		event = contracts.Event{Envelope: contracts.Envelope{Kind: contracts.CommitResultReady, Revision: revision}, State: domain.Failed, Outcome: contracts.NotApplied, Error: code, Text: text}
+	}
+	c.mu.Unlock()
+	if result.Outcome == contracts.NotApplied {
+		c.releaseComposition(r)
+	}
+	c.emit(r, event)
+}
+
+func (c *Coordinator) emitState(r *run, state domain.SessionState) {
+	c.emit(r, contracts.Event{Envelope: contracts.Envelope{Kind: contracts.SessionStateChanged}, State: state})
+}
+
+func (c *Coordinator) emit(r *run, event contracts.Event) {
+	c.emitMu.Lock()
+	defer c.emitMu.Unlock()
+	event.Version = contracts.Version
+	event.Identity = r.identity
+	event.Sequence = r.sequence.Add(1)
+	event.AtMs = float64(time.Since(r.started).Microseconds()) / 1000
+	for _, listener := range c.listeners {
+		if listener != nil {
+			listener(event)
+		}
+	}
+}
+
+func codeOr(err error, fallback domain.ErrorCode) domain.ErrorCode {
+	if code := domain.CodeOf(err); code != "" {
+		return code
+	}
+	return fallback
+}
+
+// Level maps frame RMS to a perceptual 0..1 meter value.
+func Level(samples []float32) float32 {
+	if len(samples) == 0 {
+		return 0
+	}
+	var sum float64
+	for _, s := range samples {
+		sum += float64(s) * float64(s)
+	}
+	rms := math.Sqrt(sum / float64(len(samples)))
+	db := 20 * math.Log10(rms+1e-9)
+	return float32(math.Max(0, math.Min(1, (db+60)/50)))
+}

@@ -20,6 +20,8 @@ const (
 	CorrectionReady     EventKind = "correction_ready"
 	CommitResultReady   EventKind = "commit_result"
 	ErrorOccurred       EventKind = "error"
+	// AudioLevel carries a content-free input level for meters.
+	AudioLevel EventKind = "audio_level"
 )
 
 type Envelope struct {
@@ -110,4 +112,37 @@ const (
 type CommitResult struct {
 	Identity
 	Outcome CommitOutcome
+	// Failure explains a not_applied outcome with a stable code.
+	Failure domain.ErrorCode
+}
+
+// TargetSnapshot is captured when dictation starts. The token is opaque;
+// native handles stay inside the OS adapter (DSK-05).
+type TargetSnapshot struct {
+	Identity
+	Target       TargetToken
+	Capabilities Capabilities
+	// Sensitive is true for secure fields and fields whose safety the
+	// adapter cannot establish (DSK-08).
+	Sensitive bool
+	// Application is the platform identity of the focused app, used only for
+	// local policy such as the context denylist. It is never logged.
+	Application string
+}
+
+// Event is the typed application event delivered to UI adapters. Text lives
+// only in session RAM and is never logged (PRV-05).
+type Event struct {
+	Envelope
+	State   domain.SessionState `json:"state,omitempty"`
+	Text    string              `json:"text,omitempty"`
+	Raw     string              `json:"raw,omitempty"`
+	Level   float32             `json:"level,omitempty"`
+	Outcome CommitOutcome       `json:"outcome,omitempty"`
+	Error   domain.ErrorCode    `json:"error,omitempty"`
+	// Detail is a content-free diagnostic category such as "microphone" or
+	// "accessibility" for PERMISSION_DENIED.
+	Detail string `json:"detail,omitempty"`
+	// AtMs is the monotonic time since the session started.
+	AtMs float64 `json:"at_ms"`
 }
