@@ -1,0 +1,143 @@
+package bootstrap
+
+import (
+	"strings"
+
+	"arion.local/core/application"
+	arion "arion.local/desktop/ui/shared/runtime"
+	"github.com/egoist/mygo"
+)
+
+// actions implements runtime.Actions. Views call it on the main thread.
+type actions struct{ a *App }
+
+func (x actions) ToggleDictation()           { x.a.core.Toggle() }
+func (x actions) CancelDictation()           { x.a.core.Cancel() }
+func (x actions) RequestMicrophone()         { x.a.platform.RequestMicrophone() }
+func (x actions) RequestAccessibility()      { x.a.platform.RequestAccessibility() }
+func (x actions) OpenMicrophoneSettings()    { x.a.platform.OpenMicrophoneSettings() }
+func (x actions) OpenAccessibilitySettings() { x.a.platform.OpenAccessibilitySettings() }
+func (x actions) RetryModel()                { go x.a.activate(x.a.state.Preferences.ModelOverride) }
+func (x actions) StartLevelMonitor()         { x.a.startMonitor() }
+func (x actions) StopLevelMonitor()          { x.a.stopMonitor() }
+func (x actions) RefreshDevices()            { go x.a.refreshDevicesAsync() }
+func (x actions) CopyText(text string)       { mygo.Clipboard.WriteText(text) }
+func (x actions) OpenSettings()              { x.a.openSettings() }
+func (x actions) Quit()                      { mygo.App.Quit() }
+func (x actions) TestShortcut(testing bool)  { x.a.testingShortcut = testing }
+
+func (x actions) UseBundle(id string) {
+	x.UpdatePreferences(func(p *application.Preferences) { p.ModelOverride = id })
+	go x.a.activate(id)
+}
+
+func (x actions) UseRecommendedBundle() {
+	x.UpdatePreferences(func(p *application.Preferences) { p.ModelOverride = "" })
+	go x.a.activate("")
+}
+
+// UpdatePreferences persists a change and applies its side effects.
+func (x actions) UpdatePreferences(change func(*application.Preferences)) {
+	a := x.a
+	before := a.state.Preferences
+	next := before
+	change(&next)
+	next, _ = next.Normalize()
+	a.savePreferences(next)
+	if next.LaunchAtLogin != before.LaunchAtLogin {
+		_ = mygo.App.SetOpenAtLogin(next.LaunchAtLogin)
+	}
+	if next.Microphone != before.Microphone {
+		a.mic.Select(next.Microphone)
+		if a.monitor != nil {
+			a.stopMonitor()
+			a.startMonitor()
+		}
+	}
+	if next.Mode != before.Mode {
+		a.core.SetMode(next.Mode)
+	}
+}
+
+// SetShortcut registers a new hotkey, keeping the old one when it fails.
+func (x actions) SetShortcut(accelerator string) error {
+	a := x.a
+	previous := a.state.Shortcut.Accelerator
+	if err := a.registerShortcut(accelerator); err != nil {
+		_ = a.registerShortcut(previous)
+		return err
+	}
+	x.UpdatePreferences(func(p *application.Preferences) { p.Shortcut = accelerator })
+	return nil
+}
+
+func (x actions) SuspendShortcut(suspend bool) {
+	a := x.a
+	if suspend && a.shortcutActive {
+		mygo.GlobalShortcut.Unregister(a.state.Shortcut.Accelerator)
+		a.shortcutActive = false
+		return
+	}
+	if !suspend && !a.shortcutActive {
+		_ = a.registerShortcut(a.state.Shortcut.Accelerator)
+	}
+}
+
+// InstallInputMethod installs Arion's input source at the user's request.
+func (x actions) InstallInputMethod() error {
+	if x.a.ime == nil {
+		return errInputMethodUnsupported
+	}
+	err := x.a.ime.Install()
+	x.a.state.InputMethod = x.a.ime.State()
+	return err
+}
+
+// RemoveInputMethod removes the input source and returns to shortcut mode.
+func (x actions) RemoveInputMethod() error {
+	if x.a.ime == nil {
+		return errInputMethodUnsupported
+	}
+	err := x.a.ime.Remove()
+	x.a.state.InputMethod = x.a.ime.State()
+	if x.a.state.Preferences.Mode == arion.ModeSystemIME {
+		x.UpdatePreferences(func(p *application.Preferences) { p.Mode = arion.ModeShortcut })
+	}
+	return err
+}
+
+func (x actions) AddReplacement(from, to string) error {
+	a := x.a
+	if strings.TrimSpace(from) == "" || strings.TrimSpace(to) == "" {
+		return errInvalidReplacement
+	}
+	a.loadVocabulary(true)
+	if a.vocab == nil {
+		return errVocabularyUnavailable
+	}
+	if _, err := a.vocab.Add(from, to); err != nil {
+		return err
+	}
+	a.loadVocabulary(false)
+	return nil
+}
+
+func (x actions) RemoveReplacement(id string) {
+	a := x.a
+	if a.vocab == nil {
+		return
+	}
+	if err := a.vocab.Remove(id); err == nil {
+		a.loadVocabulary(false)
+	}
+}
+
+func (x actions) CompleteOnboarding() {
+	a := x.a
+	x.UpdatePreferences(func(p *application.Preferences) { p.OnboardingCompleted = true })
+	if a.onboarding != nil {
+		a.onboarding.Close()
+	}
+}
+
+var _ arion.Actions = actions{}

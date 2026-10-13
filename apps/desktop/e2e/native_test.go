@@ -1,11 +1,12 @@
 //go:build arion_e2e && (darwin || windows)
 
-// Package e2e exercises the production window on the actual OS event loop.
+// Package e2e exercises the production windows on the actual OS event loop.
 package e2e
 
 import (
 	"bytes"
 	"fmt"
+	"image"
 	"image/png"
 	"os"
 	"path/filepath"
@@ -14,17 +15,33 @@ import (
 	"time"
 
 	"arion.local/desktop/bootstrap"
+	uiapp "arion.local/desktop/ui/app"
+	arion "arion.local/desktop/ui/shared/runtime"
 	"github.com/egoist/mygo"
 )
+
+var app *bootstrap.App
 
 func TestMain(m *testing.M) {
 	if os.Getenv("ARION_NATIVE_E2E") != "1" {
 		fmt.Fprintln(os.Stderr, "native E2E requires ARION_NATIVE_E2E=1 and an interactive desktop session")
 		os.Exit(2)
 	}
-	mygo.App.OnWindowAllClosed(func() {})
+	data, err := os.MkdirTemp("", "arion-e2e-")
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
+	}
+	defer os.RemoveAll(data)
+	// An isolated profile: no stored preferences, no models, no onboarding.
+	app, err = bootstrap.New(bootstrap.Options{DataDir: data, SkipOnboarding: true})
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
+	}
 	var code atomic.Int32
 	code.Store(1)
+	app.Start()
 	mygo.App.WhenReady(func() {
 		go func() {
 			code.Store(int32(m.Run()))
@@ -38,7 +55,7 @@ func TestMain(m *testing.M) {
 	os.Exit(int(code.Load()))
 }
 
-func eventually(t *testing.T, predicate func() bool) {
+func eventually(t *testing.T, what string, predicate func() bool) {
 	t.Helper()
 	deadline := time.Now().Add(5 * time.Second)
 	for time.Now().Before(deadline) {
@@ -47,63 +64,110 @@ func eventually(t *testing.T, predicate func() bool) {
 		}
 		time.Sleep(10 * time.Millisecond)
 	}
-	t.Fatal("native window condition did not become true")
+	t.Fatalf("native condition not met: %s", what)
 }
 
-func TestProductionWindowLifecycle(t *testing.T) {
-	options := bootstrap.WindowOptions()
-	options.StateKey = "" // Keep test geometry out of user window preferences.
-	window := mygo.NewWindow(options)
-	t.Cleanup(func() {
-		if !window.IsDestroyed() {
-			window.Destroy()
-		}
-	})
-	eventually(t, window.IsVisible)
+// capture checks a window renders nonblank native content and saves it.
+func capture(t *testing.T, window *mygo.Window, name string, minW, minH int) image.Image {
+	t.Helper()
 	if window.Page() != nil {
 		t.Fatal("production UI must use native content")
 	}
+	data, err := window.CapturePage()
+	if err != nil {
+		t.Fatal(err)
+	}
+	img, err := png.Decode(bytes.NewReader(data))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if img.Bounds().Dx() < minW || img.Bounds().Dy() < minH {
+		t.Fatalf("%s: invalid content size %v", name, img.Bounds())
+	}
+	if directory := os.Getenv("ARION_E2E_OUTPUT"); directory != "" {
+		if err := os.MkdirAll(directory, 0o700); err != nil {
+			t.Fatal(err)
+		}
+		if err := os.WriteFile(filepath.Join(directory, name+".png"), data, 0o600); err != nil {
+			t.Fatal(err)
+		}
+	}
+	return img
+}
 
-	capture, err := window.CapturePage()
-	if err != nil {
-		t.Fatal(err)
-	}
-	img, err := png.Decode(bytes.NewReader(capture))
-	if err != nil {
-		t.Fatal(err)
-	}
-	if img.Bounds().Dx() < 360 || img.Bounds().Dy() < 240 {
-		t.Fatal("invalid native content dimensions")
-	}
-	// CapturePage renders Content; this is not an OS screenshot or GPU readback.
-	first := img.At(0, 0)
+func nonblank(img image.Image) bool {
+	first := img.At(img.Bounds().Min.X, img.Bounds().Min.Y)
 	fr, fg, fb, fa := first.RGBA()
-	different := false
-	for y := img.Bounds().Min.Y; y < img.Bounds().Max.Y && !different; y++ {
-		for x := img.Bounds().Min.X; x < img.Bounds().Max.X; x++ {
+	for y := img.Bounds().Min.Y; y < img.Bounds().Max.Y; y += 2 {
+		for x := img.Bounds().Min.X; x < img.Bounds().Max.X; x += 2 {
 			r, g, b, a := img.At(x, y).RGBA()
 			if r != fr || g != fg || b != fb || a != fa {
-				different = true
-				break
+				return true
 			}
 		}
 	}
-	if !different {
-		t.Fatal("production content capture is blank")
-	}
-	if directory := os.Getenv("ARION_E2E_OUTPUT"); directory != "" {
-		if err := os.MkdirAll(directory, 0700); err != nil {
-			t.Fatal(err)
+	return false
+}
+
+// Dictating in a fresh profile shows the overlay without taking focus and
+// an explicit failure: PERMISSION_DENIED without Accessibility trust (before
+// any microphone use, DSK-A01), otherwise MODEL_MISSING since no model is
+// provisioned in the isolated profile (DSK-09).
+func TestOverlayExplainsFailure(t *testing.T) {
+	var overlay *mygo.Window
+	eventually(t, "overlay created", func() bool { overlay = app.Windows()["overlay"]; return overlay != nil })
+	var want arion.ErrorCode = arion.CodeModelMissing
+	app.Update(func(s *arion.State) {
+		if s.Permissions.Accessibility != arion.ConsentGranted {
+			want = arion.CodePermissionDenied
 		}
-		if err := os.WriteFile(filepath.Join(directory, "native-content.png"), capture, 0600); err != nil {
-			t.Fatal(err)
-		}
+	})
+	app.Coordinator().Start()
+	eventually(t, "explicit failure "+string(want), func() bool {
+		var failure arion.ErrorCode
+		app.Update(func(s *arion.State) { failure = s.Dictation.Failure })
+		// A headless CI desktop may have no foreground editor: that is an
+		// explicit TARGET_UNSUPPORTED, also before any microphone use.
+		return failure == want || (want == arion.CodeModelMissing && failure == arion.CodeTargetUnsupported)
+	})
+	eventually(t, "overlay shown", overlay.IsVisible)
+	if overlay.IsFocused() {
+		t.Fatal("overlay took focus")
 	}
-	window.SetContentSize(560, 360)
-	eventually(t, func() bool { width, height := window.ContentSize(); return width == 560 && height == 360 })
+	eventually(t, "overlay pill drawn", func() bool {
+		return nonblank(capture(t, overlay, "overlay-failure", uiapp.OverlayWidth, uiapp.OverlayHeight))
+	})
+	time.Sleep(600 * time.Millisecond)
+	capture(t, overlay, "overlay-failure", uiapp.OverlayWidth, uiapp.OverlayHeight)
+}
+
+func TestSettingsWindowLifecycle(t *testing.T) {
+	app.OpenSettings()
+	var settings *mygo.Window
+	eventually(t, "settings opened", func() bool { settings = app.Windows()["settings"]; return settings != nil && settings.IsVisible() })
+	if !nonblank(capture(t, settings, "settings", 640, 440)) {
+		t.Fatal("settings content blank")
+	}
+	settings.SetContentSize(820, 600)
+	eventually(t, "settings resized", func() bool { w, h := settings.ContentSize(); return w == 820 && h == 600 })
 	var closed atomic.Int32
-	window.OnClosed(func() { closed.Add(1) })
-	window.Close()
-	eventually(t, window.IsDestroyed)
-	eventually(t, func() bool { return closed.Load() == 1 })
+	settings.OnClosed(func() { closed.Add(1) })
+	settings.Close()
+	eventually(t, "settings destroyed", settings.IsDestroyed)
+	eventually(t, "one close callback", func() bool { return closed.Load() == 1 })
+	eventually(t, "settings released", func() bool { return app.Windows()["settings"] == nil })
+}
+
+func TestOnboardingWindowLifecycle(t *testing.T) {
+	app.OpenOnboarding()
+	var onboarding *mygo.Window
+	eventually(t, "onboarding opened", func() bool {
+		onboarding = app.Windows()["onboarding"]
+		return onboarding != nil && onboarding.IsVisible()
+	})
+	if !nonblank(capture(t, onboarding, "onboarding", uiapp.OnboardingWidth, uiapp.OnboardingHeight)) {
+		t.Fatal("onboarding content blank")
+	}
+	onboarding.Close()
+	eventually(t, "onboarding destroyed", onboarding.IsDestroyed)
 }

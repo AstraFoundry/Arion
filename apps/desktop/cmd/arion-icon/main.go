@@ -1,0 +1,125 @@
+// Command arion-icon renders resources/icon.png, Arion's app icon: five
+// rounded voice bars on an ink-blue squircle. Rendering is deterministic so
+// the committed PNG can be regenerated and diffed.
+package main
+
+import (
+	"image"
+	"image/color"
+	"image/png"
+	"log"
+	"math"
+	"os"
+)
+
+const (
+	size    = 1024
+	samples = 4
+	margin  = 100.0
+)
+
+// squircle reports coverage of a superellipse (n=5), Apple's icon shape.
+func squircle(x, y float64) bool {
+	half := (size - 2*margin) / 2
+	cx, cy := size/2.0, size/2.0+6
+	nx, ny := math.Abs(x-cx)/half, math.Abs(y-cy)/half
+	return math.Pow(nx, 5)+math.Pow(ny, 5) <= 1
+}
+
+func bar(x, y float64) bool {
+	heights := []float64{230, 420, 560, 360, 250}
+	width, gap := 64.0, 46.0
+	total := float64(len(heights))*width + float64(len(heights)-1)*gap
+	left := size/2.0 - total/2
+	for i, h := range heights {
+		x0 := left + float64(i)*(width+gap)
+		top, bottom := size/2.0-h/2, size/2.0+h/2
+		r := width / 2
+		if x < x0 || x > x0+width || y < top || y > bottom {
+			continue
+		}
+		cx := x0 + r
+		switch {
+		case y < top+r:
+			if math.Hypot(x-cx, y-(top+r)) <= r {
+				return true
+			}
+		case y > bottom-r:
+			if math.Hypot(x-cx, y-(bottom-r)) <= r {
+				return true
+			}
+		default:
+			return true
+		}
+	}
+	return false
+}
+
+// menuIcon renders the input-menu glyph: the same five bars in black on
+// transparent, which macOS tints as a template.
+func menuIcon(path string) {
+	const n = 64
+	img := image.NewNRGBA(image.Rect(0, 0, n, n))
+	heights := []float64{18, 34, 48, 30, 20}
+	for py := 0; py < n; py++ {
+		for px := 0; px < n; px++ {
+			x, y := float64(px)+0.5, float64(py)+0.5
+			for i, h := range heights {
+				x0 := 7 + float64(i)*11
+				top, bottom := n/2.0-h/2, n/2.0+h/2
+				if x >= x0 && x <= x0+6 && y >= top+3 && y <= bottom-3 || math.Hypot(x-(x0+3), y-(top+3)) <= 3 || math.Hypot(x-(x0+3), y-(bottom-3)) <= 3 {
+					img.Set(px, py, color.NRGBA{A: 255})
+				}
+			}
+		}
+	}
+	write(path, img)
+}
+
+func write(path string, img image.Image) {
+	out, err := os.Create(path)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer out.Close()
+	if err := png.Encode(out, img); err != nil {
+		log.Fatal(err)
+	}
+}
+
+func main() {
+	if len(os.Args) == 3 && os.Args[1] == "-menu" {
+		menuIcon(os.Args[2])
+		return
+	}
+	img := image.NewNRGBA(image.Rect(0, 0, size, size))
+	for py := 0; py < size; py++ {
+		for px := 0; px < size; px++ {
+			var a, r, g, b float64
+			for sy := 0; sy < samples; sy++ {
+				for sx := 0; sx < samples; sx++ {
+					x := float64(px) + (float64(sx)+0.5)/samples
+					y := float64(py) + (float64(sy)+0.5)/samples
+					if !squircle(x, y) {
+						continue
+					}
+					a++
+					if bar(x, y) {
+						r, g, b = r+250, g+251, b+255
+						continue
+					}
+					// Ink blue, slightly lighter at the top.
+					t := (y - margin) / (size - 2*margin)
+					r += 34 - 14*t
+					g += 92 - 26*t
+					b += 214 - 40*t
+				}
+			}
+			if a == 0 {
+				continue
+			}
+			img.Set(px, py, color.NRGBA{R: uint8(r / a), G: uint8(g / a), B: uint8(b / a), A: uint8(255 * a / (samples * samples))})
+		}
+	}
+	write(os.Args[1], img)
+}

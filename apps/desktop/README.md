@@ -1,7 +1,18 @@
-# Desktop shell
+# Desktop app
 
-MyGo native Go module with centralized English copy and FSD Go packages. The current window reports that capture/input adapters are not connected. The UI does not simulate dictation or register an input source.
+MyGo native Go module: the menu bar app, its windows (overlay pill, menu bar panel, settings, onboarding), OS adapters and the composition root.
 
-See [local development](../../docs/operations/local-dev.md), [architecture](../../docs/project/architecture.md), and [desktop spec](../../specs/001-desktop-input.md).
+| Path | Role |
+| --- | --- |
+| `main.go`, `bootstrap/` | Composition root: wires the core coordinator, model runtime, platform adapters, tray, windows, hotkeys and sounds; E2E control mode behind `ARION_E2E_CONTROL` |
+| `ui/` | FSD native UI (`app → pages → widgets → features → entities → shared`); all copy in `ui/shared/copy` |
+| `infrastructure/audio` | miniaudio capture (CoreAudio/WASAPI, 16 kHz mono) and real-time fixture replay |
+| `infrastructure/asr` | sherpa-onnx streaming recognizer and offline finalizer adapters |
+| `infrastructure/provision`, `modelruntime` | Verified model downloads and the resident bundle chosen by evaluation |
+| `infrastructure/macos`, `windows` | Permissions, target capture and insertion routes ([ADR 003](../../docs/decisions/003-insertion-routes.md)) |
+| `infrastructure/settings`, `secrets`, `vocabulary` | Preferences JSON, OS-kept key, encrypted vocabulary |
+| `cmd/arion-eval-driver` | Benchmark driver running the production pipeline |
+| `cmd/arion-e2e-driver`, `e2e/` | Product scenario driver, owned editor fixture and native window tests |
+| `cmd/arion-models`, `cmd/arion-icon` | Catalog review/offline import tool; app icon renderer |
 
-Use `go tool mygo dev` from this directory for a bundled development app, or `go tool mygo build` for the current host. MyGo CLI is pinned by this module's tool directive. OS inference/IME/capture implementations belong in `infrastructure/` and implement core ports.
+Speech runtimes are cgo libraries: build with `make desktop-build` / `make desktop-dev`, which stage the pinned dylibs/DLLs into `resources/` and set the rpath. See [local development](../../docs/operations/local-dev.md) and [architecture](../../docs/project/architecture.md).

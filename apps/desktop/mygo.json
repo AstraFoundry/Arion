@@ -1,6 +1,16 @@
 {
   "name": "Arion",
   "identifier": "local.arion.desktop",
-  "version": "0.0.0",
-  "out": "build"
+  "version": "0.1.0",
+  "copyright": "Arion contributors",
+  "out": "build",
+  "macos": {
+    "minimumSystemVersion": "13.0",
+    "entitlements": "entitlements.plist",
+    "infoPlist": {
+      "NSMicrophoneUsageDescription": "Arion listens only while you dictate. Speech is recognized on this Mac.",
+      "LSUIElement": true,
+      "LSApplicationCategoryType": "public.app-category.productivity"
+    }
+  }
 }
