@@ -12,7 +12,7 @@ Imports can only go from a higher layer to a lower layer:
 app -> pages -> widgets -> features -> entities -> shared
 ```
 
-- `shared` cannot import from any other layer.
+- `shared` cannot import from any other layer. It has segments rather than slices, so one shared segment may import another (for example `shared/kit` uses `shared/theme`).
 - `entities` cannot import from `features`, `widgets`, `pages`, or `app`.
 - `features` cannot import from `widgets`, `pages`, or `app`.
 

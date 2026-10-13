@@ -26,11 +26,22 @@ This is Arion's design, not a verified competitor call graph. Ranking requires r
 
 ## Modules
 
-- `apps/desktop`: composition root, MyGo UI, OS adapter wiring and packaging. FSD packages are under `ui/`; native/platform code is under `infrastructure/`.
-- `packages/core`: framework-free Go domain, transport-neutral value contracts, domain-owned ports and application use cases. No MyGo, CGo, SQL, OS permissions, HTTP client, or vendor model SDK imports.
-- `services/sync`: reserved service boundary for Go DDD relay code. No implemented relay in this foundation.
+- `apps/desktop`: composition root (`bootstrap`), MyGo UI, OS adapter wiring and packaging. FSD packages are under `ui/`; native/platform code is under `infrastructure/`.
+- `packages/core`: framework-free Go domain, transport-neutral value contracts, domain-owned ports and the dictation coordinator. No MyGo, CGo, SQL, OS permissions, HTTP client, or vendor model SDK imports.
+- `models`: a Go module embedding the reviewed catalog (`catalog.json`): artifact provenance, file digests, licenses, bundles and evaluation summaries. Weights, user corpora and commercial app binaries are never committed.
+- `services/sync`: reserved service boundary for Go DDD relay code. No implemented relay.
 - `packages/contracts`: language-neutral examples and contract ownership; portable Go DTOs live in core rather than duplicate type implementations.
-- `models`: reviewed model metadata only. Weights, user corpora and commercial app binaries are never committed.
+
+## Runtime shape (shortcut mode)
+
+One process. The menu bar app owns four kinds of native windows: a click-through overlay that never takes focus and hosts the dictation pill, the menu bar popover panel, settings and onboarding. A global shortcut toggles the coordinator; Escape is held globally only while a session can be cancelled.
+
+1. **Start:** a new generation and session; the platform adapter captures the focused editor (Accessibility trust required on macOS) and chooses one insertion route; the resident recognizer opens a stream; the microphone starts. A known secure field or missing permission ends the session before the microphone opens.
+2. **Capture:** miniaudio delivers 20 ms mono 16 kHz frames to a bounded queue; overflow or device loss ends the session with `AUDIO_DISCONTINUITY`. One session goroutine owns the recognizer, emits level events and revisioned drafts, and retains session audio in RAM.
+3. **Finish:** the stream is flushed; the bundle's acoustic finalizer re-decodes the retained audio; conservative rules and approved vocabulary produce the reviewed text; audio is dropped.
+4. **Commit:** the session claims its single commit; the adapter revalidates focus and inserts once. Outcomes map to "Inserted" (verified), "Typed"/"Pasted" (unknown) or a failure with the text kept for copying.
+
+Coordinator events cross to the UI through a non-blocking queue drained onto the main thread, so worker goroutines never wait on the UI. The model runtime swaps bundles only while no session holds a recognizer.
 
 See [repository ownership](repository.md) for import rules and [contract](../../specs/004-contracts.md) for versioning.
 

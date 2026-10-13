@@ -5,6 +5,19 @@ Arion uses MyGo native Go packages under `apps/desktop/ui`. FSD responsibilities
 
 This section defines how the frontend is organized using **Feature-Sliced Design (FSD)**.
 
+## Arion slices
+
+| Layer | Slices |
+| --- | --- |
+| `app` | One view per window: overlay, menu bar panel, settings, onboarding |
+| `pages` | `overlay`, `menubar`, `settings`, `onboarding` |
+| `widgets` | `capsule` (dictation pill), `statusheader`, `modelcard`, `stepper` |
+| `features` | `dictate`, `permissions`, `provision`, `shortcut`, `microphone`, `vocabulary`, `transcript`, `modelchoice` |
+| `entities` | `dictation` (phase/notice projection), `model`, `onboarding` (step rules) |
+| `shared` | `runtime` (state and actions boundary), `copy`, `theme` (tokens, motion presets), `kit` (primitives), `icons` (Lucide, ISC) |
+
+Views read `runtime.State` and request `runtime.Actions`; the composition root mutates state on the main thread. Headless view tests in `ui/app` render every surface with MyGo's `ui.Tester`.
+
 ## Documents
 
 - [`fsd-overview.md`](fsd-overview.md) — what FSD is and why it is used.

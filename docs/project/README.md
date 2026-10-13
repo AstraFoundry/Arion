@@ -10,6 +10,7 @@ Arion is a voice input product with a native Go desktop shell. macOS and Windows
 - User-controlled personal vocabulary, correction rules, and contextual preferences.
 - Self-hosted encrypted memory sync, with offline dictation independent of account or server availability.
 - MyGo native Go UI; no web frontend is required.
+- The recognition model is not a user decision: the best evaluated bundle downloads and loads automatically; another evaluated bundle can be chosen explicitly.
 
 Language coverage and latency are evaluation targets, not measured product claims. User-facing UI copy remains English under repository conventions.
 
@@ -23,15 +24,15 @@ Jev is TypeSafe’s System One typed decision model. Laya Multilingual is the pr
 
 | Area | Choice | Status |
 | --- | --- | --- |
-| Desktop UI | MyGo v0.4.6 native, Go 1.27.1 | Selected by user; pinned shell dependency |
-| Shared domain/application | Portable Go module | Foundation |
-| macOS | CoreAudio/AVFoundation capture; AX context; IMK composition | Adapter design, implementation pending |
-| Windows | WASAPI capture; UI Automation context; TSF composition | Adapter design, implementation pending |
-| ASR | sherpa-onnx streaming evaluation adapter | Proposed; production weights require benchmark/license gates |
-| Correction | Conservative rules, optional local text model | Evaluation required |
-| Candidate ranking | Laya Multilingual local Choice evaluation adapter | Proposed; production checkpoint/export requires evaluation |
-| Local storage | SQLite with encrypted sensitive values and OS-kept keys | Proposed; concrete driver/migrations pending |
-| Sync service | Self-hosted Go relay; ciphertext records | Selected deployment priority; protocol specified |
-| Cryptography | Vetted AEAD/key lifecycle implementation | Provider decision pending; do not invent crypto |
+| Desktop UI | MyGo v0.4.6 native, Go 1.27.1 | Implemented: menu bar panel, overlay pill, settings, onboarding |
+| Shared domain/application | Portable Go module | Implemented: session aggregate, coordinator, correction rules, model selection |
+| macOS | miniaudio/CoreAudio capture; AX target and insertion; InputMethodKit host | Implemented and tested on macOS arm64 |
+| Windows | miniaudio/WASAPI capture; SendInput insertion; DPAPI | Code compiled for windows/amd64; not run on Windows; TSF pending |
+| ASR | sherpa-onnx 1.13.8 via Go/cgo; streaming preview plus acoustic finalizer | Default bundle chosen by measured evaluation ([ADR 004](../decisions/004-automatic-model-selection.md)) |
+| Correction | Conservative rules (`arion-rules-v1`) and approved vocabulary | Implemented; local LLM correction not adopted |
+| Candidate ranking | Laya Multilingual local Choice evaluation adapter | Not implemented: recognizers expose one hypothesis |
+| Local storage | Preferences JSON; AES-256-GCM vocabulary with OS-kept key | Implemented ([ADR 005](../decisions/005-local-encryption.md)); SQLite/outbox pending |
+| Sync service | Self-hosted Go relay; ciphertext records | Protocol specified; not implemented |
+| Cryptography | Go standard library AES-GCM; Keychain/DPAPI keys | Local values only; key exchange for sync pending |
 
 See [specs](../../specs/README.md), [research](../research/README.md), [repository](repository.md), and [agent handoff](agent-handoff.md).

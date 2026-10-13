@@ -1,6 +1,6 @@
 # Evaluation procedure
 
-No on-device model performance is measured in this foundation. Budgets in [006 Models](../../specs/006-models.md) are proposed engineering gates.
+Model-comparison runs measure Arion's production pipeline on device (see [benchmark results](../../benchmarks/README.md)); their aggregates select the default bundle. Budgets in [006 Models](../../specs/006-models.md) remain provisional engineering gates.
 
 ## Record each run
 

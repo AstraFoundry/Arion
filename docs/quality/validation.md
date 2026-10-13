@@ -1,17 +1,55 @@
-# Foundation validation
+# Validation
 
-## Observed locally
+What was actually run, on which host, and what remains unverified. Host: Apple M4, 32 GB, macOS 26.6.2 (25G83), arm64, Go 1.27.1, sherpa-onnx-go 1.13.8.
 
-- Repository links/configuration/layer imports/JavaScript syntax pass `pnpm check`.
-- Portable core tests, Go vet and formatting pass `pnpm core:check`. Tests cover review-before-commit/terminal session transitions and candidate permutation/finite scores.
-- MyGo native Go module compiles and passes vet on macOS arm64 with selected Go 1.27.1.
-- `go tool mygo build` successfully produces `apps/desktop/build/darwin-arm64/Arion.app` and `Arion 0.0.0 arm64.dmg` with local ad hoc signing. This is not Developer ID signing or notarization.
-- Direct Windows amd64 cross-compilation and `go tool mygo build -platform windows/amd64` succeed; the CLI emits `apps/desktop/build/windows-amd64/Arion.exe`. The local macOS host has no NSIS, so its cross-build explicitly skipped the Windows installer. Windows execution, installer registration and UI behavior remain unverified.
-- Frozen pnpm 10.33.0 workspace installation, portable core checks and 21 evaluation-tool tests pass locally.
-- Actual macOS native E2E passes: production window visibility, Content capture, resize and exactly one close callback. Content capture is not an OS/GPU screenshot. Windows amd64 native E2E test binary also cross-compiles successfully; Windows execution remains unverified.
-- Factorial and streaming plans generate deterministically; missing corpus/driver requests fail explicitly. All seven pinned HF metadata revisions resolve through `pnpm datasets:check`. Dataset research records access limits and provenance; no audio/model acquisition or speech score is claimed.
-- Complete Typeless REA Evidence is retained locally; committed ledgers preserve IDs, digests and partial coverage. Doubao evidence is ordinary shell static evidence, not REA decompilation.
+## Automated checks (macOS arm64)
 
-## Not verified / not implemented
+| Check | Result |
+| --- | --- |
+| `pnpm check` (links, JSON, layering, JS syntax) | Pass |
+| Core and catalog tests (`GOWORK=off go test -race`) | Pass: session aggregate, correction rules, model selection, coordinator (commit once, cancel during finalization, stale revisions, overflow, silence, secure/untrusted target, missing model, unknown outcome not retried, mode switch, IME composition routing) |
+| Desktop tests (`CGO_ENABLED=1 go test ./...`) | Pass: headless view tests for overlay, menu bar panel, all settings sections and the onboarding flow; provisioning (corrupt and tampered artifacts rejected, failed replacement keeps the prior install, resume, size bound, offline refusal); encrypted vocabulary; replay audio; catalog-to-selection mapping |
+| Evaluation tooling tests | Pass |
+| Native window E2E (`make e2e`) | Pass: overlay explicit failure without taking focus, settings and onboarding window lifecycle |
+| Windows amd64 cross-build with cgo (MinGW-w64 14) | `go vet` clean; `Arion.exe` and the native E2E test binary link against `sherpa-onnx-c-api.dll` |
 
-No Windows execution, microphone capture, ASR/model benchmark, correction/ranking inference, IMK/TSF host registration, crypto/storage or sync deployment was performed. Full product scenario drivers remain unimplemented. CI jobs are configured and have not been run remotely. No production model weights or distribution licenses were approved. See [handoff](../project/agent-handoff.md) and [evaluation](../research/evaluation.md).
+## Model selection run (`models-dev-2`)
+
+Real-time replay of 118 dev fixtures per bundle through the production pipeline (coordinator, sherpa-onnx streaming recognizer, finalizer; correction off), warm, 4 threads, AC power. Report: [`benchmarks/results/models-dev-2`](../../benchmarks/results/models-dev-2/summary.json). Rates are corpus micro-averages; latency is stop (end of audio) to review-ready.
+
+| Bundle | Mandarin CER | English WER | Mixed MER | Stop→review p95 | RTF |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| **X-ASR 480 ms + X-ASR final pass (default)** | 0.071 | 0.037 | 0.253 | 157 ms | 0.10 |
+| X-ASR 160 ms + X-ASR final pass | 0.071 | 0.037 | 0.253 | 190 ms | 0.19 |
+| X-ASR 160 ms + SenseVoice final pass | 0.072 | 0.131 | 0.380 | 248 ms | 0.20 |
+| X-ASR streaming 480 ms | 0.126 | 0.068 | 0.337 | 44 ms | 0.08 |
+| X-ASR streaming 160 ms | 0.096 | 0.061 | 0.359 | 1,019 ms | 0.31 |
+| Zipformer bilingual (2023) | 0.375 | 0.107 | 1.283 | 51 ms | 0.09 |
+
+Limits: one seed and the warm stratum only; 48 Mandarin/40 English/30 synthetic mixed fixtures (the mixed set is macOS-voice TTS, and its references write numbers as words, which penalizes digit output); speaker-cluster CIs are exploratory. The X-ASR streaming 160 ms block overlapped developer test builds on the same machine, which inflated its tail latency; the default's block ran on an idle machine. SenseVoice emitted text on one of three noise fixtures; the default emitted none. The two X-ASR final-pass bundles produce identical final text, so the latency tie-break chose the 480 ms preview. First-partial latency (≈1.6 s p95 from audio start, including leading silence) is not a speech-onset measurement.
+
+## Product scenarios (`make e2e-macos`)
+
+All eight scenarios in [`macos-shortcut-scenarios.json`](../../tests/e2e/macos-shortcut-scenarios.json) passed against the packaged `Arion.app` (binary SHA-256 `e28ce58a…`), with Accessibility and microphone consent granted by a person through onboarding, an isolated profile, `ARION_OFFLINE=1` and the AppKit editor fixture:
+
+| Scenario | Observed |
+| --- | --- |
+| shortcut-offline-once | Editor A = "Hello world.", one commit, `applied`, 0 sockets |
+| mixed-language-dictation | Editor B = "请把这个 PR merge 到 main 分支。", one commit |
+| cancel-stale-callback | Late final result after cancel: no text, no commit |
+| focus-change-blocks-commit | Focus moved A→B before commit: no text anywhere, `not_applied/TARGET_CHANGED` |
+| secure-field-blocked | `SECURE_FIELD_BLOCKED`, microphone never started |
+| uncertain-commit-no-retry | Lost acknowledgement: outcome `unknown`, one insertion attempt, text once |
+| input-mode-switch-cancels | Switch to `system_ime` during finalization cancels; capture inactive, no commit |
+| silence-no-commit | `NO_SPEECH`, no text |
+
+The first-run path was also exercised on the real profile: onboarding completed, and the app downloaded, verified and installed the two archives of the default bundle (only listed members, archives removed). The E2E harness's error-message change in `bootstrap/e2e.go` was made after this binary was built; it affects E2E-mode error reporting only.
+
+## Not verified
+
+- The live microphone path with real speech (capture → recognition → insertion) was not exercised by automation; scenarios replay fixture audio into the production pipeline.
+- Nothing has run on Windows: capture, insertion, DPAPI and windows lifecycle are compiled only.
+- IME-A01 (install/select/remove on a real input-source list) and host-edit scenarios IME-A04/A05 need a person or a dedicated test profile; IMK composition was not exercised in a host application.
+- Microphone denial (DSK-A01 with a denied consent database) needs a test profile; it is covered by unit tests and the native E2E's untrusted-Accessibility path only.
+- Streaming latency claims with annotated speech onsets (STR-A01–A04) need reviewed timestamp labels; first-partial values above are measured from audio start, not speech onset.
+- No Developer ID signing, notarization or updater.

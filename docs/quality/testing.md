@@ -2,13 +2,13 @@
 
 ## Current checks
 
-- `pnpm check`: local docs links, configuration JSON, unresolved active-template placeholders Go package layering and JavaScript syntax.
-- `make core-check`: core tests, vet and Go formatting. Existing tests cover terminal session immutability/review-before-commit and candidate ID permutation/finite-score invariants.
-- `pnpm test` / `make test`: portable core checks plus benchmark metric, corpus-isolation, stream scoring and driver-conformance tests. Synthetic data is not inference evidence.
-- `make e2e`: actual production native window lifecycle/render/resize/close; requires an interactive macOS/Windows session.
-- CI native jobs: compile/test/vet, explicitly run native E2E and package the shell on macOS/Windows. They do not establish microphone/IME behavior.
-- `make e2e-scenarios`: 16 owned product scenarios through a reviewed live OS driver; current product adapters are not implemented. See [E2E](e2e.md).
-- `make ablation-plan` / `make stream-plan`: reproducible configurations without inference; live runs require corpus/model hashes and drivers. See [tooling](../../tools/evaluation/README.md).
+- `pnpm check`: local docs links, configuration JSON, placeholders, Go package layering and JavaScript syntax.
+- `make core-check`: portable core and catalog tests, vet and formatting. Coordinator tests run under `-race`: exactly-once commit, cancellation during finalization, stale revisions, queue overflow, silence, secure/untrusted targets, missing model, unknown-outcome no-retry, mode switching and IME composition routing.
+- `make desktop-check`: desktop tests and vet with cgo: headless view tests for every window, encrypted vocabulary (ciphertext on disk, wrong key and tampering fail closed), replay audio.
+- `make e2e`: production windows on the real OS loop (overlay explicit failure without focus, settings and onboarding lifecycle).
+- `make e2e-macos`: eight owned product scenarios against the packaged app and an AppKit editor fixture; requires Accessibility access for `Arion.app`.
+- `make bench-run CONFIG=benchmarks/configs/desktop-models.json …`: real-time model comparison through the production pipeline; `scripts/catalog-evaluation.mjs` records completed reports in the catalog.
+- Windows: `CGO_ENABLED=1 GOOS=windows GOARCH=amd64 CC=x86_64-w64-mingw32-gcc go vet ./...` and `go build` compile the app and native E2E test binary; execution needs Windows.
 
 ## Required implementation evidence
 

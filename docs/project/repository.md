@@ -5,14 +5,16 @@
 | Path | Owner and dependency boundary |
 | --- | --- |
 | `apps/desktop` | Separate Go module; MyGo lifecycle and FSD native UI; depends on core |
-| `apps/desktop/ui` | `app → pages → widgets → features → entities → shared` Go packages; same-layer slices isolated |
-| `apps/desktop/infrastructure` | OS input/capture/context/IME and model/storage adapters; implements domain-owned ports |
+| `apps/desktop/ui` | `app → pages → widgets → features → entities → shared` Go packages; same-layer slices isolated; shared segments may import each other |
+| `apps/desktop/bootstrap` | Composition root: wiring, windows, tray, hotkeys, main-thread state, E2E control mode |
+| `apps/desktop/infrastructure` | OS input/capture/context and model/storage adapters; implements domain-owned ports |
+| `apps/desktop/cmd` | Evaluation and E2E drivers, model catalog tool, icon renderer |
 | `packages/core/domain` | Session and candidate invariants; standard-library only |
 | `packages/core/contracts` | Versioned transport-neutral DTOs; no SDK or platform handles |
-| `packages/core/application` | Use-case orchestration (reserved); depends on domain-owned ports |
+| `packages/core/application` | Dictation coordinator and preferences; depends on domain-owned ports |
 | `packages/contracts` | Shared wire examples/documentation, no duplicate business types |
 | `services/sync` | Reserved self-hosted relay; must adopt DDD when implemented |
-| `models` | License/provenance manifest schema and metadata; no weights |
+| `models` | Go module embedding the reviewed catalog: provenance, digests, licenses, bundles, evaluation summaries; no weights |
 | `scripts` | Dependency-free repository checks and platform-neutral workflow entry points |
 | `tools/evaluation` | pnpm workspace: metric/statistics/driver protocol and real-run orchestration |
 | `benchmarks` | Experiment configurations and pinned dataset catalog; no audio/weights |
@@ -21,7 +23,7 @@
 | `specs` | Normative requirements, acceptance scenarios and task traceability |
 | `docs/research` | Evidence and technical proposals; cannot override accepted specs |
 
-The two implemented Go modules are connected by `go.work`. `apps/desktop/go.mod` pins MyGo and reserves a local core replacement; the minimal shell does not import core yet. Add its requirement when wiring actual use cases. The local `replace` makes that integration usable outside workspace mode and must be reconsidered before publishing modules. `GOWORK=off` allows portable core checks without upgrading its toolchain.
+The three Go modules (`packages/core`, `models`, `apps/desktop`) are connected by `go.work`. `apps/desktop/go.mod` pins MyGo, sherpa-onnx Go bindings and miniaudio, and replaces core/models with the local modules; reconsider the local `replace` before publishing modules. `GOWORK=off` allows portable core and catalog checks without upgrading their toolchain. The desktop module builds with cgo (`CGO_ENABLED=1`) because the speech runtimes are native libraries.
 
 ## FSD in native Go
 
@@ -37,6 +39,6 @@ Core domain defines invariants and abstractions; core application orchestrates t
 
 ## Working rules
 
-Do not create empty implementations that return success, mock a recognizer as production behavior, or silently use cloud services. Only contract/state invariants and a minimal native shell are implemented now. Every new adapter requires a capability statement, explicit unsupported result and acceptance evidence. OS target claims require tests on that OS.
+Do not create empty implementations that return success, mock a recognizer as production behavior, or silently use cloud services. Every adapter requires a capability statement, explicit unsupported result and acceptance evidence. OS target claims require tests on that OS. Test doubles live only in `_test.go` files; the E2E control mode replaces the microphone with fixture audio but runs the production recognizer, correction and insertion.
 
 JavaScript tooling is a pnpm workspace pinned by the root package manager and lockfile. `make` exposes recurring workflows; do not introduce npm commands or a second lockfile. Go modules remain independently versioned. Benchmark/OS drivers are concrete adapter implementations, not frontend business logic.

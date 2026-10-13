@@ -2,13 +2,21 @@
 
 ## Implemented native lifecycle
 
-`make e2e` / `pnpm e2e:native` runs build-tagged Go tests in an actual macOS/Windows desktop session. The app main thread runs MyGo's native loop while the test uses the same production `bootstrap.WindowOptions()` and UI. Only window state persistence is disabled for fixture isolation.
+`make e2e` / `pnpm e2e:native` runs build-tagged Go tests in an actual macOS/Windows desktop session. The test hosts the production composition root (`bootstrap.App`) in an isolated temporary profile on MyGo's native loop.
 
-Checks: visible window, native Content rather than a Page, nonblank decoded PNG content capture, minimum geometry, resizing, destruction and one closed callback. App teardown terminates the event loop. A missing OS/session is a failure, not a success-shaped skip. Ordinary `pnpm test` excludes interactive tests; CI native jobs explicitly run them. Local macOS execution passed; Windows CI is configured but local Windows execution is unavailable.
+Checks: the click-through overlay exists, stays unfocused and draws an explicit failure when dictation starts in a fresh profile (PERMISSION_DENIED with the capability named when Accessibility is not granted, otherwise MODEL_MISSING); settings and onboarding windows show native Content, render nonblank captures, resize, close once and release their views. A missing OS/session is a failure, not a success-shaped skip. Ordinary `pnpm test` excludes interactive tests; CI native jobs explicitly run them.
+
+## Headless view tests
+
+`go test ./ui/app` renders every surface with MyGo's `ui.Tester` (no window): overlay phases and outcome timeouts, the menu bar panel (start, live, copy, download progress), each settings section including shortcut recording, the modifier rule, vocabulary entry and insertion method, and the complete onboarding flow with its permission gates and Accessibility auto-advance. `ARION_UI_SNAPSHOTS=<dir>` saves PNG frames for review.
 
 MyGo `CapturePage()` renders Content; it does not verify the OS compositor, GPU pixels, accessibility tree, text injection, microphone or IME. Captures are saved under ignored `.workspace/e2e/<platform>/`. These checks establish native shell lifecycle only.
 
-## Product scenario suite
+## Product scenarios on macOS
+
+[`tests/e2e/macos-shortcut-scenarios.json`](../../tests/e2e/macos-shortcut-scenarios.json) holds eight owned scenarios for shortcut mode: offline exact-once insertion with socket monitoring, mixed-language dictation, cancellation with a late final result, focus change before commit, secure field, lost commit acknowledgement, input-mode switch and silence. `arion-e2e-driver` launches the packaged `Arion.app` with `ARION_E2E_CONTROL` (fixture audio in place of the microphone, final-result gate, acknowledgement-loss fault; recognition, correction, target capture and insertion are the product's), an isolated profile and `ARION_OFFLINE=1`, plus the `ArionEditorFixture` app built from `apps/desktop/e2e/fixtures/editor`. Editors report their real text; `lsof -i` samples the app's sockets; each scenario writes a hashed trace. Insertion requires Accessibility access for `Arion.app`, granted once by a person; an ad hoc rebuild requires granting it again.
+
+## Product scenario suite (all platforms)
 
 [16 executable scenarios](../../tests/e2e/desktop-scenarios.json) define actions and observable assertions for shortcut/offline exact-once insertion, cancellation/stale callbacks, focus changes, secure context, denied microphone, IME registration/lifecycle/Unicode/user edits, candidate selection, uncertain commit, encrypted relay conflicts, tampering/revocation/tombstones and offline outbox restart.
 

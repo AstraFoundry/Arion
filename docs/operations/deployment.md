@@ -2,7 +2,7 @@
 
 ## Current capability
 
-The native shell can be built with the pinned MyGo CLI. No microphone, model, IME installer, updater or sync service is implemented. A successful shell build is not a releasable input method.
+`make desktop-build` packages `Arion.app` (menu bar app, `LSUIElement`), its icon, the microphone usage description, the audio-input entitlement and the speech runtime libraries in `Contents/Resources/lib`, signed ad hoc. Models are not bundled: the app downloads the bundle selected by evaluation from pinned URLs and verifies every file. There is no IME installer, updater or sync service yet. The development identifier `local.arion.desktop` and ad hoc signing are not release-ready.
 
 ```sh
 make desktop-build

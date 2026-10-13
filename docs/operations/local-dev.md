@@ -24,7 +24,19 @@ make desktop-build
 make desktop-dev
 ```
 
-These commands use the pinned `go tool mygo` from `apps/desktop`. Windows installer creation uses NSIS: the pinned CLI provisions it on Windows when missing; cross-packaging on macOS without NSIS emits the executable and explicitly skips the installer. `desktop-dev` launches the minimal window and is an interactive action; it does not attach a microphone, register an IME or download model weights. Close the window normally when done. `desktop-build` produces native packaging for the current host under ignored `apps/desktop/build/`.
+These commands use the pinned `go tool mygo` from `apps/desktop` with `CGO_ENABLED=1` and an rpath to `Contents/Resources/lib`. `make desktop-libs` (run by both) copies the pinned sherpa-onnx and ONNX Runtime libraries from the Go module cache into `apps/desktop/resources/<platform>/`; they are build artifacts and stay ignored. Windows installer creation uses NSIS; cross-packaging cgo for Windows additionally needs a MinGW-w64 toolchain (`CC=x86_64-w64-mingw32-gcc`).
+
+`desktop-dev` launches the menu bar app. On first run it shows onboarding, asks for microphone and Accessibility access, and downloads the automatically selected model bundle (about 270 MB) into the per-user model store; after that dictation works offline. `desktop-build` produces `Arion.app` and a DMG under ignored `apps/desktop/build/`. macOS ties Accessibility consent to the app's code signature: an ad hoc rebuild needs the permission granted again.
+
+### Data locations
+
+| Data | macOS | Windows |
+| --- | --- | --- |
+| Preferences | `~/Library/Application Support/Arion/preferences.json` | `%AppData%\Arion\preferences.json` |
+| Verified models | `~/Library/Application Support/Arion/models/<artifact>/` | `%AppData%\Arion\models\` |
+| Vocabulary (AES-GCM) | `~/Library/Application Support/Arion/vocabulary.bin`, key in the login Keychain | same folder, key protected by DPAPI |
+
+`ARION_DATA_DIR` points the app at another profile directory; `ARION_OFFLINE=1` refuses model downloads; `ARION_E2E_CONTROL=<socket>` enables the owned-scenario control mode (fixture audio instead of the microphone). These exist for isolated E2E profiles, not for users.
 
 For direct compile validation:
 
@@ -43,7 +55,7 @@ Run `go mod tidy` in the module whose imports changed and retain `go.sum`. Keep 
 ## Troubleshooting
 
 - Missing toolchain/network: provision matching Go and module cache explicitly; do not lower MyGo's required version.
-- Model unavailable: current shell has no model adapter. Follow ASR-01/RNK-01 rather than interpreting it as an inference error.
+- Model unavailable: open the menu bar panel or Settings › Model; a failed download or checksum shows its reason and a retry. `go run ./cmd/arion-models import` installs an already-downloaded archive into a store without network.
 - Platform build failure: capture compiler/SDK errors and compare pinned upstream source before choosing an adapter.
 - Unsupported field: future adapters must return a typed unsupported result; clipboard is not a silent bypass.
 

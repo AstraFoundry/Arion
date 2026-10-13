@@ -14,6 +14,10 @@ Write an ADR when the decision:
 
 - [001: Desktop native boundaries](001-desktop-native-boundaries.md).
 - [002: Local pipeline and self-hosted memory](002-local-pipeline-and-memory.md).
+- [003: Shortcut-mode insertion routes](003-insertion-routes.md).
+- [004: The default model is chosen by measured evaluation](004-automatic-model-selection.md).
+- [005: Local encryption of approved vocabulary](005-local-encryption.md).
+- [006: macOS input-method host and local IPC](006-macos-input-method-host.md).
 - [`adr-template.md`](adr-template.md) — template for new ADRs.
 
 ## Naming

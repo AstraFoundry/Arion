@@ -35,6 +35,9 @@ jobs:
       matrix:
         os: [macos-14, windows-2022]
     runs-on: ${{ matrix.os }}
+    env:
+      # Speech runtimes (sherpa-onnx, miniaudio) are cgo libraries.
+      CGO_ENABLED: '1'
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -49,6 +52,14 @@ jobs:
         with:
           go-version: '1.27.1'
           cache-dependency-path: apps/desktop/go.sum
+      - name: Put the speech runtime DLLs on PATH (Windows)
+        if: runner.os == 'Windows'
+        shell: bash
+        working-directory: apps/desktop
+        run: |
+          go mod download github.com/k2-fsa/sherpa-onnx-go-windows
+          dir=$(go list -m -f '{{.Dir}}' github.com/k2-fsa/sherpa-onnx-go-windows)
+          cygpath -w "$dir/lib/x86_64-pc-windows-gnu" >> "$GITHUB_PATH"
       - run: pnpm desktop:check
       - run: pnpm e2e:native
       - uses: actions/upload-artifact@v4
@@ -57,6 +68,17 @@ jobs:
           name: native-content-${{ matrix.os }}
           path: .workspace/e2e/
           if-no-files-found: ignore
-      - name: Package native shell
+      - name: Stage native libraries and the input method
+        run: |
+          node scripts/stage-native-libs.mjs
+          node scripts/build-input-method.mjs
+      - name: Package (macOS)
+        if: runner.os == 'macOS'
+        working-directory: apps/desktop
+        env:
+          CGO_LDFLAGS: -Wl,-rpath,@executable_path/../Resources/lib
+        run: go tool mygo build -skip-dmg && node ../../scripts/finalize-macos-app.mjs
+      - name: Package (Windows)
+        if: runner.os == 'Windows'
         working-directory: apps/desktop
         run: go tool mygo build
