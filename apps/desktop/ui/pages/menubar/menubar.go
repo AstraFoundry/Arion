@@ -5,21 +5,22 @@ import (
 	"runtime"
 
 	"arion.local/desktop/ui/features/dictate"
+	"arion.local/desktop/ui/features/provision"
 	"arion.local/desktop/ui/features/transcript"
 	"arion.local/desktop/ui/shared/copy"
 	"arion.local/desktop/ui/shared/icons"
 	"arion.local/desktop/ui/shared/kit"
 	arion "arion.local/desktop/ui/shared/runtime"
 	"arion.local/desktop/ui/shared/theme"
-	"arion.local/desktop/ui/widgets/modelcard"
 	"arion.local/desktop/ui/widgets/statusheader"
 	"github.com/egoist/mygo/ui"
 )
 
-// Width and Height size the panel.
+// Width and Height size the panel: Height holds four lines of the last
+// dictation with a model download or failure under them.
 const (
 	Width  = 330
-	Height = 340
+	Height = 328
 )
 
 // Panel keeps the panel's own view state.
@@ -45,7 +46,11 @@ func (p *Panel) Render(c *ui.Context, store arion.Store) {
 		dictate.Toggle(c, store, tokens)
 		transcript.Last(c, store, tokens, &p.copied)
 		ui.Spacer(c)
-		modelcard.Render(c, store, tokens, true)
+		// The bundle itself is chosen in settings; the panel only shows the
+		// download or failure that keeps dictation from starting.
+		if store.State.Model.State != arion.ModelReady {
+			provision.Progress(c, store, tokens)
+		}
 		ui.Row(c).Gap(4).AlignItems(ui.Center).Children(func() {
 			footerButton(c, tokens, icons.Settings, messages.Text(copy.SettingsMenu), store.Actions.OpenSettings)
 			ui.Spacer(c)

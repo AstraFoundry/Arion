@@ -208,7 +208,9 @@ func (p *Page) section(c *ui.Context, store runtime.Store, tokens theme.Tokens) 
 	case About:
 		kit.Card(c, tokens).Children(func() {
 			ui.Column(c).Height(200).Children(func() {
-				showcase.Render(c, tokens, store.Copy(), showcase.Inserted, store.State.Shortcut.Accelerator, nil)
+				// The banner's top corners nest inside the card's border.
+				inner := float32(theme.RadiusCard - 1)
+				showcase.Render(c, tokens, store.Copy(), showcase.Inserted, store.State.Shortcut.Accelerator, nil, inner, inner, 0, 0)
 			})
 			ui.Column(c).Padding(16).Gap(12).Children(func() {
 				ui.Row(c).Gap(10).AlignItems(ui.Center).Children(func() {

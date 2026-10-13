@@ -13,7 +13,8 @@ import (
 	"github.com/egoist/mygo/ui"
 )
 
-// Render draws the card. Compact hides the metrics, for the menu bar.
+// Render draws the card. Compact hides the metrics and the choice, for a
+// summary.
 func Render(c *ui.Context, store runtime.Store, tokens theme.Tokens, compact bool) {
 	messages := store.Copy()
 	m := store.State.Model

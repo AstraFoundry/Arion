@@ -216,6 +216,9 @@ func TestMenuBarPanel(t *testing.T) {
 	if !hasText(tt, copy.For(copy.English).Text(copy.StatusReady)) || !hasText(tt, copy.For(copy.English).Text(copy.PanelEmpty)) {
 		t.Fatalf("idle panel: %q", tt.Texts())
 	}
+	if hasText(tt, state.Model.Active.Name) {
+		t.Fatalf("ready panel shows the model, which settings owns: %q", tt.Texts())
+	}
 	snapshot(t, tt, "panel-ready")
 	if err := tt.Click(copy.For(copy.English).Text(copy.StartDictate)); err != nil {
 		t.Fatal(err)
@@ -243,6 +246,22 @@ func TestMenuBarPanel(t *testing.T) {
 		t.Fatalf("provisioning panel: %q", tt.Texts())
 	}
 	snapshot(t, tt, "panel-downloading")
+
+	// A failed download offers its retry above the footer, under the
+	// longest last dictation.
+	state.LastText = strings.Repeat("Ship the release notes before Friday. ", 12)
+	state.Model = runtime.Model{State: runtime.ModelFailed, Failure: runtime.CodeProvisioningFailed, Active: state.Model.Active, Automatic: true}
+	settle(tt)
+	en := copy.For(copy.English)
+	retry, ok := tt.Find(en.Text(copy.Retry))
+	quit, _ := tt.Find(en.Text(copy.Quit))
+	if !ok || retry.Y+retry.H > quit.Y || quit.Y+quit.H > PanelHeight {
+		t.Fatalf("retry %+v and footer %+v do not fit the panel", retry, quit)
+	}
+	if err := tt.Click(en.Text(copy.Retry)); err != nil || !actions.called("retry") {
+		t.Fatalf("retry: %v %q", err, actions.calls)
+	}
+	snapshot(t, tt, "panel-failed")
 }
 
 func TestSettingsSections(t *testing.T) {

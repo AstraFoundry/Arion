@@ -18,9 +18,15 @@ import (
 	"github.com/egoist/mygo/ui"
 )
 
-// previewRunes bounds the draft shown in the pill; the tail is the part the
-// user is speaking now.
+// previewRunes bounds the draft handed to the text line; the line shows its
+// tail, the part the user is speaking now.
 const previewRunes = 64
+
+// Live is the pill's fixed width while the microphone is open and the
+// draft is finishing: streaming hypotheses grow and shrink as they are
+// revised, so a pill sized by its text would breathe with every partial.
+// As Typeless's recording bar, the pill changes size only between states.
+const Live = 380
 
 var pillMotion = ui.ElementTransition{
 	Animation: &theme.Settle,
@@ -49,8 +55,12 @@ func Render(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 			return
 		}
 		pill := kit.Pill(c.Key("pill"), tokens).MaxWidth(600).Transition(pillMotion)
+		switch phase {
+		case dictation.Preparing, dictation.Listening, dictation.Transcribing, dictation.Inserting:
+			pill.Width(pill.AnimateTo("width", Live, theme.Settle))
+		}
 		pill.Children(func() {
-			row := ui.Row(c.Key(phase)).Gap(10).AlignItems(ui.Center).Transition(contentMotion)
+			row := ui.Row(c.Key(phase)).Grow(1).Gap(10).AlignItems(ui.Center).Transition(contentMotion)
 			row.Children(func() {
 				switch phase {
 				case dictation.Preparing, dictation.Listening:
@@ -73,19 +83,24 @@ func Render(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 func listening(c *ui.Context, state *runtime.State, tokens theme.Tokens, preparing bool) {
 	messages := copy.For(copy.Locale(state.Preferences.UILanguage))
 	d := state.Dictation
-	dot := ui.Box(c).Size(8, 8).Radius(4).Background(tokens.Live)
-	if !preparing {
-		pulse := dot.Loop("pulse", 1400*time.Millisecond, ui.Bounce(ui.EaseInOut))
-		dot.Opacity(0.45 + 0.55*pulse)
-	}
-	kit.LevelBars(c, d.Levels, 11, 3, 20, 3, tokens.PillText)
+	// The dot and the meter say "listening"; the word is their name for
+	// assistive technology rather than text competing for the line.
+	ui.Row(c).Gap(10).AlignItems(ui.Center).Shrink(0).Label(messages.Text(copy.PillListening)).Children(func() {
+		dot := ui.Box(c).Size(8, 8).Radius(4).Background(tokens.Live)
+		if !preparing {
+			pulse := dot.Loop("pulse", 1400*time.Millisecond, ui.Bounce(ui.EaseInOut))
+			dot.Opacity(0.45 + 0.55*pulse)
+		}
+		kit.LevelBars(c, d.Levels, 11, 3, 20, 3, tokens.PillText)
+	})
+	// One slot holds the draft once speech arrives, and until then how to
+	// finish: a key and a few words, as Doubao's 「松手结束」.
 	if text := dictation.Text(d); text != "" {
-		ui.Text(c.Key("draft"), tail(text, previewRunes)).FontSize(theme.Body).MaxLines(2).MaxWidth(380).
-			ContentTransition(ui.ContentTransition{})
-	} else if !preparing {
-		ui.Text(c, messages.Text(copy.PillListening)).FontSize(theme.Body).TextColor(tokens.PillMuted)
+		draft(c, tokens, text, tokens.PillText)
+		return
 	}
-	ui.Row(c).Gap(6).AlignItems(ui.Center).Margin(0, 0, 0, 4).Children(func() {
+	ui.Row(c.Key("hint")).Grow(1).Gap(6).AlignItems(ui.Center).Justify(ui.End).
+		Transition(ui.ElementTransition{Enter: &ui.Motion{Y: 4}}).Children(func() {
 		if state.Shortcut.Holding {
 			kit.Keycap(c, tokens, holdkey.Name(messages, state.Preferences.HoldKey), true)
 			ui.Text(c, messages.Text(copy.PillReleaseHint)).FontSize(theme.Caption).TextColor(tokens.PillMuted).SingleLine()
@@ -94,6 +109,45 @@ func listening(c *ui.Context, state *runtime.State, tokens theme.Tokens, prepari
 		kit.Keycaps(c, tokens, state.Shortcut.Accelerator, true)
 		ui.Text(c, messages.Text(copy.PillShortcutHint)).FontSize(theme.Caption).TextColor(tokens.PillMuted).SingleLine()
 	})
+}
+
+// draft shows the end of the streaming text on one line: as much of the
+// tail as fits beside the meter, the start cut with an ellipsis, so
+// the line keeps its place however long the sentence grows. Widths come
+// from the previous frame's layout; before the first, the line clips.
+func draft(c *ui.Context, tokens theme.Tokens, text string, color ui.Color) {
+	line := ui.Row(c.Key("draft")).Grow(1).Shrink(1).Width(0).ClipX().AlignItems(ui.Center)
+	room := line.Bounds().W
+	if room > 0 {
+		text = fit(c, tail(text, previewRunes), room)
+	}
+	line.Children(func() {
+		ui.Text(c, text).FontSize(theme.Body).TextColor(color).SingleLine().Shrink(0)
+	})
+}
+
+// fit returns the longest tail of text that fits in width at the body
+// size, after an ellipsis when cut.
+func fit(c *ui.Context, text string, width float32) string {
+	measure := func(s string) float32 {
+		w, _ := c.MeasureText(0, ui.Span{Text: s, Size: theme.Body})
+		return w
+	}
+	if measure(text) <= width {
+		return text
+	}
+	runes := []rune(text)
+	// Smallest cut whose tail fits: tails shrink as the cut grows.
+	lo, hi := 1, len(runes)
+	for lo < hi {
+		mid := (lo + hi) / 2
+		if measure("…"+string(runes[mid:])) <= width {
+			hi = mid
+		} else {
+			lo = mid + 1
+		}
+	}
+	return "…" + string(runes[lo:])
 }
 
 func transcribing(c *ui.Context, d runtime.Dictation, tokens theme.Tokens, messages copy.Catalog) {
@@ -118,7 +172,7 @@ func transcribing(c *ui.Context, d runtime.Dictation, tokens theme.Tokens, messa
 	if text == "" {
 		text = messages.Text(copy.PillTranscribing)
 	}
-	ui.Text(c.Key("draft"), tail(text, previewRunes)).FontSize(theme.Body).MaxLines(2).MaxWidth(420).TextColor(tokens.PillMuted)
+	draft(c, tokens, text, tokens.PillMuted)
 }
 
 func outcome(c *ui.Context, d runtime.Dictation, tokens theme.Tokens, messages copy.Catalog) {

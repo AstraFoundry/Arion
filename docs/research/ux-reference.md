@@ -27,7 +27,7 @@ No app was launched, no account or user data was read, and no network traffic wa
 
 - **Typeless:** a tray menu with home, history, settings, microphone selection, "add word to dictionary", update status, version and quit; a separate frameless floating bar window for status.
 - **Doubao:** the input method is background-only; settings is a separate UI-element app; an `ASRPanelController`/`BaseCapsulePanel` family and a `MicrophoneMeterModel` back the voice panel.
-- **Arion choice:** a menu bar icon whose click opens a native popover panel (status, start/finish button with the shortcut, last dictation with copy, active model and its state) and whose right-click opens a short menu. The dictation pill lives in its own transparent, click-through, always-on-top window that never takes focus.
+- **Arion choice:** a menu bar icon whose click opens a native popover panel (status, start/finish button with the shortcut, last dictation with copy, and a model download or failure with its retry only while the model is not ready; the bundle itself is shown and chosen in Settings › Model) and whose right-click opens a short menu. The dictation pill lives in its own transparent, click-through, always-on-top window that never takes focus.
 
 ### Settings
 
@@ -37,9 +37,9 @@ No app was launched, no account or user data was read, and no network traffic wa
 
 ### Floating surface and motion
 
-- **Typeless:** the floating bar computes bar heights from Web Audio `getByteFrequencyData` and uses short cubic-bezier transitions; its alerts cover permissions, device problems, network failures, session limits, cancelled transcripts and "press again to finish" hints.
-- **Doubao:** capsule panels, Lottie animations, banner animation state and progress-fill capsule buttons.
-- **Arion choice:** a dark capsule with a pulsing live dot, input-level bars eased by a spring, the streaming draft (tail-truncated), the shortcut to finish; a three-dot wave while transcribing; a drawn check for verified insertion; a shake-in warning with a title and a next step for failures. Springs keep velocity so the pill resizes smoothly as text streams; reduced motion is honored by MyGo.
+- **Typeless:** the floating bar computes bar heights from Web Audio `getByteFrequencyData` and uses short cubic-bezier transitions; its alerts cover permissions, device problems, network failures, session limits, cancelled transcripts and "press again to finish" hints. Its renderer (`dist/renderer/floating-bar.html` in the installed `app.asar`) sizes the bar by state constants, not content: idle 70×34, recording 116×34 (+40 in one mode), starting the microphone 54×12; the recording bar holds a 38 px waveform between icon-only cancel and finish buttons, shows no transcript, and puts hints in a tooltip placed above it (max 360 px).
+- **Doubao:** capsule panels, Lottie animations, banner animation state and progress-fill capsule buttons. Strings in the installed binary keep capsule hints to a few characters (「松手结束」, 「按任意键可结束」, 「请按住快捷键开始说话...」); its guide animations (`voice_guide_realtime_on_screen_*`) show live text on screen in the target, not in the capsule.
+- **Arion choice:** a dark capsule with a pulsing live dot, input-level bars eased by a spring and one text slot; a three-dot wave while transcribing; a drawn check for verified insertion; a shake-in warning with a title and a next step for failures. As Typeless, the pill changes size only between states: while listening and transcribing it is a fixed 380 DIP wide and one line tall, so revised partial hypotheses never make it breathe. The slot shows the finishing key and a short hint (`fn` 「松开结束」) until speech arrives, then the draft's newest words, measured to fit with the start cut by an ellipsis. Outcomes and failures size to their words. Reduced motion is honored by MyGo.
 
 ### Model management
 

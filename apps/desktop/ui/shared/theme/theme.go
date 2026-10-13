@@ -204,13 +204,16 @@ func Apply(c *ui.Context) Tokens {
 
 // Ink builds body with ink as the accent: MyGo's navigation controls tint
 // every icon with the accent, and yellow icons on a light surface fall
-// under 3:1. Yellow stays reserved for primary actions and the mark.
+// under 3:1. Yellow stays reserved for primary actions and the mark. The
+// surface is cleared too: MyGo's Sidebar fills itself with it, which would
+// set a white panel inside the window material or the column holding it.
 // Restoring the theme resets the root's background, so a view that clears
 // it for the window material does so after building.
 func Ink(c *ui.Context, tokens Tokens, body func()) {
 	outer := c.Theme()
 	t := *outer
 	t.Accent, t.AccentHover, t.AccentPressed, t.AccentText = tokens.Text, tokens.Text, tokens.Text, tokens.Canvas
+	t.Surface = ui.Transparent
 	c.SetTheme(&t)
 	body()
 	c.SetTheme(outer)

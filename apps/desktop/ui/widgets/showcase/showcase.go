@@ -42,7 +42,11 @@ const Window = 248
 
 // Render fills its box with the photograph and the scene. Levels drive the
 // pill's meter when given (a live microphone); otherwise it breathes.
-func Render(c *ui.Context, tokens theme.Tokens, messages copy.Catalog, scene Scene, accelerator string, levels []float32) {
+// Radius rounds the photograph's corners (all, or top-left, top-right,
+// bottom-right, bottom-left) where it meets a rounded container: each layer
+// carries the corners itself, because the GPU renderers leave bitmaps and
+// gradients square under a parent's rounded clip.
+func Render(c *ui.Context, tokens theme.Tokens, messages copy.Catalog, scene Scene, accelerator string, levels []float32, radius ...float32) {
 	now := c.Now()
 	if scene != Inserted {
 		c.AnimationFrame()
@@ -51,13 +55,21 @@ func Render(c *ui.Context, tokens theme.Tokens, messages copy.Catalog, scene Sce
 	if len(levels) == 0 {
 		levels = breathing(now)
 	}
-	ui.Column(c).Fill().Clip().Background(tokens.Scrim).Role(ui.RoleImage).Label(messages.Text(copy.ShowcaseLabel)).Children(func() {
-		ui.Image(c, assets.Backdrop).Absolute().Top(0).Left(0).Right(0).Bottom(0).Fit(ui.Cover)
+	corners := [4]float32{}
+	switch len(radius) {
+	case 1:
+		corners = [4]float32{radius[0], radius[0], radius[0], radius[0]}
+	case 4:
+		corners = [4]float32{radius[0], radius[1], radius[2], radius[3]}
+	}
+	ui.Column(c).Fill().Clip().Radius(corners[:]...).Background(tokens.Scrim).Role(ui.RoleImage).Label(messages.Text(copy.ShowcaseLabel)).Children(func() {
+		ui.Image(c, assets.Backdrop).Absolute().Top(0).Left(0).Right(0).Bottom(0).Fit(ui.Cover).Radius(corners[:]...)
 		// Scrims keep the title bar controls and the pill's shadow legible
-		// over the brightest petals.
-		ui.Box(c).Absolute().Top(0).Left(0).Right(0).Height(96).PassThrough().
+		// over the brightest petals. The top one meets the top corners, the
+		// bottom one the bottom corners.
+		ui.Box(c).Absolute().Top(0).Left(0).Right(0).Height(96).PassThrough().Radius(corners[0], corners[1], 0, 0).
 			LinearGradient(ui.LinearGradient{From: tokens.Scrim.Alpha(0.4), To: tokens.Scrim.Alpha(0), Angle: 180})
-		ui.Box(c).Absolute().Left(0).Right(0).Bottom(0).Height(240).PassThrough().
+		ui.Box(c).Absolute().Left(0).Right(0).Bottom(0).Height(240).PassThrough().Radius(0, 0, corners[2], corners[3]).
 			LinearGradient(ui.LinearGradient{From: tokens.Scrim.Alpha(0), To: tokens.Scrim.Alpha(0.45), Angle: 180})
 		ui.Column(c).Absolute().Top(0).Left(0).Right(0).Bottom(0).Justify(ui.Center).AlignItems(ui.Center).Children(func() {
 			editor(c, tokens, messages, inserted)
