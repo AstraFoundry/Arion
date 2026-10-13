@@ -12,7 +12,7 @@ Arion is a voice input product with a native Go desktop shell. macOS and Windows
 - MyGo native Go UI; no web frontend is required.
 - The recognition model is not a user decision: the best evaluated bundle downloads and loads automatically; another evaluated bundle can be chosen explicitly.
 
-Language coverage and latency are evaluation targets, not measured product claims. User-facing UI copy remains English under repository conventions.
+Language coverage and latency are evaluation targets, not measured product claims. The interface defaults to English and supports Simplified Chinese through a persisted language picker; interface language is independent of recognition language ([i18n](../frontend/i18n.md)).
 
 ## Explicit boundaries
 
@@ -24,7 +24,7 @@ Jev is TypeSafe’s System One typed decision model. Laya Multilingual is the pr
 
 | Area | Choice | Status |
 | --- | --- | --- |
-| Desktop UI | MyGo v0.4.6 native, Go 1.27.1 | Implemented: menu bar panel, overlay pill, settings, onboarding |
+| Desktop UI | MyGo v0.4.6 native, Go 1.27.1; Sunbeam design system with coss anatomy in Go ([ADR 007](../decisions/007-sunbeam-design-system.md)) | Implemented: menu bar panel, overlay pill, settings, onboarding |
 | Shared domain/application | Portable Go module | Implemented: session aggregate, coordinator, correction rules, model selection |
 | macOS | miniaudio/CoreAudio capture; AX target and insertion; InputMethodKit host | Implemented and tested on macOS arm64 |
 | Windows | miniaudio/WASAPI capture; SendInput insertion; DPAPI | Code compiled for windows/amd64; not run on Windows; TSF pending |

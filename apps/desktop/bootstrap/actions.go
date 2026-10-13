@@ -44,6 +44,9 @@ func (x actions) UpdatePreferences(change func(*application.Preferences)) {
 	change(&next)
 	next, _ = next.Normalize()
 	a.savePreferences(next)
+	if next.UILanguage != before.UILanguage {
+		a.updateLanguage()
+	}
 	if next.LaunchAtLogin != before.LaunchAtLogin {
 		_ = mygo.App.SetOpenAtLogin(next.LaunchAtLogin)
 	}

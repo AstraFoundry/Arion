@@ -10,7 +10,12 @@
     "infoPlist": {
       "NSMicrophoneUsageDescription": "Arion listens only while you dictate. Speech is recognized on this Mac.",
       "LSUIElement": true,
-      "LSApplicationCategoryType": "public.app-category.productivity"
+      "LSApplicationCategoryType": "public.app-category.productivity",
+      "CFBundleDevelopmentRegion": "en",
+      "CFBundleLocalizations": [
+        "en",
+        "zh-Hans"
+      ]
     }
   }
 }

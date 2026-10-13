@@ -6,7 +6,7 @@ This document defines how UI is written in this project. The goal is a consisten
 
 ## Language
 
-- All user-facing copy must be in English unless the user explicitly asks for another language.
+- English is the default interface language; Simplified Chinese is supported through the approved [i18n catalogs](i18n.md). Add every message to both catalogs; do not embed text in views.
 - All code, comments, prop names, and CSS custom properties must be in English.
 
 ## No hardcoded strings
@@ -54,6 +54,7 @@ import { t } from 'shared/i18n';
 - ❌ Avoid: `bg-white`, `text-black`, `zinc-500`.
 - ✅ Prefer: `bg-bg`, `text-text`, `border-border`, `text-muted`.
 - Theme differences must live in one place (global theme file or CSS variables). Do not scatter `dark:` or media queries across components.
+- Arion: colors come only from `theme.Tokens` (`ui/shared/theme`), buttons from `kit.Button`/`kit.IconButton`, and no view calls `ui.RGB`, `ui.Hex` or `ui.Oklch`. See [design system](design-system.md).
 
 ## Components are small and focused
 

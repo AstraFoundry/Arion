@@ -31,7 +31,7 @@ Slice directories become Go packages. Only exported package symbols are the publ
 
 UI slices can consume core contract DTOs through a shared adapter boundary. UI must not implement ASR/correction/ranking rules or import an infrastructure adapter directly. The app composition root wires dependencies. `ui/entities` owns UI-facing domain projections without widget code or transport clients.
 
-All visible text is centralized under `ui/shared/copy`. Native theme/layout values stay in shared theme packages when needed. Apply UI craft skills using MyGo's existing native primitives, not CSS-only instructions.
+All application copy is centralized in the English/Simplified Chinese catalogs under `ui/shared/copy`; `runtime.Store.Copy()` selects immutable translations from persisted preferences. Entity projections and transient errors carry typed message keys ([i18n](../frontend/i18n.md)). Native theme/layout values stay in shared theme packages when needed. Apply UI craft skills using MyGo's existing native primitives, not CSS-only instructions.
 
 ## DDD in desktop and relay
 

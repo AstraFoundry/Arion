@@ -11,9 +11,10 @@ import (
 
 // Picker selects the capture device; the system default is listed first.
 func Picker(c *ui.Context, store runtime.Store) {
-	names := []string{copy.MicSystem}
+	messages := store.Copy()
+	names := []string{messages.Text(copy.MicSystem)}
 	ids := []string{""}
-	selected := copy.MicSystem
+	selected := messages.Text(copy.MicSystem)
 	for _, device := range store.State.Devices {
 		names = append(names, device.Name)
 		ids = append(ids, device.ID)
@@ -21,7 +22,7 @@ func Picker(c *ui.Context, store runtime.Store) {
 			selected = device.Name
 		}
 	}
-	if ui.Select(c.Key("device"), &selected, names).Label(copy.MicDevice).Width(240).Changed() {
+	if ui.Select(c.Key("device"), &selected, names).Label(messages.Text(copy.MicDevice)).Width(240).Changed() {
 		for i, name := range names {
 			if name == selected {
 				id := ids[i]
@@ -33,5 +34,5 @@ func Picker(c *ui.Context, store runtime.Store) {
 
 // Meter shows the monitored input level as bars.
 func Meter(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
-	kit.LevelBars(c, store.State.MonitorLevels, 24, 4, 36, 3, tokens.Accent)
+	kit.LevelBars(c, store.State.MonitorLevels, 24, 4, 36, 3, tokens.Text)
 }

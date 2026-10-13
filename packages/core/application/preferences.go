@@ -23,6 +23,7 @@ const (
 // only exists for an explicit choice among evaluated bundles.
 type Preferences struct {
 	Version             int              `json:"version"`
+	UILanguage          UILanguage       `json:"uiLanguage"`
 	OnboardingCompleted bool             `json:"onboardingCompleted"`
 	Mode                domain.InputMode `json:"mode"`
 	Shortcut            string           `json:"shortcut"`
@@ -37,13 +38,21 @@ type Preferences struct {
 // PreferencesVersion is the current schema; older files are migrated.
 const PreferencesVersion = 1
 
+// UILanguage affects desktop copy only, independently of recognition language.
+type UILanguage string
+
+const (
+	English           UILanguage = "en"
+	SimplifiedChinese UILanguage = "zh-CN"
+)
+
 // DefaultShortcut is Option+Space on macOS and Alt+Space on Windows.
 const DefaultShortcut = "Alt+Space"
 
 // DefaultPreferences are the first-run choices.
 func DefaultPreferences() Preferences {
 	return Preferences{
-		Version: PreferencesVersion, Mode: domain.ShortcutMode, Shortcut: DefaultShortcut,
+		Version: PreferencesVersion, UILanguage: English, Mode: domain.ShortcutMode, Shortcut: DefaultShortcut,
 		Delivery: DeliveryAutomatic, RemoveFillers: true, Sounds: true,
 	}
 }
@@ -53,6 +62,10 @@ func DefaultPreferences() Preferences {
 func (p Preferences) Normalize() (Preferences, []string) {
 	defaults := DefaultPreferences()
 	var repaired []string
+	if p.UILanguage != English && p.UILanguage != SimplifiedChinese {
+		p.UILanguage = defaults.UILanguage
+		repaired = append(repaired, "uiLanguage")
+	}
 	if p.Version != PreferencesVersion {
 		p.Version = PreferencesVersion
 		repaired = append(repaired, "version")

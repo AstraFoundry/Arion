@@ -5,6 +5,7 @@
   "description": "Native desktop voice input foundation and specifications.",
   "scripts": {
     "check": "node scripts/check-repository.mjs",
+    "i18n:check": "node scripts/check-i18n.mjs",
     "docs:check": "node scripts/check-repository.mjs",
     "lint": "node scripts/check-repository.mjs",
     "test": "node scripts/test.mjs",

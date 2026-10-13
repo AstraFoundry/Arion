@@ -14,36 +14,31 @@ import (
 // Toggle is the main dictation button with its shortcut. It turns into a
 // live "Finish" control while the microphone is open.
 func Toggle(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
+	messages := store.Copy()
 	d := store.State.Dictation
 	live := d.State == runtime.StateCapturing
 	busy := dictation.Active(d) && !live
-	label := copy.StartDictate
+	label := messages.Text(copy.StartDictate)
 	if live {
-		label = copy.StopDictate
+		label = messages.Text(copy.StopDictate)
 	}
-	button := ui.ButtonBase(c.Key("dictate")).Height(40).Padding(0, 14).Gap(10).AlignItems(ui.Center).Radius(10).
-		Disabled(busy || store.State.Model.State != runtime.ModelReady)
-	face := tokens.Accent
+	enabled := !busy && store.State.Model.State == runtime.ModelReady
+	button := ui.ButtonBase(c.Key("dictate")).Height(40).Padding(0, 14).Gap(10).AlignItems(ui.Center).Radius(theme.RadiusControl).
+		Disabled(!enabled)
+	variant := kit.Primary
 	if live {
-		face = tokens.Live
+		variant = kit.Live
 	}
-	if button.Hovered() && !button.IsDisabled() {
-		face = face.Mix(ui.RGB(255, 255, 255), 0.08)
-	}
-	button.Background(button.AnimateColor("face", face, theme.Quick)).TextColor(tokens.AccentText)
-	kit.Press(button)
-	if button.IsDisabled() {
-		button.Opacity(0.55)
-	}
+	kit.Style(button, tokens, variant, enabled)
 	button.Children(func() {
 		if live {
-			kit.LevelBars(c, d.Levels, 5, 3, 16, 2, tokens.AccentText)
+			kit.LevelBars(c, d.Levels, 5, 3, 16, 2, tokens.OnFill)
 		} else {
 			ui.Icon(c, icons.Mic).FontSize(16)
 		}
 		ui.Text(c, label).FontSize(theme.Body).FontWeight(600).SingleLine().ContentTransition(ui.ContentTransition{})
 		ui.Spacer(c)
-		ui.Row(c).Gap(3).Opacity(0.85).Children(func() {
+		ui.Row(c).Gap(3).Opacity(0.72).Children(func() {
 			for _, key := range kit.Keys(store.State.Shortcut.Accelerator) {
 				ui.Text(c, key).FontSize(theme.Caption).FontWeight(500)
 			}

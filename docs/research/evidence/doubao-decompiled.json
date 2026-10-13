@@ -1,0 +1,155 @@
+{
+  "schema_version": 1,
+  "evidence_scope": "REA 6.4.0 CLI with the Ghidra 12.1.4 provider (OpenJDK 21) against the arm64 slice of the installed DoubaoIme main executable. Static analysis only; the app was not launched.",
+  "artifact": {
+    "bundle": "/Library/Input Methods/DoubaoIme.app",
+    "bundle_version": "1.0.2 (1)",
+    "universal_sha256": "4b3836dcb8a3e06b01b4c95390c757b71f623c1f7c4141c059e49284f7f6442d",
+    "analyzed_slice": "arm64 via lipo -thin",
+    "analyzed_sha256": "266f49f6bcb62e43c5170620d4b86e2e4c4ef873bcce624ef1a90b9c46244983",
+    "analysis_profile_digest": "20565088524a2d0359b9b96f46ac48e679d774c7b0092c56abc06de8fdbec11c"
+  },
+  "method": [
+    "The executable is stripped (no LC_FUNCTION_STARTS, no local symbols). Ghidra recovered Swift stored-property offset symbols (DoubaoImeInputController::*_) and Objective-C selectors.",
+    "Swift large string literals are referenced as (count, address - 0x20 | 0x8000000000000000); REA trace_feature and xrefs returned no references for the literal or the encoded address.",
+    "Code sites were located with a local ADRP+ADD scan of __TEXT,__text for the encoded literal addresses, and candidate function entries came from __unwind_info. Consecutive functions with identical unwind encodings are merged there, so entries are candidates; a decompiled body was accepted only when it contains the literal.",
+    "Literal text was decoded from the shipped bytes at encoded address + 0x20."
+  ],
+  "observations": [
+    {
+      "id": "DD-paste-handoff",
+      "evidence_id": "ev_f83fcb7dbd1d806506760b9dcd8270e70e79ed45279a4066d91fe105c5465bac",
+      "function": "0x100176dd8",
+      "properties": [
+        "asrPastePreparingToken_",
+        "asrPasteRestoreSnapshot_",
+        "asrPasteWrittenChangeCount_",
+        "asrPasteRestoreToken_",
+        "asrPasteRestoreWorkItem_"
+      ],
+      "selectors": [
+        "generalPasteboard",
+        "changeCount"
+      ],
+      "literals": [
+        "[ASR][FinalCommit] pasteboard handoff, trigger=smartOrganizeUndoCopy, seq=",
+        "[ASR][FinalCommit] skip pasteboard handoff, reason=changedAfterPaste, trigger=smartOrganizeUndoCopy, seq=",
+        ", expectedChangeCount=",
+        ", currentChangeCount="
+      ],
+      "observed": "With a restore snapshot and a recorded written change count, the function increments the restore token, cancels and clears the scheduled restore DispatchWorkItem, then compares NSPasteboard.generalPasteboard.changeCount with the recorded count: equal logs a handoff, different logs a skip with reason changedAfterPaste."
+    },
+    {
+      "id": "DD-paste-gate",
+      "evidence_id": "ev_7813c9cf5cfd974f88db927e1d3ec7e857a490b646f2b4d8968d44ded8cdb348",
+      "function": "0x10017dce4",
+      "properties": [
+        "asrFinalGeneration_",
+        "asrPasteInFlight_",
+        "asrPasteCommandVPosted_",
+        "asrFinalTextWriteCount_",
+        "asrPasteCommitSeq_",
+        "asrPastePendingRestore_",
+        "asrPasteAfterPreparation_",
+        "asrAXProbeToken_",
+        "asrFinalCommitTransaction_"
+      ],
+      "selectors": [
+        "pressedMouseButtons",
+        "generalPasteboard",
+        "changeCount",
+        "setString:forType:",
+        "setData:forType:",
+        "addTypes:owner:",
+        "prepareForNewContentsWithOptions:",
+        "markedRange",
+        "selectedRange",
+        "systemUptime"
+      ],
+      "literals": [
+        "com.microsoft.Excel",
+        "[ASR][FinalCommit] wait_mouse_release transaction=",
+        "[ASR][FinalCommit] mouse_released transaction=",
+        "[ASR][FinalCommit] delayed paste skipped session=",
+        ", reason=staleBeforeCommandV, host=",
+        "[ASR][FinalCommit] delayed paste canceled session=",
+        ", reason=preSendGateFailed, host=",
+        "targetChangedBeforePost",
+        "pasteboardChangedDuringWrite",
+        "pasteboardRestoreChanged",
+        "setPasteboardFailed",
+        "setPasteboardMarkerFailed",
+        ", reason=preferredTargetChanged, host=",
+        ", reason=preferredTargetChangedAfterHook, host=",
+        ", outcome=pastePosted, host=",
+        ", markedBeforeSend={",
+        ", hostAck=unknown"
+      ],
+      "observed": "Before posting Command-V the delayed paste proceeds only if the session is unchanged, asrFinalGeneration_ equals the captured generation, a paste is in flight, Command-V has not been posted, asrFinalTextWriteCount_ is zero and asrPasteCommitSeq_ equals the captured sequence; otherwise it logs staleBeforeCommandV. When the host bundle identifier equals com.microsoft.Excel and NSEvent.pressedMouseButtons is non-zero, the commit waits for mouse release. Named failure reasons cover target change before post, pasteboard change during write and pasteboard write failures; a posted paste is logged with hostAck=unknown."
+    },
+    {
+      "id": "DD-commit-strategy",
+      "evidence_id": "ev_3af76376fc6472a824bed1678d3f5b5a2975d70d8a2733140195b4be57bbb3c7",
+      "function": "0x1001ab16c",
+      "properties": [
+        "asrHostCommitResolution_",
+        "asrFinalCommitStrategy_",
+        "asrAXInputImplementation_",
+        "asrFinalGeneration_",
+        "asrFinalTextWriteCount_",
+        "asrNeedDirectCommitNewline_",
+        "asrFinalUsedNewlineNormalization_",
+        "asrSmartOrganizeContext_"
+      ],
+      "literals": [
+        "imeCommitRequired",
+        "hostCommitted",
+        "ambiguous",
+        "contextInvalid",
+        "commitRequested",
+        "[ASR][FinalCommit] selected session=",
+        ", strategy=skipSystemCommitted, writes=0, reason=hostCommittedOriginal, host="
+      ],
+      "observed": "A host commit resolution with the values hostCommitted, imeCommitRequired, ambiguous and contextInvalid is evaluated before delivery; resolutions that are not hostCommitted return early. On the path that logs strategy skipSystemCommitted with zero writes (reason hostCommittedOriginal), the function increments asrFinalGeneration_, resets asrFinalTextWriteCount_ and stores 2 in asrFinalCommitStrategy_. It also reads a host text-implementation classification (asrAXInputImplementation_) whose inline names include web and qt."
+    },
+    {
+      "id": "DD-shortcut-fn",
+      "evidence_id": "ev_2ad00740bc5f0d16e593a9ec9c39b2b45998ed59cd712458ab7d712ffecb6d6c",
+      "function": "0x10098b81c",
+      "symbols": [
+        "OimeCommon::ASRShortcutModifierFlags::genericFlags"
+      ],
+      "literals": [
+        "[ASRShortcut] profile updated: ",
+        ", shared=",
+        ", longPressUsesFn="
+      ],
+      "observed": "longPressUsesFn is true when the long-press key code is 0x3F (kVK_Function) or when a modifier-only shortcut's generic flags equal 0x800000 (NSEventModifierFlagFunction). shared is true when the long-press and single-click profiles have the same key."
+    },
+    {
+      "id": "DD-negative-references",
+      "evidence_ids": [
+        "ev_1000937a6411f171133ad697f114826eed7bc528ec7ecf5ab44619968d9f0dee",
+        "ev_7403420ed72de164282c2de7cfeb883c0f6ab91cc879acd692f4e3aac24ce2aa",
+        "ev_e4c8c3825edd3f77ff7ab13a1e138d1b83b0bcae46389ebed350fbb21b13f6b4",
+        "ev_d71075ed5b845f0a0318f038ecc96d2fd646d30cd95886ac4364065ea134a830",
+        "ev_00e01252cbf028a7dca067fa62fdd590d09a80f5ed4c8113cb3d177af9ee6b52",
+        "ev_61c4e3d289841ca603d435f84df1cf8e87215d2bcda482209cefcdd7a3d911a1",
+        "ev_0be7772030d9981e0ab0b2c93befc8470c05ab9bbc62a0497bbb57471c92ce14"
+      ],
+      "observed": "trace_feature found the literals but no references; xrefs at the encoded literal addresses returned empty lists. This is a reference-recovery limit for Swift literals, not evidence that the strings are unused."
+    },
+    {
+      "id": "DD-text-display",
+      "evidence_id": "ev_008deae3abf00b45a9b02f4c85ba85f16867d29623812bcd597eacd13c4e9cc2",
+      "observed": "ASRTextDisplayWindowController::applyDiff is an import from OimeCommon.framework; the main executable holds only its stubs. OimeCommon was not decompiled."
+    }
+  ],
+  "unresolved": [
+    "The direct (insertText) versus paste routing condition: its sites lie in a function whose entry was not isolated.",
+    "Hold-to-talk event capture (event tap versus NSEvent monitor) and the long-press threshold.",
+    "Whether the stale offline-model callback guard changes routing; its candidate entry did not contain the literal.",
+    "OimeCommon, OimeEngine and other frameworks; runtime ordering; actual host behavior."
+  ],
+  "reproduction": "Full REA records and the scan scripts are retained in ignored .workspace/research/doubao-rea/. Re-run with GHIDRA_INSTALL_DIR set to Ghidra 12.1.x, JDK 21 on PATH and REA_GHIDRA_STARTUP_TIMEOUT_MS raised (default auto-analysis of this slice exceeds the 330 s default)."
+}

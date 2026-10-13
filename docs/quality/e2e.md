@@ -4,11 +4,13 @@
 
 `make e2e` / `pnpm e2e:native` runs build-tagged Go tests in an actual macOS/Windows desktop session. The test hosts the production composition root (`bootstrap.App`) in an isolated temporary profile on MyGo's native loop.
 
+DSK-A09 also switches language through the production preference action with settings/onboarding already open, checks native titles in both directions and captures Chinese Content.
+
 Checks: the click-through overlay exists, stays unfocused and draws an explicit failure when dictation starts in a fresh profile (PERMISSION_DENIED with the capability named when Accessibility is not granted, otherwise MODEL_MISSING); settings and onboarding windows show native Content, render nonblank captures, resize, close once and release their views. On Windows the tests also type Unicode text (including CJK) into an owned Notepad through the production `SendInput` route and check that a focus change before commit inserts nothing. Go test binaries carry no manifest, so the Windows runner compiles the test executable and places [`e2e/windows.manifest`](../../apps/desktop/e2e/windows.manifest) beside it; it mirrors the manifest `mygo build` embeds (Windows 8+ compatibility for the hidden-title-bar controls, per-monitor DPI awareness, UTF-8). A missing OS/session is a failure, not a success-shaped skip. Ordinary `pnpm test` excludes interactive tests; CI native jobs explicitly run them.
 
 ## Headless view tests
 
-`go test ./ui/app` renders every surface with MyGo's `ui.Tester` (no window): overlay phases and outcome timeouts, the menu bar panel (start, live, copy, download progress), each settings section including shortcut recording, the modifier rule, vocabulary entry and insertion method, and the complete onboarding flow with its permission gates and Accessibility auto-advance. `ARION_UI_SNAPSHOTS=<dir>` saves PNG frames for review.
+`go test ./ui/app` renders every surface with MyGo's `ui.Tester` (no window): overlay phases and outcome timeouts, the menu bar panel (start, live, copy, download progress), each settings section including shortcut recording, the modifier rule, vocabulary entry and insertion method, and the complete onboarding flow with its permission gates and Accessibility auto-advance, plus the panel, settings and onboarding in the dark appearance. English/Simplified Chinese tests cover the real picker, all settings sections, panel/overlay copy and download formatting; switching languages preserves user text and retranslates existing form/shortcut errors. `ARION_UI_SNAPSHOTS=<dir>` saves PNG frames for review.
 
 MyGo `CapturePage()` renders Content; it does not verify the OS compositor, GPU pixels, accessibility tree, text injection, microphone or IME. Captures are saved under ignored `.workspace/e2e/<platform>/`. These checks establish native shell lifecycle only.
 

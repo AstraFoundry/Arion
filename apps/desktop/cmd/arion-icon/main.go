@@ -1,5 +1,5 @@
 // Command arion-icon renders resources/icon.png, Arion's app icon: five
-// rounded voice bars on an ink-blue squircle. Rendering is deterministic so
+// rounded ink voice bars on a Sunbeam yellow squircle. Rendering is deterministic so
 // the committed PNG can be regenerated and diffed.
 package main
 
@@ -105,14 +105,15 @@ func main() {
 					}
 					a++
 					if bar(x, y) {
-						r, g, b = r+250, g+251, b+255
+						// Ink 900, the Sunbeam text color on yellow.
+						r, g, b = r+21, g+18, b+15
 						continue
 					}
-					// Ink blue, slightly lighter at the top.
+					// Sunbeam yellow (#FFCC00), slightly lighter at the top.
 					t := (y - margin) / (size - 2*margin)
-					r += 34 - 14*t
-					g += 92 - 26*t
-					b += 214 - 40*t
+					r += 255 - 4*t
+					g += 214 - 18*t
+					b += 46 - 46*t
 				}
 			}
 			if a == 0 {

@@ -18,6 +18,7 @@ Write an ADR when the decision:
 - [004: The default model is chosen by measured evaluation](004-automatic-model-selection.md).
 - [005: Local encryption of approved vocabulary](005-local-encryption.md).
 - [006: macOS input-method host and local IPC](006-macos-input-method-host.md).
+- [007: Sunbeam design system and coss anatomy in Go](007-sunbeam-design-system.md).
 - [`adr-template.md`](adr-template.md) — template for new ADRs.
 
 ## Naming

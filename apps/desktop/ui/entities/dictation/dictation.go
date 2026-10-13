@@ -79,8 +79,8 @@ func Active(d runtime.Dictation) bool {
 
 // Notice explains a failure with its next step.
 type Notice struct {
-	Title string
-	Hint  string
+	Title copy.Key
+	Hint  copy.Key
 }
 
 // NoticeOf explains the session failure. A permission failure names the
@@ -122,7 +122,7 @@ func NoticeOf(d runtime.Dictation, permissions runtime.Permissions) Notice {
 
 // OutcomeLabel names a completed commit honestly: only a verified
 // insertion is "Inserted".
-func OutcomeLabel(d runtime.Dictation, pasted bool) string {
+func OutcomeLabel(d runtime.Dictation, pasted bool) copy.Key {
 	switch {
 	case d.Outcome == runtime.OutcomeApplied:
 		return copy.PillInserted

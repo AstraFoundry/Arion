@@ -15,7 +15,7 @@ func Fraction(m runtime.Model) float64 {
 }
 
 // PhaseLabel names what provisioning is doing now.
-func PhaseLabel(m runtime.Model) string {
+func PhaseLabel(m runtime.Model) copy.Key {
 	switch m.State {
 	case runtime.ModelReady:
 		return copy.ModelVerified

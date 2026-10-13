@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 for (const [args, cwd] of [
   [['scripts/check-go.mjs', 'core'], root],
+  [['scripts/check-i18n.mjs'], root],
   [['--test'], path.join(root, 'tools/evaluation')],
 ]) {
   const result = spawnSync(process.execPath, args, { cwd, stdio: 'inherit' });

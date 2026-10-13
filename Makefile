@@ -4,7 +4,7 @@ PLAN ?= .workspace/benchmarks/plan.json
 SUITE ?= tests/e2e/desktop-scenarios.json
 export CORPUS DRIVER OUT RESULTS CONFIG PLAN SUITE
 
-.PHONY: install check test lint format docs core-check tooling-test desktop-check desktop-libs desktop-build desktop-dev e2e e2e-macos e2e-scenarios bench-plan ablation-plan bench-validate bench-run bench-report datasets-check stream-plan stream-bench help
+.PHONY: install check test lint format docs core-check tooling-test desktop-check desktop-libs desktop-build desktop-dev e2e e2e-macos e2e-scenarios bench-plan ablation-plan bench-validate bench-run bench-report datasets-check i18n-check stream-plan stream-bench help
 
 install: ## Install the pinned pnpm workspace with its frozen lockfile
 	@pnpm install --frozen-lockfile
@@ -13,6 +13,9 @@ check: docs test ## Run portable repository and automation gates
 
 docs: ## Validate documentation, JSON and layer boundaries
 	@pnpm docs:check
+
+i18n-check: ## Validate translation keys, templates and hardcoded UI copy
+	@pnpm i18n:check
 
 core-check: ## Run portable core tests, vet and formatting checks
 	@pnpm core:check
@@ -26,7 +29,8 @@ desktop-check: ## Compile/check native shell for current host
 # Speech runtimes are cgo libraries packaged in Contents/Resources/lib.
 DESKTOP_ENV = CGO_ENABLED=1 CGO_LDFLAGS="-Wl,-rpath,@executable_path/../Resources/lib"
 
-desktop-libs: ## Stage pinned speech runtime libraries and the macOS input method into desktop resources
+desktop-libs: ## Stage speech runtimes, localized permission copy and the macOS input method
+	@node scripts/stage-desktop-localizations.mjs
 	@node scripts/stage-native-libs.mjs darwin
 	@node scripts/build-input-method.mjs
 

@@ -15,35 +15,36 @@ import (
 
 // Render draws the card. Compact hides the metrics, for the menu bar.
 func Render(c *ui.Context, store runtime.Store, tokens theme.Tokens, compact bool) {
+	messages := store.Copy()
 	m := store.State.Model
 	kit.Card(c, tokens).Padding(16).Gap(12).Children(func() {
 		ui.Row(c).Gap(10).AlignItems(ui.Center).Children(func() {
-			ui.Icon(c, icons.Cpu).FontSize(16).TextColor(tokens.Accent)
+			ui.Icon(c, icons.Cpu).FontSize(16).TextColor(tokens.Muted)
 			ui.Column(c).Gap(1).Grow(1).Children(func() {
 				name := m.Active.Name
 				if name == "" {
-					name = copy.ModelNoEvaluation
+					name = messages.Text(copy.ModelNoEvaluation)
 				}
 				ui.Text(c, name).FontSize(theme.Body).FontWeight(600).SingleLine()
-				source := copy.PanelAutomatic
+				source := messages.Text(copy.PanelAutomatic)
 				if !m.Automatic {
-					source = copy.PanelChosen
+					source = messages.Text(copy.PanelChosen)
 				}
 				ui.Text(c, source).FontSize(theme.Caption).TextColor(tokens.Muted)
 			})
 			if !m.Automatic && !compact {
-				if ui.Button(c, copy.ModelUseRecommend).Clicked() {
+				if kit.Button(c, tokens, kit.Outline, messages.Text(copy.ModelUseRecommend), true).Clicked() {
 					store.Actions.UseRecommendedBundle()
 				}
 			}
 		})
 		if !compact && m.Active.Evaluated {
-			reason := copy.ModelReason
+			reason := messages.Text(copy.ModelReason)
 			if !m.LatencyMeasured {
-				reason = copy.ModelReasonRemote
+				reason = messages.Text(copy.ModelReasonRemote)
 			}
 			ui.Text(c, reason).FontSize(theme.Caption).TextColor(tokens.Muted)
-			modelchoice.Metrics(c, tokens, m.Active)
+			modelchoice.Metrics(c, tokens, store.Copy(), m.Active)
 		}
 		provision.Progress(c, store, tokens)
 	})

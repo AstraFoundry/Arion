@@ -47,7 +47,7 @@ func trayIcon(live bool) []byte {
 }
 
 func (a *App) createTray() {
-	tray, err := mygo.NewTray(mygo.TrayOptions{Icon: trayIcon(false), IconIsTemplate: runtime.GOOS == "darwin", ToolTip: copy.TrayToolTip})
+	tray, err := mygo.NewTray(mygo.TrayOptions{Icon: trayIcon(false), IconIsTemplate: runtime.GOOS == "darwin", ToolTip: a.ui.Copy().Text(copy.TrayToolTip)})
 	if err != nil {
 		return
 	}
@@ -57,15 +57,15 @@ func (a *App) createTray() {
 		if a.panel != nil {
 			a.panel.Close()
 		}
-		label := copy.TrayStart
+		label := a.ui.Copy().Text(copy.TrayStart)
 		if a.state.Dictation.State == arion.StateCapturing {
-			label = copy.TrayStop
+			label = a.ui.Copy().Text(copy.TrayStop)
 		}
 		menu := mygo.NewMenu([]*mygo.MenuItem{
 			{Label: label, Accelerator: a.state.Shortcut.Accelerator, Click: func(*mygo.MenuItem, *mygo.Window) { a.core.Toggle() }},
 			mygo.Separator(),
-			{Label: copy.TraySettings, Accelerator: "CmdOrCtrl+,", Click: func(*mygo.MenuItem, *mygo.Window) { a.openSettings() }},
-			{Label: copy.TrayQuit, Accelerator: "CmdOrCtrl+Q", Click: func(*mygo.MenuItem, *mygo.Window) { mygo.App.Quit() }},
+			{Label: a.ui.Copy().Text(copy.TraySettings), Accelerator: "CmdOrCtrl+,", Click: func(*mygo.MenuItem, *mygo.Window) { a.openSettings() }},
+			{Label: a.ui.Copy().Text(copy.TrayQuit), Accelerator: "CmdOrCtrl+Q", Click: func(*mygo.MenuItem, *mygo.Window) { mygo.App.Quit() }},
 		})
 		tray.SetMenu(menu)
 		defer tray.SetMenu(nil)
@@ -115,7 +115,7 @@ func (a *App) track(window *mygo.Window, view uiapp.View, closed func()) {
 func (a *App) createOverlay() {
 	view := uiapp.Overlay(a.ui)
 	a.overlay = mygo.NewWindow(mygo.WindowOptions{
-		Title: copy.Title, Width: uiapp.OverlayWidth, Height: uiapp.OverlayHeight, Frameless: true, Transparent: true,
+		Title: a.ui.Copy().Text(copy.Title), Width: uiapp.OverlayWidth, Height: uiapp.OverlayHeight, Frameless: true, Transparent: true,
 		AlwaysOnTop: true, SkipTaskbar: true, DisableResize: true, DisableMinimize: true, DisableMaximize: true,
 		DisableFullScreen: true, DisableShadow: true, Hidden: true, Content: view.Content,
 	})
@@ -151,7 +151,7 @@ func (a *App) openSettings() {
 	}
 	view := uiapp.Settings(a.ui)
 	a.settingsWin = mygo.NewWindow(mygo.WindowOptions{
-		Title: copy.SettingsTitle, Width: uiapp.SettingsWidth, Height: uiapp.SettingsHeight, MinWidth: 640, MinHeight: 440,
+		Title: a.ui.Copy().Text(copy.SettingsTitle), Width: uiapp.SettingsWidth, Height: uiapp.SettingsHeight, MinWidth: 640, MinHeight: 440,
 		TitleBarStyle: mygo.TitleBarHidden, Vibrancy: mygo.VibrancySidebar, StateKey: "settings", Content: view.Content,
 	})
 	a.track(a.settingsWin, view, func() { a.settingsWin = nil })
@@ -166,10 +166,27 @@ func (a *App) openOnboarding() {
 	}
 	view := uiapp.Onboarding(a.ui)
 	a.onboarding = mygo.NewWindow(mygo.WindowOptions{
-		Title: copy.Title, Width: uiapp.OnboardingWidth, Height: uiapp.OnboardingHeight, TitleBarStyle: mygo.TitleBarHidden,
+		Title: a.ui.Copy().Text(copy.Title), Width: uiapp.OnboardingWidth, Height: uiapp.OnboardingHeight, TitleBarStyle: mygo.TitleBarHidden,
 		DisableResize: true, DisableMaximize: true, DisableFullScreen: true, Content: view.Content,
 	})
 	a.track(a.onboarding, view, func() { a.onboarding = nil })
 	mygo.App.Focus()
 	a.onboarding.Focus()
+}
+
+// updateLanguage refreshes native chrome without recreating windows or sessions.
+func (a *App) updateLanguage() {
+	messages := a.ui.Copy()
+	for _, window := range []*mygo.Window{a.overlay, a.onboarding} {
+		if window != nil {
+			window.SetTitle(messages.Text(copy.Title))
+		}
+	}
+	if a.settingsWin != nil {
+		a.settingsWin.SetTitle(messages.Text(copy.SettingsTitle))
+	}
+	if a.tray != nil {
+		a.tray.SetToolTip(messages.Text(copy.TrayToolTip))
+	}
+	a.invalidate()
 }

@@ -9,17 +9,17 @@ import (
 )
 
 // Render draws total dots with index current active.
-func Render(c *ui.Context, tokens theme.Tokens, current, total int) {
-	ui.Row(c).Gap(6).AlignItems(ui.Center).Label(copy.Step(current+1, total+1)).Children(func() {
+func Render(c *ui.Context, tokens theme.Tokens, messages copy.Catalog, current, total int) {
+	ui.Row(c).Gap(6).AlignItems(ui.Center).Label(messages.Step(current+1, total+1)).Children(func() {
 		for i := 0; i <= total; i++ {
 			dot := ui.Box(c.Key(i)).Height(6).Radius(3)
 			width := float32(6)
 			color := tokens.CardBorder
 			switch {
 			case i == current:
-				width, color = 22, tokens.Accent
+				width, color = 22, tokens.Text
 			case i < current:
-				color = tokens.Accent.Alpha(0.45)
+				color = tokens.Faint
 			}
 			dot.Width(dot.AnimateTo("w", width, theme.Settle)).Background(dot.AnimateColor("c", color, theme.Quick))
 		}

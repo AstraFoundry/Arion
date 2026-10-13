@@ -29,6 +29,7 @@ type Panel struct {
 
 // Render draws the panel over the popover material on macOS.
 func (p *Panel) Render(c *ui.Context, store arion.Store) {
+	messages := store.Copy()
 	tokens := theme.Apply(c)
 	c.Root().Background(ui.Transparent)
 	box := ui.Column(c).Fill()
@@ -46,9 +47,9 @@ func (p *Panel) Render(c *ui.Context, store arion.Store) {
 		ui.Spacer(c)
 		modelcard.Render(c, store, tokens, true)
 		ui.Row(c).Gap(4).AlignItems(ui.Center).Children(func() {
-			footerButton(c, tokens, icons.Settings, copy.SettingsMenu, store.Actions.OpenSettings)
+			footerButton(c, tokens, icons.Settings, messages.Text(copy.SettingsMenu), store.Actions.OpenSettings)
 			ui.Spacer(c)
-			footerButton(c, tokens, icons.Power, copy.Quit, store.Actions.Quit)
+			footerButton(c, tokens, icons.Power, messages.Text(copy.Quit), store.Actions.Quit)
 		})
 	})
 }

@@ -13,11 +13,12 @@ import (
 // State is the choice's own view state.
 type State struct {
 	mode  runtime.SessionMode
-	Error string
+	Error copy.Key
 }
 
 // Choice draws the two modes and, for the input method, its installation.
 func Choice(c *ui.Context, store runtime.Store, tokens theme.Tokens, state *State) {
+	messages := store.Copy()
 	s := store.State
 	state.mode = s.Preferences.Mode
 	supported := s.InputMethod != runtime.InputMethodUnsupported
@@ -26,7 +27,7 @@ func Choice(c *ui.Context, store runtime.Store, tokens theme.Tokens, state *Stat
 			options := []struct {
 				value         runtime.SessionMode
 				label, detail string
-			}{{runtime.ModeShortcut, copy.ModeShortcut, copy.ModeShortcutDetail}, {runtime.ModeSystemIME, copy.ModeIME, copy.ModeIMEDetail}}
+			}{{runtime.ModeShortcut, messages.Text(copy.ModeShortcut), messages.Text(copy.ModeShortcutDetail)}, {runtime.ModeSystemIME, messages.Text(copy.ModeIME), messages.Text(copy.ModeIMEDetail)}}
 			for i, option := range options {
 				if i > 0 {
 					kit.Divider(c, tokens)
@@ -42,28 +43,31 @@ func Choice(c *ui.Context, store runtime.Store, tokens theme.Tokens, state *Stat
 			}
 		})
 		kit.Divider(c, tokens)
-		kit.Row(c, tokens, copy.IMEName, status(s.InputMethod), func() {
+		kit.Row(c, tokens, messages.Text(copy.IMEName), messages.Text(status(s.InputMethod)), func() {
 			switch s.InputMethod {
 			case runtime.InputMethodAbsent:
-				if ui.Button(c.Key("install"), copy.IMEInstall).Clicked() {
+				if kit.Button(c.Key("install"), tokens, kit.Outline, messages.Text(copy.IMEInstall), true).Clicked() {
 					state.Error = ""
 					if store.Actions.InstallInputMethod() != nil {
 						state.Error = copy.IMEFailed
 					}
 				}
 			case runtime.InputMethodInstalled, runtime.InputMethodSelected:
-				if ui.Button(c.Key("remove"), copy.IMERemove).Clicked() {
-					_ = store.Actions.RemoveInputMethod()
+				if kit.Button(c.Key("remove"), tokens, kit.Outline, messages.Text(copy.IMERemove), true).Clicked() {
+					state.Error = ""
+					if store.Actions.RemoveInputMethod() != nil {
+						state.Error = copy.IMERemoveFailed
+					}
 				}
 			}
 		})
 	})
 	if state.Error != "" {
-		ui.Text(c, state.Error).FontSize(theme.Caption).TextColor(tokens.Danger)
+		ui.Text(c, messages.Text(state.Error)).FontSize(theme.Caption).TextColor(tokens.Danger)
 	}
 }
 
-func status(s runtime.InputMethodState) string {
+func status(s runtime.InputMethodState) copy.Key {
 	switch s {
 	case runtime.InputMethodAbsent:
 		return copy.IMEAbsent

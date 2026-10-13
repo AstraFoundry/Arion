@@ -37,6 +37,7 @@
 - [`docs/frontend/segments.md`](docs/frontend/segments.md) — `ui`, `model`, `lib`, `api`, `config` segments.
 - [`docs/frontend/public-api.md`](docs/frontend/public-api.md) — public API and re-export rules.
 - [`docs/frontend/import-rules.md`](docs/frontend/import-rules.md) — cross-layer and cross-slice import rules.
+- [`docs/frontend/i18n.md`](docs/frontend/i18n.md) — interface languages, typed copy keys, formatting and completeness gates.
 - [`docs/frontend/ui-patterns.md`](docs/frontend/ui-patterns.md) — semantic styling, no hardcoded copy, no redundant copy.
 - [`docs/quality/agent-skills.md`](docs/quality/agent-skills.md) — Agent Skills for UI craft, motion, and anti-slop. Apply them when writing or reviewing UI.
 
@@ -67,7 +68,7 @@
 ### English only for code and comments
 
 - All source code, comments, commit messages, and internal identifiers must be written in English.
-- User-facing copy must also be in English unless the user explicitly asks for another language.
+- User-facing copy uses the approved English and Simplified Chinese catalogs, with English as the default. Additional languages require an explicit request; code, comments and identifiers remain English.
 
 ### Forbidden patterns
 

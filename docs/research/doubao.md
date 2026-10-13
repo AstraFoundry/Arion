@@ -4,7 +4,7 @@
 
 Target: `/Library/Input Methods/DoubaoIme.app`, installed bundle version **1.0.2**, build **1**. This report describes the installed macOS artifact, not the latest release or Windows/mobile implementation.
 
-The invoked `reverse-engineer-anything` skill requires an available REA connection and native analysis provider for callgraph/decompilation work. The parent investigation found no callable REA tools or installed native provider. Supported work continued with read-only Python plist/byte parsing and the system `file`, `otool`, and `nm` tools. **No REA Evidence IDs were produced.** `DS-*` below are locally assigned observation identifiers in [doubao-static.json](evidence/doubao-static.json), which preserves SHA-256 identities, original byte offsets, selected imports, resource headers, and reproduction commands.
+Two passes exist. The first used read-only Python plist/byte parsing and the system `file`, `otool` and `nm` tools; `DS-*` identifiers are locally assigned observations in [doubao-static.json](evidence/doubao-static.json) (SHA-256 identities, byte offsets, imports, resource headers, reproduction commands). The second used the `reverse-engineer-anything` skill's REA 6.4.0 CLI with the Ghidra 12.1.4 provider on the arm64 slice of the main executable and produced REA Evidence IDs; `DD-*` identifiers in [doubao-decompiled.json](evidence/doubao-decompiled.json) map to them. See [Decompiled insertion and shortcut paths](#decompiled-insertion-and-shortcut-paths).
 
 Only application-package files were read. The app was not launched or attached; no microphone recordings, user databases, runtime logs, account material, or network interception were accessed. Consequently, **execution order, active settings, latency, transmitted payloads, model weights, and server implementation are unresolved**.
 
@@ -63,6 +63,20 @@ OimeEngine names user-correction, user-NER, n-gram, exempt-word and character-er
 
 Smart organization has its own client/cache/undo types (`DS-organize`). Treat lightweight recognition correction, punctuation formatting and semantic organization as separate capabilities when designing Arion. An offline ASR engine does not by itself establish an offline organization pipeline.
 
+## Decompiled insertion and shortcut paths
+
+The executable is stripped, but Ghidra recovered Swift stored-property offset symbols of `DoubaoImeInputController` and Objective-C selectors, which make decompiled control flow legible. REA could not link Swift string literals to code (trace and xrefs returned no references, `DD-negative-references`), so code sites were located by scanning for the instructions that compute the encoded literal addresses; a decompiled body was used only when it contains the literal. Five functions were decompiled; four are interpreted below.
+
+| Question | Status | Observation (REA Evidence) |
+| --- | --- | --- |
+| What gates a delayed paste? | Answered for this function | `DD-paste-gate` (`ev_7813c9cf…`): Command-V is posted only if the session, a final-result generation counter and a paste commit sequence still match the captured values, a paste is in flight, Command-V has not been posted and the final-text write count is zero; otherwise `staleBeforeCommandV`. Further named failures: target changed before post, pasteboard changed during write, pasteboard write or marker failure, preferred target changed (before or after a hook). A posted paste is logged with `hostAck=unknown`. |
+| Host-specific handling? | Observed for one host | `DD-paste-gate`: when the host bundle identifier is `com.microsoft.Excel` and a mouse button is held (`NSEvent.pressedMouseButtons`), the commit waits for mouse release before pasting. |
+| How is the clipboard restored? | Answered for this function | `DD-paste-handoff` (`ev_f83fcb7d…`): a restore token is incremented and the scheduled restore work item cancelled; the current `changeCount` is compared with the count recorded at write. Equal hands the pasteboard off; different skips with `changedAfterPaste`. |
+| Can the host commit on its own? | Partially answered | `DD-commit-strategy` (`ev_3af76376…`): a host commit resolution (`hostCommitted`, `imeCommitRequired`, `ambiguous`, `contextInvalid`) is evaluated first; when the host already committed the original text the strategy is `skipSystemCommitted` with zero writes. A host text-implementation classification (`web`, `qt`, …) is read in the same step. |
+| Hold-to-talk? | Partially answered | `DD-shortcut-fn` (`ev_2ad00740…`): a long-press shortcut profile exists beside the single-click one; `longPressUsesFn` is true for key code 0x3F or a modifier-only shortcut whose flags equal `NSEventModifierFlagFunction`. Shipped messages promote a pending long press to a single click when the panel is opening. The capture mechanism and threshold were not recovered. |
+
+Unresolved: the routing condition between direct `insertText` and paste (its function entry was not isolated), the stale offline-model callback path, the `OimeCommon`/`OimeEngine` frameworks (including the text-display `applyDiff`, `DD-text-display`), and any runtime ordering or host behavior.
+
 ## Public-source corroboration
 
 The [official desktop product page](https://ime.doubao.com/pc) describes dialect and mixed Chinese/English voice input, keyboard prediction/correction, optional text organization, and cross-device clipboard transfer. These are vendor descriptions, not measurements of the installed package. The page was retrieved successfully; its claims do not identify model internals or memory-sync behavior.
@@ -76,10 +90,12 @@ These are proposed product/architecture decisions, not copied competitor impleme
 - Keep native IME integration distinct from the settings shell. MyGo hosting alone does not establish IMK or Windows TSF support.
 - Model recognition updates as revisable hypotheses with segment/session identities and explicit finalization. Keep committed output separate from mutable composition.
 - Capture only authorized bounded context; hotword biasing and persistent user memory need separate contracts and privacy rules.
-- Own final insertion as a transaction tied to host, selection and session. Reject stale results and focus changes; return an explicit delivery outcome.
+- Own final insertion as a transaction tied to host, selection and session. Reject stale results and focus changes; return an explicit delivery outcome. Doubao's decompiled paste gate checks session, generation, commit sequence and a zero write count immediately before Command-V and reports an unknown host acknowledgement; Arion's coordinator generation check, `ClaimCommit` and `unknown` outcome cover the same failure modes.
+- Restore the clipboard only if nothing else changed it (Doubao compares `changeCount`; Arion's clipboard route does the same).
+- Offer hold-to-talk as a separate shortcut profile, including the fn key, distinct from toggle; Doubao ships both.
 - Expose offline recognition readiness and failure explicitly. Do not silently switch a privacy-sensitive local session to cloud recognition.
 - Evaluate lexical correction, punctuation and semantic rewriting separately, including the privacy and latency of each stage.
 
 ## Remaining investigation
 
-A native provider or a bounded runtime study is needed to establish callers/callees, stage ordering, sample rate/codec, default mode, switching conditions, retry policy, emitted partial cadence and target-route selection. A verified model manifest/parser is needed for downloaded model identity and licensing. Windows, iOS and Android binaries were outside this local target. No conclusion here claims those questions are resolved.
+Decompilation answered the paste gate, clipboard handoff, host-commit resolution and fn long-press profile for the functions listed above. A bounded runtime study or further decompilation is still needed for stage ordering, sample rate/codec, default mode, online/offline switching, retry policy, partial cadence and the direct-versus-paste routing condition. A verified model manifest/parser is needed for downloaded model identity and licensing. Windows, iOS and Android binaries were outside this local target. No conclusion here claims those questions are resolved.

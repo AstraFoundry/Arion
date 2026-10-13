@@ -6,6 +6,7 @@ import (
 	"image/png"
 	"os"
 	"path/filepath"
+	platform "runtime"
 	"strings"
 	"testing"
 	"time"
@@ -156,13 +157,13 @@ func TestOverlayPhases(t *testing.T) {
 		d    runtime.Dictation
 		want string
 	}{
-		{"listening", runtime.Dictation{SessionID: "1", State: runtime.StateCapturing, Levels: levels(40), Changed: now}, copy.PillListening},
+		{"listening", runtime.Dictation{SessionID: "1", State: runtime.StateCapturing, Levels: levels(40), Changed: now}, copy.For(copy.English).Text(copy.PillListening)},
 		{"draft", runtime.Dictation{SessionID: "1", State: runtime.StateCapturing, Levels: levels(40), Draft: "把这个 PR merge 到 main 分支之前先跑一下 CI", Changed: now}, "merge"},
 		{"transcribing", runtime.Dictation{SessionID: "1", State: runtime.StateFinalizing, Draft: "今天的 standup 改到上午十点半", Changed: now}, "standup"},
-		{"inserted", runtime.Dictation{SessionID: "1", State: runtime.StateCompleted, Outcome: runtime.OutcomeApplied, Changed: now}, copy.PillInserted},
-		{"typed", runtime.Dictation{SessionID: "2", State: runtime.StateCompleted, Outcome: runtime.OutcomeUnknown, Changed: now}, copy.PillTyped},
-		{"focus-moved", runtime.Dictation{SessionID: "3", State: runtime.StateFailed, Failure: runtime.CodeTargetChanged, Changed: now}, copy.FailTargetTitle},
-		{"no-speech", runtime.Dictation{SessionID: "4", State: runtime.StateFailed, Failure: runtime.CodeNoSpeech, Changed: now}, copy.FailNoSpeechTitle},
+		{"inserted", runtime.Dictation{SessionID: "1", State: runtime.StateCompleted, Outcome: runtime.OutcomeApplied, Changed: now}, copy.For(copy.English).Text(copy.PillInserted)},
+		{"typed", runtime.Dictation{SessionID: "2", State: runtime.StateCompleted, Outcome: runtime.OutcomeUnknown, Changed: now}, copy.For(copy.English).Text(copy.PillTyped)},
+		{"focus-moved", runtime.Dictation{SessionID: "3", State: runtime.StateFailed, Failure: runtime.CodeTargetChanged, Changed: now}, copy.For(copy.English).Text(copy.FailTargetTitle)},
+		{"no-speech", runtime.Dictation{SessionID: "4", State: runtime.StateFailed, Failure: runtime.CodeNoSpeech, Changed: now}, copy.For(copy.English).Text(copy.FailNoSpeechTitle)},
 	}
 	for _, tc := range cases {
 		state.Dictation = tc.d
@@ -176,14 +177,14 @@ func TestOverlayPhases(t *testing.T) {
 	// Outcomes leave after their display time.
 	state.Dictation = runtime.Dictation{SessionID: "5", State: runtime.StateCompleted, Outcome: runtime.OutcomeApplied, Changed: now.Add(-5 * time.Second)}
 	settle(tt)
-	if hasText(tt, copy.PillInserted) {
+	if hasText(tt, copy.For(copy.English).Text(copy.PillInserted)) {
 		t.Error("stale outcome still visible")
 	}
 	// A denied microphone is named precisely.
 	state.Permissions.Microphone = runtime.ConsentDenied
 	state.Dictation = runtime.Dictation{SessionID: "6", State: runtime.StateFailed, Failure: runtime.CodePermissionDenied, Changed: time.Now()}
 	settle(tt)
-	if !hasText(tt, copy.FailMicTitle) {
+	if !hasText(tt, copy.For(copy.English).Text(copy.FailMicTitle)) {
 		t.Errorf("permission failure not explained: %q", tt.Texts())
 	}
 }
@@ -193,11 +194,11 @@ func TestMenuBarPanel(t *testing.T) {
 	panel := &menubar.Panel{}
 	tt := ui.NewTester(func(c *ui.Context) { panel.Render(c, store) }, PanelWidth, PanelHeight)
 	settle(tt)
-	if !hasText(tt, copy.StatusReady) || !hasText(tt, copy.PanelEmpty) {
+	if !hasText(tt, copy.For(copy.English).Text(copy.StatusReady)) || !hasText(tt, copy.For(copy.English).Text(copy.PanelEmpty)) {
 		t.Fatalf("idle panel: %q", tt.Texts())
 	}
 	snapshot(t, tt, "panel-ready")
-	if err := tt.Click(copy.StartDictate); err != nil {
+	if err := tt.Click(copy.For(copy.English).Text(copy.StartDictate)); err != nil {
 		t.Fatal(err)
 	}
 	if !actions.called("toggle") {
@@ -206,11 +207,11 @@ func TestMenuBarPanel(t *testing.T) {
 	state.Dictation = runtime.Dictation{SessionID: "1", State: runtime.StateCapturing, Levels: levels(40), Changed: time.Now()}
 	state.LastText = "Ship the release notes before Friday."
 	settle(tt)
-	if !hasText(tt, copy.StopDictate) || !hasText(tt, copy.StatusListening) {
+	if !hasText(tt, copy.For(copy.English).Text(copy.StopDictate)) || !hasText(tt, copy.For(copy.English).Text(copy.StatusListening)) {
 		t.Fatalf("live panel: %q", tt.Texts())
 	}
 	snapshot(t, tt, "panel-listening")
-	if err := tt.Click(copy.Copy); err != nil {
+	if err := tt.Click(copy.For(copy.English).Text(copy.Copy)); err != nil {
 		t.Fatal(err)
 	}
 	if !actions.called("copy:Ship the release notes before Friday.") {
@@ -219,7 +220,7 @@ func TestMenuBarPanel(t *testing.T) {
 	state.Dictation = runtime.Dictation{}
 	state.Model = runtime.Model{State: runtime.ModelProvisioning, Phase: runtime.PhaseDownloading, Done: 63 << 20, Total: 134 << 20, Active: state.Model.Active, Automatic: true}
 	settle(tt)
-	if !hasText(tt, copy.StatusPreparing) || !hasText(tt, "63 MB of 134 MB") {
+	if !hasText(tt, copy.For(copy.English).Text(copy.StatusPreparing)) || !hasText(tt, "63 MB of 134 MB") {
 		t.Fatalf("provisioning panel: %q", tt.Texts())
 	}
 	snapshot(t, tt, "panel-downloading")
@@ -230,13 +231,13 @@ func TestSettingsSections(t *testing.T) {
 	page := settings.NewPage()
 	tt := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, SettingsWidth, SettingsHeight)
 	for _, section := range []struct{ id, label, want string }{
-		{settings.General, copy.NavGeneral, copy.LaunchAtLogin},
-		{settings.Dictation, copy.NavDictation, copy.ShortcutLabel},
-		{settings.Microphone, copy.NavMicrophone, copy.MicTest},
-		{settings.Model, copy.NavModel, copy.ModelReason},
-		{settings.Vocabulary, copy.NavVocabulary, copy.VocabEmpty},
-		{settings.Privacy, copy.NavPrivacy, copy.PrivacyLocal},
-		{settings.About, copy.NavAbout, copy.AboutCredits},
+		{settings.General, copy.For(copy.English).Text(copy.NavGeneral), copy.For(copy.English).Text(copy.LaunchAtLogin)},
+		{settings.Dictation, copy.For(copy.English).Text(copy.NavDictation), copy.For(copy.English).Text(copy.ShortcutLabel)},
+		{settings.Microphone, copy.For(copy.English).Text(copy.NavMicrophone), copy.For(copy.English).Text(copy.MicTest)},
+		{settings.Model, copy.For(copy.English).Text(copy.NavModel), copy.For(copy.English).Text(copy.ModelReason)},
+		{settings.Vocabulary, copy.For(copy.English).Text(copy.NavVocabulary), copy.For(copy.English).Text(copy.VocabEmpty)},
+		{settings.Privacy, copy.For(copy.English).Text(copy.NavPrivacy), copy.For(copy.English).Text(copy.PrivacyLocal)},
+		{settings.About, copy.For(copy.English).Text(copy.NavAbout), copy.For(copy.English).Text(copy.AboutCredits)},
 	} {
 		if err := tt.Click(section.label); err != nil {
 			t.Fatal(err)
@@ -252,19 +253,19 @@ func TestSettingsSections(t *testing.T) {
 		t.Errorf("monitor lifecycle %v", actions.calls)
 	}
 	// Vocabulary: add a replacement through the form.
-	if err := tt.Click(copy.NavVocabulary); err != nil {
+	if err := tt.Click(copy.For(copy.English).Text(copy.NavVocabulary)); err != nil {
 		t.Fatal(err)
 	}
 	settle(tt)
-	if err := tt.Click(copy.VocabFromLabel); err != nil {
+	if err := tt.Click(copy.For(copy.English).Text(copy.VocabFromLabel)); err != nil {
 		t.Fatal(err)
 	}
 	tt.Type("阿里昂")
-	if err := tt.Click(copy.VocabToLabel); err != nil {
+	if err := tt.Click(copy.For(copy.English).Text(copy.VocabToLabel)); err != nil {
 		t.Fatal(err)
 	}
 	tt.Type("Arion")
-	if err := tt.Click(copy.Add); err != nil {
+	if err := tt.Click(copy.For(copy.English).Text(copy.Add)); err != nil {
 		t.Fatal(err)
 	}
 	settle(tt)
@@ -273,11 +274,11 @@ func TestSettingsSections(t *testing.T) {
 	}
 	snapshot(t, tt, "settings-vocabulary-filled")
 	// Dictation: record a new shortcut.
-	if err := tt.Click(copy.NavDictation); err != nil {
+	if err := tt.Click(copy.For(copy.English).Text(copy.NavDictation)); err != nil {
 		t.Fatal(err)
 	}
 	settle(tt)
-	if err := tt.Click(copy.ShortcutRecord); err != nil {
+	if err := tt.Click(copy.For(copy.English).Text(copy.ShortcutRecord)); err != nil {
 		t.Fatal(err)
 	}
 	settle(tt)
@@ -287,27 +288,27 @@ func TestSettingsSections(t *testing.T) {
 		t.Fatalf("shortcut not recorded: %q calls=%v", state.Shortcut.Accelerator, actions.calls)
 	}
 	// Plain letters are rejected so typing is never captured.
-	if err := tt.Click(copy.ShortcutRecord); err != nil {
+	if err := tt.Click(copy.For(copy.English).Text(copy.ShortcutRecord)); err != nil {
 		t.Fatal(err)
 	}
 	settle(tt)
 	tt.Key(0, ui.KeyD)
 	settle(tt)
-	if !hasText(tt, copy.ShortcutNeedsModifier) {
+	if !hasText(tt, copy.For(copy.English).Text(modifierHint())) {
 		t.Fatalf("modifier rule not shown: %q", tt.Texts())
 	}
 	snapshot(t, tt, "settings-dictation-recording")
 	// The input method is installed on request, then chosen as the mode.
 	state.InputMethod = runtime.InputMethodAbsent
 	settle(tt)
-	if err := tt.Click(copy.IMEInstall); err != nil {
+	if err := tt.Click(copy.For(copy.English).Text(copy.IMEInstall)); err != nil {
 		t.Fatal(err)
 	}
 	settle(tt)
-	if !actions.called("install-ime") || !hasText(tt, copy.IMEInstalled) {
+	if !actions.called("install-ime") || !hasText(tt, copy.For(copy.English).Text(copy.IMEInstalled)) {
 		t.Fatalf("input method install: %v %q", actions.calls, tt.Texts())
 	}
-	if err := tt.Click(copy.ModeIME); err != nil {
+	if err := tt.Click(copy.For(copy.English).Text(copy.ModeIME)); err != nil {
 		t.Fatal(err)
 	}
 	settle(tt)
@@ -315,22 +316,48 @@ func TestSettingsSections(t *testing.T) {
 		t.Fatalf("mode not changed: %v", state.Preferences.Mode)
 	}
 	snapshot(t, tt, "settings-dictation-input-method")
-	if hasText(tt, copy.DeliveryClipboard) {
+	if hasText(tt, copy.For(copy.English).Text(copy.DeliveryClipboard)) {
 		t.Fatal("shortcut-only insertion options shown in input-method mode")
 	}
-	if err := tt.Click(copy.ModeShortcut); err != nil {
+	if err := tt.Click(copy.For(copy.English).Text(copy.ModeShortcut)); err != nil {
 		t.Fatal(err)
 	}
 	settle(tt)
 	// Switching insertion to paste persists through the preferences action.
 	tt.Key(0, ui.KeyEscape)
 	settle(tt)
-	if err := tt.Click(copy.DeliveryClipboard); err != nil {
+	if err := tt.Click(copy.For(copy.English).Text(copy.DeliveryClipboard)); err != nil {
 		t.Fatal(err)
 	}
 	settle(tt)
 	if state.Preferences.Delivery != runtime.DeliveryClipboard {
 		t.Fatalf("delivery not changed: %v", state.Preferences.Delivery)
+	}
+}
+
+// TestDarkAppearance renders the main surfaces with the dark tokens.
+func TestDarkAppearance(t *testing.T) {
+	_, _, store := fixture()
+	panel := &menubar.Panel{}
+	settingsPage := settings.NewPage()
+	settingsPage.Section = settings.Dictation
+	onboardingPage := onboarding.NewPage()
+	for _, view := range []struct {
+		name          string
+		render        func(c *ui.Context)
+		width, height int
+	}{
+		{"panel", func(c *ui.Context) { panel.Render(c, store) }, PanelWidth, PanelHeight},
+		{"settings", func(c *ui.Context) { settingsPage.Render(c, store) }, SettingsWidth, SettingsHeight},
+		{"onboarding", func(c *ui.Context) { onboardingPage.Render(c, store) }, OnboardingWidth, OnboardingHeight},
+	} {
+		tt := ui.NewTester(view.render, view.width, view.height)
+		tt.SetDark(true)
+		settle(tt)
+		if len(tt.Texts()) == 0 {
+			t.Errorf("%s: nothing drawn in the dark appearance", view.name)
+		}
+		snapshot(t, tt, "dark-"+view.name)
 	}
 }
 
@@ -349,17 +376,17 @@ func TestOnboardingFlow(t *testing.T) {
 		}
 		settle(tt)
 	}
-	click(copy.OnbStart)
-	if !hasText(tt, copy.OnbMicTitle) {
+	click(copy.For(copy.English).Text(copy.OnbStart))
+	if !hasText(tt, copy.For(copy.English).Text(copy.OnbMicTitle)) {
 		t.Fatalf("microphone step missing: %q", tt.Texts())
 	}
 	snapshot(t, tt, "onboarding-2-microphone")
 	// Continue stays disabled until consent exists.
-	click(copy.Continue)
-	if !hasText(tt, copy.OnbMicTitle) {
+	click(copy.For(copy.English).Text(copy.Continue))
+	if !hasText(tt, copy.For(copy.English).Text(copy.OnbMicTitle)) {
 		t.Fatal("advanced without microphone consent")
 	}
-	click(copy.OnbMicAllow)
+	click(copy.For(copy.English).Text(copy.OnbMicAllow))
 	if !actions.called("request-mic") {
 		t.Fatal("microphone not requested")
 	}
@@ -367,41 +394,200 @@ func TestOnboardingFlow(t *testing.T) {
 	state.MonitorLevels = levels(40)
 	settle(tt)
 	snapshot(t, tt, "onboarding-2-microphone-granted")
-	click(copy.Continue)
+	click(copy.For(copy.English).Text(copy.Continue))
 	snapshot(t, tt, "onboarding-3-accessibility")
-	click(copy.OnbAXAllow)
-	if !actions.called("request-ax") || !hasText(tt, copy.OnbAXWaiting) {
+	click(copy.For(copy.English).Text(copy.OnbAXAllow))
+	if !actions.called("request-ax") || !hasText(tt, copy.For(copy.English).Text(copy.OnbAXWaiting)) {
 		t.Fatalf("accessibility request: %v %q", actions.calls, tt.Texts())
 	}
 	snapshot(t, tt, "onboarding-3-accessibility-waiting")
 	state.Permissions.Accessibility = runtime.ConsentGranted
 	deadline := time.Now().Add(2 * time.Second)
-	for !hasText(tt, copy.OnbModelTitle) && time.Now().Before(deadline) {
+	for !hasText(tt, copy.For(copy.English).Text(copy.OnbModelTitle)) && time.Now().Before(deadline) {
 		tt.Frame()
 		time.Sleep(20 * time.Millisecond)
 	}
-	if !hasText(tt, copy.OnbModelTitle) {
+	if !hasText(tt, copy.For(copy.English).Text(copy.OnbModelTitle)) {
 		t.Fatalf("did not advance after accessibility grant: %q", tt.Texts())
 	}
 	settle(tt)
 	snapshot(t, tt, "onboarding-4-model")
-	click(copy.Continue)
+	click(copy.For(copy.English).Text(copy.Continue))
 	if !actions.called("test-shortcut") {
 		t.Fatal("shortcut test mode not entered")
 	}
 	snapshot(t, tt, "onboarding-5-shortcut")
 	state.Shortcut.Pressed = time.Now().Add(time.Second)
 	settle(tt)
-	if !hasText(tt, copy.OnbShortcutHeard) {
+	if !hasText(tt, copy.For(copy.English).Text(copy.OnbShortcutHeard)) {
 		t.Fatalf("shortcut press not acknowledged: %q", tt.Texts())
 	}
 	snapshot(t, tt, "onboarding-5-shortcut-heard")
-	click(copy.Continue)
+	click(copy.For(copy.English).Text(copy.Continue))
 	snapshot(t, tt, "onboarding-6-try")
-	click(copy.Continue)
+	click(copy.For(copy.English).Text(copy.Continue))
 	snapshot(t, tt, "onboarding-7-done")
-	click(copy.OnbFinish)
+	click(copy.For(copy.English).Text(copy.OnbFinish))
 	if !actions.called("complete") {
 		t.Fatal("onboarding not completed")
 	}
+}
+
+func TestInterfaceLanguageSwitch(t *testing.T) {
+	state, actions, store := fixture()
+	page := settings.NewPage()
+	panel := &menubar.Panel{}
+	onboardingPage := onboarding.NewPage()
+	settingsTester := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, SettingsWidth, SettingsHeight)
+	panelTester := ui.NewTester(func(c *ui.Context) { panel.Render(c, store) }, PanelWidth, PanelHeight)
+	onboardingTester := ui.NewTester(func(c *ui.Context) { onboardingPage.Render(c, store) }, OnboardingWidth, OnboardingHeight)
+	state.LastText = "User text {index}: keep exactly."
+	state.Dictation = runtime.Dictation{SessionID: "active", State: runtime.StateCapturing, Draft: state.LastText, Changed: time.Now()}
+	settle(settingsTester)
+	if err := settingsTester.Click("English"); err != nil {
+		t.Fatal(err)
+	}
+	settle(settingsTester)
+	if err := settingsTester.Click("简体中文"); err != nil {
+		t.Fatal(err)
+	}
+	settle(settingsTester)
+	if state.Preferences.UILanguage != runtime.LanguageChinese || !actions.called("prefs") {
+		t.Fatalf("picker did not update preference: %v", state.Preferences)
+	}
+	settle(panelTester)
+	settle(onboardingTester)
+	if !hasText(settingsTester, "界面语言") || !hasText(panelTester, "结束") || !hasText(onboardingTester, "开始设置") {
+		t.Fatalf("views did not switch: %q %q %q", settingsTester.Texts(), panelTester.Texts(), onboardingTester.Texts())
+	}
+	if state.Dictation.SessionID != "active" || state.Dictation.Draft != state.LastText || !hasText(panelTester, state.LastText) {
+		t.Fatal("language change altered user content/session")
+	}
+	snapshot(t, settingsTester, "settings-general-zh-CN")
+	snapshot(t, panelTester, "panel-zh-CN")
+	snapshot(t, onboardingTester, "onboarding-zh-CN")
+	if err := settingsTester.Click("简体中文"); err != nil {
+		t.Fatal(err)
+	}
+	settle(settingsTester)
+	if err := settingsTester.Click("English"); err != nil {
+		t.Fatal(err)
+	}
+	settle(settingsTester)
+	settle(panelTester)
+	if state.Preferences.UILanguage != runtime.LanguageEnglish || !hasText(panelTester, "Finish") || !hasText(settingsTester, "Interface language") {
+		t.Fatal("switch back to English failed")
+	}
+}
+
+func TestChineseSettingsAndTransientErrors(t *testing.T) {
+	state, _, store := fixture()
+	state.Preferences.UILanguage = runtime.LanguageChinese
+	page := settings.NewPage()
+	tt := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, SettingsWidth, SettingsHeight)
+	zh := copy.For(copy.SimplifiedChinese)
+	for _, section := range []struct {
+		id  string
+		key copy.Key
+	}{
+		{settings.General, copy.LanguageLabel}, {settings.Dictation, copy.ShortcutLabel},
+		{settings.Microphone, copy.MicTest}, {settings.Model, copy.ModelReason},
+		{settings.Vocabulary, copy.VocabEmpty}, {settings.Privacy, copy.PrivacyLocal}, {settings.About, copy.AboutCredits},
+	} {
+		page.Section = section.id
+		settle(tt)
+		if !hasText(tt, zh.Text(section.key)) {
+			t.Errorf("%s: %q", section.id, tt.Texts())
+		}
+		snapshot(t, tt, "settings-"+section.id+"-zh-CN")
+	}
+	page.Section = settings.Vocabulary
+	settle(tt)
+	if err := tt.Click("添加"); err != nil {
+		t.Fatal(err)
+	}
+	settle(tt)
+	if !hasText(tt, "请填写两个输入框") {
+		t.Fatalf("missing localized validation: %q", tt.Texts())
+	}
+	state.Preferences.UILanguage = runtime.LanguageEnglish
+	settle(tt)
+	if !hasText(tt, "Both fields are needed") || hasText(tt, "请填写两个输入框") {
+		t.Fatalf("stale validation after switch: %q", tt.Texts())
+	}
+
+	// A draft entered in English survives the language change and is saved verbatim.
+	if err := tt.Click("Heard as"); err != nil {
+		t.Fatal(err)
+	}
+	tt.Type("阿里昂 {value}")
+	if err := tt.Click("Write as"); err != nil {
+		t.Fatal(err)
+	}
+	tt.Type("Arion {value}")
+	state.Preferences.UILanguage = runtime.LanguageChinese
+	settle(tt)
+	if err := tt.Click("添加"); err != nil {
+		t.Fatal(err)
+	}
+	settle(tt)
+	if len(state.Vocabulary) != 1 || state.Vocabulary[0].From != "阿里昂 {value}" || state.Vocabulary[0].To != "Arion {value}" {
+		t.Fatalf("language switch changed vocabulary draft: %v", state.Vocabulary)
+	}
+	page.Section = settings.Dictation
+	settle(tt)
+	if err := tt.Click("修改"); err != nil {
+		t.Fatal(err)
+	}
+	settle(tt)
+	tt.Key(0, ui.KeyD)
+	settle(tt)
+	if !hasText(tt, zh.Text(modifierHint())) {
+		t.Fatal("shortcut error untranslated")
+	}
+	state.Preferences.UILanguage = runtime.LanguageEnglish
+	settle(tt)
+	if !hasText(tt, copy.For(copy.English).Text(modifierHint())) {
+		t.Fatal("shortcut error did not change language")
+	}
+}
+
+func TestChineseOverlayAndDownload(t *testing.T) {
+	state, _, store := fixture()
+	state.Preferences.UILanguage = runtime.LanguageChinese
+	tt := ui.NewTester(func(c *ui.Context) { overlay.Render(c, store) }, OverlayWidth, OverlayHeight)
+	for _, tc := range []struct {
+		session runtime.Dictation
+		want    string
+	}{
+		{runtime.Dictation{State: runtime.StateCapturing}, "正在聆听…"},
+		{runtime.Dictation{State: runtime.StateFinalizing}, "正在转写…"},
+		{runtime.Dictation{State: runtime.StateCompleted, Outcome: runtime.OutcomeApplied}, "已插入"},
+		{runtime.Dictation{State: runtime.StateFailed, Failure: runtime.CodeNoSpeech}, "未检测到语音"},
+	} {
+		state.Dictation = tc.session
+		state.Dictation.SessionID = tc.want
+		state.Dictation.Changed = time.Now()
+		settle(tt)
+		if !hasText(tt, tc.want) {
+			t.Fatalf("want %q: %q", tc.want, tt.Texts())
+		}
+	}
+	state.Dictation = runtime.Dictation{}
+	state.Model.State = runtime.ModelProvisioning
+	state.Model.Phase = runtime.PhaseDownloading
+	state.Model.Done, state.Model.Total = 63<<20, 134<<20
+	panel := &menubar.Panel{}
+	panelTester := ui.NewTester(func(c *ui.Context) { panel.Render(c, store) }, PanelWidth, PanelHeight)
+	settle(panelTester)
+	if !hasText(panelTester, "正在下载") || !hasText(panelTester, "63 MB / 134 MB") {
+		t.Fatalf("untranslated download: %q", panelTester.Texts())
+	}
+}
+
+func modifierHint() copy.Key {
+	if platform.GOOS == "windows" {
+		return copy.ShortcutNeedsModifierWindows
+	}
+	return copy.ShortcutNeedsModifier
 }

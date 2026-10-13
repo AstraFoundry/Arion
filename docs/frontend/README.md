@@ -11,10 +11,10 @@ This section defines how the frontend is organized using **Feature-Sliced Design
 | --- | --- |
 | `app` | One view per window: overlay, menu bar panel, settings, onboarding |
 | `pages` | `overlay`, `menubar`, `settings`, `onboarding` |
-| `widgets` | `capsule` (dictation pill), `statusheader`, `modelcard`, `stepper` |
-| `features` | `dictate`, `permissions`, `provision`, `shortcut`, `microphone`, `vocabulary`, `transcript`, `modelchoice` |
+| `widgets` | `capsule` (dictation pill), `statusheader`, `modelcard`, `stepper`, `showcase` (illustrations: mock UI over a photograph) |
+| `features` | `dictate`, `permissions`, `provision`, `shortcut`, `microphone`, `vocabulary`, `transcript`, `modelchoice`, `uilanguage` |
 | `entities` | `dictation` (phase/notice projection), `model`, `onboarding` (step rules) |
-| `shared` | `runtime` (state and actions boundary), `copy`, `theme` (tokens, motion presets), `kit` (primitives), `icons` (Lucide, ISC) |
+| `shared` | `runtime` (state and actions boundary), `copy`, `theme` (Sunbeam tokens, motion presets), `kit` (coss-anatomy primitives), `icons` (Lucide, ISC), `assets` (app mark, photographs) |
 
 Views read `runtime.State` and request `runtime.Actions`; the composition root mutates state on the main thread. Headless view tests in `ui/app` render every surface with MyGo's `ui.Tester`.
 
@@ -26,7 +26,9 @@ Views read `runtime.State` and request `runtime.Actions`; the composition root m
 - [`segments.md`](segments.md) — `ui`, `model`, `lib`, `api`, `config` segments.
 - [`public-api.md`](public-api.md) — public API and re-export rules.
 - [`import-rules.md`](import-rules.md) — cross-layer and cross-slice import rules.
+- [`i18n.md`](i18n.md) — English/Simplified Chinese catalogs, preferences, formatting and native boundaries.
 - [`ui-patterns.md`](ui-patterns.md) — semantic styling, no hardcoded copy, no redundant copy.
+- [`design-system.md`](design-system.md) — Sunbeam tokens, coss-anatomy primitives, elevation and illustration rules.
 - [`../quality/agent-skills.md`](../quality/agent-skills.md) — Agent Skills for UI craft, motion, and anti-slop.
 
 ## Quick start
@@ -34,7 +36,7 @@ Views read `runtime.State` and request `runtime.Actions`; the composition root m
 1. Read [`fsd-overview.md`](fsd-overview.md) if FSD is new to you.
 2. Read [`layers.md`](layers.md) to understand where a new file belongs.
 3. Read [`import-rules.md`](import-rules.md) before adding any import.
-4. Read [`ui-patterns.md`](ui-patterns.md) before writing UI code.
+4. Read [`ui-patterns.md`](ui-patterns.md) and [`design-system.md`](design-system.md) before writing UI code.
 5. Apply the Agent Skills in [`../quality/agent-skills.md`](../quality/agent-skills.md) when the work is visual or motion-related.
 
 ## Core principle

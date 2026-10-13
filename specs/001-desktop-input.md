@@ -11,6 +11,7 @@
 - DSK-07: IME mode MUST follow the host's composition/candidate lifecycle and release all owned ranges on cancellation/deactivation. See [007](007-ime-ranking.md).
 - DSK-08: Block context extraction and memory learning from secure/password fields. If the adapter cannot establish field safety, it cannot read its content.
 - DSK-09: Model missing/unsupported hardware/permission denied MUST be actionable explicit errors; never silently use cloud inference.
+- DSK-10: The interface MUST offer English (default) and Simplified Chinese in settings and onboarding, persist the choice, and update existing windows without restarting recognition or altering user content. UI language MUST remain independent of recognition/model selection.
 
 ## Acceptance
 
@@ -24,5 +25,6 @@
 | DSK-A06 | Switch modes during capture → old generation closed; new mode requires a new session |
 | DSK-A07 | Secure field or unknown field safety → no context, no automatic memory learning |
 | DSK-A08 | Sleep, microphone unplug, hotkey conflict or adapter loss → capture stops with explicit reason |
+| DSK-A09 | Choose Simplified Chinese → settings/onboarding/panel/overlay and native window titles update → restart retains the choice → switch back to English; existing drafts, forms and recognition preferences remain intact |
 
 Compatibility must be recorded per app/version/input mode on both OSes: native editor, browser editable field, Electron editor, office document, terminal, noneditable field and elevated Windows app. These are test categories, not established support claims. Never auto-send Enter or execute a terminal command.

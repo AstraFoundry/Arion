@@ -184,3 +184,42 @@ func TestOnboardingWindowLifecycle(t *testing.T) {
 	onboarding.Close()
 	eventually(t, "onboarding destroyed", onboarding.IsDestroyed)
 }
+
+// DSK-A09: switching interface language updates existing native windows while
+// leaving the shared dictation/recognition preferences intact.
+func TestInterfaceLanguageUpdatesNativeWindows(t *testing.T) {
+	app.OpenSettings()
+	app.OpenOnboarding()
+	var settings, onboarding *mygo.Window
+	eventually(t, "language test windows opened", func() bool {
+		windows := app.Windows()
+		settings, onboarding = windows["settings"], windows["onboarding"]
+		return settings != nil && onboarding != nil && settings.IsVisible() && onboarding.IsVisible()
+	})
+	defer mygo.RunOnMain(func() {
+		app.Store().Actions.UpdatePreferences(func(p *arion.Preferences) { p.UILanguage = arion.LanguageEnglish })
+		settings.Close()
+		onboarding.Close()
+	})
+	var before arion.Preferences
+	app.Update(func(s *arion.State) {
+		before = s.Preferences
+		app.Store().Actions.UpdatePreferences(func(p *arion.Preferences) { p.UILanguage = arion.LanguageChinese })
+	})
+	eventually(t, "localized native settings title", func() bool { return settings.Title() == "Arion 设置" })
+	if !nonblank(capture(t, settings, "settings-zh-CN", 640, 440)) {
+		t.Fatal("Chinese settings content blank")
+	}
+	if !nonblank(capture(t, onboarding, "onboarding-zh-CN", uiapp.OnboardingWidth, uiapp.OnboardingHeight)) {
+		t.Fatal("Chinese onboarding content blank")
+	}
+	app.Update(func(s *arion.State) {
+		want := before
+		want.UILanguage = arion.LanguageChinese
+		if s.Preferences != want {
+			t.Errorf("language switch changed other preferences: %v", s.Preferences)
+		}
+		app.Store().Actions.UpdatePreferences(func(p *arion.Preferences) { p.UILanguage = arion.LanguageEnglish })
+	})
+	eventually(t, "English native settings title restored", func() bool { return settings.Title() == "Arion Settings" })
+}

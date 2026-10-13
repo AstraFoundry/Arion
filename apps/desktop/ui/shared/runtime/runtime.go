@@ -9,6 +9,7 @@ import (
 	"arion.local/core/application"
 	"arion.local/core/contracts"
 	"arion.local/core/domain"
+	"arion.local/desktop/ui/shared/copy"
 )
 
 // Re-exported core types so UI slices depend on this boundary only.
@@ -19,6 +20,7 @@ type (
 	CommitOutcome = contracts.CommitOutcome
 	Preferences   = application.Preferences
 	Delivery      = application.Delivery
+	UILanguage    = application.UILanguage
 )
 
 const (
@@ -38,6 +40,8 @@ const (
 
 	DeliveryAutomatic = application.DeliveryAutomatic
 	DeliveryClipboard = application.DeliveryClipboard
+	LanguageEnglish   = application.English
+	LanguageChinese   = application.SimplifiedChinese
 )
 
 // Error codes the UI explains.
@@ -239,4 +243,9 @@ type Actions interface {
 type Store struct {
 	State   *State
 	Actions Actions
+}
+
+// Copy derives an immutable catalog from the current shared language preference.
+func (s Store) Copy() copy.Catalog {
+	return copy.For(copy.Locale(s.State.Preferences.UILanguage))
 }

@@ -2,50 +2,46 @@
 package statusheader
 
 import (
-	"time"
-
 	"arion.local/desktop/ui/entities/dictation"
 	"arion.local/desktop/ui/entities/model"
 	"arion.local/desktop/ui/shared/copy"
-	"arion.local/desktop/ui/shared/icons"
+	"arion.local/desktop/ui/shared/kit"
 	"arion.local/desktop/ui/shared/runtime"
 	"arion.local/desktop/ui/shared/theme"
 	"github.com/egoist/mygo/ui"
 )
 
-// Status derives the label and color shown next to the brand. Only an open
-// microphone pulses; other states are a flat dot and a word.
-func Status(s *runtime.State, tokens theme.Tokens) (string, ui.Color, bool) {
+// Status derives the label and color shown next to the brand: a flat dot
+// and a word. The pulse that marks an open microphone lives on the pill.
+func Status(s *runtime.State, tokens theme.Tokens) (string, ui.Color) {
+	messages := copy.For(copy.Locale(s.Preferences.UILanguage))
 	switch {
 	case s.Dictation.State == runtime.StateCapturing:
-		return copy.StatusListening, tokens.Live, true
+		return messages.Text(copy.StatusListening), tokens.Live
 	case s.Permissions.Microphone != runtime.ConsentGranted || s.Permissions.Accessibility != runtime.ConsentGranted:
-		return copy.StatusPermission, tokens.Warning, false
+		return messages.Text(copy.StatusPermission), tokens.Warning
 	case dictation.Active(s.Dictation):
-		return copy.StatusTranscribing, tokens.Muted, false
+		return messages.Text(copy.StatusTranscribing), tokens.Muted
 	case model.Busy(s.Model):
-		return copy.StatusPreparing, tokens.Muted, false
+		return messages.Text(copy.StatusPreparing), tokens.Muted
 	case s.Model.State == runtime.ModelFailed || s.Model.State == runtime.ModelUnselected:
-		return copy.StatusModelFailed, tokens.Danger, false
+		return messages.Text(copy.StatusModelFailed), tokens.Danger
 	}
-	return copy.StatusReady, tokens.Success, false
+	return messages.Text(copy.StatusReady), tokens.Success
 }
 
 // Render draws the header row.
 func Render(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
-	label, color, live := Status(store.State, tokens)
+	messages := store.Copy()
+	label, color := Status(store.State, tokens)
 	ui.Row(c).Gap(10).AlignItems(ui.Center).Children(func() {
-		ui.Row(c).Size(28, 28).Radius(8).Background(tokens.Accent).Justify(ui.Center).AlignItems(ui.Center).
-			TextColor(tokens.AccentText).Children(func() { ui.Icon(c, icons.AudioLines).FontSize(16) })
-		ui.Text(c, copy.Title).FontSize(theme.Heading).FontWeight(600)
+		kit.Mark(c, 30).Margin(-2)
+		ui.Text(c, messages.Text(copy.Title)).FontSize(theme.Heading).FontWeight(600)
 		ui.Spacer(c)
 		ui.Row(c).Gap(6).AlignItems(ui.Center).Children(func() {
 			dot := ui.Box(c).Size(6, 6).Radius(3)
 			// The dot eases between states so a change reads as one signal.
 			dot.Background(dot.AnimateColor("color", color, theme.Quick))
-			if live {
-				dot.Opacity(0.4 + 0.6*dot.Loop("pulse", 1200*time.Millisecond, ui.Bounce(ui.EaseInOut)))
-			}
 			ui.Text(c, label).FontSize(theme.Caption).FontWeight(500).TextColor(tokens.Muted).SingleLine().ContentTransition(ui.ContentTransition{})
 		})
 	})

@@ -11,7 +11,7 @@ make desktop-check
 make e2e
 ```
 
-`pnpm check` validates local Markdown links, runtime configuration JSON, active-doc placeholders, Go layer imports and JavaScript syntax. `make core-check` runs portable core tests/vet/format validation in standalone module mode. These do not claim OS adapter or inference coverage.
+`pnpm check` validates local Markdown links, runtime configuration JSON, active-doc placeholders, Go layer imports and JavaScript syntax. `make core-check` runs portable core tests/vet/format validation in standalone module mode. `make i18n-check` / `pnpm i18n:check` validates translation keys, templates, formatting and direct hardcoded copy; `pnpm test` includes it. These do not claim OS adapter or inference coverage.
 
 ## Native desktop
 
@@ -24,7 +24,7 @@ make desktop-build
 make desktop-dev
 ```
 
-These commands use the pinned `go tool mygo` from `apps/desktop` with `CGO_ENABLED=1` and an rpath to `Contents/Resources/lib`. `make desktop-libs` (run by both) copies the pinned sherpa-onnx and ONNX Runtime libraries from the Go module cache into `apps/desktop/resources/<platform>/`; they are build artifacts and stay ignored. Windows installer creation uses NSIS; cross-packaging cgo for Windows additionally needs a MinGW-w64 toolchain (`CC=x86_64-w64-mingw32-gcc`).
+These commands use the pinned `go tool mygo` from `apps/desktop` with `CGO_ENABLED=1` and an rpath to `Contents/Resources/lib`. `make desktop-libs` (run by both) generates the English/Simplified Chinese macOS permission localizations from the [copy catalogs](../frontend/i18n.md) and copies the pinned sherpa-onnx and ONNX Runtime libraries from the Go module cache into `apps/desktop/resources/<platform>/`; they are build artifacts and stay ignored. Windows installer creation uses NSIS; cross-packaging cgo for Windows additionally needs a MinGW-w64 toolchain (`CC=x86_64-w64-mingw32-gcc`).
 
 `desktop-dev` launches the menu bar app. On first run it shows onboarding, asks for microphone and Accessibility access, and downloads the automatically selected model bundle (about 270 MB) into the per-user model store; after that dictation works offline. `desktop-build` produces `Arion.app` and a DMG under ignored `apps/desktop/build/`. macOS ties Accessibility consent to the app's code signature: an ad hoc rebuild needs the permission granted again.
 

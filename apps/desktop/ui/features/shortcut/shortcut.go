@@ -2,6 +2,7 @@
 package shortcut
 
 import (
+	platform "runtime"
 	"strings"
 
 	"arion.local/desktop/ui/shared/copy"
@@ -14,7 +15,7 @@ import (
 // Recorder is the recorder's own state, kept by the page.
 type Recorder struct {
 	Listening bool
-	Error     string
+	Error     copy.Key
 }
 
 var keyNames = map[ui.Key]string{
@@ -65,11 +66,12 @@ func Accelerator(mods ui.Modifiers, key ui.Key) (string, bool) {
 
 // Field shows the current shortcut and records a new one on request.
 func Field(c *ui.Context, store runtime.Store, tokens theme.Tokens, recorder *Recorder) {
+	messages := store.Copy()
 	ui.Column(c).Gap(6).AlignItems(ui.End).Children(func() {
 		ui.Row(c).Gap(8).AlignItems(ui.Center).Children(func() {
 			if recorder.Listening {
 				capture := ui.Row(c.Key("capture")).Height(28).Padding(0, 10).AlignItems(ui.Center).Radius(theme.RadiusControl).
-					Border(1, tokens.Accent).Background(tokens.AccentSoft).Focusable().AutoFocus().FocusRing(false)
+					Border(1, tokens.AccentInk).Background(tokens.AccentSoft).Focusable().AutoFocus().FocusRing(false)
 				capture.HandleInput(func(ev ui.InputEvent) bool {
 					if ev.Kind != ui.InputKeyDown || ev.Repeat {
 						return false
@@ -82,6 +84,9 @@ func Field(c *ui.Context, store runtime.Store, tokens theme.Tokens, recorder *Re
 					accelerator, ok := Accelerator(ev.Mods, ev.Key)
 					if !ok {
 						recorder.Error = copy.ShortcutNeedsModifier
+						if platform.GOOS == "windows" {
+							recorder.Error = copy.ShortcutNeedsModifierWindows
+						}
 						return true
 					}
 					if err := store.Actions.SetShortcut(accelerator); err != nil {
@@ -92,21 +97,21 @@ func Field(c *ui.Context, store runtime.Store, tokens theme.Tokens, recorder *Re
 					return true
 				})
 				capture.Children(func() {
-					ui.Text(c, copy.ShortcutRecording).FontSize(theme.Caption).TextColor(tokens.Accent)
+					ui.Text(c, messages.Text(copy.ShortcutRecording)).FontSize(theme.Caption).TextColor(tokens.Text)
 				})
 				if !capture.FocusWithin() && !capture.Focused() {
 					capture.Focus()
 				}
 			} else {
 				kit.Keycaps(c, tokens, store.State.Shortcut.Accelerator, false)
-				if ui.Button(c.Key("change"), copy.ShortcutRecord).Clicked() {
+				if kit.Button(c.Key("change"), tokens, kit.Outline, messages.Text(copy.ShortcutRecord), true).Clicked() {
 					recorder.Listening, recorder.Error = true, ""
 					store.Actions.SuspendShortcut(true)
 				}
 			}
 		})
 		if recorder.Error != "" {
-			ui.Text(c.Key("error"), recorder.Error).FontSize(theme.Caption).TextColor(tokens.Danger).
+			ui.Text(c.Key("error"), messages.Text(recorder.Error)).FontSize(theme.Caption).TextColor(tokens.Danger).
 				Transition(ui.ElementTransition{Enter: &ui.Motion{Y: -4}})
 		}
 	})

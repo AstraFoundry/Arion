@@ -35,6 +35,7 @@ var contentMotion = ui.ElementTransition{
 
 // Render builds the pill bottom-centered in a transparent overlay window.
 func Render(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
+	messages := store.Copy()
 	state := store.State
 	d := state.Dictation
 	now := c.Now()
@@ -46,10 +47,7 @@ func Render(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 		if phase == dictation.Hidden {
 			return
 		}
-		pill := ui.Row(c.Key("pill")).Gap(10).Padding(0, 18, 0, 16).MinHeight(44).MaxWidth(600).AlignItems(ui.Center).
-			Radius(theme.RadiusPill).Background(tokens.PillSurface).Border(1, tokens.PillBorder).
-			Shadow(0, 12, 32, 0, ui.RGBA(0, 0, 0, 0.32)).Shadow(0, 2, 6, 0, ui.RGBA(0, 0, 0, 0.18)).
-			TextColor(tokens.PillText).Transition(pillMotion)
+		pill := kit.Pill(c.Key("pill"), tokens).MaxWidth(600).Transition(pillMotion)
 		pill.Children(func() {
 			row := ui.Row(c.Key(phase)).Gap(10).AlignItems(ui.Center).Transition(contentMotion)
 			row.Children(func() {
@@ -57,14 +55,14 @@ func Render(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 				case dictation.Preparing, dictation.Listening:
 					listening(c, state, tokens, phase == dictation.Preparing)
 				case dictation.Transcribing, dictation.Inserting:
-					transcribing(c, d, tokens)
+					transcribing(c, d, tokens, store.Copy())
 				case dictation.Done:
-					outcome(c, d, tokens)
+					outcome(c, d, tokens, store.Copy())
 				case dictation.Failed:
 					failure(c, state, tokens)
 				case dictation.Cancelled:
 					ui.Icon(c, icons.X).FontSize(15).TextColor(tokens.PillMuted)
-					ui.Text(c, copy.PillCancelled).FontSize(theme.Body).TextColor(tokens.PillMuted)
+					ui.Text(c, messages.Text(copy.PillCancelled)).FontSize(theme.Body).TextColor(tokens.PillMuted)
 				}
 			})
 		})
@@ -72,6 +70,7 @@ func Render(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 }
 
 func listening(c *ui.Context, state *runtime.State, tokens theme.Tokens, preparing bool) {
+	messages := copy.For(copy.Locale(state.Preferences.UILanguage))
 	d := state.Dictation
 	dot := ui.Box(c).Size(8, 8).Radius(4).Background(tokens.Live)
 	if !preparing {
@@ -83,15 +82,15 @@ func listening(c *ui.Context, state *runtime.State, tokens theme.Tokens, prepari
 		ui.Text(c.Key("draft"), tail(text, previewRunes)).FontSize(theme.Body).MaxLines(2).MaxWidth(380).
 			ContentTransition(ui.ContentTransition{})
 	} else if !preparing {
-		ui.Text(c, copy.PillListening).FontSize(theme.Body).TextColor(tokens.PillMuted)
+		ui.Text(c, messages.Text(copy.PillListening)).FontSize(theme.Body).TextColor(tokens.PillMuted)
 	}
 	ui.Row(c).Gap(6).AlignItems(ui.Center).Margin(0, 0, 0, 4).Children(func() {
 		kit.Keycaps(c, tokens, state.Shortcut.Accelerator, true)
-		ui.Text(c, copy.PillShortcutHint).FontSize(theme.Caption).TextColor(tokens.PillMuted).SingleLine()
+		ui.Text(c, messages.Text(copy.PillShortcutHint)).FontSize(theme.Caption).TextColor(tokens.PillMuted).SingleLine()
 	})
 }
 
-func transcribing(c *ui.Context, d runtime.Dictation, tokens theme.Tokens) {
+func transcribing(c *ui.Context, d runtime.Dictation, tokens theme.Tokens, messages copy.Catalog) {
 	ui.Row(c).Gap(4).AlignItems(ui.Center).Children(func() {
 		for i := 0; i < 3; i++ {
 			dot := ui.Box(c.Key(i)).Size(5, 5).Radius(2.5).Background(tokens.PillText)
@@ -111,32 +110,33 @@ func transcribing(c *ui.Context, d runtime.Dictation, tokens theme.Tokens) {
 	})
 	text := dictation.Text(d)
 	if text == "" {
-		text = copy.PillTranscribing
+		text = messages.Text(copy.PillTranscribing)
 	}
 	ui.Text(c.Key("draft"), tail(text, previewRunes)).FontSize(theme.Body).MaxLines(2).MaxWidth(420).TextColor(tokens.PillMuted)
 }
 
-func outcome(c *ui.Context, d runtime.Dictation, tokens theme.Tokens) {
+func outcome(c *ui.Context, d runtime.Dictation, tokens theme.Tokens, messages copy.Catalog) {
 	mark := ui.Box(c).Size(18, 18).Radius(9).Background(tokens.Success)
 	drawn := mark.Keyframes("draw", []ui.Keyframe{{Value: 0}, {At: 320 * time.Millisecond, Value: 1, Ease: ui.EaseOut}},
 		ui.KeyframeOptions{Run: run(d.SessionID), Delay: 60 * time.Millisecond})
 	mark.Draw(func(p *ui.Painter, r ui.Rect) {
 		check := (&ui.Path{}).MoveTo(r.X+5, r.Y+9.5).LineTo(r.X+8, r.Y+12.5).LineTo(r.X+13.5, r.Y+6)
-		p.StrokePath(check.Trim(0, drawn), 2, ui.RGB(255, 255, 255))
+		p.StrokePath(check.Trim(0, drawn), 2, tokens.OnFill)
 	})
-	ui.Text(c, dictation.OutcomeLabel(d, d.Pasted)).FontSize(theme.Body).FontWeight(500)
+	ui.Text(c, messages.Text(dictation.OutcomeLabel(d, d.Pasted))).FontSize(theme.Body).FontWeight(500)
 }
 
 func failure(c *ui.Context, state *runtime.State, tokens theme.Tokens) {
+	messages := copy.For(copy.Locale(state.Preferences.UILanguage))
 	notice := dictation.NoticeOf(state.Dictation, state.Permissions)
 	icon := ui.Icon(c, icons.TriangleAlert).FontSize(16).TextColor(tokens.Warning)
 	shake := icon.Keyframes("shake", []ui.Keyframe{{Value: 0}, {At: 60 * time.Millisecond, Value: -3}, {At: 140 * time.Millisecond, Value: 3},
 		{At: 220 * time.Millisecond, Value: -1.5}, {At: 300 * time.Millisecond, Value: 0, Ease: ui.EaseOut}}, ui.KeyframeOptions{Run: run(state.Dictation.SessionID)})
 	icon.Translate(shake, 0)
 	ui.Column(c).Gap(1).MaxWidth(420).Children(func() {
-		ui.Text(c, notice.Title).FontSize(theme.Body).FontWeight(500).SingleLine()
+		ui.Text(c, messages.Text(notice.Title)).FontSize(theme.Body).FontWeight(500).SingleLine()
 		if notice.Hint != "" {
-			ui.Text(c, notice.Hint).FontSize(theme.Caption).TextColor(tokens.PillMuted).SingleLine()
+			ui.Text(c, messages.Text(notice.Hint)).FontSize(theme.Caption).TextColor(tokens.PillMuted).SingleLine()
 		}
 	})
 }

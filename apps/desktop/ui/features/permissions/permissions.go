@@ -4,6 +4,7 @@ package permissions
 import (
 	"arion.local/desktop/ui/shared/copy"
 	"arion.local/desktop/ui/shared/icons"
+	"arion.local/desktop/ui/shared/kit"
 	"arion.local/desktop/ui/shared/runtime"
 	"arion.local/desktop/ui/shared/theme"
 	"github.com/egoist/mygo/ui"
@@ -31,22 +32,21 @@ func Granted(store runtime.Store, kind Kind) bool {
 
 // Status shows the consent as a colored label.
 func Status(c *ui.Context, store runtime.Store, tokens theme.Tokens, kind Kind) {
-	text, color, icon := copy.StatusUndetermined, tokens.Muted, icons.Info
+	messages := store.Copy()
+	text, color, icon := messages.Text(copy.StatusUndetermined), tokens.Muted, icons.Info
 	switch consent(store, kind) {
 	case runtime.ConsentGranted:
-		text, color, icon = copy.StatusGranted, tokens.Success, icons.CircleCheck
+		text, color, icon = messages.Text(copy.StatusGranted), tokens.Success, icons.CircleCheck
 	case runtime.ConsentDenied, runtime.ConsentRestricted:
-		text, color, icon = copy.StatusDenied, tokens.Danger, icons.TriangleAlert
+		text, color, icon = messages.Text(copy.StatusDenied), tokens.Danger, icons.TriangleAlert
 	}
-	ui.Row(c).Gap(5).AlignItems(ui.Center).TextColor(color).Children(func() {
-		ui.Icon(c, icon).FontSize(13)
-		ui.Text(c, text).FontSize(theme.Caption).FontWeight(500).SingleLine().ContentTransition(ui.ContentTransition{})
-	})
+	kit.Status(c, tokens, icon, color, text)
 }
 
 // Request offers the next step: ask, or open System Settings once denied.
 // Nothing is shown once consent is granted.
-func Request(c *ui.Context, store runtime.Store, kind Kind, label string, primary bool) {
+func Request(c *ui.Context, store runtime.Store, tokens theme.Tokens, kind Kind, label string, primary bool) {
+	messages := store.Copy()
 	state := consent(store, kind)
 	if state == runtime.ConsentGranted {
 		return
@@ -55,15 +55,13 @@ func Request(c *ui.Context, store runtime.Store, kind Kind, label string, primar
 	// Settings from then on.
 	denied := state == runtime.ConsentDenied || state == runtime.ConsentRestricted
 	if denied {
-		label = copy.OpenSettings
+		label = messages.Text(copy.OpenSettings)
 	}
-	var button ui.Element
+	variant := kit.Outline
 	if primary {
-		button = ui.PrimaryButton(c.Key(kind), label)
-	} else {
-		button = ui.Button(c.Key(kind), label)
+		variant = kit.Primary
 	}
-	if button.Clicked() {
+	if kit.Button(c.Key(kind), tokens, variant, label, true).Clicked() {
 		switch {
 		case kind == Microphone && denied:
 			store.Actions.OpenMicrophoneSettings()
