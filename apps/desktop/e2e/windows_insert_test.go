@@ -72,23 +72,33 @@ func startNotepad(t *testing.T) *notepad {
 }
 
 // focus brings the window forward. Windows only lets a process take the
-// foreground after input, so the test taps Shift first (a lone Alt would put
-// Notepad's menu bar in keyboard mode and swallow the typed text), then
-// focuses the edit control through the window's input thread.
+// foreground after input, so each attempt taps Shift (a lone Alt would put
+// Notepad's menu bar in keyboard mode and swallow the typed text) and joins
+// the current foreground window's input queue before switching; attempts
+// repeat until the switch is observed. The edit control is then focused
+// through the window's input thread.
 func (n *notepad) focus(t *testing.T) {
 	t.Helper()
-	procKeybdEvent.Call(vkShift, 0, 0, 0)
-	procKeybdEvent.Call(vkShift, 0, keyUp, 0)
-	procSetForegroundWindow.Call(n.window)
-	thread, _, _ := procGetWindowThreadPID.Call(n.window, 0)
 	self, _, _ := procGetCurrentThreadId.Call()
+	eventually(t, "notepad foreground", func() bool {
+		foreground, _, _ := procGetForegroundWindow.Call()
+		if foreground == n.window {
+			return true
+		}
+		procKeybdEvent.Call(vkShift, 0, 0, 0)
+		procKeybdEvent.Call(vkShift, 0, keyUp, 0)
+		current, _, _ := procGetWindowThreadPID.Call(foreground, 0)
+		procAttachThreadInput.Call(self, current, 1)
+		procSetForegroundWindow.Call(n.window)
+		procAttachThreadInput.Call(self, current, 0)
+		time.Sleep(50 * time.Millisecond)
+		foreground, _, _ = procGetForegroundWindow.Call()
+		return foreground == n.window
+	})
+	thread, _, _ := procGetWindowThreadPID.Call(n.window, 0)
 	procAttachThreadInput.Call(self, thread, 1)
 	procSetFocus.Call(n.edit)
 	procAttachThreadInput.Call(self, thread, 0)
-	eventually(t, "notepad foreground", func() bool {
-		foreground, _, _ := procGetForegroundWindow.Call()
-		return foreground == n.window
-	})
 }
 
 func (n *notepad) text() string {
