@@ -90,6 +90,8 @@ const (
 	MicPermissionText            Key = "MicPermissionText"
 	AXPermission                 Key = "AXPermission"
 	AXPermissionText             Key = "AXPermissionText"
+	GuideDrag                    Key = "GuideDrag"
+	GuideClose                   Key = "GuideClose"
 	ShortcutLabel                Key = "ShortcutLabel"
 	ShortcutDetail               Key = "ShortcutDetail"
 	ShortcutRecord               Key = "ShortcutRecord"

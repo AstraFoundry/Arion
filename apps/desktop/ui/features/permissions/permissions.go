@@ -1,4 +1,6 @@
-// Package permissions shows and requests OS consent for one capability.
+// Package permissions shows and requests OS consent for one capability,
+// and guides the user through System Settings lists that Arion cannot
+// prompt for.
 package permissions
 
 import (

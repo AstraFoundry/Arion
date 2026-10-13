@@ -9,7 +9,7 @@ This section defines how the frontend is organized using **Feature-Sliced Design
 
 | Layer | Slices |
 | --- | --- |
-| `app` | One view per window: overlay, menu bar panel, settings, onboarding |
+| `app` | One view per window: overlay, menu bar panel, settings, onboarding, macOS consent guide |
 | `pages` | `overlay`, `menubar`, `settings`, `onboarding` |
 | `widgets` | `capsule` (dictation pill), `statusheader`, `modelcard`, `stepper`, `showcase` (illustrations: mock UI over a photograph) |
 | `features` | `dictate`, `permissions`, `provision`, `shortcut`, `microphone`, `vocabulary`, `transcript`, `modelchoice`, `uilanguage` |

@@ -21,6 +21,7 @@ func load(name string) *ui.SVG {
 var (
 	Accessibility     = load("accessibility")
 	ArrowRight        = load("arrow-right")
+	ArrowUp           = load("arrow-up")
 	AudioLines        = load("audio-lines")
 	BookOpen          = load("book-open")
 	Check             = load("check")
@@ -31,6 +32,7 @@ var (
 	Cpu               = load("cpu")
 	Download          = load("download")
 	Globe             = load("globe")
+	GripVertical      = load("grip-vertical")
 	HardDriveDownload = load("hard-drive-download")
 	Info              = load("info")
 	Keyboard          = load("keyboard")

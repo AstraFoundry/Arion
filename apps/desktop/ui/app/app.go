@@ -2,6 +2,7 @@
 package app
 
 import (
+	"arion.local/desktop/ui/pages/guide"
 	"arion.local/desktop/ui/pages/menubar"
 	"arion.local/desktop/ui/pages/onboarding"
 	"arion.local/desktop/ui/pages/overlay"
@@ -20,6 +21,7 @@ const (
 	SettingsHeight   = 560
 	OverlayWidth     = 720
 	OverlayHeight    = 180
+	GuideHeight      = guide.Height
 )
 
 // View is a window's content and the hook releasing what it holds.
@@ -30,6 +32,10 @@ type View struct {
 
 func Overlay(store runtime.Store) View {
 	return View{Content: ui.View(func(c *ui.Context) { overlay.Render(c, store) }), Close: func() {}}
+}
+
+func Guide(store runtime.Store) View {
+	return View{Content: ui.View(func(c *ui.Context) { guide.Render(c, store) }), Close: func() {}}
 }
 
 func Panel(store runtime.Store) View {

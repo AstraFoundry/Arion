@@ -50,6 +50,8 @@ Rules:
 
 A surface gets either a hairline with a contact shadow, or real elevation; never a hairline plus a wide diffuse glow.
 
+The macOS consent guide is a whole window floating over System Settings: its card fills a flyout whose system shadow is the elevation, so it draws no `kit.Raise` or border of its own. Its app tile nests at `RadiusCard − padding`.
+
 ## Primitives (`ui/shared/kit`)
 
 | Primitive | Anatomy |

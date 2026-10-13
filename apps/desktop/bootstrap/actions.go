@@ -11,20 +11,19 @@ import (
 // actions implements runtime.Actions. Views call it on the main thread.
 type actions struct{ a *App }
 
-func (x actions) ToggleDictation()           { x.a.core.Toggle() }
-func (x actions) CancelDictation()           { x.a.core.Cancel() }
-func (x actions) RequestMicrophone()         { x.a.platform.RequestMicrophone() }
-func (x actions) RequestAccessibility()      { x.a.platform.RequestAccessibility() }
-func (x actions) OpenMicrophoneSettings()    { x.a.platform.OpenMicrophoneSettings() }
-func (x actions) OpenAccessibilitySettings() { x.a.platform.OpenAccessibilitySettings() }
-func (x actions) RetryModel()                { go x.a.activate(x.a.state.Preferences.ModelOverride) }
-func (x actions) StartLevelMonitor()         { x.a.startMonitor() }
-func (x actions) StopLevelMonitor()          { x.a.stopMonitor() }
-func (x actions) RefreshDevices()            { go x.a.refreshDevicesAsync() }
-func (x actions) CopyText(text string)       { mygo.Clipboard.WriteText(text) }
-func (x actions) OpenSettings()              { x.a.openSettings() }
-func (x actions) Quit()                      { mygo.App.Quit() }
-func (x actions) TestShortcut(testing bool)  { x.a.testingShortcut = testing }
+func (x actions) ToggleDictation()          { x.a.core.Toggle() }
+func (x actions) CancelDictation()          { x.a.core.Cancel() }
+func (x actions) RequestMicrophone()        { x.a.platform.RequestMicrophone() }
+func (x actions) OpenMicrophoneSettings()   { x.a.platform.OpenMicrophoneSettings() }
+func (x actions) CloseGuide()               { x.a.closeGuide(true) }
+func (x actions) RetryModel()               { go x.a.activate(x.a.state.Preferences.ModelOverride) }
+func (x actions) StartLevelMonitor()        { x.a.startMonitor() }
+func (x actions) StopLevelMonitor()         { x.a.stopMonitor() }
+func (x actions) RefreshDevices()           { go x.a.refreshDevicesAsync() }
+func (x actions) CopyText(text string)      { mygo.Clipboard.WriteText(text) }
+func (x actions) OpenSettings()             { x.a.openSettings() }
+func (x actions) Quit()                     { mygo.App.Quit() }
+func (x actions) TestShortcut(testing bool) { x.a.testingShortcut = testing }
 
 func (x actions) UseBundle(id string) {
 	x.UpdatePreferences(func(p *application.Preferences) { p.ModelOverride = id })
@@ -80,9 +79,26 @@ func (x actions) SetHoldKey(key application.HoldKey) {
 	x.a.startHoldKey()
 }
 
+// RequestAccessibility guides the user to add Arion to the Accessibility
+// list. A process outside an app bundle has nothing to drag and uses the
+// system prompt instead.
+func (x actions) RequestAccessibility() {
+	if !x.a.openGuide(arion.GuideAccessibility) {
+		x.a.platform.RequestAccessibility()
+	}
+}
+
+func (x actions) OpenAccessibilitySettings() {
+	if !x.a.openGuide(arion.GuideAccessibility) {
+		x.a.platform.OpenAccessibilitySettings()
+	}
+}
+
 // RequestInputMonitoring asks for the consent a macOS hold key needs.
 func (x actions) RequestInputMonitoring() {
-	x.a.platform.RequestInputMonitoring()
+	if !x.a.openGuide(arion.GuideInputMonitoring) {
+		x.a.platform.RequestInputMonitoring()
+	}
 	x.a.refreshPermissions()
 }
 

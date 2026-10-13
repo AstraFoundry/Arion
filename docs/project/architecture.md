@@ -38,7 +38,7 @@ An optional local generative stage is specified in [009](../../specs/009-context
 
 ## Runtime shape (shortcut mode)
 
-One process. The menu bar app owns four kinds of native windows: a click-through overlay that never takes focus and hosts the dictation pill, the menu bar popover panel, settings and onboarding. A global shortcut toggles the coordinator; Escape is held globally only while a session can be cancelled.
+One process. The menu bar app owns five kinds of native windows: a click-through overlay that never takes focus and hosts the dictation pill, the menu bar popover panel, settings, onboarding, and on macOS the consent guide ([DSK-11](../../specs/001-desktop-input.md)). The guide is a nonactivating tray flyout that `bootstrap/guide.go` places under the System Settings window: a worker reads the window server (`infrastructure/macos/guide.m`, no Accessibility needed) and consent at 30 Hz while the guide is open and posts only changes to the main thread; the view (`features/permissions.Guide`) drags Arion's bundle as a file URL. A global shortcut toggles the coordinator; Escape is held globally only while a session can be cancelled.
 
 1. **Start:** a new generation and session; the platform adapter captures the focused editor (Accessibility trust required on macOS) and chooses one insertion route; the resident recognizer opens a stream; the microphone starts. A known secure field or missing permission ends the session before the microphone opens.
 2. **Capture:** miniaudio delivers 20 ms mono 16 kHz frames to a bounded queue; overflow or device loss ends the session with `AUDIO_DISCONTINUITY`. One session goroutine owns the recognizer, emits level events and revisioned drafts, and retains session audio in RAM.

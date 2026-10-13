@@ -12,12 +12,14 @@ import (
 	"time"
 
 	"arion.local/desktop/ui/features/holdkey"
+	"arion.local/desktop/ui/pages/guide"
 	"arion.local/desktop/ui/pages/menubar"
 	"arion.local/desktop/ui/pages/onboarding"
 	"arion.local/desktop/ui/pages/overlay"
 	"arion.local/desktop/ui/pages/settings"
 	"arion.local/desktop/ui/shared/copy"
 	"arion.local/desktop/ui/shared/runtime"
+	"github.com/egoist/mygo/transfer"
 	"github.com/egoist/mygo/ui"
 )
 
@@ -49,6 +51,7 @@ func (r *recorder) SuspendShortcut(s bool)      { r.call("suspend") }
 func (r *recorder) TestShortcut(testing bool)   { r.call("test-shortcut") }
 func (r *recorder) RemoveReplacement(id string) { r.call("remove:" + id) }
 func (r *recorder) RequestInputMonitoring()     { r.call("request-monitoring") }
+func (r *recorder) CloseGuide()                 { r.call("close-guide") }
 func (r *recorder) SetHoldKey(key runtime.HoldKey) {
 	r.call("hold:" + string(key))
 	r.state.Preferences.HoldKey = key
@@ -142,6 +145,15 @@ func snapshot(t *testing.T, tt *ui.Tester, name string) {
 func settle(tt *ui.Tester) {
 	for i := 0; i < 40; i++ {
 		tt.Frame()
+	}
+}
+
+// rest runs frames for d of wall time: the tester's animations follow the
+// clock, so an entrance finishes only once its duration has passed.
+func rest(tt *ui.Tester, d time.Duration) {
+	for deadline := time.Now().Add(d); time.Now().Before(deadline); {
+		tt.Frame()
+		time.Sleep(16 * time.Millisecond)
 	}
 }
 
@@ -687,4 +699,40 @@ func TestHoldKeySettingsAndPill(t *testing.T) {
 	if !hasText(pill, en.Text(copy.PillShortcutHint)) {
 		t.Fatalf("toggle hint missing after tap: %q", pill.Texts())
 	}
+}
+
+func TestPermissionGuide(t *testing.T) {
+	state, actions, store := fixture()
+	tt := ui.NewTester(func(c *ui.Context) { guide.Render(c, store) }, 480, GuideHeight)
+	settle(tt)
+	if len(tt.Texts()) != 0 {
+		t.Fatalf("guide drawn without a pane: %q", tt.Texts())
+	}
+	app, err := transfer.FileData("/Applications/Arion.app")
+	if err != nil {
+		t.Fatal(err)
+	}
+	state.Guide = runtime.Guide{Pane: runtime.GuideAccessibility, App: app, Shown: 1}
+	rest(tt, 600*time.Millisecond)
+	en := copy.For(copy.English)
+	if !hasText(tt, en.Text(copy.GuideDrag)) || !hasText(tt, en.Text(copy.Title)) {
+		t.Fatalf("guide: %q", tt.Texts())
+	}
+	snapshot(t, tt, "guide")
+	if err := tt.Click(en.Text(copy.GuideClose)); err != nil {
+		t.Fatalf("%v (texts %q)", err, tt.Texts())
+	}
+	if !actions.called("close-guide") {
+		t.Fatal("close button did not close the guide")
+	}
+
+	state.Preferences.UILanguage = runtime.LanguageChinese
+	settle(tt)
+	if !hasText(tt, copy.For(copy.SimplifiedChinese).Text(copy.GuideDrag)) {
+		t.Fatalf("Chinese guide: %q", tt.Texts())
+	}
+	snapshot(t, tt, "guide-zh-CN")
+	tt.SetDark(true)
+	rest(tt, 200*time.Millisecond)
+	snapshot(t, tt, "dark-guide")
 }

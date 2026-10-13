@@ -71,6 +71,15 @@ The first-run path was also exercised on the real profile: onboarding completed,
 
 The macOS event tap needs Input Monitoring consent, which CI cannot grant to a test binary; the tap was compiled and vetted but not exercised on a desktop.
 
+## Consent guide (DSK-11)
+
+| Check | Where | Result |
+| --- | --- | --- |
+| Guide card in English, Simplified Chinese and dark appearance; nothing drawn without a pane; close button calls `CloseGuide` | `ui/app` headless view test | Pass |
+| Placement under the pane beside the sidebar, minimum width, clamping at display edges and on a secondary display | `bootstrap/guide_test.go` | Pass |
+
+DSK-A11 needs a packaged `Arion.app` and a person: the drop of Arion's file URL into the System Settings list, hiding and reappearing on app switches, and closing on grant or quit have not been exercised.
+
 ## Not verified
 
 - The live microphone path with real speech (capture → recognition → insertion) was not exercised by automation; scenarios replay fixture audio into the production pipeline.
@@ -79,4 +88,5 @@ The macOS event tap needs Input Monitoring consent, which CI cannot grant to a t
 - Microphone denial (DSK-A01 with a denied consent database) needs a test profile; it is covered by unit tests and the native E2E's untrusted-Accessibility path only.
 - Streaming latency claims with annotated speech onsets (STR-A01–A04) need reviewed timestamp labels; first-partial values above are measured from audio start, not speech onset.
 - The macOS hold-key event tap with real key presses (needs Input Monitoring granted to the app by a person).
+- The consent guide against real System Settings (DSK-A11), including on macOS 27, where the Accessibility pane is renamed but keeps its URL.
 - No Developer ID signing, notarization or updater.

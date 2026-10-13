@@ -10,6 +10,7 @@ import (
 	"arion.local/core/contracts"
 	"arion.local/core/domain"
 	"arion.local/desktop/ui/shared/copy"
+	"github.com/egoist/mygo/transfer"
 )
 
 // Re-exported core types so UI slices depend on this boundary only.
@@ -164,6 +165,25 @@ type Permissions struct {
 	InputMonitoring Consent
 }
 
+// GuidePane is a System Settings list that the user adds Arion to by hand.
+type GuidePane string
+
+const (
+	GuideAccessibility   GuidePane = "accessibility"
+	GuideInputMonitoring GuidePane = "input-monitoring"
+)
+
+// Guide is the consent guide that floats under System Settings while the
+// user adds Arion to a privacy list.
+type Guide struct {
+	// Pane is the list being guided; empty when no guide is open.
+	Pane GuidePane
+	// App is Arion's .app as file data, which the list takes as a drop.
+	App transfer.Data
+	// Shown counts the times the guide appeared, so it enters each time.
+	Shown int
+}
+
 // Device is a capture endpoint.
 type Device struct {
 	ID      string
@@ -221,6 +241,7 @@ type State struct {
 	Vocabulary  []Replacement
 	Shortcut    Shortcut
 	InputMethod InputMethodState
+	Guide       Guide
 	// MonitorLevels feed the microphone test meter, newest last.
 	MonitorLevels []float32
 	LastText      string
@@ -244,6 +265,8 @@ type Actions interface {
 	// SetHoldKey chooses the hold-to-talk key, or HoldOff.
 	SetHoldKey(key HoldKey)
 	RequestInputMonitoring()
+	// CloseGuide dismisses the consent guide and returns to Arion.
+	CloseGuide()
 	// SuspendShortcut releases the global hotkey while a recorder listens.
 	SuspendShortcut(suspend bool)
 	// TestShortcut makes hotkey presses only report Shortcut.Pressed, for

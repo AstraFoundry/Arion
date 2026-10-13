@@ -1,6 +1,6 @@
 # Desktop app
 
-MyGo native Go module: the menu bar app, its windows (overlay pill, menu bar panel, settings, onboarding), OS adapters and the composition root.
+MyGo native Go module: the menu bar app, its windows (overlay pill, menu bar panel, settings, onboarding, macOS consent guide), OS adapters and the composition root.
 
 | Path | Role |
 | --- | --- |
@@ -21,3 +21,5 @@ Speech runtimes are cgo libraries: build with `make desktop-build` / `make deskt
 The interface defaults to English; choose English or Simplified Chinese in General settings or onboarding. The choice persists and updates existing windows without restarting dictation. Copy keys, formatting, native permission resources and verification commands are documented in [i18n](../../docs/frontend/i18n.md).
 
 Dictation starts from the toggle shortcut (default ⌥Space / Alt+Space) or, optionally, a hold key chosen in Dictation settings: fn, right Option or right Command on macOS; right Alt or right Ctrl on Windows. Holding the key past 300 ms dictates until release; a shorter tap keeps dictating until the next press; another key pressed during a hold that started the session cancels it (a chord such as fn+arrow inserts nothing). On macOS the hold key needs Input Monitoring consent; without it settings shows the missing consent with a way to grant it, and the toggle shortcut keeps working.
+
+On macOS, granting Accessibility or Input Monitoring from a packaged `Arion.app` opens the privacy pane in System Settings with a small guide under its window: drag the Arion tile into the list (or switch Arion on if it is listed). The guide follows the window, hides while another app is in front, and closes once consent arrives, returning to the Arion window that asked. A build run outside an app bundle (`go run`, tests) has nothing to drag and uses the system prompts.

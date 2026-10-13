@@ -29,6 +29,11 @@ func (windowsPlatform) OpenAccessibilitySettings() {}
 // A low-level keyboard hook needs no consent.
 func (windowsPlatform) InputMonitoring() runtime.Consent { return runtime.ConsentGranted }
 func (windowsPlatform) RequestInputMonitoring()          {}
+
+// Windows has no consent that a settings list takes by drag.
+func (windowsPlatform) AppBundle() string               { return "" }
+func (windowsPlatform) OpenGuidePane(runtime.GuidePane) {}
+func (windowsPlatform) SettingsWindow() SettingsWindow  { return SettingsWindow{} }
 func (windowsPlatform) StartHoldKey(key application.HoldKey, sink func(holdkey.Event)) error {
 	return windows.StartHold(key, sink)
 }

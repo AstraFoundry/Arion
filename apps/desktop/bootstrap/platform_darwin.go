@@ -42,6 +42,23 @@ func (p darwinPlatform) InputMonitoring() runtime.Consent {
 	return consent(p.permissions.InputMonitoring())
 }
 func (p darwinPlatform) RequestInputMonitoring() { p.permissions.RequestInputMonitoring() }
+
+func (darwinPlatform) AppBundle() string { return macos.AppBundle() }
+
+func (p darwinPlatform) OpenGuidePane(pane runtime.GuidePane) {
+	switch pane {
+	case runtime.GuideAccessibility:
+		p.permissions.Open(macos.PaneAccessibility)
+	case runtime.GuideInputMonitoring:
+		p.permissions.Open(macos.PaneInputMonitoring)
+	}
+}
+
+func (darwinPlatform) SettingsWindow() SettingsWindow {
+	w := macos.FindSettingsWindow()
+	return SettingsWindow{Running: w.Running, Visible: w.Visible, Frontmost: w.Frontmost,
+		Bounds: mygo.Rectangle{X: w.X, Y: w.Y, Width: w.Width, Height: w.Height}}
+}
 func (darwinPlatform) StartHoldKey(key application.HoldKey, sink func(holdkey.Event)) error {
 	return macos.StartHold(key, sink)
 }

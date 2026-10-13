@@ -71,6 +71,7 @@ type App struct {
 	panel           *mygo.Window
 	settingsWin     *mygo.Window
 	onboarding      *mygo.Window
+	guide           *guideSession
 	views           map[*mygo.Window]uiapp.View
 	testingShortcut bool
 	shortcutActive  bool
