@@ -19,6 +19,7 @@ func (x actions) SignIn() {
 			return
 		}
 		a.state.Account.Phase = arion.AccountSigningIn
+		a.state.Account.Credential = arion.CredentialUnknown
 		a.state.Account.ErrorCode = ""
 		a.state.Account.ErrorDetail = ""
 	})
@@ -46,6 +47,7 @@ func (x actions) CancelSignIn() {
 		}
 		a.state.Account.ErrorCode = string(account.CodeCancelled)
 		a.state.Account.ErrorDetail = ""
+		a.state.Account.Credential = arion.CredentialUnknown
 		if current, ok := a.accounts.Session(); ok {
 			a.applySession(current, arion.AccountSignedIn)
 			return
@@ -62,6 +64,7 @@ func (x actions) RefreshAccount() {
 			return
 		}
 		a.state.Account.Phase = arion.AccountRefreshing
+		a.state.Account.Credential = arion.CredentialUnknown
 		a.state.Account.ErrorCode = ""
 		a.state.Account.ErrorDetail = ""
 	})
@@ -122,6 +125,49 @@ func (x actions) JoinHostedSyncWaitlist() {
 	}()
 }
 
+func (x actions) CheckStoredAccount() {
+	a := x.a
+	a.post(func() {
+		current := &a.state.Account
+		if current.Phase != arion.AccountSignedOut || current.Credential != arion.CredentialUnknown {
+			return
+		}
+		current.Credential = arion.CredentialChecking
+		seq := a.accountGeneration()
+		go func() {
+			stored, err := a.accounts.Stored()
+			a.post(func() { a.finishCredential(seq, stored, err) })
+		}()
+	})
+}
+
+// finishCredential records a credential-store read unless a sign-in,
+// refresh, cancel or sign-out happened since; the view reads again then.
+func (a *App) finishCredential(seq uint64, stored bool, err error) {
+	current := &a.state.Account
+	if current.Credential != arion.CredentialChecking {
+		return
+	}
+	switch {
+	case !a.accountLive(seq):
+		current.Credential = arion.CredentialUnknown
+	case err != nil:
+		current.Credential = arion.CredentialUnreadable
+		current.ErrorCode = string(account.CodeOf(err))
+		current.ErrorDetail = account.DetailOf(err)
+	case stored:
+		current.Credential = arion.CredentialStored
+	default:
+		current.Credential = arion.CredentialAbsent
+	}
+}
+
+func (a *App) accountGeneration() uint64 {
+	a.accountMu.Lock()
+	defer a.accountMu.Unlock()
+	return a.accountSeq
+}
+
 // beginAccount starts a sign-in or refresh generation and aborts the previous
 // browser wait. Sign-out does not call this; it stops the service first so a
 // stored refresh token is revoked on the sign-out result.
@@ -150,6 +196,7 @@ func (a *App) accountReady(seq uint64, ctx context.Context) bool {
 }
 
 func (a *App) finishAccount(session account.Session, err error) {
+	a.state.Account.Credential = arion.CredentialUnknown
 	if err != nil {
 		a.state.Account.ErrorCode = string(account.CodeOf(err))
 		a.state.Account.ErrorDetail = account.DetailOf(err)

@@ -430,6 +430,10 @@ type Actions interface {
 	RefreshAccount()
 	// SignOut revokes the refresh token and deletes that credential item.
 	SignOut()
+	// CheckStoredAccount reads, off the main thread and without network,
+	// whether a refresh token is stored, into State.Account.Credential.
+	// It does nothing unless signed out with the credential unknown.
+	CheckStoredAccount()
 	// JoinHostedSyncWaitlist joins the hosted-sync waitlist for the signed-in user.
 	JoinHostedSyncWaitlist()
 	Quit()

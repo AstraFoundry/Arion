@@ -23,6 +23,23 @@ const (
 	AccountWaitlistError           AccountWaitlistPhase = "error"
 )
 
+// AccountCredential is what the credential store last said about a refresh
+// token while signed out. It is read only when an account view asks, never
+// at startup and never over the network.
+type AccountCredential string
+
+const (
+	// CredentialUnknown: not read since the last account change.
+	CredentialUnknown  AccountCredential = ""
+	CredentialChecking AccountCredential = "checking"
+	CredentialAbsent   AccountCredential = "absent"
+	// CredentialStored: a refresh token from an earlier session is kept;
+	// RefreshAccount reconnects it and SignOut revokes and deletes it.
+	CredentialStored AccountCredential = "stored"
+	// CredentialUnreadable: the read failed; ErrorCode says why.
+	CredentialUnreadable AccountCredential = "unreadable"
+)
+
 // Account is the onboarding projection. It carries the profile and whether
 // the access token's ent claim includes hosted sync. The access token and
 // the refresh token are not here.
@@ -38,6 +55,9 @@ type Account struct {
 	ErrorDetail string
 	Waitlist    AccountWaitlist
 	SignOut     AccountSignOut
+	// Credential is meaningful while signed out; any sign-in, refresh,
+	// cancel or sign-out resets it to CredentialUnknown.
+	Credential AccountCredential
 }
 
 // Account.ErrorCode values views map to copy. They equal the account

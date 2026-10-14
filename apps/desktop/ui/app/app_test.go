@@ -55,6 +55,7 @@ func (r *recorder) CancelSignIn()               { r.call("cancel-sign-in") }
 func (r *recorder) RefreshAccount()             { r.call("refresh-account") }
 func (r *recorder) SignOut()                    { r.call("sign-out") }
 func (r *recorder) JoinHostedSyncWaitlist()     { r.call("join-waitlist") }
+func (r *recorder) CheckStoredAccount()         { r.call("check-stored") }
 func (r *recorder) Quit()                       { r.call("quit") }
 func (r *recorder) SuspendShortcut(s bool)      { r.call("suspend") }
 func (r *recorder) TestShortcut(testing bool)   { r.call("test-shortcut") }
