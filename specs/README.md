@@ -6,7 +6,7 @@ These documents are normative for implementation. Research recommendations requi
 | --- | --- |
 | [001 Desktop input](001-desktop-input.md) | Shortcut and configurable IME workflows, target ownership |
 | [002 Speech pipeline](002-speech-pipeline.md) | Capture, streaming revisions and correction |
-| [003 Memory sync](003-memory-sync.md) | Approved memory, offline outbox, self-hosted encrypted relay |
+| [003 Memory sync](003-memory-sync.md) | Approved memory, offline outbox, self-hosted encrypted relay, hosted account authorization |
 | [004 Contracts](004-contracts.md) | Portable events, cancellation, capabilities and errors |
 | [005 Privacy](005-privacy.md) | Storage, consent, keys and network boundaries |
 | [006 Models and evaluation](006-models.md) | Model provenance and measurable release gates |

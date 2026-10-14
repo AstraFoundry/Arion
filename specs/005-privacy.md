@@ -12,7 +12,7 @@
 | App updates | Signed archive replaces the installed app | Release manifest and archive downloads from GitHub releases only; no content payload; checks can be turned off |
 | Performance diagnostics | Local content-free metrics | No remote telemetry enabled by this foundation |
 
-PRV-01: Dictation and ranking have no cloud inference route. Model downloads and encrypted self-hosted sync are separately enabled surfaces; test their destinations and payload classes.
+PRV-01: Dictation and ranking have no cloud inference route. Model downloads, encrypted sync (self-hosted or hosted) and account sign-in ([ADR 015](../docs/decisions/015-hosted-relay-account-authorization.md)) are separately enabled surfaces; test their destinations and payload classes.
 
 PRV-07: Update checks request only the public release manifest and archive of the configured GitHub repository. They carry no audio, text, vocabulary, preference or device identifier, run only while the user's automatic-check preference is on or on an explicit request, and an archive whose Ed25519 signature does not match the built-in key is never installed ([ADR 010](../docs/decisions/010-in-app-updates.md)).
 
@@ -24,7 +24,7 @@ PRV-04: A vetted authenticated encryption provider must fail closed on key/tag e
 
 PRV-05: Log only random correlation IDs, coarse capability/model IDs, numeric durations, queue depth and error codes. Exclude audio/transcripts, vocabulary, app window titles, selected text, clipboard, filesystem user paths, prompts and secrets. Failure bundles are opt-in and locally inspectable.
 
-PRV-06: A self-hosted operator can observe timing, IP/device/group routing metadata and ciphertext sizes. E2EE does not conceal all metadata or protect against a compromised endpoint. Document backup, key recovery, device revocation and deletion limits before enabling sync.
+PRV-06: A relay operator, self-hosted or hosted, can observe timing, IP/device/group routing metadata and ciphertext sizes; the hosted relay also knows which account subject owns a tenant, never its keys. E2EE does not conceal all metadata or protect against a compromised endpoint. Document backup, key recovery, device revocation and deletion limits before enabling sync.
 
 PRV-08: Usage counts record a session only after its commit completes. They hold calendar-day totals keyed by date and by scene name, never dictated text, bundle IDs, hosts or per-session timestamps, so they cannot reconstruct what was said or where.
 

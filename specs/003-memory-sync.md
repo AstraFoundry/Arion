@@ -16,7 +16,7 @@ MEM-03: Local writes and outbox creation occur in one transaction. Dictation nev
 
 SYNC-01: A self-hosted Go service stores only authenticated ciphertext envelopes and necessary routing metadata. The client encrypts before persistence into the outbox. Auth credentials and encryption keys are separate and neither is stored in repository config.
 
-SYNC-02: Enrollment uses an existing authorized device or a recovery secret to establish group keys. A device has a revocable identity. Crypto library, pairing UX and recovery format are gated decisions; do not implement homemade key exchange. Password/SSO account login is not assumed.
+SYNC-02: Enrollment uses an existing authorized device or a recovery secret to establish group keys. A device has a revocable identity. Crypto library, pairing UX and recovery format are gated decisions; do not implement homemade key exchange. Device registration does not depend on an account: the hosted relay adds OIDC account authorization on top of device authentication, and self-hosted relays may leave it disabled ([ADR 015](../docs/decisions/015-hosted-relay-account-authorization.md)).
 
 SYNC-03: Planned operations are authenticated `POST /v1/sync/push`, `GET /v1/sync/pull?cursor=…`, device enrollment and revoke. Push batches use bounded size and unique operation IDs; retries deduplicate by device and operation ID and return the original result. Pull cursors are opaque, server-ordered and distinct from logical memory revisions.
 
@@ -27,6 +27,14 @@ SYNC-05: A concurrent edit produces explicit sibling revisions, never silent las
 SYNC-06: Unknown schema, invalid authentication, revoked device, stale key epoch, invalid tag, replay and cursor expiry are explicit outcomes. Cursor expiry triggers a validated full snapshot path, not clearing local memory. Uncertain push results reuse the same operation ID.
 
 SYNC-07: Revocation rotates the key epoch for future writes and re-encrypts live records before new-device access. Previously downloaded plaintext cannot be remotely erased. Export/deletion/backup procedures disclose this boundary. Sync-disabled and server-deletion are separate visible actions.
+
+## Account authorization
+
+SYNC-08: An `AccountGate` application port resolves each request to a tenant before the relay core runs; the core never reads account data. `noop` (self-host default) uses one implicit tenant and device authentication only. `oidc` requires a Bearer JWT whose signature verifies against the configured issuer's JWKS and whose `iss`, `aud` and `exp` are valid and whose `ent` contains the configured entitlement (`arion.sync.hosted` for the hosted relay), and maps `(issuer, subject)` to a tenant (`account_link` unique on `(issuer, subject)`; `tenant(id, quota, state)`). Device authentication is still required inside the tenant. A missing entitlement, invalid token or frozen tenant is an explicit outcome, never a fallback to `noop`. An account never grants key access: losing every device without the recovery secret makes synced memory unrecoverable.
+
+SYNC-09: With `oidc`, `POST /v1/security-events` accepts RFC 8417 Security Event Tokens pushed per RFC 8935, verified with the issuer's JWKS, `aud` set to the relay's server client and deduplicated by `jti`; it answers `202` or `400` with an RFC 8935 error. `account-purged` deletes the tenant's ciphertext, routing metadata, devices and account link; `account-disabled` freezes the tenant; `account-enabled` unfreezes it; `session-revoked` rejects that subject's tokens issued before the event until the client re-authorizes.
+
+SYNC-10: Onboarding defaults to continuing locally without an account; signing in to set up sync is the second path. Desktop sign-in uses the system browser, a loopback `127.0.0.1` redirect on a random port and PKCE S256 (RFC 8252); the refresh token is kept only in the OS credential store. Signing out keeps local keys and memory. A signed-in user without the hosted entitlement keeps every local feature and may join the waitlist or use a self-hosted relay.
 
 ## Acceptance
 
@@ -44,5 +52,10 @@ SYNC-07: Revocation rotates the key epoch for future writes and re-encrypts live
 | MEM-A10 | Continued typing, deletions, punctuation, changed numbers or a rewrite → nothing learned ([edit-learning-v1](../benchmarks/results/edit-learning-v1/README.md)) |
 | MEM-A11 | Secure field, learning off, IME composition or Windows → the field is never followed or read (`TestCoordinatorNeverFollowsSensitiveOrWhenOff`) |
 | MEM-A12 | Hung host, corrupt/truncated/wrong-key file, read-only directory or crash leftover → dictation unaffected, memory file unchanged or explicitly unavailable (`TestEditTrackerAbandonsHungHost`, `TestCorruptFileFailsClosed`, edit-learning-v1 faults) |
+| MEM-A13 | `noop` relay → enroll, push and pull with device authentication only; no token, account table or events endpoint |
+| MEM-A14 | `oidc` relay → wrong signature, issuer, audience, expired token or missing entitlement → explicit rejection; a valid token without a device signature, or with another tenant's device, cannot push or pull |
+| MEM-A15 | Same `(issuer, subject)` → same tenant; another issuer with the same subject → a different tenant |
+| MEM-A16 | Security events: purge → tenant ciphertext, routing metadata, devices and link gone; disable → push/pull rejected with data kept; enable → restored; session revoked → earlier tokens rejected, a newer token accepted; replayed `jti` → no second effect; bad signature, issuer or audience → `400` |
+| MEM-A17 | Sign out → refresh token removed from the credential store; local keys, memory and dictation unaffected |
 
 Deployment implementation is pending; see [handoff](../docs/project/agent-handoff.md).
