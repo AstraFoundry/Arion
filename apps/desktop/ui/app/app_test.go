@@ -52,6 +52,7 @@ func (r *recorder) Quit()                       { r.call("quit") }
 func (r *recorder) SuspendShortcut(s bool)      { r.call("suspend") }
 func (r *recorder) TestShortcut(testing bool)   { r.call("test-shortcut") }
 func (r *recorder) RemoveReplacement(id string) { r.call("remove:" + id) }
+func (r *recorder) UndoLearned(id string)       { r.call("undo:" + id) }
 func (r *recorder) RequestInputMonitoring()     { r.call("request-monitoring") }
 func (r *recorder) CloseGuide()                 { r.call("close-guide") }
 func (r *recorder) CheckForUpdates()            { r.call("check-update") }
@@ -892,4 +893,29 @@ func TestPermissionGuide(t *testing.T) {
 	tt.SetDark(true)
 	rest(tt, 200*time.Millisecond)
 	snapshot(t, tt, "dark-guide")
+}
+
+// ADR 014: a learned correction shows with an undo, in both languages, and
+// a running session hides it.
+func TestLearnedNoticeUndo(t *testing.T) {
+	for _, locale := range []copy.Locale{copy.English, copy.SimplifiedChinese} {
+		state, actions, store := fixture()
+		state.Preferences.UILanguage = runtime.UILanguage(locale)
+		messages := copy.For(locale)
+		state.Learned = runtime.Learned{ID: "e1", From: "jason", To: "Jayson", At: time.Now()}
+		pill := ui.NewTester(func(c *ui.Context) { overlay.Render(c, store) }, OverlayWidth, OverlayHeight)
+		settle(pill)
+		if !hasText(pill, messages.Text(copy.PillLearned)) || !hasText(pill, "jason") || !hasText(pill, "Jayson") {
+			t.Fatalf("%s: notice missing: %q", locale, pill.Texts())
+		}
+		snapshot(t, pill, "overlay-learned-"+string(locale))
+		if err := pill.Click(messages.Text(copy.Undo)); err != nil || !actions.called("undo:e1") {
+			t.Fatalf("%s: undo not requested: %v %v", locale, err, actions.calls)
+		}
+		state.Dictation = runtime.Dictation{SessionID: "n", State: runtime.StateCapturing, Levels: levels(8), Changed: time.Now()}
+		settle(pill)
+		if hasText(pill, messages.Text(copy.PillLearned)) {
+			t.Fatalf("%s: notice shown during a session", locale)
+		}
+	}
 }

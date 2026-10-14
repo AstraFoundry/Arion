@@ -20,6 +20,20 @@ type Draft struct {
 
 var rowMotion = ui.ElementTransition{Animation: &theme.Settle, Enter: &ui.Motion{Collapse: true}, Exit: &ui.Motion{Collapse: true}}
 
+// Learning is the switch for learning entries from the user's corrections
+// of inserted text (ADR 014).
+func Learning(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
+	messages := store.Copy()
+	on := store.State.Preferences.LearnEdits
+	kit.Card(c, tokens).Children(func() {
+		kit.Row(c, tokens, messages.Text(copy.LearnEditsLabel), messages.Text(copy.LearnEditsDetail), func() {
+			if ui.Switch(c.Key("learn-edits"), &on).Label(messages.Text(copy.LearnEditsLabel)).Changed() {
+				store.Actions.UpdatePreferences(func(p *runtime.Preferences) { p.LearnEdits = on })
+			}
+		})
+	})
+}
+
 // Editor lists replacements and adds new ones.
 func Editor(c *ui.Context, store runtime.Store, tokens theme.Tokens, draft *Draft) {
 	messages := store.Copy()

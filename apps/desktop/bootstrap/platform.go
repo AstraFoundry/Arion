@@ -34,6 +34,9 @@ type InputMethod interface {
 type Targets interface {
 	ports.TargetProvider
 	ports.InputTarget
+	// FieldReader follows committed fields for edit learning; adapters that
+	// cannot read fields refuse every Follow.
+	ports.FieldReader
 	// FocusOwner returns the frontmost app's process before an Arion window
 	// takes the focus; Peek then describes its focused field for display.
 	FocusOwner() int

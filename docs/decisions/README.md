@@ -25,6 +25,7 @@ Write an ADR when the decision:
 - [011: Live local rewriting](011-live-local-rewriting.md) — Qwen3 1.7B in an isolated worker edits while you speak; validated rewrite inserts automatically.
 - [012: Scene selection from the focused field, site and app](012-context-scene-selection.md) — local metadata picks email, work, prompt, search or chat layout; the rewrite prompt stays unchanged.
 - [013: Rewrite context from the cursor, the screen and recent dictations](013-rewrite-context-on-device.md) — on by default, on-device only; reaches the model as extracted terms.
+- [014: Learn vocabulary from the user's corrections](014-edit-learning.md) — on-device edit tracking, one-shot learning with undo, one-pass recall and bounded prompt terms.
 - [`adr-template.md`](adr-template.md) — template for new ADRs.
 
 ## Naming

@@ -26,6 +26,7 @@ import (
 
 	"arion.local/core/contracts"
 	"arion.local/core/domain"
+	"arion.local/core/domain/ports"
 )
 
 // AuthStatus mirrors the OS consent state of a capability.
@@ -111,12 +112,27 @@ type target struct {
 	secure  bool
 	app     string
 	created time.Time
+	// follow keeps the element after Commit for edit learning (ADR 014).
+	follow bool
 }
+
+// followed is a committed field kept readable for edit learning. Its own
+// lock serializes reads with the release, so a slow host never holds the
+// Targets lock that capture and commit need.
+type followed struct {
+	mu      sync.Mutex
+	element unsafe.Pointer
+	pid     int
+}
+
+// keptFollowed bounds followed fields; the tracker follows one at a time.
+const keptFollowed = 4
 
 // Targets implements ports.TargetProvider and ports.InputTarget.
 type Targets struct {
 	mu       sync.Mutex
 	targets  map[contracts.TargetToken]*target
+	followed map[contracts.TargetToken]*followed
 	delivery func() Delivery
 	// ClipboardRestoreDelay waits for the host to read the pasted text.
 	ClipboardRestoreDelay time.Duration
@@ -132,7 +148,8 @@ type Targets struct {
 }
 
 func NewTargets(delivery func() Delivery) *Targets {
-	return &Targets{targets: map[contracts.TargetToken]*target{}, delivery: delivery, ClipboardRestoreDelay: 400 * time.Millisecond}
+	return &Targets{targets: map[contracts.TargetToken]*target{}, followed: map[contracts.TargetToken]*followed{},
+		delivery: delivery, ClipboardRestoreDelay: 400 * time.Millisecond}
 }
 
 const keptTargets = 4
@@ -324,7 +341,11 @@ func (t *Targets) Commit(_ context.Context, request contracts.CommitRequest) (co
 		result.Failure = domain.CodeTargetChanged
 		return result, nil
 	}
-	defer C.arion_release(tgt.element)
+	if tgt.follow {
+		t.keepFollowed(request.Target, tgt)
+	} else {
+		defer C.arion_release(tgt.element)
+	}
 	// DSK-A03: a focus change means the user must act; nothing is inserted.
 	if C.arion_focus_matches(tgt.element, C.int(tgt.pid)) != 1 {
 		result.Failure = domain.CodeTargetChanged
@@ -376,6 +397,84 @@ func (t *Targets) Commit(_ context.Context, request contracts.CommitRequest) (co
 		}
 	}
 	return result, nil
+}
+
+// Follow marks a captured target to stay readable after Commit. Secure,
+// denied and unreadable fields are refused and never read (DSK-08).
+func (t *Targets) Follow(token contracts.TargetToken) bool {
+	t.mu.Lock()
+	defer t.mu.Unlock()
+	tgt := t.targets[token]
+	if tgt == nil || tgt.secure || !tgt.readable || tgt.element == nil || domain.ContextDenied(tgt.app) {
+		return false
+	}
+	tgt.follow = true
+	return true
+}
+
+func (t *Targets) keepFollowed(token contracts.TargetToken, tgt *target) {
+	t.mu.Lock()
+	t.followed[token] = &followed{element: tgt.element, pid: tgt.pid}
+	var evict []*followed
+	for other, f := range t.followed {
+		if len(t.followed)-len(evict) <= keptFollowed {
+			break
+		}
+		if other != token {
+			evict = append(evict, f)
+			delete(t.followed, other)
+		}
+	}
+	t.mu.Unlock()
+	for _, f := range evict {
+		f.release()
+	}
+}
+
+// ReadField reads a bounded excerpt around the followed field's cursor and
+// whether it still has focus. Each AX call has its messaging timeout.
+func (t *Targets) ReadField(_ context.Context, token contracts.TargetToken) (ports.FieldRead, error) {
+	t.mu.Lock()
+	f := t.followed[token]
+	t.mu.Unlock()
+	if f == nil {
+		return ports.FieldRead{}, domain.Fail(domain.CodeTargetChanged, "field not followed")
+	}
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	if f.element == nil {
+		return ports.FieldRead{}, domain.Fail(domain.CodeTargetChanged, "field released")
+	}
+	if C.arion_secure_input() == 1 {
+		return ports.FieldRead{}, domain.Fail(domain.CodeSecureFieldBlocked, "secure input")
+	}
+	read := ports.FieldRead{Focused: C.arion_focus_matches(f.element, C.int(f.pid)) == 1}
+	before, after, ok := cursorContext(f.element, domain.MaxEditRunes+domain.MaxCursorContext)
+	if !ok {
+		return read, domain.Fail(domain.CodeTargetUnsupported, "field unreadable")
+	}
+	read.Text = before + after
+	return read, nil
+}
+
+// Release stops following a field and frees its element.
+func (t *Targets) Release(token contracts.TargetToken) {
+	t.mu.Lock()
+	f := t.followed[token]
+	delete(t.followed, token)
+	t.mu.Unlock()
+	if f != nil {
+		f.release()
+	}
+}
+
+func (f *followed) release() {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	if f.element != nil {
+		C.arion_release(f.element)
+		f.element = nil
+	}
 }
 
 // singleLine replaces line breaks: synthesized Return could send a message

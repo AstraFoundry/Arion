@@ -47,7 +47,7 @@ The diagram reconstructs the inspected client branches. The edge from collected 
 
 A distinct edit-tracking component captures the originally inserted refined text and input-box content, polls subsequent focus/input state, and reacts to keyboard activity. Its `sendTrackResultToServer` method wraps a payload containing `refined_inserted_text`, original/edited input-box fields, application/device context and mode, then posts a `log` body to `/user/traits`. The response can contain an `auto_add_dictionary` term and dictionary ID, which are forwarded through a dictionary notification (`CR-TL-feedback`).
 
-This is a concrete feedback request-construction path. It does not establish which settings enable it, whether every edit is sent, or how the backend learns a style. Arion should distinguish user-approved memory from automatically inferred feedback and evaluate those policies independently. A request field encryption wrapper for a processing service does not imply that service cannot access its plaintext.
+This is a concrete feedback request-construction path. It does not establish which settings enable it, whether every edit is sent, or how the backend learns a style. The follow-up [edit learning](edit-learning.md) traces the tracker's settle triggers and thresholds, the dictionary alert and its undo, and compares Doubao's and Chatterfly's equivalents. Arion should distinguish user-approved memory from automatically inferred feedback and evaluate those policies independently. A request field encryption wrapper for a processing service does not imply that service cannot access its plaintext.
 
 ## Doubao: organization has its own stream and decision lifecycle
 

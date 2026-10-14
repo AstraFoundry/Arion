@@ -24,8 +24,11 @@ type RewritePolicy struct {
 	SceneOverrides domain.SceneOverrides
 	// Context selects the context sources the rewrite may read.
 	Context ContextPolicy
-	// Terms are approved vocabulary entries shown to the model as data.
+	// Terms are fixed strings shown to the model as data.
 	Terms []string
+	// Vocabulary is the approved memory; only its entries relevant to the
+	// text reach the model, at most domain.MaxRecallTerms (ADR 014).
+	Vocabulary *domain.Vocabulary
 	// Timeout bounds the final rewrite after the user stops.
 	Timeout time.Duration
 }
@@ -249,7 +252,7 @@ func (c *Coordinator) preview(r *run, stable string) {
 	// Previews use context once it is read and never wait for it.
 	rc := r.contextFor(0)
 	result, err := c.deps.Rewriter.Rewrite(ctx, ports.RewriteRequest{Identity: r.identity, Text: stable,
-		Scene: string(domain.ModelScene(domain.Scene(l.policy.Scene), stable)), Terms: withContextTerms(l.policy.Terms, rc, stable), Live: true})
+		Scene: string(domain.ModelScene(domain.Scene(l.policy.Scene), stable)), Terms: withContextTerms(l.policy.terms(stable), rc, stable), Live: true})
 	c.mu.Lock()
 	l.cancelPreview = nil
 	c.mu.Unlock()
@@ -257,7 +260,7 @@ func (c *Coordinator) preview(r *run, stable string) {
 		return
 	}
 	text := domain.AlignLiveEnding(stable, result.Text)
-	if domain.ValidateRewrite(domain.RewriteCheck{Source: stable, Candidate: text, Truncated: result.Truncated, Terms: l.policy.Terms, Context: rc}) != domain.RewriteAccepted {
+	if domain.ValidateRewrite(domain.RewriteCheck{Source: stable, Candidate: text, Truncated: result.Truncated, Terms: l.policy.terms(stable), Context: rc}) != domain.RewriteAccepted {
 		return
 	}
 	c.mu.Lock()
@@ -327,7 +330,7 @@ func (c *Coordinator) rewriteFinal(r *run, source string, policy RewritePolicy) 
 	defer cancel()
 	rc := r.contextFor(contextWait)
 	result, err := c.deps.Rewriter.Rewrite(ctx, ports.RewriteRequest{Identity: r.identity, Text: source,
-		Scene: string(domain.ModelScene(domain.Scene(policy.Scene), source)), Terms: withContextTerms(policy.Terms, rc, source)})
+		Scene: string(domain.ModelScene(domain.Scene(policy.Scene), source)), Terms: withContextTerms(policy.terms(source), rc, source)})
 	switch {
 	case r.ctx.Err() != nil:
 		return "", "", false
@@ -336,7 +339,7 @@ func (c *Coordinator) rewriteFinal(r *run, source string, policy RewritePolicy) 
 	case err != nil:
 		return source, RewriteUnavailable, true
 	}
-	verdict := domain.ValidateRewrite(domain.RewriteCheck{Source: source, Candidate: result.Text, Truncated: result.Truncated, Terms: policy.Terms, Context: rc})
+	verdict := domain.ValidateRewrite(domain.RewriteCheck{Source: source, Candidate: result.Text, Truncated: result.Truncated, Terms: policy.terms(source), Context: rc})
 	if verdict != domain.RewriteAccepted {
 		return source, string(verdict), true
 	}
@@ -394,4 +397,13 @@ func quietCut(samples []float32, from, to, rate int) int {
 		return to
 	}
 	return start + (bestStart*window + bestLen*window/2)
+}
+
+// terms are the fixed terms and the memory entries relevant to text.
+func (p RewritePolicy) terms(text string) []string {
+	recalled := p.Vocabulary.Terms(text, domain.MaxRecallTerms)
+	if len(recalled) == 0 {
+		return p.Terms
+	}
+	return append(append([]string(nil), p.Terms...), recalled...)
 }

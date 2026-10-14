@@ -230,6 +230,14 @@ type Replacement struct {
 	To   string
 }
 
+// Learned is a vocabulary entry just learned from the user's correction.
+type Learned struct {
+	ID   string
+	From string
+	To   string
+	At   time.Time
+}
+
 // InputMethodState is the system input source's registration state.
 type InputMethodState string
 
@@ -333,6 +341,9 @@ type State struct {
 	Preferences Preferences
 	Devices     []Device
 	Vocabulary  []Replacement
+	// Learned is the entry last learned from a correction, shown with an
+	// undo until it expires.
+	Learned     Learned
 	Shortcut    Shortcut
 	InputMethod InputMethodState
 	Guide       Guide
@@ -385,6 +396,8 @@ type Actions interface {
 	RemoveInputMethod() error
 	AddReplacement(from, to string) error
 	RemoveReplacement(id string)
+	// UndoLearned forgets the entry just learned and dismisses its notice.
+	UndoLearned(id string)
 	CopyText(text string)
 	// ChooseScene keeps scene for SceneTarget's site or app; empty follows
 	// the built-in rules again.

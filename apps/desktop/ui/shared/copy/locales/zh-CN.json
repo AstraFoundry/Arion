@@ -274,5 +274,9 @@
   "ModelNameDeep": "深度校对",
   "ModelNameGeneric": "语音识别",
   "ModelRecognitionGroup": "语音识别",
-  "ModelPolishGroup": "润色"
+  "ModelPolishGroup": "润色",
+  "PillLearned": "已记住",
+  "Undo": "撤销",
+  "LearnEditsLabel": "从我的修改中学习",
+  "LearnEditsDetail": "你改正 Arion 插入的词后，下次按你的写法输入"
 }

@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "scope": "Correction learning and recall in installed Typeless, Doubao IME and Chatterfly: whether a user's edit of inserted dictation is detected, stored as vocabulary and used again. Ordinary-shell static observations of shipped bytes; no app launch, account, network request, user database or audio. EL-* IDs are local observations, not REA Evidence IDs. Offsets are byte offsets of a literal's first occurrence in the named file (Doubao's main executable is universal; each literal occurs once per slice).",
+  "artifacts": [
+    {"id": "typeless-main", "member": "Typeless 2.8.1 app.asar dist/main/index.js", "sha256": "7b87e1578597b6fce6b6589a2f8aa18496e9513f0e74d0b8b26186a641b59ade"},
+    {"id": "typeless-renderer", "member": "Typeless 2.8.1 app.asar dist/renderer/static/js/UfR9-a2Z.js", "sha256": "efba7d2db84c1da476b521c84cd38446d594ffd4f0d8e59cac85e7ec7d6ae49a"},
+    {"id": "doubao-main", "path": "/Library/Input Methods/DoubaoIme.app/Contents/MacOS/DoubaoIme", "version": "1.0.2 (1)", "sha256": "4b3836dcb8a3e06b01b4c95390c757b71f623c1f7c4141c059e49284f7f6442d"},
+    {"id": "chatterfly-arm64", "member": "Chatterfly 1.0.6.13398 arm64 slice of Contents/MacOS/Chatterfly", "sha256": "2ea312f6324accd6194e6c612608870321bc62c286aa2cdbccf8288ae19a2433"}
+  ],
+  "method": "Typeless literals were read through the inert rotated-literal decoding already used for competitor-rewrite.json (no target JavaScript executed). Doubao and Chatterfly were read with strings(1) and, for Chatterfly's four learned-term methods, objdump(1) call-site listings; no decompiler was available on this machine.",
+  "observations": [
+    {"id": "EL-TL-track", "artifact": "typeless-main", "offsets": {"track-edit-text:start-track": 413965, "maxTrackTime": 388254, "switch_input_box": 543917, "clear_input_box": 422002, "track_timeout": 400065},
+      "finding": "An edit tracker starts on IPC after insertion, requires an editable field whose full content contains the refined text, polls the focused field and keyboard, and settles on a 15 s timeout reset by each edit, a focus or input-box change, a cleared box, or Enter. A cleared box is judged by the last content read."},
+    {"id": "EL-TL-filter", "artifact": "typeless-main", "offsets": {"analysisModification": 391224},
+      "finding": "Over the first 1000 characters of the field: remaining length under 20 %, more than 50 % removed, or changes over twice the length is a large modification and is not reported; unchanged and cleared content is not reported either."},
+    {"id": "EL-TL-report", "artifact": "typeless-main", "offsets": {"sendTrackResultToServer": 401206, "user_traits": 411315, "/user/traits": 547560, "auto_add_dictionary": 411998},
+      "finding": "A small edit posts refined_inserted_text, original and edited input box, active application, device environment and mode, wrapped with context user_traits, to /user/traits. The response may carry auto_add_dictionary {term, user_dictionary_id}. The diff that yields the term is computed by the server."},
+    {"id": "EL-TL-undo", "artifact": "typeless-renderer", "offsets": {"dictionary:word-auto-added": 261226, "client:floating_bar__alert__dictionary_auto_added__title": 37631, "/user/dictionary/delete": 236016, "/user/dictionary/list": 232254},
+      "finding": "The renderer shows a 5 s floating-bar alert naming the added term with an Undo button that deletes it by dictionary ID. The dictionary is an account resource behind /user/dictionary/{add,list,update,delete,batch-delete,bulk-import}."},
+    {"id": "EL-TL-recall", "artifact": "typeless-main",
+      "finding": "No dictionary field was found in the /ai/voice_flow request construction; recall, if any, happens on the server per account. This is an inference from absence, not an observed server behaviour."},
+    {"id": "EL-DB-track", "artifact": "doubao-main", "offsets": {"settle before return send": 17278898, "skip upload because wordDiff is too large": 17197629},
+      "finding": "As the input method, Doubao snapshots the field after each ASR commit, records its own insert and delete-backward events, and settles before Return sends, on mouse settle candidates and when the next ASR round begins. A word diff that is too large is not uploaded."},
+    {"id": "EL-DB-upload", "artifact": "doubao-main", "offsets": {"/api/v3/context/ime/modify_pair/v2": 18998336, "/api/v3/context/ime/user_words": 18998304, "write upload response into engine": 17198221},
+      "finding": "Edits are uploaded to /api/v3/context/ime/modify_pair/v2; the sanitized modify pairs in the response are written into the local engine (GlobalContextAddModifyPair). User words go to /api/v3/context/ime/user_words."},
+    {"id": "EL-DB-store", "artifact": "doubao-main", "offsets": {"CREATE TABLE IF NOT EXISTS modify_pair": 17371655, "invalid expire_days: %d, use default 30": 17377924, "NOT EXISTS (SELECT 1 FROM modify_pair mp2 WHERE mp2.src_text = modify_pair.dst_text": 17381128},
+      "finding": "A local SQLite table modify_pair keeps src/dst text (plaintext or encrypted columns with tags), use_count, recall_count and timestamps; entries expire after expire_days (default 30) and are evicted beyond a limit by update time and use count. A pair whose reverse also exists (A→B and B→A) is excluded from recall."},
+    {"id": "EL-DB-recall", "artifact": "doubao-main", "offsets": {"QueryModifyPairTopN": 17380527, "UpdateDstTextRecallCount": 17383586, "USER_MODIFY": 17455192, "user_modify_max_length": 17454933},
+      "finding": "QueryModifyPairTopN takes today's pairs, then the highest recall_count, then the rest by use count up to total_limit, and fills the USER_MODIFY slot of the on-device speech-LLM prompt within user_modify_max_length. When a dst_text is recalled its recall_count increases."},
+    {"id": "EL-CF-track", "artifact": "chatterfly-arm64", "offsets": {"[VoiceEdit] reporting app=%@": 29874894, "[VoiceEdit] report skip: uid empty": 29874836},
+      "finding": "SGVoiceEditTracker reads an accessibility baseline with anchors before and after the insertion, polls, settles on triggers and computes an edit distance. It reports only for a signed-in user (uid)."},
+    {"id": "EL-CF-mining", "artifact": "chatterfly-arm64", "offsets": {"https://sec.ybime.qq.com/speech/mining/term": 29874064, "new_terms": 29875165, "p_handleLearnedTermsFromResponseData:skillId:startTime:": 30808368, "showLearnedWordUIWithTerms:skillId:respTimeMS:": 29853226, "speech_bar_learned_word": 29861754},
+      "finding": "p_reportASRText:finalText:appContext:skillId: posts asr_text, final_text, app_context and uid as JSON to /speech/mining/term. The handler reads data.new_terms[].text and shows a learned-word view on the speech bar with an exposure beacon; the client does not store the term in this path."},
+    {"id": "EL-CF-sync", "artifact": "chatterfly-arm64", "offsets": {"https://ybime.lexicon_term.raw_http.local/lexicon/term/sync": 30173724, "VoiceDictSync timer fired": 33845835},
+      "finding": "YBVoiceDictSyncManager periodically calls the kernel's TriggerVoiceDictBuildSync, which fetches /lexicon/term/sync and builds a local VoiceUsrDict from VoiceTermRecord entries. Whether recognition or post-processing consumes that dictionary, or the server recalls by uid, was not established."},
+    {"id": "EL-CF-punctuation", "artifact": "chatterfly-arm64", "offsets": {"SGMacSpeechPunctuationLearner": 29849493},
+      "finding": "A separate punctuation learner settles the user's punctuation edits after speech per app."}
+  ],
+  "limitations": [
+    "Static reading only: defaults, consent gates, server-side diffing and the exact use of recalled terms were not observed at runtime.",
+    "Doubao offsets are in the universal file; the arm64 and x86_64 slices each contain the literal.",
+    "Chatterfly call sites come from objdump listings of four methods; the consumers of VoiceUsrDict were not traced."
+  ]
+}

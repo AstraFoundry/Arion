@@ -96,9 +96,14 @@ type App struct {
 	updates         *updates
 
 	// Snapshot read by worker goroutines (correction policy, delivery).
-	snapshot   sync.Mutex
-	prefs      application.Preferences
-	replaces   []domain.Replacement
+	snapshot sync.Mutex
+	prefs    application.Preferences
+	replaces []domain.Replacement
+	// vocabulary indexes replaces once per change; memory is vocab for
+	// worker goroutines (edit learning, recall counts).
+	vocabulary *domain.Vocabulary
+	memory     *vocabulary.Store
+	edits      *application.EditTracker
 	queueMu    sync.Mutex
 	queue      []func()
 	queueReady chan struct{}
@@ -172,13 +177,14 @@ func New(opts Options) (*App, error) {
 		finalizer = gatedFinalizer{h: a.harness, inner: a.manager}
 		targets = countingTargets{Targets: a.targets, h: a.harness}
 	}
+	a.edits = &application.EditTracker{Report: a.learnEdit}
 	deps := application.Dependencies{Audio: capture, Recognizers: a.manager, Finalizer: finalizer, Targets: targets, Input: targets,
-		Rewriter: a.rewriter, History: a.history, NewID: newID}
+		Rewriter: a.rewriter, History: a.history, Edits: a.edits, NewID: newID}
 	if a.ime != nil {
 		deps.IMETargets, deps.IMEInput, deps.Composition = a.ime, a.ime, a.ime
 	}
 	a.core, err = application.NewCoordinator(deps, application.Options{Mode: prefs.Mode, AutoCommit: true, Correction: true, Policy: a.policy,
-		Rewrite: a.rewritePolicy})
+		Rewrite: a.rewritePolicy, Learning: a.learning, Recalled: a.recalled})
 	if err != nil {
 		return nil, err
 	}
@@ -205,24 +211,21 @@ func (a *App) policy() domain.CorrectionPolicy {
 	a.snapshot.Lock()
 	defer a.snapshot.Unlock()
 	return domain.CorrectionPolicy{LatinCase: a.manager.LatinCase(), RemoveFillers: a.prefs.RemoveFillers,
-		Replacements: append([]domain.Replacement(nil), a.replaces...)}
+		Replacements: a.replaces, Vocabulary: a.vocabulary}
 }
 
 // rewritePolicy is read when a session starts: the live pipeline runs only
 // when the user turned it on and the worker is serving. Approved
-// vocabulary reaches the model as data, never as instructions.
+// vocabulary reaches the model as data, never as instructions, and only
+// the entries relevant to the text (ADR 014).
 func (a *App) rewritePolicy() application.RewritePolicy {
 	a.snapshot.Lock()
 	defer a.snapshot.Unlock()
 	if !a.prefs.Polish || !a.rewriter.Ready() {
 		return application.RewritePolicy{}
 	}
-	terms := make([]string, 0, len(a.replaces))
-	for _, r := range a.replaces {
-		terms = append(terms, r.From+" → "+r.To)
-	}
 	return application.RewritePolicy{Enabled: true, Scene: string(domain.SceneChat), FollowApp: a.prefs.MatchApp,
-		SceneOverrides: a.prefs.SceneOverrides, Terms: terms,
+		SceneOverrides: a.prefs.SceneOverrides, Vocabulary: a.vocabulary,
 		Context: application.ContextPolicy{Cursor: a.prefs.ContextCursor, Screen: a.prefs.ContextScreen, History: a.prefs.ContextHistory}}
 }
 
@@ -381,6 +384,7 @@ func (a *App) apply(e contracts.Event) {
 			return
 		}
 		*d = arion.Dictation{SessionID: e.SessionID}
+		a.dismissLearned()
 		a.stopMonitor()
 		a.positionOverlay()
 	}
@@ -633,8 +637,9 @@ func (a *App) loadVocabulary(create bool) {
 			replaces = append(replaces, domain.Replacement{From: entry.From, To: entry.To})
 		}
 	}
+	index := domain.NewVocabulary(replaces)
 	a.snapshot.Lock()
-	a.replaces = replaces
+	a.replaces, a.vocabulary, a.memory = replaces, index, a.vocab
 	a.snapshot.Unlock()
 }
 

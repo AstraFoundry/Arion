@@ -281,4 +281,8 @@ const (
 	FormatUpdateAvailable        Key = "FormatUpdateAvailable"
 	FormatUpdateTo               Key = "FormatUpdateTo"
 	FormatDownloadSize           Key = "FormatDownloadSize"
+	PillLearned                  Key = "PillLearned"
+	Undo                         Key = "Undo"
+	LearnEditsLabel              Key = "LearnEditsLabel"
+	LearnEditsDetail             Key = "LearnEditsDetail"
 )

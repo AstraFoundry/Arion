@@ -4,7 +4,11 @@
 
 MEM-01: Allowed sync records are user-approved vocabulary entries, explicit correction pairs and per-app style preferences. A record has opaque ID, kind, content schema version, logical revision, origin device, approval provenance and tombstone. Temporary app/selection context is session-only and excluded from persistence/sync.
 
-MEM-02: Learning proposes a record after a confirmed user edit. Do not promote model guesses or arbitrary observed typing into synchronized memory. The user can review, edit, remove, export and disable learning/sync independently. Vocabulary may influence ranking only within its approved scope.
+MEM-02: Learning adds a record only from the user's own correction of text Arion inserted ([ADR 014](../docs/decisions/014-edit-learning.md)). The record applies at once and is shown with an undo; undoing it, or correcting a learned replacement back, removes it. Model guesses, typing that continues or precedes the insertion, deletions, punctuation, changed numbers, sentence-start capitalization, lowered letter case, single Latin letters, grammar-dependent homophones (他/她/它, 的/地/得, 在/再) and rewrites of most of the insertion are never learned. The user can review, remove, export and disable learning/sync independently. Vocabulary may influence ranking only within its approved scope.
+
+MEM-04: Memory is bounded. Learned entries unused for 90 days expire and, beyond 2,000 entries, the least used learned entries are evicted; entries the user typed never are. A learned pair whose From matches an entry the user typed leaves that entry unchanged. Recall applies approved entries as whole-word replacements in one pass, and only the entries relevant to the current text, at most eight, reach the rewrite prompt.
+
+MEM-05: Learning never delays dictation. Following a field starts after the commit returns, each field read has its own time budget, a field that stops answering is abandoned, and the next dictation settles the previous edit without waiting. Memory writes are atomic and durable; a file that fails authentication or cannot be written is left unchanged, learning reports the failure, and dictation continues with whatever memory loaded.
 
 MEM-03: Local writes and outbox creation occur in one transaction. Dictation never waits for network or sync. When sync is disabled, local memory remains available and no outbox uploads occur.
 
@@ -36,5 +40,9 @@ SYNC-07: Revocation rotates the key epoch for future writes and re-encrypts live
 | MEM-A06 | Revoke B → B cannot pull/push; new key epoch works for active devices |
 | MEM-A07 | Invalid tag/key epoch/unknown schema → explicit failure, no plaintext downgrade |
 | MEM-A08 | Tampered routing metadata or replayed envelope → authentication/replay check rejects |
+| MEM-A09 | Correct a dictated word in a field → the pair is learned, shown with an undo, and corrects the next dictation; undo or correcting it back removes it (`TestExtractCorrections`, `TestLearnRules`, `TestLearnedNoticeUndo`) |
+| MEM-A10 | Continued typing, deletions, punctuation, changed numbers or a rewrite → nothing learned ([edit-learning-v1](../benchmarks/results/edit-learning-v1/README.md)) |
+| MEM-A11 | Secure field, learning off, IME composition or Windows → the field is never followed or read (`TestCoordinatorNeverFollowsSensitiveOrWhenOff`) |
+| MEM-A12 | Hung host, corrupt/truncated/wrong-key file, read-only directory or crash leftover → dictation unaffected, memory file unchanged or explicitly unavailable (`TestEditTrackerAbandonsHungHost`, `TestCorruptFileFailsClosed`, edit-learning-v1 faults) |
 
 Deployment implementation is pending; see [handoff](../docs/project/agent-handoff.md).

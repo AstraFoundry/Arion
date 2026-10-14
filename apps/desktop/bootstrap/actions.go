@@ -194,6 +194,11 @@ func (x actions) AddReplacement(from, to string) error {
 	return nil
 }
 
+func (x actions) UndoLearned(id string) {
+	x.a.dismissLearned()
+	x.RemoveReplacement(id)
+}
+
 func (x actions) RemoveReplacement(id string) {
 	a := x.a
 	if a.vocab == nil {

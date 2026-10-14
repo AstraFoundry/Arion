@@ -27,7 +27,16 @@ const (
 	DoneVisible      = 1100 * time.Millisecond
 	FailedVisible    = 3600 * time.Millisecond
 	CancelledVisible = 700 * time.Millisecond
+	// LearnedVisible keeps a learned entry's undo on screen, as long as
+	// Typeless shows its "added to dictionary" alert.
+	LearnedVisible = 5 * time.Second
 )
+
+// LearnedShown reports whether the learned notice is still on screen; a
+// running session hides it.
+func LearnedShown(l runtime.Learned, d runtime.Dictation, now time.Time) bool {
+	return l.ID != "" && !Active(d) && now.Sub(l.At) < LearnedVisible
+}
 
 // PhaseOf maps the session state to an overlay phase at time now.
 func PhaseOf(d runtime.Dictation, now time.Time) Phase {

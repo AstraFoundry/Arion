@@ -203,6 +203,7 @@ func (p *Page) section(c *ui.Context, store runtime.Store, tokens theme.Tokens) 
 			kit.Group(c, tokens, messages.Text(copy.ModelOthers), func() { modelchoice.Others(c, store, tokens) })
 		}
 	case Vocabulary:
+		vocabulary.Learning(c, store, tokens)
 		vocabulary.Editor(c, store, tokens, &p.draft)
 	case About:
 		kit.Card(c, tokens).Children(func() {

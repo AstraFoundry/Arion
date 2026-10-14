@@ -45,6 +45,7 @@ The scene sets the layout of a rewrite, never its content. Scenes: `chat` (one p
 - CTX-03: **Recent dictations**: the last five texts inserted in the same place (`domain.SceneKey`), kept 30 minutes in memory; turning the switch off clears them.
 - CTX-04: Secure fields and the password-manager denylist (`domain.ContextDenied`) read nothing. Context is read once per session after target capture, in parallel with speaking; previews use it once read and the final rewrite waits at most 1.5 s. It stays in session memory and is never logged, synced or sent anywhere.
 - CTX-05: Context is data. It is sanitized of prompt markers and section tags. The product passes the spellings extracted from it (`domain.ContextTerms`: sender names, quoted names, Latin names, identifiers and codes) into the prompt's terms; the context-section template (`context-v1`) is kept for the benchmark only. Validation treats context as evidence for spellings and rejects `context_copied` proposals and context standing in for most of the dictation (capped coverage credit). Speech repeating the end of the text before the cursor may be dropped.
+- CTX-06: **Approved memory** reaches the prompt's terms only for entries whose heard or written form occurs in the text being rewritten, at most eight (`domain.Vocabulary.Terms`), so the prompt does not grow with the memory ([ADR 014](../docs/decisions/014-edit-learning.md)).
 
 ## Runtime requirements
 

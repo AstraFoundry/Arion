@@ -34,7 +34,10 @@ type Dependencies struct {
 	// History keeps recent dictations per place for rewrite context; nil
 	// keeps none.
 	History *History
-	NewID   func() string
+	// Edits follows committed fields to learn the user's corrections; nil
+	// learns nothing (ADR 014).
+	Edits *EditTracker
+	NewID func() string
 }
 
 // Options configure one coordinator. Policy is read when a session finalizes,
@@ -50,8 +53,13 @@ type Options struct {
 	// SegmentFinalize runs the finalizer per closed segment while speaking
 	// even without rewriting.
 	SegmentFinalize bool
-	QueueFrames     int
-	MaxAudio        time.Duration
+	// Learning is read at each commit; it gates edit tracking.
+	Learning func() bool
+	// Recalled receives the vocabulary entries that corrected a dictation,
+	// off the delivery path's critical section; nil ignores them.
+	Recalled    func([]domain.Replacement)
+	QueueFrames int
+	MaxAudio    time.Duration
 }
 
 const (
@@ -206,6 +214,10 @@ func (c *Coordinator) Toggle() {
 // Start begins a new session in a new generation. Adapter calls that may
 // block run off the caller's thread; failures are delivered as events.
 func (c *Coordinator) Start() {
+	if c.deps.Edits != nil {
+		// The next insertion changes the field: judge the last one now.
+		c.deps.Edits.Settle()
+	}
 	c.mu.Lock()
 	if c.current != nil && !c.current.session.Terminal() {
 		r := c.current
@@ -515,7 +527,11 @@ func (c *Coordinator) finalize(r *run) {
 func (c *Coordinator) deliver(r *run, raw string, policy RewritePolicy) {
 	source := raw
 	if c.opts.Correction {
-		source = domain.Correct(raw, c.opts.Policy()).Text
+		corrected := domain.Correct(raw, c.opts.Policy())
+		source = corrected.Text
+		if len(corrected.Recalled) > 0 && c.opts.Recalled != nil {
+			go c.opts.Recalled(corrected.Recalled)
+		}
 	}
 	text, outcome := source, ""
 	if strings.TrimSpace(source) != "" {
@@ -582,10 +598,18 @@ func (c *Coordinator) commit(r *run, revision uint64, text string) {
 	c.mu.Unlock()
 	c.emitState(r, domain.Committing)
 	_, input := c.targets(r)
+	follower := c.follower(r, input)
 	result, err := input.Commit(context.Background(), contracts.CommitRequest{
 		Identity: r.identity, Target: r.target.Target, SourceRevision: revision, Text: text})
 	if err != nil {
 		result = contracts.CommitResult{Identity: r.identity, Outcome: contracts.NotApplied, Failure: codeOr(err, domain.CodeTargetUnsupported)}
+	}
+	if follower != nil {
+		if result.Outcome == contracts.NotApplied {
+			follower.Release(r.target.Target)
+		} else {
+			c.deps.Edits.Track(follower, r.target.Target, r.identity, text)
+		}
 	}
 	c.mu.Lock()
 	var event contracts.Event
@@ -610,6 +634,20 @@ func (c *Coordinator) commit(r *run, revision uint64, text string) {
 		c.releaseComposition(r)
 	}
 	c.emit(r, event)
+}
+
+// follower asks the commit adapter to keep the field readable after the
+// commit when learning is on. Secure fields and IME compositions are never
+// followed (DSK-08); the adapter refuses fields it cannot read safely.
+func (c *Coordinator) follower(r *run, input ports.InputTarget) ports.FieldReader {
+	if c.deps.Edits == nil || c.opts.Learning == nil || !c.opts.Learning() || r.target.Sensitive || c.composing(r) {
+		return nil
+	}
+	reader, ok := input.(ports.FieldReader)
+	if !ok || !reader.Follow(r.target.Target) {
+		return nil
+	}
+	return reader
 }
 
 func (c *Coordinator) emitState(r *run, state domain.SessionState) {

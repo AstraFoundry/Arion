@@ -31,6 +31,9 @@ type CorrectionPolicy struct {
 	LatinCase     LatinCase
 	RemoveFillers bool
 	Replacements  []Replacement
+	// Vocabulary is Replacements prebuilt once by the caller; when nil it is
+	// built from Replacements for this call.
+	Vocabulary *Vocabulary
 }
 
 // CorrectionOutcome keeps the raw text separate from the corrected text.
@@ -39,6 +42,8 @@ type CorrectionOutcome struct {
 	Text    string
 	Applied []string
 	Version string
+	// Recalled lists the vocabulary entries that fired, in text order.
+	Recalled []Replacement
 }
 
 // Correct applies the conservative rule pipeline.
@@ -59,8 +64,16 @@ func Correct(raw string, policy CorrectionPolicy) CorrectionOutcome {
 	if policy.RemoveFillers {
 		apply("fillers", removeFillers)
 	}
-	if len(policy.Replacements) > 0 {
-		apply("vocabulary", func(s string) string { return applyReplacements(s, policy.Replacements) })
+	vocabulary := policy.Vocabulary
+	if vocabulary == nil && len(policy.Replacements) > 0 {
+		vocabulary = NewVocabulary(policy.Replacements)
+	}
+	if vocabulary.Len() > 0 {
+		apply("vocabulary", func(s string) string {
+			next, fired := vocabulary.Apply(s)
+			out.Recalled = fired
+			return next
+		})
 	}
 	apply("cjk-spacing", joinCJKSpacing)
 	out.Text = text
@@ -209,64 +222,6 @@ func skipFillerTrail(runes []rune, j int) int {
 		j++
 	}
 	return j
-}
-
-func applyReplacements(s string, replacements []Replacement) string {
-	for _, rep := range replacements {
-		if rep.From == "" || rep.From == rep.To {
-			continue
-		}
-		s = replaceToken(s, rep.From, rep.To)
-	}
-	return s
-}
-
-// replaceToken replaces case-insensitive whole-word Latin matches and exact
-// CJK matches, never touching a match embedded in a longer Latin word.
-func replaceToken(s, from, to string) string {
-	lowerS, lowerFrom := strings.ToLower(s), strings.ToLower(from)
-	if len(lowerS) != len(s) || len(lowerFrom) != len(from) {
-		return strings.ReplaceAll(s, from, to)
-	}
-	var b strings.Builder
-	for i := 0; i < len(s); {
-		k := strings.Index(lowerS[i:], lowerFrom)
-		if k < 0 {
-			b.WriteString(s[i:])
-			break
-		}
-		start, end := i+k, i+k+len(from)
-		if boundary(s, start, end) {
-			b.WriteString(s[i:start])
-			b.WriteString(to)
-		} else {
-			b.WriteString(s[i:end])
-		}
-		i = end
-	}
-	return b.String()
-}
-
-func boundary(s string, start, end int) bool {
-	if start > 0 {
-		r, _ := utf8.DecodeLastRuneInString(s[:start])
-		if isLatinOrDigit(r) {
-			first, _ := utf8.DecodeRuneInString(s[start:])
-			if isLatinOrDigit(first) {
-				return false
-			}
-		}
-	}
-	if end < len(s) {
-		r, _ := utf8.DecodeRuneInString(s[end:])
-		if isLatinOrDigit(r) {
-			last, _ := utf8.DecodeLastRuneInString(s[:end])
-			if isLatinOrDigit(last) {
-				return false
-			}
-		}
-	}
-	return true
 }
 
 // JoinText concatenates text segments, inserting a space only between

@@ -72,6 +72,23 @@ type InputTarget interface {
 	Commit(context.Context, contracts.CommitRequest) (contracts.CommitResult, error)
 }
 
+// FieldRead is the field a commit went into, read for edit learning: a
+// bounded excerpt around its cursor, and whether it still has focus.
+type FieldRead struct {
+	Text    string
+	Focused bool
+}
+
+// FieldReader is offered by input targets that can read the committed field
+// back (ADR 014). Follow keeps a committed target readable; it returns
+// false for secure, denied or unreadable fields, which are never read.
+// Release ends following and frees native handles.
+type FieldReader interface {
+	Follow(contracts.TargetToken) bool
+	ReadField(context.Context, contracts.TargetToken) (FieldRead, error)
+	Release(contracts.TargetToken)
+}
+
 // CompositionTarget owns only the host range associated with this session.
 // Implementations require the OS host's edit/thread protocol.
 type CompositionTarget interface {

@@ -59,6 +59,10 @@ type Preferences struct {
 	ContextCursor  bool `json:"contextCursor"`
 	ContextScreen  bool `json:"contextScreen"`
 	ContextHistory bool `json:"contextHistory"`
+	// LearnEdits reads a field Arion inserted into until the user stops
+	// editing it, and remembers the words they corrected (ADR 014). On by
+	// default; profiles written before it existed load the default.
+	LearnEdits bool `json:"learnEdits"`
 }
 
 // PreferencesVersion is the current schema; older files are migrated.
@@ -80,7 +84,7 @@ func DefaultPreferences() Preferences {
 	return Preferences{
 		Version: PreferencesVersion, UILanguage: English, Mode: domain.ShortcutMode, Shortcut: DefaultShortcut,
 		Delivery: DeliveryAutomatic, RemoveFillers: true, Sounds: true, CheckUpdates: true, MatchApp: true,
-		ContextCursor: true, ContextScreen: true, ContextHistory: true,
+		ContextCursor: true, ContextScreen: true, ContextHistory: true, LearnEdits: true,
 	}
 }
 

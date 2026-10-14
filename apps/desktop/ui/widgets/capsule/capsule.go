@@ -50,7 +50,17 @@ func Render(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 	if remaining := dictation.Remaining(d, now); remaining > 0 {
 		c.After(remaining + 10*time.Millisecond)
 	}
+	learned := phase == dictation.Hidden && dictation.LearnedShown(state.Learned, d, now)
+	if learned {
+		c.After(dictation.LearnedVisible - now.Sub(state.Learned.At) + 10*time.Millisecond)
+	}
 	ui.Column(c).Fill().Justify(ui.End).AlignItems(ui.Center).Padding(0, 0, 22, 0).Children(func() {
+		if learned {
+			kit.Pill(c.Key("learned"), tokens).MaxWidth(600).Transition(pillMotion).Children(func() {
+				learnedNotice(c, store, tokens)
+			})
+			return
+		}
 		if phase == dictation.Hidden {
 			return
 		}
@@ -199,6 +209,31 @@ func failure(c *ui.Context, state *runtime.State, tokens theme.Tokens) {
 			ui.Text(c, messages.Text(notice.Hint)).FontSize(theme.Caption).TextColor(tokens.PillMuted).SingleLine()
 		}
 	})
+}
+
+// learnedNotice names the entry just learned from a correction, with an
+// undo that forgets it.
+func learnedNotice(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
+	messages := store.Copy()
+	l := store.State.Learned
+	ui.Icon(c, icons.Sparkles).FontSize(15).TextColor(tokens.PillMuted)
+	ui.Text(c, messages.Text(copy.PillLearned)).FontSize(theme.Body).TextColor(tokens.PillMuted).SingleLine().Shrink(0)
+	ui.Row(c).Gap(6).AlignItems(ui.Center).Shrink(1).ClipX().Children(func() {
+		ui.Text(c, l.From).FontSize(theme.Body).SingleLine()
+		ui.Icon(c, icons.ArrowRight).FontSize(12).TextColor(tokens.PillMuted)
+		ui.Text(c, l.To).FontSize(theme.Body).FontWeight(500).SingleLine()
+	})
+	undo := ui.ButtonBase(c.Key("undo")).Height(28).Padding(0, 10).Radius(theme.RadiusControl).AlignItems(ui.Center).
+		Background(tokens.PillText.Alpha(0.12)).Shrink(0)
+	if undo.Hovered() {
+		undo.Background(tokens.PillText.Alpha(0.2))
+	}
+	kit.Press(undo).Children(func() {
+		ui.Text(c, messages.Text(copy.Undo)).FontSize(theme.Caption).FontWeight(500).TextColor(tokens.PillText).SingleLine()
+	})
+	if undo.Clicked() {
+		store.Actions.UndoLearned(l.ID)
+	}
 }
 
 // tail keeps the last n runes so the pill shows what is being said now.

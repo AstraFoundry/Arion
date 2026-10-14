@@ -99,6 +99,15 @@ static NSTextView *makeEditor(NSRect frame, NSString *name) {
             }
             [self.window toggleFullScreen:nil];
         }
+    } else if ([op isEqual:@"replace"]) {
+        // Retypes the first occurrence of `from` in an editor as a user
+        // would, so the change arrives through the text system.
+        NSTextView *editor = [command[@"target"] isEqual:@"B"] ? self.editorB : self.editorA;
+        NSRange range = [editor.string rangeOfString:command[@"from"] ?: @""];
+        if (range.location != NSNotFound && command[@"to"]) {
+            [editor setSelectedRange:range];
+            [editor insertText:command[@"to"] replacementRange:range];
+        }
     } else if ([op isEqual:@"reset"]) {
         self.editorA.string = @"";
         self.editorB.string = @"";

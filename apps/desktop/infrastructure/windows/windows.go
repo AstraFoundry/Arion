@@ -18,6 +18,7 @@ import (
 
 	"arion.local/core/contracts"
 	"arion.local/core/domain"
+	"arion.local/core/domain/ports"
 )
 
 var (
@@ -162,6 +163,16 @@ func (t *Targets) FocusOwner() int { return 0 }
 func (t *Targets) Peek(context.Context, int) (contracts.TargetSnapshot, error) {
 	return contracts.TargetSnapshot{}, domain.Fail(domain.CodeTargetUnsupported, "scene display not offered")
 }
+
+// Follow refuses: the Windows adapter reads no field text, so edits are
+// not learned on Windows yet (ADR 014).
+func (t *Targets) Follow(contracts.TargetToken) bool { return false }
+
+func (t *Targets) ReadField(context.Context, contracts.TargetToken) (ports.FieldRead, error) {
+	return ports.FieldRead{}, domain.Fail(domain.CodeTargetUnsupported, "field reading not offered")
+}
+
+func (t *Targets) Release(contracts.TargetToken) {}
 
 func (t *Targets) Capabilities(_ context.Context, token contracts.TargetToken) (contracts.Capabilities, error) {
 	t.mu.Lock()

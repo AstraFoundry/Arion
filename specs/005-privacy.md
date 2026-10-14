@@ -5,7 +5,7 @@
 | Raw audio/PCM | Bounded RAM for active session | Never sync/log; disk recording requires separate user action |
 | ASR/correction drafts | Active session RAM | Never diagnostics; history separately opt-in |
 | Target app/nearby/selected text | Bounded consent-gated session context | Never sync/log or persist automatically |
-| Approved vocabulary/correction/preferences | Encrypted local values | Client-encrypted sync only when enabled |
+| Approved vocabulary/correction/preferences | Encrypted local values, including pairs learned from the user's corrections with their use counts | Client-encrypted sync only when enabled |
 | Group/device keys and auth tokens | OS credential store | Never logs/config/export without explicit protected flow |
 | Models | Per-user verified model cache | Public artifact downloads only; no speech payload |
 | App updates | Signed archive replaces the installed app | Release manifest and archive downloads from GitHub releases only; no content payload; checks can be turned off |
@@ -15,7 +15,7 @@ PRV-01: Dictation and ranking have no cloud inference route. Model downloads and
 
 PRV-07: Update checks request only the public release manifest and archive of the configured GitHub repository. They carry no audio, text, vocabulary, preference or device identifier, run only while the user's automatic-check preference is on or on an explicit request, and an archive whose Ed25519 signature does not match the built-in key is never installed ([ADR 010](../docs/decisions/010-in-app-updates.md)).
 
-PRV-02: Context read is limited to the focused application/field and bounded text under each source's switch ([ADR 013](../docs/decisions/013-rewrite-context-on-device.md)): text around the cursor, OS-recognized text of the focused window only (the image is never stored) and recent dictations in memory. No full-screen or background capture, keystroke history or full document scraping. Secure/unknown fields disable reads/learning. User denylist overrides per-app preferences.
+PRV-02: Context read is limited to the focused application/field and bounded text under each source's switch ([ADR 013](../docs/decisions/013-rewrite-context-on-device.md)): text around the cursor, OS-recognized text of the focused window only (the image is never stored) and recent dictations in memory. No full-screen or background capture, keystroke history or full document scraping. Secure/unknown fields disable reads/learning. User denylist overrides per-app preferences. While learning from corrections is on ([ADR 014](../docs/decisions/014-edit-learning.md)), the field Arion inserted into is re-read, as a bounded excerpt around its cursor, until the user stops editing it (at most 60 s); only the learned word pairs are kept, encrypted with the vocabulary.
 
 PRV-03: Before using personal memory, disclose its type/scope and allow reset/export/delete. Session-only memory is never promoted automatically. Disabling sync does not imply deletion of already stored relay ciphertext; expose deletion separately.
 

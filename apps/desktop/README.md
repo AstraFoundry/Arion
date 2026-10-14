@@ -11,7 +11,7 @@ MyGo native Go module: the menu bar app, its windows (overlay pill, menu bar pan
 | `infrastructure/provision`, `modelruntime` | Verified model downloads and the resident bundle chosen by evaluation |
 | `infrastructure/macos`, `windows` | Permissions, target capture and insertion routes ([ADR 003](../../docs/decisions/003-insertion-routes.md)); hold-key listeners (listen-only event tap, low-level keyboard hook) |
 | `infrastructure/holdkey` | Pure interpretation of raw key events into hold-key down/up/chord, tested on every OS |
-| `infrastructure/settings`, `secrets`, `vocabulary` | Preferences JSON, OS-kept key, encrypted vocabulary |
+| `infrastructure/settings`, `secrets`, `vocabulary` | Preferences JSON, OS-kept key, encrypted vocabulary with learned entries and their counts |
 | `cmd/arion-eval-driver` | Benchmark driver running the production pipeline |
 | `cmd/arion-e2e-driver`, `e2e/` | Product scenario driver, owned editor fixture and native window tests |
 | `cmd/arion-models`, `cmd/arion-icon` | Catalog review/offline import tool; app icon renderer (ink bars on Sunbeam yellow) |

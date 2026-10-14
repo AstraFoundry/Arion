@@ -274,5 +274,9 @@
   "ModelNameDeep": "Deep check",
   "ModelNameGeneric": "Voice recognition",
   "ModelRecognitionGroup": "Recognition",
-  "ModelPolishGroup": "Polish"
+  "ModelPolishGroup": "Polish",
+  "PillLearned": "Learned",
+  "Undo": "Undo",
+  "LearnEditsLabel": "Learn from my corrections",
+  "LearnEditsDetail": "When you fix a word Arion inserted, it spells it your way next time"
 }

@@ -39,7 +39,8 @@
     "live:text": "node scripts/live-bench-command.mjs text",
     "live:audio": "node scripts/live-bench-command.mjs audio",
     "live:report": "node scripts/live-bench-command.mjs report",
-    "scene:bench": "node scripts/live-bench-command.mjs scene"
+    "scene:bench": "node scripts/live-bench-command.mjs scene",
+    "memory:bench": "node scripts/memory-bench-command.mjs"
   },
   "engines": {
     "node": ">=20.0.0"
