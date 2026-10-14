@@ -75,6 +75,24 @@ func (s *Service) Session() (Session, bool) {
 	return s.session, true
 }
 
+// Stored reports whether the credential store holds a refresh token. It
+// reads the store only: no discovery, no request, no refresh. A store that
+// cannot be read is an error, never "nothing stored".
+func (s *Service) Stored() (bool, error) {
+	s.commitMu.Lock()
+	defer s.commitMu.Unlock()
+	token, err := s.store.Get()
+	switch {
+	case errors.Is(err, ErrNotFound):
+		return false, nil
+	case errors.Is(err, ErrUnsupported):
+		return false, wrap(CodeStore, "unsupported", err)
+	case err != nil:
+		return false, wrap(CodeStore, "read", err)
+	}
+	return token != "", nil
+}
+
 // Cancel invalidates the in-flight sign-in or refresh. A callback that
 // arrives afterwards is not exchanged, and a token already issued is not kept.
 func (s *Service) Cancel() { s.stop(stopCancel) }

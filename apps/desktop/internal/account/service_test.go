@@ -989,3 +989,66 @@ func TestRejectsBadWaitlistID(t *testing.T) {
 		t.Fatal("accepted ..")
 	}
 }
+
+// failingStore fails every read with err.
+type failingStore struct{ err error }
+
+func (f failingStore) Put(string) error     { return f.err }
+func (f failingStore) Get() (string, error) { return "", f.err }
+func (f failingStore) Delete() error        { return f.err }
+
+func TestStoredReadsOnlyTheCredentialStore(t *testing.T) {
+	hit := 0
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { hit++ }))
+	defer srv.Close()
+	for _, tc := range []struct {
+		name   string
+		store  RefreshTokenStore
+		stored bool
+		code   Code
+		detail string
+	}{
+		{"empty", &memStore{}, false, "", ""},
+		{"token", &memStore{token: refreshCanary, present: true}, true, "", ""},
+		{"read error", failingStore{errors.New("keychain locked")}, false, CodeStore, "read"},
+		{"unsupported", failingStore{ErrUnsupported}, false, CodeStore, "unsupported"},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			svc, err := New(Config{Issuer: srv.URL, HTTP: srv.Client()}, Dependencies{
+				Store:   tc.store,
+				Browser: func(string) error { t.Fatal("browser opened"); return nil },
+			})
+			if err != nil {
+				t.Fatal(err)
+			}
+			stored, err := svc.Stored()
+			if stored != tc.stored || CodeOf(err) != tc.code || DetailOf(err) != tc.detail {
+				t.Fatalf("Stored() = %v, %v", stored, err)
+			}
+			if err != nil && strings.Contains(err.Error(), refreshCanary) {
+				t.Fatal("error leaked the refresh token")
+			}
+			if _, ok := svc.Session(); ok {
+				t.Fatal("reading the store created a session")
+			}
+		})
+	}
+	if hit != 0 {
+		t.Fatalf("Stored made %d requests", hit)
+	}
+}
+
+// A refresh token left from an earlier run is revoked and deleted by
+// SignOut without a session in memory.
+func TestSignOutRevokesStoredTokenWithoutSession(t *testing.T) {
+	iss := newIssuer(t)
+	store := &memStore{token: refreshCanary, present: true}
+	svc := iss.service(store)
+	result, err := svc.SignOut(context.Background(), nil)
+	if err != nil || !result.RevokeAttempted || !result.Revoked || !result.RefreshTokenDeleted {
+		t.Fatalf("SignOut = %+v, %v", result, err)
+	}
+	if stored, err := svc.Stored(); stored || err != nil {
+		t.Fatalf("Stored after sign-out = %v, %v", stored, err)
+	}
+}
