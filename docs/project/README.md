@@ -35,6 +35,6 @@ Jev is TypeSafe’s System One typed decision model. Laya Multilingual is the pr
 | Sync service | Self-hosted Go relay; ciphertext records | Protocol specified; not implemented |
 | Marketing site | Next.js static export, React 19, Tailwind v4, next-intl en/zh/ja; Cloudflare Workers static assets ([ADR 016](../decisions/016-marketing-site.md)) | Implemented in `apps/site`; vendored Sunbeam/beUI until `@astrafoundry/design` is published |
 | Cryptography | Go standard library AES-GCM; Keychain/DPAPI keys | Local values only; key exchange for sync pending |
-| Account sign-in | Public OIDC client `arion-desktop`, loopback PKCE, refresh token in Keychain or Credential Manager | Service implemented ([account sign-in](account-signin.md)); onboarding UI open |
+| Account sign-in | Public OIDC client `arion-desktop`, loopback PKCE, refresh token in Keychain or Credential Manager | Service, onboarding step and Settings › Account implemented ([account sign-in](account-signin.md)); device enrollment open |
 
 See [specs](../../specs/README.md), [research](../research/README.md), [repository](repository.md), [account sign-in](account-signin.md), and [agent handoff](agent-handoff.md).

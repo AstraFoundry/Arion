@@ -40,6 +40,28 @@ One sign-in or refresh runs at a time. A second request fails with `SIGN_IN_IN_P
 
 The loopback response is an empty `200` with `Cache-Control: no-store`. The onboarding copy that tells the user to return to Arion lives in the app, not on that page.
 
+## Views
+
+The onboarding step `Sync` comes after the first dictation and before Finish (`entities/onboarding`). The first button, and the primary one, is **Continue locally**. It moves on with no account and no network. **Sign in and set up sync** calls `SignIn`. While `Phase` is `signing_in`, the step shows the browser wait with Cancel (`CancelSignIn`). The step does not move on while a sign-in, refresh, or sign-out is running (`Account.Busy`). Settings › Account shows the same account card: Sign in, or the profile with Sign out and the line that local keys and memory stay. When signed in, a Hosted sync card follows. The line that signing in never lets AstraFoundry read memory appears once: on the onboarding step, and in Settings next to Sign in.
+
+`features/signin` draws the account card and the hosted-sync card. `entities/account` maps state to copy keys.
+
+| State | Shown |
+| --- | --- |
+| `HostedSync` false | Waitlist row. Idle shows Join (`JoinHostedSyncWaitlist`). `joined_pending` shows "under review" and `already_entitled` shows "already has hosted sync"; both offer Check again (`RefreshAccount`), and the new access token carries the granted `ent`. `closed` has no action. `error` shows Retry. Every phase says that self-hosted sync needs no waitlist and that local features work either way |
+| `HostedSync` true | Hosted sync is available. Setting up this device is not in this version |
+| `ErrorCode` | One notice per code. `ErrorDetail` picks a variant: `access_denied`; `invalid_grant` or `not_found`; a network detail (`transport`, `request`, `http_N`) or an issuer configuration detail (`issuer_mismatch`, `s256_required`, …); browser `open` or the loopback. `SIGN_IN_CANCELLED` shows nothing. A `WAITLIST` failure appears only in the waitlist row |
+| `SignOut.RevokeAttempted` and not `Revoked` | Signed out on this device, but AstraFoundry did not confirm the revocation |
+
+`runtime.AccountCodes` lists the codes views know. `TestAccountCodesMatchService` parses `internal/account/errors.go`, so a new service code fails until it is listed and has copy (`TestEveryErrorCodeHasCopy`).
+
+Not built yet:
+
+- **Device enrollment (SYNC-02) after the entitlement.** No desktop sync client exists. The entitled row in `features/signin` is where enrollment starts.
+- **Turn off sync and Delete server data (SYNC-07).** No actions back them, so Settings shows neither. They stay two separate operations.
+- **Restoring a session after restart.** Views do not call `RefreshAccount` on open. `State.Account` cannot tell whether a refresh token is stored, and `Refresh` without one fails with `REFRESH` / `not_found`. So an account signed in before a restart shows Sign in.
+- **Profile picture.** `Picture` is not loaded, because loading it would mean fetching a remote image.
+
 ## Service API
 
 Package `arion.local/desktop/internal/account`. `bootstrap` is the only production caller.
