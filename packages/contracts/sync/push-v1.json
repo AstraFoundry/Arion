@@ -1,0 +1,18 @@
+{
+  "operations": [
+    {
+      "operation_id": "op-contract-1",
+      "record_id": "rec-contract-1",
+      "schema_version": 1,
+      "key_epoch": 1,
+      "algorithm": "AES-256-GCM",
+      "nonce": "AQEBAQEBAQEBAQEB",
+      "ciphertext": "Y2lwaGVydGV4dC1maXh0dXJl",
+      "tag": "AgICAgICAgICAgICAgICAg",
+      "logical_revision": 1,
+      "kind": "write",
+      "expected_revision": 0,
+      "parents": []
+    }
+  ]
+}
