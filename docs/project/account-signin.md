@@ -6,7 +6,7 @@ Behavior is specified in [ADR 015](../decisions/015-hosted-relay-account-authori
 
 ## Startup
 
-`account.New` and `bootstrap.New` do not discover the issuer, open a port, read the credential store, or refresh a token. Dictation does not wait on this service. A process restart leaves any stored refresh token where it is and shows `AccountSignedOut` until the user signs in or the UI calls `RefreshAccount`.
+`account.New` and `bootstrap.New` do not discover the issuer, open a port, read the credential store, or refresh a token. Dictation does not wait on this service. A process restart leaves any stored refresh token where it is and shows `AccountSignedOut`. When the onboarding sync step or Settings › Account is on screen, the view calls `CheckStoredAccount`. That reads the credential store off the main thread, with no network, and records the result in `Account.Credential`. Nothing reads the store at startup.
 
 ## What views call
 
@@ -19,6 +19,7 @@ These `runtime.Actions` methods return immediately. Work continues off the main 
 | `RefreshAccount()` | Rotates the stored refresh token and replaces the in-memory access token. Phase `refreshing`. |
 | `SignOut()` | Revokes the refresh token, then deletes that credential item. Local keys and local memory stay. |
 | `JoinHostedSyncWaitlist()` | Resolves and joins the hosted-sync waitlist. |
+| `CheckStoredAccount()` | Reads whether a refresh token is stored, with `Service.Stored`. This does nothing unless `Phase` is `signed_out` and `Credential` is unknown. A result is dropped when a sign-in, refresh, cancel or sign-out started during the read. |
 
 One sign-in or refresh runs at a time. A second request fails with `SIGN_IN_IN_PROGRESS`. Join does the same while one is running.
 
@@ -35,6 +36,7 @@ One sign-in or refresh runs at a time. A second request fails with `SIGN_IN_IN_P
 | `Waitlist.Phase` | empty, `joining`, `joined_pending`, `already_entitled`, `closed`, `error` |
 | `Waitlist.EntryID`, `Code`, `HTTPStatus` | Join payload |
 | `SignOut` | `Attempted`, `RefreshTokenDeleted`, `RevokeAttempted`, `Revoked`, `RevokeDetail` |
+| `Credential` | While signed out: empty (not read since the last account change), `checking`, `absent`, `stored`, or `unreadable`. A failed read sets `unreadable` and `ErrorCode` `SECURE_STORE` with detail `read` or `unsupported`; it is never shown as `absent`. Sign-in, refresh, cancel and sign-out reset it to empty, so the view reads the store again |
 
 `ErrorDetail` is an OAuth error code (`access_denied`, `invalid_grant`, `server_error`), an `http_N` label, or another short token such as `issuer_mismatch` or `s256_required`. It is not `error_description`, a token, or an authorization code. Show catalog copy for `ErrorCode`, not `Error()` from the service.
 
@@ -42,7 +44,7 @@ The loopback response is an empty `200` with `Cache-Control: no-store`. The onbo
 
 ## Views
 
-The onboarding step `Sync` comes after the first dictation and before Finish (`entities/onboarding`). The first button, and the primary one, is **Continue locally**. It moves on with no account and no network. **Sign in and set up sync** calls `SignIn`. While `Phase` is `signing_in`, the step shows the browser wait with Cancel (`CancelSignIn`). The step does not move on while a sign-in, refresh, or sign-out is running (`Account.Busy`). Settings › Account shows the same account card: Sign in, or the profile with Sign out and the line that local keys and memory stay. When signed in, a Hosted sync card follows. The line that signing in never lets AstraFoundry read memory appears once: on the onboarding step, and in Settings next to Sign in.
+The onboarding step `Sync` comes after the first dictation and before Finish (`entities/onboarding`). The first button, and the primary one, is **Continue locally**. It moves on with no account and no network. **Sign in and set up sync** calls `SignIn`. While `Phase` is `signing_in`, the step shows the browser wait with Cancel (`CancelSignIn`). The step does not move on while a sign-in, refresh, or sign-out is running (`Account.Busy`). Settings › Account shows the same account card: Sign in, or the profile with Sign out and the line that local keys and memory stay. When `Credential` is `stored`, the card shows the earlier sign-in with **Reconnect** (`RefreshAccount`) and **Sign out**, and Sign out revokes and deletes that token without a session in memory. In onboarding, Continue then moves on without reconnecting. While the store is being read, the card shows the checking row. When the store can't be read, the card offers Sign in with the store error under it. When signed in, a Hosted sync card follows. The line that signing in never lets AstraFoundry read memory appears once: on the onboarding step, and in Settings next to Sign in.
 
 `features/signin` draws the account card and the hosted-sync card. `entities/account` maps state to copy keys.
 
@@ -59,7 +61,7 @@ Not built yet:
 
 - **Device enrollment (SYNC-02) after the entitlement.** No desktop sync client exists. The entitled row in `features/signin` is where enrollment starts.
 - **Turn off sync and Delete server data (SYNC-07).** No actions back them, so Settings shows neither. They stay two separate operations.
-- **Restoring a session after restart.** Views do not call `RefreshAccount` on open. `State.Account` cannot tell whether a refresh token is stored, and `Refresh` without one fails with `REFRESH` / `not_found`. So an account signed in before a restart shows Sign in.
+- **Profile after restart.** Name and email are not kept on disk. Before Reconnect, the stored state shows no profile. Keeping it would add fields to the versioned preferences schema.
 - **Profile picture.** `Picture` is not loaded, because loading it would mean fetching a remote image.
 
 ## Service API
@@ -74,7 +76,10 @@ func (s *Service) Refresh(ctx context.Context) (Session, error)
 func (s *Service) SignOut(ctx context.Context, armed func()) (SignOutResult, error)
 func (s *Service) JoinHostedSyncWaitlist(ctx context.Context) (WaitlistResult, error)
 func (s *Service) Session() (Session, bool)
+func (s *Service) Stored() (bool, error)
 ```
+
+`Stored` calls only `RefreshTokenStore.Get`, under the same lock that commits a token. `ErrNotFound` means false. Any other failure is a `SECURE_STORE` error.
 
 `Dependencies.Store` is a `RefreshTokenStore` (`Put`, `Get`, `Delete`). `Delete` removes the refresh token only. `Dependencies.Browser` opens the authorization URL. `New` returns an error when either is nil.
 
