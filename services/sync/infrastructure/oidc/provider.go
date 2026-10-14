@@ -183,10 +183,7 @@ func (p *Provider) Verify(ctx context.Context, token string) (application.Securi
 	}
 	key, err := p.publicKey(ctx, header.Kid, header.Alg)
 	if err != nil {
-		if errors.Is(err, errUnknownKey) {
-			return application.SecurityEvent{}, application.SET("invalid_key", "key rejected")
-		}
-		return application.SecurityEvent{}, application.SET("authentication_failed", "authentication failed")
+		return application.SecurityEvent{}, application.SET("invalid_key", "key rejected")
 	}
 	claims := &setClaims{}
 	parser := jwt.NewParser(

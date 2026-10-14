@@ -254,6 +254,50 @@ func TestNewRejectsHMAC(t *testing.T) {
 	}
 }
 
+func TestSETKeyFailureAndEntitlementsPayload(t *testing.T) {
+	pub, priv, err := ed25519.GenerateKey(nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	ring := &keyRing{}
+	ring.set(edKey{kid: "k1", pub: pub})
+	jwks := httptest.NewServer(http.HandlerFunc(ring.serve))
+	t.Cleanup(jwks.Close)
+	broken := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		http.Error(w, "unavailable", http.StatusInternalServerError)
+	}))
+	t.Cleanup(broken.Close)
+	now := time.Date(2026, 6, 4, 12, 0, 0, 0, time.UTC)
+	store := memory.New()
+	down := newProvider(t, store, "https://astrafoundry.si", broken.URL, func() time.Time { return now })
+	header := base64.RawURLEncoding.EncodeToString([]byte(`{"alg":"EdDSA","typ":"secevent+jwt","kid":"k1"}`))
+	body := base64.RawURLEncoding.EncodeToString([]byte(`{}`))
+	if _, err := down.Verify(context.Background(), header+"."+body+".sig"); !setCode(err, "invalid_key") {
+		t.Fatalf("jwks failure: %v", err)
+	}
+
+	provider := newProvider(t, store, "https://astrafoundry.si", jwks.URL, func() time.Time { return now })
+	claims := jwt.MapClaims{
+		"iss": "https://astrafoundry.si", "aud": testClient, "iat": now.Unix(), "jti": "jti-ent",
+		"sub_id": map[string]string{"format": "iss_sub", "iss": "https://astrafoundry.si", "sub": "alice"},
+		"events": map[string]any{application.EventEntitlementsChanged: map[string]any{"entitlements": []string{"arion.sync.hosted", "other"}}},
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodEdDSA, claims)
+	token.Header["kid"] = "k1"
+	token.Header["typ"] = "secevent+jwt"
+	signed, err := token.SignedString(priv)
+	if err != nil {
+		t.Fatal(err)
+	}
+	event, err := provider.Verify(context.Background(), signed)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(event.Types) != 1 || event.Types[0] != application.EventEntitlementsChanged || event.Subject != "alice" {
+		t.Fatalf("%+v", event)
+	}
+}
+
 func TestNoneAlgorithmRejected(t *testing.T) {
 	store := memory.New()
 	provider := newProvider(t, store, "https://astrafoundry.si", "http://127.0.0.1/jwks", time.Now)
@@ -263,6 +307,11 @@ func TestNoneAlgorithmRejected(t *testing.T) {
 	if !coded(err, domain.CodeUnauthorized) {
 		t.Fatalf("got %v", err)
 	}
+}
+
+func setCode(err error, code string) bool {
+	set, ok := application.AsSET(err)
+	return ok && set.Code == code
 }
 
 func coded(err error, code string) bool {

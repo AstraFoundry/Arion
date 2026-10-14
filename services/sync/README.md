@@ -34,7 +34,7 @@ Push bodies are JSON. Ciphertext, nonce, tag and AAD are raw base64url. Schema v
 
 Sibling revisions are kept. A delete beside an edit stays suppressed until a resolution names every current head. Tombstones stay until every active device has acknowledged them, then that record's envelopes are removed. Wall clock does not pick a winner.
 
-With `oidc`, `POST /v1/security-events` accepts `application/secevent+jwt` (RFC 8417 over RFC 8935), verified with the same issuer JWKS, `typ` `secevent+jwt`, `aud` `arion-sync`, deduplicated on persisted `jti`. Success is `202` with an empty body. Failure is `400` `{"err","description"}` using `invalid_request`, `invalid_key`, `invalid_issuer`, `invalid_audience`, or `authentication_failed`.
+With `oidc`, `POST /v1/security-events` accepts `application/secevent+jwt` (RFC 8417 over RFC 8935), verified with the same issuer JWKS, `typ` `secevent+jwt`, `aud` `arion-sync`, deduplicated on persisted `jti`. Success is `202` with an empty body. Failure is `400` `{"err","description"}` using only `invalid_request`, `invalid_key`, `invalid_issuer`, or `invalid_audience`. A bad signature or a key the JWKS cannot supply is `invalid_key`. A malformed token, wrong `typ`, or rejected claim is `invalid_request`.
 
 | Event | Effect |
 | --- | --- |
@@ -42,7 +42,7 @@ With `oidc`, `POST /v1/security-events` accepts `application/secevent+jwt` (RFC 
 | `https://schemas.openid.net/secevent/risc/event-type/account-disabled` | Freeze the tenant and revoke sessions. Data is kept. |
 | `https://schemas.openid.net/secevent/risc/event-type/account-enabled` | Unfreeze. Tokens issued at or before the revocation floor stay rejected. |
 | `https://schemas.openid.net/secevent/caep/event-type/session-revoked` | Reject tokens issued at or before the event until a newer token is presented. |
-| `https://astrafoundry.si/secevent/entitlements-changed` | Accept and log. `ent` is checked on every request. |
+| `https://astrafoundry.si/secevent/entitlements-changed` | Accept `{ "entitlements": ["…"] }` and log. The payload is not stored. `ent` is read from the next access token. |
 
 ## Configuration
 
