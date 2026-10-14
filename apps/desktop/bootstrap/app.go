@@ -20,6 +20,8 @@ import (
 	"arion.local/core/domain"
 	"arion.local/core/domain/ports"
 	"arion.local/desktop/infrastructure/audio"
+	"arion.local/desktop/infrastructure/browser"
+	"arion.local/desktop/infrastructure/keystore"
 	"arion.local/desktop/infrastructure/modelruntime"
 	"arion.local/desktop/infrastructure/netproxy"
 	"arion.local/desktop/infrastructure/provision"
@@ -28,6 +30,7 @@ import (
 	"arion.local/desktop/infrastructure/settings"
 	"arion.local/desktop/infrastructure/usage"
 	"arion.local/desktop/infrastructure/vocabulary"
+	"arion.local/desktop/internal/account"
 	uiapp "arion.local/desktop/ui/app"
 	arion "arion.local/desktop/ui/shared/runtime"
 	"arion.local/models"
@@ -52,6 +55,9 @@ type Options struct {
 	// E2EControl, when set, is the path of a local control socket for owned
 	// product scenarios; it swaps the microphone for scripted fixture audio.
 	E2EControl string
+	// Account configures hosted-sync sign-in. The zero value selects the
+	// product issuer and does not contact it.
+	Account account.Config
 }
 
 // App owns the running desktop application.
@@ -111,6 +117,11 @@ type App struct {
 	queueMu    sync.Mutex
 	queue      []func()
 	queueReady chan struct{}
+
+	accounts      *account.Service
+	accountMu     sync.Mutex
+	accountSeq    uint64
+	accountCancel context.CancelFunc
 }
 
 // New builds the application without starting the event loop.
@@ -194,7 +205,15 @@ func New(opts Options) (*App, error) {
 		return nil, err
 	}
 	a.state = arion.State{Preferences: prefs, Platform: modelruntime.Platform(),
-		Shortcut: arion.Shortcut{Accelerator: prefs.Shortcut}, Model: arion.Model{State: arion.ModelUnselected}}
+		Shortcut: arion.Shortcut{Accelerator: prefs.Shortcut}, Model: arion.Model{State: arion.ModelUnselected},
+		Account: arion.Account{Phase: arion.AccountSignedOut}}
+	// Sign-in is constructed here and stays idle: no discovery, browser, or
+	// credential read until the user asks.
+	accounts, err := account.New(opts.Account, account.Dependencies{Store: keystore.Open(), Browser: browser.Open})
+	if err != nil {
+		return nil, err
+	}
+	a.accounts = accounts
 	a.ui = arion.Store{State: &a.state, Actions: actions{a}}
 	return a, nil
 }

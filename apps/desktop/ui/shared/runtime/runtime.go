@@ -367,6 +367,8 @@ type State struct {
 	Platform     string
 	// SceneTarget is set each time the panel opens.
 	SceneTarget SceneTarget
+	// Account is the hosted-sync sign-in projection. It has no tokens.
+	Account Account
 }
 
 // Actions are requests views make; implementations return quickly and do
@@ -420,6 +422,16 @@ type Actions interface {
 	// RestartToUpdate relaunches into the installed version.
 	RestartToUpdate()
 	CompleteOnboarding()
+	// SignIn starts the system-browser sign-in. It returns immediately.
+	SignIn()
+	// CancelSignIn invalidates the in-flight sign-in or refresh.
+	CancelSignIn()
+	// RefreshAccount restores a session from the stored refresh token.
+	RefreshAccount()
+	// SignOut revokes the refresh token and deletes that credential item.
+	SignOut()
+	// JoinHostedSyncWaitlist joins the hosted-sync waitlist for the signed-in user.
+	JoinHostedSyncWaitlist()
 	Quit()
 }
 

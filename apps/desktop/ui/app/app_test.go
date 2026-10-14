@@ -50,6 +50,11 @@ func (r *recorder) StopLevelMonitor()           { r.call("monitor-stop") }
 func (r *recorder) CopyText(text string)        { r.call("copy:" + text) }
 func (r *recorder) OpenSettings()               { r.call("settings") }
 func (r *recorder) CompleteOnboarding()         { r.call("complete") }
+func (r *recorder) SignIn()                     { r.call("sign-in") }
+func (r *recorder) CancelSignIn()               { r.call("cancel-sign-in") }
+func (r *recorder) RefreshAccount()             { r.call("refresh-account") }
+func (r *recorder) SignOut()                    { r.call("sign-out") }
+func (r *recorder) JoinHostedSyncWaitlist()     { r.call("join-waitlist") }
 func (r *recorder) Quit()                       { r.call("quit") }
 func (r *recorder) SuspendShortcut(s bool)      { r.call("suspend") }
 func (r *recorder) TestShortcut(testing bool)   { r.call("test-shortcut") }
