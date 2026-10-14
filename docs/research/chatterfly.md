@@ -40,9 +40,30 @@ Fourteen bounded function bodies are anchored by entry address, next text symbol
 
 The resulting bounded reconstruction is **ASR stable text + context/config → post-process payload → optional SSE transport → scene/rewriting deltas and final result → enhanced-text session state → input-delivery helper**. Packet transport is streaming; this evidence does not establish that every ASR partial triggers a new LLM job. Pause processing has separate shipped methods and flags; actual stop/pause scheduling and perceived latency require controlled runtime traces.
 
+## Scene recognition and switching
+
+A second pass (`CF-asm-sel-*`, `CF-scene-catalog`, `CF-scene-negative-setters` in the ledger) followed the scene path end to end in the same arm64 slice, the preference app and the full symbolized disassembly. It answers where scenes come from, which client signals feed them and what the client does with the result.
+
+| Question | Finding | Evidence |
+| --- | --- | --- |
+| Which scenes does the product present? | Four usage scenes: email polish (邮件润色), work-message reply (回复工作消息, numbered points and tone), vibe-coding prompt (developer instruction with terms, constraints and acceptance criteria) and all-scene AI typing. User-enabled Skills are "chosen by the current input scene" | `CF-scene-catalog` (product copy, not server behavior) |
+| Who classifies the scene? | The server. The client has no scene model, label table or app-to-scene map; the SSE stream returns `scene{route, reason, path, confidence, label}` before the rewrite, and the response times `scene_ms` and `cmode_ms` separately | `CF-asm-sel-response-parse`, `CF-asm-scene-packet` |
+| What does the client send for it? | `platform`, `app{bundle_id, display_name}`, `input_env{type}`, `input_content{before_cursor ≤200, after_cursor, selected_text}`, `clipboard`, per-app `input_history` (only with enhanced recognition), `event_id`, `timestamp` | `CF-asm-sel-default-context`, `CF-asm-fast-fields`, `CF-asm-context-builder` |
+| How is the app identified? | `bundle_id` of the frontmost app; `display_name` is its frontmost on-screen window title from CGWindowList (owner PID, layer 0, non-empty name), else the app name. In a browser that title is normally the page title; no URL is read | `CF-asm-sel-app-info`, `CF-asm-sel-window-title`, `CF-asm-sel-app-dict` |
+| How is the field identified? | AX subrole `AXSearchField` → `search`; role `AXTextField`/`AXTextArea` → `text`; else empty. Secure input stops the builder before clipboard or text is read; the password flag is not sent | `CF-asm-sel-input-type`, `CF-asm-sel-input-env-dict` |
+| Are screen text, chat history or memory sent? | Not by this build: nothing calls their setters, although the serializer supports them | `CF-scene-negative-setters` (indirect writes not excluded) |
+| What does the client do with the scene? | Nothing that changes text. It attaches the scene path to the voice-edit segment so later user edits are attributed to it and reports it as `scene_path` telemetry. The delivered text is the server's enhanced output | `CF-asm-sel-edit-scene-path`, `CF-asm-sel-beacon-scene` |
+| Any local page detection? | Only inherited typing-IME heuristics: browser bundle tables plus caret geometry for the address bar, and one site detected from window titles. The browser sub-scene telemetry field (`llq_*` categories) is hard-coded to 0 | `CF-asm-sel-address-bar`, `CF-asm-sel-site-title`, `CF-asm-sel-llq-scene` |
+
+Correction: the earlier record `CF-asm-context-input-env` said `is_password` is serialized. The serializer writes only `type`, and the string does not occur in the binary.
+
+The reconstructed flow is **frontmost app (bundle ID, window title) + field type + cursor text + clipboard + per-app history → server scene stage (label, route, confidence) → server rewrite stage for that scene, optionally a user-enabled Skill → enhanced text**. The server's classifier, its label vocabulary, thresholds and prompts are not in the client and remain unknown. No live session was run, so scene choices for particular apps were not observed.
+
 ## Implications for Arion
 
 Separate ASR text, conservative correction and an explicitly selected scene-aware rewrite candidate. Do not treat scene classification, fluent output or model self-reported reasoning as proof of correctness. A server's baseline/enhanced and pause/skill/guide events are workflow evidence, not a requirement to implement voice commands or a cloud service.
+
+Arion's [scene selection](../../specs/009-contextual-rewrite.md#scene-selection) keeps Chatterfly's signal order but decides locally with a deterministic table: field type, then the web page host, then the app's bundle ID. It reads the host from the page's accessibility URL instead of the window title, which carries less content (no subject lines or document names), and it never reads cursor text, clipboard or history for this purpose. The scenes mirror the product catalog (email, work, prompt, plain chat) plus search from the field type. Chatterfly's vibe-coding scene adds constraints from page and codebase context; Arion's prompt scene only lays out what was said.
 
 Arion's proposed local path is bounded consent-gated context + approved memory + immutable source text + declared scene → versioned prompt and tokenizer → local prefill/decode → preservation checks → owned preview → existing final commit gate. Foreign field text remains data rather than an instruction source. Clipboard, full-screen scraping and unapproved cross-app history are not introduced by this research. See [proposed ADR 008](../decisions/008-contextual-rewrite-evaluation.md) and [009](../../specs/009-contextual-rewrite.md).
 
@@ -58,6 +79,7 @@ A streamed token is provisional. A newer ASR revision, cancellation, mode change
 | What is the client-side rewrite path? | Partially answered | Fourteen focused instruction records cover context, orchestration, payload, SSE packets and result handoff; execution and delivery-helper internals remain unresolved |
 | What original/export models can Arion run locally? | Partially answered | [Pinned HF/ONNX candidates](onnx-rewrite-models.md); metadata and runtime source support only, native loading/parity pending |
 | How should rewrite quality and latency be tested? | Answered as a design | [Executable evaluator and blind review chain](rewrite-evaluation.md); live LLM/native drivers and reviewed fixtures are required to obtain measurements |
+| Where are scenes decided and from which signals? | Answered | Server-side; client sends bundle ID, window title, field type, cursor text, clipboard and per-app history; the scene result only feeds edit attribution and telemetry |
 | What is Chatterfly's exact prompt, server LLM and active scene policy? | Unresolved | No server implementation or controlled runtime fixture capture was supplied |
 | Does it rewrite each partial, a stable phrase or only a completed turn? | Partially answered | Orchestration supplies `asrStableText`; separate pause-processing methods exist. Exact trigger scheduling and runtime traces remain unresolved |
 | Does a rich context field mean it reads or sends that content? | Partially answered | Concrete builder/serializer paths are established; schema, populated values and observed transmission remain separate evidence levels |

@@ -422,6 +422,92 @@
           "utf8Bytes": 13
         }
       ]
+    },
+    {
+      "id": "CF-scene-catalog",
+      "kind": "ordinary-static-bytes",
+      "observation": "The preference app presents four usage scenes (email polish, work-message reply, vibe-coding prompt, all-scene AI typing) and states that enabled Skills are chosen per input scene. Product copy is not evidence of server behavior.",
+      "artifactSha256": "4fd9473c8637b6820654b54ab0d05ff79d069d0ca29d2c7bf5fd55094047f3dd",
+      "locations": [
+        {
+          "value": "邮件润色",
+          "encoding": "utf-16-le",
+          "fileOffsets": [
+            22891374,
+            52289642
+          ]
+        },
+        {
+          "value": "回复工作消息",
+          "encoding": "utf-16-le",
+          "fileOffsets": [
+            22891556,
+            52289824
+          ]
+        },
+        {
+          "value": "说出想法，专业 Prompt 就已成型",
+          "encoding": "utf-16-le",
+          "fileOffsets": [
+            22891734,
+            52290002
+          ]
+        },
+        {
+          "value": "全场景 AI 打字",
+          "encoding": "utf-16-le",
+          "fileOffsets": [
+            22892016,
+            52290284
+          ]
+        },
+        {
+          "value": "结合当前输入场景智能选择 Skill",
+          "encoding": "utf-16-le",
+          "fileOffsets": [
+            22892510,
+            52290778
+          ]
+        },
+        {
+          "value": "home_scene_yjgt",
+          "encoding": "ascii",
+          "fileOffsets": [
+            21998244,
+            51589996
+          ]
+        },
+        {
+          "value": "home_scene_gzhb",
+          "encoding": "ascii",
+          "fileOffsets": [
+            21998260,
+            51590012
+          ]
+        },
+        {
+          "value": "home_scene_vibecoding",
+          "encoding": "ascii",
+          "fileOffsets": [
+            21998276,
+            51590028
+          ]
+        },
+        {
+          "value": "home_scene_aityping",
+          "encoding": "ascii",
+          "fileOffsets": [
+            21998298,
+            51590050
+          ]
+        }
+      ]
+    },
+    {
+      "id": "CF-scene-negative-setters",
+      "kind": "bounded-negative-static-search",
+      "observation": "In the full arm64 __text disassembly no call site sends setScreenContent:, setSceneContext:, setMemory: or setChatHistory:. setClipboard: is called by the context fast-fields builder and the ASR params builder. Indirect writes (KVC, dynamic selectors) are not excluded.",
+      "searchBoundary": "llvm-objdump --macho symbolized stub targets _objc_msgSend$<selector> in Chatterfly arm64 slice"
     }
   ],
   "decompiledFunctions": [],
@@ -3212,7 +3298,7 @@
         "sourceFileOffset": 4265392,
         "functionBytesSha256": "080d83a6094b83b8d3ec0113ca857e2082be0de28d10df3f57c1d5e1bd398e9f",
         "assemblySha256": "19d0d39a701054f5ae3a806b32159356aef8f8ce2e4d3fe7c12253db7cd2b0f8",
-        "observation": "Serializes type and is_password.",
+        "observation": "Serializes type only (corrected: is_password is not serialized; see CF-asm-sel-input-env-dict).",
         "callAnchors": [
           {
             "address": "0x1004115cc",
@@ -3246,6 +3332,1431 @@
             "reference": "@\"type\""
           }
         ]
+      },
+      {
+        "id": "CF-asm-sel-input-type",
+        "kind": "ordinary-static-arm64-instructions",
+        "method": "-[SGMacSpeechContextBuilder p_inputTypeFromAXRole:subrole:]",
+        "entry": "0x1003c31e0",
+        "exclusiveEndFromNextTextSymbol": "0x1003c3270",
+        "sourceFileOffset": 3944928,
+        "functionBytesSha256": "a362b486094af892583adb404692f7e78edcb1d9117e0eaf5366cb613607b9f5",
+        "assemblySha256": "8c9e6f78695fa9d5c71ec150076b9339f6d1d243c8086302bf93d79d6de22201",
+        "observation": "Maps AX subrole AXSearchField to \"search\" and role AXTextField or AXTextArea to \"text\"; any other role yields an empty type.",
+        "callAnchors": [
+          {
+            "address": "0x1003c3208",
+            "fileOffset": 3944968,
+            "target": "_objc_msgSend$isEqualToString:"
+          },
+          {
+            "address": "0x1003c3228",
+            "fileOffset": 3945000,
+            "target": "_objc_msgSend$isEqualToString:"
+          },
+          {
+            "address": "0x1003c3244",
+            "fileOffset": 3945028,
+            "target": "_objc_msgSend$isEqualToString:"
+          }
+        ],
+        "constantAnchors": [
+          {
+            "address": "0x1003c3200",
+            "reference": "@\"AXSearchField\""
+          },
+          {
+            "address": "0x1003c3214",
+            "reference": "@\"search\""
+          },
+          {
+            "address": "0x1003c3220",
+            "reference": "@\"AXTextField\""
+          },
+          {
+            "address": "0x1003c3230",
+            "reference": "@\"text\""
+          },
+          {
+            "address": "0x1003c323c",
+            "reference": "@\"AXTextArea\""
+          },
+          {
+            "address": "0x1003c324c",
+            "reference": "@\"\""
+          }
+        ]
+      },
+      {
+        "id": "CF-asm-sel-input-env-dict",
+        "kind": "ordinary-static-arm64-instructions",
+        "method": "-[SGSpeechPostProcessInputEnv toDict]",
+        "entry": "0x1004115b0",
+        "exclusiveEndFromNextTextSymbol": "0x100411648",
+        "sourceFileOffset": 4265392,
+        "functionBytesSha256": "080d83a6094b83b8d3ec0113ca857e2082be0de28d10df3f57c1d5e1bd398e9f",
+        "assemblySha256": "d24fecf55bd6d9155b7ca8668cd1e4334be544c28d5a2794ff20de2d46b26b7a",
+        "observation": "Serializes only key \"type\" when non-empty. The isPassword flag is not serialized here and the string is_password does not occur in the binary; it gates the context builder locally.",
+        "callAnchors": [
+          {
+            "address": "0x1004115e0",
+            "fileOffset": 4265440,
+            "target": "_objc_msgSend$type"
+          },
+          {
+            "address": "0x100411608",
+            "fileOffset": 4265480,
+            "target": "_objc_msgSend$type"
+          },
+          {
+            "address": "0x100411628",
+            "fileOffset": 4265512,
+            "target": "_objc_msgSend$setObject:forKeyedSubscript:"
+          }
+        ],
+        "constantAnchors": [
+          {
+            "address": "0x10041161c",
+            "reference": "@\"type\""
+          }
+        ]
+      },
+      {
+        "id": "CF-asm-sel-app-info",
+        "kind": "ordinary-static-arm64-instructions",
+        "method": "+[SGSpeechPostProcessAppInfo currentAppInfo]",
+        "entry": "0x100410f78",
+        "exclusiveEndFromNextTextSymbol": "0x1004110b4",
+        "sourceFileOffset": 4263800,
+        "functionBytesSha256": "f32f4641fe1e90dd561e8974f82acae0ec5fa009dd057f8e4229d32bfcbb902d",
+        "assemblySha256": "cb6c2935f3e62b5875932be25421a9a26e0518ed5ecfb545bffc8f3ec5ff9f91",
+        "observation": "Takes NSWorkspace frontmostApplication; display_name is the frontmost window title when available, otherwise localizedName; also stores bundleIdentifier.",
+        "callAnchors": [
+          {
+            "address": "0x100410f98",
+            "fileOffset": 4263832,
+            "target": "_objc_msgSend$sharedWorkspace"
+          },
+          {
+            "address": "0x100410fa8",
+            "fileOffset": 4263848,
+            "target": "_objc_msgSend$frontmostApplication"
+          },
+          {
+            "address": "0x100410fdc",
+            "fileOffset": 4263900,
+            "target": "_objc_msgSend$frontmostWindowTitleOfApp:"
+          },
+          {
+            "address": "0x100411000",
+            "fileOffset": 4263936,
+            "target": "_objc_msgSend$setDisplayName:"
+          },
+          {
+            "address": "0x10041100c",
+            "fileOffset": 4263948,
+            "target": "_objc_msgSend$localizedName"
+          },
+          {
+            "address": "0x100411028",
+            "fileOffset": 4263976,
+            "target": "_objc_msgSend$setDisplayName:"
+          },
+          {
+            "address": "0x100411040",
+            "fileOffset": 4264000,
+            "target": "_objc_msgSend$localizedName"
+          },
+          {
+            "address": "0x10041105c",
+            "fileOffset": 4264028,
+            "target": "_objc_msgSend$setAppName:"
+          },
+          {
+            "address": "0x10041106c",
+            "fileOffset": 4264044,
+            "target": "_objc_msgSend$bundleIdentifier"
+          },
+          {
+            "address": "0x100411088",
+            "fileOffset": 4264072,
+            "target": "_objc_msgSend$setBundleId:"
+          }
+        ],
+        "constantAnchors": [
+          {
+            "address": "0x100410ff0",
+            "reference": "@\"\""
+          }
+        ]
+      },
+      {
+        "id": "CF-asm-sel-window-title",
+        "kind": "ordinary-static-arm64-instructions",
+        "method": "+[SGSpeechPostProcessAppInfo frontmostWindowTitleOfApp:]",
+        "entry": "0x1004110b4",
+        "exclusiveEndFromNextTextSymbol": "0x1004112c4",
+        "sourceFileOffset": 4264116,
+        "functionBytesSha256": "46920d68ddfecff82629ff5cd78cd39aba3476ee744e9c6b548ca07e805c4ff8",
+        "assemblySha256": "799433b44863cdc6ad1125bb219d668ef69b6cd34ae093ecd41324eb420f1850",
+        "observation": "CGWindowListCopyWindowInfo(0x11) on-screen windows; selects the first window whose kCGWindowOwnerPID equals the app pid, kCGWindowLayer is 0 and kCGWindowName is non-empty. On current macOS window names require Screen Recording permission; without it the app name is used.",
+        "callAnchors": [
+          {
+            "address": "0x1004110f8",
+            "fileOffset": 4264184,
+            "target": "_objc_msgSend$processIdentifier"
+          },
+          {
+            "address": "0x100411108",
+            "fileOffset": 4264200,
+            "target": "_CGWindowListCopyWindowInfo"
+          },
+          {
+            "address": "0x100411130",
+            "fileOffset": 4264240,
+            "target": "_objc_msgSend$countByEnumeratingWithState:objects:count:"
+          },
+          {
+            "address": "0x10041119c",
+            "fileOffset": 4264348,
+            "target": "_objc_msgSend$objectForKeyedSubscript:"
+          },
+          {
+            "address": "0x1004111b4",
+            "fileOffset": 4264372,
+            "target": "_objc_msgSend$objectForKeyedSubscript:"
+          },
+          {
+            "address": "0x1004111e8",
+            "fileOffset": 4264424,
+            "target": "_objc_msgSend$objectForKeyedSubscript:"
+          },
+          {
+            "address": "0x100411234",
+            "fileOffset": 4264500,
+            "target": "_objc_msgSend$countByEnumeratingWithState:objects:count:"
+          }
+        ],
+        "constantAnchors": []
+      },
+      {
+        "id": "CF-asm-sel-app-dict",
+        "kind": "ordinary-static-arm64-instructions",
+        "method": "-[SGSpeechPostProcessAppInfo toDict]",
+        "entry": "0x1004112c4",
+        "exclusiveEndFromNextTextSymbol": "0x1004113b4",
+        "sourceFileOffset": 4264644,
+        "functionBytesSha256": "a633a912ebb89b32e9ea3eca242882fbbd47d9af81fd981a5f424866f14f79b5",
+        "assemblySha256": "2b2543326448822eef386c08573c13805d4ef785590912e051b9eda082d5102b",
+        "observation": "Serializes display_name and bundle_id when non-empty. In a browser the window title is normally the page title.",
+        "callAnchors": [
+          {
+            "address": "0x1004112f4",
+            "fileOffset": 4264692,
+            "target": "_objc_msgSend$displayName"
+          },
+          {
+            "address": "0x10041131c",
+            "fileOffset": 4264732,
+            "target": "_objc_msgSend$displayName"
+          },
+          {
+            "address": "0x10041133c",
+            "fileOffset": 4264764,
+            "target": "_objc_msgSend$setObject:forKeyedSubscript:"
+          },
+          {
+            "address": "0x10041134c",
+            "fileOffset": 4264780,
+            "target": "_objc_msgSend$bundleId"
+          },
+          {
+            "address": "0x100411374",
+            "fileOffset": 4264820,
+            "target": "_objc_msgSend$bundleId"
+          },
+          {
+            "address": "0x100411394",
+            "fileOffset": 4264852,
+            "target": "_objc_msgSend$setObject:forKeyedSubscript:"
+          }
+        ],
+        "constantAnchors": [
+          {
+            "address": "0x100411330",
+            "reference": "@\"display_name\""
+          },
+          {
+            "address": "0x100411388",
+            "reference": "@\"bundle_id\""
+          }
+        ]
+      },
+      {
+        "id": "CF-asm-sel-default-context",
+        "kind": "ordinary-static-arm64-instructions",
+        "method": "+[SGSpeechPostProcessContext defaultContext]",
+        "entry": "0x100411ed4",
+        "exclusiveEndFromNextTextSymbol": "0x100411f70",
+        "sourceFileOffset": 4267732,
+        "functionBytesSha256": "10d9317befdcaed412cf0c3ed7648f94b86fa803ccb52a0bf382facecff4129c",
+        "assemblySha256": "3245ab8bd925c72a45712f52324832e04e56a4d83d7aa192b362a1b8f76b1276",
+        "observation": "Creates the context with platform \"macos\", the current app info and a timestamp.",
+        "callAnchors": [
+          {
+            "address": "0x100411f04",
+            "fileOffset": 4267780,
+            "target": "_objc_msgSend$setPlatform:"
+          },
+          {
+            "address": "0x100411f10",
+            "fileOffset": 4267792,
+            "target": "_objc_msgSend$currentAppInfo"
+          },
+          {
+            "address": "0x100411f28",
+            "fileOffset": 4267816,
+            "target": "_objc_msgSend$setApp:"
+          },
+          {
+            "address": "0x100411f38",
+            "fileOffset": 4267832,
+            "target": "_objc_msgSend$currentTimestamp"
+          },
+          {
+            "address": "0x100411f50",
+            "fileOffset": 4267856,
+            "target": "_objc_msgSend$setTimestamp:"
+          }
+        ],
+        "constantAnchors": [
+          {
+            "address": "0x100411f00",
+            "reference": "@\"macos\""
+          }
+        ]
+      },
+      {
+        "id": "CF-asm-sel-response-parse",
+        "kind": "ordinary-static-arm64-instructions",
+        "method": "+[SGSpeechPostProcessResponse parseProcessData:]",
+        "entry": "0x100419770",
+        "exclusiveEndFromNextTextSymbol": "0x100419ce4",
+        "sourceFileOffset": 4298608,
+        "functionBytesSha256": "6d5afd0467e7489d00de13d44e4dcc38a060e2fb80f651a96ad336698b97e957",
+        "assemblySha256": "0f87b6e542c01913659114dd619b4ca83151b61b1e7e52ed75ac5a11e0abd53e",
+        "observation": "Parses scene {route, reason, path, confidence, label}, cmode {reasoning, baseline_output, enhanced_output, tips}, fallback {kind, message, asr_text, cmode_error} and latency {e2e_ms, scene_ms, cmode_ms}: scene selection and rewriting are separately timed server stages.",
+        "callAnchors": [
+          {
+            "address": "0x1004197d0",
+            "fileOffset": 4298704,
+            "target": "_objc_msgSend$setDelta:"
+          },
+          {
+            "address": "0x1004197e8",
+            "fileOffset": 4298728,
+            "target": "_objc_msgSend$objectForKeyedSubscript:"
+          },
+          {
+            "address": "0x10041980c",
+            "fileOffset": 4298764,
+            "target": "_objc_msgSend$isKindOfClass:"
+          },
+          {
+            "address": "0x100419838",
+            "fileOffset": 4298808,
+            "target": "_objc_msgSend$setFinal:"
+          },
+          {
+            "address": "0x100419848",
+            "fileOffset": 4298824,
+            "target": "_objc_msgSend$objectForKeyedSubscript:"
+          },
+          {
+            "address": "0x10041986c",
+            "fileOffset": 4298860,
+            "target": "_objc_msgSend$isKindOfClass:"
+          },
+          {
+            "address": "0x1004198ac",
+            "fileOffset": 4298924,
+            "target": "_objc_msgSend$setRoute:"
+          },
+          {
+            "address": "0x1004198dc",
+            "fileOffset": 4298972,
+            "target": "_objc_msgSend$setReason:"
+          },
+          {
+            "address": "0x10041990c",
+            "fileOffset": 4299020,
+            "target": "_objc_msgSend$setPath:"
+          },
+          {
+            "address": "0x100419924",
+            "fileOffset": 4299044,
+            "target": "_objc_msgSend$objectForKeyedSubscript:"
+          },
+          {
+            "address": "0x100419944",
+            "fileOffset": 4299076,
+            "target": "_objc_msgSend$isKindOfClass:"
+          },
+          {
+            "address": "0x10041996c",
+            "fileOffset": 4299116,
+            "target": "_objc_msgSend$setConfidence:"
+          },
+          {
+            "address": "0x100419994",
+            "fileOffset": 4299156,
+            "target": "_objc_msgSend$setLabel:"
+          },
+          {
+            "address": "0x1004199a8",
+            "fileOffset": 4299176,
+            "target": "_objc_msgSend$setScene:"
+          },
+          {
+            "address": "0x1004199c0",
+            "fileOffset": 4299200,
+            "target": "_objc_msgSend$objectForKeyedSubscript:"
+          },
+          {
+            "address": "0x1004199e0",
+            "fileOffset": 4299232,
+            "target": "_objc_msgSend$isKindOfClass:"
+          },
+          {
+            "address": "0x100419a20",
+            "fileOffset": 4299296,
+            "target": "_objc_msgSend$setReasoning:"
+          },
+          {
+            "address": "0x100419a50",
+            "fileOffset": 4299344,
+            "target": "_objc_msgSend$setBaselineOutput:"
+          },
+          {
+            "address": "0x100419a80",
+            "fileOffset": 4299392,
+            "target": "_objc_msgSend$setEnhancedOutput:"
+          },
+          {
+            "address": "0x100419ab0",
+            "fileOffset": 4299440,
+            "target": "_objc_msgSend$setTips:"
+          },
+          {
+            "address": "0x100419ac4",
+            "fileOffset": 4299460,
+            "target": "_objc_msgSend$setCmode:"
+          },
+          {
+            "address": "0x100419adc",
+            "fileOffset": 4299484,
+            "target": "_objc_msgSend$objectForKeyedSubscript:"
+          },
+          {
+            "address": "0x100419afc",
+            "fileOffset": 4299516,
+            "target": "_objc_msgSend$isKindOfClass:"
+          },
+          {
+            "address": "0x100419b3c",
+            "fileOffset": 4299580,
+            "target": "_objc_msgSend$setKind:"
+          },
+          {
+            "address": "0x100419b6c",
+            "fileOffset": 4299628,
+            "target": "_objc_msgSend$setMessage:"
+          },
+          {
+            "address": "0x100419b9c",
+            "fileOffset": 4299676,
+            "target": "_objc_msgSend$setAsrText:"
+          },
+          {
+            "address": "0x100419bcc",
+            "fileOffset": 4299724,
+            "target": "_objc_msgSend$setCmodeError:"
+          },
+          {
+            "address": "0x100419be0",
+            "fileOffset": 4299744,
+            "target": "_objc_msgSend$setFallback:"
+          },
+          {
+            "address": "0x100419bf8",
+            "fileOffset": 4299768,
+            "target": "_objc_msgSend$objectForKeyedSubscript:"
+          },
+          {
+            "address": "0x100419c18",
+            "fileOffset": 4299800,
+            "target": "_objc_msgSend$isKindOfClass:"
+          },
+          {
+            "address": "0x100419c4c",
+            "fileOffset": 4299852,
+            "target": "_objc_msgSend$setE2eMs:"
+          },
+          {
+            "address": "0x100419c68",
+            "fileOffset": 4299880,
+            "target": "_objc_msgSend$setSceneMs:"
+          },
+          {
+            "address": "0x100419c84",
+            "fileOffset": 4299908,
+            "target": "_objc_msgSend$setCmodeMs:"
+          },
+          {
+            "address": "0x100419c90",
+            "fileOffset": 4299920,
+            "target": "_objc_msgSend$setLatency:"
+          }
+        ],
+        "constantAnchors": [
+          {
+            "address": "0x1004197b0",
+            "reference": "@\"delta\""
+          },
+          {
+            "address": "0x1004197e0",
+            "reference": "@\"final\""
+          },
+          {
+            "address": "0x100419840",
+            "reference": "@\"scene\""
+          },
+          {
+            "address": "0x10041988c",
+            "reference": "@\"route\""
+          },
+          {
+            "address": "0x1004198bc",
+            "reference": "@\"reason\""
+          },
+          {
+            "address": "0x1004198ec",
+            "reference": "@\"path\""
+          },
+          {
+            "address": "0x10041991c",
+            "reference": "@\"confidence\""
+          },
+          {
+            "address": "0x100419974",
+            "reference": "@\"label\""
+          },
+          {
+            "address": "0x1004199b8",
+            "reference": "@\"cmode\""
+          },
+          {
+            "address": "0x100419a00",
+            "reference": "@\"reasoning\""
+          },
+          {
+            "address": "0x100419a30",
+            "reference": "@\"baseline_output\""
+          },
+          {
+            "address": "0x100419a60",
+            "reference": "@\"enhanced_output\""
+          },
+          {
+            "address": "0x100419a90",
+            "reference": "@\"tips\""
+          },
+          {
+            "address": "0x100419ad4",
+            "reference": "@\"fallback\""
+          },
+          {
+            "address": "0x100419b1c",
+            "reference": "@\"kind\""
+          },
+          {
+            "address": "0x100419b4c",
+            "reference": "@\"message\""
+          },
+          {
+            "address": "0x100419b7c",
+            "reference": "@\"asr_text\""
+          },
+          {
+            "address": "0x100419bac",
+            "reference": "@\"cmode_error\""
+          },
+          {
+            "address": "0x100419bf0",
+            "reference": "@\"latency\""
+          },
+          {
+            "address": "0x100419c38",
+            "reference": "@\"e2e_ms\""
+          },
+          {
+            "address": "0x100419c54",
+            "reference": "@\"scene_ms\""
+          },
+          {
+            "address": "0x100419c70",
+            "reference": "@\"cmode_ms\""
+          }
+        ]
+      },
+      {
+        "id": "CF-asm-sel-edit-scene-path",
+        "kind": "ordinary-static-arm64-instructions",
+        "method": "-[SGVoiceEditTracker prepareForVoiceCommitWithText:sessionData:]",
+        "entry": "0x10041eef4",
+        "exclusiveEndFromNextTextSymbol": "0x10041f4d0",
+        "sourceFileOffset": 4321012,
+        "functionBytesSha256": "7b18653c0a7131c8c4f738eb84cfb6a12f8e04ac59ec373108b12d2131fa6e31",
+        "assemblySha256": "851a3711561a3e0b9ca83abe4c8ed8a633636167e860100e897e6de874752eae",
+        "observation": "Copies the response scene path onto the voice-edit segment with skill id, finish method and AX anchors, so later user edits are attributed to the scene; it does not change delivered text.",
+        "callAnchors": [
+          {
+            "address": "0x10041f028",
+            "fileOffset": 4321320,
+            "target": "_objc_msgSend$sessionFinishFrom"
+          },
+          {
+            "address": "0x10041f034",
+            "fileOffset": 4321332,
+            "target": "_objc_msgSend$setFinishMethod:"
+          },
+          {
+            "address": "0x10041f03c",
+            "fileOffset": 4321340,
+            "target": "_objc_msgSend$llmResponse"
+          },
+          {
+            "address": "0x10041f04c",
+            "fileOffset": 4321356,
+            "target": "_objc_msgSend$stepInfo"
+          },
+          {
+            "address": "0x10041f05c",
+            "fileOffset": 4321372,
+            "target": "_objc_msgSend$scene"
+          },
+          {
+            "address": "0x10041f06c",
+            "fileOffset": 4321388,
+            "target": "_objc_msgSend$path"
+          },
+          {
+            "address": "0x10041f084",
+            "fileOffset": 4321412,
+            "target": "_objc_msgSend$setScenePath:"
+          },
+          {
+            "address": "0x10041f0ac",
+            "fileOffset": 4321452,
+            "target": "_objc_msgSend$before"
+          },
+          {
+            "address": "0x10041f324",
+            "fileOffset": 4322084,
+            "target": "_objc_msgSend$role"
+          },
+          {
+            "address": "0x10041f344",
+            "fileOffset": 4322116,
+            "target": "_objc_msgSend$path"
+          },
+          {
+            "address": "0x10041f350",
+            "fileOffset": 4322128,
+            "target": "_objc_msgSend$cursor"
+          },
+          {
+            "address": "0x10041f35c",
+            "fileOffset": 4322140,
+            "target": "_objc_msgSend$totalLength"
+          },
+          {
+            "address": "0x10041f368",
+            "fileOffset": 4322152,
+            "target": "_objc_msgSend$costMS"
+          },
+          {
+            "address": "0x10041f380",
+            "fileOffset": 4322176,
+            "target": "_objc_msgSend$prefixAnchor"
+          }
+        ],
+        "constantAnchors": [
+          {
+            "address": "0x10041f0c0",
+            "reference": "@\"\""
+          },
+          {
+            "address": "0x10041f310",
+            "reference": "@\"-\""
+          }
+        ]
+      },
+      {
+        "id": "CF-asm-sel-beacon-scene",
+        "kind": "ordinary-static-arm64-instructions",
+        "method": "+[SGSpeechBeaconReporter reportSuccessWithSessionData:extraParams:]",
+        "entry": "0x100407fcc",
+        "exclusiveEndFromNextTextSymbol": "0x100408e50",
+        "sourceFileOffset": 4227020,
+        "functionBytesSha256": "c23374cbf52e75a87eb578991c59f5f369092aa1650a2f614ea7ae1c677b0940",
+        "assemblySha256": "a7487a5600dee180356a9cb5a9b31daeada5e79a7e516489d6177ee0671bcbf1",
+        "observation": "Reports the scene path as telemetry key scene_path.",
+        "callAnchors": [
+          {
+            "address": "0x100408d04",
+            "fileOffset": 4230404,
+            "target": "_objc_msgSend$setObject:forKeyedSubscript:"
+          },
+          {
+            "address": "0x100408d14",
+            "fileOffset": 4230420,
+            "target": "_objc_msgSend$llmResponse"
+          },
+          {
+            "address": "0x100408d24",
+            "fileOffset": 4230436,
+            "target": "_objc_msgSend$stepInfo"
+          },
+          {
+            "address": "0x100408d34",
+            "fileOffset": 4230452,
+            "target": "_objc_msgSend$scene"
+          },
+          {
+            "address": "0x100408d44",
+            "fileOffset": 4230468,
+            "target": "_objc_msgSend$path"
+          },
+          {
+            "address": "0x100408d70",
+            "fileOffset": 4230512,
+            "target": "_objc_msgSend$setObject:forKeyedSubscript:"
+          }
+        ],
+        "constantAnchors": [
+          {
+            "address": "0x100408cf8",
+            "reference": "@\"vp_latency\""
+          },
+          {
+            "address": "0x100408d58",
+            "reference": "@\"\""
+          },
+          {
+            "address": "0x100408d68",
+            "reference": "@\"scene_path\""
+          }
+        ]
+      },
+      {
+        "id": "CF-asm-sel-address-bar",
+        "kind": "ordinary-static-arm64-instructions",
+        "method": "-[SGInputControllerIdle isInAddressBarWithSender:]",
+        "entry": "0x1002d2d60",
+        "exclusiveEndFromNextTextSymbol": "0x1002d36d0",
+        "sourceFileOffset": 2960736,
+        "functionBytesSha256": "d2ab1106f3ee5cc20aae747cb2efd9b5ddfcebb7e40e4d52d464e062e948266d",
+        "assemblySha256": "3e6c638dcea4a5f2d6e4464f44563b361ac5261381816ef25dab43b406935030",
+        "observation": "Typing-IME heuristic: per-browser tables (bundle IDs of Safari, Chrome, Firefox, Opera, Edge, QQ and 360 browsers) and caret geometry relative to the frontmost window bounds from CGWindowList decide whether the caret is in the address bar. No URL is read.",
+        "callAnchors": [
+          {
+            "address": "0x1002d2dc8",
+            "fileOffset": 2960840,
+            "target": "_objc_msgSend$recordRunLogP4WithFunc:withLine:withLogContent:withLogType:"
+          },
+          {
+            "address": "0x1002d2df4",
+            "fileOffset": 2960884,
+            "target": "_objc_msgSend$boolObjectForKey:"
+          },
+          {
+            "address": "0x1002d2e30",
+            "fileOffset": 2960944,
+            "target": "_objc_msgSend$compare:options:"
+          },
+          {
+            "address": "0x1002d2e98",
+            "fileOffset": 2961048,
+            "target": "_objc_msgSend$dictionaryWithObjectsAndKeys:"
+          },
+          {
+            "address": "0x1002d2ed0",
+            "fileOffset": 2961104,
+            "target": "_objc_msgSend$dictionaryWithObjectsAndKeys:"
+          },
+          {
+            "address": "0x1002d2f00",
+            "fileOffset": 2961152,
+            "target": "_objc_msgSend$dictionaryWithObjectsAndKeys:"
+          },
+          {
+            "address": "0x1002d2f4c",
+            "fileOffset": 2961228,
+            "target": "_objc_msgSend$dictionaryWithObjectsAndKeys:"
+          },
+          {
+            "address": "0x1002d2f7c",
+            "fileOffset": 2961276,
+            "target": "_objc_msgSend$dictionaryWithObjectsAndKeys:"
+          },
+          {
+            "address": "0x1002d2fac",
+            "fileOffset": 2961324,
+            "target": "_objc_msgSend$dictionaryWithObjectsAndKeys:"
+          },
+          {
+            "address": "0x1002d2fdc",
+            "fileOffset": 2961372,
+            "target": "_objc_msgSend$dictionaryWithObjectsAndKeys:"
+          },
+          {
+            "address": "0x1002d305c",
+            "fileOffset": 2961500,
+            "target": "_objc_msgSend$dictionaryWithObjectsAndKeys:"
+          },
+          {
+            "address": "0x1002d30b4",
+            "fileOffset": 2961588,
+            "target": "_objc_msgSend$bundleIdentifier"
+          },
+          {
+            "address": "0x1002d30cc",
+            "fileOffset": 2961612,
+            "target": "_objc_msgSend$objectForKey:"
+          },
+          {
+            "address": "0x1002d3100",
+            "fileOffset": 2961664,
+            "target": "_objc_msgSend$attributesForCharacterIndex:lineHeightRectangle:"
+          },
+          {
+            "address": "0x1002d3108",
+            "fileOffset": 2961672,
+            "target": "_objc_unsafeClaimAutoreleasedReturnValue"
+          },
+          {
+            "address": "0x1002d313c",
+            "fileOffset": 2961724,
+            "target": "_objc_msgSend$objectForKey:"
+          },
+          {
+            "address": "0x1002d3158",
+            "fileOffset": 2961752,
+            "target": "_objc_msgSend$screens"
+          },
+          {
+            "address": "0x1002d3168",
+            "fileOffset": 2961768,
+            "target": "_objc_msgSend$firstObject"
+          },
+          {
+            "address": "0x1002d3184",
+            "fileOffset": 2961796,
+            "target": "_objc_msgSend$frame"
+          },
+          {
+            "address": "0x1002d3198",
+            "fileOffset": 2961816,
+            "target": "_objc_msgSend$objectForKey:"
+          },
+          {
+            "address": "0x1002d31b0",
+            "fileOffset": 2961840,
+            "target": "_CGWindowListCopyWindowInfo"
+          },
+          {
+            "address": "0x1002d31ec",
+            "fileOffset": 2961900,
+            "target": "_objc_msgSend$objectAtIndexedSubscript:"
+          },
+          {
+            "address": "0x1002d3200",
+            "fileOffset": 2961920,
+            "target": "_objc_msgSend$objectForKey:"
+          },
+          {
+            "address": "0x1002d3218",
+            "fileOffset": 2961944,
+            "target": "_objc_msgSend$allKeys"
+          },
+          {
+            "address": "0x1002d322c",
+            "fileOffset": 2961964,
+            "target": "_objc_msgSend$containsObject:"
+          },
+          {
+            "address": "0x1002d323c",
+            "fileOffset": 2961980,
+            "target": "_objc_msgSend$objectForKey:"
+          },
+          {
+            "address": "0x1002d3270",
+            "fileOffset": 2962032,
+            "target": "_objc_msgSend$isEqualToString:"
+          },
+          {
+            "address": "0x1002d3284",
+            "fileOffset": 2962052,
+            "target": "_objc_msgSend$rangeOfString:"
+          },
+          {
+            "address": "0x1002d32b0",
+            "fileOffset": 2962096,
+            "target": "_objc_msgSend$objectAtIndexedSubscript:"
+          },
+          {
+            "address": "0x1002d32d0",
+            "fileOffset": 2962128,
+            "target": "_objc_msgSend$objectForKeyedSubscript:"
+          },
+          {
+            "address": "0x1002d32e8",
+            "fileOffset": 2962152,
+            "target": "_objc_msgSend$objectForKeyedSubscript:"
+          },
+          {
+            "address": "0x1002d3300",
+            "fileOffset": 2962176,
+            "target": "_objc_msgSend$isEqualToNumber:"
+          },
+          {
+            "address": "0x1002d3318",
+            "fileOffset": 2962200,
+            "target": "_objc_msgSend$objectForKeyedSubscript:"
+          },
+          {
+            "address": "0x1002d3338",
+            "fileOffset": 2962232,
+            "target": "_objc_msgSend$objectForKeyedSubscript:"
+          },
+          {
+            "address": "0x1002d33a4",
+            "fileOffset": 2962340,
+            "target": "_objc_msgSend$rangeOfString:"
+          },
+          {
+            "address": "0x1002d33c0",
+            "fileOffset": 2962368,
+            "target": "_objc_msgSend$objectForKey:"
+          },
+          {
+            "address": "0x1002d33d8",
+            "fileOffset": 2962392,
+            "target": "_objc_msgSend$objectForKey:"
+          },
+          {
+            "address": "0x1002d341c",
+            "fileOffset": 2962460,
+            "target": "_objc_msgSend$objectForKey:"
+          },
+          {
+            "address": "0x1002d3434",
+            "fileOffset": 2962484,
+            "target": "_objc_msgSend$isEqualToString:"
+          },
+          {
+            "address": "0x1002d3548",
+            "fileOffset": 2962760,
+            "target": "_objc_msgSend$objectForKey:"
+          },
+          {
+            "address": "0x1002d3578",
+            "fileOffset": 2962808,
+            "target": "_objc_msgSend$objectForKey:"
+          },
+          {
+            "address": "0x1002d359c",
+            "fileOffset": 2962844,
+            "target": "_objc_msgSend$objectForKey:"
+          },
+          {
+            "address": "0x1002d35e0",
+            "fileOffset": 2962912,
+            "target": "_objc_msgSend$objectForKey:"
+          },
+          {
+            "address": "0x1002d360c",
+            "fileOffset": 2962956,
+            "target": "_objc_msgSend$objectForKey:"
+          },
+          {
+            "address": "0x1002d3634",
+            "fileOffset": 2962996,
+            "target": "_objc_msgSend$objectForKey:"
+          },
+          {
+            "address": "0x1002d3670",
+            "fileOffset": 2963056,
+            "target": "_objc_msgSend$objectForKey:"
+          },
+          {
+            "address": "0x1002d36a8",
+            "fileOffset": 2963112,
+            "target": "_NSPointInRect"
+          }
+        ],
+        "constantAnchors": [
+          {
+            "address": "0x1002d2dbc",
+            "reference": "@\"beg\""
+          },
+          {
+            "address": "0x1002d2df0",
+            "reference": "@\"keyAddressInBrower\""
+          },
+          {
+            "address": "0x1002d2e28",
+            "reference": "@\"10.15\""
+          },
+          {
+            "address": "0x1002d2e50",
+            "reference": "@\"S\""
+          },
+          {
+            "address": "0x1002d2e58",
+            "reference": "@\"S\""
+          },
+          {
+            "address": "0x1002d2e68",
+            "reference": "@\"height\""
+          },
+          {
+            "address": "0x1002d2e74",
+            "reference": "@\"50\""
+          },
+          {
+            "address": "0x1002d2e7c",
+            "reference": "@\"pTop\""
+          },
+          {
+            "address": "0x1002d2e88",
+            "reference": "@\"0\""
+          },
+          {
+            "address": "0x1002d2e90",
+            "reference": "@\"name\""
+          },
+          {
+            "address": "0x1002d2eb4",
+            "reference": "@\"30\""
+          },
+          {
+            "address": "0x1002d2ec0",
+            "reference": "@\"40\""
+          },
+          {
+            "address": "0x1002d2ecc",
+            "reference": "@\"Google Chrome\""
+          },
+          {
+            "address": "0x1002d2ef0",
+            "reference": "@\"42\""
+          },
+          {
+            "address": "0x1002d2efc",
+            "reference": "@\"Opera\""
+          },
+          {
+            "address": "0x1002d2f18",
+            "reference": "@\"pRightPercent\""
+          },
+          {
+            "address": "0x1002d2f24",
+            "reference": "@\"0.5\""
+          },
+          {
+            "address": "0x1002d2f30",
+            "reference": "@\"28\""
+          },
+          {
+            "address": "0x1002d2f3c",
+            "reference": "@\"45\""
+          },
+          {
+            "address": "0x1002d2f44",
+            "reference": "@\"Firefox\""
+          },
+          {
+            "address": "0x1002d2f68",
+            "reference": "@\"36\""
+          },
+          {
+            "address": "0x1002d2f78",
+            "reference": "@\"Q\""
+          },
+          {
+            "address": "0x1002d2f9c",
+            "reference": "@\"35\""
+          },
+          {
+            "address": "0x1002d2fa8",
+            "reference": "@\"3\""
+          },
+          {
+            "address": "0x1002d2fcc",
+            "reference": "@\"40\""
+          },
+          {
+            "address": "0x1002d2fd8",
+            "reference": "@\"Microsoft Edge\""
+          },
+          {
+            "address": "0x1002d2ff8",
+            "reference": "@\"com.microsoft.edgemac\""
+          },
+          {
+            "address": "0x1002d3004",
+            "reference": "@\"net.qihoo.360browser\""
+          },
+          {
+            "address": "0x1002d3010",
+            "reference": "@\"com.tencent.QQBrowserLite\""
+          },
+          {
+            "address": "0x1002d301c",
+            "reference": "@\"com.tencent.QQBrowser\""
+          },
+          {
+            "address": "0x1002d3028",
+            "reference": "@\"org.mozilla.firefox\""
+          },
+          {
+            "address": "0x1002d3034",
+            "reference": "@\"com.operasoftware.Opera\""
+          },
+          {
+            "address": "0x1002d3040",
+            "reference": "@\"com.google.Chrome\""
+          },
+          {
+            "address": "0x1002d304c",
+            "reference": "@\"com.apple.Safari\""
+          },
+          {
+            "address": "0x1002d3190",
+            "reference": "@\"name\""
+          },
+          {
+            "address": "0x1002d31d4",
+            "reference": "@\"kCGWindowOwnerName\""
+          },
+          {
+            "address": "0x1002d31dc",
+            "reference": "@\"kCGWindowName\""
+          },
+          {
+            "address": "0x1002d326c",
+            "reference": "@\"QQ\""
+          },
+          {
+            "address": "0x1002d3280",
+            "reference": "@\"Safari\""
+          },
+          {
+            "address": "0x1002d32c8",
+            "reference": "@\"kCGWindowAlpha\""
+          },
+          {
+            "address": "0x1002d3310",
+            "reference": "@\"kCGWindowNumber\""
+          },
+          {
+            "address": "0x1002d3360",
+            "reference": "@\"kCGWindowOwnerName\""
+          },
+          {
+            "address": "0x1002d3394",
+            "reference": "@\"kCGWindowName\""
+          },
+          {
+            "address": "0x1002d33bc",
+            "reference": "@\"kCGWindowBounds\""
+          },
+          {
+            "address": "0x1002d33d4",
+            "reference": "@\"Height\""
+          },
+          {
+            "address": "0x1002d340c",
+            "reference": "@\"kCGWindowOwnerName\""
+          },
+          {
+            "address": "0x1002d3430",
+            "reference": "@\"Q\""
+          },
+          {
+            "address": "0x1002d3444",
+            "reference": "@\"kCGWindowName\""
+          },
+          {
+            "address": "0x1002d3480",
+            "reference": "@\"kCGWindowName\""
+          },
+          {
+            "address": "0x1002d3540",
+            "reference": "@\"Width\""
+          },
+          {
+            "address": "0x1002d356c",
+            "reference": "@\"pRightPercent\""
+          },
+          {
+            "address": "0x1002d3594",
+            "reference": "@\"pRightPercent\""
+          },
+          {
+            "address": "0x1002d35d8",
+            "reference": "@\"height\""
+          },
+          {
+            "address": "0x1002d3604",
+            "reference": "@\"Y\""
+          },
+          {
+            "address": "0x1002d362c",
+            "reference": "@\"pTop\""
+          },
+          {
+            "address": "0x1002d3668",
+            "reference": "@\"X\""
+          }
+        ]
+      },
+      {
+        "id": "CF-asm-sel-site-title",
+        "kind": "ordinary-static-arm64-instructions",
+        "method": "_IsInZhihuBrowser",
+        "entry": "0x1001405e4",
+        "exclusiveEndFromNextTextSymbol": "0x100140a5c",
+        "sourceFileOffset": 1312228,
+        "functionBytesSha256": "58ca73b785779fb0bd4b8aaf2cec645d20840ff0fe40f7dde934da55c02219a9",
+        "assemblySha256": "3dbbbf94262a5e9e30e3768f85f581c333326e73c7feb46c62c77dc569dcfa57",
+        "observation": "Typing-IME heuristic: matches browser window titles from CGWindowList (split on \"-\") to detect one site. Page identity comes from the window title, not a URL.",
+        "callAnchors": [
+          {
+            "address": "0x100140650",
+            "fileOffset": 1312336,
+            "target": "_objc_msgSend$compare:options:"
+          },
+          {
+            "address": "0x100140688",
+            "fileOffset": 1312392,
+            "target": "_objc_msgSend$dictionaryWithObjectsAndKeys:"
+          },
+          {
+            "address": "0x1001406a8",
+            "fileOffset": 1312424,
+            "target": "_objc_msgSend$dictionaryWithObjectsAndKeys:"
+          },
+          {
+            "address": "0x1001406c8",
+            "fileOffset": 1312456,
+            "target": "_objc_msgSend$dictionaryWithObjectsAndKeys:"
+          },
+          {
+            "address": "0x1001406e8",
+            "fileOffset": 1312488,
+            "target": "_objc_msgSend$dictionaryWithObjectsAndKeys:"
+          },
+          {
+            "address": "0x100140708",
+            "fileOffset": 1312520,
+            "target": "_objc_msgSend$dictionaryWithObjectsAndKeys:"
+          },
+          {
+            "address": "0x10014075c",
+            "fileOffset": 1312604,
+            "target": "_objc_msgSend$dictionaryWithObjectsAndKeys:"
+          },
+          {
+            "address": "0x1001407a8",
+            "fileOffset": 1312680,
+            "target": "_objc_msgSend$objectForKey:"
+          },
+          {
+            "address": "0x1001407dc",
+            "fileOffset": 1312732,
+            "target": "_objc_msgSend$arrayWithObjects:"
+          },
+          {
+            "address": "0x1001407fc",
+            "fileOffset": 1312764,
+            "target": "_objc_msgSend$objectForKey:"
+          },
+          {
+            "address": "0x100140814",
+            "fileOffset": 1312788,
+            "target": "_CGWindowListCopyWindowInfo"
+          },
+          {
+            "address": "0x100140838",
+            "fileOffset": 1312824,
+            "target": "_objc_msgSend$countByEnumeratingWithState:objects:count:"
+          },
+          {
+            "address": "0x10014088c",
+            "fileOffset": 1312908,
+            "target": "_objc_msgSend$objectForKey:"
+          },
+          {
+            "address": "0x1001408a8",
+            "fileOffset": 1312936,
+            "target": "_objc_msgSend$rangeOfString:"
+          },
+          {
+            "address": "0x1001408c0",
+            "fileOffset": 1312960,
+            "target": "_objc_msgSend$objectForKey:"
+          },
+          {
+            "address": "0x100140904",
+            "fileOffset": 1313028,
+            "target": "_objc_msgSend$countByEnumeratingWithState:objects:count:"
+          },
+          {
+            "address": "0x100140940",
+            "fileOffset": 1313088,
+            "target": "_objc_msgSend$rangeOfString:"
+          },
+          {
+            "address": "0x100140968",
+            "fileOffset": 1313128,
+            "target": "_objc_msgSend$countByEnumeratingWithState:objects:count:"
+          },
+          {
+            "address": "0x1001409c0",
+            "fileOffset": 1313216,
+            "target": "_objc_msgSend$countByEnumeratingWithState:objects:count:"
+          }
+        ],
+        "constantAnchors": [
+          {
+            "address": "0x100140630",
+            "reference": "@\"name\""
+          },
+          {
+            "address": "0x100140648",
+            "reference": "@\"10.15\""
+          },
+          {
+            "address": "0x100140664",
+            "reference": "@\"S\""
+          },
+          {
+            "address": "0x10014066c",
+            "reference": "@\"S\""
+          },
+          {
+            "address": "0x1001406a4",
+            "reference": "@\"Google Chrome\""
+          },
+          {
+            "address": "0x1001406c4",
+            "reference": "@\"Opera\""
+          },
+          {
+            "address": "0x1001406e4",
+            "reference": "@\"Firefox\""
+          },
+          {
+            "address": "0x100140704",
+            "reference": "@\"Q\""
+          },
+          {
+            "address": "0x10014071c",
+            "reference": "@\"com.tencent.QQBrowser\""
+          },
+          {
+            "address": "0x100140728",
+            "reference": "@\"org.mozilla.firefox\""
+          },
+          {
+            "address": "0x100140734",
+            "reference": "@\"com.operasoftware.Opera\""
+          },
+          {
+            "address": "0x100140740",
+            "reference": "@\"com.google.Chrome\""
+          },
+          {
+            "address": "0x10014074c",
+            "reference": "@\"com.apple.Safari\""
+          },
+          {
+            "address": "0x1001407cc",
+            "reference": "@\"-\""
+          },
+          {
+            "address": "0x1001407d8",
+            "reference": "@\"�wNN \""
+          },
+          {
+            "address": "0x1001407f0",
+            "reference": "@\"name\""
+          },
+          {
+            "address": "0x100140854",
+            "reference": "@\"kCGWindowOwnerName\""
+          },
+          {
+            "address": "0x1001408bc",
+            "reference": "@\"kCGWindowName\""
+          },
+          {
+            "address": "0x100140990",
+            "reference": "@\"kCGWindowOwnerName\""
+          }
+        ]
+      },
+      {
+        "id": "CF-asm-sel-llq-scene",
+        "kind": "ordinary-static-arm64-instructions",
+        "method": "-[SGPyConversionEngine createActionInfoForFullCommit]",
+        "entry": "0x100325e94",
+        "exclusiveEndFromNextTextSymbol": "0x100326994",
+        "sourceFileOffset": 3301012,
+        "functionBytesSha256": "4cb09c9cd7362bfced9d64bd34ba20329f424a680dd72a94861881966f222a26",
+        "assemblySha256": "5c2241b7750bf3c5f0780720710a6c6b69f6f8719dde09015b4a18a48c23a0b2",
+        "observation": "Pingback field llqScene (browser sub-scene) is set to constant 0 on this commit path; the llq_* category labels are dormant telemetry in this build.",
+        "callAnchors": [
+          {
+            "address": "0x1003262f8",
+            "fileOffset": 3302136,
+            "target": "_objc_msgSend$bundleID"
+          },
+          {
+            "address": "0x100326324",
+            "fileOffset": 3302180,
+            "target": "_objc_msgSend$setAppName:"
+          },
+          {
+            "address": "0x100326330",
+            "fileOffset": 3302192,
+            "target": "_objc_msgSend$setLlqScene:"
+          },
+          {
+            "address": "0x10032634c",
+            "fileOffset": 3302220,
+            "target": "_objc_msgSend$timeIntervalSince1970"
+          },
+          {
+            "address": "0x100326364",
+            "fileOffset": 3302244,
+            "target": "_objc_msgSend$setCommitId:"
+          }
+        ],
+        "constantAnchors": []
       }
     ]
   }
