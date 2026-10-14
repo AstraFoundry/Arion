@@ -15,7 +15,7 @@ function isExternal(href: string) {
 
 /**
  * A link styled as a button. Internal routes use Next's client navigation in
- * the current locale; external links (releases, source, the Astra Foundry
+ * the current locale; external links (releases, source, the AstraFoundry
  * account) are plain anchors in the same tab.
  */
 export function LinkButton({

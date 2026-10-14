@@ -6,7 +6,7 @@
 export interface PublicEnv {
   /** Origin of this site, without a trailing slash. */
   siteUrl: string;
-  /** Origin of the Astra Foundry platform, without a trailing slash. */
+  /** Origin of the AstraFoundry platform, without a trailing slash. */
   platformUrl: string;
 }
 

@@ -17,7 +17,7 @@
     "openMenu": "Open menu",
     "closeMenu": "Close menu",
     "githubLabel": "Arion on GitHub",
-    "account": "Astra Foundry account",
+    "account": "AstraFoundry account",
     "hostedSyncWaitlist": "Hosted sync waitlist"
   },
   "nav": {
@@ -66,7 +66,7 @@
   },
   "privacy": {
     "title": "Signing in never unlocks your words",
-    "lead": "Arion works without an account. When encrypted sync arrives, an Astra Foundry account only decides whether you may use the hosted relay. Reading your data takes keys that only your devices hold.",
+    "lead": "Arion works without an account. When encrypted sync arrives, an AstraFoundry account only decides whether you may use the hosted relay. Reading your data takes keys that only your devices hold.",
     "points": [
       {
         "title": "On the device",
@@ -132,10 +132,10 @@
         ]
       },
       {
-        "title": "Your Astra Foundry account",
+        "title": "Your AstraFoundry account",
         "body": [
           "An account is optional. Dictation, vocabulary and learning work without one.",
-          "Signing in tells the hosted relay who you are and whether you have access to hosted sync. The account holds no keys and cannot decrypt anything you sync, and neither can Astra Foundry. The hosted relay does know which account each sync space belongs to.",
+          "Signing in tells the hosted relay who you are and whether you have access to hosted sync. The account holds no keys and cannot decrypt anything you sync, and neither can AstraFoundry. The hosted relay does know which account each sync space belongs to.",
           "Signing out keeps your local keys and vocabulary. Turning sync off and deleting data from the server are separate actions."
         ]
       },
@@ -165,7 +165,7 @@
         "body": [
           "The same core runs hosted and self-hosted. It knows devices, envelopes, revisions and cursors, not accounts. An account gate in front of it has two modes.",
           "noop, the default for self-hosting: there are no accounts. Every request is authenticated by the signature of an enrolled device.",
-          "oidc: the relay also requires a bearer token from an OpenID Connect issuer, checks its issuer, audience, expiry and sync entitlement, and maps the token's issuer and subject to a tenant. Device signatures are still required. Astra Foundry's hosted relay runs in this mode, and you can point it at your own identity provider."
+          "oidc: the relay also requires a bearer token from an OpenID Connect issuer, checks its issuer, audience, expiry and sync entitlement, and maps the token's issuer and subject to a tenant. Device signatures are still required. AstraFoundry's hosted relay runs in this mode, and you can point it at your own identity provider."
         ]
       },
       {
@@ -183,7 +183,7 @@
     ],
     "source": "Follow the relay in the repository",
     "hostedTitle": "Rather not run a server?",
-    "hostedBody": "Astra Foundry will run the same relay as a hosted service.",
+    "hostedBody": "AstraFoundry will run the same relay as a hosted service.",
     "hostedLink": "Join the hosted sync waitlist"
   },
   "creditsPage": {
@@ -197,12 +197,12 @@
     "tagline": "Local voice input for macOS and Windows.",
     "product": "Product",
     "project": "Project",
-    "astraFoundry": "Astra Foundry",
+    "astraFoundry": "AstraFoundry",
     "source": "Source code",
     "issues": "Report a bug",
     "license": "License",
     "credits": "Credits",
-    "copyright": "© {year} Astra Foundry"
+    "copyright": "© {year} AstraFoundry"
   },
   "notFound": {
     "title": "Page not found",

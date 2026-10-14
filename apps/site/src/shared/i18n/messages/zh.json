@@ -17,7 +17,7 @@
     "openMenu": "打开菜单",
     "closeMenu": "关闭菜单",
     "githubLabel": "GitHub 上的 Arion",
-    "account": "Astra Foundry 账号",
+    "account": "AstraFoundry 账号",
     "hostedSyncWaitlist": "托管同步候补名单"
   },
   "nav": {
@@ -66,7 +66,7 @@
   },
   "privacy": {
     "title": "登录，不等于能读你的内容",
-    "lead": "Arion 不需要账号也能用。加密同步上线后，Astra Foundry 账号只决定你能否使用托管中继；读取数据需要的密钥只在你的设备上。",
+    "lead": "Arion 不需要账号也能用。加密同步上线后，AstraFoundry 账号只决定你能否使用托管中继；读取数据需要的密钥只在你的设备上。",
     "points": [
       {
         "title": "在设备上",
@@ -132,10 +132,10 @@
         ]
       },
       {
-        "title": "你的 Astra Foundry 账号",
+        "title": "你的 AstraFoundry 账号",
         "body": [
           "账号是可选的。听写、词汇和学习都不需要账号。",
-          "登录是告诉托管中继你是谁、是否有托管同步的使用权限。账号不保存任何密钥，无法解密你同步的内容，Astra Foundry 也不能。托管中继会知道每个同步空间属于哪个账号。",
+          "登录是告诉托管中继你是谁、是否有托管同步的使用权限。账号不保存任何密钥，无法解密你同步的内容，AstraFoundry 也不能。托管中继会知道每个同步空间属于哪个账号。",
           "退出登录不会删除本机的密钥和词汇。关闭同步与删除服务器上的数据是两个独立的操作。"
         ]
       },
@@ -165,7 +165,7 @@
         "body": [
           "托管和自托管运行同一个核心。核心只认识设备、信封、修订和游标，不认识账号。核心前面有一道账号关卡，分两种模式。",
           "noop，自托管的默认模式：没有账号，每个请求都由已注册设备的签名认证。",
-          "oidc：中继额外要求 OpenID Connect 签发的 Bearer 令牌，校验签发方、受众、有效期和同步权益，并把令牌的签发方与主体映射到一个租户。设备签名仍然必需。Astra Foundry 的托管中继运行在这个模式下，你也可以把它指向自己的身份提供方。"
+          "oidc：中继额外要求 OpenID Connect 签发的 Bearer 令牌，校验签发方、受众、有效期和同步权益，并把令牌的签发方与主体映射到一个租户。设备签名仍然必需。AstraFoundry 的托管中继运行在这个模式下，你也可以把它指向自己的身份提供方。"
         ]
       },
       {
@@ -183,7 +183,7 @@
     ],
     "source": "在仓库中关注中继进展",
     "hostedTitle": "不想自己维护服务器？",
-    "hostedBody": "Astra Foundry 会以托管服务的形式运行同一个中继。",
+    "hostedBody": "AstraFoundry 会以托管服务的形式运行同一个中继。",
     "hostedLink": "加入托管同步候补名单"
   },
   "creditsPage": {
@@ -197,12 +197,12 @@
     "tagline": "适用于 macOS 和 Windows 的本地语音输入。",
     "product": "产品",
     "project": "项目",
-    "astraFoundry": "Astra Foundry",
+    "astraFoundry": "AstraFoundry",
     "source": "源代码",
     "issues": "报告问题",
     "license": "许可证",
     "credits": "致谢",
-    "copyright": "© {year} Astra Foundry"
+    "copyright": "© {year} AstraFoundry"
   },
   "notFound": {
     "title": "页面不存在",

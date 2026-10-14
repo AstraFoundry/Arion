@@ -22,7 +22,7 @@ Two build-time variables, inlined into the bundle (`src/shared/config/env.ts`). 
 | Variable | Production value | Used for |
 | --- | --- | --- |
 | `NEXT_PUBLIC_SITE_URL` | `https://arion.astrafoundry.si` | Canonical URLs, hreflang, sitemap, robots, Open Graph |
-| `NEXT_PUBLIC_PLATFORM_URL` | `https://astrafoundry.si` | The Astra Foundry account link (`/account`) and the hosted sync waitlist link (`/products/arion/waitlist/hosted-sync`) |
+| `NEXT_PUBLIC_PLATFORM_URL` | `https://astrafoundry.si` | The AstraFoundry account link (`/account`) and the hosted sync waitlist link (`/products/arion/waitlist/hosted-sync`) |
 
 `.env.production` holds the production values; `.env.example` documents them. Override them in the environment for a preview build. The site only links to the platform; it never calls it and never reads a session.
 

@@ -8,7 +8,7 @@ const REPOSITORY = "https://github.com/AstraFoundry/Arion";
 
 export const siteConfig = {
   name: "Arion",
-  organization: "Astra Foundry",
+  organization: "AstraFoundry",
   url: publicEnv.siteUrl,
   accountUrl: `${publicEnv.platformUrl}/account`,
   hostedSyncWaitlistUrl: `${publicEnv.platformUrl}/products/arion/waitlist/hosted-sync`,
