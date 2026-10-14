@@ -9,7 +9,7 @@ Arion is a voice input product with a native Go desktop shell. macOS and Windows
 - Local ranking of actual candidate words/segments, preserving candidate identity and text.
 - User-controlled personal vocabulary, correction rules, and contextual preferences.
 - Self-hosted encrypted memory sync, with offline dictation independent of account or server availability.
-- MyGo native Go UI; no web frontend is required.
+- MyGo native Go UI for the desktop app; the only web code is the static marketing site in `apps/site` ([ADR 016](../decisions/016-marketing-site.md)).
 - The recognition model is not a user decision: the best evaluated bundle downloads and loads automatically; another evaluated bundle can be chosen explicitly.
 
 Language coverage and latency are evaluation targets, not measured product claims. The interface defaults to English and supports Simplified Chinese through a persisted language picker; interface language is independent of recognition language ([i18n](../frontend/i18n.md)).
@@ -33,6 +33,7 @@ Jev is TypeSafe’s System One typed decision model. Laya Multilingual is the pr
 | Candidate ranking | Laya Multilingual local Choice evaluation adapter | Not implemented: recognizers expose one hypothesis |
 | Local storage | Preferences JSON; AES-256-GCM vocabulary with OS-kept key | Implemented ([ADR 005](../decisions/005-local-encryption.md)); SQLite/outbox pending |
 | Sync service | Self-hosted Go relay; ciphertext records | Protocol specified; not implemented |
+| Marketing site | Next.js static export, React 19, Tailwind v4, next-intl en/zh/ja; Cloudflare Workers static assets ([ADR 016](../decisions/016-marketing-site.md)) | Implemented in `apps/site`; vendored Sunbeam/beUI until `@astrafoundry/design` is published |
 | Cryptography | Go standard library AES-GCM; Keychain/DPAPI keys | Local values only; key exchange for sync pending |
 
 See [specs](../../specs/README.md), [research](../research/README.md), [repository](repository.md), and [agent handoff](agent-handoff.md).

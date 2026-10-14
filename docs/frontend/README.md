@@ -2,6 +2,8 @@
 
 Arion uses MyGo native Go packages under `apps/desktop/ui`. FSD responsibilities and downward imports remain; Go exported package symbols replace `index.ts`. Existing TypeScript/CSS examples below and in linked convention docs are illustrative, not a requirement to add a web frontend. See [repository mapping](../project/repository.md).
 
+The marketing site in `apps/site` is separate from the desktop app and is the only React code in the repository ([ADR 016](../decisions/016-marketing-site.md)); its conventions are in [`site.md`](site.md).
+
 
 This section defines how the frontend is organized using **Feature-Sliced Design (FSD)**.
 
@@ -29,6 +31,7 @@ Views read `runtime.State` and request `runtime.Actions`; the composition root m
 - [`i18n.md`](i18n.md) — English/Simplified Chinese catalogs, preferences, formatting and native boundaries.
 - [`ui-patterns.md`](ui-patterns.md) — semantic styling, no hardcoded copy, no redundant copy.
 - [`design-system.md`](design-system.md) — Sunbeam tokens, coss-anatomy primitives, elevation and illustration rules.
+- [`site.md`](site.md) — the `apps/site` marketing site: routing, copy catalogs, links, static-only rules.
 - [`../quality/agent-skills.md`](../quality/agent-skills.md) — Agent Skills for UI craft, motion, and anti-slop.
 
 ## Quick start

@@ -30,6 +30,7 @@ make desktop-dev    # run the app
 make desktop-build  # package Arion.app and a DMG
 make e2e            # native window lifecycle on a real desktop session
 make e2e-macos      # owned product scenarios against the packaged app
+make site-check     # marketing site (apps/site): i18n, types, lint, tests, static export
 ```
 
 JavaScript tooling uses pinned pnpm 10.33.0 and Node 24; npm installation is rejected. Native desktop builds use Go 1.27.1 with cgo and the pinned MyGo CLI. Model selection evidence comes from the [evaluation runners](tools/evaluation/README.md) and [paper-grounded metrics](docs/research/benchmark-methodology.md); aggregate reports are in [`benchmarks/results`](benchmarks/README.md). See [repository ownership](docs/project/repository.md) for the workspace layout and [release gates](docs/operations/deployment.md) before distribution.

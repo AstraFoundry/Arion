@@ -13,6 +13,8 @@ make e2e
 
 `pnpm check` validates local Markdown links, runtime configuration JSON, active-doc placeholders, Go layer imports and JavaScript syntax. `make core-check` runs portable core tests/vet/format validation in standalone module mode. `make i18n-check` / `pnpm i18n:check` validates translation keys, templates, formatting and direct hardcoded copy; `pnpm test` includes it. These do not claim OS adapter or inference coverage.
 
+`make site-check` / `pnpm site:check` checks the marketing site in `apps/site`: dictionary completeness, TypeScript, ESLint, Vitest and the Next.js static export into `apps/site/out`. `pnpm --filter @arion/site dev` serves it on `127.0.0.1` for local work; see the [site README](../../apps/site/README.md) and [site conventions](../frontend/site.md).
+
 ## Native desktop
 
 MyGo v0.4.6 requires Go 1.27.1. The workspace/tool directive uses Go automatic toolchain selection when available; a first native build may download it. Use an installed matching Go toolchain with `GOTOOLCHAIN=local` for explicitly offline development after dependencies are provisioned.

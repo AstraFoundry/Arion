@@ -32,3 +32,14 @@ The app updates itself from the latest published GitHub release of `AstraFoundry
 Implement SYNC-01 before deploying anything. Specify server auth/enrollment, TLS/reverse proxy, ciphertext database migrations, size/rate limits, durable cursor/revision behavior, backup/restore and key-epoch tests. Keep private keys on clients; operators back up encrypted records/routing metadata. A restore cannot invent plaintext or silently discard client conflicts.
 
 Docker/Kubernetes assets are reserved under [deploy](../../deploy/README.md); no image, host, ingress or database credentials are invented by this foundation.
+
+## Marketing site
+
+`apps/site` is a static export served by Cloudflare Workers static assets at `arion.astrafoundry.si` ([ADR 016](../decisions/016-marketing-site.md)); `apps/site/wrangler.jsonc` has no Worker script and binds the custom domain.
+
+```sh
+make site-check   # dictionaries, types, lint, tests, static export
+make site-deploy  # build apps/site/out, then wrangler deploy
+```
+
+`wrangler deploy` reads Cloudflare credentials (`wrangler login` or `CLOUDFLARE_API_TOKEN`) from the shell; none are stored in the repository. The site's origin and the Astra Foundry platform origin are build-time values in `apps/site/.env.production` ([site README](../../apps/site/README.md#configuration)); a different deployment overrides them in the environment and rebuilds.
