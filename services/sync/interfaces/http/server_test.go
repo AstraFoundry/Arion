@@ -230,7 +230,7 @@ func TestSecurityEvents(t *testing.T) {
 	sig[0] ^= 0xff
 	parts[2] = base64.RawURLEncoding.EncodeToString(sig)
 	bad = strings.Join(parts, ".")
-	if rec := env.postSET(bad); rec.Code != http.StatusBadRequest || !strings.Contains(rec.Body.String(), `"err":"authentication_failed"`) && !strings.Contains(rec.Body.String(), `"err":"invalid_key"`) {
+	if rec := env.postSET(bad); rec.Code != http.StatusBadRequest || !strings.Contains(rec.Body.String(), `"err":"invalid_key"`) {
 		t.Fatalf("bad signature %d %s", rec.Code, rec.Body.Bytes())
 	}
 	wrongAud := signSET(t, priv, issuer.URL, "other-client", "alice", "jti-aud", env.at, map[string]any{application.EventEntitlementsChanged: map[string]any{}})

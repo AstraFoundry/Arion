@@ -266,7 +266,7 @@ func classifySET(err error) error {
 	case errors.Is(err, jwt.ErrTokenInvalidIssuer):
 		return application.SET("invalid_issuer", "issuer rejected")
 	case errors.Is(err, jwt.ErrTokenSignatureInvalid):
-		return application.SET("authentication_failed", "authentication failed")
+		return application.SET("invalid_key", "key rejected")
 	case errors.Is(err, errUnknownKey):
 		return application.SET("invalid_key", "key rejected")
 	default:
