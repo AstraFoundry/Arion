@@ -26,6 +26,8 @@ Write an ADR when the decision:
 - [012: Scene selection from the focused field, site and app](012-context-scene-selection.md) — local metadata picks email, work, prompt, search or chat layout; the rewrite prompt stays unchanged.
 - [013: Rewrite context from the cursor, the screen and recent dictations](013-rewrite-context-on-device.md) — on by default, on-device only; reaches the model as extracted terms.
 - [014: Learn vocabulary from the user's corrections](014-edit-learning.md) — on-device edit tracking, one-shot learning with undo, one-pass recall and bounded prompt terms.
+- [015: Hosted relay account authorization layer](015-hosted-relay-account-authorization.md) — `AccountGate` (`noop` self-host, `oidc` hosted) on top of device auth, `(issuer, subject)` tenants, security events; login never grants decryption.
+- [016: Marketing site in `apps/site`](016-marketing-site.md) — static Next.js export with the shared design package; ADR 001's no-React rule covers the desktop app only.
 - [`adr-template.md`](adr-template.md) — template for new ADRs.
 
 ## Naming

@@ -36,6 +36,9 @@ Verification results and their limits are recorded in [validation](../quality/va
 | STR (streaming sweep) | P1 | Reviewed timestamp annotations | Chunk/endpoint sweep with annotated onsets (STR-A01–A04) |
 | MEM-01 (sync parts) | P1 | Crypto/pairing ADR | Outbox, approval provenance UI, export/delete |
 | SYNC-01 | P1 | MEM-01 | Self-hosted relay per 003 |
+| SYNC-08/09 | P1 | SYNC-01 core | `AccountGate` `noop`/`oidc` and `POST /v1/security-events` per [ADR 015](../decisions/015-hosted-relay-account-authorization.md); MEM-A13–A16 against a local fake issuer (self-signed JWKS); hosted compose + PostgreSQL in `deploy/` |
+| SYNC-10 | P1 | Platform `arion-desktop` client | Desktop sign-in (RFC 8252 loopback, PKCE S256, refresh token in Keychain/Credential Manager), two-path onboarding, waitlist join, sign-out keeping local data (MEM-A17) |
+| SITE-01 | P1 | — | `apps/site` static export on Cloudflare Workers, en/zh/ja ([ADR 016](../decisions/016-marketing-site.md)); replace vendored Sunbeam/beUI with `@astrafoundry/design` once published |
 | Hold-to-talk | P1 | Key-up adapter (event tap) | Tested native key-down/key-up adapter (DSK-02) |
 | REL-01 | P1 | Signing identities | Developer ID signing/notarization, controlled bundle ID; the signed updater exists ([ADR 010](../decisions/010-in-app-updates.md)) and keeps consent across updates only once Developer ID signing lands |
 | MOBILE-01 | P2 | Desktop contract stabilization | Native keyboard constraints research only |

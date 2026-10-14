@@ -15,7 +15,9 @@
 | `packages/core/contracts` | Versioned transport-neutral DTOs; no SDK or platform handles |
 | `packages/core/application` | Dictation coordinator and preferences; depends on domain-owned ports |
 | `packages/contracts` | Shared wire examples/documentation, no duplicate business types |
-| `services/sync` | Reserved self-hosted relay; must adopt DDD when implemented |
+| `apps/site` | Static Next.js marketing site (pnpm, TypeScript FSD, en/zh/ja); independent of the Go modules and the desktop shell ([ADR 016](../decisions/016-marketing-site.md)) |
+| `services/sync` | Go DDD relay; account-unaware core, `AccountGate` port with `noop` and `oidc` adapters ([ADR 015](../decisions/015-hosted-relay-account-authorization.md)) |
+| `deploy` | Relay images, self-host compose and the hosted relay's compose stack with its own PostgreSQL |
 | `models` | Go module embedding the reviewed catalog: provenance, digests, licenses, bundles, evaluation summaries; no weights |
 | `scripts` | Dependency-free repository checks and platform-neutral workflow entry points |
 | `tools/evaluation` | pnpm workspace: metrics, driver protocols, real-run orchestration and isolated Python development inference adapters |
