@@ -18,8 +18,12 @@ const (
 	SignedOut Stage = iota
 	// Waiting is the browser sign-in in flight, which the user may cancel.
 	Waiting
-	// Checking is a refresh without a profile to show yet.
+	// Checking is a refresh without a profile to show yet, or the
+	// credential-store read.
 	Checking
+	// Stored is signed out with a refresh token kept from an earlier
+	// session: reconnect, or sign out to revoke and delete it.
+	Stored
 	// Profile is a session: profile, sign-out and hosted sync.
 	Profile
 )
@@ -32,8 +36,20 @@ func StageOf(a runtime.Account) Stage {
 		return Profile
 	case a.Phase == runtime.AccountRefreshing:
 		return Checking
+	case a.Phase == runtime.AccountSigningOut:
+		return Stored
+	case a.Credential == runtime.CredentialChecking:
+		return Checking
+	case a.Credential == runtime.CredentialStored:
+		return Stored
 	}
 	return SignedOut
+}
+
+// NeedsCredentialCheck reports a signed-out account whose credential store
+// has not been read since the last account change.
+func NeedsCredentialCheck(a runtime.Account) bool {
+	return a.Phase == runtime.AccountSignedOut && a.Credential == runtime.CredentialUnknown
 }
 
 // Identity is the profile line: the name over the email, or the email

@@ -362,5 +362,7 @@
   "AccErrEntitlement": "无法读取此账号的同步权限，请重试。",
   "AccErrBrowser": "无法打开浏览器。",
   "AccErrLoopback": "Arion 无法接收浏览器返回的登录结果，请重试。",
-  "AccErrGeneric": "AstraFoundry 账号出现问题。"
+  "AccErrGeneric": "AstraFoundry 账号出现问题。",
+  "AccReconnect": "重新连接",
+  "AccStoredDetail": "你之前在此设备上登录过。重新连接即可继续使用该账号。"
 }

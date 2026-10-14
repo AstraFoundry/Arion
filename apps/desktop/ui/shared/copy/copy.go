@@ -369,4 +369,6 @@ const (
 	AccErrBrowser                Key = "AccErrBrowser"
 	AccErrLoopback               Key = "AccErrLoopback"
 	AccErrGeneric                Key = "AccErrGeneric"
+	AccReconnect                 Key = "AccReconnect"
+	AccStoredDetail              Key = "AccStoredDetail"
 )

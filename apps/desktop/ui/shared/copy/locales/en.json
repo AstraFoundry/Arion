@@ -362,5 +362,7 @@
   "AccErrEntitlement": "Couldn't read this account's sync access. Try again.",
   "AccErrBrowser": "Couldn't open your browser.",
   "AccErrLoopback": "Arion couldn't receive the sign-in from your browser. Try again.",
-  "AccErrGeneric": "Something went wrong with your AstraFoundry account."
+  "AccErrGeneric": "Something went wrong with your AstraFoundry account.",
+  "AccReconnect": "Reconnect",
+  "AccStoredDetail": "You signed in on this device before. Reconnect to use that account again."
 }

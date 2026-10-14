@@ -63,6 +63,9 @@ func (p *Page) Render(c *ui.Context, store runtime.Store) {
 		p.focus, p.Section = focus.Seq, focus.Section
 	}
 	p.syncMonitor(store)
+	if p.Section == Account {
+		signin.Check(store)
+	}
 	if p.Section != p.shown {
 		p.shown = p.Section
 		if p.Section == Overview {

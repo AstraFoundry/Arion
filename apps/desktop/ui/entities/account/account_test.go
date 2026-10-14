@@ -20,9 +20,35 @@ func TestStageOf(t *testing.T) {
 		{signedIn, Profile},
 		{runtime.Account{Phase: runtime.AccountRefreshing, Subject: "sub"}, Profile},
 		{runtime.Account{Phase: runtime.AccountSigningOut, Subject: "sub"}, Profile},
+		{runtime.Account{Phase: runtime.AccountSignedOut, Credential: runtime.CredentialChecking}, Checking},
+		{runtime.Account{Phase: runtime.AccountSignedOut, Credential: runtime.CredentialStored}, Stored},
+		{runtime.Account{Phase: runtime.AccountSigningOut}, Stored},
+		{runtime.Account{Phase: runtime.AccountSignedOut, Credential: runtime.CredentialAbsent}, SignedOut},
+		{runtime.Account{Phase: runtime.AccountSignedOut, Credential: runtime.CredentialUnreadable, ErrorCode: runtime.AccountCodeStore}, SignedOut},
 	} {
 		if got := StageOf(tc.account); got != tc.want {
 			t.Errorf("StageOf(%+v) = %d, want %d", tc.account, got, tc.want)
+		}
+	}
+}
+
+// The store is read only while signed out and not yet read; a failed read
+// is not retried on every frame.
+func TestNeedsCredentialCheck(t *testing.T) {
+	for _, tc := range []struct {
+		account runtime.Account
+		want    bool
+	}{
+		{runtime.Account{}, false},
+		{runtime.Account{Phase: runtime.AccountSignedOut}, true},
+		{runtime.Account{Phase: runtime.AccountSignedOut, Credential: runtime.CredentialChecking}, false},
+		{runtime.Account{Phase: runtime.AccountSignedOut, Credential: runtime.CredentialStored}, false},
+		{runtime.Account{Phase: runtime.AccountSignedOut, Credential: runtime.CredentialUnreadable}, false},
+		{runtime.Account{Phase: runtime.AccountSigningIn}, false},
+		{runtime.Account{Phase: runtime.AccountSignedIn, Subject: "sub"}, false},
+	} {
+		if got := NeedsCredentialCheck(tc.account); got != tc.want {
+			t.Errorf("NeedsCredentialCheck(%+v) = %v", tc.account, got)
 		}
 	}
 }

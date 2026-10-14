@@ -95,7 +95,7 @@ func (p *Page) Render(c *ui.Context, store runtime.Store) {
 					kit.Button(c.Key("next"), tokens, kit.Primary, messages.Text(copy.OnbStart), true).OnClick(func() { p.move(c, 1, state) })
 				case onboarding.Sync:
 					// Signed out, the step's own buttons are the two paths.
-					if state.Account.SignedIn() {
+					if account.StageOf(state.Account) != account.SignedOut {
 						kit.Button(c.Key("next"), tokens, kit.Primary, messages.Text(copy.Continue), onboarding.Ready(step, state)).OnClick(func() { p.move(c, 1, state) })
 					}
 				case onboarding.Finished:
@@ -153,7 +153,8 @@ func (p *Page) move(c *ui.Context, delta int, state *runtime.State) {
 	}
 }
 
-// sync runs the microphone monitor and shortcut test only on their steps.
+// sync runs the microphone monitor and shortcut test only on their steps,
+// and reads whether a sign-in is stored on the sync step.
 func (p *Page) sync(store runtime.Store, step onboarding.Step) {
 	monitor := step == onboarding.Microphone && store.State.Permissions.Microphone == runtime.ConsentGranted
 	if monitor != p.monitoring {
@@ -163,6 +164,9 @@ func (p *Page) sync(store runtime.Store, step onboarding.Step) {
 		} else {
 			store.Actions.StopLevelMonitor()
 		}
+	}
+	if step == onboarding.Sync {
+		signin.Check(store)
 	}
 	testing := step == onboarding.Shortcut
 	if testing != p.testing {

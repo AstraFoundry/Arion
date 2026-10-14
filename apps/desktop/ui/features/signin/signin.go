@@ -20,6 +20,14 @@ func Start(c *ui.Context, store runtime.Store, tokens theme.Tokens, variant kit.
 	}
 }
 
+// Check asks once, while an account view shows, whether a refresh token is
+// stored. The read is local and off the main thread.
+func Check(store runtime.Store) {
+	if account.NeedsCredentialCheck(store.State.Account) {
+		store.Actions.CheckStoredAccount()
+	}
+}
+
 // Card is the account in its current stage, followed by the last failure.
 func Card(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 	ui.Column(c).Gap(theme.GapRelated).Children(func() {
@@ -46,6 +54,18 @@ func card(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 			})
 		case account.Checking:
 			kit.Row(c, tokens, messages.Text(copy.AccTitle), messages.Text(copy.AccChecking), func() { ui.Spinner(c).Size(14, 14) })
+		case account.Stored:
+			kit.Row(c, tokens, messages.Text(copy.AccTitle), messages.Text(copy.AccStoredDetail), func() {
+				if a.Busy() {
+					ui.Spinner(c).Size(14, 14)
+				}
+				if kit.Button(c.Key("reconnect"), tokens, kit.Outline, messages.Text(copy.AccReconnect), !a.Busy()).Clicked() {
+					store.Actions.RefreshAccount()
+				}
+				signOut(c, store, tokens)
+			})
+			kit.Divider(c, tokens)
+			ui.Text(c, messages.Text(copy.AccSignOutKeeps)).FontSize(theme.Caption).TextColor(tokens.Muted).Padding(10, 16)
 		case account.Profile:
 			profile(c, store, tokens)
 			kit.Divider(c, tokens)
@@ -65,10 +85,17 @@ func profile(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 		if a.Busy() {
 			ui.Spinner(c).Size(14, 14)
 		}
-		if kit.Button(c.Key("sign-out"), tokens, kit.Outline, messages.Text(copy.AccSignOut), !a.Busy()).Clicked() {
-			store.Actions.SignOut()
-		}
+		signOut(c, store, tokens)
 	})
+}
+
+// signOut revokes and deletes the stored refresh token, with or without a
+// session in memory.
+func signOut(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
+	a := store.State.Account
+	if kit.Button(c.Key("sign-out"), tokens, kit.Outline, store.Copy().Text(copy.AccSignOut), !a.Busy()).Clicked() {
+		store.Actions.SignOut()
+	}
 }
 
 // Notice states the last account failure, or a sign-out whose revocation

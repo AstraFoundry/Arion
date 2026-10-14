@@ -247,3 +247,91 @@ func TestChineseAccount(t *testing.T) {
 	expect(t, tt, true, zh.Text(copy.AccSignOut), zh.Text(copy.AccSignOutKeeps), zh.Text(copy.AccSyncAvailable), zh.Text(copy.AccSyncDeviceLater))
 	snapshot(t, tt, "settings-account-zh")
 }
+
+// Settings › Account reads the credential store when it shows; a stored
+// sign-in offers Reconnect and Sign out instead of Sign in.
+func TestSettingsAccountStoredSession(t *testing.T) {
+	state, actions, store := fixture()
+	en := copy.For(copy.English)
+	state.Account = runtime.Account{Phase: runtime.AccountSignedOut}
+	tt := openAccount(t, store)
+	if !actions.called("check-stored") {
+		t.Fatal("credential store not read")
+	}
+	state.Account.Credential = runtime.CredentialChecking
+	settle(tt)
+	expect(t, tt, true, en.Text(copy.AccChecking))
+	expect(t, tt, false, en.Text(copy.AccSignIn))
+
+	state.Account.Credential = runtime.CredentialStored
+	settle(tt)
+	expect(t, tt, true, en.Text(copy.AccStoredDetail), en.Text(copy.AccReconnect), en.Text(copy.AccSignOut), en.Text(copy.AccSignOutKeeps))
+	expect(t, tt, false, en.Text(copy.AccSignIn), en.Text(copy.AccSyncGroup))
+	snapshot(t, tt, "settings-account-stored")
+	click := clicker(t, tt)
+	click(en.Text(copy.AccReconnect))
+	if !actions.called("refresh-account") {
+		t.Fatal("reconnect did not refresh")
+	}
+	click(en.Text(copy.AccSignOut))
+	if !actions.called("sign-out") {
+		t.Fatal("sign-out not requested")
+	}
+
+	actions.calls = nil
+	state.Account = runtime.Account{Phase: runtime.AccountSigningOut}
+	settle(tt)
+	click(en.Text(copy.AccSignOut))
+	if actions.called("sign-out") {
+		t.Fatal("sign-out requested while one is running")
+	}
+}
+
+// A credential store that cannot be read is stated, not shown as signed out,
+// and is not read again on every frame.
+func TestSettingsAccountUnreadableStore(t *testing.T) {
+	state, actions, store := fixture()
+	state.Account = runtime.Account{Phase: runtime.AccountSignedOut, Credential: runtime.CredentialUnreadable,
+		ErrorCode: runtime.AccountCodeStore, ErrorDetail: "read"}
+	for _, language := range []runtime.UILanguage{runtime.LanguageEnglish, runtime.LanguageChinese} {
+		state.Preferences.UILanguage = language
+		messages := store.Copy()
+		actions.calls = nil
+		tt := openAccount(t, store)
+		expect(t, tt, true, messages.Text(copy.AccErrStore), messages.Text(copy.AccSignIn))
+		if actions.called("check-stored") {
+			t.Fatal("unreadable store read again")
+		}
+		snapshot(t, tt, "settings-account-unreadable-"+string(language))
+	}
+}
+
+// The onboarding sync step reads the store too; with a stored sign-in it
+// offers Reconnect, and Continue moves on without reconnecting.
+func TestOnboardingSyncStoredSession(t *testing.T) {
+	state, actions, store := fixture()
+	en := copy.For(copy.English)
+	page := onboarding.NewPage()
+	tt := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, OnboardingWidth, OnboardingHeight)
+	settle(tt)
+	click := clicker(t, tt)
+	click(en.Text(copy.OnbStart))
+	for range 4 {
+		click(en.Text(copy.Continue))
+	}
+	if actions.called("check-stored") {
+		t.Fatal("credential store read before the sync step")
+	}
+	state.Account = runtime.Account{Phase: runtime.AccountSignedOut}
+	click(en.Text(copy.Continue))
+	if !actions.called("check-stored") {
+		t.Fatal("credential store not read on the sync step")
+	}
+	state.Account.Credential = runtime.CredentialStored
+	settle(tt)
+	expect(t, tt, true, en.Text(copy.AccReconnect), en.Text(copy.AccSignOut))
+	expect(t, tt, false, en.Text(copy.OnbSignInSync))
+	snapshot(t, tt, "onboarding-sync-stored")
+	click(en.Text(copy.Continue))
+	expect(t, tt, true, en.Text(copy.OnbDoneTitle))
+}
