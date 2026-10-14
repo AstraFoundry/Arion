@@ -28,6 +28,8 @@ jobs:
           cache: false
       - run: pnpm check
       - run: pnpm test
+      - name: Marketing site (dictionaries, types, lint, tests, static export)
+        run: pnpm site:check
 
   native-shell:
     strategy:
