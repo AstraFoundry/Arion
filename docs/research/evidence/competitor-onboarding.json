@@ -1,0 +1,2148 @@
+{
+  "schemaVersion": 1,
+  "evidenceBoundary": "Shipped package static analysis and source review; no competitor execution or user-state changes. CO/TO/DO/AR identifiers are local observations, not REA Evidence IDs.",
+  "chatterfly": {
+    "version": "1.0.6.13398",
+    "installerBundleID": "com.tencent.ChatterflyInstaller",
+    "installerBinarySha256": "d659abaf2ea036acff7d38f9ed7387a4047d18dca90ce330d28e653857e5fe4a",
+    "arm64SliceOffset": 3817472,
+    "arm64SliceSha256": "63c47b7a1f6b8edb2028ffa0760f86ca77fd2cd3abf1f0a927d8800131e8f94f",
+    "retainedReaInventoryEvidenceID": "ev_e86f7a8a483ab5d40506a8aadc00d715761d84afe030d451ac85c0ba46f38d70",
+    "retainedReaExtractionEvidenceID": "ev_d7b75b5f00fcbb8469fe6c48e8050a0c2699c71754343e3c858052dbc139272d",
+    "payloadZipSha256": "3392e95b4d2d6aac9b09c3d28490ad15798c2075be7b2eb2c1e4b278960f9563",
+    "validation": "Every selected four-byte instruction matches the arm64 slice and original universal binary. llvm-objdump Mach-O disassembly and nm symbols; this is not REA decompilation.",
+    "functions": [
+      {
+        "id": "CO-CF-01",
+        "kind": "ordinary-static-arm64-instructions",
+        "method": "-[YBAsrDetectViewController viewDidLoad]",
+        "entry": "0x1000504e0",
+        "exclusiveEnd": "0x100050568",
+        "originalFileOffset": 4146400,
+        "functionBytesSha256": "36b94731a42d2c40cedc61e60026d9c409e8ddde9a37c1b75d3292483be6444c",
+        "callAnchors": [
+          {
+            "address": "0x100050514",
+            "originalFileOffset": 4146452,
+            "target": "view"
+          },
+          {
+            "address": "0x100050524",
+            "originalFileOffset": 4146468,
+            "target": "yb_applyInstallerGradientBackground"
+          },
+          {
+            "address": "0x100050534",
+            "originalFileOffset": 4146484,
+            "target": "setupSubviews"
+          },
+          {
+            "address": "0x100050540",
+            "originalFileOffset": 4146496,
+            "target": "updateNextButtonEnabled:"
+          },
+          {
+            "address": "0x100050548",
+            "originalFileOffset": 4146504,
+            "target": "ybad_queryAndRefreshShortcutBadge"
+          },
+          {
+            "address": "0x100050554",
+            "originalFileOffset": 4146516,
+            "target": "reportGuideExposureForInsSltx"
+          }
+        ]
+      },
+      {
+        "id": "CO-CF-02",
+        "kind": "ordinary-static-arm64-instructions",
+        "method": "-[YBAsrDetectViewController textDidChange:]",
+        "entry": "0x1000516c0",
+        "exclusiveEnd": "0x100051748",
+        "originalFileOffset": 4150976,
+        "functionBytesSha256": "a914b071e784378200d421564539551949af0bb1f43d447bb09ad653004d1239",
+        "callAnchors": [
+          {
+            "address": "0x1000516d4",
+            "originalFileOffset": 4150996,
+            "target": "recognizedTextView"
+          },
+          {
+            "address": "0x1000516e4",
+            "originalFileOffset": 4151012,
+            "target": "string"
+          },
+          {
+            "address": "0x1000516f4",
+            "originalFileOffset": 4151028,
+            "target": "length"
+          },
+          {
+            "address": "0x100051704",
+            "originalFileOffset": 4151044,
+            "target": "updateNextButtonEnabled:"
+          },
+          {
+            "address": "0x10005171c",
+            "originalFileOffset": 4151068,
+            "target": "recognizedTextView"
+          },
+          {
+            "address": "0x100051730",
+            "originalFileOffset": 4151088,
+            "target": "setNeedsDisplay:"
+          }
+        ]
+      },
+      {
+        "id": "CO-CF-03",
+        "kind": "ordinary-static-arm64-instructions",
+        "method": "-[YBAsrDetectViewController handleNextClick]",
+        "entry": "0x1000517d8",
+        "exclusiveEnd": "0x10005188c",
+        "originalFileOffset": 4151256,
+        "functionBytesSha256": "79e04dabfe5bfb63282a92ea75e4d0fc20e770b514d05a9b5bf388e470bcd05d",
+        "callAnchors": [
+          {
+            "address": "0x1000517ec",
+            "originalFileOffset": 4151276,
+            "target": "nextButton"
+          },
+          {
+            "address": "0x1000517fc",
+            "originalFileOffset": 4151292,
+            "target": "isEnabled"
+          },
+          {
+            "address": "0x100051818",
+            "originalFileOffset": 4151320,
+            "target": "reportClickInsTyXyb"
+          },
+          {
+            "address": "0x100051820",
+            "originalFileOffset": 4151328,
+            "target": "delegate"
+          },
+          {
+            "address": "0x100051838",
+            "originalFileOffset": 4151352,
+            "target": "respondsToSelector:"
+          },
+          {
+            "address": "0x100051850",
+            "originalFileOffset": 4151376,
+            "target": "delegate"
+          },
+          {
+            "address": "0x100051864",
+            "originalFileOffset": 4151396,
+            "target": "asrDetectViewControllerDidClickNext:"
+          }
+        ]
+      },
+      {
+        "id": "CO-CF-04",
+        "kind": "ordinary-static-arm64-instructions",
+        "method": "-[YBGuideFinishViewController ybf_commitImprovementPlanOn:]",
+        "entry": "0x10005c864",
+        "exclusiveEnd": "0x10005c9f4",
+        "originalFileOffset": 4196452,
+        "functionBytesSha256": "1acd692859de3a7f801913f339dfde000445bed6b29ebf292a125be62b0f43cd",
+        "callAnchors": [
+          {
+            "address": "0x10005c8c8",
+            "originalFileOffset": 4196552,
+            "target": "dictionaryWithObjects:forKeys:count:"
+          },
+          {
+            "address": "0x10005c8fc",
+            "originalFileOffset": 4196604,
+            "target": "defaultCenter"
+          },
+          {
+            "address": "0x10005c92c",
+            "originalFileOffset": 4196652,
+            "target": "stringByAppendingString:"
+          },
+          {
+            "address": "0x10005c94c",
+            "originalFileOffset": 4196684,
+            "target": "postNotificationName:object:userInfo:"
+          },
+          {
+            "address": "0x10005c964",
+            "originalFileOffset": 4196708,
+            "target": "sharedInstance"
+          },
+          {
+            "address": "0x10005c980",
+            "originalFileOffset": 4196736,
+            "target": "setObject:forKey:"
+          },
+          {
+            "address": "0x10005c990",
+            "originalFileOffset": 4196752,
+            "target": "sharedInstance"
+          },
+          {
+            "address": "0x10005c9a0",
+            "originalFileOffset": 4196768,
+            "target": "saveConfig"
+          }
+        ]
+      },
+      {
+        "id": "CO-CF-05",
+        "kind": "ordinary-static-arm64-instructions",
+        "method": "___43-[YBHotkeyDetectViewController viewDidLoad]_block_invoke",
+        "entry": "0x100065bb8",
+        "exclusiveEnd": "0x100065c08",
+        "originalFileOffset": 4234168,
+        "functionBytesSha256": "7641962d1c71eb04c688b7b1a1171892573188eaf1cd0efa2689d7f5121a6e51",
+        "callAnchors": [
+          {
+            "address": "0x100065be8",
+            "originalFileOffset": 4234216,
+            "target": "ybhd_setKeyVisualLit:animated:"
+          },
+          {
+            "address": "0x100065bf4",
+            "originalFileOffset": 4234228,
+            "target": "updateNextButtonEnabled:"
+          }
+        ]
+      },
+      {
+        "id": "CO-CF-06",
+        "kind": "ordinary-static-arm64-instructions",
+        "method": "-[YBHotkeyDetectViewController setupSubviews]",
+        "entry": "0x100065c88",
+        "exclusiveEnd": "0x100066f50",
+        "originalFileOffset": 4234376,
+        "functionBytesSha256": "85ed4aac19abc7350448add516eec99a650e6c290b2b3d8cf398deb561cbe5a2",
+        "callAnchors": [
+          {
+            "address": "0x100065cf4",
+            "originalFileOffset": 4234484,
+            "target": "initWithFrame:"
+          },
+          {
+            "address": "0x100065d04",
+            "originalFileOffset": 4234500,
+            "target": "setContentImageView:"
+          },
+          {
+            "address": "0x100065d20",
+            "originalFileOffset": 4234528,
+            "target": "imageNamed:"
+          },
+          {
+            "address": "0x100065d34",
+            "originalFileOffset": 4234548,
+            "target": "contentImageView"
+          },
+          {
+            "address": "0x100065d48",
+            "originalFileOffset": 4234568,
+            "target": "setImage:"
+          },
+          {
+            "address": "0x100065d60",
+            "originalFileOffset": 4234592,
+            "target": "contentImageView"
+          },
+          {
+            "address": "0x100065d74",
+            "originalFileOffset": 4234612,
+            "target": "setImageScaling:"
+          },
+          {
+            "address": "0x100065d84",
+            "originalFileOffset": 4234628,
+            "target": "contentImageView"
+          },
+          {
+            "address": "0x100065d98",
+            "originalFileOffset": 4234648,
+            "target": "setImageAlignment:"
+          },
+          {
+            "address": "0x100065da8",
+            "originalFileOffset": 4234664,
+            "target": "view"
+          },
+          {
+            "address": "0x100065dbc",
+            "originalFileOffset": 4234684,
+            "target": "contentImageView"
+          },
+          {
+            "address": "0x100065dd4",
+            "originalFileOffset": 4234708,
+            "target": "addSubview:"
+          },
+          {
+            "address": "0x100065e14",
+            "originalFileOffset": 4234772,
+            "target": "initWithFrame:"
+          },
+          {
+            "address": "0x100065e24",
+            "originalFileOffset": 4234788,
+            "target": "setPressLabel:"
+          },
+          {
+            "address": "0x100065e34",
+            "originalFileOffset": 4234804,
+            "target": "pressLabel"
+          },
+          {
+            "address": "0x100065e4c",
+            "originalFileOffset": 4234828,
+            "target": "setStringValue:"
+          },
+          {
+            "address": "0x100065e5c",
+            "originalFileOffset": 4234844,
+            "target": "pressLabel"
+          },
+          {
+            "address": "0x100065e70",
+            "originalFileOffset": 4234864,
+            "target": "setBezeled:"
+          },
+          {
+            "address": "0x100065e80",
+            "originalFileOffset": 4234880,
+            "target": "pressLabel"
+          },
+          {
+            "address": "0x100065e94",
+            "originalFileOffset": 4234900,
+            "target": "setDrawsBackground:"
+          },
+          {
+            "address": "0x100065ea4",
+            "originalFileOffset": 4234916,
+            "target": "pressLabel"
+          },
+          {
+            "address": "0x100065eb8",
+            "originalFileOffset": 4234936,
+            "target": "setEditable:"
+          },
+          {
+            "address": "0x100065ec8",
+            "originalFileOffset": 4234952,
+            "target": "pressLabel"
+          },
+          {
+            "address": "0x100065edc",
+            "originalFileOffset": 4234972,
+            "target": "setSelectable:"
+          },
+          {
+            "address": "0x100065eec",
+            "originalFileOffset": 4234988,
+            "target": "pressLabel"
+          },
+          {
+            "address": "0x100065f00",
+            "originalFileOffset": 4235008,
+            "target": "setAlignment:"
+          },
+          {
+            "address": "0x100065f20",
+            "originalFileOffset": 4235040,
+            "target": "fontWithName:size:"
+          },
+          {
+            "address": "0x100065f4c",
+            "originalFileOffset": 4235084,
+            "target": "systemFontOfSize:weight:"
+          },
+          {
+            "address": "0x100065f60",
+            "originalFileOffset": 4235104,
+            "target": "pressLabel"
+          },
+          {
+            "address": "0x100065f74",
+            "originalFileOffset": 4235124,
+            "target": "setFont:"
+          },
+          {
+            "address": "0x100065fb4",
+            "originalFileOffset": 4235188,
+            "target": "colorWithRed:green:blue:alpha:"
+          },
+          {
+            "address": "0x100065fc8",
+            "originalFileOffset": 4235208,
+            "target": "pressLabel"
+          },
+          {
+            "address": "0x100065fdc",
+            "originalFileOffset": 4235228,
+            "target": "setTextColor:"
+          },
+          {
+            "address": "0x100065ff4",
+            "originalFileOffset": 4235252,
+            "target": "view"
+          },
+          {
+            "address": "0x100066008",
+            "originalFileOffset": 4235272,
+            "target": "pressLabel"
+          },
+          {
+            "address": "0x100066020",
+            "originalFileOffset": 4235296,
+            "target": "addSubview:"
+          },
+          {
+            "address": "0x100066058",
+            "originalFileOffset": 4235352,
+            "target": "initWithFrame:"
+          },
+          {
+            "address": "0x100066068",
+            "originalFileOffset": 4235368,
+            "target": "setTestHotkeyLabel:"
+          },
+          {
+            "address": "0x100066078",
+            "originalFileOffset": 4235384,
+            "target": "testHotkeyLabel"
+          },
+          {
+            "address": "0x100066090",
+            "originalFileOffset": 4235408,
+            "target": "setStringValue:"
+          },
+          {
+            "address": "0x1000660a0",
+            "originalFileOffset": 4235424,
+            "target": "testHotkeyLabel"
+          },
+          {
+            "address": "0x1000660b4",
+            "originalFileOffset": 4235444,
+            "target": "setBezeled:"
+          },
+          {
+            "address": "0x1000660c4",
+            "originalFileOffset": 4235460,
+            "target": "testHotkeyLabel"
+          },
+          {
+            "address": "0x1000660d8",
+            "originalFileOffset": 4235480,
+            "target": "setDrawsBackground:"
+          },
+          {
+            "address": "0x1000660e8",
+            "originalFileOffset": 4235496,
+            "target": "testHotkeyLabel"
+          },
+          {
+            "address": "0x1000660fc",
+            "originalFileOffset": 4235516,
+            "target": "setEditable:"
+          },
+          {
+            "address": "0x10006610c",
+            "originalFileOffset": 4235532,
+            "target": "testHotkeyLabel"
+          },
+          {
+            "address": "0x100066120",
+            "originalFileOffset": 4235552,
+            "target": "setSelectable:"
+          },
+          {
+            "address": "0x100066130",
+            "originalFileOffset": 4235568,
+            "target": "testHotkeyLabel"
+          },
+          {
+            "address": "0x100066144",
+            "originalFileOffset": 4235588,
+            "target": "setAlignment:"
+          },
+          {
+            "address": "0x100066160",
+            "originalFileOffset": 4235616,
+            "target": "fontWithName:size:"
+          },
+          {
+            "address": "0x10006618c",
+            "originalFileOffset": 4235660,
+            "target": "systemFontOfSize:weight:"
+          },
+          {
+            "address": "0x1000661a0",
+            "originalFileOffset": 4235680,
+            "target": "testHotkeyLabel"
+          },
+          {
+            "address": "0x1000661b4",
+            "originalFileOffset": 4235700,
+            "target": "setFont:"
+          },
+          {
+            "address": "0x1000661e8",
+            "originalFileOffset": 4235752,
+            "target": "colorWithRed:green:blue:alpha:"
+          },
+          {
+            "address": "0x1000661fc",
+            "originalFileOffset": 4235772,
+            "target": "testHotkeyLabel"
+          },
+          {
+            "address": "0x100066210",
+            "originalFileOffset": 4235792,
+            "target": "setTextColor:"
+          },
+          {
+            "address": "0x100066228",
+            "originalFileOffset": 4235816,
+            "target": "view"
+          },
+          {
+            "address": "0x10006623c",
+            "originalFileOffset": 4235836,
+            "target": "testHotkeyLabel"
+          },
+          {
+            "address": "0x100066254",
+            "originalFileOffset": 4235860,
+            "target": "addSubview:"
+          },
+          {
+            "address": "0x100066274",
+            "originalFileOffset": 4235892,
+            "target": "ybhd_makeBadgeLabelWithText:"
+          },
+          {
+            "address": "0x1000662a0",
+            "originalFileOffset": 4235936,
+            "target": "setFrame:"
+          },
+          {
+            "address": "0x1000662b8",
+            "originalFileOffset": 4235960,
+            "target": "arrayWithObjects:count:"
+          },
+          {
+            "address": "0x1000662d0",
+            "originalFileOffset": 4235984,
+            "target": "setBadgeLabels:"
+          },
+          {
+            "address": "0x1000662e0",
+            "originalFileOffset": 4236000,
+            "target": "view"
+          },
+          {
+            "address": "0x1000662f4",
+            "originalFileOffset": 4236020,
+            "target": "addSubview:"
+          },
+          {
+            "address": "0x100066324",
+            "originalFileOffset": 4236068,
+            "target": "initWithFrame:"
+          },
+          {
+            "address": "0x100066334",
+            "originalFileOffset": 4236084,
+            "target": "setTipLabel:"
+          },
+          {
+            "address": "0x100066344",
+            "originalFileOffset": 4236100,
+            "target": "tipLabel"
+          },
+          {
+            "address": "0x10006635c",
+            "originalFileOffset": 4236124,
+            "target": "setStringValue:"
+          },
+          {
+            "address": "0x10006636c",
+            "originalFileOffset": 4236140,
+            "target": "tipLabel"
+          },
+          {
+            "address": "0x100066380",
+            "originalFileOffset": 4236160,
+            "target": "setBezeled:"
+          },
+          {
+            "address": "0x100066390",
+            "originalFileOffset": 4236176,
+            "target": "tipLabel"
+          },
+          {
+            "address": "0x1000663a4",
+            "originalFileOffset": 4236196,
+            "target": "setDrawsBackground:"
+          },
+          {
+            "address": "0x1000663b4",
+            "originalFileOffset": 4236212,
+            "target": "tipLabel"
+          },
+          {
+            "address": "0x1000663c8",
+            "originalFileOffset": 4236232,
+            "target": "setEditable:"
+          },
+          {
+            "address": "0x1000663d8",
+            "originalFileOffset": 4236248,
+            "target": "tipLabel"
+          },
+          {
+            "address": "0x1000663ec",
+            "originalFileOffset": 4236268,
+            "target": "setSelectable:"
+          },
+          {
+            "address": "0x1000663fc",
+            "originalFileOffset": 4236284,
+            "target": "tipLabel"
+          },
+          {
+            "address": "0x100066410",
+            "originalFileOffset": 4236304,
+            "target": "setAlignment:"
+          },
+          {
+            "address": "0x10006642c",
+            "originalFileOffset": 4236332,
+            "target": "fontWithName:size:"
+          },
+          {
+            "address": "0x10006644c",
+            "originalFileOffset": 4236364,
+            "target": "systemFontOfSize:"
+          },
+          {
+            "address": "0x100066460",
+            "originalFileOffset": 4236384,
+            "target": "tipLabel"
+          },
+          {
+            "address": "0x100066474",
+            "originalFileOffset": 4236404,
+            "target": "setFont:"
+          },
+          {
+            "address": "0x1000664a8",
+            "originalFileOffset": 4236456,
+            "target": "colorWithRed:green:blue:alpha:"
+          },
+          {
+            "address": "0x1000664bc",
+            "originalFileOffset": 4236476,
+            "target": "tipLabel"
+          },
+          {
+            "address": "0x1000664d0",
+            "originalFileOffset": 4236496,
+            "target": "setTextColor:"
+          },
+          {
+            "address": "0x1000664e8",
+            "originalFileOffset": 4236520,
+            "target": "view"
+          },
+          {
+            "address": "0x1000664fc",
+            "originalFileOffset": 4236540,
+            "target": "tipLabel"
+          },
+          {
+            "address": "0x100066514",
+            "originalFileOffset": 4236564,
+            "target": "addSubview:"
+          },
+          {
+            "address": "0x100066540",
+            "originalFileOffset": 4236608,
+            "target": "initWithFrame:"
+          },
+          {
+            "address": "0x100066550",
+            "originalFileOffset": 4236624,
+            "target": "setSettingTipLabel:"
+          },
+          {
+            "address": "0x100066560",
+            "originalFileOffset": 4236640,
+            "target": "settingTipLabel"
+          },
+          {
+            "address": "0x100066578",
+            "originalFileOffset": 4236664,
+            "target": "setStringValue:"
+          },
+          {
+            "address": "0x100066588",
+            "originalFileOffset": 4236680,
+            "target": "settingTipLabel"
+          },
+          {
+            "address": "0x10006659c",
+            "originalFileOffset": 4236700,
+            "target": "setBezeled:"
+          },
+          {
+            "address": "0x1000665ac",
+            "originalFileOffset": 4236716,
+            "target": "settingTipLabel"
+          },
+          {
+            "address": "0x1000665c0",
+            "originalFileOffset": 4236736,
+            "target": "setDrawsBackground:"
+          },
+          {
+            "address": "0x1000665d0",
+            "originalFileOffset": 4236752,
+            "target": "settingTipLabel"
+          },
+          {
+            "address": "0x1000665e4",
+            "originalFileOffset": 4236772,
+            "target": "setEditable:"
+          },
+          {
+            "address": "0x1000665f4",
+            "originalFileOffset": 4236788,
+            "target": "settingTipLabel"
+          },
+          {
+            "address": "0x100066608",
+            "originalFileOffset": 4236808,
+            "target": "setSelectable:"
+          },
+          {
+            "address": "0x100066618",
+            "originalFileOffset": 4236824,
+            "target": "settingTipLabel"
+          },
+          {
+            "address": "0x10006662c",
+            "originalFileOffset": 4236844,
+            "target": "setAlignment:"
+          },
+          {
+            "address": "0x100066648",
+            "originalFileOffset": 4236872,
+            "target": "fontWithName:size:"
+          },
+          {
+            "address": "0x100066668",
+            "originalFileOffset": 4236904,
+            "target": "systemFontOfSize:"
+          },
+          {
+            "address": "0x10006667c",
+            "originalFileOffset": 4236924,
+            "target": "settingTipLabel"
+          },
+          {
+            "address": "0x100066690",
+            "originalFileOffset": 4236944,
+            "target": "setFont:"
+          },
+          {
+            "address": "0x1000666c8",
+            "originalFileOffset": 4237000,
+            "target": "colorWithRed:green:blue:alpha:"
+          },
+          {
+            "address": "0x1000666dc",
+            "originalFileOffset": 4237020,
+            "target": "settingTipLabel"
+          },
+          {
+            "address": "0x1000666f0",
+            "originalFileOffset": 4237040,
+            "target": "setTextColor:"
+          },
+          {
+            "address": "0x100066708",
+            "originalFileOffset": 4237064,
+            "target": "view"
+          },
+          {
+            "address": "0x10006671c",
+            "originalFileOffset": 4237084,
+            "target": "settingTipLabel"
+          },
+          {
+            "address": "0x100066734",
+            "originalFileOffset": 4237108,
+            "target": "addSubview:"
+          },
+          {
+            "address": "0x100066768",
+            "originalFileOffset": 4237160,
+            "target": "initWithFrame:"
+          },
+          {
+            "address": "0x100066778",
+            "originalFileOffset": 4237176,
+            "target": "setProgressImageView:"
+          },
+          {
+            "address": "0x100066790",
+            "originalFileOffset": 4237200,
+            "target": "imageNamed:"
+          },
+          {
+            "address": "0x1000667a4",
+            "originalFileOffset": 4237220,
+            "target": "progressImageView"
+          },
+          {
+            "address": "0x1000667b8",
+            "originalFileOffset": 4237240,
+            "target": "setImage:"
+          },
+          {
+            "address": "0x1000667d0",
+            "originalFileOffset": 4237264,
+            "target": "progressImageView"
+          },
+          {
+            "address": "0x1000667e4",
+            "originalFileOffset": 4237284,
+            "target": "setImageScaling:"
+          },
+          {
+            "address": "0x1000667f4",
+            "originalFileOffset": 4237300,
+            "target": "progressImageView"
+          },
+          {
+            "address": "0x100066808",
+            "originalFileOffset": 4237320,
+            "target": "setImageAlignment:"
+          },
+          {
+            "address": "0x100066818",
+            "originalFileOffset": 4237336,
+            "target": "view"
+          },
+          {
+            "address": "0x10006682c",
+            "originalFileOffset": 4237356,
+            "target": "progressImageView"
+          },
+          {
+            "address": "0x100066844",
+            "originalFileOffset": 4237380,
+            "target": "addSubview:"
+          },
+          {
+            "address": "0x10006687c",
+            "originalFileOffset": 4237436,
+            "target": "initWithFrame:"
+          },
+          {
+            "address": "0x10006688c",
+            "originalFileOffset": 4237452,
+            "target": "setFnImageView:"
+          },
+          {
+            "address": "0x10006689c",
+            "originalFileOffset": 4237468,
+            "target": "fnImageView"
+          },
+          {
+            "address": "0x1000668b0",
+            "originalFileOffset": 4237488,
+            "target": "setImageScaling:"
+          },
+          {
+            "address": "0x1000668c0",
+            "originalFileOffset": 4237504,
+            "target": "fnImageView"
+          },
+          {
+            "address": "0x1000668d4",
+            "originalFileOffset": 4237524,
+            "target": "setImageAlignment:"
+          },
+          {
+            "address": "0x1000668e4",
+            "originalFileOffset": 4237540,
+            "target": "fnImageView"
+          },
+          {
+            "address": "0x1000668f8",
+            "originalFileOffset": 4237560,
+            "target": "setWantsLayer:"
+          },
+          {
+            "address": "0x100066908",
+            "originalFileOffset": 4237576,
+            "target": "view"
+          },
+          {
+            "address": "0x10006691c",
+            "originalFileOffset": 4237596,
+            "target": "fnImageView"
+          },
+          {
+            "address": "0x100066934",
+            "originalFileOffset": 4237620,
+            "target": "addSubview:"
+          },
+          {
+            "address": "0x100066950",
+            "originalFileOffset": 4237648,
+            "target": "ybhd_setKeyVisualLit:"
+          },
+          {
+            "address": "0x100066984",
+            "originalFileOffset": 4237700,
+            "target": "initWithFrame:"
+          },
+          {
+            "address": "0x100066994",
+            "originalFileOffset": 4237716,
+            "target": "setCustomHotkeyButton:"
+          },
+          {
+            "address": "0x1000669a4",
+            "originalFileOffset": 4237732,
+            "target": "customHotkeyButton"
+          },
+          {
+            "address": "0x1000669b8",
+            "originalFileOffset": 4237752,
+            "target": "setBezelStyle:"
+          },
+          {
+            "address": "0x1000669c8",
+            "originalFileOffset": 4237768,
+            "target": "customHotkeyButton"
+          },
+          {
+            "address": "0x1000669dc",
+            "originalFileOffset": 4237788,
+            "target": "setBordered:"
+          },
+          {
+            "address": "0x1000669ec",
+            "originalFileOffset": 4237804,
+            "target": "customHotkeyButton"
+          },
+          {
+            "address": "0x100066a00",
+            "originalFileOffset": 4237824,
+            "target": "setWantsLayer:"
+          },
+          {
+            "address": "0x100066a10",
+            "originalFileOffset": 4237840,
+            "target": "clearColor"
+          },
+          {
+            "address": "0x100066a24",
+            "originalFileOffset": 4237860,
+            "target": "CGColor"
+          },
+          {
+            "address": "0x100066a30",
+            "originalFileOffset": 4237872,
+            "target": "customHotkeyButton"
+          },
+          {
+            "address": "0x100066a40",
+            "originalFileOffset": 4237888,
+            "target": "layer"
+          },
+          {
+            "address": "0x100066a54",
+            "originalFileOffset": 4237908,
+            "target": "setBackgroundColor:"
+          },
+          {
+            "address": "0x100066a74",
+            "originalFileOffset": 4237940,
+            "target": "customHotkeyButton"
+          },
+          {
+            "address": "0x100066a84",
+            "originalFileOffset": 4237956,
+            "target": "layer"
+          },
+          {
+            "address": "0x100066a98",
+            "originalFileOffset": 4237976,
+            "target": "setCornerRadius:"
+          },
+          {
+            "address": "0x100066ab0",
+            "originalFileOffset": 4238000,
+            "target": "customHotkeyButton"
+          },
+          {
+            "address": "0x100066ac0",
+            "originalFileOffset": 4238016,
+            "target": "layer"
+          },
+          {
+            "address": "0x100066ad4",
+            "originalFileOffset": 4238036,
+            "target": "setBorderWidth:"
+          },
+          {
+            "address": "0x100066af8",
+            "originalFileOffset": 4238072,
+            "target": "colorWithWhite:alpha:"
+          },
+          {
+            "address": "0x100066b0c",
+            "originalFileOffset": 4238092,
+            "target": "CGColor"
+          },
+          {
+            "address": "0x100066b18",
+            "originalFileOffset": 4238104,
+            "target": "customHotkeyButton"
+          },
+          {
+            "address": "0x100066b28",
+            "originalFileOffset": 4238120,
+            "target": "layer"
+          },
+          {
+            "address": "0x100066b3c",
+            "originalFileOffset": 4238140,
+            "target": "setBorderColor:"
+          },
+          {
+            "address": "0x100066b5c",
+            "originalFileOffset": 4238172,
+            "target": "customHotkeyButton"
+          },
+          {
+            "address": "0x100066b70",
+            "originalFileOffset": 4238192,
+            "target": "setTarget:"
+          },
+          {
+            "address": "0x100066b88",
+            "originalFileOffset": 4238216,
+            "target": "customHotkeyButton"
+          },
+          {
+            "address": "0x100066b9c",
+            "originalFileOffset": 4238236,
+            "target": "setAction:"
+          },
+          {
+            "address": "0x100066bac",
+            "originalFileOffset": 4238252,
+            "target": "customHotkeyButton"
+          },
+          {
+            "address": "0x100066bc4",
+            "originalFileOffset": 4238276,
+            "target": "setHoverButtonTitle:"
+          },
+          {
+            "address": "0x100066be0",
+            "originalFileOffset": 4238304,
+            "target": "fontWithName:size:"
+          },
+          {
+            "address": "0x100066c0c",
+            "originalFileOffset": 4238348,
+            "target": "systemFontOfSize:weight:"
+          },
+          {
+            "address": "0x100066c20",
+            "originalFileOffset": 4238368,
+            "target": "customHotkeyButton"
+          },
+          {
+            "address": "0x100066c34",
+            "originalFileOffset": 4238388,
+            "target": "setHoverButtonFont:"
+          },
+          {
+            "address": "0x100066c6c",
+            "originalFileOffset": 4238444,
+            "target": "colorWithRed:green:blue:alpha:"
+          },
+          {
+            "address": "0x100066c80",
+            "originalFileOffset": 4238464,
+            "target": "customHotkeyButton"
+          },
+          {
+            "address": "0x100066c94",
+            "originalFileOffset": 4238484,
+            "target": "setNormalTextColor:"
+          },
+          {
+            "address": "0x100066cbc",
+            "originalFileOffset": 4238524,
+            "target": "colorWithRed:green:blue:alpha:"
+          },
+          {
+            "address": "0x100066cd0",
+            "originalFileOffset": 4238544,
+            "target": "customHotkeyButton"
+          },
+          {
+            "address": "0x100066ce4",
+            "originalFileOffset": 4238564,
+            "target": "setHighlightTextColor:"
+          },
+          {
+            "address": "0x100066d08",
+            "originalFileOffset": 4238600,
+            "target": "colorWithWhite:alpha:"
+          },
+          {
+            "address": "0x100066d1c",
+            "originalFileOffset": 4238620,
+            "target": "customHotkeyButton"
+          },
+          {
+            "address": "0x100066d30",
+            "originalFileOffset": 4238640,
+            "target": "setHighlightFillColor:"
+          },
+          {
+            "address": "0x100066d48",
+            "originalFileOffset": 4238664,
+            "target": "customHotkeyButton"
+          },
+          {
+            "address": "0x100066d58",
+            "originalFileOffset": 4238680,
+            "target": "ybhk_refreshAppearance"
+          },
+          {
+            "address": "0x100066d68",
+            "originalFileOffset": 4238696,
+            "target": "view"
+          },
+          {
+            "address": "0x100066d7c",
+            "originalFileOffset": 4238716,
+            "target": "customHotkeyButton"
+          },
+          {
+            "address": "0x100066d94",
+            "originalFileOffset": 4238740,
+            "target": "addSubview:"
+          },
+          {
+            "address": "0x100066dc0",
+            "originalFileOffset": 4238784,
+            "target": "fontWithName:size:"
+          },
+          {
+            "address": "0x100066dec",
+            "originalFileOffset": 4238828,
+            "target": "systemFontOfSize:weight:"
+          },
+          {
+            "address": "0x100066e1c",
+            "originalFileOffset": 4238876,
+            "target": "yb_buttonWithStyle:title:font:target:action:"
+          },
+          {
+            "address": "0x100066e34",
+            "originalFileOffset": 4238900,
+            "target": "setNextButton:"
+          },
+          {
+            "address": "0x100066e58",
+            "originalFileOffset": 4238936,
+            "target": "nextButton"
+          },
+          {
+            "address": "0x100066e6c",
+            "originalFileOffset": 4238956,
+            "target": "setTranslatesAutoresizingMaskIntoConstraints:"
+          },
+          {
+            "address": "0x100066e7c",
+            "originalFileOffset": 4238972,
+            "target": "nextButton"
+          },
+          {
+            "address": "0x100066ea8",
+            "originalFileOffset": 4239016,
+            "target": "setFrame:"
+          },
+          {
+            "address": "0x100066eb8",
+            "originalFileOffset": 4239032,
+            "target": "view"
+          },
+          {
+            "address": "0x100066ecc",
+            "originalFileOffset": 4239052,
+            "target": "nextButton"
+          },
+          {
+            "address": "0x100066ee4",
+            "originalFileOffset": 4239076,
+            "target": "addSubview:"
+          },
+          {
+            "address": "0x100066f00",
+            "originalFileOffset": 4239104,
+            "target": "updateNextButtonEnabled:"
+          }
+        ]
+      },
+      {
+        "id": "CO-CF-07",
+        "kind": "ordinary-static-arm64-instructions",
+        "method": "___55-[YBHotkeyDetectViewController handleCustomHotkeyClick]_block_invoke.152",
+        "entry": "0x10006740c",
+        "exclusiveEnd": "0x100067474",
+        "originalFileOffset": 4240396,
+        "functionBytesSha256": "bfd6e8c2090de344b0907946da2107ee2777f1227eac2b7fd5ce5dac933b34df",
+        "callAnchors": [
+          {
+            "address": "0x10006742c",
+            "originalFileOffset": 4240428,
+            "target": "ybhd_setKeyVisualLit:"
+          },
+          {
+            "address": "0x100067448",
+            "originalFileOffset": 4240456,
+            "target": "updateNextButtonEnabled:"
+          },
+          {
+            "address": "0x100067460",
+            "originalFileOffset": 4240480,
+            "target": "ybhd_queryAndRefreshShortcutBadge"
+          }
+        ]
+      },
+      {
+        "id": "CO-CF-08",
+        "kind": "ordinary-static-arm64-instructions",
+        "method": "-[YBMainWindowController showLoginPage]",
+        "entry": "0x100077e68",
+        "exclusiveEnd": "0x100077fc8",
+        "originalFileOffset": 4308584,
+        "functionBytesSha256": "8d21316d31cc51346800dd2931d6e3c67a382eccccab66abb2e59644aaac0ec2",
+        "callAnchors": [
+          {
+            "address": "0x100077e8c",
+            "originalFileOffset": 4308620,
+            "target": "p_stopUpgradeInputSourcePollTimer"
+          },
+          {
+            "address": "0x100077e98",
+            "originalFileOffset": 4308632,
+            "target": "isLogin"
+          },
+          {
+            "address": "0x100077ea4",
+            "originalFileOffset": 4308644,
+            "target": "installProgressViewController"
+          },
+          {
+            "address": "0x100077eb4",
+            "originalFileOffset": 4308660,
+            "target": "stopProgress"
+          },
+          {
+            "address": "0x100077ec8",
+            "originalFileOffset": 4308680,
+            "target": "setCloseButtonEnabled:"
+          },
+          {
+            "address": "0x100077edc",
+            "originalFileOffset": 4308700,
+            "target": "showSpeechAuthViewController"
+          },
+          {
+            "address": "0x100077ee4",
+            "originalFileOffset": 4308708,
+            "target": "loginMainViewController"
+          },
+          {
+            "address": "0x100077f08",
+            "originalFileOffset": 4308744,
+            "target": "init"
+          },
+          {
+            "address": "0x100077f18",
+            "originalFileOffset": 4308760,
+            "target": "setLoginMainViewController:"
+          },
+          {
+            "address": "0x100077f28",
+            "originalFileOffset": 4308776,
+            "target": "loginMainViewController"
+          },
+          {
+            "address": "0x100077f3c",
+            "originalFileOffset": 4308796,
+            "target": "setDelegate:"
+          },
+          {
+            "address": "0x100077f4c",
+            "originalFileOffset": 4308812,
+            "target": "installProgressViewController"
+          },
+          {
+            "address": "0x100077f5c",
+            "originalFileOffset": 4308828,
+            "target": "stopProgress"
+          },
+          {
+            "address": "0x100077f6c",
+            "originalFileOffset": 4308844,
+            "target": "loginMainViewController"
+          },
+          {
+            "address": "0x100077f7c",
+            "originalFileOffset": 4308860,
+            "target": "view"
+          },
+          {
+            "address": "0x100077f94",
+            "originalFileOffset": 4308884,
+            "target": "p_switchContentView:"
+          },
+          {
+            "address": "0x100077fb0",
+            "originalFileOffset": 4308912,
+            "target": "setCloseButtonEnabled:"
+          },
+          {
+            "address": "0x100077fc4",
+            "originalFileOffset": 4308932,
+            "target": "p_startLoginPageSelectTimer"
+          }
+        ]
+      },
+      {
+        "id": "CO-CF-09",
+        "kind": "ordinary-static-arm64-instructions",
+        "method": "-[YBMainWindowController enabledTipsViewControllerDidEnableInputSource:]",
+        "entry": "0x1000783fc",
+        "exclusiveEnd": "0x100078420",
+        "originalFileOffset": 4310012,
+        "functionBytesSha256": "7bb6631e846e646dd6e54d3a362a720454870191f224175ef507e2c410335c86",
+        "callAnchors": [
+          {
+            "address": "0x10007840c",
+            "originalFileOffset": 4310028,
+            "target": "activateMainWindowToFront"
+          },
+          {
+            "address": "0x10007841c",
+            "originalFileOffset": 4310044,
+            "target": "showLoginPage"
+          }
+        ]
+      },
+      {
+        "id": "CO-CF-10",
+        "kind": "ordinary-static-arm64-instructions",
+        "method": "-[YBMainWindowController userLoginWebViewControllerDidSuccess:]",
+        "entry": "0x100078620",
+        "exclusiveEnd": "0x100078624",
+        "originalFileOffset": 4310560,
+        "functionBytesSha256": "9763aa9b298137243dbf86e7aad24cb264f2a34ab9a3587d9c1edf67f7081ab0",
+        "callAnchors": [
+          {
+            "address": "0x100078620",
+            "originalFileOffset": 4310560,
+            "target": "showSpeechAuthViewController"
+          }
+        ]
+      },
+      {
+        "id": "CO-CF-11",
+        "kind": "ordinary-static-arm64-instructions",
+        "method": "-[YBMainWindowController showSpeechAuthViewController]",
+        "entry": "0x100078624",
+        "exclusiveEnd": "0x1000787cc",
+        "originalFileOffset": 4310564,
+        "functionBytesSha256": "05244d0a4bc2bfd15e0c3c0aecc74808b0acbd0b7e4ac5e330314ac5a6e095e2",
+        "callAnchors": [
+          {
+            "address": "0x100078638",
+            "originalFileOffset": 4310584,
+            "target": "chatterflyAuthBothGranted"
+          },
+          {
+            "address": "0x100078654",
+            "originalFileOffset": 4310612,
+            "target": "sharedInstance"
+          },
+          {
+            "address": "0x10007866c",
+            "originalFileOffset": 4310636,
+            "target": "notifyInstallerConnectWithPage:"
+          },
+          {
+            "address": "0x100078680",
+            "originalFileOffset": 4310656,
+            "target": "sharedInstace"
+          },
+          {
+            "address": "0x100078690",
+            "originalFileOffset": 4310672,
+            "target": "isNewInstall"
+          },
+          {
+            "address": "0x1000786b4",
+            "originalFileOffset": 4310708,
+            "target": "p_proceedToNextPageAfterSpeechAuthGranted"
+          },
+          {
+            "address": "0x1000786bc",
+            "originalFileOffset": 4310716,
+            "target": "speechAuthVC"
+          },
+          {
+            "address": "0x1000786e0",
+            "originalFileOffset": 4310752,
+            "target": "init"
+          },
+          {
+            "address": "0x1000786f0",
+            "originalFileOffset": 4310768,
+            "target": "setSpeechAuthVC:"
+          },
+          {
+            "address": "0x100078700",
+            "originalFileOffset": 4310784,
+            "target": "speechAuthVC"
+          },
+          {
+            "address": "0x100078714",
+            "originalFileOffset": 4310804,
+            "target": "setDelegate:"
+          },
+          {
+            "address": "0x100078724",
+            "originalFileOffset": 4310820,
+            "target": "speechAuthVC"
+          },
+          {
+            "address": "0x100078734",
+            "originalFileOffset": 4310836,
+            "target": "view"
+          },
+          {
+            "address": "0x10007874c",
+            "originalFileOffset": 4310860,
+            "target": "p_switchContentView:"
+          },
+          {
+            "address": "0x100078764",
+            "originalFileOffset": 4310884,
+            "target": "speechAuthVC"
+          },
+          {
+            "address": "0x100078774",
+            "originalFileOffset": 4310900,
+            "target": "resumeAuthMonitoring"
+          },
+          {
+            "address": "0x100078788",
+            "originalFileOffset": 4310920,
+            "target": "sharedInstance"
+          },
+          {
+            "address": "0x1000787a4",
+            "originalFileOffset": 4310948,
+            "target": "notifyInstallerConnectWithPage:"
+          },
+          {
+            "address": "0x1000787c8",
+            "originalFileOffset": 4310984,
+            "target": "showGuideFinishPage"
+          }
+        ]
+      },
+      {
+        "id": "CO-CF-12",
+        "kind": "ordinary-static-arm64-instructions",
+        "method": "-[YBMainWindowController audioDetectViewControllerDidClickNext:]",
+        "entry": "0x100078adc",
+        "exclusiveEnd": "0x100078bb8",
+        "originalFileOffset": 4311772,
+        "functionBytesSha256": "dc3ba28326935086512494b0ae23c4ea4171c53ac7deaa2aea30858b315c13e2",
+        "callAnchors": [
+          {
+            "address": "0x100078afc",
+            "originalFileOffset": 4311804,
+            "target": "init"
+          },
+          {
+            "address": "0x100078b0c",
+            "originalFileOffset": 4311820,
+            "target": "setHotkeyDetectVC:"
+          },
+          {
+            "address": "0x100078b1c",
+            "originalFileOffset": 4311836,
+            "target": "hotkeyDetectVC"
+          },
+          {
+            "address": "0x100078b30",
+            "originalFileOffset": 4311856,
+            "target": "setDelegate:"
+          },
+          {
+            "address": "0x100078b40",
+            "originalFileOffset": 4311872,
+            "target": "hotkeyDetectVC"
+          },
+          {
+            "address": "0x100078b50",
+            "originalFileOffset": 4311888,
+            "target": "view"
+          },
+          {
+            "address": "0x100078b68",
+            "originalFileOffset": 4311912,
+            "target": "p_switchContentView:"
+          },
+          {
+            "address": "0x100078b84",
+            "originalFileOffset": 4311940,
+            "target": "sharedInstance"
+          },
+          {
+            "address": "0x100078ba0",
+            "originalFileOffset": 4311968,
+            "target": "notifyInstallerConnectWithPage:"
+          }
+        ]
+      },
+      {
+        "id": "CO-CF-13",
+        "kind": "ordinary-static-arm64-instructions",
+        "method": "-[YBMainWindowController noMicrophoneViewControllerDidClickSkip:]",
+        "entry": "0x100078bb8",
+        "exclusiveEnd": "0x100078c7c",
+        "originalFileOffset": 4311992,
+        "functionBytesSha256": "14bd3d78490cf2028e414706f37d44a8fb120d4d314d2b696f19b4b38799fe60",
+        "callAnchors": [
+          {
+            "address": "0x100078bcc",
+            "originalFileOffset": 4312012,
+            "target": "speechDemoVC"
+          },
+          {
+            "address": "0x100078bf0",
+            "originalFileOffset": 4312048,
+            "target": "init"
+          },
+          {
+            "address": "0x100078c00",
+            "originalFileOffset": 4312064,
+            "target": "setSpeechDemoVC:"
+          },
+          {
+            "address": "0x100078c10",
+            "originalFileOffset": 4312080,
+            "target": "speechDemoVC"
+          },
+          {
+            "address": "0x100078c24",
+            "originalFileOffset": 4312100,
+            "target": "setDelegate:"
+          },
+          {
+            "address": "0x100078c34",
+            "originalFileOffset": 4312116,
+            "target": "speechDemoVC"
+          },
+          {
+            "address": "0x100078c44",
+            "originalFileOffset": 4312132,
+            "target": "view"
+          },
+          {
+            "address": "0x100078c5c",
+            "originalFileOffset": 4312156,
+            "target": "p_switchContentView:"
+          }
+        ]
+      },
+      {
+        "id": "CO-CF-14",
+        "kind": "ordinary-static-arm64-instructions",
+        "method": "-[YBMainWindowController speechDemoViewControllerDidClickSkip:]",
+        "entry": "0x100078d8c",
+        "exclusiveEnd": "0x100078d90",
+        "originalFileOffset": 4312460,
+        "functionBytesSha256": "3b152d562cc5a2d972e63f0ab8aac03d0ffb4fd6f21abd67209ae25f89dcf564",
+        "callAnchors": [
+          {
+            "address": "0x100078d8c",
+            "originalFileOffset": 4312460,
+            "target": "showGuideFinishPage"
+          }
+        ]
+      },
+      {
+        "id": "CO-CF-15",
+        "kind": "ordinary-static-arm64-instructions",
+        "method": "-[YBMainWindowController hotkeyDetectViewControllerDidClickNext:]",
+        "entry": "0x100078ea4",
+        "exclusiveEnd": "0x100078f80",
+        "originalFileOffset": 4312740,
+        "functionBytesSha256": "b404829feafa43834e7f59b4e128e99ab73c003be152bc65da2f97944bc6ed35",
+        "callAnchors": [
+          {
+            "address": "0x100078ec4",
+            "originalFileOffset": 4312772,
+            "target": "init"
+          },
+          {
+            "address": "0x100078ed4",
+            "originalFileOffset": 4312788,
+            "target": "setAsrDetectVC:"
+          },
+          {
+            "address": "0x100078ee4",
+            "originalFileOffset": 4312804,
+            "target": "asrDetectVC"
+          },
+          {
+            "address": "0x100078ef8",
+            "originalFileOffset": 4312824,
+            "target": "setDelegate:"
+          },
+          {
+            "address": "0x100078f08",
+            "originalFileOffset": 4312840,
+            "target": "asrDetectVC"
+          },
+          {
+            "address": "0x100078f18",
+            "originalFileOffset": 4312856,
+            "target": "view"
+          },
+          {
+            "address": "0x100078f30",
+            "originalFileOffset": 4312880,
+            "target": "p_switchContentView:"
+          },
+          {
+            "address": "0x100078f4c",
+            "originalFileOffset": 4312908,
+            "target": "sharedInstance"
+          },
+          {
+            "address": "0x100078f68",
+            "originalFileOffset": 4312936,
+            "target": "notifyInstallerConnectWithPage:"
+          }
+        ]
+      },
+      {
+        "id": "CO-CF-16",
+        "kind": "ordinary-static-arm64-instructions",
+        "method": "-[YBMainWindowController asrDetectViewControllerDidClickNext:]",
+        "entry": "0x100078f80",
+        "exclusiveEnd": "0x100078fcc",
+        "originalFileOffset": 4312960,
+        "functionBytesSha256": "e38ca80b4915bc3ea5b6f9d33cb45d67bead7386799f530434c91871585c3a48",
+        "callAnchors": [
+          {
+            "address": "0x100078f98",
+            "originalFileOffset": 4312984,
+            "target": "sharedInstance"
+          },
+          {
+            "address": "0x100078fb0",
+            "originalFileOffset": 4313008,
+            "target": "notifyInstallerConnectWithPage:"
+          },
+          {
+            "address": "0x100078fc8",
+            "originalFileOffset": 4313032,
+            "target": "showGuideFinishPage"
+          }
+        ]
+      },
+      {
+        "id": "CO-CF-17",
+        "kind": "ordinary-static-arm64-instructions",
+        "method": "-[YBMainWindowController asrDetectViewControllerDidClickSkip:]",
+        "entry": "0x100078fcc",
+        "exclusiveEnd": "0x100079018",
+        "originalFileOffset": 4313036,
+        "functionBytesSha256": "bba1731e809fa5072817f474a7176d677cf554232433014c93dae6d30e825d48",
+        "callAnchors": [
+          {
+            "address": "0x100078fe4",
+            "originalFileOffset": 4313060,
+            "target": "sharedInstance"
+          },
+          {
+            "address": "0x100078ffc",
+            "originalFileOffset": 4313084,
+            "target": "notifyInstallerConnectWithPage:"
+          },
+          {
+            "address": "0x100079014",
+            "originalFileOffset": 4313108,
+            "target": "showGuideFinishPage"
+          }
+        ]
+      },
+      {
+        "id": "CO-CF-18",
+        "kind": "ordinary-static-arm64-instructions",
+        "method": "-[YBMainWindowController guideFinishViewControllerDidClickFinish:]",
+        "entry": "0x100079018",
+        "exclusiveEnd": "0x100079048",
+        "originalFileOffset": 4313112,
+        "functionBytesSha256": "dcfcb63789bb79aa107347adc098b0291dd8007b688f4231490eb3136713a2af",
+        "callAnchors": [
+          {
+            "address": "0x100079024",
+            "originalFileOffset": 4313124,
+            "target": "window"
+          },
+          {
+            "address": "0x100079034",
+            "originalFileOffset": 4313140,
+            "target": "close"
+          }
+        ]
+      },
+      {
+        "id": "CO-CF-19",
+        "kind": "ordinary-static-arm64-instructions",
+        "method": "-[YBMainWindowController p_proceedToNextPageAfterSpeechAuthGranted]",
+        "entry": "0x100079048",
+        "exclusiveEnd": "0x1000791c4",
+        "originalFileOffset": 4313160,
+        "functionBytesSha256": "9a5b2eff988111eb915b8a1525316a07acb232ad23c66438ea2d066f4389ff3e",
+        "callAnchors": [
+          {
+            "address": "0x100079064",
+            "originalFileOffset": 4313188,
+            "target": "availableDevices"
+          },
+          {
+            "address": "0x10007909c",
+            "originalFileOffset": 4313244,
+            "target": "count"
+          },
+          {
+            "address": "0x1000790bc",
+            "originalFileOffset": 4313276,
+            "target": "init"
+          },
+          {
+            "address": "0x1000790cc",
+            "originalFileOffset": 4313292,
+            "target": "setAudioDetectVC:"
+          },
+          {
+            "address": "0x1000790dc",
+            "originalFileOffset": 4313308,
+            "target": "audioDetectVC"
+          },
+          {
+            "address": "0x1000790f0",
+            "originalFileOffset": 4313328,
+            "target": "setDelegate:"
+          },
+          {
+            "address": "0x100079100",
+            "originalFileOffset": 4313344,
+            "target": "audioDetectVC"
+          },
+          {
+            "address": "0x100079114",
+            "originalFileOffset": 4313364,
+            "target": "noMicrophoneVC"
+          },
+          {
+            "address": "0x100079138",
+            "originalFileOffset": 4313400,
+            "target": "init"
+          },
+          {
+            "address": "0x100079148",
+            "originalFileOffset": 4313416,
+            "target": "setNoMicrophoneVC:"
+          },
+          {
+            "address": "0x100079158",
+            "originalFileOffset": 4313432,
+            "target": "noMicrophoneVC"
+          },
+          {
+            "address": "0x10007916c",
+            "originalFileOffset": 4313452,
+            "target": "setDelegate:"
+          },
+          {
+            "address": "0x10007917c",
+            "originalFileOffset": 4313468,
+            "target": "noMicrophoneVC"
+          },
+          {
+            "address": "0x10007918c",
+            "originalFileOffset": 4313484,
+            "target": "view"
+          },
+          {
+            "address": "0x1000791a4",
+            "originalFileOffset": 4313508,
+            "target": "p_switchContentView:"
+          }
+        ]
+      },
+      {
+        "id": "CO-CF-20",
+        "kind": "ordinary-static-arm64-instructions",
+        "method": "___47-[YBSpeechAuthViewController refreshAuthStatus]_block_invoke",
+        "entry": "0x100083210",
+        "exclusiveEnd": "0x10008334c",
+        "originalFileOffset": 4354576,
+        "functionBytesSha256": "29509097e69d8e0bd233e6715271714cdd4b16979e62570ae341952e8b79ac1e",
+        "callAnchors": [
+          {
+            "address": "0x100083244",
+            "originalFileOffset": 4354628,
+            "target": "setMicAuthStatus:"
+          },
+          {
+            "address": "0x100083250",
+            "originalFileOffset": 4354640,
+            "target": "setAccessibilityAuthStatus:"
+          },
+          {
+            "address": "0x100083260",
+            "originalFileOffset": 4354656,
+            "target": "stopAuthMonitoring"
+          },
+          {
+            "address": "0x10008326c",
+            "originalFileOffset": 4354668,
+            "target": "sharedInstace"
+          },
+          {
+            "address": "0x10008327c",
+            "originalFileOffset": 4354684,
+            "target": "isNewInstall"
+          },
+          {
+            "address": "0x100083290",
+            "originalFileOffset": 4354704,
+            "target": "delegate"
+          },
+          {
+            "address": "0x1000832b0",
+            "originalFileOffset": 4354736,
+            "target": "respondsToSelector:"
+          },
+          {
+            "address": "0x1000832c8",
+            "originalFileOffset": 4354760,
+            "target": "delegate"
+          },
+          {
+            "address": "0x1000832dc",
+            "originalFileOffset": 4354780,
+            "target": "speechAuthViewControllerDidComplete:"
+          },
+          {
+            "address": "0x1000832ec",
+            "originalFileOffset": 4354796,
+            "target": "setGuideType:"
+          },
+          {
+            "address": "0x100083300",
+            "originalFileOffset": 4354816,
+            "target": "respondsToSelector:"
+          },
+          {
+            "address": "0x100083318",
+            "originalFileOffset": 4354840,
+            "target": "delegate"
+          },
+          {
+            "address": "0x10008332c",
+            "originalFileOffset": 4354860,
+            "target": "speechAuthViewControllerDidCompleteAsUpgrade:"
+          }
+        ]
+      }
+    ],
+    "limitations": [
+      "Runtime visibility and branches were not observed.",
+      "Nonempty practice text is not a verified speech-session commit. Skip paths exist.",
+      "Installer window close is established; durable completion preference remains unresolved."
+    ]
+  },
+  "typeless": {
+    "parentReaEvidenceID": "ev_17708dd83c71fab9ced0d18a4df9036551e5e4aca46326f121f929f1cbaa2ccb",
+    "version": "2.8.1",
+    "asarSha256": "eb9bcc842478b12a7488d90778ad6b08e6788c8fa5e875782ec2af0387c6c80b",
+    "observations": [
+      {
+        "id": "TO-01",
+        "member": "dist/renderer/static/js/UfR9-a2Z.js",
+        "sha256": "efba7d2db84c1da476b521c84cd38446d594ffd4f0d8e59cac85e7ec7d6ae49a",
+        "start_byte": 26342,
+        "end_byte": 31100,
+        "description": "Ordered default/lite flows and platform completion predicate",
+        "evidence_type": "ordinary inert shipped source inspection; not REA-produced feature evidence or observed execution"
+      },
+      {
+        "id": "TO-02",
+        "member": "dist/renderer/static/js/UfR9-a2Z.js",
+        "sha256": "efba7d2db84c1da476b521c84cd38446d594ffd4f0d8e59cac85e7ec7d6ae49a",
+        "start_byte": 395536,
+        "end_byte": 399021,
+        "description": "Synthetic onboarding app/input contexts",
+        "evidence_type": "ordinary inert shipped source inspection; not REA-produced feature evidence or observed execution"
+      },
+      {
+        "id": "TO-03",
+        "member": "dist/renderer/static/js/CmxXvT3N.mjs",
+        "sha256": "d26ed3a5c1dc62298680590e200973c36b2c4ff89c497f1be4b7505f05df3c6c",
+        "start_byte": 144550,
+        "end_byte": 146100,
+        "description": "Rendered scenario names",
+        "evidence_type": "ordinary inert shipped source inspection; not REA-produced feature evidence or observed execution"
+      },
+      {
+        "id": "TO-04",
+        "member": "dist/renderer/static/js/CmxXvT3N.mjs",
+        "sha256": "d26ed3a5c1dc62298680590e200973c36b2c4ff89c497f1be4b7505f05df3c6c",
+        "start_byte": 167650,
+        "end_byte": 168600,
+        "description": "Permission request/polling component",
+        "evidence_type": "ordinary inert shipped source inspection; not REA-produced feature evidence or observed execution"
+      },
+      {
+        "id": "TO-05",
+        "member": "dist/renderer/static/js/CmxXvT3N.mjs",
+        "sha256": "d26ed3a5c1dc62298680590e200973c36b2c4ff89c497f1be4b7505f05df3c6c",
+        "start_byte": 182700,
+        "end_byte": 186200,
+        "description": "Permission gating and child-process check",
+        "evidence_type": "ordinary inert shipped source inspection; not REA-produced feature evidence or observed execution"
+      },
+      {
+        "id": "TO-06",
+        "member": "dist/renderer/static/js/CmxXvT3N.mjs",
+        "sha256": "d26ed3a5c1dc62298680590e200973c36b2c4ff89c497f1be4b7505f05df3c6c",
+        "start_byte": 162820,
+        "end_byte": 166600,
+        "description": "Microphone test actions and gating",
+        "evidence_type": "ordinary inert shipped source inspection; not REA-produced feature evidence or observed execution"
+      },
+      {
+        "id": "TO-07",
+        "member": "dist/renderer/static/js/CmxXvT3N.mjs",
+        "sha256": "d26ed3a5c1dc62298680590e200973c36b2c4ff89c497f1be4b7505f05df3c6c",
+        "start_byte": 142200,
+        "end_byte": 144300,
+        "description": "Survey submission and final completion",
+        "evidence_type": "ordinary inert shipped source inspection; not REA-produced feature evidence or observed execution"
+      },
+      {
+        "id": "TO-08",
+        "member": "dist/renderer/static/js/CmxXvT3N.mjs",
+        "sha256": "d26ed3a5c1dc62298680590e200973c36b2c4ff89c497f1be4b7505f05df3c6c",
+        "start_byte": 194630,
+        "end_byte": 196400,
+        "description": "Pricing free/pro branch",
+        "evidence_type": "ordinary inert shipped source inspection; not REA-produced feature evidence or observed execution"
+      },
+      {
+        "id": "TO-09",
+        "member": "dist/renderer/static/js/DdHsgR7k.js",
+        "sha256": "b7049c950a0373e40f72a6c94c48858440e571c6bc21c54e194f2e05476102a6",
+        "start_byte": 127793,
+        "end_byte": 133043,
+        "description": "Resume state, skip policies, upgrade and completion",
+        "evidence_type": "ordinary inert shipped source inspection; not REA-produced feature evidence or observed execution"
+      },
+      {
+        "id": "TO-10",
+        "member": "dist/renderer/static/js/DdHsgR7k.js",
+        "sha256": "b7049c950a0373e40f72a6c94c48858440e571c6bc21c54e194f2e05476102a6",
+        "start_byte": 133423,
+        "end_byte": 136393,
+        "description": "Guided exercise success/continue gate",
+        "evidence_type": "ordinary inert shipped source inspection; not REA-produced feature evidence or observed execution"
+      },
+      {
+        "id": "TO-11",
+        "member": "dist/renderer/static/js/DdHsgR7k.js",
+        "sha256": "b7049c950a0373e40f72a6c94c48858440e571c6bc21c54e194f2e05476102a6",
+        "start_byte": 256854,
+        "end_byte": 258854,
+        "description": "Actual dictation shortcut hit gate",
+        "evidence_type": "ordinary inert shipped source inspection; not REA-produced feature evidence or observed execution"
+      },
+      {
+        "id": "TO-12",
+        "member": "dist/renderer/static/js/DdHsgR7k.js",
+        "sha256": "b7049c950a0373e40f72a6c94c48858440e571c6bc21c54e194f2e05476102a6",
+        "start_byte": 281074,
+        "end_byte": 282854,
+        "description": "Target language selection gate",
+        "evidence_type": "ordinary inert shipped source inspection; not REA-produced feature evidence or observed execution"
+      },
+      {
+        "id": "TO-13",
+        "member": "dist/renderer/static/js/DdHsgR7k.js",
+        "sha256": "b7049c950a0373e40f72a6c94c48858440e571c6bc21c54e194f2e05476102a6",
+        "start_byte": 267324,
+        "end_byte": 273454,
+        "description": "Feature overview and optional invite/pricing navigation",
+        "evidence_type": "ordinary inert shipped source inspection; not REA-produced feature evidence or observed execution"
+      },
+      {
+        "id": "TO-14",
+        "member": "dist/renderer/static/js/DNMdpbnK.mjs",
+        "sha256": "86fa0e0d3bc22d43d07f3cf7d1730018c5e4b022ce884baa21b4a80f3eaa7913",
+        "start_byte": 4889893,
+        "end_byte": 4890748,
+        "description": "Hub account onboarding update request",
+        "evidence_type": "ordinary inert shipped source inspection; not REA-produced feature evidence or observed execution"
+      },
+      {
+        "id": "TO-15",
+        "derived_path": ".workspace/research/competitor-rewrite/typeless-main-literals.txt",
+        "original_member": "dist/main/index.js",
+        "original_sha256": "7b87e1578597b6fce6b6589a2f8aa18496e9513f0e74d0b8b26186a641b59ade",
+        "derived_start_byte": 142200,
+        "derived_end_byte": 144500,
+        "description": "Main startup login/account/permission default versus lite routing",
+        "evidence_type": "ordinary deterministic inert literal substitution; offsets apply to derived source",
+        "mapping_path": ".workspace/research/competitor-rewrite/typeless-literal-map.json"
+      },
+      {
+        "id": "TO-16",
+        "derived_path": ".workspace/research/competitor-rewrite/typeless-main-literals.txt",
+        "original_member": "dist/main/index.js",
+        "original_sha256": "7b87e1578597b6fce6b6589a2f8aa18496e9513f0e74d0b8b26186a641b59ade",
+        "derived_start_byte": 565720,
+        "derived_end_byte": 566398,
+        "description": "Main completion closes onboarding, opens hub/bar and clears progress",
+        "evidence_type": "ordinary deterministic inert literal substitution; offsets apply to derived source",
+        "mapping_path": ".workspace/research/competitor-rewrite/typeless-literal-map.json"
+      }
+    ]
+  },
+  "doubao": {
+    "version": "1.0.2",
+    "settingsBundleID": "com.bytedance.inputmethod.doubaoime.settings",
+    "settingsUniversalSha256": "13fff30333c99fcd706e30f1e8408d49d04cb5748146a8befa72dff381f57762",
+    "settingsArm64Sha256": "8cc8ad24e94234817231c791e6c09fa578221992ee0e9f434b3d858da56f2ef6",
+    "retainedReaEvidence": [
+      {
+        "id": "ev_731210eaeb6d41d66b4703c9561801520666fa5b2f530dd38fc716fa5015a859",
+        "operation": "search_procedures",
+        "observation": "Native OnboardingWindow initializer and close methods; does not establish page order."
+      },
+      {
+        "id": "ev_45dbd19b6897eb5099570396a8676a7ed22b387adb7b9cb063e20a13bd97d148",
+        "operation": "search_strings",
+        "observation": "Defined hasCompletedOnboarding strings; does not establish persistence timing."
+      }
+    ],
+    "observations": [
+      {
+        "id": "DO-permission",
+        "originalFileOffset": "0x5a2930",
+        "observation": "MicrophonePermissionPage type; permission deep link at 0x56eb80; authorization title at 0x56e520."
+      },
+      {
+        "id": "DO-shortcut",
+        "arm64FileOffset": "0x51cfa0",
+        "observation": "VoiceShortcutPage; _canProceed and recording state. Original title offset 0x56f9a0; Fn conflict guidance 0x56fd30; hold/click mode names 0x56fee0 and 0x56ff00."
+      },
+      {
+        "id": "DO-practice",
+        "originalFileOffset": "0x5a3568",
+        "observation": "TrySpeakingPage type; practice title 0x56ee00, sample 0x56ee40, settings CTA 0x56ee20. Reflection includes transcription state, microphone picker/meter and onComplete."
+      },
+      {
+        "id": "DO-completion",
+        "originalFileOffset": "0x56eb00",
+        "observation": "hasCompletedOnboarding; explicit --show-onboarding argument 0x5604f0; skip diagnostic 0x5604a0 and completion notification import."
+      },
+      {
+        "id": "DO-optional",
+        "originalFileOffset": "0x55e7c0",
+        "observation": "GlobalVoiceGuideModal, SmartTextPermissionGuideModal and separate capability prerequisites; not proven basic-onboarding gates."
+      }
+    ],
+    "limitations": [
+      "Microphone -> shortcut -> practice -> settings is a candidate order, not recovered dispatch control flow.",
+      "Exact forward/back gates, ASR success/skip criterion, IME initial enablement and basic login requirements remain unverified.",
+      "Two focused decompilations selected neighboring code and were excluded from behavior claims.",
+      "No runtime launch or user-state reset. Native session closed."
+    ]
+  },
+  "arion": {
+    "kind": "ordinary-working-tree-source-review",
+    "observations": [
+      {
+        "id": "AR-ready",
+        "path": "apps/desktop/ui/entities/onboarding/onboarding.go",
+        "line": 32,
+        "observation": "Try falls through true; Shortcut only checks Registered; Model permits provisioning/loading."
+      },
+      {
+        "id": "AR-practice",
+        "path": "apps/desktop/ui/pages/onboarding/onboarding.go",
+        "line": 278,
+        "observation": "Local editable practice string without session-bound success/status/recovery."
+      },
+      {
+        "id": "AR-completion",
+        "path": "apps/desktop/bootstrap/actions.go",
+        "line": 212,
+        "observation": "CompleteOnboarding unconditionally sets completion preference."
+      },
+      {
+        "id": "AR-test",
+        "path": "apps/desktop/ui/app/app_test.go",
+        "line": 716,
+        "observation": "Existing headless flow advances with provisioning model and empty practice."
+      }
+    ],
+    "check": {
+      "command": "go test ./ui/app -run '^TestOnboardingFlow$' -count=1",
+      "cwd": "apps/desktop",
+      "result": "PASS",
+      "scope": "Headless UI with fake state/actions; not real recognition or insertion."
+    }
+  }
+}
