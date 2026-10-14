@@ -8,6 +8,8 @@ import (
 	_ "embed"
 	"encoding/json"
 	"strings"
+
+	"arion.local/core/domain"
 )
 
 //go:embed live.json
@@ -27,9 +29,6 @@ type Template struct {
 	System   string    `json:"system"`
 	Examples []Example `json:"examples"`
 }
-
-// Scenes the template formats; anything else is rendered as chat.
-var scenes = map[string]bool{"chat": true, "email": true, "list": true}
 
 // Live is the shipped template; its version is recorded with every run.
 func Live() Template {
@@ -71,9 +70,12 @@ func (t Template) Prompt(in Input) string {
 }
 
 func user(in Input) string {
-	scene := in.Scene
-	if !scenes[scene] {
-		scene = "chat"
+	// The template formats the model scenes; anything else is chat.
+	scene := string(domain.SceneChat)
+	for _, s := range domain.ModelScenes {
+		if string(s) == in.Scene {
+			scene = in.Scene
+		}
 	}
 	var b strings.Builder
 	b.WriteString("[" + scene + "]")

@@ -117,6 +117,9 @@ type Targets struct {
 	delivery func() Delivery
 	// ClipboardRestoreDelay waits for the host to read the pasted text.
 	ClipboardRestoreDelay time.Duration
+	// ReadSite reports whether Capture may read the host of the focused web
+	// page for scene selection; nil never reads it.
+	ReadSite func() bool
 }
 
 func NewTargets(delivery func() Delivery) *Targets {
@@ -153,7 +156,11 @@ func newToken() contracts.TargetToken {
 // returns PERMISSION_DENIED having read nothing (DSK-A01).
 func (t *Targets) Capture(_ context.Context, id contracts.Identity) (contracts.TargetSnapshot, error) {
 	var native C.arion_target
-	switch C.arion_capture_target(&native) {
+	readSite := C.int(0)
+	if t.ReadSite != nil && t.ReadSite() {
+		readSite = 1
+	}
+	switch C.arion_capture_target(&native, readSite) {
 	case C.ARION_TARGET_UNTRUSTED:
 		return contracts.TargetSnapshot{}, domain.Fail(domain.CodePermissionDenied, "accessibility")
 	case C.ARION_TARGET_NONE:
@@ -179,12 +186,53 @@ func (t *Targets) Capture(_ context.Context, id contracts.Identity) (contracts.T
 	t.mu.Unlock()
 	return contracts.TargetSnapshot{
 		Identity: id, Target: token, Sensitive: secure, Application: bundle,
+		Field: fieldKind(role, subrole), Site: C.GoString(&native.site[0]), ApplicationName: C.GoString(&native.app_name[0]),
 		Capabilities: contracts.Capabilities{
 			// DSK-08: context is readable only from a known, non-secure field.
 			ContextRead:     known && !secure && tgt.readable,
 			SingleInsertion: true,
 		},
 	}, nil
+}
+
+// FocusOwner returns the process of the frontmost app, read before an
+// Arion window takes the focus, for a later Peek.
+func (t *Targets) FocusOwner() int { return int(C.arion_frontmost_pid()) }
+
+// Peek describes the focused field of owner for display: app, field type
+// and, when ReadSite allows, the page host. It keeps no target and reads no
+// field text; Arion itself and unknown processes are TARGET_UNSUPPORTED.
+func (t *Targets) Peek(_ context.Context, owner int) (contracts.TargetSnapshot, error) {
+	readSite := C.int(0)
+	if t.ReadSite != nil && t.ReadSite() {
+		readSite = 1
+	}
+	var native C.arion_target
+	switch C.arion_peek_target(C.int(owner), &native, readSite) {
+	case C.ARION_TARGET_UNTRUSTED:
+		return contracts.TargetSnapshot{}, domain.Fail(domain.CodePermissionDenied, "accessibility")
+	case C.ARION_TARGET_NONE:
+		return contracts.TargetSnapshot{}, domain.Fail(domain.CodeTargetUnsupported, "no other application")
+	}
+	role, subrole := C.GoString(&native.role[0]), C.GoString(&native.subrole[0])
+	return contracts.TargetSnapshot{
+		Application: C.GoString(&native.bundle[0]), ApplicationName: C.GoString(&native.app_name[0]),
+		Field: fieldKind(role, subrole), Site: C.GoString(&native.site[0]),
+		Sensitive: native.secure_input == 1 || subrole == "AXSecureTextField",
+	}, nil
+}
+
+// fieldKind maps AX roles to field types. It follows Chatterfly's context
+// builder (search-field subrole is search, text fields and areas are text)
+// and also counts editable combo boxes, which web search boxes report.
+func fieldKind(role, subrole string) domain.FieldKind {
+	switch {
+	case subrole == "AXSearchField":
+		return domain.FieldSearch
+	case role == "AXTextField" || role == "AXTextArea" || role == "AXComboBox":
+		return domain.FieldText
+	}
+	return domain.FieldUnknown
 }
 
 func (t *Targets) evictLocked() {

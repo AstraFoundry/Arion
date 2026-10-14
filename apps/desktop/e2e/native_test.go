@@ -10,6 +10,7 @@ import (
 	"image/png"
 	"os"
 	"path/filepath"
+	"reflect"
 	"sync/atomic"
 	"testing"
 	"time"
@@ -216,7 +217,7 @@ func TestInterfaceLanguageUpdatesNativeWindows(t *testing.T) {
 	app.Update(func(s *arion.State) {
 		want := before
 		want.UILanguage = arion.LanguageChinese
-		if s.Preferences != want {
+		if !reflect.DeepEqual(s.Preferences, want) {
 			t.Errorf("language switch changed other preferences: %v", s.Preferences)
 		}
 		app.Store().Actions.UpdatePreferences(func(p *arion.Preferences) { p.UILanguage = arion.LanguageEnglish })

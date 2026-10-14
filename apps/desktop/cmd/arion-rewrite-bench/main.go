@@ -28,6 +28,12 @@ type sample struct {
 	Scenario       string   `json:"scenario"`
 	Mode           string   `json:"mode"`
 	ApprovedMemory []string `json:"approvedMemory"`
+	// Target is the focused app, field and site the case is dictated into.
+	Target struct {
+		App   string           `json:"app"`
+		Field domain.FieldKind `json:"field"`
+		Site  string           `json:"site"`
+	} `json:"target"`
 }
 
 type live struct {
@@ -38,8 +44,13 @@ type live struct {
 }
 
 type row struct {
-	CaseID       string  `json:"caseId"`
-	VariantID    string  `json:"variantId"`
+	CaseID     string `json:"caseId"`
+	VariantID  string `json:"variantId"`
+	Scene      string `json:"scene"`
+	SceneRoute string `json:"sceneRoute,omitempty"`
+	// Source is the text sent to the rewriter, after rule correction when
+	// -correct is set.
+	Source       string  `json:"source"`
 	Live         []live  `json:"live"`
 	Proposal     string  `json:"proposal"`
 	Verdict      string  `json:"verdict"`
@@ -64,8 +75,14 @@ func main() {
 	variant := flag.String("variant", "", "variant id recorded in rows")
 	liveEdits := flag.Bool("live", true, "rewrite each closed segment before the final request")
 	threads := flag.Int("threads", 4, "intra-op threads")
+	correct := flag.Bool("correct", false, "apply the product's default rule correction (fillers) before rewriting, as dictation does")
+	sceneMode := flag.String("scene", "corpus", "corpus: each case's scenario; auto: decided from its target like the product; or a fixed scene")
 	out := flag.String("out", "", "output JSONL path (must not exist)")
 	flag.Parse()
+	if *sceneMode != "corpus" && *sceneMode != "auto" && !domain.Scene(*sceneMode).Known() {
+		fmt.Fprintf(os.Stderr, "unknown scene mode %q\n", *sceneMode)
+		os.Exit(2)
+	}
 	if *corpusPath == "" || *worker == "" || *runtimeDir == "" || *model == "" || *variant == "" || *out == "" {
 		flag.Usage()
 		os.Exit(2)
@@ -86,38 +103,54 @@ func main() {
 	for i, s := range corpus.Samples {
 		id := contracts.Identity{SessionID: s.ID, Generation: uint64(i + 1)}
 		r := row{CaseID: s.ID, VariantID: *variant}
+		switch *sceneMode {
+		case "corpus":
+			r.Scene = s.Scenario
+		case "auto":
+			d := domain.DecideScene(domain.SceneHints{App: s.Target.App, Field: s.Target.Field, Site: s.Target.Site}, nil)
+			r.Scene, r.SceneRoute = string(d.Scene), string(d.Route)
+		default:
+			r.Scene = *sceneMode
+		}
+		source := s.SourceText
+		if *correct {
+			source = domain.Correct(source, domain.CorrectionPolicy{RemoveFillers: true}).Text
+		}
+		r.Source = source
+		scene := domain.Scene(r.Scene)
 		if s.Mode == "verbatim" {
 			// Verbatim dictation never reaches the model (009 step 5).
-			r.Bypassed, r.Verdict, r.Text = true, "bypassed", s.SourceText
+			r.Bypassed, r.Verdict, r.Text = true, "bypassed", source
 			check(encoder.Encode(r))
 			continue
 		}
 		request := func(text string, live bool) (ports.RewriteResult, float64) {
 			start := time.Now()
-			result, err := c.Rewrite(ctx, ports.RewriteRequest{Identity: id, Text: text, Scene: s.Scenario, Terms: s.ApprovedMemory, Live: live})
+			result, err := c.Rewrite(ctx, ports.RewriteRequest{Identity: id, Text: text, Scene: string(domain.ModelScene(scene, text)), Terms: s.ApprovedMemory, Live: live})
 			check(err)
 			return result, float64(time.Since(start).Microseconds()) / 1000
 		}
 		if *liveEdits {
-			for _, prefix := range stablePrefixes(s) {
+			for _, prefix := range stablePrefixes(s, source) {
 				result, ms := request(prefix, true)
 				text := domain.AlignLiveEnding(prefix, result.Text)
 				verdict := domain.ValidateRewrite(domain.RewriteCheck{Source: prefix, Candidate: text, Truncated: result.Truncated, Terms: s.ApprovedMemory})
 				r.Live = append(r.Live, live{Source: prefix, Text: text, Verdict: string(verdict), TotalMs: ms})
 			}
 		}
-		result, ms := request(s.SourceText, false)
-		verdict := domain.ValidateRewrite(domain.RewriteCheck{Source: s.SourceText, Candidate: result.Text, Truncated: result.Truncated, Terms: s.ApprovedMemory})
+		result, ms := request(source, false)
+		verdict := domain.ValidateRewrite(domain.RewriteCheck{Source: source, Candidate: result.Text, Truncated: result.Truncated, Terms: s.ApprovedMemory})
 		r.Proposal, r.Verdict, r.Truncated = result.Text, string(verdict), result.Truncated
-		r.Text = s.SourceText
+		r.Text = source
 		if verdict == domain.RewriteAccepted {
 			r.Text = result.Text
 		}
+		r.Text = domain.FinishScene(scene, r.Text)
 		r.FinalMs, r.PrefillMs, r.DecodeMs = ms, result.PrefillMs, result.DecodeMs
 		r.InputTokens, r.ReusedTokens, r.OutputTokens = result.InputTokens, result.ReusedTokens, result.OutputTokens
 		c.End(id)
 		check(encoder.Encode(r))
-		fmt.Fprintf(os.Stderr, "%-18s %-20s %6.0f ms reuse=%d/%d\n", s.ID, verdict, ms, result.ReusedTokens, result.InputTokens)
+		fmt.Fprintf(os.Stderr, "%-18s %-7s %-20s %6.0f ms reuse=%d/%d\n", s.ID, r.Scene, verdict, ms, result.ReusedTokens, result.InputTokens)
 	}
 }
 
@@ -125,10 +158,10 @@ func main() {
 // complete utterance: what a live edit sees while the speaker continues.
 // Segment boundaries come from the case's pause-marked speech script, or
 // its commas when it has none.
-func stablePrefixes(s sample) []string {
+func stablePrefixes(s sample, sourceText string) []string {
 	speech := s.Speech
 	if speech == "" {
-		speech = strings.NewReplacer("，", "|", ", ", "|").Replace(strings.TrimRight(s.SourceText, "。.!?！？"))
+		speech = strings.NewReplacer("，", "|", ", ", "|").Replace(strings.TrimRight(sourceText, "。.!?！？"))
 	}
 	parts := strings.Split(speech, "|")
 	if len(parts) < 2 {
@@ -136,7 +169,7 @@ func stablePrefixes(s sample) []string {
 	}
 	var out []string
 	cursor := 0
-	source := []rune(s.SourceText)
+	source := []rune(sourceText)
 	for _, part := range parts[:len(parts)-1] {
 		// Advance through the source past this spoken part and its trailing
 		// punctuation, so the prefix uses the source's own characters.

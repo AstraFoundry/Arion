@@ -1,6 +1,8 @@
 package application
 
 import (
+	"arion.local/core/domain"
+	"encoding/json"
 	"math"
 	"slices"
 	"testing"
@@ -57,5 +59,27 @@ func TestMicrophoneGainPreference(t *testing.T) {
 	}
 	if f := GainFactor(6); math.Abs(float64(f)-1.995) > 0.01 || GainFactor(0) != 1 {
 		t.Fatalf("gain factors: %v %v", f, GainFactor(0))
+	}
+}
+
+func TestSceneOverridesRoundTripAndRepair(t *testing.T) {
+	prefs := DefaultPreferences()
+	prefs.SceneOverrides = domain.SceneOverrides{"mail.google.com": domain.SceneWork, "search@com.apple.mail": domain.SceneChat}
+	data, err := json.Marshal(prefs)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var loaded Preferences
+	if err := json.Unmarshal(data, &loaded); err != nil || loaded.SceneOverrides["mail.google.com"] != domain.SceneWork {
+		t.Fatalf("round trip lost overrides: %+v %v", loaded.SceneOverrides, err)
+	}
+	loaded.SceneOverrides = loaded.SceneOverrides.WithScene("poem.example", "poem").WithScene("list.example", domain.SceneList)
+	stored := loaded.SceneOverrides
+	normalized, repairs := loaded.Normalize()
+	if len(normalized.SceneOverrides) != 2 || len(repairs) == 0 {
+		t.Fatalf("invalid overrides kept: %+v %v", normalized.SceneOverrides, repairs)
+	}
+	if len(stored) != 4 {
+		t.Fatal("Normalize mutated the stored map")
 	}
 }

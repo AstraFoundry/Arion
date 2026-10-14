@@ -3,6 +3,7 @@ package settings
 import (
 	"os"
 	"path/filepath"
+	"reflect"
 	"slices"
 	"testing"
 
@@ -20,7 +21,7 @@ func TestLanguagePersistenceAndLegacyProfiles(t *testing.T) {
 		t.Fatal(err)
 	}
 	loaded, repairs, err := store.Load()
-	if err != nil || len(repairs) != 0 || loaded != prefs {
+	if err != nil || len(repairs) != 0 || !reflect.DeepEqual(loaded, prefs) {
 		t.Fatalf("round trip: %v %v %v", loaded, repairs, err)
 	}
 	if err := os.WriteFile(store.Path, []byte(`{"version":1,"sounds":false,"shortcut":"Cmd+Shift+D"}`), 0600); err != nil {

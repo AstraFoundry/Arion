@@ -63,6 +63,41 @@ func TestPolishRowStates(t *testing.T) {
 	snapshot(t, tt, "settings-polish-unsupported-zh-CN")
 }
 
+// Match the app appears only while polishing is on, starts on, and its
+// switch writes the preference.
+func TestMatchAppRow(t *testing.T) {
+	state, actions, store := fixture()
+	tt := ui.NewTester(func(c *ui.Context) {
+		ui.Column(c).Children(func() { polish.MatchApp(c, store, theme.Resolve(false)) })
+	}, 560, 120)
+	en := copy.For(copy.English)
+	state.Polish = runtime.Polish{State: runtime.PolishReady, Installed: true}
+	state.Preferences.Polish, state.Preferences.MatchApp = false, true
+	settle(tt)
+	if hasText(tt, en.Text(copy.MatchAppLabel)) {
+		t.Fatal("shown while polishing is off")
+	}
+	state.Preferences.Polish = true
+	settle(tt)
+	title, ok := tt.Find(en.Text(copy.MatchAppLabel))
+	if !ok || !hasText(tt, en.Text(copy.MatchAppDetail)) {
+		t.Fatalf("row missing: %q", tt.Texts())
+	}
+	snapshot(t, tt, "settings-match-app")
+	// The switch is centered on the row, whose detail wraps.
+	detail, _ := tt.Find(en.Text(copy.MatchAppDetail))
+	tt.ClickAt(560-40, (title.Y+detail.Y+detail.H)/2)
+	settle(tt)
+	if state.Preferences.MatchApp || !actions.called("prefs") {
+		t.Fatal("switch did not turn Match the app off")
+	}
+	state.Polish = runtime.Polish{State: runtime.PolishUnsupported}
+	settle(tt)
+	if hasText(tt, en.Text(copy.MatchAppLabel)) {
+		t.Fatal("shown where polishing is unsupported")
+	}
+}
+
 // A rewritten dictation keeps its recognized original one click away.
 func TestCopyOriginal(t *testing.T) {
 	state, actions, store := fixture()

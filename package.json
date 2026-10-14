@@ -38,7 +38,8 @@
     "live:fixtures": "node scripts/live-bench-command.mjs fixtures",
     "live:text": "node scripts/live-bench-command.mjs text",
     "live:audio": "node scripts/live-bench-command.mjs audio",
-    "live:report": "node scripts/live-bench-command.mjs report"
+    "live:report": "node scripts/live-bench-command.mjs report",
+    "scene:bench": "node scripts/live-bench-command.mjs scene"
   },
   "engines": {
     "node": ">=20.0.0"

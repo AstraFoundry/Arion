@@ -34,8 +34,15 @@ type RewriteCheck struct {
 	Terms []string
 }
 
-// markers are chat/prompt structures that must never reach a target.
-var markers = []string{"<think", "</think", "<|", "|>", "[chat]", "[email]", "[list]", "[terms", `"transcript"`}
+// markers are chat/prompt structures that must never reach a target,
+// including every scene tag of the rewrite prompt.
+var markers = func() []string {
+	out := []string{"<think", "</think", "<|", "|>", "[terms", `"transcript"`}
+	for _, scene := range Scenes {
+		out = append(out, "["+string(scene)+"]")
+	}
+	return out
+}()
 
 // listMarkers are numbered-list labels a list scene may add.
 var listMarkers = regexp.MustCompile(`(?m)^\s*\d{1,2}[.、)]\s*`)
@@ -84,7 +91,12 @@ func ValidateRewrite(c RewriteCheck) RewriteVerdict {
 	if values := quantities(c.Source); len(values) > 0 && !strings.Contains(candidate, values[len(values)-1]) {
 		return RewriteFinalValue
 	}
-	if !hasRepairCue(c.Source) && coverage(withoutReplaced(c.Source, c.Terms), candidate)*10 < 7 {
+	kept := withoutReplaced(c.Source, c.Terms)
+	if len(listMarkers.FindAllString(candidate, 2)) == 2 {
+		// Numbered lines replace the spoken ordinals.
+		kept = ordinals.ReplaceAllString(kept, "")
+	}
+	if !hasRepairCue(c.Source) && coverage(kept, candidate)*10 < 7 {
 		return RewriteDropped
 	}
 	return RewriteAccepted
@@ -119,6 +131,9 @@ func hasRepairCue(s string) bool {
 	}
 	return false
 }
+
+// ordinals are spoken enumeration markers a numbered list replaces.
+var ordinals = regexp.MustCompile(`(?i)第[一二三四五六七八九十][是个点]?|[一二三四五六七八九十]是|首先|其次|\b(first|second|third|fourth|fifth)(ly)?\b`)
 
 // withoutReplaced removes the misheard side of "from → to" terms, which a
 // correct rewrite legitimately replaces.

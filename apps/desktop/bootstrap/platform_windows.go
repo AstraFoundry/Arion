@@ -42,7 +42,8 @@ func (windowsPlatform) StartHoldKey(key application.HoldKey, sink func(holdkey.E
 }
 func (windowsPlatform) StopHoldKey() { windows.StopHold() }
 
-func (windowsPlatform) NewTargets(delivery func() application.Delivery) Targets {
+// NewTargets ignores readSite: the Windows adapter reads no web site.
+func (windowsPlatform) NewTargets(delivery func() application.Delivery, _ func() bool) Targets {
 	return windows.NewTargets(func() windows.Delivery {
 		if delivery() == application.DeliveryClipboard {
 			return windows.DeliveryClipboard

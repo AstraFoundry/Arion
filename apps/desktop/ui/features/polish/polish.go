@@ -32,6 +32,22 @@ func Row(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 	Status(c, store, tokens)
 }
 
+// MatchApp is the switch letting polishing follow the focused app, field and
+// web site. It is shown only while polishing is on.
+func MatchApp(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
+	if !store.State.Preferences.Polish || store.State.Polish.State == runtime.PolishUnsupported {
+		return
+	}
+	messages := store.Copy()
+	on := store.State.Preferences.MatchApp
+	kit.Divider(c, tokens)
+	kit.Row(c, tokens, messages.Text(copy.MatchAppLabel), messages.Text(copy.MatchAppDetail), func() {
+		if ui.Switch(c.Key("match-app"), &on).Label(messages.Text(copy.MatchAppLabel)).Changed() {
+			store.Actions.UpdatePreferences(func(prefs *runtime.Preferences) { prefs.MatchApp = on })
+		}
+	})
+}
+
 // Status is the line under the row: what enabling costs, progress, or a
 // failure with its retry.
 func Status(c *ui.Context, store runtime.Store, tokens theme.Tokens) {

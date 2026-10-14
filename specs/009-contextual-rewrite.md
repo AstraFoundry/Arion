@@ -2,7 +2,7 @@
 
 ## Status and scope
 
-This spec defines an optional local LLM stage and its evaluation boundary. The production desktop implements the [live rewriting pipeline](#live-rewriting-pipeline) of [ADR 011](../docs/decisions/011-live-local-rewriting.md) on macOS (Apple silicon): previews while speaking and one validated, automatically inserted rewrite after stop, in an isolated ONNX Runtime GenAI worker. Context capture, scene detection, Windows and the strict [rewrite evaluator](../docs/research/rewrite-evaluation.md) protocol remain unimplemented. Competitor artifact findings do not establish that Arion or a competitor executes this pipeline.
+This spec defines an optional local LLM stage and its evaluation boundary. The production desktop implements the [live rewriting pipeline](#live-rewriting-pipeline) of [ADR 011](../docs/decisions/011-live-local-rewriting.md) on macOS (Apple silicon): previews while speaking and one validated, automatically inserted rewrite after stop, in an isolated ONNX Runtime GenAI worker. It also implements [scene selection](#scene-selection) from the focused field, web site and app. Context text capture, Windows and the strict [rewrite evaluator](../docs/research/rewrite-evaluation.md) protocol remain unimplemented. Competitor artifact findings do not establish that Arion or a competitor executes this pipeline.
 
 Rewriting is separate from acoustic recognition, conservative correction and Laya candidate ranking. A ranker permutes existing producer candidates; a rewriter can generate a new text proposal. Baseline dictation remains available with rewriting disabled. macOS shortcut, Windows shortcut and optional IMK/TSF hosts share the portable request/result contract; host integration must be verified on the actual OS.
 
@@ -25,6 +25,16 @@ Rewriting is separate from acoustic recognition, conservative correction and Lay
 - LRW-05: Every proposal passes `domain.ValidateRewrite` before display or insertion: not truncated or empty, no chat markup or echo, bounded length change, no new numbers or unsupported content, no dropped negation, the final value of a self-correction kept, and no large deletion without a repair cue. Live previews keep the open source's trailing punctuation.
 - LRW-06: The model runs in a separate worker process that never loads the speech runtime. Prompt instructions and demonstrations are a fixed, versioned prefix; dictated text and approved terms are data in the last user turn, and chat control markers in dictated text are rejected. Reusing KV state must not change greedy output.
 - LRW-07: Model weights download only on the user's choice, as SHA-256-pinned files published atomically; the runtime ships signed inside the app. Platforms without a pinned runtime report the capability as unsupported.
+
+## Scene selection
+
+The scene sets the layout of a rewrite, never its content. Scenes: `chat` (one plain paragraph, the default), `email` (greeting, body, closing), `work` (concise message, enumerated points as numbered lines), `prompt` (instruction for a coding agent: code names, paths, commands and error text exact, enumerated requirements as numbered lines), `search` (query without sentence-final punctuation) and `list` (numbered lines). They mirror the scenes Chatterfly presents ([research](../docs/research/chatterfly.md#scene-recognition-and-switching)); search follows its field-type signal.
+
+- SCN-01: With **Match the app** on (default; under Settings › Model while polishing is on), the scene is decided once per session after target capture by `domain.DecideScene`: a scene the user chose for the place wins, then a search field, then the host of the web page owning the focus, then the app's bundle ID, else `chat`. A listed site matches its exact host, ignoring `www.`; workspace domains such as `feishu.cn` also match every subdomain. Off, every session uses `chat`.
+- SCN-02: Inputs are metadata only: bundle ID, AX role/subrole and the http(s) host of the outermost `AXWebArea`'s `AXURL`. The host is read only while polishing and Match the app are both on. Field text, page titles, paths, queries, clipboard and history are not read for scene selection. Hosts and bundle IDs stay in session memory and are never logged; the review event reports only the scene.
+- SCN-03: Every preview and the final rewrite of a session use the same scene. Secure fields still fail before capture (DSK-08); no context is read from them.
+- SCN-04: Scene tags are prompt structure: a proposal containing any scene tag is rejected as markup. Layout added by a scene passes the same validation as any other proposal.
+- SCN-05: Opening the menu bar panel reads the frontmost app's focused field (app name, field type and, under SCN-02's gate, site) and shows its scene with whether it is automatic or the user's choice. Choosing a scene there stores it for that place: the site without `www.` when there is one, else the app, and a search field of that place separately (`domain.SceneKey`). **Automatic** removes the choice. Choices are kept with the preferences on this device; secure fields, Arion itself and unreadable targets show no card.
 
 ## Runtime requirements
 
@@ -68,6 +78,16 @@ Automated checks cover protected exact occurrences, declared constraints, unsupp
 | LRW-A05 | Held-out development gate on Apple M4: text stage delivers at least ten more proxy passes than the source with zero worsened cases; the product audio variant has zero worsened cases, previews before stop in at least 80% of multi-segment fixtures and stop-to-final p95 under 1.5 s ([report](../benchmarks/results/live-rewrite-v1/README.md)) |
 | LRW-A06 | Blind independent meaning/style/hallucination review of live output (open; same coverage rules as RWT-A08) |
 
+### Scene selection acceptance
+
+| ID | Required evidence |
+| --- | --- |
+| SCN-A01 | Field > site > app > default precedence, subdomain matching and fixed scene without Match the app (`TestDecideScene`, `TestFollowAppDecidesScene`) |
+| SCN-A02 | Scene tags are rejected as markup (`TestSceneTagsAreMarkup`) |
+| SCN-A03 | Held-out scene corpus on Apple M4: auto scenes deliver more layout-proxy passes than fixed chat with zero worsened cases; the live held-out set keeps its LRW-A05 result ([report](../benchmarks/results/scene-switching-v1/README.md)) |
+| SCN-A04 | The site host is read from Safari and Chromium web content on a trusted build, and not read with the preference off (open: native verification) |
+| SCN-A05 | A user's choice beats the built-in rules for exactly its place and Automatic restores them; the panel card shows, switches and retranslates the scene (`TestSceneOverrides`, `TestSceneOverrideWins`, `TestSceneCard`, `TestPanelWithSceneCard`) |
+
 ## Implementation order
 
-Implemented: source-bound cancellation and live preview, deterministic validation, isolated worker, KV-reuse parity check and the live development benchmark (LRW-A01–A05). P0: reviewed corpus and independent blind review (LRW-A06, RWT-A08); source-checkpoint/export parity; native shortcut/IME acceptance with rendered preview timing. P1: Windows runtime and acceptance; consent-gated context and scene selection; ASR-contention and power measurements. P2: broader personalization after harm measurements justify it.
+Implemented: source-bound cancellation and live preview, deterministic validation, isolated worker, KV-reuse parity check and the live development benchmark (LRW-A01–A05). P0: reviewed corpus and independent blind review (LRW-A06, RWT-A08); source-checkpoint/export parity; native shortcut/IME acceptance with rendered preview timing. Scene selection from field, site and app (SCN-A01–A03). P1: Windows runtime and acceptance; native site-host verification (SCN-A04); consent-gated context text; ASR-contention and power measurements. P2: broader personalization after harm measurements justify it.

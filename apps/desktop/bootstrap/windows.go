@@ -97,6 +97,7 @@ func (a *App) togglePanel() {
 		a.panel.Close()
 		return
 	}
+	a.peekScene()
 	view := uiapp.Panel(a.ui)
 	a.panel = mygo.NewFlyout(mygo.FlyoutOptions{
 		Tray: a.tray, Placement: mygo.PlacementBottom, Gap: 4, Width: uiapp.PanelWidth, Height: uiapp.PanelHeight,

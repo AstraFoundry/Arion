@@ -254,6 +254,14 @@ func (c *Coordinator) prepare(r *run, needTarget bool) {
 		}
 		r.target, r.hasTarget = target, true
 	}
+	if l := r.live; l != nil && l.policy.Enabled && l.policy.FollowApp {
+		// Set before the live worker starts; only it and delivery read it.
+		var hints domain.SceneHints
+		if r.hasTarget {
+			hints = r.target.SceneHints()
+		}
+		l.policy.Scene = string(domain.DecideScene(hints, l.policy.SceneOverrides).Scene)
+	}
 	recognizer, err := c.deps.Recognizers.NewRecognizer(r.ctx, r.identity)
 	if err != nil {
 		c.failErr(r, err, domain.CodeModelMissing)
@@ -506,6 +514,9 @@ func (c *Coordinator) deliver(r *run, raw string, policy RewritePolicy) {
 		if text, outcome, ok = c.rewriteFinal(r, source, policy); !ok {
 			return
 		}
+		if policy.Enabled {
+			text = domain.FinishScene(domain.Scene(policy.Scene), text)
+		}
 	}
 	c.mu.Lock()
 	if c.current != r || r.ctx.Err() != nil {
@@ -529,7 +540,11 @@ func (c *Coordinator) deliver(r *run, raw string, policy RewritePolicy) {
 	_ = r.session.Advance(domain.Reviewing)
 	r.final = text
 	c.mu.Unlock()
-	c.emit(r, contracts.Event{Envelope: contracts.Envelope{Kind: contracts.CorrectionReady, Revision: revision}, State: domain.Reviewing, Raw: raw, Source: source, Rewrite: outcome, Text: text})
+	scene := ""
+	if outcome != "" {
+		scene = policy.Scene
+	}
+	c.emit(r, contracts.Event{Envelope: contracts.Envelope{Kind: contracts.CorrectionReady, Revision: revision}, State: domain.Reviewing, Raw: raw, Source: source, Rewrite: outcome, Scene: scene, Text: text})
 	if c.opts.AutoCommit {
 		c.commit(r, revision, text)
 	}

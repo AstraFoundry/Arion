@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"arion.local/core/application"
+	"arion.local/core/domain"
 	"arion.local/desktop/ui/pages/settings"
 	arion "arion.local/desktop/ui/shared/runtime"
 	"github.com/egoist/mygo"
@@ -34,7 +35,16 @@ func (x actions) OpenUpdate() {
 	x.a.state.Focus = arion.SettingsFocus{Section: settings.About, Seq: x.a.state.Focus.Seq + 1}
 	x.a.openSettings()
 }
-func (x actions) Quit()                     { mygo.App.Quit() }
+func (x actions) Quit() { mygo.App.Quit() }
+
+// ChooseScene stores the user's scene for the panel's target place.
+func (x actions) ChooseScene(scene domain.Scene) {
+	key := domain.SceneKey(x.a.state.SceneTarget.Hints)
+	if key == "" {
+		return
+	}
+	x.UpdatePreferences(func(p *application.Preferences) { p.SceneOverrides = p.SceneOverrides.WithScene(key, scene) })
+}
 func (x actions) TestShortcut(testing bool) { x.a.testingShortcut = testing }
 
 func (x actions) UseBundle(id string) {

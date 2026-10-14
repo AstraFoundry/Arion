@@ -68,13 +68,15 @@ func (darwinPlatform) StartHoldKey(key application.HoldKey, sink func(holdkey.Ev
 }
 func (darwinPlatform) StopHoldKey() { macos.StopHold() }
 
-func (p darwinPlatform) NewTargets(delivery func() application.Delivery) Targets {
-	return macos.NewTargets(func() macos.Delivery {
+func (p darwinPlatform) NewTargets(delivery func() application.Delivery, readSite func() bool) Targets {
+	targets := macos.NewTargets(func() macos.Delivery {
 		if delivery() == application.DeliveryClipboard {
 			return macos.DeliveryClipboard
 		}
 		return macos.DeliveryAutomatic
 	})
+	targets.ReadSite = readSite
+	return targets
 }
 
 type darwinIME struct{ *macos.IME }

@@ -3,6 +3,8 @@ package prompt
 import (
 	"strings"
 	"testing"
+
+	"arion.local/core/domain"
 )
 
 func TestPromptExtendsSource(t *testing.T) {
@@ -38,6 +40,32 @@ func TestExamplesAreClean(t *testing.T) {
 			if strings.Contains(s, "<|") || strings.Contains(s, "<think>") {
 				t.Fatalf("control text in example %q", s)
 			}
+		}
+	}
+}
+
+// Every layout the coordinator can ask for is demonstrated, and
+// demonstrations use no other layout.
+func TestEveryModelSceneIsDemonstrated(t *testing.T) {
+	shown := map[domain.Scene]bool{}
+	for _, e := range Live().Examples {
+		shown[domain.Scene(e.Scene)] = true
+	}
+	for _, scene := range domain.ModelScenes {
+		if !shown[scene] {
+			t.Errorf("no demonstration for %s", scene)
+		}
+		delete(shown, scene)
+	}
+	for scene := range shown {
+		t.Errorf("demonstration uses %s, which the coordinator never asks for", scene)
+	}
+}
+
+func TestContextScenesAreNotModelTags(t *testing.T) {
+	for _, scene := range []domain.Scene{domain.SceneWork, domain.ScenePrompt, domain.SceneSearch} {
+		if got := user(Input{Scene: string(scene), Text: "x"}); !strings.HasPrefix(got, "[chat]") {
+			t.Errorf("%s rendered as %q", scene, got)
 		}
 	}
 }

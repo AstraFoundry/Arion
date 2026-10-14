@@ -152,6 +152,14 @@ func (t *Targets) Capture(_ context.Context, id contracts.Identity) (contracts.T
 		Capabilities: contracts.Capabilities{SingleInsertion: true}}, nil
 }
 
+// FocusOwner and Peek: the Windows adapter does not describe targets for
+// scene display yet, as it reads no field type or site.
+func (t *Targets) FocusOwner() int { return 0 }
+
+func (t *Targets) Peek(context.Context, int) (contracts.TargetSnapshot, error) {
+	return contracts.TargetSnapshot{}, domain.Fail(domain.CodeTargetUnsupported, "scene display not offered")
+}
+
 func (t *Targets) Capabilities(_ context.Context, token contracts.TargetToken) (contracts.Capabilities, error) {
 	t.mu.Lock()
 	defer t.mu.Unlock()

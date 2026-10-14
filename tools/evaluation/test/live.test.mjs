@@ -28,6 +28,23 @@ test("text scoring separates proposals, delivered text and worsening", () => {
   assert.equal(s.liveEdits, 1);
 });
 
+test("text scoring breaks results down by expected scene", () => {
+  const scenes = {
+    samples: [
+      { ...sample("mail", "张总你好，合同看完了。", { required: ["\n\n"] }), scenario: "email" },
+      sample("chat", "我七点到。", { required: ["七点"] }),
+    ],
+  };
+  const rows = [
+    { caseId: "mail", scene: "email", verdict: "accepted", proposal: "张总你好：\n\n合同看完了。", text: "张总你好：\n\n合同看完了。", generationMs: 300 },
+    { caseId: "chat", scene: "email", verdict: "accepted", proposal: "我七点到。", text: "我七点到。", generationMs: 200 },
+  ];
+  const s = scoreText(scenes, rows);
+  assert.equal(s.sceneAgreement, 1);
+  assert.deepEqual(s.byScene.email, { cases: 1, sourcePass: 0, deliveredPass: 1, worsened: 0, sceneAgreement: 1 });
+  assert.deepEqual(s.byScene.chat, { cases: 1, sourcePass: 1, deliveredPass: 1, worsened: 0, sceneAgreement: 0 });
+});
+
 test("text scoring rejects incomplete coverage", () => {
   assert.throws(() => scoreText(corpus, [{ caseId: "repair", verdict: "accepted", text: "x" }]));
 });

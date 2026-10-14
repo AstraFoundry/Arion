@@ -304,6 +304,15 @@ func (u Update) Pending() bool {
 	return u.Phase == UpdateAvailable || u.Phase == UpdateDownloading || u.Phase == UpdateReady
 }
 
+// SceneTarget is the field the menu bar panel shows the scene of: the app
+// that was frontmost when the panel opened. It lives only in memory.
+type SceneTarget struct {
+	Known bool
+	// AppName is the app's display name.
+	AppName string
+	Hints   domain.SceneHints
+}
+
 // SettingsFocus asks the settings window to show a section. Seq increases
 // with each request, so a page applies each one once.
 type SettingsFocus struct {
@@ -335,6 +344,8 @@ type State struct {
 	// rewrite replaced it; empty otherwise.
 	LastOriginal string
 	Platform     string
+	// SceneTarget is set each time the panel opens.
+	SceneTarget SceneTarget
 }
 
 // Actions are requests views make; implementations return quickly and do
@@ -371,6 +382,9 @@ type Actions interface {
 	AddReplacement(from, to string) error
 	RemoveReplacement(id string)
 	CopyText(text string)
+	// ChooseScene keeps scene for SceneTarget's site or app; empty follows
+	// the built-in rules again.
+	ChooseScene(scene domain.Scene)
 	OpenSettings()
 	// OpenUpdate shows the update in Settings › About.
 	OpenUpdate()

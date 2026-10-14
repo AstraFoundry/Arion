@@ -1,7 +1,10 @@
 package bootstrap
 
 import (
+	"context"
+
 	"arion.local/core/application"
+	"arion.local/core/contracts"
 	"arion.local/core/domain/ports"
 	"arion.local/desktop/infrastructure/holdkey"
 	"arion.local/desktop/ui/shared/runtime"
@@ -31,6 +34,10 @@ type InputMethod interface {
 type Targets interface {
 	ports.TargetProvider
 	ports.InputTarget
+	// FocusOwner returns the frontmost app's process before an Arion window
+	// takes the focus; Peek then describes its focused field for display.
+	FocusOwner() int
+	Peek(ctx context.Context, owner int) (contracts.TargetSnapshot, error)
 }
 
 // Platform is the OS-specific consent and insertion surface.
@@ -57,7 +64,7 @@ type Platform interface {
 	// block. StopHoldKey is idempotent.
 	StartHoldKey(key application.HoldKey, sink func(holdkey.Event)) error
 	StopHoldKey()
-	NewTargets(delivery func() application.Delivery) Targets
+	NewTargets(delivery func() application.Delivery, readSite func() bool) Targets
 	// NewInputMethod returns nil where no input method host exists yet.
 	NewInputMethod(onLeave func()) InputMethod
 }

@@ -24,13 +24,17 @@ typedef struct {
     char subrole[64];
     char bundle[256];
     char bundle_path[1024];
+    char site[256];
+    char app_name[256];
 } arion_target;
 
 int arion_mic_status(void);
 void arion_mic_request(void);
 int arion_ax_trusted(int prompt);
 void arion_open_url(const char *url);
-int arion_capture_target(arion_target *out);
+int arion_capture_target(arion_target *out, int read_site);
+int arion_frontmost_pid(void);
+int arion_peek_target(int pid, arion_target *out, int read_site);
 void arion_release(void *element);
 int arion_focus_matches(void *element, int pid);
 int arion_secure_input(void);

@@ -132,6 +132,19 @@ type TargetSnapshot struct {
 	// Application is the platform identity of the focused app, used only for
 	// local policy such as the context denylist. It is never logged.
 	Application string
+	// ApplicationName is the app's display name, shown only in Arion's own
+	// interface. It is never logged.
+	ApplicationName string
+	// Field is the focused field's type, from its platform role.
+	Field domain.FieldKind
+	// Site is the host of the web page owning the focused field, read only
+	// when the user lets the scene follow the app. It is never logged.
+	Site string
+}
+
+// SceneHints are the snapshot's inputs to scene selection.
+func (t TargetSnapshot) SceneHints() domain.SceneHints {
+	return domain.SceneHints{App: t.Application, Field: t.Field, Site: t.Site}
 }
 
 // Event is the typed application event delivered to UI adapters. Text lives
@@ -144,8 +157,10 @@ type Event struct {
 	// Source is the rule-corrected text a rewrite started from; Rewrite is
 	// the rewrite outcome (a domain.RewriteVerdict or a RewriteOutcome) and
 	// empty when no rewrite ran. Text is what review shows and commit inserts.
-	Source  string           `json:"source,omitempty"`
-	Rewrite string           `json:"rewrite,omitempty"`
+	Source  string `json:"source,omitempty"`
+	Rewrite string `json:"rewrite,omitempty"`
+	// Scene is the formatting scene the rewrite was asked for.
+	Scene   string           `json:"scene,omitempty"`
 	Level   float32          `json:"level,omitempty"`
 	Outcome CommitOutcome    `json:"outcome,omitempty"`
 	Error   domain.ErrorCode `json:"error,omitempty"`

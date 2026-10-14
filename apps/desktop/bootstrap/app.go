@@ -69,11 +69,13 @@ type App struct {
 	vocabPath string
 
 	// Main-thread state.
-	state           arion.State
-	ui              arion.Store
-	tray            *mygo.Tray
-	overlay         *mygo.Window
-	panel           *mygo.Window
+	state   arion.State
+	ui      arion.Store
+	tray    *mygo.Tray
+	overlay *mygo.Window
+	panel   *mygo.Window
+	// sceneSeq drops a scene peek answered after a newer panel opened.
+	sceneSeq        int
 	settingsWin     *mygo.Window
 	onboarding      *mygo.Window
 	guide           *guideSession
@@ -138,7 +140,11 @@ func New(opts Options) (*App, error) {
 	a.mic = audio.NewMicrophone(a.platform)
 	a.mic.Select(prefs.Microphone)
 	a.mic.SetGain(prefs.MicrophoneGain)
-	a.targets = a.platform.NewTargets(func() application.Delivery { return a.preferences().Delivery })
+	a.targets = a.platform.NewTargets(func() application.Delivery { return a.preferences().Delivery }, func() bool {
+		// The page's host is read only when a rewrite will use it.
+		p := a.preferences()
+		return p.Polish && p.MatchApp
+	})
 	a.vocabPath = filepath.Join(opts.DataDir, "vocabulary.bin")
 	capture := opts.Audio
 	if capture == nil {
@@ -209,7 +215,8 @@ func (a *App) rewritePolicy() application.RewritePolicy {
 	for _, r := range a.replaces {
 		terms = append(terms, r.From+" → "+r.To)
 	}
-	return application.RewritePolicy{Enabled: true, Scene: "chat", Terms: terms}
+	return application.RewritePolicy{Enabled: true, Scene: string(domain.SceneChat), FollowApp: a.prefs.MatchApp,
+		SceneOverrides: a.prefs.SceneOverrides, Terms: terms}
 }
 
 // Run starts the event loop; it returns when the app quits.

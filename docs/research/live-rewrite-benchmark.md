@@ -17,6 +17,15 @@ Scoring (`tools/evaluation/live`) applies the exact-string proxies of the [Qwen 
 
 Fixtures, rows and weights stay in `.workspace/`; only content-free aggregates are published.
 
+## Scene selection
+
+[Scene selection](../../specs/009-contextual-rewrite.md#scene-selection) is measured twice:
+
+- **Classifier** (`make scene-bench`, `arion-scene-bench`): scores `domain.DecideScene` against [labelled app and site contexts](../../benchmarks/configs/scene-contexts.json) — common mail, messaging, coding, AI-assistant and search apps and sites, plus documents and unlisted targets. It reports accuracy, per-scene precision and recall, the confusion matrix, which signal decided and the decision time. The developer who wrote the rule tables also wrote the labels, so it measures coverage of listed targets; ambiguous cases are labelled by intended use so path-dependent misses stay visible.
+- **Rewrite by scene** (`make live-text-bench … SCENE=auto CORRECT=1`): text cases carry a `target` (`app`, `field`, `site`) and an expected `scenario`. `SCENE=auto` decides each case's scene from its target exactly like the product; `SCENE=chat` reproduces the product before scene selection; `SCENE=corpus` uses the labelled scene. `CORRECT=1` applies the product's default rule correction before the rewrite, as dictation does. Rows record the scene, the deciding route and the rewriter's input; the scorer reports passes, worsening and scene agreement per expected scene. Layout proxies are exact strings: paragraph breaks for email, numbered lines for enumerated work and coding requests, no sentence-final punctuation for search, a single paragraph for chat.
+
+Two developer-authored scene corpora exist: a 33-case set written before any scene prompt work and then used for diagnosis (now the development set), and a 30-case held-out set written and hashed after that diagnosis and before the final pipeline ran.
+
 ## Limits
 
 One author wrote every case; there are no independent annotations, no natural speech and no human ratings. Exact-string proxies can pass a fluent hallucination or fail an equivalent spelling. Synthetic speech has no disfluent prosody, and the inserted pauses make segmentation easier than real dictation. The host was not isolated from other desktop tasks. Native preview rendering, IME insertion and Windows were not measured. These results select defaults for development; they do not establish Typeless parity or satisfy RWT-A07/A08.

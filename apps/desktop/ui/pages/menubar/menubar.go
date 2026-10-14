@@ -6,6 +6,7 @@ import (
 
 	"arion.local/desktop/ui/features/dictate"
 	"arion.local/desktop/ui/features/provision"
+	"arion.local/desktop/ui/features/scene"
 	"arion.local/desktop/ui/features/transcript"
 	"arion.local/desktop/ui/features/update"
 	"arion.local/desktop/ui/shared/copy"
@@ -17,11 +18,12 @@ import (
 	"github.com/egoist/mygo/ui"
 )
 
-// Width and Height size the panel: Height holds four lines of the last
-// dictation with a model download or failure under them.
+// Width and Height size the panel: Height holds the scene card and four
+// lines of the last dictation with a model download or failure under them.
+// The card's target is read after the panel opens, so its room is fixed.
 const (
 	Width  = 330
-	Height = 328
+	Height = 384
 )
 
 // Panel keeps the panel's own view state.
@@ -45,6 +47,7 @@ func (p *Panel) Render(c *ui.Context, store arion.Store) {
 	box.Padding(16).Gap(14).Children(func() {
 		statusheader.Render(c, store, tokens)
 		dictate.Toggle(c, store, tokens)
+		scene.Card(c, store, tokens)
 		transcript.Last(c, store, tokens, &p.copied)
 		ui.Spacer(c)
 		// The bundle itself is chosen in settings; the panel only shows the

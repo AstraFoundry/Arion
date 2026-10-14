@@ -1,0 +1,186 @@
+{
+ "kind": "arion-scene-classifier-report-v1",
+ "contextsSha256": "6837117c2dce0c8348498da1bddff169e211b9158adc7509fcff73e6a02f2fd4",
+ "note": "run1 before the exact-host fix (docs.google.com was search); run2 after the fix and four added bundle IDs, on the same contexts, so run2 is not held-out",
+ "run1": {
+  "contexts": 118,
+  "correct": 107,
+  "accuracy": 0.9067796610169492,
+  "routes": {
+   "app": 39,
+   "default": 33,
+   "field": 5,
+   "site": 41
+  },
+  "misses": [
+   {
+    "id": "app-airmail",
+    "expected": "email",
+    "got": "chat",
+    "route": "default"
+   },
+   {
+    "id": "app-android-studio",
+    "expected": "prompt",
+    "got": "chat",
+    "route": "default"
+   },
+   {
+    "id": "app-sublime",
+    "expected": "prompt",
+    "got": "chat",
+    "route": "default"
+   },
+   {
+    "id": "app-superhuman",
+    "expected": "email",
+    "got": "chat",
+    "route": "default"
+   },
+   {
+    "id": "app-zoom",
+    "expected": "work",
+    "got": "chat",
+    "route": "default"
+   },
+   {
+    "id": "web-doc-docs.google.com",
+    "expected": "chat",
+    "got": "search",
+    "route": "site"
+   },
+   {
+    "id": "web-doc-feishu-docs",
+    "expected": "chat",
+    "got": "work",
+    "route": "site"
+   },
+   {
+    "id": "web-mail-www.icloud.com",
+    "expected": "email",
+    "got": "chat",
+    "route": "default"
+   },
+   {
+    "id": "web-prompt-stackoverflow.com",
+    "expected": "prompt",
+    "got": "chat",
+    "route": "default"
+   },
+   {
+    "id": "web-search-s.taobao.com",
+    "expected": "search",
+    "got": "chat",
+    "route": "default"
+   },
+   {
+    "id": "web-search-www.google.com.hk",
+    "expected": "search",
+    "got": "chat",
+    "route": "default"
+   }
+  ]
+ },
+ "run2": {
+  "accuracy": 0.9576271186440678,
+  "confusion": {
+   "chat": {
+    "chat": 34,
+    "work": 1
+   },
+   "email": {
+    "chat": 2,
+    "email": 17
+   },
+   "prompt": {
+    "chat": 1,
+    "prompt": 33
+   },
+   "search": {
+    "chat": 1,
+    "search": 15
+   },
+   "work": {
+    "work": 14
+   }
+  },
+  "contexts": 118,
+  "correct": 113,
+  "decisionNs": 53.478813559322035,
+  "misses": [
+   {
+    "id": "app-superhuman",
+    "expected": "email",
+    "got": "chat",
+    "route": "default"
+   },
+   {
+    "id": "web-doc-feishu-docs",
+    "expected": "chat",
+    "got": "work",
+    "route": "site"
+   },
+   {
+    "id": "web-mail-www.icloud.com",
+    "expected": "email",
+    "got": "chat",
+    "route": "default"
+   },
+   {
+    "id": "web-prompt-stackoverflow.com",
+    "expected": "prompt",
+    "got": "chat",
+    "route": "default"
+   },
+   {
+    "id": "web-search-s.taobao.com",
+    "expected": "search",
+    "got": "chat",
+    "route": "default"
+   }
+  ],
+  "routes": {
+   "app": 43,
+   "default": 29,
+   "field": 5,
+   "site": 41
+  },
+  "scenes": {
+   "chat": {
+    "expected": 35,
+    "predicted": 38,
+    "correct": 34,
+    "precision": 0.8947368421052632,
+    "recall": 0.9714285714285714
+   },
+   "email": {
+    "expected": 19,
+    "predicted": 17,
+    "correct": 17,
+    "precision": 1,
+    "recall": 0.8947368421052632
+   },
+   "prompt": {
+    "expected": 34,
+    "predicted": 33,
+    "correct": 33,
+    "precision": 1,
+    "recall": 0.9705882352941176
+   },
+   "search": {
+    "expected": 16,
+    "predicted": 15,
+    "correct": 15,
+    "precision": 1,
+    "recall": 0.9375
+   },
+   "work": {
+    "expected": 14,
+    "predicted": 15,
+    "correct": 14,
+    "precision": 0.9333333333333333,
+    "recall": 1
+   }
+  }
+ }
+}

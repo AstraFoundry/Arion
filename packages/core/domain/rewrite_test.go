@@ -25,6 +25,8 @@ func TestValidateRewrite(t *testing.T) {
 		{"repair cue removed is fine", RewriteCheck{Source: "帮我告诉张三，不是张三，是李四，明天不用来了。", Candidate: "告诉李四明天不用来了。"}, RewriteAccepted},
 		{"final value dropped", RewriteCheck{Source: "这次一共要买二十台电脑。等。一下，试试。十八台。", Candidate: "这次一共要买二十台电脑。"}, RewriteFinalValue},
 		{"final value kept", RewriteCheck{Source: "票价是每张八十块，一共买六张，不对，买七张。", Candidate: "票价是每张八十块，一共买七张。"}, RewriteAccepted},
+		{"numbered lines replace spoken ordinals", RewriteCheck{Source: "收到，这周要做三件事，第一是联系供应商，第二是确认报价，第三是安排验收。", Candidate: "这周要做三件事：\n1. 联系供应商\n2. 确认报价\n3. 安排验收"}, RewriteAccepted},
+		{"ordinals still count without a list", RewriteCheck{Source: "收到，这周要做三件事，第一是联系供应商，第二是确认报价，第三是安排验收。", Candidate: "这周要做三件事，联系供应商，确认报价。"}, RewriteDropped},
 		{"ordinal is not a value", RewriteCheck{Source: "出差要带三样东西，第一电脑，第二充电器，第三身份证。", Candidate: "出差要带三样东西：\n1. 电脑\n2. 充电器\n3. 身份证"}, RewriteAccepted},
 		{"clause dropped without repair", RewriteCheck{Source: "周末不要安排加班。大。家需要休息。", Candidate: "周末不要安排加班。"}, RewriteDropped},
 		{"fillers removed", RewriteCheck{Source: "那个那个我觉得这个方案，嗯还是挺好的，就是成本有点高。", Candidate: "我觉得这个方案还是挺好的，就是成本有点高。"}, RewriteAccepted},

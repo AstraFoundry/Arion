@@ -342,3 +342,76 @@ func TestWholeUtteranceFinalizationWithPreviews(t *testing.T) {
 		t.Fatalf("expected one whole-utterance decode, got %d", len(finalizer.calls))
 	}
 }
+
+// SCN-A01: with FollowApp the captured target decides the scene of every
+// preview and the final rewrite, and the review reports it.
+func TestFollowAppDecidesScene(t *testing.T) {
+	rewriter := &scriptedRewriter{answer: func(req ports.RewriteRequest) (string, error) { return req.Text, nil }}
+	c, audio, events, target, _ := liveSetup(t, []string{"hello", "|", "b"}, rewriter, RewritePolicy{Enabled: true, Scene: "chat", FollowApp: true})
+	target.snapshot.Application, target.snapshot.Site = "com.google.Chrome", "mail.google.com"
+	c.Start()
+	events.wait(t, stateIs(domain.Capturing))
+	audio.push(3, 0.2)
+	c.Stop()
+	if ready := events.wait(t, kindIs(contracts.CorrectionReady)); ready.Scene != string(domain.SceneEmail) {
+		t.Fatalf("review scene %q", ready.Scene)
+	}
+	rewriter.mu.Lock()
+	defer rewriter.mu.Unlock()
+	if len(rewriter.requests) == 0 {
+		t.Fatal("no rewrite requests")
+	}
+	for _, req := range rewriter.requests {
+		if req.Scene != string(domain.SceneEmail) {
+			t.Fatalf("request scene %q (live=%v)", req.Scene, req.Live)
+		}
+	}
+
+	// Without FollowApp the declared scene stays, whatever the target.
+	rewriter = &scriptedRewriter{answer: func(req ports.RewriteRequest) (string, error) { return req.Text, nil }}
+	c, audio, events, target, _ = liveSetup(t, []string{"hello"}, rewriter, RewritePolicy{Enabled: true, Scene: "chat"})
+	target.snapshot.Application = "com.apple.mail"
+	c.Start()
+	events.wait(t, stateIs(domain.Capturing))
+	audio.push(1, 0.2)
+	c.Stop()
+	if ready := events.wait(t, kindIs(contracts.CorrectionReady)); ready.Scene != string(domain.SceneChat) {
+		t.Fatalf("fixed scene became %q", ready.Scene)
+	}
+}
+
+// A search field asks the model for plain text and delivers a query
+// without sentence-final punctuation, whether or not the rewrite passed.
+func TestSearchSceneFinishesQuery(t *testing.T) {
+	rewriter := &scriptedRewriter{answer: func(req ports.RewriteRequest) (string, error) { return req.Text + "。", nil }}
+	c, audio, events, target, _ := liveSetup(t, []string{"weather"}, rewriter, RewritePolicy{Enabled: true, Scene: "chat", FollowApp: true})
+	target.snapshot.Field = domain.FieldSearch
+	c.Start()
+	events.wait(t, stateIs(domain.Capturing))
+	audio.push(1, 0.2)
+	c.Stop()
+	ready := events.wait(t, kindIs(contracts.CorrectionReady))
+	if ready.Scene != string(domain.SceneSearch) || ready.Text != "WEATHER" {
+		t.Fatalf("unexpected %+v", ready)
+	}
+	rewriter.mu.Lock()
+	defer rewriter.mu.Unlock()
+	if last := rewriter.requests[len(rewriter.requests)-1]; last.Scene != string(domain.SceneChat) {
+		t.Fatalf("model asked for %q", last.Scene)
+	}
+}
+
+// A scene the user chose for the place beats the built-in rules.
+func TestSceneOverrideWins(t *testing.T) {
+	rewriter := &scriptedRewriter{answer: func(req ports.RewriteRequest) (string, error) { return req.Text, nil }}
+	overrides := domain.SceneOverrides{"com.apple.mail": domain.SceneWork}
+	c, audio, events, target, _ := liveSetup(t, []string{"hello"}, rewriter, RewritePolicy{Enabled: true, Scene: "chat", FollowApp: true, SceneOverrides: overrides})
+	target.snapshot.Application = "com.apple.mail"
+	c.Start()
+	events.wait(t, stateIs(domain.Capturing))
+	audio.push(1, 0.2)
+	c.Stop()
+	if ready := events.wait(t, kindIs(contracts.CorrectionReady)); ready.Scene != string(domain.SceneWork) {
+		t.Fatalf("override ignored: %q", ready.Scene)
+	}
+}

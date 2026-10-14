@@ -6,7 +6,7 @@ REWRITE_CONFIG ?= benchmarks/configs/desktop-rewrite.json
 REWRITE_PLAN ?= .workspace/benchmarks/rewrite-plan.json
 export CORPUS DRIVER OUT RESULTS MANIFEST BUNDLE SEGMENT LLM_MODEL LLM_RUNTIME VARIANT RUNS CONFIG PLAN SUITE REWRITE_CONFIG REWRITE_PLAN REVIEW RATINGS RATERS RATING_SEED EVAL_PYTHON MODELS MODEL_IDS QWEN_CONFIG QWEN_PROMPTS QWEN_ASR AUDIO_CORPUS PREFIX_CONFIG
 
-.PHONY: install check test lint format docs core-check tooling-test desktop-check desktop-libs desktop-build desktop-dev e2e e2e-macos e2e-scenarios bench-plan ablation-plan bench-validate bench-run bench-report datasets-check i18n-check stream-plan stream-bench rewrite-plan rewrite-validate rewrite-run rewrite-report rewrite-human-export rewrite-human-report rewrite-e2e qwen-env qwen-provision qwen-diagnostic qwen-report qwen-asr-diagnostic qwen-prefix-diagnostic live-fixtures live-text-bench live-audio-bench live-report help
+.PHONY: install check test lint format docs core-check tooling-test desktop-check desktop-libs desktop-build desktop-dev e2e e2e-macos e2e-scenarios bench-plan ablation-plan bench-validate bench-run bench-report datasets-check i18n-check stream-plan stream-bench rewrite-plan rewrite-validate rewrite-run rewrite-report rewrite-human-export rewrite-human-report rewrite-e2e qwen-env qwen-provision qwen-diagnostic qwen-report qwen-asr-diagnostic qwen-prefix-diagnostic live-fixtures live-text-bench live-audio-bench live-report scene-bench help
 
 install: ## Install the pinned pnpm workspace with its frozen lockfile
 	@pnpm install --frozen-lockfile
@@ -128,7 +128,7 @@ qwen-prefix-diagnostic: ## Compare real ASR replay and ahead-of-stop prefix pref
 live-fixtures: ## Synthesize pause-segmented speech fixtures from a text corpus; CORPUS and OUT required
 	@node scripts/live-bench-command.mjs fixtures
 
-live-text-bench: ## Rewrite a text corpus through the production LLM worker with live edits; CORPUS, LLM_MODEL, OUT required
+live-text-bench: ## Rewrite a text corpus through the production LLM worker with live edits; CORPUS, LLM_MODEL, OUT required; SCENE=corpus|auto|<scene>, CORRECT=1 applies rule correction first
 	@node scripts/live-bench-command.mjs text
 
 live-audio-bench: ## Replay fixtures through the live dictation pipeline; MANIFEST, CORPUS, MODELS, BUNDLE, OUT required; SEGMENT=1, LLM_MODEL optional
@@ -136,6 +136,9 @@ live-audio-bench: ## Replay fixtures through the live dictation pipeline; MANIFE
 
 live-report: ## Aggregate scored live benchmark rows into a content-free report; RUNS and OUT required
 	@node scripts/live-bench-command.mjs report
+
+scene-bench: ## Score scene selection against labelled app/site contexts; CONTEXTS defaults to benchmarks/configs/scene-contexts.json
+	@node scripts/live-bench-command.mjs scene
 
 help: ## Show available commands
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z0-9_-]+:.*?## / {printf "  %-18s %s\n", $$1, $$2}' $(MAKEFILE_LIST)

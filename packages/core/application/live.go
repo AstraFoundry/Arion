@@ -13,8 +13,15 @@ import (
 // RewritePolicy configures the optional LLM stage of one session.
 type RewritePolicy struct {
 	Enabled bool
-	// Scene is the declared formatting scene ("chat", "email", "list").
+	// Scene is the formatting scene (a domain.Scene). With FollowApp it is
+	// the fallback until the session's target is captured.
 	Scene string
+	// FollowApp decides Scene from the focused target's field, site and
+	// application when the session starts (domain.DecideScene).
+	FollowApp bool
+	// SceneOverrides are the user's choices by place; they beat the
+	// built-in rules when FollowApp decides the scene.
+	SceneOverrides domain.SceneOverrides
 	// Terms are approved vocabulary entries shown to the model as data.
 	Terms []string
 	// Timeout bounds the final rewrite after the user stops.
@@ -237,7 +244,8 @@ func (c *Coordinator) preview(r *run, stable string) {
 	c.mu.Lock()
 	l.cancelPreview = cancel
 	c.mu.Unlock()
-	result, err := c.deps.Rewriter.Rewrite(ctx, ports.RewriteRequest{Identity: r.identity, Text: stable, Scene: l.policy.Scene, Terms: l.policy.Terms, Live: true})
+	result, err := c.deps.Rewriter.Rewrite(ctx, ports.RewriteRequest{Identity: r.identity, Text: stable,
+		Scene: string(domain.ModelScene(domain.Scene(l.policy.Scene), stable)), Terms: l.policy.Terms, Live: true})
 	c.mu.Lock()
 	l.cancelPreview = nil
 	c.mu.Unlock()
@@ -313,7 +321,8 @@ func (c *Coordinator) rewriteFinal(r *run, source string, policy RewritePolicy) 
 	}
 	ctx, cancel := context.WithTimeout(r.ctx, policy.Timeout)
 	defer cancel()
-	result, err := c.deps.Rewriter.Rewrite(ctx, ports.RewriteRequest{Identity: r.identity, Text: source, Scene: policy.Scene, Terms: policy.Terms})
+	result, err := c.deps.Rewriter.Rewrite(ctx, ports.RewriteRequest{Identity: r.identity, Text: source,
+		Scene: string(domain.ModelScene(domain.Scene(policy.Scene), source)), Terms: policy.Terms})
 	switch {
 	case r.ctx.Err() != nil:
 		return "", "", false

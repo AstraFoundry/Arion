@@ -49,7 +49,43 @@ static AXUIElementRef focused_element(int *error) {
     return (AXUIElementRef)element;
 }
 
-int arion_capture_target(arion_target *out) {
+static int is_role(AXUIElementRef element, CFStringRef wanted) {
+    CFTypeRef role = NULL;
+    int match = AXUIElementCopyAttributeValue(element, kAXRoleAttribute, &role) == kAXErrorSuccess && role &&
+                CFGetTypeID(role) == CFStringGetTypeID() && CFStringCompare((CFStringRef)role, wanted, 0) == kCFCompareEqualTo;
+    if (role) CFRelease(role);
+    return match;
+}
+
+// copy_site writes the host of the top-level web page containing element:
+// the outermost AXWebArea ancestor's AXURL. Only http(s) hosts are kept;
+// the path, query and page title are never read.
+static void copy_site(AXUIElementRef element, char *out, size_t size) {
+    out[0] = 0;
+    AXUIElementRef current = (AXUIElementRef)CFRetain(element);
+    for (int depth = 0; current && depth < 64; depth++) {
+        if (is_role(current, CFSTR("AXWebArea"))) {
+            CFTypeRef url = NULL;
+            if (AXUIElementCopyAttributeValue(current, kAXURLAttribute, &url) == kAXErrorSuccess && url) {
+                if (CFGetTypeID(url) == CFURLGetTypeID()) {
+                    NSURL *page = (__bridge NSURL *)url;
+                    NSString *scheme = page.scheme.lowercaseString;
+                    if (([scheme isEqualToString:@"https"] || [scheme isEqualToString:@"http"]) && page.host.length) {
+                        strlcpy(out, page.host.lowercaseString.UTF8String, size);
+                    }
+                }
+                CFRelease(url);
+            }
+        }
+        CFTypeRef parent = NULL;
+        AXError error = AXUIElementCopyAttributeValue(current, kAXParentAttribute, &parent);
+        CFRelease(current);
+        current = error == kAXErrorSuccess ? (AXUIElementRef)parent : NULL;
+    }
+    if (current) CFRelease(current);
+}
+
+int arion_capture_target(arion_target *out, int read_site) {
     memset(out, 0, sizeof(*out));
     if (!AXIsProcessTrusted()) return ARION_TARGET_UNTRUSTED;
     @autoreleasepool {
@@ -58,6 +94,7 @@ int arion_capture_target(arion_target *out) {
         out->pid = app.processIdentifier;
         if (app.bundleIdentifier) strlcpy(out->bundle, app.bundleIdentifier.UTF8String, sizeof(out->bundle));
         if (app.bundleURL) strlcpy(out->bundle_path, app.bundleURL.fileSystemRepresentation, sizeof(out->bundle_path));
+        if (app.localizedName) strlcpy(out->app_name, app.localizedName.UTF8String, sizeof(out->app_name));
         out->secure_input = IsSecureEventInputEnabled() ? 1 : 0;
         int error = 0;
         AXUIElementRef element = focused_element(&error);
@@ -84,7 +121,49 @@ int arion_capture_target(arion_target *out) {
             out->value_readable = CFGetTypeID(value) == CFStringGetTypeID() ? 1 : 0;
             CFRelease(value);
         }
+        if (read_site) copy_site(element, out->site, sizeof(out->site));
         out->element = (void *)element; // retained; released by arion_release
+        return ARION_TARGET_OK;
+    }
+}
+
+int arion_frontmost_pid(void) {
+    @autoreleasepool {
+        NSRunningApplication *app = [[NSWorkspace sharedWorkspace] frontmostApplication];
+        return app ? app.processIdentifier : 0;
+    }
+}
+
+// arion_peek_target reads the focused field of the app with pid, which need
+// not be frontmost any more, without keeping an element. It never reads a
+// field's value and skips the site of a secure field.
+int arion_peek_target(int pid, arion_target *out, int read_site) {
+    memset(out, 0, sizeof(*out));
+    if (!AXIsProcessTrusted()) return ARION_TARGET_UNTRUSTED;
+    if (pid <= 0 || pid == getpid()) return ARION_TARGET_NONE;
+    @autoreleasepool {
+        NSRunningApplication *app = [NSRunningApplication runningApplicationWithProcessIdentifier:pid];
+        if (!app) return ARION_TARGET_NONE;
+        out->pid = pid;
+        if (app.bundleIdentifier) strlcpy(out->bundle, app.bundleIdentifier.UTF8String, sizeof(out->bundle));
+        if (app.localizedName) strlcpy(out->app_name, app.localizedName.UTF8String, sizeof(out->app_name));
+        out->secure_input = IsSecureEventInputEnabled() ? 1 : 0;
+        AXUIElementRef application = AXUIElementCreateApplication(pid);
+        AXUIElementSetMessagingTimeout(application, 0.5f);
+        CFTypeRef element = NULL;
+        AXError error = AXUIElementCopyAttributeValue(application, kAXFocusedUIElementAttribute, &element);
+        CFRelease(application);
+        if (error != kAXErrorSuccess || !element) return ARION_TARGET_OK;
+        AXUIElementSetMessagingTimeout((AXUIElementRef)element, 0.5f);
+        CFTypeRef role = NULL, subrole = NULL;
+        AXUIElementCopyAttributeValue((AXUIElementRef)element, kAXRoleAttribute, &role);
+        AXUIElementCopyAttributeValue((AXUIElementRef)element, kAXSubroleAttribute, &subrole);
+        copy_string(role, out->role, sizeof(out->role));
+        copy_string(subrole, out->subrole, sizeof(out->subrole));
+        if (role) CFRelease(role);
+        if (subrole) CFRelease(subrole);
+        if (read_site && strcmp(out->subrole, "AXSecureTextField") != 0) copy_site((AXUIElementRef)element, out->site, sizeof(out->site));
+        CFRelease(element);
         return ARION_TARGET_OK;
     }
 }

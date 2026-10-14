@@ -14,7 +14,9 @@ export function scoreText(corpus, rows) {
     if (!sample) throw new Error(`Unknown case ${row.caseId}`);
     const delivered = diagnosticMetrics(sample, { text: row.text, truncated: false });
     const proposal = diagnosticMetrics(sample, { text: row.bypassed ? row.text : row.proposal, truncated: row.truncated });
-    const source = diagnosticMetrics(sample, { text: sample.sourceText, truncated: false });
+    // The rewriter's input: the corrected source when the run applied rule
+    // correction, else the corpus text.
+    const source = diagnosticMetrics(sample, { text: row.source ?? sample.sourceText, truncated: false });
     return { row, sample, delivered, proposal, source };
   });
   const count = (f) => scored.filter(f).length;
@@ -42,7 +44,17 @@ export function scoreText(corpus, rows) {
     liveEdits: lives.length,
     liveAccepted: lives.filter((l) => l.verdict === "accepted").length,
     liveMs: distribution(lives.map((l) => l.totalMs)),
-    perCase: scored.map((s) => ({ id: s.row.caseId, verdict: s.row.verdict, pass: s.delivered.constraintPass, sourcePass: s.source.constraintPass })),
+    // Rows from runs before scenes were recorded carry no scene.
+    sceneAgreement: count((s) => s.row.scene === s.sample.scenario),
+    byScene: Object.fromEntries(
+      [...new Set(scored.map((s) => s.sample.scenario))].sort().map((scene) => {
+        const group = scored.filter((s) => s.sample.scenario === scene);
+        const n = (f) => group.filter(f).length;
+        return [scene, { cases: group.length, sourcePass: n((s) => s.source.constraintPass), deliveredPass: n((s) => s.delivered.constraintPass),
+          worsened: n((s) => s.source.constraintPass && !s.delivered.constraintPass), sceneAgreement: n((s) => s.row.scene === scene) }];
+      }),
+    ),
+    perCase: scored.map((s) => ({ id: s.row.caseId, scene: s.row.scene, verdict: s.row.verdict, pass: s.delivered.constraintPass, sourcePass: s.source.constraintPass })),
   };
 }
 
@@ -54,6 +66,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     const { perCase, ...summary } = scoreText(corpus, rows);
     console.log(p, JSON.stringify(summary));
     if (process.env.VERBOSE)
-      for (const c of perCase) console.log(" ", c.id.padEnd(18), c.verdict.padEnd(20), c.pass ? "PASS" : "fail", c.sourcePass ? "(src pass)" : "");
+      for (const c of perCase)
+        console.log(" ", c.id.padEnd(18), (c.scene ?? "").padEnd(7), c.verdict.padEnd(20), c.pass ? "PASS" : "fail", c.sourcePass ? "(src pass)" : "");
   }
 }

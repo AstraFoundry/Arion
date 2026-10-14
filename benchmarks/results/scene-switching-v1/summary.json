@@ -1,0 +1,923 @@
+{
+  "kind": "arion-live-rewrite-report-v1",
+  "generated": "2026-10-14T03:17:02.199Z",
+  "host": "Apple M4, 32 GiB, macOS arm64; CPU only; 4 intra-op threads; host not isolated: the final-pipeline batch ran under heavy load from unrelated processes (load average above 100, memory compressed), so its latencies are not comparable",
+  "provenance": "Qwen3 1.7B INT4 onnx-community CPU export in the arion-llm worker (ONNX Runtime GenAI 0.17.0 / ONNX Runtime 1.30.0), greedy; prompt live-v2 unless a run says live-v3; scene selection by domain.DecideScene from each case's target",
+  "limitations": "Developer-authored synthetic text cases (one author), exact-string layout and content proxies only; no speech, human ratings, native capture of real targets or Windows",
+  "runs": [
+    {
+      "id": "scene-heldout-fixed-chat",
+      "kind": "text",
+      "split": "heldout",
+      "variant": "live-v2, fixed chat (before scene selection), rule correction",
+      "corpusSha256": "6e181e2efd7348dc092abaadf38c5283bc378c913d481bc521dc6307bd8fbcc3",
+      "resultsSha256": "b60d66bc59b7178b34ef0ffc441f9b9f4d07a11e00a0e4f40ac31884e9836d1d",
+      "cases": 30,
+      "sourcePass": 10,
+      "proposalPass": 13,
+      "deliveredPass": 14,
+      "accepted": 26,
+      "rejected": {
+        "length": 2,
+        "truncated": 2
+      },
+      "acceptedFailing": 13,
+      "rejectedPassing": 0,
+      "worsened": 1,
+      "referenceEditRatioMean": 0.05014968299225938,
+      "sourceEditRatioMean": 0.08307942801279726,
+      "finalMs": {
+        "count": 30,
+        "p50": 1478.606,
+        "p95": 6249.116699999998,
+        "p99": 12965.116820000007
+      },
+      "liveEdits": 62,
+      "liveAccepted": 53,
+      "liveMs": {
+        "count": 62,
+        "p50": 1066.0255,
+        "p95": 5375.365399999995,
+        "p99": 7688.910970000001
+      },
+      "sceneAgreement": 6,
+      "byScene": {
+        "chat": {
+          "cases": 6,
+          "sourcePass": 5,
+          "deliveredPass": 4,
+          "worsened": 1,
+          "sceneAgreement": 6
+        },
+        "email": {
+          "cases": 6,
+          "sourcePass": 0,
+          "deliveredPass": 2,
+          "worsened": 0,
+          "sceneAgreement": 0
+        },
+        "prompt": {
+          "cases": 6,
+          "sourcePass": 3,
+          "deliveredPass": 4,
+          "worsened": 0,
+          "sceneAgreement": 0
+        },
+        "search": {
+          "cases": 6,
+          "sourcePass": 0,
+          "deliveredPass": 0,
+          "worsened": 0,
+          "sceneAgreement": 0
+        },
+        "work": {
+          "cases": 6,
+          "sourcePass": 2,
+          "deliveredPass": 4,
+          "worsened": 0,
+          "sceneAgreement": 0
+        }
+      }
+    },
+    {
+      "id": "scene-heldout-auto",
+      "kind": "text",
+      "split": "heldout",
+      "variant": "live-v2, automatic scene, rule correction",
+      "corpusSha256": "6e181e2efd7348dc092abaadf38c5283bc378c913d481bc521dc6307bd8fbcc3",
+      "resultsSha256": "32841f1fbaffe408ca8a1de405203fdc03e90f5dbd774d54e1dc57a82b4e5bd5",
+      "cases": 30,
+      "sourcePass": 10,
+      "proposalPass": 17,
+      "deliveredPass": 21,
+      "accepted": 25,
+      "rejected": {
+        "length": 1,
+        "unsupported_content": 1,
+        "truncated": 2,
+        "new_number": 1
+      },
+      "acceptedFailing": 10,
+      "rejectedPassing": 2,
+      "worsened": 1,
+      "referenceEditRatioMean": 0.04404747094039058,
+      "sourceEditRatioMean": 0.08307942801279726,
+      "finalMs": {
+        "count": 30,
+        "p50": 1316.6675,
+        "p95": 4219.617699999992,
+        "p99": 8150.232020000003
+      },
+      "liveEdits": 62,
+      "liveAccepted": 53,
+      "liveMs": {
+        "count": 62,
+        "p50": 1025.181,
+        "p95": 4077.4283999999975,
+        "p99": 4624.85504
+      },
+      "sceneAgreement": 30,
+      "byScene": {
+        "chat": {
+          "cases": 6,
+          "sourcePass": 5,
+          "deliveredPass": 4,
+          "worsened": 1,
+          "sceneAgreement": 6
+        },
+        "email": {
+          "cases": 6,
+          "sourcePass": 0,
+          "deliveredPass": 4,
+          "worsened": 0,
+          "sceneAgreement": 6
+        },
+        "prompt": {
+          "cases": 6,
+          "sourcePass": 3,
+          "deliveredPass": 4,
+          "worsened": 0,
+          "sceneAgreement": 6
+        },
+        "search": {
+          "cases": 6,
+          "sourcePass": 0,
+          "deliveredPass": 5,
+          "worsened": 0,
+          "sceneAgreement": 6
+        },
+        "work": {
+          "cases": 6,
+          "sourcePass": 2,
+          "deliveredPass": 4,
+          "worsened": 0,
+          "sceneAgreement": 6
+        }
+      }
+    },
+    {
+      "id": "scene-dev-fixed-chat",
+      "kind": "text",
+      "split": "dev",
+      "variant": "live-v2, fixed chat, rule correction",
+      "corpusSha256": "ce28db718d4edc68c1e6c0455be26629f7a4d93420ec834b9421ace52082dd4b",
+      "resultsSha256": "d8b0abfef4c7e35171abfb65c1249e6011f2832b02a10532517fa5c3aff461a6",
+      "cases": 33,
+      "sourcePass": 13,
+      "proposalPass": 20,
+      "deliveredPass": 19,
+      "accepted": 29,
+      "rejected": {
+        "unsupported_content": 2,
+        "truncated": 1,
+        "length": 1
+      },
+      "acceptedFailing": 10,
+      "rejectedPassing": 1,
+      "worsened": 0,
+      "referenceEditRatioMean": 0.03726403775242992,
+      "sourceEditRatioMean": 0.052330933662994905,
+      "finalMs": {
+        "count": 33,
+        "p50": 998.722,
+        "p95": 3106.565799999995,
+        "p99": 5478.89956
+      },
+      "liveEdits": 68,
+      "liveAccepted": 62,
+      "liveMs": {
+        "count": 68,
+        "p50": 608.2194999999999,
+        "p95": 1994.229299999999,
+        "p99": 3277.749189999999
+      },
+      "sceneAgreement": 6,
+      "byScene": {
+        "chat": {
+          "cases": 6,
+          "sourcePass": 6,
+          "deliveredPass": 6,
+          "worsened": 0,
+          "sceneAgreement": 6
+        },
+        "email": {
+          "cases": 7,
+          "sourcePass": 0,
+          "deliveredPass": 3,
+          "worsened": 0,
+          "sceneAgreement": 0
+        },
+        "prompt": {
+          "cases": 7,
+          "sourcePass": 3,
+          "deliveredPass": 4,
+          "worsened": 0,
+          "sceneAgreement": 0
+        },
+        "search": {
+          "cases": 6,
+          "sourcePass": 0,
+          "deliveredPass": 0,
+          "worsened": 0,
+          "sceneAgreement": 0
+        },
+        "work": {
+          "cases": 7,
+          "sourcePass": 4,
+          "deliveredPass": 6,
+          "worsened": 0,
+          "sceneAgreement": 0
+        }
+      }
+    },
+    {
+      "id": "scene-dev-auto",
+      "kind": "text",
+      "split": "dev",
+      "variant": "live-v2, automatic scene, rule correction",
+      "corpusSha256": "ce28db718d4edc68c1e6c0455be26629f7a4d93420ec834b9421ace52082dd4b",
+      "resultsSha256": "0c1378787c779d9171da440b2568f3ba894412bb5c0329526a22798a8d9b3ff1",
+      "cases": 33,
+      "sourcePass": 13,
+      "proposalPass": 23,
+      "deliveredPass": 28,
+      "accepted": 28,
+      "rejected": {
+        "unsupported_content": 2,
+        "length": 2,
+        "truncated": 1
+      },
+      "acceptedFailing": 6,
+      "rejectedPassing": 1,
+      "worsened": 0,
+      "referenceEditRatioMean": 0.03501936884109434,
+      "sourceEditRatioMean": 0.052330933662994905,
+      "finalMs": {
+        "count": 33,
+        "p50": 894.008,
+        "p95": 4283.214799999997,
+        "p99": 5598.08216
+      },
+      "liveEdits": 68,
+      "liveAccepted": 62,
+      "liveMs": {
+        "count": 68,
+        "p50": 567.0895,
+        "p95": 1890.379649999999,
+        "p99": 2840.0442099999996
+      },
+      "sceneAgreement": 33,
+      "byScene": {
+        "chat": {
+          "cases": 6,
+          "sourcePass": 6,
+          "deliveredPass": 6,
+          "worsened": 0,
+          "sceneAgreement": 6
+        },
+        "email": {
+          "cases": 7,
+          "sourcePass": 0,
+          "deliveredPass": 6,
+          "worsened": 0,
+          "sceneAgreement": 7
+        },
+        "prompt": {
+          "cases": 7,
+          "sourcePass": 3,
+          "deliveredPass": 4,
+          "worsened": 0,
+          "sceneAgreement": 7
+        },
+        "search": {
+          "cases": 6,
+          "sourcePass": 0,
+          "deliveredPass": 6,
+          "worsened": 0,
+          "sceneAgreement": 6
+        },
+        "work": {
+          "cases": 7,
+          "sourcePass": 4,
+          "deliveredPass": 6,
+          "worsened": 0,
+          "sceneAgreement": 7
+        }
+      }
+    },
+    {
+      "id": "lrw-heldout-final",
+      "kind": "text",
+      "split": "heldout",
+      "variant": "live-v2, labelled scene, scene-aware validator",
+      "corpusSha256": "31a5231fa057d8057933b1966c75a279d552c08fac3c4c8524cac300c5bda8fa",
+      "resultsSha256": "f6ba9e8af1436d95f351b34b9ba7c161b53b838e6d61ebe8b47ab124a70a5ca1",
+      "cases": 30,
+      "sourcePass": 12,
+      "proposalPass": 25,
+      "deliveredPass": 27,
+      "accepted": 27,
+      "rejected": {
+        "length": 2
+      },
+      "acceptedFailing": 3,
+      "rejectedPassing": 0,
+      "worsened": 0,
+      "referenceEditRatioMean": 0.043584529505582136,
+      "sourceEditRatioMean": 0.3079450617608513,
+      "finalMs": {
+        "count": 29,
+        "p50": 662.689,
+        "p95": 2622.081399999998,
+        "p99": 3286.9495599999996
+      },
+      "liveEdits": 45,
+      "liveAccepted": 43,
+      "liveMs": {
+        "count": 45,
+        "p50": 535.344,
+        "p95": 1380.6211999999991,
+        "p99": 1850.2073600000012
+      },
+      "sceneAgreement": 30,
+      "byScene": {
+        "chat": {
+          "cases": 26,
+          "sourcePass": 12,
+          "deliveredPass": 23,
+          "worsened": 0,
+          "sceneAgreement": 26
+        },
+        "email": {
+          "cases": 2,
+          "sourcePass": 0,
+          "deliveredPass": 2,
+          "worsened": 0,
+          "sceneAgreement": 2
+        },
+        "list": {
+          "cases": 2,
+          "sourcePass": 0,
+          "deliveredPass": 2,
+          "worsened": 0,
+          "sceneAgreement": 2
+        }
+      }
+    },
+    {
+      "id": "lrw-dev-final",
+      "kind": "text",
+      "split": "dev",
+      "variant": "live-v2, labelled scene, scene-aware validator",
+      "corpusSha256": "aa5e9b4a18b0ca489531dc3982f6f129282d243b40778f5e0ec9883de7995053",
+      "resultsSha256": "c9dd9cc5016cf94cd4307cd1086662f7b4a9cc1f29d643ba6ce47e439ee858c6",
+      "cases": 24,
+      "sourcePass": 8,
+      "proposalPass": 17,
+      "deliveredPass": 17,
+      "accepted": 21,
+      "rejected": {
+        "unsupported_content": 1
+      },
+      "acceptedFailing": 6,
+      "rejectedPassing": 0,
+      "worsened": 0,
+      "referenceEditRatioMean": 0.19771743098948982,
+      "sourceEditRatioMean": 0.3670215201465201,
+      "finalMs": {
+        "count": 22,
+        "p50": 743.0889999999999,
+        "p95": 1188.743,
+        "p99": 1223.88121
+      },
+      "liveEdits": 31,
+      "liveAccepted": 29,
+      "liveMs": {
+        "count": 31,
+        "p50": 540.677,
+        "p95": 919.054,
+        "p99": 1071.3872999999999
+      },
+      "sceneAgreement": 24,
+      "byScene": {
+        "chat": {
+          "cases": 19,
+          "sourcePass": 7,
+          "deliveredPass": 13,
+          "worsened": 0,
+          "sceneAgreement": 19
+        },
+        "code_comment": {
+          "cases": 1,
+          "sourcePass": 1,
+          "deliveredPass": 1,
+          "worsened": 0,
+          "sceneAgreement": 1
+        },
+        "email": {
+          "cases": 2,
+          "sourcePass": 0,
+          "deliveredPass": 2,
+          "worsened": 0,
+          "sceneAgreement": 2
+        },
+        "list": {
+          "cases": 2,
+          "sourcePass": 0,
+          "deliveredPass": 1,
+          "worsened": 0,
+          "sceneAgreement": 2
+        }
+      }
+    },
+    {
+      "id": "prompt-exp-v2-chat",
+      "kind": "text",
+      "split": "dev",
+      "variant": "live-v2, fixed chat, raw text",
+      "corpusSha256": "ce28db718d4edc68c1e6c0455be26629f7a4d93420ec834b9421ace52082dd4b",
+      "resultsSha256": "12bc6da8406948c1924a9619eada576d51a659a26cd392cdce599cfce6415c97",
+      "cases": 33,
+      "sourcePass": 2,
+      "proposalPass": 17,
+      "deliveredPass": 16,
+      "accepted": 28,
+      "rejected": {
+        "unsupported_content": 2,
+        "content_dropped": 1,
+        "truncated": 1,
+        "length": 1
+      },
+      "acceptedFailing": 12,
+      "rejectedPassing": 1,
+      "worsened": 0,
+      "referenceEditRatioMean": 0.06827524226223203,
+      "sourceEditRatioMean": 0.09867394276146839,
+      "finalMs": {
+        "count": 33,
+        "p50": 669.681,
+        "p95": 2125.1671999999962,
+        "p99": 4306.25648
+      },
+      "liveEdits": 90,
+      "liveAccepted": 83,
+      "liveMs": {
+        "count": 90,
+        "p50": 340.0525,
+        "p95": 750.8431499999999,
+        "p99": 2383.83452
+      },
+      "sceneAgreement": 6,
+      "byScene": {
+        "chat": {
+          "cases": 6,
+          "sourcePass": 1,
+          "deliveredPass": 4,
+          "worsened": 0,
+          "sceneAgreement": 6
+        },
+        "email": {
+          "cases": 7,
+          "sourcePass": 0,
+          "deliveredPass": 3,
+          "worsened": 0,
+          "sceneAgreement": 0
+        },
+        "prompt": {
+          "cases": 7,
+          "sourcePass": 0,
+          "deliveredPass": 3,
+          "worsened": 0,
+          "sceneAgreement": 0
+        },
+        "search": {
+          "cases": 6,
+          "sourcePass": 0,
+          "deliveredPass": 1,
+          "worsened": 0,
+          "sceneAgreement": 0
+        },
+        "work": {
+          "cases": 7,
+          "sourcePass": 1,
+          "deliveredPass": 5,
+          "worsened": 0,
+          "sceneAgreement": 0
+        }
+      }
+    },
+    {
+      "id": "prompt-exp-v2-auto",
+      "kind": "text",
+      "split": "dev",
+      "variant": "live-v2, automatic scene (email only taught), raw text",
+      "corpusSha256": "ce28db718d4edc68c1e6c0455be26629f7a4d93420ec834b9421ace52082dd4b",
+      "resultsSha256": "05774884a95796da554f3a7d1ee31566eb60fde4e5dbbbf17bce1db866e8fb4a",
+      "cases": 33,
+      "sourcePass": 2,
+      "proposalPass": 20,
+      "deliveredPass": 19,
+      "accepted": 28,
+      "rejected": {
+        "unsupported_content": 2,
+        "content_dropped": 1,
+        "truncated": 1,
+        "length": 1
+      },
+      "acceptedFailing": 9,
+      "rejectedPassing": 1,
+      "worsened": 0,
+      "referenceEditRatioMean": 0.06747357479389789,
+      "sourceEditRatioMean": 0.09867394276146839,
+      "finalMs": {
+        "count": 33,
+        "p50": 1008.368,
+        "p95": 3922.2593999999945,
+        "p99": 6213.560039999999
+      },
+      "liveEdits": 90,
+      "liveAccepted": 82,
+      "liveMs": {
+        "count": 90,
+        "p50": 594.02,
+        "p95": 2354.4729499999994,
+        "p99": 3227.0650499999997
+      },
+      "sceneAgreement": 33,
+      "byScene": {
+        "chat": {
+          "cases": 6,
+          "sourcePass": 1,
+          "deliveredPass": 4,
+          "worsened": 0,
+          "sceneAgreement": 6
+        },
+        "email": {
+          "cases": 7,
+          "sourcePass": 0,
+          "deliveredPass": 6,
+          "worsened": 0,
+          "sceneAgreement": 7
+        },
+        "prompt": {
+          "cases": 7,
+          "sourcePass": 0,
+          "deliveredPass": 3,
+          "worsened": 0,
+          "sceneAgreement": 7
+        },
+        "search": {
+          "cases": 6,
+          "sourcePass": 0,
+          "deliveredPass": 1,
+          "worsened": 0,
+          "sceneAgreement": 6
+        },
+        "work": {
+          "cases": 7,
+          "sourcePass": 1,
+          "deliveredPass": 5,
+          "worsened": 0,
+          "sceneAgreement": 7
+        }
+      }
+    },
+    {
+      "id": "prompt-exp-v3-chat",
+      "kind": "text",
+      "split": "dev",
+      "variant": "live-v3 (rejected), fixed chat, raw text",
+      "corpusSha256": "ce28db718d4edc68c1e6c0455be26629f7a4d93420ec834b9421ace52082dd4b",
+      "resultsSha256": "54243f86e2db06ecce348036160b444396916842d8c57c7e0e5d6bc479ad32c4",
+      "cases": 33,
+      "sourcePass": 2,
+      "proposalPass": 15,
+      "deliveredPass": 15,
+      "accepted": 31,
+      "rejected": {
+        "unsupported_content": 1,
+        "length": 1
+      },
+      "acceptedFailing": 16,
+      "rejectedPassing": 0,
+      "worsened": 0,
+      "referenceEditRatioMean": 0.06337924568719458,
+      "sourceEditRatioMean": 0.09867394276146839,
+      "finalMs": {
+        "count": 33,
+        "p50": 1127.45,
+        "p95": 2122.3383999999983,
+        "p99": 4641.783759999999
+      },
+      "liveEdits": 90,
+      "liveAccepted": 77,
+      "liveMs": {
+        "count": 90,
+        "p50": 662.9085,
+        "p95": 2876.2448499999978,
+        "p99": 3790.19884
+      },
+      "sceneAgreement": 6,
+      "byScene": {
+        "chat": {
+          "cases": 6,
+          "sourcePass": 1,
+          "deliveredPass": 3,
+          "worsened": 0,
+          "sceneAgreement": 6
+        },
+        "email": {
+          "cases": 7,
+          "sourcePass": 0,
+          "deliveredPass": 5,
+          "worsened": 0,
+          "sceneAgreement": 0
+        },
+        "prompt": {
+          "cases": 7,
+          "sourcePass": 0,
+          "deliveredPass": 3,
+          "worsened": 0,
+          "sceneAgreement": 0
+        },
+        "search": {
+          "cases": 6,
+          "sourcePass": 0,
+          "deliveredPass": 0,
+          "worsened": 0,
+          "sceneAgreement": 0
+        },
+        "work": {
+          "cases": 7,
+          "sourcePass": 1,
+          "deliveredPass": 4,
+          "worsened": 0,
+          "sceneAgreement": 0
+        }
+      }
+    },
+    {
+      "id": "prompt-exp-v3-auto",
+      "kind": "text",
+      "split": "dev",
+      "variant": "live-v3 (rejected), automatic scene, raw text",
+      "corpusSha256": "ce28db718d4edc68c1e6c0455be26629f7a4d93420ec834b9421ace52082dd4b",
+      "resultsSha256": "3db26e1b40705bcfa86a2b1de5e35c49383186d9d4cc6eb5b6afcace17ba5198",
+      "cases": 33,
+      "sourcePass": 2,
+      "proposalPass": 18,
+      "deliveredPass": 17,
+      "accepted": 27,
+      "rejected": {
+        "unsupported_content": 2,
+        "content_dropped": 1,
+        "length": 1,
+        "negation_dropped": 1,
+        "new_number": 1
+      },
+      "acceptedFailing": 10,
+      "rejectedPassing": 1,
+      "worsened": 0,
+      "referenceEditRatioMean": 0.06471860307340892,
+      "sourceEditRatioMean": 0.09867394276146839,
+      "finalMs": {
+        "count": 33,
+        "p50": 1014.465,
+        "p95": 2007.987599999999,
+        "p99": 4225.455679999999
+      },
+      "liveEdits": 90,
+      "liveAccepted": 78,
+      "liveMs": {
+        "count": 90,
+        "p50": 632.321,
+        "p95": 2329.3562999999976,
+        "p99": 4003.4829899999995
+      },
+      "sceneAgreement": 33,
+      "byScene": {
+        "chat": {
+          "cases": 6,
+          "sourcePass": 1,
+          "deliveredPass": 3,
+          "worsened": 0,
+          "sceneAgreement": 6
+        },
+        "email": {
+          "cases": 7,
+          "sourcePass": 0,
+          "deliveredPass": 6,
+          "worsened": 0,
+          "sceneAgreement": 7
+        },
+        "prompt": {
+          "cases": 7,
+          "sourcePass": 0,
+          "deliveredPass": 3,
+          "worsened": 0,
+          "sceneAgreement": 7
+        },
+        "search": {
+          "cases": 6,
+          "sourcePass": 0,
+          "deliveredPass": 1,
+          "worsened": 0,
+          "sceneAgreement": 6
+        },
+        "work": {
+          "cases": 7,
+          "sourcePass": 1,
+          "deliveredPass": 4,
+          "worsened": 0,
+          "sceneAgreement": 7
+        }
+      }
+    },
+    {
+      "id": "prompt-exp-lrw-heldout-v2",
+      "kind": "text",
+      "split": "heldout",
+      "variant": "live-v2 same-host rerun, original validator",
+      "corpusSha256": "31a5231fa057d8057933b1966c75a279d552c08fac3c4c8524cac300c5bda8fa",
+      "resultsSha256": "3b395f51ff9b50c8a872674135f3ac78e233447b5c565179189dfefc8b4d2ed5",
+      "cases": 30,
+      "sourcePass": 12,
+      "proposalPass": 25,
+      "deliveredPass": 27,
+      "accepted": 27,
+      "rejected": {
+        "length": 2
+      },
+      "acceptedFailing": 3,
+      "rejectedPassing": 0,
+      "worsened": 0,
+      "referenceEditRatioMean": 0.043584529505582136,
+      "sourceEditRatioMean": 0.3079450617608513,
+      "finalMs": {
+        "count": 29,
+        "p50": 647.651,
+        "p95": 1697.6971999999982,
+        "p99": 3041.010079999998
+      },
+      "liveEdits": 45,
+      "liveAccepted": 43,
+      "liveMs": {
+        "count": 45,
+        "p50": 525.784,
+        "p95": 1217.3497999999997,
+        "p99": 1904.313680000002
+      },
+      "sceneAgreement": 30,
+      "byScene": {
+        "chat": {
+          "cases": 26,
+          "sourcePass": 12,
+          "deliveredPass": 23,
+          "worsened": 0,
+          "sceneAgreement": 26
+        },
+        "email": {
+          "cases": 2,
+          "sourcePass": 0,
+          "deliveredPass": 2,
+          "worsened": 0,
+          "sceneAgreement": 2
+        },
+        "list": {
+          "cases": 2,
+          "sourcePass": 0,
+          "deliveredPass": 2,
+          "worsened": 0,
+          "sceneAgreement": 2
+        }
+      }
+    },
+    {
+      "id": "prompt-exp-lrw-heldout-v3",
+      "kind": "text",
+      "split": "heldout",
+      "variant": "live-v3 (rejected), original validator",
+      "corpusSha256": "31a5231fa057d8057933b1966c75a279d552c08fac3c4c8524cac300c5bda8fa",
+      "resultsSha256": "a35115414bacaa6fea54454133b12e2b187751419757dc3378d4789bc6631870",
+      "cases": 30,
+      "sourcePass": 12,
+      "proposalPass": 21,
+      "deliveredPass": 22,
+      "accepted": 26,
+      "rejected": {
+        "content_dropped": 1,
+        "length": 1,
+        "truncated": 1
+      },
+      "acceptedFailing": 7,
+      "rejectedPassing": 1,
+      "worsened": 0,
+      "referenceEditRatioMean": 0.2036204146730462,
+      "sourceEditRatioMean": 0.3079450617608513,
+      "finalMs": {
+        "count": 29,
+        "p50": 821.621,
+        "p95": 2106.000599999999,
+        "p99": 5165.355559999995
+      },
+      "liveEdits": 45,
+      "liveAccepted": 38,
+      "liveMs": {
+        "count": 45,
+        "p50": 686.926,
+        "p95": 1974.1848,
+        "p99": 2205.995480000001
+      },
+      "sceneAgreement": 30,
+      "byScene": {
+        "chat": {
+          "cases": 26,
+          "sourcePass": 12,
+          "deliveredPass": 18,
+          "worsened": 0,
+          "sceneAgreement": 26
+        },
+        "email": {
+          "cases": 2,
+          "sourcePass": 0,
+          "deliveredPass": 2,
+          "worsened": 0,
+          "sceneAgreement": 2
+        },
+        "list": {
+          "cases": 2,
+          "sourcePass": 0,
+          "deliveredPass": 2,
+          "worsened": 0,
+          "sceneAgreement": 2
+        }
+      }
+    },
+    {
+      "id": "prompt-exp-lrw-dev-v3",
+      "kind": "text",
+      "split": "dev",
+      "variant": "live-v3 (rejected), original validator",
+      "corpusSha256": "aa5e9b4a18b0ca489531dc3982f6f129282d243b40778f5e0ec9883de7995053",
+      "resultsSha256": "4a034bde34a460de4434929a66ee87d489f8bfaad6366f5b78711cc61aaab673",
+      "cases": 24,
+      "sourcePass": 8,
+      "proposalPass": 18,
+      "deliveredPass": 17,
+      "accepted": 21,
+      "rejected": {
+        "content_dropped": 1
+      },
+      "acceptedFailing": 6,
+      "rejectedPassing": 1,
+      "worsened": 0,
+      "referenceEditRatioMean": 0.19181465321171207,
+      "sourceEditRatioMean": 0.3670215201465201,
+      "finalMs": {
+        "count": 22,
+        "p50": 1341.24,
+        "p95": 2334.3271,
+        "p99": 2561.65192
+      },
+      "liveEdits": 31,
+      "liveAccepted": 29,
+      "liveMs": {
+        "count": 31,
+        "p50": 928.216,
+        "p95": 1955.106,
+        "p99": 2316.6222
+      },
+      "sceneAgreement": 24,
+      "byScene": {
+        "chat": {
+          "cases": 19,
+          "sourcePass": 7,
+          "deliveredPass": 13,
+          "worsened": 0,
+          "sceneAgreement": 19
+        },
+        "code_comment": {
+          "cases": 1,
+          "sourcePass": 1,
+          "deliveredPass": 1,
+          "worsened": 0,
+          "sceneAgreement": 1
+        },
+        "email": {
+          "cases": 2,
+          "sourcePass": 0,
+          "deliveredPass": 2,
+          "worsened": 0,
+          "sceneAgreement": 2
+        },
+        "list": {
+          "cases": 2,
+          "sourcePass": 0,
+          "deliveredPass": 1,
+          "worsened": 0,
+          "sceneAgreement": 2
+        }
+      }
+    }
+  ]
+}

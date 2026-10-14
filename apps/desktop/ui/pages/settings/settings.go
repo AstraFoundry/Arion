@@ -193,7 +193,10 @@ func (p *Page) section(c *ui.Context, store runtime.Store, tokens theme.Tokens) 
 	case Model:
 		kit.Group(c, tokens, messages.Text(copy.ModelRecognitionGroup), func() { modelcard.Render(c, store, tokens, false) })
 		kit.Group(c, tokens, messages.Text(copy.ModelPolishGroup), func() {
-			kit.Card(c, tokens).Children(func() { polish.Row(c, store, tokens) })
+			kit.Card(c, tokens).Children(func() {
+				polish.Row(c, store, tokens)
+				polish.MatchApp(c, store, tokens)
+			})
 		})
 		if hasOthers(store) {
 			kit.Group(c, tokens, messages.Text(copy.ModelOthers), func() { modelchoice.Others(c, store, tokens) })

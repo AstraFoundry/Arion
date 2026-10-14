@@ -1,6 +1,7 @@
 package app
 
 import (
+	"arion.local/core/domain"
 	"bytes"
 	"errors"
 	"image/png"
@@ -74,6 +75,11 @@ func (r *recorder) RemoveInputMethod() error {
 	r.call("remove-ime")
 	r.state.InputMethod = runtime.InputMethodAbsent
 	return nil
+}
+func (r *recorder) ChooseScene(scene domain.Scene) {
+	key := domain.SceneKey(r.state.SceneTarget.Hints)
+	r.state.Preferences.SceneOverrides = r.state.Preferences.SceneOverrides.WithScene(key, scene)
+	r.call("scene:" + string(scene))
 }
 func (r *recorder) UpdatePreferences(change func(*runtime.Preferences)) {
 	change(&r.state.Preferences)

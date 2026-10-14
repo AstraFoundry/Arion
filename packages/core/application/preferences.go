@@ -43,6 +43,14 @@ type Preferences struct {
 	// Polish turns on the local LLM pipeline: live rewriting while speaking
 	// and a validated final rewrite. Off until the user downloads the model.
 	Polish bool `json:"polish"`
+	// MatchApp lets polishing follow the focused app, field and web site
+	// (email, work chat, coding prompt, search) instead of always writing
+	// plain chat text. Profiles written before it existed load the default.
+	MatchApp bool `json:"matchApp"`
+	// SceneOverrides are scenes the user chose for a site or app (by
+	// domain.SceneKey) from the menu bar panel. Replace the map, never
+	// mutate it: preference snapshots share it.
+	SceneOverrides domain.SceneOverrides `json:"sceneOverrides,omitempty"`
 }
 
 // PreferencesVersion is the current schema; older files are migrated.
@@ -63,7 +71,7 @@ const DefaultShortcut = "Alt+Space"
 func DefaultPreferences() Preferences {
 	return Preferences{
 		Version: PreferencesVersion, UILanguage: English, Mode: domain.ShortcutMode, Shortcut: DefaultShortcut,
-		Delivery: DeliveryAutomatic, RemoveFillers: true, Sounds: true, CheckUpdates: true,
+		Delivery: DeliveryAutomatic, RemoveFillers: true, Sounds: true, CheckUpdates: true, MatchApp: true,
 	}
 }
 
@@ -95,6 +103,12 @@ func (p Preferences) Normalize() (Preferences, []string) {
 	if p.Delivery != DeliveryAutomatic && p.Delivery != DeliveryClipboard {
 		p.Delivery = defaults.Delivery
 		repaired = append(repaired, "delivery")
+	}
+	for key, scene := range p.SceneOverrides {
+		if key == "" || !scene.Known() || scene == domain.SceneList {
+			p.SceneOverrides = p.SceneOverrides.WithScene(key, "")
+			repaired = append(repaired, "sceneOverrides")
+		}
 	}
 	if !knownGain(p.MicrophoneGain) {
 		p.MicrophoneGain = defaults.MicrophoneGain
