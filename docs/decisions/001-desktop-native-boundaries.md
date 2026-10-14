@@ -1,6 +1,6 @@
 # ADR 001: Desktop native shell and configurable input adapters
 
-Status: Accepted scope; platform integration pending.
+Status: Accepted scope; platform integration pending. The no-React/no-webview rule covers the desktop app only; the marketing site is governed by [ADR 016](016-marketing-site.md).
 
 ## Context
 
