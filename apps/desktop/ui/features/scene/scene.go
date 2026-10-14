@@ -4,7 +4,6 @@
 package scene
 
 import (
-	"arion.local/core/domain"
 	"arion.local/desktop/ui/shared/copy"
 	"arion.local/desktop/ui/shared/icons"
 	"arion.local/desktop/ui/shared/kit"
@@ -14,29 +13,29 @@ import (
 )
 
 // Label is the scene's name.
-func Label(s domain.Scene) copy.Key {
+func Label(s runtime.Scene) copy.Key {
 	switch s {
-	case domain.SceneEmail:
+	case runtime.SceneEmail:
 		return copy.SceneEmail
-	case domain.SceneWork:
+	case runtime.SceneWork:
 		return copy.SceneWork
-	case domain.ScenePrompt:
+	case runtime.ScenePrompt:
 		return copy.ScenePrompt
-	case domain.SceneSearch:
+	case runtime.SceneSearch:
 		return copy.SceneSearch
 	}
 	return copy.SceneChat
 }
 
-func icon(s domain.Scene) *ui.SVG {
+func icon(s runtime.Scene) *ui.SVG {
 	switch s {
-	case domain.SceneEmail:
+	case runtime.SceneEmail:
 		return icons.Mail
-	case domain.SceneWork:
+	case runtime.SceneWork:
 		return icons.Briefcase
-	case domain.ScenePrompt:
+	case runtime.ScenePrompt:
 		return icons.Code
-	case domain.SceneSearch:
+	case runtime.SceneSearch:
 		return icons.Search
 	}
 	return icons.MessageCircle
@@ -49,7 +48,7 @@ func Visible(store runtime.Store) bool {
 	return s.SceneTarget.Known && s.Preferences.Polish && s.Preferences.MatchApp && s.Polish.State != runtime.PolishUnsupported
 }
 
-// Card shows the scene and opens a menu to choose another one, or to follow
+// Card shows the scene and opens a select to choose another one, or to follow
 // the built-in rules again.
 func Card(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 	if !Visible(store) {
@@ -57,19 +56,26 @@ func Card(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 	}
 	messages := store.Copy()
 	target := store.State.SceneTarget
-	decision := domain.DecideScene(target.Hints, store.State.Preferences.SceneOverrides)
+	decision := runtime.DecideScene(target.Hints, store.State.Preferences.SceneOverrides)
 	source := copy.SceneAutomatic
-	if decision.Route == domain.RouteUser {
+	if decision.Route == runtime.SceneByUser {
 		source = copy.SceneChosen
 	}
 	place := target.AppName
 	if target.Hints.Site != "" {
 		place = target.Hints.Site
 	}
-	button := ui.ButtonBase(c.Key("scene")).Label(messages.Text(copy.SceneCardLabel)).Height(48).Padding(0, 12).Gap(10).
+	// The empty scene stands for the built-in rules.
+	var chosen runtime.Scene
+	if decision.Route == runtime.SceneByUser {
+		chosen = decision.Scene
+	}
+	selected := chosen
+	sel := ui.SelectBase(c.Key("scene"), &selected)
+	button := sel.Trigger.Label(messages.Text(copy.SceneCardLabel)).Height(48).Padding(0, 12).Gap(10).
 		AlignItems(ui.Center).Radius(theme.RadiusControl).Border(1, tokens.Hairline)
 	kit.Press(button)
-	if button.Hovered() {
+	if button.Hovered() || sel.Open() {
 		button.Background(tokens.AccentSoft)
 	}
 	button.Transition(ui.ElementTransition{Colors: true, Duration: theme.Quick.Duration})
@@ -88,15 +94,14 @@ func Card(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 		})
 		ui.Icon(c, icons.ChevronsUpDown).FontSize(14).TextColor(tokens.Muted)
 	})
-	button.Menu(func(m *ui.Menu) {
-		if m.Item(messages.Text(copy.SceneAutomatic)).Checked(decision.Route != domain.RouteUser).Chosen() {
-			store.Actions.ChooseScene("")
-		}
-		m.Separator()
-		for _, s := range domain.ChoosableScenes {
-			if m.Item(messages.Text(Label(s))).Checked(decision.Route == domain.RouteUser && decision.Scene == s).Chosen() {
-				store.Actions.ChooseScene(s)
-			}
+	kit.SelectPopup(tokens, sel, func() {
+		kit.SelectItem(c, tokens, sel, "", messages.Text(copy.SceneAutomatic), chosen == "")
+		kit.SelectSeparator(c, tokens)
+		for _, s := range runtime.ChoosableScenes {
+			kit.SelectItem(c, tokens, sel, s, messages.Text(Label(s)), chosen == s)
 		}
 	})
+	if button.Changed() {
+		store.Actions.ChooseScene(selected)
+	}
 }

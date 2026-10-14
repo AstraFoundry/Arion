@@ -1,6 +1,7 @@
 package engine
 
 import (
+	"arion.local/core/domain"
 	"os"
 	"sync/atomic"
 	"testing"
@@ -25,7 +26,7 @@ func TestReuseParity(t *testing.T) {
 	var stop atomic.Bool
 	final := Request{Session: "a", Scene: "chat", Text: "票价是每张八十块，一共买六张，不对，买七张。"}
 	cold := func() string {
-		e, _, err := Load(config, prompt.Live())
+		e, _, err := Load(config, prompt.Live(), prompt.Context())
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -36,14 +37,19 @@ func TestReuseParity(t *testing.T) {
 		}
 		return r.Text
 	}()
-	e, _, err := Load(config, prompt.Live())
+	e, _, err := Load(config, prompt.Live(), prompt.Context())
 	if err != nil {
 		t.Fatal(err)
 	}
 	defer e.Close()
-	// Another session first, then live previews of growing stable text.
+	// Another session first, one that swaps in the context template, then
+	// live previews of growing stable text.
 	if _, err := e.Run(Request{Session: "z", Scene: "chat", Text: "Can you check the logs?"}, &stop); err != nil {
 		t.Fatal(err)
+	}
+	withContext, err := e.Run(Request{Session: "y", Scene: "chat", Context: domain.RewriteContext{Screen: "Build failed: TS2345"}, Text: "看一下那个报错。"}, &stop)
+	if err != nil || withContext.Template == prompt.Live().Version {
+		t.Fatalf("context request not served by the context template: %v %q", err, withContext.Template)
 	}
 	for _, text := range []string{"票价是每张八十块，", "票价是每张八十块，一共买六张，"} {
 		if _, err := e.Run(Request{Session: "a", Scene: "chat", Text: text, Live: true}, &stop); err != nil {

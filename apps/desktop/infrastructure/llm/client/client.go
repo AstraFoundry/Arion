@@ -156,14 +156,18 @@ func (c *Client) Rewrite(ctx context.Context, req ports.RewriteRequest) (ports.R
 	if req.Prefill {
 		op = protocol.OpPrefill
 	}
-	response, err := c.call(ctx, protocol.Request{Op: op, Session: session(req.Identity), Scene: req.Scene, Terms: req.Terms, Text: req.Text, Live: req.Live})
+	request := protocol.Request{Op: op, Session: session(req.Identity), Scene: req.Scene, Terms: req.Terms, Text: req.Text, Live: req.Live}
+	if c := req.Context.Bounded(); !c.Empty() {
+		request.Context = &c
+	}
+	response, err := c.call(ctx, request)
 	if err != nil {
 		return ports.RewriteResult{}, err
 	}
 	if response.Cancelled {
 		return ports.RewriteResult{}, domain.Fail(domain.CodeCancelled, "rewrite cancelled")
 	}
-	return ports.RewriteResult{Text: response.Text, Truncated: response.Truncated, PrefillMs: response.PrefillMs, DecodeMs: response.DecodeMs,
+	return ports.RewriteResult{Text: response.Text, Truncated: response.Truncated, Template: response.Template, PrefillMs: response.PrefillMs, DecodeMs: response.DecodeMs,
 		InputTokens: response.InputTokens, ReusedTokens: response.ReusedTokens, OutputTokens: response.OutputTokens}, nil
 }
 

@@ -22,6 +22,8 @@ type RewritePolicy struct {
 	// SceneOverrides are the user's choices by place; they beat the
 	// built-in rules when FollowApp decides the scene.
 	SceneOverrides domain.SceneOverrides
+	// Context selects the context sources the rewrite may read.
+	Context ContextPolicy
 	// Terms are approved vocabulary entries shown to the model as data.
 	Terms []string
 	// Timeout bounds the final rewrite after the user stops.
@@ -244,8 +246,10 @@ func (c *Coordinator) preview(r *run, stable string) {
 	c.mu.Lock()
 	l.cancelPreview = cancel
 	c.mu.Unlock()
+	// Previews use context once it is read and never wait for it.
+	rc := r.contextFor(0)
 	result, err := c.deps.Rewriter.Rewrite(ctx, ports.RewriteRequest{Identity: r.identity, Text: stable,
-		Scene: string(domain.ModelScene(domain.Scene(l.policy.Scene), stable)), Terms: l.policy.Terms, Live: true})
+		Scene: string(domain.ModelScene(domain.Scene(l.policy.Scene), stable)), Terms: withContextTerms(l.policy.Terms, rc, stable), Live: true})
 	c.mu.Lock()
 	l.cancelPreview = nil
 	c.mu.Unlock()
@@ -253,7 +257,7 @@ func (c *Coordinator) preview(r *run, stable string) {
 		return
 	}
 	text := domain.AlignLiveEnding(stable, result.Text)
-	if domain.ValidateRewrite(domain.RewriteCheck{Source: stable, Candidate: text, Truncated: result.Truncated, Terms: l.policy.Terms}) != domain.RewriteAccepted {
+	if domain.ValidateRewrite(domain.RewriteCheck{Source: stable, Candidate: text, Truncated: result.Truncated, Terms: l.policy.Terms, Context: rc}) != domain.RewriteAccepted {
 		return
 	}
 	c.mu.Lock()
@@ -321,8 +325,9 @@ func (c *Coordinator) rewriteFinal(r *run, source string, policy RewritePolicy) 
 	}
 	ctx, cancel := context.WithTimeout(r.ctx, policy.Timeout)
 	defer cancel()
+	rc := r.contextFor(contextWait)
 	result, err := c.deps.Rewriter.Rewrite(ctx, ports.RewriteRequest{Identity: r.identity, Text: source,
-		Scene: string(domain.ModelScene(domain.Scene(policy.Scene), source)), Terms: policy.Terms})
+		Scene: string(domain.ModelScene(domain.Scene(policy.Scene), source)), Terms: withContextTerms(policy.Terms, rc, source)})
 	switch {
 	case r.ctx.Err() != nil:
 		return "", "", false
@@ -331,7 +336,7 @@ func (c *Coordinator) rewriteFinal(r *run, source string, policy RewritePolicy) 
 	case err != nil:
 		return source, RewriteUnavailable, true
 	}
-	verdict := domain.ValidateRewrite(domain.RewriteCheck{Source: source, Candidate: result.Text, Truncated: result.Truncated, Terms: policy.Terms})
+	verdict := domain.ValidateRewrite(domain.RewriteCheck{Source: source, Candidate: result.Text, Truncated: result.Truncated, Terms: policy.Terms, Context: rc})
 	if verdict != domain.RewriteAccepted {
 		return source, string(verdict), true
 	}

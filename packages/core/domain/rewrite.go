@@ -22,6 +22,9 @@ const (
 	RewriteNegation    RewriteVerdict = "negation_dropped"
 	RewriteFinalValue  RewriteVerdict = "final_value_dropped"
 	RewriteDropped     RewriteVerdict = "content_dropped"
+	// RewriteContextCopied adds content from the context that the dictation
+	// does not contain.
+	RewriteContextCopied RewriteVerdict = "context_copied"
 )
 
 // RewriteCheck is a proposal and the evidence it may draw on.
@@ -32,12 +35,15 @@ type RewriteCheck struct {
 	// Terms are approved vocabulary/memory strings; their content counts as
 	// supported.
 	Terms []string
+	// Context is the rewrite's context; its text supports spelling fixes
+	// but not added content.
+	Context RewriteContext
 }
 
 // markers are chat/prompt structures that must never reach a target,
 // including every scene tag of the rewrite prompt.
 var markers = func() []string {
-	out := []string{"<think", "</think", "<|", "|>", "[terms", `"transcript"`}
+	out := append([]string{"<think", "</think", "<|", "|>", "[terms", `"transcript"`}, contextTags...)
 	for _, scene := range Scenes {
 		out = append(out, "["+string(scene)+"]")
 	}
@@ -70,7 +76,7 @@ func ValidateRewrite(c RewriteCheck) RewriteVerdict {
 			return RewriteMarkup
 		}
 	}
-	evidence := c.Source + "\n" + strings.Join(c.Terms, "\n")
+	evidence := c.Source + "\n" + strings.Join(c.Terms, "\n") + "\n" + c.Context.Evidence()
 	src, cand := contentRunes(c.Source), contentRunes(candidate)
 	if len(cand) > len(src)*5/4+6 || len(cand)*4 < len(src) {
 		return RewriteLength
@@ -79,6 +85,9 @@ func ValidateRewrite(c RewriteCheck) RewriteVerdict {
 		if !strings.Contains(evidence, n) {
 			return RewriteNewNumber
 		}
+	}
+	if !c.Context.Empty() && contextCopied(c.Source+"\n"+strings.Join(c.Terms, "\n"), candidate) {
+		return RewriteContextCopied
 	}
 	if unsupported(evidence, candidate) {
 		return RewriteUnsupported
@@ -92,11 +101,24 @@ func ValidateRewrite(c RewriteCheck) RewriteVerdict {
 		return RewriteFinalValue
 	}
 	kept := withoutReplaced(c.Source, c.Terms)
+	// Speech that repeats the text just before the cursor may be dropped:
+	// the field already has it.
+	kept = strings.TrimPrefix(kept, repeatedBefore(c.Context.Before, kept))
 	if len(listMarkers.FindAllString(candidate, 2)) == 2 {
 		// Numbered lines replace the spoken ordinals.
 		kept = ordinals.ReplaceAllString(kept, "")
 	}
-	if !hasRepairCue(c.Source) && coverage(kept, candidate)*10 < 7 {
+	covered := coverage(kept, candidate)
+	if !c.Context.Empty() {
+		// A misheard word replaced by its spelling from the context is not
+		// dropped content.
+		// The credit is capped: a spelling fix replaces a few characters,
+		// while context standing in for the dictation replaces most of it.
+		n := len(contentRunes(kept))
+		credit := min(contextSupported(c.Source, c.Context.Evidence(), candidate), max(4, n/4))
+		covered += float64(credit) / float64(max(1, n))
+	}
+	if !hasRepairCue(c.Source) && covered*10 < 7 {
 		return RewriteDropped
 	}
 	return RewriteAccepted

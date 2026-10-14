@@ -24,6 +24,7 @@ Write an ADR when the decision:
 - [010: In-app updates from GitHub releases](010-in-app-updates.md) — signed MyGo updates, automatic checks on by default.
 - [011: Live local rewriting](011-live-local-rewriting.md) — Qwen3 1.7B in an isolated worker edits while you speak; validated rewrite inserts automatically.
 - [012: Scene selection from the focused field, site and app](012-context-scene-selection.md) — local metadata picks email, work, prompt, search or chat layout; the rewrite prompt stays unchanged.
+- [013: Rewrite context from the cursor, the screen and recent dictations](013-rewrite-context-on-device.md) — on by default, on-device only; reaches the model as extracted terms.
 - [`adr-template.md`](adr-template.md) — template for new ADRs.
 
 ## Naming

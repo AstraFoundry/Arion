@@ -31,7 +31,10 @@ type Dependencies struct {
 	// Rewriter is the optional local LLM stage; nil leaves dictation as
 	// recognized and rule-corrected text (009).
 	Rewriter ports.Rewriter
-	NewID    func() string
+	// History keeps recent dictations per place for rewrite context; nil
+	// keeps none.
+	History *History
+	NewID   func() string
 }
 
 // Options configure one coordinator. Policy is read when a session finalizes,
@@ -91,6 +94,11 @@ type run struct {
 	recognizer ports.Recognizer
 	target     contracts.TargetSnapshot
 	hasTarget  bool
+	// place names the target for history; contextReady closes once
+	// rewriteContext is read (startContext).
+	place          string
+	contextReady   chan struct{}
+	rewriteContext domain.RewriteContext
 	// live is set at start when the live pipeline runs for this session.
 	live *liveState
 
@@ -262,6 +270,7 @@ func (c *Coordinator) prepare(r *run, needTarget bool) {
 		}
 		l.policy.Scene = string(domain.DecideScene(hints, l.policy.SceneOverrides).Scene)
 	}
+	c.startContext(r)
 	recognizer, err := c.deps.Recognizers.NewRecognizer(r.ctx, r.identity)
 	if err != nil {
 		c.failErr(r, err, domain.CodeModelMissing)
@@ -584,6 +593,9 @@ func (c *Coordinator) commit(r *run, revision uint64, text string) {
 	case contracts.Applied, contracts.Unknown:
 		// CTR-A06: an unknown outcome is final; it is never retried.
 		_ = r.session.Advance(domain.Completed)
+		if result.Outcome == contracts.Applied {
+			c.remember(r, text)
+		}
 		event = contracts.Event{Envelope: contracts.Envelope{Kind: contracts.CommitResultReady, Revision: revision}, State: domain.Completed, Outcome: result.Outcome, Text: text}
 	default:
 		code := result.Failure

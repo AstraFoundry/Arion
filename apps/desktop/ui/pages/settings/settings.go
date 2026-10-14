@@ -196,6 +196,7 @@ func (p *Page) section(c *ui.Context, store runtime.Store, tokens theme.Tokens) 
 			kit.Card(c, tokens).Children(func() {
 				polish.Row(c, store, tokens)
 				polish.MatchApp(c, store, tokens)
+				polish.Context(c, store, tokens)
 			})
 		})
 		if hasOthers(store) {

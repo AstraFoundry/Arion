@@ -15,7 +15,7 @@ PRV-01: Dictation and ranking have no cloud inference route. Model downloads and
 
 PRV-07: Update checks request only the public release manifest and archive of the configured GitHub repository. They carry no audio, text, vocabulary, preference or device identifier, run only while the user's automatic-check preference is on or on an explicit request, and an archive whose Ed25519 signature does not match the built-in key is never installed ([ADR 010](../docs/decisions/010-in-app-updates.md)).
 
-PRV-02: Context read is limited to the focused opted-in application/field and bounded text. No broad screen capture, keystroke history or full document scraping. Secure/unknown fields disable reads/learning. User denylist overrides per-app preferences.
+PRV-02: Context read is limited to the focused application/field and bounded text under each source's switch ([ADR 013](../docs/decisions/013-rewrite-context-on-device.md)): text around the cursor, OS-recognized text of the focused window only (the image is never stored) and recent dictations in memory. No full-screen or background capture, keystroke history or full document scraping. Secure/unknown fields disable reads/learning. User denylist overrides per-app preferences.
 
 PRV-03: Before using personal memory, disclose its type/scope and allow reset/export/delete. Session-only memory is never promoted automatically. Disabling sync does not imply deletion of already stored relay ciphertext; expose deletion separately.
 

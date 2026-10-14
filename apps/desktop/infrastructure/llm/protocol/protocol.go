@@ -3,8 +3,10 @@
 // handled out of band and stops a running or queued request.
 package protocol
 
+import "arion.local/core/domain"
+
 // Version is bumped on any incompatible message change.
-const Version = 1
+const Version = 2
 
 // Ops.
 const (
@@ -31,8 +33,10 @@ type Request struct {
 	Session string   `json:"session,omitempty"`
 	Scene   string   `json:"scene,omitempty"`
 	Terms   []string `json:"terms,omitempty"`
-	Text    string   `json:"text,omitempty"`
-	Live    bool     `json:"live,omitempty"`
+	// Context is the request's untrusted context, when it has any.
+	Context *domain.RewriteContext `json:"context,omitempty"`
+	Text    string                 `json:"text,omitempty"`
+	Live    bool                   `json:"live,omitempty"`
 	// Cancel.
 	Target uint64 `json:"target,omitempty"`
 }
@@ -47,6 +51,7 @@ type Response struct {
 	PromptID     string  `json:"promptId,omitempty"`
 	PrefixTokens int     `json:"prefixTokens,omitempty"`
 	// Rewrite and prefill.
+	Template     string  `json:"template,omitempty"`
 	Text         string  `json:"text,omitempty"`
 	InputTokens  int     `json:"inputTokens,omitempty"`
 	ReusedTokens int     `json:"reusedTokens,omitempty"`

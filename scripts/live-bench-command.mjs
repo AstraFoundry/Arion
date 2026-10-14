@@ -34,7 +34,9 @@ if (operation === "fixtures") {
   build("./cmd/arion-rewrite-bench", "arion-rewrite-bench", false);
   invoke(path.join(bin, "arion-rewrite-bench"), ["-corpus", option("CORPUS"), "-worker", path.join(bin, "arion-llm"), "-runtime", runtimeDir(),
     "-model", option("LLM_MODEL"), "-variant", option("VARIANT") ?? path.basename(option("LLM_MODEL")), "-scene", option("SCENE") ?? "corpus",
-    ...(option("CORRECT") === "1" ? ["-correct"] : []), "-out", option("OUT")]);
+    ...(option("CORRECT") === "1" ? ["-correct"] : []), ...(option("CONTEXT") ? ["-context", option("CONTEXT")] : []),
+    ...(option("SCREEN") ? ["-screen", option("SCREEN")] : []), ...(option("OCR") ? ["-ocr", option("OCR")] : []),
+    ...(option("CONTEXT_AS") ? ["-context-as", option("CONTEXT_AS")] : []), "-out", option("OUT")]);
   score("score-text.mjs", option("CORPUS"), option("OUT"));
 } else if (operation === "audio") {
   required("MANIFEST", "CORPUS", "MODELS", "BUNDLE", "OUT");
@@ -47,6 +49,11 @@ if (operation === "fixtures") {
   // caffeinate keeps the host awake so idle sleep cannot stretch latencies.
   invoke("caffeinate", ["-i", path.join(bin, "arion-live-bench"), ...args]);
   score("score-audio.mjs", option("MANIFEST"), option("CORPUS"), option("OUT"));
+} else if (operation === "ocr") {
+  required("CORPUS", "OUT");
+  build("./cmd/arion-ocr", "arion-ocr", true);
+  invoke(path.join(bin, "arion-ocr"), ["-corpus", option("CORPUS"), "-out", option("OUT")]);
+  score("score-ocr.mjs", option("CORPUS"), option("OUT"));
 } else if (operation === "scene") {
   invoke("go", ["run", "./cmd/arion-scene-bench", "-misses", "-contexts", path.resolve(root, option("CONTEXTS") ?? "benchmarks/configs/scene-contexts.json")],
     { CGO_ENABLED: "0" }, path.join(root, "apps/desktop"));
@@ -54,5 +61,5 @@ if (operation === "fixtures") {
   required("RUNS", "OUT");
   score("report.mjs", option("RUNS"), option("OUT"));
 } else {
-  throw new Error("usage: live-bench-command.mjs fixtures|text|audio|report|scene");
+  throw new Error("usage: live-bench-command.mjs fixtures|text|audio|report|scene|ocr");
 }

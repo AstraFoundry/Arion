@@ -62,6 +62,9 @@ type App struct {
 	store     *provision.Store
 	manager   *modelruntime.Manager
 	rewriter  *rewriting.Service
+	// history keeps recent dictations per place for rewrite context, in
+	// memory only.
+	history   *application.History
 	mic       *audio.Microphone
 	targets   Targets
 	ime       InputMethod
@@ -137,13 +140,16 @@ func New(opts Options) (*App, error) {
 	a.manager = modelruntime.NewManager(catalog, a.store, opts.Threads)
 	resources, _ := mygo.App.Path(mygo.PathResources)
 	a.rewriter = rewriting.New(catalog, a.store, rewriting.Locate(resources), opts.Threads, modelruntime.Platform())
+	a.history = application.NewHistory(30 * time.Minute)
 	a.mic = audio.NewMicrophone(a.platform)
 	a.mic.Select(prefs.Microphone)
 	a.mic.SetGain(prefs.MicrophoneGain)
-	a.targets = a.platform.NewTargets(func() application.Delivery { return a.preferences().Delivery }, func() bool {
-		// The page's host is read only when a rewrite will use it.
-		p := a.preferences()
-		return p.Polish && p.MatchApp
+	// Hosts, field text and window text are read only when a rewrite will
+	// use them.
+	a.targets = a.platform.NewTargets(func() application.Delivery { return a.preferences().Delivery }, TargetGates{
+		Site:   func() bool { p := a.preferences(); return p.Polish && p.MatchApp },
+		Cursor: func() bool { p := a.preferences(); return p.Polish && p.ContextCursor },
+		Screen: func() bool { p := a.preferences(); return p.Polish && p.ContextScreen },
 	})
 	a.vocabPath = filepath.Join(opts.DataDir, "vocabulary.bin")
 	capture := opts.Audio
@@ -167,7 +173,7 @@ func New(opts Options) (*App, error) {
 		targets = countingTargets{Targets: a.targets, h: a.harness}
 	}
 	deps := application.Dependencies{Audio: capture, Recognizers: a.manager, Finalizer: finalizer, Targets: targets, Input: targets,
-		Rewriter: a.rewriter, NewID: newID}
+		Rewriter: a.rewriter, History: a.history, NewID: newID}
 	if a.ime != nil {
 		deps.IMETargets, deps.IMEInput, deps.Composition = a.ime, a.ime, a.ime
 	}
@@ -216,7 +222,8 @@ func (a *App) rewritePolicy() application.RewritePolicy {
 		terms = append(terms, r.From+" → "+r.To)
 	}
 	return application.RewritePolicy{Enabled: true, Scene: string(domain.SceneChat), FollowApp: a.prefs.MatchApp,
-		SceneOverrides: a.prefs.SceneOverrides, Terms: terms}
+		SceneOverrides: a.prefs.SceneOverrides, Terms: terms,
+		Context: application.ContextPolicy{Cursor: a.prefs.ContextCursor, Screen: a.prefs.ContextScreen, History: a.prefs.ContextHistory}}
 }
 
 // Run starts the event loop; it returns when the app quits.
@@ -473,7 +480,7 @@ func (a *App) onShortcut() {
 
 func (a *App) refreshPermissions() bool {
 	next := arion.Permissions{Microphone: a.platform.Microphone(), Accessibility: a.platform.Accessibility(),
-		InputMonitoring: a.platform.InputMonitoring()}
+		InputMonitoring: a.platform.InputMonitoring(), ScreenRecording: a.platform.ScreenRecording()}
 	previous := a.state.Permissions
 	changed := next != previous
 	if changed && next.Microphone == arion.ConsentGranted && previous.Microphone != arion.ConsentGranted {

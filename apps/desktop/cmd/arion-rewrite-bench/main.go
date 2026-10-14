@@ -28,6 +28,15 @@ type sample struct {
 	Scenario       string   `json:"scenario"`
 	Mode           string   `json:"mode"`
 	ApprovedMemory []string `json:"approvedMemory"`
+	// ContextFixture holds a context case's window image, its true visible
+	// text, cursor text and history.
+	ContextFixture *struct {
+		Image       string   `json:"image"`
+		ScreenTruth string   `json:"screenTruth"`
+		Before      string   `json:"before"`
+		After       string   `json:"after"`
+		History     []string `json:"history"`
+	} `json:"contextFixture"`
 	// Target is the focused app, field and site the case is dictated into.
 	Target struct {
 		App   string           `json:"app"`
@@ -48,6 +57,11 @@ type row struct {
 	VariantID  string `json:"variantId"`
 	Scene      string `json:"scene"`
 	SceneRoute string `json:"sceneRoute,omitempty"`
+	// Context sources applied, their bounded size and the prompt used.
+	ContextSources []string `json:"contextSources,omitempty"`
+	ContextChars   int      `json:"contextChars,omitempty"`
+	Template       string   `json:"template,omitempty"`
+	ContextTerms   []string `json:"contextTerms,omitempty"`
 	// Source is the text sent to the rewriter, after rule correction when
 	// -correct is set.
 	Source       string  `json:"source"`
@@ -76,6 +90,10 @@ func main() {
 	liveEdits := flag.Bool("live", true, "rewrite each closed segment before the final request")
 	threads := flag.Int("threads", 4, "intra-op threads")
 	correct := flag.Bool("correct", false, "apply the product's default rule correction (fillers) before rewriting, as dictation does")
+	contextFlag := flag.String("context", "", "comma-separated context sources: cursor, history, screen")
+	screenFlag := flag.String("screen", "oracle", "screen text: oracle (true visible text), accurate or fast (Vision OCR rows from -ocr)")
+	ocrPath := flag.String("ocr", "", "arion-ocr JSONL for -screen accurate|fast")
+	contextAs := flag.String("context-as", "prompt", "prompt: context sections and the context template; terms: spellings extracted from context into the plain prompt's terms; both")
 	sceneMode := flag.String("scene", "corpus", "corpus: each case's scenario; auto: decided from its target like the product; or a fixed scene")
 	out := flag.String("out", "", "output JSONL path (must not exist)")
 	flag.Parse()
@@ -91,6 +109,23 @@ func main() {
 	check(err)
 	var corpus struct{ Samples []sample }
 	check(json.Unmarshal(data, &corpus))
+	sources := map[string]bool{}
+	for _, name := range strings.Split(*contextFlag, ",") {
+		switch name = strings.TrimSpace(name); name {
+		case "":
+		case "cursor", "history", "screen":
+			sources[name] = true
+		default:
+			check(fmt.Errorf("unknown context source %q", name))
+		}
+	}
+	if *contextAs != "prompt" && *contextAs != "terms" && *contextAs != "both" {
+		check(fmt.Errorf("unknown -context-as %q", *contextAs))
+	}
+	ocr := map[string]string{}
+	if sources["screen"] && *screenFlag != "oracle" {
+		ocr = loadOCR(*ocrPath, *screenFlag)
+	}
 	file, err := os.OpenFile(*out, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0o600)
 	check(err)
 	defer file.Close()
@@ -118,6 +153,41 @@ func main() {
 		}
 		r.Source = source
 		scene := domain.Scene(r.Scene)
+		var rc domain.RewriteContext
+		if f := s.ContextFixture; f != nil {
+			if sources["screen"] {
+				rc.Screen = f.ScreenTruth
+				if *screenFlag != "oracle" {
+					rc.Screen = ocr[s.ID]
+				}
+			}
+			if sources["cursor"] {
+				rc.Before, rc.After = f.Before, f.After
+			}
+			if sources["history"] {
+				rc.History = f.History
+			}
+		}
+		rc = rc.Bounded()
+		for _, name := range []string{"cursor", "history", "screen"} {
+			if sources[name] {
+				r.ContextSources = append(r.ContextSources, name)
+			}
+		}
+		if !rc.Empty() {
+			r.ContextChars = len([]rune(strings.TrimSpace(rc.Evidence())))
+		}
+		// Validation always sees the whole context, as the product does;
+		// -context-as only changes what reaches the model.
+		evidence := rc
+		terms := s.ApprovedMemory
+		if *contextAs != "prompt" {
+			r.ContextTerms = domain.ContextTerms(rc, source)
+			terms = append(append([]string{}, terms...), r.ContextTerms...)
+			if *contextAs == "terms" {
+				rc = domain.RewriteContext{}
+			}
+		}
 		if s.Mode == "verbatim" {
 			// Verbatim dictation never reaches the model (009 step 5).
 			r.Bypassed, r.Verdict, r.Text = true, "bypassed", source
@@ -126,7 +196,7 @@ func main() {
 		}
 		request := func(text string, live bool) (ports.RewriteResult, float64) {
 			start := time.Now()
-			result, err := c.Rewrite(ctx, ports.RewriteRequest{Identity: id, Text: text, Scene: string(domain.ModelScene(scene, text)), Terms: s.ApprovedMemory, Live: live})
+			result, err := c.Rewrite(ctx, ports.RewriteRequest{Identity: id, Text: text, Scene: string(domain.ModelScene(scene, text)), Terms: terms, Context: rc, Live: live})
 			check(err)
 			return result, float64(time.Since(start).Microseconds()) / 1000
 		}
@@ -134,12 +204,13 @@ func main() {
 			for _, prefix := range stablePrefixes(s, source) {
 				result, ms := request(prefix, true)
 				text := domain.AlignLiveEnding(prefix, result.Text)
-				verdict := domain.ValidateRewrite(domain.RewriteCheck{Source: prefix, Candidate: text, Truncated: result.Truncated, Terms: s.ApprovedMemory})
+				verdict := domain.ValidateRewrite(domain.RewriteCheck{Source: prefix, Candidate: text, Truncated: result.Truncated, Terms: terms, Context: evidence})
 				r.Live = append(r.Live, live{Source: prefix, Text: text, Verdict: string(verdict), TotalMs: ms})
 			}
 		}
 		result, ms := request(source, false)
-		verdict := domain.ValidateRewrite(domain.RewriteCheck{Source: source, Candidate: result.Text, Truncated: result.Truncated, Terms: s.ApprovedMemory})
+		verdict := domain.ValidateRewrite(domain.RewriteCheck{Source: source, Candidate: result.Text, Truncated: result.Truncated, Terms: terms, Context: evidence})
+		r.Template = result.Template
 		r.Proposal, r.Verdict, r.Truncated = result.Text, string(verdict), result.Truncated
 		r.Text = source
 		if verdict == domain.RewriteAccepted {
@@ -203,6 +274,24 @@ func advance(source []rune, from int, part []rune) int {
 }
 
 func isSkippable(r rune) bool { return strings.ContainsRune("，,。. 、；;：:！!？?", r) }
+
+// loadOCR reads one recognition level's text per case from arion-ocr rows.
+func loadOCR(path, level string) map[string]string {
+	if path == "" {
+		check(fmt.Errorf("-ocr is required for -screen %s", level))
+	}
+	data, err := os.ReadFile(path)
+	check(err)
+	out := map[string]string{}
+	for _, line := range strings.Split(strings.TrimSpace(string(data)), "\n") {
+		var r struct{ CaseID, Level, Text string }
+		check(json.Unmarshal([]byte(line), &r))
+		if r.Level == level {
+			out[r.CaseID] = r.Text
+		}
+	}
+	return out
+}
 
 func check(err error) {
 	if err != nil {

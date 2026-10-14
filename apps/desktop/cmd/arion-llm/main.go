@@ -104,7 +104,7 @@ func (w *worker) load(req protocol.Request) protocol.Response {
 		return fail(err)
 	}
 	template := prompt.Live()
-	e, loadMs, err := engine.Load(engine.Config{ModelDir: req.Model, Threads: req.Threads, MaxLength: req.MaxLength, MaxNewTokens: req.MaxNewTokens}, template)
+	e, loadMs, err := engine.Load(engine.Config{ModelDir: req.Model, Threads: req.Threads, MaxLength: req.MaxLength, MaxNewTokens: req.MaxNewTokens}, template, prompt.Context())
 	if err != nil {
 		return fail(err)
 	}
@@ -125,7 +125,11 @@ func (w *worker) rewrite(req protocol.Request) protocol.Response {
 	w.running = req.ID
 	w.stop.Store(false)
 	w.mu.Unlock()
-	result, err := w.engine.Run(engine.Request{Session: req.Session, Scene: req.Scene, Terms: req.Terms, Text: req.Text, Prefill: req.Op == protocol.OpPrefill, Live: req.Live}, &w.stop)
+	in := engine.Request{Session: req.Session, Scene: req.Scene, Terms: req.Terms, Text: req.Text, Prefill: req.Op == protocol.OpPrefill, Live: req.Live}
+	if req.Context != nil {
+		in.Context = *req.Context
+	}
+	result, err := w.engine.Run(in, &w.stop)
 	w.mu.Lock()
 	w.running = 0
 	delete(w.cancelled, req.ID)
@@ -133,7 +137,7 @@ func (w *worker) rewrite(req protocol.Request) protocol.Response {
 	if err != nil {
 		return fail(err)
 	}
-	return protocol.Response{OK: true, Text: result.Text, InputTokens: result.InputTokens, ReusedTokens: result.ReusedTokens,
+	return protocol.Response{OK: true, Text: result.Text, Template: result.Template, InputTokens: result.InputTokens, ReusedTokens: result.ReusedTokens,
 		OutputTokens: result.OutputTokens, PrefillMs: result.PrefillMs, DecodeMs: result.DecodeMs, FirstTokenMs: result.FirstTokenMs,
 		Truncated: result.Truncated, Cancelled: result.Cancelled, PeakRSS: peakRSS()}
 }

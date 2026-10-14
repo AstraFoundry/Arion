@@ -1,7 +1,6 @@
 package app
 
 import (
-	"arion.local/core/domain"
 	"bytes"
 	"errors"
 	"image/png"
@@ -76,8 +75,9 @@ func (r *recorder) RemoveInputMethod() error {
 	r.state.InputMethod = runtime.InputMethodAbsent
 	return nil
 }
-func (r *recorder) ChooseScene(scene domain.Scene) {
-	key := domain.SceneKey(r.state.SceneTarget.Hints)
+func (r *recorder) RequestScreenRecording() { r.call("screen-recording") }
+func (r *recorder) ChooseScene(scene runtime.Scene) {
+	key := runtime.SceneKey(r.state.SceneTarget.Hints)
 	r.state.Preferences.SceneOverrides = r.state.Preferences.SceneOverrides.WithScene(key, scene)
 	r.call("scene:" + string(scene))
 }

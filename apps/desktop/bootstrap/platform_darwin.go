@@ -39,6 +39,10 @@ func (p darwinPlatform) Accessibility() runtime.Consent {
 func (p darwinPlatform) MicrophoneAuthorized() bool { return p.permissions.MicrophoneAuthorized() }
 func (p darwinPlatform) RequestMicrophone()         { p.permissions.RequestMicrophone() }
 func (p darwinPlatform) RequestAccessibility()      { p.permissions.RequestAccessibility() }
+func (p darwinPlatform) ScreenRecording() runtime.Consent {
+	return consent(p.permissions.ScreenRecording())
+}
+func (p darwinPlatform) RequestScreenRecording()    { p.permissions.RequestScreenRecording() }
 func (p darwinPlatform) OpenMicrophoneSettings()    { p.permissions.Open(macos.PaneMicrophone) }
 func (p darwinPlatform) OpenAccessibilitySettings() { p.permissions.Open(macos.PaneAccessibility) }
 
@@ -68,14 +72,14 @@ func (darwinPlatform) StartHoldKey(key application.HoldKey, sink func(holdkey.Ev
 }
 func (darwinPlatform) StopHoldKey() { macos.StopHold() }
 
-func (p darwinPlatform) NewTargets(delivery func() application.Delivery, readSite func() bool) Targets {
+func (p darwinPlatform) NewTargets(delivery func() application.Delivery, gates TargetGates) Targets {
 	targets := macos.NewTargets(func() macos.Delivery {
 		if delivery() == application.DeliveryClipboard {
 			return macos.DeliveryClipboard
 		}
 		return macos.DeliveryAutomatic
 	})
-	targets.ReadSite = readSite
+	targets.ReadSite, targets.ReadCursor, targets.ReadScreen = gates.Site, gates.Cursor, gates.Screen
 	return targets
 }
 

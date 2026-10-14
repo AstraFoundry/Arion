@@ -193,6 +193,8 @@ type Permissions struct {
 	Accessibility Consent
 	// InputMonitoring is needed only for a hold key on macOS.
 	InputMonitoring Consent
+	// ScreenRecording is needed for screen context on macOS.
+	ScreenRecording Consent
 }
 
 // GuidePane is a System Settings list that the user adds Arion to by hand.
@@ -367,6 +369,8 @@ type Actions interface {
 	// SetHoldKey chooses the hold-to-talk key, or HoldOff.
 	SetHoldKey(key HoldKey)
 	RequestInputMonitoring()
+	// RequestScreenRecording asks for the consent screen context needs.
+	RequestScreenRecording()
 	// CloseGuide dismisses the consent guide and returns to Arion.
 	CloseGuide()
 	// SuspendShortcut releases the global hotkey while a recorder listens.
@@ -408,3 +412,33 @@ type Store struct {
 func (s Store) Copy() copy.Catalog {
 	return copy.For(copy.Locale(s.State.Preferences.UILanguage))
 }
+
+// Scene selection for the menu bar card (ADR 012), re-exported so views
+// never import the core domain.
+type (
+	Scene          = domain.Scene
+	SceneHints     = domain.SceneHints
+	SceneOverrides = domain.SceneOverrides
+	SceneDecision  = domain.SceneDecision
+	FieldKind      = domain.FieldKind
+)
+
+const (
+	SceneChat   = domain.SceneChat
+	SceneEmail  = domain.SceneEmail
+	SceneWork   = domain.SceneWork
+	ScenePrompt = domain.ScenePrompt
+	SceneSearch = domain.SceneSearch
+	SceneByUser = domain.RouteUser
+	FieldText   = domain.FieldText
+	FieldSearch = domain.FieldSearch
+)
+
+// ChoosableScenes are the scenes the card offers.
+var ChoosableScenes = domain.ChoosableScenes
+
+// DecideScene is the scene a target gets with the user's choices.
+func DecideScene(h SceneHints, o SceneOverrides) SceneDecision { return domain.DecideScene(h, o) }
+
+// SceneKey names the place a choice applies to.
+func SceneKey(h SceneHints) string { return domain.SceneKey(h) }

@@ -54,6 +54,14 @@ export function scoreText(corpus, rows) {
           worsened: n((s) => s.source.constraintPass && !s.delivered.constraintPass), sceneAgreement: n((s) => s.row.scene === scene) }];
       }),
     ),
+    byKind: Object.fromEntries(
+      [...new Set(scored.map((s) => s.sample.tags?.[0] ?? "untagged"))].sort().map((kind) => {
+        const group = scored.filter((s) => (s.sample.tags?.[0] ?? "untagged") === kind);
+        const n = (f) => group.filter(f).length;
+        return [kind, { cases: group.length, sourcePass: n((s) => s.source.constraintPass), deliveredPass: n((s) => s.delivered.constraintPass),
+          worsened: n((s) => s.source.constraintPass && !s.delivered.constraintPass) }];
+      }),
+    ),
     perCase: scored.map((s) => ({ id: s.row.caseId, scene: s.row.scene, verdict: s.row.verdict, pass: s.delivered.constraintPass, sourcePass: s.source.constraintPass })),
   };
 }

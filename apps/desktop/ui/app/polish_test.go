@@ -164,3 +164,43 @@ func TestNoTechnicalModelNames(t *testing.T) {
 		snapshot(t, ot, "onboarding-4-model-"+string(locale))
 	}
 }
+
+// The context switches show while polishing is on, start on, write their
+// preference, and the screen switch asks for Screen Recording when missing.
+func TestContextRows(t *testing.T) {
+	state, actions, store := fixture()
+	state.Preferences.Polish = true
+	state.Preferences.ContextCursor, state.Preferences.ContextScreen, state.Preferences.ContextHistory = true, true, true
+	state.Polish = runtime.Polish{State: runtime.PolishReady, Installed: true}
+	tt := ui.NewTester(func(c *ui.Context) {
+		ui.Column(c).Children(func() { polish.Context(c, store, theme.Resolve(false)) })
+	}, 560, 360)
+	en := copy.For(copy.English)
+	settle(tt)
+	for _, key := range []copy.Key{copy.ContextCursorLabel, copy.ContextScreenLabel, copy.ContextHistoryLabel, copy.ContextScreenPermission} {
+		if !hasText(tt, en.Text(key)) {
+			t.Fatalf("missing %s: %q", key, tt.Texts())
+		}
+	}
+	snapshot(t, tt, "settings-context")
+	if err := tt.Click(en.Text(copy.Allow)); err != nil || !actions.called("screen-recording") {
+		t.Fatalf("permission request: %v", err)
+	}
+	title, _ := tt.Find(en.Text(copy.ContextHistoryLabel))
+	detail, _ := tt.Find(en.Text(copy.ContextHistoryDetail))
+	tt.ClickAt(560-40, (title.Y+detail.Y+detail.H)/2)
+	settle(tt)
+	if state.Preferences.ContextHistory {
+		t.Fatal("history switch did not turn off")
+	}
+	state.Permissions.ScreenRecording = runtime.ConsentGranted
+	settle(tt)
+	if hasText(tt, en.Text(copy.ContextScreenPermission)) {
+		t.Fatal("permission prompt shown after access was granted")
+	}
+	state.Preferences.Polish = false
+	settle(tt)
+	if hasText(tt, en.Text(copy.ContextCursorLabel)) {
+		t.Fatal("shown with polishing off")
+	}
+}

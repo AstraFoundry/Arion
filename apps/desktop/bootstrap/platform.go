@@ -40,6 +40,17 @@ type Targets interface {
 	Peek(ctx context.Context, owner int) (contracts.TargetSnapshot, error)
 }
 
+// TargetGates say what the target adapter may read beyond the focused
+// field's identity; each is checked when a read happens.
+type TargetGates struct {
+	// Site is the host of the focused web page, for scene selection.
+	Site func() bool
+	// Cursor is the field's text around the cursor; Screen is the focused
+	// window's recognized text.
+	Cursor func() bool
+	Screen func() bool
+}
+
 // Platform is the OS-specific consent and insertion surface.
 type Platform interface {
 	Microphone() runtime.Consent
@@ -47,6 +58,9 @@ type Platform interface {
 	MicrophoneAuthorized() bool
 	RequestMicrophone()
 	RequestAccessibility()
+	// ScreenRecording is the consent window text recognition needs.
+	ScreenRecording() runtime.Consent
+	RequestScreenRecording()
 	OpenMicrophoneSettings()
 	OpenAccessibilitySettings()
 	// InputMonitoring is the consent to observe keys for hold-to-talk.
@@ -64,7 +78,7 @@ type Platform interface {
 	// block. StopHoldKey is idempotent.
 	StartHoldKey(key application.HoldKey, sink func(holdkey.Event)) error
 	StopHoldKey()
-	NewTargets(delivery func() application.Delivery, readSite func() bool) Targets
+	NewTargets(delivery func() application.Delivery, gates TargetGates) Targets
 	// NewInputMethod returns nil where no input method host exists yet.
 	NewInputMethod(onLeave func()) InputMethod
 }

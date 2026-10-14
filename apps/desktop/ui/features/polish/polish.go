@@ -48,6 +48,46 @@ func MatchApp(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 	})
 }
 
+// Context lists the switches for the context polishing may read. Shown
+// only while polishing is on; the screen switch asks for Screen Recording
+// where macOS needs it.
+func Context(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
+	if !store.State.Preferences.Polish || store.State.Polish.State == runtime.PolishUnsupported {
+		return
+	}
+	messages := store.Copy()
+	prefs := store.State.Preferences
+	row := func(key string, label, detail copy.Key, value bool, set func(*runtime.Preferences, bool), extra func()) {
+		on := value
+		kit.Divider(c, tokens)
+		kit.Row(c, tokens, messages.Text(label), messages.Text(detail), func() {
+			if ui.Switch(c.Key(key), &on).Label(messages.Text(label)).Changed() {
+				store.Actions.UpdatePreferences(func(p *runtime.Preferences) { set(p, on) })
+			}
+		})
+		if extra != nil {
+			extra()
+		}
+	}
+	row("context-cursor", copy.ContextCursorLabel, copy.ContextCursorDetail, prefs.ContextCursor,
+		func(p *runtime.Preferences, on bool) { p.ContextCursor = on }, nil)
+	row("context-screen", copy.ContextScreenLabel, copy.ContextScreenDetail, prefs.ContextScreen,
+		func(p *runtime.Preferences, on bool) { p.ContextScreen = on }, func() {
+			if !prefs.ContextScreen || store.State.Permissions.ScreenRecording == runtime.ConsentGranted {
+				return
+			}
+			ui.Row(c.Key("screen-permission")).Padding(0, 16, 12, 16).Gap(8).AlignItems(ui.Center).Children(func() {
+				ui.Icon(c, icons.TriangleAlert).FontSize(14).TextColor(tokens.Warning)
+				ui.Text(c, messages.Text(copy.ContextScreenPermission)).FontSize(theme.Caption).Grow(1)
+				if kit.Button(c, tokens, kit.Outline, messages.Text(copy.Allow), true).Clicked() {
+					store.Actions.RequestScreenRecording()
+				}
+			})
+		})
+	row("context-history", copy.ContextHistoryLabel, copy.ContextHistoryDetail, prefs.ContextHistory,
+		func(p *runtime.Preferences, on bool) { p.ContextHistory = on }, nil)
+}
+
 // Status is the line under the row: what enabling costs, progress, or a
 // failure with its retry.
 func Status(c *ui.Context, store runtime.Store, tokens theme.Tokens) {

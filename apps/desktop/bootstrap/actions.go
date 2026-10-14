@@ -91,6 +91,9 @@ func (x actions) UpdatePreferences(change func(*application.Preferences)) {
 			go a.rewriter.Disable()
 		}
 	}
+	if before.ContextHistory && !next.ContextHistory {
+		a.history.Clear()
+	}
 	if next.CheckUpdates && !before.CheckUpdates && a.updates.due(time.Now()) {
 		a.updates.check(time.Now(), false)
 	}
@@ -128,6 +131,9 @@ func (x actions) OpenAccessibilitySettings() {
 		x.a.platform.OpenAccessibilitySettings()
 	}
 }
+
+// RequestScreenRecording asks for the consent screen context needs.
+func (x actions) RequestScreenRecording() { x.a.platform.RequestScreenRecording() }
 
 // RequestInputMonitoring asks for the consent a macOS hold key needs.
 func (x actions) RequestInputMonitoring() {

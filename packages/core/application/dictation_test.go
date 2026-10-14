@@ -92,11 +92,14 @@ func (f fakeFactory) NewRecognizer(context.Context, contracts.Identity) (ports.R
 
 type fakeTarget struct {
 	snapshot contracts.TargetSnapshot
-	err      error
-	commits  atomic.Int32
-	outcome  contracts.CommitOutcome
-	texts    []string
-	mu       sync.Mutex
+	// context is what ReadContext returns; reads counts its calls.
+	context contracts.ContextSnapshot
+	reads   atomic.Int32
+	err     error
+	commits atomic.Int32
+	outcome contracts.CommitOutcome
+	texts   []string
+	mu      sync.Mutex
 }
 
 func (t *fakeTarget) Capture(context.Context, contracts.Identity) (contracts.TargetSnapshot, error) {
@@ -106,7 +109,8 @@ func (t *fakeTarget) Capabilities(context.Context, contracts.TargetToken) (contr
 	return contracts.Capabilities{SingleInsertion: true}, nil
 }
 func (t *fakeTarget) ReadContext(context.Context, contracts.Identity, contracts.TargetToken) (contracts.ContextSnapshot, error) {
-	return contracts.ContextSnapshot{}, nil
+	t.reads.Add(1)
+	return t.context, nil
 }
 func (t *fakeTarget) Commit(_ context.Context, request contracts.CommitRequest) (contracts.CommitResult, error) {
 	t.commits.Add(1)

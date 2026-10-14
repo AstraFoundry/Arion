@@ -107,7 +107,10 @@ type target struct {
 	pid      int
 	route    Route
 	readable bool
-	created  time.Time
+	// secure and app gate context reads (DSK-08).
+	secure  bool
+	app     string
+	created time.Time
 }
 
 // Targets implements ports.TargetProvider and ports.InputTarget.
@@ -120,6 +123,12 @@ type Targets struct {
 	// ReadSite reports whether Capture may read the host of the focused web
 	// page for scene selection; nil never reads it.
 	ReadSite func() bool
+	// ReadCursor and ReadScreen gate ReadContext's text around the cursor
+	// and the focused window's recognized text; nil never reads them.
+	ReadCursor func() bool
+	ReadScreen func() bool
+	// ScreenTimeout bounds window capture.
+	ScreenTimeout time.Duration
 }
 
 func NewTargets(delivery func() Delivery) *Targets {
@@ -170,7 +179,7 @@ func (t *Targets) Capture(_ context.Context, id contracts.Identity) (contracts.T
 	bundle, bundlePath := C.GoString(&native.bundle[0]), C.GoString(&native.bundle_path[0])
 	secure := native.secure_input == 1 || subrole == "AXSecureTextField"
 	known := native.element != nil && role != ""
-	tgt := &target{element: native.element, pid: int(native.pid), readable: native.value_readable == 1, created: time.Now()}
+	tgt := &target{element: native.element, pid: int(native.pid), readable: native.value_readable == 1, secure: secure, app: bundle, created: time.Now()}
 	switch {
 	case t.delivery() == DeliveryClipboard:
 		tgt.route = RouteClipboard
@@ -269,8 +278,39 @@ func (t *Targets) Capabilities(_ context.Context, token contracts.TargetToken) (
 
 // ReadContext is not offered: Arion does not read foreign field content in
 // this release, so the capability stays declared unsupported.
-func (t *Targets) ReadContext(context.Context, contracts.Identity, contracts.TargetToken) (contracts.ContextSnapshot, error) {
-	return contracts.ContextSnapshot{}, domain.Fail(domain.CodeTargetUnsupported, "context read not offered")
+// ReadContext reads the context the user allows for a captured target:
+// text around its cursor and the recognized text of its window. Secure
+// fields and denied apps read nothing (DSK-08); each source that fails is
+// left empty, so the rewrite proceeds with whatever was read.
+func (t *Targets) ReadContext(_ context.Context, id contracts.Identity, token contracts.TargetToken) (contracts.ContextSnapshot, error) {
+	snap := contracts.ContextSnapshot{Identity: id, Target: token}
+	t.mu.Lock()
+	tgt := t.targets[token]
+	if tgt == nil {
+		t.mu.Unlock()
+		return snap, domain.Fail(domain.CodeTargetChanged, "unknown target")
+	}
+	if tgt.secure || domain.ContextDenied(tgt.app) {
+		t.mu.Unlock()
+		return snap, nil
+	}
+	snap.SafeToRead = true
+	if t.ReadCursor != nil && t.ReadCursor() && tgt.readable && tgt.element != nil {
+		// The element stays retained while the lock prevents its eviction.
+		snap.Before, snap.After, _ = cursorContext(tgt.element, domain.MaxCursorContext)
+	}
+	pid := tgt.pid
+	t.mu.Unlock()
+	if t.ReadScreen != nil && t.ReadScreen() {
+		timeout := t.ScreenTimeout
+		if timeout <= 0 {
+			timeout = 1500 * time.Millisecond
+		}
+		if screen, err := RecognizeWindow(pid, OCRAccurate, timeout); err == nil {
+			snap.Screen, snap.ScreenCaptureMs, snap.ScreenOCRMs = screen.Text, screen.CaptureMs, screen.OCRMs
+		}
+	}
+	return snap, nil
 }
 
 // Commit revalidates focus and inserts once through the captured route.

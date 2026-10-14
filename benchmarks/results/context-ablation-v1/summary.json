@@ -1,0 +1,2613 @@
+{
+  "kind": "arion-live-rewrite-report-v1",
+  "generated": "2026-10-14T12:09:03.350Z",
+  "host": "Apple M4, 32 GiB, macOS arm64; CPU only; 4 intra-op threads; host not isolated from other desktop tasks",
+  "provenance": "arion-llm worker (ONNX Runtime GenAI 0.17.0 / ONNX Runtime 1.30.0), greedy; Qwen3 1.7B and 4B INT4 onnx-community CPU exports; prompts live-v2 and context-v1+live-v2; screen text from macOS Vision via arion-ocr on headless-Chrome renderings at 2x",
+  "limitations": "Developer-authored synthetic windows and ASR-like errors (one author), exact-string proxies, text input only; real window capture, real ASR, Windows OCR and human ratings were not measured",
+  "runs": [
+    {
+      "id": "first-17-none",
+      "kind": "text",
+      "split": "heldout",
+      "variant": "1.7B no context",
+      "corpusSha256": "267dde15b2cec1385cc9c67eaab31e2912b62ae93177c340564c6768992923ca",
+      "resultsSha256": "28f94d18521dccd15d862ab9e9f2f219447ce5c69eca099f2c98fdaad4e39711",
+      "cases": 30,
+      "sourcePass": 8,
+      "proposalPass": 8,
+      "deliveredPass": 8,
+      "accepted": 30,
+      "rejected": {},
+      "acceptedFailing": 22,
+      "rejectedPassing": 0,
+      "worsened": 0,
+      "referenceEditRatioMean": 0.1770819473238828,
+      "sourceEditRatioMean": 0.1659708362127717,
+      "finalMs": {
+        "count": 30,
+        "p50": 490.289,
+        "p95": 889.09475,
+        "p99": 1008.1019000000001
+      },
+      "liveEdits": 16,
+      "liveAccepted": 15,
+      "liveMs": {
+        "count": 16,
+        "p50": 309.49249999999995,
+        "p95": 570.82525,
+        "p99": 694.6154499999999
+      },
+      "sceneAgreement": 30,
+      "byScene": {
+        "chat": {
+          "cases": 13,
+          "sourcePass": 7,
+          "deliveredPass": 7,
+          "worsened": 0,
+          "sceneAgreement": 13
+        },
+        "email": {
+          "cases": 5,
+          "sourcePass": 0,
+          "deliveredPass": 0,
+          "worsened": 0,
+          "sceneAgreement": 5
+        },
+        "prompt": {
+          "cases": 5,
+          "sourcePass": 1,
+          "deliveredPass": 1,
+          "worsened": 0,
+          "sceneAgreement": 5
+        },
+        "work": {
+          "cases": 7,
+          "sourcePass": 0,
+          "deliveredPass": 0,
+          "worsened": 0,
+          "sceneAgreement": 7
+        }
+      },
+      "byKind": {
+        "cursor": {
+          "cases": 6,
+          "sourcePass": 0,
+          "deliveredPass": 0,
+          "worsened": 0
+        },
+        "history": {
+          "cases": 6,
+          "sourcePass": 1,
+          "deliveredPass": 1,
+          "worsened": 0
+        },
+        "negative": {
+          "cases": 7,
+          "sourcePass": 7,
+          "deliveredPass": 7,
+          "worsened": 0
+        },
+        "screen": {
+          "cases": 11,
+          "sourcePass": 0,
+          "deliveredPass": 0,
+          "worsened": 0
+        }
+      }
+    },
+    {
+      "id": "first-17-cursor",
+      "kind": "text",
+      "split": "heldout",
+      "variant": "1.7B cursor, context prompt",
+      "corpusSha256": "267dde15b2cec1385cc9c67eaab31e2912b62ae93177c340564c6768992923ca",
+      "resultsSha256": "271ba4ced10d259daee0518def59e816a81b8196b0517a97431c963725724154",
+      "cases": 30,
+      "sourcePass": 8,
+      "proposalPass": 8,
+      "deliveredPass": 8,
+      "accepted": 30,
+      "rejected": {},
+      "acceptedFailing": 22,
+      "rejectedPassing": 0,
+      "worsened": 0,
+      "referenceEditRatioMean": 0.1770819473238828,
+      "sourceEditRatioMean": 0.1659708362127717,
+      "finalMs": {
+        "count": 30,
+        "p50": 542.5455,
+        "p95": 895.2583,
+        "p99": 912.44126
+      },
+      "liveEdits": 16,
+      "liveAccepted": 16,
+      "liveMs": {
+        "count": 16,
+        "p50": 360.422,
+        "p95": 5896.26,
+        "p99": 7778.128799999999
+      },
+      "sceneAgreement": 30,
+      "byScene": {
+        "chat": {
+          "cases": 13,
+          "sourcePass": 7,
+          "deliveredPass": 7,
+          "worsened": 0,
+          "sceneAgreement": 13
+        },
+        "email": {
+          "cases": 5,
+          "sourcePass": 0,
+          "deliveredPass": 0,
+          "worsened": 0,
+          "sceneAgreement": 5
+        },
+        "prompt": {
+          "cases": 5,
+          "sourcePass": 1,
+          "deliveredPass": 1,
+          "worsened": 0,
+          "sceneAgreement": 5
+        },
+        "work": {
+          "cases": 7,
+          "sourcePass": 0,
+          "deliveredPass": 0,
+          "worsened": 0,
+          "sceneAgreement": 7
+        }
+      },
+      "byKind": {
+        "cursor": {
+          "cases": 6,
+          "sourcePass": 0,
+          "deliveredPass": 0,
+          "worsened": 0
+        },
+        "history": {
+          "cases": 6,
+          "sourcePass": 1,
+          "deliveredPass": 1,
+          "worsened": 0
+        },
+        "negative": {
+          "cases": 7,
+          "sourcePass": 7,
+          "deliveredPass": 7,
+          "worsened": 0
+        },
+        "screen": {
+          "cases": 11,
+          "sourcePass": 0,
+          "deliveredPass": 0,
+          "worsened": 0
+        }
+      }
+    },
+    {
+      "id": "first-17-history",
+      "kind": "text",
+      "split": "heldout",
+      "variant": "1.7B history, context prompt",
+      "corpusSha256": "267dde15b2cec1385cc9c67eaab31e2912b62ae93177c340564c6768992923ca",
+      "resultsSha256": "36c5f1f8253cb135d7c9f94b2ca9df0115c5bc3b71578c4cf27820854a812c88",
+      "cases": 30,
+      "sourcePass": 8,
+      "proposalPass": 9,
+      "deliveredPass": 9,
+      "accepted": 29,
+      "rejected": {
+        "negation_dropped": 1
+      },
+      "acceptedFailing": 20,
+      "rejectedPassing": 0,
+      "worsened": 0,
+      "referenceEditRatioMean": 0.17041528065721614,
+      "sourceEditRatioMean": 0.1659708362127717,
+      "finalMs": {
+        "count": 30,
+        "p50": 783.5635,
+        "p95": 5150.7863999999845,
+        "p99": 22358.628530000016
+      },
+      "liveEdits": 16,
+      "liveAccepted": 15,
+      "liveMs": {
+        "count": 16,
+        "p50": 623.6179999999999,
+        "p95": 12819.70825,
+        "p99": 16728.840849999997
+      },
+      "sceneAgreement": 30,
+      "byScene": {
+        "chat": {
+          "cases": 13,
+          "sourcePass": 7,
+          "deliveredPass": 7,
+          "worsened": 0,
+          "sceneAgreement": 13
+        },
+        "email": {
+          "cases": 5,
+          "sourcePass": 0,
+          "deliveredPass": 0,
+          "worsened": 0,
+          "sceneAgreement": 5
+        },
+        "prompt": {
+          "cases": 5,
+          "sourcePass": 1,
+          "deliveredPass": 2,
+          "worsened": 0,
+          "sceneAgreement": 5
+        },
+        "work": {
+          "cases": 7,
+          "sourcePass": 0,
+          "deliveredPass": 0,
+          "worsened": 0,
+          "sceneAgreement": 7
+        }
+      },
+      "byKind": {
+        "cursor": {
+          "cases": 6,
+          "sourcePass": 0,
+          "deliveredPass": 0,
+          "worsened": 0
+        },
+        "history": {
+          "cases": 6,
+          "sourcePass": 1,
+          "deliveredPass": 2,
+          "worsened": 0
+        },
+        "negative": {
+          "cases": 7,
+          "sourcePass": 7,
+          "deliveredPass": 7,
+          "worsened": 0
+        },
+        "screen": {
+          "cases": 11,
+          "sourcePass": 0,
+          "deliveredPass": 0,
+          "worsened": 0
+        }
+      }
+    },
+    {
+      "id": "first-17-screen-oracle",
+      "kind": "text",
+      "split": "heldout",
+      "variant": "1.7B screen oracle text, context prompt",
+      "corpusSha256": "267dde15b2cec1385cc9c67eaab31e2912b62ae93177c340564c6768992923ca",
+      "resultsSha256": "54b0f7c4f1d5cce5cc553f49b4394870fa7db46ef50708b9a63cf85dc2d1ff0b",
+      "cases": 30,
+      "sourcePass": 8,
+      "proposalPass": 8,
+      "deliveredPass": 9,
+      "accepted": 29,
+      "rejected": {
+        "content_dropped": 1
+      },
+      "acceptedFailing": 21,
+      "rejectedPassing": 0,
+      "worsened": 0,
+      "referenceEditRatioMean": 0.1648955673955674,
+      "sourceEditRatioMean": 0.1659708362127717,
+      "finalMs": {
+        "count": 30,
+        "p50": 1058.9585,
+        "p95": 2507.4751999999994,
+        "p99": 3403.009170000001
+      },
+      "liveEdits": 16,
+      "liveAccepted": 15,
+      "liveMs": {
+        "count": 16,
+        "p50": 923.2445,
+        "p95": 4027.6652500000005,
+        "p99": 8739.672249999998
+      },
+      "sceneAgreement": 30,
+      "byScene": {
+        "chat": {
+          "cases": 13,
+          "sourcePass": 7,
+          "deliveredPass": 7,
+          "worsened": 0,
+          "sceneAgreement": 13
+        },
+        "email": {
+          "cases": 5,
+          "sourcePass": 0,
+          "deliveredPass": 0,
+          "worsened": 0,
+          "sceneAgreement": 5
+        },
+        "prompt": {
+          "cases": 5,
+          "sourcePass": 1,
+          "deliveredPass": 1,
+          "worsened": 0,
+          "sceneAgreement": 5
+        },
+        "work": {
+          "cases": 7,
+          "sourcePass": 0,
+          "deliveredPass": 1,
+          "worsened": 0,
+          "sceneAgreement": 7
+        }
+      },
+      "byKind": {
+        "cursor": {
+          "cases": 6,
+          "sourcePass": 0,
+          "deliveredPass": 0,
+          "worsened": 0
+        },
+        "history": {
+          "cases": 6,
+          "sourcePass": 1,
+          "deliveredPass": 1,
+          "worsened": 0
+        },
+        "negative": {
+          "cases": 7,
+          "sourcePass": 7,
+          "deliveredPass": 7,
+          "worsened": 0
+        },
+        "screen": {
+          "cases": 11,
+          "sourcePass": 0,
+          "deliveredPass": 1,
+          "worsened": 0
+        }
+      }
+    },
+    {
+      "id": "first-17-screen-accurate",
+      "kind": "text",
+      "split": "heldout",
+      "variant": "1.7B screen Vision accurate, context prompt",
+      "corpusSha256": "267dde15b2cec1385cc9c67eaab31e2912b62ae93177c340564c6768992923ca",
+      "resultsSha256": "e9557061d035cb622ab33d2e8ebd55cbdecfe478e9eb30a48b447e55d641bdf9",
+      "cases": 30,
+      "sourcePass": 8,
+      "proposalPass": 8,
+      "deliveredPass": 9,
+      "accepted": 29,
+      "rejected": {
+        "content_dropped": 1
+      },
+      "acceptedFailing": 21,
+      "rejectedPassing": 0,
+      "worsened": 0,
+      "referenceEditRatioMean": 0.1648955673955674,
+      "sourceEditRatioMean": 0.1659708362127717,
+      "finalMs": {
+        "count": 30,
+        "p50": 885.5105000000001,
+        "p95": 1292.0771499999998,
+        "p99": 1718.9490000000005
+      },
+      "liveEdits": 16,
+      "liveAccepted": 14,
+      "liveMs": {
+        "count": 16,
+        "p50": 698.0345,
+        "p95": 5692.692000000001,
+        "p99": 11792.884799999998
+      },
+      "sceneAgreement": 30,
+      "byScene": {
+        "chat": {
+          "cases": 13,
+          "sourcePass": 7,
+          "deliveredPass": 7,
+          "worsened": 0,
+          "sceneAgreement": 13
+        },
+        "email": {
+          "cases": 5,
+          "sourcePass": 0,
+          "deliveredPass": 0,
+          "worsened": 0,
+          "sceneAgreement": 5
+        },
+        "prompt": {
+          "cases": 5,
+          "sourcePass": 1,
+          "deliveredPass": 1,
+          "worsened": 0,
+          "sceneAgreement": 5
+        },
+        "work": {
+          "cases": 7,
+          "sourcePass": 0,
+          "deliveredPass": 1,
+          "worsened": 0,
+          "sceneAgreement": 7
+        }
+      },
+      "byKind": {
+        "cursor": {
+          "cases": 6,
+          "sourcePass": 0,
+          "deliveredPass": 0,
+          "worsened": 0
+        },
+        "history": {
+          "cases": 6,
+          "sourcePass": 1,
+          "deliveredPass": 1,
+          "worsened": 0
+        },
+        "negative": {
+          "cases": 7,
+          "sourcePass": 7,
+          "deliveredPass": 7,
+          "worsened": 0
+        },
+        "screen": {
+          "cases": 11,
+          "sourcePass": 0,
+          "deliveredPass": 1,
+          "worsened": 0
+        }
+      }
+    },
+    {
+      "id": "first-17-screen-fast",
+      "kind": "text",
+      "split": "heldout",
+      "variant": "1.7B screen Vision fast, context prompt",
+      "corpusSha256": "267dde15b2cec1385cc9c67eaab31e2912b62ae93177c340564c6768992923ca",
+      "resultsSha256": "06a3f24bef82757af4e7f624eaa421880036fe07c3de9102359bae2f4939d4bc",
+      "cases": 30,
+      "sourcePass": 8,
+      "proposalPass": 8,
+      "deliveredPass": 8,
+      "accepted": 30,
+      "rejected": {},
+      "acceptedFailing": 22,
+      "rejectedPassing": 0,
+      "worsened": 0,
+      "referenceEditRatioMean": 0.16967453991647544,
+      "sourceEditRatioMean": 0.1659708362127717,
+      "finalMs": {
+        "count": 30,
+        "p50": 1229.416,
+        "p95": 9635.222299999965,
+        "p99": 15786.54855
+      },
+      "liveEdits": 16,
+      "liveAccepted": 15,
+      "liveMs": {
+        "count": 16,
+        "p50": 1203.9205000000002,
+        "p95": 10577.1825,
+        "p99": 13445.142899999999
+      },
+      "sceneAgreement": 30,
+      "byScene": {
+        "chat": {
+          "cases": 13,
+          "sourcePass": 7,
+          "deliveredPass": 7,
+          "worsened": 0,
+          "sceneAgreement": 13
+        },
+        "email": {
+          "cases": 5,
+          "sourcePass": 0,
+          "deliveredPass": 0,
+          "worsened": 0,
+          "sceneAgreement": 5
+        },
+        "prompt": {
+          "cases": 5,
+          "sourcePass": 1,
+          "deliveredPass": 1,
+          "worsened": 0,
+          "sceneAgreement": 5
+        },
+        "work": {
+          "cases": 7,
+          "sourcePass": 0,
+          "deliveredPass": 0,
+          "worsened": 0,
+          "sceneAgreement": 7
+        }
+      },
+      "byKind": {
+        "cursor": {
+          "cases": 6,
+          "sourcePass": 0,
+          "deliveredPass": 0,
+          "worsened": 0
+        },
+        "history": {
+          "cases": 6,
+          "sourcePass": 1,
+          "deliveredPass": 1,
+          "worsened": 0
+        },
+        "negative": {
+          "cases": 7,
+          "sourcePass": 7,
+          "deliveredPass": 7,
+          "worsened": 0
+        },
+        "screen": {
+          "cases": 11,
+          "sourcePass": 0,
+          "deliveredPass": 0,
+          "worsened": 0
+        }
+      }
+    },
+    {
+      "id": "first-17-all-accurate",
+      "kind": "text",
+      "split": "heldout",
+      "variant": "1.7B all sources accurate OCR, context prompt",
+      "corpusSha256": "267dde15b2cec1385cc9c67eaab31e2912b62ae93177c340564c6768992923ca",
+      "resultsSha256": "830e39f63e6032b43302ee60eeb9edd7ecd39163b26acece04f0921718ae11dc",
+      "cases": 30,
+      "sourcePass": 8,
+      "proposalPass": 8,
+      "deliveredPass": 9,
+      "accepted": 29,
+      "rejected": {
+        "content_dropped": 1
+      },
+      "acceptedFailing": 21,
+      "rejectedPassing": 0,
+      "worsened": 0,
+      "referenceEditRatioMean": 0.15930416954610502,
+      "sourceEditRatioMean": 0.1659708362127717,
+      "finalMs": {
+        "count": 30,
+        "p50": 827.135,
+        "p95": 1179.8169999999998,
+        "p99": 1373.1376700000003
+      },
+      "liveEdits": 16,
+      "liveAccepted": 14,
+      "liveMs": {
+        "count": 16,
+        "p50": 770.9035,
+        "p95": 5283.28975,
+        "p99": 10964.950749999996
+      },
+      "sceneAgreement": 30,
+      "byScene": {
+        "chat": {
+          "cases": 13,
+          "sourcePass": 7,
+          "deliveredPass": 7,
+          "worsened": 0,
+          "sceneAgreement": 13
+        },
+        "email": {
+          "cases": 5,
+          "sourcePass": 0,
+          "deliveredPass": 0,
+          "worsened": 0,
+          "sceneAgreement": 5
+        },
+        "prompt": {
+          "cases": 5,
+          "sourcePass": 1,
+          "deliveredPass": 2,
+          "worsened": 0,
+          "sceneAgreement": 5
+        },
+        "work": {
+          "cases": 7,
+          "sourcePass": 0,
+          "deliveredPass": 0,
+          "worsened": 0,
+          "sceneAgreement": 7
+        }
+      },
+      "byKind": {
+        "cursor": {
+          "cases": 6,
+          "sourcePass": 0,
+          "deliveredPass": 0,
+          "worsened": 0
+        },
+        "history": {
+          "cases": 6,
+          "sourcePass": 1,
+          "deliveredPass": 2,
+          "worsened": 0
+        },
+        "negative": {
+          "cases": 7,
+          "sourcePass": 7,
+          "deliveredPass": 7,
+          "worsened": 0
+        },
+        "screen": {
+          "cases": 11,
+          "sourcePass": 0,
+          "deliveredPass": 0,
+          "worsened": 0
+        }
+      }
+    },
+    {
+      "id": "first-17-all-oracle",
+      "kind": "text",
+      "split": "heldout",
+      "variant": "1.7B all sources oracle screen, context prompt",
+      "corpusSha256": "267dde15b2cec1385cc9c67eaab31e2912b62ae93177c340564c6768992923ca",
+      "resultsSha256": "5066a24b89ac753817f1c896f78b2db70cbc94d43c1567e092f743ba8d38679f",
+      "cases": 30,
+      "sourcePass": 8,
+      "proposalPass": 8,
+      "deliveredPass": 9,
+      "accepted": 29,
+      "rejected": {
+        "content_dropped": 1
+      },
+      "acceptedFailing": 21,
+      "rejectedPassing": 0,
+      "worsened": 0,
+      "referenceEditRatioMean": 0.15930416954610502,
+      "sourceEditRatioMean": 0.1659708362127717,
+      "finalMs": {
+        "count": 30,
+        "p50": 964.809,
+        "p95": 1852.0929999999998,
+        "p99": 1945.4154400000002
+      },
+      "liveEdits": 16,
+      "liveAccepted": 15,
+      "liveMs": {
+        "count": 16,
+        "p50": 809.894,
+        "p95": 4051.702,
+        "p99": 9202.879599999997
+      },
+      "sceneAgreement": 30,
+      "byScene": {
+        "chat": {
+          "cases": 13,
+          "sourcePass": 7,
+          "deliveredPass": 7,
+          "worsened": 0,
+          "sceneAgreement": 13
+        },
+        "email": {
+          "cases": 5,
+          "sourcePass": 0,
+          "deliveredPass": 0,
+          "worsened": 0,
+          "sceneAgreement": 5
+        },
+        "prompt": {
+          "cases": 5,
+          "sourcePass": 1,
+          "deliveredPass": 2,
+          "worsened": 0,
+          "sceneAgreement": 5
+        },
+        "work": {
+          "cases": 7,
+          "sourcePass": 0,
+          "deliveredPass": 0,
+          "worsened": 0,
+          "sceneAgreement": 7
+        }
+      },
+      "byKind": {
+        "cursor": {
+          "cases": 6,
+          "sourcePass": 0,
+          "deliveredPass": 0,
+          "worsened": 0
+        },
+        "history": {
+          "cases": 6,
+          "sourcePass": 1,
+          "deliveredPass": 2,
+          "worsened": 0
+        },
+        "negative": {
+          "cases": 7,
+          "sourcePass": 7,
+          "deliveredPass": 7,
+          "worsened": 0
+        },
+        "screen": {
+          "cases": 11,
+          "sourcePass": 0,
+          "deliveredPass": 0,
+          "worsened": 0
+        }
+      }
+    },
+    {
+      "id": "first-4b-none",
+      "kind": "text",
+      "split": "heldout",
+      "variant": "4B no context",
+      "corpusSha256": "267dde15b2cec1385cc9c67eaab31e2912b62ae93177c340564c6768992923ca",
+      "resultsSha256": "d4acebb95c97ebfba923ec8f1633c2e331c882dece2ed90118dc7a37a0f6154f",
+      "cases": 30,
+      "sourcePass": 8,
+      "proposalPass": 9,
+      "deliveredPass": 9,
+      "accepted": 30,
+      "rejected": {},
+      "acceptedFailing": 21,
+      "rejectedPassing": 0,
+      "worsened": 0,
+      "referenceEditRatioMean": 0.1659708362127717,
+      "sourceEditRatioMean": 0.1659708362127717,
+      "finalMs": {
+        "count": 30,
+        "p50": 1654.42,
+        "p95": 3154.327499999999,
+        "p99": 4563.427690000002
+      },
+      "liveEdits": 16,
+      "liveAccepted": 16,
+      "liveMs": {
+        "count": 16,
+        "p50": 1143.3600000000001,
+        "p95": 2674.317,
+        "p99": 3042.3113999999996
+      },
+      "sceneAgreement": 30,
+      "byScene": {
+        "chat": {
+          "cases": 13,
+          "sourcePass": 7,
+          "deliveredPass": 7,
+          "worsened": 0,
+          "sceneAgreement": 13
+        },
+        "email": {
+          "cases": 5,
+          "sourcePass": 0,
+          "deliveredPass": 0,
+          "worsened": 0,
+          "sceneAgreement": 5
+        },
+        "prompt": {
+          "cases": 5,
+          "sourcePass": 1,
+          "deliveredPass": 2,
+          "worsened": 0,
+          "sceneAgreement": 5
+        },
+        "work": {
+          "cases": 7,
+          "sourcePass": 0,
+          "deliveredPass": 0,
+          "worsened": 0,
+          "sceneAgreement": 7
+        }
+      },
+      "byKind": {
+        "cursor": {
+          "cases": 6,
+          "sourcePass": 0,
+          "deliveredPass": 1,
+          "worsened": 0
+        },
+        "history": {
+          "cases": 6,
+          "sourcePass": 1,
+          "deliveredPass": 1,
+          "worsened": 0
+        },
+        "negative": {
+          "cases": 7,
+          "sourcePass": 7,
+          "deliveredPass": 7,
+          "worsened": 0
+        },
+        "screen": {
+          "cases": 11,
+          "sourcePass": 0,
+          "deliveredPass": 0,
+          "worsened": 0
+        }
+      }
+    },
+    {
+      "id": "first-4b-all-accurate",
+      "kind": "text",
+      "split": "heldout",
+      "variant": "4B all sources accurate OCR, context prompt, uncapped validator",
+      "corpusSha256": "267dde15b2cec1385cc9c67eaab31e2912b62ae93177c340564c6768992923ca",
+      "resultsSha256": "b24fe90c0c2a61e490511aac5a73f128ffed4376e7cd3abfab4052706b2c6f95",
+      "cases": 30,
+      "sourcePass": 8,
+      "proposalPass": 14,
+      "deliveredPass": 15,
+      "accepted": 28,
+      "rejected": {
+        "length": 1,
+        "content_dropped": 1
+      },
+      "acceptedFailing": 14,
+      "rejectedPassing": 0,
+      "worsened": 1,
+      "referenceEditRatioMean": 0.16239436489436487,
+      "sourceEditRatioMean": 0.1659708362127717,
+      "finalMs": {
+        "count": 30,
+        "p50": 2387.69,
+        "p95": 5724.535199999997,
+        "p99": 7592.922610000001
+      },
+      "liveEdits": 16,
+      "liveAccepted": 15,
+      "liveMs": {
+        "count": 16,
+        "p50": 2641.0005,
+        "p95": 16190.96875,
+        "p99": 37475.45214999998
+      },
+      "sceneAgreement": 30,
+      "byScene": {
+        "chat": {
+          "cases": 13,
+          "sourcePass": 7,
+          "deliveredPass": 7,
+          "worsened": 1,
+          "sceneAgreement": 13
+        },
+        "email": {
+          "cases": 5,
+          "sourcePass": 0,
+          "deliveredPass": 2,
+          "worsened": 0,
+          "sceneAgreement": 5
+        },
+        "prompt": {
+          "cases": 5,
+          "sourcePass": 1,
+          "deliveredPass": 4,
+          "worsened": 0,
+          "sceneAgreement": 5
+        },
+        "work": {
+          "cases": 7,
+          "sourcePass": 0,
+          "deliveredPass": 2,
+          "worsened": 0,
+          "sceneAgreement": 7
+        }
+      },
+      "byKind": {
+        "cursor": {
+          "cases": 6,
+          "sourcePass": 0,
+          "deliveredPass": 1,
+          "worsened": 0
+        },
+        "history": {
+          "cases": 6,
+          "sourcePass": 1,
+          "deliveredPass": 3,
+          "worsened": 0
+        },
+        "negative": {
+          "cases": 7,
+          "sourcePass": 7,
+          "deliveredPass": 6,
+          "worsened": 1
+        },
+        "screen": {
+          "cases": 11,
+          "sourcePass": 0,
+          "deliveredPass": 5,
+          "worsened": 0
+        }
+      }
+    },
+    {
+      "id": "dev-17-none",
+      "kind": "text",
+      "split": "dev",
+      "variant": "1.7B no context",
+      "corpusSha256": "28be286b2b1562f33a7d38b58f005b906f84f03dedd24eb4311f14ecfb381819",
+      "resultsSha256": "f1bda608ffb30a9f5e42ecf34cd2792177fe1cd322eefb796d776a0fa2cb054e",
+      "cases": 16,
+      "sourcePass": 4,
+      "proposalPass": 4,
+      "deliveredPass": 4,
+      "accepted": 16,
+      "rejected": {},
+      "acceptedFailing": 12,
+      "rejectedPassing": 0,
+      "worsened": 0,
+      "referenceEditRatioMean": 0.20516390268228507,
+      "sourceEditRatioMean": 0.20516390268228507,
+      "finalMs": {
+        "count": 16,
+        "p50": 499.453,
+        "p95": 659.7327499999999,
+        "p99": 778.1625499999999
+      },
+      "liveEdits": 7,
+      "liveAccepted": 7,
+      "liveMs": {
+        "count": 7,
+        "p50": 328.664,
+        "p95": 571.4037999999999,
+        "p99": 601.57516
+      },
+      "sceneAgreement": 16,
+      "byScene": {
+        "chat": {
+          "cases": 6,
+          "sourcePass": 3,
+          "deliveredPass": 3,
+          "worsened": 0,
+          "sceneAgreement": 6
+        },
+        "email": {
+          "cases": 3,
+          "sourcePass": 1,
+          "deliveredPass": 1,
+          "worsened": 0,
+          "sceneAgreement": 3
+        },
+        "prompt": {
+          "cases": 3,
+          "sourcePass": 0,
+          "deliveredPass": 0,
+          "worsened": 0,
+          "sceneAgreement": 3
+        },
+        "work": {
+          "cases": 4,
+          "sourcePass": 0,
+          "deliveredPass": 0,
+          "worsened": 0,
+          "sceneAgreement": 4
+        }
+      },
+      "byKind": {
+        "cursor": {
+          "cases": 3,
+          "sourcePass": 0,
+          "deliveredPass": 0,
+          "worsened": 0
+        },
+        "history": {
+          "cases": 3,
+          "sourcePass": 0,
+          "deliveredPass": 0,
+          "worsened": 0
+        },
+        "negative": {
+          "cases": 3,
+          "sourcePass": 3,
+          "deliveredPass": 3,
+          "worsened": 0
+        },
+        "screen": {
+          "cases": 7,
+          "sourcePass": 1,
+          "deliveredPass": 1,
+          "worsened": 0
+        }
+      }
+    },
+    {
+      "id": "dev-17-all-prompt",
+      "kind": "text",
+      "split": "dev",
+      "variant": "1.7B all accurate, prompt",
+      "corpusSha256": "28be286b2b1562f33a7d38b58f005b906f84f03dedd24eb4311f14ecfb381819",
+      "resultsSha256": "607893509c4d314af295d0c7ee665ba5714c9467e1f1aedeb93b5533abd970dc",
+      "cases": 16,
+      "sourcePass": 4,
+      "proposalPass": 4,
+      "deliveredPass": 4,
+      "accepted": 16,
+      "rejected": {},
+      "acceptedFailing": 12,
+      "rejectedPassing": 0,
+      "worsened": 0,
+      "referenceEditRatioMean": 0.2121083471267295,
+      "sourceEditRatioMean": 0.20516390268228507,
+      "finalMs": {
+        "count": 16,
+        "p50": 680.3215,
+        "p95": 1077.0845,
+        "p99": 1118.6777
+      },
+      "liveEdits": 7,
+      "liveAccepted": 6,
+      "liveMs": {
+        "count": 7,
+        "p50": 684.394,
+        "p95": 6586.604999999995,
+        "p99": 8549.831399999995
+      },
+      "sceneAgreement": 16,
+      "byScene": {
+        "chat": {
+          "cases": 6,
+          "sourcePass": 3,
+          "deliveredPass": 3,
+          "worsened": 0,
+          "sceneAgreement": 6
+        },
+        "email": {
+          "cases": 3,
+          "sourcePass": 1,
+          "deliveredPass": 1,
+          "worsened": 0,
+          "sceneAgreement": 3
+        },
+        "prompt": {
+          "cases": 3,
+          "sourcePass": 0,
+          "deliveredPass": 0,
+          "worsened": 0,
+          "sceneAgreement": 3
+        },
+        "work": {
+          "cases": 4,
+          "sourcePass": 0,
+          "deliveredPass": 0,
+          "worsened": 0,
+          "sceneAgreement": 4
+        }
+      },
+      "byKind": {
+        "cursor": {
+          "cases": 3,
+          "sourcePass": 0,
+          "deliveredPass": 0,
+          "worsened": 0
+        },
+        "history": {
+          "cases": 3,
+          "sourcePass": 0,
+          "deliveredPass": 0,
+          "worsened": 0
+        },
+        "negative": {
+          "cases": 3,
+          "sourcePass": 3,
+          "deliveredPass": 3,
+          "worsened": 0
+        },
+        "screen": {
+          "cases": 7,
+          "sourcePass": 1,
+          "deliveredPass": 1,
+          "worsened": 0
+        }
+      }
+    },
+    {
+      "id": "dev-17-all-terms",
+      "kind": "text",
+      "split": "dev",
+      "variant": "1.7B all accurate, terms",
+      "corpusSha256": "28be286b2b1562f33a7d38b58f005b906f84f03dedd24eb4311f14ecfb381819",
+      "resultsSha256": "02d86eb4d5aba0de8fc02af344ee0a785dd2ac5ead546113e89e1111877d3736",
+      "cases": 16,
+      "sourcePass": 4,
+      "proposalPass": 4,
+      "deliveredPass": 4,
+      "accepted": 16,
+      "rejected": {},
+      "acceptedFailing": 12,
+      "rejectedPassing": 0,
+      "worsened": 1,
+      "referenceEditRatioMean": 0.20169168046006283,
+      "sourceEditRatioMean": 0.20516390268228507,
+      "finalMs": {
+        "count": 16,
+        "p50": 522.6445,
+        "p95": 774.0797500000001,
+        "p99": 943.94875
+      },
+      "liveEdits": 7,
+      "liveAccepted": 6,
+      "liveMs": {
+        "count": 7,
+        "p50": 532.765,
+        "p95": 964.3524999999995,
+        "p99": 1091.9112999999998
+      },
+      "sceneAgreement": 16,
+      "byScene": {
+        "chat": {
+          "cases": 6,
+          "sourcePass": 3,
+          "deliveredPass": 2,
+          "worsened": 1,
+          "sceneAgreement": 6
+        },
+        "email": {
+          "cases": 3,
+          "sourcePass": 1,
+          "deliveredPass": 2,
+          "worsened": 0,
+          "sceneAgreement": 3
+        },
+        "prompt": {
+          "cases": 3,
+          "sourcePass": 0,
+          "deliveredPass": 0,
+          "worsened": 0,
+          "sceneAgreement": 3
+        },
+        "work": {
+          "cases": 4,
+          "sourcePass": 0,
+          "deliveredPass": 0,
+          "worsened": 0,
+          "sceneAgreement": 4
+        }
+      },
+      "byKind": {
+        "cursor": {
+          "cases": 3,
+          "sourcePass": 0,
+          "deliveredPass": 1,
+          "worsened": 0
+        },
+        "history": {
+          "cases": 3,
+          "sourcePass": 0,
+          "deliveredPass": 0,
+          "worsened": 0
+        },
+        "negative": {
+          "cases": 3,
+          "sourcePass": 3,
+          "deliveredPass": 2,
+          "worsened": 1
+        },
+        "screen": {
+          "cases": 7,
+          "sourcePass": 1,
+          "deliveredPass": 1,
+          "worsened": 0
+        }
+      }
+    },
+    {
+      "id": "dev-17-all-both",
+      "kind": "text",
+      "split": "dev",
+      "variant": "1.7B all accurate, prompt+terms",
+      "corpusSha256": "28be286b2b1562f33a7d38b58f005b906f84f03dedd24eb4311f14ecfb381819",
+      "resultsSha256": "db89df090f7d1600a9a4ce1ba550108d4b120e0ad73f2dca5d06ceb55f97e662",
+      "cases": 16,
+      "sourcePass": 4,
+      "proposalPass": 4,
+      "deliveredPass": 4,
+      "accepted": 16,
+      "rejected": {},
+      "acceptedFailing": 12,
+      "rejectedPassing": 0,
+      "worsened": 0,
+      "referenceEditRatioMean": 0.2121083471267295,
+      "sourceEditRatioMean": 0.20516390268228507,
+      "finalMs": {
+        "count": 16,
+        "p50": 764.8505,
+        "p95": 1364.46175,
+        "p99": 1370.91235
+      },
+      "liveEdits": 7,
+      "liveAccepted": 6,
+      "liveMs": {
+        "count": 7,
+        "p50": 899.84,
+        "p95": 7717.584299999994,
+        "p99": 9819.588059999996
+      },
+      "sceneAgreement": 16,
+      "byScene": {
+        "chat": {
+          "cases": 6,
+          "sourcePass": 3,
+          "deliveredPass": 3,
+          "worsened": 0,
+          "sceneAgreement": 6
+        },
+        "email": {
+          "cases": 3,
+          "sourcePass": 1,
+          "deliveredPass": 1,
+          "worsened": 0,
+          "sceneAgreement": 3
+        },
+        "prompt": {
+          "cases": 3,
+          "sourcePass": 0,
+          "deliveredPass": 0,
+          "worsened": 0,
+          "sceneAgreement": 3
+        },
+        "work": {
+          "cases": 4,
+          "sourcePass": 0,
+          "deliveredPass": 0,
+          "worsened": 0,
+          "sceneAgreement": 4
+        }
+      },
+      "byKind": {
+        "cursor": {
+          "cases": 3,
+          "sourcePass": 0,
+          "deliveredPass": 0,
+          "worsened": 0
+        },
+        "history": {
+          "cases": 3,
+          "sourcePass": 0,
+          "deliveredPass": 0,
+          "worsened": 0
+        },
+        "negative": {
+          "cases": 3,
+          "sourcePass": 3,
+          "deliveredPass": 3,
+          "worsened": 0
+        },
+        "screen": {
+          "cases": 7,
+          "sourcePass": 1,
+          "deliveredPass": 1,
+          "worsened": 0
+        }
+      }
+    },
+    {
+      "id": "dev-4b-all-prompt",
+      "kind": "text",
+      "split": "dev",
+      "variant": "4B all accurate, prompt",
+      "corpusSha256": "28be286b2b1562f33a7d38b58f005b906f84f03dedd24eb4311f14ecfb381819",
+      "resultsSha256": "4525a66a37d065056556a78a254636f62cb2aa4ff58cf98e77c02600ff2565fc",
+      "cases": 16,
+      "sourcePass": 4,
+      "proposalPass": 7,
+      "deliveredPass": 8,
+      "accepted": 15,
+      "rejected": {
+        "content_dropped": 1
+      },
+      "acceptedFailing": 8,
+      "rejectedPassing": 0,
+      "worsened": 0,
+      "referenceEditRatioMean": 0.14144862490450724,
+      "sourceEditRatioMean": 0.20516390268228507,
+      "finalMs": {
+        "count": 16,
+        "p50": 1531.6435000000001,
+        "p95": 2460.27475,
+        "p99": 2912.4989499999997
+      },
+      "liveEdits": 7,
+      "liveAccepted": 6,
+      "liveMs": {
+        "count": 7,
+        "p50": 1737.002,
+        "p95": 17747.591199999984,
+        "p99": 22864.52223999999
+      },
+      "sceneAgreement": 16,
+      "byScene": {
+        "chat": {
+          "cases": 6,
+          "sourcePass": 3,
+          "deliveredPass": 3,
+          "worsened": 0,
+          "sceneAgreement": 6
+        },
+        "email": {
+          "cases": 3,
+          "sourcePass": 1,
+          "deliveredPass": 2,
+          "worsened": 0,
+          "sceneAgreement": 3
+        },
+        "prompt": {
+          "cases": 3,
+          "sourcePass": 0,
+          "deliveredPass": 2,
+          "worsened": 0,
+          "sceneAgreement": 3
+        },
+        "work": {
+          "cases": 4,
+          "sourcePass": 0,
+          "deliveredPass": 1,
+          "worsened": 0,
+          "sceneAgreement": 4
+        }
+      },
+      "byKind": {
+        "cursor": {
+          "cases": 3,
+          "sourcePass": 0,
+          "deliveredPass": 0,
+          "worsened": 0
+        },
+        "history": {
+          "cases": 3,
+          "sourcePass": 0,
+          "deliveredPass": 2,
+          "worsened": 0
+        },
+        "negative": {
+          "cases": 3,
+          "sourcePass": 3,
+          "deliveredPass": 3,
+          "worsened": 0
+        },
+        "screen": {
+          "cases": 7,
+          "sourcePass": 1,
+          "deliveredPass": 3,
+          "worsened": 0
+        }
+      }
+    },
+    {
+      "id": "dev-4b-all-terms",
+      "kind": "text",
+      "split": "dev",
+      "variant": "4B all accurate, terms",
+      "corpusSha256": "28be286b2b1562f33a7d38b58f005b906f84f03dedd24eb4311f14ecfb381819",
+      "resultsSha256": "5e140b90e184583cef12838da8ea2e5c4b6835481cd5124485d4081177e65009",
+      "cases": 16,
+      "sourcePass": 4,
+      "proposalPass": 9,
+      "deliveredPass": 9,
+      "accepted": 16,
+      "rejected": {},
+      "acceptedFailing": 7,
+      "rejectedPassing": 0,
+      "worsened": 0,
+      "referenceEditRatioMean": 0.16835834712672948,
+      "sourceEditRatioMean": 0.20516390268228507,
+      "finalMs": {
+        "count": 16,
+        "p50": 1214.449,
+        "p95": 1795.8507499999998,
+        "p99": 2051.2893499999996
+      },
+      "liveEdits": 7,
+      "liveAccepted": 4,
+      "liveMs": {
+        "count": 7,
+        "p50": 1395.236,
+        "p95": 2779.967399999999,
+        "p99": 2998.0894799999996
+      },
+      "sceneAgreement": 16,
+      "byScene": {
+        "chat": {
+          "cases": 6,
+          "sourcePass": 3,
+          "deliveredPass": 3,
+          "worsened": 0,
+          "sceneAgreement": 6
+        },
+        "email": {
+          "cases": 3,
+          "sourcePass": 1,
+          "deliveredPass": 2,
+          "worsened": 0,
+          "sceneAgreement": 3
+        },
+        "prompt": {
+          "cases": 3,
+          "sourcePass": 0,
+          "deliveredPass": 2,
+          "worsened": 0,
+          "sceneAgreement": 3
+        },
+        "work": {
+          "cases": 4,
+          "sourcePass": 0,
+          "deliveredPass": 2,
+          "worsened": 0,
+          "sceneAgreement": 4
+        }
+      },
+      "byKind": {
+        "cursor": {
+          "cases": 3,
+          "sourcePass": 0,
+          "deliveredPass": 1,
+          "worsened": 0
+        },
+        "history": {
+          "cases": 3,
+          "sourcePass": 0,
+          "deliveredPass": 2,
+          "worsened": 0
+        },
+        "negative": {
+          "cases": 3,
+          "sourcePass": 3,
+          "deliveredPass": 3,
+          "worsened": 0
+        },
+        "screen": {
+          "cases": 7,
+          "sourcePass": 1,
+          "deliveredPass": 3,
+          "worsened": 0
+        }
+      }
+    },
+    {
+      "id": "final-4b-none",
+      "kind": "text",
+      "split": "heldout",
+      "variant": "4B no context",
+      "corpusSha256": "267dde15b2cec1385cc9c67eaab31e2912b62ae93177c340564c6768992923ca",
+      "resultsSha256": "44e311fc9bb171300315800e3e6ae33de0b265b7f5b656f53aa35b7658aee6aa",
+      "cases": 30,
+      "sourcePass": 8,
+      "proposalPass": 9,
+      "deliveredPass": 9,
+      "accepted": 30,
+      "rejected": {},
+      "acceptedFailing": 21,
+      "rejectedPassing": 0,
+      "worsened": 0,
+      "referenceEditRatioMean": 0.1659708362127717,
+      "sourceEditRatioMean": 0.1659708362127717,
+      "finalMs": {
+        "count": 30,
+        "p50": 1011.4114999999999,
+        "p95": 1959.0103,
+        "p99": 2696.881790000001
+      },
+      "liveEdits": 16,
+      "liveAccepted": 16,
+      "liveMs": {
+        "count": 16,
+        "p50": 648.4715,
+        "p95": 1445.75225,
+        "p99": 1483.67285
+      },
+      "sceneAgreement": 30,
+      "byScene": {
+        "chat": {
+          "cases": 13,
+          "sourcePass": 7,
+          "deliveredPass": 7,
+          "worsened": 0,
+          "sceneAgreement": 13
+        },
+        "email": {
+          "cases": 5,
+          "sourcePass": 0,
+          "deliveredPass": 0,
+          "worsened": 0,
+          "sceneAgreement": 5
+        },
+        "prompt": {
+          "cases": 5,
+          "sourcePass": 1,
+          "deliveredPass": 2,
+          "worsened": 0,
+          "sceneAgreement": 5
+        },
+        "work": {
+          "cases": 7,
+          "sourcePass": 0,
+          "deliveredPass": 0,
+          "worsened": 0,
+          "sceneAgreement": 7
+        }
+      },
+      "byKind": {
+        "cursor": {
+          "cases": 6,
+          "sourcePass": 0,
+          "deliveredPass": 1,
+          "worsened": 0
+        },
+        "history": {
+          "cases": 6,
+          "sourcePass": 1,
+          "deliveredPass": 1,
+          "worsened": 0
+        },
+        "negative": {
+          "cases": 7,
+          "sourcePass": 7,
+          "deliveredPass": 7,
+          "worsened": 0
+        },
+        "screen": {
+          "cases": 11,
+          "sourcePass": 0,
+          "deliveredPass": 0,
+          "worsened": 0
+        }
+      }
+    },
+    {
+      "id": "final-4b-terms-cursor",
+      "kind": "text",
+      "split": "heldout",
+      "variant": "4B cursor, terms, validated without context (stricter than the product)",
+      "corpusSha256": "267dde15b2cec1385cc9c67eaab31e2912b62ae93177c340564c6768992923ca",
+      "resultsSha256": "a7be4af73a980b34b5810eddef8ef9477c54b3a7d9a22c80a5741304b8bcdabb",
+      "cases": 30,
+      "sourcePass": 8,
+      "proposalPass": 9,
+      "deliveredPass": 9,
+      "accepted": 30,
+      "rejected": {},
+      "acceptedFailing": 21,
+      "rejectedPassing": 0,
+      "worsened": 0,
+      "referenceEditRatioMean": 0.1659708362127717,
+      "sourceEditRatioMean": 0.1659708362127717,
+      "finalMs": {
+        "count": 30,
+        "p50": 1262.8274999999999,
+        "p95": 2069.0816999999993,
+        "p99": 2853.400270000001
+      },
+      "liveEdits": 16,
+      "liveAccepted": 15,
+      "liveMs": {
+        "count": 16,
+        "p50": 991.0005,
+        "p95": 1849.0735,
+        "p99": 1950.1603
+      },
+      "sceneAgreement": 30,
+      "byScene": {
+        "chat": {
+          "cases": 13,
+          "sourcePass": 7,
+          "deliveredPass": 7,
+          "worsened": 0,
+          "sceneAgreement": 13
+        },
+        "email": {
+          "cases": 5,
+          "sourcePass": 0,
+          "deliveredPass": 0,
+          "worsened": 0,
+          "sceneAgreement": 5
+        },
+        "prompt": {
+          "cases": 5,
+          "sourcePass": 1,
+          "deliveredPass": 2,
+          "worsened": 0,
+          "sceneAgreement": 5
+        },
+        "work": {
+          "cases": 7,
+          "sourcePass": 0,
+          "deliveredPass": 0,
+          "worsened": 0,
+          "sceneAgreement": 7
+        }
+      },
+      "byKind": {
+        "cursor": {
+          "cases": 6,
+          "sourcePass": 0,
+          "deliveredPass": 1,
+          "worsened": 0
+        },
+        "history": {
+          "cases": 6,
+          "sourcePass": 1,
+          "deliveredPass": 1,
+          "worsened": 0
+        },
+        "negative": {
+          "cases": 7,
+          "sourcePass": 7,
+          "deliveredPass": 7,
+          "worsened": 0
+        },
+        "screen": {
+          "cases": 11,
+          "sourcePass": 0,
+          "deliveredPass": 0,
+          "worsened": 0
+        }
+      }
+    },
+    {
+      "id": "final-4b-terms-history",
+      "kind": "text",
+      "split": "heldout",
+      "variant": "4B history, terms, validated without context (stricter than the product)",
+      "corpusSha256": "267dde15b2cec1385cc9c67eaab31e2912b62ae93177c340564c6768992923ca",
+      "resultsSha256": "ed3657181c4ca69aa7b75c7489dc5e1a109b68d9fb1b1dc613190b930062eb28",
+      "cases": 30,
+      "sourcePass": 8,
+      "proposalPass": 10,
+      "deliveredPass": 10,
+      "accepted": 30,
+      "rejected": {},
+      "acceptedFailing": 20,
+      "rejectedPassing": 0,
+      "worsened": 0,
+      "referenceEditRatioMean": 0.15930416954610502,
+      "sourceEditRatioMean": 0.1659708362127717,
+      "finalMs": {
+        "count": 30,
+        "p50": 1498.024,
+        "p95": 2740.4972999999995,
+        "p99": 3536.8440100000007
+      },
+      "liveEdits": 16,
+      "liveAccepted": 15,
+      "liveMs": {
+        "count": 16,
+        "p50": 718.412,
+        "p95": 2500.6730000000002,
+        "p99": 3375.3073999999997
+      },
+      "sceneAgreement": 30,
+      "byScene": {
+        "chat": {
+          "cases": 13,
+          "sourcePass": 7,
+          "deliveredPass": 7,
+          "worsened": 0,
+          "sceneAgreement": 13
+        },
+        "email": {
+          "cases": 5,
+          "sourcePass": 0,
+          "deliveredPass": 0,
+          "worsened": 0,
+          "sceneAgreement": 5
+        },
+        "prompt": {
+          "cases": 5,
+          "sourcePass": 1,
+          "deliveredPass": 3,
+          "worsened": 0,
+          "sceneAgreement": 5
+        },
+        "work": {
+          "cases": 7,
+          "sourcePass": 0,
+          "deliveredPass": 0,
+          "worsened": 0,
+          "sceneAgreement": 7
+        }
+      },
+      "byKind": {
+        "cursor": {
+          "cases": 6,
+          "sourcePass": 0,
+          "deliveredPass": 1,
+          "worsened": 0
+        },
+        "history": {
+          "cases": 6,
+          "sourcePass": 1,
+          "deliveredPass": 2,
+          "worsened": 0
+        },
+        "negative": {
+          "cases": 7,
+          "sourcePass": 7,
+          "deliveredPass": 7,
+          "worsened": 0
+        },
+        "screen": {
+          "cases": 11,
+          "sourcePass": 0,
+          "deliveredPass": 0,
+          "worsened": 0
+        }
+      }
+    },
+    {
+      "id": "final-4b-terms-screen-oracle",
+      "kind": "text",
+      "split": "heldout",
+      "variant": "4B screen oracle text, terms, validated without context (stricter than the product)",
+      "corpusSha256": "267dde15b2cec1385cc9c67eaab31e2912b62ae93177c340564c6768992923ca",
+      "resultsSha256": "5e9af96e123d10a1b817764301cd94895946149fbabc0912eb3a3443d3bf3e74",
+      "cases": 30,
+      "sourcePass": 8,
+      "proposalPass": 16,
+      "deliveredPass": 15,
+      "accepted": 25,
+      "rejected": {
+        "content_dropped": 3,
+        "unsupported_content": 2
+      },
+      "acceptedFailing": 13,
+      "rejectedPassing": 4,
+      "worsened": 0,
+      "referenceEditRatioMean": 0.14636668886668888,
+      "sourceEditRatioMean": 0.1659708362127717,
+      "finalMs": {
+        "count": 30,
+        "p50": 1263.9125,
+        "p95": 2146.0108499999997,
+        "p99": 2489.71543
+      },
+      "liveEdits": 16,
+      "liveAccepted": 10,
+      "liveMs": {
+        "count": 16,
+        "p50": 1139.0665,
+        "p95": 2662.83875,
+        "p99": 2810.87015
+      },
+      "sceneAgreement": 30,
+      "byScene": {
+        "chat": {
+          "cases": 13,
+          "sourcePass": 7,
+          "deliveredPass": 8,
+          "worsened": 0,
+          "sceneAgreement": 13
+        },
+        "email": {
+          "cases": 5,
+          "sourcePass": 0,
+          "deliveredPass": 1,
+          "worsened": 0,
+          "sceneAgreement": 5
+        },
+        "prompt": {
+          "cases": 5,
+          "sourcePass": 1,
+          "deliveredPass": 4,
+          "worsened": 0,
+          "sceneAgreement": 5
+        },
+        "work": {
+          "cases": 7,
+          "sourcePass": 0,
+          "deliveredPass": 2,
+          "worsened": 0,
+          "sceneAgreement": 7
+        }
+      },
+      "byKind": {
+        "cursor": {
+          "cases": 6,
+          "sourcePass": 0,
+          "deliveredPass": 1,
+          "worsened": 0
+        },
+        "history": {
+          "cases": 6,
+          "sourcePass": 1,
+          "deliveredPass": 2,
+          "worsened": 0
+        },
+        "negative": {
+          "cases": 7,
+          "sourcePass": 7,
+          "deliveredPass": 7,
+          "worsened": 0
+        },
+        "screen": {
+          "cases": 11,
+          "sourcePass": 0,
+          "deliveredPass": 5,
+          "worsened": 0
+        }
+      }
+    },
+    {
+      "id": "final-4b-terms-screen-accurate",
+      "kind": "text",
+      "split": "heldout",
+      "variant": "4B screen Vision accurate, terms, validated without context (stricter than the product)",
+      "corpusSha256": "267dde15b2cec1385cc9c67eaab31e2912b62ae93177c340564c6768992923ca",
+      "resultsSha256": "293df79d8453a382f49671dc311513ebc7af018edcca0dad9a7e9bd019fe9ecb",
+      "cases": 30,
+      "sourcePass": 8,
+      "proposalPass": 15,
+      "deliveredPass": 14,
+      "accepted": 25,
+      "rejected": {
+        "content_dropped": 3,
+        "unsupported_content": 2
+      },
+      "acceptedFailing": 14,
+      "rejectedPassing": 4,
+      "worsened": 0,
+      "referenceEditRatioMean": 0.15303335553335554,
+      "sourceEditRatioMean": 0.1659708362127717,
+      "finalMs": {
+        "count": 30,
+        "p50": 1302.3115,
+        "p95": 2161.20965,
+        "p99": 2458.6321800000005
+      },
+      "liveEdits": 16,
+      "liveAccepted": 10,
+      "liveMs": {
+        "count": 16,
+        "p50": 1119.6765,
+        "p95": 2331.1707499999998,
+        "p99": 2473.18295
+      },
+      "sceneAgreement": 30,
+      "byScene": {
+        "chat": {
+          "cases": 13,
+          "sourcePass": 7,
+          "deliveredPass": 8,
+          "worsened": 0,
+          "sceneAgreement": 13
+        },
+        "email": {
+          "cases": 5,
+          "sourcePass": 0,
+          "deliveredPass": 1,
+          "worsened": 0,
+          "sceneAgreement": 5
+        },
+        "prompt": {
+          "cases": 5,
+          "sourcePass": 1,
+          "deliveredPass": 3,
+          "worsened": 0,
+          "sceneAgreement": 5
+        },
+        "work": {
+          "cases": 7,
+          "sourcePass": 0,
+          "deliveredPass": 2,
+          "worsened": 0,
+          "sceneAgreement": 7
+        }
+      },
+      "byKind": {
+        "cursor": {
+          "cases": 6,
+          "sourcePass": 0,
+          "deliveredPass": 1,
+          "worsened": 0
+        },
+        "history": {
+          "cases": 6,
+          "sourcePass": 1,
+          "deliveredPass": 1,
+          "worsened": 0
+        },
+        "negative": {
+          "cases": 7,
+          "sourcePass": 7,
+          "deliveredPass": 7,
+          "worsened": 0
+        },
+        "screen": {
+          "cases": 11,
+          "sourcePass": 0,
+          "deliveredPass": 5,
+          "worsened": 0
+        }
+      }
+    },
+    {
+      "id": "final-4b-terms-screen-fast",
+      "kind": "text",
+      "split": "heldout",
+      "variant": "4B screen Vision fast, terms, validated without context (stricter than the product)",
+      "corpusSha256": "267dde15b2cec1385cc9c67eaab31e2912b62ae93177c340564c6768992923ca",
+      "resultsSha256": "7d0ac0f08e3d5ffbdf800d2fce7198dae416fd308952816b15553f21fcd5f9b8",
+      "cases": 30,
+      "sourcePass": 8,
+      "proposalPass": 13,
+      "deliveredPass": 13,
+      "accepted": 26,
+      "rejected": {
+        "content_dropped": 2,
+        "unsupported_content": 2
+      },
+      "acceptedFailing": 15,
+      "rejectedPassing": 2,
+      "worsened": 0,
+      "referenceEditRatioMean": 0.1504722607141962,
+      "sourceEditRatioMean": 0.1659708362127717,
+      "finalMs": {
+        "count": 30,
+        "p50": 1286.6755,
+        "p95": 2161.5778499999997,
+        "p99": 2333.41111
+      },
+      "liveEdits": 16,
+      "liveAccepted": 14,
+      "liveMs": {
+        "count": 16,
+        "p50": 1110.165,
+        "p95": 2570.81875,
+        "p99": 3404.4365499999994
+      },
+      "sceneAgreement": 30,
+      "byScene": {
+        "chat": {
+          "cases": 13,
+          "sourcePass": 7,
+          "deliveredPass": 7,
+          "worsened": 0,
+          "sceneAgreement": 13
+        },
+        "email": {
+          "cases": 5,
+          "sourcePass": 0,
+          "deliveredPass": 1,
+          "worsened": 0,
+          "sceneAgreement": 5
+        },
+        "prompt": {
+          "cases": 5,
+          "sourcePass": 1,
+          "deliveredPass": 4,
+          "worsened": 0,
+          "sceneAgreement": 5
+        },
+        "work": {
+          "cases": 7,
+          "sourcePass": 0,
+          "deliveredPass": 1,
+          "worsened": 0,
+          "sceneAgreement": 7
+        }
+      },
+      "byKind": {
+        "cursor": {
+          "cases": 6,
+          "sourcePass": 0,
+          "deliveredPass": 1,
+          "worsened": 0
+        },
+        "history": {
+          "cases": 6,
+          "sourcePass": 1,
+          "deliveredPass": 2,
+          "worsened": 0
+        },
+        "negative": {
+          "cases": 7,
+          "sourcePass": 7,
+          "deliveredPass": 7,
+          "worsened": 0
+        },
+        "screen": {
+          "cases": 11,
+          "sourcePass": 0,
+          "deliveredPass": 3,
+          "worsened": 0
+        }
+      }
+    },
+    {
+      "id": "final-4b-terms-all-accurate",
+      "kind": "text",
+      "split": "heldout",
+      "variant": "4B all sources accurate OCR, terms, validated without context (stricter than the product)",
+      "corpusSha256": "267dde15b2cec1385cc9c67eaab31e2912b62ae93177c340564c6768992923ca",
+      "resultsSha256": "459bc07246420f4adf031c20dc3c1e452aa02cd55116730933bdc6c8cfaec4f8",
+      "cases": 30,
+      "sourcePass": 8,
+      "proposalPass": 16,
+      "deliveredPass": 15,
+      "accepted": 25,
+      "rejected": {
+        "content_dropped": 3,
+        "unsupported_content": 2
+      },
+      "acceptedFailing": 13,
+      "rejectedPassing": 4,
+      "worsened": 0,
+      "referenceEditRatioMean": 0.14636668886668888,
+      "sourceEditRatioMean": 0.1659708362127717,
+      "finalMs": {
+        "count": 30,
+        "p50": 1332.1309999999999,
+        "p95": 2112.1886,
+        "p99": 2340.2697900000003
+      },
+      "liveEdits": 16,
+      "liveAccepted": 10,
+      "liveMs": {
+        "count": 16,
+        "p50": 1195.4115,
+        "p95": 2535.9595,
+        "p99": 2542.1263
+      },
+      "sceneAgreement": 30,
+      "byScene": {
+        "chat": {
+          "cases": 13,
+          "sourcePass": 7,
+          "deliveredPass": 8,
+          "worsened": 0,
+          "sceneAgreement": 13
+        },
+        "email": {
+          "cases": 5,
+          "sourcePass": 0,
+          "deliveredPass": 1,
+          "worsened": 0,
+          "sceneAgreement": 5
+        },
+        "prompt": {
+          "cases": 5,
+          "sourcePass": 1,
+          "deliveredPass": 4,
+          "worsened": 0,
+          "sceneAgreement": 5
+        },
+        "work": {
+          "cases": 7,
+          "sourcePass": 0,
+          "deliveredPass": 2,
+          "worsened": 0,
+          "sceneAgreement": 7
+        }
+      },
+      "byKind": {
+        "cursor": {
+          "cases": 6,
+          "sourcePass": 0,
+          "deliveredPass": 1,
+          "worsened": 0
+        },
+        "history": {
+          "cases": 6,
+          "sourcePass": 1,
+          "deliveredPass": 2,
+          "worsened": 0
+        },
+        "negative": {
+          "cases": 7,
+          "sourcePass": 7,
+          "deliveredPass": 7,
+          "worsened": 0
+        },
+        "screen": {
+          "cases": 11,
+          "sourcePass": 0,
+          "deliveredPass": 5,
+          "worsened": 0
+        }
+      }
+    },
+    {
+      "id": "final-4b-prompt-all-accurate",
+      "kind": "text",
+      "split": "heldout",
+      "variant": "4B all sources accurate OCR, context prompt",
+      "corpusSha256": "267dde15b2cec1385cc9c67eaab31e2912b62ae93177c340564c6768992923ca",
+      "resultsSha256": "8ad76eae4d2ebe64f2ba663f3eee418179ae50f4fe49a6e9a9decf52d77fa7b2",
+      "cases": 30,
+      "sourcePass": 8,
+      "proposalPass": 14,
+      "deliveredPass": 16,
+      "accepted": 27,
+      "rejected": {
+        "length": 1,
+        "content_dropped": 2
+      },
+      "acceptedFailing": 13,
+      "rejectedPassing": 0,
+      "worsened": 0,
+      "referenceEditRatioMean": 0.13512163762163762,
+      "sourceEditRatioMean": 0.1659708362127717,
+      "finalMs": {
+        "count": 30,
+        "p50": 1836.354,
+        "p95": 2831.340949999999,
+        "p99": 3131.74506
+      },
+      "liveEdits": 16,
+      "liveAccepted": 15,
+      "liveMs": {
+        "count": 16,
+        "p50": 1630.657,
+        "p95": 8006.7432499999995,
+        "p99": 20639.80144999999
+      },
+      "sceneAgreement": 30,
+      "byScene": {
+        "chat": {
+          "cases": 13,
+          "sourcePass": 7,
+          "deliveredPass": 8,
+          "worsened": 0,
+          "sceneAgreement": 13
+        },
+        "email": {
+          "cases": 5,
+          "sourcePass": 0,
+          "deliveredPass": 2,
+          "worsened": 0,
+          "sceneAgreement": 5
+        },
+        "prompt": {
+          "cases": 5,
+          "sourcePass": 1,
+          "deliveredPass": 4,
+          "worsened": 0,
+          "sceneAgreement": 5
+        },
+        "work": {
+          "cases": 7,
+          "sourcePass": 0,
+          "deliveredPass": 2,
+          "worsened": 0,
+          "sceneAgreement": 7
+        }
+      },
+      "byKind": {
+        "cursor": {
+          "cases": 6,
+          "sourcePass": 0,
+          "deliveredPass": 1,
+          "worsened": 0
+        },
+        "history": {
+          "cases": 6,
+          "sourcePass": 1,
+          "deliveredPass": 3,
+          "worsened": 0
+        },
+        "negative": {
+          "cases": 7,
+          "sourcePass": 7,
+          "deliveredPass": 7,
+          "worsened": 0
+        },
+        "screen": {
+          "cases": 11,
+          "sourcePass": 0,
+          "deliveredPass": 5,
+          "worsened": 0
+        }
+      }
+    },
+    {
+      "id": "final-17-terms-all-accurate",
+      "kind": "text",
+      "split": "heldout",
+      "variant": "1.7B all sources accurate OCR, terms, validated without context (stricter than the product)",
+      "corpusSha256": "267dde15b2cec1385cc9c67eaab31e2912b62ae93177c340564c6768992923ca",
+      "resultsSha256": "96186bab30a7f341e8820f20254a5072b59a5c3b41fea57b0469eb68b8a23b4f",
+      "cases": 30,
+      "sourcePass": 8,
+      "proposalPass": 9,
+      "deliveredPass": 9,
+      "accepted": 29,
+      "rejected": {
+        "content_dropped": 1
+      },
+      "acceptedFailing": 20,
+      "rejectedPassing": 0,
+      "worsened": 0,
+      "referenceEditRatioMean": 0.17967453991647542,
+      "sourceEditRatioMean": 0.1659708362127717,
+      "finalMs": {
+        "count": 30,
+        "p50": 555.5245,
+        "p95": 915.9749499999999,
+        "p99": 1020.9236900000001
+      },
+      "liveEdits": 16,
+      "liveAccepted": 15,
+      "liveMs": {
+        "count": 16,
+        "p50": 419.8175,
+        "p95": 808.00825,
+        "p99": 808.34965
+      },
+      "sceneAgreement": 30,
+      "byScene": {
+        "chat": {
+          "cases": 13,
+          "sourcePass": 7,
+          "deliveredPass": 7,
+          "worsened": 0,
+          "sceneAgreement": 13
+        },
+        "email": {
+          "cases": 5,
+          "sourcePass": 0,
+          "deliveredPass": 0,
+          "worsened": 0,
+          "sceneAgreement": 5
+        },
+        "prompt": {
+          "cases": 5,
+          "sourcePass": 1,
+          "deliveredPass": 2,
+          "worsened": 0,
+          "sceneAgreement": 5
+        },
+        "work": {
+          "cases": 7,
+          "sourcePass": 0,
+          "deliveredPass": 0,
+          "worsened": 0,
+          "sceneAgreement": 7
+        }
+      },
+      "byKind": {
+        "cursor": {
+          "cases": 6,
+          "sourcePass": 0,
+          "deliveredPass": 0,
+          "worsened": 0
+        },
+        "history": {
+          "cases": 6,
+          "sourcePass": 1,
+          "deliveredPass": 2,
+          "worsened": 0
+        },
+        "negative": {
+          "cases": 7,
+          "sourcePass": 7,
+          "deliveredPass": 7,
+          "worsened": 0
+        },
+        "screen": {
+          "cases": 11,
+          "sourcePass": 0,
+          "deliveredPass": 0,
+          "worsened": 0
+        }
+      }
+    },
+    {
+      "id": "regression-lrw-heldout",
+      "kind": "text",
+      "split": "heldout",
+      "variant": "1.7B live held-out set, no context, after the context changes",
+      "corpusSha256": "31a5231fa057d8057933b1966c75a279d552c08fac3c4c8524cac300c5bda8fa",
+      "resultsSha256": "99a72fff8d8cf95692bd23e9f59108b21e3979a3c891fbf8c33aeea935f46ebe",
+      "cases": 30,
+      "sourcePass": 12,
+      "proposalPass": 25,
+      "deliveredPass": 27,
+      "accepted": 27,
+      "rejected": {
+        "length": 2
+      },
+      "acceptedFailing": 3,
+      "rejectedPassing": 0,
+      "worsened": 0,
+      "referenceEditRatioMean": 0.043584529505582136,
+      "sourceEditRatioMean": 0.3079450617608513,
+      "finalMs": {
+        "count": 29,
+        "p50": 552.546,
+        "p95": 1237.1665999999993,
+        "p99": 2599.1912399999983
+      },
+      "liveEdits": 45,
+      "liveAccepted": 43,
+      "liveMs": {
+        "count": 45,
+        "p50": 463.453,
+        "p95": 934.7161999999997,
+        "p99": 1519.009000000002
+      },
+      "sceneAgreement": 30,
+      "byScene": {
+        "chat": {
+          "cases": 26,
+          "sourcePass": 12,
+          "deliveredPass": 23,
+          "worsened": 0,
+          "sceneAgreement": 26
+        },
+        "email": {
+          "cases": 2,
+          "sourcePass": 0,
+          "deliveredPass": 2,
+          "worsened": 0,
+          "sceneAgreement": 2
+        },
+        "list": {
+          "cases": 2,
+          "sourcePass": 0,
+          "deliveredPass": 2,
+          "worsened": 0,
+          "sceneAgreement": 2
+        }
+      },
+      "byKind": {
+        "code": {
+          "cases": 1,
+          "sourcePass": 1,
+          "deliveredPass": 1,
+          "worsened": 0
+        },
+        "copy-control": {
+          "cases": 2,
+          "sourcePass": 2,
+          "deliveredPass": 2,
+          "worsened": 0
+        },
+        "filler": {
+          "cases": 4,
+          "sourcePass": 0,
+          "deliveredPass": 2,
+          "worsened": 0
+        },
+        "format": {
+          "cases": 4,
+          "sourcePass": 0,
+          "deliveredPass": 4,
+          "worsened": 0
+        },
+        "injection": {
+          "cases": 2,
+          "sourcePass": 2,
+          "deliveredPass": 2,
+          "worsened": 0
+        },
+        "memory": {
+          "cases": 1,
+          "sourcePass": 0,
+          "deliveredPass": 1,
+          "worsened": 0
+        },
+        "negation": {
+          "cases": 3,
+          "sourcePass": 3,
+          "deliveredPass": 3,
+          "worsened": 0
+        },
+        "question": {
+          "cases": 1,
+          "sourcePass": 1,
+          "deliveredPass": 1,
+          "worsened": 0
+        },
+        "repetition": {
+          "cases": 1,
+          "sourcePass": 0,
+          "deliveredPass": 0,
+          "worsened": 0
+        },
+        "self-correction": {
+          "cases": 8,
+          "sourcePass": 0,
+          "deliveredPass": 8,
+          "worsened": 0
+        },
+        "uncertainty": {
+          "cases": 1,
+          "sourcePass": 1,
+          "deliveredPass": 1,
+          "worsened": 0
+        },
+        "url": {
+          "cases": 1,
+          "sourcePass": 1,
+          "deliveredPass": 1,
+          "worsened": 0
+        },
+        "verbatim": {
+          "cases": 1,
+          "sourcePass": 1,
+          "deliveredPass": 1,
+          "worsened": 0
+        }
+      }
+    },
+    {
+      "id": "product-4b-product-all-accurate",
+      "kind": "text",
+      "split": "heldout",
+      "variant": "4B all sources accurate OCR, terms, validated with the whole context (product)",
+      "corpusSha256": "267dde15b2cec1385cc9c67eaab31e2912b62ae93177c340564c6768992923ca",
+      "resultsSha256": "1a4acbe0b01ee2bc3a91f736143d6ce41160b795bcfd2b2dfa25c90be067a5f3",
+      "cases": 30,
+      "sourcePass": 8,
+      "proposalPass": 16,
+      "deliveredPass": 16,
+      "accepted": 26,
+      "rejected": {
+        "unsupported_content": 2,
+        "content_dropped": 2
+      },
+      "acceptedFailing": 13,
+      "rejectedPassing": 3,
+      "worsened": 0,
+      "referenceEditRatioMean": 0.12890637140637137,
+      "sourceEditRatioMean": 0.1659708362127717,
+      "finalMs": {
+        "count": 30,
+        "p50": 862.0955,
+        "p95": 1488.7237999999993,
+        "p99": 1701.34831
+      },
+      "liveEdits": 16,
+      "liveAccepted": 11,
+      "liveMs": {
+        "count": 16,
+        "p50": 787.9385,
+        "p95": 1605.44875,
+        "p99": 1711.7465499999998
+      },
+      "sceneAgreement": 30,
+      "byScene": {
+        "chat": {
+          "cases": 13,
+          "sourcePass": 7,
+          "deliveredPass": 8,
+          "worsened": 0,
+          "sceneAgreement": 13
+        },
+        "email": {
+          "cases": 5,
+          "sourcePass": 0,
+          "deliveredPass": 1,
+          "worsened": 0,
+          "sceneAgreement": 5
+        },
+        "prompt": {
+          "cases": 5,
+          "sourcePass": 1,
+          "deliveredPass": 4,
+          "worsened": 0,
+          "sceneAgreement": 5
+        },
+        "work": {
+          "cases": 7,
+          "sourcePass": 0,
+          "deliveredPass": 3,
+          "worsened": 0,
+          "sceneAgreement": 7
+        }
+      },
+      "byKind": {
+        "cursor": {
+          "cases": 6,
+          "sourcePass": 0,
+          "deliveredPass": 1,
+          "worsened": 0
+        },
+        "history": {
+          "cases": 6,
+          "sourcePass": 1,
+          "deliveredPass": 2,
+          "worsened": 0
+        },
+        "negative": {
+          "cases": 7,
+          "sourcePass": 7,
+          "deliveredPass": 7,
+          "worsened": 0
+        },
+        "screen": {
+          "cases": 11,
+          "sourcePass": 0,
+          "deliveredPass": 6,
+          "worsened": 0
+        }
+      }
+    },
+    {
+      "id": "product-17-product-all-accurate",
+      "kind": "text",
+      "split": "heldout",
+      "variant": "1.7B all sources accurate OCR, terms, validated with the whole context (product)",
+      "corpusSha256": "267dde15b2cec1385cc9c67eaab31e2912b62ae93177c340564c6768992923ca",
+      "resultsSha256": "7a3490ae77aeaf430d429138997f9c365bf885d1f6da3112547b923f621f529a",
+      "cases": 30,
+      "sourcePass": 8,
+      "proposalPass": 9,
+      "deliveredPass": 9,
+      "accepted": 30,
+      "rejected": {},
+      "acceptedFailing": 21,
+      "rejectedPassing": 0,
+      "worsened": 0,
+      "referenceEditRatioMean": 0.16380152404345952,
+      "sourceEditRatioMean": 0.1659708362127717,
+      "finalMs": {
+        "count": 30,
+        "p50": 435.51300000000003,
+        "p95": 734.9053499999998,
+        "p99": 819.2600700000002
+      },
+      "liveEdits": 16,
+      "liveAccepted": 15,
+      "liveMs": {
+        "count": 16,
+        "p50": 316.873,
+        "p95": 613.95425,
+        "p99": 641.4132500000001
+      },
+      "sceneAgreement": 30,
+      "byScene": {
+        "chat": {
+          "cases": 13,
+          "sourcePass": 7,
+          "deliveredPass": 7,
+          "worsened": 0,
+          "sceneAgreement": 13
+        },
+        "email": {
+          "cases": 5,
+          "sourcePass": 0,
+          "deliveredPass": 0,
+          "worsened": 0,
+          "sceneAgreement": 5
+        },
+        "prompt": {
+          "cases": 5,
+          "sourcePass": 1,
+          "deliveredPass": 2,
+          "worsened": 0,
+          "sceneAgreement": 5
+        },
+        "work": {
+          "cases": 7,
+          "sourcePass": 0,
+          "deliveredPass": 0,
+          "worsened": 0,
+          "sceneAgreement": 7
+        }
+      },
+      "byKind": {
+        "cursor": {
+          "cases": 6,
+          "sourcePass": 0,
+          "deliveredPass": 0,
+          "worsened": 0
+        },
+        "history": {
+          "cases": 6,
+          "sourcePass": 1,
+          "deliveredPass": 2,
+          "worsened": 0
+        },
+        "negative": {
+          "cases": 7,
+          "sourcePass": 7,
+          "deliveredPass": 7,
+          "worsened": 0
+        },
+        "screen": {
+          "cases": 11,
+          "sourcePass": 0,
+          "deliveredPass": 0,
+          "worsened": 0
+        }
+      }
+    }
+  ]
+}

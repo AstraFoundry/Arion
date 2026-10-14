@@ -51,6 +51,14 @@ type Preferences struct {
 	// domain.SceneKey) from the menu bar panel. Replace the map, never
 	// mutate it: preference snapshots share it.
 	SceneOverrides domain.SceneOverrides `json:"sceneOverrides,omitempty"`
+	// ContextCursor, ContextScreen and ContextHistory let polishing read the
+	// field's text around the cursor, the focused window's recognized text
+	// and the user's recent dictations in the same place (ADR 013). On by
+	// default; everything stays on this device. Profiles written before
+	// they existed load the defaults.
+	ContextCursor  bool `json:"contextCursor"`
+	ContextScreen  bool `json:"contextScreen"`
+	ContextHistory bool `json:"contextHistory"`
 }
 
 // PreferencesVersion is the current schema; older files are migrated.
@@ -72,6 +80,7 @@ func DefaultPreferences() Preferences {
 	return Preferences{
 		Version: PreferencesVersion, UILanguage: English, Mode: domain.ShortcutMode, Shortcut: DefaultShortcut,
 		Delivery: DeliveryAutomatic, RemoveFillers: true, Sounds: true, CheckUpdates: true, MatchApp: true,
+		ContextCursor: true, ContextScreen: true, ContextHistory: true,
 	}
 }
 

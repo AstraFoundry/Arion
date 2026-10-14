@@ -107,13 +107,16 @@ func (w *scriptedRewriter) End(id contracts.Identity) {
 	w.mu.Unlock()
 }
 
-func liveSetup(t *testing.T, script []string, rewriter *scriptedRewriter, policy RewritePolicy) (*Coordinator, *fakeAudio, *recorder, *fakeTarget, *upperFinalizer) {
+func liveSetup(t *testing.T, script []string, rewriter *scriptedRewriter, policy RewritePolicy, history ...*History) (*Coordinator, *fakeAudio, *recorder, *fakeTarget, *upperFinalizer) {
 	t.Helper()
 	audio := &fakeAudio{}
 	target := &fakeTarget{outcome: contracts.Applied, snapshot: contracts.TargetSnapshot{Target: "t1"}}
 	finalizer := &upperFinalizer{}
 	deps := Dependencies{Audio: audio, Recognizers: segmentFactory{&segmentRecognizer{script: script}}, Finalizer: finalizer,
 		Targets: target, Input: target, NewID: newID}
+	if len(history) > 0 {
+		deps.History = history[0]
+	}
 	if rewriter != nil {
 		deps.Rewriter = rewriter
 	}
@@ -413,5 +416,82 @@ func TestSceneOverrideWins(t *testing.T) {
 	c.Stop()
 	if ready := events.wait(t, kindIs(contracts.CorrectionReady)); ready.Scene != string(domain.SceneWork) {
 		t.Fatalf("override ignored: %q", ready.Scene)
+	}
+}
+
+// CTX-A01: the session's context reaches the final rewrite and its
+// validation; an inserted dictation becomes history for the same place
+// only; denied apps are never read.
+func TestRewriteContextAndHistory(t *testing.T) {
+	history := NewHistory(time.Hour)
+	policy := RewritePolicy{Enabled: true, Scene: "chat", Context: ContextPolicy{Cursor: true, Screen: true, History: true}}
+	rewriter := &scriptedRewriter{answer: func(req ports.RewriteRequest) (string, error) { return req.Text, nil }}
+	c, audio, events, target, _ := liveSetup(t, []string{"first"}, rewriter, policy, history)
+	target.snapshot.Application = "com.tencent.xinWeChat"
+	target.context = contracts.ContextSnapshot{SafeToRead: true, Before: "Hi ", After: " bye", Screen: "Zhang Wei: lunch?"}
+	c.Start()
+	events.wait(t, stateIs(domain.Capturing))
+	audio.push(1, 0.2)
+	c.Stop()
+	events.wait(t, kindIs(contracts.CommitResultReady))
+	rewriter.mu.Lock()
+	final := rewriter.requests[len(rewriter.requests)-1]
+	rewriter.mu.Unlock()
+	if strings.Join(final.Terms, ";") != "Zhang;Wei" || !final.Context.Empty() {
+		t.Fatalf("first session: terms %q, context %+v", final.Terms, final.Context)
+	}
+	if got := history.Recent("com.tencent.xinWeChat"); len(got) != 1 || got[0] != "FIRST" {
+		t.Fatalf("history after insertion %q", got)
+	}
+
+	// The next dictation in the same app sees it; another app does not.
+	rewriter = &scriptedRewriter{answer: func(req ports.RewriteRequest) (string, error) { return req.Text, nil }}
+	c, audio, events, target, _ = liveSetup(t, []string{"second"}, rewriter, policy, history)
+	target.snapshot.Application = "com.tencent.xinWeChat"
+	c.Start()
+	events.wait(t, stateIs(domain.Capturing))
+	audio.push(1, 0.2)
+	c.Stop()
+	events.wait(t, kindIs(contracts.CommitResultReady))
+	if terms := rewriter.requests[len(rewriter.requests)-1].Terms; strings.Join(terms, ";") != "FIRST" {
+		t.Fatalf("same place history terms %q", terms)
+	}
+	if got := history.Recent("com.apple.mail"); len(got) != 0 {
+		t.Fatalf("history leaked to another place: %q", got)
+	}
+
+	// A password manager is never read, even with every source allowed.
+	rewriter = &scriptedRewriter{answer: func(req ports.RewriteRequest) (string, error) { return req.Text, nil }}
+	c, audio, events, target, _ = liveSetup(t, []string{"third"}, rewriter, policy, history)
+	target.snapshot.Application = "com.1password.1password"
+	target.context = contracts.ContextSnapshot{SafeToRead: true, Screen: "vault"}
+	c.Start()
+	events.wait(t, stateIs(domain.Capturing))
+	audio.push(1, 0.2)
+	c.Stop()
+	events.wait(t, kindIs(contracts.CommitResultReady))
+	if target.reads.Load() != 0 || len(rewriter.requests[len(rewriter.requests)-1].Terms) != 0 {
+		t.Fatal("denied app was read")
+	}
+}
+
+func TestHistoryExpiresAndClears(t *testing.T) {
+	h := NewHistory(time.Minute)
+	now := time.Unix(0, 0)
+	h.now = func() time.Time { return now }
+	for _, text := range []string{"a", "b", "c", "d", "e", "f"} {
+		h.Add("app", text)
+	}
+	if got := h.Recent("app"); strings.Join(got, "") != "bcdef" {
+		t.Fatalf("keeps the newest items: %q", got)
+	}
+	now = now.Add(2 * time.Minute)
+	if got := h.Recent("app"); len(got) != 0 {
+		t.Fatalf("expired items returned: %q", got)
+	}
+	h.Add("app", "x")
+	h.Clear()
+	if got := h.Recent("app"); len(got) != 0 {
+		t.Fatal("Clear kept items")
 	}
 }

@@ -117,7 +117,7 @@ func identity() contracts.Identity {
 func TestWindowsInsertsIntoNotepad(t *testing.T) {
 	editor := startNotepad(t)
 	editor.focus(t)
-	targets := windows.NewTargets(func() windows.Delivery { return windows.DeliveryAutomatic })
+	targets := windows.NewTargets(nil, func() windows.Delivery { return windows.DeliveryAutomatic })
 	snapshot, err := targets.Capture(context.Background(), identity())
 	if err != nil || snapshot.Sensitive {
 		t.Fatalf("capture: %+v %v", snapshot, err)
@@ -141,7 +141,7 @@ func TestWindowsFocusChangeBlocksCommit(t *testing.T) {
 	first := startNotepad(t)
 	second := startNotepad(t)
 	first.focus(t)
-	targets := windows.NewTargets(func() windows.Delivery { return windows.DeliveryAutomatic })
+	targets := windows.NewTargets(nil, func() windows.Delivery { return windows.DeliveryAutomatic })
 	snapshot, err := targets.Capture(context.Background(), identity())
 	if err != nil {
 		t.Fatal(err)

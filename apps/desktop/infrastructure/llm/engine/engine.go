@@ -11,6 +11,7 @@ import (
 	"time"
 	"unicode/utf8"
 
+	"arion.local/core/domain"
 	"arion.local/desktop/infrastructure/llm/genai"
 	"arion.local/desktop/infrastructure/llm/prompt"
 )
@@ -28,6 +29,8 @@ type Request struct {
 	Session string
 	Scene   string
 	Terms   []string
+	// Context, when present, selects the context template.
+	Context domain.RewriteContext
 	Text    string
 	// Prefill computes the source tokens only and generates nothing.
 	Prefill bool
@@ -48,7 +51,9 @@ func (e *Engine) budget(inputTokens int, live bool) int {
 
 // Result reports the candidate and where its time went.
 type Result struct {
-	Text         string  `json:"text"`
+	Text string `json:"text"`
+	// Template is the version of the prompt that served the request.
+	Template     string  `json:"template"`
 	InputTokens  int     `json:"inputTokens"`
 	ReusedTokens int     `json:"reusedTokens"`
 	OutputTokens int     `json:"outputTokens"`
@@ -67,18 +72,23 @@ var (
 
 // Engine is not safe for concurrent use; the worker serializes requests.
 type Engine struct {
-	config   Config
-	template prompt.Template
-	model    *genai.Model
-	gen      *genai.Generator
+	config     Config
+	template   prompt.Template
+	contextual prompt.Template
+	// active is the version of the template whose prefix is in KV.
+	active string
+	model  *genai.Model
+	gen    *genai.Generator
 	// tokens mirrors the generator's KV contents token-for-token.
 	tokens  []int32
 	prefix  int
 	session string
 }
 
-// Load opens the model and computes the shared instruction prefix.
-func Load(config Config, template prompt.Template) (*Engine, float64, error) {
+// Load opens the model and computes the plain template's shared prefix.
+// Requests with context use contextual, whose prefix replaces the plain one
+// in the KV state while those requests run.
+func Load(config Config, template, contextual prompt.Template) (*Engine, float64, error) {
 	start := time.Now()
 	model, err := genai.OpenModel(config.ModelDir, genai.Options{IntraOpThreads: config.Threads, InterOpThreads: 1})
 	if err != nil {
@@ -89,18 +99,34 @@ func Load(config Config, template prompt.Template) (*Engine, float64, error) {
 		model.Close()
 		return nil, 0, err
 	}
-	e := &Engine{config: config, template: template, model: model, gen: gen}
-	prefix, err := model.Encode(template.Prefix())
-	if err != nil {
+	e := &Engine{config: config, template: template, contextual: contextual, model: model, gen: gen}
+	if err := e.use(template); err != nil {
 		e.Close()
 		return nil, 0, err
 	}
-	if err := gen.Append(prefix); err != nil {
-		e.Close()
-		return nil, 0, err
-	}
-	e.tokens, e.prefix = prefix, len(prefix)
 	return e, ms(time.Since(start)), nil
+}
+
+// use makes t the template whose prefix fills the start of the KV state.
+func (e *Engine) use(t prompt.Template) error {
+	if e.active == t.Version && e.tokens != nil {
+		return nil
+	}
+	prefix, err := e.model.Encode(t.Prefix())
+	if err != nil {
+		return err
+	}
+	if e.tokens != nil {
+		if err := e.rewind(0); err != nil {
+			return err
+		}
+	}
+	if err := e.gen.Append(prefix); err != nil {
+		e.tokens, e.active = nil, ""
+		return err
+	}
+	e.tokens, e.prefix, e.active = prefix, len(prefix), t.Version
+	return nil
 }
 
 // PrefixTokens is the size of the shared instruction prefix.
@@ -147,10 +173,19 @@ func (e *Engine) Run(req Request, cancelled *atomic.Bool) (Result, error) {
 		}
 		e.session = req.Session
 	}
-	in := prompt.Input{Scene: req.Scene, Terms: req.Terms, Text: req.Text}
-	text := e.template.Prompt(in)
+	start := time.Now()
+	tpl := e.template
+	if !req.Context.Bounded().Empty() {
+		tpl = e.contextual
+	}
+	if err := e.use(tpl); err != nil {
+		_ = e.EndSession()
+		return Result{}, err
+	}
+	in := prompt.Input{Scene: req.Scene, Terms: req.Terms, Context: req.Context, Text: req.Text}
+	text := tpl.Prompt(in)
 	if req.Prefill {
-		text = e.template.Source(in)
+		text = tpl.Source(in)
 	}
 	ids, err := e.model.Encode(text)
 	if err != nil {
@@ -167,7 +202,6 @@ func (e *Engine) Run(req Request, cancelled *atomic.Bool) (Result, error) {
 	if common < e.prefix {
 		return Result{}, errors.New("instruction prefix tokenization changed")
 	}
-	start := time.Now()
 	if err := e.rewind(common); err != nil {
 		return Result{}, err
 	}
@@ -176,7 +210,7 @@ func (e *Engine) Run(req Request, cancelled *atomic.Bool) (Result, error) {
 		return Result{}, err
 	}
 	e.tokens = append(e.tokens, ids[common:]...)
-	result := Result{InputTokens: len(ids) - e.prefix, ReusedTokens: common - e.prefix, PrefillMs: ms(time.Since(start))}
+	result := Result{Template: tpl.Version, InputTokens: len(ids) - e.prefix, ReusedTokens: common - e.prefix, PrefillMs: ms(time.Since(start))}
 	if req.Prefill {
 		return result, nil
 	}

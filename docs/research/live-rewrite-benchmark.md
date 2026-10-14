@@ -26,6 +26,15 @@ Fixtures, rows and weights stay in `.workspace/`; only content-free aggregates a
 
 Two developer-authored scene corpora exist: a 33-case set written before any scene prompt work and then used for diagnosis (now the development set), and a 30-case held-out set written and hashed after that diagnosis and before the final pipeline ran.
 
+## Rewrite context
+
+The context ablation ([ADR 013](../decisions/013-rewrite-context-on-device.md), [report](../../benchmarks/results/context-ablation-v1/README.md)) measures whether text around the cursor, the screen and recent dictations help the rewrite fix misheard names, terms and codes, and whether they leak into the output.
+
+- **Fixtures.** Each case renders a realistic window (chat, mail, editor, document, issue page) as HTML to a 2× PNG with headless Chrome, and carries its true visible text, the field's text around the cursor, recent dictations, an ASR-like source with the error and exact-string proxies. Negative cases (distracting screens, prompt injection in the window, a different person with a similar name, unrelated history) must stay unchanged and must not take on screen text.
+- **Screen text.** `make context-ocr` runs the production Vision recognizer (`macos.RecognizeImage`) on every image at the accurate and fast levels and scores character error against the true text. The rewrite bench takes screen text as `SCREEN=oracle` (true text, isolating recognition errors), `accurate` or `fast`.
+- **Delivery.** `CONTEXT=cursor,history,screen` selects sources; `CONTEXT_AS=prompt` sends context sections with the `context-v1` template, `terms` sends only `domain.ContextTerms` in the plain prompt's terms (the product's choice), `both` does both. Validation always uses the whole context, as the product does.
+- **Splits.** The 30-case held-out set was written and hashed before the context demonstrations. After its first ablation was inspected, a 16-case development set was written to choose the delivery mode and calibrate the validator; held-out was then run once more for the final rows.
+
 ## Limits
 
 One author wrote every case; there are no independent annotations, no natural speech and no human ratings. Exact-string proxies can pass a fluent hallucination or fail an equivalent spelling. Synthetic speech has no disfluent prosody, and the inserted pauses make segmentation easier than real dictation. The host was not isolated from other desktop tasks. Native preview rendering, IME insertion and Windows were not measured. These results select defaults for development; they do not establish Typeless parity or satisfy RWT-A07/A08.

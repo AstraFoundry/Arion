@@ -5,6 +5,7 @@ import (
 	"context"
 
 	"arion.local/core/contracts"
+	"arion.local/core/domain"
 )
 
 // FrameSink receives captured frames. Implementations only enqueue (SPH-02).
@@ -86,7 +87,10 @@ type RewriteRequest struct {
 	Text           string
 	Scene          string
 	Terms          []string
-	Prefill        bool
+	// Context is consulted for spelling and continuation; empty uses the
+	// plain prompt.
+	Context domain.RewriteContext
+	Prefill bool
 	// Live marks a preview of speech that is still being captured.
 	Live bool
 }
@@ -95,6 +99,8 @@ type RewriteRequest struct {
 type RewriteResult struct {
 	Text      string
 	Truncated bool
+	// Template is the prompt version that served the request.
+	Template string
 	// Timing is content-free engine telemetry for evaluation.
 	PrefillMs    float64
 	DecodeMs     float64

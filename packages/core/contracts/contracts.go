@@ -72,6 +72,14 @@ type ContextSnapshot struct {
 	SelectionStart uint32
 	SelectionEnd   uint32
 	SafeToRead     bool
+	// Before and After are the field's text around the selection; Screen
+	// is text recognized in the focused window. All stay in session RAM.
+	Before string
+	After  string
+	Screen string
+	// ScreenCaptureMs and ScreenOCRMs are content-free timings.
+	ScreenCaptureMs float64
+	ScreenOCRMs     float64
 }
 
 type RankRequest struct {

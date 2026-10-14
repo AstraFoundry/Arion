@@ -9,7 +9,7 @@ Rewriting is separate from acoustic recognition, conservative correction and Lay
 ## Product pipeline
 
 1. Obtain revisioned ASR text and conservative correction. Preserve their original text independently of any rewrite.
-2. Capture a bounded, consent-gated context snapshot and approved memory. Select a scenario from explicit user choice and permitted application hints. Unknown/secure targets deny context acquisition before reading their values. Clipboard, screen text and conversation history require distinct opt-in capabilities; their existence in competitor symbols does not authorize Arion to collect them.
+2. Capture a bounded context snapshot and approved memory under [rewrite context](#rewrite-context). Select a scenario from explicit user choice and permitted application hints. Unknown/secure targets deny context acquisition before reading their values. Clipboard remains unread; other sources need their own switch.
 3. Build a versioned prompt with trusted rewrite instructions separated from untrusted transcript/context/memory. Pin template, tokenizer, checkpoint, ONNX graph, conversion, quantization and execution provider. User text may describe commands; it never grants tool execution, networking or target writes.
 4. Run bounded non-thinking generation locally. Keep token streams and provisional rewrite previews separate from recognized drafts and owned IME composition. Partial-source speculation is optional: every new source revision cancels it, and it cannot become the final candidate by mistake.
 5. Validate the final proposal against the selected mode, output budget and protected content. Verbatim mode forbids changes to code, punctuation, capitalization and spacing. Names, numbers, URLs, negation, modality and speaker intent need preservation; string checks alone cannot prove semantic preservation.
@@ -35,6 +35,16 @@ The scene sets the layout of a rewrite, never its content. Scenes: `chat` (one p
 - SCN-03: Every preview and the final rewrite of a session use the same scene. Secure fields still fail before capture (DSK-08); no context is read from them.
 - SCN-04: Scene tags are prompt structure: a proposal containing any scene tag is rejected as markup. Layout added by a scene passes the same validation as any other proposal.
 - SCN-05: Opening the menu bar panel reads the frontmost app's focused field (app name, field type and, under SCN-02's gate, site) and shows its scene with whether it is automatic or the user's choice. Choosing a scene there stores it for that place: the site without `www.` when there is one, else the app, and a search field of that place separately (`domain.SceneKey`). **Automatic** removes the choice. Choices are kept with the preferences on this device; secure fields, Arion itself and unreadable targets show no card.
+
+## Rewrite context
+
+[ADR 013](../docs/decisions/013-rewrite-context-on-device.md) lets polishing read three sources, each with its own switch under Settings › Model, all on by default while polishing is on.
+
+- CTX-01: **Text around the cursor**: up to 200 characters before and after the selection of the captured field, read through Accessibility (macOS). Windows does not read it.
+- CTX-02: **Screen content**: OS text recognition of the focused window only (macOS: ScreenCaptureKit + Vision accurate, Screen Recording access, macOS 14 or later; Windows: `PrintWindow` + `Windows.Media.Ocr`, compile-checked only). The image is released inside the call; recognized text is cut to 1,200 characters.
+- CTX-03: **Recent dictations**: the last five texts inserted in the same place (`domain.SceneKey`), kept 30 minutes in memory; turning the switch off clears them.
+- CTX-04: Secure fields and the password-manager denylist (`domain.ContextDenied`) read nothing. Context is read once per session after target capture, in parallel with speaking; previews use it once read and the final rewrite waits at most 1.5 s. It stays in session memory and is never logged, synced or sent anywhere.
+- CTX-05: Context is data. It is sanitized of prompt markers and section tags. The product passes the spellings extracted from it (`domain.ContextTerms`: sender names, quoted names, Latin names, identifiers and codes) into the prompt's terms; the context-section template (`context-v1`) is kept for the benchmark only. Validation treats context as evidence for spellings and rejects `context_copied` proposals and context standing in for most of the dictation (capped coverage credit). Speech repeating the end of the text before the cursor may be dropped.
 
 ## Runtime requirements
 
@@ -86,6 +96,10 @@ Automated checks cover protected exact occurrences, declared constraints, unsupp
 | SCN-A02 | Scene tags are rejected as markup (`TestSceneTagsAreMarkup`) |
 | SCN-A03 | Held-out scene corpus on Apple M4: auto scenes deliver more layout-proxy passes than fixed chat with zero worsened cases; the live held-out set keeps its LRW-A05 result ([report](../benchmarks/results/scene-switching-v1/README.md)) |
 | SCN-A04 | The site host is read from Safari and Chromium web content on a trusted build, and not read with the preference off (open: native verification) |
+| CTX-A01 | Context reaches previews and the final rewrite as terms; history is per place and expires; denied apps are never read (`TestRewriteContextAndHistory`, `TestHistoryExpiresAndClears`) |
+| CTX-A02 | Bounds, sanitizing, term extraction and the context validation rules (`TestRewriteContextBounded`, `TestValidateRewriteWithContext`, `TestContextTerms`) |
+| CTX-A03 | Held-out context ablation on Apple M4 with production OCR and worker ([report](../benchmarks/results/context-ablation-v1/README.md)); a gain requires zero worsened cases in its run |
+| CTX-A04 | Real window capture, recognition and cursor reads on a trusted build (`TestReadContextFromWindow`, open), and Windows OCR on Windows (open) |
 | SCN-A05 | A user's choice beats the built-in rules for exactly its place and Automatic restores them; the panel card shows, switches and retranslates the scene (`TestSceneOverrides`, `TestSceneOverrideWins`, `TestSceneCard`, `TestPanelWithSceneCard`) |
 
 ## Implementation order

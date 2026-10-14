@@ -24,6 +24,10 @@ func (windowsPlatform) Accessibility() runtime.Consent { return runtime.ConsentG
 func (windowsPlatform) MicrophoneAuthorized() bool     { return true }
 func (windowsPlatform) RequestMicrophone()             { windows.OpenSettings("ms-settings:privacy-microphone") }
 func (windowsPlatform) RequestAccessibility()          {}
+
+// Windows needs no consent to capture another window.
+func (windowsPlatform) ScreenRecording() runtime.Consent { return runtime.ConsentGranted }
+func (windowsPlatform) RequestScreenRecording()          {}
 func (windowsPlatform) OpenMicrophoneSettings() {
 	windows.OpenSettings("ms-settings:privacy-microphone")
 }
@@ -42,9 +46,10 @@ func (windowsPlatform) StartHoldKey(key application.HoldKey, sink func(holdkey.E
 }
 func (windowsPlatform) StopHoldKey() { windows.StopHold() }
 
-// NewTargets ignores readSite: the Windows adapter reads no web site.
-func (windowsPlatform) NewTargets(delivery func() application.Delivery, _ func() bool) Targets {
-	return windows.NewTargets(func() windows.Delivery {
+// NewTargets: the Windows adapter reads no web site or cursor text; it
+// recognizes the window's text when gates.Screen allows.
+func (windowsPlatform) NewTargets(delivery func() application.Delivery, gates TargetGates) Targets {
+	return windows.NewTargets(gates.Screen, func() windows.Delivery {
 		if delivery() == application.DeliveryClipboard {
 			return windows.DeliveryClipboard
 		}

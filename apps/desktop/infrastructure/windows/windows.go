@@ -93,6 +93,7 @@ type target struct {
 	foreground uintptr
 	focus      uintptr
 	clipboard  bool
+	secure     bool
 	created    time.Time
 }
 
@@ -101,10 +102,12 @@ type Targets struct {
 	mu       sync.Mutex
 	targets  map[contracts.TargetToken]*target
 	delivery func() Delivery
+	// readScreen gates window text recognition; nil never reads it.
+	readScreen func() bool
 }
 
-func NewTargets(delivery func() Delivery) *Targets {
-	return &Targets{targets: map[contracts.TargetToken]*target{}, delivery: delivery}
+func NewTargets(readScreen func() bool, delivery func() Delivery) *Targets {
+	return &Targets{targets: map[contracts.TargetToken]*target{}, delivery: delivery, readScreen: readScreen}
 }
 
 func focusOf(foreground uintptr) uintptr {
@@ -137,7 +140,7 @@ func (t *Targets) Capture(_ context.Context, id contracts.Identity) (contracts.T
 	_, _ = rand.Read(b[:])
 	token := contracts.TargetToken(hex.EncodeToString(b[:]))
 	t.mu.Lock()
-	t.targets[token] = &target{foreground: foreground, focus: focus, clipboard: t.delivery() == DeliveryClipboard, created: time.Now()}
+	t.targets[token] = &target{foreground: foreground, focus: focus, clipboard: t.delivery() == DeliveryClipboard, secure: secure, created: time.Now()}
 	for len(t.targets) > 4 {
 		var oldest contracts.TargetToken
 		for k, v := range t.targets {
@@ -169,8 +172,29 @@ func (t *Targets) Capabilities(_ context.Context, token contracts.TargetToken) (
 	return contracts.Capabilities{SingleInsertion: true}, nil
 }
 
-func (t *Targets) ReadContext(context.Context, contracts.Identity, contracts.TargetToken) (contracts.ContextSnapshot, error) {
-	return contracts.ContextSnapshot{}, domain.Fail(domain.CodeTargetUnsupported, "context read not offered")
+// ReadContext recognizes the captured foreground window's text when allowed.
+// Text around the cursor is not read on Windows.
+func (t *Targets) ReadContext(ctx context.Context, id contracts.Identity, token contracts.TargetToken) (contracts.ContextSnapshot, error) {
+	snap := contracts.ContextSnapshot{Identity: id, Target: token}
+	t.mu.Lock()
+	tgt := t.targets[token]
+	t.mu.Unlock()
+	if tgt == nil {
+		return snap, domain.Fail(domain.CodeTargetChanged, "unknown target")
+	}
+	if tgt.secure {
+		return snap, nil
+	}
+	snap.SafeToRead = true
+	if t.readScreen != nil && t.readScreen() {
+		ctx, cancel := context.WithTimeout(ctx, screenTimeout)
+		defer cancel()
+		start := time.Now()
+		if text, err := recognizeWindow(ctx, tgt.foreground); err == nil {
+			snap.Screen, snap.ScreenOCRMs = text, float64(time.Since(start).Microseconds())/1000
+		}
+	}
+	return snap, nil
 }
 
 func (t *Targets) Commit(_ context.Context, request contracts.CommitRequest) (contracts.CommitResult, error) {

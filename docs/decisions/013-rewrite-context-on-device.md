@@ -1,0 +1,43 @@
+# ADR 013: Rewrite context from the cursor, the screen and recent dictations
+
+## Status
+
+Accepted (product decision). Amends the consent rule of [009](../../specs/009-contextual-rewrite.md) step 2 and PRV-02 of [005](../../specs/005-privacy.md) for these three sources. Extends [ADR 011](011-live-local-rewriting.md) and [ADR 012](012-context-scene-selection.md).
+
+## Context
+
+Typeless sends the focused window's visible text (from its accessibility tree), the text around the cursor and app/page identity to its server with the audio. Doubao conditions its on-device speech-LLM on cursor text, recent dialogue and hot words. Chatterfly sends cursor text and the window title ([competitor research](../research/competitor-rewrite.md#screen-and-cursor-context)). Their purpose is the same: spell names, terms and codes that recognition gets wrong, and continue the text already in the field.
+
+Arion's rewrite saw only the dictation. 009 required a separate opt-in for screen text and history, and PRV-02 excluded broad screen capture.
+
+## Decision
+
+- **Sources.** Three sources, each its own switch under Settings › Model, all on by default while polishing is on:
+  - Text around the cursor: up to 200 characters on each side, read through Accessibility.
+  - Screen content: text recognized by the OS in the focused window only. macOS uses ScreenCaptureKit and Vision at the accurate level and needs Screen Recording access. Windows uses `PrintWindow` and `Windows.Media.Ocr`.
+  - Recent dictations: the last five inserted in the same site or app, kept for 30 minutes in memory.
+- **Bounds and exclusions.**
+  - The window image is never stored. Recognized text is cut to 1,200 characters. Context lives in session memory and is never logged or synced.
+  - Secure fields read nothing, and a built-in list of password managers is never read.
+  - Turning history off clears it.
+- **Data, not instructions.** Context is sanitized of prompt markers and tags, placed in its own sections before the dictation, and described to the model as reference data. The validator accepts spellings supported by the context but rejects:
+  - proposals that add a long run of context content;
+  - context that stands in for most of the dictation (`context_copied`, capped coverage credit).
+- **No screen VLM.** A local vision-language model was not evaluated; reading the screen goes through the OS recognizer.
+- **Windows.** Window capture and OCR are implemented but compile-checked only; text around the cursor is not read on Windows.
+
+## Consequences
+
+- Everything stays on the device. Unlike Typeless, no context reaches a server, and PRV-01 (offline, no content egress) is unchanged.
+- **Delivery as terms.** The model receives only the spellings `domain.ContextTerms` extracts (sender and quoted names, Latin names, identifiers, codes) in the prompt's terms. On the development split this matched or beat context sections, at lower latency and without a second prompt prefix; the `context-v1` section template remains for the benchmark.
+- **Measured effect** ([report](../../benchmarks/results/context-ablation-v1/README.md)): with Qwen3 4B, all sources raise the held-out context set from 9 to 16 of 30 with no worsened case, almost entirely from screen text. The shipped Qwen3 1.7B ignores context (9 of 30 with or without it). The benefit therefore needs the larger model; with 1.7B the context costs recognition time and changes little.
+- Reading the screen costs a capture plus about 0.1–0.3 s of recognition at session start, which runs in parallel with speaking. The final rewrite waits at most 1.5 s for it.
+- On by default means a person who never opens Settings gets screen and field text read whenever polishing is on. The switches and the Screen Recording grant are the controls; macOS also shows its own recording indicator.
+
+## Alternatives considered
+
+- **Opt-in per source** (009 as written): safer by default, but most people would never benefit; the user chose Typeless's default.
+- **Accessibility-tree visible text** (Typeless): no Screen Recording grant, but many apps (Electron, canvas editors, terminals) expose little text, and walking large trees is slow.
+- **Local VLM on the screenshot:** not run; weights were not downloaded for this study.
+- **Context as ASR hot words** (Doubao): needs a biasing-capable recognizer and audio fixtures; a candidate follow-up.
+- **Context sections in the prompt** (`context-v1`): the same 16 held-out passes as terms for 4B, but slower at the median (1.84 s against 1.33 s in the same batch) and a prefix swap per switch; kept as a benchmark mode.
