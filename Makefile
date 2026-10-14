@@ -6,7 +6,7 @@ REWRITE_CONFIG ?= benchmarks/configs/desktop-rewrite.json
 REWRITE_PLAN ?= .workspace/benchmarks/rewrite-plan.json
 export CORPUS DRIVER OUT RESULTS MANIFEST BUNDLE SEGMENT LLM_MODEL LLM_RUNTIME VARIANT RUNS CONFIG PLAN SUITE REWRITE_CONFIG REWRITE_PLAN REVIEW RATINGS RATERS RATING_SEED EVAL_PYTHON MODELS MODEL_IDS QWEN_CONFIG QWEN_PROMPTS QWEN_ASR AUDIO_CORPUS PREFIX_CONFIG CASES DEV TEST REPS
 
-.PHONY: install check test lint format docs core-check tooling-test desktop-check desktop-libs desktop-build desktop-dev site-check site-build site-assets site-deploy e2e e2e-macos e2e-scenarios bench-plan ablation-plan bench-validate bench-run bench-report datasets-check i18n-check stream-plan stream-bench rewrite-plan rewrite-validate rewrite-run rewrite-report rewrite-human-export rewrite-human-report rewrite-e2e qwen-env qwen-provision qwen-diagnostic qwen-report qwen-asr-diagnostic qwen-prefix-diagnostic live-fixtures live-text-bench live-audio-bench live-report scene-bench context-ocr memory-bench help
+.PHONY: install check test lint format docs core-check sync-check sync-integration tooling-test desktop-check desktop-libs desktop-build desktop-dev site-check site-build site-assets site-deploy e2e e2e-macos e2e-scenarios bench-plan ablation-plan bench-validate bench-run bench-report datasets-check i18n-check stream-plan stream-bench rewrite-plan rewrite-validate rewrite-run rewrite-report rewrite-human-export rewrite-human-report rewrite-e2e qwen-env qwen-provision qwen-diagnostic qwen-report qwen-asr-diagnostic qwen-prefix-diagnostic live-fixtures live-text-bench live-audio-bench live-report scene-bench context-ocr memory-bench help
 
 install: ## Install the pinned pnpm workspace with its frozen lockfile
 	@pnpm install --frozen-lockfile
@@ -21,6 +21,12 @@ i18n-check: ## Validate translation keys, templates and hardcoded UI copy
 
 core-check: ## Run portable core tests, vet and formatting checks
 	@pnpm core:check
+
+sync-check: ## Test and vet the sync relay module
+	@cd services/sync && GOWORK=off go test ./... && GOWORK=off go vet ./...
+
+sync-integration: ## Run the PostgreSQL relay test; requires ARION_SYNC_TEST_DATABASE_URL
+	@cd services/sync && GOWORK=off go test -tags integration ./infrastructure/postgres/
 
 tooling-test: ## Test benchmark metrics, leakage guards and driver conformance
 	@pnpm test:tooling

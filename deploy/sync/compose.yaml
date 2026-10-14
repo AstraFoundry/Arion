@@ -1,0 +1,52 @@
+name: arion-sync
+
+services:
+  postgres:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: arion
+      POSTGRES_PASSWORD: ${ARION_SYNC_POSTGRES_PASSWORD:?set ARION_SYNC_POSTGRES_PASSWORD}
+      POSTGRES_DB: arion_sync
+    volumes:
+      - arion-sync-pg:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U arion -d arion_sync"]
+      interval: 2s
+      timeout: 5s
+      retries: 30
+
+  migrate:
+    build:
+      context: ../..
+      dockerfile: deploy/sync/Dockerfile
+    command: ["migrate"]
+    environment:
+      ARION_SYNC_DATABASE_URL: postgres://arion:${ARION_SYNC_POSTGRES_PASSWORD}@postgres:5432/arion_sync?sslmode=disable
+      ARION_SYNC_ACCOUNT_GATE: ${ARION_SYNC_ACCOUNT_GATE:-noop}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
+
+  api:
+    build:
+      context: ../..
+      dockerfile: deploy/sync/Dockerfile
+    command: ["serve"]
+    environment:
+      ARION_SYNC_DATABASE_URL: postgres://arion:${ARION_SYNC_POSTGRES_PASSWORD}@postgres:5432/arion_sync?sslmode=disable
+      ARION_SYNC_HTTP_ADDR: ":8080"
+      ARION_SYNC_ACCOUNT_GATE: ${ARION_SYNC_ACCOUNT_GATE:-noop}
+      ARION_SYNC_LOG_LEVEL: ${ARION_SYNC_LOG_LEVEL:-info}
+      ARION_SYNC_OIDC_ISSUER: ${ARION_SYNC_OIDC_ISSUER:-https://astrafoundry.si}
+      ARION_SYNC_OIDC_AUDIENCE: ${ARION_SYNC_OIDC_AUDIENCE:-https://api.arion.astrafoundry.si}
+      ARION_SYNC_OIDC_CLIENT_ID: ${ARION_SYNC_OIDC_CLIENT_ID:-arion-sync}
+      ARION_SYNC_OIDC_ENTITLEMENT: ${ARION_SYNC_OIDC_ENTITLEMENT:-arion.sync.hosted}
+    ports:
+      - "127.0.0.1:8080:8080"
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+
+volumes:
+  arion-sync-pg:

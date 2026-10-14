@@ -1,3 +1,3 @@
 # Docker
 
-No image or compose stack is implemented. Add a reproducible relay image only after SYNC-01 has a concrete module, encrypted storage/auth protocol and deployment runbook. Desktop apps and IME hosts are native packages, not containers.
+The relay image is [deploy/sync/Dockerfile](../sync/Dockerfile): a multi-stage build of `services/sync`, static binary, uid 65532, no shell. [compose.yaml](../sync/compose.yaml) runs PostgreSQL 17, a one-shot migrate, and the API on `127.0.0.1:8080`. Desktop apps and IME hosts stay native packages.

@@ -11,7 +11,8 @@ Read [AGENTS.md](../../AGENTS.md), [architecture](architecture.md), [repository]
 - **LRW-01 (live rewriting, macOS Apple silicon):** edit-while-speaking pipeline per [ADR 011](../decisions/011-live-local-rewriting.md): segment cuts at pauses, latest-wins live previews of stable text, validated automatic final rewrite with the original kept, Qwen3 1.7B in the isolated `arion-llm` GenAI worker with KV prefix reuse, pinned model provisioning, a polish switch beside recognition in onboarding and Settings › Model, silent hf-mirror fallback and "Copy original". LRW-A01–A05 evidence in [the report](../../benchmarks/results/live-rewrite-v1/README.md); LRW-A06 (blind review) open.
 - **UI-01:** menu bar icon and popover panel, click-through overlay pill with spring motion, settings (permissions, shortcut recorder, input mode, insertion, microphone device, gain with suggested distances and meter, model, vocabulary, about with updates, privacy and project links), first-run onboarding with permission gates and model download; headless view tests and native window E2E; persisted English/Simplified Chinese interface language with live switching, typed catalogs and localized macOS permission resources ([i18n](../frontend/i18n.md), DSK-A09).
 - **IMK-01:** `ArionInput.app` InputMethodKit host with marked-text composition over local IPC ([ADR 006](../decisions/006-macos-input-method-host.md)); explicit install/remove in settings.
-- **MEM-01 (local):** approved vocabulary encrypted with AES-256-GCM, key in the Keychain/DPAPI ([ADR 005](../decisions/005-local-encryption.md)); no outbox or sync yet.
+- **MEM-01 (local):** approved vocabulary encrypted with AES-256-GCM, key in the Keychain/DPAPI ([ADR 005](../decisions/005-local-encryption.md)); no desktop outbox yet.
+- **SYNC-01 / SYNC-08 / SYNC-09:** `services/sync` ciphertext relay with `noop` and `oidc` gates, device signatures, push/pull/snapshot/ack, revocation and `POST /v1/security-events` ([ADR 015](../decisions/015-hosted-relay-account-authorization.md)). MEM-A13–A16 are covered by unit tests against an in-memory port double and a local JWKS. `make sync-integration` is the PostgreSQL check and is not part of the default test run. Desktop enrollment and SYNC-10 remain open.
 - **MEM-02 (edit learning, macOS):** corrections of inserted text are learned on the device, shown with an undo, recalled by a one-pass index and, bounded, in the rewrite prompt ([ADR 014](../decisions/014-edit-learning.md), [edit-learning-v1](../../benchmarks/results/edit-learning-v1/README.md)). Windows does not read fields, so it does not learn yet.
 - **EVAL-01 / DATA-01 (partial):** production-pipeline benchmark driver, corpus builder, model-comparison experiment and catalog recording; macOS product scenario driver with an owned editor fixture.
 - **WIN-01 (code):** WASAPI capture through the same miniaudio adapter, SendInput Unicode insertion with foreground/focus revalidation, guarded clipboard paste, DPAPI key storage. Compiled for windows/amd64; never run on Windows.
@@ -35,8 +36,6 @@ Verification results and their limits are recorded in [validation](../quality/va
 | LRW-REVIEW-01 | P0 | Independent raters | Blind meaning/style/hallucination review of held-out live output (LRW-A06); natural consented speech; same-fixture Typeless/Doubao comparison in an owned editor |
 | STR (streaming sweep) | P1 | Reviewed timestamp annotations | Chunk/endpoint sweep with annotated onsets (STR-A01–A04) |
 | MEM-01 (sync parts) | P1 | Crypto/pairing ADR | Outbox, approval provenance UI, export/delete |
-| SYNC-01 | P1 | MEM-01 | Self-hosted relay per 003 |
-| SYNC-08/09 | P1 | SYNC-01 core | `AccountGate` `noop`/`oidc` and `POST /v1/security-events` per [ADR 015](../decisions/015-hosted-relay-account-authorization.md); MEM-A13–A16 against a local fake issuer (self-signed JWKS); hosted compose + PostgreSQL in `deploy/` |
 | SYNC-10 | P1 | Platform `arion-desktop` client | Desktop sign-in (RFC 8252 loopback, PKCE S256, refresh token in Keychain/Credential Manager), two-path onboarding, waitlist join, sign-out keeping local data (MEM-A17) |
 | SITE-01 | P1 | `@astrafoundry/design` published | `apps/site` is built ([site](../frontend/site.md), [ADR 016](../decisions/016-marketing-site.md)); remaining: replace the vendored Sunbeam/beUI copy listed in the [site README](../../apps/site/README.md#temporary-vendored-design-code) with the package |
 | Hold-to-talk | P1 | Key-up adapter (event tap) | Tested native key-down/key-up adapter (DSK-02) |
@@ -48,7 +47,7 @@ RNK-01 cannot fabricate n-best from a recognizer that exposes a single hypothesi
 ## Decisions needed at the appropriate task
 
 - Ranking/correction checkpoints after measured gates; recognition bundles are selected by ADR 004.
-- Vetted crypto provider, enrollment/recovery UX and key epochs before MEM-01/SYNC-01 persist or exchange real memory.
+- Recovery-secret enrollment stays rejected (`RECOVERY_UNSUPPORTED`) until a vetted format exists. Revocation rotates the key epoch; clients re-encrypt because the relay cannot read ciphertext.
 - Local SQLite driver and encryption boundary before persistence migration code.
 - Native IMK/TSF host language and local authenticated IPC framing after minimal OS harness proves lifecycle/ABI.
 - App identifier/signing identities, minimum OS/RAM and update trust before public packages. Current `local.arion.desktop` is a development identifier.

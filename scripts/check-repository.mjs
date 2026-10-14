@@ -90,6 +90,11 @@ for (const name of files.filter(name => name.endsWith('.go'))) {
       if (normalized.startsWith('packages/core/application/') && /arion\.local\/core\/(infrastructure|interfaces)\//.test(dependency)) errors.push(`${name}: concrete adapter import in application: ${dependency}`);
       if (normalized.startsWith('packages/core/contracts/') && /arion\.local\/core\/(application|infrastructure|interfaces)\//.test(dependency)) errors.push(`${name}: outward portable contract import: ${dependency}`);
     }
+    if (normalized.startsWith('services/sync/domain/')) {
+      if (dependency.includes('.') || /^(net|database|os|syscall|plugin)(\/|$)/.test(dependency)) errors.push(`${name}: non-stdlib or transport dependency in sync domain: ${dependency}`);
+      if (/arion\.local\/sync\/(application|infrastructure|interfaces)\//.test(dependency)) errors.push(`${name}: outward sync domain import: ${dependency}`);
+    }
+    if (normalized.startsWith('services/sync/application/') && /arion\.local\/sync\/(infrastructure|interfaces)\//.test(dependency)) errors.push(`${name}: concrete adapter import in sync application: ${dependency}`);
     if (!ui) continue;
     if (dependency.startsWith('arion.local/desktop/') && !dependency.startsWith('arion.local/desktop/ui/')) errors.push(`${name}: concrete desktop dependency in UI: ${dependency}`);
     const target = dependency.match(/^arion\.local\/desktop\/ui\/([^/]+)\/([^/]+)/);

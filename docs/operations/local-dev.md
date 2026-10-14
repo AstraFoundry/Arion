@@ -11,7 +11,7 @@ make desktop-check
 make e2e
 ```
 
-`pnpm check` validates local Markdown links, runtime configuration JSON, active-doc placeholders, Go layer imports and JavaScript syntax. `make core-check` runs portable core tests/vet/format validation in standalone module mode. `make i18n-check` / `pnpm i18n:check` validates translation keys, templates, formatting and direct hardcoded copy; `pnpm test` includes it. These do not claim OS adapter or inference coverage.
+`pnpm check` validates local Markdown links, runtime configuration JSON, active-doc placeholders, Go layer imports and JavaScript syntax. `make core-check` runs portable core tests/vet/format validation in standalone module mode. `make sync-check` does the same for `services/sync`. `pnpm test` includes both. `make sync-integration` needs `ARION_SYNC_TEST_DATABASE_URL` and is not part of the default run. `make i18n-check` / `pnpm i18n:check` validates translation keys, templates, formatting and direct hardcoded copy. These do not claim OS adapter or inference coverage.
 
 `make site-check` / `pnpm site:check` checks the marketing site in `apps/site`: dictionary completeness, TypeScript, ESLint, Vitest and the Next.js static export into `apps/site/out`. `pnpm --filter @arion/site dev` serves it on `127.0.0.1` for local work; see the [site README](../../apps/site/README.md) and [site conventions](../frontend/site.md).
 

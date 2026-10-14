@@ -2,7 +2,7 @@
 
 ## Current capability
 
-`make desktop-build` packages `Arion.app` (menu bar app, `LSUIElement`), its icon, the microphone usage description, the audio-input entitlement and the speech runtime libraries in `Contents/Resources/lib`, signed ad hoc, and its disk image. `scripts/cc-relocatable.sh` links without the build machine's module-cache rpath, so `mygo build` signs the binary that ships; `scripts/verify-macos-app.mjs` checks rpaths and the signature without changing the app. Models are not bundled: the app downloads the bundle selected by evaluation from pinned URLs and verifies every file. There is no IME installer or sync service yet. The development identifier `local.arion.desktop` and ad hoc signing are not release-ready.
+`make desktop-build` packages `Arion.app` (menu bar app, `LSUIElement`), its icon, the microphone usage description, the audio-input entitlement and the speech runtime libraries in `Contents/Resources/lib`, signed ad hoc, and its disk image. `scripts/cc-relocatable.sh` links without the build machine's module-cache rpath, so `mygo build` signs the binary that ships; `scripts/verify-macos-app.mjs` checks rpaths and the signature without changing the app. Models are not bundled: the app downloads the bundle selected by evaluation from pinned URLs and verifies every file. There is no IME installer yet. The sync relay image and compose stack live in [deploy/sync](../../deploy/sync/README.md). The development identifier `local.arion.desktop` and ad hoc signing are not release-ready.
 
 ```sh
 make desktop-build
@@ -27,11 +27,11 @@ The app updates itself from the latest published GitHub release of `AstraFoundry
 6. Prove mode switching, host crashes, shutdown and update/uninstall clean owned composition and don't strand OS registrations.
 7. Update trust (Ed25519-signed archives) and swap rollback are in place ([ADR 010](../decisions/010-in-app-updates.md)); model migration checks and Developer ID signing, which keeps privacy consent across updates, remain before broad distribution.
 
-## Self-hosted relay gates
+## Self-hosted relay
 
-Implement SYNC-01 before deploying anything. Specify server auth/enrollment, TLS/reverse proxy, ciphertext database migrations, size/rate limits, durable cursor/revision behavior, backup/restore and key-epoch tests. Keep private keys on clients; operators back up encrypted records/routing metadata. A restore cannot invent plaintext or silently discard client conflicts.
+[deploy/sync](../../deploy/sync/README.md) builds the relay and runs PostgreSQL 17 plus a one-shot migration. Put TLS on a reverse proxy in front of `127.0.0.1:8080`. Keep private keys on clients; operators back up ciphertext and routing metadata. A restore cannot invent plaintext or silently discard client conflicts. Revocation rotates the key epoch; clients re-encrypt, and previously downloaded plaintext cannot be remotely erased.
 
-Docker/Kubernetes assets are reserved under [deploy](../../deploy/README.md); no image, host, ingress or database credentials are invented by this foundation.
+`noop` is the self-host default. `oidc` is the hosted gate for `api.arion.astrafoundry.si` and must not share the platform database. Kubernetes packaging under [deploy/k8s](../../deploy/k8s/README.md) is still unused.
 
 ## Marketing site
 

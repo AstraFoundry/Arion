@@ -27,7 +27,7 @@
 | `specs` | Normative requirements, acceptance scenarios and task traceability |
 | `docs/research` | Evidence and technical proposals; cannot override accepted specs |
 
-The three Go modules (`packages/core`, `models`, `apps/desktop`) are connected by `go.work`. `cmd/arion-llm` and the `infrastructure/llm` packages build with `CGO_ENABLED=0` and must never import the speech runtime; `scripts/stage-llm-runtime.mjs` stages the worker and its pinned GenAI/ONNX Runtime libraries into `resources/darwin-arm64/llm`. `apps/desktop/go.mod` pins MyGo, sherpa-onnx Go bindings and miniaudio, and replaces core/models with the local modules; reconsider the local `replace` before publishing modules. `GOWORK=off` allows portable core and catalog checks without upgrading their toolchain. The desktop module builds with cgo (`CGO_ENABLED=1`) because the speech runtimes are native libraries.
+The four Go modules (`packages/core`, `models`, `apps/desktop`, `services/sync`) are connected by `go.work`. `services/sync` is checked with `GOWORK=off`, the same way as the portable core. Its domain package is standard-library only and does not import the application or infrastructure layers. `cmd/arion-llm` and the `infrastructure/llm` packages build with `CGO_ENABLED=0` and must never import the speech runtime; `scripts/stage-llm-runtime.mjs` stages the worker and its pinned GenAI/ONNX Runtime libraries into `resources/darwin-arm64/llm`. `apps/desktop/go.mod` pins MyGo, sherpa-onnx Go bindings and miniaudio, and replaces core/models with the local modules; reconsider the local `replace` before publishing modules. `GOWORK=off` allows portable core and catalog checks without upgrading their toolchain. The desktop module builds with cgo (`CGO_ENABLED=1`) because the speech runtimes are native libraries.
 
 ## FSD in native Go
 
@@ -39,7 +39,7 @@ All application copy is centralized in the English/Simplified Chinese catalogs u
 
 ## DDD in desktop and relay
 
-Core domain defines invariants and abstractions; core application orchestrates them. Desktop infrastructure provides local implementations. Future relay domain owns device authorization, opaque revisions, retention and conflict validation, never speech or plaintext memory. Its interfaces call application services rather than SQL directly.
+Core domain defines invariants and abstractions; core application orchestrates them. Desktop infrastructure provides local implementations. The relay domain owns device authorization, opaque revisions, retention and conflict validation, never speech, plaintext memory, or accounts. Its HTTP package calls application services rather than SQL. `infrastructure/memory` implements the same ports as PostgreSQL for tests and is not composed into `cmd/sync`.
 
 ## Working rules
 

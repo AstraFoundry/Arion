@@ -6,4 +6,4 @@ Allowed local records: approved memory, user preferences, tombstones, encrypted 
 
 IDs are opaque stable identifiers. Domain revision/parent references determine conflicts; wall-clock timestamps do not pick winners. Repository adapters implement transactions for local memory + outbox. Migrations are versioned, tested against prior snapshots and never modify applied revisions.
 
-The future relay stores ciphertext envelopes, device authorization, operation deduplication and server cursors. Do not assume an ORM, PostgreSQL or broker; SQLite is an initial deployment candidate subject to concurrency/backup evaluation. See [memory sync](../../specs/003-memory-sync.md).
+The desktop proposal above is unchanged. The relay in `services/sync` uses its own PostgreSQL and forward-only SQL migrations. It stores ciphertext envelopes, device public keys, operation deduplication and server cursors. It does not use the desktop SQLite file. See [memory sync](../../specs/003-memory-sync.md) and [deploy/sync](../../deploy/sync/README.md).
