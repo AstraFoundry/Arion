@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	// DefaultIssuer is the Astra Foundry issuer. Relying parties key accounts
+	// DefaultIssuer is the AstraFoundry issuer. Relying parties key accounts
 	// on (issuer, subject).
 	DefaultIssuer = "https://astrafoundry.si"
 	// DefaultClientID is the public desktop client.
