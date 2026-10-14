@@ -6,7 +6,7 @@ Accepted. Clarifies the scope of [ADR 001](001-desktop-native-boundaries.md).
 
 ## Context
 
-Arion needs a public product site at `arion.astrafoundry.si`: product pages, downloads and links to the Astra Foundry account and hosted-sync waitlist. Astra Foundry's sites share one visual system, published as `@astrafoundry/design` (Sunbeam tokens and beUI motion components, React). `lyra-landing` already ships this kind of site as a Next.js static export on Cloudflare Workers.
+Arion needs a public product site at `arion.astrafoundry.si`: product pages, downloads and links to the AstraFoundry account and hosted-sync waitlist. AstraFoundry's sites share one visual system, published as `@astrafoundry/design` (Sunbeam tokens and beUI motion components, React). `lyra-landing` already ships this kind of site as a Next.js static export on Cloudflare Workers.
 
 [ADR 001](001-desktop-native-boundaries.md) and the repository rules forbid React and webviews. That rule protects the desktop app, which is a MyGo native shell; it was never about a website.
 

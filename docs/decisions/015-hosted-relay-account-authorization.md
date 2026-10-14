@@ -6,7 +6,7 @@ Accepted. Amends SYNC-02 of [003](../../specs/003-memory-sync.md), which assumed
 
 ## Context
 
-[003](../../specs/003-memory-sync.md) defines a self-hosted relay that stores only ciphertext and authenticates devices. Astra Foundry will also run a hosted relay at `api.arion.astrafoundry.si`. A hosted relay needs to know who may use it, which tenant a request belongs to and what quota applies, and it must act when the account behind a tenant is deleted, banned or revokes Arion. Access to the hosted relay is an entitlement (`arion.sync.hosted`) granted from the Astra Foundry waitlist; Astra Foundry accounts are an OpenID Connect provider at issuer `https://astrafoundry.si`. Endpoints, claims, clients and event payloads are defined normatively by the [platform contracts](https://github.com/AstraFoundry/astrafoundry.si/blob/main/docs/project/platform-contracts.md) (`astrafoundry.si` repository, `docs/project/platform-contracts.md`); this ADR records Arion's side.
+[003](../../specs/003-memory-sync.md) defines a self-hosted relay that stores only ciphertext and authenticates devices. AstraFoundry will also run a hosted relay at `api.arion.astrafoundry.si`. A hosted relay needs to know who may use it, which tenant a request belongs to and what quota applies, and it must act when the account behind a tenant is deleted, banned or revokes Arion. Access to the hosted relay is an entitlement (`arion.sync.hosted`) granted from the AstraFoundry waitlist; AstraFoundry accounts are an OpenID Connect provider at issuer `https://astrafoundry.si`. Endpoints, claims, clients and event payloads are defined normatively by the [platform contracts](https://github.com/AstraFoundry/astrafoundry.si/blob/main/docs/project/platform-contracts.md) (`astrafoundry.si` repository, `docs/project/platform-contracts.md`); this ADR records Arion's side.
 
 Self-hosting stays the sync priority, so none of this may become a requirement for a self-hosted relay, and an account must never become a way to read memory.
 
@@ -40,14 +40,14 @@ Groups, devices and envelopes belong to a tenant as defined by 003.
 
 With `noop` the endpoint does not exist.
 
-**Login is not decryption.** The account answers only whether a client may use the hosted relay, which tenant it is and what quota applies. Reading memory depends only on a device holding the group key. Neither the relay nor Astra Foundry sees plaintext or holds keys, and account recovery does not recover data: losing every device without the recovery key loses the synced memory. Onboarding, Settings and the privacy notice say so.
+**Login is not decryption.** The account answers only whether a client may use the hosted relay, which tenant it is and what quota applies. Reading memory depends only on a device holding the group key. Neither the relay nor AstraFoundry sees plaintext or holds keys, and account recovery does not recover data: losing every device without the recovery key loses the synced memory. Onboarding, Settings and the privacy notice say so.
 
 **Desktop sign-in** follows RFC 8252. Arion opens the system browser to the issuer's authorize endpoint (from discovery) as the public client `arion-desktop`, with PKCE S256 and a `state`, and receives the code on a one-shot listener at `http://127.0.0.1:{random port}/callback`. It requests `openid profile offline_access arion.sync waitlist:join`. The refresh token is kept in the macOS Keychain or Windows Credential Manager; access tokens stay in memory.
 
 - Onboarding offers two paths, the first being the default: **Continue locally**, with no account and every local feature, and **Sign in and set up sync**. A signed-in user without `arion.sync.hosted` can join the hosted-sync waitlist from the app and is offered a self-hosted relay. The app resolves the waitlist id from `GET {issuer}/api/v1/catalog/products/arion` (key `hosted-sync`) rather than hardcoding it; joining returns `201` pending, and `409` means already entitled or already pending; local features are unaffected. With the entitlement, device enrollment follows SYNC-02.
 - Signing out revokes and deletes the refresh token and keeps local keys and memory. Turning sync off and deleting server data remain separate actions (SYNC-07).
 
-**Deployment.** The hosted relay is its own Docker compose stack with its own PostgreSQL, kept in this repository's `deploy/`. It never shares the Astra Foundry platform database; it talks to the platform only through OIDC discovery, JWKS, the security events it receives and, optionally, `POST {issuer}/api/v1/entitlements/introspect` as the confidential client `arion-sync` (`client_credentials`, `client_secret_basic`, scope `entitlements:introspect`).
+**Deployment.** The hosted relay is its own Docker compose stack with its own PostgreSQL, kept in this repository's `deploy/`. It never shares the AstraFoundry platform database; it talks to the platform only through OIDC discovery, JWKS, the security events it receives and, optionally, `POST {issuer}/api/v1/entitlements/introspect` as the confidential client `arion-sync` (`client_credentials`, `client_secret_basic`, scope `entitlements:introspect`).
 
 ## Consequences
 
@@ -71,5 +71,5 @@ With `noop` the endpoint does not exist.
 
 - [003 Memory sync](../../specs/003-memory-sync.md), [005 Privacy](../../specs/005-privacy.md), [ADR 002](002-local-pipeline-and-memory.md).
 - [`services/sync`](../../services/sync/README.md), [`deploy/`](../../deploy/README.md).
-- [Astra Foundry platform contracts](https://github.com/AstraFoundry/astrafoundry.si/blob/main/docs/project/platform-contracts.md) — normative issuer, client, token, waitlist and security-event values.
+- [AstraFoundry platform contracts](https://github.com/AstraFoundry/astrafoundry.si/blob/main/docs/project/platform-contracts.md) — normative issuer, client, token, waitlist and security-event values.
 - RFC 8252 (OAuth 2.0 for native apps), RFC 7636 (PKCE), RFC 8417 (Security Event Token), RFC 8935 (push delivery), OpenID RISC and CAEP event types.
