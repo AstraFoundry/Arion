@@ -2,7 +2,9 @@
 package kit
 
 import (
+	"math"
 	"runtime"
+	"strconv"
 	"strings"
 	"time"
 
@@ -353,4 +355,148 @@ func SelectItem[T comparable](c *ui.Context, tokens theme.Tokens, sel ui.SelectP
 // SelectSeparator divides groups of options in a select's popup.
 func SelectSeparator(c *ui.Context, tokens theme.Tokens) ui.Element {
 	return ui.Box(c).Height(1).Margin(4, 8).Background(tokens.Hairline)
+}
+
+// CardHeader is a card's title row, as coss's CardHeader: the title on the
+// left and an optional action (a select, a button, a figure) on the right.
+func CardHeader(c *ui.Context, tokens theme.Tokens, title string, action func()) ui.Element {
+	return ui.Row(c).Gap(8).Padding(12, 12, 4, 16).MinHeight(44).AlignItems(ui.Center).Children(func() {
+		ui.Text(c, title).FontSize(theme.Heading).FontWeight(600).TextColor(tokens.Text).SingleLine().Grow(1).Shrink(1)
+		if action != nil {
+			action()
+		}
+	})
+}
+
+// Stat is a card stating one measurement: an icon and label over the
+// figure, which value draws large (with Figure), and its unit, set small.
+func Stat(c *ui.Context, tokens theme.Tokens, icon *ui.SVG, label, unit string, value func()) ui.Element {
+	card := Card(c, tokens).Padding(14, 16, 16, 16).Gap(10)
+	card.Children(func() {
+		ui.Row(c).Gap(6).AlignItems(ui.Center).TextColor(tokens.Muted).Children(func() {
+			ui.Icon(c, icon).FontSize(14)
+			ui.Text(c, label).FontSize(theme.Caption).FontWeight(500).SingleLine().Shrink(1)
+		})
+		// MyGo has no baseline alignment outside fields: bottoms align and
+		// the unit rises by the difference in descent.
+		ui.Row(c).Gap(4).AlignItems(ui.End).Children(func() {
+			value()
+			if unit != "" {
+				ui.Text(c, unit).FontSize(theme.Body).FontWeight(500).TextColor(tokens.Muted).SingleLine().Shrink(0).Margin(0, 0, 3, 0)
+			}
+		})
+	})
+	return card
+}
+
+// Rolls keeps a view's odometer wheels between frames, so a digit passing
+// 9 keeps rolling up to 0 instead of back down.
+type Rolls struct{ turns map[string]float32 }
+
+// FigureStyle is the type a Figure is set in.
+type FigureStyle struct {
+	Size   float32
+	Weight int
+	Color  ui.Color
+}
+
+// figureRoll is how a wheel turns; each digit after the first waits
+// digitStagger longer, so the figure rolls in from the left.
+var (
+	figureRoll   = ui.SpringOptions{Duration: 900 * time.Millisecond}
+	digitStagger = 35 * time.Millisecond
+)
+
+// nextTurn is where a wheel at target goes to show digit: forward, never
+// back, so 9 → 0 rolls up through the turn.
+func nextTurn(target float32, digit int) float32 {
+	return target + float32((digit-int(target)%10+10)%10)
+}
+
+// Figure sets text in tabular digits on odometer wheels. Each digit rolls
+// up to its value and keeps rolling up when the value grows; enter starts
+// every wheel from 0, as when the view appears, after delay. Separators
+// stay put. The text itself is laid out (invisibly) for size and for
+// assistive technology; the wheels are painted over it, clipped to it.
+func Figure(c *ui.Context, rolls *Rolls, key, text string, style FigureStyle, enter bool, delay time.Duration) ui.Element {
+	if rolls.turns == nil {
+		rolls.turns = map[string]float32{}
+	}
+	runes := []rune(text)
+	digits := 0
+	for _, r := range runes {
+		if r >= '0' && r <= '9' {
+			digits++
+		}
+	}
+	holder := ui.Box(c.Key(key)).Clip()
+	wheels := make([]float32, len(runes))
+	place := 0
+	for i := len(runes) - 1; i >= 0; i-- {
+		if runes[i] < '0' || runes[i] > '9' {
+			continue
+		}
+		// Wheels are named by place from the right, so 999 → 1,000 keeps
+		// the ones on the ones.
+		wheel := key + "/" + strconv.Itoa(place)
+		digit := float32(runes[i] - '0')
+		target, seen := rolls.turns[wheel]
+		if enter || !seen {
+			holder.Jump(wheel, 0)
+			target = digit
+		} else {
+			target = nextTurn(target, int(digit))
+		}
+		rolls.turns[wheel] = target
+		wait := delay + time.Duration(digits-1-place)*digitStagger
+		wheels[i] = holder.AnimateTo(wheel, target, ui.Animation{Spring: figureRoll, Delay: wait})
+		place++
+	}
+	holder.Children(func() {
+		ui.Text(c, text).FontSize(style.Size).FontWeight(style.Weight).FontFeatures("tnum").SingleLine().Shrink(0).
+			TextColor(ui.Transparent).Draw(func(p *ui.Painter, r ui.Rect) {
+			x := r.X
+			glyph := func(text string, y, alpha float32) {
+				p.RichText(x, y, 0, ui.Span{Text: text, Size: style.Size, Weight: style.Weight, Features: "tnum", Color: style.Color.Alpha(alpha)})
+			}
+			for i, r0 := range runes {
+				width, _ := p.MeasureText(0, ui.Span{Text: string(r0), Size: style.Size, Weight: style.Weight, Features: "tnum"})
+				if r0 < '0' || r0 > '9' {
+					glyph(string(r0), r.Y, 1)
+				} else {
+					turn := float32(math.Floor(float64(wheels[i])))
+					along := wheels[i] - turn
+					// The leaving digit rises out as the next rises in.
+					glyph(strconv.Itoa(int(turn)%10), r.Y-along*r.H, 1-along)
+					if along > 0.001 {
+						glyph(strconv.Itoa((int(turn)+1)%10), r.Y+(1-along)*r.H, along)
+					}
+				}
+				x += width
+			}
+		})
+	})
+	return holder
+}
+
+// SelectTrigger draws a select's trigger as coss does: an outline control
+// showing the chosen value and an up-down chevron. label names the select
+// for assistive technology.
+func SelectTrigger[T comparable](c *ui.Context, tokens theme.Tokens, sel ui.SelectParts[T], label, value string) ui.Element {
+	trigger := sel.Trigger.Label(label).Height(28).Padding(0, 8, 0, 10).Gap(6).MinWidth(96).
+		Radius(theme.RadiusControl).AlignItems(ui.Center)
+	Style(trigger, tokens, Outline, true)
+	trigger.Children(func() {
+		ui.Text(c, value).FontSize(theme.Body).FontWeight(500).SingleLine().Grow(1).ContentTransition(ui.ContentTransition{})
+		ui.Icon(c, icons.ChevronsUpDown).FontSize(13).TextColor(tokens.Muted)
+	})
+	return trigger
+}
+
+// Empty fills a card's body when there is nothing to show yet, as coss's
+// Empty: one quiet line, centered.
+func Empty(c *ui.Context, tokens theme.Tokens, text string) ui.Element {
+	return ui.Column(c).Grow(1).Padding(24, 16).Justify(ui.Center).AlignItems(ui.Center).Children(func() {
+		ui.Text(c, text).FontSize(theme.Body).TextColor(tokens.Muted).TextAlign(ui.Center)
+	})
 }

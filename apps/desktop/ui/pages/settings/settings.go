@@ -22,11 +22,13 @@ import (
 	"arion.local/desktop/ui/shared/theme"
 	"arion.local/desktop/ui/widgets/modelcard"
 	"arion.local/desktop/ui/widgets/showcase"
+	"arion.local/desktop/ui/widgets/usage"
 	"github.com/egoist/mygo/ui"
 )
 
 // Section IDs.
 const (
+	Overview   = "overview"
 	General    = "general"
 	Dictation  = "dictation"
 	Microphone = "microphone"
@@ -44,9 +46,13 @@ type Page struct {
 	delivery   runtime.Delivery
 	mode       inputmode.State
 	focus      int
+	usage      usage.State
+	// shown is the section drawn last, so entering one can replay its
+	// entrance.
+	shown string
 }
 
-func NewPage() *Page { return &Page{Section: General} }
+func NewPage() *Page { return &Page{Section: Overview} }
 
 // Render draws the settings window.
 func (p *Page) Render(c *ui.Context, store runtime.Store) {
@@ -55,6 +61,12 @@ func (p *Page) Render(c *ui.Context, store runtime.Store) {
 		p.focus, p.Section = focus.Seq, focus.Section
 	}
 	p.syncMonitor(store)
+	if p.Section != p.shown {
+		p.shown = p.Section
+		if p.Section == Overview {
+			p.usage.Replay()
+		}
+	}
 	bar := c.TitleBar()
 	ui.Row(c).Fill().AlignItems(ui.Stretch).Children(func() {
 		side := ui.Column(c).Width(210).Padding(max(bar.Height, 12)+8, 10, 12, 10)
@@ -98,6 +110,8 @@ func (p *Page) syncMonitor(store runtime.Store) {
 
 // Close releases resources the page holds.
 func (p *Page) Close(store runtime.Store) {
+	// The window opens again with its section's entrance.
+	p.shown = ""
 	if p.monitoring {
 		p.monitoring = false
 		store.Actions.StopLevelMonitor()
@@ -108,7 +122,7 @@ func (p *Page) Close(store runtime.Store) {
 }
 
 func title(section string, messages copy.Catalog) string {
-	return map[string]string{General: messages.Text(copy.NavGeneral), Dictation: messages.Text(copy.NavDictation), Microphone: messages.Text(copy.NavMicrophone),
+	return map[string]string{Overview: messages.Text(copy.NavOverview), General: messages.Text(copy.NavGeneral), Dictation: messages.Text(copy.NavDictation), Microphone: messages.Text(copy.NavMicrophone),
 		Model: messages.Text(copy.NavModel), Vocabulary: messages.Text(copy.NavVocabulary), About: messages.Text(copy.NavAbout)}[section]
 }
 
@@ -116,6 +130,8 @@ func (p *Page) section(c *ui.Context, store runtime.Store, tokens theme.Tokens) 
 	messages := store.Copy()
 	prefs := store.State.Preferences
 	switch p.Section {
+	case Overview:
+		usage.Overview(c, store, tokens, &p.usage, func() { p.Section = Vocabulary })
 	case General:
 		kit.Card(c, tokens).Children(func() {
 			kit.Row(c, tokens, messages.Text(copy.LanguageLabel), "", func() { uilanguage.Picker(c, store) })
@@ -309,6 +325,7 @@ func (p *Page) deliveryCard(c *ui.Context, store runtime.Store, tokens theme.Tok
 // nav lists the sections.
 func (p *Page) nav(c *ui.Context, messages copy.Catalog) {
 	ui.Sidebar(c.Key("nav"), &p.Section, func() {
+		ui.SidebarItem(c, Overview, icons.ChartLine, messages.Text(copy.NavOverview))
 		ui.SidebarItem(c, General, icons.Settings, messages.Text(copy.NavGeneral))
 		ui.SidebarItem(c, Dictation, icons.Keyboard, messages.Text(copy.NavDictation))
 		ui.SidebarItem(c, Microphone, icons.Mic, messages.Text(copy.NavMicrophone))

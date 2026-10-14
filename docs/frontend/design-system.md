@@ -66,7 +66,28 @@ The macOS consent guide is a whole window floating over System Settings: its car
 | `Keycap(s)`, `LevelBars`, `Press` | Shortcut display, live meter, press feedback |
 | `SelectPopup`, `SelectItem`, `SelectSeparator` | coss `Select` popup over `ui.SelectBase`: a card face 4 DIP below the trigger, radius 10, hairline, top light and `Lifted` elevation, 4 DIP padding; 28 DIP options with a 16 DIP check column, washed in `AccentSoft` while highlighted; inset hairline separators. The trigger keeps the look of the control it is (the scene card) |
 
+| `CardHeader` | coss `CardHeader`: a 15 DIP semibold title and an optional action (select, ghost button, figure) on one 44 DIP row |
+| `Stat` | A card stating one measurement: icon and caption label over a `Display` figure (drawn by the caller, usually with `Figure`) and its unit in muted `Body` |
+| `Figure`, `Rolls` | A number on odometer wheels: the text is laid out invisibly for size and assistive technology, and each digit is painted rolling up over it, clipped to the line, the leaving digit fading as the next arrives. Digits roll in from the left 35 ms apart on a 900 ms spring; `enter` starts them from 0. `Rolls` keeps each wheel's turns so a growing value rolls forward through 9 → 0, never back |
+| `SelectTrigger` | coss `Select` trigger for a plain value: the `Outline` button anatomy at 28 DIP, the value and an up-down chevron; its popup is `SelectPopup` |
+| `Empty` | coss `Empty`: one muted, centered line filling a card body that has nothing to show yet |
+
 Use these instead of `ui.Button` / `ui.PrimaryButton`. MyGo's stock switches, radios, fields, selects and progress bars are themed by `theme.Apply` and are used as is. A choice made from a custom trigger uses the `kit` select, not a native `Element.Menu`.
+
+## Overview
+
+Settings › Overview (`widgets/usage`) is the window's first section and its default. Cards are laid out in equal pairs: time dictating and words dictated, words polished and average speed (`Stat`), the daily-words heatmap (full width), then scenes and vocabulary.
+
+The heatmap follows GitHub's contribution graph: a column per week, Monday on top, ending with the current week, as many weeks as the card fits (cells 11–15 DIP on a 3 DIP gap, up to 53 weeks), with Mon/Wed/Fri and month labels and a Less–More legend in the header. Five shades: the `Hairline` well, the accent at 30% and 62%, the accent, then `AccentInk`. A day's shade is its rank among the visible days with dictation (the busiest quarter is darkest), so one unusual day does not wash out the rest. Hovering a day rings it and names its date and words in a tooltip.
+
+Entering the overview (opening the window on it, or choosing it) plays one entrance, about a second long:
+
+- Cards rise 8 DIPs and fade in on a 520 ms spring without bounce, 45 ms apart in reading order. The motion is a pose (transform and opacity), which the GPU renderer composites; MyGo's software rasterizer, used by the headless tester, draws transformed cards far slower, so filmstrip timings from `ARION_UI_SNAPSHOTS` are not real frame times.
+- Each stat's `Figure` rolls up from 0 starting 90 ms after its card.
+- Scene bars grow from 0 after their card, 50 ms apart; later range changes ease them with `Settle`, and their counts change with MyGo's numeric content transition.
+- The heatmap's cells light in a wave from the oldest week once its card has landed (the 1.2 s run starts at −0.18): each grows from 40% and fades in over a quarter of the run.
+
+A dictation committed while the overview shows rolls the figures and reshades the map without replaying the entrance. With Reduce Motion, MyGo only fades: every card fades at once without stagger, and figures, bars and cells take their values immediately. Scene bars are accent on a hairline track; their counts are always written beside them. Each card shows `Empty` when its period has no dictation.
 
 ## Illustrations
 

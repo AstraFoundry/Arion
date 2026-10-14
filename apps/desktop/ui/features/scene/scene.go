@@ -27,7 +27,8 @@ func Label(s runtime.Scene) copy.Key {
 	return copy.SceneChat
 }
 
-func icon(s runtime.Scene) *ui.SVG {
+// Icon is the scene's glyph.
+func Icon(s runtime.Scene) *ui.SVG {
 	switch s {
 	case runtime.SceneEmail:
 		return icons.Mail
@@ -80,7 +81,7 @@ func Card(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 	}
 	button.Transition(ui.ElementTransition{Colors: true, Duration: theme.Quick.Duration})
 	button.Children(func() {
-		ui.Icon(c, icon(decision.Scene)).FontSize(16).TextColor(tokens.Text)
+		ui.Icon(c, Icon(decision.Scene)).FontSize(16).TextColor(tokens.Text)
 		ui.Column(c).Gap(2).Grow(1).Children(func() {
 			ui.Text(c, messages.Text(Label(decision.Scene))).FontSize(theme.Body).FontWeight(600).SingleLine().
 				ContentTransition(ui.ContentTransition{})

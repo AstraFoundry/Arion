@@ -23,6 +23,9 @@ type (
 	Delivery      = application.Delivery
 	UILanguage    = application.UILanguage
 	HoldKey       = application.HoldKey
+	Usage         = domain.Usage
+	UsageLog      = domain.UsageLog
+	UsageDay      = domain.UsageDay
 )
 
 const (
@@ -52,6 +55,9 @@ const (
 	HoldRightAlt     = application.HoldRightAlt
 	HoldRightCtrl    = application.HoldRightCtrl
 )
+
+// DayKey names the local calendar day of t, as UsageDay.Date does.
+func DayKey(t time.Time) string { return domain.DayKey(t) }
 
 // HoldKeysFor lists the hold keys a platform supports.
 func HoldKeysFor(platform string) []HoldKey { return application.HoldKeysFor(platform) }
@@ -343,7 +349,9 @@ type State struct {
 	Vocabulary  []Replacement
 	// Learned is the entry last learned from a correction, shown with an
 	// undo until it expires.
-	Learned     Learned
+	Learned Learned
+	// Usage is the per-day dictation counts, oldest first.
+	Usage       UsageLog
 	Shortcut    Shortcut
 	InputMethod InputMethodState
 	Guide       Guide

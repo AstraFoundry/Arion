@@ -3,6 +3,7 @@ package app
 import (
 	"bytes"
 	"errors"
+	"fmt"
 	"image/png"
 	"os"
 	"path/filepath"
@@ -20,6 +21,7 @@ import (
 	"arion.local/desktop/ui/shared/config"
 	"arion.local/desktop/ui/shared/copy"
 	"arion.local/desktop/ui/shared/runtime"
+	"arion.local/desktop/ui/shared/theme"
 	"github.com/egoist/mygo/transfer"
 	"github.com/egoist/mygo/ui"
 )
@@ -297,6 +299,7 @@ func TestSettingsSections(t *testing.T) {
 	page := settings.NewPage()
 	tt := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, SettingsWidth, SettingsHeight)
 	for _, section := range []struct{ id, label, want string }{
+		{settings.Overview, copy.For(copy.English).Text(copy.NavOverview), copy.For(copy.English).Text(copy.UsageActivity)},
 		{settings.General, copy.For(copy.English).Text(copy.NavGeneral), copy.For(copy.English).Text(copy.LaunchAtLogin)},
 		{settings.Dictation, copy.For(copy.English).Text(copy.NavDictation), copy.For(copy.English).Text(copy.ShortcutLabel)},
 		{settings.Microphone, copy.For(copy.English).Text(copy.NavMicrophone), copy.For(copy.English).Text(copy.MicTest)},
@@ -545,6 +548,146 @@ func TestUpdateNotice(t *testing.T) {
 	}
 }
 
+// usageFixture fills a week of counts ending today and a few replacements.
+func usageFixture(state *runtime.State) {
+	now := time.Now()
+	for i, words := range []int{120, 0, 860, 430, 1210, 640, 380} {
+		day := now.AddDate(0, 0, i-6)
+		if words > 0 {
+			state.Usage = state.Usage.Add(day, runtime.Usage{SpeechMs: int64(words) * 400, Words: words / 2})
+			state.Usage = state.Usage.Add(day, runtime.Usage{SpeechMs: int64(words) * 300, Words: words / 4, Scene: runtime.SceneWork})
+			state.Usage = state.Usage.Add(day, runtime.Usage{SpeechMs: int64(words) * 150, Words: words - words/2 - words/4, Scene: runtime.ScenePrompt})
+		}
+	}
+	state.Usage = state.Usage.Add(now.AddDate(0, -2, 0), runtime.Usage{SpeechMs: 600000, Words: 1800, Scene: runtime.SceneEmail})
+	// Earlier months: busier on weekdays, with quiet stretches.
+	for back := 7; back < 210; back++ {
+		day := now.AddDate(0, 0, -back)
+		words := (back * 7919) % 900
+		if day.Weekday() == time.Saturday || day.Weekday() == time.Sunday {
+			words /= 4
+		}
+		if back%23 < 4 || words < 60 {
+			continue
+		}
+		state.Usage = state.Usage.Add(day, runtime.Usage{SpeechMs: int64(words) * 700, Words: words})
+	}
+	state.Vocabulary = []runtime.Replacement{{ID: "1", From: "cloud code", To: "Claude Code"}, {ID: "2", From: "a rion", To: "Arion"},
+		{ID: "3", From: "my go", To: "MyGo"}}
+}
+
+func TestUsageOverview(t *testing.T) {
+	state, _, store := fixture()
+	en := copy.For(copy.English)
+	page := settings.NewPage()
+	tt := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, SettingsWidth, SettingsHeight)
+	settle(tt)
+	if page.Section != settings.Overview || !hasText(tt, en.Text(copy.UsageActivity)) || !hasText(tt, en.Text(copy.UsageScenesEmpty)) {
+		t.Fatalf("empty overview: %s %q", page.Section, tt.Texts())
+	}
+	snapshot(t, tt, "settings-overview-empty")
+
+	// Entering the overview lights the heatmap up from the oldest week.
+	usageFixture(state)
+	if err := tt.Click(en.Text(copy.NavGeneral)); err != nil {
+		t.Fatal(err)
+	}
+	settle(tt)
+	if err := tt.Click(en.Text(copy.NavOverview)); err != nil {
+		t.Fatal(err)
+	}
+	// A filmstrip of the entrance, each frame named by its time.
+	for entered := time.Now(); time.Since(entered) < 1600*time.Millisecond; {
+		tt.Frame()
+		snapshot(t, tt, fmt.Sprintf("settings-overview-entering-%04d", time.Since(entered).Milliseconds()))
+	}
+	rest(tt, 300*time.Millisecond)
+	total := state.Usage.Since(time.Time{})
+	if !hasText(tt, en.Count(total.Words)) || !hasText(tt, "Claude Code") {
+		t.Fatalf("filled overview: %q", tt.Texts())
+	}
+	snapshot(t, tt, "settings-overview")
+	// Hovering this week's Monday names its words.
+	title, ok := tt.Find(en.Text(copy.UsageActivity))
+	if !ok {
+		t.Fatalf("no heatmap: %q", tt.Texts())
+	}
+	// Header row (44, title centered), the map's 4 DIP margin and its
+	// month labels (18), then half a cell.
+	tt.Move(SettingsWidth-theme.Gutter-17-6, title.Y+title.H/2+22+4+18+6)
+	rest(tt, 900*time.Millisecond)
+	snapshot(t, tt, "settings-overview-hover")
+	now := time.Now()
+	thisMonday := now.AddDate(0, 0, -((int(now.Weekday()) + 6) % 7))
+	tip := en.DayWords(thisMonday, state.Usage.Days(thisMonday, 1)[0].Words)
+	if !hasText(tt, tip) {
+		t.Errorf("no tooltip %q: %q", tip, tt.Texts())
+	}
+	tt.Move(10, 10)
+	// A dictation committed while the overview shows rolls the figures on
+	// without replaying the entrance.
+	state.Usage = state.Usage.Add(time.Now(), runtime.Usage{SpeechMs: 4000, Words: 256})
+	rest(tt, 1200*time.Millisecond)
+	if grown := state.Usage.Since(time.Time{}).Words; !hasText(tt, en.Count(grown)) {
+		t.Fatalf("figure did not follow %d: %q", grown, tt.Texts())
+	}
+	snapshot(t, tt, "settings-overview-grown")
+	tt.Scroll(SettingsWidth*0.7, SettingsHeight/2, 0, 600)
+	settle(tt)
+	snapshot(t, tt, "settings-overview-scenes")
+	// Today has no email; all time does.
+	if hasText(tt, en.Text(copy.SceneEmail)) {
+		t.Fatalf("today shows an older scene: %q", tt.Texts())
+	}
+	if err := tt.Click(en.Text(copy.UsageRangeToday)); err != nil {
+		t.Fatal(err)
+	}
+	settle(tt)
+	if err := tt.Click(en.Text(copy.UsageRangeAll)); err != nil {
+		t.Fatal(err)
+	}
+	rest(tt, 600*time.Millisecond)
+	if !hasText(tt, en.Text(copy.SceneEmail)) {
+		t.Fatalf("all time misses email: %q", tt.Texts())
+	}
+	if err := tt.Click(en.Text(copy.UsageVocabEdit)); err != nil {
+		t.Fatal(err)
+	}
+	settle(tt)
+	if page.Section != settings.Vocabulary {
+		t.Fatalf("edit opened %s", page.Section)
+	}
+
+	state.Preferences.UILanguage = runtime.LanguageChinese
+	zh := settings.NewPage()
+	zhTester := ui.NewTester(func(c *ui.Context) { zh.Render(c, store) }, SettingsWidth, SettingsHeight)
+	rest(zhTester, 1300*time.Millisecond)
+	if !hasText(zhTester, copy.For(copy.SimplifiedChinese).Text(copy.UsageSpeed)) {
+		t.Fatalf("zh overview: %q", zhTester.Texts())
+	}
+	snapshot(t, zhTester, "settings-overview-zh-CN")
+	zhTester.Scroll(SettingsWidth*0.7, SettingsHeight/2, 0, 600)
+	settle(zhTester)
+	snapshot(t, zhTester, "settings-overview-zh-CN-scenes")
+	dark := settings.NewPage()
+	darkTester := ui.NewTester(func(c *ui.Context) { dark.Render(c, store) }, SettingsWidth+300, SettingsHeight)
+	darkTester.SetDark(true)
+	rest(darkTester, 1300*time.Millisecond)
+	snapshot(t, darkTester, "dark-overview-wide")
+}
+
+// TestHeatmapReducedMotion shows every lit day at once when the desktop
+// asks for less motion.
+func TestHeatmapReducedMotion(t *testing.T) {
+	state, _, store := fixture()
+	usageFixture(state)
+	page := settings.NewPage()
+	tt := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, SettingsWidth, SettingsHeight)
+	tt.SetPreferences(ui.Preferences{ReduceMotion: true})
+	rest(tt, 700*time.Millisecond)
+	snapshot(t, tt, "settings-overview-reduced-motion")
+}
+
 func TestDarkAppearance(t *testing.T) {
 	_, _, store := fixture()
 	panel := &menubar.Panel{}
@@ -650,6 +793,7 @@ func TestInterfaceLanguageSwitch(t *testing.T) {
 	settingsTester := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, SettingsWidth, SettingsHeight)
 	panelTester := ui.NewTester(func(c *ui.Context) { panel.Render(c, store) }, PanelWidth, PanelHeight)
 	onboardingTester := ui.NewTester(func(c *ui.Context) { onboardingPage.Render(c, store) }, OnboardingWidth, OnboardingHeight)
+	page.Section = settings.General
 	state.LastText = "User text {index}: keep exactly."
 	state.Dictation = runtime.Dictation{SessionID: "active", State: runtime.StateCapturing, Draft: state.LastText, Changed: time.Now()}
 	settle(settingsTester)

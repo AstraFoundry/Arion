@@ -6,6 +6,7 @@
 | ASR/correction drafts | Active session RAM | Never diagnostics; history separately opt-in |
 | Target app/nearby/selected text | Bounded consent-gated session context | Never sync/log or persist automatically |
 | Approved vocabulary/correction/preferences | Encrypted local values, including pairs learned from the user's corrections with their use counts | Client-encrypted sync only when enabled |
+| Usage counts | Per-day numbers in `usage.json`: sessions, speaking time, words and words per rewrite scene; no text, app, host or time of day | Never sync/log; shown only in Settings › Overview |
 | Group/device keys and auth tokens | OS credential store | Never logs/config/export without explicit protected flow |
 | Models | Per-user verified model cache | Public artifact downloads only; no speech payload |
 | App updates | Signed archive replaces the installed app | Release manifest and archive downloads from GitHub releases only; no content payload; checks can be turned off |
@@ -25,6 +26,8 @@ PRV-05: Log only random correlation IDs, coarse capability/model IDs, numeric du
 
 PRV-06: A self-hosted operator can observe timing, IP/device/group routing metadata and ciphertext sizes. E2EE does not conceal all metadata or protect against a compromised endpoint. Document backup, key recovery, device revocation and deletion limits before enabling sync.
 
+PRV-08: Usage counts record a session only after its commit completes. They hold calendar-day totals keyed by date and by scene name, never dictated text, bundle IDs, hosts or per-session timestamps, so they cannot reconstruct what was said or where.
+
 ## Acceptance
 
-PRV-A01: offline capture/rank/correction generates no content network traffic; PRV-A02: artifact/log scan excludes synthetic sensitive canaries; PRV-A03: cancel/restart leaves no temporary PCM files; PRV-A04: relay backup contains ciphertext only; PRV-A05: denylist/password/unknown field blocks context; PRV-A06: lost keys cannot silently create plaintext data or replace old encrypted records; PRV-A07: with automatic checks off, or in the offline profile, the app makes no update request, and a tampered update archive is rejected.
+PRV-A01: offline capture/rank/correction generates no content network traffic; PRV-A02: artifact/log scan excludes synthetic sensitive canaries; PRV-A03: cancel/restart leaves no temporary PCM files; PRV-A04: relay backup contains ciphertext only; PRV-A05: denylist/password/unknown field blocks context; PRV-A06: lost keys cannot silently create plaintext data or replace old encrypted records; PRV-A07: with automatic checks off, or in the offline profile, the app makes no update request, and a tampered update archive is rejected. PRV-A08: a cancelled, silent or failed session adds no usage, and the usage file holds only dates, counts and scene names (`TestUsageMeterCountsCommittedSessions`, `TestUsageRoundTrip`).

@@ -12,6 +12,7 @@ import (
 	"strconv"
 	"strings"
 	"testing"
+	"time"
 )
 
 func TestCatalogsMatchDeclaredKeys(t *testing.T) {
@@ -53,11 +54,18 @@ func TestCatalogsMatchDeclaredKeys(t *testing.T) {
 	}
 }
 
+func TestAdjacentPlaceholders(t *testing.T) {
+	names, err := placeholders("{month}{day}日")
+	if err != nil || strings.Join(names, ",") != "day,month" {
+		t.Fatalf("adjacent placeholders: %v %v", names, err)
+	}
+}
+
 func TestCatalogRejectsInvalidData(t *testing.T) {
 	for _, data := range []string{
 		`[]`, `{"a":"one","a":"two"}`, `{"a":""}`, `{"":"value"}`,
 		`{"a":42}`, `{"a":"{value"}`, `{"a":"value}"}`, `{"a":"{}"}`,
-		`{"a":"{nested{value}}"}`, `{"a":"ok"} {}`, `{"a":"ok"`,
+		`{"a":"{nested{value}}"}`, `{"a":"ok"} {}`, `{"a":"ok"`, `{"a":"{one}}"}`,
 	} {
 		t.Run(data, func(t *testing.T) {
 			if _, err := decodeCatalog(data); err == nil {
@@ -109,6 +117,29 @@ func TestFormatting(t *testing.T) {
 				t.Fatalf("value reinterpreted as template: %q", got)
 			}
 		})
+	}
+}
+
+func TestUsageFormatting(t *testing.T) {
+	en, zh := For(English), For(SimplifiedChinese)
+	for _, pair := range [][2]string{
+		{en.Count(0), "0"}, {en.Count(999), "999"}, {en.Count(1000), "1,000"}, {zh.Count(1234567), "1,234,567"},
+		{en.Weekday(time.Sunday), "Sun"}, {zh.Weekday(time.Wednesday), "周三"},
+		{en.DayWords(time.Date(2026, 10, 4, 0, 0, 0, 0, time.Local), 1380), "Oct 4: 1,380 words"},
+		{zh.DayWords(time.Date(2026, 1, 14, 0, 0, 0, 0, time.Local), 0), "1月14日：0 字"},
+	} {
+		if pair[0] != pair[1] {
+			t.Errorf("got %q, want %q", pair[0], pair[1])
+		}
+	}
+	for _, tc := range []struct {
+		catalog     Catalog
+		ms          int64
+		value, unit string
+	}{{en, 0, "0", "s"}, {en, 59999, "59", "s"}, {zh, 61000, "1", "分钟"}, {en, 5400000, "1.5", "h"}} {
+		if value, unit := tc.catalog.Duration(tc.ms); value != tc.value || unit != tc.unit {
+			t.Errorf("Duration(%d) = %q %q, want %q %q", tc.ms, value, unit, tc.value, tc.unit)
+		}
 	}
 }
 

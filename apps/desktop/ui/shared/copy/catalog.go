@@ -8,6 +8,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"time"
 )
 
 // Locale is a supported interface language, not an ASR language hint.
@@ -127,7 +128,7 @@ func placeholders(message string) ([]string, error) {
 				return nil, fmt.Errorf("invalid placeholder %q", name)
 			}
 			names = append(names, name)
-			i += end + 2
+			i += end + 1
 		}
 	}
 	sort.Strings(names)
@@ -225,4 +226,48 @@ func (c Catalog) DownloadSize(n int64) string {
 
 func (c Catalog) Step(index, total int) string {
 	return c.format(FormatStep, "index", strconv.Itoa(index), "total", strconv.Itoa(total))
+}
+
+// Count groups digits by thousands, as both locales write them.
+func (c Catalog) Count(n int) string {
+	digits := strconv.Itoa(max(n, 0))
+	for i := len(digits) - 3; i > 0; i -= 3 {
+		digits = digits[:i] + "," + digits[i:]
+	}
+	return digits
+}
+
+// Duration splits a span into a figure and its unit, so views can set the
+// figure larger: whole seconds under a minute, whole minutes under an
+// hour, then hours to one decimal.
+func (c Catalog) Duration(ms int64) (value, unit string) {
+	switch seconds := max(ms, 0) / 1000; {
+	case seconds < 60:
+		return strconv.FormatInt(seconds, 10), c.Text(UnitSeconds)
+	case seconds < 3600:
+		return strconv.FormatInt(seconds/60, 10), c.Text(UnitMinutes)
+	default:
+		return strconv.FormatFloat(float64(seconds)/3600, 'f', 1, 64), c.Text(UnitHours)
+	}
+}
+
+// Weekday is a day's short name.
+func (c Catalog) Weekday(day time.Weekday) string {
+	return c.Text([...]Key{WeekdaySun, WeekdayMon, WeekdayTue, WeekdayWed, WeekdayThu, WeekdayFri, WeekdaySat}[day])
+}
+
+// MonthDay names a calendar day without its year.
+func (c Catalog) MonthDay(t time.Time) string {
+	return c.format(FormatMonthDay, "month", c.Month(t.Month()), "day", strconv.Itoa(t.Day()))
+}
+
+// Month is a month's short name.
+func (c Catalog) Month(month time.Month) string {
+	return c.Text([...]Key{MonthJan, MonthFeb, MonthMar, MonthApr, MonthMay, MonthJun, MonthJul, MonthAug, MonthSep,
+		MonthOct, MonthNov, MonthDec}[month-1])
+}
+
+// DayWords states a day's dictated words.
+func (c Catalog) DayWords(t time.Time, words int) string {
+	return c.format(FormatDayWords, "date", c.MonthDay(t), "words", c.Count(words))
 }

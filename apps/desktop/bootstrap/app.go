@@ -26,6 +26,7 @@ import (
 	"arion.local/desktop/infrastructure/rewriting"
 	"arion.local/desktop/infrastructure/secrets"
 	"arion.local/desktop/infrastructure/settings"
+	"arion.local/desktop/infrastructure/usage"
 	"arion.local/desktop/infrastructure/vocabulary"
 	uiapp "arion.local/desktop/ui/app"
 	arion "arion.local/desktop/ui/shared/runtime"
@@ -70,6 +71,9 @@ type App struct {
 	ime       InputMethod
 	core      *application.Coordinator
 	vocabPath string
+	// usage persists per-day counts; meter folds session events into them.
+	usage usage.Store
+	meter application.UsageMeter
 
 	// Main-thread state.
 	state   arion.State
@@ -157,6 +161,7 @@ func New(opts Options) (*App, error) {
 		Screen: func() bool { p := a.preferences(); return p.Polish && p.ContextScreen },
 	})
 	a.vocabPath = filepath.Join(opts.DataDir, "vocabulary.bin")
+	a.usage = usage.Store{Path: filepath.Join(opts.DataDir, "usage.json")}
 	capture := opts.Audio
 	if capture == nil {
 		capture = a.mic
@@ -307,6 +312,11 @@ func (a *App) ready() {
 		a.state.InputMethod = a.ime.State()
 	}
 	a.loadVocabulary(false)
+	if days, err := a.usage.Load(); err != nil {
+		log.Printf("usage unreadable: %v", err)
+	} else {
+		a.state.Usage = days
+	}
 	// Offline and scripted profiles never reach the release feed.
 	var source updateSource = mygoUpdates{}
 	if a.opts.Offline || a.harness != nil {
@@ -378,6 +388,12 @@ func appendLevel(levels []float32, level float32) []float32 {
 
 // apply folds a coordinator event into the UI state on the main thread.
 func (a *App) apply(e contracts.Event) {
+	if u, ok := a.meter.Observe(e); ok {
+		a.state.Usage = a.state.Usage.Add(time.Now(), u)
+		if err := a.usage.Save(a.state.Usage); err != nil {
+			log.Printf("usage not saved: %v", err)
+		}
+	}
 	d := &a.state.Dictation
 	if e.SessionID != d.SessionID {
 		if e.Kind != contracts.SessionStateChanged || e.State != domain.Preparing {
