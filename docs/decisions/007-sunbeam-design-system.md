@@ -14,7 +14,8 @@ The question was whether Arion should adopt coss ui as its component baseline.
 
 - **coss ui is not a dependency.** It is React, Base UI and Tailwind; [ADR 001](001-desktop-native-boundaries.md) keeps Arion a MyGo native app with no React or webview. Its *anatomy* is the baseline instead, ported to Go in `ui/shared/kit`:
   - buttons in coss's `Primary`, `Outline` and `Ghost` variants, plus `Live` for the dictation toggle while recording, 32 DIP tall, radius 10, with a 1px edge, a 1px top light and a contact shadow that press flat, and 64% opacity when disabled;
-  - cards with a hairline edge, a contact shadow in the light and a top light in the dark.
+  - cards with a hairline edge, a contact shadow in the light and a top light in the dark;
+  - the `Select` popup, with its check column, highlight wash and separators, built on MyGo's headless `SelectBase`.
 - **Sunbeam tokens** live only in `ui/shared/theme`. `theme.Apply` installs them as MyGo's theme too, so stock controls (switches, radios, fields, progress) match. The app icon is redrawn in Sunbeam yellow with ink bars (`cmd/arion-icon`).
 - **The accent is pinned**, not taken from the system: Arion's brand is yellow on every desktop. Yellow never carries light text, and it is not used as text or icon color on light surfaces (`AccentInk` exists for that). Navigation uses ink as its accent (`theme.Ink`) because MyGo tints every sidebar icon with the accent.
 - **Illustrations** are mock UI (an editor window and the dictation pill) floating on a soft, motion-blurred photograph, drawn by `widgets/showcase`. They appear only in onboarding and Settings › About.

@@ -64,8 +64,9 @@ The macOS consent guide is a whole window floating over System Settings: its car
 | `Pill` | The dictation HUD surface, shared by the live pill and illustrations |
 | `Mark` | The app icon bitmap; the brand mark is never a glyph in an accent tile |
 | `Keycap(s)`, `LevelBars`, `Press` | Shortcut display, live meter, press feedback |
+| `SelectPopup`, `SelectItem`, `SelectSeparator` | coss `Select` popup over `ui.SelectBase`: a card face 4 DIP below the trigger, radius 10, hairline, top light and `Lifted` elevation, 4 DIP padding; 28 DIP options with a 16 DIP check column, washed in `AccentSoft` while highlighted; inset hairline separators. The trigger keeps the look of the control it is (the scene card) |
 
-Use these instead of `ui.Button` / `ui.PrimaryButton`. MyGo's stock switches, radios, fields, selects and progress bars are themed by `theme.Apply` and are used as is.
+Use these instead of `ui.Button` / `ui.PrimaryButton`. MyGo's stock switches, radios, fields, selects and progress bars are themed by `theme.Apply` and are used as is. A choice made from a custom trigger uses the `kit` select, not a native `Element.Menu`.
 
 ## Illustrations
 

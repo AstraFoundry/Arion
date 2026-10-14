@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"arion.local/desktop/ui/shared/assets"
+	"arion.local/desktop/ui/shared/icons"
 	"arion.local/desktop/ui/shared/theme"
 	"github.com/egoist/mygo/ui"
 )
@@ -316,4 +317,40 @@ func absInt(v int) int {
 		return -v
 	}
 	return v
+}
+
+// SelectPopup gives a select's popup coss anatomy over Sunbeam tokens: a
+// card face with a hairline, a 1px top light and lifted elevation, 4 DIPs
+// below the trigger and at least as wide. items builds the options with
+// SelectItem and SelectSeparator.
+func SelectPopup[T comparable](tokens theme.Tokens, sel ui.SelectParts[T], items func()) ui.Element {
+	return sel.Popup(func(panel ui.Element) {
+		panel.Padding(4).Margin(4, 0, 0, 0).Radius(theme.RadiusControl).Background(tokens.Card).
+			Border(1, tokens.CardBorder).InsetShadow(0, 1, 0, 0, tokens.Highlight).TextColor(tokens.Text)
+		Raise(panel, tokens, Lifted)
+		items()
+	})
+}
+
+// SelectItem is an option of a select, as coss draws it: a 28 DIP row
+// with a check column before the label, washed while highlighted.
+func SelectItem[T comparable](c *ui.Context, tokens theme.Tokens, sel ui.SelectParts[T], value T, label string, selected bool) ui.Element {
+	item := sel.Item(value).MinHeight(28).Padding(4, 16, 4, 8).Gap(8).AlignItems(ui.Center).Radius(theme.RadiusMD).
+		Label(label)
+	if item.Highlighted() {
+		item.Background(tokens.AccentSoft)
+	}
+	item.Children(func() {
+		check := ui.Box(c).Size(16, 16).Shrink(0).Justify(ui.Center).AlignItems(ui.Center)
+		if selected {
+			check.Children(func() { ui.Icon(c, icons.Check).FontSize(14).TextColor(tokens.Text) })
+		}
+		ui.Text(c, label).FontSize(theme.Body).SingleLine().Shrink(1)
+	})
+	return item
+}
+
+// SelectSeparator divides groups of options in a select's popup.
+func SelectSeparator(c *ui.Context, tokens theme.Tokens) ui.Element {
+	return ui.Box(c).Height(1).Margin(4, 8).Background(tokens.Hairline)
 }
