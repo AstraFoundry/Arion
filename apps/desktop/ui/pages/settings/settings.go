@@ -10,6 +10,7 @@ import (
 	"arion.local/desktop/ui/features/permissions"
 	"arion.local/desktop/ui/features/polish"
 	"arion.local/desktop/ui/features/shortcut"
+	"arion.local/desktop/ui/features/signin"
 	"arion.local/desktop/ui/features/uilanguage"
 	"arion.local/desktop/ui/features/update"
 	"arion.local/desktop/ui/features/vocabulary"
@@ -34,6 +35,7 @@ const (
 	Microphone = "microphone"
 	Model      = "model"
 	Vocabulary = "vocabulary"
+	Account    = "account"
 	About      = "about"
 )
 
@@ -123,7 +125,7 @@ func (p *Page) Close(store runtime.Store) {
 
 func title(section string, messages copy.Catalog) string {
 	return map[string]string{Overview: messages.Text(copy.NavOverview), General: messages.Text(copy.NavGeneral), Dictation: messages.Text(copy.NavDictation), Microphone: messages.Text(copy.NavMicrophone),
-		Model: messages.Text(copy.NavModel), Vocabulary: messages.Text(copy.NavVocabulary), About: messages.Text(copy.NavAbout)}[section]
+		Model: messages.Text(copy.NavModel), Vocabulary: messages.Text(copy.NavVocabulary), Account: messages.Text(copy.NavAccount), About: messages.Text(copy.NavAbout)}[section]
 }
 
 func (p *Page) section(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
@@ -221,6 +223,11 @@ func (p *Page) section(c *ui.Context, store runtime.Store, tokens theme.Tokens) 
 	case Vocabulary:
 		vocabulary.Learning(c, store, tokens)
 		vocabulary.Editor(c, store, tokens, &p.draft)
+	case Account:
+		signin.Card(c, store, tokens)
+		if store.State.Account.SignedIn() {
+			kit.Group(c, tokens, messages.Text(copy.AccSyncGroup), func() { signin.HostedSync(c, store, tokens) })
+		}
 	case About:
 		kit.Card(c, tokens).Children(func() {
 			ui.Column(c).Height(200).Children(func() {
@@ -331,6 +338,7 @@ func (p *Page) nav(c *ui.Context, messages copy.Catalog) {
 		ui.SidebarItem(c, Microphone, icons.Mic, messages.Text(copy.NavMicrophone))
 		ui.SidebarItem(c, Model, icons.Cpu, messages.Text(copy.NavModel))
 		ui.SidebarItem(c, Vocabulary, icons.BookOpen, messages.Text(copy.NavVocabulary))
+		ui.SidebarItem(c, Account, icons.CircleUser, messages.Text(copy.NavAccount))
 		ui.SidebarItem(c, About, icons.Info, messages.Text(copy.NavAbout))
 	}).Grow(1)
 }

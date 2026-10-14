@@ -1,16 +1,19 @@
 // Package onboarding is the first-run flow: permissions, the automatically
-// chosen model, the shortcut and a first dictation, each step beside an
-// illustration of what it enables.
+// chosen model, the shortcut, a first dictation and the choice between
+// staying local and signing in for sync, each step beside an illustration
+// of what it enables.
 package onboarding
 
 import (
 	"time"
 
+	"arion.local/desktop/ui/entities/account"
 	"arion.local/desktop/ui/entities/onboarding"
 	"arion.local/desktop/ui/features/microphone"
 	"arion.local/desktop/ui/features/permissions"
 	"arion.local/desktop/ui/features/polish"
 	"arion.local/desktop/ui/features/shortcut"
+	"arion.local/desktop/ui/features/signin"
 	"arion.local/desktop/ui/features/uilanguage"
 	"arion.local/desktop/ui/shared/copy"
 	"arion.local/desktop/ui/shared/icons"
@@ -90,6 +93,11 @@ func (p *Page) Render(c *ui.Context, store runtime.Store) {
 				switch step {
 				case onboarding.Welcome:
 					kit.Button(c.Key("next"), tokens, kit.Primary, messages.Text(copy.OnbStart), true).OnClick(func() { p.move(c, 1, state) })
+				case onboarding.Sync:
+					// Signed out, the step's own buttons are the two paths.
+					if state.Account.SignedIn() {
+						kit.Button(c.Key("next"), tokens, kit.Primary, messages.Text(copy.Continue), onboarding.Ready(step, state)).OnClick(func() { p.move(c, 1, state) })
+					}
 				case onboarding.Finished:
 					kit.Button(c.Key("finish"), tokens, kit.Primary, messages.Text(copy.OnbFinish), true).OnClick(func() {
 						p.release(store)
@@ -282,6 +290,23 @@ func (p *Page) step(c *ui.Context, store runtime.Store, tokens theme.Tokens, ste
 			if state.Model.State != runtime.ModelReady {
 				modelcard.Render(c, store, tokens, true)
 			}
+		})
+	case onboarding.Sync:
+		heading(c, tokens, messages.Text(copy.OnbSyncTitle), messages.Text(copy.OnbSyncBody))
+		ui.Column(c).Width(Content).Gap(12).Children(func() {
+			if account.StageOf(state.Account) != account.SignedOut {
+				signin.Card(c, store, tokens)
+				if state.Account.SignedIn() {
+					signin.HostedSync(c, store, tokens)
+				}
+				return
+			}
+			ui.Row(c).Gap(8).Children(func() {
+				kit.Button(c.Key("local"), tokens, kit.Primary, messages.Text(copy.OnbContinueLocally), true).OnClick(func() { p.move(c, 1, state) })
+				signin.Start(c, store, tokens, kit.Outline, messages.Text(copy.OnbSignInSync))
+			})
+			ui.Text(c, messages.Text(copy.AccNoDecrypt)).FontSize(theme.Caption).TextColor(tokens.Muted)
+			signin.Notice(c, store, tokens)
 		})
 	case onboarding.Finished:
 		ui.Column(c).Gap(16).Children(func() {

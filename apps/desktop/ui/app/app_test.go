@@ -783,7 +783,12 @@ func TestOnboardingFlow(t *testing.T) {
 	click(copy.For(copy.English).Text(copy.Continue))
 	snapshot(t, tt, "onboarding-6-try")
 	click(copy.For(copy.English).Text(copy.Continue))
-	snapshot(t, tt, "onboarding-7-done")
+	snapshot(t, tt, "onboarding-7-sync")
+	click(copy.For(copy.English).Text(copy.OnbContinueLocally))
+	if actions.called("sign-in") {
+		t.Fatal("continuing locally started a sign-in")
+	}
+	snapshot(t, tt, "onboarding-8-done")
 	click(copy.For(copy.English).Text(copy.OnbFinish))
 	if !actions.called("complete") {
 		t.Fatal("onboarding not completed")

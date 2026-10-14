@@ -30,6 +30,7 @@ var (
 	ChevronRight      = load("chevron-right")
 	ChevronsUpDown    = load("chevrons-up-down")
 	CircleCheck       = load("circle-check")
+	CircleUser        = load("circle-user")
 	Clipboard         = load("clipboard")
 	Clock             = load("clock")
 	Code              = load("code")
