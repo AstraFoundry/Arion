@@ -77,3 +77,36 @@ type CompositionTarget interface {
 	Update(context.Context, contracts.TargetToken, contracts.Draft) error
 	Cancel(context.Context, contracts.Identity, contracts.TargetToken) error
 }
+
+// RewriteRequest asks for a polished proposal of one session's current
+// source text. Prefill only computes the source ahead of a later request.
+type RewriteRequest struct {
+	contracts.Identity
+	SourceRevision uint64
+	Text           string
+	Scene          string
+	Terms          []string
+	Prefill        bool
+	// Live marks a preview of speech that is still being captured.
+	Live bool
+}
+
+// RewriteResult is an unvalidated proposal; Truncated output is unusable.
+type RewriteResult struct {
+	Text      string
+	Truncated bool
+	// Timing is content-free engine telemetry for evaluation.
+	PrefillMs    float64
+	DecodeMs     float64
+	InputTokens  int
+	ReusedTokens int
+	OutputTokens int
+}
+
+// Rewriter is the optional local LLM stage (009). Cancelling ctx abandons a
+// request; End releases the session's private state. It returns
+// MODEL_MISSING while no verified model is running.
+type Rewriter interface {
+	Rewrite(context.Context, RewriteRequest) (RewriteResult, error)
+	End(contracts.Identity)
+}

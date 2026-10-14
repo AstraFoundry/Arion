@@ -24,9 +24,27 @@ flowchart LR
 
 This is Arion's design, not a verified competitor call graph. Ranking requires real alternatives from its producer; a single ASR hypothesis remains a single candidate. Rule correction and ranking are separate operations. Streaming drafts are never treated as committed target content.
 
-## Contextual rewrite evaluation boundary
+## Live local rewriting
 
-An optional local generative stage is specified in [009](../../specs/009-contextual-rewrite.md) and [proposed ADR 008](../decisions/008-contextual-rewrite-evaluation.md). Its evaluation path is source/rule text + declared scene + bounded opted-in context + approved memory → pinned prompt/tokenizer → local prefill/decode → preservation checks → revision-owned native candidate preview. It shares the existing final commit gate; model tokens never write directly to a target. This stage is not implemented in the production runtime. The dedicated [rewrite evaluator](../research/rewrite-evaluation.md) measures it separately from ASR and Laya ranking.
+The optional live pipeline ([ADR 011](../decisions/011-live-local-rewriting.md), [009](../../specs/009-contextual-rewrite.md)) edits text while the user speaks:
+
+```mermaid
+flowchart LR
+    Stream[Streaming ASR segments] -->|endpoint| Cut[Cut at the pause]
+    Cut --> Refine[Optional per-segment finalizer]
+    Refine --> Rules[Rule correction]
+    Rules -->|stable text| Preview[Live LLM preview]
+    Preview --> Validate1[Validate]
+    Validate1 --> Display[Preview + open tail]
+    Stream -->|open segment| Display
+    Rules -->|after stop| Final[Final LLM rewrite]
+    Final --> Validate2[Validate]
+    Validate2 --> Commit[Single commit]
+```
+
+`application/live.go` owns this schedule per session. Segment units flow from the pump to a per-session worker through a bounded queue; a newly closed segment cancels the running preview (latest wins), and a preview computed for older text is never displayed. Stop cancels previews before the final request. `domain.ValidateRewrite` decides whether a proposal may be shown or inserted; a rejected final rewrite inserts the rule-corrected text and the event records the outcome.
+
+The model runs in the `arion-llm` worker process: ONNX Runtime GenAI loaded with purego, JSON lines over pipes (`infrastructure/llm/protocol`). One greedy KV state is reused by longest common token prefix: the instruction prefix is computed at load, each preview extends the transcript, and a session's end rewinds to the shared prefix. `infrastructure/rewriting` provisions the model, starts and stops the worker and reports readiness; `infrastructure/llm/client` adapts the worker to the core `Rewriter` port. Context capture and the strict [rewrite evaluator](../research/rewrite-evaluation.md) protocol remain separate, unimplemented gates.
 
 ## Modules
 
@@ -44,7 +62,7 @@ The macOS overlay's native window policy is applied by `infrastructure/macos.Con
 
 1. **Start:** a new generation and session; the platform adapter captures the focused editor (Accessibility trust required on macOS) and chooses one insertion route; the resident recognizer opens a stream; the microphone starts. A known secure field or missing permission ends the session before the microphone opens.
 2. **Capture:** miniaudio delivers 20 ms mono 16 kHz frames to a bounded queue; overflow or device loss ends the session with `AUDIO_DISCONTINUITY`. One session goroutine owns the recognizer, emits level events and revisioned drafts, and retains session audio in RAM.
-3. **Finish:** the stream is flushed; the bundle's acoustic finalizer re-decodes the retained audio; conservative rules and approved vocabulary produce the reviewed text; audio is dropped.
+3. **Finish:** the stream is flushed; the bundle's acoustic finalizer re-decodes the retained audio; conservative rules and approved vocabulary produce the reviewed text; with polishing on, the final LLM rewrite replaces it if it passes validation; audio is dropped.
 4. **Commit:** the session claims its single commit; the adapter revalidates focus and inserts once. Outcomes map to "Inserted" (verified), "Typed"/"Pasted" (unknown) or a failure with the text kept for copying.
 
 Coordinator events cross to the UI through a non-blocking queue drained onto the main thread, so worker goroutines never wait on the UI. The model runtime swaps bundles only while no session holds a recognizer.
@@ -59,12 +77,12 @@ IME mode uses host-owned composition ranges. IMK and TSF manage provisional mark
 
 ## Process and execution constraints
 
-MyGo and OS UI calls run on their required UI thread. Capture callbacks enqueue bounded frames and never run inference or network calls. ASR, ranker and correction workers are cancellable and tagged with session/revision/generation. A stopped session cannot receive a late write. The core does not require a process split; isolate native inference crashes where supported and document IPC before introducing a worker process.
+MyGo and OS UI calls run on their required UI thread. Capture callbacks enqueue bounded frames and never run inference or network calls. ASR, ranker and correction workers are cancellable and tagged with session/revision/generation. A stopped session cannot receive a late write. Speech inference stays in-process; the LLM runs in the `arion-llm` worker process, whose protocol is documented in `infrastructure/llm/protocol`, so its ONNX Runtime never shares an address space with sherpa's.
 
 IMK/TSF integration must be proven with small OS-native harnesses before linking the production host. Windows TSF may require a small native COM host/in-process DLL; a Go/MyGo process is not automatically a TSF text service. macOS input source packaging similarly requires an IMK server bundle. These adapters are separate from the normal shortcut app lifecycle.
 
 ## Privacy and sync
 
-Model provisioning, update checks ([ADR 010](../decisions/010-in-app-updates.md)) and encrypted memory sync are explicit network surfaces; dictation and ranking have no cloud inference route. Audio is memory-only by default. Context is bounded, expires with the session and is excluded from logs/sync. Vetted encryption seals allowed memory before it enters the outbox; the relay cannot access plaintext. Failure never downgrades to plaintext or remotely processed speech.
+Model provisioning, update checks ([ADR 010](../decisions/010-in-app-updates.md)) and encrypted memory sync are explicit network surfaces; downloads and update checks use `HTTP(S)_PROXY` when set and otherwise the macOS system proxy; Hugging Face files fall back silently to hf-mirror.com when huggingface.co is unreachable, verified by the same pinned digests (`infrastructure/netproxy`; PAC files are not evaluated, Windows honors environment variables only); dictation and ranking have no cloud inference route. Audio is memory-only by default. Context is bounded, expires with the session and is excluded from logs/sync. Vetted encryption seals allowed memory before it enters the outbox; the relay cannot access plaintext. Failure never downgrades to plaintext or remotely processed speech.
 
 See [privacy](../../specs/005-privacy.md), [memory sync](../../specs/003-memory-sync.md), and [ADRs](../decisions/README.md).

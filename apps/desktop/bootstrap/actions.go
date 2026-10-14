@@ -19,6 +19,7 @@ func (x actions) RequestMicrophone()      { x.a.platform.RequestMicrophone() }
 func (x actions) OpenMicrophoneSettings() { x.a.platform.OpenMicrophoneSettings() }
 func (x actions) CloseGuide()             { x.a.closeGuide(true) }
 func (x actions) RetryModel()             { go x.a.activate(x.a.state.Preferences.ModelOverride) }
+func (x actions) RetryPolish()            { go x.a.startPolish() }
 func (x actions) StartLevelMonitor()      { x.a.startMonitor() }
 func (x actions) StopLevelMonitor()       { x.a.stopMonitor() }
 func (x actions) RefreshDevices()         { go x.a.refreshDevicesAsync() }
@@ -72,6 +73,13 @@ func (x actions) UpdatePreferences(change func(*application.Preferences)) {
 	}
 	if next.Mode != before.Mode {
 		a.core.SetMode(next.Mode)
+	}
+	if next.Polish != before.Polish {
+		if next.Polish {
+			go a.startPolish()
+		} else {
+			go a.rewriter.Disable()
+		}
 	}
 	if next.CheckUpdates && !before.CheckUpdates && a.updates.due(time.Now()) {
 		a.updates.check(time.Now(), false)

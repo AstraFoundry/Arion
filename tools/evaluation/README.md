@@ -111,3 +111,13 @@ Streaming replies additionally require `timings.audioStartMs`, actual `previewEv
 `run.json` retains configuration, hash identities, hardware/runtime and completed status. `results.jsonl` and `warmups.jsonl` are private content-bearing traces, with hashes checked before report generation. Failure leaves `failure.json` and incomplete status. `summary.json`/`summary.md` contain aggregates and paired comparisons; do not publish raw files by default. Reports reject incomplete coverage, duplicated observations and unmatched candidate sets for ranker-only claims.
 
 E2E drivers implement `cleanup` and reply with `execution:"live", cleanupComplete:true` after restoring owned fault injections and closing owned targets/hosts. The runner attempts cleanup on both success and failure; unconfirmed cleanup prevents a passing result. Drivers also need OS signal/parent-exit cleanup, since a crashed transport cannot acknowledge cleanup.
+
+## Qwen development diagnostics
+
+[Qwen pipeline diagnostics](../../docs/research/qwen-pipeline-diagnostics.md) describes actual warm CPU generation, offline Qwen-ASR and frozen-source experiments on unreviewed development fixtures. Use `make qwen-env`, explicit `make qwen-provision MODEL_IDS=...`, `make qwen-diagnostic CORPUS=... OUT=...` and `make qwen-report CORPUS=... RESULTS=...`. These do not replace reviewed `rewrite-run` or native E2E acceptance. The diagnostic worker is Python tooling, not production runtime implementation.
+
+Use `make qwen-prefix-diagnostic CORPUS=... AUDIO_CORPUS=... DRIVER=... OUT=...` for the actual ASR replay / staged prefix comparison. Its parent-clock candidate latency and token/source parity checks do not establish native preview, insertion, cancellation or drop-free capture. The temporary idle-sleep assertion belongs only to the diagnostic process.
+
+## Live rewrite pipeline benchmarks
+
+`make live-fixtures`, `make live-text-bench`, `make live-audio-bench` and `make live-report` (pnpm `live:fixtures`, `live:text`, `live:audio`, `live:report`) run the production rewrite worker and dictation coordinator; see [the methodology](../../docs/research/live-rewrite-benchmark.md). `live/score-text.mjs` and `live/score-audio.mjs` score rows with the diagnostic exact-string proxies plus acoustic error, stop-to-final latency and previews before stop; `live/report.mjs` writes a content-free summary with the hash of every input. Binaries build into `.workspace/bin`; rows, fixtures and weights never leave `.workspace`.

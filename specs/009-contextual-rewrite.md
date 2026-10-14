@@ -2,7 +2,7 @@
 
 ## Status and scope
 
-This spec defines an optional local LLM stage and its evaluation boundary. The repository implements its evaluation harness, not the ONNX LLM runtime or a production rewrite driver. Competitor artifact findings do not establish that Arion or a competitor executes this proposed pipeline.
+This spec defines an optional local LLM stage and its evaluation boundary. The production desktop implements the [live rewriting pipeline](#live-rewriting-pipeline) of [ADR 011](../docs/decisions/011-live-local-rewriting.md) on macOS (Apple silicon): previews while speaking and one validated, automatically inserted rewrite after stop, in an isolated ONNX Runtime GenAI worker. Context capture, scene detection, Windows and the strict [rewrite evaluator](../docs/research/rewrite-evaluation.md) protocol remain unimplemented. Competitor artifact findings do not establish that Arion or a competitor executes this pipeline.
 
 Rewriting is separate from acoustic recognition, conservative correction and Laya candidate ranking. A ranker permutes existing producer candidates; a rewriter can generate a new text proposal. Baseline dictation remains available with rewriting disabled. macOS shortcut, Windows shortcut and optional IMK/TSF hosts share the portable request/result contract; host integration must be verified on the actual OS.
 
@@ -13,8 +13,18 @@ Rewriting is separate from acoustic recognition, conservative correction and Lay
 3. Build a versioned prompt with trusted rewrite instructions separated from untrusted transcript/context/memory. Pin template, tokenizer, checkpoint, ONNX graph, conversion, quantization and execution provider. User text may describe commands; it never grants tool execution, networking or target writes.
 4. Run bounded non-thinking generation locally. Keep token streams and provisional rewrite previews separate from recognized drafts and owned IME composition. Partial-source speculation is optional: every new source revision cancels it, and it cannot become the final candidate by mistake.
 5. Validate the final proposal against the selected mode, output budget and protected content. Verbatim mode forbids changes to code, punctuation, capitalization and spacing. Names, numbers, URLs, negation, modality and speaker intent need preservation; string checks alone cannot prove semantic preservation.
-6. Present the original and proposal for review. Initial rewrite mode requires explicit candidate acceptance. A generated instruction, reasoning block, skill invocation or model refusal is never inserted as ordinary dictated text. Rejection, timeout, missing model and unsupported runtime are explicit outcomes; any choice to use the original is visible to the user.
+6. Deliver the validated proposal automatically ([ADR 011](../docs/decisions/011-live-local-rewriting.md)) and keep the recognized original available to copy. A generated instruction, reasoning block, skill invocation or model refusal is never inserted as ordinary dictated text. Rejection, timeout, missing model and unsupported runtime are explicit outcomes recorded with the result; they insert the rule-corrected recognized text instead.
 7. Commit only through the existing once-only target capability after source identity, focus and mode checks. Source revision, cancellation, focus change or mode switch invalidates the proposal and owned composition. A late token, preview or callback cannot write to a target.
+
+## Live rewriting pipeline
+
+- LRW-01: Previews rewrite only text of closed recognizer segments (stable text). The open segment is displayed as recognized, after the preview.
+- LRW-02: A segment's audio is cut inside the pause that closed it, not at the moment the endpoint was reported. Per-segment finalization is a bundle choice; without it the finalizer decodes the whole utterance once after stop.
+- LRW-03: Latest wins. A newly closed segment cancels the running preview; a preview computed for older stable text is never displayed. Previews never commit and failures of previews never end the session.
+- LRW-04: Stop cancels previews before the final rewrite. Cancellation, mode change or a new session discards the final rewrite; the worker releases the session's KV state when the session ends.
+- LRW-05: Every proposal passes `domain.ValidateRewrite` before display or insertion: not truncated or empty, no chat markup or echo, bounded length change, no new numbers or unsupported content, no dropped negation, the final value of a self-correction kept, and no large deletion without a repair cue. Live previews keep the open source's trailing punctuation.
+- LRW-06: The model runs in a separate worker process that never loads the speech runtime. Prompt instructions and demonstrations are a fixed, versioned prefix; dictated text and approved terms are data in the last user turn, and chat control markers in dictated text are rejected. Reusing KV state must not change greedy output.
+- LRW-07: Model weights download only on the user's choice, as SHA-256-pinned files published atomically; the runtime ships signed inside the app. Platforms without a pinned runtime report the capability as unsupported.
 
 ## Runtime requirements
 
@@ -42,11 +52,22 @@ Automated checks cover protected exact occurrences, declared constraints, unsupp
 | RWT-A02 | Session/generation/source revision matches; cancellation and revision invalidation discard tokens/proposals and prevent stale preview/write |
 | RWT-A03 | Focus/mode changes invalidate shortcut and owned IME composition; final commit rechecks ownership exactly once |
 | RWT-A04 | Secure/unknown target context is denied before reads; clipboard/screen/history use explicit bounded capabilities; prompt data cannot authorize commands |
-| RWT-A05 | Verbatim/code and protected meaning constraints hold; original and rewrite remain distinct, user reviews generated proposals |
+| RWT-A05 | Verbatim/code and protected meaning constraints hold; original and rewrite remain distinct, and the original stays available after automatic insertion (ADR 011) |
 | RWT-A06 | Missing artifact, unsupported provider, rejection and timeout are explicit; no fabricated live result or silent cloud routing |
 | RWT-A07 | Reviewed hashes, isolated splits, held-out labels, matched factorial controls, warm/cold/load strata and real token/native traces produce a reproducible checked report |
 | RWT-A08 | Blind meaning/style/fluency/hallucination review meets declared independent-rater coverage; output coverage differences invalidate paired quality claims |
 
+### Live pipeline acceptance
+
+| ID | Required evidence |
+| --- | --- |
+| LRW-A01 | Previews appear while capture continues; stale previews are never displayed (`TestLivePreviewThenFinalRewrite`, `TestStalePreviewNotDisplayed`) |
+| LRW-A02 | Stop/cancel discard previews and the final proposal; a dead worker is an explicit `unavailable` outcome (`TestCancelDuringFinalRewrite`, client tests) |
+| LRW-A03 | Rejected, timed-out and unavailable rewrites insert the rule-corrected text with a recorded outcome (`TestRejectedRewriteKeepsSource`, `TestRewriteFailureAndTimeoutAreExplicit`, `TestValidateRewrite`) |
+| LRW-A04 | Worker has no speech-runtime dependency; KV reuse equals a cold run (`TestWorkerDependencies`, `TestReuseParity` with a provisioned model) |
+| LRW-A05 | Held-out development gate on Apple M4: text stage delivers at least ten more proxy passes than the source with zero worsened cases; the product audio variant has zero worsened cases, previews before stop in at least 80% of multi-segment fixtures and stop-to-final p95 under 1.5 s ([report](../benchmarks/results/live-rewrite-v1/README.md)) |
+| LRW-A06 | Blind independent meaning/style/hallucination review of live output (open; same coverage rules as RWT-A08) |
+
 ## Implementation order
 
-P0: reviewed corpus and native rewrite driver; model/tokenizer/export parity; source-bound cancellation and preview; deterministic mode/constraint checks. P1: blind quality review and held-out budget selection; provider and ASR-contention comparisons; native shortcut/IME acceptance. P2: speculative partial rewriting and broader personalization, after stability and harm measurements justify them.
+Implemented: source-bound cancellation and live preview, deterministic validation, isolated worker, KV-reuse parity check and the live development benchmark (LRW-A01–A05). P0: reviewed corpus and independent blind review (LRW-A06, RWT-A08); source-checkpoint/export parity; native shortcut/IME acceptance with rendered preview timing. P1: Windows runtime and acceptance; consent-gated context and scene selection; ASR-contention and power measurements. P2: broader personalization after harm measurements justify it.

@@ -8,6 +8,7 @@ import (
 	"arion.local/desktop/ui/features/microphone"
 	"arion.local/desktop/ui/features/modelchoice"
 	"arion.local/desktop/ui/features/permissions"
+	"arion.local/desktop/ui/features/polish"
 	"arion.local/desktop/ui/features/shortcut"
 	"arion.local/desktop/ui/features/uilanguage"
 	"arion.local/desktop/ui/features/update"
@@ -190,7 +191,10 @@ func (p *Page) section(c *ui.Context, store runtime.Store, tokens theme.Tokens) 
 			})
 		})
 	case Model:
-		modelcard.Render(c, store, tokens, false)
+		kit.Group(c, tokens, messages.Text(copy.ModelRecognitionGroup), func() { modelcard.Render(c, store, tokens, false) })
+		kit.Group(c, tokens, messages.Text(copy.ModelPolishGroup), func() {
+			kit.Card(c, tokens).Children(func() { polish.Row(c, store, tokens) })
+		})
 		if hasOthers(store) {
 			kit.Group(c, tokens, messages.Text(copy.ModelOthers), func() { modelchoice.Others(c, store, tokens) })
 		}

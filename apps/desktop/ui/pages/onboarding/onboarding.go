@@ -9,6 +9,7 @@ import (
 	"arion.local/desktop/ui/entities/onboarding"
 	"arion.local/desktop/ui/features/microphone"
 	"arion.local/desktop/ui/features/permissions"
+	"arion.local/desktop/ui/features/polish"
 	"arion.local/desktop/ui/features/shortcut"
 	"arion.local/desktop/ui/features/uilanguage"
 	"arion.local/desktop/ui/shared/copy"
@@ -237,7 +238,11 @@ func (p *Page) step(c *ui.Context, store runtime.Store, tokens theme.Tokens, ste
 		})
 	case onboarding.Model:
 		heading(c, tokens, messages.Text(copy.OnbModelTitle), messages.Text(copy.OnbModelBody))
-		ui.Column(c).Width(Content).Children(func() { modelcard.Render(c, store, tokens, false) })
+		// Recognition and the optional polishing are set up together.
+		ui.Column(c).Width(Content).Gap(12).Children(func() {
+			modelcard.Render(c, store, tokens, true)
+			kit.Card(c, tokens).Children(func() { polish.Row(c, store, tokens) })
+		})
 	case onboarding.Shortcut:
 		heading(c, tokens, messages.Text(copy.OnbShortcutTitle), messages.Text(copy.OnbShortcutBody))
 		heard := state.Shortcut.Pressed.After(p.entered)

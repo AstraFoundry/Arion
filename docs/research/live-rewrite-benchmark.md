@@ -1,0 +1,33 @@
+# Live rewrite pipeline benchmark
+
+## What it measures
+
+The live pipeline ([ADR 011](../decisions/011-live-local-rewriting.md), [009](../../specs/009-contextual-rewrite.md)) previews LLM rewrites of stable text while the user speaks and inserts one validated rewrite after stop. Two benchmarks measure it with the production code:
+
+- **Text stage** (`arion-rewrite-bench`): rewrites fixed text through the packaged `arion-llm` worker. Each case replays the live schedule: one live request per closed speech segment (cumulative stable text), then the final request on the same session, so prefix reuse and incremental prefill are exercised as in the product. It records proposals, validation verdicts, delivered text and engine timings.
+- **Audio pipeline** (`arion-live-bench`): replays pause-segmented speech in real time through the production coordinator, using the catalog bundle's streaming recognizer and finalizer, the live worker and the final rewrite. It records every displayed draft (marking validated previews) and the final review on one monotonic clock.
+
+Scoring (`tools/evaluation/live`) applies the exact-string proxies of the [Qwen diagnostics](qwen-pipeline-diagnostics.md): required, forbidden and protected strings, and verbatim identity. Audio runs also report recognizer error against the spoken script per language (CER for Mandarin, WER for English, MER for mixed text), stop-to-final latency and whether a validated preview appeared before the speaker stopped. `worsened` counts cases where the source text passed and the delivered text does not; `improved` is the reverse.
+
+## Corpora and splits
+
+- **Development:** the 24-case [diagnostic corpus](qwen-pipeline-diagnostics.md), used for prompt iteration (`live-v1` → `live-v2`).
+- **Held-out:** 30 new developer-authored cases with pause scripts, written and hashed before any prompt tuning. They are synthetic challenges in the same categories (self-corrections across segments, fillers, repetition, negation, hedging, copy controls, email/list scenes, approved terms, instructions spoken as dictation, code/URLs, verbatim). The prompt was frozen before the held-out run; none of its demonstrations reuse held-out content.
+- **Speech fixtures** (`build-live-audio.py`): each pause-separated part is synthesized with macOS `say` (Tingting for Mandarin and mixed text, Samantha for English) and joined with 1.2 s of silence, longer than the 0.8 s endpoint, so segments close as they would when a speaker pauses. Verbatim and unspeakable cases (code, URLs) are text-only.
+
+Fixtures, rows and weights stay in `.workspace/`; only content-free aggregates are published.
+
+## Limits
+
+One author wrote every case; there are no independent annotations, no natural speech and no human ratings. Exact-string proxies can pass a fluent hallucination or fail an equivalent spelling. Synthetic speech has no disfluent prosody, and the inserted pauses make segmentation easier than real dictation. The host was not isolated from other desktop tasks. Native preview rendering, IME insertion and Windows were not measured. These results select defaults for development; they do not establish Typeless parity or satisfy RWT-A07/A08.
+
+## Commands
+
+```sh
+make live-fixtures CORPUS=.workspace/live-heldout-corpus.json OUT=.workspace/live-audio-heldout
+make live-text-bench CORPUS=.workspace/live-heldout-corpus.json LLM_MODEL=.workspace/ablation-models/qwen3-1.7b OUT=.workspace/benchmarks/live-text/heldout-1.7b.jsonl
+make live-audio-bench MANIFEST=.workspace/live-audio-heldout/manifest.json CORPUS=.workspace/live-heldout-corpus.json MODELS=.workspace/models/store BUNDLE=xasr-160-xasr-final LLM_MODEL=.workspace/ablation-models/qwen3-1.7b OUT=.workspace/benchmarks/live-audio/heldout-1.7b.jsonl
+make live-report RUNS=benchmarks/configs/live-rewrite-report.json OUT=benchmarks/results/live-rewrite-v1/summary.json
+```
+
+`LLM_RUNTIME` defaults to the staged `apps/desktop/resources/darwin-arm64/llm` (`make desktop-libs`); `SEGMENT=1` turns on per-segment finalization. Output files must not exist. The audio command keeps the host awake with `caffeinate` for the run.

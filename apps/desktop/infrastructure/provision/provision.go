@@ -13,14 +13,18 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"net"
 	"net/http"
+	"net/url"
 	"os"
 	"path"
 	"path/filepath"
 	"strconv"
+	"sync"
 	"time"
 
 	"arion.local/core/domain"
+	"arion.local/desktop/infrastructure/netproxy"
 	"arion.local/models"
 )
 
@@ -43,7 +47,17 @@ type Store struct {
 	Client *http.Client
 	// Offline refuses network downloads; installed artifacts still load.
 	Offline bool
+	// Mirrors maps a download host to hosts serving identical files. When a
+	// host is unreachable the download continues from a mirror without
+	// asking: catalog digests make the bytes independent of the source.
+	Mirrors map[string][]string
+
+	mu        sync.Mutex
+	preferred map[string]string
 }
+
+// DefaultMirrors serve Hugging Face files where huggingface.co is blocked.
+var DefaultMirrors = map[string][]string{"huggingface.co": {"hf-mirror.com"}}
 
 // DefaultRoot is ~/Library/Application Support/Arion/models on macOS and
 // %AppData%\Arion\models on Windows.
@@ -56,7 +70,56 @@ func DefaultRoot() (string, error) {
 }
 
 func NewStore(root string) *Store {
-	return &Store{Root: root, Client: &http.Client{Timeout: 0, Transport: &http.Transport{Proxy: http.ProxyFromEnvironment, ResponseHeaderTimeout: 30 * time.Second}}}
+	// Bounded dial and handshake times let an unreachable host fail over
+	// to a mirror quickly instead of hanging.
+	transport := &http.Transport{Proxy: netproxy.Proxy, DialContext: (&net.Dialer{Timeout: 10 * time.Second}).DialContext,
+		TLSHandshakeTimeout: 10 * time.Second, ResponseHeaderTimeout: 30 * time.Second, ForceAttemptHTTP2: true}
+	return &Store{Root: root, Client: &http.Client{Transport: transport}, Mirrors: DefaultMirrors}
+}
+
+// sources orders a URL's host and its mirrors, the host that last worked
+// first.
+func (s *Store) sources(raw string) []string {
+	u, err := url.Parse(raw)
+	if err != nil || len(s.Mirrors[u.Host]) == 0 {
+		return []string{raw}
+	}
+	hosts := append([]string{u.Host}, s.Mirrors[u.Host]...)
+	s.mu.Lock()
+	preferred := s.preferred[u.Host]
+	s.mu.Unlock()
+	for i, h := range hosts {
+		if h == preferred && i > 0 {
+			hosts[0], hosts[i] = hosts[i], hosts[0]
+		}
+	}
+	out := make([]string, len(hosts))
+	for i, h := range hosts {
+		v := *u
+		v.Host = h
+		out[i] = v.String()
+	}
+	return out
+}
+
+func (s *Store) remember(original, used string) {
+	a, errA := url.Parse(original)
+	b, errB := url.Parse(used)
+	if errA != nil || errB != nil {
+		return
+	}
+	s.mu.Lock()
+	if s.preferred == nil {
+		s.preferred = map[string]string{}
+	}
+	s.preferred[a.Host] = b.Host
+	s.mu.Unlock()
+}
+
+// retryable failures are about reaching a source, not about its bytes.
+func retryable(err error) bool {
+	coded, ok := err.(*domain.Error)
+	return ok && coded.Code == domain.CodeProvisioningFailed && coded.Detail != "offline" && coded.Detail != "write"
 }
 
 type marker struct {
@@ -128,21 +191,40 @@ func (s *Store) Ensure(ctx context.Context, a models.Artifact, progress Progress
 	return dir, nil
 }
 
-// download resumes a partial file with a byte range and bounds the size by
-// the catalog, so an endpoint cannot fill the disk.
 func (s *Store) download(ctx context.Context, a models.Artifact, archive string, progress Progress) error {
-	if info, err := os.Stat(archive); err == nil && info.Size() == a.Source.SizeBytes {
+	return s.fetch(ctx, a.ID, a.Source.URL, a.Source.SizeBytes, archive, progress)
+}
+
+// fetch resumes a partial file with a byte range and bounds the size by
+// the catalog, so an endpoint cannot fill the disk.
+func (s *Store) fetch(ctx context.Context, id, url string, size int64, archive string, progress Progress) error {
+	if info, err := os.Stat(archive); err == nil && info.Size() == size {
 		return nil
 	}
 	if s.Offline {
 		return domain.Fail(domain.CodeProvisioningFailed, "offline")
 	}
+	var err error
+	for _, source := range s.sources(url) {
+		// A partial file resumes from any source: the bytes are identical.
+		if err = s.fetchFrom(ctx, id, source, size, archive, progress); err == nil {
+			s.remember(url, source)
+			return nil
+		}
+		if !retryable(err) || ctx.Err() != nil {
+			return err
+		}
+	}
+	return err
+}
+
+func (s *Store) fetchFrom(ctx context.Context, id, url string, size int64, archive string, progress Progress) error {
 	partial := archive + ".partial"
 	offset := int64(0)
-	if info, err := os.Stat(partial); err == nil && info.Size() < a.Source.SizeBytes {
+	if info, err := os.Stat(partial); err == nil && info.Size() < size {
 		offset = info.Size()
 	}
-	request, err := http.NewRequestWithContext(ctx, http.MethodGet, a.Source.URL, nil)
+	request, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
 		return domain.Fail(domain.CodeProvisioningFailed, "request")
 	}
@@ -177,7 +259,7 @@ func (s *Store) download(ctx context.Context, a models.Artifact, archive string,
 	for {
 		n, readErr := response.Body.Read(buffer)
 		if n > 0 {
-			if done+int64(n) > a.Source.SizeBytes {
+			if done+int64(n) > size {
 				file.Close()
 				_ = os.Remove(partial)
 				return domain.Fail(domain.CodeArtifactUnverified, "archive larger than catalog size")
@@ -188,7 +270,7 @@ func (s *Store) download(ctx context.Context, a models.Artifact, archive string,
 			}
 			done += int64(n)
 			if time.Since(last) > 100*time.Millisecond {
-				progress(a.ID, PhaseDownloading, done, a.Source.SizeBytes)
+				progress(id, PhaseDownloading, done, size)
 				last = time.Now()
 			}
 		}
@@ -206,8 +288,8 @@ func (s *Store) download(ctx context.Context, a models.Artifact, archive string,
 	if err := file.Close(); err != nil {
 		return domain.Fail(domain.CodeProvisioningFailed, "write")
 	}
-	progress(a.ID, PhaseDownloading, done, a.Source.SizeBytes)
-	if done != a.Source.SizeBytes {
+	progress(id, PhaseDownloading, done, size)
+	if done != size {
 		return domain.Fail(domain.CodeProvisioningFailed, "incomplete download")
 	}
 	return os.Rename(partial, archive)

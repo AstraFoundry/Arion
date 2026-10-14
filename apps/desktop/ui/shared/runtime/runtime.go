@@ -98,6 +98,8 @@ type Dictation struct {
 	Failure ErrorCode
 	// FailureDetail names the capability behind a failure, e.g. "microphone".
 	FailureDetail string
+	// Original is the recognized text when a rewrite replaced it.
+	Original string
 	// Pasted marks a commit delivered through the clipboard.
 	Pasted  bool
 	Outcome CommitOutcome
@@ -129,7 +131,6 @@ const (
 // Bundle describes an evaluated recognition bundle.
 type Bundle struct {
 	ID          string
-	Name        string
 	Streaming   string
 	Finalizer   string
 	SizeBytes   int64
@@ -152,6 +153,29 @@ type Model struct {
 	LatencyMeasured bool
 	Automatic       bool
 	Bundles         []Bundle
+}
+
+// PolishState is the readiness of the local rewrite model.
+type PolishState string
+
+const (
+	PolishUnsupported  PolishState = "unsupported"
+	PolishOff          PolishState = "off"
+	PolishProvisioning PolishState = "provisioning"
+	PolishLoading      PolishState = "loading"
+	PolishReady        PolishState = "ready"
+	PolishFailed       PolishState = "failed"
+)
+
+// Polish is the live rewrite capability and its download progress.
+type Polish struct {
+	State     PolishState
+	Phase     ProvisionPhase
+	Done      int64
+	Total     int64
+	Failure   ErrorCode
+	Installed bool
+	SizeBytes int64
 }
 
 // Consent is an OS permission state.
@@ -293,6 +317,7 @@ type State struct {
 	Version     string
 	Dictation   Dictation
 	Model       Model
+	Polish      Polish
 	Permissions Permissions
 	Preferences Preferences
 	Devices     []Device
@@ -306,7 +331,10 @@ type State struct {
 	// MonitorLevels feed the microphone test meter, newest last.
 	MonitorLevels []float32
 	LastText      string
-	Platform      string
+	// LastOriginal is the recognized text of the last dictation when a
+	// rewrite replaced it; empty otherwise.
+	LastOriginal string
+	Platform     string
 }
 
 // Actions are requests views make; implementations return quickly and do
@@ -319,6 +347,8 @@ type Actions interface {
 	OpenMicrophoneSettings()
 	OpenAccessibilitySettings()
 	RetryModel()
+	// RetryPolish downloads or restarts the rewrite model after a failure.
+	RetryPolish()
 	UseBundle(id string)
 	UseRecommendedBundle()
 	UpdatePreferences(func(*Preferences))

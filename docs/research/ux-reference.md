@@ -29,7 +29,7 @@ No app was launched, no account or user data was read, and no network traffic wa
 
 - **Typeless:** a tray menu with home, history, settings, microphone selection, "add word to dictionary", update status, version and quit; a separate frameless floating bar window for status.
 - **Doubao:** the input method is background-only; settings is a separate UI-element app; an `ASRPanelController`/`BaseCapsulePanel` family and a `MicrophoneMeterModel` back the voice panel.
-- **Arion choice:** a menu bar icon whose click opens a native popover panel (status, start/finish button with the shortcut, last dictation with copy, and a model download or failure with its retry only while the model is not ready; the bundle itself is shown and chosen in Settings › Model) and whose right-click opens a short menu. The dictation pill lives in its own transparent, click-through, always-on-top window that never takes focus.
+- **Arion choice:** a menu bar icon whose click opens a native popover panel (status, start/finish button with the shortcut, last dictation with copy, and a model download or failure with its retry only while the model is not ready; the recognition option, under a plain name, and the optional polishing are shown and chosen together in Settings › Model and the onboarding model step) and whose right-click opens a short menu. The dictation pill lives in its own transparent, click-through, always-on-top window that never takes focus.
 
 ### Settings
 

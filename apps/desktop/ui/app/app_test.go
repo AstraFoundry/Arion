@@ -39,6 +39,7 @@ func (r *recorder) RequestAccessibility()       { r.call("request-ax") }
 func (r *recorder) OpenMicrophoneSettings()     { r.call("open-mic") }
 func (r *recorder) OpenAccessibilitySettings()  { r.call("open-ax") }
 func (r *recorder) RetryModel()                 { r.call("retry") }
+func (r *recorder) RetryPolish()                { r.call("retry-polish") }
 func (r *recorder) UseBundle(id string)         { r.call("use:" + id) }
 func (r *recorder) UseRecommendedBundle()       { r.call("use-recommended") }
 func (r *recorder) RefreshDevices()             { r.call("devices") }
@@ -105,9 +106,9 @@ func (r *recorder) called(name string) bool {
 }
 
 func fixture() (*runtime.State, *recorder, runtime.Store) {
-	recommended := runtime.Bundle{ID: "xasr-160-xasr-final", Name: "X-ASR 160 ms + X-ASR final pass", Evaluated: true, Recommended: true,
+	recommended := runtime.Bundle{ID: "xasr-160-xasr-final", Evaluated: true, Recommended: true,
 		ErrorRates: map[string]float64{"zh": 0.041, "en": 0.052, "mixed": 0.087}, ReviewP95Ms: 312, SizeBytes: 270 << 20}
-	other := runtime.Bundle{ID: "xasr-160", Name: "X-ASR streaming 160 ms", Evaluated: true,
+	other := runtime.Bundle{ID: "xasr-160", Evaluated: true,
 		ErrorRates: map[string]float64{"zh": 0.06, "en": 0.07, "mixed": 0.11}, ReviewP95Ms: 41, SizeBytes: 134 << 20}
 	state := &runtime.State{
 		Version:     "0.1.0",
@@ -236,7 +237,7 @@ func TestMenuBarPanel(t *testing.T) {
 	if !hasText(tt, copy.For(copy.English).Text(copy.StatusReady)) || !hasText(tt, copy.For(copy.English).Text(copy.PanelEmpty)) {
 		t.Fatalf("idle panel: %q", tt.Texts())
 	}
-	if hasText(tt, state.Model.Active.Name) {
+	if hasText(tt, copy.For(copy.English).Text(copy.ModelNameAccurate)) {
 		t.Fatalf("ready panel shows the model, which settings owns: %q", tt.Texts())
 	}
 	snapshot(t, tt, "panel-ready")

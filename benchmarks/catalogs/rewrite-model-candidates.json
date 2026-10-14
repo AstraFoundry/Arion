@@ -2199,5 +2199,12 @@
     "GenAI/ORT/export version compatibility must be established for actual chosen binaries.",
     "Community conversion provenance and missing license fields require review.",
     "macOS and Windows native provider parity and safe runtime coexistence remain unverified."
-  ]
+  ],
+  "snapshotScope": "Initial artifact-metadata inspection; existing download/load flags describe that inspection, not current follow-up experiments",
+  "followUpEvidence": {
+    "document": "docs/research/qwen-pipeline-diagnostics.md",
+    "measuredCatalog": "benchmarks/catalogs/qwen-diagnostic-models.json",
+    "aggregates": "benchmarks/results/qwen-pipeline-diagnostic-v1/summary.json",
+    "scope": "macOS arm64 native CPU engine via Python diagnostic tooling; no native UI or production approval"
+  }
 }

@@ -84,6 +84,15 @@ The macOS event tap needs Input Monitoring consent, which CI cannot grant to a t
 
 DSK-A11 needs a packaged `Arion.app` and a person: the drop of Arion's file URL into the System Settings list, hiding and reappearing on app switches, and closing on grant or quit have not been exercised.
 
+## Live rewriting (LRW-A01–A05, macOS arm64, Apple M4)
+
+- Core: `go test -race ./packages/core/...` covers previews during capture, latest-wins and stale-preview suppression, cancel during the final rewrite, explicit `unavailable`/`timeout`/rejection outcomes, whole-utterance versus per-segment finalization and the pause cut; `TestValidateRewrite` covers each validation verdict.
+- Worker: client tests run the real protocol against a fake worker (cancel, crash); `TestWorkerDependencies` proves no speech-runtime import; `TestReuseParity` passed against the provisioned Qwen3 1.7B model (KV reuse output equals a cold run).
+- Packaging: `make desktop-build` staged the pinned GenAI 0.17.0 / ONNX Runtime 1.30.0 libraries and `arion-llm` into `Contents/Resources/llm`; `codesign --verify --deep --strict` passed (ad-hoc signature); the packaged worker loaded the model and rewrote held-out cases.
+- UI: `TestPolishRowStates` and `TestCopyOriginal` render the polish row (download size, progress, failure retry, ready, unsupported in Chinese) and the "Copy original" action; `TestNoTechnicalModelNames` renders Settings › Model and the onboarding model step in both languages and rejects engine or model-family names.
+- Downloads: `TestMirrorFallbackIsSilentAndRemembered` and `TestMirrorBytesStillVerified` cover the silent Hugging Face mirror; a proxy-only network was verified to download through the macOS system proxy. The mirror itself redirected this Japan-exit host back to huggingface.co, so mirror-served bytes were not observed from a mainland network.
+- Benchmark: [live-rewrite-v1](../../benchmarks/results/live-rewrite-v1/README.md) meets the LRW-A05 development gate. The running app was not exercised end to end with a microphone; rendered-preview timing and IME composition with previews remain unmeasured.
+
 ## Not verified
 
 - The live microphone path with real speech (capture → recognition → insertion) was not exercised by automation; scenarios replay fixture audio into the production pipeline.

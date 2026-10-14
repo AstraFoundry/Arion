@@ -1,0 +1,145 @@
+{
+  "host": "Apple M4, 32 GiB, macOS arm64; CPU only; 4 intra-op threads per runtime; host not isolated from other desktop tasks",
+  "provenance": "ONNX Runtime GenAI 0.17.0 / ONNX Runtime 1.30.0 in the arion-llm worker; prompt live-v2; onnx-community Qwen3 INT4 CPU exports pinned in benchmarks/catalogs/qwen-diagnostic-models.json; sherpa-onnx 1.13.8 recognizers pinned in models/catalog.json",
+  "limitations": "Developer-authored synthetic cases (one author), macOS TTS speech with inserted pauses, exact-string proxies only; no human ratings, natural speech, native preview, IME or Windows measurements",
+  "runs": [
+    {
+      "id": "text-dev-0.6b",
+      "kind": "text",
+      "split": "dev",
+      "variant": "live-v2 qwen3-0.6b",
+      "corpus": ".workspace/ablation-corpus.json",
+      "results": ".workspace/benchmarks/live-text/dev-final-0.6b.jsonl"
+    },
+    {
+      "id": "text-dev-1.7b",
+      "kind": "text",
+      "split": "dev",
+      "variant": "live-v2 qwen3-1.7b",
+      "corpus": ".workspace/ablation-corpus.json",
+      "results": ".workspace/benchmarks/live-text/dev-final-1.7b.jsonl"
+    },
+    {
+      "id": "text-dev-4b",
+      "kind": "text",
+      "split": "dev",
+      "variant": "live-v2 qwen3-4b",
+      "corpus": ".workspace/ablation-corpus.json",
+      "results": ".workspace/benchmarks/live-text/dev-final-4b.jsonl"
+    },
+    {
+      "id": "text-heldout-0.6b",
+      "kind": "text",
+      "split": "heldout",
+      "variant": "live-v2 qwen3-0.6b",
+      "corpus": ".workspace/live-heldout-corpus.json",
+      "results": ".workspace/benchmarks/live-text/heldout-final-0.6b.jsonl"
+    },
+    {
+      "id": "text-heldout-1.7b",
+      "kind": "text",
+      "split": "heldout",
+      "variant": "live-v2 qwen3-1.7b",
+      "corpus": ".workspace/live-heldout-corpus.json",
+      "results": ".workspace/benchmarks/live-text/heldout-final-1.7b.jsonl"
+    },
+    {
+      "id": "text-heldout-4b",
+      "kind": "text",
+      "split": "heldout",
+      "variant": "live-v2 qwen3-4b",
+      "corpus": ".workspace/live-heldout-corpus.json",
+      "results": ".workspace/benchmarks/live-text/heldout-final-4b.jsonl"
+    },
+    {
+      "id": "audio-heldout-xfinal",
+      "kind": "audio",
+      "variant": "X-ASR 160 + X-ASR whole finalizer, no LLM (current product)",
+      "results": ".workspace/benchmarks/live-audio/r1/heldout-xfinal.jsonl",
+      "split": "heldout",
+      "corpus": ".workspace/live-heldout-corpus.json",
+      "manifest": ".workspace/live-audio-heldout/manifest.json"
+    },
+    {
+      "id": "audio-heldout-qfinal",
+      "kind": "audio",
+      "variant": "X-ASR 160 + Qwen3-ASR whole finalizer, no LLM",
+      "results": ".workspace/benchmarks/live-audio/r1/heldout-qfinal.jsonl",
+      "split": "heldout",
+      "corpus": ".workspace/live-heldout-corpus.json",
+      "manifest": ".workspace/live-audio-heldout/manifest.json"
+    },
+    {
+      "id": "audio-heldout-qseg",
+      "kind": "audio",
+      "variant": "X-ASR 160 + Qwen3-ASR per segment, no LLM",
+      "results": ".workspace/benchmarks/live-audio/r1/heldout-qseg.jsonl",
+      "split": "heldout",
+      "corpus": ".workspace/live-heldout-corpus.json",
+      "manifest": ".workspace/live-audio-heldout/manifest.json"
+    },
+    {
+      "id": "audio-heldout-qseg-1.7b",
+      "kind": "audio",
+      "variant": "Qwen3-ASR per segment + Qwen3 1.7B live",
+      "results": ".workspace/benchmarks/live-audio/r1/heldout-qseg-1.7b.jsonl",
+      "split": "heldout",
+      "corpus": ".workspace/live-heldout-corpus.json",
+      "manifest": ".workspace/live-audio-heldout/manifest.json"
+    },
+    {
+      "id": "audio-heldout-xseg-1.7b",
+      "kind": "audio",
+      "variant": "X-ASR per segment + Qwen3 1.7B live",
+      "results": ".workspace/benchmarks/live-audio/r2/heldout-xseg-1.7b.jsonl",
+      "split": "heldout",
+      "corpus": ".workspace/live-heldout-corpus.json",
+      "manifest": ".workspace/live-audio-heldout/manifest.json"
+    },
+    {
+      "id": "audio-heldout-xfinal-0.6b",
+      "kind": "audio",
+      "variant": "X-ASR whole finalizer + Qwen3 0.6B live",
+      "results": ".workspace/benchmarks/live-audio/r2/heldout-xfinal-0.6b.jsonl",
+      "split": "heldout",
+      "corpus": ".workspace/live-heldout-corpus.json",
+      "manifest": ".workspace/live-audio-heldout/manifest.json"
+    },
+    {
+      "id": "audio-heldout-xfinal-1.7b",
+      "kind": "audio",
+      "variant": "X-ASR whole finalizer + Qwen3 1.7B live (shipped)",
+      "results": ".workspace/benchmarks/live-audio/r2/heldout-xfinal-1.7b.jsonl",
+      "split": "heldout",
+      "corpus": ".workspace/live-heldout-corpus.json",
+      "manifest": ".workspace/live-audio-heldout/manifest.json"
+    },
+    {
+      "id": "audio-heldout-xfinal-4b",
+      "kind": "audio",
+      "variant": "X-ASR whole finalizer + Qwen3 4B live",
+      "results": ".workspace/benchmarks/live-audio/r2/heldout-xfinal-4b.jsonl",
+      "split": "heldout",
+      "corpus": ".workspace/live-heldout-corpus.json",
+      "manifest": ".workspace/live-audio-heldout/manifest.json"
+    },
+    {
+      "id": "audio-dev-xfinal",
+      "kind": "audio",
+      "variant": "X-ASR whole finalizer, no LLM",
+      "results": ".workspace/benchmarks/live-audio/r2/dev-xfinal.jsonl",
+      "split": "dev",
+      "corpus": ".workspace/ablation-corpus.json",
+      "manifest": ".workspace/live-audio-dev/manifest.json"
+    },
+    {
+      "id": "audio-dev-xfinal-1.7b",
+      "kind": "audio",
+      "variant": "X-ASR whole finalizer + Qwen3 1.7B live",
+      "results": ".workspace/benchmarks/live-audio/r2/dev-xfinal-1.7b.jsonl",
+      "split": "dev",
+      "corpus": ".workspace/ablation-corpus.json",
+      "manifest": ".workspace/live-audio-dev/manifest.json"
+    }
+  ]
+}

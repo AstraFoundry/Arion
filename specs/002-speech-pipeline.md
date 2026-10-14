@@ -8,6 +8,7 @@ Capture → bounded frames → explicit resampling → VAD/streaming recognizer 
 - SPH-02: Capture callbacks MUST only enqueue frames. On overload, emit a discontinuity and terminate or restart explicitly; do not conceal dropped audio.
 - SPH-03: Partial output replaces only its session-owned draft. A revision number increases for every hypothesis update. ASR endpoint/final status is separate from target commit status.
 - SPH-04: VAD boundaries MUST preserve complete speech including onset/tail and flush the recognizer on user stop. A nonstreaming recognizer in overlapping windows must be identified as chunked, not true streaming.
+- SPH-04a: When closed segments are processed during capture ([009 LRW-02](009-contextual-rewrite.md#live-rewriting-pipeline)), each segment's audio is cut inside the pause that closed it, so no syllable is split between segments.
 - SPH-05: Correction input MUST include exact source revision, allowed contextual memory and a bounded draft. Correction results cannot apply to a different revision or committed content.
 - SPH-06: Names, numbers, URLs, negation and technical identifiers MUST retain intent. Ambiguous rewrites are presented as candidates; reject model additions outside supported correction policy.
 - SPH-07: Candidate ranking MUST only reorder producer-owned candidates. Models producing only one hypothesis must not be described as exposing n-best. See [007](007-ime-ranking.md).

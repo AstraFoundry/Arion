@@ -3,6 +3,7 @@
 package modelchoice
 
 import (
+	entity "arion.local/desktop/ui/entities/model"
 	"arion.local/desktop/ui/shared/copy"
 	"arion.local/desktop/ui/shared/kit"
 	"arion.local/desktop/ui/shared/runtime"
@@ -47,7 +48,7 @@ func Others(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 			id := bundle.ID
 			ui.Row(c.Key(id)).Gap(12).Padding(12, 16).AlignItems(ui.Center).Children(func() {
 				ui.Column(c).Grow(1).Gap(6).Children(func() {
-					ui.Text(c, bundle.Name).FontSize(theme.Body).FontWeight(500)
+					ui.Text(c, messages.Text(entity.NameKey(bundle.ID))).FontSize(theme.Body).FontWeight(500)
 					Metrics(c, tokens, store.Copy(), bundle)
 				})
 				busy := model.State == runtime.ModelProvisioning || model.State == runtime.ModelLoading

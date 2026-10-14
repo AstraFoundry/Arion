@@ -28,7 +28,17 @@
     "rewrite:report": "node tools/evaluation/rewrite-cli.mjs report",
     "rewrite:human-export": "node tools/evaluation/rewrite-cli.mjs human-export",
     "rewrite:human-report": "node tools/evaluation/rewrite-cli.mjs human-report",
-    "rewrite:e2e": "node tools/evaluation/cli.mjs e2e --suite tests/e2e/contextual-rewrite-scenarios.json"
+    "rewrite:e2e": "node tools/evaluation/cli.mjs e2e --suite tests/e2e/contextual-rewrite-scenarios.json",
+    "qwen:env": "node scripts/qwen-diagnostic-command.mjs env",
+    "qwen:provision": "node scripts/qwen-diagnostic-command.mjs provision",
+    "qwen:diagnostic": "node tools/evaluation/qwen-diagnostic.mjs run",
+    "qwen:report": "node tools/evaluation/qwen-diagnostic.mjs report",
+    "qwen:asr-diagnostic": "node tools/evaluation/diagnostic/asr-run.mjs",
+    "qwen:prefix-diagnostic": "node tools/evaluation/diagnostic/prefix-run.mjs",
+    "live:fixtures": "node scripts/live-bench-command.mjs fixtures",
+    "live:text": "node scripts/live-bench-command.mjs text",
+    "live:audio": "node scripts/live-bench-command.mjs audio",
+    "live:report": "node scripts/live-bench-command.mjs report"
   },
   "engines": {
     "node": ">=20.0.0"

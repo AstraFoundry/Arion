@@ -2,7 +2,7 @@
 
 ## Evidence boundary
 
-This document designs Arion's evaluation, rather than reporting competitor execution or measured model quality. [009 Contextual rewrite](../../specs/009-contextual-rewrite.md) is normative. The Node harness, deterministic plan, validators, checked reports and blind-review packaging are implemented; a reviewed ONNX generation/native-preview driver and authorized corpora are still required. Tests use known synthetic count/serialization oracles and reject `execution:"fixture"`. They are not inference evidence.
+This document defines the reviewed release protocol. Separate [Qwen development diagnostics](qwen-pipeline-diagnostics.md) report actual local CPU inference on unreviewed developer fixtures, without relaxing this protocol or asserting competitor parity. [009 Contextual rewrite](../../specs/009-contextual-rewrite.md) is normative. The Node harness, deterministic plan, validators, checked reports and blind-review packaging are implemented; a reviewed ONNX generation/native-preview driver and authorized corpora are still required. Tests use known synthetic count/serialization oracles and reject `execution:"fixture"`. They are not inference evidence.
 
 Recognition, conservative correction, candidate ranking and contextual rewriting have separate outputs and denominators. Preserve frozen ASR inputs for rewrite comparisons; keep existing [speech evaluation](benchmark-methodology.md) for actual CER/WER/MER and [streaming evaluation](streaming-datasets.md) for endpoint/preview timing. This rewrite harness measures contention queue/drop/emission traces, not ASR reference accuracy. Run the existing ASR evaluator on the same pinned audio/model with and without the LLM load to establish recognition regressions.
 

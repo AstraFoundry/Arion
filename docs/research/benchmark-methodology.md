@@ -1,6 +1,8 @@
 # Benchmark methodology
 
-This is an Arion protocol informed by research, not an exact reproduction of any paper's checkpoint, corpus preprocessing or published score. [008 Evaluation](../../specs/008-evaluation.md) is normative. [Runner](../../tools/evaluation/README.md) is executable; local production-model results do not exist yet.
+This is an Arion protocol informed by research, not an exact reproduction of any paper's checkpoint, corpus preprocessing or published score. [008 Evaluation](../../specs/008-evaluation.md) is normative. [Runner](../../tools/evaluation/README.md) is executable; [local development diagnostics](qwen-pipeline-diagnostics.md) do not establish release acceptance.
+
+[Qwen paper strategies](qwen-paper-strategies.md) maps contextual-ASR, editing/distillation and decoding papers to separate proposed experiments. Its entity-biased errors and edit-conditional diagnostics require reviewed annotations and explicit new scoring support; they are not metrics already emitted by this runner.
 
 ## Paper-to-implementation mapping
 

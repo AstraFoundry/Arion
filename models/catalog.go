@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"regexp"
+	"strings"
 )
 
 //go:embed catalog.json
@@ -17,6 +18,68 @@ type Catalog struct {
 	Version   int        `json:"version"`
 	Artifacts []Artifact `json:"artifacts"`
 	Bundles   []Bundle   `json:"bundles"`
+	Rewriters []Rewriter `json:"rewriters"`
+}
+
+// Rewriter is an optional local LLM for live rewriting (009). Its weights
+// are individual pinned files; the GenAI runtime ships inside the app.
+type Rewriter struct {
+	ID           string                `json:"id"`
+	Name         string                `json:"name"`
+	Runtime      Runtime               `json:"runtime"`
+	Repository   string                `json:"repository"`
+	Revision     string                `json:"revision"`
+	Source       string                `json:"sourceRepository"`
+	ModelCard    string                `json:"modelCard"`
+	License      License               `json:"license"`
+	Platforms    []string              `json:"platforms"`
+	Languages    []string              `json:"languages"`
+	Files        map[string]RemoteFile `json:"files"`
+	Prompt       string                `json:"prompt"`
+	Quantization string                `json:"quantization"`
+	Conversion   string                `json:"conversion"`
+	Evaluations  []RewriteEvaluation   `json:"evaluations"`
+}
+
+// RemoteFile is one individually downloaded, digest-pinned file.
+type RemoteFile struct {
+	URL       string `json:"url"`
+	SHA256    string `json:"sha256"`
+	SizeBytes int64  `json:"sizeBytes"`
+}
+
+// RewriteEvaluation is a content-free summary of a live pipeline report.
+type RewriteEvaluation struct {
+	RunID          string  `json:"runId"`
+	Report         string  `json:"report"`
+	Hardware       string  `json:"hardware"`
+	Split          string  `json:"split"`
+	Cases          int     `json:"cases"`
+	SourcePass     int     `json:"sourcePass"`
+	FinalPass      int     `json:"finalPass"`
+	Worsened       int     `json:"worsened"`
+	StopToFinalP50 float64 `json:"stopToFinalP50Ms"`
+	StopToFinalP95 float64 `json:"stopToFinalP95Ms"`
+	PeakRSSBytes   int64   `json:"peakRssBytes,omitempty"`
+}
+
+// Rewriter returns a rewriter by ID.
+func (c Catalog) Rewriter(id string) (Rewriter, bool) {
+	for _, r := range c.Rewriters {
+		if r.ID == id {
+			return r, true
+		}
+	}
+	return Rewriter{}, false
+}
+
+// SizeBytes is a rewriter's total download size.
+func (r Rewriter) SizeBytes() int64 {
+	var n int64
+	for _, f := range r.Files {
+		n += f.SizeBytes
+	}
+	return n
 }
 
 // Artifact is one immutable upstream archive.
@@ -136,6 +199,27 @@ func Parse(data []byte) (Catalog, error) {
 			}
 		}
 		artifacts[a.ID] = a
+	}
+	rewriters := map[string]bool{}
+	for _, r := range catalog.Rewriters {
+		if r.ID == "" || r.Name == "" || rewriters[r.ID] {
+			return Catalog{}, fmt.Errorf("catalog: missing or duplicate rewriter id %q", r.ID)
+		}
+		rewriters[r.ID] = true
+		if r.Repository == "" || r.Revision == "" || r.Prompt == "" || r.Runtime.Engine == "" || len(r.Platforms) == 0 {
+			return Catalog{}, fmt.Errorf("catalog: %s lacks pinned provenance", r.ID)
+		}
+		if r.License.Model == "" || r.License.Runtime == "" || r.License.Reference == "" {
+			return Catalog{}, fmt.Errorf("catalog: %s lacks license references", r.ID)
+		}
+		if len(r.Files) == 0 {
+			return Catalog{}, fmt.Errorf("catalog: %s has no files", r.ID)
+		}
+		for name, f := range r.Files {
+			if name == "" || strings.ContainsAny(name, `/\`) || f.URL == "" || !sha256Pattern.MatchString(f.SHA256) || f.SizeBytes <= 0 {
+				return Catalog{}, fmt.Errorf("catalog: %s file %q lacks digest", r.ID, name)
+			}
+		}
 	}
 	bundles := map[string]bool{}
 	for _, b := range catalog.Bundles {

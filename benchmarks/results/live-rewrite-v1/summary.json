@@ -1,0 +1,729 @@
+{
+  "kind": "arion-live-rewrite-report-v1",
+  "generated": "2026-10-13T18:59:25.317Z",
+  "host": "Apple M4, 32 GiB, macOS arm64; CPU only; 4 intra-op threads per runtime; host not isolated from other desktop tasks",
+  "provenance": "ONNX Runtime GenAI 0.17.0 / ONNX Runtime 1.30.0 in the arion-llm worker; prompt live-v2; onnx-community Qwen3 INT4 CPU exports pinned in benchmarks/catalogs/qwen-diagnostic-models.json; sherpa-onnx 1.13.8 recognizers pinned in models/catalog.json",
+  "limitations": "Developer-authored synthetic cases (one author), macOS TTS speech with inserted pauses, exact-string proxies only; no human ratings, natural speech, native preview, IME or Windows measurements",
+  "runs": [
+    {
+      "id": "text-dev-0.6b",
+      "kind": "text",
+      "split": "dev",
+      "variant": "live-v2 qwen3-0.6b",
+      "corpusSha256": "aa5e9b4a18b0ca489531dc3982f6f129282d243b40778f5e0ec9883de7995053",
+      "resultsSha256": "17931c01f02fd307e27ce155f6c81da912c6a308675d068dea5a918ce322d317",
+      "cases": 24,
+      "sourcePass": 8,
+      "proposalPass": 15,
+      "deliveredPass": 15,
+      "accepted": 20,
+      "rejected": {
+        "content_dropped": 1,
+        "negation_dropped": 1
+      },
+      "acceptedFailing": 8,
+      "rejectedPassing": 1,
+      "worsened": 0,
+      "referenceEditRatioMean": 0.24457881443175564,
+      "sourceEditRatioMean": 0.3670215201465201,
+      "finalMs": {
+        "count": 22,
+        "p50": 240.288,
+        "p95": 404.03855,
+        "p99": 417.07741
+      },
+      "liveEdits": 31,
+      "liveAccepted": 22,
+      "liveMs": {
+        "count": 31,
+        "p50": 178.898,
+        "p95": 499.6165,
+        "p99": 712.0815999999999
+      }
+    },
+    {
+      "id": "text-dev-1.7b",
+      "kind": "text",
+      "split": "dev",
+      "variant": "live-v2 qwen3-1.7b",
+      "corpusSha256": "aa5e9b4a18b0ca489531dc3982f6f129282d243b40778f5e0ec9883de7995053",
+      "resultsSha256": "6ab64f9c7567dd0b589e08e5b36da905e5d8578eaaf2d2b5865625736f1b3868",
+      "cases": 24,
+      "sourcePass": 8,
+      "proposalPass": 17,
+      "deliveredPass": 17,
+      "accepted": 21,
+      "rejected": {
+        "unsupported_content": 1
+      },
+      "acceptedFailing": 6,
+      "rejectedPassing": 0,
+      "worsened": 0,
+      "referenceEditRatioMean": 0.19771743098948982,
+      "sourceEditRatioMean": 0.3670215201465201,
+      "finalMs": {
+        "count": 22,
+        "p50": 533.471,
+        "p95": 795.72195,
+        "p99": 1088.7508199999997
+      },
+      "liveEdits": 31,
+      "liveAccepted": 29,
+      "liveMs": {
+        "count": 31,
+        "p50": 377.261,
+        "p95": 612.335,
+        "p99": 769.0646999999999
+      }
+    },
+    {
+      "id": "text-dev-4b",
+      "kind": "text",
+      "split": "dev",
+      "variant": "live-v2 qwen3-4b",
+      "corpusSha256": "aa5e9b4a18b0ca489531dc3982f6f129282d243b40778f5e0ec9883de7995053",
+      "resultsSha256": "f64b7836aca2deea1e9eff65b97fd020120c9b504316c2e65eca67f5b8ec70ed",
+      "cases": 24,
+      "sourcePass": 8,
+      "proposalPass": 20,
+      "deliveredPass": 20,
+      "accepted": 22,
+      "rejected": {},
+      "acceptedFailing": 4,
+      "rejectedPassing": 0,
+      "worsened": 0,
+      "referenceEditRatioMean": 0.14855170700758938,
+      "sourceEditRatioMean": 0.3670215201465201,
+      "finalMs": {
+        "count": 22,
+        "p50": 1067.5774999999999,
+        "p95": 2239.35705,
+        "p99": 2465.0148699999995
+      },
+      "liveEdits": 31,
+      "liveAccepted": 29,
+      "liveMs": {
+        "count": 31,
+        "p50": 735.625,
+        "p95": 1447.961,
+        "p99": 1785.3407999999997
+      }
+    },
+    {
+      "id": "text-heldout-0.6b",
+      "kind": "text",
+      "split": "heldout",
+      "variant": "live-v2 qwen3-0.6b",
+      "corpusSha256": "31a5231fa057d8057933b1966c75a279d552c08fac3c4c8524cac300c5bda8fa",
+      "resultsSha256": "3ec47b62a314c6adbe7b7876484f4ecf7aa668a91ea8553ae498ab04b8b05e8d",
+      "cases": 30,
+      "sourcePass": 12,
+      "proposalPass": 22,
+      "deliveredPass": 24,
+      "accepted": 24,
+      "rejected": {
+        "content_dropped": 3,
+        "length": 1,
+        "unsupported_content": 1
+      },
+      "acceptedFailing": 4,
+      "rejectedPassing": 1,
+      "worsened": 0,
+      "referenceEditRatioMean": 0.14450036805299962,
+      "sourceEditRatioMean": 0.3079450617608513,
+      "finalMs": {
+        "count": 29,
+        "p50": 180.874,
+        "p95": 359.5811999999999,
+        "p99": 460.3363199999999
+      },
+      "liveEdits": 45,
+      "liveAccepted": 31,
+      "liveMs": {
+        "count": 45,
+        "p50": 179.197,
+        "p95": 395.49739999999986,
+        "p99": 487.25280000000026
+      }
+    },
+    {
+      "id": "text-heldout-1.7b",
+      "kind": "text",
+      "split": "heldout",
+      "variant": "live-v2 qwen3-1.7b",
+      "corpusSha256": "31a5231fa057d8057933b1966c75a279d552c08fac3c4c8524cac300c5bda8fa",
+      "resultsSha256": "a5a404d6fe35674a6f2f1add7e24704f5991d865113069d297b417214f6c4b88",
+      "cases": 30,
+      "sourcePass": 12,
+      "proposalPass": 25,
+      "deliveredPass": 27,
+      "accepted": 27,
+      "rejected": {
+        "length": 2
+      },
+      "acceptedFailing": 3,
+      "rejectedPassing": 0,
+      "worsened": 0,
+      "referenceEditRatioMean": 0.043584529505582136,
+      "sourceEditRatioMean": 0.3079450617608513,
+      "finalMs": {
+        "count": 29,
+        "p50": 499.526,
+        "p95": 1669.1909999999984,
+        "p99": 3079.487159999998
+      },
+      "liveEdits": 45,
+      "liveAccepted": 43,
+      "liveMs": {
+        "count": 45,
+        "p50": 370.167,
+        "p95": 740.5541999999999,
+        "p99": 1406.3403200000025
+      }
+    },
+    {
+      "id": "text-heldout-4b",
+      "kind": "text",
+      "split": "heldout",
+      "variant": "live-v2 qwen3-4b",
+      "corpusSha256": "31a5231fa057d8057933b1966c75a279d552c08fac3c4c8524cac300c5bda8fa",
+      "resultsSha256": "6a911388f0a6c2149736fc545d22e6fcb5ecb2c9d3795d06888b53dfd75ae851",
+      "cases": 30,
+      "sourcePass": 12,
+      "proposalPass": 26,
+      "deliveredPass": 28,
+      "accepted": 27,
+      "rejected": {
+        "length": 2
+      },
+      "acceptedFailing": 2,
+      "rejectedPassing": 0,
+      "worsened": 0,
+      "referenceEditRatioMean": 0.03407496012759171,
+      "sourceEditRatioMean": 0.3079450617608513,
+      "finalMs": {
+        "count": 29,
+        "p50": 886.739,
+        "p95": 2149.080799999998,
+        "p99": 3999.847039999998
+      },
+      "liveEdits": 45,
+      "liveAccepted": 40,
+      "liveMs": {
+        "count": 45,
+        "p50": 743.016,
+        "p95": 1346.9797999999996,
+        "p99": 1797.0889200000004
+      }
+    },
+    {
+      "id": "audio-heldout-xfinal",
+      "kind": "audio",
+      "split": "heldout",
+      "variant": "X-ASR 160 + X-ASR whole finalizer, no LLM (current product)",
+      "corpusSha256": "31a5231fa057d8057933b1966c75a279d552c08fac3c4c8524cac300c5bda8fa",
+      "resultsSha256": "e9acb91fa236784b36e542419a25df17c88ebb2e21fa88575a09f65aef153757",
+      "manifestSha256": "ba20094b45e2a97e700b63edcf07a1ae46ec059bcf375c1c7af3c06d7f60c2fa",
+      "cases": 27,
+      "failed": 0,
+      "asrErrorRate": {
+        "zh:cer": {
+          "errors": 1,
+          "referenceUnits": 291,
+          "rate": 0.003436426116838488
+        },
+        "en:wer": {
+          "errors": 1,
+          "referenceUnits": 94,
+          "rate": 0.010638297872340425
+        },
+        "mixed:mer": {
+          "errors": 5,
+          "referenceUnits": 46,
+          "rate": 0.10869565217391304
+        }
+      },
+      "sourcePass": 12,
+      "finalPass": 12,
+      "worsened": 0,
+      "improved": 0,
+      "rewrite": {
+        "none": 27
+      },
+      "stopToFinalMs": {
+        "count": 27,
+        "p50": 128.592,
+        "p95": 211.0334,
+        "p99": 253.58261999999993
+      },
+      "firstPartialMs": {
+        "count": 27,
+        "p50": 1134.202,
+        "p95": 1301.6082000000001,
+        "p99": 1306.65258
+      },
+      "multiSegment": 21,
+      "previewBeforeStop": 0,
+      "previewEventsMean": 0
+    },
+    {
+      "id": "audio-heldout-qfinal",
+      "kind": "audio",
+      "split": "heldout",
+      "variant": "X-ASR 160 + Qwen3-ASR whole finalizer, no LLM",
+      "corpusSha256": "31a5231fa057d8057933b1966c75a279d552c08fac3c4c8524cac300c5bda8fa",
+      "resultsSha256": "74c5466322bb052252e192a4a5ebf59181ca77fcd38371533222bec02b7faaa6",
+      "manifestSha256": "ba20094b45e2a97e700b63edcf07a1ae46ec059bcf375c1c7af3c06d7f60c2fa",
+      "cases": 27,
+      "failed": 0,
+      "asrErrorRate": {
+        "zh:cer": {
+          "errors": 1,
+          "referenceUnits": 291,
+          "rate": 0.003436426116838488
+        },
+        "en:wer": {
+          "errors": 4,
+          "referenceUnits": 94,
+          "rate": 0.0425531914893617
+        },
+        "mixed:mer": {
+          "errors": 5,
+          "referenceUnits": 46,
+          "rate": 0.10869565217391304
+        }
+      },
+      "sourcePass": 12,
+      "finalPass": 12,
+      "worsened": 0,
+      "improved": 0,
+      "rewrite": {
+        "none": 27
+      },
+      "stopToFinalMs": {
+        "count": 27,
+        "p50": 770.808,
+        "p95": 1674.2665,
+        "p99": 1797.3014999999998
+      },
+      "firstPartialMs": {
+        "count": 27,
+        "p50": 1134.25,
+        "p95": 1303.2994,
+        "p99": 1305.9744
+      },
+      "multiSegment": 21,
+      "previewBeforeStop": 0,
+      "previewEventsMean": 0
+    },
+    {
+      "id": "audio-heldout-qseg",
+      "kind": "audio",
+      "split": "heldout",
+      "variant": "X-ASR 160 + Qwen3-ASR per segment, no LLM",
+      "corpusSha256": "31a5231fa057d8057933b1966c75a279d552c08fac3c4c8524cac300c5bda8fa",
+      "resultsSha256": "6c2d78a8050642465926c578c43de09a20a02514f40db7cf30c52c7bf9468421",
+      "manifestSha256": "ba20094b45e2a97e700b63edcf07a1ae46ec059bcf375c1c7af3c06d7f60c2fa",
+      "cases": 27,
+      "failed": 0,
+      "asrErrorRate": {
+        "zh:cer": {
+          "errors": 5,
+          "referenceUnits": 291,
+          "rate": 0.01718213058419244
+        },
+        "en:wer": {
+          "errors": 2,
+          "referenceUnits": 94,
+          "rate": 0.02127659574468085
+        },
+        "mixed:mer": {
+          "errors": 4,
+          "referenceUnits": 46,
+          "rate": 0.08695652173913043
+        }
+      },
+      "sourcePass": 12,
+      "finalPass": 12,
+      "worsened": 0,
+      "improved": 0,
+      "rewrite": {
+        "none": 27
+      },
+      "stopToFinalMs": {
+        "count": 27,
+        "p50": 373.601,
+        "p95": 1487.6827999999998,
+        "p99": 2287.538199999998
+      },
+      "firstPartialMs": {
+        "count": 27,
+        "p50": 1131.298,
+        "p95": 1308.1446,
+        "p99": 1312.5784
+      },
+      "multiSegment": 21,
+      "previewBeforeStop": 0,
+      "previewEventsMean": 0
+    },
+    {
+      "id": "audio-heldout-qseg-1.7b",
+      "kind": "audio",
+      "split": "heldout",
+      "variant": "Qwen3-ASR per segment + Qwen3 1.7B live",
+      "corpusSha256": "31a5231fa057d8057933b1966c75a279d552c08fac3c4c8524cac300c5bda8fa",
+      "resultsSha256": "2f610e80e9ec84f852d1c8ca4c56742561138f850b6521aafa9451c998adccf4",
+      "manifestSha256": "ba20094b45e2a97e700b63edcf07a1ae46ec059bcf375c1c7af3c06d7f60c2fa",
+      "cases": 27,
+      "failed": 1,
+      "asrErrorRate": {
+        "zh:cer": {
+          "errors": 5,
+          "referenceUnits": 273,
+          "rate": 0.018315018315018316
+        },
+        "en:wer": {
+          "errors": 2,
+          "referenceUnits": 94,
+          "rate": 0.02127659574468085
+        },
+        "mixed:mer": {
+          "errors": 4,
+          "referenceUnits": 46,
+          "rate": 0.08695652173913043
+        }
+      },
+      "sourcePass": 12,
+      "finalPass": 21,
+      "worsened": 0,
+      "improved": 9,
+      "rewrite": {
+        "accepted": 24,
+        "length": 2
+      },
+      "stopToFinalMs": {
+        "count": 26,
+        "p50": 1553.193,
+        "p95": 3972.0027499999997,
+        "p99": 5530.7425
+      },
+      "firstPartialMs": {
+        "count": 26,
+        "p50": 1064.5465,
+        "p95": 1304.12725,
+        "p99": 1307.05775
+      },
+      "multiSegment": 20,
+      "previewBeforeStop": 17,
+      "previewEventsMean": 5.85
+    },
+    {
+      "id": "audio-heldout-xseg-1.7b",
+      "kind": "audio",
+      "split": "heldout",
+      "variant": "X-ASR per segment + Qwen3 1.7B live",
+      "corpusSha256": "31a5231fa057d8057933b1966c75a279d552c08fac3c4c8524cac300c5bda8fa",
+      "resultsSha256": "791a56a889dfbe4d0d1023dd60a950af706c489d1b15578ff189f818c898e8ee",
+      "manifestSha256": "ba20094b45e2a97e700b63edcf07a1ae46ec059bcf375c1c7af3c06d7f60c2fa",
+      "cases": 27,
+      "failed": 0,
+      "asrErrorRate": {
+        "zh:cer": {
+          "errors": 3,
+          "referenceUnits": 291,
+          "rate": 0.010309278350515464
+        },
+        "en:wer": {
+          "errors": 3,
+          "referenceUnits": 94,
+          "rate": 0.031914893617021274
+        },
+        "mixed:mer": {
+          "errors": 9,
+          "referenceUnits": 46,
+          "rate": 0.1956521739130435
+        }
+      },
+      "sourcePass": 11,
+      "finalPass": 21,
+      "worsened": 0,
+      "improved": 10,
+      "rewrite": {
+        "accepted": 25,
+        "length": 2
+      },
+      "stopToFinalMs": {
+        "count": 27,
+        "p50": 476.453,
+        "p95": 991.1659999999999,
+        "p99": 1981.3129999999983
+      },
+      "firstPartialMs": {
+        "count": 27,
+        "p50": 1134.959,
+        "p95": 1311.0919,
+        "p99": 1312.79154
+      },
+      "multiSegment": 21,
+      "previewBeforeStop": 20,
+      "previewEventsMean": 10.571428571428571
+    },
+    {
+      "id": "audio-heldout-xfinal-0.6b",
+      "kind": "audio",
+      "split": "heldout",
+      "variant": "X-ASR whole finalizer + Qwen3 0.6B live",
+      "corpusSha256": "31a5231fa057d8057933b1966c75a279d552c08fac3c4c8524cac300c5bda8fa",
+      "resultsSha256": "bce095d4b9e850f4de3a03d75521f6a5ac6566d756c80c876537aa1efbc2daaf",
+      "manifestSha256": "ba20094b45e2a97e700b63edcf07a1ae46ec059bcf375c1c7af3c06d7f60c2fa",
+      "cases": 27,
+      "failed": 0,
+      "asrErrorRate": {
+        "zh:cer": {
+          "errors": 1,
+          "referenceUnits": 291,
+          "rate": 0.003436426116838488
+        },
+        "en:wer": {
+          "errors": 1,
+          "referenceUnits": 94,
+          "rate": 0.010638297872340425
+        },
+        "mixed:mer": {
+          "errors": 5,
+          "referenceUnits": 46,
+          "rate": 0.10869565217391304
+        }
+      },
+      "sourcePass": 12,
+      "finalPass": 24,
+      "worsened": 0,
+      "improved": 12,
+      "rewrite": {
+        "accepted": 24,
+        "length": 1,
+        "content_dropped": 1,
+        "unsupported_content": 1
+      },
+      "stopToFinalMs": {
+        "count": 27,
+        "p50": 333.279,
+        "p95": 799.1968999999999,
+        "p99": 841.49276
+      },
+      "firstPartialMs": {
+        "count": 27,
+        "p50": 1144.811,
+        "p95": 1311.9289999999999,
+        "p99": 1312.70048
+      },
+      "multiSegment": 21,
+      "previewBeforeStop": 18,
+      "previewEventsMean": 9.80952380952381
+    },
+    {
+      "id": "audio-heldout-xfinal-1.7b",
+      "kind": "audio",
+      "split": "heldout",
+      "variant": "X-ASR whole finalizer + Qwen3 1.7B live (shipped)",
+      "corpusSha256": "31a5231fa057d8057933b1966c75a279d552c08fac3c4c8524cac300c5bda8fa",
+      "resultsSha256": "eb35ac790c81440622b6ea01e6ec3d8092a45c46e6bb637f9da1be7f11f805b5",
+      "manifestSha256": "ba20094b45e2a97e700b63edcf07a1ae46ec059bcf375c1c7af3c06d7f60c2fa",
+      "cases": 27,
+      "failed": 0,
+      "asrErrorRate": {
+        "zh:cer": {
+          "errors": 1,
+          "referenceUnits": 291,
+          "rate": 0.003436426116838488
+        },
+        "en:wer": {
+          "errors": 1,
+          "referenceUnits": 94,
+          "rate": 0.010638297872340425
+        },
+        "mixed:mer": {
+          "errors": 5,
+          "referenceUnits": 46,
+          "rate": 0.10869565217391304
+        }
+      },
+      "sourcePass": 12,
+      "finalPass": 25,
+      "worsened": 0,
+      "improved": 13,
+      "rewrite": {
+        "accepted": 25,
+        "length": 2
+      },
+      "stopToFinalMs": {
+        "count": 27,
+        "p50": 499.854,
+        "p95": 1246.7846999999997,
+        "p99": 2128.3702599999983
+      },
+      "firstPartialMs": {
+        "count": 27,
+        "p50": 1134.496,
+        "p95": 1304.771,
+        "p99": 1313.68146
+      },
+      "multiSegment": 21,
+      "previewBeforeStop": 19,
+      "previewEventsMean": 10.285714285714286
+    },
+    {
+      "id": "audio-heldout-xfinal-4b",
+      "kind": "audio",
+      "split": "heldout",
+      "variant": "X-ASR whole finalizer + Qwen3 4B live",
+      "corpusSha256": "31a5231fa057d8057933b1966c75a279d552c08fac3c4c8524cac300c5bda8fa",
+      "resultsSha256": "ee17e2ecd07cd10e6d498a54c89069648b263a47e72b76ab802f7bc95a22b333",
+      "manifestSha256": "ba20094b45e2a97e700b63edcf07a1ae46ec059bcf375c1c7af3c06d7f60c2fa",
+      "cases": 27,
+      "failed": 0,
+      "asrErrorRate": {
+        "zh:cer": {
+          "errors": 1,
+          "referenceUnits": 291,
+          "rate": 0.003436426116838488
+        },
+        "en:wer": {
+          "errors": 1,
+          "referenceUnits": 94,
+          "rate": 0.010638297872340425
+        },
+        "mixed:mer": {
+          "errors": 5,
+          "referenceUnits": 46,
+          "rate": 0.10869565217391304
+        }
+      },
+      "sourcePass": 12,
+      "finalPass": 26,
+      "worsened": 0,
+      "improved": 14,
+      "rewrite": {
+        "accepted": 25,
+        "length": 2
+      },
+      "stopToFinalMs": {
+        "count": 27,
+        "p50": 1000.203,
+        "p95": 1999.6535,
+        "p99": 4216.307239999995
+      },
+      "firstPartialMs": {
+        "count": 27,
+        "p50": 1135.041,
+        "p95": 1307.5061,
+        "p99": 1314.0999
+      },
+      "multiSegment": 21,
+      "previewBeforeStop": 20,
+      "previewEventsMean": 8.714285714285714
+    },
+    {
+      "id": "audio-dev-xfinal",
+      "kind": "audio",
+      "split": "dev",
+      "variant": "X-ASR whole finalizer, no LLM",
+      "corpusSha256": "aa5e9b4a18b0ca489531dc3982f6f129282d243b40778f5e0ec9883de7995053",
+      "resultsSha256": "ad3244edb63724e45c806fd0050cb38657f700fdec278633d857290e1960c56f",
+      "manifestSha256": "89db7edeaa612e9f209c741d9a17edc2b9eac95034c7a97f5d8ffc40184e492d",
+      "cases": 22,
+      "failed": 0,
+      "asrErrorRate": {
+        "zh:cer": {
+          "errors": 7,
+          "referenceUnits": 197,
+          "rate": 0.03553299492385787
+        },
+        "en:wer": {
+          "errors": 26,
+          "referenceUnits": 72,
+          "rate": 0.3611111111111111
+        },
+        "mixed:mer": {
+          "errors": 11,
+          "referenceUnits": 101,
+          "rate": 0.10891089108910891
+        }
+      },
+      "sourcePass": 6,
+      "finalPass": 6,
+      "worsened": 0,
+      "improved": 0,
+      "rewrite": {
+        "none": 22
+      },
+      "stopToFinalMs": {
+        "count": 22,
+        "p50": 120.206,
+        "p95": 162.12625,
+        "p99": 167.20411000000001
+      },
+      "firstPartialMs": {
+        "count": 22,
+        "p50": 1150.7115,
+        "p95": 1313.93275,
+        "p99": 1438.69213
+      },
+      "multiSegment": 17,
+      "previewBeforeStop": 0,
+      "previewEventsMean": 0
+    },
+    {
+      "id": "audio-dev-xfinal-1.7b",
+      "kind": "audio",
+      "split": "dev",
+      "variant": "X-ASR whole finalizer + Qwen3 1.7B live",
+      "corpusSha256": "aa5e9b4a18b0ca489531dc3982f6f129282d243b40778f5e0ec9883de7995053",
+      "resultsSha256": "f216cde6ca989312fb4291c92a8b9551435a3cb75a2b4592248906ed7d45d8ff",
+      "manifestSha256": "89db7edeaa612e9f209c741d9a17edc2b9eac95034c7a97f5d8ffc40184e492d",
+      "cases": 22,
+      "failed": 0,
+      "asrErrorRate": {
+        "zh:cer": {
+          "errors": 7,
+          "referenceUnits": 197,
+          "rate": 0.03553299492385787
+        },
+        "en:wer": {
+          "errors": 26,
+          "referenceUnits": 72,
+          "rate": 0.3611111111111111
+        },
+        "mixed:mer": {
+          "errors": 11,
+          "referenceUnits": 101,
+          "rate": 0.10891089108910891
+        }
+      },
+      "sourcePass": 6,
+      "finalPass": 11,
+      "worsened": 0,
+      "improved": 5,
+      "rewrite": {
+        "accepted": 20,
+        "new_number": 1,
+        "length": 1
+      },
+      "stopToFinalMs": {
+        "count": 22,
+        "p50": 611.316,
+        "p95": 1108.3473499999998,
+        "p99": 1215.3917499999998
+      },
+      "firstPartialMs": {
+        "count": 22,
+        "p50": 1149.9095,
+        "p95": 1465.5872499999998,
+        "p99": 2248.325239999999
+      },
+      "multiSegment": 17,
+      "previewBeforeStop": 16,
+      "previewEventsMean": 10.117647058823529
+    }
+  ]
+}

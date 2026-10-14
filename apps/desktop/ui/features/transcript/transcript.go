@@ -13,8 +13,11 @@ import (
 	"github.com/egoist/mygo/ui"
 )
 
-// Copied remembers when the copy button was used, for its confirmation.
-type Copied struct{ At time.Time }
+// Copied remembers when a copy button was used, for its confirmation.
+type Copied struct {
+	At       time.Time
+	Original bool
+}
 
 // Last shows the most recent dictation text.
 func Last(c *ui.Context, store runtime.Store, tokens theme.Tokens, copied *Copied) {
@@ -24,28 +27,12 @@ func Last(c *ui.Context, store runtime.Store, tokens theme.Tokens, copied *Copie
 		ui.Row(c).AlignItems(ui.Center).Children(func() {
 			ui.Text(c, messages.Text(copy.PanelLastDictation)).FontSize(theme.Caption).FontWeight(600).TextColor(tokens.Muted)
 			ui.Spacer(c)
+			// A rewritten dictation keeps its recognized original one click away.
+			if original := store.State.LastOriginal; text != "" && original != "" {
+				copyButton(c.Key("original"), store, tokens, copied, true, messages.Text(copy.CopyOriginal), original)
+			}
 			if text != "" {
-				justCopied := c.Now().Sub(copied.At) < 1500*time.Millisecond
-				if justCopied {
-					c.After(1500*time.Millisecond - c.Now().Sub(copied.At))
-				}
-				icon, label := icons.Copy, messages.Text(copy.Copy)
-				if justCopied {
-					icon, label = icons.Check, messages.Text(copy.Copied)
-				}
-				button := ui.ButtonBase(c.Key("copy")).Gap(4).Height(26).Padding(0, 8).Radius(6).AlignItems(ui.Center).TextColor(tokens.Muted)
-				kit.Press(button)
-				if button.Hovered() {
-					button.Background(tokens.AccentSoft).TextColor(tokens.Text)
-				}
-				button.Children(func() {
-					ui.Icon(c, icon).FontSize(12).ContentTransition(ui.ContentTransition{})
-					ui.Text(c, label).FontSize(theme.Caption).ContentTransition(ui.ContentTransition{})
-				})
-				if button.Clicked() {
-					store.Actions.CopyText(text)
-					copied.At = c.Now()
-				}
+				copyButton(c.Key("copy"), store, tokens, copied, false, messages.Text(copy.Copy), text)
 			}
 		})
 		if text == "" {
@@ -55,4 +42,28 @@ func Last(c *ui.Context, store runtime.Store, tokens theme.Tokens, copied *Copie
 				Transition(ui.ElementTransition{Enter: &ui.Motion{Y: 6}})
 		}
 	})
+}
+
+func copyButton(c *ui.Context, store runtime.Store, tokens theme.Tokens, copied *Copied, original bool, label, text string) {
+	justCopied := copied.Original == original && c.Now().Sub(copied.At) < 1500*time.Millisecond
+	if justCopied {
+		c.After(1500*time.Millisecond - c.Now().Sub(copied.At))
+	}
+	icon := icons.Copy
+	if justCopied {
+		icon, label = icons.Check, store.Copy().Text(copy.Copied)
+	}
+	button := ui.ButtonBase(c).Gap(4).Height(26).Padding(0, 8).Radius(6).AlignItems(ui.Center).TextColor(tokens.Muted)
+	kit.Press(button)
+	if button.Hovered() {
+		button.Background(tokens.AccentSoft).TextColor(tokens.Text)
+	}
+	button.Children(func() {
+		ui.Icon(c, icon).FontSize(12).ContentTransition(ui.ContentTransition{})
+		ui.Text(c, label).FontSize(theme.Caption).ContentTransition(ui.ContentTransition{})
+	})
+	if button.Clicked() {
+		store.Actions.CopyText(text)
+		copied.At, copied.Original = c.Now(), original
+	}
 }

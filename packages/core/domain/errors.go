@@ -26,6 +26,8 @@ const (
 	CodeProvisioningFailed    ErrorCode = "PROVISIONING_FAILED"
 	CodeSecureFieldBlocked    ErrorCode = "SECURE_FIELD_BLOCKED"
 	CodeEvaluationUnavailable ErrorCode = "EVALUATION_UNAVAILABLE"
+	CodeRewriteRejected       ErrorCode = "REWRITE_REJECTED"
+	CodeRewriteTimeout        ErrorCode = "REWRITE_TIMEOUT"
 )
 
 // Error carries a stable code and a diagnostic category. Detail must never

@@ -34,3 +34,10 @@ out/
 
 # Update signing keys never enter the repository.
 mygo-update.key
+
+# Generated Python evaluation bytecode
+__pycache__/
+*.pyc
+
+# Staged LLM worker and runtime (scripts/stage-llm-runtime.mjs).
+/apps/desktop/resources/*/llm/

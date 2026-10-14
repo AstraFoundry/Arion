@@ -268,3 +268,24 @@ func boundary(s string, start, end int) bool {
 	}
 	return true
 }
+
+// JoinText concatenates text segments, inserting a space only between
+// Latin letters or digits, never next to CJK characters.
+func JoinText(parts ...string) string {
+	var b strings.Builder
+	for _, part := range parts {
+		part = strings.TrimSpace(part)
+		if part == "" {
+			continue
+		}
+		if b.Len() > 0 {
+			last, _ := utf8.DecodeLastRuneInString(b.String())
+			first, _ := utf8.DecodeRuneInString(part)
+			if !IsCJK(last) && !IsCJK(first) && !unicode.IsSpace(last) {
+				b.WriteByte(' ')
+			}
+		}
+		b.WriteString(part)
+	}
+	return b.String()
+}

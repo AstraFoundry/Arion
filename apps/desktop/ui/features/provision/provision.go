@@ -24,7 +24,7 @@ func Progress(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 		case runtime.ModelFailed:
 			ui.Row(c.Key("failed")).Gap(8).AlignItems(ui.Center).Children(func() {
 				ui.Icon(c, icons.TriangleAlert).FontSize(14).TextColor(tokens.Danger)
-				ui.Text(c, messages.Text(failure(m.Failure))).FontSize(theme.Caption).Grow(1)
+				ui.Text(c, messages.Text(model.FailureKey(m.Failure))).FontSize(theme.Caption).Grow(1)
 				if kit.Button(c, tokens, kit.Outline, messages.Text(copy.Retry), true).Clicked() {
 					store.Actions.RetryModel()
 				}
@@ -46,14 +46,4 @@ func Progress(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 			})
 		}
 	})
-}
-
-func failure(code runtime.ErrorCode) copy.Key {
-	switch code {
-	case runtime.CodeArtifactUnverified:
-		return copy.ModelFailChecksum
-	case runtime.CodeProvisioningFailed:
-		return copy.ModelFailNetwork
-	}
-	return copy.FailModelTitle
 }

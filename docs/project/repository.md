@@ -8,7 +8,9 @@
 | `apps/desktop/ui` | `app → pages → widgets → features → entities → shared` Go packages; same-layer slices isolated; shared segments may import each other |
 | `apps/desktop/bootstrap` | Composition root: wiring, windows, tray, hotkeys, main-thread state, E2E control mode |
 | `apps/desktop/infrastructure` | OS input/capture/context and model/storage adapters; implements domain-owned ports |
-| `apps/desktop/cmd` | Evaluation and E2E drivers, model catalog tool, icon renderer |
+| `apps/desktop/cmd` | Evaluation and E2E drivers, the `arion-llm` rewrite worker (no cgo), live rewrite benchmarks, model catalog tool, icon renderer |
+| `apps/desktop/infrastructure/llm` | GenAI purego binding, prompt template, KV-reusing engine and worker protocol (worker side), process client (app side) |
+| `apps/desktop/infrastructure/rewriting` | Rewrite capability service: bundled runtime location, model provisioning, worker lifecycle, `Rewriter` port |
 | `packages/core/domain` | Session and candidate invariants; standard-library only |
 | `packages/core/contracts` | Versioned transport-neutral DTOs; no SDK or platform handles |
 | `packages/core/application` | Dictation coordinator and preferences; depends on domain-owned ports |
@@ -16,14 +18,14 @@
 | `services/sync` | Reserved self-hosted relay; must adopt DDD when implemented |
 | `models` | Go module embedding the reviewed catalog: provenance, digests, licenses, bundles, evaluation summaries; no weights |
 | `scripts` | Dependency-free repository checks and platform-neutral workflow entry points |
-| `tools/evaluation` | pnpm workspace: metric/statistics/driver protocol and real-run orchestration |
+| `tools/evaluation` | pnpm workspace: metrics, driver protocols, real-run orchestration and isolated Python development inference adapters |
 | `benchmarks` | Experiment configurations and pinned dataset catalog; no audio/weights |
 | `tests/e2e` | Product action/assertion scenarios; requires live OS adapters |
 | `apps/desktop/e2e` | Build-tagged real native window lifecycle test |
 | `specs` | Normative requirements, acceptance scenarios and task traceability |
 | `docs/research` | Evidence and technical proposals; cannot override accepted specs |
 
-The three Go modules (`packages/core`, `models`, `apps/desktop`) are connected by `go.work`. `apps/desktop/go.mod` pins MyGo, sherpa-onnx Go bindings and miniaudio, and replaces core/models with the local modules; reconsider the local `replace` before publishing modules. `GOWORK=off` allows portable core and catalog checks without upgrading their toolchain. The desktop module builds with cgo (`CGO_ENABLED=1`) because the speech runtimes are native libraries.
+The three Go modules (`packages/core`, `models`, `apps/desktop`) are connected by `go.work`. `cmd/arion-llm` and the `infrastructure/llm` packages build with `CGO_ENABLED=0` and must never import the speech runtime; `scripts/stage-llm-runtime.mjs` stages the worker and its pinned GenAI/ONNX Runtime libraries into `resources/darwin-arm64/llm`. `apps/desktop/go.mod` pins MyGo, sherpa-onnx Go bindings and miniaudio, and replaces core/models with the local modules; reconsider the local `replace` before publishing modules. `GOWORK=off` allows portable core and catalog checks without upgrading their toolchain. The desktop module builds with cgo (`CGO_ENABLED=1`) because the speech runtimes are native libraries.
 
 ## FSD in native Go
 

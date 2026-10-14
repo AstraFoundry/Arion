@@ -6,8 +6,6 @@ import (
 	"path/filepath"
 	"strings"
 	"sync"
-	"unicode"
-	"unicode/utf8"
 
 	"arion.local/core/contracts"
 	"arion.local/core/domain"
@@ -24,6 +22,7 @@ const (
 	OfflineTransducer Kind = "offline-transducer"
 	OfflineSenseVoice Kind = "offline-sense-voice"
 	OfflineParaformer Kind = "offline-paraformer"
+	OfflineQwen3ASR   Kind = "offline-qwen3-asr"
 )
 
 // Spec locates one verified artifact's files inside its cache directory.
@@ -150,10 +149,13 @@ func (s *session) Partial(context.Context) (contracts.Draft, error) {
 	return s.draft(current, false), nil
 }
 
+// draft reports closed segments separately from the open one, so a live
+// editor can treat closed text as stable.
 func (s *session) draft(current string, final bool) contracts.Draft {
 	s.revision++
-	parts := append(append([]string(nil), s.segments...), current)
-	return contracts.Draft{Identity: s.id, Revision: s.revision, Text: JoinSegments(parts), Final: final}
+	segments := append([]string(nil), s.segments...)
+	parts := append(append([]string(nil), segments...), current)
+	return contracts.Draft{Identity: s.id, Revision: s.revision, Text: JoinSegments(parts), Final: final, Segments: segments, Tail: current}
 }
 
 // Finish flushes the model's right context with trailing silence so the
@@ -183,26 +185,8 @@ func (s *session) Close() error {
 	return nil
 }
 
-// JoinSegments concatenates recognizer segments, inserting a space only
-// between Latin letters or digits, never between CJK characters.
-func JoinSegments(parts []string) string {
-	var b strings.Builder
-	for _, part := range parts {
-		part = strings.TrimSpace(part)
-		if part == "" {
-			continue
-		}
-		if b.Len() > 0 {
-			last, _ := utf8.DecodeLastRuneInString(b.String())
-			first, _ := utf8.DecodeRuneInString(part)
-			if !domain.IsCJK(last) && !domain.IsCJK(first) && !unicode.IsSpace(last) {
-				b.WriteByte(' ')
-			}
-		}
-		b.WriteString(part)
-	}
-	return b.String()
-}
+// JoinSegments concatenates recognizer segments (see domain.JoinText).
+func JoinSegments(parts []string) string { return domain.JoinText(parts...) }
 
 // Offline is a resident non-streaming recognizer used for the acoustic
 // second pass over retained session audio.
@@ -228,6 +212,12 @@ func LoadOffline(spec Spec) (*Offline, error) {
 		config.ModelConfig.Transducer = sherpa.OfflineTransducerModelConfig{Encoder: spec.file("encoder"), Decoder: spec.file("decoder"), Joiner: spec.file("joiner")}
 	case OfflineParaformer:
 		config.ModelConfig.Paraformer = sherpa.OfflineParaformerModelConfig{Model: spec.file("model")}
+	case OfflineQwen3ASR:
+		// The tokenizer files are installed flat beside the graphs, so the
+		// artifact directory is the tokenizer directory. Greedy decoding;
+		// 128 new tokens bound one segment.
+		config.ModelConfig.Qwen3ASR = sherpa.OfflineQwen3ASRModelConfig{ConvFrontend: spec.file("conv_frontend"), Encoder: spec.file("encoder"),
+			Decoder: spec.file("decoder"), Tokenizer: spec.Directory, MaxTotalLen: 512, MaxNewTokens: 128, Temperature: 1e-6, TopP: 1, Seed: 11}
 	default:
 		return nil, domain.Fail(domain.CodeModelUnsupported, "not an offline kind")
 	}

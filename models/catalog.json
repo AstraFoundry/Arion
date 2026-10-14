@@ -332,6 +332,85 @@
         "mixed": "Mixed Mandarin-English is measured by Arion, not claimed by the vendor",
         "casing": "Observed: English output is uppercase; the rule corrector naturalizes it"
       }
+    },
+    {
+      "id": "qwen3-asr-0.6b-int8-2026-03-25",
+      "purpose": "offline-asr",
+      "kind": "offline-qwen3-asr",
+      "runtime": {
+        "engine": "sherpa-onnx",
+        "version": "1.13.8"
+      },
+      "source": {
+        "url": "https://github.com/k2-fsa/sherpa-onnx/releases/download/asr-models/sherpa-onnx-qwen3-asr-0.6B-int8-2026-03-25.tar.bz2",
+        "release": "k2-fsa/sherpa-onnx asr-models",
+        "published": "2026-04-07T09:52:28Z",
+        "sha256": "393f8a14e2f5fb96746aaab342997a40641001fbd5bf9592a080a8329178ee96",
+        "sizeBytes": 878702423,
+        "modelCard": "https://huggingface.co/Qwen/Qwen3-ASR-0.6B",
+        "repository": "https://github.com/QwenLM/Qwen3-ASR"
+      },
+      "license": {
+        "model": "Apache-2.0 (Qwen3-ASR-0.6B)",
+        "runtime": "Apache-2.0 (sherpa-onnx), MIT (onnxruntime)",
+        "reference": "https://huggingface.co/Qwen/Qwen3-ASR-0.6B",
+        "status": "user-initiated download only; ONNX export by a third party (github.com/Wasser1462/Qwen3-ASR-onnx), export parity not established"
+      },
+      "languages": [
+        "zh",
+        "en",
+        "mixed"
+      ],
+      "platforms": [
+        "darwin-arm64",
+        "darwin-amd64",
+        "windows-amd64"
+      ],
+      "audio": {
+        "sampleRate": 16000,
+        "channels": 1
+      },
+      "files": {
+        "conv_frontend": {
+          "member": "sherpa-onnx-qwen3-asr-0.6B-int8-2026-03-25/conv_frontend.onnx",
+          "sha256": "d22dc4423e0940e49884e903d2ea2f7e5567c14fc1aed97e4e26d6b8f208ef9e",
+          "sizeBytes": 44148281
+        },
+        "encoder": {
+          "member": "sherpa-onnx-qwen3-asr-0.6B-int8-2026-03-25/encoder.int8.onnx",
+          "sha256": "60748d3e6744a57c9c91e1b17424a6c2990567e8adceb0783940c03ed98fa9d9",
+          "sizeBytes": 182491662
+        },
+        "decoder": {
+          "member": "sherpa-onnx-qwen3-asr-0.6B-int8-2026-03-25/decoder.int8.onnx",
+          "sha256": "4f6885be5959ae26af3089d38ee7972c5fafbeeb1cf8d5e76eab6d8b61ca5771",
+          "sizeBytes": 755914231
+        },
+        "vocab": {
+          "member": "sherpa-onnx-qwen3-asr-0.6B-int8-2026-03-25/tokenizer/vocab.json",
+          "sha256": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910",
+          "sizeBytes": 2776833
+        },
+        "merges": {
+          "member": "sherpa-onnx-qwen3-asr-0.6B-int8-2026-03-25/tokenizer/merges.txt",
+          "sha256": "8831e4f1a044471340f7c0a83d7bd71306a5b867e95fd870f74d0c5308a904d5",
+          "sizeBytes": 1671853
+        },
+        "tokenizer_config": {
+          "member": "sherpa-onnx-qwen3-asr-0.6B-int8-2026-03-25/tokenizer/tokenizer_config.json",
+          "sha256": "4942d005604266809309cabc9f4e9cb89ce855d59b14681fdc0e1cc62ea26c4c",
+          "sizeBytes": 12487
+        }
+      },
+      "modelingUnit": "",
+      "latinCase": "natural",
+      "punctuation": true,
+      "quantization": "int8",
+      "conversion": "Qwen3-ASR-0.6B exported to ONNX (conv frontend, encoder, autoregressive decoder) by a third party and int8-quantized; packaged by sherpa-onnx",
+      "notes": {
+        "decoding": "Autoregressive LLM decoder, greedy (temperature 1e-6), at most 128 new tokens per decode; Arion decodes per closed segment",
+        "streaming": "Final-only recognizer; Arion uses it per segment and after stop, not for partial preview"
+      }
     }
   ],
   "bundles": [
@@ -481,6 +560,91 @@
         }
       ],
       "finalizer": "sense-voice-small-int8-2025-09-09"
+    },
+    {
+      "id": "xasr-160-qwen3asr-final",
+      "name": "X-ASR 160 ms + Qwen3-ASR final pass",
+      "streaming": "x-asr-zh-en-160ms-streaming-punct-int8-2026-06-05",
+      "chunkMs": 20,
+      "endpointSilenceMs": 800,
+      "finalizer": "qwen3-asr-0.6b-int8-2026-03-25"
+    }
+  ],
+  "rewriters": [
+    {
+      "id": "qwen3-1.7b-int4-cpu",
+      "name": "Qwen3 1.7B (INT4, CPU)",
+      "runtime": {
+        "engine": "onnxruntime-genai",
+        "version": "0.17.0"
+      },
+      "repository": "onnx-community/Qwen3-1.7B-ONNX",
+      "revision": "b85539623180ae64303f37373d942cb0595ca44d",
+      "sourceRepository": "Qwen/Qwen3-1.7B@70d244cc86ccca08cf5af4e1e306ecf908b1ad5e",
+      "modelCard": "https://huggingface.co/Qwen/Qwen3-1.7B",
+      "license": {
+        "model": "Apache-2.0 (Qwen3-1.7B)",
+        "runtime": "MIT (onnxruntime, onnxruntime-genai)",
+        "reference": "https://huggingface.co/Qwen/Qwen3-1.7B/blob/main/LICENSE",
+        "status": "user-initiated download only; community ONNX export, source/export parity not established"
+      },
+      "platforms": [
+        "darwin-arm64"
+      ],
+      "languages": [
+        "zh",
+        "en",
+        "mixed"
+      ],
+      "files": {
+        "chat_template.jinja": {
+          "url": "https://huggingface.co/onnx-community/Qwen3-1.7B-ONNX/resolve/b85539623180ae64303f37373d942cb0595ca44d/onnxruntime/cpu_and_mobile/cpu-int4-kld-block-128/chat_template.jinja",
+          "sha256": "a55ee1b1660128b7098723e0abcd92caa0788061051c62d51cbe87d9cf1974d8",
+          "sizeBytes": 4168
+        },
+        "config.json": {
+          "url": "https://huggingface.co/onnx-community/Qwen3-1.7B-ONNX/resolve/b85539623180ae64303f37373d942cb0595ca44d/onnxruntime/cpu_and_mobile/cpu-int4-kld-block-128/config.json",
+          "sha256": "14c4e163fc54e5c7301a7f26054386ac77734401355fecd530ce4a98233f070c",
+          "sizeBytes": 8697
+        },
+        "genai_config.json": {
+          "url": "https://huggingface.co/onnx-community/Qwen3-1.7B-ONNX/resolve/b85539623180ae64303f37373d942cb0595ca44d/onnxruntime/cpu_and_mobile/cpu-int4-kld-block-128/genai_config.json",
+          "sha256": "d328d2ad4cbd7915eee3ad047eabfc562d8daf7307b202c1e6aaef4e8a236ba2",
+          "sizeBytes": 1520
+        },
+        "model.onnx": {
+          "url": "https://huggingface.co/onnx-community/Qwen3-1.7B-ONNX/resolve/b85539623180ae64303f37373d942cb0595ca44d/onnxruntime/cpu_and_mobile/cpu-int4-kld-block-128/model.onnx",
+          "sha256": "9fddc5a0a7f9c51132c376db8fe44774b17a8e42d721c4d289ade16af87da0bd",
+          "sizeBytes": 1408943689
+        },
+        "tokenizer.json": {
+          "url": "https://huggingface.co/onnx-community/Qwen3-1.7B-ONNX/resolve/b85539623180ae64303f37373d942cb0595ca44d/onnxruntime/cpu_and_mobile/cpu-int4-kld-block-128/tokenizer.json",
+          "sha256": "979d160e081df25a1bf7f4e2e8f4c441b5dfdc9a8e84aec9f32e80445e1b59b8",
+          "sizeBytes": 11422648
+        },
+        "tokenizer_config.json": {
+          "url": "https://huggingface.co/onnx-community/Qwen3-1.7B-ONNX/resolve/b85539623180ae64303f37373d942cb0595ca44d/onnxruntime/cpu_and_mobile/cpu-int4-kld-block-128/tokenizer_config.json",
+          "sha256": "bfd13b57b2e0c2cb582f311c0895f077d16a868c0dc61e4dbbba544a835341d6",
+          "sizeBytes": 663
+        }
+      },
+      "prompt": "live-v2",
+      "quantization": "int4 (cpu-int4-kld-block-128)",
+      "conversion": "Qwen3-1.7B exported for ONNX Runtime GenAI CPU by onnx-community; INT4 KLD block-128 quantization",
+      "evaluations": [
+        {
+          "runId": "live-rewrite-v1/audio-heldout-xfinal-1.7b",
+          "report": "benchmarks/results/live-rewrite-v1/README.md",
+          "hardware": "darwin-arm64 Apple M4",
+          "split": "heldout",
+          "cases": 27,
+          "sourcePass": 12,
+          "finalPass": 25,
+          "worsened": 0,
+          "stopToFinalP50Ms": 500,
+          "stopToFinalP95Ms": 1247
+        }
+      ]
     }
   ]
 }

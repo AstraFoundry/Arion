@@ -3,6 +3,7 @@
 package modelcard
 
 import (
+	"arion.local/desktop/ui/entities/model"
 	"arion.local/desktop/ui/features/modelchoice"
 	"arion.local/desktop/ui/features/provision"
 	"arion.local/desktop/ui/shared/copy"
@@ -22,8 +23,8 @@ func Render(c *ui.Context, store runtime.Store, tokens theme.Tokens, compact boo
 		ui.Row(c).Gap(10).AlignItems(ui.Center).Children(func() {
 			ui.Icon(c, icons.Cpu).FontSize(16).TextColor(tokens.Muted)
 			ui.Column(c).Gap(1).Grow(1).Children(func() {
-				name := m.Active.Name
-				if name == "" {
+				name := messages.Text(model.NameKey(m.Active.ID))
+				if m.Active.ID == "" {
 					name = messages.Text(copy.ModelNoEvaluation)
 				}
 				ui.Text(c, name).FontSize(theme.Body).FontWeight(600).SingleLine()

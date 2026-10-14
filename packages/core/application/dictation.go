@@ -28,18 +28,27 @@ type Dependencies struct {
 	IMETargets  ports.TargetProvider
 	IMEInput    ports.InputTarget
 	Composition ports.CompositionTarget
-	NewID       func() string
+	// Rewriter is the optional local LLM stage; nil leaves dictation as
+	// recognized and rule-corrected text (009).
+	Rewriter ports.Rewriter
+	NewID    func() string
 }
 
 // Options configure one coordinator. Policy is read when a session finalizes,
 // so settings changes apply to the next review without restarting.
 type Options struct {
-	Mode        domain.InputMode
-	AutoCommit  bool
-	Correction  bool
-	Policy      func() domain.CorrectionPolicy
-	QueueFrames int
-	MaxAudio    time.Duration
+	Mode       domain.InputMode
+	AutoCommit bool
+	Correction bool
+	Policy     func() domain.CorrectionPolicy
+	// Rewrite is read when a session starts; enabling it turns on the live
+	// pipeline: per-segment finalization, live previews and a final rewrite.
+	Rewrite func() RewritePolicy
+	// SegmentFinalize runs the finalizer per closed segment while speaking
+	// even without rewriting.
+	SegmentFinalize bool
+	QueueFrames     int
+	MaxAudio        time.Duration
 }
 
 const (
@@ -82,6 +91,8 @@ type run struct {
 	recognizer ports.Recognizer
 	target     contracts.TargetSnapshot
 	hasTarget  bool
+	// live is set at start when the live pipeline runs for this session.
+	live *liveState
 
 	// Owned by the pump goroutine.
 	samples    []float32
@@ -113,6 +124,9 @@ func NewCoordinator(deps Dependencies, opts Options) (*Coordinator, error) {
 	}
 	if opts.Policy == nil {
 		opts.Policy = func() domain.CorrectionPolicy { return domain.CorrectionPolicy{} }
+	}
+	if opts.Rewrite == nil {
+		opts.Rewrite = func() RewritePolicy { return RewritePolicy{} }
 	}
 	return &Coordinator{deps: deps, opts: opts}, nil
 }
@@ -200,6 +214,7 @@ func (c *Coordinator) Start() {
 	ctx, cancel := context.WithCancel(context.Background())
 	r := &run{session: session, identity: contracts.Identity{SessionID: session.ID(), Generation: session.Generation()},
 		ctx: ctx, cancel: cancel, started: time.Now(), frames: make(chan contracts.Frame, c.opts.QueueFrames), pumpDone: make(chan struct{})}
+	r.live = c.newLive(r)
 	_ = session.Advance(domain.Preparing)
 	c.current = r
 	needTarget := c.opts.AutoCommit
@@ -274,6 +289,9 @@ func (c *Coordinator) prepare(r *run, needTarget bool) {
 	_ = r.session.Advance(domain.Capturing)
 	c.mu.Unlock()
 	c.emitState(r, domain.Capturing)
+	if r.live != nil {
+		go c.liveWorker(r)
+	}
 	go c.pump(r)
 }
 
@@ -314,7 +332,14 @@ func (c *Coordinator) pump(r *run) {
 			c.failErr(r, err, domain.CodeModelUnsupported)
 			continue
 		}
-		if draft.Text != r.lastText {
+		if r.live != nil {
+			// A segment closing moves text from the tail to the stable part
+			// even when the joined text is unchanged.
+			if c.queueClosed(r, draft) || draft.Text != r.lastText {
+				r.lastText = draft.Text
+				c.acceptLiveDraft(r, draft)
+			}
+		} else if draft.Text != r.lastText {
 			r.lastText = draft.Text
 			c.acceptDraft(r, draft.Text)
 		}
@@ -328,14 +353,27 @@ func (c *Coordinator) pump(r *run) {
 	c.mu.Lock()
 	finalize := r.stopAsked && c.current == r && r.session.State() == domain.Finalizing
 	c.mu.Unlock()
-	if finalize && r.ctx.Err() == nil {
+	switch {
+	case finalize && r.ctx.Err() == nil && r.live != nil:
+		c.finalizeLive(r)
+	case finalize && r.ctx.Err() == nil:
 		c.finalize(r)
+	case r.live != nil:
+		r.live.shutdown()
 	}
 	_ = r.recognizer.Close()
+	if r.live != nil && c.deps.Rewriter != nil {
+		// No private KV state outlives the session in the worker.
+		c.deps.Rewriter.End(r.identity)
+	}
 	r.samples = nil // SPH-09: session audio is discarded when processing ends.
 }
 
-func (c *Coordinator) acceptDraft(r *run, text string) {
+func (c *Coordinator) acceptDraft(r *run, text string) { c.acceptDisplay(r, text, "") }
+
+// acceptDisplay publishes a draft; rewrite is "preview" when the display
+// includes a validated live rewrite.
+func (c *Coordinator) acceptDisplay(r *run, text, rewrite string) {
 	c.mu.Lock()
 	if c.current != r {
 		c.mu.Unlock()
@@ -357,7 +395,7 @@ func (c *Coordinator) acceptDraft(r *run, text string) {
 			return
 		}
 	}
-	c.emit(r, contracts.Event{Envelope: contracts.Envelope{Kind: contracts.DraftReplaced, Revision: revision}, State: state, Text: text})
+	c.emit(r, contracts.Event{Envelope: contracts.Envelope{Kind: contracts.DraftReplaced, Revision: revision}, State: state, Text: text, Rewrite: rewrite})
 }
 
 // Stop ends capture; finalization, correction and commit continue on the
@@ -452,6 +490,23 @@ func (c *Coordinator) finalize(r *run) {
 		}
 		raw = second
 	}
+	c.deliver(r, raw, RewritePolicy{})
+}
+
+// deliver corrects the final recognized text, optionally rewrites it,
+// reviews it and commits it when configured.
+func (c *Coordinator) deliver(r *run, raw string, policy RewritePolicy) {
+	source := raw
+	if c.opts.Correction {
+		source = domain.Correct(raw, c.opts.Policy()).Text
+	}
+	text, outcome := source, ""
+	if strings.TrimSpace(source) != "" {
+		var ok bool
+		if text, outcome, ok = c.rewriteFinal(r, source, policy); !ok {
+			return
+		}
+	}
 	c.mu.Lock()
 	if c.current != r || r.ctx.Err() != nil {
 		c.mu.Unlock()
@@ -461,10 +516,6 @@ func (c *Coordinator) finalize(r *run) {
 	if err := r.session.AcceptRevision(revision); err != nil {
 		c.mu.Unlock()
 		return
-	}
-	text := raw
-	if c.opts.Correction {
-		text = domain.Correct(raw, c.opts.Policy()).Text
 	}
 	r.raw, r.draft = raw, raw
 	if strings.TrimSpace(text) == "" {
@@ -478,7 +529,7 @@ func (c *Coordinator) finalize(r *run) {
 	_ = r.session.Advance(domain.Reviewing)
 	r.final = text
 	c.mu.Unlock()
-	c.emit(r, contracts.Event{Envelope: contracts.Envelope{Kind: contracts.CorrectionReady, Revision: revision}, State: domain.Reviewing, Raw: raw, Text: text})
+	c.emit(r, contracts.Event{Envelope: contracts.Envelope{Kind: contracts.CorrectionReady, Revision: revision}, State: domain.Reviewing, Raw: raw, Source: source, Rewrite: outcome, Text: text})
 	if c.opts.AutoCommit {
 		c.commit(r, revision, text)
 	}

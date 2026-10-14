@@ -7,6 +7,9 @@ Research separates **observed shipped artifacts**, **static inferences**, **vend
 - [Chatterfly](chatterfly.md) — installer payload and native scenario-aware post-processing paths.
 - [Competitor contextual rewriting](competitor-rewrite.md) — focused Typeless/Doubao refinement and organization evidence.
 - [ONNX rewrite models](onnx-rewrite-models.md) — pinned Hugging Face candidates, native runtime compatibility and load/parity gates.
+- [Qwen pipeline diagnostics](qwen-pipeline-diagnostics.md) — actual development inference, scope boundaries and repeatable flows.
+- [Qwen paper strategies](qwen-paper-strategies.md) — primary-paper mechanisms, contextual transcription/editing limits, training proposals and staged ablations.
+- [Live rewrite benchmark](live-rewrite-benchmark.md) — production-path text and real-time audio benchmarks of the edit-while-speaking pipeline ([ADR 011](../decisions/011-live-local-rewriting.md)).
 - [Rewrite evaluation](rewrite-evaluation.md) — isolated quality tests, native latency, contention, ablations and blind human review.
 - [MyGo](mygo.md) — pinned source review, capabilities and required OS adapters.
 - [On-device speech and ranking](on-device-speech.md) — local runtime/model comparison and evaluation gates.

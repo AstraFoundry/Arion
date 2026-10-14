@@ -3,10 +3,12 @@
 package bootstrap
 
 import (
+	"context"
 	"crypto/rand"
 	"encoding/hex"
 	"errors"
 	"log"
+	"net/http"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -19,7 +21,9 @@ import (
 	"arion.local/core/domain/ports"
 	"arion.local/desktop/infrastructure/audio"
 	"arion.local/desktop/infrastructure/modelruntime"
+	"arion.local/desktop/infrastructure/netproxy"
 	"arion.local/desktop/infrastructure/provision"
+	"arion.local/desktop/infrastructure/rewriting"
 	"arion.local/desktop/infrastructure/secrets"
 	"arion.local/desktop/infrastructure/settings"
 	"arion.local/desktop/infrastructure/vocabulary"
@@ -57,6 +61,7 @@ type App struct {
 	catalog   models.Catalog
 	store     *provision.Store
 	manager   *modelruntime.Manager
+	rewriter  *rewriting.Service
 	mic       *audio.Microphone
 	targets   Targets
 	ime       InputMethod
@@ -103,6 +108,11 @@ func New(opts Options) (*App, error) {
 		}
 		opts.DataDir = filepath.Join(base, "Arion")
 	}
+	// Release checks use the default transport; like model downloads they
+	// follow the system proxy when the app was not started from a shell.
+	if transport, ok := http.DefaultTransport.(*http.Transport); ok {
+		transport.Proxy = netproxy.Proxy
+	}
 	if opts.Threads <= 0 {
 		opts.Threads = min(4, max(2, runtime.NumCPU()/2))
 	}
@@ -123,6 +133,8 @@ func New(opts Options) (*App, error) {
 	a.store = provision.NewStore(filepath.Join(opts.DataDir, "models"))
 	a.store.Offline = opts.Offline
 	a.manager = modelruntime.NewManager(catalog, a.store, opts.Threads)
+	resources, _ := mygo.App.Path(mygo.PathResources)
+	a.rewriter = rewriting.New(catalog, a.store, rewriting.Locate(resources), opts.Threads, modelruntime.Platform())
 	a.mic = audio.NewMicrophone(a.platform)
 	a.mic.Select(prefs.Microphone)
 	a.mic.SetGain(prefs.MicrophoneGain)
@@ -148,11 +160,13 @@ func New(opts Options) (*App, error) {
 		finalizer = gatedFinalizer{h: a.harness, inner: a.manager}
 		targets = countingTargets{Targets: a.targets, h: a.harness}
 	}
-	deps := application.Dependencies{Audio: capture, Recognizers: a.manager, Finalizer: finalizer, Targets: targets, Input: targets, NewID: newID}
+	deps := application.Dependencies{Audio: capture, Recognizers: a.manager, Finalizer: finalizer, Targets: targets, Input: targets,
+		Rewriter: a.rewriter, NewID: newID}
 	if a.ime != nil {
 		deps.IMETargets, deps.IMEInput, deps.Composition = a.ime, a.ime, a.ime
 	}
-	a.core, err = application.NewCoordinator(deps, application.Options{Mode: prefs.Mode, AutoCommit: true, Correction: true, Policy: a.policy})
+	a.core, err = application.NewCoordinator(deps, application.Options{Mode: prefs.Mode, AutoCommit: true, Correction: true, Policy: a.policy,
+		Rewrite: a.rewritePolicy})
 	if err != nil {
 		return nil, err
 	}
@@ -180,6 +194,22 @@ func (a *App) policy() domain.CorrectionPolicy {
 	defer a.snapshot.Unlock()
 	return domain.CorrectionPolicy{LatinCase: a.manager.LatinCase(), RemoveFillers: a.prefs.RemoveFillers,
 		Replacements: append([]domain.Replacement(nil), a.replaces...)}
+}
+
+// rewritePolicy is read when a session starts: the live pipeline runs only
+// when the user turned it on and the worker is serving. Approved
+// vocabulary reaches the model as data, never as instructions.
+func (a *App) rewritePolicy() application.RewritePolicy {
+	a.snapshot.Lock()
+	defer a.snapshot.Unlock()
+	if !a.prefs.Polish || !a.rewriter.Ready() {
+		return application.RewritePolicy{}
+	}
+	terms := make([]string, 0, len(a.replaces))
+	for _, r := range a.replaces {
+		terms = append(terms, r.From+" → "+r.To)
+	}
+	return application.RewritePolicy{Enabled: true, Scene: "chat", Terms: terms}
 }
 
 // Run starts the event loop; it returns when the app quits.
@@ -247,6 +277,10 @@ func (a *App) ready() {
 		}
 	}
 	a.manager.OnStatus(func(s modelruntime.Status) { a.post(func() { a.applyModel(s) }) })
+	a.rewriter.OnStatus(func(s rewriting.Status) { a.post(func() { a.applyPolish(s) }) })
+	a.applyPolish(a.rewriter.Status())
+	go a.startPolish()
+	mygo.App.OnQuit(a.rewriter.Disable)
 	a.refreshPermissions()
 	a.state.InputMethod = arion.InputMethodUnsupported
 	if a.ime != nil {
@@ -357,11 +391,15 @@ func (a *App) apply(e contracts.Event) {
 		d.Draft = e.Text
 	case contracts.CorrectionReady:
 		d.Final = e.Text
+		d.Original = ""
+		if e.Rewrite == string(domain.RewriteAccepted) && e.Source != e.Text {
+			d.Original = e.Source
+		}
 		setState(domain.Reviewing)
 	case contracts.CommitResultReady:
 		d.Outcome, d.Failure = e.Outcome, e.Error
 		d.Pasted = a.state.Preferences.Delivery == application.DeliveryClipboard && e.Outcome != contracts.NotApplied
-		a.state.LastText = e.Text
+		a.state.LastText, a.state.LastOriginal = e.Text, d.Original
 		setState(e.State)
 	case contracts.ErrorOccurred:
 		if e.Error == domain.CodeSessionBusy {
@@ -369,7 +407,7 @@ func (a *App) apply(e contracts.Event) {
 		}
 		d.Failure, d.FailureDetail = e.Error, e.Detail
 		if e.Text != "" {
-			a.state.LastText = e.Text
+			a.state.LastText, a.state.LastOriginal = e.Text, ""
 		}
 		setState(e.State)
 	}
@@ -478,7 +516,7 @@ func (a *App) bundles() []arion.Bundle {
 	platform := modelruntime.Platform()
 	var out []arion.Bundle
 	for _, b := range a.catalog.Bundles {
-		bundle := arion.Bundle{ID: b.ID, Name: b.Name, Streaming: b.Streaming, Finalizer: b.Finalizer, SizeBytes: a.catalog.DownloadBytes(b), Recommended: b.ID == a.recommended}
+		bundle := arion.Bundle{ID: b.ID, Streaming: b.Streaming, Finalizer: b.Finalizer, SizeBytes: a.catalog.DownloadBytes(b), Recommended: b.ID == a.recommended}
 		for _, e := range b.Evaluations {
 			if e.Hardware == platform || !bundle.Evaluated {
 				bundle.Evaluated, bundle.ErrorRates, bundle.ReviewP95Ms, bundle.RTF = true, e.ErrorRates, e.StopToReviewP95Ms, e.RealTimeFactor
@@ -532,6 +570,24 @@ func (a *App) applyModel(s modelruntime.Status) {
 		m.State = arion.ModelUnselected
 	}
 	a.updateTray()
+}
+
+// startPolish refreshes installation state and starts the worker when the
+// user has the capability on; it never downloads without that choice.
+func (a *App) startPolish() {
+	a.rewriter.Refresh()
+	if a.preferences().Polish {
+		_ = a.rewriter.Enable(context.Background())
+	}
+}
+
+func (a *App) applyPolish(s rewriting.Status) {
+	p := &a.state.Polish
+	p.Phase, p.Done, p.Total, p.Failure = arion.ProvisionPhase(s.Phase), s.Done, s.Total, s.Failure
+	p.Installed, p.SizeBytes = s.Installed, s.SizeBytes
+	p.State = map[rewriting.State]arion.PolishState{rewriting.Unsupported: arion.PolishUnsupported, rewriting.Off: arion.PolishOff,
+		rewriting.Provisioning: arion.PolishProvisioning, rewriting.Loading: arion.PolishLoading, rewriting.Ready: arion.PolishReady,
+		rewriting.Failed: arion.PolishFailed}[s.State]
 }
 
 func (a *App) loadVocabulary(create bool) {

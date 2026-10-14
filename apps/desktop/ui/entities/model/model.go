@@ -47,3 +47,58 @@ func Recommended(m runtime.Model) (runtime.Bundle, bool) {
 	}
 	return runtime.Bundle{}, false
 }
+
+// FailureKey explains a provisioning or loading failure code.
+func FailureKey(code runtime.ErrorCode) copy.Key {
+	switch code {
+	case runtime.CodeArtifactUnverified:
+		return copy.ModelFailChecksum
+	case runtime.CodeProvisioningFailed:
+		return copy.ModelFailNetwork
+	}
+	return copy.FailModelTitle
+}
+
+// PolishFraction is rewrite-model download progress, or -1 when unknown.
+func PolishFraction(p runtime.Polish) float64 {
+	if p.Total <= 0 || p.Phase != runtime.PhaseDownloading {
+		return -1
+	}
+	return min(float64(p.Done)/float64(p.Total), 1)
+}
+
+// PolishPhaseLabel names what rewrite-model provisioning is doing now.
+func PolishPhaseLabel(p runtime.Polish) copy.Key {
+	switch p.State {
+	case runtime.PolishReady:
+		return copy.PolishReady
+	case runtime.PolishLoading:
+		return copy.PolishLoading
+	case runtime.PolishProvisioning:
+		if p.Phase == runtime.PhaseVerifying {
+			return copy.ModelVerifying
+		}
+		return copy.ModelDownloading
+	}
+	return ""
+}
+
+// names gives catalog bundles plain names; catalog identifiers and engine
+// names never reach the interface.
+var names = map[string]copy.Key{
+	"xasr-160-xasr-final":       copy.ModelNameAccurate,
+	"xasr-480-xasr-final":       copy.ModelNameAccurateSteady,
+	"xasr-160":                  copy.ModelNameFast,
+	"xasr-480":                  copy.ModelNameSteady,
+	"zipformer-2023":            copy.ModelNameLight,
+	"xasr-160-sensevoice-final": copy.ModelNameAlternate,
+	"xasr-160-qwen3asr-final":   copy.ModelNameDeep,
+}
+
+// NameKey is a bundle's user-facing name.
+func NameKey(id string) copy.Key {
+	if key, ok := names[id]; ok {
+		return key
+	}
+	return copy.ModelNameGeneric
+}

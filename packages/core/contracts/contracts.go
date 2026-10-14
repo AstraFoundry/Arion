@@ -49,6 +49,10 @@ type Draft struct {
 	Text       string             `json:"text"`
 	Final      bool               `json:"final"`
 	Candidates []domain.Candidate `json:"candidates"`
+	// Segments are recognizer segments closed at an endpoint; they no longer
+	// change. Tail is the open segment. Text joins both.
+	Segments []string `json:"segments,omitempty"`
+	Tail     string   `json:"tail,omitempty"`
 }
 
 type TargetToken string
@@ -134,12 +138,17 @@ type TargetSnapshot struct {
 // only in session RAM and is never logged (PRV-05).
 type Event struct {
 	Envelope
-	State   domain.SessionState `json:"state,omitempty"`
-	Text    string              `json:"text,omitempty"`
-	Raw     string              `json:"raw,omitempty"`
-	Level   float32             `json:"level,omitempty"`
-	Outcome CommitOutcome       `json:"outcome,omitempty"`
-	Error   domain.ErrorCode    `json:"error,omitempty"`
+	State domain.SessionState `json:"state,omitempty"`
+	Text  string              `json:"text,omitempty"`
+	Raw   string              `json:"raw,omitempty"`
+	// Source is the rule-corrected text a rewrite started from; Rewrite is
+	// the rewrite outcome (a domain.RewriteVerdict or a RewriteOutcome) and
+	// empty when no rewrite ran. Text is what review shows and commit inserts.
+	Source  string           `json:"source,omitempty"`
+	Rewrite string           `json:"rewrite,omitempty"`
+	Level   float32          `json:"level,omitempty"`
+	Outcome CommitOutcome    `json:"outcome,omitempty"`
+	Error   domain.ErrorCode `json:"error,omitempty"`
 	// Detail is a content-free diagnostic category such as "microphone" or
 	// "accessibility" for PERMISSION_DENIED.
 	Detail string `json:"detail,omitempty"`

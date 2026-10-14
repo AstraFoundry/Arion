@@ -19,9 +19,10 @@ Write an ADR when the decision:
 - [005: Local encryption of approved vocabulary](005-local-encryption.md).
 - [006: macOS input-method host and local IPC](006-macos-input-method-host.md).
 - [007: Sunbeam design system and coss anatomy in Go](007-sunbeam-design-system.md).
-- [008: Contextual rewrite evaluation](008-contextual-rewrite-evaluation.md) — proposed capability and runtime evaluation boundary.
+- [008: Contextual rewrite evaluation](008-contextual-rewrite-evaluation.md) — evaluation boundary; its review-before-insert rule is superseded by ADR 011.
 - [009: AGPL-3.0 license](009-agpl-license.md) — open source with a commercial hosted edition kept possible.
 - [010: In-app updates from GitHub releases](010-in-app-updates.md) — signed MyGo updates, automatic checks on by default.
+- [011: Live local rewriting](011-live-local-rewriting.md) — Qwen3 1.7B in an isolated worker edits while you speak; validated rewrite inserts automatically.
 - [`adr-template.md`](adr-template.md) — template for new ADRs.
 
 ## Naming

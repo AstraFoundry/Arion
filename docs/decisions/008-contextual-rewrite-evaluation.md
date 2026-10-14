@@ -2,7 +2,7 @@
 
 ## Status
 
-Proposed. This records the investigation boundary and experiment design, not an adopted runtime, checkpoint or enabled product feature.
+Proposed; the review-before-insert rule is superseded by [ADR 011](011-live-local-rewriting.md) for the live pipeline. This records the investigation boundary and experiment design, not an adopted runtime, checkpoint or enabled product feature.
 
 ## Context
 
