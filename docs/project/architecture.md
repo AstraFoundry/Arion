@@ -52,7 +52,7 @@ The model runs in the `arion-llm` worker process: ONNX Runtime GenAI loaded with
 
 ## Modules
 
-- `apps/desktop`: composition root (`bootstrap`), MyGo UI, OS adapter wiring and packaging. FSD packages are under `ui/`; native/platform code is under `infrastructure/`.
+- `apps/desktop`: composition root (`bootstrap`), MyGo UI, OS adapter wiring and packaging. FSD packages are under `ui/`; native/platform code is under `infrastructure/`. Hosted-sync sign-in lives in `internal/account` ([account sign-in](account-signin.md)).
 - `packages/core`: framework-free Go domain, transport-neutral value contracts, domain-owned ports and the dictation coordinator. No MyGo, CGo, SQL, OS permissions, HTTP client, or vendor model SDK imports.
 - `models`: a Go module embedding the reviewed catalog (`catalog.json`): artifact provenance, file digests, licenses, bundles and evaluation summaries. Weights, user corpora and commercial app binaries are never committed.
 - `services/sync`: implemented Go DDD ciphertext relay (`cmd/sync`, PostgreSQL migrations, [deploy/sync](../../deploy/sync/README.md)). One account-unaware core for self-hosted and hosted deployments; the `AccountGate` port (`noop` or `oidc`) maps requests to tenants on top of device authentication, and the hosted edition receives security events ([ADR 015](../decisions/015-hosted-relay-account-authorization.md)).
@@ -87,8 +87,12 @@ MyGo and OS UI calls run on their required UI thread. Capture callbacks enqueue 
 
 IMK/TSF integration must be proven with small OS-native harnesses before linking the production host. Windows TSF may require a small native COM host/in-process DLL; a Go/MyGo process is not automatically a TSF text service. macOS input source packaging similarly requires an IMK server bundle. These adapters are separate from the normal shortcut app lifecycle.
 
+## Account sign-in
+
+`bootstrap.New` builds `internal/account` after the system proxy is installed on the default HTTP transport, and leaves it idle. Views call `SignIn`, `CancelSignIn`, `RefreshAccount`, `SignOut`, and `JoinHostedSyncWaitlist`. Those return immediately. `runtime.State.Account` receives the profile, the hosted-sync entitlement flag, the waitlist outcome, and content-free error codes. The access token stays on `App.Account().Session()` for a future sync client in the composition root. The refresh token is a Keychain or Credential Manager item separate from the vocabulary key ([ADR 005](../decisions/005-local-encryption.md)). Sign-out revokes it and deletes that item. The call surface is [account sign-in](account-signin.md); the rules are [ADR 015](../decisions/015-hosted-relay-account-authorization.md) and SYNC-10.
+
 ## Privacy and sync
 
 Model provisioning, update checks ([ADR 010](../decisions/010-in-app-updates.md)) and encrypted memory sync are explicit network surfaces; downloads and update checks use `HTTP(S)_PROXY` when set and otherwise the macOS system proxy; Hugging Face files fall back silently to hf-mirror.com when huggingface.co is unreachable, verified by the same pinned digests (`infrastructure/netproxy`; PAC files are not evaluated, Windows honors environment variables only); dictation and ranking have no cloud inference route. Audio is memory-only by default. Context is bounded, expires with the session and is excluded from logs/sync. Vetted encryption seals allowed memory before it enters the outbox; the relay cannot access plaintext. Optional account sign-in (system browser, loopback PKCE, refresh token in the OS credential store) only authorizes the hosted relay; it never grants key access ([ADR 015](../decisions/015-hosted-relay-account-authorization.md)). Failure never downgrades to plaintext or remotely processed speech.
 
-See [privacy](../../specs/005-privacy.md), [memory sync](../../specs/003-memory-sync.md), and [ADRs](../decisions/README.md).
+See [privacy](../../specs/005-privacy.md), [memory sync](../../specs/003-memory-sync.md), [account sign-in](account-signin.md), and [ADRs](../decisions/README.md).

@@ -8,6 +8,9 @@
 | `apps/desktop/ui` | `app → pages → widgets → features → entities → shared` Go packages; same-layer slices isolated; shared segments may import each other |
 | `apps/desktop/bootstrap` | Composition root: wiring, windows, tray, hotkeys, main-thread state, E2E control mode |
 | `apps/desktop/infrastructure` | OS input/capture/context and model/storage adapters; implements domain-owned ports |
+| `apps/desktop/internal/account` | OIDC public client for hosted sync: loopback PKCE, in-memory access token, refresh rotation, waitlist join ([account sign-in](account-signin.md)) |
+| `apps/desktop/infrastructure/keystore` | Refresh-token item in the macOS Keychain or Windows Credential Manager |
+| `apps/desktop/infrastructure/browser` | System browser for http(s) authorization URLs |
 | `apps/desktop/cmd` | Evaluation and E2E drivers, the `arion-llm` rewrite worker (no cgo), live rewrite benchmarks, model catalog tool, icon renderer |
 | `apps/desktop/infrastructure/llm` | GenAI purego binding, prompt template, KV-reusing engine and worker protocol (worker side), process client (app side) |
 | `apps/desktop/infrastructure/rewriting` | Rewrite capability service: bundled runtime location, model provisioning, worker lifecycle, `Rewriter` port |

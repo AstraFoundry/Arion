@@ -38,8 +38,11 @@ These commands use the pinned `go tool mygo` from `apps/desktop` with `CGO_ENABL
 | Verified models | `~/Library/Application Support/Arion/models/<artifact>/` | `%AppData%\Arion\models\` |
 | Usage counts | `~/Library/Application Support/Arion/usage.json` | `%AppData%\Arion\usage.json` |
 | Vocabulary (AES-GCM) | `~/Library/Application Support/Arion/vocabulary.bin`, key in the login Keychain | same folder, key protected by DPAPI |
+| Hosted-sync refresh token | login Keychain, service `Arion`, account `account-refresh-token` | Credential Manager target `Arion/account-refresh-token` |
 
 `ARION_DATA_DIR` points the app at another profile directory; `ARION_OFFLINE=1` refuses model downloads; `ARION_E2E_CONTROL=<socket>` enables the owned-scenario control mode (fixture audio instead of the microphone). These exist for isolated E2E profiles, not for users.
+
+The refresh-token item is created only after the user signs in ([account sign-in](../project/account-signin.md)). It is a different Keychain account and a different Credential Manager target from the vocabulary key. Signing out deletes the refresh token. The vocabulary file and its key stay.
 
 For direct compile validation:
 
