@@ -1,0 +1,16 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "arion-site",
+  "compatibility_date": "2026-09-01",
+
+  // Static assets only: there is no Worker script, so every request is served
+  // from the Next.js export. Build it (`pnpm site:build` at the repository
+  // root) before `wrangler deploy`.
+  "assets": {
+    "directory": "./out",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page",
+  },
+
+  "routes": [{ "pattern": "arion.astrafoundry.si", "custom_domain": true }],
+}

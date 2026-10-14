@@ -1,0 +1,147 @@
+/*
+ * Sunbeam tokens: the only place where light / dark differences live.
+ * Copied from lyra-landing (frontend/src/app/styles/globals.css) until
+ * @astrafoundry/design is published; see apps/site/README.md.
+ */
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  color-scheme: light;
+
+  --yellow-100: hsl(48 100% 88%);
+  --yellow-300: hsl(48 100% 64%);
+  --yellow-500: hsl(48 100% 50%);
+  --yellow-700: hsl(45 100% 33%);
+  --ink-50: hsl(40 30% 97%);
+  --ink-100: hsl(38 22% 92%);
+  --ink-200: hsl(36 16% 85%);
+  --ink-300: hsl(34 12% 72%);
+  --ink-400: hsl(32 8% 56%);
+  --ink-500: hsl(30 6% 42%);
+  --ink-600: hsl(28 8% 30%);
+  --ink-700: hsl(26 10% 20%);
+  --ink-800: hsl(24 12% 12%);
+  --ink-900: hsl(22 14% 7%);
+
+  --background: var(--ink-50);
+  --foreground: var(--ink-900);
+  --card: hsl(0 0% 100%);
+  --card-foreground: var(--ink-900);
+  --popover: hsl(0 0% 100%);
+  --popover-foreground: var(--ink-900);
+  --primary: var(--yellow-500);
+  --primary-foreground: var(--ink-900);
+  --secondary: var(--ink-100);
+  --secondary-foreground: var(--ink-700);
+  --muted: var(--ink-100);
+  --muted-foreground: var(--ink-500);
+  --accent: var(--yellow-100);
+  --accent-foreground: var(--yellow-700);
+  --border: var(--ink-200);
+  --input: var(--ink-200);
+  --ring: var(--yellow-500);
+  --faint: var(--ink-400);
+  --success: hsl(150 67% 37%);
+  --danger: hsl(10 76% 50%);
+
+  /* Always-dark surface: the dictation pill and dark sections. Never re-staged by `.dark`. */
+  --substrate: hsl(40 17.6% 3.3%);
+  --substrate-surface: hsl(40 15.8% 7.5%);
+  --substrate-raised: hsl(40 17% 10.4%);
+  --substrate-line: hsl(37 17% 15.1%);
+  --substrate-edge: hsl(38 16% 19.6%);
+  --substrate-hi: var(--ink-50);
+  --substrate-ink: var(--ink-200);
+  --substrate-muted: var(--ink-400);
+
+  /* Warm two-layer shadows keyed off ink-900, never neutral black. */
+  --shadow-1: 0 1px 0 rgb(20 18 14 / 0.04), 0 1px 2px rgb(20 18 14 / 0.06);
+  --shadow-2: 0 1px 0 rgb(20 18 14 / 0.04), 0 4px 10px -2px rgb(20 18 14 / 0.08);
+  --shadow-3: 0 2px 0 rgb(20 18 14 / 0.04), 0 10px 24px -4px rgb(20 18 14 / 0.1);
+  --shadow-4: 0 4px 0 rgb(20 18 14 / 0.04), 0 20px 48px -8px rgb(20 18 14 / 0.14);
+  --shadow-5: 0 8px 0 rgb(20 18 14 / 0.04), 0 32px 64px -12px rgb(20 18 14 / 0.2);
+  --image-outline: rgb(0 0 0 / 0.1);
+}
+
+.dark {
+  color-scheme: dark;
+
+  --background: hsl(22 18% 3%);
+  --foreground: var(--ink-50);
+  --card: var(--ink-800);
+  --card-foreground: var(--ink-50);
+  --popover: var(--ink-800);
+  --popover-foreground: var(--ink-50);
+  --secondary: var(--ink-700);
+  --secondary-foreground: var(--ink-50);
+  --muted: var(--ink-700);
+  --muted-foreground: var(--ink-300);
+  --accent: hsl(45 70% 13%);
+  --accent-foreground: var(--yellow-300);
+  --border: hsl(26 10% 18%);
+  --input: hsl(26 10% 18%);
+  --faint: var(--ink-400);
+
+  --shadow-1: 0 1px 0 rgb(0 0 0 / 0.3), 0 1px 2px rgb(0 0 0 / 0.4);
+  --shadow-2: 0 1px 0 rgb(0 0 0 / 0.3), 0 4px 10px -2px rgb(0 0 0 / 0.5);
+  --shadow-3: 0 2px 0 rgb(0 0 0 / 0.3), 0 10px 24px -4px rgb(0 0 0 / 0.55);
+  --shadow-4: 0 4px 0 rgb(0 0 0 / 0.3), 0 20px 48px -8px rgb(0 0 0 / 0.6);
+  --shadow-5: 0 8px 0 rgb(0 0 0 / 0.3), 0 32px 64px -12px rgb(0 0 0 / 0.7);
+  --image-outline: rgb(255 255 255 / 0.1);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-faint: var(--faint);
+  --color-success: var(--success);
+  --color-danger: var(--danger);
+  --color-substrate: var(--substrate);
+  --color-substrate-surface: var(--substrate-surface);
+  --color-substrate-raised: var(--substrate-raised);
+  --color-substrate-line: var(--substrate-line);
+  --color-substrate-edge: var(--substrate-edge);
+  --color-substrate-hi: var(--substrate-hi);
+  --color-substrate-ink: var(--substrate-ink);
+  --color-substrate-muted: var(--substrate-muted);
+  --color-brand: var(--yellow-500);
+
+  --font-display:
+    var(--font-fraunces), "Noto Serif SC", "Iowan Old Style", "Times New Roman", serif;
+  --font-sans:
+    var(--font-plex), "Noto Sans SC", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, "SF Mono", monospace;
+
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+  --radius-xl: 14px;
+  --radius-2xl: 18px;
+  --radius-3xl: 24px;
+
+  --shadow-1: var(--shadow-1);
+  --shadow-2: var(--shadow-2);
+  --shadow-3: var(--shadow-3);
+  --shadow-4: var(--shadow-4);
+  --shadow-5: var(--shadow-5);
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+}

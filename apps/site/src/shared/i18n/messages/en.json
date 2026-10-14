@@ -1,0 +1,212 @@
+{
+  "meta": {
+    "title": "Arion: voice input that stays on your computer",
+    "titleTemplate": "%s · Arion",
+    "description": "Dictate into any app on macOS or Windows. Arion recognizes Chinese, English and both mixed on your device, works offline, and is open source under AGPL-3.0.",
+    "ogAlt": "The Arion icon over a soft, motion-blurred photograph of flowers"
+  },
+  "common": {
+    "skipToContent": "Skip to content",
+    "download": "Download",
+    "downloadLong": "Download for free",
+    "viewSource": "View source",
+    "replay": "Replay",
+    "themeToDark": "Switch to dark theme",
+    "themeToLight": "Switch to light theme",
+    "language": "Language",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "githubLabel": "Arion on GitHub",
+    "account": "Astra Foundry account",
+    "hostedSyncWaitlist": "Hosted sync waitlist"
+  },
+  "nav": {
+    "label": "Main",
+    "privacy": "Privacy",
+    "selfHosting": "Self-hosting",
+    "openSource": "Open source",
+    "account": "Account"
+  },
+  "hero": {
+    "title": "Voice input that never leaves your computer",
+    "lead": "Press {shortcut} in any app and speak Chinese, English or both. Arion recognizes your speech on the device and types the text where your cursor is.",
+    "note": "Free and open source ({license}) · macOS {macos} or later · Windows preview",
+    "demoLabel": "Illustration: Arion listening in a dark pill below a document window, then typing the dictated sentence into the document."
+  },
+  "demo": {
+    "editorTitle": "Release notes",
+    "editorLines": [
+      "Onboarding now asks for one permission at a time.",
+      "The menu bar panel shows the last dictation."
+    ],
+    "sentence": "把这个 PR merge 到 main 之前，先跑一下 CI。",
+    "finishHint": "to finish",
+    "inserted": "Inserted"
+  },
+  "values": {
+    "title": "Built for the way you talk at work",
+    "items": [
+      {
+        "title": "Works offline",
+        "body": "Speech recognition runs on your device. After the one-time model download, dictation needs no network, and no audio or text is sent anywhere."
+      },
+      {
+        "title": "Two languages in one sentence",
+        "body": "Switch between Chinese and English mid-sentence, the way people talk about code and meetings. You never pick a language first."
+      },
+      {
+        "title": "Learns from your fixes",
+        "body": "Correct a word Arion typed and it applies the fix next time, with an undo. Learned words stay on the device, encrypted."
+      },
+      {
+        "title": "Optional polishing",
+        "body": "A small language model on your Mac can tidy the wording and apply spoken self-corrections before the text lands. Off by default; Apple silicon only."
+      }
+    ]
+  },
+  "privacy": {
+    "title": "Signing in never unlocks your words",
+    "lead": "Arion works without an account. When encrypted sync arrives, an Astra Foundry account only decides whether you may use the hosted relay. Reading your data takes keys that only your devices hold.",
+    "points": [
+      {
+        "title": "On the device",
+        "body": "Audio lives in memory for the current dictation and is never written to disk or sent. Your vocabulary is encrypted with AES-256-GCM under a key kept in Keychain or DPAPI."
+      },
+      {
+        "title": "On the relay",
+        "body": "Sync encrypts each record before it leaves the device. The relay, hosted or your own, stores ciphertext and the routing metadata it needs to deliver it."
+      },
+      {
+        "title": "If you lose every device",
+        "body": "Without one of your devices or your recovery key, synced data cannot be decrypted. Recovering your account does not recover it."
+      }
+    ],
+    "more": "How Arion handles your data"
+  },
+  "openSource": {
+    "title": "Read it, build it, run your own relay",
+    "lead": "Arion is licensed under {license}. The desktop app and the sync relay live in one repository, and hosted and self-hosted sync share the same relay core.",
+    "buildTitle": "Build from source",
+    "buildNote": "Desktop builds need macOS, Go 1.27 and pnpm 10.",
+    "selfHosting": "Self-hosting guide",
+    "waitlist": "Join the hosted sync waitlist"
+  },
+  "download": {
+    "title": "Download Arion",
+    "lead": "Builds for macOS (Apple silicon and Intel) and Windows are published on GitHub Releases. Installed apps update from there and verify each update's signature first.",
+    "note": "The Windows build is an early preview."
+  },
+  "privacyPage": {
+    "title": "Privacy and encryption",
+    "lead": "What Arion keeps, where, and what an account can and cannot do.",
+    "sections": [
+      {
+        "title": "What stays on your device",
+        "body": [
+          "Microphone audio is held in memory for the dictation in progress and dropped when it ends. Drafts and corrections are kept the same way.",
+          "When you turn on context for polishing, Arion reads a bounded excerpt around the cursor in the focused field and the text of the focused window. It never stores the image and skips password and unknown fields.",
+          "Usage statistics are daily totals of sessions, speaking time and words. They hold no text, app names or times of day."
+        ]
+      },
+      {
+        "title": "What uses the network",
+        "body": [
+          "Model downloads: public files, each checked against a pinned SHA-256 digest before use.",
+          "Update checks: the public release manifest of the Arion repository on GitHub, carrying no content or device identifier. You can turn them off.",
+          "Nothing else. Arion has no cloud recognition and no telemetry."
+        ]
+      },
+      {
+        "title": "Encryption on the device",
+        "body": [
+          "Approved and learned vocabulary is sealed with AES-256-GCM. The key is generated on the device and kept in the login Keychain (this device only) on macOS, or with DPAPI on Windows.",
+          "A missing key or a failed integrity check is an error. Arion never falls back to plaintext."
+        ]
+      },
+      {
+        "title": "Sync",
+        "body": [
+          "Sync is in development and not yet available. Its design is fixed in the specification: each record is encrypted on the device before upload, and only devices that hold the group key can read it.",
+          "A new device joins through one of your existing devices or your recovery key. Removing a device rotates the key for future writes.",
+          "The relay, hosted or self-hosted, can see timing, IP addresses, device and group routing identifiers and ciphertext sizes. Encryption does not hide that metadata, and it cannot protect a device that is already compromised."
+        ]
+      },
+      {
+        "title": "Your Astra Foundry account",
+        "body": [
+          "An account is optional. Dictation, vocabulary and learning work without one.",
+          "Signing in tells the hosted relay who you are and whether you have access to hosted sync. The account holds no keys and cannot decrypt anything you sync, and neither can Astra Foundry. The hosted relay does know which account each sync space belongs to.",
+          "Signing out keeps your local keys and vocabulary. Turning sync off and deleting data from the server are separate actions."
+        ]
+      },
+      {
+        "title": "What cannot be undone",
+        "body": [
+          "If you lose every device and your recovery key, synced data is gone. Account recovery restores sign-in, not data.",
+          "Text already downloaded to a device cannot be erased from it remotely, even after that device is removed."
+        ]
+      }
+    ]
+  },
+  "selfHostingPage": {
+    "title": "Self-hosting the sync relay",
+    "lead": "Run the relay on your own hardware, so even the ciphertext stays with you.",
+    "status": "The relay is in development and has no release yet. This page describes its design so you can plan ahead.",
+    "sections": [
+      {
+        "title": "What the relay does",
+        "body": [
+          "The relay stores authenticated, encrypted records and the revisions that order them, and hands them to your other devices. It never processes speech and never sees plaintext.",
+          "Devices push batches of encrypted changes, pull with an opaque cursor, and are enrolled or revoked through the relay."
+        ]
+      },
+      {
+        "title": "One core, two account modes",
+        "body": [
+          "The same core runs hosted and self-hosted. It knows devices, envelopes, revisions and cursors, not accounts. An account gate in front of it has two modes.",
+          "noop, the default for self-hosting: there are no accounts. Every request is authenticated by the signature of an enrolled device.",
+          "oidc: the relay also requires a bearer token from an OpenID Connect issuer, checks its issuer, audience, expiry and sync entitlement, and maps the token's issuer and subject to a tenant. Device signatures are still required. Astra Foundry's hosted relay runs in this mode, and you can point it at your own identity provider."
+        ]
+      },
+      {
+        "title": "What you see as an operator",
+        "body": [
+          "Timing, IP addresses, device and group routing identifiers and ciphertext sizes. Not content: backups of the relay database hold ciphertext only."
+        ]
+      },
+      {
+        "title": "Running it",
+        "body": [
+          "The relay is a Go service with its own PostgreSQL database. Its container image, configuration reference and runbook ship with the first release."
+        ]
+      }
+    ],
+    "source": "Follow the relay in the repository",
+    "hostedTitle": "Rather not run a server?",
+    "hostedBody": "Astra Foundry will run the same relay as a hosted service.",
+    "hostedLink": "Join the hosted sync waitlist"
+  },
+  "creditsPage": {
+    "title": "Credits",
+    "lead": "The photographs and open-source work this site is made with.",
+    "photos": "Photography",
+    "software": "Typefaces, icons and components",
+    "by": "by {author}"
+  },
+  "footer": {
+    "tagline": "Local voice input for macOS and Windows.",
+    "product": "Product",
+    "project": "Project",
+    "astraFoundry": "Astra Foundry",
+    "source": "Source code",
+    "issues": "Report a bug",
+    "license": "License",
+    "credits": "Credits",
+    "copyright": "© {year} Astra Foundry"
+  },
+  "notFound": {
+    "title": "Page not found",
+    "body": "This address does not exist on the Arion site.",
+    "home": "Go to the home page"
+  }
+}

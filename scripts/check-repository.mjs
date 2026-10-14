@@ -7,7 +7,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const errors = [];
 const files = [];
 const trees = ['docs', 'specs', 'apps', 'packages', 'services', 'models', 'deploy', 'tools', 'benchmarks', 'tests', 'scripts'];
-const ignored = new Set(['build', 'dist', 'node_modules', '.git']);
+const ignored = new Set(['build', 'dist', 'node_modules', '.git', '.next', 'out']);
 
 async function walk(relative) {
   for (const entry of await readdir(path.join(root, relative), { withFileTypes: true })) {

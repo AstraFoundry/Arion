@@ -1,0 +1,47 @@
+{
+  "name": "@arion/site",
+  "version": "0.0.0",
+  "private": true,
+  "license": "AGPL-3.0-only",
+  "description": "arion.astrafoundry.si: the static marketing site, served as Cloudflare Workers static assets.",
+  "type": "module",
+  "scripts": {
+    "dev": "next dev --hostname 127.0.0.1",
+    "build": "node scripts/check-messages.mjs && next build",
+    "i18n:check": "node scripts/check-messages.mjs",
+    "lint": "eslint . --max-warnings=0",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "check": "pnpm i18n:check && pnpm typecheck && pnpm lint && pnpm test && pnpm build",
+    "assets:build": "node scripts/build-assets.mjs",
+    "deploy": "wrangler deploy"
+  },
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "lucide-react": "^1.47.0",
+    "motion": "^13.4.2",
+    "next": "^16.3.6",
+    "next-intl": "^4.14.7",
+    "next-themes": "^0.4.6",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "server-only": "^0.0.1",
+    "tailwind-merge": "^3.7.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.3",
+    "@types/node": "^26.6.2",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "eslint": "^9.39.5",
+    "eslint-config-next": "^16.3.6",
+    "sharp": "^0.35.5",
+    "tailwindcss": "^4.3.3",
+    "typescript": "~5.9.3",
+    "vitest": "^5.0.1",
+    "wrangler": "^4.137.0"
+  },
+  "engines": {
+    "node": ">=20.9.0"
+  }
+}

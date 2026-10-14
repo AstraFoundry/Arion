@@ -2,10 +2,15 @@
 .env
 .env.*
 !.env.example
+!/apps/site/.env.production
 node_modules/
 dist/
 build/
 out/
+.next/
+next-env.d.ts
+*.tsbuildinfo
+.wrangler/
 *.log
 *.tmp
 .DS_Store
