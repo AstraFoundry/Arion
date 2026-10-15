@@ -2,6 +2,8 @@
 
 Local-first voice input for macOS and Windows, built with [MyGo](https://github.com/egoist/mygo) native Go UI.
 
+[English](README.md) · [简体中文](README.zh-CN.md) · [日本語](README.ja.md)
+
 [![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL--3.0-blue.svg)](LICENSE)
 [![Go 1.27.1](https://img.shields.io/badge/Go-1.27.1-00ADD8?logo=go&logoColor=white)](go.work)
 [![MyGo v0.4.6](https://img.shields.io/badge/MyGo-v0.4.6-4B5563)](apps/desktop/go.mod)
@@ -9,11 +11,9 @@ Local-first voice input for macOS and Windows, built with [MyGo](https://github.
 [![Node 24](https://img.shields.io/badge/Node-24-339933?logo=nodedotjs&logoColor=white)](.nvmrc)
 [![pnpm 10.33.0](https://img.shields.io/badge/pnpm-10.33.0-F69220?logo=pnpm&logoColor=white)](package.json)
 
-![Arion marketing-site hero showing the dictation document window and floating pill mock on a blurred photograph](docs/readme/hero.png)
+![Arion voice input window and floating dictation pill](docs/readme/hero.png)
 
-*Marketing-site hero (`apps/site`): the dictation mock (document window and floating pill) on a blurred photograph, and its scripted demo below.*
-
-![Scripted marketing-site dictation demo](docs/readme/demo.gif)
+![Arion voice dictation in action](docs/readme/demo.gif)
 
 ## Overview
 
@@ -90,6 +90,14 @@ On first run, `make desktop-dev` opens onboarding, requests microphone and Acces
 - [Deployment & Release Gates (`docs/operations/deployment.md`)](docs/operations/deployment.md) and [Sync Relay Runbook (`deploy/sync/README.md`)](deploy/sync/README.md).
 - [Quality & Testing (`docs/quality/README.md`)](docs/quality/README.md), [Validation Report (`docs/quality/validation.md`)](docs/quality/validation.md), and [Native E2E (`docs/quality/e2e.md`)](docs/quality/e2e.md).
 - [Research Evidence (`docs/research/README.md`)](docs/research/README.md), [Benchmark Methodology (`docs/research/benchmark-methodology.md`)](docs/research/benchmark-methodology.md), [Evaluation Runners (`tools/evaluation/README.md`)](tools/evaluation/README.md), and [Benchmark Results (`benchmarks/README.md`)](benchmarks/README.md).
+
+## Contributors
+
+[![AstraFoundry/Arion contributors](https://contrib.rocks/image?repo=AstraFoundry/Arion)](https://github.com/AstraFoundry/Arion/graphs/contributors)
+
+## Star History
+
+[![AstraFoundry/Arion Star History Chart](https://api.star-history.com/svg?repos=AstraFoundry/Arion&type=Date)](https://star-history.com/#AstraFoundry/Arion&Date)
 
 ## License
 
