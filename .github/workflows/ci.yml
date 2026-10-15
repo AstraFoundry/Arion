@@ -1,6 +1,14 @@
 name: CI
 
 on:
+  workflow_call:
+    inputs:
+      release:
+        type: boolean
+        default: false
+    secrets:
+      MYGO_UPDATER_PRIVATE_KEY:
+        required: false
   push:
     branches: [main]
   pull_request:
@@ -27,6 +35,7 @@ jobs:
           go-version: '1.25.7'
           cache: false
       - run: pnpm check
+      - run: pnpm workflows:check
       - run: pnpm test
       - name: Marketing site (dictionaries, types, lint, tests, static export)
         run: pnpm site:check
@@ -35,7 +44,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-14, windows-2022]
+        include:
+          - { os: macos-15, platform: darwin-arm64 }
+          - { os: macos-15-intel, platform: darwin-amd64 }
+          - { os: windows-2022, platform: windows-amd64 }
     runs-on: ${{ matrix.os }}
     env:
       # Speech runtimes (sherpa-onnx, miniaudio) are cgo libraries.
@@ -70,18 +82,15 @@ jobs:
           name: native-content-${{ matrix.os }}
           path: .workspace/e2e/
           if-no-files-found: ignore
-      - name: Stage native libraries and the input method
-        run: |
-          node scripts/stage-native-libs.mjs
-          node scripts/build-input-method.mjs
-      - name: Package (macOS)
-        if: runner.os == 'macOS'
-        working-directory: apps/desktop
+      - name: Build and verify desktop package
         env:
-          CC: ${{ github.workspace }}/scripts/cc-relocatable.sh
-          CGO_LDFLAGS: -Wl,-rpath,@executable_path/../Resources/lib
-        run: go tool mygo build && node ../../scripts/verify-macos-app.mjs
-      - name: Package (Windows)
-        if: runner.os == 'Windows'
-        working-directory: apps/desktop
-        run: go tool mygo build
+          MYGO_UPDATER_PRIVATE_KEY: ${{ inputs.release && secrets.MYGO_UPDATER_PRIVATE_KEY || '' }}
+        run: node scripts/desktop-command.mjs build
+      - name: Collect installers and verify signed updates for releases
+        run: node scripts/release.mjs collect ${{ matrix.platform }} .workspace/release/${{ matrix.platform }} ${{ inputs.release && '--signed' || '--unsigned' }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: desktop-${{ matrix.platform }}
+          path: .workspace/release/${{ matrix.platform }}/
+          if-no-files-found: error
+          compression-level: 0

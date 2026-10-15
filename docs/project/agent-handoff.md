@@ -16,7 +16,7 @@ Read [AGENTS.md](../../AGENTS.md), [architecture](architecture.md), [repository]
 - **SYNC-10 (service):** desktop account sign-in ([account sign-in](account-signin.md)): RFC 8252 loopback, PKCE S256, refresh token in the OS credential store, waitlist join, and sign-out that keeps local keys and memory (MEM-A17). The two-path onboarding step and Settings › Account are built on it ([views](account-signin.md#views)); they have not been run in a native window on macOS or Windows. Native Keychain and Credential Manager behavior has not been executed on those operating systems.
 - **MEM-02 (edit learning, macOS):** corrections of inserted text are learned on the device, shown with an undo, recalled by a one-pass index and, bounded, in the rewrite prompt ([ADR 014](../decisions/014-edit-learning.md), [edit-learning-v1](../../benchmarks/results/edit-learning-v1/README.md)). Windows does not read fields, so it does not learn yet.
 - **EVAL-01 / DATA-01 (partial):** production-pipeline benchmark driver, corpus builder, model-comparison experiment and catalog recording; macOS product scenario driver with an owned editor fixture.
-- **WIN-01 (code):** WASAPI capture through the same miniaudio adapter, SendInput Unicode insertion with foreground/focus revalidation, guarded clipboard paste, DPAPI key storage. Compiled for windows/amd64; never run on Windows.
+- **WIN-01 (code):** WASAPI capture through the same miniaudio adapter, SendInput Unicode insertion with foreground/focus revalidation, guarded clipboard paste, DPAPI key storage. Native CI has exercised window lifecycle, owned Notepad insertion and the hold-key hook; the complete packaged microphone/recognition path remains unverified ([validation](../quality/validation.md)).
 
 Verification results and their limits are recorded in [validation](../quality/validation.md).
 
@@ -40,7 +40,7 @@ Verification results and their limits are recorded in [validation](../quality/va
 | SYNC-10 UI | P1 | Desktop sync client; SYNC-07 actions | Two-path onboarding and Settings › Account are built ([views](account-signin.md#views)). A stored sign-in is detected without network when an account view shows and offers Reconnect. Remaining: device enrollment from the entitled hosted-sync row, Turn off sync and Delete server data once their actions exist, and a native run on macOS and Windows |
 | SITE-01 | P1 | `@astrafoundry/design` published | `apps/site` is built ([site](../frontend/site.md), [ADR 016](../decisions/016-marketing-site.md)); remaining: replace the vendored Sunbeam/beUI copy listed in the [site README](../../apps/site/README.md#temporary-vendored-design-code) with the package |
 | Hold-to-talk | P1 | Key-up adapter (event tap) | Tested native key-down/key-up adapter (DSK-02) |
-| REL-01 | P1 | Signing identities | Developer ID signing/notarization, controlled bundle ID; the signed updater exists ([ADR 010](../decisions/010-in-app-updates.md)) and keeps consent across updates only once Developer ID signing lands |
+| REL-01 | P1 | Signing identities | Developer ID signing/notarization and Windows publisher signing; controlled bundle IDs are configured; the signed updater exists ([ADR 010](../decisions/010-in-app-updates.md)) and keeps consent across updates only once Developer ID signing lands |
 | MOBILE-01 | P2 | Desktop contract stabilization | Native keyboard constraints research only |
 
 RNK-01 cannot fabricate n-best from a recognizer that exposes a single hypothesis. A dictionary/phonetic candidate source must declare its provenance and scope.
@@ -51,7 +51,7 @@ RNK-01 cannot fabricate n-best from a recognizer that exposes a single hypothesi
 - Recovery-secret enrollment stays rejected (`RECOVERY_UNSUPPORTED`) until a vetted format exists. Revocation rotates the key epoch; clients re-encrypt because the relay cannot read ciphertext.
 - Local SQLite driver and encryption boundary before persistence migration code.
 - Native IMK/TSF host language and local authenticated IPC framing after minimal OS harness proves lifecycle/ABI.
-- App identifier/signing identities, minimum OS/RAM and update trust before public packages. Current `local.arion.desktop` is a development identifier.
+- App identifier/signing identities, minimum OS/RAM and update trust before public packages. The controlled identifiers are `si.astrafoundry.arion` and `si.astrafoundry.arion.inputmethod`; signing credentials and host acceptance remain open.
 
 These are bounded open decisions, not permission prompts for already-authorized research or reversible scaffolding. Continue independent work, use evidence, and ask only when a choice changes user-visible scope or trust.
 

@@ -1023,7 +1023,7 @@ func TestPermissionGuide(t *testing.T) {
 	if len(tt.Texts()) != 0 {
 		t.Fatalf("guide drawn without a pane: %q", tt.Texts())
 	}
-	app, err := transfer.FileData("/Applications/Arion.app")
+	app, err := transfer.FileData(filepath.Join(t.TempDir(), "Arion.app"))
 	if err != nil {
 		t.Fatal(err)
 	}

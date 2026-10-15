@@ -35,10 +35,6 @@ export function makePrompt(sample, variant) {
 }
 
 async function run() {
-  if (process.platform !== "darwin")
-    throw new Error(
-      "This diagnostic version is measured on macOS only; Windows native execution remains pending",
-    );
   for (const key of ["corpus", "models", "python", "out"])
     if (!flags[key]) throw new Error(`--${key} required`);
   const configPath = path.resolve(
@@ -119,6 +115,11 @@ async function run() {
     config.provider !== "CPUExecutionProvider"
   )
     throw new Error("This diagnostic adapter only implements warm solo CPU");
+  // Input validation is portable; actual inference still requires the measured OS.
+  if (process.platform !== "darwin")
+    throw new Error(
+      "This diagnostic version is measured on macOS only; native execution on this OS remains pending",
+    );
   const out = path.resolve(flags.out);
   await fs.mkdir(out, { mode: 0o700 });
   const artifacts = await read(path.join(flags.models, "artifacts.json"));

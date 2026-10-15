@@ -1,86 +1,57 @@
 name: Release
 
-# A pushed tag v1.2.0 builds every desktop platform and uploads the
-# installers with their signed updates to a draft GitHub release. Installed
-# apps update from the latest published release only, so a draft is
-# reviewed and published by hand (docs/operations/deployment.md).
+# Tagged releases run the same checks and packaging as pull requests.
+# Only complete, verified sets are uploaded; publishing the draft stays manual.
 on:
   push:
     tags: ['v*']
 
 permissions:
-  contents: write # the draft release and the uploads to it
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
-  draft-release:
+  preflight:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Check the tag against the app version
-        run: |
-          version=$(node -p "require('./apps/desktop/mygo.json').version")
-          test "$GITHUB_REF_NAME" = "v$version" || { echo "tag $GITHUB_REF_NAME, mygo.json version $version"; exit 1; }
-      - name: Create the draft release
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          if ! gh release view "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" > /dev/null 2>&1; then
-            gh release create "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" \
-              --draft --verify-tag --title "$GITHUB_REF_NAME" --generate-notes
-          fi
-
-  build:
-    needs: draft-release
-    name: ${{ matrix.name }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          # Speech runtimes are cgo libraries, so each target builds on its own OS and CPU.
-          - { name: macOS arm64, os: macos-14 }
-          - { name: macOS x86_64, os: macos-13 }
-          - { name: Windows x86_64, os: windows-2022 }
-    env:
-      CGO_ENABLED: '1'
-    steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-        with:
-          run_install: false
       - uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
-      - uses: actions/setup-go@v5
+      - name: Validate tag, repository and update signing key
+        env:
+          MYGO_UPDATER_PRIVATE_KEY: ${{ secrets.MYGO_UPDATER_PRIVATE_KEY }}
+        run: node scripts/release.mjs check
+
+  checks:
+    needs: preflight
+    uses: ./.github/workflows/ci.yml
+    with:
+      release: true
+    secrets:
+      MYGO_UPDATER_PRIVATE_KEY: ${{ secrets.MYGO_UPDATER_PRIVATE_KEY }}
+
+  draft-release:
+    needs: checks
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          go-version: '1.27.1'
-          cache-dependency-path: apps/desktop/go.sum
-      - name: Stage localizations, native libraries and the input method
-        run: |
-          node scripts/stage-desktop-localizations.mjs
-          node scripts/stage-native-libs.mjs
-          node scripts/build-input-method.mjs
-      - name: Build, sign updates and upload (macOS)
-        if: runner.os == 'macOS'
-        working-directory: apps/desktop
+          node-version-file: .nvmrc
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: desktop-*
+          merge-multiple: true
+          path: .workspace/release/verified
+      - name: Verify the complete release and write SHA256SUMS
+        run: node scripts/release.mjs verify .workspace/release/verified
+      - name: Upload verified assets to a draft release
         env:
           GH_TOKEN: ${{ github.token }}
-          MYGO_UPDATER_PRIVATE_KEY: ${{ secrets.MYGO_UPDATER_PRIVATE_KEY }}
-          CC: ${{ github.workspace }}/scripts/cc-relocatable.sh
-          CGO_LDFLAGS: -Wl,-rpath,@executable_path/../Resources/lib
-        run: |
-          test -n "$MYGO_UPDATER_PRIVATE_KEY" || { echo "MYGO_UPDATER_PRIVATE_KEY is not set"; exit 1; }
-          go tool mygo build -upload
-          node ../../scripts/verify-macos-app.mjs
-      - name: Build, sign updates and upload (Windows)
-        if: runner.os == 'Windows'
-        shell: bash
-        working-directory: apps/desktop
-        env:
-          GH_TOKEN: ${{ github.token }}
-          MYGO_UPDATER_PRIVATE_KEY: ${{ secrets.MYGO_UPDATER_PRIVATE_KEY }}
-        run: |
-          test -n "$MYGO_UPDATER_PRIVATE_KEY" || { echo "MYGO_UPDATER_PRIVATE_KEY is not set"; exit 1; }
-          go tool mygo build -upload
+        run: node scripts/release.mjs upload .workspace/release/verified

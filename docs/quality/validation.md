@@ -111,3 +111,13 @@ DSK-A11 needs a packaged `Arion.app` and a person: the drop of Arion's file URL 
 - The macOS hold-key event tap with real key presses (needs Input Monitoring granted to the app by a person).
 - The consent guide against real System Settings (DSK-A11), including on macOS 27, where the Accessibility pane is renamed but keeps its URL.
 - No Developer ID signing or notarization. The updater is covered by state and schedule unit tests and a locally signed archive; installing a published release has not run, since none is published.
+
+## Release pipeline checks
+
+- `pnpm check`, pinned actionlint (`pnpm workflows:check`), portable core/catalog/relay checks and all 50 evaluation/release tooling tests passed on macOS arm64. The same 50 Node tests passed in an actual Linux arm64 container with a read-only repository and no network. The previously failing diagnostic-default test validates malformed input before the macOS-only inference gate; the native inference restriction remains.
+- `pnpm desktop:check` and `pnpm e2e:native` passed on macOS arm64. Permission-guide view tests use an owned temporary absolute path on each OS; the changed UI test binary also cross-compiled for Windows x64 with MinGW. The changed test has not been executed on Windows in this change set.
+- `pnpm site:check` passed: complete dictionaries, types, lint, nine tests and the static export advertising macOS 14.
+- `make desktop-build` passed with `si.astrafoundry.arion`, the matching IMK identifier, and an explicit macOS 14 cgo deployment target. The app/DMG contains the LLM worker, inference libraries, localized permission resources, module/runtime licenses and model provenance. The verifier checked required files, Mach-O architectures and minimum OS versions, package versions/identifiers, relocatable rpaths and the ad hoc signature. The new minimum-OS gate initially caught the host SDK producing a main executable with a 26.0 minimum; compiler and linker flags corrected that root cause.
+- Release tests reject missing/mismatched signing keys, incomplete platform sets, same-size archive tampering, substituted versions/origins/platforms and size changes. Unsigned installer collection passed for the packaged macOS app. Test keys are ephemeral fixtures; no production key was generated or configured.
+
+The updated hosted runner matrix has not run from these local changes. Intel/Windows runtime acceptance, system signing/notarization, a complete signed release and a published old-to-new update remain open. No GitHub release was created or changed by this validation.

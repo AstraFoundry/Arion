@@ -1,6 +1,6 @@
 # ADR 010: In-app updates from GitHub releases
 
-Status: Accepted; client and release workflow implemented, no release published yet.
+Status: Accepted; client and release workflow implemented, no release published yet; provisioning the update key remains required.
 
 ## Context
 
@@ -19,6 +19,7 @@ Users install Arion from a disk image or installer and had no way to learn about
 
 - An update request is an HTTPS GET to GitHub with the app name and version in its User-Agent; GitHub sees the IP address and timing. No audio, text, vocabulary, identifiers or preferences are sent.
 - Losing the secret key strands installed apps on their version; a leaked key lets its holder ship code to users. Rotating it needs a release signed with the old key that carries the new public key.
+- Tagged builds reuse the complete CI gates, verify all three platforms' installers and signed archives, and only then upload to a draft. Ordinary CI retains installers without a key; missing release keys fail before creating a draft.
 - The build must produce the shipped binary in one `mygo build`, because the update archive is made there: `scripts/cc-relocatable.sh` drops the module-cache rpath at link time and `scripts/verify-macos-app.mjs` only checks the result.
 - While releases are signed ad hoc, macOS keys privacy consent (Accessibility, Input Monitoring) to the exact build, so users grant it again after an update. Developer ID signing (REL-01) removes this.
 - Rollback is limited to a failed swap; a published bad release is fixed by publishing a newer one.

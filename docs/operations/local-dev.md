@@ -19,14 +19,14 @@ make e2e
 
 MyGo v0.4.6 requires Go 1.27.1. The workspace/tool directive uses Go automatic toolchain selection when available; a first native build may download it. Use an installed matching Go toolchain with `GOTOOLCHAIN=local` for explicitly offline development after dependencies are provisioned.
 
-macOS needs Xcode Command Line Tools and SDK. Windows builds must run on Windows with the native toolchain requirements declared by pinned MyGo. Check [MyGo research](../research/mygo.md) and inspect actual compiler errors rather than adding cross-platform stubs.
+macOS packages require macOS 14 or later because the bundled polishing ONNX Runtime declares a 14.0 minimum. Building needs Xcode Command Line Tools and SDK. Windows builds must run on Windows with the native toolchain requirements declared by pinned MyGo. Check [MyGo research](../research/mygo.md) and inspect actual compiler errors rather than adding cross-platform stubs.
 
 ```sh
 make desktop-build
 make desktop-dev
 ```
 
-These commands use the pinned `go tool mygo` from `apps/desktop` with `CGO_ENABLED=1` and an rpath to `Contents/Resources/lib`. `make desktop-libs` (run by both) generates the English/Simplified Chinese macOS permission localizations from the [copy catalogs](../frontend/i18n.md) and copies the pinned sherpa-onnx and ONNX Runtime libraries from the Go module cache into `apps/desktop/resources/<platform>/`; they are build artifacts and stay ignored. Windows installer creation uses NSIS; cross-packaging cgo for Windows additionally needs a MinGW-w64 toolchain (`CC=x86_64-w64-mingw32-gcc`).
+These commands call `scripts/desktop-command.mjs`, the same build/dev entry point used by CI. It runs the pinned `go tool mygo` from `apps/desktop` with `CGO_ENABLED=1`; on macOS it sets the configured minimum OS in the deployment target and cgo compiler/linker flags and uses a relocatable rpath to `Contents/Resources/lib`. Both call `scripts/stage-desktop-resources.mjs` (`make desktop-libs` runs that preparation alone). It generates the English/Simplified Chinese macOS permission localizations from the [copy catalogs](../frontend/i18n.md) and copies the pinned sherpa-onnx and ONNX Runtime libraries from the Go module cache into `apps/desktop/resources/<platform>/`; they are build artifacts and stay ignored. Windows installer creation uses NSIS; cross-packaging cgo for Windows additionally needs a MinGW-w64 toolchain (`CC=x86_64-w64-mingw32-gcc`).
 
 `desktop-dev` launches the menu bar app. On first run it shows onboarding, asks for microphone and Accessibility access, and downloads the automatically selected model bundle (about 270 MB) into the per-user model store; after that dictation works offline. `desktop-build` produces `Arion.app` and a DMG under ignored `apps/desktop/build/`. macOS ties Accessibility consent to the app's code signature: an ad hoc rebuild needs the permission granted again.
 
@@ -56,7 +56,7 @@ Run `go mod tidy` in the module whose imports changed and retain `go.sum`. Keep 
 
 ## Configuration
 
-`apps/desktop/mygo.json` is public development package metadata, not secrets. The identifier `local.arion.desktop` requires replacement with a controlled production identifier before release. Runtime settings/storage and sync config are not implemented. Credentials must use OS key stores; never add fake environment settings that appear operational.
+`apps/desktop/mygo.json` is public development package metadata, not secrets. The controlled identifier is `si.astrafoundry.arion`; the IMK bundle uses `si.astrafoundry.arion.inputmethod`. Developer ID/notarization and Windows publisher signing still require credentials. Local preferences and encrypted vocabulary are implemented; desktop sync enrollment/outbox remain open. Credentials must use OS key stores; never add fake environment settings that appear operational.
 
 ## Troubleshooting
 

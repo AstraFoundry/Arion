@@ -24,7 +24,7 @@ import (
 )
 
 // IMESourceID is the input source Arion's IMK bundle declares.
-const IMESourceID = "local.arion.inputmethod.voice"
+const IMESourceID = "si.astrafoundry.arion.inputmethod.voice"
 
 // IMEState is the registration state of Arion's input source.
 type IMEState int

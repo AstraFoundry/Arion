@@ -9,14 +9,22 @@
           "sha256": "be267c676885305267c2a416324a4a5fe522d04b3efb0386d13e40a675aa7df0",
           "sizeBytes": 4303989,
           "license": "MIT",
-          "members": { "onnxruntime-genai-0.17.0-osx-arm64/lib/libonnxruntime-genai.dylib": "libonnxruntime-genai.dylib" }
+          "members": {
+            "onnxruntime-genai-0.17.0-osx-arm64/lib/libonnxruntime-genai.dylib": "libonnxruntime-genai.dylib",
+            "onnxruntime-genai-0.17.0-osx-arm64/LICENSE": "licenses/onnxruntime-genai-LICENSE",
+            "onnxruntime-genai-0.17.0-osx-arm64/ThirdPartyNotices.txt": "licenses/onnxruntime-genai-ThirdPartyNotices.txt"
+          }
         },
         {
           "url": "https://github.com/microsoft/onnxruntime/releases/download/v1.30.0/onnxruntime-osx-arm64-1.30.0.tgz",
           "sha256": "6ebb5062a934537c352937821f9fe9718e7de1a2db1122a93dd363ffd53a7012",
           "sizeBytes": 42373116,
           "license": "MIT",
-          "members": { "onnxruntime-osx-arm64-1.30.0/lib/libonnxruntime.1.30.0.dylib": "libonnxruntime.dylib" }
+          "members": {
+            "./onnxruntime-osx-arm64-1.30.0/lib/libonnxruntime.1.30.0.dylib": "libonnxruntime.dylib",
+            "./onnxruntime-osx-arm64-1.30.0/LICENSE": "licenses/onnxruntime-LICENSE",
+            "./onnxruntime-osx-arm64-1.30.0/ThirdPartyNotices.txt": "licenses/onnxruntime-ThirdPartyNotices.txt"
+          }
         }
       ]
     }

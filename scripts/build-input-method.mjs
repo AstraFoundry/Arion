@@ -1,7 +1,7 @@
 // Builds Arion's InputMethodKit bundle (ArionInput.app) into the desktop
 // macOS resources, where `mygo build` ships and signs it inside Arion.app.
 import { execFileSync } from 'node:child_process';
-import { copyFileSync, mkdirSync, rmSync } from 'node:fs';
+import { copyFileSync, mkdirSync, readFileSync, rmSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -11,6 +11,7 @@ if (process.platform !== 'darwin') {
 }
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const desktop = path.join(root, 'apps', 'desktop');
+const config = JSON.parse(readFileSync(path.join(desktop, 'mygo.json'), 'utf8'));
 const source = path.join(desktop, 'ime', 'macos');
 const bundle = path.join(desktop, 'resources', 'darwin', 'ArionInput.app', 'Contents');
 rmSync(path.dirname(bundle), { recursive: true, force: true });
@@ -18,8 +19,11 @@ mkdirSync(path.join(bundle, 'MacOS'), { recursive: true });
 mkdirSync(path.join(bundle, 'Resources'), { recursive: true });
 copyFileSync(path.join(source, 'Info.plist'), path.join(bundle, 'Info.plist'));
 const run = (command, args, cwd = desktop) => execFileSync(command, args, { cwd, stdio: 'inherit' });
+run('/usr/libexec/PlistBuddy', ['-c', `Set :CFBundleShortVersionString ${config.version.split('-')[0]}`, path.join(bundle, 'Info.plist')]);
+run('/usr/libexec/PlistBuddy', ['-c', `Set :CFBundleVersion ${config.version.split('-')[0]}`, path.join(bundle, 'Info.plist')]);
+run('/usr/libexec/PlistBuddy', ['-c', `Set :LSMinimumSystemVersion ${config.macos.minimumSystemVersion}`, path.join(bundle, 'Info.plist')]);
 // Universal so one bundle serves Apple silicon and Intel Macs.
-run('clang', ['-fobjc-arc', '-O2', '-mmacosx-version-min=13.0', '-arch', 'arm64', '-arch', 'x86_64',
+run('clang', ['-fobjc-arc', '-O2', `-mmacosx-version-min=${config.macos.minimumSystemVersion}`, '-arch', 'arm64', '-arch', 'x86_64',
   '-framework', 'Cocoa', '-framework', 'InputMethodKit', path.join(source, 'main.m'), '-o', path.join(bundle, 'MacOS', 'ArionInput')]);
 const png = path.join(bundle, 'Resources', 'menu_icon.png');
 run('go', ['run', './cmd/arion-icon', '-menu', png]);

@@ -46,3 +46,4 @@ __pycache__/
 
 # Staged LLM worker and runtime (scripts/stage-llm-runtime.mjs).
 /apps/desktop/resources/*/llm/
+/apps/desktop/resources/licenses/

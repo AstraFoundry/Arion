@@ -1,0 +1,48 @@
+// Release checks never create keys or weaken update signature verification.
+import { execFileSync, spawnSync } from 'node:child_process';
+import { copyFileSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { checkRelease, digest, platformAssets, releasePlatforms, releaseStatus } from './lib/release.mjs';
+
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const config = JSON.parse(readFileSync(path.join(root, 'apps/desktop/mygo.json'), 'utf8'));
+const [operation, first, second, mode] = process.argv.slice(2);
+const checksumList = (directory, files) => [...files, 'RELEASE-STATUS.md'].sort().map(file => `${digest(readFileSync(path.join(directory, file))).toString('hex')}  ${file}\n`).join('');
+if (operation === 'check') {
+  checkRelease(config, process.env.GITHUB_REF_NAME, process.env.MYGO_UPDATER_PRIVATE_KEY);
+  if (process.env.GITHUB_REPOSITORY !== config.updates.github) throw new Error('Release repository does not match the configured update source');
+  console.log(`Verified release configuration for v${config.version}.`);
+} else if (operation === 'collect') {
+  if (!['--signed', '--unsigned'].includes(mode)) throw new Error('Choose --signed for releases or --unsigned for preview installers');
+  const platform = first;
+  const destination = path.resolve(second);
+  const source = path.join(root, 'apps/desktop', config.out, platform);
+  const files = platformAssets(source, config, platform, mode === '--signed');
+  mkdirSync(destination, { recursive: true });
+  for (const file of files) copyFileSync(path.join(source, file), path.join(destination, file));
+  console.log(`Collected ${platform}: ${files.join(', ')}`);
+} else if (operation === 'verify' || operation === 'upload') {
+  const directory = path.resolve(first);
+  const files = releasePlatforms.flatMap(platform => platformAssets(directory, config, platform));
+  if (operation === 'verify') {
+    const unexpected = readdirSync(directory).filter(file => !files.includes(file));
+    if (unexpected.length) throw new Error(`Unexpected release assets: ${unexpected.join(', ')}`);
+    writeFileSync(path.join(directory, 'RELEASE-STATUS.md'), releaseStatus(config, readFileSync(path.join(root, 'docs/operations/release-status.md'), 'utf8')));
+    writeFileSync(path.join(directory, 'SHA256SUMS'), checksumList(directory, files));
+    console.log(`Verified installers and signed updates for all ${releasePlatforms.length} platforms.`);
+  } else {
+    const tag = `v${config.version}`;
+    if (process.env.GITHUB_REF_NAME !== tag || process.env.GITHUB_REPOSITORY !== config.updates.github) throw new Error('Release tag or repository mismatch');
+    const allFiles = [...files, 'RELEASE-STATUS.md', 'SHA256SUMS'];
+    if (readFileSync(path.join(directory, 'SHA256SUMS'), 'utf8') !== checksumList(directory, files)) throw new Error('Release checksums changed after verification');
+    // A failed lookup must not be treated as permission to create a new release.
+    const list = execFileSync('gh', ['release', 'list', '--repo', config.updates.github, '--limit', '100', '--json', 'tagName,isDraft'], { encoding: 'utf8' });
+    const existing = JSON.parse(list).find(release => release.tagName === tag);
+    if (existing && !existing.isDraft) throw new Error('Refusing to modify a published release');
+    if (!existing) execFileSync('gh', ['release', 'create', tag, '--repo', config.updates.github, '--draft', '--verify-tag', '--title', tag, '--generate-notes', ...(config.version.includes('-') ? ['--prerelease'] : [])], { stdio: 'inherit' });
+    const result = spawnSync('gh', ['release', 'upload', tag, '--repo', config.updates.github, '--clobber', ...allFiles.map(file => path.join(directory, file))], { stdio: 'inherit' });
+    if (result.error) throw result.error;
+    if (result.status !== 0) process.exit(result.status ?? 1);
+  }
+} else throw new Error('Use release.mjs check | collect <platform> <directory> --signed|--unsigned | verify <directory> | upload <directory>');

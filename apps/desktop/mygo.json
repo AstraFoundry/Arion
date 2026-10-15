@@ -1,6 +1,6 @@
 {
   "name": "Arion",
-  "identifier": "local.arion.desktop",
+  "identifier": "si.astrafoundry.arion",
   "version": "0.1.0",
   "copyright": "Arion contributors",
   "out": "build",
@@ -9,7 +9,7 @@
     "github": "AstraFoundry/Arion"
   },
   "macos": {
-    "minimumSystemVersion": "13.0",
+    "minimumSystemVersion": "14.0",
     "entitlements": "entitlements.plist",
     "infoPlist": {
       "NSMicrophoneUsageDescription": "Arion listens only while you dictate. Speech is recognized on this Mac.",

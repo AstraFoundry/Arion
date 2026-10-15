@@ -1,4 +1,5 @@
 .DEFAULT_GOAL := help
+.PHONY: workflows-check
 CONFIG ?= benchmarks/configs/desktop-factorial.json
 PLAN ?= .workspace/benchmarks/plan.json
 SUITE ?= tests/e2e/desktop-scenarios.json
@@ -11,7 +12,10 @@ export CORPUS DRIVER OUT RESULTS MANIFEST BUNDLE SEGMENT LLM_MODEL LLM_RUNTIME V
 install: ## Install the pinned pnpm workspace with its frozen lockfile
 	@pnpm install --frozen-lockfile
 
-check: docs test ## Run portable repository and automation gates
+check: docs workflows-check test ## Run portable repository and automation gates
+
+workflows-check: ## Validate GitHub Actions syntax, runners and reusable workflow calls
+	@pnpm workflows:check
 
 docs: ## Validate documentation, JSON and layer boundaries
 	@pnpm docs:check
@@ -34,22 +38,14 @@ tooling-test: ## Test benchmark metrics, leakage guards and driver conformance
 desktop-check: ## Compile/check native shell for current host
 	@pnpm desktop:check
 
-# Speech runtimes are cgo libraries packaged in Contents/Resources/lib; the
-# compiler wrapper drops the module cache rpath the speech bindings link with.
-DESKTOP_ENV = CGO_ENABLED=1 CC="$(CURDIR)/scripts/cc-relocatable.sh" CGO_LDFLAGS="-Wl,-rpath,@executable_path/../Resources/lib"
-
 desktop-libs: ## Stage speech runtimes, the LLM worker, localized permission copy and the macOS input method
-	@node scripts/stage-desktop-localizations.mjs
-	@node scripts/stage-native-libs.mjs darwin
-	@node scripts/stage-llm-runtime.mjs darwin-arm64
-	@node scripts/build-input-method.mjs
+	@node scripts/stage-desktop-resources.mjs
 
-desktop-build: desktop-libs ## Package the native app, its disk image and (with MYGO_UPDATER_PRIVATE_KEY) signed updates
-	@cd apps/desktop && $(DESKTOP_ENV) go tool mygo build
-	@node scripts/verify-macos-app.mjs
+desktop-build: ## Package and verify the app, its installer and (with MYGO_UPDATER_PRIVATE_KEY) signed updates
+	@node scripts/desktop-command.mjs build
 
-desktop-dev: desktop-libs ## Launch the native app in development mode
-	@cd apps/desktop && $(DESKTOP_ENV) go tool mygo dev
+desktop-dev: ## Launch the native app in development mode
+	@node scripts/desktop-command.mjs dev
 
 site-check: ## Check the marketing site: dictionaries, types, lint, tests and the static export
 	@pnpm site:check

@@ -21,7 +21,7 @@ export const siteConfig = {
   organizationUrl: "https://github.com/AstraFoundry",
   license: "AGPL-3.0",
   shortcut: ["⌥", "Space"],
-  minimumMacOS: "13",
+  minimumMacOS: "14",
 } as const;
 
 /** Internal routes. Trailing slashes match the static export layout. */
