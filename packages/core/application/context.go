@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"arion.local/core/domain"
+	"arion.local/core/domain/ports"
 )
 
 // ContextPolicy says which context a session's rewrite may read (009,
@@ -108,7 +109,9 @@ func (c *Coordinator) startContext(r *run) {
 			rc.History = c.deps.History.Recent(r.place)
 		}
 		if _, input := c.targets(r); input != nil && (policy.Cursor || policy.Screen) {
+			started := time.Now()
 			snap, err := input.ReadContext(r.ctx, r.identity, r.target.Target)
+			c.diagnostic(r, ports.DiagnosticContext, started, err)
 			if err == nil && snap.SafeToRead {
 				if policy.Cursor {
 					rc.Before, rc.After = snap.Before, snap.After

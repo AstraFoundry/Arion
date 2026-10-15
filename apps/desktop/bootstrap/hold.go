@@ -1,7 +1,6 @@
 package bootstrap
 
 import (
-	"log"
 	"time"
 
 	"arion.local/core/application"
@@ -25,9 +24,9 @@ func (a *App) startHoldKey() {
 		now := time.Now()
 		a.post(func() { a.onHoldKey(e, now) })
 	})
+	a.record("hold_register", err)
 	if err != nil {
 		a.state.Shortcut.HoldFailure = domain.CodeOf(err)
-		log.Printf("hold key %s unavailable: %v", key, err)
 		return
 	}
 	a.state.Shortcut.HoldActive = true
@@ -64,12 +63,15 @@ func (a *App) onHoldKey(e holdkey.Event, at time.Time) {
 	}
 	switch action {
 	case application.HoldStart:
+		a.record("hold_start", nil)
 		a.state.Shortcut.Holding = true
 		a.core.Start()
 	case application.HoldStop:
+		a.record("hold_stop", nil)
 		a.state.Shortcut.Holding = false
 		a.finishDictation()
 	case application.HoldCancel:
+		a.record("hold_cancel", nil)
 		a.state.Shortcut.Holding = false
 		a.core.Cancel()
 	}

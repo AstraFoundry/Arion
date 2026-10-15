@@ -336,9 +336,22 @@ type SettingsFocus struct {
 	Seq     int
 }
 
+// DiagnosticsPhase is the state of an explicit local export.
+type DiagnosticsPhase string
+
+const (
+	DiagnosticsIdle      DiagnosticsPhase = ""
+	DiagnosticsExporting DiagnosticsPhase = "exporting"
+	DiagnosticsSaved     DiagnosticsPhase = "saved"
+	DiagnosticsFailed    DiagnosticsPhase = "failed"
+)
+
+type Diagnostics struct{ Phase DiagnosticsPhase }
+
 // State is everything views read. The composition root mutates it only on
 // the main thread and then invalidates windows.
 type State struct {
+	Diagnostics Diagnostics
 	Version     string
 	Dictation   Dictation
 	Model       Model
@@ -421,6 +434,8 @@ type Actions interface {
 	InstallUpdate()
 	// RestartToUpdate relaunches into the installed version.
 	RestartToUpdate()
+	// ExportDiagnostics saves a local content-free ZIP through the system chooser.
+	ExportDiagnostics()
 	CompleteOnboarding()
 	// SignIn starts the system-browser sign-in. It returns immediately.
 	SignIn()

@@ -14,8 +14,8 @@ import (
 // actions implements runtime.Actions. Views call it on the main thread.
 type actions struct{ a *App }
 
-func (x actions) ToggleDictation()        { x.a.core.Toggle() }
-func (x actions) CancelDictation()        { x.a.core.Cancel() }
+func (x actions) ToggleDictation()        { x.a.record("dictation_toggle", nil); x.a.core.Toggle() }
+func (x actions) CancelDictation()        { x.a.record("dictation_cancel", nil); x.a.core.Cancel() }
 func (x actions) RequestMicrophone()      { x.a.platform.RequestMicrophone() }
 func (x actions) OpenMicrophoneSettings() { x.a.platform.OpenMicrophoneSettings() }
 func (x actions) CloseGuide()             { x.a.closeGuide(true) }

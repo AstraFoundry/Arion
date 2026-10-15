@@ -4,6 +4,7 @@
 package e2e
 
 import (
+	"archive/zip"
 	"bytes"
 	"fmt"
 	"image"
@@ -11,12 +12,14 @@ import (
 	"os"
 	"path/filepath"
 	"reflect"
+	"strings"
 	"sync/atomic"
 	"testing"
 	"time"
 
 	"arion.local/desktop/bootstrap"
 	uiapp "arion.local/desktop/ui/app"
+	"arion.local/desktop/ui/pages/settings"
 	arion "arion.local/desktop/ui/shared/runtime"
 	"github.com/egoist/mygo"
 )
@@ -33,9 +36,8 @@ func TestMain(m *testing.M) {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
-	defer os.RemoveAll(data)
 	// An isolated profile: no stored preferences, no models, no onboarding.
-	app, err = bootstrap.New(bootstrap.Options{DataDir: data, SkipOnboarding: true})
+	app, err = bootstrap.New(bootstrap.Options{DataDir: data, SkipOnboarding: true, Offline: true})
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
@@ -53,6 +55,7 @@ func TestMain(m *testing.M) {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
+	os.RemoveAll(data)
 	os.Exit(int(code.Load()))
 }
 
@@ -223,4 +226,56 @@ func TestInterfaceLanguageUpdatesNativeWindows(t *testing.T) {
 		app.Store().Actions.UpdatePreferences(func(p *arion.Preferences) { p.UILanguage = arion.LanguageEnglish })
 	})
 	eventually(t, "English native settings title restored", func() bool { return settings.Title() == "Arion Settings" })
+}
+
+// DSK-A14: opt-in because a UI driver must answer the real OS save sheets.
+// The expected ZIP path is confined to an isolated test output directory.
+func TestDiagnosticExportNativeDialog(t *testing.T) {
+	if os.Getenv("ARION_E2E_DIAGNOSTICS") != "1" {
+		t.Skip("requires a UI driver for native save sheets")
+	}
+	destination := os.Getenv("ARION_E2E_DIAGNOSTICS_EXPORT")
+	if destination == "" {
+		t.Fatal("ARION_E2E_DIAGNOSTICS_EXPORT is required")
+	}
+	t.Logf("native export build version: %q", mygo.App.Version())
+	app.OpenSettings()
+	for _, step := range []struct {
+		name string
+		want arion.DiagnosticsPhase
+	}{{"cancel", arion.DiagnosticsIdle}, {"save", arion.DiagnosticsSaved}} {
+		app.Update(func(s *arion.State) {
+			s.Focus = arion.SettingsFocus{Section: settings.About, Seq: s.Focus.Seq + 1}
+			app.Store().Actions.ExportDiagnostics()
+		})
+		t.Logf("native diagnostic chooser: %s", step.name)
+		var phase arion.DiagnosticsPhase
+		if !within(60*time.Second, func() bool {
+			app.Update(func(s *arion.State) { phase = s.Diagnostics.Phase })
+			return phase != arion.DiagnosticsExporting
+		}) {
+			t.Fatal("native save sheet was not answered")
+		}
+		if phase != step.want {
+			t.Fatalf("%s: phase %s", step.name, phase)
+		}
+		if step.name == "cancel" {
+			if _, err := os.Stat(destination); !os.IsNotExist(err) {
+				t.Fatalf("cancel created export: %v", err)
+			}
+		}
+	}
+	archive, err := zip.OpenReader(destination)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer archive.Close()
+	manifest, logs := false, false
+	for _, file := range archive.File {
+		manifest = manifest || file.Name == "manifest.json"
+		logs = logs || strings.HasPrefix(file.Name, "events.")
+	}
+	if !manifest || !logs {
+		t.Fatal("native export missing manifest/logs")
+	}
 }

@@ -12,6 +12,7 @@ import (
 	"testing"
 	"time"
 
+	diagnosticui "arion.local/desktop/ui/features/diagnostics"
 	"arion.local/desktop/ui/features/holdkey"
 	"arion.local/desktop/ui/pages/guide"
 	"arion.local/desktop/ui/pages/menubar"
@@ -34,6 +35,7 @@ type recorder struct {
 }
 
 func (r *recorder) call(name string)            { r.calls = append(r.calls, name) }
+func (r *recorder) ExportDiagnostics()          { r.call("export-diagnostics") }
 func (r *recorder) ToggleDictation()            { r.call("toggle") }
 func (r *recorder) CancelDictation()            { r.call("cancel") }
 func (r *recorder) RequestMicrophone()          { r.call("request-mic") }
@@ -1071,6 +1073,50 @@ func TestLearnedNoticeUndo(t *testing.T) {
 		settle(pill)
 		if hasText(pill, messages.Text(copy.PillLearned)) {
 			t.Fatalf("%s: notice shown during a session", locale)
+		}
+	}
+}
+
+func TestAboutDiagnosticExport(t *testing.T) {
+	for _, locale := range []runtime.UILanguage{runtime.LanguageEnglish, runtime.LanguageChinese} {
+		state, actions, store := fixture()
+		state.Preferences.UILanguage = locale
+		messages := store.Copy()
+		page := settings.NewPage()
+		page.Section = settings.About
+		tt := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, SettingsWidth, SettingsHeight)
+		settle(tt)
+		tt.Scroll(SettingsWidth/2, SettingsHeight/2, 0, 230)
+		settle(tt)
+		if !hasText(tt, messages.Text(copy.DiagnosticsTitle)) {
+			t.Fatalf("About missing diagnostics: %v", tt.Texts())
+		}
+		if err := tt.Click(messages.Text(copy.DiagnosticsExport)); err != nil || !actions.called("export-diagnostics") {
+			t.Fatalf("export click %v %v", err, actions.calls)
+		}
+		snapshot(t, tt, "settings-about-diagnostics-"+string(locale))
+		// Exercise progress, result and error states at the actual content width.
+		card := ui.NewTester(func(c *ui.Context) { diagnosticui.Card(c, store, theme.Apply(c)) }, 500, 180)
+		for _, phase := range []runtime.DiagnosticsPhase{runtime.DiagnosticsIdle, runtime.DiagnosticsExporting, runtime.DiagnosticsSaved, runtime.DiagnosticsFailed} {
+			state.Diagnostics.Phase = phase
+			actions.calls = nil
+			settle(card)
+			label := copy.DiagnosticsExport
+			if phase == runtime.DiagnosticsExporting {
+				label = copy.DiagnosticsExporting
+			}
+			if !hasText(card, messages.Text(label)) {
+				t.Fatalf("%s missing label: %v", phase, card.Texts())
+			}
+			err := card.Click(messages.Text(label))
+			if phase == runtime.DiagnosticsExporting {
+				if actions.called("export-diagnostics") {
+					t.Fatal("busy button invoked export")
+				}
+			} else if err != nil || !actions.called("export-diagnostics") {
+				t.Fatalf("%s click: %v", phase, err)
+			}
+			snapshot(t, card, "diagnostics-"+string(locale)+"-"+string(phase))
 		}
 	}
 }

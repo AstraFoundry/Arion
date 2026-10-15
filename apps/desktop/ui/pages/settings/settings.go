@@ -3,6 +3,7 @@
 package settings
 
 import (
+	"arion.local/desktop/ui/features/diagnostics"
 	"arion.local/desktop/ui/features/holdkey"
 	"arion.local/desktop/ui/features/inputmode"
 	"arion.local/desktop/ui/features/microphone"
@@ -247,6 +248,7 @@ func (p *Page) section(c *ui.Context, store runtime.Store, tokens theme.Tokens) 
 			})
 		})
 		update.Card(c, store, tokens)
+		diagnostics.Card(c, store, tokens)
 		kit.Group(c, tokens, messages.Text(copy.NavPrivacy), func() { privacy(c, messages, tokens) })
 		aboutLinks(c, messages, tokens)
 	}

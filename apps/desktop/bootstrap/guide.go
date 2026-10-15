@@ -1,7 +1,6 @@
 package bootstrap
 
 import (
-	"log"
 	"time"
 
 	uiapp "arion.local/desktop/ui/app"
@@ -64,7 +63,7 @@ func (a *App) openGuide(pane arion.GuidePane) bool {
 	}
 	drag, err := transfer.FileData(app)
 	if err != nil {
-		log.Printf("consent guide unavailable: %v", err)
+		a.record("consent_guide", err)
 		return false
 	}
 	if a.guide != nil && a.guide.pane != pane {

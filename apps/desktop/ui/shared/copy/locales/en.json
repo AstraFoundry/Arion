@@ -364,5 +364,12 @@
   "AccErrLoopback": "Arion couldn't receive the sign-in from your browser. Try again.",
   "AccErrGeneric": "Something went wrong with your AstraFoundry account.",
   "AccReconnect": "Reconnect",
-  "AccStoredDetail": "You signed in on this device before. Reconnect to use that account again."
+  "AccStoredDetail": "You signed in on this device before. Reconnect to use that account again.",
+  "DiagnosticsTitle": "Diagnostic logs",
+  "DiagnosticsDetail": "Local events and timings only. No audio, text or personal data.",
+  "DiagnosticsExport": "Export logs…",
+  "DiagnosticsExporting": "Exporting…",
+  "DiagnosticsSaved": "Logs exported. The ZIP is ready to inspect and share.",
+  "DiagnosticsFailed": "Couldn’t export logs. Check the save location or restart Arion and retry.",
+  "DiagnosticsArchive": "ZIP archive"
 }

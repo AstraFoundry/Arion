@@ -20,6 +20,7 @@ import (
 // The IME adapters serve system_ime sessions: the input method owns the
 // marked-text range, receives every draft and commits the reviewed text.
 type Dependencies struct {
+	Diagnostics ports.Diagnostics
 	Audio       ports.AudioCapture
 	Recognizers ports.RecognizerFactory
 	Finalizer   ports.Finalizer
@@ -263,7 +264,9 @@ func (c *Coordinator) prepare(r *run, needTarget bool) {
 			c.failDetail(r, domain.CodeTargetUnsupported, "input mode unavailable")
 			return
 		}
+		started := time.Now()
 		target, err := provider.Capture(r.ctx, r.identity)
+		c.diagnostic(r, ports.DiagnosticTarget, started, err)
 		if err != nil {
 			c.failErr(r, err, domain.CodePermissionDenied)
 			return
@@ -283,12 +286,15 @@ func (c *Coordinator) prepare(r *run, needTarget bool) {
 		l.policy.Scene = string(domain.DecideScene(hints, l.policy.SceneOverrides).Scene)
 	}
 	c.startContext(r)
+	started := time.Now()
 	recognizer, err := c.deps.Recognizers.NewRecognizer(r.ctx, r.identity)
+	c.diagnostic(r, ports.DiagnosticRecognizer, started, err)
 	if err != nil {
 		c.failErr(r, err, domain.CodeModelMissing)
 		return
 	}
 	r.recognizer = recognizer
+	started = time.Now()
 	stream, err := c.deps.Audio.Start(r.ctx, r.identity, func(frame contracts.Frame) {
 		if r.overflow.Load() {
 			return
@@ -302,6 +308,7 @@ func (c *Coordinator) prepare(r *run, needTarget bool) {
 			}
 		}
 	})
+	c.diagnostic(r, ports.DiagnosticCapture, started, err)
 	if err != nil {
 		_ = recognizer.Close()
 		c.failErr(r, err, domain.CodeDeviceUnavailable)
@@ -512,7 +519,9 @@ func (c *Coordinator) finalize(r *run) {
 	}
 	raw := draft.Text
 	if c.deps.Finalizer != nil && len(r.samples) > 0 {
+		started := time.Now()
 		second, err := c.deps.Finalizer.Finalize(r.ctx, ports.FinalizeRequest{Identity: r.identity, SampleRate: r.sampleRate, Samples: r.samples, Draft: raw})
+		c.diagnostic(r, ports.DiagnosticFinalize, started, err)
 		if err != nil {
 			c.failErr(r, err, domain.CodeModelUnsupported)
 			return
@@ -599,8 +608,10 @@ func (c *Coordinator) commit(r *run, revision uint64, text string) {
 	c.emitState(r, domain.Committing)
 	_, input := c.targets(r)
 	follower := c.follower(r, input)
+	started := time.Now()
 	result, err := input.Commit(context.Background(), contracts.CommitRequest{
 		Identity: r.identity, Target: r.target.Target, SourceRevision: revision, Text: text})
+	c.diagnostic(r, ports.DiagnosticCommit, started, err)
 	if err != nil {
 		result = contracts.CommitResult{Identity: r.identity, Outcome: contracts.NotApplied, Failure: codeOr(err, domain.CodeTargetUnsupported)}
 	}

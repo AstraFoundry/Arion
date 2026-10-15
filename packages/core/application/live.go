@@ -130,6 +130,9 @@ func (c *Coordinator) queueClosed(r *run, draft contracts.Draft) bool {
 		c.mu.Unlock()
 		l.overflow = true
 	}
+	if c.deps.Diagnostics != nil {
+		c.deps.Diagnostics.Observe(ports.Diagnostic{Identity: r.identity, Stage: ports.DiagnosticSegmentQueue, QueueDepth: len(l.units), QueueOverflow: l.overflow})
+	}
 	return true
 }
 
@@ -226,7 +229,10 @@ func (c *Coordinator) refine(r *run, u unit) (string, error) {
 	if !c.opts.SegmentFinalize || c.deps.Finalizer == nil || len(u.samples) == 0 || u.text == "" {
 		return u.text, nil
 	}
-	return c.deps.Finalizer.Finalize(r.ctx, ports.FinalizeRequest{Identity: r.identity, SampleRate: r.sampleRate, Samples: u.samples, Draft: u.text})
+	started := time.Now()
+	text, err := c.deps.Finalizer.Finalize(r.ctx, ports.FinalizeRequest{Identity: r.identity, SampleRate: r.sampleRate, Samples: u.samples, Draft: u.text})
+	c.diagnostic(r, ports.DiagnosticFinalize, started, err)
+	return text, err
 }
 
 func (c *Coordinator) correct(raw string) string {
@@ -251,8 +257,10 @@ func (c *Coordinator) preview(r *run, stable string) {
 	c.mu.Unlock()
 	// Previews use context once it is read and never wait for it.
 	rc := r.contextFor(0)
+	started := time.Now()
 	result, err := c.deps.Rewriter.Rewrite(ctx, ports.RewriteRequest{Identity: r.identity, Text: stable,
 		Scene: string(domain.ModelScene(domain.Scene(l.policy.Scene), stable)), Terms: withContextTerms(l.policy.terms(stable), rc, stable), Live: true})
+	c.diagnostic(r, ports.DiagnosticPreview, started, err)
 	c.mu.Lock()
 	l.cancelPreview = nil
 	c.mu.Unlock()
@@ -260,7 +268,11 @@ func (c *Coordinator) preview(r *run, stable string) {
 		return
 	}
 	text := domain.AlignLiveEnding(stable, result.Text)
-	if domain.ValidateRewrite(domain.RewriteCheck{Source: stable, Candidate: text, Truncated: result.Truncated, Terms: l.policy.terms(stable), Context: rc}) != domain.RewriteAccepted {
+	verdict := domain.ValidateRewrite(domain.RewriteCheck{Source: stable, Candidate: text, Truncated: result.Truncated, Terms: l.policy.terms(stable), Context: rc})
+	if c.deps.Diagnostics != nil {
+		c.deps.Diagnostics.Observe(ports.Diagnostic{Identity: r.identity, Stage: ports.DiagnosticValidation, Verdict: verdict})
+	}
+	if verdict != domain.RewriteAccepted {
 		return
 	}
 	c.mu.Lock()
@@ -304,7 +316,9 @@ func (c *Coordinator) finalizeLive(r *run) {
 		c.mu.Lock()
 		streamed := domain.JoinText(append(append([]string(nil), l.refined...), rest.text)...)
 		c.mu.Unlock()
+		started := time.Now()
 		raw, err = c.deps.Finalizer.Finalize(r.ctx, ports.FinalizeRequest{Identity: r.identity, SampleRate: r.sampleRate, Samples: r.samples, Draft: streamed})
+		c.diagnostic(r, ports.DiagnosticFinalize, started, err)
 	} else {
 		var last string
 		last, err = c.refine(r, rest)
@@ -329,8 +343,10 @@ func (c *Coordinator) rewriteFinal(r *run, source string, policy RewritePolicy) 
 	ctx, cancel := context.WithTimeout(r.ctx, policy.Timeout)
 	defer cancel()
 	rc := r.contextFor(contextWait)
+	started := time.Now()
 	result, err := c.deps.Rewriter.Rewrite(ctx, ports.RewriteRequest{Identity: r.identity, Text: source,
 		Scene: string(domain.ModelScene(domain.Scene(policy.Scene), source)), Terms: withContextTerms(policy.terms(source), rc, source)})
+	c.diagnostic(r, ports.DiagnosticRewrite, started, err)
 	switch {
 	case r.ctx.Err() != nil:
 		return "", "", false

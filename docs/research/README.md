@@ -21,3 +21,5 @@ Research separates **observed shipped artifacts**, **static inferences**, **vend
 - [Evidence](evidence/README.md) — sanitized artifact identity and provenance.
 
 Competitors provide workflow evidence, not reusable implementations or approved models. Do not copy packaged code, private endpoints, keys, audio or personal databases into Arion. Local expanded analysis files stay in ignored `.workspace/research/`.
+
+- [Competitor diagnostics](competitor-diagnostics.md) — recorded Typeless, Doubao and Chatterfly stage evidence and Arion's content-free logging boundaries.

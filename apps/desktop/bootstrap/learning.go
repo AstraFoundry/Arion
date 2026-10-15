@@ -1,11 +1,11 @@
 package bootstrap
 
 import (
-	"log"
 	"time"
 
 	"arion.local/core/application"
 	"arion.local/core/domain"
+	"arion.local/desktop/infrastructure/diagnostics"
 	"arion.local/desktop/infrastructure/vocabulary"
 	"arion.local/desktop/ui/entities/dictation"
 	arion "arion.local/desktop/ui/shared/runtime"
@@ -33,8 +33,7 @@ func (a *App) memoryStore() *vocabulary.Store {
 // learnEdit persists the corrections of one tracked edit off the main
 // thread and shows the newest learned entry. Logs carry no text (PRV-05).
 func (a *App) learnEdit(report application.EditReport) {
-	log.Printf("edit learning settlement=%s verdict=%s pairs=%d reads=%d failures=%d",
-		report.Settlement, report.Outcome.Verdict, len(report.Outcome.Pairs), report.Reads, report.Failures)
+	a.recordEntry(diagnostics.Entry{Event: "edit_learning", Reason: string(report.Settlement), Outcome: string(report.Outcome.Verdict), Count: len(report.Outcome.Pairs), Reads: report.Reads, Failures: report.Failures})
 	if report.Outcome.Verdict != domain.EditLearned || !a.learning() {
 		return
 	}
@@ -49,7 +48,7 @@ func (a *App) learnEdit(report application.EditReport) {
 		go func() {
 			results, err := store.Learn(pairs, time.Now())
 			if err != nil {
-				log.Printf("edit learning not saved: %v", err)
+				a.record("vocabulary_save", err)
 				return
 			}
 			a.post(func() {
@@ -70,7 +69,7 @@ func (a *App) learnEdit(report application.EditReport) {
 func (a *App) recalled(fired []domain.Replacement) {
 	if store := a.memoryStore(); store != nil {
 		if err := store.Recall(fired, time.Now()); err != nil {
-			log.Printf("vocabulary recall not counted: %v", err)
+			a.record("vocabulary_recall", err)
 		}
 	}
 }

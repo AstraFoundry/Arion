@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"arion.local/desktop/bootstrap"
+	"arion.local/desktop/infrastructure/diagnostics"
 )
 
 func main() {
@@ -16,9 +17,9 @@ func main() {
 		SkipOnboarding: os.Getenv("ARION_E2E_CONTROL") != "",
 	})
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("application failed code=%s", diagnostics.Failure(err))
 	}
 	if err := app.Run(); err != nil {
-		log.Fatal(err)
+		log.Fatalf("application failed code=%s", diagnostics.Failure(err))
 	}
 }

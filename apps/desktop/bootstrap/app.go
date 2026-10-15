@@ -21,6 +21,7 @@ import (
 	"arion.local/core/domain/ports"
 	"arion.local/desktop/infrastructure/audio"
 	"arion.local/desktop/infrastructure/browser"
+	"arion.local/desktop/infrastructure/diagnostics"
 	"arion.local/desktop/infrastructure/keystore"
 	"arion.local/desktop/infrastructure/modelruntime"
 	"arion.local/desktop/infrastructure/netproxy"
@@ -62,13 +63,17 @@ type Options struct {
 
 // App owns the running desktop application.
 type App struct {
-	opts      Options
-	platform  Platform
-	prefStore settings.Store
-	catalog   models.Catalog
-	store     *provision.Store
-	manager   *modelruntime.Manager
-	rewriter  *rewriting.Service
+	repairedPreferences int
+	diagnostics         *diagnostics.Recorder
+	exports             *diagnosticExport
+	version             string
+	opts                Options
+	platform            Platform
+	prefStore           settings.Store
+	catalog             models.Catalog
+	store               *provision.Store
+	manager             *modelruntime.Manager
+	rewriter            *rewriting.Service
 	// history keeps recent dictations per place for rewrite context, in
 	// memory only.
 	history   *application.History
@@ -152,7 +157,7 @@ func New(opts Options) (*App, error) {
 		return nil, err
 	}
 	if len(repaired) > 0 {
-		log.Printf("preferences repaired fields=%v", repaired)
+		a.repairedPreferences = len(repaired)
 	}
 	a.prefs = prefs
 	a.store = provision.NewStore(filepath.Join(opts.DataDir, "models"))
@@ -194,7 +199,7 @@ func New(opts Options) (*App, error) {
 		targets = countingTargets{Targets: a.targets, h: a.harness}
 	}
 	a.edits = &application.EditTracker{Report: a.learnEdit}
-	deps := application.Dependencies{Audio: capture, Recognizers: a.manager, Finalizer: finalizer, Targets: targets, Input: targets,
+	deps := application.Dependencies{Diagnostics: a, Audio: capture, Recognizers: a.manager, Finalizer: finalizer, Targets: targets, Input: targets,
 		Rewriter: a.rewriter, History: a.history, Edits: a.edits, NewID: newID}
 	if a.ime != nil {
 		deps.IMETargets, deps.IMEInput, deps.Composition = a.ime, a.ime, a.ime
@@ -255,6 +260,7 @@ func (a *App) rewritePolicy() application.RewritePolicy {
 
 // Run starts the event loop; it returns when the app quits.
 func (a *App) Run() error {
+	defer a.closeDiagnostics()
 	if !mygo.App.RequestSingleInstanceLock() {
 		return errors.New("Arion is already running")
 	}
@@ -267,6 +273,7 @@ func (a *App) Run() error {
 func (a *App) Start() {
 	mygo.App.SetActivationPolicy(mygo.ActivationPolicyAccessory)
 	mygo.App.OnWindowAllClosed(func() {})
+	mygo.App.OnQuit(a.closeDiagnostics)
 	mygo.App.OnSecondInstance(func([]string, string) { a.openSettings() })
 	mygo.App.WhenReady(a.ready)
 }
@@ -306,13 +313,31 @@ func (a *App) Coordinator() *application.Coordinator { return a.core }
 
 func (a *App) ready() {
 	a.state.Version = mygo.App.Version()
+	a.version = a.state.Version
+	recorder, err := diagnostics.Open(filepath.Join(a.opts.DataDir, "logs"))
+	if err != nil {
+		a.state.Diagnostics.Phase = arion.DiagnosticsFailed
+		log.Print("diagnostics open failed code=IO_FAILED")
+	} else {
+		a.diagnostics = recorder
+		a.record("app_started", nil)
+		if a.repairedPreferences > 0 {
+			a.recordEntry(diagnostics.Entry{Event: "preferences_repaired", Count: a.repairedPreferences})
+		}
+	}
+	a.setupDiagnosticExport()
 	a.startCue, a.stopCue = cue(true), cue(false)
 	go a.drain()
+	a.core.Subscribe(func(e contracts.Event) {
+		if a.diagnostics != nil {
+			a.diagnostics.Session(e)
+		}
+	})
 	a.core.Subscribe(func(e contracts.Event) { a.post(func() { a.apply(e) }) })
 	if a.harness != nil {
 		a.core.Subscribe(a.harness.observe)
 		if err := a.harness.serve(a.opts.E2EControl); err != nil {
-			log.Printf("e2e control unavailable: %v", err)
+			a.record("e2e_listen", err)
 			mygo.App.Quit()
 			return
 		}
@@ -326,13 +351,13 @@ func (a *App) ready() {
 	a.state.InputMethod = arion.InputMethodUnsupported
 	if a.ime != nil {
 		if err := a.ime.Listen(); err != nil {
-			log.Printf("input method socket unavailable: %v", err)
+			a.record("ime_listen", err)
 		}
 		a.state.InputMethod = a.ime.State()
 	}
 	a.loadVocabulary(false)
 	if days, err := a.usage.Load(); err != nil {
-		log.Printf("usage unreadable: %v", err)
+		a.record("usage_load", err)
 	} else {
 		a.state.Usage = days
 	}
@@ -352,8 +377,8 @@ func (a *App) ready() {
 	go a.activate(a.state.Preferences.ModelOverride)
 	go a.pollPermissions()
 	go a.refreshDevicesAsync()
-	mygo.Power.OnSuspend(a.core.Cancel)
-	mygo.Power.OnLockScreen(a.core.Cancel)
+	mygo.Power.OnSuspend(func() { a.record("power_suspend", nil); a.core.Cancel() })
+	mygo.Power.OnLockScreen(func() { a.record("screen_locked", nil); a.core.Cancel() })
 	if !a.state.Preferences.OnboardingCompleted && !a.opts.SkipOnboarding {
 		a.openOnboarding()
 	}
@@ -410,7 +435,7 @@ func (a *App) apply(e contracts.Event) {
 	if u, ok := a.meter.Observe(e); ok {
 		a.state.Usage = a.state.Usage.Add(time.Now(), u)
 		if err := a.usage.Save(a.state.Usage); err != nil {
-			log.Printf("usage not saved: %v", err)
+			a.record("usage_save", err)
 		}
 	}
 	d := &a.state.Dictation
@@ -485,7 +510,7 @@ func (a *App) updateEscape() {
 		return
 	}
 	if active {
-		if err := mygo.GlobalShortcut.Register("Escape", a.core.Cancel); err == nil {
+		if err := mygo.GlobalShortcut.Register("Escape", func() { a.record("dictation_cancel", nil); a.core.Cancel() }); err == nil {
 			a.escapeActive = true
 		}
 		return
@@ -500,6 +525,7 @@ func (a *App) registerShortcut(accelerator string) error {
 		a.shortcutActive = false
 	}
 	err := mygo.GlobalShortcut.Register(accelerator, a.onShortcut)
+	a.record("shortcut_register", err)
 	if err == nil {
 		a.shortcutActive = true
 		a.state.Shortcut.Accelerator = accelerator
@@ -514,6 +540,7 @@ func (a *App) onShortcut() {
 		a.invalidate()
 		return
 	}
+	a.record("dictation_toggle", nil)
 	a.core.Toggle()
 }
 
@@ -524,6 +551,11 @@ func (a *App) refreshPermissions() bool {
 	changed := next != previous
 	if changed && next.Microphone == arion.ConsentGranted && previous.Microphone != arion.ConsentGranted {
 		go a.refreshDevicesAsync()
+	}
+	if changed {
+		for capability, value := range map[string]arion.Consent{"microphone": next.Microphone, "accessibility": next.Accessibility, "input_monitoring": next.InputMonitoring, "screen_recording": next.ScreenRecording} {
+			a.recordEntry(diagnostics.Entry{Event: "permissions_changed", Capability: capability, Outcome: string(value)})
+		}
 	}
 	a.state.Permissions = next
 	a.refreshHoldConsent(previous.InputMonitoring)
@@ -547,6 +579,7 @@ func (a *App) pollPermissions() {
 
 func (a *App) refreshDevicesAsync() {
 	devices, err := audio.Devices()
+	a.record("devices_list", err)
 	if err != nil {
 		return
 	}
@@ -602,12 +635,15 @@ func (a *App) activate(override string) {
 		}
 	})
 	if err := a.manager.Activate(contextBackground(), bundle); err != nil {
-		log.Printf("model activation failed bundle=%s code=%s", bundle.ID, domain.CodeOf(err))
+		a.record("model_activate", err)
 	}
 }
 
 func (a *App) applyModel(s modelruntime.Status) {
 	m := &a.state.Model
+	if string(m.State) != string(s.State) || string(m.Phase) != string(s.Phase) || m.Failure != s.Failure {
+		a.recordEntry(diagnostics.Entry{Event: "model_status", ModelID: s.Bundle, Outcome: string(s.State), Phase: string(s.Phase), Code: diagnostics.FailureCode(s.Failure)})
+	}
 	m.Done, m.Total, m.Failure = s.Done, s.Total, s.Failure
 	m.Phase = arion.ProvisionPhase(s.Phase)
 	switch s.State {
@@ -636,6 +672,9 @@ func (a *App) startPolish() {
 
 func (a *App) applyPolish(s rewriting.Status) {
 	p := &a.state.Polish
+	if string(p.State) != string(s.State) || string(p.Phase) != string(s.Phase) || p.Failure != s.Failure {
+		a.recordEntry(diagnostics.Entry{Event: "rewrite_status", ModelID: rewriting.DefaultModel, Outcome: string(s.State), Phase: string(s.Phase), Code: diagnostics.FailureCode(s.Failure)})
+	}
 	p.Phase, p.Done, p.Total, p.Failure = arion.ProvisionPhase(s.Phase), s.Done, s.Total, s.Failure
 	p.Installed, p.SizeBytes = s.Installed, s.SizeBytes
 	p.State = map[rewriting.State]arion.PolishState{rewriting.Unsupported: arion.PolishUnsupported, rewriting.Off: arion.PolishOff,
@@ -645,23 +684,29 @@ func (a *App) applyPolish(s rewriting.Status) {
 
 func (a *App) loadVocabulary(create bool) {
 	if a.vocab == nil {
-		if _, err := os.Stat(a.vocabPath); err != nil && !create {
-			return
+		if _, err := os.Stat(a.vocabPath); err != nil {
+			if !errors.Is(err, os.ErrNotExist) {
+				a.record("vocabulary_load", err)
+			}
+			if !create {
+				return
+			}
 		}
 		key, err := secrets.Key("Arion", "vocabulary-key")
 		if err != nil {
-			log.Printf("vocabulary key unavailable: %v", err)
+			a.record("vocabulary_key", err)
 			return
 		}
 		store, err := vocabulary.Open(a.vocabPath, key)
 		if err != nil {
+			a.record("vocabulary_load", err)
 			return
 		}
 		a.vocab = store
 	}
 	entries, err := a.vocab.List()
 	if err != nil {
-		log.Printf("vocabulary unreadable: %v", err)
+		a.record("vocabulary_load", err)
 		return
 	}
 	a.state.Vocabulary = a.state.Vocabulary[:0]
@@ -680,7 +725,7 @@ func (a *App) loadVocabulary(create bool) {
 
 func (a *App) savePreferences(prefs application.Preferences) {
 	if err := a.prefStore.Save(prefs); err != nil {
-		log.Printf("preferences not saved: %v", err)
+		a.record("preferences_save", err)
 	}
 	a.snapshot.Lock()
 	a.prefs = prefs

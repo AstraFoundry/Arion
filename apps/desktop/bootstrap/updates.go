@@ -3,7 +3,6 @@ package bootstrap
 import (
 	"context"
 	"errors"
-	"log"
 	"time"
 
 	arion "arion.local/desktop/ui/shared/runtime"
@@ -54,6 +53,7 @@ type updates struct {
 	post    func(func())
 	found   *release
 	attempt time.Time
+	record  func(string, error)
 }
 
 func newUpdates(source updateSource, state *arion.Update, post func(func())) *updates {
@@ -99,7 +99,9 @@ func (u *updates) checked(found *release, err error, previous arion.Update, manu
 		return
 	}
 	if err != nil {
-		log.Printf("update check failed manual=%v: %v", manual, err)
+		if u.record != nil {
+			u.record("update_check", err)
+		}
 		if !manual {
 			*u.state = previous
 			return
@@ -107,6 +109,9 @@ func (u *updates) checked(found *release, err error, previous arion.Update, manu
 		*u.state = arion.Update{Phase: arion.UpdateFailed, Failed: arion.UpdateStepCheck, Checked: previous.Checked,
 			Version: previous.Version, Notes: previous.Notes}
 		return
+	}
+	if u.record != nil {
+		u.record("update_check", nil)
 	}
 	u.found = found
 	*u.state = arion.Update{Phase: arion.UpdateCurrent, Checked: time.Now()}
@@ -133,9 +138,14 @@ func (u *updates) install() {
 		})
 		u.post(func() {
 			if err != nil {
-				log.Printf("update install failed version=%s: %v", found.Version, err)
+				if u.record != nil {
+					u.record("update_install", err)
+				}
 				u.state.Phase, u.state.Failed = arion.UpdateFailed, arion.UpdateStepInstall
 				return
+			}
+			if u.record != nil {
+				u.record("update_install", nil)
 			}
 			u.state.Phase = arion.UpdateReady
 		})
@@ -144,6 +154,7 @@ func (u *updates) install() {
 
 // scheduleUpdates runs automatic checks while the preference allows them.
 func (a *App) scheduleUpdates() {
+	a.updates.record = a.record
 	tick := func() {
 		if a.state.Preferences.CheckUpdates && a.updates.due(time.Now()) {
 			a.updates.check(time.Now(), false)

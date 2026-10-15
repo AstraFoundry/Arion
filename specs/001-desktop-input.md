@@ -15,6 +15,8 @@
 - DSK-11: On macOS, a packaged Arion asking for Accessibility or Input Monitoring MUST open that privacy pane in System Settings with a nonactivating guide under its window that offers Arion's app to drag into the list. The guide follows the window, shows only while System Settings is frontmost, and closes on consent (returning focus to the Arion window that asked), on its close button, or when System Settings quits. Microphone keeps the system prompt; an unbundled build keeps the system prompts. The guide never changes consent itself.
 - DSK-12: Settings › Microphone MUST offer a stepped software input gain from −6 dB to +12 dB in 3 dB steps, 0 dB by default, labeling each step with the speaking distance it suits (15 cm at −6 dB to 120 cm at +12 dB; speech level falls 6 dB per doubling of distance from a 30 cm reference). Gain scales only Arion's capture, clipping at full scale, applies to the live meter and to dictation without reopening the device, persists, and never changes the OS input volume.
 
+- DSK-13: Settings › About MUST offer a user-triggered local diagnostic ZIP export through the native save dialog, with progress and explicit failure feedback in both interface languages. Cancellation creates no export; success reveals the file for inspection. No automatic upload is permitted.
+
 ## Acceptance
 
 | ID | Scenario and required result |
@@ -31,6 +33,7 @@
 | DSK-A10 | Choose a hold key → hold, speak, release → final commit exactly once; tap → dictation continues until the next press; hold key + another key → session cancelled, nothing inserted; missing Input Monitoring on macOS → explicit status and a grant action, toggle shortcut unaffected |
 | DSK-A11 | macOS, packaged app, consent missing → grant Accessibility (or Input Monitoring) → pane opens with the guide under it → switch apps: guide hides; return: it reappears → drag Arion into the list and switch it on → guide closes and the asking window is frontmost; quitting System Settings closes the guide |
 | DSK-A12 | Open Settings › Microphone → every gain step shows its distance under its tick → drag to +12 dB → the meter responds louder at once, the next dictation captures at that gain → restart retains it; a stored gain outside the steps is repaired to 0 dB and reported |
+| DSK-A14 | Settings › About → export logs → cancel: no ZIP; retry → choose a writable destination: a locally inspectable ZIP appears; repeated clicks during export cannot open duplicate dialogs; a save/read failure reports failure without replacing an existing file |
 | DSK-A13 | macOS editor in a separate app enters native fullscreen → start dictation → overlay joins that Space and appears above the editor in the window server; showing it again keeps the editor frontmost and its text view focused |
 
 Compatibility must be recorded per app/version/input mode on both OSes: native editor, browser editable field, Electron editor, office document, terminal, noneditable field and elevated Windows app. These are test categories, not established support claims. Never auto-send Enter or execute a terminal command.
