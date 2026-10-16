@@ -13,6 +13,7 @@ Research separates **observed shipped artifacts**, **static inferences**, **vend
 - [Competitor disfluency handling](competitor-disfluency.md) — Doubao decoder span annotations, organization request construction, Chatterfly short-input/result policies and language limits.
 - [Disfluency implementation benchmark](../../benchmarks/results/disfluency-alignment-v2/README.md) — local deletion spans, independent organization, matched native workers and explicit remaining failures.
 - [Rewrite reliability](rewrite-reliability.md) — Doubao/Chatterfly alignment, reproduced source-delivery defects, adopted fixes and remaining generation failures.
+- [Competitor cloud synchronization](competitor-cloud-sync.md) — account vocabulary, selected preferences, optional history, clipboard transfer and cloud-processing boundaries.
 - [Learning from corrections](edit-learning.md) — how Typeless, Doubao and Chatterfly detect a user's fix of dictated text, store it and recall it.
 - [ONNX rewrite models](onnx-rewrite-models.md) — pinned Hugging Face candidates, native runtime compatibility and load/parity gates.
 - [Qwen pipeline diagnostics](qwen-pipeline-diagnostics.md) — actual development inference, scope boundaries and repeatable flows.

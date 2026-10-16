@@ -1,0 +1,1012 @@
+{
+  "schema_version": 1,
+  "scope": "Selected macOS shipped artifacts; static account synchronization surfaces compared with cloud processing. No target execution, private account data or traffic capture.",
+  "evidence_types": {
+    "REA": "Only actual retained REA Evidence IDs, reused for artifact identity and original partial graph coverage.",
+    "TLS-* and CF-sync-*": "Ordinary inert source or byte-validated disassembly observations; not REA execution evidence.",
+    "CS-V-*": "Vendor statements retrieved from official product sources; not verified server behavior.",
+    "CS-DB-static": "Ordinary byte-verified ARM64 disassembly and Swift string decoding; not new REA execution evidence."
+  },
+  "typeless": {
+    "schema_version": 1,
+    "scope": "Typeless cloud sync; packaged code static inspection and official vendor statements. No app execution, private user data, credentials or live traffic.",
+    "identity": {
+      "app": "/Applications/Typeless.app",
+      "version": "2.8.1",
+      "build": "2.8.1.130",
+      "bundle_id": "now.typeless.desktop",
+      "asar_sha256": "eb9bcc842478b12a7488d90778ad6b08e6788c8fa5e875782ec2af0387c6c80b"
+    },
+    "reused_rea": {
+      "complete_record": ".workspace/research/typeless-rea.json",
+      "parent_evidence_id": "ev_17708dd83c71fab9ced0d18a4df9036551e5e4aca46326f121f929f1cbaa2ccb",
+      "summary_evidence_id": "ev_154207074f88942945c0fffd0602428fae26bd75741a0f17c0b74a19d2f8113f",
+      "scope": "Reused artifact identity/summary; focused observations below are ordinary static source observations, not new REA output.",
+      "coverage": "partial graph, 3 parse failures; native companion digest contradictions observed-untrusted, documented in docs/research/evidence/typeless-static.json"
+    },
+    "observations": [
+      {
+        "id": "TLS-01",
+        "label": "History push payload field allowlist",
+        "evidence_type": "ordinary static source observation; not a REA execution/callgraph observation",
+        "member": "dist/main/index.js",
+        "member_sha256": "7b87e1578597b6fce6b6589a2f8aa18496e9513f0e74d0b8b26186a641b59ade",
+        "original_byte_range": [
+          245265,
+          246073
+        ],
+        "derived_char_range": [
+          231482,
+          232220
+        ]
+      },
+      {
+        "id": "TLS-02",
+        "label": "History selected text promoted into mode_meta",
+        "evidence_type": "ordinary static source observation; not a REA execution/callgraph observation",
+        "member": "dist/main/index.js",
+        "member_sha256": "7b87e1578597b6fce6b6589a2f8aa18496e9513f0e74d0b8b26186a641b59ade",
+        "original_byte_range": [
+          203312,
+          203937
+        ],
+        "derived_char_range": [
+          191253,
+          191897
+        ]
+      },
+      {
+        "id": "TLS-03",
+        "label": "History sync defaults are unknown until remote state",
+        "evidence_type": "ordinary static source observation; not a REA execution/callgraph observation",
+        "member": "dist/main/index.js",
+        "member_sha256": "7b87e1578597b6fce6b6589a2f8aa18496e9513f0e74d0b8b26186a641b59ade",
+        "original_byte_range": [
+          223458,
+          224307
+        ],
+        "derived_char_range": [
+          210740,
+          211635
+        ]
+      },
+      {
+        "id": "TLS-04",
+        "label": "History sync remote enabled and retention settings",
+        "evidence_type": "ordinary static source observation; not a REA execution/callgraph observation",
+        "member": "dist/main/index.js",
+        "member_sha256": "7b87e1578597b6fce6b6589a2f8aa18496e9513f0e74d0b8b26186a641b59ade",
+        "original_byte_range": [
+          226525,
+          227667
+        ],
+        "derived_char_range": [
+          213723,
+          214805
+        ]
+      },
+      {
+        "id": "TLS-05",
+        "label": "History disableSync posts enabled false; no local server implementation",
+        "evidence_type": "ordinary static source observation; not a REA execution/callgraph observation",
+        "member": "dist/main/index.js",
+        "member_sha256": "7b87e1578597b6fce6b6589a2f8aa18496e9513f0e74d0b8b26186a641b59ade",
+        "original_byte_range": [
+          265387,
+          265844
+        ],
+        "derived_char_range": [
+          250759,
+          251249
+        ]
+      },
+      {
+        "id": "TLS-06",
+        "label": "Individual local synced deletion requires accepted tombstone",
+        "evidence_type": "ordinary static source observation; not a REA execution/callgraph observation",
+        "member": "dist/main/index.js",
+        "member_sha256": "7b87e1578597b6fce6b6589a2f8aa18496e9513f0e74d0b8b26186a641b59ade",
+        "original_byte_range": [
+          221696,
+          222782
+        ],
+        "derived_char_range": [
+          209015,
+          210051
+        ]
+      },
+      {
+        "id": "TLS-07",
+        "label": "Cloud tombstones delete local record and local audio",
+        "evidence_type": "ordinary static source observation; not a REA execution/callgraph observation",
+        "member": "dist/main/index.js",
+        "member_sha256": "7b87e1578597b6fce6b6589a2f8aa18496e9513f0e74d0b8b26186a641b59ade",
+        "original_byte_range": [
+          261261,
+          262253
+        ],
+        "derived_char_range": [
+          246736,
+          247648
+        ]
+      },
+      {
+        "id": "TLS-08",
+        "label": "Cloud wipe request and remote state normalization",
+        "evidence_type": "ordinary static source observation; not a REA execution/callgraph observation",
+        "member": "dist/main/index.js",
+        "member_sha256": "7b87e1578597b6fce6b6589a2f8aa18496e9513f0e74d0b8b26186a641b59ade",
+        "original_byte_range": [
+          262253,
+          263294
+        ],
+        "derived_char_range": [
+          247648,
+          248622
+        ]
+      },
+      {
+        "id": "TLS-09",
+        "label": "Local app settings schema",
+        "evidence_type": "ordinary static source observation; not a REA execution/callgraph observation",
+        "member": "dist/main/index.js",
+        "member_sha256": "7b87e1578597b6fce6b6589a2f8aa18496e9513f0e74d0b8b26186a641b59ade",
+        "original_byte_range": [
+          130179,
+          131432
+        ],
+        "derived_char_range": [
+          121324,
+          122575
+        ]
+      },
+      {
+        "id": "TLS-10",
+        "label": "Personalization edit-report content submitted to server",
+        "evidence_type": "ordinary static source observation; not a REA execution/callgraph observation",
+        "member": "dist/main/index.js",
+        "member_sha256": "7b87e1578597b6fce6b6589a2f8aa18496e9513f0e74d0b8b26186a641b59ade",
+        "original_byte_range": [
+          546895,
+          548735
+        ],
+        "derived_char_range": [
+          520831,
+          522653
+        ]
+      },
+      {
+        "id": "TLS-11",
+        "label": "Dictionary account API CRUD and bulk import",
+        "evidence_type": "ordinary static source observation; not a REA execution/callgraph observation",
+        "member": "dist/renderer/static/js/UfR9-a2Z.js",
+        "member_sha256": "efba7d2db84c1da476b521c84cd38446d594ffd4f0d8e59cac85e7ec7d6ae49a",
+        "original_byte_range": [
+          231200,
+          240650
+        ],
+        "derived_char_range": null
+      },
+      {
+        "id": "TLS-12",
+        "label": "Account settings personalize style toggle",
+        "evidence_type": "ordinary static source observation; not a REA execution/callgraph observation",
+        "member": "dist/renderer/static/js/UfR9-a2Z.js",
+        "member_sha256": "efba7d2db84c1da476b521c84cd38446d594ffd4f0d8e59cac85e7ec7d6ae49a",
+        "original_byte_range": [
+          201730,
+          202120
+        ],
+        "derived_char_range": null
+      },
+      {
+        "id": "TLS-13",
+        "label": "Account language and translation target settings",
+        "evidence_type": "ordinary static source observation; not a REA execution/callgraph observation",
+        "member": "dist/renderer/static/js/UfR9-a2Z.js",
+        "member_sha256": "efba7d2db84c1da476b521c84cd38446d594ffd4f0d8e59cac85e7ec7d6ae49a",
+        "original_byte_range": [
+          220300,
+          220740
+        ],
+        "derived_char_range": null
+      },
+      {
+        "id": "TLS-14",
+        "label": "Cloud dictation output language map",
+        "evidence_type": "ordinary static source observation; not a REA execution/callgraph observation",
+        "member": "dist/renderer/static/js/UfR9-a2Z.js",
+        "member_sha256": "efba7d2db84c1da476b521c84cd38446d594ffd4f0d8e59cac85e7ec7d6ae49a",
+        "original_byte_range": [
+          240675,
+          241045
+        ],
+        "derived_char_range": null
+      },
+      {
+        "id": "TLS-15",
+        "label": "History push API usage",
+        "evidence_type": "ordinary static source observation; not a REA execution/callgraph observation",
+        "member": "dist/main/index.js",
+        "member_sha256": "7b87e1578597b6fce6b6589a2f8aa18496e9513f0e74d0b8b26186a641b59ade",
+        "original_byte_range": [
+          241631,
+          243095
+        ],
+        "derived_char_range": [
+          228000,
+          229400
+        ]
+      }
+    ],
+    "findings": [
+      {
+        "id": "TLS-F01",
+        "status": "static code established; official feature confirmed",
+        "category": "cross-device history",
+        "detail": "Optional history sync pushes explicit record fields including refined_text and mode_meta plus identity/status/timestamps/duration/platform/version/concurrency metadata. mode_meta may carry selected_text and Ask AI results. Audio bytes, local path, audio_context and microphone data are absent from this push shape. Do not generalize that absence to all network processing.",
+        "observations": [
+          "TLS-01",
+          "TLS-02",
+          "TLS-15"
+        ]
+      },
+      {
+        "id": "TLS-F02",
+        "status": "static cloud backing established; cross-device reuse inferred",
+        "category": "dictionary",
+        "detail": "Manual and auto-added dictionary terms are fetched/mutated through authenticated account API; bulk CSV import submits word content. The user guide describes auto/manual entries but does not independently promise synchronization latency.",
+        "observations": [
+          "TLS-10",
+          "TLS-11"
+        ]
+      },
+      {
+        "id": "TLS-F03",
+        "status": "static remote persistence APIs established; exact cross-device refresh unknown",
+        "category": "account preferences",
+        "detail": "Cloud API stores personal_auto_style_on, user_info.locale, translation_settings.target_languages and dictation_settings.output_language_map; history enabled/retention_seconds are separate remote controls. This does not establish every setting syncs.",
+        "observations": [
+          "TLS-04",
+          "TLS-12",
+          "TLS-13",
+          "TLS-14"
+        ]
+      },
+      {
+        "id": "TLS-F04",
+        "status": "static upload established; retained learned pattern vendor statement",
+        "category": "personalization processing",
+        "detail": "Edits submit encrypted user_traits log containing inserted output, original/edited input-box content, active app, device environment, and mode; server may return auto_added_dictionary term and ID. Vendor says only abstract style patterns learned/stored, not specific content; actual server retention and cross-device pattern use unverified.",
+        "observations": [
+          "TLS-10"
+        ]
+      },
+      {
+        "id": "TLS-F05",
+        "status": "static local storage established; focused negative search only",
+        "category": "device settings",
+        "detail": "Shortcuts, microphone selection, startup, dock/flow-bar visibility, sounds, appearance and local historyDurationSeconds are in local app-settings store. No general account upload for them found in focused pass; not proof of absence. Remote cloud retention_seconds is separate.",
+        "observations": [
+          "TLS-09"
+        ]
+      },
+      {
+        "id": "TLS-F06",
+        "status": "static policy flow established; server deletion vendor statement",
+        "category": "controls",
+        "detail": "enabled initial state is null; refresh retrieves remote status, no default established. Disable requests enabled:false; official says cloud text deleted. Individual synced deletion pushes tombstones while enabled, pull applies tombstones including local audio deletion. Wipe calls /transcription_history/wipe. Server erasure not observed.",
+        "observations": [
+          "TLS-03",
+          "TLS-04",
+          "TLS-05",
+          "TLS-06",
+          "TLS-07",
+          "TLS-08"
+        ]
+      }
+    ],
+    "official_sources": [
+      {
+        "url": "https://www.typeless.com/data-controls",
+        "observed_update": "Oct 13, 2026",
+        "supports": "Optional history cloud sync text, disable deletes cloud text; audio not retained; anonymous word statistics; cloud transcription; context processing and feedback exceptions."
+      },
+      {
+        "url": "https://www.typeless.com/privacy",
+        "observed_update": "Oct 13, 2026",
+        "supports": "Cloud audio/context real-time processing and deletion; optional history text retention; account/billing retention; diagnostic feedback exceptions."
+      },
+      {
+        "url": "https://www.typeless.com/help/quickstart/personalization",
+        "supports": "Style learning claims abstract patterns retained, no specific messages; toggle to stop learning."
+      },
+      {
+        "url": "https://www.typeless.com/help/quickstart/history-and-dictionary",
+        "supports": "Dictionary manual/auto entries, correction auto-add, CSV import; history guide says only on device, conflicts with current data-controls and installed sync code."
+      }
+    ],
+    "unknowns": [
+      "Actual requests or server retention/deletion/encryption enforcement were not observed.",
+      "No cross-device two-account/device experiment; dictionary/preferences synchronization is inferred from cloud-backed account APIs.",
+      "No installed iOS/Windows binary examined.",
+      "Default history enabled state not proven; client initialized null and depends on server.",
+      "Learned style schema, weights, storage format, retention and multi-device sharing remain unverified.",
+      "No broad guarantee all local preferences remain device-only; focused pass found explicit local storage."
+    ]
+  },
+  "chatterfly": {
+    "scope": "Chatterfly 1.0.6.13398 macOS shipped package only; no target execution, private databases, account state or traffic accessed",
+    "identity": {
+      "installer": {
+        "name": "Chatterfly_V1.0.6.13398.app",
+        "directoryManifestSha256": "0f3fe308c62824816f38f91d10baf50de46c52213d17b7a3443ec99d179366bd",
+        "reaEvidence": "ev_e86f7a8a483ab5d40506a8aadc00d715761d84afe030d451ac85c0ba46f38d70"
+      },
+      "archive": {
+        "member": "Contents/Resources/ChatterFly.zip",
+        "sha256": "3392e95b4d2d6aac9b09c3d28490ad15798c2075be7b2eb2c1e4b278960f9563",
+        "reaEvidence": "ev_d7b75b5f00fcbb8469fe6c48e8050a0c2699c71754343e3c858052dbc139272d"
+      },
+      "main": {
+        "member": "Chatterfly.app/Contents/MacOS/Chatterfly",
+        "size": 112951952,
+        "sha256": "1063fbb5b0e18dc323ec4a14487456795b359b9330cfeee14b78454a00791e50",
+        "reaEvidence": "ev_357f2213ffae36932ca3c1c489824db2b8487a33c049894dba6808dca0e0d91e"
+      },
+      "derivedArm64": {
+        "sha256": "2ea312f6324accd6194e6c612608870321bc62c286aa2cdbccf8288ae19a2433",
+        "size": 54198928,
+        "sourceSliceOffset": 58753024,
+        "method": "system lipo -thin arm64; byte equality to original slice independently checked"
+      },
+      "plist": {
+        "member": "Chatterfly.app/Contents/Info.plist",
+        "sha256": "f88657237cee0c241b572b9a2e6df2c231f27a70258143175be005d0705fe20c",
+        "bundleIdentifier": "com.tencent.inputmethod.chatterfly",
+        "version": "1.0.6.13398",
+        "connectionName": "Yuanbao_InputMethod_Connection",
+        "controllerClass": "YuanbaoInputController"
+      }
+    },
+    "preference": {
+      "binary": ".workspace/research/chatterfly/extracted/Chatterfly.app/Contents/ChatterflyPreference.app/Contents/MacOS/ChatterflyPreference",
+      "sha256": "4fd9473c8637b6820654b54ab0d05ff79d069d0ca29d2c7bf5fd55094047f3dd",
+      "arm64sha256": "a47ca563f751dacb869c3b92bb80f2a76ffa4a866c3250b3aa3f59d0aeea7748",
+      "type": "ordinary-static-arm64-instructions",
+      "records": [
+        {
+          "id": "CF-sync-pref-term-0",
+          "symbol": "-[YBDictViewController ybdasRequestTermListPage:completionHandler:]",
+          "entry": "0x1001b1e14",
+          "arm64FileOffset": 1777172,
+          "end": "0x1001b2154",
+          "functionBytesSha256": "12e632cb053a646b4798ef91d15d672cae55924323e437974f7dd2dd08612211",
+          "instructionsValidated": 208,
+          "assembly": ".workspace/research/cloud-sync/chatterfly/asm-preference-term-0.txt"
+        },
+        {
+          "id": "CF-sync-pref-term-1",
+          "symbol": "-[YBDictViewController ybdasCreateTerm:completion:]",
+          "entry": "0x1001b32a4",
+          "arm64FileOffset": 1782436,
+          "end": "0x1001b35d4",
+          "functionBytesSha256": "c555a7660c718cbe5131403c716995d402e4d04c09d21f6a1367db727a3ed265",
+          "instructionsValidated": 204,
+          "assembly": ".workspace/research/cloud-sync/chatterfly/asm-preference-term-1.txt"
+        },
+        {
+          "id": "CF-sync-pref-term-2",
+          "symbol": "-[YBDictViewController ybdasUpdateTerm:text:completion:]",
+          "entry": "0x1001b4a8c",
+          "arm64FileOffset": 1788556,
+          "end": "0x1001b4dd4",
+          "functionBytesSha256": "132bc5e243fd52f3216d51076b6b3b9507563cae3b25a88729b66d637862a038",
+          "instructionsValidated": 210,
+          "assembly": ".workspace/research/cloud-sync/chatterfly/asm-preference-term-2.txt"
+        },
+        {
+          "id": "CF-sync-pref-term-3",
+          "symbol": "-[YBDictViewController ybdasDeleteTerm:completion:]",
+          "entry": "0x1001b50e0",
+          "arm64FileOffset": 1790176,
+          "end": "0x1001b5424",
+          "functionBytesSha256": "93cf10882797e044aabf6bc07e4fca337c9b543f935e89b719e3404f3ea13bce",
+          "instructionsValidated": 209,
+          "assembly": ".workspace/research/cloud-sync/chatterfly/asm-preference-term-3.txt"
+        },
+        {
+          "id": "CF-sync-pref-term-4",
+          "symbol": "___67-[YBDictViewController ybdasRequestTermListPage:completionHandler:]_block_invoke",
+          "entry": "0x1001b2154",
+          "arm64FileOffset": 1778004,
+          "end": "0x1001b21e0",
+          "functionBytesSha256": "9118b1b534a8c414128fb051f0076014762e033be99c1a0d7f5ba63a2e0d4645",
+          "instructionsValidated": 35,
+          "assembly": ".workspace/research/cloud-sync/chatterfly/asm-preference-term-4.txt"
+        },
+        {
+          "id": "CF-sync-pref-term-5",
+          "symbol": "___51-[YBDictViewController ybdasCreateTerm:completion:]_block_invoke",
+          "entry": "0x1001b35d4",
+          "arm64FileOffset": 1783252,
+          "end": "0x1001b398c",
+          "functionBytesSha256": "e6f4dead826413a7ffd0f04a4e5ff68af2eda89a96da0a3fa3899d37eba51b55",
+          "instructionsValidated": 238,
+          "assembly": ".workspace/research/cloud-sync/chatterfly/asm-preference-term-5.txt"
+        }
+      ]
+    },
+    "findings": [
+      {
+        "id": "CF-sync-typing-vocabulary",
+        "status": "answered-static",
+        "confidence": "high",
+        "conclusion": "Shipped product supports local/cloud user typing dictionary sync, manually and automatically. Preference copy says every four hours. Chatterfly-specific task enters only userDict sync, with download/unzip -> merge local -> upload zip path. Exact dictionary fields and other-device OS interoperability are not fully decoded.",
+        "sources": [
+          "CF-sync-sync-all-entry",
+          "CF-sync-yuanbao-sync",
+          "CF-sync-yuanbao-userdict",
+          "CF-sync-userdict-download",
+          "CF-sync-userdict-merge",
+          "CF-sync-userdict-upload",
+          "preference-copy.json"
+        ]
+      },
+      {
+        "id": "CF-sync-personal-terms",
+        "status": "answered-static",
+        "confidence": "high for account service-backed CRUD; medium for actual cross-device consistency",
+        "conclusion": "Personal vocabulary term UI lists/creates/updates/deletes account-authenticated terms through EW POST transport. Create JSON contains text; update contains term_id,text; delete contains term_ids; list uses page,page_size. Logical alias ybime.lexicon_term.http.local is not established as a public routable host or OS localhost. No cross-device trial was run.",
+        "sources": [
+          "CF-sync-pref-term-0",
+          "CF-sync-pref-term-1",
+          "CF-sync-pref-term-2",
+          "CF-sync-pref-term-3",
+          "CF-sync-pref-term-4"
+        ]
+      },
+      {
+        "id": "CF-sync-settings",
+        "status": "unresolved",
+        "confidence": "no active Chatterfly evidence",
+        "conclusion": "Inherited SGTaskSyncSetting zip/upload/download code exists, containing UserPreferences, skinInfo, scdInfo, FontStyle, symbolSubsitute, autoEngUserSet, hideInlineUserSet, cnUseEnSymAppsSet plist names. Do not report these as Chatterfly synced settings. syncAllUsrData chooses Sogou full-data task only for SogouInput; Chatterfly task directly starts userDict. Direct B/BL scan found no incoming call to syncYuanbao_downloadSetting; indirect dispatch not excluded.",
+        "sources": [
+          "CF-sync-sync-all-entry",
+          "CF-sync-yuanbao-sync",
+          "CF-sync-settings-init",
+          "direct-sync-callers.json"
+        ]
+      },
+      {
+        "id": "CF-sync-voice-history",
+        "status": "partially-answered",
+        "confidence": "high for local store; cloud sync unestablished",
+        "conclusion": "Speech history UI calls it local and manager queries its store. Packaged SQL schema stores ASR/LLM configs/results and audio relative paths. No cross-device speech-history/audio sync path was established within inspected dictionary task and history manager; this does not prove absence throughout product.",
+        "sources": [
+          "CF-history-schema",
+          "CF-sync-history-load",
+          "preference-copy.json"
+        ]
+      },
+      {
+        "id": "CF-sync-cloud-processing",
+        "status": "answered-static-separate-from-sync",
+        "confidence": "high for remote-capable path",
+        "conclusion": "ASR text and enhanced-recognition context (app/title, cursor text, clipboard, recent per-app input) enter network-capable speech/AI processing; those uploads are inference requests, not proof of account cloud synchronization. Shipped disclosure says high-frequency historic entities used temporarily for current transcription, discarded without cloud retention or model training. This is vendor copy, not measured retention.",
+        "sources": [
+          "CF-asm-context-builder",
+          "CF-asm-context-dict",
+          "CF-asm-payload",
+          "CF-asm-sse-network",
+          "preference-copy.json"
+        ]
+      },
+      {
+        "id": "CF-sync-voice-dict-build",
+        "status": "partially-answered",
+        "confidence": "high for local build call; cloud route incomplete",
+        "conclusion": "YBVoiceDictSyncManager timer calls SGCoreService buildVoiceUsrDictWithCompletion then native pc_build_voice_usr. Its Sync name alone must not be treated as proof of extra cloud sync categories.",
+        "sources": [
+          "CF-sync-voice-dict-timer",
+          "CF-sync-voice-build"
+        ]
+      }
+    ],
+    "officialURLs": [
+      "https://rule.tencent.com/rule/202608310001",
+      "https://privacy.qq.com/document/preview/faa95909a411465bb41ff74457f41c3d",
+      "https://privacy.qq.com/document/preview/921f01d728cb4feca554b88733f87ea9"
+    ],
+    "officialFetch": "Web tool could not retrieve policy content; direct HTTP retrieved JS shell only. Policy text not used for behavioral conclusions. URLs established by packaged bytes. Unrelated chatterfly.in and chatterfly.org excluded.",
+    "limits": [
+      "All new CF-sync IDs are ordinary static observations validated against ARM64 bytes, not REA Evidence IDs or observed execution.",
+      "REA identity Evidence IDs reused from original authenticated inventory/extraction/Mach-O evidence; original native Ghidra timed out and no successful native REA dossier exists.",
+      "Static code cannot prove current server acceptance, multi-device consistency or retention.",
+      "Correction event reporting/cloud inference is separate from synchronization. No complete correction-log synchronization established."
+    ],
+    "instruction_observations": {
+      "type": "ordinary-static-arm64-instructions",
+      "binarySHA256": "2ea312f6324accd6194e6c612608870321bc62c286aa2cdbccf8288ae19a2433",
+      "limits": [
+        "No target execution or traffic observed",
+        "No successful REA native decompilation dossier; previous Ghidra startup timed out",
+        "Objective-C call selectors do not by themselves prove dynamic receiver identity"
+      ],
+      "functions": [
+        {
+          "id": "CF-sync-sync-all-entry",
+          "symbol": "-[SGTimerTaskHub syncAllUsrData]",
+          "entry": "0x10027cae8",
+          "exclusiveEndFromNextTextSymbol": "0x10027cb7c",
+          "arm64FileOffset": 2607848,
+          "universalFileOffset": 61360872,
+          "functionBytesSha256": "a13656622b0dc5975692e8e6e483faffead9e3acd3b3fd9b89d1151fd748ff31",
+          "assemblyFile": ".workspace/research/cloud-sync/chatterfly/asm-sync-all-entry.txt",
+          "instructionsValidated": 37
+        },
+        {
+          "id": "CF-sync-voice-build",
+          "symbol": "+[SGCoreService buildVoiceUsrDictWithCompletion:]",
+          "entry": "0x10007da34",
+          "exclusiveEndFromNextTextSymbol": "0x10007db48",
+          "arm64FileOffset": 514612,
+          "universalFileOffset": 59267636,
+          "functionBytesSha256": "9fec28d0934ee191b0d3db25567e3db9250dd84f48faf3a5379e3946834d9a35",
+          "assemblyFile": ".workspace/research/cloud-sync/chatterfly/asm-voice-build.txt",
+          "instructionsValidated": 69
+        },
+        {
+          "id": "CF-sync-history-load",
+          "symbol": "-[SGVoiceHistoryManager loadFirstPageWithLimit:completion:]",
+          "entry": "0x100425090",
+          "exclusiveEndFromNextTextSymbol": "0x100425110",
+          "arm64FileOffset": 4346000,
+          "universalFileOffset": 63099024,
+          "functionBytesSha256": "b784e63cfc1865379f83e72ccfe247ef3c6684af4a9204f26ad2fa59d17234ba",
+          "assemblyFile": ".workspace/research/cloud-sync/chatterfly/asm-history-load.txt",
+          "instructionsValidated": 32
+        },
+        {
+          "id": "CF-sync-settings-zip",
+          "symbol": "-[SGTaskSyncSetting zipLocalSettings:withZipFilePath:]",
+          "entry": "0x10038a54c",
+          "exclusiveEndFromNextTextSymbol": "0x10038af84",
+          "arm64FileOffset": 3712332,
+          "universalFileOffset": 62465356,
+          "functionBytesSha256": "d7ce49dcb902d3337c3b354cc03a0e6a04964fdb1849508799c62c5d67d3ece5",
+          "assemblyFile": ".workspace/research/cloud-sync/chatterfly/asm-settings-zip.txt",
+          "instructionsValidated": 654
+        },
+        {
+          "id": "CF-sync-settings-init",
+          "symbol": "-[SGTaskSyncSetting init]",
+          "entry": "0x100389148",
+          "exclusiveEndFromNextTextSymbol": "0x100389248",
+          "arm64FileOffset": 3707208,
+          "universalFileOffset": 62460232,
+          "functionBytesSha256": "917fee1f2c7420eb1b632bb65399ae212a70921cb48efb57c913c956fa6baa0a",
+          "assemblyFile": ".workspace/research/cloud-sync/chatterfly/asm-settings-init.txt",
+          "instructionsValidated": 64
+        },
+        {
+          "id": "CF-sync-yuanbao-sync",
+          "symbol": "-[SGSyncTaskGroups taskSyncYuanbaoUsrData:]",
+          "entry": "0x10027768c",
+          "exclusiveEndFromNextTextSymbol": "0x1002776e8",
+          "arm64FileOffset": 2586252,
+          "universalFileOffset": 61339276,
+          "functionBytesSha256": "0a742cc02337334b2aaaaa9ec108393e3ffac691f4cce473c50a82835c246230",
+          "assemblyFile": ".workspace/research/cloud-sync/chatterfly/asm-yuanbao-sync.txt",
+          "instructionsValidated": 23
+        },
+        {
+          "id": "CF-sync-yuanbao-download-setting",
+          "symbol": "-[SGSyncTaskGroups syncYuanbao_downloadSetting:]",
+          "entry": "0x1002776e8",
+          "exclusiveEndFromNextTextSymbol": "0x10027782c",
+          "arm64FileOffset": 2586344,
+          "universalFileOffset": 61339368,
+          "functionBytesSha256": "4ef19875e4c507e7b9a18b81818c9bb3402a38aff5207c3d684efe1b19bf9a73",
+          "assemblyFile": ".workspace/research/cloud-sync/chatterfly/asm-yuanbao-download-setting.txt",
+          "instructionsValidated": 81
+        },
+        {
+          "id": "CF-sync-yuanbao-upload-setting",
+          "symbol": "-[SGSyncTaskGroups syncYuanbao_uploadSetting:]",
+          "entry": "0x10027791c",
+          "exclusiveEndFromNextTextSymbol": "0x1002779f8",
+          "arm64FileOffset": 2586908,
+          "universalFileOffset": 61339932,
+          "functionBytesSha256": "4600c401d999833ad0cc4dbb57d942ca454c5d795a420ab4f26c3d54438a0d38",
+          "assemblyFile": ".workspace/research/cloud-sync/chatterfly/asm-yuanbao-upload-setting.txt",
+          "instructionsValidated": 55
+        },
+        {
+          "id": "CF-sync-yuanbao-userdict",
+          "symbol": "-[SGSyncTaskGroups syncYuanbao_userDict:]",
+          "entry": "0x100277ac8",
+          "exclusiveEndFromNextTextSymbol": "0x100277bd8",
+          "arm64FileOffset": 2587336,
+          "universalFileOffset": 61340360,
+          "functionBytesSha256": "80c68f9a94ebfb928c19e4a3beb92fb7b033bef653ece3f66519ef66a4d10cec",
+          "assemblyFile": ".workspace/research/cloud-sync/chatterfly/asm-yuanbao-userdict.txt",
+          "instructionsValidated": 68
+        },
+        {
+          "id": "CF-sync-voice-dict-start",
+          "symbol": "-[YBVoiceDictSyncManager start]",
+          "entry": "0x10039f054",
+          "exclusiveEndFromNextTextSymbol": "0x10039f160",
+          "arm64FileOffset": 3797076,
+          "universalFileOffset": 62550100,
+          "functionBytesSha256": "7c30a18471807ab0dd5ab3a0573cf1bb24155a240676882847f4708b6714a74f",
+          "assemblyFile": ".workspace/research/cloud-sync/chatterfly/asm-voice-dict-start.txt",
+          "instructionsValidated": 67
+        },
+        {
+          "id": "CF-sync-voice-dict-timer",
+          "symbol": "-[YBVoiceDictSyncManager ybvds_timerFired:]",
+          "entry": "0x10039f370",
+          "exclusiveEndFromNextTextSymbol": "0x10039f46c",
+          "arm64FileOffset": 3797872,
+          "universalFileOffset": 62550896,
+          "functionBytesSha256": "1760725573d2cf2f200f988dbade655a43668bb44f48bb0b4fc46e9d6093117d",
+          "assemblyFile": ".workspace/research/cloud-sync/chatterfly/asm-voice-dict-timer.txt",
+          "instructionsValidated": 63
+        },
+        {
+          "id": "CF-sync-voice-dict-worker",
+          "symbol": "-[SGTaskWorkThread handleTaskVoiceDictSync:]",
+          "entry": "0x10039c0e4",
+          "exclusiveEndFromNextTextSymbol": "0x10039c480",
+          "arm64FileOffset": 3784932,
+          "universalFileOffset": 62537956,
+          "functionBytesSha256": "f1d53a45a3e3d588756feb3286790bbf3fce94d56f53c64c1b387e9a39e8cc16",
+          "assemblyFile": ".workspace/research/cloud-sync/chatterfly/asm-voice-dict-worker.txt",
+          "instructionsValidated": 231
+        },
+        {
+          "id": "CF-sync-userdict-state",
+          "symbol": "-[SGTaskSyncUserDict isCurrentStateCanSync]",
+          "entry": "0x100390bb8",
+          "exclusiveEndFromNextTextSymbol": "0x100390db4",
+          "arm64FileOffset": 3738552,
+          "universalFileOffset": 62491576,
+          "functionBytesSha256": "b68566c08efad47ff849bea5eb7a799269b90bad0cbfcc48921a43ff54a7673d",
+          "assemblyFile": ".workspace/research/cloud-sync/chatterfly/asm-userdict-state.txt",
+          "instructionsValidated": 127
+        },
+        {
+          "id": "CF-sync-userdict-perform",
+          "symbol": "-[SGTaskSyncUserDict performUserDictSync]",
+          "entry": "0x1003910c8",
+          "exclusiveEndFromNextTextSymbol": "0x1003912b8",
+          "arm64FileOffset": 3739848,
+          "universalFileOffset": 62492872,
+          "functionBytesSha256": "0bdfcb1d2507b3a58b229c08a639ceb54fad3cbfa1efe403157daff0b118c530",
+          "assemblyFile": ".workspace/research/cloud-sync/chatterfly/asm-userdict-perform.txt",
+          "instructionsValidated": 124
+        },
+        {
+          "id": "CF-sync-userdict-merge",
+          "symbol": "-[SGTaskSyncUserDict mergeDownloadUsrV3DictWithLocal:]",
+          "entry": "0x100392834",
+          "exclusiveEndFromNextTextSymbol": "0x100392a6c",
+          "arm64FileOffset": 3745844,
+          "universalFileOffset": 62498868,
+          "functionBytesSha256": "cf16071e4cb57aca756b6636438c68725bbb56e02a6d60c5cf37cb92b1c547de",
+          "assemblyFile": ".workspace/research/cloud-sync/chatterfly/asm-userdict-merge.txt",
+          "instructionsValidated": 142
+        },
+        {
+          "id": "CF-sync-userdict-upload",
+          "symbol": "-[SGTaskSyncUserDict uploadUsrV3UUDWithZipPath:]",
+          "entry": "0x100392d84",
+          "exclusiveEndFromNextTextSymbol": "0x10039305c",
+          "arm64FileOffset": 3747204,
+          "universalFileOffset": 62500228,
+          "functionBytesSha256": "e971da970f0ecb6949660d0661b4b769be8b9f6bf320b1d9c8467edcebfef77f",
+          "assemblyFile": ".workspace/research/cloud-sync/chatterfly/asm-userdict-upload.txt",
+          "instructionsValidated": 182
+        },
+        {
+          "id": "CF-sync-userdict-download",
+          "symbol": "-[SGTaskSyncUserDict downloadUsrV3DictWithMd5:]",
+          "entry": "0x1003925d4",
+          "exclusiveEndFromNextTextSymbol": "0x100392744",
+          "arm64FileOffset": 3745236,
+          "universalFileOffset": 62498260,
+          "functionBytesSha256": "b0dd6259a026957cee4fe1354bb0adc3784e482ad23cca31df020da1aae661f2",
+          "assemblyFile": ".workspace/research/cloud-sync/chatterfly/asm-userdict-download.txt",
+          "instructionsValidated": 92
+        },
+        {
+          "id": "CF-sync-sync-dict-task",
+          "symbol": "-[SGSyncTaskGroups taskSyncUsrDictManually:syncMobileDict:complete:]",
+          "entry": "0x100273de0",
+          "exclusiveEndFromNextTextSymbol": "0x100273f60",
+          "arm64FileOffset": 2571744,
+          "universalFileOffset": 61324768,
+          "functionBytesSha256": "7dcea62c3578c1dc70c444ae8a31ca138e6f13622372492037a6356587ccced8",
+          "assemblyFile": ".workspace/research/cloud-sync/chatterfly/asm-sync-dict-task.txt",
+          "instructionsValidated": 96
+        }
+      ]
+    },
+    "preference_copy": {
+      "type": "ordinary-static-UTF16LE-and-URL-literals",
+      "artifact": ".workspace/research/chatterfly/extracted/Chatterfly.app/Contents/ChatterflyPreference.app/Contents/MacOS/ChatterflyPreference",
+      "sha256": "4fd9473c8637b6820654b54ab0d05ff79d069d0ca29d2c7bf5fd55094047f3dd",
+      "records": [
+        {
+          "query": "将本机词库与云端词库进行同步",
+          "fileOffset": 22893378,
+          "value": "将本机词库与云端词库进行同步"
+        },
+        {
+          "query": "将本机词库与云端词库进行同步",
+          "fileOffset": 52291646,
+          "value": "将本机词库与云端词库进行同步"
+        },
+        {
+          "query": "每 4 小时自动同步一次，上次同步: %@",
+          "fileOffset": 22893614,
+          "value": "每 4 小时自动同步一次，上次同步: %@"
+        },
+        {
+          "query": "每 4 小时自动同步一次，上次同步: %@",
+          "fileOffset": 52291882,
+          "value": "每 4 小时自动同步一次，上次同步: %@"
+        },
+        {
+          "query": "清空本地用户词库将恢复默认词序，但不会修改云端用户词库。您确定要清空吗？",
+          "fileOffset": 22893712,
+          "value": "清空本地用户词库将恢复默认词序，但不会修改云端用户词库。您确定要清空吗？"
+        },
+        {
+          "query": "清空本地用户词库将恢复默认词序，但不会修改云端用户词库。您确定要清空吗？",
+          "fileOffset": 52291980,
+          "value": "清空本地用户词库将恢复默认词序，但不会修改云端用户词库。您确定要清空吗？"
+        },
+        {
+          "query": "您所有的本地语音历史记录将被永久删除且无法恢复，确认要删除吗？",
+          "fileOffset": 22885056,
+          "value": "您所有的本地语音历史记录将被永久删除且无法恢复，确认要删除吗？"
+        },
+        {
+          "query": "您所有的本地语音历史记录将被永久删除且无法恢复，确认要删除吗？",
+          "fileOffset": 52283324,
+          "value": "您所有的本地语音历史记录将被永久删除且无法恢复，确认要删除吗？"
+        }
+      ]
+    },
+    "direct_call_boundary": {
+      "limit": "Direct ARM64 B/BL instructions only, generic ObjC dispatch and selectors as callbacks not covered",
+      "calls": [
+        {
+          "at": "0x1002776d4",
+          "target": "_objc_msgSend$syncYuanbao_userDict:",
+          "containingSymbol": "-[SGSyncTaskGroups taskSyncYuanbaoUsrData:]",
+          "entry": "0x10027768c"
+        },
+        {
+          "at": "0x1002778bc",
+          "target": "_objc_msgSend$syncYuanbao_uploadSetting:",
+          "containingSymbol": "-[SGSyncTaskGroups syncYuanbao_downloadSetting:]",
+          "entry": "0x1002776e8"
+        },
+        {
+          "at": "0x1002778f0",
+          "target": "_objc_msgSend$syncYuanbao_userDict:",
+          "containingSymbol": "-[SGSyncTaskGroups syncYuanbao_downloadSetting:]",
+          "entry": "0x1002776e8"
+        },
+        {
+          "at": "0x100277a80",
+          "target": "_objc_msgSend$syncYuanbao_userDict:",
+          "containingSymbol": "-[SGSyncTaskGroups syncYuanbao_uploadSetting:]",
+          "entry": "0x10027791c"
+        },
+        {
+          "at": "0x10027cb64",
+          "target": "_objc_msgSend$taskSyncYuanbaoUsrData:",
+          "containingSymbol": "-[SGTimerTaskHub syncAllUsrData]",
+          "entry": "0x10027cae8"
+        },
+        {
+          "at": "0x100399538",
+          "target": "_objc_msgSend$uploadSettingTask:withResult:",
+          "containingSymbol": "-[SGTaskWorkThread handleTaskUploadSetting:]",
+          "entry": "0x1003993bc"
+        },
+        {
+          "at": "0x100399560",
+          "target": "_objc_msgSend$uploadSettingTask:withResult:",
+          "containingSymbol": "-[SGTaskWorkThread handleTaskUploadSetting:]",
+          "entry": "0x1003993bc"
+        },
+        {
+          "at": "0x100399954",
+          "target": "_objc_msgSend$downloadSettingTask:withResult:",
+          "containingSymbol": "-[SGTaskWorkThread handleTaskDownloadSetting:]",
+          "entry": "0x1003997d8"
+        },
+        {
+          "at": "0x10039997c",
+          "target": "_objc_msgSend$downloadSettingTask:withResult:",
+          "containingSymbol": "-[SGTaskWorkThread handleTaskDownloadSetting:]",
+          "entry": "0x1003997d8"
+        },
+        {
+          "at": "0x100399d00",
+          "target": "_objc_msgSend$startSyncPhraseExpression:withResult:",
+          "containingSymbol": "-[SGTaskWorkThread handleTaskSyncPhraseExpression:]",
+          "entry": "0x100399c10"
+        }
+      ]
+    }
+  },
+  "vendor_sources": [
+    {
+      "id": "CS-V-TL-controls",
+      "kind": "vendor-statement",
+      "url": "https://www.typeless.com/data-controls",
+      "updated": "2026-10-13",
+      "finding": "Optional history-text cloud sync; disabling deletes cloud history text. Cloud audio/context processing is separate; no audio retention claimed."
+    },
+    {
+      "id": "CS-V-TL-privacy",
+      "kind": "vendor-statement",
+      "url": "https://www.typeless.com/privacy",
+      "updated": "2026-10-13",
+      "finding": "History sync and explicitly submitted feedback are content-retention exceptions. Client-side and server-side enforcement were not measured."
+    },
+    {
+      "id": "CS-V-DB-policy",
+      "kind": "vendor-statement",
+      "url": "https://lf3-cdn-tos.draftstatic.com/obj/ies-hotsoon-draft/wave_ime/ime_privacy_policy.html",
+      "updated": "2026-08-11",
+      "effective": "2026-08-18",
+      "sections": [
+        "1.1-1.3",
+        "2.2-2.7",
+        "feedback 3.1",
+        "experience improvement"
+      ],
+      "finding": "Account profile and personal dictionary sync are documented. Cloud processing, optional improvement uploads, feedback and local clipboard history have distinct rules; platform features may differ."
+    },
+    {
+      "id": "CS-V-DB-transfer",
+      "kind": "vendor-statement",
+      "url": "https://shurufa.doubao.com/pc",
+      "finding": "Super transfer advertises cross-device copy/paste; this is distinct from the mobile local clipboard-history policy."
+    },
+    {
+      "id": "CS-V-CF-identity",
+      "kind": "vendor-statement",
+      "url": "https://rule.tencent.com/rule/202608310001",
+      "updated": "2026-09-15",
+      "finding": "Tencent Chatterfly product identity only; this service agreement does not enumerate sync fields."
+    }
+  ],
+  "cross_product_reused_sources": [
+    "typeless-static.json",
+    "doubao-static.json",
+    "doubao-decompiled.json",
+    "chatterfly-rewrite.json",
+    "edit-learning.json"
+  ],
+  "limitations": [
+    "No two-device convergence or conflict experiment.",
+    "No complete absence claim follows from focused negative searches.",
+    "Online recognition/rewriting, edit mining, feedback and telemetry do not establish synchronization.",
+    "Current official policies can describe newer or other-platform behavior than inspected artifacts.",
+    "No server deletion, retention or cryptographic-key-custody verification."
+  ],
+  "private_evidence_root": ".workspace/research/cloud-sync/",
+  "doubao": {
+    "scope": "Installed macOS DoubaoIme 1.0.2 build 1, Wave 1.0.2.7. Static package files only. No private stores or execution.",
+    "source": "/Users/steven/code/Arion/.workspace/research/doubao-onboarding/DoubaoImeSettings-arm64",
+    "sliceSha256": "8cc8ad24e94234817231c791e6c09fa578221992ee0e9f434b3d858da56f2ef6",
+    "byteVerifiedInstructionCounts": {
+      "mapper-asm.txt": 4160,
+      "mapper-registered-asm.txt": 601,
+      "mapper-mappings-asm.txt": 142,
+      "sync-handler-focused-asm.txt": 1664
+    },
+    "settingsMappings": [
+      {
+        "enum": 0,
+        "local": "asrPunctuationPostProcessMode",
+        "remote": "audio.punctuation_display",
+        "staticKeyArray": "0x10067c608",
+        "remoteKeyBranch": "0x10039367c"
+      },
+      {
+        "enum": 2,
+        "local": "enableASRMulticonnection",
+        "remote": "audio.other.allow_switch_mobile_wifi",
+        "staticKeyArray": "0x10067c640",
+        "remoteKeyBranch": "0x10039361c"
+      },
+      {
+        "enum": 15,
+        "local": "isSpaceBetweenZhAndNumEnabled",
+        "remote": "keyboard.quick_fmt.numensym_before_space",
+        "staticKeyArray": "0x10067c678",
+        "remoteKeyBranch": "0x100393634"
+      },
+      {
+        "enum": 16,
+        "local": "inputHistoryUsable",
+        "remote": "privacy.smart_input.cloud_use_input_info",
+        "staticKeyArray": "0x10067c6b0",
+        "remoteKeyBranch": "0x1003935c8"
+      },
+      {
+        "enum": 17,
+        "local": "userDictUsable",
+        "remote": "privacy.smart_input.cloud_use_user_words",
+        "staticKeyArray": "0x10067c6e8",
+        "remoteKeyBranch": "0x10039366c"
+      }
+    ],
+    "method": "LLVM Mach-O disassembly, Swift string static array decode, relative byte jump table. All selected instruction bytes verified against source slice. Ordinary local observations, not REA evidence IDs.",
+    "limits": [
+      "No network/runtime confirmation; default toggles unknown.",
+      "Entire shared enum lists mobile settings; only five Mac mapper registrations recovered.",
+      "Personal dictionary contents, common phrases, corrections-pair inclusion remain unspecified.",
+      "Ghidra search timed out at 240000ms; second pending search was stopped and close_binary succeeded."
+    ],
+    "findings": {
+      "personalDictionary": "Vendor policy confirms account-based multi-device sync; installed coordinator/owner and preference support. Contents unspecified.",
+      "settings": "Five Mac mapper registrations; remote shared enum is larger and not all registered.",
+      "fuzzySoundsAndRecentPunctuation": "Compiled handlers and native key-return code; runtime/active registration not independently exercised.",
+      "clipboard": "Separate cross-device plain/rich text and image transfer path; public feature corroboration; retention unresolved.",
+      "history": "No verified sync of input-history records/audio; inputHistoryUsable is only a context-use permission in mapped settings.",
+      "telemetryAndInference": "Separate processing/upload categories, not evidence of account sync."
+    },
+    "publicSources": [
+      {
+        "url": "https://lf3-cdn-tos.draftstatic.com/obj/ies-hotsoon-draft/wave_ime/ime_privacy_policy.html",
+        "effective": "2026-08-18",
+        "sections": [
+          "I(A)1.1-1.3",
+          "I(A)2.1-2.7",
+          "I(B)3.1",
+          "I(B)4",
+          "I(C)"
+        ],
+        "retrieved": true
+      },
+      {
+        "url": "https://ime.doubao.com/pc",
+        "section": "超级互传",
+        "retrieved": true
+      }
+    ],
+    "stringDecode": "Swift large UTF-8 literal address = (highWord & 0x0fffffffffffffff) + 32; length from lowWord. Small userDictUsable decoded inline.",
+    "report": "findings.md",
+    "id": "CS-DB-static",
+    "artifacts": {
+      "mainUniversalSha256": "4b3836dcb8a3e06b01b4c95390c757b71f623c1f7c4141c059e49284f7f6442d",
+      "settingsUniversalSha256": "13fff30333c99fcd706e30f1e8408d49d04cb5748146a8befa72dff381f57762",
+      "settingsArm64SourceOffset": 8077312,
+      "settingsArm64Size": 7500816
+    },
+    "bounded_locations": {
+      "mapperRegistration": "0x1003a8564..0x1003a8798",
+      "fuzzyAndRecentKeyReturns": "0x100393434..0x10039354c",
+      "settingsUniversalSyncPreferences": "0x57df89..0x57dfe0",
+      "settingsUniversalDomainLabels": "0x57e3b0..0x57e470",
+      "settingsUniversalClipboardPayloadFields": "0x57fc7e..0x57ff3a"
+    },
+    "analysis_attempt": {
+      "provider": "Ghidra 12.1.4 via REA 6.4.0",
+      "outcome": "Timed out; no useful new REA Evidence IDs. Ordinary static observations remain distinct.",
+      "cleanup": "close_binary succeeded; owned analysis processes cleaned",
+      "private_result": ".workspace/research/cloud-sync/doubao/close.json"
+    }
+  }
+}

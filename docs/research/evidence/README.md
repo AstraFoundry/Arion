@@ -14,6 +14,7 @@
 - [Focused competitor rewrite ledger](competitor-rewrite.json) — original Typeless source ranges and Doubao strings/reflection observations; CR identifiers are local observations, not REA Evidence IDs.
 - [Rewrite reliability ledger](rewrite-alignment.json) — reverified Doubao/Chatterfly identities, reused evidence and content-free local text diagnostic results; no competitor runtime comparison.
 - [Multilingual disfluency probe](multilingual-disfluency.json) — developer-authored language-stratified text checks, quoted-filler rule repair and an exploratory model-size comparison; no additional recognition-language support claim.
+- [Cloud synchronization ledger](competitor-cloud-sync.json) — matched Typeless/Doubao/Chatterfly artifacts, scoped account-data observations, Chatterfly product-branch exclusions and vendor-statement boundaries.
 - [Edit learning ledger](edit-learning.json) — Typeless, Doubao and Chatterfly correction tracking, storage and recall literals with byte offsets; EL identifiers are local static observations, not REA Evidence IDs.
 - [Competitor window ledger](competitor-windows.json) — Typeless full-screen/workspace configuration and Doubao native ASR/tip panel hierarchy, numeric arguments and bounded instruction locations; CW identifiers are local static observations, not REA Evidence IDs.
 
