@@ -1,0 +1,19 @@
+{
+  "events": [
+    {
+      "id": "reported-codex",
+      "inserted": "codex能爆吗？",
+      "settled": "codex能报吗？"
+    },
+    {
+      "id": "announcement-math",
+      "inserted": "这个公示需要调整。",
+      "settled": "这个公式需要调整。"
+    },
+    {
+      "id": "cotton-fee",
+      "inserted": "这件是全免的。",
+      "settled": "这件是全棉的。"
+    }
+  ]
+}

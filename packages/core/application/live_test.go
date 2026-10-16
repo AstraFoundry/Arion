@@ -443,7 +443,7 @@ func TestRewriteContextAndHistory(t *testing.T) {
 	rewriter.mu.Lock()
 	final := rewriter.requests[len(rewriter.requests)-1]
 	rewriter.mu.Unlock()
-	if strings.Join(final.Terms, ";") != "Zhang;Wei" || !final.Context.Empty() {
+	if len(final.Terms) != 0 || final.Context.Screen != "Zhang Wei: lunch?" || final.Context.Before != "Hi" || final.Context.After != "bye" {
 		t.Fatalf("first session: terms %q, context %+v", final.Terms, final.Context)
 	}
 	if got := history.Recent("com.tencent.xinWeChat"); len(got) != 1 || got[0] != "FIRST" {
@@ -459,8 +459,8 @@ func TestRewriteContextAndHistory(t *testing.T) {
 	audio.push(1, 0.2)
 	c.Stop()
 	events.wait(t, kindIs(contracts.CommitResultReady))
-	if terms := rewriter.requests[len(rewriter.requests)-1].Terms; strings.Join(terms, ";") != "FIRST" {
-		t.Fatalf("same place history terms %q", terms)
+	if context := rewriter.requests[len(rewriter.requests)-1].Context; strings.Join(context.History, ";") != "FIRST" {
+		t.Fatalf("same place history %q", context.History)
 	}
 	if got := history.Recent("com.apple.mail"); len(got) != 0 {
 		t.Fatalf("history leaked to another place: %q", got)
@@ -476,7 +476,7 @@ func TestRewriteContextAndHistory(t *testing.T) {
 	audio.push(1, 0.2)
 	c.Stop()
 	events.wait(t, kindIs(contracts.CommitResultReady))
-	if target.reads.Load() != 0 || len(rewriter.requests[len(rewriter.requests)-1].Terms) != 0 {
+	if target.reads.Load() != 0 || len(rewriter.requests[len(rewriter.requests)-1].Terms) != 0 || !rewriter.requests[len(rewriter.requests)-1].Context.Empty() {
 		t.Fatal("denied app was read")
 	}
 }
@@ -561,6 +561,75 @@ func TestCleanupSurvivesOrganizationFailure(t *testing.T) {
 			defer target.mu.Unlock()
 			if target.commits.Load() != 1 || len(target.texts) != 1 || target.texts[0] != want {
 				t.Fatalf("unexpected commits %+v", target.texts)
+			}
+		})
+	}
+}
+
+// Full OCR, including discussion beyond the old character cutoff, must reach
+// previews and final inference. Each source remains independently gated.
+func TestFullContextInPreviewAndFinal(t *testing.T) {
+	screen := strings.Repeat("界面内容。", 300) + "同事：软件订阅可以报销。"
+	for _, tc := range []struct {
+		name   string
+		policy ContextPolicy
+		safe   bool
+	}{
+		{"all", ContextPolicy{Cursor: true, Screen: true}, true},
+		{"screen only", ContextPolicy{Screen: true}, true},
+		{"cursor only", ContextPolicy{Cursor: true}, true},
+		{"disabled", ContextPolicy{}, true},
+		{"unsafe", ContextPolicy{Cursor: true, Screen: true}, false},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			w := &scriptedRewriter{answer: func(req ports.RewriteRequest) (string, error) { return req.Text, nil }}
+			c, audio, events, target, _ := liveSetup(t, []string{"hello", "|", "again"}, w, RewritePolicy{Enabled: true, Context: tc.policy})
+			target.context = contracts.ContextSnapshot{SafeToRead: tc.safe, Screen: screen, Before: "before", After: "after"}
+			c.Start()
+			events.wait(t, stateIs(domain.Capturing))
+			c.mu.Lock()
+			r := c.current
+			c.mu.Unlock()
+			if r.contextReady != nil {
+				select {
+				case <-r.contextReady:
+				case <-time.After(time.Second):
+					t.Fatal("context not ready")
+				}
+			}
+			audio.push(2, 0.2)
+			events.wait(t, draftIs("HELLO"))
+			c.Stop()
+			events.wait(t, kindIs(contracts.CommitResultReady))
+			w.mu.Lock()
+			defer w.mu.Unlock()
+			live, final := false, false
+			for _, req := range w.requests {
+				if req.Live {
+					live = true
+				} else {
+					final = true
+				}
+				wantScreen := ""
+				if tc.safe && tc.policy.Screen {
+					wantScreen = screen
+				}
+				if req.Context.Screen != wantScreen {
+					t.Fatalf("screen lost or leaked: live=%v, runes=%d", req.Live, len([]rune(req.Context.Screen)))
+				}
+				wantBefore, wantAfter := "", ""
+				if tc.safe && tc.policy.Cursor {
+					wantBefore, wantAfter = "before", "after"
+				}
+				if req.Context.Before != wantBefore || req.Context.After != wantAfter {
+					t.Fatalf("cursor gate: %+v", req.Context)
+				}
+				if len(req.Terms) != 0 {
+					t.Fatalf("context was also extracted into terms: %q", req.Terms)
+				}
+			}
+			if !live || !final {
+				t.Fatalf("missing preview or final: %v %v", live, final)
 			}
 		})
 	}

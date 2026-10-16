@@ -1,0 +1,14 @@
+{
+  "dev": {
+    "entities": 16,
+    "audio": 98,
+    "speakers": 5,
+    "sessions": 9
+  },
+  "test": {
+    "entities": 24,
+    "audio": 164,
+    "speakers": 13,
+    "sessions": 18
+  }
+}

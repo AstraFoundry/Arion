@@ -1,0 +1,407 @@
+{
+  "source": "benchmarks/corpora/asr-v1",
+  "sourceCorpusSha256": "a5d92468ac0c1ac740cf9685628d1d1c6540f70f4ace2d11c189bd7f78fee371",
+  "selection": "sorted test IDs 10:20 per language; disjoint from v2 controls",
+  "samples": [
+    {
+      "id": "aishell-BAC009S0767W0403",
+      "split": "test",
+      "speakerId": "aishell1:S0767",
+      "sessionId": "aishell1:S0767",
+      "language": "zh",
+      "unit": "cer",
+      "tags": [
+        "read",
+        "aishell1"
+      ],
+      "audio": {
+        "path": "audio/aishell-BAC009S0767W0403.wav",
+        "sha256": "bda9b74198951013ef9c22e36ccaff0be4ae52f13571bb200edd634d9af406b3",
+        "durationMs": 5949.0
+      },
+      "reference": "徐永昊的站立打击技术在该级别中堪称翘楚",
+      "context": "",
+      "approvedMemory": []
+    },
+    {
+      "id": "aishell-BAC009S0767W0423",
+      "split": "test",
+      "speakerId": "aishell1:S0767",
+      "sessionId": "aishell1:S0767",
+      "language": "zh",
+      "unit": "cer",
+      "tags": [
+        "read",
+        "aishell1"
+      ],
+      "audio": {
+        "path": "audio/aishell-BAC009S0767W0423.wav",
+        "sha256": "cf2bf0749c76075820444c74d09031e32ecf3240efc4fed3fb280d7be6198ca6",
+        "durationMs": 2563.0
+      },
+      "reference": "但不至于要吃药",
+      "context": "",
+      "approvedMemory": []
+    },
+    {
+      "id": "aishell-BAC009S0767W0428",
+      "split": "test",
+      "speakerId": "aishell1:S0767",
+      "sessionId": "aishell1:S0767",
+      "language": "zh",
+      "unit": "cer",
+      "tags": [
+        "read",
+        "aishell1"
+      ],
+      "audio": {
+        "path": "audio/aishell-BAC009S0767W0428.wav",
+        "sha256": "48fc2b96df0c2951945e73643e6b67001d40d104ca24a4676202f101442fa046",
+        "durationMs": 4678.0
+      },
+      "reference": "并自嘲的写道自幼就走性感风格",
+      "context": "",
+      "approvedMemory": []
+    },
+    {
+      "id": "aishell-BAC009S0767W0487",
+      "split": "test",
+      "speakerId": "aishell1:S0767",
+      "sessionId": "aishell1:S0767",
+      "language": "zh",
+      "unit": "cer",
+      "tags": [
+        "read",
+        "aishell1"
+      ],
+      "audio": {
+        "path": "audio/aishell-BAC009S0767W0487.wav",
+        "sha256": "563d1e1899b9e8bef49730ee7caf298ca9d1afc2e0893782ad6a464f01e80fcf",
+        "durationMs": 3980.0
+      },
+      "reference": "城改拆迁对很多村民来说",
+      "context": "",
+      "approvedMemory": []
+    },
+    {
+      "id": "aishell-BAC009S0768W0122",
+      "split": "test",
+      "speakerId": "aishell1:S0768",
+      "sessionId": "aishell1:S0768",
+      "language": "zh",
+      "unit": "cer",
+      "tags": [
+        "read",
+        "aishell1"
+      ],
+      "audio": {
+        "path": "audio/aishell-BAC009S0768W0122.wav",
+        "sha256": "738850b36d0f66e5ac8de4d27669c575e1fe5013adac30334240a3f5a608ffe7",
+        "durationMs": 3915.0
+      },
+      "reference": "明年初料迎供应淡季",
+      "context": "",
+      "approvedMemory": []
+    },
+    {
+      "id": "aishell-BAC009S0768W0134",
+      "split": "test",
+      "speakerId": "aishell1:S0768",
+      "sessionId": "aishell1:S0768",
+      "language": "zh",
+      "unit": "cer",
+      "tags": [
+        "read",
+        "aishell1"
+      ],
+      "audio": {
+        "path": "audio/aishell-BAC009S0768W0134.wav",
+        "sha256": "00af91b70f2ae6d5dd66efbf4db0e20a17ef4ec7d3dc2f86658cf3e41bb17453",
+        "durationMs": 6149.0
+      },
+      "reference": "房地产开发企业到位资金十万亿元",
+      "context": "",
+      "approvedMemory": []
+    },
+    {
+      "id": "aishell-BAC009S0768W0142",
+      "split": "test",
+      "speakerId": "aishell1:S0768",
+      "sessionId": "aishell1:S0768",
+      "language": "zh",
+      "unit": "cer",
+      "tags": [
+        "read",
+        "aishell1"
+      ],
+      "audio": {
+        "path": "audio/aishell-BAC009S0768W0142.wav",
+        "sha256": "fb6b96f8a07ca70d7bb6f3ba1b13ddea4047de1647383c1e55a6558da201b83c",
+        "durationMs": 4729.0
+      },
+      "reference": "今年商品房销售一度低日迷",
+      "context": "",
+      "approvedMemory": []
+    },
+    {
+      "id": "aishell-BAC009S0768W0177",
+      "split": "test",
+      "speakerId": "aishell1:S0768",
+      "sessionId": "aishell1:S0768",
+      "language": "zh",
+      "unit": "cer",
+      "tags": [
+        "read",
+        "aishell1"
+      ],
+      "audio": {
+        "path": "audio/aishell-BAC009S0768W0177.wav",
+        "sha256": "994564d8acba7f9b84cf2f3f7a07a96192341bf29bda581c64f1ccb1a38525f4",
+        "durationMs": 4597.938
+      },
+      "reference": "投资价值更好房企看好",
+      "context": "",
+      "approvedMemory": []
+    },
+    {
+      "id": "aishell-BAC009S0768W0197",
+      "split": "test",
+      "speakerId": "aishell1:S0768",
+      "sessionId": "aishell1:S0768",
+      "language": "zh",
+      "unit": "cer",
+      "tags": [
+        "read",
+        "aishell1"
+      ],
+      "audio": {
+        "path": "audio/aishell-BAC009S0768W0197.wav",
+        "sha256": "7f1dbbe9ebffaa9793e2847a70b52afaca83f18ae1064998a85be904bf63e716",
+        "durationMs": 5421.0
+      },
+      "reference": "而是改按统一合理的平均成本确定",
+      "context": "",
+      "approvedMemory": []
+    },
+    {
+      "id": "aishell-BAC009S0768W0262",
+      "split": "test",
+      "speakerId": "aishell1:S0768",
+      "sessionId": "aishell1:S0768",
+      "language": "zh",
+      "unit": "cer",
+      "tags": [
+        "read",
+        "aishell1"
+      ],
+      "audio": {
+        "path": "audio/aishell-BAC009S0768W0262.wav",
+        "sha256": "d1b15f2dc304a70f12fcfe19c958f1df62bdac52d3e8404afbc00273bf5437f1",
+        "durationMs": 8116.938
+      },
+      "reference": "加上它凭借远程雷达与对方舰队保持远距离",
+      "context": "",
+      "approvedMemory": []
+    },
+    {
+      "id": "libri-1995-1836-0007",
+      "split": "test",
+      "speakerId": "librispeech:1995",
+      "sessionId": "librispeech:1995-1836",
+      "language": "en",
+      "unit": "wer",
+      "tags": [
+        "read",
+        "librispeech"
+      ],
+      "audio": {
+        "path": "audio/libri-1995-1836-0007.wav",
+        "sha256": "4514cdac0cc94e28f6f0eeeb668d6e5bc205790258a482b3801a625f32e5ef7a",
+        "durationMs": 3435.0
+      },
+      "reference": "but you believe in some education asked mary taylor",
+      "context": "",
+      "approvedMemory": []
+    },
+    {
+      "id": "libri-1995-1836-0013",
+      "split": "test",
+      "speakerId": "librispeech:1995",
+      "sessionId": "librispeech:1995-1836",
+      "language": "en",
+      "unit": "wer",
+      "tags": [
+        "read",
+        "librispeech"
+      ],
+      "audio": {
+        "path": "audio/libri-1995-1836-0013.wav",
+        "sha256": "b092b7620effca07dcc241f5dd111466ec19333ecb4a45641d860c7f103c0e4e",
+        "durationMs": 5300.0
+      },
+      "reference": "mary taylor however related the tale of zora to missus grey's private ear later",
+      "context": "",
+      "approvedMemory": []
+    },
+    {
+      "id": "libri-2300-131720-0014",
+      "split": "test",
+      "speakerId": "librispeech:2300",
+      "sessionId": "librispeech:2300-131720",
+      "language": "en",
+      "unit": "wer",
+      "tags": [
+        "read",
+        "librispeech"
+      ],
+      "audio": {
+        "path": "audio/libri-2300-131720-0014.wav",
+        "sha256": "7cf0b059946d66d3644af061770a75af9332f5a0660394fc03b5540db1bf8e18",
+        "durationMs": 3750.0
+      },
+      "reference": "mister edison was a leader far ahead of the time",
+      "context": "",
+      "approvedMemory": []
+    },
+    {
+      "id": "libri-2300-131720-0021",
+      "split": "test",
+      "speakerId": "librispeech:2300",
+      "sessionId": "librispeech:2300-131720",
+      "language": "en",
+      "unit": "wer",
+      "tags": [
+        "read",
+        "librispeech"
+      ],
+      "audio": {
+        "path": "audio/libri-2300-131720-0021.wav",
+        "sha256": "bbcb4cf48f1f4fd6a7758b16e86fd0a9f7167ddf450a514e8e89353d66601741",
+        "durationMs": 10950.0
+      },
+      "reference": "the street conductors were of the overhead pole line construction and were installed by the construction company that had been organized by edison to build and equip central stations",
+      "context": "",
+      "approvedMemory": []
+    },
+    {
+      "id": "libri-237-126133-0004",
+      "split": "test",
+      "speakerId": "librispeech:237",
+      "sessionId": "librispeech:237-126133",
+      "language": "en",
+      "unit": "wer",
+      "tags": [
+        "read",
+        "librispeech"
+      ],
+      "audio": {
+        "path": "audio/libri-237-126133-0004.wav",
+        "sha256": "e1e6db33e7d8d0c2ba3dfe06ba93c432b02712f18f7431e836da6b04601cb8da",
+        "durationMs": 3295.0
+      },
+      "reference": "if she could only see phronsie for just one moment",
+      "context": "",
+      "approvedMemory": []
+    },
+    {
+      "id": "libri-237-134493-0016",
+      "split": "test",
+      "speakerId": "librispeech:237",
+      "sessionId": "librispeech:237-134493",
+      "language": "en",
+      "unit": "wer",
+      "tags": [
+        "read",
+        "librispeech"
+      ],
+      "audio": {
+        "path": "audio/libri-237-134493-0016.wav",
+        "sha256": "6d1cc39a9e38888f83ab8cdc5d65855743362463563dfba6c1b12940ac05e80b",
+        "durationMs": 10085.0
+      },
+      "reference": "on either side of the road for a mile before you reached the foot of the hill stood tall osage orange hedges their glossy green marking off the yellow fields",
+      "context": "",
+      "approvedMemory": []
+    },
+    {
+      "id": "libri-260-123288-0008",
+      "split": "test",
+      "speakerId": "librispeech:260",
+      "sessionId": "librispeech:260-123288",
+      "language": "en",
+      "unit": "wer",
+      "tags": [
+        "read",
+        "librispeech"
+      ],
+      "audio": {
+        "path": "audio/libri-260-123288-0008.wav",
+        "sha256": "e3c4e04dab9db28856021a78df156c6eb787a3178fc9261c058fe2c249b24716",
+        "durationMs": 5515.0
+      },
+      "reference": "there's a heavy storm coming on i cried pointing towards the horizon",
+      "context": "",
+      "approvedMemory": []
+    },
+    {
+      "id": "libri-2830-3979-0006",
+      "split": "test",
+      "speakerId": "librispeech:2830",
+      "sessionId": "librispeech:2830-3979",
+      "language": "en",
+      "unit": "wer",
+      "tags": [
+        "read",
+        "librispeech"
+      ],
+      "audio": {
+        "path": "audio/libri-2830-3979-0006.wav",
+        "sha256": "65ec29bdc39e7ad307ee3d4822881b2cbd0c2b34719d955f2e2ef2d0981ce161",
+        "durationMs": 4550.0
+      },
+      "reference": "a word should now be said about the origin of luther's commentary on galatians",
+      "context": "",
+      "approvedMemory": []
+    },
+    {
+      "id": "libri-2830-3979-0010",
+      "split": "test",
+      "speakerId": "librispeech:2830",
+      "sessionId": "librispeech:2830-3979",
+      "language": "en",
+      "unit": "wer",
+      "tags": [
+        "read",
+        "librispeech"
+      ],
+      "audio": {
+        "path": "audio/libri-2830-3979-0010.wav",
+        "sha256": "7d8772c4ed93c0a409209327fdd735105632dd56f4109f771b7c4e966b95d306",
+        "durationMs": 3360.0
+      },
+      "reference": "but the essence of luther's lectures is there",
+      "context": "",
+      "approvedMemory": []
+    },
+    {
+      "id": "libri-2961-960-0015",
+      "split": "test",
+      "speakerId": "librispeech:2961",
+      "sessionId": "librispeech:2961-960",
+      "language": "en",
+      "unit": "wer",
+      "tags": [
+        "read",
+        "librispeech"
+      ],
+      "audio": {
+        "path": "audio/libri-2961-960-0015.wav",
+        "sha256": "2a811344aa4d212f9d8bf120d1e5cf1cc9bd033715ff20d14592dc2d605aba59",
+        "durationMs": 7830.0
+      },
+      "reference": "the style and plan of the timaeus differ greatly from that of any other of the platonic dialogues",
+      "context": "",
+      "approvedMemory": []
+    }
+  ]
+}

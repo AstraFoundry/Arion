@@ -1,0 +1,37 @@
+[
+  {
+    "id": "correction-feedback",
+    "url": "https://www.isca-archive.org/interspeech_2004/yu04f_interspeech.html",
+    "relevantMechanism": "Correction detection, diagnosis and pronunciation learning are separate."
+  },
+  {
+    "id": "cb-whisper-feedback",
+    "url": "https://www.isca-archive.org/interspeech_2024/monteiro24_interspeech.html",
+    "relevantMechanism": "Natural keyword audio from feedback addresses TTS enrollment limitations."
+  },
+  {
+    "id": "training-free-retrieval",
+    "url": "https://arxiv.org/html/2609.30694v1",
+    "relevantMechanism": "Localize errors, retrieve phonetic terms, re-recognize original audio."
+  },
+  {
+    "id": "ptc-bias",
+    "url": "https://arxiv.org/html/2609.28727v1",
+    "relevantMechanism": "Trained phoneme posteriors, temporal competition and acoustic verification."
+  },
+  {
+    "id": "implicit-context",
+    "url": "https://arxiv.org/html/2609.18680v1",
+    "relevantMechanism": "Implicit, explicit, unrelated and no-context controls; separate adaptation experiment."
+  },
+  {
+    "id": "g-spin",
+    "url": "https://aclanthology.org/2026.acl-industry.151/",
+    "relevantMechanism": "Phonetic candidate neighborhoods and contextual semantic ranking."
+  },
+  {
+    "id": "conservative-correction",
+    "url": "https://aclanthology.org/2024.emnlp-industry.20/",
+    "relevantMechanism": "Targets must be inferable from evidence; measure overcorrection."
+  }
+]

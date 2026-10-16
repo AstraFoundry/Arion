@@ -1,0 +1,356 @@
+{
+  "events": [
+    {
+      "id": "dev-teach-00-0",
+      "sessionId": "dev-prior-0",
+      "audio": {
+        "path": "dev-teach-00-0.wav",
+        "sha256": "535ffb51c1da7f2e1c9e7a623688a44a1a262c788136de96751b50ff34223b4b",
+        "durationMs": 3813.25,
+        "speakerId": "Tingting"
+      },
+      "userEditedText": "请把PostHog加入今天的技术清单。"
+    },
+    {
+      "id": "dev-teach-00-1",
+      "sessionId": "dev-prior-1",
+      "audio": {
+        "path": "dev-teach-00-1.wav",
+        "sha256": "e7db8f0c0dc63702ae4e933c6380710dec7f3afd4ceef1fd9735c76e3218c1b2",
+        "durationMs": 5083.8125,
+        "speakerId": "Tingting"
+      },
+      "userEditedText": "这次分享的主题是PostHog，材料已经准备好了。"
+    },
+    {
+      "id": "dev-teach-01-0",
+      "sessionId": "dev-prior-0",
+      "audio": {
+        "path": "dev-teach-01-0.wav",
+        "sha256": "f3179cc0b871c0a1a87c7709e42b32036605eaadc18df20f395f04c1f9f38959",
+        "durationMs": 3325.625,
+        "speakerId": "Tingting"
+      },
+      "userEditedText": "请把Temporal加入今天的技术清单。"
+    },
+    {
+      "id": "dev-teach-01-1",
+      "sessionId": "dev-prior-1",
+      "audio": {
+        "path": "dev-teach-01-1.wav",
+        "sha256": "6ca6764c5d6411f9cc51104623335c8b9a0adce8014363af9cbe9a6e87b85c3c",
+        "durationMs": 4549.8125,
+        "speakerId": "Tingting"
+      },
+      "userEditedText": "这次分享的主题是Temporal，材料已经准备好了。"
+    },
+    {
+      "id": "dev-teach-02-0",
+      "sessionId": "dev-prior-0",
+      "audio": {
+        "path": "dev-teach-02-0.wav",
+        "sha256": "6dec24f0757a71f08c4038adaf03575300c1d3afb2eec2bbc385dd8cdd6f4137",
+        "durationMs": 3557.875,
+        "speakerId": "Tingting"
+      },
+      "userEditedText": "请把Supabase加入今天的技术清单。"
+    },
+    {
+      "id": "dev-teach-02-1",
+      "sessionId": "dev-prior-1",
+      "audio": {
+        "path": "dev-teach-02-1.wav",
+        "sha256": "5d79992abdf40da13feac2be004d8dea6e337b8d3d4160b6c538b27001974272",
+        "durationMs": 4793.5625,
+        "speakerId": "Tingting"
+      },
+      "userEditedText": "这次分享的主题是Supabase，材料已经准备好了。"
+    },
+    {
+      "id": "dev-teach-03-0",
+      "sessionId": "dev-prior-0",
+      "audio": {
+        "path": "dev-teach-03-0.wav",
+        "sha256": "33fc3aefd89621122c0c9506a19e974d9a4b91c729112967c314e2aa242efeca",
+        "durationMs": 3174.75,
+        "speakerId": "Tingting"
+      },
+      "userEditedText": "请把Drizzle加入今天的技术清单。"
+    },
+    {
+      "id": "dev-teach-03-1",
+      "sessionId": "dev-prior-1",
+      "audio": {
+        "path": "dev-teach-03-1.wav",
+        "sha256": "dea614ecf70f6c94a2e90c6b997e3a23e628660f73192f71b0d88e9c76c08173",
+        "durationMs": 4398.875,
+        "speakerId": "Tingting"
+      },
+      "userEditedText": "这次分享的主题是Drizzle，材料已经准备好了。"
+    },
+    {
+      "id": "dev-teach-04-0",
+      "sessionId": "dev-prior-0",
+      "audio": {
+        "path": "dev-teach-04-0.wav",
+        "sha256": "67f4fd24356161233421a301c64d66b0386a4d4a8f5e7fa10572d47378083a21",
+        "durationMs": 3557.875,
+        "speakerId": "Tingting"
+      },
+      "userEditedText": "请把Convex加入今天的技术清单。"
+    },
+    {
+      "id": "dev-teach-04-1",
+      "sessionId": "dev-prior-1",
+      "audio": {
+        "path": "dev-teach-04-1.wav",
+        "sha256": "62c4428f9ae9bb258627b9c39defda0263af1a7ecee7b51af7fc323f01c1a25b",
+        "durationMs": 4793.5625,
+        "speakerId": "Tingting"
+      },
+      "userEditedText": "这次分享的主题是Convex，材料已经准备好了。"
+    },
+    {
+      "id": "dev-teach-05-0",
+      "sessionId": "dev-prior-0",
+      "audio": {
+        "path": "dev-teach-05-0.wav",
+        "sha256": "a6035c315aff096a6d00c9450084cb66e82d2ee491969b5c53d07a4a4cad10da",
+        "durationMs": 3093.4375,
+        "speakerId": "Tingting"
+      },
+      "userEditedText": "请把Turso加入今天的技术清单。"
+    },
+    {
+      "id": "dev-teach-05-1",
+      "sessionId": "dev-prior-1",
+      "audio": {
+        "path": "dev-teach-05-1.wav",
+        "sha256": "7e083a9a775d2b5d2258c2b213d0e62a16a1a04bc3607eeffc1086b75d203df8",
+        "durationMs": 4306.0,
+        "speakerId": "Tingting"
+      },
+      "userEditedText": "这次分享的主题是Turso，材料已经准备好了。"
+    },
+    {
+      "id": "dev-teach-06-0",
+      "sessionId": "dev-prior-0",
+      "audio": {
+        "path": "dev-teach-06-0.wav",
+        "sha256": "9e15067bb718995b91be0ea222d78d3b16357565ddd3b7336efdea27eea2e00c",
+        "durationMs": 3430.125,
+        "speakerId": "Tingting"
+      },
+      "userEditedText": "请把Svelte加入今天的技术清单。"
+    },
+    {
+      "id": "dev-teach-06-1",
+      "sessionId": "dev-prior-1",
+      "audio": {
+        "path": "dev-teach-06-1.wav",
+        "sha256": "dd54d5ac69db81a6c7cdc9dcecf00a227caa8e6ab31bfe60a28687e34b6f5ae8",
+        "durationMs": 4642.6875,
+        "speakerId": "Tingting"
+      },
+      "userEditedText": "这次分享的主题是Svelte，材料已经准备好了。"
+    },
+    {
+      "id": "dev-teach-07-0",
+      "sessionId": "dev-prior-0",
+      "audio": {
+        "path": "dev-teach-07-0.wav",
+        "sha256": "adfa6fae892a3f5f81f1da532baf6e4fbefbc4a8b0d59d7ee21811b65623b6e6",
+        "durationMs": 3058.625,
+        "speakerId": "Tingting"
+      },
+      "userEditedText": "请把Vite加入今天的技术清单。"
+    },
+    {
+      "id": "dev-teach-07-1",
+      "sessionId": "dev-prior-1",
+      "audio": {
+        "path": "dev-teach-07-1.wav",
+        "sha256": "76cd5c081b8975725c4c5c16279a4f27b1098b8087e360307911911a80835508",
+        "durationMs": 4259.5625,
+        "speakerId": "Tingting"
+      },
+      "userEditedText": "这次分享的主题是Vite，材料已经准备好了。"
+    },
+    {
+      "id": "dev-teach-08-0",
+      "sessionId": "dev-prior-0",
+      "audio": {
+        "path": "dev-teach-08-0.wav",
+        "sha256": "2d44725890d9efcaa50fe55b2547bf64cfa5fdb39031b89d109386b12439bef9",
+        "durationMs": 3383.6875,
+        "speakerId": "Tingting"
+      },
+      "userEditedText": "请把顾珩川加入今天的参会名单。"
+    },
+    {
+      "id": "dev-teach-08-1",
+      "sessionId": "dev-prior-1",
+      "audio": {
+        "path": "dev-teach-08-1.wav",
+        "sha256": "d2aec0ac89eb4021aa2bdff08e43cc4b7ad9dae39e52b34900f3e78251932e95",
+        "durationMs": 4445.3125,
+        "speakerId": "Tingting"
+      },
+      "userEditedText": "这次讨论由顾珩川主持，材料已经准备好了。"
+    },
+    {
+      "id": "dev-teach-09-0",
+      "sessionId": "dev-prior-0",
+      "audio": {
+        "path": "dev-teach-09-0.wav",
+        "sha256": "be4b4e489a5aefec834913742848645e4e2f5dcae37a7b8a0a4cfcc2b97b310e",
+        "durationMs": 3302.4375,
+        "speakerId": "Tingting"
+      },
+      "userEditedText": "请把温栩然加入今天的参会名单。"
+    },
+    {
+      "id": "dev-teach-09-1",
+      "sessionId": "dev-prior-1",
+      "audio": {
+        "path": "dev-teach-09-1.wav",
+        "sha256": "006ee54bf83028637acf002bfb01364c44727200d8d1ed787990f6da6aef374c",
+        "durationMs": 4352.4375,
+        "speakerId": "Tingting"
+      },
+      "userEditedText": "这次讨论由温栩然主持，材料已经准备好了。"
+    },
+    {
+      "id": "dev-teach-10-0",
+      "sessionId": "dev-prior-0",
+      "audio": {
+        "path": "dev-teach-10-0.wav",
+        "sha256": "db7ecaad6d1ef75e5a10ec709e97ce7a18787e8f059f37b0bdd5f66efeb40052",
+        "durationMs": 3151.5,
+        "speakerId": "Tingting"
+      },
+      "userEditedText": "请把棠溪加入今天的参会名单。"
+    },
+    {
+      "id": "dev-teach-10-1",
+      "sessionId": "dev-prior-1",
+      "audio": {
+        "path": "dev-teach-10-1.wav",
+        "sha256": "9a5654c9f897604cb034146d25d6fdf0776817cdbbedd1838d47a9b8000e12bf",
+        "durationMs": 4201.5,
+        "speakerId": "Tingting"
+      },
+      "userEditedText": "这次讨论由棠溪主持，材料已经准备好了。"
+    },
+    {
+      "id": "dev-teach-11-0",
+      "sessionId": "dev-prior-0",
+      "audio": {
+        "path": "dev-teach-11-0.wav",
+        "sha256": "c6e5b12e0d9f6be0a0266f67b97f3bae966f2c51ffaf96f448d25db067552c9b",
+        "durationMs": 3081.875,
+        "speakerId": "Tingting"
+      },
+      "userEditedText": "请把霁禾加入今天的参会名单。"
+    },
+    {
+      "id": "dev-teach-11-1",
+      "sessionId": "dev-prior-1",
+      "audio": {
+        "path": "dev-teach-11-1.wav",
+        "sha256": "59655c288380c223eb890e0859b5d379d466c81420dfbb31f85277abde41517c",
+        "durationMs": 4108.625,
+        "speakerId": "Tingting"
+      },
+      "userEditedText": "这次讨论由霁禾主持，材料已经准备好了。"
+    },
+    {
+      "id": "dev-teach-12-0",
+      "sessionId": "dev-prior-0",
+      "audio": {
+        "path": "dev-teach-12-0.wav",
+        "sha256": "9c7f255838d7f0408ed8798d2072eb7645504fd8cbef262dae798a69057537ed",
+        "durationMs": 2645.125,
+        "speakerId": "Samantha"
+      },
+      "userEditedText": "Please add Aisling to the meeting invitation today."
+    },
+    {
+      "id": "dev-teach-12-1",
+      "sessionId": "dev-prior-1",
+      "audio": {
+        "path": "dev-teach-12-1.wav",
+        "sha256": "16aa02816a605d1c59afcb88b9e97a031655f6cbdc5ccf844589e0cb2643b55a",
+        "durationMs": 2596.8125,
+        "speakerId": "Samantha"
+      },
+      "userEditedText": "I spoke with Aisling about the schedule this morning."
+    },
+    {
+      "id": "dev-teach-13-0",
+      "sessionId": "dev-prior-0",
+      "audio": {
+        "path": "dev-teach-13-0.wav",
+        "sha256": "ed5629e8b0ade19688c2c352d2a6725c6a4ddf02c50be079f2f8e70c258c852d",
+        "durationMs": 2471.0,
+        "speakerId": "Samantha"
+      },
+      "userEditedText": "Please add Eoin to the meeting invitation today."
+    },
+    {
+      "id": "dev-teach-13-1",
+      "sessionId": "dev-prior-1",
+      "audio": {
+        "path": "dev-teach-13-1.wav",
+        "sha256": "2da75e3e6532f344e5cfa72fd88f13bd77534282e8beb5d48e6d6916a7eef106",
+        "durationMs": 2422.6875,
+        "speakerId": "Samantha"
+      },
+      "userEditedText": "I spoke with Eoin about the schedule this morning."
+    },
+    {
+      "id": "dev-teach-14-0",
+      "sessionId": "dev-prior-0",
+      "audio": {
+        "path": "dev-teach-14-0.wav",
+        "sha256": "f51b6f2a400d3732bc6e0363b0e5648f30906f921cfec2c7e0923e4974f1036a",
+        "durationMs": 2668.375,
+        "speakerId": "Samantha"
+      },
+      "userEditedText": "Please add Cillian to the meeting invitation today."
+    },
+    {
+      "id": "dev-teach-14-1",
+      "sessionId": "dev-prior-1",
+      "audio": {
+        "path": "dev-teach-14-1.wav",
+        "sha256": "1a09d06cac49b66ffc8d151daf96300221fa9eb7878336b79a0ebd7cda897800",
+        "durationMs": 2608.4375,
+        "speakerId": "Samantha"
+      },
+      "userEditedText": "I spoke with Cillian about the schedule this morning."
+    },
+    {
+      "id": "dev-teach-15-0",
+      "sessionId": "dev-prior-0",
+      "audio": {
+        "path": "dev-teach-15-0.wav",
+        "sha256": "02d648a94381ce17f69a5c70c98794f78a20b916490b49ab975a021802260b53",
+        "durationMs": 2494.25,
+        "speakerId": "Samantha"
+      },
+      "userEditedText": "Please add Maeve to the meeting invitation today."
+    },
+    {
+      "id": "dev-teach-15-1",
+      "sessionId": "dev-prior-1",
+      "audio": {
+        "path": "dev-teach-15-1.wav",
+        "sha256": "2c72dcf49452f1552e650a9762235c97e7c85f7ec5b37153945d129dc7bfae76",
+        "durationMs": 2422.6875,
+        "speakerId": "Samantha"
+      },
+      "userEditedText": "I spoke with Maeve about the schedule this morning."
+    }
+  ]
+}

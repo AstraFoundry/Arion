@@ -1,0 +1,694 @@
+{
+  "teaching": [
+    {
+      "id": "dev-teach-00-0",
+      "term": "PostHog",
+      "language": "mixed"
+    },
+    {
+      "id": "dev-teach-00-1",
+      "term": "PostHog",
+      "language": "mixed"
+    },
+    {
+      "id": "dev-teach-01-0",
+      "term": "Temporal",
+      "language": "mixed"
+    },
+    {
+      "id": "dev-teach-01-1",
+      "term": "Temporal",
+      "language": "mixed"
+    },
+    {
+      "id": "dev-teach-02-0",
+      "term": "Supabase",
+      "language": "mixed"
+    },
+    {
+      "id": "dev-teach-02-1",
+      "term": "Supabase",
+      "language": "mixed"
+    },
+    {
+      "id": "dev-teach-03-0",
+      "term": "Drizzle",
+      "language": "mixed"
+    },
+    {
+      "id": "dev-teach-03-1",
+      "term": "Drizzle",
+      "language": "mixed"
+    },
+    {
+      "id": "dev-teach-04-0",
+      "term": "Convex",
+      "language": "mixed"
+    },
+    {
+      "id": "dev-teach-04-1",
+      "term": "Convex",
+      "language": "mixed"
+    },
+    {
+      "id": "dev-teach-05-0",
+      "term": "Turso",
+      "language": "mixed"
+    },
+    {
+      "id": "dev-teach-05-1",
+      "term": "Turso",
+      "language": "mixed"
+    },
+    {
+      "id": "dev-teach-06-0",
+      "term": "Svelte",
+      "language": "mixed"
+    },
+    {
+      "id": "dev-teach-06-1",
+      "term": "Svelte",
+      "language": "mixed"
+    },
+    {
+      "id": "dev-teach-07-0",
+      "term": "Vite",
+      "language": "mixed"
+    },
+    {
+      "id": "dev-teach-07-1",
+      "term": "Vite",
+      "language": "mixed"
+    },
+    {
+      "id": "dev-teach-08-0",
+      "term": "顾珩川",
+      "language": "zh"
+    },
+    {
+      "id": "dev-teach-08-1",
+      "term": "顾珩川",
+      "language": "zh"
+    },
+    {
+      "id": "dev-teach-09-0",
+      "term": "温栩然",
+      "language": "zh"
+    },
+    {
+      "id": "dev-teach-09-1",
+      "term": "温栩然",
+      "language": "zh"
+    },
+    {
+      "id": "dev-teach-10-0",
+      "term": "棠溪",
+      "language": "zh"
+    },
+    {
+      "id": "dev-teach-10-1",
+      "term": "棠溪",
+      "language": "zh"
+    },
+    {
+      "id": "dev-teach-11-0",
+      "term": "霁禾",
+      "language": "zh"
+    },
+    {
+      "id": "dev-teach-11-1",
+      "term": "霁禾",
+      "language": "zh"
+    },
+    {
+      "id": "dev-teach-12-0",
+      "term": "Aisling",
+      "language": "en"
+    },
+    {
+      "id": "dev-teach-12-1",
+      "term": "Aisling",
+      "language": "en"
+    },
+    {
+      "id": "dev-teach-13-0",
+      "term": "Eoin",
+      "language": "en"
+    },
+    {
+      "id": "dev-teach-13-1",
+      "term": "Eoin",
+      "language": "en"
+    },
+    {
+      "id": "dev-teach-14-0",
+      "term": "Cillian",
+      "language": "en"
+    },
+    {
+      "id": "dev-teach-14-1",
+      "term": "Cillian",
+      "language": "en"
+    },
+    {
+      "id": "dev-teach-15-0",
+      "term": "Maeve",
+      "language": "en"
+    },
+    {
+      "id": "dev-teach-15-1",
+      "term": "Maeve",
+      "language": "en"
+    }
+  ],
+  "samples": [
+    {
+      "id": "dev-recur-00-0",
+      "term": "PostHog",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "reference": "我们需要重新检查PostHog的配置文件。"
+    },
+    {
+      "id": "dev-recur-00-1",
+      "term": "PostHog",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "reference": "请确认PostHog有没有完成更新。"
+    },
+    {
+      "id": "dev-recur-00-2",
+      "term": "PostHog",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "reference": "关于PostHog的问题留到下午讨论。"
+    },
+    {
+      "id": "dev-recur-01-0",
+      "term": "Temporal",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "reference": "我们需要重新检查Temporal的配置文件。"
+    },
+    {
+      "id": "dev-recur-01-1",
+      "term": "Temporal",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "reference": "请确认Temporal有没有完成更新。"
+    },
+    {
+      "id": "dev-recur-01-2",
+      "term": "Temporal",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "reference": "关于Temporal的问题留到下午讨论。"
+    },
+    {
+      "id": "dev-recur-02-0",
+      "term": "Supabase",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "reference": "我们需要重新检查Supabase的配置文件。"
+    },
+    {
+      "id": "dev-recur-02-1",
+      "term": "Supabase",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "reference": "请确认Supabase有没有完成更新。"
+    },
+    {
+      "id": "dev-recur-02-2",
+      "term": "Supabase",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "reference": "关于Supabase的问题留到下午讨论。"
+    },
+    {
+      "id": "dev-recur-03-0",
+      "term": "Drizzle",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "reference": "我们需要重新检查Drizzle的配置文件。"
+    },
+    {
+      "id": "dev-recur-03-1",
+      "term": "Drizzle",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "reference": "请确认Drizzle有没有完成更新。"
+    },
+    {
+      "id": "dev-recur-03-2",
+      "term": "Drizzle",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "reference": "关于Drizzle的问题留到下午讨论。"
+    },
+    {
+      "id": "dev-recur-04-0",
+      "term": "Convex",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "reference": "我们需要重新检查Convex的配置文件。"
+    },
+    {
+      "id": "dev-recur-04-1",
+      "term": "Convex",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "reference": "请确认Convex有没有完成更新。"
+    },
+    {
+      "id": "dev-recur-04-2",
+      "term": "Convex",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "reference": "关于Convex的问题留到下午讨论。"
+    },
+    {
+      "id": "dev-recur-05-0",
+      "term": "Turso",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "reference": "我们需要重新检查Turso的配置文件。"
+    },
+    {
+      "id": "dev-recur-05-1",
+      "term": "Turso",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "reference": "请确认Turso有没有完成更新。"
+    },
+    {
+      "id": "dev-recur-05-2",
+      "term": "Turso",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "reference": "关于Turso的问题留到下午讨论。"
+    },
+    {
+      "id": "dev-recur-06-0",
+      "term": "Svelte",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "reference": "我们需要重新检查Svelte的配置文件。"
+    },
+    {
+      "id": "dev-recur-06-1",
+      "term": "Svelte",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "reference": "请确认Svelte有没有完成更新。"
+    },
+    {
+      "id": "dev-recur-06-2",
+      "term": "Svelte",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "reference": "关于Svelte的问题留到下午讨论。"
+    },
+    {
+      "id": "dev-recur-07-0",
+      "term": "Vite",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "reference": "我们需要重新检查Vite的配置文件。"
+    },
+    {
+      "id": "dev-recur-07-1",
+      "term": "Vite",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "reference": "请确认Vite有没有完成更新。"
+    },
+    {
+      "id": "dev-recur-07-2",
+      "term": "Vite",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "reference": "关于Vite的问题留到下午讨论。"
+    },
+    {
+      "id": "dev-recur-08-0",
+      "term": "顾珩川",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "recurring",
+      "reference": "明天请顾珩川带上会议记录。"
+    },
+    {
+      "id": "dev-recur-08-1",
+      "term": "顾珩川",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "recurring",
+      "reference": "我已经给顾珩川发过确认消息了。"
+    },
+    {
+      "id": "dev-recur-08-2",
+      "term": "顾珩川",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "recurring",
+      "reference": "关于这份材料，先听听顾珩川的意见。"
+    },
+    {
+      "id": "dev-recur-09-0",
+      "term": "温栩然",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "recurring",
+      "reference": "明天请温栩然带上会议记录。"
+    },
+    {
+      "id": "dev-recur-09-1",
+      "term": "温栩然",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "recurring",
+      "reference": "我已经给温栩然发过确认消息了。"
+    },
+    {
+      "id": "dev-recur-09-2",
+      "term": "温栩然",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "recurring",
+      "reference": "关于这份材料，先听听温栩然的意见。"
+    },
+    {
+      "id": "dev-recur-10-0",
+      "term": "棠溪",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "recurring",
+      "reference": "明天请棠溪带上会议记录。"
+    },
+    {
+      "id": "dev-recur-10-1",
+      "term": "棠溪",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "recurring",
+      "reference": "我已经给棠溪发过确认消息了。"
+    },
+    {
+      "id": "dev-recur-10-2",
+      "term": "棠溪",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "recurring",
+      "reference": "关于这份材料，先听听棠溪的意见。"
+    },
+    {
+      "id": "dev-recur-11-0",
+      "term": "霁禾",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "recurring",
+      "reference": "明天请霁禾带上会议记录。"
+    },
+    {
+      "id": "dev-recur-11-1",
+      "term": "霁禾",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "recurring",
+      "reference": "我已经给霁禾发过确认消息了。"
+    },
+    {
+      "id": "dev-recur-11-2",
+      "term": "霁禾",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "recurring",
+      "reference": "关于这份材料，先听听霁禾的意见。"
+    },
+    {
+      "id": "dev-recur-12-0",
+      "term": "Aisling",
+      "language": "en",
+      "unit": "wer",
+      "kind": "recurring",
+      "reference": "Could you ask Aisling to review the document?"
+    },
+    {
+      "id": "dev-recur-12-1",
+      "term": "Aisling",
+      "language": "en",
+      "unit": "wer",
+      "kind": "recurring",
+      "reference": "We are still waiting for a reply from Aisling."
+    },
+    {
+      "id": "dev-recur-12-2",
+      "term": "Aisling",
+      "language": "en",
+      "unit": "wer",
+      "kind": "recurring",
+      "reference": "The next presentation will be prepared by Aisling."
+    },
+    {
+      "id": "dev-recur-13-0",
+      "term": "Eoin",
+      "language": "en",
+      "unit": "wer",
+      "kind": "recurring",
+      "reference": "Could you ask Eoin to review the document?"
+    },
+    {
+      "id": "dev-recur-13-1",
+      "term": "Eoin",
+      "language": "en",
+      "unit": "wer",
+      "kind": "recurring",
+      "reference": "We are still waiting for a reply from Eoin."
+    },
+    {
+      "id": "dev-recur-13-2",
+      "term": "Eoin",
+      "language": "en",
+      "unit": "wer",
+      "kind": "recurring",
+      "reference": "The next presentation will be prepared by Eoin."
+    },
+    {
+      "id": "dev-recur-14-0",
+      "term": "Cillian",
+      "language": "en",
+      "unit": "wer",
+      "kind": "recurring",
+      "reference": "Could you ask Cillian to review the document?"
+    },
+    {
+      "id": "dev-recur-14-1",
+      "term": "Cillian",
+      "language": "en",
+      "unit": "wer",
+      "kind": "recurring",
+      "reference": "We are still waiting for a reply from Cillian."
+    },
+    {
+      "id": "dev-recur-14-2",
+      "term": "Cillian",
+      "language": "en",
+      "unit": "wer",
+      "kind": "recurring",
+      "reference": "The next presentation will be prepared by Cillian."
+    },
+    {
+      "id": "dev-recur-15-0",
+      "term": "Maeve",
+      "language": "en",
+      "unit": "wer",
+      "kind": "recurring",
+      "reference": "Could you ask Maeve to review the document?"
+    },
+    {
+      "id": "dev-recur-15-1",
+      "term": "Maeve",
+      "language": "en",
+      "unit": "wer",
+      "kind": "recurring",
+      "reference": "We are still waiting for a reply from Maeve."
+    },
+    {
+      "id": "dev-recur-15-2",
+      "term": "Maeve",
+      "language": "en",
+      "unit": "wer",
+      "kind": "recurring",
+      "reference": "The next presentation will be prepared by Maeve."
+    },
+    {
+      "id": "dev-control-00",
+      "term": "",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "ordinary_control",
+      "reference": "门口的师傅正在给窗户装玻璃。"
+    },
+    {
+      "id": "dev-control-01",
+      "term": "",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "ordinary_control",
+      "reference": "小朋友喜欢沿着溪水寻找石头。"
+    },
+    {
+      "id": "dev-control-02",
+      "term": "",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "ordinary_control",
+      "reference": "我们把温水倒进透明的杯子。"
+    },
+    {
+      "id": "dev-control-03",
+      "term": "",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "ordinary_control",
+      "reference": "明天周一先整理会议材料。"
+    },
+    {
+      "id": "dev-control-04",
+      "term": "",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "ordinary_control",
+      "reference": "这张表格需要重新核对一遍。"
+    },
+    {
+      "id": "dev-control-05",
+      "term": "",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "ordinary_control",
+      "reference": "请在打印之前确认纸张大小。"
+    },
+    {
+      "id": "dev-control-06",
+      "term": "",
+      "language": "en",
+      "unit": "wer",
+      "kind": "ordinary_control",
+      "reference": "The farmer walked slowly towards the gate."
+    },
+    {
+      "id": "dev-control-07",
+      "term": "",
+      "language": "en",
+      "unit": "wer",
+      "kind": "ordinary_control",
+      "reference": "She placed the glass beside the window."
+    },
+    {
+      "id": "dev-control-08",
+      "term": "",
+      "language": "en",
+      "unit": "wer",
+      "kind": "ordinary_control",
+      "reference": "Please leave enough room for the next paragraph."
+    },
+    {
+      "id": "dev-control-09",
+      "term": "",
+      "language": "en",
+      "unit": "wer",
+      "kind": "ordinary_control",
+      "reference": "I think the meeting starts after lunch."
+    },
+    {
+      "id": "dev-control-10",
+      "term": "",
+      "language": "en",
+      "unit": "wer",
+      "kind": "ordinary_control",
+      "reference": "The water is too cold for swimming."
+    },
+    {
+      "id": "dev-control-11",
+      "term": "",
+      "language": "en",
+      "unit": "wer",
+      "kind": "ordinary_control",
+      "reference": "We should finish the report before dinner."
+    },
+    {
+      "id": "dev-unlearned-00-0",
+      "term": "Fennel",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "unlearned_control",
+      "reference": "请检查Fennel的设置有没有保存。"
+    },
+    {
+      "id": "dev-unlearned-00-1",
+      "term": "Fennel",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "unlearned_control",
+      "reference": "明天再讨论Fennel的使用方法。"
+    },
+    {
+      "id": "dev-unlearned-01-0",
+      "term": "Deno",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "unlearned_control",
+      "reference": "请检查Deno的设置有没有保存。"
+    },
+    {
+      "id": "dev-unlearned-01-1",
+      "term": "Deno",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "unlearned_control",
+      "reference": "明天再讨论Deno的使用方法。"
+    },
+    {
+      "id": "dev-silence",
+      "term": "",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "nonspeech",
+      "reference": ""
+    },
+    {
+      "id": "dev-noise",
+      "term": "",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "nonspeech",
+      "reference": ""
+    }
+  ]
+}

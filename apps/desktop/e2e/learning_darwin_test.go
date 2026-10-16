@@ -12,6 +12,7 @@ import (
 	"arion.local/core/contracts"
 	"arion.local/core/domain"
 	"arion.local/desktop/infrastructure/macos"
+	"arion.local/desktop/infrastructure/wordseg"
 )
 
 // MEM-A09 / MEM-A11 on a real AppKit field: the production target adapter
@@ -47,7 +48,7 @@ func TestLearnFromEditInOwnedEditor(t *testing.T) {
 		t.Fatalf("commit: %+v %v", result, err)
 	}
 	reports := make(chan application.EditReport, 1)
-	tracker := &application.EditTracker{Poll: 100 * time.Millisecond, Idle: time.Second, Report: func(r application.EditReport) { reports <- r }}
+	tracker := &application.EditTracker{Segmenter: wordseg.Segmenter{}, Poll: 100 * time.Millisecond, Idle: time.Second, Report: func(r application.EditReport) { reports <- r }}
 	tracker.Track(targets, target.Target, id, inserted)
 	time.Sleep(400 * time.Millisecond)
 	if state := request("replace", map[string]any{"target": "A", "from": "jason", "to": "Jayson"}); state.A.Text != "ask Jayson about the release" {

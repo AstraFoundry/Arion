@@ -1,0 +1,583 @@
+{
+  "version": 1,
+  "license": "AGPL-3.0-only authored fixture text and scripts; audio synthesized locally by macOS system voices for this diagnostic",
+  "consent": true,
+  "provenance": "Single developer-authored diagnostic. All memory predates this authored test set. TTS speech, not natural microphone speech. Independent annotations and source-checkpoint parity are absent. Transliterated term references encode approved spelling, not literal Chinese surface rendering. Reused exposed v1 fixtures as development data for v2.",
+  "synthesis": "macOS say Tingting/Samantha, rate 170; ffmpeg mono PCM16 16kHz; original AIFF retained",
+  "samples": [
+    {
+      "id": "arion-a",
+      "split": "dev",
+      "sessionId": "current-arion-a",
+      "speakerId": "tts-Tingting",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "spokenText": "请打开阿里昂的设置页面。",
+      "reference": "请打开Arion的设置页面。",
+      "term": "Arion",
+      "voice": "Tingting",
+      "audio": {
+        "path": "arion-a.wav",
+        "sha256": "cba6cdecf5ece0eaa3918f8ce255ec28594d0c2f58ab588e4207d2fc7e5f81c1",
+        "durationMs": 2373.625
+      }
+    },
+    {
+      "id": "arion-b",
+      "split": "dev",
+      "sessionId": "current-arion-b",
+      "speakerId": "tts-Tingting",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "spokenText": "阿里昂这次更新需要重新启动。",
+      "reference": "Arion这次更新需要重新启动。",
+      "term": "Arion",
+      "voice": "Tingting",
+      "audio": {
+        "path": "arion-b.wav",
+        "sha256": "ff187a326a1b8aa1fb4842b8f776968f7b49ea861f29304e9820cbc5cf85856c",
+        "durationMs": 2829.25
+      }
+    },
+    {
+      "id": "mygo-a",
+      "split": "dev",
+      "sessionId": "current-mygo-a",
+      "speakerId": "tts-Tingting",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "spokenText": "这个窗口是用麦狗实现的。",
+      "reference": "这个窗口是用MyGo实现的。",
+      "term": "MyGo",
+      "voice": "Tingting",
+      "audio": {
+        "path": "mygo-a.wav",
+        "sha256": "537bbbfa56ab2ca2fc56072753aa4d5aa99907b91a32879300e82341f2bb955a",
+        "durationMs": 2401.9375
+      }
+    },
+    {
+      "id": "mygo-b",
+      "split": "dev",
+      "sessionId": "current-mygo-b",
+      "speakerId": "tts-Tingting",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "spokenText": "请检查麦狗的按钮样式。",
+      "reference": "请检查MyGo的按钮样式。",
+      "term": "MyGo",
+      "voice": "Tingting",
+      "audio": {
+        "path": "mygo-b.wav",
+        "sha256": "6f40bf922c098aceb93c10f83138b692b2d8138f7eef8acd2e080f938e3494dc",
+        "durationMs": 2362.0
+      }
+    },
+    {
+      "id": "redis-a",
+      "split": "dev",
+      "sessionId": "current-redis-a",
+      "speakerId": "tts-Tingting",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "spokenText": "缓存服务使用瑞迪斯。",
+      "reference": "缓存服务使用Redis。",
+      "term": "Redis",
+      "voice": "Tingting",
+      "audio": {
+        "path": "redis-a.wav",
+        "sha256": "66e5633cd432d88269579bb64bafba33f5918b60ecb9fc5061d2d6999ab51a9c",
+        "durationMs": 2089.3125
+      }
+    },
+    {
+      "id": "redis-b",
+      "split": "dev",
+      "sessionId": "current-redis-b",
+      "speakerId": "tts-Tingting",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "spokenText": "先别重启瑞迪斯服务。",
+      "reference": "先别重启Redis服务。",
+      "term": "Redis",
+      "voice": "Tingting",
+      "audio": {
+        "path": "redis-b.wav",
+        "sha256": "56dcb99a7986cad52b456819a57087ff13663318f2073606ee0804286a3feb22",
+        "durationMs": 2197.0
+      }
+    },
+    {
+      "id": "kubernetes-a",
+      "split": "dev",
+      "sessionId": "current-kubernetes-a",
+      "speakerId": "tts-Tingting",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "spokenText": "把服务部署到库伯内蒂斯。",
+      "reference": "把服务部署到Kubernetes。",
+      "term": "Kubernetes",
+      "voice": "Tingting",
+      "audio": {
+        "path": "kubernetes-a.wav",
+        "sha256": "0deac2d3b7a20dfa16efeeff9525c278fad9ebeb6b0e38dc8e195ed90f69b366",
+        "durationMs": 2426.5
+      }
+    },
+    {
+      "id": "kubernetes-b",
+      "split": "dev",
+      "sessionId": "current-kubernetes-b",
+      "speakerId": "tts-Tingting",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "spokenText": "库伯内蒂斯集群暂时不能升级。",
+      "reference": "Kubernetes集群暂时不能升级。",
+      "term": "Kubernetes",
+      "voice": "Tingting",
+      "audio": {
+        "path": "kubernetes-b.wav",
+        "sha256": "c7685f54ad7756c46a1136f1ff27b24cd24acf3180c91a5da054b5c5c0fbc435",
+        "durationMs": 3055.875
+      }
+    },
+    {
+      "id": "feishu-a",
+      "split": "dev",
+      "sessionId": "current-feishu-a",
+      "speakerId": "tts-Tingting",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "recurring",
+      "spokenText": "把会议记录发到飞书群里。",
+      "reference": "把会议记录发到飞书群里。",
+      "term": "飞书",
+      "voice": "Tingting",
+      "audio": {
+        "path": "feishu-a.wav",
+        "sha256": "f32e90811d559bb493073ad596dc7118c61056c6e90396c258d06d3954eb42c0",
+        "durationMs": 2461.3125
+      }
+    },
+    {
+      "id": "feishu-b",
+      "split": "dev",
+      "sessionId": "current-feishu-b",
+      "speakerId": "tts-Tingting",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "recurring",
+      "spokenText": "我没有收到飞书上的消息。",
+      "reference": "我没有收到飞书上的消息。",
+      "term": "飞书",
+      "voice": "Tingting",
+      "audio": {
+        "path": "feishu-b.wav",
+        "sha256": "82dfb123abbd9875df9a97b6a7e669ad994b75101db5aa12c8495ad7f83b4e81",
+        "durationMs": 2349.125
+      }
+    },
+    {
+      "id": "safari-a",
+      "split": "dev",
+      "sessionId": "current-safari-a",
+      "speakerId": "tts-Samantha",
+      "language": "en",
+      "unit": "wer",
+      "kind": "recurring",
+      "spokenText": "Open Safari and check the download page.",
+      "reference": "Open Safari and check the download page.",
+      "term": "Safari",
+      "voice": "Samantha",
+      "audio": {
+        "path": "safari-a.wav",
+        "sha256": "977cbe037819a62bf3ec0b132a099455636ce1d8db0e0bb9b2c05f8b9f8b1587",
+        "durationMs": 2385.0
+      }
+    },
+    {
+      "id": "safari-b",
+      "split": "dev",
+      "sessionId": "current-safari-b",
+      "speakerId": "tts-Tingting",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "spokenText": "请用沙发浏览器打开这个网页。",
+      "reference": "请用Safari浏览器打开这个网页。",
+      "term": "Safari",
+      "voice": "Tingting",
+      "audio": {
+        "path": "safari-b.wav",
+        "sha256": "7c9fbb78d45a9e3e07c36fbc2001051e4270848d25ad4d5315489f3ea66790b6",
+        "durationMs": 2919.3125
+      }
+    },
+    {
+      "id": "openai-a",
+      "split": "dev",
+      "sessionId": "current-openai-a",
+      "speakerId": "tts-Samantha",
+      "language": "en",
+      "unit": "wer",
+      "kind": "recurring",
+      "spokenText": "We use Open AI models for this project.",
+      "reference": "We use OpenAI models for this project.",
+      "term": "OpenAI",
+      "voice": "Samantha",
+      "audio": {
+        "path": "openai-a.wav",
+        "sha256": "a1fd05cb11d34fc38ba37e72e0f686795767e26d2bcc5745037b04addcb84197",
+        "durationMs": 2440.5
+      }
+    },
+    {
+      "id": "openai-b",
+      "split": "dev",
+      "sessionId": "current-openai-b",
+      "speakerId": "tts-Samantha",
+      "language": "en",
+      "unit": "wer",
+      "kind": "recurring",
+      "spokenText": "Please check the Open AI documentation.",
+      "reference": "Please check the OpenAI documentation.",
+      "term": "OpenAI",
+      "voice": "Samantha",
+      "audio": {
+        "path": "openai-b.wav",
+        "sha256": "d41cf9cd008a8e7eb56349744fa8411aafcd658d9dc046570eb31c6edd579cee",
+        "durationMs": 2459.375
+      }
+    },
+    {
+      "id": "sql-a",
+      "split": "dev",
+      "sessionId": "current-sql-a",
+      "speakerId": "tts-Samantha",
+      "language": "en",
+      "unit": "wer",
+      "kind": "recurring",
+      "spokenText": "Run the sequel query against the database.",
+      "reference": "Run the SQL query against the database.",
+      "term": "SQL",
+      "voice": "Samantha",
+      "audio": {
+        "path": "sql-a.wav",
+        "sha256": "b81d8d20b9c063d963e390875181007f3f76d2492e43c0788650d4e40cd62536",
+        "durationMs": 2317.5
+      }
+    },
+    {
+      "id": "sql-b",
+      "split": "dev",
+      "sessionId": "current-sql-b",
+      "speakerId": "tts-Samantha",
+      "language": "en",
+      "unit": "wer",
+      "kind": "recurring",
+      "spokenText": "Do not change the sequel schema.",
+      "reference": "Do not change the SQL schema.",
+      "term": "SQL",
+      "voice": "Samantha",
+      "audio": {
+        "path": "sql-b.wav",
+        "sha256": "08c68a3603a5a475594923d3cd7e3841058a54860f91ea85d116818b9173c695",
+        "durationMs": 1744.9375
+      }
+    },
+    {
+      "id": "github-a",
+      "split": "dev",
+      "sessionId": "current-github-a",
+      "speakerId": "tts-Tingting",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "selection_miss",
+      "spokenText": "把代码推送到吉特哈布。",
+      "reference": "把代码推送到GitHub。",
+      "term": "GitHub",
+      "voice": "Tingting",
+      "audio": {
+        "path": "github-a.wav",
+        "sha256": "720e169a90e7e85a78b4e3d75887da5e2f614765d75a3929062352e7db31626f",
+        "durationMs": 2263.9375
+      }
+    },
+    {
+      "id": "github-b",
+      "split": "dev",
+      "sessionId": "current-github-b",
+      "speakerId": "tts-Tingting",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "selection_miss",
+      "spokenText": "请检查吉特哈布上的问题列表。",
+      "reference": "请检查GitHub上的问题列表。",
+      "term": "GitHub",
+      "voice": "Tingting",
+      "audio": {
+        "path": "github-b.wav",
+        "sha256": "84ad4321d8207c0c940df074a3c127db74d0379cef746427b45a56af7d773a6e",
+        "durationMs": 3081.875
+      }
+    },
+    {
+      "id": "codex-a",
+      "split": "dev",
+      "sessionId": "current-codex-a",
+      "speakerId": "tts-Tingting",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "selection_miss",
+      "spokenText": "用扣代克斯检查这个修改。",
+      "reference": "用Codex检查这个修改。",
+      "term": "Codex",
+      "voice": "Tingting",
+      "audio": {
+        "path": "codex-a.wav",
+        "sha256": "5423ffc57e83bd5e00a53137e64033b0e7c30889af2cf85ee28eb9528941891d",
+        "durationMs": 2615.625
+      }
+    },
+    {
+      "id": "codex-b",
+      "split": "dev",
+      "sessionId": "current-codex-b",
+      "speakerId": "tts-Tingting",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "selection_miss",
+      "spokenText": "扣代克斯已经完成了代码审查。",
+      "reference": "Codex已经完成了代码审查。",
+      "term": "Codex",
+      "voice": "Tingting",
+      "audio": {
+        "path": "codex-b.wav",
+        "sha256": "4f00e8f3a6f8ce56a83269dcda523f416155be11003957bbadd2d96bf9170862",
+        "durationMs": 2997.8125
+      }
+    },
+    {
+      "id": "sofa-a",
+      "split": "dev",
+      "sessionId": "current-sofa-a",
+      "speakerId": "tts-Tingting",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "homophone_control",
+      "spokenText": "客厅的沙发需要清洗。",
+      "reference": "客厅的沙发需要清洗。",
+      "term": "沙发",
+      "voice": "Tingting",
+      "audio": {
+        "path": "sofa-a.wav",
+        "sha256": "d9dd21e7b9c564261cd78d350d1e60fd05f72bab3a5fee0d7575b3bb65e32b9e",
+        "durationMs": 2023.3124999999998
+      }
+    },
+    {
+      "id": "sofa-b",
+      "split": "dev",
+      "sessionId": "current-sofa-b",
+      "speakerId": "tts-Tingting",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "homophone_control",
+      "spokenText": "我想买一个灰色的沙发。",
+      "reference": "我想买一个灰色的沙发。",
+      "term": "沙发",
+      "voice": "Tingting",
+      "audio": {
+        "path": "sofa-b.wav",
+        "sha256": "7cdd06c817de3983fa152d878761aa8efc0ca6bc2b006a5f3b29ecca8a0b74fc",
+        "durationMs": 2058.875
+      }
+    },
+    {
+      "id": "sequel-a",
+      "split": "dev",
+      "sessionId": "current-sequel-a",
+      "speakerId": "tts-Samantha",
+      "language": "en",
+      "unit": "wer",
+      "kind": "homophone_control",
+      "spokenText": "The sequel to this movie was disappointing.",
+      "reference": "The sequel to this movie was disappointing.",
+      "term": "sequel",
+      "voice": "Samantha",
+      "audio": {
+        "path": "sequel-a.wav",
+        "sha256": "254207e67f3746b6906591f8dbfa2e212ef287c191972bb37a9282ab8d570a05",
+        "durationMs": 2252.8125
+      }
+    },
+    {
+      "id": "sequel-b",
+      "split": "dev",
+      "sessionId": "current-sequel-b",
+      "speakerId": "tts-Samantha",
+      "language": "en",
+      "unit": "wer",
+      "kind": "homophone_control",
+      "spokenText": "She wrote a sequel to her first novel.",
+      "reference": "She wrote a sequel to her first novel.",
+      "term": "sequel",
+      "voice": "Samantha",
+      "audio": {
+        "path": "sequel-b.wav",
+        "sha256": "905825bec25ae3ac9b9eea3c59883f9012492d91e5cf5854907b1a0a806dd117",
+        "durationMs": 1972.0
+      }
+    },
+    {
+      "id": "reverse-a",
+      "split": "dev",
+      "sessionId": "current-reverse-a",
+      "speakerId": "tts-Tingting",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "reverse_control",
+      "spokenText": "我的眼睛有点不舒服。",
+      "reference": "我的眼睛有点不舒服。",
+      "term": "眼睛",
+      "voice": "Tingting",
+      "audio": {
+        "path": "reverse-a.wav",
+        "sha256": "00772c18ff81a01d74bdaf882c8dce69b012c8adbdae0f80950bf952e818a75c",
+        "durationMs": 1896.3125
+      }
+    },
+    {
+      "id": "reverse-b",
+      "split": "dev",
+      "sessionId": "current-reverse-b",
+      "speakerId": "tts-Tingting",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "reverse_control",
+      "spokenText": "燕京大学的历史很有意思。",
+      "reference": "燕京大学的历史很有意思。",
+      "term": "燕京",
+      "voice": "Tingting",
+      "audio": {
+        "path": "reverse-b.wav",
+        "sha256": "15f1b2840065c1f718e001be10c3a7acbfac038f3589505bf9e90441ce6ea592",
+        "durationMs": 2324.3125
+      }
+    },
+    {
+      "id": "expired-a",
+      "split": "dev",
+      "sessionId": "current-expired-a",
+      "speakerId": "tts-Tingting",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "expired_control",
+      "spokenText": "向量索引用丘德兰特来管理。",
+      "reference": "向量索引用Qdrant来管理。",
+      "term": "Qdrant",
+      "voice": "Tingting",
+      "audio": {
+        "path": "expired-a.wav",
+        "sha256": "0c4cdaf7a26836e3fa991002c6df593eeab5253fb5f9d86eacac0feeecdef71b",
+        "durationMs": 2893.5625
+      }
+    },
+    {
+      "id": "expired-b",
+      "split": "dev",
+      "sessionId": "current-expired-b",
+      "speakerId": "tts-Tingting",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "expired_control",
+      "spokenText": "丘德兰特今天没有报错。",
+      "reference": "Qdrant今天没有报错。",
+      "term": "Qdrant",
+      "voice": "Tingting",
+      "audio": {
+        "path": "expired-b.wav",
+        "sha256": "5267662f91cbde9859f08228d33329625bb01349fe43ee91cfd1e6dc8ed82728",
+        "durationMs": 2338.8125
+      }
+    },
+    {
+      "id": "ordinary-zh",
+      "split": "dev",
+      "sessionId": "current-ordinary-zh",
+      "speakerId": "tts-Tingting",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "ordinary_control",
+      "spokenText": "明天下午我们一起去公园散步。",
+      "reference": "明天下午我们一起去公园散步。",
+      "term": "",
+      "voice": "Tingting",
+      "audio": {
+        "path": "ordinary-zh.wav",
+        "sha256": "ff857d2028a9e9b8df9482f617e5af23f8dcec40d9cec8eb24c2ca8181a02a74",
+        "durationMs": 2906.5
+      }
+    },
+    {
+      "id": "ordinary-en",
+      "split": "dev",
+      "sessionId": "current-ordinary-en",
+      "speakerId": "tts-Samantha",
+      "language": "en",
+      "unit": "wer",
+      "kind": "ordinary_control",
+      "spokenText": "Please close the window before you leave.",
+      "reference": "Please close the window before you leave.",
+      "term": "",
+      "voice": "Samantha",
+      "audio": {
+        "path": "ordinary-en.wav",
+        "sha256": "ebc47292714395bcdc4c832f211acc5149ddcc8c58e4f06e0c4d220efff1e395",
+        "durationMs": 2076.25
+      }
+    },
+    {
+      "id": "silence",
+      "split": "dev",
+      "sessionId": "current-silence",
+      "speakerId": "generated-nonspeech",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "nonspeech",
+      "spokenText": "",
+      "reference": "",
+      "term": "",
+      "audio": {
+        "path": "silence.wav",
+        "sha256": "20eaebffe1816e0ffa6f7f854f5ef4ea80d5349faaf0ce1fec1b713e7fde58fa",
+        "durationMs": 2000
+      }
+    },
+    {
+      "id": "noise",
+      "split": "dev",
+      "sessionId": "current-noise",
+      "speakerId": "generated-nonspeech",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "nonspeech",
+      "spokenText": "",
+      "reference": "",
+      "term": "",
+      "audio": {
+        "path": "noise.wav",
+        "sha256": "135a7843273d0f2330a2d7e219d88f87d2e24d03f01a816a06bf8f7489e7e98f",
+        "durationMs": 2000
+      }
+    }
+  ]
+}

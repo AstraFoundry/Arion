@@ -121,3 +121,11 @@ DSK-A11 needs a packaged `Arion.app` and a person: the drop of Arion's file URL 
 - Release tests reject missing/mismatched signing keys, incomplete platform sets, same-size archive tampering, substituted versions/origins/platforms and size changes. Unsigned installer collection passed for the packaged macOS app. Test keys are ephemeral fixtures; no production key was generated or configured.
 
 The updated hosted runner matrix has not run from these local changes. Intel/Windows runtime acceptance, system signing/notarization, a complete signed release and a published old-to-new update remain open. No GitHub release was created or changed by this validation.
+
+## Full OCR delivery and correction word boundaries
+
+On macOS arm64, regression tests cover full OCR beyond the former 1,200-character cutoff in both preview and final requests, independent screen/cursor gates, unsafe context exclusion, same-place history and source-separated prompt rendering. The production worker retains its explicit token-budget rejection; screen text is no longer cut to a character count.
+
+Native Core Foundation segmentation and code-point offset conversion (including emoji before a correction) are tested. The real extraction/encrypted-store/reload path learns 公示 → 公式 and recalls it in different wording, and persists both 爆吗 → 报吗 and 播吗 → 报吗. Domain tests cover changes merged within a word, unchanged numeric/grammar exclusions and invalid/missing segmentation. Unknown single-character boundaries are deliberately skipped, including 全免 → 全棉 when the OS splits both compounds into single characters. Older stored fragments cannot be repaired without their original sentences and are left for user review.
+
+`pnpm core:check`, `pnpm desktop:check` (tests and vet), `pnpm docs:check`, focused race tests, native segmentation/store tests and CGO-disabled research helper tests pass. These are request/extraction/persistence checks with authored text, not a measured increase in 1.7B model quality. No new screen-capture, native field-edit or Windows runtime result is claimed; prior benchmark numbers remain historical.

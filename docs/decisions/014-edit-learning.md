@@ -30,7 +30,7 @@ Arion had approved vocabulary that a user could type in Settings, and every entr
 - the next dictation starts;
 - 60 s pass.
 
-**Extraction** (`domain.ExtractCorrections`). Every change must lie inside the inserted text, with the text around it intact. The insertion and the edited text are compared word by word for Latin and character by character for CJK. Each change becomes one pair, up to 16 characters per side and three changes per edit. A one-character CJK change is widened with an unchanged neighbouring character. Nothing is learned from:
+**Extraction** (`domain.ExtractCorrections`). Every change must lie inside the inserted text, with the text around it intact. The insertion and the edited text are compared word by word for Latin and character by character for CJK. For CJK changes, the local word-segmentation port supplies boundaries for both the inserted and corrected text. The domain retains complete words on both sides and merges changes within a word before projecting unchanged edges. Each pair is limited to 16 characters per side and three changes per edit. A standalone one-character word is learned only with an adjacent complete question particle (for example 爆吗 → 报吗); other ambiguous boundaries are skipped. No arbitrary neighboring character is appended. macOS uses Core Foundation via the existing purego runtime; missing/invalid segmentation yields the content-free `words_unavailable` outcome, with no guessed pair. Nothing is learned from:
 
 - typing before or after the insertion;
 - deletions or insertions alone;
@@ -63,10 +63,11 @@ Arion had approved vocabulary that a user could type in Settings, and every entr
 - The prompt no longer grows with the vocabulary.
 - Replacement no longer slows with the number of entries.
 - Field text read for learning is held only in the tracker's memory and dropped when it settles.
+- Word boundaries are linguistic evidence, not a guarantee for unknown names or compounds. Ambiguous edits may teach nothing (for example 全免 → 全棉 when the OS returns single characters); users can still add explicit pairs. Existing stored fragments are not rewritten automatically because their original sentence context was not retained.
 - A pair applies after a single correction, so a mistaken edit is applied until it is undone or corrected back. Content changes that look like misrecognitions, such as one weekday replaced by another, are learned. The undo, the Settings list and reversal handling are the safeguards.
 - Edits Arion cannot see are not learned: Windows (no field reading yet), IME compositions, hosts whose Accessibility value is unreadable, and edits after the field lost focus.
 - A user who rewrites polished text back to their own wording teaches that wording, as with Typeless.
-- Measured in [edit-learning-v1](../../benchmarks/results/edit-learning-v1/README.md):
+- Historical extraction/recall results before the word-boundary change, measured in [edit-learning-v1](../../benchmarks/results/edit-learning-v1/README.md):
   - On labelled edits, pair precision is 0.95 and recall 0.91, with nothing learned from 23 non-corrections. That set is a development set.
   - Held out, memory from dev corrections changed none of 150 test dictations: no benefit and no harm, because the errors did not recur.
   - When the same sentences are re-dictated, errors drop from 8.5 % to 3.6 % (mixed technical speech 23.9 % → 7.3 %), with 1 of 114 worsened.

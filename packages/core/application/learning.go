@@ -56,6 +56,8 @@ type EditReport struct {
 // the corrections the user made in it. It never blocks a commit: Track
 // returns at once and every read is bounded by EditReadBudget.
 type EditTracker struct {
+	// Segmenter supplies local word boundaries for CJK corrections.
+	Segmenter domain.WordSegmenter
 	// Report receives each settled edit on the tracker's goroutine.
 	Report func(EditReport)
 	// Poll, Idle and Max override the timings for tests.
@@ -204,7 +206,7 @@ func (t *EditTracker) run(tr *tracking) {
 		if baseline != "" && why != SettleAbandon {
 			// A cleared or unfocused field is judged by the last text seen
 			// in it, as Typeless does when a message is sent.
-			report.Outcome = domain.ExtractCorrections(domain.FieldEdit{Inserted: tr.inserted, Baseline: baseline, Settled: last})
+			report.Outcome = domain.ExtractCorrections(domain.FieldEdit{Inserted: tr.inserted, Baseline: baseline, Settled: last}, t.Segmenter)
 		} else if why == SettleNext && baseline == "" {
 			report.Settlement = SettleBaseline
 		}

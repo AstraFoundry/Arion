@@ -1,0 +1,48 @@
+{
+  "status": "complete_verified",
+  "attempts": [
+    {
+      "kind": "github_rest_metadata",
+      "outcome": "failed_http_403_rate_limit",
+      "replacement": "git ls-remote and commit-pinned raw source, source archive checked against raw hash"
+    },
+    {
+      "kind": "uv_git_install",
+      "outcome": "cancelled_after_slow_full_history_fetch",
+      "replacement": "same commit source tarball, exact qwen3_asr.py hash matched"
+    },
+    {
+      "kind": "hf_snapshot_xet",
+      "outcome": "cancelled_zero_weight_bytes_after_about_three_minutes",
+      "replacement": "same revision HTTP download"
+    },
+    {
+      "kind": "single_http_download",
+      "outcome": "cancelled_after_slow_transfer",
+      "retainedPartial": ".workspace/ablation-models/qwen3-asr-1.7b-mlx8/model.http-part",
+      "replacement": "range-checked parallel HTTP transfer of identical pinned weight"
+    },
+    {
+      "kind": "range_http_16",
+      "outcome": "cancelled_to_resume_complete_ranges_with_32_connections"
+    },
+    {
+      "kind": "range_http_32_attempt2",
+      "outcome": "failed_short_transfer_103",
+      "completedRanges": 207,
+      "shortRanges": [
+        103,
+        106,
+        112
+      ],
+      "missingRanges": 84,
+      "replacement": "Retry incomplete ranges only, retaining partial files and validating final complete-file SHA256"
+    },
+    {
+      "kind": "range_http_32_attempt3",
+      "outcome": "complete_all_ranges_and_full_sha256_verified"
+    }
+  ],
+  "sourceArchiveSha256": "8036f5aaea1ba357993a20f6b144b8c428e92228cad6e45f5006a8a67c3cc8cc",
+  "verifiedWeightSha256": "bf304b009cc7eca79283056f787b44c952d24ac22cec787b39732bba3c23c13c"
+}

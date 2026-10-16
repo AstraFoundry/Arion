@@ -1,0 +1,12 @@
+{
+  "benchmarks/reproduction/user-modify-asr-v3/run.py": "benchmarks/reproduction/user-modify-asr-v3/production-source/benchmarks/reproduction/user-modify-asr-v3/run.py",
+  "benchmarks/reproduction/user-modify-asr-v3/common.py": "benchmarks/reproduction/user-modify-asr-v3/production-source/benchmarks/reproduction/user-modify-asr-v3/common.py",
+  "benchmarks/reproduction/user-modify-asr-v3/retrieval.py": "benchmarks/reproduction/user-modify-asr-v3/production-source/benchmarks/reproduction/user-modify-asr-v3/retrieval.py",
+  "benchmarks/reproduction/user-modify-asr-v2/run.py": "benchmarks/reproduction/user-modify-asr-v3/production-source/benchmarks/reproduction/user-modify-asr-v2/run.py",
+  "benchmarks/reproduction/user-modify-asr-v2/policy.py": "benchmarks/reproduction/user-modify-asr-v3/production-source/benchmarks/reproduction/user-modify-asr-v2/policy.py",
+  "benchmarks/reproduction/user-modify-asr-v1/run.py": "benchmarks/reproduction/user-modify-asr-v3/production-source/benchmarks/reproduction/user-modify-asr-v1/run.py",
+  "apps/desktop/cmd/arion-memory-loop/main.go": "benchmarks/reproduction/user-modify-asr-v3/production-source/apps/desktop/cmd/arion-memory-loop/main.go",
+  "apps/desktop/infrastructure/vocabulary/vocabulary.go": "benchmarks/reproduction/user-modify-asr-v3/production-source/apps/desktop/infrastructure/vocabulary/vocabulary.go",
+  "packages/core/domain/learning.go": "benchmarks/reproduction/user-modify-asr-v3/production-source/packages/core/domain/learning.go",
+  "packages/core/domain/memory.go": "benchmarks/reproduction/user-modify-asr-v3/production-source/packages/core/domain/memory.go"
+}

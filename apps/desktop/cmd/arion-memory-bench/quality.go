@@ -12,6 +12,7 @@ import (
 	"unicode"
 
 	"arion.local/core/domain"
+	"arion.local/desktop/infrastructure/wordseg"
 )
 
 // caseFile is benchmarks/configs/edit-learning-cases.json.
@@ -62,7 +63,10 @@ func scoreCases(path string) (extractionReport, error) {
 		r.Cases++
 		edit := domain.FieldEdit{Inserted: c.Inserted, Baseline: c.Baseline, Settled: c.Settled}
 		start := time.Now()
-		out := domain.ExtractCorrections(edit)
+		out := domain.ExtractCorrections(edit, wordseg.Segmenter{})
+		if out.Verdict == domain.EditWordsUnavailable {
+			return extractionReport{}, fmt.Errorf("local linguistic word segmentation unavailable")
+		}
 		latencies = append(latencies, float64(time.Since(start).Nanoseconds())/1e3)
 		r.Verdicts[string(out.Verdict)]++
 		switch c.Kind {
@@ -212,7 +216,7 @@ func replay(corpusPath, devPath, devVariant, testPath, testVariant, rulesVariant
 		}
 		r.DevSamples++
 		inserted := domain.Correct(hyp, base).Text
-		out := domain.ExtractCorrections(domain.FieldEdit{Inserted: inserted, Baseline: inserted, Settled: s.Reference})
+		out := domain.ExtractCorrections(domain.FieldEdit{Inserted: inserted, Baseline: inserted, Settled: s.Reference}, wordseg.Segmenter{})
 		r.DevVerdicts[string(out.Verdict)]++
 		for i, pair := range out.Pairs {
 			memory, _ = domain.Learn(memory, pair, fmt.Sprintf("%s-%d", s.ID, i), now)

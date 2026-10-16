@@ -1,0 +1,1248 @@
+{
+  "version": 2,
+  "consent": true,
+  "license": "Authored text/scripts AGPL-3.0-only; synthetic system-voice audio for research; natural reads retain original source corpus terms.",
+  "provenance": "New authored test sentences and different TTS voices frozen before v2 development tuning. Natural controls are exposed historical regression read speech, not a new unseen corpus. No independent human annotation. Memory unchanged from v1.",
+  "samples": [
+    {
+      "id": "fresh-arion-1",
+      "split": "test",
+      "sessionId": "new-session-arion-1",
+      "speakerId": "tts-Eddy (中文（中国大陆）)",
+      "voice": "Eddy (中文（中国大陆）)",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "reference": "今天先测试Arion的快捷键。",
+      "spokenText": "今天先测试阿里昂的快捷键。",
+      "term": "Arion",
+      "audio": {
+        "path": "arion-1.wav",
+        "sha256": "9f2a588a277224434d21f41367199b91cd3c2ab34e89d78507ec356d14068ca6",
+        "durationMs": 2904.625
+      }
+    },
+    {
+      "id": "fresh-arion-2",
+      "split": "test",
+      "sessionId": "new-session-arion-2",
+      "speakerId": "tts-Eddy (中文（中国大陆）)",
+      "voice": "Eddy (中文（中国大陆）)",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "reference": "Arion的麦克风权限还没有打开。",
+      "spokenText": "阿里昂的麦克风权限还没有打开。",
+      "term": "Arion",
+      "audio": {
+        "path": "arion-2.wav",
+        "sha256": "0639a790fa526d5a670a6bccc30df6450f3dc53011d6bccf244b1d1169b23f65",
+        "durationMs": 3262.5625
+      }
+    },
+    {
+      "id": "fresh-mygo-1",
+      "split": "test",
+      "sessionId": "new-session-mygo-1",
+      "speakerId": "tts-Eddy (中文（中国大陆）)",
+      "voice": "Eddy (中文（中国大陆）)",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "reference": "我们决定用MyGo制作这个面板。",
+      "spokenText": "我们决定用麦狗制作这个面板。",
+      "term": "MyGo",
+      "audio": {
+        "path": "mygo-1.wav",
+        "sha256": "de3ba1250896a3927029b1e9f5b766de43e3e90fa61f3e96a5bdb72b66a85417",
+        "durationMs": 2766.375
+      }
+    },
+    {
+      "id": "fresh-mygo-2",
+      "split": "test",
+      "sessionId": "new-session-mygo-2",
+      "speakerId": "tts-Eddy (中文（中国大陆）)",
+      "voice": "Eddy (中文（中国大陆）)",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "reference": "MyGo的输入框需要支持中文。",
+      "spokenText": "麦狗的输入框需要支持中文。",
+      "term": "MyGo",
+      "audio": {
+        "path": "mygo-2.wav",
+        "sha256": "041b6d3a12af3dd1c3163f77ec47574ccfa6388c9fa89fb9cb88c8687d55e5fb",
+        "durationMs": 2942.375
+      }
+    },
+    {
+      "id": "fresh-redis-1",
+      "split": "test",
+      "sessionId": "new-session-redis-1",
+      "speakerId": "tts-Eddy (中文（中国大陆）)",
+      "voice": "Eddy (中文（中国大陆）)",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "reference": "Redis里的缓存暂时不要删除。",
+      "spokenText": "瑞迪斯里的缓存暂时不要删除。",
+      "term": "Redis",
+      "audio": {
+        "path": "redis-1.wav",
+        "sha256": "0d322b67fcf6bea3f602fdc147f4b77dc5f5d7eae7e461b6e2e2637270396db4",
+        "durationMs": 3278.5625
+      }
+    },
+    {
+      "id": "fresh-redis-2",
+      "split": "test",
+      "sessionId": "new-session-redis-2",
+      "speakerId": "tts-Eddy (中文（中国大陆）)",
+      "voice": "Eddy (中文（中国大陆）)",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "reference": "请确认Redis是否已经连接成功。",
+      "spokenText": "请确认瑞迪斯是否已经连接成功。",
+      "term": "Redis",
+      "audio": {
+        "path": "redis-2.wav",
+        "sha256": "6c4aa51d9b67abf7ab3faca418c7d03da0acd723a44f952c640d3c0492342e2e",
+        "durationMs": 3288.4375
+      }
+    },
+    {
+      "id": "fresh-kubernetes-1",
+      "split": "test",
+      "sessionId": "new-session-kubernetes-1",
+      "speakerId": "tts-Eddy (中文（中国大陆）)",
+      "voice": "Eddy (中文（中国大陆）)",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "reference": "这个问题只在Kubernetes里出现。",
+      "spokenText": "这个问题只在库伯内蒂斯里出现。",
+      "term": "Kubernetes",
+      "audio": {
+        "path": "kubernetes-1.wav",
+        "sha256": "1c9d21147e510577eaa9c804db2cffb99cc9cbc82219a603ababb9d3582133a7",
+        "durationMs": 3112.5625
+      }
+    },
+    {
+      "id": "fresh-kubernetes-2",
+      "split": "test",
+      "sessionId": "new-session-kubernetes-2",
+      "speakerId": "tts-Eddy (中文（中国大陆）)",
+      "voice": "Eddy (中文（中国大陆）)",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "reference": "明天检查Kubernetes的资源用量。",
+      "spokenText": "明天检查库伯内蒂斯的资源用量。",
+      "term": "Kubernetes",
+      "audio": {
+        "path": "kubernetes-2.wav",
+        "sha256": "86336596e8adde1510565c64819b2b8c83e9fc12022fd28f45d950d9da24922c",
+        "durationMs": 3454.375
+      }
+    },
+    {
+      "id": "fresh-feishu-1",
+      "split": "test",
+      "sessionId": "new-session-feishu-1",
+      "speakerId": "tts-Eddy (中文（中国大陆）)",
+      "voice": "Eddy (中文（中国大陆）)",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "recurring",
+      "reference": "飞书里的那份表格已经更新了。",
+      "spokenText": "飞书里的那份表格已经更新了。",
+      "term": "飞书",
+      "audio": {
+        "path": "feishu-1.wav",
+        "sha256": "bc727d2b736b1da088d6baa91954d2fc245cd2450cb32bfa8ac3353a6cf7323b",
+        "durationMs": 2942.5625
+      }
+    },
+    {
+      "id": "fresh-feishu-2",
+      "split": "test",
+      "sessionId": "new-session-feishu-2",
+      "speakerId": "tts-Eddy (中文（中国大陆）)",
+      "voice": "Eddy (中文（中国大陆）)",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "recurring",
+      "reference": "请在飞书上提醒大家参加培训。",
+      "spokenText": "请在飞书上提醒大家参加培训。",
+      "term": "飞书",
+      "audio": {
+        "path": "feishu-2.wav",
+        "sha256": "07e95ba6f12e1e6a312ab6b5253d88de953368aa587b51602b3c83486e962b3a",
+        "durationMs": 3368.4375
+      }
+    },
+    {
+      "id": "fresh-safari-1",
+      "split": "test",
+      "sessionId": "new-session-safari-1",
+      "speakerId": "tts-Karen",
+      "voice": "Karen",
+      "language": "en",
+      "unit": "wer",
+      "kind": "recurring",
+      "reference": "Safari should remember this page after a restart.",
+      "spokenText": "Safari should remember this page after a restart.",
+      "term": "Safari",
+      "audio": {
+        "path": "safari-1.wav",
+        "sha256": "2e8da5c1c01c8627771e4fac9024111ed622fdf9989684774921129f9dbe1fd3",
+        "durationMs": 2964.0625
+      }
+    },
+    {
+      "id": "fresh-safari-2",
+      "split": "test",
+      "sessionId": "new-session-safari-2",
+      "speakerId": "tts-Eddy (中文（中国大陆）)",
+      "voice": "Eddy (中文（中国大陆）)",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "reference": "Safari浏览器的下载已经结束了。",
+      "spokenText": "沙发浏览器的下载已经结束了。",
+      "term": "Safari",
+      "audio": {
+        "path": "safari-2.wav",
+        "sha256": "c8e2d7dc9dc8b42105436aa660d0381c29a8fe3ade0f2ef9581391e8b52a7402",
+        "durationMs": 2862.625
+      }
+    },
+    {
+      "id": "fresh-openai-1",
+      "split": "test",
+      "sessionId": "new-session-openai-1",
+      "speakerId": "tts-Karen",
+      "voice": "Karen",
+      "language": "en",
+      "unit": "wer",
+      "kind": "recurring",
+      "reference": "OpenAI has published another technical report.",
+      "spokenText": "Open AI has published another technical report.",
+      "term": "OpenAI",
+      "audio": {
+        "path": "openai-1.wav",
+        "sha256": "b4664389c4246e4cbb5f132d526dd83c7cd6034ee956a4cb1776dba0e0a32539",
+        "durationMs": 2795.5625
+      }
+    },
+    {
+      "id": "fresh-openai-2",
+      "split": "test",
+      "sessionId": "new-session-openai-2",
+      "speakerId": "tts-Karen",
+      "voice": "Karen",
+      "language": "en",
+      "unit": "wer",
+      "kind": "recurring",
+      "reference": "The team will review the OpenAI integration.",
+      "spokenText": "The team will review the Open AI integration.",
+      "term": "OpenAI",
+      "audio": {
+        "path": "openai-2.wav",
+        "sha256": "ccf28d4f23820e4c5a5f8a596664f4eea82240c00daa61cbf199ce625828b7f6",
+        "durationMs": 2616.3125
+      }
+    },
+    {
+      "id": "fresh-sql-1",
+      "split": "test",
+      "sessionId": "new-session-sql-1",
+      "speakerId": "tts-Karen",
+      "voice": "Karen",
+      "language": "en",
+      "unit": "wer",
+      "kind": "recurring",
+      "reference": "The SQL database is unavailable at the moment.",
+      "spokenText": "The sequel database is unavailable at the moment.",
+      "term": "SQL",
+      "audio": {
+        "path": "sql-1.wav",
+        "sha256": "4205284dc14d1011a52dc4d55aef4102246c60b012b27a3fca525e900b368840",
+        "durationMs": 2732.4375
+      }
+    },
+    {
+      "id": "fresh-sql-2",
+      "split": "test",
+      "sessionId": "new-session-sql-2",
+      "speakerId": "tts-Karen",
+      "voice": "Karen",
+      "language": "en",
+      "unit": "wer",
+      "kind": "recurring",
+      "reference": "Review the SQL statement before running the migration.",
+      "spokenText": "Review the sequel statement before running the migration.",
+      "term": "SQL",
+      "audio": {
+        "path": "sql-2.wav",
+        "sha256": "c3e98343de4c95ab28b00d98eec020a6435aec9ed8752c1790659b6018afbce1",
+        "durationMs": 3020.375
+      }
+    },
+    {
+      "id": "fresh-github-1",
+      "split": "test",
+      "sessionId": "new-session-github-1",
+      "speakerId": "tts-Eddy (中文（中国大陆）)",
+      "voice": "Eddy (中文（中国大陆）)",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "reference": "GitHub上的这个仓库需要增加说明。",
+      "spokenText": "吉特哈布上的这个仓库需要增加说明。",
+      "term": "GitHub",
+      "audio": {
+        "path": "github-1.wav",
+        "sha256": "be38be985642854c7c954ebb0529ce8f6066fe322fddc702954bb2c089d1874e",
+        "durationMs": 3528.625
+      }
+    },
+    {
+      "id": "fresh-github-2",
+      "split": "test",
+      "sessionId": "new-session-github-2",
+      "speakerId": "tts-Eddy (中文（中国大陆）)",
+      "voice": "Eddy (中文（中国大陆）)",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "reference": "我已经在GitHub提交了修复。",
+      "spokenText": "我已经在吉特哈布提交了修复。",
+      "term": "GitHub",
+      "audio": {
+        "path": "github-2.wav",
+        "sha256": "e8191679d2cad86578f8244342384b60c1bb5b8c6224f594e5a027cdb6eee5c7",
+        "durationMs": 2750.375
+      }
+    },
+    {
+      "id": "fresh-codex-1",
+      "split": "test",
+      "sessionId": "new-session-codex-1",
+      "speakerId": "tts-Eddy (中文（中国大陆）)",
+      "voice": "Eddy (中文（中国大陆）)",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "reference": "让Codex整理一下测试结果。",
+      "spokenText": "让扣代克斯整理一下测试结果。",
+      "term": "Codex",
+      "audio": {
+        "path": "codex-1.wav",
+        "sha256": "62e5a6cdd3aa44bebe58e3b243f3fb179596dd6572cd3f704ff7fdf325b77a9d",
+        "durationMs": 3054.5625
+      }
+    },
+    {
+      "id": "fresh-codex-2",
+      "split": "test",
+      "sessionId": "new-session-codex-2",
+      "speakerId": "tts-Eddy (中文（中国大陆）)",
+      "voice": "Eddy (中文（中国大陆）)",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "reference": "Codex没有修改任何配置。",
+      "spokenText": "扣代克斯没有修改任何配置。",
+      "term": "Codex",
+      "audio": {
+        "path": "codex-2.wav",
+        "sha256": "b3393853b2f2b3da67e255daa35233b874e92652e6b281b836cf1f098c64e4b1",
+        "durationMs": 2712.5625
+      }
+    },
+    {
+      "id": "fresh-sofa-1",
+      "split": "test",
+      "sessionId": "new-session-sofa-1",
+      "speakerId": "tts-Eddy (中文（中国大陆）)",
+      "voice": "Eddy (中文（中国大陆）)",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "homophone_control",
+      "reference": "这张沙发放在客厅里刚好合适。",
+      "spokenText": "这张沙发放在客厅里刚好合适。",
+      "term": "沙发",
+      "audio": {
+        "path": "sofa-1.wav",
+        "sha256": "817ba95b7cda81708e5f5f535319613bcb48fe63c399198b9eacf4d6c3764f9a",
+        "durationMs": 3016.625
+      }
+    },
+    {
+      "id": "fresh-sofa-2",
+      "split": "test",
+      "sessionId": "new-session-sofa-2",
+      "speakerId": "tts-Eddy (中文（中国大陆）)",
+      "voice": "Eddy (中文（中国大陆）)",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "homophone_control",
+      "reference": "搬家的时候不要刮坏沙发。",
+      "spokenText": "搬家的时候不要刮坏沙发。",
+      "term": "沙发",
+      "audio": {
+        "path": "sofa-2.wav",
+        "sha256": "fa50bc6bade5a807f6fca78aba847d88085260b84988755ad03415ae3d6c8cd1",
+        "durationMs": 2632.8125
+      }
+    },
+    {
+      "id": "fresh-sequel-1",
+      "split": "test",
+      "sessionId": "new-session-sequel-1",
+      "speakerId": "tts-Karen",
+      "voice": "Karen",
+      "language": "en",
+      "unit": "wer",
+      "kind": "homophone_control",
+      "reference": "The director is planning a sequel to the original film.",
+      "spokenText": "The director is planning a sequel to the original film.",
+      "term": "sequel",
+      "audio": {
+        "path": "sequel-1.wav",
+        "sha256": "94a655f3e2a41f24738be90e3c667ba539bf0205ee0818db9fc52d1c8f7293dd",
+        "durationMs": 2860.125
+      }
+    },
+    {
+      "id": "fresh-sequel-2",
+      "split": "test",
+      "sessionId": "new-session-sequel-2",
+      "speakerId": "tts-Karen",
+      "voice": "Karen",
+      "language": "en",
+      "unit": "wer",
+      "kind": "homophone_control",
+      "reference": "I enjoyed the first book more than its sequel.",
+      "spokenText": "I enjoyed the first book more than its sequel.",
+      "term": "sequel",
+      "audio": {
+        "path": "sequel-2.wav",
+        "sha256": "093ce6d3df683b32ea5dfa864633a8ed64b6022ab08f15da0ea6b99378405fe1",
+        "durationMs": 2492.0625
+      }
+    },
+    {
+      "id": "fresh-open-1",
+      "split": "test",
+      "sessionId": "new-session-open-1",
+      "speakerId": "tts-Karen",
+      "voice": "Karen",
+      "language": "en",
+      "unit": "wer",
+      "kind": "homophone_control",
+      "reference": "Keep the door open, I will return in a moment.",
+      "spokenText": "Keep the door open, I will return in a moment.",
+      "term": "",
+      "audio": {
+        "path": "open-1.wav",
+        "sha256": "0c502d63fc0286971a7c59cd8b683e26d1679052e365645e8e42f8d62aa332d4",
+        "durationMs": 2802.75
+      }
+    },
+    {
+      "id": "fresh-open-2",
+      "split": "test",
+      "sessionId": "new-session-open-2",
+      "speakerId": "tts-Karen",
+      "voice": "Karen",
+      "language": "en",
+      "unit": "wer",
+      "kind": "homophone_control",
+      "reference": "We should stay open, I think, to other suggestions.",
+      "spokenText": "We should stay open, I think, to other suggestions.",
+      "term": "",
+      "audio": {
+        "path": "open-2.wav",
+        "sha256": "43410c322741348223266b28b09ba9147b9457faa732a1341dfc64e268c1e711",
+        "durationMs": 3397.3125
+      }
+    },
+    {
+      "id": "fresh-mai-1",
+      "split": "test",
+      "sessionId": "new-session-mai-1",
+      "speakerId": "tts-Eddy (中文（中国大陆）)",
+      "voice": "Eddy (中文（中国大陆）)",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "homophone_control",
+      "reference": "那个卖狗粮的店铺周末不开门。",
+      "spokenText": "那个卖狗粮的店铺周末不开门。",
+      "term": "",
+      "audio": {
+        "path": "mai-1.wav",
+        "sha256": "53a0758edce6fa33ff8f36e5c95f4e33e551c1cdaa52112ee9272530633b1dce",
+        "durationMs": 2958.4375
+      }
+    },
+    {
+      "id": "fresh-mai-2",
+      "split": "test",
+      "sessionId": "new-session-mai-2",
+      "speakerId": "tts-Eddy (中文（中国大陆）)",
+      "voice": "Eddy (中文（中国大陆）)",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "homophone_control",
+      "reference": "麦沟附近的村民准备修一条新路。",
+      "spokenText": "麦沟附近的村民准备修一条新路。",
+      "term": "麦沟",
+      "audio": {
+        "path": "mai-2.wav",
+        "sha256": "73f7cbab8d62b8390c2f495d88bc183be088440a1d7e5dfdf36c3561fe8c9404",
+        "durationMs": 3310.375
+      }
+    },
+    {
+      "id": "fresh-reverse-1",
+      "split": "test",
+      "sessionId": "new-session-reverse-1",
+      "speakerId": "tts-Eddy (中文（中国大陆）)",
+      "voice": "Eddy (中文（中国大陆）)",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "reverse_control",
+      "reference": "看书太久会让眼睛感到疲劳。",
+      "spokenText": "看书太久会让眼睛感到疲劳。",
+      "term": "眼睛",
+      "audio": {
+        "path": "reverse-1.wav",
+        "sha256": "e92c23bb05e8eacec27d97c649f4af920ac48cc22882f08c6319f799f4ae2056",
+        "durationMs": 3080.625
+      }
+    },
+    {
+      "id": "fresh-reverse-2",
+      "split": "test",
+      "sessionId": "new-session-reverse-2",
+      "speakerId": "tts-Eddy (中文（中国大陆）)",
+      "voice": "Eddy (中文（中国大陆）)",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "reverse_control",
+      "reference": "我们参观了燕京大学的旧址。",
+      "spokenText": "我们参观了燕京大学的旧址。",
+      "term": "燕京",
+      "audio": {
+        "path": "reverse-2.wav",
+        "sha256": "32438968897a08e94808fa12d368366d67935bb69dc4b9ff3bcf592a4a98bd30",
+        "durationMs": 2782.375
+      }
+    },
+    {
+      "id": "fresh-expired-1",
+      "split": "test",
+      "sessionId": "new-session-expired-1",
+      "speakerId": "tts-Eddy (中文（中国大陆）)",
+      "voice": "Eddy (中文（中国大陆）)",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "expired_control",
+      "reference": "Qdrant的索引需要重新建立。",
+      "spokenText": "丘德兰特的索引需要重新建立。",
+      "term": "Qdrant",
+      "audio": {
+        "path": "expired-1.wav",
+        "sha256": "0b19df496e304f79f9d8096b37f864caa28ed5c080e3097fb6f58ec1784cbbae",
+        "durationMs": 3096.5
+      }
+    },
+    {
+      "id": "fresh-expired-2",
+      "split": "test",
+      "sessionId": "new-session-expired-2",
+      "speakerId": "tts-Eddy (中文（中国大陆）)",
+      "voice": "Eddy (中文（中国大陆）)",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "expired_control",
+      "reference": "请比较Qdrant和其他向量数据库。",
+      "spokenText": "请比较丘德兰特和其他向量数据库。",
+      "term": "Qdrant",
+      "audio": {
+        "path": "expired-2.wav",
+        "sha256": "7e790ca1cd517c79ba55beb2a84b0817319059007bfd7d585df2c28370dbca36",
+        "durationMs": 3656.5
+      }
+    },
+    {
+      "id": "fresh-ordinary-zh-1",
+      "split": "test",
+      "sessionId": "new-session-ordinary-zh-1",
+      "speakerId": "tts-Eddy (中文（中国大陆）)",
+      "voice": "Eddy (中文（中国大陆）)",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "ordinary_control",
+      "reference": "明天早上先去食堂吃饭再去教室。",
+      "spokenText": "明天早上先去食堂吃饭再去教室。",
+      "term": "",
+      "audio": {
+        "path": "ordinary-zh-1.wav",
+        "sha256": "e7714f8b884e6278ca77455051b18d24c78ba04e96920cdc02385880d27cccd8",
+        "durationMs": 3598.375
+      }
+    },
+    {
+      "id": "fresh-ordinary-zh-2",
+      "split": "test",
+      "sessionId": "new-session-ordinary-zh-2",
+      "speakerId": "tts-Eddy (中文（中国大陆）)",
+      "voice": "Eddy (中文（中国大陆）)",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "ordinary_control",
+      "reference": "这个方案可能还需要再讨论一下。",
+      "spokenText": "这个方案可能还需要再讨论一下。",
+      "term": "",
+      "audio": {
+        "path": "ordinary-zh-2.wav",
+        "sha256": "db3ebce44f3439aec075d43acfe9cdd0680c125935285e315c3bebdd0a91b24b",
+        "durationMs": 3080.625
+      }
+    },
+    {
+      "id": "fresh-ordinary-en-1",
+      "split": "test",
+      "sessionId": "new-session-ordinary-en-1",
+      "speakerId": "tts-Karen",
+      "voice": "Karen",
+      "language": "en",
+      "unit": "wer",
+      "kind": "ordinary_control",
+      "reference": "Do not send the message until everyone agrees.",
+      "spokenText": "Do not send the message until everyone agrees.",
+      "term": "",
+      "audio": {
+        "path": "ordinary-en-1.wav",
+        "sha256": "06f8bda3c4af30b523f4d352135c78ba79ecd98b5f59c83c76452de729f2fefa",
+        "durationMs": 2670.6875
+      }
+    },
+    {
+      "id": "fresh-ordinary-en-2",
+      "split": "test",
+      "sessionId": "new-session-ordinary-en-2",
+      "speakerId": "tts-Karen",
+      "voice": "Karen",
+      "language": "en",
+      "unit": "wer",
+      "kind": "ordinary_control",
+      "reference": "The blue folder is probably still on the desk.",
+      "spokenText": "The blue folder is probably still on the desk.",
+      "term": "",
+      "audio": {
+        "path": "ordinary-en-2.wav",
+        "sha256": "31236469da8ba0174eef12db36e766bbf5a6ad333c88b1e11a2234ec77c7a119",
+        "durationMs": 2477.0
+      }
+    },
+    {
+      "id": "fresh-silence",
+      "split": "test",
+      "sessionId": "noise-silence",
+      "speakerId": "generated-nonspeech-v2",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "nonspeech",
+      "reference": "",
+      "term": "",
+      "audio": {
+        "path": "silence.wav",
+        "sha256": "20eaebffe1816e0ffa6f7f854f5ef4ea80d5349faaf0ce1fec1b713e7fde58fa",
+        "durationMs": 2000
+      }
+    },
+    {
+      "id": "fresh-noise",
+      "split": "test",
+      "sessionId": "noise-noise",
+      "speakerId": "generated-nonspeech-v2",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "nonspeech",
+      "reference": "",
+      "term": "",
+      "audio": {
+        "path": "noise.wav",
+        "sha256": "b9d3218c92d2820fe521c6b817e7af240084237ae987f6d51fc7034c15371ab1",
+        "durationMs": 2000
+      }
+    },
+    {
+      "id": "natural-aishell-BAC009S0767W0122",
+      "split": "test",
+      "speakerId": "aishell1:S0767",
+      "sessionId": "aishell1:S0767",
+      "language": "zh",
+      "unit": "cer",
+      "tags": [
+        "read",
+        "aishell1"
+      ],
+      "audio": {
+        "path": "natural-aishell-BAC009S0767W0122.wav",
+        "sha256": "b56ea5b1c068070bd97b6603351d614bb9d9fd169f75c0a381e37c9517780dff",
+        "durationMs": 6578.0
+      },
+      "reference": "引领中国房地产广告行业走向新的黄金时代",
+      "context": "",
+      "kind": "natural_control",
+      "term": ""
+    },
+    {
+      "id": "natural-aishell-BAC009S0767W0172",
+      "split": "test",
+      "speakerId": "aishell1:S0767",
+      "sessionId": "aishell1:S0767",
+      "language": "zh",
+      "unit": "cer",
+      "tags": [
+        "read",
+        "aishell1"
+      ],
+      "audio": {
+        "path": "natural-aishell-BAC009S0767W0172.wav",
+        "sha256": "194ec0962e8e58e2406e8a2170a596e6b974b6c0e19f9548eb73efafdd391326",
+        "durationMs": 3598.0
+      },
+      "reference": "住宅市场交易明显升温",
+      "context": "",
+      "kind": "natural_control",
+      "term": ""
+    },
+    {
+      "id": "natural-aishell-BAC009S0767W0234",
+      "split": "test",
+      "speakerId": "aishell1:S0767",
+      "sessionId": "aishell1:S0767",
+      "language": "zh",
+      "unit": "cer",
+      "tags": [
+        "read",
+        "aishell1"
+      ],
+      "audio": {
+        "path": "natural-aishell-BAC009S0767W0234.wav",
+        "sha256": "3a5b2a4886385f0beca5ae3e7959997eed4914a03abe07045ee288ad545a9ceb",
+        "durationMs": 6319.0
+      },
+      "reference": "使地方政府的债务融资规模控制在安全范围内",
+      "context": "",
+      "kind": "natural_control",
+      "term": ""
+    },
+    {
+      "id": "natural-aishell-BAC009S0767W0251",
+      "split": "test",
+      "speakerId": "aishell1:S0767",
+      "sessionId": "aishell1:S0767",
+      "language": "zh",
+      "unit": "cer",
+      "tags": [
+        "read",
+        "aishell1"
+      ],
+      "audio": {
+        "path": "natural-aishell-BAC009S0767W0251.wav",
+        "sha256": "6182ce64b764b60fca2aa9370fa1805870f826c34732950f5f3a001b66dc9c59",
+        "durationMs": 5172.0
+      },
+      "reference": "对考务费标准实行统一标准化管理",
+      "context": "",
+      "kind": "natural_control",
+      "term": ""
+    },
+    {
+      "id": "natural-aishell-BAC009S0767W0314",
+      "split": "test",
+      "speakerId": "aishell1:S0767",
+      "sessionId": "aishell1:S0767",
+      "language": "zh",
+      "unit": "cer",
+      "tags": [
+        "read",
+        "aishell1"
+      ],
+      "audio": {
+        "path": "natural-aishell-BAC009S0767W0314.wav",
+        "sha256": "e795e36f05e1b3b3cce012820d705830238f1c50b5b3716e5173c4f0912f4ab4",
+        "durationMs": 6116.938
+      },
+      "reference": "八月初公司通过了增加产能建设的决议",
+      "context": "",
+      "kind": "natural_control",
+      "term": ""
+    },
+    {
+      "id": "natural-aishell-BAC009S0767W0350",
+      "split": "test",
+      "speakerId": "aishell1:S0767",
+      "sessionId": "aishell1:S0767",
+      "language": "zh",
+      "unit": "cer",
+      "tags": [
+        "read",
+        "aishell1"
+      ],
+      "audio": {
+        "path": "natural-aishell-BAC009S0767W0350.wav",
+        "sha256": "7674e323de076cc650342f48de60fe98edb73ff96dd1f4ec518e749a387778c2",
+        "durationMs": 7455.062
+      },
+      "reference": "俄罗斯搏击新生代旗帜性天才高手哈亚在接受采访时",
+      "context": "",
+      "kind": "natural_control",
+      "term": ""
+    },
+    {
+      "id": "natural-aishell-BAC009S0767W0358",
+      "split": "test",
+      "speakerId": "aishell1:S0767",
+      "sessionId": "aishell1:S0767",
+      "language": "zh",
+      "unit": "cer",
+      "tags": [
+        "read",
+        "aishell1"
+      ],
+      "audio": {
+        "path": "natural-aishell-BAC009S0767W0358.wav",
+        "sha256": "7038c3a57f747e68b19d4600589498d8cdc4090613214680240ced1087ea7507",
+        "durationMs": 4925.062
+      },
+      "reference": "今天赛事举行了赛前新闻发布会",
+      "context": "",
+      "kind": "natural_control",
+      "term": ""
+    },
+    {
+      "id": "natural-aishell-BAC009S0767W0379",
+      "split": "test",
+      "speakerId": "aishell1:S0767",
+      "sessionId": "aishell1:S0767",
+      "language": "zh",
+      "unit": "cer",
+      "tags": [
+        "read",
+        "aishell1"
+      ],
+      "audio": {
+        "path": "natural-aishell-BAC009S0767W0379.wav",
+        "sha256": "b9af6078f4122cad6df72583983115aefd01d8d062cab0163bf12f1c85cd651b",
+        "durationMs": 5218.0
+      },
+      "reference": "这其中一位身材高挑的女孩子颇为引人关注",
+      "context": "",
+      "kind": "natural_control",
+      "term": ""
+    },
+    {
+      "id": "natural-aishell-BAC009S0767W0383",
+      "split": "test",
+      "speakerId": "aishell1:S0767",
+      "sessionId": "aishell1:S0767",
+      "language": "zh",
+      "unit": "cer",
+      "tags": [
+        "read",
+        "aishell1"
+      ],
+      "audio": {
+        "path": "natural-aishell-BAC009S0767W0383.wav",
+        "sha256": "003bbed0740cefeb53ff73b29629a491c31d421f205c9443aa58ec94e984a42b",
+        "durationMs": 3901.875
+      },
+      "reference": "整个队伍承受了很大的困难和考验",
+      "context": "",
+      "kind": "natural_control",
+      "term": ""
+    },
+    {
+      "id": "natural-aishell-BAC009S0767W0394",
+      "split": "test",
+      "speakerId": "aishell1:S0767",
+      "sessionId": "aishell1:S0767",
+      "language": "zh",
+      "unit": "cer",
+      "tags": [
+        "read",
+        "aishell1"
+      ],
+      "audio": {
+        "path": "natural-aishell-BAC009S0767W0394.wav",
+        "sha256": "38b704f3f9c3bf9658c7c8d9fe315fac86429ae32b15b111c800fe3301ee90ed",
+        "durationMs": 3115.0
+      },
+      "reference": "徐云丽最后动情地说",
+      "context": "",
+      "kind": "natural_control",
+      "term": ""
+    },
+    {
+      "id": "natural-libri-1089-134686-0008",
+      "split": "test",
+      "speakerId": "librispeech:1089",
+      "sessionId": "librispeech:1089-134686",
+      "language": "en",
+      "unit": "wer",
+      "tags": [
+        "read",
+        "librispeech"
+      ],
+      "audio": {
+        "path": "natural-libri-1089-134686-0008.wav",
+        "sha256": "c6d413fe63540a24110a8dd2db4502d41cf55112767dc2338cb4234cc8c09777",
+        "durationMs": 6730.0
+      },
+      "reference": "the chaos in which his ardour extinguished itself was a cold indifferent knowledge of himself",
+      "context": "",
+      "kind": "natural_control",
+      "term": ""
+    },
+    {
+      "id": "natural-libri-1089-134691-0022",
+      "split": "test",
+      "speakerId": "librispeech:1089",
+      "sessionId": "librispeech:1089-134691",
+      "language": "en",
+      "unit": "wer",
+      "tags": [
+        "read",
+        "librispeech"
+      ],
+      "audio": {
+        "path": "natural-libri-1089-134691-0022.wav",
+        "sha256": "6bd200548edced04025726014eaf43af1d46f2a6d7e2f07d646685602f2413f2",
+        "durationMs": 5635.0
+      },
+      "reference": "he stood still in deference to their calls and parried their banter with easy words",
+      "context": "",
+      "kind": "natural_control",
+      "term": ""
+    },
+    {
+      "id": "natural-libri-1188-133604-0000",
+      "split": "test",
+      "speakerId": "librispeech:1188",
+      "sessionId": "librispeech:1188-133604",
+      "language": "en",
+      "unit": "wer",
+      "tags": [
+        "read",
+        "librispeech"
+      ],
+      "audio": {
+        "path": "natural-libri-1188-133604-0000.wav",
+        "sha256": "7103ea9b2746ea371e053c5e44aa65e3d69fdc84194e4af12722cd72a721c822",
+        "durationMs": 10725.0
+      },
+      "reference": "you will find me continually speaking of four men titian holbein turner and tintoret in almost the same terms",
+      "context": "",
+      "kind": "natural_control",
+      "term": ""
+    },
+    {
+      "id": "natural-libri-1188-133604-0040",
+      "split": "test",
+      "speakerId": "librispeech:1188",
+      "sessionId": "librispeech:1188-133604",
+      "language": "en",
+      "unit": "wer",
+      "tags": [
+        "read",
+        "librispeech"
+      ],
+      "audio": {
+        "path": "natural-libri-1188-133604-0040.wav",
+        "sha256": "c49880d34175f8cd226a4b3a37054dceaae7362cf652fe51dcf3290d8f17ea60",
+        "durationMs": 3230.0
+      },
+      "reference": "the crampness and the poverty are all intended",
+      "context": "",
+      "kind": "natural_control",
+      "term": ""
+    },
+    {
+      "id": "natural-libri-121-121726-0001",
+      "split": "test",
+      "speakerId": "librispeech:121",
+      "sessionId": "librispeech:121-121726",
+      "language": "en",
+      "unit": "wer",
+      "tags": [
+        "read",
+        "librispeech"
+      ],
+      "audio": {
+        "path": "natural-libri-121-121726-0001.wav",
+        "sha256": "b1657235d4fbcfb2d8468b738e3c77b8bf171dc90ad6c1ca7cd7f57fb994059b",
+        "durationMs": 5925.0
+      },
+      "reference": "harangue the tiresome product of a tireless tongue",
+      "context": "",
+      "kind": "natural_control",
+      "term": ""
+    },
+    {
+      "id": "natural-libri-121-127105-0023",
+      "split": "test",
+      "speakerId": "librispeech:121",
+      "sessionId": "librispeech:121-127105",
+      "language": "en",
+      "unit": "wer",
+      "tags": [
+        "read",
+        "librispeech"
+      ],
+      "audio": {
+        "path": "natural-libri-121-127105-0023.wav",
+        "sha256": "a8965ee6dd9d2a7c0b59e02c3a50e93a717c509412b3960c04126beb1da92759",
+        "durationMs": 10910.0
+      },
+      "reference": "let me say here distinctly to have done with it that this narrative from an exact transcript of my own made much later is what i shall presently give",
+      "context": "",
+      "kind": "natural_control",
+      "term": ""
+    },
+    {
+      "id": "natural-libri-1284-1181-0021",
+      "split": "test",
+      "speakerId": "librispeech:1284",
+      "sessionId": "librispeech:1284-1181",
+      "language": "en",
+      "unit": "wer",
+      "tags": [
+        "read",
+        "librispeech"
+      ],
+      "audio": {
+        "path": "natural-libri-1284-1181-0021.wav",
+        "sha256": "9626183e2feea482dc2524ceab84f663819d97277f578424dfe923a103143a97",
+        "durationMs": 2700.0
+      },
+      "reference": "asked the voice in scornful accents",
+      "context": "",
+      "kind": "natural_control",
+      "term": ""
+    },
+    {
+      "id": "natural-libri-1320-122612-0010",
+      "split": "test",
+      "speakerId": "librispeech:1320",
+      "sessionId": "librispeech:1320-122612",
+      "language": "en",
+      "unit": "wer",
+      "tags": [
+        "read",
+        "librispeech"
+      ],
+      "audio": {
+        "path": "natural-libri-1320-122612-0010.wav",
+        "sha256": "a538ed9cd603bb3cb4b5cd9c2ea43c7f6532cb40925bbf1b1b7edd5608fe40b8",
+        "durationMs": 10195.0
+      },
+      "reference": "see said uncas pointing north and south at the evident marks of the broad trail on either side of him the dark hair has gone toward the forest",
+      "context": "",
+      "kind": "natural_control",
+      "term": ""
+    },
+    {
+      "id": "natural-libri-1320-122617-0037",
+      "split": "test",
+      "speakerId": "librispeech:1320",
+      "sessionId": "librispeech:1320-122617",
+      "language": "en",
+      "unit": "wer",
+      "tags": [
+        "read",
+        "librispeech"
+      ],
+      "audio": {
+        "path": "natural-libri-1320-122617-0037.wav",
+        "sha256": "1b28641d123de0f5ab4af46c627309666b4d64af149964a75c63fdb7f0ca406d",
+        "durationMs": 7180.0
+      },
+      "reference": "the delaware dog he said leaning forward and peering through the dim light to catch the expression of the other's features is he afraid",
+      "context": "",
+      "kind": "natural_control",
+      "term": ""
+    },
+    {
+      "id": "natural-libri-1580-141083-0024",
+      "split": "test",
+      "speakerId": "librispeech:1580",
+      "sessionId": "librispeech:1580-141083",
+      "language": "en",
+      "unit": "wer",
+      "tags": [
+        "read",
+        "librispeech"
+      ],
+      "audio": {
+        "path": "natural-libri-1580-141083-0024.wav",
+        "sha256": "69e50c5bd571e73e2d7383c758c66d2cf7e22299f94f8c1af747ea338a6ac2af",
+        "durationMs": 4480.0
+      },
+      "reference": "you left him in a chair you say which chair by the window there",
+      "context": "",
+      "kind": "natural_control",
+      "term": ""
+    }
+  ],
+  "originalNaturalCorpusSha256": "a5d92468ac0c1ac740cf9685628d1d1c6540f70f4ace2d11c189bd7f78fee371",
+  "naturalImports": [
+    {
+      "originalId": "aishell-BAC009S0767W0122",
+      "originalPath": "benchmarks/corpora/asr-v1/audio/aishell-BAC009S0767W0122.wav",
+      "sha256": "b56ea5b1c068070bd97b6603351d614bb9d9fd169f75c0a381e37c9517780dff",
+      "sourceSpeaker": "aishell1:S0767"
+    },
+    {
+      "originalId": "aishell-BAC009S0767W0172",
+      "originalPath": "benchmarks/corpora/asr-v1/audio/aishell-BAC009S0767W0172.wav",
+      "sha256": "194ec0962e8e58e2406e8a2170a596e6b974b6c0e19f9548eb73efafdd391326",
+      "sourceSpeaker": "aishell1:S0767"
+    },
+    {
+      "originalId": "aishell-BAC009S0767W0234",
+      "originalPath": "benchmarks/corpora/asr-v1/audio/aishell-BAC009S0767W0234.wav",
+      "sha256": "3a5b2a4886385f0beca5ae3e7959997eed4914a03abe07045ee288ad545a9ceb",
+      "sourceSpeaker": "aishell1:S0767"
+    },
+    {
+      "originalId": "aishell-BAC009S0767W0251",
+      "originalPath": "benchmarks/corpora/asr-v1/audio/aishell-BAC009S0767W0251.wav",
+      "sha256": "6182ce64b764b60fca2aa9370fa1805870f826c34732950f5f3a001b66dc9c59",
+      "sourceSpeaker": "aishell1:S0767"
+    },
+    {
+      "originalId": "aishell-BAC009S0767W0314",
+      "originalPath": "benchmarks/corpora/asr-v1/audio/aishell-BAC009S0767W0314.wav",
+      "sha256": "e795e36f05e1b3b3cce012820d705830238f1c50b5b3716e5173c4f0912f4ab4",
+      "sourceSpeaker": "aishell1:S0767"
+    },
+    {
+      "originalId": "aishell-BAC009S0767W0350",
+      "originalPath": "benchmarks/corpora/asr-v1/audio/aishell-BAC009S0767W0350.wav",
+      "sha256": "7674e323de076cc650342f48de60fe98edb73ff96dd1f4ec518e749a387778c2",
+      "sourceSpeaker": "aishell1:S0767"
+    },
+    {
+      "originalId": "aishell-BAC009S0767W0358",
+      "originalPath": "benchmarks/corpora/asr-v1/audio/aishell-BAC009S0767W0358.wav",
+      "sha256": "7038c3a57f747e68b19d4600589498d8cdc4090613214680240ced1087ea7507",
+      "sourceSpeaker": "aishell1:S0767"
+    },
+    {
+      "originalId": "aishell-BAC009S0767W0379",
+      "originalPath": "benchmarks/corpora/asr-v1/audio/aishell-BAC009S0767W0379.wav",
+      "sha256": "b9af6078f4122cad6df72583983115aefd01d8d062cab0163bf12f1c85cd651b",
+      "sourceSpeaker": "aishell1:S0767"
+    },
+    {
+      "originalId": "aishell-BAC009S0767W0383",
+      "originalPath": "benchmarks/corpora/asr-v1/audio/aishell-BAC009S0767W0383.wav",
+      "sha256": "003bbed0740cefeb53ff73b29629a491c31d421f205c9443aa58ec94e984a42b",
+      "sourceSpeaker": "aishell1:S0767"
+    },
+    {
+      "originalId": "aishell-BAC009S0767W0394",
+      "originalPath": "benchmarks/corpora/asr-v1/audio/aishell-BAC009S0767W0394.wav",
+      "sha256": "38b704f3f9c3bf9658c7c8d9fe315fac86429ae32b15b111c800fe3301ee90ed",
+      "sourceSpeaker": "aishell1:S0767"
+    },
+    {
+      "originalId": "libri-1089-134686-0008",
+      "originalPath": "benchmarks/corpora/asr-v1/audio/libri-1089-134686-0008.wav",
+      "sha256": "c6d413fe63540a24110a8dd2db4502d41cf55112767dc2338cb4234cc8c09777",
+      "sourceSpeaker": "librispeech:1089"
+    },
+    {
+      "originalId": "libri-1089-134691-0022",
+      "originalPath": "benchmarks/corpora/asr-v1/audio/libri-1089-134691-0022.wav",
+      "sha256": "6bd200548edced04025726014eaf43af1d46f2a6d7e2f07d646685602f2413f2",
+      "sourceSpeaker": "librispeech:1089"
+    },
+    {
+      "originalId": "libri-1188-133604-0000",
+      "originalPath": "benchmarks/corpora/asr-v1/audio/libri-1188-133604-0000.wav",
+      "sha256": "7103ea9b2746ea371e053c5e44aa65e3d69fdc84194e4af12722cd72a721c822",
+      "sourceSpeaker": "librispeech:1188"
+    },
+    {
+      "originalId": "libri-1188-133604-0040",
+      "originalPath": "benchmarks/corpora/asr-v1/audio/libri-1188-133604-0040.wav",
+      "sha256": "c49880d34175f8cd226a4b3a37054dceaae7362cf652fe51dcf3290d8f17ea60",
+      "sourceSpeaker": "librispeech:1188"
+    },
+    {
+      "originalId": "libri-121-121726-0001",
+      "originalPath": "benchmarks/corpora/asr-v1/audio/libri-121-121726-0001.wav",
+      "sha256": "b1657235d4fbcfb2d8468b738e3c77b8bf171dc90ad6c1ca7cd7f57fb994059b",
+      "sourceSpeaker": "librispeech:121"
+    },
+    {
+      "originalId": "libri-121-127105-0023",
+      "originalPath": "benchmarks/corpora/asr-v1/audio/libri-121-127105-0023.wav",
+      "sha256": "a8965ee6dd9d2a7c0b59e02c3a50e93a717c509412b3960c04126beb1da92759",
+      "sourceSpeaker": "librispeech:121"
+    },
+    {
+      "originalId": "libri-1284-1181-0021",
+      "originalPath": "benchmarks/corpora/asr-v1/audio/libri-1284-1181-0021.wav",
+      "sha256": "9626183e2feea482dc2524ceab84f663819d97277f578424dfe923a103143a97",
+      "sourceSpeaker": "librispeech:1284"
+    },
+    {
+      "originalId": "libri-1320-122612-0010",
+      "originalPath": "benchmarks/corpora/asr-v1/audio/libri-1320-122612-0010.wav",
+      "sha256": "a538ed9cd603bb3cb4b5cd9c2ea43c7f6532cb40925bbf1b1b7edd5608fe40b8",
+      "sourceSpeaker": "librispeech:1320"
+    },
+    {
+      "originalId": "libri-1320-122617-0037",
+      "originalPath": "benchmarks/corpora/asr-v1/audio/libri-1320-122617-0037.wav",
+      "sha256": "1b28641d123de0f5ab4af46c627309666b4d64af149964a75c63fdb7f0ca406d",
+      "sourceSpeaker": "librispeech:1320"
+    },
+    {
+      "originalId": "libri-1580-141083-0024",
+      "originalPath": "benchmarks/corpora/asr-v1/audio/libri-1580-141083-0024.wav",
+      "sha256": "69e50c5bd571e73e2d7383c758c66d2cf7e22299f94f8c1af747ea338a6ac2af",
+      "sourceSpeaker": "librispeech:1580"
+    }
+  ],
+  "naturalProvenance": {
+    "builder": "tools/evaluation/data/build_corpus.py",
+    "sources": {
+      "aishell-test-mirror-00000.parquet": "2466b1e851147943d4a2c46e1dddc8a70a45b733065c7f6a86e44bd88d5579c6",
+      "aishell_transcript_v0.8.txt": "b5f33b9e0b47548e20a5ea4e504297f80df41d559133924c4e5b7b544c15b5c4",
+      "test.clean.parquet": "7113aa4c3cf963fb54697145719a7725f984c8836d1c494a554cbb9f1a017df0",
+      "validation.clean.parquet": "c816e936fed8b83d5e3de28795bff1bcd3b46b3f1a5815bad4395d20186a9770"
+    },
+    "ffmpeg": "ffmpeg version 8.1.2 Copyright (c) 2000-2026 the FFmpeg developers",
+    "aishellSpeakerRecovery": {
+      "method": "unique transcript text match against official aishell_transcript_v0.8",
+      "unmatchedRows": 381
+    },
+    "aishellSplitNote": "Official AISHELL-1 test speakers are partitioned by speaker into Arion dev (S0764-S0766) and test (S0767-S0770)",
+    "syntheticNote": "TTS fixtures are a synthetic stress set; they are not natural speech"
+  },
+  "naturalLicense": "AISHELL-1 Apache-2.0 (OpenSLR SLR33; HF mirror AudioLLMs/aishell_1_zh_test@e73dc7f0, transcript AISHELL/AISHELL-1@bbe295d5); LibriSpeech CC-BY-4.0 (openslr/librispeech_asr@71cacbfb); synthetic macOS TTS prompts authored for Arion (CC0); generated nonspeech"
+}

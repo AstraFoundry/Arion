@@ -1,5 +1,9 @@
 .DEFAULT_GOAL := help
 .PHONY: workflows-check
+.PHONY: memory-asr-bench memory-asr-report
+export MEMORY_SELECTION
+export MEMORY_SPLIT MEMORY_DRIVER CONTEXT_DRIVER WORKER_PYTHON MODEL_METADATA MEMORY_BIN_DIR
+.PHONY: memory-loop-build memory-loop-verify memory-loop-bench memory-loop-report memory-context-bench memory-context-report
 .PHONY: phonetic-extract phonetic-bench phonetic-report benchmark-archive-check benchmark-archive-report
 export PHONETIC_CONFIG PHONE_MODELS RUNTIME_ARTIFACTS LLM_ARTIFACTS EVIDENCE PHONETIC_PREFLIGHT
 CONFIG ?= benchmarks/configs/desktop-factorial.json
@@ -161,6 +165,30 @@ scene-bench: ## Score scene selection against labelled app/site contexts; CONTEX
 
 memory-bench: ## Edit learning and vocabulary recall quality, latency and faults; requires OUT, optional CORPUS with DEV and TEST results
 	@node scripts/memory-bench-command.mjs
+
+memory-asr-bench: ## Run recognition-stage memory; CORPUS fixture directory, MODELS model directory and OUT required; MEMORY_SELECTION optional
+	@node scripts/asr-memory-bench-command.mjs run
+
+memory-asr-report: ## Replay recognition-stage entity and speech metrics without a model; CORPUS fixture directory, RESULTS and OUT required
+	@node scripts/asr-memory-bench-command.mjs report
+
+memory-loop-build: ## Build production extraction/vault and prompt/validation research drivers; MEMORY_BIN_DIR optional
+	@node scripts/memory-loop-command.mjs build
+
+memory-loop-verify: ## Verify exact bytes of the closed-loop audio and text-context research archives
+	@node scripts/memory-loop-command.mjs verify
+
+memory-loop-bench: ## Run empty-vault learning and later audio recognition; CORPUS, MEMORY_SPLIT, MODELS, MEMORY_DRIVER, OUT required
+	@node scripts/memory-loop-command.mjs run
+
+memory-loop-report: ## Replay closed-loop memory observations; CORPUS fixture root, RESULTS and new OUT JSON required
+	@node scripts/memory-loop-command.mjs report
+
+memory-context-bench: ## Run text-context research; requires CORPUS, MEMORY_SPLIT, MODELS, MODEL_METADATA, WORKER_PYTHON, MEMORY_DRIVER, CONTEXT_DRIVER, OUT
+	@node scripts/memory-loop-command.mjs context
+
+memory-context-report: ## Replay text-context research, separate from audio/OCR acceptance; CORPUS, RESULTS and OUT required
+	@node scripts/memory-loop-command.mjs context-report
 
 phonetic-extract: ## Extract real ASR scores and audio IPA; CORPUS, EVAL_PYTHON, MODELS, PHONE_MODELS, RUNTIME_ARTIFACTS and OUT required
 	@node scripts/phonetic-bench-command.mjs extract

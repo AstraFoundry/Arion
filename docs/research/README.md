@@ -15,6 +15,9 @@ Research separates **observed shipped artifacts**, **static inferences**, **vend
 - [Rewrite reliability](rewrite-reliability.md) — Doubao/Chatterfly alignment, reproduced source-delivery defects, adopted fixes and remaining generation failures.
 - [Competitor cloud synchronization](competitor-cloud-sync.md) — account vocabulary, selected preferences, optional history, clipboard transfer and cloud-processing boundaries.
 - [Learning from corrections](edit-learning.md) — how Typeless, Doubao and Chatterfly detect a user's fix of dictated text, store it and recall it.
+- [Recognition-stage correction memory](user-modify-asr.md) — Qwen3-ASR-1.7B context interfaces, MLX/sherpa feasibility, known Doubao matching limits and a measured five-arm audio-stage diagnostic.
+- [Recognition memory optimization](user-modify-asr-optimization.md) — contextual-ASR papers, correction-pair failure hypotheses, compact term retrieval and measured original-audio re-decoding on a frozen new test.
+- [Closed-loop memory and contextual disambiguation](closed-loop-memory.md) — user feedback papers, empty-vault acquisition/reload/audio evaluation, ordinary-word ambiguity, OCR-to-prompt limits and retrieved pronunciation examples.
 - [ONNX rewrite models](onnx-rewrite-models.md) — pinned Hugging Face candidates, native runtime compatibility and load/parity gates.
 - [Qwen pipeline diagnostics](qwen-pipeline-diagnostics.md) — actual development inference, scope boundaries and repeatable flows.
 - [Qwen paper strategies](qwen-paper-strategies.md) — primary-paper mechanisms, contextual transcription/editing limits, training proposals and staged ablations.

@@ -156,16 +156,3 @@ func (c *Coordinator) remember(r *run, text string) {
 		c.deps.History.Add(r.place, text)
 	}
 }
-
-// withContextTerms adds the spellings found in the context to the approved
-// terms. The model sees only these, in the prompt's terms, never the
-// context itself: on the development split this matched or beat context
-// sections and keeps the shared prompt prefix (context-ablation-v1). The
-// whole context still supports validation.
-func withContextTerms(terms []string, rc domain.RewriteContext, source string) []string {
-	extra := domain.ContextTerms(rc, source)
-	if len(extra) == 0 {
-		return terms
-	}
-	return append(append([]string{}, terms...), extra...)
-}

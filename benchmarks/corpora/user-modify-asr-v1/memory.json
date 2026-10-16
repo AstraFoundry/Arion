@@ -1,0 +1,150 @@
+{
+  "version": 1,
+  "logicalDay": 100,
+  "entries": [
+    {
+      "id": "arion",
+      "source": "阿里昂",
+      "target": "Arion",
+      "updatedDay": 100,
+      "useCount": 1,
+      "recallCount": 0,
+      "approved": true,
+      "origin": "authored_prior_session",
+      "sourceSession": "prior-arion"
+    },
+    {
+      "id": "mygo",
+      "source": "麦狗",
+      "target": "MyGo",
+      "updatedDay": 100,
+      "useCount": 1,
+      "recallCount": 0,
+      "approved": true,
+      "origin": "authored_prior_session",
+      "sourceSession": "prior-mygo"
+    },
+    {
+      "id": "redis",
+      "source": "瑞迪斯",
+      "target": "Redis",
+      "updatedDay": 98,
+      "useCount": 9,
+      "recallCount": 20,
+      "approved": true,
+      "origin": "authored_prior_session",
+      "sourceSession": "prior-redis"
+    },
+    {
+      "id": "kubernetes",
+      "source": "库伯内蒂斯",
+      "target": "Kubernetes",
+      "updatedDay": 97,
+      "useCount": 8,
+      "recallCount": 18,
+      "approved": true,
+      "origin": "authored_prior_session",
+      "sourceSession": "prior-kubernetes"
+    },
+    {
+      "id": "feishu",
+      "source": "飞输",
+      "target": "飞书",
+      "updatedDay": 96,
+      "useCount": 7,
+      "recallCount": 16,
+      "approved": true,
+      "origin": "authored_prior_session",
+      "sourceSession": "prior-feishu"
+    },
+    {
+      "id": "safari",
+      "source": "沙发",
+      "target": "Safari",
+      "updatedDay": 95,
+      "useCount": 15,
+      "recallCount": 1,
+      "approved": true,
+      "origin": "authored_prior_session",
+      "sourceSession": "prior-safari"
+    },
+    {
+      "id": "openai",
+      "source": "open ai",
+      "target": "OpenAI",
+      "updatedDay": 94,
+      "useCount": 14,
+      "recallCount": 1,
+      "approved": true,
+      "origin": "authored_prior_session",
+      "sourceSession": "prior-openai"
+    },
+    {
+      "id": "sql",
+      "source": "sequel",
+      "target": "SQL",
+      "updatedDay": 93,
+      "useCount": 13,
+      "recallCount": 1,
+      "approved": true,
+      "origin": "authored_prior_session",
+      "sourceSession": "prior-sql"
+    },
+    {
+      "id": "github",
+      "source": "吉特哈布",
+      "target": "GitHub",
+      "updatedDay": 92,
+      "useCount": 2,
+      "recallCount": 0,
+      "approved": true,
+      "origin": "authored_prior_session",
+      "sourceSession": "prior-github"
+    },
+    {
+      "id": "codex",
+      "source": "扣代克斯",
+      "target": "Codex",
+      "updatedDay": 91,
+      "useCount": 1,
+      "recallCount": 0,
+      "approved": true,
+      "origin": "authored_prior_session",
+      "sourceSession": "prior-codex"
+    },
+    {
+      "id": "reverse-a",
+      "source": "燕京",
+      "target": "眼睛",
+      "updatedDay": 99,
+      "useCount": 99,
+      "recallCount": 99,
+      "approved": true,
+      "origin": "authored_prior_session",
+      "sourceSession": "prior-reverse-a"
+    },
+    {
+      "id": "reverse-b",
+      "source": "眼睛",
+      "target": "燕京",
+      "updatedDay": 99,
+      "useCount": 99,
+      "recallCount": 99,
+      "approved": true,
+      "origin": "authored_prior_session",
+      "sourceSession": "prior-reverse-b"
+    },
+    {
+      "id": "expired",
+      "source": "丘德兰特",
+      "target": "Qdrant",
+      "updatedDay": 60,
+      "useCount": 999,
+      "recallCount": 999,
+      "approved": true,
+      "origin": "authored_prior_session",
+      "sourceSession": "prior-expired"
+    }
+  ],
+  "provenance": "Developer-authored approved prior-session fixtures and counts, not mined personal data. Fixed before current test utterances and never derived from their references."
+}

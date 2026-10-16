@@ -1,0 +1,62 @@
+{
+  "id": "Qwen/Qwen3-ASR-1.7B",
+  "revision": "7278e1e70fe206f11671096ffdd38061171dd6e5",
+  "license": "apache-2.0",
+  "assets": [
+    {
+      "rfilename": "chat_template.json",
+      "blobId": "c44736493efd71ec96218cc626904698cdb13235",
+      "size": 1161
+    },
+    {
+      "rfilename": "config.json",
+      "blobId": "2bc16c9d4ca08963715cfb94d879799b9adbd0e9",
+      "size": 6194
+    },
+    {
+      "rfilename": "generation_config.json",
+      "blobId": "7382a4d347c0a865b76bb1b8277f66a5ac312854",
+      "size": 142
+    },
+    {
+      "rfilename": "model-00001-of-00002.safetensors",
+      "blobId": "1522f6592ff361cdc8b95692bbd8c513d68fc40a",
+      "size": 4220320824,
+      "lfs": {
+        "sha256": "a4cd1f1a04d90b757dc7f7dd26254e69a013b19e80efe590a83c6a3bde8608d6",
+        "size": 4220320824,
+        "pointerSize": 135
+      }
+    },
+    {
+      "rfilename": "model-00002-of-00002.safetensors",
+      "blobId": "5a13bd2988d1368745384b4acb6e8bab73f98a75",
+      "size": 478200688,
+      "lfs": {
+        "sha256": "6e0b9d9e09e2e0238e7ef3cc8a484ab387e91b90f1900bedf88bc92d7929ccfc",
+        "size": 478200688,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "model.safetensors.index.json",
+      "blobId": "1048a4eb4f21fef9aea06d8568a784b2b5595689",
+      "size": 64821
+    },
+    {
+      "rfilename": "preprocessor_config.json",
+      "blobId": "8f7f07346466d5d494ec0d4969d1c3d0190eed72",
+      "size": 330
+    },
+    {
+      "rfilename": "tokenizer_config.json",
+      "blobId": "b93109843922a40c6654c5449d3bf95372267c66",
+      "size": 12487
+    },
+    {
+      "rfilename": "vocab.json",
+      "blobId": "4783fe10ac3adce15ac8f358ef5462739852c569",
+      "size": 2776833
+    }
+  ]
+}

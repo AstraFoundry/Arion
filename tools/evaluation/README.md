@@ -142,6 +142,20 @@ Freeze and hash new test cases before candidate generation; previous challenge s
 
 The audio driver now matches the product default (`RemoveFillers=true`). Use `FILLERS=0` only for an explicitly labelled diagnostic ablation. New audio rows record `removeFillers`; legacy rows report null, never an inferred false. Mixed policies in one run and mismatches with an explicitly declared report policy fail. The final report retains the older filler-off arm separately, including its regression.
 
+## Recognition-stage memory research
+
+`pnpm memory:asr` / `make memory-asr-bench` run the [retrieval and audio re-decoding study](../../benchmarks/reproduction/user-modify-asr-v2/README.md) using separately provisioned Apple Silicon MLX weights/runtime. Set `CORPUS` to the fixture directory, `MODELS` to the pinned model directory and `OUT` to a new run directory; `EVAL_PYTHON` selects the provisioned interpreter. For a final test, `MEMORY_SELECTION` supplies the development-only frozen selection JSON. pnpm also accepts the runner's explicit arguments. No command downloads weights or routes inference to a service.
+
+`pnpm memory:asr-report` / `make memory-asr-report` need only `CORPUS`, `RESULTS` (run directory) and a new `OUT` JSON file. Explicit pnpm positional arguments follow that same order. Reports verify input/audio/call/output identities and score entity hits and wrong memory entities alongside CER/WER/MER. Adaptive rows reuse the actual first pass, so observations and actual calls have separate counts. See [the measured report](../../benchmarks/results/user-modify-asr-v2/README.md) for frozen selection, synthetic/natural-read strata, limitations and replay.
+
+## Empty-vault and contextual memory research
+
+`pnpm memory:loop-build` (`make memory-loop-build`) compiles the production extraction/vault and prompt/validation research helpers into `.workspace/`; set `MEMORY_BIN_DIR` for another private location. `pnpm memory:loop` (`make memory-loop-bench`) runs actual earlier-session ASR, authored user corrections, encrypted persistence/reopen and future audio using a frozen memory. See [the driver README](../../benchmarks/reproduction/user-modify-asr-v3/README.md) for required arguments and development-only selection. `pnpm memory:loop-report <fixture-root> <run> <new-json>` verifies and scores without a model. Initial empty memory, actual producing calls, write/reopen provenance and future-reference isolation are separate gates.
+
+`pnpm memory:context` (`make memory-context-bench`) uses the same production learning code and a different 1.7B text model to compare product terms with reconstructed screen context and retrieved pronunciation examples. It does not run OCR or ASR. `pnpm memory:context-report` (`make memory-context-report`) replays its recorded generations and validator decisions. [Its README](../../benchmarks/reproduction/context-memory-v1/README.md) documents private provisioning, old asset-path mapping for new inference, frozen test selection and the distinction between raw and delivered scores. Both studies preserve original failures and have independent manifests outside the historical migration replay command.
+
+`pnpm memory:loop-verify` / `make memory-loop-verify` verify their two archive manifests, including exact audio, observations and frozen sources. Explicit manifest paths may be supplied to the pnpm command. Verification is read-only and needs no model, private key or original workspace paths.
+
 ## Archived benchmark research
 
 [The archive contract](../../benchmarks/migration/README.md) describes the byte-preserving research snapshot and its limitations. Corpora and recorded audio are under `benchmarks/corpora/`, raw outputs and failure metadata under `benchmarks/runs/`, and frozen scripts/evaluators under `benchmarks/reproduction/`. Original machine paths and hashes remain in historical metadata; the archive map resolves them explicitly without a local-workspace fallback.

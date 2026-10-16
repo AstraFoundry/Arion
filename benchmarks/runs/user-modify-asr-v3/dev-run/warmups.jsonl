@@ -1,0 +1,2 @@
+{"context": "", "text": "The meeting room is ready for the next discussion.", "elapsedMs": 793.0098331999034, "promptTokens": 49, "generationTokens": 13, "tokenLimitReached": false, "peakRssBytes": 2283061248, "peakMlxBytes": 3192329340}
+{"context": "Vocabulary: calendar.", "text": "The meeting room is ready for the next discussion.", "elapsedMs": 549.6459160931408, "promptTokens": 54, "generationTokens": 13, "tokenLimitReached": false, "peakRssBytes": 2283061248, "peakMlxBytes": 3192329340}

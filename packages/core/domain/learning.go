@@ -33,18 +33,29 @@ type FieldEdit struct {
 	Settled  string
 }
 
+// WordSpan is a half-open word range in Unicode code points, not bytes or
+// UTF-16 code units. Punctuation and whitespace need not have spans.
+type WordSpan struct{ Start, End int }
+
+// WordSegmenter supplies local linguistic word boundaries. Platform adapters
+// implement this port without introducing OS dependencies into the domain.
+type WordSegmenter interface {
+	Words(string) ([]WordSpan, error)
+}
+
 // EditVerdict is a content-free outcome of one tracked edit.
 type EditVerdict string
 
 const (
-	EditLearned   EditVerdict = "learned"
-	EditUnchanged EditVerdict = "unchanged"
-	EditCleared   EditVerdict = "cleared"
-	EditNotFound  EditVerdict = "not_found"
-	EditOutside   EditVerdict = "outside"
-	EditTooLarge  EditVerdict = "too_large"
-	EditRewrite   EditVerdict = "rewrite"
-	EditNoPair    EditVerdict = "no_pair"
+	EditLearned          EditVerdict = "learned"
+	EditUnchanged        EditVerdict = "unchanged"
+	EditCleared          EditVerdict = "cleared"
+	EditNotFound         EditVerdict = "not_found"
+	EditOutside          EditVerdict = "outside"
+	EditTooLarge         EditVerdict = "too_large"
+	EditRewrite          EditVerdict = "rewrite"
+	EditNoPair           EditVerdict = "no_pair"
+	EditWordsUnavailable EditVerdict = "words_unavailable"
 )
 
 // EditOutcome carries the pairs to learn when the verdict is EditLearned.
@@ -56,7 +67,7 @@ type EditOutcome struct {
 // ExtractCorrections finds the word-level replacements the user made inside
 // the inserted text. Typing before or after it, deleting it, clearing the
 // field and large rewrites teach nothing.
-func ExtractCorrections(e FieldEdit) EditOutcome {
+func ExtractCorrections(e FieldEdit, segmenter WordSegmenter) EditOutcome {
 	if strings.TrimSpace(e.Settled) == "" {
 		return EditOutcome{Verdict: EditCleared}
 	}
@@ -80,6 +91,9 @@ func ExtractCorrections(e FieldEdit) EditOutcome {
 	edited := e.Settled[at : len(e.Settled)-(len(e.Baseline)-end)]
 	if edited == e.Inserted {
 		return EditOutcome{Verdict: EditUnchanged}
+	}
+	if utf8.RuneCountInString(edited) > MaxEditRunes {
+		return EditOutcome{Verdict: EditTooLarge}
 	}
 	a, b := editUnits(e.Inserted), editUnits(edited)
 	ops := diffUnits(a, b)
@@ -105,6 +119,28 @@ func ExtractCorrections(e FieldEdit) EditOutcome {
 	hunks := groupHunks(a, ops)
 	if len(hunks) > MaxEditHunks {
 		return EditOutcome{Verdict: EditRewrite}
+	}
+	needsWords := false
+	for _, h := range hunks {
+		h = trimHunk(a, b, h)
+		from, to := strings.Join(a[h.i0:h.i1], ""), strings.Join(b[h.j0:h.j1], "")
+		if contentWeight(from) > 0 && contentWeight(to) > 0 &&
+			!(numeric(from) && numeric(to)) && !exemptChange(from, to) &&
+			(hasCJK(from) || hasCJK(to)) {
+			needsWords = true
+			break
+		}
+	}
+	if needsWords {
+		if segmenter == nil {
+			return EditOutcome{Verdict: EditWordsUnavailable}
+		}
+		sourceWords, sourceErr := segmenter.Words(e.Inserted)
+		words, err := segmenter.Words(edited)
+		if err != nil || sourceErr != nil || !validWordSpans(sourceWords, utf8.RuneCountInString(e.Inserted)) || !validWordSpans(words, utf8.RuneCountInString(edited)) {
+			return EditOutcome{Verdict: EditWordsUnavailable}
+		}
+		hunks = alignWordHunks(a, b, hunks, sourceWords, words)
 	}
 	var pairs []Replacement
 	for _, h := range hunks {
@@ -266,8 +302,7 @@ func groupHunks(a []string, ops []diffOp) []hunk {
 	return out
 }
 
-// hunkPair turns one change into a vocabulary pair, widening a short CJK
-// change with its unchanged neighbour.
+// hunkPair turns an aligned change into a vocabulary pair.
 func hunkPair(a, b []string, h hunk) (Replacement, bool) {
 	from := strings.TrimSpace(strings.Join(a[h.i0:h.i1], ""))
 	to := strings.TrimSpace(strings.Join(b[h.j0:h.j1], ""))
@@ -294,17 +329,8 @@ func hunkPair(a, b []string, h hunk) (Replacement, bool) {
 		return Replacement{}, false
 	}
 	if hasCJK(from) || hasCJK(to) {
-		i0, i1, j0, j1 := h.i0, h.i1, h.j0, h.j1
-		for utf8.RuneCountInString(from) < minCJKPair || utf8.RuneCountInString(to) < minCJKPair {
-			switch {
-			case i1 < len(a) && j1 < len(b) && a[i1] == b[j1] && hasCJK(a[i1]):
-				i1, j1 = i1+1, j1+1
-			case i0 > 0 && j0 > 0 && a[i0-1] == b[j0-1] && hasCJK(a[i0-1]):
-				i0, j0 = i0-1, j0-1
-			default:
-				return Replacement{}, false
-			}
-			from, to = strings.Join(a[i0:i1], ""), strings.Join(b[j0:j1], "")
+		if utf8.RuneCountInString(from) < minCJKPair || utf8.RuneCountInString(to) < minCJKPair {
+			return Replacement{}, false
 		}
 	}
 	if utf8.RuneCountInString(from) > MaxPairRunes || utf8.RuneCountInString(to) > MaxPairRunes ||

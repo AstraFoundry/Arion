@@ -1,0 +1,65 @@
+{
+  "events": [
+    {
+      "id": "unchanged",
+      "kind": "negative",
+      "inserted": "材料已经准备好了。",
+      "settled": "材料已经准备好了。"
+    },
+    {
+      "id": "append",
+      "kind": "negative",
+      "inserted": "材料已经准备好了。",
+      "settled": "材料已经准备好了。明天再发。"
+    },
+    {
+      "id": "punctuation",
+      "kind": "negative",
+      "inserted": "材料已经准备好了。",
+      "settled": "材料已经准备好了！"
+    },
+    {
+      "id": "number",
+      "kind": "negative",
+      "inserted": "请在九点参加会议。",
+      "settled": "请在十点参加会议。"
+    },
+    {
+      "id": "grammar",
+      "kind": "negative",
+      "inserted": "他的材料已经准备好了。",
+      "settled": "她的材料已经准备好了。"
+    },
+    {
+      "id": "clear",
+      "kind": "negative",
+      "inserted": "材料已经准备好了。",
+      "settled": ""
+    },
+    {
+      "id": "delete",
+      "kind": "negative",
+      "inserted": "材料已经全部准备好了。",
+      "settled": "材料已经准备好了。"
+    },
+    {
+      "id": "outside",
+      "kind": "negative",
+      "inserted": "材料已经准备好了。",
+      "prefix": "乙组：",
+      "settled": "乙队：材料已经准备好了。"
+    },
+    {
+      "id": "rewrite",
+      "kind": "negative",
+      "inserted": "下午先讨论演示文稿的修改意见。",
+      "settled": "明天请大家早点出发。"
+    },
+    {
+      "id": "weekday-intent",
+      "kind": "semantic_risk",
+      "inserted": "明天周一先整理材料。",
+      "settled": "明天周二先整理材料。"
+    }
+  ]
+}

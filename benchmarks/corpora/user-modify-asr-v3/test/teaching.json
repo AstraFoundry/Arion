@@ -1,0 +1,532 @@
+{
+  "events": [
+    {
+      "id": "test-teach-00-0",
+      "sessionId": "test-prior-0",
+      "audio": {
+        "path": "test-teach-00-0.wav",
+        "sha256": "b7252f8ac30e5053e201fda5c0db23f83fe3000b5cf575c92f11d5608d41eee8",
+        "durationMs": 4558.3125,
+        "speakerId": "Flo (中文（中国大陆）)"
+      },
+      "userEditedText": "文档里缺少ClickHouse的安装步骤，请补充。"
+    },
+    {
+      "id": "test-teach-00-1",
+      "sessionId": "test-prior-1",
+      "audio": {
+        "path": "test-teach-00-1.wav",
+        "sha256": "7eecf7e620cdf1abd89b8962e214f5b67915cb2c68d0fec7f55309cede5bb3af",
+        "durationMs": 4414.375,
+        "speakerId": "Flo (中文（中国大陆）)"
+      },
+      "userEditedText": "午后培训将介绍ClickHouse，请提前报名。"
+    },
+    {
+      "id": "test-teach-01-0",
+      "sessionId": "test-prior-0",
+      "audio": {
+        "path": "test-teach-01-0.wav",
+        "sha256": "da07131af4e6dcfc69ec888b8a9b5fd43816346d6967bf3397b56d95911c3586",
+        "durationMs": 4558.3125,
+        "speakerId": "Flo (中文（中国大陆）)"
+      },
+      "userEditedText": "文档里缺少Prometheus的安装步骤，请补充。"
+    },
+    {
+      "id": "test-teach-01-1",
+      "sessionId": "test-prior-1",
+      "audio": {
+        "path": "test-teach-01-1.wav",
+        "sha256": "c1c206cdee2ced8889c19744557beb1713846f4c4352cf886c79774774d4e9c4",
+        "durationMs": 4382.375,
+        "speakerId": "Flo (中文（中国大陆）)"
+      },
+      "userEditedText": "午后培训将介绍Prometheus，请提前报名。"
+    },
+    {
+      "id": "test-teach-02-0",
+      "sessionId": "test-prior-0",
+      "audio": {
+        "path": "test-teach-02-0.wav",
+        "sha256": "79a553de08ba302390f6c92aba910768da57fc08781763bc8f90267083f2571f",
+        "durationMs": 4286.3125,
+        "speakerId": "Flo (中文（中国大陆）)"
+      },
+      "userEditedText": "文档里缺少Grafana的安装步骤，请补充。"
+    },
+    {
+      "id": "test-teach-02-1",
+      "sessionId": "test-prior-1",
+      "audio": {
+        "path": "test-teach-02-1.wav",
+        "sha256": "2024136a9839cd11e84f02092c19097ba427858ec261879b4f4ae3aae510f14e",
+        "durationMs": 4142.375,
+        "speakerId": "Flo (中文（中国大陆）)"
+      },
+      "userEditedText": "午后培训将介绍Grafana，请提前报名。"
+    },
+    {
+      "id": "test-teach-03-0",
+      "sessionId": "test-prior-0",
+      "audio": {
+        "path": "test-teach-03-0.wav",
+        "sha256": "df92f8dfadc531abe15ffee2580b9b2b2c4a5e94fc70b85854d0bead1d257da2",
+        "durationMs": 4302.3125,
+        "speakerId": "Flo (中文（中国大陆）)"
+      },
+      "userEditedText": "文档里缺少Milvus的安装步骤，请补充。"
+    },
+    {
+      "id": "test-teach-03-1",
+      "sessionId": "test-prior-1",
+      "audio": {
+        "path": "test-teach-03-1.wav",
+        "sha256": "3d36b8f61807d0b4b204cfa20c72b47f4beb36de7f7722081d6bf0970fd11bd7",
+        "durationMs": 4126.375,
+        "speakerId": "Flo (中文（中国大陆）)"
+      },
+      "userEditedText": "午后培训将介绍Milvus，请提前报名。"
+    },
+    {
+      "id": "test-teach-04-0",
+      "sessionId": "test-prior-0",
+      "audio": {
+        "path": "test-teach-04-0.wav",
+        "sha256": "e19e3746cdcd87bf28d4a74de535da197c4ef404ceaefce8f1bf7b74184094d7",
+        "durationMs": 4206.3125,
+        "speakerId": "Flo (中文（中国大陆）)"
+      },
+      "userEditedText": "文档里缺少Weaviate的安装步骤，请补充。"
+    },
+    {
+      "id": "test-teach-04-1",
+      "sessionId": "test-prior-1",
+      "audio": {
+        "path": "test-teach-04-1.wav",
+        "sha256": "744f5f9f147a330046c2cd6c595dec429a165d3de7b2ffdf0ca01125de07c6fc",
+        "durationMs": 4046.3750000000005,
+        "speakerId": "Flo (中文（中国大陆）)"
+      },
+      "userEditedText": "午后培训将介绍Weaviate，请提前报名。"
+    },
+    {
+      "id": "test-teach-05-0",
+      "sessionId": "test-prior-0",
+      "audio": {
+        "path": "test-teach-05-0.wav",
+        "sha256": "16157cdcad8f6a20a355169285ee3e94abc20f300fcaebe29e194b41c5432d04",
+        "durationMs": 4350.25,
+        "speakerId": "Flo (中文（中国大陆）)"
+      },
+      "userEditedText": "文档里缺少DuckDB的安装步骤，请补充。"
+    },
+    {
+      "id": "test-teach-05-1",
+      "sessionId": "test-prior-1",
+      "audio": {
+        "path": "test-teach-05-1.wav",
+        "sha256": "fdf61383deb9033547db77956c23c5a6ef87c18b78827f1a81fe2c97a49f3c10",
+        "durationMs": 4238.375,
+        "speakerId": "Flo (中文（中国大陆）)"
+      },
+      "userEditedText": "午后培训将介绍DuckDB，请提前报名。"
+    },
+    {
+      "id": "test-teach-06-0",
+      "sessionId": "test-prior-0",
+      "audio": {
+        "path": "test-teach-06-0.wav",
+        "sha256": "d70cc62fd8abed0902223a3fe4b4b0362afefc07753b70e366cff4aa0aca9ff9",
+        "durationMs": 4414.3125,
+        "speakerId": "Flo (中文（中国大陆）)"
+      },
+      "userEditedText": "文档里缺少Raycast的安装步骤，请补充。"
+    },
+    {
+      "id": "test-teach-06-1",
+      "sessionId": "test-prior-1",
+      "audio": {
+        "path": "test-teach-06-1.wav",
+        "sha256": "d1a8d3f88585101bba1a22c2e4b47d9d0d722ea7c0e38ab15d7cf9215760e504",
+        "durationMs": 4270.375,
+        "speakerId": "Flo (中文（中国大陆）)"
+      },
+      "userEditedText": "午后培训将介绍Raycast，请提前报名。"
+    },
+    {
+      "id": "test-teach-07-0",
+      "sessionId": "test-prior-0",
+      "audio": {
+        "path": "test-teach-07-0.wav",
+        "sha256": "8a0c85fbb5bf18946673699b1db9e53286172650d5d7845d1a6e04969d41008c",
+        "durationMs": 4494.3125,
+        "speakerId": "Flo (中文（中国大陆）)"
+      },
+      "userEditedText": "文档里缺少Obsidian的安装步骤，请补充。"
+    },
+    {
+      "id": "test-teach-07-1",
+      "sessionId": "test-prior-1",
+      "audio": {
+        "path": "test-teach-07-1.wav",
+        "sha256": "2f7bb140103b1da2f93432defc5587c1b33bf909abaddf68bcb840447178949b",
+        "durationMs": 4302.375,
+        "speakerId": "Flo (中文（中国大陆）)"
+      },
+      "userEditedText": "午后培训将介绍Obsidian，请提前报名。"
+    },
+    {
+      "id": "test-teach-08-0",
+      "sessionId": "test-prior-0",
+      "audio": {
+        "path": "test-teach-08-0.wav",
+        "sha256": "5a17fd9a2ed1480572c4b8258dc412e4d5c66f713c5687ee72ea24575fce1b51",
+        "durationMs": 3886.3125,
+        "speakerId": "Flo (中文（中国大陆）)"
+      },
+      "userEditedText": "文档里缺少Zed的安装步骤，请补充。"
+    },
+    {
+      "id": "test-teach-08-1",
+      "sessionId": "test-prior-1",
+      "audio": {
+        "path": "test-teach-08-1.wav",
+        "sha256": "515c339165013c456df60b8c63016465f4a1b2bc2e2283bb5de37b96d406b163",
+        "durationMs": 3758.375,
+        "speakerId": "Flo (中文（中国大陆）)"
+      },
+      "userEditedText": "午后培训将介绍Zed，请提前报名。"
+    },
+    {
+      "id": "test-teach-09-0",
+      "sessionId": "test-prior-0",
+      "audio": {
+        "path": "test-teach-09-0.wav",
+        "sha256": "8c3daedcded53281738e94dccad1e9d37d137fc5cbf8be4f3835ef4ae6901c0d",
+        "durationMs": 3950.25,
+        "speakerId": "Flo (中文（中国大陆）)"
+      },
+      "userEditedText": "文档里缺少Cursor的安装步骤，请补充。"
+    },
+    {
+      "id": "test-teach-09-1",
+      "sessionId": "test-prior-1",
+      "audio": {
+        "path": "test-teach-09-1.wav",
+        "sha256": "a8535499114a8460b77026993021a093defb9ea8444177eb14a136fe38271ee3",
+        "durationMs": 3806.375,
+        "speakerId": "Flo (中文（中国大陆）)"
+      },
+      "userEditedText": "午后培训将介绍Cursor，请提前报名。"
+    },
+    {
+      "id": "test-teach-10-0",
+      "sessionId": "test-prior-0",
+      "audio": {
+        "path": "test-teach-10-0.wav",
+        "sha256": "b355c8f5ad45eaa883e05037766565764b66b8e2c3b4b8249b45d3caf272ca6e",
+        "durationMs": 4062.3125,
+        "speakerId": "Flo (中文（中国大陆）)"
+      },
+      "userEditedText": "文档里缺少Ollama的安装步骤，请补充。"
+    },
+    {
+      "id": "test-teach-10-1",
+      "sessionId": "test-prior-1",
+      "audio": {
+        "path": "test-teach-10-1.wav",
+        "sha256": "28d43fcbf229089bb2d80a3b4d8f829696817e7ac5e2c0f3f97daf67b2148be5",
+        "durationMs": 3934.375,
+        "speakerId": "Flo (中文（中国大陆）)"
+      },
+      "userEditedText": "午后培训将介绍Ollama，请提前报名。"
+    },
+    {
+      "id": "test-teach-11-0",
+      "sessionId": "test-prior-0",
+      "audio": {
+        "path": "test-teach-11-0.wav",
+        "sha256": "0dc3a03fec7a51bcb30b264f686369c2189b2ee6162f00d09734d179f1e83ee6",
+        "durationMs": 3934.3125,
+        "speakerId": "Flo (中文（中国大陆）)"
+      },
+      "userEditedText": "文档里缺少Tauri的安装步骤，请补充。"
+    },
+    {
+      "id": "test-teach-11-1",
+      "sessionId": "test-prior-1",
+      "audio": {
+        "path": "test-teach-11-1.wav",
+        "sha256": "23347143357baefc4dcadb65faf5d1668ff20e221ce4ee4420740e9e2ec618a1",
+        "durationMs": 3790.375,
+        "speakerId": "Flo (中文（中国大陆）)"
+      },
+      "userEditedText": "午后培训将介绍Tauri，请提前报名。"
+    },
+    {
+      "id": "test-teach-12-0",
+      "sessionId": "test-prior-0",
+      "audio": {
+        "path": "test-teach-12-0.wav",
+        "sha256": "6235c67268055e0aa8df51299e0d13c9c9923f701cbdadc3ae5635c70a87ea83",
+        "durationMs": 2702.5625,
+        "speakerId": "Flo (中文（中国大陆）)"
+      },
+      "userEditedText": "负责下午活动的人叫祁砚舟。"
+    },
+    {
+      "id": "test-teach-12-1",
+      "sessionId": "test-prior-1",
+      "audio": {
+        "path": "test-teach-12-1.wav",
+        "sha256": "4c8cc8c778373d4ffc3a470786c95d926cb46cd97c7f7b2967466ac0a2013019",
+        "durationMs": 3646.5625,
+        "speakerId": "Flo (中文（中国大陆）)"
+      },
+      "userEditedText": "新收到的申请表上写着祁砚舟的名字。"
+    },
+    {
+      "id": "test-teach-13-0",
+      "sessionId": "test-prior-0",
+      "audio": {
+        "path": "test-teach-13-0.wav",
+        "sha256": "e7a8ecd25ba21b18c89ae814aa9bf8206c8cc0570858e789407881438946ebe9",
+        "durationMs": 2750.5625,
+        "speakerId": "Flo (中文（中国大陆）)"
+      },
+      "userEditedText": "负责下午活动的人叫邵栩宁。"
+    },
+    {
+      "id": "test-teach-13-1",
+      "sessionId": "test-prior-1",
+      "audio": {
+        "path": "test-teach-13-1.wav",
+        "sha256": "5dda5ae908490014b8ebc630a1b2b79995948b6b344924a88ed0ee17fb5c131f",
+        "durationMs": 3678.5625,
+        "speakerId": "Flo (中文（中国大陆）)"
+      },
+      "userEditedText": "新收到的申请表上写着邵栩宁的名字。"
+    },
+    {
+      "id": "test-teach-14-0",
+      "sessionId": "test-prior-0",
+      "audio": {
+        "path": "test-teach-14-0.wav",
+        "sha256": "453773f4923791bb7f0ef7bd321eb20849ef8c49babee4d20113188bcb052b8a",
+        "durationMs": 2782.5625,
+        "speakerId": "Flo (中文（中国大陆）)"
+      },
+      "userEditedText": "负责下午活动的人叫苏芷澄。"
+    },
+    {
+      "id": "test-teach-14-1",
+      "sessionId": "test-prior-1",
+      "audio": {
+        "path": "test-teach-14-1.wav",
+        "sha256": "06abb10e5abc790ed956405c4ce8f820f48bcdab7a3060d5f7d682a198b4d802",
+        "durationMs": 3726.5625,
+        "speakerId": "Flo (中文（中国大陆）)"
+      },
+      "userEditedText": "新收到的申请表上写着苏芷澄的名字。"
+    },
+    {
+      "id": "test-teach-15-0",
+      "sessionId": "test-prior-0",
+      "audio": {
+        "path": "test-teach-15-0.wav",
+        "sha256": "6d80242c64696adef422484624d87a5c68e39a8fda33e109d5a7deed89cab69e",
+        "durationMs": 2750.5625,
+        "speakerId": "Flo (中文（中国大陆）)"
+      },
+      "userEditedText": "负责下午活动的人叫蓝泊川。"
+    },
+    {
+      "id": "test-teach-15-1",
+      "sessionId": "test-prior-1",
+      "audio": {
+        "path": "test-teach-15-1.wav",
+        "sha256": "b1c477793fe4e338f06379632da996489107ec1699dd17121fd83d764dac80f5",
+        "durationMs": 3742.5625,
+        "speakerId": "Flo (中文（中国大陆）)"
+      },
+      "userEditedText": "新收到的申请表上写着蓝泊川的名字。"
+    },
+    {
+      "id": "test-teach-16-0",
+      "sessionId": "test-prior-0",
+      "audio": {
+        "path": "test-teach-16-0.wav",
+        "sha256": "09678387206ba09638d0b3ba6d921d8a0b0beca8a2e163f7d97348cf8e640f88",
+        "durationMs": 2558.5625,
+        "speakerId": "Flo (中文（中国大陆）)"
+      },
+      "userEditedText": "负责下午活动的人叫霁川。"
+    },
+    {
+      "id": "test-teach-16-1",
+      "sessionId": "test-prior-1",
+      "audio": {
+        "path": "test-teach-16-1.wav",
+        "sha256": "7a4aeec49799737e7ce6b1b0a3c47eefde3f0ee7ddb58da067a4eb6221ca78ee",
+        "durationMs": 3534.5625,
+        "speakerId": "Flo (中文（中国大陆）)"
+      },
+      "userEditedText": "新收到的申请表上写着霁川的名字。"
+    },
+    {
+      "id": "test-teach-17-0",
+      "sessionId": "test-prior-0",
+      "audio": {
+        "path": "test-teach-17-0.wav",
+        "sha256": "f4e84ed11b34cd623140c7ad18c1056d15fa98c02a27cd54adbc87e1fffee57b",
+        "durationMs": 2558.5625,
+        "speakerId": "Flo (中文（中国大陆）)"
+      },
+      "userEditedText": "负责下午活动的人叫栖禾。"
+    },
+    {
+      "id": "test-teach-17-1",
+      "sessionId": "test-prior-1",
+      "audio": {
+        "path": "test-teach-17-1.wav",
+        "sha256": "73b78bf437f7bc6da519cd79df6fee6185b4a006484d62dc5bc7aee57999ba05",
+        "durationMs": 3502.5625,
+        "speakerId": "Flo (中文（中国大陆）)"
+      },
+      "userEditedText": "新收到的申请表上写着栖禾的名字。"
+    },
+    {
+      "id": "test-teach-18-0",
+      "sessionId": "test-prior-0",
+      "audio": {
+        "path": "test-teach-18-0.wav",
+        "sha256": "38fdd2662e29809e2719c86189aeba23c9dbb83affd152134f0ee30dd9dbe6c6",
+        "durationMs": 2997.6875,
+        "speakerId": "Moira"
+      },
+      "userEditedText": "Our contact for the afternoon workshop is Siobhan."
+    },
+    {
+      "id": "test-teach-18-1",
+      "sessionId": "test-prior-1",
+      "audio": {
+        "path": "test-teach-18-1.wav",
+        "sha256": "733407f1c15f2a374084d0ea280f5ffdea53f5a9d97e886f9355cf1768d1953a",
+        "durationMs": 2707.0,
+        "speakerId": "Moira"
+      },
+      "userEditedText": "The application from Siobhan arrived yesterday."
+    },
+    {
+      "id": "test-teach-19-0",
+      "sessionId": "test-prior-0",
+      "audio": {
+        "path": "test-teach-19-0.wav",
+        "sha256": "d4b0a059b1e27385387a00a66847445f2bf2f9eeb586a8389b5e7018101d6bd6",
+        "durationMs": 2916.4375,
+        "speakerId": "Moira"
+      },
+      "userEditedText": "Our contact for the afternoon workshop is Niamh."
+    },
+    {
+      "id": "test-teach-19-1",
+      "sessionId": "test-prior-1",
+      "audio": {
+        "path": "test-teach-19-1.wav",
+        "sha256": "b31ff81ba4f43e4f749b52a87f21c790f01d96ec6e40f98357f8f8518d6766ca",
+        "durationMs": 2521.1875,
+        "speakerId": "Moira"
+      },
+      "userEditedText": "The application from Niamh arrived yesterday."
+    },
+    {
+      "id": "test-teach-20-0",
+      "sessionId": "test-prior-0",
+      "audio": {
+        "path": "test-teach-20-0.wav",
+        "sha256": "eb89f8187573207ecc39ee578fee9e704460a0b0032178bdd5c968a752a96f43",
+        "durationMs": 2986.125,
+        "speakerId": "Moira"
+      },
+      "userEditedText": "Our contact for the afternoon workshop is Aoife."
+    },
+    {
+      "id": "test-teach-20-1",
+      "sessionId": "test-prior-1",
+      "audio": {
+        "path": "test-teach-20-1.wav",
+        "sha256": "bf0c68fd4768407aee74b3ea59d70ee7f1859fca5b741874abe4245e56d13d3a",
+        "durationMs": 2590.875,
+        "speakerId": "Moira"
+      },
+      "userEditedText": "The application from Aoife arrived yesterday."
+    },
+    {
+      "id": "test-teach-21-0",
+      "sessionId": "test-prior-0",
+      "audio": {
+        "path": "test-teach-21-0.wav",
+        "sha256": "b3074e8574dce81635f40bf66cab9ef5e7a835baf93052e9de9520603e0ed808",
+        "durationMs": 2986.125,
+        "speakerId": "Moira"
+      },
+      "userEditedText": "Our contact for the afternoon workshop is Saoirse."
+    },
+    {
+      "id": "test-teach-21-1",
+      "sessionId": "test-prior-1",
+      "audio": {
+        "path": "test-teach-21-1.wav",
+        "sha256": "4093f3d9c7e350ddd3858290ec6f0f7c0be8cd8204c50c9ebbe91cd8bd90fe73",
+        "durationMs": 2637.3125,
+        "speakerId": "Moira"
+      },
+      "userEditedText": "The application from Saoirse arrived yesterday."
+    },
+    {
+      "id": "test-teach-22-0",
+      "sessionId": "test-prior-0",
+      "audio": {
+        "path": "test-teach-22-0.wav",
+        "sha256": "f9064e45d0fe4a3596920f580842dedb863dc063cc6d0d789759083ad841883f",
+        "durationMs": 3055.75,
+        "speakerId": "Moira"
+      },
+      "userEditedText": "Our contact for the afternoon workshop is Joaquin."
+    },
+    {
+      "id": "test-teach-22-1",
+      "sessionId": "test-prior-1",
+      "audio": {
+        "path": "test-teach-22-1.wav",
+        "sha256": "a2cc0350363148c2772f490e1f6df0e018622420ec1630e2f34c219ae6624a41",
+        "durationMs": 2672.125,
+        "speakerId": "Moira"
+      },
+      "userEditedText": "The application from Joaquin arrived yesterday."
+    },
+    {
+      "id": "test-teach-23-0",
+      "sessionId": "test-prior-0",
+      "audio": {
+        "path": "test-teach-23-0.wav",
+        "sha256": "95cbc4ff4b7e1bb42736cdd309baf965eab95b8d5da5a2730904b19d924fd6e7",
+        "durationMs": 3171.875,
+        "speakerId": "Moira"
+      },
+      "userEditedText": "Our contact for the afternoon workshop is Xochitl."
+    },
+    {
+      "id": "test-teach-23-1",
+      "sessionId": "test-prior-1",
+      "audio": {
+        "path": "test-teach-23-1.wav",
+        "sha256": "210f13df32872d7bdeb8da7934b5470ecaa39861ec3ff812612cdc4c294623bd",
+        "durationMs": 2753.4375,
+        "speakerId": "Moira"
+      },
+      "userEditedText": "The application from Xochitl arrived yesterday."
+    }
+  ]
+}

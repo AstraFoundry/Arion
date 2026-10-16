@@ -1,0 +1,439 @@
+{
+  "afterCount": 43,
+  "beforeCount": 43,
+  "ciphertextBytes": 6357,
+  "ciphertextSha256": "9f33bc4a3b311e96233e7c00e253fdab8933e14a64fb23163e7a50bfce3e7f5c",
+  "entries": [
+    {
+      "id": "2e66485c495a67c9",
+      "from": "克里克豪斯",
+      "to": "ClickHouse",
+      "approved": true,
+      "origin": "learned_edit",
+      "uses": 1,
+      "created": 1800000000,
+      "used": 1800000000
+    },
+    {
+      "id": "b96fa07a88dfc237",
+      "from": "特里特豪斯",
+      "to": "ClickHouse",
+      "approved": true,
+      "origin": "learned_edit",
+      "uses": 1,
+      "created": 1800000060,
+      "used": 1800000060
+    },
+    {
+      "id": "8094e3f59848dede",
+      "from": "普罗米修斯",
+      "to": "Prometheus",
+      "approved": true,
+      "origin": "learned_edit",
+      "uses": 2,
+      "created": 1800000120,
+      "used": 1800000180
+    },
+    {
+      "id": "b35d1835dc82874a",
+      "from": "德拉法纳",
+      "to": "Grafana",
+      "approved": true,
+      "origin": "learned_edit",
+      "uses": 1,
+      "created": 1800000300,
+      "used": 1800000300
+    },
+    {
+      "id": "c001f3a3135b76f6",
+      "from": "米尔沃斯",
+      "to": "Milvus",
+      "approved": true,
+      "origin": "learned_edit",
+      "uses": 2,
+      "created": 1800000360,
+      "used": 1800000420
+    },
+    {
+      "id": "73c61d694da6220c",
+      "from": "专线",
+      "to": "将介",
+      "approved": true,
+      "origin": "learned_edit",
+      "uses": 1,
+      "created": 1800000420,
+      "used": 1800000420
+    },
+    {
+      "id": "9a8b8e9632202f7f",
+      "from": "维维艾特",
+      "to": "Weaviate",
+      "approved": true,
+      "origin": "learned_edit",
+      "uses": 1,
+      "created": 1800000480,
+      "used": 1800000480
+    },
+    {
+      "id": "67e33fe15b0ec50f",
+      "from": "专介",
+      "to": "将介",
+      "approved": true,
+      "origin": "learned_edit",
+      "uses": 2,
+      "created": 1800000540,
+      "used": 1800001020
+    },
+    {
+      "id": "01cc0ef20038c0d1",
+      "from": "为维爱特",
+      "to": "Weaviate",
+      "approved": true,
+      "origin": "learned_edit",
+      "uses": 1,
+      "created": 1800000540,
+      "used": 1800000540
+    },
+    {
+      "id": "a4d10ae4ce157a1f",
+      "from": "杨克勤笔",
+      "to": "DuckDB",
+      "approved": true,
+      "origin": "learned_edit",
+      "uses": 1,
+      "created": 1800000600,
+      "used": 1800000600
+    },
+    {
+      "id": "00fbf2e9191f3d27",
+      "from": "羊特几笔",
+      "to": "DuckDB",
+      "approved": true,
+      "origin": "learned_edit",
+      "uses": 1,
+      "created": 1800000660,
+      "used": 1800000660
+    },
+    {
+      "id": "55615733c42beecd",
+      "from": "瑞卡斯特",
+      "to": "Raycast",
+      "approved": true,
+      "origin": "learned_edit",
+      "uses": 2,
+      "created": 1800000720,
+      "used": 1800000780
+    },
+    {
+      "id": "2b29b6213abb41e9",
+      "from": "奥布希迪安",
+      "to": "Obsidian",
+      "approved": true,
+      "origin": "learned_edit",
+      "uses": 1,
+      "created": 1800000840,
+      "used": 1800000840
+    },
+    {
+      "id": "4fa3f285dba0f289",
+      "from": "布希迪安",
+      "to": "Obsidian",
+      "approved": true,
+      "origin": "learned_edit",
+      "uses": 1,
+      "created": 1800000900,
+      "used": 1800000900
+    },
+    {
+      "id": "ce33c18a477171db",
+      "from": "怎怎",
+      "to": "Zed",
+      "approved": true,
+      "origin": "learned_edit",
+      "uses": 1,
+      "created": 1800000960,
+      "used": 1800000960
+    },
+    {
+      "id": "8c76323ed17dd4be",
+      "from": "泽德",
+      "to": "Zed",
+      "approved": true,
+      "origin": "learned_edit",
+      "uses": 1,
+      "created": 1800001020,
+      "used": 1800001020
+    },
+    {
+      "id": "095396f1107925e6",
+      "from": "拍摄",
+      "to": "Cursor",
+      "approved": true,
+      "origin": "learned_edit",
+      "uses": 1,
+      "created": 1800001080,
+      "used": 1800001080
+    },
+    {
+      "id": "d2dde22aa921cdff",
+      "from": "班介",
+      "to": "将介",
+      "approved": true,
+      "origin": "learned_edit",
+      "uses": 2,
+      "created": 1800001140,
+      "used": 1800001260
+    },
+    {
+      "id": "655c9c644c8ec6dd",
+      "from": "特色",
+      "to": "Cursor",
+      "approved": true,
+      "origin": "learned_edit",
+      "uses": 1,
+      "created": 1800001140,
+      "used": 1800001140
+    },
+    {
+      "id": "bfd4ef231b7a719d",
+      "from": "二维码",
+      "to": "Ollama",
+      "approved": true,
+      "origin": "learned_edit",
+      "uses": 1,
+      "created": 1800001200,
+      "used": 1800001200
+    },
+    {
+      "id": "5603765e739c25ce",
+      "from": "欧拉玛",
+      "to": "Ollama",
+      "approved": true,
+      "origin": "learned_edit",
+      "uses": 1,
+      "created": 1800001260,
+      "used": 1800001260
+    },
+    {
+      "id": "6342250541428f4e",
+      "from": "草椅",
+      "to": "Tauri",
+      "approved": true,
+      "origin": "learned_edit",
+      "uses": 2,
+      "created": 1800001320,
+      "used": 1800001380
+    },
+    {
+      "id": "09c9646e19f8136e",
+      "from": "徐彦洲",
+      "to": "祁砚舟",
+      "approved": true,
+      "origin": "learned_edit",
+      "uses": 1,
+      "created": 1800001440,
+      "used": 1800001440
+    },
+    {
+      "id": "ed5576f5deb3a6b1",
+      "from": "许晏周",
+      "to": "祁砚舟",
+      "approved": true,
+      "origin": "learned_edit",
+      "uses": 1,
+      "created": 1800001500,
+      "used": 1800001500
+    },
+    {
+      "id": "41ee150f4702b112",
+      "from": "雪宁",
+      "to": "栩宁",
+      "approved": true,
+      "origin": "learned_edit",
+      "uses": 1,
+      "created": 1800001560,
+      "used": 1800001560
+    },
+    {
+      "id": "70dd48c9947aa60d",
+      "from": "候选人物",
+      "to": "邵栩宁",
+      "approved": true,
+      "origin": "learned_edit",
+      "uses": 1,
+      "created": 1800001620,
+      "used": 1800001620
+    },
+    {
+      "id": "76cb4178dd0600ba",
+      "from": "水成",
+      "to": "芷澄",
+      "approved": true,
+      "origin": "learned_edit",
+      "uses": 1,
+      "created": 1800001680,
+      "used": 1800001680
+    },
+    {
+      "id": "01e85da30e8851a5",
+      "from": "子晨",
+      "to": "芷澄",
+      "approved": true,
+      "origin": "learned_edit",
+      "uses": 1,
+      "created": 1800001740,
+      "used": 1800001740
+    },
+    {
+      "id": "8204eb30dca6f4e3",
+      "from": "校园过宽",
+      "to": "叫蓝泊川",
+      "approved": true,
+      "origin": "learned_edit",
+      "uses": 1,
+      "created": 1800001800,
+      "used": 1800001800
+    },
+    {
+      "id": "243c0cd259381c0c",
+      "from": "破川",
+      "to": "泊川",
+      "approved": true,
+      "origin": "learned_edit",
+      "uses": 1,
+      "created": 1800001860,
+      "used": 1800001860
+    },
+    {
+      "id": "4ad9fa537039d69c",
+      "from": "进川",
+      "to": "霁川",
+      "approved": true,
+      "origin": "learned_edit",
+      "uses": 1,
+      "created": 1800001920,
+      "used": 1800001920
+    },
+    {
+      "id": "482e3632387f45b9",
+      "from": "季川",
+      "to": "霁川",
+      "approved": true,
+      "origin": "learned_edit",
+      "uses": 1,
+      "created": 1800001980,
+      "used": 1800001980
+    },
+    {
+      "id": "0abfd72fce8c1d07",
+      "from": "西河",
+      "to": "栖禾",
+      "approved": true,
+      "origin": "learned_edit",
+      "uses": 2,
+      "created": 1800002040,
+      "used": 1800002100
+    },
+    {
+      "id": "f0f41854afe53d68",
+      "from": "Shavon",
+      "to": "Siobhan",
+      "approved": true,
+      "origin": "learned_edit",
+      "uses": 2,
+      "created": 1800002160,
+      "used": 1800002220
+    },
+    {
+      "id": "e425fe88ff772e05",
+      "from": "Neve",
+      "to": "Niamh",
+      "approved": true,
+      "origin": "learned_edit",
+      "uses": 2,
+      "created": 1800002280,
+      "used": 1800002340
+    },
+    {
+      "id": "c521f80557724b98",
+      "from": "IFA",
+      "to": "Aoife",
+      "approved": true,
+      "origin": "learned_edit",
+      "uses": 1,
+      "created": 1800002400,
+      "used": 1800002400
+    },
+    {
+      "id": "6466b15eb93ca79e",
+      "from": "Eva",
+      "to": "Aoife",
+      "approved": true,
+      "origin": "learned_edit",
+      "uses": 1,
+      "created": 1800002460,
+      "used": 1800002460
+    },
+    {
+      "id": "ec6f31bc95152d83",
+      "from": "Sarsia",
+      "to": "Saoirse",
+      "approved": true,
+      "origin": "learned_edit",
+      "uses": 1,
+      "created": 1800002520,
+      "used": 1800002520
+    },
+    {
+      "id": "8cc1759bbdcd3928",
+      "from": "Sasha",
+      "to": "Saoirse",
+      "approved": true,
+      "origin": "learned_edit",
+      "uses": 1,
+      "created": 1800002580,
+      "used": 1800002580
+    },
+    {
+      "id": "1f2eb5db971dafa1",
+      "from": "Wikeen",
+      "to": "Joaquin",
+      "approved": true,
+      "origin": "learned_edit",
+      "uses": 1,
+      "created": 1800002640,
+      "used": 1800002640
+    },
+    {
+      "id": "f44e19682c52388e",
+      "from": "Wakine",
+      "to": "Joaquin",
+      "approved": true,
+      "origin": "learned_edit",
+      "uses": 1,
+      "created": 1800002700,
+      "used": 1800002700
+    },
+    {
+      "id": "bb7a324da29ba61b",
+      "from": "Zochetel",
+      "to": "Xochitl",
+      "approved": true,
+      "origin": "learned_edit",
+      "uses": 1,
+      "created": 1800002760,
+      "used": 1800002760
+    },
+    {
+      "id": "faf45828f9dd2ebf",
+      "from": "Zarchid",
+      "to": "Xochitl",
+      "approved": true,
+      "origin": "learned_edit",
+      "uses": 1,
+      "created": 1800002820,
+      "used": 1800002820
+    }
+  ],
+  "mutationMs": 0.001875
+}

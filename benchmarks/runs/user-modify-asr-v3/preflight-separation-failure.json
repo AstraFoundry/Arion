@@ -1,0 +1,5 @@
+{
+  "status": "failed_before_any_v3_inference",
+  "reason": "Generated development/test silence had identical PCM bytes despite different logical speakers. Use different nonspeech durations; no speech input or labels selected based on model output.",
+  "freezeSha256": "a89e4e8a02f2cd8c5a277aec74f13eb9fd20869455b0e0e5cbf9876dc472f9b5"
+}

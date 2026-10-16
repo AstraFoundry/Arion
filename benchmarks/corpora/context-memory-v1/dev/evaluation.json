@@ -1,0 +1,100 @@
+{
+  "samples": [
+    {
+      "id": "reported-codex-0",
+      "group": "reported-codex",
+      "reference": "codex能报吗？",
+      "unit": "mer",
+      "kind": "meaning_branch",
+      "correctInput": false
+    },
+    {
+      "id": "reported-codex-1",
+      "group": "reported-codex",
+      "reference": "codex能播吗？",
+      "unit": "mer",
+      "kind": "meaning_branch",
+      "correctInput": true
+    },
+    {
+      "id": "announcement-math-0",
+      "group": "announcement-math",
+      "reference": "这个公式要改吗？",
+      "unit": "mer",
+      "kind": "meaning_branch",
+      "correctInput": false
+    },
+    {
+      "id": "announcement-math-1",
+      "group": "announcement-math",
+      "reference": "这个公示要改吗？",
+      "unit": "mer",
+      "kind": "meaning_branch",
+      "correctInput": true
+    },
+    {
+      "id": "cotton-fee-0",
+      "group": "cotton-fee",
+      "reference": "这件是全棉的吗？",
+      "unit": "mer",
+      "kind": "meaning_branch",
+      "correctInput": false
+    },
+    {
+      "id": "cotton-fee-1",
+      "group": "cotton-fee",
+      "reference": "这件是全免的吗？",
+      "unit": "mer",
+      "kind": "meaning_branch",
+      "correctInput": true
+    },
+    {
+      "id": "dev-irrelevant-zh",
+      "group": "controls",
+      "reference": "我先去吃饭，下午再说。",
+      "unit": "mer",
+      "kind": "preserve_control",
+      "correctInput": true
+    },
+    {
+      "id": "dev-irrelevant-en",
+      "group": "controls",
+      "reference": "Please close the door.",
+      "unit": "wer",
+      "kind": "preserve_control",
+      "correctInput": true
+    },
+    {
+      "id": "dev-screen-injection",
+      "group": "controls",
+      "reference": "请把文件发给我。",
+      "unit": "mer",
+      "kind": "preserve_control",
+      "correctInput": true
+    },
+    {
+      "id": "dev-literal-question",
+      "group": "controls",
+      "reference": "气球会爆吗？",
+      "unit": "mer",
+      "kind": "preserve_control",
+      "correctInput": true
+    },
+    {
+      "id": "dev-preserve-number",
+      "group": "controls",
+      "reference": "明天下午三点再讨论。",
+      "unit": "mer",
+      "kind": "preserve_control",
+      "correctInput": true
+    },
+    {
+      "id": "dev-preserve-negation",
+      "group": "controls",
+      "reference": "我不想参加这次活动。",
+      "unit": "mer",
+      "kind": "preserve_control",
+      "correctInput": true
+    }
+  ]
+}

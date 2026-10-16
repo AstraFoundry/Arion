@@ -1,0 +1,6 @@
+{
+  "tokenizerConfigSha256": "4942d005604266809309cabc9f4e9cb89ce855d59b14681fdc0e1cc62ea26c4c",
+  "registeredTokenCount": 62,
+  "userModifyIsRegistered": false,
+  "interpretation": "The v1 wrapper is ordinary input text, not a registered Qwen control token; this does not establish what Doubao substitutes into its own slot."
+}

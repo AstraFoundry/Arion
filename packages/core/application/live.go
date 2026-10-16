@@ -256,7 +256,7 @@ func (c *Coordinator) preview(r *run, stable string) {
 	rc := r.contextFor(0)
 	started := time.Now()
 	result, err := c.deps.Rewriter.Rewrite(ctx, ports.RewriteRequest{Identity: r.identity, Text: stable,
-		Scene: string(domain.ModelScene(domain.Scene(l.policy.Scene), stable)), Terms: withContextTerms(l.policy.terms(stable), rc, stable), Live: true})
+		Scene: string(domain.ModelScene(domain.Scene(l.policy.Scene), stable)), Terms: l.policy.terms(stable), Context: rc, Live: true})
 	c.diagnostic(r, ports.DiagnosticPreview, started, err)
 	c.mu.Lock()
 	l.cancelPreview = nil
@@ -347,7 +347,7 @@ func (c *Coordinator) rewriteFinal(r *run, source string, policy RewritePolicy) 
 	rc := r.contextFor(contextWait)
 	started := time.Now()
 	result, err := c.deps.Rewriter.Rewrite(ctx, ports.RewriteRequest{Identity: r.identity, Text: source,
-		Scene: string(domain.ModelScene(domain.Scene(policy.Scene), source)), Terms: withContextTerms(policy.terms(source), rc, source)})
+		Scene: string(domain.ModelScene(domain.Scene(policy.Scene), source)), Terms: policy.terms(source), Context: rc})
 	c.diagnostic(r, ports.DiagnosticRewrite, started, err)
 	switch {
 	case r.ctx.Err() != nil:

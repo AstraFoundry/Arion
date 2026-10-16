@@ -1,0 +1,164 @@
+teach test-teach-00-0 learned 1
+teach test-teach-00-1 learned 2
+teach test-teach-01-0 learned 3
+teach test-teach-01-1 learned 3
+teach test-teach-02-0 no_pair 3
+teach test-teach-02-1 learned 4
+teach test-teach-03-0 learned 5
+teach test-teach-03-1 learned 6
+teach test-teach-04-0 learned 7
+teach test-teach-04-1 learned 9
+teach test-teach-05-0 learned 10
+teach test-teach-05-1 learned 11
+teach test-teach-06-0 learned 12
+teach test-teach-06-1 learned 12
+teach test-teach-07-0 learned 13
+teach test-teach-07-1 learned 14
+teach test-teach-08-0 learned 15
+teach test-teach-08-1 learned 16
+teach test-teach-09-0 learned 17
+teach test-teach-09-1 learned 19
+teach test-teach-10-0 learned 20
+teach test-teach-10-1 learned 21
+teach test-teach-11-0 learned 22
+teach test-teach-11-1 learned 22
+teach test-teach-12-0 learned 23
+teach test-teach-12-1 learned 24
+teach test-teach-13-0 learned 25
+teach test-teach-13-1 learned 26
+teach test-teach-14-0 learned 27
+teach test-teach-14-1 learned 28
+teach test-teach-15-0 learned 29
+teach test-teach-15-1 learned 30
+teach test-teach-16-0 learned 31
+teach test-teach-16-1 learned 32
+teach test-teach-17-0 learned 33
+teach test-teach-17-1 learned 33
+teach test-teach-18-0 learned 34
+teach test-teach-18-1 learned 34
+teach test-teach-19-0 learned 35
+teach test-teach-19-1 learned 35
+teach test-teach-20-0 learned 36
+teach test-teach-20-1 learned 37
+teach test-teach-21-0 learned 38
+teach test-teach-21-1 learned 39
+teach test-teach-22-0 learned 40
+teach test-teach-22-1 learned 41
+teach test-teach-23-0 learned 42
+teach test-teach-23-1 learned 43
+future test-recur-00-0
+future test-recur-00-1
+future test-recur-00-2
+future test-recur-01-0
+future test-recur-01-1
+future test-recur-01-2
+future test-recur-02-0
+future test-recur-02-1
+future test-recur-02-2
+future test-recur-03-0
+future test-recur-03-1
+future test-recur-03-2
+future test-recur-04-0
+future test-recur-04-1
+future test-recur-04-2
+future test-recur-05-0
+future test-recur-05-1
+future test-recur-05-2
+future test-recur-06-0
+future test-recur-06-1
+future test-recur-06-2
+future test-recur-07-0
+future test-recur-07-1
+future test-recur-07-2
+future test-recur-08-0
+future test-recur-08-1
+future test-recur-08-2
+future test-recur-09-0
+future test-recur-09-1
+future test-recur-09-2
+future test-recur-10-0
+future test-recur-10-1
+future test-recur-10-2
+future test-recur-11-0
+future test-recur-11-1
+future test-recur-11-2
+future test-recur-12-0
+future test-recur-12-1
+future test-recur-12-2
+future test-recur-13-0
+future test-recur-13-1
+future test-recur-13-2
+future test-recur-14-0
+future test-recur-14-1
+future test-recur-14-2
+future test-recur-15-0
+future test-recur-15-1
+future test-recur-15-2
+future test-recur-16-0
+future test-recur-16-1
+future test-recur-16-2
+future test-recur-17-0
+future test-recur-17-1
+future test-recur-17-2
+future test-recur-18-0
+future test-recur-18-1
+future test-recur-18-2
+future test-recur-19-0
+future test-recur-19-1
+future test-recur-19-2
+future test-recur-20-0
+future test-recur-20-1
+future test-recur-20-2
+future test-recur-21-0
+future test-recur-21-1
+future test-recur-21-2
+future test-recur-22-0
+future test-recur-22-1
+future test-recur-22-2
+future test-recur-23-0
+future test-recur-23-1
+future test-recur-23-2
+future test-control-00
+future test-control-01
+future test-control-02
+future test-control-03
+future test-control-04
+future test-control-05
+future test-control-06
+future test-control-07
+future test-control-08
+future test-control-09
+future test-control-10
+future test-control-11
+future test-control-12
+future test-control-13
+future test-control-14
+future test-control-15
+future test-unlearned-00-0
+future test-unlearned-00-1
+future test-unlearned-01-0
+future test-unlearned-01-1
+future test-unlearned-02-0
+future test-unlearned-02-1
+future natural-aishell-BAC009S0767W0403
+future natural-aishell-BAC009S0767W0423
+future natural-aishell-BAC009S0767W0428
+future natural-aishell-BAC009S0767W0487
+future natural-aishell-BAC009S0768W0122
+future natural-aishell-BAC009S0768W0134
+future natural-aishell-BAC009S0768W0142
+future natural-aishell-BAC009S0768W0177
+future natural-aishell-BAC009S0768W0197
+future natural-aishell-BAC009S0768W0262
+future natural-libri-1995-1836-0007
+future natural-libri-1995-1836-0013
+future natural-libri-2300-131720-0014
+future natural-libri-2300-131720-0021
+future natural-libri-237-126133-0004
+future natural-libri-237-134493-0016
+future natural-libri-260-123288-0008
+future natural-libri-2830-3979-0006
+future natural-libri-2830-3979-0010
+future natural-libri-2961-960-0015
+future test-silence
+future test-noise

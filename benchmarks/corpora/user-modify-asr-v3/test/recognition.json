@@ -1,0 +1,1164 @@
+{
+  "samples": [
+    {
+      "id": "test-recur-00-0",
+      "sessionId": "test-future-0",
+      "audio": {
+        "path": "test-recur-00-0.wav",
+        "sha256": "adc5329b6efaac20cc90dafddb5db4e49f6a4389fbbe390e69cf6693cece6335",
+        "durationMs": 4110.5625,
+        "speakerId": "Reed (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "test-recur-00-1",
+      "sessionId": "test-future-1",
+      "audio": {
+        "path": "test-recur-00-1.wav",
+        "sha256": "2a4fed1cf88fb2f7f1615af4c35b878d7238847996f6e7564ee74ab13db275f7",
+        "durationMs": 3496.625,
+        "speakerId": "Reed (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "test-recur-00-2",
+      "sessionId": "test-future-2",
+      "audio": {
+        "path": "test-recur-00-2.wav",
+        "sha256": "9e415b1bb901d5659eb979002b3eb84992ce032fc08793f93027615af97eacd3",
+        "durationMs": 3822.625,
+        "speakerId": "Reed (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "test-recur-01-0",
+      "sessionId": "test-future-0",
+      "audio": {
+        "path": "test-recur-01-0.wav",
+        "sha256": "39e2d79cd6ef70d88ac1f306e5a21d61ec0bd7e0b06d1e38ef4f2ae7015c568b",
+        "durationMs": 4078.5625000000005,
+        "speakerId": "Reed (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "test-recur-01-1",
+      "sessionId": "test-future-1",
+      "audio": {
+        "path": "test-recur-01-1.wav",
+        "sha256": "3fcd703ca031aed96eb64b7757bb6f63fe527e676fc0e182bf13a765713eaf1c",
+        "durationMs": 3464.625,
+        "speakerId": "Reed (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "test-recur-01-2",
+      "sessionId": "test-future-2",
+      "audio": {
+        "path": "test-recur-01-2.wav",
+        "sha256": "0356baf01779a779e020be7a21bd97b6b3a21d8bb7de849ee015a99905738e33",
+        "durationMs": 3790.625,
+        "speakerId": "Reed (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "test-recur-02-0",
+      "sessionId": "test-future-0",
+      "audio": {
+        "path": "test-recur-02-0.wav",
+        "sha256": "e3d9f49ffa7af0ff233a1641fc5d05f1f074a6d5cbb10e64c29d0b12476c887b",
+        "durationMs": 3838.5625,
+        "speakerId": "Reed (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "test-recur-02-1",
+      "sessionId": "test-future-1",
+      "audio": {
+        "path": "test-recur-02-1.wav",
+        "sha256": "fa3c3d9264c12519b48a420e2229bc3ef43b783004dba5dddff478c974439e67",
+        "durationMs": 3224.625,
+        "speakerId": "Reed (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "test-recur-02-2",
+      "sessionId": "test-future-2",
+      "audio": {
+        "path": "test-recur-02-2.wav",
+        "sha256": "0d7f9edc22c7d0b5c3c8eadb8551dd18599c4c54e9a9551f495439c1c50dd02b",
+        "durationMs": 3534.625,
+        "speakerId": "Reed (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "test-recur-03-0",
+      "sessionId": "test-future-0",
+      "audio": {
+        "path": "test-recur-03-0.wav",
+        "sha256": "ebb402698f713910b9bd8f3bc9268376be1fa016ca00dc7c0f05cd57ff1d6458",
+        "durationMs": 3822.5625,
+        "speakerId": "Reed (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "test-recur-03-1",
+      "sessionId": "test-future-1",
+      "audio": {
+        "path": "test-recur-03-1.wav",
+        "sha256": "5aba7537b4f2f66de9321c47fc61cafaa939077241ed10b4edcb3aaee8095585",
+        "durationMs": 3256.625,
+        "speakerId": "Reed (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "test-recur-03-2",
+      "sessionId": "test-future-2",
+      "audio": {
+        "path": "test-recur-03-2.wav",
+        "sha256": "0255c6d82af26791b8d96f5b19ab1e007823dc28bdad092bc70ccf316f37c334",
+        "durationMs": 3550.625,
+        "speakerId": "Reed (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "test-recur-04-0",
+      "sessionId": "test-future-0",
+      "audio": {
+        "path": "test-recur-04-0.wav",
+        "sha256": "68b8f8e54f88fc2569c33785f2c85154c78be7b1226c1f4139f73b7f2d593a01",
+        "durationMs": 3742.5625,
+        "speakerId": "Reed (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "test-recur-04-1",
+      "sessionId": "test-future-1",
+      "audio": {
+        "path": "test-recur-04-1.wav",
+        "sha256": "8bad8ec4da9fb8eb8f1c7dc24e015ca0dc507e154bcef37439926624943e85ad",
+        "durationMs": 3160.625,
+        "speakerId": "Reed (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "test-recur-04-2",
+      "sessionId": "test-future-2",
+      "audio": {
+        "path": "test-recur-04-2.wav",
+        "sha256": "1d974ebd8c9e45f017ebcbed0d520fe8c6c6559f5d90a3f4d2301ec79871f8c8",
+        "durationMs": 3470.625,
+        "speakerId": "Reed (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "test-recur-05-0",
+      "sessionId": "test-future-0",
+      "audio": {
+        "path": "test-recur-05-0.wav",
+        "sha256": "07f12e7041a9850dff9c7c317c1b692f28b446409c367093a67362cf0c4a9568",
+        "durationMs": 3886.5625,
+        "speakerId": "Reed (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "test-recur-05-1",
+      "sessionId": "test-future-1",
+      "audio": {
+        "path": "test-recur-05-1.wav",
+        "sha256": "365cbd2bb3ab21f9f3cb2930606fd092b6d6bfcb6a6f86d72eea784acd48da40",
+        "durationMs": 3304.625,
+        "speakerId": "Reed (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "test-recur-05-2",
+      "sessionId": "test-future-2",
+      "audio": {
+        "path": "test-recur-05-2.wav",
+        "sha256": "16f359d7739edd75b0c2bfb56bbdea394bef0f18761086277c9ed8c9faf101c9",
+        "durationMs": 3582.625,
+        "speakerId": "Reed (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "test-recur-06-0",
+      "sessionId": "test-future-0",
+      "audio": {
+        "path": "test-recur-06-0.wav",
+        "sha256": "b593583635cffc19dfd9657c1c4f40c937ed3595ce23428a32e5c4ed3da8fc64",
+        "durationMs": 3966.5625,
+        "speakerId": "Reed (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "test-recur-06-1",
+      "sessionId": "test-future-1",
+      "audio": {
+        "path": "test-recur-06-1.wav",
+        "sha256": "05b3c0a846bb9a94e99c143c5e9385d4a5bee91164ba8ddfd8cfc9c961362286",
+        "durationMs": 3384.625,
+        "speakerId": "Reed (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "test-recur-06-2",
+      "sessionId": "test-future-2",
+      "audio": {
+        "path": "test-recur-06-2.wav",
+        "sha256": "f46aadd75e32937d2aaf9b9cb71778b9a3d8eb55873d3bafd4304201549fbca3",
+        "durationMs": 3662.625,
+        "speakerId": "Reed (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "test-recur-07-0",
+      "sessionId": "test-future-0",
+      "audio": {
+        "path": "test-recur-07-0.wav",
+        "sha256": "7835669c58e1f76c3582221829d9077de47d4f87017eab4a45e975191a7c9d52",
+        "durationMs": 4062.5625000000005,
+        "speakerId": "Reed (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "test-recur-07-1",
+      "sessionId": "test-future-1",
+      "audio": {
+        "path": "test-recur-07-1.wav",
+        "sha256": "9ea161ec6951ecfdb60d8b93dfbf1e230099bf8b67af8ee3450fc3a4a18932c6",
+        "durationMs": 3368.625,
+        "speakerId": "Reed (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "test-recur-07-2",
+      "sessionId": "test-future-2",
+      "audio": {
+        "path": "test-recur-07-2.wav",
+        "sha256": "83ae702b59216cb9e1fc6311aa70f3e137dc6c9467e59f0d8f7f4da41535e9c1",
+        "durationMs": 3742.625,
+        "speakerId": "Reed (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "test-recur-08-0",
+      "sessionId": "test-future-0",
+      "audio": {
+        "path": "test-recur-08-0.wav",
+        "sha256": "e037a0e77026e1fbf67eb3e8af3c2193b38e7d34f4daaabac0c112146a9d50ad",
+        "durationMs": 3438.5625,
+        "speakerId": "Reed (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "test-recur-08-1",
+      "sessionId": "test-future-1",
+      "audio": {
+        "path": "test-recur-08-1.wav",
+        "sha256": "bf7a9b1c1e016f56aac34cc3a92eb60bf4f186c086fa3a09d2d4a5b3e9a7adb5",
+        "durationMs": 2856.625,
+        "speakerId": "Reed (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "test-recur-08-2",
+      "sessionId": "test-future-2",
+      "audio": {
+        "path": "test-recur-08-2.wav",
+        "sha256": "f79cb808d4a2a901a5a5240bc53acb6badb8a209a6389c3e664afe3f6bde6654",
+        "durationMs": 3150.625,
+        "speakerId": "Reed (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "test-recur-09-0",
+      "sessionId": "test-future-0",
+      "audio": {
+        "path": "test-recur-09-0.wav",
+        "sha256": "70df6f9fe68879624ef31c0f97bcd30cc308430d9dab9603e9001bfceff07458",
+        "durationMs": 3534.5625,
+        "speakerId": "Reed (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "test-recur-09-1",
+      "sessionId": "test-future-1",
+      "audio": {
+        "path": "test-recur-09-1.wav",
+        "sha256": "a98cd3eff019ed07ae3fffa8341d5195abe24cb93473f834e12982a30d58b680",
+        "durationMs": 2904.625,
+        "speakerId": "Reed (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "test-recur-09-2",
+      "sessionId": "test-future-2",
+      "audio": {
+        "path": "test-recur-09-2.wav",
+        "sha256": "4d90363be8a843d539206d36f61015e2b65c5874935a93b4ae06551e3518dcd9",
+        "durationMs": 3214.625,
+        "speakerId": "Reed (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "test-recur-10-0",
+      "sessionId": "test-future-0",
+      "audio": {
+        "path": "test-recur-10-0.wav",
+        "sha256": "53e8368e962c2edb11b80fc8adf97efa3e7ea5771cfbc570d76b0826d793ab76",
+        "durationMs": 3598.5625,
+        "speakerId": "Reed (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "test-recur-10-1",
+      "sessionId": "test-future-1",
+      "audio": {
+        "path": "test-recur-10-1.wav",
+        "sha256": "4bc5c5f5e43b217bdf9edd7cc69706d2234dea62f8487b3d3f3921c8bff03b04",
+        "durationMs": 3000.625,
+        "speakerId": "Reed (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "test-recur-10-2",
+      "sessionId": "test-future-2",
+      "audio": {
+        "path": "test-recur-10-2.wav",
+        "sha256": "e36dd09b01cbea6c45e35a7fa689cffa57e1cac3bdea720ca4bb1bcc93578827",
+        "durationMs": 3294.625,
+        "speakerId": "Reed (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "test-recur-11-0",
+      "sessionId": "test-future-0",
+      "audio": {
+        "path": "test-recur-11-0.wav",
+        "sha256": "b10a9485b1d91a13f09d3628a79f47d323a7e9febc9a443de5022392e17fe8bd",
+        "durationMs": 3470.5625,
+        "speakerId": "Reed (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "test-recur-11-1",
+      "sessionId": "test-future-1",
+      "audio": {
+        "path": "test-recur-11-1.wav",
+        "sha256": "2d2db29f1fd2c6bc5bc16ca904cac452590198a8d02d8865aadfb0be280da236",
+        "durationMs": 2872.5625,
+        "speakerId": "Reed (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "test-recur-11-2",
+      "sessionId": "test-future-2",
+      "audio": {
+        "path": "test-recur-11-2.wav",
+        "sha256": "74343605f13b97e80c2fa488345a9b90259a8db29124495974cae3f59738e468",
+        "durationMs": 3166.625,
+        "speakerId": "Reed (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "test-recur-12-0",
+      "sessionId": "test-future-0",
+      "audio": {
+        "path": "test-recur-12-0.wav",
+        "sha256": "85a0289c406932403da7f4c812bac8b00b3cf546044e9aaacebcaec26dc88b81",
+        "durationMs": 2968.625,
+        "speakerId": "Reed (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "test-recur-12-1",
+      "sessionId": "test-future-1",
+      "audio": {
+        "path": "test-recur-12-1.wav",
+        "sha256": "3165063d9dc9598671d8292cc3b33647e6cd95a8af1ab7a0eef23be4459683d9",
+        "durationMs": 3688.4375,
+        "speakerId": "Reed (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "test-recur-12-2",
+      "sessionId": "test-future-2",
+      "audio": {
+        "path": "test-recur-12-2.wav",
+        "sha256": "c5695e2646915964c80ca2148c2ddb766bc826f7e93c652a94eeb6e9a9c6211d",
+        "durationMs": 3096.625,
+        "speakerId": "Reed (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "test-recur-13-0",
+      "sessionId": "test-future-0",
+      "audio": {
+        "path": "test-recur-13-0.wav",
+        "sha256": "24f447d6710f4e3eb11832c359ca809d994443dbe99692328e59639d0cfd8d50",
+        "durationMs": 3032.5625,
+        "speakerId": "Reed (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "test-recur-13-1",
+      "sessionId": "test-future-1",
+      "audio": {
+        "path": "test-recur-13-1.wav",
+        "sha256": "c70130aa3a00361c449b6b8dde716e91719d13f35ca7748f34f57e658c0cd508",
+        "durationMs": 3768.4375,
+        "speakerId": "Reed (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "test-recur-13-2",
+      "sessionId": "test-future-2",
+      "audio": {
+        "path": "test-recur-13-2.wav",
+        "sha256": "725c7bb0ba579a27962b7f5e99265f0ab014f0bcde8ea0c9eb5a314c487bb8f1",
+        "durationMs": 3176.625,
+        "speakerId": "Reed (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "test-recur-14-0",
+      "sessionId": "test-future-0",
+      "audio": {
+        "path": "test-recur-14-0.wav",
+        "sha256": "9bd8b8d266d53a3b1708ea351e2126a53d0623e4109f1057994274785b935574",
+        "durationMs": 3032.5625,
+        "speakerId": "Reed (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "test-recur-14-1",
+      "sessionId": "test-future-1",
+      "audio": {
+        "path": "test-recur-14-1.wav",
+        "sha256": "e46f9d694355874112ba0b7c74e8b98b8aab31851da0d0fd2e91c919689b1c8e",
+        "durationMs": 3768.4375,
+        "speakerId": "Reed (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "test-recur-14-2",
+      "sessionId": "test-future-2",
+      "audio": {
+        "path": "test-recur-14-2.wav",
+        "sha256": "33d1c46d4cdee7496b698bda0f48e5d175b6e41723e71a13ea05e5cd7f178ab3",
+        "durationMs": 3176.625,
+        "speakerId": "Reed (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "test-recur-15-0",
+      "sessionId": "test-future-0",
+      "audio": {
+        "path": "test-recur-15-0.wav",
+        "sha256": "bc2035b022770dafd934d46b997976e42a3f8a9c68cb90b745ea829a5ea94553",
+        "durationMs": 3016.625,
+        "speakerId": "Reed (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "test-recur-15-1",
+      "sessionId": "test-future-1",
+      "audio": {
+        "path": "test-recur-15-1.wav",
+        "sha256": "ba4a4f23522cfd87bf3a4f49b23826b736da0982723633c28fb4754e21ffacaf",
+        "durationMs": 3736.5,
+        "speakerId": "Reed (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "test-recur-15-2",
+      "sessionId": "test-future-2",
+      "audio": {
+        "path": "test-recur-15-2.wav",
+        "sha256": "8f32b17f6bd6441beb66155f056ccffd2331dfb54d23ee778ba7859194db78fe",
+        "durationMs": 3144.625,
+        "speakerId": "Reed (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "test-recur-16-0",
+      "sessionId": "test-future-0",
+      "audio": {
+        "path": "test-recur-16-0.wav",
+        "sha256": "98394016d06176c1a15fdf4e1a0be20c4a352f7306d12fcfe3eec092febce79e",
+        "durationMs": 2808.625,
+        "speakerId": "Reed (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "test-recur-16-1",
+      "sessionId": "test-future-1",
+      "audio": {
+        "path": "test-recur-16-1.wav",
+        "sha256": "4a6ea839b3faaae5252d7f41ffada3693b6cfc31e878c5fc27221f948439a7e1",
+        "durationMs": 3544.5,
+        "speakerId": "Reed (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "test-recur-16-2",
+      "sessionId": "test-future-2",
+      "audio": {
+        "path": "test-recur-16-2.wav",
+        "sha256": "1b0d32114bae6169fe1a8012b2e9c9cde98c1fa10fa597537525f6f5aae434ed",
+        "durationMs": 2952.5625,
+        "speakerId": "Reed (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "test-recur-17-0",
+      "sessionId": "test-future-0",
+      "audio": {
+        "path": "test-recur-17-0.wav",
+        "sha256": "2aa6f4d4a5a75ab2ccad0a9f5a0ca68925358ca5297a5efb0fbd4377a84b954e",
+        "durationMs": 2840.625,
+        "speakerId": "Reed (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "test-recur-17-1",
+      "sessionId": "test-future-1",
+      "audio": {
+        "path": "test-recur-17-1.wav",
+        "sha256": "ab9b465b10c57356470718c8f45c857477c78d8e7dc35ca3c3b44979974f14fc",
+        "durationMs": 3560.5,
+        "speakerId": "Reed (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "test-recur-17-2",
+      "sessionId": "test-future-2",
+      "audio": {
+        "path": "test-recur-17-2.wav",
+        "sha256": "40465f1e6c946297eafbfc00882a28d0c107807350226289408ad046a5c2dfec",
+        "durationMs": 2952.5625,
+        "speakerId": "Reed (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "test-recur-18-0",
+      "sessionId": "test-future-0",
+      "audio": {
+        "path": "test-recur-18-0.wav",
+        "sha256": "f69228a331564a4beff02f9a421019f8f9eea98665877645c1a946f5ef085ce7",
+        "durationMs": 2991.9375,
+        "speakerId": "Tessa"
+      }
+    },
+    {
+      "id": "test-recur-18-1",
+      "sessionId": "test-future-1",
+      "audio": {
+        "path": "test-recur-18-1.wav",
+        "sha256": "8616ef10d1f79aa13d479f03091486de94f3d633fcf2ae34207c3dfdb80c8f1c",
+        "durationMs": 3351.375,
+        "speakerId": "Tessa"
+      }
+    },
+    {
+      "id": "test-recur-18-2",
+      "sessionId": "test-future-2",
+      "audio": {
+        "path": "test-recur-18-2.wav",
+        "sha256": "6aa03f540bb2b2681c948b78412f876e29d49facfdfbabecde502b8db2988a1f",
+        "durationMs": 2903.1875,
+        "speakerId": "Tessa"
+      }
+    },
+    {
+      "id": "test-recur-19-0",
+      "sessionId": "test-future-0",
+      "audio": {
+        "path": "test-recur-19-0.wav",
+        "sha256": "3ca4be8170a92ae5a8640899688a17e54430980bbaccab836c7ad6021aeaa4ba",
+        "durationMs": 2783.0,
+        "speakerId": "Tessa"
+      }
+    },
+    {
+      "id": "test-recur-19-1",
+      "sessionId": "test-future-1",
+      "audio": {
+        "path": "test-recur-19-1.wav",
+        "sha256": "be7675fa4833fa63d9b5d416023ba99a7b92d436435ef894fc746b2e187fbea6",
+        "durationMs": 3188.8125,
+        "speakerId": "Tessa"
+      }
+    },
+    {
+      "id": "test-recur-19-2",
+      "sessionId": "test-future-2",
+      "audio": {
+        "path": "test-recur-19-2.wav",
+        "sha256": "31b7ef0033547de1cb1f6edda05fbb23761b043b1014982417da44ad8dd2230f",
+        "durationMs": 2705.8125,
+        "speakerId": "Tessa"
+      }
+    },
+    {
+      "id": "test-recur-20-0",
+      "sessionId": "test-future-0",
+      "audio": {
+        "path": "test-recur-20-0.wav",
+        "sha256": "875c2843f8abb121549426b42751cfdd7e653677d9ae5f8c9d8fdedca0de5266",
+        "durationMs": 2922.3125,
+        "speakerId": "Tessa"
+      }
+    },
+    {
+      "id": "test-recur-20-1",
+      "sessionId": "test-future-1",
+      "audio": {
+        "path": "test-recur-20-1.wav",
+        "sha256": "34c01040d7016ed83e5af09d1d5f7da3f189105b47fbb1e63caca00c5d7b4d72",
+        "durationMs": 3339.75,
+        "speakerId": "Tessa"
+      }
+    },
+    {
+      "id": "test-recur-20-2",
+      "sessionId": "test-future-2",
+      "audio": {
+        "path": "test-recur-20-2.wav",
+        "sha256": "568717761cb852e6bcfdf82c5fc9b4d98fbc058468ae6e231a7afd936ba75c21",
+        "durationMs": 2833.5,
+        "speakerId": "Tessa"
+      }
+    },
+    {
+      "id": "test-recur-21-0",
+      "sessionId": "test-future-0",
+      "audio": {
+        "path": "test-recur-21-0.wav",
+        "sha256": "8a7468c1fb52411a16310ca590c4386c5827c602700954aa841368db8eaa734a",
+        "durationMs": 3247.375,
+        "speakerId": "Tessa"
+      }
+    },
+    {
+      "id": "test-recur-21-1",
+      "sessionId": "test-future-1",
+      "audio": {
+        "path": "test-recur-21-1.wav",
+        "sha256": "7239ad5e116625b28605b2cdc94725940f16b40add92a7b3326ffdb41f0809ba",
+        "durationMs": 3490.6875,
+        "speakerId": "Tessa"
+      }
+    },
+    {
+      "id": "test-recur-21-2",
+      "sessionId": "test-future-2",
+      "audio": {
+        "path": "test-recur-21-2.wav",
+        "sha256": "5bdac3d58e17d5a314860b346ea53d31b7329879379d2de81e8c6b0e1a8916e6",
+        "durationMs": 3054.0625,
+        "speakerId": "Tessa"
+      }
+    },
+    {
+      "id": "test-recur-22-0",
+      "sessionId": "test-future-0",
+      "audio": {
+        "path": "test-recur-22-0.wav",
+        "sha256": "7b16b8223f8aa79057e914ae85456ce953147d71fbdff9eb16e7d27833a5230f",
+        "durationMs": 3061.625,
+        "speakerId": "Tessa"
+      }
+    },
+    {
+      "id": "test-recur-22-1",
+      "sessionId": "test-future-1",
+      "audio": {
+        "path": "test-recur-22-1.wav",
+        "sha256": "735fbf61c665294f12ce30d57257bd9c47125f43d22a80028711dd5af7fd54af",
+        "durationMs": 3363.0,
+        "speakerId": "Tessa"
+      }
+    },
+    {
+      "id": "test-recur-22-2",
+      "sessionId": "test-future-2",
+      "audio": {
+        "path": "test-recur-22-2.wav",
+        "sha256": "4fbd841877f060b3e678b4973a98c24ae54fab8cb2c98ee223989b5992e0bafd",
+        "durationMs": 2903.1875,
+        "speakerId": "Tessa"
+      }
+    },
+    {
+      "id": "test-recur-23-0",
+      "sessionId": "test-future-0",
+      "audio": {
+        "path": "test-recur-23-0.wav",
+        "sha256": "778e886c39c24e356c13044bca2ef706faa3df87a40bed7c02ba539e8af1d99f",
+        "durationMs": 3119.6875,
+        "speakerId": "Tessa"
+      }
+    },
+    {
+      "id": "test-recur-23-1",
+      "sessionId": "test-future-1",
+      "audio": {
+        "path": "test-recur-23-1.wav",
+        "sha256": "cf4efbf0aedac0a4d19214440c0ab8f047c78d9e140d1a41b4b04edbdd6ed75c",
+        "durationMs": 3479.0625,
+        "speakerId": "Tessa"
+      }
+    },
+    {
+      "id": "test-recur-23-2",
+      "sessionId": "test-future-2",
+      "audio": {
+        "path": "test-recur-23-2.wav",
+        "sha256": "71ad3d18952b9ed1a5d705f76142dd8203270f428c153b84f0e031167689361b",
+        "durationMs": 3007.625,
+        "speakerId": "Tessa"
+      }
+    },
+    {
+      "id": "test-control-00",
+      "sessionId": "test-controls",
+      "audio": {
+        "path": "test-control-00.wav",
+        "sha256": "a0005a775f4c5a5b50302eb229b1ed3f022eed8257f98514aacda4c53eee8d29",
+        "durationMs": 4222.625,
+        "speakerId": "Reed (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "test-control-01",
+      "sessionId": "test-controls",
+      "audio": {
+        "path": "test-control-01.wav",
+        "sha256": "531ebcad0caaee9ca860461274119edf8dba8c8829a05813a297c01df1719fff",
+        "durationMs": 2856.8125,
+        "speakerId": "Reed (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "test-control-02",
+      "sessionId": "test-controls",
+      "audio": {
+        "path": "test-control-02.wav",
+        "sha256": "d1dc9a3e75fc51fd20a1a959231d45cff5efc0154a6ae9f1237dfb7e12e4369e",
+        "durationMs": 2568.4375,
+        "speakerId": "Reed (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "test-control-03",
+      "sessionId": "test-controls",
+      "audio": {
+        "path": "test-control-03.wav",
+        "sha256": "8f25673cdebe8667e3ca9070b3818cb3156bd435ba51af82c19bba74d2fa3b4b",
+        "durationMs": 2734.375,
+        "speakerId": "Reed (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "test-control-04",
+      "sessionId": "test-controls",
+      "audio": {
+        "path": "test-control-04.wav",
+        "sha256": "ec123b713e99385ea27a5aae8cdfd62b2ccc01c9f31c5fe7708655877dd5ff55",
+        "durationMs": 2424.625,
+        "speakerId": "Reed (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "test-control-05",
+      "sessionId": "test-controls",
+      "audio": {
+        "path": "test-control-05.wav",
+        "sha256": "960a3f6ca5a6805c96f05eae3031eb50d1b893f2518386230cc795dce96e118e",
+        "durationMs": 2264.625,
+        "speakerId": "Reed (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "test-control-06",
+      "sessionId": "test-controls",
+      "audio": {
+        "path": "test-control-06.wav",
+        "sha256": "f2a1a35ab3555705c0bfd26914a9b8e2a537ceff558a05ebb5354e8715247ba7",
+        "durationMs": 2904.625,
+        "speakerId": "Reed (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "test-control-07",
+      "sessionId": "test-controls",
+      "audio": {
+        "path": "test-control-07.wav",
+        "sha256": "ea3a9a6d786c847d03a6b38e0f81a9578b833b6b620d0cbd43429e968957221e",
+        "durationMs": 2872.5,
+        "speakerId": "Reed (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "test-control-08",
+      "sessionId": "test-controls",
+      "audio": {
+        "path": "test-control-08.wav",
+        "sha256": "b176c3f36f752d91f0fcc01952b1cbdcb5940decc5234603349ee4c24cd76cb1",
+        "durationMs": 2853.375,
+        "speakerId": "Tessa"
+      }
+    },
+    {
+      "id": "test-control-09",
+      "sessionId": "test-controls",
+      "audio": {
+        "path": "test-control-09.wav",
+        "sha256": "d055cccd6dd83c352f13dd5e84b91a67fa3cc4a14e369ece73ac09746ecd6615",
+        "durationMs": 2376.625,
+        "speakerId": "Tessa"
+      }
+    },
+    {
+      "id": "test-control-10",
+      "sessionId": "test-controls",
+      "audio": {
+        "path": "test-control-10.wav",
+        "sha256": "8f76502b270c0a3fce86cda0176422dfda4e5291d4e5e5e41a8e06353f224d0f",
+        "durationMs": 2109.3125,
+        "speakerId": "Tessa"
+      }
+    },
+    {
+      "id": "test-control-11",
+      "sessionId": "test-controls",
+      "audio": {
+        "path": "test-control-11.wav",
+        "sha256": "e6cf4b8f474484b3c4e291dcfe0dbff0d1c29c943db29062eee12d69fe796677",
+        "durationMs": 2574.0,
+        "speakerId": "Tessa"
+      }
+    },
+    {
+      "id": "test-control-12",
+      "sessionId": "test-controls",
+      "audio": {
+        "path": "test-control-12.wav",
+        "sha256": "df76b57988f4fde34aa9a2edd413c21c431a08171855a6b24e107f229c0d54ae",
+        "durationMs": 2194.625,
+        "speakerId": "Tessa"
+      }
+    },
+    {
+      "id": "test-control-13",
+      "sessionId": "test-controls",
+      "audio": {
+        "path": "test-control-13.wav",
+        "sha256": "8920286633d2d40d441a20b381d188d66ce149bb573fc073522727e94a05f96f",
+        "durationMs": 2244.0625,
+        "speakerId": "Tessa"
+      }
+    },
+    {
+      "id": "test-control-14",
+      "sessionId": "test-controls",
+      "audio": {
+        "path": "test-control-14.wav",
+        "sha256": "f7b273d5009e43540b32802b8c39468271b29617b7c6b8eccab74ab41dc813d6",
+        "durationMs": 2585.625,
+        "speakerId": "Tessa"
+      }
+    },
+    {
+      "id": "test-control-15",
+      "sessionId": "test-controls",
+      "audio": {
+        "path": "test-control-15.wav",
+        "sha256": "1bae4e4a409f8bd1f1fd649ff3051e6671085913bad9f53b6f7dd7c698e5308a",
+        "durationMs": 2620.6875,
+        "speakerId": "Tessa"
+      }
+    },
+    {
+      "id": "test-unlearned-00-0",
+      "sessionId": "test-unlearned",
+      "audio": {
+        "path": "test-unlearned-00-0.wav",
+        "sha256": "1e453184c530d3f26318453918a3fe48af594f1d68ef1bdd86a0da966908de9e",
+        "durationMs": 3304.625,
+        "speakerId": "Reed (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "test-unlearned-00-1",
+      "sessionId": "test-unlearned",
+      "audio": {
+        "path": "test-unlearned-00-1.wav",
+        "sha256": "527cfc3d599794022a75ae4e5f8af9e284fba5dc2701099c0ba556d8f1b00376",
+        "durationMs": 3614.5625,
+        "speakerId": "Reed (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "test-unlearned-01-0",
+      "sessionId": "test-unlearned",
+      "audio": {
+        "path": "test-unlearned-01-0.wav",
+        "sha256": "62a5348f499f0c7b76b8667f039d8441ecb3bac1dc89aed6cc6f60e3a3cd0224",
+        "durationMs": 3272.5625,
+        "speakerId": "Reed (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "test-unlearned-01-1",
+      "sessionId": "test-unlearned",
+      "audio": {
+        "path": "test-unlearned-01-1.wav",
+        "sha256": "912e9b5916071e704d2fd898af66c73ae46b737795ffbd2a40f6372970076ae6",
+        "durationMs": 3630.5625,
+        "speakerId": "Reed (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "test-unlearned-02-0",
+      "sessionId": "test-unlearned",
+      "audio": {
+        "path": "test-unlearned-02-0.wav",
+        "sha256": "1b6c95dae93ce64fc1612156bc83d59bddd0390eb9bf57018c20abe237c5a6fa",
+        "durationMs": 3816.625,
+        "speakerId": "Reed (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "test-unlearned-02-1",
+      "sessionId": "test-unlearned",
+      "audio": {
+        "path": "test-unlearned-02-1.wav",
+        "sha256": "5284ff1f1fc11ccea1b649f4a7d29c50e2a4d4297e29248a99eb693009aae81d",
+        "durationMs": 4174.5625,
+        "speakerId": "Reed (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "natural-aishell-BAC009S0767W0403",
+      "sessionId": "historical-aishell1:S0767",
+      "audio": {
+        "path": "natural-aishell-BAC009S0767W0403.wav",
+        "sha256": "bda9b74198951013ef9c22e36ccaff0be4ae52f13571bb200edd634d9af406b3",
+        "durationMs": 5949.0,
+        "speakerId": "aishell1:S0767"
+      }
+    },
+    {
+      "id": "natural-aishell-BAC009S0767W0423",
+      "sessionId": "historical-aishell1:S0767",
+      "audio": {
+        "path": "natural-aishell-BAC009S0767W0423.wav",
+        "sha256": "cf2bf0749c76075820444c74d09031e32ecf3240efc4fed3fb280d7be6198ca6",
+        "durationMs": 2563.0,
+        "speakerId": "aishell1:S0767"
+      }
+    },
+    {
+      "id": "natural-aishell-BAC009S0767W0428",
+      "sessionId": "historical-aishell1:S0767",
+      "audio": {
+        "path": "natural-aishell-BAC009S0767W0428.wav",
+        "sha256": "48fc2b96df0c2951945e73643e6b67001d40d104ca24a4676202f101442fa046",
+        "durationMs": 4678.0,
+        "speakerId": "aishell1:S0767"
+      }
+    },
+    {
+      "id": "natural-aishell-BAC009S0767W0487",
+      "sessionId": "historical-aishell1:S0767",
+      "audio": {
+        "path": "natural-aishell-BAC009S0767W0487.wav",
+        "sha256": "563d1e1899b9e8bef49730ee7caf298ca9d1afc2e0893782ad6a464f01e80fcf",
+        "durationMs": 3980.0,
+        "speakerId": "aishell1:S0767"
+      }
+    },
+    {
+      "id": "natural-aishell-BAC009S0768W0122",
+      "sessionId": "historical-aishell1:S0768",
+      "audio": {
+        "path": "natural-aishell-BAC009S0768W0122.wav",
+        "sha256": "738850b36d0f66e5ac8de4d27669c575e1fe5013adac30334240a3f5a608ffe7",
+        "durationMs": 3915.0,
+        "speakerId": "aishell1:S0768"
+      }
+    },
+    {
+      "id": "natural-aishell-BAC009S0768W0134",
+      "sessionId": "historical-aishell1:S0768",
+      "audio": {
+        "path": "natural-aishell-BAC009S0768W0134.wav",
+        "sha256": "00af91b70f2ae6d5dd66efbf4db0e20a17ef4ec7d3dc2f86658cf3e41bb17453",
+        "durationMs": 6149.0,
+        "speakerId": "aishell1:S0768"
+      }
+    },
+    {
+      "id": "natural-aishell-BAC009S0768W0142",
+      "sessionId": "historical-aishell1:S0768",
+      "audio": {
+        "path": "natural-aishell-BAC009S0768W0142.wav",
+        "sha256": "fb6b96f8a07ca70d7bb6f3ba1b13ddea4047de1647383c1e55a6558da201b83c",
+        "durationMs": 4729.0,
+        "speakerId": "aishell1:S0768"
+      }
+    },
+    {
+      "id": "natural-aishell-BAC009S0768W0177",
+      "sessionId": "historical-aishell1:S0768",
+      "audio": {
+        "path": "natural-aishell-BAC009S0768W0177.wav",
+        "sha256": "994564d8acba7f9b84cf2f3f7a07a96192341bf29bda581c64f1ccb1a38525f4",
+        "durationMs": 4597.938,
+        "speakerId": "aishell1:S0768"
+      }
+    },
+    {
+      "id": "natural-aishell-BAC009S0768W0197",
+      "sessionId": "historical-aishell1:S0768",
+      "audio": {
+        "path": "natural-aishell-BAC009S0768W0197.wav",
+        "sha256": "7f1dbbe9ebffaa9793e2847a70b52afaca83f18ae1064998a85be904bf63e716",
+        "durationMs": 5421.0,
+        "speakerId": "aishell1:S0768"
+      }
+    },
+    {
+      "id": "natural-aishell-BAC009S0768W0262",
+      "sessionId": "historical-aishell1:S0768",
+      "audio": {
+        "path": "natural-aishell-BAC009S0768W0262.wav",
+        "sha256": "d1b15f2dc304a70f12fcfe19c958f1df62bdac52d3e8404afbc00273bf5437f1",
+        "durationMs": 8116.938,
+        "speakerId": "aishell1:S0768"
+      }
+    },
+    {
+      "id": "natural-libri-1995-1836-0007",
+      "sessionId": "historical-librispeech:1995-1836",
+      "audio": {
+        "path": "natural-libri-1995-1836-0007.wav",
+        "sha256": "4514cdac0cc94e28f6f0eeeb668d6e5bc205790258a482b3801a625f32e5ef7a",
+        "durationMs": 3435.0,
+        "speakerId": "librispeech:1995"
+      }
+    },
+    {
+      "id": "natural-libri-1995-1836-0013",
+      "sessionId": "historical-librispeech:1995-1836",
+      "audio": {
+        "path": "natural-libri-1995-1836-0013.wav",
+        "sha256": "b092b7620effca07dcc241f5dd111466ec19333ecb4a45641d860c7f103c0e4e",
+        "durationMs": 5300.0,
+        "speakerId": "librispeech:1995"
+      }
+    },
+    {
+      "id": "natural-libri-2300-131720-0014",
+      "sessionId": "historical-librispeech:2300-131720",
+      "audio": {
+        "path": "natural-libri-2300-131720-0014.wav",
+        "sha256": "7cf0b059946d66d3644af061770a75af9332f5a0660394fc03b5540db1bf8e18",
+        "durationMs": 3750.0,
+        "speakerId": "librispeech:2300"
+      }
+    },
+    {
+      "id": "natural-libri-2300-131720-0021",
+      "sessionId": "historical-librispeech:2300-131720",
+      "audio": {
+        "path": "natural-libri-2300-131720-0021.wav",
+        "sha256": "bbcb4cf48f1f4fd6a7758b16e86fd0a9f7167ddf450a514e8e89353d66601741",
+        "durationMs": 10950.0,
+        "speakerId": "librispeech:2300"
+      }
+    },
+    {
+      "id": "natural-libri-237-126133-0004",
+      "sessionId": "historical-librispeech:237-126133",
+      "audio": {
+        "path": "natural-libri-237-126133-0004.wav",
+        "sha256": "e1e6db33e7d8d0c2ba3dfe06ba93c432b02712f18f7431e836da6b04601cb8da",
+        "durationMs": 3295.0,
+        "speakerId": "librispeech:237"
+      }
+    },
+    {
+      "id": "natural-libri-237-134493-0016",
+      "sessionId": "historical-librispeech:237-134493",
+      "audio": {
+        "path": "natural-libri-237-134493-0016.wav",
+        "sha256": "6d1cc39a9e38888f83ab8cdc5d65855743362463563dfba6c1b12940ac05e80b",
+        "durationMs": 10085.0,
+        "speakerId": "librispeech:237"
+      }
+    },
+    {
+      "id": "natural-libri-260-123288-0008",
+      "sessionId": "historical-librispeech:260-123288",
+      "audio": {
+        "path": "natural-libri-260-123288-0008.wav",
+        "sha256": "e3c4e04dab9db28856021a78df156c6eb787a3178fc9261c058fe2c249b24716",
+        "durationMs": 5515.0,
+        "speakerId": "librispeech:260"
+      }
+    },
+    {
+      "id": "natural-libri-2830-3979-0006",
+      "sessionId": "historical-librispeech:2830-3979",
+      "audio": {
+        "path": "natural-libri-2830-3979-0006.wav",
+        "sha256": "65ec29bdc39e7ad307ee3d4822881b2cbd0c2b34719d955f2e2ef2d0981ce161",
+        "durationMs": 4550.0,
+        "speakerId": "librispeech:2830"
+      }
+    },
+    {
+      "id": "natural-libri-2830-3979-0010",
+      "sessionId": "historical-librispeech:2830-3979",
+      "audio": {
+        "path": "natural-libri-2830-3979-0010.wav",
+        "sha256": "7d8772c4ed93c0a409209327fdd735105632dd56f4109f771b7c4e966b95d306",
+        "durationMs": 3360.0,
+        "speakerId": "librispeech:2830"
+      }
+    },
+    {
+      "id": "natural-libri-2961-960-0015",
+      "sessionId": "historical-librispeech:2961-960",
+      "audio": {
+        "path": "natural-libri-2961-960-0015.wav",
+        "sha256": "2a811344aa4d212f9d8bf120d1e5cf1cc9bd033715ff20d14592dc2d605aba59",
+        "durationMs": 7830.0,
+        "speakerId": "librispeech:2961"
+      }
+    },
+    {
+      "id": "test-silence",
+      "sessionId": "test-silence",
+      "audio": {
+        "path": "silence.wav",
+        "sha256": "7ecf682084778b830a82e84e04e87013363718960dfd22be6a2cd233e65509aa",
+        "durationMs": 2500.0,
+        "speakerId": "test-generated-nonspeech"
+      }
+    },
+    {
+      "id": "test-noise",
+      "sessionId": "test-noise",
+      "audio": {
+        "path": "noise.wav",
+        "sha256": "18be7800ca670b179e72b7307a68df517443f7a285c59bce22f614cb5cefe210",
+        "durationMs": 2500.0,
+        "speakerId": "test-generated-nonspeech"
+      }
+    }
+  ]
+}

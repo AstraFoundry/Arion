@@ -31,6 +31,7 @@ import (
 	"arion.local/desktop/infrastructure/settings"
 	"arion.local/desktop/infrastructure/usage"
 	"arion.local/desktop/infrastructure/vocabulary"
+	"arion.local/desktop/infrastructure/wordseg"
 	"arion.local/desktop/internal/account"
 	uiapp "arion.local/desktop/ui/app"
 	arion "arion.local/desktop/ui/shared/runtime"
@@ -198,7 +199,7 @@ func New(opts Options) (*App, error) {
 		finalizer = gatedFinalizer{h: a.harness, inner: a.manager}
 		targets = countingTargets{Targets: a.targets, h: a.harness}
 	}
-	a.edits = &application.EditTracker{Report: a.learnEdit}
+	a.edits = &application.EditTracker{Report: a.learnEdit, Segmenter: wordseg.Segmenter{}}
 	deps := application.Dependencies{Diagnostics: a, Audio: capture, Recognizers: a.manager, Finalizer: finalizer, Targets: targets, Input: targets,
 		Rewriter: a.rewriter, History: a.history, Edits: a.edits, NewID: newID}
 	if a.ime != nil {

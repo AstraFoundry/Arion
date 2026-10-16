@@ -1,0 +1,1174 @@
+{
+  "teaching": [
+    {
+      "id": "test-teach-00-0",
+      "term": "ClickHouse",
+      "language": "mixed"
+    },
+    {
+      "id": "test-teach-00-1",
+      "term": "ClickHouse",
+      "language": "mixed"
+    },
+    {
+      "id": "test-teach-01-0",
+      "term": "Prometheus",
+      "language": "mixed"
+    },
+    {
+      "id": "test-teach-01-1",
+      "term": "Prometheus",
+      "language": "mixed"
+    },
+    {
+      "id": "test-teach-02-0",
+      "term": "Grafana",
+      "language": "mixed"
+    },
+    {
+      "id": "test-teach-02-1",
+      "term": "Grafana",
+      "language": "mixed"
+    },
+    {
+      "id": "test-teach-03-0",
+      "term": "Milvus",
+      "language": "mixed"
+    },
+    {
+      "id": "test-teach-03-1",
+      "term": "Milvus",
+      "language": "mixed"
+    },
+    {
+      "id": "test-teach-04-0",
+      "term": "Weaviate",
+      "language": "mixed"
+    },
+    {
+      "id": "test-teach-04-1",
+      "term": "Weaviate",
+      "language": "mixed"
+    },
+    {
+      "id": "test-teach-05-0",
+      "term": "DuckDB",
+      "language": "mixed"
+    },
+    {
+      "id": "test-teach-05-1",
+      "term": "DuckDB",
+      "language": "mixed"
+    },
+    {
+      "id": "test-teach-06-0",
+      "term": "Raycast",
+      "language": "mixed"
+    },
+    {
+      "id": "test-teach-06-1",
+      "term": "Raycast",
+      "language": "mixed"
+    },
+    {
+      "id": "test-teach-07-0",
+      "term": "Obsidian",
+      "language": "mixed"
+    },
+    {
+      "id": "test-teach-07-1",
+      "term": "Obsidian",
+      "language": "mixed"
+    },
+    {
+      "id": "test-teach-08-0",
+      "term": "Zed",
+      "language": "mixed"
+    },
+    {
+      "id": "test-teach-08-1",
+      "term": "Zed",
+      "language": "mixed"
+    },
+    {
+      "id": "test-teach-09-0",
+      "term": "Cursor",
+      "language": "mixed"
+    },
+    {
+      "id": "test-teach-09-1",
+      "term": "Cursor",
+      "language": "mixed"
+    },
+    {
+      "id": "test-teach-10-0",
+      "term": "Ollama",
+      "language": "mixed"
+    },
+    {
+      "id": "test-teach-10-1",
+      "term": "Ollama",
+      "language": "mixed"
+    },
+    {
+      "id": "test-teach-11-0",
+      "term": "Tauri",
+      "language": "mixed"
+    },
+    {
+      "id": "test-teach-11-1",
+      "term": "Tauri",
+      "language": "mixed"
+    },
+    {
+      "id": "test-teach-12-0",
+      "term": "祁砚舟",
+      "language": "zh"
+    },
+    {
+      "id": "test-teach-12-1",
+      "term": "祁砚舟",
+      "language": "zh"
+    },
+    {
+      "id": "test-teach-13-0",
+      "term": "邵栩宁",
+      "language": "zh"
+    },
+    {
+      "id": "test-teach-13-1",
+      "term": "邵栩宁",
+      "language": "zh"
+    },
+    {
+      "id": "test-teach-14-0",
+      "term": "苏芷澄",
+      "language": "zh"
+    },
+    {
+      "id": "test-teach-14-1",
+      "term": "苏芷澄",
+      "language": "zh"
+    },
+    {
+      "id": "test-teach-15-0",
+      "term": "蓝泊川",
+      "language": "zh"
+    },
+    {
+      "id": "test-teach-15-1",
+      "term": "蓝泊川",
+      "language": "zh"
+    },
+    {
+      "id": "test-teach-16-0",
+      "term": "霁川",
+      "language": "zh"
+    },
+    {
+      "id": "test-teach-16-1",
+      "term": "霁川",
+      "language": "zh"
+    },
+    {
+      "id": "test-teach-17-0",
+      "term": "栖禾",
+      "language": "zh"
+    },
+    {
+      "id": "test-teach-17-1",
+      "term": "栖禾",
+      "language": "zh"
+    },
+    {
+      "id": "test-teach-18-0",
+      "term": "Siobhan",
+      "language": "en"
+    },
+    {
+      "id": "test-teach-18-1",
+      "term": "Siobhan",
+      "language": "en"
+    },
+    {
+      "id": "test-teach-19-0",
+      "term": "Niamh",
+      "language": "en"
+    },
+    {
+      "id": "test-teach-19-1",
+      "term": "Niamh",
+      "language": "en"
+    },
+    {
+      "id": "test-teach-20-0",
+      "term": "Aoife",
+      "language": "en"
+    },
+    {
+      "id": "test-teach-20-1",
+      "term": "Aoife",
+      "language": "en"
+    },
+    {
+      "id": "test-teach-21-0",
+      "term": "Saoirse",
+      "language": "en"
+    },
+    {
+      "id": "test-teach-21-1",
+      "term": "Saoirse",
+      "language": "en"
+    },
+    {
+      "id": "test-teach-22-0",
+      "term": "Joaquin",
+      "language": "en"
+    },
+    {
+      "id": "test-teach-22-1",
+      "term": "Joaquin",
+      "language": "en"
+    },
+    {
+      "id": "test-teach-23-0",
+      "term": "Xochitl",
+      "language": "en"
+    },
+    {
+      "id": "test-teach-23-1",
+      "term": "Xochitl",
+      "language": "en"
+    }
+  ],
+  "samples": [
+    {
+      "id": "test-recur-00-0",
+      "term": "ClickHouse",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "reference": "如果ClickHouse无法启动，就先检查日志。"
+    },
+    {
+      "id": "test-recur-00-1",
+      "term": "ClickHouse",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "reference": "这份比较报告也应该包含ClickHouse。"
+    },
+    {
+      "id": "test-recur-00-2",
+      "term": "ClickHouse",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "reference": "现在可以暂停ClickHouse相关的任务了。"
+    },
+    {
+      "id": "test-recur-01-0",
+      "term": "Prometheus",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "reference": "如果Prometheus无法启动，就先检查日志。"
+    },
+    {
+      "id": "test-recur-01-1",
+      "term": "Prometheus",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "reference": "这份比较报告也应该包含Prometheus。"
+    },
+    {
+      "id": "test-recur-01-2",
+      "term": "Prometheus",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "reference": "现在可以暂停Prometheus相关的任务了。"
+    },
+    {
+      "id": "test-recur-02-0",
+      "term": "Grafana",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "reference": "如果Grafana无法启动，就先检查日志。"
+    },
+    {
+      "id": "test-recur-02-1",
+      "term": "Grafana",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "reference": "这份比较报告也应该包含Grafana。"
+    },
+    {
+      "id": "test-recur-02-2",
+      "term": "Grafana",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "reference": "现在可以暂停Grafana相关的任务了。"
+    },
+    {
+      "id": "test-recur-03-0",
+      "term": "Milvus",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "reference": "如果Milvus无法启动，就先检查日志。"
+    },
+    {
+      "id": "test-recur-03-1",
+      "term": "Milvus",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "reference": "这份比较报告也应该包含Milvus。"
+    },
+    {
+      "id": "test-recur-03-2",
+      "term": "Milvus",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "reference": "现在可以暂停Milvus相关的任务了。"
+    },
+    {
+      "id": "test-recur-04-0",
+      "term": "Weaviate",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "reference": "如果Weaviate无法启动，就先检查日志。"
+    },
+    {
+      "id": "test-recur-04-1",
+      "term": "Weaviate",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "reference": "这份比较报告也应该包含Weaviate。"
+    },
+    {
+      "id": "test-recur-04-2",
+      "term": "Weaviate",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "reference": "现在可以暂停Weaviate相关的任务了。"
+    },
+    {
+      "id": "test-recur-05-0",
+      "term": "DuckDB",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "reference": "如果DuckDB无法启动，就先检查日志。"
+    },
+    {
+      "id": "test-recur-05-1",
+      "term": "DuckDB",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "reference": "这份比较报告也应该包含DuckDB。"
+    },
+    {
+      "id": "test-recur-05-2",
+      "term": "DuckDB",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "reference": "现在可以暂停DuckDB相关的任务了。"
+    },
+    {
+      "id": "test-recur-06-0",
+      "term": "Raycast",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "reference": "如果Raycast无法启动，就先检查日志。"
+    },
+    {
+      "id": "test-recur-06-1",
+      "term": "Raycast",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "reference": "这份比较报告也应该包含Raycast。"
+    },
+    {
+      "id": "test-recur-06-2",
+      "term": "Raycast",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "reference": "现在可以暂停Raycast相关的任务了。"
+    },
+    {
+      "id": "test-recur-07-0",
+      "term": "Obsidian",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "reference": "如果Obsidian无法启动，就先检查日志。"
+    },
+    {
+      "id": "test-recur-07-1",
+      "term": "Obsidian",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "reference": "这份比较报告也应该包含Obsidian。"
+    },
+    {
+      "id": "test-recur-07-2",
+      "term": "Obsidian",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "reference": "现在可以暂停Obsidian相关的任务了。"
+    },
+    {
+      "id": "test-recur-08-0",
+      "term": "Zed",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "reference": "如果Zed无法启动，就先检查日志。"
+    },
+    {
+      "id": "test-recur-08-1",
+      "term": "Zed",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "reference": "这份比较报告也应该包含Zed。"
+    },
+    {
+      "id": "test-recur-08-2",
+      "term": "Zed",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "reference": "现在可以暂停Zed相关的任务了。"
+    },
+    {
+      "id": "test-recur-09-0",
+      "term": "Cursor",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "reference": "如果Cursor无法启动，就先检查日志。"
+    },
+    {
+      "id": "test-recur-09-1",
+      "term": "Cursor",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "reference": "这份比较报告也应该包含Cursor。"
+    },
+    {
+      "id": "test-recur-09-2",
+      "term": "Cursor",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "reference": "现在可以暂停Cursor相关的任务了。"
+    },
+    {
+      "id": "test-recur-10-0",
+      "term": "Ollama",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "reference": "如果Ollama无法启动，就先检查日志。"
+    },
+    {
+      "id": "test-recur-10-1",
+      "term": "Ollama",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "reference": "这份比较报告也应该包含Ollama。"
+    },
+    {
+      "id": "test-recur-10-2",
+      "term": "Ollama",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "reference": "现在可以暂停Ollama相关的任务了。"
+    },
+    {
+      "id": "test-recur-11-0",
+      "term": "Tauri",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "reference": "如果Tauri无法启动，就先检查日志。"
+    },
+    {
+      "id": "test-recur-11-1",
+      "term": "Tauri",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "reference": "这份比较报告也应该包含Tauri。"
+    },
+    {
+      "id": "test-recur-11-2",
+      "term": "Tauri",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "recurring",
+      "reference": "现在可以暂停Tauri相关的任务了。"
+    },
+    {
+      "id": "test-recur-12-0",
+      "term": "祁砚舟",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "recurring",
+      "reference": "刚才负责接待来宾的人是祁砚舟。"
+    },
+    {
+      "id": "test-recur-12-1",
+      "term": "祁砚舟",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "recurring",
+      "reference": "请转告祁砚舟，会议地点已经换了。"
+    },
+    {
+      "id": "test-recur-12-2",
+      "term": "祁砚舟",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "recurring",
+      "reference": "这封感谢信的收件人写祁砚舟。"
+    },
+    {
+      "id": "test-recur-13-0",
+      "term": "邵栩宁",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "recurring",
+      "reference": "刚才负责接待来宾的人是邵栩宁。"
+    },
+    {
+      "id": "test-recur-13-1",
+      "term": "邵栩宁",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "recurring",
+      "reference": "请转告邵栩宁，会议地点已经换了。"
+    },
+    {
+      "id": "test-recur-13-2",
+      "term": "邵栩宁",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "recurring",
+      "reference": "这封感谢信的收件人写邵栩宁。"
+    },
+    {
+      "id": "test-recur-14-0",
+      "term": "苏芷澄",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "recurring",
+      "reference": "刚才负责接待来宾的人是苏芷澄。"
+    },
+    {
+      "id": "test-recur-14-1",
+      "term": "苏芷澄",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "recurring",
+      "reference": "请转告苏芷澄，会议地点已经换了。"
+    },
+    {
+      "id": "test-recur-14-2",
+      "term": "苏芷澄",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "recurring",
+      "reference": "这封感谢信的收件人写苏芷澄。"
+    },
+    {
+      "id": "test-recur-15-0",
+      "term": "蓝泊川",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "recurring",
+      "reference": "刚才负责接待来宾的人是蓝泊川。"
+    },
+    {
+      "id": "test-recur-15-1",
+      "term": "蓝泊川",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "recurring",
+      "reference": "请转告蓝泊川，会议地点已经换了。"
+    },
+    {
+      "id": "test-recur-15-2",
+      "term": "蓝泊川",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "recurring",
+      "reference": "这封感谢信的收件人写蓝泊川。"
+    },
+    {
+      "id": "test-recur-16-0",
+      "term": "霁川",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "recurring",
+      "reference": "刚才负责接待来宾的人是霁川。"
+    },
+    {
+      "id": "test-recur-16-1",
+      "term": "霁川",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "recurring",
+      "reference": "请转告霁川，会议地点已经换了。"
+    },
+    {
+      "id": "test-recur-16-2",
+      "term": "霁川",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "recurring",
+      "reference": "这封感谢信的收件人写霁川。"
+    },
+    {
+      "id": "test-recur-17-0",
+      "term": "栖禾",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "recurring",
+      "reference": "刚才负责接待来宾的人是栖禾。"
+    },
+    {
+      "id": "test-recur-17-1",
+      "term": "栖禾",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "recurring",
+      "reference": "请转告栖禾，会议地点已经换了。"
+    },
+    {
+      "id": "test-recur-17-2",
+      "term": "栖禾",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "recurring",
+      "reference": "这封感谢信的收件人写栖禾。"
+    },
+    {
+      "id": "test-recur-18-0",
+      "term": "Siobhan",
+      "language": "en",
+      "unit": "wer",
+      "kind": "recurring",
+      "reference": "The final signature should be provided by Siobhan."
+    },
+    {
+      "id": "test-recur-18-1",
+      "term": "Siobhan",
+      "language": "en",
+      "unit": "wer",
+      "kind": "recurring",
+      "reference": "Before we continue, check whether Siobhan is available."
+    },
+    {
+      "id": "test-recur-18-2",
+      "term": "Siobhan",
+      "language": "en",
+      "unit": "wer",
+      "kind": "recurring",
+      "reference": "That suggestion came from Siobhan during the call."
+    },
+    {
+      "id": "test-recur-19-0",
+      "term": "Niamh",
+      "language": "en",
+      "unit": "wer",
+      "kind": "recurring",
+      "reference": "The final signature should be provided by Niamh."
+    },
+    {
+      "id": "test-recur-19-1",
+      "term": "Niamh",
+      "language": "en",
+      "unit": "wer",
+      "kind": "recurring",
+      "reference": "Before we continue, check whether Niamh is available."
+    },
+    {
+      "id": "test-recur-19-2",
+      "term": "Niamh",
+      "language": "en",
+      "unit": "wer",
+      "kind": "recurring",
+      "reference": "That suggestion came from Niamh during the call."
+    },
+    {
+      "id": "test-recur-20-0",
+      "term": "Aoife",
+      "language": "en",
+      "unit": "wer",
+      "kind": "recurring",
+      "reference": "The final signature should be provided by Aoife."
+    },
+    {
+      "id": "test-recur-20-1",
+      "term": "Aoife",
+      "language": "en",
+      "unit": "wer",
+      "kind": "recurring",
+      "reference": "Before we continue, check whether Aoife is available."
+    },
+    {
+      "id": "test-recur-20-2",
+      "term": "Aoife",
+      "language": "en",
+      "unit": "wer",
+      "kind": "recurring",
+      "reference": "That suggestion came from Aoife during the call."
+    },
+    {
+      "id": "test-recur-21-0",
+      "term": "Saoirse",
+      "language": "en",
+      "unit": "wer",
+      "kind": "recurring",
+      "reference": "The final signature should be provided by Saoirse."
+    },
+    {
+      "id": "test-recur-21-1",
+      "term": "Saoirse",
+      "language": "en",
+      "unit": "wer",
+      "kind": "recurring",
+      "reference": "Before we continue, check whether Saoirse is available."
+    },
+    {
+      "id": "test-recur-21-2",
+      "term": "Saoirse",
+      "language": "en",
+      "unit": "wer",
+      "kind": "recurring",
+      "reference": "That suggestion came from Saoirse during the call."
+    },
+    {
+      "id": "test-recur-22-0",
+      "term": "Joaquin",
+      "language": "en",
+      "unit": "wer",
+      "kind": "recurring",
+      "reference": "The final signature should be provided by Joaquin."
+    },
+    {
+      "id": "test-recur-22-1",
+      "term": "Joaquin",
+      "language": "en",
+      "unit": "wer",
+      "kind": "recurring",
+      "reference": "Before we continue, check whether Joaquin is available."
+    },
+    {
+      "id": "test-recur-22-2",
+      "term": "Joaquin",
+      "language": "en",
+      "unit": "wer",
+      "kind": "recurring",
+      "reference": "That suggestion came from Joaquin during the call."
+    },
+    {
+      "id": "test-recur-23-0",
+      "term": "Xochitl",
+      "language": "en",
+      "unit": "wer",
+      "kind": "recurring",
+      "reference": "The final signature should be provided by Xochitl."
+    },
+    {
+      "id": "test-recur-23-1",
+      "term": "Xochitl",
+      "language": "en",
+      "unit": "wer",
+      "kind": "recurring",
+      "reference": "Before we continue, check whether Xochitl is available."
+    },
+    {
+      "id": "test-recur-23-2",
+      "term": "Xochitl",
+      "language": "en",
+      "unit": "wer",
+      "kind": "recurring",
+      "reference": "That suggestion came from Xochitl during the call."
+    },
+    {
+      "id": "test-control-00",
+      "term": "",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "ordinary_control",
+      "reference": "小船停在水边，等大家吃完午饭再出发。"
+    },
+    {
+      "id": "test-control-01",
+      "term": "",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "ordinary_control",
+      "reference": "他喜欢骑车去河边看日落。"
+    },
+    {
+      "id": "test-control-02",
+      "term": "",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "ordinary_control",
+      "reference": "请把米放进锅里再加水。"
+    },
+    {
+      "id": "test-control-03",
+      "term": "",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "ordinary_control",
+      "reference": "明天周一要记得早点出门。"
+    },
+    {
+      "id": "test-control-04",
+      "term": "",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "ordinary_control",
+      "reference": "这件外套的拉链好像坏了。"
+    },
+    {
+      "id": "test-control-05",
+      "term": "",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "ordinary_control",
+      "reference": "桌子上的咖啡已经凉了。"
+    },
+    {
+      "id": "test-control-06",
+      "term": "",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "ordinary_control",
+      "reference": "这位老师讲课的时候语速很慢。"
+    },
+    {
+      "id": "test-control-07",
+      "term": "",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "ordinary_control",
+      "reference": "栖息在树上的鸟儿还没有醒来。"
+    },
+    {
+      "id": "test-control-08",
+      "term": "",
+      "language": "en",
+      "unit": "wer",
+      "kind": "ordinary_control",
+      "reference": "I found a cursor shaped like a small arrow."
+    },
+    {
+      "id": "test-control-09",
+      "term": "",
+      "language": "en",
+      "unit": "wer",
+      "kind": "ordinary_control",
+      "reference": "The duck swam quietly across the pond."
+    },
+    {
+      "id": "test-control-10",
+      "term": "",
+      "language": "en",
+      "unit": "wer",
+      "kind": "ordinary_control",
+      "reference": "She drew a simple chart on the board."
+    },
+    {
+      "id": "test-control-11",
+      "term": "",
+      "language": "en",
+      "unit": "wer",
+      "kind": "ordinary_control",
+      "reference": "The coast is covered in thick fog this morning."
+    },
+    {
+      "id": "test-control-12",
+      "term": "",
+      "language": "en",
+      "unit": "wer",
+      "kind": "ordinary_control",
+      "reference": "Please move the chair away from the door."
+    },
+    {
+      "id": "test-control-13",
+      "term": "",
+      "language": "en",
+      "unit": "wer",
+      "kind": "ordinary_control",
+      "reference": "We need another copy of this document."
+    },
+    {
+      "id": "test-control-14",
+      "term": "",
+      "language": "en",
+      "unit": "wer",
+      "kind": "ordinary_control",
+      "reference": "The children are playing outside the library."
+    },
+    {
+      "id": "test-control-15",
+      "term": "",
+      "language": "en",
+      "unit": "wer",
+      "kind": "ordinary_control",
+      "reference": "He left a short note on the kitchen table."
+    },
+    {
+      "id": "test-unlearned-00-0",
+      "term": "Nushell",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "unlearned_control",
+      "reference": "这份表格缺少Nushell的相关数据。"
+    },
+    {
+      "id": "test-unlearned-00-1",
+      "term": "Nushell",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "unlearned_control",
+      "reference": "如果有人问起Nushell，请联系负责人。"
+    },
+    {
+      "id": "test-unlearned-01-0",
+      "term": "Valkey",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "unlearned_control",
+      "reference": "这份表格缺少Valkey的相关数据。"
+    },
+    {
+      "id": "test-unlearned-01-1",
+      "term": "Valkey",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "unlearned_control",
+      "reference": "如果有人问起Valkey，请联系负责人。"
+    },
+    {
+      "id": "test-unlearned-02-0",
+      "term": "NixOS",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "unlearned_control",
+      "reference": "这份表格缺少NixOS的相关数据。"
+    },
+    {
+      "id": "test-unlearned-02-1",
+      "term": "NixOS",
+      "language": "mixed",
+      "unit": "mer",
+      "kind": "unlearned_control",
+      "reference": "如果有人问起NixOS，请联系负责人。"
+    },
+    {
+      "id": "natural-aishell-BAC009S0767W0403",
+      "term": "",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "natural_control",
+      "reference": "徐永昊的站立打击技术在该级别中堪称翘楚"
+    },
+    {
+      "id": "natural-aishell-BAC009S0767W0423",
+      "term": "",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "natural_control",
+      "reference": "但不至于要吃药"
+    },
+    {
+      "id": "natural-aishell-BAC009S0767W0428",
+      "term": "",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "natural_control",
+      "reference": "并自嘲的写道自幼就走性感风格"
+    },
+    {
+      "id": "natural-aishell-BAC009S0767W0487",
+      "term": "",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "natural_control",
+      "reference": "城改拆迁对很多村民来说"
+    },
+    {
+      "id": "natural-aishell-BAC009S0768W0122",
+      "term": "",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "natural_control",
+      "reference": "明年初料迎供应淡季"
+    },
+    {
+      "id": "natural-aishell-BAC009S0768W0134",
+      "term": "",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "natural_control",
+      "reference": "房地产开发企业到位资金十万亿元"
+    },
+    {
+      "id": "natural-aishell-BAC009S0768W0142",
+      "term": "",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "natural_control",
+      "reference": "今年商品房销售一度低日迷"
+    },
+    {
+      "id": "natural-aishell-BAC009S0768W0177",
+      "term": "",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "natural_control",
+      "reference": "投资价值更好房企看好"
+    },
+    {
+      "id": "natural-aishell-BAC009S0768W0197",
+      "term": "",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "natural_control",
+      "reference": "而是改按统一合理的平均成本确定"
+    },
+    {
+      "id": "natural-aishell-BAC009S0768W0262",
+      "term": "",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "natural_control",
+      "reference": "加上它凭借远程雷达与对方舰队保持远距离"
+    },
+    {
+      "id": "natural-libri-1995-1836-0007",
+      "term": "",
+      "language": "en",
+      "unit": "wer",
+      "kind": "natural_control",
+      "reference": "but you believe in some education asked mary taylor"
+    },
+    {
+      "id": "natural-libri-1995-1836-0013",
+      "term": "",
+      "language": "en",
+      "unit": "wer",
+      "kind": "natural_control",
+      "reference": "mary taylor however related the tale of zora to missus grey's private ear later"
+    },
+    {
+      "id": "natural-libri-2300-131720-0014",
+      "term": "",
+      "language": "en",
+      "unit": "wer",
+      "kind": "natural_control",
+      "reference": "mister edison was a leader far ahead of the time"
+    },
+    {
+      "id": "natural-libri-2300-131720-0021",
+      "term": "",
+      "language": "en",
+      "unit": "wer",
+      "kind": "natural_control",
+      "reference": "the street conductors were of the overhead pole line construction and were installed by the construction company that had been organized by edison to build and equip central stations"
+    },
+    {
+      "id": "natural-libri-237-126133-0004",
+      "term": "",
+      "language": "en",
+      "unit": "wer",
+      "kind": "natural_control",
+      "reference": "if she could only see phronsie for just one moment"
+    },
+    {
+      "id": "natural-libri-237-134493-0016",
+      "term": "",
+      "language": "en",
+      "unit": "wer",
+      "kind": "natural_control",
+      "reference": "on either side of the road for a mile before you reached the foot of the hill stood tall osage orange hedges their glossy green marking off the yellow fields"
+    },
+    {
+      "id": "natural-libri-260-123288-0008",
+      "term": "",
+      "language": "en",
+      "unit": "wer",
+      "kind": "natural_control",
+      "reference": "there's a heavy storm coming on i cried pointing towards the horizon"
+    },
+    {
+      "id": "natural-libri-2830-3979-0006",
+      "term": "",
+      "language": "en",
+      "unit": "wer",
+      "kind": "natural_control",
+      "reference": "a word should now be said about the origin of luther's commentary on galatians"
+    },
+    {
+      "id": "natural-libri-2830-3979-0010",
+      "term": "",
+      "language": "en",
+      "unit": "wer",
+      "kind": "natural_control",
+      "reference": "but the essence of luther's lectures is there"
+    },
+    {
+      "id": "natural-libri-2961-960-0015",
+      "term": "",
+      "language": "en",
+      "unit": "wer",
+      "kind": "natural_control",
+      "reference": "the style and plan of the timaeus differ greatly from that of any other of the platonic dialogues"
+    },
+    {
+      "id": "test-silence",
+      "term": "",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "nonspeech",
+      "reference": ""
+    },
+    {
+      "id": "test-noise",
+      "term": "",
+      "language": "zh",
+      "unit": "cer",
+      "kind": "nonspeech",
+      "reference": ""
+    }
+  ]
+}

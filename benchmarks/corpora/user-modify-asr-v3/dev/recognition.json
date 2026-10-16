@@ -1,0 +1,664 @@
+{
+  "samples": [
+    {
+      "id": "dev-recur-00-0",
+      "sessionId": "dev-future-0",
+      "audio": {
+        "path": "dev-recur-00-0.wav",
+        "sha256": "c4b3c7a3b2da82d679437d945409daaecb0425ae397503895bcc128e7f145950",
+        "durationMs": 3886.375,
+        "speakerId": "Eddy (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "dev-recur-00-1",
+      "sessionId": "dev-future-1",
+      "audio": {
+        "path": "dev-recur-00-1.wav",
+        "sha256": "1bfd88471bd7a79f1a149db4cc2da64ef6ff070ed8977a28e5adce44d3e28356",
+        "durationMs": 3448.4375,
+        "speakerId": "Eddy (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "dev-recur-00-2",
+      "sessionId": "dev-future-2",
+      "audio": {
+        "path": "dev-recur-00-2.wav",
+        "sha256": "9f8e4b51328d955eca3093b632b60b2c677c8fbd3768ae721af892cd9d423da4",
+        "durationMs": 3432.5625,
+        "speakerId": "Eddy (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "dev-recur-01-0",
+      "sessionId": "dev-future-0",
+      "audio": {
+        "path": "dev-recur-01-0.wav",
+        "sha256": "43098f67d51e79405bf63ddc1f39f0e05b901c401d3d8226da251df8ba1b8c69",
+        "durationMs": 3630.375,
+        "speakerId": "Eddy (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "dev-recur-01-1",
+      "sessionId": "dev-future-1",
+      "audio": {
+        "path": "dev-recur-01-1.wav",
+        "sha256": "2c8fb4c4bbf37d20688a69e09d155838a02823f27e268ad4df3a2a7599389e8b",
+        "durationMs": 3160.5,
+        "speakerId": "Eddy (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "dev-recur-01-2",
+      "sessionId": "dev-future-2",
+      "audio": {
+        "path": "dev-recur-01-2.wav",
+        "sha256": "5b16633b192b45f20d652e9de25731fb65f55cddba10ca0aa0171e7f4a421672",
+        "durationMs": 3160.5,
+        "speakerId": "Eddy (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "dev-recur-02-0",
+      "sessionId": "dev-future-0",
+      "audio": {
+        "path": "dev-recur-02-0.wav",
+        "sha256": "af7ce0fa4a82bc7b1089f049df13c0a4c4f735faa14b216339c92e29d2c7c4de",
+        "durationMs": 3838.375,
+        "speakerId": "Eddy (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "dev-recur-02-1",
+      "sessionId": "dev-future-1",
+      "audio": {
+        "path": "dev-recur-02-1.wav",
+        "sha256": "2b5af5157eb54c7c2b9ee4999798c57a469452d23f79bbb82289f65586cff947",
+        "durationMs": 3368.4375,
+        "speakerId": "Eddy (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "dev-recur-02-2",
+      "sessionId": "dev-future-2",
+      "audio": {
+        "path": "dev-recur-02-2.wav",
+        "sha256": "5293f2d7b1e7c7b6865482c7497927bccabcef1bbd48285afac877464a7ecac3",
+        "durationMs": 3384.5625,
+        "speakerId": "Eddy (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "dev-recur-03-0",
+      "sessionId": "dev-future-0",
+      "audio": {
+        "path": "dev-recur-03-0.wav",
+        "sha256": "2481fb82ddcc51cd8b182165e3a44706722a4ce1b669d943b1027c53196190c4",
+        "durationMs": 3582.375,
+        "speakerId": "Eddy (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "dev-recur-03-1",
+      "sessionId": "dev-future-1",
+      "audio": {
+        "path": "dev-recur-03-1.wav",
+        "sha256": "87ebf55a0cb347fc5030f43e79deb2d6f8deffa1e31c47412522e6f16634771d",
+        "durationMs": 3128.4375,
+        "speakerId": "Eddy (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "dev-recur-03-2",
+      "sessionId": "dev-future-2",
+      "audio": {
+        "path": "dev-recur-03-2.wav",
+        "sha256": "a02ef36849216e942c2820cde84fa9a23257337d04bb3de9c9c1e0e2dc6d163f",
+        "durationMs": 3096.5625,
+        "speakerId": "Eddy (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "dev-recur-04-0",
+      "sessionId": "dev-future-0",
+      "audio": {
+        "path": "dev-recur-04-0.wav",
+        "sha256": "1c4383b166710ad34e5d541e11647990d7d267f082f82a29f908fd7dc14b06f3",
+        "durationMs": 3838.375,
+        "speakerId": "Eddy (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "dev-recur-04-1",
+      "sessionId": "dev-future-1",
+      "audio": {
+        "path": "dev-recur-04-1.wav",
+        "sha256": "df8aa1a2a683a56f5efc659c987ed4c45598204e9d73ade78ca8f82c227a792a",
+        "durationMs": 3368.4375,
+        "speakerId": "Eddy (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "dev-recur-04-2",
+      "sessionId": "dev-future-2",
+      "audio": {
+        "path": "dev-recur-04-2.wav",
+        "sha256": "041c429e0078a7ec01951746015b5188bcbe059c1995135792bc4fa921a17245",
+        "durationMs": 3368.5625,
+        "speakerId": "Eddy (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "dev-recur-05-0",
+      "sessionId": "dev-future-0",
+      "audio": {
+        "path": "dev-recur-05-0.wav",
+        "sha256": "d65fbdb89808afaceb2e12103d5525bc24bbefe758847a8f0330fcfee3b8ab52",
+        "durationMs": 3406.375,
+        "speakerId": "Eddy (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "dev-recur-05-1",
+      "sessionId": "dev-future-1",
+      "audio": {
+        "path": "dev-recur-05-1.wav",
+        "sha256": "e45e0382a4715a11aada6c4972d7e0b1b609d75e730a8f8198c2c3cf932df7ac",
+        "durationMs": 2936.5,
+        "speakerId": "Eddy (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "dev-recur-05-2",
+      "sessionId": "dev-future-2",
+      "audio": {
+        "path": "dev-recur-05-2.wav",
+        "sha256": "2530b289f4e6405892a77554aed6f2eb73f98349280b8584a101cb6aeb342964",
+        "durationMs": 2952.5625,
+        "speakerId": "Eddy (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "dev-recur-06-0",
+      "sessionId": "dev-future-0",
+      "audio": {
+        "path": "dev-recur-06-0.wav",
+        "sha256": "5cd24534e72a375df23ea2497f66390ce62e7c4a8e4b0d5fe5ac693ec7cabbd3",
+        "durationMs": 3710.375,
+        "speakerId": "Eddy (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "dev-recur-06-1",
+      "sessionId": "dev-future-1",
+      "audio": {
+        "path": "dev-recur-06-1.wav",
+        "sha256": "93896fa5f2c549c6a12c24b5cf813b8a522bc1308de25dd844f99d38c98e35b7",
+        "durationMs": 3256.5,
+        "speakerId": "Eddy (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "dev-recur-06-2",
+      "sessionId": "dev-future-2",
+      "audio": {
+        "path": "dev-recur-06-2.wav",
+        "sha256": "e6e802458029b5df16ba279a8d2afcb535e0bb6d16028fe1a52d3f0aa22992f2",
+        "durationMs": 3256.5625,
+        "speakerId": "Eddy (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "dev-recur-07-0",
+      "sessionId": "dev-future-0",
+      "audio": {
+        "path": "dev-recur-07-0.wav",
+        "sha256": "64e0c2d34eba8cdea99f57c984f6636b43d8c91e4f0024c116f6c103027aafc4",
+        "durationMs": 3310.375,
+        "speakerId": "Eddy (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "dev-recur-07-1",
+      "sessionId": "dev-future-1",
+      "audio": {
+        "path": "dev-recur-07-1.wav",
+        "sha256": "6555020325b7c86219347ed1e689516147462abc2a770e3d32fe9eb309c2b0b5",
+        "durationMs": 2856.5,
+        "speakerId": "Eddy (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "dev-recur-07-2",
+      "sessionId": "dev-future-2",
+      "audio": {
+        "path": "dev-recur-07-2.wav",
+        "sha256": "1fa5093bb24b92319d2d4542d3f1c6aecfc133b30f7482e401c6ae1e512136f5",
+        "durationMs": 2856.5625,
+        "speakerId": "Eddy (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "dev-recur-08-0",
+      "sessionId": "dev-future-0",
+      "audio": {
+        "path": "dev-recur-08-0.wav",
+        "sha256": "d082a455472a3378615926ce8718f128446df7f03f10c34fc6080f05efebf664",
+        "durationMs": 3022.375,
+        "speakerId": "Eddy (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "dev-recur-08-1",
+      "sessionId": "dev-future-1",
+      "audio": {
+        "path": "dev-recur-08-1.wav",
+        "sha256": "6908804e573c1bcec84472caeb6db96ebce15754fbede1462dfe6be810b2d242",
+        "durationMs": 3214.375,
+        "speakerId": "Eddy (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "dev-recur-08-2",
+      "sessionId": "dev-future-2",
+      "audio": {
+        "path": "dev-recur-08-2.wav",
+        "sha256": "33dc2532aa52d462063aed45a790ead04b923fc5a4889180f4defc67be0fe507",
+        "durationMs": 3992.5625,
+        "speakerId": "Eddy (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "dev-recur-09-0",
+      "sessionId": "dev-future-0",
+      "audio": {
+        "path": "dev-recur-09-0.wav",
+        "sha256": "d1529fee9602f36be605443a049db915f58d29db1d6fe062119c3ade399de40d",
+        "durationMs": 2974.375,
+        "speakerId": "Eddy (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "dev-recur-09-1",
+      "sessionId": "dev-future-1",
+      "audio": {
+        "path": "dev-recur-09-1.wav",
+        "sha256": "77b60ba197cd83f0b0597e79687beef047833aa616a7a6eb18204ca7d6d89e76",
+        "durationMs": 3166.375,
+        "speakerId": "Eddy (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "dev-recur-09-2",
+      "sessionId": "dev-future-2",
+      "audio": {
+        "path": "dev-recur-09-2.wav",
+        "sha256": "c8f8bc94ee32c568919e4b68f6baf78c7b58e24177681c59574e1a4d53735a64",
+        "durationMs": 3944.5625,
+        "speakerId": "Eddy (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "dev-recur-10-0",
+      "sessionId": "dev-future-0",
+      "audio": {
+        "path": "dev-recur-10-0.wav",
+        "sha256": "783b3d363c00c02a6f519a37ede9a32b30cd13f5d2230c0cdeae289130b6cfa3",
+        "durationMs": 2830.375,
+        "speakerId": "Eddy (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "dev-recur-10-1",
+      "sessionId": "dev-future-1",
+      "audio": {
+        "path": "dev-recur-10-1.wav",
+        "sha256": "a9b3cba5c65176ede1f243783ad29afe9ab6ab2e7a9af8756c120926db3b2f60",
+        "durationMs": 3022.375,
+        "speakerId": "Eddy (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "dev-recur-10-2",
+      "sessionId": "dev-future-2",
+      "audio": {
+        "path": "dev-recur-10-2.wav",
+        "sha256": "2782fbafe4275b8682ae8d22c6da0ebf6047c9fcfcb29957ccbad513ef94c421",
+        "durationMs": 3800.5,
+        "speakerId": "Eddy (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "dev-recur-11-0",
+      "sessionId": "dev-future-0",
+      "audio": {
+        "path": "dev-recur-11-0.wav",
+        "sha256": "d5a27fa51fabc6f46070f364247a11e741398d6be081210d4ba066052cab80f6",
+        "durationMs": 2670.375,
+        "speakerId": "Eddy (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "dev-recur-11-1",
+      "sessionId": "dev-future-1",
+      "audio": {
+        "path": "dev-recur-11-1.wav",
+        "sha256": "42b258a307274c72f2dd9adef640a7d4b3b9b5f132964402b708fca80f53d862",
+        "durationMs": 2846.375,
+        "speakerId": "Eddy (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "dev-recur-11-2",
+      "sessionId": "dev-future-2",
+      "audio": {
+        "path": "dev-recur-11-2.wav",
+        "sha256": "e464c9577a26dbd77d4dd162d2abf6f802747c85fc8f069aec9d8e976df92cd7",
+        "durationMs": 3640.5,
+        "speakerId": "Eddy (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "dev-recur-12-0",
+      "sessionId": "dev-future-0",
+      "audio": {
+        "path": "dev-recur-12-0.wav",
+        "sha256": "9f8dcb41494e3ad90732fbca2ec29d499c2b6ec4f8cb923e155fcb49ddbb22d6",
+        "durationMs": 2285.125,
+        "speakerId": "Karen"
+      }
+    },
+    {
+      "id": "dev-recur-12-1",
+      "sessionId": "dev-future-1",
+      "audio": {
+        "path": "dev-recur-12-1.wav",
+        "sha256": "c9cf00f9999fe22330c612262ce7ebfea4f85eb3905248425e848b4ba164e464",
+        "durationMs": 2340.75,
+        "speakerId": "Karen"
+      }
+    },
+    {
+      "id": "dev-recur-12-2",
+      "sessionId": "dev-future-2",
+      "audio": {
+        "path": "dev-recur-12-2.wav",
+        "sha256": "825eeddebaa292c2936b75987aba90eaaeca1ebac2c9425284b65c653bb5727b",
+        "durationMs": 2848.4375,
+        "speakerId": "Karen"
+      }
+    },
+    {
+      "id": "dev-recur-13-0",
+      "sessionId": "dev-future-0",
+      "audio": {
+        "path": "dev-recur-13-0.wav",
+        "sha256": "f7f671be3cd3a5f013f4db06090692336f504c8e4908a6dee40fcafc41945f04",
+        "durationMs": 2192.3125,
+        "speakerId": "Karen"
+      }
+    },
+    {
+      "id": "dev-recur-13-1",
+      "sessionId": "dev-future-1",
+      "audio": {
+        "path": "dev-recur-13-1.wav",
+        "sha256": "4f7f25e7542d724268cf1fc3fdb7780aa5bfd80ecd470601b8edd0e74ecf95e9",
+        "durationMs": 2247.875,
+        "speakerId": "Karen"
+      }
+    },
+    {
+      "id": "dev-recur-13-2",
+      "sessionId": "dev-future-2",
+      "audio": {
+        "path": "dev-recur-13-2.wav",
+        "sha256": "a64f958f9a729b4cfeea3d90da490e4d0a49b21c37b1137c0dba76285bd144a6",
+        "durationMs": 2744.0,
+        "speakerId": "Karen"
+      }
+    },
+    {
+      "id": "dev-recur-14-0",
+      "sessionId": "dev-future-0",
+      "audio": {
+        "path": "dev-recur-14-0.wav",
+        "sha256": "a652f8f410075bb238225c95f6aeb96cc93ad6606ce2336412a0c8dca7955a03",
+        "durationMs": 2250.375,
+        "speakerId": "Karen"
+      }
+    },
+    {
+      "id": "dev-recur-14-1",
+      "sessionId": "dev-future-1",
+      "audio": {
+        "path": "dev-recur-14-1.wav",
+        "sha256": "5aad8ff376cb9c4864fff397bf1f9272125a159973af496e8caf3bfd3740d199",
+        "durationMs": 2317.5625,
+        "speakerId": "Karen"
+      }
+    },
+    {
+      "id": "dev-recur-14-2",
+      "sessionId": "dev-future-2",
+      "audio": {
+        "path": "dev-recur-14-2.wav",
+        "sha256": "e601ede3a8bbf0e7beb586c1d0bdf2143d80cab9310002f766df49e6ad75d7a3",
+        "durationMs": 2790.4375,
+        "speakerId": "Karen"
+      }
+    },
+    {
+      "id": "dev-recur-15-0",
+      "sessionId": "dev-future-0",
+      "audio": {
+        "path": "dev-recur-15-0.wav",
+        "sha256": "b5d007e9e4fc8422d7e5780b3659867c4ea1ff0f2fad398789630bbb5e528bbb",
+        "durationMs": 2123.125,
+        "speakerId": "Karen"
+      }
+    },
+    {
+      "id": "dev-recur-15-1",
+      "sessionId": "dev-future-1",
+      "audio": {
+        "path": "dev-recur-15-1.wav",
+        "sha256": "6954a792c9d34f35a6faadf690ed77a81487321d9689341ee178d4255298b701",
+        "durationMs": 2166.625,
+        "speakerId": "Karen"
+      }
+    },
+    {
+      "id": "dev-recur-15-2",
+      "sessionId": "dev-future-2",
+      "audio": {
+        "path": "dev-recur-15-2.wav",
+        "sha256": "8705659b8f9e5eafa1dab91694fee18c0a48fa5b469d7ca074fb9f3a7b4d47a5",
+        "durationMs": 2651.125,
+        "speakerId": "Karen"
+      }
+    },
+    {
+      "id": "dev-control-00",
+      "sessionId": "dev-controls",
+      "audio": {
+        "path": "dev-control-00.wav",
+        "sha256": "bcc47c67ae64934ee6c52d86c5a8748c287ffd2d95431c3f0386d42a5ced83f8",
+        "durationMs": 3086.375,
+        "speakerId": "Eddy (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "dev-control-01",
+      "sessionId": "dev-controls",
+      "audio": {
+        "path": "dev-control-01.wav",
+        "sha256": "d02c2aa19bcd586db34202e70c49c32d703088f44b94befe2e016dbfa985fa5e",
+        "durationMs": 3294.625,
+        "speakerId": "Eddy (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "dev-control-02",
+      "sessionId": "dev-controls",
+      "audio": {
+        "path": "dev-control-02.wav",
+        "sha256": "d6e21fef69ac3ae6c63516c20631e31501ffcfa95eab1c55fa7f3fb4d190429d",
+        "durationMs": 2654.375,
+        "speakerId": "Eddy (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "dev-control-03",
+      "sessionId": "dev-controls",
+      "audio": {
+        "path": "dev-control-03.wav",
+        "sha256": "36885311e917ee0e4a568ff0f8a38fb1ae3a50c67bdf3aec3c7f37a33e3e1889",
+        "durationMs": 2766.375,
+        "speakerId": "Eddy (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "dev-control-04",
+      "sessionId": "dev-controls",
+      "audio": {
+        "path": "dev-control-04.wav",
+        "sha256": "5f410e7ece08fc41cd8695a4f2faf6bbb369db83ff0654540096531ef800248e",
+        "durationMs": 2824.625,
+        "speakerId": "Eddy (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "dev-control-05",
+      "sessionId": "dev-controls",
+      "audio": {
+        "path": "dev-control-05.wav",
+        "sha256": "b430fd120ac778a40e874bcd01468a0e6c95d228414ce6276bd941df3ae9dc8a",
+        "durationMs": 3064.5,
+        "speakerId": "Eddy (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "dev-control-06",
+      "sessionId": "dev-controls",
+      "audio": {
+        "path": "dev-control-06.wav",
+        "sha256": "4dbd9be9f042fb7016e5bd5d9cc2326b1fd630e09880fcd34013e92c7163d518",
+        "durationMs": 2302.8125,
+        "speakerId": "Karen"
+      }
+    },
+    {
+      "id": "dev-control-07",
+      "sessionId": "dev-controls",
+      "audio": {
+        "path": "dev-control-07.wav",
+        "sha256": "c89b4875fb4aa6f50dfc9e401481c2039f7ab8bff2085cbbb0e054bf104b35c6",
+        "durationMs": 2155.0625,
+        "speakerId": "Karen"
+      }
+    },
+    {
+      "id": "dev-control-08",
+      "sessionId": "dev-controls",
+      "audio": {
+        "path": "dev-control-08.wav",
+        "sha256": "24926e9f22de3b94ad4920ae9557ea478e5a5fa6c01a90c1009cfbf27bafe0bd",
+        "durationMs": 2524.625,
+        "speakerId": "Karen"
+      }
+    },
+    {
+      "id": "dev-control-09",
+      "sessionId": "dev-controls",
+      "audio": {
+        "path": "dev-control-09.wav",
+        "sha256": "0484dd63c1d16c3c4616cc1c9d4f45699945771355f97a361c6f0c175aa0e771",
+        "durationMs": 2180.0,
+        "speakerId": "Karen"
+      }
+    },
+    {
+      "id": "dev-control-10",
+      "sessionId": "dev-controls",
+      "audio": {
+        "path": "dev-control-10.wav",
+        "sha256": "c26e04fec2e6c060f046efda4fe0e44634b63096cd4ef37cb68970b93bdace6c",
+        "durationMs": 1850.0625,
+        "speakerId": "Karen"
+      }
+    },
+    {
+      "id": "dev-control-11",
+      "sessionId": "dev-controls",
+      "audio": {
+        "path": "dev-control-11.wav",
+        "sha256": "73283076ce061ce73481447282995f633ce041775874692fa8c2ddaef7a073d6",
+        "durationMs": 1980.875,
+        "speakerId": "Karen"
+      }
+    },
+    {
+      "id": "dev-unlearned-00-0",
+      "sessionId": "dev-unlearned",
+      "audio": {
+        "path": "dev-unlearned-00-0.wav",
+        "sha256": "027557017fcf25dbf263c07a17a8db2549317d8ae9dcb89326a1213c2bc0dd4e",
+        "durationMs": 3256.5,
+        "speakerId": "Eddy (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "dev-unlearned-00-1",
+      "sessionId": "dev-unlearned",
+      "audio": {
+        "path": "dev-unlearned-00-1.wav",
+        "sha256": "f82b187d394df60fc61cce291a3768823ac5de0d17754e126058ad10c1c18e1d",
+        "durationMs": 3118.375,
+        "speakerId": "Eddy (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "dev-unlearned-01-0",
+      "sessionId": "dev-unlearned",
+      "audio": {
+        "path": "dev-unlearned-01-0.wav",
+        "sha256": "692bbd247fa166aa02b74bd1f4b588e2767d7111401c304351e36c9c488e79e1",
+        "durationMs": 3112.5,
+        "speakerId": "Eddy (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "dev-unlearned-01-1",
+      "sessionId": "dev-unlearned",
+      "audio": {
+        "path": "dev-unlearned-01-1.wav",
+        "sha256": "698a18c1588940f36d84ea56e10af0ab718b1b589dae42cd4850ed0264fac438",
+        "durationMs": 2958.375,
+        "speakerId": "Eddy (中文（中国大陆）)"
+      }
+    },
+    {
+      "id": "dev-silence",
+      "sessionId": "dev-silence",
+      "audio": {
+        "path": "silence.wav",
+        "sha256": "20c51a2ccfac3b8373f678d9f14b68c2e3ffc33dac17956b738f9241e4c0725b",
+        "durationMs": 1500.0,
+        "speakerId": "dev-generated-nonspeech"
+      }
+    },
+    {
+      "id": "dev-noise",
+      "sessionId": "dev-noise",
+      "audio": {
+        "path": "noise.wav",
+        "sha256": "6c8625694a351818694af453b7451d2dd891407effe70cf248e319222440e16b",
+        "durationMs": 1500.0,
+        "speakerId": "dev-generated-nonspeech"
+      }
+    }
+  ]
+}

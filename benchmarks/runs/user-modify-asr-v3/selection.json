@@ -1,0 +1,235 @@
+{
+  "status": "frozen_before_test_teaching_and_recognition",
+  "selectedArm": "v2_hint",
+  "eligibleArms": [
+    "native_vocab",
+    "competing_vocab"
+  ],
+  "sourceHashes": {
+    "benchmarks/reproduction/user-modify-asr-v3/run.py": "3da0cd1db18b85411911e7431ff227f65cf4800a5c386ad314bbabbd7ebd69b5",
+    "benchmarks/reproduction/user-modify-asr-v3/common.py": "590c60645de60902d6c631b63f0407ae6a085a6df5d0e967d24facf693bedbad",
+    "benchmarks/reproduction/user-modify-asr-v3/retrieval.py": "01e5ef01f1a2f891c4a966107e58c8eae0b65ad157ddd0eabb32804d2456126e",
+    "benchmarks/reproduction/user-modify-asr-v2/run.py": "d738e5ff5015b7527f5502f90cc3b6abc72f4e9b2c4b205f4a54e1c4c66cef2f",
+    "benchmarks/reproduction/user-modify-asr-v2/policy.py": "8110104c7a61ded6903e5b6dbc7ec6f672223d0818edcad170095ea75c92c2b2",
+    "benchmarks/reproduction/user-modify-asr-v1/run.py": "b703f735d500f8dd29427cd5d7a525c7aa6ed9bb0f278a03dacaa43ebb01adf0",
+    "apps/desktop/cmd/arion-memory-loop/main.go": "15c3a4a9d93fdcf2deb7be846f7072bf78b8ae42f4a3f4720eed59f41f0e29c0",
+    "apps/desktop/infrastructure/vocabulary/vocabulary.go": "c2d9a64afa9b0f881fc6fb22589deae3337e17bdbdc5a276da87bf4bf3101043",
+    "packages/core/domain/learning.go": "fc63e28c40559c01f451686074ede64329d1d2818074f46bedc8c329b97400ed",
+    "packages/core/domain/memory.go": "2c4cf5ebf22b1bad9539dfcd204e1ff66cda4c3c1aa34f414d990f4b9321faa5"
+  },
+  "configSha256": "959be3cc79efb7bde737812fcf8c46ce620282d3a1fa32be84da8343490a49de",
+  "initialFreezeSha256": "6d0d3c9deda4017b59210edddfa58bd7f6dbd61a3d9430ca3f31648ed41a6cb7",
+  "selectionCriteriaSha256": "220b718e56a9558a2028e92edfab12f7fd530a033673678c40fc85e3f0a9ddbe",
+  "devSummarySha256": "fb64cecda3a64417d65bdca65b606804f1486c172c8fda3dcd8bf9f692b28668",
+  "reason": "Retained previous policy",
+  "devMetrics": {
+    "none": {
+      "primaryEntityHits": 6,
+      "primaryEntityCases": 48,
+      "storedTargetCases": 39,
+      "storedTargetHits": 3,
+      "baselineEntityMisses": 42,
+      "baselineMissesRecovered": 0,
+      "baselineEntityHitsLost": 0,
+      "retrievalHitsAmongBaselineMisses": 0,
+      "newWrongEntityCases": 0,
+      "baselineCorrectCases": 18,
+      "baselineCorrectRegressed": 0,
+      "controlCases": 16,
+      "controlWorsened": 0,
+      "naturalCases": 0,
+      "naturalWorsened": 0,
+      "improved": 0,
+      "worsened": 0,
+      "lexicalErrors": 120,
+      "nonspeechEmissions": 0,
+      "truncations": 0,
+      "redecodeCases": 0,
+      "rates": {
+        "zh": {
+          "errors": 25,
+          "referenceUnits": 231,
+          "rate": 0.10822510822510822
+        },
+        "en": {
+          "errors": 6,
+          "referenceUnits": 143,
+          "rate": 0.04195804195804196
+        },
+        "mixed": {
+          "errors": 89,
+          "referenceUnits": 342,
+          "rate": 0.260233918128655
+        }
+      },
+      "pipelineMs": {
+        "count": 66,
+        "p50": 684.2932918807492,
+        "p95": 986.0742391902022,
+        "p99": 1179.088449967092
+      },
+      "routedExtraMs": {
+        "count": 0,
+        "p50": null,
+        "p95": null,
+        "p99": null
+      }
+    },
+    "v2_hint": {
+      "primaryEntityHits": 23,
+      "primaryEntityCases": 48,
+      "storedTargetCases": 39,
+      "storedTargetHits": 19,
+      "baselineEntityMisses": 42,
+      "baselineMissesRecovered": 17,
+      "baselineEntityHitsLost": 0,
+      "retrievalHitsAmongBaselineMisses": 31,
+      "newWrongEntityCases": 0,
+      "baselineCorrectCases": 18,
+      "baselineCorrectRegressed": 0,
+      "controlCases": 16,
+      "controlWorsened": 0,
+      "naturalCases": 0,
+      "naturalWorsened": 0,
+      "improved": 18,
+      "worsened": 0,
+      "lexicalErrors": 83,
+      "nonspeechEmissions": 0,
+      "truncations": 0,
+      "redecodeCases": 38,
+      "rates": {
+        "zh": {
+          "errors": 19,
+          "referenceUnits": 231,
+          "rate": 0.08225108225108226
+        },
+        "en": {
+          "errors": 0,
+          "referenceUnits": 143,
+          "rate": 0
+        },
+        "mixed": {
+          "errors": 64,
+          "referenceUnits": 342,
+          "rate": 0.1871345029239766
+        }
+      },
+      "pipelineMs": {
+        "count": 66,
+        "p50": 1133.0458340235054,
+        "p95": 1622.6576042245142,
+        "p99": 1787.9690860514527
+      },
+      "routedExtraMs": {
+        "count": 38,
+        "p50": 685.2983954595402,
+        "p95": 878.4421366406605,
+        "p99": 904.1749099851586
+      }
+    },
+    "native_vocab": {
+      "primaryEntityHits": 18,
+      "primaryEntityCases": 48,
+      "storedTargetCases": 39,
+      "storedTargetHits": 14,
+      "baselineEntityMisses": 42,
+      "baselineMissesRecovered": 12,
+      "baselineEntityHitsLost": 0,
+      "retrievalHitsAmongBaselineMisses": 31,
+      "newWrongEntityCases": 0,
+      "baselineCorrectCases": 18,
+      "baselineCorrectRegressed": 0,
+      "controlCases": 16,
+      "controlWorsened": 0,
+      "naturalCases": 0,
+      "naturalWorsened": 0,
+      "improved": 13,
+      "worsened": 0,
+      "lexicalErrors": 93,
+      "nonspeechEmissions": 0,
+      "truncations": 0,
+      "redecodeCases": 38,
+      "rates": {
+        "zh": {
+          "errors": 21,
+          "referenceUnits": 231,
+          "rate": 0.09090909090909091
+        },
+        "en": {
+          "errors": 1,
+          "referenceUnits": 143,
+          "rate": 0.006993006993006993
+        },
+        "mixed": {
+          "errors": 71,
+          "referenceUnits": 342,
+          "rate": 0.20760233918128654
+        }
+      },
+      "pipelineMs": {
+        "count": 66,
+        "p50": 1106.184292002581,
+        "p95": 1662.1556465979666,
+        "p99": 2111.708767060185
+      },
+      "routedExtraMs": {
+        "count": 38,
+        "p50": 703.4348336746916,
+        "p95": 910.5498963850548,
+        "p99": 1583.7532596150436
+      }
+    },
+    "competing_vocab": {
+      "primaryEntityHits": 19,
+      "primaryEntityCases": 48,
+      "storedTargetCases": 39,
+      "storedTargetHits": 15,
+      "baselineEntityMisses": 42,
+      "baselineMissesRecovered": 13,
+      "baselineEntityHitsLost": 0,
+      "retrievalHitsAmongBaselineMisses": 32,
+      "newWrongEntityCases": 0,
+      "baselineCorrectCases": 18,
+      "baselineCorrectRegressed": 0,
+      "controlCases": 16,
+      "controlWorsened": 0,
+      "naturalCases": 0,
+      "naturalWorsened": 0,
+      "improved": 14,
+      "worsened": 0,
+      "lexicalErrors": 91,
+      "nonspeechEmissions": 0,
+      "truncations": 0,
+      "redecodeCases": 40,
+      "rates": {
+        "zh": {
+          "errors": 19,
+          "referenceUnits": 231,
+          "rate": 0.08225108225108226
+        },
+        "en": {
+          "errors": 1,
+          "referenceUnits": 143,
+          "rate": 0.006993006993006993
+        },
+        "mixed": {
+          "errors": 71,
+          "referenceUnits": 342,
+          "rate": 0.20760233918128654
+        }
+      },
+      "pipelineMs": {
+        "count": 66,
+        "p50": 1119.8018544819206,
+        "p95": 1702.797218458727,
+        "p99": 1998.449314560274
+      },
+      "routedExtraMs": {
+        "count": 40,
+        "p50": 690.6976666068658,
+        "p95": 921.7768189148044,
+        "p99": 1202.263806776609
+      }
+    }
+  }
+}

@@ -42,6 +42,14 @@ func TestExtractCorrections(t *testing.T) {
 		{"whole insertion replaced", FieldEdit{Inserted: "在", Baseline: "在", Settled: "再"}, EditTooLarge, nil},
 		{"single han widened", FieldEdit{Inserted: "收到请回付", Baseline: "收到请回付", Settled: "收到请回复"},
 			EditLearned, []Replacement{{From: "回付", To: "回复"}}},
+		{"word ending fixed", FieldEdit{Inserted: "公示需要修改", Baseline: "公示需要修改", Settled: "公式需要修改"},
+			EditLearned, []Replacement{{From: "公示", To: "公式"}}},
+		{"word before different verb", FieldEdit{Inserted: "这个公示已经更新", Baseline: "这个公示已经更新", Settled: "这个公式已经更新"},
+			EditLearned, []Replacement{{From: "公示", To: "公式"}}},
+		{"word before particle", FieldEdit{Inserted: "这是全免的衣服", Baseline: "这是全免的衣服", Settled: "这是全棉的衣服"},
+			EditLearned, []Replacement{{From: "全免", To: "全棉"}}},
+		{"question phrase", FieldEdit{Inserted: "codex能爆吗", Baseline: "codex能爆吗", Settled: "codex能报吗"},
+			EditLearned, []Replacement{{From: "爆吗", To: "报吗"}}},
 		{"exempt homophone", FieldEdit{Inserted: "我们在来一次", Baseline: "我们在来一次", Settled: "我们再来一次"}, EditNoPair, nil},
 		{"long phrase", FieldEdit{Inserted: "please send it", Baseline: "please send it", Settled: "please forward the quarterly planning spreadsheet it"}, EditTooLarge, nil},
 		{"identifier", FieldEdit{Inserted: "call get user by id first", Baseline: "call get user by id first", Settled: "call getUserById first"},
@@ -52,7 +60,7 @@ func TestExtractCorrections(t *testing.T) {
 		{"short rewrite", FieldEdit{Inserted: "我觉得这个方案还可以再改改", Baseline: "我觉得这个方案还可以再改改", Settled: "方案通过"}, EditTooLarge, nil},
 	}
 	for _, tc := range cases {
-		got := ExtractCorrections(tc.edit)
+		got := ExtractCorrections(tc.edit, learningTestSegmenter{})
 		if got.Verdict != tc.verdict || !samePairs(got.Pairs, tc.pairs) {
 			t.Errorf("%s: got %s %v want %s %v", tc.name, got.Verdict, got.Pairs, tc.verdict, tc.pairs)
 		}
@@ -140,6 +148,54 @@ func TestPruneMemoryKeepsUserEntries(t *testing.T) {
 	for _, e := range got {
 		if e.ID == "old" {
 			t.Fatal("expired entry kept")
+		}
+	}
+}
+
+// Linguistic boundaries are supplied by an adapter; domain tests provide
+// deterministic word fixtures. Native segmentation is tested in wordseg.
+type learningTestSegmenter struct{}
+
+func (learningTestSegmenter) Words(text string) ([]WordSpan, error) {
+	var spans []WordSpan
+	position := 0
+	units := editUnits(text)
+	for i := 0; i < len(units); {
+		word := units[i]
+		count := 1
+		for _, known := range []string{"纵火", "送火", "小王", "晓王", "回复", "回付", "公式", "公示", "全棉", "全免", "数据库", "模型"} {
+			if strings.HasPrefix(strings.Join(units[i:], ""), known) {
+				word = known
+				count = len([]rune(known))
+				break
+			}
+		}
+		end := position + len([]rune(word))
+		spans = append(spans, WordSpan{position, end})
+		position = end
+		i += count
+	}
+	return spans, nil
+}
+
+func TestChangesInsideOneWordMerge(t *testing.T) {
+	got := ExtractCorrections(FieldEdit{Inserted: "这个术据酷需要迁移", Baseline: "这个术据酷需要迁移", Settled: "这个数据库需要迁移"}, learningTestSegmenter{})
+	want := []Replacement{{From: "术据酷", To: "数据库"}}
+	if got.Verdict != EditLearned || !samePairs(got.Pairs, want) {
+		t.Fatalf("word split into separate memories: %+v", got)
+	}
+}
+
+type invalidTestSegmenter struct{ spans []WordSpan }
+
+func (s invalidTestSegmenter) Words(string) ([]WordSpan, error) { return s.spans, nil }
+
+func TestMissingOrInvalidSegmentationNeverGuesses(t *testing.T) {
+	edit := FieldEdit{Inserted: "公示需要修改", Baseline: "公示需要修改", Settled: "公式需要修改"}
+	for _, segmenter := range []WordSegmenter{nil, invalidTestSegmenter{}, invalidTestSegmenter{[]WordSpan{{0, 99}}}, invalidTestSegmenter{[]WordSpan{{0, 3}, {2, 4}}}} {
+		got := ExtractCorrections(edit, segmenter)
+		if got.Verdict != EditWordsUnavailable || len(got.Pairs) != 0 {
+			t.Fatalf("guessed despite invalid boundaries: %+v", got)
 		}
 	}
 }

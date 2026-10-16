@@ -1,0 +1,90 @@
+{
+  "product": {
+    "exactMatches": 8,
+    "cases": 12,
+    "rawExactMatches": 8,
+    "branchMatches": 3,
+    "branchCases": 6,
+    "controlFailures": 1,
+    "controlCases": 6,
+    "correctInputRegressions": 2,
+    "correctInputCases": 9,
+    "questionViolations": 0,
+    "protectedViolations": 0,
+    "validatorRejections": 0,
+    "truncations": 0,
+    "generationMs": {
+      "count": 12,
+      "p50": 6020.862333592959,
+      "p95": 9279.402787308209,
+      "p99": 9742.107923789881
+    },
+    "lexicalErrors": 4
+  },
+  "sections": {
+    "exactMatches": 8,
+    "cases": 12,
+    "rawExactMatches": 7,
+    "branchMatches": 3,
+    "branchCases": 6,
+    "controlFailures": 1,
+    "controlCases": 6,
+    "correctInputRegressions": 1,
+    "correctInputCases": 9,
+    "questionViolations": 0,
+    "protectedViolations": 0,
+    "validatorRejections": 1,
+    "truncations": 0,
+    "generationMs": {
+      "count": 12,
+      "p50": 10724.69289554283,
+      "p95": 16514.3821731559,
+      "p99": 17635.7912346418
+    },
+    "lexicalErrors": 5
+  },
+  "semantic_context": {
+    "exactMatches": 8,
+    "cases": 12,
+    "rawExactMatches": 4,
+    "branchMatches": 3,
+    "branchCases": 6,
+    "controlFailures": 1,
+    "controlCases": 6,
+    "correctInputRegressions": 1,
+    "correctInputCases": 9,
+    "questionViolations": 0,
+    "protectedViolations": 0,
+    "validatorRejections": 4,
+    "truncations": 0,
+    "generationMs": {
+      "count": 12,
+      "p50": 7836.090562981553,
+      "p95": 13562.125703552734,
+      "p99": 15484.073973493652
+    },
+    "lexicalErrors": 4
+  },
+  "phonetic_context": {
+    "exactMatches": 9,
+    "cases": 12,
+    "rawExactMatches": 4,
+    "branchMatches": 3,
+    "branchCases": 6,
+    "controlFailures": 0,
+    "controlCases": 6,
+    "correctInputRegressions": 0,
+    "correctInputCases": 9,
+    "questionViolations": 0,
+    "protectedViolations": 0,
+    "validatorRejections": 5,
+    "truncations": 0,
+    "generationMs": {
+      "count": 12,
+      "p50": 7357.546083047055,
+      "p95": 8703.081998357084,
+      "p99": 9252.266733411234
+    },
+    "lexicalErrors": 3
+  }
+}

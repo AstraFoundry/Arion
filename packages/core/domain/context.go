@@ -6,7 +6,7 @@ import (
 )
 
 // RewriteContext is text around a dictation that a rewrite may consult to
-// spell names and terms or to continue the surrounding text. It comes from
+// resolve plausible recognition errors or continue the surrounding text. It comes from
 // other applications and is data, never instructions (009).
 type RewriteContext struct {
 	// Screen is text recognized in the focused window.
@@ -21,7 +21,6 @@ type RewriteContext struct {
 
 // Context bounds in Unicode scalar values; history keeps the newest items.
 const (
-	MaxScreenContext  = 1200
 	MaxCursorContext  = 200
 	MaxHistoryItems   = 5
 	MaxHistoryContext = 200
@@ -33,11 +32,12 @@ var contextTags = []string{"<screen>", "</screen>", "<before_cursor>", "</before
 	"<history>", "</history>", "<dictation>", "</dictation>"}
 
 // Bounded returns c sanitized and cut to the context bounds: the end of the
-// text before the cursor, the start of the text after it, the start of the
-// screen text and the newest history items.
+// text before the cursor, the start of the text after it and the newest
+// history items. Screen text is preserved in full after sanitization; the
+// inference worker rejects requests exceeding its token budget explicitly.
 func (c RewriteContext) Bounded() RewriteContext {
 	out := RewriteContext{
-		Screen: head(sanitizeContext(c.Screen), MaxScreenContext),
+		Screen: sanitizeContext(c.Screen),
 		Before: tail(sanitizeContext(c.Before), MaxCursorContext),
 		After:  head(sanitizeContext(c.After), MaxCursorContext),
 	}

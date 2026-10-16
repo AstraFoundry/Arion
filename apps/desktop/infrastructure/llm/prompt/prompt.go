@@ -45,8 +45,8 @@ func Live() Template {
 
 // Context extends Live for requests that carry context sections: its system
 // prompt adds the context rules and its demonstrations follow Live's. The
-// product sends context as terms instead (ADR 013); the benchmark's
-// -context-as prompt mode uses this template.
+// product uses this template for both previews and final rewrites whenever
+// session context is available (ADR 013).
 func Context() Template {
 	var extra struct {
 		Version  string    `json:"version"`

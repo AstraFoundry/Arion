@@ -17,7 +17,7 @@ Arion's rewrite saw only the dictation. 009 required a separate opt-in for scree
   - Screen content: text recognized by the OS in the focused window only. macOS uses ScreenCaptureKit and Vision at the accurate level and needs Screen Recording access. Windows uses `PrintWindow` and `Windows.Media.Ocr`.
   - Recent dictations: the last five inserted in the same site or app, kept for 30 minutes in memory.
 - **Bounds and exclusions.**
-  - The window image is never stored. Recognized text is cut to 1,200 characters. Context lives in session memory and is never logged or synced.
+  - The window image is never stored. All recognized text is retained after sanitization; the inference worker explicitly rejects requests exceeding its token budget. Context lives in session memory and is never logged or synced.
   - Secure fields read nothing, and a built-in list of password managers is never read.
   - Turning history off clears it.
 - **Data, not instructions.** Context is sanitized of prompt markers and tags, placed in its own sections before the dictation, and described to the model as reference data. The validator accepts spellings supported by the context but rejects:
@@ -29,7 +29,7 @@ Arion's rewrite saw only the dictation. 009 required a separate opt-in for scree
 ## Consequences
 
 - Everything stays on the device. Unlike Typeless, no context reaches a server, and PRV-01 (offline, no content egress) is unchanged.
-- **Delivery as terms.** The model receives only the spellings `domain.ContextTerms` extracts (sender and quoted names, Latin names, identifiers, codes) in the prompt's terms. On the development split this matched or beat context sections, at lower latency and without a second prompt prefix; the `context-v1` section template remains for the benchmark.
+- **Delivery as context sections.** At the user's request, both preview and final rewrite requests now deliver full sanitized OCR plus cursor/history as separate data sections. `context-v2+live-v2` permits plausible ordinary-word disambiguation from the current discussion while preserving intent and questions. Approved vocabulary remains in terms. This supersedes the earlier terms-only delivery and 1,200-character OCR cutoff; long requests fail the worker token budget explicitly. Historical benchmark results below describe the earlier templates, not an accuracy or latency guarantee for this change.
 - **Measured effect** ([report](../../benchmarks/results/context-ablation-v1/README.md)): with Qwen3 4B, all sources raise the held-out context set from 9 to 16 of 30 with no worsened case, almost entirely from screen text. The shipped Qwen3 1.7B ignores context (9 of 30 with or without it). The benefit therefore needs the larger model; with 1.7B the context costs recognition time and changes little.
 - Reading the screen costs a capture plus about 0.1–0.3 s of recognition at session start, which runs in parallel with speaking. The final rewrite waits at most 1.5 s for it.
 - On by default means a person who never opens Settings gets screen and field text read whenever polishing is on. The switches and the Screen Recording grant are the controls; macOS also shows its own recording indicator.
@@ -40,4 +40,4 @@ Arion's rewrite saw only the dictation. 009 required a separate opt-in for scree
 - **Accessibility-tree visible text** (Typeless): no Screen Recording grant, but many apps (Electron, canvas editors, terminals) expose little text, and walking large trees is slow.
 - **Local VLM on the screenshot:** not run; weights were not downloaded for this study.
 - **Context as ASR hot words** (Doubao): needs a biasing-capable recognizer and audio fixtures; a candidate follow-up.
-- **Context sections in the prompt** (`context-v1`): the same 16 held-out passes as terms for 4B, but slower at the median (1.84 s against 1.33 s in the same batch) and a prefix swap per switch; kept as a benchmark mode.
+- **Earlier context sections** (`context-v1`): the same 16 held-out passes as terms for 4B, but slower at the median (1.84 s against 1.33 s in the same batch) and a prefix swap per switch. This historical result motivated the earlier terms-only policy; the current decision prioritizes retaining discussion semantics.

@@ -1,0 +1,7 @@
+{
+  "split": "dev",
+  "speakerId": "tts-Daniel",
+  "sessionId": "warmup-only",
+  "audio": "warmup.wav",
+  "sha256": "64e3d7b59c72ffd7a6a16ce35033566145ab3241e732f7f0f1b97abc752487d5"
+}

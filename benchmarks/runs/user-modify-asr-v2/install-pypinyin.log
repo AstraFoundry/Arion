@@ -1,0 +1,4 @@
+Using Python 3.12.9 environment at: .workspace/user-modify-asr-venv
+Resolved 1 package in 2.59s
+Installed 1 package in 27ms
+ + pypinyin==0.55.0

@@ -1,0 +1,24 @@
+[
+  {
+    "file": "qwen.py",
+    "url": "https://raw.githubusercontent.com/QwenLM/Qwen3-ASR/7c6daf77a2421100f5fb066495372c00129d39ff/qwen_asr/inference/qwen3_asr.py",
+    "sha256": "0b1770f8e907b6c5a0a1e9ebce037cb63f48555f3cd15eaf6ea2078e9df41a7b",
+    "revision": "7c6daf77a2421100f5fb066495372c00129d39ff"
+  },
+  {
+    "file": "mlx.py",
+    "url": "https://raw.githubusercontent.com/Blaizzy/mlx-audio/dad2087f790dfe96b07d5aac1405db4b578b411f/mlx_audio/stt/models/qwen3_asr/qwen3_asr.py",
+    "sha256": "661e6e930842dcd0cd509a75964f4b0fcf4d935a52011062d2978f050bc6b38d",
+    "revision": "dad2087f790dfe96b07d5aac1405db4b578b411f"
+  },
+  {
+    "file": "sherpa-v1.13.8.cc",
+    "url": "https://raw.githubusercontent.com/k2-fsa/sherpa-onnx/v1.13.8/sherpa-onnx/csrc/offline-recognizer-qwen3-asr-impl.cc",
+    "sha256": "d9daad0eafcd066fa088eb06d858ecfd394fef35ce1e6f595ab934e6e5525824"
+  },
+  {
+    "file": "sherpa-config-v1.13.8.h",
+    "url": "https://raw.githubusercontent.com/k2-fsa/sherpa-onnx/v1.13.8/sherpa-onnx/csrc/offline-qwen3-asr-model-config.h",
+    "sha256": "fd62ade1d1c32b75429b27ccd103d00e0c47daf728e9d841c82f96a5180aee49"
+  }
+]

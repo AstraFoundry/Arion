@@ -1,0 +1,297 @@
+{
+  "status": "frozen_before_inference",
+  "kind": "developer_authored_synthetic_audio_diagnostic",
+  "files": {
+    "safari-b.aiff": {
+      "sha256": "10111f58ca505988bfa03fd11ead1e7b210dfa3c00ebf8375ed20d7e9e0d2cb7",
+      "bytes": 132836
+    },
+    "feishu-a.aiff": {
+      "sha256": "4105ca303685fe94b26250c6b830bfaba7643a06f8cb9a14005f796e14c21a0c",
+      "bytes": 112638
+    },
+    "model-metadata.json": {
+      "sha256": "2a76ad1d017c35e7ed20468efbf3517649519985895cf0dd674345465f139c2c",
+      "bytes": 1396
+    },
+    "ordinary-en.aiff": {
+      "sha256": "fee789403f1ace9447873f410a072f798c1a1d4fdc63f8978656a5067ab95b1d",
+      "bytes": 95658
+    },
+    "corpus.json": {
+      "sha256": "68bb9e19a832b445b1ca59a43c08175f7fd03165fce0a077adfd31afaee90a99",
+      "bytes": 18080
+    },
+    "sql-a.aiff": {
+      "sha256": "a47c884ab2acab1ec4c0d36b9e25f886c2ea107c3e7998177d58b3bcaa0b9af1",
+      "bytes": 106296
+    },
+    "expired-a.wav": {
+      "sha256": "0c4cdaf7a26836e3fa991002c6df593eeab5253fb5f9d86eacac0feeecdef71b",
+      "bytes": 92672
+    },
+    "sequel-a.wav": {
+      "sha256": "254207e67f3746b6906591f8dbfa2e212ef287c191972bb37a9282ab8d570a05",
+      "bytes": 72168
+    },
+    "expired-b.wav": {
+      "sha256": "5267662f91cbde9859f08228d33329625bb01349fe43ee91cfd1e6dc8ed82728",
+      "bytes": 74920
+    },
+    "arion-a.aiff": {
+      "sha256": "c3e09c6457744a2c28e45e0f2c08c9f08877f1cdb432d6c6efe8aa50e47775ec",
+      "bytes": 108772
+    },
+    "sofa-b.aiff": {
+      "sha256": "ebc2cd563a4cf0f1fada648254bcfb2145c703ca381ac73e561d50d95f94e711",
+      "bytes": 94890
+    },
+    "sequel-b.wav": {
+      "sha256": "905825bec25ae3ac9b9eea3c59883f9012492d91e5cf5854907b1a0a806dd117",
+      "bytes": 63182
+    },
+    "reverse-b.wav": {
+      "sha256": "15f1b2840065c1f718e001be10c3a7acbfac038f3589505bf9e90441ce6ea592",
+      "bytes": 74456
+    },
+    "config.json": {
+      "sha256": "59f2cc1d2188f8fc7ed692b210289017945b275c418f675e2a940f7b0557bff2",
+      "bytes": 589
+    },
+    "sequel-a.aiff": {
+      "sha256": "1397d7843a85e51c6a695597e200199548c61933488704e9302bf61089793ed3",
+      "bytes": 103444
+    },
+    "kubernetes-b.aiff": {
+      "sha256": "9389130d08b2d6add63dc57898b538ffbe0d3595d5ccfda6d4a94b161368eb54",
+      "bytes": 138862
+    },
+    "reverse-a.wav": {
+      "sha256": "00772c18ff81a01d74bdaf882c8dce69b012c8adbdae0f80950bf952e818a75c",
+      "bytes": 60760
+    },
+    "memory.json": {
+      "sha256": "919a3284bbe9dddb61026980c1c7f511ccfb1ef3894e72519028fe9bc90beab9",
+      "bytes": 3676
+    },
+    "mygo-a.aiff": {
+      "sha256": "fb08ed77054a030739079bc93ff14bf6fce10d9e862c4e69f31193f63f5414f3",
+      "bytes": 110020
+    },
+    "openai-a.aiff": {
+      "sha256": "017762fdbdd620826768bdee5ed005ed9d3e337c28663c4a73c83b765a54ccca",
+      "bytes": 111722
+    },
+    "sql-b.wav": {
+      "sha256": "08c68a3603a5a475594923d3cd7e3841058a54860f91ea85d116818b9173c695",
+      "bytes": 55916
+    },
+    "github-a.wav": {
+      "sha256": "720e169a90e7e85a78b4e3d75887da5e2f614765d75a3929062352e7db31626f",
+      "bytes": 72524
+    },
+    "redis-b.aiff": {
+      "sha256": "362bd1d1805394f65b9a785ea11416fa001426d4ee88bbbe221269b7e44796e9",
+      "bytes": 100982
+    },
+    "github-b.aiff": {
+      "sha256": "734461a307191a64247b645dd5ba143cdfaf5556f069f1edbffcf3b912800880",
+      "bytes": 140004
+    },
+    "ordinary-zh.aiff": {
+      "sha256": "8a940d85794ef97d9dda1e399678db5677f22906ba44b3d8b55fc41b9de4143f",
+      "bytes": 132272
+    },
+    "codex-b.aiff": {
+      "sha256": "44a52343bcd676b926aed37077b9d51faac53b8f4ee120f56abd7f5a8d7c9f7c",
+      "bytes": 136298
+    },
+    "sql-a.wav": {
+      "sha256": "b81d8d20b9c063d963e390875181007f3f76d2492e43c0788650d4e40cd62536",
+      "bytes": 74238
+    },
+    "expired-a.aiff": {
+      "sha256": "355fc738b01b878e7a16e0d902173133cab07dfc9ff680572fea87eec2585276",
+      "bytes": 131702
+    },
+    "reverse-a.aiff": {
+      "sha256": "13c89a7ce9d5b334fa26279c26aa1114ff6137b64bd76a96d7ed5f6cfa8bd7d2",
+      "bytes": 87722
+    },
+    "github-b.wav": {
+      "sha256": "84ad4321d8207c0c940df074a3c127db74d0379cef746427b45a56af7d773a6e",
+      "bytes": 98698
+    },
+    "warmup.aiff": {
+      "sha256": "4deb6ecb33f9359d0b333949ca2d52447894933d95f27e07f5128154f640c151",
+      "bytes": 120726
+    },
+    "redis-a.aiff": {
+      "sha256": "2152ae92a42e77789a785f49e8b70556ff88803fcf8ebb6d8f946469cf82ded4",
+      "bytes": 96234
+    },
+    "github-a.aiff": {
+      "sha256": "79f096200ecca0988ff1164a6fe2bfd02a9da8bba0750ff877880c2d769387fa",
+      "bytes": 103934
+    },
+    "codex-b.wav": {
+      "sha256": "4f00e8f3a6f8ce56a83269dcda523f416155be11003957bbadd2d96bf9170862",
+      "bytes": 96008
+    },
+    "codex-a.aiff": {
+      "sha256": "a1edde0f58cd3740b9d5b3001bf7d2a184867ecddc4bcc2937fdcda44e551f43",
+      "bytes": 119444
+    },
+    "ordinary-en.wav": {
+      "sha256": "ebc47292714395bcdc4c832f211acc5149ddcc8c58e4f06e0c4d220efff1e395",
+      "bytes": 66518
+    },
+    "reverse-b.aiff": {
+      "sha256": "9c324c6b62f0155d2455324992c766ee05c53c51db0749d8cff75a7003d12d1a",
+      "bytes": 106596
+    },
+    "expired-b.aiff": {
+      "sha256": "c2e61d95a976bf6263df13bbf6d98c82ee276ccda6ba5005cba2c4fbcd80d78d",
+      "bytes": 107236
+    },
+    "feishu-b.wav": {
+      "sha256": "82dfb123abbd9875df9a97b6a7e669ad994b75101db5aa12c8495ad7f83b4e81",
+      "bytes": 75250
+    },
+    "mygo-b.aiff": {
+      "sha256": "f31f421900c9e270536d999319b79b76df4a904f3446438b4f8fc79cdf989582",
+      "bytes": 108260
+    },
+    "openai-b.aiff": {
+      "sha256": "8742f170f8869cd081f516558fdcc2e8b8e38083fbda4ac0749b5dc0c0aab17c",
+      "bytes": 112554
+    },
+    "codex-a.wav": {
+      "sha256": "5423ffc57e83bd5e00a53137e64033b0e7c30889af2cf85ee28eb9528941891d",
+      "bytes": 83778
+    },
+    "feishu-a.wav": {
+      "sha256": "f32e90811d559bb493073ad596dc7118c61056c6e90396c258d06d3954eb42c0",
+      "bytes": 78840
+    },
+    "redis-a.wav": {
+      "sha256": "66e5633cd432d88269579bb64bafba33f5918b60ecb9fc5061d2d6999ab51a9c",
+      "bytes": 66936
+    },
+    "kubernetes-a.aiff": {
+      "sha256": "8389ca51999167f6ad7a3289b964f7f1fda03eafcee50f3f2bf9d47d8623cb95",
+      "bytes": 111102
+    },
+    "warmup.json": {
+      "sha256": "910b961edccb1cc064aa4cc55a8967fb58e79f7d8b5e0bbf378095de847c9441",
+      "bytes": 185
+    },
+    "silence.wav": {
+      "sha256": "20eaebffe1816e0ffa6f7f854f5ef4ea80d5349faaf0ce1fec1b713e7fde58fa",
+      "bytes": 64044
+    },
+    "mygo-b.wav": {
+      "sha256": "6f40bf922c098aceb93c10f83138b692b2d8138f7eef8acd2e080f938e3494dc",
+      "bytes": 75662
+    },
+    "sofa-a.wav": {
+      "sha256": "d9dd21e7b9c564261cd78d350d1e60fd05f72bab3a5fee0d7575b3bb65e32b9e",
+      "bytes": 64824
+    },
+    "arion-b.wav": {
+      "sha256": "ff187a326a1b8aa1fb4842b8f776968f7b49ea861f29304e9820cbc5cf85856c",
+      "bytes": 90614
+    },
+    "redis-b.wav": {
+      "sha256": "56dcb99a7986cad52b456819a57087ff13663318f2073606ee0804286a3feb22",
+      "bytes": 70382
+    },
+    "mygo-a.wav": {
+      "sha256": "537bbbfa56ab2ca2fc56072753aa4d5aa99907b91a32879300e82341f2bb955a",
+      "bytes": 76940
+    },
+    "sofa-b.wav": {
+      "sha256": "7cdd06c817de3983fa152d878761aa8efc0ca6bc2b006a5f3b29ecca8a0b74fc",
+      "bytes": 65962
+    },
+    "arion-a.wav": {
+      "sha256": "cba6cdecf5ece0eaa3918f8ce255ec28594d0c2f58ab588e4207d2fc7e5f81c1",
+      "bytes": 76034
+    },
+    "sequel-b.aiff": {
+      "sha256": "c810161b6ef267b4ddc9f8f40321d67ce546cbf50d112ed17dbce205781af9db",
+      "bytes": 91060
+    },
+    "openai-a.wav": {
+      "sha256": "a1fd05cb11d34fc38ba37e72e0f686795767e26d2bcc5745037b04addcb84197",
+      "bytes": 78174
+    },
+    "arion-b.aiff": {
+      "sha256": "0fcf3a3601aa03a0346f5b469f5d369e503efa20a73495bfd35e0d0abe2ab4ee",
+      "bytes": 128864
+    },
+    "sofa-a.aiff": {
+      "sha256": "72014f88cf209347f34436ba91b802ab4cebe16946fcc3e4e410a957202fe07e",
+      "bytes": 93324
+    },
+    "warmup.wav": {
+      "sha256": "64e3d7b59c72ffd7a6a16ce35033566145ab3241e732f7f0f1b97abc752487d5",
+      "bytes": 84708
+    },
+    "all-model-files.json": {
+      "sha256": "f3fd65ac3fe7e71da4202c8baf314a784f6bc8a0c452013006403415df885ac5",
+      "bytes": 4230
+    },
+    "openai-b.wav": {
+      "sha256": "d41cf9cd008a8e7eb56349744fa8411aafcd658d9dc046570eb31c6edd579cee",
+      "bytes": 78778
+    },
+    "sql-b.aiff": {
+      "sha256": "c60c95a4eb57760588f0dca8d27d6041e44f466b7da133f395a129539a88a8d7",
+      "bytes": 81046
+    },
+    "kubernetes-a.wav": {
+      "sha256": "0deac2d3b7a20dfa16efeeff9525c278fad9ebeb6b0e38dc8e195ed90f69b366",
+      "bytes": 77726
+    },
+    "safari-a.aiff": {
+      "sha256": "f31d9f9feb14f31760640b9ddcf32f1ab602c31263226fb1434c2ceada5f41cc",
+      "bytes": 109272
+    },
+    "feishu-b.aiff": {
+      "sha256": "a58f940af8f2f23da5602b90a2ba19999e682c5f39c3aaa2aa148f41690d6483",
+      "bytes": 107690
+    },
+    "ordinary-zh.wav": {
+      "sha256": "ff857d2028a9e9b8df9482f617e5af23f8dcec40d9cec8eb24c2ca8181a02a74",
+      "bytes": 93086
+    },
+    "safari-a.wav": {
+      "sha256": "977cbe037819a62bf3ec0b132a099455636ce1d8db0e0bb9b2c05f8b9f8b1587",
+      "bytes": 76398
+    },
+    "kubernetes-b.wav": {
+      "sha256": "c7685f54ad7756c46a1136f1ff27b24cd24acf3180c91a5da054b5c5c0fbc435",
+      "bytes": 97866
+    },
+    "noise.wav": {
+      "sha256": "135a7843273d0f2330a2d7e219d88f87d2e24d03f01a816a06bf8f7489e7e98f",
+      "bytes": 64044
+    },
+    "safari-b.wav": {
+      "sha256": "7c9fbb78d45a9e3e07c36fbc2001051e4270848d25ad4d5315489f3ea66790b6",
+      "bytes": 93496
+    }
+  },
+  "source": {
+    "builder": "benchmarks/reproduction/user-modify-asr-v1/build-fixtures.py",
+    "builderSha256": "52fd14ed67f9b986f1c294aa2ecf36c2fb294261a14272207da0b5318d22f8a9"
+  },
+  "limitations": [
+    "No natural microphone recordings or independent annotations.",
+    "Memory and counts are authored fixtures, not observed automatic learning.",
+    "Test voices Tingting and Samantha; development warmup uses Daniel.",
+    "Transliterated proper names have approved reference spellings.",
+    "Source-BF16 versus MLX-8bit conversion parity has not been measured."
+  ]
+}

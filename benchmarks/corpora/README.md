@@ -19,6 +19,10 @@ Recorded inputs are retained byte-for-byte with references, constraints, speaker
 | [rewrite-dev-v1](rewrite-dev-v1/provenance.json) | `corpus.json`: 24 | 1 |
 | [rewrite-frozen-asr-v1](rewrite-frozen-asr-v1/provenance.json) | `corpus.json`: 56 | 1 |
 | [scene-v1](scene-v1/provenance.json) | `scene-dev-corpus.json`: 33; `scene-heldout-b-corpus.json`: 30 | 6 |
+| [user-modify-asr-v1](user-modify-asr-v1/provenance.json) | `corpus.json`: 32; prior memory, separate-voice warmup and frozen model metadata | 71 |
+| [user-modify-asr-v2](user-modify-asr-v2/test/provenance.json) | Development: 32 exposed cases; test: 38 new authored inputs plus 20 historical natural-read controls; unchanged prior memory and pre-development freeze | 145 |
+| [user-modify-asr-v3](user-modify-asr-v3/test/provenance.json) | Development: 32 earlier audio + 66 future inputs; test: 48 earlier audio + 116 future inputs; entity/voice/session/template separation, empty initial memory | 519 |
+| [context-memory-v1](context-memory-v1/protocol.json) | Development: 12 context branches/controls; test: 16; reported/authored ASR strings and reconstructed screen text, no audio/OCR capture | 9 |
 
 The count is retained files, not independent cases. Audio manifests can describe the same cases as a text corpus. Context and scene directories include authored renderings, builders are archived separately, and audio retains the recorded waveform rather than relying on TTS regeneration. Missing licence fields in authored cases are recorded as unspecified in sidecars; the migration does not rewrite their original bytes.
 

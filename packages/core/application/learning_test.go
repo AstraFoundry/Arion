@@ -7,6 +7,7 @@ import (
 	"sync/atomic"
 	"testing"
 	"time"
+	"unicode"
 
 	"arion.local/core/contracts"
 	"arion.local/core/domain"
@@ -55,7 +56,7 @@ func (f *fakeField) set(text string, focused bool) {
 }
 
 func newTracker(reports chan EditReport) *EditTracker {
-	return &EditTracker{Poll: 5 * time.Millisecond, Idle: 60 * time.Millisecond, Max: 2 * time.Second,
+	return &EditTracker{Segmenter: trackerTestSegmenter{}, Poll: 5 * time.Millisecond, Idle: 60 * time.Millisecond, Max: 2 * time.Second,
 		Report: func(r EditReport) { reports <- r }}
 }
 
@@ -227,4 +228,23 @@ func TestCoordinatorNeverFollowsSensitiveOrWhenOff(t *testing.T) {
 			t.Fatalf("%s: field followed %d read %d", tc.name, field.followed.Load(), field.reads.Load())
 		}
 	}
+}
+
+// The tracker test supplies boundaries; the desktop adapter has native tests.
+type trackerTestSegmenter struct{}
+
+func (trackerTestSegmenter) Words(text string) ([]domain.WordSpan, error) {
+	var out []domain.WordSpan
+	runes := []rune(text)
+	for i := 0; i < len(runes); {
+		end := i + 1
+		if unicode.Is(unicode.Latin, runes[i]) {
+			for end < len(runes) && unicode.Is(unicode.Latin, runes[end]) {
+				end++
+			}
+		}
+		out = append(out, domain.WordSpan{Start: i, End: end})
+		i = end
+	}
+	return out, nil
 }

@@ -69,3 +69,16 @@ func TestContextScenesAreNotModelTags(t *testing.T) {
 		}
 	}
 }
+
+func TestFullOCRIsSeparateFromDictation(t *testing.T) {
+	screen := strings.Repeat("会议内容。", 300) + "订阅费用可按报销流程申请。"
+	got := user(Input{Scene: "chat", Context: domain.RewriteContext{Screen: screen, Before: "问题：", After: "谢谢"}, Text: "codex能播吗？"})
+	for _, part := range []string{"<screen>\n" + screen + "\n</screen>", "<before_cursor>\n问题：\n</before_cursor>", "<after_cursor>\n谢谢\n</after_cursor>", "<dictation>\ncodex能播吗？"} {
+		if !strings.Contains(got, part) {
+			t.Fatalf("missing section %q", part[len(part)-min(40, len(part)):])
+		}
+	}
+	if strings.Contains(got, "[terms:") {
+		t.Fatal("OCR must not be reduced to terms")
+	}
+}

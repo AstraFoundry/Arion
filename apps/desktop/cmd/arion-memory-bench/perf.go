@@ -19,6 +19,7 @@ import (
 	"arion.local/core/domain"
 	"arion.local/core/domain/ports"
 	"arion.local/desktop/infrastructure/vocabulary"
+	"arion.local/desktop/infrastructure/wordseg"
 )
 
 // stats are latency quantiles in the unit named by the field.
@@ -218,7 +219,7 @@ func measureExtract(reps int) []extractScale {
 		var lat []float64
 		for r := 0; r < reps; r++ {
 			t := time.Now()
-			domain.ExtractCorrections(domain.FieldEdit{Inserted: inserted, Baseline: inserted, Settled: settled})
+			domain.ExtractCorrections(domain.FieldEdit{Inserted: inserted, Baseline: inserted, Settled: settled}, wordseg.Segmenter{})
 			lat = append(lat, micros(time.Since(t)))
 		}
 		out = append(out, extractScale{Runes: len([]rune(inserted)), Us: summarize(lat)})
@@ -262,7 +263,7 @@ func measureTracker(reps int) trackerReport {
 	var track, settle, settleReport []float64
 	for i := 0; i < reps; i++ {
 		reports := make(chan application.EditReport, 1)
-		tracker := &application.EditTracker{Report: func(e application.EditReport) { reports <- e }}
+		tracker := &application.EditTracker{Segmenter: wordseg.Segmenter{}, Report: func(e application.EditReport) { reports <- e }}
 		field := &benchField{text: "ask jason about it", focused: true}
 		t := time.Now()
 		tracker.Track(field, "t", contracts.Identity{SessionID: "bench"}, "ask jason about it")
@@ -281,7 +282,7 @@ func measureTracker(reps int) trackerReport {
 	r.TrackUs, r.SettleUs, r.SettleToReport = summarize(track), summarize(settle), summarize(settleReport)
 
 	reports := make(chan application.EditReport, 1)
-	tracker := &application.EditTracker{Report: func(e application.EditReport) { reports <- e }}
+	tracker := &application.EditTracker{Segmenter: wordseg.Segmenter{}, Report: func(e application.EditReport) { reports <- e }}
 	start := time.Now()
 	tracker.Track(&benchField{hang: true}, "t", contracts.Identity{}, "x")
 	report := <-reports

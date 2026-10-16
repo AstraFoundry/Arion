@@ -1,0 +1,35 @@
+{
+  "id": 2,
+  "ok": true,
+  "text": "Ready.",
+  "rawText": "Ready.",
+  "tokenizerParity": true,
+  "prefixTokens": 0,
+  "prefixPrefillMs": 0,
+  "events": [
+    {
+      "ms": 100.09270813316107,
+      "tokenId": 19202,
+      "delta": "Ready"
+    },
+    {
+      "ms": 122.05908307805657,
+      "tokenId": 13,
+      "delta": "."
+    },
+    {
+      "ms": 143.61799997277558,
+      "tokenId": 151645,
+      "delta": ""
+    }
+  ],
+  "inputTokens": 23,
+  "outputTokens": 3,
+  "prefillMs": 99.73195800557733,
+  "generationMs": 143.62137508578598,
+  "firstTokenMs": 100.09270813316107,
+  "truncated": false,
+  "incompleteThinking": false,
+  "peakRssBytes": 2883502080,
+  "rssScope": "process_high_water"
+}

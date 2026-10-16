@@ -1,0 +1,69 @@
+{
+  "afterCount": 6,
+  "beforeCount": 6,
+  "ciphertextBytes": 892,
+  "ciphertextSha256": "487fef6dcac509bd4f60a4cdbb5b946657e2180716d636335a2664b8a65c99c7",
+  "entries": [
+    {
+      "id": "026b0024eb2b9ffb",
+      "from": "力需",
+      "to": "利需",
+      "approved": true,
+      "origin": "learned_edit",
+      "uses": 1,
+      "created": 1800000000,
+      "used": 1800000000
+    },
+    {
+      "id": "8fb971ad6d8ac37b",
+      "from": "里程",
+      "to": "历程",
+      "approved": true,
+      "origin": "learned_edit",
+      "uses": 1,
+      "created": 1800000060,
+      "used": 1800000060
+    },
+    {
+      "id": "9ffd4864226e846d",
+      "from": "计帐",
+      "to": "记账",
+      "approved": true,
+      "origin": "learned_edit",
+      "uses": 1,
+      "created": 1800000120,
+      "used": 1800000120
+    },
+    {
+      "id": "6382e56c10f97a23",
+      "from": "fair",
+      "to": "fare",
+      "approved": true,
+      "origin": "learned_edit",
+      "uses": 1,
+      "created": 1800000180,
+      "used": 1800000180
+    },
+    {
+      "id": "cb7d745e8cee574c",
+      "from": "site",
+      "to": "sight",
+      "approved": true,
+      "origin": "learned_edit",
+      "uses": 1,
+      "created": 1800000240,
+      "used": 1800000240
+    },
+    {
+      "id": "42b8966cfbcc70ec",
+      "from": "principle",
+      "to": "principal",
+      "approved": true,
+      "origin": "learned_edit",
+      "uses": 1,
+      "created": 1800000300,
+      "used": 1800000300
+    }
+  ],
+  "mutationMs": 0.001667
+}
