@@ -1,0 +1,2307 @@
+{
+  "target": {
+    "bundle_identifier": "com.bytedance.ios.doubaoime",
+    "version": "1.6.1",
+    "build": "1060105",
+    "ipa_sha256": "75b60d6fbc249d1f1814814accdea6517459b3ed4e2f6b8d5f1b4965bd892c64",
+    "size_bytes": 238828054
+  },
+  "scope": "Offline shipped IPA analysis. No execution, decryption, live requests or user-data access.",
+  "local_identifiers": "DI, IV, IA and IK are local observations; only ev_ identifiers are REA Evidence.",
+  "rea_evidence": [
+    {
+      "evidence_id": "ev_8c587f5debf49136a8ef36f9496c6fdb533679cdb8df804a109394f5359f81a6",
+      "operation": "inspect_artifact",
+      "local_complete_record": ".workspace/research/doubao-ios/rea-artifact.json",
+      "limitations": [
+        "Inspection derives bounded static hypotheses and next probes; it does not execute the artifact or claim format-specific semantics.",
+        "ZIP inventory lists central-directory entries only. Bytes after the central directory, including an APK Signing Block or a ZIP comment, are not occurrences."
+      ]
+    },
+    {
+      "evidence_id": "ev_2fe0aa88cb57a733aed99a92f3eb980b78f17884e4139ab5348559738ecb648d",
+      "operation": "project_apple_application_graph",
+      "local_complete_record": ".workspace/research/doubao-ios/rea-apple-graph.json",
+      "limitations": [
+        "Bundle roles follow path conventions. Read each info_plist_path with inspect_plist for CFBundleExecutable, identifiers, and declared services.",
+        "Bundle identifiers and signing claims require dedicated plist and CMS parsing; this projection reports only exact paths and hashes.",
+        "Runtime families are inferred from inventory formats and bounded framework path conventions, not observed runtime loading.",
+        "Generic framework and dylib paths do not establish Swift or Objective-C; this inventory projection does not decode language metadata.",
+        "Bridge candidates are path-based hypotheses, not observed runtime calls.",
+        "A bridge basis is inferred from the native path and is repeated for every managed component."
+      ]
+    },
+    {
+      "evidence_id": "ev_84e2005530d5ac497e017f1202da61bb3e613729fedfbb9c19714cdd146dc80b",
+      "operation": "inspect_plist",
+      "local_complete_record": ".workspace/research/doubao-ios/rea-host-plist.json",
+      "limitations": []
+    },
+    {
+      "evidence_id": "ev_c2095864f9d7a3e027c9b10bc539c3860d03fbc5eba98e84fbd16d57cb526d56",
+      "operation": "inspect_plist",
+      "local_complete_record": ".workspace/research/doubao-ios/rea-keyboard-plist.json",
+      "limitations": []
+    }
+  ],
+  "DI-01": {
+    "method": "LC_ENCRYPTION_INFO_64 and LC_LOAD_DYLIB parsing; SHA-256 of extracted Mach-O files",
+    "images": [
+      {
+        "path": "oime_iOS",
+        "size": 79670832,
+        "sha256": "3b8f6faae905fb5104ffdcb8d61f47e53b464dc7b3d60a995771a4404d4606dd",
+        "encryption": {
+          "cryptoff": 16384,
+          "cryptsize": 63045632,
+          "cryptid": 1
+        },
+        "libraries": [
+          "/usr/lib/libbz2.1.0.dylib",
+          "/usr/lib/libc++.1.dylib",
+          "/usr/lib/libc++abi.dylib",
+          "/usr/lib/libiconv.2.dylib",
+          "/usr/lib/libresolv.9.dylib",
+          "/usr/lib/libsqlite3.dylib",
+          "/usr/lib/libz.1.dylib",
+          "/System/Library/Frameworks/AVFoundation.framework/AVFoundation",
+          "/System/Library/Frameworks/AVKit.framework/AVKit",
+          "/System/Library/Frameworks/Accelerate.framework/Accelerate",
+          "/System/Library/Frameworks/AdSupport.framework/AdSupport",
+          "/System/Library/Frameworks/AssetsLibrary.framework/AssetsLibrary",
+          "/System/Library/Frameworks/AudioToolbox.framework/AudioToolbox",
+          "@rpath/Bind.framework/Bind",
+          "@rpath/ByteDanceKit.framework/ByteDanceKit",
+          "/System/Library/Frameworks/CFNetwork.framework/CFNetwork",
+          "/System/Library/Frameworks/CoreFoundation.framework/CoreFoundation",
+          "/System/Library/Frameworks/CoreGraphics.framework/CoreGraphics",
+          "/System/Library/Frameworks/CoreImage.framework/CoreImage",
+          "/System/Library/Frameworks/CoreLocation.framework/CoreLocation",
+          "/System/Library/Frameworks/CoreML.framework/CoreML",
+          "/System/Library/Frameworks/CoreMedia.framework/CoreMedia",
+          "/System/Library/Frameworks/CoreMotion.framework/CoreMotion",
+          "/System/Library/Frameworks/CoreServices.framework/CoreServices",
+          "/System/Library/Frameworks/CoreTelephony.framework/CoreTelephony",
+          "/System/Library/Frameworks/CoreText.framework/CoreText",
+          "/System/Library/Frameworks/CoreVideo.framework/CoreVideo",
+          "/System/Library/Frameworks/DeviceCheck.framework/DeviceCheck",
+          "/System/Library/Frameworks/EventKit.framework/EventKit",
+          "/System/Library/Frameworks/Foundation.framework/Foundation",
+          "/System/Library/Frameworks/GLKit.framework/GLKit",
+          "/System/Library/Frameworks/ImageIO.framework/ImageIO",
+          "/System/Library/Frameworks/JavaScriptCore.framework/JavaScriptCore",
+          "/System/Library/Frameworks/LocalAuthentication.framework/LocalAuthentication",
+          "@rpath/MMKV.framework/MMKV",
+          "@rpath/MMKVCore.framework/MMKVCore",
+          "/System/Library/Frameworks/MessageUI.framework/MessageUI",
+          "/System/Library/Frameworks/Metal.framework/Metal",
+          "/System/Library/Frameworks/MetalKit.framework/MetalKit",
+          "/System/Library/Frameworks/MetalPerformanceShaders.framework/MetalPerformanceShaders",
+          "/System/Library/Frameworks/MobileCoreServices.framework/MobileCoreServices",
+          "/System/Library/Frameworks/NaturalLanguage.framework/NaturalLanguage",
+          "/System/Library/Frameworks/NetworkExtension.framework/NetworkExtension",
+          "@rpath/OimeCommon.framework/OimeCommon",
+          "@rpath/OimeEngine.framework/OimeEngine",
+          "/System/Library/Frameworks/Photos.framework/Photos",
+          "/System/Library/Frameworks/PhotosUI.framework/PhotosUI",
+          "/System/Library/Frameworks/QuartzCore.framework/QuartzCore",
+          "/System/Library/Frameworks/SafariServices.framework/SafariServices",
+          "/System/Library/Frameworks/Security.framework/Security",
+          "/System/Library/Frameworks/StoreKit.framework/StoreKit",
+          "@rpath/SwifterSwift.framework/SwifterSwift",
+          "/System/Library/Frameworks/SystemConfiguration.framework/SystemConfiguration",
+          "/System/Library/Frameworks/UIKit.framework/UIKit",
+          "/System/Library/Frameworks/WebKit.framework/WebKit",
+          "@rpath/sqlcipher.framework/sqlcipher",
+          "/System/Library/Frameworks/AVFAudio.framework/AVFAudio",
+          "/System/Library/Frameworks/AdServices.framework/AdServices",
+          "/System/Library/Frameworks/AppTrackingTransparency.framework/AppTrackingTransparency",
+          "/System/Library/Frameworks/CryptoKit.framework/CryptoKit",
+          "/System/Library/Frameworks/MediaPlayer.framework/MediaPlayer",
+          "/System/Library/Frameworks/MetricKit.framework/MetricKit",
+          "/System/Library/Frameworks/Network.framework/Network",
+          "/usr/lib/libobjc.A.dylib",
+          "/usr/lib/libSystem.B.dylib",
+          "/System/Library/Frameworks/ActivityKit.framework/ActivityKit",
+          "/System/Library/Frameworks/AppIntents.framework/AppIntents",
+          "/System/Library/Frameworks/Combine.framework/Combine",
+          "/System/Library/Frameworks/OpenGLES.framework/OpenGLES",
+          "/System/Library/Frameworks/QuickLook.framework/QuickLook",
+          "/System/Library/Frameworks/SwiftUI.framework/SwiftUI",
+          "/System/Library/Frameworks/UserNotifications.framework/UserNotifications",
+          "/System/Library/Frameworks/WidgetKit.framework/WidgetKit",
+          "/System/Library/Frameworks/_AppIntents_SwiftUI.framework/_AppIntents_SwiftUI",
+          "/usr/lib/swift/libswiftAVFoundation.dylib",
+          "/usr/lib/swift/libswiftAccelerate.dylib",
+          "/usr/lib/swift/libswiftCore.dylib",
+          "/usr/lib/swift/libswiftCoreAudio.dylib",
+          "/usr/lib/swift/libswiftCoreFoundation.dylib",
+          "/usr/lib/swift/libswiftCoreImage.dylib",
+          "/usr/lib/swift/libswiftCoreLocation.dylib",
+          "/usr/lib/swift/libswiftCoreMIDI.dylib",
+          "/usr/lib/swift/libswiftCoreMedia.dylib",
+          "/usr/lib/swift/libswiftDarwin.dylib",
+          "/usr/lib/swift/libswiftDispatch.dylib",
+          "/usr/lib/swift/libswiftGLKit.dylib",
+          "/usr/lib/swift/libswiftIntents.dylib",
+          "/usr/lib/swift/libswiftMapKit.dylib",
+          "/usr/lib/swift/libswiftMetal.dylib",
+          "/usr/lib/swift/libswiftModelIO.dylib",
+          "/usr/lib/swift/libswiftOSLog.dylib",
+          "/usr/lib/swift/libswiftObjectiveC.dylib",
+          "/usr/lib/swift/libswiftQuartzCore.dylib",
+          "/usr/lib/swift/libswiftSceneKit.dylib",
+          "/usr/lib/swift/libswiftSpatial.dylib",
+          "/usr/lib/swift/libswiftSpriteKit.dylib",
+          "/usr/lib/swift/libswiftUniformTypeIdentifiers.dylib",
+          "/usr/lib/swift/libswiftXPC.dylib",
+          "/usr/lib/swift/libswift_Concurrency.dylib",
+          "/usr/lib/swift/libswiftos.dylib",
+          "/usr/lib/swift/libswiftsimd.dylib",
+          "/usr/lib/swift/libswiftCoreGraphics.dylib",
+          "/usr/lib/swift/libswiftFoundation.dylib",
+          "/usr/lib/swift/libswiftUIKit.dylib"
+        ],
+        "segments": [
+          {
+            "name": "__PAGEZERO",
+            "file_offset": 0,
+            "size": 0
+          },
+          {
+            "name": "__TEXT",
+            "file_offset": 0,
+            "size": 63078400
+          },
+          {
+            "name": "__DATA_CONST",
+            "file_offset": 63078400,
+            "size": 2768896
+          },
+          {
+            "name": "__DATA",
+            "file_offset": 65847296,
+            "size": 4833280
+          },
+          {
+            "name": "__LYNX__DATA",
+            "file_offset": 70680576,
+            "size": 16384
+          },
+          {
+            "name": "__LINKEDIT",
+            "file_offset": 70696960,
+            "size": 8973872
+          }
+        ]
+      },
+      {
+        "path": "PlugIns/NotificationExtension.appex/NotificationExtension",
+        "size": 186096,
+        "sha256": "c91c4db7b845f5d7212f0b44184fcfb22d6abb2aab8a2aff7157c567d7312e71",
+        "encryption": {
+          "cryptoff": 16384,
+          "cryptsize": 98304,
+          "cryptid": 1
+        },
+        "libraries": [
+          "/System/Library/Frameworks/Intents.framework/Intents",
+          "/System/Library/Frameworks/Foundation.framework/Foundation",
+          "/usr/lib/libobjc.A.dylib",
+          "/usr/lib/libSystem.B.dylib",
+          "/System/Library/Frameworks/CoreFoundation.framework/CoreFoundation",
+          "/System/Library/Frameworks/UIKit.framework/UIKit",
+          "/System/Library/Frameworks/UserNotifications.framework/UserNotifications",
+          "/usr/lib/libc++.1.dylib",
+          "/usr/lib/swift/libswiftCore.dylib",
+          "/usr/lib/swift/libswiftCoreFoundation.dylib",
+          "/usr/lib/swift/libswiftCoreImage.dylib",
+          "/usr/lib/swift/libswiftDarwin.dylib",
+          "/usr/lib/swift/libswiftDispatch.dylib",
+          "/usr/lib/swift/libswiftMetal.dylib",
+          "/usr/lib/swift/libswiftOSLog.dylib",
+          "/usr/lib/swift/libswiftObjectiveC.dylib",
+          "/usr/lib/swift/libswiftQuartzCore.dylib",
+          "/usr/lib/swift/libswiftUniformTypeIdentifiers.dylib",
+          "/usr/lib/swift/libswiftXPC.dylib",
+          "/usr/lib/swift/libswiftos.dylib",
+          "/usr/lib/swift/libswiftFoundation.dylib",
+          "/usr/lib/swift/libswiftUIKit.dylib"
+        ],
+        "segments": [
+          {
+            "name": "__PAGEZERO",
+            "file_offset": 0,
+            "size": 0
+          },
+          {
+            "name": "__TEXT",
+            "file_offset": 0,
+            "size": 114688
+          },
+          {
+            "name": "__DATA_CONST",
+            "file_offset": 114688,
+            "size": 16384
+          },
+          {
+            "name": "__DATA",
+            "file_offset": 131072,
+            "size": 16384
+          },
+          {
+            "name": "__LINKEDIT",
+            "file_offset": 147456,
+            "size": 38640
+          }
+        ]
+      },
+      {
+        "path": "PlugIns/KeyboardExtension.appex/KeyboardExtension",
+        "size": 35576400,
+        "sha256": "0015f826a30ac98e89536b7b35e800974161931ba94ca5779d366ebcc4968773",
+        "encryption": {
+          "cryptoff": 16384,
+          "cryptsize": 29212672,
+          "cryptid": 1
+        },
+        "libraries": [
+          "/usr/lib/libc++.1.dylib",
+          "/usr/lib/libc++abi.dylib",
+          "/usr/lib/libiconv.2.dylib",
+          "/usr/lib/libresolv.9.dylib",
+          "/usr/lib/libsqlite3.dylib",
+          "/usr/lib/libz.1.dylib",
+          "/System/Library/Frameworks/AVFoundation.framework/AVFoundation",
+          "/System/Library/Frameworks/AVKit.framework/AVKit",
+          "/System/Library/Frameworks/Accelerate.framework/Accelerate",
+          "/System/Library/Frameworks/AdSupport.framework/AdSupport",
+          "/System/Library/Frameworks/AudioToolbox.framework/AudioToolbox",
+          "@rpath/Bind.framework/Bind",
+          "@rpath/ByteDanceKit.framework/ByteDanceKit",
+          "/System/Library/Frameworks/CFNetwork.framework/CFNetwork",
+          "/System/Library/Frameworks/CoreFoundation.framework/CoreFoundation",
+          "/System/Library/Frameworks/CoreGraphics.framework/CoreGraphics",
+          "/System/Library/Frameworks/CoreImage.framework/CoreImage",
+          "/System/Library/Frameworks/CoreMedia.framework/CoreMedia",
+          "/System/Library/Frameworks/CoreServices.framework/CoreServices",
+          "/System/Library/Frameworks/CoreTelephony.framework/CoreTelephony",
+          "/System/Library/Frameworks/CoreText.framework/CoreText",
+          "/System/Library/Frameworks/CoreVideo.framework/CoreVideo",
+          "/System/Library/Frameworks/Foundation.framework/Foundation",
+          "/System/Library/Frameworks/ImageIO.framework/ImageIO",
+          "/System/Library/Frameworks/JavaScriptCore.framework/JavaScriptCore",
+          "/System/Library/Frameworks/LocalAuthentication.framework/LocalAuthentication",
+          "@rpath/MMKV.framework/MMKV",
+          "@rpath/MMKVCore.framework/MMKVCore",
+          "/System/Library/Frameworks/MetalPerformanceShaders.framework/MetalPerformanceShaders",
+          "/System/Library/Frameworks/MobileCoreServices.framework/MobileCoreServices",
+          "@rpath/OimeCommon.framework/OimeCommon",
+          "@rpath/OimeEngine.framework/OimeEngine",
+          "/System/Library/Frameworks/Photos.framework/Photos",
+          "/System/Library/Frameworks/QuartzCore.framework/QuartzCore",
+          "/System/Library/Frameworks/Security.framework/Security",
+          "@rpath/SwifterSwift.framework/SwifterSwift",
+          "/System/Library/Frameworks/SystemConfiguration.framework/SystemConfiguration",
+          "/System/Library/Frameworks/UIKit.framework/UIKit",
+          "@rpath/sqlcipher.framework/sqlcipher",
+          "/System/Library/Frameworks/AdServices.framework/AdServices",
+          "/System/Library/Frameworks/AppTrackingTransparency.framework/AppTrackingTransparency",
+          "/System/Library/Frameworks/CryptoKit.framework/CryptoKit",
+          "/System/Library/Frameworks/MetricKit.framework/MetricKit",
+          "/System/Library/Frameworks/Network.framework/Network",
+          "/usr/lib/libobjc.A.dylib",
+          "/usr/lib/libSystem.B.dylib",
+          "/System/Library/Frameworks/AVFAudio.framework/AVFAudio",
+          "/System/Library/Frameworks/ActivityKit.framework/ActivityKit",
+          "/System/Library/Frameworks/AppIntents.framework/AppIntents",
+          "/System/Library/Frameworks/Combine.framework/Combine",
+          "/System/Library/Frameworks/CoreHaptics.framework/CoreHaptics",
+          "/System/Library/Frameworks/MediaPlayer.framework/MediaPlayer",
+          "/System/Library/Frameworks/Metal.framework/Metal",
+          "/System/Library/Frameworks/QuickLook.framework/QuickLook",
+          "/System/Library/Frameworks/StoreKit.framework/StoreKit",
+          "/System/Library/Frameworks/SwiftUI.framework/SwiftUI",
+          "/System/Library/Frameworks/WebKit.framework/WebKit",
+          "/System/Library/Frameworks/WidgetKit.framework/WidgetKit",
+          "/System/Library/Frameworks/_AppIntents_SwiftUI.framework/_AppIntents_SwiftUI",
+          "/usr/lib/swift/libswiftAVFoundation.dylib",
+          "/usr/lib/swift/libswiftAccelerate.dylib",
+          "/usr/lib/swift/libswiftCore.dylib",
+          "/usr/lib/swift/libswiftCoreAudio.dylib",
+          "/usr/lib/swift/libswiftCoreFoundation.dylib",
+          "/usr/lib/swift/libswiftCoreImage.dylib",
+          "/usr/lib/swift/libswiftCoreLocation.dylib",
+          "/usr/lib/swift/libswiftCoreMIDI.dylib",
+          "/usr/lib/swift/libswiftCoreMedia.dylib",
+          "/usr/lib/swift/libswiftDarwin.dylib",
+          "/usr/lib/swift/libswiftDispatch.dylib",
+          "/usr/lib/swift/libswiftGLKit.dylib",
+          "/usr/lib/swift/libswiftIntents.dylib",
+          "/usr/lib/swift/libswiftMapKit.dylib",
+          "/usr/lib/swift/libswiftMetal.dylib",
+          "/usr/lib/swift/libswiftModelIO.dylib",
+          "/usr/lib/swift/libswiftOSLog.dylib",
+          "/usr/lib/swift/libswiftObjectiveC.dylib",
+          "/usr/lib/swift/libswiftQuartzCore.dylib",
+          "/usr/lib/swift/libswiftSceneKit.dylib",
+          "/usr/lib/swift/libswiftSpatial.dylib",
+          "/usr/lib/swift/libswiftSpriteKit.dylib",
+          "/usr/lib/swift/libswiftUniformTypeIdentifiers.dylib",
+          "/usr/lib/swift/libswiftXPC.dylib",
+          "/usr/lib/swift/libswift_Concurrency.dylib",
+          "/usr/lib/swift/libswiftos.dylib",
+          "/usr/lib/swift/libswiftsimd.dylib",
+          "/usr/lib/swift/libswiftCoreGraphics.dylib",
+          "/usr/lib/swift/libswiftFoundation.dylib",
+          "/usr/lib/swift/libswiftUIKit.dylib"
+        ],
+        "segments": [
+          {
+            "name": "__PAGEZERO",
+            "file_offset": 0,
+            "size": 0
+          },
+          {
+            "name": "__TEXT",
+            "file_offset": 0,
+            "size": 29245440
+          },
+          {
+            "name": "__DATA_CONST",
+            "file_offset": 29245440,
+            "size": 1081344
+          },
+          {
+            "name": "__DATA",
+            "file_offset": 30326784,
+            "size": 1720320
+          },
+          {
+            "name": "__LINKEDIT",
+            "file_offset": 32047104,
+            "size": 3529296
+          }
+        ]
+      },
+      {
+        "path": "PlugIns/KeyboardLiveActivityExtension.appex/KeyboardLiveActivityExtension",
+        "size": 182544,
+        "sha256": "5f32b5658c0486146c19d2264cedb9fe3616d4a7c03625d50b93bec2994cb2a6",
+        "encryption": {
+          "cryptoff": 16384,
+          "cryptsize": 81920,
+          "cryptid": 1
+        },
+        "libraries": [
+          "/System/Library/Frameworks/SwiftUI.framework/SwiftUI",
+          "/System/Library/Frameworks/WidgetKit.framework/WidgetKit",
+          "/System/Library/Frameworks/Foundation.framework/Foundation",
+          "/usr/lib/libobjc.A.dylib",
+          "/usr/lib/libSystem.B.dylib",
+          "/System/Library/Frameworks/ActivityKit.framework/ActivityKit",
+          "/System/Library/Frameworks/AppIntents.framework/AppIntents",
+          "/System/Library/Frameworks/CoreFoundation.framework/CoreFoundation",
+          "/System/Library/Frameworks/UIKit.framework/UIKit",
+          "/System/Library/Frameworks/_AppIntents_SwiftUI.framework/_AppIntents_SwiftUI",
+          "/usr/lib/libc++.1.dylib",
+          "/usr/lib/swift/libswiftCore.dylib",
+          "/usr/lib/swift/libswiftCoreFoundation.dylib",
+          "/usr/lib/swift/libswiftCoreImage.dylib",
+          "/usr/lib/swift/libswiftCoreLocation.dylib",
+          "/usr/lib/swift/libswiftDarwin.dylib",
+          "/usr/lib/swift/libswiftDispatch.dylib",
+          "/usr/lib/swift/libswiftIntents.dylib",
+          "/usr/lib/swift/libswiftMetal.dylib",
+          "/usr/lib/swift/libswiftOSLog.dylib",
+          "/usr/lib/swift/libswiftObjectiveC.dylib",
+          "/usr/lib/swift/libswiftQuartzCore.dylib",
+          "/usr/lib/swift/libswiftSpatial.dylib",
+          "/usr/lib/swift/libswiftUniformTypeIdentifiers.dylib",
+          "/usr/lib/swift/libswiftXPC.dylib",
+          "/usr/lib/swift/libswift_Concurrency.dylib",
+          "/usr/lib/swift/libswiftos.dylib",
+          "/usr/lib/swift/libswiftsimd.dylib",
+          "/usr/lib/swift/libswiftUIKit.dylib"
+        ],
+        "segments": [
+          {
+            "name": "__PAGEZERO",
+            "file_offset": 0,
+            "size": 0
+          },
+          {
+            "name": "__TEXT",
+            "file_offset": 0,
+            "size": 98304
+          },
+          {
+            "name": "__DATA_CONST",
+            "file_offset": 98304,
+            "size": 16384
+          },
+          {
+            "name": "__DATA",
+            "file_offset": 114688,
+            "size": 16384
+          },
+          {
+            "name": "__LINKEDIT",
+            "file_offset": 131072,
+            "size": 51472
+          }
+        ]
+      },
+      {
+        "path": "Frameworks/SwifterSwift.framework/SwifterSwift",
+        "size": 1242064,
+        "sha256": "3ffcb878055ccc32414c4b0c06ceb3809470691141c7bbb77dc237cb25b56f16",
+        "encryption": {
+          "cryptoff": 16384,
+          "cryptsize": 360448,
+          "cryptid": 1
+        },
+        "libraries": [
+          "/System/Library/Frameworks/Foundation.framework/Foundation",
+          "/usr/lib/libobjc.A.dylib",
+          "/usr/lib/libSystem.B.dylib",
+          "/System/Library/Frameworks/AVFoundation.framework/AVFoundation",
+          "/System/Library/Frameworks/AudioToolbox.framework/AudioToolbox",
+          "/System/Library/Frameworks/CoreFoundation.framework/CoreFoundation",
+          "/System/Library/Frameworks/CoreGraphics.framework/CoreGraphics",
+          "/System/Library/Frameworks/CoreImage.framework/CoreImage",
+          "/System/Library/Frameworks/CoreLocation.framework/CoreLocation",
+          "/System/Library/Frameworks/CoreMedia.framework/CoreMedia",
+          "/System/Library/Frameworks/MapKit.framework/MapKit",
+          "/System/Library/Frameworks/QuartzCore.framework/QuartzCore",
+          "/System/Library/Frameworks/SceneKit.framework/SceneKit",
+          "/System/Library/Frameworks/SpriteKit.framework/SpriteKit",
+          "/System/Library/Frameworks/UIKit.framework/UIKit",
+          "/usr/lib/libc++.1.dylib",
+          "/usr/lib/swift/libswiftAVFoundation.dylib",
+          "/usr/lib/swift/libswiftCore.dylib",
+          "/usr/lib/swift/libswiftCoreAudio.dylib",
+          "/usr/lib/swift/libswiftCoreFoundation.dylib",
+          "/usr/lib/swift/libswiftCoreImage.dylib",
+          "/usr/lib/swift/libswiftCoreLocation.dylib",
+          "/usr/lib/swift/libswiftCoreMIDI.dylib",
+          "/usr/lib/swift/libswiftCoreMedia.dylib",
+          "/usr/lib/swift/libswiftDarwin.dylib",
+          "/usr/lib/swift/libswiftDispatch.dylib",
+          "/usr/lib/swift/libswiftGLKit.dylib",
+          "/usr/lib/swift/libswiftMapKit.dylib",
+          "/usr/lib/swift/libswiftMetal.dylib",
+          "/usr/lib/swift/libswiftModelIO.dylib",
+          "/usr/lib/swift/libswiftOSLog.dylib",
+          "/usr/lib/swift/libswiftObjectiveC.dylib",
+          "/usr/lib/swift/libswiftQuartzCore.dylib",
+          "/usr/lib/swift/libswiftSceneKit.dylib",
+          "/usr/lib/swift/libswiftSpriteKit.dylib",
+          "/usr/lib/swift/libswiftUniformTypeIdentifiers.dylib",
+          "/usr/lib/swift/libswiftXPC.dylib",
+          "/usr/lib/swift/libswiftos.dylib",
+          "/usr/lib/swift/libswiftsimd.dylib",
+          "/usr/lib/swift/libswiftFoundation.dylib",
+          "/usr/lib/swift/libswiftCoreGraphics.dylib",
+          "/usr/lib/swift/libswiftUIKit.dylib"
+        ],
+        "segments": [
+          {
+            "name": "__TEXT",
+            "file_offset": 0,
+            "size": 376832
+          },
+          {
+            "name": "__DATA_CONST",
+            "file_offset": 376832,
+            "size": 16384
+          },
+          {
+            "name": "__DATA",
+            "file_offset": 393216,
+            "size": 16384
+          },
+          {
+            "name": "__LINKEDIT",
+            "file_offset": 409600,
+            "size": 832464
+          }
+        ]
+      },
+      {
+        "path": "Frameworks/OimeEngine.framework/OimeEngine",
+        "size": 24405552,
+        "sha256": "3200d8a400d47df7dc50cfaaec01900475b04c1619d1eeff3bb0d51d81424355",
+        "encryption": {
+          "cryptoff": 16384,
+          "cryptsize": 15532032,
+          "cryptid": 1
+        },
+        "libraries": [
+          "/System/Library/Frameworks/MobileCoreServices.framework/MobileCoreServices",
+          "@rpath/OimeCommon.framework/OimeCommon",
+          "@rpath/SwifterSwift.framework/SwifterSwift",
+          "/System/Library/Frameworks/Foundation.framework/Foundation",
+          "/usr/lib/libobjc.A.dylib",
+          "/usr/lib/libc++.1.dylib",
+          "/usr/lib/libSystem.B.dylib",
+          "/System/Library/Frameworks/CoreFoundation.framework/CoreFoundation",
+          "/System/Library/Frameworks/QuartzCore.framework/QuartzCore",
+          "/System/Library/Frameworks/Security.framework/Security",
+          "/usr/lib/swift/libswiftAVFoundation.dylib",
+          "/usr/lib/swift/libswiftCore.dylib",
+          "/usr/lib/swift/libswiftCoreAudio.dylib",
+          "/usr/lib/swift/libswiftCoreFoundation.dylib",
+          "/usr/lib/swift/libswiftCoreImage.dylib",
+          "/usr/lib/swift/libswiftCoreLocation.dylib",
+          "/usr/lib/swift/libswiftCoreMIDI.dylib",
+          "/usr/lib/swift/libswiftCoreMedia.dylib",
+          "/usr/lib/swift/libswiftDarwin.dylib",
+          "/usr/lib/swift/libswiftDispatch.dylib",
+          "/usr/lib/swift/libswiftGLKit.dylib",
+          "/usr/lib/swift/libswiftMapKit.dylib",
+          "/usr/lib/swift/libswiftMetal.dylib",
+          "/usr/lib/swift/libswiftModelIO.dylib",
+          "/usr/lib/swift/libswiftOSLog.dylib",
+          "/usr/lib/swift/libswiftObjectiveC.dylib",
+          "/usr/lib/swift/libswiftQuartzCore.dylib",
+          "/usr/lib/swift/libswiftSceneKit.dylib",
+          "/usr/lib/swift/libswiftSpriteKit.dylib",
+          "/usr/lib/swift/libswiftUniformTypeIdentifiers.dylib",
+          "/usr/lib/swift/libswiftXPC.dylib",
+          "/usr/lib/swift/libswiftos.dylib",
+          "/usr/lib/swift/libswiftsimd.dylib",
+          "/usr/lib/swift/libswiftFoundation.dylib",
+          "/usr/lib/swift/libswiftCoreGraphics.dylib",
+          "/usr/lib/swift/libswiftUIKit.dylib"
+        ],
+        "segments": [
+          {
+            "name": "__TEXT",
+            "file_offset": 0,
+            "size": 15548416
+          },
+          {
+            "name": "__DATA_CONST",
+            "file_offset": 15548416,
+            "size": 393216
+          },
+          {
+            "name": "__DATA",
+            "file_offset": 15941632,
+            "size": 98304
+          },
+          {
+            "name": "__LINKEDIT",
+            "file_offset": 16039936,
+            "size": 8365616
+          }
+        ]
+      },
+      {
+        "path": "Frameworks/MMKVCore.framework/MMKVCore",
+        "size": 392816,
+        "sha256": "f2c48a5f09dbb2171dba8c326ec09611024346d2a791282a3cc8517d09587c75",
+        "encryption": {
+          "cryptoff": 16384,
+          "cryptsize": 163840,
+          "cryptid": 1
+        },
+        "libraries": [
+          "/usr/lib/libc++.1.dylib",
+          "/usr/lib/libz.1.dylib",
+          "/System/Library/Frameworks/CoreFoundation.framework/CoreFoundation",
+          "/System/Library/Frameworks/UIKit.framework/UIKit",
+          "/System/Library/Frameworks/Foundation.framework/Foundation",
+          "/usr/lib/libobjc.A.dylib",
+          "/usr/lib/libSystem.B.dylib"
+        ],
+        "segments": [
+          {
+            "name": "__TEXT",
+            "file_offset": 0,
+            "size": 180224
+          },
+          {
+            "name": "__DATA_CONST",
+            "file_offset": 180224,
+            "size": 16384
+          },
+          {
+            "name": "__DATA",
+            "file_offset": 196608,
+            "size": 16384
+          },
+          {
+            "name": "__LINKEDIT",
+            "file_offset": 212992,
+            "size": 179824
+          }
+        ]
+      },
+      {
+        "path": "Frameworks/Bind.framework/Bind",
+        "size": 152400,
+        "sha256": "4a7abbae0da7dbee2dbd2561d5f79aed5a5806c8c1c0f95bc1523eedeaab856a",
+        "encryption": {
+          "cryptoff": 16384,
+          "cryptsize": 32768,
+          "cryptid": 1
+        },
+        "libraries": [
+          "/System/Library/Frameworks/Foundation.framework/Foundation",
+          "/usr/lib/libobjc.A.dylib",
+          "/usr/lib/libSystem.B.dylib",
+          "/System/Library/Frameworks/CoreFoundation.framework/CoreFoundation",
+          "/System/Library/Frameworks/UIKit.framework/UIKit",
+          "/usr/lib/libc++.1.dylib",
+          "/usr/lib/swift/libswiftCore.dylib",
+          "/usr/lib/swift/libswiftCoreFoundation.dylib",
+          "/usr/lib/swift/libswiftCoreImage.dylib",
+          "/usr/lib/swift/libswiftDarwin.dylib",
+          "/usr/lib/swift/libswiftDispatch.dylib",
+          "/usr/lib/swift/libswiftMetal.dylib",
+          "/usr/lib/swift/libswiftOSLog.dylib",
+          "/usr/lib/swift/libswiftObjectiveC.dylib",
+          "/usr/lib/swift/libswiftQuartzCore.dylib",
+          "/usr/lib/swift/libswiftUniformTypeIdentifiers.dylib",
+          "/usr/lib/swift/libswiftXPC.dylib",
+          "/usr/lib/swift/libswiftos.dylib",
+          "/usr/lib/swift/libswiftFoundation.dylib",
+          "/usr/lib/swift/libswiftUIKit.dylib"
+        ],
+        "segments": [
+          {
+            "name": "__TEXT",
+            "file_offset": 0,
+            "size": 49152
+          },
+          {
+            "name": "__DATA_CONST",
+            "file_offset": 49152,
+            "size": 16384
+          },
+          {
+            "name": "__DATA",
+            "file_offset": 65536,
+            "size": 16384
+          },
+          {
+            "name": "__LINKEDIT",
+            "file_offset": 81920,
+            "size": 70480
+          }
+        ]
+      },
+      {
+        "path": "Frameworks/OimeCommon.framework/OimeCommon",
+        "size": 430928,
+        "sha256": "f315b9591bc5f51f72c445fb747f4ad2ec6de0f79ea8439446cf78ee889839af",
+        "encryption": {
+          "cryptoff": 16384,
+          "cryptsize": 147456,
+          "cryptid": 1
+        },
+        "libraries": [
+          "/System/Library/Frameworks/Accelerate.framework/Accelerate",
+          "@rpath/Bind.framework/Bind",
+          "@rpath/ByteDanceKit.framework/ByteDanceKit",
+          "/System/Library/Frameworks/CoreGraphics.framework/CoreGraphics",
+          "/System/Library/Frameworks/CoreImage.framework/CoreImage",
+          "/System/Library/Frameworks/CoreTelephony.framework/CoreTelephony",
+          "/System/Library/Frameworks/CoreText.framework/CoreText",
+          "/System/Library/Frameworks/MobileCoreServices.framework/MobileCoreServices",
+          "/System/Library/Frameworks/QuartzCore.framework/QuartzCore",
+          "@rpath/SwifterSwift.framework/SwifterSwift",
+          "/System/Library/Frameworks/SystemConfiguration.framework/SystemConfiguration",
+          "/System/Library/Frameworks/UIKit.framework/UIKit",
+          "/System/Library/Frameworks/Foundation.framework/Foundation",
+          "/usr/lib/libobjc.A.dylib",
+          "/usr/lib/libSystem.B.dylib",
+          "/System/Library/Frameworks/CoreFoundation.framework/CoreFoundation",
+          "/System/Library/Frameworks/CryptoKit.framework/CryptoKit",
+          "/usr/lib/libc++.1.dylib",
+          "/usr/lib/swift/libswiftAVFoundation.dylib",
+          "/usr/lib/swift/libswiftCore.dylib",
+          "/usr/lib/swift/libswiftCoreAudio.dylib",
+          "/usr/lib/swift/libswiftCoreFoundation.dylib",
+          "/usr/lib/swift/libswiftCoreImage.dylib",
+          "/usr/lib/swift/libswiftCoreLocation.dylib",
+          "/usr/lib/swift/libswiftCoreMIDI.dylib",
+          "/usr/lib/swift/libswiftCoreMedia.dylib",
+          "/usr/lib/swift/libswiftDarwin.dylib",
+          "/usr/lib/swift/libswiftDispatch.dylib",
+          "/usr/lib/swift/libswiftGLKit.dylib",
+          "/usr/lib/swift/libswiftMapKit.dylib",
+          "/usr/lib/swift/libswiftMetal.dylib",
+          "/usr/lib/swift/libswiftModelIO.dylib",
+          "/usr/lib/swift/libswiftOSLog.dylib",
+          "/usr/lib/swift/libswiftObjectiveC.dylib",
+          "/usr/lib/swift/libswiftQuartzCore.dylib",
+          "/usr/lib/swift/libswiftSceneKit.dylib",
+          "/usr/lib/swift/libswiftSpriteKit.dylib",
+          "/usr/lib/swift/libswiftUniformTypeIdentifiers.dylib",
+          "/usr/lib/swift/libswiftXPC.dylib",
+          "/usr/lib/swift/libswiftos.dylib",
+          "/usr/lib/swift/libswiftsimd.dylib",
+          "/usr/lib/swift/libswiftFoundation.dylib",
+          "/usr/lib/swift/libswiftUIKit.dylib",
+          "/usr/lib/swift/libswiftCoreGraphics.dylib"
+        ],
+        "segments": [
+          {
+            "name": "__TEXT",
+            "file_offset": 0,
+            "size": 163840
+          },
+          {
+            "name": "__DATA_CONST",
+            "file_offset": 163840,
+            "size": 16384
+          },
+          {
+            "name": "__DATA",
+            "file_offset": 180224,
+            "size": 16384
+          },
+          {
+            "name": "__LINKEDIT",
+            "file_offset": 196608,
+            "size": 234320
+          }
+        ]
+      },
+      {
+        "path": "Frameworks/MMKV.framework/MMKV",
+        "size": 149840,
+        "sha256": "a5983f25f7aa31f47fc997dd49de791c58f029b187da147f979d67e263f1d791",
+        "encryption": {
+          "cryptoff": 16384,
+          "cryptsize": 32768,
+          "cryptid": 1
+        },
+        "libraries": [
+          "/usr/lib/libc++.1.dylib",
+          "/usr/lib/libz.1.dylib",
+          "/System/Library/Frameworks/CoreFoundation.framework/CoreFoundation",
+          "@rpath/MMKVCore.framework/MMKVCore",
+          "/System/Library/Frameworks/UIKit.framework/UIKit",
+          "/System/Library/Frameworks/Foundation.framework/Foundation",
+          "/usr/lib/libobjc.A.dylib",
+          "/usr/lib/libSystem.B.dylib"
+        ],
+        "segments": [
+          {
+            "name": "__TEXT",
+            "file_offset": 0,
+            "size": 49152
+          },
+          {
+            "name": "__DATA_CONST",
+            "file_offset": 49152,
+            "size": 16384
+          },
+          {
+            "name": "__DATA",
+            "file_offset": 65536,
+            "size": 16384
+          },
+          {
+            "name": "__LINKEDIT",
+            "file_offset": 81920,
+            "size": 67920
+          }
+        ]
+      },
+      {
+        "path": "Frameworks/ByteDanceKit.framework/ByteDanceKit",
+        "size": 789024,
+        "sha256": "748e7bc6019141503ef72a1d816a3191bcd1feb5df5940f6ccbdf77126a6e2b8",
+        "encryption": {
+          "cryptoff": 16384,
+          "cryptsize": 327680,
+          "cryptid": 1
+        },
+        "libraries": [
+          "/System/Library/Frameworks/Accelerate.framework/Accelerate",
+          "/System/Library/Frameworks/CoreGraphics.framework/CoreGraphics",
+          "/System/Library/Frameworks/CoreImage.framework/CoreImage",
+          "/System/Library/Frameworks/CoreTelephony.framework/CoreTelephony",
+          "/System/Library/Frameworks/CoreText.framework/CoreText",
+          "/System/Library/Frameworks/QuartzCore.framework/QuartzCore",
+          "/System/Library/Frameworks/SystemConfiguration.framework/SystemConfiguration",
+          "/System/Library/Frameworks/UIKit.framework/UIKit",
+          "/System/Library/Frameworks/Foundation.framework/Foundation",
+          "/usr/lib/libobjc.A.dylib",
+          "/usr/lib/libSystem.B.dylib",
+          "/System/Library/Frameworks/CFNetwork.framework/CFNetwork",
+          "/System/Library/Frameworks/CoreFoundation.framework/CoreFoundation",
+          "/System/Library/Frameworks/Security.framework/Security"
+        ],
+        "segments": [
+          {
+            "name": "__TEXT",
+            "file_offset": 0,
+            "size": 344064
+          },
+          {
+            "name": "__DATA_CONST",
+            "file_offset": 344064,
+            "size": 32768
+          },
+          {
+            "name": "__DATA",
+            "file_offset": 376832,
+            "size": 32768
+          },
+          {
+            "name": "__LINKEDIT",
+            "file_offset": 409600,
+            "size": 379424
+          }
+        ]
+      },
+      {
+        "path": "Frameworks/sqlcipher.framework/sqlcipher",
+        "size": 1114464,
+        "sha256": "da444787481860012ce9487fc5fe00a2f389fdfd01a079a9e089b461cfb3e0bd",
+        "encryption": {
+          "cryptoff": 16384,
+          "cryptsize": 704512,
+          "cryptid": 1
+        },
+        "libraries": [
+          "/System/Library/Frameworks/Foundation.framework/Foundation",
+          "/System/Library/Frameworks/Security.framework/Security",
+          "/usr/lib/libobjc.A.dylib",
+          "/usr/lib/libSystem.B.dylib",
+          "/System/Library/Frameworks/CoreFoundation.framework/CoreFoundation"
+        ],
+        "segments": [
+          {
+            "name": "__TEXT",
+            "file_offset": 0,
+            "size": 720896
+          },
+          {
+            "name": "__DATA_CONST",
+            "file_offset": 720896,
+            "size": 16384
+          },
+          {
+            "name": "__DATA",
+            "file_offset": 737280,
+            "size": 16384
+          },
+          {
+            "name": "__LINKEDIT",
+            "file_offset": 753664,
+            "size": 360800
+          }
+        ]
+      }
+    ]
+  },
+  "DI-02": {
+    "method": "REA archive inventory and Apple graph plus parsed Info.plist",
+    "keyboard_principal_class": "KeyboardExtension.KeyboardExtensionEntry",
+    "extension_point": "com.apple.keyboard-service",
+    "primary_language": "zh-CN",
+    "ascii_capable": true,
+    "requests_open_access": true
+  },
+  "voice": [
+    {
+      "evidence_id": "IV-01-capture",
+      "path": "oime_iOS",
+      "type": "Mach-O export trie names; static declaration, not code flow",
+      "items": [
+        {
+          "name": "_$s9OimeAudio14ASRAudioEngineC13captureOutput_03didF04fromySo09AVCaptureF0C_So17CMSampleBufferRefaSo0I10ConnectionCtF",
+          "trie_node_file_offset": "0x44ec3c8",
+          "flags": 0,
+          "address_offset": "0x22207c8",
+          "demangled": "OimeAudio.ASRAudioEngine.captureOutput(_: __C.AVCaptureOutput, didOutput: __C.CMSampleBufferRef, from: __C.AVCaptureConnection) -> ()"
+        },
+        {
+          "name": "_$s9OimeAudio14ASRAudioEngineC14createReusable18audioSessionPolicyA2C0bhI0O_tKFZ",
+          "trie_node_file_offset": "0x44ec3d5",
+          "flags": 0,
+          "address_offset": "0x2218800",
+          "demangled": "static OimeAudio.ASRAudioEngine.createReusable(audioSessionPolicy: OimeAudio.ASRAudioEngine.AudioSessionPolicy) throws -> OimeAudio.ASRAudioEngine"
+        },
+        {
+          "name": "_$s9OimeAudio14ASRAudioEngineC14createReusable25audioSessionConfigurationA2C0bhI0V_tKFZ",
+          "trie_node_file_offset": "0x44ec3dc",
+          "flags": 0,
+          "address_offset": "0x221886c",
+          "demangled": "static OimeAudio.ASRAudioEngine.createReusable(audioSessionConfiguration: OimeAudio.ASRAudioEngine.AudioSessionConfiguration) throws -> OimeAudio.ASRAudioEngine"
+        },
+        {
+          "name": "_$s9OimeAudio14ASRAudioEngineC4stopyyF",
+          "trie_node_file_offset": "0x44ec529",
+          "flags": 0,
+          "address_offset": "0x221a530",
+          "demangled": "OimeAudio.ASRAudioEngine.stop() -> ()"
+        },
+        {
+          "name": "_$s9OimeAudio14ASRAudioEngineC5start10completionyys6ResultOyyts5Error_pGc_tF",
+          "trie_node_file_offset": "0x44ec54b",
+          "flags": 0,
+          "address_offset": "0x2219f7c",
+          "demangled": "OimeAudio.ASRAudioEngine.start(completion: (Swift.Result<(), Swift.Error>) -> ()) -> ()"
+        },
+        {
+          "name": "_$s9OimeAudio14ASRAudioEngineC6create18audioSessionPolicyA2C0bgH0O_tKFZ",
+          "trie_node_file_offset": "0x44ec60d",
+          "flags": 0,
+          "address_offset": "0x2218730",
+          "demangled": "static OimeAudio.ASRAudioEngine.create(audioSessionPolicy: OimeAudio.ASRAudioEngine.AudioSessionPolicy) throws -> OimeAudio.ASRAudioEngine"
+        },
+        {
+          "name": "_$s9OimeAudio14ASRAudioEngineC6create25audioSessionConfigurationA2C0bgH0V_tKFZ",
+          "trie_node_file_offset": "0x44ec614",
+          "flags": 0,
+          "address_offset": "0x2218798",
+          "demangled": "static OimeAudio.ASRAudioEngine.create(audioSessionConfiguration: OimeAudio.ASRAudioEngine.AudioSessionConfiguration) throws -> OimeAudio.ASRAudioEngine"
+        },
+        {
+          "name": "_$s9OimeAudio14ASRAudioEngineC7stopASRyyF",
+          "trie_node_file_offset": "0x44ec6ea",
+          "flags": 0,
+          "address_offset": "0x22198bc",
+          "demangled": "OimeAudio.ASRAudioEngine.stopASR() -> ()"
+        },
+        {
+          "name": "_$s9OimeAudio14ASRAudioEngineC8receiverAA0B12DataReceiver_pSgvg",
+          "trie_node_file_offset": "0x44ec769",
+          "flags": 0,
+          "address_offset": "0x2218418",
+          "demangled": "OimeAudio.ASRAudioEngine.receiver.getter : OimeAudio.AudioDataReceiver?"
+        },
+        {
+          "name": "_$s9OimeAudio14ASRAudioEngineC8receiverAA0B12DataReceiver_pSgvpWvd",
+          "trie_node_file_offset": "0x44ec77d",
+          "flags": 0,
+          "address_offset": "0x42bf578",
+          "demangled": "direct field offset for OimeAudio.ASRAudioEngine.receiver : OimeAudio.AudioDataReceiver?"
+        },
+        {
+          "name": "_$s9OimeAudio14ASRAudioEngineC8receiverAA0B12DataReceiver_pSgvpfi",
+          "trie_node_file_offset": "0x44ec784",
+          "flags": 0,
+          "address_offset": "0x1052d28",
+          "demangled": "variable initialization expression of OimeAudio.ASRAudioEngine.receiver : OimeAudio.AudioDataReceiver?"
+        },
+        {
+          "name": "_$s9OimeAudio14ASRAudioEngineC8startASR5logIDySS_tF",
+          "trie_node_file_offset": "0x44ec7d1",
+          "flags": 0,
+          "address_offset": "0x22195d4",
+          "demangled": "OimeAudio.ASRAudioEngine.startASR(logID: Swift.String) -> ()"
+        }
+      ],
+      "complete_local_source": ".workspace/research/doubao-ios/voice-evidence.json"
+    },
+    {
+      "evidence_id": "IV-02-host",
+      "path": "oime_iOS",
+      "type": "Mach-O export trie names; static declaration, not code flow",
+      "items": [
+        {
+          "name": "_$s9OimeAudio17MainAppASRManagerC13onDataArrived4datay10Foundation0G0V_tF",
+          "trie_node_file_offset": "0x44ed8f5",
+          "flags": 0,
+          "address_offset": "0x22af2a8",
+          "demangled": "OimeAudio.MainAppASRManager.onDataArrived(data: Foundation.Data) -> ()"
+        },
+        {
+          "name": "_$s9OimeAudio17MainAppASRManagerC5start7context5logID12asrStartTime0F6Source15completionBlockyAA10ASRContextCSg_SSSg10Foundation4DateVAA08ASRStartM0OyAC0K13ASRStatusCodeO_AMtcSgtF",
+          "trie_node_file_offset": "0x44ee251",
+          "flags": 0,
+          "address_offset": "0x22a766c",
+          "demangled": "OimeAudio.MainAppASRManager.start(context: OimeAudio.ASRContext?, logID: Swift.String?, asrStartTime: Foundation.Date, startSource: OimeAudio.ASRStartSource, completionBlock: ((OimeAudio.MainAppASRManager.StartASRStatusCode, Swift.String?) -> ())?) -> ()"
+        },
+        {
+          "name": "_$s9OimeAudio17MainAppASRManagerC23handleStartASRByOpenURLyySo7UISceneCF",
+          "trie_node_file_offset": "0x44edc7f",
+          "flags": 0,
+          "address_offset": "0x22a5a5c",
+          "demangled": "OimeAudio.MainAppASRManager.handleStartASRByOpenURL(__C.UIScene) -> ()"
+        },
+        {
+          "name": "_$s9OimeAudio17MainAppASRManagerC13stopRecordingyyF",
+          "trie_node_file_offset": "0x44ed903",
+          "flags": 0,
+          "address_offset": "0x22aa334",
+          "demangled": "OimeAudio.MainAppASRManager.stopRecording() -> ()"
+        },
+        {
+          "name": "_$s9OimeAudio17MainAppASRManagerC23currentJumpbackBundleID33_7D611D92704C6A993B2ABFB1789BC1D7LLSSSgvpfi",
+          "trie_node_file_offset": "0x44edc6a",
+          "flags": 0,
+          "address_offset": "0x1052d28",
+          "demangled": "variable initialization expression of OimeAudio.MainAppASRManager.(currentJumpbackBundleID in _7D611D92704C6A993B2ABFB1789BC1D7) : Swift.String?"
+        },
+        {
+          "name": "_$s9OimeAudio17MainAppASRManagerC26rtiJumpbackWaitCoordinatorAA011RTIJumpbackhI0Cvpfi",
+          "trie_node_file_offset": "0x44ede6c",
+          "flags": 0,
+          "address_offset": "0x2222428",
+          "demangled": "variable initialization expression of OimeAudio.MainAppASRManager.rtiJumpbackWaitCoordinator : OimeAudio.RTIJumpbackWaitCoordinator"
+        }
+      ],
+      "complete_local_source": ".workspace/research/doubao-ios/voice-evidence.json"
+    },
+    {
+      "evidence_id": "IV-03-keyboard",
+      "path": "oime_iOS",
+      "type": "Mach-O export trie names; static declaration, not code flow",
+      "items": [
+        {
+          "name": "_$s9OimeAudio18KeyboardASRManagerC010sendFinishB0yyF",
+          "trie_node_file_offset": "0x44eefc7",
+          "flags": 0,
+          "address_offset": "0x2299930",
+          "demangled": "OimeAudio.KeyboardASRManager.sendFinishAudio() -> ()"
+        },
+        {
+          "name": "_$s9OimeAudio18KeyboardASRManagerC12forceTwopassyyF",
+          "trie_node_file_offset": "0x44ef22f",
+          "flags": 0,
+          "address_offset": "0x2299834",
+          "demangled": "OimeAudio.KeyboardASRManager.forceTwopass() -> ()"
+        },
+        {
+          "name": "_$s9OimeAudio18KeyboardASRManagerC13stopASRMethod33_0F4B72EB0C29540CFAA5237013D1D2DDLLAA04StopF0Cvpfi",
+          "trie_node_file_offset": "0x44ef42a",
+          "flags": 0,
+          "address_offset": "0x2222248",
+          "demangled": "variable initialization expression of OimeAudio.KeyboardASRManager.(stopASRMethod in _0F4B72EB0C29540CFAA5237013D1D2DD) : OimeAudio.StopASRMethod"
+        },
+        {
+          "name": "_$s9OimeAudio18KeyboardASRManagerC14makeASRContext10forInputVC12hostBundleIDAA0F0CSo21UIInputViewControllerC_SSSgtF",
+          "trie_node_file_offset": "0x44ef4a5",
+          "flags": 0,
+          "address_offset": "0x22994d0",
+          "demangled": "OimeAudio.KeyboardASRManager.makeASRContext(forInputVC: __C.UIInputViewController, hostBundleID: Swift.String?) -> OimeAudio.ASRContext"
+        },
+        {
+          "name": "_$s9OimeAudio18KeyboardASRManagerC14onASRGetResult6result5logIDyAA9ASRResultC_SStF",
+          "trie_node_file_offset": "0x44ef4b3",
+          "flags": 0,
+          "address_offset": "0x22961a8",
+          "demangled": "OimeAudio.KeyboardASRManager.onASRGetResult(result: OimeAudio.ASRResult, logID: Swift.String) -> ()"
+        },
+        {
+          "name": "_$s9OimeAudio18KeyboardASRManagerC14startASRMethod33_0F4B72EB0C29540CFAA5237013D1D2DDLLAA05StartF0Cvpfi",
+          "trie_node_file_offset": "0x44ef549",
+          "flags": 0,
+          "address_offset": "0x2222230",
+          "demangled": "variable initialization expression of OimeAudio.KeyboardASRManager.(startASRMethod in _0F4B72EB0C29540CFAA5237013D1D2DD) : OimeAudio.StartASRMethod"
+        },
+        {
+          "name": "_$s9OimeAudio18KeyboardASRManagerC15stopASRIfNeeded10forInputVC5scene13waitVADResult5delaySbSo21UIInputViewControllerCSg_AC12ASRStopSceneOSbSdtF",
+          "trie_node_file_offset": "0x44ef5f8",
+          "flags": 0,
+          "address_offset": "0x229cff4",
+          "demangled": "OimeAudio.KeyboardASRManager.stopASRIfNeeded(forInputVC: __C.UIInputViewController?, scene: OimeAudio.KeyboardASRManager.ASRStopScene, waitVADResult: Swift.Bool, delay: Swift.Double) -> Swift.Bool"
+        },
+        {
+          "name": "_$s9OimeAudio18KeyboardASRManagerC21isASRStartInterruptedSbvg",
+          "trie_node_file_offset": "0x44ef9fb",
+          "flags": 0,
+          "address_offset": "0x2297418",
+          "demangled": "OimeAudio.KeyboardASRManager.isASRStartInterrupted.getter : Swift.Bool"
+        },
+        {
+          "name": "_$s9OimeAudio18KeyboardASRManagerC21isASRStartInterruptedSbvpWvd",
+          "trie_node_file_offset": "0x44efa0f",
+          "flags": 0,
+          "address_offset": "0x3844088",
+          "demangled": "direct field offset for OimeAudio.KeyboardASRManager.isASRStartInterrupted : Swift.Bool"
+        },
+        {
+          "name": "_$s9OimeAudio18KeyboardASRManagerC21isASRStartInterruptedSbvpfi",
+          "trie_node_file_offset": "0x44efa16",
+          "flags": 0,
+          "address_offset": "0x1580c0",
+          "demangled": "variable initialization expression of OimeAudio.KeyboardASRManager.isASRStartInterrupted : Swift.Bool"
+        },
+        {
+          "name": "_$s9OimeAudio18KeyboardASRManagerC28canStartASRWithoutJumpMethod33_0F4B72EB0C29540CFAA5237013D1D2DDLLAA03CanfghI0Cvpfi",
+          "trie_node_file_offset": "0x44efede",
+          "flags": 0,
+          "address_offset": "0x22221a0",
+          "demangled": "variable initialization expression of OimeAudio.KeyboardASRManager.(canStartASRWithoutJumpMethod in _0F4B72EB0C29540CFAA5237013D1D2DD) : OimeAudio.CanStartASRWithoutJumpMethod"
+        },
+        {
+          "name": "_$s9OimeAudio18KeyboardASRManagerC7stopASR10forInputVC5scene5delayySo21UIInputViewControllerCSg_AC12ASRStopSceneOSdtF",
+          "trie_node_file_offset": "0x44f0379",
+          "flags": 0,
+          "address_offset": "0x229d62c",
+          "demangled": "OimeAudio.KeyboardASRManager.stopASR(forInputVC: __C.UIInputViewController?, scene: OimeAudio.KeyboardASRManager.ASRStopScene, delay: Swift.Double) -> ()"
+        },
+        {
+          "name": "_$s9OimeAudio18KeyboardASRManagerC8startASR10forInputVC15completionBlockySo21UIInputViewControllerC_yAA07MainAppD0C18StartASRStatusCodeO_SSSgtcSgtF",
+          "trie_node_file_offset": "0x44f0464",
+          "flags": 0,
+          "address_offset": "0x229877c",
+          "demangled": "OimeAudio.KeyboardASRManager.startASR(forInputVC: __C.UIInputViewController, completionBlock: ((OimeAudio.MainAppASRManager.StartASRStatusCode, Swift.String?) -> ())?) -> ()"
+        },
+        {
+          "name": "_$s9OimeAudio18KeyboardASRManagerC8startASR10forInputVC5scene15completionBlockySo21UIInputViewControllerC_AC12ASRStopSceneOyAA07MainAppD0C18StartASRStatusCodeO_SSSgtcSgtF",
+          "trie_node_file_offset": "0x44f0478",
+          "flags": 0,
+          "address_offset": "0x229878c",
+          "demangled": "OimeAudio.KeyboardASRManager.startASR(forInputVC: __C.UIInputViewController, scene: OimeAudio.KeyboardASRManager.ASRStopScene, completionBlock: ((OimeAudio.MainAppASRManager.StartASRStatusCode, Swift.String?) -> ())?) -> ()"
+        }
+      ],
+      "complete_local_source": ".workspace/research/doubao-ios/voice-evidence.json"
+    },
+    {
+      "evidence_id": "IV-04-offline",
+      "path": "oime_iOS",
+      "type": "Mach-O export trie names; static declaration, not code flow",
+      "items": [
+        {
+          "name": "_$s9OimeAudio22ASROfflineModelManagerC013retryDownloadcD0yyF",
+          "trie_node_file_offset": "0x44f20f8",
+          "flags": 0,
+          "address_offset": "0x2255ac0",
+          "demangled": "OimeAudio.ASROfflineModelManager.retryDownloadASROfflineModel() -> ()"
+        },
+        {
+          "name": "_$s9OimeAudio22ASROfflineModelManagerC014cancelDownloadcD0yyF",
+          "trie_node_file_offset": "0x44f210c",
+          "flags": 0,
+          "address_offset": "0x2257974",
+          "demangled": "OimeAudio.ASROfflineModelManager.cancelDownloadASROfflineModel() -> ()"
+        },
+        {
+          "name": "_$s9OimeAudio22ASROfflineModelManagerC021getFilePathForOfflineD0SSSgyF",
+          "trie_node_file_offset": "0x44f2153",
+          "flags": 0,
+          "address_offset": "0x2258da0",
+          "demangled": "OimeAudio.ASROfflineModelManager.getFilePathForOfflineModel() -> Swift.String?"
+        },
+        {
+          "name": "_$s9OimeAudio22ASROfflineModelManagerC05fetchcD8MetaInfo15completionBlockyySo018IESEffectAlgorithmD0CSgc_tF",
+          "trie_node_file_offset": "0x44f2167",
+          "flags": 0,
+          "address_offset": "0x22571a0",
+          "demangled": "OimeAudio.ASROfflineModelManager.fetchASROfflineModelMetaInfo(completionBlock: (__C.IESEffectAlgorithmModel?) -> ()) -> ()"
+        },
+        {
+          "name": "_$s9OimeAudio22ASROfflineModelManagerC06deleteD5AsyncyyF",
+          "trie_node_file_offset": "0x44f217b",
+          "flags": 0,
+          "address_offset": "0x22585bc",
+          "demangled": "OimeAudio.ASROfflineModelManager.deleteModelAsync() -> ()"
+        },
+        {
+          "name": "_$s9OimeAudio22ASROfflineModelManagerC06updatecD8IfNeeded8metaInfoySo018IESEffectAlgorithmD0CSg_tF",
+          "trie_node_file_offset": "0x44f218f",
+          "flags": 0,
+          "address_offset": "0x2255338",
+          "demangled": "OimeAudio.ASROfflineModelManager.updateASROfflineModelIfNeeded(metaInfo: __C.IESEffectAlgorithmModel?) -> ()"
+        },
+        {
+          "name": "_$s9OimeAudio22ASROfflineModelManagerC08downloadcD018isDownloadWifiOnlyySb_tF",
+          "trie_node_file_offset": "0x44f2263",
+          "flags": 0,
+          "address_offset": "0x2255ba8",
+          "demangled": "OimeAudio.ASROfflineModelManager.downloadASROfflineModel(isDownloadWifiOnly: Swift.Bool) -> ()"
+        },
+        {
+          "name": "_$s9OimeAudio22ASROfflineModelManagerC15setupForMainAppyyF",
+          "trie_node_file_offset": "0x44f24d2",
+          "flags": 0,
+          "address_offset": "0x22542fc",
+          "demangled": "OimeAudio.ASROfflineModelManager.setupForMainApp() -> ()"
+        },
+        {
+          "name": "_$s9OimeAudio22ASROfflineModelManagerC16getStoreMetaInfo10completionyyAC09AlgorithmhI0VSgc_tF",
+          "trie_node_file_offset": "0x44f2544",
+          "flags": 0,
+          "address_offset": "0x225662c",
+          "demangled": "OimeAudio.ASROfflineModelManager.getStoreMetaInfo(completion: (OimeAudio.ASROfflineModelManager.AlgorithmMetaInfo?) -> ()) -> ()"
+        }
+      ],
+      "complete_local_source": ".workspace/research/doubao-ios/voice-evidence.json"
+    },
+    {
+      "evidence_id": "IV-05-processing",
+      "path": "oime_iOS",
+      "type": "Mach-O export trie names; static declaration, not code flow",
+      "items": [
+        {
+          "name": "_$s9OimeAudio13ASRTypeWriterC12updateResult6result5blockyAA9ASRResultC_ySS_SStctF",
+          "trie_node_file_offset": "0x44eb52c",
+          "flags": 0,
+          "address_offset": "0x227f4f0",
+          "demangled": "OimeAudio.ASRTypeWriter.updateResult(result: OimeAudio.ASRResult, block: (Swift.String, Swift.String) -> ()) -> ()"
+        },
+        {
+          "name": "_$s9OimeAudio13ASRTypeWriterC19syncCommittedResultyyAA9ASRResultCF",
+          "trie_node_file_offset": "0x44eb5dc",
+          "flags": 0,
+          "address_offset": "0x228045c",
+          "demangled": "OimeAudio.ASRTypeWriter.syncCommittedResult(OimeAudio.ASRResult) -> ()"
+        },
+        {
+          "name": "_$s9OimeAudio18SAMIASRResultModelV13VADModifyPairV11descriptionSSvg",
+          "trie_node_file_offset": "0x44f0676",
+          "flags": 0,
+          "address_offset": "0x22c06fc",
+          "demangled": "OimeAudio.SAMIASRResultModel.VADModifyPair.description.getter : Swift.String"
+        },
+        {
+          "name": "_$s9OimeAudio18SAMIASRResultModelV6ResultV15streamAsrFinishSbSgvg",
+          "trie_node_file_offset": "0x44f0a99",
+          "flags": 0,
+          "address_offset": "0x22c0290",
+          "demangled": "OimeAudio.SAMIASRResultModel.Result.streamAsrFinish.getter : Swift.Bool?"
+        },
+        {
+          "name": "_$s9OimeAudio18SAMIASRResultModelV6ResultV13isVadFinishedSbSgvg",
+          "trie_node_file_offset": "0x44f0a52",
+          "flags": 0,
+          "address_offset": "0x22c0270",
+          "demangled": "OimeAudio.SAMIASRResultModel.Result.isVadFinished.getter : Swift.Bool?"
+        },
+        {
+          "name": "_$s9OimeAudio9ASRResultC15puncPostProcess6byMode12inputContextAC04PuncE15ProcessedResultVAA014ASRPunctuationH0O_AA0n5InputJ0OtF",
+          "trie_node_file_offset": "0x44f8cc0",
+          "flags": 0,
+          "address_offset": "0x2276304",
+          "demangled": "OimeAudio.ASRResult.puncPostProcess(byMode: OimeAudio.ASRPunctuationMode, inputContext: OimeAudio.ASRPunctuationInputContext) -> OimeAudio.ASRResult.PuncPostProcessedResult"
+        },
+        {
+          "name": "_$s9OimeAudio18SAMIASRResultModelV5ExtraV15fastModifyPairsSayAC13VADModifyPairVGSgvg",
+          "trie_node_file_offset": "0x44f0820",
+          "flags": 0,
+          "address_offset": "0x22c0ab0",
+          "demangled": "OimeAudio.SAMIASRResultModel.Extra.fastModifyPairs.getter : [OimeAudio.SAMIASRResultModel.VADModifyPair]?"
+        }
+      ],
+      "complete_local_source": ".workspace/research/doubao-ios/voice-evidence.json"
+    },
+    {
+      "evidence_id": "IV-06-context",
+      "path": "oime_iOS",
+      "type": "Mach-O export trie names; static declaration, not code flow",
+      "items": [
+        {
+          "name": "_$s9OimeAudio10ASRContextC15ChatContextDataC14cursorPosition4textAESi_SStcfC",
+          "trie_node_file_offset": "0x44eabd5",
+          "flags": 0,
+          "address_offset": "0x2227e6c",
+          "demangled": "OimeAudio.ASRContext.ChatContextData.__allocating_init(cursorPosition: Swift.Int, text: Swift.String) -> OimeAudio.ASRContext.ChatContextData"
+        },
+        {
+          "name": "_$s9OimeAudio10ASRContextC12hotwordsInfoSayAC14HotwordContextCGvpfi",
+          "trie_node_file_offset": "0x44eaa2e",
+          "flags": 0,
+          "address_offset": "0x19751f4",
+          "demangled": "variable initialization expression of OimeAudio.ASRContext.hotwordsInfo : [OimeAudio.ASRContext.HotwordContext]"
+        },
+        {
+          "name": "_$s9OimeAudio10ASRContextC12locationInfoAC15LocationContextCvpfi",
+          "trie_node_file_offset": "0x44eaa35",
+          "flags": 0,
+          "address_offset": "0x2221030",
+          "demangled": "variable initialization expression of OimeAudio.ASRContext.locationInfo : OimeAudio.ASRContext.LocationContext"
+        },
+        {
+          "name": "_$s9OimeAudio10ASRContextC12trackingInfoSDyS2SGvpfi",
+          "trie_node_file_offset": "0x44eaa3c",
+          "flags": 0,
+          "address_offset": "0x19c69c8",
+          "demangled": "variable initialization expression of OimeAudio.ASRContext.trackingInfo : [Swift.String : Swift.String]"
+        },
+        {
+          "name": "_$s9OimeAudio10ASRContextC10ImeContextC6hostIDSSSgvpfi",
+          "trie_node_file_offset": "0x44ea6a5",
+          "flags": 0,
+          "address_offset": "0x1052d28",
+          "demangled": "variable initialization expression of OimeAudio.ASRContext.ImeContext.hostID : Swift.String?"
+        },
+        {
+          "name": "_$s9OimeAudio10ASRContextC14HotwordContextC9frequencys5Int64VSgvpfi",
+          "trie_node_file_offset": "0x44eaaee",
+          "flags": 0,
+          "address_offset": "0x11e13a0",
+          "demangled": "variable initialization expression of OimeAudio.ASRContext.HotwordContext.frequency : Swift.Int64?"
+        }
+      ],
+      "complete_local_source": ".workspace/research/doubao-ios/voice-evidence.json"
+    },
+    {
+      "evidence_id": "IV-07-authconfig",
+      "path": "oime_iOS",
+      "type": "Mach-O export trie names; static declaration, not code flow",
+      "items": [
+        {
+          "name": "_$s9OimeAudio0B17PermissionCheckerC19authorizationStatusSo015AVAuthorizationF0VvgZ",
+          "trie_node_file_offset": "0x44ea54e",
+          "flags": 0,
+          "address_offset": "0x228721c",
+          "demangled": "static OimeAudio.AudioPermissionChecker.authorizationStatus.getter : __C.AVAuthorizationStatus"
+        },
+        {
+          "name": "_$s9OimeAudio0B17PermissionCheckerC5check15completionBlockyySo21AVAuthorizationStatusVc_tFZ",
+          "trie_node_file_offset": "0x44ea56c",
+          "flags": 0,
+          "address_offset": "0x228724c",
+          "demangled": "static OimeAudio.AudioPermissionChecker.check(completionBlock: (__C.AVAuthorizationStatus) -> ()) -> ()"
+        },
+        {
+          "name": "_$s9OimeAudio13SAMIASRConfigV10makeHeaderAC0E0VyFZ",
+          "trie_node_file_offset": "0x44eba2b",
+          "flags": 0,
+          "address_offset": "0x22bf6f0",
+          "demangled": "static OimeAudio.SAMIASRConfig.makeHeader() -> OimeAudio.SAMIASRConfig.Header"
+        },
+        {
+          "name": "_$s9OimeAudio13SAMIASRConfigV20makeOdinTokenJSONStrSSSgyFZ",
+          "trie_node_file_offset": "0x44eba89",
+          "flags": 0,
+          "address_offset": "0x22bf624",
+          "demangled": "static OimeAudio.SAMIASRConfig.makeOdinTokenJSONStr() -> Swift.String?"
+        },
+        {
+          "name": "_$s9OimeAudio13SAMIASRConfigV6HeaderV10sdkVersionSSSgvpfi",
+          "trie_node_file_offset": "0x44ebaca",
+          "flags": 0,
+          "address_offset": "0x1052d28",
+          "demangled": "variable initialization expression of OimeAudio.SAMIASRConfig.Header.sdkVersion : Swift.String?"
+        },
+        {
+          "name": "_$s9OimeAudio13SAMIASRConfigV6HeaderV4fromAEs7Decoder_p_tKcfC",
+          "trie_node_file_offset": "0x44ebad1",
+          "flags": 0,
+          "address_offset": "0x22bf0ec",
+          "demangled": "OimeAudio.SAMIASRConfig.Header.init(from: Swift.Decoder) throws -> OimeAudio.SAMIASRConfig.Header"
+        },
+        {
+          "name": "_$s9OimeAudio13SAMIASRConfigV6HeaderV5xTTEKSSSgvpfi",
+          "trie_node_file_offset": "0x44ebad8",
+          "flags": 0,
+          "address_offset": "0x1052d28",
+          "demangled": "variable initialization expression of OimeAudio.SAMIASRConfig.Header.xTTEK : Swift.String?"
+        },
+        {
+          "name": "_$s9OimeAudio13SAMIASRConfigV6HeaderV6encode2toys7Encoder_p_tKF",
+          "trie_node_file_offset": "0x44ebadf",
+          "flags": 0,
+          "address_offset": "0x22bef04",
+          "demangled": "OimeAudio.SAMIASRConfig.Header.encode(to: Swift.Encoder) throws -> ()"
+        },
+        {
+          "name": "_$s9OimeAudio13SAMIASRConfigV6HeaderV6xTTEnvSSSgvpfi",
+          "trie_node_file_offset": "0x44ebae6",
+          "flags": 0,
+          "address_offset": "0x1052d28",
+          "demangled": "variable initialization expression of OimeAudio.SAMIASRConfig.Header.xTTEnv : Swift.String?"
+        },
+        {
+          "name": "_$s9OimeAudio13SAMIASRConfigV6HeaderV7xUsePPESSSgvpfi",
+          "trie_node_file_offset": "0x44ebb1e",
+          "flags": 0,
+          "address_offset": "0x1052d28",
+          "demangled": "variable initialization expression of OimeAudio.SAMIASRConfig.Header.xUsePPE : Swift.String?"
+        },
+        {
+          "name": "_$s9OimeAudio13SAMIASRConfigV6HeaderV8xTTTokenSSSgvpfi",
+          "trie_node_file_offset": "0x44ebb25",
+          "flags": 0,
+          "address_offset": "0x1052d28",
+          "demangled": "variable initialization expression of OimeAudio.SAMIASRConfig.Header.xTTToken : Swift.String?"
+        },
+        {
+          "name": "_$s9OimeAudio13SAMIASRConfigV9OdinTokenV4fromAEs7Decoder_p_tKcfC",
+          "trie_node_file_offset": "0x44ebbf4",
+          "flags": 0,
+          "address_offset": "0x22bf5b4",
+          "demangled": "OimeAudio.SAMIASRConfig.OdinToken.init(from: Swift.Decoder) throws -> OimeAudio.SAMIASRConfig.OdinToken"
+        },
+        {
+          "name": "_$s9OimeAudio13SAMIASRConfigV9OdinTokenV5appIDSSvpfi",
+          "trie_node_file_offset": "0x44ebbfb",
+          "flags": 0,
+          "address_offset": "0x2222588",
+          "demangled": "variable initialization expression of OimeAudio.SAMIASRConfig.OdinToken.appID : Swift.String"
+        },
+        {
+          "name": "_$s9OimeAudio13SAMIASRConfigV9OdinTokenV6encode2toys7Encoder_p_tKF",
+          "trie_node_file_offset": "0x44ebc02",
+          "flags": 0,
+          "address_offset": "0x22bf478",
+          "demangled": "OimeAudio.SAMIASRConfig.OdinToken.encode(to: Swift.Encoder) throws -> ()"
+        }
+      ],
+      "complete_local_source": ".workspace/research/doubao-ios/voice-evidence.json"
+    },
+    {
+      "evidence_id": "IV-08-ipc",
+      "path": "oime_iOS",
+      "type": "Mach-O export trie names; static declaration, not code flow",
+      "items": [
+        {
+          "name": "_$s7OimeIPC15IPCBridgeMethodC4call5model4lane15callbackTimeout17completionHandleryAA0C5ModelC_AA0C4LaneOSdSgyAJSg_AA0C6StatusCtctF",
+          "trie_node_file_offset": "0x44e19b9",
+          "flags": 0,
+          "address_offset": "0x2378f10",
+          "demangled": "OimeIPC.IPCBridgeMethod.call(model: OimeIPC.IPCBridgeModel, lane: OimeIPC.IPCBridgeLane, callbackTimeout: Swift.Double?, completionHandler: (OimeIPC.IPCBridgeModel?, OimeIPC.IPCBridgeStatus) -> ()) -> ()"
+        },
+        {
+          "name": "_$s7OimeIPC0A10IPCManagerC9postEvent_7messageyAA0A12IPCEventNameO_Se_SEpSgtF",
+          "trie_node_file_offset": "0x44e12fa",
+          "flags": 0,
+          "address_offset": "0x237a97c",
+          "demangled": "OimeIPC.OimeIPCManager.postEvent(_: OimeIPC.OimeIPCEventName, message: (Swift.Decodable & Swift.Encodable)?) -> ()"
+        },
+        {
+          "name": "_$s7OimeIPC0A10IPCManagerC26DarwinNotificationObserverC02onE8Recevied16notificationNameySS_tF",
+          "trie_node_file_offset": "0x44e10eb",
+          "flags": 0,
+          "address_offset": "0x72c0",
+          "demangled": "OimeIPC.OimeIPCManager.DarwinNotificationObserver.onNotificationRecevied(notificationName: Swift.String) -> ()"
+        },
+        {
+          "name": "_$s9OimeAudio22StartASRByOpenURLUtilsC16getParamAndClearAA0cdE13URLParamModelCSgyFZ",
+          "trie_node_file_offset": "0x44f2d84",
+          "flags": 0,
+          "address_offset": "0x22d38d0",
+          "demangled": "static OimeAudio.StartASRByOpenURLUtils.getParamAndClear() -> OimeAudio.StartASRByOpenURLParamModel?"
+        },
+        {
+          "name": "_$s9OimeAudio22StartASRByOpenURLUtilsC10storeParamyyAA0cdE13URLParamModelCFZ",
+          "trie_node_file_offset": "0x44f2d7d",
+          "flags": 0,
+          "address_offset": "0x22d38cc",
+          "demangled": "static OimeAudio.StartASRByOpenURLUtils.storeParam(OimeAudio.StartASRByOpenURLParamModel) -> ()"
+        },
+        {
+          "name": "_$s9OimeAudio27StartASRByOpenURLParamModelC6jumpIDSSvg",
+          "trie_node_file_offset": "0x44f7304",
+          "flags": 0,
+          "address_offset": "0x22d4830",
+          "demangled": "OimeAudio.StartASRByOpenURLParamModel.jumpID.getter : Swift.String"
+        }
+      ],
+      "complete_local_source": ".workspace/research/doubao-ios/voice-evidence.json"
+    },
+    {
+      "evidence_id": "IV-09-plist",
+      "path": "Info.plist",
+      "type": "parsed property list",
+      "fields": {
+        "NSMicrophoneUsageDescription": "请授权设备麦克风，以便进行语音文字识别",
+        "UIBackgroundModes": [
+          "audio",
+          "remote-notification"
+        ],
+        "CFBundleShortVersionString": "1.6.1",
+        "CFBundleVersion": "1060105"
+      },
+      "complete_local_source": ".workspace/research/doubao-ios/voice-evidence.json"
+    },
+    {
+      "evidence_id": "IV-10-sdk",
+      "path": "oime_iOS",
+      "type": "ASCII symbol strings outside encrypted range",
+      "items": [
+        {
+          "offset": "0x4866df7",
+          "text": "__ZN12AsrProcessor14CreateOnWorkerEP25asrContextCreateParameter"
+        },
+        {
+          "offset": "0x4866ee5",
+          "text": "__ZN12AsrProcessor15CreateOffWorkerEv"
+        },
+        {
+          "offset": "0x4866cf3",
+          "text": "__ZN12AsrProcessor12FusionResultE13asrResultTypeRKNSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEES9_RS7_"
+        },
+        {
+          "offset": "0x4866f57",
+          "text": "__ZN12AsrProcessor15OnNetworkChangeE32WSClientDelegate_ConnectionStatePKcS2_"
+        },
+        {
+          "offset": "0x4867267",
+          "text": "__ZN12AsrProcessor21OnNeedSwitchToOfflineEv"
+        },
+        {
+          "offset": "0x48672f2",
+          "text": "__ZN12AsrProcessor22ExecuteOnlyOfflineTaskEv"
+        },
+        {
+          "offset": "0x48673a7",
+          "text": "__ZN12AsrProcessor24OfflineResultPostProcessEv"
+        },
+        {
+          "offset": "0x4867434",
+          "text": "__ZN12AsrProcessor28PutOnlineCacheAudioToOfflineEv"
+        }
+      ],
+      "complete_local_source": ".workspace/research/doubao-ios/voice-evidence.json"
+    },
+    {
+      "evidence_id": "IV-11-resources",
+      "type": "file inventory and byte headers",
+      "items": [
+        {
+          "path": "Frameworks/OimeEngine.framework/OimeEngineResources.bundle/asr/90afacc4f089",
+          "bytes": 7235000,
+          "sha256": "4f62dd763c0e464463dd5442c7e15b21f34284ec2777b29314809c31bceaaf0f",
+          "first48_hex": "002f00009bff340130000000b8656e00d0f807003000000050bf470074bc040080bf470038a62600b8656e0000000000",
+          "format": "opaque data"
+        },
+        {
+          "path": "Frameworks/OimeEngine.framework/OimeEngineResources.bundle/asr/2c57d1948fe3",
+          "bytes": 14134,
+          "sha256": "33a6aeaddaef015b5f18b2aa971d3dee2c870a51982eadfc82b8131cf69ac011",
+          "first48_hex": "102f0000cc2735013000000036370000510300003000000010350000fb00000040350000f60100003637000000000000",
+          "format": "opaque data"
+        },
+        {
+          "path": "Frameworks/OimeEngine.framework/OimeEngineResources.bundle/asr/281be8420195",
+          "bytes": 9292,
+          "sha256": "ce04ead1db78f5a8e1a0bf1dc27f0dfc7a471d138ad71333a2c08c91f34db926",
+          "first48_hex": "fd2e0000cbfe3401300000004c240000ea01000030000000241300007801000054130000f81000004c24000000000000",
+          "format": "opaque data"
+        }
+      ],
+      "complete_local_source": ".workspace/research/doubao-ios/voice-evidence.json"
+    },
+    {
+      "evidence_id": "IV-12-engine",
+      "path": "Frameworks/OimeEngine.framework/OimeEngine",
+      "type": "ASCII symbol strings outside encrypted range",
+      "items": [
+        {
+          "offset": "0x13897eb",
+          "text": "+[ImeEngine(ASR) addASRResultNERResponse:]"
+        },
+        {
+          "offset": "0x138902e",
+          "text": "-[ImeEngine getASRGlobalContext:endTimestamp:]"
+        },
+        {
+          "offset": "0xfa9674",
+          "text": "AsrWordConversionERKNSt3__112basic_stringIDsNS2_11char_traitsIDsEENS2_9allocatorIDsEEEENS_9FuzzyTypeEbbtRNS2_6vectorINS3_IcNS4_IcEENS6_IcEEEENS6_ISF_EEEE"
+        },
+        {
+          "offset": "0x101e422",
+          "text": "AsrUserCorrectDict"
+        },
+        {
+          "offset": "0xf63bd7",
+          "text": "ASRGlobalContext"
+        }
+      ],
+      "complete_local_source": ".workspace/research/doubao-ios/voice-evidence.json"
+    }
+  ],
+  "authorization": {
+    "scope": "Static declarations and complete export trie names; no execution or decrypted code flow evidence.",
+    "IA-03": {
+      "source": "auth-entitlements.json",
+      "xml_sources": [
+        "auth-entitlements-main.plist",
+        "auth-entitlements-KeyboardExtension.plist",
+        "auth-entitlements-KeyboardLiveActivityExtension.plist",
+        "auth-entitlements-NotificationExtension.plist"
+      ]
+    },
+    "IA-04-IA-09": {
+      "source": "main-exports-parsed.json paired with main-export-names-demangled.txt by row",
+      "exports": [
+        {
+          "name": "_$s11OimeStorage04WaveB5GroupC23isLastFullAccessEnabledSbSgvgZ",
+          "trie_node_file_offset": "0x43dc51e",
+          "flags": 0,
+          "address_offset": "0x23efec8",
+          "demangled": "static OimeStorage.WaveStorageGroup.isLastFullAccessEnabled.getter : Swift.Bool?",
+          "source_row_1based": 5223
+        },
+        {
+          "name": "_$s12OimeSettings04UserB0C22isSystemMicrophoneOpenSbvg",
+          "trie_node_file_offset": "0x43e1aca",
+          "flags": 0,
+          "address_offset": "0x23bb3e4",
+          "demangled": "OimeSettings.UserSettings.isSystemMicrophoneOpen.getter : Swift.Bool",
+          "source_row_1based": 6095
+        },
+        {
+          "name": "_$s14FlowAccountSDK0aB15LoginHostConfigV16privacyPolicyURLSSvg",
+          "trie_node_file_offset": "0x43ed4e4",
+          "flags": 0,
+          "address_offset": "0x199dba8",
+          "demangled": "FlowAccountSDK.FlowAccountLoginHostConfig.privacyPolicyURL.getter : Swift.String",
+          "source_row_1based": 7806
+        },
+        {
+          "name": "_$s14FlowAccountSDK0aB15LoginHostConfigV19serviceAgreementURLSSvg",
+          "trie_node_file_offset": "0x43ed500",
+          "flags": 0,
+          "address_offset": "0x199db7c",
+          "demangled": "FlowAccountSDK.FlowAccountLoginHostConfig.serviceAgreementURL.getter : Swift.String",
+          "source_row_1based": 7808
+        },
+        {
+          "name": "_$s14FlowAccountSDK0aB8PlatformC11requestAuth8platform6config5scene9willLogin10completionyAA0abF4TypeO_AA0abF13RequestConfigVAA0abK5SceneOySScSgyAA0ab10ThirdPartyF8ResponseVSg_So7NSErrorCSgtctFZ",
+          "trie_node_file_offset": "0x43f721a",
+          "flags": 0,
+          "address_offset": "0x19dfb30",
+          "demangled": "static FlowAccountSDK.FlowAccountPlatform.requestAuth(platform: FlowAccountSDK.FlowAccountAuthType, config: FlowAccountSDK.FlowAccountAuthRequestConfig, scene: FlowAccountSDK.FlowAccountLoginScene, willLogin: ((Swift.String) -> ())?, completion: (FlowAccountSDK.FlowAccountThirdPartyAuthResponse?, __C.NSError?) -> ()) -> ()",
+          "source_row_1based": 9324
+        },
+        {
+          "name": "_$s14KeyboardRouterAAC13hasFullAccessSbvgZ",
+          "trie_node_file_offset": "0x43f9b20",
+          "flags": 0,
+          "address_offset": "0x1c9d164",
+          "demangled": "static KeyboardRouter.KeyboardRouter.hasFullAccess.getter : Swift.Bool",
+          "source_row_1based": 9657
+        },
+        {
+          "name": "_$s14WaveMainAppKit0A31SystemPermissionsViewControllerC11viewDidLoadyyF",
+          "trie_node_file_offset": "0x448706f",
+          "flags": 0,
+          "address_offset": "0x2b1b868",
+          "demangled": "WaveMainAppKit.WaveSystemPermissionsViewController.viewDidLoad() -> ()",
+          "source_row_1based": 33473
+        },
+        {
+          "name": "_$s14WaveMainAppKit29OpenAccessGuideViewControllerC11viewDidLoadyyF",
+          "trie_node_file_offset": "0x44896c4",
+          "flags": 0,
+          "address_offset": "0x2a5fca8",
+          "demangled": "WaveMainAppKit.OpenAccessGuideViewController.viewDidLoad() -> ()",
+          "source_row_1based": 33665
+        },
+        {
+          "name": "_$s22WaveAccountSessionSync0abC10CredentialV4fromACs7Decoder_p_tKcfC",
+          "trie_node_file_offset": "0x44a9a02",
+          "flags": 0,
+          "address_offset": "0x298a80c",
+          "demangled": "WaveAccountSessionSync.WaveAccountSessionCredential.init(from: Swift.Decoder) throws -> WaveAccountSessionSync.WaveAccountSessionCredential",
+          "source_row_1based": 38516
+        },
+        {
+          "name": "_$s22WaveAccountSessionSync0abC10CredentialV7cookiesSDyS2SGvg",
+          "trie_node_file_offset": "0x44a9a17",
+          "flags": 0,
+          "address_offset": "0x19e41c8",
+          "demangled": "WaveAccountSessionSync.WaveAccountSessionCredential.cookies.getter : [Swift.String : Swift.String]",
+          "source_row_1based": 38519
+        },
+        {
+          "name": "_$s22WaveAccountSessionSync0abC10CredentialV8xTtToken7cookies11updatedAtMsACSSSg_SDyS2SGs5Int64VtcfC",
+          "trie_node_file_offset": "0x44a9a44",
+          "flags": 0,
+          "address_offset": "0x72c0",
+          "demangled": "WaveAccountSessionSync.WaveAccountSessionCredential.init(xTtToken: Swift.String?, cookies: [Swift.String : Swift.String], updatedAtMs: Swift.Int64) -> WaveAccountSessionSync.WaveAccountSessionCredential",
+          "source_row_1based": 38522
+        },
+        {
+          "name": "_$s22WaveAccountSessionSync0abC10CredentialV8xTtTokenSSSgvg",
+          "trie_node_file_offset": "0x44a9a51",
+          "flags": 0,
+          "address_offset": "0x19b9118",
+          "demangled": "WaveAccountSessionSync.WaveAccountSessionCredential.xTtToken.getter : Swift.String?",
+          "source_row_1based": 38524
+        },
+        {
+          "name": "_$s22WaveAccountSessionSync0abC11PublicStateV13hasCredential12userSnapshot04lastB2ID14accountVersion06logoutN017keyboardFirstBeat21credentialUpdatedAtMs0kruV00k13UserInfoFetchuV0ACSb_AA0abwJ0VSgSSSgs5Int64VARSbARSgA2StcfC",
+          "trie_node_file_offset": "0x44a9ce2",
+          "flags": 0,
+          "address_offset": "0x298a9d0",
+          "demangled": "WaveAccountSessionSync.WaveAccountSessionPublicState.init(hasCredential: Swift.Bool, userSnapshot: WaveAccountSessionSync.WaveAccountUserSnapshot?, lastAccountID: Swift.String?, accountVersion: Swift.Int64, logoutVersion: Swift.Int64, keyboardFirstBeat: Swift.Bool, credentialUpdatedAtMs: Swift.Int64?, lastBeatAtMs: Swift.Int64?, lastUserInfoFetchAtMs: Swift.Int64?) -> WaveAccountSessionSync.WaveAccountSessionPublicState",
+          "source_row_1based": 38549
+        },
+        {
+          "name": "_$s22WaveAccountSessionSync0abC11PublicStateV13hasCredentialSbvg",
+          "trie_node_file_offset": "0x44a9cf0",
+          "flags": 0,
+          "address_offset": "0x19e3c24",
+          "demangled": "WaveAccountSessionSync.WaveAccountSessionPublicState.hasCredential.getter : Swift.Bool",
+          "source_row_1based": 38551
+        },
+        {
+          "name": "_$s22WaveAccountSessionSync0abC11PublicStateV13logoutVersions5Int64Vvg",
+          "trie_node_file_offset": "0x44a9dd2",
+          "flags": 0,
+          "address_offset": "0x298a92c",
+          "demangled": "WaveAccountSessionSync.WaveAccountSessionPublicState.logoutVersion.getter : Swift.Int64",
+          "source_row_1based": 38555
+        },
+        {
+          "name": "_$s22WaveAccountSessionSync0abC11PublicStateV14accountVersions5Int64Vvg",
+          "trie_node_file_offset": "0x44a9e33",
+          "flags": 0,
+          "address_offset": "0x298a91c",
+          "demangled": "WaveAccountSessionSync.WaveAccountSessionPublicState.accountVersion.getter : Swift.Int64",
+          "source_row_1based": 38559
+        },
+        {
+          "name": "_$s22WaveAccountSessionSync0abC11PublicStateV17keyboardFirstBeatSbvg",
+          "trie_node_file_offset": "0x44a9e67",
+          "flags": 0,
+          "address_offset": "0x298a94c",
+          "demangled": "WaveAccountSessionSync.WaveAccountSessionPublicState.keyboardFirstBeat.getter : Swift.Bool",
+          "source_row_1based": 38563
+        },
+        {
+          "name": "_$s22WaveAccountSessionSync0abC11PublicStateV4fromACs7Decoder_p_tKcfC",
+          "trie_node_file_offset": "0x44a9fe2",
+          "flags": 0,
+          "address_offset": "0x298b0c0",
+          "demangled": "WaveAccountSessionSync.WaveAccountSessionPublicState.init(from: Swift.Decoder) throws -> WaveAccountSessionSync.WaveAccountSessionPublicState",
+          "source_row_1based": 38577
+        },
+        {
+          "name": "_$s22WaveAccountSessionSync0abC13ConfigurationV7baseURL10appGroupID014keychainAccessI0AC10Foundation0G0V_S2SSgtcfC",
+          "trie_node_file_offset": "0x44aa130",
+          "flags": 0,
+          "address_offset": "0x2989af4",
+          "demangled": "WaveAccountSessionSync.WaveAccountSessionConfiguration.init(baseURL: Foundation.URL, appGroupID: Swift.String, keychainAccessGroup: Swift.String?) -> WaveAccountSessionSync.WaveAccountSessionConfiguration",
+          "source_row_1based": 38591
+        },
+        {
+          "name": "_$s22WaveAccountSessionSyncAAC06ensureC05sceneAA0abC6ResultVAA0abC5SceneO_tYaF",
+          "trie_node_file_offset": "0x44aa4cc",
+          "flags": 0,
+          "address_offset": "0x299a4dc",
+          "demangled": "WaveAccountSessionSync.WaveAccountSessionSync.ensureSession(scene: WaveAccountSessionSync.WaveAccountSessionScene) async -> WaveAccountSessionSync.WaveAccountSessionResult",
+          "source_row_1based": 38623
+        },
+        {
+          "name": "_$s22WaveAccountSessionSyncAAC06ensureC05sceneAA0abC6ResultVAA0abC5SceneO_tYaFTu",
+          "trie_node_file_offset": "0x44aa4c5",
+          "flags": 0,
+          "address_offset": "0x3869870",
+          "demangled": "async function pointer to WaveAccountSessionSync.WaveAccountSessionSync.ensureSession(scene: WaveAccountSessionSync.WaveAccountSessionScene) async -> WaveAccountSessionSync.WaveAccountSessionResult",
+          "source_row_1based": 38624
+        },
+        {
+          "name": "_$s22WaveAccountSessionSyncAAC12syncFromHost10credential12userSnapshotyAA0abC10CredentialV_AA0ab4UserJ0VSgtKF",
+          "trie_node_file_offset": "0x44aa52c",
+          "flags": 0,
+          "address_offset": "0x29981fc",
+          "demangled": "WaveAccountSessionSync.WaveAccountSessionSync.syncFromHost(credential: WaveAccountSessionSync.WaveAccountSessionCredential, userSnapshot: WaveAccountSessionSync.WaveAccountUserSnapshot?) throws -> ()",
+          "source_row_1based": 38626
+        },
+        {
+          "name": "_$s22WaveAccountSessionSyncAAC13clearFromHost015shouldClearLastB2IDySb_tKF",
+          "trie_node_file_offset": "0x44aa533",
+          "flags": 0,
+          "address_offset": "0x299a08c",
+          "demangled": "WaveAccountSessionSync.WaveAccountSessionSync.clearFromHost(shouldClearLastAccountID: Swift.Bool) throws -> ()",
+          "source_row_1based": 38627
+        },
+        {
+          "name": "_$s22WaveAccountSessionSyncAAC15currentXTTTokenSSSgyF",
+          "trie_node_file_offset": "0x44aa53a",
+          "flags": 0,
+          "address_offset": "0x29980d0",
+          "demangled": "WaveAccountSessionSync.WaveAccountSessionSync.currentXTTToken() -> Swift.String?",
+          "source_row_1based": 38628
+        },
+        {
+          "name": "_$s22WaveAccountSessionSyncAAC18currentPublicStateAA0abcfG0VSgyF",
+          "trie_node_file_offset": "0x44aa664",
+          "flags": 0,
+          "address_offset": "0x2997cb4",
+          "demangled": "WaveAccountSessionSync.WaveAccountSessionSync.currentPublicState() -> WaveAccountSessionSync.WaveAccountSessionPublicState?",
+          "source_row_1based": 38634
+        },
+        {
+          "name": "_$s22WaveAccountSessionSyncAAC19currentUserSnapshotAA0abfG0VSgyF",
+          "trie_node_file_offset": "0x44aa6e4",
+          "flags": 0,
+          "address_offset": "0x2997b14",
+          "demangled": "WaveAccountSessionSync.WaveAccountSessionSync.currentUserSnapshot() -> WaveAccountSessionSync.WaveAccountUserSnapshot?",
+          "source_row_1based": 38635
+        },
+        {
+          "name": "_$s22WaveAccountSessionSyncAAC21currentRequestHeadersSDyS2SGyF",
+          "trie_node_file_offset": "0x44aa809",
+          "flags": 0,
+          "address_offset": "0x2998194",
+          "demangled": "WaveAccountSessionSync.WaveAccountSessionSync.currentRequestHeaders() -> [Swift.String : Swift.String]",
+          "source_row_1based": 38637
+        },
+        {
+          "name": "_$s9OimeAudio0B17PermissionCheckerC19authorizationStatusSo015AVAuthorizationF0VvgZ",
+          "trie_node_file_offset": "0x44ea54e",
+          "flags": 0,
+          "address_offset": "0x228721c",
+          "demangled": "static OimeAudio.AudioPermissionChecker.authorizationStatus.getter : __C.AVAuthorizationStatus",
+          "source_row_1based": 50086
+        },
+        {
+          "name": "_$s9OimeAudio0B17PermissionCheckerC5check15completionBlockyySo21AVAuthorizationStatusVc_tFZ",
+          "trie_node_file_offset": "0x44ea56c",
+          "flags": 0,
+          "address_offset": "0x228724c",
+          "demangled": "static OimeAudio.AudioPermissionChecker.check(completionBlock: (__C.AVAuthorizationStatus) -> ()) -> ()",
+          "source_row_1based": 50088
+        }
+      ]
+    },
+    "signed_entitlements": {
+      ".": {
+        "application-identifier": "96L78H6LMH.com.bytedance.ios.doubaoime",
+        "aps-environment": "production",
+        "com.apple.developer.associated-domains": [
+          "applinks:shurufa.doubao.com",
+          "applinks:ime.doubao.com"
+        ],
+        "com.apple.developer.team-identifier": "96L78H6LMH",
+        "com.apple.security.application-groups": [
+          "group.com.bytedance.ios.doubaoime"
+        ],
+        "keychain-access-groups": [
+          "96L78H6LMH.com.bytedance.ios.doubaoime.account",
+          "96L78H6LMH.chainlogin"
+        ]
+      },
+      "PlugIns/KeyboardExtension.appex": {
+        "application-identifier": "96L78H6LMH.com.bytedance.ios.doubaoime.keyboardExtension",
+        "com.apple.developer.team-identifier": "96L78H6LMH",
+        "com.apple.security.application-groups": [
+          "group.com.bytedance.ios.doubaoime"
+        ],
+        "keychain-access-groups": [
+          "96L78H6LMH.com.bytedance.ios.doubaoime.account"
+        ]
+      },
+      "PlugIns/KeyboardLiveActivityExtension.appex": {
+        "application-identifier": "96L78H6LMH.com.bytedance.ios.doubaoime.liveActivityExtension",
+        "com.apple.developer.team-identifier": "96L78H6LMH"
+      },
+      "PlugIns/NotificationExtension.appex": {
+        "application-identifier": "96L78H6LMH.com.bytedance.ios.doubaoime.notificationExtension",
+        "com.apple.developer.team-identifier": "96L78H6LMH",
+        "com.apple.security.application-groups": [
+          "group.com.bytedance.ios.doubaoime"
+        ]
+      }
+    }
+  },
+  "keyboard": [
+    {
+      "evidence_id": "IK-03",
+      "path": "PlugIns/KeyboardExtension.appex/KeyboardExtension",
+      "type": "reconstructed export trie declarations",
+      "items": [
+        {
+          "name": "_$s15OimeKeyboardKit0B14ViewControllerC10insertText4text6pinyin4modeySS_SSAA06InsertG4ModeOSgtF",
+          "flags": 0,
+          "address": "0x1206a98",
+          "trie_node_offset": "0x1eec714"
+        },
+        {
+          "name": "_$s15OimeKeyboardKit0B14ViewControllerC13setMarkedTextyySSF",
+          "flags": 0,
+          "address": "0x1207368",
+          "trie_node_offset": "0x1eecb02"
+        },
+        {
+          "name": "_$s15OimeKeyboardKit0B14ViewControllerC14deleteBackward0F4TypeSbAA06DeleteH0O_tF",
+          "flags": 0,
+          "address": "0x120595c",
+          "trie_node_offset": "0x1eecbf9"
+        },
+        {
+          "name": "_$s15OimeKeyboardKit0B14ViewControllerC19onCandidateSelected9candidate011isAssociateG012appendedText13commitTriggery0A6Engine0G8Protocol_p_SbSSSgAA0bG7TrackerC06CommitO0OtF",
+          "flags": 0,
+          "address": "0xfc0e18",
+          "trie_node_offset": "0x1eed811"
+        },
+        {
+          "name": "_$s15OimeKeyboardKit0B14ViewControllerC13onUserInputed4text12bypassEngineySS_SbtF",
+          "flags": 0,
+          "address": "0x1202724",
+          "trie_node_offset": "0x1eecaf4"
+        },
+        {
+          "name": "_$s15OimeKeyboardKit0B14ViewControllerC19onMarkedTextChanged4text015inputBoxDisplayH0ySS_SStF",
+          "flags": 0,
+          "address": "0x120ecbc",
+          "trie_node_offset": "0x1eed818"
+        },
+        {
+          "name": "_$s15OimeKeyboardKit0B14ViewControllerC25documentContextAfterInputSSSgvg",
+          "flags": 0,
+          "address": "0x1206898",
+          "trie_node_offset": "0x1eee3bd"
+        },
+        {
+          "name": "_$s15OimeKeyboardKit0B14ViewControllerC26documentContextBeforeInputSSSgvg",
+          "flags": 0,
+          "address": "0x11f84d8",
+          "trie_node_offset": "0x1eee4ec"
+        },
+        {
+          "name": "_$s15OimeKeyboardKit0B14ViewControllerC38syncMarkedTextToFirstResponderIfNeeded33_D7552F41D49CCEDAA9DF23CFCF452C70LLyyF",
+          "flags": 0,
+          "address": "0x12077a8",
+          "trie_node_offset": "0x1eeefe2"
+        },
+        {
+          "name": "_$s15OimeKeyboardKit0B14ViewControllerC31cachedInputBoxDisplayMarkedTextSSvg",
+          "flags": 0,
+          "address": "0xfc0e18",
+          "trie_node_offset": "0x1eeebeb"
+        }
+      ]
+    },
+    {
+      "evidence_id": "IK-04",
+      "path": "Frameworks/OimeEngine.framework/OimeEngine",
+      "type": "reconstructed export trie declarations",
+      "items": [
+        {
+          "name": "_$s10OimeEngineAAC5setup11sysDictPath04usereF0SbSSSg_AFtF",
+          "flags": 0,
+          "address": "0x259ec",
+          "trie_node_offset": "0xf5c2bd"
+        },
+        {
+          "name": "_$s10OimeEngineAAC6commit13absoluteIndexAB12CommitResultVSgSu_tF",
+          "flags": 0,
+          "address": "0x268b4",
+          "trie_node_offset": "0xf5c2cf"
+        },
+        {
+          "name": "_$s10OimeEngineAAC6commit9candidate6pinyinAB12CommitResultVSgAA9CandidateC_SStF",
+          "flags": 0,
+          "address": "0x26eb4",
+          "trie_node_offset": "0xf5c2e1"
+        },
+        {
+          "name": "_$s10OimeEngineAAC7convert5input6paramsAA9CandidateCSgSS_So0A13ConvertParamsCSgtF",
+          "flags": 0,
+          "address": "0x260e0",
+          "trie_node_offset": "0xf5c423"
+        },
+        {
+          "name": "_$s10OimeEngineAAC12CommitResultV13convertRemainSSSgvg",
+          "flags": 0,
+          "address": "0x20c04",
+          "trie_node_offset": "0xf5b698"
+        },
+        {
+          "name": "_$s10OimeEngineAAC12CommitResultV17selectedCandidateAA0F0CSgvg",
+          "flags": 0,
+          "address": "0x26854",
+          "trie_node_offset": "0xf5b6db"
+        }
+      ]
+    },
+    {
+      "evidence_id": "IK-06",
+      "path": "Frameworks/OimeEngine.framework/OimeEngine",
+      "type": "reconstructed export trie declarations",
+      "items": [
+        {
+          "name": "_$s10OimeEngineAAC19getCloudRequestData13precedingTextSSSgSS_tF",
+          "flags": 0,
+          "address": "0x29a70",
+          "trie_node_offset": "0xf5be2b"
+        },
+        {
+          "name": "_$s10OimeEngineAAC24parseCloudAndLLMResponse13cloudResponse03llmH013precedingText8onTiming17sessionLLMEnabledySS_S2SSiSbtF",
+          "flags": 0,
+          "address": "0x27cc8",
+          "trie_node_offset": "0xf5c037"
+        }
+      ]
+    },
+    {
+      "evidence_id": "IK-09",
+      "path": "PlugIns/KeyboardExtension.appex/KeyboardExtension",
+      "type": "reconstructed export trie declarations",
+      "items": [
+        {
+          "name": "_$s12OimeSettings04UserB0C19currentKeyboardTypeAC0eF0Ovg",
+          "flags": 0,
+          "address": "0x132d648",
+          "trie_node_offset": "0x1ee3ed9"
+        },
+        {
+          "name": "_$s12OimeSettings04UserB0C21T26KeyboardLayoutModeOMn",
+          "flags": 0,
+          "address": "0x1a5f9fc",
+          "trie_node_offset": "0x1ee4472"
+        },
+        {
+          "name": "_$s12OimeSettings04UserB0C21keyboardEngLayoutModeAC08KeyboardefG0Ovg",
+          "flags": 0,
+          "address": "0x13348cc",
+          "trie_node_offset": "0x1ee4853"
+        },
+        {
+          "name": "_$s12OimeSettings04UserB0C22currentShuangpinSchemeAC0eF0Ovg",
+          "flags": 0,
+          "address": "0x132e19c",
+          "trie_node_offset": "0x1ee4b77"
+        },
+        {
+          "name": "_$s12OimeSettings04UserB0C09wubiInputB0AA04WubieB0Vvg",
+          "flags": 0,
+          "address": "0x132d068",
+          "trie_node_offset": "0x1ee309d"
+        }
+      ]
+    },
+    {
+      "evidence_id": "IK-02",
+      "path": "PlugIns/KeyboardExtension.appex/KeyboardExtension",
+      "type": "nlist symbols; names do not establish call flow",
+      "items": [
+        {
+          "name": "_OBJC_CLASS_$_UIInputViewController",
+          "type": "0x1",
+          "section": 0,
+          "address": "0x0",
+          "string_offset": "0x2108945"
+        },
+        {
+          "name": "_OBJC_CLASS_$__TtC15OimeKeyboardKit22KeyboardViewController",
+          "type": "0xf",
+          "section": 50,
+          "address": "0x101e1d1e8",
+          "string_offset": "0x2063a69"
+        },
+        {
+          "name": "_OBJC_CLASS_$__TtC15OimeKeyboardKit34SingleLineCandidatesViewController",
+          "type": "0xf",
+          "section": 50,
+          "address": "0x101e1de20",
+          "string_offset": "0x2063aec"
+        }
+      ]
+    },
+    {
+      "evidence_id": "IK-05",
+      "path": "Frameworks/OimeEngine.framework/OimeEngine",
+      "type": "nlist symbols; names do not establish call flow",
+      "items": [
+        {
+          "name": "__ZN11oime_engine6pinyin15SyllableLattice19CreatePinYinLatticeERKNS_12SyllableDictENS_11CorrectTypeENS_9FuzzyTypeEbb",
+          "type": "0x24",
+          "section": 1,
+          "address": "0x77e6ac",
+          "string_offset": "0x12baed1"
+        },
+        {
+          "name": "__ZN11oime_engine6pinyin15SyllableLattice23CreatePinYinLattice9KeyERKNS_12SyllableDictENS_11CorrectTypeENS_9FuzzyTypeEbbj",
+          "type": "0x24",
+          "section": 1,
+          "address": "0x780178",
+          "string_offset": "0x12bb11a"
+        },
+        {
+          "name": "__ZN11oime_engine6pinyin15SyllableLattice22CreateShuangPinLatticeERKNSt3__112basic_stringIcNS2_11char_traitsIcEENS2_9allocatorIcEEEERKNS_12SyllableDictERKNS0_9ShuangPinENS_9FuzzyTypeEb",
+          "type": "0x24",
+          "section": 1,
+          "address": "0x781790",
+          "string_offset": "0x12bb061"
+        },
+        {
+          "name": "__ZN11oime_engine6pinyin15SyllableLattice32CreateIntelligentFuzzyPinLatticeERKNSt3__112basic_stringIcNS2_11char_traitsIcEENS2_9allocatorIcEEEERKNS_12SyllableDictENS_11CorrectTypeE",
+          "type": "0x24",
+          "section": 1,
+          "address": "0x7820ac",
+          "string_offset": "0x12bb413"
+        },
+        {
+          "name": "__ZN11oime_engine6pinyin6Engine13PinYinConvertERNS_16ConvertParamsOutE",
+          "type": "0x24",
+          "section": 1,
+          "address": "0x6dce64",
+          "string_offset": "0x12c0ab4"
+        },
+        {
+          "name": "__ZN11oime_engine6pinyin6Engine14SearchUserDictERKNS_12KeyboardTypeERKNS0_15SyllableLatticeERbbRNS0_15CandidateUniqueERj",
+          "type": "0x24",
+          "section": 1,
+          "address": "0x704f94",
+          "string_offset": "0x12c0c63"
+        },
+        {
+          "name": "__ZN11oime_engine6pinyin11new_session24SortCandidatesByMLPModelERNSt3__16vectorIPNS0_14CandidateInnerENS2_9allocatorIS5_EEEE",
+          "type": "0x24",
+          "section": 1,
+          "address": "0x6589e4",
+          "string_offset": "0x12b711d"
+        },
+        {
+          "name": "__ZN11oime_engine6pinyin11new_session23EvaluateLocalConfidenceEPNS0_14CandidateInnerE",
+          "type": "0x24",
+          "section": 1,
+          "address": "0x650218",
+          "string_offset": "0x12b6e9f"
+        },
+        {
+          "name": "__ZN11oime_engine6pinyin13PyDictManager7DictRefINS0_7SysDictEEERT_v",
+          "type": "0x1e",
+          "section": 1,
+          "address": "0x58c7a0",
+          "string_offset": "0x14d3afb"
+        },
+        {
+          "name": "__ZN11oime_engine6pinyin13PyDictManager7DictRefINS0_7UsrDictEEERT_v",
+          "type": "0x1e",
+          "section": 1,
+          "address": "0x6da5ec",
+          "string_offset": "0x1526a2f"
+        },
+        {
+          "name": "__ZN11oime_engine6pinyin13PyDictManager7DictRefINS0_13UsrBigramDictEEERT_v",
+          "type": "0x1e",
+          "section": 1,
+          "address": "0x6da7a4",
+          "string_offset": "0x1526b15"
+        },
+        {
+          "name": "__ZN11oime_engine6pinyin13PyDictManager7DictRefINS0_11CorrectDictEEERT_v",
+          "type": "0x1e",
+          "section": 1,
+          "address": "0x66d500",
+          "string_offset": "0x1514d22"
+        },
+        {
+          "name": "__ZN11oime_engine6pinyin13PyDictManager7DictRefINS_16AsrCharErrorDictEEERT_v",
+          "type": "0x1e",
+          "section": 1,
+          "address": "0x6f49a8",
+          "string_offset": "0x1527219"
+        },
+        {
+          "name": "__ZN11oime_engine6pinyin13PyDictManager7DictRefINS_9clipboard13ClipboardDictEEERT_v",
+          "type": "0x1e",
+          "section": 1,
+          "address": "0x6ef644",
+          "string_offset": "0x1527125"
+        }
+      ]
+    },
+    {
+      "evidence_id": "IK-06-native",
+      "path": "Frameworks/OimeEngine.framework/OimeEngine",
+      "type": "nlist symbols; names do not establish call flow",
+      "items": [
+        {
+          "name": "__ZN11oime_engine6pinyin11new_session20MergeStrategySession25MergeCloudAndLocalFeatureERNS0_6ResultE",
+          "type": "0x24",
+          "section": 1,
+          "address": "0x652684",
+          "string_offset": "0x12b69e4"
+        },
+        {
+          "name": "__ZN11oime_engine6pinyin6Engine24ParseCloudAndLLMResponseERKNSt3__112basic_stringIcNS2_11char_traitsIcEENS2_9allocatorIcEEEESA_SA_NS_24CandRefreshTimePointTypeEbRNS_6KErrnoE",
+          "type": "0x24",
+          "section": 1,
+          "address": "0x6fdcc4",
+          "string_offset": "0x12c1ed8"
+        }
+      ]
+    },
+    {
+      "evidence_id": "IK-07",
+      "path": "Frameworks/OimeEngine.framework/OimeEngine",
+      "type": "nlist symbols; names do not establish call flow",
+      "items": [
+        {
+          "name": "__ZN11oime_engine11handwriting11HandWriting20RunStrokeRecognitionERKNSt3__16vectorINS2_4pairIiiEENS2_9allocatorIS5_EEEERKNS1_11StrokeFrameE",
+          "type": "0x24",
+          "section": 1,
+          "address": "0x7e70e0",
+          "string_offset": "0x1299a3b"
+        },
+        {
+          "name": "__ZN11oime_engine11handwriting11HandWriting25RecognizeContinuousStrokeERKNSt3__16vectorINS2_4pairIiiEENS2_9allocatorIS5_EEEE",
+          "type": "0x24",
+          "section": 1,
+          "address": "0x7ec150",
+          "string_offset": "0x129a280"
+        },
+        {
+          "name": "__ZN11oime_engine11handwriting11HandWriting22RecognizeOverlapStrokeERKNSt3__16vectorINS2_4pairIiiEENS2_9allocatorIS5_EEEEj",
+          "type": "0x24",
+          "section": 1,
+          "address": "0x7ebd4c",
+          "string_offset": "0x1299d07"
+        },
+        {
+          "name": "__ZN11oime_engine11handwriting11HandWriting23RunHandWritingInferenceERKNSt3__16vectorIhNS2_9allocatorIhEEEEjjj",
+          "type": "0x24",
+          "section": 1,
+          "address": "0x7ee140",
+          "string_offset": "0x1299e58"
+        },
+        {
+          "name": "__ZN11oime_engine11handwriting23HandWritingCrnnPipeline9LoadModelERKNSt3__112basic_stringIcNS2_11char_traitsIcEENS2_9allocatorIcEEEE",
+          "type": "0x24",
+          "section": 1,
+          "address": "0x805fdc",
+          "string_offset": "0x129e16f"
+        },
+        {
+          "name": "__ZN11oime_engine11handwriting16HandWritingModel9LoadModelERKNSt3__112basic_stringIcNS2_11char_traitsIcEENS2_9allocatorIcEEEE",
+          "type": "0x24",
+          "section": 1,
+          "address": "0x806258",
+          "string_offset": "0x129c875"
+        },
+        {
+          "name": "__ZN11oime_engine11handwriting16HandWritingModel9InferenceERKNSt3__16vectorIhNS2_9allocatorIhEEEEjj",
+          "type": "0x24",
+          "section": 1,
+          "address": "0x806bec",
+          "string_offset": "0x129c6e3"
+        }
+      ]
+    },
+    {
+      "evidence_id": "IK-08",
+      "path": "Frameworks/OimeCommon.framework/OimeCommon",
+      "type": "nlist symbols; names do not establish call flow",
+      "items": [
+        {
+          "name": "_$sSo14NSUserDefaultsC10OimeCommonE9oimeGroupABSgvgZ",
+          "type": "0x24",
+          "section": 1,
+          "address": "0x1ccd0",
+          "string_offset": "0x4d1fb"
+        },
+        {
+          "name": "_$s10OimeCommon7AppInfoO10appGroupIdSSvgZ",
+          "type": "0x24",
+          "section": 1,
+          "address": "0x887c",
+          "string_offset": "0x4bfb5"
+        }
+      ]
+    }
+  ],
+  "validation": {
+    "selected_metadata_locations_outside_encryption_verified": 167,
+    "nlist_and_literal_strings_byte_verified": true,
+    "export_names_source": "Complete original-byte export tries; node locations checked against encryption ranges. Target addresses are not interpreted as plaintext code."
+  },
+  "limitations": [
+    "All 12 Mach-O images declare cryptid=1. No reliable code flow recovered.",
+    "Exported APIs, native symbols and data models are shipped surfaces, not runtime selection or upload evidence.",
+    "Opaque ASR resources do not identify a complete acoustic model.",
+    "Native REA inspect_macho failed when dyld_info rejected an initializer offset; retained in local rea-engine-macho.json.",
+    "No device runtime, packet capture, latency/accuracy measurement, Keychain access-control recovery or server-side validation."
+  ]
+}

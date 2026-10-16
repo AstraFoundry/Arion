@@ -2,6 +2,7 @@
 
 - [Typeless ledger](typeless-static.json) — compact derivative of actual REA analysis plus ordinary shell artifact findings; includes original Evidence IDs, SHA-256, offsets and coverage limitations.
 - [Doubao ledger](doubao-static.json) — ordinary shell static observations; locally assigned DS identifiers, not REA Evidence.
+- [Doubao iOS ledger](doubao-ios.json) — REA IPA inventory/property-list Evidence IDs and byte-checked local export/symbol, permission, entitlement, voice and keyboard observations; encrypted instruction bodies and runtime policy remain unresolved.
 - [Phonetic ASR ledger](phonetic-asr.json) — matched REA artifact identities, bounded phonetic/N-best searches, excluded TTS/tokenizer false leads and reused Chatterfly payload instructions.
 - [Doubao decompiled ledger](doubao-decompiled.json) — REA 6.4.0 + Ghidra 12.1.4 Evidence IDs for five decompiled main-executable functions (insertion gates, clipboard handoff, commit strategy, fn long-press), the reference-recovery method and unresolved questions. Decompiled code itself is not committed.
 - [Chatterfly ledger](chatterfly-rewrite.json) — installer/archive identities and focused native post-processing evidence with explicit limitations.

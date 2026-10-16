@@ -4,6 +4,7 @@ Research separates **observed shipped artifacts**, **static inferences**, **vend
 
 - [Typeless](typeless.md) — installed Electron artifact and audio/context/delivery surfaces.
 - [Doubao](doubao.md) — installed native IMK artifact, online/offline ASR and composition surfaces.
+- [Doubao iOS](doubao-ios.md) — App Store IPA voice/keyboard split, permission and account synchronization declarations, native typing engine and FairPlay evidence limits.
 - [Chatterfly](chatterfly.md) — installer payload and native scenario-aware post-processing paths.
 - [Keyboard input methods](keyboard-ime.md) — Doubao/Chatterfly native Pinyin decoding, local candidate ranking, conditional model/cloud enhancement and composition/commit evidence.
 - [Installed Chatterfly keyboard](chatterfly-installed-keyboard.md) — matching installed bytes, XNet loaders, model enablement, bounded provisioning search, stored cloud preference and real keyboard probes.
