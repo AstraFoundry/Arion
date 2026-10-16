@@ -61,7 +61,7 @@ make install        # install the pinned pnpm workspace (--frozen-lockfile)
 make check          # docs, JSON, Go layer boundaries, core/sync and evaluation tests
 make desktop-check  # desktop tests and go vet (cgo)
 make desktop-dev    # stage native runtimes and launch the desktop app in dev mode
-make desktop-build  # package Arion.app and a DMG under apps/desktop/build/
+make build desktop  # package Arion.app and a DMG under apps/desktop/build/
 make e2e            # native window lifecycle E2E on a real desktop session
 make e2e-macos      # owned product scenarios against the packaged Arion.app
 make site-check     # marketing site (apps/site): i18n, types, lint, tests, static export

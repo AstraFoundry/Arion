@@ -18,9 +18,9 @@ The macOS package requires macOS 14 or later. Its bundled polishing ONNX Runtime
 
 The package identifiers are `si.astrafoundry.arion` and `si.astrafoundry.arion.inputmethod`; the IMK input-source ID adds `.voice`. Changing from development identifiers requires a fresh permission grant and removal of the old input source through the older build before testing the new one. Local user data paths have not been migrated.
 
-macOS packages currently use ad hoc signing. Developer ID signing, Apple notarization and Windows publisher signing are pending credentials and integration; these packages are for preview testing. Updating an ad hoc build can require granting privacy permissions again. A valid ad hoc signature does not establish Gatekeeper approval.
+Ordinary macOS builds use ad hoc signing. Complete Apple environment configuration enables Developer ID signing and notarization through the same build entry point; tagged CI builds require it. Credentialed signing/notarization and clean-machine acceptance still require a real run; automated orchestration tests alone do not establish either. Windows publisher signing remains unimplemented. Updating an ad hoc build can require granting privacy permissions again. A valid ad hoc signature does not establish Gatekeeper approval.
 
-Tagged release jobs require a matching Ed25519 update key and verify every platform's archive size and signature before upload. That key is independent of Apple certificates. Without it, ordinary CI still produces installer artifacts; the release job fails before creating a draft. Drafts and prereleases are not offered by the app's updater. Publishing remains a manual decision after acceptance.
+Tagged releases require a matching Ed25519 update key and Apple signing/notarization credentials, and verify every platform's archive size and signature before upload. The update key is independent of Apple certificates. Without release credentials, ordinary CI still produces installer artifacts; the release job fails before creating a draft. Drafts and prereleases are not offered by the app's updater. Publishing remains a manual decision after acceptance.
 
 ## Acceptance before broad distribution
 

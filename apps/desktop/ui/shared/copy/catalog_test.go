@@ -265,7 +265,7 @@ func TestHardcodedCopyGateFindsLabels(t *testing.T) {
 }
 
 func TestNativePermissionMetadata(t *testing.T) {
-	data, err := os.ReadFile("../../../mygo.json")
+	data, err := os.ReadFile("../../../desktop.json")
 	if err != nil {
 		t.Fatal(err)
 	}

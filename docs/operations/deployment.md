@@ -2,25 +2,56 @@
 
 ## Current capability
 
-`make desktop-build` packages `Arion.app` (menu bar app, `LSUIElement`), localized microphone descriptions, the audio-input entitlement, speech runtime libraries, the IMK host, and its disk image. Apple silicon also ships the pinned local-polishing worker and GenAI runtime. The macOS package minimum is 14.0, matching the highest minimum in the bundled native libraries.
+`make build desktop` packages `Arion.app` (menu bar app, `LSUIElement`), localized microphone descriptions, the audio-input entitlement, speech runtime libraries, the IMK host, and its disk image. Apple silicon also ships the pinned local-polishing worker and GenAI runtime. The macOS package minimum is 14.0, matching the highest minimum in the bundled native libraries.
 
 `scripts/desktop-command.mjs` is the shared local/CI build entry point and sets the configured minimum OS in cgo compiler/linker flags. Its `scripts/stage-desktop-resources.mjs` preparation step includes Go module licenses, native runtime licenses/notices and model provenance. `scripts/cc-relocatable.sh` drops build-machine rpaths at link time. The read-only `scripts/verify-desktop-package.mjs` checks required resources, architectures, package identities/versions, native minimum OS versions and macOS signatures/rpaths. Models are downloaded separately from pinned URLs with verified digests.
 
-The identifiers are `si.astrafoundry.arion` and `si.astrafoundry.arion.inputmethod`. macOS still uses ad hoc signing; Developer ID/notarization and Windows publisher signing remain credential-dependent work. The [release status](release-status.md) distinguishes packaged capabilities from actual host acceptance. The sync relay image and compose stack live in [deploy/sync](../../deploy/sync/README.md).
+The identifiers are `si.astrafoundry.arion` and `si.astrafoundry.arion.inputmethod`. macOS uses ad hoc signing without Apple configuration; complete configuration enables Developer ID signing and notarization through the same build command. Windows publisher signing remains open. The [release status](release-status.md) distinguishes packaged capabilities from actual host acceptance. The sync relay image and compose stack live in [deploy/sync](../../deploy/sync/README.md).
 
 ```sh
-make desktop-build
+make build desktop
 ```
+
+## macOS signing configuration
+
+The build entry point reads the root `.env` when present; existing shell variables take precedence, including deliberately empty values. Copy [`.env.example`](../../.env.example) for the settings. `make build desktop` is the only packaging command: no Apple variables produces a preview, partial Apple configuration fails, and complete configuration signs and notarizes. `MYGO_UPDATER_PRIVATE_KEY` independently enables signed updates. `desktop-dev` keeps development signing and does not import release credentials.
+
+For a local Mac, install a **Developer ID Application** certificate with its private key, store notarization credentials once with `xcrun notarytool store-credentials arion-notary`, and configure:
+
+```dotenv
+ARION_MACOS_SIGNING_IDENTITY="Developer ID Application: Your Company (ABCDE12345)"
+ARION_MACOS_NOTARY_PROFILE=arion-notary
+```
+
+`ARION_MACOS_NOTARY_KEYCHAIN` optionally selects the existing keychain holding that profile. The build checks the identity/private key and access to the notary service before staging resources. Keep certificates and passwords outside the repository; a `.cer` alone does not contain the private key. Export the certificate and private key together as a password-protected `.p12` for CI.
+
+For CI or importing credentials locally, configure the following instead of an existing profile:
+
+| Environment variable / GitHub repository secret | Value |
+| --- | --- |
+| `ARION_MACOS_SIGNING_IDENTITY` | Full Developer ID Application identity, including Team ID |
+| `MACOS_CERTIFICATE_P12_BASE64` | Base64 of the `.p12` containing certificate and private key |
+| `MACOS_CERTIFICATE_PASSWORD` | Password protecting the `.p12` |
+| `APPLE_ID` | Apple account used for notarization |
+| `APPLE_TEAM_ID` | Team ID matching the signing identity |
+| `APPLE_APP_SPECIFIC_PASSWORD` | App-specific password for that account |
+| `MYGO_UPDATER_PRIVATE_KEY` | Separate Ed25519 update key matching `desktop.json` |
+
+The script creates a temporary keychain with a random password, imports the certificate for Apple signing tools, adds it to the user's search list, and stores a validated `arion-notary` profile there. It restores the original search list and deletes temporary credentials on completion or failure. Raw Apple credentials are removed from build subprocess environments. Existing certificates and profiles are left in place. GitHub-hosted runners are disposable; self-hosted signing jobs require a dedicated user because the keychain search list is user-wide.
+
+Public package metadata lives in `apps/desktop/desktop.json`; `mygo.config.ts` adds environment-driven signing through the pinned MyGo API without rewriting source files. MyGo signs nested executables/libraries and the IMK bundle before the outer app, enables hardened runtime and secure timestamps, signs and notarizes the DMG, and staples tickets to both DMG and App **before** producing Ed25519-signed updates. The verifier checks code identities, runtime flags, timestamps, App/DMG tickets and Gatekeeper acceptance; with updates enabled it also verifies the final archive signature and the extracted App's signature/ticket. No signed archive is modified afterward.
+
+Credentialed packaging and microphone, IMK, inference and update acceptance still require real runs. See [release status](release-status.md).
 
 ## Releases and updates
 
 The app updates itself from the latest published GitHub release of `AstraFoundry/Arion` ([ADR 010](../decisions/010-in-app-updates.md)). With `MYGO_UPDATER_PRIVATE_KEY` set, `mygo build` also writes the signed update archive and `update-<os>-<arch>.json` for the platform.
 
-1. Once: store the matching Ed25519 secret key in the password manager and as `MYGO_UPDATER_PRIVATE_KEY` in repository secrets. It is independent of Apple Developer certificates. If the original private key is lost before the first release, deliberately replace the key pair and the configured public key before shipping; after shipping, rotation needs the old signing key. Do not commit keys.
-2. Bump `version` in `apps/desktop/mygo.json`, commit, and push `v<version>`. The [release workflow](../../.github/workflows/release.yml) validates the tag, configured repository and private/public key match before building or creating a draft. A missing key fails explicitly.
+1. Once: configure the repository secrets above, including the matching Ed25519 secret key as `MYGO_UPDATER_PRIVATE_KEY`, and keep a backup in the password manager. It is independent of Apple Developer certificates. If the original update private key is lost before the first release, deliberately replace the key pair and the configured public key before shipping; after shipping, rotation needs the old signing key. Do not commit keys.
+2. Bump `version` in `apps/desktop/desktop.json`, commit, and push `v<version>`. The [release workflow](../../.github/workflows/release.yml) validates the tag, repository, private/public key match and required Apple configuration before building or creating a draft. Missing or partial credentials fail explicitly; actual certificate validity and notary access are checked on macOS.
 3. The release calls the [same CI workflow](../../.github/workflows/ci.yml) at the tagged commit: portable/repository/site gates and native tests on macOS arm64 (`macos-15`), macOS Intel (`macos-15-intel`) and Windows x64 (`windows-2022`). Each runner stages identical resources, builds once, verifies its package, and verifies its update archive and any deltas. Ordinary PR/main CI needs no signing secrets and retains installer artifacts for preview testing.
 4. Only after every job passes, download all three artifact sets and validate their installer, manifest version, archive URL, byte size and Ed25519 signature. Write `SHA256SUMS` and attach [RELEASE-STATUS.md](release-status.md). Then create/update the draft and upload the verified set. Existing published releases cannot be overwritten. No partial build set is uploaded; an interrupted upload can be retried against its draft.
-5. Review notes, checksums and platform acceptance before publishing the draft. Drafts and prereleases are never offered to installed apps. Tagged release builds remain blocked until the update key is provisioned; ordinary CI packaging is available without it.
+5. Review notes, checksums and platform acceptance before publishing the draft. Drafts and prereleases are never offered to installed apps. Tagged releases require both update and Apple credentials; ordinary CI packaging remains available without them. Only tagged macOS build steps receive Apple secrets; PR/main and Windows builds do not import them.
 
 ## Desktop release gates
 

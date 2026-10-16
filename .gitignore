@@ -39,6 +39,8 @@ next-env.d.ts
 
 # Update signing keys never enter the repository.
 mygo-update.key
+*.p12
+*.p8
 
 # Generated Python evaluation bytecode
 __pycache__/

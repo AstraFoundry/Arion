@@ -11,7 +11,7 @@ if (process.platform !== 'darwin') {
 }
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const desktop = path.join(root, 'apps', 'desktop');
-const config = JSON.parse(readFileSync(path.join(desktop, 'mygo.json'), 'utf8'));
+const config = JSON.parse(readFileSync(path.join(desktop, 'desktop.json'), 'utf8'));
 const source = path.join(desktop, 'ime', 'macos');
 const bundle = path.join(desktop, 'resources', 'darwin', 'ArionInput.app', 'Contents');
 rmSync(path.dirname(bundle), { recursive: true, force: true });

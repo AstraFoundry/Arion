@@ -19,7 +19,7 @@ const (
 )
 
 // updateSource finds and installs newer versions. In production it is
-// mygo.Updater: the latest GitHub release of the repository in mygo.json,
+// mygo.Updater: the latest GitHub release of the repository in desktop.json,
 // whose archive must carry a signature by the key built into the app.
 type updateSource interface {
 	Enabled() bool

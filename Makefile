@@ -13,7 +13,23 @@ REWRITE_CONFIG ?= benchmarks/configs/desktop-rewrite.json
 REWRITE_PLAN ?= .workspace/benchmarks/rewrite-plan.json
 export CORPUS DRIVER OUT RESULTS MANIFEST BUNDLE SEGMENT LLM_MODEL LLM_RUNTIME VARIANT RUNS CONFIG PLAN SUITE REWRITE_CONFIG REWRITE_PLAN REVIEW RATINGS RATERS RATING_SEED EVAL_PYTHON MODELS MODEL_IDS QWEN_CONFIG QWEN_PROMPTS QWEN_ASR AUDIO_CORPUS PREFIX_CONFIG CASES DEV TEST REPS
 
-.PHONY: install check test lint format docs core-check sync-check sync-integration tooling-test desktop-check desktop-libs desktop-build desktop-dev site-check site-build site-assets site-deploy e2e e2e-macos e2e-scenarios bench-plan ablation-plan bench-validate bench-run bench-report datasets-check i18n-check stream-plan stream-bench rewrite-plan rewrite-validate rewrite-run rewrite-report rewrite-human-export rewrite-human-report rewrite-e2e qwen-env qwen-provision qwen-diagnostic qwen-report qwen-asr-diagnostic qwen-prefix-diagnostic live-fixtures live-text-bench live-audio-bench live-report scene-bench context-ocr memory-bench help
+.PHONY: install check test lint format docs core-check sync-check sync-integration tooling-test build desktop-check desktop-libs desktop-dev site-check site-assets site-deploy e2e e2e-macos e2e-scenarios bench-plan ablation-plan bench-validate bench-run bench-report datasets-check i18n-check stream-plan stream-bench rewrite-plan rewrite-validate rewrite-run rewrite-report rewrite-human-export rewrite-human-report rewrite-e2e qwen-env qwen-provision qwen-diagnostic qwen-report qwen-asr-diagnostic qwen-prefix-diagnostic live-fixtures live-text-bench live-audio-bench live-report scene-bench context-ocr memory-bench help
+
+# Make treats the component as a second goal; validate before any recipes run.
+ifneq ($(filter build,$(MAKECMDGOALS)),)
+ifneq ($(words $(MAKECMDGOALS)),2)
+$(error Usage: make build <desktop|site>)
+endif
+ifneq ($(firstword $(MAKECMDGOALS)),build)
+$(error Usage: make build <desktop|site>)
+endif
+ifeq ($(filter $(word 2,$(MAKECMDGOALS)),desktop site),)
+$(error Unsupported build component: $(word 2,$(MAKECMDGOALS)). Choose desktop or site)
+endif
+.PHONY: $(word 2,$(MAKECMDGOALS))
+$(word 2,$(MAKECMDGOALS)): build
+	@:
+endif
 
 install: ## Install the pinned pnpm workspace with its frozen lockfile
 	@pnpm install --frozen-lockfile
@@ -47,8 +63,8 @@ desktop-check: ## Compile/check native shell for current host
 desktop-libs: ## Stage speech runtimes, the LLM worker, localized permission copy and the macOS input method
 	@node scripts/stage-desktop-resources.mjs
 
-desktop-build: ## Package and verify the app, its installer and (with MYGO_UPDATER_PRIVATE_KEY) signed updates
-	@node scripts/desktop-command.mjs build
+build: ## Build a component: make build desktop | make build site (desktop signing follows ENV)
+	@node scripts/build.mjs $(word 2,$(MAKECMDGOALS))
 
 desktop-dev: ## Launch the native app in development mode
 	@node scripts/desktop-command.mjs dev
@@ -56,13 +72,11 @@ desktop-dev: ## Launch the native app in development mode
 site-check: ## Check the marketing site: dictionaries, types, lint, tests and the static export
 	@pnpm site:check
 
-site-build: ## Build the marketing site's static export into apps/site/out
-	@pnpm site:build
-
 site-assets: ## Regenerate the site's backdrop, icon and Open Graph images from repository sources
 	@pnpm site:assets
 
-site-deploy: site-build ## Deploy apps/site/out to Cloudflare Workers static assets (needs wrangler auth)
+site-deploy: ## Build and deploy the marketing site (needs wrangler auth)
+	@node scripts/build.mjs site
 	@pnpm site:deploy
 
 test: ## Run core and evaluation tooling tests

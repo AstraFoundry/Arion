@@ -4,13 +4,16 @@ import { copyFileSync, mkdirSync, readFileSync, readdirSync, writeFileSync } fro
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { checkRelease, digest, platformAssets, releasePlatforms, releaseStatus } from './lib/release.mjs';
+import { macosSigningSettings } from './lib/desktop-signing.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const config = JSON.parse(readFileSync(path.join(root, 'apps/desktop/mygo.json'), 'utf8'));
+const config = JSON.parse(readFileSync(path.join(root, 'apps/desktop/desktop.json'), 'utf8'));
 const [operation, first, second, mode] = process.argv.slice(2);
 const checksumList = (directory, files) => [...files, 'RELEASE-STATUS.md'].sort().map(file => `${digest(readFileSync(path.join(directory, file))).toString('hex')}  ${file}\n`).join('');
 if (operation === 'check') {
   checkRelease(config, process.env.GITHUB_REF_NAME, process.env.MYGO_UPDATER_PRIVATE_KEY);
+  const signing = macosSigningSettings(process.env);
+  if (!signing?.certificate || !signing.appleId) throw new Error('Tagged releases require a Developer ID certificate, its password, signing identity and Apple notarization credentials');
   if (process.env.GITHUB_REPOSITORY !== config.updates.github) throw new Error('Release repository does not match the configured update source');
   console.log(`Verified release configuration for v${config.version}.`);
 } else if (operation === 'collect') {

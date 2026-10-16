@@ -3,9 +3,11 @@ import { execFileSync } from 'node:child_process';
 import { readFileSync, statSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { macosSigningSettings } from './lib/desktop-signing.mjs';
+import { verifyMacOSDistribution } from './lib/verify-macos-distribution.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const config = JSON.parse(readFileSync(path.join(root, 'apps/desktop/mygo.json'), 'utf8'));
+const config = JSON.parse(readFileSync(path.join(root, 'apps/desktop/desktop.json'), 'utf8'));
 const pins = JSON.parse(readFileSync(path.join(root, 'scripts/llm-runtime.json'), 'utf8'));
 const goos = { darwin: 'darwin', win32: 'windows' }[process.platform];
 const arch = process.arch === 'x64' ? 'amd64' : process.arch;
@@ -59,5 +61,10 @@ if (goos === 'darwin') {
   }
   for (const locale of ['en', 'zh-Hans']) requireFile(path.join(resources, `${locale}.lproj/InfoPlist.strings`));
   execFileSync(process.execPath, [path.join(root, 'scripts/verify-macos-app.mjs')], { stdio: 'inherit' });
+  const signing = macosSigningSettings(process.env);
+  if (signing) {
+    verifyMacOSDistribution({ directory: built, config, platform, binaries, identity: signing.identity, updates: Boolean(process.env.MYGO_UPDATER_PRIVATE_KEY) });
+    console.log('Verified Developer ID signatures, hardened runtime, notarization tickets and Gatekeeper acceptance.');
+  }
 }
 console.log(`Verified ${platform} resources, licenses and architectures; local rewriting ${spec ? 'bundled' : 'unsupported'}.`);

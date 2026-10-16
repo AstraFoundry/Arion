@@ -145,7 +145,7 @@ existence does not prove Arion's foreign-editor operations work. Sources:
 
 ## Recommended repository boundaries and implementation gates
 
-Keep `apps/desktop` as the MyGo module with `mygo.json`, native UI, resources
+Keep `apps/desktop` as the MyGo module with `mygo.config.ts`, public `desktop.json` metadata, native UI, resources
 and OS adapters. Place portable speech-session, correction and memory domain
 logic in a separate Go module under `packages/`; it must not import MyGo.
 Maintain model/runtime assets and licensing manifests separately from source.

@@ -9,6 +9,18 @@ on:
     secrets:
       MYGO_UPDATER_PRIVATE_KEY:
         required: false
+      ARION_MACOS_SIGNING_IDENTITY:
+        required: false
+      MACOS_CERTIFICATE_P12_BASE64:
+        required: false
+      MACOS_CERTIFICATE_PASSWORD:
+        required: false
+      APPLE_ID:
+        required: false
+      APPLE_TEAM_ID:
+        required: false
+      APPLE_APP_SPECIFIC_PASSWORD:
+        required: false
   push:
     branches: [main]
   pull_request:
@@ -85,7 +97,13 @@ jobs:
       - name: Build and verify desktop package
         env:
           MYGO_UPDATER_PRIVATE_KEY: ${{ inputs.release && secrets.MYGO_UPDATER_PRIVATE_KEY || '' }}
-        run: node scripts/desktop-command.mjs build
+          ARION_MACOS_SIGNING_IDENTITY: ${{ inputs.release && runner.os == 'macOS' && secrets.ARION_MACOS_SIGNING_IDENTITY || '' }}
+          MACOS_CERTIFICATE_P12_BASE64: ${{ inputs.release && runner.os == 'macOS' && secrets.MACOS_CERTIFICATE_P12_BASE64 || '' }}
+          MACOS_CERTIFICATE_PASSWORD: ${{ inputs.release && runner.os == 'macOS' && secrets.MACOS_CERTIFICATE_PASSWORD || '' }}
+          APPLE_ID: ${{ inputs.release && runner.os == 'macOS' && secrets.APPLE_ID || '' }}
+          APPLE_TEAM_ID: ${{ inputs.release && runner.os == 'macOS' && secrets.APPLE_TEAM_ID || '' }}
+          APPLE_APP_SPECIFIC_PASSWORD: ${{ inputs.release && runner.os == 'macOS' && secrets.APPLE_APP_SPECIFIC_PASSWORD || '' }}
+        run: node scripts/build.mjs desktop
       - name: Collect installers and verify signed updates for releases
         run: node scripts/release.mjs collect ${{ matrix.platform }} .workspace/release/${{ matrix.platform }} ${{ inputs.release && '--signed' || '--unsigned' }}
       - uses: actions/upload-artifact@v4

@@ -21,7 +21,7 @@ const app = path.join(root, 'apps', 'desktop', 'build', `darwin-${arch}`, 'Arion
 const models = process.env.ARION_E2E_MODELS ?? path.join(homedir(), 'Library', 'Application Support', 'Arion', 'models');
 const run = (command, args, options = {}) => execFileSync(command, args, { stdio: 'inherit', ...options });
 
-if (!existsSync(app)) { console.error(`Missing ${app}; run make desktop-build first.`); process.exit(1); }
+if (!existsSync(app)) { console.error(`Missing ${app}; run make build desktop first.`); process.exit(1); }
 if (!existsSync(models)) { console.error(`Missing model store ${models}; finish onboarding or set ARION_E2E_MODELS.`); process.exit(1); }
 
 // Editor fixture app.

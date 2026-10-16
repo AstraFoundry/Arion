@@ -9,9 +9,9 @@ Run from the repository root with the pinned pnpm (`make install` first):
 | Command | Does |
 | --- | --- |
 | `pnpm site:check` / `make site-check` | Dictionary completeness, typecheck, lint, unit tests, static export |
-| `pnpm site:build` / `make site-build` | Dictionary check and static export into `apps/site/out` |
+| `pnpm site:build` / `make build site` | Dictionary check and static export into `apps/site/out` |
 | `pnpm site:assets` / `make site-assets` | Regenerates `public/backdrops`, `public/brand` and `public/og.jpg` from repository sources |
-| `pnpm site:deploy` / `make site-deploy` | Builds, then `wrangler deploy` (needs Cloudflare credentials in the shell; none are stored here) |
+| `pnpm site:deploy` / `make site-deploy` | `wrangler deploy`; Make builds first, pnpm deploys the existing export (needs Cloudflare credentials in the shell; none are stored here) |
 
 `pnpm --filter @arion/site dev` starts the development server on `127.0.0.1`.
 
