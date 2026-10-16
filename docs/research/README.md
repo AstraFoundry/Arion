@@ -5,6 +5,7 @@ Research separates **observed shipped artifacts**, **static inferences**, **vend
 - [Typeless](typeless.md) — installed Electron artifact and audio/context/delivery surfaces.
 - [Doubao](doubao.md) — installed native IMK artifact, online/offline ASR and composition surfaces.
 - [Chatterfly](chatterfly.md) — installer payload and native scenario-aware post-processing paths.
+- [Keyboard input methods](keyboard-ime.md) — Doubao/Chatterfly native Pinyin decoding, local candidate ranking, conditional model/cloud enhancement and composition/commit evidence.
 - [Competitor onboarding](competitor-onboarding.md) — first-use flows, evidence limits and Arion verified-practice implementation gaps.
 - [Competitor contextual rewriting](competitor-rewrite.md) — focused Typeless/Doubao refinement and organization evidence.
 - [Competitor disfluency handling](competitor-disfluency.md) — Doubao decoder span annotations, organization request construction, Chatterfly short-input/result policies and language limits.

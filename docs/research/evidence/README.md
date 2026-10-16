@@ -5,6 +5,7 @@
 - [Phonetic ASR ledger](phonetic-asr.json) — matched REA artifact identities, bounded phonetic/N-best searches, excluded TTS/tokenizer false leads and reused Chatterfly payload instructions.
 - [Doubao decompiled ledger](doubao-decompiled.json) — REA 6.4.0 + Ghidra 12.1.4 Evidence IDs for five decompiled main-executable functions (insertion gates, clipboard handoff, commit strategy, fn long-press), the reference-recovery method and unresolved questions. Decompiled code itself is not committed.
 - [Chatterfly ledger](chatterfly-rewrite.json) — installer/archive identities and focused native post-processing evidence with explicit limitations.
+- [Keyboard IME ledger](keyboard-ime.json) — matched REA identities and registration, byte-verified Doubao/Chatterfly Pinyin decoding/ranking, model/cloud branches and candidate/commit paths; local static IDs are distinct from REA Evidence IDs.
 - [Doubao disfluency ledger](doubao-disfluency.json) — byte-verified decoder annotation cleanup and bounded organization builder/result observations; a timed-out REA query produced no pseudocode.
 - [Chatterfly disfluency ledger](chatterfly-disfluency.json) — byte-verified short-input, result-selection and language-policy follow-up with reused REA artifact identity.
 - [Onboarding ledger](competitor-onboarding.json) — Typeless flow/gate source ranges, Doubao native page/persistence surfaces and byte-verified Chatterfly installer transitions; includes Arion source/test gaps.

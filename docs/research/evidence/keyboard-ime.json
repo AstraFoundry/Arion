@@ -1,0 +1,1963 @@
+{
+  "schemaVersion": 1,
+  "scope": "Retained macOS Doubao 1.0.2 (1) and Chatterfly 1.0.6.13398 (13398), physical-keyboard Pinyin input only. Static package investigation; no target execution, private user data or competitor inference-service calls.",
+  "reaWorkflow": "REA 6.4.0 cached public CLI. Read-only doctor confirmed Codex registration; connected MCP tools absent. No configuration repair or engine installation. Reused matching inspect_macho records; new inspect_plist records. No persistent native session opened.",
+  "evidenceBoundary": "REA IDs authenticate their stated artifact/metadata operation only. DBK-* and CF-key-* are ordinary local static observations, not REA decompilation or execution. Focused LLVM instructions were verified against arm64 artifact bytes.",
+  "reaEvidence": [
+    {
+      "product": "doubao",
+      "evidenceId": "ev_ab0cf18cfebbbfdaeb04776d7794499e8daa4ebe64c6ea2d1def5c6b60ac2936",
+      "operation": "inspect_plist",
+      "subject": {
+        "name": "DoubaoIme",
+        "digest": {
+          "sha256": "4b3836dcb8a3e06b01b4c95390c757b71f623c1f7c4141c059e49284f7f6442d"
+        },
+        "format": "mach-o",
+        "architecture": "arm64",
+        "local_path": "/Library/Input Methods/DoubaoIme.app/Contents/MacOS/DoubaoIme"
+      },
+      "completeRecord": ".workspace/research/keyboard-ime/doubao-plist-rea.json",
+      "recordSha256": "19e983ab86222f52f47acf568c480fc028ab8dadfd5c7e85fbd0bdb1c9f13e14",
+      "registration": {
+        "CFBundleIdentifier": "com.bytedance.inputmethod.doubaoime",
+        "CFBundleShortVersionString": "1.0.2",
+        "CFBundleVersion": "1",
+        "InputMethodServerControllerClass": "DoubaoImeInputController",
+        "InputMethodConnectionName": "DoubaoIme_Connection",
+        "LSBackgroundOnly": true
+      }
+    },
+    {
+      "product": "doubao",
+      "evidenceId": "ev_66516fc55867516031ba4c3c21cfcfd36c135cf6b7e3d1a9cbc94dbd80198f0e",
+      "operation": "inspect_macho",
+      "subject": {
+        "name": "DoubaoIme",
+        "digest": {
+          "sha256": "4b3836dcb8a3e06b01b4c95390c757b71f623c1f7c4141c059e49284f7f6442d"
+        },
+        "format": "mach-o",
+        "architecture": "arm64",
+        "local_path": "/Library/Input Methods/DoubaoIme.app/Contents/MacOS/DoubaoIme"
+      },
+      "completeRecord": ".workspace/research/phonetic-asr/doubao-macho.json",
+      "recordSha256": "d671cd597bee044ee598b33b7daff5c6cd54eb2efa1c9db3846cc15257aab7d9"
+    },
+    {
+      "product": "chatterfly",
+      "evidenceId": "ev_188347c90c36987b1d678da43a519ea3d2205c27287c4d1a43a20984c160f5f9",
+      "operation": "inspect_plist",
+      "subject": {
+        "name": "Chatterfly",
+        "digest": {
+          "sha256": "1063fbb5b0e18dc323ec4a14487456795b359b9330cfeee14b78454a00791e50"
+        },
+        "format": "mach-o",
+        "architecture": "arm64",
+        "local_path": "/Users/steven/code/Arion/.workspace/research/chatterfly/extracted/Chatterfly.app/Contents/MacOS/Chatterfly"
+      },
+      "completeRecord": ".workspace/research/keyboard-ime/chatterfly-plist-rea.json",
+      "recordSha256": "fec01ab789a5dc4dcd52e261115c5acfbe67053c5ac6567384658acdcf8dc43a",
+      "registration": {
+        "CFBundleIdentifier": "com.tencent.inputmethod.chatterfly",
+        "CFBundleShortVersionString": "1.0.6.13398",
+        "CFBundleVersion": "13398",
+        "InputMethodServerControllerClass": "YuanbaoInputController",
+        "InputMethodConnectionName": "Yuanbao_InputMethod_Connection",
+        "LSBackgroundOnly": true
+      }
+    },
+    {
+      "product": "chatterfly",
+      "evidenceId": "ev_357f2213ffae36932ca3c1c489824db2b8487a33c049894dba6808dca0e0d91e",
+      "operation": "inspect_macho",
+      "subject": {
+        "name": "Chatterfly",
+        "digest": {
+          "sha256": "1063fbb5b0e18dc323ec4a14487456795b359b9330cfeee14b78454a00791e50"
+        },
+        "format": "mach-o",
+        "architecture": "arm64",
+        "local_path": "/Users/steven/code/Arion/.workspace/research/chatterfly/extracted/Chatterfly.app/Contents/MacOS/Chatterfly"
+      },
+      "completeRecord": ".workspace/research/phonetic-asr/chatterfly-macho.json",
+      "recordSha256": "4aa02351024cf1c2320c78df21f10d984a63c2572a68d5b479a2da25e27cc36f"
+    }
+  ],
+  "doubao": {
+    "scope": "Doubao keyboard typing only; installed macOS 1.0.2 build 1, Wave 1.0.2.7. Offline shipped-artifact inspection. No target execution or private user data access.",
+    "evidenceType": "Ordinary static Mach-O analysis with Apple nm, swift-demangle, c++filt, LLVM objdump and direct byte verification. DBK IDs are local evidence IDs, not REA IDs.",
+    "identities": {
+      "main": {
+        "path": "/Library/Input Methods/DoubaoIme.app/Contents/MacOS/DoubaoIme",
+        "sha256": "4b3836dcb8a3e06b01b4c95390c757b71f623c1f7c4141c059e49284f7f6442d",
+        "arm64Sha256": "266f49f6bcb62e43c5170620d4b86e2e4c4ef873bcce624ef1a90b9c46244983",
+        "arm64UniversalOffset": 21757952
+      },
+      "engine": {
+        "path": "/Library/Input Methods/DoubaoIme.app/Contents/Frameworks/OimeEngine.framework/Versions/A/OimeEngine",
+        "sha256": "d1cebd7c9a9d888acc2a6d2f4aad372cb3b31570ff68a7e631cba930517f5db8",
+        "arm64Sha256": "eec270b3d90e670a55edd91534d985a3371dd5819a54e0089bb7ec17a92509ff",
+        "arm64UniversalOffset": 7520256
+      }
+    },
+    "commands": [
+      "xcrun nm -arch arm64 -nm <path>",
+      "xcrun swift-demangle < oime-symbols.txt",
+      "xcrun c++filt < oime-symbols.txt",
+      "xcrun otool -arch arm64 -ov <path>",
+      "/opt/homebrew/opt/llvm/bin/llvm-objdump --macho --arch=arm64 --disassemble <path>",
+      "python3 .workspace/research/keyboard-ime/doubao/build-ledger.py"
+    ],
+    "observations": [
+      {
+        "id": "DBK-asm-cloud-llm-request",
+        "file": "asm-cloud-llm-request.txt",
+        "sha256": "3424c1f790dcc990a31f8a06d5817ff9020b21a7d8250e5e200d82aa6d4e107c",
+        "artifact": "engine",
+        "byteVerifiedInstructions": 5734,
+        "keyAnchors": [
+          "2da60:\tc9 fc 0d 94\tbl\t0x3acd84 ; Objc message: +[OimeEngineNetworkInterface sendLLMRequestWithInput:textBeforeCursor:textAfterCursor:type:scheme:timeout:enableLogger:callback:]"
+        ],
+        "limitation": "Selected address window; file name does not establish a single function extent. Static instructions do not prove execution."
+      },
+      {
+        "id": "DBK-asm-candidate-sort",
+        "file": "asm-candidate-sort.txt",
+        "sha256": "cfbe777112781dd5dda59043514101b95824fd69587dd40ccf52a7614291ff71",
+        "artifact": "engine",
+        "byteVerifiedInstructions": 605,
+        "keyAnchors": [
+          "1c3e74:\t9c 05 01 94\tbl\t__ZN11oime_engine6pinyin8MLPModel18CalcScoreByFeatureERNSt3__16vectorIPNS0_16CandidateFeatureENS2_9allocatorIS5_EEEERNS3_IPNS0_14CorrectFeatureENS6_ISB_EEEE"
+        ],
+        "limitation": "Selected address window; file name does not establish a single function extent. Static instructions do not prove execution."
+      },
+      {
+        "id": "DBK-asm-engine-update-result",
+        "file": "asm-engine-update-result.txt",
+        "sha256": "1ffefa6efab562a6ecde5243addf9e59a53dd0e39e08ec023353accf7fcf6c12",
+        "artifact": "engine",
+        "byteVerifiedInstructions": 717,
+        "keyAnchors": [],
+        "limitation": "Selected address window; file name does not establish a single function extent. Static instructions do not prove execution."
+      },
+      {
+        "id": "DBK-asm-handle-event",
+        "file": "asm-handle-event.txt",
+        "sha256": "b7f7125f5ec135c482beccb177f41bb7f869cd0b3527dbc5b03eca621006f90b",
+        "artifact": "main",
+        "byteVerifiedInstructions": 8782,
+        "keyAnchors": [
+          "100147768:\t08 f6 ff 97\tbl\t0x100144f88"
+        ],
+        "limitation": "Selected address window; file name does not establish a single function extent. Static instructions do not prove execution."
+      },
+      {
+        "id": "DBK-asm-mlp-combined",
+        "file": "asm-mlp-combined.txt",
+        "sha256": "616211df3c20f8f03183f69f532afc6af279e32695f41cadb0b9f1ad4b7ecaf8",
+        "artifact": "engine",
+        "byteVerifiedInstructions": 1066,
+        "keyAnchors": [
+          "2061fc:\td9 97 06 94\tbl\t0x3ac160 ; symbol stub for: _OrtGetApiBase"
+        ],
+        "limitation": "Selected address window; file name does not establish a single function extent. Static instructions do not prove execution."
+      },
+      {
+        "id": "DBK-asm-mlp-score",
+        "file": "asm-mlp-score.txt",
+        "sha256": "5e5297e4e079e91a43b3cbe66ce0cb4c304f8c10de8d54a056b1da6c8bd79b24",
+        "artifact": "engine",
+        "byteVerifiedInstructions": 221,
+        "keyAnchors": [
+          "2056dc:\t5f 00 00 94\tbl\t__ZN11oime_engine6pinyin8MLPModel26CalcScoreByFeatureCombinedERNSt3__16vectorINS0_15CombinedFeatureENS2_9allocatorIS4_EEEE"
+        ],
+        "limitation": "Selected address window; file name does not establish a single function extent. Static instructions do not prove execution."
+      },
+      {
+        "id": "DBK-asm-pinyin-convert",
+        "file": "asm-pinyin-convert.txt",
+        "sha256": "94f5a978e9e5244ff38fab3eb39ee4927d5fc50596c41d8df16447e59e49080e",
+        "artifact": "engine",
+        "byteVerifiedInstructions": 790,
+        "keyAnchors": [
+          "1babb0:\t65 72 02 94\tbl\t__ZN11oime_engine6pinyin15SyllableLattice13CreateLatticeERKNSt3__112basic_stringIcNS2_11char_traitsIcEENS2_9allocatorIcEEEERKNS_12SyllableDictENS_11CorrectTypeENS_9FuzzyTypeEbb",
+          "1bac30:\ta4 76 02 94\tbl\t__ZN11oime_engine6pinyin15SyllableLattice17CreateLattice9KeyERKNSt3__112basic_stringIcNS2_11char_traitsIcEENS2_9allocatorIcEEEERKNS_12SyllableDictENS_9FuzzyTypeEbRKNS2_6vectorIS8_NS6_IS8_EEEEPSH_PS8_bb",
+          "1bada4:\tf8 06 00 94\tbl\t__ZN11oime_engine6pinyin6Engine17ConvertByUserDictERKNS_12KeyboardTypeERKNS0_15SyllableLatticeES7_RbRNS0_15CandidateUniqueERj",
+          "1badcc:\tfc 07 00 94\tbl\t__ZN11oime_engine6pinyin6Engine16ConvertBySysDictERKNS_12KeyboardTypeERKNS0_15SyllableLatticeES7_bRNS0_15CandidateUniqueERj",
+          "1baed0:\ta2 0e 00 94\tbl\t__ZN11oime_engine6pinyin6Engine17ConvertBySentenceERKNS_12KeyboardTypeERKNSt3__112basic_stringIcNS5_11char_traitsIcEENS5_9allocatorIcEEEERKNS0_15SyllableLatticeEbiRKNS_11CorrectTypeERKNS_9FuzzyTypeEiRNS0_15CandidateUniqueE"
+        ],
+        "limitation": "Selected address window; file name does not establish a single function extent. Static instructions do not prove execution."
+      },
+      {
+        "id": "DBK-asm-convert-impl",
+        "file": "asm-convert-impl.txt",
+        "sha256": "23cdc9ca465ee47c32bc0106d378598d0ac0317dd63827592cb075adc38f225b",
+        "artifact": "engine",
+        "byteVerifiedInstructions": 298,
+        "keyAnchors": [],
+        "limitation": "Selected address window; file name does not establish a single function extent. Static instructions do not prove execution."
+      },
+      {
+        "id": "DBK-asm-swift-convert",
+        "file": "asm-swift-convert.txt",
+        "sha256": "e9ff6de0fc4981d96b08adb078825d99ed705fff9e50de04c1146c53adb27866",
+        "artifact": "engine",
+        "byteVerifiedInstructions": 163,
+        "keyAnchors": [],
+        "limitation": "Selected address window; file name does not establish a single function extent. Static instructions do not prove execution."
+      },
+      {
+        "id": "DBK-asm-dict-manager-load",
+        "file": "asm-dict-manager-load.txt",
+        "sha256": "ae6dfac67228359c43b31a7a4ca02dddcd15c70969a41b9356dbcaee7983b765",
+        "artifact": "engine",
+        "byteVerifiedInstructions": 2607,
+        "keyAnchors": [],
+        "limitation": "Selected address window; file name does not establish a single function extent. Static instructions do not prove execution."
+      },
+      {
+        "id": "DBK-asm-commit-composition",
+        "file": "asm-commit-composition.txt",
+        "sha256": "80234af30b305f84ae6a1bbd61f49eeb98b1626e2149e8d2e8e691fb02803306",
+        "artifact": "main",
+        "byteVerifiedInstructions": 54,
+        "keyAnchors": [],
+        "limitation": "Selected address window; file name does not establish a single function extent. Static instructions do not prove execution."
+      },
+      {
+        "id": "DBK-asm-commit",
+        "file": "asm-commit.txt",
+        "sha256": "fdc040404248cb88f8c0c80d5000df97612566ecd2731cf034491d629ffbf108",
+        "artifact": "engine",
+        "byteVerifiedInstructions": 226,
+        "keyAnchors": [],
+        "limitation": "Selected address window; file name does not establish a single function extent. Static instructions do not prove execution."
+      },
+      {
+        "id": "DBK-asm-wrapper-convert",
+        "file": "asm-wrapper-convert.txt",
+        "sha256": "f915bfdf55d03de5a051a628cf038102e369a62838568749a67be1dbb45abce0",
+        "artifact": "engine",
+        "byteVerifiedInstructions": 748,
+        "keyAnchors": [],
+        "limitation": "Selected address window; file name does not establish a single function extent. Static instructions do not prove execution."
+      },
+      {
+        "id": "DBK-asm-mlp-load",
+        "file": "asm-mlp-load.txt",
+        "sha256": "fbed5193606518cc809433234c5467031a4a1d133686794f93bfeddd85d222c1",
+        "artifact": "engine",
+        "byteVerifiedInstructions": 455,
+        "keyAnchors": [],
+        "limitation": "Selected address window; file name does not establish a single function extent. Static instructions do not prove execution."
+      }
+    ],
+    "resourceInventory": [
+      {
+        "path": "Frameworks/OimeEngine.framework/Versions/A/Resources/OimeEngineResources.bundle/0327c67597fd",
+        "size": 245062,
+        "sha256": "95f3f972ce33e907e5b1bbd8cc143fabeefe1339d8c56fbc3a144aed31ae0636",
+        "prefixHex": "f92a0000de2535014000000046bd03008704000040000000"
+      },
+      {
+        "path": "Frameworks/OimeEngine.framework/Versions/A/Resources/OimeEngineResources.bundle/203edb1b31cc",
+        "size": 11252,
+        "sha256": "b4cd7d98a0934865f83373d5383b92c18c843c4f21c0065363547940b4de2301",
+        "prefixHex": "29a00000acb2340130000000f42b0000ff03000030000000"
+      },
+      {
+        "path": "Frameworks/OimeEngine.framework/Versions/A/Resources/OimeEngineResources.bundle/3aa2ea70d0b2",
+        "size": 176585,
+        "sha256": "4bbeb705b040bc67571e4b04707c6fd1d8da87288cb0d8d370377aff1bccd887",
+        "prefixHex": "0806120d6f6e6e782e7175616e74697a651a05302e312e30"
+      },
+      {
+        "path": "Frameworks/OimeEngine.framework/Versions/A/Resources/OimeEngineResources.bundle/56b00eaaf9b6",
+        "size": 1601756,
+        "sha256": "2c9efa1fb30d6f5ba4e1a5e4682445dbf16c8aabf2a34032206bd0ca1782bfe1",
+        "prefixHex": "fc2a0000ed8b340150000000dc70180050000000e2371000"
+      },
+      {
+        "path": "Frameworks/OimeEngine.framework/Versions/A/Resources/OimeEngineResources.bundle/5a272508274f",
+        "size": 92308,
+        "sha256": "3e956627a8271f157fb2587e91a1ad87262b18ffcf38ab8538b6143849573e9a",
+        "prefixHex": "092f0000d3fe34012400000094680100bc36000024000000"
+      },
+      {
+        "path": "Frameworks/OimeEngine.framework/Versions/A/Resources/OimeEngineResources.bundle/636f49ed508e",
+        "size": 924924,
+        "sha256": "a72c14216e07a3eb6c90a609c6a590f2751e229f6cee495c847ac0fa53a47015",
+        "prefixHex": "4f50454e43435f4d41524953415f302e322e355765206c6f"
+      },
+      {
+        "path": "Frameworks/OimeEngine.framework/Versions/A/Resources/OimeEngineResources.bundle/642794bb90df",
+        "size": 3823224,
+        "sha256": "f049720ad78ea48c6668330d72b8b7ffb2fe04ec0861fa12aeddf9f4d830ae16",
+        "prefixHex": "1979000007b134011c00000008ec15008c6f02001c000000"
+      },
+      {
+        "path": "Frameworks/OimeEngine.framework/Versions/A/Resources/OimeEngineResources.bundle/66c18d5eaa2e",
+        "size": 257016,
+        "sha256": "596fd4e43cc568983ae13a449e9ec89ae5830bd394012457f4a65f836a2d2069",
+        "prefixHex": "022f00005c00350130000000f8eb0300fd30000030000000"
+      },
+      {
+        "path": "Frameworks/OimeEngine.framework/Versions/A/Resources/OimeEngineResources.bundle/6ee457976f14",
+        "size": 11860103,
+        "sha256": "0696d2a03e8f081c4f64e5c7b3dfddd8830ced705a48d4a14586e4bff55894a3",
+        "prefixHex": "09520000c00035013000000087f8b40060e6050030000000"
+      },
+      {
+        "path": "Frameworks/OimeEngine.framework/Versions/A/Resources/OimeEngineResources.bundle/7cbf0cdb728e",
+        "size": 19421086,
+        "sha256": "e0a4f9299ca2b45535386714ded33a241570304453ab7c8f0e5e7993569f7d04",
+        "prefixHex": "032f000016013501300000009e572801cfe00c0030000000"
+      },
+      {
+        "path": "Frameworks/OimeEngine.framework/Versions/A/Resources/OimeEngineResources.bundle/84ac6a563f50",
+        "size": 350246,
+        "sha256": "33501c7c76a17fa7330b25e23ec41e448b11b27e3699cdebbef74f30b71a5e19",
+        "prefixHex": "052f00004a0235013000000026580500fb27000030000000"
+      },
+      {
+        "path": "Frameworks/OimeEngine.framework/Versions/A/Resources/OimeEngineResources.bundle/8bf1ace21a9c",
+        "size": 1552,
+        "sha256": "f467deca4a642d1e54921700e4d4661c25e1943273398d4bf9d6ac87484079d9",
+        "prefixHex": "2aa00000acb2340130000000100600008f00000030000000"
+      },
+      {
+        "path": "Frameworks/OimeEngine.framework/Versions/A/Resources/OimeEngineResources.bundle/8ce02a28dedf",
+        "size": 860471,
+        "sha256": "21b1be533f92891be457766fdcd7cdfcb002287cc62c8c9ca19390e3f22c20aa",
+        "prefixHex": "022b00007bd834013000000037210d00a1d2000030000000"
+      },
+      {
+        "path": "Frameworks/OimeEngine.framework/Versions/A/Resources/OimeEngineResources.bundle/945d832b70b0",
+        "size": 58966,
+        "sha256": "54066101c1c626dadda9122399e501792af25fb12e8b053051b53f0ca44f8b54",
+        "prefixHex": "4f50454e43435f4d41524953415f302e322e355765206c6f"
+      },
+      {
+        "path": "Frameworks/OimeEngine.framework/Versions/A/Resources/OimeEngineResources.bundle/991bca749d55",
+        "size": 22489074,
+        "sha256": "27fb41523d0d8e9bdd3c475ff21756d32d1d8ecb80921785094251a16d2b4df0",
+        "prefixHex": "fa2a0000d925350130000000f227570103190e0030000000"
+      },
+      {
+        "path": "Frameworks/OimeEngine.framework/Versions/A/Resources/OimeEngineResources.bundle/9f9ec5e462c2",
+        "size": 26090856,
+        "sha256": "7f9e63e86dc85b8dd2c458357ebf067092a05b71447bc3bf0021b0e841a8ade3",
+        "prefixHex": "fb2a0000d92535016c000000681d8e01043404006c000000"
+      },
+      {
+        "path": "Frameworks/OimeEngine.framework/Versions/A/Resources/OimeEngineResources.bundle/a35866d14c43",
+        "size": 45384,
+        "sha256": "815945a69fa2d0e602db7f81a15eceaeefe4ab25ddf6d54d5af1a91a5e3594d8",
+        "prefixHex": "4f50454e43435f4d41524953415f302e322e355765206c6f"
+      },
+      {
+        "path": "Frameworks/OimeEngine.framework/Versions/A/Resources/OimeEngineResources.bundle/ac5ee95964d3",
+        "size": 12658,
+        "sha256": "3cb05eac4d6097e004bbe230b44bd3a545c68f88c90865767ab17b9558e99e23",
+        "prefixHex": "f12e0000adb2340130000000723100007601000030000000"
+      },
+      {
+        "path": "Frameworks/OimeEngine.framework/Versions/A/Resources/OimeEngineResources.bundle/asr/281be8420195",
+        "size": 9292,
+        "sha256": "ce04ead1db78f5a8e1a0bf1dc27f0dfc7a471d138ad71333a2c08c91f34db926",
+        "prefixHex": "fd2e0000cbfe3401300000004c240000ea01000030000000"
+      },
+      {
+        "path": "Frameworks/OimeEngine.framework/Versions/A/Resources/OimeEngineResources.bundle/asr/2c57d1948fe3",
+        "size": 14134,
+        "sha256": "33a6aeaddaef015b5f18b2aa971d3dee2c870a51982eadfc82b8131cf69ac011",
+        "prefixHex": "102f0000cc27350130000000363700005103000030000000"
+      },
+      {
+        "path": "Frameworks/OimeEngine.framework/Versions/A/Resources/OimeEngineResources.bundle/asr/90afacc4f089",
+        "size": 7235000,
+        "sha256": "4f62dd763c0e464463dd5442c7e15b21f34284ec2777b29314809c31bceaaf0f",
+        "prefixHex": "002f00009bff340130000000b8656e00d0f8070030000000"
+      },
+      {
+        "path": "Frameworks/OimeEngine.framework/Versions/A/Resources/OimeEngineResources.bundle/c48352298dbd",
+        "size": 46589478,
+        "sha256": "84bf43e8c7976d904f20e57663d4a006553b5dfe59bac31e28546c78abd3b2e2",
+        "prefixHex": "ff2e000098ff34013000000026e6c602fde6200030000000"
+      },
+      {
+        "path": "Frameworks/OimeEngine.framework/Versions/A/Resources/OimeEngineResources.bundle/ca0f31c7f384",
+        "size": 4409542,
+        "sha256": "6fd2d882b3ab6518bfcff48881b206b817a28617c4bebdda3d255845eae6cce8",
+        "prefixHex": "ec2e000012b1340130000000c6484300cca8010030000000"
+      },
+      {
+        "path": "Frameworks/OimeEngine.framework/Versions/A/Resources/OimeEngineResources.bundle/d28f090e48f3",
+        "size": 9782,
+        "sha256": "eea69e525e01b8475a1b1ad45f78f25e5aa78986305f185ef6f85e11f5325387",
+        "prefixHex": "4f50454e43435f4d41524953415f302e322e355765206c6f"
+      },
+      {
+        "path": "Frameworks/OimeEngine.framework/Versions/A/Resources/OimeEngineResources.bundle/d9cce8a55257",
+        "size": 167497,
+        "sha256": "5f4545bc291fbd79981bac686fecf467c354025049fe6189efc681f213d914eb",
+        "prefixHex": "0806120d6f6e6e782e7175616e74697a651a05302e312e30"
+      },
+      {
+        "path": "Frameworks/OimeEngine.framework/Versions/A/Resources/OimeEngineResources.bundle/d9fb456e30c0",
+        "size": 1107036,
+        "sha256": "6e000aa4e0d9497ab651b4a2beb89a57cd069b119e9a30fc4eee6aa531b6b5c1",
+        "prefixHex": "fe2a0000d9af3401300000005ce4100064d7000030000000"
+      },
+      {
+        "path": "Frameworks/OimeEngine.framework/Versions/A/Resources/OimeEngineResources.bundle/hw/b0dc6f1290d0",
+        "size": 78516,
+        "sha256": "9405ac4648c4c320c8ed9caf54fce1df24c78642106f94bb31e05c5117fb9cc2",
+        "prefixHex": "080712077079746f7263681a05322e372e313a9ae5040a36"
+      },
+      {
+        "path": "Frameworks/OimeEngine.framework/Versions/A/Resources/OimeEngineResources.bundle/hw/b0dc6f1290d0.data",
+        "size": 2467712,
+        "sha256": "ea18b75c37d879938e97b5568082d04bb42cd5700f384e1bc078ba95728c79db",
+        "prefixHex": "02ea863e22ba783e22179b3e776827be916111bd42479e3c"
+      },
+      {
+        "path": "Frameworks/OimeEngine.framework/Versions/A/Resources/OimeEngineResources.bundle/hw/b2de1ebe3b18",
+        "size": 1000785,
+        "sha256": "74bebdbf880faf853e0a6802bffff240748cd1ef52a1293c441b810b01e4ff5d",
+        "prefixHex": "082f0000752735013000000051450f0004a9000030000000"
+      },
+      {
+        "path": "Frameworks/OimeEngine.framework/Versions/A/Resources/OimeEngineResources.bundle/hw/model/2b03d4592918",
+        "size": 8765,
+        "sha256": "91fffd6b13186bf809eff693397b5abb9031c49a68b3c6f69aeb0c2268659c3d",
+        "prefixHex": "0807120d6f6e6e782e7175616e74697a651a05302e312e30"
+      },
+      {
+        "path": "Frameworks/OimeEngine.framework/Versions/A/Resources/OimeEngineResources.bundle/hw/model/2b03d4592918.data",
+        "size": 3717524,
+        "sha256": "0ca9611c2c62934b824dbed89a41ff0263decc644969d63fa43b19cc5977164b",
+        "prefixHex": "269246c0022509bf7977c3be5d411fbeb0ead3bee757b0be"
+      },
+      {
+        "path": "Frameworks/OimeEngine.framework/Versions/A/Resources/OimeEngineResources.bundle/hw/model/d2227d4a9246",
+        "size": 8762,
+        "sha256": "460303e6cbaf71fbdb9e9d497ca937932f2d28a4e881cb39cbcc3cbb3ccc3ac3",
+        "prefixHex": "0807120d6f6e6e782e7175616e74697a651a05302e312e30"
+      },
+      {
+        "path": "Frameworks/OimeEngine.framework/Versions/A/Resources/OimeEngineResources.bundle/hw/model/d2227d4a9246.data",
+        "size": 2602824,
+        "sha256": "52fc5e6bcfd3a30e9b5c5efc4d567339297f43d7ec867f43ad1dcc0747ecb7bc",
+        "prefixHex": "b8c1ee3f619b04bfd2cbbfbfcff3033fb42d983f42b303bf"
+      },
+      {
+        "path": "Frameworks/OimeEngine.framework/Versions/A/Resources/OimeEngineResources.bundle/hw/model/d398ce154a57",
+        "size": 101835,
+        "sha256": "9ffe7f00e8fd4b1b1cbfd24c05ca7e8ca774cfeb7b63ceff4ecbcbdb6fc28cea",
+        "prefixHex": "0807120d6f6e6e782e7175616e74697a651a05302e312e30"
+      },
+      {
+        "path": "Frameworks/OimeEngine.framework/Versions/A/Resources/OimeEngineResources.bundle/hw/model/d398ce154a57.data",
+        "size": 987456,
+        "sha256": "3fcefd81061478fb0ca5e32baf522c07e95ecb78cd657304c1b1da6ba97bbfaf",
+        "prefixHex": "b5ba00bcba50b6bdf8832c3d710bbc3cffafaf3b907679bd"
+      }
+    ],
+    "findings": [
+      {
+        "id": "DBK-host",
+        "status": "answered-static",
+        "observation": "Info.plist selects com.bytedance.inputmethod.doubaoime.pinyin, DoubaoImeInputController and DoubaoIme_Connection. ObjC class metadata establishes IMKInputController superclass and handleEvent:client: implementation 0x1001476f8. Its bridge calls Swift body 0x100144f88 at 0x100147768. commitComposition: implementation 0x1001883d8 loads 0x100187eb4 and branches to shared bridge 0x10013eb48.",
+        "evidence": [
+          "main-controller-methods.json",
+          "DBK-asm-handle-event",
+          "DBK-asm-commit-composition"
+        ],
+        "unknown": "Complete stripped Swift control flow from event to engine was not reconstructed."
+      },
+      {
+        "id": "DBK-local-engine",
+        "status": "answered-static",
+        "observation": "OimeEngine Swift facade has convert(input:params:) 0x245f4, getCandidates(startIndex:count:) 0x24a54, commit(absoluteIndex:) 0x24dcc. ObjC++ ImeEngine convert:: at 0x7020 bridges into C++ oime_engine. Engine::ConvertImpl branches to SymbolConvert, PinYinConvert or ShuangPinConvert. PinYinConvert directly calls SyllableLattice::CreateLattice at 0x1babb0, user dictionary conversion at 0x1bada4, system dictionary at 0x1badcc, extension/enhanced/contact dictionaries and sentence generation at 0x1baed0.",
+        "evidence": [
+          "oime-demangled.txt",
+          "oime-cpp.txt",
+          "DBK-asm-convert-impl",
+          "DBK-asm-pinyin-convert"
+        ],
+        "inference": "A native local dictionary/lattice candidate generator exists. Ordinary keyboard typing is not implemented solely as one cloud LLM prompt."
+      },
+      {
+        "id": "DBK-ranking",
+        "status": "answered-static",
+        "observation": "Engine::CanditateSortByFeature at 0x1c3af8 directly calls MLPModel::CalcScoreByFeature at 0x1c3e74. That assembles CombinedFeature and calls CalcScoreByFeatureCombined at 0x2056dc. PyDictManager::LoadSysDict directly loads SyllableDict 0x172f60, SysDict 0x173038, SysBigramDict 0x173108, CorrectDict 0x1731dc, local MLP model 0x173818 and cloud MLP 0x173870.",
+        "evidence": [
+          "DBK-asm-candidate-sort",
+          "DBK-asm-mlp-score",
+          "DBK-asm-dict-manager-load"
+        ],
+        "unknown": "Weights, thresholds, exact deployed model mapping, and active settings. The string MLPModel no gpt2 is a diagnostic label, not proof of a particular language-model architecture."
+      },
+      {
+        "id": "DBK-cloud",
+        "status": "answered-client-static",
+        "observation": "The separate Swift OimeEngineNetworkManager sendCloudAndLLMRequest overload at 0x2ce44 takes raw input, precedingText, followingText, requestSerial, shouldSendLLMRequest, keyboardType and keyboardScheme. At 0x2da60 it calls ObjC sendLLMRequestWithInput:textBeforeCursor:textAfterCursor:type:scheme:timeout:enableLogger:callback:. Shipped model includes distinct cached local, llmCandidates and cloudCandidate properties plus cloud and LLM error paths.",
+        "evidence": [
+          "oime-demangled.txt",
+          "DBK-asm-cloud-llm-request"
+        ],
+        "inference": "Cloud/LLM enhancement is layered on native keyboard conversion; evidence shows client request paths, not live calls.",
+        "unknown": "Which flags enable requests in an active session, remote prompt/model, server ranking, latency and actual output."
+      },
+      {
+        "id": "DBK-commit",
+        "status": "partial-static",
+        "observation": "Candidate model exports displayString, convertString, composingString, commitWord, rawWord, dictType, candidateType, segmentPositions and correctSyllableInfos; CommitResult has selectedCandidate and convertRemain. Engine has distinct Commit, EnterCommit, history and user dictionary saving/learning APIs. Main owns composingString_, markedTextSelectionLocation_, candidate session/panel state and uses macOS setMarkedText:selectionRange:replacementRange: and insertText:replacementRange: APIs.",
+        "evidence": [
+          "oime-demangled.txt",
+          "oime-cpp.txt",
+          "main-controller-methods.json"
+        ],
+        "unknown": "Full keyboard candidate selection -> final insertText call chain is not proven in this pass. Shared text APIs are also used by voice features, so global selector hits cannot by themselves attribute a typing commit."
+      },
+      {
+        "id": "DBK-resources",
+        "status": "partial-static",
+        "observation": "Shipped OimeEngineResources.bundle contains hashed-name binary resources, approximately 47 MB, 26 MB, 22 MB and other payloads; separate hw/model and asr subdirectories exist. Resource hashes/sizes are retained.",
+        "evidence": [
+          "resourceInventory"
+        ],
+        "unknown": "No format-aware decode tied each opaque payload to a dictionary/model role; hashed filenames and size alone do not establish their semantics."
+      }
+    ],
+    "limitations": [
+      "No runtime execution, app launch, network request, microphone, user text or private app storage was inspected.",
+      "No claim is made about Windows, Android, iOS or versions other than the installed macOS build.",
+      "Symbol presence is static capability evidence; only listed call instructions establish local static linkage.",
+      "Candidate UI behavior, active configuration, dictionary format and server implementation remain partial or unknown."
+    ]
+  },
+  "chatterfly": {
+    "evidenceType": "ordinary-static-arm64-instructions-and-package-bytes",
+    "limitations": [
+      "No successful REA native function dossier; prior whole-program Ghidra attempt timed out.",
+      "No target launch, runtime traffic, accuracy test or private user files.",
+      "Objective-C messages are statically resolved selector annotations, not observed dynamic receiver calls.",
+      "Opaque dictionary headers and symbol names do not reveal complete model architectures or weights."
+    ],
+    "binary": {
+      "path": ".workspace/research/chatterfly/chatterfly-arm64",
+      "size": 54198928,
+      "sha256": "2ea312f6324accd6194e6c612608870321bc62c286aa2cdbccf8288ae19a2433"
+    },
+    "resources": [
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/Info.plist",
+        "size": 661,
+        "sha256": "f8b79f1d39a4d1fe9d6ab1c271532a584a4a4680484fd42037cb9d0da6cfa515",
+        "headHex": "3c3f786d6c2076657273696f6e3d22312e302220656e636f64696e673d225554"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/Correction.ini",
+        "size": 106,
+        "sha256": "39cba84fd6dde264a89f6ecff8b44145c93213265d9feddb7d175643645795f9",
+        "headHex": "fffe5b0043006f007200720065006300740069006f006e005d000d000a006700"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/Fuzzy.dat",
+        "size": 172,
+        "sha256": "f75a51f0135e67113e4a2fdd200f493aed108d71b5f2ebe59e02937b7620c530",
+        "headHex": "fffe5b0047007200610079005d000d000a007a0068003d007a000d000a006300"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/MoHuYin.ini",
+        "size": 104,
+        "sha256": "23b8591c1c886f3fb3e692340d6fafd23e394fba3e6434942acf6c1e7abf12c6",
+        "headHex": "fffe5b00460075007a007a0079005d000d000a007a0068003d007a000d000a00"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/Punctures.ini",
+        "size": 2891,
+        "sha256": "49b0497dee8749f244f9275bad5658b0eaada32800bb7b410801e98949a1e6e1",
+        "headHex": "efbbbf5b76657273696f6e5d0a6d61696e3d310a7375623d3230303730353136"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/ShuangPinSchemes/ABC.ini",
+        "size": 331,
+        "sha256": "f183f4bbe768d9d3ef22f2da600fb26bfab1614ad0bf3015585d2c16e07decc0",
+        "headHex": "efbbbf5b6d657461646174615d0a7469746c653de699bae883bd4142430a0a5b"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/ShuangPinSchemes/GuoBiao.ini",
+        "size": 696,
+        "sha256": "15e8a8c80c43779076c22e6a1b319592e8b320e1d64c2a0c289067a2801c6475",
+        "headHex": "fffe5b006d0065007400610064006100740061005d000d000a00740069007400"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/ShuangPinSchemes/MS2003.ini",
+        "size": 334,
+        "sha256": "6eed5ec9af43fe6f691eff472b30d51c76e6c7aa7cd6d629f26f6bf81513b296",
+        "headHex": "efbbbf5b6d657461646174615d0a7469746c653de5beaee8bdafe58f8ce68bbc"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/ShuangPinSchemes/PinyinJiaJia.ini",
+        "size": 330,
+        "sha256": "0ab9690a11e97102a346a4de66b4e12057006311947430fecbd130ef284e862a",
+        "headHex": "efbbbf5b6d657461646174615d0a7469746c653de68bbce99fb3e58aa0e58aa0"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/ShuangPinSchemes/Sogou.ini",
+        "size": 334,
+        "sha256": "faa0395839de4d16456f79499135a1a4d9de1c782c047936304cc9c18d7a52d5",
+        "headHex": "efbbbf5b6d657461646174615d0a7469746c653de6909ce78b97e58f8ce68bbc"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/ShuangPinSchemes/XiaoHe.ini",
+        "size": 312,
+        "sha256": "c7a3c1e60d7114786d680e68e8ecf391fe01fe07da57cbdf18b7a14ce803bc5e",
+        "headHex": "5b6d657461646174615d0a7469746c653dd0a1bad7cbabc6b40a0a5bc9f9c4b8"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/ShuangPinSchemes/ZiGuang.ini",
+        "size": 333,
+        "sha256": "300acfd77b43f8eadbc5c89e7c7bc150a777073376316d451372e2773db49ad2",
+        "headHex": "efbbbf5b6d657461646174615d0a7469746c653de7b4abe58589e58f8ce68bbc"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/ShuangPinSchemes/ZiRanMa.ini",
+        "size": 329,
+        "sha256": "a495d7ad20130758704f95d48aff37db1c8ba2d8103f48e1730a984a58f21806",
+        "headHex": "efbbbf5b6d657461646174615d0a7469746c653de887aae784b6e7a0810a0a5b"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/characters.ini",
+        "size": 17620,
+        "sha256": "0b78b652bec27d8c45b0cd591a170cbbe6503b9dfd5c503dea5bb63d74839f46",
+        "headHex": "3b203b20e4b8bae5878fe5b091e5afbce887b4e8be93e585a5e6b395e587bae7"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/ime_InputStr.bin",
+        "size": 3464,
+        "sha256": "5eb8d1d2d30332b93508b1eae5a8ceb787b727edfbf44494f9af2a6385be52a0",
+        "headHex": "610a61690a616e0a616e670a616f0a62610a6261690a62616e0a62616e670a62"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/ime_aid.bin",
+        "size": 48601,
+        "sha256": "9ff8922abf4fc0941f9ebf31e2cd79776a62d6c0fb0513b83b4c1c5c43deb552",
+        "headHex": "ccddeeff340000001c00000040000000050000000e090000bdbc000000000000"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/ime_annex.bin",
+        "size": 3458978,
+        "sha256": "0719b32073aa0a384f1afd6d82b71f2d5a6c80111b7065f01d21132b55d3ec03",
+        "headHex": "59de6efc96000000040000000100000005000000030002000000060000000000"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/ime_bh.bin",
+        "size": 234120,
+        "sha256": "f4d467bc25567eb5e292bf46b27dea8e671894263d95885054cbdb3e60cb51dc",
+        "headHex": "eeccddff394290250300000001000000240000007c2300005023020088920300"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/ime_bigram_serdata.bin.630211129",
+        "size": 438570,
+        "sha256": "ce934c66b9a8e1e89cd750fe284018a5fcb9b27785f6beddd82be193e2fc7369",
+        "headHex": "8a6a010000000000000000000000000000000000000000000000000000000000"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/ime_charvalid.bin",
+        "size": 65552,
+        "sha256": "440d5ffe0e79dc4cdbe7b9bf2b3b8a51804b0734c8652eb71cb1a5e3d1ae318d",
+        "headHex": "a354330100000100010700000000000001010101010101010101010101010101"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/ime_cor.bin",
+        "size": 195904,
+        "sha256": "bc5b107db00ab88f7bebf10b9493d9d2bd45e0099b1ab9c76bb937d4da2c7d65",
+        "headHex": "eeddccffe597681e2000000098080000b7010000b7010000d1f0020000020000"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/ime_em.bin",
+        "size": 79776,
+        "sha256": "08a9e8bf5d594c9e427559ff6b987e985b46d3319e923996917ef4682900447b",
+        "headHex": "8a173401140000000800000000040000e34c0000000000009dd9ae3ce8bb1b3d"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/ime_em_physical.bin",
+        "size": 79776,
+        "sha256": "9099b3378ee7cb67204d7d5948963505a1b0aa0fed76b94272eebc58bbb0ca28",
+        "headHex": "8a173401140000000800000000040000e34c0000000000004f54fc33d0f90935"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/ime_en_sys.bin",
+        "size": 276897,
+        "sha256": "2546d329d99657621ddb1f4b1ce6cf3b5b17de4c19e313b114362883120e546a",
+        "headHex": "b32e2b0459c6330162f5135f1c000000a1390400e1af7fcc57630000b32e2b04"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/ime_fix_first.bin",
+        "size": 650366,
+        "sha256": "61a56e271bce23ecfc5a5071f431d226ac08c328ee4c5eddda30994a77423288",
+        "headHex": "07ea77fd42000000010000000100000002000000010005000000000000000000"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/ime_gd_aa.bin",
+        "size": 8264,
+        "sha256": "19ea1f40b60330c52c040a255f1954d1328d0d7b67ef7c80704693df06bf27cc",
+        "headHex": "534741412800000009a033010000000048200000020000000004000001000000"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/ime_gd_abg.bin",
+        "size": 74056,
+        "sha256": "551aaa9786b28609cc2e46fc5c70cf5874db42a10da899ebc792bc738e7e9cf2",
+        "headHex": "5341504228000000c1a033010000000048210100010000000400000000000000"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/ime_gd_app_mapping.bin",
+        "size": 24708,
+        "sha256": "44cae434803b1e955c3400bfea8ae7a0a9804e3fbe195420a054025ef06e448f",
+        "headHex": "5347414d28000000198d34010000000084600000010000000000000000000000"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/ime_gd_asscloud.bin",
+        "size": 26204,
+        "sha256": "48c8f5e5769e0ef99be4d749c47867a6cec5ca902c41e34044112ed28a720979",
+        "headHex": "41434c00280000006e163401000000005c660000030000000000000000000000"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/ime_gd_asso_bs.bin",
+        "size": 128,
+        "sha256": "1f14bc8434dacd9b9d31a2b8dc2c12ee252c2fe4615c037e190c7c596eda6e07",
+        "headHex": "534142532800000098c833010000000080000000010000000400000000000000"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/ime_gd_asso_bt.bin",
+        "size": 1026572,
+        "sha256": "a40c1317fd54a2e6552d002f58c1fb73657db56a8b655b9193ed6819206998c0",
+        "headHex": "5341425428000000c2a03301000000000caa0f00020000000800000000000000"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/ime_gd_asso_sc.bin",
+        "size": 337100,
+        "sha256": "e1cac364b855b7c45111ed0e3766226a33687009be38e04d61a4ffc778d78212",
+        "headHex": "534153432800000087a1330100000000cc240500010000000400000000000000"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/ime_gd_assoccloud_app.bin",
+        "size": 240,
+        "sha256": "70fa20c87733aa524151d280a787fd421b747124ccef2a0299d30e8522f32b45",
+        "headHex": "4143414c28000000ad3c340100000000f0000000010000000000000000000000"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/ime_gd_bh_ext.bin",
+        "size": 3784,
+        "sha256": "f6bdbfeecff42304ec2eff95b0761d35b1152d458185b9add50b0d3d8475bd51",
+        "headHex": "53474245280000000514340100000000c80e0000010000000000000000000000"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/ime_gd_bigram.bin",
+        "size": 10777984,
+        "sha256": "a5feba121e346977b8b5cc0ad4f3979ae745aa97eaaf1a2c43b258ed4a4d71e8",
+        "headHex": "5347534228000000c1a03301000000008075a400010000002c00020000000000"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/ime_gd_blfx.bin",
+        "size": 76108,
+        "sha256": "7ffe81474f963799d33c211deb57c5e0e2272d1c7efcb37639e829de2e68c76e",
+        "headHex": "4c58424c2800000031ee3301000000004c290100050000000000000000000000"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/ime_gd_br.bin",
+        "size": 244988,
+        "sha256": "b36bcbe51a5ecfde9a2358cde6eb312ec5797876145d20e56f00ef872891f86f",
+        "headHex": "5347425228000000c0a03301d96dba57fcbc0300010000000000000001000000"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/ime_gd_bsa.bin",
+        "size": 99164,
+        "sha256": "a30277308a44ce498d35caf246256ed48f1d979a8526de73eac4ef8e6d109526",
+        "headHex": "534742412800000009a03301000000005c830100010000000000000000000000"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/ime_gd_ca_common_bi.bin",
+        "size": 230716,
+        "sha256": "91d1672d0c51113e3d3700f74bc0a49c6d07ceabc3c114e8322e90e8608c0819",
+        "headHex": "4343424928000000e8623401000000003c850300010000000000000000000000"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/ime_gd_cagram.bin",
+        "size": 1386184,
+        "sha256": "e442fc5814919d4bbd7c65bd4b5c75d1b5f5b37104ae3c123bc5c2f25ded2328",
+        "headHex": "5343414228000000c2a0330100000000c8261500030000000800000000000000"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/ime_gd_cf.bin",
+        "size": 1304,
+        "sha256": "267cf332b957de89310892be31394683f4062a4f62281a27188a3dfad549dea5",
+        "headHex": "5347464e28000000d0c7330167ed5a5918050000020000000000000000000000"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/ime_gd_cloud_ca_convert.bin",
+        "size": 70012,
+        "sha256": "3366e0450080f3558016d8f7986eb0ff701b33533ecc7aa7f3fb58c4cb9155ba",
+        "headHex": "3942902501000000020000000300000004000000050000000600000008000000"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/ime_gd_csmile.bin",
+        "size": 27272,
+        "sha256": "bd861366b5a43ca63d3d5bacbe49c41166bad14a301aafddc2f1586cb403fb96",
+        "headHex": "534743532800000009a0330100000000886a0000010000000000000000000000"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/ime_gd_em.bin",
+        "size": 96168,
+        "sha256": "de070f393cc042cea2e1ca07e1e9478ae7aa39969da762439f7627b75a78f835",
+        "headHex": "5347454d2800000009a0330100000000a877010002000000000c000000000000"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/ime_gd_em_wx.bin",
+        "size": 4496,
+        "sha256": "e4d7198e114f0808628a7c7c27dd4591ada49917cf4ede7e00fcc96bed769b18",
+        "headHex": "53454d572800000009a033010000000090110000020000000004000000000000"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/ime_gd_grey.bin",
+        "size": 23468,
+        "sha256": "621b80dbc487334a19e3a59f1fd20dbec1b62b5ae363d784e75897867b7d98f7",
+        "headHex": "5347534728000000f43e340100000000ac5b0000010000000000000000000000"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/ime_gd_hmd.bin",
+        "size": 4440,
+        "sha256": "6f729ccb2d48fe83368d6fddd9b0c0a826cbd63362a7cd5e09e3fa1a776b3342",
+        "headHex": "53484d4428000000e23b34010000000058110000010000000000000000000000"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/ime_gd_nicheapp_black.bin",
+        "size": 240,
+        "sha256": "d51fdd62610d10118042cd632a5e3786c3a8bafd008a5210044935a8914e36c2",
+        "headHex": "4d41424c280000007214340100000000f0000000010000000000000000000000"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/ime_gd_nmode.bin",
+        "size": 260508,
+        "sha256": "6db20c5197cbe3a2c179bbaf27f42cb99047f62a9b77a143fde83e996404404e",
+        "headHex": "4e4d440028000000e3173401000000009cf9030003000000e006000000000000"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/ime_gd_old_sys_serdata.bin.630211129",
+        "size": 5560423,
+        "sha256": "9a2f809eef364261c540c4b3f0d1c637f0b0a1babefece1b6ebfe7d2653f0ac9",
+        "headHex": "534753543942902557d8540008000000ff0000000a0000000400000001000000"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/ime_gd_py_ext.bin",
+        "size": 2472,
+        "sha256": "f2d3c0ea96e1f6ff5574c5e17fb8ff3c987e4fe9964403a04d125b0b22092f1b",
+        "headHex": "5347534528000000f13e340100000000a8090000010000000000000000000000"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/ime_gd_smartcor_white.bin",
+        "size": 432,
+        "sha256": "00979be1f55022eaecaa6e202911ad5f5110765929ea23840c81da314fb3cb2f",
+        "headHex": "5343574c280000008317340100000000b0010000010000000000000000000000"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/ime_gd_smile.bin",
+        "size": 284492,
+        "sha256": "8c14b5a69bb674adcc082d6cc55b4816e3fc87fb66cf359df05a59420c4e6788",
+        "headHex": "534750532800000009a03301000000004c570400010000000000000000000000"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/ime_gd_splt.bin",
+        "size": 2700,
+        "sha256": "bbf6ada3906f1955b4dadca2d4aa13cb8a8b525df8f77436eb731cbbdd187823",
+        "headHex": "534753492800000009a03301000000008c0a0000010000000000000000000000"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/ime_gd_sw_sys.bin",
+        "size": 125352,
+        "sha256": "b6f23aca62d304bea3305701c34b5d451952494e86dfcb6c65f5d2d2a5733cc2",
+        "headHex": "534753572800000009a0330100000000a8e90100010000000000000000000000"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/ime_gd_sw_ts.bin",
+        "size": 125056,
+        "sha256": "b14b65a1f2d0a3808ab7c73e1f84e30e2c5c43139b988be733ba0641e2c5506a",
+        "headHex": "534754532800000009a033010000000080e80100020000000000000000000000"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/ime_gd_timeaware.bin",
+        "size": 20012,
+        "sha256": "662cdc880430e64337943e46db784603434d21d00b3a0630b71d79dfdef650aa",
+        "headHex": "53544d412800000009a03301000000002c4e0000010000000000000000000000"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/ime_gd_trad_conv.bin",
+        "size": 166248,
+        "sha256": "a6678d3f211b065e2fd9620c034879de58f451c1b0a64cc722426b125cc95ccb",
+        "headHex": "5452414428000000a99f33010000000068890200040000000400000000000000"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/ime_gd_ucd.bin",
+        "size": 314848,
+        "sha256": "b39b790b2c0f44dc2d924313a6a8f935eb1b2864164919544a7e3606744556e0",
+        "headHex": "535543442800000009a0330100000000e0cd0400010000000000000000000000"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/ime_gd_um.bin",
+        "size": 43776,
+        "sha256": "220792ff0a250aaa08316abbf966e9bcb119ade0c2dd0f34b941789d13fc9fbd",
+        "headHex": "5347554d2800000009a033010000000000ab0000040000000c00000001000000"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/ime_gd_umodel.bin",
+        "size": 2636424,
+        "sha256": "615a0a600a6d6043883398e043fd6f0d9897bdece11566ba9b0e7e5336c4fb20",
+        "headHex": "5347554228000000a289340100000000883a2800060000009846010001000000"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/ime_gd_wb.bin",
+        "size": 1052716,
+        "sha256": "1296549bb527d133249abf16450db0bdd262f21721957bd7f51051af182878c2",
+        "headHex": "534757422800000009a03301000000002c101000010000000000000001000000"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/ime_gd_wbcode_search.bin",
+        "size": 63176,
+        "sha256": "975da40e1aa0476f5908c350b878a3e9c7f3e51f61e470d92e2f25842a2265b3",
+        "headHex": "57424353280000000dc7330100000000c8f600000100000034f5000001000000"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/ime_gd_zly.bin",
+        "size": 36260,
+        "sha256": "9926e35ad98bc1fc7ae28ec9d3c15ffd53516278f1f849c55e81c56595932a96",
+        "headHex": "535a4c592800000009a0330100000000a48d0000010000000000000000000000"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/ime_ip.bin",
+        "size": 39390,
+        "sha256": "b79e6923acf3fb51e756ae0e4c7fdfb0f610e907ffb5c85b16e5e58db3f26e85",
+        "headHex": "eeddccff18000000b943a319030000001b000000c69900007001010001001000"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/ime_keymap.bin",
+        "size": 312258,
+        "sha256": "2cbe60eeaaec6cde4d9a63cce3a88775fdcc969de1f8e401b7087fbcf6ad0946",
+        "headHex": "e0128cfd3e000000010000000100000001000000010005000000050006000700"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/ime_lm.bin",
+        "size": 532485,
+        "sha256": "618a18bca043b5556eacc17ab338d52c2b495032f5dbdba4c2cbe1f6e266a6aa",
+        "headHex": "fc153401140000000800000000040000f11b080000000000931a5a3a3a90f53b"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/ime_lm_physical.bin",
+        "size": 532485,
+        "sha256": "938f7dddf89498fce20039e2bd8604f2ecc30baa6bb22d5505bc7a25311bf0ae",
+        "headHex": "fc153401140000000800000000040000f11b080000000000acc5273782a8fb37"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/ime_name.bin",
+        "size": 33803,
+        "sha256": "4c2ec36e40d51007cc8af26d58e16c8b229393e8d310fac45a63ef82b94d53de",
+        "headHex": "10000000ed010000403b000007000200014e0000001400074e140000d600184e"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/ime_phrases.bin",
+        "size": 2816,
+        "sha256": "df783e4ce6325d3e66f4fb30256c472c09603616602a2828c1e7a209aac06bb6",
+        "headHex": "5f3999fd3e000000010000000100000002000000010003000000000005000000"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/ime_prefix_table.bin",
+        "size": 6900,
+        "sha256": "ff82baf93040b154b601a30a1f6c84aa37b07afb5cc873d8ef5b7c2d31d676cd",
+        "headHex": "01030b1e2a2c343eff48525c69727f8089939caeffffbabfc9d2ffffffffffff"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/ime_py.bin",
+        "size": 16277,
+        "sha256": "6119128d41ece84fda2f71b323fc041e1575c6619fb1db1afce2a10bde5005a7",
+        "headHex": "eeccddffb95cd9170000000008009d0161000000000000000000000000000000"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/ime_pyslm.bin",
+        "size": 172440,
+        "sha256": "3f0ed3c1111441ac9da4246a5751d39a0c81c27adbc64df091eae2715169c805",
+        "headHex": "8a173401140000000800000000040000849d020000000000d39f7d3b0c40a33b"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/ime_qr.bin",
+        "size": 7206,
+        "sha256": "397ee75c376798754235a8a911e883386c97f763f3c81f8d6c128abd740ecd7f",
+        "headHex": "eeddccff28000000a6b8c523c6010000040000000f270000cc0100000a0b0000"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/ime_quick.bin",
+        "size": 426910,
+        "sha256": "5b3e49ca88b835c3f2475c89d5365bf3870a9b6b31fba332bcc84e18a0bc0a2f",
+        "headHex": "f29c80fd74000000020000000200000003000000030004000000000005000500"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/ime_sp.bin",
+        "size": 1140,
+        "sha256": "a316165f5c9ae1b33a4738057897d230dd7aaa10b4a896ed3698779b8f4b09f6",
+        "headHex": "eeddccff3c0000009edb7218080000001b00000003000000d50000006c000000"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/ime_sys.bin",
+        "size": 4438030,
+        "sha256": "e7f05975eb92815ce540d8f7601c2331a079967fa53d3b21e2213de1802a6605",
+        "headHex": "ccddeeff3942902528000200030009009ea20900341f5202bd1a77040b080a10"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/ime_translate.bin",
+        "size": 904364,
+        "sha256": "f3e81909461102842bc420633b19f6f231c3c2789b19e19606afd70087dddbe2",
+        "headHex": "37bc67fd2c0000000100000000000000020000000100020000000000feffffff"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/ime_url.bin",
+        "size": 73046,
+        "sha256": "16b5f35c2c6603a5518e681dca661d426f65150ba6dfca9ee916f13c23ae4ed3",
+        "headHex": "dd5896fd2a00000001000000000000000100000001000300000007000700feff"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/scd/14108.scel",
+        "size": 248598,
+        "sha256": "8f7fa9a5e82ff9292939789bded8ec2886463fa196000c7014b241a71d002710",
+        "headHex": "40150000d26d53010100000008af560c44c8a068c2c635e3505fbd3d31003400"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/scd/60393.scel",
+        "size": 9982,
+        "sha256": "5a84c2439d59e5b77bd2ba123fae596ecf27199b41034d976e510b5e1e711b55",
+        "headHex": "4015000044435301010000006da1d3d9156a59db008f93258d663aac36003000"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/scdlist.ini",
+        "size": 46,
+        "sha256": "5abc7d8e6e2f27affe1a79e7f36e52f6ccb85b5b0e29ad33f110412e804453dc",
+        "headHex": "fffe5b007300630064006c006900730074005d000d000a007600650072007300"
+      },
+      {
+        "path": "Contents/Resources/ImeKernel.bundle/dict/sizeChange.bin",
+        "size": 897,
+        "sha256": "b5c8e405a3e926002043625d28c32ae5d30814f00d1fd8be4776629cf9b08216",
+        "headHex": "e5a4a7e5b08fe58f98e58c960a7367696d5f67645f6e6d6f64652e62696e0932"
+      },
+      {
+        "path": "Contents/Resources/ShuangPinSchemes/GuoBiao.ini",
+        "size": 696,
+        "sha256": "15e8a8c80c43779076c22e6a1b319592e8b320e1d64c2a0c289067a2801c6475",
+        "headHex": "fffe5b006d0065007400610064006100740061005d000d000a00740069007400"
+      }
+    ],
+    "originalUniversalBinary": {
+      "path": ".workspace/research/chatterfly/extracted/Chatterfly.app/Contents/MacOS/Chatterfly",
+      "size": 112951952,
+      "sha256": "1063fbb5b0e18dc323ec4a14487456795b359b9330cfeee14b78454a00791e50"
+    },
+    "bundle": {
+      "CFBundleIdentifier": "com.tencent.inputmethod.chatterfly",
+      "CFBundleShortVersionString": "1.0.6.13398",
+      "CFBundleVersion": "13398",
+      "InputMethodServerControllerClass": "YuanbaoInputController",
+      "InputMethodConnectionName": "Yuanbao_InputMethod_Connection",
+      "tsInputMethodCharacterRepertoireKey": [
+        "Latn",
+        "Hans",
+        "Hant"
+      ]
+    },
+    "functions": [
+      {
+        "id": "CF-key-yuanbao-key",
+        "symbol": "-[YuanbaoInputController handleKeyDown:client:]",
+        "entry": "0x100002b68",
+        "exclusiveEndFromNextTextSymbol": "0x100002c8c",
+        "functionBytesSha256": "202e869e3af12448bde7dd68619f046181f5b93c37c7f8b259816aa543a5b2af",
+        "assemblyFile": ".workspace/research/keyboard-ime/chatterfly/asm-yuanbao-key.txt",
+        "assemblySha256": "d37a66b391c3f37ae8f33457be014c9e6a94bf86d430b9744080022fe5e83be8",
+        "instructionsValidatedAgainstArm64File": 73,
+        "reproduceCommand": [
+          "xcrun",
+          "llvm-objdump",
+          "--macho",
+          "--disassemble",
+          "--dis-symname",
+          "-[YuanbaoInputController handleKeyDown:client:]",
+          ".workspace/research/chatterfly/chatterfly-arm64"
+        ]
+      },
+      {
+        "id": "CF-key-base-event",
+        "symbol": "-[SGBaseInputController handleEvent:client:]",
+        "entry": "0x1002880a4",
+        "exclusiveEndFromNextTextSymbol": "0x1002886ac",
+        "functionBytesSha256": "d6280fde470c3e9c9838d4dee4b00d5fab72bc1c80fdebb9fd913aa72e941aaf",
+        "assemblyFile": ".workspace/research/keyboard-ime/chatterfly/asm-base-event.txt",
+        "assemblySha256": "e8534ae3ddf17b1e27108b8464066e4233d115e085a848a882c8a5b84e35edba",
+        "instructionsValidatedAgainstArm64File": 386,
+        "reproduceCommand": [
+          "xcrun",
+          "llvm-objdump",
+          "--macho",
+          "--disassemble",
+          "--dis-symname",
+          "-[SGBaseInputController handleEvent:client:]",
+          ".workspace/research/chatterfly/chatterfly-arm64"
+        ]
+      },
+      {
+        "id": "CF-key-base-key",
+        "symbol": "-[SGBaseInputController handleKeyDown:client:]",
+        "entry": "0x10028a428",
+        "exclusiveEndFromNextTextSymbol": "0x10028a5d4",
+        "functionBytesSha256": "19a98237d9b16204df143702fab65e0e9ac9d8aa12d18985d0309e7ed095f29d",
+        "assemblyFile": ".workspace/research/keyboard-ime/chatterfly/asm-base-key.txt",
+        "assemblySha256": "1417f171a41e88002a68c67c9fa3ae99055596b58ee9df5cefdf35ed4bf208b6",
+        "instructionsValidatedAgainstArm64File": 107,
+        "reproduceCommand": [
+          "xcrun",
+          "llvm-objdump",
+          "--macho",
+          "--disassemble",
+          "--dis-symname",
+          "-[SGBaseInputController handleKeyDown:client:]",
+          ".workspace/research/chatterfly/chatterfly-arm64"
+        ]
+      },
+      {
+        "id": "CF-key-py-key",
+        "symbol": "-[SGInputControllerPy handleKeyDown:client:isContinue:]",
+        "entry": "0x1002d7ae0",
+        "exclusiveEndFromNextTextSymbol": "0x1002d7f84",
+        "functionBytesSha256": "98c6b8fc854581449e552717a195a48b916344d9d035bace6ac0a44c469e8313",
+        "assemblyFile": ".workspace/research/keyboard-ime/chatterfly/asm-py-key.txt",
+        "assemblySha256": "bb4460bd3304c66c4e56427c42a3fc849a549e3f4bc9a8f95f2cda8c5fd0350b",
+        "instructionsValidatedAgainstArm64File": 297,
+        "reproduceCommand": [
+          "xcrun",
+          "llvm-objdump",
+          "--macho",
+          "--disassemble",
+          "--dis-symname",
+          "-[SGInputControllerPy handleKeyDown:client:isContinue:]",
+          ".workspace/research/chatterfly/chatterfly-arm64"
+        ]
+      },
+      {
+        "id": "CF-key-py-add",
+        "symbol": "-[SGInputControllerPy funcAddInput:]",
+        "entry": "0x1002dd4b4",
+        "exclusiveEndFromNextTextSymbol": "0x1002dd698",
+        "functionBytesSha256": "2d749d3fb4a9d98d72c9851eb7337ab8720c8d065dde856d158bd3ef8c563eea",
+        "assemblyFile": ".workspace/research/keyboard-ime/chatterfly/asm-py-add.txt",
+        "assemblySha256": "15986141bf4db12b1770105a1bddd01dfcc6b9b599e0ec0426e75de8e5ba0abf",
+        "instructionsValidatedAgainstArm64File": 121,
+        "reproduceCommand": [
+          "xcrun",
+          "llvm-objdump",
+          "--macho",
+          "--disassemble",
+          "--dis-symname",
+          "-[SGInputControllerPy funcAddInput:]",
+          ".workspace/research/chatterfly/chatterfly-arm64"
+        ]
+      },
+      {
+        "id": "CF-key-engine-add",
+        "symbol": "-[SGPyConversionEngine addInput:]",
+        "entry": "0x10031db38",
+        "exclusiveEndFromNextTextSymbol": "0x10031dd9c",
+        "functionBytesSha256": "98237327bf824879dca650361f2383ac54b176cf2209b25efc9ed4bf9acbd6eb",
+        "assemblyFile": ".workspace/research/keyboard-ime/chatterfly/asm-engine-add.txt",
+        "assemblySha256": "7fd7683561095235ddf4a62c8e0a042405558abc45d0b491d9a2cb1044ba1e93",
+        "instructionsValidatedAgainstArm64File": 153,
+        "reproduceCommand": [
+          "xcrun",
+          "llvm-objdump",
+          "--macho",
+          "--disassemble",
+          "--dis-symname",
+          "-[SGPyConversionEngine addInput:]",
+          ".workspace/research/chatterfly/chatterfly-arm64"
+        ]
+      },
+      {
+        "id": "CF-key-engine-convert",
+        "symbol": "-[SGPyConversionEngine convertWithHint:]",
+        "entry": "0x10031eb28",
+        "exclusiveEndFromNextTextSymbol": "0x10031fd24",
+        "functionBytesSha256": "aac9e3c8ec8bb5fd1de873ded23cb91b21e7d9b479080e59d2783557c4afa844",
+        "assemblyFile": ".workspace/research/keyboard-ime/chatterfly/asm-engine-convert.txt",
+        "assemblySha256": "f4e161eb7df523d23b9d86cb82123aff566176dea69ce59b5141b4583019cb06",
+        "instructionsValidatedAgainstArm64File": 1151,
+        "reproduceCommand": [
+          "xcrun",
+          "llvm-objdump",
+          "--macho",
+          "--disassemble",
+          "--dis-symname",
+          "-[SGPyConversionEngine convertWithHint:]",
+          ".workspace/research/chatterfly/chatterfly-arm64"
+        ]
+      },
+      {
+        "id": "CF-key-bridge-convert",
+        "symbol": "+[SGConversionEngine convertAnyEntriesWithCompText:tableText:pageStart:pageSize:dateFormatCurrent:dateFormatPrevious:isEng:isEngKeyboard:isUrl:supportSplitZi:convertContext:]",
+        "entry": "0x100078d70",
+        "exclusiveEndFromNextTextSymbol": "0x100078ebc",
+        "functionBytesSha256": "7c551e5827c8caa45f2446a65ab0f42ce7480a5c7fdcb0436d52ba8f9319eb02",
+        "assemblyFile": ".workspace/research/keyboard-ime/chatterfly/asm-bridge-convert.txt",
+        "assemblySha256": "c80bf0a53cd4caf7592144c68dc5eb71e5ed6b7f506d6d754424c2104664517c",
+        "instructionsValidatedAgainstArm64File": 83,
+        "reproduceCommand": [
+          "xcrun",
+          "llvm-objdump",
+          "--macho",
+          "--disassemble",
+          "--dis-symname",
+          "+[SGConversionEngine convertAnyEntriesWithCompText:tableText:pageStart:pageSize:dateFormatCurrent:dateFormatPrevious:isEng:isEngKeyboard:isUrl:supportSplitZi:convertContext:]",
+          ".workspace/research/chatterfly/chatterfly-arm64"
+        ]
+      },
+      {
+        "id": "CF-key-core-convert",
+        "symbol": "+[SGCoreService convertAnyWithComp:bh:entries:pageStart:pageSize:digitalInput:bEng:bEngKeyboard:bUrl:bSplitZi:convertContext:]",
+        "entry": "0x10007fd00",
+        "exclusiveEndFromNextTextSymbol": "0x10007ff74",
+        "functionBytesSha256": "1b381778b084e3ce6057b043d9ef7375b741bb57eaff4648e7842225156039d4",
+        "assemblyFile": ".workspace/research/keyboard-ime/chatterfly/asm-core-convert.txt",
+        "assemblySha256": "73eb120a59cf5f83af607b170b62f5f4b163231ac34f4e824141196745173a96",
+        "instructionsValidatedAgainstArm64File": 157,
+        "reproduceCommand": [
+          "xcrun",
+          "llvm-objdump",
+          "--macho",
+          "--disassemble",
+          "--dis-symname",
+          "+[SGCoreService convertAnyWithComp:bh:entries:pageStart:pageSize:digitalInput:bEng:bEngKeyboard:bUrl:bSplitZi:convertContext:]",
+          ".workspace/research/chatterfly/chatterfly-arm64"
+        ]
+      },
+      {
+        "id": "CF-key-helper-update",
+        "symbol": "-[SGInputHelper pyUpdateInput:]",
+        "entry": "0x1002df344",
+        "exclusiveEndFromNextTextSymbol": "0x1002df618",
+        "functionBytesSha256": "8952d493bd00234f19c86ca768cbe421313c090375e0aa4022844c71f3f84c00",
+        "assemblyFile": ".workspace/research/keyboard-ime/chatterfly/asm-helper-update.txt",
+        "assemblySha256": "d0ddda58fb8d509bf39afd48c6f14322b59ec15e14de55a5aebdef512d05edfe",
+        "instructionsValidatedAgainstArm64File": 181,
+        "reproduceCommand": [
+          "xcrun",
+          "llvm-objdump",
+          "--macho",
+          "--disassemble",
+          "--dis-symname",
+          "-[SGInputHelper pyUpdateInput:]",
+          ".workspace/research/chatterfly/chatterfly-arm64"
+        ]
+      },
+      {
+        "id": "CF-key-py-select",
+        "symbol": "-[SGInputControllerPy funcSelectCandidateForSpace:]",
+        "entry": "0x1002dd1cc",
+        "exclusiveEndFromNextTextSymbol": "0x1002dd294",
+        "functionBytesSha256": "6685724ee92a577b9fa9d73f21e9a1e18e5b24cd2e2f895589eff278eabab2a3",
+        "assemblyFile": ".workspace/research/keyboard-ime/chatterfly/asm-py-select.txt",
+        "assemblySha256": "558fc5637473cb7a2d5ced79b9750fe0e08fc6348081960901a620ba992fefd2",
+        "instructionsValidatedAgainstArm64File": 50,
+        "reproduceCommand": [
+          "xcrun",
+          "llvm-objdump",
+          "--macho",
+          "--disassemble",
+          "--dis-symname",
+          "-[SGInputControllerPy funcSelectCandidateForSpace:]",
+          ".workspace/research/chatterfly/chatterfly-arm64"
+        ]
+      },
+      {
+        "id": "CF-key-engine-select",
+        "symbol": "-[SGPyConversionEngine selectCandidateAtIndex:]",
+        "entry": "0x100323e68",
+        "exclusiveEndFromNextTextSymbol": "0x100324438",
+        "functionBytesSha256": "9c1cbff0d28534933dd327cecad9e29ef97b35729e55c1ae5c8a9c8354a878e6",
+        "assemblyFile": ".workspace/research/keyboard-ime/chatterfly/asm-engine-select.txt",
+        "assemblySha256": "70b44199bb00bf1b42597b6c4507dfd430259db01c8e0405bcddbd153d7958e6",
+        "instructionsValidatedAgainstArm64File": 372,
+        "reproduceCommand": [
+          "xcrun",
+          "llvm-objdump",
+          "--macho",
+          "--disassemble",
+          "--dis-symname",
+          "-[SGPyConversionEngine selectCandidateAtIndex:]",
+          ".workspace/research/chatterfly/chatterfly-arm64"
+        ]
+      },
+      {
+        "id": "CF-key-engine-commit",
+        "symbol": "-[SGPyConversionEngine committCurrenCandidate]",
+        "entry": "0x10032485c",
+        "exclusiveEndFromNextTextSymbol": "0x1003248d0",
+        "functionBytesSha256": "5506f185424c01b53d8ffabb4ecd27d69b20ef14a268716d4ad21ab7011690c8",
+        "assemblyFile": ".workspace/research/keyboard-ime/chatterfly/asm-engine-commit.txt",
+        "assemblySha256": "4593059f03d0114843587442a13d106785b7b6aa6d13013c539488707db75857",
+        "instructionsValidatedAgainstArm64File": 29,
+        "reproduceCommand": [
+          "xcrun",
+          "llvm-objdump",
+          "--macho",
+          "--disassemble",
+          "--dis-symname",
+          "-[SGPyConversionEngine committCurrenCandidate]",
+          ".workspace/research/chatterfly/chatterfly-arm64"
+        ]
+      },
+      {
+        "id": "CF-key-helper-commit",
+        "symbol": "-[SGInputHelper pyCommitCandidate:sender:]",
+        "entry": "0x1002df698",
+        "exclusiveEndFromNextTextSymbol": "0x1002df990",
+        "functionBytesSha256": "a49a7695f28dfc4720b23897eed735f628d7416f3e3398abbb42e55eaf0aeaf3",
+        "assemblyFile": ".workspace/research/keyboard-ime/chatterfly/asm-helper-commit.txt",
+        "assemblySha256": "9de33ee9e345c59be0756192ab395b9a3fd325e79d93f995edb25e6f0f67478d",
+        "instructionsValidatedAgainstArm64File": 190,
+        "reproduceCommand": [
+          "xcrun",
+          "llvm-objdump",
+          "--macho",
+          "--disassemble",
+          "--dis-symname",
+          "-[SGInputHelper pyCommitCandidate:sender:]",
+          ".workspace/research/chatterfly/chatterfly-arm64"
+        ]
+      },
+      {
+        "id": "CF-key-helper-insert",
+        "symbol": "-[SGInputHelper sg_insertText:sender:replacementRange:shouldRecord:]",
+        "entry": "0x1002e5720",
+        "exclusiveEndFromNextTextSymbol": "0x1002e57d4",
+        "functionBytesSha256": "fa2248bdac75b6741520f6eb207a7622694a9258db4a5c4686498d25e75edf3c",
+        "assemblyFile": ".workspace/research/keyboard-ime/chatterfly/asm-helper-insert.txt",
+        "assemblySha256": "4afeac3e02f52025f981dff28ab5216f10a0834c6e4010e6341b7098817a5425",
+        "instructionsValidatedAgainstArm64File": 45,
+        "reproduceCommand": [
+          "xcrun",
+          "llvm-objdump",
+          "--macho",
+          "--disassemble",
+          "--dis-symname",
+          "-[SGInputHelper sg_insertText:sender:replacementRange:shouldRecord:]",
+          ".workspace/research/chatterfly/chatterfly-arm64"
+        ]
+      },
+      {
+        "id": "CF-key-helper-clean",
+        "symbol": "-[SGInputHelper cleanInlinePrivate:]",
+        "entry": "0x1002e5978",
+        "exclusiveEndFromNextTextSymbol": "0x1002e5a00",
+        "functionBytesSha256": "5677aa0774007d1e0505ad545c7f99a7e07cefd80accb0de3608486347e9136d",
+        "assemblyFile": ".workspace/research/keyboard-ime/chatterfly/asm-helper-clean.txt",
+        "assemblySha256": "651f0589612459ed790de46cadc1909be277fa957b42e15ecaffb4bf13931493",
+        "instructionsValidatedAgainstArm64File": 34,
+        "reproduceCommand": [
+          "xcrun",
+          "llvm-objdump",
+          "--macho",
+          "--disassemble",
+          "--dis-symname",
+          "-[SGInputHelper cleanInlinePrivate:]",
+          ".workspace/research/chatterfly/chatterfly-arm64"
+        ]
+      },
+      {
+        "id": "CF-key-ui-update",
+        "symbol": "-[SGCandidatesController updateInput:]",
+        "entry": "0x100292cdc",
+        "exclusiveEndFromNextTextSymbol": "0x1002930e0",
+        "functionBytesSha256": "b47eb10c712faa3054b47b49e839ac51188da5225e3eab260cf7a3eea9f2ca8e",
+        "assemblyFile": ".workspace/research/keyboard-ime/chatterfly/asm-ui-update.txt",
+        "assemblySha256": "00ec00c5a0587ecd4b12c345b1d750f0d67d52def3d339e4e7d2425ea4cc823a",
+        "instructionsValidatedAgainstArm64File": 257,
+        "reproduceCommand": [
+          "xcrun",
+          "llvm-objdump",
+          "--macho",
+          "--disassemble",
+          "--dis-symname",
+          "-[SGCandidatesController updateInput:]",
+          ".workspace/research/chatterfly/chatterfly-arm64"
+        ]
+      },
+      {
+        "id": "CF-key-cloud-receive",
+        "symbol": "-[SGPyConversionEngine receiveCloudCandidateEntries:flowID:]",
+        "entry": "0x100321cc4",
+        "exclusiveEndFromNextTextSymbol": "0x100322484",
+        "functionBytesSha256": "a70307e692b298896da38ee17b8df3d193dfc83e3826cac134aa34983ec9d904",
+        "assemblyFile": ".workspace/research/keyboard-ime/chatterfly/asm-cloud-receive.txt",
+        "assemblySha256": "263c0d4eff8d481c201b0654415d31903f3412b1b398575e0838c73af2a538f0",
+        "instructionsValidatedAgainstArm64File": 496,
+        "reproduceCommand": [
+          "xcrun",
+          "llvm-objdump",
+          "--macho",
+          "--disassemble",
+          "--dis-symname",
+          "-[SGPyConversionEngine receiveCloudCandidateEntries:flowID:]",
+          ".workspace/research/chatterfly/chatterfly-arm64"
+        ]
+      },
+      {
+        "id": "CF-key-engine-learn",
+        "symbol": "-[SGPyConversionEngine learnWord]",
+        "entry": "0x100326ec8",
+        "exclusiveEndFromNextTextSymbol": "0x100327194",
+        "functionBytesSha256": "934dcd25fc7bd2907d62335b6f40666da1c296307dc3ff8f6d857aa6ba777a04",
+        "assemblyFile": ".workspace/research/keyboard-ime/chatterfly/asm-engine-learn.txt",
+        "assemblySha256": "690b76a424c2f77ebb02a8d4668d0c75a8a2059d7693a5e9077b1c562c13bb70",
+        "instructionsValidatedAgainstArm64File": 179,
+        "reproduceCommand": [
+          "xcrun",
+          "llvm-objdump",
+          "--macho",
+          "--disassemble",
+          "--dis-symname",
+          "-[SGPyConversionEngine learnWord]",
+          ".workspace/research/chatterfly/chatterfly-arm64"
+        ]
+      },
+      {
+        "id": "CF-key-engine-learn-submit",
+        "symbol": "-[SGPyConversionEngine learnWordDelaySubmit]",
+        "entry": "0x1003273b8",
+        "exclusiveEndFromNextTextSymbol": "0x100327444",
+        "functionBytesSha256": "d95241bbd587eaeea68ce9f6912e0d05c0aaa0d18c034350bb0df3411eaae207",
+        "assemblyFile": ".workspace/research/keyboard-ime/chatterfly/asm-engine-learn-submit.txt",
+        "assemblySha256": "dd9602a044944196997b87acccb57bdd909b849f59b33e71d9b477bf842be039",
+        "instructionsValidatedAgainstArm64File": 35,
+        "reproduceCommand": [
+          "xcrun",
+          "llvm-objdump",
+          "--macho",
+          "--disassemble",
+          "--dis-symname",
+          "-[SGPyConversionEngine learnWordDelaySubmit]",
+          ".workspace/research/chatterfly/chatterfly-arm64"
+        ]
+      },
+      {
+        "id": "CF-key-generate-async",
+        "symbol": "__ZN19_sgime_core_pinyin_15t_pyCtInterface32StartGenerateModelInferenceAsyncEPPNS_11t_candEntryEiPNS_11t_arrayWordEb",
+        "entry": "0x100a94928",
+        "exclusiveEndFromNextTextSymbol": "0x100a94b2c",
+        "functionBytesSha256": "ddbe42f02a59fdf21c00d263ed18e2fef6a148f106b6ef27ccea5d4382e60010",
+        "assemblyFile": ".workspace/research/keyboard-ime/chatterfly/asm-generate-async.txt",
+        "assemblySha256": "f1708df1413758583c0408a397da9cea057ec042084d1e25dff4efb23da39c30",
+        "instructionsValidatedAgainstArm64File": 129,
+        "reproduceCommand": [
+          "xcrun",
+          "llvm-objdump",
+          "--macho",
+          "--disassemble",
+          "--dis-symname",
+          "__ZN19_sgime_core_pinyin_15t_pyCtInterface32StartGenerateModelInferenceAsyncEPPNS_11t_candEntryEiPNS_11t_arrayWordEb",
+          ".workspace/research/chatterfly/chatterfly-arm64"
+        ]
+      },
+      {
+        "id": "CF-key-generate-infer",
+        "symbol": "__ZN19_sgime_core_pinyin_25GenerateCandManagerHandle17GenerateInferenceERN16inference_engine18GenerateCandResultERb",
+        "entry": "0x100abf804",
+        "exclusiveEndFromNextTextSymbol": "0x100abfe74",
+        "functionBytesSha256": "1771afa644d6ff5c8f7503314d7521e39e8cf8302abadc9a613395345429bb68",
+        "assemblyFile": ".workspace/research/keyboard-ime/chatterfly/asm-generate-infer.txt",
+        "assemblySha256": "5dfc58a421995e47f6b4bc3018aaa0b06343fd7e14b796cb49f527f7ed99c80d",
+        "instructionsValidatedAgainstArm64File": 406,
+        "reproduceCommand": [
+          "xcrun",
+          "llvm-objdump",
+          "--macho",
+          "--disassemble",
+          "--dis-symname",
+          "__ZN19_sgime_core_pinyin_25GenerateCandManagerHandle17GenerateInferenceERN16inference_engine18GenerateCandResultERb",
+          ".workspace/research/chatterfly/chatterfly-arm64"
+        ]
+      },
+      {
+        "id": "CF-key-generate-loader",
+        "symbol": "__ZN19_sgime_core_pinyin_9n_newDict13t_dictManager17LoadGenerateModelEv",
+        "entry": "0x1008cc4ac",
+        "exclusiveEndFromNextTextSymbol": "0x1008cca10",
+        "functionBytesSha256": "6b98dc72083fcf038c83e59a597a4ef4bac4e5dcb62e0a8f762ae619a87fecf2",
+        "assemblyFile": ".workspace/research/keyboard-ime/chatterfly/asm-generate-loader.txt",
+        "assemblySha256": "b73fe9ddb02389e61218129c9b74949debceeee840774814391c08b3a91f7c1c",
+        "instructionsValidatedAgainstArm64File": 342,
+        "reproduceCommand": [
+          "xcrun",
+          "llvm-objdump",
+          "--macho",
+          "--disassemble",
+          "--dis-symname",
+          "__ZN19_sgime_core_pinyin_9n_newDict13t_dictManager17LoadGenerateModelEv",
+          ".workspace/research/chatterfly/chatterfly-arm64"
+        ]
+      },
+      {
+        "id": "CF-key-lm-infer-impl",
+        "symbol": "__ZN19_sgime_core_pinyin_20FeatureSortHandlerLm17GetEntryScoreImplERKNSt3__16vectorINS1_12basic_stringIDsNS1_11char_traitsIDsEENS1_9allocatorIDsEEEENS6_IS8_EEEEPfiNS1_10shared_ptrINS1_6atomicIbEEEE",
+        "entry": "0x100aae858",
+        "exclusiveEndFromNextTextSymbol": "0x100aae9a4",
+        "functionBytesSha256": "3643e3714aa93a1f39f2f99a40044f2b01bcc09e65f82d6bd4b2a59c2df0cb1f",
+        "assemblyFile": ".workspace/research/keyboard-ime/chatterfly/asm-lm-infer-impl.txt",
+        "assemblySha256": "33010dc9abdb6d8f40aecdc60c9963e6edf38e41dedab1f7e3d81aca57e8354b",
+        "instructionsValidatedAgainstArm64File": 81,
+        "reproduceCommand": [
+          "xcrun",
+          "llvm-objdump",
+          "--macho",
+          "--disassemble",
+          "--dis-symname",
+          "__ZN19_sgime_core_pinyin_20FeatureSortHandlerLm17GetEntryScoreImplERKNSt3__16vectorINS1_12basic_stringIDsNS1_11char_traitsIDsEENS1_9allocatorIDsEEEENS6_IS8_EEEEPfiNS1_10shared_ptrINS1_6atomicIbEEEE",
+          ".workspace/research/chatterfly/chatterfly-arm64"
+        ]
+      },
+      {
+        "id": "CF-key-manager-convert",
+        "symbol": "__ZN19_sgime_core_pinyin_13CInputManager7ConvertEv",
+        "entry": "0x10083ccb4",
+        "exclusiveEndFromNextTextSymbol": "0x10083cf0c",
+        "functionBytesSha256": "bed4b284a7127b117dba88a2a474ed7e6d400219f374b5b8bdd6f7576d958572",
+        "assemblyFile": ".workspace/research/keyboard-ime/chatterfly/asm-manager-convert.txt",
+        "assemblySha256": "74ce24ffbbd7de164a69fe0ee859c14887851a1b2780f02b99fe3814cafa0dbd",
+        "instructionsValidatedAgainstArm64File": 150,
+        "reproduceCommand": [
+          "xcrun",
+          "llvm-objdump",
+          "--macho",
+          "--disassemble",
+          "--dis-symname",
+          "__ZN19_sgime_core_pinyin_13CInputManager7ConvertEv",
+          ".workspace/research/chatterfly/chatterfly-arm64"
+        ]
+      },
+      {
+        "id": "CF-key-manager-result",
+        "symbol": "__ZN19_sgime_core_pinyin_13CInputManager9GetResultEPPNS_11t_candEntryEjS3_RiPNS_16CSogouCoreResultE",
+        "entry": "0x10083cf38",
+        "exclusiveEndFromNextTextSymbol": "0x10083d308",
+        "functionBytesSha256": "b584c452ce55dfcea9d473773e27415ba4e244ccc13ec6ecbedfc1f67050653f",
+        "assemblyFile": ".workspace/research/keyboard-ime/chatterfly/asm-manager-result.txt",
+        "assemblySha256": "c1444e043b246ae752918b1c3633c8a4621cbb3eeba4b26940da215173e382c8",
+        "instructionsValidatedAgainstArm64File": 244,
+        "reproduceCommand": [
+          "xcrun",
+          "llvm-objdump",
+          "--macho",
+          "--disassemble",
+          "--dis-symname",
+          "__ZN19_sgime_core_pinyin_13CInputManager9GetResultEPPNS_11t_candEntryEjS3_RiPNS_16CSogouCoreResultE",
+          ".workspace/research/chatterfly/chatterfly-arm64"
+        ]
+      },
+      {
+        "id": "CF-key-lm-sort",
+        "symbol": "__ZN19_sgime_core_pinyin_20FeatureSortHandlerLm14SortByFeaturesERN26sgime_kernelbase_namespace6t_heapEPPNS_11t_candEntryEjPv",
+        "entry": "0x100aad268",
+        "exclusiveEndFromNextTextSymbol": "0x100aad678",
+        "functionBytesSha256": "2056e2bd7edfc2f9b73684933c0707f05d173d1eeda99f8c0a8d580d315b3b4e",
+        "assemblyFile": ".workspace/research/keyboard-ime/chatterfly/asm-lm-sort.txt",
+        "assemblySha256": "9da5586cd3bfdc5839dd1e2e6c0c3b75cf92cde3a3556d2da7643e1efa22ba4b",
+        "instructionsValidatedAgainstArm64File": 260,
+        "reproduceCommand": [
+          "xcrun",
+          "llvm-objdump",
+          "--macho",
+          "--disassemble",
+          "--dis-symname",
+          "__ZN19_sgime_core_pinyin_20FeatureSortHandlerLm14SortByFeaturesERN26sgime_kernelbase_namespace6t_heapEPPNS_11t_candEntryEjPv",
+          ".workspace/research/chatterfly/chatterfly-arm64"
+        ]
+      },
+      {
+        "id": "CF-key-lm-sync",
+        "symbol": "__ZN19_sgime_core_pinyin_20FeatureSortHandlerLm17GetEntryScoreSyncEPfi",
+        "entry": "0x100aaf100",
+        "exclusiveEndFromNextTextSymbol": "0x100aaf1e0",
+        "functionBytesSha256": "9bcbbf538f55218df1acbcb1cd3ea31908323a4eac5d7f77d08538a9a72821cc",
+        "assemblyFile": ".workspace/research/keyboard-ime/chatterfly/asm-lm-sync.txt",
+        "assemblySha256": "2a1f0cac2501c946aec03ae91664a3b833c7aac2c65bafd8173dd6232e8ff23c",
+        "instructionsValidatedAgainstArm64File": 56,
+        "reproduceCommand": [
+          "xcrun",
+          "llvm-objdump",
+          "--macho",
+          "--disassemble",
+          "--dis-symname",
+          "__ZN19_sgime_core_pinyin_20FeatureSortHandlerLm17GetEntryScoreSyncEPfi",
+          ".workspace/research/chatterfly/chatterfly-arm64"
+        ]
+      },
+      {
+        "id": "CF-key-py-result",
+        "symbol": "__ZN19_sgime_core_pinyin_15t_pyCtInterface14GetConvertDataEPPNS_11t_candEntryEjPNS_12t_KeyMappingES3_RiPNS_16CSogouCoreResultE",
+        "entry": "0x100a83b7c",
+        "exclusiveEndFromNextTextSymbol": "0x100a84d20",
+        "functionBytesSha256": "4b59ff3326355f436e7c62fd54933eb6a9b4b304a2f8fbf0381cdd67d851d687",
+        "assemblyFile": ".workspace/research/keyboard-ime/chatterfly/asm-py-result.txt",
+        "assemblySha256": "ce318727bcfdcd1c24b6ab1955b83b7662f5a3d13e2254feefb010f92631daee",
+        "instructionsValidatedAgainstArm64File": 1129,
+        "reproduceCommand": [
+          "xcrun",
+          "llvm-objdump",
+          "--macho",
+          "--disassemble",
+          "--dis-symname",
+          "__ZN19_sgime_core_pinyin_15t_pyCtInterface14GetConvertDataEPPNS_11t_candEntryEjPNS_12t_KeyMappingES3_RiPNS_16CSogouCoreResultE",
+          ".workspace/research/chatterfly/chatterfly-arm64"
+        ]
+      },
+      {
+        "id": "CF-key-bridge-buffer",
+        "symbol": "+[SGConversionEngine convertAnyWithCompText:tableText:candEntryBuffer:pageStart:pageSize:dateFormatCurrent:dateFormatPrevious:isEng:isEngKeyboard:isUrl:supportSplitZi:convertContext:]",
+        "entry": "0x100078c34",
+        "exclusiveEndFromNextTextSymbol": "0x100078d4c",
+        "functionBytesSha256": "5695723d7ee68fc5f795196325dfaf773bd9dfa1e76fa327e77013ca4b1af0ec",
+        "assemblyFile": ".workspace/research/keyboard-ime/chatterfly/asm-bridge-buffer.txt",
+        "assemblySha256": "c662b27b4e29201f2a985394399921f8936ab1c3aca64311b40800edb6cf8d99",
+        "instructionsValidatedAgainstArm64File": 70,
+        "reproduceCommand": [
+          "xcrun",
+          "llvm-objdump",
+          "--macho",
+          "--disassemble",
+          "--dis-symname",
+          "+[SGConversionEngine convertAnyWithCompText:tableText:candEntryBuffer:pageStart:pageSize:dateFormatCurrent:dateFormatPrevious:isEng:isEngKeyboard:isUrl:supportSplitZi:convertContext:]",
+          ".workspace/research/chatterfly/chatterfly-arm64"
+        ]
+      },
+      {
+        "id": "CF-key-pc-adapter",
+        "symbol": "__Z23pc_convert_any_to_arrayPKwS0_PP13t_candPCEntryiiiPK18t_digitalModeInputbbbbPK16PCConvertContext",
+        "entry": "0x10006c6b0",
+        "exclusiveEndFromNextTextSymbol": "0x10006ce18",
+        "functionBytesSha256": "dac850405b6898f8732656d8f7f611c4ef31ed2cb2b154d33d19b6fc49911ec8",
+        "assemblyFile": ".workspace/research/keyboard-ime/chatterfly/asm-pc-adapter.txt",
+        "assemblySha256": "0f8903e7c65f98ae8531a0b76aae50b906404544947b71d1fe84af644a81150d",
+        "instructionsValidatedAgainstArm64File": 467,
+        "reproduceCommand": [
+          "xcrun",
+          "llvm-objdump",
+          "--macho",
+          "--disassemble",
+          "--dis-symname",
+          "__Z23pc_convert_any_to_arrayPKwS0_PP13t_candPCEntryiiiPK18t_digitalModeInputbbbbPK16PCConvertContext",
+          ".workspace/research/chatterfly/chatterfly-arm64"
+        ]
+      },
+      {
+        "id": "CF-key-logic-convert",
+        "symbol": "__ZN19_sgime_core_pinyin_14InputLogicImpl11ConvertImplERKNS_11ConvertArgsE",
+        "entry": "0x100d83354",
+        "exclusiveEndFromNextTextSymbol": "0x100d83e4c",
+        "functionBytesSha256": "922dd8e47b25d5b272511165ea11aad2a0ec61ca2d7ecbdfbe1a10cccd02b99d",
+        "assemblyFile": ".workspace/research/keyboard-ime/chatterfly/asm-logic-convert.txt",
+        "assemblySha256": "3c96cefc5c3a3b91e608a07cf22f364dbdba0ce22e1b298296f9db04fc338a51",
+        "instructionsValidatedAgainstArm64File": 702,
+        "reproduceCommand": [
+          "xcrun",
+          "llvm-objdump",
+          "--macho",
+          "--disassemble",
+          "--dis-symname",
+          "__ZN19_sgime_core_pinyin_14InputLogicImpl11ConvertImplERKNS_11ConvertArgsE",
+          ".workspace/research/chatterfly/chatterfly-arm64"
+        ]
+      },
+      {
+        "id": "CF-key-core-convert-impl",
+        "symbol": "__ZN19_sgime_core_pinyin_16CSogouCoreEngine11ConvertImplEPKDsRNS_16CSogouCoreResultEPS3_RKNS_10t_compInfoES5_",
+        "entry": "0x10084ef24",
+        "exclusiveEndFromNextTextSymbol": "0x10084f664",
+        "functionBytesSha256": "9178214c5b3a7b68a79a95f44f7552475e5a0df05053170e1ad06b0796197aeb",
+        "assemblyFile": ".workspace/research/keyboard-ime/chatterfly/asm-core-convert-impl.txt",
+        "assemblySha256": "28cc57286b9b59486f6d367e1a27bec7eead5981f88dcac9048a26d79bebdefa",
+        "instructionsValidatedAgainstArm64File": 463,
+        "reproduceCommand": [
+          "xcrun",
+          "llvm-objdump",
+          "--macho",
+          "--disassemble",
+          "--dis-symname",
+          "__ZN19_sgime_core_pinyin_16CSogouCoreEngine11ConvertImplEPKDsRNS_16CSogouCoreResultEPS3_RKNS_10t_compInfoES5_",
+          ".workspace/research/chatterfly/chatterfly-arm64"
+        ]
+      },
+      {
+        "id": "CF-key-py-convert",
+        "symbol": "__ZN19_sgime_core_pinyin_15t_pyCtInterface7ConvertEv",
+        "entry": "0x100a960c8",
+        "exclusiveEndFromNextTextSymbol": "0x100a96344",
+        "functionBytesSha256": "47ac7eb66175b1dc82bcec4f343fc053f7dacfc7bf14c3229a914f90d377796a",
+        "assemblyFile": ".workspace/research/keyboard-ime/chatterfly/asm-py-convert.txt",
+        "assemblySha256": "9c626fb7355dae3c585b34ebad1b7ea9fcaa727aa06160019e809a9135defc6c",
+        "instructionsValidatedAgainstArm64File": 159,
+        "reproduceCommand": [
+          "xcrun",
+          "llvm-objdump",
+          "--macho",
+          "--disassemble",
+          "--dis-symname",
+          "__ZN19_sgime_core_pinyin_15t_pyCtInterface7ConvertEv",
+          ".workspace/research/chatterfly/chatterfly-arm64"
+        ]
+      },
+      {
+        "id": "CF-key-ltr-sort",
+        "symbol": "__ZN19_sgime_core_pinyin_15t_pyCtInterface14SortCandsByLtrEPPNS_11t_candEntryEjPNS_16CSogouCoreResultERb",
+        "entry": "0x100a9524c",
+        "exclusiveEndFromNextTextSymbol": "0x100a95488",
+        "functionBytesSha256": "faeb00981c17ced685ca1be2caf02eabbee054d6894f4a2fb8d4f6267b8e3ec6",
+        "assemblyFile": ".workspace/research/keyboard-ime/chatterfly/asm-ltr-sort.txt",
+        "assemblySha256": "646c2b421cc0f8fc2befe9513e705a32fa6326d6ea137cc5dd2840f7fbca2bce",
+        "instructionsValidatedAgainstArm64File": 143,
+        "reproduceCommand": [
+          "xcrun",
+          "llvm-objdump",
+          "--macho",
+          "--disassemble",
+          "--dis-symname",
+          "__ZN19_sgime_core_pinyin_15t_pyCtInterface14SortCandsByLtrEPPNS_11t_candEntryEjPNS_16CSogouCoreResultERb",
+          ".workspace/research/chatterfly/chatterfly-arm64"
+        ]
+      },
+      {
+        "id": "CF-key-py-selection-dispatch",
+        "symbol": "-[SGInputControllerPy selectCandidate:sender:]",
+        "entry": "0x1002dd91c",
+        "exclusiveEndFromNextTextSymbol": "0x1002ddae0",
+        "functionBytesSha256": "4c2e3a247929c0fc956699d215349284fb3b2ba7a1aff0278d9931fb14ead54d",
+        "assemblyFile": ".workspace/research/keyboard-ime/chatterfly/asm-py-selection-dispatch.txt",
+        "assemblySha256": "9744ced363acf3886432af76e8d688ebcc30f3c34233790dcc65ee0c7ba2fe23",
+        "instructionsValidatedAgainstArm64File": 113,
+        "reproduceCommand": [
+          "xcrun",
+          "llvm-objdump",
+          "--macho",
+          "--disassemble",
+          "--dis-symname",
+          "-[SGInputControllerPy selectCandidate:sender:]",
+          ".workspace/research/chatterfly/chatterfly-arm64"
+        ]
+      },
+      {
+        "id": "CF-key-ui-window",
+        "symbol": "-[SGCandidatesController updateWindow:]",
+        "entry": "0x1002930e0",
+        "exclusiveEndFromNextTextSymbol": "0x100293a10",
+        "functionBytesSha256": "89862a0c4db7517ce276bf37f8b5c5c44964d1c90a795c48ebccb06585ab8eb0",
+        "assemblyFile": ".workspace/research/keyboard-ime/chatterfly/asm-ui-window.txt",
+        "assemblySha256": "fcad169c77443753e5d0a3d57beb1f8171b6115d07dbb8a3a191b4b81a3ab991",
+        "instructionsValidatedAgainstArm64File": 588,
+        "reproduceCommand": [
+          "xcrun",
+          "llvm-objdump",
+          "--macho",
+          "--disassemble",
+          "--dis-symname",
+          "-[SGCandidatesController updateWindow:]",
+          ".workspace/research/chatterfly/chatterfly-arm64"
+        ]
+      },
+      {
+        "id": "CF-key-context-first",
+        "symbol": "-[SGConvertContextCollector fetchAndSetContextForFirstInput:]",
+        "entry": "0x1002a361c",
+        "exclusiveEndFromNextTextSymbol": "0x1002a371c",
+        "functionBytesSha256": "f2322df33c225d2f40802174460db4cbf0df76d613172eb68bf6939587c4ae8a",
+        "assemblyFile": ".workspace/research/keyboard-ime/chatterfly/asm-context-first.txt",
+        "assemblySha256": "de68e96d6acf5eefcdb84876d807e045c6752be3304f1962217ea5274e962892",
+        "instructionsValidatedAgainstArm64File": 64,
+        "reproduceCommand": [
+          "xcrun",
+          "llvm-objdump",
+          "--macho",
+          "--disassemble",
+          "--dis-symname",
+          "-[SGConvertContextCollector fetchAndSetContextForFirstInput:]",
+          ".workspace/research/chatterfly/chatterfly-arm64"
+        ]
+      },
+      {
+        "id": "CF-key-xgb-load",
+        "symbol": "__ZN19_sgime_core_pinyin_9n_newDict13t_dictManager18LoadXgboosterModelEv",
+        "entry": "0x1008c4860",
+        "exclusiveEndFromNextTextSymbol": "0x1008c4bcc",
+        "functionBytesSha256": "f02a80260b89a43654053c0469f0e65fb908eb37631c546d16981c004017c0d7",
+        "assemblyFile": ".workspace/research/keyboard-ime/chatterfly/asm-xgb-load.txt",
+        "assemblySha256": "3f84c4f367641ab534c97542d595592ee807c4ea9232758163e9c454cf04cce3",
+        "instructionsValidatedAgainstArm64File": 217,
+        "reproduceCommand": [
+          "xcrun",
+          "llvm-objdump",
+          "--macho",
+          "--disassemble",
+          "--dis-symname",
+          "__ZN19_sgime_core_pinyin_9n_newDict13t_dictManager18LoadXgboosterModelEv",
+          ".workspace/research/chatterfly/chatterfly-arm64"
+        ]
+      }
+    ],
+    "findingReport": ".workspace/research/keyboard-ime/chatterfly/findings.md",
+    "completeAnchors": ".workspace/research/keyboard-ime/chatterfly/evidence.json",
+    "symbolInventorySha256": "278b633eafa3d86d5714c0f2acf9d18eddacbf4435f98da50f10b4f49720dc4a"
+  },
+  "apiSources": [
+    {
+      "id": "KI-API-apple-inputmethodkit",
+      "kind": "official-documentation",
+      "url": "https://developer.apple.com/documentation/inputmethodkit",
+      "sha256": "6f48d931ef0428def172900d779bd1454e5355a47d8a4af74697e176f4f237ad",
+      "localRecord": ".workspace/research/keyboard-ime/apple-inputmethodkit.md"
+    },
+    {
+      "id": "KI-API-apple-input-controller",
+      "kind": "official-documentation",
+      "url": "https://developer.apple.com/documentation/inputmethodkit/imkinputcontroller",
+      "sha256": "edb217a0cedd8bfab72db60af47baf9ae5d51a060875731d4d3337a958a39e4e",
+      "localRecord": ".workspace/research/keyboard-ime/apple-input-controller.md"
+    },
+    {
+      "id": "KI-SDK-IMKInputController.h",
+      "kind": "official-installed-sdk-header",
+      "path": "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/InputMethodKit.framework/Headers/IMKInputController.h",
+      "encodingForDisplay": "mac_roman",
+      "sha256": "8057ec10d791466bcf2c8077309fdd2247364a3adb4b48e7cb2bc3953dd20c95",
+      "anchors": [
+        {
+          "line": 9,
+          "text": "@abstract\tAn IMKInputController is created for each input session. The IMKInputController receives input from client input sessions.  The sender object will always conform to the IMKTextInput protocol.  See IMKInputSession.h."
+        },
+        {
+          "line": 41,
+          "text": "In this approach the system takes each keydown and trys to map the keydown to an action method that the input method has implemented.  If an action is found the system calls didCommandBySelector:client:.  If no action method is found inputText:client: is called.  An input method choosing this approach should implement"
+        },
+        {
+          "line": 42,
+          "text": "-(BOOL)inputText:(NSString*)string client:(id)sender;"
+        },
+        {
+          "line": 46,
+          "text": "Key events are broken down into the Unicodes, the key code that generated them, and modifier flags.  This data is then sent to the input method's inputText:key:modifiers:client: method.  For this approach implement:"
+        },
+        {
+          "line": 47,
+          "text": "-(BOOL)inputText:(NSString*)string key:(NSInteger)keyCode modifiers:(NSUInteger)flags client:(id)sender;"
+        },
+        {
+          "line": 50,
+          "text": "-(BOOL)handleEvent:(NSEvent*)event client:(id)sender;"
+        },
+        {
+          "line": 59,
+          "text": "- (BOOL)inputText:(NSString*)string key:(NSInteger)keyCode modifiers:(NSUInteger)flags client:(id)sender;"
+        },
+        {
+          "line": 66,
+          "text": "- (BOOL)inputText:(NSString*)string client:(id)sender;"
+        },
+        {
+          "line": 73,
+          "text": "- (BOOL)handleEvent:(NSEvent*)event client:(id)sender;"
+        },
+        {
+          "line": 105,
+          "text": "- (void)commitComposition:(id)sender;"
+        },
+        {
+          "line": 160,
+          "text": "If your input method only handles key downs the InputMethodKit provides default mouse handling.  The default mousedown handling behavior is as follows: if there is an active composition area and the user clicks in the text but outside of the composition area the InputMethodKit will send your input method a commitComposition: message. Note that this will only happen for input methods that return just NSKeyDownMask (i.e. the default value) as the result of recognizedEvents."
+        },
+        {
+          "line": 162,
+          "text": "- (NSUInteger)recognizedEvents:(id)sender;"
+        },
+        {
+          "line": 226,
+          "text": "The inputClient parameter is the client side object that will be sending messages to the controller via the IMKServer.  The client object always conforms to the IMKTextInput protocol."
+        },
+        {
+          "line": 235,
+          "text": "@discussion This method will call the protocol method composedString: to obtain the current composition. The current composition will be sent to the client by a call to the method setMarkedText:"
+        },
+        {
+          "line": 244,
+          "text": "@discussion Calls the method originalString to obtain the original text and sends that to the client via a call to IMKInputSession protocol method insertText:"
+        },
+        {
+          "line": 294,
+          "text": "kIMKCommandClientName\t\t\tid<IMKTextInput, NSObject> - the current client"
+        },
+        {
+          "line": 336,
+          "text": "@discussion The client object will conform to the IMKTextInput protocol. The returned object is an autoreleased object."
+        },
+        {
+          "line": 338,
+          "text": "- (id<IMKTextInput, NSObject>)client;"
+        },
+        {
+          "line": 367,
+          "text": "- (void)candidateSelected:(NSAttributedString*)candidateString;"
+        }
+      ]
+    },
+    {
+      "id": "KI-SDK-IMKServer.h",
+      "kind": "official-installed-sdk-header",
+      "path": "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/InputMethodKit.framework/Headers/IMKServer.h",
+      "encodingForDisplay": "utf-8",
+      "sha256": "a6070ad67e6b1888e0bb13ae699cd5599a27f6fd73eb90a13b1b54aded7d9e02",
+      "anchors": []
+    },
+    {
+      "id": "KI-SDK-IMKCandidates.h",
+      "kind": "official-installed-sdk-header",
+      "path": "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/InputMethodKit.framework/Headers/IMKCandidates.h",
+      "encodingForDisplay": "utf-8",
+      "sha256": "cbeb73a6e67de8f4f60d95a6a59493783c621c1e293fed1ea1ad12471c9e4953",
+      "anchors": [
+        {
+          "line": 205,
+          "text": "@discussion By default, if a return or enter key is typed, the candidates are dismissed and a candidateSelected: message is sent to the input controller.  However  if setDismissesAutomatically is passed a NO flag  the candidate display will not be dismissed when a return or enter key is typed.  The input controller will still be sent the candidatesSelected: message, but, as stated, the candidates display will not be dismissed."
+        }
+      ]
+    }
+  ],
+  "vendorStatements": [
+    {
+      "id": "KI-vendor-doubao",
+      "url": "https://shurufa.doubao.com/pc",
+      "kind": "vendor-statement",
+      "observation": "Current vendor page advertises model-assisted keyboard association, long-sentence completion and correction. It does not identify the retained build's enabled paths or model."
+    }
+  ],
+  "limitations": [
+    "Exact dynamic Objective-C receivers, indirect call targets and enabled feature flags were not observed.",
+    "Doubao stripped main keyboard event-to-engine and selection-to-insertion paths remain partially reconstructed.",
+    "Opaque resource headers and model filenames do not establish complete formats, trained weights or model architectures.",
+    "Chatterfly generation-loader referenced model files were absent from the inspected retained bundle; external provisioning and current installation state were not inspected.",
+    "No latest-release equivalence, Windows/mobile behavior, actual offline accuracy or end-to-end latency claim."
+  ]
+}
