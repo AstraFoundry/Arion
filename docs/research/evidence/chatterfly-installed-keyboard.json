@@ -1,0 +1,2647 @@
+{
+  "schemaVersion": 1,
+  "scope": "Installed macOS Chatterfly keyboard input, version 1.0.6.13398 (13398), following prior installer-only research. No product source changes.",
+  "artifact": {
+    "name": "Chatterfly",
+    "digest": {
+      "sha256": "1063fbb5b0e18dc323ec4a14487456795b359b9330cfeee14b78454a00791e50"
+    },
+    "format": "mach-o",
+    "architecture": "arm64",
+    "local_path": "/Library/Input Methods/Chatterfly.app/Contents/MacOS/Chatterfly"
+  },
+  "bundleComparison": {
+    "installedFileCount": 431,
+    "retainedFileCount": 427,
+    "changed": [],
+    "installedOnly": [
+      {
+        "path": "Contents/ChatterflyPreference.app/Contents/Frameworks/SocketRocket.framework/SocketRocket",
+        "symlink": "Versions/Current/SocketRocket"
+      },
+      {
+        "path": "Contents/ChatterflyTaskManager.app/Contents/Frameworks/BeaconAPI_Base.framework/BeaconAPI_Base",
+        "symlink": "Versions/Current/BeaconAPI_Base"
+      },
+      {
+        "path": "Contents/Frameworks/BeaconAPI_Base.framework/BeaconAPI_Base",
+        "symlink": "Versions/Current/BeaconAPI_Base"
+      },
+      {
+        "path": "Contents/Frameworks/SocketRocket.framework/SocketRocket",
+        "symlink": "Versions/Current/SocketRocket"
+      }
+    ],
+    "retainedOnly": []
+  },
+  "reaEvidence": [
+    {
+      "evidenceId": "ev_c16ca1847e7ddc1ad168e45d2a39eb83358507515eaea67a609091e01a02596b",
+      "operation": "inspect_signature",
+      "recordSha256": "4185d3ebc381f7e36920ddeb1c823075243fda9088a57e25dc0db7797bcae7e7",
+      "localRecord": ".workspace/research/chatterfly-installed/signature.json",
+      "observedSignature": {
+        "signed": true,
+        "hardenedRuntime": true,
+        "getTaskAllowPresent": false
+      }
+    }
+  ],
+  "staticEvidence": {
+    "gateFunctions": {
+      "type": "ordinary-static-byte-verified-arm64",
+      "binaryPath": ".workspace/research/chatterfly/chatterfly-arm64",
+      "binarySha256": "2ea312f6324accd6194e6c612608870321bc62c286aa2cdbccf8288ae19a2433",
+      "installedUniversalSha256": "1063fbb5b0e18dc323ec4a14487456795b359b9330cfeee14b78454a00791e50",
+      "functions": [
+        {
+          "id": "CF-installed-gate-26GetGenerateInferenceEnableEv",
+          "symbol": "__ZN19_sgime_core_pinyin_12t_parameters26GetGenerateInferenceEnableEv",
+          "entry": "0x10087ef0c",
+          "exclusiveEnd": "0x10087ef3c",
+          "instructionsByteVerified": 12,
+          "functionBytesSha256": "41a2ae4b51b49b8f882a59d9427d9386e3d94e80d4cba487794405d03fbf6ea6",
+          "assemblyFile": ".workspace/research/chatterfly-installed/gates/asm-26GetGenerateInferenceEnableEv.txt",
+          "assemblySha256": "3318af439b2cc95e7faa540e2dd503152026e7a29109c231354f4de0eebe19f4"
+        },
+        {
+          "id": "CF-installed-gate-26SetGenerateInferenceEnableEb",
+          "symbol": "__ZN19_sgime_core_pinyin_12t_parameters26SetGenerateInferenceEnableEb",
+          "entry": "0x10087edf4",
+          "exclusiveEnd": "0x10087ee40",
+          "instructionsByteVerified": 19,
+          "functionBytesSha256": "4807c73d23fd735591a8203907241a941bc271f517a7b4616e3440ba6f7742c6",
+          "assemblyFile": ".workspace/research/chatterfly-installed/gates/asm-26SetGenerateInferenceEnableEb.txt",
+          "assemblySha256": "d9a0f0c3e56744c40c1378851565d3daf32da7062d7c240d81e1bf04a02fcc3a"
+        },
+        {
+          "id": "CF-installed-gate-26SetGenerateModelLoadEnableE",
+          "symbol": "__ZN19_sgime_core_pinyin_12t_parameters26SetGenerateModelLoadEnableENS_29GenerateModelLoadEnableStatusE",
+          "entry": "0x10087ee40",
+          "exclusiveEnd": "0x10087ef0c",
+          "instructionsByteVerified": 51,
+          "functionBytesSha256": "4cb3bc66603c856bf4f91e4a5c3eeac5d1763d7600b238534798ba198307f459",
+          "assemblyFile": ".workspace/research/chatterfly-installed/gates/asm-26SetGenerateModelLoadEnableE.txt",
+          "assemblySha256": "e88e25452b3fbe99647aa701209c46177e3e3bf0ef984a89c94ed21d16ab45ab"
+        },
+        {
+          "id": "CF-installed-gate-24GetGenerateDictLoadStateEv",
+          "symbol": "__ZN19_sgime_core_pinyin_12t_parameters24GetGenerateDictLoadStateEv",
+          "entry": "0x10087ef3c",
+          "exclusiveEnd": "0x10087ef5c",
+          "instructionsByteVerified": 8,
+          "functionBytesSha256": "efb2e47d6f97fd40e616549d36b205078327b2f4924985f22e4a9f29e6192c80",
+          "assemblyFile": ".workspace/research/chatterfly-installed/gates/asm-24GetGenerateDictLoadStateEv.txt",
+          "assemblySha256": "0c2ace58cc8f4c8234dedf3ab638b1440e681b6ac3a340dfc116a2c7e01c004c"
+        },
+        {
+          "id": "CF-installed-gate-24IsDeviceReadyForGenerateEv",
+          "symbol": "__ZN19_sgime_core_pinyin_12t_parameters24IsDeviceReadyForGenerateEv",
+          "entry": "0x10087f91c",
+          "exclusiveEnd": "0x10087fa1c",
+          "instructionsByteVerified": 64,
+          "functionBytesSha256": "65b6e6f7b01b7526f66f9e05c8f0dffdd78894401811b41d247533f43c2173bb",
+          "assemblyFile": ".workspace/research/chatterfly-installed/gates/asm-24IsDeviceReadyForGenerateEv.txt",
+          "assemblySha256": "4edee87a945dd0b0c6ae1c03ab2ea59492ebe5c93bd4f6ce4240391995a83160"
+        },
+        {
+          "id": "CF-installed-gate-26GetGenerateModelLoadEnableEv",
+          "symbol": "__ZN19_sgime_core_pinyin_12t_parameters26GetGenerateModelLoadEnableEv",
+          "entry": "0x10087fb04",
+          "exclusiveEnd": "0x10087fbe4",
+          "instructionsByteVerified": 56,
+          "functionBytesSha256": "ec3877069a8d3aa5fa6ebbd4e374ccb37157c1f17d1291b8a9248be287031327",
+          "assemblyFile": ".workspace/research/chatterfly-installed/gates/asm-26GetGenerateModelLoadEnableEv.txt",
+          "assemblySha256": "53a4bca1c51846f0d728e25af74ee34937ce7fc2ed72206cca1ce2f293230b06"
+        },
+        {
+          "id": "CF-installed-gate-31IsGenerateModelUseStatusHealthyEv",
+          "symbol": "__ZN19_sgime_core_pinyin_12t_parameters31IsGenerateModelUseStatusHealthyEv",
+          "entry": "0x10087fd78",
+          "exclusiveEnd": "0x10087fe44",
+          "instructionsByteVerified": 51,
+          "functionBytesSha256": "7a9a124fd6b0ad770ed87be88c4a2221d8bf8ccad3fad3b45a1977acee754737",
+          "assemblyFile": ".workspace/research/chatterfly-installed/gates/asm-31IsGenerateModelUseStatusHealthyEv.txt",
+          "assemblySha256": "e8b9168b81b47ad7d815022fa848e261c7988cc0453d4125107d0da97a98e481"
+        },
+        {
+          "id": "CF-installed-gate-20NeedLoadXNetLanModelEv",
+          "symbol": "__ZN19_sgime_core_pinyin_12t_parameters20NeedLoadXNetLanModelEv",
+          "entry": "0x1008806fc",
+          "exclusiveEnd": "0x1008807b4",
+          "instructionsByteVerified": 46,
+          "functionBytesSha256": "f2b7a7caa6f13eaaa848f8af87115a07e4a8755a2b70c0ec611851d4aa269dc6",
+          "assemblyFile": ".workspace/research/chatterfly-installed/gates/asm-20NeedLoadXNetLanModelEv.txt",
+          "assemblySha256": "75665f5e6dd3e3cc5515618d5951fbe042b915dffc1564476038d655373c9a33"
+        },
+        {
+          "id": "CF-installed-gate-21GetXNetLanModelEnableEv",
+          "symbol": "__ZNK19_sgime_core_pinyin_12t_parameters21GetXNetLanModelEnableEv",
+          "entry": "0x1008806e0",
+          "exclusiveEnd": "0x1008806fc",
+          "instructionsByteVerified": 7,
+          "functionBytesSha256": "757e0337ceb3f6fe5b748d8dee5331f82d46ce32a8ee369dee28f7db52f648e0",
+          "assemblyFile": ".workspace/research/chatterfly-installed/gates/asm-21GetXNetLanModelEnableEv.txt",
+          "assemblySha256": "8e648db84ce4a9f53c1351f5d5bceb44aa923d421cdf648bc975c06524767bbd"
+        },
+        {
+          "id": "CF-installed-gate-22LoadLocalLanguageModelEv",
+          "symbol": "__ZN19_sgime_core_pinyin_9n_newDict13t_dictManager22LoadLocalLanguageModelEv",
+          "entry": "0x1008c76d4",
+          "exclusiveEnd": "0x1008c7c04",
+          "instructionsByteVerified": 330,
+          "functionBytesSha256": "1545b63123bf5e93694e57011721a2a91c0d9210190609f9f5875d6522419ec7",
+          "assemblyFile": ".workspace/research/chatterfly-installed/gates/asm-22LoadLocalLanguageModelEv.txt",
+          "assemblySha256": "42c78b7f3be5988f9652cfa9dd6459eb2ac8e9b49b7ec1d26a9dc95e89937dfb"
+        },
+        {
+          "id": "CF-installed-gate-22LoadSortFeatureModelLmEv",
+          "symbol": "__ZN19_sgime_core_pinyin_9n_newDict13t_dictManager22LoadSortFeatureModelLmEv",
+          "entry": "0x1008c7c04",
+          "exclusiveEnd": "0x1008c81f4",
+          "instructionsByteVerified": 377,
+          "functionBytesSha256": "bbb558989223ac9eb1f98c9dde5b2ef05ff598eb009ffef00a490d726a311e56",
+          "assemblyFile": ".workspace/research/chatterfly-installed/gates/asm-22LoadSortFeatureModelLmEv.txt",
+          "assemblySha256": "e26873de92ba86fb07ca69d0612102852a917807e2aec9c57ec46ff7f5693e43"
+        },
+        {
+          "id": "CF-installed-gate-23LoadGenerateModelSeriesEv",
+          "symbol": "__ZN19_sgime_core_pinyin_9n_newDict13t_dictManager23LoadGenerateModelSeriesEv",
+          "entry": "0x1008cd72c",
+          "exclusiveEnd": "0x1008cdae0",
+          "instructionsByteVerified": 233,
+          "functionBytesSha256": "8135ccf7df77800459aa0a91497ed6e801aede87c722a96424967b50e3257833",
+          "assemblyFile": ".workspace/research/chatterfly-installed/gates/asm-23LoadGenerateModelSeriesEv.txt",
+          "assemblySha256": "2bee135e30df1591fec6ff535d6c3aa35952a1716da57baf59a17c0af9518748"
+        },
+        {
+          "id": "CF-installed-gate-31CheckDeviceGradeAndLoadGenModelEv",
+          "symbol": "__ZN19_sgime_core_pinyin_9n_newDict13t_dictManager31CheckDeviceGradeAndLoadGenModelEv",
+          "entry": "0x1008c6f64",
+          "exclusiveEnd": "0x1008c71c4",
+          "instructionsByteVerified": 152,
+          "functionBytesSha256": "2166a9b0ead0f19f5fb9113332a13315407334c3c649a1d6cad98b8b6e3d2bbc",
+          "assemblyFile": ".workspace/research/chatterfly-installed/gates/asm-31CheckDeviceGradeAndLoadGenModelEv.txt",
+          "assemblySha256": "8ebaa445f5278ff91d18d5d0859eb9c9df0066335591bf55a65dc8995a4cdcbc"
+        },
+        {
+          "id": "CF-installed-gate-29HandleDeviceGradeAndLoadModelEv",
+          "symbol": "__ZN19_sgime_core_pinyin_9n_newDict13t_dictManager29HandleDeviceGradeAndLoadModelEv",
+          "entry": "0x1008c71c4",
+          "exclusiveEnd": "0x1008c76d4",
+          "instructionsByteVerified": 314,
+          "functionBytesSha256": "afba59c1eb937c2e25cb47fa0eb44312b8c9549ef6a21a390b65d69d59e36364",
+          "assemblyFile": ".workspace/research/chatterfly-installed/gates/asm-29HandleDeviceGradeAndLoadModelEv.txt",
+          "assemblySha256": "6650046d0dc788847bed15dbf215362004b91e02e7b0627ef2cbb702a430f890"
+        },
+        {
+          "id": "CF-installed-gate-18LocalLanguageModel11AttachModelE",
+          "symbol": "__ZN19_sgime_core_pinyin_18LocalLanguageModel11AttachModelEPKcS2_S2_b",
+          "entry": "0x100adee5c",
+          "exclusiveEnd": "0x100adeeb0",
+          "instructionsByteVerified": 21,
+          "functionBytesSha256": "29e54aa3776bd89c4c960658f27face1926a533fa5db1849382f737d39b42cec",
+          "assemblyFile": ".workspace/research/chatterfly-installed/gates/asm-18LocalLanguageModel11AttachModelE.txt",
+          "assemblySha256": "3d3dd3c6578b21f470c75e4d2eceecbea8e429826de0fcd347855a4dc18da7f2"
+        },
+        {
+          "id": "CF-installed-gate-18LocalLanguageModel14AttachModelTNNE",
+          "symbol": "__ZN19_sgime_core_pinyin_18LocalLanguageModel14AttachModelTNNEPKcS2_S2_",
+          "entry": "0x100adeeb0",
+          "exclusiveEnd": "0x100adeeb8",
+          "instructionsByteVerified": 2,
+          "functionBytesSha256": "5103ba3de080c52a046485f800433848701faa49ab8f60241a80987ca249d7ac",
+          "assemblyFile": ".workspace/research/chatterfly-installed/gates/asm-18LocalLanguageModel14AttachModelTNNE.txt",
+          "assemblySha256": "689bb39077a35d342668e50f1149937b88448e54ca608e8ad0126bd9352a0ce6"
+        },
+        {
+          "id": "CF-installed-gate-18LocalLanguageModel15AttachModelXNetE",
+          "symbol": "__ZN19_sgime_core_pinyin_18LocalLanguageModel15AttachModelXNetEPKcS2_",
+          "entry": "0x100adeeb8",
+          "exclusiveEnd": "0x100adf5d0",
+          "instructionsByteVerified": 453,
+          "functionBytesSha256": "2fe13be4456ff50511959cc7839969439893a4af880257a89900b0f37f9d7085",
+          "assemblyFile": ".workspace/research/chatterfly-installed/gates/asm-18LocalLanguageModel15AttachModelXNetE.txt",
+          "assemblySha256": "6ba051744dff632c0ffc25730af453628672ca61324c0991bb5a5a6e3c4a20b9"
+        },
+        {
+          "id": "CF-installed-gate-18LocalLanguageModel8IsAttachEv",
+          "symbol": "__ZNK19_sgime_core_pinyin_18LocalLanguageModel8IsAttachEv",
+          "entry": "0x100adf744",
+          "exclusiveEnd": "0x100adf74c",
+          "instructionsByteVerified": 2,
+          "functionBytesSha256": "1c02822f87eee63ad88aa503f98f120ed3e988ab0712ff97de9f51a0b1838867",
+          "assemblyFile": ".workspace/research/chatterfly-installed/gates/asm-18LocalLanguageModel8IsAttachEv.txt",
+          "assemblySha256": "464faf7c7613ffb4b00ce6cc95d56d5b64913bd04b891d6fe62894a7656ad76f"
+        },
+        {
+          "id": "CF-installed-gate-27EnableAutoLoadLanguageModelEv",
+          "symbol": "__ZNK19_sgime_core_pinyin_12t_parameters27EnableAutoLoadLanguageModelEv",
+          "entry": "0x100877554",
+          "exclusiveEnd": "0x10087756c",
+          "instructionsByteVerified": 6,
+          "functionBytesSha256": "0b4f38878e14c075a4661b0a3e6e27064dad0ae91dd6dfe9f434c05fba7e4aaf",
+          "assemblyFile": ".workspace/research/chatterfly-installed/gates/asm-27EnableAutoLoadLanguageModelEv.txt",
+          "assemblySha256": "9a9e8c5eefe9531aee98dd2f065e00c0704840cc967670d874d026780249cbf3"
+        },
+        {
+          "id": "CF-installed-gate-31EnableSentenceWithLanguageModelEv",
+          "symbol": "__ZNK19_sgime_core_pinyin_12t_parameters31EnableSentenceWithLanguageModelEv",
+          "entry": "0x1008775e0",
+          "exclusiveEnd": "0x1008775fc",
+          "instructionsByteVerified": 7,
+          "functionBytesSha256": "1c067bcc4f119ce585eda3fe0a95a7c8348d71fb180986fe6f8da788b3527802",
+          "assemblyFile": ".workspace/research/chatterfly-installed/gates/asm-31EnableSentenceWithLanguageModelEv.txt",
+          "assemblySha256": "c050078ef4b96640555f5a976e91cbdbd213d3f8995fb7ac5a34d0cb25eeed08"
+        },
+        {
+          "id": "CF-installed-gate-30EnableCorrectWithLanguageModelEv",
+          "symbol": "__ZNK19_sgime_core_pinyin_12t_parameters30EnableCorrectWithLanguageModelEv",
+          "entry": "0x1008775fc",
+          "exclusiveEnd": "0x100877618",
+          "instructionsByteVerified": 7,
+          "functionBytesSha256": "f91390da3a941a319aa3df0979790def8454135f1f14f44e4e677c6b33f2f4e5",
+          "assemblyFile": ".workspace/research/chatterfly-installed/gates/asm-30EnableCorrectWithLanguageModelEv.txt",
+          "assemblySha256": "fdf3d9c4b25bc8e99b3ad9e9ec607f08103449267237a59b68e872e8dd06bfc3"
+        },
+        {
+          "id": "CF-installed-gate-SetLanguageModelEnableStateEi",
+          "symbol": "__ZN19_sgime_core_pinyin_12t_parameters27SetLanguageModelEnableStateEi",
+          "entry": "0x100877534",
+          "exclusiveEnd": "0x100877544",
+          "instructionsByteVerified": 4,
+          "functionBytesSha256": "e4b9068394f9a6158a24034c08d16832d9d41dd0b0b21d9ca53d3ebf7c3fff3f",
+          "assemblyFile": ".workspace/research/chatterfly-installed/gates/asm-SetLanguageModelEnableStateEi.txt",
+          "assemblySha256": "7a00df04053520a57a90a5c29e5fc76d72db32ddc2ce0363b030ef37b655c6e1"
+        },
+        {
+          "id": "CF-installed-gate-SetLanguageModelApplyEnableStateEi",
+          "symbol": "__ZN19_sgime_core_pinyin_12t_parameters32SetLanguageModelApplyEnableStateEi",
+          "entry": "0x100877544",
+          "exclusiveEnd": "0x100877554",
+          "instructionsByteVerified": 4,
+          "functionBytesSha256": "b1862a16f223ec194e1664400f5482489899f63feebce7a32ef584f88d0a41dd",
+          "assemblyFile": ".workspace/research/chatterfly-installed/gates/asm-SetLanguageModelApplyEnableStateEi.txt",
+          "assemblySha256": "0864426e8cabf34806f269eda4715bbf1fbdc876421a931c5ac4c493453a04f5"
+        },
+        {
+          "id": "CF-installed-gate-13CoreNetSwitch21LoadDeviceModelConfigEv",
+          "symbol": "__ZN19_sgime_core_pinyin_13CoreNetSwitch21LoadDeviceModelConfigEv",
+          "entry": "0x100d12560",
+          "exclusiveEnd": "0x100d12b1c",
+          "instructionsByteVerified": 367,
+          "functionBytesSha256": "15382939a8082e8a4b7cca97eea805dec618464d47dbb3f5b8c177070ae37582",
+          "assemblyFile": ".workspace/research/chatterfly-installed/gates/asm-13CoreNetSwitch21LoadDeviceModelConfigEv.txt",
+          "assemblySha256": "0b6b71ee99727361a285731c7cc53a26a061772682919b06acac75d26c968b5b"
+        },
+        {
+          "id": "CF-installed-gate-t_parametersC2Ev",
+          "symbol": "__ZN19_sgime_core_pinyin_12t_parametersC2Ev",
+          "entry": "0x10086fe50",
+          "exclusiveEnd": "0x1008713cc",
+          "instructionsByteVerified": 1371,
+          "functionBytesSha256": "f85147586db657de4e44835b5b3593e72b06437f5a5122c186dcbb8b516904e4",
+          "assemblyFile": ".workspace/research/chatterfly-installed/gates/asm-t_parametersC2Ev.txt",
+          "assemblySha256": "11d5d683bd405270327a416573d1eefeb652d9c7a37177dfee06f031c5734f63"
+        },
+        {
+          "id": "CF-installed-gate-17GetLanModelAbsDirE",
+          "symbol": "__ZN19_sgime_core_pinyin_9n_newDict13n_dictManager17GetLanModelAbsDirERNSt3__112basic_stringIcNS2_11char_traitsIcEENS2_9allocatorIcEEEE",
+          "entry": "0x1008cbbd4",
+          "exclusiveEnd": "0x1008cbe80",
+          "instructionsByteVerified": 171,
+          "functionBytesSha256": "12f430ff362f84c214e97debe6b47df2161ee74a69cccd6238adf604983e6945",
+          "assemblyFile": ".workspace/research/chatterfly-installed/gates/asm-17GetLanModelAbsDirE.txt",
+          "assemblySha256": "51986223c2e8471815ed90b01419a6387fc7c4027756b91ed089428d8688715e"
+        },
+        {
+          "id": "CF-installed-gate-10CoreConfig12GetIntConfigE",
+          "symbol": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "entry": "0x100cae484",
+          "exclusiveEnd": "0x100cae4ac",
+          "instructionsByteVerified": 10,
+          "functionBytesSha256": "a5d448f4e04c8d9e32ae86bbbb5564024d6dcf9cb120f74bfa5af1caa4d3f0c5",
+          "assemblyFile": ".workspace/research/chatterfly-installed/gates/asm-10CoreConfig12GetIntConfigE.txt",
+          "assemblySha256": "610ffcd96cd7ad888c0b427375e8c7c399ec0043ec7788c5e5f9a92c7e7adfc4"
+        },
+        {
+          "id": "CF-installed-gate-20NeedDownloadGenModelEv",
+          "symbol": "__ZNK19_sgime_core_pinyin_12t_parameters20NeedDownloadGenModelEv",
+          "entry": "0x100880bc8",
+          "exclusiveEnd": "0x100880cdc",
+          "instructionsByteVerified": 69,
+          "functionBytesSha256": "07be8d0d5a5eeb052dba7a07971f6bfc1e5689ef354ded1b1474eff7d0924288",
+          "assemblyFile": ".workspace/research/chatterfly-installed/gates/asm-20NeedDownloadGenModelEv.txt",
+          "assemblySha256": "da5e0cdeb21f855d28d723e510a0568a108d770f7212addab4a923d651dae1e4"
+        },
+        {
+          "id": "CF-installed-gate-20NeedDownloadLanModelEv",
+          "symbol": "__ZNK19_sgime_core_pinyin_12t_parameters20NeedDownloadLanModelEv",
+          "entry": "0x100880cdc",
+          "exclusiveEnd": "0x100880df0",
+          "instructionsByteVerified": 69,
+          "functionBytesSha256": "02e1463e48f5795a1b35d719a2c67c9cbb76f7d500f7b9f4a50d87cbdad88264",
+          "assemblyFile": ".workspace/research/chatterfly-installed/gates/asm-20NeedDownloadLanModelEv.txt",
+          "assemblySha256": "723ebdff4f8fd535188de3a1898115705a1a57677d2a5965df3ce2fbbb2ad4b7"
+        },
+        {
+          "id": "CF-installed-gate-20SetDeviceModelEnableE",
+          "symbol": "__ZN19_sgime_core_pinyin_12t_parameters20SetDeviceModelEnableENS_16ModelEnableStateE",
+          "entry": "0x100880548",
+          "exclusiveEnd": "0x100880558",
+          "instructionsByteVerified": 4,
+          "functionBytesSha256": "e36000d2e6a1515bb4232cb4a4e75d9ee0b761290e5756af60375b9d7bd1bfe0",
+          "assemblyFile": ".workspace/research/chatterfly-installed/gates/asm-20SetDeviceModelEnableE.txt",
+          "assemblySha256": "2dda1a835743df62f5faf0a88cd97a9b1c54ef70cf1a6e4ee7adfdfbb747974f"
+        },
+        {
+          "id": "CF-installed-gate-27RefreshDeviceModelNetSwitchEv",
+          "symbol": "__ZN19_sgime_core_pinyin_12t_parameters27RefreshDeviceModelNetSwitchEv",
+          "entry": "0x100878724",
+          "exclusiveEnd": "0x1008787e4",
+          "instructionsByteVerified": 48,
+          "functionBytesSha256": "d3de7cd65cf760aafef95ceef0de19194eb62d3aa9928b8b37b223c98115f75f",
+          "assemblyFile": ".workspace/research/chatterfly-installed/gates/asm-27RefreshDeviceModelNetSwitchEv.txt",
+          "assemblySha256": "a00c7fad356693917a4e97c5f83c577263e3d0475e944bc71c7a041f25a26eb2"
+        },
+        {
+          "id": "CF-installed-gate-23UpdateDeviceModelEnableEv",
+          "symbol": "__ZN19_sgime_core_pinyin_12t_parameters23UpdateDeviceModelEnableEv",
+          "entry": "0x1008787e4",
+          "exclusiveEnd": "0x10087888c",
+          "instructionsByteVerified": 42,
+          "functionBytesSha256": "155fa065b3746aa191523876cea6c41c850849a084e6ec1bff8d0f11169b6a5b",
+          "assemblyFile": ".workspace/research/chatterfly-installed/gates/asm-23UpdateDeviceModelEnableEv.txt",
+          "assemblySha256": "415e57d97aa3f3d1a6f3272b543d4a22ea73a30fd7e5acaf734148ca5d59f163"
+        },
+        {
+          "id": "CF-installed-gate--[SGPyConversionEngine enableCloudRequest]",
+          "symbol": "-[SGPyConversionEngine enableCloudRequest]",
+          "entry": "0x100330ecc",
+          "exclusiveEnd": "0x100330f70",
+          "instructionsByteVerified": 41,
+          "functionBytesSha256": "acc907afc2854e7ce20469e6700fd256272ab062d68bf2cb4812fd705b1ab0a3",
+          "assemblyFile": ".workspace/research/chatterfly-installed/gates/asm--[SGPyConversionEngine enableCloudRequest].txt",
+          "assemblySha256": "1b425618c5b0e9d837e75ff901b8ea6526567f100a8df2c9a2f61f960bf96d20"
+        },
+        {
+          "id": "CF-installed-gate--[SGPyConversionEngine setEnableCloudRequest:]",
+          "symbol": "-[SGPyConversionEngine setEnableCloudRequest:]",
+          "entry": "0x10032d30c",
+          "exclusiveEnd": "0x10032d3cc",
+          "instructionsByteVerified": 48,
+          "functionBytesSha256": "e9205c3dcc8f40e4a501f91198b984867cd08a7530af2a1d9cd03f21736cf28b",
+          "assemblyFile": ".workspace/research/chatterfly-installed/gates/asm--[SGPyConversionEngine setEnableCloudRequest:].txt",
+          "assemblySha256": "2d779b70c6657de5bf7c460492a6f1e97064c85dece460d7bf9550ac5f7e58bf"
+        },
+        {
+          "id": "CF-installed-gate--[SGPyConversionEngine sg_shouldUsePlatformCloudChannel]",
+          "symbol": "-[SGPyConversionEngine sg_shouldUsePlatformCloudChannel]",
+          "entry": "0x1003212e4",
+          "exclusiveEnd": "0x100321300",
+          "instructionsByteVerified": 7,
+          "functionBytesSha256": "68135e07f3618abd169f54b3d8a68746b741204f29a075f9c19c6088aaf9fb4e",
+          "assemblyFile": ".workspace/research/chatterfly-installed/gates/asm--[SGPyConversionEngine sg_shouldUsePlatformCloudChannel].txt",
+          "assemblySha256": "7ca82ad9b25a04e13887477e6628cb5b885ea714cbc306b13f78c635b0f053ba"
+        },
+        {
+          "id": "CF-installed-gate--[SGInputManager shouldFetchCloudCandidates:]",
+          "symbol": "-[SGInputManager shouldFetchCloudCandidates:]",
+          "entry": "0x1002eec88",
+          "exclusiveEnd": "0x1002eecf0",
+          "instructionsByteVerified": 26,
+          "functionBytesSha256": "398dd22cdf360ae5fa8df9533430e4dd520379dbd219d639f1abb34e1dcbd33b",
+          "assemblyFile": ".workspace/research/chatterfly-installed/gates/asm--[SGInputManager shouldFetchCloudCandidates:].txt",
+          "assemblySha256": "6aa0ef7299ba21c3cd496108e472a909433e2bc68dd21cf7cfb883a4c67cc953"
+        },
+        {
+          "id": "CF-installed-gate-+[SGEngineConfig currentCloudSendType]",
+          "symbol": "+[SGEngineConfig currentCloudSendType]",
+          "entry": "0x10008475c",
+          "exclusiveEnd": "0x100084770",
+          "instructionsByteVerified": 5,
+          "functionBytesSha256": "0a27fcbcc902dc44ae9d6de876ccc76d51d9fe99f6a9652fd0e4bdb4ff59e8d8",
+          "assemblyFile": ".workspace/research/chatterfly-installed/gates/asm-+[SGEngineConfig currentCloudSendType].txt",
+          "assemblySha256": "7d8f7a2eda85fbb5e09c2728a71e1efdc352b781bf0a9990915fd78ef13cd9d8"
+        },
+        {
+          "id": "CF-installed-gate--[SGInputConfig init]",
+          "symbol": "-[SGInputConfig init]",
+          "entry": "0x1001324b0",
+          "exclusiveEnd": "0x10013258c",
+          "instructionsByteVerified": 55,
+          "functionBytesSha256": "1611d33b081aca3cc21e31df968570e110589618b9de8d1f720de20fb157abc7",
+          "assemblyFile": ".workspace/research/chatterfly-installed/gates/asm--[SGInputConfig init].txt",
+          "assemblySha256": "fd8c84418876c245f1bc7c542d1e1382692039ffebfa52b968fcb8d3b61ccb33"
+        },
+        {
+          "id": "CF-installed-gate-+[SGBrandService defaultPreferences]",
+          "symbol": "+[SGBrandService defaultPreferences]",
+          "entry": "0x10043a6c4",
+          "exclusiveEnd": "0x10043ac70",
+          "instructionsByteVerified": 363,
+          "functionBytesSha256": "934b1c066ebed0752647d9a52e16246c259a80a1f3a2bc7faac87f3cc8bc113f",
+          "assemblyFile": ".workspace/research/chatterfly-installed/gates/asm-+[SGBrandService defaultPreferences].txt",
+          "assemblySha256": "a8e38cd41bf3a91ade79047eee73f70458606d329d2e57c10aeb9321a3413cc6"
+        },
+        {
+          "id": "CF-installed-gate-+[SGBrandInfo defaultPreferences]",
+          "symbol": "+[SGBrandInfo defaultPreferences]",
+          "entry": "0x100176418",
+          "exclusiveEnd": "0x1001764ac",
+          "instructionsByteVerified": 37,
+          "functionBytesSha256": "45caffef60e653f0b6a461e250d850668022bdd7661a41bd97e9c4acb8d836db",
+          "assemblyFile": ".workspace/research/chatterfly-installed/gates/asm-+[SGBrandInfo defaultPreferences].txt",
+          "assemblySha256": "f8cbbc096b8fd47bed786462e973adaca4591d68f88d74bedfa2bce3447dd1bd"
+        },
+        {
+          "id": "CF-installed-gate-+[SGKernelConfig defaultConfig]",
+          "symbol": "+[SGKernelConfig defaultConfig]",
+          "entry": "0x1000895e0",
+          "exclusiveEnd": "0x100089780",
+          "instructionsByteVerified": 104,
+          "functionBytesSha256": "75e503656df198490c6fbd20f3b38649043956b71cc020f5998fdbf49e549d48",
+          "assemblyFile": ".workspace/research/chatterfly-installed/gates/asm-+[SGKernelConfig defaultConfig].txt",
+          "assemblySha256": "e365b20d6ba957c1efd74eefcb479f024c4ab8dd2b2c5aaede9bcfc4045d6f05"
+        },
+        {
+          "id": "CF-installed-gate--[SGInputConfig loadConfig]",
+          "symbol": "-[SGInputConfig loadConfig]",
+          "entry": "0x10013258c",
+          "exclusiveEnd": "0x100132770",
+          "instructionsByteVerified": 121,
+          "functionBytesSha256": "5a77fe98310db45928c16cf629b643397ceba497ef3aa04f9820a5a74ef7dd7e",
+          "assemblyFile": ".workspace/research/chatterfly-installed/gates/asm--[SGInputConfig loadConfig].txt",
+          "assemblySha256": "54f35adcaf16407af4be00a201c56a5b9a6fc57662fc55aa4b86148d9ff581ce"
+        },
+        {
+          "id": "CF-installed-gate--[SGInputManager needRequestCloudCandidate]",
+          "symbol": "-[SGInputManager needRequestCloudCandidate]",
+          "entry": "0x1002ec270",
+          "exclusiveEnd": "0x1002ec340",
+          "instructionsByteVerified": 52,
+          "functionBytesSha256": "0d3990baf05a0fdfea110f09fcac7730145a3a77b6654862b42ec1073c30eefe",
+          "assemblyFile": ".workspace/research/chatterfly-installed/gates/asm--[SGInputManager needRequestCloudCandidate].txt",
+          "assemblySha256": "4a9c006d7f9b6d6bba0250ddd1377addb59770c54585e2d3425214d57e8f4c4c"
+        },
+        {
+          "id": "CF-installed-gate--[SGInputManager prepareCloudCandidatesOnInput:]",
+          "symbol": "-[SGInputManager prepareCloudCandidatesOnInput:]",
+          "entry": "0x1002ec218",
+          "exclusiveEnd": "0x1002ec270",
+          "instructionsByteVerified": 22,
+          "functionBytesSha256": "9b096d538fa0294fc7cd66376d3f9677a3c3d47888e445bcd62d4e2536a7f055",
+          "assemblyFile": ".workspace/research/chatterfly-installed/gates/asm--[SGInputManager prepareCloudCandidatesOnInput:].txt",
+          "assemblySha256": "afaca7029f381c1db2ea00085205992bfe69a50cf7787414aa8ff2d4e6095428"
+        }
+      ],
+      "directCallReferences": [
+        {
+          "kind": "BL",
+          "call": "0x10083b7d8",
+          "target": "__ZN19_sgime_core_pinyin_12t_parameters23UpdateDeviceModelEnableEv",
+          "caller": "__ZN19_sgime_core_pinyin_13CInputManager11InitPyInputEv",
+          "callerEntry": "0x10083b75c"
+        },
+        {
+          "kind": "BL",
+          "call": "0x1008581dc",
+          "target": "__ZN19_sgime_core_pinyin_12t_parameters23UpdateDeviceModelEnableEv",
+          "caller": "__ZN19_sgime_core_pinyin_16CSogouCoreEngine14UpdateLanModelEPKcS2_S2_S2_S2_",
+          "callerEntry": "0x10085819c"
+        },
+        {
+          "kind": "BL",
+          "call": "0x10085f664",
+          "target": "__ZN19_sgime_core_pinyin_12t_parameters23UpdateDeviceModelEnableEv",
+          "caller": "__ZN19_sgime_core_pinyin_16CSogouCoreEngine25LoadOrUnloadLanguageModelEb",
+          "callerEntry": "0x10085f638"
+        },
+        {
+          "kind": "BL",
+          "call": "0x10085f6c0",
+          "target": "__ZN19_sgime_core_pinyin_12t_parameters27SetLanguageModelEnableStateEi",
+          "caller": "__ZN19_sgime_core_pinyin_16CSogouCoreEngine22SetLanuageModelEnabledEb",
+          "callerEntry": "0x10085f694"
+        },
+        {
+          "kind": "BL",
+          "call": "0x10085f6fc",
+          "target": "__ZN19_sgime_core_pinyin_12t_parameters32SetLanguageModelApplyEnableStateEi",
+          "caller": "__ZN19_sgime_core_pinyin_16CSogouCoreEngine27SetLanuageModelApplyEnabledEi",
+          "callerEntry": "0x10085f6d8"
+        },
+        {
+          "kind": "BL",
+          "call": "0x10085f728",
+          "target": "__ZNK19_sgime_core_pinyin_18LocalLanguageModel8IsAttachEv",
+          "caller": "__ZNK19_sgime_core_pinyin_16CSogouCoreEngine16IsLanModelLoadedEv",
+          "callerEntry": "0x10085f714"
+        },
+        {
+          "kind": "B",
+          "call": "0x100861928",
+          "target": "__ZN19_sgime_core_pinyin_12t_parameters24IsDeviceReadyForGenerateEv",
+          "caller": "__ZN19_sgime_core_pinyin_16CSogouCoreEngine24SetGenerateInferenceInfoEy",
+          "callerEntry": "0x1008618f8"
+        },
+        {
+          "kind": "B",
+          "call": "0x100862144",
+          "target": "__ZN19_sgime_core_pinyin_12t_parameters20SetDeviceModelEnableENS_16ModelEnableStateE",
+          "caller": "__ZN19_sgime_core_pinyin_16CSogouCoreEngine25SetDeviceModelEnableStateENS_16ModelEnableStateE",
+          "callerEntry": "0x10086211c"
+        },
+        {
+          "kind": "BL",
+          "call": "0x10086fdec",
+          "target": "__ZN19_sgime_core_pinyin_12t_parametersC2Ev",
+          "caller": "__ZN19_sgime_core_pinyin_12t_parameters11GetInstanceEv",
+          "callerEntry": "0x10086fdb4"
+        },
+        {
+          "kind": "B",
+          "call": "0x10086fe18",
+          "target": "__ZN19_sgime_core_pinyin_12t_parametersC2Ev",
+          "caller": "__ZN19_sgime_core_pinyin_12t_parametersC1Ev",
+          "callerEntry": "0x10086fe18"
+        },
+        {
+          "kind": "BL",
+          "call": "0x1008722c0",
+          "target": "__ZN19_sgime_core_pinyin_12t_parametersC2Ev",
+          "caller": "__ZN19_sgime_core_pinyin_12t_parameters11SetInputStrEPKDsRKNS_10t_compInfoE",
+          "callerEntry": "0x100872200"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100872318",
+          "target": "__ZN19_sgime_core_pinyin_12t_parametersC2Ev",
+          "caller": "__ZN19_sgime_core_pinyin_12t_parameters11SetInputStrEPKDsRKNS_10t_compInfoE",
+          "callerEntry": "0x100872200"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100872404",
+          "target": "__ZN19_sgime_core_pinyin_12t_parametersC2Ev",
+          "caller": "__ZN19_sgime_core_pinyin_12t_parameters11SetInputStrEPKDsRKNS_10t_compInfoE",
+          "callerEntry": "0x100872200"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100872514",
+          "target": "__ZN19_sgime_core_pinyin_12t_parametersC2Ev",
+          "caller": "__ZN19_sgime_core_pinyin_12t_parameters21Get9KeyInputSplitTypeEPKDsRKNS_10t_compInfoE",
+          "callerEntry": "0x1008724cc"
+        },
+        {
+          "kind": "BL",
+          "call": "0x1008739f8",
+          "target": "__ZN19_sgime_core_pinyin_12t_parametersC2Ev",
+          "caller": "__ZNK19_sgime_core_pinyin_12t_parameters19GetSingleFilterShowEji",
+          "callerEntry": "0x10087395c"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100873fb4",
+          "target": "__ZN19_sgime_core_pinyin_12t_parametersC2Ev",
+          "caller": "__ZN19_sgime_core_pinyin_12t_parameters15GetIsHalfChosenEv",
+          "callerEntry": "0x100873f8c"
+        },
+        {
+          "kind": "BL",
+          "call": "0x1008740b4",
+          "target": "__ZN19_sgime_core_pinyin_12t_parametersC2Ev",
+          "caller": "__ZN19_sgime_core_pinyin_12t_parameters20AllowedBySmileSwitchEPNS_11t_candEntryE",
+          "callerEntry": "0x100874070"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100878744",
+          "target": "__ZN19_sgime_core_pinyin_13CoreNetSwitch21LoadDeviceModelConfigEv",
+          "caller": "__ZN19_sgime_core_pinyin_12t_parameters27RefreshDeviceModelNetSwitchEv",
+          "callerEntry": "0x100878724"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100878788",
+          "target": "__ZN19_sgime_core_pinyin_12t_parameters26SetGenerateModelLoadEnableENS_29GenerateModelLoadEnableStatusE",
+          "caller": "__ZN19_sgime_core_pinyin_12t_parameters27RefreshDeviceModelNetSwitchEv",
+          "callerEntry": "0x100878724"
+        },
+        {
+          "kind": "BL",
+          "call": "0x1008787ac",
+          "target": "__ZN19_sgime_core_pinyin_12t_parameters26SetGenerateModelLoadEnableENS_29GenerateModelLoadEnableStatusE",
+          "caller": "__ZN19_sgime_core_pinyin_12t_parameters27RefreshDeviceModelNetSwitchEv",
+          "callerEntry": "0x100878724"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100878834",
+          "target": "__ZN19_sgime_core_pinyin_12t_parameters26SetGenerateModelLoadEnableENS_29GenerateModelLoadEnableStatusE",
+          "caller": "__ZN19_sgime_core_pinyin_12t_parameters23UpdateDeviceModelEnableEv",
+          "callerEntry": "0x1008787e4"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100878854",
+          "target": "__ZN19_sgime_core_pinyin_12t_parameters26SetGenerateModelLoadEnableENS_29GenerateModelLoadEnableStatusE",
+          "caller": "__ZN19_sgime_core_pinyin_12t_parameters23UpdateDeviceModelEnableEv",
+          "callerEntry": "0x1008787e4"
+        },
+        {
+          "kind": "BL",
+          "call": "0x10087c634",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_12t_parameters22UpdateUsrDictNumFromKvEi",
+          "callerEntry": "0x10087c60c"
+        },
+        {
+          "kind": "B",
+          "call": "0x10087c67c",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_12t_parameters19GetUsrDictNumFromKvEv",
+          "callerEntry": "0x10087c664"
+        },
+        {
+          "kind": "BL",
+          "call": "0x10087c7a0",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_12t_parameters23GetUsrDictMaxNumFromExpEv",
+          "callerEntry": "0x10087c684"
+        },
+        {
+          "kind": "B",
+          "call": "0x10087c7e4",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_12t_parameters23GetUsrDictMaxNumFromExpEv",
+          "callerEntry": "0x10087c684"
+        },
+        {
+          "kind": "B",
+          "call": "0x10087ee20",
+          "target": "__ZN19_sgime_core_pinyin_12t_parameters26SetGenerateModelLoadEnableENS_29GenerateModelLoadEnableStatusE",
+          "caller": "__ZN19_sgime_core_pinyin_12t_parameters26SetGenerateInferenceEnableEb",
+          "callerEntry": "0x10087edf4"
+        },
+        {
+          "kind": "BL",
+          "call": "0x10087ee2c",
+          "target": "__ZN19_sgime_core_pinyin_12t_parameters26SetGenerateModelLoadEnableENS_29GenerateModelLoadEnableStatusE",
+          "caller": "__ZN19_sgime_core_pinyin_12t_parameters26SetGenerateInferenceEnableEb",
+          "callerEntry": "0x10087edf4"
+        },
+        {
+          "kind": "BL",
+          "call": "0x10087eea4",
+          "target": "__ZN19_sgime_core_pinyin_12t_parametersC2Ev",
+          "caller": "__ZN19_sgime_core_pinyin_12t_parameters26SetGenerateModelLoadEnableENS_29GenerateModelLoadEnableStatusE",
+          "callerEntry": "0x10087ee40"
+        },
+        {
+          "kind": "BL",
+          "call": "0x10087fb48",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_12t_parameters26GetGenerateModelLoadEnableEv",
+          "callerEntry": "0x10087fb04"
+        },
+        {
+          "kind": "BL",
+          "call": "0x10087fb68",
+          "target": "__ZN19_sgime_core_pinyin_12t_parametersC2Ev",
+          "caller": "__ZN19_sgime_core_pinyin_12t_parameters26GetGenerateModelLoadEnableEv",
+          "callerEntry": "0x10087fb04"
+        },
+        {
+          "kind": "BL",
+          "call": "0x10087fc48",
+          "target": "__ZN19_sgime_core_pinyin_12t_parametersC2Ev",
+          "caller": "__ZN19_sgime_core_pinyin_12t_parameters25SetGenerateModelUseStatusEi",
+          "callerEntry": "0x10087fbe4"
+        },
+        {
+          "kind": "BL",
+          "call": "0x10087fcf4",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_12t_parameters25GetGenerateModelUseStatusEv",
+          "callerEntry": "0x10087fcb0"
+        },
+        {
+          "kind": "BL",
+          "call": "0x10087fd10",
+          "target": "__ZN19_sgime_core_pinyin_12t_parametersC2Ev",
+          "caller": "__ZN19_sgime_core_pinyin_12t_parameters25GetGenerateModelUseStatusEv",
+          "callerEntry": "0x10087fcb0"
+        },
+        {
+          "kind": "BL",
+          "call": "0x10087fdbc",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_12t_parameters31IsGenerateModelUseStatusHealthyEv",
+          "callerEntry": "0x10087fd78"
+        },
+        {
+          "kind": "BL",
+          "call": "0x10087fddc",
+          "target": "__ZN19_sgime_core_pinyin_12t_parametersC2Ev",
+          "caller": "__ZN19_sgime_core_pinyin_12t_parameters31IsGenerateModelUseStatusHealthyEv",
+          "callerEntry": "0x10087fd78"
+        },
+        {
+          "kind": "BL",
+          "call": "0x10087fe9c",
+          "target": "__ZN19_sgime_core_pinyin_12t_parametersC2Ev",
+          "caller": "__ZN19_sgime_core_pinyin_12t_parameters13SetGeneDumpUpEb",
+          "callerEntry": "0x10087fe44"
+        },
+        {
+          "kind": "BL",
+          "call": "0x10087ff00",
+          "target": "__ZN19_sgime_core_pinyin_12t_parametersC2Ev",
+          "caller": "__ZN19_sgime_core_pinyin_12t_parameters13GetGeneDumpUpEv",
+          "callerEntry": "0x10087fed8"
+        },
+        {
+          "kind": "BL",
+          "call": "0x10087ff20",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_12t_parameters13GetGeneDumpUpEv",
+          "callerEntry": "0x10087fed8"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100880008",
+          "target": "__ZNK19_sgime_core_pinyin_18LocalLanguageModel8IsAttachEv",
+          "caller": "__ZN19_sgime_core_pinyin_12t_parameters24ResetWhiteDogModelStatusEv",
+          "callerEntry": "0x10087ff9c"
+        },
+        {
+          "kind": "BL",
+          "call": "0x1008800c0",
+          "target": "__ZNK19_sgime_core_pinyin_18LocalLanguageModel8IsAttachEv",
+          "caller": "__ZN19_sgime_core_pinyin_12t_parameters25UpdateWhiteDogModelStatusENS_13WhiteDogIndexEbb",
+          "callerEntry": "0x100880048"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100880264",
+          "target": "__ZN19_sgime_core_pinyin_12t_parameters26GetGenerateModelLoadEnableEv",
+          "caller": "__ZN19_sgime_core_pinyin_12t_parameters19IsGeneModelNeedLoadEv",
+          "callerEntry": "0x100880150"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100880340",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_12t_parameters21UpdateGeneSLODumpInfoEv",
+          "callerEntry": "0x100880308"
+        },
+        {
+          "kind": "BL",
+          "call": "0x10088036c",
+          "target": "__ZN19_sgime_core_pinyin_12t_parametersC2Ev",
+          "caller": "__ZN19_sgime_core_pinyin_12t_parameters21UpdateGeneSLODumpInfoEv",
+          "callerEntry": "0x100880308"
+        },
+        {
+          "kind": "BL",
+          "call": "0x1008803b4",
+          "target": "__ZN19_sgime_core_pinyin_12t_parametersC2Ev",
+          "caller": "__ZN19_sgime_core_pinyin_12t_parameters21UpdateGeneSLODumpInfoEv",
+          "callerEntry": "0x100880308"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100880458",
+          "target": "__ZN19_sgime_core_pinyin_12t_parametersC2Ev",
+          "caller": "__ZN19_sgime_core_pinyin_12t_parameters21UpdateGeneSLODumpInfoEv",
+          "callerEntry": "0x100880308"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100880794",
+          "target": "__ZNK19_sgime_core_pinyin_18LocalLanguageModel8IsAttachEv",
+          "caller": "__ZN19_sgime_core_pinyin_12t_parameters20NeedLoadXNetLanModelEv",
+          "callerEntry": "0x1008806fc"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100880a34",
+          "target": "__ZN19_sgime_core_pinyin_12t_parametersC2Ev",
+          "caller": "__ZNK19_sgime_core_pinyin_12t_parameters13NeedUpdateLtrEv",
+          "callerEntry": "0x100880944"
+        },
+        {
+          "kind": "B",
+          "call": "0x100880bb4",
+          "target": "__ZNK19_sgime_core_pinyin_18LocalLanguageModel8IsAttachEv",
+          "caller": "__ZNK19_sgime_core_pinyin_12t_parameters22NeedUnLoadXNetLanModelEv",
+          "callerEntry": "0x100880b30"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100881690",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_12t_parameters18AddUsrDictLearnCntEb",
+          "callerEntry": "0x100881660"
+        },
+        {
+          "kind": "BL",
+          "call": "0x1008816b4",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_12t_parameters18AddUsrDictLearnCntEb",
+          "callerEntry": "0x100881660"
+        },
+        {
+          "kind": "BL",
+          "call": "0x1008816e0",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_12t_parameters18AddUsrDictLearnCntEb",
+          "callerEntry": "0x100881660"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100881764",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_12t_parameters29AddUsrDictSaveCntToReportDataERKNS_17DictSaveSucRateXzE",
+          "callerEntry": "0x10088172c"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100881778",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_12t_parameters29AddUsrDictSaveCntToReportDataERKNS_17DictSaveSucRateXzE",
+          "callerEntry": "0x10088172c"
+        },
+        {
+          "kind": "BL",
+          "call": "0x1008817b8",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_12t_parameters29AddUsrDictSaveCntToReportDataERKNS_17DictSaveSucRateXzE",
+          "callerEntry": "0x10088172c"
+        },
+        {
+          "kind": "BL",
+          "call": "0x1008817e8",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_12t_parameters29AddUsrDictSaveCntToReportDataERKNS_17DictSaveSucRateXzE",
+          "callerEntry": "0x10088172c"
+        },
+        {
+          "kind": "BL",
+          "call": "0x1008817fc",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_12t_parameters29AddUsrDictSaveCntToReportDataERKNS_17DictSaveSucRateXzE",
+          "callerEntry": "0x10088172c"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100881810",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_12t_parameters29AddUsrDictSaveCntToReportDataERKNS_17DictSaveSucRateXzE",
+          "callerEntry": "0x10088172c"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100891764",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_9n_newDict19CategoryDictManager25InitCategoryConfigVersionEv",
+          "callerEntry": "0x100891740"
+        },
+        {
+          "kind": "BL",
+          "call": "0x1008930f0",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_9n_newDict19CategoryDictManager33CheckAndUpdateConfigBeforeConvertEv",
+          "callerEntry": "0x1008930b8"
+        },
+        {
+          "kind": "BL",
+          "call": "0x1008931e8",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_9n_newDict19CategoryDictManager33CheckAndUpdateConfigBeforeConvertEv",
+          "callerEntry": "0x1008930b8"
+        },
+        {
+          "kind": "BL",
+          "call": "0x10089da58",
+          "target": "__ZN19_sgime_core_pinyin_12t_parameters26GetGenerateInferenceEnableEv",
+          "caller": "__ZN19_sgime_core_pinyin_13n_deviceModel20device_model_manager19FillKernelStateDataENSt3__110shared_ptrINS_15KernelStateDataEEE",
+          "callerEntry": "0x10089d9a8"
+        },
+        {
+          "kind": "BL",
+          "call": "0x10089da68",
+          "target": "__ZN19_sgime_core_pinyin_12t_parameters24GetGenerateDictLoadStateEv",
+          "caller": "__ZN19_sgime_core_pinyin_13n_deviceModel20device_model_manager19FillKernelStateDataENSt3__110shared_ptrINS_15KernelStateDataEEE",
+          "callerEntry": "0x10089d9a8"
+        },
+        {
+          "kind": "BL",
+          "call": "0x10089da88",
+          "target": "__ZN19_sgime_core_pinyin_12t_parameters24IsDeviceReadyForGenerateEv",
+          "caller": "__ZN19_sgime_core_pinyin_13n_deviceModel20device_model_manager19FillKernelStateDataENSt3__110shared_ptrINS_15KernelStateDataEEE",
+          "callerEntry": "0x10089d9a8"
+        },
+        {
+          "kind": "B",
+          "call": "0x1008c6330",
+          "target": "__ZN19_sgime_core_pinyin_9n_newDict13t_dictManager22LoadSortFeatureModelLmEv",
+          "caller": "__ZN19_sgime_core_pinyin_9n_newDict13t_dictManager14ManualLoadDictE12e_dictTypeID",
+          "callerEntry": "0x1008c62b8"
+        },
+        {
+          "kind": "B",
+          "call": "0x1008c633c",
+          "target": "__ZN19_sgime_core_pinyin_9n_newDict13t_dictManager22LoadLocalLanguageModelEv",
+          "caller": "__ZN19_sgime_core_pinyin_9n_newDict13t_dictManager14ManualLoadDictE12e_dictTypeID",
+          "callerEntry": "0x1008c62b8"
+        },
+        {
+          "kind": "BL",
+          "call": "0x1008c6f8c",
+          "target": "__ZN19_sgime_core_pinyin_12t_parameters26GetGenerateModelLoadEnableEv",
+          "caller": "__ZN19_sgime_core_pinyin_9n_newDict13t_dictManager31CheckDeviceGradeAndLoadGenModelEv",
+          "callerEntry": "0x1008c6f64"
+        },
+        {
+          "kind": "B",
+          "call": "0x1008c7038",
+          "target": "__ZN19_sgime_core_pinyin_9n_newDict13t_dictManager29HandleDeviceGradeAndLoadModelEv",
+          "caller": "__ZN19_sgime_core_pinyin_9n_newDict13t_dictManager31CheckDeviceGradeAndLoadGenModelEv",
+          "callerEntry": "0x1008c6f64"
+        },
+        {
+          "kind": "BL",
+          "call": "0x1008c7210",
+          "target": "__ZNK19_sgime_core_pinyin_12t_parameters20NeedDownloadGenModelEv",
+          "caller": "__ZN19_sgime_core_pinyin_9n_newDict13t_dictManager29HandleDeviceGradeAndLoadModelEv",
+          "callerEntry": "0x1008c71c4"
+        },
+        {
+          "kind": "BL",
+          "call": "0x1008c721c",
+          "target": "__ZNK19_sgime_core_pinyin_12t_parameters20NeedDownloadLanModelEv",
+          "caller": "__ZN19_sgime_core_pinyin_9n_newDict13t_dictManager29HandleDeviceGradeAndLoadModelEv",
+          "callerEntry": "0x1008c71c4"
+        },
+        {
+          "kind": "BL",
+          "call": "0x1008c7268",
+          "target": "__ZN19_sgime_core_pinyin_12t_parameters20NeedLoadXNetLanModelEv",
+          "caller": "__ZN19_sgime_core_pinyin_9n_newDict13t_dictManager29HandleDeviceGradeAndLoadModelEv",
+          "callerEntry": "0x1008c71c4"
+        },
+        {
+          "kind": "BL",
+          "call": "0x1008c72dc",
+          "target": "__ZNK19_sgime_core_pinyin_12t_parameters20NeedDownloadGenModelEv",
+          "caller": "__ZN19_sgime_core_pinyin_9n_newDict13t_dictManager29HandleDeviceGradeAndLoadModelEv",
+          "callerEntry": "0x1008c71c4"
+        },
+        {
+          "kind": "BL",
+          "call": "0x1008c7300",
+          "target": "__ZNK19_sgime_core_pinyin_12t_parameters20NeedDownloadLanModelEv",
+          "caller": "__ZN19_sgime_core_pinyin_9n_newDict13t_dictManager29HandleDeviceGradeAndLoadModelEv",
+          "callerEntry": "0x1008c71c4"
+        },
+        {
+          "kind": "BL",
+          "call": "0x1008c7708",
+          "target": "__ZNK19_sgime_core_pinyin_18LocalLanguageModel8IsAttachEv",
+          "caller": "__ZN19_sgime_core_pinyin_9n_newDict13t_dictManager22LoadLocalLanguageModelEv",
+          "callerEntry": "0x1008c76d4"
+        },
+        {
+          "kind": "BL",
+          "call": "0x1008c7788",
+          "target": "__ZNK19_sgime_core_pinyin_18LocalLanguageModel8IsAttachEv",
+          "caller": "__ZN19_sgime_core_pinyin_9n_newDict13t_dictManager22LoadLocalLanguageModelEv",
+          "callerEntry": "0x1008c76d4"
+        },
+        {
+          "kind": "BL",
+          "call": "0x1008c779c",
+          "target": "__ZN19_sgime_core_pinyin_9n_newDict13n_dictManager17GetLanModelAbsDirERNSt3__112basic_stringIcNS2_11char_traitsIcEENS2_9allocatorIcEEEE",
+          "caller": "__ZN19_sgime_core_pinyin_9n_newDict13t_dictManager22LoadLocalLanguageModelEv",
+          "callerEntry": "0x1008c76d4"
+        },
+        {
+          "kind": "BL",
+          "call": "0x1008c79e8",
+          "target": "__ZN19_sgime_core_pinyin_18LocalLanguageModel11AttachModelEPKcS2_S2_b",
+          "caller": "__ZN19_sgime_core_pinyin_9n_newDict13t_dictManager22LoadLocalLanguageModelEv",
+          "callerEntry": "0x1008c76d4"
+        },
+        {
+          "kind": "BL",
+          "call": "0x1008c7cbc",
+          "target": "__ZN19_sgime_core_pinyin_9n_newDict13n_dictManager17GetLanModelAbsDirERNSt3__112basic_stringIcNS2_11char_traitsIcEENS2_9allocatorIcEEEE",
+          "caller": "__ZN19_sgime_core_pinyin_9n_newDict13t_dictManager22LoadSortFeatureModelLmEv",
+          "callerEntry": "0x1008c7c04"
+        },
+        {
+          "kind": "BL",
+          "call": "0x1008c82d0",
+          "target": "__ZN19_sgime_core_pinyin_9n_newDict13n_dictManager17GetLanModelAbsDirERNSt3__112basic_stringIcNS2_11char_traitsIcEENS2_9allocatorIcEEEE",
+          "caller": "__ZN19_sgime_core_pinyin_9n_newDict13t_dictManager25LoadXNetLMWordMappingDictEv",
+          "callerEntry": "0x1008c81f4"
+        },
+        {
+          "kind": "BL",
+          "call": "0x1008ce2e0",
+          "target": "__ZNK19_sgime_core_pinyin_12t_parameters21GetXNetLanModelEnableEv",
+          "caller": "__ZN19_sgime_core_pinyin_9n_newDict13n_dictManager25UpdateLanModelForDownloadEPKcS3_S3_",
+          "callerEntry": "0x1008ce2a0"
+        },
+        {
+          "kind": "BL",
+          "call": "0x1008ce380",
+          "target": "__ZNK19_sgime_core_pinyin_18LocalLanguageModel8IsAttachEv",
+          "caller": "__ZN19_sgime_core_pinyin_9n_newDict13n_dictManager25UpdateLanModelForDownloadEPKcS3_S3_",
+          "callerEntry": "0x1008ce2a0"
+        },
+        {
+          "kind": "BL",
+          "call": "0x1008ce5b0",
+          "target": "__ZNK19_sgime_core_pinyin_18LocalLanguageModel8IsAttachEv",
+          "caller": "__ZN19_sgime_core_pinyin_9n_newDict13n_dictManager25UpdateLanModelForDownloadEPKcS3_S3_",
+          "callerEntry": "0x1008ce2a0"
+        },
+        {
+          "kind": "BL",
+          "call": "0x1008ce5e8",
+          "target": "__ZN19_sgime_core_pinyin_9n_newDict13t_dictManager22LoadLocalLanguageModelEv",
+          "caller": "__ZN19_sgime_core_pinyin_9n_newDict13n_dictManager25UpdateLanModelForDownloadEPKcS3_S3_",
+          "callerEntry": "0x1008ce2a0"
+        },
+        {
+          "kind": "BL",
+          "call": "0x1008ce5f8",
+          "target": "__ZN19_sgime_core_pinyin_9n_newDict13t_dictManager22LoadSortFeatureModelLmEv",
+          "caller": "__ZN19_sgime_core_pinyin_9n_newDict13n_dictManager25UpdateLanModelForDownloadEPKcS3_S3_",
+          "callerEntry": "0x1008ce2a0"
+        },
+        {
+          "kind": "BL",
+          "call": "0x1008ceca4",
+          "target": "__ZN19_sgime_core_pinyin_9n_newDict13t_dictManager23LoadGenerateModelSeriesEv",
+          "caller": "__ZN19_sgime_core_pinyin_9n_newDict13t_dictManager26AsyncLoadGenerateModelDictEv",
+          "callerEntry": "0x1008cebf0"
+        },
+        {
+          "kind": "BL",
+          "call": "0x1008ceff0",
+          "target": "__ZN19_sgime_core_pinyin_12t_parameters23UpdateDeviceModelEnableEv",
+          "caller": "__ZN19_sgime_core_pinyin_9n_newDict13t_dictManager25UpdateLanModelForDownloadEPKci",
+          "callerEntry": "0x1008cefcc"
+        },
+        {
+          "kind": "BL",
+          "call": "0x1008d0a24",
+          "target": "__ZNK19_sgime_core_pinyin_18LocalLanguageModel8IsAttachEv",
+          "caller": "__ZN19_sgime_core_pinyin_9n_newDict13t_dictManager20UnloadModelIfUpgradeEv",
+          "callerEntry": "0x1008d09b0"
+        },
+        {
+          "kind": "BL",
+          "call": "0x1008d0abc",
+          "target": "__ZNK19_sgime_core_pinyin_18LocalLanguageModel8IsAttachEv",
+          "caller": "__ZN19_sgime_core_pinyin_9n_newDict13t_dictManager20UnloadModelIfUpgradeEv",
+          "callerEntry": "0x1008d09b0"
+        },
+        {
+          "kind": "BL",
+          "call": "0x1008d0d68",
+          "target": "__ZN19_sgime_core_pinyin_9n_newDict13t_dictManager22LoadLocalLanguageModelEv",
+          "caller": "__ZN19_sgime_core_pinyin_9n_newDict13t_dictManager22LoadLanguageModelAsyncEv",
+          "callerEntry": "0x1008d0d20"
+        },
+        {
+          "kind": "BL",
+          "call": "0x1008d0dd4",
+          "target": "__ZN19_sgime_core_pinyin_9n_newDict13t_dictManager22LoadSortFeatureModelLmEv",
+          "caller": "__ZN19_sgime_core_pinyin_9n_newDict13t_dictManager22LoadLanguageModelAsyncEv",
+          "callerEntry": "0x1008d0d20"
+        },
+        {
+          "kind": "BL",
+          "call": "0x1008d109c",
+          "target": "__ZNK19_sgime_core_pinyin_18LocalLanguageModel8IsAttachEv",
+          "caller": "__ZN19_sgime_core_pinyin_9n_newDict13n_dictManager20LoadOrUnloadLanModelEb",
+          "callerEntry": "0x1008d0fd8"
+        },
+        {
+          "kind": "BL",
+          "call": "0x1008d1118",
+          "target": "__ZNK19_sgime_core_pinyin_18LocalLanguageModel8IsAttachEv",
+          "caller": "__ZN19_sgime_core_pinyin_9n_newDict13n_dictManager20LoadOrUnloadLanModelEb",
+          "callerEntry": "0x1008d0fd8"
+        },
+        {
+          "kind": "BL",
+          "call": "0x1008d15b4",
+          "target": "__ZN19_sgime_core_pinyin_9n_newDict13t_dictManager22LoadLocalLanguageModelEv",
+          "caller": "__ZN19_sgime_core_pinyin_9n_newDict13n_dictManager20LoadOrUnloadLanModelEb",
+          "callerEntry": "0x1008d0fd8"
+        },
+        {
+          "kind": "BL",
+          "call": "0x1008d15f4",
+          "target": "__ZN19_sgime_core_pinyin_9n_newDict13t_dictManager22LoadSortFeatureModelLmEv",
+          "caller": "__ZN19_sgime_core_pinyin_9n_newDict13n_dictManager20LoadOrUnloadLanModelEb",
+          "callerEntry": "0x1008d0fd8"
+        },
+        {
+          "kind": "BL",
+          "call": "0x1008d5558",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_9n_newDict13t_dictManager25TriggerVoiceDictBuildSyncENSt3__18functionIFvvEEE",
+          "callerEntry": "0x1008d540c"
+        },
+        {
+          "kind": "BL",
+          "call": "0x1008dbb24",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_9n_newDict13n_dictManager23BuildCommonCategoryDictERNSt3__16vectorINS_17t_commonDictParamENS2_9allocatorIS4_EEEE",
+          "callerEntry": "0x1008db4f0"
+        },
+        {
+          "kind": "BL",
+          "call": "0x1008df1c4",
+          "target": "__ZNK19_sgime_core_pinyin_18LocalLanguageModel8IsAttachEv",
+          "caller": "__ZN19_sgime_core_pinyin_9n_newDict13n_dictManager25UpdateLanModelForDownloadEPKcS3_S3_S3_S3_",
+          "callerEntry": "0x1008df09c"
+        },
+        {
+          "kind": "BL",
+          "call": "0x1008df344",
+          "target": "__ZNK19_sgime_core_pinyin_18LocalLanguageModel8IsAttachEv",
+          "caller": "__ZN19_sgime_core_pinyin_9n_newDict13n_dictManager25UpdateLanModelForDownloadEPKcS3_S3_S3_S3_",
+          "callerEntry": "0x1008df09c"
+        },
+        {
+          "kind": "BL",
+          "call": "0x1008df35c",
+          "target": "__ZN19_sgime_core_pinyin_9n_newDict13t_dictManager22LoadLocalLanguageModelEv",
+          "caller": "__ZN19_sgime_core_pinyin_9n_newDict13n_dictManager25UpdateLanModelForDownloadEPKcS3_S3_S3_S3_",
+          "callerEntry": "0x1008df09c"
+        },
+        {
+          "kind": "BL",
+          "call": "0x1008df424",
+          "target": "__ZN19_sgime_core_pinyin_9n_newDict13t_dictManager22LoadSortFeatureModelLmEv",
+          "caller": "__ZN19_sgime_core_pinyin_9n_newDict13n_dictManager25UpdateLanModelForDownloadEPKcS3_S3_S3_S3_",
+          "callerEntry": "0x1008df09c"
+        },
+        {
+          "kind": "BL",
+          "call": "0x1008dfc74",
+          "target": "__ZN19_sgime_core_pinyin_9n_newDict13t_dictManager29HandleDeviceGradeAndLoadModelEv",
+          "caller": "__ZNSt3__110__function6__funcIZN19_sgime_core_pinyin_9n_newDict13t_dictManager31CheckDeviceGradeAndLoadGenModelEvE3$_0NS_9allocatorIS5_EEFbvEEclEv",
+          "callerEntry": "0x1008dfc68"
+        },
+        {
+          "kind": "BL",
+          "call": "0x1009c24a4",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_23InputBehaviorSLOCollect20UpdateDictFixSucRateERKNS_11DictFixRateENSt3__110shared_ptrINS_15SuccessRateDataEEE",
+          "callerEntry": "0x1009c2448"
+        },
+        {
+          "kind": "BL",
+          "call": "0x1009c24b8",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_23InputBehaviorSLOCollect20UpdateDictFixSucRateERKNS_11DictFixRateENSt3__110shared_ptrINS_15SuccessRateDataEEE",
+          "callerEntry": "0x1009c2448"
+        },
+        {
+          "kind": "BL",
+          "call": "0x1009c24cc",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_23InputBehaviorSLOCollect20UpdateDictFixSucRateERKNS_11DictFixRateENSt3__110shared_ptrINS_15SuccessRateDataEEE",
+          "callerEntry": "0x1009c2448"
+        },
+        {
+          "kind": "BL",
+          "call": "0x1009c24e0",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_23InputBehaviorSLOCollect20UpdateDictFixSucRateERKNS_11DictFixRateENSt3__110shared_ptrINS_15SuccessRateDataEEE",
+          "callerEntry": "0x1009c2448"
+        },
+        {
+          "kind": "BL",
+          "call": "0x1009c24f4",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_23InputBehaviorSLOCollect20UpdateDictFixSucRateERKNS_11DictFixRateENSt3__110shared_ptrINS_15SuccessRateDataEEE",
+          "callerEntry": "0x1009c2448"
+        },
+        {
+          "kind": "BL",
+          "call": "0x1009c2508",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_23InputBehaviorSLOCollect20UpdateDictFixSucRateERKNS_11DictFixRateENSt3__110shared_ptrINS_15SuccessRateDataEEE",
+          "callerEntry": "0x1009c2448"
+        },
+        {
+          "kind": "BL",
+          "call": "0x1009c4d70",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_19InputBehaviorSLOSum26FillPlatFormSucRateSumInfoENSt3__110shared_ptrINS_15SuccessRateDataEEERNS1_3mapINS1_12basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEESB_NS1_4lessISB_EENS9_INS1_4pairIKSB_SB_EEEEEE",
+          "callerEntry": "0x1009c4d40"
+        },
+        {
+          "kind": "BL",
+          "call": "0x1009c4e04",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_19InputBehaviorSLOSum26FillPlatFormSucRateSumInfoENSt3__110shared_ptrINS_15SuccessRateDataEEERNS1_3mapINS1_12basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEESB_NS1_4lessISB_EENS9_INS1_4pairIKSB_SB_EEEEEE",
+          "callerEntry": "0x1009c4d40"
+        },
+        {
+          "kind": "BL",
+          "call": "0x1009c4e98",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_19InputBehaviorSLOSum26FillPlatFormSucRateSumInfoENSt3__110shared_ptrINS_15SuccessRateDataEEERNS1_3mapINS1_12basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEESB_NS1_4lessISB_EENS9_INS1_4pairIKSB_SB_EEEEEE",
+          "callerEntry": "0x1009c4d40"
+        },
+        {
+          "kind": "BL",
+          "call": "0x1009c4f2c",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_19InputBehaviorSLOSum26FillPlatFormSucRateSumInfoENSt3__110shared_ptrINS_15SuccessRateDataEEERNS1_3mapINS1_12basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEESB_NS1_4lessISB_EENS9_INS1_4pairIKSB_SB_EEEEEE",
+          "callerEntry": "0x1009c4d40"
+        },
+        {
+          "kind": "BL",
+          "call": "0x1009c4fc0",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_19InputBehaviorSLOSum26FillPlatFormSucRateSumInfoENSt3__110shared_ptrINS_15SuccessRateDataEEERNS1_3mapINS1_12basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEESB_NS1_4lessISB_EENS9_INS1_4pairIKSB_SB_EEEEEE",
+          "callerEntry": "0x1009c4d40"
+        },
+        {
+          "kind": "BL",
+          "call": "0x1009c5054",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_19InputBehaviorSLOSum26FillPlatFormSucRateSumInfoENSt3__110shared_ptrINS_15SuccessRateDataEEERNS1_3mapINS1_12basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEESB_NS1_4lessISB_EENS9_INS1_4pairIKSB_SB_EEEEEE",
+          "callerEntry": "0x1009c4d40"
+        },
+        {
+          "kind": "BL",
+          "call": "0x1009d10e8",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_18InputBehaviorSLOXz22FillOtherSucRateXzInfoENSt3__110shared_ptrINS_15SuccessRateDataEEERNS1_3mapINS1_12basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEESB_NS1_4lessISB_EENS9_INS1_4pairIKSB_SB_EEEEEE",
+          "callerEntry": "0x1009d0f0c"
+        },
+        {
+          "kind": "BL",
+          "call": "0x1009d1100",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_18InputBehaviorSLOXz22FillOtherSucRateXzInfoENSt3__110shared_ptrINS_15SuccessRateDataEEERNS1_3mapINS1_12basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEESB_NS1_4lessISB_EENS9_INS1_4pairIKSB_SB_EEEEEE",
+          "callerEntry": "0x1009d0f0c"
+        },
+        {
+          "kind": "BL",
+          "call": "0x1009d1118",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_18InputBehaviorSLOXz22FillOtherSucRateXzInfoENSt3__110shared_ptrINS_15SuccessRateDataEEERNS1_3mapINS1_12basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEESB_NS1_4lessISB_EENS9_INS1_4pairIKSB_SB_EEEEEE",
+          "callerEntry": "0x1009d0f0c"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100a830b4",
+          "target": "__ZNK19_sgime_core_pinyin_18LocalLanguageModel8IsAttachEv",
+          "caller": "__ZN19_sgime_core_pinyin_15t_pyCtInterface14LoadDictionaryEv",
+          "callerEntry": "0x100a83080"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100a83f6c",
+          "target": "__ZN19_sgime_core_pinyin_12t_parameters26GetGenerateInferenceEnableEv",
+          "caller": "__ZN19_sgime_core_pinyin_15t_pyCtInterface14GetConvertDataEPPNS_11t_candEntryEjPNS_12t_KeyMappingES3_RiPNS_16CSogouCoreResultE",
+          "callerEntry": "0x100a83b7c"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100a94498",
+          "target": "__ZN19_sgime_core_pinyin_12t_parameters26GetGenerateInferenceEnableEv",
+          "caller": "__ZN19_sgime_core_pinyin_15t_pyCtInterface28CreateArrayWordGenerateModelEPN26sgime_kernelbase_namespace6t_heapE",
+          "callerEntry": "0x100a9447c"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100a94958",
+          "target": "__ZN19_sgime_core_pinyin_12t_parameters26GetGenerateInferenceEnableEv",
+          "caller": "__ZN19_sgime_core_pinyin_15t_pyCtInterface32StartGenerateModelInferenceAsyncEPPNS_11t_candEntryEiPNS_11t_arrayWordEb",
+          "callerEntry": "0x100a94928"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100a94b84",
+          "target": "__ZN19_sgime_core_pinyin_12t_parameters24IsDeviceReadyForGenerateEv",
+          "caller": "__ZN19_sgime_core_pinyin_15t_pyCtInterface18IsTriggerGeneInferEPPNS_11t_candEntryEiPNS_16CSogouCoreResultERb",
+          "callerEntry": "0x100a94b2c"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100a9de70",
+          "target": "__ZNK19_sgime_core_pinyin_18LocalLanguageModel8IsAttachEv",
+          "caller": "__ZN19_sgime_core_pinyin_15t_pyCtInterface17EndUpdateLanModelEv",
+          "callerEntry": "0x100a9de54"
+        },
+        {
+          "kind": "B",
+          "call": "0x100aa11ec",
+          "target": "__ZN19_sgime_core_pinyin_12t_parameters24IsDeviceReadyForGenerateEv",
+          "caller": "__ZN19_sgime_core_pinyin_15t_pyCtInterface20IsGenerateModelReadyEv",
+          "callerEntry": "0x100aa11dc"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100aaaf78",
+          "target": "__ZNK19_sgime_core_pinyin_18LocalLanguageModel8IsAttachEv",
+          "caller": "__ZN19_sgime_core_pinyin_20FeatureFilterHandler13GetEntryScoreEPfi",
+          "callerEntry": "0x100aaaf30"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100aab5ec",
+          "target": "__ZNK19_sgime_core_pinyin_18LocalLanguageModel8IsAttachEv",
+          "caller": "__ZN19_sgime_core_pinyin_18FeatureSortHandler18GetSortFeatureModeEv",
+          "callerEntry": "0x100aab5d8"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100aae8ac",
+          "target": "__ZNK19_sgime_core_pinyin_18LocalLanguageModel8IsAttachEv",
+          "caller": "__ZN19_sgime_core_pinyin_20FeatureSortHandlerLm17GetEntryScoreImplERKNSt3__16vectorINS1_12basic_stringIDsNS1_11char_traitsIDsEENS1_9allocatorIDsEEEENS6_IS8_EEEEPfiNS1_10shared_ptrINS1_6atomicIbEEEE",
+          "callerEntry": "0x100aae858"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100ab3c90",
+          "target": "__ZNK19_sgime_core_pinyin_18LocalLanguageModel8IsAttachEv",
+          "caller": "__ZNK19_sgime_core_pinyin_17GeneResortManager9IsDegradeERNS_13DegradeReasonE",
+          "callerEntry": "0x100ab3c60"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100addfa0",
+          "target": "__ZNK19_sgime_core_pinyin_18LocalLanguageModel8IsAttachEv",
+          "caller": "__ZN19_sgime_core_pinyin_22LanguageModelIncreBase17UpdateSortContextERKNSt3__112basic_stringIDsNS1_11char_traitsIDsEENS1_9allocatorIDsEEEENS_17UpdateContextTypeE",
+          "callerEntry": "0x100addf68"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100ade528",
+          "target": "__ZNK19_sgime_core_pinyin_18LocalLanguageModel8IsAttachEv",
+          "caller": "__ZN19_sgime_core_pinyin_22LanguageModelIncreBase17UpdateSortContextERKNSt3__16vectorINS1_12basic_stringIDsNS1_11char_traitsIDsEENS1_9allocatorIDsEEEENS6_IS8_EEEENS_17UpdateContextTypeE",
+          "callerEntry": "0x100ade4f0"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100adee8c",
+          "target": "__ZN19_sgime_core_pinyin_18LocalLanguageModel15AttachModelXNetEPKcS2_",
+          "caller": "__ZN19_sgime_core_pinyin_18LocalLanguageModel11AttachModelEPKcS2_S2_b",
+          "callerEntry": "0x100adee5c"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100bf779c",
+          "target": "__ZNK19_sgime_core_pinyin_12t_parameters31EnableSentenceWithLanguageModelEv",
+          "caller": "__ZN19_sgime_core_pinyin_13t_entryLoader16addSentenceEntryEPNS_11t_arrayWordEPNS_10t_SentenceEPNS_9t_pysListEPNS_11t_candEntryENS_22eLanguageModelUseStateE",
+          "callerEntry": "0x100bf721c"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100c36b64",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_15UserTagStrategy12LoadStrategyEv",
+          "callerEntry": "0x100c36b28"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100c36b78",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_15UserTagStrategy12LoadStrategyEv",
+          "callerEntry": "0x100c36b28"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100c36b98",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_15UserTagStrategy12LoadStrategyEv",
+          "callerEntry": "0x100c36b28"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100c36bac",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_15UserTagStrategy12LoadStrategyEv",
+          "callerEntry": "0x100c36b28"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100c36bc0",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_15UserTagStrategy12LoadStrategyEv",
+          "callerEntry": "0x100c36b28"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100c36bd4",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_15UserTagStrategy12LoadStrategyEv",
+          "callerEntry": "0x100c36b28"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100c36c44",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_15UserTagStrategy19SetFirstInstallTimeEl",
+          "callerEntry": "0x100c36bf4"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100c36c58",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_15UserTagStrategy19SetFirstInstallTimeEl",
+          "callerEntry": "0x100c36bf4"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100c36cc4",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_15UserTagStrategy19SetFirstInstallTimeEl",
+          "callerEntry": "0x100c36bf4"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100c36d14",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_15UserTagStrategy19SetFirstInstallTimeEl",
+          "callerEntry": "0x100c36bf4"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100c36d28",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_15UserTagStrategy19SetFirstInstallTimeEl",
+          "callerEntry": "0x100c36bf4"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100c36d7c",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_15UserTagStrategy19SetFirstInstallTimeEl",
+          "callerEntry": "0x100c36bf4"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100c36e78",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_15UserTagStrategy18UpdateNewTypingTagEv",
+          "callerEntry": "0x100c36e18"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100c36e8c",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_15UserTagStrategy18UpdateNewTypingTagEv",
+          "callerEntry": "0x100c36e18"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100c36f10",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_15UserTagStrategy18UpdateNewTypingTagEv",
+          "callerEntry": "0x100c36e18"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100c36ff0",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_15UserTagStrategy14OnUserFeedbackEPKc",
+          "callerEntry": "0x100c36fac"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100c37004",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_15UserTagStrategy14OnUserFeedbackEPKc",
+          "callerEntry": "0x100c36fac"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100c37054",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_15UserTagStrategy14OnUserFeedbackEPKc",
+          "callerEntry": "0x100c36fac"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100c37584",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_15UserTagStrategy17OnInputSessionEndENS_18SatisfactionStatusE",
+          "callerEntry": "0x100c374bc"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100c37598",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_15UserTagStrategy17OnInputSessionEndENS_18SatisfactionStatusE",
+          "callerEntry": "0x100c374bc"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100c375e0",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_15UserTagStrategy17OnInputSessionEndENS_18SatisfactionStatusE",
+          "callerEntry": "0x100c374bc"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100c375fc",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_15UserTagStrategy17OnInputSessionEndENS_18SatisfactionStatusE",
+          "callerEntry": "0x100c374bc"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100cb69c4",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_25InputExperimentController19StoreExperimentInfoEbb",
+          "callerEntry": "0x100cb6984"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100cb6a14",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_25InputExperimentController19StoreExperimentInfoEbb",
+          "callerEntry": "0x100cb6984"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100cb6fb4",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_25InputExperimentController23CheckExpStatusOnConvertEv",
+          "callerEntry": "0x100cb6f80"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100cb7008",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_25InputExperimentController23CheckExpStatusOnConvertEv",
+          "callerEntry": "0x100cb6f80"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100cb7020",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_25InputExperimentController23CheckExpStatusOnConvertEv",
+          "callerEntry": "0x100cb6f80"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100cb7090",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_25InputExperimentController23CheckExpStatusOnConvertEv",
+          "callerEntry": "0x100cb6f80"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100d1228c",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_13CoreNetSwitch17LoadConfigOnStartEv",
+          "callerEntry": "0x100d1225c"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100d122a0",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_13CoreNetSwitch17LoadConfigOnStartEv",
+          "callerEntry": "0x100d1225c"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100d122b4",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_13CoreNetSwitch17LoadConfigOnStartEv",
+          "callerEntry": "0x100d1225c"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100d122c8",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_13CoreNetSwitch17LoadConfigOnStartEv",
+          "callerEntry": "0x100d1225c"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100d122e4",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_13CoreNetSwitch17LoadConfigOnStartEv",
+          "callerEntry": "0x100d1225c"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100d12300",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_13CoreNetSwitch17LoadConfigOnStartEv",
+          "callerEntry": "0x100d1225c"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100d1231c",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_13CoreNetSwitch17LoadConfigOnStartEv",
+          "callerEntry": "0x100d1225c"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100d12338",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_13CoreNetSwitch17LoadConfigOnStartEv",
+          "callerEntry": "0x100d1225c"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100d12354",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_13CoreNetSwitch17LoadConfigOnStartEv",
+          "callerEntry": "0x100d1225c"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100d123a4",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_13CoreNetSwitch17LoadConfigOnStartEv",
+          "callerEntry": "0x100d1225c"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100d123b0",
+          "target": "__ZN19_sgime_core_pinyin_13CoreNetSwitch21LoadDeviceModelConfigEv",
+          "caller": "__ZN19_sgime_core_pinyin_13CoreNetSwitch17LoadConfigOnStartEv",
+          "callerEntry": "0x100d1225c"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100d125a0",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_13CoreNetSwitch21LoadDeviceModelConfigEv",
+          "callerEntry": "0x100d12560"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100d125c8",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_13CoreNetSwitch21LoadDeviceModelConfigEv",
+          "callerEntry": "0x100d12560"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100d125dc",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_13CoreNetSwitch21LoadDeviceModelConfigEv",
+          "callerEntry": "0x100d12560"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100d125f0",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_13CoreNetSwitch21LoadDeviceModelConfigEv",
+          "callerEntry": "0x100d12560"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100d12604",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_13CoreNetSwitch21LoadDeviceModelConfigEv",
+          "callerEntry": "0x100d12560"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100d12650",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_13CoreNetSwitch21LoadDeviceModelConfigEv",
+          "callerEntry": "0x100d12560"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100d12664",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_13CoreNetSwitch21LoadDeviceModelConfigEv",
+          "callerEntry": "0x100d12560"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100d12678",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_13CoreNetSwitch21LoadDeviceModelConfigEv",
+          "callerEntry": "0x100d12560"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100d1268c",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_13CoreNetSwitch21LoadDeviceModelConfigEv",
+          "callerEntry": "0x100d12560"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100d1269c",
+          "target": "__ZN19_sgime_core_pinyin_12t_parameters20SetDeviceModelEnableENS_16ModelEnableStateE",
+          "caller": "__ZN19_sgime_core_pinyin_13CoreNetSwitch21LoadDeviceModelConfigEv",
+          "callerEntry": "0x100d12560"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100d126e0",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_13CoreNetSwitch21LoadDeviceModelConfigEv",
+          "callerEntry": "0x100d12560"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100d12708",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_13CoreNetSwitch21LoadDeviceModelConfigEv",
+          "callerEntry": "0x100d12560"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100d1271c",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_13CoreNetSwitch21LoadDeviceModelConfigEv",
+          "callerEntry": "0x100d12560"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100d12730",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_13CoreNetSwitch21LoadDeviceModelConfigEv",
+          "callerEntry": "0x100d12560"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100d12744",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_13CoreNetSwitch21LoadDeviceModelConfigEv",
+          "callerEntry": "0x100d12560"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100d12758",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_13CoreNetSwitch21LoadDeviceModelConfigEv",
+          "callerEntry": "0x100d12560"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100d1276c",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_13CoreNetSwitch21LoadDeviceModelConfigEv",
+          "callerEntry": "0x100d12560"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100d129e8",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_13CoreNetSwitch21LoadDeviceModelConfigEv",
+          "callerEntry": "0x100d12560"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100d129fc",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_13CoreNetSwitch21LoadDeviceModelConfigEv",
+          "callerEntry": "0x100d12560"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100d12a10",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_13CoreNetSwitch21LoadDeviceModelConfigEv",
+          "callerEntry": "0x100d12560"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100d12a24",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_13CoreNetSwitch21LoadDeviceModelConfigEv",
+          "callerEntry": "0x100d12560"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100d12a38",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_13CoreNetSwitch21LoadDeviceModelConfigEv",
+          "callerEntry": "0x100d12560"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100d13064",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_13CoreNetSwitch19LoadConfigOnConvertEv",
+          "callerEntry": "0x100d13038"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100d13078",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_13CoreNetSwitch19LoadConfigOnConvertEv",
+          "callerEntry": "0x100d13038"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100d1308c",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_13CoreNetSwitch19LoadConfigOnConvertEv",
+          "callerEntry": "0x100d13038"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100d130a0",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_13CoreNetSwitch19LoadConfigOnConvertEv",
+          "callerEntry": "0x100d13038"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100d130b4",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_13CoreNetSwitch19LoadConfigOnConvertEv",
+          "callerEntry": "0x100d13038"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100d130c8",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_13CoreNetSwitch19LoadConfigOnConvertEv",
+          "callerEntry": "0x100d13038"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100d130e4",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_13CoreNetSwitch19LoadConfigOnConvertEv",
+          "callerEntry": "0x100d13038"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100d130f8",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_13CoreNetSwitch19LoadConfigOnConvertEv",
+          "callerEntry": "0x100d13038"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100d1310c",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_13CoreNetSwitch19LoadConfigOnConvertEv",
+          "callerEntry": "0x100d13038"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100d13120",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_13CoreNetSwitch19LoadConfigOnConvertEv",
+          "callerEntry": "0x100d13038"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100d14224",
+          "target": "__ZN19_sgime_core_pinyin_12t_parameters20SetDeviceModelEnableENS_16ModelEnableStateE",
+          "caller": "__ZN19_sgime_core_pinyin_13CoreNetSwitch32UpdateDeviceModelInferenceConfigERKNSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEE",
+          "callerEntry": "0x100d13cf8"
+        },
+        {
+          "kind": "B",
+          "call": "0x100d15608",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZNK19_sgime_core_pinyin_13CoreNetSwitch20GetMoreCloudStrategyEv",
+          "callerEntry": "0x100d155ac"
+        },
+        {
+          "kind": "B",
+          "call": "0x100d15630",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZNK19_sgime_core_pinyin_13CoreNetSwitch20GetMoreCloudStrategyEv",
+          "callerEntry": "0x100d155ac"
+        },
+        {
+          "kind": "BL",
+          "call": "0x100d7be64",
+          "target": "__ZN19_sgime_core_pinyin_10CoreConfig12GetIntConfigENS_9ConfigKeyEi",
+          "caller": "__ZN19_sgime_core_pinyin_11dict_update24PrepareDictUpdateRequestERNSt3__18multimapINS1_12basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEES8_NS1_4lessIS8_EENS6_INS1_4pairIKS8_S8_EEEEEE",
+          "callerEntry": "0x100d7bde4"
+        }
+      ],
+      "limitations": [
+        "Static ordinary-tool evidence, not REA Evidence.",
+        "No runtime execution or active flags observed.",
+        "Direct B/BL scan excludes indirect calls and branches through stubs.",
+        "Next symbol interval may include padding."
+      ]
+    },
+    "modelFunctions": [
+      {
+        "id": "CF-installed-models-gen-name",
+        "symbol": "__ZN19_sgime_core_pinyin_13n_deviceModel20device_model_manager19MakeGenModelDirNameEiii",
+        "entry": "0x1008a0e20",
+        "end": "0x1008a11a8",
+        "functionByteSha256": "f48a3f209a67b6cbfb2e6a5c4c9b25af937fdf5b7f66ef36b5af6ade5a2b1ac2",
+        "instructionsByteVerified": 226,
+        "assemblySha256": "72edfa74c26517c12141e735224fa61af05a3f3bcb79cc042158e31f6b3b0370",
+        "anchors": [
+          "1008a0e68:\t5d f3 47 94\tbl\t0x101a9dbdc ; symbol stub for: __ZNSt3__19to_stringEi",
+          "1008a0e88:\t8a f1 47 94\tbl\t0x101a9d4b0 ; symbol stub for: __ZNSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEE6appendEPKcm",
+          "1008a0ea8:\t21 40 1d 91\tadd\tx1, x1, #0x750 ; literal pool for: \"_v\"",
+          "1008a0eb0:\t7d f1 47 94\tbl\t0x101a9d4a4 ; symbol stub for: __ZNSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEE6appendEPKc",
+          "1008a0ed8:\t41 f3 47 94\tbl\t0x101a9dbdc ; symbol stub for: __ZNSt3__19to_stringEi",
+          "1008a0ef8:\t6e f1 47 94\tbl\t0x101a9d4b0 ; symbol stub for: __ZNSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEE6appendEPKcm",
+          "1008a0f18:\t21 4c 1d 91\tadd\tx1, x1, #0x753 ; literal pool for: \"_g\"",
+          "1008a0f20:\t61 f1 47 94\tbl\t0x101a9d4a4 ; symbol stub for: __ZNSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEE6appendEPKc",
+          "1008a0f48:\t25 f3 47 94\tbl\t0x101a9dbdc ; symbol stub for: __ZNSt3__19to_stringEi",
+          "1008a0f68:\t52 f1 47 94\tbl\t0x101a9d4b0 ; symbol stub for: __ZNSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEE6appendEPKcm",
+          "1008a0fe0:\t2c f3 47 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "1008a0ff0:\t28 f3 47 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "1008a1000:\t24 f3 47 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "1008a1010:\t20 f3 47 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "1008a1020:\t1c f3 47 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "1008a1030:\t18 f3 47 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "1008a1040:\t14 f3 47 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "1008a1050:\t10 f3 47 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "1008a10b4:\tfa ef 47 94\tbl\t0x101a9d09c ; symbol stub for: __Unwind_Resume",
+          "1008a10bc:\tf5 f2 47 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "1008a10dc:\ted f2 47 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "1008a10fc:\te5 f2 47 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "1008a111c:\tdd f2 47 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "1008a113c:\td5 f2 47 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "1008a115c:\tcd f2 47 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "1008a117c:\tc5 f2 47 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "1008a119c:\tbd f2 47 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "1008a11a4:\tbe ef 47 94\tbl\t0x101a9d09c ; symbol stub for: __Unwind_Resume"
+        ]
+      },
+      {
+        "id": "CF-installed-models-lm-name",
+        "symbol": "__ZN19_sgime_core_pinyin_13n_deviceModel20device_model_manager19MakeLanModelDirNameEii",
+        "entry": "0x1008a11a8",
+        "end": "0x1008a13f4",
+        "functionByteSha256": "383f332ad86644fab5d46c65df690d4fe3c3ee511a07357bee020b1e04df64a5",
+        "instructionsByteVerified": 147,
+        "assemblySha256": "fd54baf3703178c78b24a2d378e30a31e3cdacfe3e517e5831def93cc2bd8237",
+        "anchors": [
+          "1008a11ec:\t7c f2 47 94\tbl\t0x101a9dbdc ; symbol stub for: __ZNSt3__19to_stringEi",
+          "1008a120c:\ta9 f0 47 94\tbl\t0x101a9d4b0 ; symbol stub for: __ZNSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEE6appendEPKcm",
+          "1008a122c:\t21 40 1d 91\tadd\tx1, x1, #0x750 ; literal pool for: \"_v\"",
+          "1008a1234:\t9c f0 47 94\tbl\t0x101a9d4a4 ; symbol stub for: __ZNSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEE6appendEPKc",
+          "1008a125c:\t60 f2 47 94\tbl\t0x101a9dbdc ; symbol stub for: __ZNSt3__19to_stringEi",
+          "1008a127c:\t8d f0 47 94\tbl\t0x101a9d4b0 ; symbol stub for: __ZNSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEE6appendEPKcm",
+          "1008a12d8:\t6e f2 47 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "1008a12e8:\t6a f2 47 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "1008a12f8:\t66 f2 47 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "1008a1308:\t62 f2 47 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "1008a1318:\t5e f2 47 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "1008a1360:\t4f ef 47 94\tbl\t0x101a9d09c ; symbol stub for: __Unwind_Resume",
+          "1008a1368:\t4a f2 47 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "1008a1388:\t42 f2 47 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "1008a13a8:\t3a f2 47 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "1008a13c8:\t32 f2 47 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "1008a13e8:\t2a f2 47 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "1008a13f0:\t2b ef 47 94\tbl\t0x101a9d09c ; symbol stub for: __Unwind_Resume"
+        ]
+      },
+      {
+        "id": "CF-installed-models-gen-rel",
+        "symbol": "__ZN19_sgime_core_pinyin_13n_deviceModel20device_model_manager18MakeGenModelRelDirEiii",
+        "entry": "0x1008c9a84",
+        "end": "0x1008c9ba4",
+        "functionByteSha256": "914a5ebc34209c232caccc32d3242085e9ad8869dfa5b87b933d8bdb52e88555",
+        "instructionsByteVerified": 72,
+        "assemblySha256": "5cd9268a5a1ca0eaa3c8557154fab3ee8edd7e7c793384e91ca073b280e3f3ca",
+        "anchors": [
+          "1008c9ad4:\td3 5c ff 97\tbl\t__ZN19_sgime_core_pinyin_13n_deviceModel20device_model_manager19MakeGenModelDirNameEiii",
+          "1008c9af4:\t6f 4e 47 94\tbl\t0x101a9d4b0 ; symbol stub for: __ZNSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEE6appendEPKcm",
+          "1008c9b34:\t57 50 47 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "1008c9b44:\t53 50 47 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "1008c9b70:\t4b 4d 47 94\tbl\t0x101a9d09c ; symbol stub for: __Unwind_Resume",
+          "1008c9b78:\t46 50 47 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "1008c9b98:\t3e 50 47 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "1008c9ba0:\t3f 4d 47 94\tbl\t0x101a9d09c ; symbol stub for: __Unwind_Resume"
+        ]
+      },
+      {
+        "id": "CF-installed-models-lm-rel",
+        "symbol": "__ZN19_sgime_core_pinyin_13n_deviceModel20device_model_manager18MakeLanModelRelDirEii",
+        "entry": "0x1008d5c20",
+        "end": "0x1008d5d3c",
+        "functionByteSha256": "6212993d4f7ce1c685a5393b5a6d6dfcb1b0f205a3c26e7e146ec778378422f1",
+        "instructionsByteVerified": 71,
+        "assemblySha256": "6696e9c03562ee0dc95bb2a38f07ea3a4748e47140da6c35c31f4f91db63af01",
+        "anchors": [
+          "1008d5c6c:\t4f 2d ff 97\tbl\t__ZN19_sgime_core_pinyin_13n_deviceModel20device_model_manager19MakeLanModelDirNameEii",
+          "1008d5c8c:\t09 1e 47 94\tbl\t0x101a9d4b0 ; symbol stub for: __ZNSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEE6appendEPKcm",
+          "1008d5ccc:\tf1 1f 47 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "1008d5cdc:\ted 1f 47 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "1008d5d08:\te5 1c 47 94\tbl\t0x101a9d09c ; symbol stub for: __Unwind_Resume",
+          "1008d5d10:\te0 1f 47 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "1008d5d30:\td8 1f 47 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "1008d5d38:\td9 1c 47 94\tbl\t0x101a9d09c ; symbol stub for: __Unwind_Resume"
+        ]
+      },
+      {
+        "id": "CF-installed-models-gen-dir",
+        "symbol": "__ZN19_sgime_core_pinyin_9n_newDict13n_dictManager17GetGenModelAbsDirERNSt3__112basic_stringIcNS2_11char_traitsIcEENS2_9allocatorIcEEEE",
+        "entry": "0x1008cc044",
+        "end": "0x1008cc314",
+        "functionByteSha256": "dc0a015a59bfcc15c06d9011e8cc2d57414efafbc4cb4137cdf4ca706de9ceaf",
+        "instructionsByteVerified": 180,
+        "assemblySha256": "359f5e8f1dcce40577660f9c5e0cb63c3e12b55a9b0c74c9d8f91a975d978e33",
+        "anchors": [
+          "1008cc06c:\t08 a9 46 f9\tldr\tx8, [x8, #0xd50] ; literal pool symbol address: ___stack_chk_guard",
+          "1008cc078:\t4f 8f fe 97\tbl\t__ZN19_sgime_core_pinyin_12t_parameters11GetInstanceEv",
+          "1008cc07c:\t9f d0 fe 97\tbl\t__ZNK19_sgime_core_pinyin_12t_parameters18IsModelUseFullPathEv",
+          "1008cc090:\t97 26 00 94\tbl\t__ZN19_sgime_core_pinyin_9n_newDict13n_dictManager14GetUserDirUtf8ERNSt3__112basic_stringIcNS2_11char_traitsIcEENS2_9allocatorIcEEEE",
+          "1008cc09c:\t54 36 ff 97\tbl\t__ZN19_sgime_core_pinyin_13n_deviceModel20device_model_manager11GetInstanceEv",
+          "1008cc0a4:\tfc 4f ff 97\tbl\t__ZN19_sgime_core_pinyin_13n_deviceModel20device_model_manager18GetGenModelVersionEv",
+          "1008cc0b0:\t0d 50 ff 97\tbl\t__ZN19_sgime_core_pinyin_13n_deviceModel20device_model_manager16GetGenModelGradeEv",
+          "1008cc108:\t79 26 00 94\tbl\t__ZN19_sgime_core_pinyin_9n_newDict13n_dictManager14GetUserDirUtf8ERNSt3__112basic_stringIcNS2_11char_traitsIcEENS2_9allocatorIcEEEE",
+          "1008cc11c:\t1b 45 47 94\tbl\t0x101a9d588 ; symbol stub for: __ZNSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEaSERKS5_",
+          "1008cc12c:\td9 46 47 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "1008cc138:\t29 a9 46 f9\tldr\tx9, [x9, #0xd50] ; literal pool symbol address: ___stack_chk_guard",
+          "1008cc194:\tc8 46 47 94\tbl\t0x101a9dcb4 ; symbol stub for: __Znwm",
+          "1008cc1c0:\t65 4a 47 94\tbl\t0x101a9eb54 ; symbol stub for: _memmove",
+          "1008cc1e0:\t29 f6 ff 97\tbl\t__ZN19_sgime_core_pinyin_13n_deviceModel20device_model_manager18MakeGenModelRelDirEiii",
+          "1008cc200:\tac 44 47 94\tbl\t0x101a9d4b0 ; symbol stub for: __ZNSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEE6appendEPKcm",
+          "1008cc22c:\t99 46 47 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "1008cc260:\t8c 46 47 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "1008cc270:\t88 46 47 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "1008cc27c:\tdf 46 47 94\tbl\t0x101a9ddf8 ; symbol stub for: ___stack_chk_fail",
+          "1008cc284:\t90 53 f6 97\tbl\t__ZNKSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEE20__throw_length_errorB8ne180100Ev",
+          "1008cc2ac:\t7c 43 47 94\tbl\t0x101a9d09c ; symbol stub for: __Unwind_Resume",
+          "1008cc2b4:\t77 46 47 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "1008cc2d4:\t6f 46 47 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "1008cc308:\t62 46 47 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "1008cc310:\t63 43 47 94\tbl\t0x101a9d09c ; symbol stub for: __Unwind_Resume"
+        ]
+      },
+      {
+        "id": "CF-installed-models-lm-dir",
+        "symbol": "__ZN19_sgime_core_pinyin_9n_newDict13n_dictManager17GetLanModelAbsDirERNSt3__112basic_stringIcNS2_11char_traitsIcEENS2_9allocatorIcEEEE",
+        "entry": "0x1008cbbd4",
+        "end": "0x1008cbe80",
+        "functionByteSha256": "12f430ff362f84c214e97debe6b47df2161ee74a69cccd6238adf604983e6945",
+        "instructionsByteVerified": 171,
+        "assemblySha256": "51986223c2e8471815ed90b01419a6387fc7c4027756b91ed089428d8688715e",
+        "anchors": [
+          "1008cbbf8:\t08 a9 46 f9\tldr\tx8, [x8, #0xd50] ; literal pool symbol address: ___stack_chk_guard",
+          "1008cbc04:\t6c 90 fe 97\tbl\t__ZN19_sgime_core_pinyin_12t_parameters11GetInstanceEv",
+          "1008cbc08:\tbc d1 fe 97\tbl\t__ZNK19_sgime_core_pinyin_12t_parameters18IsModelUseFullPathEv",
+          "1008cbc1c:\tb4 27 00 94\tbl\t__ZN19_sgime_core_pinyin_9n_newDict13n_dictManager14GetUserDirUtf8ERNSt3__112basic_stringIcNS2_11char_traitsIcEENS2_9allocatorIcEEEE",
+          "1008cbc28:\t71 37 ff 97\tbl\t__ZN19_sgime_core_pinyin_13n_deviceModel20device_model_manager11GetInstanceEv",
+          "1008cbc2c:\t04 51 ff 97\tbl\t__ZN19_sgime_core_pinyin_13n_deviceModel20device_model_manager18GetLanModelVersionEv",
+          "1008cbc84:\t9a 27 00 94\tbl\t__ZN19_sgime_core_pinyin_9n_newDict13n_dictManager14GetUserDirUtf8ERNSt3__112basic_stringIcNS2_11char_traitsIcEENS2_9allocatorIcEEEE",
+          "1008cbc98:\t3c 46 47 94\tbl\t0x101a9d588 ; symbol stub for: __ZNSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEaSERKS5_",
+          "1008cbca8:\tfa 47 47 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "1008cbcb4:\t29 a9 46 f9\tldr\tx9, [x9, #0xd50] ; literal pool symbol address: ___stack_chk_guard",
+          "1008cbd0c:\tea 47 47 94\tbl\t0x101a9dcb4 ; symbol stub for: __Znwm",
+          "1008cbd38:\t87 4b 47 94\tbl\t0x101a9eb54 ; symbol stub for: _memmove",
+          "1008cbd54:\tb3 27 00 94\tbl\t__ZN19_sgime_core_pinyin_13n_deviceModel20device_model_manager18MakeLanModelRelDirEii",
+          "1008cbd74:\tcf 45 47 94\tbl\t0x101a9d4b0 ; symbol stub for: __ZNSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEE6appendEPKcm",
+          "1008cbda0:\tbc 47 47 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "1008cbdd4:\taf 47 47 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "1008cbde4:\tab 47 47 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "1008cbdf0:\t02 48 47 94\tbl\t0x101a9ddf8 ; symbol stub for: ___stack_chk_fail",
+          "1008cbdf8:\tb3 54 f6 97\tbl\t__ZNKSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEE20__throw_length_errorB8ne180100Ev",
+          "1008cbe20:\t9f 44 47 94\tbl\t0x101a9d09c ; symbol stub for: __Unwind_Resume",
+          "1008cbe28:\t9a 47 47 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "1008cbe48:\t92 47 47 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "1008cbe74:\t87 47 47 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "1008cbe7c:\t88 44 47 94\tbl\t0x101a9d09c ; symbol stub for: __Unwind_Resume"
+        ]
+      },
+      {
+        "id": "CF-installed-models-lm-loader",
+        "symbol": "__ZN19_sgime_core_pinyin_9n_newDict13t_dictManager22LoadLocalLanguageModelEv",
+        "entry": "0x1008c76d4",
+        "end": "0x1008c7c04",
+        "functionByteSha256": "1545b63123bf5e93694e57011721a2a91c0d9210190609f9f5875d6522419ec7",
+        "instructionsByteVerified": 330,
+        "assemblySha256": "42c78b7f3be5988f9652cfa9dd6459eb2ac8e9b49b7ec1d26a9dc95e89937dfb",
+        "anchors": [
+          "1008c7708:\t0f 60 08 94\tbl\t__ZNK19_sgime_core_pinyin_18LocalLanguageModel8IsAttachEv",
+          "1008c7730:\t61 59 47 94\tbl\t0x101a9dcb4 ; symbol stub for: __Znwm",
+          "1008c777c:\te5 da ff 97\tbl\t__ZN19_sgime_core_pinyin_13t_dictFactory10CreateDictE12e_dictTypeID",
+          "1008c7788:\tef 5f 08 94\tbl\t__ZNK19_sgime_core_pinyin_18LocalLanguageModel8IsAttachEv",
+          "1008c779c:\t0e 11 00 94\tbl\t__ZN19_sgime_core_pinyin_9n_newDict13n_dictManager17GetLanModelAbsDirERNSt3__112basic_stringIcNS2_11char_traitsIcEENS2_9allocatorIcEEEE",
+          "1008c77a4:\t38 76 3b 94\tbl\t__ZN26sgime_kernelbase_namespace9n_utility10GetUserDirEv",
+          "1008c77b4:\t24 a3 3b 94\tbl\t__ZN10sogou_base10UTF8ToWideERKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEE",
+          "1008c77c4:\t7d 57 47 94\tbl\t0x101a9d5b8 ; symbol stub for: __ZNSt3__112basic_stringIwNS_11char_traitsIwEENS_9allocatorIwEEE6appendEPKw",
+          "1008c77e8:\t29 89 21 91\tadd\tx9, x9, #0x862 ; literal pool for: \"lanmodel.xnet\"",
+          "1008c7810:\t0d a3 3b 94\tbl\t__ZN10sogou_base10UTF8ToWideERKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEE",
+          "1008c7830:\t65 57 47 94\tbl\t0x101a9d5c4 ; symbol stub for: __ZNSt3__112basic_stringIwNS_11char_traitsIwEENS_9allocatorIwEEE6appendEPKwm",
+          "1008c7874:\tee 0f 3b 94\tbl\t__ZN8t_saPathC1ERKNSt3__112basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEE",
+          "1008c787c:\tfb ec 3a 94\tbl\t__ZN10t_fileUtil10FileExistsERK8t_saPath",
+          "1008c78dc:\ted 58 47 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "1008c78ec:\te9 58 47 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "1008c78fc:\te5 58 47 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "1008c790c:\te1 58 47 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "1008c7918:\tde 58 47 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "1008c7928:\tda 58 47 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "1008c7938:\td6 58 47 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "1008c794c:\tda 58 47 94\tbl\t0x101a9dcb4 ; symbol stub for: __Znwm",
+          "1008c7998:\t5e da ff 97\tbl\t__ZN19_sgime_core_pinyin_13t_dictFactory10CreateDictE12e_dictTypeID",
+          "1008c79b4:\t59 a1 3b 94\tbl\t__ZN10sogou_base10WideToUTF8ERKNSt3__112basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEE",
+          "1008c79e8:\t1d 5d 08 94\tbl\t__ZN19_sgime_core_pinyin_18LocalLanguageModel11AttachModelEPKcS2_S2_b",
+          "1008c79fc:\ta5 58 47 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "1008c7a2c:\t99 58 47 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "1008c7a3c:\t95 58 47 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "1008c7a60:\tb6 58 47 94\tbl\t0x101a9dd38 ; symbol stub for: ___cxa_guard_acquire",
+          "1008c7a70:\t00 e3 ff 97\tbl\t__ZN19_sgime_core_pinyin_9n_newDict13t_dictManagerC2Ev",
+          "1008c7a8c:\t96 58 47 94\tbl\t0x101a9dce4 ; symbol stub for: ___cxa_atexit",
+          "1008c7a98:\tab 58 47 94\tbl\t0x101a9dd44 ; symbol stub for: ___cxa_guard_release",
+          "1008c7aa8:\ta4 58 47 94\tbl\t0x101a9dd38 ; symbol stub for: ___cxa_guard_acquire",
+          "1008c7ab8:\tee e2 ff 97\tbl\t__ZN19_sgime_core_pinyin_9n_newDict13t_dictManagerC2Ev",
+          "1008c7ad4:\t84 58 47 94\tbl\t0x101a9dce4 ; symbol stub for: ___cxa_atexit",
+          "1008c7ae0:\t99 58 47 94\tbl\t0x101a9dd44 ; symbol stub for: ___cxa_guard_release",
+          "1008c7af4:\t8e 58 47 94\tbl\t0x101a9dd2c ; symbol stub for: ___cxa_guard_abort",
+          "1008c7b08:\t89 58 47 94\tbl\t0x101a9dd2c ; symbol stub for: ___cxa_guard_abort",
+          "1008c7b10:\t63 55 47 94\tbl\t0x101a9d09c ; symbol stub for: __Unwind_Resume",
+          "1008c7b28:\t5a 58 47 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "1008c7b3c:\te3 00 fd 97\tbl\t__ZN8t_saPathD1Ev",
+          "1008c7b54:\t4f 58 47 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "1008c7b6c:\t49 58 47 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "1008c7b88:\t42 58 47 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "1008c7bb8:\t36 58 47 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "1008c7bd8:\t2e 58 47 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "1008c7bf8:\t26 58 47 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "1008c7c00:\t27 55 47 94\tbl\t0x101a9d09c ; symbol stub for: __Unwind_Resume"
+        ]
+      },
+      {
+        "id": "CF-installed-models-lm-attach",
+        "symbol": "__ZN19_sgime_core_pinyin_18LocalLanguageModel11AttachModelEPKcS2_S2_b",
+        "entry": "0x100adee5c",
+        "end": "0x100adeeb0",
+        "functionByteSha256": "29e54aa3776bd89c4c960658f27face1926a533fa5db1849382f737d39b42cec",
+        "instructionsByteVerified": 21,
+        "assemblySha256": "3d3dd3c6578b21f470c75e4d2eceecbea8e429826de0fcd347855a4dc18da7f2",
+        "anchors": [
+          "100adee8c:\t0b 00 00 94\tbl\t__ZN19_sgime_core_pinyin_18LocalLanguageModel15AttachModelXNetEPKcS2_",
+          "100adee98:\tce 01 00 94\tbl\t__ZN19_sgime_core_pinyin_18LocalLanguageModel13InitAsyncHeapEv"
+        ]
+      },
+      {
+        "id": "CF-installed-models-lm-xnet",
+        "symbol": "__ZN19_sgime_core_pinyin_18LocalLanguageModel15AttachModelXNetEPKcS2_",
+        "entry": "0x100adeeb8",
+        "end": "0x100adf5d0",
+        "functionByteSha256": "2fe13be4456ff50511959cc7839969439893a4af880257a89900b0f37f9d7085",
+        "instructionsByteVerified": 453,
+        "assemblySha256": "6ba051744dff632c0ffc25730af453628672ca61324c0991bb5a5a6e3c4a20b9",
+        "anchors": [
+          "100adeee8:\t08 a9 46 f9\tldr\tx8, [x8, #0xd50] ; literal pool symbol address: ___stack_chk_guard",
+          "100adeefc:\t6e fb 3e 94\tbl\t0x101a9dcb4 ; symbol stub for: __Znwm",
+          "100adef04:\tbe 01 0b 94\tbl\t__ZN16inference_engine32InferenceEngineXNetLMIncrementalC1Ev",
+          "100adef0c:\t6a fb 3e 94\tbl\t0x101a9dcb4 ; symbol stub for: __Znwm",
+          "100adef58:\t6d fa 3e 94\tbl\t0x101a9d90c ; symbol stub for: __ZNSt3__119__shared_weak_count14__release_weakEv",
+          "100adef9c:\t4e f9 3e 94\tbl\t0x101a9d4d4 ; symbol stub for: __ZNSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEE6assignEPKc",
+          "100adefa0:\t85 43 f6 97\tbl\t__ZN19_sgime_core_pinyin_12t_parameters11GetInstanceEv",
+          "100adefa4:\td2 82 f6 97\tbl\t__ZN19_sgime_core_pinyin_12t_parameters20IsLocalModelMmapLoadEv",
+          "100adefb4:\t80 43 f6 97\tbl\t__ZN19_sgime_core_pinyin_12t_parameters11GetInstanceEv",
+          "100adefb8:\td0 84 f6 97\tbl\t__ZNK19_sgime_core_pinyin_12t_parameters18IsModelUseFullPathEv",
+          "100adf000:\t25 7a f2 97\tbl\t__ZNSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEE25__init_copy_ctor_externalEPKcm",
+          "100adf010:\t32 01 3f 94\tbl\t0x101a9f4d8 ; symbol stub for: _strlen",
+          "100adf054:\t18 fb 3e 94\tbl\t0x101a9dcb4 ; symbol stub for: __Znwm",
+          "100adf074:\tb5 fe 3e 94\tbl\t0x101a9eb48 ; symbol stub for: _memcpy",
+          "100adf080:\t21 e4 33 91\tadd\tx1, x1, #0xcf9 ; literal pool for: \"/\"",
+          "100adf088:\t07 f9 3e 94\tbl\t0x101a9d4a4 ; symbol stub for: __ZNSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEE6appendEPKc",
+          "100adf0c4:\tfb f8 3e 94\tbl\t0x101a9d4b0 ; symbol stub for: __ZNSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEE6appendEPKcm",
+          "100adf0f8:\teb 74 09 94\tbl\t__ZN19_sgime_core_pinyin_19IsValidPathAndClearERKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEEb",
+          "100adf144:\td3 fa 3e 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "100adf154:\tcf fa 3e 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "100adf178:\tcf fa 3e 94\tbl\t0x101a9dcb4 ; symbol stub for: __Znwm",
+          "100adf1a4:\t6c fe 3e 94\tbl\t0x101a9eb54 ; symbol stub for: _memmove",
+          "100adf1b8:\t92 75 09 94\tbl\t__ZN19_sgime_core_pinyin_24GetMmapVersionSubDirNameEv",
+          "100adf1d8:\tb6 f8 3e 94\tbl\t0x101a9d4b0 ; symbol stub for: __ZNSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEE6appendEPKcm",
+          "100adf20c:\ta1 fa 3e 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "100adf234:\t97 fa 3e 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "100adf244:\t93 fa 3e 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "100adf250:\t95 74 09 94\tbl\t__ZN19_sgime_core_pinyin_19IsValidPathAndClearERKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEEb",
+          "100adf260:\tca f8 3e 94\tbl\t0x101a9d588 ; symbol stub for: __ZNSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEaSERKS5_",
+          "100adf26c:\tc7 f8 3e 94\tbl\t0x101a9d588 ; symbol stub for: __ZNSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEaSERKS5_",
+          "100adf27c:\tc3 f8 3e 94\tbl\t0x101a9d588 ; symbol stub for: __ZNSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEaSERKS5_",
+          "100adf28c:\t81 fa 3e 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "100adf29c:\t7d fa 3e 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "100adf2ac:\t21 8c 33 91\tadd\tx1, x1, #0xce3 ; literal pool for: \"input\"",
+          "100adf2b0:\t89 f8 3e 94\tbl\t0x101a9d4d4 ; symbol stub for: __ZNSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEE6assignEPKc",
+          "100adf2bc:\t21 2c 02 91\tadd\tx1, x1, #0x8b ; literal pool for: \"output\"",
+          "100adf2c0:\t85 f8 3e 94\tbl\t0x101a9d4d4 ; symbol stub for: __ZNSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEE6assignEPKc",
+          "100adf2e4:\t95 2f f4 97\tbl\t__ZNSt3__16vectorINS_12basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEENS4_IS6_EEE21__push_back_slow_pathIRKS6_EEPS6_OT_",
+          "100adf32c:\t83 2f f4 97\tbl\t__ZNSt3__16vectorINS_12basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEENS4_IS6_EEE21__push_back_slow_pathIRKS6_EEPS6_OT_",
+          "100adf35c:\t4e 79 f2 97\tbl\t__ZNSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEE25__init_copy_ctor_externalEPKcm",
+          "100adf3ac:\t3a 79 f2 97\tbl\t__ZNSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEE25__init_copy_ctor_externalEPKcm",
+          "100adf3f4:\t77 00 00 94\tbl\t__ZN19_sgime_core_pinyin_18LocalLanguageModel13InitAsyncHeapEv",
+          "100adf414:\t71 03 00 94\tbl\t__ZN16inference_engine13LMModelConfigD2Ev",
+          "100adf420:\t29 a9 46 f9\tldr\tx9, [x9, #0xd50] ; literal pool symbol address: ___stack_chk_guard",
+          "100adf458:\t0e fa 3e 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "100adf468:\t0a fa 3e 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "100adf470:\t62 fa 3e 94\tbl\t0x101a9ddf8 ; symbol stub for: ___stack_chk_fail",
+          "100adf478:\t13 07 ee 97\tbl\t__ZNKSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEE20__throw_length_errorB8ne180100Ev",
+          "100adf484:\t10 07 ee 97\tbl\t__ZNKSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEE20__throw_length_errorB8ne180100Ev",
+          "100adf4a0:\tfc f9 3e 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "100adf4bc:\tf5 f9 3e 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "100adf4f8:\te6 f9 3e 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "100adf530:\td8 f9 3e 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "100adf540:\td4 f9 3e 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "100adf548:\t24 03 00 94\tbl\t__ZN16inference_engine13LMModelConfigD2Ev",
+          "100adf550:\td3 f6 3e 94\tbl\t0x101a9d09c ; symbol stub for: __Unwind_Resume",
+          "100adf570:\tcb f6 3e 94\tbl\t0x101a9d09c ; symbol stub for: __Unwind_Resume",
+          "100adf57c:\tc5 f9 3e 94\tbl\t0x101a9dc90 ; symbol stub for: __ZdlPv",
+          "100adf584:\tc6 f6 3e 94\tbl\t0x101a9d09c ; symbol stub for: __Unwind_Resume",
+          "100adf594:\t11 03 00 94\tbl\t__ZN16inference_engine13LMModelConfigD2Ev",
+          "100adf59c:\tc0 f6 3e 94\tbl\t0x101a9d09c ; symbol stub for: __Unwind_Resume",
+          "100adf5ac:\t0b 03 00 94\tbl\t__ZN16inference_engine13LMModelConfigD2Ev",
+          "100adf5b4:\tba f6 3e 94\tbl\t0x101a9d09c ; symbol stub for: __Unwind_Resume",
+          "100adf5c4:\t05 03 00 94\tbl\t__ZN16inference_engine13LMModelConfigD2Ev",
+          "100adf5cc:\tb4 f6 3e 94\tbl\t0x101a9d09c ; symbol stub for: __Unwind_Resume"
+        ]
+      }
+    ],
+    "selectedCoreConfigKeys": {
+      "type": "ordinary-static-pointer-and-cstring-bytes",
+      "sourceSha256": "2ea312f6324accd6194e6c612608870321bc62c286aa2cdbccf8288ae19a2433",
+      "tableVa": "0x10210f348",
+      "coverage": "Bounded 0x00 through 0x8f; only valid ASCII k-prefixed entries retained.",
+      "records": [
+        {
+          "index": "0x33",
+          "tableEntryVa": "0x10210f4e0",
+          "stringVa": "0x101ccbe2f",
+          "key": "kGenerateModelLoadStatus",
+          "pointerBytes": "2fbecc0101000000",
+          "stringBytes": "6b47656e65726174654d6f64656c4c6f6164537461747573"
+        },
+        {
+          "index": "0x34",
+          "tableEntryVa": "0x10210f4e8",
+          "stringVa": "0x101ccbe48",
+          "key": "kGenerateModelUseStatus",
+          "pointerBytes": "48becc0101000000",
+          "stringBytes": "6b47656e65726174654d6f64656c557365537461747573"
+        },
+        {
+          "index": "0x4b",
+          "tableEntryVa": "0x10210f5a0",
+          "stringVa": "0x101ccc060",
+          "key": "kDeviceModelEnableState",
+          "pointerBytes": "60c0cc0101000000",
+          "stringBytes": "6b4465766963654d6f64656c456e61626c655374617465"
+        }
+      ]
+    },
+    "packagedOpaqueResources": {
+      "evidenceType": "ordinary-static-file-identification-and-bounded-header",
+      "limitation": "file classification and 32-byte header do not decode dictionary/model architecture; proprietary format remains unresolved Header arithmetic is only an observed byte-layout consistency check, without a recovered field schema.",
+      "files": [
+        {
+          "name": "ime_lm.bin",
+          "size": 532485,
+          "sha256": "618a18bca043b5556eacc17ab338d52c2b495032f5dbdba4c2cbe1f6e266a6aa",
+          "first32BytesHex": "fc153401140000000800000000040000f11b080000000000931a5a3a3a90f53b",
+          "fileDescription": "data",
+          "firstFiveLittleEndianUInt32": [
+            20190716,
+            20,
+            8,
+            1024,
+            531441
+          ],
+          "byteLengthMinusWords1And3": 531441,
+          "ratioToWord4": 1.0
+        },
+        {
+          "name": "ime_lm_physical.bin",
+          "size": 532485,
+          "sha256": "938f7dddf89498fce20039e2bd8604f2ecc30baa6bb22d5505bc7a25311bf0ae",
+          "first32BytesHex": "fc153401140000000800000000040000f11b080000000000acc5273782a8fb37",
+          "fileDescription": "data",
+          "firstFiveLittleEndianUInt32": [
+            20190716,
+            20,
+            8,
+            1024,
+            531441
+          ],
+          "byteLengthMinusWords1And3": 531441,
+          "ratioToWord4": 1.0
+        },
+        {
+          "name": "ime_em.bin",
+          "size": 79776,
+          "sha256": "08a9e8bf5d594c9e427559ff6b987e985b46d3319e923996917ef4682900447b",
+          "first32BytesHex": "8a173401140000000800000000040000e34c0000000000009dd9ae3ce8bb1b3d",
+          "fileDescription": "data",
+          "firstFiveLittleEndianUInt32": [
+            20191114,
+            20,
+            8,
+            1024,
+            19683
+          ],
+          "byteLengthMinusWords1And3": 78732,
+          "ratioToWord4": 4.0
+        },
+        {
+          "name": "ime_pyslm.bin",
+          "size": 172440,
+          "sha256": "3f0ed3c1111441ac9da4246a5751d39a0c81c27adbc64df091eae2715169c805",
+          "first32BytesHex": "8a173401140000000800000000040000849d020000000000d39f7d3b0c40a33b",
+          "fileDescription": "data",
+          "firstFiveLittleEndianUInt32": [
+            20191114,
+            20,
+            8,
+            1024,
+            171396
+          ],
+          "byteLengthMinusWords1And3": 171396,
+          "ratioToWord4": 1.0
+        },
+        {
+          "name": "ime_gd_bigram.bin",
+          "size": 10777984,
+          "sha256": "a5feba121e346977b8b5cc0ad4f3979ae745aa97eaaf1a2c43b258ed4a4d71e8",
+          "first32BytesHex": "5347534228000000c1a03301000000008075a400010000002c00020000000000",
+          "fileDescription": "data"
+        }
+      ]
+    }
+  },
+  "modelSearch": {
+    "evidenceType": "ordinary-filesystem-metadata-and-sha256",
+    "searchBoundaries": "Installed bundle; direct Chatterfly-named entries in user/system Application Support and Caches. Symlink directories not followed. No user contents read.",
+    "exactNames": [
+      "xnet_enc_model.xnet",
+      "xnet_dec_model.xnet",
+      "sentencepiece.model",
+      "sentencepiece_dec.model",
+      "ime_xgb_name_model.bin",
+      "lanmodel.xnet",
+      "model.lm.xnet",
+      "resort_model.xnet",
+      "lanmodel_dict.txt",
+      "ime_xnet_lm_wm.bin",
+      "model.legacy.xnet",
+      "model.legacy_v1.xnet",
+      "xnet_global_mmap.bin",
+      "xnet.mmap",
+      "lanmodel.tnnproto",
+      "lanmodel.tnnmodel",
+      "model.lm.tnnproto",
+      "model.lm.tnnmodel",
+      "model.opt.tnnproto",
+      "model.opt.tnnmodel"
+    ],
+    "roots": [
+      {
+        "root": "/Library/Input Methods/Chatterfly.app",
+        "filesEnumeratedMetadataOnly": 431,
+        "exactNamedModelMatches": [],
+        "modelExtensionCandidates": []
+      },
+      {
+        "root": "/Users/steven/Library/Application Support/com.tencent.inputmethod.chatterfly",
+        "filesEnumeratedMetadataOnly": 27,
+        "exactNamedModelMatches": [],
+        "modelExtensionCandidates": []
+      },
+      {
+        "root": "/Users/steven/Library/Application Support/com.tencent.ChatterflyTaskManager",
+        "filesEnumeratedMetadataOnly": 4,
+        "exactNamedModelMatches": [],
+        "modelExtensionCandidates": []
+      },
+      {
+        "root": "/Users/steven/Library/Application Support/Chatterfly",
+        "filesEnumeratedMetadataOnly": 99,
+        "exactNamedModelMatches": [],
+        "modelExtensionCandidates": []
+      },
+      {
+        "root": "/Users/steven/Library/Application Support/com.tencent.ChatterflyPreference",
+        "filesEnumeratedMetadataOnly": 12,
+        "exactNamedModelMatches": [],
+        "modelExtensionCandidates": []
+      },
+      {
+        "root": "/Users/steven/Library/Application Support/com.tencent.ChatterflyInstaller",
+        "filesEnumeratedMetadataOnly": 4,
+        "exactNamedModelMatches": [],
+        "modelExtensionCandidates": []
+      },
+      {
+        "root": "/Users/steven/Library/Caches/com.tencent.inputmethod.chatterfly",
+        "filesEnumeratedMetadataOnly": 3,
+        "exactNamedModelMatches": [],
+        "modelExtensionCandidates": []
+      },
+      {
+        "root": "/Users/steven/Library/Caches/com.tencent.ChatterflyTaskManager",
+        "filesEnumeratedMetadataOnly": 4,
+        "exactNamedModelMatches": [],
+        "modelExtensionCandidates": []
+      },
+      {
+        "root": "/Users/steven/Library/Caches/com.tencent.ChatterflyPreference",
+        "filesEnumeratedMetadataOnly": 10,
+        "exactNamedModelMatches": [],
+        "modelExtensionCandidates": []
+      },
+      {
+        "root": "/Users/steven/Library/Caches/ChatterflyServices",
+        "filesEnumeratedMetadataOnly": 3,
+        "exactNamedModelMatches": [],
+        "modelExtensionCandidates": []
+      },
+      {
+        "root": "/Users/steven/Library/Caches/com.tencent.ChatterflyInstaller",
+        "filesEnumeratedMetadataOnly": 68,
+        "exactNamedModelMatches": [],
+        "modelExtensionCandidates": []
+      }
+    ]
+  },
+  "activePreferenceProbe": {
+    "id": "CF-installed-pref-cloud",
+    "kind": "ordinary-allowlisted-plist-values",
+    "source": "~/Library/Application Support/Chatterfly/InputMethod/ChatterflyPY/UserPreferences.plist",
+    "observedKey": "keyEnableCloudRequest",
+    "observedValue": "1",
+    "sourceSha256": "0cc10fa4231e8db30982a982b80227077bbe23b85eefd6dfe69225a00d471a32",
+    "limitations": [
+      "Preference presence establishes stored configuration, not effective kernel settings, successful requests or candidate provenance.",
+      "Only four explicitly allowlisted technical model/cloud keys were output; no personal fields or history were retained."
+    ]
+  },
+  "inputSourceProbe": {
+    "id": "CF-installed-input-source",
+    "kind": "ordinary-runtime-Carbon-TIS-read-only-query",
+    "records": [
+      {
+        "enabled": true,
+        "id": "com.tencent.inputmethod.chatterfly.pinyin",
+        "name": "Chatterfly",
+        "selectable": true,
+        "selected": true
+      },
+      {
+        "enabled": true,
+        "id": "com.tencent.inputmethod.chatterfly",
+        "name": "Chatterfly",
+        "selectable": false,
+        "selected": false
+      }
+    ],
+    "scriptSha256": "6ea49675e3e5d18ced2542dc1fb059605523c00f4cc2b6d68ce24300ae586aec"
+  },
+  "uiProbes": [
+    {
+      "id": "CF-installed-ui-composition",
+      "kind": "ordinary-cua-returned-ax-observation",
+      "host": "com.apple.TextEdit",
+      "keys": [
+        "n",
+        "i",
+        "h",
+        "a",
+        "o"
+      ],
+      "observedText": "ni'hao",
+      "interpretation": "Synthetic Pinyin composition appeared in the test field; a separate Chatterfly-owned candidate window was onscreen. Candidate text/pixels were not captured by REA."
+    },
+    {
+      "id": "CF-installed-ui-commit",
+      "kind": "ordinary-cua-returned-ax-observation",
+      "host": "com.apple.TextEdit",
+      "precondition": "Only synthetic test field cleared",
+      "keys": [
+        "n",
+        "i",
+        "h",
+        "a",
+        "o",
+        "space"
+      ],
+      "observedText": "你好",
+      "interpretation": "Continuous keyboard sequence committed Chinese text into the actual host. Does not attribute the selected candidate to a specific local/cloud model."
+    },
+    {
+      "id": "CF-installed-ui-cancel",
+      "kind": "ordinary-cua-returned-ax-observation",
+      "host": "com.apple.TextEdit",
+      "precondition": "Only synthetic test field cleared",
+      "keys": [
+        "n",
+        "i",
+        "h",
+        "a",
+        "o",
+        "Escape"
+      ],
+      "observedText": "",
+      "interpretation": "Cancellation left the host field empty."
+    },
+    {
+      "id": "CF-installed-ui-edit",
+      "kind": "ordinary-cua-returned-ax-observation",
+      "host": "com.apple.TextEdit",
+      "precondition": "Empty test field",
+      "keys": [
+        "n",
+        "i",
+        "h",
+        "a",
+        "o",
+        "BackSpace",
+        "o",
+        "space"
+      ],
+      "observedText": "你好",
+      "interpretation": "Editing the Pinyin buffer and selecting its candidate committed Chinese text."
+    }
+  ],
+  "uiProbeBoundary": "These records transcribe actual CUA-returned AX field values in this chat. They are local observations, not canonical REA UI Evidence or an exported screenshot. The user first switched the test document into Chinese mode. Earlier interrupted/source-mode attempts yielded Latin text and are not counted as Chinese commit successes.",
+  "candidateWindowMetadata": {
+    "id": "CF-installed-candidate-window",
+    "kind": "ordinary-CoreGraphics-window-metadata",
+    "records": [
+      {
+        "kCGWindowBounds": {
+          "Height": 60,
+          "Width": 558,
+          "X": 283,
+          "Y": 217
+        },
+        "kCGWindowIsOnscreen": true,
+        "kCGWindowLayer": 2147483629,
+        "kCGWindowName": "",
+        "kCGWindowNumber": 185524,
+        "kCGWindowOwnerPID": 21396
+      }
+    ],
+    "scriptSha256": "6e67b79e0095a9cfd775e333e62fa2876576329ef9e56a989ee679da387f05bb"
+  },
+  "reaNativeUiAttempt": {
+    "kind": "failed-operation-no-evidence-id",
+    "targetPid": 21396,
+    "targetWindowId": 185524,
+    "result": {
+      "error": "Analysis failed",
+      "code": "capability_unavailable",
+      "category": "unsupported_provider",
+      "message": "This analysis is unavailable for the current target. Choose another analysis or target.",
+      "retryable": false,
+      "remediation": {
+        "action": "This analysis is unavailable for the current target. Choose another analysis or target."
+      },
+      "details": {
+        "provider_id": "native-macos",
+        "operation": "observe_native_ui",
+        "reason": "process-identity-unavailable: Selected application does not expose a launch time; stable PID reuse checks are unavailable"
+      }
+    }
+  },
+  "runtimeModelHandleObservation": {
+    "id": "CF-installed-model-handles",
+    "kind": "ordinary-lsof-open-path-snapshot",
+    "pid": 21396,
+    "knownXNetOrSentencePieceModelPathsObserved": [],
+    "observedBundledModelNamedPath": "/Library/Input Methods/Chatterfly.app/Contents/Resources/ImeKernel.bundle/dict/ime_gd_umodel.bin",
+    "limitation": "Open handles alone cannot establish model absence in memory; parsed files may be closed and allocations anonymous."
+  },
+  "probeArtifacts": [
+    {
+      "path": ".workspace/research/chatterfly-installed/chatterfly-keyboard-original.rtf",
+      "sha256": "1461eda3f57703d17ab02e9e92b58125a506b9f80cce0a8316c2d308f37f32e7",
+      "contentBoundary": "Synthetic Chinese greeting only"
+    },
+    {
+      "path": ".workspace/research/chatterfly-installed/chatterfly-keyboard-test.rtf",
+      "sha256": "4fa3269a38a44a988f117e37af144d6c2f83e0496ae2da1686102d307c9131e5",
+      "contentBoundary": "Synthetic Chinese greeting only"
+    }
+  ],
+  "limitations": [
+    "No native model-function trace, model inference benchmark, network-isolated offline test, TLS interception or competitor server model/prompt evidence.",
+    "REA native UI capture failed stable process-identity precondition; this did not produce an Evidence ID. The failed request was not repeated.",
+    "Native call tracing was not attempted: target is hardened and lacks get-task-allow, which the REA native-call workflow requires. No re-signing, injection or security-setting changes were made.",
+    "Static defaults and numeric mode predicates are not the process's observed active flags.",
+    "Model search is bounded to the enumerated directories and known names/extensions; renamed/embedded/memory-only assets remain possible.",
+    "No private typing history, user dictionary content, credentials, MMKV databases or private logs were inspected."
+  ]
+}

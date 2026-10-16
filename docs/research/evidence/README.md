@@ -6,6 +6,7 @@
 - [Doubao decompiled ledger](doubao-decompiled.json) — REA 6.4.0 + Ghidra 12.1.4 Evidence IDs for five decompiled main-executable functions (insertion gates, clipboard handoff, commit strategy, fn long-press), the reference-recovery method and unresolved questions. Decompiled code itself is not committed.
 - [Chatterfly ledger](chatterfly-rewrite.json) — installer/archive identities and focused native post-processing evidence with explicit limitations.
 - [Keyboard IME ledger](keyboard-ime.json) — matched REA identities and registration, byte-verified Doubao/Chatterfly Pinyin decoding/ranking, model/cloud branches and candidate/commit paths; local static IDs are distinct from REA Evidence IDs.
+- [Installed Chatterfly keyboard ledger](chatterfly-installed-keyboard.json) — installed identity/signature, model/load gates, bounded asset search, allowlisted cloud preference and ordinary runtime UI observations; failed REA UI capture is preserved as a limitation.
 - [Doubao disfluency ledger](doubao-disfluency.json) — byte-verified decoder annotation cleanup and bounded organization builder/result observations; a timed-out REA query produced no pseudocode.
 - [Chatterfly disfluency ledger](chatterfly-disfluency.json) — byte-verified short-input, result-selection and language-policy follow-up with reused REA artifact identity.
 - [Onboarding ledger](competitor-onboarding.json) — Typeless flow/gate source ranges, Doubao native page/persistence surfaces and byte-verified Chatterfly installer transitions; includes Arion source/test gaps.
@@ -17,4 +18,4 @@
 
 The Typeless complete REA record and REA summary view, and the Doubao REA records with their scan scripts (`.workspace/research/doubao-rea/`), are retained in ignored `.workspace/research/` on this machine. The compact ledger is not a portable replacement for the complete REA record and cannot be used as an inline Evidence input. Reproduce against the documented artifact digest and retain a fresh full record when continued graph analysis is needed.
 
-Neither report inspected private application databases, recorded user speech, or intercepted live service requests. Sanitized ledgers contain names and bounded static facts, not commercial code or model weights.
+These investigations did not inspect private application databases, record user speech, or intercept live service requests. The installed Chatterfly follow-up additionally retains allowlisted technical preferences and synthetic keyboard observations, with their evidence limits recorded separately. Sanitized ledgers contain names and bounded observations, not commercial implementation code or model weights.

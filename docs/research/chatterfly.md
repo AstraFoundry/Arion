@@ -1,5 +1,7 @@
 # Chatterfly scenario-aware speech rewriting
 
+For conventional keyboard typing, see the [keyboard investigation](keyboard-ime.md#chatterfly) and [installed-artifact follow-up](chatterfly-installed-keyboard.md), including model-loading gates and synthetic TextEdit runtime observations. This document's speech findings retain their original static evidence boundary.
+
 ## Selected artifact and evidence boundary
 
 The supplied `Chatterfly_V1.0.6.13398.app` is an installer (`com.tencent.ChatterflyInstaller`), not the input-method executable. REA inventory and safe extraction selected its `Contents/Resources/ChatterFly.zip`, whose payload contains the actual `Chatterfly.app`, preference and task-manager apps, services/installation files and packaged resources. The main input-method plist names `com.tencent.inputmethod.chatterfly`, version `1.0.6.13398`, `YuanbaoInputController` and an InputMethodKit connection. The universal main executable contains x86_64 and arm64 slices. The arm64 analysis copy was verified byte-for-byte against the original slice.

@@ -4,6 +4,8 @@
 
 This investigation follows physical-keyboard typing on the retained macOS packages: installed Doubao IME **1.0.2 (1)** and installer-extracted Chatterfly **1.0.6.13398 (13398)**. It covers input-method registration, keyboard events, Pinyin conversion, candidate ranking, composition, candidate UI and commit. It does not characterize newer builds, Windows or mobile implementations.
 
+The [installed Chatterfly follow-up](chatterfly-installed-keyboard.md) adds matching installed-artifact identity, concrete XNet loader and enablement rules, a bounded provisioning search, the stored cloud preference and actual TextEdit keyboard probes. The static-only evidence boundary below describes the original pass.
+
 The [evidence ledger](evidence/keyboard-ime.json) separates actual REA Evidence IDs from ordinary package, metadata and byte-verified arm64 instruction observations. Matching existing REA Mach-O identities were reused; new REA `inspect_plist` records confirm input-host registration. Focused instruction analysis uses Apple LLVM and native symbols; it is not newly recovered REA pseudocode. The apps were not launched and no user dictionaries, account data or live traffic were read. Full local records remain in ignored `.workspace/research/keyboard-ime/`.
 
 Both products contain native keyboard-conversion engines with conditional model/cloud enhancement. Their keyboard engines and the speech-recognition/post-processing paths described in [Doubao](doubao.md) and [Chatterfly](chatterfly.md) are distinct implementation surfaces. The exact enabled branches, server models and perceived typing latency require runtime evidence.
