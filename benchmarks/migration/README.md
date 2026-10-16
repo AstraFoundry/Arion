@@ -1,6 +1,6 @@
 # Benchmark research archive
 
-Reusable benchmark inputs and evidence have been copied from the local scratch workspace into `benchmarks/`. Original local files remain available. No historical corpus, observation, prompt, run status or published JSON result was rewritten. Git attributes disable line-ending normalization for benchmark assets and preserve original whitespace in frozen evidence, including historical logs. The files are ready for Git inclusion; this task has not staged, committed or pushed them.
+Reusable benchmark inputs and evidence have been copied from the local scratch workspace into `benchmarks/`. Original local files remain available. No historical corpus, observation, prompt, run status or published JSON result was rewritten. Git attributes disable line-ending normalization for benchmark assets and preserve original whitespace in frozen evidence, including historical logs. The archive is retained in Git; temporary execution data remains in the local workspace.
 
 ## Retained evidence
 
