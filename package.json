@@ -45,7 +45,12 @@
     "live:audio": "node scripts/live-bench-command.mjs audio",
     "live:report": "node scripts/live-bench-command.mjs report",
     "scene:bench": "node scripts/live-bench-command.mjs scene",
-    "memory:bench": "node scripts/memory-bench-command.mjs"
+    "memory:bench": "node scripts/memory-bench-command.mjs",
+    "phonetic:extract": "node scripts/phonetic-bench-command.mjs extract",
+    "phonetic:bench": "node scripts/phonetic-bench-command.mjs run",
+    "phonetic:report": "node scripts/phonetic-bench-command.mjs report",
+    "bench:archive:verify": "node tools/evaluation/archive/cli.mjs verify",
+    "bench:archive:report": "node tools/evaluation/archive/cli.mjs report"
   },
   "engines": {
     "node": ">=20.0.0"

@@ -1,0 +1,617 @@
+{
+  "version": 1,
+  "annotation": "developer_authored_unreviewed",
+  "split": "test",
+  "samples": [
+    {
+      "id": "zh-hesitation",
+      "language": "zh",
+      "sourceText": "呃，那个，麻烦把日志发到群里。",
+      "references": [
+        "麻烦把日志发到群里。"
+      ],
+      "requiredStrings": [
+        "日志",
+        "群里"
+      ],
+      "forbiddenStrings": [
+        "呃",
+        "那个"
+      ],
+      "protected": [],
+      "scenario": "chat",
+      "mode": "clean",
+      "approvedMemory": [],
+      "tags": [
+        "hesitation"
+      ]
+    },
+    {
+      "id": "zh-repair",
+      "language": "zh",
+      "sourceText": "周四交付，啊不对，周六交付。",
+      "references": [
+        "周六交付。"
+      ],
+      "requiredStrings": [
+        "周六",
+        "交付"
+      ],
+      "forbiddenStrings": [
+        "周四",
+        "不对"
+      ],
+      "protected": [],
+      "scenario": "chat",
+      "mode": "clean",
+      "approvedMemory": [],
+      "tags": [
+        "repair"
+      ]
+    },
+    {
+      "id": "zh-repair-name",
+      "language": "zh",
+      "sourceText": "发给老陈，不对，发给小赵。",
+      "references": [
+        "发给小赵。"
+      ],
+      "requiredStrings": [
+        "小赵"
+      ],
+      "forbiddenStrings": [
+        "老陈",
+        "不对"
+      ],
+      "protected": [],
+      "scenario": "chat",
+      "mode": "clean",
+      "approvedMemory": [],
+      "tags": [
+        "repair-name"
+      ]
+    },
+    {
+      "id": "zh-repeat",
+      "language": "zh",
+      "sourceText": "我我觉得这个这个方案可能不行。",
+      "references": [
+        "我觉得这个方案可能不行。"
+      ],
+      "requiredStrings": [
+        "可能",
+        "不行"
+      ],
+      "forbiddenStrings": [
+        "我我",
+        "这个这个"
+      ],
+      "protected": [],
+      "scenario": "chat",
+      "mode": "clean",
+      "approvedMemory": [],
+      "tags": [
+        "repeat"
+      ]
+    },
+    {
+      "id": "zh-reference",
+      "language": "zh",
+      "sourceText": "我要那个，别给我这个。",
+      "references": [
+        "我要那个，别给我这个。"
+      ],
+      "requiredStrings": [
+        "那个",
+        "别",
+        "这个"
+      ],
+      "forbiddenStrings": [],
+      "protected": [],
+      "scenario": "chat",
+      "mode": "clean",
+      "approvedMemory": [],
+      "tags": [
+        "reference"
+      ]
+    },
+    {
+      "id": "zh-quoted",
+      "language": "zh",
+      "sourceText": "请保留“啊不对”和“呃”，这是用户的原话。",
+      "references": [
+        "请保留“啊不对”和“呃”，这是用户的原话。"
+      ],
+      "requiredStrings": [
+        "“啊不对”",
+        "“呃”",
+        "原话"
+      ],
+      "forbiddenStrings": [],
+      "protected": [],
+      "scenario": "chat",
+      "mode": "clean",
+      "approvedMemory": [],
+      "tags": [
+        "quoted"
+      ]
+    },
+    {
+      "id": "zh-uncertainty",
+      "language": "zh",
+      "sourceText": "价格大概是九百元，不能确定。",
+      "references": [
+        "价格大概是九百元，不能确定。"
+      ],
+      "requiredStrings": [
+        "大概",
+        "九百元",
+        "不能确定"
+      ],
+      "forbiddenStrings": [],
+      "protected": [],
+      "scenario": "chat",
+      "mode": "clean",
+      "approvedMemory": [],
+      "tags": [
+        "uncertainty"
+      ]
+    },
+    {
+      "id": "zh-filler-question",
+      "language": "zh",
+      "sourceText": "那个，我想确认一下，备份是否已经完成？",
+      "references": [
+        "我想确认一下，备份是否已经完成？"
+      ],
+      "requiredStrings": [
+        "备份",
+        "是否",
+        "完成",
+        "？"
+      ],
+      "forbiddenStrings": [
+        "那个"
+      ],
+      "protected": [],
+      "scenario": "chat",
+      "mode": "clean",
+      "approvedMemory": [],
+      "tags": [
+        "filler-question"
+      ]
+    },
+    {
+      "id": "en-hesitation",
+      "language": "en",
+      "sourceText": "Erm, uh, please keep the staging backup.",
+      "references": [
+        "Please keep the staging backup."
+      ],
+      "requiredStrings": [
+        "staging",
+        "backup"
+      ],
+      "forbiddenStrings": [
+        "Erm",
+        "uh,"
+      ],
+      "protected": [],
+      "scenario": "chat",
+      "mode": "clean",
+      "approvedMemory": [],
+      "tags": [
+        "hesitation"
+      ]
+    },
+    {
+      "id": "en-repair",
+      "language": "en",
+      "sourceText": "Meet on Tuesday, no wait, meet on Thursday.",
+      "references": [
+        "Meet on Thursday."
+      ],
+      "requiredStrings": [
+        "Thursday"
+      ],
+      "forbiddenStrings": [
+        "Tuesday",
+        "no wait"
+      ],
+      "protected": [],
+      "scenario": "chat",
+      "mode": "clean",
+      "approvedMemory": [],
+      "tags": [
+        "repair"
+      ]
+    },
+    {
+      "id": "en-repair-value",
+      "language": "en",
+      "sourceText": "Choose the green icon, I mean the purple icon.",
+      "references": [
+        "Choose the purple icon."
+      ],
+      "requiredStrings": [
+        "purple icon"
+      ],
+      "forbiddenStrings": [
+        "green",
+        "I mean"
+      ],
+      "protected": [],
+      "scenario": "chat",
+      "mode": "clean",
+      "approvedMemory": [],
+      "tags": [
+        "repair-value"
+      ]
+    },
+    {
+      "id": "en-filler",
+      "language": "en",
+      "sourceText": "We, like, need the patch before Monday.",
+      "references": [
+        "We need the patch before Monday."
+      ],
+      "requiredStrings": [
+        "patch",
+        "before Monday"
+      ],
+      "forbiddenStrings": [
+        "like"
+      ],
+      "protected": [],
+      "scenario": "chat",
+      "mode": "clean",
+      "approvedMemory": [],
+      "tags": [
+        "filler"
+      ]
+    },
+    {
+      "id": "en-reference",
+      "language": "en",
+      "sourceText": "I like that one, do not change it.",
+      "references": [
+        "I like that one, do not change it."
+      ],
+      "requiredStrings": [
+        "like",
+        "that one",
+        "not"
+      ],
+      "forbiddenStrings": [],
+      "protected": [],
+      "scenario": "chat",
+      "mode": "clean",
+      "approvedMemory": [],
+      "tags": [
+        "reference"
+      ]
+    },
+    {
+      "id": "en-quoted",
+      "language": "en",
+      "sourceText": "Leave \"uh\" in the sample, it might matter.",
+      "references": [
+        "Leave \"uh\" in the sample, it might matter."
+      ],
+      "requiredStrings": [
+        "\"uh\"",
+        "might"
+      ],
+      "forbiddenStrings": [],
+      "protected": [],
+      "scenario": "chat",
+      "mode": "clean",
+      "approvedMemory": [],
+      "tags": [
+        "quoted"
+      ]
+    },
+    {
+      "id": "en-repeat",
+      "language": "en",
+      "sourceText": "I I might need the the earlier train.",
+      "references": [
+        "I might need the earlier train."
+      ],
+      "requiredStrings": [
+        "might",
+        "earlier train"
+      ],
+      "forbiddenStrings": [
+        "I I",
+        "the the"
+      ],
+      "protected": [],
+      "scenario": "chat",
+      "mode": "clean",
+      "approvedMemory": [],
+      "tags": [
+        "repeat"
+      ]
+    },
+    {
+      "id": "en-negation",
+      "language": "en",
+      "sourceText": "I do not know whether we can ship it.",
+      "references": [
+        "I do not know whether we can ship it."
+      ],
+      "requiredStrings": [
+        "not know",
+        "whether"
+      ],
+      "forbiddenStrings": [],
+      "protected": [],
+      "scenario": "chat",
+      "mode": "clean",
+      "approvedMemory": [],
+      "tags": [
+        "negation"
+      ]
+    },
+    {
+      "id": "es-hesitation",
+      "language": "es",
+      "sourceText": "Eh, necesito revisar el contrato hoy.",
+      "references": [
+        "Necesito revisar el contrato hoy."
+      ],
+      "requiredStrings": [
+        "contrato",
+        "hoy"
+      ],
+      "forbiddenStrings": [
+        "Eh,"
+      ],
+      "protected": [],
+      "scenario": "chat",
+      "mode": "clean",
+      "approvedMemory": [],
+      "tags": [
+        "hesitation"
+      ]
+    },
+    {
+      "id": "es-repair",
+      "language": "es",
+      "sourceText": "La entrega es el viernes, perdón, el domingo.",
+      "references": [
+        "La entrega es el domingo."
+      ],
+      "requiredStrings": [
+        "entrega",
+        "domingo"
+      ],
+      "forbiddenStrings": [
+        "viernes",
+        "perdón"
+      ],
+      "protected": [],
+      "scenario": "chat",
+      "mode": "clean",
+      "approvedMemory": [],
+      "tags": [
+        "repair"
+      ]
+    },
+    {
+      "id": "es-preserve",
+      "language": "es",
+      "sourceText": "No cambies ese nombre, quizá sea correcto.",
+      "references": [
+        "No cambies ese nombre, quizá sea correcto."
+      ],
+      "requiredStrings": [
+        "No",
+        "ese nombre",
+        "quizá"
+      ],
+      "forbiddenStrings": [],
+      "protected": [],
+      "scenario": "chat",
+      "mode": "clean",
+      "approvedMemory": [],
+      "tags": [
+        "preserve"
+      ]
+    },
+    {
+      "id": "es-quoted",
+      "language": "es",
+      "sourceText": "Conserva \"eh\" en el ejemplo.",
+      "references": [
+        "Conserva \"eh\" en el ejemplo."
+      ],
+      "requiredStrings": [
+        "\"eh\"",
+        "ejemplo"
+      ],
+      "forbiddenStrings": [],
+      "protected": [],
+      "scenario": "chat",
+      "mode": "clean",
+      "approvedMemory": [],
+      "tags": [
+        "quoted"
+      ]
+    },
+    {
+      "id": "fr-hesitation",
+      "language": "fr",
+      "sourceText": "Euh, il faut envoyer le devis ce soir.",
+      "references": [
+        "Il faut envoyer le devis ce soir."
+      ],
+      "requiredStrings": [
+        "devis",
+        "ce soir"
+      ],
+      "forbiddenStrings": [
+        "Euh,"
+      ],
+      "protected": [],
+      "scenario": "chat",
+      "mode": "clean",
+      "approvedMemory": [],
+      "tags": [
+        "hesitation"
+      ]
+    },
+    {
+      "id": "fr-repair",
+      "language": "fr",
+      "sourceText": "Le départ est lundi, non pardon, mercredi.",
+      "references": [
+        "Le départ est mercredi."
+      ],
+      "requiredStrings": [
+        "départ",
+        "mercredi"
+      ],
+      "forbiddenStrings": [
+        "lundi",
+        "pardon"
+      ],
+      "protected": [],
+      "scenario": "chat",
+      "mode": "clean",
+      "approvedMemory": [],
+      "tags": [
+        "repair"
+      ]
+    },
+    {
+      "id": "fr-preserve",
+      "language": "fr",
+      "sourceText": "Ne change pas ce nom, il est peut-être correct.",
+      "references": [
+        "Ne change pas ce nom, il est peut-être correct."
+      ],
+      "requiredStrings": [
+        "Ne",
+        "pas",
+        "ce nom",
+        "peut-être"
+      ],
+      "forbiddenStrings": [],
+      "protected": [],
+      "scenario": "chat",
+      "mode": "clean",
+      "approvedMemory": [],
+      "tags": [
+        "preserve"
+      ]
+    },
+    {
+      "id": "fr-quoted",
+      "language": "fr",
+      "sourceText": "Gardez \"euh\" dans cet exemple.",
+      "references": [
+        "Gardez \"euh\" dans cet exemple."
+      ],
+      "requiredStrings": [
+        "\"euh\"",
+        "exemple"
+      ],
+      "forbiddenStrings": [],
+      "protected": [],
+      "scenario": "chat",
+      "mode": "clean",
+      "approvedMemory": [],
+      "tags": [
+        "quoted"
+      ]
+    },
+    {
+      "id": "ja-hesitation",
+      "language": "ja",
+      "sourceText": "えーと、あの、明後日の予定を教えてください。",
+      "references": [
+        "明後日の予定を教えてください。"
+      ],
+      "requiredStrings": [
+        "明後日",
+        "予定"
+      ],
+      "forbiddenStrings": [
+        "えーと",
+        "あの"
+      ],
+      "protected": [],
+      "scenario": "chat",
+      "mode": "clean",
+      "approvedMemory": [],
+      "tags": [
+        "hesitation"
+      ]
+    },
+    {
+      "id": "ja-repair",
+      "language": "ja",
+      "sourceText": "開始は六時、いや、八時です。",
+      "references": [
+        "開始は八時です。"
+      ],
+      "requiredStrings": [
+        "開始",
+        "八時"
+      ],
+      "forbiddenStrings": [
+        "六時",
+        "いや"
+      ],
+      "protected": [],
+      "scenario": "chat",
+      "mode": "clean",
+      "approvedMemory": [],
+      "tags": [
+        "repair"
+      ]
+    },
+    {
+      "id": "ja-reference",
+      "language": "ja",
+      "sourceText": "あの設定は変更しないでください。",
+      "references": [
+        "あの設定は変更しないでください。"
+      ],
+      "requiredStrings": [
+        "あの設定",
+        "しない"
+      ],
+      "forbiddenStrings": [],
+      "protected": [],
+      "scenario": "chat",
+      "mode": "clean",
+      "approvedMemory": [],
+      "tags": [
+        "reference"
+      ]
+    },
+    {
+      "id": "ja-quoted",
+      "language": "ja",
+      "sourceText": "例文の「えーと」は残してください。",
+      "references": [
+        "例文の「えーと」は残してください。"
+      ],
+      "requiredStrings": [
+        "「えーと」",
+        "残し"
+      ],
+      "forbiddenStrings": [],
+      "protected": [],
+      "scenario": "chat",
+      "mode": "clean",
+      "approvedMemory": [],
+      "tags": [
+        "quoted"
+      ]
+    }
+  ]
+}

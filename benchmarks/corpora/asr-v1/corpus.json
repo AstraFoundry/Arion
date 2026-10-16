@@ -1,0 +1,5503 @@
+{
+ "version": 1,
+ "license": "AISHELL-1 Apache-2.0 (OpenSLR SLR33; HF mirror AudioLLMs/aishell_1_zh_test@e73dc7f0, transcript AISHELL/AISHELL-1@bbe295d5); LibriSpeech CC-BY-4.0 (openslr/librispeech_asr@71cacbfb); synthetic macOS TTS prompts authored for Arion (CC0); generated nonspeech",
+ "consent": true,
+ "provenance": {
+  "builder": "tools/evaluation/data/build_corpus.py",
+  "sources": {
+   "aishell-test-mirror-00000.parquet": "2466b1e851147943d4a2c46e1dddc8a70a45b733065c7f6a86e44bd88d5579c6",
+   "aishell_transcript_v0.8.txt": "b5f33b9e0b47548e20a5ea4e504297f80df41d559133924c4e5b7b544c15b5c4",
+   "test.clean.parquet": "7113aa4c3cf963fb54697145719a7725f984c8836d1c494a554cbb9f1a017df0",
+   "validation.clean.parquet": "c816e936fed8b83d5e3de28795bff1bcd3b46b3f1a5815bad4395d20186a9770"
+  },
+  "ffmpeg": "ffmpeg version 8.1.2 Copyright (c) 2000-2026 the FFmpeg developers",
+  "aishellSpeakerRecovery": {
+   "method": "unique transcript text match against official aishell_transcript_v0.8",
+   "unmatchedRows": 381
+  },
+  "aishellSplitNote": "Official AISHELL-1 test speakers are partitioned by speaker into Arion dev (S0764-S0766) and test (S0767-S0770)",
+  "syntheticNote": "TTS fixtures are a synthetic stress set; they are not natural speech"
+ },
+ "samples": [
+  {
+   "id": "aishell-BAC009S0766W0137",
+   "split": "dev",
+   "speakerId": "aishell1:S0766",
+   "sessionId": "aishell1:S0766",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0766W0137.wav",
+    "sha256": "8bc76e3746211962d65b47cfff79c6f18f6750b2cf1bfaf611330798495d11eb",
+    "durationMs": 3927.0
+   },
+   "reference": "这成为今久转型的起点",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0766W0325",
+   "split": "dev",
+   "speakerId": "aishell1:S0766",
+   "sessionId": "aishell1:S0766",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0766W0325.wav",
+    "sha256": "4c666bb9f9bcd59b1d5ba22b6a6ccb5204c5435aacb61818b259b4dca7f22a3d",
+    "durationMs": 3631.938
+   },
+   "reference": "成飞集成的其他主营业务中",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0766W0180",
+   "split": "dev",
+   "speakerId": "aishell1:S0766",
+   "sessionId": "aishell1:S0766",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0766W0180.wav",
+    "sha256": "13851b0a6f4ba6e0a4f38cc6857188219c653532c06239a66b70198833ebcf23",
+    "durationMs": 3108.0
+   },
+   "reference": "今久成功实现了转型",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0764W0205",
+   "split": "dev",
+   "speakerId": "aishell1:S0764",
+   "sessionId": "aishell1:S0764",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0764W0205.wav",
+    "sha256": "eb3fd6d4b8810a91faab2d712ef5b1c997bb09686a39d8a03e1e303027c899ab",
+    "durationMs": 6324.938
+   },
+   "reference": "本报记者王颖春国家发改委近日发出通知",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0765W0290",
+   "split": "dev",
+   "speakerId": "aishell1:S0765",
+   "sessionId": "aishell1:S0765",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0765W0290.wav",
+    "sha256": "e742dc865125332bd3bd9b77a18fe02f85c0d5608e38698cfd632da7a852bad4",
+    "durationMs": 3439.938
+   },
+   "reference": "在韩国股市低迷情况下",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0766W0171",
+   "split": "dev",
+   "speakerId": "aishell1:S0766",
+   "sessionId": "aishell1:S0766",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0766W0171.wav",
+    "sha256": "0326a70af26ebcab9ee281fd9568ced04da1df79fe908a6f380bc72c540fec36",
+    "durationMs": 5834.938
+   },
+   "reference": "逐渐地撬开了上海这个外来公司很难生根的大都市",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0765W0152",
+   "split": "dev",
+   "speakerId": "aishell1:S0765",
+   "sessionId": "aishell1:S0765",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0765W0152.wav",
+    "sha256": "36da329b57b2bae7658da1373199bf0a5e7a52b4cd3224b3ad80f673c82f5ab0",
+    "durationMs": 4467.0
+   },
+   "reference": "为了购买自己想要传承给子女的房产",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0766W0392",
+   "split": "dev",
+   "speakerId": "aishell1:S0766",
+   "sessionId": "aishell1:S0766",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0766W0392.wav",
+    "sha256": "2b31729217127829008a913981ee7a2b84884295a2ce09c1be424665823a1d8a",
+    "durationMs": 4939.25
+   },
+   "reference": "没有你们的支持我们该如何度过最挣扎的时期呢",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0766W0138",
+   "split": "dev",
+   "speakerId": "aishell1:S0766",
+   "sessionId": "aishell1:S0766",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0766W0138.wav",
+    "sha256": "baeab2e9949e1320866a73e5fe5cafa708d6c61e38d0bc96d68f4c9cb1492f16",
+    "durationMs": 4490.0
+   },
+   "reference": "依托蓝色光标强大的技术和资源优势",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0766W0125",
+   "split": "dev",
+   "speakerId": "aishell1:S0766",
+   "sessionId": "aishell1:S0766",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0766W0125.wav",
+    "sha256": "fd612fa23a91bd9c5a4b6dbf4238a7257ad69d1357acae8512dd88c76cd50a82",
+    "durationMs": 5492.0
+   },
+   "reference": "唯有实力雄厚又颇具现代创新意识的广告企业",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0764W0408",
+   "split": "dev",
+   "speakerId": "aishell1:S0764",
+   "sessionId": "aishell1:S0764",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0764W0408.wav",
+    "sha256": "7aa9a6e551624af279c166b50085d9711388f2fb4446a5e5248cd16b1a9b78ce",
+    "durationMs": 2663.062
+   },
+   "reference": "对男友有什么条件",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0765W0360",
+   "split": "dev",
+   "speakerId": "aishell1:S0765",
+   "sessionId": "aishell1:S0765",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0765W0360.wav",
+    "sha256": "9a28cc56ef50c679c8668508891f52a17363ba2c808964683a6248e5e5aa1d5f",
+    "durationMs": 6210.938
+   },
+   "reference": "花样滑冰大奖赛中国杯常年在北京和上海之间轮换",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0766W0494",
+   "split": "dev",
+   "speakerId": "aishell1:S0766",
+   "sessionId": "aishell1:S0766",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0766W0494.wav",
+    "sha256": "2fba391af90a4d5b54c17c13af675cefd9fffd93354be70e1886b93ac9211271",
+    "durationMs": 3556.125
+   },
+   "reference": "让一些网友有如猜谜",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0766W0124",
+   "split": "dev",
+   "speakerId": "aishell1:S0766",
+   "sessionId": "aishell1:S0766",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0766W0124.wav",
+    "sha256": "2f1ad0d2a82fe8c87c1cbe02b52b82aed57ded9821f559e8cb657b75652d3ff4",
+    "durationMs": 4519.0
+   },
+   "reference": "催生了广告领域新的变革和创新",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0764W0359",
+   "split": "dev",
+   "speakerId": "aishell1:S0764",
+   "sessionId": "aishell1:S0764",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0764W0359.wav",
+    "sha256": "4542aa58405e22c15ad59f7d2d0da1ddf4f3babb43279abe6b2af5c7a352611e",
+    "durationMs": 3500.0
+   },
+   "reference": "按照平时训练的速度进行跑步",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0764W0399",
+   "split": "dev",
+   "speakerId": "aishell1:S0764",
+   "sessionId": "aishell1:S0764",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0764W0399.wav",
+    "sha256": "e1803151a746cb35313e05d600d0fdc54d14f58e09aa64c899cdfc672bff501e",
+    "durationMs": 5204.062
+   },
+   "reference": "也是最终打动国家奥运委会评审团的法宝",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0764W0360",
+   "split": "dev",
+   "speakerId": "aishell1:S0764",
+   "sessionId": "aishell1:S0764",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0764W0360.wav",
+    "sha256": "1564a6fe59c923c5be156e78fa650f4d1c40adff943a92547937eec72e26bd9a",
+    "durationMs": 4702.875
+   },
+   "reference": "二十岁的跑者平均每英里耗时八分十八秒",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0764W0490",
+   "split": "dev",
+   "speakerId": "aishell1:S0764",
+   "sessionId": "aishell1:S0764",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0764W0490.wav",
+    "sha256": "c7563d2fda9d40cac24d271749fd585ef62adfb72467a6d0d919ef92c57b6a61",
+    "durationMs": 4117.938
+   },
+   "reference": "而是因为她也中了天价的招",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0766W0384",
+   "split": "dev",
+   "speakerId": "aishell1:S0766",
+   "sessionId": "aishell1:S0766",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0766W0384.wav",
+    "sha256": "4a2d3f30194b848ab03eb2eb9279ae09008c3728818c485b48aeed5a53f68b35",
+    "durationMs": 4500.0
+   },
+   "reference": "能够保障他的职业生涯发展是我的荣幸",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0764W0250",
+   "split": "dev",
+   "speakerId": "aishell1:S0764",
+   "sessionId": "aishell1:S0764",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0764W0250.wav",
+    "sha256": "294addd3e35f0ce18cbbae43f90899b0b884fa1c327a194a3f7a8813c46b5bfe",
+    "durationMs": 3798.938
+   },
+   "reference": "确保境外企业和人员安全",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0764W0254",
+   "split": "dev",
+   "speakerId": "aishell1:S0764",
+   "sessionId": "aishell1:S0764",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0764W0254.wav",
+    "sha256": "421d3c056e19cf00a16cc1e0801558f02ddbf43451c8663df7da11804dcafc23",
+    "durationMs": 6553.0
+   },
+   "reference": "它必须尽量做到只针对敌对国家的计算机和网络",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0764W0404",
+   "split": "dev",
+   "speakerId": "aishell1:S0764",
+   "sessionId": "aishell1:S0764",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0764W0404.wav",
+    "sha256": "f9f7b2c0d48a564f9fe1688a88e22ed2b362271196da2c4b27603c7404ba5c0d",
+    "durationMs": 6042.0
+   },
+   "reference": "影片将在二零一五年一月在慕尼黑正式开机",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0764W0137",
+   "split": "dev",
+   "speakerId": "aishell1:S0764",
+   "sessionId": "aishell1:S0764",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0764W0137.wav",
+    "sha256": "cc2da521919a65fb0586cb35dd1adadbba49fcf86f88a7218eaff967d5d452e7",
+    "durationMs": 3611.0
+   },
+   "reference": "面包价格会跟风上涨吗",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0764W0459",
+   "split": "dev",
+   "speakerId": "aishell1:S0764",
+   "sessionId": "aishell1:S0764",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0764W0459.wav",
+    "sha256": "ddcfc41acf6030d1d97d253aa863cad18e2e76d59925f09de0e0a85087453ad8",
+    "durationMs": 5002.938
+   },
+   "reference": "一八一所院校将补录一九四九人",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0764W0417",
+   "split": "dev",
+   "speakerId": "aishell1:S0764",
+   "sessionId": "aishell1:S0764",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0764W0417.wav",
+    "sha256": "2cc5928107ea000ad52e34d1c952d8dc92825f3d75803284e14bcdf6c3feda9e",
+    "durationMs": 4953.125
+   },
+   "reference": "背后意义竟只是不要忘记自己从哪里来",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0765W0495",
+   "split": "dev",
+   "speakerId": "aishell1:S0765",
+   "sessionId": "aishell1:S0765",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0765W0495.wav",
+    "sha256": "b627954b2b8d2d9115a6ac9ba58c0122f6c5a6fff849a0d5e58d382eab4fa318",
+    "durationMs": 6722.188
+   },
+   "reference": "李嘉诚军师抛售马云一五亿买香港最贵单价豪宅",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0766W0386",
+   "split": "dev",
+   "speakerId": "aishell1:S0766",
+   "sessionId": "aishell1:S0766",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0766W0386.wav",
+    "sha256": "193ee60d1115022a1701ef8015eb8185b87df47e51f144ce97223af56d796f53",
+    "durationMs": 2956.062
+   },
+   "reference": "我们的朋友将代表德国",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0764W0293",
+   "split": "dev",
+   "speakerId": "aishell1:S0764",
+   "sessionId": "aishell1:S0764",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0764W0293.wav",
+    "sha256": "2175819bcad1755454da5e614669373426269977bd1cdb0ccf1e852ffc9da7d1",
+    "durationMs": 4224.125
+   },
+   "reference": "如今则猛增到一两亿美元",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0766W0442",
+   "split": "dev",
+   "speakerId": "aishell1:S0766",
+   "sessionId": "aishell1:S0766",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0766W0442.wav",
+    "sha256": "4a32817444411caf0886272871aca7a9a3555539d3b2ab1edb1665eb6a0e425d",
+    "durationMs": 6119.875
+   },
+   "reference": "李嘉诚正式回应撤资指控不相信文革式思维复苏",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0764W0492",
+   "split": "dev",
+   "speakerId": "aishell1:S0764",
+   "sessionId": "aishell1:S0764",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0764W0492.wav",
+    "sha256": "8c006c8368b9b5728b456797692c1d6660b400a2ddf5cfbbe63dc39c45266763",
+    "durationMs": 3765.875
+   },
+   "reference": "成功处置深航机上纵火事件",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0765W0408",
+   "split": "dev",
+   "speakerId": "aishell1:S0765",
+   "sessionId": "aishell1:S0765",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0765W0408.wav",
+    "sha256": "d52c40a4004928b82bdefe27b8bdaf2733486140d9908f1502f380ae1ce28dfe",
+    "durationMs": 2738.0
+   },
+   "reference": "演技也日渐精湛",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0764W0304",
+   "split": "dev",
+   "speakerId": "aishell1:S0764",
+   "sessionId": "aishell1:S0764",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0764W0304.wav",
+    "sha256": "d95ca1d281a3852c22ead5ddb82e138ae1ac22935bbdeeab3e57deb58f500f63",
+    "durationMs": 4845.188
+   },
+   "reference": "裁员二千人是由于销售模式发生改变",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0766W0178",
+   "split": "dev",
+   "speakerId": "aishell1:S0766",
+   "sessionId": "aishell1:S0766",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0766W0178.wav",
+    "sha256": "c90e41084f3eb20c07a2e5581b654fbb50642157c32b27038b83c808110c0273",
+    "durationMs": 2545.0
+   },
+   "reference": "实现区域扩张",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0765W0299",
+   "split": "dev",
+   "speakerId": "aishell1:S0765",
+   "sessionId": "aishell1:S0765",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0765W0299.wav",
+    "sha256": "e15b342a0a80e9a027e47f146d370a694293a23b50ee0b22b8df750112baa620",
+    "durationMs": 3015.0
+   },
+   "reference": "最近都在流行做预测",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0764W0474",
+   "split": "dev",
+   "speakerId": "aishell1:S0764",
+   "sessionId": "aishell1:S0764",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0764W0474.wav",
+    "sha256": "6fea0baebc00069011bad1409a1f4553aafd7efa135623524b4980de70b6d596",
+    "durationMs": 6409.938
+   },
+   "reference": "记者从首都机场公安分局航站区派出所获悉",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0765W0487",
+   "split": "dev",
+   "speakerId": "aishell1:S0765",
+   "sessionId": "aishell1:S0765",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0765W0487.wav",
+    "sha256": "625757cfa25eacb5ddee499dbfe4ec9105351651276533b48f5aa7e9b61d6836",
+    "durationMs": 6240.25
+   },
+   "reference": "李克强集众智汇众力攻坚克难激发活力",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0766W0310",
+   "split": "dev",
+   "speakerId": "aishell1:S0766",
+   "sessionId": "aishell1:S0766",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0766W0310.wav",
+    "sha256": "fd2f7f26343bc2033170eead268e7876827f7830cd1acefa51722f81f5a61eee",
+    "durationMs": 4653.062
+   },
+   "reference": "前两年锂电池行业整体处于市场培育期",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0764W0261",
+   "split": "dev",
+   "speakerId": "aishell1:S0764",
+   "sessionId": "aishell1:S0764",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0764W0261.wav",
+    "sha256": "dcd6b544ae172b9f40d9324400fbdddfb6c374bcfe481e0b5debfff0e1b58517",
+    "durationMs": 3462.062
+   },
+   "reference": "病毒武器的隐蔽性极佳",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0765W0410",
+   "split": "dev",
+   "speakerId": "aishell1:S0765",
+   "sessionId": "aishell1:S0765",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0765W0410.wav",
+    "sha256": "797adb204ae94d1a5081136b08323936fa4adb895025302409c7431eafda8ab9",
+    "durationMs": 2876.0
+   },
+   "reference": "可说是超完美女神",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0766W0148",
+   "split": "dev",
+   "speakerId": "aishell1:S0766",
+   "sessionId": "aishell1:S0766",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0766W0148.wav",
+    "sha256": "d7bce0fda4e7d22160ffd0d3abf47ae4ba7db5753f48c8dde64974a3b1747358",
+    "durationMs": 3269.938
+   },
+   "reference": "但大多是雷声大雨点小",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0764W0224",
+   "split": "dev",
+   "speakerId": "aishell1:S0764",
+   "sessionId": "aishell1:S0764",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0764W0224.wav",
+    "sha256": "c07f990d060a23e4e452719b9b0b8f9d8ee90031056485f7d730ac2a14457810",
+    "durationMs": 4685.062
+   },
+   "reference": "充分发挥地方政府融资平台作用",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0764W0149",
+   "split": "dev",
+   "speakerId": "aishell1:S0764",
+   "sessionId": "aishell1:S0764",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0764W0149.wav",
+    "sha256": "888aabd11153edc5a43d9c8d872ed09f3196fdbaf164ce2c1d427557c8a5aaa4",
+    "durationMs": 3344.0
+   },
+   "reference": "一线城市签约十七万套",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0766W0424",
+   "split": "dev",
+   "speakerId": "aishell1:S0766",
+   "sessionId": "aishell1:S0766",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0766W0424.wav",
+    "sha256": "e41334efe77a9c9d2a3e8037ad87b8803fc5bee0934c8ccc86714f85765ab14d",
+    "durationMs": 2621.062
+   },
+   "reference": "此后便鲜有消息",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0766W0139",
+   "split": "dev",
+   "speakerId": "aishell1:S0766",
+   "sessionId": "aishell1:S0766",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0766W0139.wav",
+    "sha256": "583b28d5f810179d21d7a39c30feec3ce1a6fec6706c1f1b983af6479059cf0b",
+    "durationMs": 3728.0
+   },
+   "reference": "今久率先提出整合营销的概念",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0764W0387",
+   "split": "dev",
+   "speakerId": "aishell1:S0764",
+   "sessionId": "aishell1:S0764",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0764W0387.wav",
+    "sha256": "356880e2c97ae68efb1e3dde696fd96c6229eb54c106f97bff9a52c237d2cf12",
+    "durationMs": 5500.0
+   },
+   "reference": "也看到了在冰雪运动综合实力上的欠缺和不足",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0770W0182",
+   "split": "test",
+   "speakerId": "aishell1:S0770",
+   "sessionId": "aishell1:S0770",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0770W0182.wav",
+    "sha256": "75ba569b3522fe37a2d34f4909f926d3cdce3613971b34064dc2e7babdfd1c6e",
+    "durationMs": 5313.0
+   },
+   "reference": "明年平均售价将维持不变",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0769W0132",
+   "split": "test",
+   "speakerId": "aishell1:S0769",
+   "sessionId": "aishell1:S0769",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0769W0132.wav",
+    "sha256": "7a53852823b1181a7f2d2f12ad6a4fe052981445ee3e334883826d6092051833",
+    "durationMs": 5685.0
+   },
+   "reference": "推进上百个棚改项目全面启动实施",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0769W0488",
+   "split": "test",
+   "speakerId": "aishell1:S0769",
+   "sessionId": "aishell1:S0769",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0769W0488.wav",
+    "sha256": "e76dee04db6c5bf0420e2a50459601631358b6cabb12cd79ed7756a3b2bc0ed5",
+    "durationMs": 4626.0
+   },
+   "reference": "本报一零月五日讯国庆长假",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0767W0403",
+   "split": "test",
+   "speakerId": "aishell1:S0767",
+   "sessionId": "aishell1:S0767",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0767W0403.wav",
+    "sha256": "bda9b74198951013ef9c22e36ccaff0be4ae52f13571bb200edd634d9af406b3",
+    "durationMs": 5949.0
+   },
+   "reference": "徐永昊的站立打击技术在该级别中堪称翘楚",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0767W0383",
+   "split": "test",
+   "speakerId": "aishell1:S0767",
+   "sessionId": "aishell1:S0767",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0767W0383.wav",
+    "sha256": "003bbed0740cefeb53ff73b29629a491c31d421f205c9443aa58ec94e984a42b",
+    "durationMs": 3901.875
+   },
+   "reference": "整个队伍承受了很大的困难和考验",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0767W0314",
+   "split": "test",
+   "speakerId": "aishell1:S0767",
+   "sessionId": "aishell1:S0767",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0767W0314.wav",
+    "sha256": "e795e36f05e1b3b3cce012820d705830238f1c50b5b3716e5173c4f0912f4ab4",
+    "durationMs": 6116.938
+   },
+   "reference": "八月初公司通过了增加产能建设的决议",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0767W0379",
+   "split": "test",
+   "speakerId": "aishell1:S0767",
+   "sessionId": "aishell1:S0767",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0767W0379.wav",
+    "sha256": "b9af6078f4122cad6df72583983115aefd01d8d062cab0163bf12f1c85cd651b",
+    "durationMs": 5218.0
+   },
+   "reference": "这其中一位身材高挑的女孩子颇为引人关注",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0767W0122",
+   "split": "test",
+   "speakerId": "aishell1:S0767",
+   "sessionId": "aishell1:S0767",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0767W0122.wav",
+    "sha256": "b56ea5b1c068070bd97b6603351d614bb9d9fd169f75c0a381e37c9517780dff",
+    "durationMs": 6578.0
+   },
+   "reference": "引领中国房地产广告行业走向新的黄金时代",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0769W0482",
+   "split": "test",
+   "speakerId": "aishell1:S0769",
+   "sessionId": "aishell1:S0769",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0769W0482.wav",
+    "sha256": "0a0240504d0f385a766a31937f623c436051f7b515749868192e6ef39a2dc9c4",
+    "durationMs": 3201.875
+   },
+   "reference": "但问题至今没有解决",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0768W0443",
+   "split": "test",
+   "speakerId": "aishell1:S0768",
+   "sessionId": "aishell1:S0768",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0768W0443.wav",
+    "sha256": "4de6e7a4cd60acd051961969c150e9d1443d096cf7321c0cb91981cc9029189e",
+    "durationMs": 4303.0
+   },
+   "reference": "政府出钱搬迁盖房的机会",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0767W0487",
+   "split": "test",
+   "speakerId": "aishell1:S0767",
+   "sessionId": "aishell1:S0767",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0767W0487.wav",
+    "sha256": "563d1e1899b9e8bef49730ee7caf298ca9d1afc2e0893782ad6a464f01e80fcf",
+    "durationMs": 3980.0
+   },
+   "reference": "城改拆迁对很多村民来说",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0767W0428",
+   "split": "test",
+   "speakerId": "aishell1:S0767",
+   "sessionId": "aishell1:S0767",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0767W0428.wav",
+    "sha256": "48fc2b96df0c2951945e73643e6b67001d40d104ca24a4676202f101442fa046",
+    "durationMs": 4678.0
+   },
+   "reference": "并自嘲的写道自幼就走性感风格",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0768W0409",
+   "split": "test",
+   "speakerId": "aishell1:S0768",
+   "sessionId": "aishell1:S0768",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0768W0409.wav",
+    "sha256": "60897e0aa9e9a791aeca35d07fe3ce4f8e6167588365b2f91ca607ab9890006a",
+    "durationMs": 3545.875
+   },
+   "reference": "此照片萌翻众网友",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0769W0378",
+   "split": "test",
+   "speakerId": "aishell1:S0769",
+   "sessionId": "aishell1:S0769",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0769W0378.wav",
+    "sha256": "94d181d43b7b11379652627334f7d15d1e15d1d1efcad6d5da39e18ac104e317",
+    "durationMs": 4740.0
+   },
+   "reference": "从四百米预赛到最后的一千五百米预赛",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0767W0350",
+   "split": "test",
+   "speakerId": "aishell1:S0767",
+   "sessionId": "aishell1:S0767",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0767W0350.wav",
+    "sha256": "7674e323de076cc650342f48de60fe98edb73ff96dd1f4ec518e749a387778c2",
+    "durationMs": 7455.062
+   },
+   "reference": "俄罗斯搏击新生代旗帜性天才高手哈亚在接受采访时",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0769W0469",
+   "split": "test",
+   "speakerId": "aishell1:S0769",
+   "sessionId": "aishell1:S0769",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0769W0469.wav",
+    "sha256": "bd445c7fe05e80a373b1bb1f8062c289cff099b6970fbb875963ebb5d216c15c",
+    "durationMs": 3876.938
+   },
+   "reference": "希望相关部门能处理此事",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0768W0142",
+   "split": "test",
+   "speakerId": "aishell1:S0768",
+   "sessionId": "aishell1:S0768",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0768W0142.wav",
+    "sha256": "fb6b96f8a07ca70d7bb6f3ba1b13ddea4047de1647383c1e55a6558da201b83c",
+    "durationMs": 4729.0
+   },
+   "reference": "今年商品房销售一度低日迷",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0770W0201",
+   "split": "test",
+   "speakerId": "aishell1:S0770",
+   "sessionId": "aishell1:S0770",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0770W0201.wav",
+    "sha256": "53c0d2d1631666f8acd6450544364f94d5aba91692d17cd52d2a56920224cf70",
+    "durationMs": 7324.938
+   },
+   "reference": "下一步我国的城投债劵还需要做哪些完善",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0768W0134",
+   "split": "test",
+   "speakerId": "aishell1:S0768",
+   "sessionId": "aishell1:S0768",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0768W0134.wav",
+    "sha256": "00af91b70f2ae6d5dd66efbf4db0e20a17ef4ec7d3dc2f86658cf3e41bb17453",
+    "durationMs": 6149.0
+   },
+   "reference": "房地产开发企业到位资金十万亿元",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0768W0262",
+   "split": "test",
+   "speakerId": "aishell1:S0768",
+   "sessionId": "aishell1:S0768",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0768W0262.wav",
+    "sha256": "d1b15f2dc304a70f12fcfe19c958f1df62bdac52d3e8404afbc00273bf5437f1",
+    "durationMs": 8116.938
+   },
+   "reference": "加上它凭借远程雷达与对方舰队保持远距离",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0769W0315",
+   "split": "test",
+   "speakerId": "aishell1:S0769",
+   "sessionId": "aishell1:S0769",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0769W0315.wav",
+    "sha256": "53fcfa073d53814bb6f8c1f66aecddd54194ac1796ba7db12d7846d335fd9edb",
+    "durationMs": 4875.0
+   },
+   "reference": "浪潮的发展也有可圈可可点之处",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0770W0246",
+   "split": "test",
+   "speakerId": "aishell1:S0770",
+   "sessionId": "aishell1:S0770",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0770W0246.wav",
+    "sha256": "ce69451faf20125a4676c7d2920be8df185eb42fec86445bccfc4b620acda9f2",
+    "durationMs": 4095.938
+   },
+   "reference": "引导天然气合理消费",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0767W0172",
+   "split": "test",
+   "speakerId": "aishell1:S0767",
+   "sessionId": "aishell1:S0767",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0767W0172.wav",
+    "sha256": "194ec0962e8e58e2406e8a2170a596e6b974b6c0e19f9548eb73efafdd391326",
+    "durationMs": 3598.0
+   },
+   "reference": "住宅市场交易明显升温",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0769W0416",
+   "split": "test",
+   "speakerId": "aishell1:S0769",
+   "sessionId": "aishell1:S0769",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0769W0416.wav",
+    "sha256": "fc192a710df8ee788219f6d64472a39cb599d28901ea7267cfb77b4edc7b9da5",
+    "durationMs": 5341.812
+   },
+   "reference": "但会给哥哥谢霆锋传短信了解情况",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0770W0361",
+   "split": "test",
+   "speakerId": "aishell1:S0770",
+   "sessionId": "aishell1:S0770",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0770W0361.wav",
+    "sha256": "2fd489b26966ee29516c11e9ccb89c15be458d0415a612030f625337d6661cea",
+    "durationMs": 5482.188
+   },
+   "reference": "赢得了同行媒体和观众的敬意",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0769W0393",
+   "split": "test",
+   "speakerId": "aishell1:S0769",
+   "sessionId": "aishell1:S0769",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0769W0393.wav",
+    "sha256": "35a42e0c00cb199f0ee39f43ed3bbe0a41f37afd3cfd7b5be69f61cba0aa126c",
+    "durationMs": 3482.938
+   },
+   "reference": "他们也是历届大赛的一个亮点",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0768W0395",
+   "split": "test",
+   "speakerId": "aishell1:S0768",
+   "sessionId": "aishell1:S0768",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0768W0395.wav",
+    "sha256": "dfcd63a6652711628f9eb9a4a66484f060a33db2015399078439930bc6316bb4",
+    "durationMs": 6793.0
+   },
+   "reference": "二零千米竞走尼尔斯布莱姆巴号",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0768W0122",
+   "split": "test",
+   "speakerId": "aishell1:S0768",
+   "sessionId": "aishell1:S0768",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0768W0122.wav",
+    "sha256": "738850b36d0f66e5ac8de4d27669c575e1fe5013adac30334240a3f5a608ffe7",
+    "durationMs": 3915.0
+   },
+   "reference": "明年初料迎供应淡季",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0768W0412",
+   "split": "test",
+   "speakerId": "aishell1:S0768",
+   "sessionId": "aishell1:S0768",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0768W0412.wav",
+    "sha256": "6840a266fedf537303fbec524eed2b86689c2cf7b9dfce08ae3909a758c7f147",
+    "durationMs": 4163.062
+   },
+   "reference": "自小卖得一脸好萌",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0769W0262",
+   "split": "test",
+   "speakerId": "aishell1:S0769",
+   "sessionId": "aishell1:S0769",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0769W0262.wav",
+    "sha256": "16536374b7e97debfd43997aae4d539cee5b63f29a93f3469322428b2a3d00de",
+    "durationMs": 5218.0
+   },
+   "reference": "高效精准投送药物不仅可降低用药量",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0768W0345",
+   "split": "test",
+   "speakerId": "aishell1:S0768",
+   "sessionId": "aishell1:S0768",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0768W0345.wav",
+    "sha256": "692e9eeffa8d4a708b2a8443ae2107e113bdab06b0d5cb796ee119980b9068db",
+    "durationMs": 3803.0
+   },
+   "reference": "对于这场比赛的备战",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0769W0123",
+   "split": "test",
+   "speakerId": "aishell1:S0769",
+   "sessionId": "aishell1:S0769",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0769W0123.wav",
+    "sha256": "ebfd0a52d445bd1d2be0b99ba9c59055e45de21937d73b0350602b5032789463",
+    "durationMs": 4136.938
+   },
+   "reference": "彩虹之门建筑净高三十米",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0768W0177",
+   "split": "test",
+   "speakerId": "aishell1:S0768",
+   "sessionId": "aishell1:S0768",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0768W0177.wav",
+    "sha256": "994564d8acba7f9b84cf2f3f7a07a96192341bf29bda581c64f1ccb1a38525f4",
+    "durationMs": 4597.938
+   },
+   "reference": "投资价值更好房企看好",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0768W0337",
+   "split": "test",
+   "speakerId": "aishell1:S0768",
+   "sessionId": "aishell1:S0768",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0768W0337.wav",
+    "sha256": "43458f44a978fbd43b6e2c0b200b37dd30a8fbe44b103f1a2865770347e7a4eb",
+    "durationMs": 4081.062
+   },
+   "reference": "侵犯了公民的合法权益",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0769W0431",
+   "split": "test",
+   "speakerId": "aishell1:S0769",
+   "sessionId": "aishell1:S0769",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0769W0431.wav",
+    "sha256": "1f6ff799680173b62630902b03332f84b7b27ee34ab7a3b16e03ad14bea60fa5",
+    "durationMs": 4916.062
+   },
+   "reference": "施王祥被陆丰市纪委立案调查",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0769W0440",
+   "split": "test",
+   "speakerId": "aishell1:S0769",
+   "sessionId": "aishell1:S0769",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0769W0440.wav",
+    "sha256": "cc8fe5f4ea962a06dadcb08bb3f135e052687c978f34bbb0a449b944db0d9e49",
+    "durationMs": 10156.0
+   },
+   "reference": "村小老师自掏腰包八零零零元为贫困生设奖学金",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0769W0382",
+   "split": "test",
+   "speakerId": "aishell1:S0769",
+   "sessionId": "aishell1:S0769",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0769W0382.wav",
+    "sha256": "18505602e39c50255bf1d9900c8d53e3b28e663ca7fd6fb6282a5e65bdb5c960",
+    "durationMs": 3129.125
+   },
+   "reference": "更大的战场还在里约",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0768W0197",
+   "split": "test",
+   "speakerId": "aishell1:S0768",
+   "sessionId": "aishell1:S0768",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0768W0197.wav",
+    "sha256": "7f1dbbe9ebffaa9793e2847a70b52afaca83f18ae1064998a85be904bf63e716",
+    "durationMs": 5421.0
+   },
+   "reference": "而是改按统一合理的平均成本确定",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0770W0196",
+   "split": "test",
+   "speakerId": "aishell1:S0770",
+   "sessionId": "aishell1:S0770",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0770W0196.wav",
+    "sha256": "385ede29692d1446a88ee627b9673f033da77025417200e3eff4be5df7971084",
+    "durationMs": 4598.0
+   },
+   "reference": "从您刚才的介绍中我们了解到",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0769W0121",
+   "split": "test",
+   "speakerId": "aishell1:S0769",
+   "sessionId": "aishell1:S0769",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0769W0121.wav",
+    "sha256": "aebd508ed602c98f0001e6f5a300dd26f9d3af781dfbc4249766df548057debf",
+    "durationMs": 6559.0
+   },
+   "reference": "该地块即为通州新城核心地标彩虹之门用地",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0768W0404",
+   "split": "test",
+   "speakerId": "aishell1:S0768",
+   "sessionId": "aishell1:S0768",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0768W0404.wav",
+    "sha256": "9562520945963fd9d3e518f58a6ad6ddf331d2d2ccf0523195e6997800552006",
+    "durationMs": 4933.125
+   },
+   "reference": "这部命运多旭的电影",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0769W0344",
+   "split": "test",
+   "speakerId": "aishell1:S0769",
+   "sessionId": "aishell1:S0769",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0769W0344.wav",
+    "sha256": "18ca15de0739e4d098b38f9cda488b84ed6e9559d99d2026d93b4661ed35d71c",
+    "durationMs": 6216.062
+   },
+   "reference": "铅球克里斯蒂娜斯齐万兹",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0770W0272",
+   "split": "test",
+   "speakerId": "aishell1:S0770",
+   "sessionId": "aishell1:S0770",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0770W0272.wav",
+    "sha256": "39deca8cdb4a87f6ad3b88805dc469e85f492e29ca5724914b8352fa1f9b240e",
+    "durationMs": 8011.0
+   },
+   "reference": "之前刚刚提出为女性员工提供冷冻卵子费用",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0768W0492",
+   "split": "test",
+   "speakerId": "aishell1:S0768",
+   "sessionId": "aishell1:S0768",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0768W0492.wav",
+    "sha256": "a91a182ee7b797b69f55390aa92aa3d1fd1e458c8eb972d13a954296f0afa41e",
+    "durationMs": 9104.938
+   },
+   "reference": "村官涉不雅视频被免职饭桌上摸女子胸部臀部等",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0770W0322",
+   "split": "test",
+   "speakerId": "aishell1:S0770",
+   "sessionId": "aishell1:S0770",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0770W0322.wav",
+    "sha256": "23c812b22508e692f58ae54e03f33ce7feaf75aa9eaeabcb10a3346b08ae1020",
+    "durationMs": 8858.875
+   },
+   "reference": "至于像整机柜这类深度定制化的细分市场",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0767W0234",
+   "split": "test",
+   "speakerId": "aishell1:S0767",
+   "sessionId": "aishell1:S0767",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0767W0234.wav",
+    "sha256": "3a5b2a4886385f0beca5ae3e7959997eed4914a03abe07045ee288ad545a9ceb",
+    "durationMs": 6319.0
+   },
+   "reference": "使地方政府的债务融资规模控制在安全范围内",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0768W0343",
+   "split": "test",
+   "speakerId": "aishell1:S0768",
+   "sessionId": "aishell1:S0768",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0768W0343.wav",
+    "sha256": "587d0ae66425e8b3548a0764a439996fef856a159c18e7ab4055de6cf9b572b4",
+    "durationMs": 6695.062
+   },
+   "reference": "我都会对站立技术进行重点强化",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0769W0390",
+   "split": "test",
+   "speakerId": "aishell1:S0769",
+   "sessionId": "aishell1:S0769",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0769W0390.wav",
+    "sha256": "8cff2da42125480ea66df78dca3846304ad259fc0f579ce6e7426e7bb86a2454",
+    "durationMs": 4969.0
+   },
+   "reference": "而他们已经为这次田径世锦赛做好了准备",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0767W0423",
+   "split": "test",
+   "speakerId": "aishell1:S0767",
+   "sessionId": "aishell1:S0767",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0767W0423.wav",
+    "sha256": "cf2bf0749c76075820444c74d09031e32ecf3240efc4fed3fb280d7be6198ca6",
+    "durationMs": 2563.0
+   },
+   "reference": "但不至于要吃药",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0767W0251",
+   "split": "test",
+   "speakerId": "aishell1:S0767",
+   "sessionId": "aishell1:S0767",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0767W0251.wav",
+    "sha256": "6182ce64b764b60fca2aa9370fa1805870f826c34732950f5f3a001b66dc9c59",
+    "durationMs": 5172.0
+   },
+   "reference": "对考务费标准实行统一标准化管理",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0769W0343",
+   "split": "test",
+   "speakerId": "aishell1:S0769",
+   "sessionId": "aishell1:S0769",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0769W0343.wav",
+    "sha256": "057997f6b5eebb1e240205587473bf8b6f5120eac334c525a3aae5a7d61bf436",
+    "durationMs": 5083.0
+   },
+   "reference": "三级跳克里斯丁吉尔奇",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0770W0216",
+   "split": "test",
+   "speakerId": "aishell1:S0770",
+   "sessionId": "aishell1:S0770",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0770W0216.wav",
+    "sha256": "930ae648076fb41439293fe185090e2fa86bb4e4e5e4b6367e4fc2f600001ed8",
+    "durationMs": 4860.938
+   },
+   "reference": "但是还需要进一步改进",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0768W0398",
+   "split": "test",
+   "speakerId": "aishell1:S0768",
+   "sessionId": "aishell1:S0768",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0768W0398.wav",
+    "sha256": "f792469db9fb014efdf892e79b07a519a6a45e78f460daa1cf13c3c9f3550ca7",
+    "durationMs": 3690.938
+   },
+   "reference": "卢卡斯亚库比泽克",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0769W0155",
+   "split": "test",
+   "speakerId": "aishell1:S0769",
+   "sessionId": "aishell1:S0769",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0769W0155.wav",
+    "sha256": "498297df23e427abbd72030fa11bb4cc672547367963d36c08b161093a1da3f0",
+    "durationMs": 3586.0
+   },
+   "reference": "力争配租三万户以上",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0769W0372",
+   "split": "test",
+   "speakerId": "aishell1:S0769",
+   "sessionId": "aishell1:S0769",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0769W0372.wav",
+    "sha256": "25ec196c3d38d607de2ff03302195634cb49a0dc69fb8e1ef3d9748eed08d18f",
+    "durationMs": 4771.0
+   },
+   "reference": "直到二零一四年四月才解禁复出",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0767W0394",
+   "split": "test",
+   "speakerId": "aishell1:S0767",
+   "sessionId": "aishell1:S0767",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0767W0394.wav",
+    "sha256": "38b704f3f9c3bf9658c7c8d9fe315fac86429ae32b15b111c800fe3301ee90ed",
+    "durationMs": 3115.0
+   },
+   "reference": "徐云丽最后动情地说",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0769W0327",
+   "split": "test",
+   "speakerId": "aishell1:S0769",
+   "sessionId": "aishell1:S0769",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0769W0327.wav",
+    "sha256": "68756251d59d8579abcafd2f18ce720f1ba6d47de528be456024d61715b60e23",
+    "durationMs": 3991.0
+   },
+   "reference": "国产服务器即使是自主设计",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0768W0436",
+   "split": "test",
+   "speakerId": "aishell1:S0768",
+   "sessionId": "aishell1:S0768",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0768W0436.wav",
+    "sha256": "16e2d3d153896cbff3bc5e93f939a9127415fbaa3225d46b68783343df39b875",
+    "durationMs": 5604.0
+   },
+   "reference": "大兴区礼贤镇紫各庄村",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0767W0358",
+   "split": "test",
+   "speakerId": "aishell1:S0767",
+   "sessionId": "aishell1:S0767",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0767W0358.wav",
+    "sha256": "7038c3a57f747e68b19d4600589498d8cdc4090613214680240ced1087ea7507",
+    "durationMs": 4925.062
+   },
+   "reference": "今天赛事举行了赛前新闻发布会",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "aishell-BAC009S0769W0468",
+   "split": "test",
+   "speakerId": "aishell1:S0769",
+   "sessionId": "aishell1:S0769",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "read",
+    "aishell1"
+   ],
+   "audio": {
+    "path": "audio/aishell-BAC009S0769W0468.wav",
+    "sha256": "5a0d0377748271edda57a69d9b1fdad72fda34eab59ddd7334382504fb359550",
+    "durationMs": 5374.062
+   },
+   "reference": "该村村民黎胜明向楚天快报求助",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-2086-149220-0005",
+   "split": "dev",
+   "speakerId": "librispeech:2086",
+   "sessionId": "librispeech:2086-149220",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-2086-149220-0005.wav",
+    "sha256": "cb9aaf78f0a437393859b8341e45f56e1d8bf3c5042ec0ba1fa8dbc00d6fbe5e",
+    "durationMs": 9090.0
+   },
+   "reference": "bees too strange to say had thought it worth their while to come hither possibly from the range of hives beside some farm house miles away",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-3081-166546-0006",
+   "split": "dev",
+   "speakerId": "librispeech:3081",
+   "sessionId": "librispeech:3081-166546",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-3081-166546-0006.wav",
+    "sha256": "7fbd2304dafd34123c6d8ea16b3d79f681edda85dbc8560519729d277b079b5c",
+    "durationMs": 3775.0
+   },
+   "reference": "the boys look wide awake enough if the father does not",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-251-137823-0017",
+   "split": "dev",
+   "speakerId": "librispeech:251",
+   "sessionId": "librispeech:251-137823",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-251-137823-0017.wav",
+    "sha256": "5f0ef6809a5fcd07764139cfe5b7d67a27a6cd0045dcd48109f1c717d40b66e1",
+    "durationMs": 3855.0
+   },
+   "reference": "anyhow we want to help got a job for us",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-6241-61943-0014",
+   "split": "dev",
+   "speakerId": "librispeech:6241",
+   "sessionId": "librispeech:6241-61943",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-6241-61943-0014.wav",
+    "sha256": "1a76756b08042da8c9efb3f1c711378357de0ddcd279b8c5c6d335f2ccd8bc3f",
+    "durationMs": 6740.0
+   },
+   "reference": "he was however but a civil servant a magistrate the governor of the island baron trampe",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-7976-110124-0005",
+   "split": "dev",
+   "speakerId": "librispeech:7976",
+   "sessionId": "librispeech:7976-110124",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-7976-110124-0005.wav",
+    "sha256": "90ad24af4b97fec566082b334740409ae4bab840c30397eb92a2a40add39af64",
+    "durationMs": 5210.0
+   },
+   "reference": "let me enter i pray you to pass the night under your roof",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-2086-149220-0023",
+   "split": "dev",
+   "speakerId": "librispeech:2086",
+   "sessionId": "librispeech:2086-149220",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-2086-149220-0023.wav",
+    "sha256": "27b2a948e4359d623d4b41cfee561668262976f7721737f02c2fdd5f7a967aef",
+    "durationMs": 7365.0
+   },
+   "reference": "most of my likenesses do look unamiable but the very sufficient reason i fancy is because the originals are so",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-2277-149874-0017",
+   "split": "dev",
+   "speakerId": "librispeech:2277",
+   "sessionId": "librispeech:2277-149874",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-2277-149874-0017.wav",
+    "sha256": "d829e5dd24757c93bbfd5d197ed6187f3f50762832400ca01918b4a86938cc86",
+    "durationMs": 3360.0
+   },
+   "reference": "a shop girl was the destiny prefigured for the newcomer",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-2035-147961-0024",
+   "split": "dev",
+   "speakerId": "librispeech:2035",
+   "sessionId": "librispeech:2035-147961",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-2035-147961-0024.wav",
+    "sha256": "0c2bc477da92fa51e5770b814ea25dee38f937532af2b9fd356b7745c6ee2660",
+    "durationMs": 3810.0
+   },
+   "reference": "there are only three sledges left he whispered",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-1988-147956-0013",
+   "split": "dev",
+   "speakerId": "librispeech:1988",
+   "sessionId": "librispeech:1988-147956",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-1988-147956-0013.wav",
+    "sha256": "fe7e2639a7f9ab08998f3dcf825bd1c73e955f11af4501e919607c5ae034a53f",
+    "durationMs": 2890.0
+   },
+   "reference": "he was born like that the others are smart",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-7850-281318-0019",
+   "split": "dev",
+   "speakerId": "librispeech:7850",
+   "sessionId": "librispeech:7850-281318",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-7850-281318-0019.wav",
+    "sha256": "1c6cf0d284a09e8b0b99e76076d336c061e5cc09141452f8b7216120e0d6872e",
+    "durationMs": 5485.0
+   },
+   "reference": "you say you know all about it then go on and finish your nests by yourselves",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-1919-142785-0059",
+   "split": "dev",
+   "speakerId": "librispeech:1919",
+   "sessionId": "librispeech:1919-142785",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-1919-142785-0059.wav",
+    "sha256": "a3826a8d6c26c7d2f6efffa15feab098583bcbc257628dfae7b593d7e634aa45",
+    "durationMs": 8745.0
+   },
+   "reference": "when quite crisp dip one side of the sippet into the beaten white of an egg mixed with a little flour and place it on the edge of the dish",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-2428-83705-0041",
+   "split": "dev",
+   "speakerId": "librispeech:2428",
+   "sessionId": "librispeech:2428-83705",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-2428-83705-0041.wav",
+    "sha256": "b33fe2a0d519804a86d1d2b8a288df5cfc7ff170ff6816083d34a4fae8f72f0c",
+    "durationMs": 3960.0
+   },
+   "reference": "a second cousin of mary ann's is in the cook's tours line",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-1272-141231-0010",
+   "split": "dev",
+   "speakerId": "librispeech:1272",
+   "sessionId": "librispeech:1272-141231",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-1272-141231-0010.wav",
+    "sha256": "f90875d5dc061dd45eef7549244494e8b024465f432c382ece4963c631cbfadd",
+    "durationMs": 10760.0
+   },
+   "reference": "particularly so on this last night when only two of the little cubicles were occupied the thousands of others standing with dark empty doors",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-1462-170145-0018",
+   "split": "dev",
+   "speakerId": "librispeech:1462",
+   "sessionId": "librispeech:1462-170145",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-1462-170145-0018.wav",
+    "sha256": "4e419e005393a7c9ce7f6bd39345595583a5d740f512ceb6edffd2b518fe790e",
+    "durationMs": 2025.0
+   },
+   "reference": "only i'll do it more completely",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-2035-147961-0010",
+   "split": "dev",
+   "speakerId": "librispeech:2035",
+   "sessionId": "librispeech:2035-147961",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-2035-147961-0010.wav",
+    "sha256": "fa92059d0b60621a19686e62ca35cc7e6c4396f5e334a9677fb2ead43490eac5",
+    "durationMs": 2910.0
+   },
+   "reference": "he seemed to be cursing people who had wronged him",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-2277-149874-0002",
+   "split": "dev",
+   "speakerId": "librispeech:2277",
+   "sessionId": "librispeech:2277-149874",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-2277-149874-0002.wav",
+    "sha256": "871ee83351530308ffc4c3aa493a3157921a2f99ba99f135770443f97dee7888",
+    "durationMs": 5095.0
+   },
+   "reference": "to him the presence or absence of his wife's sister was a matter of indifference",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-5694-64038-0009",
+   "split": "dev",
+   "speakerId": "librispeech:5694",
+   "sessionId": "librispeech:5694-64038",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-5694-64038-0009.wav",
+    "sha256": "5bb490dbd1eb47d32c518342dec315a2edfd5699c325e1953233364255e72924",
+    "durationMs": 2385.0
+   },
+   "reference": "the voice appeared to be overhead",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-174-168635-0014",
+   "split": "dev",
+   "speakerId": "librispeech:174",
+   "sessionId": "librispeech:174-168635",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-174-168635-0014.wav",
+    "sha256": "48ba2c92837acaf8bcff6500b4a30b674a6eb6769293eae5469c766a34e946a6",
+    "durationMs": 4825.062
+   },
+   "reference": "cosette was no longer in rags she was in mourning",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-7850-286674-0008",
+   "split": "dev",
+   "speakerId": "librispeech:7850",
+   "sessionId": "librispeech:7850-286674",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-7850-286674-0008.wav",
+    "sha256": "a880a572686f91bbd0a839a480701cfa7fad56feb3bd1bfb3dd2f0f7c0d9d3a4",
+    "durationMs": 2750.0
+   },
+   "reference": "our upper lips are so small they don't matter",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-84-121550-0004",
+   "split": "dev",
+   "speakerId": "librispeech:84",
+   "sessionId": "librispeech:84-121550",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-84-121550-0004.wav",
+    "sha256": "79d76227ba3e4851c6f00d0b418227593b294ecb77c2959921bd176eefad9a60",
+    "durationMs": 7965.0
+   },
+   "reference": "ye are new comers and because i smile began she peradventure in this place elect to human nature for its nest",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-3170-137482-0012",
+   "split": "dev",
+   "speakerId": "librispeech:3170",
+   "sessionId": "librispeech:3170-137482",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-3170-137482-0012.wav",
+    "sha256": "2154ae7f99f55ccbbe5335f93f7022e6771efeeb5525f31556ad600491320d4a",
+    "durationMs": 2985.0
+   },
+   "reference": "we took our three prisoners to a large boat",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-5536-43359-0002",
+   "split": "dev",
+   "speakerId": "librispeech:5536",
+   "sessionId": "librispeech:5536-43359",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-5536-43359-0002.wav",
+    "sha256": "dfbe6ddda7340b472bbb16a5b4b19a729763370aaee34f3f78ec88b4e1531b2b",
+    "durationMs": 11040.0
+   },
+   "reference": "the ordeal is best met alone where no curious or pitying eyes embarrass her where all nature says to her spirit tis love tis love the fulfilling of life",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-3752-4944-0065",
+   "split": "dev",
+   "speakerId": "librispeech:3752",
+   "sessionId": "librispeech:3752-4944",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-3752-4944-0065.wav",
+    "sha256": "c44856ead762baaaef849c6dc56135640ffc513c453338d0f76ac4343172e79d",
+    "durationMs": 4200.0
+   },
+   "reference": "i must have a teaspoonful he said to allay the craving",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-5694-64038-0019",
+   "split": "dev",
+   "speakerId": "librispeech:5694",
+   "sessionId": "librispeech:5694-64038",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-5694-64038-0019.wav",
+    "sha256": "a5b4b867175ac9fd3cc25aa474c395ec033fc0cabc8819a9b47edd67711b4a48",
+    "durationMs": 6255.0
+   },
+   "reference": "he wanted to go by home and tell his wife and children good bye and to get his clothes it was no go",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-5895-34615-0008",
+   "split": "dev",
+   "speakerId": "librispeech:5895",
+   "sessionId": "librispeech:5895-34615",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-5895-34615-0008.wav",
+    "sha256": "bc0767f0b0d239ecb23078b3de72d6d28696f78b0cb3b507162f90acbef72182",
+    "durationMs": 3055.0
+   },
+   "reference": "the outside did not depend on the interior",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-2078-142845-0011",
+   "split": "dev",
+   "speakerId": "librispeech:2078",
+   "sessionId": "librispeech:2078-142845",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-2078-142845-0011.wav",
+    "sha256": "823a3ad2ef01fd67e2287625bce36fb76ade8f1b6b8e6419d9b316bea275733b",
+    "durationMs": 4530.0
+   },
+   "reference": "it will grow on poor soils and is extremely productive",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-174-84280-0005",
+   "split": "dev",
+   "speakerId": "librispeech:174",
+   "sessionId": "librispeech:174-84280",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-174-84280-0005.wav",
+    "sha256": "fea26fd6dd4b46da39a43e98bf969d9d96703c9a9a72cf17fb1ff11267476bc4",
+    "durationMs": 8610.0
+   },
+   "reference": "for a time the death of mary obscured her life for me but now her living presence is more in my mind again",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-2428-83705-0024",
+   "split": "dev",
+   "speakerId": "librispeech:2428",
+   "sessionId": "librispeech:2428-83705",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-2428-83705-0024.wav",
+    "sha256": "a44e1c3ae452a66afe4616f3b0f3264f5c75783a8ef67e6f538b0d7e920f0475",
+    "durationMs": 4940.0
+   },
+   "reference": "and i will see that there is no shirking about the boys or about the girls either",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-7976-105575-0004",
+   "split": "dev",
+   "speakerId": "librispeech:7976",
+   "sessionId": "librispeech:7976-105575",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-7976-105575-0004.wav",
+    "sha256": "8a4269cd7aacf87f42e8b903f92c877f44c0c5352bde9ef511c3644eca153548",
+    "durationMs": 6015.0
+   },
+   "reference": "not balaklava nor the alma saw such fighting it was a duel to the death",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-8297-275156-0000",
+   "split": "dev",
+   "speakerId": "librispeech:8297",
+   "sessionId": "librispeech:8297-275156",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-8297-275156-0000.wav",
+    "sha256": "13358e58def12edd49c209b7f8ab352bede77fe0c993a6e7eb3711b0f59aaa05",
+    "durationMs": 3580.0
+   },
+   "reference": "what are you doing here he asked",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-84-121550-0019",
+   "split": "dev",
+   "speakerId": "librispeech:84",
+   "sessionId": "librispeech:84-121550",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-84-121550-0019.wav",
+    "sha256": "bbe1f3a0e7eed0d832d8819143a68dd632b16943485cd5ac2ac2f185cfc77f8e",
+    "durationMs": 9279.938
+   },
+   "reference": "in rear of all the group here treated of two old men i beheld unlike in habit but like in gait each dignified and grave",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-3536-23268-0013",
+   "split": "dev",
+   "speakerId": "librispeech:3536",
+   "sessionId": "librispeech:3536-23268",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-3536-23268-0013.wav",
+    "sha256": "31470590969865078b8a68768fe71ef63775120739164ca34eae0cc5ff768f4d",
+    "durationMs": 8025.0
+   },
+   "reference": "do you think i would go answered miss milner with an eagerness that for a time suppressed her tears in contradiction to his will",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-3000-15664-0014",
+   "split": "dev",
+   "speakerId": "librispeech:3000",
+   "sessionId": "librispeech:3000-15664",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-3000-15664-0014.wav",
+    "sha256": "f1f7970e54ef65ac34fb5c4db5824e1c1e2671d6ec3d911847b3ad3762e1c08e",
+    "durationMs": 7205.0
+   },
+   "reference": "in setting out from strawberry valley by bearing off to the northwestward a few miles you may see",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-3536-23268-0006",
+   "split": "dev",
+   "speakerId": "librispeech:3536",
+   "sessionId": "librispeech:3536-23268",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-3536-23268-0006.wav",
+    "sha256": "3ab2da3868746de04e5867acdabe1a09e4cac59a22c0f5308904ee2731ff27ef",
+    "durationMs": 5300.0
+   },
+   "reference": "yes indeed and i believe it is right that i should keep my first promise is it not",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-1462-170145-0009",
+   "split": "dev",
+   "speakerId": "librispeech:1462",
+   "sessionId": "librispeech:1462-170145",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-1462-170145-0009.wav",
+    "sha256": "747888fff8badb87b8585e5bc76f3a051e1dac5fdea731cea8ff743b343c40f3",
+    "durationMs": 2925.0
+   },
+   "reference": "oh bartley did you write to me",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-5895-34629-0023",
+   "split": "dev",
+   "speakerId": "librispeech:5895",
+   "sessionId": "librispeech:5895-34629",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-5895-34629-0023.wav",
+    "sha256": "6b0b375c0ec5d79235eacb587dbc5647723b2d5e1ef072914cbd1cce3a031315",
+    "durationMs": 7895.0
+   },
+   "reference": "at every performance the yard of the inn transformed into a pit was filled with a ragged and enthusiastic audience",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-3081-166546-0068",
+   "split": "dev",
+   "speakerId": "librispeech:3081",
+   "sessionId": "librispeech:3081-166546",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-3081-166546-0068.wav",
+    "sha256": "e99fa378c73c954019deaeea91af60d5b786c6ceae08f31d6cc29e70a4c565a0",
+    "durationMs": 2530.0
+   },
+   "reference": "but they'll put a man on for you",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-777-126732-0038",
+   "split": "dev",
+   "speakerId": "librispeech:777",
+   "sessionId": "librispeech:777-126732",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-777-126732-0038.wav",
+    "sha256": "937b3fcd4588081bed4cdf77251d5e830bbf3859bf9e14a2b0cb78e8a5ddd970",
+    "durationMs": 3100.0
+   },
+   "reference": "he paused then added with modest firmness",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-2412-153954-0007",
+   "split": "dev",
+   "speakerId": "librispeech:2412",
+   "sessionId": "librispeech:2412-153954",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-2412-153954-0007.wav",
+    "sha256": "db4d0939ebcf6883ad10dce5864c2baef26eeec7a05c66e392186b7f60ef0332",
+    "durationMs": 8430.0
+   },
+   "reference": "even in middle age they were still comely and the old grey haired women at their cottage doors had a dignity not to say majesty of their own",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-3170-137482-0015",
+   "split": "dev",
+   "speakerId": "librispeech:3170",
+   "sessionId": "librispeech:3170-137482",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-3170-137482-0015.wav",
+    "sha256": "7e205bc9e34962f05899445f823d4db66c8687195200c7637592b11bed16ef99",
+    "durationMs": 10210.0
+   },
+   "reference": "my readers may imagine whether we felt inclined to laugh when the charming creature bade us good night thanking us all with perfect good faith",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-7176-92135-0036",
+   "split": "test",
+   "speakerId": "librispeech:7176",
+   "sessionId": "librispeech:7176-92135",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-7176-92135-0036.wav",
+    "sha256": "1b77258a435601a23962fc931c9115b06e6128467e8addbeff30757601718e87",
+    "durationMs": 6470.0
+   },
+   "reference": "the crowd drifts off leaving the hero and heroine alone in the middle of the stage and then you can begin",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-2830-3979-0006",
+   "split": "test",
+   "speakerId": "librispeech:2830",
+   "sessionId": "librispeech:2830-3979",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-2830-3979-0006.wav",
+    "sha256": "65ec29bdc39e7ad307ee3d4822881b2cbd0c2b34719d955f2e2ef2d0981ce161",
+    "durationMs": 4550.0
+   },
+   "reference": "a word should now be said about the origin of luther's commentary on galatians",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-1188-133604-0000",
+   "split": "test",
+   "speakerId": "librispeech:1188",
+   "sessionId": "librispeech:1188-133604",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-1188-133604-0000.wav",
+    "sha256": "7103ea9b2746ea371e053c5e44aa65e3d69fdc84194e4af12722cd72a721c822",
+    "durationMs": 10725.0
+   },
+   "reference": "you will find me continually speaking of four men titian holbein turner and tintoret in almost the same terms",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-1284-1181-0021",
+   "split": "test",
+   "speakerId": "librispeech:1284",
+   "sessionId": "librispeech:1284-1181",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-1284-1181-0021.wav",
+    "sha256": "9626183e2feea482dc2524ceab84f663819d97277f578424dfe923a103143a97",
+    "durationMs": 2700.0
+   },
+   "reference": "asked the voice in scornful accents",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-1320-122617-0037",
+   "split": "test",
+   "speakerId": "librispeech:1320",
+   "sessionId": "librispeech:1320-122617",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-1320-122617-0037.wav",
+    "sha256": "1b28641d123de0f5ab4af46c627309666b4d64af149964a75c63fdb7f0ca406d",
+    "durationMs": 7180.0
+   },
+   "reference": "the delaware dog he said leaning forward and peering through the dim light to catch the expression of the other's features is he afraid",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-7176-92135-0006",
+   "split": "test",
+   "speakerId": "librispeech:7176",
+   "sessionId": "librispeech:7176-92135",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-7176-92135-0006.wav",
+    "sha256": "57b1c2f3a546ad8b5e5fe9602c9506e93b04608f78fb1e3ae697053d1bcaad0d",
+    "durationMs": 7795.0
+   },
+   "reference": "i've got a little idea for a play about a man and a woman and another woman and but perhaps i'd better keep the plot a secret for the moment",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-61-70968-0013",
+   "split": "test",
+   "speakerId": "librispeech:61",
+   "sessionId": "librispeech:61-70968",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-61-70968-0013.wav",
+    "sha256": "ec88f797bcb446927417a91a63fa9a92aa3cab67a4d4e68b9f0d84070fdfd12a",
+    "durationMs": 4450.0
+   },
+   "reference": "before them fled the stroller and his three sons capless and terrified",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-8463-287645-0000",
+   "split": "test",
+   "speakerId": "librispeech:8463",
+   "sessionId": "librispeech:8463-287645",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-8463-287645-0000.wav",
+    "sha256": "20d3a722fecc2090ba5bc90fdfe7e4f3863b3695247b5ffc25f047a7e25d077d",
+    "durationMs": 4730.0
+   },
+   "reference": "this was what did the mischief so far as the running away was concerned",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-2830-3979-0010",
+   "split": "test",
+   "speakerId": "librispeech:2830",
+   "sessionId": "librispeech:2830-3979",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-2830-3979-0010.wav",
+    "sha256": "7d8772c4ed93c0a409209327fdd735105632dd56f4109f771b7c4e966b95d306",
+    "durationMs": 3360.0
+   },
+   "reference": "but the essence of luther's lectures is there",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-2300-131720-0014",
+   "split": "test",
+   "speakerId": "librispeech:2300",
+   "sessionId": "librispeech:2300-131720",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-2300-131720-0014.wav",
+    "sha256": "7cf0b059946d66d3644af061770a75af9332f5a0660394fc03b5540db1bf8e18",
+    "durationMs": 3750.0
+   },
+   "reference": "mister edison was a leader far ahead of the time",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-4446-2275-0042",
+   "split": "test",
+   "speakerId": "librispeech:4446",
+   "sessionId": "librispeech:4446-2275",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-4446-2275-0042.wav",
+    "sha256": "13322c0a280663a0248060a6aa5d0628709334a2059402b2899c3781c77b3e03",
+    "durationMs": 5400.0
+   },
+   "reference": "and then you came back not caring very much but it made no difference",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-4446-2273-0026",
+   "split": "test",
+   "speakerId": "librispeech:4446",
+   "sessionId": "librispeech:4446-2273",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-4446-2273-0026.wav",
+    "sha256": "3030dfe4abda1ced6aecf36c18623aa62ec92ef53aa174f7f770a896e75034d0",
+    "durationMs": 1950.0
+   },
+   "reference": "have i told you about my new play",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-8555-284447-0002",
+   "split": "test",
+   "speakerId": "librispeech:8555",
+   "sessionId": "librispeech:8555-284447",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-8555-284447-0002.wav",
+    "sha256": "3629c1cfc2405ebb1b03eb188618d126fe8a634a7ea56cd739c15725b97e3b46",
+    "durationMs": 8025.0
+   },
+   "reference": "i wouldn't mind a cup o coffee myself said cap'n bill i've had consid'ble exercise this mornin and i'm all ready for breakfas",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-8455-210777-0018",
+   "split": "test",
+   "speakerId": "librispeech:8455",
+   "sessionId": "librispeech:8455-210777",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-8455-210777-0018.wav",
+    "sha256": "e23c3ad58ac22dcb0d6c1e9506f363817e00cc830669adf3710a51d51ad73109",
+    "durationMs": 5925.0
+   },
+   "reference": "this she said was true hospitality and i am not sure that i did not agree with her",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-1188-133604-0040",
+   "split": "test",
+   "speakerId": "librispeech:1188",
+   "sessionId": "librispeech:1188-133604",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-1188-133604-0040.wav",
+    "sha256": "c49880d34175f8cd226a4b3a37054dceaae7362cf652fe51dcf3290d8f17ea60",
+    "durationMs": 3230.0
+   },
+   "reference": "the crampness and the poverty are all intended",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-121-121726-0001",
+   "split": "test",
+   "speakerId": "librispeech:121",
+   "sessionId": "librispeech:121-121726",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-121-121726-0001.wav",
+    "sha256": "b1657235d4fbcfb2d8468b738e3c77b8bf171dc90ad6c1ca7cd7f57fb994059b",
+    "durationMs": 5925.0
+   },
+   "reference": "harangue the tiresome product of a tireless tongue",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-237-126133-0004",
+   "split": "test",
+   "speakerId": "librispeech:237",
+   "sessionId": "librispeech:237-126133",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-237-126133-0004.wav",
+    "sha256": "e1e6db33e7d8d0c2ba3dfe06ba93c432b02712f18f7431e836da6b04601cb8da",
+    "durationMs": 3295.0
+   },
+   "reference": "if she could only see phronsie for just one moment",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-672-122797-0051",
+   "split": "test",
+   "speakerId": "librispeech:672",
+   "sessionId": "librispeech:672-122797",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-672-122797-0051.wav",
+    "sha256": "7d15d2a72350745071d41e5fbf2bddb56bf51af4829399c7a9f68c878d19d79a",
+    "durationMs": 4665.0
+   },
+   "reference": "i am by no means old said the fir tree",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-1089-134691-0022",
+   "split": "test",
+   "speakerId": "librispeech:1089",
+   "sessionId": "librispeech:1089-134691",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-1089-134691-0022.wav",
+    "sha256": "6bd200548edced04025726014eaf43af1d46f2a6d7e2f07d646685602f2413f2",
+    "durationMs": 5635.0
+   },
+   "reference": "he stood still in deference to their calls and parried their banter with easy words",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-5142-33396-0007",
+   "split": "test",
+   "speakerId": "librispeech:5142",
+   "sessionId": "librispeech:5142-33396",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-5142-33396-0007.wav",
+    "sha256": "36409abb92caf77d64f784deecf0417db4da109a0eb0603fdb4b5baa5ec6eb37",
+    "durationMs": 4975.0
+   },
+   "reference": "at the prow i carved the head with open mouth and forked tongue thrust out",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-2961-960-0015",
+   "split": "test",
+   "speakerId": "librispeech:2961",
+   "sessionId": "librispeech:2961-960",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-2961-960-0015.wav",
+    "sha256": "2a811344aa4d212f9d8bf120d1e5cf1cc9bd033715ff20d14592dc2d605aba59",
+    "durationMs": 7830.0
+   },
+   "reference": "the style and plan of the timaeus differ greatly from that of any other of the platonic dialogues",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-4970-29093-0013",
+   "split": "test",
+   "speakerId": "librispeech:4970",
+   "sessionId": "librispeech:4970-29093",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-4970-29093-0013.wav",
+    "sha256": "539db00d96d20f321eb740f7ba3d4294f8ef06b555a73bb4db1fae40a59dc37a",
+    "durationMs": 8010.0
+   },
+   "reference": "and he went back to his books and to his waiting for an opening large enough for his dignified entrance into the literary world",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-3729-6852-0002",
+   "split": "test",
+   "speakerId": "librispeech:3729",
+   "sessionId": "librispeech:3729-6852",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-3729-6852-0002.wav",
+    "sha256": "8cbca70d965aab750131e10e02600d97f24e129c77390f68524ba795c04f3a89",
+    "durationMs": 8780.0
+   },
+   "reference": "in order to please her i spoke to her of the abbe conti and i had occasion to quote two lines of that profound writer",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-1320-122612-0010",
+   "split": "test",
+   "speakerId": "librispeech:1320",
+   "sessionId": "librispeech:1320-122612",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-1320-122612-0010.wav",
+    "sha256": "a538ed9cd603bb3cb4b5cd9c2ea43c7f6532cb40925bbf1b1b7edd5608fe40b8",
+    "durationMs": 10195.0
+   },
+   "reference": "see said uncas pointing north and south at the evident marks of the broad trail on either side of him the dark hair has gone toward the forest",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-237-134493-0016",
+   "split": "test",
+   "speakerId": "librispeech:237",
+   "sessionId": "librispeech:237-134493",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-237-134493-0016.wav",
+    "sha256": "6d1cc39a9e38888f83ab8cdc5d65855743362463563dfba6c1b12940ac05e80b",
+    "durationMs": 10085.0
+   },
+   "reference": "on either side of the road for a mile before you reached the foot of the hill stood tall osage orange hedges their glossy green marking off the yellow fields",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-7729-102255-0007",
+   "split": "test",
+   "speakerId": "librispeech:7729",
+   "sessionId": "librispeech:7729-102255",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-7729-102255-0007.wav",
+    "sha256": "f72dd3621c1ce021b94c1d5e63548060da9ee3e6a1b2201bc50a4d17bdd233c6",
+    "durationMs": 11530.0
+   },
+   "reference": "his reception speech at westport in which he maintained the legality of the legislature and his determination to enforce their laws delighted his pro slavery auditors",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-61-70968-0034",
+   "split": "test",
+   "speakerId": "librispeech:61",
+   "sessionId": "librispeech:61-70968",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-61-70968-0034.wav",
+    "sha256": "6054ef7bb5140173bc76ae5a7cf5d1fed714117fc2bb4320f370df247d1228d6",
+    "durationMs": 4230.0
+   },
+   "reference": "a montfichet a montfichet gamewell to the rescue",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-4992-23283-0001",
+   "split": "test",
+   "speakerId": "librispeech:4992",
+   "sessionId": "librispeech:4992-23283",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-4992-23283-0001.wav",
+    "sha256": "19f412368f2e70851c1396153054dcd555ef8c1c1ab88d5fc5bbf421886abcbf",
+    "durationMs": 2710.0
+   },
+   "reference": "miss milner's health is not good",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-8555-292519-0015",
+   "split": "test",
+   "speakerId": "librispeech:8555",
+   "sessionId": "librispeech:8555-292519",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-8555-292519-0015.wav",
+    "sha256": "e474dc458a71feca730b64ddc3be9205eb0cf092bf1e8189ff7266adf07dde4a",
+    "durationMs": 2850.0
+   },
+   "reference": "he had broken into her courtyard",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-1995-1836-0013",
+   "split": "test",
+   "speakerId": "librispeech:1995",
+   "sessionId": "librispeech:1995-1836",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-1995-1836-0013.wav",
+    "sha256": "b092b7620effca07dcc241f5dd111466ec19333ecb4a45641d860c7f103c0e4e",
+    "durationMs": 5300.0
+   },
+   "reference": "mary taylor however related the tale of zora to missus grey's private ear later",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-5142-33396-0033",
+   "split": "test",
+   "speakerId": "librispeech:5142",
+   "sessionId": "librispeech:5142-33396",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-5142-33396-0033.wav",
+    "sha256": "7fedb93dc273f4396decbb4759d7f074e4b346046e860197c2463fe1247883c3",
+    "durationMs": 5280.0
+   },
+   "reference": "you would not eat with us you cannot say no to half of my ale i drink this to your health",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-5683-32866-0007",
+   "split": "test",
+   "speakerId": "librispeech:5683",
+   "sessionId": "librispeech:5683-32866",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-5683-32866-0007.wav",
+    "sha256": "d651ac0d4c4126c07392588f0c3c7cf5592bf6da029e486d401a4293d788e74b",
+    "durationMs": 4120.0
+   },
+   "reference": "if a fellow's been a little bit wild he's beelzebub at once",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-4992-41797-0019",
+   "split": "test",
+   "speakerId": "librispeech:4992",
+   "sessionId": "librispeech:4992-41797",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-4992-41797-0019.wav",
+    "sha256": "ab3342d5d62afa5dc3b034391960d5701f16572d6197e25e2a13fac1c039cb5a",
+    "durationMs": 4755.0
+   },
+   "reference": "olive's mournful black eyes met nancy's sparkling brown ones",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-7729-102255-0036",
+   "split": "test",
+   "speakerId": "librispeech:7729",
+   "sessionId": "librispeech:7729-102255",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-7729-102255-0036.wav",
+    "sha256": "d470885948eeaaed5acde039bb041477bf50db89c251b2c84846489db2df2667",
+    "durationMs": 7705.0
+   },
+   "reference": "he planted a company before the hotel and demanded a surrender of the arms belonging to the free state military companies",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-5683-32865-0017",
+   "split": "test",
+   "speakerId": "librispeech:5683",
+   "sessionId": "librispeech:5683-32865",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-5683-32865-0017.wav",
+    "sha256": "f68ac1fc138b6d0613a8763239670afa1faf123b1903fc76b04c3044a3fcf694",
+    "durationMs": 5455.0
+   },
+   "reference": "all the time he was talking to me his angry little eyes were following lake",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-6829-68769-0046",
+   "split": "test",
+   "speakerId": "librispeech:6829",
+   "sessionId": "librispeech:6829-68769",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-6829-68769-0046.wav",
+    "sha256": "fa7a590aa40f00c6e9706185f567c62c148e766d12dd673acf485651df83cf0d",
+    "durationMs": 2570.0
+   },
+   "reference": "you're foolish why should you do all this",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-8463-294828-0014",
+   "split": "test",
+   "speakerId": "librispeech:8463",
+   "sessionId": "librispeech:8463-294828",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-8463-294828-0014.wav",
+    "sha256": "7466967854c834bafbf21a1d77205c64c7b02fb6ecb44cdd7339eaa313600a86",
+    "durationMs": 5725.0
+   },
+   "reference": "there was good reason to stop and think even for the world's most emotionless man",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-3575-170457-0035",
+   "split": "test",
+   "speakerId": "librispeech:3575",
+   "sessionId": "librispeech:3575-170457",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-3575-170457-0035.wav",
+    "sha256": "9ba838afb1585a7f991e851c0043d15817d4de4a49794d3b12c97cd526264a22",
+    "durationMs": 9370.0
+   },
+   "reference": "i wish it would recur again but it will take two or three interviews before the stiffness the estrangement of this long separation will wear away",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-5639-40744-0017",
+   "split": "test",
+   "speakerId": "librispeech:5639",
+   "sessionId": "librispeech:5639-40744",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-5639-40744-0017.wav",
+    "sha256": "8012c4141ccd704b66b7b54dc6232bd69b782c2768a842ce1591e203ef2fc740",
+    "durationMs": 5880.0
+   },
+   "reference": "choking with emotion leocadi made a sign to her parents that she wished to be alone with them",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-4970-29095-0029",
+   "split": "test",
+   "speakerId": "librispeech:4970",
+   "sessionId": "librispeech:4970-29095",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-4970-29095-0029.wav",
+    "sha256": "d5bdf6358541f1e66af6a072ad1f9125493eb5fda0967017c5c45835ab836ae6",
+    "durationMs": 3890.0
+   },
+   "reference": "is he going to start a daily newspaper among the kick a poos",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-8224-274381-0003",
+   "split": "test",
+   "speakerId": "librispeech:8224",
+   "sessionId": "librispeech:8224-274381",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-8224-274381-0003.wav",
+    "sha256": "0a273e9f0b36d7d6d45ee136698c716468b555136176a375385a8e25d71432f0",
+    "durationMs": 13085.0
+   },
+   "reference": "the king's ears were now open to montrose's counsels who proposed none but the boldest and most daring agreeably to the desperate state of the royal cause in scotland",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-3575-170457-0012",
+   "split": "test",
+   "speakerId": "librispeech:3575",
+   "sessionId": "librispeech:3575-170457",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-3575-170457-0012.wav",
+    "sha256": "49425bd3c769c312a9ba9eefe9800b6a016f32a8217cc690061524f50a2f6a85",
+    "durationMs": 5850.062
+   },
+   "reference": "you will say that a woman has no need of such a caution there can be no peril in it for her",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-3570-5694-0022",
+   "split": "test",
+   "speakerId": "librispeech:3570",
+   "sessionId": "librispeech:3570-5694",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-3570-5694-0022.wav",
+    "sha256": "e19d31ff9a007ab0446b159920023780d1aa210873abb133e4c760f0dfcca4bc",
+    "durationMs": 4295.0
+   },
+   "reference": "the livery becomes obnoxious to nearly all who are required to wear it",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-8224-274381-0010",
+   "split": "test",
+   "speakerId": "librispeech:8224",
+   "sessionId": "librispeech:8224-274381",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-8224-274381-0010.wav",
+    "sha256": "f347a866636497a144c443d892e577e50589757fb28cdcb1335dd181a6ddb761",
+    "durationMs": 13620.0
+   },
+   "reference": "by a quick and unexpected march montrose hastened to innerlochy and presented himself in order of battle before the surprised but not affrightened covenanters",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-1995-1836-0007",
+   "split": "test",
+   "speakerId": "librispeech:1995",
+   "sessionId": "librispeech:1995-1836",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-1995-1836-0007.wav",
+    "sha256": "4514cdac0cc94e28f6f0eeeb668d6e5bc205790258a482b3801a625f32e5ef7a",
+    "durationMs": 3435.0
+   },
+   "reference": "but you believe in some education asked mary taylor",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-908-31957-0018",
+   "split": "test",
+   "speakerId": "librispeech:908",
+   "sessionId": "librispeech:908-31957",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-908-31957-0018.wav",
+    "sha256": "66616f2f184d0ee6610e80f4608713e690260e0e1a87cd662656695dd5209573",
+    "durationMs": 3915.0
+   },
+   "reference": "but thou art not such a lover my beloved",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-2961-961-0013",
+   "split": "test",
+   "speakerId": "librispeech:2961",
+   "sessionId": "librispeech:2961-961",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-2961-961-0013.wav",
+    "sha256": "00b0ddb5efa2800743dd7ecf2452c50d4d615dcb72b863f4a2b53d7b5390fadd",
+    "durationMs": 5120.0
+   },
+   "reference": "solon marvelled and desired to be informed of the particulars",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-672-122797-0032",
+   "split": "test",
+   "speakerId": "librispeech:672",
+   "sessionId": "librispeech:672-122797",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-672-122797-0032.wav",
+    "sha256": "be6f9e61d897913520a25a294ace16b0b405c25237ba6422f9fbe9cafda15b8a",
+    "durationMs": 4000.0
+   },
+   "reference": "cried the young ladies and they quickly put out the fire",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-7021-79730-0001",
+   "split": "test",
+   "speakerId": "librispeech:7021",
+   "sessionId": "librispeech:7021-79730",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-7021-79730-0001.wav",
+    "sha256": "1b3e8c057b41ba2034bcb50e8fa6b56acbdef8216814c84c294d731e56adf8ef",
+    "durationMs": 11490.0
+   },
+   "reference": "to suppose that the object of this work is to aid in effecting such a substitution as that is entirely to mistake its nature and design",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-7127-75947-0011",
+   "split": "test",
+   "speakerId": "librispeech:7127",
+   "sessionId": "librispeech:7127-75947",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-7127-75947-0011.wav",
+    "sha256": "33316afec60d43b6028affb291354cf50160393414e177fc2e074123f983e11a",
+    "durationMs": 3620.0
+   },
+   "reference": "remain i implore you the evening is most lovely",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-2300-131720-0021",
+   "split": "test",
+   "speakerId": "librispeech:2300",
+   "sessionId": "librispeech:2300-131720",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-2300-131720-0021.wav",
+    "sha256": "bbcb4cf48f1f4fd6a7758b16e86fd0a9f7167ddf450a514e8e89353d66601741",
+    "durationMs": 10950.0
+   },
+   "reference": "the street conductors were of the overhead pole line construction and were installed by the construction company that had been organized by edison to build and equip central stations",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-1089-134686-0008",
+   "split": "test",
+   "speakerId": "librispeech:1089",
+   "sessionId": "librispeech:1089-134686",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-1089-134686-0008.wav",
+    "sha256": "c6d413fe63540a24110a8dd2db4502d41cf55112767dc2338cb4234cc8c09777",
+    "durationMs": 6730.0
+   },
+   "reference": "the chaos in which his ardour extinguished itself was a cold indifferent knowledge of himself",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-6930-76324-0023",
+   "split": "test",
+   "speakerId": "librispeech:6930",
+   "sessionId": "librispeech:6930-76324",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-6930-76324-0023.wav",
+    "sha256": "91d56db171e251838c1859d1da5bdb9896b68ca51d3d2f0b08daf4ba05071108",
+    "durationMs": 4850.0
+   },
+   "reference": "and my pocket money is getting low again and you haven't any left as usual",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-121-127105-0023",
+   "split": "test",
+   "speakerId": "librispeech:121",
+   "sessionId": "librispeech:121-127105",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-121-127105-0023.wav",
+    "sha256": "a8965ee6dd9d2a7c0b59e02c3a50e93a717c509412b3960c04126beb1da92759",
+    "durationMs": 10910.0
+   },
+   "reference": "let me say here distinctly to have done with it that this narrative from an exact transcript of my own made much later is what i shall presently give",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-260-123288-0008",
+   "split": "test",
+   "speakerId": "librispeech:260",
+   "sessionId": "librispeech:260-123288",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-260-123288-0008.wav",
+    "sha256": "e3c4e04dab9db28856021a78df156c6eb787a3178fc9261c058fe2c249b24716",
+    "durationMs": 5515.0
+   },
+   "reference": "there's a heavy storm coming on i cried pointing towards the horizon",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-8455-210777-0017",
+   "split": "test",
+   "speakerId": "librispeech:8455",
+   "sessionId": "librispeech:8455-210777",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-8455-210777-0017.wav",
+    "sha256": "3653ccd2ac28ebf9dda512f9f9d7d09ce2771d17527b48e976ff1e28293538d3",
+    "durationMs": 5330.062
+   },
+   "reference": "my wife on the spur of the moment managed to give the gentlemen a very good dinner",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-908-157963-0026",
+   "split": "test",
+   "speakerId": "librispeech:908",
+   "sessionId": "librispeech:908-157963",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-908-157963-0026.wav",
+    "sha256": "a30c8dcbb1faa879a534cb2375ec5c23a77a2c9a4e5deb46923b182ce3e6e7a8",
+    "durationMs": 8100.0
+   },
+   "reference": "and says thou mother of my children i have loved thee and i have given thee a crown that none can take away",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-1580-141083-0024",
+   "split": "test",
+   "speakerId": "librispeech:1580",
+   "sessionId": "librispeech:1580-141083",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-1580-141083-0024.wav",
+    "sha256": "69e50c5bd571e73e2d7383c758c66d2cf7e22299f94f8c1af747ea338a6ac2af",
+    "durationMs": 4480.0
+   },
+   "reference": "you left him in a chair you say which chair by the window there",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-4507-16021-0024",
+   "split": "test",
+   "speakerId": "librispeech:4507",
+   "sessionId": "librispeech:4507-16021",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-4507-16021-0024.wav",
+    "sha256": "ae0038ca5b22e93290353040c011e89fe5c2646e8af99ff94fc338ded39e1539",
+    "durationMs": 5140.0
+   },
+   "reference": "algebra medicine botany have each their slang",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "libri-6829-68769-0013",
+   "split": "test",
+   "speakerId": "librispeech:6829",
+   "sessionId": "librispeech:6829-68769",
+   "language": "en",
+   "unit": "wer",
+   "tags": [
+    "read",
+    "librispeech"
+   ],
+   "audio": {
+    "path": "audio/libri-6829-68769-0013.wav",
+    "sha256": "2722a468c1370f18c27c68e1f160969f76d954cda246f1158f8a3279418333c7",
+    "durationMs": 2725.0
+   },
+   "reference": "may we see gates at once asked kenneth",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "tts-train-00-grandpa",
+   "split": "train",
+   "speakerId": "tts:grandpa",
+   "sessionId": "tts:grandpa:train",
+   "language": "mixed",
+   "unit": "mer",
+   "tags": [
+    "synthetic-tts",
+    "technical"
+   ],
+   "audio": {
+    "path": "audio/tts-train-00-grandpa.wav",
+    "sha256": "b5123c7bae57b825518a5037d056fb51cdf7bbb9d88e5f0a47a2f8682f6d2051",
+    "durationMs": 4110.25
+   },
+   "reference": "我们下午三点开个短会，讨论一下 roadmap。",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "tts-train-01-grandpa",
+   "split": "train",
+   "speakerId": "tts:grandpa",
+   "sessionId": "tts:grandpa:train",
+   "language": "mixed",
+   "unit": "mer",
+   "tags": [
+    "synthetic-tts",
+    "technical"
+   ],
+   "audio": {
+    "path": "audio/tts-train-01-grandpa.wav",
+    "sha256": "5b09ad0149ccc0dde5b086f4268772e32ee45c4303dd529052860945741609f9",
+    "durationMs": 2984.812
+   },
+   "reference": "请把这份 PDF 发到我的邮箱。",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "tts-dev-00-eddy",
+   "split": "dev",
+   "speakerId": "tts:eddy",
+   "sessionId": "tts:eddy:dev",
+   "language": "mixed",
+   "unit": "mer",
+   "tags": [
+    "synthetic-tts",
+    "technical"
+   ],
+   "audio": {
+    "path": "audio/tts-dev-00-eddy.wav",
+    "sha256": "2b9d16aae2c2a60d4a2523c8f0a794c2c37a2d781898baebe9c9d099db003995",
+    "durationMs": 4344.812
+   },
+   "reference": "把这个 PR merge 到 main 分支之前先跑一下 CI。",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "tts-dev-01-flo",
+   "split": "dev",
+   "speakerId": "tts:flo",
+   "sessionId": "tts:flo:dev",
+   "language": "mixed",
+   "unit": "mer",
+   "tags": [
+    "synthetic-tts",
+    "technical"
+   ],
+   "audio": {
+    "path": "audio/tts-dev-01-flo.wav",
+    "sha256": "5c36237c6b1f0fb6cfa8b9509fd42c849a23b5b72064591a0c55178e01c3f016",
+    "durationMs": 3111.938
+   },
+   "reference": "今天的 standup 改到上午十点半。",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "tts-dev-02-reed",
+   "split": "dev",
+   "speakerId": "tts:reed",
+   "sessionId": "tts:reed:dev",
+   "language": "mixed",
+   "unit": "mer",
+   "tags": [
+    "synthetic-tts",
+    "technical"
+   ],
+   "audio": {
+    "path": "audio/tts-dev-02-reed.wav",
+    "sha256": "6344015748467d41e957efa7e5fa295fb577e27c4f92f42ea39da2b28f4abd73",
+    "durationMs": 4296.625
+   },
+   "reference": "这个 bug 只在 Safari 上出现，Chrome 没有问题。",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "tts-dev-03-eddy",
+   "split": "dev",
+   "speakerId": "tts:eddy",
+   "sessionId": "tts:eddy:dev",
+   "language": "mixed",
+   "unit": "mer",
+   "tags": [
+    "synthetic-tts",
+    "technical"
+   ],
+   "audio": {
+    "path": "audio/tts-dev-03-eddy.wav",
+    "sha256": "4bc23add014ef2accec322fbdc3ad7f436a5c28b5e4b1409a566bac3d3a17c59",
+    "durationMs": 4376.812
+   },
+   "reference": "帮我在 Notion 里新建一个页面，标题叫季度总结。",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "tts-dev-04-flo",
+   "split": "dev",
+   "speakerId": "tts:flo",
+   "sessionId": "tts:flo:dev",
+   "language": "mixed",
+   "unit": "mer",
+   "tags": [
+    "synthetic-tts",
+    "technical"
+   ],
+   "audio": {
+    "path": "audio/tts-dev-04-flo.wav",
+    "sha256": "dd80fe379c710751b6cab9705a13574de726091ef3465260422791e0497fd194",
+    "durationMs": 3406.375
+   },
+   "reference": "我们的 API 响应时间大概是两百毫秒。",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "tts-dev-05-reed",
+   "split": "dev",
+   "speakerId": "tts:reed",
+   "sessionId": "tts:reed:dev",
+   "language": "mixed",
+   "unit": "mer",
+   "tags": [
+    "synthetic-tts",
+    "technical"
+   ],
+   "audio": {
+    "path": "audio/tts-dev-05-reed.wav",
+    "sha256": "7699f427ac833f47b67dc8ee003c78e2fde8a7dcab61e69ae85f9e60ece756b0",
+    "durationMs": 4030.625
+   },
+   "reference": "下周一之前把 design review 的反馈整理好。",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "tts-dev-06-eddy",
+   "split": "dev",
+   "speakerId": "tts:eddy",
+   "sessionId": "tts:eddy:dev",
+   "language": "mixed",
+   "unit": "mer",
+   "tags": [
+    "synthetic-tts",
+    "technical"
+   ],
+   "audio": {
+    "path": "audio/tts-dev-06-eddy.wav",
+    "sha256": "3d4c4f23dc2ba2760bc54ad97be3a928ff408e300d93c3ef07a83daf91326b4b",
+    "durationMs": 3336.625
+   },
+   "reference": "Docker 镜像太大了，需要优化一下。",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "tts-dev-07-flo",
+   "split": "dev",
+   "speakerId": "tts:flo",
+   "sessionId": "tts:flo:dev",
+   "language": "mixed",
+   "unit": "mer",
+   "tags": [
+    "synthetic-tts",
+    "technical"
+   ],
+   "audio": {
+    "path": "audio/tts-dev-07-flo.wav",
+    "sha256": "4a3038d2169437d698b510d4c323a6bd1a570208f7bdb43cf9ef5478dfd8c39d",
+    "durationMs": 3752.5
+   },
+   "reference": "请不要在 production 环境直接改数据库。",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "tts-dev-08-reed",
+   "split": "dev",
+   "speakerId": "tts:reed",
+   "sessionId": "tts:reed:dev",
+   "language": "mixed",
+   "unit": "mer",
+   "tags": [
+    "synthetic-tts",
+    "technical"
+   ],
+   "audio": {
+    "path": "audio/tts-dev-08-reed.wav",
+    "sha256": "5c06c78fcd6bf4bebf706d6a24373e202aa6f96646e2d7142ccd5b0581c7c5d5",
+    "durationMs": 3368.625
+   },
+   "reference": "这个 function 的返回值应该是一个数组。",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "tts-dev-09-eddy",
+   "split": "dev",
+   "speakerId": "tts:eddy",
+   "sessionId": "tts:eddy:dev",
+   "language": "mixed",
+   "unit": "mer",
+   "tags": [
+    "synthetic-tts",
+    "technical"
+   ],
+   "audio": {
+    "path": "audio/tts-dev-09-eddy.wav",
+    "sha256": "05b9d0fe204539c99f3f06ecac671badf73d13fa07b3bcda097d2a15c4793c4d",
+    "durationMs": 3630.375
+   },
+   "reference": "我已经把 slides 上传到 Google Drive 了。",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "tts-dev-10-flo",
+   "split": "dev",
+   "speakerId": "tts:flo",
+   "sessionId": "tts:flo:dev",
+   "language": "mixed",
+   "unit": "mer",
+   "tags": [
+    "synthetic-tts",
+    "technical"
+   ],
+   "audio": {
+    "path": "audio/tts-dev-10-flo.wav",
+    "sha256": "fc331bb11f2c4a64db79d663ddb646df30b90c0297a3a9efb3bc1e3996b3742e",
+    "durationMs": 2600.5
+   },
+   "reference": "客户说他们不需要 dark mode。",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "tts-dev-11-reed",
+   "split": "dev",
+   "speakerId": "tts:reed",
+   "sessionId": "tts:reed:dev",
+   "language": "mixed",
+   "unit": "mer",
+   "tags": [
+    "synthetic-tts",
+    "technical"
+   ],
+   "audio": {
+    "path": "audio/tts-dev-11-reed.wav",
+    "sha256": "3592541e4549c7d547fd09f5c1250db89a11449547af3df9d287a581a57b2e65",
+    "durationMs": 2968.812
+   },
+   "reference": "把 timeout 设置成三十秒试试看。",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "tts-dev-12-eddy",
+   "split": "dev",
+   "speakerId": "tts:eddy",
+   "sessionId": "tts:eddy:dev",
+   "language": "mixed",
+   "unit": "mer",
+   "tags": [
+    "synthetic-tts",
+    "technical"
+   ],
+   "audio": {
+    "path": "audio/tts-dev-12-eddy.wav",
+    "sha256": "0b9d404e574a0fb0022529ae64ed3f9fbeec6432beaa5fff88a555d9c324d402",
+    "durationMs": 2942.375
+   },
+   "reference": "我们用 Kubernetes 部署这个服务。",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "tts-dev-13-flo",
+   "split": "dev",
+   "speakerId": "tts:flo",
+   "sessionId": "tts:flo:dev",
+   "language": "mixed",
+   "unit": "mer",
+   "tags": [
+    "synthetic-tts",
+    "technical"
+   ],
+   "audio": {
+    "path": "audio/tts-dev-13-flo.wav",
+    "sha256": "348541af6714c913e570561ac07b8d5b8e658d6bced8993335b187005b985704",
+    "durationMs": 3262.375
+   },
+   "reference": "明天早上九点和 Sarah 开一对一。",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "tts-dev-14-reed",
+   "split": "dev",
+   "speakerId": "tts:reed",
+   "sessionId": "tts:reed:dev",
+   "language": "mixed",
+   "unit": "mer",
+   "tags": [
+    "synthetic-tts",
+    "technical"
+   ],
+   "audio": {
+    "path": "audio/tts-dev-14-reed.wav",
+    "sha256": "33d4787b69e3f6753c1d9c94acae79a932da0ff7e8bc42c601014c85256fd8c6",
+    "durationMs": 4248.625
+   },
+   "reference": "这个 feature 先不要上线，等 QA 测完再说。",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "tts-dev-15-eddy",
+   "split": "dev",
+   "speakerId": "tts:eddy",
+   "sessionId": "tts:eddy:dev",
+   "language": "mixed",
+   "unit": "mer",
+   "tags": [
+    "synthetic-tts",
+    "technical"
+   ],
+   "audio": {
+    "path": "audio/tts-dev-15-eddy.wav",
+    "sha256": "cf1150bec7ad042ef75c6e1e9c42ca7585b768cf2c9ff14975370d1a75bc45c6",
+    "durationMs": 3086.562
+   },
+   "reference": "README 里面要写清楚安装步骤。",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "tts-dev-16-flo",
+   "split": "dev",
+   "speakerId": "tts:flo",
+   "sessionId": "tts:flo:dev",
+   "language": "mixed",
+   "unit": "mer",
+   "tags": [
+    "synthetic-tts",
+    "technical"
+   ],
+   "audio": {
+    "path": "audio/tts-dev-16-flo.wav",
+    "sha256": "a71ca6782ad82fa1202e979df9fc530d37b2c01d86657684803b01c9845733d9",
+    "durationMs": 3518.375
+   },
+   "reference": "内存占用涨到了八个 G，有点奇怪。",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "tts-dev-17-reed",
+   "split": "dev",
+   "speakerId": "tts:reed",
+   "sessionId": "tts:reed:dev",
+   "language": "mixed",
+   "unit": "mer",
+   "tags": [
+    "synthetic-tts",
+    "technical"
+   ],
+   "audio": {
+    "path": "audio/tts-dev-17-reed.wav",
+    "sha256": "36498e8f1421f53b27e67b0821916ecdff7e496fdc35dd7d93d12b61462d44c1",
+    "durationMs": 2824.5
+   },
+   "reference": "请把预算表格导出成 Excel。",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "tts-dev-18-eddy",
+   "split": "dev",
+   "speakerId": "tts:eddy",
+   "sessionId": "tts:eddy:dev",
+   "language": "mixed",
+   "unit": "mer",
+   "tags": [
+    "synthetic-tts",
+    "technical"
+   ],
+   "audio": {
+    "path": "audio/tts-dev-18-eddy.wav",
+    "sha256": "565f0f00ea3f2ea32628e691ade3813e12a2a7e8c1355bfef6521ec21d80461f",
+    "durationMs": 2942.375
+   },
+   "reference": "我觉得这个 UI 的间距有点太紧了。",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "tts-dev-19-flo",
+   "split": "dev",
+   "speakerId": "tts:flo",
+   "sessionId": "tts:flo:dev",
+   "language": "mixed",
+   "unit": "mer",
+   "tags": [
+    "synthetic-tts",
+    "technical"
+   ],
+   "audio": {
+    "path": "audio/tts-dev-19-flo.wav",
+    "sha256": "63b2c5b2e41a0b8f7ce7568a05b9df1f88188e22e3115ad712fa8463dce897bf",
+    "durationMs": 2440.5
+   },
+   "reference": "周五的 demo 我来负责讲解。",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "tts-dev-20-reed",
+   "split": "dev",
+   "speakerId": "tts:reed",
+   "sessionId": "tts:reed:dev",
+   "language": "mixed",
+   "unit": "mer",
+   "tags": [
+    "synthetic-tts",
+    "technical"
+   ],
+   "audio": {
+    "path": "audio/tts-dev-20-reed.wav",
+    "sha256": "ea1126d30559b5d177f231f0d946b867e6e2809a273019ba7ff03de5211c4f69",
+    "durationMs": 2360.625
+   },
+   "reference": "这个接口返回了四百零四。",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "tts-dev-21-eddy",
+   "split": "dev",
+   "speakerId": "tts:eddy",
+   "sessionId": "tts:eddy:dev",
+   "language": "mixed",
+   "unit": "mer",
+   "tags": [
+    "synthetic-tts",
+    "technical"
+   ],
+   "audio": {
+    "path": "audio/tts-dev-21-eddy.wav",
+    "sha256": "e665b719a69eb24fd191b57888fcd0c1f952d1a3bf3e910d15c3c3a38f9dbc47",
+    "durationMs": 2904.812
+   },
+   "reference": "把 log level 调成 debug 再看看。",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "tts-dev-22-flo",
+   "split": "dev",
+   "speakerId": "tts:flo",
+   "sessionId": "tts:flo:dev",
+   "language": "mixed",
+   "unit": "mer",
+   "tags": [
+    "synthetic-tts",
+    "technical"
+   ],
+   "audio": {
+    "path": "audio/tts-dev-22-flo.wav",
+    "sha256": "b7ba333c55e8e1b7b7c6a3adcb1de2e265ba3f27f55d51adae4cd3724a5f277c",
+    "durationMs": 3176.625
+   },
+   "reference": "Typescript 的类型检查没有通过。",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "tts-dev-23-reed",
+   "split": "dev",
+   "speakerId": "tts:reed",
+   "sessionId": "tts:reed:dev",
+   "language": "mixed",
+   "unit": "mer",
+   "tags": [
+    "synthetic-tts",
+    "technical"
+   ],
+   "audio": {
+    "path": "audio/tts-dev-23-reed.wav",
+    "sha256": "67852ef2ffbbc8498846538ae57121ee31f98509be82ca2fe9087dfcf97e2ee2",
+    "durationMs": 3118.562
+   },
+   "reference": "会议纪要我晚点发到 Slack 频道。",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "tts-dev-24-eddy",
+   "split": "dev",
+   "speakerId": "tts:eddy",
+   "sessionId": "tts:eddy:dev",
+   "language": "mixed",
+   "unit": "mer",
+   "tags": [
+    "synthetic-tts",
+    "technical"
+   ],
+   "audio": {
+    "path": "audio/tts-dev-24-eddy.wav",
+    "sha256": "f4d3f8a7e962fe7e0ec6ca4dda9c30ce80688e3ee8a11205ee7fe344b1bcf0a0",
+    "durationMs": 3118.375
+   },
+   "reference": "我们需要一个更好的 onboarding 流程。",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "tts-dev-25-flo",
+   "split": "dev",
+   "speakerId": "tts:flo",
+   "sessionId": "tts:flo:dev",
+   "language": "mixed",
+   "unit": "mer",
+   "tags": [
+    "synthetic-tts",
+    "technical"
+   ],
+   "audio": {
+    "path": "audio/tts-dev-25-flo.wav",
+    "sha256": "74bf48822306daf666201d4d4c58fd0e314a9e00362ea897633b6ac5c67ab763",
+    "durationMs": 3144.562
+   },
+   "reference": "这个模型在 M4 芯片上跑得很快。",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "tts-dev-26-reed",
+   "split": "dev",
+   "speakerId": "tts:reed",
+   "sessionId": "tts:reed:dev",
+   "language": "mixed",
+   "unit": "mer",
+   "tags": [
+    "synthetic-tts",
+    "technical"
+   ],
+   "audio": {
+    "path": "audio/tts-dev-26-reed.wav",
+    "sha256": "930adb5aadec4bf8daf06f9f4b44626e61d6dbaed1eeeb4662d90973811360ca",
+    "durationMs": 2136.812
+   },
+   "reference": "不要忘记更新 changelog。",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "tts-dev-27-eddy",
+   "split": "dev",
+   "speakerId": "tts:eddy",
+   "sessionId": "tts:eddy:dev",
+   "language": "mixed",
+   "unit": "mer",
+   "tags": [
+    "synthetic-tts",
+    "technical"
+   ],
+   "audio": {
+    "path": "audio/tts-dev-27-eddy.wav",
+    "sha256": "d2d0a93a784c0e5851730962aef5fb77c98ea9af9af9081da827a7bbdc523379",
+    "durationMs": 3288.625
+   },
+   "reference": "第二季度的 revenue 增长了百分之十二。",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "tts-dev-28-flo",
+   "split": "dev",
+   "speakerId": "tts:flo",
+   "sessionId": "tts:flo:dev",
+   "language": "mixed",
+   "unit": "mer",
+   "tags": [
+    "synthetic-tts",
+    "technical"
+   ],
+   "audio": {
+    "path": "audio/tts-dev-28-flo.wav",
+    "sha256": "e3eba38013541074dfd79a6ec03a5fd27ec713cdece45ba86106fbe66daceebc",
+    "durationMs": 2952.5
+   },
+   "reference": "请帮我预约一下下周三的会议室。",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "tts-dev-29-reed",
+   "split": "dev",
+   "speakerId": "tts:reed",
+   "sessionId": "tts:reed:dev",
+   "language": "mixed",
+   "unit": "mer",
+   "tags": [
+    "synthetic-tts",
+    "technical"
+   ],
+   "audio": {
+    "path": "audio/tts-dev-29-reed.wav",
+    "sha256": "134832341122f3565a607c2452c92da90e97c24adecf23ca8061d75d2d2c8ae8",
+    "durationMs": 3112.562
+   },
+   "reference": "这个 commit 的信息写得不够清楚。",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "tts-test-00-tingting",
+   "split": "test",
+   "speakerId": "tts:tingting",
+   "sessionId": "tts:tingting:test",
+   "language": "mixed",
+   "unit": "mer",
+   "tags": [
+    "synthetic-tts",
+    "technical"
+   ],
+   "audio": {
+    "path": "audio/tts-test-00-tingting.wav",
+    "sha256": "1570eed3d9b3a093d8acc8d40933b6c08d5e12bc7721019089531ac711d48011",
+    "durationMs": 3381.188
+   },
+   "reference": "先把 feature branch rebase 一下再提交。",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "tts-test-01-shelley",
+   "split": "test",
+   "speakerId": "tts:shelley",
+   "sessionId": "tts:shelley:test",
+   "language": "mixed",
+   "unit": "mer",
+   "tags": [
+    "synthetic-tts",
+    "technical"
+   ],
+   "audio": {
+    "path": "audio/tts-test-01-shelley.wav",
+    "sha256": "0603c65321461aa880bc7c146daccde24395a7a98c99243eeaf1d1707711f1fa",
+    "durationMs": 2936.562
+   },
+   "reference": "这次 release 我们推迟到下周二。",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "tts-test-02-rocko",
+   "split": "test",
+   "speakerId": "tts:rocko",
+   "sessionId": "tts:rocko:test",
+   "language": "mixed",
+   "unit": "mer",
+   "tags": [
+    "synthetic-tts",
+    "technical"
+   ],
+   "audio": {
+    "path": "audio/tts-test-02-rocko.wav",
+    "sha256": "1a21e7adbb441b993b1438bdb274d21a0bd16c224dd8ec74e86f2b265979091d",
+    "durationMs": 3336.625
+   },
+   "reference": "登录页面在 iPhone 上显示不正常。",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "tts-test-03-sandy",
+   "split": "test",
+   "speakerId": "tts:sandy",
+   "sessionId": "tts:sandy:test",
+   "language": "mixed",
+   "unit": "mer",
+   "tags": [
+    "synthetic-tts",
+    "technical"
+   ],
+   "audio": {
+    "path": "audio/tts-test-03-sandy.wav",
+    "sha256": "a984287932d527441a4965d90390fa9c3badbb9db6b868f7aad96189271d20d3",
+    "durationMs": 3614.188
+   },
+   "reference": "我刚刚在 Jira 上建了一个新的 ticket。",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "tts-test-04-tingting",
+   "split": "test",
+   "speakerId": "tts:tingting",
+   "sessionId": "tts:tingting:test",
+   "language": "mixed",
+   "unit": "mer",
+   "tags": [
+    "synthetic-tts",
+    "technical"
+   ],
+   "audio": {
+    "path": "audio/tts-test-04-tingting.wav",
+    "sha256": "c3f89a5a472ad909d5f65f2f912c1c9e925adfe80cb72824f742fa37b5610415",
+    "durationMs": 2636.75
+   },
+   "reference": "数据库的 query 需要加一个索引。",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "tts-test-05-shelley",
+   "split": "test",
+   "speakerId": "tts:shelley",
+   "sessionId": "tts:shelley:test",
+   "language": "mixed",
+   "unit": "mer",
+   "tags": [
+    "synthetic-tts",
+    "technical"
+   ],
+   "audio": {
+    "path": "audio/tts-test-05-shelley.wav",
+    "sha256": "61722079bea5f569fbab6b8fb66238d47285539945095f9f2594ff3301e96675",
+    "durationMs": 3032.5
+   },
+   "reference": "请把这段代码的 unit test 补上。",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "tts-test-06-rocko",
+   "split": "test",
+   "speakerId": "tts:rocko",
+   "sessionId": "tts:rocko:test",
+   "language": "mixed",
+   "unit": "mer",
+   "tags": [
+    "synthetic-tts",
+    "technical"
+   ],
+   "audio": {
+    "path": "audio/tts-test-06-rocko.wav",
+    "sha256": "605506fffc299cd8b62aa5da5a2b0c8b860d869bc1f622e9d3b608ada0c5c734",
+    "durationMs": 3246.25
+   },
+   "reference": "我们的用户留存率是百分之三十五。",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "tts-test-07-sandy",
+   "split": "test",
+   "speakerId": "tts:sandy",
+   "sessionId": "tts:sandy:test",
+   "language": "mixed",
+   "unit": "mer",
+   "tags": [
+    "synthetic-tts",
+    "technical"
+   ],
+   "audio": {
+    "path": "audio/tts-test-07-sandy.wav",
+    "sha256": "2f5760b672519d334997f7e07e09727786e9d8c421e890b93047d2d5ffbd08ce",
+    "durationMs": 3118.625
+   },
+   "reference": "下午和 David 讨论一下定价策略。",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "tts-test-08-tingting",
+   "split": "test",
+   "speakerId": "tts:tingting",
+   "sessionId": "tts:tingting:test",
+   "language": "mixed",
+   "unit": "mer",
+   "tags": [
+    "synthetic-tts",
+    "technical"
+   ],
+   "audio": {
+    "path": "audio/tts-test-08-tingting.wav",
+    "sha256": "bf493f9e1210f19aa12b01b1fae32f3f9949b8b815cfc6a33d0e4a9b7a0b9723",
+    "durationMs": 3935.75
+   },
+   "reference": "不要把 API key 提交到 GitHub 上。",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "tts-test-09-shelley",
+   "split": "test",
+   "speakerId": "tts:shelley",
+   "sessionId": "tts:shelley:test",
+   "language": "mixed",
+   "unit": "mer",
+   "tags": [
+    "synthetic-tts",
+    "technical"
+   ],
+   "audio": {
+    "path": "audio/tts-test-09-shelley.wav",
+    "sha256": "479c92b7801620f917d11405f46cd55954f544af1d491b51699ee2c81dd9c01a",
+    "durationMs": 2760.5
+   },
+   "reference": "这个页面的 loading 时间太长了。",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "tts-test-10-rocko",
+   "split": "test",
+   "speakerId": "tts:rocko",
+   "sessionId": "tts:rocko:test",
+   "language": "mixed",
+   "unit": "mer",
+   "tags": [
+    "synthetic-tts",
+    "technical"
+   ],
+   "audio": {
+    "path": "audio/tts-test-10-rocko.wav",
+    "sha256": "9090d345a9569ce30bc7f7eea1d0f05cff2f6668658fde0196aeaff6344644c4",
+    "durationMs": 2792.812
+   },
+   "reference": "把字体改成 Inter，字号十四。",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "tts-test-11-sandy",
+   "split": "test",
+   "speakerId": "tts:sandy",
+   "sessionId": "tts:sandy:test",
+   "language": "mixed",
+   "unit": "mer",
+   "tags": [
+    "synthetic-tts",
+    "technical"
+   ],
+   "audio": {
+    "path": "audio/tts-test-11-sandy.wav",
+    "sha256": "f5896fa64156c39f980e0457fb5a6f5098fe1a0328571ee30c4a7d7c91058869",
+    "durationMs": 3950.562
+   },
+   "reference": "服务器的 CPU 使用率一直在百分之九十以上。",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "tts-test-12-tingting",
+   "split": "test",
+   "speakerId": "tts:tingting",
+   "sessionId": "tts:tingting:test",
+   "language": "mixed",
+   "unit": "mer",
+   "tags": [
+    "synthetic-tts",
+    "technical"
+   ],
+   "audio": {
+    "path": "audio/tts-test-12-tingting.wav",
+    "sha256": "70186609747f0b3ca343c778b4136298c19bf4e443f59b654058df5bd5a40839",
+    "durationMs": 2761.875
+   },
+   "reference": "这个需求我们这个 sprint 做不完。",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "tts-test-13-shelley",
+   "split": "test",
+   "speakerId": "tts:shelley",
+   "sessionId": "tts:shelley:test",
+   "language": "mixed",
+   "unit": "mer",
+   "tags": [
+    "synthetic-tts",
+    "technical"
+   ],
+   "audio": {
+    "path": "audio/tts-test-13-shelley.wav",
+    "sha256": "0217b50cafc8499727f0f5bb671b53cf6273406838e583299259ba7e9efb3a4b",
+    "durationMs": 3016.5
+   },
+   "reference": "请在 Figma 里把按钮改成圆角。",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "tts-test-14-rocko",
+   "split": "test",
+   "speakerId": "tts:rocko",
+   "sessionId": "tts:rocko:test",
+   "language": "mixed",
+   "unit": "mer",
+   "tags": [
+    "synthetic-tts",
+    "technical"
+   ],
+   "audio": {
+    "path": "audio/tts-test-14-rocko.wav",
+    "sha256": "b6b733326871b4b965aa9ef2144a1300355cf3a1ff4481be361aee1fd5231082",
+    "durationMs": 3694.25
+   },
+   "reference": "我们的 Python 版本需要升级到三点十二。",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "tts-test-15-sandy",
+   "split": "test",
+   "speakerId": "tts:sandy",
+   "sessionId": "tts:sandy:test",
+   "language": "mixed",
+   "unit": "mer",
+   "tags": [
+    "synthetic-tts",
+    "technical"
+   ],
+   "audio": {
+    "path": "audio/tts-test-15-sandy.wav",
+    "sha256": "8a3294567bac24e20f5c361f02a179c247816dc5c41048368f9e666eb61a5566",
+    "durationMs": 3870.562
+   },
+   "reference": "合同里写的是二零二六年十二月三十一日到期。",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "tts-test-16-tingting",
+   "split": "test",
+   "speakerId": "tts:tingting",
+   "sessionId": "tts:tingting:test",
+   "language": "mixed",
+   "unit": "mer",
+   "tags": [
+    "synthetic-tts",
+    "technical"
+   ],
+   "audio": {
+    "path": "audio/tts-test-16-tingting.wav",
+    "sha256": "8d01c9a69ccf26d7ad1d18645bcdd213e6c4692c0a13561564ac138d669c0098",
+    "durationMs": 2773.438
+   },
+   "reference": "这个 email 模板需要支持中英文。",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "tts-test-17-shelley",
+   "split": "test",
+   "speakerId": "tts:shelley",
+   "sessionId": "tts:shelley:test",
+   "language": "mixed",
+   "unit": "mer",
+   "tags": [
+    "synthetic-tts",
+    "technical"
+   ],
+   "audio": {
+    "path": "audio/tts-test-17-shelley.wav",
+    "sha256": "c27a745693a1e20bf33bdf0c89147a68068423bba3b21e94f4f38580d6bf498c",
+    "durationMs": 2664.625
+   },
+   "reference": "测试环境的 Redis 连不上了。",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "tts-test-18-rocko",
+   "split": "test",
+   "speakerId": "tts:rocko",
+   "sessionId": "tts:rocko:test",
+   "language": "mixed",
+   "unit": "mer",
+   "tags": [
+    "synthetic-tts",
+    "technical"
+   ],
+   "audio": {
+    "path": "audio/tts-test-18-rocko.wav",
+    "sha256": "96b2854a881d55f4fba5fad8b01cf8900ffc5cf9f902b30dede0a5d63dfd025f",
+    "durationMs": 2958.188
+   },
+   "reference": "我不同意直接删除这个 endpoint。",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "tts-test-19-sandy",
+   "split": "test",
+   "speakerId": "tts:sandy",
+   "sessionId": "tts:sandy:test",
+   "language": "mixed",
+   "unit": "mer",
+   "tags": [
+    "synthetic-tts",
+    "technical"
+   ],
+   "audio": {
+    "path": "audio/tts-test-19-sandy.wav",
+    "sha256": "36f2829371aa4e15eaaa724cd0ff9166ef12441488629c8e11968a59ab9a79e0",
+    "durationMs": 3374.562
+   },
+   "reference": "会后把 action items 整理成一个列表。",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "tts-test-20-tingting",
+   "split": "test",
+   "speakerId": "tts:tingting",
+   "sessionId": "tts:tingting:test",
+   "language": "mixed",
+   "unit": "mer",
+   "tags": [
+    "synthetic-tts",
+    "technical"
+   ],
+   "audio": {
+    "path": "audio/tts-test-20-tingting.wav",
+    "sha256": "9ae5b380b2a2c3ee92713a4778136a14251956095c49ed0177755afc7496135a",
+    "durationMs": 2674.25
+   },
+   "reference": "我们下个月要参加一个 AI 大会。",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "tts-test-21-shelley",
+   "split": "test",
+   "speakerId": "tts:shelley",
+   "sessionId": "tts:shelley:test",
+   "language": "mixed",
+   "unit": "mer",
+   "tags": [
+    "synthetic-tts",
+    "technical"
+   ],
+   "audio": {
+    "path": "audio/tts-test-21-shelley.wav",
+    "sha256": "a386c8be504b6b0e2687e761dbeb992e6488016974d5d68499996b5a3c58fe85",
+    "durationMs": 2536.562
+   },
+   "reference": "这个图表的颜色对比度不够。",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "tts-test-22-rocko",
+   "split": "test",
+   "speakerId": "tts:rocko",
+   "sessionId": "tts:rocko:test",
+   "language": "mixed",
+   "unit": "mer",
+   "tags": [
+    "synthetic-tts",
+    "technical"
+   ],
+   "audio": {
+    "path": "audio/tts-test-22-rocko.wav",
+    "sha256": "9b23f223318b2afefccd8fac710bf020a7f00c13375966950d103b7792c093d2",
+    "durationMs": 3160.438
+   },
+   "reference": "请帮我把 meeting 改到明天下午。",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "tts-test-23-sandy",
+   "split": "test",
+   "speakerId": "tts:sandy",
+   "sessionId": "tts:sandy:test",
+   "language": "mixed",
+   "unit": "mer",
+   "tags": [
+    "synthetic-tts",
+    "technical"
+   ],
+   "audio": {
+    "path": "audio/tts-test-23-sandy.wav",
+    "sha256": "cd0b982f29a65351e2dc7cd8dfdf07b124399cccd81455baa92568fe8c59cfb1",
+    "durationMs": 3278.625
+   },
+   "reference": "新版本的安装包大概一百五十 MB。",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "tts-test-24-tingting",
+   "split": "test",
+   "speakerId": "tts:tingting",
+   "sessionId": "tts:tingting:test",
+   "language": "mixed",
+   "unit": "mer",
+   "tags": [
+    "synthetic-tts",
+    "technical"
+   ],
+   "audio": {
+    "path": "audio/tts-test-24-tingting.wav",
+    "sha256": "5db3ddce9dc437c75a001d2d572d80fa0a3c3423cde3e1f9a0c3b8ec125186f4",
+    "durationMs": 3725.5
+   },
+   "reference": "这个 PR 有两个 reviewer 还没批准。",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "tts-test-25-shelley",
+   "split": "test",
+   "speakerId": "tts:shelley",
+   "sessionId": "tts:shelley:test",
+   "language": "mixed",
+   "unit": "mer",
+   "tags": [
+    "synthetic-tts",
+    "technical"
+   ],
+   "audio": {
+    "path": "audio/tts-test-25-shelley.wav",
+    "sha256": "365e5044fc3978f3851ff0b5379a9d834ef3eacb435cd4604488171de0be38ae",
+    "durationMs": 3150.25
+   },
+   "reference": "麻烦把发票抬头改成公司全称。",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "tts-test-26-rocko",
+   "split": "test",
+   "speakerId": "tts:rocko",
+   "sessionId": "tts:rocko:test",
+   "language": "mixed",
+   "unit": "mer",
+   "tags": [
+    "synthetic-tts",
+    "technical"
+   ],
+   "audio": {
+    "path": "audio/tts-test-26-rocko.wav",
+    "sha256": "ad23d27a31c47777ae4b1fc5c67bb7a4e9eaba974b7593377a608de1183eca0f",
+    "durationMs": 3118.188
+   },
+   "reference": "我们用 WebSocket 推送实时消息。",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "tts-test-27-sandy",
+   "split": "test",
+   "speakerId": "tts:sandy",
+   "sessionId": "tts:sandy:test",
+   "language": "mixed",
+   "unit": "mer",
+   "tags": [
+    "synthetic-tts",
+    "technical"
+   ],
+   "audio": {
+    "path": "audio/tts-test-27-sandy.wav",
+    "sha256": "fc28af9ccc12e520c398aa7e0084aceae1b84e53d2912e075bef0838e8f238d0",
+    "durationMs": 2968.812
+   },
+   "reference": "这个功能对 VIP 用户免费开放。",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "tts-test-28-tingting",
+   "split": "test",
+   "speakerId": "tts:tingting",
+   "sessionId": "tts:tingting:test",
+   "language": "mixed",
+   "unit": "mer",
+   "tags": [
+    "synthetic-tts",
+    "technical"
+   ],
+   "audio": {
+    "path": "audio/tts-test-28-tingting.wav",
+    "sha256": "4bb677291b2fefee199a9b2154a0679da9ee9421a740b390895f2f19e91ba404",
+    "durationMs": 4475.062
+   },
+   "reference": "请检查一下 SSL 证书是不是过期了。",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "tts-test-29-shelley",
+   "split": "test",
+   "speakerId": "tts:shelley",
+   "sessionId": "tts:shelley:test",
+   "language": "mixed",
+   "unit": "mer",
+   "tags": [
+    "synthetic-tts",
+    "technical"
+   ],
+   "audio": {
+    "path": "audio/tts-test-29-shelley.wav",
+    "sha256": "56737978c0875305945b9899a0f45652592fbf650bf8eb8c812bed3b900662ec",
+    "durationMs": 3032.562
+   },
+   "reference": "周报里加上本周完成的 OKR 进度。",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "nonspeech-dev-0",
+   "split": "dev",
+   "speakerId": "nonspeech:dev",
+   "sessionId": "nonspeech:dev:0",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "nonspeech",
+    "silence"
+   ],
+   "audio": {
+    "path": "audio/nonspeech-dev-0.wav",
+    "sha256": "20eaebffe1816e0ffa6f7f854f5ef4ea80d5349faaf0ce1fec1b713e7fde58fa",
+    "durationMs": 2000.0
+   },
+   "reference": "",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "nonspeech-dev-1",
+   "split": "dev",
+   "speakerId": "nonspeech:dev",
+   "sessionId": "nonspeech:dev:1",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "nonspeech",
+    "noise"
+   ],
+   "audio": {
+    "path": "audio/nonspeech-dev-1.wav",
+    "sha256": "9e353602e4da422f081c7ad2a0cbd480ab2e11d3d0b91667831db593485ece72",
+    "durationMs": 3000.0
+   },
+   "reference": "",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "nonspeech-dev-2",
+   "split": "dev",
+   "speakerId": "nonspeech:dev",
+   "sessionId": "nonspeech:dev:2",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "nonspeech",
+    "noise"
+   ],
+   "audio": {
+    "path": "audio/nonspeech-dev-2.wav",
+    "sha256": "4ae4d85749b1d835b82508e460054eb33dd603e6f782e4aa2e10dfe62c82e62c",
+    "durationMs": 4000.0
+   },
+   "reference": "",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "nonspeech-test-0",
+   "split": "test",
+   "speakerId": "nonspeech:test",
+   "sessionId": "nonspeech:test:0",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "nonspeech",
+    "silence"
+   ],
+   "audio": {
+    "path": "audio/nonspeech-test-0.wav",
+    "sha256": "7ecf682084778b830a82e84e04e87013363718960dfd22be6a2cd233e65509aa",
+    "durationMs": 2500.0
+   },
+   "reference": "",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "nonspeech-test-1",
+   "split": "test",
+   "speakerId": "nonspeech:test",
+   "sessionId": "nonspeech:test:1",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "nonspeech",
+    "noise"
+   ],
+   "audio": {
+    "path": "audio/nonspeech-test-1.wav",
+    "sha256": "8a21e28173b8337d013b4b6b3380aaa49b66eaabf99c90cc58903cde951c4d1a",
+    "durationMs": 3500.0
+   },
+   "reference": "",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "nonspeech-test-2",
+   "split": "test",
+   "speakerId": "nonspeech:test",
+   "sessionId": "nonspeech:test:2",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "nonspeech",
+    "noise"
+   ],
+   "audio": {
+    "path": "audio/nonspeech-test-2.wav",
+    "sha256": "5079b34fe2ccb93bf29b421897796f7691ce99db6937e54223d0824fe88d4741",
+    "durationMs": 4500.0
+   },
+   "reference": "",
+   "context": "",
+   "approvedMemory": []
+  },
+  {
+   "id": "nonspeech-test-3",
+   "split": "test",
+   "speakerId": "nonspeech:test",
+   "sessionId": "nonspeech:test:3",
+   "language": "zh",
+   "unit": "cer",
+   "tags": [
+    "nonspeech",
+    "noise"
+   ],
+   "audio": {
+    "path": "audio/nonspeech-test-3.wav",
+    "sha256": "8eb669ebd721ee2684eef28e0fd30417188f2fe8d608d2ee43361935dbad7820",
+    "durationMs": 5500.0
+   },
+   "reference": "",
+   "context": "",
+   "approvedMemory": []
+  }
+ ]
+}

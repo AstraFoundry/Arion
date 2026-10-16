@@ -1,0 +1,966 @@
+{
+  "resultsHash": "9013632dccf18835065d3123a65c3a9bbae159ff60a4996a54d8d4c9cd8205e1",
+  "corpusHash": "aa5e9b4a18b0ca489531dc3982f6f129282d243b40778f5e0ec9883de7995053",
+  "mapping": [
+    {
+      "id": "R-0001",
+      "caseId": "zh-inject",
+      "variantId": "qwen06-basic"
+    },
+    {
+      "id": "R-0002",
+      "caseId": "en-money",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0003",
+      "caseId": "zh-uncertain",
+      "variantId": "qwen06-basic"
+    },
+    {
+      "id": "R-0004",
+      "caseId": "en-repeat",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0005",
+      "caseId": "mixed-repair",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0006",
+      "caseId": "mixed-repair",
+      "variantId": "qwen17-basic"
+    },
+    {
+      "id": "R-0007",
+      "caseId": "zh-uncertain",
+      "variantId": "qwen17-full"
+    },
+    {
+      "id": "R-0008",
+      "caseId": "mixed-memory",
+      "variantId": "qwen17-no-scene"
+    },
+    {
+      "id": "R-0009",
+      "caseId": "mixed-context",
+      "variantId": "qwen06-basic"
+    },
+    {
+      "id": "R-0010",
+      "caseId": "zh-number",
+      "variantId": "qwen06-full"
+    },
+    {
+      "id": "R-0011",
+      "caseId": "zh-list",
+      "variantId": "qwen06-full"
+    },
+    {
+      "id": "R-0012",
+      "caseId": "mixed-context",
+      "variantId": "qwen17-basic"
+    },
+    {
+      "id": "R-0013",
+      "caseId": "zh-email",
+      "variantId": "qwen17-basic"
+    },
+    {
+      "id": "R-0014",
+      "caseId": "zh-context",
+      "variantId": "qwen17-no-context"
+    },
+    {
+      "id": "R-0015",
+      "caseId": "en-repeat",
+      "variantId": "qwen06-full"
+    },
+    {
+      "id": "R-0016",
+      "caseId": "en-url",
+      "variantId": "qwen06-full"
+    },
+    {
+      "id": "R-0017",
+      "caseId": "mixed-repair",
+      "variantId": "qwen06-full"
+    },
+    {
+      "id": "R-0018",
+      "caseId": "en-email",
+      "variantId": "qwen06-basic"
+    },
+    {
+      "id": "R-0019",
+      "caseId": "zh-person",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0020",
+      "caseId": "zh-repeat",
+      "variantId": "qwen17-no-memory"
+    },
+    {
+      "id": "R-0021",
+      "caseId": "zh-repeat",
+      "variantId": "qwen06-full"
+    },
+    {
+      "id": "R-0022",
+      "caseId": "en-negation",
+      "variantId": "qwen06-basic"
+    },
+    {
+      "id": "R-0023",
+      "caseId": "zh-number",
+      "variantId": "qwen17-full"
+    },
+    {
+      "id": "R-0024",
+      "caseId": "zh-memory",
+      "variantId": "qwen17-full"
+    },
+    {
+      "id": "R-0025",
+      "caseId": "zh-context",
+      "variantId": "qwen17-full"
+    },
+    {
+      "id": "R-0026",
+      "caseId": "en-money",
+      "variantId": "qwen17-no-context"
+    },
+    {
+      "id": "R-0027",
+      "caseId": "mixed-list",
+      "variantId": "qwen17-no-context"
+    },
+    {
+      "id": "R-0028",
+      "caseId": "zh-uncertain",
+      "variantId": "qwen17-no-memory"
+    },
+    {
+      "id": "R-0029",
+      "caseId": "zh-number",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0030",
+      "caseId": "zh-person",
+      "variantId": "qwen17-full"
+    },
+    {
+      "id": "R-0031",
+      "caseId": "mixed-context",
+      "variantId": "qwen17-no-memory"
+    },
+    {
+      "id": "R-0032",
+      "caseId": "en-negation",
+      "variantId": "qwen17-no-memory"
+    },
+    {
+      "id": "R-0033",
+      "caseId": "zh-inject",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0034",
+      "caseId": "zh-repeat",
+      "variantId": "qwen17-no-scene"
+    },
+    {
+      "id": "R-0035",
+      "caseId": "zh-uncertain",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0036",
+      "caseId": "mixed-list",
+      "variantId": "qwen06-basic"
+    },
+    {
+      "id": "R-0037",
+      "caseId": "en-money",
+      "variantId": "qwen17-full"
+    },
+    {
+      "id": "R-0038",
+      "caseId": "en-day",
+      "variantId": "qwen17-full"
+    },
+    {
+      "id": "R-0039",
+      "caseId": "zh-inject",
+      "variantId": "qwen17-full"
+    },
+    {
+      "id": "R-0040",
+      "caseId": "mixed-context",
+      "variantId": "qwen17-no-scene"
+    },
+    {
+      "id": "R-0041",
+      "caseId": "mixed-memory",
+      "variantId": "qwen17-full"
+    },
+    {
+      "id": "R-0042",
+      "caseId": "en-negation",
+      "variantId": "qwen06-full"
+    },
+    {
+      "id": "R-0043",
+      "caseId": "zh-inject",
+      "variantId": "qwen06-full"
+    },
+    {
+      "id": "R-0044",
+      "caseId": "zh-email",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0045",
+      "caseId": "mixed-injection",
+      "variantId": "qwen06-full"
+    },
+    {
+      "id": "R-0046",
+      "caseId": "zh-context",
+      "variantId": "qwen17-no-memory"
+    },
+    {
+      "id": "R-0047",
+      "caseId": "mixed-list",
+      "variantId": "qwen17-basic"
+    },
+    {
+      "id": "R-0048",
+      "caseId": "mixed-repair",
+      "variantId": "qwen06-basic"
+    },
+    {
+      "id": "R-0049",
+      "caseId": "zh-context",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0050",
+      "caseId": "mixed-repair",
+      "variantId": "qwen17-no-scene"
+    },
+    {
+      "id": "R-0051",
+      "caseId": "zh-email",
+      "variantId": "qwen06-full"
+    },
+    {
+      "id": "R-0052",
+      "caseId": "zh-day",
+      "variantId": "qwen17-no-scene"
+    },
+    {
+      "id": "R-0053",
+      "caseId": "en-email",
+      "variantId": "qwen17-no-memory"
+    },
+    {
+      "id": "R-0054",
+      "caseId": "zh-context-inject",
+      "variantId": "qwen17-no-context"
+    },
+    {
+      "id": "R-0055",
+      "caseId": "zh-list",
+      "variantId": "qwen17-no-memory"
+    },
+    {
+      "id": "R-0056",
+      "caseId": "zh-day",
+      "variantId": "qwen17-basic"
+    },
+    {
+      "id": "R-0057",
+      "caseId": "en-url",
+      "variantId": "qwen06-basic"
+    },
+    {
+      "id": "R-0058",
+      "caseId": "mixed-injection",
+      "variantId": "qwen17-no-memory"
+    },
+    {
+      "id": "R-0059",
+      "caseId": "zh-list",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0060",
+      "caseId": "mixed-context",
+      "variantId": "qwen17-full"
+    },
+    {
+      "id": "R-0061",
+      "caseId": "zh-context-inject",
+      "variantId": "qwen17-basic"
+    },
+    {
+      "id": "R-0062",
+      "caseId": "zh-context-inject",
+      "variantId": "qwen06-full"
+    },
+    {
+      "id": "R-0063",
+      "caseId": "zh-memory",
+      "variantId": "qwen06-basic"
+    },
+    {
+      "id": "R-0064",
+      "caseId": "mixed-context",
+      "variantId": "qwen17-no-context"
+    },
+    {
+      "id": "R-0065",
+      "caseId": "mixed-list",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0066",
+      "caseId": "mixed-memory",
+      "variantId": "qwen17-basic"
+    },
+    {
+      "id": "R-0067",
+      "caseId": "zh-repeat",
+      "variantId": "qwen17-no-context"
+    },
+    {
+      "id": "R-0068",
+      "caseId": "zh-person",
+      "variantId": "qwen17-basic"
+    },
+    {
+      "id": "R-0069",
+      "caseId": "mixed-injection",
+      "variantId": "qwen06-basic"
+    },
+    {
+      "id": "R-0070",
+      "caseId": "zh-number",
+      "variantId": "qwen17-no-memory"
+    },
+    {
+      "id": "R-0071",
+      "caseId": "en-negation",
+      "variantId": "qwen17-no-scene"
+    },
+    {
+      "id": "R-0072",
+      "caseId": "en-repeat",
+      "variantId": "qwen17-no-memory"
+    },
+    {
+      "id": "R-0073",
+      "caseId": "zh-day",
+      "variantId": "qwen06-basic"
+    },
+    {
+      "id": "R-0074",
+      "caseId": "zh-memory",
+      "variantId": "qwen17-no-context"
+    },
+    {
+      "id": "R-0075",
+      "caseId": "zh-uncertain",
+      "variantId": "qwen17-no-context"
+    },
+    {
+      "id": "R-0076",
+      "caseId": "mixed-code",
+      "variantId": "qwen06-basic"
+    },
+    {
+      "id": "R-0077",
+      "caseId": "zh-memory",
+      "variantId": "qwen17-basic"
+    },
+    {
+      "id": "R-0078",
+      "caseId": "zh-list",
+      "variantId": "qwen17-basic"
+    },
+    {
+      "id": "R-0079",
+      "caseId": "en-day",
+      "variantId": "qwen17-no-context"
+    },
+    {
+      "id": "R-0080",
+      "caseId": "en-day",
+      "variantId": "qwen17-no-memory"
+    },
+    {
+      "id": "R-0081",
+      "caseId": "en-repeat",
+      "variantId": "qwen06-basic"
+    },
+    {
+      "id": "R-0082",
+      "caseId": "zh-context",
+      "variantId": "qwen17-basic"
+    },
+    {
+      "id": "R-0083",
+      "caseId": "zh-verbatim",
+      "variantId": "qwen17-no-memory"
+    },
+    {
+      "id": "R-0084",
+      "caseId": "en-email",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0085",
+      "caseId": "zh-verbatim",
+      "variantId": "qwen06-basic"
+    },
+    {
+      "id": "R-0086",
+      "caseId": "zh-context",
+      "variantId": "qwen17-no-scene"
+    },
+    {
+      "id": "R-0087",
+      "caseId": "mixed-list",
+      "variantId": "qwen06-full"
+    },
+    {
+      "id": "R-0088",
+      "caseId": "mixed-context",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0089",
+      "caseId": "en-url",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0090",
+      "caseId": "zh-day",
+      "variantId": "qwen06-full"
+    },
+    {
+      "id": "R-0091",
+      "caseId": "zh-verbatim",
+      "variantId": "qwen17-no-context"
+    },
+    {
+      "id": "R-0092",
+      "caseId": "en-repeat",
+      "variantId": "qwen17-no-context"
+    },
+    {
+      "id": "R-0093",
+      "caseId": "zh-verbatim",
+      "variantId": "qwen17-no-scene"
+    },
+    {
+      "id": "R-0094",
+      "caseId": "zh-verbatim",
+      "variantId": "qwen17-basic"
+    },
+    {
+      "id": "R-0095",
+      "caseId": "mixed-list",
+      "variantId": "qwen17-no-scene"
+    },
+    {
+      "id": "R-0096",
+      "caseId": "zh-day",
+      "variantId": "qwen17-full"
+    },
+    {
+      "id": "R-0097",
+      "caseId": "zh-context-inject",
+      "variantId": "qwen17-no-memory"
+    },
+    {
+      "id": "R-0098",
+      "caseId": "zh-verbatim",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0099",
+      "caseId": "en-money",
+      "variantId": "qwen06-full"
+    },
+    {
+      "id": "R-0100",
+      "caseId": "en-negation",
+      "variantId": "qwen17-basic"
+    },
+    {
+      "id": "R-0101",
+      "caseId": "zh-repeat",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0102",
+      "caseId": "zh-repeat",
+      "variantId": "qwen17-basic"
+    },
+    {
+      "id": "R-0103",
+      "caseId": "mixed-code",
+      "variantId": "qwen17-full"
+    },
+    {
+      "id": "R-0104",
+      "caseId": "mixed-repair",
+      "variantId": "qwen17-no-memory"
+    },
+    {
+      "id": "R-0105",
+      "caseId": "mixed-memory",
+      "variantId": "qwen17-no-context"
+    },
+    {
+      "id": "R-0106",
+      "caseId": "en-day",
+      "variantId": "qwen06-full"
+    },
+    {
+      "id": "R-0107",
+      "caseId": "zh-email",
+      "variantId": "qwen17-no-context"
+    },
+    {
+      "id": "R-0108",
+      "caseId": "zh-number",
+      "variantId": "qwen17-no-scene"
+    },
+    {
+      "id": "R-0109",
+      "caseId": "zh-list",
+      "variantId": "qwen17-full"
+    },
+    {
+      "id": "R-0110",
+      "caseId": "zh-email",
+      "variantId": "qwen17-full"
+    },
+    {
+      "id": "R-0111",
+      "caseId": "mixed-code",
+      "variantId": "qwen06-full"
+    },
+    {
+      "id": "R-0112",
+      "caseId": "zh-context",
+      "variantId": "qwen06-basic"
+    },
+    {
+      "id": "R-0113",
+      "caseId": "zh-memory",
+      "variantId": "qwen06-full"
+    },
+    {
+      "id": "R-0114",
+      "caseId": "zh-number",
+      "variantId": "qwen17-no-context"
+    },
+    {
+      "id": "R-0115",
+      "caseId": "en-money",
+      "variantId": "qwen17-no-memory"
+    },
+    {
+      "id": "R-0116",
+      "caseId": "en-email",
+      "variantId": "qwen17-no-scene"
+    },
+    {
+      "id": "R-0117",
+      "caseId": "mixed-memory",
+      "variantId": "qwen06-full"
+    },
+    {
+      "id": "R-0118",
+      "caseId": "zh-person",
+      "variantId": "qwen17-no-memory"
+    },
+    {
+      "id": "R-0119",
+      "caseId": "en-url",
+      "variantId": "qwen17-no-memory"
+    },
+    {
+      "id": "R-0120",
+      "caseId": "en-url",
+      "variantId": "qwen17-no-context"
+    },
+    {
+      "id": "R-0121",
+      "caseId": "zh-day",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0122",
+      "caseId": "zh-uncertain",
+      "variantId": "qwen17-basic"
+    },
+    {
+      "id": "R-0123",
+      "caseId": "en-repeat",
+      "variantId": "qwen17-full"
+    },
+    {
+      "id": "R-0124",
+      "caseId": "en-money",
+      "variantId": "qwen06-basic"
+    },
+    {
+      "id": "R-0125",
+      "caseId": "en-email",
+      "variantId": "qwen17-basic"
+    },
+    {
+      "id": "R-0126",
+      "caseId": "zh-email",
+      "variantId": "qwen17-no-scene"
+    },
+    {
+      "id": "R-0127",
+      "caseId": "mixed-code",
+      "variantId": "qwen17-no-scene"
+    },
+    {
+      "id": "R-0128",
+      "caseId": "zh-context",
+      "variantId": "qwen06-full"
+    },
+    {
+      "id": "R-0129",
+      "caseId": "mixed-repair",
+      "variantId": "qwen17-no-context"
+    },
+    {
+      "id": "R-0130",
+      "caseId": "zh-memory",
+      "variantId": "qwen17-no-memory"
+    },
+    {
+      "id": "R-0131",
+      "caseId": "zh-inject",
+      "variantId": "qwen17-no-memory"
+    },
+    {
+      "id": "R-0132",
+      "caseId": "zh-day",
+      "variantId": "qwen17-no-context"
+    },
+    {
+      "id": "R-0133",
+      "caseId": "en-day",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0134",
+      "caseId": "en-email",
+      "variantId": "qwen17-no-context"
+    },
+    {
+      "id": "R-0135",
+      "caseId": "zh-person",
+      "variantId": "qwen17-no-context"
+    },
+    {
+      "id": "R-0136",
+      "caseId": "zh-context-inject",
+      "variantId": "qwen17-full"
+    },
+    {
+      "id": "R-0137",
+      "caseId": "zh-person",
+      "variantId": "qwen06-full"
+    },
+    {
+      "id": "R-0138",
+      "caseId": "en-money",
+      "variantId": "qwen17-basic"
+    },
+    {
+      "id": "R-0139",
+      "caseId": "zh-memory",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0140",
+      "caseId": "zh-email",
+      "variantId": "qwen17-no-memory"
+    },
+    {
+      "id": "R-0141",
+      "caseId": "zh-inject",
+      "variantId": "qwen17-basic"
+    },
+    {
+      "id": "R-0142",
+      "caseId": "zh-day",
+      "variantId": "qwen17-no-memory"
+    },
+    {
+      "id": "R-0143",
+      "caseId": "zh-memory",
+      "variantId": "qwen17-no-scene"
+    },
+    {
+      "id": "R-0144",
+      "caseId": "en-email",
+      "variantId": "qwen17-full"
+    },
+    {
+      "id": "R-0145",
+      "caseId": "zh-repeat",
+      "variantId": "qwen06-basic"
+    },
+    {
+      "id": "R-0146",
+      "caseId": "zh-person",
+      "variantId": "qwen17-no-scene"
+    },
+    {
+      "id": "R-0147",
+      "caseId": "en-url",
+      "variantId": "qwen17-no-scene"
+    },
+    {
+      "id": "R-0148",
+      "caseId": "mixed-memory",
+      "variantId": "qwen06-basic"
+    },
+    {
+      "id": "R-0149",
+      "caseId": "en-repeat",
+      "variantId": "qwen17-basic"
+    },
+    {
+      "id": "R-0150",
+      "caseId": "en-negation",
+      "variantId": "qwen17-full"
+    },
+    {
+      "id": "R-0151",
+      "caseId": "zh-context-inject",
+      "variantId": "qwen17-no-scene"
+    },
+    {
+      "id": "R-0152",
+      "caseId": "en-negation",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0153",
+      "caseId": "en-day",
+      "variantId": "qwen06-basic"
+    },
+    {
+      "id": "R-0154",
+      "caseId": "mixed-injection",
+      "variantId": "qwen17-no-context"
+    },
+    {
+      "id": "R-0155",
+      "caseId": "mixed-list",
+      "variantId": "qwen17-full"
+    },
+    {
+      "id": "R-0156",
+      "caseId": "mixed-injection",
+      "variantId": "qwen17-no-scene"
+    },
+    {
+      "id": "R-0157",
+      "caseId": "zh-context-inject",
+      "variantId": "qwen06-basic"
+    },
+    {
+      "id": "R-0158",
+      "caseId": "en-day",
+      "variantId": "qwen17-no-scene"
+    },
+    {
+      "id": "R-0159",
+      "caseId": "zh-verbatim",
+      "variantId": "qwen17-full"
+    },
+    {
+      "id": "R-0160",
+      "caseId": "zh-person",
+      "variantId": "qwen06-basic"
+    },
+    {
+      "id": "R-0161",
+      "caseId": "zh-list",
+      "variantId": "qwen17-no-context"
+    },
+    {
+      "id": "R-0162",
+      "caseId": "en-negation",
+      "variantId": "qwen17-no-context"
+    },
+    {
+      "id": "R-0163",
+      "caseId": "zh-uncertain",
+      "variantId": "qwen06-full"
+    },
+    {
+      "id": "R-0164",
+      "caseId": "en-url",
+      "variantId": "qwen17-basic"
+    },
+    {
+      "id": "R-0165",
+      "caseId": "en-day",
+      "variantId": "qwen17-basic"
+    },
+    {
+      "id": "R-0166",
+      "caseId": "zh-inject",
+      "variantId": "qwen17-no-scene"
+    },
+    {
+      "id": "R-0167",
+      "caseId": "zh-number",
+      "variantId": "qwen17-basic"
+    },
+    {
+      "id": "R-0168",
+      "caseId": "zh-email",
+      "variantId": "qwen06-basic"
+    },
+    {
+      "id": "R-0169",
+      "caseId": "mixed-repair",
+      "variantId": "qwen17-full"
+    },
+    {
+      "id": "R-0170",
+      "caseId": "mixed-injection",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0171",
+      "caseId": "mixed-context",
+      "variantId": "qwen06-full"
+    },
+    {
+      "id": "R-0172",
+      "caseId": "zh-repeat",
+      "variantId": "qwen17-full"
+    },
+    {
+      "id": "R-0173",
+      "caseId": "mixed-code",
+      "variantId": "qwen17-no-context"
+    },
+    {
+      "id": "R-0174",
+      "caseId": "mixed-code",
+      "variantId": "qwen17-no-memory"
+    },
+    {
+      "id": "R-0175",
+      "caseId": "zh-verbatim",
+      "variantId": "qwen06-full"
+    },
+    {
+      "id": "R-0176",
+      "caseId": "mixed-code",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0177",
+      "caseId": "en-email",
+      "variantId": "qwen06-full"
+    },
+    {
+      "id": "R-0178",
+      "caseId": "mixed-injection",
+      "variantId": "qwen17-basic"
+    },
+    {
+      "id": "R-0179",
+      "caseId": "zh-list",
+      "variantId": "qwen06-basic"
+    },
+    {
+      "id": "R-0180",
+      "caseId": "zh-list",
+      "variantId": "qwen17-no-scene"
+    },
+    {
+      "id": "R-0181",
+      "caseId": "mixed-memory",
+      "variantId": "qwen17-no-memory"
+    },
+    {
+      "id": "R-0182",
+      "caseId": "zh-number",
+      "variantId": "qwen06-basic"
+    },
+    {
+      "id": "R-0183",
+      "caseId": "mixed-code",
+      "variantId": "qwen17-basic"
+    },
+    {
+      "id": "R-0184",
+      "caseId": "en-url",
+      "variantId": "qwen17-full"
+    },
+    {
+      "id": "R-0185",
+      "caseId": "zh-uncertain",
+      "variantId": "qwen17-no-scene"
+    },
+    {
+      "id": "R-0186",
+      "caseId": "mixed-injection",
+      "variantId": "qwen17-full"
+    },
+    {
+      "id": "R-0187",
+      "caseId": "mixed-list",
+      "variantId": "qwen17-no-memory"
+    },
+    {
+      "id": "R-0188",
+      "caseId": "en-repeat",
+      "variantId": "qwen17-no-scene"
+    },
+    {
+      "id": "R-0189",
+      "caseId": "en-money",
+      "variantId": "qwen17-no-scene"
+    },
+    {
+      "id": "R-0190",
+      "caseId": "zh-inject",
+      "variantId": "qwen17-no-context"
+    },
+    {
+      "id": "R-0191",
+      "caseId": "zh-context-inject",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0192",
+      "caseId": "mixed-memory",
+      "variantId": "verbatim"
+    }
+  ]
+}

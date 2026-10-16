@@ -167,7 +167,11 @@ func (c *Client) Rewrite(ctx context.Context, req ports.RewriteRequest) (ports.R
 	if response.Cancelled {
 		return ports.RewriteResult{}, domain.Fail(domain.CodeCancelled, "rewrite cancelled")
 	}
-	return ports.RewriteResult{Text: response.Text, Truncated: response.Truncated, Template: response.Template, PrefillMs: response.PrefillMs, DecodeMs: response.DecodeMs,
+	var cleanup domain.SpeechCleanup
+	if response.Cleanup != nil {
+		cleanup = *response.Cleanup
+	}
+	return ports.RewriteResult{Cleanup: cleanup, Text: response.Text, Truncated: response.Truncated, Template: response.Template, PrefillMs: response.PrefillMs, DecodeMs: response.DecodeMs,
 		InputTokens: response.InputTokens, ReusedTokens: response.ReusedTokens, OutputTokens: response.OutputTokens}, nil
 }
 

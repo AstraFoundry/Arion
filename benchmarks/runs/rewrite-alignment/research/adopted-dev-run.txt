@@ -1,0 +1,18 @@
+loaded qwen3-1.7b prompt=live-v2 prefix=822 in 7335 ms
+zh-scaffold        chat    accepted                716 ms reuse=19/34
+zh-filler-dense    chat    accepted                568 ms reuse=13/28
+zh-ramble          chat    accepted                614 ms reuse=19/36
+zh-repeat          chat    accepted                530 ms reuse=0/27
+zh-brief           chat    accepted                421 ms reuse=10/24
+zh-detail          chat    accepted                884 ms reuse=15/34
+zh-hedge           chat    accepted                608 ms reuse=14/29
+zh-demonstrative   chat    accepted                578 ms reuse=16/30
+zh-condition       chat    accepted                532 ms reuse=14/29
+zh-quote           chat    accepted                452 ms reuse=15/27
+zh-complete        chat    accepted                329 ms reuse=11/23
+zh-repair          chat    accepted                455 ms reuse=20/33
+en-scaffold        chat    unsupported_content     484 ms reuse=0/37
+en-hedge           chat    accepted                566 ms reuse=12/29
+mixed-code         chat    accepted                907 ms reuse=18/38
+zh-open            chat    accepted                303 ms reuse=12/22
+.workspace/research/rewrite-alignment/adopted-dev.jsonl {"cases":16,"sourcePass":6,"proposalPass":9,"deliveredPass":9,"accepted":15,"rejected":{"unsupported_content":1},"acceptedFailing":6,"rejectedPassing":0,"worsened":0,"referenceEditRatioMean":0.34955498003799224,"sourceEditRatioMean":0.5314404915571244,"finalMs":{"count":16,"p50":549.296,"p95":889.48925,"p99":903.42665},"liveEdits":21,"liveAccepted":21,"liveMs":{"count":21,"p50":398.875,"p95":554.476,"p99":822.0176000000002},"sceneAgreement":16,"byScene":{"chat":{"cases":16,"sourcePass":6,"deliveredPass":9,"worsened":0,"sceneAgreement":16}},"byKind":{"colloquial":{"cases":11,"sourcePass":1,"deliveredPass":4,"worsened":0},"preservation":{"cases":5,"sourcePass":5,"deliveredPass":5,"worsened":0}}}

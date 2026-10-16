@@ -1,0 +1,17 @@
+{
+  "kind": "arion-corpus-archive-provenance",
+  "preservation": "Original source bytes; no annotation, licence or split rewritten",
+  "sources": [
+    {
+      "originalPath": ".workspace/ablation-audio/corpus.json",
+      "archivedPath": "benchmarks/corpora/ablation-audio-v1/corpus.json",
+      "sha256": "da674ff77c798df5ab353d51f78029e451697122a56a524fdcc72dc8a0a5812f",
+      "samples": 16,
+      "declaredLicense": "AISHELL-1 Apache-2.0 (OpenSLR SLR33; HF mirror AudioLLMs/aishell_1_zh_test@e73dc7f0, transcript AISHELL/AISHELL-1@bbe295d5); LibriSpeech CC-BY-4.0 (openslr/librispeech_asr@71cacbfb); synthetic macOS TTS prompts authored for Arion (CC0); generated nonspeech; developer-authored synthetic development challenges; no independent annotations",
+      "declaredAnnotation": null,
+      "declaredSplit": null
+    }
+  ],
+  "attribution": "Source licence and annotation values are copied from original metadata; null means unspecified, not a new permission assertion. See benchmarks/datasets.json for upstream dataset identities.",
+  "studyUse": "Historical disclosed benchmark corpus. Preserve its original split field; future reuse is regression/exploratory evidence."
+}

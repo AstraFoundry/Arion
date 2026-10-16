@@ -24,7 +24,7 @@
 | `models` | Go module embedding the reviewed catalog: provenance, digests, licenses, bundles, evaluation summaries; no weights |
 | `scripts` | Dependency-free repository checks and platform-neutral workflow entry points |
 | `tools/evaluation` | pnpm workspace: metrics, driver protocols, real-run orchestration and isolated Python development inference adapters |
-| `benchmarks` | Experiment configurations and pinned dataset catalog; no audio/weights |
+| `benchmarks` | Versioned research corpora/audio, raw observations, reproduction sources, provenance and reports; no weights/runtime environments or personal recordings |
 | `tests/e2e` | Product action/assertion scenarios; requires live OS adapters |
 | `apps/desktop/e2e` | Build-tagged real native window lifecycle test |
 | `specs` | Normative requirements, acceptance scenarios and task traceability |

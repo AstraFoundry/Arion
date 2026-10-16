@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "kind": "arion-qwen-diagnostic-v1",
+  "split": "dev",
+  "baseline": "verbatim",
+  "orderSeed": 1729,
+  "warmupCount": 2,
+  "maxInputTokens": 2048,
+  "maxNewTokens": 128,
+  "threads": 4,
+  "cacheState": "warm",
+  "loadState": "solo",
+  "provider": "CPUExecutionProvider",
+  "variants": [
+    {
+      "id": "verbatim",
+      "model": null,
+      "prompt": null,
+      "context": false,
+      "memory": false,
+      "scenario": false
+    },
+    {
+      "id": "qwen06-basic",
+      "model": "qwen3-0.6b",
+      "prompt": "basic",
+      "context": false,
+      "memory": false,
+      "scenario": false
+    },
+    {
+      "id": "qwen06-full",
+      "model": "qwen3-0.6b",
+      "prompt": "full",
+      "context": true,
+      "memory": true,
+      "scenario": true
+    }
+  ]
+}

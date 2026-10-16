@@ -1,0 +1,106 @@
+{
+  "version": 1,
+  "kind": "arion-live-audio",
+  "textCorpus": "audio-corpus.json",
+  "textCorpusSha256": "bace3f53ffe3734396e82bddbacb24a6c20b544c0bec4ddda6e36e7c91534d26",
+  "synthesis": "macOS say (Tingting zh/mixed, Samantha en) rate 175; 1.2s pauses between parts; 0.3s lead, 0.8s trail; 16 kHz mono PCM16",
+  "limitations": "Synthetic TTS speech with inserted pauses; not natural dictation",
+  "samples": [
+    {
+      "id": "zh-hesitation",
+      "language": "zh",
+      "voice": "Tingting",
+      "segments": 1,
+      "speech": "呃，那个，麻烦把日志发到群里。",
+      "audio": {
+        "path": "zh-hesitation.wav",
+        "sha256": "ae20fdbe964b47722e8f6938966a43fc831b439370bd187c3ca0cea386239c3d",
+        "durationMs": 4405.0625
+      }
+    },
+    {
+      "id": "zh-repair",
+      "language": "zh",
+      "voice": "Tingting",
+      "segments": 3,
+      "speech": "周四交付|啊不对|周六交付。",
+      "audio": {
+        "path": "zh-repair.wav",
+        "sha256": "57baf56f64557d2566719124c1544702caa0786a593264f740290d963cc3d5f5",
+        "durationMs": 6011.8125
+      }
+    },
+    {
+      "id": "zh-repeat",
+      "language": "zh",
+      "voice": "Tingting",
+      "segments": 1,
+      "speech": "我我觉得这个这个方案可能不行。",
+      "audio": {
+        "path": "zh-repeat.wav",
+        "sha256": "c9f12a8db12d7506910be0e090014c040457034847b97e29051bf7ffc2ec986e",
+        "durationMs": 3901.875
+      }
+    },
+    {
+      "id": "zh-reference",
+      "language": "zh",
+      "voice": "Tingting",
+      "segments": 1,
+      "speech": "我要那个，别给我这个。",
+      "audio": {
+        "path": "zh-reference.wav",
+        "sha256": "f200fe66be2e888a3a1bfdd1a845cd61004dd527973126a170dad9fba78676b7",
+        "durationMs": 3110.625
+      }
+    },
+    {
+      "id": "en-hesitation",
+      "language": "en",
+      "voice": "Samantha",
+      "segments": 1,
+      "speech": "Erm, uh, please keep the staging backup.",
+      "audio": {
+        "path": "en-hesitation.wav",
+        "sha256": "79c59f3fbaae13d21a2cdace39db47307c33160e52f0d802bf484464ecaf83ae",
+        "durationMs": 3835.625
+      }
+    },
+    {
+      "id": "en-repair",
+      "language": "en",
+      "voice": "Samantha",
+      "segments": 3,
+      "speech": "Meet on Tuesday|no wait|meet on Thursday.",
+      "audio": {
+        "path": "en-repair.wav",
+        "sha256": "b0671e43f245e93ad14590af1a84c0386789bba9f46e595ad6d32bc6e14b2e1f",
+        "durationMs": 6127.4375
+      }
+    },
+    {
+      "id": "en-reference",
+      "language": "en",
+      "voice": "Samantha",
+      "segments": 1,
+      "speech": "I like that one, do not change it.",
+      "audio": {
+        "path": "en-reference.wav",
+        "sha256": "2617744cafe590fab04116738c0231810468bf77c3a9d03299595c745335f7dc",
+        "durationMs": 3302.25
+      }
+    },
+    {
+      "id": "en-repeat",
+      "language": "en",
+      "voice": "Samantha",
+      "segments": 1,
+      "speech": "I I might need the the earlier train.",
+      "audio": {
+        "path": "en-repeat.wav",
+        "sha256": "c279d16fa30b637a1d963526c16caa7e48b3c128bddcea7794612033aa96c235",
+        "durationMs": 3011.8125
+      }
+    }
+  ]
+}

@@ -51,7 +51,7 @@ This is a concrete feedback request-construction path. It does not establish whi
 
 ## Doubao: organization has its own stream and decision lifecycle
 
-The shipped `OimeSmartOrganize` types are more specific than a generic “LLM supported” string. Request/configuration names expose `query`, `contextID`, `spacingOptions`, `requestID`, result timeout and done timeout. A nearby route literal is `/api/v2/ai/text_organization`; spacing parameter names include `space_at_cn_en_nb` and `space_at_newline` (`CR-DB-request`). These are native strings/reflection observations; the serialized request body was not recovered. In particular, `contextID` must not be expanded into an imagined text-context payload.
+The shipped `OimeSmartOrganize` types are more specific than a generic “LLM supported” string. Request/configuration names expose `query`, `contextID`, `spacingOptions`, `requestID`, result timeout and done timeout. A nearby route literal is `/api/v2/ai/text_organization`; spacing parameter names include `space_at_cn_en_nb` and `space_at_newline` (`CR-DB-request`). The [disfluency follow-up](competitor-disfluency.md#doubao-decoder-cleanup-plus-text-organization) traced the builder and recovered five application-specific body entries: `query`, numeric `scene=6`, `stream=true`, `space_at_cn_en_nb` and `space_at_newline`. Shared request augmentation remains unresolved. In particular, `contextID` must not be expanded into an imagined text-context payload.
 
 `SmartOrganizeClient` has named SSE handlers for headers, deltas, completion, transport finish and errors, with request/generation identifiers. The artifact contains `format.completed`, `scene.completed.empty_content`, `missing_completed`, `transport_closed_before_completed` and encryption-validation diagnostics. Stored state distinguishes `waitingForCompleted` from `waitingForDone`, and `pending`/`noRewrite`/`willRewrite`, with independent result/done timeout work items (`CR-DB-stream`). This supports a **separate result decision and transport-completion model** as an architectural inference; it does not prove an exact SSE event order or a particular scene taxonomy.
 
@@ -102,7 +102,7 @@ So Typeless sends rich screen and cursor context to a server that recognizes and
 | Typeless contextual scenario policy or server prompt | Partially answered | Classifier/prompt/backend evidence; fields alone cannot identify it |
 | Typeless refinement reliability and feedback surfaces | Answered for inspected source branches | Runtime timings, consent/defaults and learning implementation |
 | Doubao organization stream/state/coordinator surfaces | Partially answered | Focused native decompilation and an authorized runtime trace |
-| Doubao exact request serialization and scenario/model policy | Unresolved | Request-builder decompilation or explicit fixture-based runtime capture |
+| Doubao exact request serialization and scenario/model policy | Partial: five application-specific body entries recovered in the disfluency follow-up | Shared networking augmentation, server policy or explicit fixture-based runtime capture |
 | Models/checkpoints/parameters used by either service | Unresolved | Verified provider/model evidence, not kernel names or marketing |
 | Screen or cursor context used for accuracy | Answered statically | Runtime capture of actual payloads; accuracy effect unmeasured |
 | Offline semantic rewriting and measured effectiveness | Unresolved | Network-isolated inference and controlled evaluation |

@@ -1,0 +1,1217 @@
+[
+  {
+    "path": "/Library/Input Methods/DoubaoIme.app/Contents/MacOS/DoubaoIme",
+    "sha256": "4b3836dcb8a3e06b01b4c95390c757b71f623c1f7c4141c059e49284f7f6442d",
+    "size": 42723680,
+    "groups": {
+      "phonetic": {
+        "count": 34,
+        "matches": [
+          {
+            "match": "phoneMe",
+            "offset": 16901717,
+            "context": "MicrophoneMeterModel"
+          },
+          {
+            "match": "phoneme",
+            "offset": 17333068,
+            "context": "phonemes"
+          },
+          {
+            "match": "Phoneme",
+            "offset": 17389372,
+            "context": "_transformWordsPhonemes"
+          },
+          {
+            "match": "phoneme",
+            "offset": 17389421,
+            "context": "[SAMICORE: %s@%s:%d] received words and phonemes num is not equal,may has some error\n"
+          },
+          {
+            "match": "phoneme",
+            "offset": 17389555,
+            "context": "[SAMICORE: %s@%s:%d] phonemes not found or no content\n"
+          },
+          {
+            "match": "phoneme",
+            "offset": 17390182,
+            "context": "[SAMICORE: %s@%s:%d] phonemes not found in payload, skip phonemes\n"
+          },
+          {
+            "match": "phoneme",
+            "offset": 17390218,
+            "context": "[SAMICORE: %s@%s:%d] phonemes not found in payload, skip phonemes\n"
+          },
+          {
+            "match": "phoneme",
+            "offset": 17390296,
+            "context": "[SAMICORE: %s@%s:%d] alignment not found in payload, skip words and phonemes\n"
+          },
+          {
+            "match": "nbest",
+            "offset": 17618621,
+            "context": "nbest"
+          },
+          {
+            "match": "nbest",
+            "offset": 17618628,
+            "context": "(nbest == 1)"
+          },
+          {
+            "match": "nbest",
+            "offset": 17618640,
+            "context": "nbest is only support 1 now"
+          },
+          {
+            "match": "phoneMe",
+            "offset": 18988563,
+            "context": "_TtC7OimeASR20MicrophoneMeterModel"
+          },
+          {
+            "match": "phoneme",
+            "offset": 19119610,
+            "context": "T@\"NSString\",&,N,V_phonemeAlignment"
+          },
+          {
+            "match": "phoneme",
+            "offset": 19141651,
+            "context": "_phonemeAlignment"
+          },
+          {
+            "match": "phoneme",
+            "offset": 19177937,
+            "context": "phonemeAlignment"
+          },
+          {
+            "match": "Phoneme",
+            "offset": 19192495,
+            "context": "setPhonemeAlignment:"
+          },
+          {
+            "match": "phoneMe",
+            "offset": 19490246,
+            "context": "_microphoneMeterModel"
+          },
+          {
+            "match": "phoneMe",
+            "offset": 36896789,
+            "context": "MicrophoneMeterModel"
+          },
+          {
+            "match": "phoneme",
+            "offset": 37333455,
+            "context": "phonemes"
+          },
+          {
+            "match": "Phoneme",
+            "offset": 37392646,
+            "context": "_transformWordsPhonemes"
+          },
+          {
+            "match": "phoneme",
+            "offset": 37392695,
+            "context": "[SAMICORE: %s@%s:%d] received words and phonemes num is not equal,may has some error\n"
+          },
+          {
+            "match": "phoneme",
+            "offset": 37392829,
+            "context": "[SAMICORE: %s@%s:%d] phonemes not found or no content\n"
+          },
+          {
+            "match": "phoneme",
+            "offset": 37393456,
+            "context": "[SAMICORE: %s@%s:%d] phonemes not found in payload, skip phonemes\n"
+          },
+          {
+            "match": "phoneme",
+            "offset": 37393492,
+            "context": "[SAMICORE: %s@%s:%d] phonemes not found in payload, skip phonemes\n"
+          },
+          {
+            "match": "phoneme",
+            "offset": 37393570,
+            "context": "[SAMICORE: %s@%s:%d] alignment not found in payload, skip words and phonemes\n"
+          },
+          {
+            "match": "nbest",
+            "offset": 37620936,
+            "context": "nbest"
+          },
+          {
+            "match": "nbest",
+            "offset": 37620943,
+            "context": "(nbest == 1)"
+          },
+          {
+            "match": "nbest",
+            "offset": 37620955,
+            "context": "nbest is only support 1 now"
+          },
+          {
+            "match": "phoneMe",
+            "offset": 39860867,
+            "context": "_TtC7OimeASR20MicrophoneMeterModel"
+          },
+          {
+            "match": "phoneme",
+            "offset": 39991788,
+            "context": "T@\"NSString\",&,N,V_phonemeAlignment"
+          },
+          {
+            "match": "phoneme",
+            "offset": 40013898,
+            "context": "_phonemeAlignment"
+          },
+          {
+            "match": "phoneme",
+            "offset": 40050772,
+            "context": "phonemeAlignment"
+          },
+          {
+            "match": "Phoneme",
+            "offset": 40065446,
+            "context": "setPhonemeAlignment:"
+          },
+          {
+            "match": "phoneMe",
+            "offset": 40368054,
+            "context": "_microphoneMeterModel"
+          }
+        ]
+      },
+      "asr_context": {
+        "count": 74,
+        "matches": [
+          {
+            "match": "ImeAsrQwen3",
+            "offset": 16450328,
+            "context": "@Y>)�N7panther4lite3cpu26W4A8ImeAsrQwen3TransformerE"
+          },
+          {
+            "match": "asr_text",
+            "offset": 17227557,
+            "context": "init_asr_text_count"
+          },
+          {
+            "match": "USER_MODIFY",
+            "offset": 17455192,
+            "context": "USER_MODIFY"
+          },
+          {
+            "match": "HOTWORDS",
+            "offset": 17455211,
+            "context": "HOTWORDS"
+          },
+          {
+            "match": "CUR_CONTEXT",
+            "offset": 17455220,
+            "context": "CUR_CONTEXT"
+          },
+          {
+            "match": "ImeAsrQwen3",
+            "offset": 17486793,
+            "context": "[ImeAsrQwen3][Init] provider->type=%d (0=CPU,4=Metal)%s\n"
+          },
+          {
+            "match": "ImeAsrQwen3",
+            "offset": 17486973,
+            "context": "\u001b[1m[Panther][INFO]: [ImeAsrQwen3] Dynamic KV quant detected (identity scales): dynamic per-token K/V, no fake-quant, no P quant\n\u001b[0m"
+          },
+          {
+            "match": "ImeAsrQwen3",
+            "offset": 17487106,
+            "context": "[ImeAsrQwen3] i8mm prepacked weights enabled for GEMV\n"
+          },
+          {
+            "match": "ImeAsrQwen3",
+            "offset": 17487161,
+            "context": "[ImeAsrQwen3][Layer %d] ERROR: kv_len=%d exceeds max_T=%d (past_len=%d, T=%d)\n"
+          },
+          {
+            "match": "ImeAsrQwen3",
+            "offset": 17488585,
+            "context": "[ImeAsrQwen3][Layer %d][WARN] provider=CPU but kv_cache_list[%d]=0x%lx looks like a non-CPU pointer (GPU buffer handle / sentinel?). If the run crashes shortly, the cause is flute gpu_kv_offload=true with a CPU LLM provider; set gpu_kv_offload=false.\n"
+          },
+          {
+            "match": "ImeAsrQwen3",
+            "offset": 17491387,
+            "context": "[ImeAsrQwen3] *** W4A8 MARIANA-COMPAT ACTIVE *** per_k_gemv_s4 T=%d K=%d N=%d rescale=%s\n"
+          },
+          {
+            "match": "ImeAsrQwen3",
+            "offset": 17491502,
+            "context": "[ImeAsrQwen3] *** W4A16 BYPASS ACTIVE *** per_k_gemv_s4 T=%d K=%d N=%d rescale=%s\n"
+          },
+          {
+            "match": "ImeAsrQwen3",
+            "offset": 17491602,
+            "context": "[ImeAsrQwen3] Using GEMM path for prefill (T=%d)\n"
+          },
+          {
+            "match": "ImeAsrQwen3",
+            "offset": 17566279,
+            "context": "PthCpuProviderW4A8ImeAsrQwen3TransformerBlock"
+          },
+          {
+            "match": "ImeAsrQwen3",
+            "offset": 17566311,
+            "context": "W4A8ImeAsrQwen3TransformerBlock"
+          },
+          {
+            "match": "ImeAsrQwen3",
+            "offset": 17566420,
+            "context": "KernelFactory<CpuKernelType>::Global().RegisterKernelInfo( \"PthCpuProvider\" \"W4A8ImeAsrQwen3TransformerBlock\", \"W4A8ImeAsrQwen3TransformerBlock\", cpu::BuildLiteKernelCreateInfo<cpu::LITE_KERNEL_CLASS_NAME( PthCpuProvider, W4A8ImeAsrQwen3TransformerBlock)>)"
+          },
+          {
+            "match": "ImeAsrQwen3",
+            "offset": 17566455,
+            "context": "KernelFactory<CpuKernelType>::Global().RegisterKernelInfo( \"PthCpuProvider\" \"W4A8ImeAsrQwen3TransformerBlock\", \"W4A8ImeAsrQwen3TransformerBlock\", cpu::BuildLiteKernelCreateInfo<cpu::LITE_KERNEL_CLASS_NAME( PthCpuProvider, W4A8ImeAsrQwen3TransformerBlock)>)"
+          },
+          {
+            "match": "ImeAsrQwen3",
+            "offset": 17566620,
+            "context": "register cpu kernel W4A8ImeAsrQwen3TransformerBlock info failed"
+          },
+          {
+            "match": "ImeAsrQwen3",
+            "offset": 17619941,
+            "context": "W4A8ImeAsrQwen3Transformer ffn activation only support Silu"
+          },
+          {
+            "match": "ImeAsrQwen3",
+            "offset": 17620344,
+            "context": "W4A8ImeAsrQwen3Transformer attention type only support qwen3"
+          },
+          {
+            "match": "ImeAsrQwen3",
+            "offset": 17620496,
+            "context": "GetW4A8ImeAsrQwen3TransformerKernel failed"
+          },
+          {
+            "match": "ImeAsrQwen3",
+            "offset": 17620536,
+            "context": "W4A8ImeAsrQwen3TransformerKernel Init failed\n"
+          },
+          {
+            "match": "ImeAsrQwen3",
+            "offset": 17620582,
+            "context": "W4A8ImeAsrQwen3Transformer input x shape is not valid"
+          },
+          {
+            "match": "ImeAsrQwen3",
+            "offset": 17620858,
+            "context": "GetW4A8ImeAsrQwen3TransformerKernel failed (lazy)"
+          },
+          {
+            "match": "ImeAsrQwen3",
+            "offset": 17620988,
+            "context": "W4A8ImeAsrQwen3TransformerKernel lazy Init failed\n"
+          },
+          {
+            "match": "ImeAsrQwen3",
+            "offset": 17621096,
+            "context": "W4A8ImeAsrQwen3Transformer compute failed"
+          },
+          {
+            "match": "VADModifyPair",
+            "offset": 21177725,
+            "context": "�@_$s10OimeCommon13VADModifyPairVMn"
+          },
+          {
+            "match": "VADModifyPair",
+            "offset": 21177761,
+            "context": "�@_$s10OimeCommon13VADModifyPairVN"
+          },
+          {
+            "match": "VADModifyPair",
+            "offset": 21177796,
+            "context": "�@_$s10OimeCommon13VADModifyPairVSEAAMc"
+          },
+          {
+            "match": "VADModifyPair",
+            "offset": 21177836,
+            "context": "�@_$s10OimeCommon13VADModifyPairVSeAAMc"
+          },
+          {
+            "match": "VADModifyPair",
+            "offset": 21251597,
+            "context": "s�\u0016 \u0019@_$s10OimeCommon9ASRResultC14completeResult15recentVADResult03tbdE09isFullVAD0i7OfflineE02pt6taskId14vadModifyPairsACSS_S2SS2bSSSgALSayAA13VADModifyPairVGtcfc"
+          },
+          {
+            "match": "VADModifyPair",
+            "offset": 21436146,
+            "context": "_$s10OimeCommon13VADModifyPairVMn"
+          },
+          {
+            "match": "VADModifyPair",
+            "offset": 21436180,
+            "context": "_$s10OimeCommon13VADModifyPairVN"
+          },
+          {
+            "match": "VADModifyPair",
+            "offset": 21436213,
+            "context": "_$s10OimeCommon13VADModifyPairVSEAAMc"
+          },
+          {
+            "match": "VADModifyPair",
+            "offset": 21436251,
+            "context": "_$s10OimeCommon13VADModifyPairVSeAAMc"
+          },
+          {
+            "match": "VADModifyPair",
+            "offset": 21449345,
+            "context": "_$s10OimeCommon9ASRResultC14completeResult15recentVADResult03tbdE09isFullVAD0i7OfflineE02pt6taskId14vadModifyPairsACSS_S2SS2bSSSgALSayAA13VADModifyPairVGtcfc"
+          },
+          {
+            "match": "ImeAsrQwen3",
+            "offset": 36450384,
+            "context": "N7panther4lite3cpu26W4A8ImeAsrQwen3TransformerE"
+          },
+          {
+            "match": "asr_text",
+            "offset": 37229749,
+            "context": "init_asr_text_count"
+          },
+          {
+            "match": "USER_MODIFY",
+            "offset": 37458601,
+            "context": "USER_MODIFY"
+          },
+          {
+            "match": "HOTWORDS",
+            "offset": 37458620,
+            "context": "HOTWORDS"
+          },
+          {
+            "match": "CUR_CONTEXT",
+            "offset": 37458629,
+            "context": "CUR_CONTEXT"
+          },
+          {
+            "match": "ImeAsrQwen3",
+            "offset": 37487489,
+            "context": "[ImeAsrQwen3][Init] provider->type=%d (0=CPU,4=Metal)%s\n"
+          },
+          {
+            "match": "ImeAsrQwen3",
+            "offset": 37487669,
+            "context": "\u001b[1m[Panther][INFO]: [ImeAsrQwen3] Dynamic KV quant detected (identity scales): dynamic per-token K/V, no fake-quant, no P quant\n\u001b[0m"
+          },
+          {
+            "match": "ImeAsrQwen3",
+            "offset": 37487802,
+            "context": "[ImeAsrQwen3] i8mm prepacked weights enabled for GEMV\n"
+          },
+          {
+            "match": "ImeAsrQwen3",
+            "offset": 37487857,
+            "context": "[ImeAsrQwen3][Layer %d] ERROR: kv_len=%d exceeds max_T=%d (past_len=%d, T=%d)\n"
+          },
+          {
+            "match": "ImeAsrQwen3",
+            "offset": 37489281,
+            "context": "[ImeAsrQwen3][Layer %d][WARN] provider=CPU but kv_cache_list[%d]=0x%lx looks like a non-CPU pointer (GPU buffer handle / sentinel?). If the run crashes shortly, the cause is flute gpu_kv_offload=true with a CPU LLM provider; set gpu_kv_offload=false.\n"
+          },
+          {
+            "match": "ImeAsrQwen3",
+            "offset": 37492083,
+            "context": "[ImeAsrQwen3] *** W4A8 MARIANA-COMPAT ACTIVE *** per_k_gemv_s4 T=%d K=%d N=%d rescale=%s\n"
+          },
+          {
+            "match": "ImeAsrQwen3",
+            "offset": 37492198,
+            "context": "[ImeAsrQwen3] *** W4A16 BYPASS ACTIVE *** per_k_gemv_s4 T=%d K=%d N=%d rescale=%s\n"
+          },
+          {
+            "match": "ImeAsrQwen3",
+            "offset": 37492298,
+            "context": "[ImeAsrQwen3] Using GEMM path for prefill (T=%d)\n"
+          },
+          {
+            "match": "ImeAsrQwen3",
+            "offset": 37566935,
+            "context": "PthCpuProviderW4A8ImeAsrQwen3TransformerBlock"
+          },
+          {
+            "match": "ImeAsrQwen3",
+            "offset": 37566967,
+            "context": "W4A8ImeAsrQwen3TransformerBlock"
+          },
+          {
+            "match": "ImeAsrQwen3",
+            "offset": 37567076,
+            "context": "KernelFactory<CpuKernelType>::Global().RegisterKernelInfo( \"PthCpuProvider\" \"W4A8ImeAsrQwen3TransformerBlock\", \"W4A8ImeAsrQwen3TransformerBlock\", cpu::BuildLiteKernelCreateInfo<cpu::LITE_KERNEL_CLASS_NAME( PthCpuProvider, W4A8ImeAsrQwen3TransformerBlock)>)"
+          },
+          {
+            "match": "ImeAsrQwen3",
+            "offset": 37567111,
+            "context": "KernelFactory<CpuKernelType>::Global().RegisterKernelInfo( \"PthCpuProvider\" \"W4A8ImeAsrQwen3TransformerBlock\", \"W4A8ImeAsrQwen3TransformerBlock\", cpu::BuildLiteKernelCreateInfo<cpu::LITE_KERNEL_CLASS_NAME( PthCpuProvider, W4A8ImeAsrQwen3TransformerBlock)>)"
+          },
+          {
+            "match": "ImeAsrQwen3",
+            "offset": 37567276,
+            "context": "register cpu kernel W4A8ImeAsrQwen3TransformerBlock info failed"
+          },
+          {
+            "match": "ImeAsrQwen3",
+            "offset": 37622256,
+            "context": "W4A8ImeAsrQwen3Transformer ffn activation only support Silu"
+          },
+          {
+            "match": "ImeAsrQwen3",
+            "offset": 37622733,
+            "context": "W4A8ImeAsrQwen3Transformer attention type only support qwen3"
+          },
+          {
+            "match": "ImeAsrQwen3",
+            "offset": 37622885,
+            "context": "GetW4A8ImeAsrQwen3TransformerKernel failed"
+          },
+          {
+            "match": "ImeAsrQwen3",
+            "offset": 37622925,
+            "context": "W4A8ImeAsrQwen3TransformerKernel Init failed\n"
+          },
+          {
+            "match": "ImeAsrQwen3",
+            "offset": 37623178,
+            "context": "W4A8ImeAsrQwen3Transformer input x shape is not valid"
+          },
+          {
+            "match": "ImeAsrQwen3",
+            "offset": 37623463,
+            "context": "W4A8ImeAsrQwen3Transformer Metal execution failed after CPU weights were released"
+          },
+          {
+            "match": "ImeAsrQwen3",
+            "offset": 37623548,
+            "context": "GetW4A8ImeAsrQwen3TransformerKernel failed (lazy)"
+          },
+          {
+            "match": "ImeAsrQwen3",
+            "offset": 37623678,
+            "context": "W4A8ImeAsrQwen3TransformerKernel lazy Init failed\n"
+          },
+          {
+            "match": "ImeAsrQwen3",
+            "offset": 37623786,
+            "context": "W4A8ImeAsrQwen3Transformer compute failed"
+          },
+          {
+            "match": "ImeAsrQwen3",
+            "offset": 37624178,
+            "context": "[UNLOAD] ~W4A8ImeAsrQwen3Transformer layer_idx=%d metal_init=%d\n"
+          },
+          {
+            "match": "VADModifyPair",
+            "offset": 42152302,
+            "context": "�@_$s10OimeCommon13VADModifyPairVMn"
+          },
+          {
+            "match": "VADModifyPair",
+            "offset": 42152338,
+            "context": "�@_$s10OimeCommon13VADModifyPairVN"
+          },
+          {
+            "match": "VADModifyPair",
+            "offset": 42152373,
+            "context": "�@_$s10OimeCommon13VADModifyPairVSEAAMc"
+          },
+          {
+            "match": "VADModifyPair",
+            "offset": 42152413,
+            "context": "�@_$s10OimeCommon13VADModifyPairVSeAAMc"
+          },
+          {
+            "match": "VADModifyPair",
+            "offset": 42234629,
+            "context": "s�\u0016 \u0019@_$s10OimeCommon9ASRResultC14completeResult15recentVADResult03tbdE09isFullVAD0i7OfflineE02pt6taskId14vadModifyPairsACSS_S2SS2bSSSgALSayAA13VADModifyPairVGtcfc"
+          },
+          {
+            "match": "VADModifyPair",
+            "offset": 42415634,
+            "context": "_$s10OimeCommon13VADModifyPairVMn"
+          },
+          {
+            "match": "VADModifyPair",
+            "offset": 42415668,
+            "context": "_$s10OimeCommon13VADModifyPairVN"
+          },
+          {
+            "match": "VADModifyPair",
+            "offset": 42415701,
+            "context": "_$s10OimeCommon13VADModifyPairVSEAAMc"
+          },
+          {
+            "match": "VADModifyPair",
+            "offset": 42415739,
+            "context": "_$s10OimeCommon13VADModifyPairVSeAAMc"
+          },
+          {
+            "match": "VADModifyPair",
+            "offset": 42428833,
+            "context": "_$s10OimeCommon9ASRResultC14completeResult15recentVADResult03tbdE09isFullVAD0i7OfflineE02pt6taskId14vadModifyPairsACSS_S2SS2bSSSgALSayAA13VADModifyPairVGtcfc"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "path": "/Library/Input Methods/DoubaoIme.app/Contents/Frameworks/OimeCommon.framework/Versions/A/OimeCommon",
+    "sha256": "e32fe772173cf8a52865152ab0e07d8bec2354ea317ce61f6ec8e2fc1a805606",
+    "size": 1084144,
+    "groups": {
+      "phonetic": {
+        "count": 0,
+        "matches": []
+      },
+      "asr_context": {
+        "count": 8,
+        "matches": [
+          {
+            "match": "VADModifyPair",
+            "offset": 330480,
+            "context": "VADModifyPair"
+          },
+          {
+            "match": "VADModifyPair",
+            "offset": 479895,
+            "context": "�WVADModifyPairV"
+          },
+          {
+            "match": "VADModifyPair",
+            "offset": 507782,
+            "context": "\u000215recentVADResult03tbdE09isFullVAD0i7OfflineE02pt6taskId14vadModifyPairsACSS_S2SS2bSSSgALSayAA13VADModifyPairVGtcf"
+          },
+          {
+            "match": "VADModifyPair",
+            "offset": 507955,
+            "context": "��\u0002vadModifyPairsSayAA13VADModifyPairVGv"
+          },
+          {
+            "match": "VADModifyPair",
+            "offset": 851200,
+            "context": "VADModifyPair"
+          },
+          {
+            "match": "VADModifyPair",
+            "offset": 1012744,
+            "context": "�WVADModifyPairV"
+          },
+          {
+            "match": "VADModifyPair",
+            "offset": 1040582,
+            "context": "\u000215recentVADResult03tbdE09isFullVAD0i7OfflineE02pt6taskId14vadModifyPairsACSS_S2SS2bSSSgALSayAA13VADModifyPairVGtcf"
+          },
+          {
+            "match": "VADModifyPair",
+            "offset": 1040755,
+            "context": "ĳ\u0002vadModifyPairsSayAA13VADModifyPairVGv"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "path": "/Library/Input Methods/DoubaoIme.app/Contents/Frameworks/OimeEngine.framework/Versions/A/OimeEngine",
+    "sha256": "d1cebd7c9a9d888acc2a6d2f4aad372cb3b31570ff68a7e631cba930517f5db8",
+    "size": 14474480,
+    "groups": {
+      "phonetic": {
+        "count": 0,
+        "matches": []
+      },
+      "asr_context": {
+        "count": 0,
+        "matches": []
+      }
+    }
+  },
+  {
+    "path": "/Users/steven/code/Arion/.workspace/research/chatterfly/chatterfly-arm64",
+    "sha256": "2ea312f6324accd6194e6c612608870321bc62c286aa2cdbccf8288ae19a2433",
+    "size": 54198928,
+    "groups": {
+      "phonetic": {
+        "count": 90,
+        "matches": [
+          {
+            "match": "NBEST",
+            "offset": 30155749,
+            "context": "NBEST"
+          },
+          {
+            "match": "NBest",
+            "offset": 30299825,
+            "context": "xsp.NBestSentencePieceText"
+          },
+          {
+            "match": "nbest",
+            "offset": 30300646,
+            "context": "nbest_spt"
+          },
+          {
+            "match": "NBest",
+            "offset": 30300666,
+            "context": "model_->IsNBestEncodeAvailable()"
+          },
+          {
+            "match": "NBest",
+            "offset": 30300689,
+            "context": "NBestEncode is not available for the current model."
+          },
+          {
+            "match": "nbest",
+            "offset": 30300742,
+            "context": "!nbests.empty()"
+          },
+          {
+            "match": "NBest",
+            "offset": 30300757,
+            "context": "NBestEncode returns empty result."
+          },
+          {
+            "match": "nbest",
+            "offset": 30300792,
+            "context": "(nbest_size) <= (512)"
+          },
+          {
+            "match": "nbest",
+            "offset": 30300813,
+            "context": "nbest_size must be nbest_size <= 512"
+          },
+          {
+            "match": "nbest",
+            "offset": 30300832,
+            "context": "nbest_size must be nbest_size <= 512"
+          },
+          {
+            "match": "nbest",
+            "offset": 30301856,
+            "context": "nbest_size >= 1. Returns empty result."
+          },
+          {
+            "match": "NBest",
+            "offset": 33528421,
+            "context": "N3xsp22NBestSentencePieceTextE"
+          },
+          {
+            "match": "NBest",
+            "offset": 33529057,
+            "context": "N3xsp31ImmutableNBestSentencePieceTextE"
+          },
+          {
+            "match": "NBest",
+            "offset": 33529234,
+            "context": "NSt3__120__shared_ptr_emplaceIN3xsp22NBestSentencePieceTextENS_9allocatorIS2_EEEE"
+          },
+          {
+            "match": "NBest",
+            "offset": 36975057,
+            "context": "��\u0014FindNBestCorrectArcEPKNS_8t_pysArcEifs"
+          },
+          {
+            "match": "Phonetic",
+            "offset": 37091765,
+            "context": "��\u001bPhoneticGeneEntryERKNSt3__16vectorINS1_4pairINS1_12basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEEfEENS7_ISA_EEEERNS2_INS3_IPKhS9_EENS7_ISH_EEEE"
+          },
+          {
+            "match": "Phonetic",
+            "offset": 37232483,
+            "context": "��$PhoneticCandEntryERKNSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEERNS1_6vectorIPKhNS5_ISC_EEEERN26sgime_kernelbase_namespace6t_heapE"
+          },
+          {
+            "match": "NBest",
+            "offset": 37244656,
+            "context": "�%InsertMetaWordInNBestListEPA7_tiPNS_11t_SplitListEiiRS3_"
+          },
+          {
+            "match": "NBest",
+            "offset": 37253391,
+            "context": "��%InsertMetaWordInNBestListEPA7_tiPNS_11t_SplitListEiiRS3_"
+          },
+          {
+            "match": "NBest",
+            "offset": 44651079,
+            "context": "__ZN19_sgime_core_pinyin_13t_entryLoader19FindNBestCorrectArcEPKNS_8t_pysArcEifs"
+          },
+          {
+            "match": "Phonetic",
+            "offset": 44839427,
+            "context": "__ZN19_sgime_core_pinyin_17GeneResortManager17PhoneticGeneEntryERKNSt3__16vectorINS1_4pairINS1_12basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEEfEENS7_ISA_EEEERNS2_INS3_IPKhS9_EENS7_ISH_EEEE"
+          },
+          {
+            "match": "Phonetic",
+            "offset": 45059014,
+            "context": "__ZN19_sgime_core_pinyin_25GenerateCandManagerHandle17PhoneticCandEntryERKNSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEERNS1_6vectorIPKhNS5_ISC_EEEERN26sgime_kernelbase_namespace6t_heapE"
+          },
+          {
+            "match": "NBest",
+            "offset": 45078589,
+            "context": "__ZN19_sgime_core_pinyin_26t_WordPredictionElementSet25InsertMetaWordInNBestListEPA7_tiPNS_11t_SplitListEiiRS3_"
+          },
+          {
+            "match": "NBest",
+            "offset": 45092992,
+            "context": "__ZN19_sgime_core_pinyin_30t_cantWordPredictionElementSet25InsertMetaWordInNBestListEPA7_tiPNS_11t_SplitListEiiRS3_"
+          },
+          {
+            "match": "NBest",
+            "offset": 46409400,
+            "context": "__ZN3xsp22NBestSentencePieceText9ArenaDtorEPv"
+          },
+          {
+            "match": "NBest",
+            "offset": 48063282,
+            "context": "__ZNK3xsp22NBestSentencePieceText13SetCachedSizeEi"
+          },
+          {
+            "match": "NBest",
+            "offset": 49764826,
+            "context": "__ZNK3xsp14ModelInterface11NBestEncodeENS_4util11string_viewEi"
+          },
+          {
+            "match": "NBest",
+            "offset": 49765075,
+            "context": "__ZNK3xsp3bpe5Model22IsNBestEncodeAvailableEv"
+          },
+          {
+            "match": "NBest",
+            "offset": 49767798,
+            "context": "__ZNK3xsp14ModelInterface22IsNBestEncodeAvailableEv"
+          },
+          {
+            "match": "NBest",
+            "offset": 49778351,
+            "context": "__ZN3xsp22NBestSentencePieceTextC1EPN7XGoogle8protobuf5ArenaEb"
+          },
+          {
+            "match": "NBest",
+            "offset": 49778414,
+            "context": "__ZN3xsp22NBestSentencePieceTextC2EPN7XGoogle8protobuf5ArenaEb"
+          },
+          {
+            "match": "NBest",
+            "offset": 49778548,
+            "context": "__ZN3xsp22NBestSentencePieceTextC2ERKS0_"
+          },
+          {
+            "match": "NBest",
+            "offset": 49778589,
+            "context": "__ZN3xsp22NBestSentencePieceTextC1ERKS0_"
+          },
+          {
+            "match": "NBest",
+            "offset": 49778630,
+            "context": "__ZN3xsp22NBestSentencePieceTextD2Ev"
+          },
+          {
+            "match": "NBest",
+            "offset": 49778667,
+            "context": "__ZN3xsp22NBestSentencePieceTextD1Ev"
+          },
+          {
+            "match": "NBest",
+            "offset": 49778704,
+            "context": "__ZN3xsp22NBestSentencePieceTextD0Ev"
+          },
+          {
+            "match": "NBest",
+            "offset": 49778741,
+            "context": "__ZN3xsp22NBestSentencePieceText5ClearEv"
+          },
+          {
+            "match": "NBest",
+            "offset": 49778782,
+            "context": "__ZN3xsp22NBestSentencePieceText14_InternalParseEPKcPN7XGoogle8protobuf8internal12ParseContextE"
+          },
+          {
+            "match": "NBest",
+            "offset": 49778879,
+            "context": "__ZNK3xsp22NBestSentencePieceText18_InternalSerializeEPhPN7XGoogle8protobuf2io19EpsCopyOutputStreamE"
+          },
+          {
+            "match": "NBest",
+            "offset": 49778980,
+            "context": "__ZNK3xsp22NBestSentencePieceText12ByteSizeLongEv"
+          },
+          {
+            "match": "NBest",
+            "offset": 49779029,
+            "context": "__ZN3xsp22NBestSentencePieceText21CheckTypeAndMergeFromERKN7XGoogle8protobuf11MessageLiteE"
+          },
+          {
+            "match": "NBest",
+            "offset": 49779120,
+            "context": "__ZN3xsp22NBestSentencePieceText9MergeFromERKS0_"
+          },
+          {
+            "match": "NBest",
+            "offset": 49779169,
+            "context": "__ZN3xsp22NBestSentencePieceText8CopyFromERKS0_"
+          },
+          {
+            "match": "NBest",
+            "offset": 49779218,
+            "context": "__ZNK3xsp22NBestSentencePieceText13IsInitializedEv"
+          },
+          {
+            "match": "NBest",
+            "offset": 49780286,
+            "context": "__ZN3xsp22NBestSentencePieceText12InternalSwapEPS0_"
+          },
+          {
+            "match": "NBest",
+            "offset": 49780339,
+            "context": "__ZNK3xsp22NBestSentencePieceText11GetTypeNameEv"
+          },
+          {
+            "match": "NBest",
+            "offset": 49780628,
+            "context": "__ZN7XGoogle8protobuf5Arena18CreateMaybeMessageIN3xsp22NBestSentencePieceTextEJEEEPT_PS1_DpOT0_"
+          },
+          {
+            "match": "NBest",
+            "offset": 49781004,
+            "context": "__ZNK3xsp22NBestSentencePieceText3NewEv"
+          },
+          {
+            "match": "NBest",
+            "offset": 49781044,
+            "context": "__ZNK3xsp22NBestSentencePieceText3NewEPN7XGoogle8protobuf5ArenaE"
+          },
+          {
+            "match": "NBest",
+            "offset": 49781109,
+            "context": "__ZNK3xsp22NBestSentencePieceText13GetCachedSizeEv"
+          },
+          {
+            "match": "NBest",
+            "offset": 49795558,
+            "context": "__ZN3xsp31ImmutableNBestSentencePieceTextC1Ev"
+          },
+          {
+            "match": "NBest",
+            "offset": 49795604,
+            "context": "__ZN3xsp31ImmutableNBestSentencePieceTextC2Ev"
+          },
+          {
+            "match": "NBest",
+            "offset": 49795650,
+            "context": "__ZN3xsp31ImmutableNBestSentencePieceTextD2Ev"
+          },
+          {
+            "match": "NBest",
+            "offset": 49795696,
+            "context": "__ZN3xsp31ImmutableNBestSentencePieceTextD1Ev"
+          },
+          {
+            "match": "NBest",
+            "offset": 49795742,
+            "context": "__ZN3xsp31ImmutableNBestSentencePieceTextD0Ev"
+          },
+          {
+            "match": "NBest",
+            "offset": 49795789,
+            "context": "__ZNK3xsp31ImmutableNBestSentencePieceText11nbests_sizeEv"
+          },
+          {
+            "match": "nbest",
+            "offset": 49795813,
+            "context": "__ZNK3xsp31ImmutableNBestSentencePieceText11nbests_sizeEv"
+          },
+          {
+            "match": "NBest",
+            "offset": 49795847,
+            "context": "__ZNK3xsp31ImmutableNBestSentencePieceText6nbestsEi"
+          },
+          {
+            "match": "nbest",
+            "offset": 49795870,
+            "context": "__ZNK3xsp31ImmutableNBestSentencePieceText6nbestsEi"
+          },
+          {
+            "match": "NBest",
+            "offset": 49795899,
+            "context": "__ZNK3xsp31ImmutableNBestSentencePieceText6nbestsEv"
+          },
+          {
+            "match": "nbest",
+            "offset": 49795922,
+            "context": "__ZNK3xsp31ImmutableNBestSentencePieceText6nbestsEv"
+          },
+          {
+            "match": "NBest",
+            "offset": 49795950,
+            "context": "__ZN3xsp31ImmutableNBestSentencePieceText13mutable_protoEv"
+          },
+          {
+            "match": "NBest",
+            "offset": 49796009,
+            "context": "__ZN3xsp31ImmutableNBestSentencePieceText21ConvertToUnicodeSpansEv"
+          },
+          {
+            "match": "NBest",
+            "offset": 49796077,
+            "context": "__ZNK3xsp31ImmutableNBestSentencePieceText17SerializeAsStringEv"
+          },
+          {
+            "match": "NBest",
+            "offset": 49798091,
+            "context": "__ZNK3xsp22SentencePieceProcessor11NBestEncodeENS_4util11string_viewEiPNSt3__16vectorINS4_INS3_12basic_stringIcNS3_11char_traitsIcEENS3_9allocatorIcEEEENS8_ISA_EEEENS8_ISC_EEEE"
+          },
+          {
+            "match": "NBest",
+            "offset": 49798268,
+            "context": "__ZNK3xsp22SentencePieceProcessor11NBestEncodeENS_4util11string_viewEiPNSt3__16vectorINS4_IiNS3_9allocatorIiEEEENS5_IS7_EEEE"
+          },
+          {
+            "match": "NBest",
+            "offset": 49799628,
+            "context": "__ZNK3xsp22SentencePieceProcessor11NBestEncodeENS_4util11string_viewEiPNS_22NBestSentencePieceTextE"
+          },
+          {
+            "match": "NBest",
+            "offset": 49799669,
+            "context": "__ZNK3xsp22SentencePieceProcessor11NBestEncodeENS_4util11string_viewEiPNS_22NBestSentencePieceTextE"
+          },
+          {
+            "match": "NBest",
+            "offset": 49800309,
+            "context": "__ZNK3xsp22SentencePieceProcessor20SampleEncodeAndScoreENS_4util11string_viewEifbbPNS_22NBestSentencePieceTextE"
+          },
+          {
+            "match": "NBest",
+            "offset": 49802575,
+            "context": "__ZNK3xsp22SentencePieceProcessor19NBestEncodeAsPiecesENS_4util11string_viewEi"
+          },
+          {
+            "match": "NBest",
+            "offset": 49802654,
+            "context": "__ZNK3xsp22SentencePieceProcessor16NBestEncodeAsIdsENS_4util11string_viewEi"
+          },
+          {
+            "match": "NBest",
+            "offset": 49803648,
+            "context": "__ZNK3xsp22SentencePieceProcessor28NBestEncodeAsSerializedProtoENS_4util11string_viewEi"
+          },
+          {
+            "match": "NBest",
+            "offset": 49804390,
+            "context": "__ZNK3xsp22SentencePieceProcessor27NBestEncodeAsImmutableProtoENS_4util11string_viewEi"
+          },
+          {
+            "match": "NBest",
+            "offset": 49805744,
+            "context": "__ZNSt3__120__shared_ptr_emplaceIN3xsp22NBestSentencePieceTextENS_9allocatorIS2_EEED1Ev"
+          },
+          {
+            "match": "NBest",
+            "offset": 49805832,
+            "context": "__ZNSt3__120__shared_ptr_emplaceIN3xsp22NBestSentencePieceTextENS_9allocatorIS2_EEED0Ev"
+          },
+          {
+            "match": "NBest",
+            "offset": 49805920,
+            "context": "__ZNSt3__120__shared_ptr_emplaceIN3xsp22NBestSentencePieceTextENS_9allocatorIS2_EEE16__on_zero_sharedEv"
+          },
+          {
+            "match": "NBest",
+            "offset": 49806024,
+            "context": "__ZNSt3__120__shared_ptr_emplaceIN3xsp22NBestSentencePieceTextENS_9allocatorIS2_EEE21__on_zero_shared_weakEv"
+          },
+          {
+            "match": "NBest",
+            "offset": 49809388,
+            "context": "__ZN3xsp7unigram7Lattice5NBestEmbf"
+          },
+          {
+            "match": "NBest",
+            "offset": 49809962,
+            "context": "__ZNK3xsp7unigram5Model11NBestEncodeENS_4util11string_viewEi"
+          },
+          {
+            "match": "NBest",
+            "offset": 49810440,
+            "context": "__ZNK3xsp7unigram5Model22IsNBestEncodeAvailableEv"
+          },
+          {
+            "match": "NBest",
+            "offset": 52172349,
+            "context": "__ZTSN3xsp22NBestSentencePieceTextE"
+          },
+          {
+            "match": "NBest",
+            "offset": 52173316,
+            "context": "__ZTSN3xsp31ImmutableNBestSentencePieceTextE"
+          },
+          {
+            "match": "NBest",
+            "offset": 52173500,
+            "context": "__ZTSNSt3__120__shared_ptr_emplaceIN3xsp22NBestSentencePieceTextENS_9allocatorIS2_EEEE"
+          },
+          {
+            "match": "NBest",
+            "offset": 52573170,
+            "context": "__ZTVN3xsp22NBestSentencePieceTextE"
+          },
+          {
+            "match": "NBest",
+            "offset": 52573282,
+            "context": "__ZTIN3xsp22NBestSentencePieceTextE"
+          },
+          {
+            "match": "NBest",
+            "offset": 52573715,
+            "context": "__ZTVN3xsp31ImmutableNBestSentencePieceTextE"
+          },
+          {
+            "match": "NBest",
+            "offset": 52573836,
+            "context": "__ZTIN3xsp31ImmutableNBestSentencePieceTextE"
+          },
+          {
+            "match": "NBest",
+            "offset": 52574429,
+            "context": "__ZTVNSt3__120__shared_ptr_emplaceIN3xsp22NBestSentencePieceTextENS_9allocatorIS2_EEEE"
+          },
+          {
+            "match": "NBest",
+            "offset": 52574516,
+            "context": "__ZTINSt3__120__shared_ptr_emplaceIN3xsp22NBestSentencePieceTextENS_9allocatorIS2_EEEE"
+          },
+          {
+            "match": "NBest",
+            "offset": 53238902,
+            "context": "__ZN3xsp41_NBestSentencePieceText_default_instance_E"
+          }
+        ]
+      },
+      "asr_context": {
+        "count": 24,
+        "matches": [
+          {
+            "match": "asr_text",
+            "offset": 29849390,
+            "context": "asr_text"
+          },
+          {
+            "match": "asrStableText",
+            "offset": 29857445,
+            "context": "  asrStableText.len=%lu\n  asrTempText.len=%lu\n  enhancedText.len=%lu\n  sessionError=%@\n  startTime=%@\n  endTime=%@\n  llmEndTime=%@\n  triggerType=%@\n  skillName=%@\n  voiceFilePath=%@\n  voiceFileMD5=%@\n  historyVoiceID=%lld\n  asrSDKVersion=%@\n>"
+          },
+          {
+            "match": "processWithAsrText",
+            "offset": 29869608,
+            "context": "-[SGSpeechPostProcessor processWithAsrText:vpTrigger:enablePauseDetect:uid:userToken:completion:]"
+          },
+          {
+            "match": "processWithAsrText",
+            "offset": 29870107,
+            "context": "-[SGSpeechPostProcessorSSE processWithAsrText:vpTrigger:enablePauseDetect:uid:userToken:completion:]"
+          },
+          {
+            "match": "asr_text",
+            "offset": 30159126,
+            "context": "asr_text: %s, user_text: %s, app_id: %s, edit_type %d, result: %d"
+          },
+          {
+            "match": "asr_text",
+            "offset": 30165744,
+            "context": "asr_text: %s"
+          },
+          {
+            "match": "asrStableText",
+            "offset": 30502725,
+            "context": "T@\"NSString\",C,N,V_asrStableText"
+          },
+          {
+            "match": "asrStableText",
+            "offset": 30570295,
+            "context": "_asrStableText"
+          },
+          {
+            "match": "asrStableText",
+            "offset": 30641617,
+            "context": "asrStableText"
+          },
+          {
+            "match": "buildPayloadWithAsrText",
+            "offset": 30651464,
+            "context": "buildPayloadWithAsrText:vpTrigger:enablePauseDetect:uid:"
+          },
+          {
+            "match": "processWithAsrText",
+            "offset": 30820068,
+            "context": "processWithAsrText:vpTrigger:enablePauseDetect:uid:userToken:completion:"
+          },
+          {
+            "match": "asrStableText",
+            "offset": 47326108,
+            "context": "-[SGMacSpeechSessionData asrStableText]"
+          },
+          {
+            "match": "processWithAsrText",
+            "offset": 47415949,
+            "context": "-[SGSpeechPostProcessor processWithAsrText:vpTrigger:enablePauseDetect:uid:userToken:completion:]"
+          },
+          {
+            "match": "processWithAsrText",
+            "offset": 47416111,
+            "context": "___97-[SGSpeechPostProcessor processWithAsrText:vpTrigger:enablePauseDetect:uid:userToken:completion:]_block_invoke"
+          },
+          {
+            "match": "processWithAsrText",
+            "offset": 47416227,
+            "context": "___97-[SGSpeechPostProcessor processWithAsrText:vpTrigger:enablePauseDetect:uid:userToken:completion:]_block_invoke_2"
+          },
+          {
+            "match": "processWithAsrText",
+            "offset": 47416493,
+            "context": "___97-[SGSpeechPostProcessor processWithAsrText:vpTrigger:enablePauseDetect:uid:userToken:completion:]_block_invoke.35"
+          },
+          {
+            "match": "buildPayloadWithAsrText",
+            "offset": 47416682,
+            "context": "-[SGSpeechPostProcessor buildPayloadWithAsrText:vpTrigger:enablePauseDetect:uid:]"
+          },
+          {
+            "match": "processWithAsrText",
+            "offset": 47418147,
+            "context": "-[SGSpeechPostProcessorSSE processWithAsrText:vpTrigger:enablePauseDetect:uid:userToken:completion:]"
+          },
+          {
+            "match": "buildPayloadWithAsrText",
+            "offset": 47419414,
+            "context": "-[SGSpeechPostProcessorSSE buildPayloadWithAsrText:vpTrigger:enablePauseDetect:uid:]"
+          },
+          {
+            "match": "asrStableText",
+            "offset": 51244419,
+            "context": "_objc_msgSend$asrStableText"
+          },
+          {
+            "match": "buildPayloadWithAsrText",
+            "offset": 51257044,
+            "context": "_objc_msgSend$buildPayloadWithAsrText:vpTrigger:enablePauseDetect:uid:"
+          },
+          {
+            "match": "processWithAsrText",
+            "offset": 51449031,
+            "context": "_objc_msgSend$processWithAsrText:vpTrigger:enablePauseDetect:uid:userToken:completion:"
+          },
+          {
+            "match": "asrStableText",
+            "offset": 53146863,
+            "context": "_OBJC_IVAR_$_SGMacSpeechSessionData._asrStableText"
+          },
+          {
+            "match": "asr_text",
+            "offset": 53338428,
+            "context": "__ZN5nsrss13PostTextStore9asr_text_E"
+          }
+        ]
+      }
+    }
+  }
+]

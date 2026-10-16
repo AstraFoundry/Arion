@@ -1,0 +1,35 @@
+loaded scene-v3-auto prompt=live-v3 prefix=1154 in 13404 ms
+se-zh-defense      email   accepted               2396 ms reuse=31/42
+se-en-contract     email   accepted               1167 ms reuse=31/42
+se-mx-roadmap      email   unsupported_content     949 ms reuse=23/34
+se-zh-quote        email   accepted               1103 ms reuse=24/38
+se-en-closure      email   accepted               1353 ms reuse=30/41
+se-zh-invoice      email   accepted                948 ms reuse=27/38
+se-zh-repair       email   accepted                743 ms reuse=25/36
+sw-zh-three        work    content_dropped        1221 ms reuse=27/45
+sw-en-deploy       work    accepted               1001 ms reuse=24/42
+sw-zh-short        work    accepted                628 ms reuse=9/27
+sw-en-release      work    accepted               1155 ms reuse=20/36
+sw-zh-meeting      work    accepted               1039 ms reuse=19/34
+sw-mx-review       work    unsupported_content    1334 ms reuse=24/38
+sw-zh-steps        work    accepted               1377 ms reuse=22/37
+sp-mx-retry        prompt  accepted               1336 ms reuse=28/44
+sp-en-hook         prompt  accepted               1204 ms reuse=25/42
+sp-zh-app          prompt  length                 5086 ms reuse=32/46
+sp-en-tests        prompt  negation_dropped       1749 ms reuse=17/37
+sp-mx-issue        prompt  accepted               1171 ms reuse=20/39
+sp-zh-async        prompt  accepted               1250 ms reuse=19/33
+sp-en-backoff      prompt  accepted               1311 ms reuse=20/35
+ss-zh-weather      search  accepted                683 ms reuse=8/22
+ss-en-headphones   search  new_number              722 ms reuse=0/24
+ss-zh-mailsearch   search  accepted                497 ms reuse=0/21
+ss-mx-python       search  accepted                592 ms reuse=8/26
+ss-en-reset        search  accepted                684 ms reuse=0/25
+ss-zh-finder       search  accepted                387 ms reuse=0/19
+sc-zh-dinner       chat    accepted                688 ms reuse=14/28
+sc-en-saturday     chat    accepted                928 ms reuse=10/26
+sc-zh-notes        chat    accepted               1014 ms reuse=14/32
+sc-zh-places       chat    accepted                715 ms reuse=14/28
+sc-en-wiki         chat    accepted                805 ms reuse=11/26
+sc-mx-game         chat    accepted                836 ms reuse=14/29
+.workspace/benchmarks/scene/scene-v3-auto.jsonl {"cases":33,"sourcePass":2,"proposalPass":18,"deliveredPass":17,"accepted":27,"rejected":{"unsupported_content":2,"content_dropped":1,"length":1,"negation_dropped":1,"new_number":1},"acceptedFailing":10,"rejectedPassing":1,"worsened":0,"referenceEditRatioMean":0.06471860307340892,"sourceEditRatioMean":0.09867394276146839,"finalMs":{"count":33,"p50":1014.465,"p95":2007.987599999999,"p99":4225.455679999999},"liveEdits":90,"liveAccepted":78,"liveMs":{"count":90,"p50":632.321,"p95":2329.3562999999976,"p99":4003.4829899999995},"sceneAgreement":33,"byScene":{"chat":{"cases":6,"sourcePass":1,"deliveredPass":3,"worsened":0,"sceneAgreement":6},"email":{"cases":7,"sourcePass":0,"deliveredPass":6,"worsened":0,"sceneAgreement":7},"prompt":{"cases":7,"sourcePass":0,"deliveredPass":3,"worsened":0,"sceneAgreement":7},"search":{"cases":6,"sourcePass":0,"deliveredPass":1,"worsened":0,"sceneAgreement":6},"work":{"cases":7,"sourcePass":1,"deliveredPass":4,"worsened":0,"sceneAgreement":7}}}

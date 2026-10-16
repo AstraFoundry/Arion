@@ -137,7 +137,7 @@ func (w *worker) rewrite(req protocol.Request) protocol.Response {
 	if err != nil {
 		return fail(err)
 	}
-	return protocol.Response{OK: true, Text: result.Text, Template: result.Template, InputTokens: result.InputTokens, ReusedTokens: result.ReusedTokens,
+	return protocol.Response{OK: true, Text: result.Text, Cleanup: &result.Cleanup, Template: result.Template, InputTokens: result.InputTokens, ReusedTokens: result.ReusedTokens,
 		OutputTokens: result.OutputTokens, PrefillMs: result.PrefillMs, DecodeMs: result.DecodeMs, FirstTokenMs: result.FirstTokenMs,
 		Truncated: result.Truncated, Cancelled: result.Cancelled, PeakRSS: peakRSS()}
 }

@@ -1,0 +1,4785 @@
+{
+  "kind": "arion-phonetic-ablation-v1",
+  "status": "complete",
+  "corpusHash": "a5d92468ac0c1ac740cf9685628d1d1c6540f70f4ace2d11c189bd7f78fee371",
+  "runHash": "d0e130415102e609e707f86dce428aa51ef3e07e6e626b45e9ff26e0513a1fa9",
+  "resultsHash": "271a66d4b1a7348fdc831da4c5ec0f3297c15147d79b408b19d6c20702d3cbfc",
+  "config": {
+    "version": 1,
+    "kind": "arion-phonetic-ablation-v1",
+    "split": "test",
+    "models": [
+      "qwen3-1.7b"
+    ],
+    "variants": [
+      "text",
+      "text_pinyin",
+      "text_scores",
+      "text_pinyin_scores",
+      "text_ipa",
+      "ipa_only"
+    ],
+    "asrModel": "x-asr-zh-en-160ms-streaming-punct-int8-2026-06-05",
+    "phoneModel": "uni2005",
+    "phoneInventory": "ipa",
+    "threads": 4,
+    "chunkMs": 20,
+    "endpointSilenceSeconds": 0.8,
+    "tailPaddingSeconds": 0.4,
+    "scoreQuantile": 0.25,
+    "orderSeed": 1729,
+    "warmupCount": 2,
+    "maxInputTokens": 4096,
+    "maxNewTokens": 256,
+    "bootstrapIterations": 2000,
+    "policy": "Faithful acoustic transcription correction; no style editing, memory or external context",
+    "timing": "Accelerated chunk replay and isolated warm CPU correction; no realtime preview or insertion claim"
+  },
+  "host": {
+    "os": "darwin",
+    "architecture": "arm64",
+    "cpu": "Apple M4",
+    "ramBytes": 34359738368,
+    "osRelease": "25.6.0",
+    "powerMode": "System-wide power settings:\n SleepDisabled\t\t0\nCurrently in use:\n standby              1\n Sleep On Power Button 1\n hibernatefile        /var/vm/sleepimage\n powernap             1\n networkoversleep     0\n disksleep            10\n sleep                0 (sleep prevented by powerd, caffeinate)\n hibernatemode        3\n ttyskeepawake        1\n displaysleep         0 (display sleep prevented by Caffeine)\n tcpkeepalive         1\n lowpowermode         0\n womp                 1"
+  },
+  "threshold": -0.7410774230957031,
+  "testSamples": 154,
+  "speakers": 44,
+  "acousticTimings": {
+    "asrMs": {
+      "count": 272,
+      "p50": 606.1989795416594,
+      "p95": 2001.4963709283616,
+      "p99": 2874.9199089128774
+    },
+    "phoneMs": {
+      "count": 272,
+      "p50": 101.30797896999866,
+      "p95": 296.0660107899456,
+      "p99": 391.02515784092327
+    },
+    "pinyinMs": {
+      "count": 272,
+      "p50": 0.16464549116790295,
+      "p95": 0.5202713655307887,
+      "p99": 2.187319635413591
+    }
+  },
+  "summaries": {
+    "raw/raw": {
+      "overall": {
+        "count": 154,
+        "rates": {
+          "cer": {
+            "count": 60,
+            "errors": 66,
+            "referenceUnits": 808,
+            "rate": 0.08168316831683169
+          },
+          "wer": {
+            "count": 60,
+            "errors": 75,
+            "referenceUnits": 983,
+            "rate": 0.0762970498474059
+          },
+          "mer": {
+            "count": 30,
+            "errors": 135,
+            "referenceUnits": 371,
+            "rate": 0.3638814016172507
+          }
+        },
+        "improved": 0,
+        "worsened": 0,
+        "changed": 0,
+        "originallyCorrect": 60,
+        "corrupted": 0,
+        "silenceCount": 4,
+        "falseEmissions": 0,
+        "truncated": 0,
+        "generationMs": {
+          "count": 154,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "inputTokens": {
+          "count": 154,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "peakRssBytes": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "p99": null
+        },
+        "outputContractFailures": 0
+      },
+      "byLanguage": {
+        "zh": {
+          "count": 64,
+          "rates": {
+            "cer": {
+              "count": 60,
+              "errors": 66,
+              "referenceUnits": 808,
+              "rate": 0.08168316831683169
+            },
+            "wer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "mer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            }
+          },
+          "improved": 0,
+          "worsened": 0,
+          "changed": 0,
+          "originallyCorrect": 38,
+          "corrupted": 0,
+          "silenceCount": 4,
+          "falseEmissions": 0,
+          "truncated": 0,
+          "generationMs": {
+            "count": 64,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "inputTokens": {
+            "count": 64,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "peakRssBytes": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "outputContractFailures": 0
+        },
+        "en": {
+          "count": 60,
+          "rates": {
+            "cer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "wer": {
+              "count": 60,
+              "errors": 75,
+              "referenceUnits": 983,
+              "rate": 0.0762970498474059
+            },
+            "mer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            }
+          },
+          "improved": 0,
+          "worsened": 0,
+          "changed": 0,
+          "originallyCorrect": 21,
+          "corrupted": 0,
+          "silenceCount": 0,
+          "falseEmissions": 0,
+          "truncated": 0,
+          "generationMs": {
+            "count": 60,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "inputTokens": {
+            "count": 60,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "peakRssBytes": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "outputContractFailures": 0
+        },
+        "mixed": {
+          "count": 30,
+          "rates": {
+            "cer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "wer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "mer": {
+              "count": 30,
+              "errors": 135,
+              "referenceUnits": 371,
+              "rate": 0.3638814016172507
+            }
+          },
+          "improved": 0,
+          "worsened": 0,
+          "changed": 0,
+          "originallyCorrect": 1,
+          "corrupted": 0,
+          "silenceCount": 0,
+          "falseEmissions": 0,
+          "truncated": 0,
+          "generationMs": {
+            "count": 30,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "inputTokens": {
+            "count": 30,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "peakRssBytes": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "outputContractFailures": 0
+        }
+      },
+      "byTag": {
+        "read": {
+          "count": 120,
+          "rates": {
+            "cer": {
+              "count": 60,
+              "errors": 66,
+              "referenceUnits": 808,
+              "rate": 0.08168316831683169
+            },
+            "wer": {
+              "count": 60,
+              "errors": 75,
+              "referenceUnits": 983,
+              "rate": 0.0762970498474059
+            },
+            "mer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            }
+          },
+          "improved": 0,
+          "worsened": 0,
+          "changed": 0,
+          "originallyCorrect": 55,
+          "corrupted": 0,
+          "silenceCount": 0,
+          "falseEmissions": 0,
+          "truncated": 0,
+          "generationMs": {
+            "count": 120,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "inputTokens": {
+            "count": 120,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "peakRssBytes": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "outputContractFailures": 0
+        },
+        "aishell1": {
+          "count": 60,
+          "rates": {
+            "cer": {
+              "count": 60,
+              "errors": 66,
+              "referenceUnits": 808,
+              "rate": 0.08168316831683169
+            },
+            "wer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "mer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            }
+          },
+          "improved": 0,
+          "worsened": 0,
+          "changed": 0,
+          "originallyCorrect": 34,
+          "corrupted": 0,
+          "silenceCount": 0,
+          "falseEmissions": 0,
+          "truncated": 0,
+          "generationMs": {
+            "count": 60,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "inputTokens": {
+            "count": 60,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "peakRssBytes": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "outputContractFailures": 0
+        },
+        "librispeech": {
+          "count": 60,
+          "rates": {
+            "cer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "wer": {
+              "count": 60,
+              "errors": 75,
+              "referenceUnits": 983,
+              "rate": 0.0762970498474059
+            },
+            "mer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            }
+          },
+          "improved": 0,
+          "worsened": 0,
+          "changed": 0,
+          "originallyCorrect": 21,
+          "corrupted": 0,
+          "silenceCount": 0,
+          "falseEmissions": 0,
+          "truncated": 0,
+          "generationMs": {
+            "count": 60,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "inputTokens": {
+            "count": 60,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "peakRssBytes": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "outputContractFailures": 0
+        },
+        "synthetic-tts": {
+          "count": 30,
+          "rates": {
+            "cer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "wer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "mer": {
+              "count": 30,
+              "errors": 135,
+              "referenceUnits": 371,
+              "rate": 0.3638814016172507
+            }
+          },
+          "improved": 0,
+          "worsened": 0,
+          "changed": 0,
+          "originallyCorrect": 1,
+          "corrupted": 0,
+          "silenceCount": 0,
+          "falseEmissions": 0,
+          "truncated": 0,
+          "generationMs": {
+            "count": 30,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "inputTokens": {
+            "count": 30,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "peakRssBytes": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "outputContractFailures": 0
+        },
+        "technical": {
+          "count": 30,
+          "rates": {
+            "cer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "wer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "mer": {
+              "count": 30,
+              "errors": 135,
+              "referenceUnits": 371,
+              "rate": 0.3638814016172507
+            }
+          },
+          "improved": 0,
+          "worsened": 0,
+          "changed": 0,
+          "originallyCorrect": 1,
+          "corrupted": 0,
+          "silenceCount": 0,
+          "falseEmissions": 0,
+          "truncated": 0,
+          "generationMs": {
+            "count": 30,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "inputTokens": {
+            "count": 30,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "peakRssBytes": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "outputContractFailures": 0
+        },
+        "nonspeech": {
+          "count": 4,
+          "rates": {
+            "cer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "wer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "mer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            }
+          },
+          "improved": 0,
+          "worsened": 0,
+          "changed": 0,
+          "originallyCorrect": 4,
+          "corrupted": 0,
+          "silenceCount": 4,
+          "falseEmissions": 0,
+          "truncated": 0,
+          "generationMs": {
+            "count": 4,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "inputTokens": {
+            "count": 4,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "peakRssBytes": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "outputContractFailures": 0
+        },
+        "silence": {
+          "count": 1,
+          "rates": {
+            "cer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "wer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "mer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            }
+          },
+          "improved": 0,
+          "worsened": 0,
+          "changed": 0,
+          "originallyCorrect": 1,
+          "corrupted": 0,
+          "silenceCount": 1,
+          "falseEmissions": 0,
+          "truncated": 0,
+          "generationMs": {
+            "count": 1,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "inputTokens": {
+            "count": 1,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "peakRssBytes": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "outputContractFailures": 0
+        },
+        "noise": {
+          "count": 3,
+          "rates": {
+            "cer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "wer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "mer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            }
+          },
+          "improved": 0,
+          "worsened": 0,
+          "changed": 0,
+          "originallyCorrect": 3,
+          "corrupted": 0,
+          "silenceCount": 3,
+          "falseEmissions": 0,
+          "truncated": 0,
+          "generationMs": {
+            "count": 3,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "inputTokens": {
+            "count": 3,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "peakRssBytes": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "outputContractFailures": 0
+        }
+      }
+    },
+    "qwen3-1.7b/text_scores": {
+      "overall": {
+        "count": 154,
+        "rates": {
+          "cer": {
+            "count": 60,
+            "errors": 693,
+            "referenceUnits": 808,
+            "rate": 0.8576732673267327
+          },
+          "wer": {
+            "count": 60,
+            "errors": 386,
+            "referenceUnits": 983,
+            "rate": 0.392675483214649
+          },
+          "mer": {
+            "count": 30,
+            "errors": 858,
+            "referenceUnits": 371,
+            "rate": 2.31266846361186
+          }
+        },
+        "improved": 1,
+        "worsened": 46,
+        "changed": 51,
+        "originallyCorrect": 60,
+        "corrupted": 26,
+        "silenceCount": 4,
+        "falseEmissions": 4,
+        "truncated": 7,
+        "generationMs": {
+          "count": 154,
+          "p50": 5469.942603958771,
+          "p95": 15621.303014364092,
+          "p99": 24223.827896609437
+        },
+        "inputTokens": {
+          "count": 154,
+          "p50": 468,
+          "p95": 853.35,
+          "p99": 1048.99
+        },
+        "peakRssBytes": {
+          "count": 154,
+          "p50": 3173285888,
+          "p95": 3173285888,
+          "p99": 3173285888
+        },
+        "outputContractFailures": 7
+      },
+      "byLanguage": {
+        "zh": {
+          "count": 64,
+          "rates": {
+            "cer": {
+              "count": 60,
+              "errors": 693,
+              "referenceUnits": 808,
+              "rate": 0.8576732673267327
+            },
+            "wer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "mer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            }
+          },
+          "improved": 0,
+          "worsened": 28,
+          "changed": 28,
+          "originallyCorrect": 38,
+          "corrupted": 22,
+          "silenceCount": 4,
+          "falseEmissions": 4,
+          "truncated": 1,
+          "generationMs": {
+            "count": 64,
+            "p50": 4558.091166079976,
+            "p95": 7252.827289234845,
+            "p99": 14201.638298819276
+          },
+          "inputTokens": {
+            "count": 64,
+            "p50": 439,
+            "p95": 529.55,
+            "p99": 565.22
+          },
+          "peakRssBytes": {
+            "count": 64,
+            "p50": 3173285888,
+            "p95": 3173285888,
+            "p99": 3173285888
+          },
+          "outputContractFailures": 1
+        },
+        "en": {
+          "count": 60,
+          "rates": {
+            "cer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "wer": {
+              "count": 60,
+              "errors": 386,
+              "referenceUnits": 983,
+              "rate": 0.392675483214649
+            },
+            "mer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            }
+          },
+          "improved": 1,
+          "worsened": 10,
+          "changed": 11,
+          "originallyCorrect": 21,
+          "corrupted": 3,
+          "silenceCount": 0,
+          "falseEmissions": 0,
+          "truncated": 2,
+          "generationMs": {
+            "count": 60,
+            "p50": 7330.859229085036,
+            "p95": 15932.743961969387,
+            "p99": 20568.026172313814
+          },
+          "inputTokens": {
+            "count": 60,
+            "p50": 591,
+            "p95": 1005.8499999999999,
+            "p99": 1068.25
+          },
+          "peakRssBytes": {
+            "count": 60,
+            "p50": 3173285888,
+            "p95": 3173285888,
+            "p99": 3173285888
+          },
+          "outputContractFailures": 2
+        },
+        "mixed": {
+          "count": 30,
+          "rates": {
+            "cer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "wer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "mer": {
+              "count": 30,
+              "errors": 858,
+              "referenceUnits": 371,
+              "rate": 2.31266846361186
+            }
+          },
+          "improved": 0,
+          "worsened": 8,
+          "changed": 12,
+          "originallyCorrect": 1,
+          "corrupted": 1,
+          "silenceCount": 0,
+          "falseEmissions": 0,
+          "truncated": 4,
+          "generationMs": {
+            "count": 30,
+            "p50": 4561.021749977954,
+            "p95": 20355.41099568361,
+            "p99": 24911.03762910934
+          },
+          "inputTokens": {
+            "count": 30,
+            "p50": 443.5,
+            "p95": 486.95,
+            "p99": 520.82
+          },
+          "peakRssBytes": {
+            "count": 30,
+            "p50": 3173285888,
+            "p95": 3173285888,
+            "p99": 3173285888
+          },
+          "outputContractFailures": 4
+        }
+      },
+      "byTag": {
+        "read": {
+          "count": 120,
+          "rates": {
+            "cer": {
+              "count": 60,
+              "errors": 693,
+              "referenceUnits": 808,
+              "rate": 0.8576732673267327
+            },
+            "wer": {
+              "count": 60,
+              "errors": 386,
+              "referenceUnits": 983,
+              "rate": 0.392675483214649
+            },
+            "mer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            }
+          },
+          "improved": 1,
+          "worsened": 34,
+          "changed": 35,
+          "originallyCorrect": 55,
+          "corrupted": 21,
+          "silenceCount": 0,
+          "falseEmissions": 0,
+          "truncated": 3,
+          "generationMs": {
+            "count": 120,
+            "p50": 5830.356895457953,
+            "p95": 14660.35297361668,
+            "p99": 20944.52650300461
+          },
+          "inputTokens": {
+            "count": 120,
+            "p50": 491.5,
+            "p95": 879.9999999999999,
+            "p99": 1054.77
+          },
+          "peakRssBytes": {
+            "count": 120,
+            "p50": 3173285888,
+            "p95": 3173285888,
+            "p99": 3173285888
+          },
+          "outputContractFailures": 3
+        },
+        "aishell1": {
+          "count": 60,
+          "rates": {
+            "cer": {
+              "count": 60,
+              "errors": 693,
+              "referenceUnits": 808,
+              "rate": 0.8576732673267327
+            },
+            "wer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "mer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            }
+          },
+          "improved": 0,
+          "worsened": 24,
+          "changed": 24,
+          "originallyCorrect": 34,
+          "corrupted": 18,
+          "silenceCount": 0,
+          "falseEmissions": 0,
+          "truncated": 1,
+          "generationMs": {
+            "count": 60,
+            "p50": 4660.68929200992,
+            "p95": 7313.384318444877,
+            "p99": 14680.806533817627
+          },
+          "inputTokens": {
+            "count": 60,
+            "p50": 449,
+            "p95": 530.5999999999999,
+            "p99": 565.46
+          },
+          "peakRssBytes": {
+            "count": 60,
+            "p50": 3173285888,
+            "p95": 3173285888,
+            "p99": 3173285888
+          },
+          "outputContractFailures": 1
+        },
+        "librispeech": {
+          "count": 60,
+          "rates": {
+            "cer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "wer": {
+              "count": 60,
+              "errors": 386,
+              "referenceUnits": 983,
+              "rate": 0.392675483214649
+            },
+            "mer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            }
+          },
+          "improved": 1,
+          "worsened": 10,
+          "changed": 11,
+          "originallyCorrect": 21,
+          "corrupted": 3,
+          "silenceCount": 0,
+          "falseEmissions": 0,
+          "truncated": 2,
+          "generationMs": {
+            "count": 60,
+            "p50": 7330.859229085036,
+            "p95": 15932.743961969387,
+            "p99": 20568.026172313814
+          },
+          "inputTokens": {
+            "count": 60,
+            "p50": 591,
+            "p95": 1005.8499999999999,
+            "p99": 1068.25
+          },
+          "peakRssBytes": {
+            "count": 60,
+            "p50": 3173285888,
+            "p95": 3173285888,
+            "p99": 3173285888
+          },
+          "outputContractFailures": 2
+        },
+        "nonspeech": {
+          "count": 4,
+          "rates": {
+            "cer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "wer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "mer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            }
+          },
+          "improved": 0,
+          "worsened": 4,
+          "changed": 4,
+          "originallyCorrect": 4,
+          "corrupted": 4,
+          "silenceCount": 4,
+          "falseEmissions": 4,
+          "truncated": 0,
+          "generationMs": {
+            "count": 4,
+            "p50": 3212.919187033549,
+            "p95": 3443.1613998953253,
+            "p99": 3449.1622799728066
+          },
+          "inputTokens": {
+            "count": 4,
+            "p50": 281,
+            "p95": 281,
+            "p99": 281
+          },
+          "peakRssBytes": {
+            "count": 4,
+            "p50": 3173285888,
+            "p95": 3173285888,
+            "p99": 3173285888
+          },
+          "outputContractFailures": 0
+        },
+        "noise": {
+          "count": 3,
+          "rates": {
+            "cer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "wer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "mer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            }
+          },
+          "improved": 0,
+          "worsened": 3,
+          "changed": 3,
+          "originallyCorrect": 3,
+          "corrupted": 3,
+          "silenceCount": 3,
+          "falseEmissions": 3,
+          "truncated": 0,
+          "generationMs": {
+            "count": 3,
+            "p50": 3025.1832080539316,
+            "p95": 3408.1145707983524,
+            "p99": 3442.152914153412
+          },
+          "inputTokens": {
+            "count": 3,
+            "p50": 281,
+            "p95": 281,
+            "p99": 281
+          },
+          "peakRssBytes": {
+            "count": 3,
+            "p50": 3173285888,
+            "p95": 3173285888,
+            "p99": 3173285888
+          },
+          "outputContractFailures": 0
+        },
+        "synthetic-tts": {
+          "count": 30,
+          "rates": {
+            "cer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "wer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "mer": {
+              "count": 30,
+              "errors": 858,
+              "referenceUnits": 371,
+              "rate": 2.31266846361186
+            }
+          },
+          "improved": 0,
+          "worsened": 8,
+          "changed": 12,
+          "originallyCorrect": 1,
+          "corrupted": 1,
+          "silenceCount": 0,
+          "falseEmissions": 0,
+          "truncated": 4,
+          "generationMs": {
+            "count": 30,
+            "p50": 4561.021749977954,
+            "p95": 20355.41099568361,
+            "p99": 24911.03762910934
+          },
+          "inputTokens": {
+            "count": 30,
+            "p50": 443.5,
+            "p95": 486.95,
+            "p99": 520.82
+          },
+          "peakRssBytes": {
+            "count": 30,
+            "p50": 3173285888,
+            "p95": 3173285888,
+            "p99": 3173285888
+          },
+          "outputContractFailures": 4
+        },
+        "technical": {
+          "count": 30,
+          "rates": {
+            "cer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "wer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "mer": {
+              "count": 30,
+              "errors": 858,
+              "referenceUnits": 371,
+              "rate": 2.31266846361186
+            }
+          },
+          "improved": 0,
+          "worsened": 8,
+          "changed": 12,
+          "originallyCorrect": 1,
+          "corrupted": 1,
+          "silenceCount": 0,
+          "falseEmissions": 0,
+          "truncated": 4,
+          "generationMs": {
+            "count": 30,
+            "p50": 4561.021749977954,
+            "p95": 20355.41099568361,
+            "p99": 24911.03762910934
+          },
+          "inputTokens": {
+            "count": 30,
+            "p50": 443.5,
+            "p95": 486.95,
+            "p99": 520.82
+          },
+          "peakRssBytes": {
+            "count": 30,
+            "p50": 3173285888,
+            "p95": 3173285888,
+            "p99": 3173285888
+          },
+          "outputContractFailures": 4
+        },
+        "silence": {
+          "count": 1,
+          "rates": {
+            "cer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "wer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "mer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            }
+          },
+          "improved": 0,
+          "worsened": 1,
+          "changed": 1,
+          "originallyCorrect": 1,
+          "corrupted": 1,
+          "silenceCount": 1,
+          "falseEmissions": 1,
+          "truncated": 0,
+          "generationMs": {
+            "count": 1,
+            "p50": 3400.6551660131663,
+            "p95": 3400.6551660131663,
+            "p99": 3400.6551660131663
+          },
+          "inputTokens": {
+            "count": 1,
+            "p50": 281,
+            "p95": 281,
+            "p99": 281
+          },
+          "peakRssBytes": {
+            "count": 1,
+            "p50": 3173285888,
+            "p95": 3173285888,
+            "p99": 3173285888
+          },
+          "outputContractFailures": 0
+        }
+      }
+    },
+    "qwen3-1.7b/text_ipa": {
+      "overall": {
+        "count": 154,
+        "rates": {
+          "cer": {
+            "count": 60,
+            "errors": 154,
+            "referenceUnits": 808,
+            "rate": 0.1905940594059406
+          },
+          "wer": {
+            "count": 60,
+            "errors": 102,
+            "referenceUnits": 983,
+            "rate": 0.10376398779247202
+          },
+          "mer": {
+            "count": 30,
+            "errors": 272,
+            "referenceUnits": 371,
+            "rate": 0.7331536388140162
+          }
+        },
+        "improved": 1,
+        "worsened": 14,
+        "changed": 17,
+        "originallyCorrect": 60,
+        "corrupted": 5,
+        "silenceCount": 4,
+        "falseEmissions": 4,
+        "truncated": 0,
+        "generationMs": {
+          "count": 154,
+          "p50": 3686.667416477576,
+          "p95": 6326.5492249047375,
+          "p99": 8230.003205947578
+        },
+        "inputTokens": {
+          "count": 154,
+          "p50": 328.5,
+          "p95": 440.75,
+          "p99": 478.94
+        },
+        "peakRssBytes": {
+          "count": 154,
+          "p50": 3173285888,
+          "p95": 3173285888,
+          "p99": 3173285888
+        },
+        "outputContractFailures": 0
+      },
+      "byLanguage": {
+        "zh": {
+          "count": 64,
+          "rates": {
+            "cer": {
+              "count": 60,
+              "errors": 154,
+              "referenceUnits": 808,
+              "rate": 0.1905940594059406
+            },
+            "wer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "mer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            }
+          },
+          "improved": 0,
+          "worsened": 7,
+          "changed": 9,
+          "originallyCorrect": 38,
+          "corrupted": 4,
+          "silenceCount": 4,
+          "falseEmissions": 4,
+          "truncated": 0,
+          "generationMs": {
+            "count": 64,
+            "p50": 3273.3587083639577,
+            "p95": 5167.0159607660025,
+            "p99": 5764.520012759603
+          },
+          "inputTokens": {
+            "count": 64,
+            "p50": 319.5,
+            "p95": 357.4,
+            "p99": 380.96
+          },
+          "peakRssBytes": {
+            "count": 64,
+            "p50": 3173285888,
+            "p95": 3173285888,
+            "p99": 3173285888
+          },
+          "outputContractFailures": 0
+        },
+        "en": {
+          "count": 60,
+          "rates": {
+            "cer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "wer": {
+              "count": 60,
+              "errors": 102,
+              "referenceUnits": 983,
+              "rate": 0.10376398779247202
+            },
+            "mer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            }
+          },
+          "improved": 1,
+          "worsened": 1,
+          "changed": 2,
+          "originallyCorrect": 21,
+          "corrupted": 0,
+          "silenceCount": 0,
+          "falseEmissions": 0,
+          "truncated": 0,
+          "generationMs": {
+            "count": 60,
+            "p50": 4000.3602295182645,
+            "p95": 7071.533332660327,
+            "p99": 8076.539666918106
+          },
+          "inputTokens": {
+            "count": 60,
+            "p50": 351,
+            "p95": 474.2,
+            "p99": 484.09999999999997
+          },
+          "peakRssBytes": {
+            "count": 60,
+            "p50": 3173285888,
+            "p95": 3173285888,
+            "p99": 3173285888
+          },
+          "outputContractFailures": 0
+        },
+        "mixed": {
+          "count": 30,
+          "rates": {
+            "cer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "wer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "mer": {
+              "count": 30,
+              "errors": 272,
+              "referenceUnits": 371,
+              "rate": 0.7331536388140162
+            }
+          },
+          "improved": 0,
+          "worsened": 6,
+          "changed": 6,
+          "originallyCorrect": 1,
+          "corrupted": 1,
+          "silenceCount": 0,
+          "falseEmissions": 0,
+          "truncated": 0,
+          "generationMs": {
+            "count": 30,
+            "p50": 4017.0409579295665,
+            "p95": 7429.422282974696,
+            "p99": 9371.922750696542
+          },
+          "inputTokens": {
+            "count": 30,
+            "p50": 326,
+            "p95": 350.2,
+            "p99": 353.42
+          },
+          "peakRssBytes": {
+            "count": 30,
+            "p50": 3173285888,
+            "p95": 3173285888,
+            "p99": 3173285888
+          },
+          "outputContractFailures": 0
+        }
+      },
+      "byTag": {
+        "read": {
+          "count": 120,
+          "rates": {
+            "cer": {
+              "count": 60,
+              "errors": 154,
+              "referenceUnits": 808,
+              "rate": 0.1905940594059406
+            },
+            "wer": {
+              "count": 60,
+              "errors": 102,
+              "referenceUnits": 983,
+              "rate": 0.10376398779247202
+            },
+            "mer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            }
+          },
+          "improved": 1,
+          "worsened": 5,
+          "changed": 8,
+          "originallyCorrect": 55,
+          "corrupted": 1,
+          "silenceCount": 0,
+          "falseEmissions": 0,
+          "truncated": 0,
+          "generationMs": {
+            "count": 120,
+            "p50": 3652.7581460541114,
+            "p95": 6184.7114421077995,
+            "p99": 7989.477730048821
+          },
+          "inputTokens": {
+            "count": 120,
+            "p50": 334,
+            "p95": 447,
+            "p99": 479.62
+          },
+          "peakRssBytes": {
+            "count": 120,
+            "p50": 3173285888,
+            "p95": 3173285888,
+            "p99": 3173285888
+          },
+          "outputContractFailures": 0
+        },
+        "librispeech": {
+          "count": 60,
+          "rates": {
+            "cer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "wer": {
+              "count": 60,
+              "errors": 102,
+              "referenceUnits": 983,
+              "rate": 0.10376398779247202
+            },
+            "mer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            }
+          },
+          "improved": 1,
+          "worsened": 1,
+          "changed": 2,
+          "originallyCorrect": 21,
+          "corrupted": 0,
+          "silenceCount": 0,
+          "falseEmissions": 0,
+          "truncated": 0,
+          "generationMs": {
+            "count": 60,
+            "p50": 4000.3602295182645,
+            "p95": 7071.533332660327,
+            "p99": 8076.539666918106
+          },
+          "inputTokens": {
+            "count": 60,
+            "p50": 351,
+            "p95": 474.2,
+            "p99": 484.09999999999997
+          },
+          "peakRssBytes": {
+            "count": 60,
+            "p50": 3173285888,
+            "p95": 3173285888,
+            "p99": 3173285888
+          },
+          "outputContractFailures": 0
+        },
+        "aishell1": {
+          "count": 60,
+          "rates": {
+            "cer": {
+              "count": 60,
+              "errors": 154,
+              "referenceUnits": 808,
+              "rate": 0.1905940594059406
+            },
+            "wer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "mer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            }
+          },
+          "improved": 0,
+          "worsened": 4,
+          "changed": 6,
+          "originallyCorrect": 34,
+          "corrupted": 1,
+          "silenceCount": 0,
+          "falseEmissions": 0,
+          "truncated": 0,
+          "generationMs": {
+            "count": 60,
+            "p50": 3327.848020941019,
+            "p95": 5173.046135704499,
+            "p99": 5784.314496074801
+          },
+          "inputTokens": {
+            "count": 60,
+            "p50": 320,
+            "p95": 358.54999999999995,
+            "p99": 381.28
+          },
+          "peakRssBytes": {
+            "count": 60,
+            "p50": 3173285888,
+            "p95": 3173285888,
+            "p99": 3173285888
+          },
+          "outputContractFailures": 0
+        },
+        "synthetic-tts": {
+          "count": 30,
+          "rates": {
+            "cer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "wer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "mer": {
+              "count": 30,
+              "errors": 272,
+              "referenceUnits": 371,
+              "rate": 0.7331536388140162
+            }
+          },
+          "improved": 0,
+          "worsened": 6,
+          "changed": 6,
+          "originallyCorrect": 1,
+          "corrupted": 1,
+          "silenceCount": 0,
+          "falseEmissions": 0,
+          "truncated": 0,
+          "generationMs": {
+            "count": 30,
+            "p50": 4017.0409579295665,
+            "p95": 7429.422282974696,
+            "p99": 9371.922750696542
+          },
+          "inputTokens": {
+            "count": 30,
+            "p50": 326,
+            "p95": 350.2,
+            "p99": 353.42
+          },
+          "peakRssBytes": {
+            "count": 30,
+            "p50": 3173285888,
+            "p95": 3173285888,
+            "p99": 3173285888
+          },
+          "outputContractFailures": 0
+        },
+        "technical": {
+          "count": 30,
+          "rates": {
+            "cer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "wer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "mer": {
+              "count": 30,
+              "errors": 272,
+              "referenceUnits": 371,
+              "rate": 0.7331536388140162
+            }
+          },
+          "improved": 0,
+          "worsened": 6,
+          "changed": 6,
+          "originallyCorrect": 1,
+          "corrupted": 1,
+          "silenceCount": 0,
+          "falseEmissions": 0,
+          "truncated": 0,
+          "generationMs": {
+            "count": 30,
+            "p50": 4017.0409579295665,
+            "p95": 7429.422282974696,
+            "p99": 9371.922750696542
+          },
+          "inputTokens": {
+            "count": 30,
+            "p50": 326,
+            "p95": 350.2,
+            "p99": 353.42
+          },
+          "peakRssBytes": {
+            "count": 30,
+            "p50": 3173285888,
+            "p95": 3173285888,
+            "p99": 3173285888
+          },
+          "outputContractFailures": 0
+        },
+        "nonspeech": {
+          "count": 4,
+          "rates": {
+            "cer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "wer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "mer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            }
+          },
+          "improved": 0,
+          "worsened": 3,
+          "changed": 3,
+          "originallyCorrect": 4,
+          "corrupted": 3,
+          "silenceCount": 4,
+          "falseEmissions": 4,
+          "truncated": 0,
+          "generationMs": {
+            "count": 4,
+            "p50": 2623.79306263756,
+            "p95": 2844.695837527979,
+            "p99": 2868.0062674568035
+          },
+          "inputTokens": {
+            "count": 4,
+            "p50": 262,
+            "p95": 264.7,
+            "p99": 264.94
+          },
+          "peakRssBytes": {
+            "count": 4,
+            "p50": 3173285888,
+            "p95": 3173285888,
+            "p99": 3173285888
+          },
+          "outputContractFailures": 0
+        },
+        "silence": {
+          "count": 1,
+          "rates": {
+            "cer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "wer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "mer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            }
+          },
+          "improved": 0,
+          "worsened": 0,
+          "changed": 0,
+          "originallyCorrect": 1,
+          "corrupted": 0,
+          "silenceCount": 1,
+          "falseEmissions": 1,
+          "truncated": 0,
+          "generationMs": {
+            "count": 1,
+            "p50": 2568.005833076313,
+            "p95": 2568.005833076313,
+            "p99": 2568.005833076313
+          },
+          "inputTokens": {
+            "count": 1,
+            "p50": 259,
+            "p95": 259,
+            "p99": 259
+          },
+          "peakRssBytes": {
+            "count": 1,
+            "p50": 3173285888,
+            "p95": 3173285888,
+            "p99": 3173285888
+          },
+          "outputContractFailures": 0
+        },
+        "noise": {
+          "count": 3,
+          "rates": {
+            "cer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "wer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "mer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            }
+          },
+          "improved": 0,
+          "worsened": 3,
+          "changed": 3,
+          "originallyCorrect": 3,
+          "corrupted": 3,
+          "silenceCount": 3,
+          "falseEmissions": 3,
+          "truncated": 0,
+          "generationMs": {
+            "count": 3,
+            "p50": 2679.580292198807,
+            "p95": 2854.4085166649893,
+            "p99": 2869.9488032842055
+          },
+          "inputTokens": {
+            "count": 3,
+            "p50": 263,
+            "p95": 264.8,
+            "p99": 264.96
+          },
+          "peakRssBytes": {
+            "count": 3,
+            "p50": 3173285888,
+            "p95": 3173285888,
+            "p99": 3173285888
+          },
+          "outputContractFailures": 0
+        }
+      }
+    },
+    "qwen3-1.7b/ipa_only": {
+      "overall": {
+        "count": 154,
+        "rates": {
+          "cer": {
+            "count": 60,
+            "errors": 2543,
+            "referenceUnits": 808,
+            "rate": 3.147277227722772
+          },
+          "wer": {
+            "count": 60,
+            "errors": 3290,
+            "referenceUnits": 983,
+            "rate": 3.3468972533062056
+          },
+          "mer": {
+            "count": 30,
+            "errors": 1021,
+            "referenceUnits": 371,
+            "rate": 2.752021563342318
+          }
+        },
+        "improved": 0,
+        "worsened": 153,
+        "changed": 153,
+        "originallyCorrect": 60,
+        "corrupted": 59,
+        "silenceCount": 4,
+        "falseEmissions": 4,
+        "truncated": 2,
+        "generationMs": {
+          "count": 154,
+          "p50": 5960.683917044662,
+          "p95": 12827.161239704583,
+          "p99": 21036.204587444663
+        },
+        "inputTokens": {
+          "count": 154,
+          "p50": 313,
+          "p95": 403.44999999999993,
+          "p99": 440.94
+        },
+        "peakRssBytes": {
+          "count": 154,
+          "p50": 3173285888,
+          "p95": 3173285888,
+          "p99": 3173285888
+        },
+        "outputContractFailures": 2
+      },
+      "byLanguage": {
+        "zh": {
+          "count": 64,
+          "rates": {
+            "cer": {
+              "count": 60,
+              "errors": 2543,
+              "referenceUnits": 808,
+              "rate": 3.147277227722772
+            },
+            "wer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "mer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            }
+          },
+          "improved": 0,
+          "worsened": 63,
+          "changed": 63,
+          "originallyCorrect": 38,
+          "corrupted": 37,
+          "silenceCount": 4,
+          "falseEmissions": 4,
+          "truncated": 0,
+          "generationMs": {
+            "count": 64,
+            "p50": 4892.568874987774,
+            "p95": 9592.863723181646,
+            "p99": 10952.060787193472
+          },
+          "inputTokens": {
+            "count": 64,
+            "p50": 306.5,
+            "p95": 339,
+            "p99": 357.84999999999997
+          },
+          "peakRssBytes": {
+            "count": 64,
+            "p50": 3173285888,
+            "p95": 3173285888,
+            "p99": 3173285888
+          },
+          "outputContractFailures": 0
+        },
+        "en": {
+          "count": 60,
+          "rates": {
+            "cer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "wer": {
+              "count": 60,
+              "errors": 3290,
+              "referenceUnits": 983,
+              "rate": 3.3468972533062056
+            },
+            "mer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            }
+          },
+          "improved": 0,
+          "worsened": 60,
+          "changed": 60,
+          "originallyCorrect": 21,
+          "corrupted": 21,
+          "silenceCount": 0,
+          "falseEmissions": 0,
+          "truncated": 2,
+          "generationMs": {
+            "count": 60,
+            "p50": 6935.157082974911,
+            "p95": 20233.467274799477,
+            "p99": 24858.968618779883
+          },
+          "inputTokens": {
+            "count": 60,
+            "p50": 331,
+            "p95": 439.05,
+            "p99": 446.91999999999996
+          },
+          "peakRssBytes": {
+            "count": 60,
+            "p50": 3173285888,
+            "p95": 3173285888,
+            "p99": 3173285888
+          },
+          "outputContractFailures": 2
+        },
+        "mixed": {
+          "count": 30,
+          "rates": {
+            "cer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "wer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "mer": {
+              "count": 30,
+              "errors": 1021,
+              "referenceUnits": 371,
+              "rate": 2.752021563342318
+            }
+          },
+          "improved": 0,
+          "worsened": 30,
+          "changed": 30,
+          "originallyCorrect": 1,
+          "corrupted": 1,
+          "silenceCount": 0,
+          "falseEmissions": 0,
+          "truncated": 0,
+          "generationMs": {
+            "count": 30,
+            "p50": 6175.494708586484,
+            "p95": 8723.299493850207,
+            "p99": 11474.79187884834
+          },
+          "inputTokens": {
+            "count": 30,
+            "p50": 312,
+            "p95": 335.4,
+            "p99": 339.71
+          },
+          "peakRssBytes": {
+            "count": 30,
+            "p50": 3173285888,
+            "p95": 3173285888,
+            "p99": 3173285888
+          },
+          "outputContractFailures": 0
+        }
+      },
+      "byTag": {
+        "read": {
+          "count": 120,
+          "rates": {
+            "cer": {
+              "count": 60,
+              "errors": 2543,
+              "referenceUnits": 808,
+              "rate": 3.147277227722772
+            },
+            "wer": {
+              "count": 60,
+              "errors": 3290,
+              "referenceUnits": 983,
+              "rate": 3.3468972533062056
+            },
+            "mer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            }
+          },
+          "improved": 0,
+          "worsened": 120,
+          "changed": 120,
+          "originallyCorrect": 55,
+          "corrupted": 55,
+          "silenceCount": 0,
+          "falseEmissions": 0,
+          "truncated": 2,
+          "generationMs": {
+            "count": 120,
+            "p50": 6007.234291057102,
+            "p95": 13138.152459042609,
+            "p99": 21555.878012422476
+          },
+          "inputTokens": {
+            "count": 120,
+            "p50": 317.5,
+            "p95": 410.2,
+            "p99": 441.62
+          },
+          "peakRssBytes": {
+            "count": 120,
+            "p50": 3173285888,
+            "p95": 3173285888,
+            "p99": 3173285888
+          },
+          "outputContractFailures": 2
+        },
+        "librispeech": {
+          "count": 60,
+          "rates": {
+            "cer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "wer": {
+              "count": 60,
+              "errors": 3290,
+              "referenceUnits": 983,
+              "rate": 3.3468972533062056
+            },
+            "mer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            }
+          },
+          "improved": 0,
+          "worsened": 60,
+          "changed": 60,
+          "originallyCorrect": 21,
+          "corrupted": 21,
+          "silenceCount": 0,
+          "falseEmissions": 0,
+          "truncated": 2,
+          "generationMs": {
+            "count": 60,
+            "p50": 6935.157082974911,
+            "p95": 20233.467274799477,
+            "p99": 24858.968618779883
+          },
+          "inputTokens": {
+            "count": 60,
+            "p50": 331,
+            "p95": 439.05,
+            "p99": 446.91999999999996
+          },
+          "peakRssBytes": {
+            "count": 60,
+            "p50": 3173285888,
+            "p95": 3173285888,
+            "p99": 3173285888
+          },
+          "outputContractFailures": 2
+        },
+        "synthetic-tts": {
+          "count": 30,
+          "rates": {
+            "cer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "wer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "mer": {
+              "count": 30,
+              "errors": 1021,
+              "referenceUnits": 371,
+              "rate": 2.752021563342318
+            }
+          },
+          "improved": 0,
+          "worsened": 30,
+          "changed": 30,
+          "originallyCorrect": 1,
+          "corrupted": 1,
+          "silenceCount": 0,
+          "falseEmissions": 0,
+          "truncated": 0,
+          "generationMs": {
+            "count": 30,
+            "p50": 6175.494708586484,
+            "p95": 8723.299493850207,
+            "p99": 11474.79187884834
+          },
+          "inputTokens": {
+            "count": 30,
+            "p50": 312,
+            "p95": 335.4,
+            "p99": 339.71
+          },
+          "peakRssBytes": {
+            "count": 30,
+            "p50": 3173285888,
+            "p95": 3173285888,
+            "p99": 3173285888
+          },
+          "outputContractFailures": 0
+        },
+        "technical": {
+          "count": 30,
+          "rates": {
+            "cer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "wer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "mer": {
+              "count": 30,
+              "errors": 1021,
+              "referenceUnits": 371,
+              "rate": 2.752021563342318
+            }
+          },
+          "improved": 0,
+          "worsened": 30,
+          "changed": 30,
+          "originallyCorrect": 1,
+          "corrupted": 1,
+          "silenceCount": 0,
+          "falseEmissions": 0,
+          "truncated": 0,
+          "generationMs": {
+            "count": 30,
+            "p50": 6175.494708586484,
+            "p95": 8723.299493850207,
+            "p99": 11474.79187884834
+          },
+          "inputTokens": {
+            "count": 30,
+            "p50": 312,
+            "p95": 335.4,
+            "p99": 339.71
+          },
+          "peakRssBytes": {
+            "count": 30,
+            "p50": 3173285888,
+            "p95": 3173285888,
+            "p99": 3173285888
+          },
+          "outputContractFailures": 0
+        },
+        "aishell1": {
+          "count": 60,
+          "rates": {
+            "cer": {
+              "count": 60,
+              "errors": 2543,
+              "referenceUnits": 808,
+              "rate": 3.147277227722772
+            },
+            "wer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "mer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            }
+          },
+          "improved": 0,
+          "worsened": 60,
+          "changed": 60,
+          "originallyCorrect": 34,
+          "corrupted": 34,
+          "silenceCount": 0,
+          "falseEmissions": 0,
+          "truncated": 0,
+          "generationMs": {
+            "count": 60,
+            "p50": 5201.274500461295,
+            "p95": 9788.581069081556,
+            "p99": 11034.303948841982
+          },
+          "inputTokens": {
+            "count": 60,
+            "p50": 308,
+            "p95": 339.59999999999997,
+            "p99": 358.04999999999995
+          },
+          "peakRssBytes": {
+            "count": 60,
+            "p50": 3173285888,
+            "p95": 3173285888,
+            "p99": 3173285888
+          },
+          "outputContractFailures": 0
+        },
+        "nonspeech": {
+          "count": 4,
+          "rates": {
+            "cer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "wer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "mer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            }
+          },
+          "improved": 0,
+          "worsened": 3,
+          "changed": 3,
+          "originallyCorrect": 4,
+          "corrupted": 3,
+          "silenceCount": 4,
+          "falseEmissions": 4,
+          "truncated": 0,
+          "generationMs": {
+            "count": 4,
+            "p50": 2512.3619789956138,
+            "p95": 3668.0629902402866,
+            "p99": 3828.3831653534435
+          },
+          "inputTokens": {
+            "count": 4,
+            "p50": 258,
+            "p95": 260.7,
+            "p99": 260.94
+          },
+          "peakRssBytes": {
+            "count": 4,
+            "p50": 3173285888,
+            "p95": 3173285888,
+            "p99": 3173285888
+          },
+          "outputContractFailures": 0
+        },
+        "noise": {
+          "count": 3,
+          "rates": {
+            "cer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "wer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "mer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            }
+          },
+          "improved": 0,
+          "worsened": 3,
+          "changed": 3,
+          "originallyCorrect": 3,
+          "corrupted": 3,
+          "silenceCount": 3,
+          "falseEmissions": 3,
+          "truncated": 0,
+          "generationMs": {
+            "count": 3,
+            "p50": 2492.2622081357986,
+            "p95": 2528.441795683466,
+            "p99": 2531.6577590210363
+          },
+          "inputTokens": {
+            "count": 3,
+            "p50": 259,
+            "p95": 260.8,
+            "p99": 260.96
+          },
+          "peakRssBytes": {
+            "count": 3,
+            "p50": 3173285888,
+            "p95": 3173285888,
+            "p99": 3173285888
+          },
+          "outputContractFailures": 0
+        },
+        "silence": {
+          "count": 1,
+          "rates": {
+            "cer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "wer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "mer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            }
+          },
+          "improved": 0,
+          "worsened": 0,
+          "changed": 0,
+          "originallyCorrect": 1,
+          "corrupted": 0,
+          "silenceCount": 1,
+          "falseEmissions": 1,
+          "truncated": 0,
+          "generationMs": {
+            "count": 1,
+            "p50": 3868.4632091317326,
+            "p95": 3868.4632091317326,
+            "p99": 3868.4632091317326
+          },
+          "inputTokens": {
+            "count": 1,
+            "p50": 255,
+            "p95": 255,
+            "p99": 255
+          },
+          "peakRssBytes": {
+            "count": 1,
+            "p50": 3173285888,
+            "p95": 3173285888,
+            "p99": 3173285888
+          },
+          "outputContractFailures": 0
+        }
+      }
+    },
+    "qwen3-1.7b/text": {
+      "overall": {
+        "count": 154,
+        "rates": {
+          "cer": {
+            "count": 60,
+            "errors": 68,
+            "referenceUnits": 808,
+            "rate": 0.08415841584158416
+          },
+          "wer": {
+            "count": 60,
+            "errors": 74,
+            "referenceUnits": 983,
+            "rate": 0.0752797558494405
+          },
+          "mer": {
+            "count": 30,
+            "errors": 135,
+            "referenceUnits": 371,
+            "rate": 0.3638814016172507
+          }
+        },
+        "improved": 1,
+        "worsened": 2,
+        "changed": 6,
+        "originallyCorrect": 60,
+        "corrupted": 1,
+        "silenceCount": 4,
+        "falseEmissions": 4,
+        "truncated": 0,
+        "generationMs": {
+          "count": 154,
+          "p50": 2968.694874551147,
+          "p95": 4879.5641665230505,
+          "p99": 6805.632653587962
+        },
+        "inputTokens": {
+          "count": 154,
+          "p50": 263,
+          "p95": 282,
+          "p99": 286.47
+        },
+        "peakRssBytes": {
+          "count": 154,
+          "p50": 3173285888,
+          "p95": 3173285888,
+          "p99": 3173285888
+        },
+        "outputContractFailures": 0
+      },
+      "byLanguage": {
+        "zh": {
+          "count": 64,
+          "rates": {
+            "cer": {
+              "count": 60,
+              "errors": 68,
+              "referenceUnits": 808,
+              "rate": 0.08415841584158416
+            },
+            "wer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "mer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            }
+          },
+          "improved": 0,
+          "worsened": 2,
+          "changed": 4,
+          "originallyCorrect": 38,
+          "corrupted": 1,
+          "silenceCount": 4,
+          "falseEmissions": 4,
+          "truncated": 0,
+          "generationMs": {
+            "count": 64,
+            "p50": 2859.6786245470867,
+            "p95": 4223.902464366984,
+            "p99": 5065.3691428108095
+          },
+          "inputTokens": {
+            "count": 64,
+            "p50": 261,
+            "p95": 266.85,
+            "p99": 271.11
+          },
+          "peakRssBytes": {
+            "count": 64,
+            "p50": 3173285888,
+            "p95": 3173285888,
+            "p99": 3173285888
+          },
+          "outputContractFailures": 0
+        },
+        "en": {
+          "count": 60,
+          "rates": {
+            "cer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "wer": {
+              "count": 60,
+              "errors": 74,
+              "referenceUnits": 983,
+              "rate": 0.0752797558494405
+            },
+            "mer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            }
+          },
+          "improved": 1,
+          "worsened": 0,
+          "changed": 2,
+          "originallyCorrect": 21,
+          "corrupted": 0,
+          "silenceCount": 0,
+          "falseEmissions": 0,
+          "truncated": 0,
+          "generationMs": {
+            "count": 60,
+            "p50": 3145.038979011588,
+            "p95": 5520.9704533685,
+            "p99": 7969.354354764797
+          },
+          "inputTokens": {
+            "count": 60,
+            "p50": 270,
+            "p95": 285.05,
+            "p99": 287.82
+          },
+          "peakRssBytes": {
+            "count": 60,
+            "p50": 3173285888,
+            "p95": 3173285888,
+            "p99": 3173285888
+          },
+          "outputContractFailures": 0
+        },
+        "mixed": {
+          "count": 30,
+          "rates": {
+            "cer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "wer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "mer": {
+              "count": 30,
+              "errors": 135,
+              "referenceUnits": 371,
+              "rate": 0.3638814016172507
+            }
+          },
+          "improved": 0,
+          "worsened": 0,
+          "changed": 0,
+          "originallyCorrect": 1,
+          "corrupted": 0,
+          "silenceCount": 0,
+          "falseEmissions": 0,
+          "truncated": 0,
+          "generationMs": {
+            "count": 30,
+            "p50": 2852.1453749854118,
+            "p95": 4641.0634628264215,
+            "p99": 4988.6753485002555
+          },
+          "inputTokens": {
+            "count": 30,
+            "p50": 261,
+            "p95": 263.55,
+            "p99": 266.84000000000003
+          },
+          "peakRssBytes": {
+            "count": 30,
+            "p50": 3173285888,
+            "p95": 3173285888,
+            "p99": 3173285888
+          },
+          "outputContractFailures": 0
+        }
+      },
+      "byTag": {
+        "nonspeech": {
+          "count": 4,
+          "rates": {
+            "cer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "wer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "mer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            }
+          },
+          "improved": 0,
+          "worsened": 0,
+          "changed": 0,
+          "originallyCorrect": 4,
+          "corrupted": 0,
+          "silenceCount": 4,
+          "falseEmissions": 4,
+          "truncated": 0,
+          "generationMs": {
+            "count": 4,
+            "p50": 2416.6200211038813,
+            "p95": 2901.567947480362,
+            "p99": 2957.9085224098526
+          },
+          "inputTokens": {
+            "count": 4,
+            "p50": 253,
+            "p95": 253,
+            "p99": 253
+          },
+          "peakRssBytes": {
+            "count": 4,
+            "p50": 3173285888,
+            "p95": 3173285888,
+            "p99": 3173285888
+          },
+          "outputContractFailures": 0
+        },
+        "noise": {
+          "count": 3,
+          "rates": {
+            "cer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "wer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "mer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            }
+          },
+          "improved": 0,
+          "worsened": 0,
+          "changed": 0,
+          "originallyCorrect": 3,
+          "corrupted": 0,
+          "silenceCount": 3,
+          "falseEmissions": 3,
+          "truncated": 0,
+          "generationMs": {
+            "count": 3,
+            "p50": 2330.7511671446264,
+            "p95": 2485.3151042712852,
+            "p99": 2499.054120904766
+          },
+          "inputTokens": {
+            "count": 3,
+            "p50": 253,
+            "p95": 253,
+            "p99": 253
+          },
+          "peakRssBytes": {
+            "count": 3,
+            "p50": 3173285888,
+            "p95": 3173285888,
+            "p99": 3173285888
+          },
+          "outputContractFailures": 0
+        },
+        "read": {
+          "count": 120,
+          "rates": {
+            "cer": {
+              "count": 60,
+              "errors": 68,
+              "referenceUnits": 808,
+              "rate": 0.08415841584158416
+            },
+            "wer": {
+              "count": 60,
+              "errors": 74,
+              "referenceUnits": 983,
+              "rate": 0.0752797558494405
+            },
+            "mer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            }
+          },
+          "improved": 1,
+          "worsened": 2,
+          "changed": 6,
+          "originallyCorrect": 55,
+          "corrupted": 1,
+          "silenceCount": 0,
+          "falseEmissions": 0,
+          "truncated": 0,
+          "generationMs": {
+            "count": 120,
+            "p50": 3022.64922845643,
+            "p95": 4869.464916375,
+            "p99": 7245.175360294527
+          },
+          "inputTokens": {
+            "count": 120,
+            "p50": 264,
+            "p95": 283.05,
+            "p99": 286.81
+          },
+          "peakRssBytes": {
+            "count": 120,
+            "p50": 3173285888,
+            "p95": 3173285888,
+            "p99": 3173285888
+          },
+          "outputContractFailures": 0
+        },
+        "aishell1": {
+          "count": 60,
+          "rates": {
+            "cer": {
+              "count": 60,
+              "errors": 68,
+              "referenceUnits": 808,
+              "rate": 0.08415841584158416
+            },
+            "wer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "mer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            }
+          },
+          "improved": 0,
+          "worsened": 2,
+          "changed": 4,
+          "originallyCorrect": 34,
+          "corrupted": 1,
+          "silenceCount": 0,
+          "falseEmissions": 0,
+          "truncated": 0,
+          "generationMs": {
+            "count": 60,
+            "p50": 2865.6150836031884,
+            "p95": 4230.178085109219,
+            "p99": 5137.284086137072
+          },
+          "inputTokens": {
+            "count": 60,
+            "p50": 261,
+            "p95": 267.05,
+            "p99": 271.23
+          },
+          "peakRssBytes": {
+            "count": 60,
+            "p50": 3173285888,
+            "p95": 3173285888,
+            "p99": 3173285888
+          },
+          "outputContractFailures": 0
+        },
+        "synthetic-tts": {
+          "count": 30,
+          "rates": {
+            "cer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "wer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "mer": {
+              "count": 30,
+              "errors": 135,
+              "referenceUnits": 371,
+              "rate": 0.3638814016172507
+            }
+          },
+          "improved": 0,
+          "worsened": 0,
+          "changed": 0,
+          "originallyCorrect": 1,
+          "corrupted": 0,
+          "silenceCount": 0,
+          "falseEmissions": 0,
+          "truncated": 0,
+          "generationMs": {
+            "count": 30,
+            "p50": 2852.1453749854118,
+            "p95": 4641.0634628264215,
+            "p99": 4988.6753485002555
+          },
+          "inputTokens": {
+            "count": 30,
+            "p50": 261,
+            "p95": 263.55,
+            "p99": 266.84000000000003
+          },
+          "peakRssBytes": {
+            "count": 30,
+            "p50": 3173285888,
+            "p95": 3173285888,
+            "p99": 3173285888
+          },
+          "outputContractFailures": 0
+        },
+        "technical": {
+          "count": 30,
+          "rates": {
+            "cer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "wer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "mer": {
+              "count": 30,
+              "errors": 135,
+              "referenceUnits": 371,
+              "rate": 0.3638814016172507
+            }
+          },
+          "improved": 0,
+          "worsened": 0,
+          "changed": 0,
+          "originallyCorrect": 1,
+          "corrupted": 0,
+          "silenceCount": 0,
+          "falseEmissions": 0,
+          "truncated": 0,
+          "generationMs": {
+            "count": 30,
+            "p50": 2852.1453749854118,
+            "p95": 4641.0634628264215,
+            "p99": 4988.6753485002555
+          },
+          "inputTokens": {
+            "count": 30,
+            "p50": 261,
+            "p95": 263.55,
+            "p99": 266.84000000000003
+          },
+          "peakRssBytes": {
+            "count": 30,
+            "p50": 3173285888,
+            "p95": 3173285888,
+            "p99": 3173285888
+          },
+          "outputContractFailures": 0
+        },
+        "librispeech": {
+          "count": 60,
+          "rates": {
+            "cer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "wer": {
+              "count": 60,
+              "errors": 74,
+              "referenceUnits": 983,
+              "rate": 0.0752797558494405
+            },
+            "mer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            }
+          },
+          "improved": 1,
+          "worsened": 0,
+          "changed": 2,
+          "originallyCorrect": 21,
+          "corrupted": 0,
+          "silenceCount": 0,
+          "falseEmissions": 0,
+          "truncated": 0,
+          "generationMs": {
+            "count": 60,
+            "p50": 3145.038979011588,
+            "p95": 5520.9704533685,
+            "p99": 7969.354354764797
+          },
+          "inputTokens": {
+            "count": 60,
+            "p50": 270,
+            "p95": 285.05,
+            "p99": 287.82
+          },
+          "peakRssBytes": {
+            "count": 60,
+            "p50": 3173285888,
+            "p95": 3173285888,
+            "p99": 3173285888
+          },
+          "outputContractFailures": 0
+        },
+        "silence": {
+          "count": 1,
+          "rates": {
+            "cer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "wer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "mer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            }
+          },
+          "improved": 0,
+          "worsened": 0,
+          "changed": 0,
+          "originallyCorrect": 1,
+          "corrupted": 0,
+          "silenceCount": 1,
+          "falseEmissions": 1,
+          "truncated": 0,
+          "generationMs": {
+            "count": 1,
+            "p50": 2971.9936661422253,
+            "p95": 2971.9936661422253,
+            "p99": 2971.9936661422253
+          },
+          "inputTokens": {
+            "count": 1,
+            "p50": 253,
+            "p95": 253,
+            "p99": 253
+          },
+          "peakRssBytes": {
+            "count": 1,
+            "p50": 3173285888,
+            "p95": 3173285888,
+            "p99": 3173285888
+          },
+          "outputContractFailures": 0
+        }
+      }
+    },
+    "qwen3-1.7b/text_pinyin": {
+      "overall": {
+        "count": 154,
+        "rates": {
+          "cer": {
+            "count": 60,
+            "errors": 68,
+            "referenceUnits": 808,
+            "rate": 0.08415841584158416
+          },
+          "wer": {
+            "count": 60,
+            "errors": 75,
+            "referenceUnits": 983,
+            "rate": 0.0762970498474059
+          },
+          "mer": {
+            "count": 30,
+            "errors": 135,
+            "referenceUnits": 371,
+            "rate": 0.3638814016172507
+          }
+        },
+        "improved": 0,
+        "worsened": 2,
+        "changed": 6,
+        "originallyCorrect": 60,
+        "corrupted": 1,
+        "silenceCount": 4,
+        "falseEmissions": 4,
+        "truncated": 0,
+        "generationMs": {
+          "count": 154,
+          "p50": 3212.0352499186993,
+          "p95": 5601.548273139632,
+          "p99": 6593.0753324134275
+        },
+        "inputTokens": {
+          "count": 154,
+          "p50": 297,
+          "p95": 323.35,
+          "p99": 332.94
+        },
+        "peakRssBytes": {
+          "count": 154,
+          "p50": 3173285888,
+          "p95": 3173285888,
+          "p99": 3173285888
+        },
+        "outputContractFailures": 0
+      },
+      "byLanguage": {
+        "zh": {
+          "count": 64,
+          "rates": {
+            "cer": {
+              "count": 60,
+              "errors": 68,
+              "referenceUnits": 808,
+              "rate": 0.08415841584158416
+            },
+            "wer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "mer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            }
+          },
+          "improved": 0,
+          "worsened": 2,
+          "changed": 6,
+          "originallyCorrect": 38,
+          "corrupted": 1,
+          "silenceCount": 4,
+          "falseEmissions": 4,
+          "truncated": 0,
+          "generationMs": {
+            "count": 64,
+            "p50": 3118.5561665333807,
+            "p95": 5929.297852574374,
+            "p99": 8571.038760067882
+          },
+          "inputTokens": {
+            "count": 64,
+            "p50": 298,
+            "p95": 323.85,
+            "p99": 334.37
+          },
+          "peakRssBytes": {
+            "count": 64,
+            "p50": 3173285888,
+            "p95": 3173285888,
+            "p99": 3173285888
+          },
+          "outputContractFailures": 0
+        },
+        "en": {
+          "count": 60,
+          "rates": {
+            "cer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "wer": {
+              "count": 60,
+              "errors": 75,
+              "referenceUnits": 983,
+              "rate": 0.0762970498474059
+            },
+            "mer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            }
+          },
+          "improved": 0,
+          "worsened": 0,
+          "changed": 0,
+          "originallyCorrect": 21,
+          "corrupted": 0,
+          "silenceCount": 0,
+          "falseEmissions": 0,
+          "truncated": 0,
+          "generationMs": {
+            "count": 60,
+            "p50": 3421.060520573519,
+            "p95": 5672.958087688312,
+            "p99": 6049.856756133956
+          },
+          "inputTokens": {
+            "count": 60,
+            "p50": 294,
+            "p95": 324.1,
+            "p99": 329.64
+          },
+          "peakRssBytes": {
+            "count": 60,
+            "p50": 3173285888,
+            "p95": 3173285888,
+            "p99": 3173285888
+          },
+          "outputContractFailures": 0
+        },
+        "mixed": {
+          "count": 30,
+          "rates": {
+            "cer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "wer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "mer": {
+              "count": 30,
+              "errors": 135,
+              "referenceUnits": 371,
+              "rate": 0.3638814016172507
+            }
+          },
+          "improved": 0,
+          "worsened": 0,
+          "changed": 0,
+          "originallyCorrect": 1,
+          "corrupted": 0,
+          "silenceCount": 0,
+          "falseEmissions": 0,
+          "truncated": 0,
+          "generationMs": {
+            "count": 30,
+            "p50": 3149.0570624591783,
+            "p95": 4462.349626957439,
+            "p99": 5206.761510008947
+          },
+          "inputTokens": {
+            "count": 30,
+            "p50": 298,
+            "p95": 309.75,
+            "p99": 319.81
+          },
+          "peakRssBytes": {
+            "count": 30,
+            "p50": 3173285888,
+            "p95": 3173285888,
+            "p99": 3173285888
+          },
+          "outputContractFailures": 0
+        }
+      },
+      "byTag": {
+        "synthetic-tts": {
+          "count": 30,
+          "rates": {
+            "cer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "wer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "mer": {
+              "count": 30,
+              "errors": 135,
+              "referenceUnits": 371,
+              "rate": 0.3638814016172507
+            }
+          },
+          "improved": 0,
+          "worsened": 0,
+          "changed": 0,
+          "originallyCorrect": 1,
+          "corrupted": 0,
+          "silenceCount": 0,
+          "falseEmissions": 0,
+          "truncated": 0,
+          "generationMs": {
+            "count": 30,
+            "p50": 3149.0570624591783,
+            "p95": 4462.349626957439,
+            "p99": 5206.761510008947
+          },
+          "inputTokens": {
+            "count": 30,
+            "p50": 298,
+            "p95": 309.75,
+            "p99": 319.81
+          },
+          "peakRssBytes": {
+            "count": 30,
+            "p50": 3173285888,
+            "p95": 3173285888,
+            "p99": 3173285888
+          },
+          "outputContractFailures": 0
+        },
+        "technical": {
+          "count": 30,
+          "rates": {
+            "cer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "wer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "mer": {
+              "count": 30,
+              "errors": 135,
+              "referenceUnits": 371,
+              "rate": 0.3638814016172507
+            }
+          },
+          "improved": 0,
+          "worsened": 0,
+          "changed": 0,
+          "originallyCorrect": 1,
+          "corrupted": 0,
+          "silenceCount": 0,
+          "falseEmissions": 0,
+          "truncated": 0,
+          "generationMs": {
+            "count": 30,
+            "p50": 3149.0570624591783,
+            "p95": 4462.349626957439,
+            "p99": 5206.761510008947
+          },
+          "inputTokens": {
+            "count": 30,
+            "p50": 298,
+            "p95": 309.75,
+            "p99": 319.81
+          },
+          "peakRssBytes": {
+            "count": 30,
+            "p50": 3173285888,
+            "p95": 3173285888,
+            "p99": 3173285888
+          },
+          "outputContractFailures": 0
+        },
+        "read": {
+          "count": 120,
+          "rates": {
+            "cer": {
+              "count": 60,
+              "errors": 68,
+              "referenceUnits": 808,
+              "rate": 0.08415841584158416
+            },
+            "wer": {
+              "count": 60,
+              "errors": 75,
+              "referenceUnits": 983,
+              "rate": 0.0762970498474059
+            },
+            "mer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            }
+          },
+          "improved": 0,
+          "worsened": 2,
+          "changed": 6,
+          "originallyCorrect": 55,
+          "corrupted": 1,
+          "silenceCount": 0,
+          "falseEmissions": 0,
+          "truncated": 0,
+          "generationMs": {
+            "count": 120,
+            "p50": 3212.0352499186993,
+            "p95": 5756.029953761026,
+            "p99": 6692.770897396841
+          },
+          "inputTokens": {
+            "count": 120,
+            "p50": 297,
+            "p95": 324.1,
+            "p99": 333.62
+          },
+          "peakRssBytes": {
+            "count": 120,
+            "p50": 3173285888,
+            "p95": 3173285888,
+            "p99": 3173285888
+          },
+          "outputContractFailures": 0
+        },
+        "librispeech": {
+          "count": 60,
+          "rates": {
+            "cer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "wer": {
+              "count": 60,
+              "errors": 75,
+              "referenceUnits": 983,
+              "rate": 0.0762970498474059
+            },
+            "mer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            }
+          },
+          "improved": 0,
+          "worsened": 0,
+          "changed": 0,
+          "originallyCorrect": 21,
+          "corrupted": 0,
+          "silenceCount": 0,
+          "falseEmissions": 0,
+          "truncated": 0,
+          "generationMs": {
+            "count": 60,
+            "p50": 3421.060520573519,
+            "p95": 5672.958087688312,
+            "p99": 6049.856756133956
+          },
+          "inputTokens": {
+            "count": 60,
+            "p50": 294,
+            "p95": 324.1,
+            "p99": 329.64
+          },
+          "peakRssBytes": {
+            "count": 60,
+            "p50": 3173285888,
+            "p95": 3173285888,
+            "p99": 3173285888
+          },
+          "outputContractFailures": 0
+        },
+        "aishell1": {
+          "count": 60,
+          "rates": {
+            "cer": {
+              "count": 60,
+              "errors": 68,
+              "referenceUnits": 808,
+              "rate": 0.08415841584158416
+            },
+            "wer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "mer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            }
+          },
+          "improved": 0,
+          "worsened": 2,
+          "changed": 6,
+          "originallyCorrect": 34,
+          "corrupted": 1,
+          "silenceCount": 0,
+          "falseEmissions": 0,
+          "truncated": 0,
+          "generationMs": {
+            "count": 60,
+            "p50": 3118.5561665333807,
+            "p95": 6141.070842277259,
+            "p99": 8768.071801708995
+          },
+          "inputTokens": {
+            "count": 60,
+            "p50": 299.5,
+            "p95": 324.29999999999995,
+            "p99": 334.40999999999997
+          },
+          "peakRssBytes": {
+            "count": 60,
+            "p50": 3173285888,
+            "p95": 3173285888,
+            "p99": 3173285888
+          },
+          "outputContractFailures": 0
+        },
+        "nonspeech": {
+          "count": 4,
+          "rates": {
+            "cer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "wer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "mer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            }
+          },
+          "improved": 0,
+          "worsened": 0,
+          "changed": 0,
+          "originallyCorrect": 4,
+          "corrupted": 0,
+          "silenceCount": 4,
+          "falseEmissions": 4,
+          "truncated": 0,
+          "generationMs": {
+            "count": 4,
+            "p50": 3225.4593330435455,
+            "p95": 3705.0575873814523,
+            "p99": 3747.286717388779
+          },
+          "inputTokens": {
+            "count": 4,
+            "p50": 259,
+            "p95": 259,
+            "p99": 259
+          },
+          "peakRssBytes": {
+            "count": 4,
+            "p50": 3173285888,
+            "p95": 3173285888,
+            "p99": 3173285888
+          },
+          "outputContractFailures": 0
+        },
+        "noise": {
+          "count": 3,
+          "rates": {
+            "cer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "wer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "mer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            }
+          },
+          "improved": 0,
+          "worsened": 0,
+          "changed": 0,
+          "originallyCorrect": 3,
+          "corrupted": 0,
+          "silenceCount": 3,
+          "falseEmissions": 3,
+          "truncated": 0,
+          "generationMs": {
+            "count": 3,
+            "p50": 3405.934583162889,
+            "p95": 3722.6530582178384,
+            "p99": 3750.805811556056
+          },
+          "inputTokens": {
+            "count": 3,
+            "p50": 259,
+            "p95": 259,
+            "p99": 259
+          },
+          "peakRssBytes": {
+            "count": 3,
+            "p50": 3173285888,
+            "p95": 3173285888,
+            "p99": 3173285888
+          },
+          "outputContractFailures": 0
+        },
+        "silence": {
+          "count": 1,
+          "rates": {
+            "cer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "wer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "mer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            }
+          },
+          "improved": 0,
+          "worsened": 0,
+          "changed": 0,
+          "originallyCorrect": 1,
+          "corrupted": 0,
+          "silenceCount": 1,
+          "falseEmissions": 1,
+          "truncated": 0,
+          "generationMs": {
+            "count": 1,
+            "p50": 2033.4594580344856,
+            "p95": 2033.4594580344856,
+            "p99": 2033.4594580344856
+          },
+          "inputTokens": {
+            "count": 1,
+            "p50": 259,
+            "p95": 259,
+            "p99": 259
+          },
+          "peakRssBytes": {
+            "count": 1,
+            "p50": 3173285888,
+            "p95": 3173285888,
+            "p99": 3173285888
+          },
+          "outputContractFailures": 0
+        }
+      }
+    },
+    "qwen3-1.7b/text_pinyin_scores": {
+      "overall": {
+        "count": 154,
+        "rates": {
+          "cer": {
+            "count": 60,
+            "errors": 587,
+            "referenceUnits": 808,
+            "rate": 0.7264851485148515
+          },
+          "wer": {
+            "count": 60,
+            "errors": 129,
+            "referenceUnits": 983,
+            "rate": 0.13123092573753814
+          },
+          "mer": {
+            "count": 30,
+            "errors": 306,
+            "referenceUnits": 371,
+            "rate": 0.8247978436657682
+          }
+        },
+        "improved": 0,
+        "worsened": 48,
+        "changed": 51,
+        "originallyCorrect": 60,
+        "corrupted": 23,
+        "silenceCount": 4,
+        "falseEmissions": 4,
+        "truncated": 3,
+        "generationMs": {
+          "count": 154,
+          "p50": 5423.781499965116,
+          "p95": 14272.087818721773,
+          "p99": 22303.948155494872
+        },
+        "inputTokens": {
+          "count": 154,
+          "p50": 505,
+          "p95": 888.7,
+          "p99": 1088.28
+        },
+        "peakRssBytes": {
+          "count": 154,
+          "p50": 3173285888,
+          "p95": 3173285888,
+          "p99": 3173285888
+        },
+        "outputContractFailures": 3
+      },
+      "byLanguage": {
+        "zh": {
+          "count": 64,
+          "rates": {
+            "cer": {
+              "count": 60,
+              "errors": 587,
+              "referenceUnits": 808,
+              "rate": 0.7264851485148515
+            },
+            "wer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "mer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            }
+          },
+          "improved": 0,
+          "worsened": 32,
+          "changed": 33,
+          "originallyCorrect": 38,
+          "corrupted": 23,
+          "silenceCount": 4,
+          "falseEmissions": 4,
+          "truncated": 2,
+          "generationMs": {
+            "count": 64,
+            "p50": 4941.776958061382,
+            "p95": 10929.900487523992,
+            "p99": 23716.580065123268
+          },
+          "inputTokens": {
+            "count": 64,
+            "p50": 476.5,
+            "p95": 585.25,
+            "p99": 629.4399999999999
+          },
+          "peakRssBytes": {
+            "count": 64,
+            "p50": 3173285888,
+            "p95": 3173285888,
+            "p99": 3173285888
+          },
+          "outputContractFailures": 2
+        },
+        "en": {
+          "count": 60,
+          "rates": {
+            "cer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "wer": {
+              "count": 60,
+              "errors": 129,
+              "referenceUnits": 983,
+              "rate": 0.13123092573753814
+            },
+            "mer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            }
+          },
+          "improved": 0,
+          "worsened": 5,
+          "changed": 5,
+          "originallyCorrect": 21,
+          "corrupted": 0,
+          "silenceCount": 0,
+          "falseEmissions": 0,
+          "truncated": 0,
+          "generationMs": {
+            "count": 60,
+            "p50": 7225.968062644824,
+            "p95": 14580.63684153603,
+            "p99": 18822.649669474908
+          },
+          "inputTokens": {
+            "count": 60,
+            "p50": 615.5,
+            "p95": 1046.6,
+            "p99": 1109.1999999999998
+          },
+          "peakRssBytes": {
+            "count": 60,
+            "p50": 3173285888,
+            "p95": 3173285888,
+            "p99": 3173285888
+          },
+          "outputContractFailures": 0
+        },
+        "mixed": {
+          "count": 30,
+          "rates": {
+            "cer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "wer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "mer": {
+              "count": 30,
+              "errors": 306,
+              "referenceUnits": 371,
+              "rate": 0.8247978436657682
+            }
+          },
+          "improved": 0,
+          "worsened": 11,
+          "changed": 13,
+          "originallyCorrect": 1,
+          "corrupted": 0,
+          "silenceCount": 0,
+          "falseEmissions": 0,
+          "truncated": 1,
+          "generationMs": {
+            "count": 30,
+            "p50": 4722.817354486324,
+            "p95": 10069.181662541812,
+            "p99": 16824.165355477024
+          },
+          "inputTokens": {
+            "count": 30,
+            "p50": 482,
+            "p95": 534.3499999999999,
+            "p99": 574.6600000000001
+          },
+          "peakRssBytes": {
+            "count": 30,
+            "p50": 3173285888,
+            "p95": 3173285888,
+            "p99": 3173285888
+          },
+          "outputContractFailures": 1
+        }
+      },
+      "byTag": {
+        "synthetic-tts": {
+          "count": 30,
+          "rates": {
+            "cer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "wer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "mer": {
+              "count": 30,
+              "errors": 306,
+              "referenceUnits": 371,
+              "rate": 0.8247978436657682
+            }
+          },
+          "improved": 0,
+          "worsened": 11,
+          "changed": 13,
+          "originallyCorrect": 1,
+          "corrupted": 0,
+          "silenceCount": 0,
+          "falseEmissions": 0,
+          "truncated": 1,
+          "generationMs": {
+            "count": 30,
+            "p50": 4722.817354486324,
+            "p95": 10069.181662541812,
+            "p99": 16824.165355477024
+          },
+          "inputTokens": {
+            "count": 30,
+            "p50": 482,
+            "p95": 534.3499999999999,
+            "p99": 574.6600000000001
+          },
+          "peakRssBytes": {
+            "count": 30,
+            "p50": 3173285888,
+            "p95": 3173285888,
+            "p99": 3173285888
+          },
+          "outputContractFailures": 1
+        },
+        "technical": {
+          "count": 30,
+          "rates": {
+            "cer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "wer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "mer": {
+              "count": 30,
+              "errors": 306,
+              "referenceUnits": 371,
+              "rate": 0.8247978436657682
+            }
+          },
+          "improved": 0,
+          "worsened": 11,
+          "changed": 13,
+          "originallyCorrect": 1,
+          "corrupted": 0,
+          "silenceCount": 0,
+          "falseEmissions": 0,
+          "truncated": 1,
+          "generationMs": {
+            "count": 30,
+            "p50": 4722.817354486324,
+            "p95": 10069.181662541812,
+            "p99": 16824.165355477024
+          },
+          "inputTokens": {
+            "count": 30,
+            "p50": 482,
+            "p95": 534.3499999999999,
+            "p99": 574.6600000000001
+          },
+          "peakRssBytes": {
+            "count": 30,
+            "p50": 3173285888,
+            "p95": 3173285888,
+            "p99": 3173285888
+          },
+          "outputContractFailures": 1
+        },
+        "read": {
+          "count": 120,
+          "rates": {
+            "cer": {
+              "count": 60,
+              "errors": 587,
+              "referenceUnits": 808,
+              "rate": 0.7264851485148515
+            },
+            "wer": {
+              "count": 60,
+              "errors": 129,
+              "referenceUnits": 983,
+              "rate": 0.13123092573753814
+            },
+            "mer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            }
+          },
+          "improved": 0,
+          "worsened": 33,
+          "changed": 34,
+          "originallyCorrect": 55,
+          "corrupted": 19,
+          "silenceCount": 0,
+          "falseEmissions": 0,
+          "truncated": 2,
+          "generationMs": {
+            "count": 120,
+            "p50": 5583.256332902238,
+            "p95": 14580.63684153603,
+            "p99": 22760.16689864686
+          },
+          "inputTokens": {
+            "count": 120,
+            "p50": 519,
+            "p95": 913.3499999999999,
+            "p99": 1096.44
+          },
+          "peakRssBytes": {
+            "count": 120,
+            "p50": 3173285888,
+            "p95": 3173285888,
+            "p99": 3173285888
+          },
+          "outputContractFailures": 2
+        },
+        "aishell1": {
+          "count": 60,
+          "rates": {
+            "cer": {
+              "count": 60,
+              "errors": 587,
+              "referenceUnits": 808,
+              "rate": 0.7264851485148515
+            },
+            "wer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "mer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            }
+          },
+          "improved": 0,
+          "worsened": 28,
+          "changed": 29,
+          "originallyCorrect": 34,
+          "corrupted": 19,
+          "silenceCount": 0,
+          "falseEmissions": 0,
+          "truncated": 2,
+          "generationMs": {
+            "count": 60,
+            "p50": 4997.586770914495,
+            "p95": 11168.225100089317,
+            "p99": 23792.414378446985
+          },
+          "inputTokens": {
+            "count": 60,
+            "p50": 486,
+            "p95": 586.8,
+            "p99": 629.92
+          },
+          "peakRssBytes": {
+            "count": 60,
+            "p50": 3173285888,
+            "p95": 3173285888,
+            "p99": 3173285888
+          },
+          "outputContractFailures": 2
+        },
+        "librispeech": {
+          "count": 60,
+          "rates": {
+            "cer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "wer": {
+              "count": 60,
+              "errors": 129,
+              "referenceUnits": 983,
+              "rate": 0.13123092573753814
+            },
+            "mer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            }
+          },
+          "improved": 0,
+          "worsened": 5,
+          "changed": 5,
+          "originallyCorrect": 21,
+          "corrupted": 0,
+          "silenceCount": 0,
+          "falseEmissions": 0,
+          "truncated": 0,
+          "generationMs": {
+            "count": 60,
+            "p50": 7225.968062644824,
+            "p95": 14580.63684153603,
+            "p99": 18822.649669474908
+          },
+          "inputTokens": {
+            "count": 60,
+            "p50": 615.5,
+            "p95": 1046.6,
+            "p99": 1109.1999999999998
+          },
+          "peakRssBytes": {
+            "count": 60,
+            "p50": 3173285888,
+            "p95": 3173285888,
+            "p99": 3173285888
+          },
+          "outputContractFailures": 0
+        },
+        "nonspeech": {
+          "count": 4,
+          "rates": {
+            "cer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "wer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "mer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            }
+          },
+          "improved": 0,
+          "worsened": 4,
+          "changed": 4,
+          "originallyCorrect": 4,
+          "corrupted": 4,
+          "silenceCount": 4,
+          "falseEmissions": 4,
+          "truncated": 0,
+          "generationMs": {
+            "count": 4,
+            "p50": 3127.5057710008696,
+            "p95": 3248.728529375512,
+            "p99": 3265.188339317683
+          },
+          "inputTokens": {
+            "count": 4,
+            "p50": 287,
+            "p95": 287,
+            "p99": 287
+          },
+          "peakRssBytes": {
+            "count": 4,
+            "p50": 3173285888,
+            "p95": 3173285888,
+            "p99": 3173285888
+          },
+          "outputContractFailures": 0
+        },
+        "silence": {
+          "count": 1,
+          "rates": {
+            "cer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "wer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "mer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            }
+          },
+          "improved": 0,
+          "worsened": 1,
+          "changed": 1,
+          "originallyCorrect": 1,
+          "corrupted": 1,
+          "silenceCount": 1,
+          "falseEmissions": 1,
+          "truncated": 0,
+          "generationMs": {
+            "count": 1,
+            "p50": 3269.303291803226,
+            "p95": 3269.303291803226,
+            "p99": 3269.303291803226
+          },
+          "inputTokens": {
+            "count": 1,
+            "p50": 287,
+            "p95": 287,
+            "p99": 287
+          },
+          "peakRssBytes": {
+            "count": 1,
+            "p50": 3173285888,
+            "p95": 3173285888,
+            "p99": 3173285888
+          },
+          "outputContractFailures": 0
+        },
+        "noise": {
+          "count": 3,
+          "rates": {
+            "cer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "wer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            },
+            "mer": {
+              "count": 0,
+              "errors": 0,
+              "referenceUnits": 0,
+              "rate": null
+            }
+          },
+          "improved": 0,
+          "worsened": 3,
+          "changed": 3,
+          "originallyCorrect": 3,
+          "corrupted": 3,
+          "silenceCount": 3,
+          "falseEmissions": 3,
+          "truncated": 0,
+          "generationMs": {
+            "count": 3,
+            "p50": 3122.873333049938,
+            "p95": 3131.2117213616148,
+            "p99": 3131.952911433764
+          },
+          "inputTokens": {
+            "count": 3,
+            "p50": 287,
+            "p95": 287,
+            "p99": 287
+          },
+          "peakRssBytes": {
+            "count": 3,
+            "p50": 3173285888,
+            "p95": 3173285888,
+            "p99": 3173285888
+          },
+          "outputContractFailures": 0
+        }
+      }
+    }
+  },
+  "comparisons": [
+    {
+      "baseline": "raw/raw",
+      "treatment": "qwen3-1.7b/text_scores",
+      "unit": "cer",
+      "status": "ok",
+      "clusters": 4,
+      "iterations": 2000,
+      "seed": 1729,
+      "delta": 0.775990099009901,
+      "ci95": [
+        0.1979695431472081,
+        1.3260869565217392
+      ]
+    },
+    {
+      "baseline": "raw/raw",
+      "treatment": "qwen3-1.7b/text_scores",
+      "unit": "wer",
+      "status": "ok",
+      "clusters": 35,
+      "iterations": 2000,
+      "seed": 1729,
+      "delta": 0.31637843336724314,
+      "ci95": [
+        0.07438194467982447,
+        0.6948741853037267
+      ]
+    },
+    {
+      "baseline": "raw/raw",
+      "treatment": "qwen3-1.7b/text_scores",
+      "unit": "mer",
+      "status": "ok",
+      "clusters": 4,
+      "iterations": 2000,
+      "seed": 1729,
+      "delta": 1.9487870619946093,
+      "ci95": [
+        0.4607594936708861,
+        3.574866310160428
+      ]
+    },
+    {
+      "baseline": "qwen3-1.7b/text",
+      "treatment": "qwen3-1.7b/text_scores",
+      "unit": "cer",
+      "status": "ok",
+      "clusters": 4,
+      "iterations": 2000,
+      "seed": 1729,
+      "delta": 0.7735148514851485,
+      "ci95": [
+        0.19543147208121828,
+        1.3236714975845412
+      ]
+    },
+    {
+      "baseline": "qwen3-1.7b/text",
+      "treatment": "qwen3-1.7b/text_scores",
+      "unit": "wer",
+      "status": "ok",
+      "clusters": 35,
+      "iterations": 2000,
+      "seed": 1729,
+      "delta": 0.3173957273652085,
+      "ci95": [
+        0.0678110102566572,
+        0.6795558552870725
+      ]
+    },
+    {
+      "baseline": "qwen3-1.7b/text",
+      "treatment": "qwen3-1.7b/text_scores",
+      "unit": "mer",
+      "status": "ok",
+      "clusters": 4,
+      "iterations": 2000,
+      "seed": 1729,
+      "delta": 1.9487870619946093,
+      "ci95": [
+        0.4607594936708861,
+        3.574866310160428
+      ]
+    },
+    {
+      "baseline": "raw/raw",
+      "treatment": "qwen3-1.7b/text_ipa",
+      "unit": "cer",
+      "status": "ok",
+      "clusters": 4,
+      "iterations": 2000,
+      "seed": 1729,
+      "delta": 0.10891089108910891,
+      "ci95": [
+        0,
+        0.20502092050209206
+      ]
+    },
+    {
+      "baseline": "raw/raw",
+      "treatment": "qwen3-1.7b/text_ipa",
+      "unit": "wer",
+      "status": "ok",
+      "clusters": 35,
+      "iterations": 2000,
+      "seed": 1729,
+      "delta": 0.02746693794506612,
+      "ci95": [
+        -0.002770663427165386,
+        0.09776272434460319
+      ]
+    },
+    {
+      "baseline": "raw/raw",
+      "treatment": "qwen3-1.7b/text_ipa",
+      "unit": "mer",
+      "status": "ok",
+      "clusters": 4,
+      "iterations": 2000,
+      "seed": 1729,
+      "delta": 0.3692722371967655,
+      "ci95": [
+        0.10160427807486633,
+        0.7393767705382437
+      ]
+    },
+    {
+      "baseline": "qwen3-1.7b/text",
+      "treatment": "qwen3-1.7b/text_ipa",
+      "unit": "cer",
+      "status": "ok",
+      "clusters": 4,
+      "iterations": 2000,
+      "seed": 1729,
+      "delta": 0.10643564356435643,
+      "ci95": [
+        0,
+        0.200836820083682
+      ]
+    },
+    {
+      "baseline": "qwen3-1.7b/text",
+      "treatment": "qwen3-1.7b/text_ipa",
+      "unit": "wer",
+      "status": "ok",
+      "clusters": 35,
+      "iterations": 2000,
+      "seed": 1729,
+      "delta": 0.028484231943031527,
+      "ci95": [
+        0,
+        0.09988109393579073
+      ]
+    },
+    {
+      "baseline": "qwen3-1.7b/text",
+      "treatment": "qwen3-1.7b/text_ipa",
+      "unit": "mer",
+      "status": "ok",
+      "clusters": 4,
+      "iterations": 2000,
+      "seed": 1729,
+      "delta": 0.3692722371967655,
+      "ci95": [
+        0.10160427807486633,
+        0.7393767705382437
+      ]
+    },
+    {
+      "baseline": "raw/raw",
+      "treatment": "qwen3-1.7b/ipa_only",
+      "unit": "cer",
+      "status": "ok",
+      "clusters": 4,
+      "iterations": 2000,
+      "seed": 1729,
+      "delta": 3.0655940594059405,
+      "ci95": [
+        2.8183486238532107,
+        3.1616161616161618
+      ]
+    },
+    {
+      "baseline": "raw/raw",
+      "treatment": "qwen3-1.7b/ipa_only",
+      "unit": "wer",
+      "status": "ok",
+      "clusters": 35,
+      "iterations": 2000,
+      "seed": 1729,
+      "delta": 3.2706002034587995,
+      "ci95": [
+        2.940085839896992,
+        3.583190548248166
+      ]
+    },
+    {
+      "baseline": "raw/raw",
+      "treatment": "qwen3-1.7b/ipa_only",
+      "unit": "mer",
+      "status": "ok",
+      "clusters": 4,
+      "iterations": 2000,
+      "seed": 1729,
+      "delta": 2.3881401617250675,
+      "ci95": [
+        2.0594315245478034,
+        2.657303370786517
+      ]
+    },
+    {
+      "baseline": "qwen3-1.7b/text",
+      "treatment": "qwen3-1.7b/ipa_only",
+      "unit": "cer",
+      "status": "ok",
+      "clusters": 4,
+      "iterations": 2000,
+      "seed": 1729,
+      "delta": 3.063118811881188,
+      "ci95": [
+        2.8183486238532107,
+        3.1595959595959595
+      ]
+    },
+    {
+      "baseline": "qwen3-1.7b/text",
+      "treatment": "qwen3-1.7b/ipa_only",
+      "unit": "wer",
+      "status": "ok",
+      "clusters": 35,
+      "iterations": 2000,
+      "seed": 1729,
+      "delta": 3.271617497456765,
+      "ci95": [
+        2.9571592987257618,
+        3.611276648903583
+      ]
+    },
+    {
+      "baseline": "qwen3-1.7b/text",
+      "treatment": "qwen3-1.7b/ipa_only",
+      "unit": "mer",
+      "status": "ok",
+      "clusters": 4,
+      "iterations": 2000,
+      "seed": 1729,
+      "delta": 2.3881401617250675,
+      "ci95": [
+        2.0594315245478034,
+        2.657303370786517
+      ]
+    },
+    {
+      "baseline": "raw/raw",
+      "treatment": "qwen3-1.7b/text",
+      "unit": "cer",
+      "status": "ok",
+      "clusters": 4,
+      "iterations": 2000,
+      "seed": 1729,
+      "delta": 0.0024752475247524774,
+      "ci95": [
+        0,
+        0.004184100418410053
+      ]
+    },
+    {
+      "baseline": "raw/raw",
+      "treatment": "qwen3-1.7b/text",
+      "unit": "wer",
+      "status": "ok",
+      "clusters": 35,
+      "iterations": 2000,
+      "seed": 1729,
+      "delta": -0.0010172939979654072,
+      "ci95": [
+        -0.0032787782042544037,
+        0
+      ]
+    },
+    {
+      "baseline": "raw/raw",
+      "treatment": "qwen3-1.7b/text",
+      "unit": "mer",
+      "status": "ok",
+      "clusters": 4,
+      "iterations": 2000,
+      "seed": 1729,
+      "delta": 0,
+      "ci95": [
+        0,
+        0
+      ]
+    },
+    {
+      "baseline": "raw/raw",
+      "treatment": "qwen3-1.7b/text_pinyin",
+      "unit": "cer",
+      "status": "ok",
+      "clusters": 4,
+      "iterations": 2000,
+      "seed": 1729,
+      "delta": 0.0024752475247524774,
+      "ci95": [
+        0,
+        0.004184100418410053
+      ]
+    },
+    {
+      "baseline": "raw/raw",
+      "treatment": "qwen3-1.7b/text_pinyin",
+      "unit": "wer",
+      "status": "ok",
+      "clusters": 35,
+      "iterations": 2000,
+      "seed": 1729,
+      "delta": 0,
+      "ci95": [
+        0,
+        0
+      ]
+    },
+    {
+      "baseline": "raw/raw",
+      "treatment": "qwen3-1.7b/text_pinyin",
+      "unit": "mer",
+      "status": "ok",
+      "clusters": 4,
+      "iterations": 2000,
+      "seed": 1729,
+      "delta": 0,
+      "ci95": [
+        0,
+        0
+      ]
+    },
+    {
+      "baseline": "qwen3-1.7b/text",
+      "treatment": "qwen3-1.7b/text_pinyin",
+      "unit": "cer",
+      "status": "ok",
+      "clusters": 4,
+      "iterations": 2000,
+      "seed": 1729,
+      "delta": 0,
+      "ci95": [
+        0,
+        0
+      ]
+    },
+    {
+      "baseline": "qwen3-1.7b/text",
+      "treatment": "qwen3-1.7b/text_pinyin",
+      "unit": "wer",
+      "status": "ok",
+      "clusters": 35,
+      "iterations": 2000,
+      "seed": 1729,
+      "delta": 0.0010172939979654072,
+      "ci95": [
+        0,
+        0.003191659483736337
+      ]
+    },
+    {
+      "baseline": "qwen3-1.7b/text",
+      "treatment": "qwen3-1.7b/text_pinyin",
+      "unit": "mer",
+      "status": "ok",
+      "clusters": 4,
+      "iterations": 2000,
+      "seed": 1729,
+      "delta": 0,
+      "ci95": [
+        0,
+        0
+      ]
+    },
+    {
+      "baseline": "raw/raw",
+      "treatment": "qwen3-1.7b/text_pinyin_scores",
+      "unit": "cer",
+      "status": "ok",
+      "clusters": 4,
+      "iterations": 2000,
+      "seed": 1729,
+      "delta": 0.6448019801980198,
+      "ci95": [
+        0.16822429906542055,
+        1.1988582302568982
+      ]
+    },
+    {
+      "baseline": "raw/raw",
+      "treatment": "qwen3-1.7b/text_pinyin_scores",
+      "unit": "wer",
+      "status": "ok",
+      "clusters": 35,
+      "iterations": 2000,
+      "seed": 1729,
+      "delta": 0.05493387589013224,
+      "ci95": [
+        0.012870360565468308,
+        0.11010439036029587
+      ]
+    },
+    {
+      "baseline": "raw/raw",
+      "treatment": "qwen3-1.7b/text_pinyin_scores",
+      "unit": "mer",
+      "status": "ok",
+      "clusters": 4,
+      "iterations": 2000,
+      "seed": 1729,
+      "delta": 0.46091644204851756,
+      "ci95": [
+        0.022727272727272707,
+        1.0594315245478036
+      ]
+    },
+    {
+      "baseline": "qwen3-1.7b/text",
+      "treatment": "qwen3-1.7b/text_pinyin_scores",
+      "unit": "cer",
+      "status": "ok",
+      "clusters": 4,
+      "iterations": 2000,
+      "seed": 1729,
+      "delta": 0.6423267326732673,
+      "ci95": [
+        0.16635514018691588,
+        1.1950523311132255
+      ]
+    },
+    {
+      "baseline": "qwen3-1.7b/text",
+      "treatment": "qwen3-1.7b/text_pinyin_scores",
+      "unit": "wer",
+      "status": "ok",
+      "clusters": 35,
+      "iterations": 2000,
+      "seed": 1729,
+      "delta": 0.055951169888097646,
+      "ci95": [
+        0.014364212252692729,
+        0.10903272146426832
+      ]
+    },
+    {
+      "baseline": "qwen3-1.7b/text",
+      "treatment": "qwen3-1.7b/text_pinyin_scores",
+      "unit": "mer",
+      "status": "ok",
+      "clusters": 4,
+      "iterations": 2000,
+      "seed": 1729,
+      "delta": 0.46091644204851756,
+      "ci95": [
+        0.022727272727272707,
+        1.0594315245478036
+      ]
+    }
+  ],
+  "limitations": [
+    "Exploratory paired speaker bootstrap; multiple comparisons unadjusted",
+    "Accelerated acoustic replay; warm CPU generation, no UI/insertion or stop-to-review latency",
+    "Natural read speech and synthetic mixed-language stress fixtures; no spontaneous speech or independent semantic ratings",
+    "Audio IPA comes from unfine-tuned Allosaurus uni2005; single phone path, no tone-aware pinyin acoustic model",
+    "No real N-best exposed by selected ASR; no candidate reranking claim",
+    "No protected-span annotations in this corpus; error-rate and corruption proxies do not prove intent preservation"
+  ]
+}

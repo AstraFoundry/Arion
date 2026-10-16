@@ -1,0 +1,903 @@
+{
+ "version": 1,
+ "kind": "arion-scene-text-v1",
+ "split": "test",
+ "license": "developer-authored synthetic",
+ "consent": true,
+ "annotation": "single developer; exact-string layout proxies; written after scene-heldout-corpus.json was used for diagnosis and before the revised pipeline ran",
+ "samples": [
+  {
+   "id": "hb-e-zh-leave",
+   "language": "zh",
+   "speech": "",
+   "sourceText": "刘经理您好，我下周一到周三需要请假，工作已经交接给小王了，麻烦您批准，谢谢。",
+   "references": [
+    "刘经理您好：\n\n我下周一到周三需要请假，工作已经交接给小王了，麻烦您批准。\n\n谢谢。"
+   ],
+   "requiredStrings": [
+    "\n\n",
+    "小王"
+   ],
+   "forbiddenStrings": [],
+   "protected": [
+    "刘经理"
+   ],
+   "scenario": "email",
+   "target": {
+    "app": "com.microsoft.Outlook",
+    "field": "text",
+    "site": ""
+   },
+   "context": "",
+   "approvedMemory": [],
+   "mode": "clean",
+   "tags": [
+    "scene-email"
+   ]
+  },
+  {
+   "id": "hb-e-en-intro",
+   "language": "en",
+   "speech": "",
+   "sourceText": "Hi Priya, I'd like to introduce you to Daniel, he leads our data team and can help with the migration. Cheers, Lena.",
+   "references": [
+    "Hi Priya,\n\nI'd like to introduce you to Daniel. He leads our data team and can help with the migration.\n\nCheers,\nLena"
+   ],
+   "requiredStrings": [
+    "\n\n",
+    "Daniel"
+   ],
+   "forbiddenStrings": [],
+   "protected": [
+    "Priya",
+    "Lena"
+   ],
+   "scenario": "email",
+   "target": {
+    "app": "com.google.Chrome",
+    "field": "text",
+    "site": "mail.google.com"
+   },
+   "context": "",
+   "approvedMemory": [],
+   "mode": "clean",
+   "tags": [
+    "scene-email"
+   ]
+  },
+  {
+   "id": "hb-e-zh-repair",
+   "language": "zh",
+   "speech": "",
+   "sourceText": "孙老师好，作业我已经提交了，是第五章，不对，是第六章的练习，请您查收。",
+   "references": [
+    "孙老师好：\n\n作业我已经提交了，是第六章的练习，请您查收。"
+   ],
+   "requiredStrings": [
+    "\n\n",
+    "第六章"
+   ],
+   "forbiddenStrings": [
+    "第五章",
+    "不对"
+   ],
+   "protected": [
+    "孙老师"
+   ],
+   "scenario": "email",
+   "target": {
+    "app": "com.apple.Safari",
+    "field": "text",
+    "site": "mail.163.com"
+   },
+   "context": "",
+   "approvedMemory": [],
+   "mode": "clean",
+   "tags": [
+    "scene-email",
+    "self-correction"
+   ]
+  },
+  {
+   "id": "hb-e-mx-demo",
+   "language": "mixed",
+   "speech": "",
+   "sourceText": "Hi all，嗯，明天下午的 demo 改到线上进行，会议链接稍后发出，thanks。",
+   "references": [
+    "Hi all，\n\n明天下午的 demo 改到线上进行，会议链接稍后发出。\n\nThanks。"
+   ],
+   "requiredStrings": [
+    "\n\n",
+    "demo"
+   ],
+   "forbiddenStrings": [
+    "嗯"
+   ],
+   "protected": [
+    "会议链接"
+   ],
+   "scenario": "email",
+   "target": {
+    "app": "com.apple.mail",
+    "field": "text",
+    "site": ""
+   },
+   "context": "",
+   "approvedMemory": [],
+   "mode": "clean",
+   "tags": [
+    "scene-email"
+   ]
+  },
+  {
+   "id": "hb-e-en-refund",
+   "language": "en",
+   "speech": "",
+   "sourceText": "Hello, uh, I was charged twice for order 4471 and would like a refund for one of the charges. Thank you, Mark.",
+   "references": [
+    "Hello,\n\nI was charged twice for order 4471 and would like a refund for one of the charges.\n\nThank you,\nMark"
+   ],
+   "requiredStrings": [
+    "\n\n",
+    "4471"
+   ],
+   "forbiddenStrings": [
+    " uh,"
+   ],
+   "protected": [
+    "Mark",
+    "refund"
+   ],
+   "scenario": "email",
+   "target": {
+    "app": "com.microsoft.edgemac",
+    "field": "text",
+    "site": "outlook.live.com"
+   },
+   "context": "",
+   "approvedMemory": [],
+   "mode": "clean",
+   "tags": [
+    "scene-email"
+   ]
+  },
+  {
+   "id": "hb-e-zh-thanks",
+   "language": "zh",
+   "speech": "",
+   "sourceText": "赵总，您好，感谢您今天抽时间参加评审，会议纪要我整理好后会发给大家。",
+   "references": [
+    "赵总，您好：\n\n感谢您今天抽时间参加评审，会议纪要我整理好后会发给大家。"
+   ],
+   "requiredStrings": [
+    "\n\n",
+    "会议纪要"
+   ],
+   "forbiddenStrings": [],
+   "protected": [
+    "赵总"
+   ],
+   "scenario": "email",
+   "target": {
+    "app": "org.mozilla.thunderbird",
+    "field": "text",
+    "site": ""
+   },
+   "context": "",
+   "approvedMemory": [],
+   "mode": "clean",
+   "tags": [
+    "scene-email"
+   ]
+  },
+  {
+   "id": "hb-w-zh-plan",
+   "language": "zh",
+   "speech": "",
+   "sourceText": "这周的计划是，第一，完成支付模块，第二，修复三个线上问题，第三，准备周五的分享。",
+   "references": [
+    "这周的计划是：\n1. 完成支付模块\n2. 修复三个线上问题\n3. 准备周五的分享"
+   ],
+   "requiredStrings": [
+    "\n1.",
+    "\n2.",
+    "\n3."
+   ],
+   "forbiddenStrings": [],
+   "protected": [
+    "支付模块"
+   ],
+   "scenario": "work",
+   "target": {
+    "app": "com.tencent.WeWorkMac",
+    "field": "text",
+    "site": ""
+   },
+   "context": "",
+   "approvedMemory": [],
+   "mode": "clean",
+   "tags": [
+    "scene-work",
+    "enumeration"
+   ]
+  },
+  {
+   "id": "hb-w-en-blocker",
+   "language": "en",
+   "speech": "",
+   "sourceText": "Heads up, the staging database is down again, so please hold off on deploys until I confirm it's back.",
+   "references": [
+    "Heads up, the staging database is down again, so please hold off on deploys until I confirm it's back."
+   ],
+   "requiredStrings": [
+    "staging database",
+    "hold off"
+   ],
+   "forbiddenStrings": [
+    "\n"
+   ],
+   "protected": [],
+   "scenario": "work",
+   "target": {
+    "app": "com.tinyspeck.slackmacgap",
+    "field": "text",
+    "site": ""
+   },
+   "context": "",
+   "approvedMemory": [],
+   "mode": "clean",
+   "tags": [
+    "scene-work"
+   ]
+  },
+  {
+   "id": "hb-w-mx-sync",
+   "language": "mixed",
+   "speech": "",
+   "sourceText": "今天 sync 的结论有两点，一是先上线 MVP，二是 analytics 下个迭代再做。",
+   "references": [
+    "今天 sync 的结论有两点：\n1. 先上线 MVP\n2. analytics 下个迭代再做"
+   ],
+   "requiredStrings": [
+    "\n1.",
+    "\n2.",
+    "MVP",
+    "analytics"
+   ],
+   "forbiddenStrings": [],
+   "protected": [],
+   "scenario": "work",
+   "target": {
+    "app": "com.google.Chrome",
+    "field": "text",
+    "site": "acme.feishu.cn"
+   },
+   "context": "",
+   "approvedMemory": [],
+   "mode": "clean",
+   "tags": [
+    "scene-work",
+    "enumeration"
+   ]
+  },
+  {
+   "id": "hb-w-zh-ack",
+   "language": "zh",
+   "speech": "",
+   "sourceText": "收到，我这边没问题，明天上午给您答复。",
+   "references": [
+    "收到，我这边没问题，明天上午给您答复。"
+   ],
+   "requiredStrings": [
+    "明天上午"
+   ],
+   "forbiddenStrings": [
+    "\n"
+   ],
+   "protected": [],
+   "scenario": "work",
+   "target": {
+    "app": "com.alibaba.DingTalkMac",
+    "field": "text",
+    "site": ""
+   },
+   "context": "",
+   "approvedMemory": [],
+   "mode": "clean",
+   "tags": [
+    "scene-work"
+   ]
+  },
+  {
+   "id": "hb-w-en-steps",
+   "language": "en",
+   "speech": "",
+   "sourceText": "Two things before the review, first update the slides with the new numbers, and second send the deck to Raj.",
+   "references": [
+    "Two things before the review:\n1. Update the slides with the new numbers\n2. Send the deck to Raj"
+   ],
+   "requiredStrings": [
+    "\n1.",
+    "\n2."
+   ],
+   "forbiddenStrings": [],
+   "protected": [
+    "Raj"
+   ],
+   "scenario": "work",
+   "target": {
+    "app": "com.microsoft.teams2",
+    "field": "text",
+    "site": ""
+   },
+   "context": "",
+   "approvedMemory": [],
+   "mode": "clean",
+   "tags": [
+    "scene-work",
+    "enumeration"
+   ]
+  },
+  {
+   "id": "hb-w-zh-repair",
+   "language": "zh",
+   "speech": "",
+   "sourceText": "评审会定在周四，不是，是周五下午两点，在三号会议室。",
+   "references": [
+    "评审会定在周五下午两点，在三号会议室。"
+   ],
+   "requiredStrings": [
+    "周五下午两点"
+   ],
+   "forbiddenStrings": [
+    "周四",
+    "不是"
+   ],
+   "protected": [
+    "三号会议室"
+   ],
+   "scenario": "work",
+   "target": {
+    "app": "com.electron.lark",
+    "field": "text",
+    "site": ""
+   },
+   "context": "",
+   "approvedMemory": [],
+   "mode": "clean",
+   "tags": [
+    "scene-work",
+    "self-correction"
+   ]
+  },
+  {
+   "id": "hb-p-mx-lint",
+   "language": "mixed",
+   "speech": "",
+   "sourceText": "帮我在 package.json 里加一个 lint 脚本，用 eslint 检查 src 目录，不要改动其他配置。",
+   "references": [
+    "帮我在 package.json 里加一个 lint 脚本，用 eslint 检查 src 目录，不要改动其他配置。"
+   ],
+   "requiredStrings": [
+    "package.json",
+    "eslint",
+    "不要"
+   ],
+   "forbiddenStrings": [],
+   "protected": [
+    "src"
+   ],
+   "scenario": "prompt",
+   "target": {
+    "app": "com.todesktop.230313mzl4w4u92",
+    "field": "text",
+    "site": ""
+   },
+   "context": "",
+   "approvedMemory": [],
+   "mode": "clean",
+   "tags": [
+    "scene-prompt"
+   ]
+  },
+  {
+   "id": "hb-p-en-cache",
+   "language": "en",
+   "speech": "",
+   "sourceText": "Add caching to the getPrices endpoint, first use Redis with a five minute TTL, second invalidate it when prices change.",
+   "references": [
+    "Add caching to the getPrices endpoint:\n1. Use Redis with a five minute TTL\n2. Invalidate it when prices change"
+   ],
+   "requiredStrings": [
+    "getPrices",
+    "Redis",
+    "\n1.",
+    "\n2."
+   ],
+   "forbiddenStrings": [],
+   "protected": [],
+   "scenario": "prompt",
+   "target": {
+    "app": "com.googlecode.iterm2",
+    "field": "text",
+    "site": ""
+   },
+   "context": "",
+   "approvedMemory": [],
+   "mode": "clean",
+   "tags": [
+    "scene-prompt"
+   ]
+  },
+  {
+   "id": "hb-p-zh-page",
+   "language": "zh",
+   "speech": "",
+   "sourceText": "帮我写一个登录页面，要求有三点，第一，支持手机号登录，第二，记住密码，第三，适配深色模式。",
+   "references": [
+    "帮我写一个登录页面，要求有三点：\n1. 支持手机号登录\n2. 记住密码\n3. 适配深色模式"
+   ],
+   "requiredStrings": [
+    "\n1.",
+    "\n2.",
+    "\n3."
+   ],
+   "forbiddenStrings": [],
+   "protected": [
+    "深色模式"
+   ],
+   "scenario": "prompt",
+   "target": {
+    "app": "company.thebrowser.Browser",
+    "field": "text",
+    "site": "claude.ai"
+   },
+   "context": "",
+   "approvedMemory": [],
+   "mode": "clean",
+   "tags": [
+    "scene-prompt",
+    "enumeration"
+   ]
+  },
+  {
+   "id": "hb-p-en-error",
+   "language": "en",
+   "speech": "",
+   "sourceText": "The build fails with error TS2345 in OrderList.tsx, can you fix the type of the onSelect prop?",
+   "references": [
+    "The build fails with error TS2345 in OrderList.tsx. Can you fix the type of the onSelect prop?"
+   ],
+   "requiredStrings": [
+    "TS2345",
+    "OrderList.tsx",
+    "onSelect"
+   ],
+   "forbiddenStrings": [],
+   "protected": [],
+   "scenario": "prompt",
+   "target": {
+    "app": "com.microsoft.VSCode",
+    "field": "text",
+    "site": ""
+   },
+   "context": "",
+   "approvedMemory": [],
+   "mode": "clean",
+   "tags": [
+    "scene-prompt"
+   ]
+  },
+  {
+   "id": "hb-p-mx-repair",
+   "language": "mixed",
+   "speech": "",
+   "sourceText": "把 timeout 改成三十秒，哦不对，改成六十秒，然后更新 README。",
+   "references": [
+    "把 timeout 改成六十秒，然后更新 README。"
+   ],
+   "requiredStrings": [
+    "六十秒",
+    "README"
+   ],
+   "forbiddenStrings": [
+    "三十秒",
+    "不对"
+   ],
+   "protected": [
+    "timeout"
+   ],
+   "scenario": "prompt",
+   "target": {
+    "app": "com.google.Chrome",
+    "field": "text",
+    "site": "github.com"
+   },
+   "context": "",
+   "approvedMemory": [],
+   "mode": "clean",
+   "tags": [
+    "scene-prompt",
+    "self-correction"
+   ]
+  },
+  {
+   "id": "hb-p-zh-explain",
+   "language": "zh",
+   "speech": "",
+   "sourceText": "解释一下这段代码为什么会内存泄漏，不需要改代码。",
+   "references": [
+    "解释一下这段代码为什么会内存泄漏，不需要改代码。"
+   ],
+   "requiredStrings": [
+    "内存泄漏",
+    "不需要"
+   ],
+   "forbiddenStrings": [
+    "\n"
+   ],
+   "protected": [],
+   "scenario": "prompt",
+   "target": {
+    "app": "com.openai.codex",
+    "field": "text",
+    "site": ""
+   },
+   "context": "",
+   "approvedMemory": [],
+   "mode": "clean",
+   "tags": [
+    "scene-prompt"
+   ]
+  },
+  {
+   "id": "hb-s-zh-flight",
+   "language": "zh",
+   "speech": "",
+   "sourceText": "上海飞成都的机票。",
+   "references": [
+    "上海飞成都的机票"
+   ],
+   "requiredStrings": [
+    "上海飞成都的机票"
+   ],
+   "forbiddenStrings": [
+    "。"
+   ],
+   "protected": [],
+   "scenario": "search",
+   "target": {
+    "app": "com.google.Chrome",
+    "field": "text",
+    "site": "www.baidu.com"
+   },
+   "context": "",
+   "approvedMemory": [],
+   "mode": "clean",
+   "tags": [
+    "scene-search"
+   ]
+  },
+  {
+   "id": "hb-s-en-recipe",
+   "language": "en",
+   "speech": "",
+   "sourceText": "easy vegetarian lasagna recipe.",
+   "references": [
+    "easy vegetarian lasagna recipe"
+   ],
+   "requiredStrings": [
+    "vegetarian lasagna recipe"
+   ],
+   "forbiddenStrings": [
+    "."
+   ],
+   "protected": [],
+   "scenario": "search",
+   "target": {
+    "app": "com.apple.Safari",
+    "field": "text",
+    "site": "www.google.com"
+   },
+   "context": "",
+   "approvedMemory": [],
+   "mode": "clean",
+   "tags": [
+    "scene-search"
+   ]
+  },
+  {
+   "id": "hb-s-zh-slack",
+   "language": "zh",
+   "speech": "",
+   "sourceText": "上周的发布记录。",
+   "references": [
+    "上周的发布记录"
+   ],
+   "requiredStrings": [
+    "上周的发布记录"
+   ],
+   "forbiddenStrings": [
+    "。"
+   ],
+   "protected": [],
+   "scenario": "search",
+   "target": {
+    "app": "com.tinyspeck.slackmacgap",
+    "field": "search",
+    "site": ""
+   },
+   "context": "",
+   "approvedMemory": [],
+   "mode": "clean",
+   "tags": [
+    "scene-search"
+   ]
+  },
+  {
+   "id": "hb-s-mx-docs",
+   "language": "mixed",
+   "speech": "",
+   "sourceText": "React useEffect 清理函数怎么写？",
+   "references": [
+    "React useEffect 清理函数怎么写"
+   ],
+   "requiredStrings": [
+    "useEffect",
+    "清理函数"
+   ],
+   "forbiddenStrings": [
+    "？"
+   ],
+   "protected": [],
+   "scenario": "search",
+   "target": {
+    "app": "company.thebrowser.Browser",
+    "field": "text",
+    "site": "duckduckgo.com"
+   },
+   "context": "",
+   "approvedMemory": [],
+   "mode": "clean",
+   "tags": [
+    "scene-search"
+   ]
+  },
+  {
+   "id": "hb-s-en-question",
+   "language": "en",
+   "speech": "",
+   "sourceText": "what time does the louvre open on sundays?",
+   "references": [
+    "what time does the louvre open on sundays"
+   ],
+   "requiredStrings": [
+    "louvre",
+    "sundays"
+   ],
+   "forbiddenStrings": [
+    "?"
+   ],
+   "protected": [],
+   "scenario": "search",
+   "target": {
+    "app": "com.microsoft.edgemac",
+    "field": "text",
+    "site": "www.bing.com"
+   },
+   "context": "",
+   "approvedMemory": [],
+   "mode": "clean",
+   "tags": [
+    "scene-search"
+   ]
+  },
+  {
+   "id": "hb-s-zh-filler",
+   "language": "zh",
+   "speech": "",
+   "sourceText": "嗯，附近的宠物医院。",
+   "references": [
+    "附近的宠物医院"
+   ],
+   "requiredStrings": [
+    "附近的宠物医院"
+   ],
+   "forbiddenStrings": [
+    "。",
+    "嗯"
+   ],
+   "protected": [],
+   "scenario": "search",
+   "target": {
+    "app": "com.google.Chrome",
+    "field": "text",
+    "site": "www.google.com"
+   },
+   "context": "",
+   "approvedMemory": [],
+   "mode": "clean",
+   "tags": [
+    "scene-search"
+   ]
+  },
+  {
+   "id": "hb-c-zh-late",
+   "language": "zh",
+   "speech": "",
+   "sourceText": "我可能要晚半小时，路上有点堵。",
+   "references": [
+    "我可能要晚半小时，路上有点堵。"
+   ],
+   "requiredStrings": [
+    "晚半小时"
+   ],
+   "forbiddenStrings": [
+    "\n"
+   ],
+   "protected": [],
+   "scenario": "chat",
+   "target": {
+    "app": "com.tencent.qq",
+    "field": "text",
+    "site": ""
+   },
+   "context": "",
+   "approvedMemory": [],
+   "mode": "clean",
+   "tags": [
+    "scene-chat"
+   ]
+  },
+  {
+   "id": "hb-c-en-movie",
+   "language": "en",
+   "speech": "",
+   "sourceText": "Want to see a movie tonight, maybe the eight o'clock one?",
+   "references": [
+    "Want to see a movie tonight, maybe the eight o'clock one?"
+   ],
+   "requiredStrings": [
+    "movie tonight",
+    "eight"
+   ],
+   "forbiddenStrings": [
+    "\n"
+   ],
+   "protected": [],
+   "scenario": "chat",
+   "target": {
+    "app": "net.whatsapp.WhatsApp",
+    "field": "text",
+    "site": ""
+   },
+   "context": "",
+   "approvedMemory": [],
+   "mode": "clean",
+   "tags": [
+    "scene-chat"
+   ]
+  },
+  {
+   "id": "hb-c-zh-two",
+   "language": "zh",
+   "speech": "",
+   "sourceText": "晚饭想吃两样，第一是烤鱼，第二是凉面。",
+   "references": [
+    "晚饭想吃两样，第一是烤鱼，第二是凉面。"
+   ],
+   "requiredStrings": [
+    "烤鱼",
+    "凉面"
+   ],
+   "forbiddenStrings": [
+    "\n"
+   ],
+   "protected": [],
+   "scenario": "chat",
+   "target": {
+    "app": "com.tencent.xinWeChat",
+    "field": "text",
+    "site": ""
+   },
+   "context": "",
+   "approvedMemory": [],
+   "mode": "clean",
+   "tags": [
+    "scene-chat",
+    "enumeration"
+   ]
+  },
+  {
+   "id": "hb-c-mx-doc",
+   "language": "mixed",
+   "speech": "",
+   "sourceText": "这一段的 conclusion 写得有点弱，嗯，可以再补一个例子。",
+   "references": [
+    "这一段的 conclusion 写得有点弱，可以再补一个例子。"
+   ],
+   "requiredStrings": [
+    "conclusion"
+   ],
+   "forbiddenStrings": [
+    "嗯",
+    "\n"
+   ],
+   "protected": [],
+   "scenario": "chat",
+   "target": {
+    "app": "com.google.Chrome",
+    "field": "text",
+    "site": "docs.google.com"
+   },
+   "context": "",
+   "approvedMemory": [],
+   "mode": "clean",
+   "tags": [
+    "scene-chat"
+   ]
+  },
+  {
+   "id": "hb-c-en-note",
+   "language": "en",
+   "speech": "",
+   "sourceText": "Remember to water the plants and, uh, call grandma on Sunday.",
+   "references": [
+    "Remember to water the plants and call grandma on Sunday."
+   ],
+   "requiredStrings": [
+    "grandma",
+    "Sunday"
+   ],
+   "forbiddenStrings": [
+    " uh,",
+    "\n"
+   ],
+   "protected": [],
+   "scenario": "chat",
+   "target": {
+    "app": "com.apple.Notes",
+    "field": "text",
+    "site": ""
+   },
+   "context": "",
+   "approvedMemory": [],
+   "mode": "clean",
+   "tags": [
+    "scene-chat"
+   ]
+  },
+  {
+   "id": "hb-c-zh-repair",
+   "language": "zh",
+   "speech": "",
+   "sourceText": "周六见面吧，不对，周日，周六我要加班。",
+   "references": [
+    "周日见面吧，周六我要加班。"
+   ],
+   "requiredStrings": [
+    "周日见面"
+   ],
+   "forbiddenStrings": [
+    "不对",
+    "\n"
+   ],
+   "protected": [
+    "加班"
+   ],
+   "scenario": "chat",
+   "target": {
+    "app": "com.tdesktop.Telegram",
+    "field": "text",
+    "site": ""
+   },
+   "context": "",
+   "approvedMemory": [],
+   "mode": "clean",
+   "tags": [
+    "scene-chat",
+    "self-correction"
+   ]
+  }
+ ]
+}

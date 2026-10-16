@@ -1,0 +1,147 @@
+{
+  "status": "complete",
+  "corpusHash": "a5d92468ac0c1ac740cf9685628d1d1c6540f70f4ace2d11c189bd7f78fee371",
+  "model": "x-asr-zh-en-offline-punct-int8-2026-06-03",
+  "artifacts": [
+    {
+      "path": "/Users/steven/code/Arion/.workspace/models/store/x-asr-zh-en-offline-punct-int8-2026-06-03/encoder-epoch-99-avg-1.int8.onnx",
+      "sha256": "7f6aa62056efd8af9da13e0faa81cd3f284d2fb2e3b63de56fd2dfd3450910dc"
+    },
+    {
+      "path": "/Users/steven/code/Arion/.workspace/models/store/x-asr-zh-en-offline-punct-int8-2026-06-03/decoder-epoch-99-avg-1.onnx",
+      "sha256": "72f47405d3c1033bebccbef82f90071e7b4ba3e71b9c986f2b74244b25723aed"
+    },
+    {
+      "path": "/Users/steven/code/Arion/.workspace/models/store/x-asr-zh-en-offline-punct-int8-2026-06-03/joiner-epoch-99-avg-1.int8.onnx",
+      "sha256": "aedb7fa697b2ab43f20499826fff7c997eea7d67db77be97769aeeeb726e63b3"
+    },
+    {
+      "path": "/Users/steven/code/Arion/.workspace/models/store/x-asr-zh-en-offline-punct-int8-2026-06-03/tokens.txt",
+      "sha256": "b818a60878b9aae978cbb8ad594acbd403d76d1af2e31ef4197c84e2dbdba27c"
+    },
+    {
+      "path": "/Users/steven/.local/share/uv/python/cpython-3.12.9-macos-aarch64-none/bin/python3.12",
+      "sha256": "e878533ce71a6e91b0fae5e8bbe8baebbb6194dad84fead52e9b42f0620ad011"
+    },
+    {
+      "path": "/Users/steven/code/Arion/.workspace/phonetic-venv/lib/python3.12/site-packages/numpy/_core/_multiarray_tests.cpython-312-darwin.so",
+      "sha256": "083ab89907471d9d6af7337ae44f6acbde5e5e23ef173394dc6251c925fc08ba"
+    },
+    {
+      "path": "/Users/steven/code/Arion/.workspace/phonetic-venv/lib/python3.12/site-packages/numpy/_core/_multiarray_umath.cpython-312-darwin.so",
+      "sha256": "af36cbbb39b27651a8b9f7dfa491775016f331a58e8d116eb6b4cfd5e22efb77"
+    },
+    {
+      "path": "/Users/steven/code/Arion/.workspace/phonetic-venv/lib/python3.12/site-packages/numpy/_core/_operand_flag_tests.cpython-312-darwin.so",
+      "sha256": "e910e6642301f2f28a986d819a3249d5d1013b2ee6ce4e5e9a95082ecc4d3627"
+    },
+    {
+      "path": "/Users/steven/code/Arion/.workspace/phonetic-venv/lib/python3.12/site-packages/numpy/_core/_rational_tests.cpython-312-darwin.so",
+      "sha256": "73d0f8c90654dd97fa2b0ed6c45882eb8fe83a8c4256e38bfc31713e5e07841b"
+    },
+    {
+      "path": "/Users/steven/code/Arion/.workspace/phonetic-venv/lib/python3.12/site-packages/numpy/_core/_simd.cpython-312-darwin.so",
+      "sha256": "e78efa667e9cd2d0f319968a7feae06adf7f0945efde8bbcad3bd0f75e199541"
+    },
+    {
+      "path": "/Users/steven/code/Arion/.workspace/phonetic-venv/lib/python3.12/site-packages/numpy/_core/_struct_ufunc_tests.cpython-312-darwin.so",
+      "sha256": "24218eec682f48246b450903e270be19eca1c6c2d828235ddef29949f2cc8950"
+    },
+    {
+      "path": "/Users/steven/code/Arion/.workspace/phonetic-venv/lib/python3.12/site-packages/numpy/_core/_umath_tests.cpython-312-darwin.so",
+      "sha256": "1c55454c29a1a5f500fc22cf095e862b0af0f17e14c2a1fbe7140832c21a0d66"
+    },
+    {
+      "path": "/Users/steven/code/Arion/.workspace/phonetic-venv/lib/python3.12/site-packages/numpy/fft/_pocketfft_umath.cpython-312-darwin.so",
+      "sha256": "51add49e0b523ae7b20a10a879a77e0998afb795d6d233ef8936f0a58ce4e36f"
+    },
+    {
+      "path": "/Users/steven/code/Arion/.workspace/phonetic-venv/lib/python3.12/site-packages/numpy/linalg/_umath_linalg.cpython-312-darwin.so",
+      "sha256": "aa8f5a2f363ad911eddb849e3ed82ba017bd2fec5b8dde28a330e2873f501fb8"
+    },
+    {
+      "path": "/Users/steven/code/Arion/.workspace/phonetic-venv/lib/python3.12/site-packages/numpy/linalg/lapack_lite.cpython-312-darwin.so",
+      "sha256": "a7895a9c0d4afdf3fbbdc2456e016590aa0fbd8d7e203079debee39bd0269b5c"
+    },
+    {
+      "path": "/Users/steven/code/Arion/.workspace/phonetic-venv/lib/python3.12/site-packages/numpy/random/_bounded_integers.cpython-312-darwin.so",
+      "sha256": "1215997585debe5651a77a52563dc32508e67414ef35761c49afa150ce1f8e1f"
+    },
+    {
+      "path": "/Users/steven/code/Arion/.workspace/phonetic-venv/lib/python3.12/site-packages/numpy/random/_common.cpython-312-darwin.so",
+      "sha256": "884ecb8d16bbb1572816a89fff6b2b5722bb8210273ff744ec0db5c0496de5fd"
+    },
+    {
+      "path": "/Users/steven/code/Arion/.workspace/phonetic-venv/lib/python3.12/site-packages/numpy/random/_generator.cpython-312-darwin.so",
+      "sha256": "87a6dfcf15b6107936915f76e1a52b00d68f2e539169aee194af7a3e5bbacc1b"
+    },
+    {
+      "path": "/Users/steven/code/Arion/.workspace/phonetic-venv/lib/python3.12/site-packages/numpy/random/_mt19937.cpython-312-darwin.so",
+      "sha256": "9779d38f6e586d845f2ee652959f3edf1acb44fbeff6f4ee16ec7fb58f23dd6d"
+    },
+    {
+      "path": "/Users/steven/code/Arion/.workspace/phonetic-venv/lib/python3.12/site-packages/numpy/random/_pcg64.cpython-312-darwin.so",
+      "sha256": "39fbdcf07c23901f4ae0b6ab3be3e05829a83495819a69cda8ddbd11d06ff136"
+    },
+    {
+      "path": "/Users/steven/code/Arion/.workspace/phonetic-venv/lib/python3.12/site-packages/numpy/random/_philox.cpython-312-darwin.so",
+      "sha256": "5a74868b1a98c3d0a776cf275c88959871376bab0ff15ef0d882229ddd5a2a56"
+    },
+    {
+      "path": "/Users/steven/code/Arion/.workspace/phonetic-venv/lib/python3.12/site-packages/numpy/random/_sfc64.cpython-312-darwin.so",
+      "sha256": "6bb290611b7fa2304d28f3c8ddb0156f435ead1aa0f5a997ddfe4e8a6762c200"
+    },
+    {
+      "path": "/Users/steven/code/Arion/.workspace/phonetic-venv/lib/python3.12/site-packages/numpy/random/bit_generator.cpython-312-darwin.so",
+      "sha256": "88bbb27d3f58e12c9be2ff6af6eff4e409599a3e6cece3b4144d4aa8878b149b"
+    },
+    {
+      "path": "/Users/steven/code/Arion/.workspace/phonetic-venv/lib/python3.12/site-packages/numpy/random/mtrand.cpython-312-darwin.so",
+      "sha256": "0e52c63a090850119f67a570ae2fd094861fcff3a0bad00cbf3a0c86faa82510"
+    },
+    {
+      "path": "/Users/steven/code/Arion/.workspace/phonetic-venv/lib/python3.12/site-packages/sherpa_onnx/lib/_sherpa_onnx.cpython-312-darwin.so",
+      "sha256": "2d755a7dab9989e6587eeab50587be45b75dd51328e008d1e98ab6ece2991609"
+    },
+    {
+      "path": "/Users/steven/code/Arion/.workspace/phonetic-venv/lib/python3.12/site-packages/sherpa_onnx/lib/libonnxruntime.dylib",
+      "sha256": "b0613d0ae53199a83b05fa48e169211498e9d40d54beaa372068ebe5ec5b0929"
+    },
+    {
+      "path": "/Users/steven/code/Arion/.workspace/phonetic-venv/lib/python3.12/site-packages/sherpa_onnx/lib/libsherpa-onnx-c-api.dylib",
+      "sha256": "579e3d8765b27eea31a6bf55018a7735e32f1f69734b35bf239c8cd332ae59ed"
+    },
+    {
+      "path": "/Users/steven/code/Arion/.workspace/phonetic-venv/lib/python3.12/site-packages/sherpa_onnx/lib/libsherpa-onnx-cxx-api.dylib",
+      "sha256": "fa3dfbc10af9af9f59d7b53386d47be99bc8e2ba12aab63ca5a3c91bbd483a00"
+    },
+    {
+      "path": "/Users/steven/code/Arion/.workspace/phonetic-venv/lib/python3.12/site-packages/sherpa_onnx/offline_recognizer.py",
+      "sha256": "f862ba8b174bdd7eef6562729ac1518bf444ea4dbde12db98c92221e6065402e"
+    },
+    {
+      "path": "/Users/steven/code/Arion/.workspace/research/phonetic-asr/offline_control.py",
+      "sha256": "1e6f732bd1221f40d61f63f9aad4c52f073ab9989eb912d077b0b55c37fe345d"
+    }
+  ],
+  "controllerHash": "8f77d4825e688f7a13e179b5bdf8fdf0df3d254cb3e2e8fd82ba82705632d950",
+  "host": {
+    "os": "darwin",
+    "architecture": "arm64",
+    "cpu": "Apple M4",
+    "ramBytes": 34359738368,
+    "osRelease": "25.6.0",
+    "powerMode": "System-wide power settings:\n SleepDisabled\t\t0\nCurrently in use:\n standby              1\n Sleep On Power Button 1\n hibernatefile        /var/vm/sleepimage\n powernap             1\n networkoversleep     0\n disksleep            10\n sleep                0 (sleep prevented by powerd, caffeinate)\n hibernatemode        3\n ttyskeepawake        1\n displaysleep         0 (display sleep prevented by Caffeine)\n tcpkeepalive         1\n lowpowermode         0\n womp                 1"
+  },
+  "threads": 4,
+  "note": "Whole-file offline acoustic second pass control; no LLM and no realtime preview. Inputs contain audio only.",
+  "runtime": {
+    "id": "1",
+    "ok": true,
+    "loadMs": 960.1974580436945,
+    "sherpa": "1.13.8",
+    "numpy": "2.5.4"
+  },
+  "resultsHash": "ca39682ac6c0c3288acd0717d12ce88fe8a4b7d46b3f379b8f4129174d08a9b8",
+  "warmupsHash": "679dc33ca48d37c4f562fe8ddc22ef0a9d06a7775a6dafadc9ca5ed9efa22feb"
+}

@@ -1,0 +1,4 @@
+Regression review before held-out execution:
+- Technical topic marker changed model behavior on the existing mixed-code development case.
+- Audit original-byte offsets under non-ASCII case folding and spelled-letter controls.
+- Repeat candidate inference after these development changes; keep previous runs as rejected iteration evidence.

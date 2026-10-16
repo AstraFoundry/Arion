@@ -51,15 +51,16 @@ type Response struct {
 	PromptID     string  `json:"promptId,omitempty"`
 	PrefixTokens int     `json:"prefixTokens,omitempty"`
 	// Rewrite and prefill.
-	Template     string  `json:"template,omitempty"`
-	Text         string  `json:"text,omitempty"`
-	InputTokens  int     `json:"inputTokens,omitempty"`
-	ReusedTokens int     `json:"reusedTokens,omitempty"`
-	OutputTokens int     `json:"outputTokens,omitempty"`
-	PrefillMs    float64 `json:"prefillMs,omitempty"`
-	DecodeMs     float64 `json:"decodeMs,omitempty"`
-	FirstTokenMs float64 `json:"firstTokenMs,omitempty"`
-	Truncated    bool    `json:"truncated,omitempty"`
-	Cancelled    bool    `json:"cancelled,omitempty"`
-	PeakRSS      int64   `json:"peakRssBytes,omitempty"`
+	Template     string                `json:"template,omitempty"`
+	Text         string                `json:"text,omitempty"`
+	Cleanup      *domain.SpeechCleanup `json:"cleanup,omitempty"`
+	InputTokens  int                   `json:"inputTokens,omitempty"`
+	ReusedTokens int                   `json:"reusedTokens,omitempty"`
+	OutputTokens int                   `json:"outputTokens,omitempty"`
+	PrefillMs    float64               `json:"prefillMs,omitempty"`
+	DecodeMs     float64               `json:"decodeMs,omitempty"`
+	FirstTokenMs float64               `json:"firstTokenMs,omitempty"`
+	Truncated    bool                  `json:"truncated,omitempty"`
+	Cancelled    bool                  `json:"cancelled,omitempty"`
+	PeakRSS      int64                 `json:"peakRssBytes,omitempty"`
 }

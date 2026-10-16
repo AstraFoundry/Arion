@@ -13,7 +13,7 @@ Evaluation infrastructure is implemented; microphone, inference, IMK/TSF and rel
 3. Benchmark inference receives audio, context and approved memory only. Reference text, acceptable candidates, protected spans and timing annotations remain in the evaluator.
 4. Local model/runtime and audio files MUST match pinned SHA-256 digests. Record hardware, power mode, runtime version/build flags/timer, Git revision/dirty state, effective treatments and pipeline settings.
 5. Training, development and test audio/speakers/sessions MUST be separated. Test-derived memory is forbidden. Timestamp labels require independent review. Access/license evidence belongs to the corpus provenance.
-6. Runs retain failed status and completed observations; incomplete runs cannot produce a completed report. Existing output directories cannot be overwritten. Raw traces/transcripts remain in ignored private workspaces; CI uploads aggregate reports only.
+6. Runs retain failed status and completed observations; incomplete runs cannot produce a completed report. Existing output directories cannot be overwritten. Reusable research corpora, recorded fixtures, raw benchmark observations, warmups, failed/cancelled attempts and reproduction sources MUST be archived under `benchmarks/` with original bytes, explicit path mappings, provenance and SHA-256 identities. Personal recordings, weights, runtime environments and unfinished execution remain private in ignored workspaces. CI run uploads remain aggregate-only unless a separate fixture archive is explicitly selected.
 
 ## Experiments
 
@@ -38,6 +38,7 @@ Scenario-aware generative rewriting uses the separate [009 contract](009-context
 | EVAL-A05 | Stale response, changed treatment/pipeline, fabricated candidate IDs or invalid trace is rejected |
 | EVAL-A06 | Incomplete/duplicate/unpaired observations or changed result checksums cannot produce a completed report |
 | EVAL-A07 | Seeded plans/bootstrap reproduce; corpus rates are micro-averaged and silence has its own denominator |
+| EVAL-A08 | Archived fixture/result hashes and supported reports verify from a checkout without the original scratch workspace; failures/cancellations keep their status |
 | STR-A01 | Fixed model, realtime chunks and independent timestamp labels yield latency/error/stability tradeoffs |
 | STR-A02 | Internal thinking pause is not labeled a valid end merely because VAD detects silence |
 | STR-A03 | Engine and rendered-preview traces are distinct; absent first partials remain visible |

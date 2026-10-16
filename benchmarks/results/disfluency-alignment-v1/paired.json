@@ -1,0 +1,142 @@
+{
+  "method": "Matched case exact-constraint pass; improvement is baseline fail to candidate pass, regression the reverse",
+  "comparisons": [
+    {
+      "id": "dev",
+      "cases": 21,
+      "improved": 10,
+      "regressed": 0,
+      "byLanguage": {
+        "zh": {
+          "cases": 6,
+          "improved": 1,
+          "regressed": 0
+        },
+        "en": {
+          "cases": 6,
+          "improved": 3,
+          "regressed": 0
+        },
+        "es": {
+          "cases": 3,
+          "improved": 2,
+          "regressed": 0
+        },
+        "fr": {
+          "cases": 3,
+          "improved": 2,
+          "regressed": 0
+        },
+        "ja": {
+          "cases": 3,
+          "improved": 2,
+          "regressed": 0
+        }
+      }
+    },
+    {
+      "id": "alignment",
+      "cases": 16,
+      "improved": 4,
+      "regressed": 0,
+      "byLanguage": {
+        "zh": {
+          "cases": 13,
+          "improved": 3,
+          "regressed": 0
+        },
+        "en": {
+          "cases": 2,
+          "improved": 1,
+          "regressed": 0
+        },
+        "mixed": {
+          "cases": 1,
+          "improved": 0,
+          "regressed": 0
+        }
+      }
+    },
+    {
+      "id": "regression",
+      "cases": 30,
+      "improved": 0,
+      "regressed": 0,
+      "byLanguage": {
+        "zh": {
+          "cases": 16,
+          "improved": 0,
+          "regressed": 0
+        },
+        "en": {
+          "cases": 8,
+          "improved": 0,
+          "regressed": 0
+        },
+        "mixed": {
+          "cases": 6,
+          "improved": 0,
+          "regressed": 0
+        }
+      }
+    },
+    {
+      "id": "fresh",
+      "cases": 16,
+      "improved": 4,
+      "regressed": 0,
+      "byLanguage": {
+        "en": {
+          "cases": 10,
+          "improved": 3,
+          "regressed": 0
+        },
+        "zh": {
+          "cases": 6,
+          "improved": 1,
+          "regressed": 0
+        }
+      }
+    },
+    {
+      "id": "heldout",
+      "cases": 28,
+      "improved": 8,
+      "regressed": 0,
+      "byLanguage": {
+        "zh": {
+          "cases": 8,
+          "improved": 3,
+          "regressed": 0
+        },
+        "en": {
+          "cases": 8,
+          "improved": 0,
+          "regressed": 0
+        },
+        "es": {
+          "cases": 4,
+          "improved": 2,
+          "regressed": 0
+        },
+        "fr": {
+          "cases": 4,
+          "improved": 2,
+          "regressed": 0
+        },
+        "ja": {
+          "cases": 4,
+          "improved": 1,
+          "regressed": 0
+        }
+      }
+    },
+    {
+      "id": "audio",
+      "cases": 8,
+      "improved": 1,
+      "regressed": 1,
+      "rawSourceChanged": 0
+    }
+  ]
+}

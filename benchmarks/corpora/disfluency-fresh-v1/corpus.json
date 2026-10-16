@@ -1,0 +1,360 @@
+{
+  "version": 1,
+  "split": "test",
+  "annotation": "developer_authored_unreviewed",
+  "scope": "New post-review text fixtures, frozen before any model outputs on these cases",
+  "samples": [
+    {
+      "id": "en-fresh-first-person-1",
+      "language": "en",
+      "sourceText": "I I can send the invoice tonight.",
+      "references": [
+        "I can send the invoice tonight."
+      ],
+      "requiredStrings": [
+        "I can",
+        "invoice",
+        "tonight"
+      ],
+      "forbiddenStrings": [
+        "I I",
+        "II"
+      ],
+      "protected": [],
+      "scenario": "chat",
+      "mode": "clean",
+      "approvedMemory": [],
+      "tags": [
+        "first-person-1"
+      ]
+    },
+    {
+      "id": "en-fresh-first-person-2",
+      "language": "en",
+      "sourceText": "I I I will not overwrite the archive.",
+      "references": [
+        "I will not overwrite the archive."
+      ],
+      "requiredStrings": [
+        "I will not",
+        "archive"
+      ],
+      "forbiddenStrings": [
+        "I I",
+        "II"
+      ],
+      "protected": [],
+      "scenario": "chat",
+      "mode": "clean",
+      "approvedMemory": [],
+      "tags": [
+        "first-person-2"
+      ]
+    },
+    {
+      "id": "en-fresh-quoted-pronoun",
+      "language": "en",
+      "sourceText": "Leave \"I I\" in the transcript, do not normalize it.",
+      "references": [
+        "Leave \"I I\" in the transcript, do not normalize it."
+      ],
+      "requiredStrings": [
+        "\"I I\"",
+        "not normalize"
+      ],
+      "forbiddenStrings": [
+        "\"II\""
+      ],
+      "protected": [],
+      "scenario": "chat",
+      "mode": "clean",
+      "approvedMemory": [],
+      "tags": [
+        "quoted-pronoun"
+      ]
+    },
+    {
+      "id": "en-fresh-acronyms",
+      "language": "en",
+      "sourceText": "Use P R for code review and A P I for the endpoint.",
+      "references": [
+        "Use PR for code review and API for the endpoint."
+      ],
+      "requiredStrings": [
+        "PR",
+        "API",
+        "endpoint"
+      ],
+      "forbiddenStrings": [],
+      "protected": [],
+      "scenario": "chat",
+      "mode": "clean",
+      "approvedMemory": [],
+      "tags": [
+        "acronyms"
+      ]
+    },
+    {
+      "id": "en-fresh-numeral",
+      "language": "en",
+      "sourceText": "Section II must stay Section II.",
+      "references": [
+        "Section II must stay Section II."
+      ],
+      "requiredStrings": [
+        "Section II"
+      ],
+      "forbiddenStrings": [],
+      "protected": [],
+      "scenario": "chat",
+      "mode": "clean",
+      "approvedMemory": [],
+      "tags": [
+        "numeral"
+      ]
+    },
+    {
+      "id": "en-fresh-tense",
+      "language": "en",
+      "sourceText": "I had had enough, but I might return.",
+      "references": [
+        "I had had enough, but I might return."
+      ],
+      "requiredStrings": [
+        "had had",
+        "might"
+      ],
+      "forbiddenStrings": [],
+      "protected": [],
+      "scenario": "chat",
+      "mode": "clean",
+      "approvedMemory": [],
+      "tags": [
+        "tense"
+      ]
+    },
+    {
+      "id": "zh-fresh-repair",
+      "language": "zh",
+      "sourceText": "周一下午见面，啊不对，周三下午见面。",
+      "references": [
+        "周三下午见面。"
+      ],
+      "requiredStrings": [
+        "周三",
+        "下午",
+        "见面"
+      ],
+      "forbiddenStrings": [
+        "周一",
+        "不对"
+      ],
+      "protected": [],
+      "scenario": "chat",
+      "mode": "clean",
+      "approvedMemory": [],
+      "tags": [
+        "repair"
+      ]
+    },
+    {
+      "id": "zh-fresh-quoted-repeat",
+      "language": "zh",
+      "sourceText": "保留“我我”和“那个”，不要合并。",
+      "references": [
+        "保留“我我”和“那个”，不要合并。"
+      ],
+      "requiredStrings": [
+        "“我我”",
+        "“那个”",
+        "不要"
+      ],
+      "forbiddenStrings": [],
+      "protected": [],
+      "scenario": "chat",
+      "mode": "clean",
+      "approvedMemory": [],
+      "tags": [
+        "quoted-repeat"
+      ]
+    },
+    {
+      "id": "zh-fresh-reference",
+      "language": "zh",
+      "sourceText": "用那个，不是这个，别替我做决定。",
+      "references": [
+        "用那个，不是这个，别替我做决定。"
+      ],
+      "requiredStrings": [
+        "那个",
+        "这个",
+        "别"
+      ],
+      "forbiddenStrings": [],
+      "protected": [],
+      "scenario": "chat",
+      "mode": "clean",
+      "approvedMemory": [],
+      "tags": [
+        "reference"
+      ]
+    },
+    {
+      "id": "zh-fresh-hedge",
+      "language": "zh",
+      "sourceText": "这个结论可能不成立，先别删除证据。",
+      "references": [
+        "这个结论可能不成立，先别删除证据。"
+      ],
+      "requiredStrings": [
+        "可能",
+        "别",
+        "证据"
+      ],
+      "forbiddenStrings": [],
+      "protected": [],
+      "scenario": "chat",
+      "mode": "clean",
+      "approvedMemory": [],
+      "tags": [
+        "hedge"
+      ]
+    },
+    {
+      "id": "zh-fresh-question",
+      "language": "zh",
+      "sourceText": "呃，那个，我想了解一下，升级何时完成？",
+      "references": [
+        "我想了解一下，升级何时完成？"
+      ],
+      "requiredStrings": [
+        "升级",
+        "何时",
+        "完成",
+        "？"
+      ],
+      "forbiddenStrings": [
+        "呃",
+        "那个"
+      ],
+      "protected": [],
+      "scenario": "chat",
+      "mode": "clean",
+      "approvedMemory": [],
+      "tags": [
+        "question"
+      ]
+    },
+    {
+      "id": "zh-fresh-value",
+      "language": "zh",
+      "sourceText": "启动时间是九点，不对，十一点，别设闹钟。",
+      "references": [
+        "启动时间是十一点，别设闹钟。"
+      ],
+      "requiredStrings": [
+        "十一点",
+        "别设闹钟"
+      ],
+      "forbiddenStrings": [
+        "九点",
+        "不对"
+      ],
+      "protected": [],
+      "scenario": "chat",
+      "mode": "clean",
+      "approvedMemory": [],
+      "tags": [
+        "value"
+      ]
+    },
+    {
+      "id": "en-fresh-repair",
+      "language": "en",
+      "sourceText": "Keep the orange label, I mean the silver label.",
+      "references": [
+        "Keep the silver label."
+      ],
+      "requiredStrings": [
+        "silver label"
+      ],
+      "forbiddenStrings": [
+        "orange",
+        "I mean"
+      ],
+      "protected": [],
+      "scenario": "chat",
+      "mode": "clean",
+      "approvedMemory": [],
+      "tags": [
+        "repair"
+      ]
+    },
+    {
+      "id": "en-fresh-parenthetical",
+      "language": "en",
+      "sourceText": "I, like, need the export by Sunday.",
+      "references": [
+        "I need the export by Sunday."
+      ],
+      "requiredStrings": [
+        "export",
+        "by Sunday"
+      ],
+      "forbiddenStrings": [
+        "like"
+      ],
+      "protected": [],
+      "scenario": "chat",
+      "mode": "clean",
+      "approvedMemory": [],
+      "tags": [
+        "parenthetical"
+      ]
+    },
+    {
+      "id": "en-fresh-code",
+      "language": "en",
+      "sourceText": "Keep `I I` and `P R` as literal code.",
+      "references": [
+        "Keep `I I` and `P R` as literal code."
+      ],
+      "requiredStrings": [
+        "`I I`",
+        "`P R`"
+      ],
+      "forbiddenStrings": [
+        "`II`",
+        "`PR`"
+      ],
+      "protected": [],
+      "scenario": "chat",
+      "mode": "clean",
+      "approvedMemory": [],
+      "tags": [
+        "code"
+      ]
+    },
+    {
+      "id": "en-fresh-comparison",
+      "language": "en",
+      "sourceText": "That one is like the original, so keep it.",
+      "references": [
+        "That one is like the original, so keep it."
+      ],
+      "requiredStrings": [
+        "That one",
+        "like",
+        "original"
+      ],
+      "forbiddenStrings": [],
+      "protected": [],
+      "scenario": "chat",
+      "mode": "clean",
+      "approvedMemory": [],
+      "tags": [
+        "comparison"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+loaded lrw-heldout prompt=live-v2 prefix=822 in 9361 ms
+h-zh-time          chat    accepted                296 ms reuse=15/28
+h-zh-place         chat    accepted                369 ms reuse=15/29
+h-zh-count         chat    accepted                401 ms reuse=17/30
+h-zh-filler        chat    accepted                886 ms reuse=17/31
+h-zh-negation      chat    accepted                407 ms reuse=11/24
+h-zh-hedge         chat    accepted                606 ms reuse=16/30
+h-zh-plain         chat    accepted                474 ms reuse=0/24
+h-zh-money         chat    accepted                389 ms reuse=14/29
+h-zh-email         email   accepted                918 ms reuse=24/35
+h-zh-list          list    accepted               1025 ms reuse=19/31
+h-zh-memory        chat    accepted                558 ms reuse=0/36
+h-zh-inject        chat    length                  549 ms reuse=13/26
+h-zh-question      chat    accepted                371 ms reuse=0/21
+h-en-time          chat    accepted                489 ms reuse=17/30
+h-en-person        chat    accepted                324 ms reuse=15/29
+h-en-filler        chat    accepted                631 ms reuse=17/30
+h-en-negation      chat    accepted                686 ms reuse=14/29
+h-en-plain         chat    accepted                449 ms reuse=0/23
+h-en-email         email   accepted                713 ms reuse=21/33
+h-en-list          list    accepted                985 ms reuse=20/33
+h-en-inject        chat    length                 3074 ms reuse=0/24
+h-mixed-tool       chat    accepted                563 ms reuse=17/34
+h-mixed-plain      chat    accepted                588 ms reuse=15/28
+h-mixed-filler     chat    accepted                361 ms reuse=13/25
+h-mixed-code       chat    accepted                553 ms reuse=13/28
+h-mixed-url        chat    accepted                775 ms reuse=16/34
+h-mixed-repeat     chat    accepted                530 ms reuse=0/25
+h-zh-long          chat    accepted               1379 ms reuse=30/49
+h-zh-cross         chat    accepted                502 ms reuse=20/33
+.workspace/benchmarks/context/lrw-heldout.jsonl {"cases":30,"sourcePass":12,"proposalPass":25,"deliveredPass":27,"accepted":27,"rejected":{"length":2},"acceptedFailing":3,"rejectedPassing":0,"worsened":0,"referenceEditRatioMean":0.043584529505582136,"sourceEditRatioMean":0.3079450617608513,"finalMs":{"count":29,"p50":552.546,"p95":1237.1665999999993,"p99":2599.1912399999983},"liveEdits":45,"liveAccepted":43,"liveMs":{"count":45,"p50":463.453,"p95":934.7161999999997,"p99":1519.009000000002},"sceneAgreement":30,"byScene":{"chat":{"cases":26,"sourcePass":12,"deliveredPass":23,"worsened":0,"sceneAgreement":26},"email":{"cases":2,"sourcePass":0,"deliveredPass":2,"worsened":0,"sceneAgreement":2},"list":{"cases":2,"sourcePass":0,"deliveredPass":2,"worsened":0,"sceneAgreement":2}},"byKind":{"code":{"cases":1,"sourcePass":1,"deliveredPass":1,"worsened":0},"copy-control":{"cases":2,"sourcePass":2,"deliveredPass":2,"worsened":0},"filler":{"cases":4,"sourcePass":0,"deliveredPass":2,"worsened":0},"format":{"cases":4,"sourcePass":0,"deliveredPass":4,"worsened":0},"injection":{"cases":2,"sourcePass":2,"deliveredPass":2,"worsened":0},"memory":{"cases":1,"sourcePass":0,"deliveredPass":1,"worsened":0},"negation":{"cases":3,"sourcePass":3,"deliveredPass":3,"worsened":0},"question":{"cases":1,"sourcePass":1,"deliveredPass":1,"worsened":0},"repetition":{"cases":1,"sourcePass":0,"deliveredPass":0,"worsened":0},"self-correction":{"cases":8,"sourcePass":0,"deliveredPass":8,"worsened":0},"uncertainty":{"cases":1,"sourcePass":1,"deliveredPass":1,"worsened":0},"url":{"cases":1,"sourcePass":1,"deliveredPass":1,"worsened":0},"verbatim":{"cases":1,"sourcePass":1,"deliveredPass":1,"worsened":0}}}

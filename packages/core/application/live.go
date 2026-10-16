@@ -86,9 +86,6 @@ type liveState struct {
 
 func (c *Coordinator) newLive(r *run) *liveState {
 	policy := c.opts.Rewrite()
-	if policy.Enabled && c.deps.Rewriter == nil {
-		policy.Enabled = false
-	}
 	if !policy.Enabled && !c.opts.SegmentFinalize {
 		return nil
 	}
@@ -247,7 +244,7 @@ func (c *Coordinator) correct(raw string) string {
 // session, because the final rewrite decides what is inserted.
 func (c *Coordinator) preview(r *run, stable string) {
 	l := r.live
-	if stable == "" {
+	if stable == "" || c.deps.Rewriter == nil {
 		return
 	}
 	ctx, cancel := context.WithCancel(l.rewriteCtx)
@@ -335,10 +332,15 @@ func (c *Coordinator) finalizeLive(r *run) {
 
 // rewriteFinal runs the final rewrite of the corrected source and returns
 // the text to review and its outcome. ok is false when the session ended
-// meanwhile. Any non-accepted outcome keeps the source, visibly labeled.
+// meanwhile. Organization failures retain completed local cleanup and
+// their explicit failure outcome; the recognized source stays separate.
 func (c *Coordinator) rewriteFinal(r *run, source string, policy RewritePolicy) (text, outcome string, ok bool) {
 	if !policy.Enabled {
 		return source, "", true
+	}
+	cleaned := domain.CleanSpeech(source).Text
+	if c.deps.Rewriter == nil {
+		return cleaned, RewriteUnavailable, true
 	}
 	ctx, cancel := context.WithTimeout(r.ctx, policy.Timeout)
 	defer cancel()
@@ -351,13 +353,13 @@ func (c *Coordinator) rewriteFinal(r *run, source string, policy RewritePolicy) 
 	case r.ctx.Err() != nil:
 		return "", "", false
 	case err != nil && errors.Is(ctx.Err(), context.DeadlineExceeded):
-		return source, RewriteTimeout, true
+		return cleaned, RewriteTimeout, true
 	case err != nil:
-		return source, RewriteUnavailable, true
+		return cleaned, RewriteUnavailable, true
 	}
 	verdict := domain.ValidateRewrite(domain.RewriteCheck{Source: source, Candidate: result.Text, Truncated: result.Truncated, Terms: policy.terms(source), Context: rc})
 	if verdict != domain.RewriteAccepted {
-		return source, string(verdict), true
+		return cleaned, string(verdict), true
 	}
 	return result.Text, string(verdict), true
 }

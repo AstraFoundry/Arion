@@ -1,0 +1,78 @@
+
+> arion-monorepo@0.0.0 desktop:check /Users/steven/code/Arion
+> node scripts/check-go.mjs desktop
+
+?   	arion.local/desktop	[no test files]
+# arion.local/desktop/bootstrap.test
+ld: warning: ignoring duplicate libraries: '-lobjc'
+ok  	arion.local/desktop/bootstrap	1.952s
+?   	arion.local/desktop/cmd/arion-e2e-driver	[no test files]
+?   	arion.local/desktop/cmd/arion-eval-driver	[no test files]
+?   	arion.local/desktop/cmd/arion-icon	[no test files]
+?   	arion.local/desktop/cmd/arion-live-bench	[no test files]
+ok  	arion.local/desktop/cmd/arion-llm	2.280s
+?   	arion.local/desktop/cmd/arion-memory-bench	[no test files]
+?   	arion.local/desktop/cmd/arion-models	[no test files]
+?   	arion.local/desktop/cmd/arion-ocr	[no test files]
+?   	arion.local/desktop/cmd/arion-rewrite-bench	[no test files]
+?   	arion.local/desktop/cmd/arion-scene-bench	[no test files]
+?   	arion.local/desktop/infrastructure/asr	[no test files]
+ok  	arion.local/desktop/infrastructure/audio	1.135s
+ok  	arion.local/desktop/infrastructure/browser	(cached)
+ok  	arion.local/desktop/infrastructure/diagnostics	4.015s
+ok  	arion.local/desktop/infrastructure/holdkey	0.394s
+ok  	arion.local/desktop/infrastructure/keystore	(cached)
+ok  	arion.local/desktop/infrastructure/llm/client	4.097s
+ok  	arion.local/desktop/infrastructure/llm/engine	1.779s
+?   	arion.local/desktop/infrastructure/llm/genai	[no test files]
+ok  	arion.local/desktop/infrastructure/llm/prompt	2.892s
+?   	arion.local/desktop/infrastructure/llm/protocol	[no test files]
+?   	arion.local/desktop/infrastructure/macos	[no test files]
+ok  	arion.local/desktop/infrastructure/modelruntime	4.440s
+ok  	arion.local/desktop/infrastructure/netproxy	(cached)
+ok  	arion.local/desktop/infrastructure/provision	4.930s
+?   	arion.local/desktop/infrastructure/rewriting	[no test files]
+?   	arion.local/desktop/infrastructure/secrets	[no test files]
+ok  	arion.local/desktop/infrastructure/settings	4.847s
+ok  	arion.local/desktop/infrastructure/usage	4.488s
+ok  	arion.local/desktop/infrastructure/vocabulary	4.497s
+ok  	arion.local/desktop/internal/account	(cached)
+ok  	arion.local/desktop/ui/app	93.796s
+ok  	arion.local/desktop/ui/entities/account	4.499s
+?   	arion.local/desktop/ui/entities/dictation	[no test files]
+?   	arion.local/desktop/ui/entities/model	[no test files]
+?   	arion.local/desktop/ui/entities/onboarding	[no test files]
+?   	arion.local/desktop/ui/features/diagnostics	[no test files]
+?   	arion.local/desktop/ui/features/dictate	[no test files]
+?   	arion.local/desktop/ui/features/holdkey	[no test files]
+?   	arion.local/desktop/ui/features/inputmode	[no test files]
+?   	arion.local/desktop/ui/features/microphone	[no test files]
+?   	arion.local/desktop/ui/features/modelchoice	[no test files]
+?   	arion.local/desktop/ui/features/permissions	[no test files]
+?   	arion.local/desktop/ui/features/polish	[no test files]
+?   	arion.local/desktop/ui/features/provision	[no test files]
+?   	arion.local/desktop/ui/features/scene	[no test files]
+?   	arion.local/desktop/ui/features/shortcut	[no test files]
+?   	arion.local/desktop/ui/features/signin	[no test files]
+?   	arion.local/desktop/ui/features/transcript	[no test files]
+?   	arion.local/desktop/ui/features/uilanguage	[no test files]
+?   	arion.local/desktop/ui/features/update	[no test files]
+?   	arion.local/desktop/ui/features/vocabulary	[no test files]
+?   	arion.local/desktop/ui/pages/guide	[no test files]
+?   	arion.local/desktop/ui/pages/menubar	[no test files]
+?   	arion.local/desktop/ui/pages/onboarding	[no test files]
+?   	arion.local/desktop/ui/pages/overlay	[no test files]
+?   	arion.local/desktop/ui/pages/settings	[no test files]
+?   	arion.local/desktop/ui/shared/assets	[no test files]
+?   	arion.local/desktop/ui/shared/config	[no test files]
+ok  	arion.local/desktop/ui/shared/copy	(cached)
+?   	arion.local/desktop/ui/shared/icons	[no test files]
+ok  	arion.local/desktop/ui/shared/kit	(cached)
+ok  	arion.local/desktop/ui/shared/runtime	4.560s
+?   	arion.local/desktop/ui/shared/theme	[no test files]
+?   	arion.local/desktop/ui/widgets/capsule	[no test files]
+?   	arion.local/desktop/ui/widgets/modelcard	[no test files]
+?   	arion.local/desktop/ui/widgets/showcase	[no test files]
+?   	arion.local/desktop/ui/widgets/statusheader	[no test files]
+?   	arion.local/desktop/ui/widgets/stepper	[no test files]
+ok  	arion.local/desktop/ui/widgets/usage	3.811s

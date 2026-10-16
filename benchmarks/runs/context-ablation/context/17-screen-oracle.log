@@ -1,0 +1,32 @@
+loaded 17-screen-oracle prompt=live-v2 prefix=822 in 8618 ms
+x-s-zh-name        work    accepted                747 ms reuse=59/79
+x-s-zh-place       chat    accepted                814 ms reuse=61/74
+x-s-en-name        email   accepted                968 ms reuse=81/100
+x-s-mx-tool        prompt  accepted               1238 ms reuse=79/105
+x-s-zh-product     chat    accepted               1050 ms reuse=0/77
+x-s-en-term        prompt  accepted               1065 ms reuse=0/61
+x-s-zh-db          work    accepted                831 ms reuse=75/88
+x-s-en-person      work    accepted                818 ms reuse=48/65
+x-c-zh-term        email   accepted                654 ms reuse=58/76
+x-c-en-name        chat    accepted               1062 ms reuse=0/61
+x-c-zh-after       chat    accepted               1604 ms reuse=0/58
+x-c-mx-code        prompt  accepted               1081 ms reuse=0/55
+x-c-zh-continue    work    accepted                819 ms reuse=0/54
+x-c-en-continue    email   accepted                600 ms reuse=49/64
+x-h-zh-term        work    accepted                766 ms reuse=46/59
+x-h-en-name        chat    accepted               1087 ms reuse=0/48
+x-h-zh-name        chat    accepted               1236 ms reuse=0/44
+x-h-mx-api         prompt  accepted               1056 ms reuse=0/48
+x-h-en-product     email   accepted                961 ms reuse=0/54
+x-h-zh-place       chat    accepted                826 ms reuse=38/51
+x-n-zh-distract    chat    accepted               1116 ms reuse=0/68
+x-n-en-distract    chat    accepted               1119 ms reuse=0/68
+x-n-zh-inject      chat    content_dropped        1417 ms reuse=44/58
+x-n-en-inject      chat    accepted               3727 ms reuse=0/57
+x-n-zh-similar     chat    accepted                859 ms reuse=45/57
+x-n-en-history     chat    accepted               1225 ms reuse=0/43
+x-n-zh-code        prompt  accepted                739 ms reuse=44/57
+x-m-zh-both        work    accepted               2382 ms reuse=61/78
+x-m-en-both        email   accepted               1735 ms reuse=64/82
+x-m-zh-number      work    accepted               2610 ms reuse=0/83
+.workspace/benchmarks/context/17-screen-oracle.jsonl {"cases":30,"sourcePass":8,"proposalPass":8,"deliveredPass":9,"accepted":29,"rejected":{"content_dropped":1},"acceptedFailing":21,"rejectedPassing":0,"worsened":0,"referenceEditRatioMean":0.1648955673955674,"sourceEditRatioMean":0.1659708362127717,"finalMs":{"count":30,"p50":1058.9585,"p95":2507.4751999999994,"p99":3403.009170000001},"liveEdits":16,"liveAccepted":15,"liveMs":{"count":16,"p50":923.2445,"p95":4027.6652500000005,"p99":8739.672249999998},"sceneAgreement":30,"byScene":{"chat":{"cases":13,"sourcePass":7,"deliveredPass":7,"worsened":0,"sceneAgreement":13},"email":{"cases":5,"sourcePass":0,"deliveredPass":0,"worsened":0,"sceneAgreement":5},"prompt":{"cases":5,"sourcePass":1,"deliveredPass":1,"worsened":0,"sceneAgreement":5},"work":{"cases":7,"sourcePass":0,"deliveredPass":1,"worsened":0,"sceneAgreement":7}},"byKind":{"cursor":{"cases":6,"sourcePass":0,"deliveredPass":0,"worsened":0},"history":{"cases":6,"sourcePass":1,"deliveredPass":1,"worsened":0},"negative":{"cases":7,"sourcePass":7,"deliveredPass":7,"worsened":0},"screen":{"cases":11,"sourcePass":0,"deliveredPass":1,"worsened":0}}}

@@ -1,0 +1,26 @@
+{
+  "kind": "arion-corpus-archive-provenance",
+  "preservation": "Original source bytes; no annotation, licence or split rewritten",
+  "sources": [
+    {
+      "originalPath": ".workspace/scene/scene-dev-corpus.json",
+      "archivedPath": "benchmarks/corpora/scene-v1/scene-dev-corpus.json",
+      "sha256": "ce28db718d4edc68c1e6c0455be26629f7a4d93420ec834b9421ace52082dd4b",
+      "samples": 33,
+      "declaredLicense": "developer-authored synthetic",
+      "declaredAnnotation": "single developer; exact-string layout proxies; written before live-v3 demonstrations",
+      "declaredSplit": "test"
+    },
+    {
+      "originalPath": ".workspace/scene/scene-heldout-b-corpus.json",
+      "archivedPath": "benchmarks/corpora/scene-v1/scene-heldout-b-corpus.json",
+      "sha256": "6e181e2efd7348dc092abaadf38c5283bc378c913d481bc521dc6307bd8fbcc3",
+      "samples": 30,
+      "declaredLicense": "developer-authored synthetic",
+      "declaredAnnotation": "single developer; exact-string layout proxies; written after scene-heldout-corpus.json was used for diagnosis and before the revised pipeline ran",
+      "declaredSplit": "test"
+    }
+  ],
+  "attribution": "Source licence and annotation values are copied from original metadata; null means unspecified, not a new permission assertion. See benchmarks/datasets.json for upstream dataset identities.",
+  "studyUse": "Historical disclosed benchmark corpus. Preserve its original split field; future reuse is regression/exploratory evidence."
+}

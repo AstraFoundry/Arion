@@ -1,0 +1,846 @@
+{
+  "resultsHash": "abe01e934e3eea7294410a2b169d4e05e01c6d87edb5d61cd699aac6fdd99d5d",
+  "corpusHash": "719b9dd5cfcd31a309aab9b0a2b4c4c3292e1a56ae785910a57ed0f4f1dda1d7",
+  "mapping": [
+    {
+      "id": "R-0001",
+      "caseId": "xasr-160-xasr-final__en-repeat",
+      "variantId": "qwen4b-two-pass"
+    },
+    {
+      "id": "R-0002",
+      "caseId": "qwen3-asr-06__en-email",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0003",
+      "caseId": "xasr-160-rules__en-day",
+      "variantId": "qwen4b-intent"
+    },
+    {
+      "id": "R-0004",
+      "caseId": "xasr-160__en-repeat",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0005",
+      "caseId": "xasr-160-rules__zh-repeat",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0006",
+      "caseId": "qwen3-asr-06__en-repeat",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0007",
+      "caseId": "xasr-160__en-email",
+      "variantId": "qwen4b-two-pass"
+    },
+    {
+      "id": "R-0008",
+      "caseId": "xasr-160-rules__zh-day",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0009",
+      "caseId": "xasr-160-rules__mixed-repair",
+      "variantId": "qwen4b-intent"
+    },
+    {
+      "id": "R-0010",
+      "caseId": "xasr-160__zh-day",
+      "variantId": "qwen4b-intent"
+    },
+    {
+      "id": "R-0011",
+      "caseId": "xasr-160__zh-person",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0012",
+      "caseId": "xasr-160-xasr-final__zh-repeat",
+      "variantId": "qwen4b-two-pass"
+    },
+    {
+      "id": "R-0013",
+      "caseId": "xasr-160__zh-uncertain",
+      "variantId": "qwen4b-two-pass"
+    },
+    {
+      "id": "R-0014",
+      "caseId": "xasr-160-xasr-final__zh-memory",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0015",
+      "caseId": "qwen3-asr-06__mixed-repair",
+      "variantId": "qwen4b-two-pass"
+    },
+    {
+      "id": "R-0016",
+      "caseId": "qwen3-asr-06__zh-uncertain",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0017",
+      "caseId": "qwen3-asr-06__zh-number",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0018",
+      "caseId": "xasr-160-rules__en-money",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0019",
+      "caseId": "xasr-160-rules__zh-day",
+      "variantId": "qwen4b-two-pass"
+    },
+    {
+      "id": "R-0020",
+      "caseId": "xasr-160-xasr-final__en-money",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0021",
+      "caseId": "xasr-160-xasr-final__zh-number",
+      "variantId": "qwen4b-intent"
+    },
+    {
+      "id": "R-0022",
+      "caseId": "xasr-160__mixed-repair",
+      "variantId": "qwen4b-two-pass"
+    },
+    {
+      "id": "R-0023",
+      "caseId": "qwen3-asr-06__zh-repeat",
+      "variantId": "qwen4b-intent"
+    },
+    {
+      "id": "R-0024",
+      "caseId": "xasr-160__mixed-code",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0025",
+      "caseId": "xasr-160-rules__mixed-repair",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0026",
+      "caseId": "qwen3-asr-06__en-repeat",
+      "variantId": "qwen4b-intent"
+    },
+    {
+      "id": "R-0027",
+      "caseId": "qwen3-asr-06__en-money",
+      "variantId": "qwen4b-intent"
+    },
+    {
+      "id": "R-0028",
+      "caseId": "xasr-160__en-email",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0029",
+      "caseId": "xasr-160-xasr-final__zh-list",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0030",
+      "caseId": "xasr-160-rules__zh-number",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0031",
+      "caseId": "qwen3-asr-06__zh-number",
+      "variantId": "qwen4b-two-pass"
+    },
+    {
+      "id": "R-0032",
+      "caseId": "xasr-160-xasr-final__en-email",
+      "variantId": "qwen4b-intent"
+    },
+    {
+      "id": "R-0033",
+      "caseId": "xasr-160__zh-day",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0034",
+      "caseId": "xasr-160-xasr-final__zh-uncertain",
+      "variantId": "qwen4b-two-pass"
+    },
+    {
+      "id": "R-0035",
+      "caseId": "xasr-160__en-day",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0036",
+      "caseId": "xasr-160-xasr-final__zh-email",
+      "variantId": "qwen4b-two-pass"
+    },
+    {
+      "id": "R-0037",
+      "caseId": "xasr-160-rules__mixed-code",
+      "variantId": "qwen4b-two-pass"
+    },
+    {
+      "id": "R-0038",
+      "caseId": "xasr-160__zh-number",
+      "variantId": "qwen4b-intent"
+    },
+    {
+      "id": "R-0039",
+      "caseId": "xasr-160-rules__en-email",
+      "variantId": "qwen4b-two-pass"
+    },
+    {
+      "id": "R-0040",
+      "caseId": "xasr-160-xasr-final__zh-number",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0041",
+      "caseId": "xasr-160-rules__zh-memory",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0042",
+      "caseId": "xasr-160-rules__zh-day",
+      "variantId": "qwen4b-intent"
+    },
+    {
+      "id": "R-0043",
+      "caseId": "qwen3-asr-06__zh-person",
+      "variantId": "qwen4b-two-pass"
+    },
+    {
+      "id": "R-0044",
+      "caseId": "xasr-160-rules__zh-email",
+      "variantId": "qwen4b-intent"
+    },
+    {
+      "id": "R-0045",
+      "caseId": "qwen3-asr-06__zh-memory",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0046",
+      "caseId": "xasr-160-xasr-final__mixed-repair",
+      "variantId": "qwen4b-intent"
+    },
+    {
+      "id": "R-0047",
+      "caseId": "xasr-160__en-day",
+      "variantId": "qwen4b-intent"
+    },
+    {
+      "id": "R-0048",
+      "caseId": "xasr-160__en-money",
+      "variantId": "qwen4b-intent"
+    },
+    {
+      "id": "R-0049",
+      "caseId": "xasr-160-xasr-final__zh-uncertain",
+      "variantId": "qwen4b-intent"
+    },
+    {
+      "id": "R-0050",
+      "caseId": "xasr-160-rules__zh-repeat",
+      "variantId": "qwen4b-two-pass"
+    },
+    {
+      "id": "R-0051",
+      "caseId": "xasr-160-xasr-final__zh-email",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0052",
+      "caseId": "qwen3-asr-06__mixed-code",
+      "variantId": "qwen4b-two-pass"
+    },
+    {
+      "id": "R-0053",
+      "caseId": "qwen3-asr-06__zh-repeat",
+      "variantId": "qwen4b-two-pass"
+    },
+    {
+      "id": "R-0054",
+      "caseId": "xasr-160-xasr-final__zh-day",
+      "variantId": "qwen4b-two-pass"
+    },
+    {
+      "id": "R-0055",
+      "caseId": "xasr-160__zh-repeat",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0056",
+      "caseId": "xasr-160__zh-list",
+      "variantId": "qwen4b-two-pass"
+    },
+    {
+      "id": "R-0057",
+      "caseId": "xasr-160-rules__en-email",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0058",
+      "caseId": "xasr-160__zh-repeat",
+      "variantId": "qwen4b-two-pass"
+    },
+    {
+      "id": "R-0059",
+      "caseId": "xasr-160-xasr-final__zh-number",
+      "variantId": "qwen4b-two-pass"
+    },
+    {
+      "id": "R-0060",
+      "caseId": "xasr-160__zh-uncertain",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0061",
+      "caseId": "qwen3-asr-06__zh-list",
+      "variantId": "qwen4b-two-pass"
+    },
+    {
+      "id": "R-0062",
+      "caseId": "xasr-160-xasr-final__zh-list",
+      "variantId": "qwen4b-intent"
+    },
+    {
+      "id": "R-0063",
+      "caseId": "xasr-160-rules__zh-list",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0064",
+      "caseId": "xasr-160-rules__mixed-code",
+      "variantId": "qwen4b-intent"
+    },
+    {
+      "id": "R-0065",
+      "caseId": "xasr-160__zh-email",
+      "variantId": "qwen4b-two-pass"
+    },
+    {
+      "id": "R-0066",
+      "caseId": "xasr-160-rules__zh-uncertain",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0067",
+      "caseId": "qwen3-asr-06__mixed-code",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0068",
+      "caseId": "qwen3-asr-06__en-money",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0069",
+      "caseId": "xasr-160-rules__en-money",
+      "variantId": "qwen4b-intent"
+    },
+    {
+      "id": "R-0070",
+      "caseId": "qwen3-asr-06__en-repeat",
+      "variantId": "qwen4b-two-pass"
+    },
+    {
+      "id": "R-0071",
+      "caseId": "xasr-160-rules__en-email",
+      "variantId": "qwen4b-intent"
+    },
+    {
+      "id": "R-0072",
+      "caseId": "qwen3-asr-06__en-day",
+      "variantId": "qwen4b-intent"
+    },
+    {
+      "id": "R-0073",
+      "caseId": "qwen3-asr-06__zh-day",
+      "variantId": "qwen4b-intent"
+    },
+    {
+      "id": "R-0074",
+      "caseId": "xasr-160__zh-person",
+      "variantId": "qwen4b-two-pass"
+    },
+    {
+      "id": "R-0075",
+      "caseId": "xasr-160-rules__mixed-code",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0076",
+      "caseId": "qwen3-asr-06__en-money",
+      "variantId": "qwen4b-two-pass"
+    },
+    {
+      "id": "R-0077",
+      "caseId": "xasr-160__zh-email",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0078",
+      "caseId": "xasr-160-xasr-final__zh-person",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0079",
+      "caseId": "xasr-160-rules__en-day",
+      "variantId": "qwen4b-two-pass"
+    },
+    {
+      "id": "R-0080",
+      "caseId": "qwen3-asr-06__zh-email",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0081",
+      "caseId": "xasr-160__en-email",
+      "variantId": "qwen4b-intent"
+    },
+    {
+      "id": "R-0082",
+      "caseId": "xasr-160-rules__zh-uncertain",
+      "variantId": "qwen4b-two-pass"
+    },
+    {
+      "id": "R-0083",
+      "caseId": "xasr-160__mixed-repair",
+      "variantId": "qwen4b-intent"
+    },
+    {
+      "id": "R-0084",
+      "caseId": "xasr-160__en-repeat",
+      "variantId": "qwen4b-two-pass"
+    },
+    {
+      "id": "R-0085",
+      "caseId": "xasr-160__zh-uncertain",
+      "variantId": "qwen4b-intent"
+    },
+    {
+      "id": "R-0086",
+      "caseId": "qwen3-asr-06__zh-person",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0087",
+      "caseId": "xasr-160__zh-number",
+      "variantId": "qwen4b-two-pass"
+    },
+    {
+      "id": "R-0088",
+      "caseId": "qwen3-asr-06__zh-memory",
+      "variantId": "qwen4b-intent"
+    },
+    {
+      "id": "R-0089",
+      "caseId": "xasr-160-xasr-final__zh-day",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0090",
+      "caseId": "qwen3-asr-06__zh-number",
+      "variantId": "qwen4b-intent"
+    },
+    {
+      "id": "R-0091",
+      "caseId": "xasr-160-xasr-final__en-day",
+      "variantId": "qwen4b-two-pass"
+    },
+    {
+      "id": "R-0092",
+      "caseId": "xasr-160-rules__en-repeat",
+      "variantId": "qwen4b-two-pass"
+    },
+    {
+      "id": "R-0093",
+      "caseId": "xasr-160-xasr-final__mixed-repair",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0094",
+      "caseId": "xasr-160-xasr-final__en-money",
+      "variantId": "qwen4b-two-pass"
+    },
+    {
+      "id": "R-0095",
+      "caseId": "xasr-160__en-repeat",
+      "variantId": "qwen4b-intent"
+    },
+    {
+      "id": "R-0096",
+      "caseId": "xasr-160-rules__en-money",
+      "variantId": "qwen4b-two-pass"
+    },
+    {
+      "id": "R-0097",
+      "caseId": "xasr-160__zh-memory",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0098",
+      "caseId": "qwen3-asr-06__zh-uncertain",
+      "variantId": "qwen4b-two-pass"
+    },
+    {
+      "id": "R-0099",
+      "caseId": "qwen3-asr-06__en-email",
+      "variantId": "qwen4b-intent"
+    },
+    {
+      "id": "R-0100",
+      "caseId": "qwen3-asr-06__mixed-repair",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0101",
+      "caseId": "xasr-160-xasr-final__en-email",
+      "variantId": "qwen4b-two-pass"
+    },
+    {
+      "id": "R-0102",
+      "caseId": "xasr-160-xasr-final__zh-uncertain",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0103",
+      "caseId": "xasr-160__zh-list",
+      "variantId": "qwen4b-intent"
+    },
+    {
+      "id": "R-0104",
+      "caseId": "xasr-160-rules__zh-person",
+      "variantId": "qwen4b-intent"
+    },
+    {
+      "id": "R-0105",
+      "caseId": "xasr-160-rules__zh-person",
+      "variantId": "qwen4b-two-pass"
+    },
+    {
+      "id": "R-0106",
+      "caseId": "xasr-160-rules__zh-memory",
+      "variantId": "qwen4b-two-pass"
+    },
+    {
+      "id": "R-0107",
+      "caseId": "xasr-160-rules__zh-uncertain",
+      "variantId": "qwen4b-intent"
+    },
+    {
+      "id": "R-0108",
+      "caseId": "xasr-160-rules__zh-number",
+      "variantId": "qwen4b-two-pass"
+    },
+    {
+      "id": "R-0109",
+      "caseId": "xasr-160__zh-email",
+      "variantId": "qwen4b-intent"
+    },
+    {
+      "id": "R-0110",
+      "caseId": "qwen3-asr-06__zh-person",
+      "variantId": "qwen4b-intent"
+    },
+    {
+      "id": "R-0111",
+      "caseId": "xasr-160__en-money",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0112",
+      "caseId": "xasr-160-xasr-final__en-repeat",
+      "variantId": "qwen4b-intent"
+    },
+    {
+      "id": "R-0113",
+      "caseId": "qwen3-asr-06__zh-memory",
+      "variantId": "qwen4b-two-pass"
+    },
+    {
+      "id": "R-0114",
+      "caseId": "xasr-160-xasr-final__zh-memory",
+      "variantId": "qwen4b-two-pass"
+    },
+    {
+      "id": "R-0115",
+      "caseId": "xasr-160__zh-list",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0116",
+      "caseId": "xasr-160-rules__zh-number",
+      "variantId": "qwen4b-intent"
+    },
+    {
+      "id": "R-0117",
+      "caseId": "xasr-160-xasr-final__mixed-code",
+      "variantId": "qwen4b-two-pass"
+    },
+    {
+      "id": "R-0118",
+      "caseId": "xasr-160-rules__zh-repeat",
+      "variantId": "qwen4b-intent"
+    },
+    {
+      "id": "R-0119",
+      "caseId": "qwen3-asr-06__zh-email",
+      "variantId": "qwen4b-two-pass"
+    },
+    {
+      "id": "R-0120",
+      "caseId": "xasr-160-rules__zh-email",
+      "variantId": "qwen4b-two-pass"
+    },
+    {
+      "id": "R-0121",
+      "caseId": "xasr-160-rules__zh-memory",
+      "variantId": "qwen4b-intent"
+    },
+    {
+      "id": "R-0122",
+      "caseId": "qwen3-asr-06__en-day",
+      "variantId": "qwen4b-two-pass"
+    },
+    {
+      "id": "R-0123",
+      "caseId": "qwen3-asr-06__zh-list",
+      "variantId": "qwen4b-intent"
+    },
+    {
+      "id": "R-0124",
+      "caseId": "xasr-160-xasr-final__zh-repeat",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0125",
+      "caseId": "qwen3-asr-06__mixed-code",
+      "variantId": "qwen4b-intent"
+    },
+    {
+      "id": "R-0126",
+      "caseId": "xasr-160-xasr-final__zh-day",
+      "variantId": "qwen4b-intent"
+    },
+    {
+      "id": "R-0127",
+      "caseId": "qwen3-asr-06__zh-day",
+      "variantId": "qwen4b-two-pass"
+    },
+    {
+      "id": "R-0128",
+      "caseId": "xasr-160__mixed-repair",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0129",
+      "caseId": "xasr-160-xasr-final__mixed-code",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0130",
+      "caseId": "xasr-160-xasr-final__en-day",
+      "variantId": "qwen4b-intent"
+    },
+    {
+      "id": "R-0131",
+      "caseId": "xasr-160__zh-repeat",
+      "variantId": "qwen4b-intent"
+    },
+    {
+      "id": "R-0132",
+      "caseId": "xasr-160-rules__zh-email",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0133",
+      "caseId": "xasr-160-xasr-final__en-email",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0134",
+      "caseId": "xasr-160-xasr-final__zh-person",
+      "variantId": "qwen4b-intent"
+    },
+    {
+      "id": "R-0135",
+      "caseId": "xasr-160-rules__zh-list",
+      "variantId": "qwen4b-intent"
+    },
+    {
+      "id": "R-0136",
+      "caseId": "xasr-160-xasr-final__zh-list",
+      "variantId": "qwen4b-two-pass"
+    },
+    {
+      "id": "R-0137",
+      "caseId": "xasr-160__zh-person",
+      "variantId": "qwen4b-intent"
+    },
+    {
+      "id": "R-0138",
+      "caseId": "xasr-160__en-day",
+      "variantId": "qwen4b-two-pass"
+    },
+    {
+      "id": "R-0139",
+      "caseId": "qwen3-asr-06__zh-list",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0140",
+      "caseId": "xasr-160__mixed-code",
+      "variantId": "qwen4b-intent"
+    },
+    {
+      "id": "R-0141",
+      "caseId": "xasr-160__zh-memory",
+      "variantId": "qwen4b-two-pass"
+    },
+    {
+      "id": "R-0142",
+      "caseId": "xasr-160__zh-memory",
+      "variantId": "qwen4b-intent"
+    },
+    {
+      "id": "R-0143",
+      "caseId": "xasr-160-rules__mixed-repair",
+      "variantId": "qwen4b-two-pass"
+    },
+    {
+      "id": "R-0144",
+      "caseId": "qwen3-asr-06__en-day",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0145",
+      "caseId": "xasr-160-xasr-final__zh-repeat",
+      "variantId": "qwen4b-intent"
+    },
+    {
+      "id": "R-0146",
+      "caseId": "xasr-160-rules__en-repeat",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0147",
+      "caseId": "xasr-160-xasr-final__en-day",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0148",
+      "caseId": "xasr-160__mixed-code",
+      "variantId": "qwen4b-two-pass"
+    },
+    {
+      "id": "R-0149",
+      "caseId": "xasr-160-rules__zh-list",
+      "variantId": "qwen4b-two-pass"
+    },
+    {
+      "id": "R-0150",
+      "caseId": "xasr-160-xasr-final__zh-email",
+      "variantId": "qwen4b-intent"
+    },
+    {
+      "id": "R-0151",
+      "caseId": "xasr-160-xasr-final__en-repeat",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0152",
+      "caseId": "xasr-160-rules__en-day",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0153",
+      "caseId": "qwen3-asr-06__zh-day",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0154",
+      "caseId": "xasr-160__zh-day",
+      "variantId": "qwen4b-two-pass"
+    },
+    {
+      "id": "R-0155",
+      "caseId": "qwen3-asr-06__zh-repeat",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0156",
+      "caseId": "xasr-160-xasr-final__zh-memory",
+      "variantId": "qwen4b-intent"
+    },
+    {
+      "id": "R-0157",
+      "caseId": "xasr-160__en-money",
+      "variantId": "qwen4b-two-pass"
+    },
+    {
+      "id": "R-0158",
+      "caseId": "xasr-160-xasr-final__zh-person",
+      "variantId": "qwen4b-two-pass"
+    },
+    {
+      "id": "R-0159",
+      "caseId": "xasr-160-xasr-final__mixed-repair",
+      "variantId": "qwen4b-two-pass"
+    },
+    {
+      "id": "R-0160",
+      "caseId": "qwen3-asr-06__en-email",
+      "variantId": "qwen4b-two-pass"
+    },
+    {
+      "id": "R-0161",
+      "caseId": "qwen3-asr-06__zh-email",
+      "variantId": "qwen4b-intent"
+    },
+    {
+      "id": "R-0162",
+      "caseId": "qwen3-asr-06__zh-uncertain",
+      "variantId": "qwen4b-intent"
+    },
+    {
+      "id": "R-0163",
+      "caseId": "xasr-160-rules__en-repeat",
+      "variantId": "qwen4b-intent"
+    },
+    {
+      "id": "R-0164",
+      "caseId": "xasr-160-xasr-final__en-money",
+      "variantId": "qwen4b-intent"
+    },
+    {
+      "id": "R-0165",
+      "caseId": "xasr-160-xasr-final__mixed-code",
+      "variantId": "qwen4b-intent"
+    },
+    {
+      "id": "R-0166",
+      "caseId": "qwen3-asr-06__mixed-repair",
+      "variantId": "qwen4b-intent"
+    },
+    {
+      "id": "R-0167",
+      "caseId": "xasr-160__zh-number",
+      "variantId": "verbatim"
+    },
+    {
+      "id": "R-0168",
+      "caseId": "xasr-160-rules__zh-person",
+      "variantId": "verbatim"
+    }
+  ]
+}

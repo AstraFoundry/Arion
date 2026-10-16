@@ -1,0 +1,704 @@
+{
+  "kind": "arion-phonetic-ablation-v1",
+  "stage": "correction",
+  "status": "cancelled_by_user",
+  "config": {
+    "version": 1,
+    "kind": "arion-phonetic-ablation-v1",
+    "split": "test",
+    "models": [
+      "qwen3-1.7b",
+      "qwen3-4b"
+    ],
+    "variants": [
+      "text",
+      "text_pinyin",
+      "text_scores",
+      "text_pinyin_scores",
+      "text_ipa",
+      "ipa_only"
+    ],
+    "asrModel": "x-asr-zh-en-160ms-streaming-punct-int8-2026-06-05",
+    "phoneModel": "uni2005",
+    "phoneInventory": "ipa",
+    "threads": 4,
+    "chunkMs": 20,
+    "endpointSilenceSeconds": 0.8,
+    "tailPaddingSeconds": 0.4,
+    "scoreQuantile": 0.25,
+    "orderSeed": 1729,
+    "warmupCount": 2,
+    "maxInputTokens": 4096,
+    "maxNewTokens": 256,
+    "bootstrapIterations": 2000,
+    "policy": "Faithful acoustic transcription correction; no style editing, memory or external context",
+    "timing": "Accelerated chunk replay and isolated warm CPU correction; no realtime preview or insertion claim"
+  },
+  "configHash": "3b2406a6dfd05d826a51d38f90da31ae9925c91f55747021610160275e32c0ab",
+  "corpusFile": "/Users/steven/code/Arion/.workspace/corpus/v1/corpus.json",
+  "corpusHash": "a5d92468ac0c1ac740cf9685628d1d1c6540f70f4ace2d11c189bd7f78fee371",
+  "host": {
+    "os": "darwin",
+    "architecture": "arm64",
+    "cpu": "Apple M4",
+    "ramBytes": 34359738368,
+    "osRelease": "25.6.0",
+    "powerMode": "System-wide power settings:\n SleepDisabled\t\t0\nCurrently in use:\n standby              1\n Sleep On Power Button 1\n hibernatefile        /var/vm/sleepimage\n powernap             1\n networkoversleep     0\n disksleep            10\n sleep                0 (sleep prevented by powerd, caffeinate)\n hibernatemode        3\n ttyskeepawake        1\n displaysleep         0 (display sleep prevented by Caffeine)\n tcpkeepalive         1\n lowpowermode         0\n womp                 1"
+  },
+  "gitRevision": "1ffa254a919acbfb074acd1e1a778a026c6547bf",
+  "gitDirty": true,
+  "timer": "monotonic time.perf_counter / performance.now",
+  "codeArtifacts": [
+    {
+      "path": "/Users/steven/code/Arion/tools/evaluation/phonetic/cli.mjs",
+      "sha256": "458c085dbc86e333c93973f1e1b57a8740d6c6847e692d2fc4f9188d7b553e48"
+    },
+    {
+      "path": "/Users/steven/code/Arion/tools/evaluation/phonetic/design.mjs",
+      "sha256": "f7b4393448a95b791369b08be1c83cb2d90e87a3aab28d048af0b0d9bd418072"
+    },
+    {
+      "path": "/Users/steven/code/Arion/tools/evaluation/phonetic/preflight.mjs",
+      "sha256": "6a36900d79baa996932eb110b88c3bca55bd6a5e0d4a0f5dabcee9885206ad9b"
+    },
+    {
+      "path": "/Users/steven/code/Arion/tools/evaluation/phonetic/acoustic_worker.py",
+      "sha256": "ed4c9f4a99776130eb3dfc8b7c3a9c3cf38d4101c1a3fd43cad7ffd67affb8bd"
+    },
+    {
+      "path": "/Users/steven/code/Arion/tools/evaluation/diagnostic/qwen_worker.py",
+      "sha256": "980227e86cab60f234e51e3fda82cf0cc6689bbd8cf927b18d968de0fd0918eb"
+    },
+    {
+      "path": "/Users/steven/code/Arion/tools/evaluation/diagnostic/worker.mjs",
+      "sha256": "7282db38c249ebeaf05aea74211a0e96db69ea41399721026598737c1f3ac606"
+    }
+  ],
+  "evidenceDirectory": "/Users/steven/code/Arion/.workspace/benchmarks/phonetic-asr-v1/acoustic",
+  "evidenceRunHash": "c8c51431fead1b2c2837f42f33ee9955c81f34156089ad7afb7c1379f9726816",
+  "preflightDirectory": "/Users/steven/code/Arion/.workspace/benchmarks/phonetic-asr-v2/smoke-a",
+  "preflightRunHash": "c387d34291d4c6d33f9b8a19c64ebb9c46a3d49015e8740c96cc4698cda1a5ae",
+  "preflightResultsHash": "02f9c7c37bb01b011245963f558f3600519110badfc3d471d1be94195761b30b",
+  "preflightCheck": {
+    "observations": 36,
+    "textEvidenceContractFailures": 0,
+    "negativeControlFailures": 1
+  },
+  "threshold": -0.7410774230957031,
+  "thresholdSource": "development token scores only; no reference optimization",
+  "sampleIds": [
+    "aishell-BAC009S0770W0182",
+    "aishell-BAC009S0769W0132",
+    "aishell-BAC009S0769W0488",
+    "aishell-BAC009S0767W0403",
+    "aishell-BAC009S0767W0383",
+    "aishell-BAC009S0767W0314",
+    "aishell-BAC009S0767W0379",
+    "aishell-BAC009S0767W0122",
+    "aishell-BAC009S0769W0482",
+    "aishell-BAC009S0768W0443",
+    "aishell-BAC009S0767W0487",
+    "aishell-BAC009S0767W0428",
+    "aishell-BAC009S0768W0409",
+    "aishell-BAC009S0769W0378",
+    "aishell-BAC009S0767W0350",
+    "aishell-BAC009S0769W0469",
+    "aishell-BAC009S0768W0142",
+    "aishell-BAC009S0770W0201",
+    "aishell-BAC009S0768W0134",
+    "aishell-BAC009S0768W0262",
+    "aishell-BAC009S0769W0315",
+    "aishell-BAC009S0770W0246",
+    "aishell-BAC009S0767W0172",
+    "aishell-BAC009S0769W0416",
+    "aishell-BAC009S0770W0361",
+    "aishell-BAC009S0769W0393",
+    "aishell-BAC009S0768W0395",
+    "aishell-BAC009S0768W0122",
+    "aishell-BAC009S0768W0412",
+    "aishell-BAC009S0769W0262",
+    "aishell-BAC009S0768W0345",
+    "aishell-BAC009S0769W0123",
+    "aishell-BAC009S0768W0177",
+    "aishell-BAC009S0768W0337",
+    "aishell-BAC009S0769W0431",
+    "aishell-BAC009S0769W0440",
+    "aishell-BAC009S0769W0382",
+    "aishell-BAC009S0768W0197",
+    "aishell-BAC009S0770W0196",
+    "aishell-BAC009S0769W0121",
+    "aishell-BAC009S0768W0404",
+    "aishell-BAC009S0769W0344",
+    "aishell-BAC009S0770W0272",
+    "aishell-BAC009S0768W0492",
+    "aishell-BAC009S0770W0322",
+    "aishell-BAC009S0767W0234",
+    "aishell-BAC009S0768W0343",
+    "aishell-BAC009S0769W0390",
+    "aishell-BAC009S0767W0423",
+    "aishell-BAC009S0767W0251",
+    "aishell-BAC009S0769W0343",
+    "aishell-BAC009S0770W0216",
+    "aishell-BAC009S0768W0398",
+    "aishell-BAC009S0769W0155",
+    "aishell-BAC009S0769W0372",
+    "aishell-BAC009S0767W0394",
+    "aishell-BAC009S0769W0327",
+    "aishell-BAC009S0768W0436",
+    "aishell-BAC009S0767W0358",
+    "aishell-BAC009S0769W0468",
+    "libri-7176-92135-0036",
+    "libri-2830-3979-0006",
+    "libri-1188-133604-0000",
+    "libri-1284-1181-0021",
+    "libri-1320-122617-0037",
+    "libri-7176-92135-0006",
+    "libri-61-70968-0013",
+    "libri-8463-287645-0000",
+    "libri-2830-3979-0010",
+    "libri-2300-131720-0014",
+    "libri-4446-2275-0042",
+    "libri-4446-2273-0026",
+    "libri-8555-284447-0002",
+    "libri-8455-210777-0018",
+    "libri-1188-133604-0040",
+    "libri-121-121726-0001",
+    "libri-237-126133-0004",
+    "libri-672-122797-0051",
+    "libri-1089-134691-0022",
+    "libri-5142-33396-0007",
+    "libri-2961-960-0015",
+    "libri-4970-29093-0013",
+    "libri-3729-6852-0002",
+    "libri-1320-122612-0010",
+    "libri-237-134493-0016",
+    "libri-7729-102255-0007",
+    "libri-61-70968-0034",
+    "libri-4992-23283-0001",
+    "libri-8555-292519-0015",
+    "libri-1995-1836-0013",
+    "libri-5142-33396-0033",
+    "libri-5683-32866-0007",
+    "libri-4992-41797-0019",
+    "libri-7729-102255-0036",
+    "libri-5683-32865-0017",
+    "libri-6829-68769-0046",
+    "libri-8463-294828-0014",
+    "libri-3575-170457-0035",
+    "libri-5639-40744-0017",
+    "libri-4970-29095-0029",
+    "libri-8224-274381-0003",
+    "libri-3575-170457-0012",
+    "libri-3570-5694-0022",
+    "libri-8224-274381-0010",
+    "libri-1995-1836-0007",
+    "libri-908-31957-0018",
+    "libri-2961-961-0013",
+    "libri-672-122797-0032",
+    "libri-7021-79730-0001",
+    "libri-7127-75947-0011",
+    "libri-2300-131720-0021",
+    "libri-1089-134686-0008",
+    "libri-6930-76324-0023",
+    "libri-121-127105-0023",
+    "libri-260-123288-0008",
+    "libri-8455-210777-0017",
+    "libri-908-157963-0026",
+    "libri-1580-141083-0024",
+    "libri-4507-16021-0024",
+    "libri-6829-68769-0013",
+    "tts-test-00-tingting",
+    "tts-test-01-shelley",
+    "tts-test-02-rocko",
+    "tts-test-03-sandy",
+    "tts-test-04-tingting",
+    "tts-test-05-shelley",
+    "tts-test-06-rocko",
+    "tts-test-07-sandy",
+    "tts-test-08-tingting",
+    "tts-test-09-shelley",
+    "tts-test-10-rocko",
+    "tts-test-11-sandy",
+    "tts-test-12-tingting",
+    "tts-test-13-shelley",
+    "tts-test-14-rocko",
+    "tts-test-15-sandy",
+    "tts-test-16-tingting",
+    "tts-test-17-shelley",
+    "tts-test-18-rocko",
+    "tts-test-19-sandy",
+    "tts-test-20-tingting",
+    "tts-test-21-shelley",
+    "tts-test-22-rocko",
+    "tts-test-23-sandy",
+    "tts-test-24-tingting",
+    "tts-test-25-shelley",
+    "tts-test-26-rocko",
+    "tts-test-27-sandy",
+    "tts-test-28-tingting",
+    "tts-test-29-shelley",
+    "nonspeech-test-0",
+    "nonspeech-test-1",
+    "nonspeech-test-2",
+    "nonspeech-test-3"
+  ],
+  "runtimes": {
+    "qwen3-1.7b": {
+      "id": "1",
+      "ok": true,
+      "runtime": "0.17.1",
+      "ortRuntime": "1.30.0",
+      "providersAvailable": [
+        "CoreMLExecutionProvider",
+        "AzureExecutionProvider",
+        "CPUExecutionProvider"
+      ],
+      "providerRequested": "CPUExecutionProvider",
+      "architecture": "arm64",
+      "loadMs": 3734.4900420866907
+    },
+    "qwen3-4b": {
+      "id": "1",
+      "ok": true,
+      "runtime": "0.17.1",
+      "ortRuntime": "1.30.0",
+      "providersAvailable": [
+        "CoreMLExecutionProvider",
+        "AzureExecutionProvider",
+        "CPUExecutionProvider"
+      ],
+      "providerRequested": "CPUExecutionProvider",
+      "architecture": "arm64",
+      "loadMs": 7855.09220813401
+    }
+  },
+  "modelArtifacts": {
+    "qwen3-1.7b": [
+      {
+        "path": "/Users/steven/code/Arion/.workspace/ablation-models/qwen3-1.7b/chat_template.jinja",
+        "sha256": "a55ee1b1660128b7098723e0abcd92caa0788061051c62d51cbe87d9cf1974d8",
+        "sizeBytes": 4168,
+        "source": "https://huggingface.co/onnx-community/Qwen3-1.7B-ONNX/resolve/b85539623180ae64303f37373d942cb0595ca44d/onnxruntime/cpu_and_mobile/cpu-int4-kld-block-128/chat_template.jinja",
+        "modelId": "qwen3-1.7b",
+        "license": "apache-2.0",
+        "repository": "onnx-community/Qwen3-1.7B-ONNX",
+        "revision": "b85539623180ae64303f37373d942cb0595ca44d"
+      },
+      {
+        "path": "/Users/steven/code/Arion/.workspace/ablation-models/qwen3-1.7b/config.json",
+        "sha256": "14c4e163fc54e5c7301a7f26054386ac77734401355fecd530ce4a98233f070c",
+        "sizeBytes": 8697,
+        "source": "https://huggingface.co/onnx-community/Qwen3-1.7B-ONNX/resolve/b85539623180ae64303f37373d942cb0595ca44d/onnxruntime/cpu_and_mobile/cpu-int4-kld-block-128/config.json",
+        "modelId": "qwen3-1.7b",
+        "license": "apache-2.0",
+        "repository": "onnx-community/Qwen3-1.7B-ONNX",
+        "revision": "b85539623180ae64303f37373d942cb0595ca44d"
+      },
+      {
+        "path": "/Users/steven/code/Arion/.workspace/ablation-models/qwen3-1.7b/genai_config.json",
+        "sha256": "d328d2ad4cbd7915eee3ad047eabfc562d8daf7307b202c1e6aaef4e8a236ba2",
+        "sizeBytes": 1520,
+        "source": "https://huggingface.co/onnx-community/Qwen3-1.7B-ONNX/resolve/b85539623180ae64303f37373d942cb0595ca44d/onnxruntime/cpu_and_mobile/cpu-int4-kld-block-128/genai_config.json",
+        "modelId": "qwen3-1.7b",
+        "license": "apache-2.0",
+        "repository": "onnx-community/Qwen3-1.7B-ONNX",
+        "revision": "b85539623180ae64303f37373d942cb0595ca44d"
+      },
+      {
+        "path": "/Users/steven/code/Arion/.workspace/ablation-models/qwen3-1.7b/model.onnx",
+        "sha256": "9fddc5a0a7f9c51132c376db8fe44774b17a8e42d721c4d289ade16af87da0bd",
+        "sizeBytes": 1408943689,
+        "source": "https://huggingface.co/onnx-community/Qwen3-1.7B-ONNX/resolve/b85539623180ae64303f37373d942cb0595ca44d/onnxruntime/cpu_and_mobile/cpu-int4-kld-block-128/model.onnx",
+        "modelId": "qwen3-1.7b",
+        "license": "apache-2.0",
+        "repository": "onnx-community/Qwen3-1.7B-ONNX",
+        "revision": "b85539623180ae64303f37373d942cb0595ca44d"
+      },
+      {
+        "path": "/Users/steven/code/Arion/.workspace/ablation-models/qwen3-1.7b/tokenizer.json",
+        "sha256": "979d160e081df25a1bf7f4e2e8f4c441b5dfdc9a8e84aec9f32e80445e1b59b8",
+        "sizeBytes": 11422648,
+        "source": "https://huggingface.co/onnx-community/Qwen3-1.7B-ONNX/resolve/b85539623180ae64303f37373d942cb0595ca44d/onnxruntime/cpu_and_mobile/cpu-int4-kld-block-128/tokenizer.json",
+        "modelId": "qwen3-1.7b",
+        "license": "apache-2.0",
+        "repository": "onnx-community/Qwen3-1.7B-ONNX",
+        "revision": "b85539623180ae64303f37373d942cb0595ca44d"
+      },
+      {
+        "path": "/Users/steven/code/Arion/.workspace/ablation-models/qwen3-1.7b/tokenizer_config.json",
+        "sha256": "bfd13b57b2e0c2cb582f311c0895f077d16a868c0dc61e4dbbba544a835341d6",
+        "sizeBytes": 663,
+        "source": "https://huggingface.co/onnx-community/Qwen3-1.7B-ONNX/resolve/b85539623180ae64303f37373d942cb0595ca44d/onnxruntime/cpu_and_mobile/cpu-int4-kld-block-128/tokenizer_config.json",
+        "modelId": "qwen3-1.7b",
+        "license": "apache-2.0",
+        "repository": "onnx-community/Qwen3-1.7B-ONNX",
+        "revision": "b85539623180ae64303f37373d942cb0595ca44d"
+      },
+      {
+        "path": "/Users/steven/code/Arion/.workspace/benchmarks/phonetic-asr-v2/correction/qwen3-1.7b/genai_config.json",
+        "sha256": "9cac0c504e5b454a8961b9a742bf3c74ffd88ac838e6f20c6675689d7a136019"
+      }
+    ],
+    "qwen3-4b": [
+      {
+        "path": "/Users/steven/code/Arion/.workspace/ablation-models/qwen3-4b/chat_template.jinja",
+        "sha256": "a55ee1b1660128b7098723e0abcd92caa0788061051c62d51cbe87d9cf1974d8",
+        "sizeBytes": 4168,
+        "source": "https://huggingface.co/onnx-community/Qwen3-4B-ONNX/resolve/5cbfbcacd84ed9e54cea017a4cbddb67cc45337f/onnxruntime/cpu_and_mobile/cpu-int4-kld-block-128/chat_template.jinja",
+        "modelId": "qwen3-4b",
+        "license": "Apache-2.0",
+        "repository": "onnx-community/Qwen3-4B-ONNX",
+        "revision": "5cbfbcacd84ed9e54cea017a4cbddb67cc45337f"
+      },
+      {
+        "path": "/Users/steven/code/Arion/.workspace/ablation-models/qwen3-4b/config.json",
+        "sha256": "0bfeedcfa808cb8404e75d32cef3cdb6c566631acdb7c0edbe9e6945763c6989",
+        "sizeBytes": 9567,
+        "source": "https://huggingface.co/onnx-community/Qwen3-4B-ONNX/resolve/5cbfbcacd84ed9e54cea017a4cbddb67cc45337f/onnxruntime/cpu_and_mobile/cpu-int4-kld-block-128/config.json",
+        "modelId": "qwen3-4b",
+        "license": "Apache-2.0",
+        "repository": "onnx-community/Qwen3-4B-ONNX",
+        "revision": "5cbfbcacd84ed9e54cea017a4cbddb67cc45337f"
+      },
+      {
+        "path": "/Users/steven/code/Arion/.workspace/ablation-models/qwen3-4b/genai_config.json",
+        "sha256": "dcb9aa8dd93b1acc17a2df193811c200ab540932c20a98ce4d4d23ce88a69b7d",
+        "sizeBytes": 1520,
+        "source": "https://huggingface.co/onnx-community/Qwen3-4B-ONNX/resolve/5cbfbcacd84ed9e54cea017a4cbddb67cc45337f/onnxruntime/cpu_and_mobile/cpu-int4-kld-block-128/genai_config.json",
+        "modelId": "qwen3-4b",
+        "license": "Apache-2.0",
+        "repository": "onnx-community/Qwen3-4B-ONNX",
+        "revision": "5cbfbcacd84ed9e54cea017a4cbddb67cc45337f"
+      },
+      {
+        "path": "/Users/steven/code/Arion/.workspace/ablation-models/qwen3-4b/model.onnx",
+        "sha256": "b4547cf9327bd532cb81703cf013f958117ba5a3e5a81c7c79a33aba534ff337",
+        "sizeBytes": 519634,
+        "source": "https://huggingface.co/onnx-community/Qwen3-4B-ONNX/resolve/5cbfbcacd84ed9e54cea017a4cbddb67cc45337f/onnxruntime/cpu_and_mobile/cpu-int4-kld-block-128/model.onnx",
+        "modelId": "qwen3-4b",
+        "license": "Apache-2.0",
+        "repository": "onnx-community/Qwen3-4B-ONNX",
+        "revision": "5cbfbcacd84ed9e54cea017a4cbddb67cc45337f"
+      },
+      {
+        "path": "/Users/steven/code/Arion/.workspace/ablation-models/qwen3-4b/model.onnx.data",
+        "sha256": "d6003acd70841b99a44ce4c21d13dc42244e3ec3b7c12d70919f9b55440bbc45",
+        "sizeBytes": 2885434880,
+        "source": "https://huggingface.co/onnx-community/Qwen3-4B-ONNX/resolve/5cbfbcacd84ed9e54cea017a4cbddb67cc45337f/onnxruntime/cpu_and_mobile/cpu-int4-kld-block-128/model.onnx.data",
+        "modelId": "qwen3-4b",
+        "license": "Apache-2.0",
+        "repository": "onnx-community/Qwen3-4B-ONNX",
+        "revision": "5cbfbcacd84ed9e54cea017a4cbddb67cc45337f"
+      },
+      {
+        "path": "/Users/steven/code/Arion/.workspace/ablation-models/qwen3-4b/tokenizer.json",
+        "sha256": "979d160e081df25a1bf7f4e2e8f4c441b5dfdc9a8e84aec9f32e80445e1b59b8",
+        "sizeBytes": 11422648,
+        "source": "https://huggingface.co/onnx-community/Qwen3-4B-ONNX/resolve/5cbfbcacd84ed9e54cea017a4cbddb67cc45337f/onnxruntime/cpu_and_mobile/cpu-int4-kld-block-128/tokenizer.json",
+        "modelId": "qwen3-4b",
+        "license": "Apache-2.0",
+        "repository": "onnx-community/Qwen3-4B-ONNX",
+        "revision": "5cbfbcacd84ed9e54cea017a4cbddb67cc45337f"
+      },
+      {
+        "path": "/Users/steven/code/Arion/.workspace/ablation-models/qwen3-4b/tokenizer_config.json",
+        "sha256": "bfd13b57b2e0c2cb582f311c0895f077d16a868c0dc61e4dbbba544a835341d6",
+        "sizeBytes": 663,
+        "source": "https://huggingface.co/onnx-community/Qwen3-4B-ONNX/resolve/5cbfbcacd84ed9e54cea017a4cbddb67cc45337f/onnxruntime/cpu_and_mobile/cpu-int4-kld-block-128/tokenizer_config.json",
+        "modelId": "qwen3-4b",
+        "license": "Apache-2.0",
+        "repository": "onnx-community/Qwen3-4B-ONNX",
+        "revision": "5cbfbcacd84ed9e54cea017a4cbddb67cc45337f"
+      },
+      {
+        "path": "/Users/steven/code/Arion/.workspace/benchmarks/phonetic-asr-v2/correction/qwen3-4b/genai_config.json",
+        "sha256": "387b59d9f5bb87397bdff3bf2f8590ee1bd45af7fe26b5072d573ac9c4e03ed7"
+      }
+    ]
+  },
+  "runtimeArtifacts": [
+    {
+      "path": "/Users/steven/code/Arion/.workspace/ablation-venv/lib/python3.12/site-packages/onnxruntime_genai/__init__.py",
+      "sha256": "268f28fa938dc1090d41a545d02b9123577568c0d529eb389aeba4e4f21dcf2b",
+      "sizeBytes": 817,
+      "runtime": "onnxruntime_genai",
+      "license": "MIT"
+    },
+    {
+      "path": "/Users/steven/code/Arion/.workspace/ablation-venv/lib/python3.12/site-packages/onnxruntime_genai/libonnxruntime-genai.dylib",
+      "sha256": "36ad46730a7e1d4dda7efd9545fb584d68befd2adedf82400e843e175762f036",
+      "sizeBytes": 11967632,
+      "runtime": "onnxruntime_genai",
+      "license": "MIT"
+    },
+    {
+      "path": "/Users/steven/code/Arion/.workspace/ablation-venv/lib/python3.12/site-packages/onnxruntime_genai/onnxruntime_genai.cpython-312-darwin.so",
+      "sha256": "08f0cabf032b8903ce37d9f913b479576ce7e9ee134acc9c234a3e458616dcb6",
+      "sizeBytes": 583368,
+      "runtime": "onnxruntime_genai",
+      "license": "MIT"
+    },
+    {
+      "path": "/Users/steven/code/Arion/.workspace/ablation-venv/lib/python3.12/site-packages/onnxruntime_genai/_dll_directory.py",
+      "sha256": "8ea57e0c807886ce6f4ed5b15137bd40bfd090da2506654ef42816f45684f5e4",
+      "sizeBytes": 3624,
+      "runtime": "onnxruntime_genai",
+      "license": "MIT"
+    },
+    {
+      "path": "/Users/steven/code/Arion/.workspace/ablation-venv/lib/python3.12/site-packages/onnxruntime_genai/models/__init__.py",
+      "sha256": "45f3538b069176fa94ab4e23d26d1284ad4824f4a7212f4c80ac2f6c1f900eb4",
+      "sizeBytes": 318,
+      "runtime": "onnxruntime_genai",
+      "license": "MIT"
+    },
+    {
+      "path": "/Users/steven/code/Arion/.workspace/ablation-venv/lib/python3.12/site-packages/onnxruntime_genai/models/builders/__init__.py",
+      "sha256": "1cc58241a5dfcd53b77177f2ef3a904ea0d5b038927004ac36e5fd7d10533efa",
+      "sizeBytes": 2472,
+      "runtime": "onnxruntime_genai",
+      "license": "MIT"
+    },
+    {
+      "path": "/Users/steven/code/Arion/.workspace/ablation-venv/lib/python3.12/site-packages/onnxruntime_genai/models/quantization/__init__.py",
+      "sha256": "4a8a21ceb90092ba65c05d7dbe83bda85ee044098408eff0311868c77d9dacae",
+      "sizeBytes": 498,
+      "runtime": "onnxruntime_genai",
+      "license": "MIT"
+    },
+    {
+      "path": "/Users/steven/code/Arion/.workspace/ablation-venv/lib/python3.12/site-packages/onnxruntime_genai/models/loaders/__init__.py",
+      "sha256": "7dcd1893687bf8016bd6b3e4e40eb9e7e448c44c2106340d6ccddbfb671fa0c0",
+      "sizeBytes": 73,
+      "runtime": "onnxruntime_genai",
+      "license": "MIT"
+    },
+    {
+      "path": "/Users/steven/code/Arion/.workspace/ablation-venv/lib/python3.12/site-packages/onnxruntime_genai/models/builders/expansions/__init__.py",
+      "sha256": "b40125012c3749bb714b45fe3fa37753d5405ed98aaa1fbfc461c6f0fcbdcd2e",
+      "sizeBytes": 443,
+      "runtime": "onnxruntime_genai",
+      "license": "MIT"
+    },
+    {
+      "path": "/Users/steven/code/Arion/.workspace/ablation-venv/lib/python3.12/site-packages/onnxruntime/__init__.py",
+      "sha256": "c238c7f2c3660ad216cfe3f794f65adf81a08c99be0f7c8d854f1e4cab076d07",
+      "sizeBytes": 21447,
+      "runtime": "onnxruntime",
+      "license": "MIT"
+    },
+    {
+      "path": "/Users/steven/code/Arion/.workspace/ablation-venv/lib/python3.12/site-packages/onnxruntime/tools/__init__.py",
+      "sha256": "8b1e1ecad6d6555f1029e66ef8d54f8dbf2820c5ab484d262b37d5867edc8419",
+      "sizeBytes": 518,
+      "runtime": "onnxruntime",
+      "license": "MIT"
+    },
+    {
+      "path": "/Users/steven/code/Arion/.workspace/ablation-venv/lib/python3.12/site-packages/onnxruntime/capi/libonnxruntime.1.30.0.dylib",
+      "sha256": "b46713ea6a25a5227541c21001f6422c1ccdeaecc369aa026a61b752520325c3",
+      "sizeBytes": 33209560,
+      "runtime": "onnxruntime",
+      "license": "MIT"
+    },
+    {
+      "path": "/Users/steven/code/Arion/.workspace/ablation-venv/lib/python3.12/site-packages/onnxruntime/capi/__init__.py",
+      "sha256": "592371b77978964580ff4be1c35103e08eca38ed269c0b87c1280562a6ead0b8",
+      "sizeBytes": 247,
+      "runtime": "onnxruntime",
+      "license": "MIT"
+    },
+    {
+      "path": "/Users/steven/code/Arion/.workspace/ablation-venv/lib/python3.12/site-packages/onnxruntime/capi/onnxruntime_pybind11_state.so",
+      "sha256": "ce493e00c5a471f8604f55fb2eef1fb4490b31ee21bf9278b86e1f5b5e6b461a",
+      "sizeBytes": 40806592,
+      "runtime": "onnxruntime",
+      "license": "MIT"
+    },
+    {
+      "path": "/Users/steven/code/Arion/.workspace/ablation-venv/lib/python3.12/site-packages/onnxruntime/datasets/__init__.py",
+      "sha256": "28244c8b55c33ad8aa29e063d5b9ac0e3520ee582fe19d20d8b16c0ad6a4062d",
+      "sizeBytes": 455,
+      "runtime": "onnxruntime",
+      "license": "MIT"
+    },
+    {
+      "path": "/Users/steven/code/Arion/.workspace/ablation-venv/lib/python3.12/site-packages/onnxruntime/backend/__init__.py",
+      "sha256": "92ad7c59c0743a5dfc0921872fe38dc2991f504d0a726a233aaea4f951ada306",
+      "sizeBytes": 328,
+      "runtime": "onnxruntime",
+      "license": "MIT"
+    },
+    {
+      "path": "/Users/steven/code/Arion/.workspace/ablation-venv/lib/python3.12/site-packages/onnxruntime/quantization/__init__.py",
+      "sha256": "e6a397c6f48639307150aa6d495826b3a3f3229220748a095837a592c9beac8c",
+      "sizeBytes": 763,
+      "runtime": "onnxruntime",
+      "license": "MIT"
+    },
+    {
+      "path": "/Users/steven/code/Arion/.workspace/ablation-venv/lib/python3.12/site-packages/onnxruntime/transformers/__init__.py",
+      "sha256": "452e41e705a7c05287d0a5d9796c9d863b3d5a5f6c3d1aa053f941d7f75460de",
+      "sizeBytes": 313,
+      "runtime": "onnxruntime",
+      "license": "MIT"
+    },
+    {
+      "path": "/Users/steven/code/Arion/.workspace/ablation-venv/lib/python3.12/site-packages/onnxruntime/tools/qdq_helpers/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "sizeBytes": 0,
+      "runtime": "onnxruntime",
+      "license": "MIT"
+    },
+    {
+      "path": "/Users/steven/code/Arion/.workspace/ablation-venv/lib/python3.12/site-packages/onnxruntime/tools/mobile_helpers/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "sizeBytes": 0,
+      "runtime": "onnxruntime",
+      "license": "MIT"
+    },
+    {
+      "path": "/Users/steven/code/Arion/.workspace/ablation-venv/lib/python3.12/site-packages/onnxruntime/tools/ort_format_model/__init__.py",
+      "sha256": "6ad6e1088a303c660e4a2ad9c18082dfede79ec7a72c787237637cbcc9dc10b8",
+      "sizeBytes": 1280,
+      "runtime": "onnxruntime",
+      "license": "MIT"
+    },
+    {
+      "path": "/Users/steven/code/Arion/.workspace/ablation-venv/lib/python3.12/site-packages/onnxruntime/tools/ort_format_model/ort_flatbuffers_py/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "sizeBytes": 0,
+      "runtime": "onnxruntime",
+      "license": "MIT"
+    },
+    {
+      "path": "/Users/steven/code/Arion/.workspace/ablation-venv/lib/python3.12/site-packages/onnxruntime/tools/ort_format_model/ort_flatbuffers_py/fbs/__init__.py",
+      "sha256": "ea499fd8cfe2c9e5dccd3d6855aa78e1d1ee3b7d6c5214bec13f719d02aa2992",
+      "sizeBytes": 245,
+      "runtime": "onnxruntime",
+      "license": "MIT"
+    },
+    {
+      "path": "/Users/steven/code/Arion/.workspace/ablation-venv/lib/python3.12/site-packages/onnxruntime/quantization/fusions/__init__.py",
+      "sha256": "f05e55a909e2a9aedaec74ef9451aff14e65b6f059f9215ad936310ab822ab24",
+      "sizeBytes": 242,
+      "runtime": "onnxruntime",
+      "license": "MIT"
+    },
+    {
+      "path": "/Users/steven/code/Arion/.workspace/ablation-venv/lib/python3.12/site-packages/onnxruntime/quantization/operators/__init__.py",
+      "sha256": "7b531614058e27f1678fbea573c2e71b6dafd8ac22ff236f2a1d1aaa489d10a5",
+      "sizeBytes": 83,
+      "runtime": "onnxruntime",
+      "license": "MIT"
+    },
+    {
+      "path": "/Users/steven/code/Arion/.workspace/ablation-venv/lib/python3.12/site-packages/onnxruntime/quantization/neural_compressor/__init__.py",
+      "sha256": "97eb008ba62d7bfb6234540b738dce6914085e0517358f1c091232e9db87f172",
+      "sizeBytes": 67,
+      "runtime": "onnxruntime",
+      "license": "MIT"
+    },
+    {
+      "path": "/Users/steven/code/Arion/.workspace/ablation-venv/lib/python3.12/site-packages/onnxruntime/quantization/CalTableFlatBuffers/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "sizeBytes": 0,
+      "runtime": "onnxruntime",
+      "license": "MIT"
+    },
+    {
+      "path": "/Users/steven/code/Arion/.workspace/ablation-venv/lib/python3.12/site-packages/onnxruntime/quantization/execution_providers/qnn/__init__.py",
+      "sha256": "99a13e72b8e602904cfac188b98fcfce386542eb10afc0fe140840f5eaa6f758",
+      "sizeBytes": 118,
+      "runtime": "onnxruntime",
+      "license": "MIT"
+    },
+    {
+      "path": "/Users/steven/code/Arion/.workspace/ablation-venv/lib/python3.12/site-packages/onnxruntime/transformers/models/phi2/__init__.py",
+      "sha256": "c74bfebb1533dfd0926b02c6d5107e26c761f63e57db09614b7289bb0be4dcf8",
+      "sizeBytes": 478,
+      "runtime": "onnxruntime",
+      "license": "MIT"
+    },
+    {
+      "path": "/Users/steven/code/Arion/.workspace/ablation-venv/lib/python3.12/site-packages/onnxruntime/transformers/models/t5/__init__.py",
+      "sha256": "07046f69491f612ac655dcf64fa8c28be707f2047d503deadc6aed32d9092fcc",
+      "sizeBytes": 483,
+      "runtime": "onnxruntime",
+      "license": "MIT"
+    },
+    {
+      "path": "/Users/steven/code/Arion/.workspace/ablation-venv/lib/python3.12/site-packages/onnxruntime/transformers/models/bart/__init__.py",
+      "sha256": "07046f69491f612ac655dcf64fa8c28be707f2047d503deadc6aed32d9092fcc",
+      "sizeBytes": 483,
+      "runtime": "onnxruntime",
+      "license": "MIT"
+    },
+    {
+      "path": "/Users/steven/code/Arion/.workspace/ablation-venv/lib/python3.12/site-packages/onnxruntime/transformers/models/bert/__init__.py",
+      "sha256": "07046f69491f612ac655dcf64fa8c28be707f2047d503deadc6aed32d9092fcc",
+      "sizeBytes": 483,
+      "runtime": "onnxruntime",
+      "license": "MIT"
+    },
+    {
+      "path": "/Users/steven/code/Arion/.workspace/ablation-venv/lib/python3.12/site-packages/onnxruntime/transformers/models/stable_diffusion/__init__.py",
+      "sha256": "07046f69491f612ac655dcf64fa8c28be707f2047d503deadc6aed32d9092fcc",
+      "sizeBytes": 483,
+      "runtime": "onnxruntime",
+      "license": "MIT"
+    },
+    {
+      "path": "/Users/steven/code/Arion/.workspace/ablation-venv/lib/python3.12/site-packages/onnxruntime/transformers/models/longformer/__init__.py",
+      "sha256": "07046f69491f612ac655dcf64fa8c28be707f2047d503deadc6aed32d9092fcc",
+      "sizeBytes": 483,
+      "runtime": "onnxruntime",
+      "license": "MIT"
+    },
+    {
+      "path": "/Users/steven/code/Arion/.workspace/ablation-venv/lib/python3.12/site-packages/onnxruntime/transformers/models/gpt2/__init__.py",
+      "sha256": "07046f69491f612ac655dcf64fa8c28be707f2047d503deadc6aed32d9092fcc",
+      "sizeBytes": 483,
+      "runtime": "onnxruntime",
+      "license": "MIT"
+    },
+    {
+      "path": "/Users/steven/code/Arion/.workspace/ablation-venv/lib/python3.12/site-packages/onnxruntime/transformers/models/sam2/__init__.py",
+      "sha256": "07046f69491f612ac655dcf64fa8c28be707f2047d503deadc6aed32d9092fcc",
+      "sizeBytes": 483,
+      "runtime": "onnxruntime",
+      "license": "MIT"
+    },
+    {
+      "path": "/Users/steven/code/Arion/.workspace/ablation-venv/lib/python3.12/site-packages/onnxruntime/transformers/models/llama/__init__.py",
+      "sha256": "c74bfebb1533dfd0926b02c6d5107e26c761f63e57db09614b7289bb0be4dcf8",
+      "sizeBytes": 478,
+      "runtime": "onnxruntime",
+      "license": "MIT"
+    },
+    {
+      "path": "/Users/steven/code/Arion/.workspace/ablation-venv/lib/python3.12/site-packages/onnxruntime/transformers/models/whisper/__init__.py",
+      "sha256": "c74bfebb1533dfd0926b02c6d5107e26c761f63e57db09614b7289bb0be4dcf8",
+      "sizeBytes": 478,
+      "runtime": "onnxruntime",
+      "license": "MIT"
+    },
+    {
+      "path": "/Users/steven/.local/share/uv/python/cpython-3.12.9-macos-aarch64-none/bin/python3.12",
+      "sha256": "e878533ce71a6e91b0fae5e8bbe8baebbb6194dad84fead52e9b42f0620ad011"
+    }
+  ],
+  "failure": "Worker exited null",
+  "terminationReason": "User requested no further Qwen3-4B evaluation; complete Qwen3-1.7B checkpoint retained",
+  "retainedCounts": {
+    "raw": 154,
+    "qwen3-1.7b": 924,
+    "qwen3-4b": 2
+  },
+  "retainedWarmupCounts": {
+    "qwen3-1.7b": 12,
+    "qwen3-4b": 12
+  },
+  "resultsHashAtStop": "e1d7949a9508bfcb26ad87eeb0caa55728782de4701ecf4212ff5fa687696b20",
+  "warmupsHashAtStop": "5d0922071ca564727325b9660f8ba7646e2e062ec4c9e87283b655903c05be0e"
+}

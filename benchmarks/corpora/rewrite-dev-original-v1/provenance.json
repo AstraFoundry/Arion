@@ -1,0 +1,17 @@
+{
+  "kind": "arion-corpus-archive-provenance",
+  "preservation": "Original source bytes; no annotation, licence or split rewritten",
+  "sources": [
+    {
+      "originalPath": ".workspace/ablation-corpus-v1.json",
+      "archivedPath": "benchmarks/corpora/rewrite-dev-original-v1/corpus.json",
+      "sha256": "5e9ac53eb85c1c914741800ec38137130838d64d81828f09f5b98d9969999741",
+      "samples": 24,
+      "declaredLicense": "CC0-1.0; synthetic prompts authored for this Arion experiment",
+      "declaredAnnotation": "developer_authored_unreviewed",
+      "declaredSplit": "dev"
+    }
+  ],
+  "attribution": "Source licence and annotation values are copied from original metadata; null means unspecified, not a new permission assertion. See benchmarks/datasets.json for upstream dataset identities.",
+  "studyUse": "Historical disclosed benchmark corpus. Preserve its original split field; future reuse is regression/exploratory evidence."
+}

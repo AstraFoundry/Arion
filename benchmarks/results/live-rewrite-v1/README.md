@@ -1,6 +1,6 @@
 # Live rewrite pipeline results (v1)
 
-These are real local CPU runs of the production code paths on Apple M4 (32 GiB, macOS arm64): the `arion-llm` worker (ONNX Runtime GenAI 0.17.0 / ONNX Runtime 1.30.0, prompt `live-v2`, greedy, 4 threads) and the production dictation coordinator replaying speech in real time. [The content-free summary](summary.json) holds every number below together with the hash of each corpus, fixture manifest and private result file. The [methodology](../../../docs/research/live-rewrite-benchmark.md) defines the corpora and metrics.
+These are real local CPU runs of the production code paths on Apple M4 (32 GiB, macOS arm64): the `arion-llm` worker (ONNX Runtime GenAI 0.17.0 / ONNX Runtime 1.30.0, prompt `live-v2`, greedy, 4 threads) and the production dictation coordinator replaying speech in real time. [The content-free summary](summary.json) holds every number below together with the hash of each corpus, fixture manifest and archived result file. The [methodology](../../../docs/research/live-rewrite-benchmark.md) defines the corpora and metrics.
 
 **Limits.** One developer authored every case. Speech is macOS TTS with inserted 1.2 s pauses. Scores are exact-string proxies, not semantic accuracy, and there are no human ratings. The host was not isolated. Native preview rendering, IME insertion and Windows were not measured. The held-out set was written and hashed before prompt tuning; the development set was used to tune the prompt.
 

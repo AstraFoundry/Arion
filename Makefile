@@ -1,5 +1,7 @@
 .DEFAULT_GOAL := help
 .PHONY: workflows-check
+.PHONY: phonetic-extract phonetic-bench phonetic-report benchmark-archive-check benchmark-archive-report
+export PHONETIC_CONFIG PHONE_MODELS RUNTIME_ARTIFACTS LLM_ARTIFACTS EVIDENCE PHONETIC_PREFLIGHT
 CONFIG ?= benchmarks/configs/desktop-factorial.json
 PLAN ?= .workspace/benchmarks/plan.json
 SUITE ?= tests/e2e/desktop-scenarios.json
@@ -159,6 +161,21 @@ scene-bench: ## Score scene selection against labelled app/site contexts; CONTEX
 
 memory-bench: ## Edit learning and vocabulary recall quality, latency and faults; requires OUT, optional CORPUS with DEV and TEST results
 	@node scripts/memory-bench-command.mjs
+
+phonetic-extract: ## Extract real ASR scores and audio IPA; CORPUS, EVAL_PYTHON, MODELS, PHONE_MODELS, RUNTIME_ARTIFACTS and OUT required
+	@node scripts/phonetic-bench-command.mjs extract
+
+phonetic-bench: ## Run paired phonetic correction ablations; CORPUS, EVAL_PYTHON, MODELS, RUNTIME_ARTIFACTS, LLM_ARTIFACTS, EVIDENCE, PHONETIC_PREFLIGHT and OUT required
+	@node scripts/phonetic-bench-command.mjs run
+
+phonetic-report: ## Score a completed phonetic ablation; RESULTS and OUT required
+	@node scripts/phonetic-bench-command.mjs report
+
+benchmark-archive-check: ## Verify archived benchmark bytes, linked evidence, audio and completed checkpoint selection
+	@pnpm bench:archive:verify
+
+benchmark-archive-report: ## Regenerate and compare eight archived report families without inference; OUT required
+	@pnpm bench:archive:report --out "$(OUT)"
 
 help: ## Show available commands
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z0-9_-]+:.*?## / {printf "  %-18s %s\n", $$1, $$2}' $(MAKEFILE_LIST)

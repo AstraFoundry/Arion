@@ -79,6 +79,8 @@ func TestExportExcludesSensitiveCanaries(t *testing.T) {
 	}
 	e.Kind, e.Sequence, e.Rewrite = contracts.CorrectionReady, 3, "negation_dropped"
 	r.Session(e)
+	e.Rewrite = "uncertainty_dropped"
+	r.Session(e)
 	e.Kind, e.Sequence, e.Outcome = contracts.CommitResultReady, 4, contracts.Unknown
 	r.Session(e)
 	r.Record(Entry{Event: "preferences_save", Code: Failure(errors.New("/Users/private/" + secret))})
@@ -99,7 +101,7 @@ func TestExportExcludesSensitiveCanaries(t *testing.T) {
 		t.Fatal("sensitive canary exported")
 	}
 	log := string(files["events.0.jsonl"])
-	for _, event := range []string{"session_state", "first_draft", "correction_ready", "commit_result", "IO_FAILED", "events_dropped", "negation_dropped", "unknown"} {
+	for _, event := range []string{"session_state", "first_draft", "correction_ready", "commit_result", "IO_FAILED", "events_dropped", "negation_dropped", "uncertainty_dropped", "unknown"} {
 		if !strings.Contains(log, event) {
 			t.Errorf("missing %s: %s", event, log)
 		}

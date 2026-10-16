@@ -1,0 +1,179 @@
+{
+  "schema_version": 1,
+  "scope": "Static package analysis and existing evidence reuse only; no competitor launch, microphone, network interception, personal data or inference measurements.",
+  "rea_runtime": "REA 6.4.0 public cached CLI; MCP tools unavailable in this chat; codex registration healthy. No configuration or engine installation. inspect-macho used native-macos provider and completed without persistent native session.",
+  "artifacts": [
+    {
+      "product": "doubao",
+      "path": "/Library/Input Methods/DoubaoIme.app/Contents/MacOS/DoubaoIme",
+      "sha256": "4b3836dcb8a3e06b01b4c95390c757b71f623c1f7c4141c059e49284f7f6442d",
+      "rea_evidence_id": "ev_66516fc55867516031ba4c3c21cfcfd36c135cf6b7e3d1a9cbc94dbd80198f0e",
+      "operation": "inspect_macho"
+    },
+    {
+      "product": "chatterfly",
+      "path": "/Users/steven/code/Arion/.workspace/research/chatterfly/extracted/Chatterfly.app/Contents/MacOS/Chatterfly",
+      "sha256": "1063fbb5b0e18dc323ec4a14487456795b359b9330cfeee14b78454a00791e50",
+      "rea_evidence_id": "ev_357f2213ffae36932ca3c1c489824db2b8487a33c049894dba6808dca0e0d91e",
+      "operation": "inspect_macho"
+    }
+  ],
+  "derived_artifacts": [
+    {
+      "path": "/Library/Input Methods/DoubaoIme.app/Contents/MacOS/DoubaoIme",
+      "sha256": "4b3836dcb8a3e06b01b4c95390c757b71f623c1f7c4141c059e49284f7f6442d",
+      "size": 42723680
+    },
+    {
+      "path": "/Library/Input Methods/DoubaoIme.app/Contents/Frameworks/OimeCommon.framework/Versions/A/OimeCommon",
+      "sha256": "e32fe772173cf8a52865152ab0e07d8bec2354ea317ce61f6ec8e2fc1a805606",
+      "size": 1084144
+    },
+    {
+      "path": "/Library/Input Methods/DoubaoIme.app/Contents/Frameworks/OimeEngine.framework/Versions/A/OimeEngine",
+      "sha256": "d1cebd7c9a9d888acc2a6d2f4aad372cb3b31570ff68a7e631cba930517f5db8",
+      "size": 14474480
+    },
+    {
+      "path": "/Users/steven/code/Arion/.workspace/research/chatterfly/chatterfly-arm64",
+      "sha256": "2ea312f6324accd6194e6c612608870321bc62c286aa2cdbccf8288ae19a2433",
+      "size": 54198928
+    }
+  ],
+  "observations": [
+    {
+      "id": "PA-DB-context",
+      "kind": "ordinary-static-bytes",
+      "observation": "The main binary contains HOTWORDS, USER_MODIFY and CUR_CONTEXT literals. Reused contextual speech-decoder analysis is a static surface inference, not runtime or checkpoint identity.",
+      "locations": [
+        {
+          "file_offset": 17455192,
+          "match": "USER_MODIFY",
+          "context": "USER_MODIFY"
+        },
+        {
+          "file_offset": 17455211,
+          "match": "HOTWORDS",
+          "context": "HOTWORDS"
+        },
+        {
+          "file_offset": 17455220,
+          "match": "CUR_CONTEXT",
+          "context": "CUR_CONTEXT"
+        },
+        {
+          "file_offset": 37458601,
+          "match": "USER_MODIFY",
+          "context": "USER_MODIFY"
+        },
+        {
+          "file_offset": 37458620,
+          "match": "HOTWORDS",
+          "context": "HOTWORDS"
+        },
+        {
+          "file_offset": 37458629,
+          "match": "CUR_CONTEXT",
+          "context": "CUR_CONTEXT"
+        }
+      ]
+    },
+    {
+      "id": "PA-DB-tts",
+      "kind": "ordinary-static-bytes-and-retained-objc-metadata",
+      "observation": "phonemeAlignment belongs to SAMICore_TtsResult in retained Objective-C class metadata. _transformWordsPhonemes diagnostics are adjacent to websocket/tts source-path and TTS event literals. These are TTS surfaces and do not establish ASR phoneme output.",
+      "source_metadata_sha256": "09ccf77f4bde784ddcef229ce7b8fe8984eb3ca512e1abaa426dc8742efe13cb",
+      "metadata_line_start": 12311,
+      "metadata_line_end": 12386,
+      "locations": [
+        {
+          "file_offset": 17333068,
+          "match": "phoneme",
+          "context": "phonemes"
+        },
+        {
+          "file_offset": 17389372,
+          "match": "Phoneme",
+          "context": "_transformWordsPhonemes"
+        },
+        {
+          "file_offset": 19177937,
+          "match": "phoneme",
+          "context": "phonemeAlignment"
+        },
+        {
+          "file_offset": 37333455,
+          "match": "phoneme",
+          "context": "phonemes"
+        },
+        {
+          "file_offset": 37392646,
+          "match": "Phoneme",
+          "context": "_transformWordsPhonemes"
+        },
+        {
+          "file_offset": 40050772,
+          "match": "phoneme",
+          "context": "phonemeAlignment"
+        }
+      ]
+    },
+    {
+      "id": "PA-DB-nbest",
+      "kind": "ordinary-static-bytes",
+      "observation": "nbest is only support 1 now occurs in a neighborhood containing transition initializers and ViterbiDecoderV2 kernel init failed. No ASR path attribution is established; it cannot prove application-wide N-best support or absence.",
+      "locations": [
+        {
+          "file_offset": 17618640,
+          "match": "nbest",
+          "context": "nbest is only support 1 now"
+        },
+        {
+          "file_offset": 37620955,
+          "match": "nbest",
+          "context": "nbest is only support 1 now"
+        }
+      ]
+    },
+    {
+      "id": "PA-CF-path",
+      "kind": "reused-native-instruction-observations",
+      "reused_ids": [
+        "CF-asm-llm-orchestrator",
+        "CF-asm-payload"
+      ],
+      "observation": "Inspected orchestration reads asrStableText at 0x1003c3cf4 and invokes processWithAsrText at 0x1003c3d80. The SSE payload constructor references asr_text at 0x100415494; inspected fields contain no explicit phoneme, pinyin or N-best field. Optional ext_config/context and uninspected branches/server internals remain unknown.",
+      "instruction_files": [
+        {
+          "name": "asm-payload.txt",
+          "sha256": "7b869e674291feb4cffb5f1c9f5462b1b28248b10968c981e0f383ee5ca233a4"
+        },
+        {
+          "name": "asm-llm-orchestrator.txt",
+          "sha256": "421a7d0887835cb4dbf5a5b2cad1fa043ef2b4990a4cb964ca24777dce474f4e"
+        }
+      ]
+    },
+    {
+      "id": "PA-CF-false-leads",
+      "kind": "ordinary-static-symbols",
+      "observation": "NBestSentencePieceText belongs to xsp tokenizer names; PhoneticCandEntry/PhoneticGeneEntry belong to _sgime_core_pinyin_ symbols. Their presence does not establish speech N-best or speech-to-phoneme delivery to the postprocessor.",
+      "locations": [
+        {
+          "file_offset": 30299825,
+          "context": "xsp.NBestSentencePieceText"
+        },
+        {
+          "file_offset": 45059014,
+          "context": "__ZN19_sgime_core_pinyin_25GenerateCandManagerHandle17PhoneticCandEntryERKNSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEERNS1_6vectorIPKhNS5_ISC_EEEERN26sgime_kernelbase_namespace6t_heapE"
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "Installed Doubao IME 1.0.2 (1) and retained Chatterfly 1.0.6.13398 only; not evidence of latest versions or other platforms.",
+    "String scans are bounded literals, not whole-program or server reachability proofs.",
+    "REA evidence authenticates artifact inspection; PA/CF identifiers are ordinary static observations, not REA decompilation evidence.",
+    "No phonetic sidecar or candidate pipeline was implemented or benchmarked."
+  ]
+}

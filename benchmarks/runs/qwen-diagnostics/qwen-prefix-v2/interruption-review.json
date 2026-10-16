@@ -1,0 +1,7 @@
+{
+  "resultsHash": "3c2978ebfdc8b1108bf2bd01a70b2d791f9296fbe864d6941d38de8f640cd36c",
+  "validity": "inference coverage completed; not an uncontaminated latency comparison",
+  "decision": "preserve all raw observations; repeat whole comparison",
+  "physicalCause": "unconfirmed host scheduling or clock interruption",
+  "excludedOutlierCount": 0
+}

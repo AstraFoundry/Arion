@@ -1,0 +1,585 @@
+{
+  "version": 1,
+  "configHash": "35515e71f080f1f09673065d0ad78ba3202aa00625363045380d560688b53ada",
+  "normalization": "arion-nfkc-lower-punctuation-space-v1",
+  "blocks": [
+    {
+      "seed": 11,
+      "cacheState": "warm",
+      "variant": {
+        "id": "m0-r0-c0",
+        "features": {
+          "memory": false,
+          "ranker": "source",
+          "correction": "none"
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "warm",
+      "variant": {
+        "id": "m1-r0-c1",
+        "features": {
+          "memory": true,
+          "ranker": "source",
+          "correction": "local"
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "warm",
+      "variant": {
+        "id": "m1-r0-c0",
+        "features": {
+          "memory": true,
+          "ranker": "source",
+          "correction": "none"
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "warm",
+      "variant": {
+        "id": "m0-r1-c1",
+        "features": {
+          "memory": false,
+          "ranker": "laya",
+          "correction": "local"
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "warm",
+      "variant": {
+        "id": "m0-r0-c1",
+        "features": {
+          "memory": false,
+          "ranker": "source",
+          "correction": "local"
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "warm",
+      "variant": {
+        "id": "m0-r1-c0",
+        "features": {
+          "memory": false,
+          "ranker": "laya",
+          "correction": "none"
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "warm",
+      "variant": {
+        "id": "m1-r1-c0",
+        "features": {
+          "memory": true,
+          "ranker": "laya",
+          "correction": "none"
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "warm",
+      "variant": {
+        "id": "m1-r1-c1",
+        "features": {
+          "memory": true,
+          "ranker": "laya",
+          "correction": "local"
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "cold",
+      "variant": {
+        "id": "m0-r1-c0",
+        "features": {
+          "memory": false,
+          "ranker": "laya",
+          "correction": "none"
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "cold",
+      "variant": {
+        "id": "m1-r1-c0",
+        "features": {
+          "memory": true,
+          "ranker": "laya",
+          "correction": "none"
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "cold",
+      "variant": {
+        "id": "m0-r0-c0",
+        "features": {
+          "memory": false,
+          "ranker": "source",
+          "correction": "none"
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "cold",
+      "variant": {
+        "id": "m1-r1-c1",
+        "features": {
+          "memory": true,
+          "ranker": "laya",
+          "correction": "local"
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "cold",
+      "variant": {
+        "id": "m0-r0-c1",
+        "features": {
+          "memory": false,
+          "ranker": "source",
+          "correction": "local"
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "cold",
+      "variant": {
+        "id": "m1-r0-c0",
+        "features": {
+          "memory": true,
+          "ranker": "source",
+          "correction": "none"
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "cold",
+      "variant": {
+        "id": "m0-r1-c1",
+        "features": {
+          "memory": false,
+          "ranker": "laya",
+          "correction": "local"
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "cold",
+      "variant": {
+        "id": "m1-r0-c1",
+        "features": {
+          "memory": true,
+          "ranker": "source",
+          "correction": "local"
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "warm",
+      "variant": {
+        "id": "m1-r1-c1",
+        "features": {
+          "memory": true,
+          "ranker": "laya",
+          "correction": "local"
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "warm",
+      "variant": {
+        "id": "m1-r0-c1",
+        "features": {
+          "memory": true,
+          "ranker": "source",
+          "correction": "local"
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "warm",
+      "variant": {
+        "id": "m0-r0-c1",
+        "features": {
+          "memory": false,
+          "ranker": "source",
+          "correction": "local"
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "warm",
+      "variant": {
+        "id": "m1-r1-c0",
+        "features": {
+          "memory": true,
+          "ranker": "laya",
+          "correction": "none"
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "warm",
+      "variant": {
+        "id": "m1-r0-c0",
+        "features": {
+          "memory": true,
+          "ranker": "source",
+          "correction": "none"
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "warm",
+      "variant": {
+        "id": "m0-r0-c0",
+        "features": {
+          "memory": false,
+          "ranker": "source",
+          "correction": "none"
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "warm",
+      "variant": {
+        "id": "m0-r1-c0",
+        "features": {
+          "memory": false,
+          "ranker": "laya",
+          "correction": "none"
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "warm",
+      "variant": {
+        "id": "m0-r1-c1",
+        "features": {
+          "memory": false,
+          "ranker": "laya",
+          "correction": "local"
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "cold",
+      "variant": {
+        "id": "m1-r1-c0",
+        "features": {
+          "memory": true,
+          "ranker": "laya",
+          "correction": "none"
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "cold",
+      "variant": {
+        "id": "m0-r0-c1",
+        "features": {
+          "memory": false,
+          "ranker": "source",
+          "correction": "local"
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "cold",
+      "variant": {
+        "id": "m0-r1-c1",
+        "features": {
+          "memory": false,
+          "ranker": "laya",
+          "correction": "local"
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "cold",
+      "variant": {
+        "id": "m1-r1-c1",
+        "features": {
+          "memory": true,
+          "ranker": "laya",
+          "correction": "local"
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "cold",
+      "variant": {
+        "id": "m1-r0-c1",
+        "features": {
+          "memory": true,
+          "ranker": "source",
+          "correction": "local"
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "cold",
+      "variant": {
+        "id": "m0-r0-c0",
+        "features": {
+          "memory": false,
+          "ranker": "source",
+          "correction": "none"
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "cold",
+      "variant": {
+        "id": "m0-r1-c0",
+        "features": {
+          "memory": false,
+          "ranker": "laya",
+          "correction": "none"
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "cold",
+      "variant": {
+        "id": "m1-r0-c0",
+        "features": {
+          "memory": true,
+          "ranker": "source",
+          "correction": "none"
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "warm",
+      "variant": {
+        "id": "m0-r1-c1",
+        "features": {
+          "memory": false,
+          "ranker": "laya",
+          "correction": "local"
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "warm",
+      "variant": {
+        "id": "m1-r1-c0",
+        "features": {
+          "memory": true,
+          "ranker": "laya",
+          "correction": "none"
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "warm",
+      "variant": {
+        "id": "m0-r0-c0",
+        "features": {
+          "memory": false,
+          "ranker": "source",
+          "correction": "none"
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "warm",
+      "variant": {
+        "id": "m1-r0-c1",
+        "features": {
+          "memory": true,
+          "ranker": "source",
+          "correction": "local"
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "warm",
+      "variant": {
+        "id": "m0-r0-c1",
+        "features": {
+          "memory": false,
+          "ranker": "source",
+          "correction": "local"
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "warm",
+      "variant": {
+        "id": "m0-r1-c0",
+        "features": {
+          "memory": false,
+          "ranker": "laya",
+          "correction": "none"
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "warm",
+      "variant": {
+        "id": "m1-r0-c0",
+        "features": {
+          "memory": true,
+          "ranker": "source",
+          "correction": "none"
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "warm",
+      "variant": {
+        "id": "m1-r1-c1",
+        "features": {
+          "memory": true,
+          "ranker": "laya",
+          "correction": "local"
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "cold",
+      "variant": {
+        "id": "m0-r0-c0",
+        "features": {
+          "memory": false,
+          "ranker": "source",
+          "correction": "none"
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "cold",
+      "variant": {
+        "id": "m1-r1-c0",
+        "features": {
+          "memory": true,
+          "ranker": "laya",
+          "correction": "none"
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "cold",
+      "variant": {
+        "id": "m1-r0-c0",
+        "features": {
+          "memory": true,
+          "ranker": "source",
+          "correction": "none"
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "cold",
+      "variant": {
+        "id": "m1-r1-c1",
+        "features": {
+          "memory": true,
+          "ranker": "laya",
+          "correction": "local"
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "cold",
+      "variant": {
+        "id": "m1-r0-c1",
+        "features": {
+          "memory": true,
+          "ranker": "source",
+          "correction": "local"
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "cold",
+      "variant": {
+        "id": "m0-r1-c1",
+        "features": {
+          "memory": false,
+          "ranker": "laya",
+          "correction": "local"
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "cold",
+      "variant": {
+        "id": "m0-r1-c0",
+        "features": {
+          "memory": false,
+          "ranker": "laya",
+          "correction": "none"
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "cold",
+      "variant": {
+        "id": "m0-r0-c1",
+        "features": {
+          "memory": false,
+          "ranker": "source",
+          "correction": "local"
+        }
+      }
+    }
+  ],
+  "cases": [],
+  "measuredRequests": 0
+}

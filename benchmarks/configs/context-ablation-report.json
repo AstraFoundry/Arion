@@ -1,231 +1,236 @@
 {
- "host": "Apple M4, 32 GiB, macOS arm64; CPU only; 4 intra-op threads; host not isolated from other desktop tasks",
- "provenance": "arion-llm worker (ONNX Runtime GenAI 0.17.0 / ONNX Runtime 1.30.0), greedy; Qwen3 1.7B and 4B INT4 onnx-community CPU exports; prompts live-v2 and context-v1+live-v2; screen text from macOS Vision via arion-ocr on headless-Chrome renderings at 2x",
- "limitations": "Developer-authored synthetic windows and ASR-like errors (one author), exact-string proxies, text input only; real window capture, real ASR, Windows OCR and human ratings were not measured",
- "runs": [
-  {
-   "id": "first-17-none",
-   "kind": "text",
-   "split": "heldout",
-   "variant": "1.7B no context",
-   "corpus": ".workspace/context/context-heldout-corpus.json",
-   "results": ".workspace/benchmarks/context/17-none.jsonl"
-  },
-  {
-   "id": "first-17-cursor",
-   "kind": "text",
-   "split": "heldout",
-   "variant": "1.7B cursor, context prompt",
-   "corpus": ".workspace/context/context-heldout-corpus.json",
-   "results": ".workspace/benchmarks/context/17-cursor.jsonl"
-  },
-  {
-   "id": "first-17-history",
-   "kind": "text",
-   "split": "heldout",
-   "variant": "1.7B history, context prompt",
-   "corpus": ".workspace/context/context-heldout-corpus.json",
-   "results": ".workspace/benchmarks/context/17-history.jsonl"
-  },
-  {
-   "id": "first-17-screen-oracle",
-   "kind": "text",
-   "split": "heldout",
-   "variant": "1.7B screen oracle text, context prompt",
-   "corpus": ".workspace/context/context-heldout-corpus.json",
-   "results": ".workspace/benchmarks/context/17-screen-oracle.jsonl"
-  },
-  {
-   "id": "first-17-screen-accurate",
-   "kind": "text",
-   "split": "heldout",
-   "variant": "1.7B screen Vision accurate, context prompt",
-   "corpus": ".workspace/context/context-heldout-corpus.json",
-   "results": ".workspace/benchmarks/context/17-screen-accurate.jsonl"
-  },
-  {
-   "id": "first-17-screen-fast",
-   "kind": "text",
-   "split": "heldout",
-   "variant": "1.7B screen Vision fast, context prompt",
-   "corpus": ".workspace/context/context-heldout-corpus.json",
-   "results": ".workspace/benchmarks/context/17-screen-fast.jsonl"
-  },
-  {
-   "id": "first-17-all-accurate",
-   "kind": "text",
-   "split": "heldout",
-   "variant": "1.7B all sources accurate OCR, context prompt",
-   "corpus": ".workspace/context/context-heldout-corpus.json",
-   "results": ".workspace/benchmarks/context/17-all-accurate.jsonl"
-  },
-  {
-   "id": "first-17-all-oracle",
-   "kind": "text",
-   "split": "heldout",
-   "variant": "1.7B all sources oracle screen, context prompt",
-   "corpus": ".workspace/context/context-heldout-corpus.json",
-   "results": ".workspace/benchmarks/context/17-all-oracle.jsonl"
-  },
-  {
-   "id": "first-4b-none",
-   "kind": "text",
-   "split": "heldout",
-   "variant": "4B no context",
-   "corpus": ".workspace/context/context-heldout-corpus.json",
-   "results": ".workspace/benchmarks/context/4b-none.jsonl"
-  },
-  {
-   "id": "first-4b-all-accurate",
-   "kind": "text",
-   "split": "heldout",
-   "variant": "4B all sources accurate OCR, context prompt, uncapped validator",
-   "corpus": ".workspace/context/context-heldout-corpus.json",
-   "results": ".workspace/benchmarks/context/4b-all-accurate.jsonl"
-  },
-  {
-   "id": "dev-17-none",
-   "kind": "text",
-   "split": "dev",
-   "variant": "1.7B no context",
-   "corpus": ".workspace/context/dev/context-dev-corpus.json",
-   "results": ".workspace/benchmarks/context/dev/17-none.jsonl"
-  },
-  {
-   "id": "dev-17-all-prompt",
-   "kind": "text",
-   "split": "dev",
-   "variant": "1.7B all accurate, prompt",
-   "corpus": ".workspace/context/dev/context-dev-corpus.json",
-   "results": ".workspace/benchmarks/context/dev/17-all-prompt.jsonl"
-  },
-  {
-   "id": "dev-17-all-terms",
-   "kind": "text",
-   "split": "dev",
-   "variant": "1.7B all accurate, terms",
-   "corpus": ".workspace/context/dev/context-dev-corpus.json",
-   "results": ".workspace/benchmarks/context/dev/17-all-terms.jsonl"
-  },
-  {
-   "id": "dev-17-all-both",
-   "kind": "text",
-   "split": "dev",
-   "variant": "1.7B all accurate, prompt+terms",
-   "corpus": ".workspace/context/dev/context-dev-corpus.json",
-   "results": ".workspace/benchmarks/context/dev/17-all-both.jsonl"
-  },
-  {
-   "id": "dev-4b-all-prompt",
-   "kind": "text",
-   "split": "dev",
-   "variant": "4B all accurate, prompt",
-   "corpus": ".workspace/context/dev/context-dev-corpus.json",
-   "results": ".workspace/benchmarks/context/dev/4b-all-prompt.jsonl"
-  },
-  {
-   "id": "dev-4b-all-terms",
-   "kind": "text",
-   "split": "dev",
-   "variant": "4B all accurate, terms",
-   "corpus": ".workspace/context/dev/context-dev-corpus.json",
-   "results": ".workspace/benchmarks/context/dev/4b-all-terms.jsonl"
-  },
-  {
-   "id": "final-4b-none",
-   "kind": "text",
-   "split": "heldout",
-   "variant": "4B no context",
-   "corpus": ".workspace/context/context-heldout-corpus.json",
-   "results": ".workspace/benchmarks/context/final/4b-none.jsonl"
-  },
-  {
-   "id": "final-4b-terms-cursor",
-   "kind": "text",
-   "split": "heldout",
-   "variant": "4B cursor, terms, validated without context (stricter than the product)",
-   "corpus": ".workspace/context/context-heldout-corpus.json",
-   "results": ".workspace/benchmarks/context/final/4b-terms-cursor.jsonl"
-  },
-  {
-   "id": "final-4b-terms-history",
-   "kind": "text",
-   "split": "heldout",
-   "variant": "4B history, terms, validated without context (stricter than the product)",
-   "corpus": ".workspace/context/context-heldout-corpus.json",
-   "results": ".workspace/benchmarks/context/final/4b-terms-history.jsonl"
-  },
-  {
-   "id": "final-4b-terms-screen-oracle",
-   "kind": "text",
-   "split": "heldout",
-   "variant": "4B screen oracle text, terms, validated without context (stricter than the product)",
-   "corpus": ".workspace/context/context-heldout-corpus.json",
-   "results": ".workspace/benchmarks/context/final/4b-terms-screen-oracle.jsonl"
-  },
-  {
-   "id": "final-4b-terms-screen-accurate",
-   "kind": "text",
-   "split": "heldout",
-   "variant": "4B screen Vision accurate, terms, validated without context (stricter than the product)",
-   "corpus": ".workspace/context/context-heldout-corpus.json",
-   "results": ".workspace/benchmarks/context/final/4b-terms-screen-accurate.jsonl"
-  },
-  {
-   "id": "final-4b-terms-screen-fast",
-   "kind": "text",
-   "split": "heldout",
-   "variant": "4B screen Vision fast, terms, validated without context (stricter than the product)",
-   "corpus": ".workspace/context/context-heldout-corpus.json",
-   "results": ".workspace/benchmarks/context/final/4b-terms-screen-fast.jsonl"
-  },
-  {
-   "id": "final-4b-terms-all-accurate",
-   "kind": "text",
-   "split": "heldout",
-   "variant": "4B all sources accurate OCR, terms, validated without context (stricter than the product)",
-   "corpus": ".workspace/context/context-heldout-corpus.json",
-   "results": ".workspace/benchmarks/context/final/4b-terms-all-accurate.jsonl"
-  },
-  {
-   "id": "final-4b-prompt-all-accurate",
-   "kind": "text",
-   "split": "heldout",
-   "variant": "4B all sources accurate OCR, context prompt",
-   "corpus": ".workspace/context/context-heldout-corpus.json",
-   "results": ".workspace/benchmarks/context/final/4b-prompt-all-accurate.jsonl"
-  },
-  {
-   "id": "final-17-terms-all-accurate",
-   "kind": "text",
-   "split": "heldout",
-   "variant": "1.7B all sources accurate OCR, terms, validated without context (stricter than the product)",
-   "corpus": ".workspace/context/context-heldout-corpus.json",
-   "results": ".workspace/benchmarks/context/final/17-terms-all-accurate.jsonl"
-  },
-  {
-   "id": "regression-lrw-heldout",
-   "kind": "text",
-   "split": "heldout",
-   "variant": "1.7B live held-out set, no context, after the context changes",
-   "corpus": ".workspace/live-heldout-corpus.json",
-   "results": ".workspace/benchmarks/context/lrw-heldout.jsonl"
-  },
-  {
-   "id": "product-4b-product-all-accurate",
-   "kind": "text",
-   "split": "heldout",
-   "variant": "4B all sources accurate OCR, terms, validated with the whole context (product)",
-   "corpus": ".workspace/context/context-heldout-corpus.json",
-   "results": ".workspace/benchmarks/context/final/4b-product-all-accurate.jsonl"
-  },
-  {
-   "id": "product-17-product-all-accurate",
-   "kind": "text",
-   "split": "heldout",
-   "variant": "1.7B all sources accurate OCR, terms, validated with the whole context (product)",
-   "corpus": ".workspace/context/context-heldout-corpus.json",
-   "results": ".workspace/benchmarks/context/final/17-product-all-accurate.jsonl"
+  "host": "Apple M4, 32 GiB, macOS arm64; CPU only; 4 intra-op threads; host not isolated from other desktop tasks",
+  "provenance": "arion-llm worker (ONNX Runtime GenAI 0.17.0 / ONNX Runtime 1.30.0), greedy; Qwen3 1.7B and 4B INT4 onnx-community CPU exports; prompts live-v2 and context-v1+live-v2; screen text from macOS Vision via arion-ocr on headless-Chrome renderings at 2x",
+  "limitations": "Developer-authored synthetic windows and ASR-like errors (one author), exact-string proxies, text input only; real window capture, real ASR, Windows OCR and human ratings were not measured",
+  "runs": [
+    {
+      "id": "first-17-none",
+      "kind": "text",
+      "split": "heldout",
+      "variant": "1.7B no context",
+      "corpus": "benchmarks/corpora/context-v1/context-heldout-corpus.json",
+      "results": "benchmarks/runs/context-ablation/context/17-none.jsonl"
+    },
+    {
+      "id": "first-17-cursor",
+      "kind": "text",
+      "split": "heldout",
+      "variant": "1.7B cursor, context prompt",
+      "corpus": "benchmarks/corpora/context-v1/context-heldout-corpus.json",
+      "results": "benchmarks/runs/context-ablation/context/17-cursor.jsonl"
+    },
+    {
+      "id": "first-17-history",
+      "kind": "text",
+      "split": "heldout",
+      "variant": "1.7B history, context prompt",
+      "corpus": "benchmarks/corpora/context-v1/context-heldout-corpus.json",
+      "results": "benchmarks/runs/context-ablation/context/17-history.jsonl"
+    },
+    {
+      "id": "first-17-screen-oracle",
+      "kind": "text",
+      "split": "heldout",
+      "variant": "1.7B screen oracle text, context prompt",
+      "corpus": "benchmarks/corpora/context-v1/context-heldout-corpus.json",
+      "results": "benchmarks/runs/context-ablation/context/17-screen-oracle.jsonl"
+    },
+    {
+      "id": "first-17-screen-accurate",
+      "kind": "text",
+      "split": "heldout",
+      "variant": "1.7B screen Vision accurate, context prompt",
+      "corpus": "benchmarks/corpora/context-v1/context-heldout-corpus.json",
+      "results": "benchmarks/runs/context-ablation/context/17-screen-accurate.jsonl"
+    },
+    {
+      "id": "first-17-screen-fast",
+      "kind": "text",
+      "split": "heldout",
+      "variant": "1.7B screen Vision fast, context prompt",
+      "corpus": "benchmarks/corpora/context-v1/context-heldout-corpus.json",
+      "results": "benchmarks/runs/context-ablation/context/17-screen-fast.jsonl"
+    },
+    {
+      "id": "first-17-all-accurate",
+      "kind": "text",
+      "split": "heldout",
+      "variant": "1.7B all sources accurate OCR, context prompt",
+      "corpus": "benchmarks/corpora/context-v1/context-heldout-corpus.json",
+      "results": "benchmarks/runs/context-ablation/context/17-all-accurate.jsonl"
+    },
+    {
+      "id": "first-17-all-oracle",
+      "kind": "text",
+      "split": "heldout",
+      "variant": "1.7B all sources oracle screen, context prompt",
+      "corpus": "benchmarks/corpora/context-v1/context-heldout-corpus.json",
+      "results": "benchmarks/runs/context-ablation/context/17-all-oracle.jsonl"
+    },
+    {
+      "id": "first-4b-none",
+      "kind": "text",
+      "split": "heldout",
+      "variant": "4B no context",
+      "corpus": "benchmarks/corpora/context-v1/context-heldout-corpus.json",
+      "results": "benchmarks/runs/context-ablation/context/4b-none.jsonl"
+    },
+    {
+      "id": "first-4b-all-accurate",
+      "kind": "text",
+      "split": "heldout",
+      "variant": "4B all sources accurate OCR, context prompt, uncapped validator",
+      "corpus": "benchmarks/corpora/context-v1/context-heldout-corpus.json",
+      "results": "benchmarks/runs/context-ablation/context/4b-all-accurate.jsonl"
+    },
+    {
+      "id": "dev-17-none",
+      "kind": "text",
+      "split": "dev",
+      "variant": "1.7B no context",
+      "corpus": "benchmarks/corpora/context-v1/dev/context-dev-corpus.json",
+      "results": "benchmarks/runs/context-ablation/context/dev/17-none.jsonl"
+    },
+    {
+      "id": "dev-17-all-prompt",
+      "kind": "text",
+      "split": "dev",
+      "variant": "1.7B all accurate, prompt",
+      "corpus": "benchmarks/corpora/context-v1/dev/context-dev-corpus.json",
+      "results": "benchmarks/runs/context-ablation/context/dev/17-all-prompt.jsonl"
+    },
+    {
+      "id": "dev-17-all-terms",
+      "kind": "text",
+      "split": "dev",
+      "variant": "1.7B all accurate, terms",
+      "corpus": "benchmarks/corpora/context-v1/dev/context-dev-corpus.json",
+      "results": "benchmarks/runs/context-ablation/context/dev/17-all-terms.jsonl"
+    },
+    {
+      "id": "dev-17-all-both",
+      "kind": "text",
+      "split": "dev",
+      "variant": "1.7B all accurate, prompt+terms",
+      "corpus": "benchmarks/corpora/context-v1/dev/context-dev-corpus.json",
+      "results": "benchmarks/runs/context-ablation/context/dev/17-all-both.jsonl"
+    },
+    {
+      "id": "dev-4b-all-prompt",
+      "kind": "text",
+      "split": "dev",
+      "variant": "4B all accurate, prompt",
+      "corpus": "benchmarks/corpora/context-v1/dev/context-dev-corpus.json",
+      "results": "benchmarks/runs/context-ablation/context/dev/4b-all-prompt.jsonl"
+    },
+    {
+      "id": "dev-4b-all-terms",
+      "kind": "text",
+      "split": "dev",
+      "variant": "4B all accurate, terms",
+      "corpus": "benchmarks/corpora/context-v1/dev/context-dev-corpus.json",
+      "results": "benchmarks/runs/context-ablation/context/dev/4b-all-terms.jsonl"
+    },
+    {
+      "id": "final-4b-none",
+      "kind": "text",
+      "split": "heldout",
+      "variant": "4B no context",
+      "corpus": "benchmarks/corpora/context-v1/context-heldout-corpus.json",
+      "results": "benchmarks/runs/context-ablation/context/final/4b-none.jsonl"
+    },
+    {
+      "id": "final-4b-terms-cursor",
+      "kind": "text",
+      "split": "heldout",
+      "variant": "4B cursor, terms, validated without context (stricter than the product)",
+      "corpus": "benchmarks/corpora/context-v1/context-heldout-corpus.json",
+      "results": "benchmarks/runs/context-ablation/context/final/4b-terms-cursor.jsonl"
+    },
+    {
+      "id": "final-4b-terms-history",
+      "kind": "text",
+      "split": "heldout",
+      "variant": "4B history, terms, validated without context (stricter than the product)",
+      "corpus": "benchmarks/corpora/context-v1/context-heldout-corpus.json",
+      "results": "benchmarks/runs/context-ablation/context/final/4b-terms-history.jsonl"
+    },
+    {
+      "id": "final-4b-terms-screen-oracle",
+      "kind": "text",
+      "split": "heldout",
+      "variant": "4B screen oracle text, terms, validated without context (stricter than the product)",
+      "corpus": "benchmarks/corpora/context-v1/context-heldout-corpus.json",
+      "results": "benchmarks/runs/context-ablation/context/final/4b-terms-screen-oracle.jsonl"
+    },
+    {
+      "id": "final-4b-terms-screen-accurate",
+      "kind": "text",
+      "split": "heldout",
+      "variant": "4B screen Vision accurate, terms, validated without context (stricter than the product)",
+      "corpus": "benchmarks/corpora/context-v1/context-heldout-corpus.json",
+      "results": "benchmarks/runs/context-ablation/context/final/4b-terms-screen-accurate.jsonl"
+    },
+    {
+      "id": "final-4b-terms-screen-fast",
+      "kind": "text",
+      "split": "heldout",
+      "variant": "4B screen Vision fast, terms, validated without context (stricter than the product)",
+      "corpus": "benchmarks/corpora/context-v1/context-heldout-corpus.json",
+      "results": "benchmarks/runs/context-ablation/context/final/4b-terms-screen-fast.jsonl"
+    },
+    {
+      "id": "final-4b-terms-all-accurate",
+      "kind": "text",
+      "split": "heldout",
+      "variant": "4B all sources accurate OCR, terms, validated without context (stricter than the product)",
+      "corpus": "benchmarks/corpora/context-v1/context-heldout-corpus.json",
+      "results": "benchmarks/runs/context-ablation/context/final/4b-terms-all-accurate.jsonl"
+    },
+    {
+      "id": "final-4b-prompt-all-accurate",
+      "kind": "text",
+      "split": "heldout",
+      "variant": "4B all sources accurate OCR, context prompt",
+      "corpus": "benchmarks/corpora/context-v1/context-heldout-corpus.json",
+      "results": "benchmarks/runs/context-ablation/context/final/4b-prompt-all-accurate.jsonl"
+    },
+    {
+      "id": "final-17-terms-all-accurate",
+      "kind": "text",
+      "split": "heldout",
+      "variant": "1.7B all sources accurate OCR, terms, validated without context (stricter than the product)",
+      "corpus": "benchmarks/corpora/context-v1/context-heldout-corpus.json",
+      "results": "benchmarks/runs/context-ablation/context/final/17-terms-all-accurate.jsonl"
+    },
+    {
+      "id": "regression-lrw-heldout",
+      "kind": "text",
+      "split": "heldout",
+      "variant": "1.7B live held-out set, no context, after the context changes",
+      "corpus": "benchmarks/corpora/live-heldout-v1/corpus.json",
+      "results": "benchmarks/runs/context-ablation/context/lrw-heldout.jsonl"
+    },
+    {
+      "id": "product-4b-product-all-accurate",
+      "kind": "text",
+      "split": "heldout",
+      "variant": "4B all sources accurate OCR, terms, validated with the whole context (product)",
+      "corpus": "benchmarks/corpora/context-v1/context-heldout-corpus.json",
+      "results": "benchmarks/runs/context-ablation/context/final/4b-product-all-accurate.jsonl"
+    },
+    {
+      "id": "product-17-product-all-accurate",
+      "kind": "text",
+      "split": "heldout",
+      "variant": "1.7B all sources accurate OCR, terms, validated with the whole context (product)",
+      "corpus": "benchmarks/corpora/context-v1/context-heldout-corpus.json",
+      "results": "benchmarks/runs/context-ablation/context/final/17-product-all-accurate.jsonl"
+    }
+  ],
+  "archive": {
+    "manifest": "benchmarks/migration/archive.json",
+    "parentConfiguration": "benchmarks/reproduction/report-configs/context-ablation-report.json",
+    "parentSha256": "1f9919d5e78b68a8151575bbc4d2e756841d5dc8730ef8e374fe441f7396aa61"
   }
- ]
 }

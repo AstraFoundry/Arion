@@ -114,6 +114,8 @@ type RewriteRequest struct {
 
 // RewriteResult is an unvalidated proposal; Truncated output is unusable.
 type RewriteResult struct {
+	// Cleanup retains the local deletion annotations for private evaluation.
+	Cleanup   domain.SpeechCleanup
 	Text      string
 	Truncated bool
 	// Template is the prompt version that served the request.

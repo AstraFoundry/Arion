@@ -1,0 +1,181 @@
+{
+  "kind": "arion-prefix-prefill-development-v1",
+  "limitations": [
+    "Six synthetic cases, unreviewed developer annotations",
+    "No native rendered preview, insertion, cancellation or queue/drop counters",
+    "ASR-result to candidate is observed; stop estimate adds separately reported acoustic finalization and excludes its response serialization"
+  ],
+  "configHash": "7ac20c304189ec572ec4264293e46ca1ce994e75089b3ce0bdc0fa66f0f36561",
+  "corpusHash": "aa5e9b4a18b0ca489531dc3982f6f129282d243b40778f5e0ec9883de7995053",
+  "promptHash": "6f0ff89cb553ffe7c717616d6370fd2a4b320e0629cc03cd83b6b8eda0dc1f0d",
+  "workerHash": "980227e86cab60f234e51e3fda82cf0cc6689bbd8cf927b18d968de0fd0918eb",
+  "resultsHash": "52604ee922da4215376330a778b7451835f83f62bfb326db361e6d5ab722bf2d",
+  "summaries": {
+    "sequential": {
+      "count": 6,
+      "constraintPassCount": 2,
+      "asrResultToCandidateMs": {
+        "count": 6,
+        "p50": 3052.7759165000025,
+        "p95": 3797.1492084999973,
+        "p99": 3910.502475299996
+      },
+      "serialExplicitStopEstimateMs": {
+        "count": 6,
+        "p50": 3183.643916500002,
+        "p95": 3947.1792084999975,
+        "p99": 4059.814875299996
+      },
+      "firstPartialMs": {
+        "count": 6,
+        "p50": 829.264,
+        "p95": 1220.72075,
+        "p99": 1284.11455
+      },
+      "prefixReadyBeforeASRResult": 0,
+      "prefixPrefillMs": {
+        "count": 0,
+        "p50": null,
+        "p95": null,
+        "p99": null
+      },
+      "tokenizerParity": true,
+      "rawAsrErrors": [
+        {
+          "language": "en",
+          "substitutions": 2,
+          "deletions": 0,
+          "insertions": 4,
+          "errors": 6,
+          "referenceUnits": 11
+        },
+        {
+          "language": "mixed",
+          "substitutions": 3,
+          "deletions": 0,
+          "insertions": 6,
+          "errors": 9,
+          "referenceUnits": 13
+        },
+        {
+          "language": "zh",
+          "substitutions": 1,
+          "deletions": 0,
+          "insertions": 0,
+          "errors": 1,
+          "referenceUnits": 32
+        },
+        {
+          "language": "en",
+          "substitutions": 1,
+          "deletions": 1,
+          "insertions": 0,
+          "errors": 2,
+          "referenceUnits": 15
+        },
+        {
+          "language": "mixed",
+          "substitutions": 1,
+          "deletions": 0,
+          "insertions": 2,
+          "errors": 3,
+          "referenceUnits": 20
+        },
+        {
+          "language": "zh",
+          "substitutions": 1,
+          "deletions": 0,
+          "insertions": 0,
+          "errors": 1,
+          "referenceUnits": 17
+        }
+      ]
+    },
+    "prefill": {
+      "count": 6,
+      "constraintPassCount": 2,
+      "asrResultToCandidateMs": {
+        "count": 6,
+        "p50": 1333.7698335000023,
+        "p95": 2190.2795412499945,
+        "p99": 2355.6165410499957
+      },
+      "serialExplicitStopEstimateMs": {
+        "count": 6,
+        "p50": 1476.8183335000022,
+        "p95": 2362.5172912499947,
+        "p99": 2537.766491049996
+      },
+      "firstPartialMs": {
+        "count": 6,
+        "p50": 829.0135,
+        "p95": 1217.5335,
+        "p99": 1281.1459
+      },
+      "prefixReadyBeforeASRResult": 6,
+      "prefixPrefillMs": {
+        "count": 6,
+        "p50": 1668.7217090511695,
+        "p95": 1682.34383338131,
+        "p99": 1683.147566812113
+      },
+      "tokenizerParity": true,
+      "rawAsrErrors": [
+        {
+          "language": "mixed",
+          "substitutions": 3,
+          "deletions": 0,
+          "insertions": 6,
+          "errors": 9,
+          "referenceUnits": 13
+        },
+        {
+          "language": "en",
+          "substitutions": 1,
+          "deletions": 1,
+          "insertions": 0,
+          "errors": 2,
+          "referenceUnits": 15
+        },
+        {
+          "language": "zh",
+          "substitutions": 1,
+          "deletions": 0,
+          "insertions": 0,
+          "errors": 1,
+          "referenceUnits": 32
+        },
+        {
+          "language": "mixed",
+          "substitutions": 1,
+          "deletions": 0,
+          "insertions": 2,
+          "errors": 3,
+          "referenceUnits": 20
+        },
+        {
+          "language": "en",
+          "substitutions": 2,
+          "deletions": 0,
+          "insertions": 4,
+          "errors": 6,
+          "referenceUnits": 11
+        },
+        {
+          "language": "zh",
+          "substitutions": 1,
+          "deletions": 0,
+          "insertions": 0,
+          "errors": 1,
+          "referenceUnits": 17
+        }
+      ]
+    }
+  },
+  "pairedConsistency": {
+    "sameASR": 6,
+    "sameInput": 6,
+    "sameOutput": 6,
+    "pairs": 6
+  }
+}

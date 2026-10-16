@@ -1,0 +1,73 @@
+{
+  "kind": "arion-offline-asr-diagnostic-v1",
+  "status": "complete",
+  "corpusHash": "da674ff77c798df5ab353d51f78029e451697122a56a524fdcc72dc8a0a5812f",
+  "driverHash": "9c7c934df69bb8265d74bb13e78734166634f7dfeae18e860160a93acb3d503f",
+  "pipeline": {
+    "asr": "qwen3-asr-06",
+    "sampleRate": 16000,
+    "chunkMs": 20,
+    "endpoint": "explicit-stop-v1",
+    "pace": "realtime",
+    "threads": 4
+  },
+  "variant": {
+    "id": "qwen3-asr-06",
+    "features": {
+      "memory": false,
+      "ranker": "source",
+      "correction": "none"
+    }
+  },
+  "notes": "No streaming recognition or native preview. Actual batch inference after explicit-stop realtime fixture wait.",
+  "provenance": {
+    "protocol": 1,
+    "requestId": "1",
+    "execution": "live",
+    "artifacts": {
+      "qwen-asr-0": "53f18643aeb5cac1398d6b65a34484380a1a2f68991a30a358ea0cb193dbf34b",
+      "qwen-asr-1": "d22dc4423e0940e49884e903d2ea2f7e5567c14fc1aed97e4e26d6b8f208ef9e",
+      "qwen-asr-2": "bbc6dbeb9dce5b4ed0e839057137e9cba4bf05c5797277d36a80e22594414e14",
+      "qwen-asr-3": "4f6885be5959ae26af3089d38ee7972c5fafbeeb1cf8d5e76eab6d8b61ca5771",
+      "qwen-asr-4": "60748d3e6744a57c9c91e1b17424a6c2990567e8adceb0783940c03ed98fa9d9",
+      "qwen-asr-5": "4942d005604266809309cabc9f4e9cb89ce855d59b14681fdc0e1cc62ea26c4c",
+      "qwen-asr-6": "8831e4f1a044471340f7c0a83d7bd71306a5b867e95fd870f74d0c5308a904d5",
+      "qwen-asr-7": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910",
+      "qwen-asr-8": "1b69a0fce35936979824c1751a11c285559a635aeb91160d1da3b00118321495",
+      "qwen-asr-9": "e48b22f32d4d1c38f0a94a58acfc43bb8f5b7fc3b0ac01ea49372040ca831acf",
+      "qwen-asr-10": "9cab82a507e1e5a7743336f2e40fabdaa1eb6181818d7a3768925abc03effd24",
+      "qwen-asr-11": "2def7fa41004d0a7d148d4afbf4c467c9d112d8b373996123e9a4c43d94957c7",
+      "qwen-asr-12": "d926ed0159a2d750d1ae7835e60a5cb5f8737629f7bb3de6cd111a3614d5dc67",
+      "qwen-asr-13": "33f85268f7fbad6b3152b9ab051edab1a85082fde66bccff61d7f5ef7b437e58",
+      "qwen-asr-14": "ac6186d732b59c664776f84238f586d3e6c97adbc8b9f66e939ddcab5773cf3c",
+      "qwen-asr-15": "3c088a32079cfc8ed0239735295fbf7ffe657bf5ac21696f294f6a19e8e30fad",
+      "qwen-asr-16": "ec832e035c13c670e0cf68dee0ca5dfae38bf2c583aab31e587441cb3eba3f3f",
+      "qwen-asr-17": "4543f94738445a38306fb80bb0329ef5ca6d81ab1b6c3f15af1de1c3382f4b31",
+      "qwen-asr-18": "700b3c274f2fedffbb6016f03c574adaad7aa0291acc1a1ba72f07112051073f",
+      "qwen-asr-19": "7ae35f5d8f038e518f3abdeda5f78d71cb2f67c9ca29cb9a49a0b4d0702909bd",
+      "qwen-asr-20": "b43bbd0bd982c3cc88081f64389bf29fe9e9a01287d44f0b15887bc49c2b352a",
+      "qwen-asr-21": "c6421b34feccbe7fdfaa8b641b8ecb7bcd7b9f2c237c7b82712c860be524db4e",
+      "qwen-asr-22": "3cc59ec494f71135ff5761717e20597f0559b43f793dd72ae4924b86c5e038d8",
+      "qwen-asr-23": "80bb10c44085a7ce01a17abaf6a2095ed37e1695fca41cc0ea9733f1f24a749c",
+      "qwen-asr-24": "3664ef02fa664da93d94a1afc271bda31c0f8d07a9f3c74ac6cd1e5aabe8572c",
+      "qwen-asr-native-25": "579e3d8765b27eea31a6bf55018a7735e32f1f69734b35bf239c8cd332ae59ed",
+      "qwen-asr-native-26": "fa3dfbc10af9af9f59d7b53386d47be99bc8e2ba12aab63ca5a3c91bbd483a00",
+      "qwen-asr-native-27": "2d755a7dab9989e6587eeab50587be45b75dd51328e008d1e98ab6ece2991609",
+      "qwen-asr-native-28": "b0613d0ae53199a83b05fa48e169211498e9d40d54beaa372068ebe5ec5b0929"
+    },
+    "hardware": {
+      "os": "darwin",
+      "cpu": "Apple M4",
+      "powerMode": "System-wide power settings:\n SleepDisabled\t\t0\nCurrently in use:\n standby              1\n Sleep On Power Button 1\n hibernatefile        /var/vm/sleepimage\n powernap             1\n networkoversleep     0\n disksleep            10\n sleep                0 (sleep prevented by powerd, ChatGPT)\n hibernatemode        3\n ttyskeepawake        1\n displaysleep         0\n tcpkeepalive         1\n lowpowermode         0\n womp                 1",
+      "ramBytes": 34359738368
+    },
+    "runtime": {
+      "version": "1.13.8",
+      "buildFlags": "official macOS arm64 CPU Python wheel; Qwen3-ASR int8; threads=4; greedy; no hotwords",
+      "timer": "time.perf_counter monotonic",
+      "scheduler": "batch_decode_after_realtime_fixture_wait; no streaming emissions or native preview"
+    }
+  },
+  "resultsHash": "000b0d196e64ee19590d7cccb002b8278197304a4888e80ed25aa8e17f47d095",
+  "warmupsHash": "81e308642d3a475a1f3a9557aba3bb59fbb9d4f5525d746a60b347bb97e9a893"
+}

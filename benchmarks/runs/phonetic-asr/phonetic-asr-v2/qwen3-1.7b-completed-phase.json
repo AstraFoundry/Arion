@@ -1,0 +1,358 @@
+{
+  "status": "complete_model_phase_only",
+  "fullMatrixStatus": "running",
+  "model": "qwen3-1.7b",
+  "note": "Interim complete checkpoint aggregate; not a completed two-model report.",
+  "groups": {
+    "raw/raw": {
+      "count": 154,
+      "rates": {
+        "cer": {
+          "count": 60,
+          "errors": 66,
+          "referenceUnits": 808,
+          "rate": 0.08168316831683169
+        },
+        "wer": {
+          "count": 60,
+          "errors": 75,
+          "referenceUnits": 983,
+          "rate": 0.0762970498474059
+        },
+        "mer": {
+          "count": 30,
+          "errors": 135,
+          "referenceUnits": 371,
+          "rate": 0.3638814016172507
+        }
+      },
+      "improved": 0,
+      "worsened": 0,
+      "changed": 0,
+      "originallyCorrect": 60,
+      "corrupted": 0,
+      "silenceCount": 4,
+      "falseEmissions": 0,
+      "truncated": 0,
+      "generationMs": {
+        "count": 154,
+        "p50": 0,
+        "p95": 0,
+        "p99": 0
+      },
+      "inputTokens": {
+        "count": 154,
+        "p50": 0,
+        "p95": 0,
+        "p99": 0
+      },
+      "peakRssBytes": {
+        "count": 0,
+        "p50": null,
+        "p95": null,
+        "p99": null
+      },
+      "outputContractFailures": 0
+    },
+    "qwen3-1.7b/text_scores": {
+      "count": 154,
+      "rates": {
+        "cer": {
+          "count": 60,
+          "errors": 693,
+          "referenceUnits": 808,
+          "rate": 0.8576732673267327
+        },
+        "wer": {
+          "count": 60,
+          "errors": 386,
+          "referenceUnits": 983,
+          "rate": 0.392675483214649
+        },
+        "mer": {
+          "count": 30,
+          "errors": 858,
+          "referenceUnits": 371,
+          "rate": 2.31266846361186
+        }
+      },
+      "improved": 1,
+      "worsened": 46,
+      "changed": 51,
+      "originallyCorrect": 60,
+      "corrupted": 26,
+      "silenceCount": 4,
+      "falseEmissions": 4,
+      "truncated": 7,
+      "generationMs": {
+        "count": 154,
+        "p50": 5469.942603958771,
+        "p95": 15621.303014364092,
+        "p99": 24223.827896609437
+      },
+      "inputTokens": {
+        "count": 154,
+        "p50": 468,
+        "p95": 853.35,
+        "p99": 1048.99
+      },
+      "peakRssBytes": {
+        "count": 154,
+        "p50": 3173285888,
+        "p95": 3173285888,
+        "p99": 3173285888
+      },
+      "outputContractFailures": 7
+    },
+    "qwen3-1.7b/text_ipa": {
+      "count": 154,
+      "rates": {
+        "cer": {
+          "count": 60,
+          "errors": 154,
+          "referenceUnits": 808,
+          "rate": 0.1905940594059406
+        },
+        "wer": {
+          "count": 60,
+          "errors": 102,
+          "referenceUnits": 983,
+          "rate": 0.10376398779247202
+        },
+        "mer": {
+          "count": 30,
+          "errors": 272,
+          "referenceUnits": 371,
+          "rate": 0.7331536388140162
+        }
+      },
+      "improved": 1,
+      "worsened": 14,
+      "changed": 17,
+      "originallyCorrect": 60,
+      "corrupted": 5,
+      "silenceCount": 4,
+      "falseEmissions": 4,
+      "truncated": 0,
+      "generationMs": {
+        "count": 154,
+        "p50": 3686.667416477576,
+        "p95": 6326.5492249047375,
+        "p99": 8230.003205947578
+      },
+      "inputTokens": {
+        "count": 154,
+        "p50": 328.5,
+        "p95": 440.75,
+        "p99": 478.94
+      },
+      "peakRssBytes": {
+        "count": 154,
+        "p50": 3173285888,
+        "p95": 3173285888,
+        "p99": 3173285888
+      },
+      "outputContractFailures": 0
+    },
+    "qwen3-1.7b/ipa_only": {
+      "count": 154,
+      "rates": {
+        "cer": {
+          "count": 60,
+          "errors": 2543,
+          "referenceUnits": 808,
+          "rate": 3.147277227722772
+        },
+        "wer": {
+          "count": 60,
+          "errors": 3290,
+          "referenceUnits": 983,
+          "rate": 3.3468972533062056
+        },
+        "mer": {
+          "count": 30,
+          "errors": 1021,
+          "referenceUnits": 371,
+          "rate": 2.752021563342318
+        }
+      },
+      "improved": 0,
+      "worsened": 153,
+      "changed": 153,
+      "originallyCorrect": 60,
+      "corrupted": 59,
+      "silenceCount": 4,
+      "falseEmissions": 4,
+      "truncated": 2,
+      "generationMs": {
+        "count": 154,
+        "p50": 5960.683917044662,
+        "p95": 12827.161239704583,
+        "p99": 21036.204587444663
+      },
+      "inputTokens": {
+        "count": 154,
+        "p50": 313,
+        "p95": 403.44999999999993,
+        "p99": 440.94
+      },
+      "peakRssBytes": {
+        "count": 154,
+        "p50": 3173285888,
+        "p95": 3173285888,
+        "p99": 3173285888
+      },
+      "outputContractFailures": 2
+    },
+    "qwen3-1.7b/text": {
+      "count": 154,
+      "rates": {
+        "cer": {
+          "count": 60,
+          "errors": 68,
+          "referenceUnits": 808,
+          "rate": 0.08415841584158416
+        },
+        "wer": {
+          "count": 60,
+          "errors": 74,
+          "referenceUnits": 983,
+          "rate": 0.0752797558494405
+        },
+        "mer": {
+          "count": 30,
+          "errors": 135,
+          "referenceUnits": 371,
+          "rate": 0.3638814016172507
+        }
+      },
+      "improved": 1,
+      "worsened": 2,
+      "changed": 6,
+      "originallyCorrect": 60,
+      "corrupted": 1,
+      "silenceCount": 4,
+      "falseEmissions": 4,
+      "truncated": 0,
+      "generationMs": {
+        "count": 154,
+        "p50": 2968.694874551147,
+        "p95": 4879.5641665230505,
+        "p99": 6805.632653587962
+      },
+      "inputTokens": {
+        "count": 154,
+        "p50": 263,
+        "p95": 282,
+        "p99": 286.47
+      },
+      "peakRssBytes": {
+        "count": 154,
+        "p50": 3173285888,
+        "p95": 3173285888,
+        "p99": 3173285888
+      },
+      "outputContractFailures": 0
+    },
+    "qwen3-1.7b/text_pinyin": {
+      "count": 154,
+      "rates": {
+        "cer": {
+          "count": 60,
+          "errors": 68,
+          "referenceUnits": 808,
+          "rate": 0.08415841584158416
+        },
+        "wer": {
+          "count": 60,
+          "errors": 75,
+          "referenceUnits": 983,
+          "rate": 0.0762970498474059
+        },
+        "mer": {
+          "count": 30,
+          "errors": 135,
+          "referenceUnits": 371,
+          "rate": 0.3638814016172507
+        }
+      },
+      "improved": 0,
+      "worsened": 2,
+      "changed": 6,
+      "originallyCorrect": 60,
+      "corrupted": 1,
+      "silenceCount": 4,
+      "falseEmissions": 4,
+      "truncated": 0,
+      "generationMs": {
+        "count": 154,
+        "p50": 3212.0352499186993,
+        "p95": 5601.548273139632,
+        "p99": 6593.0753324134275
+      },
+      "inputTokens": {
+        "count": 154,
+        "p50": 297,
+        "p95": 323.35,
+        "p99": 332.94
+      },
+      "peakRssBytes": {
+        "count": 154,
+        "p50": 3173285888,
+        "p95": 3173285888,
+        "p99": 3173285888
+      },
+      "outputContractFailures": 0
+    },
+    "qwen3-1.7b/text_pinyin_scores": {
+      "count": 154,
+      "rates": {
+        "cer": {
+          "count": 60,
+          "errors": 587,
+          "referenceUnits": 808,
+          "rate": 0.7264851485148515
+        },
+        "wer": {
+          "count": 60,
+          "errors": 129,
+          "referenceUnits": 983,
+          "rate": 0.13123092573753814
+        },
+        "mer": {
+          "count": 30,
+          "errors": 306,
+          "referenceUnits": 371,
+          "rate": 0.8247978436657682
+        }
+      },
+      "improved": 0,
+      "worsened": 48,
+      "changed": 51,
+      "originallyCorrect": 60,
+      "corrupted": 23,
+      "silenceCount": 4,
+      "falseEmissions": 4,
+      "truncated": 3,
+      "generationMs": {
+        "count": 154,
+        "p50": 5423.781499965116,
+        "p95": 14272.087818721773,
+        "p99": 22303.948155494872
+      },
+      "inputTokens": {
+        "count": 154,
+        "p50": 505,
+        "p95": 888.7,
+        "p99": 1088.28
+      },
+      "peakRssBytes": {
+        "count": 154,
+        "p50": 3173285888,
+        "p95": 3173285888,
+        "p99": 3173285888
+      },
+      "outputContractFailures": 3
+    }
+  }
+}

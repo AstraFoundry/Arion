@@ -1,0 +1,610 @@
+{
+  "version": 1,
+  "id": "edit-learning-v1",
+  "status": "completed",
+  "environment": {
+    "at": "2026-10-14T16:10:39Z",
+    "cpu": "Apple M4",
+    "cpus": "10",
+    "gitDirty": "true",
+    "gitRevision": "28296c9e6ad0f7f5ede7d4d22071bd1024a3147c",
+    "go": "go1.27.1",
+    "goarch": "arm64",
+    "goos": "darwin"
+  },
+  "inputs": {
+    "cases": "/Users/steven/code/Arion/benchmarks/configs/edit-learning-cases.json",
+    "devVariant": "xasr-160-xasr-final",
+    "testVariant": "xasr-160-xasr-final"
+  },
+  "extraction": {
+    "cases": 47,
+    "corrections": 20,
+    "expectedPairs": 22,
+    "learnedPairs": 21,
+    "correctPairs": 20,
+    "pairPrecision": 0.9523809523809523,
+    "pairRecall": 0.9090909090909091,
+    "negatives": 23,
+    "negativesLearned": 0,
+    "falseLearningRate": 0,
+    "riskCases": 4,
+    "riskCasesLearned": 1,
+    "riskCasesLearnedIds": [
+      "risk-changed-word-en"
+    ],
+    "missedCorrectionIds": [
+      "zh-mid-sentence-in-chat",
+      "en-version"
+    ],
+    "verdicts": {
+      "cleared": 1,
+      "learned": 20,
+      "no_pair": 16,
+      "not_found": 1,
+      "outside": 2,
+      "rewrite": 1,
+      "too_large": 5,
+      "unchanged": 1
+    },
+    "extractLatencyUs": {
+      "count": 47,
+      "p50": 2.75,
+      "p95": 7.379399999999996,
+      "p99": 20.760499999999993,
+      "max": 27.833
+    }
+  },
+  "replay": {
+    "devSamples": 114,
+    "devVerdicts": {
+      "learned": 36,
+      "no_pair": 43,
+      "rewrite": 19,
+      "too_large": 1,
+      "unchanged": 15
+    },
+    "learnedEntries": 39,
+    "testSamples": 150,
+    "heldOut": {
+      "en": {
+        "samples": 60,
+        "referenceUnits": 983,
+        "errorsMemoryOff": 39,
+        "errorsMemoryOn": 39,
+        "rateMemoryOff": 0.03967446592065107,
+        "rateMemoryOn": 0.03967446592065107,
+        "samplesChanged": 0,
+        "samplesImproved": 0,
+        "samplesWorsened": 0
+      },
+      "mixed": {
+        "samples": 30,
+        "referenceUnits": 371,
+        "errorsMemoryOff": 75,
+        "errorsMemoryOn": 75,
+        "rateMemoryOff": 0.20215633423180593,
+        "rateMemoryOn": 0.20215633423180593,
+        "samplesChanged": 0,
+        "samplesImproved": 0,
+        "samplesWorsened": 0
+      },
+      "overall": {
+        "samples": 150,
+        "referenceUnits": 2162,
+        "errorsMemoryOff": 161,
+        "errorsMemoryOn": 161,
+        "rateMemoryOff": 0.07446808510638298,
+        "rateMemoryOn": 0.07446808510638298,
+        "samplesChanged": 0,
+        "samplesImproved": 0,
+        "samplesWorsened": 0
+      },
+      "zh": {
+        "samples": 60,
+        "referenceUnits": 808,
+        "errorsMemoryOff": 47,
+        "errorsMemoryOn": 47,
+        "rateMemoryOff": 0.05816831683168317,
+        "rateMemoryOn": 0.05816831683168317,
+        "samplesChanged": 0,
+        "samplesImproved": 0,
+        "samplesWorsened": 0
+      }
+    },
+    "inSampleCeiling": {
+      "en": {
+        "samples": 40,
+        "referenceUnits": 620,
+        "errorsMemoryOff": 23,
+        "errorsMemoryOn": 20,
+        "rateMemoryOff": 0.037096774193548385,
+        "rateMemoryOn": 0.03225806451612903,
+        "samplesChanged": 5,
+        "samplesImproved": 3,
+        "samplesWorsened": 1
+      },
+      "mixed": {
+        "samples": 30,
+        "referenceUnits": 368,
+        "errorsMemoryOff": 88,
+        "errorsMemoryOn": 27,
+        "rateMemoryOff": 0.2391304347826087,
+        "rateMemoryOn": 0.07336956521739131,
+        "samplesChanged": 21,
+        "samplesImproved": 21,
+        "samplesWorsened": 0
+      },
+      "overall": {
+        "samples": 114,
+        "referenceUnits": 1604,
+        "errorsMemoryOff": 137,
+        "errorsMemoryOn": 58,
+        "rateMemoryOff": 0.08541147132169576,
+        "rateMemoryOn": 0.03615960099750624,
+        "samplesChanged": 37,
+        "samplesImproved": 35,
+        "samplesWorsened": 1
+      },
+      "zh": {
+        "samples": 44,
+        "referenceUnits": 616,
+        "errorsMemoryOff": 26,
+        "errorsMemoryOn": 11,
+        "rateMemoryOff": 0.04220779220779221,
+        "rateMemoryOn": 0.017857142857142856,
+        "samplesChanged": 11,
+        "samplesImproved": 11,
+        "samplesWorsened": 0
+      }
+    },
+    "rulesAgreement": {
+      "compared": 150,
+      "equal": 141
+    },
+    "promptTermsPerTestSample": {
+      "count": 150,
+      "p50": 0,
+      "p95": 0,
+      "p99": 0,
+      "max": 1
+    },
+    "promptTermsIfAllEntries": 39
+  },
+  "recallScaling": [
+    {
+      "entries": 0,
+      "buildMs": 0.0005,
+      "applyUs": {
+        "count": 3000,
+        "p50": 0,
+        "p95": 0.042,
+        "p99": 0.042,
+        "max": 0.125
+      },
+      "termsUs": {
+        "count": 3000,
+        "p50": 0,
+        "p95": 0.042,
+        "p99": 0.042,
+        "max": 0.125
+      },
+      "correctUs": {
+        "count": 3000,
+        "p50": 0.583,
+        "p95": 2.75,
+        "p99": 3.25,
+        "max": 102.25
+      },
+      "legacyApplyUs": {
+        "count": 150,
+        "p50": 0,
+        "p95": 0.042,
+        "p99": 0.08432999999999989,
+        "max": 0.167
+      },
+      "maxPromptTerms": 0
+    },
+    {
+      "entries": 10,
+      "buildMs": 0.006916,
+      "applyUs": {
+        "count": 3000,
+        "p50": 0.375,
+        "p95": 1.458,
+        "p99": 1.75,
+        "max": 59.625
+      },
+      "termsUs": {
+        "count": 3000,
+        "p50": 0.375,
+        "p95": 2,
+        "p99": 2.417409999999999,
+        "max": 19.333
+      },
+      "correctUs": {
+        "count": 3000,
+        "p50": 0.958,
+        "p95": 4.083,
+        "p99": 4.708,
+        "max": 60.375
+      },
+      "legacyApplyUs": {
+        "count": 150,
+        "p50": 1.959,
+        "p95": 3.360749999999999,
+        "p99": 4.00166,
+        "max": 4.541
+      },
+      "maxPromptTerms": 0
+    },
+    {
+      "entries": 100,
+      "buildMs": 0.044583,
+      "applyUs": {
+        "count": 3000,
+        "p50": 0.416,
+        "p95": 2.25,
+        "p99": 2.916,
+        "max": 34.5
+      },
+      "termsUs": {
+        "count": 3000,
+        "p50": 0.417,
+        "p95": 3.333,
+        "p99": 4.083,
+        "max": 5.666
+      },
+      "correctUs": {
+        "count": 3000,
+        "p50": 0.916,
+        "p95": 4.584,
+        "p99": 5.20801,
+        "max": 55.833
+      },
+      "legacyApplyUs": {
+        "count": 150,
+        "p50": 17.646,
+        "p95": 27.625149999999994,
+        "p99": 29.17399,
+        "max": 31.667
+      },
+      "maxPromptTerms": 1
+    },
+    {
+      "entries": 1000,
+      "buildMs": 0.380625,
+      "applyUs": {
+        "count": 3000,
+        "p50": 0.458,
+        "p95": 6.66605,
+        "p99": 8.417409999999999,
+        "max": 37.25
+      },
+      "termsUs": {
+        "count": 3000,
+        "p50": 0.5,
+        "p95": 18.127049999999993,
+        "p99": 23.75042,
+        "max": 64.958
+      },
+      "correctUs": {
+        "count": 3000,
+        "p50": 0.958,
+        "p95": 9.084,
+        "p99": 10.958829999999997,
+        "max": 47.333
+      },
+      "legacyApplyUs": {
+        "count": 150,
+        "p50": 154.709,
+        "p95": 247.43299999999994,
+        "p99": 272.91425,
+        "max": 447.667
+      },
+      "maxPromptTerms": 1
+    },
+    {
+      "entries": 2000,
+      "buildMs": 0.820875,
+      "applyUs": {
+        "count": 3000,
+        "p50": 0.541,
+        "p95": 13.95805,
+        "p99": 18.25,
+        "max": 76.209
+      },
+      "termsUs": {
+        "count": 3000,
+        "p50": 0.583,
+        "p95": 35.71309999999999,
+        "p99": 47.66824,
+        "max": 91.208
+      },
+      "correctUs": {
+        "count": 3000,
+        "p50": 1.042,
+        "p95": 17.042,
+        "p99": 21.458,
+        "max": 112.5
+      },
+      "legacyApplyUs": {
+        "count": 150,
+        "p50": 320.45849999999996,
+        "p95": 530.9560999999998,
+        "p99": 686.7406699999999,
+        "max": 776.916
+      },
+      "maxPromptTerms": 1
+    },
+    {
+      "entries": 10000,
+      "buildMs": 5.108291,
+      "applyUs": {
+        "count": 3000,
+        "p50": 0.709,
+        "p95": 70.96519999999998,
+        "p99": 94.29366,
+        "max": 118.292
+      },
+      "termsUs": {
+        "count": 3000,
+        "p50": 0.75,
+        "p95": 160.25834999999998,
+        "p99": 215.37708999999998,
+        "max": 273.583
+      },
+      "correctUs": {
+        "count": 3000,
+        "p50": 1.167,
+        "p95": 74.583,
+        "p99": 99.33649,
+        "max": 155.916
+      },
+      "legacyApplyUs": {
+        "count": 150,
+        "p50": 1606.4795,
+        "p95": 2575.5499999999993,
+        "p99": 2964.6797599999995,
+        "max": 3067.75
+      },
+      "maxPromptTerms": 1
+    }
+  ],
+  "storeScaling": [
+    {
+      "entries": 0,
+      "fileBytes": 32,
+      "learnMs": {
+        "count": 20,
+        "p50": 9.991770500000001,
+        "p95": 16.21338955,
+        "p99": 16.55371071,
+        "max": 16.638791
+      },
+      "recallMs": {
+        "count": 20,
+        "p50": 10.081,
+        "p95": 12.07058125,
+        "p99": 12.31691625,
+        "max": 12.3785
+      },
+      "listMs": {
+        "count": 20,
+        "p50": 0.2331045,
+        "p95": 0.5024229,
+        "p99": 0.52975098,
+        "max": 0.536583
+      }
+    },
+    {
+      "entries": 100,
+      "fileBytes": 14697,
+      "learnMs": {
+        "count": 20,
+        "p50": 11.040124500000001,
+        "p95": 12.89154405,
+        "p99": 12.940975210000001,
+        "max": 12.953333
+      },
+      "recallMs": {
+        "count": 20,
+        "p50": 10.889958499999999,
+        "p95": 13.058968749999998,
+        "p99": 13.75389375,
+        "max": 13.927625
+      },
+      "listMs": {
+        "count": 20,
+        "p50": 0.6332915,
+        "p95": 0.9069062499999997,
+        "p99": 1.10118125,
+        "max": 1.14975
+      }
+    },
+    {
+      "entries": 1000,
+      "fileBytes": 145957,
+      "learnMs": {
+        "count": 20,
+        "p50": 12.014333,
+        "p95": 13.0045944,
+        "p99": 13.08265248,
+        "max": 13.102167
+      },
+      "recallMs": {
+        "count": 20,
+        "p50": 11.995020499999999,
+        "p95": 14.04997085,
+        "p99": 14.17302777,
+        "max": 14.203792
+      },
+      "listMs": {
+        "count": 20,
+        "p50": 1.409396,
+        "p95": 1.8226669999999998,
+        "p99": 2.027867,
+        "max": 2.079167
+      }
+    },
+    {
+      "entries": 1999,
+      "fileBytes": 291836,
+      "learnMs": {
+        "count": 20,
+        "p50": 13.1705,
+        "p95": 17.2445482,
+        "p99": 19.29664244,
+        "max": 19.809666
+      },
+      "recallMs": {
+        "count": 20,
+        "p50": 12.933896,
+        "p95": 14.186222899999999,
+        "p99": 15.00471098,
+        "max": 15.209333
+      },
+      "listMs": {
+        "count": 20,
+        "p50": 1.933875,
+        "p95": 2.0077104,
+        "p99": 2.14580848,
+        "max": 2.180333
+      }
+    }
+  ],
+  "extractScaling": [
+    {
+      "insertedRunes": 50,
+      "latencyUs": {
+        "count": 200,
+        "p50": 4.5,
+        "p95": 5.83305,
+        "p99": 10.594669999999999,
+        "max": 23.167
+      }
+    },
+    {
+      "insertedRunes": 200,
+      "latencyUs": {
+        "count": 200,
+        "p50": 30.083,
+        "p95": 34.770799999999994,
+        "p99": 101.29709,
+        "max": 139.541
+      }
+    },
+    {
+      "insertedRunes": 1000,
+      "latencyUs": {
+        "count": 200,
+        "p50": 368.625,
+        "p95": 476.4377999999999,
+        "p99": 532.85917,
+        "max": 565.416
+      }
+    },
+    {
+      "insertedRunes": 2000,
+      "latencyUs": {
+        "count": 200,
+        "p50": 1272.062,
+        "p95": 1346.9253499999998,
+        "p99": 1400.6123300000002,
+        "max": 1461.417
+      }
+    }
+  ],
+  "tracker": {
+    "trackCallUs": {
+      "count": 5,
+      "p50": 5.667,
+      "p95": 12.6748,
+      "p99": 13.30136,
+      "max": 13.458
+    },
+    "settleCallUs": {
+      "count": 5,
+      "p50": 4,
+      "p95": 10.383399999999998,
+      "p99": 11.57668,
+      "max": 11.875
+    },
+    "settleToReportMs": {
+      "count": 5,
+      "p50": 0.062833,
+      "p95": 0.1316336,
+      "p99": 0.14406032,
+      "max": 0.147167
+    },
+    "hungHostAbandonMs": 1451.480084,
+    "hungHostReads": 3,
+    "readsPerIdleEdit": 38
+  },
+  "concurrency": {
+    "readers": 8,
+    "durationMs": 3000,
+    "idleApplyUs": {
+      "count": 3000,
+      "p50": 0.75,
+      "p95": 11.168099999999995,
+      "p99": 13.959409999999998,
+      "max": 45.5
+    },
+    "underWritesApplyUs": {
+      "count": 6708906,
+      "p50": 0.791,
+      "p95": 11.833,
+      "p99": 27.333,
+      "max": 39865.25
+    },
+    "appliesUnderWrites": 6708906,
+    "writes": 196,
+    "indexRebuilds": 196,
+    "writeErrors": 0,
+    "finalEntries": 1190,
+    "expectedEntries": 1190
+  },
+  "faults": [
+    {
+      "name": "bit-flip",
+      "learnFailedExplicitly": true,
+      "fileUnchanged": true,
+      "listUsable": false,
+      "dictationCorrectionWorks": true,
+      "pass": true
+    },
+    {
+      "name": "truncated",
+      "learnFailedExplicitly": true,
+      "fileUnchanged": true,
+      "listUsable": false,
+      "dictationCorrectionWorks": true,
+      "pass": true
+    },
+    {
+      "name": "wrong-key",
+      "learnFailedExplicitly": true,
+      "fileUnchanged": true,
+      "listUsable": false,
+      "dictationCorrectionWorks": true,
+      "pass": true
+    },
+    {
+      "name": "crash-leftover",
+      "learnFailedExplicitly": false,
+      "fileUnchanged": false,
+      "listUsable": true,
+      "dictationCorrectionWorks": true,
+      "pass": true
+    },
+    {
+      "name": "read-only-dir",
+      "learnFailedExplicitly": true,
+      "fileUnchanged": true,
+      "listUsable": true,
+      "dictationCorrectionWorks": true,
+      "pass": true
+    }
+  ]
+}

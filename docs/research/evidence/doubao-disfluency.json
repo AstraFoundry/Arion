@@ -1,0 +1,172 @@
+{
+  "schemaVersion": 1,
+  "scope": "Doubao disfluency and organization static follow-up; no app execution, private data or network requests",
+  "identity": {
+    "mainSha256": "4b3836dcb8a3e06b01b4c95390c757b71f623c1f7c4141c059e49284f7f6442d",
+    "thinSha256": "266f49f6bcb62e43c5170620d4b86e2e4c4ef873bcce624ef1a90b9c46244983",
+    "sourceSlice": {
+      "offset": 21757952,
+      "size": 20965728,
+      "cpu": 16777228,
+      "subtype": 0,
+      "byteEquality": true
+    },
+    "version": "1.0.2 (1)"
+  },
+  "method": "REA native target opened and closed. A new function query timed out at 240000 ms and returned no pseudocode; no identical retry. New DBD observations use bounded Apple LLVM disassembly with instruction bytes independently compared to original artifact. They are not invented REA Evidence IDs.",
+  "reaStatus": {
+    "requestedProcedure": "0x100beaaa4",
+    "outcome": "provider_timeout",
+    "timeoutMs": 240000,
+    "openTargetSha256": "266f49f6bcb62e43c5170620d4b86e2e4c4ef873bcce624ef1a90b9c46244983",
+    "closeConfirmed": true
+  },
+  "ranges": [
+    {
+      "id": "DBD-decoder-config",
+      "kind": "ordinary-static-arm64-instructions",
+      "start": "0x10056ce54",
+      "exclusiveEnd": "0x10056e6c8",
+      "sliceFileOffset": 5688916,
+      "originalFileOffset": 27446868,
+      "instructionCount": 1565,
+      "instructionByteEquality": true,
+      "bytesSha256": "ae874f18b0814025d34c057c038d5f2d7d0e998c3fc0da071c19ffd5773c33ba",
+      "disassemblySha256": "9bc99ef0f874a51d5e7fb34a848fda4bf3de5713a2c66bb97239d8a0aedfe639",
+      "note": "Bounded ASR decoder configuration instructions; enable_disfluency parsed into object+0x1e9"
+    },
+    {
+      "id": "DBD-decoder-call",
+      "kind": "ordinary-static-arm64-instructions",
+      "start": "0x100572744",
+      "exclusiveEnd": "0x100572c2c",
+      "sliceFileOffset": 5711684,
+      "originalFileOffset": 27469636,
+      "instructionCount": 314,
+      "instructionByteEquality": true,
+      "bytesSha256": "450033b925ad07163966df8d23e733c77cb659d80b19ada4dbe8e4be6d090081",
+      "disassemblySha256": "81132e29112f24990c7c669eb68adfc3272f35fb830635a88a08e36d540edbcb",
+      "note": "Bounded decoder result/post-process call path"
+    },
+    {
+      "id": "DBD-decoder-tags",
+      "kind": "ordinary-static-arm64-instructions",
+      "start": "0x100574a34",
+      "exclusiveEnd": "0x100575784",
+      "sliceFileOffset": 5720628,
+      "originalFileOffset": 27478580,
+      "instructionCount": 852,
+      "instructionByteEquality": true,
+      "bytesSha256": "a691fd2a23cbb46e0cb54cb48d22edb7786d7b5cbd9d50a6770443af468d0da3",
+      "disassemblySha256": "ab6d3daaa2d6c902300e0ad25752953f5a4039105de17a2d0cb25004d4ad2b91",
+      "note": "Bounded cleanup routine handling disfluency markers and ITN; semantic explanation is static inference"
+    },
+    {
+      "id": "DBD-request-builder",
+      "kind": "ordinary-static-arm64-instructions",
+      "start": "0x100beaaa4",
+      "exclusiveEnd": "0x100beadd4",
+      "sliceFileOffset": 12495524,
+      "originalFileOffset": 34253476,
+      "instructionCount": 204,
+      "instructionByteEquality": true,
+      "bytesSha256": "444016aaa5d45cc9ab41f63196334988922821c2e6e0214d5d78e4c3f3c353ed",
+      "disassemblySha256": "1982d406e7458d23a58b40a238f145c5964fca1c3ea8bf810fd66000874bda5f",
+      "note": "Bounded application-specific text_organization request construction"
+    },
+    {
+      "id": "DBD-completed",
+      "kind": "ordinary-static-arm64-instructions",
+      "start": "0x100be9594",
+      "exclusiveEnd": "0x100be98d0",
+      "sliceFileOffset": 12490132,
+      "originalFileOffset": 34248084,
+      "instructionCount": 207,
+      "instructionByteEquality": true,
+      "bytesSha256": "8ffe73e963ccf75932c01076777f3e9ddb2bb49ddba0d4dabe7d95a282ebf481",
+      "disassemblySha256": "8f45f1d3ae7b54ba395de7977a29456802c985793c3138edc21e7b6e80eb9baa",
+      "note": "Completed handler identified by its prologue and handleCompleted diagnostic; unwind entries enclose several routines"
+    },
+    {
+      "id": "DBD-filler-setting",
+      "kind": "ordinary-static-arm64-instructions",
+      "start": "0x100c62c10",
+      "exclusiveEnd": "0x100c62d98",
+      "sliceFileOffset": 12987408,
+      "originalFileOffset": 34745360,
+      "instructionCount": 98,
+      "instructionByteEquality": true,
+      "bytesSha256": "4c67402b0de5e244dd0f8b50c7118ac8cd18d294a2522589584eed5de4c9d054",
+      "disassemblySha256": "f3b2e6c2595896ced3aa8124858acab1f98be160b0dcaf524cd426b5be25fcfd",
+      "note": "Preference key mapping surface only; not proof of active filler removal"
+    }
+  ],
+  "findings": [
+    {
+      "id": "DBD-span-policy",
+      "evidence": [
+        "DBD-decoder-config",
+        "DBD-decoder-call",
+        "DBD-decoder-tags"
+      ],
+      "observed": "Configuration key enable_disfluency controls byte +0x1e9; a missing configuration value sets it true in this parser. That field or adjacent ITN field enables a result cleanup call. The helper detects UTF-8 〈/〉 boundaries, splits internal text at | and compares the suffix with a/A; these branches replace the entire marked span with an empty string, while another branch keeps the text portion without markers.",
+      "anchors": [
+        "0x10056d51c–0x10056d57c",
+        "0x10057293c–0x10057296c",
+        "0x100574bac–0x100574bd0",
+        "0x100574cc4–0x100574d74",
+        "0x100574d94–0x100574e60",
+        "0x100574f98–0x100575058"
+      ],
+      "inference": "An annotation-based disfluency cleanup mechanism exists inside the packaged speech decoder, alongside separate ITN processing. It operates on spans rather than directly matching a visible dictionary of words.",
+      "unknown": "Origin of annotations, a/A semantic taxonomy, active model/configuration, actual reachability and natural-speech outcomes are not established."
+    },
+    {
+      "id": "DBD-organize-body",
+      "evidence": [
+        "DBD-request-builder"
+      ],
+      "observed": "Builder selects /api/v2/ai/text_organization and constructs five application-specific dictionary entries: query, scene=6, stream=true, space_at_cn_en_nb and space_at_newline. No per-word filler list or language field is encoded in these five entries.",
+      "anchors": [
+        "0x100beab24–0x100beab50",
+        "0x100beaca0–0x100bead68"
+      ],
+      "unknown": "Scene numeric meaning, shared-network augmentation/encryption, server prompts/model and whether contextID travels through another layer are unresolved."
+    },
+    {
+      "id": "DBD-completion-contract",
+      "evidence": [
+        "DBD-completed"
+      ],
+      "observed": "Completed handler checks request identity, phase/decision/no-rewrite state, nonempty content and cancels the result timeout before producing a result. Diagnostic distinguishes scene.completed.empty_content. No lexical coverage ratio or per-language filler-word rejection is present in this bounded handler.",
+      "anchors": [
+        "0x100be95b4–0x100be9624",
+        "0x100be9658–0x100be9730"
+      ],
+      "unknown": "This is not a whole-program negative search; other handlers/server policies may impose additional validation."
+    },
+    {
+      "id": "DBD-filler-setting-surface",
+      "evidence": [
+        "DBD-filler-setting"
+      ],
+      "observed": "Shipped preference key audio.filler_word_removal_mode and reflection name fillerWordRemovalMode exist. The key mapping returns the literal; settings helper contains the same key.",
+      "unknown": "Mapping to the decoder enable_disfluency flag and active setting/default were not established."
+    }
+  ],
+  "searchBoundary": {
+    "nativeTargets": [
+      "main executable arm64 slice",
+      "installed settings helper strings",
+      "OimeCommon framework strings"
+    ],
+    "packagedTextSearch": "Declared .json/.txt/.strings files under app Contents, under 200000 bytes and UTF-8 decodable; no matching prompt document found. This excludes other formats, encrypted resources and remote content.",
+    "languages": "No controlled multilingual transcription/cleanup run performed."
+  },
+  "limitations": [
+    "New DBD IDs are ordinary local static observations. Static reconstructed branch behavior is not a runtime result.",
+    "Unwind ranges can enclose several routines; records are bounded instruction ranges, not a claim of complete Ghidra function analysis.",
+    "SDK classes such as SpeechDisfluency and preference names do not prove the app uses all such APIs.",
+    "No checkpoint, language coverage, prompt, server-side rule or quality metric was recovered."
+  ]
+}

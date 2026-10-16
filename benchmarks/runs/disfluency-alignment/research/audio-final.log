@@ -1,0 +1,10 @@
+activated xasr-160-xasr-final in 16575 ms
+llm loaded prompt=live-v2 in 20363 ms
+zh-hesitation      stop→final   1323 ms previews=0 accepted
+zh-repair          stop→final    755 ms previews=4 accepted
+zh-repeat          stop→final   1049 ms previews=0 accepted
+zh-reference       stop→final   1380 ms previews=0 accepted
+en-hesitation      stop→final   1563 ms previews=0 accepted
+en-repair          stop→final   1124 ms previews=7 accepted
+en-reference       stop→final   1050 ms previews=0 negation_dropped
+en-repeat          stop→final   1191 ms previews=0 accepted

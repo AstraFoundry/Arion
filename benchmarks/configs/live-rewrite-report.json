@@ -8,138 +8,143 @@
       "kind": "text",
       "split": "dev",
       "variant": "live-v2 qwen3-0.6b",
-      "corpus": ".workspace/ablation-corpus.json",
-      "results": ".workspace/benchmarks/live-text/dev-final-0.6b.jsonl"
+      "corpus": "benchmarks/corpora/rewrite-dev-v1/corpus.json",
+      "results": "benchmarks/runs/live-rewrite/live-text/dev-final-0.6b.jsonl"
     },
     {
       "id": "text-dev-1.7b",
       "kind": "text",
       "split": "dev",
       "variant": "live-v2 qwen3-1.7b",
-      "corpus": ".workspace/ablation-corpus.json",
-      "results": ".workspace/benchmarks/live-text/dev-final-1.7b.jsonl"
+      "corpus": "benchmarks/corpora/rewrite-dev-v1/corpus.json",
+      "results": "benchmarks/runs/live-rewrite/live-text/dev-final-1.7b.jsonl"
     },
     {
       "id": "text-dev-4b",
       "kind": "text",
       "split": "dev",
       "variant": "live-v2 qwen3-4b",
-      "corpus": ".workspace/ablation-corpus.json",
-      "results": ".workspace/benchmarks/live-text/dev-final-4b.jsonl"
+      "corpus": "benchmarks/corpora/rewrite-dev-v1/corpus.json",
+      "results": "benchmarks/runs/live-rewrite/live-text/dev-final-4b.jsonl"
     },
     {
       "id": "text-heldout-0.6b",
       "kind": "text",
       "split": "heldout",
       "variant": "live-v2 qwen3-0.6b",
-      "corpus": ".workspace/live-heldout-corpus.json",
-      "results": ".workspace/benchmarks/live-text/heldout-final-0.6b.jsonl"
+      "corpus": "benchmarks/corpora/live-heldout-v1/corpus.json",
+      "results": "benchmarks/runs/live-rewrite/live-text/heldout-final-0.6b.jsonl"
     },
     {
       "id": "text-heldout-1.7b",
       "kind": "text",
       "split": "heldout",
       "variant": "live-v2 qwen3-1.7b",
-      "corpus": ".workspace/live-heldout-corpus.json",
-      "results": ".workspace/benchmarks/live-text/heldout-final-1.7b.jsonl"
+      "corpus": "benchmarks/corpora/live-heldout-v1/corpus.json",
+      "results": "benchmarks/runs/live-rewrite/live-text/heldout-final-1.7b.jsonl"
     },
     {
       "id": "text-heldout-4b",
       "kind": "text",
       "split": "heldout",
       "variant": "live-v2 qwen3-4b",
-      "corpus": ".workspace/live-heldout-corpus.json",
-      "results": ".workspace/benchmarks/live-text/heldout-final-4b.jsonl"
+      "corpus": "benchmarks/corpora/live-heldout-v1/corpus.json",
+      "results": "benchmarks/runs/live-rewrite/live-text/heldout-final-4b.jsonl"
     },
     {
       "id": "audio-heldout-xfinal",
       "kind": "audio",
       "variant": "X-ASR 160 + X-ASR whole finalizer, no LLM (current product)",
-      "results": ".workspace/benchmarks/live-audio/r1/heldout-xfinal.jsonl",
+      "results": "benchmarks/runs/live-rewrite/live-audio/r1/heldout-xfinal.jsonl",
       "split": "heldout",
-      "corpus": ".workspace/live-heldout-corpus.json",
-      "manifest": ".workspace/live-audio-heldout/manifest.json"
+      "corpus": "benchmarks/corpora/live-heldout-v1/corpus.json",
+      "manifest": "benchmarks/corpora/live-audio-heldout-v1/manifest.json"
     },
     {
       "id": "audio-heldout-qfinal",
       "kind": "audio",
       "variant": "X-ASR 160 + Qwen3-ASR whole finalizer, no LLM",
-      "results": ".workspace/benchmarks/live-audio/r1/heldout-qfinal.jsonl",
+      "results": "benchmarks/runs/live-rewrite/live-audio/r1/heldout-qfinal.jsonl",
       "split": "heldout",
-      "corpus": ".workspace/live-heldout-corpus.json",
-      "manifest": ".workspace/live-audio-heldout/manifest.json"
+      "corpus": "benchmarks/corpora/live-heldout-v1/corpus.json",
+      "manifest": "benchmarks/corpora/live-audio-heldout-v1/manifest.json"
     },
     {
       "id": "audio-heldout-qseg",
       "kind": "audio",
       "variant": "X-ASR 160 + Qwen3-ASR per segment, no LLM",
-      "results": ".workspace/benchmarks/live-audio/r1/heldout-qseg.jsonl",
+      "results": "benchmarks/runs/live-rewrite/live-audio/r1/heldout-qseg.jsonl",
       "split": "heldout",
-      "corpus": ".workspace/live-heldout-corpus.json",
-      "manifest": ".workspace/live-audio-heldout/manifest.json"
+      "corpus": "benchmarks/corpora/live-heldout-v1/corpus.json",
+      "manifest": "benchmarks/corpora/live-audio-heldout-v1/manifest.json"
     },
     {
       "id": "audio-heldout-qseg-1.7b",
       "kind": "audio",
       "variant": "Qwen3-ASR per segment + Qwen3 1.7B live",
-      "results": ".workspace/benchmarks/live-audio/r1/heldout-qseg-1.7b.jsonl",
+      "results": "benchmarks/runs/live-rewrite/live-audio/r1/heldout-qseg-1.7b.jsonl",
       "split": "heldout",
-      "corpus": ".workspace/live-heldout-corpus.json",
-      "manifest": ".workspace/live-audio-heldout/manifest.json"
+      "corpus": "benchmarks/corpora/live-heldout-v1/corpus.json",
+      "manifest": "benchmarks/corpora/live-audio-heldout-v1/manifest.json"
     },
     {
       "id": "audio-heldout-xseg-1.7b",
       "kind": "audio",
       "variant": "X-ASR per segment + Qwen3 1.7B live",
-      "results": ".workspace/benchmarks/live-audio/r2/heldout-xseg-1.7b.jsonl",
+      "results": "benchmarks/runs/live-rewrite/live-audio/r2/heldout-xseg-1.7b.jsonl",
       "split": "heldout",
-      "corpus": ".workspace/live-heldout-corpus.json",
-      "manifest": ".workspace/live-audio-heldout/manifest.json"
+      "corpus": "benchmarks/corpora/live-heldout-v1/corpus.json",
+      "manifest": "benchmarks/corpora/live-audio-heldout-v1/manifest.json"
     },
     {
       "id": "audio-heldout-xfinal-0.6b",
       "kind": "audio",
       "variant": "X-ASR whole finalizer + Qwen3 0.6B live",
-      "results": ".workspace/benchmarks/live-audio/r2/heldout-xfinal-0.6b.jsonl",
+      "results": "benchmarks/runs/live-rewrite/live-audio/r2/heldout-xfinal-0.6b.jsonl",
       "split": "heldout",
-      "corpus": ".workspace/live-heldout-corpus.json",
-      "manifest": ".workspace/live-audio-heldout/manifest.json"
+      "corpus": "benchmarks/corpora/live-heldout-v1/corpus.json",
+      "manifest": "benchmarks/corpora/live-audio-heldout-v1/manifest.json"
     },
     {
       "id": "audio-heldout-xfinal-1.7b",
       "kind": "audio",
       "variant": "X-ASR whole finalizer + Qwen3 1.7B live (shipped)",
-      "results": ".workspace/benchmarks/live-audio/r2/heldout-xfinal-1.7b.jsonl",
+      "results": "benchmarks/runs/live-rewrite/live-audio/r2/heldout-xfinal-1.7b.jsonl",
       "split": "heldout",
-      "corpus": ".workspace/live-heldout-corpus.json",
-      "manifest": ".workspace/live-audio-heldout/manifest.json"
+      "corpus": "benchmarks/corpora/live-heldout-v1/corpus.json",
+      "manifest": "benchmarks/corpora/live-audio-heldout-v1/manifest.json"
     },
     {
       "id": "audio-heldout-xfinal-4b",
       "kind": "audio",
       "variant": "X-ASR whole finalizer + Qwen3 4B live",
-      "results": ".workspace/benchmarks/live-audio/r2/heldout-xfinal-4b.jsonl",
+      "results": "benchmarks/runs/live-rewrite/live-audio/r2/heldout-xfinal-4b.jsonl",
       "split": "heldout",
-      "corpus": ".workspace/live-heldout-corpus.json",
-      "manifest": ".workspace/live-audio-heldout/manifest.json"
+      "corpus": "benchmarks/corpora/live-heldout-v1/corpus.json",
+      "manifest": "benchmarks/corpora/live-audio-heldout-v1/manifest.json"
     },
     {
       "id": "audio-dev-xfinal",
       "kind": "audio",
       "variant": "X-ASR whole finalizer, no LLM",
-      "results": ".workspace/benchmarks/live-audio/r2/dev-xfinal.jsonl",
+      "results": "benchmarks/runs/live-rewrite/live-audio/r2/dev-xfinal.jsonl",
       "split": "dev",
-      "corpus": ".workspace/ablation-corpus.json",
-      "manifest": ".workspace/live-audio-dev/manifest.json"
+      "corpus": "benchmarks/corpora/rewrite-dev-v1/corpus.json",
+      "manifest": "benchmarks/corpora/live-audio-dev-v1/manifest.json"
     },
     {
       "id": "audio-dev-xfinal-1.7b",
       "kind": "audio",
       "variant": "X-ASR whole finalizer + Qwen3 1.7B live",
-      "results": ".workspace/benchmarks/live-audio/r2/dev-xfinal-1.7b.jsonl",
+      "results": "benchmarks/runs/live-rewrite/live-audio/r2/dev-xfinal-1.7b.jsonl",
       "split": "dev",
-      "corpus": ".workspace/ablation-corpus.json",
-      "manifest": ".workspace/live-audio-dev/manifest.json"
+      "corpus": "benchmarks/corpora/rewrite-dev-v1/corpus.json",
+      "manifest": "benchmarks/corpora/live-audio-dev-v1/manifest.json"
     }
-  ]
+  ],
+  "archive": {
+    "manifest": "benchmarks/migration/archive.json",
+    "parentConfiguration": "benchmarks/reproduction/report-configs/live-rewrite-report.json",
+    "parentSha256": "3adf2a9736c9cd598ab26ba34739175e22fb7148e35c7c00a67469f06fb8f57e"
+  }
 }

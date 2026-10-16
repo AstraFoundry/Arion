@@ -1,0 +1,9 @@
+{
+  "model": "uni2005",
+  "source": "https://github.com/xinjli/allosaurus/releases/download/v1.0/uni2005.tar.gz",
+  "archive": {
+    "path": "/Users/steven/code/Arion/.workspace/phonetic-models/uni2005.tar.gz",
+    "sha256": "7dc4f20802012f64ac07deb04ade263f199c839521e58eae83c99d79028fc4de"
+  },
+  "purpose": "Local research benchmark only; no model redistribution or production licensing claim"
+}

@@ -12,6 +12,8 @@ export function scoreAudio(manifest, corpus, rows) {
   const audio = new Map(manifest.samples.map((s) => [s.id, s]));
   if (rows.length !== manifest.samples.length || new Set(rows.map((r) => r.caseId)).size !== rows.length)
     throw new Error("Rows must cover every fixture exactly once");
+  const policies = new Set(rows.map((r) => r.removeFillers ?? null));
+  if (policies.size > 1) throw new Error("Mixed filler policies in one audio run");
   const asr = {};
   const scored = rows.map((row) => {
     const sample = text.get(row.caseId);
@@ -35,6 +37,7 @@ export function scoreAudio(manifest, corpus, rows) {
   const multi = ok.filter((s) => s.fixture.segments > 1);
   return {
     cases: rows.length,
+    removeFillers: [...policies][0] ?? null,
     failed: scored.length - ok.length,
     asrErrorRate: Object.fromEntries(Object.entries(asr).map(([k, v]) => [k, { ...v, rate: v.errors / v.referenceUnits }])),
     sourcePass: count((s) => s.source.constraintPass),

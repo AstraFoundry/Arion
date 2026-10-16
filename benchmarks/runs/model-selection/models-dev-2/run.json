@@ -1,0 +1,369 @@
+{
+  "version": 1,
+  "status": "complete",
+  "normalization": "arion-nfkc-lower-punctuation-space-v1",
+  "config": {
+    "version": 1,
+    "id": "desktop-models-v1",
+    "purpose": "Select the default recognition bundle: same corpus, settings and correction-off treatment; only the bundle varies",
+    "split": "dev",
+    "baseline": "xasr-160",
+    "seeds": [
+      11
+    ],
+    "orderSeed": 1729,
+    "warmupCount": 2,
+    "cacheStates": [
+      "warm"
+    ],
+    "pipeline": {
+      "asr": "xasr-160",
+      "sampleRate": 16000,
+      "chunkMs": 20,
+      "endpoint": "sherpa-rules-v1",
+      "pace": "realtime",
+      "threads": 4,
+      "endpointSilenceMs": 800
+    },
+    "bootstrap": {
+      "iterations": 2000,
+      "seed": 1729
+    },
+    "variants": [
+      {
+        "id": "xasr-160",
+        "features": {
+          "memory": false,
+          "ranker": "source",
+          "correction": "none"
+        },
+        "pipelineOverrides": {
+          "asr": "xasr-160"
+        }
+      },
+      {
+        "id": "xasr-480",
+        "features": {
+          "memory": false,
+          "ranker": "source",
+          "correction": "none"
+        },
+        "pipelineOverrides": {
+          "asr": "xasr-480"
+        }
+      },
+      {
+        "id": "xasr-160-xasr-final",
+        "features": {
+          "memory": false,
+          "ranker": "source",
+          "correction": "none"
+        },
+        "pipelineOverrides": {
+          "asr": "xasr-160-xasr-final"
+        }
+      },
+      {
+        "id": "xasr-480-xasr-final",
+        "features": {
+          "memory": false,
+          "ranker": "source",
+          "correction": "none"
+        },
+        "pipelineOverrides": {
+          "asr": "xasr-480-xasr-final"
+        }
+      },
+      {
+        "id": "xasr-160-sensevoice-final",
+        "features": {
+          "memory": false,
+          "ranker": "source",
+          "correction": "none"
+        },
+        "pipelineOverrides": {
+          "asr": "xasr-160-sensevoice-final"
+        }
+      },
+      {
+        "id": "zipformer-2023",
+        "features": {
+          "memory": false,
+          "ranker": "source",
+          "correction": "none"
+        },
+        "pipelineOverrides": {
+          "asr": "zipformer-2023"
+        }
+      }
+    ]
+  },
+  "configHash": "034e0929e41207354ab9176c32423ae48914bedd8af880881f1a657030b2065b",
+  "corpusHash": "9a6d7c13fbccaaddbe511e34ed896cd830aaa02c42218e94e029a11deeffedd7",
+  "driverConfigHash": "26998f43c761d6f3b0df053746cb760209b1d45ac1707bed33af439a0850519f",
+  "provenance": {
+    "artifacts": {
+      "arion-eval-driver": "338f144767a4796a9581511c974872935b89e1c24202a791bd0936e8eebb7e57",
+      "sense-voice-small-int8-2025-09-09/model.int8.onnx": "12ca1a2ae7ecf3e0019ef2822307ee0b5cadc9196569e379b4c4026f8205276d",
+      "sense-voice-small-int8-2025-09-09/tokens.txt": "f449eb28dc567533d7fa59be34e2abca8784f771850c78a47fb731a31429a1dc",
+      "x-asr-zh-en-160ms-streaming-punct-int8-2026-06-05/decoder.onnx": "a1cbc9eac2d5e3fb6617a218c67ad6daaa7f4e0fd225f08b2c22ab0413c8c257",
+      "x-asr-zh-en-160ms-streaming-punct-int8-2026-06-05/encoder.int8.onnx": "68633dced8b8891be5b9309496cd939bbeba9188f1c1774957196f11a491aa25",
+      "x-asr-zh-en-160ms-streaming-punct-int8-2026-06-05/joiner.int8.onnx": "aedb7fa697b2ab43f20499826fff7c997eea7d67db77be97769aeeeb726e63b3",
+      "x-asr-zh-en-160ms-streaming-punct-int8-2026-06-05/tokens.txt": "b818a60878b9aae978cbb8ad594acbd403d76d1af2e31ef4197c84e2dbdba27c",
+      "x-asr-zh-en-480ms-streaming-punct-int8-2026-06-05/decoder.onnx": "a1cbc9eac2d5e3fb6617a218c67ad6daaa7f4e0fd225f08b2c22ab0413c8c257",
+      "x-asr-zh-en-480ms-streaming-punct-int8-2026-06-05/encoder.int8.onnx": "908596dcc137a73b95be908ca55e88caa1b3dbbe8027c171615f4b0609c5eb1e",
+      "x-asr-zh-en-480ms-streaming-punct-int8-2026-06-05/joiner.int8.onnx": "aedb7fa697b2ab43f20499826fff7c997eea7d67db77be97769aeeeb726e63b3",
+      "x-asr-zh-en-480ms-streaming-punct-int8-2026-06-05/tokens.txt": "b818a60878b9aae978cbb8ad594acbd403d76d1af2e31ef4197c84e2dbdba27c",
+      "x-asr-zh-en-offline-punct-int8-2026-06-03/decoder-epoch-99-avg-1.onnx": "72f47405d3c1033bebccbef82f90071e7b4ba3e71b9c986f2b74244b25723aed",
+      "x-asr-zh-en-offline-punct-int8-2026-06-03/encoder-epoch-99-avg-1.int8.onnx": "7f6aa62056efd8af9da13e0faa81cd3f284d2fb2e3b63de56fd2dfd3450910dc",
+      "x-asr-zh-en-offline-punct-int8-2026-06-03/joiner-epoch-99-avg-1.int8.onnx": "aedb7fa697b2ab43f20499826fff7c997eea7d67db77be97769aeeeb726e63b3",
+      "x-asr-zh-en-offline-punct-int8-2026-06-03/tokens.txt": "b818a60878b9aae978cbb8ad594acbd403d76d1af2e31ef4197c84e2dbdba27c",
+      "zipformer-bilingual-zh-en-streaming-int8-2023-02-20/decoder-epoch-99-avg-1.int8.onnx": "1a70c593d71e53f023f5f55b0b4cfff5055abb786ee3992e5f63dc2e273cc4fa",
+      "zipformer-bilingual-zh-en-streaming-int8-2023-02-20/encoder-epoch-99-avg-1.int8.onnx": "8fa764187a261844f859d7143ebaa563af5d10adfece4c18a8f414c88cba2a9b",
+      "zipformer-bilingual-zh-en-streaming-int8-2023-02-20/joiner-epoch-99-avg-1.int8.onnx": "1ed689c5ed19dbaa725d9d191bb4822b5f4855a39e1ffd28cbc1f340d25b2ee0",
+      "zipformer-bilingual-zh-en-streaming-int8-2023-02-20/tokens.txt": "a8e0e4ec53810e433789b54a5c0134a7eaa2ffca595a6334d54c00da858841d3"
+    },
+    "execution": "live",
+    "hardware": {
+      "arch": "arm64",
+      "cpu": "Apple M4",
+      "logicalCpus": 10,
+      "os": "darwin",
+      "osBuild": "25G83",
+      "powerMode": "ac",
+      "ramBytes": 34359738368
+    },
+    "protocol": 1,
+    "purpose": "benchmark",
+    "requestId": "1",
+    "runtime": {
+      "buildFlags": "CGO_ENABLED=1 GOARCH=arm64",
+      "provider": "onnxruntime CPU",
+      "timer": "Go monotonic clock (mach_absolute_time)",
+      "version": "arion-desktop pipeline; sherpa-onnx-go v1.13.8; go1.27.1"
+    }
+  },
+  "gitRevision": "f3a0af5cb49c88fffb48e11b13760d28240f2890",
+  "gitDirty": true,
+  "plan": {
+    "version": 1,
+    "configHash": "034e0929e41207354ab9176c32423ae48914bedd8af880881f1a657030b2065b",
+    "normalization": "arion-nfkc-lower-punctuation-space-v1",
+    "blocks": [
+      {
+        "seed": 11,
+        "cacheState": "warm",
+        "variant": {
+          "id": "xasr-160-xasr-final",
+          "features": {
+            "memory": false,
+            "ranker": "source",
+            "correction": "none"
+          },
+          "pipelineOverrides": {
+            "asr": "xasr-160-xasr-final"
+          }
+        }
+      },
+      {
+        "seed": 11,
+        "cacheState": "warm",
+        "variant": {
+          "id": "xasr-480-xasr-final",
+          "features": {
+            "memory": false,
+            "ranker": "source",
+            "correction": "none"
+          },
+          "pipelineOverrides": {
+            "asr": "xasr-480-xasr-final"
+          }
+        }
+      },
+      {
+        "seed": 11,
+        "cacheState": "warm",
+        "variant": {
+          "id": "xasr-160",
+          "features": {
+            "memory": false,
+            "ranker": "source",
+            "correction": "none"
+          },
+          "pipelineOverrides": {
+            "asr": "xasr-160"
+          }
+        }
+      },
+      {
+        "seed": 11,
+        "cacheState": "warm",
+        "variant": {
+          "id": "xasr-480",
+          "features": {
+            "memory": false,
+            "ranker": "source",
+            "correction": "none"
+          },
+          "pipelineOverrides": {
+            "asr": "xasr-480"
+          }
+        }
+      },
+      {
+        "seed": 11,
+        "cacheState": "warm",
+        "variant": {
+          "id": "xasr-160-sensevoice-final",
+          "features": {
+            "memory": false,
+            "ranker": "source",
+            "correction": "none"
+          },
+          "pipelineOverrides": {
+            "asr": "xasr-160-sensevoice-final"
+          }
+        }
+      },
+      {
+        "seed": 11,
+        "cacheState": "warm",
+        "variant": {
+          "id": "zipformer-2023",
+          "features": {
+            "memory": false,
+            "ranker": "source",
+            "correction": "none"
+          },
+          "pipelineOverrides": {
+            "asr": "zipformer-2023"
+          }
+        }
+      }
+    ],
+    "cases": [
+      "aishell-BAC009S0766W0137",
+      "aishell-BAC009S0766W0325",
+      "aishell-BAC009S0766W0180",
+      "aishell-BAC009S0764W0205",
+      "aishell-BAC009S0765W0290",
+      "aishell-BAC009S0766W0171",
+      "aishell-BAC009S0765W0152",
+      "aishell-BAC009S0766W0392",
+      "aishell-BAC009S0766W0138",
+      "aishell-BAC009S0766W0125",
+      "aishell-BAC009S0764W0408",
+      "aishell-BAC009S0765W0360",
+      "aishell-BAC009S0766W0494",
+      "aishell-BAC009S0766W0124",
+      "aishell-BAC009S0764W0359",
+      "aishell-BAC009S0764W0399",
+      "aishell-BAC009S0764W0360",
+      "aishell-BAC009S0764W0490",
+      "aishell-BAC009S0766W0384",
+      "aishell-BAC009S0764W0250",
+      "aishell-BAC009S0764W0254",
+      "aishell-BAC009S0764W0404",
+      "aishell-BAC009S0764W0137",
+      "aishell-BAC009S0764W0459",
+      "aishell-BAC009S0764W0417",
+      "aishell-BAC009S0765W0495",
+      "aishell-BAC009S0766W0386",
+      "aishell-BAC009S0764W0293",
+      "aishell-BAC009S0766W0442",
+      "aishell-BAC009S0764W0492",
+      "aishell-BAC009S0765W0408",
+      "aishell-BAC009S0764W0304",
+      "aishell-BAC009S0766W0178",
+      "aishell-BAC009S0765W0299",
+      "aishell-BAC009S0764W0474",
+      "aishell-BAC009S0765W0487",
+      "aishell-BAC009S0766W0310",
+      "aishell-BAC009S0764W0261",
+      "aishell-BAC009S0765W0410",
+      "aishell-BAC009S0766W0148",
+      "aishell-BAC009S0764W0224",
+      "aishell-BAC009S0764W0149",
+      "aishell-BAC009S0766W0424",
+      "aishell-BAC009S0766W0139",
+      "aishell-BAC009S0764W0387",
+      "libri-2086-149220-0005",
+      "libri-3081-166546-0006",
+      "libri-251-137823-0017",
+      "libri-6241-61943-0014",
+      "libri-7976-110124-0005",
+      "libri-2086-149220-0023",
+      "libri-2277-149874-0017",
+      "libri-2035-147961-0024",
+      "libri-1988-147956-0013",
+      "libri-7850-281318-0019",
+      "libri-1919-142785-0059",
+      "libri-2428-83705-0041",
+      "libri-1272-141231-0010",
+      "libri-1462-170145-0018",
+      "libri-2035-147961-0010",
+      "libri-2277-149874-0002",
+      "libri-5694-64038-0009",
+      "libri-174-168635-0014",
+      "libri-7850-286674-0008",
+      "libri-84-121550-0004",
+      "libri-3170-137482-0012",
+      "libri-5536-43359-0002",
+      "libri-3752-4944-0065",
+      "libri-5694-64038-0019",
+      "libri-5895-34615-0008",
+      "libri-2078-142845-0011",
+      "libri-174-84280-0005",
+      "libri-2428-83705-0024",
+      "libri-7976-105575-0004",
+      "libri-8297-275156-0000",
+      "libri-84-121550-0019",
+      "libri-3536-23268-0013",
+      "libri-3000-15664-0014",
+      "libri-3536-23268-0006",
+      "libri-1462-170145-0009",
+      "libri-5895-34629-0023",
+      "libri-3081-166546-0068",
+      "libri-777-126732-0038",
+      "libri-2412-153954-0007",
+      "libri-3170-137482-0015",
+      "tts-dev-00-eddy",
+      "tts-dev-01-flo",
+      "tts-dev-02-reed",
+      "tts-dev-03-eddy",
+      "tts-dev-04-flo",
+      "tts-dev-05-reed",
+      "tts-dev-06-eddy",
+      "tts-dev-07-flo",
+      "tts-dev-08-reed",
+      "tts-dev-09-eddy",
+      "tts-dev-10-flo",
+      "tts-dev-11-reed",
+      "tts-dev-12-eddy",
+      "tts-dev-13-flo",
+      "tts-dev-14-reed",
+      "tts-dev-15-eddy",
+      "tts-dev-16-flo",
+      "tts-dev-17-reed",
+      "tts-dev-18-eddy",
+      "tts-dev-19-flo",
+      "tts-dev-20-reed",
+      "tts-dev-21-eddy",
+      "tts-dev-22-flo",
+      "tts-dev-23-reed",
+      "tts-dev-24-eddy",
+      "tts-dev-25-flo",
+      "tts-dev-26-reed",
+      "tts-dev-27-eddy",
+      "tts-dev-28-flo",
+      "tts-dev-29-reed",
+      "nonspeech-dev-0",
+      "nonspeech-dev-1",
+      "nonspeech-dev-2"
+    ],
+    "measuredRequests": 708
+  },
+  "observations": 708,
+  "resultsSha256": "3ba6910d3d9386ddaf845fc5ca93da5b4c2c14467c2f74e7dea0a519f4ec3d09",
+  "warmupsSha256": "5b7335d7b01dd06c86681dc39cf92204024b2cbca502c654307c39e91ffe4dfb"
+}

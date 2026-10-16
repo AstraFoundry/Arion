@@ -1,0 +1,24 @@
+loaded dev-v3 prompt=live-v3 prefix=1154 in 15266 ms
+zh-day             chat    accepted                767 ms reuse=11/26
+zh-person          chat    accepted               1175 ms reuse=20/33
+zh-number          chat    accepted               1077 ms reuse=16/30
+zh-repeat          chat    accepted               1255 ms reuse=18/30
+zh-uncertain       chat    accepted               1566 ms reuse=15/30
+zh-email           email   accepted               2342 ms reuse=29/40
+zh-list            list    accepted               2620 ms reuse=19/32
+zh-context         chat    accepted               1339 ms reuse=12/26
+zh-memory          chat    accepted               1922 ms reuse=0/58
+zh-context-inject  chat    accepted                775 ms reuse=11/23
+en-day             chat    accepted               1344 ms reuse=13/30
+en-money           chat    accepted               1146 ms reuse=22/35
+en-repeat          chat    content_dropped         774 ms reuse=16/32
+en-email           email   accepted               1120 ms reuse=0/26
+en-negation        chat    accepted               1388 ms reuse=0/27
+en-url             chat    accepted               2189 ms reuse=0/34
+mixed-memory       chat    accepted               1466 ms reuse=44/61
+mixed-code         code_comment accepted               1532 ms reuse=20/34
+mixed-context      chat    accepted               1007 ms reuse=14/26
+mixed-repair       chat    accepted               1153 ms reuse=20/35
+mixed-list         list    accepted               1814 ms reuse=0/34
+mixed-injection    chat    accepted               1600 ms reuse=35/54
+.workspace/benchmarks/scene/dev-v3.jsonl {"cases":24,"sourcePass":8,"proposalPass":18,"deliveredPass":17,"accepted":21,"rejected":{"content_dropped":1},"acceptedFailing":6,"rejectedPassing":1,"worsened":0,"referenceEditRatioMean":0.19181465321171207,"sourceEditRatioMean":0.3670215201465201,"finalMs":{"count":22,"p50":1341.24,"p95":2334.3271,"p99":2561.65192},"liveEdits":31,"liveAccepted":29,"liveMs":{"count":31,"p50":928.216,"p95":1955.106,"p99":2316.6222},"sceneAgreement":24,"byScene":{"chat":{"cases":19,"sourcePass":7,"deliveredPass":13,"worsened":0,"sceneAgreement":19},"code_comment":{"cases":1,"sourcePass":1,"deliveredPass":1,"worsened":0,"sceneAgreement":1},"email":{"cases":2,"sourcePass":0,"deliveredPass":2,"worsened":0,"sceneAgreement":2},"list":{"cases":2,"sourcePass":0,"deliveredPass":1,"worsened":0,"sceneAgreement":2}}}

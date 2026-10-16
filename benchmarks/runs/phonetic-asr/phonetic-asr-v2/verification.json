@@ -1,0 +1,15 @@
+{
+  "status": "passed",
+  "measuredGenerations": 924,
+  "rawControls": 154,
+  "verifiedPinnedArtifacts": 52,
+  "unchangedSharedEvaluators": 3,
+  "parentStatus": "cancelled_by_user",
+  "selectedModel": "qwen3-1.7b",
+  "confidenceRecomputedGroups": 8,
+  "publishedHashes": {
+    "summary": "209dc76abe141ccfa0cb057987b271944b1aba861745deb3b00661b560660a54",
+    "supplemental": "febc83299707b5e95911b6765779afc2d6efd61a1cf5ad7f567c722da901db24",
+    "confidence": "8b778d39d0bfb6184e877b0faef4a29493a44d3bf081b3851310dccba6d9fa51"
+  }
+}

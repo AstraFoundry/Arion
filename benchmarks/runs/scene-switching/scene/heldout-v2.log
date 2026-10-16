@@ -1,0 +1,31 @@
+loaded v2-heldout prompt=live-v2 prefix=822 in 9143 ms
+h-zh-time          chat    accepted                332 ms reuse=15/28
+h-zh-place         chat    accepted                373 ms reuse=15/29
+h-zh-count         chat    accepted                431 ms reuse=17/30
+h-zh-filler        chat    accepted                666 ms reuse=17/31
+h-zh-negation      chat    accepted                728 ms reuse=11/24
+h-zh-hedge         chat    accepted                670 ms reuse=16/30
+h-zh-plain         chat    accepted                570 ms reuse=0/24
+h-zh-money         chat    accepted                451 ms reuse=14/29
+h-zh-email         email   accepted                866 ms reuse=24/35
+h-zh-list          list    accepted               1182 ms reuse=19/31
+h-zh-memory        chat    accepted                684 ms reuse=0/36
+h-zh-inject        chat    length                  648 ms reuse=13/26
+h-zh-question      chat    accepted                464 ms reuse=0/21
+h-en-time          chat    accepted                613 ms reuse=17/30
+h-en-person        chat    accepted                424 ms reuse=15/29
+h-en-filler        chat    accepted                681 ms reuse=17/30
+h-en-negation      chat    accepted                678 ms reuse=14/29
+h-en-plain         chat    accepted                524 ms reuse=0/23
+h-en-email         email   accepted                796 ms reuse=21/33
+h-en-list          list    accepted               1008 ms reuse=20/33
+h-en-inject        chat    length                 3430 ms reuse=0/24
+h-mixed-tool       chat    accepted                547 ms reuse=17/34
+h-mixed-plain      chat    accepted                667 ms reuse=15/28
+h-mixed-filler     chat    accepted                428 ms reuse=13/25
+h-mixed-code       chat    accepted                607 ms reuse=13/28
+h-mixed-url        chat    accepted                988 ms reuse=16/34
+h-mixed-repeat     chat    accepted                587 ms reuse=0/25
+h-zh-long          chat    accepted               2042 ms reuse=30/49
+h-zh-cross         chat    accepted                592 ms reuse=20/33
+.workspace/benchmarks/scene/heldout-v2.jsonl {"cases":30,"sourcePass":12,"proposalPass":25,"deliveredPass":27,"accepted":27,"rejected":{"length":2},"acceptedFailing":3,"rejectedPassing":0,"worsened":0,"referenceEditRatioMean":0.043584529505582136,"sourceEditRatioMean":0.3079450617608513,"finalMs":{"count":29,"p50":647.651,"p95":1697.6971999999982,"p99":3041.010079999998},"liveEdits":45,"liveAccepted":43,"liveMs":{"count":45,"p50":525.784,"p95":1217.3497999999997,"p99":1904.313680000002},"sceneAgreement":30,"byScene":{"chat":{"cases":26,"sourcePass":12,"deliveredPass":23,"worsened":0,"sceneAgreement":26},"email":{"cases":2,"sourcePass":0,"deliveredPass":2,"worsened":0,"sceneAgreement":2},"list":{"cases":2,"sourcePass":0,"deliveredPass":2,"worsened":0,"sceneAgreement":2}}}

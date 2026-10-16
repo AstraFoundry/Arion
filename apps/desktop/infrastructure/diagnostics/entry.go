@@ -71,7 +71,7 @@ func (e Entry) valid() bool {
 		return false
 	}
 	switch e.Outcome {
-	case "", "learned", "cleared", "not_found", "outside", "too_large", "rewrite", "no_pair", "markup", "length", "new_number", "unsupported_content", "negation_dropped", "final_value_dropped", "content_dropped", "context_copied", "ok", "failed", "cancelled", "unselected", "provisioning", "loading", "ready", "unsupported", "off", "downloading", "verifying", "extracting", "granted", "denied", "restricted", "undetermined", "accepted", "timeout", "unavailable", "preview", "applied", "not_applied", "unknown", "unchanged", "empty", "truncated", "too_long", "meaning_changed", "unsafe", "invalid", "rejected":
+	case "", "learned", "cleared", "not_found", "outside", "too_large", "rewrite", "no_pair", "markup", "length", "new_number", "unsupported_content", "negation_dropped", "final_value_dropped", "content_dropped", "uncertainty_dropped", "context_copied", "ok", "failed", "cancelled", "unselected", "provisioning", "loading", "ready", "unsupported", "off", "downloading", "verifying", "extracting", "granted", "denied", "restricted", "undetermined", "accepted", "timeout", "unavailable", "preview", "applied", "not_applied", "unknown", "unchanged", "empty", "truncated", "too_long", "meaning_changed", "unsafe", "invalid", "rejected":
 	default:
 		return false
 	}
@@ -183,7 +183,7 @@ func (r *Recorder) Session(e contracts.Event) {
 	outcome := string(e.Outcome)
 	if e.Kind == contracts.CorrectionReady {
 		switch e.Rewrite {
-		case "", "accepted", "timeout", "unavailable", "empty", "truncated", "markup", "length", "new_number", "unsupported_content", "negation_dropped", "final_value_dropped", "content_dropped", "context_copied":
+		case "", "accepted", "timeout", "unavailable", "empty", "truncated", "markup", "length", "new_number", "unsupported_content", "negation_dropped", "final_value_dropped", "content_dropped", "uncertainty_dropped", "context_copied":
 			outcome = e.Rewrite
 		default:
 			outcome = "rejected"

@@ -1,6 +1,7 @@
 // Scores arion-rewrite-bench rows against a text corpus with the diagnostic
 // exact-string proxies. Delivered text is the validated proposal or the
-// source when validation rejected it; proposals are scored separately.
+// completed local cleanup when organization is rejected; proposals are scored
+// separately. Legacy rows without cleanup retain their recorded source.
 import fs from "node:fs/promises";
 import { diagnosticMetrics } from "../diagnostic/metrics.mjs";
 import { distribution } from "../src/metrics.mjs";
@@ -17,14 +18,21 @@ export function scoreText(corpus, rows) {
     // The rewriter's input: the corrected source when the run applied rule
     // correction, else the corpus text.
     const source = diagnosticMetrics(sample, { text: row.source ?? sample.sourceText, truncated: false });
-    return { row, sample, delivered, proposal, source };
+    const cleanup = diagnosticMetrics(sample, { text: row.cleanup?.version ? row.cleanup.text : row.source ?? sample.sourceText, truncated: false });
+    return { row, sample, delivered, proposal, source, cleanup };
   });
   const count = (f) => scored.filter(f).length;
+  const mean = (values) => {
+    const finite = values.filter(Number.isFinite);
+    return finite.length ? finite.reduce((a, b) => a + b, 0) / finite.length : null;
+  };
   const finals = scored.filter((s) => !s.row.bypassed).map((s) => s.row.generationMs);
   const lives = scored.flatMap((s) => s.row.live ?? []);
   return {
     cases: scored.length,
     sourcePass: count((s) => s.source.constraintPass),
+    cleanupPass: count((s) => s.cleanup.constraintPass),
+    cleanupChanged: count((s) => s.row.cleanup?.version && s.row.cleanup.text !== s.row.source),
     proposalPass: count((s) => s.proposal.constraintPass),
     deliveredPass: count((s) => s.delivered.constraintPass),
     accepted: count((s) => s.row.verdict === "accepted"),
@@ -38,14 +46,24 @@ export function scoreText(corpus, rows) {
     acceptedFailing: count((s) => s.row.verdict === "accepted" && !s.proposal.constraintPass),
     rejectedPassing: count((s) => s.row.verdict !== "accepted" && !s.row.bypassed && s.proposal.constraintPass),
     worsened: count((s) => s.source.constraintPass && !s.delivered.constraintPass),
-    referenceEditRatioMean: scored.reduce((n, s) => n + s.delivered.referenceEditRatio, 0) / scored.length,
-    sourceEditRatioMean: scored.reduce((n, s) => n + s.source.referenceEditRatio, 0) / scored.length,
+    referenceEditRatioMean: mean(scored.map((s) => s.delivered.referenceEditRatio)),
+    sourceEditRatioMean: mean(scored.map((s) => s.source.referenceEditRatio)),
     finalMs: distribution(finals),
     liveEdits: lives.length,
     liveAccepted: lives.filter((l) => l.verdict === "accepted").length,
     liveMs: distribution(lives.map((l) => l.totalMs)),
     // Rows from runs before scenes were recorded carry no scene.
     sceneAgreement: count((s) => s.row.scene === s.sample.scenario),
+    byLanguage: Object.fromEntries(
+      [...new Set(scored.map((s) => s.sample.language))].sort().map((language) => {
+        const group = scored.filter((s) => s.sample.language === language);
+        const n = (f) => group.filter(f).length;
+        return [language, { cases: group.length, sourcePass: n((s) => s.source.constraintPass),
+          cleanupPass: n((s) => s.cleanup.constraintPass), proposalPass: n((s) => s.proposal.constraintPass),
+          deliveredPass: n((s) => s.delivered.constraintPass),
+          worsened: n((s) => s.source.constraintPass && !s.delivered.constraintPass) }];
+      }),
+    ),
     byScene: Object.fromEntries(
       [...new Set(scored.map((s) => s.sample.scenario))].sort().map((scene) => {
         const group = scored.filter((s) => s.sample.scenario === scene);

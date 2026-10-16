@@ -1,0 +1,1294 @@
+{
+  "kind": "arion-qwen-diagnostic-v1",
+  "status": "complete",
+  "scope": "real_native_cpu_engine_via_python_without_native_preview",
+  "observations": 72,
+  "corpusHash": "5e9ac53eb85c1c914741800ec38137130838d64d81828f09f5b98d9969999741",
+  "configHash": "1ac33cbd1e2d7e556d4a9960333550610a03c58a0e4d49d510524b7f4d6cbdfa",
+  "promptHash": "3cb21d347f42fdf3c6ce8a6072f8436dc7b09cf52b5509ea3619860af2938f25",
+  "annotation": "developer_authored_unreviewed",
+  "limitations": [
+    "Not independently human reviewed",
+    "No speaker-independent or population-level confidence intervals",
+    "No Typeless outputs measured",
+    "Exact-string constraints and references are development proxies, not semantic quality"
+  ],
+  "semanticQuality": "pending independent blind review",
+  "confidenceIntervals": "not computed: one developer author cluster",
+  "latencyScope": "warm engine generation; excludes audio, endpoint, IPC, native preview, validation and insertion",
+  "rssScope": "process_high_water: cumulative across requests, separate worker per checkpoint",
+  "summaries": {
+    "verbatim": {
+      "overall": {
+        "count": 24,
+        "constraintPassCount": 8,
+        "referenceEditRatioMean": 0.3670215201465201,
+        "requiredMisses": 9,
+        "forbiddenHits": 25,
+        "protectedMisses": 0,
+        "verbatimViolations": 0,
+        "truncated": 0,
+        "generationMs": {
+          "count": 24,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "firstTokenMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "p99": null
+        },
+        "peakRssBytes": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "p99": null
+        }
+      },
+      "byTag": {
+        "self-correction": {
+          "count": 6,
+          "constraintPassCount": 0,
+          "referenceEditRatioMean": 0.710576923076923,
+          "requiredMisses": 0,
+          "forbiddenHits": 14,
+          "protectedMisses": 0,
+          "verbatimViolations": 0,
+          "truncated": 0,
+          "generationMs": {
+            "count": 6,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "firstTokenMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "peakRssBytes": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          }
+        },
+        "negation": {
+          "count": 6,
+          "constraintPassCount": 4,
+          "referenceEditRatioMean": 0.28571428571428575,
+          "requiredMisses": 2,
+          "forbiddenHits": 2,
+          "protectedMisses": 0,
+          "verbatimViolations": 0,
+          "truncated": 0,
+          "generationMs": {
+            "count": 6,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "firstTokenMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "peakRssBytes": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          }
+        },
+        "number": {
+          "count": 3,
+          "constraintPassCount": 1,
+          "referenceEditRatioMean": 0.30448717948717946,
+          "requiredMisses": 0,
+          "forbiddenHits": 4,
+          "protectedMisses": 0,
+          "verbatimViolations": 0,
+          "truncated": 0,
+          "generationMs": {
+            "count": 3,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "firstTokenMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "peakRssBytes": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          }
+        },
+        "filler": {
+          "count": 2,
+          "constraintPassCount": 0,
+          "referenceEditRatioMean": 0.42647058823529416,
+          "requiredMisses": 0,
+          "forbiddenHits": 6,
+          "protectedMisses": 0,
+          "verbatimViolations": 0,
+          "truncated": 0,
+          "generationMs": {
+            "count": 2,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "firstTokenMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "peakRssBytes": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          }
+        },
+        "repetition": {
+          "count": 2,
+          "constraintPassCount": 0,
+          "referenceEditRatioMean": 0.42647058823529416,
+          "requiredMisses": 0,
+          "forbiddenHits": 6,
+          "protectedMisses": 0,
+          "verbatimViolations": 0,
+          "truncated": 0,
+          "generationMs": {
+            "count": 2,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "firstTokenMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "peakRssBytes": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          }
+        },
+        "uncertainty": {
+          "count": 1,
+          "constraintPassCount": 1,
+          "referenceEditRatioMean": 0,
+          "requiredMisses": 0,
+          "forbiddenHits": 0,
+          "protectedMisses": 0,
+          "verbatimViolations": 0,
+          "truncated": 0,
+          "generationMs": {
+            "count": 1,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "firstTokenMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "peakRssBytes": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          }
+        },
+        "unchanged": {
+          "count": 4,
+          "constraintPassCount": 4,
+          "referenceEditRatioMean": 0,
+          "requiredMisses": 0,
+          "forbiddenHits": 0,
+          "protectedMisses": 0,
+          "verbatimViolations": 0,
+          "truncated": 0,
+          "generationMs": {
+            "count": 4,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "firstTokenMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "peakRssBytes": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          }
+        },
+        "scene": {
+          "count": 4,
+          "constraintPassCount": 0,
+          "referenceEditRatioMean": 0.3700980392156863,
+          "requiredMisses": 3,
+          "forbiddenHits": 2,
+          "protectedMisses": 0,
+          "verbatimViolations": 0,
+          "truncated": 0,
+          "generationMs": {
+            "count": 4,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "firstTokenMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "peakRssBytes": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          }
+        },
+        "context": {
+          "count": 2,
+          "constraintPassCount": 0,
+          "referenceEditRatioMean": 0.3487179487179487,
+          "requiredMisses": 2,
+          "forbiddenHits": 1,
+          "protectedMisses": 0,
+          "verbatimViolations": 0,
+          "truncated": 0,
+          "generationMs": {
+            "count": 2,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "firstTokenMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "peakRssBytes": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          }
+        },
+        "memory": {
+          "count": 2,
+          "constraintPassCount": 0,
+          "referenceEditRatioMean": 0.7571428571428571,
+          "requiredMisses": 4,
+          "forbiddenHits": 2,
+          "protectedMisses": 0,
+          "verbatimViolations": 0,
+          "truncated": 0,
+          "generationMs": {
+            "count": 2,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "firstTokenMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "peakRssBytes": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          }
+        },
+        "verbatim": {
+          "count": 2,
+          "constraintPassCount": 2,
+          "referenceEditRatioMean": 0,
+          "requiredMisses": 0,
+          "forbiddenHits": 0,
+          "protectedMisses": 0,
+          "verbatimViolations": 0,
+          "truncated": 0,
+          "generationMs": {
+            "count": 2,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "firstTokenMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "peakRssBytes": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          }
+        },
+        "code": {
+          "count": 2,
+          "constraintPassCount": 2,
+          "referenceEditRatioMean": 0,
+          "requiredMisses": 0,
+          "forbiddenHits": 0,
+          "protectedMisses": 0,
+          "verbatimViolations": 0,
+          "truncated": 0,
+          "generationMs": {
+            "count": 2,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "firstTokenMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "peakRssBytes": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          }
+        },
+        "attack": {
+          "count": 3,
+          "constraintPassCount": 3,
+          "referenceEditRatioMean": 0,
+          "requiredMisses": 0,
+          "forbiddenHits": 0,
+          "protectedMisses": 0,
+          "verbatimViolations": 0,
+          "truncated": 0,
+          "generationMs": {
+            "count": 3,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "firstTokenMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "peakRssBytes": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          }
+        },
+        "url": {
+          "count": 1,
+          "constraintPassCount": 1,
+          "referenceEditRatioMean": 0,
+          "requiredMisses": 0,
+          "forbiddenHits": 0,
+          "protectedMisses": 0,
+          "verbatimViolations": 0,
+          "truncated": 0,
+          "generationMs": {
+            "count": 1,
+            "p50": 0,
+            "p95": 0,
+            "p99": 0
+          },
+          "firstTokenMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "peakRssBytes": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          }
+        }
+      }
+    },
+    "qwen06-basic": {
+      "overall": {
+        "count": 24,
+        "constraintPassCount": 11,
+        "referenceEditRatioMean": 2.266376454427925,
+        "requiredMisses": 10,
+        "forbiddenHits": 13,
+        "protectedMisses": 5,
+        "verbatimViolations": 2,
+        "truncated": 0,
+        "generationMs": {
+          "count": 24,
+          "p50": 495.88418763596565,
+          "p95": 602.844412450213,
+          "p99": 672.1493051666766
+        },
+        "firstTokenMs": {
+          "count": 24,
+          "p50": 168.33997890353203,
+          "p95": 194.10389371914786,
+          "p99": 234.85076266340909
+        },
+        "peakRssBytes": {
+          "count": 24,
+          "p50": 1683423232,
+          "p95": 1683423232,
+          "p99": 1683423232
+        }
+      },
+      "byTag": {
+        "self-correction": {
+          "count": 6,
+          "constraintPassCount": 1,
+          "referenceEditRatioMean": 3.6108974358974364,
+          "requiredMisses": 2,
+          "forbiddenHits": 10,
+          "protectedMisses": 2,
+          "verbatimViolations": 0,
+          "truncated": 0,
+          "generationMs": {
+            "count": 6,
+            "p50": 485.3469376685098,
+            "p95": 578.1735618948005,
+            "p99": 589.4710451248102
+          },
+          "firstTokenMs": {
+            "count": 6,
+            "p50": 168.33997890353203,
+            "p95": 173.91498951474205,
+            "p99": 175.23529791506007
+          },
+          "peakRssBytes": {
+            "count": 6,
+            "p50": 1683423232,
+            "p95": 1683423232,
+            "p99": 1683423232
+          }
+        },
+        "negation": {
+          "count": 6,
+          "constraintPassCount": 4,
+          "referenceEditRatioMean": 2.9433862433862434,
+          "requiredMisses": 2,
+          "forbiddenHits": 2,
+          "protectedMisses": 0,
+          "verbatimViolations": 0,
+          "truncated": 0,
+          "generationMs": {
+            "count": 6,
+            "p50": 542.1503748511896,
+            "p95": 579.9407915328629,
+            "p99": 583.7604247615673
+          },
+          "firstTokenMs": {
+            "count": 6,
+            "p50": 168.5737913940102,
+            "p95": 175.7891460438259,
+            "p99": 176.33886287221685
+          },
+          "peakRssBytes": {
+            "count": 6,
+            "p50": 1683423232,
+            "p95": 1683423232,
+            "p99": 1683423232
+          }
+        },
+        "number": {
+          "count": 3,
+          "constraintPassCount": 2,
+          "referenceEditRatioMean": 2.051282051282051,
+          "requiredMisses": 2,
+          "forbiddenHits": 1,
+          "protectedMisses": 2,
+          "verbatimViolations": 0,
+          "truncated": 0,
+          "generationMs": {
+            "count": 3,
+            "p50": 477.79012518003583,
+            "p95": 553.8388874847442,
+            "p99": 560.5987774673849
+          },
+          "firstTokenMs": {
+            "count": 3,
+            "p50": 170.70529190823436,
+            "p95": 175.07936670444906,
+            "p99": 175.46817335300148
+          },
+          "peakRssBytes": {
+            "count": 3,
+            "p50": 1683423232,
+            "p95": 1683423232,
+            "p99": 1683423232
+          }
+        },
+        "filler": {
+          "count": 2,
+          "constraintPassCount": 2,
+          "referenceEditRatioMean": 1.8735294117647059,
+          "requiredMisses": 0,
+          "forbiddenHits": 0,
+          "protectedMisses": 0,
+          "verbatimViolations": 0,
+          "truncated": 0,
+          "generationMs": {
+            "count": 2,
+            "p50": 413.20541652385145,
+            "p95": 518.3486667345278,
+            "p99": 527.6947334199212
+          },
+          "firstTokenMs": {
+            "count": 2,
+            "p50": 165.95049935858697,
+            "p95": 182.85707455361262,
+            "p99": 184.3598812376149
+          },
+          "peakRssBytes": {
+            "count": 2,
+            "p50": 1528586240,
+            "p95": 1667939532.8,
+            "p99": 1680326492.16
+          }
+        },
+        "repetition": {
+          "count": 2,
+          "constraintPassCount": 2,
+          "referenceEditRatioMean": 1.8735294117647059,
+          "requiredMisses": 0,
+          "forbiddenHits": 0,
+          "protectedMisses": 0,
+          "verbatimViolations": 0,
+          "truncated": 0,
+          "generationMs": {
+            "count": 2,
+            "p50": 413.20541652385145,
+            "p95": 518.3486667345278,
+            "p99": 527.6947334199212
+          },
+          "firstTokenMs": {
+            "count": 2,
+            "p50": 165.95049935858697,
+            "p95": 182.85707455361262,
+            "p99": 184.3598812376149
+          },
+          "peakRssBytes": {
+            "count": 2,
+            "p50": 1528586240,
+            "p95": 1667939532.8,
+            "p99": 1680326492.16
+          }
+        },
+        "uncertainty": {
+          "count": 1,
+          "constraintPassCount": 1,
+          "referenceEditRatioMean": 2.857142857142857,
+          "requiredMisses": 0,
+          "forbiddenHits": 0,
+          "protectedMisses": 0,
+          "verbatimViolations": 0,
+          "truncated": 0,
+          "generationMs": {
+            "count": 1,
+            "p50": 548.4927499201149,
+            "p95": 548.4927499201149,
+            "p99": 548.4927499201149
+          },
+          "firstTokenMs": {
+            "count": 1,
+            "p50": 173.7277079373598,
+            "p95": 173.7277079373598,
+            "p99": 173.7277079373598
+          },
+          "peakRssBytes": {
+            "count": 1,
+            "p50": 1683423232,
+            "p95": 1683423232,
+            "p99": 1683423232
+          }
+        },
+        "unchanged": {
+          "count": 4,
+          "constraintPassCount": 4,
+          "referenceEditRatioMean": 1.0114010989010989,
+          "requiredMisses": 0,
+          "forbiddenHits": 0,
+          "protectedMisses": 0,
+          "verbatimViolations": 0,
+          "truncated": 0,
+          "generationMs": {
+            "count": 4,
+            "p50": 555.39074994158,
+            "p95": 598.3434125548229,
+            "p99": 603.4334825677797
+          },
+          "firstTokenMs": {
+            "count": 4,
+            "p50": 169.78866641875356,
+            "p95": 173.274345532991,
+            "p99": 173.63703545648605
+          },
+          "peakRssBytes": {
+            "count": 4,
+            "p50": 1683423232,
+            "p95": 1683423232,
+            "p99": 1683423232
+          }
+        },
+        "scene": {
+          "count": 4,
+          "constraintPassCount": 2,
+          "referenceEditRatioMean": 1.8607843137254902,
+          "requiredMisses": 2,
+          "forbiddenHits": 1,
+          "protectedMisses": 0,
+          "verbatimViolations": 0,
+          "truncated": 0,
+          "generationMs": {
+            "count": 4,
+            "p50": 536.2871875986457,
+            "p95": 674.5069643016905,
+            "p99": 688.7371592503041
+          },
+          "firstTokenMs": {
+            "count": 4,
+            "p50": 188.75987501814961,
+            "p95": 238.91243929974732,
+            "p99": 245.0049542542547
+          },
+          "peakRssBytes": {
+            "count": 4,
+            "p50": 1683423232,
+            "p95": 1683423232,
+            "p99": 1683423232
+          }
+        },
+        "context": {
+          "count": 2,
+          "constraintPassCount": 0,
+          "referenceEditRatioMean": 2.5846153846153848,
+          "requiredMisses": 2,
+          "forbiddenHits": 0,
+          "protectedMisses": 0,
+          "verbatimViolations": 0,
+          "truncated": 0,
+          "generationMs": {
+            "count": 2,
+            "p50": 503.7855620030314,
+            "p95": 523.6266055610031,
+            "p99": 525.3902538772672
+          },
+          "firstTokenMs": {
+            "count": 2,
+            "p50": 159.7509995335713,
+            "p95": 162.03883696580306,
+            "p99": 162.24220029311255
+          },
+          "peakRssBytes": {
+            "count": 2,
+            "p50": 1683423232,
+            "p95": 1683423232,
+            "p99": 1683423232
+          }
+        },
+        "memory": {
+          "count": 2,
+          "constraintPassCount": 0,
+          "referenceEditRatioMean": 2.182142857142857,
+          "requiredMisses": 4,
+          "forbiddenHits": 2,
+          "protectedMisses": 0,
+          "verbatimViolations": 0,
+          "truncated": 0,
+          "generationMs": {
+            "count": 2,
+            "p50": 527.299229404889,
+            "p95": 561.7853731731884,
+            "p99": 564.850808174815
+          },
+          "firstTokenMs": {
+            "count": 2,
+            "p50": 165.63129192218184,
+            "p95": 167.78645440936089,
+            "p99": 167.97802440822124
+          },
+          "peakRssBytes": {
+            "count": 2,
+            "p50": 1683423232,
+            "p95": 1683423232,
+            "p99": 1683423232
+          }
+        },
+        "verbatim": {
+          "count": 2,
+          "constraintPassCount": 0,
+          "referenceEditRatioMean": 0.7847222222222222,
+          "requiredMisses": 0,
+          "forbiddenHits": 0,
+          "protectedMisses": 3,
+          "verbatimViolations": 2,
+          "truncated": 0,
+          "generationMs": {
+            "count": 2,
+            "p50": 329.9483748851344,
+            "p95": 437.5116498558782,
+            "p99": 447.07282985327765
+          },
+          "firstTokenMs": {
+            "count": 2,
+            "p50": 154.39818694721907,
+            "p95": 167.64594301348552,
+            "p99": 168.82352133048698
+          },
+          "peakRssBytes": {
+            "count": 2,
+            "p50": 1683423232,
+            "p95": 1683423232,
+            "p99": 1683423232
+          }
+        },
+        "code": {
+          "count": 2,
+          "constraintPassCount": 1,
+          "referenceEditRatioMean": 0.6125,
+          "requiredMisses": 0,
+          "forbiddenHits": 0,
+          "protectedMisses": 1,
+          "verbatimViolations": 1,
+          "truncated": 0,
+          "generationMs": {
+            "count": 2,
+            "p50": 527.0845624618232,
+            "p95": 596.9438563100994,
+            "p99": 603.153571318835
+          },
+          "firstTokenMs": {
+            "count": 2,
+            "p50": 153.3805209910497,
+            "p95": 165.71237769676372,
+            "p99": 166.80854273727164
+          },
+          "peakRssBytes": {
+            "count": 2,
+            "p50": 1683423232,
+            "p95": 1683423232,
+            "p99": 1683423232
+          }
+        },
+        "attack": {
+          "count": 3,
+          "constraintPassCount": 2,
+          "referenceEditRatioMean": 2.361111111111111,
+          "requiredMisses": 0,
+          "forbiddenHits": 0,
+          "protectedMisses": 2,
+          "verbatimViolations": 1,
+          "truncated": 0,
+          "generationMs": {
+            "count": 3,
+            "p50": 442.9710831027478,
+            "p95": 570.5409080721438,
+            "p99": 581.8804480694234
+          },
+          "firstTokenMs": {
+            "count": 3,
+            "p50": 169.11791590973735,
+            "p95": 175.74045446235687,
+            "p99": 176.32912455592304
+          },
+          "peakRssBytes": {
+            "count": 3,
+            "p50": 1683423232,
+            "p95": 1683423232,
+            "p99": 1683423232
+          }
+        },
+        "url": {
+          "count": 1,
+          "constraintPassCount": 1,
+          "referenceEditRatioMean": 0.5384615384615384,
+          "requiredMisses": 0,
+          "forbiddenHits": 0,
+          "protectedMisses": 0,
+          "verbatimViolations": 0,
+          "truncated": 0,
+          "generationMs": {
+            "count": 1,
+            "p50": 562.2887499630451,
+            "p95": 562.2887499630451,
+            "p99": 562.2887499630451
+          },
+          "firstTokenMs": {
+            "count": 1,
+            "p50": 170.70529190823436,
+            "p95": 170.70529190823436,
+            "p99": 170.70529190823436
+          },
+          "peakRssBytes": {
+            "count": 1,
+            "p50": 1683423232,
+            "p95": 1683423232,
+            "p99": 1683423232
+          }
+        }
+      }
+    },
+    "qwen06-full": {
+      "overall": {
+        "count": 24,
+        "constraintPassCount": 8,
+        "referenceEditRatioMean": 0.6606693959635136,
+        "requiredMisses": 12,
+        "forbiddenHits": 13,
+        "protectedMisses": 7,
+        "verbatimViolations": 2,
+        "truncated": 0,
+        "generationMs": {
+          "count": 24,
+          "p50": 566.7974373791367,
+          "p95": 696.6830812743864,
+          "p99": 786.9772588880733
+        },
+        "firstTokenMs": {
+          "count": 24,
+          "p50": 420.55929149501026,
+          "p95": 490.4661786858923,
+          "p99": 515.8240530220792
+        },
+        "peakRssBytes": {
+          "count": 24,
+          "p50": 1683423232,
+          "p95": 1683423232,
+          "p99": 1683423232
+        }
+      },
+      "byTag": {
+        "self-correction": {
+          "count": 6,
+          "constraintPassCount": 0,
+          "referenceEditRatioMean": 1.3397435897435896,
+          "requiredMisses": 3,
+          "forbiddenHits": 8,
+          "protectedMisses": 3,
+          "verbatimViolations": 0,
+          "truncated": 0,
+          "generationMs": {
+            "count": 6,
+            "p50": 544.2184375133365,
+            "p95": 672.4682500353083,
+            "p99": 698.9466500235721
+          },
+          "firstTokenMs": {
+            "count": 6,
+            "p50": 422.1940420102328,
+            "p95": 447.92613555910066,
+            "p99": 449.4763271533884
+          },
+          "peakRssBytes": {
+            "count": 6,
+            "p50": 1683423232,
+            "p95": 1683423232,
+            "p99": 1683423232
+          }
+        },
+        "negation": {
+          "count": 6,
+          "constraintPassCount": 4,
+          "referenceEditRatioMean": 0.6857142857142856,
+          "requiredMisses": 3,
+          "forbiddenHits": 0,
+          "protectedMisses": 2,
+          "verbatimViolations": 0,
+          "truncated": 0,
+          "generationMs": {
+            "count": 6,
+            "p50": 563.7109165545553,
+            "p95": 751.1552809737623,
+            "p99": 799.2669225670397
+          },
+          "firstTokenMs": {
+            "count": 6,
+            "p50": 431.73795845359564,
+            "p95": 460.4627504013479,
+            "p99": 463.28911716118455
+          },
+          "peakRssBytes": {
+            "count": 6,
+            "p50": 1683423232,
+            "p95": 1683423232,
+            "p99": 1683423232
+          }
+        },
+        "number": {
+          "count": 3,
+          "constraintPassCount": 1,
+          "referenceEditRatioMean": 0.22115384615384615,
+          "requiredMisses": 2,
+          "forbiddenHits": 2,
+          "protectedMisses": 2,
+          "verbatimViolations": 0,
+          "truncated": 0,
+          "generationMs": {
+            "count": 3,
+            "p50": 528.3400830812752,
+            "p95": 583.417308353819,
+            "p99": 588.3130617113784
+          },
+          "firstTokenMs": {
+            "count": 3,
+            "p50": 396.9022501260042,
+            "p95": 425.3054255852476,
+            "p99": 427.8301522927359
+          },
+          "peakRssBytes": {
+            "count": 3,
+            "p50": 1683423232,
+            "p95": 1683423232,
+            "p99": 1683423232
+          }
+        },
+        "filler": {
+          "count": 2,
+          "constraintPassCount": 1,
+          "referenceEditRatioMean": 0.22941176470588237,
+          "requiredMisses": 0,
+          "forbiddenHits": 2,
+          "protectedMisses": 0,
+          "verbatimViolations": 0,
+          "truncated": 0,
+          "generationMs": {
+            "count": 2,
+            "p50": 574.577312450856,
+            "p95": 607.0663184858859,
+            "p99": 609.9542301334441
+          },
+          "firstTokenMs": {
+            "count": 2,
+            "p50": 422.21166647505015,
+            "p95": 432.5959039502777,
+            "p99": 433.51894728140905
+          },
+          "peakRssBytes": {
+            "count": 2,
+            "p50": 1683423232,
+            "p95": 1683423232,
+            "p99": 1683423232
+          }
+        },
+        "repetition": {
+          "count": 2,
+          "constraintPassCount": 1,
+          "referenceEditRatioMean": 0.22941176470588237,
+          "requiredMisses": 0,
+          "forbiddenHits": 2,
+          "protectedMisses": 0,
+          "verbatimViolations": 0,
+          "truncated": 0,
+          "generationMs": {
+            "count": 2,
+            "p50": 574.577312450856,
+            "p95": 607.0663184858859,
+            "p99": 609.9542301334441
+          },
+          "firstTokenMs": {
+            "count": 2,
+            "p50": 422.21166647505015,
+            "p95": 432.5959039502777,
+            "p99": 433.51894728140905
+          },
+          "peakRssBytes": {
+            "count": 2,
+            "p50": 1683423232,
+            "p95": 1683423232,
+            "p99": 1683423232
+          }
+        },
+        "uncertainty": {
+          "count": 1,
+          "constraintPassCount": 1,
+          "referenceEditRatioMean": 2.7142857142857144,
+          "requiredMisses": 0,
+          "forbiddenHits": 0,
+          "protectedMisses": 0,
+          "verbatimViolations": 0,
+          "truncated": 0,
+          "generationMs": {
+            "count": 1,
+            "p50": 811.2948329653591,
+            "p95": 811.2948329653591,
+            "p99": 811.2948329653591
+          },
+          "firstTokenMs": {
+            "count": 1,
+            "p50": 416.58791597001255,
+            "p95": 416.58791597001255,
+            "p99": 416.58791597001255
+          },
+          "peakRssBytes": {
+            "count": 1,
+            "p50": 1683423232,
+            "p95": 1683423232,
+            "p99": 1683423232
+          }
+        },
+        "unchanged": {
+          "count": 4,
+          "constraintPassCount": 4,
+          "referenceEditRatioMean": 0.6785714285714286,
+          "requiredMisses": 0,
+          "forbiddenHits": 0,
+          "protectedMisses": 0,
+          "verbatimViolations": 0,
+          "truncated": 0,
+          "generationMs": {
+            "count": 4,
+            "p50": 602.9260420473292,
+            "p95": 782.0478706271388,
+            "p99": 805.445440497715
+          },
+          "firstTokenMs": {
+            "count": 4,
+            "p50": 413.8417080976069,
+            "p95": 423.74555428978056,
+            "p99": 424.7560444055125
+          },
+          "peakRssBytes": {
+            "count": 4,
+            "p50": 1683423232,
+            "p95": 1683423232,
+            "p99": 1683423232
+          }
+        },
+        "scene": {
+          "count": 4,
+          "constraintPassCount": 1,
+          "referenceEditRatioMean": 0.37982026143790854,
+          "requiredMisses": 3,
+          "forbiddenHits": 1,
+          "protectedMisses": 0,
+          "verbatimViolations": 0,
+          "truncated": 0,
+          "generationMs": {
+            "count": 4,
+            "p50": 574.4631249690428,
+            "p95": 636.73413755605,
+            "p99": 644.4229275477119
+          },
+          "firstTokenMs": {
+            "count": 4,
+            "p50": 391.37114549521357,
+            "p95": 440.6954766949639,
+            "p99": 447.28046170901507
+          },
+          "peakRssBytes": {
+            "count": 4,
+            "p50": 1683423232,
+            "p95": 1683423232,
+            "p99": 1683423232
+          }
+        },
+        "context": {
+          "count": 2,
+          "constraintPassCount": 0,
+          "referenceEditRatioMean": 0.3153846153846154,
+          "requiredMisses": 2,
+          "forbiddenHits": 0,
+          "protectedMisses": 0,
+          "verbatimViolations": 0,
+          "truncated": 0,
+          "generationMs": {
+            "count": 2,
+            "p50": 550.2938129939139,
+            "p95": 587.337381974794,
+            "p99": 590.6301436619833
+          },
+          "firstTokenMs": {
+            "count": 2,
+            "p50": 436.6398755228147,
+            "p95": 470.7787507562898,
+            "p99": 473.8133174437098
+          },
+          "peakRssBytes": {
+            "count": 2,
+            "p50": 1683423232,
+            "p95": 1683423232,
+            "p99": 1683423232
+          }
+        },
+        "memory": {
+          "count": 2,
+          "constraintPassCount": 0,
+          "referenceEditRatioMean": 0.9,
+          "requiredMisses": 4,
+          "forbiddenHits": 2,
+          "protectedMisses": 1,
+          "verbatimViolations": 0,
+          "truncated": 0,
+          "generationMs": {
+            "count": 2,
+            "p50": 588.2572914706543,
+            "p95": 607.442403852474,
+            "p99": 609.1477471753024
+          },
+          "firstTokenMs": {
+            "count": 2,
+            "p50": 478.63337490707636,
+            "p95": 491.80727435741574,
+            "p99": 492.97828764189035
+          },
+          "peakRssBytes": {
+            "count": 2,
+            "p50": 1683423232,
+            "p95": 1683423232,
+            "p99": 1683423232
+          }
+        },
+        "verbatim": {
+          "count": 2,
+          "constraintPassCount": 0,
+          "referenceEditRatioMean": 0.3472222222222222,
+          "requiredMisses": 0,
+          "forbiddenHits": 0,
+          "protectedMisses": 3,
+          "verbatimViolations": 2,
+          "truncated": 0,
+          "generationMs": {
+            "count": 2,
+            "p50": 557.3129170807078,
+            "p95": 561.7338296375237,
+            "p99": 562.126799642574
+          },
+          "firstTokenMs": {
+            "count": 2,
+            "p50": 467.5700420048088,
+            "p95": 517.0616045128554,
+            "p99": 521.4608545135707
+          },
+          "peakRssBytes": {
+            "count": 2,
+            "p50": 1683423232,
+            "p95": 1683423232,
+            "p99": 1683423232
+          }
+        },
+        "code": {
+          "count": 2,
+          "constraintPassCount": 1,
+          "referenceEditRatioMean": 0,
+          "requiredMisses": 0,
+          "forbiddenHits": 0,
+          "protectedMisses": 1,
+          "verbatimViolations": 1,
+          "truncated": 0,
+          "generationMs": {
+            "count": 2,
+            "p50": 584.3579380307347,
+            "p95": 613.1193694425747,
+            "p99": 615.6759411236271
+          },
+          "firstTokenMs": {
+            "count": 2,
+            "p50": 418.7940419651568,
+            "p95": 424.38720443751663,
+            "p99": 424.8843744350597
+          },
+          "peakRssBytes": {
+            "count": 2,
+            "p50": 1683423232,
+            "p95": 1683423232,
+            "p99": 1683423232
+          }
+        },
+        "attack": {
+          "count": 3,
+          "constraintPassCount": 2,
+          "referenceEditRatioMean": 0.23148148148148148,
+          "requiredMisses": 0,
+          "forbiddenHits": 0,
+          "protectedMisses": 2,
+          "verbatimViolations": 1,
+          "truncated": 0,
+          "generationMs": {
+            "count": 3,
+            "p50": 562.2250421438366,
+            "p95": 569.8854667134583,
+            "p99": 570.5663933418691
+          },
+          "firstTokenMs": {
+            "count": 3,
+            "p50": 438.9452498871833,
+            "p95": 514.1991253010929,
+            "p99": 520.8883586712182
+          },
+          "peakRssBytes": {
+            "count": 3,
+            "p50": 1683423232,
+            "p95": 1683423232,
+            "p99": 1683423232
+          }
+        },
+        "url": {
+          "count": 1,
+          "constraintPassCount": 1,
+          "referenceEditRatioMean": 0,
+          "requiredMisses": 0,
+          "forbiddenHits": 0,
+          "protectedMisses": 0,
+          "verbatimViolations": 0,
+          "truncated": 0,
+          "generationMs": {
+            "count": 1,
+            "p50": 589.5370000507683,
+            "p95": 589.5370000507683,
+            "p99": 589.5370000507683
+          },
+          "firstTokenMs": {
+            "count": 1,
+            "p50": 392.62391603551805,
+            "p95": 392.62391603551805,
+            "p99": 392.62391603551805
+          },
+          "peakRssBytes": {
+            "count": 1,
+            "p50": 1372372992,
+            "p95": 1372372992,
+            "p99": 1372372992
+          }
+        }
+      }
+    }
+  }
+}

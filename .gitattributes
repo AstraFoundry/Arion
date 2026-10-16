@@ -2,3 +2,10 @@
 * text=auto eol=lf
 *.png binary
 *.bz2 binary
+
+# Benchmark evidence is hashed as recorded; never normalize archived bytes.
+benchmarks/** -text !eol
+benchmarks/corpora/** -whitespace
+benchmarks/runs/** -whitespace
+benchmarks/reproduction/** -whitespace
+benchmarks/artifacts/** -whitespace

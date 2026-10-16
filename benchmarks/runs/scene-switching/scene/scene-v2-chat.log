@@ -1,0 +1,35 @@
+loaded v2-chat prompt=live-v2 prefix=822 in 7070 ms
+se-zh-defense      chat    accepted                795 ms reuse=32/43
+se-en-contract     chat    accepted                686 ms reuse=32/43
+se-mx-roadmap      chat    unsupported_content     681 ms reuse=24/35
+se-zh-quote        chat    accepted                712 ms reuse=25/39
+se-en-closure      chat    accepted                778 ms reuse=31/42
+se-zh-invoice      chat    accepted                670 ms reuse=28/39
+se-zh-repair       chat    accepted                570 ms reuse=26/37
+sw-zh-three        chat    content_dropped         903 ms reuse=27/45
+sw-en-deploy       chat    accepted                690 ms reuse=24/42
+sw-zh-short        chat    accepted                428 ms reuse=9/27
+sw-en-release      chat    accepted                731 ms reuse=20/36
+sw-zh-meeting      chat    accepted                551 ms reuse=19/34
+sw-mx-review       chat    accepted                714 ms reuse=24/38
+sw-zh-steps        chat    accepted                631 ms reuse=22/37
+sp-mx-retry        chat    truncated              4517 ms reuse=28/44
+sp-en-hook         chat    accepted                895 ms reuse=25/42
+sp-zh-app          chat    length                 3857 ms reuse=32/46
+sp-en-tests        chat    accepted                728 ms reuse=17/37
+sp-mx-issue        chat    accepted                810 ms reuse=20/39
+sp-zh-async        chat    accepted                970 ms reuse=19/33
+sp-en-backoff      chat    accepted                785 ms reuse=20/35
+ss-zh-weather      chat    accepted                240 ms reuse=8/22
+ss-en-headphones   chat    accepted                439 ms reuse=0/24
+ss-zh-mailsearch   chat    accepted                312 ms reuse=0/21
+ss-mx-python       chat    accepted                395 ms reuse=8/26
+ss-en-reset        chat    unsupported_content     439 ms reuse=0/25
+ss-zh-finder       chat    accepted                275 ms reuse=0/19
+sc-zh-dinner       chat    accepted                484 ms reuse=14/28
+sc-en-saturday     chat    accepted                335 ms reuse=10/26
+sc-zh-notes        chat    accepted                513 ms reuse=14/32
+sc-zh-places       chat    accepted                516 ms reuse=14/28
+sc-en-wiki         chat    accepted                365 ms reuse=11/26
+sc-mx-game         chat    accepted                412 ms reuse=14/29
+.workspace/benchmarks/scene/scene-v2-chat.jsonl {"cases":33,"sourcePass":2,"proposalPass":17,"deliveredPass":16,"accepted":28,"rejected":{"unsupported_content":2,"content_dropped":1,"truncated":1,"length":1},"acceptedFailing":12,"rejectedPassing":1,"worsened":0,"referenceEditRatioMean":0.06827524226223203,"sourceEditRatioMean":0.09867394276146839,"finalMs":{"count":33,"p50":669.681,"p95":2125.1671999999962,"p99":4306.25648},"liveEdits":90,"liveAccepted":83,"liveMs":{"count":90,"p50":340.0525,"p95":750.8431499999999,"p99":2383.83452},"sceneAgreement":6,"byScene":{"chat":{"cases":6,"sourcePass":1,"deliveredPass":4,"worsened":0,"sceneAgreement":6},"email":{"cases":7,"sourcePass":0,"deliveredPass":3,"worsened":0,"sceneAgreement":0},"prompt":{"cases":7,"sourcePass":0,"deliveredPass":3,"worsened":0,"sceneAgreement":0},"search":{"cases":6,"sourcePass":0,"deliveredPass":1,"worsened":0,"sceneAgreement":0},"work":{"cases":7,"sourcePass":1,"deliveredPass":5,"worsened":0,"sceneAgreement":0}}}

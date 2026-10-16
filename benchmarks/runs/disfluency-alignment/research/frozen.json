@@ -1,0 +1,7 @@
+{
+  "apps/desktop/infrastructure/llm/prompt/live.json": "31ac54390ad29c7ac12c1a6c15d4ecb86ea08b71960070b5e9de73358e72f837",
+  "packages/core/domain/rewrite.go": "d50336f43d70223d770b3f58652509ee7deeae3258aacf6febfb574c044d6c29",
+  "packages/core/domain/rewrite_fidelity.go": "92978246a64ae5270f64b1ba6b0033c1a897c67fe0f66a3ece8f1616c4b8f8c9",
+  ".workspace/research/doubao-alignment/heldout.json": "5894f0a041a21731c55b6c2e57e4610d04812bbb551ac715e06022f280f10b0b",
+  ".workspace/research/doubao-alignment/cleanup-prompt.json": "6b786f07d5f34db6062ce26552309d0b856968395d63ac6de26b11d341332d62"
+}

@@ -1,0 +1,193 @@
+{
+  "version": 1,
+  "annotation": "developer_authored_unreviewed",
+  "samples": [
+    {
+      "id": "zh-hesitation",
+      "language": "zh",
+      "sourceText": "呃，那个，麻烦把日志发到群里。",
+      "references": [
+        "麻烦把日志发到群里。"
+      ],
+      "requiredStrings": [
+        "日志",
+        "群里"
+      ],
+      "forbiddenStrings": [
+        "呃",
+        "那个"
+      ],
+      "protected": [],
+      "scenario": "chat",
+      "mode": "clean",
+      "approvedMemory": [],
+      "tags": [
+        "hesitation"
+      ],
+      "speech": "呃，那个，麻烦把日志发到群里。"
+    },
+    {
+      "id": "zh-repair",
+      "language": "zh",
+      "sourceText": "周四交付，啊不对，周六交付。",
+      "references": [
+        "周六交付。"
+      ],
+      "requiredStrings": [
+        "周六",
+        "交付"
+      ],
+      "forbiddenStrings": [
+        "周四",
+        "不对"
+      ],
+      "protected": [],
+      "scenario": "chat",
+      "mode": "clean",
+      "approvedMemory": [],
+      "tags": [
+        "repair"
+      ],
+      "speech": "周四交付|啊不对|周六交付。"
+    },
+    {
+      "id": "zh-repeat",
+      "language": "zh",
+      "sourceText": "我我觉得这个这个方案可能不行。",
+      "references": [
+        "我觉得这个方案可能不行。"
+      ],
+      "requiredStrings": [
+        "可能",
+        "不行"
+      ],
+      "forbiddenStrings": [
+        "我我",
+        "这个这个"
+      ],
+      "protected": [],
+      "scenario": "chat",
+      "mode": "clean",
+      "approvedMemory": [],
+      "tags": [
+        "repeat"
+      ],
+      "speech": "我我觉得这个这个方案可能不行。"
+    },
+    {
+      "id": "zh-reference",
+      "language": "zh",
+      "sourceText": "我要那个，别给我这个。",
+      "references": [
+        "我要那个，别给我这个。"
+      ],
+      "requiredStrings": [
+        "那个",
+        "别",
+        "这个"
+      ],
+      "forbiddenStrings": [],
+      "protected": [],
+      "scenario": "chat",
+      "mode": "clean",
+      "approvedMemory": [],
+      "tags": [
+        "reference"
+      ],
+      "speech": "我要那个，别给我这个。"
+    },
+    {
+      "id": "en-hesitation",
+      "language": "en",
+      "sourceText": "Erm, uh, please keep the staging backup.",
+      "references": [
+        "Please keep the staging backup."
+      ],
+      "requiredStrings": [
+        "staging",
+        "backup"
+      ],
+      "forbiddenStrings": [
+        "Erm",
+        "uh,"
+      ],
+      "protected": [],
+      "scenario": "chat",
+      "mode": "clean",
+      "approvedMemory": [],
+      "tags": [
+        "hesitation"
+      ],
+      "speech": "Erm, uh, please keep the staging backup."
+    },
+    {
+      "id": "en-repair",
+      "language": "en",
+      "sourceText": "Meet on Tuesday, no wait, meet on Thursday.",
+      "references": [
+        "Meet on Thursday."
+      ],
+      "requiredStrings": [
+        "Thursday"
+      ],
+      "forbiddenStrings": [
+        "Tuesday",
+        "no wait"
+      ],
+      "protected": [],
+      "scenario": "chat",
+      "mode": "clean",
+      "approvedMemory": [],
+      "tags": [
+        "repair"
+      ],
+      "speech": "Meet on Tuesday|no wait|meet on Thursday."
+    },
+    {
+      "id": "en-reference",
+      "language": "en",
+      "sourceText": "I like that one, do not change it.",
+      "references": [
+        "I like that one, do not change it."
+      ],
+      "requiredStrings": [
+        "like",
+        "that one",
+        "not"
+      ],
+      "forbiddenStrings": [],
+      "protected": [],
+      "scenario": "chat",
+      "mode": "clean",
+      "approvedMemory": [],
+      "tags": [
+        "reference"
+      ],
+      "speech": "I like that one, do not change it."
+    },
+    {
+      "id": "en-repeat",
+      "language": "en",
+      "sourceText": "I I might need the the earlier train.",
+      "references": [
+        "I might need the earlier train."
+      ],
+      "requiredStrings": [
+        "might",
+        "earlier train"
+      ],
+      "forbiddenStrings": [
+        "I I",
+        "the the"
+      ],
+      "protected": [],
+      "scenario": "chat",
+      "mode": "clean",
+      "approvedMemory": [],
+      "tags": [
+        "repeat"
+      ],
+      "speech": "I I might need the the earlier train."
+    }
+  ]
+}

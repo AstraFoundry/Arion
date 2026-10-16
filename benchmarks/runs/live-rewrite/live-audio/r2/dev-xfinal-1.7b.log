@@ -1,0 +1,24 @@
+activated xasr-160-xasr-final in 2637 ms
+llm loaded prompt=live-v2 in 5540 ms
+zh-day             stop→final    420 ms previews=10 accepted
+zh-person          stop→final    504 ms previews=15 accepted
+zh-number          stop→final    482 ms previews=15 accepted
+zh-repeat          stop→final    505 ms previews=5 accepted
+zh-uncertain       stop→final    612 ms previews=12 accepted
+zh-email           stop→final   1241 ms previews=18 accepted
+zh-list            stop→final    755 ms previews=15 accepted
+zh-context         stop→final    663 ms previews=7 accepted
+zh-memory          stop→final    604 ms previews=0 accepted
+zh-context-inject  stop→final    341 ms previews=4 accepted
+en-day             stop→final    525 ms previews=9 accepted
+en-money           stop→final    521 ms previews=12 accepted
+en-repeat          stop→final    667 ms previews=8 accepted
+en-email           stop→final    541 ms previews=0 accepted
+en-negation        stop→final    531 ms previews=0 accepted
+en-url             stop→final    879 ms previews=0 new_number
+mixed-memory       stop→final    610 ms previews=9 accepted
+mixed-code         stop→final    735 ms previews=12 accepted
+mixed-context      stop→final    631 ms previews=4 accepted
+mixed-repair       stop→final    625 ms previews=17 accepted
+mixed-list         stop→final   1120 ms previews=0 length
+mixed-injection    stop→final    614 ms previews=0 accepted

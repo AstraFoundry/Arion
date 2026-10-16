@@ -64,21 +64,22 @@ type row struct {
 	ContextTerms   []string `json:"contextTerms,omitempty"`
 	// Source is the text sent to the rewriter, after rule correction when
 	// -correct is set.
-	Source       string  `json:"source"`
-	Live         []live  `json:"live"`
-	Proposal     string  `json:"proposal"`
-	Verdict      string  `json:"verdict"`
-	Text         string  `json:"text"`
-	Bypassed     bool    `json:"bypassed"`
-	Truncated    bool    `json:"truncated"`
-	FinalMs      float64 `json:"generationMs"`
-	FirstTokenMs float64 `json:"firstTokenMs"`
-	PrefillMs    float64 `json:"prefillMs"`
-	DecodeMs     float64 `json:"decodeMs"`
-	InputTokens  int     `json:"inputTokens"`
-	ReusedTokens int     `json:"reusedTokens"`
-	OutputTokens int     `json:"outputTokens"`
-	PeakRSS      int64   `json:"peakRssBytes"`
+	Source       string               `json:"source"`
+	Cleanup      domain.SpeechCleanup `json:"cleanup"`
+	Live         []live               `json:"live"`
+	Proposal     string               `json:"proposal"`
+	Verdict      string               `json:"verdict"`
+	Text         string               `json:"text"`
+	Bypassed     bool                 `json:"bypassed"`
+	Truncated    bool                 `json:"truncated"`
+	FinalMs      float64              `json:"generationMs"`
+	FirstTokenMs float64              `json:"firstTokenMs"`
+	PrefillMs    float64              `json:"prefillMs"`
+	DecodeMs     float64              `json:"decodeMs"`
+	InputTokens  int                  `json:"inputTokens"`
+	ReusedTokens int                  `json:"reusedTokens"`
+	OutputTokens int                  `json:"outputTokens"`
+	PeakRSS      int64                `json:"peakRssBytes"`
 }
 
 func main() {
@@ -148,7 +149,7 @@ func main() {
 			r.Scene = *sceneMode
 		}
 		source := s.SourceText
-		if *correct {
+		if *correct && s.Mode != "verbatim" {
 			source = domain.Correct(source, domain.CorrectionPolicy{RemoveFillers: true}).Text
 		}
 		r.Source = source
@@ -211,8 +212,12 @@ func main() {
 		result, ms := request(source, false)
 		verdict := domain.ValidateRewrite(domain.RewriteCheck{Source: source, Candidate: result.Text, Truncated: result.Truncated, Terms: terms, Context: evidence})
 		r.Template = result.Template
+		r.Cleanup = result.Cleanup
 		r.Proposal, r.Verdict, r.Truncated = result.Text, string(verdict), result.Truncated
 		r.Text = source
+		if result.Cleanup.Version != "" {
+			r.Text = domain.CleanSpeech(source).Text
+		}
 		if verdict == domain.RewriteAccepted {
 			r.Text = result.Text
 		}

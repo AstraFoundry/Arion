@@ -1,0 +1,54 @@
+{
+  "model": {
+    "bos_token_id": 151643,
+    "context_length": 40960,
+    "decoder": {
+      "session_options": {
+        "log_id": "onnxruntime-genai",
+        "provider_options": [],
+        "intra_op_num_threads": 4,
+        "inter_op_num_threads": 1
+      },
+      "filename": "model.onnx",
+      "head_size": 128,
+      "hidden_size": 2560,
+      "inputs": {
+        "input_ids": "input_ids",
+        "attention_mask": "attention_mask",
+        "past_key_names": "past_key_values.%d.key",
+        "past_value_names": "past_key_values.%d.value"
+      },
+      "outputs": {
+        "logits": "logits",
+        "present_key_names": "present.%d.key",
+        "present_value_names": "present.%d.value"
+      },
+      "num_attention_heads": 32,
+      "num_hidden_layers": 36,
+      "num_key_value_heads": 8
+    },
+    "eos_token_id": [
+      151645,
+      151643
+    ],
+    "pad_token_id": 151643,
+    "type": "qwen3",
+    "vocab_size": 151936
+  },
+  "search": {
+    "diversity_penalty": 0,
+    "do_sample": true,
+    "early_stopping": true,
+    "length_penalty": 1,
+    "max_length": 40960,
+    "min_length": 0,
+    "no_repeat_ngram_size": 0,
+    "num_beams": 1,
+    "num_return_sequences": 1,
+    "past_present_share_buffer": true,
+    "repetition_penalty": 1,
+    "temperature": 0.6,
+    "top_k": 20,
+    "top_p": 0.95
+  }
+}

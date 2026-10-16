@@ -276,15 +276,21 @@ func TestStalePreviewNotDisplayed(t *testing.T) {
 	}
 }
 
-// Without a rewriter, enabling rewriting degrades to the plain pipeline.
-func TestRewriteWithoutRewriterIsDisabled(t *testing.T) {
-	c, audio, events, _, _ := liveSetup(t, []string{"hello"}, nil, RewritePolicy{Enabled: true})
+// LRW-A03: a missing adapter preserves the source and records why it did so.
+func TestRewriteWithoutRewriterIsUnavailable(t *testing.T) {
+	c, audio, events, target, _ := liveSetup(t, []string{"hello", "|", "there"}, nil, RewritePolicy{Enabled: true})
 	c.Start()
 	events.wait(t, stateIs(domain.Capturing))
-	audio.push(1, 0.2)
+	audio.push(3, 0.2)
 	c.Stop()
-	if ready := events.wait(t, kindIs(contracts.CorrectionReady)); ready.Rewrite != "" || ready.Text != "HELLO" {
+	if ready := events.wait(t, kindIs(contracts.CorrectionReady)); ready.Rewrite != RewriteUnavailable || ready.Text != "HELLO THERE" {
 		t.Fatalf("unexpected %+v", ready)
+	}
+	events.wait(t, kindIs(contracts.CommitResultReady))
+	target.mu.Lock()
+	defer target.mu.Unlock()
+	if target.commits.Load() != 1 || len(target.texts) != 1 || target.texts[0] != "HELLO THERE" {
+		t.Fatalf("unexpected commits %+v", target.texts)
 	}
 }
 
@@ -493,5 +499,69 @@ func TestHistoryExpiresAndClears(t *testing.T) {
 	h.Clear()
 	if got := h.Recent("app"); len(got) != 0 {
 		t.Fatal("Clear kept items")
+	}
+}
+
+// Local cleanup completes independently of organization. Rejected model
+// content never replaces it, and the failed organization remains explicit.
+func TestCleanupSurvivesOrganizationFailure(t *testing.T) {
+	for _, outcome := range []string{"rejected", "unavailable", "missing", "timeout", "disabled"} {
+		t.Run(outcome, func(t *testing.T) {
+			var rewriter *scriptedRewriter
+			policy := RewritePolicy{Enabled: true}
+			switch outcome {
+			case "rejected":
+				rewriter = &scriptedRewriter{answer: func(ports.RewriteRequest) (string, error) {
+					return "A completely unrelated answer with 987654 added facts.", nil
+				}}
+			case "unavailable":
+				rewriter = &scriptedRewriter{answer: func(ports.RewriteRequest) (string, error) {
+					return "", domain.Fail(domain.CodeModelUnsupported, "worker exited")
+				}}
+			case "timeout":
+				rewriter = &scriptedRewriter{block: make(chan struct{}), answer: func(ports.RewriteRequest) (string, error) { return "", nil }}
+				policy.Timeout = 30 * time.Millisecond
+			case "disabled":
+				policy.Enabled = false
+			}
+			source := "那个，我想确认一下，今天是否发布？"
+			c, audio, events, target, _ := liveSetup(t, []string{source}, rewriter, policy)
+			c.Start()
+			events.wait(t, stateIs(domain.Capturing))
+			audio.push(1, 0.2)
+			c.Stop()
+			ready := events.wait(t, kindIs(contracts.CorrectionReady))
+			want := "我想确认一下，今天是否发布？"
+			if outcome == "disabled" {
+				want = source
+			}
+			if ready.Raw != source || ready.Source != source || ready.Text != want {
+				t.Fatalf("lost stage identity: %+v", ready)
+			}
+			switch outcome {
+			case "missing", "unavailable":
+				if ready.Rewrite != RewriteUnavailable {
+					t.Fatal(ready.Rewrite)
+				}
+			case "timeout":
+				if ready.Rewrite != RewriteTimeout {
+					t.Fatal(ready.Rewrite)
+				}
+			case "rejected":
+				if ready.Rewrite == string(domain.RewriteAccepted) || ready.Rewrite == "" {
+					t.Fatal(ready.Rewrite)
+				}
+			case "disabled":
+				if ready.Rewrite != "" {
+					t.Fatal(ready.Rewrite)
+				}
+			}
+			events.wait(t, kindIs(contracts.CommitResultReady))
+			target.mu.Lock()
+			defer target.mu.Unlock()
+			if target.commits.Load() != 1 || len(target.texts) != 1 || target.texts[0] != want {
+				t.Fatalf("unexpected commits %+v", target.texts)
+			}
+		})
 	}
 }

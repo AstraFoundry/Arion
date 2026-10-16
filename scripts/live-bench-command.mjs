@@ -45,6 +45,7 @@ if (operation === "fixtures") {
   const args = ["-manifest", option("MANIFEST"), "-corpus", option("CORPUS"), "-models", option("MODELS"), "-bundle", option("BUNDLE"),
     "-variant", option("VARIANT") ?? option("BUNDLE"), "-out", option("OUT")];
   if (option("SEGMENT") === "1") args.push("-segment-finalize");
+  if (option("FILLERS") === "0") args.push("-remove-fillers=false");
   if (option("LLM_MODEL")) args.push("-llm-worker", path.join(bin, "arion-llm"), "-llm-runtime", runtimeDir(), "-llm-model", option("LLM_MODEL"));
   // caffeinate keeps the host awake so idle sleep cannot stretch latencies.
   invoke("caffeinate", ["-i", path.join(bin, "arion-live-bench"), ...args]);

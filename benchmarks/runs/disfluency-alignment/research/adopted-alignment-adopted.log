@@ -1,0 +1,17 @@
+loaded adopted prompt=live-v2 prefix=822 in 20848 ms
+zh-scaffold        chat    accepted               1261 ms reuse=17/30
+zh-filler-dense    chat    accepted                814 ms reuse=6/21
+zh-ramble          chat    accepted               2164 ms reuse=17/32
+zh-repeat          chat    accepted                916 ms reuse=0/25
+zh-brief           chat    accepted                716 ms reuse=6/20
+zh-detail          chat    accepted               2254 ms reuse=15/32
+zh-hedge           chat    accepted               1568 ms reuse=14/29
+zh-demonstrative   chat    accepted               1459 ms reuse=16/30
+zh-condition       chat    accepted               1277 ms reuse=14/29
+zh-quote           chat    accepted               1507 ms reuse=15/27
+zh-complete        chat    accepted                837 ms reuse=11/23
+zh-repair          chat    accepted                910 ms reuse=20/33
+en-scaffold        chat    accepted               1576 ms reuse=0/28
+en-hedge           chat    accepted               1754 ms reuse=12/29
+mixed-code         chat    accepted               1656 ms reuse=15/33
+zh-open            chat    accepted                920 ms reuse=10/20

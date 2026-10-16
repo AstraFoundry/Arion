@@ -14,12 +14,12 @@ export function diagnosticMetrics(sample, response) {
   const verbatimViolation =
     sample.mode === "verbatim" && text !== sample.sourceText;
   const unit = { zh: "cer", en: "wer", mixed: "mer" }[sample.language];
-  const distance = Math.min(
+  const distance = unit ? Math.min(
     ...sample.references.map((ref) => {
       const d = edits(tokens(ref, unit), tokens(text, unit));
       return d.errors / d.referenceUnits;
     }),
-  );
+  ) : null;
   return {
     requiredMisses,
     forbiddenHits,

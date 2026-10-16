@@ -1,0 +1,3081 @@
+{
+  "version": 1,
+  "kind": "arion-rewrite-v1",
+  "configHash": "84f3efeb2104848629c1e59c8121d46b3131da6d4382b1d9ec1b59626e963c0e",
+  "cases": [],
+  "blocks": [
+    {
+      "seed": 11,
+      "cacheState": "warm",
+      "loadState": "solo",
+      "variant": {
+        "id": "rules-c0-m0-s1",
+        "features": {
+          "engine": "rules",
+          "context": false,
+          "memory": false,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "warm",
+      "loadState": "solo",
+      "variant": {
+        "id": "rules-c0-m0-s0",
+        "features": {
+          "engine": "rules",
+          "context": false,
+          "memory": false,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "warm",
+      "loadState": "solo",
+      "variant": {
+        "id": "rules-c0-m1-s1",
+        "features": {
+          "engine": "rules",
+          "context": false,
+          "memory": true,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "warm",
+      "loadState": "solo",
+      "variant": {
+        "id": "llm-c0-m0-s1",
+        "features": {
+          "engine": "llm",
+          "context": false,
+          "memory": false,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "warm",
+      "loadState": "solo",
+      "variant": {
+        "id": "llm-c0-m1-s0",
+        "features": {
+          "engine": "llm",
+          "context": false,
+          "memory": true,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "warm",
+      "loadState": "solo",
+      "variant": {
+        "id": "rules-c1-m1-s0",
+        "features": {
+          "engine": "rules",
+          "context": true,
+          "memory": true,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "warm",
+      "loadState": "solo",
+      "variant": {
+        "id": "llm-c1-m0-s0",
+        "features": {
+          "engine": "llm",
+          "context": true,
+          "memory": false,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "warm",
+      "loadState": "solo",
+      "variant": {
+        "id": "llm-c1-m1-s0",
+        "features": {
+          "engine": "llm",
+          "context": true,
+          "memory": true,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "warm",
+      "loadState": "solo",
+      "variant": {
+        "id": "rules-c1-m1-s1",
+        "features": {
+          "engine": "rules",
+          "context": true,
+          "memory": true,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "warm",
+      "loadState": "solo",
+      "variant": {
+        "id": "llm-c1-m0-s1",
+        "features": {
+          "engine": "llm",
+          "context": true,
+          "memory": false,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "warm",
+      "loadState": "solo",
+      "variant": {
+        "id": "verbatim",
+        "features": {
+          "engine": "verbatim",
+          "context": false,
+          "memory": false,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "warm",
+      "loadState": "solo",
+      "variant": {
+        "id": "llm-c0-m0-s0",
+        "features": {
+          "engine": "llm",
+          "context": false,
+          "memory": false,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "warm",
+      "loadState": "solo",
+      "variant": {
+        "id": "rules-c1-m0-s0",
+        "features": {
+          "engine": "rules",
+          "context": true,
+          "memory": false,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "warm",
+      "loadState": "solo",
+      "variant": {
+        "id": "llm-c0-m1-s1",
+        "features": {
+          "engine": "llm",
+          "context": false,
+          "memory": true,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "warm",
+      "loadState": "solo",
+      "variant": {
+        "id": "rules-c0-m1-s0",
+        "features": {
+          "engine": "rules",
+          "context": false,
+          "memory": true,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "warm",
+      "loadState": "solo",
+      "variant": {
+        "id": "rules-c1-m0-s1",
+        "features": {
+          "engine": "rules",
+          "context": true,
+          "memory": false,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "warm",
+      "loadState": "solo",
+      "variant": {
+        "id": "llm-c1-m1-s1",
+        "features": {
+          "engine": "llm",
+          "context": true,
+          "memory": true,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "warm",
+      "loadState": "solo",
+      "variant": {
+        "id": "llm-c1-m1-s1-fp32",
+        "features": {
+          "engine": "llm",
+          "context": true,
+          "memory": true,
+          "scenario": true
+        },
+        "pipelineOverrides": {
+          "model": "rewrite-fp32-pinned",
+          "precision": "fp32"
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "warm",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "llm-c1-m1-s1-fp32",
+        "features": {
+          "engine": "llm",
+          "context": true,
+          "memory": true,
+          "scenario": true
+        },
+        "pipelineOverrides": {
+          "model": "rewrite-fp32-pinned",
+          "precision": "fp32"
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "warm",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "llm-c1-m0-s1",
+        "features": {
+          "engine": "llm",
+          "context": true,
+          "memory": false,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "warm",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "llm-c1-m0-s0",
+        "features": {
+          "engine": "llm",
+          "context": true,
+          "memory": false,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "warm",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "rules-c1-m0-s1",
+        "features": {
+          "engine": "rules",
+          "context": true,
+          "memory": false,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "warm",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "rules-c1-m0-s0",
+        "features": {
+          "engine": "rules",
+          "context": true,
+          "memory": false,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "warm",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "rules-c0-m1-s0",
+        "features": {
+          "engine": "rules",
+          "context": false,
+          "memory": true,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "warm",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "rules-c1-m1-s1",
+        "features": {
+          "engine": "rules",
+          "context": true,
+          "memory": true,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "warm",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "rules-c0-m0-s0",
+        "features": {
+          "engine": "rules",
+          "context": false,
+          "memory": false,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "warm",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "llm-c1-m1-s0",
+        "features": {
+          "engine": "llm",
+          "context": true,
+          "memory": true,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "warm",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "llm-c0-m0-s1",
+        "features": {
+          "engine": "llm",
+          "context": false,
+          "memory": false,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "warm",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "llm-c0-m1-s1",
+        "features": {
+          "engine": "llm",
+          "context": false,
+          "memory": true,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "warm",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "rules-c0-m0-s1",
+        "features": {
+          "engine": "rules",
+          "context": false,
+          "memory": false,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "warm",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "llm-c0-m1-s0",
+        "features": {
+          "engine": "llm",
+          "context": false,
+          "memory": true,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "warm",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "rules-c0-m1-s1",
+        "features": {
+          "engine": "rules",
+          "context": false,
+          "memory": true,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "warm",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "llm-c1-m1-s1",
+        "features": {
+          "engine": "llm",
+          "context": true,
+          "memory": true,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "warm",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "rules-c1-m1-s0",
+        "features": {
+          "engine": "rules",
+          "context": true,
+          "memory": true,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "warm",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "llm-c0-m0-s0",
+        "features": {
+          "engine": "llm",
+          "context": false,
+          "memory": false,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "warm",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "verbatim",
+        "features": {
+          "engine": "verbatim",
+          "context": false,
+          "memory": false,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "cold",
+      "loadState": "solo",
+      "variant": {
+        "id": "llm-c1-m0-s1",
+        "features": {
+          "engine": "llm",
+          "context": true,
+          "memory": false,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "cold",
+      "loadState": "solo",
+      "variant": {
+        "id": "rules-c1-m0-s1",
+        "features": {
+          "engine": "rules",
+          "context": true,
+          "memory": false,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "cold",
+      "loadState": "solo",
+      "variant": {
+        "id": "llm-c1-m1-s1-fp32",
+        "features": {
+          "engine": "llm",
+          "context": true,
+          "memory": true,
+          "scenario": true
+        },
+        "pipelineOverrides": {
+          "model": "rewrite-fp32-pinned",
+          "precision": "fp32"
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "cold",
+      "loadState": "solo",
+      "variant": {
+        "id": "llm-c1-m1-s1",
+        "features": {
+          "engine": "llm",
+          "context": true,
+          "memory": true,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "cold",
+      "loadState": "solo",
+      "variant": {
+        "id": "llm-c1-m1-s0",
+        "features": {
+          "engine": "llm",
+          "context": true,
+          "memory": true,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "cold",
+      "loadState": "solo",
+      "variant": {
+        "id": "rules-c0-m0-s1",
+        "features": {
+          "engine": "rules",
+          "context": false,
+          "memory": false,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "cold",
+      "loadState": "solo",
+      "variant": {
+        "id": "llm-c1-m0-s0",
+        "features": {
+          "engine": "llm",
+          "context": true,
+          "memory": false,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "cold",
+      "loadState": "solo",
+      "variant": {
+        "id": "rules-c0-m1-s0",
+        "features": {
+          "engine": "rules",
+          "context": false,
+          "memory": true,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "cold",
+      "loadState": "solo",
+      "variant": {
+        "id": "llm-c0-m0-s1",
+        "features": {
+          "engine": "llm",
+          "context": false,
+          "memory": false,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "cold",
+      "loadState": "solo",
+      "variant": {
+        "id": "rules-c0-m0-s0",
+        "features": {
+          "engine": "rules",
+          "context": false,
+          "memory": false,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "cold",
+      "loadState": "solo",
+      "variant": {
+        "id": "rules-c1-m1-s1",
+        "features": {
+          "engine": "rules",
+          "context": true,
+          "memory": true,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "cold",
+      "loadState": "solo",
+      "variant": {
+        "id": "rules-c1-m1-s0",
+        "features": {
+          "engine": "rules",
+          "context": true,
+          "memory": true,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "cold",
+      "loadState": "solo",
+      "variant": {
+        "id": "verbatim",
+        "features": {
+          "engine": "verbatim",
+          "context": false,
+          "memory": false,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "cold",
+      "loadState": "solo",
+      "variant": {
+        "id": "rules-c0-m1-s1",
+        "features": {
+          "engine": "rules",
+          "context": false,
+          "memory": true,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "cold",
+      "loadState": "solo",
+      "variant": {
+        "id": "rules-c1-m0-s0",
+        "features": {
+          "engine": "rules",
+          "context": true,
+          "memory": false,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "cold",
+      "loadState": "solo",
+      "variant": {
+        "id": "llm-c0-m1-s0",
+        "features": {
+          "engine": "llm",
+          "context": false,
+          "memory": true,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "cold",
+      "loadState": "solo",
+      "variant": {
+        "id": "llm-c0-m0-s0",
+        "features": {
+          "engine": "llm",
+          "context": false,
+          "memory": false,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "cold",
+      "loadState": "solo",
+      "variant": {
+        "id": "llm-c0-m1-s1",
+        "features": {
+          "engine": "llm",
+          "context": false,
+          "memory": true,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "cold",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "rules-c1-m1-s1",
+        "features": {
+          "engine": "rules",
+          "context": true,
+          "memory": true,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "cold",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "rules-c0-m0-s1",
+        "features": {
+          "engine": "rules",
+          "context": false,
+          "memory": false,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "cold",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "verbatim",
+        "features": {
+          "engine": "verbatim",
+          "context": false,
+          "memory": false,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "cold",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "llm-c1-m0-s1",
+        "features": {
+          "engine": "llm",
+          "context": true,
+          "memory": false,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "cold",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "rules-c0-m1-s1",
+        "features": {
+          "engine": "rules",
+          "context": false,
+          "memory": true,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "cold",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "llm-c1-m1-s1",
+        "features": {
+          "engine": "llm",
+          "context": true,
+          "memory": true,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "cold",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "llm-c1-m1-s0",
+        "features": {
+          "engine": "llm",
+          "context": true,
+          "memory": true,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "cold",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "rules-c0-m1-s0",
+        "features": {
+          "engine": "rules",
+          "context": false,
+          "memory": true,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "cold",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "rules-c1-m1-s0",
+        "features": {
+          "engine": "rules",
+          "context": true,
+          "memory": true,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "cold",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "llm-c0-m1-s1",
+        "features": {
+          "engine": "llm",
+          "context": false,
+          "memory": true,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "cold",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "llm-c1-m1-s1-fp32",
+        "features": {
+          "engine": "llm",
+          "context": true,
+          "memory": true,
+          "scenario": true
+        },
+        "pipelineOverrides": {
+          "model": "rewrite-fp32-pinned",
+          "precision": "fp32"
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "cold",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "llm-c0-m0-s1",
+        "features": {
+          "engine": "llm",
+          "context": false,
+          "memory": false,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "cold",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "llm-c0-m1-s0",
+        "features": {
+          "engine": "llm",
+          "context": false,
+          "memory": true,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "cold",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "rules-c1-m0-s0",
+        "features": {
+          "engine": "rules",
+          "context": true,
+          "memory": false,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "cold",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "rules-c0-m0-s0",
+        "features": {
+          "engine": "rules",
+          "context": false,
+          "memory": false,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "cold",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "llm-c1-m0-s0",
+        "features": {
+          "engine": "llm",
+          "context": true,
+          "memory": false,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "cold",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "rules-c1-m0-s1",
+        "features": {
+          "engine": "rules",
+          "context": true,
+          "memory": false,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "cold",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "llm-c0-m0-s0",
+        "features": {
+          "engine": "llm",
+          "context": false,
+          "memory": false,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "warm",
+      "loadState": "solo",
+      "variant": {
+        "id": "rules-c1-m0-s0",
+        "features": {
+          "engine": "rules",
+          "context": true,
+          "memory": false,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "warm",
+      "loadState": "solo",
+      "variant": {
+        "id": "rules-c0-m1-s1",
+        "features": {
+          "engine": "rules",
+          "context": false,
+          "memory": true,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "warm",
+      "loadState": "solo",
+      "variant": {
+        "id": "llm-c0-m1-s0",
+        "features": {
+          "engine": "llm",
+          "context": false,
+          "memory": true,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "warm",
+      "loadState": "solo",
+      "variant": {
+        "id": "verbatim",
+        "features": {
+          "engine": "verbatim",
+          "context": false,
+          "memory": false,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "warm",
+      "loadState": "solo",
+      "variant": {
+        "id": "llm-c1-m1-s0",
+        "features": {
+          "engine": "llm",
+          "context": true,
+          "memory": true,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "warm",
+      "loadState": "solo",
+      "variant": {
+        "id": "llm-c1-m1-s1-fp32",
+        "features": {
+          "engine": "llm",
+          "context": true,
+          "memory": true,
+          "scenario": true
+        },
+        "pipelineOverrides": {
+          "model": "rewrite-fp32-pinned",
+          "precision": "fp32"
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "warm",
+      "loadState": "solo",
+      "variant": {
+        "id": "llm-c1-m0-s0",
+        "features": {
+          "engine": "llm",
+          "context": true,
+          "memory": false,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "warm",
+      "loadState": "solo",
+      "variant": {
+        "id": "rules-c1-m1-s0",
+        "features": {
+          "engine": "rules",
+          "context": true,
+          "memory": true,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "warm",
+      "loadState": "solo",
+      "variant": {
+        "id": "rules-c0-m0-s1",
+        "features": {
+          "engine": "rules",
+          "context": false,
+          "memory": false,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "warm",
+      "loadState": "solo",
+      "variant": {
+        "id": "llm-c0-m1-s1",
+        "features": {
+          "engine": "llm",
+          "context": false,
+          "memory": true,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "warm",
+      "loadState": "solo",
+      "variant": {
+        "id": "llm-c0-m0-s1",
+        "features": {
+          "engine": "llm",
+          "context": false,
+          "memory": false,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "warm",
+      "loadState": "solo",
+      "variant": {
+        "id": "rules-c0-m1-s0",
+        "features": {
+          "engine": "rules",
+          "context": false,
+          "memory": true,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "warm",
+      "loadState": "solo",
+      "variant": {
+        "id": "llm-c1-m1-s1",
+        "features": {
+          "engine": "llm",
+          "context": true,
+          "memory": true,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "warm",
+      "loadState": "solo",
+      "variant": {
+        "id": "llm-c0-m0-s0",
+        "features": {
+          "engine": "llm",
+          "context": false,
+          "memory": false,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "warm",
+      "loadState": "solo",
+      "variant": {
+        "id": "llm-c1-m0-s1",
+        "features": {
+          "engine": "llm",
+          "context": true,
+          "memory": false,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "warm",
+      "loadState": "solo",
+      "variant": {
+        "id": "rules-c0-m0-s0",
+        "features": {
+          "engine": "rules",
+          "context": false,
+          "memory": false,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "warm",
+      "loadState": "solo",
+      "variant": {
+        "id": "rules-c1-m0-s1",
+        "features": {
+          "engine": "rules",
+          "context": true,
+          "memory": false,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "warm",
+      "loadState": "solo",
+      "variant": {
+        "id": "rules-c1-m1-s1",
+        "features": {
+          "engine": "rules",
+          "context": true,
+          "memory": true,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "warm",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "rules-c0-m1-s0",
+        "features": {
+          "engine": "rules",
+          "context": false,
+          "memory": true,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "warm",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "llm-c1-m1-s1",
+        "features": {
+          "engine": "llm",
+          "context": true,
+          "memory": true,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "warm",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "rules-c0-m1-s1",
+        "features": {
+          "engine": "rules",
+          "context": false,
+          "memory": true,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "warm",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "llm-c1-m1-s0",
+        "features": {
+          "engine": "llm",
+          "context": true,
+          "memory": true,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "warm",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "rules-c1-m0-s1",
+        "features": {
+          "engine": "rules",
+          "context": true,
+          "memory": false,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "warm",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "rules-c1-m0-s0",
+        "features": {
+          "engine": "rules",
+          "context": true,
+          "memory": false,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "warm",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "llm-c0-m1-s0",
+        "features": {
+          "engine": "llm",
+          "context": false,
+          "memory": true,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "warm",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "llm-c1-m0-s1",
+        "features": {
+          "engine": "llm",
+          "context": true,
+          "memory": false,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "warm",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "rules-c1-m1-s0",
+        "features": {
+          "engine": "rules",
+          "context": true,
+          "memory": true,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "warm",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "verbatim",
+        "features": {
+          "engine": "verbatim",
+          "context": false,
+          "memory": false,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "warm",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "llm-c1-m0-s0",
+        "features": {
+          "engine": "llm",
+          "context": true,
+          "memory": false,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "warm",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "llm-c0-m1-s1",
+        "features": {
+          "engine": "llm",
+          "context": false,
+          "memory": true,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "warm",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "llm-c0-m0-s0",
+        "features": {
+          "engine": "llm",
+          "context": false,
+          "memory": false,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "warm",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "rules-c0-m0-s1",
+        "features": {
+          "engine": "rules",
+          "context": false,
+          "memory": false,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "warm",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "rules-c1-m1-s1",
+        "features": {
+          "engine": "rules",
+          "context": true,
+          "memory": true,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "warm",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "rules-c0-m0-s0",
+        "features": {
+          "engine": "rules",
+          "context": false,
+          "memory": false,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "warm",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "llm-c0-m0-s1",
+        "features": {
+          "engine": "llm",
+          "context": false,
+          "memory": false,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "warm",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "llm-c1-m1-s1-fp32",
+        "features": {
+          "engine": "llm",
+          "context": true,
+          "memory": true,
+          "scenario": true
+        },
+        "pipelineOverrides": {
+          "model": "rewrite-fp32-pinned",
+          "precision": "fp32"
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "cold",
+      "loadState": "solo",
+      "variant": {
+        "id": "llm-c1-m1-s1-fp32",
+        "features": {
+          "engine": "llm",
+          "context": true,
+          "memory": true,
+          "scenario": true
+        },
+        "pipelineOverrides": {
+          "model": "rewrite-fp32-pinned",
+          "precision": "fp32"
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "cold",
+      "loadState": "solo",
+      "variant": {
+        "id": "rules-c0-m1-s1",
+        "features": {
+          "engine": "rules",
+          "context": false,
+          "memory": true,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "cold",
+      "loadState": "solo",
+      "variant": {
+        "id": "rules-c1-m1-s0",
+        "features": {
+          "engine": "rules",
+          "context": true,
+          "memory": true,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "cold",
+      "loadState": "solo",
+      "variant": {
+        "id": "llm-c0-m0-s1",
+        "features": {
+          "engine": "llm",
+          "context": false,
+          "memory": false,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "cold",
+      "loadState": "solo",
+      "variant": {
+        "id": "llm-c0-m1-s1",
+        "features": {
+          "engine": "llm",
+          "context": false,
+          "memory": true,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "cold",
+      "loadState": "solo",
+      "variant": {
+        "id": "rules-c1-m1-s1",
+        "features": {
+          "engine": "rules",
+          "context": true,
+          "memory": true,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "cold",
+      "loadState": "solo",
+      "variant": {
+        "id": "rules-c1-m0-s0",
+        "features": {
+          "engine": "rules",
+          "context": true,
+          "memory": false,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "cold",
+      "loadState": "solo",
+      "variant": {
+        "id": "rules-c0-m1-s0",
+        "features": {
+          "engine": "rules",
+          "context": false,
+          "memory": true,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "cold",
+      "loadState": "solo",
+      "variant": {
+        "id": "llm-c1-m0-s0",
+        "features": {
+          "engine": "llm",
+          "context": true,
+          "memory": false,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "cold",
+      "loadState": "solo",
+      "variant": {
+        "id": "llm-c1-m1-s1",
+        "features": {
+          "engine": "llm",
+          "context": true,
+          "memory": true,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "cold",
+      "loadState": "solo",
+      "variant": {
+        "id": "llm-c1-m0-s1",
+        "features": {
+          "engine": "llm",
+          "context": true,
+          "memory": false,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "cold",
+      "loadState": "solo",
+      "variant": {
+        "id": "llm-c0-m1-s0",
+        "features": {
+          "engine": "llm",
+          "context": false,
+          "memory": true,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "cold",
+      "loadState": "solo",
+      "variant": {
+        "id": "rules-c0-m0-s1",
+        "features": {
+          "engine": "rules",
+          "context": false,
+          "memory": false,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "cold",
+      "loadState": "solo",
+      "variant": {
+        "id": "verbatim",
+        "features": {
+          "engine": "verbatim",
+          "context": false,
+          "memory": false,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "cold",
+      "loadState": "solo",
+      "variant": {
+        "id": "llm-c1-m1-s0",
+        "features": {
+          "engine": "llm",
+          "context": true,
+          "memory": true,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "cold",
+      "loadState": "solo",
+      "variant": {
+        "id": "rules-c0-m0-s0",
+        "features": {
+          "engine": "rules",
+          "context": false,
+          "memory": false,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "cold",
+      "loadState": "solo",
+      "variant": {
+        "id": "rules-c1-m0-s1",
+        "features": {
+          "engine": "rules",
+          "context": true,
+          "memory": false,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "cold",
+      "loadState": "solo",
+      "variant": {
+        "id": "llm-c0-m0-s0",
+        "features": {
+          "engine": "llm",
+          "context": false,
+          "memory": false,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "cold",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "llm-c1-m0-s1",
+        "features": {
+          "engine": "llm",
+          "context": true,
+          "memory": false,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "cold",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "rules-c0-m1-s0",
+        "features": {
+          "engine": "rules",
+          "context": false,
+          "memory": true,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "cold",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "rules-c1-m1-s0",
+        "features": {
+          "engine": "rules",
+          "context": true,
+          "memory": true,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "cold",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "llm-c0-m1-s1",
+        "features": {
+          "engine": "llm",
+          "context": false,
+          "memory": true,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "cold",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "llm-c1-m1-s1-fp32",
+        "features": {
+          "engine": "llm",
+          "context": true,
+          "memory": true,
+          "scenario": true
+        },
+        "pipelineOverrides": {
+          "model": "rewrite-fp32-pinned",
+          "precision": "fp32"
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "cold",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "llm-c1-m1-s1",
+        "features": {
+          "engine": "llm",
+          "context": true,
+          "memory": true,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "cold",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "rules-c1-m0-s1",
+        "features": {
+          "engine": "rules",
+          "context": true,
+          "memory": false,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "cold",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "llm-c0-m0-s0",
+        "features": {
+          "engine": "llm",
+          "context": false,
+          "memory": false,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "cold",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "rules-c0-m0-s0",
+        "features": {
+          "engine": "rules",
+          "context": false,
+          "memory": false,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "cold",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "llm-c1-m0-s0",
+        "features": {
+          "engine": "llm",
+          "context": true,
+          "memory": false,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "cold",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "llm-c0-m0-s1",
+        "features": {
+          "engine": "llm",
+          "context": false,
+          "memory": false,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "cold",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "rules-c1-m1-s1",
+        "features": {
+          "engine": "rules",
+          "context": true,
+          "memory": true,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "cold",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "llm-c1-m1-s0",
+        "features": {
+          "engine": "llm",
+          "context": true,
+          "memory": true,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "cold",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "rules-c0-m1-s1",
+        "features": {
+          "engine": "rules",
+          "context": false,
+          "memory": true,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "cold",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "rules-c1-m0-s0",
+        "features": {
+          "engine": "rules",
+          "context": true,
+          "memory": false,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "cold",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "rules-c0-m0-s1",
+        "features": {
+          "engine": "rules",
+          "context": false,
+          "memory": false,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "cold",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "verbatim",
+        "features": {
+          "engine": "verbatim",
+          "context": false,
+          "memory": false,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "cold",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "llm-c0-m1-s0",
+        "features": {
+          "engine": "llm",
+          "context": false,
+          "memory": true,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "warm",
+      "loadState": "solo",
+      "variant": {
+        "id": "rules-c0-m1-s1",
+        "features": {
+          "engine": "rules",
+          "context": false,
+          "memory": true,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "warm",
+      "loadState": "solo",
+      "variant": {
+        "id": "rules-c0-m0-s0",
+        "features": {
+          "engine": "rules",
+          "context": false,
+          "memory": false,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "warm",
+      "loadState": "solo",
+      "variant": {
+        "id": "llm-c0-m0-s0",
+        "features": {
+          "engine": "llm",
+          "context": false,
+          "memory": false,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "warm",
+      "loadState": "solo",
+      "variant": {
+        "id": "llm-c0-m1-s1",
+        "features": {
+          "engine": "llm",
+          "context": false,
+          "memory": true,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "warm",
+      "loadState": "solo",
+      "variant": {
+        "id": "rules-c0-m0-s1",
+        "features": {
+          "engine": "rules",
+          "context": false,
+          "memory": false,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "warm",
+      "loadState": "solo",
+      "variant": {
+        "id": "llm-c0-m1-s0",
+        "features": {
+          "engine": "llm",
+          "context": false,
+          "memory": true,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "warm",
+      "loadState": "solo",
+      "variant": {
+        "id": "llm-c1-m1-s1-fp32",
+        "features": {
+          "engine": "llm",
+          "context": true,
+          "memory": true,
+          "scenario": true
+        },
+        "pipelineOverrides": {
+          "model": "rewrite-fp32-pinned",
+          "precision": "fp32"
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "warm",
+      "loadState": "solo",
+      "variant": {
+        "id": "llm-c1-m0-s1",
+        "features": {
+          "engine": "llm",
+          "context": true,
+          "memory": false,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "warm",
+      "loadState": "solo",
+      "variant": {
+        "id": "llm-c1-m1-s0",
+        "features": {
+          "engine": "llm",
+          "context": true,
+          "memory": true,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "warm",
+      "loadState": "solo",
+      "variant": {
+        "id": "rules-c1-m0-s1",
+        "features": {
+          "engine": "rules",
+          "context": true,
+          "memory": false,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "warm",
+      "loadState": "solo",
+      "variant": {
+        "id": "verbatim",
+        "features": {
+          "engine": "verbatim",
+          "context": false,
+          "memory": false,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "warm",
+      "loadState": "solo",
+      "variant": {
+        "id": "llm-c1-m0-s0",
+        "features": {
+          "engine": "llm",
+          "context": true,
+          "memory": false,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "warm",
+      "loadState": "solo",
+      "variant": {
+        "id": "rules-c0-m1-s0",
+        "features": {
+          "engine": "rules",
+          "context": false,
+          "memory": true,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "warm",
+      "loadState": "solo",
+      "variant": {
+        "id": "rules-c1-m1-s1",
+        "features": {
+          "engine": "rules",
+          "context": true,
+          "memory": true,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "warm",
+      "loadState": "solo",
+      "variant": {
+        "id": "rules-c1-m0-s0",
+        "features": {
+          "engine": "rules",
+          "context": true,
+          "memory": false,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "warm",
+      "loadState": "solo",
+      "variant": {
+        "id": "rules-c1-m1-s0",
+        "features": {
+          "engine": "rules",
+          "context": true,
+          "memory": true,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "warm",
+      "loadState": "solo",
+      "variant": {
+        "id": "llm-c0-m0-s1",
+        "features": {
+          "engine": "llm",
+          "context": false,
+          "memory": false,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "warm",
+      "loadState": "solo",
+      "variant": {
+        "id": "llm-c1-m1-s1",
+        "features": {
+          "engine": "llm",
+          "context": true,
+          "memory": true,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "warm",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "llm-c1-m1-s1",
+        "features": {
+          "engine": "llm",
+          "context": true,
+          "memory": true,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "warm",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "rules-c1-m0-s0",
+        "features": {
+          "engine": "rules",
+          "context": true,
+          "memory": false,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "warm",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "llm-c1-m1-s1-fp32",
+        "features": {
+          "engine": "llm",
+          "context": true,
+          "memory": true,
+          "scenario": true
+        },
+        "pipelineOverrides": {
+          "model": "rewrite-fp32-pinned",
+          "precision": "fp32"
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "warm",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "llm-c0-m1-s0",
+        "features": {
+          "engine": "llm",
+          "context": false,
+          "memory": true,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "warm",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "llm-c1-m1-s0",
+        "features": {
+          "engine": "llm",
+          "context": true,
+          "memory": true,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "warm",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "rules-c0-m1-s1",
+        "features": {
+          "engine": "rules",
+          "context": false,
+          "memory": true,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "warm",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "rules-c1-m0-s1",
+        "features": {
+          "engine": "rules",
+          "context": true,
+          "memory": false,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "warm",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "rules-c0-m1-s0",
+        "features": {
+          "engine": "rules",
+          "context": false,
+          "memory": true,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "warm",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "rules-c1-m1-s1",
+        "features": {
+          "engine": "rules",
+          "context": true,
+          "memory": true,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "warm",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "rules-c1-m1-s0",
+        "features": {
+          "engine": "rules",
+          "context": true,
+          "memory": true,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "warm",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "llm-c0-m0-s1",
+        "features": {
+          "engine": "llm",
+          "context": false,
+          "memory": false,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "warm",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "verbatim",
+        "features": {
+          "engine": "verbatim",
+          "context": false,
+          "memory": false,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "warm",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "llm-c0-m1-s1",
+        "features": {
+          "engine": "llm",
+          "context": false,
+          "memory": true,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "warm",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "llm-c1-m0-s1",
+        "features": {
+          "engine": "llm",
+          "context": true,
+          "memory": false,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "warm",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "llm-c0-m0-s0",
+        "features": {
+          "engine": "llm",
+          "context": false,
+          "memory": false,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "warm",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "llm-c1-m0-s0",
+        "features": {
+          "engine": "llm",
+          "context": true,
+          "memory": false,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "warm",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "rules-c0-m0-s1",
+        "features": {
+          "engine": "rules",
+          "context": false,
+          "memory": false,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "warm",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "rules-c0-m0-s0",
+        "features": {
+          "engine": "rules",
+          "context": false,
+          "memory": false,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "cold",
+      "loadState": "solo",
+      "variant": {
+        "id": "rules-c0-m0-s0",
+        "features": {
+          "engine": "rules",
+          "context": false,
+          "memory": false,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "cold",
+      "loadState": "solo",
+      "variant": {
+        "id": "rules-c1-m1-s0",
+        "features": {
+          "engine": "rules",
+          "context": true,
+          "memory": true,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "cold",
+      "loadState": "solo",
+      "variant": {
+        "id": "llm-c1-m0-s1",
+        "features": {
+          "engine": "llm",
+          "context": true,
+          "memory": false,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "cold",
+      "loadState": "solo",
+      "variant": {
+        "id": "llm-c0-m1-s1",
+        "features": {
+          "engine": "llm",
+          "context": false,
+          "memory": true,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "cold",
+      "loadState": "solo",
+      "variant": {
+        "id": "llm-c1-m1-s1-fp32",
+        "features": {
+          "engine": "llm",
+          "context": true,
+          "memory": true,
+          "scenario": true
+        },
+        "pipelineOverrides": {
+          "model": "rewrite-fp32-pinned",
+          "precision": "fp32"
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "cold",
+      "loadState": "solo",
+      "variant": {
+        "id": "verbatim",
+        "features": {
+          "engine": "verbatim",
+          "context": false,
+          "memory": false,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "cold",
+      "loadState": "solo",
+      "variant": {
+        "id": "llm-c1-m0-s0",
+        "features": {
+          "engine": "llm",
+          "context": true,
+          "memory": false,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "cold",
+      "loadState": "solo",
+      "variant": {
+        "id": "rules-c1-m0-s1",
+        "features": {
+          "engine": "rules",
+          "context": true,
+          "memory": false,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "cold",
+      "loadState": "solo",
+      "variant": {
+        "id": "llm-c0-m0-s1",
+        "features": {
+          "engine": "llm",
+          "context": false,
+          "memory": false,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "cold",
+      "loadState": "solo",
+      "variant": {
+        "id": "rules-c1-m1-s1",
+        "features": {
+          "engine": "rules",
+          "context": true,
+          "memory": true,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "cold",
+      "loadState": "solo",
+      "variant": {
+        "id": "rules-c0-m0-s1",
+        "features": {
+          "engine": "rules",
+          "context": false,
+          "memory": false,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "cold",
+      "loadState": "solo",
+      "variant": {
+        "id": "llm-c1-m1-s0",
+        "features": {
+          "engine": "llm",
+          "context": true,
+          "memory": true,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "cold",
+      "loadState": "solo",
+      "variant": {
+        "id": "rules-c0-m1-s1",
+        "features": {
+          "engine": "rules",
+          "context": false,
+          "memory": true,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "cold",
+      "loadState": "solo",
+      "variant": {
+        "id": "llm-c1-m1-s1",
+        "features": {
+          "engine": "llm",
+          "context": true,
+          "memory": true,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "cold",
+      "loadState": "solo",
+      "variant": {
+        "id": "llm-c0-m1-s0",
+        "features": {
+          "engine": "llm",
+          "context": false,
+          "memory": true,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "cold",
+      "loadState": "solo",
+      "variant": {
+        "id": "llm-c0-m0-s0",
+        "features": {
+          "engine": "llm",
+          "context": false,
+          "memory": false,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "cold",
+      "loadState": "solo",
+      "variant": {
+        "id": "rules-c1-m0-s0",
+        "features": {
+          "engine": "rules",
+          "context": true,
+          "memory": false,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "cold",
+      "loadState": "solo",
+      "variant": {
+        "id": "rules-c0-m1-s0",
+        "features": {
+          "engine": "rules",
+          "context": false,
+          "memory": true,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "cold",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "llm-c1-m1-s0",
+        "features": {
+          "engine": "llm",
+          "context": true,
+          "memory": true,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "cold",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "llm-c1-m0-s1",
+        "features": {
+          "engine": "llm",
+          "context": true,
+          "memory": false,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "cold",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "llm-c1-m0-s0",
+        "features": {
+          "engine": "llm",
+          "context": true,
+          "memory": false,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "cold",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "rules-c1-m0-s1",
+        "features": {
+          "engine": "rules",
+          "context": true,
+          "memory": false,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "cold",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "llm-c1-m1-s1",
+        "features": {
+          "engine": "llm",
+          "context": true,
+          "memory": true,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "cold",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "rules-c1-m1-s0",
+        "features": {
+          "engine": "rules",
+          "context": true,
+          "memory": true,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "cold",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "llm-c0-m0-s0",
+        "features": {
+          "engine": "llm",
+          "context": false,
+          "memory": false,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "cold",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "verbatim",
+        "features": {
+          "engine": "verbatim",
+          "context": false,
+          "memory": false,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "cold",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "llm-c1-m1-s1-fp32",
+        "features": {
+          "engine": "llm",
+          "context": true,
+          "memory": true,
+          "scenario": true
+        },
+        "pipelineOverrides": {
+          "model": "rewrite-fp32-pinned",
+          "precision": "fp32"
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "cold",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "llm-c0-m0-s1",
+        "features": {
+          "engine": "llm",
+          "context": false,
+          "memory": false,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "cold",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "rules-c1-m1-s1",
+        "features": {
+          "engine": "rules",
+          "context": true,
+          "memory": true,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "cold",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "rules-c1-m0-s0",
+        "features": {
+          "engine": "rules",
+          "context": true,
+          "memory": false,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "cold",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "rules-c0-m0-s1",
+        "features": {
+          "engine": "rules",
+          "context": false,
+          "memory": false,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "cold",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "rules-c0-m1-s1",
+        "features": {
+          "engine": "rules",
+          "context": false,
+          "memory": true,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "cold",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "rules-c0-m0-s0",
+        "features": {
+          "engine": "rules",
+          "context": false,
+          "memory": false,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "cold",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "rules-c0-m1-s0",
+        "features": {
+          "engine": "rules",
+          "context": false,
+          "memory": true,
+          "scenario": false
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "cold",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "llm-c0-m1-s1",
+        "features": {
+          "engine": "llm",
+          "context": false,
+          "memory": true,
+          "scenario": true
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "cold",
+      "loadState": "concurrent_asr",
+      "variant": {
+        "id": "llm-c0-m1-s0",
+        "features": {
+          "engine": "llm",
+          "context": false,
+          "memory": true,
+          "scenario": false
+        }
+      }
+    }
+  ],
+  "measuredRequests": 0
+}

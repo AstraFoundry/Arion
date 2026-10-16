@@ -1,3 +1,9 @@
+import fs from "node:fs/promises";
+import os from "node:os";
+import path from "node:path";
+import crypto from "node:crypto";
+import { fileURLToPath } from "node:url";
+import { spawnSync } from "node:child_process";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { scoreText } from "../live/score-text.mjs";
@@ -67,4 +73,58 @@ test("audio scoring reports acoustic error, latency and previews before stop", (
   assert.equal(s.previewBeforeStop, 1);
   assert.equal(s.asrErrorRate["zh:cer"].errors, 1);
   assert.equal(s.stopToFinalMs.p50, 500);
+});
+
+test("cleanup and multilingual constraint counts remain separate from error rates", () => {
+  const multilingual = { samples: [
+    { ...sample("fr", "Euh, le rapport est prêt.", { required: ["rapport"], forbidden: ["Euh"] }), language: "fr" },
+    { ...sample("en", "I might need it.", { required: ["might"] }), language: "en" },
+  ] };
+  const rows = [
+    { caseId: "fr", source: "Euh, le rapport est prêt.", cleanup: { version: "speech-spans-v1", text: "le rapport est prêt." }, verdict: "accepted", proposal: "Le rapport est prêt.", text: "Le rapport est prêt.", generationMs: 100 },
+    { caseId: "en", source: "I might need it.", verdict: "uncertainty_dropped", proposal: "I need it.", text: "I might need it.", generationMs: 200 },
+  ];
+  const s = scoreText(multilingual, rows);
+  assert.equal(s.sourcePass, 1);
+  assert.equal(s.cleanupPass, 2);
+  assert.equal(s.cleanupChanged, 1);
+  assert.equal(s.deliveredPass, 2);
+  assert.equal(s.referenceEditRatioMean, 0);
+  assert.deepEqual(s.byLanguage.fr, { cases: 1, sourcePass: 0, cleanupPass: 1, proposalPass: 1, deliveredPass: 1, worsened: 0 });
+});
+
+test("live report rejects checksum changes instead of publishing altered observations", async () => {
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "arion-live-report-"));
+  try {
+    const corpusPath = path.join(dir, "corpus.json");
+    const rowsPath = path.join(dir, "rows.jsonl");
+    const configPath = path.join(dir, "runs.json");
+    const out = path.join(dir, "summary.json");
+    const corpusBytes = JSON.stringify({ samples: [sample("copy", "hello")] });
+    const rowsBytes = JSON.stringify({ caseId: "copy", source: "hello", proposal: "hello", text: "hello", verdict: "accepted", generationMs: 1 }) + "\n";
+    const hash = (s) => crypto.createHash("sha256").update(s).digest("hex");
+    await fs.writeFile(corpusPath, corpusBytes);
+    await fs.writeFile(rowsPath, rowsBytes);
+    await fs.writeFile(configPath, JSON.stringify({ runs: [{ id: "fixture-only", kind: "text", corpus: corpusPath, results: rowsPath, corpusSha256: hash(corpusBytes), resultsSha256: hash(rowsBytes) }] }));
+    const run = () => spawnSync(process.execPath, [fileURLToPath(new URL("../live/report.mjs", import.meta.url)), configPath, out], { encoding: "utf8" });
+    await fs.writeFile(rowsPath, rowsBytes.replaceAll("hello", "other"));
+    assert.match(run().stderr, /results checksum changed/);
+    await assert.rejects(fs.access(out));
+    await fs.writeFile(rowsPath, rowsBytes);
+    await fs.writeFile(corpusPath, corpusBytes + " ");
+    assert.match(run().stderr, /corpus checksum changed/);
+    await fs.writeFile(corpusPath, corpusBytes);
+    assert.equal(run().status, 0);
+    assert.notEqual(run().status, 0);
+  } finally { await fs.rm(dir, { recursive: true, force: true }); }
+});
+
+test("audio reports distinguish legacy unknown filler policy and reject mixed treatments", () => {
+  const manifest = { samples: [{ id: "copy", segments: 1, speech: "下周三交稿" }] };
+  const text = { samples: [corpus.samples[1]] };
+  const row = { caseId: "copy", rawText: "下周三交稿", sourceText: "下周三交稿", finalText: "下周三交稿", rewrite: "accepted", stopToFinalMs: 1, firstPartialMs: 1, firstPreviewMs: null, speechEndMs: 1, previewEvents: 0 };
+  assert.equal(scoreAudio(manifest, text, [row]).removeFillers, null);
+  assert.equal(scoreAudio(manifest, text, [{ ...row, removeFillers: true }]).removeFillers, true);
+  const extended = { samples: [...manifest.samples, { ...manifest.samples[0], id: "other" }] };
+  assert.throws(() => scoreAudio(extended, text, [{ ...row, removeFillers: true }, { ...row, caseId: "other", removeFillers: false }]), /Mixed filler policies/);
 });

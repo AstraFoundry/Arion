@@ -1,0 +1,32 @@
+{
+  "model": "x-asr-zh-en-offline-punct-int8-2026-06-03",
+  "count": 154,
+  "rates": {
+    "cer": {
+      "count": 60,
+      "errors": 47,
+      "referenceUnits": 808,
+      "rate": 0.05816831683168317
+    },
+    "wer": {
+      "count": 60,
+      "errors": 39,
+      "referenceUnits": 983,
+      "rate": 0.03967446592065107
+    },
+    "mer": {
+      "count": 30,
+      "errors": 82,
+      "referenceUnits": 371,
+      "rate": 0.2210242587601078
+    }
+  },
+  "computeMs": {
+    "count": 154,
+    "p50": 132.7390419319272,
+    "p95": 338.3485874743199,
+    "p99": 539.2954470752737
+  },
+  "silenceCount": 4,
+  "falseEmissions": 0
+}

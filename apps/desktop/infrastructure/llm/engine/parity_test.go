@@ -67,3 +67,56 @@ func TestReuseParity(t *testing.T) {
 		t.Fatalf("reuse changed the answer:\nwarm %q\ncold %q", warm.Text, cold)
 	}
 }
+
+// Span deletion changes prompt token boundaries. Incremental prefill and
+// live rewinds must still match a fresh model request exactly.
+func TestCleanupReuseParity(t *testing.T) {
+	runtimeDir, modelDir := os.Getenv("ARION_LLM_RUNTIME"), os.Getenv("ARION_LLM_MODEL")
+	if runtimeDir == "" || modelDir == "" {
+		t.Skip("ARION_LLM_RUNTIME and ARION_LLM_MODEL not set")
+	}
+	if err := genai.Load(runtimeDir); err != nil {
+		t.Fatal(err)
+	}
+	config := Config{ModelDir: modelDir, Threads: 4, MaxLength: 4096, MaxNewTokens: 128}
+	var stop atomic.Bool
+	final := Request{Session: "cleanup", Scene: "chat", Text: "I I need the the report before Friday."}
+	fresh, _, err := Load(config, prompt.Live(), prompt.Context())
+	if err != nil {
+		t.Fatal(err)
+	}
+	cold, err := fresh.Run(final, &stop)
+	fresh.Close()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if cold.Cleanup.Text != "I need the report before Friday." || len(cold.Cleanup.Spans) != 2 {
+		t.Fatalf("cleanup not exercised: %+v", cold.Cleanup)
+	}
+	reused, _, err := Load(config, prompt.Live(), prompt.Context())
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer reused.Close()
+	for _, request := range []Request{
+		{Session: "cleanup", Scene: "chat", Text: "I I need the", Prefill: true},
+		{Session: "cleanup", Scene: "chat", Text: "I I need the the report,", Live: true},
+	} {
+		if _, err := reused.Run(request, &stop); err != nil {
+			t.Fatal(err)
+		}
+	}
+	warm, err := reused.Run(final, &stop)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if warm.ReusedTokens == 0 || warm.Text != cold.Text || warm.Cleanup.Text != cold.Cleanup.Text {
+		t.Fatalf("cleanup cache parity failed: warm=%+v cold=%+v", warm, cold)
+	}
+	if err := reused.EndSession(); err != nil {
+		t.Fatal(err)
+	}
+	if reused.session != "" || len(reused.tokens) != reused.prefix {
+		t.Fatal("private session cache retained")
+	}
+}

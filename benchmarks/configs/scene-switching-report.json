@@ -1,111 +1,116 @@
 {
- "host": "Apple M4, 32 GiB, macOS arm64; CPU only; 4 intra-op threads; host not isolated: the final-pipeline batch ran under heavy load from unrelated processes (load average above 100, memory compressed), so its latencies are not comparable",
- "provenance": "Qwen3 1.7B INT4 onnx-community CPU export in the arion-llm worker (ONNX Runtime GenAI 0.17.0 / ONNX Runtime 1.30.0), greedy; prompt live-v2 unless a run says live-v3; scene selection by domain.DecideScene from each case's target",
- "limitations": "Developer-authored synthetic text cases (one author), exact-string layout and content proxies only; no speech, human ratings, native capture of real targets or Windows",
- "runs": [
-  {
-   "id": "scene-heldout-fixed-chat",
-   "kind": "text",
-   "split": "heldout",
-   "variant": "live-v2, fixed chat (before scene selection), rule correction",
-   "corpus": ".workspace/scene/scene-heldout-b-corpus.json",
-   "results": ".workspace/benchmarks/scene/final-heldoutb-chat.jsonl"
-  },
-  {
-   "id": "scene-heldout-auto",
-   "kind": "text",
-   "split": "heldout",
-   "variant": "live-v2, automatic scene, rule correction",
-   "corpus": ".workspace/scene/scene-heldout-b-corpus.json",
-   "results": ".workspace/benchmarks/scene/final-heldoutb-auto.jsonl"
-  },
-  {
-   "id": "scene-dev-fixed-chat",
-   "kind": "text",
-   "split": "dev",
-   "variant": "live-v2, fixed chat, rule correction",
-   "corpus": ".workspace/scene/scene-dev-corpus.json",
-   "results": ".workspace/benchmarks/scene/final-dev-chat.jsonl"
-  },
-  {
-   "id": "scene-dev-auto",
-   "kind": "text",
-   "split": "dev",
-   "variant": "live-v2, automatic scene, rule correction",
-   "corpus": ".workspace/scene/scene-dev-corpus.json",
-   "results": ".workspace/benchmarks/scene/final-dev-auto.jsonl"
-  },
-  {
-   "id": "lrw-heldout-final",
-   "kind": "text",
-   "split": "heldout",
-   "variant": "live-v2, labelled scene, scene-aware validator",
-   "corpus": ".workspace/live-heldout-corpus.json",
-   "results": ".workspace/benchmarks/scene/final-lrw-heldout.jsonl"
-  },
-  {
-   "id": "lrw-dev-final",
-   "kind": "text",
-   "split": "dev",
-   "variant": "live-v2, labelled scene, scene-aware validator",
-   "corpus": ".workspace/ablation-corpus.json",
-   "results": ".workspace/benchmarks/scene/final-lrw-dev.jsonl"
-  },
-  {
-   "id": "prompt-exp-v2-chat",
-   "kind": "text",
-   "split": "dev",
-   "variant": "live-v2, fixed chat, raw text",
-   "corpus": ".workspace/scene/scene-dev-corpus.json",
-   "results": ".workspace/benchmarks/scene/scene-v2-chat.jsonl"
-  },
-  {
-   "id": "prompt-exp-v2-auto",
-   "kind": "text",
-   "split": "dev",
-   "variant": "live-v2, automatic scene (email only taught), raw text",
-   "corpus": ".workspace/scene/scene-dev-corpus.json",
-   "results": ".workspace/benchmarks/scene/scene-v2-auto.jsonl"
-  },
-  {
-   "id": "prompt-exp-v3-chat",
-   "kind": "text",
-   "split": "dev",
-   "variant": "live-v3 (rejected), fixed chat, raw text",
-   "corpus": ".workspace/scene/scene-dev-corpus.json",
-   "results": ".workspace/benchmarks/scene/scene-v3-chat.jsonl"
-  },
-  {
-   "id": "prompt-exp-v3-auto",
-   "kind": "text",
-   "split": "dev",
-   "variant": "live-v3 (rejected), automatic scene, raw text",
-   "corpus": ".workspace/scene/scene-dev-corpus.json",
-   "results": ".workspace/benchmarks/scene/scene-v3-auto.jsonl"
-  },
-  {
-   "id": "prompt-exp-lrw-heldout-v2",
-   "kind": "text",
-   "split": "heldout",
-   "variant": "live-v2 same-host rerun, original validator",
-   "corpus": ".workspace/live-heldout-corpus.json",
-   "results": ".workspace/benchmarks/scene/heldout-v2.jsonl"
-  },
-  {
-   "id": "prompt-exp-lrw-heldout-v3",
-   "kind": "text",
-   "split": "heldout",
-   "variant": "live-v3 (rejected), original validator",
-   "corpus": ".workspace/live-heldout-corpus.json",
-   "results": ".workspace/benchmarks/scene/heldout-v3.jsonl"
-  },
-  {
-   "id": "prompt-exp-lrw-dev-v3",
-   "kind": "text",
-   "split": "dev",
-   "variant": "live-v3 (rejected), original validator",
-   "corpus": ".workspace/ablation-corpus.json",
-   "results": ".workspace/benchmarks/scene/dev-v3.jsonl"
+  "host": "Apple M4, 32 GiB, macOS arm64; CPU only; 4 intra-op threads; host not isolated: the final-pipeline batch ran under heavy load from unrelated processes (load average above 100, memory compressed), so its latencies are not comparable",
+  "provenance": "Qwen3 1.7B INT4 onnx-community CPU export in the arion-llm worker (ONNX Runtime GenAI 0.17.0 / ONNX Runtime 1.30.0), greedy; prompt live-v2 unless a run says live-v3; scene selection by domain.DecideScene from each case's target",
+  "limitations": "Developer-authored synthetic text cases (one author), exact-string layout and content proxies only; no speech, human ratings, native capture of real targets or Windows",
+  "runs": [
+    {
+      "id": "scene-heldout-fixed-chat",
+      "kind": "text",
+      "split": "heldout",
+      "variant": "live-v2, fixed chat (before scene selection), rule correction",
+      "corpus": "benchmarks/corpora/scene-v1/scene-heldout-b-corpus.json",
+      "results": "benchmarks/runs/scene-switching/scene/final-heldoutb-chat.jsonl"
+    },
+    {
+      "id": "scene-heldout-auto",
+      "kind": "text",
+      "split": "heldout",
+      "variant": "live-v2, automatic scene, rule correction",
+      "corpus": "benchmarks/corpora/scene-v1/scene-heldout-b-corpus.json",
+      "results": "benchmarks/runs/scene-switching/scene/final-heldoutb-auto.jsonl"
+    },
+    {
+      "id": "scene-dev-fixed-chat",
+      "kind": "text",
+      "split": "dev",
+      "variant": "live-v2, fixed chat, rule correction",
+      "corpus": "benchmarks/corpora/scene-v1/scene-dev-corpus.json",
+      "results": "benchmarks/runs/scene-switching/scene/final-dev-chat.jsonl"
+    },
+    {
+      "id": "scene-dev-auto",
+      "kind": "text",
+      "split": "dev",
+      "variant": "live-v2, automatic scene, rule correction",
+      "corpus": "benchmarks/corpora/scene-v1/scene-dev-corpus.json",
+      "results": "benchmarks/runs/scene-switching/scene/final-dev-auto.jsonl"
+    },
+    {
+      "id": "lrw-heldout-final",
+      "kind": "text",
+      "split": "heldout",
+      "variant": "live-v2, labelled scene, scene-aware validator",
+      "corpus": "benchmarks/corpora/live-heldout-v1/corpus.json",
+      "results": "benchmarks/runs/scene-switching/scene/final-lrw-heldout.jsonl"
+    },
+    {
+      "id": "lrw-dev-final",
+      "kind": "text",
+      "split": "dev",
+      "variant": "live-v2, labelled scene, scene-aware validator",
+      "corpus": "benchmarks/corpora/rewrite-dev-v1/corpus.json",
+      "results": "benchmarks/runs/scene-switching/scene/final-lrw-dev.jsonl"
+    },
+    {
+      "id": "prompt-exp-v2-chat",
+      "kind": "text",
+      "split": "dev",
+      "variant": "live-v2, fixed chat, raw text",
+      "corpus": "benchmarks/corpora/scene-v1/scene-dev-corpus.json",
+      "results": "benchmarks/runs/scene-switching/scene/scene-v2-chat.jsonl"
+    },
+    {
+      "id": "prompt-exp-v2-auto",
+      "kind": "text",
+      "split": "dev",
+      "variant": "live-v2, automatic scene (email only taught), raw text",
+      "corpus": "benchmarks/corpora/scene-v1/scene-dev-corpus.json",
+      "results": "benchmarks/runs/scene-switching/scene/scene-v2-auto.jsonl"
+    },
+    {
+      "id": "prompt-exp-v3-chat",
+      "kind": "text",
+      "split": "dev",
+      "variant": "live-v3 (rejected), fixed chat, raw text",
+      "corpus": "benchmarks/corpora/scene-v1/scene-dev-corpus.json",
+      "results": "benchmarks/runs/scene-switching/scene/scene-v3-chat.jsonl"
+    },
+    {
+      "id": "prompt-exp-v3-auto",
+      "kind": "text",
+      "split": "dev",
+      "variant": "live-v3 (rejected), automatic scene, raw text",
+      "corpus": "benchmarks/corpora/scene-v1/scene-dev-corpus.json",
+      "results": "benchmarks/runs/scene-switching/scene/scene-v3-auto.jsonl"
+    },
+    {
+      "id": "prompt-exp-lrw-heldout-v2",
+      "kind": "text",
+      "split": "heldout",
+      "variant": "live-v2 same-host rerun, original validator",
+      "corpus": "benchmarks/corpora/live-heldout-v1/corpus.json",
+      "results": "benchmarks/runs/scene-switching/scene/heldout-v2.jsonl"
+    },
+    {
+      "id": "prompt-exp-lrw-heldout-v3",
+      "kind": "text",
+      "split": "heldout",
+      "variant": "live-v3 (rejected), original validator",
+      "corpus": "benchmarks/corpora/live-heldout-v1/corpus.json",
+      "results": "benchmarks/runs/scene-switching/scene/heldout-v3.jsonl"
+    },
+    {
+      "id": "prompt-exp-lrw-dev-v3",
+      "kind": "text",
+      "split": "dev",
+      "variant": "live-v3 (rejected), original validator",
+      "corpus": "benchmarks/corpora/rewrite-dev-v1/corpus.json",
+      "results": "benchmarks/runs/scene-switching/scene/dev-v3.jsonl"
+    }
+  ],
+  "archive": {
+    "manifest": "benchmarks/migration/archive.json",
+    "parentConfiguration": "benchmarks/reproduction/report-configs/scene-switching-report.json",
+    "parentSha256": "68115c2cc3fb357d6db10fb049c77b9c2f282e29cf4770af8006b9b66126f11b"
   }
- ]
 }

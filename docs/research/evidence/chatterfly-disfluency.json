@@ -1,0 +1,329 @@
+{
+  "version": 1,
+  "scope": "Chatterfly disfluency: additional shipped-client static evidence; no target execution, private data or network access",
+  "identity": {
+    "installer": {
+      "name": "Chatterfly_V1.0.6.13398.app",
+      "directoryManifestSha256": "0f3fe308c62824816f38f91d10baf50de46c52213d17b7a3443ec99d179366bd",
+      "reaEvidence": "ev_e86f7a8a483ab5d40506a8aadc00d715761d84afe030d451ac85c0ba46f38d70"
+    },
+    "archive": {
+      "member": "Contents/Resources/ChatterFly.zip",
+      "sha256": "3392e95b4d2d6aac9b09c3d28490ad15798c2075be7b2eb2c1e4b278960f9563",
+      "reaEvidence": "ev_d7b75b5f00fcbb8469fe6c48e8050a0c2699c71754343e3c858052dbc139272d"
+    },
+    "main": {
+      "member": "Chatterfly.app/Contents/MacOS/Chatterfly",
+      "size": 112951952,
+      "sha256": "1063fbb5b0e18dc323ec4a14487456795b359b9330cfeee14b78454a00791e50",
+      "reaEvidence": "ev_357f2213ffae36932ca3c1c489824db2b8487a33c049894dba6808dca0e0d91e"
+    },
+    "derivedArm64": {
+      "sha256": "2ea312f6324accd6194e6c612608870321bc62c286aa2cdbccf8288ae19a2433",
+      "size": 54198928,
+      "sourceSliceOffset": 58753024,
+      "method": "system lipo -thin arm64; byte equality to original slice independently checked"
+    },
+    "plist": {
+      "member": "Chatterfly.app/Contents/Info.plist",
+      "sha256": "f88657237cee0c241b572b9a2e6df2c231f27a70258143175be005d0705fe20c",
+      "bundleIdentifier": "com.tencent.inputmethod.chatterfly",
+      "version": "1.0.6.13398",
+      "connectionName": "Yuanbao_InputMethod_Connection",
+      "controllerClass": "YuanbaoInputController"
+    }
+  },
+  "identityRevalidated": {
+    "mainSha256": "1063fbb5b0e18dc323ec4a14487456795b359b9330cfeee14b78454a00791e50",
+    "derivedArm64Sha256": "2ea312f6324accd6194e6c612608870321bc62c286aa2cdbccf8288ae19a2433",
+    "derivedSliceByteEquality": true
+  },
+  "method": "Existing REA artifact/Mach-O Evidence is reused. New instruction findings use ordinary Apple LLVM llvm-objdump, not REA decompilation. Function extents use the next text symbol, instructions independently verified against the derived slice. Branch/data flow explanations are analyst inferences from static instructions.",
+  "functions": [
+    {
+      "id": "CFD-asm-asr-params",
+      "kind": "ordinary-static-arm64-instructions",
+      "method": "+[SGMacSpeechASRParamsBuilder buildLiveASRParamsWithAudioConfig:sessionID:]",
+      "entry": "0x1003c1f9c",
+      "exclusiveEndFromNextTextSymbol": "0x1003c265c",
+      "derivedSliceFileOffset": 3940252,
+      "universalFileOffset": 62693276,
+      "functionBytesSha256": "e59dc6927ffd03eb2b53ff7adfc17c32d879508ca41c877df4c8ff7074247296",
+      "assemblySha256": "dd0c1fae5da1d18074871f8a6938572391ba5233982c0b22db292493ac38f350",
+      "validatedInstructions": 432,
+      "observation": "Live ASR params explicitly set language zh-cmn-Hans-CN, asrMode online, model default, puncMode NORMAL_PUNCTUATION. This shipped builder does not establish multilingual spoken-text rewriting capability."
+    },
+    {
+      "id": "CFD-asm-asr-parse",
+      "kind": "ordinary-static-arm64-instructions",
+      "method": "-[SGSpeechASREngine parseResult:]",
+      "entry": "0x1003d855c",
+      "exclusiveEndFromNextTextSymbol": "0x1003d8898",
+      "derivedSliceFileOffset": 4031836,
+      "universalFileOffset": 62784860,
+      "functionBytesSha256": "8778d984fe57406489ab4807801a8ec544cf23c1845771ffba31e18e9fd58624",
+      "assemblySha256": "dc2b9cc9ea446b4d274eb59d82e2e6e3df226f2d09234e93867e0d613ca7d41a",
+      "validatedInstructions": 207,
+      "observation": "Reads JSON short_utterance via integerFromDict:key:, compares to zero, and sets SGASRTextResult.shortUtterance to the nonzero Boolean. The ASR-side threshold is unknown."
+    },
+    {
+      "id": "CFD-asm-live-asr",
+      "kind": "ordinary-static-arm64-instructions",
+      "method": "-[SGMacSpeechService handleLiveASRResult:]",
+      "entry": "0x1003ce680",
+      "exclusiveEndFromNextTextSymbol": "0x1003cebe8",
+      "derivedSliceFileOffset": 3991168,
+      "universalFileOffset": 62744192,
+      "functionBytesSha256": "0f44a257fad1b58bec63d2fd21b5fa4694b023e5c3d378d60ab1d0428ca464e2",
+      "assemblySha256": "366c999b250eb0350a67c29ba7e16a44328b7c2ea262b1dfc51507ed9bdc7c8b",
+      "validatedInstructions": 346,
+      "observation": "Copies result.shortUtterance into current sessionData.shortUtterance before appending finalResult to ASR stable text. This function does not compute a local character-count threshold."
+    },
+    {
+      "id": "CFD-asm-debug-setup",
+      "kind": "ordinary-static-arm64-instructions",
+      "method": "___27+[SGSpeechDebugSetup setup]_block_invoke",
+      "entry": "0x1004097dc",
+      "exclusiveEndFromNextTextSymbol": "0x100409a2c",
+      "derivedSliceFileOffset": 4233180,
+      "universalFileOffset": 62986204,
+      "functionBytesSha256": "cf8d01dfaf74268d368f7addf4695c88ad0115b597405d7a96d9c135573126b9",
+      "assemblySha256": "6d2ad8ea150dd6d9635d99cde9dd48372c81ef27cb33cbce0a9d1d84c1f40569",
+      "validatedInstructions": 148,
+      "observation": "Registers speech.shortUtteranceSkipLLM as toggleItemWithKey:title:section:defaultValue:, with title 短音频不走大模型请求 and defaultValue false. Registration default is static evidence; actual runtime override state is unknown."
+    },
+    {
+      "id": "CFD-asm-short-policy",
+      "kind": "ordinary-static-arm64-instructions",
+      "method": "+[SGSpeechDebugSetup shortUtteranceSkipLLMEnabled]",
+      "entry": "0x100409b84",
+      "exclusiveEndFromNextTextSymbol": "0x100409bd0",
+      "derivedSliceFileOffset": 4234116,
+      "universalFileOffset": 62987140,
+      "functionBytesSha256": "628a6b8f4404ae1f56303c7b607c1cbf54f42322474e63c5db72f4e4c3270e92",
+      "assemblySha256": "be7b7f5fe2014675a17b7381338ee1a9c2c4e8cb43c19b92aae34d30af4b9e4b",
+      "validatedInstructions": 19,
+      "observation": "Returns SGDebugStorage boolForKey speech.shortUtteranceSkipLLM. Does not itself measure an utterance or skip a request."
+    },
+    {
+      "id": "CFD-asm-payload-nonsse",
+      "kind": "ordinary-static-arm64-instructions",
+      "method": "-[SGSpeechPostProcessor buildPayloadWithAsrText:vpTrigger:enablePauseDetect:uid:]",
+      "entry": "0x10041355c",
+      "exclusiveEndFromNextTextSymbol": "0x10041398c",
+      "derivedSliceFileOffset": 4273500,
+      "universalFileOffset": 63026524,
+      "functionBytesSha256": "7535b90d1d58bac35a312113f1b3771679edd9d2291681be9e9369797086dd3c",
+      "assemblySha256": "ed9daa1d3eca15b1d4cf47746d9a345b57e18929629b027bdcace8911b1c4f52",
+      "validatedInstructions": 268,
+      "observation": "The non-SSE payload builder also serializes shortUtterance as NSNumber Boolean audit_only. It does not establish the server meaning of audit_only."
+    },
+    {
+      "id": "CFD-asm-commit-final",
+      "kind": "ordinary-static-arm64-instructions",
+      "method": "-[SGMacSpeechService commitFinalSpeechText]",
+      "entry": "0x1003c91d4",
+      "exclusiveEndFromNextTextSymbol": "0x1003c99c8",
+      "derivedSliceFileOffset": 3969492,
+      "universalFileOffset": 62722516,
+      "functionBytesSha256": "e1488f04c171ce76c326a3e4c5ad33813c0b78ca206f01880ee3946edb98bbf9",
+      "assemblySha256": "25ac784bdeead0324c97082ae96a67d9fb7e5108d1a51b446a2a8d678d859600",
+      "validatedInstructions": 509,
+      "observation": "Obtains enhancedText, records it for punctuation learning and edit/history tracking, then passes enhancedText to commitVoiceText when input focus exists and the result is not the unsupported-command case. Otherwise passes rewritten and ASR original separately to the result panel. No lexical-overlap or shrink-ratio validation occurs in this bounded function."
+    },
+    {
+      "id": "CFD-asm-result-switch",
+      "kind": "ordinary-static-arm64-instructions",
+      "method": "___128-[SGSpeechBarController showVoiceResultWithText:subtitle:originalText:subtitleLeadingIconURL:showUnsupportedCommandToastOnInit:]_block_invoke_3",
+      "entry": "0x1003e7ea0",
+      "exclusiveEndFromNextTextSymbol": "0x1003e7f8c",
+      "derivedSliceFileOffset": 4095648,
+      "universalFileOffset": 62848672,
+      "functionBytesSha256": "139fa37b4ad48d6dc24fa720d077ce2b60a2217fd66f36a9f74e147afb2a0d92",
+      "assemblySha256": "f49a6686ac36fbbcb79bbcffa7152a0255346fb4034125fa5ba5facf9d6aefea",
+      "validatedInstructions": 59,
+      "observation": "Result-panel callback switches separately captured strings through switchToText:directionUp: and toggles the labels 切换原文 and 切换改写. This changes displayed panel content; the callback does not call commitVoiceText."
+    }
+  ],
+  "reusedEvidence": [
+    {
+      "id": "CF-asm-payload",
+      "method": "-[SGSpeechPostProcessorSSE buildPayloadWithAsrText:vpTrigger:enablePauseDetect:uid:]",
+      "entry": "0x100415348",
+      "functionBytesSha256": "e55bea93f59cf53dfba7a2ea1360d611c4de9dff1792c5f4084e76169df6e3a8"
+    },
+    {
+      "id": "CF-asm-llm-orchestrator",
+      "method": "-[SGMacSpeechLLMProcessor startPostProcessWithSessionData:userId:userToken:completion:]",
+      "entry": "0x1003c3860",
+      "functionBytesSha256": "87dd3081502ec49e8da4c78a1a0a0f68f2e23b1d36148a68dfccedd79b09191e"
+    },
+    {
+      "id": "CF-asm-cmode",
+      "method": "-[SGSpeechPostProcessorSSE handleCModePacket:delta:finish:eventSource:]",
+      "entry": "0x1004164c0",
+      "functionBytesSha256": "0465d0633a6f81ea32a7515f25b56b571fcbc916c95f047fdc821ecbd1992a6b"
+    },
+    {
+      "id": "CF-asm-live-result",
+      "method": "-[SGMacSpeechService handleLivePostProcessResult:error:]",
+      "entry": "0x1003c8530",
+      "functionBytesSha256": "a5a86b22a5c8b69605e428e2817e5c65637c65d5d63f3e4234575f051783da1a"
+    },
+    {
+      "id": "CF-asm-sel-response-parse",
+      "method": "+[SGSpeechPostProcessResponse parseProcessData:]",
+      "entry": "0x100419770",
+      "functionBytesSha256": "6d5afd0467e7489d00de13d44e4dcc38a060e2fb80f651a96ad336698b97e957"
+    }
+  ],
+  "constants": [
+    {
+      "cfAddress": "0x102187130",
+      "flags": "0x7d0",
+      "stringAddress": "0x102025d96",
+      "sliceFileOffset": 33709462,
+      "utf16UnitsOrBytes": 10,
+      "encoding": "utf-16-le",
+      "value": "短音频不走大模型请求"
+    },
+    {
+      "cfAddress": "0x1021856f0",
+      "flags": "0x7d0",
+      "stringAddress": "0x1020257c0",
+      "sliceFileOffset": 33707968,
+      "utf16UnitsOrBytes": 4,
+      "encoding": "utf-16-le",
+      "value": "切换原文"
+    },
+    {
+      "cfAddress": "0x102185710",
+      "flags": "0x7d0",
+      "stringAddress": "0x1020257ca",
+      "sliceFileOffset": 33707978,
+      "utf16UnitsOrBytes": 4,
+      "encoding": "utf-16-le",
+      "value": "切换改写"
+    }
+  ],
+  "findings": [
+    {
+      "id": "CFD-short-audit",
+      "status": "answered-client-part",
+      "observation": "ASR JSON short_utterance -> ASR result Boolean -> session Boolean. Postprocessor flag = session Boolean AND debug skip toggle; toggle is registered false by default. Both SSE and non-SSE payloads carry audit_only Boolean. There is no evidenced unconditional short-text rewriting bypass.",
+      "anchors": [
+        "0x1003d87e8–0x1003d8810",
+        "0x1003ce6b0–0x1003ce6d0",
+        "0x1003c3bbc–0x1003c3bf4",
+        "0x100409924–0x100409938",
+        "0x100415598–0x1004155c4",
+        "0x1004137ac–0x1004137d8"
+      ],
+      "unknown": "Server threshold, server audit_only behavior, runtime override."
+    },
+    {
+      "id": "CFD-result-policy",
+      "status": "answered-client-part",
+      "observation": "Successful data.text is stored as enhancedText and passed to commitVoiceText. Error codes 0x7660/0x7661 take the ASR stable-text path and setSecurityResult; generic errors showLLMErrorUI and stop normal result handling. Error 0x7662 is stored as sessionError while response text remains available; commit treats this as unsupported command and shows result panel. No string similarity, length-ratio or filler-specific rejection gate appears in these bounded functions.",
+      "anchors": [
+        "0x1003c8630–0x1003c868c",
+        "0x1003c8808–0x1003c8904",
+        "0x1003c94c4–0x1003c94dc",
+        "0x1003c9314–0x1003c93b8"
+      ],
+      "unknown": "Numeric enum meanings beyond adjacent shipped symbols, server fallback decisions, actual error occurrence."
+    },
+    {
+      "id": "CFD-filler-algorithm",
+      "status": "unresolved-server",
+      "observation": "Request takes ASR text/context; SSE handler accepts server final text or accumulated deltas. No recovered prompt or local language-specific filler/self-correction rule is established. Product copy promises automatic correction and concise speech but is static marketing evidence.",
+      "evidence": [
+        "CF-asm-payload",
+        "CF-asm-cmode",
+        "CFD-product-copy"
+      ],
+      "unknown": "Exact rule for 呃/那个/啊不对, quotation handling, reference ambiguity, negation repair and multilingual quality."
+    },
+    {
+      "id": "CFD-language",
+      "status": "partially-answered",
+      "observation": "The live-ASR builder directly selects zh-cmn-Hans-CN. Complete arm64 __text direct Objective-C setLanguage: call search finds one speech params setter in that builder; other setters belong to telemetry/config. This is not evidence that all languages are unsupported, and Chinese/English mixed typing marketing is not proof of multilingual dictation cleanup.",
+      "evidence": [
+        "CFD-asm-asr-params",
+        "CFD-selector-search"
+      ],
+      "unknown": "Server automatic language identification, mixed-speech support and multilingual rewrite coverage."
+    }
+  ],
+  "observations": [
+    {
+      "id": "CFD-selector-search",
+      "kind": "bounded-negative-static-search",
+      "artifactSha256": "2ea312f6324accd6194e6c612608870321bc62c286aa2cdbccf8288ae19a2433",
+      "boundary": "Whole arm64 __text symbolized disassembly, direct Objective-C calls to setShortUtterance:, shortUtterance, setLanguage:, shortUtteranceSkipLLMEnabled, and key speech.shortUtteranceSkipLLM",
+      "privateArtifact": "selector-calls.json",
+      "resultCount": 22,
+      "limitations": "Dynamic dispatch, KVC, indirect writes and server implementation are not excluded."
+    },
+    {
+      "id": "CFD-product-copy",
+      "kind": "ordinary-static-packaged-text",
+      "sha256": "4fd9473c8637b6820654b54ab0d05ff79d069d0ca29d2c7bf5fd55094047f3dd",
+      "locations": [
+        {
+          "section": "__TEXT,__ustring",
+          "offset": 22891570,
+          "encoding": "utf-16-le",
+          "text": "把消息说出来,自动帮您优化内容与语气, 秒回不用斟酌用词。\n\n· 自动纠错、精简废话\n· 分点罗列,  重点突出\n· 无需推敲和内耗, 秒回老板"
+        },
+        {
+          "section": "__TEXT,__ustring",
+          "offset": 22891734,
+          "encoding": "utf-16-le",
+          "text": "说出想法，专业 Prompt 就已成型，术语准确，约束就绪。\n\n· 自动纠正错识别的技术词，将模糊口语转成准确的开发表达\n\n· 结合页面、代码库和对话上下文, 补全修改对象、实现边界与关键约束\n\n· 自动组织目标、要求和验收标准，让开发 Agent 拿到即可执行"
+        },
+        {
+          "section": "__TEXT,__ustring",
+          "offset": 22892446,
+          "encoding": "utf-16-le",
+          "text": "开启指定 Skill 后，Chatterfly 会在语音输入时，结合当前输入场景智能选择 Skill，进行改写润色"
+        },
+        {
+          "section": "__TEXT,__ustring",
+          "offset": 52289838,
+          "encoding": "utf-16-le",
+          "text": "把消息说出来,自动帮您优化内容与语气, 秒回不用斟酌用词。\n\n· 自动纠错、精简废话\n· 分点罗列,  重点突出\n· 无需推敲和内耗, 秒回老板"
+        },
+        {
+          "section": "__TEXT,__ustring",
+          "offset": 52290002,
+          "encoding": "utf-16-le",
+          "text": "说出想法，专业 Prompt 就已成型，术语准确，约束就绪。\n\n· 自动纠正错识别的技术词，将模糊口语转成准确的开发表达\n\n· 结合页面、代码库和对话上下文, 补全修改对象、实现边界与关键约束\n\n· 自动组织目标、要求和验收标准，让开发 Agent 拿到即可执行"
+        },
+        {
+          "section": "__TEXT,__ustring",
+          "offset": 52290714,
+          "encoding": "utf-16-le",
+          "text": "开启指定 Skill 后，Chatterfly 会在语音输入时，结合当前输入场景智能选择 Skill，进行改写润色"
+        }
+      ],
+      "limitation": "Static product claims, not observed inference results. Full strings are bounded to Mach-O __cstring/__ustring sections."
+    },
+    {
+      "id": "CFD-prompt-search",
+      "kind": "bounded-negative-static-search",
+      "scope": "Main arm64 and preference universal Mach-O __cstring/__ustring sections",
+      "terms": "口语|语气|去除|去掉|赘|重复|纠正|填充|多语|中英|原文|润色|disfluen|filler|verbatim|self.correct|audit_only|short_utterance|baseline_output|enhanced_output",
+      "result": "Returned schema names, panel labels and product copy; no executable prompt or explicit filler-removal instructions recovered in these sections.",
+      "limitation": "Other binary data, encoded/remote configuration and server prompts remain outside this search."
+    }
+  ],
+  "limitations": [
+    "New CFD IDs are local static observations, not REA Evidence IDs.",
+    "Previously failed Ghidra requests were not repeated; no pseudocode or runtime trace was recovered.",
+    "No target process was launched or attached. No private app state, credentials, microphone or network endpoint was accessed.",
+    "Client results cannot reveal remote prompts/weights, test outcomes or true multilingual coverage.",
+    "Default registration is not evidence of active user/debug configuration."
+  ],
+  "privateEvidenceRoot": ".workspace/research/chatterfly-disfluency"
+}

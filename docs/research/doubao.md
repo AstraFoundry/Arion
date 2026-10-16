@@ -95,6 +95,8 @@ The [IME-specific privacy policy](https://lf3-cdn-tos.draftstatic.com/obj/ies-ho
 
 ## Implications for Arion
 
+The [disfluency follow-up](competitor-disfluency.md#doubao-decoder-cleanup-plus-text-organization) recovers an `enable_disfluency`-gated decoder branch that interprets annotated spans, separately from the text-organization request. It also records the bounded request-body construction and completion checks. Annotation origin, active settings and multilingual effectiveness remain unknown.
+
 These are proposed product/architecture decisions, not copied competitor implementations:
 
 - Keep native IME integration distinct from the settings shell. MyGo hosting alone does not establish IMK or Windows TSF support.

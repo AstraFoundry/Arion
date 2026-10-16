@@ -1,0 +1,17 @@
+{
+  "kind": "arion-corpus-archive-provenance",
+  "preservation": "Original source bytes; no annotation, licence or split rewritten",
+  "sources": [
+    {
+      "originalPath": ".workspace/research/rewrite-alignment/corpus.json",
+      "archivedPath": "benchmarks/corpora/oral-rewrite-v1/corpus.json",
+      "sha256": "3cc9dcf3dd5f18cbfbcad23abc302822813bd9997641171ffdb17e691456f18e",
+      "samples": 16,
+      "declaredLicense": null,
+      "declaredAnnotation": "developer_authored_unreviewed",
+      "declaredSplit": "development"
+    }
+  ],
+  "attribution": "Source licence and annotation values are copied from original metadata; null means unspecified, not a new permission assertion. See benchmarks/datasets.json for upstream dataset identities.",
+  "studyUse": "Historical disclosed benchmark corpus. Preserve its original split field; future reuse is regression/exploratory evidence."
+}

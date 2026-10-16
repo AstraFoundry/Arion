@@ -1,0 +1,50 @@
+{
+  "rewrite": [
+    {
+      "id": "text-factorial",
+      "results": ".workspace/benchmarks/qwen-text-v1",
+      "corpus": ".workspace/ablation-corpus.json"
+    },
+    {
+      "id": "compact",
+      "results": ".workspace/benchmarks/qwen-compact-v1",
+      "corpus": ".workspace/ablation-corpus.json"
+    },
+    {
+      "id": "thinking",
+      "results": ".workspace/benchmarks/qwen-thinking-v1",
+      "corpus": ".workspace/ablation-corpus.json"
+    },
+    {
+      "id": "model-4b",
+      "results": ".workspace/benchmarks/qwen4b-text-v1",
+      "corpus": ".workspace/ablation-corpus.json"
+    },
+    {
+      "id": "two-pass",
+      "results": ".workspace/benchmarks/qwen-two-pass-v1",
+      "corpus": ".workspace/ablation-corpus.json"
+    },
+    {
+      "id": "frozen-asr",
+      "results": ".workspace/benchmarks/qwen-frozen-v1",
+      "corpus": ".workspace/ablation-frozen-corpus.json"
+    },
+    {
+      "id": "intent-v2",
+      "results": ".workspace/benchmarks/qwen-intent-v2",
+      "corpus": ".workspace/ablation-corpus.json"
+    }
+  ],
+  "audioCorpus": ".workspace/ablation-audio/corpus.json",
+  "asr": [
+    {
+      "kind": "native",
+      "results": ".workspace/benchmarks/qwen-native-v1"
+    },
+    {
+      "kind": "offline",
+      "results": ".workspace/benchmarks/qwen-asr-v2"
+    }
+  ]
+}

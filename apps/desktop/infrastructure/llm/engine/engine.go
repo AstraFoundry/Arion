@@ -51,7 +51,8 @@ func (e *Engine) budget(inputTokens int, live bool) int {
 
 // Result reports the candidate and where its time went.
 type Result struct {
-	Text string `json:"text"`
+	Text    string               `json:"text"`
+	Cleanup domain.SpeechCleanup `json:"cleanup"`
 	// Template is the version of the prompt that served the request.
 	Template     string  `json:"template"`
 	InputTokens  int     `json:"inputTokens"`
@@ -182,7 +183,8 @@ func (e *Engine) Run(req Request, cancelled *atomic.Bool) (Result, error) {
 		_ = e.EndSession()
 		return Result{}, err
 	}
-	in := prompt.Input{Scene: req.Scene, Terms: req.Terms, Context: req.Context, Text: req.Text}
+	cleanup := domain.CleanSpeech(req.Text)
+	in := prompt.Input{Scene: req.Scene, Terms: req.Terms, Context: req.Context, Text: cleanup.Text}
 	text := tpl.Prompt(in)
 	if req.Prefill {
 		text = tpl.Source(in)
@@ -210,7 +212,7 @@ func (e *Engine) Run(req Request, cancelled *atomic.Bool) (Result, error) {
 		return Result{}, err
 	}
 	e.tokens = append(e.tokens, ids[common:]...)
-	result := Result{Template: tpl.Version, InputTokens: len(ids) - e.prefix, ReusedTokens: common - e.prefix, PrefillMs: ms(time.Since(start))}
+	result := Result{Cleanup: cleanup, Template: tpl.Version, InputTokens: len(ids) - e.prefix, ReusedTokens: common - e.prefix, PrefillMs: ms(time.Since(start))}
 	if req.Prefill {
 		return result, nil
 	}

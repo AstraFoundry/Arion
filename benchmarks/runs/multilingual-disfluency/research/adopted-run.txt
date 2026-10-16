@@ -1,0 +1,22 @@
+loaded qwen3-1.7b prompt=live-v2 prefix=822 in 5582 ms
+zh-repair          chat    accepted                284 ms reuse=16/33
+zh-eh              chat    accepted                274 ms reuse=0/22
+zh-nage-filler     chat    content_dropped         193 ms reuse=12/26
+zh-nage-reference  chat    accepted                342 ms reuse=12/26
+zh-quote           chat    accepted                437 ms reuse=18/30
+zh-balance         chat    accepted                342 ms reuse=13/26
+en-hesitation      chat    accepted                276 ms reuse=0/22
+en-repair          chat    accepted                392 ms reuse=14/28
+en-i-mean          chat    accepted                348 ms reuse=11/26
+en-like-filler     chat    accepted                323 ms reuse=10/25
+en-like-meaning    chat    accepted                400 ms reuse=12/28
+en-quote           chat    accepted                468 ms reuse=17/31
+es-hesitation      chat    accepted                358 ms reuse=9/26
+es-repair          chat    content_dropped         265 ms reuse=17/30
+es-preserve        chat    accepted                398 ms reuse=12/28
+fr-hesitation      chat    accepted                447 ms reuse=9/29
+fr-repair          chat    content_dropped         238 ms reuse=16/28
+fr-preserve        chat    accepted                399 ms reuse=13/28
+ja-hesitation      chat    content_dropped         331 ms reuse=0/29
+ja-repair          chat    content_dropped         323 ms reuse=0/28
+ja-reference       chat    accepted                366 ms reuse=0/25

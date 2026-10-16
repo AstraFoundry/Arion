@@ -1,0 +1,22 @@
+loaded adopted prompt=live-v2 prefix=822 in 20632 ms
+zh-repair          chat    accepted               1593 ms reuse=7/23
+zh-eh              chat    accepted                917 ms reuse=0/22
+zh-nage-filler     chat    unsupported_content     897 ms reuse=10/24
+zh-nage-reference  chat    accepted               1787 ms reuse=12/26
+zh-quote           chat    accepted               2376 ms reuse=18/30
+zh-balance         chat    accepted               1069 ms reuse=13/26
+en-hesitation      chat    accepted               1097 ms reuse=0/22
+en-repair          chat    accepted                685 ms reuse=6/20
+en-i-mean          chat    accepted                604 ms reuse=8/20
+en-like-filler     chat    accepted               1162 ms reuse=7/22
+en-like-meaning    chat    accepted               1300 ms reuse=12/28
+en-quote           chat    accepted               1309 ms reuse=17/31
+es-hesitation      chat    accepted               1846 ms reuse=6/25
+es-repair          chat    accepted                829 ms reuse=11/23
+es-preserve        chat    accepted               1426 ms reuse=12/28
+fr-hesitation      chat    accepted               1668 ms reuse=6/26
+fr-repair          chat    accepted                708 ms reuse=10/22
+fr-preserve        chat    accepted               1525 ms reuse=13/28
+ja-hesitation      chat    new_number             2085 ms reuse=0/23
+ja-repair          chat    accepted               1164 ms reuse=0/23
+ja-reference       chat    accepted               1226 ms reuse=0/25

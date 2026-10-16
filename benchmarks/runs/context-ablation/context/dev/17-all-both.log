@@ -1,0 +1,18 @@
+loaded 17-all-both prompt=live-v2 prefix=822 in 6835 ms
+d-s-zh-name        work    accepted                520 ms reuse=57/74
+d-s-en-name        email   accepted                702 ms reuse=64/82
+d-s-mx-tool        prompt  accepted                723 ms reuse=82/95
+d-s-zh-place       chat    accepted                563 ms reuse=68/81
+d-s-en-code        prompt  accepted               1023 ms reuse=0/80
+d-c-zh-term        chat    accepted               1362 ms reuse=0/92
+d-c-en-name        email   accepted                998 ms reuse=0/90
+d-c-zh-continue    work    accepted                667 ms reuse=0/65
+d-h-zh-name        chat    accepted                733 ms reuse=0/58
+d-h-en-term        work    accepted                878 ms reuse=0/71
+d-h-mx-api         prompt  accepted               1019 ms reuse=0/78
+d-n-zh-distract    chat    accepted                548 ms reuse=65/78
+d-n-en-inject      chat    accepted                936 ms reuse=0/69
+d-n-zh-similar     chat    accepted                736 ms reuse=0/63
+d-m-zh-code        work    accepted               1373 ms reuse=0/88
+d-m-en-both        email   accepted                794 ms reuse=72/83
+.workspace/benchmarks/context/dev/17-all-both.jsonl {"cases":16,"sourcePass":4,"proposalPass":4,"deliveredPass":4,"accepted":16,"rejected":{},"acceptedFailing":12,"rejectedPassing":0,"worsened":0,"referenceEditRatioMean":0.2121083471267295,"sourceEditRatioMean":0.20516390268228507,"finalMs":{"count":16,"p50":764.8505,"p95":1364.46175,"p99":1370.91235},"liveEdits":7,"liveAccepted":6,"liveMs":{"count":7,"p50":899.84,"p95":7717.584299999994,"p99":9819.588059999996},"sceneAgreement":16,"byScene":{"chat":{"cases":6,"sourcePass":3,"deliveredPass":3,"worsened":0,"sceneAgreement":6},"email":{"cases":3,"sourcePass":1,"deliveredPass":1,"worsened":0,"sceneAgreement":3},"prompt":{"cases":3,"sourcePass":0,"deliveredPass":0,"worsened":0,"sceneAgreement":3},"work":{"cases":4,"sourcePass":0,"deliveredPass":0,"worsened":0,"sceneAgreement":4}},"byKind":{"cursor":{"cases":3,"sourcePass":0,"deliveredPass":0,"worsened":0},"history":{"cases":3,"sourcePass":0,"deliveredPass":0,"worsened":0},"negative":{"cases":3,"sourcePass":3,"deliveredPass":3,"worsened":0},"screen":{"cases":7,"sourcePass":1,"deliveredPass":1,"worsened":0}}}

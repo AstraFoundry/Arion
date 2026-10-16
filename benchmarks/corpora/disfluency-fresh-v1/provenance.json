@@ -1,0 +1,17 @@
+{
+  "kind": "arion-corpus-archive-provenance",
+  "preservation": "Original source bytes; no annotation, licence or split rewritten",
+  "sources": [
+    {
+      "originalPath": ".workspace/research/doubao-alignment/fresh-test.json",
+      "archivedPath": "benchmarks/corpora/disfluency-fresh-v1/corpus.json",
+      "sha256": "9a7adfa85ff1f7c475c25e20b5eeddf7aea5b9eac0121d18a22802ea17124123",
+      "samples": 16,
+      "declaredLicense": null,
+      "declaredAnnotation": "developer_authored_unreviewed",
+      "declaredSplit": "test"
+    }
+  ],
+  "attribution": "Source licence and annotation values are copied from original metadata; null means unspecified, not a new permission assertion. See benchmarks/datasets.json for upstream dataset identities.",
+  "studyUse": "Sixteen developer-authored cases frozen before their first final baseline/product outputs; now disclosed historical test evidence."
+}

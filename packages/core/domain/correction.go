@@ -7,7 +7,7 @@ import (
 )
 
 // RulesVersion identifies the conservative rule set used for a correction.
-const RulesVersion = "arion-rules-v1"
+const RulesVersion = "arion-rules-v3"
 
 // LatinCase declares how a recognizer emits Latin letters.
 type LatinCase string
@@ -159,6 +159,10 @@ func naturalizeUppercaseLatin(s string) string {
 // letters that a recognizer spells out ("P R" → "PR", "A P I" → "API").
 // A lone capital letter between words is left alone.
 func joinSpelledAcronyms(s string) string {
+	return transformUnquoted(s, joinUnquotedAcronyms)
+}
+
+func joinUnquotedAcronyms(s string) string {
 	fields := strings.Split(s, " ")
 	single := func(f string) bool { return len(f) == 1 && f[0] >= 'A' && f[0] <= 'Z' }
 	var out []string
@@ -167,7 +171,16 @@ func joinSpelledAcronyms(s string) string {
 		for j < len(fields) && single(fields[j]) {
 			j++
 		}
-		if j-i >= 2 {
+		// Repeated first-person I is ambiguous speech, not an acronym.
+		// Leave it for the independent repetition stage.
+		firstPerson := j > i
+		for _, word := range fields[i:j] {
+			if word != "I" {
+				firstPerson = false
+				break
+			}
+		}
+		if j-i >= 2 && !firstPerson {
 			out = append(out, strings.Join(fields[i:j], ""))
 			i = j
 			continue
@@ -180,39 +193,60 @@ func joinSpelledAcronyms(s string) string {
 
 var fillerWords = map[string]bool{"嗯": true, "呃": true, "额": true, "um": true, "uh": true, "erm": true, "uhm": true}
 
-// removeFillers drops standalone hesitation tokens. A filler inside a word or
-// a CJK run that continues with other Han characters is kept.
+// removeFillers drops hesitation tokens outside quotes. CJK hesitations may
+// attach to adjacent speech; the ambiguous noun suffix 额 needs both boundaries.
 func removeFillers(s string) string {
-	runes := []rune(s)
+	return transformUnquoted(s, removeUnquotedFillers)
+}
+
+func removeUnquotedFillers(s string) string {
 	var b strings.Builder
+	cursor := 0
+	for _, span := range hesitationSpans(s) {
+		b.WriteString(s[cursor:span.Start])
+		cursor = span.End
+	}
+	b.WriteString(s[cursor:])
+	return b.String()
+}
+
+// hesitationSpans shares correction's token boundaries with polishing.
+func hesitationSpans(s string) []SpeechSpan {
+	runes := []rune(s)
+	offsets := make([]int, 0, len(runes)+1)
+	for i := range s {
+		offsets = append(offsets, i)
+	}
+	offsets = append(offsets, len(s))
+	var out []SpeechSpan
 	for i := 0; i < len(runes); {
-		r := runes[i]
-		if r < utf8.RuneSelf && unicode.IsLetter(r) {
-			j := i
-			for j < len(runes) && runes[j] < utf8.RuneSelf && unicode.IsLetter(runes[j]) {
-				j++
+		start, end := i, i+1
+		if r := runes[i]; r < utf8.RuneSelf && unicode.IsLetter(r) {
+			for end < len(runes) && runes[end] < utf8.RuneSelf && unicode.IsLetter(runes[end]) {
+				end++
 			}
-			if fillerWords[strings.ToLower(string(runes[i:j]))] {
-				i = skipFillerTrail(runes, j)
+			if !fillerWords[strings.ToLower(string(runes[start:end]))] {
+				i = end
 				continue
 			}
-			b.WriteString(string(runes[i:j]))
-			i = j
+		} else if !fillerWords[string(r)] || !standaloneCJK(runes, i) {
+			i++
 			continue
 		}
-		if fillerWords[string(r)] && standaloneCJK(runes, i) {
-			i = skipFillerTrail(runes, i+1)
-			continue
-		}
-		b.WriteRune(r)
-		i++
+		end = skipFillerTrail(runes, end)
+		out = append(out, SpeechSpan{Start: offsets[start], End: offsets[end], Kind: SpeechHesitation})
+		i = end
 	}
-	return b.String()
+	return out
 }
 
 func standaloneCJK(runes []rune, i int) bool {
 	before := i == 0 || !unicode.Is(unicode.Han, runes[i-1])
 	after := i+1 >= len(runes) || !unicode.Is(unicode.Han, runes[i+1])
+	if runes[i] == '额' {
+		// Unlike 嗯/呃, 额 commonly ends words such as 余额 and 名额.
+		return before && after
+	}
 	return before || after
 }
 

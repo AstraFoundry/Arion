@@ -1,0 +1,39 @@
+{
+  "kind": "development-output-contract-smoke",
+  "status": "complete",
+  "testCases": 0,
+  "promptControllerHash": "f7b4393448a95b791369b08be1c83cb2d90e87a3aab28d048af0b0d9bd418072",
+  "models": {
+    "qwen3-1.7b": {
+      "id": "1",
+      "ok": true,
+      "runtime": "0.17.1",
+      "ortRuntime": "1.30.0",
+      "providersAvailable": [
+        "CoreMLExecutionProvider",
+        "AzureExecutionProvider",
+        "CPUExecutionProvider"
+      ],
+      "providerRequested": "CPUExecutionProvider",
+      "architecture": "arm64",
+      "loadMs": 4447.548208991066
+    },
+    "qwen3-4b": {
+      "id": "1",
+      "ok": true,
+      "runtime": "0.17.1",
+      "ortRuntime": "1.30.0",
+      "providersAvailable": [
+        "CoreMLExecutionProvider",
+        "AzureExecutionProvider",
+        "CPUExecutionProvider"
+      ],
+      "providerRequested": "CPUExecutionProvider",
+      "architecture": "arm64",
+      "loadMs": 9534.60479201749
+    }
+  },
+  "records": 36,
+  "contractFailures": 1,
+  "resultsHash": "02f9c7c37bb01b011245963f558f3600519110badfc3d471d1be94195761b30b"
+}

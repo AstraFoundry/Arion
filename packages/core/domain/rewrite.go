@@ -22,6 +22,7 @@ const (
 	RewriteNegation    RewriteVerdict = "negation_dropped"
 	RewriteFinalValue  RewriteVerdict = "final_value_dropped"
 	RewriteDropped     RewriteVerdict = "content_dropped"
+	RewriteUncertainty RewriteVerdict = "uncertainty_dropped"
 	// RewriteContextCopied adds content from the context that the dictation
 	// does not contain.
 	RewriteContextCopied RewriteVerdict = "context_copied"
@@ -78,7 +79,8 @@ func ValidateRewrite(c RewriteCheck) RewriteVerdict {
 	}
 	evidence := c.Source + "\n" + strings.Join(c.Terms, "\n") + "\n" + c.Context.Evidence()
 	src, cand := contentRunes(c.Source), contentRunes(candidate)
-	if len(cand) > len(src)*5/4+6 || len(cand)*4 < len(src) {
+	cleanup := CleanSpeech(c.Source).Text
+	if len(cand) > len(src)*5/4+6 || len(cand)*4 < len(contentRunes(cleanup)) {
 		return RewriteLength
 	}
 	for _, n := range digitRuns(listMarkers.ReplaceAllString(candidate, "")) {
@@ -95,12 +97,15 @@ func ValidateRewrite(c RewriteCheck) RewriteVerdict {
 	if negations(candidate) < negations(c.Source) {
 		return RewriteNegation
 	}
+	if losesUncertainty(c.Source, candidate) {
+		return RewriteUncertainty
+	}
 	// A self-correction keeps the last value spoken; dropping it reverts
 	// the speaker's correction.
 	if values := quantities(c.Source); len(values) > 0 && !strings.Contains(candidate, values[len(values)-1]) {
 		return RewriteFinalValue
 	}
-	kept := withoutReplaced(c.Source, c.Terms)
+	kept := withoutReplaced(cleanup, c.Terms)
 	// Speech that repeats the text just before the cursor may be dropped:
 	// the field already has it.
 	kept = strings.TrimPrefix(kept, repeatedBefore(c.Context.Before, kept))

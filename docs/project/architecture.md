@@ -33,11 +33,12 @@ flowchart LR
     Stream[Streaming ASR segments] -->|endpoint| Cut[Cut at the pause]
     Cut --> Refine[Optional per-segment finalizer]
     Refine --> Rules[Rule correction]
-    Rules -->|stable text| Preview[Live LLM preview]
+    Rules --> Cleanup[Local speech deletion spans]
+    Cleanup -->|stable text| Preview[Live LLM preview]
     Preview --> Validate1[Validate]
     Validate1 --> Display[Preview + open tail]
     Stream -->|open segment| Display
-    Rules -->|after stop| Final[Final LLM rewrite]
+    Cleanup -->|after stop| Final[Final LLM rewrite]
     Final --> Validate2[Validate]
     Validate2 --> Commit[Single commit]
 ```
@@ -46,7 +47,9 @@ When a session starts with **Match the app** on, the coordinator decides its sce
 
 With rewrite context on ([ADR 013](../decisions/013-rewrite-context-on-device.md)), `application/context.go` reads the session's context after capture: the target adapter's `ReadContext` returns text around the cursor and the focused window's recognized text (`infrastructure/macos/context.m`: ScreenCaptureKit + Vision; `infrastructure/windows/ocr.go`: `PrintWindow` + `Windows.Media.Ocr`), and `application.History` supplies recent dictations per place. `domain.ContextTerms` turns it into spellings for the prompt's terms; the full context is validation evidence.
 
-`application/live.go` owns this schedule per session. Segment units flow from the pump to a per-session worker through a bounded queue; a newly closed segment cancels the running preview (latest wins), and a preview computed for older text is never displayed. Stop cancels previews before the final request. `domain.ValidateRewrite` decides whether a proposal may be shown or inserted; a rejected final rewrite inserts the rule-corrected text and the event records the outcome.
+`domain.CleanSpeech` implements a separate local deletion stage (`speech-spans-v1`) before model organization. The worker sends its cleaned text to the unchanged `live-v2` prompt and returns the original-offset spans for private evaluation. Final organization rejection, timeout or unavailability retains completed cleanup with the failure outcome; recognized original and rule-corrected source remain independently available. Validation computes deletion coverage from cleaned text while keeping original-source fact/number/negation/uncertainty evidence. This follows the stage separation observed in Doubao; its speech annotation model was not recovered ([evidence](../research/competitor-disfluency.md)).
+
+`application/live.go` owns this schedule per session. Segment units flow from the pump to a per-session worker through a bounded queue; a newly closed segment cancels the running preview (latest wins), and a preview computed for older text is never displayed. Stop cancels previews before the final request. `domain.ValidateRewrite` decides whether a proposal may be shown or inserted; a rejected final organization retains the completed local cleanup and the event records the failure outcome.
 
 The model runs in the `arion-llm` worker process: ONNX Runtime GenAI loaded with purego, JSON lines over pipes (`infrastructure/llm/protocol`). One greedy KV state is reused by longest common token prefix: the instruction prefix is computed at load, each preview extends the transcript, and a session's end rewinds to the shared prefix. `infrastructure/rewriting` provisions the model, starts and stops the worker and reports readiness; `infrastructure/llm/client` adapts the worker to the core `Rewriter` port. Field-text context capture and the strict [rewrite evaluator](../research/rewrite-evaluation.md) protocol remain separate, unimplemented gates.
 

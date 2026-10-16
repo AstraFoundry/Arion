@@ -1,0 +1,32 @@
+loaded 4b-product-all-accurate prompt=live-v2 prefix=822 in 15054 ms
+x-s-zh-name        work    accepted                842 ms reuse=22/42
+x-s-zh-place       chat    accepted                824 ms reuse=32/45
+x-s-en-name        email   accepted               1025 ms reuse=24/43
+x-s-mx-tool        prompt  unsupported_content    1375 ms reuse=26/52
+x-s-zh-product     chat    accepted                957 ms reuse=0/37
+x-s-en-term        prompt  accepted               1355 ms reuse=0/49
+x-s-zh-db          work    accepted               1081 ms reuse=38/51
+x-s-en-person      work    accepted                804 ms reuse=24/41
+x-c-zh-term        email   accepted                864 ms reuse=18/36
+x-c-en-name        chat    accepted               1027 ms reuse=0/39
+x-c-zh-after       chat    accepted                860 ms reuse=0/30
+x-c-mx-code        prompt  accepted               1084 ms reuse=0/36
+x-c-zh-continue    work    accepted                749 ms reuse=0/34
+x-c-en-continue    email   accepted                698 ms reuse=13/28
+x-h-zh-term        work    accepted                941 ms reuse=35/48
+x-h-en-name        chat    accepted                946 ms reuse=0/35
+x-h-zh-name        chat    accepted                791 ms reuse=0/34
+x-h-mx-api         prompt  accepted               1058 ms reuse=0/37
+x-h-en-product     email   accepted                809 ms reuse=0/34
+x-h-zh-place       chat    accepted                756 ms reuse=25/38
+x-n-zh-distract    chat    accepted                810 ms reuse=0/39
+x-n-en-distract    chat    unsupported_content     667 ms reuse=0/36
+x-n-zh-inject      chat    content_dropped         422 ms reuse=23/37
+x-n-en-inject      chat    accepted               1009 ms reuse=0/36
+x-n-zh-similar     chat    content_dropped         413 ms reuse=28/40
+x-n-en-history     chat    accepted                636 ms reuse=0/28
+x-n-zh-code        prompt  accepted                701 ms reuse=25/38
+x-m-zh-both        work    accepted               1581 ms reuse=34/51
+x-m-en-both        email   accepted               1267 ms reuse=25/43
+x-m-zh-number      work    accepted               1750 ms reuse=0/56
+.workspace/benchmarks/context/final/4b-product-all-accurate.jsonl {"cases":30,"sourcePass":8,"proposalPass":16,"deliveredPass":16,"accepted":26,"rejected":{"unsupported_content":2,"content_dropped":2},"acceptedFailing":13,"rejectedPassing":3,"worsened":0,"referenceEditRatioMean":0.12890637140637137,"sourceEditRatioMean":0.1659708362127717,"finalMs":{"count":30,"p50":862.0955,"p95":1488.7237999999993,"p99":1701.34831},"liveEdits":16,"liveAccepted":11,"liveMs":{"count":16,"p50":787.9385,"p95":1605.44875,"p99":1711.7465499999998},"sceneAgreement":30,"byScene":{"chat":{"cases":13,"sourcePass":7,"deliveredPass":8,"worsened":0,"sceneAgreement":13},"email":{"cases":5,"sourcePass":0,"deliveredPass":1,"worsened":0,"sceneAgreement":5},"prompt":{"cases":5,"sourcePass":1,"deliveredPass":4,"worsened":0,"sceneAgreement":5},"work":{"cases":7,"sourcePass":0,"deliveredPass":3,"worsened":0,"sceneAgreement":7}},"byKind":{"cursor":{"cases":6,"sourcePass":0,"deliveredPass":1,"worsened":0},"history":{"cases":6,"sourcePass":1,"deliveredPass":2,"worsened":0},"negative":{"cases":7,"sourcePass":7,"deliveredPass":7,"worsened":0},"screen":{"cases":11,"sourcePass":0,"deliveredPass":6,"worsened":0}}}

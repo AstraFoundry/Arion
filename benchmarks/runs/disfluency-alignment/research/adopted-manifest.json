@@ -1,0 +1,67 @@
+{
+  "schema": "arion-disfluency-diagnostic-v1",
+  "status": "frozen-before-heldout",
+  "revision": "1ffa254a919acbfb074acd1e1a778a026c6547bf",
+  "dirty": true,
+  "host": {
+    "os": "26.6.2",
+    "cpu": "Apple M4",
+    "goArch": "arm64",
+    "power": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=34668643)\t100%; charged; 0:00 remaining present: true",
+    "ram": 34359738368
+  },
+  "settings": {
+    "threads": 4,
+    "prompt": "live-v2",
+    "cleanup": "speech-spans-v1",
+    "greedy": true,
+    "thinking": false,
+    "maxLength": 4096,
+    "maxNewTokens": 384,
+    "correct": true,
+    "livePrefixes": true,
+    "context": false,
+    "schedule": "sequential baseline then candidate per set",
+    "cold": "load reported separately; warm model for requests",
+    "notes": "Other desktop processes and a separate phonetic benchmark were active; latency is descriptive, not an isolated speed comparison."
+  },
+  "artifacts": {
+    ".workspace/ablation-models/qwen3-1.7b/tokenizer_config.json": "bfd13b57b2e0c2cb582f311c0895f077d16a868c0dc61e4dbbba544a835341d6",
+    ".workspace/ablation-models/qwen3-1.7b/config.json": "14c4e163fc54e5c7301a7f26054386ac77734401355fecd530ce4a98233f070c",
+    ".workspace/ablation-models/qwen3-1.7b/tokenizer.json": "979d160e081df25a1bf7f4e2e8f4c441b5dfdc9a8e84aec9f32e80445e1b59b8",
+    ".workspace/ablation-models/qwen3-1.7b/chat_template.jinja": "a55ee1b1660128b7098723e0abcd92caa0788061051c62d51cbe87d9cf1974d8",
+    ".workspace/ablation-models/qwen3-1.7b/model.onnx": "9fddc5a0a7f9c51132c376db8fe44774b17a8e42d721c4d289ade16af87da0bd",
+    ".workspace/ablation-models/qwen3-1.7b/genai_config.json": "d328d2ad4cbd7915eee3ad047eabfc562d8daf7307b202c1e6aaef4e8a236ba2",
+    "apps/desktop/resources/darwin-arm64/llm/libonnxruntime-genai.dylib": "93aece3743ebf14111a00f6b602ec0160a083e7cf4ac33feb1cee390fbca6f21",
+    "apps/desktop/resources/darwin-arm64/llm/libonnxruntime.dylib": "bcc9110f9d638a119de2db7afb3ba9a1da8085f0cb3401e1c48ae1caf450b6fa"
+  },
+  "sources": {
+    "packages/core/domain/speech_cleanup.go": "7788d188e82ef03a914f985d5abc472dbc351f8f4dac0b13455c17cfc2f4db37",
+    "packages/core/domain/rewrite.go": "91d919a9de2048ee68480620e1e97257679df13e0634b6d083af46e039650446",
+    "packages/core/domain/rewrite_fidelity.go": "bb08303a1043f74605f61b697e4f56047fe1950d1f080723ade469215bf1ea55",
+    "packages/core/domain/correction.go": "87ad9399c326a5c22926a5f7f6c7009d0e6f2ce4c0b14c3a8b2db94c7a34a0b0",
+    "packages/core/application/live.go": "6b140945b8ee40a5d4fe5cb371aa0817e7b06cd34135ccbfdbb5c55eb2410569",
+    "apps/desktop/infrastructure/llm/engine/engine.go": "efcb5f3a16ce6b00001a694e5669250665f50a980c29135c6327245720135003",
+    "apps/desktop/cmd/arion-rewrite-bench/main.go": "74a0163e8af8d423a507e1024a0b560032c7faf89db01f42fec2c554d28f03db",
+    "apps/desktop/cmd/arion-llm/main.go": "279f39b92a65c71ad112ae0348edc11bfb5cfbf4076f6f7b9bd8d4aa4b5c41f8",
+    "apps/desktop/infrastructure/llm/client/client.go": "05c1a99d33db634a51c61658ecb3297c7d9fa46b8b5a0de438bc167c834c1dd7",
+    "apps/desktop/infrastructure/llm/protocol/protocol.go": "e7ec2fca507b56efc3468c49cbc06eea644ba7dc19220f99695109b629c938db",
+    "tools/evaluation/live/score-text.mjs": "9a1674d43006480236c167637f8cde412770aafd8f3e7d807c3a6076a17caecb",
+    "tools/evaluation/diagnostic/metrics.mjs": "87854bfee61d559c9f50370ad8ca34ad53650a9ada20718a2321d38d5de1dd12"
+  },
+  "binaries": {
+    "baseline-bench": "aaa4f1ff7d9ded9fbfab150d0783f14fb5409ec7bee5b2eb2dad210b6918a7c5",
+    "baseline-worker": "967499fac116b7057ef052977325a8c3855b67a6a8371c753ddfb6558abcd7a6",
+    "adopted-worker": "e2a9169b545f4b9abd05d4fc6bcf4b040e02d6f816554c4eed902ed5734cd093",
+    "adopted-audio": "413bbaf5e00eebdb07852a02167b6a8fa2d959ea5232f6996d50062943018cb4",
+    "baseline-audio": "79507deece92a96f14b9c5f79f5ae30ab9eab9bc7b78a93ddcca7763738d7f98",
+    "adopted-bench": "19b0aeb33a2e7f83d9e8bb7a4c23cf6a473b877af69de6d67456ef7dabbb91fb"
+  },
+  "corpora": {
+    ".workspace/research/doubao-alignment/heldout.json": "5894f0a041a21731c55b6c2e57e4610d04812bbb551ac715e06022f280f10b0b",
+    ".workspace/research/doubao-alignment/audio-corpus.json": "bace3f53ffe3734396e82bddbacb24a6c20b544c0bec4ddda6e36e7c91534d26",
+    ".workspace/research/multilingual-disfluency/corpus.json": "c6ae5989e55a916af3b5c76bb024f7821f3527a6a8e0e9009b271439f05101ab",
+    ".workspace/research/rewrite-alignment/corpus.json": "3cc9dcf3dd5f18cbfbcad23abc302822813bd9997641171ffdb17e691456f18e",
+    ".workspace/live-heldout-corpus.json": "31a5231fa057d8057933b1966c75a279d552c08fac3c4c8524cac300c5bda8fa"
+  }
+}

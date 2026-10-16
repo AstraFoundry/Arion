@@ -243,14 +243,14 @@ func (a *App) policy() domain.CorrectionPolicy {
 		Replacements: a.replaces, Vocabulary: a.vocabulary}
 }
 
-// rewritePolicy is read when a session starts: the live pipeline runs only
-// when the user turned it on and the worker is serving. Approved
+// rewritePolicy is read when a session starts and preserves the user's
+// choice while the worker loads or is unavailable. Approved
 // vocabulary reaches the model as data, never as instructions, and only
 // the entries relevant to the text (ADR 014).
 func (a *App) rewritePolicy() application.RewritePolicy {
 	a.snapshot.Lock()
 	defer a.snapshot.Unlock()
-	if !a.prefs.Polish || !a.rewriter.Ready() {
+	if !a.prefs.Polish {
 		return application.RewritePolicy{}
 	}
 	return application.RewritePolicy{Enabled: true, Scene: string(domain.SceneChat), FollowApp: a.prefs.MatchApp,
@@ -469,10 +469,7 @@ func (a *App) apply(e contracts.Event) {
 		d.Draft = e.Text
 	case contracts.CorrectionReady:
 		d.Final = e.Text
-		d.Original = ""
-		if e.Rewrite == string(domain.RewriteAccepted) && e.Source != e.Text {
-			d.Original = e.Source
-		}
+		d.Original = dictationOriginal(e)
 		setState(domain.Reviewing)
 	case contracts.CommitResultReady:
 		d.Outcome, d.Failure = e.Outcome, e.Error
@@ -758,4 +755,13 @@ func (a *App) stopMonitor() {
 		go stream.Stop()
 	}
 	a.state.MonitorLevels = nil
+}
+
+// Cleanup may succeed while organization fails. The source remains
+// copyable whenever delivered text differs, regardless of that outcome.
+func dictationOriginal(e contracts.Event) string {
+	if e.Source == e.Text {
+		return ""
+	}
+	return e.Source
 }

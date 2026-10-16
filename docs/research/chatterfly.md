@@ -40,6 +40,8 @@ Fourteen bounded function bodies are anchored by entry address, next text symbol
 
 The resulting bounded reconstruction is **ASR stable text + context/config → post-process payload → optional SSE transport → scene/rewriting deltas and final result → enhanced-text session state → input-delivery helper**. Packet transport is streaming; this evidence does not establish that every ASR partial triggers a new LLM job. Pause processing has separate shipped methods and flags; actual stop/pause scheduling and perceived latency require controlled runtime traces.
 
+The [disfluency follow-up](competitor-disfluency.md#chatterfly-stable-asr-text-enters-the-post-processor) traces the short-input flag, debug toggle registered false, result-selection branches and original/rewrite panel switch. It finds no lexical-retention ratio in those bounded result functions and no recovered server filler-removal prompt. The live-ASR builder explicitly selects `zh-cmn-Hans-CN`; multilingual cleanup remains unmeasured.
+
 ## Scene recognition and switching
 
 A second pass (`CF-asm-sel-*`, `CF-scene-catalog`, `CF-scene-negative-setters` in the ledger) followed the scene path end to end in the same arm64 slice, the preference app and the full symbolized disassembly. It answers where scenes come from, which client signals feed them and what the client does with the result.

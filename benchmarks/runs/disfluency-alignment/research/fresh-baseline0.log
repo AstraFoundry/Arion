@@ -1,0 +1,17 @@
+loaded baseline0 prompt=live-v2 prefix=822 in 16707 ms
+en-fresh-first-person-1 chat    accepted               1060 ms reuse=0/22
+en-fresh-first-person-2 chat    accepted               1311 ms reuse=0/22
+en-fresh-quoted-pronoun chat    accepted               1957 ms reuse=15/29
+en-fresh-acronyms  chat    accepted               1813 ms reuse=0/26
+en-fresh-numeral   chat    accepted               1404 ms reuse=0/22
+en-fresh-tense     chat    accepted               2011 ms reuse=11/25
+zh-fresh-repair    chat    accepted                803 ms reuse=14/27
+zh-fresh-quoted-repeat chat    accepted               1366 ms reuse=15/27
+zh-fresh-reference chat    accepted               1715 ms reuse=12/27
+zh-fresh-hedge     chat    accepted               2412 ms reuse=12/26
+zh-fresh-question  chat    accepted               1297 ms reuse=11/24
+zh-fresh-value     chat    accepted               1361 ms reuse=17/31
+en-fresh-repair    chat    accepted                951 ms reuse=11/26
+en-fresh-parenthetical chat    accepted               1540 ms reuse=10/25
+en-fresh-code      chat    accepted               2293 ms reuse=0/29
+en-fresh-comparison chat    accepted               1183 ms reuse=13/26

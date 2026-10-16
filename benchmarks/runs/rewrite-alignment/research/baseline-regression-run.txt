@@ -1,0 +1,31 @@
+loaded qwen3-1.7b prompt=live-v2 prefix=822 in 8042 ms
+h-zh-time          chat    accepted                253 ms reuse=15/28
+h-zh-place         chat    accepted                287 ms reuse=15/29
+h-zh-count         chat    accepted                338 ms reuse=17/30
+h-zh-filler        chat    content_dropped         467 ms reuse=12/30
+h-zh-negation      chat    accepted                363 ms reuse=11/24
+h-zh-hedge         chat    accepted                571 ms reuse=16/30
+h-zh-plain         chat    accepted                437 ms reuse=0/24
+h-zh-money         chat    accepted                356 ms reuse=14/29
+h-zh-email         email   accepted                809 ms reuse=9/34
+h-zh-list          list    accepted                834 ms reuse=19/31
+h-zh-memory        chat    accepted                675 ms reuse=0/36
+h-zh-inject        chat    length                  594 ms reuse=13/26
+h-zh-question      chat    accepted                415 ms reuse=0/21
+h-en-time          chat    accepted                468 ms reuse=17/30
+h-en-person        chat    accepted                412 ms reuse=15/29
+h-en-filler        chat    accepted                667 ms reuse=0/29
+h-en-negation      chat    accepted                541 ms reuse=14/29
+h-en-plain         chat    accepted                466 ms reuse=0/23
+h-en-email         email   accepted               1157 ms reuse=8/32
+h-en-list          list    accepted                837 ms reuse=20/33
+h-en-inject        chat    length                 3544 ms reuse=0/24
+h-mixed-tool       chat    accepted                451 ms reuse=17/34
+h-mixed-plain      chat    accepted                544 ms reuse=15/28
+h-mixed-filler     chat    accepted                522 ms reuse=0/23
+h-mixed-code       chat    accepted               1070 ms reuse=13/28
+h-mixed-url        chat    accepted                924 ms reuse=16/34
+h-mixed-repeat     chat    accepted                507 ms reuse=0/25
+h-zh-long          chat    accepted               1322 ms reuse=30/48
+h-zh-cross         chat    accepted                498 ms reuse=20/33
+.workspace/research/rewrite-alignment/baseline-regression.jsonl {"cases":30,"sourcePass":15,"proposalPass":25,"deliveredPass":26,"accepted":26,"rejected":{"content_dropped":1,"length":2},"acceptedFailing":2,"rejectedPassing":1,"worsened":0,"referenceEditRatioMean":0.04072966507177034,"sourceEditRatioMean":0.2887397933450565,"finalMs":{"count":29,"p50":522.283,"p95":1255.8475999999998,"p99":2921.569279999998},"liveEdits":37,"liveAccepted":35,"liveMs":{"count":37,"p50":423.453,"p95":913.1465999999998,"p99":1540.4173200000005},"sceneAgreement":30,"byScene":{"chat":{"cases":26,"sourcePass":13,"deliveredPass":22,"worsened":0,"sceneAgreement":26},"email":{"cases":2,"sourcePass":2,"deliveredPass":2,"worsened":0,"sceneAgreement":2},"list":{"cases":2,"sourcePass":0,"deliveredPass":2,"worsened":0,"sceneAgreement":2}},"byKind":{"code":{"cases":1,"sourcePass":1,"deliveredPass":1,"worsened":0},"copy-control":{"cases":2,"sourcePass":2,"deliveredPass":2,"worsened":0},"filler":{"cases":4,"sourcePass":2,"deliveredPass":2,"worsened":0},"format":{"cases":4,"sourcePass":2,"deliveredPass":4,"worsened":0},"injection":{"cases":2,"sourcePass":2,"deliveredPass":2,"worsened":0},"memory":{"cases":1,"sourcePass":0,"deliveredPass":1,"worsened":0},"negation":{"cases":3,"sourcePass":3,"deliveredPass":3,"worsened":0},"question":{"cases":1,"sourcePass":1,"deliveredPass":1,"worsened":0},"repetition":{"cases":1,"sourcePass":0,"deliveredPass":0,"worsened":0},"self-correction":{"cases":8,"sourcePass":0,"deliveredPass":8,"worsened":0},"uncertainty":{"cases":1,"sourcePass":1,"deliveredPass":1,"worsened":0},"url":{"cases":1,"sourcePass":1,"deliveredPass":1,"worsened":0},"verbatim":{"cases":1,"sourcePass":0,"deliveredPass":0,"worsened":0}}}

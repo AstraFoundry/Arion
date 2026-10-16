@@ -1,0 +1,729 @@
+{
+  "version": 1,
+  "configHash": "5815e2ffde67dbdf6e5ae5a59acfefbf555eb263b622507e05f0ad2642bfe918",
+  "normalization": "arion-nfkc-lower-punctuation-space-v1",
+  "blocks": [
+    {
+      "seed": 11,
+      "cacheState": "warm",
+      "variant": {
+        "id": "chunk80-end500",
+        "features": {
+          "memory": false,
+          "ranker": "source",
+          "correction": "none"
+        },
+        "pipelineOverrides": {
+          "chunkMs": 80,
+          "endpointSilenceMs": 500
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "warm",
+      "variant": {
+        "id": "chunk20-end500",
+        "features": {
+          "memory": false,
+          "ranker": "source",
+          "correction": "none"
+        },
+        "pipelineOverrides": {
+          "chunkMs": 20,
+          "endpointSilenceMs": 500
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "warm",
+      "variant": {
+        "id": "chunk160-end500",
+        "features": {
+          "memory": false,
+          "ranker": "source",
+          "correction": "none"
+        },
+        "pipelineOverrides": {
+          "chunkMs": 160,
+          "endpointSilenceMs": 500
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "warm",
+      "variant": {
+        "id": "chunk80-end800",
+        "features": {
+          "memory": false,
+          "ranker": "source",
+          "correction": "none"
+        },
+        "pipelineOverrides": {
+          "chunkMs": 80,
+          "endpointSilenceMs": 800
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "warm",
+      "variant": {
+        "id": "chunk40-end500",
+        "features": {
+          "memory": false,
+          "ranker": "source",
+          "correction": "none"
+        },
+        "pipelineOverrides": {
+          "chunkMs": 40,
+          "endpointSilenceMs": 500
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "warm",
+      "variant": {
+        "id": "chunk320-end200",
+        "features": {
+          "memory": false,
+          "ranker": "source",
+          "correction": "none"
+        },
+        "pipelineOverrides": {
+          "chunkMs": 320,
+          "endpointSilenceMs": 200
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "warm",
+      "variant": {
+        "id": "chunk160-end800",
+        "features": {
+          "memory": false,
+          "ranker": "source",
+          "correction": "none"
+        },
+        "pipelineOverrides": {
+          "chunkMs": 160,
+          "endpointSilenceMs": 800
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "warm",
+      "variant": {
+        "id": "chunk20-end200",
+        "features": {
+          "memory": false,
+          "ranker": "source",
+          "correction": "none"
+        },
+        "pipelineOverrides": {
+          "chunkMs": 20,
+          "endpointSilenceMs": 200
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "warm",
+      "variant": {
+        "id": "chunk80-end200",
+        "features": {
+          "memory": false,
+          "ranker": "source",
+          "correction": "none"
+        },
+        "pipelineOverrides": {
+          "chunkMs": 80,
+          "endpointSilenceMs": 200
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "warm",
+      "variant": {
+        "id": "chunk40-end200",
+        "features": {
+          "memory": false,
+          "ranker": "source",
+          "correction": "none"
+        },
+        "pipelineOverrides": {
+          "chunkMs": 40,
+          "endpointSilenceMs": 200
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "warm",
+      "variant": {
+        "id": "chunk160-end200",
+        "features": {
+          "memory": false,
+          "ranker": "source",
+          "correction": "none"
+        },
+        "pipelineOverrides": {
+          "chunkMs": 160,
+          "endpointSilenceMs": 200
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "warm",
+      "variant": {
+        "id": "chunk20-end800",
+        "features": {
+          "memory": false,
+          "ranker": "source",
+          "correction": "none"
+        },
+        "pipelineOverrides": {
+          "chunkMs": 20,
+          "endpointSilenceMs": 800
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "warm",
+      "variant": {
+        "id": "chunk40-end800",
+        "features": {
+          "memory": false,
+          "ranker": "source",
+          "correction": "none"
+        },
+        "pipelineOverrides": {
+          "chunkMs": 40,
+          "endpointSilenceMs": 800
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "warm",
+      "variant": {
+        "id": "chunk320-end500",
+        "features": {
+          "memory": false,
+          "ranker": "source",
+          "correction": "none"
+        },
+        "pipelineOverrides": {
+          "chunkMs": 320,
+          "endpointSilenceMs": 500
+        }
+      }
+    },
+    {
+      "seed": 11,
+      "cacheState": "warm",
+      "variant": {
+        "id": "chunk320-end800",
+        "features": {
+          "memory": false,
+          "ranker": "source",
+          "correction": "none"
+        },
+        "pipelineOverrides": {
+          "chunkMs": 320,
+          "endpointSilenceMs": 800
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "warm",
+      "variant": {
+        "id": "chunk80-end800",
+        "features": {
+          "memory": false,
+          "ranker": "source",
+          "correction": "none"
+        },
+        "pipelineOverrides": {
+          "chunkMs": 80,
+          "endpointSilenceMs": 800
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "warm",
+      "variant": {
+        "id": "chunk20-end200",
+        "features": {
+          "memory": false,
+          "ranker": "source",
+          "correction": "none"
+        },
+        "pipelineOverrides": {
+          "chunkMs": 20,
+          "endpointSilenceMs": 200
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "warm",
+      "variant": {
+        "id": "chunk160-end200",
+        "features": {
+          "memory": false,
+          "ranker": "source",
+          "correction": "none"
+        },
+        "pipelineOverrides": {
+          "chunkMs": 160,
+          "endpointSilenceMs": 200
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "warm",
+      "variant": {
+        "id": "chunk40-end200",
+        "features": {
+          "memory": false,
+          "ranker": "source",
+          "correction": "none"
+        },
+        "pipelineOverrides": {
+          "chunkMs": 40,
+          "endpointSilenceMs": 200
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "warm",
+      "variant": {
+        "id": "chunk320-end800",
+        "features": {
+          "memory": false,
+          "ranker": "source",
+          "correction": "none"
+        },
+        "pipelineOverrides": {
+          "chunkMs": 320,
+          "endpointSilenceMs": 800
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "warm",
+      "variant": {
+        "id": "chunk320-end200",
+        "features": {
+          "memory": false,
+          "ranker": "source",
+          "correction": "none"
+        },
+        "pipelineOverrides": {
+          "chunkMs": 320,
+          "endpointSilenceMs": 200
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "warm",
+      "variant": {
+        "id": "chunk40-end500",
+        "features": {
+          "memory": false,
+          "ranker": "source",
+          "correction": "none"
+        },
+        "pipelineOverrides": {
+          "chunkMs": 40,
+          "endpointSilenceMs": 500
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "warm",
+      "variant": {
+        "id": "chunk160-end500",
+        "features": {
+          "memory": false,
+          "ranker": "source",
+          "correction": "none"
+        },
+        "pipelineOverrides": {
+          "chunkMs": 160,
+          "endpointSilenceMs": 500
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "warm",
+      "variant": {
+        "id": "chunk20-end800",
+        "features": {
+          "memory": false,
+          "ranker": "source",
+          "correction": "none"
+        },
+        "pipelineOverrides": {
+          "chunkMs": 20,
+          "endpointSilenceMs": 800
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "warm",
+      "variant": {
+        "id": "chunk320-end500",
+        "features": {
+          "memory": false,
+          "ranker": "source",
+          "correction": "none"
+        },
+        "pipelineOverrides": {
+          "chunkMs": 320,
+          "endpointSilenceMs": 500
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "warm",
+      "variant": {
+        "id": "chunk80-end500",
+        "features": {
+          "memory": false,
+          "ranker": "source",
+          "correction": "none"
+        },
+        "pipelineOverrides": {
+          "chunkMs": 80,
+          "endpointSilenceMs": 500
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "warm",
+      "variant": {
+        "id": "chunk160-end800",
+        "features": {
+          "memory": false,
+          "ranker": "source",
+          "correction": "none"
+        },
+        "pipelineOverrides": {
+          "chunkMs": 160,
+          "endpointSilenceMs": 800
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "warm",
+      "variant": {
+        "id": "chunk20-end500",
+        "features": {
+          "memory": false,
+          "ranker": "source",
+          "correction": "none"
+        },
+        "pipelineOverrides": {
+          "chunkMs": 20,
+          "endpointSilenceMs": 500
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "warm",
+      "variant": {
+        "id": "chunk40-end800",
+        "features": {
+          "memory": false,
+          "ranker": "source",
+          "correction": "none"
+        },
+        "pipelineOverrides": {
+          "chunkMs": 40,
+          "endpointSilenceMs": 800
+        }
+      }
+    },
+    {
+      "seed": 23,
+      "cacheState": "warm",
+      "variant": {
+        "id": "chunk80-end200",
+        "features": {
+          "memory": false,
+          "ranker": "source",
+          "correction": "none"
+        },
+        "pipelineOverrides": {
+          "chunkMs": 80,
+          "endpointSilenceMs": 200
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "warm",
+      "variant": {
+        "id": "chunk20-end500",
+        "features": {
+          "memory": false,
+          "ranker": "source",
+          "correction": "none"
+        },
+        "pipelineOverrides": {
+          "chunkMs": 20,
+          "endpointSilenceMs": 500
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "warm",
+      "variant": {
+        "id": "chunk320-end200",
+        "features": {
+          "memory": false,
+          "ranker": "source",
+          "correction": "none"
+        },
+        "pipelineOverrides": {
+          "chunkMs": 320,
+          "endpointSilenceMs": 200
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "warm",
+      "variant": {
+        "id": "chunk160-end200",
+        "features": {
+          "memory": false,
+          "ranker": "source",
+          "correction": "none"
+        },
+        "pipelineOverrides": {
+          "chunkMs": 160,
+          "endpointSilenceMs": 200
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "warm",
+      "variant": {
+        "id": "chunk80-end500",
+        "features": {
+          "memory": false,
+          "ranker": "source",
+          "correction": "none"
+        },
+        "pipelineOverrides": {
+          "chunkMs": 80,
+          "endpointSilenceMs": 500
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "warm",
+      "variant": {
+        "id": "chunk40-end200",
+        "features": {
+          "memory": false,
+          "ranker": "source",
+          "correction": "none"
+        },
+        "pipelineOverrides": {
+          "chunkMs": 40,
+          "endpointSilenceMs": 200
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "warm",
+      "variant": {
+        "id": "chunk320-end800",
+        "features": {
+          "memory": false,
+          "ranker": "source",
+          "correction": "none"
+        },
+        "pipelineOverrides": {
+          "chunkMs": 320,
+          "endpointSilenceMs": 800
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "warm",
+      "variant": {
+        "id": "chunk160-end800",
+        "features": {
+          "memory": false,
+          "ranker": "source",
+          "correction": "none"
+        },
+        "pipelineOverrides": {
+          "chunkMs": 160,
+          "endpointSilenceMs": 800
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "warm",
+      "variant": {
+        "id": "chunk20-end200",
+        "features": {
+          "memory": false,
+          "ranker": "source",
+          "correction": "none"
+        },
+        "pipelineOverrides": {
+          "chunkMs": 20,
+          "endpointSilenceMs": 200
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "warm",
+      "variant": {
+        "id": "chunk160-end500",
+        "features": {
+          "memory": false,
+          "ranker": "source",
+          "correction": "none"
+        },
+        "pipelineOverrides": {
+          "chunkMs": 160,
+          "endpointSilenceMs": 500
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "warm",
+      "variant": {
+        "id": "chunk20-end800",
+        "features": {
+          "memory": false,
+          "ranker": "source",
+          "correction": "none"
+        },
+        "pipelineOverrides": {
+          "chunkMs": 20,
+          "endpointSilenceMs": 800
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "warm",
+      "variant": {
+        "id": "chunk80-end200",
+        "features": {
+          "memory": false,
+          "ranker": "source",
+          "correction": "none"
+        },
+        "pipelineOverrides": {
+          "chunkMs": 80,
+          "endpointSilenceMs": 200
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "warm",
+      "variant": {
+        "id": "chunk40-end500",
+        "features": {
+          "memory": false,
+          "ranker": "source",
+          "correction": "none"
+        },
+        "pipelineOverrides": {
+          "chunkMs": 40,
+          "endpointSilenceMs": 500
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "warm",
+      "variant": {
+        "id": "chunk40-end800",
+        "features": {
+          "memory": false,
+          "ranker": "source",
+          "correction": "none"
+        },
+        "pipelineOverrides": {
+          "chunkMs": 40,
+          "endpointSilenceMs": 800
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "warm",
+      "variant": {
+        "id": "chunk80-end800",
+        "features": {
+          "memory": false,
+          "ranker": "source",
+          "correction": "none"
+        },
+        "pipelineOverrides": {
+          "chunkMs": 80,
+          "endpointSilenceMs": 800
+        }
+      }
+    },
+    {
+      "seed": 47,
+      "cacheState": "warm",
+      "variant": {
+        "id": "chunk320-end500",
+        "features": {
+          "memory": false,
+          "ranker": "source",
+          "correction": "none"
+        },
+        "pipelineOverrides": {
+          "chunkMs": 320,
+          "endpointSilenceMs": 500
+        }
+      }
+    }
+  ],
+  "cases": [],
+  "measuredRequests": 0
+}
