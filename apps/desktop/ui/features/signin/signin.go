@@ -102,9 +102,7 @@ func card(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 				if a.Busy() {
 					ui.Spinner(c).Size(14, 14)
 				}
-				if kit.Button(c.Key("reconnect"), tokens, kit.Outline, messages.Text(copy.AccReconnect), !a.Busy()).Clicked() {
-					store.Actions.RefreshAccount()
-				}
+
 				signOut(c, store, tokens)
 			})
 		case account.Profile:

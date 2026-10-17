@@ -127,10 +127,11 @@ type App struct {
 	queue      []func()
 	queueReady chan struct{}
 
-	accounts      *account.Service
-	accountMu     sync.Mutex
-	accountSeq    uint64
-	accountCancel context.CancelFunc
+	accounts           *account.Service
+	accountMaintenance accountMaintenance
+	accountMu          sync.Mutex
+	accountSeq         uint64
+	accountCancel      context.CancelFunc
 }
 
 // New builds the application without starting the event loop.
@@ -221,8 +222,7 @@ func New(opts Options) (*App, error) {
 	a.state = arion.State{Preferences: prefs, Platform: modelruntime.Platform(),
 		Shortcut: arion.Shortcut{Accelerator: prefs.Shortcut}, Model: arion.Model{State: arion.ModelUnselected},
 		Account: arion.Account{Phase: arion.AccountSignedOut, Issuer: profile.Issuer, Portal: accountPortal(profile), Disabled: profile.AuthMode == "device", WaitlistDisabled: !profile.Standard()}}
-	// Sign-in is constructed here and stays idle: no discovery, browser, or
-	// credential read until the user asks.
+	// Construction stays idle; restoration starts off the main thread after readiness.
 	accounts, err := account.New(opts.Account, account.Dependencies{Store: keystore.OpenForProfile(profile.Fingerprint()), Browser: browser.Open})
 	if err != nil {
 		return nil, err
@@ -377,6 +377,7 @@ func (a *App) ready() {
 	}
 	a.updates = newUpdates(source, &a.state.Update, a.post)
 	a.scheduleUpdates()
+	a.startAccountMaintenance()
 	a.registerShortcut(a.state.Preferences.Shortcut)
 	a.startHoldKey()
 	mygo.App.OnQuit(a.platform.StopHoldKey)

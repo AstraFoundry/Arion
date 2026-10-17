@@ -1099,3 +1099,42 @@ func TestProfileFromUserInfo(t *testing.T) {
 		t.Fatalf("userinfo auth = %q", iss.userInfoAuth)
 	}
 }
+
+type accountRoundTripFunc func(*http.Request) (*http.Response, error)
+
+func (f accountRoundTripFunc) RoundTrip(r *http.Request) (*http.Response, error) { return f(r) }
+
+func TestRefreshPersistsRotationBeforeUserInfo(t *testing.T) {
+	iss := newIssuer(t)
+	iss.bareID = true
+	store := &memStore{}
+	svc := iss.service(store)
+	before, err := svc.SignIn(context.Background())
+	if err != nil {
+		t.Fatal(err)
+	}
+	iss.refreshMode = "rotate"
+	original := svc.cfg.HTTP.Transport
+	if original == nil {
+		original = http.DefaultTransport
+	}
+	svc.cfg.HTTP.Transport = accountRoundTripFunc(func(r *http.Request) (*http.Response, error) {
+		if r.URL.Path == "/api/auth/oauth2/userinfo" {
+			if token, ok := store.current(); !ok || token != refreshNext {
+				t.Error("rotation was not persisted before UserInfo")
+			}
+			return &http.Response{StatusCode: 503, Header: make(http.Header), Body: io.NopCloser(strings.NewReader("")), Request: r}, nil
+		}
+		return original.RoundTrip(r)
+	})
+	after, err := svc.Refresh(context.Background())
+	if err != nil {
+		t.Fatal(err)
+	}
+	if after.Profile != before.Profile {
+		t.Fatalf("temporary UserInfo failure lost profile: %#v", after.Profile)
+	}
+	if current, ok := svc.Session(); !ok || current.Profile != before.Profile {
+		t.Fatal("in-memory profile was not retained")
+	}
+}

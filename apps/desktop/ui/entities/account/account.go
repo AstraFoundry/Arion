@@ -22,7 +22,7 @@ const (
 	// credential-store read.
 	Checking
 	// Stored is signed out with a refresh token kept from an earlier
-	// session: reconnect, or sign out to revoke and delete it.
+	// session: restore automatically, or sign out to revoke and delete it.
 	Stored
 	// Profile is a session: profile, sign-out and hosted sync.
 	Profile

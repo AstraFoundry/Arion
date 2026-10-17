@@ -6,7 +6,11 @@ Behavior is specified in [ADR 015](../decisions/015-hosted-relay-account-authori
 
 ## Startup
 
-`account.New` and `bootstrap.New` do not discover the issuer, open a port, read the credential store, or refresh a token. Dictation does not wait on this service. A process restart leaves any stored refresh token where it is and shows `AccountSignedOut`. When the onboarding sync step or Settings › Account is on screen, the view calls `CheckStoredAccount`. That reads the credential store off the main thread, with no network, and records the result in `Account.Credential`. Nothing reads the store at startup.
+`account.New` and `bootstrap.New` remain idle. After native readiness, the composition root reads the OS credential store off the main thread and automatically restores an existing account with its refresh token. Dictation and window startup never wait for account networking. Device-only, offline and scripted E2E profiles do not start background maintenance.
+
+Maintenance checks wall-clock deadlines every five seconds, including after sleep. Tokens renew before expiry (10% of the remaining lifetime, capped at one minute). Missing expiry schedules no proactive refresh. Transient transport failures, HTTP 408/429/5xx, OAuth `server_error`/`temporarily_unavailable`, and credential read/write errors retry with exponential backoff and jitter, starting at five seconds and capped at five minutes. Existing account identity stays visible; transient refresh failures show no prompt or toast. A restart while offline shows automatic restoration until connectivity returns; profile data is not persisted.
+
+Missing credentials or `invalid_grant` stop recovery and allow sign-in. Other permanent failures stop automatic retries and show the existing localized error. Refresh, sign-in and sign-out are serialized by account phase and service locks; generation checks discard stale results. Sign-out invalidates queued recovery before revocation, and app quit stops the maintenance timer. No background operation opens a browser.
 
 ## What views call
 
@@ -16,7 +20,7 @@ These `runtime.Actions` methods return immediately. Work continues off the main 
 | --- | --- |
 | `SignIn()` | System browser, one loopback callback. Phase `signing_in`, then `signed_in` or `signed_out`. |
 | `CancelSignIn()` | Invalidates the in-flight sign-in or refresh. A callback that arrives afterwards is not exchanged. A refresh token already stored for that attempt is deleted and revoked. |
-| `RefreshAccount()` | Rotates the stored refresh token and replaces the in-memory access token. Phase `refreshing`. |
+| `RefreshAccount()` | Explicit entitlement recheck; rotates the stored refresh token and replaces the in-memory access token. Phase `refreshing`. |
 | `SignOut()` | Revokes the refresh token, then deletes that credential item. Local keys and local memory stay. |
 | `JoinHostedSyncWaitlist()` | Resolves and joins the hosted-sync waitlist. |
 | `CheckStoredAccount()` | Reads whether a refresh token is stored, with `Service.Stored`. This does nothing unless `Phase` is `signed_out` and `Credential` is unknown. A result is dropped when a sign-in, refresh, cancel or sign-out started during the read. |
@@ -46,7 +50,7 @@ The loopback response is an empty `200` with `Cache-Control: no-store`. The onbo
 
 The onboarding step `Account` follows Welcome (`entities/onboarding`) and is skipped when the account is disabled. Signed out, it offers **Continue with Google**, **Continue with GitHub** and **Continue with email**. Each calls `SignIn`, which opens the issuer's sign-in page in the browser, where the same methods sign in or create an account. The primary footer button is **Continue locally**, which moves on with no account and no network. A custom issuer (`Account.Portal` empty) gets one **Sign in** button instead. While `Phase` is `signing_in`, the step shows the browser wait with Cancel (`CancelSignIn`). The step does not move on while a sign-in, refresh, or sign-out is running (`Account.Busy`).
 
-The settings sidebar ends with an account card, as in macOS System Settings: the profile picture (or initials) with name and email, or the person glyph and "Account" while signed out. It opens Settings › Account, which shows the account card: Sign in, or the profile with Sign out. When `Credential` is `stored`, the card shows the earlier sign-in with **Reconnect** (`RefreshAccount`) and **Sign out**, and Sign out revokes and deletes that token without a session in memory. In onboarding, Continue then moves on without reconnecting. While the store is being read, the card shows the checking row. When the store can't be read, the card offers Sign in with the store error under it. When signed in, a Hosted sync card follows, then links to the AstraFoundry account portal (`{Portal}/profile`, `/security`, `/connections`, `/products`, `/data`), opened in the browser. `Account.Portal` is `{issuer}/account` for the standard profile only.
+The settings sidebar ends with an account card, as in macOS System Settings: the profile picture (or initials) with name and email, or the person glyph and "Account" while signed out. It opens Settings › Account, which shows the account card: Sign in, or the profile with Sign out. When `Credential` is `stored`, the card reports automatic restoration and offers **Sign out**, which revokes and deletes that token without requiring a session in memory. There is no Reconnect control. In onboarding, Continue may move on while background recovery waits for connectivity. While the store is being read, the card shows the checking row. When the store can't be read, the card offers Sign in with the store error under it. When signed in, a Hosted sync card follows, then links to the AstraFoundry account portal (`{Portal}/profile`, `/security`, `/connections`, `/products`, `/data`), opened in the browser. `Account.Portal` is `{issuer}/account` for the standard profile only.
 
 `features/signin` draws the account card and the hosted-sync card. `entities/account` maps state to copy keys.
 
@@ -65,7 +69,7 @@ Not built yet:
 
 - **Device enrollment (SYNC-02) after the entitlement.** No desktop sync client exists. The entitled row in `features/signin` is where enrollment starts.
 - **Turn off sync and Delete server data (SYNC-07).** No actions back them, so Settings shows neither. They stay two separate operations.
-- **Profile after restart.** Name and email are not kept on disk. Before Reconnect, the stored state shows no profile. Keeping it would add fields to the versioned preferences schema.
+- **Profile after restart.** Name and email are not kept on disk. While initial background restoration is pending, the stored state shows no profile. Keeping it would add fields to the versioned preferences schema.
 
 ## Service API
 
@@ -106,7 +110,7 @@ There is no client secret. The public client is registered at the issuer. Discov
 
 The access token is decoded for `sub`, `ent`, and the ID-token profile only. After sign-in and refresh, the service reads `userinfo_endpoint` from discovery with the access token and fills name, email, picture and locale from it, because Better Auth 1.7 leaves profile claims out of the ID token. A UserInfo failure or a mismatched `sub` keeps the ID-token claims and does not fail sign-in. Email needs the `email` scope, which the `arion-desktop` client is not granted, so no email shows. The signature is not checked on device. A missing `ent` means no hosted entitlement. A non-array `ent` is `ENTITLEMENT` / `ent_type`. A malformed ID token does not fail sign-in.
 
-Refresh replaces the stored refresh token when the response includes a new one, and keeps the current one when it does not. `invalid_grant` deletes the stored token and clears the session.
+Refresh replaces the stored refresh token when the response includes a new one, and keeps the current one when it does not. Rotation is persisted before the optional UserInfo request; missing profile claims retain the same subject’s in-memory display fields. `invalid_grant` deletes the stored token and clears the session.
 
 ### Waitlist
 

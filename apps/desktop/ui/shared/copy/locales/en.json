@@ -359,7 +359,7 @@
   "AccErrLoopback": "Arion couldn't receive the sign-in from your browser. Try again.",
   "AccErrGeneric": "Something went wrong with your account.",
   "AccReconnect": "Reconnect",
-  "AccStoredDetail": "You signed in on this device before. Reconnect to use that account again.",
+  "AccStoredDetail": "Restoring your account automatically.",
   "DiagnosticsTitle": "Diagnostic logs",
   "DiagnosticsDetail": "Local events and timings only. No audio, text or personal data.",
   "DiagnosticsExport": "Export logs…",

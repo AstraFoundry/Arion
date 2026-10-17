@@ -17,16 +17,14 @@ func (a *App) Account() *account.Service { return a.accounts }
 
 func (x actions) SignIn() {
 	a := x.a
+	if a.state.Account.Busy() {
+		return
+	}
 	ctx, seq := a.beginAccount()
-	a.post(func() {
-		if !a.accountLive(seq) {
-			return
-		}
-		a.state.Account.Phase = arion.AccountSigningIn
-		a.state.Account.Credential = arion.CredentialUnknown
-		a.state.Account.ErrorCode = ""
-		a.state.Account.ErrorDetail = ""
-	})
+	a.state.Account.Phase = arion.AccountSigningIn
+	a.state.Account.Credential = arion.CredentialUnknown
+	a.state.Account.ErrorCode = ""
+	a.state.Account.ErrorDetail = ""
 	go func() {
 		if !a.accountReady(seq, ctx) {
 			return
@@ -61,17 +59,18 @@ func (x actions) CancelSignIn() {
 }
 
 func (x actions) RefreshAccount() {
-	a := x.a
+	x.a.post(func() { x.a.refreshAccount(false) })
+}
+
+func (a *App) refreshAccount(background bool) {
+	if a.state.Account.Busy() || a.accountMaintenance.stopped {
+		return
+	}
 	ctx, seq := a.beginAccount()
-	a.post(func() {
-		if !a.accountLive(seq) {
-			return
-		}
-		a.state.Account.Phase = arion.AccountRefreshing
-		a.state.Account.Credential = arion.CredentialUnknown
-		a.state.Account.ErrorCode = ""
-		a.state.Account.ErrorDetail = ""
-	})
+	a.state.Account.Phase = arion.AccountRefreshing
+	a.state.Account.Credential = arion.CredentialUnknown
+	a.state.Account.ErrorCode = ""
+	a.state.Account.ErrorDetail = ""
 	go func() {
 		if !a.accountReady(seq, ctx) {
 			return
@@ -81,19 +80,27 @@ func (x actions) RefreshAccount() {
 			if !a.accountLive(seq) {
 				return
 			}
-			a.finishAccount(session, err)
+			if background {
+				a.finishBackgroundRefresh(session, err)
+			} else {
+				a.finishAccount(session, err)
+			}
 		})
 	}()
 }
 
 func (x actions) SignOut() {
 	a := x.a
+	a.accountMaintenance.next = time.Time{}
+	a.state.Account.Phase = arion.AccountSigningOut
+	a.state.Account.Credential = arion.CredentialUnknown
+	a.accountMu.Lock()
+	a.accountSeq++
+	seq := a.accountSeq
+	a.accountMu.Unlock()
 	go func() {
-		var seq uint64
 		result, err := a.accounts.SignOut(context.Background(), func() {
 			a.accountMu.Lock()
-			a.accountSeq++
-			seq = a.accountSeq
 			cancel := a.accountCancel
 			a.accountCancel = nil
 			a.accountMu.Unlock()
@@ -157,12 +164,18 @@ func (a *App) finishCredential(seq uint64, stored bool, err error) {
 		current.Credential = arion.CredentialUnknown
 	case err != nil:
 		current.Credential = arion.CredentialUnreadable
+		if accountRetryable(err) {
+			a.accountMaintenance.failed(time.Now())
+		}
 		current.ErrorCode = string(account.CodeOf(err))
 		current.ErrorDetail = account.DetailOf(err)
 	case stored:
 		current.Credential = arion.CredentialStored
+		a.accountMaintenance.next = time.Now()
+		a.post(func() { a.maintainAccount(time.Now()) })
 	default:
 		current.Credential = arion.CredentialAbsent
+		a.accountMaintenance.next = time.Time{}
 	}
 }
 
@@ -209,10 +222,14 @@ func (a *App) finishAccount(session account.Session, err error) {
 			return
 		}
 		a.state.Account.Phase = arion.AccountSignedOut
+		if account.DetailOf(err) == "invalid_grant" || account.DetailOf(err) == "not_found" {
+			a.state.Account.Credential = arion.CredentialAbsent
+		}
 		a.clearAccountProfile()
 		return
 	}
 	a.applySession(session, arion.AccountSignedIn)
+	a.accountMaintenance.renewed(session, time.Now())
 	a.state.Account.ErrorCode = ""
 	a.state.Account.ErrorDetail = ""
 	a.state.Account.Waitlist = arion.AccountWaitlist{}
@@ -244,6 +261,7 @@ func (a *App) clearAccountProfile() {
 }
 
 func (a *App) finishSignOut(result account.SignOutResult, err error) {
+	a.accountMaintenance.next = time.Time{}
 	detail := ""
 	if result.RevokeError != nil {
 		detail = account.DetailOf(result.RevokeError)

@@ -264,7 +264,7 @@ func TestChineseAccount(t *testing.T) {
 }
 
 // Settings › Account reads the credential store when it shows; a stored
-// sign-in offers Reconnect and Sign out instead of Sign in.
+// sign-in restores automatically and still offers Sign out.
 func TestSettingsAccountStoredSession(t *testing.T) {
 	state, actions, store := fixture()
 	en := copy.For(copy.English)
@@ -280,14 +280,11 @@ func TestSettingsAccountStoredSession(t *testing.T) {
 
 	state.Account.Credential = runtime.CredentialStored
 	settle(tt)
-	expect(t, tt, true, en.Text(copy.AccStoredDetail), en.Text(copy.AccReconnect), en.Text(copy.AccSignOut))
-	expect(t, tt, false, en.Text(copy.AccSignIn), en.Text(copy.AccSyncGroup))
+	expect(t, tt, true, en.Text(copy.AccStoredDetail), en.Text(copy.AccSignOut))
+	expect(t, tt, false, en.Text(copy.AccSignIn), en.Text(copy.AccSyncGroup), en.Text(copy.AccReconnect))
 	snapshot(t, tt, "settings-account-stored")
 	click := clicker(t, tt)
-	click(en.Text(copy.AccReconnect))
-	if !actions.called("refresh-account") {
-		t.Fatal("reconnect did not refresh")
-	}
+	expect(t, tt, false, en.Text(copy.AccReconnect))
 	click(en.Text(copy.AccSignOut))
 	if !actions.called("sign-out") {
 		t.Fatal("sign-out not requested")
@@ -321,9 +318,7 @@ func TestSettingsAccountUnreadableStore(t *testing.T) {
 	}
 }
 
-// The onboarding account step reads the store too, and not before; with a
-// stored sign-in it offers Reconnect, and Continue moves on without
-// reconnecting.
+// The onboarding account step shares automatic restoration.
 func TestOnboardingAccountStoredSession(t *testing.T) {
 	state, actions, store := fixture()
 	en := copy.For(copy.English)
@@ -340,7 +335,8 @@ func TestOnboardingAccountStoredSession(t *testing.T) {
 	}
 	state.Account.Credential = runtime.CredentialStored
 	settle(tt)
-	expect(t, tt, true, en.Text(copy.AccReconnect), en.Text(copy.AccSignOut))
+	expect(t, tt, true, en.Text(copy.AccSignOut))
+	expect(t, tt, false, en.Text(copy.AccReconnect))
 	expect(t, tt, false, en.Text(copy.AccContinueGoogle))
 	snapshot(t, tt, "onboarding-account-stored")
 	click(en.Text(copy.Continue))

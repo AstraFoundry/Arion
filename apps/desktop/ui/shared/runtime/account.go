@@ -24,8 +24,8 @@ const (
 )
 
 // AccountCredential is what the credential store last said about a refresh
-// token while signed out. It is read only when an account view asks, never
-// at startup and never over the network.
+// token while signed out. Startup and account views read it off the main
+// thread; the credential check itself never contacts the network.
 type AccountCredential string
 
 const (
@@ -34,7 +34,7 @@ const (
 	CredentialChecking AccountCredential = "checking"
 	CredentialAbsent   AccountCredential = "absent"
 	// CredentialStored: a refresh token from an earlier session is kept;
-	// RefreshAccount reconnects it and SignOut revokes and deletes it.
+	// Background maintenance restores it; SignOut revokes and deletes it.
 	CredentialStored AccountCredential = "stored"
 	// CredentialUnreadable: the read failed; ErrorCode says why.
 	CredentialUnreadable AccountCredential = "unreadable"

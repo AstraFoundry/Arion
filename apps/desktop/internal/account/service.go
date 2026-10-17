@@ -191,6 +191,7 @@ func (s *Service) Refresh(ctx context.Context) (Session, error) {
 	s.commitMu.Unlock()
 	if err != nil {
 		if errors.Is(err, ErrNotFound) {
+			s.dropIfCurrent(epoch)
 			return Session{}, &Error{Code: CodeRefresh, Detail: "not_found", err: ErrNotFound}
 		}
 		return Session{}, wrap(CodeStore, "read", err)
@@ -218,10 +219,32 @@ func (s *Service) Refresh(ctx context.Context) (Session, error) {
 	if err != nil {
 		return Session{}, err
 	}
-	s.userInfo(opCtx, doc, &session)
+	// Persist rotation before the optional profile request: a slow UserInfo
+	// endpoint must not leave the previous, now invalid refresh token on disk.
+	if previous, ok := s.Session(); ok && previous.Subject == session.Subject {
+		if session.Profile.Name == "" {
+			session.Profile.Name = previous.Profile.Name
+		}
+		if session.Profile.Email == "" {
+			session.Profile.Email = previous.Profile.Email
+		}
+		if session.Profile.Picture == "" {
+			session.Profile.Picture = previous.Profile.Picture
+		}
+		if session.Profile.Locale == "" {
+			session.Profile.Locale = previous.Profile.Locale
+		}
+	}
 	if err := s.commit(epoch, opCtx, session, next, doc.RevocationEndpoint); err != nil {
 		return Session{}, err
 	}
+	s.userInfo(opCtx, doc, &session)
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	if s.epoch != epoch || opCtx.Err() != nil {
+		return Session{}, ErrSignInCancelled
+	}
+	s.session = session
 	return session, nil
 }
 

@@ -359,7 +359,7 @@
   "AccErrLoopback": "Arion 无法接收浏览器返回的登录结果，请重试。",
   "AccErrGeneric": "账号出现问题。",
   "AccReconnect": "重新连接",
-  "AccStoredDetail": "你之前在此设备上登录过。重新连接即可继续使用该账号。",
+  "AccStoredDetail": "正在自动恢复账号连接。",
   "DiagnosticsTitle": "诊断日志",
   "DiagnosticsDetail": "仅包含本地事件和耗时，不含音频、文本或个人数据。",
   "DiagnosticsExport": "导出日志…",

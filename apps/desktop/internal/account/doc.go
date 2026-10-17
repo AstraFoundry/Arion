@@ -6,8 +6,8 @@
 // RefreshTokenStore, which the composition root binds to the OS credential
 // store. Sign-out revokes that refresh token and deletes only that item.
 //
-// Constructing a Service does not dial the issuer. Dictation stays offline
-// until the user starts sign-in, refresh, waitlist join, or sign-out.
+// Constructing a Service does not dial the issuer. The composition root
+// restores stored credentials after readiness; dictation stays independent.
 //
 // The UI must not import this package. It calls runtime.Actions and reads
 // runtime.State.Account. See docs/project/account-signin.md.
