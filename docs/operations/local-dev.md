@@ -32,6 +32,8 @@ These commands call `scripts/desktop-command.mjs`, the same build/dev entry poin
 
 ### Data locations
 
+To replay onboarding, fully quit Arion, run `make reset desktop onboarding`, then reopen the app (or run `make desktop-dev` for the current source). Reset commands follow `make reset <component> <scope>`; currently only `desktop onboarding` is supported. Incomplete commands, unsupported scopes and extra goals fail before changing state. The command sets only `onboardingCompleted` to `false` and saves a uniquely named `preferences.json.<id>.bak` beside the preferences before changing them. Other preferences, downloaded models, vocabulary, usage, OS permissions and stored sign-in credentials remain intact; this is not a clean-install simulation. Missing preferences or an already reset flag require no change. Invalid JSON fails without modifying the file. `ARION_DATA_DIR` selects an isolated profile for this command as it does for the app. Windows users without Make can run `node scripts/reset-desktop-onboarding.mjs`.
+
 | Data | macOS | Windows |
 | --- | --- | --- |
 | Preferences | `~/Library/Application Support/Arion/preferences.json` | `%AppData%\Arion\preferences.json` |

@@ -31,6 +31,16 @@ $(word 2,$(MAKECMDGOALS)): build
 	@:
 endif
 
+# Reset scopes are explicit; reject incomplete or mixed commands before mutation.
+ifneq ($(filter reset,$(MAKECMDGOALS)),)
+ifneq ($(MAKECMDGOALS),reset desktop onboarding)
+$(error Usage: make reset desktop onboarding)
+endif
+.PHONY: desktop onboarding
+desktop onboarding: reset
+	@:
+endif
+
 install: ## Install the pinned pnpm workspace with its frozen lockfile
 	@pnpm install --frozen-lockfile
 
@@ -68,6 +78,10 @@ build: ## Build a component: make build desktop | make build site (desktop signi
 
 desktop-dev: ## Launch the native app in development mode
 	@node scripts/desktop-command.mjs dev
+
+.PHONY: reset
+reset: ## Reset state: make reset desktop onboarding (quit Arion first; backs up preferences)
+	@node scripts/reset-desktop-onboarding.mjs
 
 site-check: ## Check the marketing site: dictionaries, types, lint, tests and the static export
 	@pnpm site:check
