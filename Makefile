@@ -235,3 +235,24 @@ benchmark-archive-report: ## Regenerate and compare eight archived report famili
 
 help: ## Show available commands
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z0-9_-]+:.*?## / {printf "  %-18s %s\n", $$1, $$2}' $(MAKEFILE_LIST)
+
+# Research-only ASR -> correction -> intent rewrite reproduction.
+.PHONY: chain-env chain-build chain-provision chain-fixtures chain-bench chain-report
+chain-env:
+	pnpm chain:env
+chain-build:
+	pnpm chain:build
+chain-provision:
+	pnpm chain:provision
+chain-fixtures:
+	pnpm chain:fixtures
+chain-bench:
+	pnpm chain:run --split $(SPLIT) --out $(OUT)
+chain-report:
+	pnpm chain:report $(RESULTS) $(OUT)
+.PHONY: chain-test
+chain-test:
+	pnpm chain:test
+.PHONY: chain-review
+chain-review:
+	pnpm chain:review $(RESULTS) $(OUT)

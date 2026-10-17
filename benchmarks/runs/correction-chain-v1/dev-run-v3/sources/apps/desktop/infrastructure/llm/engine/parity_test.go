@@ -1,0 +1,122 @@
+package engine
+
+import (
+	"arion.local/core/domain"
+	"os"
+	"sync/atomic"
+	"testing"
+
+	"arion.local/desktop/infrastructure/llm/genai"
+	"arion.local/desktop/infrastructure/llm/prompt"
+)
+
+// TestReuseParity needs a real runtime and model:
+// ARION_LLM_RUNTIME=<genai dir> ARION_LLM_MODEL=<model dir> go test -run Parity
+// Greedy decoding after prefix reuse, incremental prefill and rewinding
+// must produce exactly what a fresh engine produces for the same request.
+func TestReuseParity(t *testing.T) {
+	runtimeDir, modelDir := os.Getenv("ARION_LLM_RUNTIME"), os.Getenv("ARION_LLM_MODEL")
+	if runtimeDir == "" || modelDir == "" {
+		t.Skip("ARION_LLM_RUNTIME and ARION_LLM_MODEL not set")
+	}
+	if err := genai.Load(runtimeDir); err != nil {
+		t.Fatal(err)
+	}
+	config := Config{ModelDir: modelDir, Threads: 4, MaxLength: 4096, MaxNewTokens: 128}
+	var stop atomic.Bool
+	final := Request{Session: "a", Scene: "chat", Text: "票价是每张八十块，一共买六张，不对，买七张。"}
+	cold := func() string {
+		e, _, err := Load(config, prompt.Live(), prompt.Context())
+		if err != nil {
+			t.Fatal(err)
+		}
+		defer e.Close()
+		r, err := e.Run(final, &stop)
+		if err != nil {
+			t.Fatal(err)
+		}
+		return r.Text
+	}()
+	e, _, err := Load(config, prompt.Live(), prompt.Context())
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer e.Close()
+	// Another session first, one that swaps in the context template, then
+	// live previews of growing stable text.
+	if _, err := e.Run(Request{Session: "z", Scene: "chat", Text: "Can you check the logs?"}, &stop); err != nil {
+		t.Fatal(err)
+	}
+	withContext, err := e.Run(Request{Session: "y", Scene: "chat", Context: domain.RewriteContext{Screen: "Build failed: TS2345"}, Text: "看一下那个报错。"}, &stop)
+	if err != nil || withContext.Template == prompt.Live().Version {
+		t.Fatalf("context request not served by the context template: %v %q", err, withContext.Template)
+	}
+	for _, text := range []string{"票价是每张八十块，", "票价是每张八十块，一共买六张，"} {
+		if _, err := e.Run(Request{Session: "a", Scene: "chat", Text: text, Live: true}, &stop); err != nil {
+			t.Fatal(err)
+		}
+	}
+	warm, err := e.Run(final, &stop)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if warm.ReusedTokens == 0 {
+		t.Fatal("no tokens reused from the live previews")
+	}
+	if warm.Text != cold {
+		t.Fatalf("reuse changed the answer:\nwarm %q\ncold %q", warm.Text, cold)
+	}
+}
+
+// Span deletion changes prompt token boundaries. Incremental prefill and
+// live rewinds must still match a fresh model request exactly.
+func TestCleanupReuseParity(t *testing.T) {
+	runtimeDir, modelDir := os.Getenv("ARION_LLM_RUNTIME"), os.Getenv("ARION_LLM_MODEL")
+	if runtimeDir == "" || modelDir == "" {
+		t.Skip("ARION_LLM_RUNTIME and ARION_LLM_MODEL not set")
+	}
+	if err := genai.Load(runtimeDir); err != nil {
+		t.Fatal(err)
+	}
+	config := Config{ModelDir: modelDir, Threads: 4, MaxLength: 4096, MaxNewTokens: 128}
+	var stop atomic.Bool
+	final := Request{Session: "cleanup", Scene: "chat", Text: "I I need the the report before Friday."}
+	fresh, _, err := Load(config, prompt.Live(), prompt.Context())
+	if err != nil {
+		t.Fatal(err)
+	}
+	cold, err := fresh.Run(final, &stop)
+	fresh.Close()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if cold.Cleanup.Text != "I need the report before Friday." || len(cold.Cleanup.Spans) != 2 {
+		t.Fatalf("cleanup not exercised: %+v", cold.Cleanup)
+	}
+	reused, _, err := Load(config, prompt.Live(), prompt.Context())
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer reused.Close()
+	for _, request := range []Request{
+		{Session: "cleanup", Scene: "chat", Text: "I I need the", Prefill: true},
+		{Session: "cleanup", Scene: "chat", Text: "I I need the the report,", Live: true},
+	} {
+		if _, err := reused.Run(request, &stop); err != nil {
+			t.Fatal(err)
+		}
+	}
+	warm, err := reused.Run(final, &stop)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if warm.ReusedTokens == 0 || warm.Text != cold.Text || warm.Cleanup.Text != cold.Cleanup.Text {
+		t.Fatalf("cleanup cache parity failed: warm=%+v cold=%+v", warm, cold)
+	}
+	if err := reused.EndSession(); err != nil {
+		t.Fatal(err)
+	}
+	if reused.session != "" || len(reused.tokens) != reused.prefix {
+		t.Fatal("private session cache retained")
+	}
+}

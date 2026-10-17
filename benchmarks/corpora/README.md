@@ -27,3 +27,9 @@ Recorded inputs are retained byte-for-byte with references, constraints, speaker
 The count is retained files, not independent cases. Audio manifests can describe the same cases as a text corpus. Context and scene directories include authored renderings, builders are archived separately, and audio retains the recorded waveform rather than relying on TTS regeneration. Missing licence fields in authored cases are recorded as unspecified in sidecars; the migration does not rewrite their original bytes.
 
 Use `pnpm bench:archive:verify` for file/audio hashes and `pnpm bench:archive:report --out <new-directory>` to regenerate the supported reports without inference. Model/runtime provisioning is separate.
+
+[correction-chain-v1](correction-chain-v1/manifest.json) adds 24 developer-authored
+synthetic speech challenges, two strict silence controls and five separate-voice
+development fixtures. `inputs.json` contains no references or outcome constraints;
+`labels.json` is evaluator-only. Its own manifest pins the original audio and labels;
+it is independently verified and is not part of the historical migration manifest.

@@ -1,0 +1,18 @@
+loaded correction-chain-v1 prompt=live-v2 prefix=822 in 14376 ms
+warmup-zh          chat    accepted                596 ms reuse=0/20
+warmup-en          chat    accepted                646 ms reuse=0/20
+dev-en-02--asr_llm chat    accepted                584 ms reuse=0/24
+dev-mixed-04--asr_llm chat    accepted                461 ms reuse=0/20
+dev-mixed-04--asr_correct_llm chat    accepted                476 ms reuse=0/20
+dev-en-03--asr_correct_llm chat    accepted                945 ms reuse=0/19
+dev-en-03--offline_llm chat    accepted                416 ms reuse=0/20
+dev-zh-01--asr_llm chat    accepted                426 ms reuse=0/19
+dev-zh-01--asr_correct_llm chat    accepted                412 ms reuse=0/19
+dev-en-03--asr_llm chat    accepted                445 ms reuse=0/19
+dev-mixed-04--offline_llm chat    accepted                495 ms reuse=0/21
+dev-zh-00--asr_llm chat    accepted                686 ms reuse=0/27
+dev-zh-00--asr_correct_llm chat    accepted                662 ms reuse=0/24
+dev-zh-01--offline_llm chat    accepted                558 ms reuse=0/20
+dev-en-02--offline_llm chat    accepted               1605 ms reuse=0/25
+dev-zh-00--offline_llm chat    accepted               1031 ms reuse=0/28
+dev-en-02--asr_correct_llm chat    accepted                639 ms reuse=0/22

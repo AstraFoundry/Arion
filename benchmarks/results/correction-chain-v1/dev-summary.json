@@ -1,0 +1,2101 @@
+{
+  "kind": "correction-chain-diagnostic-v1",
+  "split": "dev",
+  "status": "completed",
+  "runSha256": "c26c9c87a23967c545d68c8d7c5e6a3b2273a1a2ccdfe7e48b719d74f560048f",
+  "inputSha256": "0bdc7e6636096437611ee147988bc549ca15614c3cea3f4708e8965333150b5e",
+  "labelsSha256": "cfe3c8f851c60ab156988820fc83dfde2e638c36411d869247910eccf6d11944",
+  "scorerSha256": "a65daddcad5d6f44db0232b24b377816616ab41d8c5c4999a24a7952a8b4ed47",
+  "metricsSha256": "01cbdf07a875555679304a8fe0df49ec72ce86c0cc21f92674f3788c1a80c867",
+  "arms": {
+    "asr": {
+      "all": {
+        "count": 5,
+        "constraintPass": 2,
+        "failures": 0,
+        "rawProposalPass": 0,
+        "verdicts": {},
+        "intentOverlap": null,
+        "silenceEmissions": 0,
+        "serialEngineEstimateMs": {
+          "count": 5,
+          "p50": 1198.8488750066608,
+          "p95": 2672.9296669363976,
+          "p99": 2899.7555669397116
+        }
+      },
+      "byLanguage": {
+        "zh": {
+          "count": 2,
+          "constraintPass": 1,
+          "failures": 0,
+          "rawProposalPass": 0,
+          "verdicts": {},
+          "intentOverlap": {
+            "cases": 2,
+            "scored": 2,
+            "errors": 10,
+            "referenceUnits": 11,
+            "rate": 0.9090909090909091
+          },
+          "silenceEmissions": 0,
+          "serialEngineEstimateMs": {
+            "count": 2,
+            "p50": 1121.0094168782234,
+            "p95": 1497.021091915667,
+            "p99": 1530.4443519189954
+          }
+        },
+        "en": {
+          "count": 2,
+          "constraintPass": 1,
+          "failures": 0,
+          "rawProposalPass": 0,
+          "verdicts": {},
+          "intentOverlap": {
+            "cases": 2,
+            "scored": 2,
+            "errors": 5,
+            "referenceUnits": 7,
+            "rate": 0.7142857142857143
+          },
+          "silenceEmissions": 0,
+          "serialEngineEstimateMs": {
+            "count": 2,
+            "p50": 906.7815415328369,
+            "p95": 1169.6421416592784,
+            "p99": 1193.0075283371843
+          }
+        },
+        "mixed": {
+          "count": 1,
+          "constraintPass": 0,
+          "failures": 0,
+          "rawProposalPass": 0,
+          "verdicts": {},
+          "intentOverlap": {
+            "cases": 1,
+            "scored": 1,
+            "errors": 1,
+            "referenceUnits": 8,
+            "rate": 0.125
+          },
+          "silenceEmissions": 0,
+          "serialEngineEstimateMs": {
+            "count": 1,
+            "p50": 2956.46204194054,
+            "p95": 2956.46204194054,
+            "p99": 2956.46204194054
+          }
+        }
+      },
+      "byTask": {
+        "repair": {
+          "count": 2,
+          "constraintPass": 0,
+          "failures": 0,
+          "rawProposalPass": 0,
+          "verdicts": {},
+          "intentOverlap": null,
+          "silenceEmissions": 0,
+          "serialEngineEstimateMs": {
+            "count": 2,
+            "p50": 1368.8245209632441,
+            "p95": 1521.8026023241691,
+            "p99": 1535.4006540006958
+          }
+        },
+        "copy": {
+          "count": 3,
+          "constraintPass": 2,
+          "failures": 0,
+          "rawProposalPass": 0,
+          "verdicts": {},
+          "intentOverlap": null,
+          "silenceEmissions": 0,
+          "serialEngineEstimateMs": {
+            "count": 3,
+            "p50": 703.2186668366194,
+            "p95": 2731.137704430148,
+            "p99": 2911.3971744384617
+          }
+        }
+      },
+      "acousticByLanguage": {
+        "zh": {
+          "cases": 2,
+          "scored": 2,
+          "errors": 8,
+          "referenceUnits": 17,
+          "rate": 0.47058823529411764
+        },
+        "en": {
+          "cases": 2,
+          "scored": 2,
+          "errors": 2,
+          "referenceUnits": 11,
+          "rate": 0.18181818181818182
+        },
+        "mixed": {
+          "cases": 1,
+          "scored": 1,
+          "errors": 1,
+          "referenceUnits": 8,
+          "rate": 0.125
+        }
+      }
+    },
+    "asr_correct": {
+      "all": {
+        "count": 5,
+        "constraintPass": 2,
+        "failures": 0,
+        "rawProposalPass": 0,
+        "verdicts": {},
+        "intentOverlap": null,
+        "silenceEmissions": 0,
+        "serialEngineEstimateMs": {
+          "count": 5,
+          "p50": 1405.3356661461294,
+          "p95": 2841.7574002873152,
+          "p99": 3064.291513590142
+        }
+      },
+      "byLanguage": {
+        "zh": {
+          "count": 2,
+          "constraintPass": 1,
+          "failures": 0,
+          "rawProposalPass": 0,
+          "verdicts": {},
+          "intentOverlap": {
+            "cases": 2,
+            "scored": 2,
+            "errors": 11,
+            "referenceUnits": 11,
+            "rate": 1
+          },
+          "silenceEmissions": 0,
+          "serialEngineEstimateMs": {
+            "count": 2,
+            "p50": 1265.304229222238,
+            "p95": 1682.7085733180866,
+            "p99": 1719.811181682162
+          }
+        },
+        "en": {
+          "count": 2,
+          "constraintPass": 1,
+          "failures": 0,
+          "rawProposalPass": 0,
+          "verdicts": {},
+          "intentOverlap": {
+            "cases": 2,
+            "scored": 2,
+            "errors": 5,
+            "referenceUnits": 7,
+            "rate": 0.7142857142857143
+          },
+          "silenceEmissions": 0,
+          "serialEngineEstimateMs": {
+            "count": 2,
+            "p50": 1078.7723746616393,
+            "p95": 1372.6793369976804,
+            "p99": 1398.8044003164396
+          }
+        },
+        "mixed": {
+          "count": 1,
+          "constraintPass": 0,
+          "failures": 0,
+          "rawProposalPass": 0,
+          "verdicts": {},
+          "intentOverlap": {
+            "cases": 1,
+            "scored": 1,
+            "errors": 1,
+            "referenceUnits": 8,
+            "rate": 0.125
+          },
+          "silenceEmissions": 0,
+          "serialEngineEstimateMs": {
+            "count": 1,
+            "p50": 3119.925041915849,
+            "p95": 3119.925041915849,
+            "p99": 3119.925041915849
+          }
+        }
+      },
+      "byTask": {
+        "repair": {
+          "count": 2,
+          "constraintPass": 0,
+          "failures": 0,
+          "rawProposalPass": 0,
+          "verdicts": {},
+          "intentOverlap": null,
+          "silenceEmissions": 0,
+          "serialEngineEstimateMs": {
+            "count": 2,
+            "p50": 1567.211249959655,
+            "p95": 1712.8992753918283,
+            "p99": 1725.8493220969103
+          }
+        },
+        "copy": {
+          "count": 3,
+          "constraintPass": 2,
+          "failures": 0,
+          "rawProposalPass": 0,
+          "verdicts": {},
+          "intentOverlap": null,
+          "silenceEmissions": 0,
+          "serialEngineEstimateMs": {
+            "count": 3,
+            "p50": 801.5216246712953,
+            "p95": 2888.0847001913935,
+            "p99": 3073.556973570958
+          }
+        }
+      },
+      "acousticByLanguage": {
+        "zh": {
+          "cases": 2,
+          "scored": 2,
+          "errors": 9,
+          "referenceUnits": 17,
+          "rate": 0.5294117647058824
+        },
+        "en": {
+          "cases": 2,
+          "scored": 2,
+          "errors": 2,
+          "referenceUnits": 11,
+          "rate": 0.18181818181818182
+        },
+        "mixed": {
+          "cases": 1,
+          "scored": 1,
+          "errors": 1,
+          "referenceUnits": 8,
+          "rate": 0.125
+        }
+      }
+    },
+    "asr_llm": {
+      "all": {
+        "count": 5,
+        "constraintPass": 3,
+        "failures": 0,
+        "rawProposalPass": 3,
+        "verdicts": {
+          "accepted": 5
+        },
+        "intentOverlap": null,
+        "silenceEmissions": 0,
+        "serialEngineEstimateMs": {
+          "count": 5,
+          "p50": 1783.0108750066609,
+          "p95": 3178.720266936397,
+          "p99": 3369.5448869397114
+        }
+      },
+      "byLanguage": {
+        "zh": {
+          "count": 2,
+          "constraintPass": 1,
+          "failures": 0,
+          "rawProposalPass": 1,
+          "verdicts": {
+            "accepted": 2
+          },
+          "intentOverlap": {
+            "cases": 2,
+            "scored": 2,
+            "errors": 10,
+            "referenceUnits": 11,
+            "rate": 0.9090909090909091
+          },
+          "silenceEmissions": 0,
+          "serialEngineEstimateMs": {
+            "count": 2,
+            "p50": 1677.1499168782234,
+            "p95": 2169.852441915667,
+            "p99": 2213.6482219189957
+          }
+        },
+        "en": {
+          "count": 2,
+          "constraintPass": 2,
+          "failures": 0,
+          "rawProposalPass": 2,
+          "verdicts": {
+            "accepted": 2
+          },
+          "intentOverlap": {
+            "cases": 2,
+            "scored": 2,
+            "errors": 1,
+            "referenceUnits": 7,
+            "rate": 0.14285714285714285
+          },
+          "silenceEmissions": 0,
+          "serialEngineEstimateMs": {
+            "count": 2,
+            "p50": 1421.2145415328368,
+            "p95": 1746.8312416592785,
+            "p99": 1775.7749483371845
+          }
+        },
+        "mixed": {
+          "count": 1,
+          "constraintPass": 0,
+          "failures": 0,
+          "rawProposalPass": 0,
+          "verdicts": {
+            "accepted": 1
+          },
+          "intentOverlap": {
+            "cases": 1,
+            "scored": 1,
+            "errors": 1,
+            "referenceUnits": 8,
+            "rate": 0.125
+          },
+          "silenceEmissions": 0,
+          "serialEngineEstimateMs": {
+            "count": 1,
+            "p50": 3417.25104194054,
+            "p95": 3417.25104194054,
+            "p99": 3417.25104194054
+          }
+        }
+      },
+      "byTask": {
+        "repair": {
+          "count": 2,
+          "constraintPass": 1,
+          "failures": 0,
+          "rawProposalPass": 1,
+          "verdicts": {
+            "accepted": 2
+          },
+          "intentOverlap": null,
+          "silenceEmissions": 0,
+          "serialEngineEstimateMs": {
+            "count": 2,
+            "p50": 2003.804020963244,
+            "p95": 2202.5178523241693,
+            "p99": 2220.181304000696
+          }
+        },
+        "copy": {
+          "count": 3,
+          "constraintPass": 2,
+          "failures": 0,
+          "rawProposalPass": 2,
+          "verdicts": {
+            "accepted": 3
+          },
+          "intentOverlap": null,
+          "silenceEmissions": 0,
+          "serialEngineEstimateMs": {
+            "count": 3,
+            "p50": 1129.7026668366193,
+            "p95": 3188.4962044301474,
+            "p99": 3371.5000744384615
+          }
+        }
+      }
+    },
+    "asr_correct_llm": {
+      "all": {
+        "count": 5,
+        "constraintPass": 2,
+        "failures": 0,
+        "rawProposalPass": 2,
+        "verdicts": {
+          "accepted": 5
+        },
+        "intentOverlap": null,
+        "silenceEmissions": 0,
+        "serialEngineEstimateMs": {
+          "count": 5,
+          "p50": 2044.2156661461295,
+          "p95": 3355.1038002873147,
+          "p99": 3547.9407935901418
+        }
+      },
+      "byLanguage": {
+        "zh": {
+          "count": 2,
+          "constraintPass": 1,
+          "failures": 0,
+          "rawProposalPass": 1,
+          "verdicts": {
+            "accepted": 2
+          },
+          "intentOverlap": {
+            "cases": 2,
+            "scored": 2,
+            "errors": 11,
+            "referenceUnits": 11,
+            "rate": 1
+          },
+          "silenceEmissions": 0,
+          "serialEngineEstimateMs": {
+            "count": 2,
+            "p50": 1802.122729222238,
+            "p95": 2332.0392233180864,
+            "p99": 2379.142911682162
+          }
+        },
+        "en": {
+          "count": 2,
+          "constraintPass": 1,
+          "failures": 0,
+          "rawProposalPass": 1,
+          "verdicts": {
+            "accepted": 2
+          },
+          "intentOverlap": {
+            "cases": 2,
+            "scored": 2,
+            "errors": 5,
+            "referenceUnits": 7,
+            "rate": 0.7142857142857143
+          },
+          "silenceEmissions": 0,
+          "serialEngineEstimateMs": {
+            "count": 2,
+            "p50": 1870.5053746616395,
+            "p95": 2026.8446369976805,
+            "p99": 2040.7414603164398
+          }
+        },
+        "mixed": {
+          "count": 1,
+          "constraintPass": 0,
+          "failures": 0,
+          "rawProposalPass": 0,
+          "verdicts": {
+            "accepted": 1
+          },
+          "intentOverlap": {
+            "cases": 1,
+            "scored": 1,
+            "errors": 1,
+            "referenceUnits": 8,
+            "rate": 0.125
+          },
+          "silenceEmissions": 0,
+          "serialEngineEstimateMs": {
+            "count": 1,
+            "p50": 3596.1500419158488,
+            "p95": 3596.1500419158488,
+            "p99": 3596.1500419158488
+          }
+        }
+      },
+      "byTask": {
+        "repair": {
+          "count": 2,
+          "constraintPass": 0,
+          "failures": 0,
+          "rawProposalPass": 0,
+          "verdicts": {
+            "accepted": 2
+          },
+          "intentOverlap": null,
+          "silenceEmissions": 0,
+          "serialEngineEstimateMs": {
+            "count": 2,
+            "p50": 2217.567249959655,
+            "p95": 2373.5836753918284,
+            "p99": 2387.4518020969103
+          }
+        },
+        "copy": {
+          "count": 3,
+          "constraintPass": 2,
+          "failures": 0,
+          "rawProposalPass": 2,
+          "verdicts": {
+            "accepted": 3
+          },
+          "intentOverlap": null,
+          "silenceEmissions": 0,
+          "serialEngineEstimateMs": {
+            "count": 3,
+            "p50": 1696.7950831771493,
+            "p95": 3406.214546041979,
+            "p99": 3558.1629427410744
+          }
+        }
+      }
+    },
+    "offline": {
+      "all": {
+        "count": 5,
+        "constraintPass": 2,
+        "failures": 0,
+        "rawProposalPass": 0,
+        "verdicts": {},
+        "intentOverlap": null,
+        "silenceEmissions": 0,
+        "serialEngineEstimateMs": {
+          "count": 5,
+          "p50": 125.75612496584654,
+          "p95": 175.96687427721918,
+          "p99": 183.15790752880275
+        }
+      },
+      "byLanguage": {
+        "zh": {
+          "count": 2,
+          "constraintPass": 1,
+          "failures": 0,
+          "rawProposalPass": 0,
+          "verdicts": {},
+          "intentOverlap": {
+            "cases": 2,
+            "scored": 2,
+            "errors": 9,
+            "referenceUnits": 11,
+            "rate": 0.8181818181818182
+          },
+          "silenceEmissions": 0,
+          "serialEngineEstimateMs": {
+            "count": 2,
+            "p50": 132.88391649257392,
+            "p95": 139.29892886662856,
+            "p99": 139.86915218876675
+          }
+        },
+        "en": {
+          "count": 2,
+          "constraintPass": 1,
+          "failures": 0,
+          "rawProposalPass": 0,
+          "verdicts": {},
+          "intentOverlap": {
+            "cases": 2,
+            "scored": 2,
+            "errors": 5,
+            "referenceUnits": 7,
+            "rate": 0.7142857142857143
+          },
+          "silenceEmissions": 0,
+          "serialEngineEstimateMs": {
+            "count": 2,
+            "p50": 143.01741600502282,
+            "p95": 180.76184085803106,
+            "p99": 184.11690084496513
+          }
+        },
+        "mixed": {
+          "count": 1,
+          "constraintPass": 0,
+          "failures": 0,
+          "rawProposalPass": 0,
+          "verdicts": {},
+          "intentOverlap": {
+            "cases": 1,
+            "scored": 1,
+            "errors": 1,
+            "referenceUnits": 8,
+            "rate": 0.125
+          },
+          "silenceEmissions": 0,
+          "serialEngineEstimateMs": {
+            "count": 1,
+            "p50": 96.19387495331466,
+            "p95": 96.19387495331466,
+            "p99": 96.19387495331466
+          }
+        }
+      },
+      "byTask": {
+        "repair": {
+          "count": 2,
+          "constraintPass": 0,
+          "failures": 0,
+          "rawProposalPass": 0,
+          "verdicts": {},
+          "intentOverlap": null,
+          "silenceEmissions": 0,
+          "serialEngineEstimateMs": {
+            "count": 2,
+            "p50": 155.3558954037726,
+            "p95": 181.99568879790604,
+            "p99": 184.36367043294013
+          }
+        },
+        "copy": {
+          "count": 3,
+          "constraintPass": 2,
+          "failures": 0,
+          "rawProposalPass": 0,
+          "verdicts": {},
+          "intentOverlap": null,
+          "silenceEmissions": 0,
+          "serialEngineEstimateMs": {
+            "count": 3,
+            "p50": 101.079166168347,
+            "p95": 136.11845383420587,
+            "p99": 139.2330571822822
+          }
+        }
+      },
+      "acousticByLanguage": {
+        "zh": {
+          "cases": 2,
+          "scored": 2,
+          "errors": 6,
+          "referenceUnits": 17,
+          "rate": 0.35294117647058826
+        },
+        "en": {
+          "cases": 2,
+          "scored": 2,
+          "errors": 2,
+          "referenceUnits": 11,
+          "rate": 0.18181818181818182
+        },
+        "mixed": {
+          "cases": 1,
+          "scored": 1,
+          "errors": 1,
+          "referenceUnits": 8,
+          "rate": 0.125
+        }
+      }
+    },
+    "offline_llm": {
+      "all": {
+        "count": 5,
+        "constraintPass": 3,
+        "failures": 0,
+        "rawProposalPass": 3,
+        "verdicts": {
+          "accepted": 5
+        },
+        "intentOverlap": null,
+        "silenceEmissions": 0,
+        "serialEngineEstimateMs": {
+          "count": 5,
+          "p50": 697.9897080193012,
+          "p95": 1663.365357666528,
+          "p99": 1764.7192042066645
+        }
+      },
+      "byLanguage": {
+        "zh": {
+          "count": 2,
+          "constraintPass": 1,
+          "failures": 0,
+          "rawProposalPass": 1,
+          "verdicts": {
+            "accepted": 2
+          },
+          "intentOverlap": {
+            "cases": 2,
+            "scored": 2,
+            "errors": 9,
+            "referenceUnits": 11,
+            "rate": 0.8181818181818182
+          },
+          "silenceEmissions": 0,
+          "serialEngineEstimateMs": {
+            "count": 2,
+            "p50": 927.2929164925738,
+            "p95": 1133.6658041185192,
+            "p99": 1152.010060796381
+          }
+        },
+        "en": {
+          "count": 2,
+          "constraintPass": 2,
+          "failures": 0,
+          "rawProposalPass": 2,
+          "verdicts": {
+            "accepted": 2
+          },
+          "intentOverlap": {
+            "cases": 2,
+            "scored": 2,
+            "errors": 1,
+            "referenceUnits": 7,
+            "rate": 0.14285714285714285
+          },
+          "silenceEmissions": 0,
+          "serialEngineEstimateMs": {
+            "count": 2,
+            "p50": 1153.482416005023,
+            "p95": 1726.4001408580311,
+            "p99": 1777.3261608449652
+          }
+        },
+        "mixed": {
+          "count": 1,
+          "constraintPass": 0,
+          "failures": 0,
+          "rawProposalPass": 0,
+          "verdicts": {
+            "accepted": 1
+          },
+          "intentOverlap": {
+            "cases": 1,
+            "scored": 1,
+            "errors": 1,
+            "referenceUnits": 8,
+            "rate": 0.125
+          },
+          "silenceEmissions": 0,
+          "serialEngineEstimateMs": {
+            "count": 1,
+            "p50": 591.2608749533147,
+            "p95": 591.2608749533147,
+            "p99": 591.2608749533147
+          }
+        }
+      },
+      "byTask": {
+        "repair": {
+          "count": 2,
+          "constraintPass": 1,
+          "failures": 0,
+          "rawProposalPass": 1,
+          "verdicts": {
+            "accepted": 2
+          },
+          "intentOverlap": null,
+          "silenceEmissions": 0,
+          "serialEngineEstimateMs": {
+            "count": 2,
+            "p50": 1473.3268954037726,
+            "p95": 1758.384588797906,
+            "p99": 1783.7230504329402
+          }
+        },
+        "copy": {
+          "count": 3,
+          "constraintPass": 2,
+          "failures": 0,
+          "rawProposalPass": 2,
+          "verdicts": {
+            "accepted": 3
+          },
+          "intentOverlap": null,
+          "silenceEmissions": 0,
+          "serialEngineEstimateMs": {
+            "count": 3,
+            "p50": 591.2608749533147,
+            "p95": 687.3168247127026,
+            "p99": 695.8551313579815
+          }
+        }
+      }
+    }
+  },
+  "paired": {
+    "asr -> asr_correct": {
+      "cases": 5,
+      "intentImproved": 0,
+      "intentWorsened": 0,
+      "acousticImproved": 0,
+      "acousticWorsened": 1,
+      "correctSourceCases": 2,
+      "correctSourceCorrupted": 0
+    },
+    "asr -> asr_llm": {
+      "cases": 5,
+      "intentImproved": 1,
+      "intentWorsened": 0,
+      "acousticImproved": null,
+      "acousticWorsened": null,
+      "correctSourceCases": null,
+      "correctSourceCorrupted": null
+    },
+    "asr_llm -> asr_correct_llm": {
+      "cases": 5,
+      "intentImproved": 0,
+      "intentWorsened": 1,
+      "acousticImproved": null,
+      "acousticWorsened": null,
+      "correctSourceCases": null,
+      "correctSourceCorrupted": null
+    },
+    "asr_llm -> offline_llm": {
+      "cases": 5,
+      "intentImproved": 0,
+      "intentWorsened": 0,
+      "acousticImproved": null,
+      "acousticWorsened": null,
+      "correctSourceCases": null,
+      "correctSourceCorrupted": null
+    }
+  },
+  "correctionTimingMs": {
+    "count": 5,
+    "p50": 162.5463750679046,
+    "p95": 202.67054121941328,
+    "p99": 205.3219410777092
+  },
+  "processPeakRssBytes": {
+    "acoustic": 915193856,
+    "correction": 1683619840,
+    "rewrite": null
+  },
+  "modelLoadMs": {
+    "acoustic": 4015.917249955237,
+    "correction": 2928.425833117217,
+    "rewrite": null
+  },
+  "semanticReview": "pending; string constraints and intent reference overlap are proxies, not semantic correctness",
+  "limitations": [
+    "Pipeline is reproduced in sequential stage batches; summed per-case engine timings are serial estimates, not native stop-to-insertion measurements.",
+    "BART4CSC is a Chinese spelling-correction baseline, not an ASR-trained ECLM reproduction.",
+    "FLANEC is English and trained with n-best inputs; top-1 here is an explicitly labelled adaptation.",
+    "Synthetic developer-authored diagnostic; no independent semantic ratings, population confidence intervals, or release acceptance.",
+    "CPU warm residency; no cold, power, native UI or concurrent microphone measurements."
+  ],
+  "rows": [
+    {
+      "caseId": "dev-zh-00",
+      "language": "zh",
+      "task": "repair",
+      "arm": "asr",
+      "text": "对武装小不对， 队伍碎装票",
+      "sourceText": "对武装小不对， 队伍碎装票",
+      "correctedText": null,
+      "proposal": null,
+      "verdict": null,
+      "intent": {
+        "pass": false,
+        "missing": [
+          "四"
+        ],
+        "forbidden": [
+          "不对"
+        ],
+        "failed": false,
+        "silenceViolation": false
+      },
+      "rawProposalIntent": null,
+      "intentOverlap": {
+        "substitutions": 3,
+        "deletions": 0,
+        "insertions": 7,
+        "errors": 10,
+        "referenceUnits": 4
+      },
+      "acousticError": {
+        "substitutions": 7,
+        "deletions": 0,
+        "insertions": 1,
+        "errors": 8,
+        "referenceUnits": 10
+      },
+      "serialEngineEstimateMs": 1538.8001669198275,
+      "correctionMs": 0,
+      "rewriteMs": 0
+    },
+    {
+      "caseId": "dev-zh-00",
+      "language": "zh",
+      "task": "repair",
+      "arm": "asr_correct",
+      "text": "对武装小不对，队伍碎装漂",
+      "sourceText": "对武装小不对， 队伍碎装票",
+      "correctedText": "对武装小不对，队伍碎装漂",
+      "proposal": null,
+      "verdict": null,
+      "intent": {
+        "pass": false,
+        "missing": [
+          "四"
+        ],
+        "forbidden": [
+          "不对"
+        ],
+        "failed": false,
+        "silenceViolation": false
+      },
+      "rawProposalIntent": null,
+      "intentOverlap": {
+        "substitutions": 4,
+        "deletions": 0,
+        "insertions": 7,
+        "errors": 11,
+        "referenceUnits": 4
+      },
+      "acousticError": {
+        "substitutions": 8,
+        "deletions": 0,
+        "insertions": 1,
+        "errors": 9,
+        "referenceUnits": 10
+      },
+      "serialEngineEstimateMs": 1729.0868337731808,
+      "correctionMs": 190.28666685335338,
+      "rewriteMs": 0
+    },
+    {
+      "caseId": "dev-zh-00",
+      "language": "zh",
+      "task": "repair",
+      "arm": "asr_llm",
+      "text": "对武装小不对，队伍碎装票。",
+      "sourceText": "对武装小不对， 队伍碎装票",
+      "correctedText": null,
+      "proposal": "对武装小不对，队伍碎装票。",
+      "verdict": "accepted",
+      "intent": {
+        "pass": false,
+        "missing": [
+          "四"
+        ],
+        "forbidden": [
+          "不对"
+        ],
+        "failed": false,
+        "silenceViolation": false
+      },
+      "rawProposalIntent": {
+        "pass": false,
+        "missing": [
+          "四"
+        ],
+        "forbidden": [
+          "不对"
+        ],
+        "failed": false,
+        "silenceViolation": false
+      },
+      "intentOverlap": {
+        "substitutions": 3,
+        "deletions": 0,
+        "insertions": 7,
+        "errors": 10,
+        "referenceUnits": 4
+      },
+      "acousticError": {
+        "substitutions": 7,
+        "deletions": 0,
+        "insertions": 1,
+        "errors": 8,
+        "referenceUnits": 10
+      },
+      "serialEngineEstimateMs": 2224.5971669198275,
+      "correctionMs": 0,
+      "rewriteMs": 685.797
+    },
+    {
+      "caseId": "dev-zh-00",
+      "language": "zh",
+      "task": "repair",
+      "arm": "asr_correct_llm",
+      "text": "对武装小不对，队伍碎装漂。",
+      "sourceText": "对武装小不对， 队伍碎装票",
+      "correctedText": "对武装小不对，队伍碎装漂",
+      "proposal": "对武装小不对，队伍碎装漂。",
+      "verdict": "accepted",
+      "intent": {
+        "pass": false,
+        "missing": [
+          "四"
+        ],
+        "forbidden": [
+          "不对"
+        ],
+        "failed": false,
+        "silenceViolation": false
+      },
+      "rawProposalIntent": {
+        "pass": false,
+        "missing": [
+          "四"
+        ],
+        "forbidden": [
+          "不对"
+        ],
+        "failed": false,
+        "silenceViolation": false
+      },
+      "intentOverlap": {
+        "substitutions": 4,
+        "deletions": 0,
+        "insertions": 7,
+        "errors": 11,
+        "referenceUnits": 4
+      },
+      "acousticError": {
+        "substitutions": 8,
+        "deletions": 0,
+        "insertions": 1,
+        "errors": 9,
+        "referenceUnits": 10
+      },
+      "serialEngineEstimateMs": 2390.9188337731807,
+      "correctionMs": 190.28666685335338,
+      "rewriteMs": 661.832
+    },
+    {
+      "caseId": "dev-zh-00",
+      "language": "zh",
+      "task": "repair",
+      "arm": "offline",
+      "text": "盾武装票， 不对， 四五四装票。",
+      "sourceText": "盾武装票， 不对， 四五四装票。",
+      "correctedText": null,
+      "proposal": null,
+      "verdict": null,
+      "intent": {
+        "pass": false,
+        "missing": [],
+        "forbidden": [
+          "五",
+          "不对"
+        ],
+        "failed": false,
+        "silenceViolation": false
+      },
+      "rawProposalIntent": null,
+      "intentOverlap": {
+        "substitutions": 2,
+        "deletions": 0,
+        "insertions": 7,
+        "errors": 9,
+        "referenceUnits": 4
+      },
+      "acousticError": {
+        "substitutions": 5,
+        "deletions": 0,
+        "insertions": 1,
+        "errors": 6,
+        "referenceUnits": 10
+      },
+      "serialEngineEstimateMs": 125.75612496584654,
+      "correctionMs": 0,
+      "rewriteMs": 0
+    },
+    {
+      "caseId": "dev-zh-00",
+      "language": "zh",
+      "task": "repair",
+      "arm": "offline_llm",
+      "text": "盾武装票，不对，四五四装票。",
+      "sourceText": "盾武装票， 不对， 四五四装票。",
+      "correctedText": null,
+      "proposal": "盾武装票，不对，四五四装票。",
+      "verdict": "accepted",
+      "intent": {
+        "pass": false,
+        "missing": [],
+        "forbidden": [
+          "五",
+          "不对"
+        ],
+        "failed": false,
+        "silenceViolation": false
+      },
+      "rawProposalIntent": {
+        "pass": false,
+        "missing": [],
+        "forbidden": [
+          "五",
+          "不对"
+        ],
+        "failed": false,
+        "silenceViolation": false
+      },
+      "intentOverlap": {
+        "substitutions": 2,
+        "deletions": 0,
+        "insertions": 7,
+        "errors": 9,
+        "referenceUnits": 4
+      },
+      "acousticError": {
+        "substitutions": 5,
+        "deletions": 0,
+        "insertions": 1,
+        "errors": 6,
+        "referenceUnits": 10
+      },
+      "serialEngineEstimateMs": 1156.5961249658465,
+      "correctionMs": 0,
+      "rewriteMs": 1030.84
+    },
+    {
+      "caseId": "dev-zh-01",
+      "language": "zh",
+      "task": "copy",
+      "arm": "asr",
+      "text": "今天先检查邮件",
+      "sourceText": "今天先检查邮件",
+      "correctedText": null,
+      "proposal": null,
+      "verdict": null,
+      "intent": {
+        "pass": true,
+        "missing": [],
+        "forbidden": [],
+        "failed": false,
+        "silenceViolation": false
+      },
+      "rawProposalIntent": null,
+      "intentOverlap": {
+        "substitutions": 0,
+        "deletions": 0,
+        "insertions": 0,
+        "errors": 0,
+        "referenceUnits": 7
+      },
+      "acousticError": {
+        "substitutions": 0,
+        "deletions": 0,
+        "insertions": 0,
+        "errors": 0,
+        "referenceUnits": 7
+      },
+      "serialEngineEstimateMs": 703.2186668366194,
+      "correctionMs": 0,
+      "rewriteMs": 0
+    },
+    {
+      "caseId": "dev-zh-01",
+      "language": "zh",
+      "task": "copy",
+      "arm": "asr_correct",
+      "text": "今天先检查邮件",
+      "sourceText": "今天先检查邮件",
+      "correctedText": "今天先检查邮件",
+      "proposal": null,
+      "verdict": null,
+      "intent": {
+        "pass": true,
+        "missing": [],
+        "forbidden": [],
+        "failed": false,
+        "silenceViolation": false
+      },
+      "rawProposalIntent": null,
+      "intentOverlap": {
+        "substitutions": 0,
+        "deletions": 0,
+        "insertions": 0,
+        "errors": 0,
+        "referenceUnits": 7
+      },
+      "acousticError": {
+        "substitutions": 0,
+        "deletions": 0,
+        "insertions": 0,
+        "errors": 0,
+        "referenceUnits": 7
+      },
+      "serialEngineEstimateMs": 801.5216246712953,
+      "correctionMs": 98.30295783467591,
+      "rewriteMs": 0
+    },
+    {
+      "caseId": "dev-zh-01",
+      "language": "zh",
+      "task": "copy",
+      "arm": "asr_llm",
+      "text": "今天先检查邮件。",
+      "sourceText": "今天先检查邮件",
+      "correctedText": null,
+      "proposal": "今天先检查邮件。",
+      "verdict": "accepted",
+      "intent": {
+        "pass": true,
+        "missing": [],
+        "forbidden": [],
+        "failed": false,
+        "silenceViolation": false
+      },
+      "rawProposalIntent": {
+        "pass": true,
+        "missing": [],
+        "forbidden": [],
+        "failed": false,
+        "silenceViolation": false
+      },
+      "intentOverlap": {
+        "substitutions": 0,
+        "deletions": 0,
+        "insertions": 0,
+        "errors": 0,
+        "referenceUnits": 7
+      },
+      "acousticError": {
+        "substitutions": 0,
+        "deletions": 0,
+        "insertions": 0,
+        "errors": 0,
+        "referenceUnits": 7
+      },
+      "serialEngineEstimateMs": 1129.7026668366193,
+      "correctionMs": 0,
+      "rewriteMs": 426.484
+    },
+    {
+      "caseId": "dev-zh-01",
+      "language": "zh",
+      "task": "copy",
+      "arm": "asr_correct_llm",
+      "text": "今天先检查邮件。",
+      "sourceText": "今天先检查邮件",
+      "correctedText": "今天先检查邮件",
+      "proposal": "今天先检查邮件。",
+      "verdict": "accepted",
+      "intent": {
+        "pass": true,
+        "missing": [],
+        "forbidden": [],
+        "failed": false,
+        "silenceViolation": false
+      },
+      "rawProposalIntent": {
+        "pass": true,
+        "missing": [],
+        "forbidden": [],
+        "failed": false,
+        "silenceViolation": false
+      },
+      "intentOverlap": {
+        "substitutions": 0,
+        "deletions": 0,
+        "insertions": 0,
+        "errors": 0,
+        "referenceUnits": 7
+      },
+      "acousticError": {
+        "substitutions": 0,
+        "deletions": 0,
+        "insertions": 0,
+        "errors": 0,
+        "referenceUnits": 7
+      },
+      "serialEngineEstimateMs": 1213.3266246712953,
+      "correctionMs": 98.30295783467591,
+      "rewriteMs": 411.805
+    },
+    {
+      "caseId": "dev-zh-01",
+      "language": "zh",
+      "task": "copy",
+      "arm": "offline",
+      "text": "今天先检查邮件。",
+      "sourceText": "今天先检查邮件。",
+      "correctedText": null,
+      "proposal": null,
+      "verdict": null,
+      "intent": {
+        "pass": true,
+        "missing": [],
+        "forbidden": [],
+        "failed": false,
+        "silenceViolation": false
+      },
+      "rawProposalIntent": null,
+      "intentOverlap": {
+        "substitutions": 0,
+        "deletions": 0,
+        "insertions": 0,
+        "errors": 0,
+        "referenceUnits": 7
+      },
+      "acousticError": {
+        "substitutions": 0,
+        "deletions": 0,
+        "insertions": 0,
+        "errors": 0,
+        "referenceUnits": 7
+      },
+      "serialEngineEstimateMs": 140.0117080193013,
+      "correctionMs": 0,
+      "rewriteMs": 0
+    },
+    {
+      "caseId": "dev-zh-01",
+      "language": "zh",
+      "task": "copy",
+      "arm": "offline_llm",
+      "text": "今天先检查邮件。",
+      "sourceText": "今天先检查邮件。",
+      "correctedText": null,
+      "proposal": "今天先检查邮件。",
+      "verdict": "accepted",
+      "intent": {
+        "pass": true,
+        "missing": [],
+        "forbidden": [],
+        "failed": false,
+        "silenceViolation": false
+      },
+      "rawProposalIntent": {
+        "pass": true,
+        "missing": [],
+        "forbidden": [],
+        "failed": false,
+        "silenceViolation": false
+      },
+      "intentOverlap": {
+        "substitutions": 0,
+        "deletions": 0,
+        "insertions": 0,
+        "errors": 0,
+        "referenceUnits": 7
+      },
+      "acousticError": {
+        "substitutions": 0,
+        "deletions": 0,
+        "insertions": 0,
+        "errors": 0,
+        "referenceUnits": 7
+      },
+      "serialEngineEstimateMs": 697.9897080193012,
+      "correctionMs": 0,
+      "rewriteMs": 557.978
+    },
+    {
+      "caseId": "dev-en-02",
+      "language": "en",
+      "task": "repair",
+      "arm": "asr",
+      "text": "Me at seven, sorry me at six.",
+      "sourceText": "Me at seven, sorry me at six.",
+      "correctedText": null,
+      "proposal": null,
+      "verdict": null,
+      "intent": {
+        "pass": false,
+        "missing": [],
+        "forbidden": [
+          "seven",
+          "sorry"
+        ],
+        "failed": false,
+        "silenceViolation": false
+      },
+      "rawProposalIntent": null,
+      "intentOverlap": {
+        "substitutions": 1,
+        "deletions": 0,
+        "insertions": 4,
+        "errors": 5,
+        "referenceUnits": 3
+      },
+      "acousticError": {
+        "substitutions": 2,
+        "deletions": 0,
+        "insertions": 0,
+        "errors": 2,
+        "referenceUnits": 7
+      },
+      "serialEngineEstimateMs": 1198.8488750066608,
+      "correctionMs": 0,
+      "rewriteMs": 0
+    },
+    {
+      "caseId": "dev-en-02",
+      "language": "en",
+      "task": "repair",
+      "arm": "asr_correct",
+      "text": "me at seven sorry me at six",
+      "sourceText": "Me at seven, sorry me at six.",
+      "correctedText": "me at seven sorry me at six",
+      "proposal": null,
+      "verdict": null,
+      "intent": {
+        "pass": false,
+        "missing": [],
+        "forbidden": [
+          "seven",
+          "sorry"
+        ],
+        "failed": false,
+        "silenceViolation": false
+      },
+      "rawProposalIntent": null,
+      "intentOverlap": {
+        "substitutions": 1,
+        "deletions": 0,
+        "insertions": 4,
+        "errors": 5,
+        "referenceUnits": 3
+      },
+      "acousticError": {
+        "substitutions": 2,
+        "deletions": 0,
+        "insertions": 0,
+        "errors": 2,
+        "referenceUnits": 7
+      },
+      "serialEngineEstimateMs": 1405.3356661461294,
+      "correctionMs": 206.48679113946855,
+      "rewriteMs": 0
+    },
+    {
+      "caseId": "dev-en-02",
+      "language": "en",
+      "task": "repair",
+      "arm": "asr_llm",
+      "text": "Me at six.",
+      "sourceText": "Me at seven, sorry me at six.",
+      "correctedText": null,
+      "proposal": "Me at six.",
+      "verdict": "accepted",
+      "intent": {
+        "pass": true,
+        "missing": [],
+        "forbidden": [],
+        "failed": false,
+        "silenceViolation": false
+      },
+      "rawProposalIntent": {
+        "pass": true,
+        "missing": [],
+        "forbidden": [],
+        "failed": false,
+        "silenceViolation": false
+      },
+      "intentOverlap": {
+        "substitutions": 1,
+        "deletions": 0,
+        "insertions": 0,
+        "errors": 1,
+        "referenceUnits": 3
+      },
+      "acousticError": {
+        "substitutions": 1,
+        "deletions": 4,
+        "insertions": 0,
+        "errors": 5,
+        "referenceUnits": 7
+      },
+      "serialEngineEstimateMs": 1783.0108750066609,
+      "correctionMs": 0,
+      "rewriteMs": 584.162
+    },
+    {
+      "caseId": "dev-en-02",
+      "language": "en",
+      "task": "repair",
+      "arm": "asr_correct_llm",
+      "text": "me at seven sorry me at six",
+      "sourceText": "Me at seven, sorry me at six.",
+      "correctedText": "me at seven sorry me at six",
+      "proposal": "me at seven sorry me at six",
+      "verdict": "accepted",
+      "intent": {
+        "pass": false,
+        "missing": [],
+        "forbidden": [
+          "seven",
+          "sorry"
+        ],
+        "failed": false,
+        "silenceViolation": false
+      },
+      "rawProposalIntent": {
+        "pass": false,
+        "missing": [],
+        "forbidden": [
+          "seven",
+          "sorry"
+        ],
+        "failed": false,
+        "silenceViolation": false
+      },
+      "intentOverlap": {
+        "substitutions": 1,
+        "deletions": 0,
+        "insertions": 4,
+        "errors": 5,
+        "referenceUnits": 3
+      },
+      "acousticError": {
+        "substitutions": 2,
+        "deletions": 0,
+        "insertions": 0,
+        "errors": 2,
+        "referenceUnits": 7
+      },
+      "serialEngineEstimateMs": 2044.2156661461295,
+      "correctionMs": 206.48679113946855,
+      "rewriteMs": 638.88
+    },
+    {
+      "caseId": "dev-en-02",
+      "language": "en",
+      "task": "repair",
+      "arm": "offline",
+      "text": "Me at seven, sorry, mid at six.",
+      "sourceText": "Me at seven, sorry, mid at six.",
+      "correctedText": null,
+      "proposal": null,
+      "verdict": null,
+      "intent": {
+        "pass": false,
+        "missing": [],
+        "forbidden": [
+          "seven",
+          "sorry"
+        ],
+        "failed": false,
+        "silenceViolation": false
+      },
+      "rawProposalIntent": null,
+      "intentOverlap": {
+        "substitutions": 1,
+        "deletions": 0,
+        "insertions": 4,
+        "errors": 5,
+        "referenceUnits": 3
+      },
+      "acousticError": {
+        "substitutions": 2,
+        "deletions": 0,
+        "insertions": 0,
+        "errors": 2,
+        "referenceUnits": 7
+      },
+      "serialEngineEstimateMs": 184.95566584169865,
+      "correctionMs": 0,
+      "rewriteMs": 0
+    },
+    {
+      "caseId": "dev-en-02",
+      "language": "en",
+      "task": "repair",
+      "arm": "offline_llm",
+      "text": "Me at six.",
+      "sourceText": "Me at seven, sorry, mid at six.",
+      "correctedText": null,
+      "proposal": "Me at six.",
+      "verdict": "accepted",
+      "intent": {
+        "pass": true,
+        "missing": [],
+        "forbidden": [],
+        "failed": false,
+        "silenceViolation": false
+      },
+      "rawProposalIntent": {
+        "pass": true,
+        "missing": [],
+        "forbidden": [],
+        "failed": false,
+        "silenceViolation": false
+      },
+      "intentOverlap": {
+        "substitutions": 1,
+        "deletions": 0,
+        "insertions": 0,
+        "errors": 1,
+        "referenceUnits": 3
+      },
+      "acousticError": {
+        "substitutions": 1,
+        "deletions": 4,
+        "insertions": 0,
+        "errors": 5,
+        "referenceUnits": 7
+      },
+      "serialEngineEstimateMs": 1790.0576658416987,
+      "correctionMs": 0,
+      "rewriteMs": 1605.102
+    },
+    {
+      "caseId": "dev-en-03",
+      "language": "en",
+      "task": "copy",
+      "arm": "asr",
+      "text": "Keep the original document",
+      "sourceText": "Keep the original document",
+      "correctedText": null,
+      "proposal": null,
+      "verdict": null,
+      "intent": {
+        "pass": true,
+        "missing": [],
+        "forbidden": [],
+        "failed": false,
+        "silenceViolation": false
+      },
+      "rawProposalIntent": null,
+      "intentOverlap": {
+        "substitutions": 0,
+        "deletions": 0,
+        "insertions": 0,
+        "errors": 0,
+        "referenceUnits": 4
+      },
+      "acousticError": {
+        "substitutions": 0,
+        "deletions": 0,
+        "insertions": 0,
+        "errors": 0,
+        "referenceUnits": 4
+      },
+      "serialEngineEstimateMs": 614.7142080590129,
+      "correctionMs": 0,
+      "rewriteMs": 0
+    },
+    {
+      "caseId": "dev-en-03",
+      "language": "en",
+      "task": "copy",
+      "arm": "asr_correct",
+      "text": "keep the original document",
+      "sourceText": "Keep the original document",
+      "correctedText": "keep the original document",
+      "proposal": null,
+      "verdict": null,
+      "intent": {
+        "pass": true,
+        "missing": [],
+        "forbidden": [],
+        "failed": false,
+        "silenceViolation": false
+      },
+      "rawProposalIntent": null,
+      "intentOverlap": {
+        "substitutions": 0,
+        "deletions": 0,
+        "insertions": 0,
+        "errors": 0,
+        "referenceUnits": 4
+      },
+      "acousticError": {
+        "substitutions": 0,
+        "deletions": 0,
+        "insertions": 0,
+        "errors": 0,
+        "referenceUnits": 4
+      },
+      "serialEngineEstimateMs": 752.2090831771493,
+      "correctionMs": 137.4948751181364,
+      "rewriteMs": 0
+    },
+    {
+      "caseId": "dev-en-03",
+      "language": "en",
+      "task": "copy",
+      "arm": "asr_llm",
+      "text": "Keep the original document.",
+      "sourceText": "Keep the original document",
+      "correctedText": null,
+      "proposal": "Keep the original document.",
+      "verdict": "accepted",
+      "intent": {
+        "pass": true,
+        "missing": [],
+        "forbidden": [],
+        "failed": false,
+        "silenceViolation": false
+      },
+      "rawProposalIntent": {
+        "pass": true,
+        "missing": [],
+        "forbidden": [],
+        "failed": false,
+        "silenceViolation": false
+      },
+      "intentOverlap": {
+        "substitutions": 0,
+        "deletions": 0,
+        "insertions": 0,
+        "errors": 0,
+        "referenceUnits": 4
+      },
+      "acousticError": {
+        "substitutions": 0,
+        "deletions": 0,
+        "insertions": 0,
+        "errors": 0,
+        "referenceUnits": 4
+      },
+      "serialEngineEstimateMs": 1059.4182080590128,
+      "correctionMs": 0,
+      "rewriteMs": 444.704
+    },
+    {
+      "caseId": "dev-en-03",
+      "language": "en",
+      "task": "copy",
+      "arm": "asr_correct_llm",
+      "text": "keep the original document",
+      "sourceText": "Keep the original document",
+      "correctedText": "keep the original document",
+      "proposal": "keep the original document",
+      "verdict": "accepted",
+      "intent": {
+        "pass": true,
+        "missing": [],
+        "forbidden": [],
+        "failed": false,
+        "silenceViolation": false
+      },
+      "rawProposalIntent": {
+        "pass": true,
+        "missing": [],
+        "forbidden": [],
+        "failed": false,
+        "silenceViolation": false
+      },
+      "intentOverlap": {
+        "substitutions": 0,
+        "deletions": 0,
+        "insertions": 0,
+        "errors": 0,
+        "referenceUnits": 4
+      },
+      "acousticError": {
+        "substitutions": 0,
+        "deletions": 0,
+        "insertions": 0,
+        "errors": 0,
+        "referenceUnits": 4
+      },
+      "serialEngineEstimateMs": 1696.7950831771493,
+      "correctionMs": 137.4948751181364,
+      "rewriteMs": 944.586
+    },
+    {
+      "caseId": "dev-en-03",
+      "language": "en",
+      "task": "copy",
+      "arm": "offline",
+      "text": "Keep the original document.",
+      "sourceText": "Keep the original document.",
+      "correctedText": null,
+      "proposal": null,
+      "verdict": null,
+      "intent": {
+        "pass": true,
+        "missing": [],
+        "forbidden": [],
+        "failed": false,
+        "silenceViolation": false
+      },
+      "rawProposalIntent": null,
+      "intentOverlap": {
+        "substitutions": 0,
+        "deletions": 0,
+        "insertions": 0,
+        "errors": 0,
+        "referenceUnits": 4
+      },
+      "acousticError": {
+        "substitutions": 0,
+        "deletions": 0,
+        "insertions": 0,
+        "errors": 0,
+        "referenceUnits": 4
+      },
+      "serialEngineEstimateMs": 101.079166168347,
+      "correctionMs": 0,
+      "rewriteMs": 0
+    },
+    {
+      "caseId": "dev-en-03",
+      "language": "en",
+      "task": "copy",
+      "arm": "offline_llm",
+      "text": "Keep the original document.",
+      "sourceText": "Keep the original document.",
+      "correctedText": null,
+      "proposal": "Keep the original document.",
+      "verdict": "accepted",
+      "intent": {
+        "pass": true,
+        "missing": [],
+        "forbidden": [],
+        "failed": false,
+        "silenceViolation": false
+      },
+      "rawProposalIntent": {
+        "pass": true,
+        "missing": [],
+        "forbidden": [],
+        "failed": false,
+        "silenceViolation": false
+      },
+      "intentOverlap": {
+        "substitutions": 0,
+        "deletions": 0,
+        "insertions": 0,
+        "errors": 0,
+        "referenceUnits": 4
+      },
+      "acousticError": {
+        "substitutions": 0,
+        "deletions": 0,
+        "insertions": 0,
+        "errors": 0,
+        "referenceUnits": 4
+      },
+      "serialEngineEstimateMs": 516.907166168347,
+      "correctionMs": 0,
+      "rewriteMs": 415.828
+    },
+    {
+      "caseId": "dev-mixed-04",
+      "language": "mixed",
+      "task": "copy",
+      "arm": "asr",
+      "text": "这个都还没有修好",
+      "sourceText": "这个都还没有修好",
+      "correctedText": null,
+      "proposal": null,
+      "verdict": null,
+      "intent": {
+        "pass": false,
+        "missing": [
+          "bug"
+        ],
+        "forbidden": [],
+        "failed": false,
+        "silenceViolation": false
+      },
+      "rawProposalIntent": null,
+      "intentOverlap": {
+        "substitutions": 1,
+        "deletions": 0,
+        "insertions": 0,
+        "errors": 1,
+        "referenceUnits": 8
+      },
+      "acousticError": {
+        "substitutions": 1,
+        "deletions": 0,
+        "insertions": 0,
+        "errors": 1,
+        "referenceUnits": 8
+      },
+      "serialEngineEstimateMs": 2956.46204194054,
+      "correctionMs": 0,
+      "rewriteMs": 0
+    },
+    {
+      "caseId": "dev-mixed-04",
+      "language": "mixed",
+      "task": "copy",
+      "arm": "asr_correct",
+      "text": "这个都还没有修好",
+      "sourceText": "这个都还没有修好",
+      "correctedText": "这个都还没有修好",
+      "proposal": null,
+      "verdict": null,
+      "intent": {
+        "pass": false,
+        "missing": [
+          "bug"
+        ],
+        "forbidden": [],
+        "failed": false,
+        "silenceViolation": false
+      },
+      "rawProposalIntent": null,
+      "intentOverlap": {
+        "substitutions": 1,
+        "deletions": 0,
+        "insertions": 0,
+        "errors": 1,
+        "referenceUnits": 8
+      },
+      "acousticError": {
+        "substitutions": 1,
+        "deletions": 0,
+        "insertions": 0,
+        "errors": 1,
+        "referenceUnits": 8
+      },
+      "serialEngineEstimateMs": 3119.925041915849,
+      "correctionMs": 163.46299997530878,
+      "rewriteMs": 0
+    },
+    {
+      "caseId": "dev-mixed-04",
+      "language": "mixed",
+      "task": "copy",
+      "arm": "asr_llm",
+      "text": "这个都还没有修好。",
+      "sourceText": "这个都还没有修好",
+      "correctedText": null,
+      "proposal": "这个都还没有修好。",
+      "verdict": "accepted",
+      "intent": {
+        "pass": false,
+        "missing": [
+          "bug"
+        ],
+        "forbidden": [],
+        "failed": false,
+        "silenceViolation": false
+      },
+      "rawProposalIntent": {
+        "pass": false,
+        "missing": [
+          "bug"
+        ],
+        "forbidden": [],
+        "failed": false,
+        "silenceViolation": false
+      },
+      "intentOverlap": {
+        "substitutions": 1,
+        "deletions": 0,
+        "insertions": 0,
+        "errors": 1,
+        "referenceUnits": 8
+      },
+      "acousticError": {
+        "substitutions": 1,
+        "deletions": 0,
+        "insertions": 0,
+        "errors": 1,
+        "referenceUnits": 8
+      },
+      "serialEngineEstimateMs": 3417.25104194054,
+      "correctionMs": 0,
+      "rewriteMs": 460.789
+    },
+    {
+      "caseId": "dev-mixed-04",
+      "language": "mixed",
+      "task": "copy",
+      "arm": "asr_correct_llm",
+      "text": "这个都还没有修好。",
+      "sourceText": "这个都还没有修好",
+      "correctedText": "这个都还没有修好",
+      "proposal": "这个都还没有修好。",
+      "verdict": "accepted",
+      "intent": {
+        "pass": false,
+        "missing": [
+          "bug"
+        ],
+        "forbidden": [],
+        "failed": false,
+        "silenceViolation": false
+      },
+      "rawProposalIntent": {
+        "pass": false,
+        "missing": [
+          "bug"
+        ],
+        "forbidden": [],
+        "failed": false,
+        "silenceViolation": false
+      },
+      "intentOverlap": {
+        "substitutions": 1,
+        "deletions": 0,
+        "insertions": 0,
+        "errors": 1,
+        "referenceUnits": 8
+      },
+      "acousticError": {
+        "substitutions": 1,
+        "deletions": 0,
+        "insertions": 0,
+        "errors": 1,
+        "referenceUnits": 8
+      },
+      "serialEngineEstimateMs": 3596.1500419158488,
+      "correctionMs": 163.46299997530878,
+      "rewriteMs": 476.225
+    },
+    {
+      "caseId": "dev-mixed-04",
+      "language": "mixed",
+      "task": "copy",
+      "arm": "offline",
+      "text": "这个屋还没有修好。",
+      "sourceText": "这个屋还没有修好。",
+      "correctedText": null,
+      "proposal": null,
+      "verdict": null,
+      "intent": {
+        "pass": false,
+        "missing": [
+          "bug"
+        ],
+        "forbidden": [],
+        "failed": false,
+        "silenceViolation": false
+      },
+      "rawProposalIntent": null,
+      "intentOverlap": {
+        "substitutions": 1,
+        "deletions": 0,
+        "insertions": 0,
+        "errors": 1,
+        "referenceUnits": 8
+      },
+      "acousticError": {
+        "substitutions": 1,
+        "deletions": 0,
+        "insertions": 0,
+        "errors": 1,
+        "referenceUnits": 8
+      },
+      "serialEngineEstimateMs": 96.19387495331466,
+      "correctionMs": 0,
+      "rewriteMs": 0
+    },
+    {
+      "caseId": "dev-mixed-04",
+      "language": "mixed",
+      "task": "copy",
+      "arm": "offline_llm",
+      "text": "这个屋还没有修好。",
+      "sourceText": "这个屋还没有修好。",
+      "correctedText": null,
+      "proposal": "这个屋还没有修好。",
+      "verdict": "accepted",
+      "intent": {
+        "pass": false,
+        "missing": [
+          "bug"
+        ],
+        "forbidden": [],
+        "failed": false,
+        "silenceViolation": false
+      },
+      "rawProposalIntent": {
+        "pass": false,
+        "missing": [
+          "bug"
+        ],
+        "forbidden": [],
+        "failed": false,
+        "silenceViolation": false
+      },
+      "intentOverlap": {
+        "substitutions": 1,
+        "deletions": 0,
+        "insertions": 0,
+        "errors": 1,
+        "referenceUnits": 8
+      },
+      "acousticError": {
+        "substitutions": 1,
+        "deletions": 0,
+        "insertions": 0,
+        "errors": 1,
+        "referenceUnits": 8
+      },
+      "serialEngineEstimateMs": 591.2608749533147,
+      "correctionMs": 0,
+      "rewriteMs": 495.067
+    }
+  ]
+}

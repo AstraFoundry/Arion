@@ -1,0 +1,69 @@
+{
+  "repository": "shibing624/bart4csc-base-chinese",
+  "revision": "6bce2c5d39d52f542a720bfc2c612623401a2380",
+  "card": {
+    "language": [
+      "zh"
+    ],
+    "tags": [
+      "bart",
+      "pytorch",
+      "zh",
+      "Text2Text-Generation"
+    ],
+    "license": "apache-2.0",
+    "widget": [
+      {
+        "text": "\u5c11\u5148\u961f\u5458\u56e0\u8be5\u4e3a\u8001\u4eba\u8ba9\u5750"
+      }
+    ],
+    "datasets": [
+      "shibing624/CSC"
+    ],
+    "pipeline_tag": "text2text-generation"
+  },
+  "files": [
+    {
+      "file": "README.md",
+      "sha256": "8982b11685209907a2e82fc1644f8247c8d72be9d66c91e505b6fb3243571c22",
+      "bytes": 3512,
+      "url": "https://huggingface.co/shibing624/bart4csc-base-chinese/resolve/6bce2c5d39d52f542a720bfc2c612623401a2380/README.md"
+    },
+    {
+      "file": "config.json",
+      "sha256": "4a2d199b7982e79cf624043030b0d6c5ceb90fa54ced3a0f0705b1a0b19f3686",
+      "bytes": 1722,
+      "url": "https://huggingface.co/shibing624/bart4csc-base-chinese/resolve/6bce2c5d39d52f542a720bfc2c612623401a2380/config.json"
+    },
+    {
+      "file": "model.safetensors",
+      "sha256": "6e796d310afdfe4933c1823c02061ab669b42258b1143eccbb5cbbe29546bd93",
+      "bytes": 465141468,
+      "url": "https://huggingface.co/shibing624/bart4csc-base-chinese/resolve/6bce2c5d39d52f542a720bfc2c612623401a2380/model.safetensors"
+    },
+    {
+      "file": "special_tokens_map.json",
+      "sha256": "b6d346be366a7d1d48332dbc9fdf3bf8960b5d879522b7799ddba59e76237ee3",
+      "bytes": 125,
+      "url": "https://huggingface.co/shibing624/bart4csc-base-chinese/resolve/6bce2c5d39d52f542a720bfc2c612623401a2380/special_tokens_map.json"
+    },
+    {
+      "file": "tokenizer.json",
+      "sha256": "400c2cb8ebfcd1cd18e58d7fc8605a83cf62165b75512e5112984203b16ada37",
+      "bytes": 439389,
+      "url": "https://huggingface.co/shibing624/bart4csc-base-chinese/resolve/6bce2c5d39d52f542a720bfc2c612623401a2380/tokenizer.json"
+    },
+    {
+      "file": "tokenizer_config.json",
+      "sha256": "2bad87bc7ff9b28c1f234d910b6c98217df151c9afbd6e87f3bd80b46017580f",
+      "bytes": 557,
+      "url": "https://huggingface.co/shibing624/bart4csc-base-chinese/resolve/6bce2c5d39d52f542a720bfc2c612623401a2380/tokenizer_config.json"
+    },
+    {
+      "file": "vocab.txt",
+      "sha256": "45bbac6b341c319adc98a532532882e91a9cefc0329aa57bac9ae761c27b291c",
+      "bytes": 109540,
+      "url": "https://huggingface.co/shibing624/bart4csc-base-chinese/resolve/6bce2c5d39d52f542a720bfc2c612623401a2380/vocab.txt"
+    }
+  ]
+}

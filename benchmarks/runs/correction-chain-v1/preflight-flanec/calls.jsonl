@@ -1,0 +1,3 @@
+{"request": {"op": "load", "models": {"flanec": "/Users/steven/code/Arion/.workspace/correction-chain/models/flanec"}}, "response": {"ok": true, "loadMs": 2764.7164170630276, "torch": "2.8.0"}}
+{"request": {"op": "infer", "model": "flanec", "text": "Keep the original document."}, "response": {"ok": true, "text": "keep the original document", "rawTokenIds": [0, 453, 8, 926, 1708, 1], "inputTokens": 27, "outputTokens": 5, "truncated": false, "generationMs": 308.9759580325335, "peakRssBytes": 1199718400, "prompt": "Generate the correct transcription for the following n-best list of ASR hypotheses: \n\n1. Keep the original document."}}
+{"request": {"op": "close"}, "response": {"ok": true, "closed": true}}

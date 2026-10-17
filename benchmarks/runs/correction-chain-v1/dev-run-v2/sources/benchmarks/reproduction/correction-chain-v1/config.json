@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "kind": "correction-chain-diagnostic-v1",
+  "seed": 41327,
+  "threads": 4,
+  "correctionMaxNewTokens": 192,
+  "llmMaxNewTokens": 384,
+  "arms": ["asr", "asr_correct", "asr_llm", "asr_correct_llm", "offline", "offline_llm"],
+  "correctionModels": {"zh": "bart4csc", "mixed": "bart4csc", "en": "flanec"},
+  "flanecInput": "one actual hypothesis in the published n-best prompt; no fabricated alternatives",
+  "asrReplay": "accelerated 20ms chunks; 800ms endpoint silence; 400ms tail padding",
+  "rewrite": "production final-only worker, speech-spans cleanup and validation enabled; no approved memory or screen context",
+  "limits": [
+    "Pipeline is reproduced in sequential stage batches; summed per-case engine timings are serial estimates, not native stop-to-insertion measurements.",
+    "BART4CSC is a Chinese spelling-correction baseline, not an ASR-trained ECLM reproduction.",
+    "FLANEC is English and trained with n-best inputs; top-1 here is an explicitly labelled adaptation.",
+    "Synthetic developer-authored diagnostic; no independent semantic ratings, population confidence intervals, or release acceptance.",
+    "CPU warm residency; no cold, power, native UI or concurrent microphone measurements."
+  ]
+}

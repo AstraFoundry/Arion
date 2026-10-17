@@ -58,7 +58,15 @@
     "phonetic:bench": "node scripts/phonetic-bench-command.mjs run",
     "phonetic:report": "node scripts/phonetic-bench-command.mjs report",
     "bench:archive:verify": "node tools/evaluation/archive/cli.mjs verify",
-    "bench:archive:report": "node tools/evaluation/archive/cli.mjs report"
+    "bench:archive:report": "node tools/evaluation/archive/cli.mjs report",
+    "chain:env": "node scripts/correction-chain-command.mjs env",
+    "chain:build": "node scripts/correction-chain-command.mjs build",
+    "chain:provision": "node scripts/correction-chain-command.mjs provision",
+    "chain:fixtures": "node scripts/correction-chain-command.mjs fixtures",
+    "chain:run": "node scripts/correction-chain-command.mjs run",
+    "chain:report": "node scripts/correction-chain-command.mjs report",
+    "chain:test": "node scripts/correction-chain-command.mjs test",
+    "chain:review": "node scripts/correction-chain-command.mjs review"
   },
   "engines": {
     "node": ">=20.0.0"

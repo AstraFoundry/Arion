@@ -1,0 +1,140 @@
+{
+  "samples": [
+    {
+      "id": "warmup-zh",
+      "sourceText": "今天先检查邮件。",
+      "scenario": "chat",
+      "mode": "clean",
+      "language": "zh",
+      "approvedMemory": []
+    },
+    {
+      "id": "warmup-en",
+      "sourceText": "Keep the original document.",
+      "scenario": "chat",
+      "mode": "clean",
+      "language": "en",
+      "approvedMemory": []
+    },
+    {
+      "id": "dev-en-02--asr_llm",
+      "sourceText": "Me at seven, sorry me at six.",
+      "scenario": "chat",
+      "mode": "clean",
+      "language": "en",
+      "approvedMemory": []
+    },
+    {
+      "id": "dev-mixed-04--asr_llm",
+      "sourceText": "这个都还没有修好",
+      "scenario": "chat",
+      "mode": "clean",
+      "language": "mixed",
+      "approvedMemory": []
+    },
+    {
+      "id": "dev-mixed-04--asr_correct_llm",
+      "sourceText": "这 个 都 还 没 有 修 好",
+      "scenario": "chat",
+      "mode": "clean",
+      "language": "mixed",
+      "approvedMemory": []
+    },
+    {
+      "id": "dev-en-03--asr_correct_llm",
+      "sourceText": "keep the original document",
+      "scenario": "chat",
+      "mode": "clean",
+      "language": "en",
+      "approvedMemory": []
+    },
+    {
+      "id": "dev-en-03--offline_llm",
+      "sourceText": "Keep the original document.",
+      "scenario": "chat",
+      "mode": "clean",
+      "language": "en",
+      "approvedMemory": []
+    },
+    {
+      "id": "dev-zh-01--asr_llm",
+      "sourceText": "今天先检查邮件",
+      "scenario": "chat",
+      "mode": "clean",
+      "language": "zh",
+      "approvedMemory": []
+    },
+    {
+      "id": "dev-zh-01--asr_correct_llm",
+      "sourceText": "今 天 先 检 查 邮 件",
+      "scenario": "chat",
+      "mode": "clean",
+      "language": "zh",
+      "approvedMemory": []
+    },
+    {
+      "id": "dev-en-03--asr_llm",
+      "sourceText": "Keep the original document",
+      "scenario": "chat",
+      "mode": "clean",
+      "language": "en",
+      "approvedMemory": []
+    },
+    {
+      "id": "dev-mixed-04--offline_llm",
+      "sourceText": "这个屋还没有修好。",
+      "scenario": "chat",
+      "mode": "clean",
+      "language": "mixed",
+      "approvedMemory": []
+    },
+    {
+      "id": "dev-zh-00--asr_llm",
+      "sourceText": "对武装小不对， 队伍碎装票",
+      "scenario": "chat",
+      "mode": "clean",
+      "language": "zh",
+      "approvedMemory": []
+    },
+    {
+      "id": "dev-zh-00--asr_correct_llm",
+      "sourceText": "对 武 装 小 不 对 ， 队 伍 碎 装 漂",
+      "scenario": "chat",
+      "mode": "clean",
+      "language": "zh",
+      "approvedMemory": []
+    },
+    {
+      "id": "dev-zh-01--offline_llm",
+      "sourceText": "今天先检查邮件。",
+      "scenario": "chat",
+      "mode": "clean",
+      "language": "zh",
+      "approvedMemory": []
+    },
+    {
+      "id": "dev-en-02--offline_llm",
+      "sourceText": "Me at seven, sorry, mid at six.",
+      "scenario": "chat",
+      "mode": "clean",
+      "language": "en",
+      "approvedMemory": []
+    },
+    {
+      "id": "dev-zh-00--offline_llm",
+      "sourceText": "盾武装票， 不对， 四五四装票。",
+      "scenario": "chat",
+      "mode": "clean",
+      "language": "zh",
+      "approvedMemory": []
+    },
+    {
+      "id": "dev-en-02--asr_correct_llm",
+      "sourceText": "me at seven sorry me at six",
+      "scenario": "chat",
+      "mode": "clean",
+      "language": "en",
+      "approvedMemory": []
+    }
+  ]
+}

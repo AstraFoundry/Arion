@@ -1,0 +1,19 @@
+asr dev-en-02
+asr dev-mixed-04
+asr dev-zh-00
+asr dev-en-03
+asr dev-zh-01
+Traceback (most recent call last):
+  File "/Users/steven/code/Arion/benchmarks/reproduction/correction-chain-v1/run.py", line 157, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/Users/steven/code/Arion/benchmarks/reproduction/correction-chain-v1/run.py", line 123, in main
+    meta['correctionManifests']={name:json.loads((pathlib.Path(path)/'manifest.json').read_text()) for name,path in correction_models.items()};save()
+                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/steven/.local/share/uv/python/cpython-3.12.9-macos-aarch64-none/lib/python3.12/pathlib.py", line 1027, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/steven/.local/share/uv/python/cpython-3.12.9-macos-aarch64-none/lib/python3.12/pathlib.py", line 1013, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/Users/steven/code/Arion/.workspace/correction-chain/models/bart4csc/manifest.json'

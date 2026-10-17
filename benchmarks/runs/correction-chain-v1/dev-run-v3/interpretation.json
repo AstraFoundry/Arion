@@ -1,0 +1,5 @@
+{
+  "selectionValidity": "invalid",
+  "reason": "Chinese BART decoding omitted the upstream default ASCII-space removal; actual outputs and original run status retained",
+  "resolution": "Adapter corrected from inspected upstream source before any test inference"
+}

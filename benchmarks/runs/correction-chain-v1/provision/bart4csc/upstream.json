@@ -1,0 +1,158 @@
+{
+  "_id": "6332e082d9fa8a0601600f61",
+  "id": "shibing624/bart4csc-base-chinese",
+  "private": false,
+  "pipeline_tag": "text-generation",
+  "library_name": "transformers",
+  "tags": [
+    "transformers",
+    "pytorch",
+    "safetensors",
+    "bart",
+    "text2text-generation",
+    "zh",
+    "Text2Text-Generation",
+    "dataset:shibing624/CSC",
+    "license:apache-2.0",
+    "endpoints_compatible",
+    "deploy:azure",
+    "region:us"
+  ],
+  "downloads": 748,
+  "likes": 29,
+  "modelId": "shibing624/bart4csc-base-chinese",
+  "author": "shibing624",
+  "sha": "6bce2c5d39d52f542a720bfc2c612623401a2380",
+  "lastModified": "2024-02-19T08:42:48.000Z",
+  "gated": false,
+  "disabled": false,
+  "mask_token": "[MASK]",
+  "widgetData": [
+    {
+      "text": "\u5c11\u5148\u961f\u5458\u56e0\u8be5\u4e3a\u8001\u4eba\u8ba9\u5750"
+    }
+  ],
+  "model-index": null,
+  "config": {
+    "architectures": [
+      "BartForConditionalGeneration"
+    ],
+    "model_type": "bart",
+    "tokenizer_config": {
+      "cls_token": "[CLS]",
+      "mask_token": "[MASK]",
+      "pad_token": "[PAD]",
+      "sep_token": "[SEP]",
+      "unk_token": "[UNK]"
+    }
+  },
+  "cardData": {
+    "language": [
+      "zh"
+    ],
+    "tags": [
+      "bart",
+      "pytorch",
+      "zh",
+      "Text2Text-Generation"
+    ],
+    "license": "apache-2.0",
+    "widget": [
+      {
+        "text": "\u5c11\u5148\u961f\u5458\u56e0\u8be5\u4e3a\u8001\u4eba\u8ba9\u5750"
+      }
+    ],
+    "datasets": [
+      "shibing624/CSC"
+    ],
+    "pipeline_tag": "text2text-generation"
+  },
+  "transformersInfo": {
+    "auto_model": "AutoModelForSeq2SeqLM",
+    "pipeline_tag": "text2text-generation",
+    "processor": "AutoTokenizer"
+  },
+  "siblings": [
+    {
+      "rfilename": ".gitattributes",
+      "blobId": "3476589a58942b0e9ef94ae0efb29355707f95bb",
+      "size": 1438
+    },
+    {
+      "rfilename": "README.md",
+      "blobId": "1c935b2992482ea785839225ea4235e2bfeb077c",
+      "size": 3512
+    },
+    {
+      "rfilename": "config.json",
+      "blobId": "7de594ed9d35013da898f7305b48547416a72d8f",
+      "size": 1722
+    },
+    {
+      "rfilename": "model.safetensors",
+      "blobId": "86403f08a079dbd2aa9816cc53b66fd4c18ba2cf",
+      "size": 465141468,
+      "lfs": {
+        "sha256": "6e796d310afdfe4933c1823c02061ab669b42258b1143eccbb5cbbe29546bd93",
+        "size": 465141468,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "model_args.json",
+      "blobId": "36d1656350929719e825c6f556f128d2fc94cb23",
+      "size": 2830
+    },
+    {
+      "rfilename": "pytorch_model.bin",
+      "blobId": "dc28070d5e7348d7de991e0f13694184c038fd01",
+      "size": 465198009,
+      "lfs": {
+        "sha256": "ec2f3c0137990f84ceced277c1171b19267958b7df2e4ac91f695e5206eed2a4",
+        "size": 465198009,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "special_tokens_map.json",
+      "blobId": "a8b3208c2884c4efb86e49300fdd3dc877220cdf",
+      "size": 125
+    },
+    {
+      "rfilename": "tokenizer.json",
+      "blobId": "06baf0038f60e7521751b1fbf890ca3c0828622d",
+      "size": 439389
+    },
+    {
+      "rfilename": "tokenizer_config.json",
+      "blobId": "8fa10cd90b22d2cbb00e658a4b77845cb14d67e2",
+      "size": 557
+    },
+    {
+      "rfilename": "training_args.bin",
+      "blobId": "265ad6778394213624ae8be168bd1d31c468c486",
+      "size": 3375,
+      "lfs": {
+        "sha256": "b15e7762ef32877c634a1c3bc4fa3b06681c63839a170e13b2301a2b26236cb2",
+        "size": 3375,
+        "pointerSize": 129
+      }
+    },
+    {
+      "rfilename": "vocab.txt",
+      "blobId": "ca4f9781030019ab9b253c6dcb8c7878b6dc87a5",
+      "size": 109540
+    }
+  ],
+  "spaces": [
+    "ysbetter/shibing624-bart4csc-base-chinese"
+  ],
+  "createdAt": "2022-09-27T11:37:38.000Z",
+  "safetensors": {
+    "parameters": {
+      "F32": 116277896
+    },
+    "total": 116277896
+  },
+  "usedStorage": 930342852
+}

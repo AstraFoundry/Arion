@@ -1,0 +1,14 @@
+flanec README.md 4584
+bart4csc README.md 3512
+flanec config.json 1557
+flanec generation_config.json 142
+bart4csc config.json 1722
+flanec model.safetensors 990345064
+flanec special_tokens_map.json 2543
+flanec tokenizer.json 2422256
+flanec tokenizer_config.json 20771
+bart4csc model.safetensors 465141468
+bart4csc special_tokens_map.json 125
+bart4csc tokenizer.json 439389
+bart4csc tokenizer_config.json 557
+bart4csc vocab.txt 109540

@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/Users/steven/code/Arion/benchmarks/reproduction/correction-chain-v1/run.py", line 157, in <module>
+    if __name__=='__main__':main()
+  File "/Users/steven/code/Arion/benchmarks/reproduction/correction-chain-v1/run.py", line 97, in main
+    if sha(FIXTURES/name)!=digest:raise ValueError('Frozen fixture digest mismatch')
+  File "/Users/steven/code/Arion/benchmarks/reproduction/correction-chain-v1/run.py", line 20, in sha
+    with pathlib.Path(path).open('rb') as source:return hashlib.file_digest(source,'sha256').hexdigest()
+AttributeError: module 'hashlib' has no attribute 'file_digest'

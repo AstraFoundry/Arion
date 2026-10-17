@@ -1,0 +1,1 @@
+{"status":"failed","phase":"preflight","failure":"Host python3 is older than Python 3.11 and has no hashlib.file_digest; no model inference executed","resolution":"Use the explicitly provisioned Python 3.12 interpreter"}

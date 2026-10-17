@@ -1,0 +1,170 @@
+{
+  "_id": "66e7ff526513e518adb0b6e7",
+  "id": "morenolq/flanec-base-cd",
+  "private": false,
+  "pipeline_tag": "text-generation",
+  "library_name": "transformers",
+  "tags": [
+    "transformers",
+    "safetensors",
+    "t5",
+    "text2text-generation",
+    "en",
+    "dataset:PeacefulData/HyPoradise-v0",
+    "arxiv:2501.12979",
+    "base_model:google/flan-t5-base",
+    "base_model:finetune:google/flan-t5-base",
+    "license:mit",
+    "text-generation-inference",
+    "endpoints_compatible",
+    "region:us"
+  ],
+  "downloads": 44,
+  "likes": 1,
+  "modelId": "morenolq/flanec-base-cd",
+  "author": "morenolq",
+  "sha": "e3c8a1ea702dfb2e47ce77733a31123ea18dbe56",
+  "lastModified": "2025-02-01T09:24:46.000Z",
+  "gated": false,
+  "disabled": false,
+  "widgetData": [
+    {
+      "text": "Generate the correct transcription for the following n-best list of ASR hypotheses: \n\n1. nebode also typically is symphons and an ankle surf leash \n2. neboda is also typically is symphons and an ankle surf leash \n3. nebode also typically is swim fins and an ankle surf leash \n4. neboda also typically is symphons and an ankle surf leash \n5. neboda is also typically is swim fins and an ankle surf leash"
+    }
+  ],
+  "model-index": null,
+  "config": {
+    "architectures": [
+      "T5ForConditionalGeneration"
+    ],
+    "model_type": "t5",
+    "tokenizer_config": {
+      "eos_token": "</s>",
+      "pad_token": "<pad>",
+      "unk_token": "<unk>"
+    }
+  },
+  "cardData": {
+    "language": [
+      "en"
+    ],
+    "tags": [
+      "text2text-generation"
+    ],
+    "license": "mit",
+    "datasets": [
+      "PeacefulData/HyPoradise-v0"
+    ],
+    "library_name": "transformers",
+    "pipeline_tag": "text2text-generation",
+    "widget": [
+      {
+        "text": "Generate the correct transcription for the following n-best list of ASR hypotheses: \n\n1. nebode also typically is symphons and an ankle surf leash \n2. neboda is also typically is symphons and an ankle surf leash \n3. nebode also typically is swim fins and an ankle surf leash \n4. neboda also typically is symphons and an ankle surf leash \n5. neboda is also typically is swim fins and an ankle surf leash"
+      }
+    ],
+    "base_model": [
+      "google/flan-t5-base"
+    ]
+  },
+  "transformersInfo": {
+    "auto_model": "AutoModelForSeq2SeqLM",
+    "pipeline_tag": "text2text-generation",
+    "processor": "AutoTokenizer"
+  },
+  "siblings": [
+    {
+      "rfilename": ".gitattributes",
+      "blobId": "a6344aac8c09253b3b630fb776ae94478aa0275b",
+      "size": 1519
+    },
+    {
+      "rfilename": "README.md",
+      "blobId": "abcf129fafd7bfc24c6681783b664fb330c07d17",
+      "size": 4584
+    },
+    {
+      "rfilename": "config.json",
+      "blobId": "685cc31336f56fbb77a034914a6a54fcc669a3aa",
+      "size": 1557
+    },
+    {
+      "rfilename": "generation_config.json",
+      "blobId": "ba5c37f00d8ba9c6ddc82ea3b9b50261a4f188de",
+      "size": 142
+    },
+    {
+      "rfilename": "model.safetensors",
+      "blobId": "461bef2cc42dcd96bac0e860530219806648f95a",
+      "size": 990345064,
+      "lfs": {
+        "sha256": "13d69b47ed6c7b132635a264ef26dd36d2c9eb959ffb33f6ec4b670f9c344d8c",
+        "size": 990345064,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "results/atis_test.txt",
+      "blobId": "07f01bfda129c3a843d8b58d41f91f9e28b8f2c4",
+      "size": 133
+    },
+    {
+      "rfilename": "results/chime4_test.txt",
+      "blobId": "1f8aa591fbbbd81074ee06adb79f675b724abe05",
+      "size": 136
+    },
+    {
+      "rfilename": "results/coraal_test.txt",
+      "blobId": "af57f864342c950b97bd49e5a803bda4fe90202c",
+      "size": 140
+    },
+    {
+      "rfilename": "results/cv_test.txt",
+      "blobId": "07d027fbb4116ca358ed156c9f68e69a797460d4",
+      "size": 135
+    },
+    {
+      "rfilename": "results/lrs2_test.txt",
+      "blobId": "9be0e1de9834b7904d787c7ecd4c3afb99706a7c",
+      "size": 137
+    },
+    {
+      "rfilename": "results/swbd_test.txt",
+      "blobId": "287f0fbc5c50381ae23d71640845048d644e20b7",
+      "size": 139
+    },
+    {
+      "rfilename": "results/td3_test.txt",
+      "blobId": "804d8f2b7e3a09f9dcba6521ba3555606bcc28d3",
+      "size": 133
+    },
+    {
+      "rfilename": "results/wsj_score_test.txt",
+      "blobId": "5a7db5c7bdf44d086a4be6134817860e4fc813cc",
+      "size": 138
+    },
+    {
+      "rfilename": "special_tokens_map.json",
+      "blobId": "17ade346a1042cbe0c1436f5bedcbd85c099d582",
+      "size": 2543
+    },
+    {
+      "rfilename": "tokenizer.json",
+      "blobId": "f0a7a66541fb96522c18e8d1ea325d60b0bad191",
+      "size": 2422256
+    },
+    {
+      "rfilename": "tokenizer_config.json",
+      "blobId": "6cfb25540277ee2564f1ee4ec85cb3ab2594d1e8",
+      "size": 20771
+    }
+  ],
+  "spaces": [],
+  "createdAt": "2024-09-16T09:50:10.000Z",
+  "safetensors": {
+    "parameters": {
+      "F32": 247577856
+    },
+    "total": 247577856
+  },
+  "usedStorage": 990345064
+}
