@@ -11,6 +11,8 @@ One core serves self-hosted and hosted deployments ([ADR 015](../../docs/decisio
 
 Issuer, client, token and event values are normative in the [platform contracts](https://github.com/AstraFoundry/astrafoundry.si/blob/main/docs/project/platform-contracts.md). The hosted deployment uses its own PostgreSQL ([deploy/sync](../../deploy/sync/README.md)), never the platform database.
 
+See the [central sync design proposal](../../docs/project/central-sync-design.md) for the recommended data matrix and proposed production hardening. Its v2, pairing, recovery and desktop-client work is not implemented by the v1 routes below.
+
 ## Device authentication
 
 Ed25519. Headers `X-Arion-Device-Id`, `X-Arion-Timestamp` (unix milliseconds), `X-Arion-Signature` (raw base64url). The signed bytes are:

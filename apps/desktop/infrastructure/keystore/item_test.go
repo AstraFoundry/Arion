@@ -35,3 +35,18 @@ func hasPair(args []string, flag, value string) bool {
 	}
 	return false
 }
+
+func TestCenterProfilesHaveSeparateCredentials(t *testing.T) {
+	a, b := OpenForProfile("profile-a"), OpenForProfile("profile-b")
+	if a.target() == b.target() || a.target() == Target() {
+		t.Fatal("profile credential collision")
+	}
+	for _, args := range [][]string{a.putArgs("secret"), a.getArgs(), a.deleteArgs()} {
+		if !hasPair(args, "-a", Account+"/profile-a") {
+			t.Fatalf("unscoped credential args: %q", args)
+		}
+		if hasPair(args, "-a", VocabularyKeyAccount) {
+			t.Fatal("center profile touched vocabulary key")
+		}
+	}
+}

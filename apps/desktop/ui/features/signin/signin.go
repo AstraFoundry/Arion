@@ -15,6 +15,9 @@ import (
 
 // Start is the button that opens the browser sign-in.
 func Start(c *ui.Context, store runtime.Store, tokens theme.Tokens, variant kit.Variant, label string) {
+	if store.State.Account.Disabled {
+		return
+	}
 	if kit.Button(c.Key("sign-in"), tokens, variant, label, !store.State.Account.Busy()).Clicked() {
 		store.Actions.SignIn()
 	}
@@ -30,6 +33,9 @@ func Check(store runtime.Store) {
 
 // Card is the account in its current stage, followed by the last failure.
 func Card(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
+	if store.State.Account.Disabled {
+		return
+	}
 	ui.Column(c).Gap(theme.GapRelated).Children(func() {
 		card(c, store, tokens)
 		Notice(c, store, tokens)
@@ -42,7 +48,11 @@ func card(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 	kit.Card(c, tokens).Children(func() {
 		switch account.StageOf(a) {
 		case account.SignedOut:
-			kit.Row(c, tokens, messages.Text(copy.AccTitle), messages.Text(copy.AccNoDecrypt), func() {
+			title := a.Issuer
+			if title == "" {
+				title = messages.Text(copy.AccTitle)
+			}
+			kit.Row(c, tokens, title, messages.Text(copy.AccNoDecrypt), func() {
 				Start(c, store, tokens, kit.Outline, messages.Text(copy.AccSignIn))
 			})
 		case account.Waiting:
@@ -114,6 +124,9 @@ func Notice(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 // HostedSync is the signed-in account's hosted-sync access: available, or
 // the waitlist with its phase.
 func HostedSync(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
+	if store.State.Account.Disabled || store.State.Account.WaitlistDisabled && !store.State.Account.HostedSync {
+		return
+	}
 	messages := store.Copy()
 	a := store.State.Account
 	kit.Card(c, tokens).Children(func() {

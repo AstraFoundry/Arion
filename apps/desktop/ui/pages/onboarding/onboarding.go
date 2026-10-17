@@ -141,13 +141,7 @@ func illustration(step onboarding.Step, state *runtime.State) (showcase.Scene, [
 }
 
 func (p *Page) move(c *ui.Context, delta int, state *runtime.State) {
-	moved := false
-	if delta > 0 {
-		moved = p.flow.Next(state)
-	} else if p.flow.Index > 0 {
-		p.flow.Back()
-		moved = true
-	}
+	moved := p.flow.Move(delta, state)
 	if moved {
 		p.entered = c.Now()
 	}

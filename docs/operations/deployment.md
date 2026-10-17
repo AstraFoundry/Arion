@@ -12,24 +12,39 @@ The identifiers are `si.astrafoundry.arion` and `si.astrafoundry.arion.inputmeth
 make build desktop
 ```
 
+## Center configuration
+
+`make build desktop` and `make desktop-dev` read the same public center profile from shell ENV or the root `.env`. Omit all `ARION_CENTER_*` variables for AstraFoundry defaults. For a device-authenticated self-hosted center:
+
+```dotenv
+ARION_CENTER_URL=https://sync.example.org/prefix
+ARION_CENTER_AUTH_MODE=device
+```
+
+Custom `oidc` requires all five `ARION_CENTER_OIDC_*` fields in [`.env.example`](../../.env.example). The HTTP base URL and token resource are separate settings. Empty, unknown, conflicting and incomplete values fail; URLs must use HTTPS, except explicit loopback HTTP for development, and cannot contain credentials/query/fragment.
+
+The app embeds the validated public profile and ignores launch-time center ENV. Package verification checks the executable's `--print-center-profile` result without center ENV. Custom profiles isolate account refresh tokens and disable the official update feed; device mode offers no account sign-in, and custom OIDC never calls the official waitlist API. Official tagged releases require the exact standard profile. Existing legacy account tokens are retained but no longer read: sign in again. Local vocabulary is unchanged. See the [profile contract and remaining sync limits](../project/central-sync-design.md#implemented-profile-boundaries).
+
 ## macOS signing configuration
 
 The build entry point reads the root `.env` when present; existing shell variables take precedence, including deliberately empty values. Copy [`.env.example`](../../.env.example) for the settings. `make build desktop` is the only packaging command: no Apple variables produces a preview, partial Apple configuration fails, and complete configuration signs and notarizes. `MYGO_UPDATER_PRIVATE_KEY` independently enables signed updates. `desktop-dev` keeps development signing and does not import release credentials.
 
-For a local Mac, install a **Developer ID Application** certificate with its private key, store notarization credentials once with `xcrun notarytool store-credentials arion-notary`, and configure:
+For a local Mac, install a **Developer ID Application** certificate with its private key, store notarization credentials once with `xcrun notarytool store-credentials astrafoundry`, and configure:
 
 ```dotenv
-ARION_MACOS_SIGNING_IDENTITY="Developer ID Application: Your Company (ABCDE12345)"
-ARION_MACOS_NOTARY_PROFILE=arion-notary
+MACOS_SIGNING_IDENTITY="Developer ID Application: Your Company (ABCDE12345)"
+MACOS_NOTARY_PROFILE=astrafoundry
 ```
 
-`ARION_MACOS_NOTARY_KEYCHAIN` optionally selects the existing keychain holding that profile. The build checks the identity/private key and access to the notary service before staging resources. Keep certificates and passwords outside the repository; a `.cer` alone does not contain the private key. Export the certificate and private key together as a password-protected `.p12` for CI.
+`MACOS_NOTARY_KEYCHAIN` optionally selects the existing keychain holding that profile. The build checks the identity/private key and access to the notary service before staging resources. Keep certificates and passwords outside the repository; a `.cer` alone does not contain the private key. Export the certificate and private key together as a password-protected `.p12` for CI.
+
+Apple credentials use application-independent `MACOS_*` and `APPLE_*` names so the same Developer ID certificate can sign other AstraFoundry applications. The former `ARION_MACOS_*` names have been replaced by `MACOS_*`; migrate local environment and GitHub secret names together. Use `astrafoundry` as the label for new notary profiles, CSR key labels and exported certificate files. Existing profiles such as `arion-notary` remain usable when explicitly configured. Certificate signing identities must retain the exact Apple-issued name; changing a local label does not change the certificate's legal holder. Keep each application's update signing key separate.
 
 For CI or importing credentials locally, configure the following instead of an existing profile:
 
 | Environment variable / GitHub repository secret | Value |
 | --- | --- |
-| `ARION_MACOS_SIGNING_IDENTITY` | Full Developer ID Application identity, including Team ID |
+| `MACOS_SIGNING_IDENTITY` | Full Developer ID Application identity, including Team ID |
 | `MACOS_CERTIFICATE_P12_BASE64` | Base64 of the `.p12` containing certificate and private key |
 | `MACOS_CERTIFICATE_PASSWORD` | Password protecting the `.p12` |
 | `APPLE_ID` | Apple account used for notarization |
@@ -37,7 +52,7 @@ For CI or importing credentials locally, configure the following instead of an e
 | `APPLE_APP_SPECIFIC_PASSWORD` | App-specific password for that account |
 | `MYGO_UPDATER_PRIVATE_KEY` | Separate Ed25519 update key matching `desktop.json` |
 
-The script creates a temporary keychain with a random password, imports the certificate for Apple signing tools, adds it to the user's search list, and stores a validated `arion-notary` profile there. It restores the original search list and deletes temporary credentials on completion or failure. Raw Apple credentials are removed from build subprocess environments. Existing certificates and profiles are left in place. GitHub-hosted runners are disposable; self-hosted signing jobs require a dedicated user because the keychain search list is user-wide.
+The script creates a temporary keychain with a random password, imports the certificate for Apple signing tools, adds it to the user's search list, and stores a validated `astrafoundry` profile there. It restores the original search list and deletes temporary credentials on completion or failure. Raw Apple credentials are removed from build subprocess environments. Existing certificates and profiles are left in place. GitHub-hosted runners are disposable; self-hosted signing jobs require a dedicated user because the keychain search list is user-wide.
 
 Public package metadata lives in `apps/desktop/desktop.json`; `mygo.config.ts` adds environment-driven signing through the pinned MyGo API without rewriting source files. MyGo signs nested executables/libraries and the IMK bundle before the outer app, enables hardened runtime and secure timestamps, signs and notarizes the DMG, and staples tickets to both DMG and App **before** producing Ed25519-signed updates. The verifier checks code identities, runtime flags, timestamps, App/DMG tickets and Gatekeeper acceptance; with updates enabled it also verifies the final archive signature and the extracted App's signature/ticket. No signed archive is modified afterward.
 

@@ -2,7 +2,7 @@
   "name": "Arion",
   "identifier": "si.astrafoundry.arion",
   "version": "0.1.0",
-  "copyright": "Arion contributors",
+  "copyright": "AstraFoundry",
   "out": "build",
   "updates": {
     "publicKey": "WEZ2tNHPgq2KP405pHaCZU7hxPtss2P9lQ7nFqP7evk=",

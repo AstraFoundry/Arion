@@ -8,6 +8,7 @@
 | `apps/desktop/ui` | `app → pages → widgets → features → entities → shared` Go packages; same-layer slices isolated; shared segments may import each other |
 | `apps/desktop/bootstrap` | Composition root: wiring, windows, tray, hotkeys, main-thread state, E2E control mode |
 | `apps/desktop/infrastructure` | OS input/capture/context and model/storage adapters; implements domain-owned ports |
+| `apps/desktop/internal/center` | Compiled public center profile, validation and fingerprint; no runtime ENV or credential access |
 | `apps/desktop/internal/account` | OIDC public client for hosted sync: loopback PKCE, in-memory access token, refresh rotation, waitlist join ([account sign-in](account-signin.md)) |
 | `apps/desktop/infrastructure/keystore` | Refresh-token item in the macOS Keychain or Windows Credential Manager |
 | `apps/desktop/infrastructure/browser` | System browser for http(s) authorization URLs |

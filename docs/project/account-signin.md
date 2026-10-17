@@ -87,7 +87,7 @@ func (s *Service) Stored() (bool, error)
 
 `SignOut`'s `armed` callback runs after the in-flight attempt is marked as sign-out and before `SignOut` waits for it. `bootstrap` cancels the sign-in context there. Pass nil from tests. The returned `SignOutResult.RevokeError` is also the error from `SignOut` when revocation fails; the local item is still deleted.
 
-`Config` zero value:
+`Config` zero value (direct service construction):
 
 | Field | Default |
 | --- | --- |
@@ -134,8 +134,8 @@ Sentinels: `ErrSignInInProgress`, `ErrSignInTimeout`, `ErrSignInCancelled`, `Err
 
 | OS | Item | Mechanism |
 | --- | --- | --- |
-| macOS | login Keychain, service `Arion`, account `account-refresh-token` | `/usr/bin/security` add/find/delete-generic-password |
-| Windows | Credential Manager target `Arion/account-refresh-token`, generic, local-machine persistence | `CredWriteW` / `CredReadW` / `CredDeleteW` |
+| macOS | login Keychain, service `Arion`, account `account-refresh-token/<profile fingerprint>` | `/usr/bin/security` add/find/delete-generic-password |
+| Windows | Credential Manager target `Arion/account-refresh-token/<profile fingerprint>`, generic, local-machine persistence | `CredWriteW` / `CredReadW` / `CredDeleteW` |
 | other | — | `ErrUnsupported` when a method is called. `Open` still succeeds, so dictation starts |
 
 The vocabulary encryption key is a different item: account `vocabulary-key`, written by `infrastructure/secrets` with SecItem on macOS and DPAPI on Windows ([ADR 005](../decisions/005-local-encryption.md)). Sign-out does not address that account. macOS passes the refresh token as an argument of `security` for the duration of the call, visible to other processes of the same user; at rest it is a Keychain generic password. This package uses the `security` tool, the same approach as `github.com/zalando/go-keyring`, so it does not add that module, does not link the SecItem helper that owns the vocabulary key, and `GOOS=darwin go vet` does not need the macOS SDK. Windows blobs are at most 2560 bytes (`ErrRefreshTokenTooLarge`).
@@ -143,3 +143,7 @@ The vocabulary encryption key is a different item: account `vocabulary-key`, wri
 `infrastructure/browser` opens `http` and `https` URLs only: `/usr/bin/open` on macOS, `rundll32 url.dll,FileProtocolHandler` on Windows, `xdg-open` elsewhere.
 
 Native Keychain and Credential Manager behavior is verified by compiling the platform files. It has not been executed on those operating systems.
+
+## Packaged center profiles
+
+The composition root supplies the immutable [compiled center profile](central-sync-design.md#implemented-profile-boundaries), including custom issuer, client, resource, scopes and entitlement. Refresh-token storage is keyed by its fingerprint. Legacy unscoped tokens are retained without migration; sign in again. Device mode disables all account operations and removes the account setup path. Custom OIDC disables the AstraFoundry catalog/waitlist flow. Neither profile selection nor credential-store construction contacts a server or enables sync.

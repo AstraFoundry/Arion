@@ -49,7 +49,7 @@ func StageOf(a runtime.Account) Stage {
 // NeedsCredentialCheck reports a signed-out account whose credential store
 // has not been read since the last account change.
 func NeedsCredentialCheck(a runtime.Account) bool {
-	return a.Phase == runtime.AccountSignedOut && a.Credential == runtime.CredentialUnknown
+	return !a.Disabled && a.Phase == runtime.AccountSignedOut && a.Credential == runtime.CredentialUnknown
 }
 
 // Identity is the profile line: the name over the email, or the email

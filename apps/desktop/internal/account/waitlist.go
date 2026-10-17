@@ -48,6 +48,9 @@ type catalogWaitlist struct {
 }
 
 func (s *Service) JoinHostedSyncWaitlist(ctx context.Context) (WaitlistResult, error) {
+	if s.cfg.Disabled || s.cfg.DisableWaitlist {
+		return WaitlistResult{}, ErrUnsupported
+	}
 	if ctx == nil {
 		ctx = context.Background()
 	}

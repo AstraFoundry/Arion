@@ -13,6 +13,8 @@ docker compose up --build
 
 `ARION_SYNC_ACCOUNT_GATE=noop` is the self-host default: device signatures only, no account tables are read, and `POST /v1/security-events` is not registered. `oidc` verifies `at+jwt` access tokens from the configured issuer and accepts security events. See [services/sync](../../services/sync/README.md).
 
+Standard desktop packages select the AstraFoundry center. Source-build center overrides are specified in [SYNC-11](../../specs/003-memory-sync.md) and the [build profile](../../docs/project/central-sync-design.md#distribution-and-build-time-center-profile); desktop build injection is implemented; sync enrollment remains pending. Setting this deployment's `.env` configures the server only and does not retarget an existing desktop package.
+
 Secrets may be supplied as `ARION_SYNC_DATABASE_URL_FILE` instead of `ARION_SYNC_DATABASE_URL`. Setting both is a startup error. The image runs as uid 65532 and does not include a shell.
 
 Revocation bumps the key epoch. Clients re-encrypt live records; this process stores ciphertext and cannot erase plaintext a device already decrypted. A non-empty `recovery` field on enrollment is rejected.

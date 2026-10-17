@@ -1,6 +1,8 @@
 package main
 
 import (
+	"arion.local/desktop/internal/center"
+	"encoding/json"
 	"log"
 	"os"
 
@@ -9,6 +11,19 @@ import (
 )
 
 func main() {
+	if len(os.Args) == 2 && os.Args[1] == "--print-center-profile" {
+		profile, err := center.Load()
+		if err != nil {
+			log.Fatal(err)
+		}
+		if err := json.NewEncoder(os.Stdout).Encode(struct {
+			Profile     center.Profile `json:"profile"`
+			Fingerprint string         `json:"fingerprint"`
+		}{profile, profile.Fingerprint()}); err != nil {
+			log.Fatal(err)
+		}
+		return
+	}
 	// Environment overrides exist for isolated E2E profiles only.
 	app, err := bootstrap.New(bootstrap.Options{
 		DataDir:        os.Getenv("ARION_DATA_DIR"),

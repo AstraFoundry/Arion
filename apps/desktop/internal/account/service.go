@@ -79,6 +79,9 @@ func (s *Service) Session() (Session, bool) {
 // reads the store only: no discovery, no request, no refresh. A store that
 // cannot be read is an error, never "nothing stored".
 func (s *Service) Stored() (bool, error) {
+	if s.cfg.Disabled {
+		return false, ErrUnsupported
+	}
 	s.commitMu.Lock()
 	defer s.commitMu.Unlock()
 	token, err := s.store.Get()
@@ -160,6 +163,7 @@ func (s *Service) SignIn(ctx context.Context) (Session, error) {
 		return Session{}, s.aborted(ctx, opCtx, err)
 	}
 	session, err := sessionFromTokens(s.cfg.Issuer, tok, s.clock())
+	session.Entitlement = s.cfg.Entitlement
 	if err != nil {
 		return Session{}, err
 	}
@@ -209,6 +213,7 @@ func (s *Service) Refresh(ctx context.Context) (Session, error) {
 		next = current
 	}
 	session, err := sessionFromTokens(s.cfg.Issuer, tok, s.clock())
+	session.Entitlement = s.cfg.Entitlement
 	if err != nil {
 		return Session{}, err
 	}
@@ -227,6 +232,9 @@ func (s *Service) Refresh(ctx context.Context) (Session, error) {
 // sign-in context there so a sign-in that has not entered yet stops, while
 // a token already stored is left for this method to revoke.
 func (s *Service) SignOut(ctx context.Context, armed func()) (SignOutResult, error) {
+	if s.cfg.Disabled {
+		return SignOutResult{}, ErrUnsupported
+	}
 	if ctx == nil {
 		ctx = context.Background()
 	}
@@ -286,6 +294,9 @@ func (s *Service) snapshotForJoin() (token string, entitled, busy bool) {
 }
 
 func (s *Service) start(ctx context.Context, browserWait bool) (uint64, context.Context, error) {
+	if s.cfg.Disabled {
+		return 0, nil, ErrUnsupported
+	}
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	if s.blocked > 0 || ctx.Err() != nil {

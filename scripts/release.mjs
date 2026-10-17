@@ -4,6 +4,7 @@ import { copyFileSync, mkdirSync, readFileSync, readdirSync, writeFileSync } fro
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { checkRelease, digest, platformAssets, releasePlatforms, releaseStatus } from './lib/release.mjs';
+import { checkOfficialCenter } from './lib/center-profile.mjs';
 import { macosSigningSettings } from './lib/desktop-signing.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -11,6 +12,7 @@ const config = JSON.parse(readFileSync(path.join(root, 'apps/desktop/desktop.jso
 const [operation, first, second, mode] = process.argv.slice(2);
 const checksumList = (directory, files) => [...files, 'RELEASE-STATUS.md'].sort().map(file => `${digest(readFileSync(path.join(directory, file))).toString('hex')}  ${file}\n`).join('');
 if (operation === 'check') {
+  checkOfficialCenter({ ...process.env, ARION_OFFICIAL_RELEASE: '1' });
   checkRelease(config, process.env.GITHUB_REF_NAME, process.env.MYGO_UPDATER_PRIVATE_KEY);
   const signing = macosSigningSettings(process.env);
   if (!signing?.certificate || !signing.appleId) throw new Error('Tagged releases require a Developer ID certificate, its password, signing identity and Apple notarization credentials');

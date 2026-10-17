@@ -44,17 +44,20 @@ const (
 // the access token's ent claim includes hosted sync. The access token and
 // the refresh token are not here.
 type Account struct {
-	Phase       AccountPhase
-	Subject     string
-	Name        string
-	Email       string
-	Picture     string
-	Locale      string
-	HostedSync  bool
-	ErrorCode   string
-	ErrorDetail string
-	Waitlist    AccountWaitlist
-	SignOut     AccountSignOut
+	Issuer           string
+	Disabled         bool
+	WaitlistDisabled bool
+	Phase            AccountPhase
+	Subject          string
+	Name             string
+	Email            string
+	Picture          string
+	Locale           string
+	HostedSync       bool
+	ErrorCode        string
+	ErrorDetail      string
+	Waitlist         AccountWaitlist
+	SignOut          AccountSignOut
 	// Credential is meaningful while signed out; any sign-in, refresh,
 	// cancel or sign-out resets it to CredentialUnknown.
 	Credential AccountCredential

@@ -8,7 +8,7 @@ Arion is a voice input product with a native Go desktop shell. macOS and Windows
 - Configurable input modes: global shortcut dictation and system IME. IMK/TSF are separate OS adapters sharing the same core.
 - Local ranking of actual candidate words/segments, preserving candidate identity and text.
 - User-controlled personal vocabulary, correction rules, and contextual preferences.
-- Self-hosted encrypted memory sync, with offline dictation independent of account or server availability.
+- Encrypted memory sync: standard packages select AstraFoundry's center; source builds can select a self-hosted center through build-time environment configuration (SYNC-11, build injection implemented; desktop sync pending). Offline dictation is independent of account or server availability.
 - MyGo native Go UI for the desktop app; the only web code is the static marketing site in `apps/site` ([ADR 016](../decisions/016-marketing-site.md)).
 - The recognition model is not a user decision: the best evaluated bundle downloads and loads automatically; another evaluated bundle can be chosen explicitly.
 
@@ -32,9 +32,11 @@ Jev is TypeSafe’s System One typed decision model. Laya Multilingual is the pr
 | Correction | Conservative rules (`arion-rules-v3`) and approved vocabulary, including entries learned from the user's corrections | Implemented ([ADR 014](../decisions/014-edit-learning.md)); local LLM correction not adopted |
 | Candidate ranking | Laya Multilingual local Choice evaluation adapter | Not implemented: recognizers expose one hypothesis |
 | Local storage | Preferences JSON; AES-256-GCM vocabulary with OS-kept key | Implemented ([ADR 005](../decisions/005-local-encryption.md)); SQLite/outbox pending |
-| Sync service | Self-hosted Go relay; ciphertext records | Protocol specified; not implemented |
+| Sync service | Self-hosted/hosted Go relay; ciphertext records | Relay implemented; desktop sync/outbox, pairing and key delivery pending |
 | Marketing site | Next.js static export, React 19, Tailwind v4, next-intl en/zh/ja; Cloudflare Workers static assets ([ADR 016](../decisions/016-marketing-site.md)) | Implemented in `apps/site`; vendored Sunbeam/beUI until `@astrafoundry/design` is published |
 | Cryptography | Go standard library AES-GCM; Keychain/DPAPI keys | Local values only; key exchange for sync pending |
 | Account sign-in | Public OIDC client `arion-desktop`, loopback PKCE, refresh token in Keychain or Credential Manager | Service, onboarding step and Settings › Account implemented ([account sign-in](account-signin.md)); device enrollment open |
 
 See [specs](../../specs/README.md), [research](../research/README.md), [repository](repository.md), [account sign-in](account-signin.md), and [agent handoff](agent-handoff.md).
+
+[Central sync design proposal](central-sync-design.md) compares the recommended data allowlist with competitor evidence and specifies hosted deployment, client delivery, key lifecycle and release gaps. P1/P2 extensions remain proposals.

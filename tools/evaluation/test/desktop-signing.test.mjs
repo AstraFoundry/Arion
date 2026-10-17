@@ -4,9 +4,9 @@ import { existsSync } from 'node:fs';
 import { macosSigningSettings, prepareMacOSSigning, macosBuildConfig, signingRunner, stripAppleCredentials } from '../../../scripts/lib/desktop-signing.mjs';
 
 const identity = 'Developer ID Application: Arion Test (ABCDE12345)';
-const local = { ARION_MACOS_SIGNING_IDENTITY: identity, ARION_MACOS_NOTARY_PROFILE: 'arion-notary' };
+const local = { MACOS_SIGNING_IDENTITY: identity, MACOS_NOTARY_PROFILE: 'astrafoundry' };
 const imported = {
-  ARION_MACOS_SIGNING_IDENTITY: identity,
+  MACOS_SIGNING_IDENTITY: identity,
   MACOS_CERTIFICATE_P12_BASE64: Buffer.from('certificate test fixture').toString('base64'),
   MACOS_CERTIFICATE_PASSWORD: 'p12-test-password',
   APPLE_ID: 'build@example.invalid', APPLE_TEAM_ID: 'ABCDE12345', APPLE_APP_SPECIFIC_PASSWORD: 'notary-test-password',
@@ -23,12 +23,12 @@ test('no Apple configuration keeps preview builds unsigned; update signing is in
 });
 
 test('partial Apple configuration cannot silently produce an unsigned build', () => {
-  for (const name of Object.keys(imported).concat('ARION_MACOS_NOTARY_PROFILE', 'ARION_MACOS_NOTARY_KEYCHAIN')) {
+  for (const name of Object.keys(imported).concat('MACOS_NOTARY_PROFILE', 'MACOS_NOTARY_KEYCHAIN')) {
     assert.throws(() => macosSigningSettings({ [name]: 'partial' }));
   }
   assert.throws(() => macosSigningSettings({ ...local, MACOS_CERTIFICATE_PASSWORD: 'partial' }), /MACOS_CERTIFICATE_P12_BASE64/);
   assert.throws(() => macosSigningSettings({ ...local, APPLE_ID: 'partial' }), /APPLE_TEAM_ID/);
-  assert.throws(() => macosSigningSettings({ ...local, ARION_MACOS_SIGNING_IDENTITY: '-' }), /Developer ID Application/);
+  assert.throws(() => macosSigningSettings({ ...local, MACOS_SIGNING_IDENTITY: '-' }), /Developer ID Application/);
   assert.throws(() => macosSigningSettings({ ...imported, APPLE_TEAM_ID: 'OTHER12345' }), /team/i);
   assert.throws(() => macosSigningSettings({ ...imported, MACOS_CERTIFICATE_P12_BASE64: '%invalid' }), /Base64/);
 });
@@ -40,9 +40,9 @@ test('local signing uses an existing identity and profile without creating a key
     return command === 'security' ? `1) 1234 "${identity}"` : '';
   };
   const session = prepareMacOSSigning(macosSigningSettings(local), { run });
-  assert.equal(session.env.ARION_MACOS_NOTARY_PROFILE, 'arion-notary');
+  assert.equal(session.env.MACOS_NOTARY_PROFILE, 'astrafoundry');
   const config = macosBuildConfig({ macos: { entitlements: 'entitlements.plist' } }, { command: 'build', platform: 'darwin', env: { ...local, ...session.env } });
-  assert.deepEqual(config.macos, { entitlements: 'entitlements.plist', signingIdentity: identity, notarize: { keychainProfile: 'arion-notary' } });
+  assert.deepEqual(config.macos, { entitlements: 'entitlements.plist', signingIdentity: identity, notarize: { keychainProfile: 'astrafoundry' } });
   session.cleanup();
   assert.ok(!calls.some(([, args]) => args.includes('create-keychain')));
 });
@@ -56,7 +56,7 @@ test('CI credentials are isolated and cleanup restores the keychain search list'
     return '';
   };
   const session = prepareMacOSSigning(macosSigningSettings(imported), { run });
-  const keychain = session.env.ARION_MACOS_NOTARY_KEYCHAIN;
+  const keychain = session.env.MACOS_NOTARY_KEYCHAIN;
   assert.ok(existsSync(keychain.substring(0, keychain.lastIndexOf('/'))));
   assert.ok(calls.some(([command, args]) => command === 'security' && args[0] === 'import' && args.includes('-T') && !args.includes('-A')));
   assert.ok(calls.some(([, args]) => args[0] === 'find-identity' && args.at(-1) === keychain));
@@ -88,7 +88,7 @@ test('build subprocesses receive keychain references and keep the independent up
     assert.equal(env[name], undefined);
   }
   assert.equal(env.MYGO_UPDATER_PRIVATE_KEY, 'update-test-key');
-  assert.equal(env.ARION_MACOS_SIGNING_IDENTITY, identity);
+  assert.equal(env.MACOS_SIGNING_IDENTITY, identity);
 });
 
 test('notary authentication failure restores the search list and removes imported credentials', () => {

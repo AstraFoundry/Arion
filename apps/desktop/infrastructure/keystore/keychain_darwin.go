@@ -10,23 +10,23 @@ import (
 	"arion.local/desktop/internal/account"
 )
 
-func (Store) Put(token string) error {
+func (s Store) Put(token string) error {
 	if err := rejectEmpty(token); err != nil {
 		return err
 	}
-	return security(PutArgs(token), false)
+	return security(s.putArgs(token), false)
 }
 
-func (Store) Get() (string, error) {
-	out, err := securityOutput(GetArgs())
+func (s Store) Get() (string, error) {
+	out, err := securityOutput(s.getArgs())
 	if err != nil {
 		return "", err
 	}
 	return strings.TrimRight(out, "\r\n"), nil
 }
 
-func (Store) Delete() error {
-	return security(DeleteArgs(), true)
+func (s Store) Delete() error {
+	return security(s.deleteArgs(), true)
 }
 
 func security(args []string, missingOK bool) error {

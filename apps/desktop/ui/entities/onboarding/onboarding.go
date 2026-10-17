@@ -74,3 +74,22 @@ func (f *Flow) Back() {
 func Progress(f Flow) (current, total int) {
 	return f.Index, len(Steps) - 1
 }
+
+// Move advances through supported setup steps in either direction.
+func (f *Flow) Move(delta int, s *runtime.State) bool {
+	moved := false
+	if delta > 0 {
+		moved = f.Next(s)
+	} else if f.Index > 0 {
+		f.Back()
+		moved = true
+	}
+	if moved && f.Step() == Sync && s.Account.Disabled {
+		if delta > 0 {
+			f.Next(s)
+		} else {
+			f.Back()
+		}
+	}
+	return moved
+}

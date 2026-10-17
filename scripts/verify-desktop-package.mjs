@@ -3,6 +3,7 @@ import { execFileSync } from 'node:child_process';
 import { readFileSync, statSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { resolveCenter, centerFingerprint, isStandardCenter } from './lib/center-profile.mjs';
 import { macosSigningSettings } from './lib/desktop-signing.mjs';
 import { verifyMacOSDistribution } from './lib/verify-macos-distribution.mjs';
 
@@ -39,6 +40,10 @@ if (spec) {
     if (/\.(dylib|dll)$/.test(name)) binaries.push(file);
   }
 }
+const expectedCenter = resolveCenter(process.env);
+const embeddedCenter = JSON.parse(execFileSync(binaries[0], ['--print-center-profile'], { encoding: 'utf8', env: { PATH: process.env.PATH, SystemRoot: process.env.SystemRoot, HOME: process.env.HOME } }));
+if (JSON.stringify(embeddedCenter.profile) !== JSON.stringify(expectedCenter) || embeddedCenter.fingerprint !== centerFingerprint(expectedCenter)) throw new Error('Packaged center profile does not match build configuration');
+console.log(`Verified embedded center profile ${embeddedCenter.fingerprint}.`);
 for (const file of binaries) {
   requireFile(file);
   if (goos === 'darwin') {
@@ -63,7 +68,7 @@ if (goos === 'darwin') {
   execFileSync(process.execPath, [path.join(root, 'scripts/verify-macos-app.mjs')], { stdio: 'inherit' });
   const signing = macosSigningSettings(process.env);
   if (signing) {
-    verifyMacOSDistribution({ directory: built, config, platform, binaries, identity: signing.identity, updates: Boolean(process.env.MYGO_UPDATER_PRIVATE_KEY) });
+    verifyMacOSDistribution({ directory: built, config, platform, binaries, identity: signing.identity, updates: Boolean(process.env.MYGO_UPDATER_PRIVATE_KEY) && isStandardCenter(expectedCenter) });
     console.log('Verified Developer ID signatures, hardened runtime, notarization tickets and Gatekeeper acceptance.');
   }
 }

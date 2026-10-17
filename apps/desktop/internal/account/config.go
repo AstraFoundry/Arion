@@ -37,6 +37,9 @@ func DefaultScopes() []string {
 // Config is read once by New. The zero value selects the product defaults
 // and does not contact the network.
 type Config struct {
+	Disabled        bool
+	DisableWaitlist bool
+	Entitlement     string
 	// Issuer is the OIDC issuer. Empty selects DefaultIssuer.
 	Issuer string
 	// ClientID is the public client id. Empty selects DefaultClientID.
@@ -59,6 +62,12 @@ type Config struct {
 }
 
 func (c Config) normalized() (Config, error) {
+	if c.Disabled {
+		return c, nil
+	}
+	if c.Entitlement == "" {
+		c.Entitlement = HostedSyncEntitlement
+	}
 	if c.Issuer == "" {
 		c.Issuer = DefaultIssuer
 	}

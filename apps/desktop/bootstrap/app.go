@@ -33,6 +33,7 @@ import (
 	"arion.local/desktop/infrastructure/vocabulary"
 	"arion.local/desktop/infrastructure/wordseg"
 	"arion.local/desktop/internal/account"
+	"arion.local/desktop/internal/center"
 	uiapp "arion.local/desktop/ui/app"
 	arion "arion.local/desktop/ui/shared/runtime"
 	"arion.local/models"
@@ -57,13 +58,14 @@ type Options struct {
 	// E2EControl, when set, is the path of a local control socket for owned
 	// product scenarios; it swaps the microphone for scripted fixture audio.
 	E2EControl string
-	// Account configures hosted-sync sign-in. The zero value selects the
-	// product issuer and does not contact it.
+	// Account supplies transport and timeout test hooks. Provider identity
+	// always comes from the compiled center profile and does not contact it.
 	Account account.Config
 }
 
 // App owns the running desktop application.
 type App struct {
+	center              center.Profile
 	repairedPreferences int
 	diagnostics         *diagnostics.Recorder
 	exports             *diagnosticExport
@@ -132,6 +134,11 @@ type App struct {
 
 // New builds the application without starting the event loop.
 func New(opts Options) (*App, error) {
+	profile, err := center.Load()
+	if err != nil {
+		return nil, err
+	}
+	opts.Account = centerAccountConfig(profile, opts.Account)
 	if opts.DataDir == "" {
 		base, err := os.UserConfigDir()
 		if err != nil {
@@ -151,7 +158,7 @@ func New(opts Options) (*App, error) {
 	if err != nil {
 		return nil, err
 	}
-	a := &App{opts: opts, platform: newPlatform(), catalog: catalog, views: map[*mygo.Window]uiapp.View{}, queueReady: make(chan struct{}, 1)}
+	a := &App{center: profile, opts: opts, platform: newPlatform(), catalog: catalog, views: map[*mygo.Window]uiapp.View{}, queueReady: make(chan struct{}, 1)}
 	a.prefStore = settings.Store{Path: filepath.Join(opts.DataDir, "preferences.json")}
 	prefs, repaired, err := a.prefStore.Load()
 	if err != nil {
@@ -212,10 +219,10 @@ func New(opts Options) (*App, error) {
 	}
 	a.state = arion.State{Preferences: prefs, Platform: modelruntime.Platform(),
 		Shortcut: arion.Shortcut{Accelerator: prefs.Shortcut}, Model: arion.Model{State: arion.ModelUnselected},
-		Account: arion.Account{Phase: arion.AccountSignedOut}}
+		Account: arion.Account{Phase: arion.AccountSignedOut, Issuer: profile.Issuer, Disabled: profile.AuthMode == "device", WaitlistDisabled: !profile.Standard()}}
 	// Sign-in is constructed here and stays idle: no discovery, browser, or
 	// credential read until the user asks.
-	accounts, err := account.New(opts.Account, account.Dependencies{Store: keystore.Open(), Browser: browser.Open})
+	accounts, err := account.New(opts.Account, account.Dependencies{Store: keystore.OpenForProfile(profile.Fingerprint()), Browser: browser.Open})
 	if err != nil {
 		return nil, err
 	}
@@ -364,7 +371,7 @@ func (a *App) ready() {
 	}
 	// Offline and scripted profiles never reach the release feed.
 	var source updateSource = mygoUpdates{}
-	if a.opts.Offline || a.harness != nil {
+	if a.opts.Offline || a.harness != nil || !a.center.Standard() {
 		source = nil
 	}
 	a.updates = newUpdates(source, &a.state.Update, a.post)
@@ -765,4 +772,14 @@ func dictationOriginal(e contracts.Event) string {
 		return ""
 	}
 	return e.Source
+}
+
+// centerAccountConfig adapts immutable package configuration to the account service.
+func centerAccountConfig(profile center.Profile, cfg account.Config) account.Config {
+	cfg.Disabled = profile.AuthMode == "device"
+	cfg.DisableWaitlist = !profile.Standard()
+	cfg.Entitlement = profile.Entitlement
+	cfg.Issuer, cfg.ClientID, cfg.Resource = profile.Issuer, profile.ClientID, profile.Resource
+	cfg.Scopes = append([]string(nil), profile.Scopes...)
+	return cfg
 }

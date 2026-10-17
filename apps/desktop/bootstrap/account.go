@@ -253,7 +253,7 @@ func (a *App) finishSignOut(result account.SignOutResult, err error) {
 		a.state.Account.ErrorDetail = account.DetailOf(err)
 		return
 	}
-	a.state.Account = arion.Account{Phase: arion.AccountSignedOut, SignOut: signOut}
+	a.state.Account = arion.Account{Phase: arion.AccountSignedOut, Issuer: a.state.Account.Issuer, SignOut: signOut, Disabled: a.state.Account.Disabled, WaitlistDisabled: a.state.Account.WaitlistDisabled}
 	if err != nil {
 		a.state.Account.ErrorCode = string(account.CodeOf(err))
 		a.state.Account.ErrorDetail = account.DetailOf(err)

@@ -335,3 +335,39 @@ func TestOnboardingSyncStoredSession(t *testing.T) {
 	click(en.Text(copy.Continue))
 	expect(t, tt, true, en.Text(copy.OnbDoneTitle))
 }
+
+func TestDeviceCenterHidesAccountSettings(t *testing.T) {
+	state, actions, store := fixture()
+	state.Account.Disabled = true
+	page := settings.NewPage()
+	page.Section = settings.Account
+	tt := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, SettingsWidth, SettingsHeight)
+	settle(tt)
+	messages := copy.For(copy.English)
+	expect(t, tt, false, messages.Text(copy.NavAccount), messages.Text(copy.AccSignIn))
+	if actions.called("check-stored") || actions.called("sign-in") {
+		t.Fatal("device center accessed account state")
+	}
+}
+
+func TestCustomOIDCDoesNotOfferOfficialWaitlist(t *testing.T) {
+	state, _, store := fixture()
+	signedIn(state, false)
+	state.Account.WaitlistDisabled = true
+	page := settings.NewPage()
+	page.Section = settings.Account
+	tt := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, SettingsWidth, SettingsHeight)
+	settle(tt)
+	expect(t, tt, false, copy.For(copy.English).Text(copy.AccWaitlistJoin))
+}
+
+func TestAccountShowsConfiguredIssuer(t *testing.T) {
+	state, _, store := fixture()
+	state.Account.Issuer = "https://accounts.example.org"
+	state.Account.Credential = runtime.CredentialAbsent
+	page := settings.NewPage()
+	page.Section = settings.Account
+	tt := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, SettingsWidth, SettingsHeight)
+	settle(tt)
+	expect(t, tt, true, state.Account.Issuer)
+}

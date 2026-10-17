@@ -1,7 +1,8 @@
 // Package keystore stores the hosted-sync refresh token in the OS credential
 // store: the login Keychain on macOS and Credential Manager on Windows.
 //
-// The item is service "Arion", account "account-refresh-token". The vocabulary
+// Production items use service "Arion", account "account-refresh-token/<profile fingerprint>".
+// Unscoped helpers address legacy items only; production never reads or migrates them. The vocabulary
 // encryption key is a different account ("vocabulary-key") created by
 // infrastructure/secrets. Delete addresses only the refresh-token account.
 //
@@ -31,21 +32,36 @@ const (
 )
 
 // Target is the Windows credential name.
-func Target() string { return Service + "/" + Account }
+func Target() string { return Store{}.target() }
+
+func (s Store) target() string { return Service + "/" + s.accountName() }
+
+func (s Store) accountName() string {
+	if s.profile == "" {
+		return Account
+	}
+	return Account + "/" + s.profile
+}
 
 // PutArgs is the security(1) argument vector for a create-or-update.
-func PutArgs(secret string) []string {
-	return []string{"add-generic-password", "-U", "-s", Service, "-a", Account, "-w", secret}
+func PutArgs(secret string) []string { return Store{}.putArgs(secret) }
+
+func (s Store) putArgs(secret string) []string {
+	return []string{"add-generic-password", "-U", "-s", Service, "-a", s.accountName(), "-w", secret}
 }
 
 // GetArgs is the security(1) argument vector for a read.
-func GetArgs() []string {
-	return []string{"find-generic-password", "-s", Service, "-a", Account, "-w"}
+func GetArgs() []string { return Store{}.getArgs() }
+
+func (s Store) getArgs() []string {
+	return []string{"find-generic-password", "-s", Service, "-a", s.accountName(), "-w"}
 }
 
 // DeleteArgs is the security(1) argument vector for deletion.
-func DeleteArgs() []string {
-	return []string{"delete-generic-password", "-s", Service, "-a", Account}
+func DeleteArgs() []string { return Store{}.deleteArgs() }
+
+func (s Store) deleteArgs() []string {
+	return []string{"delete-generic-password", "-s", Service, "-a", s.accountName()}
 }
 
 func rejectEmpty(token string) error {
@@ -59,4 +75,7 @@ func rejectEmpty(token string) error {
 func Open() Store { return Store{} }
 
 // Store is the platform refresh-token item.
-type Store struct{}
+type Store struct{ profile string }
+
+// OpenForProfile isolates refresh tokens by the compiled public profile fingerprint.
+func OpenForProfile(fingerprint string) Store { return Store{profile: fingerprint} }

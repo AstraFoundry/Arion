@@ -1,0 +1,1 @@
+{"url":"https://api.arion.astrafoundry.si","authMode":"oidc","issuer":"https://astrafoundry.si","clientID":"arion-desktop","resource":"https://api.arion.astrafoundry.si","scopes":["openid","profile","offline_access","arion.sync","waitlist:join"],"entitlement":"arion.sync.hosted"}

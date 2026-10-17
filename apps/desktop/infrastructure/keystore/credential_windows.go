@@ -48,7 +48,7 @@ const (
 	_ = uint64(unsafe.Offsetof(credential{}.userName) - 72)
 )
 
-func (Store) Put(token string) error {
+func (s Store) Put(token string) error {
 	if err := rejectEmpty(token); err != nil {
 		return err
 	}
@@ -56,7 +56,7 @@ func (Store) Put(token string) error {
 		return account.ErrRefreshTokenTooLarge
 	}
 	secret := []byte(token)
-	target, user, err := names()
+	target, user, err := s.names()
 	if err != nil {
 		return err
 	}
@@ -78,8 +78,8 @@ func (Store) Put(token string) error {
 	return nil
 }
 
-func (Store) Get() (string, error) {
-	target, _, err := names()
+func (s Store) Get() (string, error) {
+	target, _, err := s.names()
 	if err != nil {
 		return "", err
 	}
@@ -99,8 +99,8 @@ func (Store) Get() (string, error) {
 	return string(append([]byte(nil), buf...)), nil
 }
 
-func (Store) Delete() error {
-	target, _, err := names()
+func (s Store) Delete() error {
+	target, _, err := s.names()
 	if err != nil {
 		return err
 	}
@@ -114,8 +114,8 @@ func (Store) Delete() error {
 	return nil
 }
 
-func names() (target, user *uint16, err error) {
-	target, err = syscall.UTF16PtrFromString(Target())
+func (s Store) names() (target, user *uint16, err error) {
+	target, err = syscall.UTF16PtrFromString(s.target())
 	if err != nil {
 		return nil, nil, err
 	}

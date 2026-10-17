@@ -6,7 +6,7 @@ import path from 'node:path';
 
 const certificateVariables = ['MACOS_CERTIFICATE_P12_BASE64', 'MACOS_CERTIFICATE_PASSWORD'];
 const notaryVariables = ['APPLE_ID', 'APPLE_TEAM_ID', 'APPLE_APP_SPECIFIC_PASSWORD'];
-const signingVariables = ['ARION_MACOS_SIGNING_IDENTITY', 'ARION_MACOS_NOTARY_PROFILE', 'ARION_MACOS_NOTARY_KEYCHAIN', ...certificateVariables, ...notaryVariables];
+const signingVariables = ['MACOS_SIGNING_IDENTITY', 'MACOS_NOTARY_PROFILE', 'MACOS_NOTARY_KEYCHAIN', ...certificateVariables, ...notaryVariables];
 
 function requireGroup(env, names) {
   const present = names.filter(name => env[name]?.trim());
@@ -18,19 +18,19 @@ function requireGroup(env, names) {
 
 export function macosSigningSettings(env) {
   if (!signingVariables.some(name => env[name]?.trim())) return null;
-  const identity = env.ARION_MACOS_SIGNING_IDENTITY?.trim();
+  const identity = env.MACOS_SIGNING_IDENTITY?.trim();
   if (!/^Developer ID Application: .+ \([A-Z0-9]{10}\)$/.test(identity ?? '')) {
-    throw new Error('ARION_MACOS_SIGNING_IDENTITY must be a full Developer ID Application identity, including its Team ID');
+    throw new Error('MACOS_SIGNING_IDENTITY must be a full Developer ID Application identity, including its Team ID');
   }
   const importCertificate = requireGroup(env, certificateVariables);
   if (importCertificate) certificateBytes(env.MACOS_CERTIFICATE_P12_BASE64);
   const storeCredentials = requireGroup(env, notaryVariables);
-  const profile = env.ARION_MACOS_NOTARY_PROFILE?.trim() || (storeCredentials ? 'arion-notary' : '');
-  if (!profile) throw new Error('Set ARION_MACOS_NOTARY_PROFILE or all APPLE_ID, APPLE_TEAM_ID and APPLE_APP_SPECIFIC_PASSWORD values');
+  const profile = env.MACOS_NOTARY_PROFILE?.trim() || (storeCredentials ? 'astrafoundry' : '');
+  if (!profile) throw new Error('Set MACOS_NOTARY_PROFILE or all APPLE_ID, APPLE_TEAM_ID and APPLE_APP_SPECIFIC_PASSWORD values');
   if (storeCredentials && !identity.endsWith(`(${env.APPLE_TEAM_ID.trim()})`)) throw new Error('Apple notarization Team ID does not match the signing identity');
-  if (storeCredentials && env.ARION_MACOS_NOTARY_KEYCHAIN?.trim()) throw new Error('APPLE_* credentials create a temporary keychain; do not also set ARION_MACOS_NOTARY_KEYCHAIN');
+  if (storeCredentials && env.MACOS_NOTARY_KEYCHAIN?.trim()) throw new Error('APPLE_* credentials create a temporary keychain; do not also set MACOS_NOTARY_KEYCHAIN');
   return {
-    identity, profile, keychain: env.ARION_MACOS_NOTARY_KEYCHAIN?.trim(),
+    identity, profile, keychain: env.MACOS_NOTARY_KEYCHAIN?.trim(),
     certificate: importCertificate ? env.MACOS_CERTIFICATE_P12_BASE64 : undefined,
     certificatePassword: env.MACOS_CERTIFICATE_PASSWORD,
     appleId: storeCredentials ? env.APPLE_ID.trim() : undefined,
@@ -113,8 +113,8 @@ export function prepareMacOSSigning(settings, { run, temporaryRoot = os.tmpdir()
     } else {
       run('xcrun', ['notarytool', 'history', '--keychain-profile', settings.profile, ...keychainArgs, '--output-format', 'json']);
     }
-    const env = { ARION_MACOS_SIGNING_IDENTITY: settings.identity, ARION_MACOS_NOTARY_PROFILE: settings.profile };
-    if (keychain) env.ARION_MACOS_NOTARY_KEYCHAIN = keychain;
+    const env = { MACOS_SIGNING_IDENTITY: settings.identity, MACOS_NOTARY_PROFILE: settings.profile };
+    if (keychain) env.MACOS_NOTARY_KEYCHAIN = keychain;
     return { env, cleanup };
   } catch (error) {
     try { cleanup(); } catch (cleanupError) { throw new AggregateError([error, cleanupError], 'macOS signing setup and cleanup failed'); }

@@ -38,7 +38,7 @@ These commands call `scripts/desktop-command.mjs`, the same build/dev entry poin
 | Verified models | `~/Library/Application Support/Arion/models/<artifact>/` | `%AppData%\Arion\models\` |
 | Usage counts | `~/Library/Application Support/Arion/usage.json` | `%AppData%\Arion\usage.json` |
 | Vocabulary (AES-GCM) | `~/Library/Application Support/Arion/vocabulary.bin`, key in the login Keychain | same folder, key protected by DPAPI |
-| Hosted-sync refresh token | login Keychain, service `Arion`, account `account-refresh-token` | Credential Manager target `Arion/account-refresh-token` |
+| Hosted-sync refresh token | login Keychain, service `Arion`, account `account-refresh-token/<profile fingerprint>` | Credential Manager target `Arion/account-refresh-token/<profile fingerprint>` |
 
 `ARION_DATA_DIR` points the app at another profile directory; `ARION_OFFLINE=1` refuses model downloads; `ARION_E2E_CONTROL=<socket>` enables the owned-scenario control mode (fixture audio instead of the microphone). These exist for isolated E2E profiles, not for users.
 
@@ -57,6 +57,8 @@ Run `go mod tidy` in the module whose imports changed and retain `go.sum`. Keep 
 ## Configuration
 
 `apps/desktop/desktop.json` is public package metadata; `mygo.config.ts` applies environment-driven signing. `make build desktop` reads the root `.env` (shell variables take precedence), uses ad hoc signing without Apple configuration, and automatically signs/notarizes with complete credentials. Partial configuration fails. See [signing configuration](deployment.md#macos-signing-configuration) and [`.env.example`](../../.env.example). The controlled identifier is `si.astrafoundry.arion`; the IMK bundle uses `si.astrafoundry.arion.inputmethod`. Windows publisher signing still requires integration. Local preferences and encrypted vocabulary are implemented; desktop sync enrollment/outbox remain open. Credentials must use OS key stores; never add fake environment settings that appear operational.
+
+SYNC-11 selects AstraFoundry as the standard packaged center and build-time `ARION_CENTER_*` overrides for source builds. The [center profile contract](../project/central-sync-design.md#distribution-and-build-time-center-profile) is validated and compiled by `desktop-command.mjs` for both build and dev. Omit all center variables for the standard profile; empty/unknown/incomplete overrides fail. A packaged app ignores runtime center ENV. Enrollment and outbox remain pending, so this configures destinations and account behavior rather than delivering an integrated sync client. Desktop build variables are public configuration and separate from the relay's secret-bearing deployment `ARION_SYNC_*` variables.
 
 ## Troubleshooting
 

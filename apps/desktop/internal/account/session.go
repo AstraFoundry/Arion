@@ -14,6 +14,7 @@ type Profile struct {
 // Session is the in-memory result of sign-in or refresh. The refresh token
 // is not here; it lives only in RefreshTokenStore.
 type Session struct {
+	Entitlement  string
 	Issuer       string
 	Subject      string
 	AccessToken  string
@@ -23,10 +24,14 @@ type Session struct {
 	Profile      Profile
 }
 
-// HasHostedSync reports whether ent contains HostedSyncEntitlement.
+// HasHostedSync checks the configured entitlement; legacy sessions use HostedSyncEntitlement.
 func (s Session) HasHostedSync() bool {
+	entitlement := s.Entitlement
+	if entitlement == "" {
+		entitlement = HostedSyncEntitlement
+	}
 	for _, key := range s.Entitlements {
-		if key == HostedSyncEntitlement {
+		if key == entitlement {
 			return true
 		}
 	}
