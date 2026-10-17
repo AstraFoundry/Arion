@@ -167,6 +167,7 @@ func (s *Service) SignIn(ctx context.Context) (Session, error) {
 	if err != nil {
 		return Session{}, err
 	}
+	s.userInfo(opCtx, doc, &session)
 	if err := s.commit(epoch, opCtx, session, tok.RefreshToken, doc.RevocationEndpoint); err != nil {
 		return Session{}, err
 	}
@@ -217,6 +218,7 @@ func (s *Service) Refresh(ctx context.Context) (Session, error) {
 	if err != nil {
 		return Session{}, err
 	}
+	s.userInfo(opCtx, doc, &session)
 	if err := s.commit(epoch, opCtx, session, next, doc.RevocationEndpoint); err != nil {
 		return Session{}, err
 	}

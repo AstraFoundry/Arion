@@ -121,7 +121,7 @@ func profile(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 		title = messages.Text(key)
 	}
 	ui.Row(c).Gap(12).Padding(14, 16).AlignItems(ui.Center).Children(func() {
-		Avatar(c, a, 40)
+		Avatar(c, tokens, a, 40)
 		ui.Column(c).Grow(1).Shrink(1).Gap(2).Children(func() {
 			ui.Text(c, title).FontSize(theme.Heading).FontWeight(600).ContentTransition(ui.ContentTransition{})
 			if detail != "" {
@@ -138,13 +138,24 @@ func profile(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 }
 
 // Avatar is the profile picture, or the initials of the name on a color
-// of its own. A picture that does not decode shows the initials.
-func Avatar(c *ui.Context, a runtime.Account, size float32) ui.Element {
+// of its own, or the person glyph without either. A picture that does not
+// decode shows the initials.
+func Avatar(c *ui.Context, tokens theme.Tokens, a runtime.Account, size float32) ui.Element {
 	name := strings.TrimSpace(a.Name)
 	if name == "" {
 		name = strings.TrimSpace(a.Email)
 	}
-	return ui.Avatar(c, name, picture(a.PictureData)).FontSize(size / 2.25)
+	bitmap := picture(a.PictureData)
+	if name == "" && bitmap == nil {
+		return glyph(c, tokens, size)
+	}
+	return ui.Avatar(c, name, bitmap).FontSize(size / 2.25)
+}
+
+func glyph(c *ui.Context, tokens theme.Tokens, size float32) ui.Element {
+	disc := ui.Box(c).Size(size, size).Radius(size / 2).Background(tokens.Canvas).Justify(ui.Center).AlignItems(ui.Center)
+	disc.Children(func() { ui.Icon(c, icons.CircleUser).FontSize(size * 0.62).TextColor(tokens.Muted) })
+	return disc
 }
 
 // pictures keeps the last decoded picture: decoding is not free.
@@ -182,9 +193,7 @@ func SidebarCard(c *ui.Context, store runtime.Store, tokens theme.Tokens, select
 	}
 	card.Children(func() {
 		if !a.SignedIn() {
-			ui.Box(c).Size(32, 32).Radius(16).Background(tokens.Canvas).Justify(ui.Center).AlignItems(ui.Center).Children(func() {
-				ui.Icon(c, icons.CircleUser).FontSize(20).TextColor(tokens.Muted)
-			})
+			glyph(c, tokens, 32)
 			ui.Text(c, messages.Text(copy.NavAccount)).FontSize(theme.Body).FontWeight(600).SingleLine().Grow(1)
 			return
 		}
@@ -192,7 +201,7 @@ func SidebarCard(c *ui.Context, store runtime.Store, tokens theme.Tokens, select
 		if key != "" {
 			title = messages.Text(key)
 		}
-		Avatar(c, a, 32)
+		Avatar(c, tokens, a, 32)
 		ui.Column(c).Grow(1).Shrink(1).Gap(1).Children(func() {
 			ui.Text(c, title).FontSize(theme.Body).FontWeight(600).SingleLine()
 			if detail != "" {

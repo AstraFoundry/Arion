@@ -96,6 +96,10 @@ type issuer struct {
 	issuerOverride string
 	authEndpoint   string
 	now            time.Time
+	// bareID issues ID tokens with only sub, as Better Auth 1.7 does, and
+	// serves the profile from UserInfo.
+	bareID       bool
+	userInfoAuth []string
 }
 
 func newIssuer(t *testing.T) *issuer {
@@ -118,6 +122,7 @@ func newIssuer(t *testing.T) *issuer {
 	mux.HandleFunc("/api/auth/oauth2/authorize", s.authorize)
 	mux.HandleFunc("/api/auth/oauth2/token", s.token)
 	mux.HandleFunc("/api/auth/oauth2/revoke", s.revoke)
+	mux.HandleFunc("/api/auth/oauth2/userinfo", s.userinfo)
 	mux.HandleFunc("/api/v1/catalog/products/"+CatalogProduct, s.catalog)
 	mux.HandleFunc("/api/v1/me/waitlists/", s.waitlist)
 	mux.HandleFunc("/stolen", s.stolen)
@@ -219,6 +224,9 @@ func (s *issuer) discovery(w http.ResponseWriter, r *http.Request) {
 		"token_endpoint":         s.srv.URL + "/api/auth/oauth2/token",
 		"revocation_endpoint":    s.srv.URL + "/api/auth/oauth2/revoke",
 	}
+	if s.bareID {
+		doc["userinfo_endpoint"] = s.srv.URL + "/api/auth/oauth2/userinfo"
+	}
 	if s.includeMethods {
 		doc["code_challenge_methods_supported"] = s.methods
 	}
@@ -303,7 +311,7 @@ func (s *issuer) writeTokens(w http.ResponseWriter, refresh string) {
 		}
 		claims["ent"] = ent
 	}
-	badID := s.badID
+	badID, bareID := s.badID, s.bareID
 	s.mu.Unlock()
 	out := map[string]any{
 		"access_token": unsignedJWT(claims),
@@ -313,9 +321,12 @@ func (s *issuer) writeTokens(w http.ResponseWriter, refresh string) {
 	if refresh != "" {
 		out["refresh_token"] = refresh
 	}
-	if badID {
+	switch {
+	case badID:
 		out["id_token"] = "not-a-jwt"
-	} else {
+	case bareID:
+		out["id_token"] = unsignedJWT(map[string]any{"sub": subject})
+	default:
 		out["id_token"] = unsignedJWT(map[string]any{
 			"sub": subject, "name": "Ada", "email": "ada@example.com",
 			"picture": "https://example.com/a.png", "locale": "en",
@@ -323,6 +334,14 @@ func (s *issuer) writeTokens(w http.ResponseWriter, refresh string) {
 	}
 	w.Header().Set("Content-Type", "application/json")
 	_ = json.NewEncoder(w).Encode(out)
+}
+
+func (s *issuer) userinfo(w http.ResponseWriter, r *http.Request) {
+	s.mu.Lock()
+	s.userInfoAuth = append(s.userInfoAuth, r.Header.Get("Authorization"))
+	s.mu.Unlock()
+	w.Header().Set("Content-Type", "application/json")
+	_ = json.NewEncoder(w).Encode(map[string]any{"sub": "user-1", "name": "Grace", "picture": "https://example.com/g.png"})
 }
 
 func (s *issuer) revoke(w http.ResponseWriter, r *http.Request) {
@@ -1050,5 +1069,33 @@ func TestSignOutRevokesStoredTokenWithoutSession(t *testing.T) {
 	}
 	if stored, err := svc.Stored(); stored || err != nil {
 		t.Fatalf("Stored after sign-out = %v, %v", stored, err)
+	}
+}
+
+// Better Auth 1.7 keeps profile claims out of the ID token; sign-in and
+// refresh read them from UserInfo with the access token.
+func TestProfileFromUserInfo(t *testing.T) {
+	iss := newIssuer(t)
+	iss.bareID = true
+	svc := iss.service(&memStore{})
+	session, err := svc.SignIn(context.Background())
+	if err != nil {
+		t.Fatal(err)
+	}
+	if session.Profile.Name != "Grace" || session.Profile.Picture != "https://example.com/g.png" || session.Profile.Email != "" {
+		t.Fatalf("profile = %#v", session.Profile)
+	}
+	iss.refreshMode = "rotate"
+	session, err = svc.Refresh(context.Background())
+	if err != nil {
+		t.Fatal(err)
+	}
+	if session.Profile.Name != "Grace" {
+		t.Fatalf("refreshed profile = %#v", session.Profile)
+	}
+	iss.mu.Lock()
+	defer iss.mu.Unlock()
+	if len(iss.userInfoAuth) != 2 || !strings.HasPrefix(iss.userInfoAuth[0], "Bearer ") {
+		t.Fatalf("userinfo auth = %q", iss.userInfoAuth)
 	}
 }

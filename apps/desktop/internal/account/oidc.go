@@ -16,6 +16,7 @@ type provider struct {
 	AuthorizationEndpoint string   `json:"authorization_endpoint"`
 	TokenEndpoint         string   `json:"token_endpoint"`
 	RevocationEndpoint    string   `json:"revocation_endpoint"`
+	UserInfoEndpoint      string   `json:"userinfo_endpoint"`
 	CodeChallengeMethods  []string `json:"code_challenge_methods_supported"`
 }
 
@@ -49,6 +50,11 @@ func (s *Service) discover(ctx context.Context) (provider, error) {
 	if doc.RevocationEndpoint != "" {
 		if err := checkHTTPURL(doc.RevocationEndpoint); err != nil {
 			return provider{}, wrap(CodeDiscovery, "revocation_endpoint", err)
+		}
+	}
+	if doc.UserInfoEndpoint != "" {
+		if err := checkHTTPURL(doc.UserInfoEndpoint); err != nil {
+			return provider{}, wrap(CodeDiscovery, "userinfo_endpoint", err)
 		}
 	}
 	if len(doc.CodeChallengeMethods) > 0 && !contains(doc.CodeChallengeMethods, "S256") {
@@ -126,6 +132,38 @@ func (s *Service) token(ctx context.Context, endpoint string, form url.Values, r
 		return tok, &Error{Code: CodeToken, Detail: "refresh_token"}
 	}
 	return tok, nil
+}
+
+// userInfo fills the profile from the UserInfo endpoint, where issuers such
+// as Better Auth 1.7 keep the profile and email claims out of the ID token.
+// The profile is display data: when the endpoint is missing or fails, the
+// session keeps the ID token's claims and sign-in still succeeds.
+func (s *Service) userInfo(ctx context.Context, doc provider, session *Session) {
+	if doc.UserInfoEndpoint == "" {
+		return
+	}
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, doc.UserInfoEndpoint, nil)
+	if err != nil {
+		return
+	}
+	req.Header.Set("Authorization", session.TokenType+" "+session.AccessToken)
+	req.Header.Set("Accept", "application/json")
+	body, status, err := s.do(req)
+	if err != nil || status != http.StatusOK {
+		return
+	}
+	var claims map[string]any
+	if json.Unmarshal(body, &claims) != nil || stringClaim(claims, "sub") != session.Subject {
+		return
+	}
+	for _, field := range []struct {
+		claim  string
+		target *string
+	}{{"name", &session.Profile.Name}, {"email", &session.Profile.Email}, {"picture", &session.Profile.Picture}, {"locale", &session.Profile.Locale}} {
+		if value := stringClaim(claims, field.claim); value != "" {
+			*field.target = value
+		}
+	}
 }
 
 func (s *Service) revoke(ctx context.Context, endpoint, refresh string) error {

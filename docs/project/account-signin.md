@@ -104,7 +104,7 @@ func (s *Service) Stored() (bool, error)
 
 There is no client secret. The public client is registered at the issuer. Discovery is `{issuer}/.well-known/openid-configuration`; the issuer string must match the document. Authorize, token, and revocation URLs come from that document. PKCE is S256. If the document lists code-challenge methods and omits S256, sign-in fails with `s256_required` and the browser stays closed.
 
-The access token is decoded for `sub`, `ent`, and the ID-token profile only. The signature is not checked on device. A missing `ent` means no hosted entitlement. A non-array `ent` is `ENTITLEMENT` / `ent_type`. A malformed ID token does not fail sign-in.
+The access token is decoded for `sub`, `ent`, and the ID-token profile only. After sign-in and refresh, the service reads `userinfo_endpoint` from discovery with the access token and fills name, email, picture and locale from it, because Better Auth 1.7 leaves profile claims out of the ID token. A UserInfo failure or a mismatched `sub` keeps the ID-token claims and does not fail sign-in. Email needs the `email` scope, which the `arion-desktop` client is not granted, so no email shows. The signature is not checked on device. A missing `ent` means no hosted entitlement. A non-array `ent` is `ENTITLEMENT` / `ent_type`. A malformed ID token does not fail sign-in.
 
 Refresh replaces the stored refresh token when the response includes a new one, and keeps the current one when it does not. `invalid_grant` deletes the stored token and clears the session.
 
