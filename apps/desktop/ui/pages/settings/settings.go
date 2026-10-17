@@ -83,7 +83,7 @@ func (p *Page) Render(c *ui.Context, store runtime.Store) {
 			side.Background(tokens.Card)
 		}
 		side.DragWindow().Children(func() {
-			theme.Ink(c, tokens, func() { p.nav(c, store.Copy(), !store.State.Account.Disabled) })
+			theme.Ink(c, tokens, func() { p.nav(c, store, tokens) })
 		})
 		ui.Column(c).Grow(1).Background(tokens.Canvas).Children(func() {
 			ui.Row(c).Height(max(bar.Height, 12)+40).Padding(max(bar.Height, 12), theme.Gutter, 0, theme.Gutter).AlignItems(ui.Center).
@@ -235,6 +235,7 @@ func (p *Page) section(c *ui.Context, store runtime.Store, tokens theme.Tokens) 
 		if store.State.Account.SignedIn() {
 			kit.Group(c, tokens, messages.Text(copy.AccSyncGroup), func() { signin.HostedSync(c, store, tokens) })
 		}
+		signin.Portal(c, store, tokens)
 	case About:
 		kit.Card(c, tokens).Children(func() {
 			ui.Column(c).Height(200).Children(func() {
@@ -337,8 +338,10 @@ func (p *Page) deliveryCard(c *ui.Context, store runtime.Store, tokens theme.Tok
 	})
 }
 
-// nav lists the sections.
-func (p *Page) nav(c *ui.Context, messages copy.Catalog, accountEnabled bool) {
+// nav lists the sections, with the account card at the foot of the
+// sidebar.
+func (p *Page) nav(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
+	messages := store.Copy()
 	ui.Sidebar(c.Key("nav"), &p.Section, func() {
 		ui.SidebarItem(c, Overview, icons.ChartLine, messages.Text(copy.NavOverview))
 		ui.SidebarItem(c, General, icons.Settings, messages.Text(copy.NavGeneral))
@@ -346,9 +349,9 @@ func (p *Page) nav(c *ui.Context, messages copy.Catalog, accountEnabled bool) {
 		ui.SidebarItem(c, Microphone, icons.Mic, messages.Text(copy.NavMicrophone))
 		ui.SidebarItem(c, Model, icons.Cpu, messages.Text(copy.NavModel))
 		ui.SidebarItem(c, Vocabulary, icons.BookOpen, messages.Text(copy.NavVocabulary))
-		if accountEnabled {
-			ui.SidebarItem(c, Account, icons.CircleUser, messages.Text(copy.NavAccount))
-		}
 		ui.SidebarItem(c, About, icons.Info, messages.Text(copy.NavAbout))
 	}).Grow(1)
+	if !store.State.Account.Disabled && signin.SidebarCard(c, store, tokens, p.Section == Account) {
+		p.Section = Account
+	}
 }

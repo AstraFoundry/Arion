@@ -67,6 +67,22 @@ func Identity(a runtime.Account) (title string, detail string, key copy.Key) {
 	return "", "", copy.AccSignedIn
 }
 
+// PortalPage is a page of the AstraFoundry account portal, below its
+// /account root.
+type PortalPage struct {
+	Path  string
+	Title copy.Key
+}
+
+// PortalPages are the portal's account pages, in its own order.
+var PortalPages = []PortalPage{
+	{"/profile", copy.AccPortalProfile},
+	{"/security", copy.AccPortalSecurity},
+	{"/connections", copy.AccPortalConnections},
+	{"/products", copy.AccPortalProducts},
+	{"/data", copy.AccPortalData},
+}
+
 // ErrorMessage is the copy for an ErrorCode, refined by ErrorDetail. A
 // cancelled sign-in has none: the user just asked for it.
 func ErrorMessage(code, detail string) copy.Key {

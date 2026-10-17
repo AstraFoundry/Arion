@@ -1,7 +1,7 @@
-// Package onboarding is the first-run flow: permissions, the automatically
-// chosen model, the shortcut, a first dictation and the choice between
-// staying local and signing in for sync, each step beside an illustration
-// of what it enables.
+// Package onboarding is the first-run flow: the choice between signing in
+// to AstraFoundry and staying local, permissions, the automatically chosen
+// model, the shortcut and a first dictation, each step beside an
+// illustration of what it enables.
 package onboarding
 
 import (
@@ -93,11 +93,13 @@ func (p *Page) Render(c *ui.Context, store runtime.Store) {
 				switch step {
 				case onboarding.Welcome:
 					kit.Button(c.Key("next"), tokens, kit.Primary, messages.Text(copy.OnbStart), true).OnClick(func() { p.move(c, 1, state) })
-				case onboarding.Sync:
-					// Signed out, the step's own buttons are the two paths.
-					if account.StageOf(state.Account) != account.SignedOut {
-						kit.Button(c.Key("next"), tokens, kit.Primary, messages.Text(copy.Continue), onboarding.Ready(step, state)).OnClick(func() { p.move(c, 1, state) })
+				case onboarding.Account:
+					// Signed out, moving on is continuing locally.
+					label := messages.Text(copy.Continue)
+					if account.StageOf(state.Account) == account.SignedOut {
+						label = messages.Text(copy.OnbContinueLocally)
 					}
+					kit.Button(c.Key("next"), tokens, kit.Primary, label, onboarding.Ready(step, state)).OnClick(func() { p.move(c, 1, state) })
 				case onboarding.Finished:
 					kit.Button(c.Key("finish"), tokens, kit.Primary, messages.Text(copy.OnbFinish), true).OnClick(func() {
 						p.release(store)
@@ -148,7 +150,7 @@ func (p *Page) move(c *ui.Context, delta int, state *runtime.State) {
 }
 
 // sync runs the microphone monitor and shortcut test only on their steps,
-// and reads whether a sign-in is stored on the sync step.
+// and reads whether a sign-in is stored on the account step.
 func (p *Page) sync(store runtime.Store, step onboarding.Step) {
 	monitor := step == onboarding.Microphone && store.State.Permissions.Microphone == runtime.ConsentGranted
 	if monitor != p.monitoring {
@@ -159,7 +161,7 @@ func (p *Page) sync(store runtime.Store, step onboarding.Step) {
 			store.Actions.StopLevelMonitor()
 		}
 	}
-	if step == onboarding.Sync {
+	if step == onboarding.Account {
 		signin.Check(store)
 	}
 	testing := step == onboarding.Shortcut
@@ -289,8 +291,8 @@ func (p *Page) step(c *ui.Context, store runtime.Store, tokens theme.Tokens, ste
 				modelcard.Render(c, store, tokens, true)
 			}
 		})
-	case onboarding.Sync:
-		heading(c, tokens, messages.Text(copy.OnbSyncTitle), messages.Text(copy.OnbSyncBody))
+	case onboarding.Account:
+		ui.Text(c, messages.Text(copy.OnbAccountTitle)).FontSize(theme.Title + 4).FontWeight(650)
 		ui.Column(c).Width(Content).Gap(12).Children(func() {
 			if account.StageOf(state.Account) != account.SignedOut {
 				signin.Card(c, store, tokens)
@@ -299,11 +301,12 @@ func (p *Page) step(c *ui.Context, store runtime.Store, tokens theme.Tokens, ste
 				}
 				return
 			}
-			ui.Row(c).Gap(8).Children(func() {
-				kit.Button(c.Key("local"), tokens, kit.Primary, messages.Text(copy.OnbContinueLocally), true).OnClick(func() { p.move(c, 1, state) })
-				signin.Start(c, store, tokens, kit.Outline, messages.Text(copy.OnbSignInSync))
-			})
-			ui.Text(c, messages.Text(copy.AccNoDecrypt)).FontSize(theme.Caption).TextColor(tokens.Muted)
+			// A custom issuer's sign-in methods are unknown: one button.
+			if state.Account.Portal == "" {
+				signin.Start(c, store, tokens, kit.Outline, messages.Text(copy.AccSignIn))
+			} else {
+				signin.Methods(c, store, tokens)
+			}
 			signin.Notice(c, store, tokens)
 		})
 	case onboarding.Finished:

@@ -44,7 +44,9 @@ The loopback response is an empty `200` with `Cache-Control: no-store`. The onbo
 
 ## Views
 
-The onboarding step `Sync` comes after the first dictation and before Finish (`entities/onboarding`). The first button, and the primary one, is **Continue locally**. It moves on with no account and no network. **Sign in and set up sync** calls `SignIn`. While `Phase` is `signing_in`, the step shows the browser wait with Cancel (`CancelSignIn`). The step does not move on while a sign-in, refresh, or sign-out is running (`Account.Busy`). Settings › Account shows the same account card: Sign in, or the profile with Sign out and the line that local keys and memory stay. When `Credential` is `stored`, the card shows the earlier sign-in with **Reconnect** (`RefreshAccount`) and **Sign out**, and Sign out revokes and deletes that token without a session in memory. In onboarding, Continue then moves on without reconnecting. While the store is being read, the card shows the checking row. When the store can't be read, the card offers Sign in with the store error under it. When signed in, a Hosted sync card follows. The line that signing in never lets AstraFoundry read memory appears once: on the onboarding step, and in Settings next to Sign in.
+The onboarding step `Account` follows Welcome (`entities/onboarding`) and is skipped when the account is disabled. Signed out, it offers **Continue with Google**, **Continue with GitHub** and **Continue with email**. Each calls `SignIn`, which opens the issuer's sign-in page in the browser, where the same methods sign in or create an account. The primary footer button is **Continue locally**, which moves on with no account and no network. A custom issuer (`Account.Portal` empty) gets one **Sign in** button instead. While `Phase` is `signing_in`, the step shows the browser wait with Cancel (`CancelSignIn`). The step does not move on while a sign-in, refresh, or sign-out is running (`Account.Busy`).
+
+The settings sidebar ends with an account card, as in macOS System Settings: the profile picture (or initials) with name and email, or the person glyph and "Account" while signed out. It opens Settings › Account, which shows the account card: Sign in, or the profile with Sign out. When `Credential` is `stored`, the card shows the earlier sign-in with **Reconnect** (`RefreshAccount`) and **Sign out**, and Sign out revokes and deletes that token without a session in memory. In onboarding, Continue then moves on without reconnecting. While the store is being read, the card shows the checking row. When the store can't be read, the card offers Sign in with the store error under it. When signed in, a Hosted sync card follows, then links to the AstraFoundry account portal (`{Portal}/profile`, `/security`, `/connections`, `/products`, `/data`), opened in the browser. `Account.Portal` is `{issuer}/account` for the standard profile only.
 
 `features/signin` draws the account card and the hosted-sync card. `entities/account` maps state to copy keys.
 
@@ -57,12 +59,13 @@ The onboarding step `Sync` comes after the first dictation and before Finish (`e
 
 `runtime.AccountCodes` lists the codes views know. `TestAccountCodesMatchService` parses `internal/account/errors.go`, so a new service code fails until it is listed and has copy (`TestEveryErrorCodeHasCopy`).
 
+The profile picture is downloaded once per `Picture` URL (`https` only, `image/*`, at most 2 MiB, 15 s) into `Account.PictureData`; a failure leaves the initials.
+
 Not built yet:
 
 - **Device enrollment (SYNC-02) after the entitlement.** No desktop sync client exists. The entitled row in `features/signin` is where enrollment starts.
 - **Turn off sync and Delete server data (SYNC-07).** No actions back them, so Settings shows neither. They stay two separate operations.
 - **Profile after restart.** Name and email are not kept on disk. Before Reconnect, the stored state shows no profile. Keeping it would add fields to the versioned preferences schema.
-- **Profile picture.** `Picture` is not loaded, because loading it would mean fetching a remote image.
 
 ## Service API
 

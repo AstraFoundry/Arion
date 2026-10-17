@@ -44,7 +44,10 @@ const (
 // the access token's ent claim includes hosted sync. The access token and
 // the refresh token are not here.
 type Account struct {
-	Issuer           string
+	Issuer string
+	// Portal is the AstraFoundry account portal, empty for a custom OIDC
+	// issuer, whose web pages Arion does not know.
+	Portal           string
 	Disabled         bool
 	WaitlistDisabled bool
 	Phase            AccountPhase
@@ -52,12 +55,15 @@ type Account struct {
 	Name             string
 	Email            string
 	Picture          string
-	Locale           string
-	HostedSync       bool
-	ErrorCode        string
-	ErrorDetail      string
-	Waitlist         AccountWaitlist
-	SignOut          AccountSignOut
+	// PictureData is the downloaded Picture, empty until it arrives or
+	// when it can't be loaded.
+	PictureData []byte
+	Locale      string
+	HostedSync  bool
+	ErrorCode   string
+	ErrorDetail string
+	Waitlist    AccountWaitlist
+	SignOut     AccountSignOut
 	// Credential is meaningful while signed out; any sign-in, refresh,
 	// cancel or sign-out resets it to CredentialUnknown.
 	Credential AccountCredential

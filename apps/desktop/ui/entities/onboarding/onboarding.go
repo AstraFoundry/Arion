@@ -8,20 +8,20 @@ type Step int
 
 const (
 	Welcome Step = iota
+	// Account offers signing in or creating an AstraFoundry account, through
+	// Google, GitHub or email in the browser, or continuing locally, the
+	// default (SYNC-10). Dictation never waits on it.
+	Account
 	Microphone
 	Accessibility
 	Model
 	Shortcut
 	Try
-	// Sync offers continuing locally, the default, or signing in to set up
-	// sync (SYNC-10). It follows the first dictation so an account never
-	// stands between the user and dictating.
-	Sync
 	Finished
 )
 
 // Steps is the page order.
-var Steps = []Step{Welcome, Microphone, Accessibility, Model, Shortcut, Try, Sync, Finished}
+var Steps = []Step{Welcome, Account, Microphone, Accessibility, Model, Shortcut, Try, Finished}
 
 // Flow is the user's position; Direction drives the page slide.
 type Flow struct {
@@ -45,7 +45,7 @@ func Ready(step Step, s *runtime.State) bool {
 		return s.Model.State == runtime.ModelReady || s.Model.State == runtime.ModelProvisioning || s.Model.State == runtime.ModelLoading
 	case Shortcut:
 		return s.Shortcut.Registered
-	case Sync:
+	case Account:
 		// A sign-in in flight is cancelled or finished before moving on.
 		return !s.Account.Busy()
 	}
@@ -84,7 +84,7 @@ func (f *Flow) Move(delta int, s *runtime.State) bool {
 		f.Back()
 		moved = true
 	}
-	if moved && f.Step() == Sync && s.Account.Disabled {
+	if moved && f.Step() == Account && s.Account.Disabled {
 		if delta > 0 {
 			f.Next(s)
 		} else {

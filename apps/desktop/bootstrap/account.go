@@ -2,6 +2,10 @@ package bootstrap
 
 import (
 	"context"
+	"io"
+	"net/http"
+	"strings"
+	"time"
 
 	"arion.local/desktop/internal/account"
 	arion "arion.local/desktop/ui/shared/runtime"
@@ -220,7 +224,11 @@ func (a *App) applySession(session account.Session, phase arion.AccountPhase) {
 	a.state.Account.Subject = session.Subject
 	a.state.Account.Name = session.Profile.Name
 	a.state.Account.Email = session.Profile.Email
-	a.state.Account.Picture = session.Profile.Picture
+	if a.state.Account.Picture != session.Profile.Picture {
+		a.state.Account.Picture = session.Profile.Picture
+		a.state.Account.PictureData = nil
+		a.loadAccountPicture(session.Profile.Picture)
+	}
 	a.state.Account.Locale = session.Profile.Locale
 	a.state.Account.HostedSync = session.HasHostedSync()
 }
@@ -230,6 +238,7 @@ func (a *App) clearAccountProfile() {
 	a.state.Account.Name = ""
 	a.state.Account.Email = ""
 	a.state.Account.Picture = ""
+	a.state.Account.PictureData = nil
 	a.state.Account.Locale = ""
 	a.state.Account.HostedSync = false
 }
@@ -253,7 +262,7 @@ func (a *App) finishSignOut(result account.SignOutResult, err error) {
 		a.state.Account.ErrorDetail = account.DetailOf(err)
 		return
 	}
-	a.state.Account = arion.Account{Phase: arion.AccountSignedOut, Issuer: a.state.Account.Issuer, SignOut: signOut, Disabled: a.state.Account.Disabled, WaitlistDisabled: a.state.Account.WaitlistDisabled}
+	a.state.Account = arion.Account{Phase: arion.AccountSignedOut, Issuer: a.state.Account.Issuer, Portal: a.state.Account.Portal, SignOut: signOut, Disabled: a.state.Account.Disabled, WaitlistDisabled: a.state.Account.WaitlistDisabled}
 	if err != nil {
 		a.state.Account.ErrorCode = string(account.CodeOf(err))
 		a.state.Account.ErrorDetail = account.DetailOf(err)
@@ -279,4 +288,41 @@ func (a *App) finishWaitlist(result account.WaitlistResult, err error) {
 		Code:       code,
 		HTTPStatus: result.HTTPStatus,
 	}
+}
+
+// maxPictureBytes bounds the downloaded profile picture.
+const maxPictureBytes = 2 << 20
+
+// loadAccountPicture downloads the profile picture off the main thread. It
+// lands only while the profile still names it; a failure leaves the
+// initials, since the picture is decoration.
+func (a *App) loadAccountPicture(url string) {
+	if !strings.HasPrefix(url, "https://") {
+		return
+	}
+	go func() {
+		ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+		defer cancel()
+		request, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
+		if err != nil {
+			return
+		}
+		response, err := http.DefaultClient.Do(request)
+		if err != nil {
+			return
+		}
+		defer response.Body.Close()
+		if response.StatusCode != http.StatusOK || !strings.HasPrefix(response.Header.Get("Content-Type"), "image/") {
+			return
+		}
+		data, err := io.ReadAll(io.LimitReader(response.Body, maxPictureBytes+1))
+		if err != nil || len(data) > maxPictureBytes {
+			return
+		}
+		a.post(func() {
+			if a.state.Account.Picture == url {
+				a.state.Account.PictureData = data
+			}
+		})
+	}()
 }

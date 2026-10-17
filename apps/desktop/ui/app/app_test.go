@@ -132,6 +132,7 @@ func fixture() (*runtime.State, *recorder, runtime.Store) {
 		Permissions: runtime.Permissions{Microphone: runtime.ConsentGranted, Accessibility: runtime.ConsentGranted},
 		Preferences: runtime.Preferences{Mode: runtime.ModeShortcut, Shortcut: "Alt+Space", Delivery: runtime.DeliveryAutomatic, RemoveFillers: true, Sounds: true, CheckUpdates: true},
 		InputMethod: runtime.InputMethodAbsent,
+		Account:     runtime.Account{Phase: runtime.AccountSignedOut, Issuer: "https://astrafoundry.si", Portal: "https://astrafoundry.si/account"},
 		Shortcut:    runtime.Shortcut{Accelerator: "Alt+Space", Registered: true},
 		Model:       runtime.Model{State: runtime.ModelReady, Active: recommended, Automatic: true, LatencyMeasured: true, Bundles: []runtime.Bundle{recommended, other}},
 		Devices:     []runtime.Device{{ID: "a", Name: "MacBook Pro Microphone", Default: true}, {ID: "b", Name: "AirPods Pro"}},
@@ -737,10 +738,15 @@ func TestOnboardingFlow(t *testing.T) {
 		settle(tt)
 	}
 	click(copy.For(copy.English).Text(copy.OnbStart))
+	snapshot(t, tt, "onboarding-2-account")
+	click(copy.For(copy.English).Text(copy.OnbContinueLocally))
+	if actions.called("sign-in") {
+		t.Fatal("continuing locally started a sign-in")
+	}
 	if !hasText(tt, copy.For(copy.English).Text(copy.OnbMicTitle)) {
 		t.Fatalf("microphone step missing: %q", tt.Texts())
 	}
-	snapshot(t, tt, "onboarding-2-microphone")
+	snapshot(t, tt, "onboarding-3-microphone")
 	// Continue stays disabled until consent exists.
 	click(copy.For(copy.English).Text(copy.Continue))
 	if !hasText(tt, copy.For(copy.English).Text(copy.OnbMicTitle)) {
@@ -753,14 +759,14 @@ func TestOnboardingFlow(t *testing.T) {
 	state.Permissions.Microphone = runtime.ConsentGranted
 	state.MonitorLevels = levels(40)
 	settle(tt)
-	snapshot(t, tt, "onboarding-2-microphone-granted")
+	snapshot(t, tt, "onboarding-3-microphone-granted")
 	click(copy.For(copy.English).Text(copy.Continue))
-	snapshot(t, tt, "onboarding-3-accessibility")
+	snapshot(t, tt, "onboarding-4-accessibility")
 	click(copy.For(copy.English).Text(copy.OnbAXAllow))
 	if !actions.called("request-ax") || !hasText(tt, copy.For(copy.English).Text(copy.OnbAXWaiting)) {
 		t.Fatalf("accessibility request: %v %q", actions.calls, tt.Texts())
 	}
-	snapshot(t, tt, "onboarding-3-accessibility-waiting")
+	snapshot(t, tt, "onboarding-4-accessibility-waiting")
 	state.Permissions.Accessibility = runtime.ConsentGranted
 	deadline := time.Now().Add(2 * time.Second)
 	for !hasText(tt, copy.For(copy.English).Text(copy.OnbModelTitle)) && time.Now().Before(deadline) {
@@ -771,26 +777,21 @@ func TestOnboardingFlow(t *testing.T) {
 		t.Fatalf("did not advance after accessibility grant: %q", tt.Texts())
 	}
 	settle(tt)
-	snapshot(t, tt, "onboarding-4-model")
+	snapshot(t, tt, "onboarding-5-model")
 	click(copy.For(copy.English).Text(copy.Continue))
 	if !actions.called("test-shortcut") {
 		t.Fatal("shortcut test mode not entered")
 	}
-	snapshot(t, tt, "onboarding-5-shortcut")
+	snapshot(t, tt, "onboarding-6-shortcut")
 	state.Shortcut.Pressed = time.Now().Add(time.Second)
 	settle(tt)
 	if !hasText(tt, copy.For(copy.English).Text(copy.OnbShortcutHeard)) {
 		t.Fatalf("shortcut press not acknowledged: %q", tt.Texts())
 	}
-	snapshot(t, tt, "onboarding-5-shortcut-heard")
+	snapshot(t, tt, "onboarding-6-shortcut-heard")
 	click(copy.For(copy.English).Text(copy.Continue))
-	snapshot(t, tt, "onboarding-6-try")
+	snapshot(t, tt, "onboarding-7-try")
 	click(copy.For(copy.English).Text(copy.Continue))
-	snapshot(t, tt, "onboarding-7-sync")
-	click(copy.For(copy.English).Text(copy.OnbContinueLocally))
-	if actions.called("sign-in") {
-		t.Fatal("continuing locally started a sign-in")
-	}
 	snapshot(t, tt, "onboarding-8-done")
 	click(copy.For(copy.English).Text(copy.OnbFinish))
 	if !actions.called("complete") {

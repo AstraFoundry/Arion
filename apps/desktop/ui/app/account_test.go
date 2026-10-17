@@ -31,13 +31,14 @@ func expect(t *testing.T, tt *ui.Tester, show bool, texts ...string) {
 }
 
 func signedIn(state *runtime.State, hosted bool) {
-	state.Account = runtime.Account{Phase: runtime.AccountSignedIn, Subject: "sub-1", Name: "Ada Lovelace", Email: "ada@example.com", HostedSync: hosted}
+	state.Account = runtime.Account{Issuer: state.Account.Issuer, Portal: state.Account.Portal, Phase: runtime.AccountSignedIn, Subject: "sub-1", Name: "Ada Lovelace", Email: "ada@example.com", HostedSync: hosted}
 }
 
-// The sync step offers continuing locally first and signing in second; the
+// The account step follows the welcome. It offers Google, GitHub and email,
+// which all open the browser sign-in, beside continuing locally; the
 // sign-in waits on the browser with a cancel, explains failures, and once
-// signed in shows the waitlist or the entitlement before finishing.
-func TestOnboardingSyncStep(t *testing.T) {
+// signed in shows the waitlist or the entitlement before moving on.
+func TestOnboardingAccountStep(t *testing.T) {
 	state, actions, store := fixture()
 	en := copy.For(copy.English)
 	page := onboarding.NewPage()
@@ -45,46 +46,42 @@ func TestOnboardingSyncStep(t *testing.T) {
 	settle(tt)
 	click := clicker(t, tt)
 	click(en.Text(copy.OnbStart))
-	for range 5 {
-		click(en.Text(copy.Continue))
-	}
-	expect(t, tt, true, en.Text(copy.OnbSyncTitle), en.Text(copy.OnbContinueLocally), en.Text(copy.OnbSignInSync), en.Text(copy.AccNoDecrypt))
-	local, _ := tt.Find(en.Text(copy.OnbContinueLocally))
-	signIn, _ := tt.Find(en.Text(copy.OnbSignInSync))
-	if local.X >= signIn.X {
-		t.Fatal("continuing locally is not the first path")
-	}
+	expect(t, tt, true, en.Text(copy.OnbAccountTitle), en.Text(copy.OnbContinueLocally), en.Text(copy.AccContinueGoogle),
+		en.Text(copy.AccContinueGitHub), en.Text(copy.AccContinueEmail))
 	expect(t, tt, false, en.Text(copy.Continue))
-	snapshot(t, tt, "onboarding-sync-choice")
+	snapshot(t, tt, "onboarding-account-choice")
 
-	click(en.Text(copy.OnbSignInSync))
-	if !actions.called("sign-in") {
-		t.Fatal("sign-in not started")
+	for _, method := range []copy.Key{copy.AccContinueGoogle, copy.AccContinueGitHub, copy.AccContinueEmail} {
+		actions.calls = nil
+		click(en.Text(method))
+		if !actions.called("sign-in") {
+			t.Fatalf("%s did not start the browser sign-in", method)
+		}
 	}
 	state.Account.Phase = runtime.AccountSigningIn
 	settle(tt)
 	expect(t, tt, true, en.Text(copy.AccWaiting), en.Text(copy.AccCancel))
-	expect(t, tt, false, en.Text(copy.OnbContinueLocally))
-	snapshot(t, tt, "onboarding-sync-waiting")
+	expect(t, tt, false, en.Text(copy.AccContinueGoogle))
+	snapshot(t, tt, "onboarding-account-waiting")
 	click(en.Text(copy.AccCancel))
 	if !actions.called("cancel-sign-in") {
 		t.Fatal("cancel not requested")
 	}
-	state.Account = runtime.Account{Phase: runtime.AccountSignedOut, ErrorCode: runtime.AccountCodeCancelled}
+	state.Account = runtime.Account{Portal: state.Account.Portal, Phase: runtime.AccountSignedOut, ErrorCode: runtime.AccountCodeCancelled}
 	settle(tt)
-	expect(t, tt, true, en.Text(copy.OnbContinueLocally))
+	expect(t, tt, true, en.Text(copy.OnbContinueLocally), en.Text(copy.AccContinueGoogle))
 	expect(t, tt, false, en.Text(copy.AccErrGeneric))
 
-	state.Account = runtime.Account{Phase: runtime.AccountSignedOut, ErrorCode: runtime.AccountCodeAuthorization, ErrorDetail: "access_denied"}
+	state.Account = runtime.Account{Portal: state.Account.Portal, Phase: runtime.AccountSignedOut, ErrorCode: runtime.AccountCodeAuthorization, ErrorDetail: "access_denied"}
 	settle(tt)
 	expect(t, tt, true, en.Text(copy.AccErrDenied))
-	snapshot(t, tt, "onboarding-sync-denied")
+	snapshot(t, tt, "onboarding-account-denied")
 
 	signedIn(state, false)
 	settle(tt)
-	expect(t, tt, true, "Ada Lovelace", "ada@example.com", en.Text(copy.AccWaitlistOpen), en.Text(copy.AccSelfHosted), en.Text(copy.AccSignOutKeeps))
-	expect(t, tt, false, en.Text(copy.AccErrDenied), en.Text(copy.AccNoDecrypt))
-	snapshot(t, tt, "onboarding-sync-signed-in")
+	expect(t, tt, true, "Ada Lovelace", "ada@example.com", en.Text(copy.AccWaitlistOpen), en.Text(copy.AccSelfHosted), en.Text(copy.Continue))
+	expect(t, tt, false, en.Text(copy.AccErrDenied), en.Text(copy.OnbContinueLocally))
+	snapshot(t, tt, "onboarding-account-signed-in")
 	click(en.Text(copy.AccWaitlistJoin))
 	if !actions.called("join-waitlist") {
 		t.Fatal("waitlist join not requested")
@@ -92,19 +89,35 @@ func TestOnboardingSyncStep(t *testing.T) {
 	state.Account.Waitlist.Phase = runtime.AccountWaitlistJoinedPending
 	settle(tt)
 	expect(t, tt, true, en.Text(copy.AccWaitlistPending))
-	snapshot(t, tt, "onboarding-sync-pending")
 
 	signedIn(state, true)
 	settle(tt)
 	expect(t, tt, true, en.Text(copy.AccSyncAvailable), en.Text(copy.AccSyncDeviceLater))
 	expect(t, tt, false, en.Text(copy.AccWaitlistJoin), en.Text(copy.AccSelfHosted))
-	snapshot(t, tt, "onboarding-sync-entitled")
 	click(en.Text(copy.Continue))
-	expect(t, tt, true, en.Text(copy.OnbDoneTitle))
+	expect(t, tt, true, en.Text(copy.OnbMicTitle))
+}
+
+// A custom issuer's sign-in methods are unknown, so the step offers one
+// sign-in instead of Google, GitHub and email.
+func TestOnboardingAccountCustomIssuer(t *testing.T) {
+	state, actions, store := fixture()
+	state.Account = runtime.Account{Issuer: "https://accounts.example.org", Phase: runtime.AccountSignedOut, Credential: runtime.CredentialAbsent}
+	en := copy.For(copy.English)
+	page := onboarding.NewPage()
+	tt := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, OnboardingWidth, OnboardingHeight)
+	settle(tt)
+	click := clicker(t, tt)
+	click(en.Text(copy.OnbStart))
+	expect(t, tt, false, en.Text(copy.AccContinueGoogle))
+	click(en.Text(copy.AccSignIn))
+	if !actions.called("sign-in") {
+		t.Fatal("sign-in not started")
+	}
 }
 
 // A sign-in in flight holds the step: Continue waits until it finishes.
-func TestOnboardingSyncWaitsForSignIn(t *testing.T) {
+func TestOnboardingAccountWaitsForSignIn(t *testing.T) {
 	state, _, store := fixture()
 	en := copy.For(copy.English)
 	page := onboarding.NewPage()
@@ -112,18 +125,15 @@ func TestOnboardingSyncWaitsForSignIn(t *testing.T) {
 	settle(tt)
 	click := clicker(t, tt)
 	click(en.Text(copy.OnbStart))
-	for range 5 {
-		click(en.Text(copy.Continue))
-	}
 	signedIn(state, false)
 	state.Account.Phase = runtime.AccountRefreshing
 	settle(tt)
 	click(en.Text(copy.Continue))
-	expect(t, tt, true, en.Text(copy.OnbSyncTitle))
+	expect(t, tt, true, en.Text(copy.OnbAccountTitle))
 	state.Account.Phase = runtime.AccountSignedIn
 	settle(tt)
 	click(en.Text(copy.Continue))
-	expect(t, tt, true, en.Text(copy.OnbDoneTitle))
+	expect(t, tt, true, en.Text(copy.OnbMicTitle))
 }
 
 func openAccount(t *testing.T, store runtime.Store) *ui.Tester {
@@ -131,7 +141,12 @@ func openAccount(t *testing.T, store runtime.Store) *ui.Tester {
 	page := settings.NewPage()
 	tt := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, SettingsWidth, SettingsHeight)
 	settle(tt)
-	clicker(t, tt)(store.Copy().Text(copy.NavAccount))
+	// The sidebar's account card names the signed-in account.
+	label := store.Copy().Text(copy.NavAccount)
+	if store.State.Account.SignedIn() {
+		label = store.State.Account.Name
+	}
+	clicker(t, tt)(label)
 	return tt
 }
 
@@ -139,7 +154,7 @@ func TestSettingsAccountSignedOut(t *testing.T) {
 	state, actions, store := fixture()
 	en := copy.For(copy.English)
 	tt := openAccount(t, store)
-	expect(t, tt, true, en.Text(copy.AccTitle), en.Text(copy.AccNoDecrypt), en.Text(copy.AccSignIn))
+	expect(t, tt, true, en.Text(copy.AccTitle), en.Text(copy.AccSignIn))
 	expect(t, tt, false, en.Text(copy.AccSyncGroup))
 	snapshot(t, tt, "settings-account-signed-out")
 	clicker(t, tt)(en.Text(copy.AccSignIn))
@@ -161,7 +176,7 @@ func TestSettingsAccountSignedIn(t *testing.T) {
 	signedIn(state, false)
 	tt := openAccount(t, store)
 	click := clicker(t, tt)
-	expect(t, tt, true, "Ada Lovelace", en.Text(copy.AccSignOut), en.Text(copy.AccSignOutKeeps), en.Text(copy.AccSyncGroup), en.Text(copy.AccWaitlistJoin))
+	expect(t, tt, true, "Ada Lovelace", en.Text(copy.AccSignOut), en.Text(copy.AccSyncGroup), en.Text(copy.AccWaitlistJoin))
 	snapshot(t, tt, "settings-account-signed-in")
 
 	for _, tc := range []struct {
@@ -244,7 +259,7 @@ func TestChineseAccount(t *testing.T) {
 	zh := copy.For(copy.SimplifiedChinese)
 	signedIn(state, true)
 	tt := openAccount(t, store)
-	expect(t, tt, true, zh.Text(copy.AccSignOut), zh.Text(copy.AccSignOutKeeps), zh.Text(copy.AccSyncAvailable), zh.Text(copy.AccSyncDeviceLater))
+	expect(t, tt, true, zh.Text(copy.AccSignOut), zh.Text(copy.AccSyncAvailable), zh.Text(copy.AccSyncDeviceLater))
 	snapshot(t, tt, "settings-account-zh")
 }
 
@@ -265,7 +280,7 @@ func TestSettingsAccountStoredSession(t *testing.T) {
 
 	state.Account.Credential = runtime.CredentialStored
 	settle(tt)
-	expect(t, tt, true, en.Text(copy.AccStoredDetail), en.Text(copy.AccReconnect), en.Text(copy.AccSignOut), en.Text(copy.AccSignOutKeeps))
+	expect(t, tt, true, en.Text(copy.AccStoredDetail), en.Text(copy.AccReconnect), en.Text(copy.AccSignOut))
 	expect(t, tt, false, en.Text(copy.AccSignIn), en.Text(copy.AccSyncGroup))
 	snapshot(t, tt, "settings-account-stored")
 	click := clicker(t, tt)
@@ -306,34 +321,30 @@ func TestSettingsAccountUnreadableStore(t *testing.T) {
 	}
 }
 
-// The onboarding sync step reads the store too; with a stored sign-in it
-// offers Reconnect, and Continue moves on without reconnecting.
-func TestOnboardingSyncStoredSession(t *testing.T) {
+// The onboarding account step reads the store too, and not before; with a
+// stored sign-in it offers Reconnect, and Continue moves on without
+// reconnecting.
+func TestOnboardingAccountStoredSession(t *testing.T) {
 	state, actions, store := fixture()
 	en := copy.For(copy.English)
 	page := onboarding.NewPage()
 	tt := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, OnboardingWidth, OnboardingHeight)
 	settle(tt)
+	if actions.called("check-stored") {
+		t.Fatal("credential store read before the account step")
+	}
 	click := clicker(t, tt)
 	click(en.Text(copy.OnbStart))
-	for range 4 {
-		click(en.Text(copy.Continue))
-	}
-	if actions.called("check-stored") {
-		t.Fatal("credential store read before the sync step")
-	}
-	state.Account = runtime.Account{Phase: runtime.AccountSignedOut}
-	click(en.Text(copy.Continue))
 	if !actions.called("check-stored") {
-		t.Fatal("credential store not read on the sync step")
+		t.Fatal("credential store not read on the account step")
 	}
 	state.Account.Credential = runtime.CredentialStored
 	settle(tt)
 	expect(t, tt, true, en.Text(copy.AccReconnect), en.Text(copy.AccSignOut))
-	expect(t, tt, false, en.Text(copy.OnbSignInSync))
-	snapshot(t, tt, "onboarding-sync-stored")
+	expect(t, tt, false, en.Text(copy.AccContinueGoogle))
+	snapshot(t, tt, "onboarding-account-stored")
 	click(en.Text(copy.Continue))
-	expect(t, tt, true, en.Text(copy.OnbDoneTitle))
+	expect(t, tt, true, en.Text(copy.OnbMicTitle))
 }
 
 func TestDeviceCenterHidesAccountSettings(t *testing.T) {
@@ -370,4 +381,20 @@ func TestAccountShowsConfiguredIssuer(t *testing.T) {
 	tt := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, SettingsWidth, SettingsHeight)
 	settle(tt)
 	expect(t, tt, true, state.Account.Issuer)
+}
+
+// Signed in, the sidebar's foot names the account and its section links the
+// AstraFoundry account portal; a custom issuer has no portal to link.
+func TestSettingsAccountPortal(t *testing.T) {
+	state, _, store := fixture()
+	en := copy.For(copy.English)
+	signedIn(state, false)
+	tt := openAccount(t, store)
+	expect(t, tt, true, en.Text(copy.AccPortalGroup), en.Text(copy.AccPortalProfile), en.Text(copy.AccPortalSecurity),
+		en.Text(copy.AccPortalConnections), en.Text(copy.AccPortalProducts), en.Text(copy.AccPortalData))
+	snapshot(t, tt, "settings-account-portal")
+
+	state.Account.Portal = ""
+	settle(tt)
+	expect(t, tt, false, en.Text(copy.AccPortalGroup))
 }

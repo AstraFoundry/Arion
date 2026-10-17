@@ -1,4 +1,6 @@
-// Package icons exposes the vendored Lucide icon set (ISC, see svg/LICENSE).
+// Package icons exposes the vendored Lucide icon set (ISC, see svg/LICENSE)
+// and the Google and GitHub marks of the AstraFoundry sign-in methods, kept
+// in their brand colors.
 package icons
 
 import (
@@ -28,6 +30,7 @@ var (
 	Check             = load("check")
 	ChartLine         = load("chart-line")
 	ChevronRight      = load("chevron-right")
+	ExternalLink      = load("external-link")
 	ChevronsUpDown    = load("chevrons-up-down")
 	CircleCheck       = load("circle-check")
 	CircleUser        = load("circle-user")
@@ -38,7 +41,9 @@ var (
 	Cpu               = load("cpu")
 	Download          = load("download")
 	Gauge             = load("gauge")
+	GitHub            = load("github")
 	Globe             = load("globe")
+	Google            = load("google")
 	GripVertical      = load("grip-vertical")
 	HardDriveDownload = load("hard-drive-download")
 	Info              = load("info")

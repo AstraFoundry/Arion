@@ -12,6 +12,7 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"strings"
 	"sync"
 	"time"
 
@@ -219,7 +220,7 @@ func New(opts Options) (*App, error) {
 	}
 	a.state = arion.State{Preferences: prefs, Platform: modelruntime.Platform(),
 		Shortcut: arion.Shortcut{Accelerator: prefs.Shortcut}, Model: arion.Model{State: arion.ModelUnselected},
-		Account: arion.Account{Phase: arion.AccountSignedOut, Issuer: profile.Issuer, Disabled: profile.AuthMode == "device", WaitlistDisabled: !profile.Standard()}}
+		Account: arion.Account{Phase: arion.AccountSignedOut, Issuer: profile.Issuer, Portal: accountPortal(profile), Disabled: profile.AuthMode == "device", WaitlistDisabled: !profile.Standard()}}
 	// Sign-in is constructed here and stays idle: no discovery, browser, or
 	// credential read until the user asks.
 	accounts, err := account.New(opts.Account, account.Dependencies{Store: keystore.OpenForProfile(profile.Fingerprint()), Browser: browser.Open})
@@ -782,4 +783,13 @@ func centerAccountConfig(profile center.Profile, cfg account.Config) account.Con
 	cfg.Issuer, cfg.ClientID, cfg.Resource = profile.Issuer, profile.ClientID, profile.Resource
 	cfg.Scopes = append([]string(nil), profile.Scopes...)
 	return cfg
+}
+
+// accountPortal is the AstraFoundry account portal of the standard profile.
+// A custom issuer's web pages are unknown, so it has none.
+func accountPortal(profile center.Profile) string {
+	if !profile.Standard() || profile.AuthMode == "device" {
+		return ""
+	}
+	return strings.TrimSuffix(profile.Issuer, "/") + "/account"
 }
