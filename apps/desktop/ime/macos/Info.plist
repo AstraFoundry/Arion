@@ -2,13 +2,15 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-  <key>CFBundleIdentifier</key><string>si.astrafoundry.arion.inputmethod</string>
-  <key>CFBundleName</key><string>Arion Voice</string>
-  <key>CFBundleDisplayName</key><string>Arion Voice</string>
+  <key>CFBundleIdentifier</key><string>si.astrafoundry.inputmethod.arion</string>
+  <key>CFBundleName</key><string>Arion</string>
+  <key>CFBundleDisplayName</key><string>Arion</string>
   <key>CFBundleExecutable</key><string>ArionInput</string>
   <key>CFBundlePackageType</key><string>APPL</string>
   <key>CFBundleShortVersionString</key><string>0.1.0</string>
   <key>CFBundleVersion</key><string>1</string>
+  <key>CFBundleDevelopmentRegion</key><string>en</string>
+  <key>CFBundleLocalizations</key><array><string>en</string><string>zh-Hans</string></array>
   <key>LSBackgroundOnly</key><true/>
   <key>LSMinimumSystemVersion</key><string>14.0</string>
   <key>NSPrincipalClass</key><string>NSApplication</string>
@@ -21,11 +23,12 @@
   <dict>
     <key>tsInputModeListKey</key>
     <dict>
-      <key>si.astrafoundry.arion.inputmethod.voice</key>
+      <key>si.astrafoundry.inputmethod.arion.pinyin</key>
       <dict>
-        <key>TISInputSourceID</key><string>si.astrafoundry.arion.inputmethod.voice</string>
+        <key>TISInputSourceID</key><string>si.astrafoundry.inputmethod.arion.pinyin</string>
+        <key>tsInputModeLocalizedNameKey</key><string>Arion</string>
         <key>TISIntendedLanguage</key><string>zh-Hans</string>
-        <key>tsInputModeScriptKey</key><string>smRoman</string>
+        <key>tsInputModeScriptKey</key><string>smSimpChinese</string>
         <key>tsInputModeIsVisibleKey</key><true/>
         <key>tsInputModeDefaultStateKey</key><true/>
         <key>tsInputModePrimaryInScriptKey</key><true/>
@@ -33,7 +36,7 @@
         <key>tsInputModePaletteIconFileKey</key><string>menu_icon.tiff</string>
       </dict>
     </dict>
-    <key>tsVisibleInputModeOrderedArrayKey</key><array><string>si.astrafoundry.arion.inputmethod.voice</string></array>
+    <key>tsVisibleInputModeOrderedArrayKey</key><array><string>si.astrafoundry.inputmethod.arion.pinyin</string></array>
   </dict>
 </dict>
 </plist>
