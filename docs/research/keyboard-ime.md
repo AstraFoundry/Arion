@@ -114,7 +114,7 @@ The selection path also calls `learnWord`, which passes candidate/Pinyin metadat
 
 For Arion, adding full keyboard Pinyin would require a separate keyboard-engine capability: scheme normalization, incremental parsing, lexicon and sentence search, ranking, user-word learning, partial selection, editing and candidate pagination, plus IMK/TSF adapters. The existing voice IME host covers only part of that work. Reusing an appropriately licensed keyboard engine is an implementation option, not a conclusion about either competitor's source code.
 
-This research does not change Arion's approved scope. [The product boundary](../project/README.md#explicit-boundaries) and [specifications](../../specs/README.md) keep a full conventional Pinyin keyboard behind a separate scope decision.
+This original research did not expand Arion's scope. The subsequent complete-typing request is addressed by [ADR 017](../decisions/017-offline-pinyin-keyboard.md) and the [IMK alignment implementation](imk-typing-alignment.md), which add offline full-Pinyin typing requirements; implementation and host acceptance remain in progress.
 
 ## Coverage checklist
 
