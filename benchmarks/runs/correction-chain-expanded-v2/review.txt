@@ -1,0 +1,999 @@
+expanded-zh-00
+SPEECH 周三预订六个座位，不，改为四个座位。
+INTENT 周三预订四个座位。
+asr: "周三预定六个座位， 不改为四个座位"
+asr_correct: "周三预订六个座位，不改为四个座为"
+asr_llm: "周三预定六个座位， 不改为四个座位"
+asr_correct_llm: "周三预订六个座位，不改为四个座为"
+offline: "周三预定六个座位， 不改为四个座位。"
+offline_llm: "周三预定六个座位， 不改为四个座位。"
+
+expanded-zh-01
+SPEECH 把附件发给刘老师，等等，是发给孙老师。
+INTENT 把附件发给孙老师。
+asr: "把物件发给刘老师， 总总， 是发给苏恩老师"
+asr_correct: "把物件发给刘老师，总总，是发给苏恩老师"
+asr_llm: "把物件发给刘老师，总总，是发给苏恩老师。"
+asr_correct_llm: "把物件发给刘老师，总总，是发给苏恩老师。"
+offline: "保护件发给刘老师， 是发给思温老师。"
+offline_llm: "保护件发给刘老师，是发给思温老师。"
+
+expanded-zh-02
+SPEECH 提醒时间设为上午十点，改到下午两点。
+INTENT 提醒时间设为下午两点。
+asr: "提醒时间设为上午十点改到下午两点"
+asr_correct: "提醒时间设为上午十点改到下午两点"
+asr_llm: "提醒时间设为上午十点，改到下午两点。"
+asr_correct_llm: "提醒时间设为上午十点，改到下午两点。"
+offline: "提醒时间设为上午十点， 改到下午两点。"
+offline_llm: "提醒时间设为上午十点， 改到下午两点。"
+
+expanded-zh-03
+SPEECH 快递寄到上海，不对，寄到杭州。
+INTENT 快递寄到杭州。
+asr: "会计到上海， 不对， 建造杭州"
+asr_correct: "会计到上海，不对，建造杭州"
+asr_llm: "会计到上海，不对，建造杭州。"
+asr_correct_llm: "会计到上海，不对，建造杭州。"
+offline: "快递进造上海， 不对， 进到杭州。"
+offline_llm: "快递进到杭州。"
+
+expanded-zh-04
+SPEECH 采购金额是一千八百元，抱歉，是两千三百元。
+INTENT 采购金额是两千三百元。
+asr: "采购金额是一千八百元， 抱歉， 是两千三百元"
+asr_correct: "采购金额是一千八百元，抱歉，是两千三百元"
+asr_llm: "采购金额是一千八百元，抱歉，是两千三百元。"
+asr_correct_llm: "采购金额是一千八百元，抱歉，是两千三百元。"
+offline: "采购金额是一千八百元， 抱歉， 是两千三百元。"
+offline_llm: "采购金额是一千八百元，抱歉，是两千三百元。"
+
+expanded-zh-05
+SPEECH 先关掉通知，不，保留通知，只关闭声音。
+INTENT 保留通知，只关闭声音。
+asr: "仙官要通知， 不， 老刘通知， 只关闭声音"
+asr_correct: "仙官要通知，不，老刘通知地只关闭声音"
+asr_llm: "仙官要通知， 不， 老刘通知， 只关闭声音"
+asr_correct_llm: "仙官要通知，不，老刘通知地只关闭声音。"
+offline: "先关掉通知， 不， 保留通知， 只关闭声音。"
+offline_llm: "先关掉通知，不，保留通知，只关闭声音。"
+
+expanded-zh-06
+SPEECH 下周取消培训，算了，培训照常，只调整教室。
+INTENT 下周培训照常，只调整教室。
+asr: "下周取消培训， 算了， 培训照常， 只调整教室"
+asr_correct: "下周取消培训，算了，培训照常，只调整教室"
+asr_llm: "下周取消培训，算了吧。培训照常，只调整教室。"
+asr_correct_llm: "下周取消培训，培训照常，只调整教室。"
+offline: "下周取消培训， 算了， 培训照常知调整教室。"
+offline_llm: "下周取消培训， 算了， 培训照常知调整教室。"
+
+expanded-zh-07
+SPEECH 打印两份合同，再确认一下，应该打印三份合同。
+INTENT 打印三份合同。
+asr: "加印两份合同在确认一下应该打印三份合同"
+asr_correct: "加印两份合同再确认一下应该打印三份合统"
+asr_llm: "加印两份合同在确认一下应该打印三份合同。"
+asr_correct_llm: "加印两份合同，再确认一下应该打印三份合同。"
+offline: "找印两份合同， 再确认一下， 应该早印三份合同。"
+offline_llm: "找印两份合同，再确认一下，应该早印三份合同。"
+
+expanded-zh-08
+SPEECH 不要覆盖原始照片，处理后的文件另存一份。
+INTENT 不要覆盖原始照片，处理后的文件另存一份。
+asr: "不要覆盖原始照片， 处理后的文件另存一份"
+asr_correct: "不要复盖原始照片，处理后的文件另存一份"
+asr_llm: "不要覆盖原始照片，处理后的文件另存一份。"
+asr_correct_llm: "不要覆盖原始照片，处理后的文件另存一份。"
+offline: "不要覆盖原始照片， 处理后的文件另存一份。"
+offline_llm: "不要覆盖原始照片，处理后的文件另存一份。"
+
+expanded-zh-09
+SPEECH 只有主管确认后才能付款，现在先不要转账。
+INTENT 只有主管确认后才能付款，现在先不要转账。
+asr: "只有主管确认后才能付款， 现在先不要做按照"
+asr_correct: "只有主管确认后才能付款，现在先不要做按照"
+asr_llm: "只有主管确认后才能付款，现在先不要做按照。"
+asr_correct_llm: "只有主管确认后才能付款，现在先不要做按照。"
+offline: "只有主管确认后才能付款， 现在先不要做按照。"
+offline_llm: "只有主管确认后才能付款，现在先不要做按照。"
+
+expanded-zh-10
+SPEECH 这不是最终报价，也不包含运费。
+INTENT 这不是最终报价，也不包含运费。
+asr: "这不是最终报价也不包含运费"
+asr_correct: "这不是最终报价也不包含运费"
+asr_llm: "这不是最终报价，也不包含运费。"
+asr_correct_llm: "这不是最终报价，也不包含运费。"
+offline: "这不是最终报价， 也不包含运费。"
+offline_llm: "这不是最终报价，也不包含运费。"
+
+expanded-zh-11
+SPEECH 如果检查没有通过，就不要发送通知。
+INTENT 如果检查没有通过，就不要发送通知。
+asr: "如果见啥没有操作， 就不要发送通知"
+asr_correct: "如果见啥没有操作，就不要发送通知"
+asr_llm: "如果见啥没有操作，就不要发送通知。"
+asr_correct_llm: "如果见啥没有操作，就不要发送通知。"
+offline: "如果检查没有通过， 就不要发送通知。"
+offline_llm: "如果检查没有通过，就不要发送通知。"
+
+expanded-zh-12
+SPEECH 可能是网络波动，不过还需要查看日志。
+INTENT 可能是网络波动，还需要查看日志。
+asr: "可能是网络波动， 不过还需要查看日志"
+asr_correct: "可能是网络波动，不过还需要查看日志"
+asr_llm: "可能是网络波动，不过还需要查看日志。"
+asr_correct_llm: "可能是网络波动，不过还需要查看日志。"
+offline: "可能是网络波动， 不过还需要查看日志。"
+offline_llm: "可能是网络波动，不过还需要查看日志。"
+
+expanded-zh-13
+SPEECH 我大概周日下午到，但暂时不能保证。
+INTENT 我大概周日下午到，但暂时不能保证。
+asr: "我叫周日下午早， 但暂时不能保证"
+asr_correct: "我叫周日下午早，但暂时不能保证"
+asr_llm: "我叫周日下午早，但暂时不能保证。"
+asr_correct_llm: "我叫周日下午早，但暂时不能保证。"
+offline: "我大概周日下午到， 但暂时不能保证。"
+offline_llm: "我大概周日下午到，但暂时不能保证。"
+
+expanded-zh-14
+SPEECH 目前看起来没有丢失数据，但还没完成核对。
+INTENT 目前看起来没有丢失数据，但还没完成核对。
+asr: "目前看起来没有丢失数据， 但还没完成核对"
+asr_correct: "目前看起来没有丢失数据，但还没完成核对"
+asr_llm: "目前看起来没有丢失数据，但还没完成核对。"
+asr_correct_llm: "目前看起来没有丢失数据，但还没完成核对。"
+offline: "目前看起来没有丢失数据， 但还没完成核对。"
+offline_llm: "目前看起来没有丢失数据，但还没完成核对。"
+
+expanded-zh-15
+SPEECH 这份材料也许够用，最好再请财务确认。
+INTENT 这份材料也许够用，最好再请财务确认。
+asr: "就算材料也起作用， 最好再请财务确认"
+asr_correct: "就算材料也起作用，最好再请财务确认"
+asr_llm: "就算材料也起作用，最好再请财务确认。"
+asr_correct_llm: "就算材料也起作用，最好再请财务确认。"
+offline: "这份材料也起作用， 最好暂时财务确认。"
+offline_llm: "这份材料也起作用，最好暂时财务确认。"
+
+expanded-zh-16
+SPEECH 嗯，就是，我想问一下，呃，这个流程能不能简化。
+INTENT 我想问一下，这个流程能不能简化？
+asr: "嗯， 就是我想问一下呃这个流程能不能简化"
+asr_correct: "嗯，就是我想问一下呃这个流程能不能简化"
+asr_llm: "就是我想问一下，这个流程能不能简化。"
+asr_correct_llm: "就是我想问一下，这个流程能不能简化。"
+offline: "嗯， 就是我想问一下呃， 这个流程能不能简化？"
+offline_llm: "就是我想问一下 这个流程能不能简化？"
+
+expanded-zh-17
+SPEECH 那个，我们先把文档，嗯，先把文档整理好。
+INTENT 我们先把文档整理好。
+asr: "那对， 我们先把蚊帐嗯， 先把蚊帐整理好"
+asr_correct: "那对，我们先把蚊帐嗯，先把样帐整理好"
+asr_llm: "那对，我们先把蚊帐整理好。"
+asr_correct_llm: "那对，我们先把蚊帐和样帐整理好。"
+offline: "那个， 我们先把蚊帐， 嗯， 先把蚊帐整理好。"
+offline_llm: "那个， 我们先把蚊帐，  先把蚊帐整理好。"
+
+expanded-zh-18
+SPEECH 我觉得吧，呃，还是应该先做一个小范围测试。
+INTENT 我觉得还是应该先做一个小范围测试。
+asr: "我觉得吧， 呃还是应该先做一个小范围测试"
+asr_correct: "我觉得吧，呃还是应该先做一个小范围测试"
+asr_llm: "我觉得吧，还是应该先做一个小范围测试。"
+asr_correct_llm: "我觉得吧，还是应该先做一个小范围测试。"
+offline: "我觉得吧， 呃还是应该先做一个小范围测试。"
+offline_llm: "我觉得吧，还是应该先做一个小范围测试。"
+
+expanded-zh-19
+SPEECH 嗯嗯，今天的重点就是，那个，确认负责人。
+INTENT 今天的重点是确认负责人。
+asr: "来人， 今天这重点就是那个确认负责人"
+asr_correct: "赖人，今天这重点就是那个确认负责人"
+asr_llm: "来人，今天这重点就是那个确认负责人。"
+asr_correct_llm: "赖人，今天这重点就是那个确认负责人。"
+offline: "嗯嗯， 今天的重点就是那个确认负责人。"
+offline_llm: "今天的重点就是那个确认负责人。"
+
+expanded-zh-20
+SPEECH 请把盖章后的扫描件存到共享文件夹。
+INTENT 请把盖章后的扫描件存到共享文件夹。
+asr: "请把盖章后的扫描键存到共享文件夹"
+asr_correct: "请把盖章后的扫描键存到共享文件夹"
+asr_llm: "请把盖章后的扫描件存到共享文件夹。"
+asr_correct_llm: "请把盖章后的扫描件存到共享文件夹。"
+offline: "请把盖章后的扫描键存到共享文件夹。"
+offline_llm: "请把盖章后的扫描件存到共享文件夹。"
+
+expanded-zh-21
+SPEECH 冷藏食品到货后需要立即放入冰箱。
+INTENT 冷藏食品到货后需要立即放入冰箱。
+asr: "LSP 到货后需要一级放入冰箱"
+asr_correct: "lsp到货后需要一级放入冰箱"
+asr_llm: "LSP 到货后需要一级放入冰箱。"
+asr_correct_llm: "lsp到货后需要一级放入冰箱。"
+offline: "冷藏食品到货后需要立即放入冰箱。"
+offline_llm: "冷藏食品到货后需要立即放入冰箱。"
+
+expanded-zh-22
+SPEECH 日志显示连接在认证阶段被拒绝。
+INTENT 日志显示连接在认证阶段被拒绝。
+asr: "日志显示连接在认证阶段被拒绝"
+asr_correct: "日志显示连接在认证阶段被拒绝"
+asr_llm: "日志显示连接在认证阶段被拒绝。"
+asr_correct_llm: "日志显示连接在认证阶段被拒绝。"
+offline: "日志显示连接在认证阶段被拒绝。"
+offline_llm: "日志显示连接在认证阶段被拒绝。"
+
+expanded-zh-23
+SPEECH 这次只记录讨论内容，不安排新的任务。
+INTENT 这次只记录讨论内容，不安排新的任务。
+asr: "这次是进入讨论内容， 不安排新的任务"
+asr_correct: "这次是进入讨论内容，不安排新的任务"
+asr_llm: "这次是进入讨论内容，不安排新的任务。"
+asr_correct_llm: "这次是进入讨论内容，不安排新的任务。"
+offline: "就辞职记录讨论内容， 不安排新的任务。"
+offline_llm: "就辞职记录讨论内容，不安排新的任务。"
+
+expanded-zh-24
+SPEECH 吴老师您好，嗯，我想把面谈改到下周二下午，您方便吗？谢谢。
+INTENT 吴老师您好，我想把面谈改到下周二下午，您方便吗？
+asr: "吴老师您好， 嗯， 我想把面谈改到下周二下午， 您方便吗？ 谢谢"
+asr_correct: "吴老师您好，嗯，我想把面谈改到下周二下午，您方便吗？谢谢"
+asr_llm: "吴老师您好：\n\n我想把面谈改到下周二下午，您方便吗？谢谢。"
+asr_correct_llm: "吴老师您好：\n\n我想把面谈改到下周二下午，您方便吗？谢谢。"
+offline: "吴老师您好， 嗯， 我想把面谈改到下周二下午， 您方便吗？ 谢谢。"
+offline_llm: "吴老师您好：\n\n我想把面谈改到下周二下午，您方便吗？谢谢。"
+
+expanded-zh-25
+SPEECH 您好，我已经收到样品，不过少了一根充电线，请帮忙核实。
+INTENT 您好，我已经收到样品，但少了一根充电线，请帮忙核实。
+asr: "您好， 我已经收到样品， 不过少了一根充电线， 请帮忙核实"
+asr_correct: "您好，我已经收到样品，不过少了一根充电线，请帮忙核实"
+asr_llm: "您好，我已经收到样品，不过少了一根充电线，请帮忙核实。"
+asr_correct_llm: "您好，我已经收到样品，不过少了一根充电线，请帮忙核实。"
+offline: "您好， 我已经收到样品， 不过少了一根充电线， 请帮忙核实。"
+offline_llm: "您好，我已收到样品，不过少了一根充电线，请帮忙核实。"
+
+expanded-zh-26
+SPEECH 出门前检查三样东西，钥匙，身份证，还有车票。
+INTENT 出门前检查钥匙、身份证和车票。
+asr: "出门前检查三样东西， 钥匙、身份证还有车票"
+asr_correct: "出门前检查三样东西，钥匙、身份证还有车票"
+asr_llm: "出门前检查三样东西：\n1. 钥匙\n2. 身份证\n3. 车票"
+asr_correct_llm: "出门前检查三样东西：\n\n1. 钥匙  \n2. 身份证  \n3. 车票"
+offline: "出门前检查三样东西， 钥匙、身份证， 还有车票。"
+offline_llm: "出门前检查三样东西：\n\n1. 钥匙  \n2. 身份证  \n3. 车票"
+
+expanded-zh-27
+SPEECH 本次更新包括两个变化，支持离线搜索，以及修复导出失败。
+INTENT 本次更新支持离线搜索，并修复导出失败。
+asr: "本次更新包括两个电话， 支持一线搜索以及修复了出失败"
+asr_correct: "本次更新包括两个电话，支持一线搜索以及修复了出失败"
+asr_llm: "本次更新包括两个电话，支持一线搜索以及修复了出失败。"
+asr_correct_llm: "本次更新包括两个电话，支持一线搜索以及修复了出失败。"
+offline: "本次更新包括两个变化， 支持一线搜索以及修复早出失败。"
+offline_llm: "本次更新包括两个变化：\n\n1. 支持一线搜索  \n2. 修复早出失败"
+
+expanded-zh-28
+SPEECH 先联系仓库确认库存，如果数量够，就安排明天发货；如果不够，先告诉我缺多少，不要自行拆单。
+INTENT 先联系仓库确认库存，充足则明天发货；不足则告知缺口，不要自行拆单。
+asr: "先联系仓库确认库存， 如果数量够， 就安排明天发货， 如果不够， 先告诉我缺多少， 不要自行拆单"
+asr_correct: "先联系仓库确认库存，如果数量够，就安排明天发货，如若不够，先告诉我缺多少，不要自行拆单"
+asr_llm: "先联系仓库确认库存，如果数量够，就安排明天发货，如果不够，先告诉我缺多少，不要自行拆单。"
+asr_correct_llm: "先联系仓库确认库存，如果数量够，就安排明天发货，如若不够，先告诉我缺多少，不要自行拆单。"
+offline: "先联系仓库确认库存， 如果数量够， 就安排明天发货， 如果不够， 先告诉我缺多少， 不要自行拆单。"
+offline_llm: "先联系仓库确认库存，如果数量够，就安排明天发货，如果不够，先告诉我缺多少，不要自行拆单。"
+
+expanded-zh-29
+SPEECH 记录一下，场地已经确认，设备还没到，餐饮需要小周跟进。不要把这三件事都标成完成。
+INTENT 场地已确认，设备未到，餐饮由小周跟进；不要全部标为完成。
+asr: "进入一下， 场地已经确认设备还没造， 餐饮需要小周跟进， 不要把这三件事都标成完成"
+asr_correct: "进入一下，场地已经确认设备还没造，餐饮需要小周跟进，不要把这三件事都标成完成"
+asr_llm: "进入一下，场地已经确认，设备还没造，餐饮需要小周跟进，不要把这三件事都标成完成。"
+asr_correct_llm: "进入一下，场地已经确认，设备还没造，餐饮需要小周跟进，不要把这三件事都标成完成。"
+offline: "记录一下， 场地已经确认， 设备还没造， 餐饮需要小周跟进， 不要把这三件事都标成完成。"
+offline_llm: "记录一下：\n\n- 场地已经确认。\n- 设备还没造。\n- 餐饮需要小周跟进。\n- 不要把这三件事都标成完成。"
+
+expanded-zh-30
+SPEECH 我不是要撤回申请，只是希望补充一份证明，原来的申请编号保持不变。
+INTENT 补充一份证明，不撤回申请，原申请编号不变。
+asr: "我不是要撤回申请， 只是希望补充一份证明。原来的申请编号保持不变"
+asr_correct: "我不是要撤回申请，只是希望补充一份证明。原来的申请编号保持不变"
+asr_llm: "我不是要撤回申请，只是希望补充一份证明。原来的申请编号保持不变。"
+asr_correct_llm: "我不是要撤回申请，只是希望补充一份证明。原来的申请编号保持不变。"
+offline: "我不是要撤回申请， 只是希望补充一份证明， 原来的申请编号保持不变。"
+offline_llm: "我不是要撤回申请，只是希望补充一份证明，原来的申请编号保持不变。"
+
+expanded-zh-31
+SPEECH 客户同意先试用两周，但没有同意自动续费，试用结束后需要再次确认。
+INTENT 客户同意试用两周，未同意自动续费，结束后需再次确认。
+asr: "客户同意先试用两周将没有同意自用试费， 试用结束后需要再次确认"
+asr_correct: "客户同意先试用两周将没有同意自用试费，试用结束后需要再次确认"
+asr_llm: "客户同意先试用两周，之后没有同意自用试费。试用结束后需要再次确认。"
+asr_correct_llm: "客户同意先试用两周，之后没有同意自用试费。试用结束后需要再次确认。"
+offline: "客户同意先试用两周， 但没有同意自用试费， 试用结束后需要再次确认。"
+offline_llm: "客户同意先试用两周，但没有同意自用试费，试用结束后需要再次确认。"
+
+expanded-en-00
+SPEECH Reserve five rooms, sorry, reserve three rooms for Friday.
+INTENT Reserve three rooms for Friday.
+asr: "Reserve five rooms. Sorry, reserve three rooms for friday"
+asr_correct: "reserve five rooms"
+asr_llm: "Reserve three rooms for Friday."
+asr_correct_llm: "reserve five rooms"
+offline: "Reserve five rooms. Sorry, reserve three rooms for Friday"
+offline_llm: "Reserve three rooms for Friday."
+
+expanded-en-01
+SPEECH Forward the schedule to Alice, no, forward it to Brian.
+INTENT Forward the schedule to Brian.
+asr: "Forward the schedule to alice no forward it to brian"
+asr_correct: "forward the schedule to alice no forward it to brian"
+asr_llm: "Forward the schedule to alice no forward it to brian"
+asr_correct_llm: "forward the schedule to Alice, do not forward it to Brian."
+offline: "Forward the schedule to Alice. No, forward it to Brian."
+offline_llm: "Forward the schedule to Alice. No, forward it to Brian."
+
+expanded-en-02
+SPEECH The appointment is at nine, actually, move it to eleven in the morning.
+INTENT Move the appointment to eleven in the morning.
+asr: "The appointment is at nine. Actually, move it to eleven in the morning"
+asr_correct: "the appointment is at nine"
+asr_llm: "The appointment is at eleven in the morning."
+asr_correct_llm: "the appointment is at nine."
+offline: "The appointment is at nine. Actually, move it to eleven in the morning"
+offline_llm: "The appointment is at eleven in the morning."
+
+expanded-en-03
+SPEECH Ship the package to Boston, I mean, ship it to Seattle.
+INTENT Ship the package to Seattle.
+asr: "Shiv the package to boston. I mean, ship it to seattle"
+asr_correct: "i mean ship it to seattle"
+asr_llm: "Shiv the package to Seattle."
+asr_correct_llm: "i mean ship it to seattle."
+offline: "Ship the package to boston. I mean ship it to seattle"
+offline_llm: "Ship the package to Seattle."
+
+expanded-en-04
+SPEECH The total is sixty dollars, sorry, seventy dollars.
+INTENT The total is seventy dollars.
+asr: "The total is sixty dollars. Sorry, seventy dollars"
+asr_correct: "the total is sixty dollars"
+asr_llm: "The total is seventy dollars."
+asr_correct_llm: "the total is sixty dollars."
+offline: "The total is sixty dollars. Sorry, seventy dollars"
+offline_llm: "The total is seventy dollars."
+
+expanded-en-05
+SPEECH Cancel the subscription, wait, keep it active and turn off automatic renewal.
+INTENT Keep the subscription active and turn off automatic renewal.
+asr: "Cancel the subscription. Wait keep it active and turn off automatic renewal"
+asr_correct: "cancel the subscription"
+asr_llm: "Cancel the subscription. Wait keep it active and turn off automatic renewal."
+asr_correct_llm: "cancel the subscription"
+offline: "Cancel the subscription. Wait keep it active and turn off automatic renewal."
+offline_llm: "Cancel the subscription. Wait keep it active and turn off automatic renewal."
+
+expanded-en-06
+SPEECH Remove the second paragraph, no, keep that and remove the last paragraph.
+INTENT Keep the second paragraph and remove the last paragraph.
+asr: "Remove the second paragraph no keep that and remove the last paragraph"
+asr_correct: "remove the second paragraph no keep that and remove the last paragraph"
+asr_llm: "Remove the second paragraph, keep the first and remove the last paragraph."
+asr_correct_llm: "remove the second paragraph no keep that and remove the last paragraph"
+offline: "Remove the second paragraph no keep that and remove the last paragraph"
+offline_llm: "Remove the second paragraph, keep the first and remove the last paragraph."
+
+expanded-en-07
+SPEECH We need fifteen copies, let me correct that, fifty copies.
+INTENT We need fifty copies.
+asr: "We need fifteen copies. Let me correct that. Fifty copies"
+asr_correct: "we need fifteen copies"
+asr_llm: "We need fifteen copies. Let me correct that. Fifty copies"
+asr_correct_llm: "we need fifteen copies."
+offline: "We need fifteen copies. Let me correct that. Fifty copies"
+offline_llm: "We need fifteen copies. Let me correct that. Fifty copies"
+
+expanded-en-08
+SPEECH Do not erase the old folder until the new backup has been verified.
+INTENT Do not erase the old folder until the new backup has been verified.
+asr: "Do not erase the old folder until the new backup has been verified"
+asr_correct: "do not erase the old folder until the new backup has been verified"
+asr_llm: "Do not erase the old folder until the new backup has been verified."
+asr_correct_llm: "do not erase the old folder until the new backup has been verified."
+offline: "Do not erase the old folder until the new backup has been verified."
+offline_llm: "Do not erase the old folder until the new backup has been verified."
+
+expanded-en-09
+SPEECH This estimate excludes tax and does not include installation.
+INTENT This estimate excludes tax and does not include installation.
+asr: "This estimate excludes tax and does not include installation"
+asr_correct: "this estimate excludes tax and does not include installation"
+asr_llm: "This estimate excludes tax and does not include installation."
+asr_correct_llm: "this estimate excludes tax and does not include installation."
+offline: "This estimate excludes tax and does not include installation."
+offline_llm: "This estimate excludes tax and does not include installation."
+
+expanded-en-10
+SPEECH If the signature is missing, do not approve the request.
+INTENT If the signature is missing, do not approve the request.
+asr: "If the signature is missing, do not approve the request"
+asr_correct: "the signature is missing do not approve the request"
+asr_llm: "If the signature is missing, do not approve the request."
+asr_correct_llm: "the signature is missing. do not approve the request."
+offline: "If the signature is missing, do not approve the request."
+offline_llm: "If the signature is missing, do not approve the request."
+
+expanded-en-11
+SPEECH Only notify the owner after the upload succeeds.
+INTENT Only notify the owner after the upload succeeds.
+asr: "Only notify the owner after the upload succeeds"
+asr_correct: "only notify the owner after the upload succeeds"
+asr_llm: "Only notify the owner after the upload succeeds."
+asr_correct_llm: "only notify the owner after the upload succeeds."
+offline: "Only notify the owner after the upload succeeds."
+offline_llm: "Only notify the owner after the upload succeeds."
+
+expanded-en-12
+SPEECH The delay could be caused by maintenance, but that has not been confirmed.
+INTENT The delay could be caused by maintenance, but that has not been confirmed.
+asr: "The delay could be caused by maintenance, but that has not been confirmed"
+asr_correct: "the delay could be caused by maintenance but that has not been confirmed"
+asr_llm: "The delay could be caused by maintenance, but that has not been confirmed."
+asr_correct_llm: "the delay could be caused by maintenance but that has not been confirmed."
+offline: "The delay could be caused by maintenance, but that has not been confirmed."
+offline_llm: "The delay could be caused by maintenance, but that has not been confirmed."
+
+expanded-en-13
+SPEECH I will probably arrive before noon, although traffic may change that.
+INTENT I will probably arrive before noon, although traffic may change that.
+asr: "I will probably arrive before noon, although traffic may change that"
+asr_correct: "he will probably arrive before noon"
+asr_llm: "I will probably arrive before noon, although traffic may change that."
+asr_correct_llm: "he will probably arrive before noon."
+offline: "I will probably arrive before noon, although traffic may change that."
+offline_llm: "I will probably arrive before noon, although traffic may change that."
+
+expanded-en-14
+SPEECH It seems the payment went through, but please check the receipt first.
+INTENT It seems the payment went through, but please check the receipt first.
+asr: "It seems the payment went through, but please check the receipt first"
+asr_correct: "it seems the payment went through but please check the receipt first"
+asr_llm: "It seems the payment went through, but please check the receipt first."
+asr_correct_llm: "it seems the payment went through, but please check the receipt first."
+offline: "It seems the payment went through, but please check the receipt first."
+offline_llm: "It seems the payment went through, but please check the receipt first."
+
+expanded-en-15
+SPEECH We may need another review, depending on what the audit finds.
+INTENT We may need another review, depending on what the audit finds.
+asr: "We may need another review, depending on what the audit finds"
+asr_correct: "we may need another review depending on what the audit finds"
+asr_llm: "We may need another review, depending on what the audit finds."
+asr_correct_llm: "we may need another review depending on what the audit finds."
+offline: "We may need another review, depending on what the audit finds"
+offline_llm: "We may need another review, depending on what the audit finds."
+
+expanded-en-16
+SPEECH Um, I was thinking, uh, we could try the smaller venue.
+INTENT I was thinking we could try the smaller venue.
+asr: "Um I was thinking ah we could try the smaller venue"
+asr_correct: "oh i was thinking ah we could try the smaller venue"
+asr_llm: "I was thinking... we could try the smaller venue."
+asr_correct_llm: "oh i was thinking we could try the smaller venue."
+offline: "Um I was thinking, ah, we could try the smaller venue."
+offline_llm: "I was thinking, we could try the smaller venue."
+
+expanded-en-17
+SPEECH Well, the main thing is, you know, to finish the inventory check.
+INTENT The main thing is to finish the inventory check.
+asr: "Well, the main thing is, you know, to finish the inventory check"
+asr_correct: "the main thing is you know to finish the inventory check"
+asr_llm: "Well, the main thing is, you know, to finish the inventory check."
+asr_correct_llm: "the main thing is to finish the inventory check."
+offline: "Well, the main thing is, you know, to finish the inventory check."
+offline_llm: "Well, the main thing is, you know, to finish the inventory check."
+
+expanded-en-18
+SPEECH So, so, please send me, um, send me the revised map.
+INTENT Please send me the revised map.
+asr: "So so please send me um send me the revised map"
+asr_correct: "so so please send me um send me the revised map"
+asr_llm: "So so please send me  send me the revised map"
+asr_correct_llm: "so so please send me  send me the revised map"
+offline: "So, so, please send me um send me the revised map"
+offline_llm: "So, so, please send me  send me the revised map"
+
+expanded-en-19
+SPEECH Uh, let us, let us compare the two options before deciding.
+INTENT Let us compare the two options before deciding.
+asr: "Let us, let us compare the two options before deciding"
+asr_correct: "let us compare the two options before deciding"
+asr_llm: "Let us compare the two options before deciding."
+asr_correct_llm: "let us compare the two options before deciding."
+offline: "Let us let us compare the two options before deciding."
+offline_llm: "Let us compare the two options before deciding."
+
+expanded-en-20
+SPEECH The visitor entrance is on the east side of the building.
+INTENT The visitor entrance is on the east side of the building.
+asr: "The visitor entrance is on the east side of the building"
+asr_correct: "the visitor entrance is on the east side of the building"
+asr_llm: "The visitor entrance is on the east side of the building."
+asr_correct_llm: "the visitor entrance is on the east side of the building."
+offline: "The visitor entrance is on the east side of the building."
+offline_llm: "The visitor entrance is on the east side of the building."
+
+expanded-en-21
+SPEECH Keep the signed original and send a scanned copy to accounting.
+INTENT Keep the signed original and send a scanned copy to accounting.
+asr: "Keep the signed original and sender scan copy to accounting"
+asr_correct: "keep the signed original and sender scan copy to accounting"
+asr_llm: "Keep the signed original and sender scan copy to accounting."
+asr_correct_llm: "keep the signed original and sender scan copy to accounting."
+offline: "Keep the signed original and send a scann copy to counting"
+offline_llm: "Keep the signed original and send a scann copy to counting."
+
+expanded-en-22
+SPEECH The report covers April through June and excludes July.
+INTENT The report covers April through June and excludes July.
+asr: "The report covers april through june and excludes july"
+asr_correct: "the report covers april through june and excludes july"
+asr_llm: "The report covers April through June and excludes July."
+asr_correct_llm: "the report covers april through june and excludes july."
+offline: "The report covers april through june and excludes july"
+offline_llm: "The report covers April through June and excludes July."
+
+expanded-en-23
+SPEECH Place the fragile items above the heavier boxes.
+INTENT Place the fragile items above the heavier boxes.
+asr: "Place the fragile items above the heavier boxes"
+asr_correct: "Place the fragile items above the heavier boxes"
+asr_llm: "Place the fragile items above the heavier boxes."
+asr_correct_llm: "Place the fragile items above the heavier boxes."
+offline: "Place the fragile items above the heavier boxes"
+offline_llm: "Place the fragile items above the heavier boxes."
+
+expanded-en-24
+SPEECH Hi Maya, um, could you send the revised agenda by Tuesday? Thanks.
+INTENT Hi Maya, could you send the revised agenda by Tuesday?
+asr: "Hi maya um could you send the revised agenda by tuesday? Thanks"
+asr_correct: "hi maya um could you send the revised agenda by tuesday"
+asr_llm: "Hi maya,\n\nCould you send the revised agenda by Tuesday?\n\nThanks."
+asr_correct_llm: "hi maya,\n\ncould you send the revised agenda by tuesday?"
+offline: "Hi Maya, um could you send the revised agenda by Tuesday? Thanks."
+offline_llm: "Hi Maya,\n\nCould you send the revised agenda by Tuesday?\n\nThanks."
+
+expanded-en-25
+SPEECH Hello, I received the replacement, but the power cable is still missing. Please check.
+INTENT Hello, I received the replacement, but the power cable is still missing. Please check.
+asr: "Hello, I received the replacement, but the power cable is still missing please check"
+asr_correct: "Hello i received the replacement but the power cable is still missing please check"
+asr_llm: "Hello, I received the replacement, but the power cable is still missing. Please check."
+asr_correct_llm: "Hello,\n\nI received the replacement but the power cable is still missing. Please check."
+offline: "Hello, I received the replacement, but the power cable is still missing please check."
+offline_llm: "Hello, I received the replacement, but the power cable is still missing. Please check."
+
+expanded-en-26
+SPEECH Before leaving, check the windows, lock the back door, and switch off the lights.
+INTENT Before leaving, check the windows, lock the back door, and switch off the lights.
+asr: "Before leaving, check the windows, lock the back door, and switch off the lights"
+asr_correct: "before leaving check the windows lock the back door and switch off the lights"
+asr_llm: "Before leaving, check the windows, lock the back door, and switch off the lights."
+asr_correct_llm: "before leaving check the windows lock the back door and switch off the lights"
+offline: "Before leaving, check the windows, lock the back door, and switch off the lights"
+offline_llm: "Before leaving, check the windows, lock the back door, and switch off the lights."
+
+expanded-en-27
+SPEECH We need two changes, a larger font and a higher contrast background.
+INTENT We need a larger font and a higher contrast background.
+asr: "We need to changes a larger font and a higher contrast background"
+asr_correct: "we need to change a larger font and a higher contrast background"
+asr_llm: "We need to change a larger font and a higher contrast background."
+asr_correct_llm: "we need to change a larger font and a higher contrast background."
+offline: "We need two changes a larger font and a higher contrast background."
+offline_llm: "We need two changes: a larger font and a higher contrast background."
+
+expanded-en-28
+SPEECH Ask the supplier whether all parts are available. If they are, request delivery on Monday. Otherwise, ask which parts are missing and do not accept a partial shipment.
+INTENT Check all parts with the supplier; request Monday delivery if available, otherwise identify missing parts and refuse partial shipment.
+asr: "Ask the supplier whether all parts are available if they are, request delivery on monday. Otherwise, ask which parts are missing and do not accept a partial shipment"
+asr_correct: "ask the supplier whether all parts are available if they are and request delivery on monday"
+asr_llm: "Ask the supplier whether all parts are available. If they are, request delivery on Monday. Otherwise, ask which parts are missing and do not accept a partial shipment."
+asr_correct_llm: "ask the supplier whether all parts are available, if they are and request delivery on Monday."
+offline: "Ask the supplier whether all parts are available. If they are, request delivery on Monday. Otherwise, ask which parts are missing and do not accept a partial shipment."
+offline_llm: "Ask the supplier whether all parts are available. If they are, request delivery on Monday. Otherwise, ask which parts are missing and do not accept a partial shipment."
+
+expanded-en-29
+SPEECH The room is booked, the projector is still unconfirmed, and Dana will handle catering. Please do not mark all three as completed.
+INTENT Room booked; projector unconfirmed; Dana handles catering. Do not mark all three completed.
+asr: "The room is booked. The projector is still unconfirmed, and dana will handle catering please do not mark all three as completed"
+asr_correct: "the projector is still unconfirmed and dana will handle catering"
+asr_llm: "The room is booked. The projector is still unconfirmed, and Dana will handle catering. Please do not mark all three as completed."
+asr_correct_llm: "the projector is still unconfirmed, and dana will handle catering."
+offline: "The room is booked, the projector is still unconfirmed, and dana will handle catering. Please do not mark all three as completed"
+offline_llm: "The room is booked, the projector is still unconfirmed, and dana will handle catering. Please do not mark all three as completed"
+
+expanded-en-30
+SPEECH I am not withdrawing the complaint. I only want to attach the photographs, and the existing case number should stay the same.
+INTENT Attach photographs without withdrawing the complaint or changing the existing case number.
+asr: "I am not withdrawing the complaint. I only want to attach the photographs and the existing case number should stay the same"
+asr_correct: "i am not withdrawing the complaint"
+asr_llm: "I am not withdrawing the complaint. I only want to attach the photographs and the existing case number should stay the same."
+asr_correct_llm: "i am not withdrawing the complaint."
+offline: "I am not withdrawing the complaint. I only want to attach the photographs, and the existing case number should stay the same."
+offline_llm: "I am not withdrawing the complaint. I only want to attach the photographs, and the existing case number should stay the same."
+
+expanded-en-31
+SPEECH The customer agreed to a one month trial but did not authorize recurring payments. We must ask again when the trial ends.
+INTENT Customer agreed to a one month trial, not recurring payments; ask again at the end.
+asr: "The customer agreed to a one month trial but did not authorize recurring payments. We must ask again when the trial ends"
+asr_correct: "the customer agreed to a one month trial but did not authorize recurring payments"
+asr_llm: "The customer agreed to a one-month trial but did not authorize recurring payments. We must ask again when the trial ends."
+asr_correct_llm: "the customer agreed to a one month trial but did not authorize recurring payments."
+offline: "The customer agreed to a one month trial but did not authorize recurring payments. We must ask again when the trial ends."
+offline_llm: "The customer agreed to a one-month trial but did not authorize recurring payments. We must ask again when the trial ends."
+
+expanded-mixed-00
+SPEECH 先重启 Nginx，不对，先重启 Redis。
+INTENT 先重启 Redis。
+asr: "先重启， 不对， 先重启 Redis"
+asr_correct: "先重启，不对，先重啟redis"
+asr_llm: "先重启 Redis。"
+asr_correct_llm: "先重啟 redis."
+offline: "先重启 Ginks， 不对， 先重启 Redis。"
+offline_llm: "先重启 Redis。"
+
+expanded-mixed-01
+SPEECH 把文件保存成 JSON，等等，应该保存成 CSV。
+INTENT 把文件保存成 CSV。
+asr: "老文件保存 ， 应该保存成七 SV"
+asr_correct: "老文件保存，应该保存成七sv"
+asr_llm: "老文件保存，应该保存成七 SV。"
+asr_correct_llm: "老文件保存，应该保存成七sv。"
+offline: "把文件保存成， 应该保存成 CSV。"
+offline_llm: "把文件保存成， 应该保存成 CSV。"
+
+expanded-mixed-02
+SPEECH 这次用 Python，不，改成用 Go 来实现。
+INTENT 这次用 Go 来实现。
+asr: "这次用 P 三不改成用勾来实现"
+asr_correct: "这次用p三部改成用勾来实现"
+asr_llm: "这次用勾来实现。"
+asr_correct_llm: "这次用 P 三部改成用 勾 来实现。"
+offline: "这次用 P 三不改成用勾来实现。"
+offline_llm: "这次用勾来实现。"
+
+expanded-mixed-03
+SPEECH 把任务分配给 Alice，不是，分配给 David。
+INTENT 把任务分配给 David。
+asr: "把任务分配给阿丽莎， 不是分配给 Lawis"
+asr_correct: "把任务分配给阿丽莎，不是分配給lawis"
+asr_llm: "把任务分配给阿丽莎。"
+asr_correct_llm: "把任务分配给阿丽莎。"
+offline: "把任务分配给阿伊斯， 不是分配给 L。"
+offline_llm: "把任务分配给阿伊斯，而不是分配给 L。"
+
+expanded-mixed-04
+SPEECH 接口超时设成五秒，改成十五秒，API 路径不要动。
+INTENT 接口超时设成十五秒，API 路径不变。
+asr: "街口超时射程五秒， 改成十五秒 A T I 路径不要动"
+asr_correct: "街口超时射程五秒，改成十五秒ati路径不要动"
+asr_llm: "街口超时射程十五秒，改成十五秒 A T I 路径不要动。"
+asr_correct_llm: "街口超时射程十五秒，改成 ATI 路径不要动。"
+offline: "接口超时射程五秒， 改成十五秒 API 路径不要动。"
+offline_llm: "接口超时射程十五秒， API 路径不要动。"
+
+expanded-mixed-05
+SPEECH 删除这个 branch，算了，保留 branch，只关闭 pull request。
+INTENT 保留 branch，只关闭 pull request。
+asr: "删除这个删算了， 保留三十只关闭或者"
+asr_correct: "删除这个删算了，保留三十只关闭或者"
+asr_llm: "删除这个删算了，保留三十只关闭或者。"
+asr_correct_llm: "删除这个删算了，保留三十只关闭或者。"
+offline: "删除这个 range 算了， 保留只关闭 pressist。"
+offline_llm: "删除这个 range 算了，保留只关闭 pressist。"
+
+expanded-mixed-06
+SPEECH 先看 CPU 的占用，不对，先看 GPU 的显存。
+INTENT 先看 GPU 的显存。
+asr: "先看 C P U 的占用， 不对， 先看 G P U 的显存"
+asr_correct: "先看cpu的占用，不对，先看gpu地显存"
+asr_llm: "先看 GPU 的显存。"
+asr_correct_llm: "先看 GPU 地显存。"
+offline: "先看 C P U 的占用， 不对， 先看 G P U 的显存。"
+offline_llm: "先看 GPU 的显存。"
+
+expanded-mixed-07
+SPEECH 部署到 production，等等，先部署到 staging。
+INTENT 先部署到 staging。
+asr: "不输要抓住自己， 走走， 先不输要擦掉"
+asr_correct: "不输要抓住自己，走走，先不输药擦掉"
+asr_llm: "不输要抓住自己，走走，先不输要擦掉。"
+asr_correct_llm: "不输要抓住自己，走走，先不输药擦掉。"
+offline: "不输造就自己， 先不输造。"
+offline_llm: "不输造就自己，先不输造。"
+
+expanded-mixed-08
+SPEECH 不要修改 Docker 的镜像，只调整环境变量。
+INTENT 不要修改 Docker 的镜像，只调整环境变量。
+asr: "不要修改的镜像， 只调整环境变量"
+asr_correct: "不要修改的镜像，只调整环境变量"
+asr_llm: "不要修改的镜像，只调整环境变量。"
+asr_correct_llm: "不要修改的镜像，只调整环境变量。"
+offline: "不要修改 docker 的镜像， 只调整环境变量。"
+offline_llm: "不要修改 docker 的镜像，只调整环境变量。"
+
+expanded-mixed-09
+SPEECH 只有 CI 通过以后才能 merge，现在不要合并。
+INTENT 只有 CI 通过以后才能 merge，现在不要合并。
+asr: "只有西亚通过以后才能摸个， 现在不要合并"
+asr_correct: "只有西亚通过以后才能摸个，现在不要合并"
+asr_llm: "只有西亚通过以后才能摸个，现在不要合并。"
+asr_correct_llm: "只有西亚通过以后才能摸个，现在不要合并。"
+offline: "只有西亚通过以后才能 murder， 现在不要合并。"
+offline_llm: "只有西亚通过以后才能 murder，现不要合并。"
+
+expanded-mixed-10
+SPEECH 这个 bug 只影响 Android，不影响 iOS。
+INTENT 这个 bug 只影响 Android，不影响 iOS。
+asr: "这个 book 之影响 Android， 不影响 ios"
+asr_correct: "这个book只影响android，不影响ios"
+asr_llm: "这个 book 的影响 Android，不影響 iOS。"
+asr_correct_llm: "这个book只影响 Android，不影响 iOS。"
+offline: "这个 bug 只影响 Android， 不影响 iOS。"
+offline_llm: "这个 bug 只影响 Android，不影响 iOS。"
+
+expanded-mixed-11
+SPEECH 如果 token 过期，就返回错误，不要自动 retry。
+INTENT 如果 token 过期，就返回错误，不要自动 retry。
+asr: "如果交过期， 就返回错误， 不要自动割据"
+asr_correct: "如果较过期，就返回错误，不要自动割据"
+asr_llm: "如果交过期，就返回错误，不要自动割据。"
+asr_correct_llm: "如果较过期，就返回错误，不要自动割据。"
+offline: "如果仇恨过期， 就返回错误， 不要自动割。"
+offline_llm: "如果仇恨过期，就返回错误，不要自动割。"
+
+expanded-mixed-12
+SPEECH 可能是 DNS 缓存的问题，但还需要确认。
+INTENT 可能是 DNS 缓存的问题，但还需要确认。
+asr: "可能是 D N S 缓存的问题， 但还需要确认"
+asr_correct: "可能是dns缓存的问题，但还需要确认"
+asr_llm: "可能是 DNS 缓存的问题，但还需要确认。"
+asr_correct_llm: "可能是 DNS 缓存的问题，但还需要确认。"
+offline: "可能是 D N S 缓存的问题， 但还需要确认。"
+offline_llm: "可能是 DNS 缓存的问题，但还需要确认。"
+
+expanded-mixed-13
+SPEECH 看起来是 React 的渲染问题，不过还没有复现。
+INTENT 看起来是 React 的渲染问题，不过还没有复现。
+asr: "看起来是 girls 的渲染问题， 不过还没有路线"
+asr_correct: "看起来是girls的渲染问题，不过还没有路线"
+asr_llm: "看起来是 girls 的渲染问题，不过还没有路线。"
+asr_correct_llm: "看起来是 girls 的渲染问题，不过还没有路线。"
+offline: "看起来是这样子的渲染问题， 不过还没有互现。"
+offline_llm: "看起来是这样子的渲染问题，不过还没有互现。"
+
+expanded-mixed-14
+SPEECH 这个 timeout 也许和代理有关，暂时不要改配置。
+INTENT 这个 timeout 也许和代理有关，暂时不要改配置。
+asr: "也许和代理有关， 暂时不要改配置"
+asr_correct: "也许和代理有关，暂时不要改配置"
+asr_llm: "也许和代理有关，暂时不要改配置。"
+asr_correct_llm: "也许和代理有关，暂时不要改配置。"
+offline: "这个 timeout 也许和代理有关， 暂时不要改配置。"
+offline_llm: "这个 timeout 也许和代理有关，暂时不要改配置。"
+
+expanded-mixed-15
+SPEECH 我怀疑 SQLite 的锁没有释放，但这只是猜测。
+INTENT 我怀疑 SQLite 的锁没有释放，但这只是猜测。
+asr: "我怀疑施伊特人是我没有释放， 但这只是猜测"
+asr_correct: "我怀疑施伊特人事我没有释放，但这只是猜测"
+asr_llm: "我怀疑施伊特人是我没有释放，但这只是猜测。"
+asr_correct_llm: "我怀疑施伊特人事没有释放，但这只是猜测。"
+offline: "我怀疑希特的锁没有释放， 但这只是猜测。"
+offline_llm: "我怀疑希特的锁没有释放，但这只是猜测。"
+
+expanded-mixed-16
+SPEECH 嗯，这个 commit，呃，需要补一条测试。
+INTENT 这个 commit 需要补一条测试。
+asr: "嗯， 这个 commit 需要补一条测试"
+asr_correct: "嗯，这个commit需要补一条测试"
+asr_llm: "这个 commit 需要补一条测试。"
+asr_correct_llm: "这个 commit 需要补一条测试。"
+offline: "嗯， 这个 commit 需要补一条测试。"
+offline_llm: "这个 commit 需要补一条测试。"
+
+expanded-mixed-17
+SPEECH 那个，我们先把 README，嗯，先把 README 更新一下。
+INTENT 我们先把 README 更新一下。
+asr: "那对， 我们先把这 先把这案子更新一下"
+asr_correct: "那对，我们先把这先把个案子更新一下"
+asr_llm: "那对，我们先把这案子更新一下。"
+asr_correct_llm: "那对，我们先把这案子更新一下。"
+offline: "那个， 我们先把这样子， 嗯， 先把这案子更新一下。"
+offline_llm: "那个， 我们先把这样子，  先把这案子更新一下。"
+
+expanded-mixed-18
+SPEECH 我觉得，呃，这个 server 应该先检查日志。
+INTENT 我觉得这个 server 应该先检查日志。
+asr: "我觉得呃这个 server 应该先检查日志"
+asr_correct: "我觉得呃这个server应该先检查日志"
+asr_llm: "我觉得这个 server 应该先检查日志。"
+asr_correct_llm: "我觉得这个 server 应该先检查日志。"
+offline: "我觉得呃这个 server 应该先检查日志。"
+offline_llm: "我觉得这个 server 应该先检查日志。"
+
+expanded-mixed-19
+SPEECH 嗯，就是先跑一下 benchmark，再决定要不要优化。
+INTENT 先跑一下 benchmark，再决定要不要优化。
+asr: "就是先跑一下温十二个， 再决定要不要优化"
+asr_correct: "就是先跑一下温十二个，再决定要不要优化"
+asr_llm: "先跑一下温十二个，再决定要不要优化。"
+asr_correct_llm: "先跑一下温十二个，再决定要不要优化。"
+offline: "嗯， 就是先跑一下奔驰， 再决定要不要优化。"
+offline_llm: "先跑一下奔驰，再决定要不要优化。"
+
+expanded-mixed-20
+SPEECH 请把错误信息写入 log，并保留 request ID。
+INTENT 请把错误信息写入 log，并保留 request ID。
+asr: "请把错误信息写入 log 并保留 request id"
+asr_correct: "请把错误信息写入log并保留requestid"
+asr_llm: "请把错误信息写入 log 并保留 request id."
+asr_correct_llm: "请把错误信息写入 log 并保留 requestid。"
+offline: "请把错误信息写入 log 并保留 request id。"
+offline_llm: "请把错误信息写入 log，并保留 request id。"
+
+expanded-mixed-21
+SPEECH 这个 SDK 支持 Windows 和 Linux。
+INTENT 这个 SDK 支持 Windows 和 Linux。
+asr: "这个 S D K 真实 Windows 和 V"
+asr_correct: "这个sdk真实windows和v"
+asr_llm: "这个 S D K 真实 Windows 和 V"
+asr_correct_llm: "这个sdk真实windows和v"
+offline: "这个 A 四 K 支持 Windows 和 V。"
+offline_llm: "这个 A 四 K 支持 Windows 和 V。"
+
+expanded-mixed-22
+SPEECH 请在 GitHub 上提交 issue，并附上复现步骤。
+INTENT 请在 GitHub 上提交 issue，并附上复现步骤。
+asr: "请在 GikTok 上提交 issue 并附上付现步骤"
+asr_correct: "请在giktok上提交issue并附上付现步骤"
+asr_llm: "请在 GikTok 上提交 issue，并附上付现步骤。"
+asr_correct_llm: "请在 Giktok 上提交 issue 并附上 付现步骤。"
+offline: "请在 GitHub 上提交 issue 并附上附线步骤。"
+offline_llm: "请在 GitHub 上提交 issue，并附上附线步骤。"
+
+expanded-mixed-23
+SPEECH 导出的 PDF 需要保留中文字体。
+INTENT 导出的 PDF 需要保留中文字体。
+asr: "老叔的 P D A 需要保留中文字体"
+asr_correct: "老叔的pda需要保留中文字体"
+asr_llm: "老叔的 PDA 需要保留中文字体。"
+asr_correct_llm: "老叔的PDA需要保留中文字体。"
+offline: "老叔的 PDF 需要保留中文字体。"
+offline_llm: "老叔的 PDF 需要保留中文字体。"
+
+expanded-mixed-24
+SPEECH Alex 你好，嗯，新的 API 文档已经上传，请你周五之前 review 一下，谢谢。
+INTENT Alex 你好，新的 API 文档已上传，请周五前 review。
+asr: "Alex 你好， 嗯， 新的 A P I 文档已经上传， 请你周五之前 review 一下， 谢谢"
+asr_correct: "alex你好，嗯，新的api文档已经上传，请你周五之前review一下，谢谢"
+asr_llm: "Alex 你好，\n\n新的 API 文档已经上传。请你周五之前 review 一下，谢谢。"
+asr_correct_llm: "alex你好，新的API文档已经上传，请你周五之前review一下，谢谢。"
+offline: "Alex 你好， 嗯， 新的 A P I 文档已经上传， 请你周五之前 review 一下， 谢谢。"
+offline_llm: "Alex 你好，\n\n新的 API 文档已经上传。请你周五之前 review 一下，谢谢。"
+
+expanded-mixed-25
+SPEECH 你好，Windows 版本出现 crash，macOS 版本正常，请帮忙确认。
+INTENT 你好，Windows 版本出现 crash，macOS 版本正常，请帮忙确认。
+asr: "你好， Windows 版本出现 rush， Nazos 版本正常， 请帮忙确认"
+asr_correct: "你好，windows版本出现rush，nazos版本正常，请帮忙确认"
+asr_llm: "你好， Windows 版本出现 rush， Nazos 版本正常， 请帮忙确认。"
+asr_correct_llm: "你好，Windows版本出现 \"rush\"，而 Nazos 版本正常，请帮忙确认。"
+offline: "你好， Windows 版本出现 rush， Nas 版本正常， 请帮忙确认。"
+offline_llm: "你好， Windows 版本出现 \"rush\"， Nas 版本正常， 请帮忙确认。"
+
+expanded-mixed-26
+SPEECH 需要检查三项，Docker 网络，Redis 连接，还有磁盘空间。
+INTENT 检查 Docker 网络、Redis 连接和磁盘空间。
+asr: "需要检查三项， Docker 网络， Redis 连接， 还有磁盘空间"
+asr_correct: "需要检查三项，docker网络，redis连接，还有磁盘空间"
+asr_llm: "需要检查三项：  \n1. Docker 网络  \n2. Redis 连接  \n3. 磁盘空间"
+asr_correct_llm: "需要检查三项：  \n1. Docker 网络  \n2. Redis 连接  \n3. 磁盘空间"
+offline: "需要检查三项， Docker 网络， Redis 连接， 还有磁盘空间。"
+offline_llm: "需要检查三项：Docker 网络、Redis 连接、磁盘空间。"
+
+expanded-mixed-27
+SPEECH 这个 PR 有两个目标，修复 login 错误，以及增加单元测试。
+INTENT 这个 PR 修复 login 错误并增加单元测试。
+asr: "这个 P R L 两个目标， 修复 login 错误以及增加预言测试"
+asr_correct: "这个prl两个目标，修复login错误以及增加预言测试"
+asr_llm: "这个 P R L 两个目标，修复 login 错误以及增加预言测试。"
+asr_correct_llm: "这个 prl 有两个目标：\n\n1. 修复 login 错误  \n2. 增加 预言 测试"
+offline: "这个 P R 有两个目标， 修复 login 错误以及增加员测试。"
+offline_llm: "这个 PR 有两个目标：\n1. 修复 login 错误\n2. 增加员测试"
+
+expanded-mixed-28
+SPEECH 先在 staging 验证 login，如果测试通过，再部署到 production。如果失败，保留日志，不要直接 rollback 数据库。
+INTENT 先在 staging 验证 login，通过后部署 production；失败则保留日志，不直接 rollback 数据库。
+asr: "先在 staging 验证 login， 如果测试通过， 再部署到 production， 如果失败， 保留日志， 不要直接 rollback 数据库"
+asr_correct: "先在staging验证login，如果测试通过，再部署到production，如若失败，保留日志，不要直接rollback数据库"
+asr_llm: "先在 staging 验证 login，如果测试通过，再部署到 production，如果失败，保留日志，不要直接 rollback 数据库。"
+asr_correct_llm: "先在 staging 验证 login，如果测试通过，再部署到 production，如若失败，保留日志，不要直接 rollback 数据库。"
+offline: "先在 staging 验证 login， 如果测试通过， 再部署到 production， 如果失败， 保留日志， 不要直接 rollback 数据库。"
+offline_llm: "先在 staging 验证 login，如果测试通过，再部署到 production，如果失败，保留日志，不要直接 rollback 数据库。"
+
+expanded-mixed-29
+SPEECH 前端的 build 已经成功，后端的 test 还没跑，Docker 镜像由 Kevin 负责，不要把所有任务都标记完成。
+INTENT 前端 build 成功，后端 test 未跑，Kevin 负责 Docker 镜像，不要全部标记完成。
+asr: "前端着 place 已经成功， 后端着 cost 还没跑， 走四镜像由 KV 负责， 不要把所有任务都标记完成"
+asr_correct: "前端着place已经成功，后端着cost还没跑，走四镜像由kv负责，不要把所有任务都标记完成"
+asr_llm: "前端着 place 已经成功，后端着 cost 还没跑，走四镜像由 KV 负责，不要把所有任务都标记完成。"
+asr_correct_llm: "前端着 place 已经成功，后端着 cost 还没跑，走四镜像由 kv 负责，不要把所有任务都标记完成。"
+offline: "前端的 B 已经成功， 后端的 just 还没跑， 这项由 K 负责， 不要把所有任务都标记完成。"
+offline_llm: "前端的 B 已经成功，后端的 just 还没跑，这项由 K 负责，不要把所有任务都标记完成。"
+
+expanded-mixed-30
+SPEECH 我不是要删除 Git 历史，只是要撤销最后一个 commit，远程 branch 暂时不要修改。
+INTENT 撤销最后一个 commit，不删除 Git 历史，暂不修改远程 branch。
+asr: "我不是要删除 G T 历史， 只是要撤销最后一个 commit， 远程 branch 暂时不要修改"
+asr_correct: "我不是要删除gt历史，只是要撤销最后一个commit，远程branch暂时不要修改"
+asr_llm: "我不是要删除 G T 历史，只想要撤销最后一个 commit，遠程 branch 暂時不要修改。"
+asr_correct_llm: "我不是要删除gt历史，只是要撤销最后一个commit，远程branch暂时不要修改"
+offline: "我不是要删除 J T 历史， 只是要撤销最后一个 commit， 远程 branch 暂时不要修改。"
+offline_llm: "我不是要删除 JT 历史，只想要撤销最后一个 commit，远程 branch 暂时不要修改。"
+
+expanded-mixed-31
+SPEECH 用户允许导出 CSV，但没有同意上传到云端。先把文件保存到本地，再询问是否需要同步。
+INTENT 用户允许导出 CSV，未同意上传云端；先保存本地，再询问同步。
+asr: "用户与时老夫 C S V 两没有同意上传到云端， 先把文件保存到本地， 再询问是否需要重录"
+asr_correct: "用户与时老夫csv两没有同意上传到云端，先把文件保存到本地，再询问是否需要重录"
+asr_llm: "用户与时老夫 C S V 两没有同意上传到云端，先把文件保存到本地，再询问是否需要重录。"
+asr_correct_llm: "用户与时老夫CSV两没有同意上传到云端，先把文件保存到本地，再询问是否需要重录。"
+offline: "用户允许导出 C S V， 让没有同意上传到云端， 先把文件保存到本地， 再询问是否需要重步。"
+offline_llm: "用户允许导出 CSV，但未同意上传到云端，先将文件保存到本地，再询问是否需要重新上传。"
+
+expanded-silence-0
+SPEECH 
+INTENT 
+asr: ""
+asr_correct: ""
+asr_llm: ""
+asr_correct_llm: ""
+offline: ""
+offline_llm: ""
+
+expanded-silence-1
+SPEECH 
+INTENT 
+asr: ""
+asr_correct: ""
+asr_llm: ""
+asr_correct_llm: ""
+offline: ""
+offline_llm: ""
+
+expanded-silence-2
+SPEECH 
+INTENT 
+asr: ""
+asr_correct: ""
+asr_llm: ""
+asr_correct_llm: ""
+offline: ""
+offline_llm: ""
+
+expanded-silence-3
+SPEECH 
+INTENT 
+asr: ""
+asr_correct: ""
+asr_llm: ""
+asr_correct_llm: ""
+offline: ""
+offline_llm: ""

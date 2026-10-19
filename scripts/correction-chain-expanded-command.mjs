@@ -1,0 +1,11 @@
+import { spawnSync } from 'node:child_process';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const [operation, ...args] = process.argv.slice(2);
+const script = {fixtures:'build_fixtures.py', run:'run.py'}[operation];
+if (!script) throw new Error('Expected fixtures or run');
+const python = process.env.EVAL_PYTHON || path.join(root, '.workspace/correction-chain/venv/bin/python');
+const child = spawnSync(python, [path.join(root, 'benchmarks/reproduction/correction-chain-expanded-v2', script), ...args], {cwd:root, stdio:'inherit'});
+if (child.error) throw child.error;
+process.exit(child.status ?? 1);

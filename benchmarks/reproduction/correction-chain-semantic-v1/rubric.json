@@ -1,0 +1,31 @@
+{
+  "version": 1,
+  "reviewKind": "agent-authored semantic reassessment of previously observed outputs",
+  "independence": "The reviewer has seen the original results and model identities. This is not independent human review, blind adjudication or a new held-out experiment.",
+  "target": "Faithful reconstruction of the speaker's final intent with flexible readable presentation",
+  "allowed": [
+    "Paraphrase, sentence merging, reordering and structured headings or lists",
+    "Equivalent words, digit/number spelling, punctuation and capitalization changes",
+    "Removal of fillers, repetitions, superseded self-repair clauses and optional greetings/thanks",
+    "Clean prose instead of a particular numbered-list syntax when the same items remain clear"
+  ],
+  "fidelity": {
+    "preserved": "Final intended actions, recipients, values, polarity, uncertainty, conditions, required items and technical identities remain recoverable without material unsupported facts",
+    "degraded": "At least one of those material facts is wrong, missing or contradicted",
+    "uncertain": "The output is ambiguous enough that the intended action or material fact cannot be confidently recovered"
+  },
+  "organization": {
+    "0": "Unresolved repairs, filler/disfluency or malformed wording still needs cleanup",
+    "1": "Readable adequate prose, possibly with minor repetition or surface errors",
+    "2": "Clear concise prose or useful structure, with repairs resolved and distracting disfluency removed"
+  },
+  "ready": "fidelity is preserved and organization >= 1; no mandated reference wording, numbering or greeting",
+  "silence": "No output is the only faithful, ready result",
+  "reviewedOutput": "Actual delivered text; raw model proposal and execution/validation outcome remain separately observable",
+  "constraints": [
+    "Read the complete spoken script and delivered output; do not assign semantic ratings using CER/WER or keyword gates",
+    "State the concrete factual failure or presentation issue for every non-perfect rating",
+    "Do not change original fixture labels, raw outputs, model choices or original summaries",
+    "Scores describe this small synthetic corpus and this reviewer, not population model quality"
+  ]
+}

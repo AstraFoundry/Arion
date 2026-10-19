@@ -1,0 +1,1371 @@
+{
+  "version": 1,
+  "kind": "correction-chain-inputs-v1",
+  "samples": [
+    {
+      "id": "expanded-zh-00",
+      "split": "test",
+      "language": "zh",
+      "task": "repair",
+      "scene": "chat",
+      "speakerId": "Tingting",
+      "audio": {
+        "path": "expanded-zh-00.wav",
+        "sha256": "d62f996a470b38b4749df2025ce842bc92f963b76e1b7984dfbf21c130a37170",
+        "durationMs": 4859.6875
+      }
+    },
+    {
+      "id": "expanded-zh-01",
+      "split": "test",
+      "language": "zh",
+      "task": "repair",
+      "scene": "chat",
+      "speakerId": "Eddy (中文（中国大陆）)",
+      "audio": {
+        "path": "expanded-zh-01.wav",
+        "sha256": "81001d103f975ccbbd24ac0d6bf90562c8054342462b0daa44c8a98a06ac0e38",
+        "durationMs": 5124.8125
+      }
+    },
+    {
+      "id": "expanded-zh-02",
+      "split": "test",
+      "language": "zh",
+      "task": "repair",
+      "scene": "chat",
+      "speakerId": "Tingting",
+      "audio": {
+        "path": "expanded-zh-02.wav",
+        "sha256": "7a68d3607d98c9d7c5929fa07f76cbd963ff82ee5e2e9b16ea1bedd9d0a3e496",
+        "durationMs": 5259.875
+      }
+    },
+    {
+      "id": "expanded-zh-03",
+      "split": "test",
+      "language": "zh",
+      "task": "repair",
+      "scene": "chat",
+      "speakerId": "Eddy (中文（中国大陆）)",
+      "audio": {
+        "path": "expanded-zh-03.wav",
+        "sha256": "11156fcd95049ea9aed89cffea06b259d24e9d8e71c7903216960f9d1da8f770",
+        "durationMs": 4452.5625
+      }
+    },
+    {
+      "id": "expanded-zh-04",
+      "split": "test",
+      "language": "zh",
+      "task": "repair",
+      "scene": "chat",
+      "speakerId": "Tingting",
+      "audio": {
+        "path": "expanded-zh-04.wav",
+        "sha256": "53f91345044c06b016d847ca3f2dd5474db1d8c2882cc7c7d17a719c041e5d7e",
+        "durationMs": 6366.625
+      }
+    },
+    {
+      "id": "expanded-zh-05",
+      "split": "test",
+      "language": "zh",
+      "task": "repair",
+      "scene": "chat",
+      "speakerId": "Eddy (中文（中国大陆）)",
+      "audio": {
+        "path": "expanded-zh-05.wav",
+        "sha256": "30735576db312252c084696bb94cab2904e5e287d3c946955414e2b2f2351297",
+        "durationMs": 5482.625
+      }
+    },
+    {
+      "id": "expanded-zh-06",
+      "split": "test",
+      "language": "zh",
+      "task": "repair",
+      "scene": "chat",
+      "speakerId": "Tingting",
+      "audio": {
+        "path": "expanded-zh-06.wav",
+        "sha256": "c0548c0cf895719f21002c9fed647ebb2c2a3a0e73a0adc0c15d71f592cf2cbe",
+        "durationMs": 6582.625
+      }
+    },
+    {
+      "id": "expanded-zh-07",
+      "split": "test",
+      "language": "zh",
+      "task": "repair",
+      "scene": "chat",
+      "speakerId": "Eddy (中文（中国大陆）)",
+      "audio": {
+        "path": "expanded-zh-07.wav",
+        "sha256": "795ba20035bd3dcf236101b218330854aca29e3aa57ca8c6510b4cacda7d5818",
+        "durationMs": 5796.625
+      }
+    },
+    {
+      "id": "expanded-zh-08",
+      "split": "test",
+      "language": "zh",
+      "task": "negation",
+      "scene": "chat",
+      "speakerId": "Tingting",
+      "audio": {
+        "path": "expanded-zh-08.wav",
+        "sha256": "62968d34bd831ef4bec0e534c18747b9405f09d43fe809751d7cc7c31f567aba",
+        "durationMs": 5488.5625
+      }
+    },
+    {
+      "id": "expanded-zh-09",
+      "split": "test",
+      "language": "zh",
+      "task": "negation",
+      "scene": "chat",
+      "speakerId": "Eddy (中文（中国大陆）)",
+      "audio": {
+        "path": "expanded-zh-09.wav",
+        "sha256": "bbce5867a70a249fd380e3eaba20ecc189b6e05b551d4b861684240b80d928c3",
+        "durationMs": 5604.625
+      }
+    },
+    {
+      "id": "expanded-zh-10",
+      "split": "test",
+      "language": "zh",
+      "task": "negation",
+      "scene": "chat",
+      "speakerId": "Tingting",
+      "audio": {
+        "path": "expanded-zh-10.wav",
+        "sha256": "5e57c1212eb2024b5f94e45c80049c595c8ce0510204b9ff9b773a03ee7704e1",
+        "durationMs": 4314.625
+      }
+    },
+    {
+      "id": "expanded-zh-11",
+      "split": "test",
+      "language": "zh",
+      "task": "negation",
+      "scene": "chat",
+      "speakerId": "Eddy (中文（中国大陆）)",
+      "audio": {
+        "path": "expanded-zh-11.wav",
+        "sha256": "cab99d8ee735de580b98eccb8098af423f51a46b549b9783380074db8e6ef769",
+        "durationMs": 4682.5625
+      }
+    },
+    {
+      "id": "expanded-zh-12",
+      "split": "test",
+      "language": "zh",
+      "task": "uncertainty",
+      "scene": "chat",
+      "speakerId": "Tingting",
+      "audio": {
+        "path": "expanded-zh-12.wav",
+        "sha256": "12bd741a554ad762a5a226910397492ba35e94bcee6c35d7d2b6e0881a0aae38",
+        "durationMs": 4992.5625
+      }
+    },
+    {
+      "id": "expanded-zh-13",
+      "split": "test",
+      "language": "zh",
+      "task": "uncertainty",
+      "scene": "chat",
+      "speakerId": "Eddy (中文（中国大陆）)",
+      "audio": {
+        "path": "expanded-zh-13.wav",
+        "sha256": "9ba574f659a7adb44476c8f3b083457020bfe7979d5e510eece4143cba83934a",
+        "durationMs": 4426.375
+      }
+    },
+    {
+      "id": "expanded-zh-14",
+      "split": "test",
+      "language": "zh",
+      "task": "uncertainty",
+      "scene": "chat",
+      "speakerId": "Tingting",
+      "audio": {
+        "path": "expanded-zh-14.wav",
+        "sha256": "8923b55fbb7c360f78b3185518cff32ac213aaf0fedc33026f13c3289210d52a",
+        "durationMs": 5481.6875
+      }
+    },
+    {
+      "id": "expanded-zh-15",
+      "split": "test",
+      "language": "zh",
+      "task": "uncertainty",
+      "scene": "chat",
+      "speakerId": "Eddy (中文（中国大陆）)",
+      "audio": {
+        "path": "expanded-zh-15.wav",
+        "sha256": "53acf776f9e68ea823c9b992caec6e1d8ed280196e74c770d115f4064f2f6ef8",
+        "durationMs": 4820.625
+      }
+    },
+    {
+      "id": "expanded-zh-16",
+      "split": "test",
+      "language": "zh",
+      "task": "filler",
+      "scene": "chat",
+      "speakerId": "Tingting",
+      "audio": {
+        "path": "expanded-zh-16.wav",
+        "sha256": "90bb71968e8ae8e860e71bbf866c79676bb077789660d0e522cec1325a54aa17",
+        "durationMs": 6318.1875
+      }
+    },
+    {
+      "id": "expanded-zh-17",
+      "split": "test",
+      "language": "zh",
+      "task": "filler",
+      "scene": "chat",
+      "speakerId": "Eddy (中文（中国大陆）)",
+      "audio": {
+        "path": "expanded-zh-17.wav",
+        "sha256": "c920f5689eb5ed14e619d9424d8c0673814d60228144e85e27d76cf4a2588873",
+        "durationMs": 5514.4375
+      }
+    },
+    {
+      "id": "expanded-zh-18",
+      "split": "test",
+      "language": "zh",
+      "task": "filler",
+      "scene": "chat",
+      "speakerId": "Tingting",
+      "audio": {
+        "path": "expanded-zh-18.wav",
+        "sha256": "60c7b2156ebec8163add9c0d85f7b057fe1f4e9d15b54f2462735ae2b1d13197",
+        "durationMs": 5583.5625
+      }
+    },
+    {
+      "id": "expanded-zh-19",
+      "split": "test",
+      "language": "zh",
+      "task": "filler",
+      "scene": "chat",
+      "speakerId": "Eddy (中文（中国大陆）)",
+      "audio": {
+        "path": "expanded-zh-19.wav",
+        "sha256": "9e8019273a54cb31a2b575a749455c38ceffd3900271aebf770dbaa22494337d",
+        "durationMs": 5498.5625
+      }
+    },
+    {
+      "id": "expanded-zh-20",
+      "split": "test",
+      "language": "zh",
+      "task": "copy",
+      "scene": "chat",
+      "speakerId": "Tingting",
+      "audio": {
+        "path": "expanded-zh-20.wav",
+        "sha256": "678b1ce6001b510b5e0ba1003af9771812e7d6af10984feb25571636d8929a41",
+        "durationMs": 4971.3125
+      }
+    },
+    {
+      "id": "expanded-zh-21",
+      "split": "test",
+      "language": "zh",
+      "task": "copy",
+      "scene": "chat",
+      "speakerId": "Eddy (中文（中国大陆）)",
+      "audio": {
+        "path": "expanded-zh-21.wav",
+        "sha256": "37001c81146f68271f2772f089c2c57dd68b4c3e80e314dcc334801fe59b35df",
+        "durationMs": 4362.4375
+      }
+    },
+    {
+      "id": "expanded-zh-22",
+      "split": "test",
+      "language": "zh",
+      "task": "copy",
+      "scene": "chat",
+      "speakerId": "Tingting",
+      "audio": {
+        "path": "expanded-zh-22.wav",
+        "sha256": "9e2532f12434d1d830151f5a799cf4f5cc886e1cb288265fc9b9508ee8627d42",
+        "durationMs": 4285.875
+      }
+    },
+    {
+      "id": "expanded-zh-23",
+      "split": "test",
+      "language": "zh",
+      "task": "copy",
+      "scene": "chat",
+      "speakerId": "Eddy (中文（中国大陆）)",
+      "audio": {
+        "path": "expanded-zh-23.wav",
+        "sha256": "f9578f06dca19955056700c24f8507f9798f44d6d1641b8004b99f2ae9c6563f",
+        "durationMs": 4660.625
+      }
+    },
+    {
+      "id": "expanded-zh-24",
+      "split": "test",
+      "language": "zh",
+      "task": "email",
+      "scene": "email",
+      "speakerId": "Tingting",
+      "audio": {
+        "path": "expanded-zh-24.wav",
+        "sha256": "dce62e45cebfc2930e410713b9603e3b2b9b7108ed3ab8016536b0f5c9735372",
+        "durationMs": 7884.0
+      }
+    },
+    {
+      "id": "expanded-zh-25",
+      "split": "test",
+      "language": "zh",
+      "task": "email",
+      "scene": "email",
+      "speakerId": "Eddy (中文（中国大陆）)",
+      "audio": {
+        "path": "expanded-zh-25.wav",
+        "sha256": "20e0e60e72ae48cecac1d65a8749abf5d7ea2e4258555ac6cab0c7a094f13643",
+        "durationMs": 7018.375
+      }
+    },
+    {
+      "id": "expanded-zh-26",
+      "split": "test",
+      "language": "zh",
+      "task": "list",
+      "scene": "list",
+      "speakerId": "Tingting",
+      "audio": {
+        "path": "expanded-zh-26.wav",
+        "sha256": "b288f844351ba8925efafa5d73784934c8e2995fdbd9a22129583c502f9bb43b",
+        "durationMs": 6483.5
+      }
+    },
+    {
+      "id": "expanded-zh-27",
+      "split": "test",
+      "language": "zh",
+      "task": "list",
+      "scene": "list",
+      "speakerId": "Eddy (中文（中国大陆）)",
+      "audio": {
+        "path": "expanded-zh-27.wav",
+        "sha256": "6b3a42aa2bd10dcdbee9e0323183be29d5b42682020550a07ac11abc413510fb",
+        "durationMs": 6916.8125
+      }
+    },
+    {
+      "id": "expanded-zh-28",
+      "split": "test",
+      "language": "zh",
+      "task": "long",
+      "scene": "chat",
+      "speakerId": "Tingting",
+      "audio": {
+        "path": "expanded-zh-28.wav",
+        "sha256": "68788e37372164e580f6ac6dd56caa30e3428d52b22f721bb7a4f8c5860e7def",
+        "durationMs": 11807.125
+      }
+    },
+    {
+      "id": "expanded-zh-29",
+      "split": "test",
+      "language": "zh",
+      "task": "long",
+      "scene": "chat",
+      "speakerId": "Eddy (中文（中国大陆）)",
+      "audio": {
+        "path": "expanded-zh-29.wav",
+        "sha256": "d7140b131fe71f89b93114a108cdae425e5c1269ba41fe42ad6dec515782b6f9",
+        "durationMs": 9444.625
+      }
+    },
+    {
+      "id": "expanded-zh-30",
+      "split": "test",
+      "language": "zh",
+      "task": "long",
+      "scene": "chat",
+      "speakerId": "Tingting",
+      "audio": {
+        "path": "expanded-zh-30.wav",
+        "sha256": "6cc7390e98d9a1a94882ad52a990d839ed98def71a097cd38165540844f090b0",
+        "durationMs": 8406.625
+      }
+    },
+    {
+      "id": "expanded-zh-31",
+      "split": "test",
+      "language": "zh",
+      "task": "long",
+      "scene": "chat",
+      "speakerId": "Eddy (中文（中国大陆）)",
+      "audio": {
+        "path": "expanded-zh-31.wav",
+        "sha256": "803b9e414a393236d531a07a3fead5d269f93a80efc033d041ffa747b3e77f6e",
+        "durationMs": 7636.625
+      }
+    },
+    {
+      "id": "expanded-en-00",
+      "split": "test",
+      "language": "en",
+      "task": "repair",
+      "scene": "chat",
+      "speakerId": "Samantha",
+      "audio": {
+        "path": "expanded-en-00.wav",
+        "sha256": "fbb5b0d7cc4eb3ca6652b4bf884390fddbde09f925f903ee594ae6db676fc422",
+        "durationMs": 4787.625
+      }
+    },
+    {
+      "id": "expanded-en-01",
+      "split": "test",
+      "language": "en",
+      "task": "repair",
+      "scene": "chat",
+      "speakerId": "Daniel",
+      "audio": {
+        "path": "expanded-en-01.wav",
+        "sha256": "809d4ddcd206422f8f85faa94dae757a1d39fefee121add0c4cae59f94960784",
+        "durationMs": 4778.0
+      }
+    },
+    {
+      "id": "expanded-en-02",
+      "split": "test",
+      "language": "en",
+      "task": "repair",
+      "scene": "chat",
+      "speakerId": "Samantha",
+      "audio": {
+        "path": "expanded-en-02.wav",
+        "sha256": "b59e0d6a8d50877d7a538c9e0ccdd636d07ce46274c25968b79dd49d62dcc2a4",
+        "durationMs": 5080.6875
+      }
+    },
+    {
+      "id": "expanded-en-03",
+      "split": "test",
+      "language": "en",
+      "task": "repair",
+      "scene": "chat",
+      "speakerId": "Daniel",
+      "audio": {
+        "path": "expanded-en-03.wav",
+        "sha256": "71f8456d6b03b37d102cadf054b91306fb4f9ce46e2e5d64acc91b5ca0d9cc47",
+        "durationMs": 4793.0625
+      }
+    },
+    {
+      "id": "expanded-en-04",
+      "split": "test",
+      "language": "en",
+      "task": "repair",
+      "scene": "chat",
+      "speakerId": "Samantha",
+      "audio": {
+        "path": "expanded-en-04.wav",
+        "sha256": "a3a5d8f749c37d14b9fa77a02812f03c02a1d1a42122ac1885c0255507135423",
+        "durationMs": 4653.0625
+      }
+    },
+    {
+      "id": "expanded-en-05",
+      "split": "test",
+      "language": "en",
+      "task": "repair",
+      "scene": "chat",
+      "speakerId": "Daniel",
+      "audio": {
+        "path": "expanded-en-05.wav",
+        "sha256": "832a82282461e407a20e13104a2c8e3b1c9752e94b50a86657bf260d61c8e4eb",
+        "durationMs": 5953.9375
+      }
+    },
+    {
+      "id": "expanded-en-06",
+      "split": "test",
+      "language": "en",
+      "task": "repair",
+      "scene": "chat",
+      "speakerId": "Samantha",
+      "audio": {
+        "path": "expanded-en-06.wav",
+        "sha256": "e86bf8598168ac0eb4b18e531c4ef0980216852e4efb8da3f3cf939ed7cdadb7",
+        "durationMs": 5658.375
+      }
+    },
+    {
+      "id": "expanded-en-07",
+      "split": "test",
+      "language": "en",
+      "task": "repair",
+      "scene": "chat",
+      "speakerId": "Daniel",
+      "audio": {
+        "path": "expanded-en-07.wav",
+        "sha256": "f4aaad18ef9c213434d02a87ec164020192a234bc6e69a1df39c3119a935c085",
+        "durationMs": 5328.3125
+      }
+    },
+    {
+      "id": "expanded-en-08",
+      "split": "test",
+      "language": "en",
+      "task": "negation",
+      "scene": "chat",
+      "speakerId": "Samantha",
+      "audio": {
+        "path": "expanded-en-08.wav",
+        "sha256": "b3c14bbb2056c87130d491cbd4d937cb035b16753b1e7cf9c5b118e7ccf13000",
+        "durationMs": 4946.3125
+      }
+    },
+    {
+      "id": "expanded-en-09",
+      "split": "test",
+      "language": "en",
+      "task": "negation",
+      "scene": "chat",
+      "speakerId": "Daniel",
+      "audio": {
+        "path": "expanded-en-09.wav",
+        "sha256": "acac6cd4c62b9e8f61d3ecc2300043764bc44bd15d941a8d26021efd925ff3ad",
+        "durationMs": 4696.875
+      }
+    },
+    {
+      "id": "expanded-en-10",
+      "split": "test",
+      "language": "en",
+      "task": "negation",
+      "scene": "chat",
+      "speakerId": "Samantha",
+      "audio": {
+        "path": "expanded-en-10.wav",
+        "sha256": "19d54e1e8a26948bd30a07c6b5c0c6b5b2bd2055ac1b5797a08264d8523afab8",
+        "durationMs": 4301.375
+      }
+    },
+    {
+      "id": "expanded-en-11",
+      "split": "test",
+      "language": "en",
+      "task": "negation",
+      "scene": "chat",
+      "speakerId": "Daniel",
+      "audio": {
+        "path": "expanded-en-11.wav",
+        "sha256": "d979c9d6780f972f39c96be7fe82b3ea753be61c8b1744a9a438a2aea3773818",
+        "durationMs": 4203.0625
+      }
+    },
+    {
+      "id": "expanded-en-12",
+      "split": "test",
+      "language": "en",
+      "task": "uncertainty",
+      "scene": "chat",
+      "speakerId": "Samantha",
+      "audio": {
+        "path": "expanded-en-12.wav",
+        "sha256": "5fefaf4dc9bd69d0cb519187e5792429052856fbe2836cdb1d54c247e39321da",
+        "durationMs": 4815.6875
+      }
+    },
+    {
+      "id": "expanded-en-13",
+      "split": "test",
+      "language": "en",
+      "task": "uncertainty",
+      "scene": "chat",
+      "speakerId": "Daniel",
+      "audio": {
+        "path": "expanded-en-13.wav",
+        "sha256": "15e3153a75ec6faae8eb935cbf116aaa630e7d6120b89dccaf43128b9b2b0364",
+        "durationMs": 5075.6875
+      }
+    },
+    {
+      "id": "expanded-en-14",
+      "split": "test",
+      "language": "en",
+      "task": "uncertainty",
+      "scene": "chat",
+      "speakerId": "Samantha",
+      "audio": {
+        "path": "expanded-en-14.wav",
+        "sha256": "2170f0bffa54227005e15835f8afe006de1cc8e3a10f802f5e704c5f500779de",
+        "durationMs": 4719.1875
+      }
+    },
+    {
+      "id": "expanded-en-15",
+      "split": "test",
+      "language": "en",
+      "task": "uncertainty",
+      "scene": "chat",
+      "speakerId": "Daniel",
+      "audio": {
+        "path": "expanded-en-15.wav",
+        "sha256": "30bc4ea7f303ed959cc9092d20c77a0a9340f24bd8ef035ad8d918b66978c76b",
+        "durationMs": 4840.6875
+      }
+    },
+    {
+      "id": "expanded-en-16",
+      "split": "test",
+      "language": "en",
+      "task": "filler",
+      "scene": "chat",
+      "speakerId": "Samantha",
+      "audio": {
+        "path": "expanded-en-16.wav",
+        "sha256": "7953edac282ad0ce8915b8277c51fba25d657fc0a87d94450353ef8b8e36ac62",
+        "durationMs": 4799.6875
+      }
+    },
+    {
+      "id": "expanded-en-17",
+      "split": "test",
+      "language": "en",
+      "task": "filler",
+      "scene": "chat",
+      "speakerId": "Daniel",
+      "audio": {
+        "path": "expanded-en-17.wav",
+        "sha256": "61a3d15c574b9355f61b069035f5f1ed2b9eee2c16e7de58df7d7feafab0ffa9",
+        "durationMs": 5305.0625
+      }
+    },
+    {
+      "id": "expanded-en-18",
+      "split": "test",
+      "language": "en",
+      "task": "filler",
+      "scene": "chat",
+      "speakerId": "Samantha",
+      "audio": {
+        "path": "expanded-en-18.wav",
+        "sha256": "ec2bb914d8edadc2d5e387fe980d9799fc01d0ec9d44a2951e198872c33f1088",
+        "durationMs": 5397.6875
+      }
+    },
+    {
+      "id": "expanded-en-19",
+      "split": "test",
+      "language": "en",
+      "task": "filler",
+      "scene": "chat",
+      "speakerId": "Daniel",
+      "audio": {
+        "path": "expanded-en-19.wav",
+        "sha256": "b84295c08d32c993d67c87c7b77a58e4a69f031495a0bdf211720eb8da0c1000",
+        "durationMs": 4969.3125
+      }
+    },
+    {
+      "id": "expanded-en-20",
+      "split": "test",
+      "language": "en",
+      "task": "copy",
+      "scene": "chat",
+      "speakerId": "Samantha",
+      "audio": {
+        "path": "expanded-en-20.wav",
+        "sha256": "aed631bbee97154608f812855964c9c27c662eb1f054b9bfd47d00290c142406",
+        "durationMs": 3759.1875
+      }
+    },
+    {
+      "id": "expanded-en-21",
+      "split": "test",
+      "language": "en",
+      "task": "copy",
+      "scene": "chat",
+      "speakerId": "Daniel",
+      "audio": {
+        "path": "expanded-en-21.wav",
+        "sha256": "8512f4001c9cfe8591ef0836a016a45671aeadb6c4ae8514ea487554218d3fe9",
+        "durationMs": 4444.3125
+      }
+    },
+    {
+      "id": "expanded-en-22",
+      "split": "test",
+      "language": "en",
+      "task": "copy",
+      "scene": "chat",
+      "speakerId": "Samantha",
+      "audio": {
+        "path": "expanded-en-22.wav",
+        "sha256": "931de71f4616e02b5a855969c75abf281255f2b602fca24410901fb3baa80202",
+        "durationMs": 4211.9375
+      }
+    },
+    {
+      "id": "expanded-en-23",
+      "split": "test",
+      "language": "en",
+      "task": "copy",
+      "scene": "chat",
+      "speakerId": "Daniel",
+      "audio": {
+        "path": "expanded-en-23.wav",
+        "sha256": "1c39c184ca51eaa10622e515f7d5d2190cd11098d03230ec43f1ef26a152d7aa",
+        "durationMs": 3874.8125
+      }
+    },
+    {
+      "id": "expanded-en-24",
+      "split": "test",
+      "language": "en",
+      "task": "email",
+      "scene": "email",
+      "speakerId": "Samantha",
+      "audio": {
+        "path": "expanded-en-24.wav",
+        "sha256": "fb40ea445b8039416da974a179dd11a683e55d631ed56a658d01efaf3d780fb7",
+        "durationMs": 5798.1875
+      }
+    },
+    {
+      "id": "expanded-en-25",
+      "split": "test",
+      "language": "en",
+      "task": "email",
+      "scene": "email",
+      "speakerId": "Daniel",
+      "audio": {
+        "path": "expanded-en-25.wav",
+        "sha256": "f632a6a01ba4c4844033b14bc774399669ccd6e8035de8dd0eb3aff2c4693fba",
+        "durationMs": 6552.9375
+      }
+    },
+    {
+      "id": "expanded-en-26",
+      "split": "test",
+      "language": "en",
+      "task": "list",
+      "scene": "list",
+      "speakerId": "Samantha",
+      "audio": {
+        "path": "expanded-en-26.wav",
+        "sha256": "508631239122d1f70f65c0aac2a1a7c2d27b1658ab33d4e927cb342eb5ad6637",
+        "durationMs": 5701.875
+      }
+    },
+    {
+      "id": "expanded-en-27",
+      "split": "test",
+      "language": "en",
+      "task": "list",
+      "scene": "list",
+      "speakerId": "Daniel",
+      "audio": {
+        "path": "expanded-en-27.wav",
+        "sha256": "bf891d22f29fc7cb0ab3dd0728244a1ef53aaf9841acbc598b4a91b0a30decae",
+        "durationMs": 5479.25
+      }
+    },
+    {
+      "id": "expanded-en-28",
+      "split": "test",
+      "language": "en",
+      "task": "long",
+      "scene": "chat",
+      "speakerId": "Samantha",
+      "audio": {
+        "path": "expanded-en-28.wav",
+        "sha256": "29a13cf841895336fa57e7d804ee8a321333864b68046ef7cd72cf047fba6071",
+        "durationMs": 10686.5
+      }
+    },
+    {
+      "id": "expanded-en-29",
+      "split": "test",
+      "language": "en",
+      "task": "long",
+      "scene": "chat",
+      "speakerId": "Daniel",
+      "audio": {
+        "path": "expanded-en-29.wav",
+        "sha256": "7fb994f5abc7f484dbd985db8d50f0fc03ec37d8934ebe1c9ac4383628538bac",
+        "durationMs": 8844.125
+      }
+    },
+    {
+      "id": "expanded-en-30",
+      "split": "test",
+      "language": "en",
+      "task": "long",
+      "scene": "chat",
+      "speakerId": "Samantha",
+      "audio": {
+        "path": "expanded-en-30.wav",
+        "sha256": "861782f876cf22a3a32312920f00e1b2a459c8f72d1750b8ddc19ad4dabc1512",
+        "durationMs": 8097.375
+      }
+    },
+    {
+      "id": "expanded-en-31",
+      "split": "test",
+      "language": "en",
+      "task": "long",
+      "scene": "chat",
+      "speakerId": "Daniel",
+      "audio": {
+        "path": "expanded-en-31.wav",
+        "sha256": "4ba2fa8fddb9af09f31dad9a1a0ca8754677c398a3d9530b27a070a5273f436d",
+        "durationMs": 8179.6875
+      }
+    },
+    {
+      "id": "expanded-mixed-00",
+      "split": "test",
+      "language": "mixed",
+      "task": "repair",
+      "scene": "chat",
+      "speakerId": "Tingting",
+      "audio": {
+        "path": "expanded-mixed-00.wav",
+        "sha256": "6902e114ddb5f25988608fe651dc7fa8e40b6f514b075c0d74269b29c93b4358",
+        "durationMs": 5108.125
+      }
+    },
+    {
+      "id": "expanded-mixed-01",
+      "split": "test",
+      "language": "mixed",
+      "task": "repair",
+      "scene": "chat",
+      "speakerId": "Eddy (中文（中国大陆）)",
+      "audio": {
+        "path": "expanded-mixed-01.wav",
+        "sha256": "0165e0098be748284ab86840e62f68b39c465c19cd338f1daf23005fe841fa79",
+        "durationMs": 6084.8125
+      }
+    },
+    {
+      "id": "expanded-mixed-02",
+      "split": "test",
+      "language": "mixed",
+      "task": "repair",
+      "scene": "chat",
+      "speakerId": "Tingting",
+      "audio": {
+        "path": "expanded-mixed-02.wav",
+        "sha256": "c84d6e251b3110dc114d38b4f7092a132982f883cf994232c4c66dd15441371d",
+        "durationMs": 4697.6875
+      }
+    },
+    {
+      "id": "expanded-mixed-03",
+      "split": "test",
+      "language": "mixed",
+      "task": "repair",
+      "scene": "chat",
+      "speakerId": "Eddy (中文（中国大陆）)",
+      "audio": {
+        "path": "expanded-mixed-03.wav",
+        "sha256": "90d3a759f2d5ccf6d924b3b8acb6f4fbba67034320ccc7d55dcb27efbae79d48",
+        "durationMs": 5332.8125
+      }
+    },
+    {
+      "id": "expanded-mixed-04",
+      "split": "test",
+      "language": "mixed",
+      "task": "repair",
+      "scene": "chat",
+      "speakerId": "Tingting",
+      "audio": {
+        "path": "expanded-mixed-04.wav",
+        "sha256": "b58050b162b8f7541296e4fbfb7d76dae9619fb710488eb504c64ac6fb8cd355",
+        "durationMs": 7351.375
+      }
+    },
+    {
+      "id": "expanded-mixed-05",
+      "split": "test",
+      "language": "mixed",
+      "task": "repair",
+      "scene": "chat",
+      "speakerId": "Eddy (中文（中国大陆）)",
+      "audio": {
+        "path": "expanded-mixed-05.wav",
+        "sha256": "d4eaf8c1279abd6dbc09de2709f53c68f3f5f1e98f0519e60ed2e99c638281c9",
+        "durationMs": 6362.625
+      }
+    },
+    {
+      "id": "expanded-mixed-06",
+      "split": "test",
+      "language": "mixed",
+      "task": "repair",
+      "scene": "chat",
+      "speakerId": "Tingting",
+      "audio": {
+        "path": "expanded-mixed-06.wav",
+        "sha256": "39115034d29bc83772ee3174156f8870d15314059bac30d43fded0b3e8bf8140",
+        "durationMs": 8614.375
+      }
+    },
+    {
+      "id": "expanded-mixed-07",
+      "split": "test",
+      "language": "mixed",
+      "task": "repair",
+      "scene": "chat",
+      "speakerId": "Eddy (中文（中国大陆）)",
+      "audio": {
+        "path": "expanded-mixed-07.wav",
+        "sha256": "2666acfcde31624edf5e1b7cbd76ceab4c374206cdbce8ffb921b969aaf04cdf",
+        "durationMs": 5332.8125
+      }
+    },
+    {
+      "id": "expanded-mixed-08",
+      "split": "test",
+      "language": "mixed",
+      "task": "negation",
+      "scene": "chat",
+      "speakerId": "Tingting",
+      "audio": {
+        "path": "expanded-mixed-08.wav",
+        "sha256": "98a5662392ca8b4ca609086fe5f03152e0b17fc54f20a0009bad5cf6e8514c98",
+        "durationMs": 5128.625
+      }
+    },
+    {
+      "id": "expanded-mixed-09",
+      "split": "test",
+      "language": "mixed",
+      "task": "negation",
+      "scene": "chat",
+      "speakerId": "Eddy (中文（中国大陆）)",
+      "audio": {
+        "path": "expanded-mixed-09.wav",
+        "sha256": "3a964aa112841ba5ff1e13f71cbc63fa343de66f545e51642af42d46ae2197dd",
+        "durationMs": 5300.625
+      }
+    },
+    {
+      "id": "expanded-mixed-10",
+      "split": "test",
+      "language": "mixed",
+      "task": "negation",
+      "scene": "chat",
+      "speakerId": "Tingting",
+      "audio": {
+        "path": "expanded-mixed-10.wav",
+        "sha256": "13f287a839a4868025b4d290252435dae59a0d1f4d2ee28f01a7ee42b18d7637",
+        "durationMs": 4871.9375
+      }
+    },
+    {
+      "id": "expanded-mixed-11",
+      "split": "test",
+      "language": "mixed",
+      "task": "negation",
+      "scene": "chat",
+      "speakerId": "Eddy (中文（中国大陆）)",
+      "audio": {
+        "path": "expanded-mixed-11.wav",
+        "sha256": "e820060c1e4c9ea09fa473706451939b3ace446d1176db91c819249475812d07",
+        "durationMs": 5450.5625
+      }
+    },
+    {
+      "id": "expanded-mixed-12",
+      "split": "test",
+      "language": "mixed",
+      "task": "uncertainty",
+      "scene": "chat",
+      "speakerId": "Tingting",
+      "audio": {
+        "path": "expanded-mixed-12.wav",
+        "sha256": "5f2a1e4b3b023e68faddfc132edecda28f9798edda6b73dde7079a114b23d28b",
+        "durationMs": 6362.5
+      }
+    },
+    {
+      "id": "expanded-mixed-13",
+      "split": "test",
+      "language": "mixed",
+      "task": "uncertainty",
+      "scene": "chat",
+      "speakerId": "Eddy (中文（中国大陆）)",
+      "audio": {
+        "path": "expanded-mixed-13.wav",
+        "sha256": "1db2da808b819b3d8995188e36e70db763455f575885d530fbcae92a2e839dea",
+        "durationMs": 5364.625
+      }
+    },
+    {
+      "id": "expanded-mixed-14",
+      "split": "test",
+      "language": "mixed",
+      "task": "uncertainty",
+      "scene": "chat",
+      "speakerId": "Tingting",
+      "audio": {
+        "path": "expanded-mixed-14.wav",
+        "sha256": "bf480047a0b4683e402afeb6abe2ccb234fbba9adacbd9c8ec10edce134be871",
+        "durationMs": 5406.0
+      }
+    },
+    {
+      "id": "expanded-mixed-15",
+      "split": "test",
+      "language": "mixed",
+      "task": "uncertainty",
+      "scene": "chat",
+      "speakerId": "Eddy (中文（中国大陆）)",
+      "audio": {
+        "path": "expanded-mixed-15.wav",
+        "sha256": "9195280d36e0ed9cf9fe7c7d23e679932ad802f20c590f0b5cd2b9ceba9eceff",
+        "durationMs": 5226.375
+      }
+    },
+    {
+      "id": "expanded-mixed-16",
+      "split": "test",
+      "language": "mixed",
+      "task": "filler",
+      "scene": "chat",
+      "speakerId": "Tingting",
+      "audio": {
+        "path": "expanded-mixed-16.wav",
+        "sha256": "e1a2111d2b6194035b854053e9acfbfb35697f739726d9209ad4ea5a7a136674",
+        "durationMs": 4797.25
+      }
+    },
+    {
+      "id": "expanded-mixed-17",
+      "split": "test",
+      "language": "mixed",
+      "task": "filler",
+      "scene": "chat",
+      "speakerId": "Eddy (中文（中国大陆）)",
+      "audio": {
+        "path": "expanded-mixed-17.wav",
+        "sha256": "dc66e21b78f5424a12ffe3dcbeda0c2d87706943a535444453e3500f32beb810",
+        "durationMs": 6154.4375
+      }
+    },
+    {
+      "id": "expanded-mixed-18",
+      "split": "test",
+      "language": "mixed",
+      "task": "filler",
+      "scene": "chat",
+      "speakerId": "Tingting",
+      "audio": {
+        "path": "expanded-mixed-18.wav",
+        "sha256": "7535c3e9f3cddc0f84d9a430eac89e6169868598caaab396721b10f3cf618b0a",
+        "durationMs": 5062.9375
+      }
+    },
+    {
+      "id": "expanded-mixed-19",
+      "split": "test",
+      "language": "mixed",
+      "task": "filler",
+      "scene": "chat",
+      "speakerId": "Eddy (中文（中国大陆）)",
+      "audio": {
+        "path": "expanded-mixed-19.wav",
+        "sha256": "c2cb8fdfec15fa94f06b1e376a43d95b53dfe20303ab71f5b3612de46ef7689a",
+        "durationMs": 5514.5625
+      }
+    },
+    {
+      "id": "expanded-mixed-20",
+      "split": "test",
+      "language": "mixed",
+      "task": "copy",
+      "scene": "chat",
+      "speakerId": "Tingting",
+      "audio": {
+        "path": "expanded-mixed-20.wav",
+        "sha256": "7e0e779552bbb1e5cac2cd486f8d2ad9a71344d8659e2293f0b07936f21669ab",
+        "durationMs": 5458.9375
+      }
+    },
+    {
+      "id": "expanded-mixed-21",
+      "split": "test",
+      "language": "mixed",
+      "task": "copy",
+      "scene": "chat",
+      "speakerId": "Eddy (中文（中国大陆）)",
+      "audio": {
+        "path": "expanded-mixed-21.wav",
+        "sha256": "3805480527d4fef7df5302aca2aa3a1a526d6de807b8313038c788a8eada586c",
+        "durationMs": 4180.625
+      }
+    },
+    {
+      "id": "expanded-mixed-22",
+      "split": "test",
+      "language": "mixed",
+      "task": "copy",
+      "scene": "chat",
+      "speakerId": "Tingting",
+      "audio": {
+        "path": "expanded-mixed-22.wav",
+        "sha256": "8ed67dda4edc42b8243083d97226d1b968d23d2f0107a776478034224e617f50",
+        "durationMs": 5249.9375
+      }
+    },
+    {
+      "id": "expanded-mixed-23",
+      "split": "test",
+      "language": "mixed",
+      "task": "copy",
+      "scene": "chat",
+      "speakerId": "Eddy (中文（中国大陆）)",
+      "audio": {
+        "path": "expanded-mixed-23.wav",
+        "sha256": "8d99bd49372e63e0b7feb7098006e26cb61dd6fd03169f94ce209e2fc3cc0cfa",
+        "durationMs": 4372.5625
+      }
+    },
+    {
+      "id": "expanded-mixed-24",
+      "split": "test",
+      "language": "mixed",
+      "task": "email",
+      "scene": "email",
+      "speakerId": "Tingting",
+      "audio": {
+        "path": "expanded-mixed-24.wav",
+        "sha256": "367fecee66378ae382b1d39b704c74e42680797528f9b69609188a48e877bb19",
+        "durationMs": 9938.0625
+      }
+    },
+    {
+      "id": "expanded-mixed-25",
+      "split": "test",
+      "language": "mixed",
+      "task": "email",
+      "scene": "email",
+      "speakerId": "Eddy (中文（中国大陆）)",
+      "audio": {
+        "path": "expanded-mixed-25.wav",
+        "sha256": "39eabe8796cd6b08e0c9dc39b404b96d02b7c04b0624556359788cddded233f4",
+        "durationMs": 7290.375
+      }
+    },
+    {
+      "id": "expanded-mixed-26",
+      "split": "test",
+      "language": "mixed",
+      "task": "list",
+      "scene": "list",
+      "speakerId": "Tingting",
+      "audio": {
+        "path": "expanded-mixed-26.wav",
+        "sha256": "b40087bb01275fceabc4972d446ea5ee7929d76997434be3e560c52b1033ad86",
+        "durationMs": 7014.75
+      }
+    },
+    {
+      "id": "expanded-mixed-27",
+      "split": "test",
+      "language": "mixed",
+      "task": "list",
+      "scene": "list",
+      "speakerId": "Eddy (中文（中国大陆）)",
+      "audio": {
+        "path": "expanded-mixed-27.wav",
+        "sha256": "a2c03db40743b0a24c47bac745872c90b26f7b60dee6a9a77f92c235ddde7aaa",
+        "durationMs": 6484.625
+      }
+    },
+    {
+      "id": "expanded-mixed-28",
+      "split": "test",
+      "language": "mixed",
+      "task": "long",
+      "scene": "chat",
+      "speakerId": "Tingting",
+      "audio": {
+        "path": "expanded-mixed-28.wav",
+        "sha256": "27abe6b4adff1822cbbea27254f89f6b4808262ddd7706d3a38b5ab19f792640",
+        "durationMs": 11354.3125
+      }
+    },
+    {
+      "id": "expanded-mixed-29",
+      "split": "test",
+      "language": "mixed",
+      "task": "long",
+      "scene": "chat",
+      "speakerId": "Eddy (中文（中国大陆）)",
+      "audio": {
+        "path": "expanded-mixed-29.wav",
+        "sha256": "5bb97e46c0546b00dd4cb491632f7d29cef9fd7e2611ba1bd883605815805435",
+        "durationMs": 10212.5
+      }
+    },
+    {
+      "id": "expanded-mixed-30",
+      "split": "test",
+      "language": "mixed",
+      "task": "long",
+      "scene": "chat",
+      "speakerId": "Tingting",
+      "audio": {
+        "path": "expanded-mixed-30.wav",
+        "sha256": "f08c8ecd0883d0f17e1946a089316284eaddab4fbb1e752908a4b25f4d39aee2",
+        "durationMs": 8557.5625
+      }
+    },
+    {
+      "id": "expanded-mixed-31",
+      "split": "test",
+      "language": "mixed",
+      "task": "long",
+      "scene": "chat",
+      "speakerId": "Eddy (中文（中国大陆）)",
+      "audio": {
+        "path": "expanded-mixed-31.wav",
+        "sha256": "5640fce427e1bad1116ff5f53f58dc6fb284002bf7022978feb44d2a3a3f940d",
+        "durationMs": 10122.5625
+      }
+    },
+    {
+      "id": "dev-zh-00",
+      "split": "dev",
+      "language": "zh",
+      "task": "repair",
+      "scene": "chat",
+      "speakerId": "Flo (中文（中国大陆）)",
+      "audio": {
+        "path": "dev-zh-00.wav",
+        "sha256": "2c4d102b3f5c07274b68bb1ce8f00591aaffee0dcca61a27371c5660ea7095cf",
+        "durationMs": 4244.625
+      }
+    },
+    {
+      "id": "dev-zh-01",
+      "split": "dev",
+      "language": "zh",
+      "task": "copy",
+      "scene": "chat",
+      "speakerId": "Flo (中文（中国大陆）)",
+      "audio": {
+        "path": "dev-zh-01.wav",
+        "sha256": "90db8594fa8a72c22e014c87df233fc86064462621fb19f863b4920e884bf17e",
+        "durationMs": 3139.9375
+      }
+    },
+    {
+      "id": "dev-en-02",
+      "split": "dev",
+      "language": "en",
+      "task": "repair",
+      "scene": "chat",
+      "speakerId": "Flo (英语（美国）)",
+      "audio": {
+        "path": "dev-en-02.wav",
+        "sha256": "8ebdd65bb982d896938d1852ad4484dfd95c9972504b0eabbf6d6f61fbc0ca34",
+        "durationMs": 4090.375
+      }
+    },
+    {
+      "id": "dev-en-03",
+      "split": "dev",
+      "language": "en",
+      "task": "copy",
+      "scene": "chat",
+      "speakerId": "Flo (英语（美国）)",
+      "audio": {
+        "path": "dev-en-03.wav",
+        "sha256": "f3eacefb8c9b68d7ac4880458273aef3c8886c9e8c28159f1428b5c4297ccb1a",
+        "durationMs": 3252.6875
+      }
+    },
+    {
+      "id": "dev-mixed-04",
+      "split": "dev",
+      "language": "mixed",
+      "task": "copy",
+      "scene": "chat",
+      "speakerId": "Flo (中文（中国大陆）)",
+      "audio": {
+        "path": "dev-mixed-04.wav",
+        "sha256": "aa66c6a2e85f5cfe2ab3c07ef81a1e17c66bb18da1a47084704b732ae55bafdc",
+        "durationMs": 3156.5625
+      }
+    },
+    {
+      "id": "expanded-silence-0",
+      "split": "test",
+      "language": "zh",
+      "task": "silence",
+      "scene": "chat",
+      "speakerId": "generated-silence",
+      "audio": {
+        "path": "expanded-silence-0.wav",
+        "sha256": "643f8a8dc8bd9c19225afffad2becfec5426180b3749cb208abdf1a6c8354efc",
+        "durationMs": 1000.0
+      }
+    },
+    {
+      "id": "expanded-silence-1",
+      "split": "test",
+      "language": "zh",
+      "task": "silence",
+      "scene": "chat",
+      "speakerId": "generated-silence",
+      "audio": {
+        "path": "expanded-silence-1.wav",
+        "sha256": "20eaebffe1816e0ffa6f7f854f5ef4ea80d5349faaf0ce1fec1b713e7fde58fa",
+        "durationMs": 2000.0
+      }
+    },
+    {
+      "id": "expanded-silence-2",
+      "split": "test",
+      "language": "zh",
+      "task": "silence",
+      "scene": "chat",
+      "speakerId": "generated-silence",
+      "audio": {
+        "path": "expanded-silence-2.wav",
+        "sha256": "d303811b8c84619667cd0501342f84ec6cbe69f7aa3856dcf52fabda374c92b8",
+        "durationMs": 3000.0
+      }
+    },
+    {
+      "id": "expanded-silence-3",
+      "split": "test",
+      "language": "zh",
+      "task": "silence",
+      "scene": "chat",
+      "speakerId": "generated-silence",
+      "audio": {
+        "path": "expanded-silence-3.wav",
+        "sha256": "f751fd7094be088dc785125e4a1a0222a17c2bd20469aa31728ca5e515ed5809",
+        "durationMs": 4000.0
+      }
+    }
+  ]
+}

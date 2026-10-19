@@ -1,0 +1,860 @@
+{
+  "expanded-zh-00": {
+    "transcript": "周三预订六个座位，不，改为四个座位。",
+    "references": [
+      "周三预订四个座位。"
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-zh-01": {
+    "transcript": "把附件发给刘老师，等等，是发给孙老师。",
+    "references": [
+      "把附件发给孙老师。"
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-zh-02": {
+    "transcript": "提醒时间设为上午十点，改到下午两点。",
+    "references": [
+      "提醒时间设为下午两点。"
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-zh-03": {
+    "transcript": "快递寄到上海，不对，寄到杭州。",
+    "references": [
+      "快递寄到杭州。"
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-zh-04": {
+    "transcript": "采购金额是一千八百元，抱歉，是两千三百元。",
+    "references": [
+      "采购金额是两千三百元。"
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-zh-05": {
+    "transcript": "先关掉通知，不，保留通知，只关闭声音。",
+    "references": [
+      "保留通知，只关闭声音。"
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-zh-06": {
+    "transcript": "下周取消培训，算了，培训照常，只调整教室。",
+    "references": [
+      "下周培训照常，只调整教室。"
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-zh-07": {
+    "transcript": "打印两份合同，再确认一下，应该打印三份合同。",
+    "references": [
+      "打印三份合同。"
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-zh-08": {
+    "transcript": "不要覆盖原始照片，处理后的文件另存一份。",
+    "references": [
+      "不要覆盖原始照片，处理后的文件另存一份。"
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-zh-09": {
+    "transcript": "只有主管确认后才能付款，现在先不要转账。",
+    "references": [
+      "只有主管确认后才能付款，现在先不要转账。"
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-zh-10": {
+    "transcript": "这不是最终报价，也不包含运费。",
+    "references": [
+      "这不是最终报价，也不包含运费。"
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-zh-11": {
+    "transcript": "如果检查没有通过，就不要发送通知。",
+    "references": [
+      "如果检查没有通过，就不要发送通知。"
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-zh-12": {
+    "transcript": "可能是网络波动，不过还需要查看日志。",
+    "references": [
+      "可能是网络波动，还需要查看日志。"
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-zh-13": {
+    "transcript": "我大概周日下午到，但暂时不能保证。",
+    "references": [
+      "我大概周日下午到，但暂时不能保证。"
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-zh-14": {
+    "transcript": "目前看起来没有丢失数据，但还没完成核对。",
+    "references": [
+      "目前看起来没有丢失数据，但还没完成核对。"
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-zh-15": {
+    "transcript": "这份材料也许够用，最好再请财务确认。",
+    "references": [
+      "这份材料也许够用，最好再请财务确认。"
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-zh-16": {
+    "transcript": "嗯，就是，我想问一下，呃，这个流程能不能简化。",
+    "references": [
+      "我想问一下，这个流程能不能简化？"
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-zh-17": {
+    "transcript": "那个，我们先把文档，嗯，先把文档整理好。",
+    "references": [
+      "我们先把文档整理好。"
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-zh-18": {
+    "transcript": "我觉得吧，呃，还是应该先做一个小范围测试。",
+    "references": [
+      "我觉得还是应该先做一个小范围测试。"
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-zh-19": {
+    "transcript": "嗯嗯，今天的重点就是，那个，确认负责人。",
+    "references": [
+      "今天的重点是确认负责人。"
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-zh-20": {
+    "transcript": "请把盖章后的扫描件存到共享文件夹。",
+    "references": [
+      "请把盖章后的扫描件存到共享文件夹。"
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-zh-21": {
+    "transcript": "冷藏食品到货后需要立即放入冰箱。",
+    "references": [
+      "冷藏食品到货后需要立即放入冰箱。"
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-zh-22": {
+    "transcript": "日志显示连接在认证阶段被拒绝。",
+    "references": [
+      "日志显示连接在认证阶段被拒绝。"
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-zh-23": {
+    "transcript": "这次只记录讨论内容，不安排新的任务。",
+    "references": [
+      "这次只记录讨论内容，不安排新的任务。"
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-zh-24": {
+    "transcript": "吴老师您好，嗯，我想把面谈改到下周二下午，您方便吗？谢谢。",
+    "references": [
+      "吴老师您好，我想把面谈改到下周二下午，您方便吗？"
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-zh-25": {
+    "transcript": "您好，我已经收到样品，不过少了一根充电线，请帮忙核实。",
+    "references": [
+      "您好，我已经收到样品，但少了一根充电线，请帮忙核实。"
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-zh-26": {
+    "transcript": "出门前检查三样东西，钥匙，身份证，还有车票。",
+    "references": [
+      "出门前检查钥匙、身份证和车票。"
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-zh-27": {
+    "transcript": "本次更新包括两个变化，支持离线搜索，以及修复导出失败。",
+    "references": [
+      "本次更新支持离线搜索，并修复导出失败。"
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-zh-28": {
+    "transcript": "先联系仓库确认库存，如果数量够，就安排明天发货；如果不够，先告诉我缺多少，不要自行拆单。",
+    "references": [
+      "先联系仓库确认库存，充足则明天发货；不足则告知缺口，不要自行拆单。"
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-zh-29": {
+    "transcript": "记录一下，场地已经确认，设备还没到，餐饮需要小周跟进。不要把这三件事都标成完成。",
+    "references": [
+      "场地已确认，设备未到，餐饮由小周跟进；不要全部标为完成。"
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-zh-30": {
+    "transcript": "我不是要撤回申请，只是希望补充一份证明，原来的申请编号保持不变。",
+    "references": [
+      "补充一份证明，不撤回申请，原申请编号不变。"
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-zh-31": {
+    "transcript": "客户同意先试用两周，但没有同意自动续费，试用结束后需要再次确认。",
+    "references": [
+      "客户同意试用两周，未同意自动续费，结束后需再次确认。"
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-en-00": {
+    "transcript": "Reserve five rooms, sorry, reserve three rooms for Friday.",
+    "references": [
+      "Reserve three rooms for Friday."
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-en-01": {
+    "transcript": "Forward the schedule to Alice, no, forward it to Brian.",
+    "references": [
+      "Forward the schedule to Brian."
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-en-02": {
+    "transcript": "The appointment is at nine, actually, move it to eleven in the morning.",
+    "references": [
+      "Move the appointment to eleven in the morning."
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-en-03": {
+    "transcript": "Ship the package to Boston, I mean, ship it to Seattle.",
+    "references": [
+      "Ship the package to Seattle."
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-en-04": {
+    "transcript": "The total is sixty dollars, sorry, seventy dollars.",
+    "references": [
+      "The total is seventy dollars."
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-en-05": {
+    "transcript": "Cancel the subscription, wait, keep it active and turn off automatic renewal.",
+    "references": [
+      "Keep the subscription active and turn off automatic renewal."
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-en-06": {
+    "transcript": "Remove the second paragraph, no, keep that and remove the last paragraph.",
+    "references": [
+      "Keep the second paragraph and remove the last paragraph."
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-en-07": {
+    "transcript": "We need fifteen copies, let me correct that, fifty copies.",
+    "references": [
+      "We need fifty copies."
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-en-08": {
+    "transcript": "Do not erase the old folder until the new backup has been verified.",
+    "references": [
+      "Do not erase the old folder until the new backup has been verified."
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-en-09": {
+    "transcript": "This estimate excludes tax and does not include installation.",
+    "references": [
+      "This estimate excludes tax and does not include installation."
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-en-10": {
+    "transcript": "If the signature is missing, do not approve the request.",
+    "references": [
+      "If the signature is missing, do not approve the request."
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-en-11": {
+    "transcript": "Only notify the owner after the upload succeeds.",
+    "references": [
+      "Only notify the owner after the upload succeeds."
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-en-12": {
+    "transcript": "The delay could be caused by maintenance, but that has not been confirmed.",
+    "references": [
+      "The delay could be caused by maintenance, but that has not been confirmed."
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-en-13": {
+    "transcript": "I will probably arrive before noon, although traffic may change that.",
+    "references": [
+      "I will probably arrive before noon, although traffic may change that."
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-en-14": {
+    "transcript": "It seems the payment went through, but please check the receipt first.",
+    "references": [
+      "It seems the payment went through, but please check the receipt first."
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-en-15": {
+    "transcript": "We may need another review, depending on what the audit finds.",
+    "references": [
+      "We may need another review, depending on what the audit finds."
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-en-16": {
+    "transcript": "Um, I was thinking, uh, we could try the smaller venue.",
+    "references": [
+      "I was thinking we could try the smaller venue."
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-en-17": {
+    "transcript": "Well, the main thing is, you know, to finish the inventory check.",
+    "references": [
+      "The main thing is to finish the inventory check."
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-en-18": {
+    "transcript": "So, so, please send me, um, send me the revised map.",
+    "references": [
+      "Please send me the revised map."
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-en-19": {
+    "transcript": "Uh, let us, let us compare the two options before deciding.",
+    "references": [
+      "Let us compare the two options before deciding."
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-en-20": {
+    "transcript": "The visitor entrance is on the east side of the building.",
+    "references": [
+      "The visitor entrance is on the east side of the building."
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-en-21": {
+    "transcript": "Keep the signed original and send a scanned copy to accounting.",
+    "references": [
+      "Keep the signed original and send a scanned copy to accounting."
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-en-22": {
+    "transcript": "The report covers April through June and excludes July.",
+    "references": [
+      "The report covers April through June and excludes July."
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-en-23": {
+    "transcript": "Place the fragile items above the heavier boxes.",
+    "references": [
+      "Place the fragile items above the heavier boxes."
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-en-24": {
+    "transcript": "Hi Maya, um, could you send the revised agenda by Tuesday? Thanks.",
+    "references": [
+      "Hi Maya, could you send the revised agenda by Tuesday?"
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-en-25": {
+    "transcript": "Hello, I received the replacement, but the power cable is still missing. Please check.",
+    "references": [
+      "Hello, I received the replacement, but the power cable is still missing. Please check."
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-en-26": {
+    "transcript": "Before leaving, check the windows, lock the back door, and switch off the lights.",
+    "references": [
+      "Before leaving, check the windows, lock the back door, and switch off the lights."
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-en-27": {
+    "transcript": "We need two changes, a larger font and a higher contrast background.",
+    "references": [
+      "We need a larger font and a higher contrast background."
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-en-28": {
+    "transcript": "Ask the supplier whether all parts are available. If they are, request delivery on Monday. Otherwise, ask which parts are missing and do not accept a partial shipment.",
+    "references": [
+      "Check all parts with the supplier; request Monday delivery if available, otherwise identify missing parts and refuse partial shipment."
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-en-29": {
+    "transcript": "The room is booked, the projector is still unconfirmed, and Dana will handle catering. Please do not mark all three as completed.",
+    "references": [
+      "Room booked; projector unconfirmed; Dana handles catering. Do not mark all three completed."
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-en-30": {
+    "transcript": "I am not withdrawing the complaint. I only want to attach the photographs, and the existing case number should stay the same.",
+    "references": [
+      "Attach photographs without withdrawing the complaint or changing the existing case number."
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-en-31": {
+    "transcript": "The customer agreed to a one month trial but did not authorize recurring payments. We must ask again when the trial ends.",
+    "references": [
+      "Customer agreed to a one month trial, not recurring payments; ask again at the end."
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-mixed-00": {
+    "transcript": "先重启 Nginx，不对，先重启 Redis。",
+    "references": [
+      "先重启 Redis。"
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-mixed-01": {
+    "transcript": "把文件保存成 JSON，等等，应该保存成 CSV。",
+    "references": [
+      "把文件保存成 CSV。"
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-mixed-02": {
+    "transcript": "这次用 Python，不，改成用 Go 来实现。",
+    "references": [
+      "这次用 Go 来实现。"
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-mixed-03": {
+    "transcript": "把任务分配给 Alice，不是，分配给 David。",
+    "references": [
+      "把任务分配给 David。"
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-mixed-04": {
+    "transcript": "接口超时设成五秒，改成十五秒，API 路径不要动。",
+    "references": [
+      "接口超时设成十五秒，API 路径不变。"
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-mixed-05": {
+    "transcript": "删除这个 branch，算了，保留 branch，只关闭 pull request。",
+    "references": [
+      "保留 branch，只关闭 pull request。"
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-mixed-06": {
+    "transcript": "先看 CPU 的占用，不对，先看 GPU 的显存。",
+    "references": [
+      "先看 GPU 的显存。"
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-mixed-07": {
+    "transcript": "部署到 production，等等，先部署到 staging。",
+    "references": [
+      "先部署到 staging。"
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-mixed-08": {
+    "transcript": "不要修改 Docker 的镜像，只调整环境变量。",
+    "references": [
+      "不要修改 Docker 的镜像，只调整环境变量。"
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-mixed-09": {
+    "transcript": "只有 CI 通过以后才能 merge，现在不要合并。",
+    "references": [
+      "只有 CI 通过以后才能 merge，现在不要合并。"
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-mixed-10": {
+    "transcript": "这个 bug 只影响 Android，不影响 iOS。",
+    "references": [
+      "这个 bug 只影响 Android，不影响 iOS。"
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-mixed-11": {
+    "transcript": "如果 token 过期，就返回错误，不要自动 retry。",
+    "references": [
+      "如果 token 过期，就返回错误，不要自动 retry。"
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-mixed-12": {
+    "transcript": "可能是 DNS 缓存的问题，但还需要确认。",
+    "references": [
+      "可能是 DNS 缓存的问题，但还需要确认。"
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-mixed-13": {
+    "transcript": "看起来是 React 的渲染问题，不过还没有复现。",
+    "references": [
+      "看起来是 React 的渲染问题，不过还没有复现。"
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-mixed-14": {
+    "transcript": "这个 timeout 也许和代理有关，暂时不要改配置。",
+    "references": [
+      "这个 timeout 也许和代理有关，暂时不要改配置。"
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-mixed-15": {
+    "transcript": "我怀疑 SQLite 的锁没有释放，但这只是猜测。",
+    "references": [
+      "我怀疑 SQLite 的锁没有释放，但这只是猜测。"
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-mixed-16": {
+    "transcript": "嗯，这个 commit，呃，需要补一条测试。",
+    "references": [
+      "这个 commit 需要补一条测试。"
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-mixed-17": {
+    "transcript": "那个，我们先把 README，嗯，先把 README 更新一下。",
+    "references": [
+      "我们先把 README 更新一下。"
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-mixed-18": {
+    "transcript": "我觉得，呃，这个 server 应该先检查日志。",
+    "references": [
+      "我觉得这个 server 应该先检查日志。"
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-mixed-19": {
+    "transcript": "嗯，就是先跑一下 benchmark，再决定要不要优化。",
+    "references": [
+      "先跑一下 benchmark，再决定要不要优化。"
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-mixed-20": {
+    "transcript": "请把错误信息写入 log，并保留 request ID。",
+    "references": [
+      "请把错误信息写入 log，并保留 request ID。"
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-mixed-21": {
+    "transcript": "这个 SDK 支持 Windows 和 Linux。",
+    "references": [
+      "这个 SDK 支持 Windows 和 Linux。"
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-mixed-22": {
+    "transcript": "请在 GitHub 上提交 issue，并附上复现步骤。",
+    "references": [
+      "请在 GitHub 上提交 issue，并附上复现步骤。"
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-mixed-23": {
+    "transcript": "导出的 PDF 需要保留中文字体。",
+    "references": [
+      "导出的 PDF 需要保留中文字体。"
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-mixed-24": {
+    "transcript": "Alex 你好，嗯，新的 API 文档已经上传，请你周五之前 review 一下，谢谢。",
+    "references": [
+      "Alex 你好，新的 API 文档已上传，请周五前 review。"
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-mixed-25": {
+    "transcript": "你好，Windows 版本出现 crash，macOS 版本正常，请帮忙确认。",
+    "references": [
+      "你好，Windows 版本出现 crash，macOS 版本正常，请帮忙确认。"
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-mixed-26": {
+    "transcript": "需要检查三项，Docker 网络，Redis 连接，还有磁盘空间。",
+    "references": [
+      "检查 Docker 网络、Redis 连接和磁盘空间。"
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-mixed-27": {
+    "transcript": "这个 PR 有两个目标，修复 login 错误，以及增加单元测试。",
+    "references": [
+      "这个 PR 修复 login 错误并增加单元测试。"
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-mixed-28": {
+    "transcript": "先在 staging 验证 login，如果测试通过，再部署到 production。如果失败，保留日志，不要直接 rollback 数据库。",
+    "references": [
+      "先在 staging 验证 login，通过后部署 production；失败则保留日志，不直接 rollback 数据库。"
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-mixed-29": {
+    "transcript": "前端的 build 已经成功，后端的 test 还没跑，Docker 镜像由 Kevin 负责，不要把所有任务都标记完成。",
+    "references": [
+      "前端 build 成功，后端 test 未跑，Kevin 负责 Docker 镜像，不要全部标记完成。"
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-mixed-30": {
+    "transcript": "我不是要删除 Git 历史，只是要撤销最后一个 commit，远程 branch 暂时不要修改。",
+    "references": [
+      "撤销最后一个 commit，不删除 Git 历史，暂不修改远程 branch。"
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-mixed-31": {
+    "transcript": "用户允许导出 CSV，但没有同意上传到云端。先把文件保存到本地，再询问是否需要同步。",
+    "references": [
+      "用户允许导出 CSV，未同意上传云端；先保存本地，再询问同步。"
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "dev-zh-00": {
+    "transcript": "订五张票，不对，订四张票。",
+    "references": [
+      "订四张票。"
+    ],
+    "required": [
+      "四"
+    ],
+    "forbidden": [
+      "五",
+      "不对"
+    ]
+  },
+  "dev-zh-01": {
+    "transcript": "今天先检查邮件。",
+    "references": [
+      "今天先检查邮件。"
+    ],
+    "required": [
+      "邮件"
+    ],
+    "forbidden": []
+  },
+  "dev-en-02": {
+    "transcript": "Meet at seven, sorry, meet at six.",
+    "references": [
+      "Meet at six."
+    ],
+    "required": [
+      "six"
+    ],
+    "forbidden": [
+      "seven",
+      "sorry"
+    ]
+  },
+  "dev-en-03": {
+    "transcript": "Keep the original document.",
+    "references": [
+      "Keep the original document."
+    ],
+    "required": [
+      "original",
+      "document"
+    ],
+    "forbidden": []
+  },
+  "dev-mixed-04": {
+    "transcript": "这个 bug 还没有修好。",
+    "references": [
+      "这个 bug 还没有修好。"
+    ],
+    "required": [
+      "bug",
+      "没有"
+    ],
+    "forbidden": []
+  },
+  "expanded-silence-0": {
+    "transcript": "",
+    "references": [
+      ""
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-silence-1": {
+    "transcript": "",
+    "references": [
+      ""
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-silence-2": {
+    "transcript": "",
+    "references": [
+      ""
+    ],
+    "required": [],
+    "forbidden": []
+  },
+  "expanded-silence-3": {
+    "transcript": "",
+    "references": [
+      ""
+    ],
+    "required": [],
+    "forbidden": []
+  }
+}

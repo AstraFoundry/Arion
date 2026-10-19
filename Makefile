@@ -256,6 +256,29 @@ chain-test:
 .PHONY: chain-review
 chain-review:
 	pnpm chain:review $(RESULTS) $(OUT)
+.PHONY: chain-semantic-report chain-semantic-test
+chain-semantic-report:
+	pnpm chain:semantic-report $(OUT)
+chain-semantic-test:
+	pnpm chain:semantic-test
+
+.PHONY: chain-semantic-verify
+chain-semantic-verify:
+	pnpm chain:semantic-verify
+
+.PHONY: chain-expanded-fixtures chain-expanded-bench
+chain-expanded-fixtures:
+	pnpm chain:expanded-fixtures
+chain-expanded-bench:
+	pnpm chain:expanded-run --split test --out $(OUT)
+.PHONY: chain-expanded-report chain-expanded-test
+chain-expanded-report:
+	pnpm chain:expanded-report $(RESULTS) $(RATINGS) $(OUT)
+chain-expanded-test:
+	pnpm chain:expanded-test
+.PHONY: chain-expanded-verify
+chain-expanded-verify:
+	pnpm chain:expanded-verify
 
 .PHONY: keyboard-stage keyboard-check keyboard-verify
 keyboard-stage: ## Stage pinned offline Pinyin runtime, schemas, data and notices

@@ -180,3 +180,11 @@ intent labels remain separate. Per-language acoustic scores precede editing;
 intent constraints and reference overlap are separate proxies. Serial engine
 latency estimates do not establish native speech-to-insertion latency. Failed
 provisioning and incomplete attempts are retained without successful substitutes.
+
+## Expanded correction-chain evaluation
+
+`pnpm chain:expanded-fixtures`, `chain:expanded-run`, `chain:expanded-report` and
+`chain:expanded-test` reuse the six model treatments on a new frozen 100-case
+synthetic corpus. The [study workflow](../../benchmarks/reproduction/correction-chain-expanded-v2/README.md)
+separates spoken cases from silence and original regression fixtures. Semantic
+ratings allow paraphrase and structure; exact substring gates are not the outcome.

@@ -1,0 +1,91 @@
+{
+  "version": 1,
+  "kind": "correction-chain-semantic-derivative-v1",
+  "files": [
+    {
+      "path": "../../corpora/correction-chain-v1/labels.json",
+      "bytes": 15678,
+      "sha256": "cfe3c8f851c60ab156988820fc83dfde2e638c36411d869247910eccf6d11944"
+    },
+    {
+      "path": "../../reproduction/correction-chain-semantic-v1/README.md",
+      "bytes": 956,
+      "sha256": "649cd491f91c31db14413bc9b55f4dd6f85b624370117e626795804851f95bb4"
+    },
+    {
+      "path": "../../reproduction/correction-chain-semantic-v1/author_ratings.py",
+      "bytes": 7173,
+      "sha256": "780705f14b7baa06a62b3116e1bc2effed56af95b3baf0e3a9176acd225165ef"
+    },
+    {
+      "path": "../../reproduction/correction-chain-semantic-v1/report.mjs",
+      "bytes": 5123,
+      "sha256": "16a558f5c3e3e8ad86b29c29ad5e6f5723a68a7e8857e4f3eaf21d3d967a403f"
+    },
+    {
+      "path": "../../reproduction/correction-chain-semantic-v1/report.test.mjs",
+      "bytes": 1678,
+      "sha256": "dd7c8003bec09aa8f071c33308436c2a83cfdaa196fa84524d18453e264d3d27"
+    },
+    {
+      "path": "../../reproduction/correction-chain-semantic-v1/rubric.json",
+      "bytes": 2241,
+      "sha256": "2c71509aac808bf0e7d1b70ec8ca02acf3aabeefa07d4ebcaf49e0907ac07b65"
+    },
+    {
+      "path": "../../reproduction/correction-chain-semantic-v1/verify.mjs",
+      "bytes": 238,
+      "sha256": "3c9ebfdef951dbe83bc4c45ae2bb2a7f8715df6922802aa4580b7070609a3eca"
+    },
+    {
+      "path": "../../results/correction-chain-semantic-v1/README.md",
+      "bytes": 5930,
+      "sha256": "177c865f9bec6b48ce371d02fda61d1bded5cbe47aabe0d5425565e251190068"
+    },
+    {
+      "path": "../../results/correction-chain-semantic-v1/ratings.json",
+      "bytes": 61980,
+      "sha256": "a0968301730a74cf81356feb97aceb2317eadea10193e950783503a484a4db1e"
+    },
+    {
+      "path": "../../results/correction-chain-semantic-v1/summary.json",
+      "bytes": 20169,
+      "sha256": "6e684ced3f97827d03b4c52a1b433bc37a1c427203ab25f4cc531c6688285aac"
+    },
+    {
+      "path": "../../results/correction-chain-v1/summary.json",
+      "bytes": 214354,
+      "sha256": "011957d7cacaa868291281e814e918fc1e53690418058059f6f2b7b360ffcbc1"
+    },
+    {
+      "path": "downloads/acquisition.json",
+      "bytes": 1584,
+      "sha256": "2a166122625325a102265226db09ad08c0765074e03f7aeb09ed4e854632aded"
+    },
+    {
+      "path": "downloads/fastcorrect-manifest.json",
+      "bytes": 2895,
+      "sha256": "354f783f49cac32719497ff408adb18c707cb94479d3ff874eece27406482692"
+    },
+    {
+      "path": "drafts/README.md",
+      "bytes": 330,
+      "sha256": "f03767e078a001b0e6c4aed5eae2c4d73db0ec48ea34a2ab14f15d9e21c7f48b"
+    },
+    {
+      "path": "drafts/author-ratings-initial-draft.py",
+      "bytes": 7051,
+      "sha256": "984875b07bddd476f945d242b8306b3b8f891fa0a8cef68606036b6cdde789fc"
+    },
+    {
+      "path": "drafts/ratings-initial-draft.json",
+      "bytes": 61245,
+      "sha256": "bda477c1e0b06ccb6f11563ac0611d0dea098e5d0b68e2885302c950de51e2da"
+    },
+    {
+      "path": "../correction-chain-v1/manifest.json",
+      "bytes": 75248,
+      "sha256": "87923b859b09b8f9496979dfead930549752a528ebb52785c80dd16c712b3dac"
+    }
+  ]
+}

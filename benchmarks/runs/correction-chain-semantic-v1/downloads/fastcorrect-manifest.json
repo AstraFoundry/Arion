@@ -1,0 +1,81 @@
+{
+  "status": "downloaded_and_structurally_inspected",
+  "route": "existing macOS system HTTPS proxy explicitly supplied to curl",
+  "assets": [
+    {
+      "filename": "fastcorrect_pretrain.pt",
+      "bytes": 914618147,
+      "sha256": "7563ad80eb52da182c7275cf8a725d35a3fbf883d7ac0d72f440e8d62f2bb1a4",
+      "officialFileId": "1-Xx2rwf-hG4Wt1FMH3K-rmATWroDTTPe",
+      "source": "https://github.com/microsoft/NeuralSpeech/tree/master/FastCorrect",
+      "publisherDigestAvailable": false
+    },
+    {
+      "filename": "sentencepiece.bpe.model",
+      "bytes": 543619,
+      "sha256": "f5d4d056afb7987595adfb8458c0e1fe1031ff013ee6ab7a10b56cdee0de5939",
+      "officialFileId": "1-w-K-IDFMc29kiUTQ6FKtAZB2NfVp2VE",
+      "source": "https://github.com/microsoft/NeuralSpeech/tree/master/FastCorrect",
+      "publisherDigestAvailable": false
+    },
+    {
+      "filename": "dict.CN_char.txt",
+      "bytes": 320567,
+      "sha256": "f91dfb1d007419ec8b7e0412ef96f3c2fc556c816a2c99757913be21761bd817",
+      "source": "https://raw.githubusercontent.com/microsoft/NeuralSpeech/8cf4fbcbf451c3affc68ecfa6c970327e927062f/FastCorrect/data/werdur_data_aishell/dict.CN_char.txt",
+      "gitBlobSha1": "1b508347aac55f0f0fe309795900e80b87ad7ba2",
+      "publisherDigestAvailable": true
+    }
+  ],
+  "inspection": {
+    "loadMode": "torch.load weights_only=True with only argparse.Namespace explicitly allowlisted; no unrestricted pickle loading",
+    "topLevelKeys": [
+      "args",
+      "model",
+      "optimizer_history",
+      "extra_state",
+      "last_optimizer_state"
+    ],
+    "modelTensorCount": 287,
+    "modelTensorElementsWithAliases": 98501126,
+    "uniqueModelTensorElements": 98501126,
+    "encoderEmbeddingShape": [
+      32656,
+      512
+    ],
+    "decoderEmbeddingShape": [
+      32656,
+      512
+    ],
+    "architecture": {
+      "arch": "nonautoregressive_transformer",
+      "task": "translation_lev",
+      "encoder_layers": 6,
+      "decoder_layers": 6,
+      "encoder_embed_dim": 512,
+      "decoder_embed_dim": 512,
+      "encoder_ffn_embed_dim": 2048,
+      "decoder_ffn_embed_dim": 2048,
+      "share_all_embeddings": true,
+      "share_decoder_input_output_embed": true,
+      "src_with_werdur": true,
+      "werdur_max_predict": 3.0
+    },
+    "sentencepieceSize": 20000,
+    "sentencepieceProbe": [
+      "▁今天",
+      "检查",
+      "邮件",
+      "。"
+    ],
+    "limitations": [
+      "Checkpoint structure and tokenizer parsed; full FastCorrect inference has not been executed.",
+      "Unique tensor element count includes state buffers and is not an instantiated parameter count.",
+      "Official artifact is a pretraining checkpoint, not a verified AISHELL-finetuned deployment package."
+    ],
+    "dictionaryEntries": 32652,
+    "dictionaryWithFairseqSpecials": 32656,
+    "dictionaryMatchesEmbedding": true,
+    "zipCRC": "all 342 entries passed"
+  }
+}

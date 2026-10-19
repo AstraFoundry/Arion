@@ -1,0 +1,1415 @@
+{
+  "version": 1,
+  "kind": "agent-semantic-review-v1",
+  "reviewer": "Codex agent; aware of original model identities and previous scores",
+  "independence": "single non-blinded agent review; not independent human ratings",
+  "summarySha256": "011957d7cacaa868291281e814e918fc1e53690418058059f6f2b7b360ffcbc1",
+  "rubricSha256": "2c71509aac808bf0e7d1b70ec8ca02acf3aabeefa07d4ebcaf49e0907ac07b65",
+  "annotationSourceSha256": "780705f14b7baa06a62b3116e1bc2effed56af95b3baf0e3a9176acd225165ef",
+  "ratings": [
+    {
+      "caseId": "test-zh-00",
+      "arm": "asr",
+      "textSha256": "2c04588d8e3b3a2ab63a98c48538076f0336fd28dee1d105446666bb340fd135",
+      "fidelity": "preserved",
+      "organization": 0,
+      "ready": false,
+      "reason": "The final nine lunches remains explicit, but every output retains the superseded twelve and spoken repair."
+    },
+    {
+      "caseId": "test-zh-00",
+      "arm": "asr_correct",
+      "textSha256": "eb51e0c46cf502158ceab2b3e0a2cb2b8e5be87f3fe6fdd18c41d46d44b65863",
+      "fidelity": "preserved",
+      "organization": 0,
+      "ready": false,
+      "reason": "The final nine lunches remains explicit, but every output retains the superseded twelve and spoken repair."
+    },
+    {
+      "caseId": "test-zh-00",
+      "arm": "asr_llm",
+      "textSha256": "2c04588d8e3b3a2ab63a98c48538076f0336fd28dee1d105446666bb340fd135",
+      "fidelity": "preserved",
+      "organization": 0,
+      "ready": false,
+      "reason": "The final nine lunches remains explicit, but every output retains the superseded twelve and spoken repair."
+    },
+    {
+      "caseId": "test-zh-00",
+      "arm": "asr_correct_llm",
+      "textSha256": "eb51e0c46cf502158ceab2b3e0a2cb2b8e5be87f3fe6fdd18c41d46d44b65863",
+      "fidelity": "preserved",
+      "organization": 0,
+      "ready": false,
+      "reason": "The final nine lunches remains explicit, but every output retains the superseded twelve and spoken repair."
+    },
+    {
+      "caseId": "test-zh-00",
+      "arm": "offline",
+      "textSha256": "1b947177b7bc6c5b80538b8bbcaa28372b6ae91167e69c2c18d9d3ea32716874",
+      "fidelity": "preserved",
+      "organization": 0,
+      "ready": false,
+      "reason": "The final nine lunches remains explicit, but every output retains the superseded twelve and spoken repair."
+    },
+    {
+      "caseId": "test-zh-00",
+      "arm": "offline_llm",
+      "textSha256": "1b947177b7bc6c5b80538b8bbcaa28372b6ae91167e69c2c18d9d3ea32716874",
+      "fidelity": "preserved",
+      "organization": 0,
+      "ready": false,
+      "reason": "The final nine lunches remains explicit, but every output retains the superseded twelve and spoken repair."
+    },
+    {
+      "caseId": "test-zh-01",
+      "arm": "asr",
+      "textSha256": "2871d2bfb2cc5fef7d4b41b522bd071e82442721eacb9e47dbced818469e4f8c",
+      "fidelity": "uncertain",
+      "organization": 1,
+      "ready": false,
+      "reason": "The missing repair punctuation makes Wang/not-Chen ambiguous in the source, correction and corrected rewrite. The direct rewrite explicitly reinforces the wrong recipient; the offline source preserves the repair and its rewrite correctly selects Chen."
+    },
+    {
+      "caseId": "test-zh-01",
+      "arm": "asr_correct",
+      "textSha256": "dc8ba1dcdbfde869f0e3691fbfcaf482465ad528e258401060bb07dffa3ef54c",
+      "fidelity": "uncertain",
+      "organization": 1,
+      "ready": false,
+      "reason": "The missing repair punctuation makes Wang/not-Chen ambiguous in the source, correction and corrected rewrite. The direct rewrite explicitly reinforces the wrong recipient; the offline source preserves the repair and its rewrite correctly selects Chen."
+    },
+    {
+      "caseId": "test-zh-01",
+      "arm": "asr_llm",
+      "textSha256": "f978995c732a6578a9f563f494b5fdf74946fd693e4e12337a7568559fbc4ee1",
+      "fidelity": "degraded",
+      "organization": 2,
+      "ready": false,
+      "reason": "The missing repair punctuation makes Wang/not-Chen ambiguous in the source, correction and corrected rewrite. The direct rewrite explicitly reinforces the wrong recipient; the offline source preserves the repair and its rewrite correctly selects Chen."
+    },
+    {
+      "caseId": "test-zh-01",
+      "arm": "asr_correct_llm",
+      "textSha256": "7972b6560a9eac7ebc6ec60d022f986da5af01f1ed92410987b287dc3a2f3a04",
+      "fidelity": "uncertain",
+      "organization": 1,
+      "ready": false,
+      "reason": "The missing repair punctuation makes Wang/not-Chen ambiguous in the source, correction and corrected rewrite. The direct rewrite explicitly reinforces the wrong recipient; the offline source preserves the repair and its rewrite correctly selects Chen."
+    },
+    {
+      "caseId": "test-zh-01",
+      "arm": "offline",
+      "textSha256": "90aedbc94bd5668cb95527da547af4f023eabd52a9122d3b21f337e19290a37d",
+      "fidelity": "preserved",
+      "organization": 0,
+      "ready": false,
+      "reason": "The missing repair punctuation makes Wang/not-Chen ambiguous in the source, correction and corrected rewrite. The direct rewrite explicitly reinforces the wrong recipient; the offline source preserves the repair and its rewrite correctly selects Chen."
+    },
+    {
+      "caseId": "test-zh-01",
+      "arm": "offline_llm",
+      "textSha256": "8ad8018ed7caf9f6649450e6a3b2d58aeafe7fe8effe562633722a463d464978",
+      "fidelity": "preserved",
+      "organization": 2,
+      "ready": true,
+      "reason": "The missing repair punctuation makes Wang/not-Chen ambiguous in the source, correction and corrected rewrite. The direct rewrite explicitly reinforces the wrong recipient; the offline source preserves the repair and its rewrite correctly selects Chen."
+    },
+    {
+      "caseId": "test-zh-02",
+      "arm": "asr",
+      "textSha256": "10048a0a627d4708c12f89a57d091f1647a2ecafac48f732d20beaf85d0cf895",
+      "fidelity": "preserved",
+      "organization": 0,
+      "ready": false,
+      "reason": "The direct and offline rewrites reverse the final day to Thursday. The corrected rewrite repeats Friday but preserves its intended afternoon; repetition reduces polish, not fidelity."
+    },
+    {
+      "caseId": "test-zh-02",
+      "arm": "asr_correct",
+      "textSha256": "1592c9c4f8de07becd384be471462f84b5c63a31fed17a3ef2aa649be8e40379",
+      "fidelity": "preserved",
+      "organization": 0,
+      "ready": false,
+      "reason": "The direct and offline rewrites reverse the final day to Thursday. The corrected rewrite repeats Friday but preserves its intended afternoon; repetition reduces polish, not fidelity."
+    },
+    {
+      "caseId": "test-zh-02",
+      "arm": "asr_llm",
+      "textSha256": "526974a9b8be47bc4153b2876766d7bff8daa626d9e25e2105d6eb86c501aa5a",
+      "fidelity": "degraded",
+      "organization": 1,
+      "ready": false,
+      "reason": "The direct and offline rewrites reverse the final day to Thursday. The corrected rewrite repeats Friday but preserves its intended afternoon; repetition reduces polish, not fidelity."
+    },
+    {
+      "caseId": "test-zh-02",
+      "arm": "asr_correct_llm",
+      "textSha256": "d20a46dd8b3452c28c1d453eadd60d8878f540de05b277d4eb21c6e7209cd381",
+      "fidelity": "preserved",
+      "organization": 1,
+      "ready": true,
+      "reason": "The direct and offline rewrites reverse the final day to Thursday. The corrected rewrite repeats Friday but preserves its intended afternoon; repetition reduces polish, not fidelity."
+    },
+    {
+      "caseId": "test-zh-02",
+      "arm": "offline",
+      "textSha256": "4d07a3f8dd18615ffb58d72850c6e21ef73d2a0e3d279a70e35a1705eedd84a5",
+      "fidelity": "preserved",
+      "organization": 0,
+      "ready": false,
+      "reason": "The direct and offline rewrites reverse the final day to Thursday. The corrected rewrite repeats Friday but preserves its intended afternoon; repetition reduces polish, not fidelity."
+    },
+    {
+      "caseId": "test-zh-02",
+      "arm": "offline_llm",
+      "textSha256": "526974a9b8be47bc4153b2876766d7bff8daa626d9e25e2105d6eb86c501aa5a",
+      "fidelity": "degraded",
+      "organization": 1,
+      "ready": false,
+      "reason": "The direct and offline rewrites reverse the final day to Thursday. The corrected rewrite repeats Friday but preserves its intended afternoon; repetition reduces polish, not fidelity."
+    },
+    {
+      "caseId": "test-zh-03",
+      "arm": "asr",
+      "textSha256": "4ac35f32ed121eb9a4c0405c86322378214cb5c8175fe48742fea8190c10372c",
+      "fidelity": "preserved",
+      "organization": 0,
+      "ready": false,
+      "reason": "All retain the final 7500 amount. The corrected and offline rewrites resolve the obsolete 6000 and repair; the other outputs still need cleanup."
+    },
+    {
+      "caseId": "test-zh-03",
+      "arm": "asr_correct",
+      "textSha256": "fba18955e0c5212e8273bddaa18c9c6175ddddd8dbb54d53673b1138fecfa3dd",
+      "fidelity": "preserved",
+      "organization": 0,
+      "ready": false,
+      "reason": "All retain the final 7500 amount. The corrected and offline rewrites resolve the obsolete 6000 and repair; the other outputs still need cleanup."
+    },
+    {
+      "caseId": "test-zh-03",
+      "arm": "asr_llm",
+      "textSha256": "244a5d60061bc3f6ece64b9901a215e03a79ece60ef28f5df53976a8ab3aa574",
+      "fidelity": "preserved",
+      "organization": 0,
+      "ready": false,
+      "reason": "All retain the final 7500 amount. The corrected and offline rewrites resolve the obsolete 6000 and repair; the other outputs still need cleanup."
+    },
+    {
+      "caseId": "test-zh-03",
+      "arm": "asr_correct_llm",
+      "textSha256": "9c0d643ab59e7a9913a33e6bb7e38e967fcf90750df0b1af3698bac0fa80c6f7",
+      "fidelity": "preserved",
+      "organization": 2,
+      "ready": true,
+      "reason": "All retain the final 7500 amount. The corrected and offline rewrites resolve the obsolete 6000 and repair; the other outputs still need cleanup."
+    },
+    {
+      "caseId": "test-zh-03",
+      "arm": "offline",
+      "textSha256": "6297dd6d55be72c108050116b3e661b8b0633c0ba988a98ba020be6d77fd782c",
+      "fidelity": "preserved",
+      "organization": 0,
+      "ready": false,
+      "reason": "All retain the final 7500 amount. The corrected and offline rewrites resolve the obsolete 6000 and repair; the other outputs still need cleanup."
+    },
+    {
+      "caseId": "test-zh-03",
+      "arm": "offline_llm",
+      "textSha256": "9c0d643ab59e7a9913a33e6bb7e38e967fcf90750df0b1af3698bac0fa80c6f7",
+      "fidelity": "preserved",
+      "organization": 2,
+      "ready": true,
+      "reason": "All retain the final 7500 amount. The corrected and offline rewrites resolve the obsolete 6000 and repair; the other outputs still need cleanup."
+    },
+    {
+      "caseId": "test-zh-04",
+      "arm": "asr",
+      "textSha256": "8d93a6a3452030a4ccc88ea806fcbe26c116962c2ca097328135ac55cf339e3f",
+      "fidelity": "preserved",
+      "organization": 1,
+      "ready": true,
+      "reason": "The backup prohibition and temporary-file action remain recoverable. The homophonic zhi typo in two outputs is a surface defect; the corrected and offline variants express the restriction clearly."
+    },
+    {
+      "caseId": "test-zh-04",
+      "arm": "asr_correct",
+      "textSha256": "4534bb79d7936ae4b2ef8dab2118c655947f483d4323c6287988a815653d5962",
+      "fidelity": "preserved",
+      "organization": 2,
+      "ready": true,
+      "reason": "The backup prohibition and temporary-file action remain recoverable. The homophonic zhi typo in two outputs is a surface defect; the corrected and offline variants express the restriction clearly."
+    },
+    {
+      "caseId": "test-zh-04",
+      "arm": "asr_llm",
+      "textSha256": "b36e42d73f879188e5725e014355709f8f5a725861e9d4c425d3b6e321d69df7",
+      "fidelity": "preserved",
+      "organization": 1,
+      "ready": true,
+      "reason": "The backup prohibition and temporary-file action remain recoverable. The homophonic zhi typo in two outputs is a surface defect; the corrected and offline variants express the restriction clearly."
+    },
+    {
+      "caseId": "test-zh-04",
+      "arm": "asr_correct_llm",
+      "textSha256": "25f6db876938047200acf8fe1ee3fb7c6b3daa6f609c0be384f603d8ceb589f1",
+      "fidelity": "preserved",
+      "organization": 2,
+      "ready": true,
+      "reason": "The backup prohibition and temporary-file action remain recoverable. The homophonic zhi typo in two outputs is a surface defect; the corrected and offline variants express the restriction clearly."
+    },
+    {
+      "caseId": "test-zh-04",
+      "arm": "offline",
+      "textSha256": "579fbedd9fd3a7776d1cbb01699dab21a80135a453b89ee680480bd34082ef42",
+      "fidelity": "preserved",
+      "organization": 2,
+      "ready": true,
+      "reason": "The backup prohibition and temporary-file action remain recoverable. The homophonic zhi typo in two outputs is a surface defect; the corrected and offline variants express the restriction clearly."
+    },
+    {
+      "caseId": "test-zh-04",
+      "arm": "offline_llm",
+      "textSha256": "25f6db876938047200acf8fe1ee3fb7c6b3daa6f609c0be384f603d8ceb589f1",
+      "fidelity": "preserved",
+      "organization": 2,
+      "ready": true,
+      "reason": "The backup prohibition and temporary-file action remain recoverable. The homophonic zhi typo in two outputs is a surface defect; the corrected and offline variants express the restriction clearly."
+    },
+    {
+      "caseId": "test-zh-05",
+      "arm": "asr",
+      "textSha256": "0611a2698666fca26ab00fd05efc90e25b4515f9f06b94fdfe06a9e817a975ad",
+      "fidelity": "preserved",
+      "organization": 2,
+      "ready": true,
+      "reason": "The permissions hypothesis and uncertainty are preserved; punctuation and spacing are immaterial."
+    },
+    {
+      "caseId": "test-zh-05",
+      "arm": "asr_correct",
+      "textSha256": "d2ca6e73d98dd0e31623f97cb4a1eef749417e8ff2efc2b091fc42e756c147fd",
+      "fidelity": "preserved",
+      "organization": 2,
+      "ready": true,
+      "reason": "The permissions hypothesis and uncertainty are preserved; punctuation and spacing are immaterial."
+    },
+    {
+      "caseId": "test-zh-05",
+      "arm": "asr_llm",
+      "textSha256": "17ccb8a5769349c6b8146e9614aa7d799971c22adb28650c2a9cf90a8da18c77",
+      "fidelity": "preserved",
+      "organization": 2,
+      "ready": true,
+      "reason": "The permissions hypothesis and uncertainty are preserved; punctuation and spacing are immaterial."
+    },
+    {
+      "caseId": "test-zh-05",
+      "arm": "asr_correct_llm",
+      "textSha256": "17ccb8a5769349c6b8146e9614aa7d799971c22adb28650c2a9cf90a8da18c77",
+      "fidelity": "preserved",
+      "organization": 2,
+      "ready": true,
+      "reason": "The permissions hypothesis and uncertainty are preserved; punctuation and spacing are immaterial."
+    },
+    {
+      "caseId": "test-zh-05",
+      "arm": "offline",
+      "textSha256": "5592c2f87ca973da0a083c3bca39600257a26551b982948d9a740b070adfc736",
+      "fidelity": "preserved",
+      "organization": 2,
+      "ready": true,
+      "reason": "The permissions hypothesis and uncertainty are preserved; punctuation and spacing are immaterial."
+    },
+    {
+      "caseId": "test-zh-05",
+      "arm": "offline_llm",
+      "textSha256": "17ccb8a5769349c6b8146e9614aa7d799971c22adb28650c2a9cf90a8da18c77",
+      "fidelity": "preserved",
+      "organization": 2,
+      "ready": true,
+      "reason": "The permissions hypothesis and uncertainty are preserved; punctuation and spacing are immaterial."
+    },
+    {
+      "caseId": "test-zh-06",
+      "arm": "asr",
+      "textSha256": "5627a1525567bf137072bbfee6cd35b8ed3bf782d0b8b68f7505ddd4b763c326",
+      "fidelity": "preserved",
+      "organization": 0,
+      "ready": false,
+      "reason": "The plan and suggestion to discuss remain. The malformed leading an-na-ge phrase in the streaming variants needs cleanup; the offline rewrite has only a minor residual filler."
+    },
+    {
+      "caseId": "test-zh-06",
+      "arm": "asr_correct",
+      "textSha256": "fe86516d01450dd502518f3d25b32087acc553c2c204a25c50c33085d44d3651",
+      "fidelity": "preserved",
+      "organization": 0,
+      "ready": false,
+      "reason": "The plan and suggestion to discuss remain. The malformed leading an-na-ge phrase in the streaming variants needs cleanup; the offline rewrite has only a minor residual filler."
+    },
+    {
+      "caseId": "test-zh-06",
+      "arm": "asr_llm",
+      "textSha256": "6c68d9e377daac0a3a0280a87fdf1f462058bb35135e3cd3e889bbe0d202d0ef",
+      "fidelity": "preserved",
+      "organization": 0,
+      "ready": false,
+      "reason": "The plan and suggestion to discuss remain. The malformed leading an-na-ge phrase in the streaming variants needs cleanup; the offline rewrite has only a minor residual filler."
+    },
+    {
+      "caseId": "test-zh-06",
+      "arm": "asr_correct_llm",
+      "textSha256": "6c68d9e377daac0a3a0280a87fdf1f462058bb35135e3cd3e889bbe0d202d0ef",
+      "fidelity": "preserved",
+      "organization": 0,
+      "ready": false,
+      "reason": "The plan and suggestion to discuss remain. The malformed leading an-na-ge phrase in the streaming variants needs cleanup; the offline rewrite has only a minor residual filler."
+    },
+    {
+      "caseId": "test-zh-06",
+      "arm": "offline",
+      "textSha256": "8cb21ee6a33b76640c12145c02d17ddc4d179d69f858cd004eedded1a8cddfdb",
+      "fidelity": "preserved",
+      "organization": 0,
+      "ready": false,
+      "reason": "The plan and suggestion to discuss remain. The malformed leading an-na-ge phrase in the streaming variants needs cleanup; the offline rewrite has only a minor residual filler."
+    },
+    {
+      "caseId": "test-zh-06",
+      "arm": "offline_llm",
+      "textSha256": "b39968b840bcb90d67d3bc660191a73c42a9a6574e70d5401fde7c8e4826cff6",
+      "fidelity": "preserved",
+      "organization": 1,
+      "ready": true,
+      "reason": "The plan and suggestion to discuss remain. The malformed leading an-na-ge phrase in the streaming variants needs cleanup; the offline rewrite has only a minor residual filler."
+    },
+    {
+      "caseId": "test-zh-07",
+      "arm": "asr",
+      "textSha256": "2d374618e4eec48b63c72de178157ec2f23e9a90e9fca65aa2235520d7a5b34c",
+      "fidelity": "preserved",
+      "organization": 2,
+      "ready": true,
+      "reason": "The reimbursement materials and next-Monday deadline are unchanged."
+    },
+    {
+      "caseId": "test-zh-07",
+      "arm": "asr_correct",
+      "textSha256": "2d374618e4eec48b63c72de178157ec2f23e9a90e9fca65aa2235520d7a5b34c",
+      "fidelity": "preserved",
+      "organization": 2,
+      "ready": true,
+      "reason": "The reimbursement materials and next-Monday deadline are unchanged."
+    },
+    {
+      "caseId": "test-zh-07",
+      "arm": "asr_llm",
+      "textSha256": "1917404fa2c2ce71eb41b16686bc06d21d9978cf76032babfc0f968ae723e6a3",
+      "fidelity": "preserved",
+      "organization": 2,
+      "ready": true,
+      "reason": "The reimbursement materials and next-Monday deadline are unchanged."
+    },
+    {
+      "caseId": "test-zh-07",
+      "arm": "asr_correct_llm",
+      "textSha256": "1917404fa2c2ce71eb41b16686bc06d21d9978cf76032babfc0f968ae723e6a3",
+      "fidelity": "preserved",
+      "organization": 2,
+      "ready": true,
+      "reason": "The reimbursement materials and next-Monday deadline are unchanged."
+    },
+    {
+      "caseId": "test-zh-07",
+      "arm": "offline",
+      "textSha256": "1917404fa2c2ce71eb41b16686bc06d21d9978cf76032babfc0f968ae723e6a3",
+      "fidelity": "preserved",
+      "organization": 2,
+      "ready": true,
+      "reason": "The reimbursement materials and next-Monday deadline are unchanged."
+    },
+    {
+      "caseId": "test-zh-07",
+      "arm": "offline_llm",
+      "textSha256": "1917404fa2c2ce71eb41b16686bc06d21d9978cf76032babfc0f968ae723e6a3",
+      "fidelity": "preserved",
+      "organization": 2,
+      "ready": true,
+      "reason": "The reimbursement materials and next-Monday deadline are unchanged."
+    },
+    {
+      "caseId": "test-zh-08",
+      "arm": "asr",
+      "textSha256": "aef078bd47796423edcc19c3e0fe33ca79604903e2ddced17255e9aef789db3b",
+      "fidelity": "preserved",
+      "organization": 0,
+      "ready": false,
+      "reason": "Teacher Zhao and the request to adjust defense order are preserved. Inline clean prose and email paragraphs are both acceptable; raw fillers reduce readiness."
+    },
+    {
+      "caseId": "test-zh-08",
+      "arm": "asr_correct",
+      "textSha256": "05ecfda40a119c673274e4b7ebdd5987c082248fcbbe64255912cf497d34a3a7",
+      "fidelity": "preserved",
+      "organization": 0,
+      "ready": false,
+      "reason": "Teacher Zhao and the request to adjust defense order are preserved. Inline clean prose and email paragraphs are both acceptable; raw fillers reduce readiness."
+    },
+    {
+      "caseId": "test-zh-08",
+      "arm": "asr_llm",
+      "textSha256": "9d216bab0cb279b4cb685f881c94acc2c1dbad9e936bdf09feb290c1f81bb663",
+      "fidelity": "preserved",
+      "organization": 2,
+      "ready": true,
+      "reason": "Teacher Zhao and the request to adjust defense order are preserved. Inline clean prose and email paragraphs are both acceptable; raw fillers reduce readiness."
+    },
+    {
+      "caseId": "test-zh-08",
+      "arm": "asr_correct_llm",
+      "textSha256": "f65c28ce95694676571ec42606b9a69c0fcc471c86644964e74560de8a343cbc",
+      "fidelity": "preserved",
+      "organization": 2,
+      "ready": true,
+      "reason": "Teacher Zhao and the request to adjust defense order are preserved. Inline clean prose and email paragraphs are both acceptable; raw fillers reduce readiness."
+    },
+    {
+      "caseId": "test-zh-08",
+      "arm": "offline",
+      "textSha256": "e3b79176ef448d45d4fe79b4eaf421fb0a46dd62ed734d8ef28fb875f2bd19db",
+      "fidelity": "preserved",
+      "organization": 0,
+      "ready": false,
+      "reason": "Teacher Zhao and the request to adjust defense order are preserved. Inline clean prose and email paragraphs are both acceptable; raw fillers reduce readiness."
+    },
+    {
+      "caseId": "test-zh-08",
+      "arm": "offline_llm",
+      "textSha256": "7ba26c40b091d20a9dc8e81ea2ad128e3610145c57f36b9f5c63e1521a2b247d",
+      "fidelity": "preserved",
+      "organization": 2,
+      "ready": true,
+      "reason": "Teacher Zhao and the request to adjust defense order are preserved. Inline clean prose and email paragraphs are both acceptable; raw fillers reduce readiness."
+    },
+    {
+      "caseId": "test-zh-09",
+      "arm": "asr",
+      "textSha256": "f46b9ea3ed05fa5f057521bfb05589e6f9fea0f36ea28c7c48b7ff38ec42f2b5",
+      "fidelity": "preserved",
+      "organization": 1,
+      "ready": true,
+      "reason": "All three checks are present in the same order. Enumerated prose is adequate; numbered lines improve structure without being required."
+    },
+    {
+      "caseId": "test-zh-09",
+      "arm": "asr_correct",
+      "textSha256": "9c93cdc4c72a9b3c521b1dc3bc06c2dcceda05ec868b18a7e8d5f8a35e44747d",
+      "fidelity": "preserved",
+      "organization": 1,
+      "ready": true,
+      "reason": "All three checks are present in the same order. Enumerated prose is adequate; numbered lines improve structure without being required."
+    },
+    {
+      "caseId": "test-zh-09",
+      "arm": "asr_llm",
+      "textSha256": "68d7484de3e7cf6050d96392c4948e420ca8e345a42cde52705145d9cd5a501e",
+      "fidelity": "preserved",
+      "organization": 2,
+      "ready": true,
+      "reason": "All three checks are present in the same order. Enumerated prose is adequate; numbered lines improve structure without being required."
+    },
+    {
+      "caseId": "test-zh-09",
+      "arm": "asr_correct_llm",
+      "textSha256": "68d7484de3e7cf6050d96392c4948e420ca8e345a42cde52705145d9cd5a501e",
+      "fidelity": "preserved",
+      "organization": 2,
+      "ready": true,
+      "reason": "All three checks are present in the same order. Enumerated prose is adequate; numbered lines improve structure without being required."
+    },
+    {
+      "caseId": "test-zh-09",
+      "arm": "offline",
+      "textSha256": "dfbb440ef88ca4c72fe8123f2980bf28980fc99af0247f27cdcb54be84824095",
+      "fidelity": "preserved",
+      "organization": 1,
+      "ready": true,
+      "reason": "All three checks are present in the same order. Enumerated prose is adequate; numbered lines improve structure without being required."
+    },
+    {
+      "caseId": "test-zh-09",
+      "arm": "offline_llm",
+      "textSha256": "68d7484de3e7cf6050d96392c4948e420ca8e345a42cde52705145d9cd5a501e",
+      "fidelity": "preserved",
+      "organization": 2,
+      "ready": true,
+      "reason": "All three checks are present in the same order. Enumerated prose is adequate; numbered lines improve structure without being required."
+    },
+    {
+      "caseId": "test-zh-10",
+      "arm": "asr",
+      "textSha256": "88140250d456c14d0093d604847501ec151c24ed14e4b0e0febffc322a14681f",
+      "fidelity": "preserved",
+      "organization": 2,
+      "ready": true,
+      "reason": "All delivered outputs preserve the dictated instruction as text. A rejected/truncated raw model proposal does not invalidate a faithful delivered source."
+    },
+    {
+      "caseId": "test-zh-10",
+      "arm": "asr_correct",
+      "textSha256": "53737a85cf50e0b9ac441fae4ef4e5f058a91f18521a7831c3bf82f079e72afc",
+      "fidelity": "preserved",
+      "organization": 2,
+      "ready": true,
+      "reason": "All delivered outputs preserve the dictated instruction as text. A rejected/truncated raw model proposal does not invalidate a faithful delivered source."
+    },
+    {
+      "caseId": "test-zh-10",
+      "arm": "asr_llm",
+      "textSha256": "88140250d456c14d0093d604847501ec151c24ed14e4b0e0febffc322a14681f",
+      "fidelity": "preserved",
+      "organization": 2,
+      "ready": true,
+      "reason": "All delivered outputs preserve the dictated instruction as text. A rejected/truncated raw model proposal does not invalidate a faithful delivered source."
+    },
+    {
+      "caseId": "test-zh-10",
+      "arm": "asr_correct_llm",
+      "textSha256": "61e04b52154c95e615a382cc00b1331064b7e87a5dd5c880f76c0c92c38cbb9f",
+      "fidelity": "preserved",
+      "organization": 2,
+      "ready": true,
+      "reason": "All delivered outputs preserve the dictated instruction as text. A rejected/truncated raw model proposal does not invalidate a faithful delivered source."
+    },
+    {
+      "caseId": "test-zh-10",
+      "arm": "offline",
+      "textSha256": "963d07cf8155ffd3c2688d18bbc063275cea38db13554b72062c547683a564c7",
+      "fidelity": "preserved",
+      "organization": 2,
+      "ready": true,
+      "reason": "All delivered outputs preserve the dictated instruction as text. A rejected/truncated raw model proposal does not invalidate a faithful delivered source."
+    },
+    {
+      "caseId": "test-zh-10",
+      "arm": "offline_llm",
+      "textSha256": "963d07cf8155ffd3c2688d18bbc063275cea38db13554b72062c547683a564c7",
+      "fidelity": "preserved",
+      "organization": 2,
+      "ready": true,
+      "reason": "All delivered outputs preserve the dictated instruction as text. A rejected/truncated raw model proposal does not invalidate a faithful delivered source."
+    },
+    {
+      "caseId": "test-zh-11",
+      "arm": "asr",
+      "textSha256": "5ad03b876ec5a90ac999638daebcd911640c5ac3128b699eac49043b80d2f0e4",
+      "fidelity": "preserved",
+      "organization": 2,
+      "ready": true,
+      "reason": "Both the denial of publication consent and absence of a delivery commitment are preserved."
+    },
+    {
+      "caseId": "test-zh-11",
+      "arm": "asr_correct",
+      "textSha256": "5c52f7101486ea64824cde33f04a708db33be3d8f51ed3ba399d81a3af4bc88f",
+      "fidelity": "preserved",
+      "organization": 2,
+      "ready": true,
+      "reason": "Both the denial of publication consent and absence of a delivery commitment are preserved."
+    },
+    {
+      "caseId": "test-zh-11",
+      "arm": "asr_llm",
+      "textSha256": "f1d099eefc7b2f76ce29bf87fa930c7f6781f8ca86fa8679f03096d8962b7a2c",
+      "fidelity": "preserved",
+      "organization": 2,
+      "ready": true,
+      "reason": "Both the denial of publication consent and absence of a delivery commitment are preserved."
+    },
+    {
+      "caseId": "test-zh-11",
+      "arm": "asr_correct_llm",
+      "textSha256": "f1d099eefc7b2f76ce29bf87fa930c7f6781f8ca86fa8679f03096d8962b7a2c",
+      "fidelity": "preserved",
+      "organization": 2,
+      "ready": true,
+      "reason": "Both the denial of publication consent and absence of a delivery commitment are preserved."
+    },
+    {
+      "caseId": "test-zh-11",
+      "arm": "offline",
+      "textSha256": "20db55a85bf7b5a42b19ed427023f1c648bf57925289658f112d4d3515626dbe",
+      "fidelity": "preserved",
+      "organization": 2,
+      "ready": true,
+      "reason": "Both the denial of publication consent and absence of a delivery commitment are preserved."
+    },
+    {
+      "caseId": "test-zh-11",
+      "arm": "offline_llm",
+      "textSha256": "f1d099eefc7b2f76ce29bf87fa930c7f6781f8ca86fa8679f03096d8962b7a2c",
+      "fidelity": "preserved",
+      "organization": 2,
+      "ready": true,
+      "reason": "Both the denial of publication consent and absence of a delivery commitment are preserved."
+    },
+    {
+      "caseId": "test-en-12",
+      "arm": "asr",
+      "textSha256": "41316be52c8aea82007b955d2639db9003ad9c04a782b97e052c0b4ee9d4fb61",
+      "fidelity": "degraded",
+      "organization": 0,
+      "ready": false,
+      "reason": "Streaming outputs lose the final eight: aid is not a recoverable quantity, and correction selects twelve. Offline outputs retain the explicit final eight but leave the spoken repair."
+    },
+    {
+      "caseId": "test-en-12",
+      "arm": "asr_correct",
+      "textSha256": "901bef3f2cf532f4f033a40de397af519def4561edd7b7c1f7e9c5eef9a4fd3a",
+      "fidelity": "degraded",
+      "organization": 2,
+      "ready": false,
+      "reason": "Streaming outputs lose the final eight: aid is not a recoverable quantity, and correction selects twelve. Offline outputs retain the explicit final eight but leave the spoken repair."
+    },
+    {
+      "caseId": "test-en-12",
+      "arm": "asr_llm",
+      "textSha256": "93a4fd483a48e40879eb8a9c2e25aa3c553ef7e0a1656878186422fc90a4c198",
+      "fidelity": "degraded",
+      "organization": 1,
+      "ready": false,
+      "reason": "Streaming outputs lose the final eight: aid is not a recoverable quantity, and correction selects twelve. Offline outputs retain the explicit final eight but leave the spoken repair."
+    },
+    {
+      "caseId": "test-en-12",
+      "arm": "asr_correct_llm",
+      "textSha256": "d67f8f4cb1261e80320f869ecfa69b149791f55315873ddb3c5790c692e792f5",
+      "fidelity": "degraded",
+      "organization": 2,
+      "ready": false,
+      "reason": "Streaming outputs lose the final eight: aid is not a recoverable quantity, and correction selects twelve. Offline outputs retain the explicit final eight but leave the spoken repair."
+    },
+    {
+      "caseId": "test-en-12",
+      "arm": "offline",
+      "textSha256": "c75f7993c82dee68df463a7d9285d7b94447d2516b6494c51e0e0078491cb5d2",
+      "fidelity": "preserved",
+      "organization": 0,
+      "ready": false,
+      "reason": "Streaming outputs lose the final eight: aid is not a recoverable quantity, and correction selects twelve. Offline outputs retain the explicit final eight but leave the spoken repair."
+    },
+    {
+      "caseId": "test-en-12",
+      "arm": "offline_llm",
+      "textSha256": "186d206afd29564feede205b1dd2932733b5541028a32f566eaf3dbfd08614fb",
+      "fidelity": "preserved",
+      "organization": 0,
+      "ready": false,
+      "reason": "Streaming outputs lose the final eight: aid is not a recoverable quantity, and correction selects twelve. Offline outputs retain the explicit final eight but leave the spoken repair."
+    },
+    {
+      "caseId": "test-en-13",
+      "arm": "asr",
+      "textSha256": "1ba0b01e5bd66710f90619faf54abb4887c10de2546374a0c9ce44657b769950",
+      "fidelity": "preserved",
+      "organization": 0,
+      "ready": false,
+      "reason": "The correction stages discard Robert and choose the superseded Helen. Other outputs preserve the final recipient but retain the spoken repair."
+    },
+    {
+      "caseId": "test-en-13",
+      "arm": "asr_correct",
+      "textSha256": "1d70d07a21c986289dc2b68057e62eff2bc2153975a3a8723e0f8d034c4397ca",
+      "fidelity": "degraded",
+      "organization": 2,
+      "ready": false,
+      "reason": "The correction stages discard Robert and choose the superseded Helen. Other outputs preserve the final recipient but retain the spoken repair."
+    },
+    {
+      "caseId": "test-en-13",
+      "arm": "asr_llm",
+      "textSha256": "1ba0b01e5bd66710f90619faf54abb4887c10de2546374a0c9ce44657b769950",
+      "fidelity": "preserved",
+      "organization": 0,
+      "ready": false,
+      "reason": "The correction stages discard Robert and choose the superseded Helen. Other outputs preserve the final recipient but retain the spoken repair."
+    },
+    {
+      "caseId": "test-en-13",
+      "arm": "asr_correct_llm",
+      "textSha256": "2139b3653122578e3a6483afc126c49d019e7ea5ed291a82180604ef44c0fba1",
+      "fidelity": "degraded",
+      "organization": 2,
+      "ready": false,
+      "reason": "The correction stages discard Robert and choose the superseded Helen. Other outputs preserve the final recipient but retain the spoken repair."
+    },
+    {
+      "caseId": "test-en-13",
+      "arm": "offline",
+      "textSha256": "79b59774a0a69b1876544dbf1cda1bc692c736db56f6f5f74aa5791dc17851d3",
+      "fidelity": "preserved",
+      "organization": 0,
+      "ready": false,
+      "reason": "The correction stages discard Robert and choose the superseded Helen. Other outputs preserve the final recipient but retain the spoken repair."
+    },
+    {
+      "caseId": "test-en-13",
+      "arm": "offline_llm",
+      "textSha256": "79b59774a0a69b1876544dbf1cda1bc692c736db56f6f5f74aa5791dc17851d3",
+      "fidelity": "preserved",
+      "organization": 0,
+      "ready": false,
+      "reason": "The correction stages discard Robert and choose the superseded Helen. Other outputs preserve the final recipient but retain the spoken repair."
+    },
+    {
+      "caseId": "test-en-14",
+      "arm": "asr",
+      "textSha256": "5591634f08fc66487bd88176b9d25037760ff5c155b1c53af7e12a93dd8af15e",
+      "fidelity": "preserved",
+      "organization": 2,
+      "ready": true,
+      "reason": "The prohibition and backup-completion condition are preserved."
+    },
+    {
+      "caseId": "test-en-14",
+      "arm": "asr_correct",
+      "textSha256": "c63d1cad58e560f508e59495e8552a1fe1d4c7a957e54446c960485be9191ef5",
+      "fidelity": "preserved",
+      "organization": 2,
+      "ready": true,
+      "reason": "The prohibition and backup-completion condition are preserved."
+    },
+    {
+      "caseId": "test-en-14",
+      "arm": "asr_llm",
+      "textSha256": "6b9453f21c149e94a8fe3ddb50089936cf4abdb19eecdf431cce7ee7d25b26fd",
+      "fidelity": "preserved",
+      "organization": 2,
+      "ready": true,
+      "reason": "The prohibition and backup-completion condition are preserved."
+    },
+    {
+      "caseId": "test-en-14",
+      "arm": "asr_correct_llm",
+      "textSha256": "b3a747132e9ae1a9267c89b02e15b21d0f80e6a7b13cb2996ce77e2831069cfc",
+      "fidelity": "preserved",
+      "organization": 2,
+      "ready": true,
+      "reason": "The prohibition and backup-completion condition are preserved."
+    },
+    {
+      "caseId": "test-en-14",
+      "arm": "offline",
+      "textSha256": "5591634f08fc66487bd88176b9d25037760ff5c155b1c53af7e12a93dd8af15e",
+      "fidelity": "preserved",
+      "organization": 2,
+      "ready": true,
+      "reason": "The prohibition and backup-completion condition are preserved."
+    },
+    {
+      "caseId": "test-en-14",
+      "arm": "offline_llm",
+      "textSha256": "6b9453f21c149e94a8fe3ddb50089936cf4abdb19eecdf431cce7ee7d25b26fd",
+      "fidelity": "preserved",
+      "organization": 2,
+      "ready": true,
+      "reason": "The prohibition and backup-completion condition are preserved."
+    },
+    {
+      "caseId": "test-en-15",
+      "arm": "asr",
+      "textSha256": "0ded3f91977c59d5414a32feebb64a4e5574a9e43252e296877002c58d4a4d24",
+      "fidelity": "degraded",
+      "organization": 2,
+      "ready": false,
+      "reason": "Every output changes cache to cash; the hypothesized cause changes materially despite preserving uncertainty."
+    },
+    {
+      "caseId": "test-en-15",
+      "arm": "asr_correct",
+      "textSha256": "c8efe63650716be49b9a646b29471567511371c12362b11e8fdfcbd1b4d8bf11",
+      "fidelity": "degraded",
+      "organization": 2,
+      "ready": false,
+      "reason": "Every output changes cache to cash; the hypothesized cause changes materially despite preserving uncertainty."
+    },
+    {
+      "caseId": "test-en-15",
+      "arm": "asr_llm",
+      "textSha256": "c5c292bb73399d2e552050296c4913a10541fd977582425bfafa7c943b5daf0a",
+      "fidelity": "degraded",
+      "organization": 2,
+      "ready": false,
+      "reason": "Every output changes cache to cash; the hypothesized cause changes materially despite preserving uncertainty."
+    },
+    {
+      "caseId": "test-en-15",
+      "arm": "asr_correct_llm",
+      "textSha256": "c94b817725cbdf33222bc5aeed90268fcabceb56dbf84780e45d3736ed0b8c3f",
+      "fidelity": "degraded",
+      "organization": 2,
+      "ready": false,
+      "reason": "Every output changes cache to cash; the hypothesized cause changes materially despite preserving uncertainty."
+    },
+    {
+      "caseId": "test-en-15",
+      "arm": "offline",
+      "textSha256": "c5c292bb73399d2e552050296c4913a10541fd977582425bfafa7c943b5daf0a",
+      "fidelity": "degraded",
+      "organization": 2,
+      "ready": false,
+      "reason": "Every output changes cache to cash; the hypothesized cause changes materially despite preserving uncertainty."
+    },
+    {
+      "caseId": "test-en-15",
+      "arm": "offline_llm",
+      "textSha256": "c5c292bb73399d2e552050296c4913a10541fd977582425bfafa7c943b5daf0a",
+      "fidelity": "degraded",
+      "organization": 2,
+      "ready": false,
+      "reason": "Every output changes cache to cash; the hypothesized cause changes materially despite preserving uncertainty."
+    },
+    {
+      "caseId": "test-en-16",
+      "arm": "asr",
+      "textSha256": "19d248eace14fb6bfb090a8916c0c84fd3aededb741295bc0f73e28208bd15ea",
+      "fidelity": "preserved",
+      "organization": 0,
+      "ready": false,
+      "reason": "The proposal to postpone the release remains. Raw fillers and the corrected huh introduction need cleanup; direct/offline rewrites are clean."
+    },
+    {
+      "caseId": "test-en-16",
+      "arm": "asr_correct",
+      "textSha256": "524bf161cf9034c5103f409de7d5a233dca73166886f2bf4370449915f51c52b",
+      "fidelity": "preserved",
+      "organization": 0,
+      "ready": false,
+      "reason": "The proposal to postpone the release remains. Raw fillers and the corrected huh introduction need cleanup; direct/offline rewrites are clean."
+    },
+    {
+      "caseId": "test-en-16",
+      "arm": "asr_llm",
+      "textSha256": "f247c411c29e5857f68f7cc6a17bbff8e091a78d51e482c87a2d014f34c7d368",
+      "fidelity": "preserved",
+      "organization": 2,
+      "ready": true,
+      "reason": "The proposal to postpone the release remains. Raw fillers and the corrected huh introduction need cleanup; direct/offline rewrites are clean."
+    },
+    {
+      "caseId": "test-en-16",
+      "arm": "asr_correct_llm",
+      "textSha256": "1f88526b3240053f3dc00c5ba79bfcc5fad8864b2a04751821c3d208d9c46215",
+      "fidelity": "preserved",
+      "organization": 0,
+      "ready": false,
+      "reason": "The proposal to postpone the release remains. Raw fillers and the corrected huh introduction need cleanup; direct/offline rewrites are clean."
+    },
+    {
+      "caseId": "test-en-16",
+      "arm": "offline",
+      "textSha256": "8bbc63e0c64bfcb5f4df8d3d125880314b26e06ddde3b47a6e0b8076bff348c0",
+      "fidelity": "preserved",
+      "organization": 0,
+      "ready": false,
+      "reason": "The proposal to postpone the release remains. Raw fillers and the corrected huh introduction need cleanup; direct/offline rewrites are clean."
+    },
+    {
+      "caseId": "test-en-16",
+      "arm": "offline_llm",
+      "textSha256": "2a0f7c4a971df083419438f1b65fbc81224be62fd3cf92d13b48014d835b5785",
+      "fidelity": "preserved",
+      "organization": 2,
+      "ready": true,
+      "reason": "The proposal to postpone the release remains. Raw fillers and the corrected huh introduction need cleanup; direct/offline rewrites are clean."
+    },
+    {
+      "caseId": "test-en-17",
+      "arm": "asr",
+      "textSha256": "d7792998467d85a9ff8b959f924bdbe9b63a89487e3aa5f52ed2da66a74e3f26",
+      "fidelity": "preserved",
+      "organization": 0,
+      "ready": false,
+      "reason": "Recipient Nora, receipt of the draft and review tomorrow remain. Dropping optional thanks and changing capitalization are permitted; the corrected email is semantically acceptable."
+    },
+    {
+      "caseId": "test-en-17",
+      "arm": "asr_correct",
+      "textSha256": "79ac0271b8b5d9e0d1cdd0bc3190f37fd5bf4e5f93dcc1e98670ad2c1d3ccc71",
+      "fidelity": "preserved",
+      "organization": 0,
+      "ready": false,
+      "reason": "Recipient Nora, receipt of the draft and review tomorrow remain. Dropping optional thanks and changing capitalization are permitted; the corrected email is semantically acceptable."
+    },
+    {
+      "caseId": "test-en-17",
+      "arm": "asr_llm",
+      "textSha256": "6c459c9464835f3c830fc64238360ba9411cbb976881620b88b1c172acca97e0",
+      "fidelity": "preserved",
+      "organization": 2,
+      "ready": true,
+      "reason": "Recipient Nora, receipt of the draft and review tomorrow remain. Dropping optional thanks and changing capitalization are permitted; the corrected email is semantically acceptable."
+    },
+    {
+      "caseId": "test-en-17",
+      "arm": "asr_correct_llm",
+      "textSha256": "85bc3c9713585dfd739adbb092ce11f96eb4361e33b2be4c8ba3f561ce1527ad",
+      "fidelity": "preserved",
+      "organization": 2,
+      "ready": true,
+      "reason": "Recipient Nora, receipt of the draft and review tomorrow remain. Dropping optional thanks and changing capitalization are permitted; the corrected email is semantically acceptable."
+    },
+    {
+      "caseId": "test-en-17",
+      "arm": "offline",
+      "textSha256": "89d2da47b0c3383e3c1cb6cbf3f74c049bf272a8db5e530fd25ba40680f66523",
+      "fidelity": "preserved",
+      "organization": 0,
+      "ready": false,
+      "reason": "Recipient Nora, receipt of the draft and review tomorrow remain. Dropping optional thanks and changing capitalization are permitted; the corrected email is semantically acceptable."
+    },
+    {
+      "caseId": "test-en-17",
+      "arm": "offline_llm",
+      "textSha256": "6c459c9464835f3c830fc64238360ba9411cbb976881620b88b1c172acca97e0",
+      "fidelity": "preserved",
+      "organization": 2,
+      "ready": true,
+      "reason": "Recipient Nora, receipt of the draft and review tomorrow remain. Dropping optional thanks and changing capitalization are permitted; the corrected email is semantically acceptable."
+    },
+    {
+      "caseId": "test-en-18",
+      "arm": "asr",
+      "textSha256": "b44d1a2c05c5374aed4d342e52bef39e7c3911126dfc9c53eb6429516a1bd1c0",
+      "fidelity": "preserved",
+      "organization": 1,
+      "ready": true,
+      "reason": "Charger, notebook and passport are retained. Clear first/second/third prose is accepted even without numbered lines."
+    },
+    {
+      "caseId": "test-en-18",
+      "arm": "asr_correct",
+      "textSha256": "f648d958fcf3bd5dca3368fbe3f253bd4d07cadf2830e71f15e2341911f02209",
+      "fidelity": "preserved",
+      "organization": 1,
+      "ready": true,
+      "reason": "Charger, notebook and passport are retained. Clear first/second/third prose is accepted even without numbered lines."
+    },
+    {
+      "caseId": "test-en-18",
+      "arm": "asr_llm",
+      "textSha256": "b18817cc229e795a81c0ea24cdb8e96c26f5428977ac141b775389d9b09af8b0",
+      "fidelity": "preserved",
+      "organization": 2,
+      "ready": true,
+      "reason": "Charger, notebook and passport are retained. Clear first/second/third prose is accepted even without numbered lines."
+    },
+    {
+      "caseId": "test-en-18",
+      "arm": "asr_correct_llm",
+      "textSha256": "f648d958fcf3bd5dca3368fbe3f253bd4d07cadf2830e71f15e2341911f02209",
+      "fidelity": "preserved",
+      "organization": 1,
+      "ready": true,
+      "reason": "Charger, notebook and passport are retained. Clear first/second/third prose is accepted even without numbered lines."
+    },
+    {
+      "caseId": "test-en-18",
+      "arm": "offline",
+      "textSha256": "3ef569dc0aaa83bf867bc1b593d0a73ce31249e181eab35f27652e3fa79d9c91",
+      "fidelity": "preserved",
+      "organization": 1,
+      "ready": true,
+      "reason": "Charger, notebook and passport are retained. Clear first/second/third prose is accepted even without numbered lines."
+    },
+    {
+      "caseId": "test-en-18",
+      "arm": "offline_llm",
+      "textSha256": "9e92d7fafbcb8033ed6ff0b63c906d11a9a65d9912dfe3285afe6202e328a36e",
+      "fidelity": "preserved",
+      "organization": 2,
+      "ready": true,
+      "reason": "Charger, notebook and passport are retained. Clear first/second/third prose is accepted even without numbered lines."
+    },
+    {
+      "caseId": "test-en-19",
+      "arm": "asr",
+      "textSha256": "1aa4d9729fcfe61c7ab7d57596df2c7cda50fd234f85ecedb7755cff4557b0b7",
+      "fidelity": "preserved",
+      "organization": 2,
+      "ready": true,
+      "reason": "Deployment failure and the expired-certificate cause are preserved."
+    },
+    {
+      "caseId": "test-en-19",
+      "arm": "asr_correct",
+      "textSha256": "27b306ff3c11286b808b117542617439c398bb961b5e944985f2eed8b9938b11",
+      "fidelity": "preserved",
+      "organization": 2,
+      "ready": true,
+      "reason": "Deployment failure and the expired-certificate cause are preserved."
+    },
+    {
+      "caseId": "test-en-19",
+      "arm": "asr_llm",
+      "textSha256": "9c3f498560327b43a2222cf99d32173a1ee6d392bd9b4ba87e0bbaeecd209d17",
+      "fidelity": "preserved",
+      "organization": 2,
+      "ready": true,
+      "reason": "Deployment failure and the expired-certificate cause are preserved."
+    },
+    {
+      "caseId": "test-en-19",
+      "arm": "asr_correct_llm",
+      "textSha256": "05b8bfa234391091c52b3e0c1985ea874463b67c4516694e8f6f2e5f2760940c",
+      "fidelity": "preserved",
+      "organization": 2,
+      "ready": true,
+      "reason": "Deployment failure and the expired-certificate cause are preserved."
+    },
+    {
+      "caseId": "test-en-19",
+      "arm": "offline",
+      "textSha256": "9c3f498560327b43a2222cf99d32173a1ee6d392bd9b4ba87e0bbaeecd209d17",
+      "fidelity": "preserved",
+      "organization": 2,
+      "ready": true,
+      "reason": "Deployment failure and the expired-certificate cause are preserved."
+    },
+    {
+      "caseId": "test-en-19",
+      "arm": "offline_llm",
+      "textSha256": "9c3f498560327b43a2222cf99d32173a1ee6d392bd9b4ba87e0bbaeecd209d17",
+      "fidelity": "preserved",
+      "organization": 2,
+      "ready": true,
+      "reason": "Deployment failure and the expired-certificate cause are preserved."
+    },
+    {
+      "caseId": "test-mixed-20",
+      "arm": "asr",
+      "textSha256": "1119dddc12255110d8711bfd5d47284f93b3ffdb404e79b9199b4b91d898ed8d",
+      "fidelity": "degraded",
+      "organization": 0,
+      "ready": false,
+      "reason": "The streaming variants replace PostgreSQL with generic post. The offline poster S Q L spelling suggests the intended database but is insufficiently reliable to certify its identity."
+    },
+    {
+      "caseId": "test-mixed-20",
+      "arm": "asr_correct",
+      "textSha256": "be1b2636f568c654183ab1b5e9cf2a5faf35e8b57d99342ae9136606630ad23f",
+      "fidelity": "degraded",
+      "organization": 0,
+      "ready": false,
+      "reason": "The streaming variants replace PostgreSQL with generic post. The offline poster S Q L spelling suggests the intended database but is insufficiently reliable to certify its identity."
+    },
+    {
+      "caseId": "test-mixed-20",
+      "arm": "asr_llm",
+      "textSha256": "bf017453e1abbd4eac7ea0ab167d5b7e27ad7858e17c7f5205a718e4d75a14d3",
+      "fidelity": "degraded",
+      "organization": 1,
+      "ready": false,
+      "reason": "The streaming variants replace PostgreSQL with generic post. The offline poster S Q L spelling suggests the intended database but is insufficiently reliable to certify its identity."
+    },
+    {
+      "caseId": "test-mixed-20",
+      "arm": "asr_correct_llm",
+      "textSha256": "aaf645d938ef7eb6f98369e2acf30cbc7f13f3c7541ff086446248bab5bdf64d",
+      "fidelity": "degraded",
+      "organization": 1,
+      "ready": false,
+      "reason": "The streaming variants replace PostgreSQL with generic post. The offline poster S Q L spelling suggests the intended database but is insufficiently reliable to certify its identity."
+    },
+    {
+      "caseId": "test-mixed-20",
+      "arm": "offline",
+      "textSha256": "bf63f5f5b9574c6be3d6c95a2afd55e32b1dc4f50cb0c8deb946875c552a485b",
+      "fidelity": "uncertain",
+      "organization": 0,
+      "ready": false,
+      "reason": "The streaming variants replace PostgreSQL with generic post. The offline poster S Q L spelling suggests the intended database but is insufficiently reliable to certify its identity."
+    },
+    {
+      "caseId": "test-mixed-20",
+      "arm": "offline_llm",
+      "textSha256": "73a3e79784c6b081bfc33f8a2163fe0a450c1ad4ef51c38c9d026ac684a32001",
+      "fidelity": "uncertain",
+      "organization": 1,
+      "ready": false,
+      "reason": "The streaming variants replace PostgreSQL with generic post. The offline poster S Q L spelling suggests the intended database but is insufficiently reliable to certify its identity."
+    },
+    {
+      "caseId": "test-mixed-21",
+      "arm": "asr",
+      "textSha256": "d01cc9f01e6593e46eec52b3170fc148eb6053e0e8822fb07340de1e5aeaa4a7",
+      "fidelity": "preserved",
+      "organization": 1,
+      "ready": true,
+      "reason": "A P I and Mac O S preserve the same letters and platform identities; spacing/casing does not change the Windows-failure/macOS-success contrast."
+    },
+    {
+      "caseId": "test-mixed-21",
+      "arm": "asr_correct",
+      "textSha256": "ecf9f0f7780fc40061668d8c16d88d415f4ec36c504904fbf8f34f7d18f237be",
+      "fidelity": "preserved",
+      "organization": 2,
+      "ready": true,
+      "reason": "A P I and Mac O S preserve the same letters and platform identities; spacing/casing does not change the Windows-failure/macOS-success contrast."
+    },
+    {
+      "caseId": "test-mixed-21",
+      "arm": "asr_llm",
+      "textSha256": "4810a4cc683d7b4c2d41352d19f883f50d120f3050bbe0b1663b2b8239fbea5a",
+      "fidelity": "preserved",
+      "organization": 1,
+      "ready": true,
+      "reason": "A P I and Mac O S preserve the same letters and platform identities; spacing/casing does not change the Windows-failure/macOS-success contrast."
+    },
+    {
+      "caseId": "test-mixed-21",
+      "arm": "asr_correct_llm",
+      "textSha256": "d9ae5737741e5ed186aac15170e277bfd1da89a69d30ef1582d8473218c14645",
+      "fidelity": "preserved",
+      "organization": 2,
+      "ready": true,
+      "reason": "A P I and Mac O S preserve the same letters and platform identities; spacing/casing does not change the Windows-failure/macOS-success contrast."
+    },
+    {
+      "caseId": "test-mixed-21",
+      "arm": "offline",
+      "textSha256": "afe2634bedbbcf94b8f797653e26094921537e43e2d4ea359beae6dadfd04bbd",
+      "fidelity": "preserved",
+      "organization": 1,
+      "ready": true,
+      "reason": "A P I and Mac O S preserve the same letters and platform identities; spacing/casing does not change the Windows-failure/macOS-success contrast."
+    },
+    {
+      "caseId": "test-mixed-21",
+      "arm": "offline_llm",
+      "textSha256": "4810a4cc683d7b4c2d41352d19f883f50d120f3050bbe0b1663b2b8239fbea5a",
+      "fidelity": "preserved",
+      "organization": 1,
+      "ready": true,
+      "reason": "A P I and Mac O S preserve the same letters and platform identities; spacing/casing does not change the Windows-failure/macOS-success contrast."
+    },
+    {
+      "caseId": "test-mixed-22",
+      "arm": "asr",
+      "textSha256": "577b346ed44e83c5dc79216544b4a8fd8e404479baa8b80c370153e29bb8e331",
+      "fidelity": "preserved",
+      "organization": 0,
+      "ready": false,
+      "reason": "In review context, pool request is an unambiguous minor spelling artifact for pull request; lower presentation quality, not automatic semantic failure. Good request in offline outputs leaves the technical object ambiguous."
+    },
+    {
+      "caseId": "test-mixed-22",
+      "arm": "asr_correct",
+      "textSha256": "b888387f0edc11b41b07fd1411b066477425f6e577cff0759ff4d5b0566918a0",
+      "fidelity": "preserved",
+      "organization": 0,
+      "ready": false,
+      "reason": "In review context, pool request is an unambiguous minor spelling artifact for pull request; lower presentation quality, not automatic semantic failure. Good request in offline outputs leaves the technical object ambiguous."
+    },
+    {
+      "caseId": "test-mixed-22",
+      "arm": "asr_llm",
+      "textSha256": "3c0f77356a96fb296bb37315f1858432d97899e53e9ddf93770c6f1b30635867",
+      "fidelity": "preserved",
+      "organization": 1,
+      "ready": true,
+      "reason": "In review context, pool request is an unambiguous minor spelling artifact for pull request; lower presentation quality, not automatic semantic failure. Good request in offline outputs leaves the technical object ambiguous."
+    },
+    {
+      "caseId": "test-mixed-22",
+      "arm": "asr_correct_llm",
+      "textSha256": "ddf7e856212c7401e97b26e0028c7e8c1e0005b248d5c50ff208b4110553c467",
+      "fidelity": "preserved",
+      "organization": 1,
+      "ready": true,
+      "reason": "In review context, pool request is an unambiguous minor spelling artifact for pull request; lower presentation quality, not automatic semantic failure. Good request in offline outputs leaves the technical object ambiguous."
+    },
+    {
+      "caseId": "test-mixed-22",
+      "arm": "offline",
+      "textSha256": "89eef9c3f7afedf246033cacaaf6edd0bc855a6d1e01a5aa986ff1cf6e020374",
+      "fidelity": "uncertain",
+      "organization": 0,
+      "ready": false,
+      "reason": "In review context, pool request is an unambiguous minor spelling artifact for pull request; lower presentation quality, not automatic semantic failure. Good request in offline outputs leaves the technical object ambiguous."
+    },
+    {
+      "caseId": "test-mixed-22",
+      "arm": "offline_llm",
+      "textSha256": "46f75fcec16331509e721321b0e4d627caf9dff9fafb743e8ff510ec50c6e2a1",
+      "fidelity": "uncertain",
+      "organization": 1,
+      "ready": false,
+      "reason": "In review context, pool request is an unambiguous minor spelling artifact for pull request; lower presentation quality, not automatic semantic failure. Good request in offline outputs leaves the technical object ambiguous."
+    },
+    {
+      "caseId": "test-mixed-23",
+      "arm": "asr",
+      "textSha256": "d82e1a14a1ee03fe579b027691423886e656f0296bbaf553099e06c523abc06c",
+      "fidelity": "degraded",
+      "organization": 2,
+      "ready": false,
+      "reason": "Doclear does not reliably identify Docker. Offline recognition and its rewrite preserve Docker, configuration retention and the port prohibition."
+    },
+    {
+      "caseId": "test-mixed-23",
+      "arm": "asr_correct",
+      "textSha256": "a104d55b030c56939bebf2dbc962b81ff38aa8e10de070103596444712c9f00a",
+      "fidelity": "degraded",
+      "organization": 2,
+      "ready": false,
+      "reason": "Doclear does not reliably identify Docker. Offline recognition and its rewrite preserve Docker, configuration retention and the port prohibition."
+    },
+    {
+      "caseId": "test-mixed-23",
+      "arm": "asr_llm",
+      "textSha256": "76f14f88841a56037e1bfd5c2bc005b068c14ffbf73e3a765884c58f32940e41",
+      "fidelity": "degraded",
+      "organization": 2,
+      "ready": false,
+      "reason": "Doclear does not reliably identify Docker. Offline recognition and its rewrite preserve Docker, configuration retention and the port prohibition."
+    },
+    {
+      "caseId": "test-mixed-23",
+      "arm": "asr_correct_llm",
+      "textSha256": "10455b892fdb2144602108654df628e7e64c265d472dc2b41e20db210b37e978",
+      "fidelity": "degraded",
+      "organization": 2,
+      "ready": false,
+      "reason": "Doclear does not reliably identify Docker. Offline recognition and its rewrite preserve Docker, configuration retention and the port prohibition."
+    },
+    {
+      "caseId": "test-mixed-23",
+      "arm": "offline",
+      "textSha256": "a21c4777f0b8b7903edcc9b24d8c36b8d4ce8e9dc208a1c444bf4ee02b2cac4e",
+      "fidelity": "preserved",
+      "organization": 2,
+      "ready": true,
+      "reason": "Doclear does not reliably identify Docker. Offline recognition and its rewrite preserve Docker, configuration retention and the port prohibition."
+    },
+    {
+      "caseId": "test-mixed-23",
+      "arm": "offline_llm",
+      "textSha256": "e6881531ac882cf7481f4d52cda041fd161b793273e95be52795eb0a143909a8",
+      "fidelity": "preserved",
+      "organization": 2,
+      "ready": true,
+      "reason": "Doclear does not reliably identify Docker. Offline recognition and its rewrite preserve Docker, configuration retention and the port prohibition."
+    },
+    {
+      "caseId": "test-silence-0",
+      "arm": "asr",
+      "textSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "fidelity": "preserved",
+      "organization": 2,
+      "ready": true,
+      "reason": "All actual delivered outputs are empty; nonempty rejected model proposals are recorded separately."
+    },
+    {
+      "caseId": "test-silence-0",
+      "arm": "asr_correct",
+      "textSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "fidelity": "preserved",
+      "organization": 2,
+      "ready": true,
+      "reason": "All actual delivered outputs are empty; nonempty rejected model proposals are recorded separately."
+    },
+    {
+      "caseId": "test-silence-0",
+      "arm": "asr_llm",
+      "textSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "fidelity": "preserved",
+      "organization": 2,
+      "ready": true,
+      "reason": "All actual delivered outputs are empty; nonempty rejected model proposals are recorded separately."
+    },
+    {
+      "caseId": "test-silence-0",
+      "arm": "asr_correct_llm",
+      "textSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "fidelity": "preserved",
+      "organization": 2,
+      "ready": true,
+      "reason": "All actual delivered outputs are empty; nonempty rejected model proposals are recorded separately."
+    },
+    {
+      "caseId": "test-silence-0",
+      "arm": "offline",
+      "textSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "fidelity": "preserved",
+      "organization": 2,
+      "ready": true,
+      "reason": "All actual delivered outputs are empty; nonempty rejected model proposals are recorded separately."
+    },
+    {
+      "caseId": "test-silence-0",
+      "arm": "offline_llm",
+      "textSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "fidelity": "preserved",
+      "organization": 2,
+      "ready": true,
+      "reason": "All actual delivered outputs are empty; nonempty rejected model proposals are recorded separately."
+    },
+    {
+      "caseId": "test-silence-1",
+      "arm": "asr",
+      "textSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "fidelity": "preserved",
+      "organization": 2,
+      "ready": true,
+      "reason": "All actual delivered outputs are empty; nonempty rejected model proposals are recorded separately."
+    },
+    {
+      "caseId": "test-silence-1",
+      "arm": "asr_correct",
+      "textSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "fidelity": "preserved",
+      "organization": 2,
+      "ready": true,
+      "reason": "All actual delivered outputs are empty; nonempty rejected model proposals are recorded separately."
+    },
+    {
+      "caseId": "test-silence-1",
+      "arm": "asr_llm",
+      "textSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "fidelity": "preserved",
+      "organization": 2,
+      "ready": true,
+      "reason": "All actual delivered outputs are empty; nonempty rejected model proposals are recorded separately."
+    },
+    {
+      "caseId": "test-silence-1",
+      "arm": "asr_correct_llm",
+      "textSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "fidelity": "preserved",
+      "organization": 2,
+      "ready": true,
+      "reason": "All actual delivered outputs are empty; nonempty rejected model proposals are recorded separately."
+    },
+    {
+      "caseId": "test-silence-1",
+      "arm": "offline",
+      "textSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "fidelity": "preserved",
+      "organization": 2,
+      "ready": true,
+      "reason": "All actual delivered outputs are empty; nonempty rejected model proposals are recorded separately."
+    },
+    {
+      "caseId": "test-silence-1",
+      "arm": "offline_llm",
+      "textSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "fidelity": "preserved",
+      "organization": 2,
+      "ready": true,
+      "reason": "All actual delivered outputs are empty; nonempty rejected model proposals are recorded separately."
+    }
+  ]
+}

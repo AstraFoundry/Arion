@@ -1,0 +1,37 @@
+{
+  "priorFailure": "Direct curl did not apply the configured macOS HTTPS proxy. The original failure is unchanged in correction-chain-v1.",
+  "status": "official checkpoint, SentencePiece model and repository dictionary downloaded and inspected",
+  "attempts": [
+    {
+      "attempt": "fastcorrect-view",
+      "statusLines": [
+        "HTTP/1.1 200 Connection established",
+        "HTTP/2 200"
+      ],
+      "headersSha256": "a0d762c97fa8bdc4e907294951c370708120a63436ece21719c16f5a7c888384",
+      "route": "Explicit existing macOS system HTTP(S) proxy, 127.0.0.1:7890",
+      "rawHeadersLocation": "private .workspace/correction-chain-reassessment/downloads; not redistributed"
+    },
+    {
+      "attempt": "fastcorrect-download",
+      "statusLines": [
+        "HTTP/1.1 200 Connection established",
+        "HTTP/2 200"
+      ],
+      "headersSha256": "0eb191affa3582a4fb84d8873c54730ec9ed7f4c2874b12af904c761383b120f",
+      "route": "Explicit existing macOS system HTTP(S) proxy, 127.0.0.1:7890",
+      "rawHeadersLocation": "private .workspace/correction-chain-reassessment/downloads; not redistributed"
+    },
+    {
+      "attempt": "sentencepiece",
+      "statusLines": [
+        "HTTP/1.1 200 Connection established",
+        "HTTP/2 200"
+      ],
+      "headersSha256": "13b0073a42ce4574d992050baa78dd33856e3e669b94d8fbce66ad9809383489",
+      "route": "Explicit existing macOS system HTTP(S) proxy, 127.0.0.1:7890",
+      "rawHeadersLocation": "private .workspace/correction-chain-reassessment/downloads; not redistributed"
+    }
+  ],
+  "inferenceExecuted": false
+}
