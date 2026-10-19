@@ -63,6 +63,9 @@ type Preferences struct {
 	// editing it, and remembers the words they corrected (ADR 014). On by
 	// default; profiles written before it existed load the default.
 	LearnEdits bool `json:"learnEdits"`
+	// Keyboard configures Arion's input method. Profiles written before it
+	// existed load the defaults.
+	Keyboard KeyboardPreferences `json:"keyboard"`
 }
 
 // PreferencesVersion is the current schema; older files are migrated.
@@ -85,6 +88,7 @@ func DefaultPreferences() Preferences {
 		Version: PreferencesVersion, UILanguage: English, Mode: domain.ShortcutMode, Shortcut: DefaultShortcut,
 		Delivery: DeliveryAutomatic, RemoveFillers: true, Sounds: true, CheckUpdates: true, MatchApp: true,
 		ContextCursor: true, ContextScreen: true, ContextHistory: true, LearnEdits: true,
+		Keyboard: DefaultKeyboardPreferences(),
 	}
 }
 
@@ -122,6 +126,10 @@ func (p Preferences) Normalize() (Preferences, []string) {
 			p.SceneOverrides = p.SceneOverrides.WithScene(key, "")
 			repaired = append(repaired, "sceneOverrides")
 		}
+	}
+	if keyboard, changed := p.Keyboard.normalize(); changed {
+		p.Keyboard = keyboard
+		repaired = append(repaired, "keyboard")
 	}
 	if !knownGain(p.MicrophoneGain) {
 		p.MicrophoneGain = defaults.MicrophoneGain

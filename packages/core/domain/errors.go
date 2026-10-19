@@ -1,6 +1,9 @@
 package domain
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+)
 
 // ErrorCode is a stable, content-free failure category from the 004 contract.
 type ErrorCode string
@@ -55,15 +58,9 @@ func Fail(code ErrorCode, detail string) *Error { return &Error{Code: code, Deta
 
 // CodeOf extracts a stable code from an error chain, or "" when uncoded.
 func CodeOf(err error) ErrorCode {
-	for err != nil {
-		if coded, ok := err.(*Error); ok {
-			return coded.Code
-		}
-		unwrapper, ok := err.(interface{ Unwrap() error })
-		if !ok {
-			return ""
-		}
-		err = unwrapper.Unwrap()
+	var coded *Error
+	if errors.As(err, &coded) && coded != nil {
+		return coded.Code
 	}
 	return ""
 }

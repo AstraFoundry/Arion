@@ -83,3 +83,24 @@ func TestSceneOverridesRoundTripAndRepair(t *testing.T) {
 		t.Fatal("Normalize mutated the stored map")
 	}
 }
+
+func TestKeyboardPreferences(t *testing.T) {
+	var old Preferences
+	prefs := DefaultPreferences()
+	if err := json.Unmarshal([]byte(`{"version":1,"uiLanguage":"en","mode":"shortcut","shortcut":"Alt+Space"}`), &prefs); err != nil {
+		t.Fatal(err)
+	}
+	if prefs.Keyboard != DefaultKeyboardPreferences() || !prefs.Keyboard.ContextRanking {
+		t.Fatalf("profile without keyboard preferences did not load defaults: %+v", prefs.Keyboard)
+	}
+	old = DefaultPreferences()
+	old.Keyboard = KeyboardPreferences{PageSize: 6, CandidateSize: CandidateLarge, Appearance: AppearanceDark}
+	if normalized, repairs := old.Normalize(); normalized.Keyboard != old.Keyboard || len(repairs) != 0 {
+		t.Fatalf("valid keyboard choice changed: %+v %v", normalized.Keyboard, repairs)
+	}
+	old.Keyboard = KeyboardPreferences{PageSize: 12, CandidateSize: "huge", Appearance: "sepia", ContextRanking: true}
+	normalized, repairs := old.Normalize()
+	if normalized.Keyboard != DefaultKeyboardPreferences() || !slices.Contains(repairs, "keyboard") {
+		t.Fatalf("invalid keyboard choice not explicitly repaired: %+v %v", normalized.Keyboard, repairs)
+	}
+}
