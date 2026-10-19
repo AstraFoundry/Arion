@@ -16,7 +16,7 @@ Language coverage and latency are evaluation targets, not measured product claim
 
 ## Explicit boundaries
 
-Raw microphone audio and temporary foreign-window context stay on the device. Persisting dictation history is separately opt-in and is not in the initial sync scope. Candidate sorting must not introduce unseen text or overwrite committed content. A full conventional Pinyin keyboard, cloud recognition, voice chat, autonomous commands, and mobile keyboard extensions require their own scope decision.
+Raw microphone audio and temporary foreign-window context stay on the device. Persisting dictation history is separately opt-in and is not in the initial sync scope. Candidate sorting must not introduce unseen text or overwrite committed content. Offline Simplified Chinese full-Pinyin typing in the macOS IMK host is now in scope ([ADR 017](../decisions/017-offline-pinyin-keyboard.md)); the native implementation and isolated engine/AppKit/storage checks are complete, while system input-source acceptance remains open. Cloud recognition, voice chat, autonomous commands, additional keyboard schemes and mobile keyboard extensions require their own scope decision.
 
 Jev is TypeSafe’s System One typed decision model. Laya Multilingual is the proposed independent local Choice implementation; exact checkpoint, native conversion and candidate accuracy require evaluation.
 
@@ -26,7 +26,7 @@ Jev is TypeSafe’s System One typed decision model. Laya Multilingual is the pr
 | --- | --- | --- |
 | Desktop UI | MyGo v0.4.6 native, Go 1.27.1; Sunbeam design system with coss anatomy in Go ([ADR 007](../decisions/007-sunbeam-design-system.md)) | Implemented: menu bar panel, overlay pill, settings, onboarding |
 | Shared domain/application | Portable Go module | Implemented: session aggregate, coordinator, correction rules, model selection |
-| macOS | miniaudio/CoreAudio capture; AX target and insertion; InputMethodKit host | Implemented and tested on macOS arm64 |
+| macOS | miniaudio/CoreAudio capture; AX target and insertion; offline Pinyin/voice InputMethodKit host | Native arm64 and Rosetta x86_64 runs each pass 22 engine/AppKit cases; physical Intel/system IMK source acceptance remain open |
 | Windows | miniaudio/WASAPI capture; SendInput insertion; DPAPI | Code compiled for windows/amd64; not run on Windows; TSF pending |
 | ASR | sherpa-onnx 1.13.8 via Go/cgo; streaming preview plus acoustic finalizer | Default bundle chosen by measured evaluation ([ADR 004](../decisions/004-automatic-model-selection.md)) |
 | Correction | Conservative rules (`arion-rules-v3`) and approved vocabulary, including entries learned from the user's corrections | Implemented ([ADR 014](../decisions/014-edit-learning.md)); local LLM correction not adopted |

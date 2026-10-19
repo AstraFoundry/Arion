@@ -6,7 +6,7 @@
 
 `scripts/desktop-command.mjs` is the shared local/CI build entry point and sets the configured minimum OS in cgo compiler/linker flags. Its `scripts/stage-desktop-resources.mjs` preparation step includes Go module licenses, native runtime licenses/notices and model provenance. `scripts/cc-relocatable.sh` drops build-machine rpaths at link time. The read-only `scripts/verify-desktop-package.mjs` checks required resources, architectures, package identities/versions, native minimum OS versions and macOS signatures/rpaths. Models are downloaded separately from pinned URLs with verified digests.
 
-The identifiers are `si.astrafoundry.arion` and `si.astrafoundry.arion.inputmethod`. macOS uses ad hoc signing without Apple configuration; complete configuration enables Developer ID signing and notarization through the same build command. Windows publisher signing remains open. The [release status](release-status.md) distinguishes packaged capabilities from actual host acceptance. The sync relay image and compose stack live in [deploy/sync](../../deploy/sync/README.md).
+The identifiers are `si.astrafoundry.arion` and `si.astrafoundry.inputmethod.arion`. macOS uses ad hoc signing without Apple configuration; complete configuration enables Developer ID signing and notarization through the same build command. Windows publisher signing remains open. The [release status](release-status.md) distinguishes packaged capabilities from actual host acceptance. The sync relay image and compose stack live in [deploy/sync](../../deploy/sync/README.md).
 
 ```sh
 make build desktop
@@ -34,7 +34,12 @@ For a local Mac, install a **Developer ID Application** certificate with its pri
 ```dotenv
 MACOS_SIGNING_IDENTITY="Developer ID Application: Your Company (ABCDE12345)"
 MACOS_NOTARY_PROFILE=astrafoundry
+MACOS_IME_PROVISIONING_PROFILE=/private/path/ArionInput.provisionprofile
 ```
+
+The signed desktop build additionally requires `MACOS_IME_PROVISIONING_PROFILE`, an existing absolute path to an Apple **Developer ID distribution provisioning profile** for `si.astrafoundry.inputmethod.arion`. Its macOS platform, expiration, Team ID, permitted application identifier and signing certificate must match. The build decodes the CMS profile, validates those constraints before resource compilation, embeds it as `ArionInput.app/Contents/embedded.provisionprofile`, and gives only that nested host `com.apple.application-identifier` and `com.apple.developer.team-identifier` through MyGo's `helperEntitlements`. No shared Keychain group is requested. Package verification checks the embedded authorization and actual signed host entitlements. Keep this account asset outside the repository; setting a profile path does not acquire or create one.
+
+This profile authorizes the Data Protection Keychain default access group ([Apple TN3137](https://developer.apple.com/documentation/technotes/tn3137-on-mac-keychains), [Keychain access groups](https://developer.apple.com/documentation/security/sharing-access-to-keychain-items-among-a-collection-of-apps), [profile model](https://developer.apple.com/documentation/technotes/tn3125-inside-code-signing-provisioning-profiles)). It is not an established fix for the separate TIS parent-enable failure. The current local profile has passed certificate/application authorization checks and the real protected-key lifecycle with device-only/nonsynchronizing OS attributes. This does not complete installed IMK acceptance. Ad hoc development builds do not add these entitlements or embed a profile; system input-source installation now rejects that payload before changing installed files. Use the signed release app for the native authorization scenario. Existing ad hoc hosts from earlier Dev builds can be removed explicitly from the signed app before installing its bundled trusted host. Protected keyboard learning never uses a legacy Keychain fallback.
 
 `MACOS_NOTARY_KEYCHAIN` optionally selects the existing keychain holding that profile. The build checks the identity/private key and access to the notary service before staging resources. Keep certificates and passwords outside the repository; a `.cer` alone does not contain the private key. Export the certificate and private key together as a password-protected `.p12` for CI.
 
@@ -45,6 +50,7 @@ For CI or importing credentials locally, configure the following instead of an e
 | Environment variable / GitHub repository secret | Value |
 | --- | --- |
 | `MACOS_SIGNING_IDENTITY` | Full Developer ID Application identity, including Team ID |
+| `MACOS_IME_PROVISIONING_PROFILE` | Absolute path to the matching Developer ID IMK profile, provisioned on the build runner |
 | `MACOS_CERTIFICATE_P12_BASE64` | Base64 of the `.p12` containing certificate and private key |
 | `MACOS_CERTIFICATE_PASSWORD` | Password protecting the `.p12` |
 | `APPLE_ID` | Apple account used for notarization |
@@ -56,7 +62,7 @@ The script creates a temporary keychain with a random password, imports the cert
 
 Public package metadata lives in `apps/desktop/desktop.json`; `mygo.config.ts` adds environment-driven signing through the pinned MyGo API without rewriting source files. MyGo signs nested executables/libraries and the IMK bundle before the outer app, enables hardened runtime and secure timestamps, signs and notarizes the DMG, and staples tickets to both DMG and App **before** producing Ed25519-signed updates. The verifier checks code identities, runtime flags, timestamps, App/DMG tickets and Gatekeeper acceptance; with updates enabled it also verifies the final archive signature and the extracted App's signature/ticket. No signed archive is modified afterward.
 
-Credentialed packaging and microphone, IMK, inference and update acceptance still require real runs. See [release status](release-status.md).
+The current profile-bearing macOS arm64 canonical build completes Developer ID signing, Accepted notarization, embedded authorization checks and Gatekeeper validation. A retained build before this profile gate also passed packaging trust checks. Its installed nested IMK host also passed Gatekeeper, but source selection still failed; packaging trust does not establish IMK acceptance. Clean-machine microphone, IMK, inference and published-update acceptance remain separate gates. See [release status](release-status.md).
 
 ## Releases and updates
 

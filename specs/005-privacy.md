@@ -6,6 +6,8 @@
 | ASR/correction drafts | Active session RAM | Never diagnostics; history separately opt-in |
 | Target app/nearby/selected text | Bounded consent-gated session context | Never sync/log or persist automatically |
 | Approved vocabulary/correction/preferences | Encrypted local values, including pairs learned from the user's corrections with their use counts | Client-encrypted sync only when enabled |
+| Keyboard composition | Active native session RAM | No raw key history, logs or sync |
+| Confirmed keyboard word learning | Separate authenticated encrypted userdb snapshots; this-device Keychain key | Explicit reset/delete; encrypted backups only; no account sync |
 | Usage counts | Per-day numbers in `usage.json`: sessions, speaking time, words and words per rewrite scene; no text, app, host or time of day | Never sync/log; shown only in Settings › Overview |
 | Group/device keys and auth tokens | OS credential store | Never logs/config/export without explicit protected flow |
 | Models | Per-user verified model cache | Public artifact downloads only; no speech payload |
@@ -21,6 +23,8 @@ PRV-02: Context read is limited to the focused application/field and bounded tex
 PRV-03: Before using personal memory, disclose its type/scope and allow reset/export/delete. Session-only memory is never promoted automatically. Disabling sync does not imply deletion of already stored relay ciphertext; expose deletion separately.
 
 PRV-04: A vetted authenticated encryption provider must fail closed on key/tag errors. OS key stores protect local keys; encryption protects persisted sensitive values including SQLite WAL/backups by encrypting before SQL writes. Full database encryption versus field encryption is an implementation decision that must account for metadata leakage.
+
+Keyboard learning specifically requires the macOS Data Protection Keychain with non-synchronizable `AfterFirstUnlockThisDeviceOnly` accessibility, verified from returned OS attributes. Missing policy attributes, missing signing entitlements and existing legacy keys fail explicitly; there is no automatic backend migration or replacement key. The host requires a provisioning profile authorizing its Data Protection Keychain application identifier ([ADR 017](../docs/decisions/017-offline-pinyin-keyboard.md)). A profile-authorized signed harness passes the real-key lifecycle and returned-attribute checks on the recorded Mac. Actual installed-host behavior and physical migration/backup behavior remain separate acceptance scopes.
 
 PRV-05: Log only random correlation IDs, coarse capability/model IDs, numeric durations, queue depth and error codes. Exclude audio/transcripts, vocabulary, app window titles, selected text, clipboard, filesystem user paths, prompts and secrets. Failure bundles are opt-in and locally inspectable. Settings › About exports only the bounded, schema-validated local JSONL logs and a version/platform manifest; no preferences, usage, vocabulary, models, raw stderr or crash dumps. Logs rotate at 2 MiB and UTC day boundaries, retaining at most five files and seven days; export never uploads them.
 

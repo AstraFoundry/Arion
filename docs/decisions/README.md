@@ -28,6 +28,7 @@ Write an ADR when the decision:
 - [014: Learn vocabulary from the user's corrections](014-edit-learning.md) — on-device edit tracking, one-shot learning with undo, one-pass recall and bounded prompt terms.
 - [015: Hosted relay account authorization layer](015-hosted-relay-account-authorization.md) — `AccountGate` (`noop` self-host, `oidc` hosted) on top of device auth, `(issuer, subject)` tenants, security events; login never grants decryption.
 - [016: Marketing site in `apps/site`](016-marketing-site.md) — static Next.js export with the shared design package; ADR 001's no-React rule covers the desktop app only.
+- [017: Offline Pinyin keyboard in the macOS IMK host](017-offline-pinyin-keyboard.md) — local conversion, independent composition ownership and encrypted learning.
 - [`adr-template.md`](adr-template.md) — template for new ADRs.
 
 ## Naming

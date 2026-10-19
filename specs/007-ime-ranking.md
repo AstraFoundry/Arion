@@ -2,15 +2,29 @@
 
 ## IME integration
 
-IME-01: Settings select shortcut mode or system IME mode. Installing/registering the input source is explicit and distinct from app startup; the user chooses it through OS controls. Removal restores a usable input source and never leaves a stale registration.
+IME-01: Settings select shortcut mode or system IME mode. Installing/registering the input source is explicit and distinct from app startup; the user chooses it through OS controls. Installation shows immediate progress and distinguishes copied/not yet discovered or registered-but-disabled (pending system setup), enabled (ready) and selected (active). A successful registration/enable request with a disabled source retains its bundle and provides explicit Keyboard settings navigation plus adding/allowing instructions; it leaves the native authorization flow in place rather than automatically navigating before the user responds; it must not report readiness or discard the bundle. The installer verifies the bundled Developer ID signature and default Data Protection identity before reading or replacing the installed source. Unverified development payloads cannot overwrite an existing host and show a release-package instruction. Genuine copy/register/enable errors retain transactional rollback and visible failure. External OS changes refresh the status without requiring app restart. Removal restores a usable input source and never leaves a stale registration.
 
 IME-02: macOS uses an InputMethodKit server bundle/client composition; Windows uses a TSF text service with edit-session locks, COM apartment/lifecycle and correct architecture registration. A MyGo window is neither an IMK server nor a TSF service. Shared contracts cross the host boundary through documented authenticated/local IPC when separate processes are required.
 
 IME-03: Active voice composition owns its host range and revision. Partial hypotheses update marked/preedit text only inside that range. Candidate selection, Enter/confirm, Escape/cancel, deactivation and focus loss follow platform semantics. No recognizer thread writes into the editor directly.
 
-IME-04: A host refusing composition/read/write or a secure field produces an explicit capability result. Do not switch secretly to clipboard/keystrokes. Normal nonvoice typing passes through according to the OS host contract; a complete Pinyin lexicon/conversion engine is not implied by this spec.
+IME-04: A host refusing composition/read/write or a secure field produces an explicit capability result. Do not switch secretly to clipboard/keystrokes. macOS also supports the offline full-Pinyin keyboard defined below; host shortcuts and English-mode typing pass through according to the OS contract.
 
 IME-05: Candidates must support keyboard navigation, selection, accessible names and bounded display. Selected ID/revision survives a reorder only while still present; user navigation freezes automatic selection until the next explicit composition update.
+
+## Offline macOS keyboard typing
+
+KBD-01: The installed IMK host provides Simplified Chinese full-Pinyin conversion without the menu-bar app or network. Pin independently licensed engine/data bytes and complete schema dependencies. Missing/corrupt runtime/data is an explicit unavailable state, never simulated conversion or silent Latin substitution.
+
+KBD-02: Keep raw input/caret, selected segments, suffix, displayed preedit and final committed text separate. Support full Pinyin, apostrophe boundaries, abbreviation and v/ü input through the declared schema. Direct `ü`/`Ü` key characters map to the schema's `v`/`V` spelling in Chinese mode; English-mode and host-shortcut pass-through preserve the original event. Candidate choice can consume a prefix and continue conversion of the remainder. Only an actual engine commit reaches the client.
+
+KBD-03: Provide bounded candidate pages, stable page-relative number/mouse selection and keyboard navigation. Backspace/Delete, arrows and Home/End operate on the engine's composition; partial-selection rollback must be verified. Stale candidate UI callbacks cannot choose a newer revision. Enter commits raw input according to the configured schema; Space selects the highlighted candidate; Escape cancels.
+
+KBD-04: Chinese/English switching is available through the input menu and Shift+Space. Switching and deactivation discard unconfirmed composition. Command-modified host shortcuts relinquish ownership before pass-through. Keyboard and voice drafts never share a mutable owner; voice start, physical typing, focus changes and late socket callbacks cannot overwrite another owner's range.
+
+KBD-05: Learn only confirmed candidate selections through an encrypted local user database with an OS-kept key. Cancellation/stale results do not learn. Restart persistence, reset/delete and encrypted backups are explicit operations. Missing keys, authentication failure and write failure do not create a new vault or plaintext storage. No raw key history or selected text enters diagnostics or account sync.
+
+KBD-06: Ship a universal arm64+x86_64 input source with relocatable native dependencies, all notices and prebuilt data. Schema deployment/download must not run on the typing path. Actual editor behavior, offline first activation, word/sentence quality and key-to-preedit latency require host observations; unit or engine-only results are insufficient.
 
 ## Local scoring
 
@@ -33,10 +47,18 @@ RNK-05: Short candidate ranking must coexist with ASR without breaking audio dea
 | IME-A03 | Cancel/deactivate/target change → clear owned composition; late callbacks ignored |
 | IME-A04 | User types/navigates during inference → host updates win and stale range never changes |
 | IME-A05 | Emoji/CJK/surrogate pairs → exact adapter range conversion; no neighboring deletion |
+| KBD-A01 | Offline first activation with menu-bar app stopped → real Pinyin composition/candidates/commit |
+| KBD-A02 | Apostrophes, abbreviations, v/ü, mixed punctuation and unknown input → declared schema results without fabricated alternatives |
+| KBD-A03 | Page/number/mouse/navigation, partial selection and suffix continuation → selected engine identity preserved |
+| KBD-A04 | Mid-buffer edit, Home/End, Backspace/Delete and selected-segment rollback → engine and marked text agree |
+| KBD-A05 | Escape/mode switch/focus change and voice/keyboard takeover → unconfirmed text discarded, late writes rejected |
+| KBD-A06 | CJK/emoji neighbors and UTF-8/UTF-16 caret boundaries → exact owned-range writes in actual editors |
+| KBD-A07 | Confirmed learning survives restart; cancellation does not learn; reset/delete work; wrong/missing key, tamper and I/O failure fail closed without plaintext |
+| KBD-A08 | Universal bundle/dependency/data/license checks and actual offline host quality/latency observations |
 | RNK-A01 | Rank result adds/drops/duplicates IDs or nonfinite scores → reject result |
 | RNK-A02 | User-selected candidate moved by ranking → same ID retained, no unexpected text replacement |
 | RNK-A03 | Older composition result arrives late → ignored |
 | RNK-A04 | Local Chinese homophone/name fixtures → measured accuracy against both baselines |
 | RNK-A05 | Missing model/unsupported set → producer order remains visibly available |
 
-No runtime IME or ranker implementation is claimed by this foundation. See [handoff](../docs/project/agent-handoff.md).
+Voice IMK ownership is implemented; full-Pinyin keyboard implementation and host acceptance are in progress. Keyboard candidates have a local context ranker (ADR 017): a permutation of the engine's leading candidates by the user's own confirmed (previous word, word) pairs, never promoting a shorter prefix, with engine order when its store is unavailable. On authored context homophones it lifts later-occurrence top-1 from 32% to 89% against engine order with frequency learning ([results](../benchmarks/results/imk-context-v1/README.md)); that is RNK-A04 evidence for this producer only. A deployed learned (model) candidate ranker is not claimed. See [handoff](../docs/project/agent-handoff.md).
