@@ -18,6 +18,7 @@ import (
 	"time"
 
 	"arion.local/desktop/bootstrap"
+	preferences "arion.local/desktop/infrastructure/settings"
 	uiapp "arion.local/desktop/ui/app"
 	"arion.local/desktop/ui/pages/settings"
 	arion "arion.local/desktop/ui/shared/runtime"
@@ -25,6 +26,7 @@ import (
 )
 
 var app *bootstrap.App
+var profileDir string
 
 func TestMain(m *testing.M) {
 	if os.Getenv("ARION_NATIVE_E2E") != "1" {
@@ -36,6 +38,7 @@ func TestMain(m *testing.M) {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
+	profileDir = data
 	// An isolated profile: no stored preferences, no models, no onboarding.
 	app, err = bootstrap.New(bootstrap.Options{DataDir: data, SkipOnboarding: true, Offline: true})
 	if err != nil {
@@ -187,6 +190,31 @@ func TestOnboardingWindowLifecycle(t *testing.T) {
 	}
 	onboarding.Close()
 	eventually(t, "onboarding destroyed", onboarding.IsDestroyed)
+}
+
+// DSK-A15: finishing setup keeps Arion visible and saves completion.
+func TestOnboardingCompletionOpensSettings(t *testing.T) {
+	app.OpenOnboarding()
+	var onboarding *mygo.Window
+	eventually(t, "onboarding opened", func() bool {
+		onboarding = app.Windows()["onboarding"]
+		return onboarding != nil && onboarding.IsVisible()
+	})
+	mygo.RunOnMain(func() { app.Store().Actions.CompleteOnboarding() })
+	eventually(t, "onboarding destroyed", onboarding.IsDestroyed)
+	var window *mygo.Window
+	eventually(t, "settings visible and focused after setup", func() bool {
+		window = app.Windows()["settings"]
+		return window != nil && window.IsVisible() && window.IsFocused()
+	})
+	defer window.Close()
+	if !nonblank(capture(t, window, "settings-after-onboarding", uiapp.SettingsWidth, uiapp.SettingsHeight)) {
+		t.Fatal("settings content blank after setup")
+	}
+	prefs, _, err := (preferences.Store{Path: filepath.Join(profileDir, "preferences.json")}).Load()
+	if err != nil || !prefs.OnboardingCompleted {
+		t.Fatalf("onboarding completion not persisted: completed=%v, err=%v", prefs.OnboardingCompleted, err)
+	}
 }
 
 // DSK-A09: switching interface language updates existing native windows while

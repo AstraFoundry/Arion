@@ -262,6 +262,7 @@ func (x actions) CompleteOnboarding() {
 	if a.onboarding != nil {
 		a.onboarding.Close()
 	}
+	a.openSettings()
 }
 
 var _ arion.Actions = actions{}
