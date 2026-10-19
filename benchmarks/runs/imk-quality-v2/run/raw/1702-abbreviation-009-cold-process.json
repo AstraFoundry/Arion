@@ -1,0 +1,120 @@
+{
+  "id" : "abbreviation-009",
+  "boundary" : "production engine key-processing plus synchronous snapshot copying; no OS events or rendered preedit",
+  "teardownMs" : 0.36937500000000001,
+  "timer" : "mach_absolute_time",
+  "beforeConfirmation" : {
+    "commit" : "",
+    "selection" : [
+      3,
+      0
+    ],
+    "lastPage" : false,
+    "highlighted" : 0,
+    "candidates" : [
+      "或者",
+      "孩子",
+      "合作",
+      "还在",
+      "杭州",
+      "患者",
+      "活着",
+      "会在",
+      "还真"
+    ],
+    "preedit" : "h z",
+    "page" : 0,
+    "ascii" : false
+  },
+  "terminal" : "empty-preedit",
+  "warmupMs" : 0.0018749999999999999,
+  "peakRSSBytes" : 21463040,
+  "confirmations" : [
+    {
+      "keyToSnapshotMs" : 0.018166666666666668,
+      "handled" : true,
+      "key" : 32,
+      "snapshot" : {
+        "commit" : "或者",
+        "selection" : [
+          0,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+
+        ],
+        "preedit" : "",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ],
+  "input" : "hz",
+  "startupToSessionMs" : 10.746541666666666,
+  "committed" : "或者",
+  "warmups" : [
+
+  ],
+  "inputKeysToFinalSnapshotMs" : 0.15116666666666664,
+  "status" : "completed",
+  "steps" : [
+    {
+      "keyToSnapshotMs" : 0.067541666666666667,
+      "handled" : true,
+      "key" : 104,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          1,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "和",
+          "好",
+          "还",
+          "会",
+          "很",
+          "后",
+          "或",
+          "号",
+          "话"
+        ],
+        "preedit" : "h",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.077208333333333323,
+      "handled" : true,
+      "key" : 122,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          3,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "或者",
+          "孩子",
+          "合作",
+          "还在",
+          "杭州",
+          "患者",
+          "活着",
+          "会在",
+          "还真"
+        ],
+        "preedit" : "h z",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ]
+}

@@ -33,3 +33,7 @@ synthetic speech challenges, two strict silence controls and five separate-voice
 development fixtures. `inputs.json` contains no references or outcome constraints;
 `labels.json` is evaluator-only. Its own manifest pins the original audio and labels;
 it is independently verified and is not part of the historical migration manifest.
+
+[imk-context-v1](imk-context-v1/README.md) contains 50 original context/target homophone pairs for context ranking.
+
+[imk-quality-v1](imk-quality-v1/README.md) contains 100 original synthetic full-Pinyin/abbreviation/v/ü/coined-phrase inputs with evaluator-only targets and explicit provenance. Revision 2 corrects one authored spelling typo; both frozen revisions and complete runs are preserved separately.

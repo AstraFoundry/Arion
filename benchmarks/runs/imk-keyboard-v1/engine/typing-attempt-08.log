@@ -1,0 +1,17 @@
+2026-10-18 12:45:37.773 typing-test[75594:97633631] PASS: corrupt immutable data rejects startup before storage
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I20261018 12:45:37.774427 0x1f8b7e180 registry.cc:14] registering component: arion_encrypted_userdb
+2026-10-18 12:45:37.852 typing-test[75594:97633631] PASS: real full-Pinyin commit
+2026-10-18 12:45:37.858 typing-test[75594:97633631] PASS: cancel preserves emoji neighbors
+2026-10-18 12:45:37.863 typing-test[75594:97633631] PASS: commit preserves emoji neighbors
+2026-10-18 12:45:37.868 typing-test[75594:97633631] PASS: Backspace reconverts real input
+2026-10-18 12:45:37.873 typing-test[75594:97633631] PASS: page and relative number selection
+2026-10-18 12:45:37.878 typing-test[75594:97633631] PASS: partial selection and suffix continuation
+2026-10-18 12:45:37.884 typing-test[75594:97633631] PASS: partial-selection Backspace rollback
+2026-10-18 12:45:37.890 typing-test[75594:97633631] PASS: mid-buffer caret edit and Home End
+2026-10-18 12:45:37.896 typing-test[75594:97633631] PASS: forward Delete at Home preserves suffix
+2026-10-18 12:45:37.900 typing-test[75594:97633631] PASS: Shift Space discards draft and passes ASCII
+2026-10-18 12:45:37.905 typing-test[75594:97633631] PASS: stale candidate callbacks cannot select
+2026-10-18 12:45:37.909 typing-test[75594:97633631] PASS: deactivation discards draft and rejects callback
+2026-10-18 12:45:37.919 typing-test[75594:97633631] PASS: learning write failure retains actual engine commit
+Keyboard test report: /Users/steven/code/Arion/.workspace/research/imk-alignment/typing-attempt-08.json

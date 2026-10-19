@@ -1,0 +1,15 @@
+{
+  "operation": "enable",
+  "sources": [
+    {
+      "enabled": false,
+      "id": "si.astrafoundry.inputmethod.numbercontrol",
+      "selected": false
+    }
+  ],
+  "statuses": {
+    "launchServices": 0,
+    "register": 0,
+    "si.astrafoundry.inputmethod.numbercontrol": 0
+  }
+}

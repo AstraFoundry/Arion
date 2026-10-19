@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "status": "ui-incomplete-restored",
+  "application": "Final notarized Arion application copied into a fresh isolated path; launched by NSWorkspace with ARION_DATA_DIR and ARION_OFFLINE=1",
+  "observations": [
+    {
+      "evidenceType": "transcribed tool observation",
+      "op": "launch",
+      "bundleIdentifier": "si.astrafoundry.arion",
+      "pid": 20198
+    },
+    {
+      "evidenceType": "transcribed CUA accessibility observation",
+      "window": "Arion",
+      "screen": "onboarding step 1 of 8",
+      "visibleActions": [
+        "Get started",
+        "Interface language"
+      ]
+    },
+    {
+      "evidenceType": "transcribed CUA observation",
+      "op": "menus",
+      "result": "Arion menu and File menu observed; settings action not present in either"
+    },
+    {
+      "evidenceType": "transcribed CUA observation",
+      "op": "close-onboarding",
+      "result": "window closed; tool could no longer attach to windowless menu-bar application",
+      "error": "Computer Use server error -10005: timeoutReached"
+    }
+  ],
+  "acceptance": {
+    "productInstallButtonReached": false,
+    "inputSourceInstallAttempted": false,
+    "inputMethodSelected": false,
+    "actualTypingDispatchTested": false
+  },
+  "restoration": "state.json",
+  "limits": [
+    "UI driver limitation; not evidence that product installation button failed",
+    "No microphone or Accessibility permission changes requested; offline configuration used",
+    "No personal settings, profiles or model weights are archive evidence"
+  ]
+}

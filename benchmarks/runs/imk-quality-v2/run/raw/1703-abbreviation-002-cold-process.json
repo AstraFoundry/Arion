@@ -1,0 +1,120 @@
+{
+  "id" : "abbreviation-002",
+  "boundary" : "production engine key-processing plus synchronous snapshot copying; no OS events or rendered preedit",
+  "teardownMs" : 0.54283333333333339,
+  "timer" : "mach_absolute_time",
+  "beforeConfirmation" : {
+    "commit" : "",
+    "selection" : [
+      2,
+      0
+    ],
+    "lastPage" : false,
+    "highlighted" : 0,
+    "candidates" : [
+      "是",
+      "说",
+      "上",
+      "时",
+      "时候",
+      "谁",
+      "啥",
+      "事",
+      "使"
+    ],
+    "preedit" : "sh",
+    "page" : 0,
+    "ascii" : false
+  },
+  "terminal" : "empty-preedit",
+  "warmupMs" : 0.0025833333333333333,
+  "peakRSSBytes" : 21479424,
+  "confirmations" : [
+    {
+      "keyToSnapshotMs" : 0.019583333333333331,
+      "handled" : true,
+      "key" : 32,
+      "snapshot" : {
+        "commit" : "是",
+        "selection" : [
+          0,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+
+        ],
+        "preedit" : "",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ],
+  "input" : "sh",
+  "startupToSessionMs" : 13.154333333333334,
+  "committed" : "是",
+  "warmups" : [
+
+  ],
+  "inputKeysToFinalSnapshotMs" : 0.184,
+  "status" : "completed",
+  "steps" : [
+    {
+      "keyToSnapshotMs" : 0.091416666666666674,
+      "handled" : true,
+      "key" : 115,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          1,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "是",
+          "说",
+          "上",
+          "时",
+          "所",
+          "谁",
+          "啥",
+          "事",
+          "死"
+        ],
+        "preedit" : "s",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.084916666666666668,
+      "handled" : true,
+      "key" : 104,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          2,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "是",
+          "说",
+          "上",
+          "时",
+          "时候",
+          "谁",
+          "啥",
+          "事",
+          "使"
+        ],
+        "preedit" : "sh",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ]
+}

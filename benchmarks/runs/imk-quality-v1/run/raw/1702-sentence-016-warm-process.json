@@ -1,0 +1,1073 @@
+{
+  "id" : "sentence-016",
+  "boundary" : "production engine key-processing plus synchronous snapshot copying; no OS events or rendered preedit",
+  "teardownMs" : 0.6825416666666666,
+  "timer" : "mach_absolute_time",
+  "beforeConfirmation" : {
+    "commit" : "",
+    "selection" : [
+      28,
+      0
+    ],
+    "lastPage" : false,
+    "highlighted" : 0,
+    "candidates" : [
+      "下一站是火车站",
+      "下一站",
+      "下一",
+      "狭义",
+      "下移",
+      "侠义",
+      "下",
+      "夏",
+      "吓"
+    ],
+    "preedit" : "xia yi zhan shi huo che zhan",
+    "page" : 0,
+    "ascii" : false
+  },
+  "terminal" : "empty-preedit",
+  "warmupMs" : 0.42316666666666669,
+  "peakRSSBytes" : 22380544,
+  "confirmations" : [
+    {
+      "keyToSnapshotMs" : 0.021083333333333332,
+      "handled" : true,
+      "key" : 32,
+      "snapshot" : {
+        "commit" : "下一站是火车站",
+        "selection" : [
+          0,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+
+        ],
+        "preedit" : "",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ],
+  "input" : "xiayizhanshihuochezhan",
+  "startupToSessionMs" : 12.563124999999999,
+  "committed" : "下一站是火车站",
+  "warmups" : [
+    {
+      "input" : "xuetang",
+      "steps" : [
+        {
+          "keyToSnapshotMs" : 0.06275,
+          "handled" : true,
+          "key" : 120,
+          "snapshot" : {
+            "commit" : "",
+            "selection" : [
+              1,
+              0
+            ],
+            "lastPage" : false,
+            "highlighted" : 0,
+            "candidates" : [
+              "下",
+              "想",
+              "小",
+              "先",
+              "新",
+              "向",
+              "写",
+              "行",
+              "像"
+            ],
+            "preedit" : "x",
+            "page" : 0,
+            "ascii" : false
+          }
+        },
+        {
+          "keyToSnapshotMs" : 0.021416666666666667,
+          "handled" : true,
+          "key" : 117,
+          "snapshot" : {
+            "commit" : "",
+            "selection" : [
+              2,
+              0
+            ],
+            "lastPage" : false,
+            "highlighted" : 0,
+            "candidates" : [
+              "需",
+              "须",
+              "徐",
+              "许",
+              "虚",
+              "续",
+              "旭",
+              "序",
+              "恤"
+            ],
+            "preedit" : "xu",
+            "page" : 0,
+            "ascii" : false
+          }
+        },
+        {
+          "keyToSnapshotMs" : 0.021666666666666667,
+          "handled" : true,
+          "key" : 101,
+          "snapshot" : {
+            "commit" : "",
+            "selection" : [
+              3,
+              0
+            ],
+            "lastPage" : false,
+            "highlighted" : 0,
+            "candidates" : [
+              "学",
+              "血",
+              "雪",
+              "薛",
+              "穴",
+              "靴",
+              "削",
+              "彐",
+              "學"
+            ],
+            "preedit" : "xue",
+            "page" : 0,
+            "ascii" : false
+          }
+        },
+        {
+          "keyToSnapshotMs" : 0.027583333333333331,
+          "handled" : true,
+          "key" : 116,
+          "snapshot" : {
+            "commit" : "",
+            "selection" : [
+              5,
+              0
+            ],
+            "lastPage" : false,
+            "highlighted" : 0,
+            "candidates" : [
+              "血统",
+              "血糖",
+              "学堂",
+              "噱头",
+              "学徒",
+              "学",
+              "血",
+              "雪",
+              "薛"
+            ],
+            "preedit" : "xue t",
+            "page" : 0,
+            "ascii" : false
+          }
+        },
+        {
+          "keyToSnapshotMs" : 0.029583333333333333,
+          "handled" : true,
+          "key" : 97,
+          "snapshot" : {
+            "commit" : "",
+            "selection" : [
+              6,
+              0
+            ],
+            "lastPage" : false,
+            "highlighted" : 0,
+            "candidates" : [
+              "学他",
+              "学",
+              "血",
+              "雪",
+              "薛",
+              "穴",
+              "靴",
+              "削",
+              "彐"
+            ],
+            "preedit" : "xue ta",
+            "page" : 0,
+            "ascii" : false
+          }
+        },
+        {
+          "keyToSnapshotMs" : 0.030624999999999999,
+          "handled" : true,
+          "key" : 110,
+          "snapshot" : {
+            "commit" : "",
+            "selection" : [
+              7,
+              0
+            ],
+            "lastPage" : false,
+            "highlighted" : 0,
+            "candidates" : [
+              "学谈",
+              "学",
+              "血",
+              "雪",
+              "薛",
+              "穴",
+              "靴",
+              "削",
+              "彐"
+            ],
+            "preedit" : "xue tan",
+            "page" : 0,
+            "ascii" : false
+          }
+        },
+        {
+          "keyToSnapshotMs" : 0.021791666666666668,
+          "handled" : true,
+          "key" : 103,
+          "snapshot" : {
+            "commit" : "",
+            "selection" : [
+              8,
+              0
+            ],
+            "lastPage" : false,
+            "highlighted" : 0,
+            "candidates" : [
+              "血糖",
+              "学堂",
+              "学",
+              "血",
+              "雪",
+              "薛",
+              "穴",
+              "靴",
+              "削"
+            ],
+            "preedit" : "xue tang",
+            "page" : 0,
+            "ascii" : false
+          }
+        }
+      ],
+      "completion" : "cancelled-without-commit"
+    },
+    {
+      "input" : "heishan",
+      "steps" : [
+        {
+          "keyToSnapshotMs" : 0.027958333333333332,
+          "handled" : true,
+          "key" : 104,
+          "snapshot" : {
+            "commit" : "",
+            "selection" : [
+              1,
+              0
+            ],
+            "lastPage" : false,
+            "highlighted" : 0,
+            "candidates" : [
+              "和",
+              "好",
+              "还",
+              "会",
+              "很",
+              "后",
+              "或",
+              "号",
+              "话"
+            ],
+            "preedit" : "h",
+            "page" : 0,
+            "ascii" : false
+          }
+        },
+        {
+          "keyToSnapshotMs" : 0.014791666666666667,
+          "handled" : true,
+          "key" : 101,
+          "snapshot" : {
+            "commit" : "",
+            "selection" : [
+              2,
+              0
+            ],
+            "lastPage" : false,
+            "highlighted" : 0,
+            "candidates" : [
+              "和",
+              "喝",
+              "何",
+              "合",
+              "河",
+              "呵",
+              "核",
+              "盒",
+              "贺"
+            ],
+            "preedit" : "he",
+            "page" : 0,
+            "ascii" : false
+          }
+        },
+        {
+          "keyToSnapshotMs" : 0.013166666666666667,
+          "handled" : true,
+          "key" : 105,
+          "snapshot" : {
+            "commit" : "",
+            "selection" : [
+              3,
+              0
+            ],
+            "lastPage" : true,
+            "highlighted" : 0,
+            "candidates" : [
+              "黑",
+              "嘿",
+              "嗨",
+              "黒",
+              "潶"
+            ],
+            "preedit" : "hei",
+            "page" : 0,
+            "ascii" : false
+          }
+        },
+        {
+          "keyToSnapshotMs" : 0.038208333333333337,
+          "handled" : true,
+          "key" : 115,
+          "snapshot" : {
+            "commit" : "",
+            "selection" : [
+              5,
+              0
+            ],
+            "lastPage" : false,
+            "highlighted" : 0,
+            "candidates" : [
+              "黑色",
+              "黑手",
+              "黑石",
+              "黑山",
+              "黑市",
+              "黑",
+              "嘿",
+              "嗨",
+              "黒"
+            ],
+            "preedit" : "hei s",
+            "page" : 0,
+            "ascii" : false
+          }
+        },
+        {
+          "keyToSnapshotMs" : 0.046124999999999999,
+          "handled" : true,
+          "key" : 104,
+          "snapshot" : {
+            "commit" : "",
+            "selection" : [
+              7,
+              0
+            ],
+            "lastPage" : false,
+            "highlighted" : 0,
+            "candidates" : [
+              "黑社会",
+              "黑手",
+              "黑石",
+              "黑山",
+              "黑市",
+              "黑色",
+              "黑",
+              "嘿",
+              "嗨"
+            ],
+            "preedit" : "hei s h",
+            "page" : 0,
+            "ascii" : false
+          }
+        },
+        {
+          "keyToSnapshotMs" : 0.025083333333333332,
+          "handled" : true,
+          "key" : 97,
+          "snapshot" : {
+            "commit" : "",
+            "selection" : [
+              7,
+              0
+            ],
+            "lastPage" : true,
+            "highlighted" : 0,
+            "candidates" : [
+              "黑啥",
+              "黑",
+              "嘿",
+              "嗨",
+              "黒",
+              "潶"
+            ],
+            "preedit" : "hei sha",
+            "page" : 0,
+            "ascii" : false
+          }
+        },
+        {
+          "keyToSnapshotMs" : 0.018458333333333334,
+          "handled" : true,
+          "key" : 110,
+          "snapshot" : {
+            "commit" : "",
+            "selection" : [
+              8,
+              0
+            ],
+            "lastPage" : true,
+            "highlighted" : 0,
+            "candidates" : [
+              "黑山",
+              "黑",
+              "嘿",
+              "嗨",
+              "黒",
+              "潶"
+            ],
+            "preedit" : "hei shan",
+            "page" : 0,
+            "ascii" : false
+          }
+        }
+      ],
+      "completion" : "cancelled-without-commit"
+    }
+  ],
+  "inputKeysToFinalSnapshotMs" : 2.3964166666666666,
+  "status" : "completed",
+  "steps" : [
+    {
+      "keyToSnapshotMs" : 0.021541666666666667,
+      "handled" : true,
+      "key" : 120,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          1,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "下",
+          "想",
+          "小",
+          "先",
+          "新",
+          "向",
+          "写",
+          "行",
+          "像"
+        ],
+        "preedit" : "x",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.024083333333333332,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          2,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "系",
+          "西",
+          "洗",
+          "戏",
+          "喜",
+          "係",
+          "细",
+          "吸",
+          "希"
+        ],
+        "preedit" : "xi",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.015416666666666665,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          3,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "下",
+          "夏",
+          "吓",
+          "瞎",
+          "虾",
+          "霞",
+          "侠",
+          "峡",
+          "厦"
+        ],
+        "preedit" : "xia",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.023541666666666669,
+      "handled" : true,
+      "key" : 121,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          5,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "下雨",
+          "下游",
+          "下一",
+          "下月",
+          "夏雨",
+          "狭义",
+          "下移",
+          "侠义",
+          "夏夜"
+        ],
+        "preedit" : "xia y",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.017541666666666667,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          6,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "下一",
+          "狭义",
+          "下移",
+          "侠义",
+          "下",
+          "夏",
+          "吓",
+          "瞎",
+          "虾"
+        ],
+        "preedit" : "xia yi",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.023791666666666669,
+      "handled" : true,
+      "key" : 122,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          8,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "下一站",
+          "下一",
+          "狭义",
+          "下移",
+          "侠义",
+          "下",
+          "夏",
+          "吓",
+          "西安"
+        ],
+        "preedit" : "xia yi z",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.028708333333333332,
+      "handled" : true,
+      "key" : 104,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          9,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "下一站",
+          "下一",
+          "狭义",
+          "下移",
+          "侠义",
+          "下",
+          "夏",
+          "吓",
+          "西安"
+        ],
+        "preedit" : "xia yi zh",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.036291666666666667,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          10,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "下一炸",
+          "下一",
+          "狭义",
+          "下移",
+          "侠义",
+          "下",
+          "夏",
+          "吓",
+          "瞎"
+        ],
+        "preedit" : "xia yi zha",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.024083333333333332,
+      "handled" : true,
+      "key" : 110,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          11,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "下一站",
+          "下一",
+          "狭义",
+          "下移",
+          "侠义",
+          "下",
+          "夏",
+          "吓",
+          "瞎"
+        ],
+        "preedit" : "xia yi zhan",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.25833333333333336,
+      "handled" : true,
+      "key" : 115,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          13,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "下一站是",
+          "下一站",
+          "下一",
+          "狭义",
+          "下移",
+          "侠义",
+          "下",
+          "夏",
+          "吓"
+        ],
+        "preedit" : "xia yi zhan s",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.327625,
+      "handled" : true,
+      "key" : 104,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          14,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "下一站是",
+          "下一站",
+          "下一",
+          "狭义",
+          "下移",
+          "侠义",
+          "下",
+          "夏",
+          "吓"
+        ],
+        "preedit" : "xia yi zhan sh",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.063083333333333338,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          15,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "下一站是",
+          "下一站",
+          "下一",
+          "狭义",
+          "下移",
+          "侠义",
+          "下",
+          "夏",
+          "吓"
+        ],
+        "preedit" : "xia yi zhan shi",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.19450000000000001,
+      "handled" : true,
+      "key" : 104,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          17,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "下一站时候",
+          "下一站",
+          "下一",
+          "狭义",
+          "下移",
+          "侠义",
+          "下",
+          "夏",
+          "吓"
+        ],
+        "preedit" : "xia yi zhan shi h",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.055708333333333339,
+      "handled" : true,
+      "key" : 117,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          18,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "下一站石斛",
+          "下一站",
+          "下一",
+          "狭义",
+          "下移",
+          "侠义",
+          "下",
+          "夏",
+          "吓"
+        ],
+        "preedit" : "xia yi zhan shi hu",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.048000000000000001,
+      "handled" : true,
+      "key" : 111,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          19,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "下一站失火",
+          "下一站",
+          "下一",
+          "狭义",
+          "下移",
+          "侠义",
+          "下",
+          "夏",
+          "吓"
+        ],
+        "preedit" : "xia yi zhan shi huo",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.19858333333333333,
+      "handled" : true,
+      "key" : 99,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          21,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "下一站是火车",
+          "下一站",
+          "下一",
+          "狭义",
+          "下移",
+          "侠义",
+          "下",
+          "夏",
+          "吓"
+        ],
+        "preedit" : "xia yi zhan shi huo c",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.23029166666666664,
+      "handled" : true,
+      "key" : 104,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          22,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "下一站是火车",
+          "下一站",
+          "下一",
+          "狭义",
+          "下移",
+          "侠义",
+          "下",
+          "夏",
+          "吓"
+        ],
+        "preedit" : "xia yi zhan shi huo ch",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.0625,
+      "handled" : true,
+      "key" : 101,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          23,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "下一站是火车",
+          "下一站",
+          "下一",
+          "狭义",
+          "下移",
+          "侠义",
+          "下",
+          "夏",
+          "吓"
+        ],
+        "preedit" : "xia yi zhan shi huo che",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.27100000000000002,
+      "handled" : true,
+      "key" : 122,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          25,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "下一站是火车站",
+          "下一站",
+          "下一",
+          "狭义",
+          "下移",
+          "侠义",
+          "下",
+          "夏",
+          "吓"
+        ],
+        "preedit" : "xia yi zhan shi huo che z",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.31900000000000001,
+      "handled" : true,
+      "key" : 104,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          26,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "下一站是火车站",
+          "下一站",
+          "下一",
+          "狭义",
+          "下移",
+          "侠义",
+          "下",
+          "夏",
+          "吓"
+        ],
+        "preedit" : "xia yi zhan shi huo che zh",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.069250000000000006,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          27,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "下一站是火车炸",
+          "下一站",
+          "下一",
+          "狭义",
+          "下移",
+          "侠义",
+          "下",
+          "夏",
+          "吓"
+        ],
+        "preedit" : "xia yi zhan shi huo che zha",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.063625000000000001,
+      "handled" : true,
+      "key" : 110,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          28,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "下一站是火车站",
+          "下一站",
+          "下一",
+          "狭义",
+          "下移",
+          "侠义",
+          "下",
+          "夏",
+          "吓"
+        ],
+        "preedit" : "xia yi zhan shi huo che zhan",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ]
+}

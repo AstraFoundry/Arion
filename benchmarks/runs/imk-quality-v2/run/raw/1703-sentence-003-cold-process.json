@@ -1,0 +1,708 @@
+{
+  "id" : "sentence-003",
+  "boundary" : "production engine key-processing plus synchronous snapshot copying; no OS events or rendered preedit",
+  "teardownMs" : 0.58441666666666658,
+  "timer" : "mach_absolute_time",
+  "beforeConfirmation" : {
+    "commit" : "",
+    "selection" : [
+      29,
+      0
+    ],
+    "lastPage" : false,
+    "highlighted" : 0,
+    "candidates" : [
+      "今天天气很暖和",
+      "今天",
+      "进",
+      "金",
+      "近",
+      "仅",
+      "尽",
+      "紧",
+      "今"
+    ],
+    "preedit" : "jin tian tian qi hen nuan huo",
+    "page" : 0,
+    "ascii" : false
+  },
+  "terminal" : "empty-preedit",
+  "warmupMs" : 0.0022083333333333334,
+  "peakRSSBytes" : 22167552,
+  "confirmations" : [
+    {
+      "keyToSnapshotMs" : 0.019375,
+      "handled" : true,
+      "key" : 32,
+      "snapshot" : {
+        "commit" : "今天天气很暖和",
+        "selection" : [
+          0,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+
+        ],
+        "preedit" : "",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ],
+  "input" : "jintiantianqihennuanhuo",
+  "startupToSessionMs" : 12.592625,
+  "committed" : "今天天气很暖和",
+  "warmups" : [
+
+  ],
+  "inputKeysToFinalSnapshotMs" : 1.4649166666666666,
+  "status" : "completed",
+  "steps" : [
+    {
+      "keyToSnapshotMs" : 0.066750000000000004,
+      "handled" : true,
+      "key" : 106,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          1,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "就",
+          "将",
+          "及",
+          "叫",
+          "家",
+          "加",
+          "见",
+          "进",
+          "讲"
+        ],
+        "preedit" : "j",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.023333333333333331,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          2,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "及",
+          "级",
+          "即",
+          "几",
+          "机",
+          "既",
+          "急",
+          "集",
+          "记"
+        ],
+        "preedit" : "ji",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.019833333333333331,
+      "handled" : true,
+      "key" : 110,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          3,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "进",
+          "金",
+          "近",
+          "仅",
+          "尽",
+          "紧",
+          "今",
+          "劲",
+          "斤"
+        ],
+        "preedit" : "jin",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.038374999999999999,
+      "handled" : true,
+      "key" : 116,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          5,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "今天",
+          "尽头",
+          "津贴",
+          "紧贴",
+          "劲头",
+          "金条",
+          "进退",
+          "浸透",
+          "金泰"
+        ],
+        "preedit" : "jin t",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.029916666666666668,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          6,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "进提",
+          "进",
+          "金",
+          "近",
+          "仅",
+          "尽",
+          "紧",
+          "今",
+          "劲"
+        ],
+        "preedit" : "jin ti",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.027041666666666669,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          8,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "进提啊",
+          "进",
+          "金",
+          "近",
+          "仅",
+          "尽",
+          "紧",
+          "今",
+          "劲"
+        ],
+        "preedit" : "jin ti a",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.021416666666666667,
+      "handled" : true,
+      "key" : 110,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          8,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "今天",
+          "进",
+          "金",
+          "近",
+          "仅",
+          "尽",
+          "紧",
+          "今",
+          "劲"
+        ],
+        "preedit" : "jin tian",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.12141666666666667,
+      "handled" : true,
+      "key" : 116,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          10,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "今天他",
+          "今天",
+          "进",
+          "金",
+          "近",
+          "仅",
+          "尽",
+          "紧",
+          "今"
+        ],
+        "preedit" : "jin tian t",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.033750000000000002,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          11,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "今天提",
+          "今天",
+          "进",
+          "金",
+          "近",
+          "仅",
+          "尽",
+          "紧",
+          "今"
+        ],
+        "preedit" : "jin tian ti",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.034000000000000002,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          13,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "今天提啊",
+          "今天",
+          "进",
+          "金",
+          "近",
+          "仅",
+          "尽",
+          "紧",
+          "今"
+        ],
+        "preedit" : "jin tian ti a",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.034833333333333334,
+      "handled" : true,
+      "key" : 110,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          13,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "今天天",
+          "今天",
+          "进",
+          "金",
+          "近",
+          "仅",
+          "尽",
+          "紧",
+          "今"
+        ],
+        "preedit" : "jin tian tian",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.114375,
+      "handled" : true,
+      "key" : 113,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          15,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "今天天气",
+          "今天",
+          "进",
+          "金",
+          "近",
+          "仅",
+          "尽",
+          "紧",
+          "今"
+        ],
+        "preedit" : "jin tian tian q",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.043458333333333335,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          16,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "今天天气",
+          "今天",
+          "进",
+          "金",
+          "近",
+          "仅",
+          "尽",
+          "紧",
+          "今"
+        ],
+        "preedit" : "jin tian tian qi",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.11154166666666668,
+      "handled" : true,
+      "key" : 104,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          18,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "今天天气和",
+          "今天",
+          "进",
+          "金",
+          "近",
+          "仅",
+          "尽",
+          "紧",
+          "今"
+        ],
+        "preedit" : "jin tian tian qi h",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.047208333333333338,
+      "handled" : true,
+      "key" : 101,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          19,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "今天天气和",
+          "今天",
+          "进",
+          "金",
+          "近",
+          "仅",
+          "尽",
+          "紧",
+          "今"
+        ],
+        "preedit" : "jin tian tian qi he",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.042750000000000003,
+      "handled" : true,
+      "key" : 110,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          20,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "今天天气很",
+          "今天",
+          "进",
+          "金",
+          "近",
+          "仅",
+          "尽",
+          "紧",
+          "今"
+        ],
+        "preedit" : "jin tian tian qi hen",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.16795833333333335,
+      "handled" : true,
+      "key" : 110,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          22,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "今天天气很难",
+          "今天",
+          "进",
+          "金",
+          "近",
+          "仅",
+          "尽",
+          "紧",
+          "今"
+        ],
+        "preedit" : "jin tian tian qi hen n",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.05525,
+      "handled" : true,
+      "key" : 117,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          23,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "今天天气很怒",
+          "今天",
+          "进",
+          "金",
+          "近",
+          "仅",
+          "尽",
+          "紧",
+          "今"
+        ],
+        "preedit" : "jin tian tian qi hen nu",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.048791666666666664,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          25,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "今天天气很怒啊",
+          "今天",
+          "进",
+          "金",
+          "近",
+          "仅",
+          "尽",
+          "紧",
+          "今"
+        ],
+        "preedit" : "jin tian tian qi hen nu a",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.048583333333333333,
+      "handled" : true,
+      "key" : 110,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          25,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "今天天气很暖",
+          "今天",
+          "进",
+          "金",
+          "近",
+          "仅",
+          "尽",
+          "紧",
+          "今"
+        ],
+        "preedit" : "jin tian tian qi hen nuan",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.18258333333333335,
+      "handled" : true,
+      "key" : 104,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          27,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "今天天气很暖和",
+          "今天",
+          "进",
+          "金",
+          "近",
+          "仅",
+          "尽",
+          "紧",
+          "今"
+        ],
+        "preedit" : "jin tian tian qi hen nuan h",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.066041666666666665,
+      "handled" : true,
+      "key" : 117,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          28,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "今天天气很暖胡",
+          "今天",
+          "进",
+          "金",
+          "近",
+          "仅",
+          "尽",
+          "紧",
+          "今"
+        ],
+        "preedit" : "jin tian tian qi hen nuan hu",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.061124999999999999,
+      "handled" : true,
+      "key" : 111,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          29,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "今天天气很暖和",
+          "今天",
+          "进",
+          "金",
+          "近",
+          "仅",
+          "尽",
+          "紧",
+          "今"
+        ],
+        "preedit" : "jin tian tian qi hen nuan huo",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ]
+}

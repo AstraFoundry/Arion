@@ -1,0 +1,288 @@
+{
+  "id" : "common-word-037",
+  "boundary" : "production engine key-processing plus synchronous snapshot copying; no OS events or rendered preedit",
+  "teardownMs" : 0.53574999999999995,
+  "timer" : "mach_absolute_time",
+  "beforeConfirmation" : {
+    "commit" : "",
+    "selection" : [
+      9,
+      0
+    ],
+    "lastPage" : false,
+    "highlighted" : 0,
+    "candidates" : [
+      "面条",
+      "面",
+      "免",
+      "棉",
+      "眠",
+      "绵",
+      "缅",
+      "勉",
+      "冕"
+    ],
+    "preedit" : "mian tiao",
+    "page" : 0,
+    "ascii" : false
+  },
+  "terminal" : "empty-preedit",
+  "warmupMs" : 0.0024166666666666664,
+  "peakRSSBytes" : 21463040,
+  "confirmations" : [
+    {
+      "keyToSnapshotMs" : 0.015958333333333335,
+      "handled" : true,
+      "key" : 32,
+      "snapshot" : {
+        "commit" : "面条",
+        "selection" : [
+          0,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+
+        ],
+        "preedit" : "",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ],
+  "input" : "miantiao",
+  "startupToSessionMs" : 12.866,
+  "committed" : "面条",
+  "warmups" : [
+
+  ],
+  "inputKeysToFinalSnapshotMs" : 0.25479166666666664,
+  "status" : "completed",
+  "steps" : [
+    {
+      "keyToSnapshotMs" : 0.064291666666666664,
+      "handled" : true,
+      "key" : 109,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          1,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "没",
+          "吗",
+          "么",
+          "买",
+          "嘛",
+          "们",
+          "卖",
+          "忙",
+          "名"
+        ],
+        "preedit" : "m",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.022624999999999999,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          2,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "米",
+          "迷",
+          "密",
+          "咪",
+          "蜜",
+          "秘",
+          "谜",
+          "弥",
+          "觅"
+        ],
+        "preedit" : "mi",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.025499999999999998,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          4,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "米啊",
+          "米",
+          "迷",
+          "密",
+          "咪",
+          "蜜",
+          "秘",
+          "谜",
+          "弥"
+        ],
+        "preedit" : "mi a",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.021791666666666668,
+      "handled" : true,
+      "key" : 110,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          4,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "面",
+          "免",
+          "棉",
+          "眠",
+          "绵",
+          "缅",
+          "勉",
+          "冕",
+          "婂"
+        ],
+        "preedit" : "mian",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.032333333333333332,
+      "handled" : true,
+      "key" : 116,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          6,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "面条",
+          "面谈",
+          "腼腆",
+          "面团",
+          "面瘫",
+          "免谈",
+          "面",
+          "免",
+          "棉"
+        ],
+        "preedit" : "mian t",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.030374999999999999,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          7,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "面提",
+          "面",
+          "免",
+          "棉",
+          "眠",
+          "绵",
+          "缅",
+          "勉",
+          "冕"
+        ],
+        "preedit" : "mian ti",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.025624999999999998,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          9,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "面提啊",
+          "面",
+          "免",
+          "棉",
+          "眠",
+          "绵",
+          "缅",
+          "勉",
+          "冕"
+        ],
+        "preedit" : "mian ti a",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.020458333333333332,
+      "handled" : true,
+      "key" : 111,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          9,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "面条",
+          "面",
+          "免",
+          "棉",
+          "眠",
+          "绵",
+          "缅",
+          "勉",
+          "冕"
+        ],
+        "preedit" : "mian tiao",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ]
+}

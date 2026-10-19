@@ -1,0 +1,764 @@
+{
+  "id" : "sentence-007",
+  "boundary" : "production engine key-processing plus synchronous snapshot copying; no OS events or rendered preedit",
+  "teardownMs" : 0.62575000000000003,
+  "timer" : "mach_absolute_time",
+  "beforeConfirmation" : {
+    "commit" : "",
+    "selection" : [
+      32,
+      0
+    ],
+    "lastPage" : false,
+    "highlighted" : 0,
+    "candidates" : [
+      "会议改到下午亮点",
+      "会议",
+      "回忆",
+      "会以",
+      "会",
+      "回",
+      "灰",
+      "辉",
+      "汇"
+    ],
+    "preedit" : "hui yi gai dao xia wu liang dian",
+    "page" : 0,
+    "ascii" : false
+  },
+  "terminal" : "empty-preedit",
+  "warmupMs" : 0.0019583333333333332,
+  "peakRSSBytes" : 22347776,
+  "confirmations" : [
+    {
+      "keyToSnapshotMs" : 0.021499999999999998,
+      "handled" : true,
+      "key" : 32,
+      "snapshot" : {
+        "commit" : "会议改到下午亮点",
+        "selection" : [
+          0,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+
+        ],
+        "preedit" : "",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ],
+  "input" : "huiyigaidaoxiawuliangdian",
+  "startupToSessionMs" : 12.446333333333333,
+  "committed" : "会议改到下午亮点",
+  "warmups" : [
+
+  ],
+  "inputKeysToFinalSnapshotMs" : 1.4376249999999999,
+  "status" : "completed",
+  "steps" : [
+    {
+      "keyToSnapshotMs" : 0.078958333333333325,
+      "handled" : true,
+      "key" : 104,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          1,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "和",
+          "好",
+          "还",
+          "会",
+          "很",
+          "后",
+          "或",
+          "号",
+          "话"
+        ],
+        "preedit" : "h",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.025958333333333333,
+      "handled" : true,
+      "key" : 117,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          2,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "胡",
+          "户",
+          "湖",
+          "虎",
+          "呼",
+          "沪",
+          "乎",
+          "互",
+          "护"
+        ],
+        "preedit" : "hu",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.018249999999999999,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          3,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "会",
+          "回",
+          "灰",
+          "辉",
+          "汇",
+          "惠",
+          "慧",
+          "毁",
+          "挥"
+        ],
+        "preedit" : "hui",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.028458333333333332,
+      "handled" : true,
+      "key" : 121,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          5,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "会议",
+          "会有",
+          "会员",
+          "回忆",
+          "回应",
+          "会用",
+          "回音",
+          "会以",
+          "会因"
+        ],
+        "preedit" : "hui y",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.019,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          6,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "会议",
+          "回忆",
+          "会以",
+          "会",
+          "回",
+          "灰",
+          "辉",
+          "汇",
+          "惠"
+        ],
+        "preedit" : "hui yi",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.044833333333333336,
+      "handled" : true,
+      "key" : 103,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          8,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "会一个",
+          "会议",
+          "回忆",
+          "会以",
+          "会",
+          "回",
+          "灰",
+          "辉",
+          "汇"
+        ],
+        "preedit" : "hui yi g",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.027333333333333331,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          9,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "会议噶",
+          "会议",
+          "回忆",
+          "会以",
+          "会",
+          "回",
+          "灰",
+          "辉",
+          "汇"
+        ],
+        "preedit" : "hui yi ga",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.025624999999999998,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          10,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "会议该",
+          "会议",
+          "回忆",
+          "会以",
+          "会",
+          "回",
+          "灰",
+          "辉",
+          "汇"
+        ],
+        "preedit" : "hui yi gai",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.072999999999999995,
+      "handled" : true,
+      "key" : 100,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          12,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "会议改动",
+          "会议",
+          "回忆",
+          "会以",
+          "会",
+          "回",
+          "灰",
+          "辉",
+          "汇"
+        ],
+        "preedit" : "hui yi gai d",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.03241666666666667,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          13,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "会议该打",
+          "会议",
+          "回忆",
+          "会以",
+          "会",
+          "回",
+          "灰",
+          "辉",
+          "汇"
+        ],
+        "preedit" : "hui yi gai da",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.035999999999999997,
+      "handled" : true,
+      "key" : 111,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          14,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "会议改到",
+          "会议",
+          "回忆",
+          "会以",
+          "会",
+          "回",
+          "灰",
+          "辉",
+          "汇"
+        ],
+        "preedit" : "hui yi gai dao",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.10454166666666667,
+      "handled" : true,
+      "key" : 120,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          16,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "会议该导向",
+          "会议",
+          "回忆",
+          "会以",
+          "会",
+          "回",
+          "灰",
+          "辉",
+          "汇"
+        ],
+        "preedit" : "hui yi gai dao x",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.037333333333333336,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          17,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "会议改到系",
+          "会议",
+          "回忆",
+          "会以",
+          "会",
+          "回",
+          "灰",
+          "辉",
+          "汇"
+        ],
+        "preedit" : "hui yi gai dao xi",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.037541666666666668,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          18,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "会议该倒下",
+          "会议",
+          "回忆",
+          "会以",
+          "会",
+          "回",
+          "灰",
+          "辉",
+          "汇"
+        ],
+        "preedit" : "hui yi gai dao xia",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.094791666666666677,
+      "handled" : true,
+      "key" : 119,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          20,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "会议改到下午",
+          "会议",
+          "回忆",
+          "会以",
+          "会",
+          "回",
+          "灰",
+          "辉",
+          "汇"
+        ],
+        "preedit" : "hui yi gai dao xia w",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.042916666666666665,
+      "handled" : true,
+      "key" : 117,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          21,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "会议改到下午",
+          "会议",
+          "回忆",
+          "会以",
+          "会",
+          "回",
+          "灰",
+          "辉",
+          "汇"
+        ],
+        "preedit" : "hui yi gai dao xia wu",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.10729166666666667,
+      "handled" : true,
+      "key" : 108,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          23,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "会议改到下午了",
+          "会议",
+          "回忆",
+          "会以",
+          "会",
+          "回",
+          "灰",
+          "辉",
+          "汇"
+        ],
+        "preedit" : "hui yi gai dao xia wu l",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.048875000000000002,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          24,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "会议改到下午里",
+          "会议",
+          "回忆",
+          "会以",
+          "会",
+          "回",
+          "灰",
+          "辉",
+          "汇"
+        ],
+        "preedit" : "hui yi gai dao xia wu li",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.04725,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          25,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "会议改到下午俩",
+          "会议",
+          "回忆",
+          "会以",
+          "会",
+          "回",
+          "灰",
+          "辉",
+          "汇"
+        ],
+        "preedit" : "hui yi gai dao xia wu lia",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.047875000000000001,
+      "handled" : true,
+      "key" : 110,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          26,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "会议改到下午连",
+          "会议",
+          "回忆",
+          "会以",
+          "会",
+          "回",
+          "灰",
+          "辉",
+          "汇"
+        ],
+        "preedit" : "hui yi gai dao xia wu lian",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.050416666666666665,
+      "handled" : true,
+      "key" : 103,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          27,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "会议改到下午两",
+          "会议",
+          "回忆",
+          "会以",
+          "会",
+          "回",
+          "灰",
+          "辉",
+          "汇"
+        ],
+        "preedit" : "hui yi gai dao xia wu liang",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.19370833333333334,
+      "handled" : true,
+      "key" : 100,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          29,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "会议改到下午两大",
+          "会议",
+          "回忆",
+          "会以",
+          "会",
+          "回",
+          "灰",
+          "辉",
+          "汇"
+        ],
+        "preedit" : "hui yi gai dao xia wu liang d",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.066291666666666665,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          30,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "会议改到下午两地",
+          "会议",
+          "回忆",
+          "会以",
+          "会",
+          "回",
+          "灰",
+          "辉",
+          "汇"
+        ],
+        "preedit" : "hui yi gai dao xia wu liang di",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.061583333333333337,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          32,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "会议改到下午两地啊",
+          "会议",
+          "回忆",
+          "会以",
+          "会",
+          "回",
+          "灰",
+          "辉",
+          "汇"
+        ],
+        "preedit" : "hui yi gai dao xia wu liang di a",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.060458333333333336,
+      "handled" : true,
+      "key" : 110,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          32,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "会议改到下午亮点",
+          "会议",
+          "回忆",
+          "会以",
+          "会",
+          "回",
+          "灰",
+          "辉",
+          "汇"
+        ],
+        "preedit" : "hui yi gai dao xia wu liang dian",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ]
+}

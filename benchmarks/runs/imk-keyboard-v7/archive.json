@@ -1,0 +1,334 @@
+{
+  "schemaVersion": 1,
+  "study": "imk-keyboard-v7",
+  "supplements": [
+    "../imk-keyboard-v6/archive.json"
+  ],
+  "functional": {
+    "before": "functional/before.json",
+    "native": "functional/arm64.json",
+    "translated": "functional/x86_64.json",
+    "beforeStatus": "failed new23rd case; original22 passed",
+    "afterPassed": 23,
+    "total": 23,
+    "sourceBindings": [
+      {
+        "originalPath": "scripts/test-keyboard-input.mjs",
+        "frozenPath": "../imk-keyboard-v5/functional/sources/scripts/test-keyboard-input.mjs",
+        "sha256": "75cf875b1deab8c245243866e66e27869dc1d89b89d8583dff1df7435a18b263",
+        "sizeBytes": 6129
+      },
+      {
+        "originalPath": "scripts/lib/build-ime-learning.mjs",
+        "frozenPath": "../imk-keyboard-v5/dp-capability/sources/scripts/lib/build-ime-learning.mjs",
+        "sha256": "67a75be4bf4552e50a684ad542a8d2aee73d6aa80f452961582eb0de34cba7a0",
+        "sizeBytes": 1691
+      },
+      {
+        "originalPath": "apps/desktop/ime/macos/keyboard.m",
+        "frozenPath": "sources/apps/desktop/ime/macos/keyboard.m",
+        "sha256": "6fdf20c571fb8f20eedd14fab2e63e0861e03522dc0b293a09274620ec7492a9",
+        "sizeBytes": 11101
+      },
+      {
+        "originalPath": "apps/desktop/ime/macos/typing.h",
+        "frozenPath": "../imk-keyboard-v5/functional/sources/apps/desktop/ime/macos/typing.h",
+        "sha256": "e5d0e858d9c6d0f496011e872d4677365d06838fad79b14e874eea75aebf7d88",
+        "sizeBytes": 797
+      },
+      {
+        "originalPath": "apps/desktop/ime/macos/learning.mm",
+        "frozenPath": "../imk-keyboard-v5/legacy-rejection/sources/apps/desktop/ime/macos/learning.mm",
+        "sha256": "3d8e6afc9aee3665180fc10fd4660b3f6a9c088ad5c30e88e81b25d287758300",
+        "sizeBytes": 25520
+      },
+      {
+        "originalPath": "apps/desktop/ime/macos/learning_crypto.swift",
+        "frozenPath": "../imk-keyboard-v5/dp-capability/sources/apps/desktop/ime/macos/learning_crypto.swift",
+        "sha256": "9c8ed696f3b17918f1e0f4489eaf65fca0dd6d9ffd9066b6d00f869380b14ed2",
+        "sizeBytes": 3075
+      },
+      {
+        "originalPath": "apps/desktop/ime/macos/keyboard.h",
+        "frozenPath": "../imk-keyboard-v5/dp-capability/sources/apps/desktop/ime/macos/keyboard.h",
+        "sha256": "7e230a99cd9788f4feb3745c14d8e4a5d1ecb008284c916cf942820c8e0d93dd",
+        "sizeBytes": 1465
+      },
+      {
+        "originalPath": "apps/desktop/ime/macos/typing.m",
+        "frozenPath": "../imk-keyboard-v5/functional/sources/apps/desktop/ime/macos/typing.m",
+        "sha256": "fb23897afe02cfb8e7b074b1c42c9e83420d77f70ecc34a2127de95aa11ca5aa",
+        "sizeBytes": 5511
+      },
+      {
+        "originalPath": "apps/desktop/ime/macos/learning.h",
+        "frozenPath": "../imk-keyboard-v5/legacy-rejection/sources/apps/desktop/ime/macos/learning.h",
+        "sha256": "98e78e35c8f0f42bd4e19ef69e6f598ee10545493641a66e400e843c2b140eef",
+        "sizeBytes": 1287
+      },
+      {
+        "originalPath": "apps/desktop/ime/macos/tests/typing_test.m",
+        "frozenPath": "sources/apps/desktop/ime/macos/tests/typing_test.m",
+        "sha256": "893fa57285f7714cc25e380fe9cbae6beb9de7adf51a226eb6bfc466a463e97d",
+        "sizeBytes": 33661
+      },
+      {
+        "originalPath": "apps/desktop/resources/darwin/keyboard/runtime.json",
+        "frozenPath": "../imk-keyboard-v5/functional/sources/apps/desktop/resources/darwin/keyboard/runtime.json",
+        "sha256": "4480566a33a0244c4d0654dca0e3f63d926f8447303e2cf84a5d305c443b80d6",
+        "sizeBytes": 5536
+      },
+      {
+        "originalPath": "apps/desktop/resources/darwin/keyboard/data/build/arion_pinyin.schema.yaml",
+        "frozenPath": "../imk-keyboard-v5/functional/sources/apps/desktop/resources/darwin/keyboard/data/build/arion_pinyin.schema.yaml",
+        "sha256": "5eeebe964c235877f495995912ec410ad70808f461be1e378b4e9d48bd0628ad",
+        "sizeBytes": 39443
+      },
+      {
+        "originalPath": "specs/007-ime-ranking.md",
+        "frozenPath": "sources/specs/007-ime-ranking.md.txt",
+        "sha256": "d0015753bc4459fe986caaa2560a1087a0383bb2b36a1a12f56e051d15c26e62",
+        "sizeBytes": 7826
+      },
+      {
+        "originalPath": "docs/decisions/017-offline-pinyin-keyboard.md",
+        "frozenPath": "sources/docs/decisions/017-offline-pinyin-keyboard.md.txt",
+        "sha256": "ed32a047c636245240de03d1df4f82ffa0fa2662d1e2fa1893fc9844c34dc0d8",
+        "sizeBytes": 6519
+      }
+    ],
+    "boundary": "Actual engine/AppKit/storage with synthetic key; no OS-kept key or installed IMK event dispatch; Rosetta on arm64 is not physical Intel"
+  },
+  "candidateProbe": {
+    "assessment": "candidate-probe/assessment.json",
+    "outcome": "scope-blocked; inactive client cannot establish populated candidate identity model or production defect",
+    "realMetadataRoundTripVerified": false
+  },
+  "static": {
+    "ledger": "static/evidence-focused.json",
+    "report": "static/findings.md",
+    "verifier": "static/verify-static.py",
+    "boundary": "Ordinary LLVM source-bound intervals and focused metadata; not REA or runtime evidence; queued UI refresh does not establish suffix decoder or generation/focus token"
+  },
+  "privacy": {
+    "excluded": "No competitor/test executable, full proprietary disassembly, runtime/SDK, profiles, key/reference bytes, original system crash reports or personal settings"
+  },
+  "exclusions": [
+    {
+      "originalPath": "apps/desktop/resources/darwin/keyboard/lib/librime.1.dylib",
+      "sha256": "1adb725a081b0accc1451034f6f1bb78cbfe8252a65245f1511f4b3f2038c487",
+      "sizeBytes": 7083112,
+      "reason": "Runtime binary excluded"
+    }
+  ],
+  "files": [
+    {
+      "path": "functional/before.json",
+      "originalPath": ".workspace/tests/keyboard-literal-umlaut-before.json",
+      "kind": "original-failed-or-completed-literal-umlaut-report",
+      "sizeBytes": 18905,
+      "sha256": "dadaebabb77eb885f2babed1957940a60ed45f0d871a09716cc57d3517950b9c"
+    },
+    {
+      "path": "functional/before.log",
+      "originalPath": ".workspace/research/imk-alignment/keyboard-literal-umlaut-before.log",
+      "kind": "original-failed-or-completed-literal-umlaut-log",
+      "sizeBytes": 2942,
+      "sha256": "7669ea507dfbf5dc9316c5f5bd08c27902066eed1d925a6dd2ecd9c51f3d5c4f"
+    },
+    {
+      "path": "functional/arm64.json",
+      "originalPath": ".workspace/tests/keyboard-literal-umlaut-arm64.json",
+      "kind": "original-failed-or-completed-literal-umlaut-report",
+      "sizeBytes": 19492,
+      "sha256": "048faaacd4245606c07362e75a6f84cba22cebd332731540178c0cf6dfbe3f0b"
+    },
+    {
+      "path": "functional/arm64.log",
+      "originalPath": ".workspace/research/imk-alignment/keyboard-literal-umlaut-arm64.log",
+      "kind": "original-failed-or-completed-literal-umlaut-log",
+      "sizeBytes": 2941,
+      "sha256": "9c6a390206dc18ef282e77649fb67afb0c1b7710adb82dca116dbd36fde5be37"
+    },
+    {
+      "path": "functional/x86_64.json",
+      "originalPath": ".workspace/tests/keyboard-literal-umlaut-x86_64.json",
+      "kind": "original-failed-or-completed-literal-umlaut-report",
+      "sizeBytes": 19498,
+      "sha256": "6751702bf3637d349318aadb17f1425f5ad8db66ad22622376df0f7ae8bc5afc"
+    },
+    {
+      "path": "functional/x86_64.log",
+      "originalPath": ".workspace/research/imk-alignment/keyboard-literal-umlaut-x86_64.log",
+      "kind": "original-failed-or-completed-literal-umlaut-log",
+      "sizeBytes": 2948,
+      "sha256": "d00640b5935d6873feda71e73fcd83ba8b8f58afa35cb188bae57182be3bfa4a"
+    },
+    {
+      "path": "before-sources/keyboard.m",
+      "originalPath": ".workspace/research/imk-alignment/literal-umlaut-before/keyboard.m",
+      "kind": "exact-pre-fix-failing-source-snapshot",
+      "sizeBytes": 10869,
+      "sha256": "d9a70d0c5e2d6a11f17b2987ff83923c80ea147363a1f796f44bf69e581cac76"
+    },
+    {
+      "path": "before-sources/typing_test.m",
+      "originalPath": ".workspace/research/imk-alignment/literal-umlaut-before/typing_test.m",
+      "kind": "exact-pre-fix-failing-source-snapshot",
+      "sizeBytes": 33140,
+      "sha256": "21961f9437fc7dc892b3cf678fb40f7a827fadaebd2253725cef152d7d63efb3"
+    },
+    {
+      "path": "checks/unsigned-host-literal-umlaut-build.log",
+      "originalPath": ".workspace/research/imk-alignment/unsigned-host-literal-umlaut-build.log",
+      "kind": "original-completed-universal-unsigned-build-control",
+      "sizeBytes": 456,
+      "sha256": "a3bce31b460e03c301bece8b5a472f12de1f0aad74a318aa2f0a3ed43b1b3d58"
+    },
+    {
+      "path": "checks/unsigned-host-literal-umlaut-verify.log",
+      "originalPath": ".workspace/research/imk-alignment/unsigned-host-literal-umlaut-verify.log",
+      "kind": "original-completed-universal-unsigned-build-control",
+      "sizeBytes": 114,
+      "sha256": "29014b6873ac4ba4d9b13d941f47104209ac44fa1e5658942e673bf89c5e8c67"
+    },
+    {
+      "path": "sources/apps/desktop/ime/macos/keyboard.m",
+      "originalPath": "apps/desktop/ime/macos/keyboard.m",
+      "kind": "exact-frozen-post-fix-source-or-policy",
+      "sizeBytes": 11101,
+      "sha256": "6fdf20c571fb8f20eedd14fab2e63e0861e03522dc0b293a09274620ec7492a9"
+    },
+    {
+      "path": "sources/apps/desktop/ime/macos/tests/typing_test.m",
+      "originalPath": "apps/desktop/ime/macos/tests/typing_test.m",
+      "kind": "exact-frozen-post-fix-source-or-policy",
+      "sizeBytes": 33661,
+      "sha256": "893fa57285f7714cc25e380fe9cbae6beb9de7adf51a226eb6bfc466a463e97d"
+    },
+    {
+      "path": "sources/specs/007-ime-ranking.md.txt",
+      "originalPath": "specs/007-ime-ranking.md",
+      "kind": "exact-frozen-post-fix-source-or-policy",
+      "sizeBytes": 7826,
+      "sha256": "d0015753bc4459fe986caaa2560a1087a0383bb2b36a1a12f56e051d15c26e62"
+    },
+    {
+      "path": "sources/docs/decisions/017-offline-pinyin-keyboard.md.txt",
+      "originalPath": "docs/decisions/017-offline-pinyin-keyboard.md",
+      "kind": "exact-frozen-post-fix-source-or-policy",
+      "sizeBytes": 6519,
+      "sha256": "ed32a047c636245240de03d1df4f82ffa0fa2662d1e2fa1893fc9844c34dc0d8"
+    },
+    {
+      "path": "candidate-probe/assessment.json",
+      "originalPath": ".workspace/research/imk-alignment/candidates-probe/assessment.json",
+      "kind": "bounded-inactive-client-assessment",
+      "sizeBytes": 3119,
+      "sha256": "bc460fc7244416430490bef257a8c4ecdaccc9e3bc70e7efac0ed724a01872b1"
+    },
+    {
+      "path": "candidate-probe/probe.m",
+      "originalPath": ".workspace/research/imk-alignment/candidates-probe/probe.m",
+      "kind": "exact-owned-probe-source-or-original-public-observation",
+      "sizeBytes": 5501,
+      "sha256": "5bb1bb9cda363a5ba114ab002b8c258cc8a36c3995464be930cb719f5b7fd957"
+    },
+    {
+      "path": "candidate-probe/setup-failed.m",
+      "originalPath": ".workspace/research/imk-alignment/candidates-probe/setup-failed.m",
+      "kind": "exact-owned-probe-source-or-original-public-observation",
+      "sizeBytes": 4170,
+      "sha256": "52c01e00792da971030ff71f3a0efa2914da478bf46ddbd37abf89e8812c5988"
+    },
+    {
+      "path": "candidate-probe/class-setup-failed.m",
+      "originalPath": ".workspace/research/imk-alignment/candidates-probe/class-setup-failed.m",
+      "kind": "exact-owned-probe-source-or-original-public-observation",
+      "sizeBytes": 4293,
+      "sha256": "801c4c4ae7499a1b2a44b5eda5e6c757186df2d2dfa55ecb86b72430bb30ce8b"
+    },
+    {
+      "path": "candidate-probe/OwnedCandidatesProbe.app/Contents/Info.plist",
+      "originalPath": ".workspace/research/imk-alignment/candidates-probe/OwnedCandidatesProbe.app/Contents/Info.plist",
+      "kind": "exact-owned-probe-source-or-original-public-observation",
+      "sizeBytes": 885,
+      "sha256": "020af3fe7dd8803764ce70a01d89d48470b72d733b9045194274baaa490a0653"
+    },
+    {
+      "path": "candidate-probe/report.json",
+      "originalPath": ".workspace/research/imk-alignment/candidates-probe/report.json",
+      "kind": "exact-owned-probe-source-or-original-public-observation",
+      "sizeBytes": 1085,
+      "sha256": "0127469ed0deaf6e2cd8ccb6082086a15abb621349871d463715aceb4cbb75bb"
+    },
+    {
+      "path": "candidate-probe/execution.json",
+      "originalPath": ".workspace/research/imk-alignment/candidates-probe/execution.json",
+      "kind": "exact-owned-probe-source-or-original-public-observation",
+      "sizeBytes": 68,
+      "sha256": "1c6887296b0c534284c043e6aa7ddcc8f96a9c8435fa2f5fb8896602ce8daba0"
+    },
+    {
+      "path": "candidate-probe/setup-failed-execution.json",
+      "originalPath": ".workspace/research/imk-alignment/candidates-probe/setup-failed-execution.json",
+      "kind": "exact-owned-probe-source-or-original-public-observation",
+      "sizeBytes": 76,
+      "sha256": "60c0143999e922b6639066d5fc06a43532edb2a4d62bd8659e749ba9bb1424e9"
+    },
+    {
+      "path": "candidate-probe/setup-failed-crash.json",
+      "originalPath": ".workspace/research/imk-alignment/candidates-probe/setup-failed-crash.json",
+      "kind": "exact-owned-probe-source-or-original-public-observation",
+      "sizeBytes": 758,
+      "sha256": "3d6092b48296f26b0a53ff388afb9b5c943eb6647d57d77c1d21025013642c2b"
+    },
+    {
+      "path": "candidate-probe/class-setup-failed-execution.json",
+      "originalPath": ".workspace/research/imk-alignment/candidates-probe/class-setup-failed-execution.json",
+      "kind": "exact-owned-probe-source-or-original-public-observation",
+      "sizeBytes": 76,
+      "sha256": "60c0143999e922b6639066d5fc06a43532edb2a4d62bd8659e749ba9bb1424e9"
+    },
+    {
+      "path": "candidate-probe/class-setup-failed-crash.json",
+      "originalPath": ".workspace/research/imk-alignment/candidates-probe/class-setup-failed-crash.json",
+      "kind": "exact-owned-probe-source-or-original-public-observation",
+      "sizeBytes": 664,
+      "sha256": "2b99753799c88057a0243e9e54a10a82b81b08705625e5a9e6d8fa640c578ef0"
+    },
+    {
+      "path": "static/findings.md",
+      "originalPath": ".workspace/research/imk-alignment/doubao-keyboard-chain/async-followup/findings.md",
+      "kind": "ordinary-static-focused-verified-followup-no-target-execution",
+      "sizeBytes": 3076,
+      "sha256": "5de94d40faf2d656a65c49f3515386f92844a37cf69f8e6eb1931662de1a04f1"
+    },
+    {
+      "path": "static/evidence-focused.json",
+      "originalPath": ".workspace/research/imk-alignment/doubao-keyboard-chain/async-followup/evidence-focused.json",
+      "kind": "ordinary-static-focused-verified-followup-no-target-execution",
+      "sizeBytes": 19890,
+      "sha256": "2eae212421d6fa0e0b95bdd6971411469749618ceb66ca05747e917bbd408691"
+    },
+    {
+      "path": "static/verify-static.py",
+      "originalPath": ".workspace/research/imk-alignment/doubao-keyboard-chain/async-followup/verify-static.py",
+      "kind": "ordinary-static-focused-verified-followup-no-target-execution",
+      "sizeBytes": 1347,
+      "sha256": "9a776ffdcc7bbadf8095817913bb050538e50e345318b31a50a3d4b7425503c3"
+    },
+    {
+      "path": "README.md",
+      "kind": "archive-documentation-or-read-only-verifier",
+      "sizeBytes": 5732,
+      "sha256": "87f0f69b7c96f93065006375b7601937705fbd5a4c03c710d8eb2c3d3dbe364f"
+    },
+    {
+      "path": "verify.mjs",
+      "kind": "archive-documentation-or-read-only-verifier",
+      "sizeBytes": 5214,
+      "sha256": "2523a645f2279c448c35644d6a4e7b58360d5415194b4d4f1089c9068ec14ba6"
+    }
+  ]
+}

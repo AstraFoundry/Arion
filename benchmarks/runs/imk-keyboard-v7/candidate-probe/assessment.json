@@ -1,0 +1,70 @@
+{
+  "outcome": "scope-blocked; no production candidate defect established",
+  "interpretation": "A bundle-backed server and IMKCandidates initialize, but all identifiers including unique text are zero and selected strings are nil in this inactive-client context. API transport success does not prove a populated candidate model. Attribute preservation and duplicate-text identity require an active IMK session.",
+  "sourceHeaders": [
+    {
+      "path": "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/InputMethodKit.framework/Headers/IMKServer.h",
+      "sha256": "a6070ad67e6b1888e0bb13ae699cd5599a27f6fd73eb90a13b1b54aded7d9e02"
+    },
+    {
+      "path": "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/InputMethodKit.framework/Headers/IMKCandidates.h",
+      "sha256": "cbeb73a6e67de8f4f60d95a6a59493783c621c1e293fed1ea1ad12471c9e4953"
+    }
+  ],
+  "apiBasis": {
+    "serverInitializer": "Public initWithName:bundleIdentifier: reads controller/delegate class names from the owned bundle and opens a named client connection.",
+    "candidateData": "Public setCandidateData accepts strings or attributed strings; candidateStringIdentifier maps a candidate to its internal identity; selectedCandidateString can return nil when no selection exists."
+  },
+  "processExit": 1,
+  "remainingProbeProcessQueryExit": 1,
+  "remainingProbePIDs": [],
+  "limits": [
+    "No TIS registration, enablement or selection calls",
+    "No Keychain or user/competitor database",
+    "No candidate window presentation",
+    "No UI event synthesis",
+    "No runtime method overrides or private API calls"
+  ],
+  "files": [
+    {
+      "path": "probe.m",
+      "sha256": "5bb1bb9cda363a5ba114ab002b8c258cc8a36c3995464be930cb719f5b7fd957"
+    },
+    {
+      "path": "setup-failed.m",
+      "sha256": "52c01e00792da971030ff71f3a0efa2914da478bf46ddbd37abf89e8812c5988"
+    },
+    {
+      "path": "class-setup-failed.m",
+      "sha256": "801c4c4ae7499a1b2a44b5eda5e6c757186df2d2dfa55ecb86b72430bb30ce8b"
+    },
+    {
+      "path": "OwnedCandidatesProbe.app/Contents/Info.plist",
+      "sha256": "020af3fe7dd8803764ce70a01d89d48470b72d733b9045194274baaa490a0653"
+    },
+    {
+      "path": "report.json",
+      "sha256": "0127469ed0deaf6e2cd8ccb6082086a15abb621349871d463715aceb4cbb75bb"
+    },
+    {
+      "path": "execution.json",
+      "sha256": "1c6887296b0c534284c043e6aa7ddcc8f96a9c8435fa2f5fb8896602ce8daba0"
+    },
+    {
+      "path": "setup-failed-execution.json",
+      "sha256": "60c0143999e922b6639066d5fc06a43532edb2a4d62bd8659e749ba9bb1424e9"
+    },
+    {
+      "path": "setup-failed-crash.json",
+      "sha256": "3d6092b48296f26b0a53ff388afb9b5c943eb6647d57d77c1d21025013642c2b"
+    },
+    {
+      "path": "class-setup-failed-execution.json",
+      "sha256": "60c0143999e922b6639066d5fc06a43532edb2a4d62bd8659e749ba9bb1424e9"
+    },
+    {
+      "path": "class-setup-failed-crash.json",
+      "sha256": "2b99753799c88057a0243e9e54a10a82b81b08705625e5a9e6d8fa640c578ef0"
+    }
+  ]
+}

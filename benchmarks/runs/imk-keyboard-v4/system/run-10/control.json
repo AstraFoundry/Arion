@@ -1,0 +1,166 @@
+{
+  "afterDisable" : [
+    {
+      "enabled" : false,
+      "id" : "com.apple.inputmethod.Korean",
+      "selected" : false
+    },
+    {
+      "enabled" : false,
+      "id" : "com.apple.inputmethod.Korean.2SetKorean",
+      "selected" : false
+    },
+    {
+      "enabled" : false,
+      "id" : "com.apple.inputmethod.Korean.390Sebulshik",
+      "selected" : false
+    },
+    {
+      "enabled" : false,
+      "id" : "com.apple.inputmethod.Korean.3SetKorean",
+      "selected" : false
+    },
+    {
+      "enabled" : false,
+      "id" : "com.apple.inputmethod.Korean.GongjinCheongRomaja",
+      "selected" : false
+    },
+    {
+      "enabled" : false,
+      "id" : "com.apple.inputmethod.Korean.HNCRomaja",
+      "selected" : false
+    },
+    {
+      "enabled" : false,
+      "id" : "com.apple.keylayout.390Hangul",
+      "selected" : false
+    },
+    {
+      "enabled" : false,
+      "id" : "com.apple.keylayout.3SetHangul",
+      "selected" : false
+    },
+    {
+      "enabled" : false,
+      "id" : "com.apple.keylayout.GJCRomaja",
+      "selected" : false
+    },
+    {
+      "enabled" : false,
+      "id" : "com.apple.keylayout.HNCRomaja",
+      "selected" : false
+    }
+  ],
+  "afterEnable" : [
+    {
+      "enabled" : true,
+      "id" : "com.apple.inputmethod.Korean",
+      "selected" : false
+    },
+    {
+      "enabled" : false,
+      "id" : "com.apple.inputmethod.Korean.2SetKorean",
+      "selected" : false
+    },
+    {
+      "enabled" : false,
+      "id" : "com.apple.inputmethod.Korean.390Sebulshik",
+      "selected" : false
+    },
+    {
+      "enabled" : false,
+      "id" : "com.apple.inputmethod.Korean.3SetKorean",
+      "selected" : false
+    },
+    {
+      "enabled" : false,
+      "id" : "com.apple.inputmethod.Korean.GongjinCheongRomaja",
+      "selected" : false
+    },
+    {
+      "enabled" : false,
+      "id" : "com.apple.inputmethod.Korean.HNCRomaja",
+      "selected" : false
+    },
+    {
+      "enabled" : false,
+      "id" : "com.apple.keylayout.390Hangul",
+      "selected" : false
+    },
+    {
+      "enabled" : false,
+      "id" : "com.apple.keylayout.3SetHangul",
+      "selected" : false
+    },
+    {
+      "enabled" : false,
+      "id" : "com.apple.keylayout.GJCRomaja",
+      "selected" : false
+    },
+    {
+      "enabled" : false,
+      "id" : "com.apple.keylayout.HNCRomaja",
+      "selected" : false
+    }
+  ],
+  "attempted" : true,
+  "before" : [
+    {
+      "enabled" : false,
+      "id" : "com.apple.inputmethod.Korean",
+      "selected" : false
+    },
+    {
+      "enabled" : false,
+      "id" : "com.apple.inputmethod.Korean.2SetKorean",
+      "selected" : false
+    },
+    {
+      "enabled" : false,
+      "id" : "com.apple.inputmethod.Korean.390Sebulshik",
+      "selected" : false
+    },
+    {
+      "enabled" : false,
+      "id" : "com.apple.inputmethod.Korean.3SetKorean",
+      "selected" : false
+    },
+    {
+      "enabled" : false,
+      "id" : "com.apple.inputmethod.Korean.GongjinCheongRomaja",
+      "selected" : false
+    },
+    {
+      "enabled" : false,
+      "id" : "com.apple.inputmethod.Korean.HNCRomaja",
+      "selected" : false
+    },
+    {
+      "enabled" : false,
+      "id" : "com.apple.keylayout.390Hangul",
+      "selected" : false
+    },
+    {
+      "enabled" : false,
+      "id" : "com.apple.keylayout.3SetHangul",
+      "selected" : false
+    },
+    {
+      "enabled" : false,
+      "id" : "com.apple.keylayout.GJCRomaja",
+      "selected" : false
+    },
+    {
+      "enabled" : false,
+      "id" : "com.apple.keylayout.HNCRomaja",
+      "selected" : false
+    }
+  ],
+  "currentAfterDisable" : "com.apple.keylayout.ABC",
+  "currentAfterEnable" : "com.apple.keylayout.ABC",
+  "currentBefore" : "com.apple.keylayout.ABC",
+  "disableStatus" : 0,
+  "enableStatus" : 0,
+  "restored" : true,
+  "source" : "com.apple.inputmethod.Korean"
+}

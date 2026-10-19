@@ -1,0 +1,680 @@
+{
+  "id" : "sentence-006",
+  "boundary" : "production engine key-processing plus synchronous snapshot copying; no OS events or rendered preedit",
+  "teardownMs" : 0.46695833333333331,
+  "timer" : "mach_absolute_time",
+  "beforeConfirmation" : {
+    "commit" : "",
+    "selection" : [
+      28,
+      0
+    ],
+    "lastPage" : false,
+    "highlighted" : 0,
+    "candidates" : [
+      "请在门口等一会",
+      "请在",
+      "请",
+      "清",
+      "情",
+      "轻",
+      "青",
+      "庆",
+      "晴"
+    ],
+    "preedit" : "qing zai men kou deng yi hui",
+    "page" : 0,
+    "ascii" : false
+  },
+  "terminal" : "empty-preedit",
+  "warmupMs" : 0.0023749999999999999,
+  "peakRSSBytes" : 22478848,
+  "confirmations" : [
+    {
+      "keyToSnapshotMs" : 0.018916666666666668,
+      "handled" : true,
+      "key" : 32,
+      "snapshot" : {
+        "commit" : "请在门口等一会",
+        "selection" : [
+          0,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+
+        ],
+        "preedit" : "",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ],
+  "input" : "qingzaimenkoudengyihui",
+  "startupToSessionMs" : 12.629875,
+  "committed" : "请在门口等一会",
+  "warmups" : [
+
+  ],
+  "inputKeysToFinalSnapshotMs" : 1.8859166666666667,
+  "status" : "completed",
+  "steps" : [
+    {
+      "keyToSnapshotMs" : 0.067125000000000004,
+      "handled" : true,
+      "key" : 113,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          1,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "去",
+          "其",
+          "请",
+          "钱",
+          "前",
+          "却",
+          "起",
+          "全",
+          "区"
+        ],
+        "preedit" : "q",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.024166666666666666,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          2,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "其",
+          "起",
+          "期",
+          "气",
+          "器",
+          "七",
+          "齐",
+          "奇",
+          "骑"
+        ],
+        "preedit" : "qi",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.020208333333333332,
+      "handled" : true,
+      "key" : 110,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          3,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "亲",
+          "秦",
+          "琴",
+          "勤",
+          "钦",
+          "沁",
+          "侵",
+          "寝",
+          "禽"
+        ],
+        "preedit" : "qin",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.018708333333333334,
+      "handled" : true,
+      "key" : 103,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          4,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "请",
+          "清",
+          "情",
+          "轻",
+          "青",
+          "庆",
+          "晴",
+          "倾",
+          "卿"
+        ],
+        "preedit" : "qing",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.045374999999999999,
+      "handled" : true,
+      "key" : 122,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          6,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "庆祝",
+          "请在",
+          "轻重",
+          "倾注",
+          "清早",
+          "青藏",
+          "清蒸",
+          "清真",
+          "青州"
+        ],
+        "preedit" : "qing z",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.03216666666666667,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          7,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "请咋",
+          "请",
+          "清",
+          "情",
+          "轻",
+          "青",
+          "庆",
+          "晴",
+          "倾"
+        ],
+        "preedit" : "qing za",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.023916666666666669,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          8,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "请在",
+          "请",
+          "清",
+          "情",
+          "轻",
+          "青",
+          "庆",
+          "晴",
+          "倾"
+        ],
+        "preedit" : "qing zai",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.22729166666666667,
+      "handled" : true,
+      "key" : 109,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          10,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "请在没",
+          "请在",
+          "庆祝",
+          "轻重",
+          "倾注",
+          "清早",
+          "青藏",
+          "清蒸",
+          "清真"
+        ],
+        "preedit" : "qing zai m",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.034541666666666665,
+      "handled" : true,
+      "key" : 101,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          11,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "请在么",
+          "请在",
+          "请",
+          "清",
+          "情",
+          "轻",
+          "青",
+          "庆",
+          "晴"
+        ],
+        "preedit" : "qing zai me",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.029583333333333333,
+      "handled" : true,
+      "key" : 110,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          12,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "请在们",
+          "请在",
+          "请",
+          "清",
+          "情",
+          "轻",
+          "青",
+          "庆",
+          "晴"
+        ],
+        "preedit" : "qing zai men",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.202625,
+      "handled" : true,
+      "key" : 107,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          14,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "请在门口",
+          "请在",
+          "庆祝",
+          "轻重",
+          "倾注",
+          "清早",
+          "青藏",
+          "清蒸",
+          "清真"
+        ],
+        "preedit" : "qing zai men k",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.042000000000000003,
+      "handled" : true,
+      "key" : 111,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          15,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "请在门口",
+          "请在",
+          "请",
+          "清",
+          "情",
+          "轻",
+          "青",
+          "庆",
+          "晴"
+        ],
+        "preedit" : "qing zai men ko",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.03216666666666667,
+      "handled" : true,
+      "key" : 117,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          16,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "请在门口",
+          "请在",
+          "请",
+          "清",
+          "情",
+          "轻",
+          "青",
+          "庆",
+          "晴"
+        ],
+        "preedit" : "qing zai men kou",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.21104166666666666,
+      "handled" : true,
+      "key" : 100,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          18,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "请在门口的",
+          "请在",
+          "庆祝",
+          "轻重",
+          "倾注",
+          "清早",
+          "青藏",
+          "清蒸",
+          "清真"
+        ],
+        "preedit" : "qing zai men kou d",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.044666666666666667,
+      "handled" : true,
+      "key" : 101,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          19,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "请在门口的",
+          "请在",
+          "请",
+          "清",
+          "情",
+          "轻",
+          "青",
+          "庆",
+          "晴"
+        ],
+        "preedit" : "qing zai men kou de",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.037708333333333337,
+      "handled" : true,
+      "key" : 110,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          20,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "请在门口扽",
+          "请在",
+          "请",
+          "清",
+          "情",
+          "轻",
+          "青",
+          "庆",
+          "晴"
+        ],
+        "preedit" : "qing zai men kou den",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.039541666666666662,
+      "handled" : true,
+      "key" : 103,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          21,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "请在门口等",
+          "请在",
+          "请",
+          "清",
+          "情",
+          "轻",
+          "青",
+          "庆",
+          "晴"
+        ],
+        "preedit" : "qing zai men kou deng",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.28883333333333333,
+      "handled" : true,
+      "key" : 121,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          23,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "请在门口等于",
+          "请在",
+          "庆祝",
+          "轻重",
+          "倾注",
+          "清早",
+          "青藏",
+          "清蒸",
+          "清真"
+        ],
+        "preedit" : "qing zai men kou deng y",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.053249999999999999,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          24,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "请在门口等一",
+          "请在",
+          "请",
+          "清",
+          "情",
+          "轻",
+          "青",
+          "庆",
+          "晴"
+        ],
+        "preedit" : "qing zai men kou deng yi",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.27908333333333329,
+      "handled" : true,
+      "key" : 104,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          26,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "请在门口等以后",
+          "请在",
+          "庆祝",
+          "轻重",
+          "倾注",
+          "清早",
+          "青藏",
+          "清蒸",
+          "清真"
+        ],
+        "preedit" : "qing zai men kou deng yi h",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.058708333333333335,
+      "handled" : true,
+      "key" : 117,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          27,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "请在门口等一户",
+          "请在",
+          "请",
+          "清",
+          "情",
+          "轻",
+          "青",
+          "庆",
+          "晴"
+        ],
+        "preedit" : "qing zai men kou deng yi hu",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.046875,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          28,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "请在门口等一会",
+          "请在",
+          "请",
+          "清",
+          "情",
+          "轻",
+          "青",
+          "庆",
+          "晴"
+        ],
+        "preedit" : "qing zai men kou deng yi hui",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ]
+}

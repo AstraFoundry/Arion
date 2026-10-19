@@ -1,0 +1,680 @@
+{
+  "id" : "sentence-010",
+  "boundary" : "production engine key-processing plus synchronous snapshot copying; no OS events or rendered preedit",
+  "teardownMs" : 0.35275000000000001,
+  "timer" : "mach_absolute_time",
+  "beforeConfirmation" : {
+    "commit" : "",
+    "selection" : [
+      29,
+      0
+    ],
+    "lastPage" : false,
+    "highlighted" : 0,
+    "candidates" : [
+      "请把地址再发一边",
+      "请把",
+      "请",
+      "清",
+      "情",
+      "轻",
+      "青",
+      "庆",
+      "晴"
+    ],
+    "preedit" : "qing ba di zhi zai fa yi bian",
+    "page" : 0,
+    "ascii" : false
+  },
+  "terminal" : "empty-preedit",
+  "warmupMs" : 0.0016666666666666668,
+  "peakRSSBytes" : 22331392,
+  "confirmations" : [
+    {
+      "keyToSnapshotMs" : 0.016416666666666666,
+      "handled" : true,
+      "key" : 32,
+      "snapshot" : {
+        "commit" : "请把地址再发一边",
+        "selection" : [
+          0,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+
+        ],
+        "preedit" : "",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ],
+  "input" : "qingbadizhizaifayibian",
+  "startupToSessionMs" : 10.441333333333334,
+  "committed" : "请把地址再发一边",
+  "warmups" : [
+
+  ],
+  "inputKeysToFinalSnapshotMs" : 1.722,
+  "status" : "completed",
+  "steps" : [
+    {
+      "keyToSnapshotMs" : 0.061583333333333337,
+      "handled" : true,
+      "key" : 113,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          1,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "去",
+          "其",
+          "请",
+          "钱",
+          "前",
+          "却",
+          "起",
+          "全",
+          "区"
+        ],
+        "preedit" : "q",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.023958333333333331,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          2,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "其",
+          "起",
+          "期",
+          "气",
+          "器",
+          "七",
+          "齐",
+          "奇",
+          "骑"
+        ],
+        "preedit" : "qi",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.019833333333333331,
+      "handled" : true,
+      "key" : 110,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          3,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "亲",
+          "秦",
+          "琴",
+          "勤",
+          "钦",
+          "沁",
+          "侵",
+          "寝",
+          "禽"
+        ],
+        "preedit" : "qin",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.018916666666666668,
+      "handled" : true,
+      "key" : 103,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          4,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "请",
+          "清",
+          "情",
+          "轻",
+          "青",
+          "庆",
+          "晴",
+          "倾",
+          "卿"
+        ],
+        "preedit" : "qing",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.034750000000000003,
+      "handled" : true,
+      "key" : 98,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          6,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "情报",
+          "清白",
+          "轻薄",
+          "请把",
+          "轻便",
+          "请别",
+          "请",
+          "清",
+          "情"
+        ],
+        "preedit" : "qing b",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.023375,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          7,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "请把",
+          "请",
+          "清",
+          "情",
+          "轻",
+          "青",
+          "庆",
+          "晴",
+          "倾"
+        ],
+        "preedit" : "qing ba",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.17129166666666665,
+      "handled" : true,
+      "key" : 100,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          9,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "请把的",
+          "请把",
+          "情报",
+          "清白",
+          "轻薄",
+          "轻便",
+          "请别",
+          "请",
+          "清"
+        ],
+        "preedit" : "qing ba d",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.033541666666666664,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          10,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "请把地",
+          "请把",
+          "请",
+          "清",
+          "情",
+          "轻",
+          "青",
+          "庆",
+          "晴"
+        ],
+        "preedit" : "qing ba di",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.14254166666666665,
+      "handled" : true,
+      "key" : 122,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          12,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "请把地址",
+          "请把",
+          "情报",
+          "清白",
+          "轻薄",
+          "轻便",
+          "请别",
+          "请",
+          "清"
+        ],
+        "preedit" : "qing ba di z",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.18579166666666666,
+      "handled" : true,
+      "key" : 104,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          13,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "请把地址",
+          "请把",
+          "情报",
+          "清白",
+          "轻薄",
+          "轻便",
+          "请别",
+          "请",
+          "清"
+        ],
+        "preedit" : "qing ba di zh",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.040083333333333339,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          14,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "请把地址",
+          "请把",
+          "请",
+          "清",
+          "情",
+          "轻",
+          "青",
+          "庆",
+          "晴"
+        ],
+        "preedit" : "qing ba di zhi",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.12816666666666668,
+      "handled" : true,
+      "key" : 122,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          16,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "请把地址在",
+          "请把",
+          "情报",
+          "清白",
+          "轻薄",
+          "轻便",
+          "请别",
+          "请",
+          "清"
+        ],
+        "preedit" : "qing ba di zhi z",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.041333333333333333,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          17,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "请把地址咋",
+          "请把",
+          "请",
+          "清",
+          "情",
+          "轻",
+          "青",
+          "庆",
+          "晴"
+        ],
+        "preedit" : "qing ba di zhi za",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.036583333333333336,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          18,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "请把地址在",
+          "请把",
+          "请",
+          "清",
+          "情",
+          "轻",
+          "青",
+          "庆",
+          "晴"
+        ],
+        "preedit" : "qing ba di zhi zai",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.15041666666666667,
+      "handled" : true,
+      "key" : 102,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          20,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "请把地址再发",
+          "请把",
+          "情报",
+          "清白",
+          "轻薄",
+          "轻便",
+          "请别",
+          "请",
+          "清"
+        ],
+        "preedit" : "qing ba di zhi zai f",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.046333333333333337,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          21,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "请把地址再发",
+          "请把",
+          "请",
+          "清",
+          "情",
+          "轻",
+          "青",
+          "庆",
+          "晴"
+        ],
+        "preedit" : "qing ba di zhi zai fa",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.17266666666666666,
+      "handled" : true,
+      "key" : 121,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          23,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "请把地址在发言",
+          "请把",
+          "情报",
+          "清白",
+          "轻薄",
+          "轻便",
+          "请别",
+          "请",
+          "清"
+        ],
+        "preedit" : "qing ba di zhi zai fa y",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.051874999999999998,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          24,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "请把地址再发一",
+          "请把",
+          "请",
+          "清",
+          "情",
+          "轻",
+          "青",
+          "庆",
+          "晴"
+        ],
+        "preedit" : "qing ba di zhi zai fa yi",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.16370833333333334,
+      "handled" : true,
+      "key" : 98,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          26,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "请把地址再发一般",
+          "请把",
+          "情报",
+          "清白",
+          "轻薄",
+          "轻便",
+          "请别",
+          "请",
+          "清"
+        ],
+        "preedit" : "qing ba di zhi zai fa yi b",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.052541666666666667,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          27,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "请把地址再发一笔",
+          "请把",
+          "请",
+          "清",
+          "情",
+          "轻",
+          "青",
+          "庆",
+          "晴"
+        ],
+        "preedit" : "qing ba di zhi zai fa yi bi",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.049500000000000002,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          29,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "请把地址再发一笔啊",
+          "请把",
+          "请",
+          "清",
+          "情",
+          "轻",
+          "青",
+          "庆",
+          "晴"
+        ],
+        "preedit" : "qing ba di zhi zai fa yi bi a",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.050416666666666665,
+      "handled" : true,
+      "key" : 110,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          29,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "请把地址再发一边",
+          "请把",
+          "请",
+          "清",
+          "情",
+          "轻",
+          "青",
+          "庆",
+          "晴"
+        ],
+        "preedit" : "qing ba di zhi zai fa yi bian",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ]
+}

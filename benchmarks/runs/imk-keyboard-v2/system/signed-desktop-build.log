@@ -1,0 +1,40 @@
+Center profile: https://api.arion.astrafoundry.si (oidc, 8c6ff58c7f2fd393ed7a67bc951fafb29d9c8d1df70d2df6c5d15651e022f8d1)
+Staged English and Simplified Chinese macOS permission localizations.
+darwin-arm64/lib: libonnxruntime.dylib, libsherpa-onnx-c-api.dylib
+darwin-amd64/lib: libonnxruntime.dylib, libsherpa-onnx-c-api.dylib
+apps/desktop/resources/darwin-arm64/llm: libonnxruntime-genai.dylib, licenses/onnxruntime-genai-LICENSE, licenses/onnxruntime-genai-ThirdPartyNotices.txt, libonnxruntime.dylib, licenses/onnxruntime-LICENSE, licenses/onnxruntime-ThirdPartyNotices.txt, arion-llm
+Staged librime 1.17.0 (arm64 + x86_64), arion_pinyin prebuilt data and license notices.
+Build-only SDK: .workspace/keyboard-runtime/sdk/include
+/Users/steven/code/Arion/apps/desktop/resources/darwin/ArionInput.app/Contents/Resources/menu_icon.png
+  /Users/steven/code/Arion/apps/desktop/resources/darwin/ArionInput.app/Contents/Resources/menu_icon.tiff
+Built apps/desktop/resources/darwin/ArionInput.app
+Staged Arion, model provenance and 15 module license records.
+
+  MyGo!!!!! v0.4.6  build
+
+  ○ Compiling darwin/arm64
+  go │ # arion.local/desktop
+  go │ ld: warning: duplicate -rpath '@executable_path/../Resources/lib' ignored
+  go │ ld: warning: duplicate -rpath '@executable_path/../Resources/lib' ignored
+  go │ ld: warning: duplicate -rpath '@executable_path/../Resources/lib' ignored
+  go │ ld: warning: duplicate -rpath '@executable_path/../Resources/lib' ignored
+  go │ ld: warning: ignoring duplicate libraries: '-lobjc'
+  ✓ Compiled darwin/arm64  11.4s
+  ○ Signing Arion.app
+  ✓ Signed Arion.app  9.0s
+  ○ Creating Arion 0.1.0 arm64.dmg
+  ✓ Created Arion 0.1.0 arm64.dmg  23.8s
+  ○ Notarizing Arion 0.1.0 arm64.dmg
+  ✓ Notarized Arion 0.1.0 arm64.dmg  3m 10s
+  ▲ Not signing an update: set MYGO_UPDATER_PRIVATE_KEY or updates.privateKey
+
+  ✓ Built Arion 0.1.0 in 3m 57s
+
+    build/darwin-arm64/
+      Arion.app               124.9 MB
+      Arion 0.1.0 arm64.dmg    29.4 MB
+
+Verified embedded center profile 8c6ff58c7f2fd393ed7a67bc951fafb29d9c8d1df70d2df6c5d15651e022f8d1.
+Verified apps/desktop/build/darwin-arm64/Arion.app (rpaths: @executable_path/../Resources/lib)
+Verified Developer ID signatures, hardened runtime, notarization tickets and Gatekeeper acceptance.
+Verified darwin-arm64 resources, licenses and architectures; local rewriting bundled.

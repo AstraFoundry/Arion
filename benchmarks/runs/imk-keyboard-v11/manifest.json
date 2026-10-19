@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "files": {
+    "README.md": "74cb77ea6ee080b49bf91bfd0d441eeb9f170b695d1214e35e8c181154f32ff0",
+    "observed/artifact.json": "5ca68242084277d131a4443eb82e25479c50adb73757b6577cba790f73a7911e",
+    "observed/install-events.json": "48b719c51bcf5bc8f2b56aea207a23ef71f1e344f9eed6a09aa4f3f9701b0c4b",
+    "observed/installed-signature.txt": "a6c56523f5dacb6edb437743cf66e9652698c8e7d762889f0ff89d88baec2e9a",
+    "observed/new-payload-validation.log": "0f4f4efdf945ecac60058255e4418ea74e809c00d21672f563908415bd86c2d9",
+    "observed/observations.json": "5a165a60e3d91c09e291ab008d200635fff44f1a2aa66d94d76948d59982647d",
+    "observed/signed-build.log": "1aa1abe01836b23ae5a06eee3ac949bbb8f8aa83a10739a8c6326d7b6d637277",
+    "observed/source-metadata.txt": "f0830ac492aa1751cab358bbe58033abd46162b33b36be9cb03d9f6b645d7f6f",
+    "observed/source-state.json": "01efbf96e45e9d6e4dc5570433fe8e09338804d4d43db7e97a243ebfc7623916",
+    "provenance.json": "1f2c9c6fbc87eeb4106ce9f016e4411642aaa57d0e5f3f9256845aacf88515d2",
+    "sources/apps/desktop/bootstrap/actions.go": "82169aa8cdec0d1a4221cd20aef26580ec12f468019a0e7562932ee8e7d578d3",
+    "sources/apps/desktop/bootstrap/actions_ime_test.go": "dcd14122479168f3d47dbd469cbeed7a6d5b14d877895a27a8cb223289213207",
+    "sources/apps/desktop/bootstrap/app.go": "1e7af130e197ebd0e1d3fe434069ba1d8882443b35b4b7f243504b81b9dd9188",
+    "sources/apps/desktop/bootstrap/platform_darwin.go": "2b535023a1a21e7ead05d78c49096edd5e76cf58b1a190886e8e6d0970ea663f",
+    "sources/apps/desktop/infrastructure/diagnostics/entry.go": "d356aeba1c6b309f7ab6d247037850dbb378808a6bff0cbbc61001c1889098bd",
+    "sources/apps/desktop/infrastructure/macos/ime.go": "afe500d186a154039975d6827137ac6bcfe6b79a75eb677b619630a32102994d",
+    "sources/apps/desktop/infrastructure/macos/ime_install_darwin_test.go": "5993961185bca13867fef624fbe5c09375979f7294ec73e72804ba4aa5009f78",
+    "sources/apps/desktop/infrastructure/macos/native.m": "618e85eed4ef34770536f762a4394f58ead2e8225cfcf0bb163337f6f92df1ca",
+    "verify.mjs": "9ad045d517701bf18dc4729435e03f87c6401addd531368e9119add624aba537"
+  }
+}

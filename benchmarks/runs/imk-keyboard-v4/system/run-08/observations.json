@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "status": "restore-failed",
+  "hypothesis": "Same source identifier at a fresh filename, exact final signed host bytes",
+  "productionInstallAdapter": false,
+  "registration": "registration.json",
+  "sourceMetadata": "source-metadata.txt",
+  "selectStatus": "select-status.txt",
+  "restoration": "state.json",
+  "freshPathStillExists": true,
+  "limitations": [
+    "Diagnostic LS/TIS flow, not the fixed-path production installer",
+    "No source activation or IMK typing dispatch passed",
+    "No identifier, signature, metadata or native code changed"
+  ]
+}

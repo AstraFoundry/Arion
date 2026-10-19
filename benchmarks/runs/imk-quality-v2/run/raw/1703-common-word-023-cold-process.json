@@ -1,0 +1,232 @@
+{
+  "id" : "common-word-023",
+  "boundary" : "production engine key-processing plus synchronous snapshot copying; no OS events or rendered preedit",
+  "teardownMs" : 0.59662499999999996,
+  "timer" : "mach_absolute_time",
+  "beforeConfirmation" : {
+    "commit" : "",
+    "selection" : [
+      7,
+      0
+    ],
+    "lastPage" : false,
+    "highlighted" : 0,
+    "candidates" : [
+      "音乐",
+      "隐约",
+      "银月",
+      "阴雨",
+      "隐喻",
+      "阴郁",
+      "音域",
+      "因",
+      "引"
+    ],
+    "preedit" : "yin yue",
+    "page" : 0,
+    "ascii" : false
+  },
+  "terminal" : "empty-preedit",
+  "warmupMs" : 0.0029583333333333336,
+  "peakRSSBytes" : 21512192,
+  "confirmations" : [
+    {
+      "keyToSnapshotMs" : 0.014999999999999999,
+      "handled" : true,
+      "key" : 32,
+      "snapshot" : {
+        "commit" : "音乐",
+        "selection" : [
+          0,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+
+        ],
+        "preedit" : "",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ],
+  "input" : "yinyue",
+  "startupToSessionMs" : 12.158583333333334,
+  "committed" : "音乐",
+  "warmups" : [
+
+  ],
+  "inputKeysToFinalSnapshotMs" : 0.20933333333333334,
+  "status" : "completed",
+  "steps" : [
+    {
+      "keyToSnapshotMs" : 0.069041666666666668,
+      "handled" : true,
+      "key" : 121,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          1,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "有",
+          "也",
+          "要",
+          "与",
+          "用",
+          "一",
+          "又",
+          "以",
+          "呀"
+        ],
+        "preedit" : "y",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.022958333333333331,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          2,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "一",
+          "以",
+          "已",
+          "亿",
+          "易",
+          "亦",
+          "伊",
+          "意",
+          "依"
+        ],
+        "preedit" : "yi",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.022083333333333333,
+      "handled" : true,
+      "key" : 110,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          3,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "因",
+          "引",
+          "银",
+          "音",
+          "印",
+          "阴",
+          "饮",
+          "尹",
+          "隐"
+        ],
+        "preedit" : "yin",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.037791666666666661,
+      "handled" : true,
+      "key" : 121,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          5,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "音乐",
+          "引用",
+          "阴影",
+          "饮用",
+          "阴阳",
+          "隐隐",
+          "隐约",
+          "引诱",
+          "印有"
+        ],
+        "preedit" : "yin y",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.022583333333333334,
+      "handled" : true,
+      "key" : 117,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          6,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "阴雨",
+          "隐喻",
+          "阴郁",
+          "音域",
+          "因",
+          "引",
+          "银",
+          "音",
+          "印"
+        ],
+        "preedit" : "yin yu",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.023875,
+      "handled" : true,
+      "key" : 101,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          7,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "音乐",
+          "隐约",
+          "银月",
+          "阴雨",
+          "隐喻",
+          "阴郁",
+          "音域",
+          "因",
+          "引"
+        ],
+        "preedit" : "yin yue",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ]
+}

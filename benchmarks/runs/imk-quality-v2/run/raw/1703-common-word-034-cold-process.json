@@ -1,0 +1,232 @@
+{
+  "id" : "common-word-034",
+  "boundary" : "production engine key-processing plus synchronous snapshot copying; no OS events or rendered preedit",
+  "teardownMs" : 0.52766666666666662,
+  "timer" : "mach_absolute_time",
+  "beforeConfirmation" : {
+    "commit" : "",
+    "selection" : [
+      7,
+      0
+    ],
+    "lastPage" : false,
+    "highlighted" : 0,
+    "candidates" : [
+      "早餐",
+      "早",
+      "造",
+      "遭",
+      "澡",
+      "糟",
+      "燥",
+      "灶",
+      "枣"
+    ],
+    "preedit" : "zao can",
+    "page" : 0,
+    "ascii" : false
+  },
+  "terminal" : "empty-preedit",
+  "warmupMs" : 0.0025416666666666665,
+  "peakRSSBytes" : 21626880,
+  "confirmations" : [
+    {
+      "keyToSnapshotMs" : 0.012916666666666667,
+      "handled" : true,
+      "key" : 32,
+      "snapshot" : {
+        "commit" : "早餐",
+        "selection" : [
+          0,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+
+        ],
+        "preedit" : "",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ],
+  "input" : "zaocan",
+  "startupToSessionMs" : 12.260999999999999,
+  "committed" : "早餐",
+  "warmups" : [
+
+  ],
+  "inputKeysToFinalSnapshotMs" : 0.25545833333333334,
+  "status" : "completed",
+  "steps" : [
+    {
+      "keyToSnapshotMs" : 0.07775,
+      "handled" : true,
+      "key" : 122,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          1,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "在",
+          "中",
+          "这",
+          "做",
+          "再",
+          "着",
+          "找",
+          "最",
+          "真"
+        ],
+        "preedit" : "z",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.024666666666666667,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          2,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "咋",
+          "砸",
+          "杂",
+          "匝",
+          "扎",
+          "咂",
+          "雜",
+          "拶",
+          "雑"
+        ],
+        "preedit" : "za",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.02283333333333333,
+      "handled" : true,
+      "key" : 111,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          3,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "早",
+          "造",
+          "遭",
+          "澡",
+          "糟",
+          "燥",
+          "灶",
+          "枣",
+          "藻"
+        ],
+        "preedit" : "zao",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.064291666666666664,
+      "handled" : true,
+      "key" : 99,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          5,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "造成",
+          "早晨",
+          "早餐",
+          "造船",
+          "造出",
+          "早春",
+          "早产",
+          "造车",
+          "早茶"
+        ],
+        "preedit" : "zao c",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.033583333333333333,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          6,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "早擦",
+          "早",
+          "造",
+          "遭",
+          "澡",
+          "糟",
+          "燥",
+          "灶",
+          "枣"
+        ],
+        "preedit" : "zao ca",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.022208333333333333,
+      "handled" : true,
+      "key" : 110,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          7,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "早餐",
+          "早",
+          "造",
+          "遭",
+          "澡",
+          "糟",
+          "燥",
+          "灶",
+          "枣"
+        ],
+        "preedit" : "zao can",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ]
+}

@@ -11,3 +11,7 @@ The new [recognition-stage memory study](user-modify-asr-v1/README.md) has its o
 The [recognition memory optimization](user-modify-asr-v2/README.md) adds first-pass retrieval, original-audio re-decoding, entity-aware scoring and development-only policy selection. Use `pnpm memory:asr` for new inference and `pnpm memory:asr-report` for model-free replay; its [separate archive](../results/user-modify-asr-v2/archive.json) preserves both splits and their actual calls.
 
 [Closed-loop memory](user-modify-asr-v3/README.md) uses actual production extraction/encrypted persistence before later audio recognition. The [ordinary-word context probe](context-memory-v1/README.md) separately evaluates text rewriting and reconstructed screen semantics. Both have model-free report commands and frozen production-source snapshots; keys, runtime binaries and model weights are separately provisioned.
+
+[Context ranking](imk-context-v1/README.md) replays seeded homophone streams through the production typing owner and candidate bar with context ranking off and on, and times keys and candidate-bar updates.
+
+[Offline Pinyin engine baseline](imk-quality-v1/README.md) compiles the production native engine/encrypted synthetic-key backend, freezes 100 original reference-isolated fixtures, runs paired cold/warm repetitions and provides model-free replay with corruption/leakage/incomplete-run rejection. No installed input-source or Keychain operation occurs.

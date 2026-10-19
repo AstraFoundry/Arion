@@ -1,0 +1,56 @@
+{
+  "phase": "restored",
+  "baseline": {
+    "current": "com.apple.keylayout.ABC",
+    "learningKeyStatus": -25300,
+    "own": []
+  },
+  "bundle": "/Users/steven/Library/Input Methods/ArionTypingValidation.app",
+  "backup": "/Users/steven/code/Arion/.workspace/e2e/imk-system/run-08/original/ArionInput.app",
+  "original": false,
+  "profile": "/Users/steven/code/Arion/.workspace/e2e/imk-system/run-08/profile",
+  "fixtureSocket": "/tmp/arion-ime-fixture-01.sock",
+  "after": {
+    "current": "com.apple.keylayout.ABC",
+    "learningKeyStatus": -25300,
+    "own": [
+      {
+        "enabled": false,
+        "id": "si.astrafoundry.inputmethod.arion",
+        "selectable": false,
+        "selected": false
+      },
+      {
+        "enabled": false,
+        "id": "si.astrafoundry.inputmethod.arion.pinyin",
+        "selectable": true,
+        "selected": false
+      }
+    ]
+  },
+  "errors": [],
+  "initialCleanupErrors": [
+    "remove: Diagnostic source remains active"
+  ],
+  "cleanupRecovery": {
+    "basis": "SDK permits child enabled-but-unselectable when parent disabled; all disable statuses0, parentdisabled, noselectedsource, originalcurrentrestored; removed exact owned payload only",
+    "after": {
+      "current": "com.apple.keylayout.ABC",
+      "learningKeyStatus": -25300,
+      "own": [
+        {
+          "enabled": false,
+          "id": "si.astrafoundry.inputmethod.arion",
+          "selectable": false,
+          "selected": false
+        },
+        {
+          "enabled": false,
+          "id": "si.astrafoundry.inputmethod.arion.pinyin",
+          "selectable": true,
+          "selected": false
+        }
+      ]
+    }
+  }
+}

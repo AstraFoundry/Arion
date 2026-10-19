@@ -1,0 +1,624 @@
+{
+  "id" : "sentence-024",
+  "boundary" : "production engine key-processing plus synchronous snapshot copying; no OS events or rendered preedit",
+  "teardownMs" : 0.48862499999999998,
+  "timer" : "mach_absolute_time",
+  "beforeConfirmation" : {
+    "commit" : "",
+    "selection" : [
+      26,
+      0
+    ],
+    "lastPage" : false,
+    "highlighted" : 0,
+    "candidates" : [
+      "我在图书馆等你",
+      "我在",
+      "我再",
+      "我",
+      "喔",
+      "窝",
+      "握",
+      "卧",
+      "沃"
+    ],
+    "preedit" : "wo zai tu shu guan deng ni",
+    "page" : 0,
+    "ascii" : false
+  },
+  "terminal" : "empty-preedit",
+  "warmupMs" : 0.0018749999999999999,
+  "peakRSSBytes" : 22298624,
+  "confirmations" : [
+    {
+      "keyToSnapshotMs" : 0.016875000000000001,
+      "handled" : true,
+      "key" : 32,
+      "snapshot" : {
+        "commit" : "我在图书馆等你",
+        "selection" : [
+          0,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+
+        ],
+        "preedit" : "",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ],
+  "input" : "wozaitushuguandengni",
+  "startupToSessionMs" : 12.006083333333335,
+  "committed" : "我在图书馆等你",
+  "warmups" : [
+
+  ],
+  "inputKeysToFinalSnapshotMs" : 1.519625,
+  "status" : "completed",
+  "steps" : [
+    {
+      "keyToSnapshotMs" : 0.061624999999999999,
+      "handled" : true,
+      "key" : 119,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          1,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "我",
+          "为",
+          "玩",
+          "问",
+          "无",
+          "万",
+          "完",
+          "网",
+          "王"
+        ],
+        "preedit" : "w",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.023875,
+      "handled" : true,
+      "key" : 111,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          2,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "我",
+          "喔",
+          "窝",
+          "握",
+          "卧",
+          "沃",
+          "硪",
+          "涡",
+          "倭"
+        ],
+        "preedit" : "wo",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.040375000000000001,
+      "handled" : true,
+      "key" : 122,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          4,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "我在",
+          "我真",
+          "我这",
+          "我只",
+          "我再",
+          "我最",
+          "我做",
+          "我找",
+          "我总"
+        ],
+        "preedit" : "wo z",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.03254166666666667,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          5,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "我咋",
+          "我",
+          "喔",
+          "窝",
+          "握",
+          "卧",
+          "沃",
+          "硪",
+          "涡"
+        ],
+        "preedit" : "wo za",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.020291666666666666,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          6,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "我在",
+          "我再",
+          "我",
+          "喔",
+          "窝",
+          "握",
+          "卧",
+          "沃",
+          "硪"
+        ],
+        "preedit" : "wo zai",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.137625,
+      "handled" : true,
+      "key" : 116,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          8,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "我在他",
+          "我在",
+          "我再",
+          "我最爱",
+          "我真",
+          "我这",
+          "我只",
+          "我最",
+          "我做"
+        ],
+        "preedit" : "wo zai t",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.029583333333333333,
+      "handled" : true,
+      "key" : 117,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          9,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "我在图",
+          "我在",
+          "我再",
+          "我",
+          "喔",
+          "窝",
+          "握",
+          "卧",
+          "沃"
+        ],
+        "preedit" : "wo zai tu",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.14199999999999999,
+      "handled" : true,
+      "key" : 115,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          11,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "我在图书",
+          "我在",
+          "我再",
+          "我最爱",
+          "我真",
+          "我这",
+          "我只",
+          "我最",
+          "我做"
+        ],
+        "preedit" : "wo zai tu s",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.13791666666666666,
+      "handled" : true,
+      "key" : 104,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          12,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "我在图书",
+          "我在",
+          "我再",
+          "我最爱",
+          "我真",
+          "我这",
+          "我只",
+          "我最",
+          "我做"
+        ],
+        "preedit" : "wo zai tu sh",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.037541666666666668,
+      "handled" : true,
+      "key" : 117,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          13,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "我在图书",
+          "我在",
+          "我再",
+          "我",
+          "喔",
+          "窝",
+          "握",
+          "卧",
+          "沃"
+        ],
+        "preedit" : "wo zai tu shu",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.1115,
+      "handled" : true,
+      "key" : 103,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          15,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "我在图书馆",
+          "我在",
+          "我再",
+          "我最爱",
+          "我真",
+          "我这",
+          "我只",
+          "我最",
+          "我做"
+        ],
+        "preedit" : "wo zai tu shu g",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.038291666666666661,
+      "handled" : true,
+      "key" : 117,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          16,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "我在图书股",
+          "我在",
+          "我再",
+          "我",
+          "喔",
+          "窝",
+          "握",
+          "卧",
+          "沃"
+        ],
+        "preedit" : "wo zai tu shu gu",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.036499999999999998,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          17,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "我在图书挂",
+          "我在",
+          "我再",
+          "我",
+          "喔",
+          "窝",
+          "握",
+          "卧",
+          "沃"
+        ],
+        "preedit" : "wo zai tu shu gua",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.038583333333333338,
+      "handled" : true,
+      "key" : 110,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          18,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "我在图书馆",
+          "我在",
+          "我再",
+          "我",
+          "喔",
+          "窝",
+          "握",
+          "卧",
+          "沃"
+        ],
+        "preedit" : "wo zai tu shu guan",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.16395833333333334,
+      "handled" : true,
+      "key" : 100,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          20,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "我在图书馆的",
+          "我在",
+          "我再",
+          "我最爱",
+          "我真",
+          "我这",
+          "我只",
+          "我最",
+          "我做"
+        ],
+        "preedit" : "wo zai tu shu guan d",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.051208333333333335,
+      "handled" : true,
+      "key" : 101,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          21,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "我在图书馆的",
+          "我在",
+          "我再",
+          "我",
+          "喔",
+          "窝",
+          "握",
+          "卧",
+          "沃"
+        ],
+        "preedit" : "wo zai tu shu guan de",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.043999999999999997,
+      "handled" : true,
+      "key" : 110,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          22,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "我在图书馆扽",
+          "我在",
+          "我再",
+          "我",
+          "喔",
+          "窝",
+          "握",
+          "卧",
+          "沃"
+        ],
+        "preedit" : "wo zai tu shu guan den",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.046041666666666661,
+      "handled" : true,
+      "key" : 103,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          23,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "我在图书馆等",
+          "我在",
+          "我再",
+          "我",
+          "喔",
+          "窝",
+          "握",
+          "卧",
+          "沃"
+        ],
+        "preedit" : "wo zai tu shu guan deng",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.24258333333333335,
+      "handled" : true,
+      "key" : 110,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          25,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "我在图书馆等你",
+          "我在",
+          "我再",
+          "我最爱",
+          "我真",
+          "我这",
+          "我只",
+          "我最",
+          "我做"
+        ],
+        "preedit" : "wo zai tu shu guan deng n",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.060458333333333336,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          26,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "我在图书馆等你",
+          "我在",
+          "我再",
+          "我",
+          "喔",
+          "窝",
+          "握",
+          "卧",
+          "沃"
+        ],
+        "preedit" : "wo zai tu shu guan deng ni",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ]
+}

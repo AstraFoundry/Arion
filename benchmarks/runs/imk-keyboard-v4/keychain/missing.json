@@ -1,0 +1,27 @@
+{
+  "secretDataRequestedByHarness" : false,
+  "startupSucceeded" : false,
+  "passed" : true,
+  "interactionPolicyStatus" : 0,
+  "failureDomain" : "si.astrafoundry.arion.keyboard.learning",
+  "phase" : "missing",
+  "failureCode" : 1,
+  "vaultUnchanged" : true,
+  "runID" : "b03804bd-afea-4544-aaed-e898ad06e8f3",
+  "interactionPolicyRestored" : 1,
+  "boundary" : "production encryption\/engine with real OS-kept key; owned profile; no IMK source dispatch",
+  "vaultInventory" : {
+    ".learning.lock" : {
+      "sha256" : "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "sizeBytes" : 0
+    },
+    "arion_pinyin.arion-userdb" : {
+      "sha256" : "2cfd346061c96aa218bb39007c07485f7a97cca19dfccdb354e19a1a73700e42",
+      "sizeBytes" : 214
+    },
+    "arion_pinyin.arion-userdb.lock" : {
+      "sha256" : "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "sizeBytes" : 0
+    }
+  }
+}

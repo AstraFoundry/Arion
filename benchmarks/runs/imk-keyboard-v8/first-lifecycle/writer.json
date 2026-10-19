@@ -1,0 +1,62 @@
+{
+  "secretDataRequestedByHarness" : false,
+  "passed" : true,
+  "beforeCandidates" : [
+    "实施",
+    "事实",
+    "试试",
+    "实时",
+    "适时",
+    "时时",
+    "逝世",
+    "世事",
+    "事事"
+  ],
+  "interactionPolicyStatus" : 0,
+  "phase" : "writer",
+  "backingEvidence" : {
+    "legacy" : {
+      "status" : -25300,
+      "sameOwnedReference" : 0,
+      "attributes" : null
+    },
+    "dataProtection" : {
+      "status" : 0,
+      "sameOwnedReference" : 1,
+      "attributes" : {
+        "creationDate" : 1792311165.3436661,
+        "accessiblePresent" : 1,
+        "accessible" : "cku",
+        "synchronizablePresent" : 1,
+        "synchronizable" : 0,
+        "matchesAfterFirstUnlockThisDeviceOnly" : true
+      }
+    }
+  },
+  "committed" : "事实",
+  "keyAttributes" : {
+    "creationDate" : 1792311165.3436661,
+    "accessiblePresent" : 1,
+    "accessible" : "cku",
+    "synchronizablePresent" : 1,
+    "synchronizable" : 0,
+    "matchesAfterFirstUnlockThisDeviceOnly" : true
+  },
+  "runID" : "a9e75cb0-f7b7-427c-ba4d-b5f73d8aac24",
+  "interactionPolicyRestored" : 1,
+  "boundary" : "production encryption\/engine with real OS-kept key; owned profile; no IMK source dispatch",
+  "vaultInventory" : {
+    ".learning.lock" : {
+      "sha256" : "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "sizeBytes" : 0
+    },
+    "arion_pinyin.arion-userdb" : {
+      "sha256" : "de04fb5a5f927e9dbf332953d7265069dda6444d50a730453be2b6e3005cd1f8",
+      "sizeBytes" : 214
+    },
+    "arion_pinyin.arion-userdb.lock" : {
+      "sha256" : "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "sizeBytes" : 0
+    }
+  }
+}

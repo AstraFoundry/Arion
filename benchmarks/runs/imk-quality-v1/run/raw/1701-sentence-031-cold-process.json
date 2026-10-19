@@ -1,0 +1,764 @@
+{
+  "id" : "sentence-031",
+  "boundary" : "production engine key-processing plus synchronous snapshot copying; no OS events or rendered preedit",
+  "teardownMs" : 4.0314583333333331,
+  "timer" : "mach_absolute_time",
+  "beforeConfirmation" : {
+    "commit" : "",
+    "selection" : [
+      33,
+      0
+    ],
+    "lastPage" : false,
+    "highlighted" : 0,
+    "candidates" : [
+      "我想问一下这个价格",
+      "我想",
+      "我",
+      "喔",
+      "窝",
+      "握",
+      "卧",
+      "沃",
+      "硪"
+    ],
+    "preedit" : "wo xiang wen yi xia zhe ge jia ge",
+    "page" : 0,
+    "ascii" : false
+  },
+  "terminal" : "empty-preedit",
+  "warmupMs" : 0.0022499999999999998,
+  "peakRSSBytes" : 22577152,
+  "confirmations" : [
+    {
+      "keyToSnapshotMs" : 0.019625,
+      "handled" : true,
+      "key" : 32,
+      "snapshot" : {
+        "commit" : "我想问一下这个价格",
+        "selection" : [
+          0,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+
+        ],
+        "preedit" : "",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ],
+  "input" : "woxiangwenyixiazhegejiage",
+  "startupToSessionMs" : 12.163208333333333,
+  "committed" : "我想问一下这个价格",
+  "warmups" : [
+
+  ],
+  "inputKeysToFinalSnapshotMs" : 2.6215833333333336,
+  "status" : "completed",
+  "steps" : [
+    {
+      "keyToSnapshotMs" : 0.061333333333333337,
+      "handled" : true,
+      "key" : 119,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          1,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "我",
+          "为",
+          "玩",
+          "问",
+          "无",
+          "万",
+          "完",
+          "网",
+          "王"
+        ],
+        "preedit" : "w",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.024666666666666667,
+      "handled" : true,
+      "key" : 111,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          2,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "我",
+          "喔",
+          "窝",
+          "握",
+          "卧",
+          "沃",
+          "硪",
+          "涡",
+          "倭"
+        ],
+        "preedit" : "wo",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.037833333333333337,
+      "handled" : true,
+      "key" : 120,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          4,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "我想",
+          "我先",
+          "我校",
+          "我县",
+          "我心",
+          "我写",
+          "我笑",
+          "斡旋",
+          "我"
+        ],
+        "preedit" : "wo x",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.025541666666666667,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          5,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "我系",
+          "我",
+          "喔",
+          "窝",
+          "握",
+          "卧",
+          "沃",
+          "硪",
+          "涡"
+        ],
+        "preedit" : "wo xi",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.073999999999999996,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          6,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "我下",
+          "我",
+          "喔",
+          "窝",
+          "握",
+          "卧",
+          "沃",
+          "硪",
+          "涡"
+        ],
+        "preedit" : "wo xia",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.020625000000000001,
+      "handled" : true,
+      "key" : 110,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          7,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "我先",
+          "我县",
+          "我",
+          "喔",
+          "窝",
+          "握",
+          "卧",
+          "沃",
+          "硪"
+        ],
+        "preedit" : "wo xian",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.020500000000000001,
+      "handled" : true,
+      "key" : 103,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          8,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "我想",
+          "我",
+          "喔",
+          "窝",
+          "握",
+          "卧",
+          "沃",
+          "硪",
+          "涡"
+        ],
+        "preedit" : "wo xiang",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.037666666666666661,
+      "handled" : true,
+      "key" : 119,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          10,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "我想我",
+          "我想",
+          "我先",
+          "我县",
+          "我",
+          "喔",
+          "窝",
+          "握",
+          "卧"
+        ],
+        "preedit" : "wo xiang w",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.17829166666666665,
+      "handled" : true,
+      "key" : 101,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          12,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "我想我恩",
+          "我想我",
+          "我想",
+          "我先",
+          "我县",
+          "我",
+          "喔",
+          "窝",
+          "握"
+        ],
+        "preedit" : "wo xiang w e",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.040083333333333339,
+      "handled" : true,
+      "key" : 110,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          12,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "我想问",
+          "我想",
+          "我",
+          "喔",
+          "窝",
+          "握",
+          "卧",
+          "沃",
+          "硪"
+        ],
+        "preedit" : "wo xiang wen",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.174625,
+      "handled" : true,
+      "key" : 121,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          14,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "我想文艺",
+          "我想我",
+          "我想",
+          "我先",
+          "我县",
+          "我",
+          "喔",
+          "窝",
+          "握"
+        ],
+        "preedit" : "wo xiang wen y",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.045458333333333337,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          15,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "我想文艺",
+          "我想",
+          "我",
+          "喔",
+          "窝",
+          "握",
+          "卧",
+          "沃",
+          "硪"
+        ],
+        "preedit" : "wo xiang wen yi",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.15604166666666666,
+      "handled" : true,
+      "key" : 120,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          17,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "我想问一下",
+          "我想我",
+          "我想",
+          "我先",
+          "我县",
+          "我",
+          "喔",
+          "窝",
+          "握"
+        ],
+        "preedit" : "wo xiang wen yi x",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.043874999999999997,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          18,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "我想问依稀",
+          "我想",
+          "我",
+          "喔",
+          "窝",
+          "握",
+          "卧",
+          "沃",
+          "硪"
+        ],
+        "preedit" : "wo xiang wen yi xi",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.040750000000000001,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          19,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "我想问一下",
+          "我想",
+          "我",
+          "喔",
+          "窝",
+          "握",
+          "卧",
+          "沃",
+          "硪"
+        ],
+        "preedit" : "wo xiang wen yi xia",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.17920833333333333,
+      "handled" : true,
+      "key" : 122,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          21,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "我想问一下在",
+          "我想我",
+          "我想",
+          "我先",
+          "我县",
+          "我",
+          "喔",
+          "窝",
+          "握"
+        ],
+        "preedit" : "wo xiang wen yi xia z",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.23508333333333334,
+      "handled" : true,
+      "key" : 104,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          22,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "我想问一下中",
+          "我想我",
+          "我想",
+          "我先",
+          "我县",
+          "我",
+          "喔",
+          "窝",
+          "握"
+        ],
+        "preedit" : "wo xiang wen yi xia zh",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.057958333333333334,
+      "handled" : true,
+      "key" : 101,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          23,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "我想问一下这",
+          "我想",
+          "我",
+          "喔",
+          "窝",
+          "握",
+          "卧",
+          "沃",
+          "硪"
+        ],
+        "preedit" : "wo xiang wen yi xia zhe",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.27633333333333332,
+      "handled" : true,
+      "key" : 103,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          25,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "我想问一下这个",
+          "我想我",
+          "我想",
+          "我先",
+          "我县",
+          "我",
+          "喔",
+          "窝",
+          "握"
+        ],
+        "preedit" : "wo xiang wen yi xia zhe g",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.060958333333333337,
+      "handled" : true,
+      "key" : 101,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          26,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "我想问一下这个",
+          "我想",
+          "我",
+          "喔",
+          "窝",
+          "握",
+          "卧",
+          "沃",
+          "硪"
+        ],
+        "preedit" : "wo xiang wen yi xia zhe ge",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.29758333333333331,
+      "handled" : true,
+      "key" : 106,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          28,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "我想问一下这个就",
+          "我想我",
+          "我想",
+          "我先",
+          "我县",
+          "我",
+          "喔",
+          "窝",
+          "握"
+        ],
+        "preedit" : "wo xiang wen yi xia zhe ge j",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.065875000000000003,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          29,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "我想问一下这个及",
+          "我想",
+          "我",
+          "喔",
+          "窝",
+          "握",
+          "卧",
+          "沃",
+          "硪"
+        ],
+        "preedit" : "wo xiang wen yi xia zhe ge ji",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.058999999999999997,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          30,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "我想问一下这个家",
+          "我想",
+          "我",
+          "喔",
+          "窝",
+          "握",
+          "卧",
+          "沃",
+          "硪"
+        ],
+        "preedit" : "wo xiang wen yi xia zhe ge jia",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.30349999999999999,
+      "handled" : true,
+      "key" : 103,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          32,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "我想问一下这个价格",
+          "我想我",
+          "我想",
+          "我先",
+          "我县",
+          "我",
+          "喔",
+          "窝",
+          "握"
+        ],
+        "preedit" : "wo xiang wen yi xia zhe ge jia g",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.078666666666666676,
+      "handled" : true,
+      "key" : 101,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          33,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "我想问一下这个价格",
+          "我想",
+          "我",
+          "喔",
+          "窝",
+          "握",
+          "卧",
+          "沃",
+          "硪"
+        ],
+        "preedit" : "wo xiang wen yi xia zhe ge jia ge",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ]
+}

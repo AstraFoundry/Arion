@@ -1,0 +1,111 @@
+{
+  "schema": 1,
+  "originals": [
+    {
+      "archivePath": "observed/source-state.json",
+      "originalPath": ".workspace/research/ime-consent-fix/source-state.json",
+      "sha256": "01efbf96e45e9d6e4dc5570433fe8e09338804d4d43db7e97a243ebfc7623916",
+      "kind": "original producer output"
+    },
+    {
+      "archivePath": "observed/source-metadata.txt",
+      "originalPath": ".workspace/research/ime-consent-fix/source-metadata.txt",
+      "sha256": "f0830ac492aa1751cab358bbe58033abd46162b33b36be9cb03d9f6b645d7f6f",
+      "kind": "original producer output"
+    },
+    {
+      "archivePath": "observed/installed-signature.txt",
+      "originalPath": ".workspace/research/ime-consent-fix/installed-signature.txt",
+      "sha256": "a6c56523f5dacb6edb437743cf66e9652698c8e7d762889f0ff89d88baec2e9a",
+      "kind": "original producer output"
+    },
+    {
+      "archivePath": "observed/install-events.json",
+      "originalPath": ".workspace/research/ime-consent-fix/install-events.json",
+      "sha256": "48b719c51bcf5bc8f2b56aea207a23ef71f1e344f9eed6a09aa4f3f9701b0c4b",
+      "kind": "original producer output"
+    },
+    {
+      "archivePath": "observed/observations.json",
+      "originalPath": ".workspace/research/ime-consent-fix/observations.json",
+      "sha256": "5a165a60e3d91c09e291ab008d200635fff44f1a2aa66d94d76948d59982647d",
+      "kind": "derived metadata"
+    },
+    {
+      "archivePath": "observed/artifact.json",
+      "originalPath": ".workspace/research/ime-consent-fix/artifact.json",
+      "sha256": "5ca68242084277d131a4443eb82e25479c50adb73757b6577cba790f73a7911e",
+      "kind": "derived metadata"
+    },
+    {
+      "archivePath": "observed/signed-build.log",
+      "originalPath": ".workspace/research/ime-consent-fix/signed-build.log",
+      "sha256": "1aa1abe01836b23ae5a06eee3ac949bbb8f8aa83a10739a8c6326d7b6d637277",
+      "kind": "original producer output"
+    },
+    {
+      "archivePath": "observed/new-payload-validation.log",
+      "originalPath": ".workspace/research/ime-consent-fix/new-payload-validation.log",
+      "sha256": "0f4f4efdf945ecac60058255e4418ea74e809c00d21672f563908415bd86c2d9",
+      "kind": "original producer output"
+    }
+  ],
+  "sourceBindings": [
+    {
+      "sourcePath": "apps/desktop/infrastructure/macos/native.m",
+      "archivePath": "sources/apps/desktop/infrastructure/macos/native.m",
+      "sha256": "618e85eed4ef34770536f762a4394f58ead2e8225cfcf0bb163337f6f92df1ca",
+      "scope": "frozen post-observation corrective source; current signed-build/control implementation, not reconstructed earlier development host/event producer"
+    },
+    {
+      "sourcePath": "apps/desktop/infrastructure/macos/ime.go",
+      "archivePath": "sources/apps/desktop/infrastructure/macos/ime.go",
+      "sha256": "afe500d186a154039975d6827137ac6bcfe6b79a75eb677b619630a32102994d",
+      "scope": "frozen post-observation corrective source; current signed-build/control implementation, not reconstructed earlier development host/event producer"
+    },
+    {
+      "sourcePath": "apps/desktop/infrastructure/macos/ime_install_darwin_test.go",
+      "archivePath": "sources/apps/desktop/infrastructure/macos/ime_install_darwin_test.go",
+      "sha256": "5993961185bca13867fef624fbe5c09375979f7294ec73e72804ba4aa5009f78",
+      "scope": "frozen post-observation corrective source; current signed-build/control implementation, not reconstructed earlier development host/event producer"
+    },
+    {
+      "sourcePath": "apps/desktop/bootstrap/actions.go",
+      "archivePath": "sources/apps/desktop/bootstrap/actions.go",
+      "sha256": "82169aa8cdec0d1a4221cd20aef26580ec12f468019a0e7562932ee8e7d578d3",
+      "scope": "frozen post-observation corrective source; current signed-build/control implementation, not reconstructed earlier development host/event producer"
+    },
+    {
+      "sourcePath": "apps/desktop/bootstrap/app.go",
+      "archivePath": "sources/apps/desktop/bootstrap/app.go",
+      "sha256": "1e7af130e197ebd0e1d3fe434069ba1d8882443b35b4b7f243504b81b9dd9188",
+      "scope": "frozen post-observation corrective source; current signed-build/control implementation, not reconstructed earlier development host/event producer"
+    },
+    {
+      "sourcePath": "apps/desktop/bootstrap/actions_ime_test.go",
+      "archivePath": "sources/apps/desktop/bootstrap/actions_ime_test.go",
+      "sha256": "dcd14122479168f3d47dbd469cbeed7a6d5b14d877895a27a8cb223289213207",
+      "scope": "frozen post-observation corrective source; current signed-build/control implementation, not reconstructed earlier development host/event producer"
+    },
+    {
+      "sourcePath": "apps/desktop/bootstrap/platform_darwin.go",
+      "archivePath": "sources/apps/desktop/bootstrap/platform_darwin.go",
+      "sha256": "2b535023a1a21e7ead05d78c49096edd5e76cf58b1a190886e8e6d0970ea663f",
+      "scope": "frozen post-observation corrective source; current signed-build/control implementation, not reconstructed earlier development host/event producer"
+    },
+    {
+      "sourcePath": "apps/desktop/infrastructure/diagnostics/entry.go",
+      "archivePath": "sources/apps/desktop/infrastructure/diagnostics/entry.go",
+      "sha256": "d356aeba1c6b309f7ab6d247037850dbb378808a6bff0cbbc61001c1889098bd",
+      "scope": "frozen post-observation corrective source; current signed-build/control implementation, not reconstructed earlier development host/event producer"
+    }
+  ],
+  "sourceBoundary": "Focused installer/controller/diagnostic sources only; not a complete standalone desktop build closure. Earlier events predate these fixes and their exact development binary/source revision is not reconstructed.",
+  "privacy": "Allowlisted public metadata/logs and source only; no screenshots, profiles, environment files, receipts, binaries, certificates or keys.",
+  "testBoundary": "Root reports negative payload/copied-state/controller/race/i18n/bilingual checks passed; raw logs were not saved and are not reconstructed. Only completed build and positive payload test have original logs here.",
+  "acceptance": {
+    "nativeGrantPersistence": "unknown",
+    "systemAddSelectTyping": "unaccepted",
+    "archivePerformsOSMutations": false
+  }
+}

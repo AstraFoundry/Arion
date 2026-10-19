@@ -1,0 +1,120 @@
+{
+  "id" : "abbreviation-003",
+  "boundary" : "production engine key-processing plus synchronous snapshot copying; no OS events or rendered preedit",
+  "teardownMs" : 0.53500000000000003,
+  "timer" : "mach_absolute_time",
+  "beforeConfirmation" : {
+    "commit" : "",
+    "selection" : [
+      3,
+      0
+    ],
+    "lastPage" : false,
+    "highlighted" : 0,
+    "candidates" : [
+      "工作",
+      "各种",
+      "关注",
+      "广州",
+      "工资",
+      "观众",
+      "规则",
+      "跟着",
+      "高中"
+    ],
+    "preedit" : "g z",
+    "page" : 0,
+    "ascii" : false
+  },
+  "terminal" : "empty-preedit",
+  "warmupMs" : 0.0030833333333333333,
+  "peakRSSBytes" : 21463040,
+  "confirmations" : [
+    {
+      "keyToSnapshotMs" : 0.022249999999999999,
+      "handled" : true,
+      "key" : 32,
+      "snapshot" : {
+        "commit" : "工作",
+        "selection" : [
+          0,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+
+        ],
+        "preedit" : "",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ],
+  "input" : "gz",
+  "startupToSessionMs" : 14.218666666666666,
+  "committed" : "工作",
+  "warmups" : [
+
+  ],
+  "inputKeysToFinalSnapshotMs" : 0.18104166666666666,
+  "status" : "completed",
+  "steps" : [
+    {
+      "keyToSnapshotMs" : 0.082041666666666666,
+      "handled" : true,
+      "key" : 103,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          1,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "个",
+          "给",
+          "过",
+          "跟",
+          "更",
+          "该",
+          "高",
+          "搞",
+          "刚"
+        ],
+        "preedit" : "g",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.091041666666666674,
+      "handled" : true,
+      "key" : 122,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          3,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "工作",
+          "各种",
+          "关注",
+          "广州",
+          "工资",
+          "观众",
+          "规则",
+          "跟着",
+          "高中"
+        ],
+        "preedit" : "g z",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ]
+}

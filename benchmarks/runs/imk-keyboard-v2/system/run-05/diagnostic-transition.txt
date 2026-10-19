@@ -1,0 +1,16 @@
+launchServices 0
+register 0
+["enabled": 0, "selected": 0, "name": Arion, "type": TISTypeKeyboardInputMethodModeEnabled, "id": si.astrafoundry.inputmethod.arion, "languages": <__NSSingleObjectArrayI 0xc47eb4050>(
+en
+)
+, "enableCapable": 1]
+["enabled": 1, "selected": 0, "name": Arion, "type": TISTypeKeyboardInputMode, "id": si.astrafoundry.inputmethod.arion.pinyin, "languages": <__NSSingleObjectArrayI 0xc47eb4060>(
+zh-Hans
+)
+, "enableCapable": 1]
+disable si.astrafoundry.inputmethod.arion.pinyin 0
+disable si.astrafoundry.inputmethod.arion 0
+enable si.astrafoundry.inputmethod.arion 0
+enable si.astrafoundry.inputmethod.arion.pinyin 0
+after si.astrafoundry.inputmethod.arion 0
+after si.astrafoundry.inputmethod.arion.pinyin 1

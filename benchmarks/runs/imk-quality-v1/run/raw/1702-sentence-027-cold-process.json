@@ -1,0 +1,764 @@
+{
+  "id" : "sentence-027",
+  "boundary" : "production engine key-processing plus synchronous snapshot copying; no OS events or rendered preedit",
+  "teardownMs" : 0.6432916666666666,
+  "timer" : "mach_absolute_time",
+  "beforeConfirmation" : {
+    "commit" : "",
+    "selection" : [
+      33,
+      0
+    ],
+    "lastPage" : false,
+    "highlighted" : 0,
+    "candidates" : [
+      "他准备学一门新语言",
+      "他",
+      "她",
+      "它",
+      "塔",
+      "踏",
+      "塌",
+      "祂",
+      "沓"
+    ],
+    "preedit" : "ta zhun bei xue yi men xin yu yan",
+    "page" : 0,
+    "ascii" : false
+  },
+  "terminal" : "empty-preedit",
+  "warmupMs" : 0.0022916666666666667,
+  "peakRSSBytes" : 22282240,
+  "confirmations" : [
+    {
+      "keyToSnapshotMs" : 0.052124999999999998,
+      "handled" : true,
+      "key" : 32,
+      "snapshot" : {
+        "commit" : "他准备学一门新语言",
+        "selection" : [
+          0,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+
+        ],
+        "preedit" : "",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ],
+  "input" : "tazhunbeixueyimenxinyuyan",
+  "startupToSessionMs" : 12.683958333333335,
+  "committed" : "他准备学一门新语言",
+  "warmups" : [
+
+  ],
+  "inputKeysToFinalSnapshotMs" : 2.2089583333333334,
+  "status" : "completed",
+  "steps" : [
+    {
+      "keyToSnapshotMs" : 0.072749999999999995,
+      "handled" : true,
+      "key" : 116,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          1,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "他",
+          "她",
+          "太",
+          "它",
+          "天",
+          "听",
+          "同",
+          "挺",
+          "图"
+        ],
+        "preedit" : "t",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.0235,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          2,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "他",
+          "她",
+          "它",
+          "塔",
+          "踏",
+          "塌",
+          "祂",
+          "沓",
+          "牠"
+        ],
+        "preedit" : "ta",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.049541666666666664,
+      "handled" : true,
+      "key" : 122,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          4,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "他在",
+          "他只",
+          "踏着",
+          "他总",
+          "他",
+          "她",
+          "它",
+          "塔",
+          "踏"
+        ],
+        "preedit" : "ta z",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.049791666666666665,
+      "handled" : true,
+      "key" : 104,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          5,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "他只",
+          "踏着",
+          "他在",
+          "他总",
+          "他",
+          "她",
+          "它",
+          "塔",
+          "踏"
+        ],
+        "preedit" : "ta zh",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.033083333333333333,
+      "handled" : true,
+      "key" : 117,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          6,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "他住",
+          "他",
+          "她",
+          "它",
+          "塔",
+          "踏",
+          "塌",
+          "祂",
+          "沓"
+        ],
+        "preedit" : "ta zhu",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.029791666666666668,
+      "handled" : true,
+      "key" : 110,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          7,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "他准",
+          "他",
+          "她",
+          "它",
+          "塔",
+          "踏",
+          "塌",
+          "祂",
+          "沓"
+        ],
+        "preedit" : "ta zhun",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.15908333333333335,
+      "handled" : true,
+      "key" : 98,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          9,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "他准备",
+          "他在",
+          "他只",
+          "踏着",
+          "他总",
+          "他",
+          "她",
+          "它",
+          "塔"
+        ],
+        "preedit" : "ta zhun b",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.142125,
+      "handled" : true,
+      "key" : 101,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          11,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "他准备恩",
+          "他在",
+          "他只",
+          "踏着",
+          "他总",
+          "他",
+          "她",
+          "它",
+          "塔"
+        ],
+        "preedit" : "ta zhun b e",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.033750000000000002,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          11,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "他准备",
+          "他",
+          "她",
+          "它",
+          "塔",
+          "踏",
+          "塌",
+          "祂",
+          "沓"
+        ],
+        "preedit" : "ta zhun bei",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.13783333333333334,
+      "handled" : true,
+      "key" : 120,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          13,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "他准备下",
+          "他在",
+          "他只",
+          "踏着",
+          "他总",
+          "他",
+          "她",
+          "它",
+          "塔"
+        ],
+        "preedit" : "ta zhun bei x",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.040750000000000001,
+      "handled" : true,
+      "key" : 117,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          14,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "他准备需",
+          "他",
+          "她",
+          "它",
+          "塔",
+          "踏",
+          "塌",
+          "祂",
+          "沓"
+        ],
+        "preedit" : "ta zhun bei xu",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.033291666666666664,
+      "handled" : true,
+      "key" : 101,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          15,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "他准备学",
+          "他",
+          "她",
+          "它",
+          "塔",
+          "踏",
+          "塌",
+          "祂",
+          "沓"
+        ],
+        "preedit" : "ta zhun bei xue",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.14033333333333334,
+      "handled" : true,
+      "key" : 121,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          17,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "他准备学院",
+          "他在",
+          "他只",
+          "踏着",
+          "他总",
+          "他",
+          "她",
+          "它",
+          "塔"
+        ],
+        "preedit" : "ta zhun bei xue y",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.042041666666666665,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          18,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "他准备学医",
+          "他",
+          "她",
+          "它",
+          "塔",
+          "踏",
+          "塌",
+          "祂",
+          "沓"
+        ],
+        "preedit" : "ta zhun bei xue yi",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.14420833333333336,
+      "handled" : true,
+      "key" : 109,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          20,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "他准备学一名",
+          "他在",
+          "他只",
+          "踏着",
+          "他总",
+          "他",
+          "她",
+          "它",
+          "塔"
+        ],
+        "preedit" : "ta zhun bei xue yi m",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.045083333333333336,
+      "handled" : true,
+      "key" : 101,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          21,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "他准备学医么",
+          "他",
+          "她",
+          "它",
+          "塔",
+          "踏",
+          "塌",
+          "祂",
+          "沓"
+        ],
+        "preedit" : "ta zhun bei xue yi me",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.042750000000000003,
+      "handled" : true,
+      "key" : 110,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          22,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "他准备学一门",
+          "他",
+          "她",
+          "它",
+          "塔",
+          "踏",
+          "塌",
+          "祂",
+          "沓"
+        ],
+        "preedit" : "ta zhun bei xue yi men",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.18812499999999999,
+      "handled" : true,
+      "key" : 120,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          24,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "他准备学医门下",
+          "他在",
+          "他只",
+          "踏着",
+          "他总",
+          "他",
+          "她",
+          "它",
+          "塔"
+        ],
+        "preedit" : "ta zhun bei xue yi men x",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.055041666666666662,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          25,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "他准备学一门系",
+          "他",
+          "她",
+          "它",
+          "塔",
+          "踏",
+          "塌",
+          "祂",
+          "沓"
+        ],
+        "preedit" : "ta zhun bei xue yi men xi",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.048208333333333339,
+      "handled" : true,
+      "key" : 110,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          26,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "他准备学一门新",
+          "他",
+          "她",
+          "它",
+          "塔",
+          "踏",
+          "塌",
+          "祂",
+          "沓"
+        ],
+        "preedit" : "ta zhun bei xue yi men xin",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.21129166666666666,
+      "handled" : true,
+      "key" : 121,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          28,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "他准备学一门信用",
+          "他在",
+          "他只",
+          "踏着",
+          "他总",
+          "他",
+          "她",
+          "它",
+          "塔"
+        ],
+        "preedit" : "ta zhun bei xue yi men xin y",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.059708333333333335,
+      "handled" : true,
+      "key" : 117,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          29,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "他准备学一门信誉",
+          "他",
+          "她",
+          "它",
+          "塔",
+          "踏",
+          "塌",
+          "祂",
+          "沓"
+        ],
+        "preedit" : "ta zhun bei xue yi men xin yu",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.27458333333333329,
+      "handled" : true,
+      "key" : 121,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          31,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "他准备学一门信誉有",
+          "他在",
+          "他只",
+          "踏着",
+          "他总",
+          "他",
+          "她",
+          "它",
+          "塔"
+        ],
+        "preedit" : "ta zhun bei xue yi men xin yu y",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.069375000000000006,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          32,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "他准备学一门信誉呀",
+          "他",
+          "她",
+          "它",
+          "塔",
+          "踏",
+          "塌",
+          "祂",
+          "沓"
+        ],
+        "preedit" : "ta zhun bei xue yi men xin yu ya",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.056000000000000001,
+      "handled" : true,
+      "key" : 110,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          33,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "他准备学一门新语言",
+          "他",
+          "她",
+          "它",
+          "塔",
+          "踏",
+          "塌",
+          "祂",
+          "沓"
+        ],
+        "preedit" : "ta zhun bei xue yi men xin yu yan",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ]
+}

@@ -1,0 +1,424 @@
+{
+  "schemaVersion": 1,
+  "study": "imk-keyboard-v4",
+  "supplements": [
+    "../imk-keyboard-v1/archive.json",
+    "../imk-keyboard-v2/archive.json",
+    "../imk-keyboard-v3/archive.json"
+  ],
+  "system": {
+    "run08": "fresh filename same source ID; enable status0 but parent disabled, selection -50; initial cleanup failed then recovered; old failure observation preserved",
+    "run09": "fresh source ID signed/notarized Accepted; parent disabled, selection -50; restored ABC with disabled cached own entries",
+    "run10": "First-party Korean parent enable changed false to true; disable changed back to false; exact original state/currentABC restored. CLI public TIS is not universally a no-op; third-party root cause remains unknown",
+    "installedIMEHostDispatch": false
+  },
+  "keychain": {
+    "runID": "b03804bd-afea-4544-aaed-e898ad06e8f3",
+    "report": "keychain/prepared.json",
+    "status": "six phases passed and restored",
+    "revision": "pre-fix production legacy-Keychain backend, not later policy implementation",
+    "deviceBoundProtectionVerification": "not-established",
+    "inputSourcesTouched": false,
+    "missingKey": "actual startup failed closed and encrypted file digest unchanged"
+  },
+  "privacy": {
+    "included": "Allowlisted own-source metadata, ABC current state, explicit first-party Korean control, synthetic learning candidate outputs, public source/signing metadata and exact source snapshots",
+    "excluded": "No native binaries/objects, downloaded ZIPs, runtime/SDK directories, profiles, ownership receipts, persistent references, key data, credentials or personal preferences"
+  },
+  "exclusions": [
+    {
+      "originalPath": ".workspace/e2e/imk-system/run-09/Arion-identity-validation.zip",
+      "sizeBytes": 3959063,
+      "sha256": "d4a0de66e18a3e4eb89707f5916198e1fdb1713318e63cc172e8009d78a5339c",
+      "reason": "Carrier retained in workspace; ZIP/binary archive excluded, focused metadata and digests retained"
+    },
+    {
+      "originalPath": ".workspace/research/imk-alignment/registration-audit/metadata-sources/Apple-NumberInput.zip",
+      "sizeBytes": 190494,
+      "sha256": "06b6f0052b7bb5bc584fb6d32a9d6fda4bba1746d29f56f00123466b60729228",
+      "reason": "Carrier retained in workspace; ZIP/binary archive excluded, focused metadata and digests retained"
+    }
+  ],
+  "files": [
+    {
+      "path": "system/run-08/observations.json",
+      "originalPath": ".workspace/e2e/imk-system/run-08/observations.json",
+      "kind": "original-diagnostic-output-or-controller-state",
+      "sizeBytes": 586,
+      "sha256": "8df7eee3b09a30340038ff6ef8f21a94e123650283899ac4dfd0971b356bad8c"
+    },
+    {
+      "path": "system/run-08/registration.json",
+      "originalPath": ".workspace/e2e/imk-system/run-08/registration.json",
+      "kind": "original-diagnostic-output-or-controller-state",
+      "sizeBytes": 432,
+      "sha256": "0789d075961d90e5ebc212cee6b755c4f1b8df8f992b3bce7a0b7487fc402cef"
+    },
+    {
+      "path": "system/run-08/select-status.txt",
+      "originalPath": ".workspace/e2e/imk-system/run-08/select-status.txt",
+      "kind": "original-diagnostic-output-or-controller-state",
+      "sizeBytes": 4,
+      "sha256": "b84096a2c95f7ac535bc39b9351f3df17093723b168773f68f3b80a089a39087"
+    },
+    {
+      "path": "system/run-08/source-metadata.txt",
+      "originalPath": ".workspace/e2e/imk-system/run-08/source-metadata.txt",
+      "kind": "original-diagnostic-output-or-controller-state",
+      "sizeBytes": 1503,
+      "sha256": "07d69ef23eecc48aac65c22030d812e532a3ec6e84a3607211e220b38423b6ff"
+    },
+    {
+      "path": "system/run-08/cleanup-recovery-disable.json",
+      "originalPath": ".workspace/e2e/imk-system/run-08/cleanup-recovery-disable.json",
+      "kind": "original-diagnostic-output-or-controller-state",
+      "sizeBytes": 290,
+      "sha256": "9d39851d6aa4afa8abba6bb57e9eba8cae7d2a675c8e3d32c050e33098f97bea"
+    },
+    {
+      "path": "system/run-08/state.json",
+      "originalPath": ".workspace/e2e/imk-system/run-08/state.json",
+      "kind": "original-diagnostic-output-or-controller-state",
+      "sizeBytes": 1651,
+      "sha256": "26d107768a5cb8ccea40626c9ff5872b853c1a2fdb0bc7a664e3e47e3202378b"
+    },
+    {
+      "path": "system/run-09/artifact.json",
+      "originalPath": ".workspace/e2e/imk-system/run-09/artifact.json",
+      "kind": "original-diagnostic-output-or-controller-state",
+      "sizeBytes": 823,
+      "sha256": "ecd94dd37191368900f07a5600513fcf539400f90c207073a60482afd6d155f4"
+    },
+    {
+      "path": "system/run-09/registration.json",
+      "originalPath": ".workspace/e2e/imk-system/run-09/registration.json",
+      "kind": "original-diagnostic-output-or-controller-state",
+      "sizeBytes": 476,
+      "sha256": "faab389e035cffe055c1cb8fdd941c89ff613d60242adf71fea140dec483f6f9"
+    },
+    {
+      "path": "system/run-09/select-status.txt",
+      "originalPath": ".workspace/e2e/imk-system/run-09/select-status.txt",
+      "kind": "original-diagnostic-output-or-controller-state",
+      "sizeBytes": 4,
+      "sha256": "b84096a2c95f7ac535bc39b9351f3df17093723b168773f68f3b80a089a39087"
+    },
+    {
+      "path": "system/run-09/gatekeeper.txt",
+      "originalPath": ".workspace/e2e/imk-system/run-09/gatekeeper.txt",
+      "kind": "original-diagnostic-output-or-controller-state",
+      "sizeBytes": 96,
+      "sha256": "501c2b818e9460fb10244ae3b5a427a611001365b39095dc640192b61b38bc05"
+    },
+    {
+      "path": "system/run-09/notarization.json",
+      "originalPath": ".workspace/e2e/imk-system/run-09/notarization.json",
+      "kind": "original-diagnostic-output-or-controller-state",
+      "sizeBytes": 111,
+      "sha256": "cb29258c075f98abe1c5716ac31ad15774608e568f3a670e1373d2ba790403fb"
+    },
+    {
+      "path": "system/run-09/state.json",
+      "originalPath": ".workspace/e2e/imk-system/run-09/state.json",
+      "kind": "original-diagnostic-output-or-controller-state",
+      "sizeBytes": 921,
+      "sha256": "2206ed33a3a721799f7540b09ca0350a270989c340b9bb35fb52f37acd564335"
+    },
+    {
+      "path": "system/run-10/control.json",
+      "originalPath": ".workspace/e2e/imk-system/run-10/control.json",
+      "kind": "original-diagnostic-output-or-controller-state",
+      "sizeBytes": 3805,
+      "sha256": "bc13f632a5ddf1c00d2135c51b4281f8d99050e3199bb8a7831e2afd9038450f"
+    },
+    {
+      "path": "system/sources/controller-08.mjs",
+      "originalPath": ".workspace/e2e/imk-system/controller-08.mjs",
+      "kind": "historical-diagnostic-source-no-replay-authorization",
+      "sizeBytes": 6519,
+      "sha256": "a969fecbca41585385c435bad2fedcd30d414d9d640252d2276573f33fb448f1"
+    },
+    {
+      "path": "system/sources/controller-09.mjs",
+      "originalPath": ".workspace/e2e/imk-system/controller-09.mjs",
+      "kind": "historical-diagnostic-source-no-replay-authorization",
+      "sizeBytes": 6971,
+      "sha256": "740253d11af129154df060893196ff00c12521e9ad1bc626b10f1d640ec604c5"
+    },
+    {
+      "path": "system/sources/sources.swift",
+      "originalPath": ".workspace/e2e/imk-system/sources.swift",
+      "kind": "historical-diagnostic-source-no-replay-authorization",
+      "sizeBytes": 1609,
+      "sha256": "e4feea7f6ed4ea31c95aa913644fa482b09df9fc329059458c6d0333e7cbd550"
+    },
+    {
+      "path": "system/sources/source-registration.swift",
+      "originalPath": ".workspace/e2e/imk-system/source-registration.swift",
+      "kind": "historical-diagnostic-source-no-replay-authorization",
+      "sizeBytes": 1715,
+      "sha256": "f48e028bf3232d055da467c73772999f9d2356f58abf8b9177c958a9e794cac2"
+    },
+    {
+      "path": "system/sources/source-registration-identity.swift",
+      "originalPath": ".workspace/e2e/imk-system/source-registration-identity.swift",
+      "kind": "historical-diagnostic-source-no-replay-authorization",
+      "sizeBytes": 1687,
+      "sha256": "c164e5d4806f0ee37da79f871a602a799bef3f5d2b97c325c84e7ff05278e333"
+    },
+    {
+      "path": "system/sources/compare-metadata.swift",
+      "originalPath": ".workspace/e2e/imk-system/compare-metadata.swift",
+      "kind": "historical-diagnostic-source-no-replay-authorization",
+      "sizeBytes": 745,
+      "sha256": "46c3fcb43f3f86b356b9d162adde68e0fa4407d5cfe4a0dc7ec590760da2eaac"
+    },
+    {
+      "path": "system/sources/apple-source-control.swift",
+      "originalPath": ".workspace/e2e/imk-system/apple-source-control.swift",
+      "kind": "historical-diagnostic-source-no-replay-authorization",
+      "sizeBytes": 2180,
+      "sha256": "dd547121c6d8d7d9e6abcd774173c0f7b16cef75679992ddd79ef7dd92a8ed4a"
+    },
+    {
+      "path": "system/run-08/recovery.json",
+      "kind": "derived-summary-not-original-tool-output",
+      "basis": [
+        "system/run-08/state.json",
+        "system/run-08/cleanup-recovery-disable.json",
+        "system/run-08/observations.json"
+      ],
+      "sizeBytes": 567,
+      "sha256": "2c60d3b60d04e6cfac92eaf171b72fd175adf37b30790c94f1dcc02d256dba68"
+    },
+    {
+      "path": "metadata/Apple-NumberInput-intro.html",
+      "originalPath": ".workspace/research/imk-alignment/registration-audit/metadata-sources/Apple-NumberInput-intro.html",
+      "kind": "original-public-primary-source-or-static-assessment",
+      "sizeBytes": 11524,
+      "sha256": "a6aea8e1b0e8ba98aa662e235b1c7eac5f030bc96346dfb5412b317ab4b0c946"
+    },
+    {
+      "path": "metadata/Apple-NumberInput_IMKit_Sample_trunk_NumberInput 0_Info.plist",
+      "originalPath": ".workspace/research/imk-alignment/registration-audit/metadata-sources/Apple-NumberInput_IMKit_Sample_trunk_NumberInput 0_Info.plist",
+      "kind": "original-public-primary-source-or-static-assessment",
+      "sizeBytes": 3116,
+      "sha256": "8716311bc0430c7526d9fea91ba9ecb75c11ae916ece103c1e555d9d1b793675"
+    },
+    {
+      "path": "metadata/Apple-NumberInput_IMKit_Sample_trunk_NumberInput 1_Info.plist",
+      "originalPath": ".workspace/research/imk-alignment/registration-audit/metadata-sources/Apple-NumberInput_IMKit_Sample_trunk_NumberInput 1_Info.plist",
+      "kind": "original-public-primary-source-or-static-assessment",
+      "sizeBytes": 2727,
+      "sha256": "0ddf4956cf3bd2dcc67e85526ab226a7fd7a45660ef406f806274c3676e19439"
+    },
+    {
+      "path": "metadata/Apple-NumberInput_IMKit_Sample_trunk_NumberInput 2_Info.plist",
+      "originalPath": ".workspace/research/imk-alignment/registration-audit/metadata-sources/Apple-NumberInput_IMKit_Sample_trunk_NumberInput 2_Info.plist",
+      "kind": "original-public-primary-source-or-static-assessment",
+      "sizeBytes": 6955,
+      "sha256": "6701de80a2d415962c249645a46f1d6f44f154a4c523f8c5ebc67b440b1d354b"
+    },
+    {
+      "path": "metadata/Apple-NumberInput_IMKit_Sample_trunk_NumberInput 3_Info.plist",
+      "originalPath": ".workspace/research/imk-alignment/registration-audit/metadata-sources/Apple-NumberInput_IMKit_Sample_trunk_NumberInput 3_Info.plist",
+      "kind": "original-public-primary-source-or-static-assessment",
+      "sizeBytes": 6955,
+      "sha256": "6701de80a2d415962c249645a46f1d6f44f154a4c523f8c5ebc67b440b1d354b"
+    },
+    {
+      "path": "metadata/Apple-NumberInput_IMKit_Sample_trunk_NumberInput 4_Info.plist",
+      "originalPath": ".workspace/research/imk-alignment/registration-audit/metadata-sources/Apple-NumberInput_IMKit_Sample_trunk_NumberInput 4_Info.plist",
+      "kind": "original-public-primary-source-or-static-assessment",
+      "sizeBytes": 6955,
+      "sha256": "6701de80a2d415962c249645a46f1d6f44f154a4c523f8c5ebc67b440b1d354b"
+    },
+    {
+      "path": "metadata/Meltype-35f2ce9-Info.plist",
+      "originalPath": ".workspace/research/imk-alignment/registration-audit/metadata-sources/Meltype-35f2ce9-Info.plist",
+      "kind": "original-public-primary-source-or-static-assessment",
+      "sizeBytes": 2698,
+      "sha256": "dc9471faab8e8efa50259a37dfb058912bf0d94a85d6fef444165a6117b036fe"
+    },
+    {
+      "path": "metadata/Meltype-35f2ce9-tree.json",
+      "originalPath": ".workspace/research/imk-alignment/registration-audit/metadata-sources/Meltype-35f2ce9-tree.json",
+      "kind": "original-public-primary-source-or-static-assessment",
+      "sizeBytes": 56774,
+      "sha256": "ecf380b1fb64b098ea46648f0afbadd9972bd6830b5d609b94b3a53692e4a0f7"
+    },
+    {
+      "path": "metadata/Meltype-main-Info.plist",
+      "originalPath": ".workspace/research/imk-alignment/registration-audit/metadata-sources/Meltype-main-Info.plist",
+      "kind": "original-public-primary-source-or-static-assessment",
+      "sizeBytes": 4308,
+      "sha256": "69bc2216106c79b21c065026057093818217e6ec0ca2f04d4d4e78ff0ce45acd"
+    },
+    {
+      "path": "metadata/Meltype-main-tree.json",
+      "originalPath": ".workspace/research/imk-alignment/registration-audit/metadata-sources/Meltype-main-tree.json",
+      "kind": "original-public-primary-source-or-static-assessment",
+      "sizeBytes": 136064,
+      "sha256": "a6dfeb9940e86d5ce5783137d8033cb38d24b6454b673b10a49fc430f6060a00"
+    },
+    {
+      "path": "metadata/assessment.json",
+      "originalPath": ".workspace/research/imk-alignment/registration-audit/metadata-sources/assessment.json",
+      "kind": "original-public-primary-source-or-static-assessment",
+      "sizeBytes": 3029,
+      "sha256": "b1efe6daacf595a07d0290adaf39cdf09eb67436c271d6b69ab6febe392ced48"
+    },
+    {
+      "path": "keychain/prepared.json",
+      "originalPath": ".workspace/tests/keyboard-keychain-b03804bd-afea-4544-aaed-e898ad06e8f3/prepared.json",
+      "kind": "original-prefixed-real-keychain-lifecycle-report",
+      "sizeBytes": 7411,
+      "sha256": "1f2d1018b97131a274573d0a97d735b5cf7faee7d894f5dbed2deed393b20a6d"
+    },
+    {
+      "path": "keychain/guard.json",
+      "originalPath": ".workspace/tests/keyboard-keychain-b03804bd-afea-4544-aaed-e898ad06e8f3/guard.json",
+      "kind": "original-prefixed-real-keychain-lifecycle-report",
+      "sizeBytes": 342,
+      "sha256": "6eb314eae5ed182d2a93577a7d414d9339957b66c20b4c088f7195c204d793b8"
+    },
+    {
+      "path": "keychain/writer.json",
+      "originalPath": ".workspace/tests/keyboard-keychain-b03804bd-afea-4544-aaed-e898ad06e8f3/writer.json",
+      "kind": "original-prefixed-real-keychain-lifecycle-report",
+      "sizeBytes": 1671,
+      "sha256": "86eb6772595143a0db7bc0b4f4fa72ab5dd5b93851625918b13a2e64d7c31be9"
+    },
+    {
+      "path": "keychain/reader.json",
+      "originalPath": ".workspace/tests/keyboard-keychain-b03804bd-afea-4544-aaed-e898ad06e8f3/reader.json",
+      "kind": "original-prefixed-real-keychain-lifecycle-report",
+      "sizeBytes": 703,
+      "sha256": "3ff5b7cd9d371529787c2be15a3bfd8e007ea3e5da44b4a30da41d786e3d7af5"
+    },
+    {
+      "path": "keychain/delete.json",
+      "originalPath": ".workspace/tests/keyboard-keychain-b03804bd-afea-4544-aaed-e898ad06e8f3/delete.json",
+      "kind": "original-prefixed-real-keychain-lifecycle-report",
+      "sizeBytes": 365,
+      "sha256": "1e051316efbfb19c15348d4706fd3de80cdc62d507e2913a9cf117f5ff6f51c7"
+    },
+    {
+      "path": "keychain/missing.json",
+      "originalPath": ".workspace/tests/keyboard-keychain-b03804bd-afea-4544-aaed-e898ad06e8f3/missing.json",
+      "kind": "original-prefixed-real-keychain-lifecycle-report",
+      "sizeBytes": 929,
+      "sha256": "0505040e1bd37f744bcca29758989205dffe0ef73c37d75f619ad2ff236aa795"
+    },
+    {
+      "path": "keychain/cleanup.json",
+      "originalPath": ".workspace/tests/keyboard-keychain-b03804bd-afea-4544-aaed-e898ad06e8f3/cleanup.json",
+      "kind": "original-prefixed-real-keychain-lifecycle-report",
+      "sizeBytes": 371,
+      "sha256": "3e3f7bc9c853e6b434066b61803df5f6191ca0da3e616672ec8c7cdc1b9f6ab0"
+    },
+    {
+      "path": "keychain/sources/apps/desktop/ime/macos/keyboard.h",
+      "originalPath": ".workspace/tests/keyboard-keychain-b03804bd-afea-4544-aaed-e898ad06e8f3/exact-sources/apps/desktop/ime/macos/keyboard.h",
+      "kind": "identity-matching-pre-fix-source",
+      "sizeBytes": 1465,
+      "sha256": "7e230a99cd9788f4feb3745c14d8e4a5d1ecb008284c916cf942820c8e0d93dd"
+    },
+    {
+      "path": "keychain/sources/apps/desktop/ime/macos/keyboard.m",
+      "originalPath": ".workspace/tests/keyboard-keychain-b03804bd-afea-4544-aaed-e898ad06e8f3/exact-sources/apps/desktop/ime/macos/keyboard.m",
+      "kind": "identity-matching-pre-fix-source",
+      "sizeBytes": 10869,
+      "sha256": "d9a70d0c5e2d6a11f17b2987ff83923c80ea147363a1f796f44bf69e581cac76"
+    },
+    {
+      "path": "keychain/sources/apps/desktop/ime/macos/learning.h",
+      "originalPath": ".workspace/tests/keyboard-keychain-b03804bd-afea-4544-aaed-e898ad06e8f3/exact-sources/apps/desktop/ime/macos/learning.h",
+      "kind": "identity-matching-pre-fix-source",
+      "sizeBytes": 1210,
+      "sha256": "d9e82f45a3710515c292d7f9f059ecb2ad96c247166ed22fa69de97a9cf3008d"
+    },
+    {
+      "path": "keychain/sources/apps/desktop/ime/macos/learning.mm",
+      "originalPath": ".workspace/tests/keyboard-keychain-b03804bd-afea-4544-aaed-e898ad06e8f3/exact-sources/apps/desktop/ime/macos/learning.mm",
+      "kind": "identity-matching-pre-fix-source",
+      "sizeBytes": 22573,
+      "sha256": "96e0a607864d62c1bc1e8be91e7832002bc948edcb0cfcc73ae471c7a6e6077b"
+    },
+    {
+      "path": "keychain/sources/apps/desktop/ime/macos/learning_crypto.swift",
+      "originalPath": ".workspace/tests/keyboard-keychain-b03804bd-afea-4544-aaed-e898ad06e8f3/exact-sources/apps/desktop/ime/macos/learning_crypto.swift",
+      "kind": "identity-matching-pre-fix-source",
+      "sizeBytes": 3075,
+      "sha256": "9c8ed696f3b17918f1e0f4489eaf65fca0dd6d9ffd9066b6d00f869380b14ed2"
+    },
+    {
+      "path": "keychain/sources/apps/desktop/ime/macos/tests/keychain_learning_test.m",
+      "originalPath": ".workspace/tests/keyboard-keychain-b03804bd-afea-4544-aaed-e898ad06e8f3/exact-sources/apps/desktop/ime/macos/tests/keychain_learning_test.m",
+      "kind": "identity-matching-pre-fix-source",
+      "sizeBytes": 15456,
+      "sha256": "2493a3ec30a6841e2fbe4eec0c9b728c2485a4bd63efbc136ace5d2dcc3aba88"
+    },
+    {
+      "path": "keychain/sources/scripts/lib/build-ime-learning.mjs",
+      "originalPath": ".workspace/tests/keyboard-keychain-b03804bd-afea-4544-aaed-e898ad06e8f3/exact-sources/scripts/lib/build-ime-learning.mjs",
+      "kind": "identity-matching-pre-fix-source",
+      "sizeBytes": 1691,
+      "sha256": "67a75be4bf4552e50a684ad542a8d2aee73d6aa80f452961582eb0de34cba7a0"
+    },
+    {
+      "path": "keychain/sources/scripts/test-keyboard-keychain.mjs",
+      "originalPath": ".workspace/tests/keyboard-keychain-b03804bd-afea-4544-aaed-e898ad06e8f3/exact-sources/scripts/test-keyboard-keychain.mjs",
+      "kind": "identity-matching-pre-fix-source",
+      "sizeBytes": 9188,
+      "sha256": "61a0c69f608c8dadd1cd33eca666d9f9a7af944717e9c1d333d7474a3f8d43a5"
+    },
+    {
+      "path": "keychain/keychain-harness-prepare-01.log",
+      "originalPath": ".workspace/research/imk-alignment/keychain-harness-prepare-01.log",
+      "kind": "original-pre-fix-preparation-failure-or-completed-lifecycle-evidence",
+      "sizeBytes": 2404,
+      "sha256": "a97a91a386675f617a2c6a358bea045500fbdff25cca1bc9ac397eac8a7f23e6"
+    },
+    {
+      "path": "keychain/keychain-harness-prepare-02.log",
+      "originalPath": ".workspace/research/imk-alignment/keychain-harness-prepare-02.log",
+      "kind": "original-pre-fix-preparation-failure-or-completed-lifecycle-evidence",
+      "sizeBytes": 157,
+      "sha256": "bcafd191c4fc84699d9a53533b68c7d52d5c01a32697971e9aed8a83f2fda1ba"
+    },
+    {
+      "path": "keychain/keychain-harness-execution-01.log",
+      "originalPath": ".workspace/research/imk-alignment/keychain-harness-execution-01.log",
+      "kind": "original-pre-fix-preparation-failure-or-completed-lifecycle-evidence",
+      "sizeBytes": 305,
+      "sha256": "a2db027bae8f55cc29a650e40dbe0a56d50806c5196db4acd9b532b7ebcf0f90"
+    },
+    {
+      "path": "keychain/keychain-policy-assessment-01.json",
+      "originalPath": ".workspace/research/imk-alignment/keychain-policy-assessment-01.json",
+      "kind": "original-pre-fix-preparation-failure-or-completed-lifecycle-evidence",
+      "sizeBytes": 2450,
+      "sha256": "82cb78bcae74a8cfcedb9cf8d4b47b7c65700f04b6ad775c6e5763fc6ab1e1af"
+    },
+    {
+      "path": "system/sources/prepare-identity-validation.mjs",
+      "originalPath": ".workspace/e2e/imk-system/prepare-identity-validation.mjs",
+      "kind": "historical-diagnostic-preparation-source-no-replay-authorization",
+      "sizeBytes": 4170,
+      "sha256": "d81ce42b80af1080c3489864109de76277ee2b9388abd96a6d3d8f81a6bccff0"
+    },
+    {
+      "path": "README.md",
+      "kind": "archive-documentation-or-read-only-verifier",
+      "sizeBytes": 5704,
+      "sha256": "b0e711e6459399fdeb8dffb64b923c78ae65585330ae61228a686399b21d5859"
+    },
+    {
+      "path": "verify.mjs",
+      "kind": "archive-documentation-or-read-only-verifier",
+      "sizeBytes": 5724,
+      "sha256": "d6f583e8a7e5a7515785345e60ec85ceeca6f28c4a7526eb0282393680597aac"
+    }
+  ]
+}

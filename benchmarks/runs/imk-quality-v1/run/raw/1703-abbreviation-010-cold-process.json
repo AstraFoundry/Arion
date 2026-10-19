@@ -1,0 +1,120 @@
+{
+  "id" : "abbreviation-010",
+  "boundary" : "production engine key-processing plus synchronous snapshot copying; no OS events or rendered preedit",
+  "teardownMs" : 0.59812500000000002,
+  "timer" : "mach_absolute_time",
+  "beforeConfirmation" : {
+    "commit" : "",
+    "selection" : [
+      3,
+      0
+    ],
+    "lastPage" : false,
+    "highlighted" : 0,
+    "candidates" : [
+      "条件",
+      "推荐",
+      "统计",
+      "添加",
+      "推进",
+      "天津",
+      "提交",
+      "调节",
+      "途径"
+    ],
+    "preedit" : "t j",
+    "page" : 0,
+    "ascii" : false
+  },
+  "terminal" : "empty-preedit",
+  "warmupMs" : 0.0027499999999999998,
+  "peakRSSBytes" : 21463040,
+  "confirmations" : [
+    {
+      "keyToSnapshotMs" : 0.017083333333333332,
+      "handled" : true,
+      "key" : 32,
+      "snapshot" : {
+        "commit" : "条件",
+        "selection" : [
+          0,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+
+        ],
+        "preedit" : "",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ],
+  "input" : "tj",
+  "startupToSessionMs" : 12.517875,
+  "committed" : "条件",
+  "warmups" : [
+
+  ],
+  "inputKeysToFinalSnapshotMs" : 0.13658333333333333,
+  "status" : "completed",
+  "steps" : [
+    {
+      "keyToSnapshotMs" : 0.063375000000000001,
+      "handled" : true,
+      "key" : 116,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          1,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "他",
+          "她",
+          "太",
+          "它",
+          "天",
+          "听",
+          "同",
+          "挺",
+          "图"
+        ],
+        "preedit" : "t",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.066416666666666666,
+      "handled" : true,
+      "key" : 106,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          3,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "条件",
+          "推荐",
+          "统计",
+          "添加",
+          "推进",
+          "天津",
+          "提交",
+          "调节",
+          "途径"
+        ],
+        "preedit" : "t j",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ]
+}

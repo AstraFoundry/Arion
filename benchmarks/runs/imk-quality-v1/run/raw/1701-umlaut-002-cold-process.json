@@ -1,0 +1,204 @@
+{
+  "id" : "umlaut-002",
+  "boundary" : "production engine key-processing plus synchronous snapshot copying; no OS events or rendered preedit",
+  "teardownMs" : 0.53208333333333335,
+  "timer" : "mach_absolute_time",
+  "beforeConfirmation" : {
+    "commit" : "",
+    "selection" : [
+      6,
+      0
+    ],
+    "lastPage" : false,
+    "highlighted" : 0,
+    "candidates" : [
+      "女孩",
+      "女",
+      "钕",
+      "籹",
+      "釹",
+      "衄",
+      "恧",
+      "聏",
+      "衂"
+    ],
+    "preedit" : "nü hai",
+    "page" : 0,
+    "ascii" : false
+  },
+  "terminal" : "empty-preedit",
+  "warmupMs" : 0.0025416666666666665,
+  "peakRSSBytes" : 21364736,
+  "confirmations" : [
+    {
+      "keyToSnapshotMs" : 0.015041666666666667,
+      "handled" : true,
+      "key" : 32,
+      "snapshot" : {
+        "commit" : "女孩",
+        "selection" : [
+          0,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+
+        ],
+        "preedit" : "",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ],
+  "input" : "nvhai",
+  "startupToSessionMs" : 11.518833333333333,
+  "committed" : "女孩",
+  "warmups" : [
+
+  ],
+  "inputKeysToFinalSnapshotMs" : 0.18245833333333333,
+  "status" : "completed",
+  "steps" : [
+    {
+      "keyToSnapshotMs" : 0.069666666666666668,
+      "handled" : true,
+      "key" : 110,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          1,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "你",
+          "那",
+          "呢",
+          "能",
+          "年",
+          "您",
+          "内",
+          "拿",
+          "哪"
+        ],
+        "preedit" : "n",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.028791666666666667,
+      "handled" : true,
+      "key" : 118,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          2,
+          0
+        ],
+        "lastPage" : true,
+        "highlighted" : 0,
+        "candidates" : [
+          "女",
+          "钕",
+          "籹",
+          "釹",
+          "衄",
+          "恧",
+          "聏",
+          "衂",
+          "朒"
+        ],
+        "preedit" : "nü",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.024916666666666667,
+      "handled" : true,
+      "key" : 104,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          4,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "女孩",
+          "女皇",
+          "女",
+          "钕",
+          "籹",
+          "釹",
+          "衄",
+          "恧",
+          "聏"
+        ],
+        "preedit" : "nü h",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.027458333333333331,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          5,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "女哈",
+          "女",
+          "钕",
+          "籹",
+          "釹",
+          "衄",
+          "恧",
+          "聏",
+          "衂"
+        ],
+        "preedit" : "nü ha",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.021458333333333333,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          6,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "女孩",
+          "女",
+          "钕",
+          "籹",
+          "釹",
+          "衄",
+          "恧",
+          "聏",
+          "衂"
+        ],
+        "preedit" : "nü hai",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ]
+}

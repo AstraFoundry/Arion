@@ -1,0 +1,32 @@
+{
+  "phase": "restored",
+  "baseline": {
+    "current": "com.apple.keylayout.ABC",
+    "learningKeyStatus": -25300,
+    "own": []
+  },
+  "bundle": "/Users/steven/Library/Input Methods/ArionGUIValidation.app",
+  "backup": "/Users/steven/code/Arion/.workspace/e2e/imk-system/run-11/original/ArionInput.app",
+  "original": false,
+  "profile": "/Users/steven/code/Arion/.workspace/e2e/imk-system/run-11/profile",
+  "fixtureSocket": "/tmp/arion-ime-fixture-01.sock",
+  "after": {
+    "current": "com.apple.keylayout.ABC",
+    "learningKeyStatus": -25300,
+    "own": [
+      {
+        "enabled": false,
+        "id": "si.astrafoundry.inputmethod.arion.validation",
+        "selectable": false,
+        "selected": false
+      },
+      {
+        "enabled": false,
+        "id": "si.astrafoundry.inputmethod.arion.validation.pinyin",
+        "selectable": true,
+        "selected": false
+      }
+    ]
+  },
+  "errors": []
+}

@@ -1,0 +1,232 @@
+{
+  "id" : "common-word-028",
+  "boundary" : "production engine key-processing plus synchronous snapshot copying; no OS events or rendered preedit",
+  "teardownMs" : 0.5432083333333334,
+  "timer" : "mach_absolute_time",
+  "beforeConfirmation" : {
+    "commit" : "",
+    "selection" : [
+      7,
+      0
+    ],
+    "lastPage" : false,
+    "highlighted" : 0,
+    "candidates" : [
+      "医院",
+      "亿元",
+      "意愿",
+      "议员",
+      "一元",
+      "一员",
+      "易于",
+      "已于",
+      "抑郁"
+    ],
+    "preedit" : "yi yuan",
+    "page" : 0,
+    "ascii" : false
+  },
+  "terminal" : "empty-preedit",
+  "warmupMs" : 0.002,
+  "peakRSSBytes" : 21364736,
+  "confirmations" : [
+    {
+      "keyToSnapshotMs" : 0.012166666666666666,
+      "handled" : true,
+      "key" : 32,
+      "snapshot" : {
+        "commit" : "医院",
+        "selection" : [
+          0,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+
+        ],
+        "preedit" : "",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ],
+  "input" : "yiyuan",
+  "startupToSessionMs" : 12.419166666666666,
+  "committed" : "医院",
+  "warmups" : [
+
+  ],
+  "inputKeysToFinalSnapshotMs" : 0.17824999999999999,
+  "status" : "completed",
+  "steps" : [
+    {
+      "keyToSnapshotMs" : 0.058958333333333335,
+      "handled" : true,
+      "key" : 121,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          1,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "有",
+          "也",
+          "要",
+          "与",
+          "用",
+          "一",
+          "又",
+          "以",
+          "呀"
+        ],
+        "preedit" : "y",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.019958333333333331,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          2,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "一",
+          "以",
+          "已",
+          "亿",
+          "易",
+          "亦",
+          "伊",
+          "意",
+          "依"
+        ],
+        "preedit" : "yi",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.02725,
+      "handled" : true,
+      "key" : 121,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          4,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "一样",
+          "医院",
+          "意义",
+          "已有",
+          "亿元",
+          "一眼",
+          "一一",
+          "一夜",
+          "医药"
+        ],
+        "preedit" : "yi y",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.018124999999999999,
+      "handled" : true,
+      "key" : 117,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          5,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "易于",
+          "已于",
+          "抑郁",
+          "益于",
+          "一语",
+          "意欲",
+          "已与",
+          "一遇",
+          "异域"
+        ],
+        "preedit" : "yi yu",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.024875000000000001,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          7,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "易于啊",
+          "易于",
+          "已于",
+          "抑郁",
+          "益于",
+          "一语",
+          "意欲",
+          "已与",
+          "一遇"
+        ],
+        "preedit" : "yi yu a",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.02,
+      "handled" : true,
+      "key" : 110,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          7,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "医院",
+          "亿元",
+          "意愿",
+          "议员",
+          "一元",
+          "一员",
+          "易于",
+          "已于",
+          "抑郁"
+        ],
+        "preedit" : "yi yuan",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ]
+}

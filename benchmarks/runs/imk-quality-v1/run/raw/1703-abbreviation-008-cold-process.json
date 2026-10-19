@@ -1,0 +1,120 @@
+{
+  "id" : "abbreviation-008",
+  "boundary" : "production engine key-processing plus synchronous snapshot copying; no OS events or rendered preedit",
+  "teardownMs" : 0.44783333333333331,
+  "timer" : "mach_absolute_time",
+  "beforeConfirmation" : {
+    "commit" : "",
+    "selection" : [
+      3,
+      0
+    ],
+    "lastPage" : false,
+    "highlighted" : 0,
+    "candidates" : [
+      "那就",
+      "南京",
+      "你就",
+      "年纪",
+      "你家",
+      "宁静",
+      "年级",
+      "年间",
+      "那句"
+    ],
+    "preedit" : "n j",
+    "page" : 0,
+    "ascii" : false
+  },
+  "terminal" : "empty-preedit",
+  "warmupMs" : 0.0025833333333333333,
+  "peakRSSBytes" : 21364736,
+  "confirmations" : [
+    {
+      "keyToSnapshotMs" : 0.019625,
+      "handled" : true,
+      "key" : 32,
+      "snapshot" : {
+        "commit" : "那就",
+        "selection" : [
+          0,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+
+        ],
+        "preedit" : "",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ],
+  "input" : "nj",
+  "startupToSessionMs" : 12.518541666666666,
+  "committed" : "那就",
+  "warmups" : [
+
+  ],
+  "inputKeysToFinalSnapshotMs" : 0.15287500000000001,
+  "status" : "completed",
+  "steps" : [
+    {
+      "keyToSnapshotMs" : 0.081541666666666665,
+      "handled" : true,
+      "key" : 110,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          1,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "你",
+          "那",
+          "呢",
+          "能",
+          "年",
+          "您",
+          "内",
+          "拿",
+          "哪"
+        ],
+        "preedit" : "n",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.063958333333333339,
+      "handled" : true,
+      "key" : 106,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          3,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "那就",
+          "南京",
+          "你就",
+          "年纪",
+          "你家",
+          "宁静",
+          "年级",
+          "年间",
+          "那句"
+        ],
+        "preedit" : "n j",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ]
+}

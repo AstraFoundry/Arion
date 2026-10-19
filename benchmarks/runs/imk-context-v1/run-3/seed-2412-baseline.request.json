@@ -1,0 +1,3206 @@
+{
+  "contextRanking": false,
+  "pageSize": 9,
+  "steps": [
+    {
+      "index": 0,
+      "kind": "context",
+      "pair": "lishi-xiehui",
+      "occurrence": 1,
+      "pinyin": "xiehui",
+      "word": "协会"
+    },
+    {
+      "index": 1,
+      "kind": "target",
+      "pair": "lishi-xiehui",
+      "occurrence": 1,
+      "pinyin": "lishi",
+      "word": "理事"
+    },
+    {
+      "index": 2,
+      "kind": "context",
+      "pair": "quanli-jiejin",
+      "occurrence": 1,
+      "pinyin": "jiejin",
+      "word": "竭尽"
+    },
+    {
+      "index": 3,
+      "kind": "target",
+      "pair": "quanli-jiejin",
+      "occurrence": 1,
+      "pinyin": "quanli",
+      "word": "全力"
+    },
+    {
+      "index": 4,
+      "kind": "context",
+      "pair": "xingshi-biaoxian",
+      "occurrence": 1,
+      "pinyin": "biaoxian",
+      "word": "表现"
+    },
+    {
+      "index": 5,
+      "kind": "target",
+      "pair": "xingshi-biaoxian",
+      "occurrence": 1,
+      "pinyin": "xingshi",
+      "word": "形式"
+    },
+    {
+      "index": 6,
+      "kind": "context",
+      "pair": "renshi-fuze",
+      "occurrence": 1,
+      "pinyin": "fuze",
+      "word": "负责"
+    },
+    {
+      "index": 7,
+      "kind": "target",
+      "pair": "renshi-fuze",
+      "occurrence": 1,
+      "pinyin": "renshi",
+      "word": "人事"
+    },
+    {
+      "index": 8,
+      "kind": "context",
+      "pair": "shiyong-zhengque",
+      "occurrence": 1,
+      "pinyin": "zhengque",
+      "word": "正确"
+    },
+    {
+      "index": 9,
+      "kind": "target",
+      "pair": "shiyong-zhengque",
+      "occurrence": 1,
+      "pinyin": "shiyong",
+      "word": "使用"
+    },
+    {
+      "index": 10,
+      "kind": "context",
+      "pair": "gongshi-shuxue",
+      "occurrence": 1,
+      "pinyin": "shuxue",
+      "word": "数学"
+    },
+    {
+      "index": 11,
+      "kind": "target",
+      "pair": "gongshi-shuxue",
+      "occurrence": 1,
+      "pinyin": "gongshi",
+      "word": "公式"
+    },
+    {
+      "index": 12,
+      "kind": "context",
+      "pair": "jiyu-xinnian",
+      "occurrence": 1,
+      "pinyin": "xinnian",
+      "word": "新年"
+    },
+    {
+      "index": 13,
+      "kind": "target",
+      "pair": "jiyu-xinnian",
+      "occurrence": 1,
+      "pinyin": "jiyu",
+      "word": "寄语"
+    },
+    {
+      "index": 14,
+      "kind": "context",
+      "pair": "renshi-gejie",
+      "occurrence": 1,
+      "pinyin": "gejie",
+      "word": "各界"
+    },
+    {
+      "index": 15,
+      "kind": "target",
+      "pair": "renshi-gejie",
+      "occurrence": 1,
+      "pinyin": "renshi",
+      "word": "人士"
+    },
+    {
+      "index": 16,
+      "kind": "context",
+      "pair": "shili-dianxing",
+      "occurrence": 1,
+      "pinyin": "dianxing",
+      "word": "典型"
+    },
+    {
+      "index": 17,
+      "kind": "target",
+      "pair": "shili-dianxing",
+      "occurrence": 1,
+      "pinyin": "shili",
+      "word": "事例"
+    },
+    {
+      "index": 18,
+      "kind": "context",
+      "pair": "zhengshi-bixu",
+      "occurrence": 1,
+      "pinyin": "bixu",
+      "word": "必须"
+    },
+    {
+      "index": 19,
+      "kind": "target",
+      "pair": "zhengshi-bixu",
+      "occurrence": 1,
+      "pinyin": "zhengshi",
+      "word": "正视"
+    },
+    {
+      "index": 20,
+      "kind": "context",
+      "pair": "renshi-gejie",
+      "occurrence": 2,
+      "pinyin": "gejie",
+      "word": "各界"
+    },
+    {
+      "index": 21,
+      "kind": "target",
+      "pair": "renshi-gejie",
+      "occurrence": 2,
+      "pinyin": "renshi",
+      "word": "人士"
+    },
+    {
+      "index": 22,
+      "kind": "context",
+      "pair": "xingshi-biaoxian",
+      "occurrence": 2,
+      "pinyin": "biaoxian",
+      "word": "表现"
+    },
+    {
+      "index": 23,
+      "kind": "target",
+      "pair": "xingshi-biaoxian",
+      "occurrence": 2,
+      "pinyin": "xingshi",
+      "word": "形式"
+    },
+    {
+      "index": 24,
+      "kind": "context",
+      "pair": "shili-yanjing",
+      "occurrence": 1,
+      "pinyin": "yanjing",
+      "word": "眼睛"
+    },
+    {
+      "index": 25,
+      "kind": "target",
+      "pair": "shili-yanjing",
+      "occurrence": 1,
+      "pinyin": "shili",
+      "word": "视力"
+    },
+    {
+      "index": 26,
+      "kind": "context",
+      "pair": "yuanyin-zhuyao",
+      "occurrence": 1,
+      "pinyin": "zhuyao",
+      "word": "主要"
+    },
+    {
+      "index": 27,
+      "kind": "target",
+      "pair": "yuanyin-zhuyao",
+      "occurrence": 1,
+      "pinyin": "yuanyin",
+      "word": "原因"
+    },
+    {
+      "index": 28,
+      "kind": "context",
+      "pair": "zhengshi-bixu",
+      "occurrence": 2,
+      "pinyin": "bixu",
+      "word": "必须"
+    },
+    {
+      "index": 29,
+      "kind": "target",
+      "pair": "zhengshi-bixu",
+      "occurrence": 2,
+      "pinyin": "zhengshi",
+      "word": "正视"
+    },
+    {
+      "index": 30,
+      "kind": "context",
+      "pair": "yizhi-yijian",
+      "occurrence": 1,
+      "pinyin": "yijian",
+      "word": "意见"
+    },
+    {
+      "index": 31,
+      "kind": "target",
+      "pair": "yizhi-yijian",
+      "occurrence": 1,
+      "pinyin": "yizhi",
+      "word": "一致"
+    },
+    {
+      "index": 32,
+      "kind": "context",
+      "pair": "shiyong-mianfei",
+      "occurrence": 1,
+      "pinyin": "mianfei",
+      "word": "免费"
+    },
+    {
+      "index": 33,
+      "kind": "target",
+      "pair": "shiyong-mianfei",
+      "occurrence": 1,
+      "pinyin": "shiyong",
+      "word": "试用"
+    },
+    {
+      "index": 34,
+      "kind": "context",
+      "pair": "renshi-fuze",
+      "occurrence": 2,
+      "pinyin": "fuze",
+      "word": "负责"
+    },
+    {
+      "index": 35,
+      "kind": "target",
+      "pair": "renshi-fuze",
+      "occurrence": 2,
+      "pinyin": "renshi",
+      "word": "人事"
+    },
+    {
+      "index": 36,
+      "kind": "context",
+      "pair": "tongzhi-zhimin",
+      "occurrence": 1,
+      "pinyin": "zhimin",
+      "word": "殖民"
+    },
+    {
+      "index": 37,
+      "kind": "target",
+      "pair": "tongzhi-zhimin",
+      "occurrence": 1,
+      "pinyin": "tongzhi",
+      "word": "统治"
+    },
+    {
+      "index": 38,
+      "kind": "context",
+      "pair": "xianshi-youhui",
+      "occurrence": 1,
+      "pinyin": "youhui",
+      "word": "优惠"
+    },
+    {
+      "index": 39,
+      "kind": "target",
+      "pair": "xianshi-youhui",
+      "occurrence": 1,
+      "pinyin": "xianshi",
+      "word": "限时"
+    },
+    {
+      "index": 40,
+      "kind": "context",
+      "pair": "zhengshi-chengwei",
+      "occurrence": 1,
+      "pinyin": "chengwei",
+      "word": "成为"
+    },
+    {
+      "index": 41,
+      "kind": "target",
+      "pair": "zhengshi-chengwei",
+      "occurrence": 1,
+      "pinyin": "zhengshi",
+      "word": "正式"
+    },
+    {
+      "index": 42,
+      "kind": "context",
+      "pair": "shiyong-feichang",
+      "occurrence": 1,
+      "pinyin": "feichang",
+      "word": "非常"
+    },
+    {
+      "index": 43,
+      "kind": "target",
+      "pair": "shiyong-feichang",
+      "occurrence": 1,
+      "pinyin": "shiyong",
+      "word": "实用"
+    },
+    {
+      "index": 44,
+      "kind": "context",
+      "pair": "jiyu-bawo",
+      "occurrence": 1,
+      "pinyin": "bawo",
+      "word": "把握"
+    },
+    {
+      "index": 45,
+      "kind": "target",
+      "pair": "jiyu-bawo",
+      "occurrence": 1,
+      "pinyin": "jiyu",
+      "word": "机遇"
+    },
+    {
+      "index": 46,
+      "kind": "context",
+      "pair": "xingshi-biaoxian",
+      "occurrence": 3,
+      "pinyin": "biaoxian",
+      "word": "表现"
+    },
+    {
+      "index": 47,
+      "kind": "target",
+      "pair": "xingshi-biaoxian",
+      "occurrence": 3,
+      "pinyin": "xingshi",
+      "word": "形式"
+    },
+    {
+      "index": 48,
+      "kind": "context",
+      "pair": "quanli-guojia",
+      "occurrence": 1,
+      "pinyin": "guojia",
+      "word": "国家"
+    },
+    {
+      "index": 49,
+      "kind": "target",
+      "pair": "quanli-guojia",
+      "occurrence": 1,
+      "pinyin": "quanli",
+      "word": "权力"
+    },
+    {
+      "index": 50,
+      "kind": "context",
+      "pair": "yizhi-yijian",
+      "occurrence": 2,
+      "pinyin": "yijian",
+      "word": "意见"
+    },
+    {
+      "index": 51,
+      "kind": "target",
+      "pair": "yizhi-yijian",
+      "occurrence": 2,
+      "pinyin": "yizhi",
+      "word": "一致"
+    },
+    {
+      "index": 52,
+      "kind": "context",
+      "pair": "shixian-guiding",
+      "occurrence": 1,
+      "pinyin": "guiding",
+      "word": "规定"
+    },
+    {
+      "index": 53,
+      "kind": "target",
+      "pair": "shixian-guiding",
+      "occurrence": 1,
+      "pinyin": "shixian",
+      "word": "时限"
+    },
+    {
+      "index": 54,
+      "kind": "context",
+      "pair": "shili-dianxing",
+      "occurrence": 2,
+      "pinyin": "dianxing",
+      "word": "典型"
+    },
+    {
+      "index": 55,
+      "kind": "target",
+      "pair": "shili-dianxing",
+      "occurrence": 2,
+      "pinyin": "shili",
+      "word": "事例"
+    },
+    {
+      "index": 56,
+      "kind": "context",
+      "pair": "shiyan-zuo",
+      "occurrence": 1,
+      "pinyin": "zuo",
+      "word": "做"
+    },
+    {
+      "index": 57,
+      "kind": "target",
+      "pair": "shiyan-zuo",
+      "occurrence": 1,
+      "pinyin": "shiyan",
+      "word": "实验"
+    },
+    {
+      "index": 58,
+      "kind": "context",
+      "pair": "shiyan-aiqing",
+      "occurrence": 1,
+      "pinyin": "aiqing",
+      "word": "爱情"
+    },
+    {
+      "index": 59,
+      "kind": "target",
+      "pair": "shiyan-aiqing",
+      "occurrence": 1,
+      "pinyin": "shiyan",
+      "word": "誓言"
+    },
+    {
+      "index": 60,
+      "kind": "context",
+      "pair": "zhiyuan-gaokao",
+      "occurrence": 1,
+      "pinyin": "gaokao",
+      "word": "高考"
+    },
+    {
+      "index": 61,
+      "kind": "target",
+      "pair": "zhiyuan-gaokao",
+      "occurrence": 1,
+      "pinyin": "zhiyuan",
+      "word": "志愿"
+    },
+    {
+      "index": 62,
+      "kind": "context",
+      "pair": "quanli-jiejin",
+      "occurrence": 2,
+      "pinyin": "jiejin",
+      "word": "竭尽"
+    },
+    {
+      "index": 63,
+      "kind": "target",
+      "pair": "quanli-jiejin",
+      "occurrence": 2,
+      "pinyin": "quanli",
+      "word": "全力"
+    },
+    {
+      "index": 64,
+      "kind": "context",
+      "pair": "fuqi-zhenyou",
+      "occurrence": 1,
+      "pinyin": "zhenyou",
+      "word": "真有"
+    },
+    {
+      "index": 65,
+      "kind": "target",
+      "pair": "fuqi-zhenyou",
+      "occurrence": 1,
+      "pinyin": "fuqi",
+      "word": "福气"
+    },
+    {
+      "index": 66,
+      "kind": "context",
+      "pair": "yizhi-jianqiang",
+      "occurrence": 1,
+      "pinyin": "jianqiang",
+      "word": "坚强"
+    },
+    {
+      "index": 67,
+      "kind": "target",
+      "pair": "yizhi-jianqiang",
+      "occurrence": 1,
+      "pinyin": "yizhi",
+      "word": "意志"
+    },
+    {
+      "index": 68,
+      "kind": "context",
+      "pair": "shixian-mengxiang",
+      "occurrence": 1,
+      "pinyin": "mengxiang",
+      "word": "梦想"
+    },
+    {
+      "index": 69,
+      "kind": "target",
+      "pair": "shixian-mengxiang",
+      "occurrence": 1,
+      "pinyin": "shixian",
+      "word": "实现"
+    },
+    {
+      "index": 70,
+      "kind": "context",
+      "pair": "jiyu-xinnian",
+      "occurrence": 2,
+      "pinyin": "xinnian",
+      "word": "新年"
+    },
+    {
+      "index": 71,
+      "kind": "target",
+      "pair": "jiyu-xinnian",
+      "occurrence": 2,
+      "pinyin": "jiyu",
+      "word": "寄语"
+    },
+    {
+      "index": 72,
+      "kind": "context",
+      "pair": "fuqi-nianqing",
+      "occurrence": 1,
+      "pinyin": "nianqing",
+      "word": "年轻"
+    },
+    {
+      "index": 73,
+      "kind": "target",
+      "pair": "fuqi-nianqing",
+      "occurrence": 1,
+      "pinyin": "fuqi",
+      "word": "夫妻"
+    },
+    {
+      "index": 74,
+      "kind": "context",
+      "pair": "tongzhi-fabu",
+      "occurrence": 1,
+      "pinyin": "fabu",
+      "word": "发布"
+    },
+    {
+      "index": 75,
+      "kind": "target",
+      "pair": "tongzhi-fabu",
+      "occurrence": 1,
+      "pinyin": "tongzhi",
+      "word": "通知"
+    },
+    {
+      "index": 76,
+      "kind": "context",
+      "pair": "lishi-zhongguo",
+      "occurrence": 1,
+      "pinyin": "zhongguo",
+      "word": "中国"
+    },
+    {
+      "index": 77,
+      "kind": "target",
+      "pair": "lishi-zhongguo",
+      "occurrence": 1,
+      "pinyin": "lishi",
+      "word": "历史"
+    },
+    {
+      "index": 78,
+      "kind": "context",
+      "pair": "shili-dianxing",
+      "occurrence": 3,
+      "pinyin": "dianxing",
+      "word": "典型"
+    },
+    {
+      "index": 79,
+      "kind": "target",
+      "pair": "shili-dianxing",
+      "occurrence": 3,
+      "pinyin": "shili",
+      "word": "事例"
+    },
+    {
+      "index": 80,
+      "kind": "context",
+      "pair": "zhiyuan-qianxian",
+      "occurrence": 1,
+      "pinyin": "qianxian",
+      "word": "前线"
+    },
+    {
+      "index": 81,
+      "kind": "target",
+      "pair": "zhiyuan-qianxian",
+      "occurrence": 1,
+      "pinyin": "zhiyuan",
+      "word": "支援"
+    },
+    {
+      "index": 82,
+      "kind": "context",
+      "pair": "fuqi-nianqing",
+      "occurrence": 2,
+      "pinyin": "nianqing",
+      "word": "年轻"
+    },
+    {
+      "index": 83,
+      "kind": "target",
+      "pair": "fuqi-nianqing",
+      "occurrence": 2,
+      "pinyin": "fuqi",
+      "word": "夫妻"
+    },
+    {
+      "index": 84,
+      "kind": "context",
+      "pair": "shiyan-hubei",
+      "occurrence": 1,
+      "pinyin": "hubei",
+      "word": "湖北"
+    },
+    {
+      "index": 85,
+      "kind": "target",
+      "pair": "shiyan-hubei",
+      "occurrence": 1,
+      "pinyin": "shiyan",
+      "word": "十堰"
+    },
+    {
+      "index": 86,
+      "kind": "context",
+      "pair": "shixian-guiding",
+      "occurrence": 2,
+      "pinyin": "guiding",
+      "word": "规定"
+    },
+    {
+      "index": 87,
+      "kind": "target",
+      "pair": "shixian-guiding",
+      "occurrence": 2,
+      "pinyin": "shixian",
+      "word": "时限"
+    },
+    {
+      "index": 88,
+      "kind": "context",
+      "pair": "shiyan-hubei",
+      "occurrence": 2,
+      "pinyin": "hubei",
+      "word": "湖北"
+    },
+    {
+      "index": 89,
+      "kind": "target",
+      "pair": "shiyan-hubei",
+      "occurrence": 2,
+      "pinyin": "shiyan",
+      "word": "十堰"
+    },
+    {
+      "index": 90,
+      "kind": "context",
+      "pair": "shiyong-zhengque",
+      "occurrence": 2,
+      "pinyin": "zhengque",
+      "word": "正确"
+    },
+    {
+      "index": 91,
+      "kind": "target",
+      "pair": "shiyong-zhengque",
+      "occurrence": 2,
+      "pinyin": "shiyong",
+      "word": "使用"
+    },
+    {
+      "index": 92,
+      "kind": "context",
+      "pair": "yizhi-jianqiang",
+      "occurrence": 2,
+      "pinyin": "jianqiang",
+      "word": "坚强"
+    },
+    {
+      "index": 93,
+      "kind": "target",
+      "pair": "yizhi-jianqiang",
+      "occurrence": 2,
+      "pinyin": "yizhi",
+      "word": "意志"
+    },
+    {
+      "index": 94,
+      "kind": "context",
+      "pair": "gongshi-shuxue",
+      "occurrence": 2,
+      "pinyin": "shuxue",
+      "word": "数学"
+    },
+    {
+      "index": 95,
+      "kind": "target",
+      "pair": "gongshi-shuxue",
+      "occurrence": 2,
+      "pinyin": "gongshi",
+      "word": "公式"
+    },
+    {
+      "index": 96,
+      "kind": "context",
+      "pair": "jiaoshi-kuanchang",
+      "occurrence": 1,
+      "pinyin": "kuanchang",
+      "word": "宽敞"
+    },
+    {
+      "index": 97,
+      "kind": "target",
+      "pair": "jiaoshi-kuanchang",
+      "occurrence": 1,
+      "pinyin": "jiaoshi",
+      "word": "教室"
+    },
+    {
+      "index": 98,
+      "kind": "context",
+      "pair": "zhengshi-chengwei",
+      "occurrence": 2,
+      "pinyin": "chengwei",
+      "word": "成为"
+    },
+    {
+      "index": 99,
+      "kind": "target",
+      "pair": "zhengshi-chengwei",
+      "occurrence": 2,
+      "pinyin": "zhengshi",
+      "word": "正式"
+    },
+    {
+      "index": 100,
+      "kind": "context",
+      "pair": "chengshi-da",
+      "occurrence": 1,
+      "pinyin": "da",
+      "word": "大"
+    },
+    {
+      "index": 101,
+      "kind": "target",
+      "pair": "chengshi-da",
+      "occurrence": 1,
+      "pinyin": "chengshi",
+      "word": "城市"
+    },
+    {
+      "index": 102,
+      "kind": "context",
+      "pair": "renshi-gejie",
+      "occurrence": 3,
+      "pinyin": "gejie",
+      "word": "各界"
+    },
+    {
+      "index": 103,
+      "kind": "target",
+      "pair": "renshi-gejie",
+      "occurrence": 3,
+      "pinyin": "renshi",
+      "word": "人士"
+    },
+    {
+      "index": 104,
+      "kind": "context",
+      "pair": "xianshi-youhui",
+      "occurrence": 2,
+      "pinyin": "youhui",
+      "word": "优惠"
+    },
+    {
+      "index": 105,
+      "kind": "target",
+      "pair": "xianshi-youhui",
+      "occurrence": 2,
+      "pinyin": "xianshi",
+      "word": "限时"
+    },
+    {
+      "index": 106,
+      "kind": "context",
+      "pair": "zhengshi-dedao",
+      "occurrence": 1,
+      "pinyin": "dedao",
+      "word": "得到"
+    },
+    {
+      "index": 107,
+      "kind": "target",
+      "pair": "zhengshi-dedao",
+      "occurrence": 1,
+      "pinyin": "zhengshi",
+      "word": "证实"
+    },
+    {
+      "index": 108,
+      "kind": "context",
+      "pair": "xianshi-pingmu",
+      "occurrence": 1,
+      "pinyin": "pingmu",
+      "word": "屏幕"
+    },
+    {
+      "index": 109,
+      "kind": "target",
+      "pair": "xianshi-pingmu",
+      "occurrence": 1,
+      "pinyin": "xianshi",
+      "word": "显示"
+    },
+    {
+      "index": 110,
+      "kind": "context",
+      "pair": "gongshi-jieguo",
+      "occurrence": 1,
+      "pinyin": "jieguo",
+      "word": "结果"
+    },
+    {
+      "index": 111,
+      "kind": "target",
+      "pair": "gongshi-jieguo",
+      "occurrence": 1,
+      "pinyin": "gongshi",
+      "word": "公示"
+    },
+    {
+      "index": 112,
+      "kind": "context",
+      "pair": "tongzhi-lao",
+      "occurrence": 1,
+      "pinyin": "lao",
+      "word": "老"
+    },
+    {
+      "index": 113,
+      "kind": "target",
+      "pair": "tongzhi-lao",
+      "occurrence": 1,
+      "pinyin": "tongzhi",
+      "word": "同志"
+    },
+    {
+      "index": 114,
+      "kind": "context",
+      "pair": "shili-yanjing",
+      "occurrence": 2,
+      "pinyin": "yanjing",
+      "word": "眼睛"
+    },
+    {
+      "index": 115,
+      "kind": "target",
+      "pair": "shili-yanjing",
+      "occurrence": 2,
+      "pinyin": "shili",
+      "word": "视力"
+    },
+    {
+      "index": 116,
+      "kind": "context",
+      "pair": "tongzhi-lao",
+      "occurrence": 2,
+      "pinyin": "lao",
+      "word": "老"
+    },
+    {
+      "index": 117,
+      "kind": "target",
+      "pair": "tongzhi-lao",
+      "occurrence": 2,
+      "pinyin": "tongzhi",
+      "word": "同志"
+    },
+    {
+      "index": 118,
+      "kind": "context",
+      "pair": "chengshi-weiren",
+      "occurrence": 1,
+      "pinyin": "weiren",
+      "word": "为人"
+    },
+    {
+      "index": 119,
+      "kind": "target",
+      "pair": "chengshi-weiren",
+      "occurrence": 1,
+      "pinyin": "chengshi",
+      "word": "诚实"
+    },
+    {
+      "index": 120,
+      "kind": "context",
+      "pair": "xianshi-youhui",
+      "occurrence": 3,
+      "pinyin": "youhui",
+      "word": "优惠"
+    },
+    {
+      "index": 121,
+      "kind": "target",
+      "pair": "xianshi-youhui",
+      "occurrence": 3,
+      "pinyin": "xianshi",
+      "word": "限时"
+    },
+    {
+      "index": 122,
+      "kind": "context",
+      "pair": "shixian-guiding",
+      "occurrence": 3,
+      "pinyin": "guiding",
+      "word": "规定"
+    },
+    {
+      "index": 123,
+      "kind": "target",
+      "pair": "shixian-guiding",
+      "occurrence": 3,
+      "pinyin": "shixian",
+      "word": "时限"
+    },
+    {
+      "index": 124,
+      "kind": "context",
+      "pair": "zhiyuan-gaokao",
+      "occurrence": 2,
+      "pinyin": "gaokao",
+      "word": "高考"
+    },
+    {
+      "index": 125,
+      "kind": "target",
+      "pair": "zhiyuan-gaokao",
+      "occurrence": 2,
+      "pinyin": "zhiyuan",
+      "word": "志愿"
+    },
+    {
+      "index": 126,
+      "kind": "context",
+      "pair": "shili-yanjing",
+      "occurrence": 3,
+      "pinyin": "yanjing",
+      "word": "眼睛"
+    },
+    {
+      "index": 127,
+      "kind": "target",
+      "pair": "shili-yanjing",
+      "occurrence": 3,
+      "pinyin": "shili",
+      "word": "视力"
+    },
+    {
+      "index": 128,
+      "kind": "context",
+      "pair": "yizhi-jianqiang",
+      "occurrence": 3,
+      "pinyin": "jianqiang",
+      "word": "坚强"
+    },
+    {
+      "index": 129,
+      "kind": "target",
+      "pair": "yizhi-jianqiang",
+      "occurrence": 3,
+      "pinyin": "yizhi",
+      "word": "意志"
+    },
+    {
+      "index": 130,
+      "kind": "context",
+      "pair": "shiyong-feichang",
+      "occurrence": 2,
+      "pinyin": "feichang",
+      "word": "非常"
+    },
+    {
+      "index": 131,
+      "kind": "target",
+      "pair": "shiyong-feichang",
+      "occurrence": 2,
+      "pinyin": "shiyong",
+      "word": "实用"
+    },
+    {
+      "index": 132,
+      "kind": "context",
+      "pair": "jingli-bumen",
+      "occurrence": 1,
+      "pinyin": "bumen",
+      "word": "部门"
+    },
+    {
+      "index": 133,
+      "kind": "target",
+      "pair": "jingli-bumen",
+      "occurrence": 1,
+      "pinyin": "jingli",
+      "word": "经理"
+    },
+    {
+      "index": 134,
+      "kind": "context",
+      "pair": "tongzhi-zhimin",
+      "occurrence": 2,
+      "pinyin": "zhimin",
+      "word": "殖民"
+    },
+    {
+      "index": 135,
+      "kind": "target",
+      "pair": "tongzhi-zhimin",
+      "occurrence": 2,
+      "pinyin": "tongzhi",
+      "word": "统治"
+    },
+    {
+      "index": 136,
+      "kind": "context",
+      "pair": "zhengshi-dedao",
+      "occurrence": 2,
+      "pinyin": "dedao",
+      "word": "得到"
+    },
+    {
+      "index": 137,
+      "kind": "target",
+      "pair": "zhengshi-dedao",
+      "occurrence": 2,
+      "pinyin": "zhengshi",
+      "word": "证实"
+    },
+    {
+      "index": 138,
+      "kind": "context",
+      "pair": "fuqi-zhenyou",
+      "occurrence": 2,
+      "pinyin": "zhenyou",
+      "word": "真有"
+    },
+    {
+      "index": 139,
+      "kind": "target",
+      "pair": "fuqi-zhenyou",
+      "occurrence": 2,
+      "pinyin": "fuqi",
+      "word": "福气"
+    },
+    {
+      "index": 140,
+      "kind": "context",
+      "pair": "quanli-jiejin",
+      "occurrence": 3,
+      "pinyin": "jiejin",
+      "word": "竭尽"
+    },
+    {
+      "index": 141,
+      "kind": "target",
+      "pair": "quanli-jiejin",
+      "occurrence": 3,
+      "pinyin": "quanli",
+      "word": "全力"
+    },
+    {
+      "index": 142,
+      "kind": "context",
+      "pair": "yizhi-yijian",
+      "occurrence": 3,
+      "pinyin": "yijian",
+      "word": "意见"
+    },
+    {
+      "index": 143,
+      "kind": "target",
+      "pair": "yizhi-yijian",
+      "occurrence": 3,
+      "pinyin": "yizhi",
+      "word": "一致"
+    },
+    {
+      "index": 144,
+      "kind": "context",
+      "pair": "shiyan-aiqing",
+      "occurrence": 2,
+      "pinyin": "aiqing",
+      "word": "爱情"
+    },
+    {
+      "index": 145,
+      "kind": "target",
+      "pair": "shiyan-aiqing",
+      "occurrence": 2,
+      "pinyin": "shiyan",
+      "word": "誓言"
+    },
+    {
+      "index": 146,
+      "kind": "context",
+      "pair": "quanli-gongmin",
+      "occurrence": 1,
+      "pinyin": "gongmin",
+      "word": "公民"
+    },
+    {
+      "index": 147,
+      "kind": "target",
+      "pair": "quanli-gongmin",
+      "occurrence": 1,
+      "pinyin": "quanli",
+      "word": "权利"
+    },
+    {
+      "index": 148,
+      "kind": "context",
+      "pair": "quanli-guojia",
+      "occurrence": 2,
+      "pinyin": "guojia",
+      "word": "国家"
+    },
+    {
+      "index": 149,
+      "kind": "target",
+      "pair": "quanli-guojia",
+      "occurrence": 2,
+      "pinyin": "quanli",
+      "word": "权力"
+    },
+    {
+      "index": 150,
+      "kind": "context",
+      "pair": "yuanyin-yingyu",
+      "occurrence": 1,
+      "pinyin": "yingyu",
+      "word": "英语"
+    },
+    {
+      "index": 151,
+      "kind": "target",
+      "pair": "yuanyin-yingyu",
+      "occurrence": 1,
+      "pinyin": "yuanyin",
+      "word": "元音"
+    },
+    {
+      "index": 152,
+      "kind": "context",
+      "pair": "jingli-bumen",
+      "occurrence": 2,
+      "pinyin": "bumen",
+      "word": "部门"
+    },
+    {
+      "index": 153,
+      "kind": "target",
+      "pair": "jingli-bumen",
+      "occurrence": 2,
+      "pinyin": "jingli",
+      "word": "经理"
+    },
+    {
+      "index": 154,
+      "kind": "context",
+      "pair": "fuqi-zhenyou",
+      "occurrence": 3,
+      "pinyin": "zhenyou",
+      "word": "真有"
+    },
+    {
+      "index": 155,
+      "kind": "target",
+      "pair": "fuqi-zhenyou",
+      "occurrence": 3,
+      "pinyin": "fuqi",
+      "word": "福气"
+    },
+    {
+      "index": 156,
+      "kind": "context",
+      "pair": "chengshi-da",
+      "occurrence": 2,
+      "pinyin": "da",
+      "word": "大"
+    },
+    {
+      "index": 157,
+      "kind": "target",
+      "pair": "chengshi-da",
+      "occurrence": 2,
+      "pinyin": "chengshi",
+      "word": "城市"
+    },
+    {
+      "index": 158,
+      "kind": "context",
+      "pair": "quanli-guojia",
+      "occurrence": 3,
+      "pinyin": "guojia",
+      "word": "国家"
+    },
+    {
+      "index": 159,
+      "kind": "target",
+      "pair": "quanli-guojia",
+      "occurrence": 3,
+      "pinyin": "quanli",
+      "word": "权力"
+    },
+    {
+      "index": 160,
+      "kind": "context",
+      "pair": "xianshi-miandui",
+      "occurrence": 1,
+      "pinyin": "miandui",
+      "word": "面对"
+    },
+    {
+      "index": 161,
+      "kind": "target",
+      "pair": "xianshi-miandui",
+      "occurrence": 1,
+      "pinyin": "xianshi",
+      "word": "现实"
+    },
+    {
+      "index": 162,
+      "kind": "context",
+      "pair": "zhiyuan-qianxian",
+      "occurrence": 2,
+      "pinyin": "qianxian",
+      "word": "前线"
+    },
+    {
+      "index": 163,
+      "kind": "target",
+      "pair": "zhiyuan-qianxian",
+      "occurrence": 2,
+      "pinyin": "zhiyuan",
+      "word": "支援"
+    },
+    {
+      "index": 164,
+      "kind": "context",
+      "pair": "zhiyuan-qianxian",
+      "occurrence": 3,
+      "pinyin": "qianxian",
+      "word": "前线"
+    },
+    {
+      "index": 165,
+      "kind": "target",
+      "pair": "zhiyuan-qianxian",
+      "occurrence": 3,
+      "pinyin": "zhiyuan",
+      "word": "支援"
+    },
+    {
+      "index": 166,
+      "kind": "context",
+      "pair": "xingshi-cheliang",
+      "occurrence": 1,
+      "pinyin": "cheliang",
+      "word": "车辆"
+    },
+    {
+      "index": 167,
+      "kind": "target",
+      "pair": "xingshi-cheliang",
+      "occurrence": 1,
+      "pinyin": "xingshi",
+      "word": "行驶"
+    },
+    {
+      "index": 168,
+      "kind": "context",
+      "pair": "renshi-fuze",
+      "occurrence": 3,
+      "pinyin": "fuze",
+      "word": "负责"
+    },
+    {
+      "index": 169,
+      "kind": "target",
+      "pair": "renshi-fuze",
+      "occurrence": 3,
+      "pinyin": "renshi",
+      "word": "人事"
+    },
+    {
+      "index": 170,
+      "kind": "context",
+      "pair": "zhiyuan-gaokao",
+      "occurrence": 3,
+      "pinyin": "gaokao",
+      "word": "高考"
+    },
+    {
+      "index": 171,
+      "kind": "target",
+      "pair": "zhiyuan-gaokao",
+      "occurrence": 3,
+      "pinyin": "zhiyuan",
+      "word": "志愿"
+    },
+    {
+      "index": 172,
+      "kind": "context",
+      "pair": "chengshi-weiren",
+      "occurrence": 2,
+      "pinyin": "weiren",
+      "word": "为人"
+    },
+    {
+      "index": 173,
+      "kind": "target",
+      "pair": "chengshi-weiren",
+      "occurrence": 2,
+      "pinyin": "chengshi",
+      "word": "诚实"
+    },
+    {
+      "index": 174,
+      "kind": "context",
+      "pair": "xianshi-miandui",
+      "occurrence": 2,
+      "pinyin": "miandui",
+      "word": "面对"
+    },
+    {
+      "index": 175,
+      "kind": "target",
+      "pair": "xianshi-miandui",
+      "occurrence": 2,
+      "pinyin": "xianshi",
+      "word": "现实"
+    },
+    {
+      "index": 176,
+      "kind": "context",
+      "pair": "yizhi-yijian",
+      "occurrence": 4,
+      "pinyin": "yijian",
+      "word": "意见"
+    },
+    {
+      "index": 177,
+      "kind": "target",
+      "pair": "yizhi-yijian",
+      "occurrence": 4,
+      "pinyin": "yizhi",
+      "word": "一致"
+    },
+    {
+      "index": 178,
+      "kind": "context",
+      "pair": "jiyu-bawo",
+      "occurrence": 2,
+      "pinyin": "bawo",
+      "word": "把握"
+    },
+    {
+      "index": 179,
+      "kind": "target",
+      "pair": "jiyu-bawo",
+      "occurrence": 2,
+      "pinyin": "jiyu",
+      "word": "机遇"
+    },
+    {
+      "index": 180,
+      "kind": "context",
+      "pair": "shiyong-zhengque",
+      "occurrence": 3,
+      "pinyin": "zhengque",
+      "word": "正确"
+    },
+    {
+      "index": 181,
+      "kind": "target",
+      "pair": "shiyong-zhengque",
+      "occurrence": 3,
+      "pinyin": "shiyong",
+      "word": "使用"
+    },
+    {
+      "index": 182,
+      "kind": "context",
+      "pair": "tongzhi-lao",
+      "occurrence": 3,
+      "pinyin": "lao",
+      "word": "老"
+    },
+    {
+      "index": 183,
+      "kind": "target",
+      "pair": "tongzhi-lao",
+      "occurrence": 3,
+      "pinyin": "tongzhi",
+      "word": "同志"
+    },
+    {
+      "index": 184,
+      "kind": "context",
+      "pair": "shixian-guiding",
+      "occurrence": 4,
+      "pinyin": "guiding",
+      "word": "规定"
+    },
+    {
+      "index": 185,
+      "kind": "target",
+      "pair": "shixian-guiding",
+      "occurrence": 4,
+      "pinyin": "shixian",
+      "word": "时限"
+    },
+    {
+      "index": 186,
+      "kind": "context",
+      "pair": "shiyan-aiqing",
+      "occurrence": 3,
+      "pinyin": "aiqing",
+      "word": "爱情"
+    },
+    {
+      "index": 187,
+      "kind": "target",
+      "pair": "shiyan-aiqing",
+      "occurrence": 3,
+      "pinyin": "shiyan",
+      "word": "誓言"
+    },
+    {
+      "index": 188,
+      "kind": "context",
+      "pair": "shiyan-zuo",
+      "occurrence": 2,
+      "pinyin": "zuo",
+      "word": "做"
+    },
+    {
+      "index": 189,
+      "kind": "target",
+      "pair": "shiyan-zuo",
+      "occurrence": 2,
+      "pinyin": "shiyan",
+      "word": "实验"
+    },
+    {
+      "index": 190,
+      "kind": "context",
+      "pair": "zhengshi-dedao",
+      "occurrence": 3,
+      "pinyin": "dedao",
+      "word": "得到"
+    },
+    {
+      "index": 191,
+      "kind": "target",
+      "pair": "zhengshi-dedao",
+      "occurrence": 3,
+      "pinyin": "zhengshi",
+      "word": "证实"
+    },
+    {
+      "index": 192,
+      "kind": "context",
+      "pair": "xianshi-miandui",
+      "occurrence": 3,
+      "pinyin": "miandui",
+      "word": "面对"
+    },
+    {
+      "index": 193,
+      "kind": "target",
+      "pair": "xianshi-miandui",
+      "occurrence": 3,
+      "pinyin": "xianshi",
+      "word": "现实"
+    },
+    {
+      "index": 194,
+      "kind": "context",
+      "pair": "gongshi-shuxue",
+      "occurrence": 3,
+      "pinyin": "shuxue",
+      "word": "数学"
+    },
+    {
+      "index": 195,
+      "kind": "target",
+      "pair": "gongshi-shuxue",
+      "occurrence": 3,
+      "pinyin": "gongshi",
+      "word": "公式"
+    },
+    {
+      "index": 196,
+      "kind": "context",
+      "pair": "shiyong-mianfei",
+      "occurrence": 2,
+      "pinyin": "mianfei",
+      "word": "免费"
+    },
+    {
+      "index": 197,
+      "kind": "target",
+      "pair": "shiyong-mianfei",
+      "occurrence": 2,
+      "pinyin": "shiyong",
+      "word": "试用"
+    },
+    {
+      "index": 198,
+      "kind": "context",
+      "pair": "quanli-gongmin",
+      "occurrence": 2,
+      "pinyin": "gongmin",
+      "word": "公民"
+    },
+    {
+      "index": 199,
+      "kind": "target",
+      "pair": "quanli-gongmin",
+      "occurrence": 2,
+      "pinyin": "quanli",
+      "word": "权利"
+    },
+    {
+      "index": 200,
+      "kind": "context",
+      "pair": "shili-dianxing",
+      "occurrence": 4,
+      "pinyin": "dianxing",
+      "word": "典型"
+    },
+    {
+      "index": 201,
+      "kind": "target",
+      "pair": "shili-dianxing",
+      "occurrence": 4,
+      "pinyin": "shili",
+      "word": "事例"
+    },
+    {
+      "index": 202,
+      "kind": "context",
+      "pair": "xingshi-cheliang",
+      "occurrence": 2,
+      "pinyin": "cheliang",
+      "word": "车辆"
+    },
+    {
+      "index": 203,
+      "kind": "target",
+      "pair": "xingshi-cheliang",
+      "occurrence": 2,
+      "pinyin": "xingshi",
+      "word": "行驶"
+    },
+    {
+      "index": 204,
+      "kind": "context",
+      "pair": "tongzhi-zhimin",
+      "occurrence": 3,
+      "pinyin": "zhimin",
+      "word": "殖民"
+    },
+    {
+      "index": 205,
+      "kind": "target",
+      "pair": "tongzhi-zhimin",
+      "occurrence": 3,
+      "pinyin": "tongzhi",
+      "word": "统治"
+    },
+    {
+      "index": 206,
+      "kind": "context",
+      "pair": "xingshi-cheliang",
+      "occurrence": 3,
+      "pinyin": "cheliang",
+      "word": "车辆"
+    },
+    {
+      "index": 207,
+      "kind": "target",
+      "pair": "xingshi-cheliang",
+      "occurrence": 3,
+      "pinyin": "xingshi",
+      "word": "行驶"
+    },
+    {
+      "index": 208,
+      "kind": "context",
+      "pair": "tongzhi-fabu",
+      "occurrence": 2,
+      "pinyin": "fabu",
+      "word": "发布"
+    },
+    {
+      "index": 209,
+      "kind": "target",
+      "pair": "tongzhi-fabu",
+      "occurrence": 2,
+      "pinyin": "tongzhi",
+      "word": "通知"
+    },
+    {
+      "index": 210,
+      "kind": "context",
+      "pair": "yuanyin-zhuyao",
+      "occurrence": 2,
+      "pinyin": "zhuyao",
+      "word": "主要"
+    },
+    {
+      "index": 211,
+      "kind": "target",
+      "pair": "yuanyin-zhuyao",
+      "occurrence": 2,
+      "pinyin": "yuanyin",
+      "word": "原因"
+    },
+    {
+      "index": 212,
+      "kind": "context",
+      "pair": "shili-zonghe",
+      "occurrence": 1,
+      "pinyin": "zonghe",
+      "word": "综合"
+    },
+    {
+      "index": 213,
+      "kind": "target",
+      "pair": "shili-zonghe",
+      "occurrence": 1,
+      "pinyin": "shili",
+      "word": "实力"
+    },
+    {
+      "index": 214,
+      "kind": "context",
+      "pair": "renshi-fuze",
+      "occurrence": 4,
+      "pinyin": "fuze",
+      "word": "负责"
+    },
+    {
+      "index": 215,
+      "kind": "target",
+      "pair": "renshi-fuze",
+      "occurrence": 4,
+      "pinyin": "renshi",
+      "word": "人事"
+    },
+    {
+      "index": 216,
+      "kind": "context",
+      "pair": "jiaoshi-youxiu",
+      "occurrence": 1,
+      "pinyin": "youxiu",
+      "word": "优秀"
+    },
+    {
+      "index": 217,
+      "kind": "target",
+      "pair": "jiaoshi-youxiu",
+      "occurrence": 1,
+      "pinyin": "jiaoshi",
+      "word": "教师"
+    },
+    {
+      "index": 218,
+      "kind": "context",
+      "pair": "shiyan-hubei",
+      "occurrence": 3,
+      "pinyin": "hubei",
+      "word": "湖北"
+    },
+    {
+      "index": 219,
+      "kind": "target",
+      "pair": "shiyan-hubei",
+      "occurrence": 3,
+      "pinyin": "shiyan",
+      "word": "十堰"
+    },
+    {
+      "index": 220,
+      "kind": "context",
+      "pair": "shili-yanjing",
+      "occurrence": 4,
+      "pinyin": "yanjing",
+      "word": "眼睛"
+    },
+    {
+      "index": 221,
+      "kind": "target",
+      "pair": "shili-yanjing",
+      "occurrence": 4,
+      "pinyin": "shili",
+      "word": "视力"
+    },
+    {
+      "index": 222,
+      "kind": "context",
+      "pair": "zhengshi-bixu",
+      "occurrence": 3,
+      "pinyin": "bixu",
+      "word": "必须"
+    },
+    {
+      "index": 223,
+      "kind": "target",
+      "pair": "zhengshi-bixu",
+      "occurrence": 3,
+      "pinyin": "zhengshi",
+      "word": "正视"
+    },
+    {
+      "index": 224,
+      "kind": "context",
+      "pair": "jingli-jizhong",
+      "occurrence": 1,
+      "pinyin": "jizhong",
+      "word": "集中"
+    },
+    {
+      "index": 225,
+      "kind": "target",
+      "pair": "jingli-jizhong",
+      "occurrence": 1,
+      "pinyin": "jingli",
+      "word": "精力"
+    },
+    {
+      "index": 226,
+      "kind": "context",
+      "pair": "shiyong-zhengque",
+      "occurrence": 4,
+      "pinyin": "zhengque",
+      "word": "正确"
+    },
+    {
+      "index": 227,
+      "kind": "target",
+      "pair": "shiyong-zhengque",
+      "occurrence": 4,
+      "pinyin": "shiyong",
+      "word": "使用"
+    },
+    {
+      "index": 228,
+      "kind": "context",
+      "pair": "jiyu-bawo",
+      "occurrence": 3,
+      "pinyin": "bawo",
+      "word": "把握"
+    },
+    {
+      "index": 229,
+      "kind": "target",
+      "pair": "jiyu-bawo",
+      "occurrence": 3,
+      "pinyin": "jiyu",
+      "word": "机遇"
+    },
+    {
+      "index": 230,
+      "kind": "context",
+      "pair": "jingli-gongzuo",
+      "occurrence": 1,
+      "pinyin": "gongzuo",
+      "word": "工作"
+    },
+    {
+      "index": 231,
+      "kind": "target",
+      "pair": "jingli-gongzuo",
+      "occurrence": 1,
+      "pinyin": "jingli",
+      "word": "经历"
+    },
+    {
+      "index": 232,
+      "kind": "context",
+      "pair": "shiyong-mianfei",
+      "occurrence": 3,
+      "pinyin": "mianfei",
+      "word": "免费"
+    },
+    {
+      "index": 233,
+      "kind": "target",
+      "pair": "shiyong-mianfei",
+      "occurrence": 3,
+      "pinyin": "shiyong",
+      "word": "试用"
+    },
+    {
+      "index": 234,
+      "kind": "context",
+      "pair": "xingshi-guoji",
+      "occurrence": 1,
+      "pinyin": "guoji",
+      "word": "国际"
+    },
+    {
+      "index": 235,
+      "kind": "target",
+      "pair": "xingshi-guoji",
+      "occurrence": 1,
+      "pinyin": "xingshi",
+      "word": "形势"
+    },
+    {
+      "index": 236,
+      "kind": "context",
+      "pair": "shiyan-zuo",
+      "occurrence": 3,
+      "pinyin": "zuo",
+      "word": "做"
+    },
+    {
+      "index": 237,
+      "kind": "target",
+      "pair": "shiyan-zuo",
+      "occurrence": 3,
+      "pinyin": "shiyan",
+      "word": "实验"
+    },
+    {
+      "index": 238,
+      "kind": "context",
+      "pair": "jiaoshi-youxiu",
+      "occurrence": 2,
+      "pinyin": "youxiu",
+      "word": "优秀"
+    },
+    {
+      "index": 239,
+      "kind": "target",
+      "pair": "jiaoshi-youxiu",
+      "occurrence": 2,
+      "pinyin": "jiaoshi",
+      "word": "教师"
+    },
+    {
+      "index": 240,
+      "kind": "context",
+      "pair": "gongshi-jieguo",
+      "occurrence": 2,
+      "pinyin": "jieguo",
+      "word": "结果"
+    },
+    {
+      "index": 241,
+      "kind": "target",
+      "pair": "gongshi-jieguo",
+      "occurrence": 2,
+      "pinyin": "gongshi",
+      "word": "公示"
+    },
+    {
+      "index": 242,
+      "kind": "context",
+      "pair": "xianshi-pingmu",
+      "occurrence": 2,
+      "pinyin": "pingmu",
+      "word": "屏幕"
+    },
+    {
+      "index": 243,
+      "kind": "target",
+      "pair": "xianshi-pingmu",
+      "occurrence": 2,
+      "pinyin": "xianshi",
+      "word": "显示"
+    },
+    {
+      "index": 244,
+      "kind": "context",
+      "pair": "chengshi-da",
+      "occurrence": 3,
+      "pinyin": "da",
+      "word": "大"
+    },
+    {
+      "index": 245,
+      "kind": "target",
+      "pair": "chengshi-da",
+      "occurrence": 3,
+      "pinyin": "chengshi",
+      "word": "城市"
+    },
+    {
+      "index": 246,
+      "kind": "context",
+      "pair": "fuqi-zhenyou",
+      "occurrence": 4,
+      "pinyin": "zhenyou",
+      "word": "真有"
+    },
+    {
+      "index": 247,
+      "kind": "target",
+      "pair": "fuqi-zhenyou",
+      "occurrence": 4,
+      "pinyin": "fuqi",
+      "word": "福气"
+    },
+    {
+      "index": 248,
+      "kind": "context",
+      "pair": "shiyong-feichang",
+      "occurrence": 3,
+      "pinyin": "feichang",
+      "word": "非常"
+    },
+    {
+      "index": 249,
+      "kind": "target",
+      "pair": "shiyong-feichang",
+      "occurrence": 3,
+      "pinyin": "shiyong",
+      "word": "实用"
+    },
+    {
+      "index": 250,
+      "kind": "context",
+      "pair": "shiyan-zuo",
+      "occurrence": 4,
+      "pinyin": "zuo",
+      "word": "做"
+    },
+    {
+      "index": 251,
+      "kind": "target",
+      "pair": "shiyan-zuo",
+      "occurrence": 4,
+      "pinyin": "shiyan",
+      "word": "实验"
+    },
+    {
+      "index": 252,
+      "kind": "context",
+      "pair": "jiaoshi-youxiu",
+      "occurrence": 3,
+      "pinyin": "youxiu",
+      "word": "优秀"
+    },
+    {
+      "index": 253,
+      "kind": "target",
+      "pair": "jiaoshi-youxiu",
+      "occurrence": 3,
+      "pinyin": "jiaoshi",
+      "word": "教师"
+    },
+    {
+      "index": 254,
+      "kind": "context",
+      "pair": "lishi-xiehui",
+      "occurrence": 2,
+      "pinyin": "xiehui",
+      "word": "协会"
+    },
+    {
+      "index": 255,
+      "kind": "target",
+      "pair": "lishi-xiehui",
+      "occurrence": 2,
+      "pinyin": "lishi",
+      "word": "理事"
+    },
+    {
+      "index": 256,
+      "kind": "context",
+      "pair": "tongzhi-lao",
+      "occurrence": 4,
+      "pinyin": "lao",
+      "word": "老"
+    },
+    {
+      "index": 257,
+      "kind": "target",
+      "pair": "tongzhi-lao",
+      "occurrence": 4,
+      "pinyin": "tongzhi",
+      "word": "同志"
+    },
+    {
+      "index": 258,
+      "kind": "context",
+      "pair": "tongzhi-zhimin",
+      "occurrence": 4,
+      "pinyin": "zhimin",
+      "word": "殖民"
+    },
+    {
+      "index": 259,
+      "kind": "target",
+      "pair": "tongzhi-zhimin",
+      "occurrence": 4,
+      "pinyin": "tongzhi",
+      "word": "统治"
+    },
+    {
+      "index": 260,
+      "kind": "context",
+      "pair": "shiyan-hubei",
+      "occurrence": 4,
+      "pinyin": "hubei",
+      "word": "湖北"
+    },
+    {
+      "index": 261,
+      "kind": "target",
+      "pair": "shiyan-hubei",
+      "occurrence": 4,
+      "pinyin": "shiyan",
+      "word": "十堰"
+    },
+    {
+      "index": 262,
+      "kind": "context",
+      "pair": "lishi-xiehui",
+      "occurrence": 3,
+      "pinyin": "xiehui",
+      "word": "协会"
+    },
+    {
+      "index": 263,
+      "kind": "target",
+      "pair": "lishi-xiehui",
+      "occurrence": 3,
+      "pinyin": "lishi",
+      "word": "理事"
+    },
+    {
+      "index": 264,
+      "kind": "context",
+      "pair": "yuanyin-yingyu",
+      "occurrence": 2,
+      "pinyin": "yingyu",
+      "word": "英语"
+    },
+    {
+      "index": 265,
+      "kind": "target",
+      "pair": "yuanyin-yingyu",
+      "occurrence": 2,
+      "pinyin": "yuanyin",
+      "word": "元音"
+    },
+    {
+      "index": 266,
+      "kind": "context",
+      "pair": "shixian-mengxiang",
+      "occurrence": 2,
+      "pinyin": "mengxiang",
+      "word": "梦想"
+    },
+    {
+      "index": 267,
+      "kind": "target",
+      "pair": "shixian-mengxiang",
+      "occurrence": 2,
+      "pinyin": "shixian",
+      "word": "实现"
+    },
+    {
+      "index": 268,
+      "kind": "context",
+      "pair": "fuqi-nianqing",
+      "occurrence": 3,
+      "pinyin": "nianqing",
+      "word": "年轻"
+    },
+    {
+      "index": 269,
+      "kind": "target",
+      "pair": "fuqi-nianqing",
+      "occurrence": 3,
+      "pinyin": "fuqi",
+      "word": "夫妻"
+    },
+    {
+      "index": 270,
+      "kind": "context",
+      "pair": "jingli-gongzuo",
+      "occurrence": 2,
+      "pinyin": "gongzuo",
+      "word": "工作"
+    },
+    {
+      "index": 271,
+      "kind": "target",
+      "pair": "jingli-gongzuo",
+      "occurrence": 2,
+      "pinyin": "jingli",
+      "word": "经历"
+    },
+    {
+      "index": 272,
+      "kind": "context",
+      "pair": "jiyu-xinnian",
+      "occurrence": 3,
+      "pinyin": "xinnian",
+      "word": "新年"
+    },
+    {
+      "index": 273,
+      "kind": "target",
+      "pair": "jiyu-xinnian",
+      "occurrence": 3,
+      "pinyin": "jiyu",
+      "word": "寄语"
+    },
+    {
+      "index": 274,
+      "kind": "context",
+      "pair": "zhiyuan-gongsi",
+      "occurrence": 1,
+      "pinyin": "gongsi",
+      "word": "公司"
+    },
+    {
+      "index": 275,
+      "kind": "target",
+      "pair": "zhiyuan-gongsi",
+      "occurrence": 1,
+      "pinyin": "zhiyuan",
+      "word": "职员"
+    },
+    {
+      "index": 276,
+      "kind": "context",
+      "pair": "chengshi-weiren",
+      "occurrence": 3,
+      "pinyin": "weiren",
+      "word": "为人"
+    },
+    {
+      "index": 277,
+      "kind": "target",
+      "pair": "chengshi-weiren",
+      "occurrence": 3,
+      "pinyin": "chengshi",
+      "word": "诚实"
+    },
+    {
+      "index": 278,
+      "kind": "context",
+      "pair": "lishi-xiehui",
+      "occurrence": 4,
+      "pinyin": "xiehui",
+      "word": "协会"
+    },
+    {
+      "index": 279,
+      "kind": "target",
+      "pair": "lishi-xiehui",
+      "occurrence": 4,
+      "pinyin": "lishi",
+      "word": "理事"
+    },
+    {
+      "index": 280,
+      "kind": "context",
+      "pair": "jiaoshi-kuanchang",
+      "occurrence": 2,
+      "pinyin": "kuanchang",
+      "word": "宽敞"
+    },
+    {
+      "index": 281,
+      "kind": "target",
+      "pair": "jiaoshi-kuanchang",
+      "occurrence": 2,
+      "pinyin": "jiaoshi",
+      "word": "教室"
+    },
+    {
+      "index": 282,
+      "kind": "context",
+      "pair": "xingshi-cheliang",
+      "occurrence": 4,
+      "pinyin": "cheliang",
+      "word": "车辆"
+    },
+    {
+      "index": 283,
+      "kind": "target",
+      "pair": "xingshi-cheliang",
+      "occurrence": 4,
+      "pinyin": "xingshi",
+      "word": "行驶"
+    },
+    {
+      "index": 284,
+      "kind": "context",
+      "pair": "tongzhi-fabu",
+      "occurrence": 3,
+      "pinyin": "fabu",
+      "word": "发布"
+    },
+    {
+      "index": 285,
+      "kind": "target",
+      "pair": "tongzhi-fabu",
+      "occurrence": 3,
+      "pinyin": "tongzhi",
+      "word": "通知"
+    },
+    {
+      "index": 286,
+      "kind": "context",
+      "pair": "fuqi-nianqing",
+      "occurrence": 4,
+      "pinyin": "nianqing",
+      "word": "年轻"
+    },
+    {
+      "index": 287,
+      "kind": "target",
+      "pair": "fuqi-nianqing",
+      "occurrence": 4,
+      "pinyin": "fuqi",
+      "word": "夫妻"
+    },
+    {
+      "index": 288,
+      "kind": "context",
+      "pair": "jiaoshi-kuanchang",
+      "occurrence": 3,
+      "pinyin": "kuanchang",
+      "word": "宽敞"
+    },
+    {
+      "index": 289,
+      "kind": "target",
+      "pair": "jiaoshi-kuanchang",
+      "occurrence": 3,
+      "pinyin": "jiaoshi",
+      "word": "教室"
+    },
+    {
+      "index": 290,
+      "kind": "context",
+      "pair": "yuanyin-yingyu",
+      "occurrence": 3,
+      "pinyin": "yingyu",
+      "word": "英语"
+    },
+    {
+      "index": 291,
+      "kind": "target",
+      "pair": "yuanyin-yingyu",
+      "occurrence": 3,
+      "pinyin": "yuanyin",
+      "word": "元音"
+    },
+    {
+      "index": 292,
+      "kind": "context",
+      "pair": "gongshi-jieguo",
+      "occurrence": 3,
+      "pinyin": "jieguo",
+      "word": "结果"
+    },
+    {
+      "index": 293,
+      "kind": "target",
+      "pair": "gongshi-jieguo",
+      "occurrence": 3,
+      "pinyin": "gongshi",
+      "word": "公示"
+    },
+    {
+      "index": 294,
+      "kind": "context",
+      "pair": "jiyu-xinnian",
+      "occurrence": 4,
+      "pinyin": "xinnian",
+      "word": "新年"
+    },
+    {
+      "index": 295,
+      "kind": "target",
+      "pair": "jiyu-xinnian",
+      "occurrence": 4,
+      "pinyin": "jiyu",
+      "word": "寄语"
+    },
+    {
+      "index": 296,
+      "kind": "context",
+      "pair": "jingli-gongzuo",
+      "occurrence": 3,
+      "pinyin": "gongzuo",
+      "word": "工作"
+    },
+    {
+      "index": 297,
+      "kind": "target",
+      "pair": "jingli-gongzuo",
+      "occurrence": 3,
+      "pinyin": "jingli",
+      "word": "经历"
+    },
+    {
+      "index": 298,
+      "kind": "context",
+      "pair": "zhiyuan-gongsi",
+      "occurrence": 2,
+      "pinyin": "gongsi",
+      "word": "公司"
+    },
+    {
+      "index": 299,
+      "kind": "target",
+      "pair": "zhiyuan-gongsi",
+      "occurrence": 2,
+      "pinyin": "zhiyuan",
+      "word": "职员"
+    },
+    {
+      "index": 300,
+      "kind": "context",
+      "pair": "jiaoshi-youxiu",
+      "occurrence": 4,
+      "pinyin": "youxiu",
+      "word": "优秀"
+    },
+    {
+      "index": 301,
+      "kind": "target",
+      "pair": "jiaoshi-youxiu",
+      "occurrence": 4,
+      "pinyin": "jiaoshi",
+      "word": "教师"
+    },
+    {
+      "index": 302,
+      "kind": "context",
+      "pair": "zhengshi-dedao",
+      "occurrence": 4,
+      "pinyin": "dedao",
+      "word": "得到"
+    },
+    {
+      "index": 303,
+      "kind": "target",
+      "pair": "zhengshi-dedao",
+      "occurrence": 4,
+      "pinyin": "zhengshi",
+      "word": "证实"
+    },
+    {
+      "index": 304,
+      "kind": "context",
+      "pair": "shiyong-feichang",
+      "occurrence": 4,
+      "pinyin": "feichang",
+      "word": "非常"
+    },
+    {
+      "index": 305,
+      "kind": "target",
+      "pair": "shiyong-feichang",
+      "occurrence": 4,
+      "pinyin": "shiyong",
+      "word": "实用"
+    },
+    {
+      "index": 306,
+      "kind": "context",
+      "pair": "yizhi-jianqiang",
+      "occurrence": 4,
+      "pinyin": "jianqiang",
+      "word": "坚强"
+    },
+    {
+      "index": 307,
+      "kind": "target",
+      "pair": "yizhi-jianqiang",
+      "occurrence": 4,
+      "pinyin": "yizhi",
+      "word": "意志"
+    },
+    {
+      "index": 308,
+      "kind": "context",
+      "pair": "jingli-bumen",
+      "occurrence": 3,
+      "pinyin": "bumen",
+      "word": "部门"
+    },
+    {
+      "index": 309,
+      "kind": "target",
+      "pair": "jingli-bumen",
+      "occurrence": 3,
+      "pinyin": "jingli",
+      "word": "经理"
+    },
+    {
+      "index": 310,
+      "kind": "context",
+      "pair": "chengshi-weiren",
+      "occurrence": 4,
+      "pinyin": "weiren",
+      "word": "为人"
+    },
+    {
+      "index": 311,
+      "kind": "target",
+      "pair": "chengshi-weiren",
+      "occurrence": 4,
+      "pinyin": "chengshi",
+      "word": "诚实"
+    },
+    {
+      "index": 312,
+      "kind": "context",
+      "pair": "renshi-gejie",
+      "occurrence": 4,
+      "pinyin": "gejie",
+      "word": "各界"
+    },
+    {
+      "index": 313,
+      "kind": "target",
+      "pair": "renshi-gejie",
+      "occurrence": 4,
+      "pinyin": "renshi",
+      "word": "人士"
+    },
+    {
+      "index": 314,
+      "kind": "context",
+      "pair": "xingshi-biaoxian",
+      "occurrence": 4,
+      "pinyin": "biaoxian",
+      "word": "表现"
+    },
+    {
+      "index": 315,
+      "kind": "target",
+      "pair": "xingshi-biaoxian",
+      "occurrence": 4,
+      "pinyin": "xingshi",
+      "word": "形式"
+    },
+    {
+      "index": 316,
+      "kind": "context",
+      "pair": "quanli-jiejin",
+      "occurrence": 4,
+      "pinyin": "jiejin",
+      "word": "竭尽"
+    },
+    {
+      "index": 317,
+      "kind": "target",
+      "pair": "quanli-jiejin",
+      "occurrence": 4,
+      "pinyin": "quanli",
+      "word": "全力"
+    },
+    {
+      "index": 318,
+      "kind": "context",
+      "pair": "xingshi-guoji",
+      "occurrence": 2,
+      "pinyin": "guoji",
+      "word": "国际"
+    },
+    {
+      "index": 319,
+      "kind": "target",
+      "pair": "xingshi-guoji",
+      "occurrence": 2,
+      "pinyin": "xingshi",
+      "word": "形势"
+    },
+    {
+      "index": 320,
+      "kind": "context",
+      "pair": "shili-zonghe",
+      "occurrence": 2,
+      "pinyin": "zonghe",
+      "word": "综合"
+    },
+    {
+      "index": 321,
+      "kind": "target",
+      "pair": "shili-zonghe",
+      "occurrence": 2,
+      "pinyin": "shili",
+      "word": "实力"
+    },
+    {
+      "index": 322,
+      "kind": "context",
+      "pair": "xianshi-pingmu",
+      "occurrence": 3,
+      "pinyin": "pingmu",
+      "word": "屏幕"
+    },
+    {
+      "index": 323,
+      "kind": "target",
+      "pair": "xianshi-pingmu",
+      "occurrence": 3,
+      "pinyin": "xianshi",
+      "word": "显示"
+    },
+    {
+      "index": 324,
+      "kind": "context",
+      "pair": "yuanyin-zhuyao",
+      "occurrence": 3,
+      "pinyin": "zhuyao",
+      "word": "主要"
+    },
+    {
+      "index": 325,
+      "kind": "target",
+      "pair": "yuanyin-zhuyao",
+      "occurrence": 3,
+      "pinyin": "yuanyin",
+      "word": "原因"
+    },
+    {
+      "index": 326,
+      "kind": "context",
+      "pair": "quanli-guojia",
+      "occurrence": 4,
+      "pinyin": "guojia",
+      "word": "国家"
+    },
+    {
+      "index": 327,
+      "kind": "target",
+      "pair": "quanli-guojia",
+      "occurrence": 4,
+      "pinyin": "quanli",
+      "word": "权力"
+    },
+    {
+      "index": 328,
+      "kind": "context",
+      "pair": "xingshi-guoji",
+      "occurrence": 3,
+      "pinyin": "guoji",
+      "word": "国际"
+    },
+    {
+      "index": 329,
+      "kind": "target",
+      "pair": "xingshi-guoji",
+      "occurrence": 3,
+      "pinyin": "xingshi",
+      "word": "形势"
+    },
+    {
+      "index": 330,
+      "kind": "context",
+      "pair": "zhengshi-bixu",
+      "occurrence": 4,
+      "pinyin": "bixu",
+      "word": "必须"
+    },
+    {
+      "index": 331,
+      "kind": "target",
+      "pair": "zhengshi-bixu",
+      "occurrence": 4,
+      "pinyin": "zhengshi",
+      "word": "正视"
+    },
+    {
+      "index": 332,
+      "kind": "context",
+      "pair": "jingli-jizhong",
+      "occurrence": 2,
+      "pinyin": "jizhong",
+      "word": "集中"
+    },
+    {
+      "index": 333,
+      "kind": "target",
+      "pair": "jingli-jizhong",
+      "occurrence": 2,
+      "pinyin": "jingli",
+      "word": "精力"
+    },
+    {
+      "index": 334,
+      "kind": "context",
+      "pair": "jiaoshi-kuanchang",
+      "occurrence": 4,
+      "pinyin": "kuanchang",
+      "word": "宽敞"
+    },
+    {
+      "index": 335,
+      "kind": "target",
+      "pair": "jiaoshi-kuanchang",
+      "occurrence": 4,
+      "pinyin": "jiaoshi",
+      "word": "教室"
+    },
+    {
+      "index": 336,
+      "kind": "context",
+      "pair": "quanli-gongmin",
+      "occurrence": 3,
+      "pinyin": "gongmin",
+      "word": "公民"
+    },
+    {
+      "index": 337,
+      "kind": "target",
+      "pair": "quanli-gongmin",
+      "occurrence": 3,
+      "pinyin": "quanli",
+      "word": "权利"
+    },
+    {
+      "index": 338,
+      "kind": "context",
+      "pair": "lishi-zhongguo",
+      "occurrence": 2,
+      "pinyin": "zhongguo",
+      "word": "中国"
+    },
+    {
+      "index": 339,
+      "kind": "target",
+      "pair": "lishi-zhongguo",
+      "occurrence": 2,
+      "pinyin": "lishi",
+      "word": "历史"
+    },
+    {
+      "index": 340,
+      "kind": "context",
+      "pair": "jingli-gongzuo",
+      "occurrence": 4,
+      "pinyin": "gongzuo",
+      "word": "工作"
+    },
+    {
+      "index": 341,
+      "kind": "target",
+      "pair": "jingli-gongzuo",
+      "occurrence": 4,
+      "pinyin": "jingli",
+      "word": "经历"
+    },
+    {
+      "index": 342,
+      "kind": "context",
+      "pair": "lishi-zhongguo",
+      "occurrence": 3,
+      "pinyin": "zhongguo",
+      "word": "中国"
+    },
+    {
+      "index": 343,
+      "kind": "target",
+      "pair": "lishi-zhongguo",
+      "occurrence": 3,
+      "pinyin": "lishi",
+      "word": "历史"
+    },
+    {
+      "index": 344,
+      "kind": "context",
+      "pair": "jiyu-bawo",
+      "occurrence": 4,
+      "pinyin": "bawo",
+      "word": "把握"
+    },
+    {
+      "index": 345,
+      "kind": "target",
+      "pair": "jiyu-bawo",
+      "occurrence": 4,
+      "pinyin": "jiyu",
+      "word": "机遇"
+    },
+    {
+      "index": 346,
+      "kind": "context",
+      "pair": "yuanyin-yingyu",
+      "occurrence": 4,
+      "pinyin": "yingyu",
+      "word": "英语"
+    },
+    {
+      "index": 347,
+      "kind": "target",
+      "pair": "yuanyin-yingyu",
+      "occurrence": 4,
+      "pinyin": "yuanyin",
+      "word": "元音"
+    },
+    {
+      "index": 348,
+      "kind": "context",
+      "pair": "shiyan-aiqing",
+      "occurrence": 4,
+      "pinyin": "aiqing",
+      "word": "爱情"
+    },
+    {
+      "index": 349,
+      "kind": "target",
+      "pair": "shiyan-aiqing",
+      "occurrence": 4,
+      "pinyin": "shiyan",
+      "word": "誓言"
+    },
+    {
+      "index": 350,
+      "kind": "context",
+      "pair": "jingli-jizhong",
+      "occurrence": 3,
+      "pinyin": "jizhong",
+      "word": "集中"
+    },
+    {
+      "index": 351,
+      "kind": "target",
+      "pair": "jingli-jizhong",
+      "occurrence": 3,
+      "pinyin": "jingli",
+      "word": "精力"
+    },
+    {
+      "index": 352,
+      "kind": "context",
+      "pair": "chengshi-da",
+      "occurrence": 4,
+      "pinyin": "da",
+      "word": "大"
+    },
+    {
+      "index": 353,
+      "kind": "target",
+      "pair": "chengshi-da",
+      "occurrence": 4,
+      "pinyin": "chengshi",
+      "word": "城市"
+    },
+    {
+      "index": 354,
+      "kind": "context",
+      "pair": "zhiyuan-gongsi",
+      "occurrence": 3,
+      "pinyin": "gongsi",
+      "word": "公司"
+    },
+    {
+      "index": 355,
+      "kind": "target",
+      "pair": "zhiyuan-gongsi",
+      "occurrence": 3,
+      "pinyin": "zhiyuan",
+      "word": "职员"
+    },
+    {
+      "index": 356,
+      "kind": "context",
+      "pair": "zhiyuan-qianxian",
+      "occurrence": 4,
+      "pinyin": "qianxian",
+      "word": "前线"
+    },
+    {
+      "index": 357,
+      "kind": "target",
+      "pair": "zhiyuan-qianxian",
+      "occurrence": 4,
+      "pinyin": "zhiyuan",
+      "word": "支援"
+    },
+    {
+      "index": 358,
+      "kind": "context",
+      "pair": "jingli-jizhong",
+      "occurrence": 4,
+      "pinyin": "jizhong",
+      "word": "集中"
+    },
+    {
+      "index": 359,
+      "kind": "target",
+      "pair": "jingli-jizhong",
+      "occurrence": 4,
+      "pinyin": "jingli",
+      "word": "精力"
+    },
+    {
+      "index": 360,
+      "kind": "context",
+      "pair": "xianshi-pingmu",
+      "occurrence": 4,
+      "pinyin": "pingmu",
+      "word": "屏幕"
+    },
+    {
+      "index": 361,
+      "kind": "target",
+      "pair": "xianshi-pingmu",
+      "occurrence": 4,
+      "pinyin": "xianshi",
+      "word": "显示"
+    },
+    {
+      "index": 362,
+      "kind": "context",
+      "pair": "quanli-gongmin",
+      "occurrence": 4,
+      "pinyin": "gongmin",
+      "word": "公民"
+    },
+    {
+      "index": 363,
+      "kind": "target",
+      "pair": "quanli-gongmin",
+      "occurrence": 4,
+      "pinyin": "quanli",
+      "word": "权利"
+    },
+    {
+      "index": 364,
+      "kind": "context",
+      "pair": "shili-zonghe",
+      "occurrence": 3,
+      "pinyin": "zonghe",
+      "word": "综合"
+    },
+    {
+      "index": 365,
+      "kind": "target",
+      "pair": "shili-zonghe",
+      "occurrence": 3,
+      "pinyin": "shili",
+      "word": "实力"
+    },
+    {
+      "index": 366,
+      "kind": "context",
+      "pair": "shixian-mengxiang",
+      "occurrence": 3,
+      "pinyin": "mengxiang",
+      "word": "梦想"
+    },
+    {
+      "index": 367,
+      "kind": "target",
+      "pair": "shixian-mengxiang",
+      "occurrence": 3,
+      "pinyin": "shixian",
+      "word": "实现"
+    },
+    {
+      "index": 368,
+      "kind": "context",
+      "pair": "jingli-bumen",
+      "occurrence": 4,
+      "pinyin": "bumen",
+      "word": "部门"
+    },
+    {
+      "index": 369,
+      "kind": "target",
+      "pair": "jingli-bumen",
+      "occurrence": 4,
+      "pinyin": "jingli",
+      "word": "经理"
+    },
+    {
+      "index": 370,
+      "kind": "context",
+      "pair": "gongshi-shuxue",
+      "occurrence": 4,
+      "pinyin": "shuxue",
+      "word": "数学"
+    },
+    {
+      "index": 371,
+      "kind": "target",
+      "pair": "gongshi-shuxue",
+      "occurrence": 4,
+      "pinyin": "gongshi",
+      "word": "公式"
+    },
+    {
+      "index": 372,
+      "kind": "context",
+      "pair": "shixian-mengxiang",
+      "occurrence": 4,
+      "pinyin": "mengxiang",
+      "word": "梦想"
+    },
+    {
+      "index": 373,
+      "kind": "target",
+      "pair": "shixian-mengxiang",
+      "occurrence": 4,
+      "pinyin": "shixian",
+      "word": "实现"
+    },
+    {
+      "index": 374,
+      "kind": "context",
+      "pair": "zhengshi-chengwei",
+      "occurrence": 3,
+      "pinyin": "chengwei",
+      "word": "成为"
+    },
+    {
+      "index": 375,
+      "kind": "target",
+      "pair": "zhengshi-chengwei",
+      "occurrence": 3,
+      "pinyin": "zhengshi",
+      "word": "正式"
+    },
+    {
+      "index": 376,
+      "kind": "context",
+      "pair": "shiyong-mianfei",
+      "occurrence": 4,
+      "pinyin": "mianfei",
+      "word": "免费"
+    },
+    {
+      "index": 377,
+      "kind": "target",
+      "pair": "shiyong-mianfei",
+      "occurrence": 4,
+      "pinyin": "shiyong",
+      "word": "试用"
+    },
+    {
+      "index": 378,
+      "kind": "context",
+      "pair": "zhiyuan-gaokao",
+      "occurrence": 4,
+      "pinyin": "gaokao",
+      "word": "高考"
+    },
+    {
+      "index": 379,
+      "kind": "target",
+      "pair": "zhiyuan-gaokao",
+      "occurrence": 4,
+      "pinyin": "zhiyuan",
+      "word": "志愿"
+    },
+    {
+      "index": 380,
+      "kind": "context",
+      "pair": "shili-zonghe",
+      "occurrence": 4,
+      "pinyin": "zonghe",
+      "word": "综合"
+    },
+    {
+      "index": 381,
+      "kind": "target",
+      "pair": "shili-zonghe",
+      "occurrence": 4,
+      "pinyin": "shili",
+      "word": "实力"
+    },
+    {
+      "index": 382,
+      "kind": "context",
+      "pair": "tongzhi-fabu",
+      "occurrence": 4,
+      "pinyin": "fabu",
+      "word": "发布"
+    },
+    {
+      "index": 383,
+      "kind": "target",
+      "pair": "tongzhi-fabu",
+      "occurrence": 4,
+      "pinyin": "tongzhi",
+      "word": "通知"
+    },
+    {
+      "index": 384,
+      "kind": "context",
+      "pair": "zhengshi-chengwei",
+      "occurrence": 4,
+      "pinyin": "chengwei",
+      "word": "成为"
+    },
+    {
+      "index": 385,
+      "kind": "target",
+      "pair": "zhengshi-chengwei",
+      "occurrence": 4,
+      "pinyin": "zhengshi",
+      "word": "正式"
+    },
+    {
+      "index": 386,
+      "kind": "context",
+      "pair": "xianshi-miandui",
+      "occurrence": 4,
+      "pinyin": "miandui",
+      "word": "面对"
+    },
+    {
+      "index": 387,
+      "kind": "target",
+      "pair": "xianshi-miandui",
+      "occurrence": 4,
+      "pinyin": "xianshi",
+      "word": "现实"
+    },
+    {
+      "index": 388,
+      "kind": "context",
+      "pair": "xingshi-guoji",
+      "occurrence": 4,
+      "pinyin": "guoji",
+      "word": "国际"
+    },
+    {
+      "index": 389,
+      "kind": "target",
+      "pair": "xingshi-guoji",
+      "occurrence": 4,
+      "pinyin": "xingshi",
+      "word": "形势"
+    },
+    {
+      "index": 390,
+      "kind": "context",
+      "pair": "lishi-zhongguo",
+      "occurrence": 4,
+      "pinyin": "zhongguo",
+      "word": "中国"
+    },
+    {
+      "index": 391,
+      "kind": "target",
+      "pair": "lishi-zhongguo",
+      "occurrence": 4,
+      "pinyin": "lishi",
+      "word": "历史"
+    },
+    {
+      "index": 392,
+      "kind": "context",
+      "pair": "yuanyin-zhuyao",
+      "occurrence": 4,
+      "pinyin": "zhuyao",
+      "word": "主要"
+    },
+    {
+      "index": 393,
+      "kind": "target",
+      "pair": "yuanyin-zhuyao",
+      "occurrence": 4,
+      "pinyin": "yuanyin",
+      "word": "原因"
+    },
+    {
+      "index": 394,
+      "kind": "context",
+      "pair": "gongshi-jieguo",
+      "occurrence": 4,
+      "pinyin": "jieguo",
+      "word": "结果"
+    },
+    {
+      "index": 395,
+      "kind": "target",
+      "pair": "gongshi-jieguo",
+      "occurrence": 4,
+      "pinyin": "gongshi",
+      "word": "公示"
+    },
+    {
+      "index": 396,
+      "kind": "context",
+      "pair": "zhiyuan-gongsi",
+      "occurrence": 4,
+      "pinyin": "gongsi",
+      "word": "公司"
+    },
+    {
+      "index": 397,
+      "kind": "target",
+      "pair": "zhiyuan-gongsi",
+      "occurrence": 4,
+      "pinyin": "zhiyuan",
+      "word": "职员"
+    },
+    {
+      "index": 398,
+      "kind": "context",
+      "pair": "xianshi-youhui",
+      "occurrence": 4,
+      "pinyin": "youhui",
+      "word": "优惠"
+    },
+    {
+      "index": 399,
+      "kind": "target",
+      "pair": "xianshi-youhui",
+      "occurrence": 4,
+      "pinyin": "xianshi",
+      "word": "限时"
+    }
+  ]
+}

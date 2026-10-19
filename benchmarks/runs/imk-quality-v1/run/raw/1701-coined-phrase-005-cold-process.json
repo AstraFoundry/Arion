@@ -1,0 +1,512 @@
+{
+  "id" : "coined-phrase-005",
+  "boundary" : "production engine key-processing plus synchronous snapshot copying; no OS events or rendered preedit",
+  "teardownMs" : 0.60504166666666659,
+  "timer" : "mach_absolute_time",
+  "beforeConfirmation" : {
+    "commit" : "",
+    "selection" : [
+      20,
+      0
+    ],
+    "lastPage" : false,
+    "highlighted" : 0,
+    "candidates" : [
+      "双核梦一他",
+      "双核",
+      "爽",
+      "双",
+      "霜",
+      "雙",
+      "孀",
+      "泷",
+      "滝"
+    ],
+    "preedit" : "shuang he meng yi ta",
+    "page" : 0,
+    "ascii" : false
+  },
+  "terminal" : "empty-preedit",
+  "warmupMs" : 0.0026250000000000002,
+  "peakRSSBytes" : 22216704,
+  "confirmations" : [
+    {
+      "keyToSnapshotMs" : 0.019375,
+      "handled" : true,
+      "key" : 32,
+      "snapshot" : {
+        "commit" : "双核梦一他",
+        "selection" : [
+          0,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+
+        ],
+        "preedit" : "",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ],
+  "input" : "shuanghemengyita",
+  "startupToSessionMs" : 12.649208333333334,
+  "committed" : "双核梦一他",
+  "warmups" : [
+
+  ],
+  "inputKeysToFinalSnapshotMs" : 1.4499583333333332,
+  "status" : "completed",
+  "steps" : [
+    {
+      "keyToSnapshotMs" : 0.08520833333333333,
+      "handled" : true,
+      "key" : 115,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          1,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "是",
+          "说",
+          "上",
+          "时",
+          "所",
+          "谁",
+          "啥",
+          "事",
+          "死"
+        ],
+        "preedit" : "s",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.087708333333333333,
+      "handled" : true,
+      "key" : 104,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          2,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "是",
+          "说",
+          "上",
+          "时",
+          "时候",
+          "谁",
+          "啥",
+          "事",
+          "使"
+        ],
+        "preedit" : "sh",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.024833333333333332,
+      "handled" : true,
+      "key" : 117,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          3,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "书",
+          "数",
+          "树",
+          "输",
+          "属",
+          "熟",
+          "术",
+          "舒",
+          "鼠"
+        ],
+        "preedit" : "shu",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.020541666666666666,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          4,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "刷",
+          "耍",
+          "唰",
+          "书",
+          "数",
+          "树",
+          "输",
+          "属",
+          "熟"
+        ],
+        "preedit" : "shua",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.022374999999999999,
+      "handled" : true,
+      "key" : 110,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          5,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "栓",
+          "拴",
+          "涮",
+          "闩",
+          "閂",
+          "书",
+          "数",
+          "树",
+          "输"
+        ],
+        "preedit" : "shuan",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.025208333333333333,
+      "handled" : true,
+      "key" : 103,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          6,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "爽",
+          "双",
+          "霜",
+          "雙",
+          "孀",
+          "泷",
+          "滝",
+          "塽",
+          "樉"
+        ],
+        "preedit" : "shuang",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.070208333333333331,
+      "handled" : true,
+      "key" : 104,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          8,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "双核",
+          "双汇",
+          "爽",
+          "双",
+          "霜",
+          "撒谎",
+          "说谎",
+          "沙皇",
+          "雙"
+        ],
+        "preedit" : "shuang h",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.032250000000000001,
+      "handled" : true,
+      "key" : 101,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          9,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "双核",
+          "爽",
+          "双",
+          "霜",
+          "雙",
+          "孀",
+          "泷",
+          "滝",
+          "塽"
+        ],
+        "preedit" : "shuang he",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.23729166666666665,
+      "handled" : true,
+      "key" : 109,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          11,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "双核没",
+          "双核",
+          "双汇",
+          "爽",
+          "双",
+          "霜",
+          "撒谎",
+          "说谎",
+          "沙皇"
+        ],
+        "preedit" : "shuang he m",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.043541666666666666,
+      "handled" : true,
+      "key" : 101,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          12,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "双核么",
+          "双核",
+          "爽",
+          "双",
+          "霜",
+          "雙",
+          "孀",
+          "泷",
+          "滝"
+        ],
+        "preedit" : "shuang he me",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.040875000000000002,
+      "handled" : true,
+      "key" : 110,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          13,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "双核们",
+          "双核",
+          "爽",
+          "双",
+          "霜",
+          "雙",
+          "孀",
+          "泷",
+          "滝"
+        ],
+        "preedit" : "shuang he men",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.036416666666666667,
+      "handled" : true,
+      "key" : 103,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          14,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "双核梦",
+          "双核",
+          "爽",
+          "双",
+          "霜",
+          "雙",
+          "孀",
+          "泷",
+          "滝"
+        ],
+        "preedit" : "shuang he meng",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.27725,
+      "handled" : true,
+      "key" : 121,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          16,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "双核萌芽",
+          "双核",
+          "双汇",
+          "爽",
+          "双",
+          "霜",
+          "撒谎",
+          "说谎",
+          "沙皇"
+        ],
+        "preedit" : "shuang he meng y",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.050125000000000003,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          17,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "双核梦一",
+          "双核",
+          "爽",
+          "双",
+          "霜",
+          "雙",
+          "孀",
+          "泷",
+          "滝"
+        ],
+        "preedit" : "shuang he meng yi",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.30275000000000002,
+      "handled" : true,
+      "key" : 116,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          19,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "双核梦一天",
+          "双核",
+          "双汇",
+          "爽",
+          "双",
+          "霜",
+          "撒谎",
+          "说谎",
+          "沙皇"
+        ],
+        "preedit" : "shuang he meng yi t",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.071499999999999994,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          20,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "双核梦一他",
+          "双核",
+          "爽",
+          "双",
+          "霜",
+          "雙",
+          "孀",
+          "泷",
+          "滝"
+        ],
+        "preedit" : "shuang he meng yi ta",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ]
+}

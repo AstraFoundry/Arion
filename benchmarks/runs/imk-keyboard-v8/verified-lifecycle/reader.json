@@ -1,0 +1,29 @@
+{
+  "passed" : true,
+  "phase" : "reader",
+  "keyAttributes" : {
+    "accessiblePresent" : 1,
+    "accessible" : "cku",
+    "creationDate" : 1792311363.8027291,
+    "matchesAfterFirstUnlockThisDeviceOnly" : true,
+    "synchronizable" : false,
+    "synchronizableRaw" : 0,
+    "synchronizablePresent" : 1
+  },
+  "runID" : "5a63b57a-a11b-4a5c-be69-f67721ac7a29",
+  "interactionPolicyRestored" : 1,
+  "boundary" : "production encryption\/engine with real OS-kept key; owned profile; no IMK source dispatch",
+  "secretDataRequestedByHarness" : false,
+  "afterRestartCandidates" : [
+    "事实",
+    "实施",
+    "试试",
+    "实时",
+    "适时",
+    "时时",
+    "逝世",
+    "世事",
+    "事事"
+  ],
+  "interactionPolicyStatus" : 0
+}

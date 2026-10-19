@@ -1,0 +1,204 @@
+{
+  "id" : "umlaut-003",
+  "boundary" : "production engine key-processing plus synchronous snapshot copying; no OS events or rendered preedit",
+  "teardownMs" : 0.47354166666666669,
+  "timer" : "mach_absolute_time",
+  "beforeConfirmation" : {
+    "commit" : "",
+    "selection" : [
+      6,
+      0
+    ],
+    "lastPage" : false,
+    "highlighted" : 0,
+    "candidates" : [
+      "旅游",
+      "驴友",
+      "率",
+      "绿",
+      "吕",
+      "铝",
+      "驴",
+      "旅",
+      "律"
+    ],
+    "preedit" : "lü you",
+    "page" : 0,
+    "ascii" : false
+  },
+  "terminal" : "empty-preedit",
+  "warmupMs" : 0.0025833333333333333,
+  "peakRSSBytes" : 21463040,
+  "confirmations" : [
+    {
+      "keyToSnapshotMs" : 0.014708333333333334,
+      "handled" : true,
+      "key" : 32,
+      "snapshot" : {
+        "commit" : "旅游",
+        "selection" : [
+          0,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+
+        ],
+        "preedit" : "",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ],
+  "input" : "lvyou",
+  "startupToSessionMs" : 12.289458333333334,
+  "committed" : "旅游",
+  "warmups" : [
+
+  ],
+  "inputKeysToFinalSnapshotMs" : 0.19645833333333335,
+  "status" : "completed",
+  "steps" : [
+    {
+      "keyToSnapshotMs" : 0.075208333333333335,
+      "handled" : true,
+      "key" : 108,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          1,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "了",
+          "来",
+          "啦",
+          "里",
+          "老",
+          "咯",
+          "连",
+          "拉",
+          "路"
+        ],
+        "preedit" : "l",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.028875000000000001,
+      "handled" : true,
+      "key" : 118,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          2,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "率",
+          "绿",
+          "吕",
+          "铝",
+          "驴",
+          "旅",
+          "律",
+          "屡",
+          "氯"
+        ],
+        "preedit" : "lü",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.03254166666666667,
+      "handled" : true,
+      "key" : 121,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          4,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "旅游",
+          "绿叶",
+          "铝业",
+          "驴友",
+          "绿茵",
+          "履约",
+          "绿野",
+          "绿意",
+          "率"
+        ],
+        "preedit" : "lü y",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.027708333333333331,
+      "handled" : true,
+      "key" : 111,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          5,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "率哟",
+          "率",
+          "绿",
+          "吕",
+          "铝",
+          "驴",
+          "旅",
+          "律",
+          "屡"
+        ],
+        "preedit" : "lü yo",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.022291666666666668,
+      "handled" : true,
+      "key" : 117,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          6,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "旅游",
+          "驴友",
+          "率",
+          "绿",
+          "吕",
+          "铝",
+          "驴",
+          "旅",
+          "律"
+        ],
+        "preedit" : "lü you",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+import { readFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
+import assert from 'node:assert/strict';
+const base = new URL('./', import.meta.url);
+const read = name => readFileSync(new URL(name, base));
+const json = name => JSON.parse(read(name));
+const sha = bytes => createHash('sha256').update(bytes).digest('hex');
+const manifest = json('manifest.json');
+for (const [name, expected] of Object.entries(manifest.files)) assert.equal(sha(read(name)), expected, name);
+const provenance = json('provenance.json');
+for (const record of [...provenance.originals, ...provenance.sourceBindings]) assert.equal(sha(read(record.archivePath)), record.sha256, record.archivePath);
+const state = json('observed/source-state.json');
+assert.equal(state.current, 'com.tencent.inputmethod.chatterfly.pinyin');
+assert.equal(state.learningKeyStatus, -25300);
+assert.equal(state.own.find(s => s.id === 'si.astrafoundry.inputmethod.arion').enabled, false);
+assert(state.own.every(s => !s.selected));
+assert(read('observed/installed-signature.txt').toString().includes('Signature=adhoc'));
+assert(read('observed/installed-signature.txt').toString().includes('TeamIdentifier=not set'));
+const artifact = json('observed/artifact.json');
+assert.equal(artifact.buildExitStatus, 0);
+assert.equal(artifact.realInputSourceAcceptance, false);
+assert(read('observed/signed-build.log').toString().includes('Verified Developer ID signatures, hardened runtime, notarization tickets and Gatekeeper acceptance.'));
+assert(read('observed/new-payload-validation.log').toString().includes('--- PASS: TestInputBundleConfiguredDeveloperIDPayload'));
+assert.equal(provenance.acceptance.nativeGrantPersistence, 'unknown');
+assert.equal(provenance.acceptance.systemAddSelectTyping, 'unaccepted');
+assert.equal(provenance.acceptance.archivePerformsOSMutations, false);
+if (process.argv.includes('--verify-originals')) {
+  const root = new URL('../../../', base);
+  for (const record of provenance.originals) assert.equal(sha(readFileSync(new URL(record.originalPath, root))), record.sha256, record.originalPath);
+  for (const record of provenance.sourceBindings) assert.equal(sha(readFileSync(new URL(record.sourcePath, root))), record.sha256, record.sourcePath);
+}
+console.log(`PASS: ${Object.keys(manifest.files).length} hashes; ${provenance.originals.length} originals and ${provenance.sourceBindings.length} post-observation source bindings; completed formal build/positive preflight; actual native consent/add/select/typing unaccepted.`);

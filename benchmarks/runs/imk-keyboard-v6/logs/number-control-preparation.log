@@ -1,0 +1,12 @@
+file:///Users/steven/code/Arion/scripts/lib/desktop-signing.mjs:30
+  if (!imeProvisioningProfile || !path.isAbsolute(imeProvisioningProfile)) throw new Error('MACOS_IME_PROVISIONING_PROFILE is required for signed builds and must be an absolute path.');
+                                                                                 ^
+
+Error: MACOS_IME_PROVISIONING_PROFILE is required for signed builds and must be an absolute path.
+    at macosSigningSettings (file:///Users/steven/code/Arion/scripts/lib/desktop-signing.mjs:30:82)
+    at file:///Users/steven/code/Arion/.workspace/e2e/imk-system/prepare-number-control.mjs:10:16
+    at ModuleJob.run (node:internal/modules/esm/module_job:430:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:661:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+
+Node.js v24.14.0

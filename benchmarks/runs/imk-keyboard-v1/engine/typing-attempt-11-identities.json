@@ -1,0 +1,42 @@
+[
+  {
+    "path": "apps/desktop/ime/macos/tests/typing_test.m",
+    "sha256": "041b263e040d17fa97983dd138a5cc222fb7dab207ed16d2866568ba1b0e4a0d"
+  },
+  {
+    "path": "scripts/test-keyboard-input.mjs",
+    "sha256": "9a0fe2f4d347ac0ffd1101eaa94e470be24f9ae05e98558ba398ff2060862d24"
+  },
+  {
+    "path": "apps/desktop/ime/macos/keyboard.m",
+    "sha256": "d9a70d0c5e2d6a11f17b2987ff83923c80ea147363a1f796f44bf69e581cac76"
+  },
+  {
+    "path": "apps/desktop/ime/macos/typing.m",
+    "sha256": "5c00d394730dcd1720aabb8b07080e3bc0e216425a315ef70896ab18efd7deaa"
+  },
+  {
+    "path": "apps/desktop/ime/macos/learning.mm",
+    "sha256": "96e0a607864d62c1bc1e8be91e7832002bc948edcb0cfcc73ae471c7a6e6077b"
+  },
+  {
+    "path": "apps/desktop/ime/macos/learning_crypto.swift",
+    "sha256": "9c8ed696f3b17918f1e0f4489eaf65fca0dd6d9ffd9066b6d00f869380b14ed2"
+  },
+  {
+    "path": "apps/desktop/resources/darwin/keyboard/data/build/arion_pinyin.schema.yaml",
+    "sha256": "5eeebe964c235877f495995912ec410ad70808f461be1e378b4e9d48bd0628ad"
+  },
+  {
+    "path": "apps/desktop/resources/darwin/keyboard/lib/librime.1.dylib",
+    "sha256": "1adb725a081b0accc1451034f6f1bb78cbfe8252a65245f1511f4b3f2038c487"
+  },
+  {
+    "path": "apps/desktop/resources/darwin/keyboard/runtime.json",
+    "sha256": "4480566a33a0244c4d0654dca0e3f63d926f8447303e2cf84a5d305c443b80d6"
+  },
+  {
+    "path": "scripts/lib/build-ime-learning.mjs",
+    "sha256": "67a75be4bf4552e50a684ad542a8d2aee73d6aa80f452961582eb0de34cba7a0"
+  }
+]

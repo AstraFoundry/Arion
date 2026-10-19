@@ -1,0 +1,27 @@
+Keyboard test execution: {"hostArchitecture":"arm64","runnerArchitecture":"arm64","executableArchitecture":"x86_64","launcher":"/usr/bin/arch -x86_64","translation":"Rosetta 2","translationProbe":{"oid":"sysctl.proc_translated","translated":true,"oidPresent":true},"physicalIntelHost":false,"installedIMEHostDispatch":false}
+2026-10-18 14:35:12.814 typing-test[56455:98026503] PASS: corrupt immutable data rejects startup before storage
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I20261018 14:35:12.829478 0x2028bee40 registry.cc:14] registering component: arion_encrypted_userdb
+2026-10-18 14:35:13.341 typing-test[56455:98026503] PASS: real full-Pinyin commit
+2026-10-18 14:35:13.351 typing-test[56455:98026503] PASS: cancel preserves emoji neighbors
+2026-10-18 14:35:13.363 typing-test[56455:98026503] PASS: commit preserves emoji neighbors
+2026-10-18 14:35:13.374 typing-test[56455:98026503] PASS: Backspace reconverts real input
+2026-10-18 14:35:13.384 typing-test[56455:98026503] PASS: page and relative number selection
+2026-10-18 14:35:13.394 typing-test[56455:98026503] PASS: partial selection and suffix continuation
+2026-10-18 14:35:13.405 typing-test[56455:98026503] PASS: partial-selection Backspace rollback
+2026-10-18 14:35:13.415 typing-test[56455:98026503] PASS: mid-buffer caret edit and Home End
+2026-10-18 14:35:13.431 typing-test[56455:98026503] PASS: forward Delete at Home preserves suffix
+2026-10-18 14:35:13.440 typing-test[56455:98026503] PASS: Shift Space discards draft and passes ASCII
+2026-10-18 14:35:13.449 typing-test[56455:98026503] PASS: stale candidate callbacks cannot select
+2026-10-18 14:35:13.458 typing-test[56455:98026503] PASS: deactivation discards draft and rejects callback
+2026-10-18 14:35:13.468 typing-test[56455:98026503] PASS: apostrophe syllable boundary converts real phrase
+2026-10-18 14:35:13.477 typing-test[56455:98026503] PASS: abbreviated Pinyin retains real candidate identity
+2026-10-18 14:35:13.487 typing-test[56455:98026503] PASS: v input represents umlaut Pinyin
+2026-10-18 14:35:13.497 typing-test[56455:98026503] PASS: literal umlaut Pinyin uses the declared schema alias
+2026-10-18 14:35:13.520 typing-test[56455:98026503] PASS: Chinese punctuation follows confirmed phrase
+2026-10-18 14:35:13.530 typing-test[56455:98026503] PASS: Return commits literal raw input
+2026-10-18 14:35:13.577 typing-test[56455:98026503] PASS: confirmed learning survives restart and cancellation adds nothing
+2026-10-18 14:35:13.587 typing-test[56455:98026503] PASS: released owner destroys actual engine session without client callbacks
+2026-10-18 14:35:13.691 typing-test[56455:98026503] PASS: mouse candidate failures revoke callbacks and preserve pending recovery
+2026-10-18 14:35:13.704 typing-test[56455:98026503] PASS: learning write failure retains actual engine commit
+Keyboard test report: /Users/steven/code/Arion/.workspace/tests/keyboard-literal-umlaut-x86_64.json

@@ -1,0 +1,30 @@
+{
+  "runID": "2b30897a-cb61-4dee-af03-d428e3b1aac5",
+  "directory": "/Users/steven/code/Arion/.workspace/tests/keyboard-keychain-2b30897a-cb61-4dee-af03-d428e3b1aac5",
+  "profile": "/Users/steven/code/Arion/.workspace/tests/keyboard-keychain-2b30897a-cb61-4dee-af03-d428e3b1aac5/owned-profile",
+  "data": "/Users/steven/code/Arion/apps/desktop/resources/darwin/keyboard/data",
+  "binary": "/Users/steven/code/Arion/.workspace/tests/keyboard-keychain-2b30897a-cb61-4dee-af03-d428e3b1aac5/ArionKeychainValidation.app/Contents/MacOS/keychain-learning-test",
+  "bundle": "/Users/steven/code/Arion/.workspace/tests/keyboard-keychain-2b30897a-cb61-4dee-af03-d428e3b1aac5/ArionKeychainValidation.app",
+  "legacyOnly": false,
+  "provisioning": {
+    "entitlements": {
+      "com.apple.application-identifier": "DRLCWL5U4V.si.astrafoundry.inputmethod.arion",
+      "com.apple.developer.team-identifier": "DRLCWL5U4V"
+    },
+    "uuid": "8f392c95-76b0-4e05-99bf-30b3506242ed",
+    "expiration": "2044-10-13T08:06:59.000Z",
+    "team": "DRLCWL5U4V",
+    "bundleIdentifier": "si.astrafoundry.inputmethod.arion"
+  },
+  "identifier": "si.astrafoundry.inputmethod.arion",
+  "identity": "Developer ID Application: Hongyi Ling (DRLCWL5U4V)",
+  "prepared": false,
+  "executed": false,
+  "boundary": "real OS key lifecycle only; no installed input-source or IMK dispatch",
+  "backup": {
+    "requiredKeyBaseline": "absent",
+    "keyDataExported": false,
+    "profileWasAbsent": true,
+    "inputSourcesTouched": false
+  }
+}

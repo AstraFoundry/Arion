@@ -1,0 +1,232 @@
+{
+  "id" : "common-word-044",
+  "boundary" : "production engine key-processing plus synchronous snapshot copying; no OS events or rendered preedit",
+  "teardownMs" : 0.47616666666666668,
+  "timer" : "mach_absolute_time",
+  "beforeConfirmation" : {
+    "commit" : "",
+    "selection" : [
+      7,
+      0
+    ],
+    "lastPage" : false,
+    "highlighted" : 0,
+    "candidates" : [
+      "喜欢",
+      "西湖",
+      "系",
+      "西",
+      "洗",
+      "戏",
+      "喜",
+      "係",
+      "细"
+    ],
+    "preedit" : "xi huan",
+    "page" : 0,
+    "ascii" : false
+  },
+  "terminal" : "empty-preedit",
+  "warmupMs" : 0.0021666666666666666,
+  "peakRSSBytes" : 21463040,
+  "confirmations" : [
+    {
+      "keyToSnapshotMs" : 0.0135,
+      "handled" : true,
+      "key" : 32,
+      "snapshot" : {
+        "commit" : "喜欢",
+        "selection" : [
+          0,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+
+        ],
+        "preedit" : "",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ],
+  "input" : "xihuan",
+  "startupToSessionMs" : 12.390708333333334,
+  "committed" : "喜欢",
+  "warmups" : [
+
+  ],
+  "inputKeysToFinalSnapshotMs" : 0.19341666666666665,
+  "status" : "completed",
+  "steps" : [
+    {
+      "keyToSnapshotMs" : 0.06870833333333333,
+      "handled" : true,
+      "key" : 120,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          1,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "下",
+          "想",
+          "小",
+          "先",
+          "新",
+          "向",
+          "写",
+          "行",
+          "像"
+        ],
+        "preedit" : "x",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.022958333333333331,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          2,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "系",
+          "西",
+          "洗",
+          "戏",
+          "喜",
+          "係",
+          "细",
+          "吸",
+          "希"
+        ],
+        "preedit" : "xi",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.030541666666666668,
+      "handled" : true,
+      "key" : 104,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          4,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "喜欢",
+          "西湖",
+          "喜好",
+          "细化",
+          "稀罕",
+          "熄火",
+          "西汉",
+          "洗好",
+          "嘻哈"
+        ],
+        "preedit" : "xi h",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.018916666666666668,
+      "handled" : true,
+      "key" : 117,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          5,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "西湖",
+          "系",
+          "西",
+          "洗",
+          "戏",
+          "喜",
+          "係",
+          "细",
+          "吸"
+        ],
+        "preedit" : "xi hu",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.019125,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          6,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "细化",
+          "西化",
+          "西湖",
+          "系",
+          "西",
+          "洗",
+          "戏",
+          "喜",
+          "係"
+        ],
+        "preedit" : "xi hua",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.021791666666666668,
+      "handled" : true,
+      "key" : 110,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          7,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "喜欢",
+          "西湖",
+          "系",
+          "西",
+          "洗",
+          "戏",
+          "喜",
+          "係",
+          "细"
+        ],
+        "preedit" : "xi huan",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ]
+}

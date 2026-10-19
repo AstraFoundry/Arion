@@ -1,0 +1,11 @@
+{
+  "deleteStatus" : 0,
+  "phase" : "cleanup",
+  "passed" : true,
+  "finalKeyStatus" : -25300,
+  "runID" : "50c25cf1-37b9-4100-8e41-dbc5ace5fe40",
+  "interactionPolicyRestored" : 1,
+  "boundary" : "production encryption\/engine with real OS-kept key; owned profile; no IMK source dispatch",
+  "secretDataRequestedByHarness" : false,
+  "interactionPolicyStatus" : 0
+}

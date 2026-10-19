@@ -1,0 +1,15 @@
+{
+  "benchmarks/reproduction/imk-quality-v1/driver.mm": "c38acf304ea4254f68b3f6d6722975b0c8d6b6546f18b08b4befd1d404b059d3",
+  "benchmarks/reproduction/imk-quality-v1/run.mjs": "5b50a572523bb705314758449fe940633279c71716eeb0a793edd213800870f1",
+  "benchmarks/reproduction/imk-quality-v1/evaluate.mjs": "05f4a732c94485e68b1ff71e5f4376a355901dcdd79d46ac2b5f74db6202ecd1",
+  "benchmarks/corpora/imk-quality-v1/corpus.json": "f3e184bd32a82a60900886e2bfe9417420cf02271ba53a29d5816d0c896f79b9",
+  "benchmarks/corpora/imk-quality-v1/provenance.json": "678c5742c232b3edb920944d4748c64cf56dbf21cb1dfc6d894dc2aff3fe5a81",
+  "apps/desktop/ime/macos/keyboard.m": "d9a70d0c5e2d6a11f17b2987ff83923c80ea147363a1f796f44bf69e581cac76",
+  "apps/desktop/ime/macos/keyboard.h": "7e230a99cd9788f4feb3745c14d8e4a5d1ecb008284c916cf942820c8e0d93dd",
+  "apps/desktop/ime/macos/learning.mm": "96e0a607864d62c1bc1e8be91e7832002bc948edcb0cfcc73ae471c7a6e6077b",
+  "apps/desktop/ime/macos/learning.h": "d9e82f45a3710515c292d7f9f059ecb2ad96c247166ed22fa69de97a9cf3008d",
+  "apps/desktop/ime/macos/learning_crypto.swift": "9c8ed696f3b17918f1e0f4489eaf65fca0dd6d9ffd9066b6d00f869380b14ed2",
+  "scripts/lib/build-ime-learning.mjs": "67a75be4bf4552e50a684ad542a8d2aee73d6aa80f452961582eb0de34cba7a0",
+  "scripts/keyboard-runtime.json": "58b95bd269eeb9a2a94c3f3f0d1d559e9b2d2c385854f2aa922207d8b92c5366",
+  "apps/desktop/resources/darwin/keyboard/runtime.json": "4480566a33a0244c4d0654dca0e3f63d926f8447303e2cf84a5d305c443b80d6"
+}

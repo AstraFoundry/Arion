@@ -1,0 +1,288 @@
+{
+  "id" : "common-word-017",
+  "boundary" : "production engine key-processing plus synchronous snapshot copying; no OS events or rendered preedit",
+  "teardownMs" : 0.51512500000000006,
+  "timer" : "mach_absolute_time",
+  "beforeConfirmation" : {
+    "commit" : "",
+    "selection" : [
+      9,
+      0
+    ],
+    "lastPage" : false,
+    "highlighted" : 0,
+    "candidates" : [
+      "窗户",
+      "床",
+      "创",
+      "窗",
+      "闯",
+      "疮",
+      "怆",
+      "創",
+      "幢"
+    ],
+    "preedit" : "chuang hu",
+    "page" : 0,
+    "ascii" : false
+  },
+  "terminal" : "empty-preedit",
+  "warmupMs" : 0.0024166666666666664,
+  "peakRSSBytes" : 21528576,
+  "confirmations" : [
+    {
+      "keyToSnapshotMs" : 0.016250000000000001,
+      "handled" : true,
+      "key" : 32,
+      "snapshot" : {
+        "commit" : "窗户",
+        "selection" : [
+          0,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+
+        ],
+        "preedit" : "",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ],
+  "input" : "chuanghu",
+  "startupToSessionMs" : 15.574958333333335,
+  "committed" : "窗户",
+  "warmups" : [
+
+  ],
+  "inputKeysToFinalSnapshotMs" : 0.36941666666666667,
+  "status" : "completed",
+  "steps" : [
+    {
+      "keyToSnapshotMs" : 0.085625000000000007,
+      "handled" : true,
+      "key" : 99,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          1,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "从",
+          "才",
+          "吃",
+          "出",
+          "成",
+          "车",
+          "错",
+          "次",
+          "此"
+        ],
+        "preedit" : "c",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.076916666666666675,
+      "handled" : true,
+      "key" : 104,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          2,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "吃",
+          "出",
+          "成",
+          "车",
+          "差",
+          "传",
+          "穿",
+          "长",
+          "处"
+        ],
+        "preedit" : "ch",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.024,
+      "handled" : true,
+      "key" : 117,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          3,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "出",
+          "处",
+          "除",
+          "初",
+          "楚",
+          "触",
+          "储",
+          "厨",
+          "褚"
+        ],
+        "preedit" : "chu",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.020041666666666669,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          4,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "欻",
+          "出",
+          "处",
+          "除",
+          "初",
+          "楚",
+          "触",
+          "储",
+          "厨"
+        ],
+        "preedit" : "chua",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.026041666666666668,
+      "handled" : true,
+      "key" : 110,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          5,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "传",
+          "穿",
+          "船",
+          "川",
+          "串",
+          "喘",
+          "傳",
+          "舛",
+          "椽"
+        ],
+        "preedit" : "chuan",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.023333333333333331,
+      "handled" : true,
+      "key" : 103,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          6,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "床",
+          "创",
+          "窗",
+          "闯",
+          "疮",
+          "怆",
+          "創",
+          "幢",
+          "闖"
+        ],
+        "preedit" : "chuang",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.06958333333333333,
+      "handled" : true,
+      "key" : 104,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          8,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "窗户",
+          "床",
+          "创",
+          "窗",
+          "闯",
+          "穿过",
+          "传给",
+          "疮",
+          "传感"
+        ],
+        "preedit" : "chuang h",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.031333333333333331,
+      "handled" : true,
+      "key" : 117,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          9,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "窗户",
+          "床",
+          "创",
+          "窗",
+          "闯",
+          "疮",
+          "怆",
+          "創",
+          "幢"
+        ],
+        "preedit" : "chuang hu",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "purpose": "Current-SDK official Apple stage-0 IMK registration control, not Arion typing acceptance",
+  "parentID": "si.astrafoundry.inputmethod.numbercontrol",
+  "connection": "ArionNumberControl_Connection",
+  "architecture": "arm64",
+  "sampleURL": "https://developer.apple.com/library/archive/samplecode/NumberInput_IMKit_Sample/NumberInput_IMKit_Sample.zip",
+  "sampleSHA256": "06b6f0052b7bb5bc584fb6d32a9d6fda4bba1746d29f56f00123466b60729228",
+  "provenance": [
+    {
+      "member": "main.m",
+      "sha256": "7e4cdfb09f665da949160c12939846e228dd3f6b38de6ca5b5534e11c490cdb2"
+    },
+    {
+      "member": "NumberInputController.h",
+      "sha256": "93d5747aa7c75cdcad9244b06eac9e6bbbbb38a02f177fd0971a638266637982"
+    },
+    {
+      "member": "NumberInputController.m",
+      "sha256": "671b2534bb09fc857705d8fe85d7e47db85ca1780578ed15098a8742e889b8f5"
+    },
+    {
+      "member": "Info.plist",
+      "sha256": "8716311bc0430c7526d9fea91ba9ecb75c11ae916ece103c1e555d9d1b793675"
+    },
+    {
+      "member": "English.lproj/InfoPlist.strings",
+      "sha256": "3b3b4915eb29aeb52a1b9be0f10e7f7720b64037c0574c5e7bbf3e76ed684fcd"
+    },
+    {
+      "member": "English.lproj/MainMenu.nib/classes.nib",
+      "sha256": "53751ab0296239ac73a217b64f398ead7b14b605d9b22f190f09f08b6ad0f4ee"
+    },
+    {
+      "member": "English.lproj/MainMenu.nib/info.nib",
+      "sha256": "da3a827392de59ea7ce0a23cc470cb050c211dd4b9c30b05cec68420e4d2a178"
+    },
+    {
+      "member": "English.lproj/MainMenu.nib/keyedobjects.nib",
+      "sha256": "beb52bcb3e349bf11d7fe93018231216775c54b131a7e4a3e83ea6fa4b032171"
+    },
+    {
+      "member": "nine.tiff",
+      "sha256": "3fda699de95574234a686ba1554e7a21decbae2957f6bab0f6657d4cd68cc446"
+    }
+  ],
+  "changes": [
+    "bundle ID/name",
+    "unique connection in plist and main",
+    "minimum OS and marketing version"
+  ],
+  "binarySHA256": "c659224591df2736a8b8c186e30a2d6fb2676ffff218ae477f103d7118607355",
+  "infoSHA256": "954875c2408e1f5caeca19acbf02e9ef0faa21ad6a8b47096a3c509edfca3e75"
+}

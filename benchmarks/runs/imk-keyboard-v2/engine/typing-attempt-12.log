@@ -1,0 +1,25 @@
+2026-10-18 13:19:23.799 typing-test[8522:97770856] PASS: corrupt immutable data rejects startup before storage
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I20261018 13:19:23.800767 0x1f8b7e180 registry.cc:14] registering component: arion_encrypted_userdb
+2026-10-18 13:19:23.920 typing-test[8522:97770856] PASS: real full-Pinyin commit
+2026-10-18 13:19:23.929 typing-test[8522:97770856] PASS: cancel preserves emoji neighbors
+2026-10-18 13:19:23.940 typing-test[8522:97770856] PASS: commit preserves emoji neighbors
+2026-10-18 13:19:23.948 typing-test[8522:97770856] PASS: Backspace reconverts real input
+2026-10-18 13:19:23.956 typing-test[8522:97770856] PASS: page and relative number selection
+2026-10-18 13:19:23.965 typing-test[8522:97770856] PASS: partial selection and suffix continuation
+2026-10-18 13:19:23.974 typing-test[8522:97770856] PASS: partial-selection Backspace rollback
+2026-10-18 13:19:23.983 typing-test[8522:97770856] PASS: mid-buffer caret edit and Home End
+2026-10-18 13:19:23.990 typing-test[8522:97770856] PASS: forward Delete at Home preserves suffix
+2026-10-18 13:19:23.998 typing-test[8522:97770856] PASS: Shift Space discards draft and passes ASCII
+2026-10-18 13:19:24.007 typing-test[8522:97770856] PASS: stale candidate callbacks cannot select
+2026-10-18 13:19:24.014 typing-test[8522:97770856] PASS: deactivation discards draft and rejects callback
+2026-10-18 13:19:24.022 typing-test[8522:97770856] PASS: apostrophe syllable boundary converts real phrase
+2026-10-18 13:19:24.031 typing-test[8522:97770856] PASS: abbreviated Pinyin retains real candidate identity
+2026-10-18 13:19:24.042 typing-test[8522:97770856] PASS: v input represents umlaut Pinyin
+2026-10-18 13:19:24.055 typing-test[8522:97770856] PASS: Chinese punctuation follows confirmed phrase
+2026-10-18 13:19:24.065 typing-test[8522:97770856] PASS: Return commits literal raw input
+2026-10-18 13:19:24.093 typing-test[8522:97770856] PASS: confirmed learning survives restart and cancellation adds nothing
+2026-10-18 13:19:24.103 typing-test[8522:97770856] PASS: released owner destroys actual engine session without client callbacks
+2026-10-18 13:19:24.157 typing-test[8522:97770856] PASS: mouse candidate failures revoke callbacks and preserve pending recovery
+2026-10-18 13:19:24.172 typing-test[8522:97770856] PASS: learning write failure retains actual engine commit
+Keyboard test report: /Users/steven/code/Arion/.workspace/research/imk-alignment/typing-attempt-12.json

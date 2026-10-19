@@ -1,0 +1,120 @@
+{
+  "id" : "abbreviation-007",
+  "boundary" : "production engine key-processing plus synchronous snapshot copying; no OS events or rendered preedit",
+  "teardownMs" : 0.57825000000000004,
+  "timer" : "mach_absolute_time",
+  "beforeConfirmation" : {
+    "commit" : "",
+    "selection" : [
+      3,
+      0
+    ],
+    "lastPage" : false,
+    "highlighted" : 0,
+    "candidates" : [
+      "文化",
+      "维护",
+      "武汉",
+      "我还",
+      "为何",
+      "我很",
+      "我和",
+      "危害",
+      "误会"
+    ],
+    "preedit" : "w h",
+    "page" : 0,
+    "ascii" : false
+  },
+  "terminal" : "empty-preedit",
+  "warmupMs" : 0.0020416666666666669,
+  "peakRSSBytes" : 21430272,
+  "confirmations" : [
+    {
+      "keyToSnapshotMs" : 0.017666666666666667,
+      "handled" : true,
+      "key" : 32,
+      "snapshot" : {
+        "commit" : "文化",
+        "selection" : [
+          0,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+
+        ],
+        "preedit" : "",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ],
+  "input" : "wh",
+  "startupToSessionMs" : 13.258958333333334,
+  "committed" : "文化",
+  "warmups" : [
+
+  ],
+  "inputKeysToFinalSnapshotMs" : 0.12791666666666668,
+  "status" : "completed",
+  "steps" : [
+    {
+      "keyToSnapshotMs" : 0.064250000000000002,
+      "handled" : true,
+      "key" : 119,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          1,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "我",
+          "为",
+          "玩",
+          "问",
+          "无",
+          "万",
+          "完",
+          "网",
+          "王"
+        ],
+        "preedit" : "w",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.056166666666666663,
+      "handled" : true,
+      "key" : 104,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          3,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "文化",
+          "维护",
+          "武汉",
+          "我还",
+          "为何",
+          "我很",
+          "我和",
+          "危害",
+          "误会"
+        ],
+        "preedit" : "w h",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ]
+}

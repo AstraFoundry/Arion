@@ -1,0 +1,316 @@
+{
+  "id" : "common-word-042",
+  "boundary" : "production engine key-processing plus synchronous snapshot copying; no OS events or rendered preedit",
+  "teardownMs" : 0.54945833333333338,
+  "timer" : "mach_absolute_time",
+  "beforeConfirmation" : {
+    "commit" : "",
+    "selection" : [
+      11,
+      0
+    ],
+    "lastPage" : false,
+    "highlighted" : 0,
+    "candidates" : [
+      "西红柿",
+      "系",
+      "西",
+      "洗",
+      "戏",
+      "喜",
+      "係",
+      "细",
+      "吸"
+    ],
+    "preedit" : "xi hong shi",
+    "page" : 0,
+    "ascii" : false
+  },
+  "terminal" : "empty-preedit",
+  "warmupMs" : 0.0027083333333333334,
+  "peakRSSBytes" : 21495808,
+  "confirmations" : [
+    {
+      "keyToSnapshotMs" : 0.015166666666666667,
+      "handled" : true,
+      "key" : 32,
+      "snapshot" : {
+        "commit" : "西红柿",
+        "selection" : [
+          0,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+
+        ],
+        "preedit" : "",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ],
+  "input" : "xihongshi",
+  "startupToSessionMs" : 12.713374999999999,
+  "committed" : "西红柿",
+  "warmups" : [
+
+  ],
+  "inputKeysToFinalSnapshotMs" : 0.32587500000000003,
+  "status" : "completed",
+  "steps" : [
+    {
+      "keyToSnapshotMs" : 0.070458333333333331,
+      "handled" : true,
+      "key" : 120,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          1,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "下",
+          "想",
+          "小",
+          "先",
+          "新",
+          "向",
+          "写",
+          "行",
+          "像"
+        ],
+        "preedit" : "x",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.023166666666666669,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          2,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "系",
+          "西",
+          "洗",
+          "戏",
+          "喜",
+          "係",
+          "细",
+          "吸",
+          "希"
+        ],
+        "preedit" : "xi",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.031875000000000001,
+      "handled" : true,
+      "key" : 104,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          4,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "喜欢",
+          "西湖",
+          "喜好",
+          "细化",
+          "稀罕",
+          "熄火",
+          "西汉",
+          "洗好",
+          "嘻哈"
+        ],
+        "preedit" : "xi h",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.030374999999999999,
+      "handled" : true,
+      "key" : 111,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          5,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "系后",
+          "系",
+          "西",
+          "洗",
+          "戏",
+          "喜",
+          "係",
+          "细",
+          "吸"
+        ],
+        "preedit" : "xi ho",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.022499999999999999,
+      "handled" : true,
+      "key" : 110,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          6,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "系红",
+          "系",
+          "西",
+          "洗",
+          "戏",
+          "喜",
+          "係",
+          "细",
+          "吸"
+        ],
+        "preedit" : "xi hon",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.021499999999999998,
+      "handled" : true,
+      "key" : 103,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          7,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "系红",
+          "系",
+          "西",
+          "洗",
+          "戏",
+          "喜",
+          "係",
+          "细",
+          "吸"
+        ],
+        "preedit" : "xi hong",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.037624999999999999,
+      "handled" : true,
+      "key" : 115,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          9,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "西红柿",
+          "喜欢",
+          "西湖",
+          "喜好",
+          "细化",
+          "稀罕",
+          "熄火",
+          "西汉",
+          "洗好"
+        ],
+        "preedit" : "xi hong s",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.045541666666666661,
+      "handled" : true,
+      "key" : 104,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          10,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "西红柿",
+          "喜欢",
+          "西湖",
+          "喜好",
+          "细化",
+          "稀罕",
+          "熄火",
+          "西汉",
+          "洗好"
+        ],
+        "preedit" : "xi hong sh",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.029208333333333333,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          11,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "西红柿",
+          "系",
+          "西",
+          "洗",
+          "戏",
+          "喜",
+          "係",
+          "细",
+          "吸"
+        ],
+        "preedit" : "xi hong shi",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ]
+}

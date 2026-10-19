@@ -1,0 +1,540 @@
+{
+  "id" : "coined-phrase-003",
+  "boundary" : "production engine key-processing plus synchronous snapshot copying; no OS events or rendered preedit",
+  "teardownMs" : 0.502,
+  "timer" : "mach_absolute_time",
+  "beforeConfirmation" : {
+    "commit" : "",
+    "selection" : [
+      21,
+      0
+    ],
+    "lastPage" : false,
+    "highlighted" : 0,
+    "candidates" : [
+      "请栏位光和",
+      "请",
+      "清",
+      "情",
+      "轻",
+      "青",
+      "庆",
+      "晴",
+      "倾"
+    ],
+    "preedit" : "qing lan wei guang he",
+    "page" : 0,
+    "ascii" : false
+  },
+  "terminal" : "empty-preedit",
+  "warmupMs" : 0.0022499999999999998,
+  "peakRSSBytes" : 22200320,
+  "confirmations" : [
+    {
+      "keyToSnapshotMs" : 0.01975,
+      "handled" : true,
+      "key" : 32,
+      "snapshot" : {
+        "commit" : "请栏位光和",
+        "selection" : [
+          0,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+
+        ],
+        "preedit" : "",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ],
+  "input" : "qinglanweiguanghe",
+  "startupToSessionMs" : 12.526833333333334,
+  "committed" : "请栏位光和",
+  "warmups" : [
+
+  ],
+  "inputKeysToFinalSnapshotMs" : 1.4032500000000001,
+  "status" : "completed",
+  "steps" : [
+    {
+      "keyToSnapshotMs" : 0.062666666666666662,
+      "handled" : true,
+      "key" : 113,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          1,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "去",
+          "其",
+          "请",
+          "钱",
+          "前",
+          "却",
+          "起",
+          "全",
+          "区"
+        ],
+        "preedit" : "q",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.022875,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          2,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "其",
+          "起",
+          "期",
+          "气",
+          "器",
+          "七",
+          "齐",
+          "奇",
+          "骑"
+        ],
+        "preedit" : "qi",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.020791666666666667,
+      "handled" : true,
+      "key" : 110,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          3,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "亲",
+          "秦",
+          "琴",
+          "勤",
+          "钦",
+          "沁",
+          "侵",
+          "寝",
+          "禽"
+        ],
+        "preedit" : "qin",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.019416666666666669,
+      "handled" : true,
+      "key" : 103,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          4,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "请",
+          "清",
+          "情",
+          "轻",
+          "青",
+          "庆",
+          "晴",
+          "倾",
+          "卿"
+        ],
+        "preedit" : "qing",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.045958333333333337,
+      "handled" : true,
+      "key" : 108,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          6,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "清理",
+          "情侣",
+          "青睐",
+          "清凉",
+          "请来",
+          "青龙",
+          "晴朗",
+          "倾力",
+          "清冷"
+        ],
+        "preedit" : "qing l",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.034750000000000003,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          7,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "请啦",
+          "请",
+          "清",
+          "情",
+          "轻",
+          "青",
+          "庆",
+          "晴",
+          "倾"
+        ],
+        "preedit" : "qing la",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.031666666666666669,
+      "handled" : true,
+      "key" : 110,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          8,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "请蓝",
+          "请",
+          "清",
+          "情",
+          "轻",
+          "青",
+          "庆",
+          "晴",
+          "倾"
+        ],
+        "preedit" : "qing lan",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.23741666666666666,
+      "handled" : true,
+      "key" : 119,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          10,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "请篮网",
+          "清理",
+          "情侣",
+          "青睐",
+          "清凉",
+          "请来",
+          "青龙",
+          "晴朗",
+          "倾力"
+        ],
+        "preedit" : "qing lan w",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.17795833333333333,
+      "handled" : true,
+      "key" : 101,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          12,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "请篮网恩",
+          "清理",
+          "情侣",
+          "青睐",
+          "清凉",
+          "请来",
+          "青龙",
+          "晴朗",
+          "倾力"
+        ],
+        "preedit" : "qing lan w e",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.038791666666666662,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          12,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "请栏位",
+          "请",
+          "清",
+          "情",
+          "轻",
+          "青",
+          "庆",
+          "晴",
+          "倾"
+        ],
+        "preedit" : "qing lan wei",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.21570833333333334,
+      "handled" : true,
+      "key" : 103,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          15,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "清理安慰个",
+          "清理",
+          "情侣",
+          "青睐",
+          "清凉",
+          "请来",
+          "青龙",
+          "晴朗",
+          "倾力"
+        ],
+        "preedit" : "qing l an wei g",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.052041666666666667,
+      "handled" : true,
+      "key" : 117,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          15,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "请栏位股",
+          "请",
+          "清",
+          "情",
+          "轻",
+          "青",
+          "庆",
+          "晴",
+          "倾"
+        ],
+        "preedit" : "qing lan wei gu",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.041666666666666664,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          16,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "请栏位挂",
+          "请",
+          "清",
+          "情",
+          "轻",
+          "青",
+          "庆",
+          "晴",
+          "倾"
+        ],
+        "preedit" : "qing lan wei gua",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.037499999999999999,
+      "handled" : true,
+      "key" : 110,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          17,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "请蓝微观",
+          "请",
+          "清",
+          "情",
+          "轻",
+          "青",
+          "庆",
+          "晴",
+          "倾"
+        ],
+        "preedit" : "qing lan wei guan",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.038625,
+      "handled" : true,
+      "key" : 103,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          18,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "请栏位光",
+          "请",
+          "清",
+          "情",
+          "轻",
+          "青",
+          "庆",
+          "晴",
+          "倾"
+        ],
+        "preedit" : "qing lan wei guang",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.25016666666666665,
+      "handled" : true,
+      "key" : 104,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          21,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "清理安慰光滑",
+          "清理",
+          "情侣",
+          "青睐",
+          "清凉",
+          "请来",
+          "青龙",
+          "晴朗",
+          "倾力"
+        ],
+        "preedit" : "qing l an wei guang h",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.050791666666666666,
+      "handled" : true,
+      "key" : 101,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          21,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "请栏位光和",
+          "请",
+          "清",
+          "情",
+          "轻",
+          "青",
+          "庆",
+          "晴",
+          "倾"
+        ],
+        "preedit" : "qing lan wei guang he",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ]
+}

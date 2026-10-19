@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "parentID": "si.astrafoundry.inputmethod.arion.validation",
+  "modeID": "si.astrafoundry.inputmethod.arion.validation.pinyin",
+  "originalParent": "si.astrafoundry.inputmethod.arion",
+  "originalMode": "si.astrafoundry.inputmethod.arion.pinyin",
+  "changes": [
+    "CFBundleIdentifier",
+    "child mode identifier/key/order",
+    "localized mode identifier keys",
+    "code signature"
+  ],
+  "unchangedConnection": "ArionInput_Connection",
+  "sourceExecutableSHA256": "ef885c8e23f0cf63d13596de897b793394cd3c36e5f85aad3474aab00ad8dc1e",
+  "engineSHA256": "6ac7d49ac588524b71ca13a692377e5c22a3c83562b68ff9ae41ae01470c4759",
+  "executableSHA256": "5bac5e6d9215462d2224a492a61d5c83c930616cf75651fdc8d3cd76fa592a12",
+  "infoSHA256": "54bd2c40b4bbe09c4945a34689e830eaffad963e40f9109cdc5849ca8de270cb"
+}

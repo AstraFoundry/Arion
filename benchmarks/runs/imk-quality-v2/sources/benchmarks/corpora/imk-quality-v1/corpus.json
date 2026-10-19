@@ -1,0 +1,618 @@
+{
+  "schemaVersion": 1,
+  "id": "imk-quality-v1",
+  "purpose": "Original synthetic development diagnostic; not held-out population quality",
+  "referencePolicy": "Single author-intended target; homophone alternatives may be valid but count as target misses",
+  "cases": [
+    {
+      "id": "common-word-001",
+      "category": "common-word",
+      "input": "zaoshang",
+      "reference": "早上"
+    },
+    {
+      "id": "common-word-002",
+      "category": "common-word",
+      "input": "wanshang",
+      "reference": "晚上"
+    },
+    {
+      "id": "common-word-003",
+      "category": "common-word",
+      "input": "jintian",
+      "reference": "今天"
+    },
+    {
+      "id": "common-word-004",
+      "category": "common-word",
+      "input": "mingnian",
+      "reference": "明年"
+    },
+    {
+      "id": "common-word-005",
+      "category": "common-word",
+      "input": "xingqi",
+      "reference": "星期"
+    },
+    {
+      "id": "common-word-006",
+      "category": "common-word",
+      "input": "pengyou",
+      "reference": "朋友"
+    },
+    {
+      "id": "common-word-007",
+      "category": "common-word",
+      "input": "jiaren",
+      "reference": "家人"
+    },
+    {
+      "id": "common-word-008",
+      "category": "common-word",
+      "input": "laoshi",
+      "reference": "老师"
+    },
+    {
+      "id": "common-word-009",
+      "category": "common-word",
+      "input": "xuesheng",
+      "reference": "学生"
+    },
+    {
+      "id": "common-word-010",
+      "category": "common-word",
+      "input": "tongxue",
+      "reference": "同学"
+    },
+    {
+      "id": "common-word-011",
+      "category": "common-word",
+      "input": "gongzuo",
+      "reference": "工作"
+    },
+    {
+      "id": "common-word-012",
+      "category": "common-word",
+      "input": "xuexi",
+      "reference": "学习"
+    },
+    {
+      "id": "common-word-013",
+      "category": "common-word",
+      "input": "shenghuo",
+      "reference": "生活"
+    },
+    {
+      "id": "common-word-014",
+      "category": "common-word",
+      "input": "shijian",
+      "reference": "时间"
+    },
+    {
+      "id": "common-word-015",
+      "category": "common-word",
+      "input": "difang",
+      "reference": "地方"
+    },
+    {
+      "id": "common-word-016",
+      "category": "common-word",
+      "input": "fangjian",
+      "reference": "房间"
+    },
+    {
+      "id": "common-word-017",
+      "category": "common-word",
+      "input": "chuanghu",
+      "reference": "窗户"
+    },
+    {
+      "id": "common-word-018",
+      "category": "common-word",
+      "input": "zhuozi",
+      "reference": "桌子"
+    },
+    {
+      "id": "common-word-019",
+      "category": "common-word",
+      "input": "yizi",
+      "reference": "椅子"
+    },
+    {
+      "id": "common-word-020",
+      "category": "common-word",
+      "input": "diannao",
+      "reference": "电脑"
+    },
+    {
+      "id": "common-word-021",
+      "category": "common-word",
+      "input": "shouji",
+      "reference": "手机"
+    },
+    {
+      "id": "common-word-022",
+      "category": "common-word",
+      "input": "zhaopian",
+      "reference": "照片"
+    },
+    {
+      "id": "common-word-023",
+      "category": "common-word",
+      "input": "yinyue",
+      "reference": "音乐"
+    },
+    {
+      "id": "common-word-024",
+      "category": "common-word",
+      "input": "dianying",
+      "reference": "电影"
+    },
+    {
+      "id": "common-word-025",
+      "category": "common-word",
+      "input": "tushuguan",
+      "reference": "图书馆"
+    },
+    {
+      "id": "common-word-026",
+      "category": "common-word",
+      "input": "chaoshi",
+      "reference": "超市"
+    },
+    {
+      "id": "common-word-027",
+      "category": "common-word",
+      "input": "shangdian",
+      "reference": "商店"
+    },
+    {
+      "id": "common-word-028",
+      "category": "common-word",
+      "input": "yiyuan",
+      "reference": "医院"
+    },
+    {
+      "id": "common-word-029",
+      "category": "common-word",
+      "input": "yinhang",
+      "reference": "银行"
+    },
+    {
+      "id": "common-word-030",
+      "category": "common-word",
+      "input": "jichang",
+      "reference": "机场"
+    },
+    {
+      "id": "common-word-031",
+      "category": "common-word",
+      "input": "huochezhan",
+      "reference": "火车站"
+    },
+    {
+      "id": "common-word-032",
+      "category": "common-word",
+      "input": "gongjiaoche",
+      "reference": "公交车"
+    },
+    {
+      "id": "common-word-033",
+      "category": "common-word",
+      "input": "zixingche",
+      "reference": "自行车"
+    },
+    {
+      "id": "common-word-034",
+      "category": "common-word",
+      "input": "zaocan",
+      "reference": "早餐"
+    },
+    {
+      "id": "common-word-035",
+      "category": "common-word",
+      "input": "wucan",
+      "reference": "午餐"
+    },
+    {
+      "id": "common-word-036",
+      "category": "common-word",
+      "input": "wancan",
+      "reference": "晚餐"
+    },
+    {
+      "id": "common-word-037",
+      "category": "common-word",
+      "input": "miantiao",
+      "reference": "面条"
+    },
+    {
+      "id": "common-word-038",
+      "category": "common-word",
+      "input": "mifan",
+      "reference": "米饭"
+    },
+    {
+      "id": "common-word-039",
+      "category": "common-word",
+      "input": "pingguo",
+      "reference": "苹果"
+    },
+    {
+      "id": "common-word-040",
+      "category": "common-word",
+      "input": "xiangjiao",
+      "reference": "香蕉"
+    },
+    {
+      "id": "common-word-041",
+      "category": "common-word",
+      "input": "putao",
+      "reference": "葡萄"
+    },
+    {
+      "id": "common-word-042",
+      "category": "common-word",
+      "input": "xihongshi",
+      "reference": "西红柿"
+    },
+    {
+      "id": "common-word-043",
+      "category": "common-word",
+      "input": "tudou",
+      "reference": "土豆"
+    },
+    {
+      "id": "common-word-044",
+      "category": "common-word",
+      "input": "xihuan",
+      "reference": "喜欢"
+    },
+    {
+      "id": "common-word-045",
+      "category": "common-word",
+      "input": "zhongyao",
+      "reference": "重要"
+    },
+    {
+      "id": "sentence-001",
+      "category": "sentence",
+      "input": "qingbachuanghuguanshang",
+      "reference": "请把窗户关上"
+    },
+    {
+      "id": "sentence-002",
+      "category": "sentence",
+      "input": "woxiangheyibeiwenshui",
+      "reference": "我想喝一杯温水"
+    },
+    {
+      "id": "sentence-003",
+      "category": "sentence",
+      "input": "jintiantianqihennuanhuo",
+      "reference": "今天天气很暖和"
+    },
+    {
+      "id": "sentence-004",
+      "category": "sentence",
+      "input": "mingtianzaoshangyaoxiayu",
+      "reference": "明天早上要下雨"
+    },
+    {
+      "id": "sentence-005",
+      "category": "sentence",
+      "input": "womenzhoumoqugongyuan",
+      "reference": "我们周末去公园"
+    },
+    {
+      "id": "sentence-006",
+      "category": "sentence",
+      "input": "qingzaimenkoudengyihui",
+      "reference": "请在门口等一会"
+    },
+    {
+      "id": "sentence-007",
+      "category": "sentence",
+      "input": "huiyigaidaoxiawuliangdian",
+      "reference": "会议改到下午两点"
+    },
+    {
+      "id": "sentence-008",
+      "category": "sentence",
+      "input": "zhegewenjianxuyaobeifen",
+      "reference": "这个文件需要备份"
+    },
+    {
+      "id": "sentence-009",
+      "category": "sentence",
+      "input": "woyijingfageitongshile",
+      "reference": "我已经发给同事了"
+    },
+    {
+      "id": "sentence-010",
+      "category": "sentence",
+      "input": "qingbadizhizaifayibian",
+      "reference": "请把地址再发一遍"
+    },
+    {
+      "id": "sentence-011",
+      "category": "sentence",
+      "input": "zhebenshuwohaimeikanwan",
+      "reference": "这本书我还没看完"
+    },
+    {
+      "id": "sentence-012",
+      "category": "sentence",
+      "input": "wanfanyihouyiqisanbu",
+      "reference": "晚饭以后一起散步"
+    },
+    {
+      "id": "sentence-013",
+      "category": "sentence",
+      "input": "bingxianglihaiyoujidan",
+      "reference": "冰箱里还有鸡蛋"
+    },
+    {
+      "id": "sentence-014",
+      "category": "sentence",
+      "input": "qingbangwodakaidiandeng",
+      "reference": "请帮我打开电灯"
+    },
+    {
+      "id": "sentence-015",
+      "category": "sentence",
+      "input": "woxiangxianxiuxishifenzhong",
+      "reference": "我想先休息十分钟"
+    },
+    {
+      "id": "sentence-016",
+      "category": "sentence",
+      "input": "xiayizhanshihuochezhan",
+      "reference": "下一站是火车站"
+    },
+    {
+      "id": "sentence-017",
+      "category": "sentence",
+      "input": "zhelidaojichangyaoduojiu",
+      "reference": "这里到机场要多久"
+    },
+    {
+      "id": "sentence-018",
+      "category": "sentence",
+      "input": "wobayusanfangzaimenhou",
+      "reference": "我把雨伞放在门后"
+    },
+    {
+      "id": "sentence-019",
+      "category": "sentence",
+      "input": "haizimenzaicaodishangwan",
+      "reference": "孩子们在草地上玩"
+    },
+    {
+      "id": "sentence-020",
+      "category": "sentence",
+      "input": "qingbayinliangtiaoxiaoyidian",
+      "reference": "请把音量调小一点"
+    },
+    {
+      "id": "sentence-021",
+      "category": "sentence",
+      "input": "womenxuyaozaitaolunyici",
+      "reference": "我们需要再讨论一次"
+    },
+    {
+      "id": "sentence-022",
+      "category": "sentence",
+      "input": "zhegewentimingtianzaishuo",
+      "reference": "这个问题明天再说"
+    },
+    {
+      "id": "sentence-023",
+      "category": "sentence",
+      "input": "qingquerenshifouyijingbaocun",
+      "reference": "请确认是否已经保存"
+    },
+    {
+      "id": "sentence-024",
+      "category": "sentence",
+      "input": "wozaitushuguandengni",
+      "reference": "我在图书馆等你"
+    },
+    {
+      "id": "sentence-025",
+      "category": "sentence",
+      "input": "meitianzaoshangdouyaochifan",
+      "reference": "每天早上都要吃饭"
+    },
+    {
+      "id": "sentence-026",
+      "category": "sentence",
+      "input": "zhejiadiandemiantiaohenhaochi",
+      "reference": "这家店的面条很好吃"
+    },
+    {
+      "id": "sentence-027",
+      "category": "sentence",
+      "input": "tazhunbeixueyimenxinyuyan",
+      "reference": "他准备学一门新语言"
+    },
+    {
+      "id": "sentence-028",
+      "category": "sentence",
+      "input": "woganggangshoudaonidexin",
+      "reference": "我刚刚收到你的信"
+    },
+    {
+      "id": "sentence-029",
+      "category": "sentence",
+      "input": "qingbazhuozishangdeshunalai",
+      "reference": "请把桌子上的书拿来"
+    },
+    {
+      "id": "sentence-030",
+      "category": "sentence",
+      "input": "huijiadelushangmaixieshuiguo",
+      "reference": "回家的路上买些水果"
+    },
+    {
+      "id": "sentence-031",
+      "category": "sentence",
+      "input": "woxiangwenyixiazhegejiage",
+      "reference": "我想问一下这个价格"
+    },
+    {
+      "id": "sentence-032",
+      "category": "sentence",
+      "input": "dengyutinglewomenzaichufa",
+      "reference": "等雨停了我们再出发"
+    },
+    {
+      "id": "sentence-033",
+      "category": "sentence",
+      "input": "zhezhangzhaopianpaidehenqingchu",
+      "reference": "这张照片拍得很清楚"
+    },
+    {
+      "id": "sentence-034",
+      "category": "sentence",
+      "input": "qingbasuoyoudechuanghudoudakai",
+      "reference": "请把所有的窗户都打开"
+    },
+    {
+      "id": "sentence-035",
+      "category": "sentence",
+      "input": "wanshangshidianyihoubaochianjing",
+      "reference": "晚上十点以后保持安静"
+    },
+    {
+      "id": "abbreviation-001",
+      "category": "abbreviation",
+      "input": "bj",
+      "reference": "北京"
+    },
+    {
+      "id": "abbreviation-002",
+      "category": "abbreviation",
+      "input": "sh",
+      "reference": "上海"
+    },
+    {
+      "id": "abbreviation-003",
+      "category": "abbreviation",
+      "input": "gz",
+      "reference": "广州"
+    },
+    {
+      "id": "abbreviation-004",
+      "category": "abbreviation",
+      "input": "sz",
+      "reference": "深圳"
+    },
+    {
+      "id": "abbreviation-005",
+      "category": "abbreviation",
+      "input": "cq",
+      "reference": "重庆"
+    },
+    {
+      "id": "abbreviation-006",
+      "category": "abbreviation",
+      "input": "cd",
+      "reference": "成都"
+    },
+    {
+      "id": "abbreviation-007",
+      "category": "abbreviation",
+      "input": "wh",
+      "reference": "武汉"
+    },
+    {
+      "id": "abbreviation-008",
+      "category": "abbreviation",
+      "input": "nj",
+      "reference": "南京"
+    },
+    {
+      "id": "abbreviation-009",
+      "category": "abbreviation",
+      "input": "hz",
+      "reference": "杭州"
+    },
+    {
+      "id": "abbreviation-010",
+      "category": "abbreviation",
+      "input": "tj",
+      "reference": "天津"
+    },
+    {
+      "id": "umlaut-001",
+      "category": "umlaut",
+      "input": "lvxing",
+      "reference": "旅行"
+    },
+    {
+      "id": "umlaut-002",
+      "category": "umlaut",
+      "input": "nvhai",
+      "reference": "女孩"
+    },
+    {
+      "id": "umlaut-003",
+      "category": "umlaut",
+      "input": "lvyou",
+      "reference": "旅游"
+    },
+    {
+      "id": "umlaut-004",
+      "category": "umlaut",
+      "input": "lvdi",
+      "reference": "绿地"
+    },
+    {
+      "id": "umlaut-005",
+      "category": "umlaut",
+      "input": "nvjing",
+      "reference": "女警"
+    },
+    {
+      "id": "coined-phrase-001",
+      "category": "coined-phrase",
+      "input": "xingluoyunsuanzhan",
+      "reference": "星落云算站"
+    },
+    {
+      "id": "coined-phrase-002",
+      "category": "coined-phrase",
+      "input": "zhuanquanxingluqiao",
+      "reference": "转圈星露桥"
+    },
+    {
+      "id": "coined-phrase-003",
+      "category": "coined-phrase",
+      "input": "qinglanweiguanghe",
+      "reference": "青岚微光盒"
+    },
+    {
+      "id": "coined-phrase-004",
+      "category": "coined-phrase",
+      "input": "yuebaiqingtingzuo",
+      "reference": "月白蜻蜓座"
+    },
+    {
+      "id": "coined-phrase-005",
+      "category": "coined-phrase",
+      "input": "shuanghemengyita",
+      "reference": "霜鹤梦译塔"
+    }
+  ],
+  "revision": 2,
+  "amendments": [
+    {
+      "case": "sentence-029",
+      "originalInput": "qingbazhuozishangdeshunaliai",
+      "correctedInput": "qingbazhuozishangdeshunalai",
+      "reason": "Authored Pinyin spelling typo: shu+na+lai was mistakenly concatenated with an extra i; no engine or acceptance threshold changed",
+      "originalFrozenCorpus": "benchmarks/runs/imk-quality-v1/sources/benchmarks/corpora/imk-quality-v1/corpus.json"
+    }
+  ]
+}

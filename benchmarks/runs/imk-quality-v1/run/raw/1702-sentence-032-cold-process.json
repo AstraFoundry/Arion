@@ -1,0 +1,757 @@
+{
+  "id" : "sentence-032",
+  "boundary" : "production engine key-processing plus synchronous snapshot copying; no OS events or rendered preedit",
+  "teardownMs" : 0.59158333333333335,
+  "timer" : "mach_absolute_time",
+  "beforeConfirmation" : {
+    "commit" : "",
+    "selection" : [
+      33,
+      0
+    ],
+    "lastPage" : false,
+    "highlighted" : 0,
+    "candidates" : [
+      "等于听了我们在出发",
+      "等于",
+      "等",
+      "灯",
+      "登",
+      "邓",
+      "瞪",
+      "蹬",
+      "凳"
+    ],
+    "preedit" : "deng yu ting le wo men zai chu fa",
+    "page" : 0,
+    "ascii" : false
+  },
+  "terminal" : "empty-preedit",
+  "warmupMs" : 0.0028333333333333335,
+  "peakRSSBytes" : 22528000,
+  "confirmations" : [
+    {
+      "keyToSnapshotMs" : 0.01925,
+      "handled" : true,
+      "key" : 32,
+      "snapshot" : {
+        "commit" : "等于听了我们在出发",
+        "selection" : [
+          0,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+
+        ],
+        "preedit" : "",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ],
+  "input" : "dengyutinglewomenzaichufa",
+  "startupToSessionMs" : 12.488958333333334,
+  "committed" : "等于听了我们在出发",
+  "warmups" : [
+
+  ],
+  "inputKeysToFinalSnapshotMs" : 2.8492500000000001,
+  "status" : "completed",
+  "steps" : [
+    {
+      "keyToSnapshotMs" : 0.068458333333333329,
+      "handled" : true,
+      "key" : 100,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          1,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "的",
+          "都",
+          "到",
+          "对",
+          "等",
+          "多",
+          "点",
+          "但",
+          "打"
+        ],
+        "preedit" : "d",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.02375,
+      "handled" : true,
+      "key" : 101,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          2,
+          0
+        ],
+        "lastPage" : true,
+        "highlighted" : 0,
+        "candidates" : [
+          "的",
+          "得",
+          "地",
+          "德",
+          "锝",
+          "底",
+          "徳",
+          "悳",
+          "淂"
+        ],
+        "preedit" : "de",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.016458333333333332,
+      "handled" : true,
+      "key" : 110,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          3,
+          0
+        ],
+        "lastPage" : true,
+        "highlighted" : 0,
+        "candidates" : [
+          "扽",
+          "扥"
+        ],
+        "preedit" : "den",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.019958333333333331,
+      "handled" : true,
+      "key" : 103,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          4,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "等",
+          "灯",
+          "登",
+          "邓",
+          "瞪",
+          "蹬",
+          "凳",
+          "噔",
+          "澄"
+        ],
+        "preedit" : "deng",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.057208333333333333,
+      "handled" : true,
+      "key" : 121,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          6,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "等于",
+          "登月",
+          "等",
+          "灯",
+          "登",
+          "邓",
+          "瞪",
+          "蹬",
+          "凳"
+        ],
+        "preedit" : "deng y",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.027791666666666669,
+      "handled" : true,
+      "key" : 117,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          7,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "等于",
+          "等",
+          "灯",
+          "登",
+          "邓",
+          "瞪",
+          "蹬",
+          "凳",
+          "噔"
+        ],
+        "preedit" : "deng yu",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.15570833333333334,
+      "handled" : true,
+      "key" : 116,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          9,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "等于他",
+          "等于",
+          "等",
+          "灯",
+          "登",
+          "邓",
+          "瞪",
+          "蹬",
+          "凳"
+        ],
+        "preedit" : "deng yu t",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.032916666666666664,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          10,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "等于提",
+          "等于",
+          "等",
+          "灯",
+          "登",
+          "邓",
+          "瞪",
+          "蹬",
+          "凳"
+        ],
+        "preedit" : "deng yu ti",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.10916666666666668,
+      "handled" : true,
+      "key" : 110,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          12,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "等于体内",
+          "等于",
+          "等",
+          "灯",
+          "登",
+          "邓",
+          "瞪",
+          "蹬",
+          "凳"
+        ],
+        "preedit" : "deng yu ti n",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.036208333333333335,
+      "handled" : true,
+      "key" : 103,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          12,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "等于听",
+          "等于",
+          "等",
+          "灯",
+          "登",
+          "邓",
+          "瞪",
+          "蹬",
+          "凳"
+        ],
+        "preedit" : "deng yu ting",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.17762500000000001,
+      "handled" : true,
+      "key" : 108,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          14,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "等于停留",
+          "等于",
+          "等",
+          "灯",
+          "登",
+          "邓",
+          "瞪",
+          "蹬",
+          "凳"
+        ],
+        "preedit" : "deng yu ting l",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.042958333333333334,
+      "handled" : true,
+      "key" : 101,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          15,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "等于听了",
+          "等于",
+          "等",
+          "灯",
+          "登",
+          "邓",
+          "瞪",
+          "蹬",
+          "凳"
+        ],
+        "preedit" : "deng yu ting le",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.20395833333333335,
+      "handled" : true,
+      "key" : 119,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          17,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "等于听乐网",
+          "等于",
+          "等",
+          "灯",
+          "登",
+          "邓",
+          "瞪",
+          "蹬",
+          "凳"
+        ],
+        "preedit" : "deng yu ting le w",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.042999999999999997,
+      "handled" : true,
+      "key" : 111,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          18,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "等于听了我",
+          "等于",
+          "等",
+          "灯",
+          "登",
+          "邓",
+          "瞪",
+          "蹬",
+          "凳"
+        ],
+        "preedit" : "deng yu ting le wo",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.21141666666666667,
+      "handled" : true,
+      "key" : 109,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          20,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "等于听了我们",
+          "等于",
+          "等",
+          "灯",
+          "登",
+          "邓",
+          "瞪",
+          "蹬",
+          "凳"
+        ],
+        "preedit" : "deng yu ting le wo m",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.048958333333333333,
+      "handled" : true,
+      "key" : 101,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          21,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "等于听了我么",
+          "等于",
+          "等",
+          "灯",
+          "登",
+          "邓",
+          "瞪",
+          "蹬",
+          "凳"
+        ],
+        "preedit" : "deng yu ting le wo me",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.042458333333333334,
+      "handled" : true,
+      "key" : 110,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          22,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "等于听了我们",
+          "等于",
+          "等",
+          "灯",
+          "登",
+          "邓",
+          "瞪",
+          "蹬",
+          "凳"
+        ],
+        "preedit" : "deng yu ting le wo men",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.27712500000000001,
+      "handled" : true,
+      "key" : 122,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          25,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "等于停留而我门诊",
+          "等于",
+          "等",
+          "灯",
+          "登",
+          "邓",
+          "瞪",
+          "蹬",
+          "凳"
+        ],
+        "preedit" : "deng yu ting l e wo men z",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.056875000000000002,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          25,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "等于听了我们咋",
+          "等于",
+          "等",
+          "灯",
+          "登",
+          "邓",
+          "瞪",
+          "蹬",
+          "凳"
+        ],
+        "preedit" : "deng yu ting le wo men za",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.049708333333333334,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          26,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "等于听了我们在",
+          "等于",
+          "等",
+          "灯",
+          "登",
+          "邓",
+          "瞪",
+          "蹬",
+          "凳"
+        ],
+        "preedit" : "deng yu ting le wo men zai",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.32166666666666671,
+      "handled" : true,
+      "key" : 99,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          28,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "等于听了我们再次",
+          "等于",
+          "等",
+          "灯",
+          "登",
+          "邓",
+          "瞪",
+          "蹬",
+          "凳"
+        ],
+        "preedit" : "deng yu ting le wo men zai c",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.34970833333333329,
+      "handled" : true,
+      "key" : 104,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          29,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "等于听了我们在场",
+          "等于",
+          "等",
+          "灯",
+          "登",
+          "邓",
+          "瞪",
+          "蹬",
+          "凳"
+        ],
+        "preedit" : "deng yu ting le wo men zai ch",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.066083333333333327,
+      "handled" : true,
+      "key" : 117,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          30,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "等于听了我们再出",
+          "等于",
+          "等",
+          "灯",
+          "登",
+          "邓",
+          "瞪",
+          "蹬",
+          "凳"
+        ],
+        "preedit" : "deng yu ting le wo men zai chu",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.31529166666666669,
+      "handled" : true,
+      "key" : 102,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          32,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "等于听了我们在出发",
+          "等于",
+          "等",
+          "灯",
+          "登",
+          "邓",
+          "瞪",
+          "蹬",
+          "凳"
+        ],
+        "preedit" : "deng yu ting le wo men zai chu f",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.067375000000000004,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          33,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "等于听了我们在出发",
+          "等于",
+          "等",
+          "灯",
+          "登",
+          "邓",
+          "瞪",
+          "蹬",
+          "凳"
+        ],
+        "preedit" : "deng yu ting le wo men zai chu fa",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ]
+}

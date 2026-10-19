@@ -1,0 +1,31 @@
+/Users/steven/code/Arion/apps/desktop/ime/macos/keyboard.m:48:19: error: property 'pathComponents' not found on object of type 'const __strong id'
+   48 |         if ([name.pathComponents containsObject:@".."] || [name.pathComponents containsObject:@"."]) return NO;
+      |                   ^
+/Users/steven/code/Arion/apps/desktop/ime/macos/keyboard.m:48:65: error: property 'pathComponents' not found on object of type 'const __strong id'
+   48 |         if ([name.pathComponents containsObject:@".."] || [name.pathComponents containsObject:@"."]) return NO;
+      |                                                                 ^
+2 errors generated.
+node:internal/errors:985
+  const err = new Error(message);
+              ^
+
+Error: Command failed: xcrun clang -target arm64-apple-macos14.0 -fobjc-arc -Wall -Wextra -Werror -DARION_LEARNING_TESTING -I /Users/steven/code/Arion/apps/desktop/resources/darwin/keyboard/include -c /Users/steven/code/Arion/apps/desktop/ime/macos/keyboard.m -o /var/folders/wg/ntr3cxsd34x0rw4w17rdrym40000gn/T/arion-keyboard-test-UUH0GZ/typing-0.o
+    at genericNodeError (node:internal/errors:985:15)
+    at wrappedFn (node:internal/errors:539:14)
+    at checkExecSyncError (node:child_process:925:11)
+    at execFileSync (node:child_process:961:15)
+    at file:///Users/steven/code/Arion/scripts/test-keyboard-input.mjs:35:5
+    at Array.map (<anonymous>)
+    at file:///Users/steven/code/Arion/scripts/test-keyboard-input.mjs:33:69
+    at ModuleJob.run (node:internal/modules/esm/module_job:430:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:661:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {
+  status: 1,
+  signal: null,
+  output: [ null, null, null ],
+  pid: 73774,
+  stdout: null,
+  stderr: null
+}
+
+Node.js v24.14.0

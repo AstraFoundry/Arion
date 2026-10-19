@@ -1,0 +1,204 @@
+{
+  "id" : "common-word-043",
+  "boundary" : "production engine key-processing plus synchronous snapshot copying; no OS events or rendered preedit",
+  "teardownMs" : 0.44420833333333332,
+  "timer" : "mach_absolute_time",
+  "beforeConfirmation" : {
+    "commit" : "",
+    "selection" : [
+      6,
+      0
+    ],
+    "lastPage" : false,
+    "highlighted" : 0,
+    "candidates" : [
+      "土豆",
+      "图",
+      "土",
+      "吐",
+      "涂",
+      "兔",
+      "突",
+      "徒",
+      "凸"
+    ],
+    "preedit" : "tu dou",
+    "page" : 0,
+    "ascii" : false
+  },
+  "terminal" : "empty-preedit",
+  "warmupMs" : 0.0025416666666666665,
+  "peakRSSBytes" : 21397504,
+  "confirmations" : [
+    {
+      "keyToSnapshotMs" : 0.014166666666666666,
+      "handled" : true,
+      "key" : 32,
+      "snapshot" : {
+        "commit" : "土豆",
+        "selection" : [
+          0,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+
+        ],
+        "preedit" : "",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ],
+  "input" : "tudou",
+  "startupToSessionMs" : 15.332541666666666,
+  "committed" : "土豆",
+  "warmups" : [
+
+  ],
+  "inputKeysToFinalSnapshotMs" : 0.16258333333333333,
+  "status" : "completed",
+  "steps" : [
+    {
+      "keyToSnapshotMs" : 0.067833333333333329,
+      "handled" : true,
+      "key" : 116,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          1,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "他",
+          "她",
+          "太",
+          "它",
+          "天",
+          "听",
+          "同",
+          "挺",
+          "图"
+        ],
+        "preedit" : "t",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.022416666666666668,
+      "handled" : true,
+      "key" : 117,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          2,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "图",
+          "土",
+          "吐",
+          "涂",
+          "兔",
+          "突",
+          "徒",
+          "凸",
+          "途"
+        ],
+        "preedit" : "tu",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.026916666666666669,
+      "handled" : true,
+      "key" : 100,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          4,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "土地",
+          "土豆",
+          "徒弟",
+          "图",
+          "土",
+          "吐",
+          "涂",
+          "兔",
+          "突"
+        ],
+        "preedit" : "tu d",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.019208333333333331,
+      "handled" : true,
+      "key" : 111,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          5,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "土豆",
+          "图",
+          "土",
+          "吐",
+          "涂",
+          "兔",
+          "突",
+          "徒",
+          "凸"
+        ],
+        "preedit" : "tu do",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.016791666666666667,
+      "handled" : true,
+      "key" : 117,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          6,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "土豆",
+          "图",
+          "土",
+          "吐",
+          "涂",
+          "兔",
+          "突",
+          "徒",
+          "凸"
+        ],
+        "preedit" : "tu dou",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ]
+}

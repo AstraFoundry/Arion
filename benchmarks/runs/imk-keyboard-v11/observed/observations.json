@@ -1,0 +1,14 @@
+{
+  "kind": "derived-observation",
+  "userEvidence": "User supplied screenshot requesting Allow for Arion Dev to enable Arion and reported allowing; second screenshot lacks Arion in added-source list.",
+  "installedArtifact": "Installed host again ad hoc after repeated Dev installation; earlier staged Developer ID host was replaced.",
+  "permissionPersistence": "Unknown; a native prompt screenshot and user-reported Allow do not establish actual enabled state.",
+  "activationFailureCause": "Not established.",
+  "correctedDefects": [
+    "reject untrusted payload before installed-path mutation",
+    "copied-but-undiscovered valid metadata stays pending",
+    "native consent is no longer followed by immediate automatic settings navigation",
+    "actual observed source-state transitions recorded"
+  ],
+  "scope": "No source selection, permission confirmation, host launch or login/logout performed in this continuation."
+}

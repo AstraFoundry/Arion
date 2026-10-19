@@ -1,0 +1,17 @@
+{
+  "kind": "derived-artifact-metadata",
+  "dmg": {
+    "name": "Arion 0.1.0 arm64.dmg",
+    "sizeBytes": 30830336,
+    "sha256": "cada41cbc5ce45fa3eef2c03a6f4ab5e883e18a4d66cd1480dbe07c967e6269f"
+  },
+  "mainExecutableSha256": "d9efead0a1f80bfa168ebdd8a366f973259279a69cd235e20d5fda2314c791ae",
+  "inputHostExecutableSha256": "4e40cb54e9b92425e54cb74cf8f0307b90fb9cbb18099078ecdedb04f12d4f91",
+  "inputHostInfoPlistSha256": "6e22ea9364da5fe062855293e531c504eb343f7da7872b392dd11b1b8bff02eb",
+  "buildCommand": "make build desktop",
+  "buildExitStatus": 0,
+  "originalBuildLog": "signed-build.log",
+  "originalReadOnlyPayloadValidationLog": "new-payload-validation.log",
+  "realInputSourceAcceptance": false,
+  "updaterArchiveSignature": "not configured in this build"
+}

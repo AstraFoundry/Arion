@@ -1,0 +1,14 @@
+{
+  "evidenceType": "Derived from preserved original final controller state and disable output; not a contemporaneous raw transcript",
+  "initialObservationStatus": "restore-failed",
+  "finalControllerPhase": "restored",
+  "initialCleanupErrors": [
+    "remove: Diagnostic source remains active"
+  ],
+  "currentAfterRecovery": "com.apple.keylayout.ABC",
+  "keyStatusAfterRecovery": -25300,
+  "errorsAfterRecovery": [],
+  "cachedEntriesRemain": true,
+  "cachedEntriesEnabledAfterRecovery": false,
+  "acceptance": "failed; select -50; no installed IMK host dispatch"
+}

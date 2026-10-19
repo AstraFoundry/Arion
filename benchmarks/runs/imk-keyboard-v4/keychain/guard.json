@@ -1,0 +1,10 @@
+{
+  "passed" : true,
+  "phase" : "guard",
+  "runID" : "b03804bd-afea-4544-aaed-e898ad06e8f3",
+  "interactionPolicyRestored" : 1,
+  "boundary" : "production encryption\/engine with real OS-kept key; owned profile; no IMK source dispatch",
+  "secretDataRequestedByHarness" : false,
+  "interactionPolicyStatus" : 0,
+  "baselineStatus" : -25300
+}

@@ -1,0 +1,113 @@
+
+> arion-monorepo@0.0.0 desktop:check /Users/steven/code/Arion
+> node scripts/check-go.mjs desktop
+
+# arion.local/desktop/bootstrap.test
+ld: warning: ignoring duplicate libraries: '-lobjc'
+?   	arion.local/desktop	[no test files]
+ok  	arion.local/desktop/bootstrap	(cached)
+?   	arion.local/desktop/cmd/arion-context-probe	[no test files]
+?   	arion.local/desktop/cmd/arion-e2e-driver	[no test files]
+?   	arion.local/desktop/cmd/arion-eval-driver	[no test files]
+?   	arion.local/desktop/cmd/arion-icon	[no test files]
+?   	arion.local/desktop/cmd/arion-ime-probe	[no test files]
+?   	arion.local/desktop/cmd/arion-live-bench	[no test files]
+ok  	arion.local/desktop/cmd/arion-llm	(cached)
+?   	arion.local/desktop/cmd/arion-memory-bench	[no test files]
+ok  	arion.local/desktop/cmd/arion-memory-loop	(cached)
+?   	arion.local/desktop/cmd/arion-models	[no test files]
+?   	arion.local/desktop/cmd/arion-ocr	[no test files]
+?   	arion.local/desktop/cmd/arion-rewrite-bench	[no test files]
+?   	arion.local/desktop/cmd/arion-scene-bench	[no test files]
+?   	arion.local/desktop/infrastructure/asr	[no test files]
+ok  	arion.local/desktop/infrastructure/audio	1.773s
+ok  	arion.local/desktop/infrastructure/browser	(cached)
+ok  	arion.local/desktop/infrastructure/diagnostics	2.611s
+ok  	arion.local/desktop/infrastructure/holdkey	(cached)
+ok  	arion.local/desktop/infrastructure/imebridge	2.567s
+ok  	arion.local/desktop/infrastructure/keystore	(cached)
+ok  	arion.local/desktop/infrastructure/llm/client	3.082s
+ok  	arion.local/desktop/infrastructure/llm/engine	(cached)
+?   	arion.local/desktop/infrastructure/llm/genai	[no test files]
+ok  	arion.local/desktop/infrastructure/llm/prompt	(cached)
+?   	arion.local/desktop/infrastructure/llm/protocol	[no test files]
+ok  	arion.local/desktop/infrastructure/macos	(cached)
+ok  	arion.local/desktop/infrastructure/modelruntime	3.159s
+ok  	arion.local/desktop/infrastructure/netproxy	(cached)
+ok  	arion.local/desktop/infrastructure/provision	3.918s
+?   	arion.local/desktop/infrastructure/rewriting	[no test files]
+?   	arion.local/desktop/infrastructure/secrets	[no test files]
+ok  	arion.local/desktop/infrastructure/settings	(cached)
+ok  	arion.local/desktop/infrastructure/usage	(cached)
+ok  	arion.local/desktop/infrastructure/vocabulary	(cached)
+ok  	arion.local/desktop/infrastructure/wordseg	(cached)
+ok  	arion.local/desktop/internal/account	(cached)
+ok  	arion.local/desktop/internal/center	(cached)
+ok  	arion.local/desktop/ui/app	131.819s
+ok  	arion.local/desktop/ui/entities/account	(cached)
+?   	arion.local/desktop/ui/entities/dictation	[no test files]
+?   	arion.local/desktop/ui/entities/model	[no test files]
+ok  	arion.local/desktop/ui/entities/onboarding	(cached)
+?   	arion.local/desktop/ui/features/diagnostics	[no test files]
+?   	arion.local/desktop/ui/features/dictate	[no test files]
+?   	arion.local/desktop/ui/features/holdkey	[no test files]
+?   	arion.local/desktop/ui/features/inputmode	[no test files]
+?   	arion.local/desktop/ui/features/microphone	[no test files]
+?   	arion.local/desktop/ui/features/modelchoice	[no test files]
+?   	arion.local/desktop/ui/features/permissions	[no test files]
+?   	arion.local/desktop/ui/features/polish	[no test files]
+?   	arion.local/desktop/ui/features/provision	[no test files]
+?   	arion.local/desktop/ui/features/scene	[no test files]
+?   	arion.local/desktop/ui/features/shortcut	[no test files]
+?   	arion.local/desktop/ui/features/signin	[no test files]
+?   	arion.local/desktop/ui/features/transcript	[no test files]
+?   	arion.local/desktop/ui/features/uilanguage	[no test files]
+?   	arion.local/desktop/ui/features/update	[no test files]
+?   	arion.local/desktop/ui/features/vocabulary	[no test files]
+?   	arion.local/desktop/ui/pages/guide	[no test files]
+?   	arion.local/desktop/ui/pages/menubar	[no test files]
+?   	arion.local/desktop/ui/pages/onboarding	[no test files]
+?   	arion.local/desktop/ui/pages/overlay	[no test files]
+?   	arion.local/desktop/ui/pages/settings	[no test files]
+?   	arion.local/desktop/ui/shared/assets	[no test files]
+?   	arion.local/desktop/ui/shared/config	[no test files]
+ok  	arion.local/desktop/ui/shared/copy	(cached)
+?   	arion.local/desktop/ui/shared/icons	[no test files]
+ok  	arion.local/desktop/ui/shared/kit	(cached)
+ok  	arion.local/desktop/ui/shared/runtime	(cached)
+?   	arion.local/desktop/ui/shared/theme	[no test files]
+?   	arion.local/desktop/ui/widgets/capsule	[no test files]
+?   	arion.local/desktop/ui/widgets/modelcard	[no test files]
+?   	arion.local/desktop/ui/widgets/showcase	[no test files]
+?   	arion.local/desktop/ui/widgets/statusheader	[no test files]
+?   	arion.local/desktop/ui/widgets/stepper	[no test files]
+ok  	arion.local/desktop/ui/widgets/usage	(cached)
+Staged librime 1.17.0 (arm64 + x86_64), arion_pinyin prebuilt data and license notices.
+Build-only SDK: .workspace/keyboard-runtime/sdk/include
+2026-10-18 13:23:30.672 composition-test[12338:97788714] PASS: native AppKit composition ownership, terminality, revisions and Unicode
+Encrypted learning source tests passed.
+2026-10-18 13:23:57.774 typing-test[12826:97790467] PASS: corrupt immutable data rejects startup before storage
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I20261018 13:23:57.774802 0x1f8b7e180 registry.cc:14] registering component: arion_encrypted_userdb
+2026-10-18 13:23:57.858 typing-test[12826:97790467] PASS: real full-Pinyin commit
+2026-10-18 13:23:57.866 typing-test[12826:97790467] PASS: cancel preserves emoji neighbors
+2026-10-18 13:23:57.874 typing-test[12826:97790467] PASS: commit preserves emoji neighbors
+2026-10-18 13:23:57.883 typing-test[12826:97790467] PASS: Backspace reconverts real input
+2026-10-18 13:23:57.891 typing-test[12826:97790467] PASS: page and relative number selection
+2026-10-18 13:23:57.899 typing-test[12826:97790467] PASS: partial selection and suffix continuation
+2026-10-18 13:23:57.908 typing-test[12826:97790467] PASS: partial-selection Backspace rollback
+2026-10-18 13:23:57.916 typing-test[12826:97790467] PASS: mid-buffer caret edit and Home End
+2026-10-18 13:23:57.925 typing-test[12826:97790467] PASS: forward Delete at Home preserves suffix
+2026-10-18 13:23:57.932 typing-test[12826:97790467] PASS: Shift Space discards draft and passes ASCII
+2026-10-18 13:23:57.940 typing-test[12826:97790467] PASS: stale candidate callbacks cannot select
+2026-10-18 13:23:57.948 typing-test[12826:97790467] PASS: deactivation discards draft and rejects callback
+2026-10-18 13:23:57.957 typing-test[12826:97790467] PASS: apostrophe syllable boundary converts real phrase
+2026-10-18 13:23:57.966 typing-test[12826:97790467] PASS: abbreviated Pinyin retains real candidate identity
+2026-10-18 13:23:57.975 typing-test[12826:97790467] PASS: v input represents umlaut Pinyin
+2026-10-18 13:23:57.987 typing-test[12826:97790467] PASS: Chinese punctuation follows confirmed phrase
+2026-10-18 13:23:57.997 typing-test[12826:97790467] PASS: Return commits literal raw input
+2026-10-18 13:23:58.027 typing-test[12826:97790467] PASS: confirmed learning survives restart and cancellation adds nothing
+2026-10-18 13:23:58.036 typing-test[12826:97790467] PASS: released owner destroys actual engine session without client callbacks
+2026-10-18 13:23:58.106 typing-test[12826:97790467] PASS: mouse candidate failures revoke callbacks and preserve pending recovery
+2026-10-18 13:23:58.129 typing-test[12826:97790467] PASS: learning write failure retains actual engine commit
+Keyboard test report: /Users/steven/code/Arion/.workspace/tests/keyboard-input.json

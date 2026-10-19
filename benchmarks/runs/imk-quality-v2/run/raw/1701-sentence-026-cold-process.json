@@ -1,0 +1,876 @@
+{
+  "id" : "sentence-026",
+  "boundary" : "production engine key-processing plus synchronous snapshot copying; no OS events or rendered preedit",
+  "teardownMs" : 0.453625,
+  "timer" : "mach_absolute_time",
+  "beforeConfirmation" : {
+    "commit" : "",
+    "selection" : [
+      37,
+      0
+    ],
+    "lastPage" : false,
+    "highlighted" : 0,
+    "candidates" : [
+      "这家点的面条很好吃",
+      "这家",
+      "折价",
+      "这几",
+      "这既",
+      "这",
+      "着",
+      "者",
+      "折"
+    ],
+    "preedit" : "zhe jia dian de mian tiao hen hao chi",
+    "page" : 0,
+    "ascii" : false
+  },
+  "terminal" : "empty-preedit",
+  "warmupMs" : 0.0018333333333333333,
+  "peakRSSBytes" : 22396928,
+  "confirmations" : [
+    {
+      "keyToSnapshotMs" : 0.020250000000000001,
+      "handled" : true,
+      "key" : 32,
+      "snapshot" : {
+        "commit" : "这家点的面条很好吃",
+        "selection" : [
+          0,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+
+        ],
+        "preedit" : "",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ],
+  "input" : "zhejiadiandemiantiaohenhaochi",
+  "startupToSessionMs" : 13.759958333333334,
+  "committed" : "这家点的面条很好吃",
+  "warmups" : [
+
+  ],
+  "inputKeysToFinalSnapshotMs" : 3.4621666666666666,
+  "status" : "completed",
+  "steps" : [
+    {
+      "keyToSnapshotMs" : 0.077499999999999999,
+      "handled" : true,
+      "key" : 122,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          1,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "在",
+          "中",
+          "这",
+          "做",
+          "再",
+          "着",
+          "找",
+          "最",
+          "真"
+        ],
+        "preedit" : "z",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.080750000000000002,
+      "handled" : true,
+      "key" : 104,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          2,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "中",
+          "这",
+          "着",
+          "找",
+          "真",
+          "之",
+          "只",
+          "者",
+          "张"
+        ],
+        "preedit" : "zh",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.024125000000000001,
+      "handled" : true,
+      "key" : 101,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          3,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "这",
+          "着",
+          "者",
+          "折",
+          "哲",
+          "遮",
+          "浙",
+          "這",
+          "喆"
+        ],
+        "preedit" : "zhe",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.093791666666666676,
+      "handled" : true,
+      "key" : 106,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          5,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "浙江",
+          "这就",
+          "这家",
+          "这句",
+          "这件",
+          "这叫",
+          "这将",
+          "这几",
+          "折旧"
+        ],
+        "preedit" : "zhe j",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.023208333333333331,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          6,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "这几",
+          "这既",
+          "这",
+          "着",
+          "者",
+          "折",
+          "哲",
+          "遮",
+          "浙"
+        ],
+        "preedit" : "zhe ji",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.019583333333333331,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          7,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "这家",
+          "折价",
+          "这几",
+          "这既",
+          "这",
+          "着",
+          "者",
+          "折",
+          "哲"
+        ],
+        "preedit" : "zhe jia",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.20345833333333335,
+      "handled" : true,
+      "key" : 100,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          9,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "这家的",
+          "这家",
+          "折价",
+          "这几",
+          "这既",
+          "这",
+          "着",
+          "者",
+          "综合"
+        ],
+        "preedit" : "zhe jia d",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.040791666666666664,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          10,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "这家地",
+          "这家",
+          "折价",
+          "这几",
+          "这既",
+          "这",
+          "着",
+          "者",
+          "折"
+        ],
+        "preedit" : "zhe jia di",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.035499999999999997,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          11,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "这家嗲",
+          "这家",
+          "折价",
+          "这几",
+          "这既",
+          "这",
+          "着",
+          "者",
+          "折"
+        ],
+        "preedit" : "zhe jia dia",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.039458333333333338,
+      "handled" : true,
+      "key" : 110,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          12,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "这家点",
+          "这家",
+          "折价",
+          "这几",
+          "这既",
+          "这",
+          "着",
+          "者",
+          "折"
+        ],
+        "preedit" : "zhe jia dian",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.22337499999999999,
+      "handled" : true,
+      "key" : 100,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          14,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "这家点点",
+          "这家",
+          "折价",
+          "这几",
+          "这既",
+          "这",
+          "着",
+          "者",
+          "综合"
+        ],
+        "preedit" : "zhe jia dian d",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.047750000000000001,
+      "handled" : true,
+      "key" : 101,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          15,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "这家点的",
+          "这家",
+          "折价",
+          "这几",
+          "这既",
+          "这",
+          "着",
+          "者",
+          "折"
+        ],
+        "preedit" : "zhe jia dian de",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.25387500000000002,
+      "handled" : true,
+      "key" : 109,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          17,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "这家点的吗",
+          "这家",
+          "折价",
+          "这几",
+          "这既",
+          "这",
+          "着",
+          "者",
+          "综合"
+        ],
+        "preedit" : "zhe jia dian de m",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.051416666666666666,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          18,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "这家点的米",
+          "这家",
+          "折价",
+          "这几",
+          "这既",
+          "这",
+          "着",
+          "者",
+          "折"
+        ],
+        "preedit" : "zhe jia dian de mi",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.045749999999999999,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          20,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "这家点的米啊",
+          "这家",
+          "折价",
+          "这几",
+          "这既",
+          "这",
+          "着",
+          "者",
+          "折"
+        ],
+        "preedit" : "zhe jia dian de mi a",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.04675,
+      "handled" : true,
+      "key" : 110,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          20,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "这家点的面",
+          "这家",
+          "折价",
+          "这几",
+          "这既",
+          "这",
+          "着",
+          "者",
+          "折"
+        ],
+        "preedit" : "zhe jia dian de mian",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.27379166666666671,
+      "handled" : true,
+      "key" : 116,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          22,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "这家点的面条",
+          "这家",
+          "折价",
+          "这几",
+          "这既",
+          "这",
+          "着",
+          "者",
+          "综合"
+        ],
+        "preedit" : "zhe jia dian de mian t",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.061499999999999999,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          23,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "这家点的面提",
+          "这家",
+          "折价",
+          "这几",
+          "这既",
+          "这",
+          "着",
+          "者",
+          "折"
+        ],
+        "preedit" : "zhe jia dian de mian ti",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.052541666666666667,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          25,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "这家点的面提啊",
+          "这家",
+          "折价",
+          "这几",
+          "这既",
+          "这",
+          "着",
+          "者",
+          "折"
+        ],
+        "preedit" : "zhe jia dian de mian ti a",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.055458333333333339,
+      "handled" : true,
+      "key" : 111,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          25,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "这家点的面条",
+          "这家",
+          "折价",
+          "这几",
+          "这既",
+          "这",
+          "着",
+          "者",
+          "折"
+        ],
+        "preedit" : "zhe jia dian de mian tiao",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.27324999999999999,
+      "handled" : true,
+      "key" : 104,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          27,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "这家点的面条和",
+          "这家",
+          "折价",
+          "这几",
+          "这既",
+          "这",
+          "着",
+          "者",
+          "综合"
+        ],
+        "preedit" : "zhe jia dian de mian tiao h",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.073916666666666672,
+      "handled" : true,
+      "key" : 101,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          28,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "这家点的面条和",
+          "这家",
+          "折价",
+          "这几",
+          "这既",
+          "这",
+          "着",
+          "者",
+          "折"
+        ],
+        "preedit" : "zhe jia dian de mian tiao he",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.064208333333333339,
+      "handled" : true,
+      "key" : 110,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          29,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "这家点的面条很",
+          "这家",
+          "折价",
+          "这几",
+          "这既",
+          "这",
+          "着",
+          "者",
+          "折"
+        ],
+        "preedit" : "zhe jia dian de mian tiao hen",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.3242916666666667,
+      "handled" : true,
+      "key" : 104,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          31,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "这家点的面条很好",
+          "这家",
+          "折价",
+          "这几",
+          "这既",
+          "这",
+          "着",
+          "者",
+          "综合"
+        ],
+        "preedit" : "zhe jia dian de mian tiao hen h",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.074958333333333335,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          32,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "这家点的面条很哈",
+          "这家",
+          "折价",
+          "这几",
+          "这既",
+          "这",
+          "着",
+          "者",
+          "折"
+        ],
+        "preedit" : "zhe jia dian de mian tiao hen ha",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.067208333333333328,
+      "handled" : true,
+      "key" : 111,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          33,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "这家点的面条很好",
+          "这家",
+          "折价",
+          "这几",
+          "这既",
+          "这",
+          "着",
+          "者",
+          "折"
+        ],
+        "preedit" : "zhe jia dian de mian tiao hen hao",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.34320833333333334,
+      "handled" : true,
+      "key" : 99,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          35,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "这家点的面条很好从",
+          "这家",
+          "折价",
+          "这几",
+          "这既",
+          "这",
+          "着",
+          "者",
+          "综合"
+        ],
+        "preedit" : "zhe jia dian de mian tiao hen hao c",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.37479166666666669,
+      "handled" : true,
+      "key" : 104,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          36,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "这家点的面条很好吃",
+          "这家",
+          "折价",
+          "这几",
+          "这既",
+          "这",
+          "着",
+          "者",
+          "综合"
+        ],
+        "preedit" : "zhe jia dian de mian tiao hen hao ch",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.086374999999999993,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          37,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "这家点的面条很好吃",
+          "这家",
+          "折价",
+          "这几",
+          "这既",
+          "这",
+          "着",
+          "者",
+          "折"
+        ],
+        "preedit" : "zhe jia dian de mian tiao hen hao chi",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+Staged librime 1.17.0 (arm64 + x86_64), arion_pinyin prebuilt data and license notices.
+Build-only SDK: .workspace/keyboard-runtime/sdk/include
+/Users/steven/code/Arion/apps/desktop/resources/darwin/.arion-input-build-uvT2OH/ArionInput.app/Contents/Resources/menu_icon.png
+  /Users/steven/code/Arion/apps/desktop/resources/darwin/.arion-input-build-uvT2OH/ArionInput.app/Contents/Resources/menu_icon.tiff
+Built apps/desktop/resources/darwin/ArionInput.app

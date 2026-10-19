@@ -1,0 +1,39 @@
+{
+  "phase": "restored",
+  "baseline": {
+    "current": "com.apple.keylayout.ABC",
+    "learningKeyStatus": -25300,
+    "own": []
+  },
+  "bundle": "/Users/steven/Library/Input Methods/ArionInput.app",
+  "backup": "/Users/steven/code/Arion/.workspace/e2e/imk-system/run-07/original/ArionInput.app",
+  "original": true,
+  "profile": "/Users/steven/code/Arion/.workspace/e2e/imk-system/run-07/profile",
+  "fixtureSocket": "/tmp/arion-ime-fixture-01.sock",
+  "originalInventory": {
+    "Contents/Info.plist": {
+      "mode": 420,
+      "sha256": "b45d6588505515a0bdb20b2cf5586dddbae1b197d6b5c5b603f1565555146b06"
+    },
+    "Contents/MacOS/ArionInput": {
+      "mode": 493,
+      "sha256": "870b2fcccff04a25c394986d07d0e0a836d229070ff8450ba46b1851011e55da"
+    },
+    "Contents/Resources/menu_icon.tiff": {
+      "mode": 420,
+      "sha256": "02955dec39067bea2b7fde2ec2d63865789f4f002277611ecc1149330f7fb0de"
+    },
+    "Contents/_CodeSignature/CodeResources": {
+      "mode": 420,
+      "sha256": "a6ce4fa2c334ec2ece5a01282786d850b791cd99ba9f3f871917b72ab9f19cdf"
+    }
+  },
+  "applicationPID": 20198,
+  "applicationBundle": "/Users/steven/code/Arion/.workspace/e2e/imk-system/run-07/application/Arion.app",
+  "after": {
+    "current": "com.apple.keylayout.ABC",
+    "learningKeyStatus": -25300,
+    "own": []
+  },
+  "errors": []
+}

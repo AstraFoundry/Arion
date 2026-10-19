@@ -1,0 +1,736 @@
+{
+  "id" : "sentence-017",
+  "boundary" : "production engine key-processing plus synchronous snapshot copying; no OS events or rendered preedit",
+  "teardownMs" : 0.59029166666666666,
+  "timer" : "mach_absolute_time",
+  "beforeConfirmation" : {
+    "commit" : "",
+    "selection" : [
+      31,
+      0
+    ],
+    "lastPage" : false,
+    "highlighted" : 0,
+    "candidates" : [
+      "这里到机场要多久",
+      "这里",
+      "哲理",
+      "这",
+      "着",
+      "者",
+      "折",
+      "哲",
+      "遮"
+    ],
+    "preedit" : "zhe li dao ji chang yao duo jiu",
+    "page" : 0,
+    "ascii" : false
+  },
+  "terminal" : "empty-preedit",
+  "warmupMs" : 0.0018333333333333333,
+  "peakRSSBytes" : 22462464,
+  "confirmations" : [
+    {
+      "keyToSnapshotMs" : 0.020208333333333332,
+      "handled" : true,
+      "key" : 32,
+      "snapshot" : {
+        "commit" : "这里到机场要多久",
+        "selection" : [
+          0,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+
+        ],
+        "preedit" : "",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ],
+  "input" : "zhelidaojichangyaoduojiu",
+  "startupToSessionMs" : 11.9015,
+  "committed" : "这里到机场要多久",
+  "warmups" : [
+
+  ],
+  "inputKeysToFinalSnapshotMs" : 3.1995416666666667,
+  "status" : "completed",
+  "steps" : [
+    {
+      "keyToSnapshotMs" : 0.11158333333333333,
+      "handled" : true,
+      "key" : 122,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          1,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "在",
+          "中",
+          "这",
+          "做",
+          "再",
+          "着",
+          "找",
+          "最",
+          "真"
+        ],
+        "preedit" : "z",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.088833333333333334,
+      "handled" : true,
+      "key" : 104,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          2,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "中",
+          "这",
+          "着",
+          "找",
+          "真",
+          "之",
+          "只",
+          "者",
+          "张"
+        ],
+        "preedit" : "zh",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.027541666666666669,
+      "handled" : true,
+      "key" : 101,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          3,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "这",
+          "着",
+          "者",
+          "折",
+          "哲",
+          "遮",
+          "浙",
+          "這",
+          "喆"
+        ],
+        "preedit" : "zhe",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.10779166666666667,
+      "handled" : true,
+      "key" : 108,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          5,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "这里",
+          "这类",
+          "这两",
+          "哲理",
+          "着脸",
+          "这辆",
+          "周恩来",
+          "这俩",
+          "这轮"
+        ],
+        "preedit" : "zhe l",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.031083333333333331,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          6,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "这里",
+          "哲理",
+          "这",
+          "着",
+          "者",
+          "折",
+          "哲",
+          "遮",
+          "浙"
+        ],
+        "preedit" : "zhe li",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.26883333333333331,
+      "handled" : true,
+      "key" : 100,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          8,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "这里的",
+          "这里",
+          "哲理",
+          "这",
+          "着",
+          "者",
+          "综合",
+          "折",
+          "组合"
+        ],
+        "preedit" : "zhe li d",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.042541666666666665,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          9,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "这里打",
+          "这里",
+          "哲理",
+          "这",
+          "着",
+          "者",
+          "折",
+          "哲",
+          "遮"
+        ],
+        "preedit" : "zhe li da",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.035083333333333334,
+      "handled" : true,
+      "key" : 111,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          10,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "这里到",
+          "这里",
+          "哲理",
+          "这",
+          "着",
+          "者",
+          "折",
+          "哲",
+          "遮"
+        ],
+        "preedit" : "zhe li dao",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.263625,
+      "handled" : true,
+      "key" : 106,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          12,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "这里道具",
+          "这里",
+          "哲理",
+          "这",
+          "着",
+          "者",
+          "综合",
+          "折",
+          "组合"
+        ],
+        "preedit" : "zhe li dao j",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.059333333333333335,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          13,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "这里到及",
+          "这里",
+          "哲理",
+          "这",
+          "着",
+          "者",
+          "折",
+          "哲",
+          "遮"
+        ],
+        "preedit" : "zhe li dao ji",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.22966666666666666,
+      "handled" : true,
+      "key" : 99,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          15,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "这里到基础",
+          "这里",
+          "哲理",
+          "这",
+          "着",
+          "者",
+          "综合",
+          "折",
+          "组合"
+        ],
+        "preedit" : "zhe li dao ji c",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.24691666666666665,
+      "handled" : true,
+      "key" : 104,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          16,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "这里到基础",
+          "这里",
+          "哲理",
+          "这",
+          "着",
+          "者",
+          "综合",
+          "折",
+          "组合"
+        ],
+        "preedit" : "zhe li dao ji ch",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.047625000000000001,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          17,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "这里到稽查",
+          "这里",
+          "哲理",
+          "这",
+          "着",
+          "者",
+          "折",
+          "哲",
+          "遮"
+        ],
+        "preedit" : "zhe li dao ji cha",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.059708333333333335,
+      "handled" : true,
+      "key" : 110,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          18,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "这里到及产",
+          "这里",
+          "哲理",
+          "这",
+          "着",
+          "者",
+          "折",
+          "哲",
+          "遮"
+        ],
+        "preedit" : "zhe li dao ji chan",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.042583333333333334,
+      "handled" : true,
+      "key" : 103,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          19,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "这里到机场",
+          "这里",
+          "哲理",
+          "这",
+          "着",
+          "者",
+          "折",
+          "哲",
+          "遮"
+        ],
+        "preedit" : "zhe li dao ji chang",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.36883333333333329,
+      "handled" : true,
+      "key" : 121,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          21,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "这里到机场有",
+          "这里",
+          "哲理",
+          "这",
+          "着",
+          "者",
+          "综合",
+          "折",
+          "组合"
+        ],
+        "preedit" : "zhe li dao ji chang y",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.058041666666666665,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          22,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "这里到机场呀",
+          "这里",
+          "哲理",
+          "这",
+          "着",
+          "者",
+          "折",
+          "哲",
+          "遮"
+        ],
+        "preedit" : "zhe li dao ji chang ya",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.049416666666666664,
+      "handled" : true,
+      "key" : 111,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          23,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "这里到机场要",
+          "这里",
+          "哲理",
+          "这",
+          "着",
+          "者",
+          "折",
+          "哲",
+          "遮"
+        ],
+        "preedit" : "zhe li dao ji chang yao",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.39087499999999997,
+      "handled" : true,
+      "key" : 100,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          25,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "这里到机场要到",
+          "这里",
+          "哲理",
+          "这",
+          "着",
+          "者",
+          "综合",
+          "折",
+          "组合"
+        ],
+        "preedit" : "zhe li dao ji chang yao d",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.071999999999999995,
+      "handled" : true,
+      "key" : 117,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          26,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "这里到机场要读",
+          "这里",
+          "哲理",
+          "这",
+          "着",
+          "者",
+          "折",
+          "哲",
+          "遮"
+        ],
+        "preedit" : "zhe li dao ji chang yao du",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.055166666666666662,
+      "handled" : true,
+      "key" : 111,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          27,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "这里到机场要多",
+          "这里",
+          "哲理",
+          "这",
+          "着",
+          "者",
+          "折",
+          "哲",
+          "遮"
+        ],
+        "preedit" : "zhe li dao ji chang yao duo",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.38100000000000001,
+      "handled" : true,
+      "key" : 106,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          29,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "这里到机场要多久",
+          "这里",
+          "哲理",
+          "这",
+          "着",
+          "者",
+          "综合",
+          "折",
+          "组合"
+        ],
+        "preedit" : "zhe li dao ji chang yao duo j",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.074916666666666673,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          30,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "这里到机场要多级",
+          "这里",
+          "哲理",
+          "这",
+          "着",
+          "者",
+          "折",
+          "哲",
+          "遮"
+        ],
+        "preedit" : "zhe li dao ji chang yao duo ji",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.056250000000000001,
+      "handled" : true,
+      "key" : 117,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          31,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "这里到机场要多久",
+          "这里",
+          "哲理",
+          "这",
+          "着",
+          "者",
+          "折",
+          "哲",
+          "遮"
+        ],
+        "preedit" : "zhe li dao ji chang yao duo jiu",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ]
+}

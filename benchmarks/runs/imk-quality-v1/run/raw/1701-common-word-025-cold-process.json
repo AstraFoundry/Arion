@@ -1,0 +1,316 @@
+{
+  "id" : "common-word-025",
+  "boundary" : "production engine key-processing plus synchronous snapshot copying; no OS events or rendered preedit",
+  "teardownMs" : 0.43541666666666667,
+  "timer" : "mach_absolute_time",
+  "beforeConfirmation" : {
+    "commit" : "",
+    "selection" : [
+      11,
+      0
+    ],
+    "lastPage" : false,
+    "highlighted" : 0,
+    "candidates" : [
+      "图书馆",
+      "图书",
+      "图",
+      "土",
+      "吐",
+      "涂",
+      "兔",
+      "突",
+      "徒"
+    ],
+    "preedit" : "tu shu guan",
+    "page" : 0,
+    "ascii" : false
+  },
+  "terminal" : "empty-preedit",
+  "warmupMs" : 0.0023749999999999999,
+  "peakRSSBytes" : 21479424,
+  "confirmations" : [
+    {
+      "keyToSnapshotMs" : 0.014916666666666667,
+      "handled" : true,
+      "key" : 32,
+      "snapshot" : {
+        "commit" : "图书馆",
+        "selection" : [
+          0,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+
+        ],
+        "preedit" : "",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ],
+  "input" : "tushuguan",
+  "startupToSessionMs" : 11.632916666666667,
+  "committed" : "图书馆",
+  "warmups" : [
+
+  ],
+  "inputKeysToFinalSnapshotMs" : 0.31945833333333329,
+  "status" : "completed",
+  "steps" : [
+    {
+      "keyToSnapshotMs" : 0.072333333333333333,
+      "handled" : true,
+      "key" : 116,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          1,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "他",
+          "她",
+          "太",
+          "它",
+          "天",
+          "听",
+          "同",
+          "挺",
+          "图"
+        ],
+        "preedit" : "t",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.023541666666666669,
+      "handled" : true,
+      "key" : 117,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          2,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "图",
+          "土",
+          "吐",
+          "涂",
+          "兔",
+          "突",
+          "徒",
+          "凸",
+          "途"
+        ],
+        "preedit" : "tu",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.032250000000000001,
+      "handled" : true,
+      "key" : 115,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          4,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "图书",
+          "屠杀",
+          "涂上",
+          "图示",
+          "徒手",
+          "土司",
+          "图",
+          "土",
+          "吐"
+        ],
+        "preedit" : "tu s",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.035041666666666665,
+      "handled" : true,
+      "key" : 104,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          5,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "图书",
+          "屠杀",
+          "涂上",
+          "图示",
+          "徒手",
+          "土司",
+          "图",
+          "土",
+          "吐"
+        ],
+        "preedit" : "tu sh",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.022541666666666668,
+      "handled" : true,
+      "key" : 117,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          6,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "图书",
+          "图",
+          "土",
+          "吐",
+          "涂",
+          "兔",
+          "突",
+          "徒",
+          "凸"
+        ],
+        "preedit" : "tu shu",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.029874999999999999,
+      "handled" : true,
+      "key" : 103,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          8,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "图书馆",
+          "图书",
+          "屠杀",
+          "涂上",
+          "图示",
+          "徒手",
+          "土司",
+          "图",
+          "土"
+        ],
+        "preedit" : "tu shu g",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.033500000000000002,
+      "handled" : true,
+      "key" : 117,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          9,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "图书股",
+          "图书",
+          "图",
+          "土",
+          "吐",
+          "涂",
+          "兔",
+          "突",
+          "徒"
+        ],
+        "preedit" : "tu shu gu",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.03229166666666667,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          10,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "图书挂",
+          "图书",
+          "图",
+          "土",
+          "吐",
+          "涂",
+          "兔",
+          "突",
+          "徒"
+        ],
+        "preedit" : "tu shu gua",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.024291666666666666,
+      "handled" : true,
+      "key" : 110,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          11,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "图书馆",
+          "图书",
+          "图",
+          "土",
+          "吐",
+          "涂",
+          "兔",
+          "突",
+          "徒"
+        ],
+        "preedit" : "tu shu guan",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ]
+}

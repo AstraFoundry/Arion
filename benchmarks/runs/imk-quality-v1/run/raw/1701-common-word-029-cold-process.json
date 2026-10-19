@@ -1,0 +1,260 @@
+{
+  "id" : "common-word-029",
+  "boundary" : "production engine key-processing plus synchronous snapshot copying; no OS events or rendered preedit",
+  "teardownMs" : 0.48391666666666666,
+  "timer" : "mach_absolute_time",
+  "beforeConfirmation" : {
+    "commit" : "",
+    "selection" : [
+      8,
+      0
+    ],
+    "lastPage" : false,
+    "highlighted" : 0,
+    "candidates" : [
+      "银行",
+      "因",
+      "引",
+      "银",
+      "音",
+      "印",
+      "阴",
+      "饮",
+      "尹"
+    ],
+    "preedit" : "yin hang",
+    "page" : 0,
+    "ascii" : false
+  },
+  "terminal" : "empty-preedit",
+  "warmupMs" : 0.0029166666666666664,
+  "peakRSSBytes" : 21413888,
+  "confirmations" : [
+    {
+      "keyToSnapshotMs" : 0.015708333333333335,
+      "handled" : true,
+      "key" : 32,
+      "snapshot" : {
+        "commit" : "银行",
+        "selection" : [
+          0,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+
+        ],
+        "preedit" : "",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ],
+  "input" : "yinhang",
+  "startupToSessionMs" : 12.723791666666665,
+  "committed" : "银行",
+  "warmups" : [
+
+  ],
+  "inputKeysToFinalSnapshotMs" : 0.24854166666666666,
+  "status" : "completed",
+  "steps" : [
+    {
+      "keyToSnapshotMs" : 0.076499999999999999,
+      "handled" : true,
+      "key" : 121,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          1,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "有",
+          "也",
+          "要",
+          "与",
+          "用",
+          "一",
+          "又",
+          "以",
+          "呀"
+        ],
+        "preedit" : "y",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.023541666666666669,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          2,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "一",
+          "以",
+          "已",
+          "亿",
+          "易",
+          "亦",
+          "伊",
+          "意",
+          "依"
+        ],
+        "preedit" : "yi",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.02,
+      "handled" : true,
+      "key" : 110,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          3,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "因",
+          "引",
+          "银",
+          "音",
+          "印",
+          "阴",
+          "饮",
+          "尹",
+          "隐"
+        ],
+        "preedit" : "yin",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.039041666666666662,
+      "handled" : true,
+      "key" : 104,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          5,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "银行",
+          "隐患",
+          "银河",
+          "淫秽",
+          "隐含",
+          "印花",
+          "引号",
+          "一年后",
+          "隐晦"
+        ],
+        "preedit" : "yin h",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.031541666666666669,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          6,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "因哈",
+          "因",
+          "引",
+          "银",
+          "音",
+          "印",
+          "阴",
+          "饮",
+          "尹"
+        ],
+        "preedit" : "yin ha",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.021458333333333333,
+      "handled" : true,
+      "key" : 110,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          7,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "隐含",
+          "因",
+          "引",
+          "银",
+          "音",
+          "印",
+          "阴",
+          "饮",
+          "尹"
+        ],
+        "preedit" : "yin han",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.023583333333333331,
+      "handled" : true,
+      "key" : 103,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          8,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "银行",
+          "因",
+          "引",
+          "银",
+          "音",
+          "印",
+          "阴",
+          "饮",
+          "尹"
+        ],
+        "preedit" : "yin hang",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ]
+}

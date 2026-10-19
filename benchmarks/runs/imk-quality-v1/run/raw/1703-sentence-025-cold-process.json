@@ -1,0 +1,815 @@
+{
+  "id" : "sentence-025",
+  "boundary" : "production engine key-processing plus synchronous snapshot copying; no OS events or rendered preedit",
+  "teardownMs" : 0.59887500000000005,
+  "timer" : "mach_absolute_time",
+  "beforeConfirmation" : {
+    "commit" : "",
+    "selection" : [
+      34,
+      0
+    ],
+    "lastPage" : false,
+    "highlighted" : 0,
+    "candidates" : [
+      "每天早上都要吃饭",
+      "每天",
+      "媒体",
+      "美体",
+      "没",
+      "每",
+      "美",
+      "梅",
+      "妹"
+    ],
+    "preedit" : "mei tian zao shang dou yao chi fan",
+    "page" : 0,
+    "ascii" : false
+  },
+  "terminal" : "empty-preedit",
+  "warmupMs" : 0.0023333333333333335,
+  "peakRSSBytes" : 22659072,
+  "confirmations" : [
+    {
+      "keyToSnapshotMs" : 0.019458333333333331,
+      "handled" : true,
+      "key" : 32,
+      "snapshot" : {
+        "commit" : "每天早上都要吃饭",
+        "selection" : [
+          0,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+
+        ],
+        "preedit" : "",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ],
+  "input" : "meitianzaoshangdouyaochifan",
+  "startupToSessionMs" : 12.879041666666666,
+  "committed" : "每天早上都要吃饭",
+  "warmups" : [
+
+  ],
+  "inputKeysToFinalSnapshotMs" : 3.2835000000000001,
+  "status" : "completed",
+  "steps" : [
+    {
+      "keyToSnapshotMs" : 0.069500000000000006,
+      "handled" : true,
+      "key" : 109,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          1,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "没",
+          "吗",
+          "么",
+          "买",
+          "嘛",
+          "们",
+          "卖",
+          "忙",
+          "名"
+        ],
+        "preedit" : "m",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.022083333333333333,
+      "handled" : true,
+      "key" : 101,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          2,
+          0
+        ],
+        "lastPage" : true,
+        "highlighted" : 0,
+        "candidates" : [
+          "么",
+          "麽",
+          "麼",
+          "嚜"
+        ],
+        "preedit" : "me",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.017708333333333333,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          3,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "没",
+          "每",
+          "美",
+          "梅",
+          "妹",
+          "煤",
+          "眉",
+          "酶",
+          "枚"
+        ],
+        "preedit" : "mei",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.044208333333333336,
+      "handled" : true,
+      "key" : 116,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          5,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "每天",
+          "媒体",
+          "煤炭",
+          "眉头",
+          "没听",
+          "美腿",
+          "美图",
+          "每台",
+          "每条"
+        ],
+        "preedit" : "mei t",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.022208333333333333,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          6,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "媒体",
+          "美体",
+          "没",
+          "每",
+          "美",
+          "梅",
+          "妹",
+          "煤",
+          "眉"
+        ],
+        "preedit" : "mei ti",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.028833333333333332,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          8,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "媒体啊",
+          "媒体",
+          "美体",
+          "没",
+          "每",
+          "美",
+          "梅",
+          "妹",
+          "煤"
+        ],
+        "preedit" : "mei ti a",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.021874999999999999,
+      "handled" : true,
+      "key" : 110,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          8,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "每天",
+          "媒体",
+          "美体",
+          "没",
+          "每",
+          "美",
+          "梅",
+          "妹",
+          "煤"
+        ],
+        "preedit" : "mei tian",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.15316666666666665,
+      "handled" : true,
+      "key" : 122,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          10,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "每天在",
+          "每天",
+          "媒体",
+          "美体",
+          "没",
+          "每",
+          "美",
+          "梅",
+          "妹"
+        ],
+        "preedit" : "mei tian z",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.036124999999999997,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          11,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "每天咋",
+          "每天",
+          "媒体",
+          "美体",
+          "没",
+          "每",
+          "美",
+          "梅",
+          "妹"
+        ],
+        "preedit" : "mei tian za",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.035833333333333335,
+      "handled" : true,
+      "key" : 111,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          12,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "每天早",
+          "每天",
+          "媒体",
+          "美体",
+          "没",
+          "每",
+          "美",
+          "梅",
+          "妹"
+        ],
+        "preedit" : "mei tian zao",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.17045833333333335,
+      "handled" : true,
+      "key" : 115,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          14,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "每天早上",
+          "每天",
+          "媒体",
+          "美体",
+          "没",
+          "每",
+          "美",
+          "梅",
+          "妹"
+        ],
+        "preedit" : "mei tian zao s",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.20745833333333336,
+      "handled" : true,
+      "key" : 104,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          15,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "每天早上",
+          "每天",
+          "媒体",
+          "美体",
+          "没",
+          "每",
+          "美",
+          "梅",
+          "妹"
+        ],
+        "preedit" : "mei tian zao sh",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.049375000000000002,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          16,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "每天早啥",
+          "每天",
+          "媒体",
+          "美体",
+          "没",
+          "每",
+          "美",
+          "梅",
+          "妹"
+        ],
+        "preedit" : "mei tian zao sha",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.042458333333333334,
+      "handled" : true,
+      "key" : 110,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          17,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "每天早山",
+          "每天",
+          "媒体",
+          "美体",
+          "没",
+          "每",
+          "美",
+          "梅",
+          "妹"
+        ],
+        "preedit" : "mei tian zao shan",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.043791666666666666,
+      "handled" : true,
+      "key" : 103,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          18,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "每天早上",
+          "每天",
+          "媒体",
+          "美体",
+          "没",
+          "每",
+          "美",
+          "梅",
+          "妹"
+        ],
+        "preedit" : "mei tian zao shang",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.34854166666666669,
+      "handled" : true,
+      "key" : 100,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          20,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "每天早上的",
+          "每天",
+          "媒体",
+          "美体",
+          "没",
+          "每",
+          "美",
+          "梅",
+          "妹"
+        ],
+        "preedit" : "mei tian zao shang d",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.059874999999999998,
+      "handled" : true,
+      "key" : 111,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          21,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "每天早上都",
+          "每天",
+          "媒体",
+          "美体",
+          "没",
+          "每",
+          "美",
+          "梅",
+          "妹"
+        ],
+        "preedit" : "mei tian zao shang do",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.046541666666666662,
+      "handled" : true,
+      "key" : 117,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          22,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "每天早上都",
+          "每天",
+          "媒体",
+          "美体",
+          "没",
+          "每",
+          "美",
+          "梅",
+          "妹"
+        ],
+        "preedit" : "mei tian zao shang dou",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.35645833333333332,
+      "handled" : true,
+      "key" : 121,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          24,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "每天早上都有",
+          "每天",
+          "媒体",
+          "美体",
+          "没",
+          "每",
+          "美",
+          "梅",
+          "妹"
+        ],
+        "preedit" : "mei tian zao shang dou y",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.063916666666666663,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          25,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "每天早上豆芽",
+          "每天",
+          "媒体",
+          "美体",
+          "没",
+          "每",
+          "美",
+          "梅",
+          "妹"
+        ],
+        "preedit" : "mei tian zao shang dou ya",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.055958333333333339,
+      "handled" : true,
+      "key" : 111,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          26,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "每天早上都要",
+          "每天",
+          "媒体",
+          "美体",
+          "没",
+          "每",
+          "美",
+          "梅",
+          "妹"
+        ],
+        "preedit" : "mei tian zao shang dou yao",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.38095833333333329,
+      "handled" : true,
+      "key" : 99,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          28,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "每天早上都要从",
+          "每天",
+          "媒体",
+          "美体",
+          "没",
+          "每",
+          "美",
+          "梅",
+          "妹"
+        ],
+        "preedit" : "mei tian zao shang dou yao c",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.41225000000000001,
+      "handled" : true,
+      "key" : 104,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          29,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "每天早上都要吃",
+          "每天",
+          "媒体",
+          "美体",
+          "没",
+          "每",
+          "美",
+          "梅",
+          "妹"
+        ],
+        "preedit" : "mei tian zao shang dou yao ch",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.078291666666666676,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          30,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "每天早上都要吃",
+          "每天",
+          "媒体",
+          "美体",
+          "没",
+          "每",
+          "美",
+          "梅",
+          "妹"
+        ],
+        "preedit" : "mei tian zao shang dou yao chi",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.35012500000000002,
+      "handled" : true,
+      "key" : 102,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          32,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "每天早上都要吃饭",
+          "每天",
+          "媒体",
+          "美体",
+          "没",
+          "每",
+          "美",
+          "梅",
+          "妹"
+        ],
+        "preedit" : "mei tian zao shang dou yao chi f",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.075916666666666674,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          33,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "每天早上都要吃法",
+          "每天",
+          "媒体",
+          "美体",
+          "没",
+          "每",
+          "美",
+          "梅",
+          "妹"
+        ],
+        "preedit" : "mei tian zao shang dou yao chi fa",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.062125,
+      "handled" : true,
+      "key" : 110,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          34,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "每天早上都要吃饭",
+          "每天",
+          "媒体",
+          "美体",
+          "没",
+          "每",
+          "美",
+          "梅",
+          "妹"
+        ],
+        "preedit" : "mei tian zao shang dou yao chi fan",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ]
+}

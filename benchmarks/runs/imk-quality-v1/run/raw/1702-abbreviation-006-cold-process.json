@@ -1,0 +1,120 @@
+{
+  "id" : "abbreviation-006",
+  "boundary" : "production engine key-processing plus synchronous snapshot copying; no OS events or rendered preedit",
+  "teardownMs" : 0.48816666666666669,
+  "timer" : "mach_absolute_time",
+  "beforeConfirmation" : {
+    "commit" : "",
+    "selection" : [
+      3,
+      0
+    ],
+    "lastPage" : false,
+    "highlighted" : 0,
+    "candidates" : [
+      "程度",
+      "成都",
+      "承担",
+      "彻底",
+      "传递",
+      "差点",
+      "菜单",
+      "冲动",
+      "存档"
+    ],
+    "preedit" : "c d",
+    "page" : 0,
+    "ascii" : false
+  },
+  "terminal" : "empty-preedit",
+  "warmupMs" : 0.0021666666666666666,
+  "peakRSSBytes" : 21512192,
+  "confirmations" : [
+    {
+      "keyToSnapshotMs" : 0.018791666666666668,
+      "handled" : true,
+      "key" : 32,
+      "snapshot" : {
+        "commit" : "程度",
+        "selection" : [
+          0,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+
+        ],
+        "preedit" : "",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ],
+  "input" : "cd",
+  "startupToSessionMs" : 11.725833333333334,
+  "committed" : "程度",
+  "warmups" : [
+
+  ],
+  "inputKeysToFinalSnapshotMs" : 0.18124999999999999,
+  "status" : "completed",
+  "steps" : [
+    {
+      "keyToSnapshotMs" : 0.085250000000000006,
+      "handled" : true,
+      "key" : 99,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          1,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "从",
+          "才",
+          "吃",
+          "出",
+          "成",
+          "车",
+          "错",
+          "次",
+          "此"
+        ],
+        "preedit" : "c",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.088874999999999996,
+      "handled" : true,
+      "key" : 100,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          3,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "程度",
+          "成都",
+          "承担",
+          "彻底",
+          "传递",
+          "差点",
+          "菜单",
+          "冲动",
+          "存档"
+        ],
+        "preedit" : "c d",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ]
+}

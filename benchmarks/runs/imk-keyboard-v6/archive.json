@@ -1,0 +1,589 @@
+{
+  "schemaVersion": 1,
+  "study": "imk-keyboard-v6",
+  "supplements": [
+    "../imk-keyboard-v4/archive.json",
+    "../imk-keyboard-v5/archive.json"
+  ],
+  "purpose": "Official Apple stage-0 do-nothing IMK source current-SDK registration control, not Arion conversion or host event acceptance",
+  "result": {
+    "registerEnableStatus": 0,
+    "parentEnabled": false,
+    "sourceSelected": false,
+    "hostLaunchAttempted": false,
+    "selectionAttempted": false,
+    "typingAttempted": false,
+    "notarization": "Accepted",
+    "gatekeeperAccepted": true,
+    "restored": true
+  },
+  "failedPreparation": {
+    "attempt": "run-12",
+    "log": "logs/number-control-preparation.log",
+    "boundary": "Temporary generic signing parser required IMK profile; failed before compilation/signing; original failed-source snapshot unavailable, later successful source kept distinct"
+  },
+  "source": {
+    "artifact": "system/artifact.json",
+    "url": "https://developer.apple.com/library/archive/samplecode/NumberInput_IMKit_Sample/NumberInput_IMKit_Sample.zip",
+    "readme": "sample/ReadMe",
+    "license": "Apple source header notices preserved in original main.m and controller files",
+    "derivedMain": "sample/main-derived.m",
+    "staticLogoutInstruction": "Official legacy sample describes initial-install logout; no logout performed or modern fix established",
+    "readmeProvenance": {
+      "member": "NumberInput_IMKit_Sample/trunk/NumberInput 0/ReadMe",
+      "sha256": "7f27440fbbfbb51ce1a67a3a6b8efceba6d1f486fcaaa81423b018d6165fe9e9",
+      "carrierSha256": "06b6f0052b7bb5bc584fb6d32a9d6fda4bba1746d29f56f00123466b60729228"
+    }
+  },
+  "limits": [
+    "Independent Apple sample source failed to enable under separate third-party identifier; Arion-specific root cause remains unproven",
+    "First-party Korean enable/disable control works (v4); public TIS is not universally inert",
+    "No production install-button, source selection, app/controller launch, typing or cross-editor acceptance in this control"
+  ],
+  "privacy": {
+    "excluded": "No app/executable/ZIP, binary sample resources, profiles, SDK/runtime, credentials/key/reference bytes or personal preferences"
+  },
+  "exclusions": [
+    {
+      "originalPath": ".workspace/e2e/imk-system/run-13/source/English.lproj/MainMenu.nib/keyedobjects.nib",
+      "sourceMember": "English.lproj/MainMenu.nib/keyedobjects.nib",
+      "sizeBytes": 1181,
+      "sha256": "beb52bcb3e349bf11d7fe93018231216775c54b131a7e4a3e83ea6fa4b032171",
+      "reason": "Original binary sample resource excluded; digest/provenance retained"
+    },
+    {
+      "originalPath": ".workspace/e2e/imk-system/run-13/source/nine.tiff",
+      "sourceMember": "nine.tiff",
+      "sizeBytes": 2142,
+      "sha256": "3fda699de95574234a686ba1554e7a21decbae2957f6bab0f6657d4cd68cc446",
+      "reason": "Original binary sample resource excluded; digest/provenance retained"
+    },
+    {
+      "originalPath": ".workspace/e2e/imk-system/run-13/NumberInputControl.zip",
+      "sizeBytes": 19692,
+      "sha256": "21ea68ee766b69ef2601f81dd62d9713dff9ae934407a037e5d090007f5ddc9b",
+      "reason": "ZIP carrier excluded; original source member digests retained"
+    },
+    {
+      "originalPath": ".workspace/research/imk-alignment/registration-audit/metadata-sources/Apple-NumberInput.zip",
+      "sizeBytes": 190494,
+      "sha256": "06b6f0052b7bb5bc584fb6d32a9d6fda4bba1746d29f56f00123466b60729228",
+      "reason": "ZIP carrier excluded; original source member digests retained"
+    }
+  ],
+  "files": [
+    {
+      "path": "system/artifact.json",
+      "originalPath": ".workspace/e2e/imk-system/run-13/artifact.json",
+      "kind": "original-completed-control-output",
+      "sizeBytes": 2034,
+      "sha256": "02aaa416f27faac36c62dcd2372c586e0ec6b6b86b6a07c52588ffe9af3a6ae7"
+    },
+    {
+      "path": "system/notarization.json",
+      "originalPath": ".workspace/e2e/imk-system/run-13/notarization.json",
+      "kind": "original-completed-control-output",
+      "sizeBytes": 111,
+      "sha256": "6db26b8967b2ee48743d03bde1c890d3bfd10247450dad2840e5ebe1b5166e5c"
+    },
+    {
+      "path": "system/gatekeeper.json",
+      "originalPath": ".workspace/e2e/imk-system/run-13/gatekeeper.json",
+      "kind": "original-completed-control-output",
+      "sizeBytes": 181,
+      "sha256": "cfff31c97d11bf2dc090cf5216c26879693d8d6b4ae59cca2c07e7abbb7c4821"
+    },
+    {
+      "path": "system/registration.json",
+      "originalPath": ".workspace/e2e/imk-system/run-13/registration.json",
+      "kind": "original-completed-control-output",
+      "sizeBytes": 281,
+      "sha256": "cf9cf960f8a158e2c4cb8be557844b0ce8131cdb25428fd1989649602049b975"
+    },
+    {
+      "path": "system/state.json",
+      "originalPath": ".workspace/e2e/imk-system/run-13/state.json",
+      "kind": "original-completed-control-output",
+      "sizeBytes": 746,
+      "sha256": "b49472c11087a3b1b505182ebf727b3b990651f5829e8a1b339a155b0e658ef4"
+    },
+    {
+      "path": "system/final-source-query.json",
+      "originalPath": ".workspace/e2e/imk-system/run-13/final-source-query.json",
+      "kind": "original-completed-control-output",
+      "sizeBytes": 74,
+      "sha256": "6cb93f4b5d25e2920ba0f9468658b570f871655526396a55e3cc432e295268b0"
+    },
+    {
+      "path": "system/final-arion-query.json",
+      "originalPath": ".workspace/e2e/imk-system/run-13/final-arion-query.json",
+      "kind": "original-completed-control-output",
+      "sizeBytes": 74,
+      "sha256": "6cb93f4b5d25e2920ba0f9468658b570f871655526396a55e3cc432e295268b0"
+    },
+    {
+      "path": "sample/English.lproj/InfoPlist.strings",
+      "originalPath": ".workspace/e2e/imk-system/run-13/source/English.lproj/InfoPlist.strings",
+      "kind": "original-Apple-sample-source-or-focused-derived-main",
+      "sizeBytes": 1212,
+      "sha256": "3b3b4915eb29aeb52a1b9be0f10e7f7720b64037c0574c5e7bbf3e76ed684fcd"
+    },
+    {
+      "path": "sample/English.lproj/MainMenu.nib/classes.nib",
+      "originalPath": ".workspace/e2e/imk-system/run-13/source/English.lproj/MainMenu.nib/classes.nib",
+      "kind": "original-Apple-sample-source-or-focused-derived-main",
+      "sizeBytes": 405,
+      "sha256": "53751ab0296239ac73a217b64f398ead7b14b605d9b22f190f09f08b6ad0f4ee"
+    },
+    {
+      "path": "sample/English.lproj/MainMenu.nib/info.nib",
+      "originalPath": ".workspace/e2e/imk-system/run-13/source/English.lproj/MainMenu.nib/info.nib",
+      "kind": "original-Apple-sample-source-or-focused-derived-main",
+      "sizeBytes": 375,
+      "sha256": "da3a827392de59ea7ce0a23cc470cb050c211dd4b9c30b05cec68420e4d2a178"
+    },
+    {
+      "path": "sample/Info.plist",
+      "originalPath": ".workspace/e2e/imk-system/run-13/source/Info.plist",
+      "kind": "original-Apple-sample-source-or-focused-derived-main",
+      "sizeBytes": 3116,
+      "sha256": "8716311bc0430c7526d9fea91ba9ecb75c11ae916ece103c1e555d9d1b793675"
+    },
+    {
+      "path": "sample/NumberInputController.h",
+      "originalPath": ".workspace/e2e/imk-system/run-13/source/NumberInputController.h",
+      "kind": "original-Apple-sample-source-or-focused-derived-main",
+      "sizeBytes": 2556,
+      "sha256": "93d5747aa7c75cdcad9244b06eac9e6bbbbb38a02f177fd0971a638266637982"
+    },
+    {
+      "path": "sample/NumberInputController.m",
+      "originalPath": ".workspace/e2e/imk-system/run-13/source/NumberInputController.m",
+      "kind": "original-Apple-sample-source-or-focused-derived-main",
+      "sizeBytes": 4564,
+      "sha256": "671b2534bb09fc857705d8fe85d7e47db85ca1780578ed15098a8742e889b8f5"
+    },
+    {
+      "path": "sample/ReadMe",
+      "originalPath": ".workspace/e2e/imk-system/run-13/source/ReadMe",
+      "kind": "original-Apple-sample-source-or-focused-derived-main",
+      "sizeBytes": 2223,
+      "sha256": "7f27440fbbfbb51ce1a67a3a6b8efceba6d1f486fcaaa81423b018d6165fe9e9"
+    },
+    {
+      "path": "sample/main-derived.m",
+      "originalPath": ".workspace/e2e/imk-system/run-13/source/main-derived.m",
+      "kind": "original-Apple-sample-source-or-focused-derived-main",
+      "sizeBytes": 3485,
+      "sha256": "f0b2c25349cfca867200bcc29c8c2554c14e42a953bc929d178d61369bdf6fff"
+    },
+    {
+      "path": "sample/main.m",
+      "originalPath": ".workspace/e2e/imk-system/run-13/source/main.m",
+      "kind": "original-Apple-sample-source-or-focused-derived-main",
+      "sizeBytes": 3480,
+      "sha256": "7e4cdfb09f665da949160c12939846e228dd3f6b38de6ca5b5534e11c490cdb2"
+    },
+    {
+      "path": "sources/prepare-number-control.mjs",
+      "originalPath": ".workspace/e2e/imk-system/prepare-number-control.mjs",
+      "kind": "historical-diagnostic-source-not-authorized-replay",
+      "sizeBytes": 5053,
+      "sha256": "46b529638a583f92233ab483ce76bcd81372df9bc1d80113717edec07c67839c"
+    },
+    {
+      "path": "sources/controller-13.mjs",
+      "originalPath": ".workspace/e2e/imk-system/controller-13.mjs",
+      "kind": "historical-diagnostic-source-not-authorized-replay",
+      "sizeBytes": 5964,
+      "sha256": "958712aeeb0f36793a16fa3ca68eec42c71f12aedbd185092fbb207d9a02110f"
+    },
+    {
+      "path": "sources/source-registration-identity.swift",
+      "originalPath": ".workspace/e2e/imk-system/source-registration-identity.swift",
+      "kind": "historical-diagnostic-source-not-authorized-replay",
+      "sizeBytes": 1687,
+      "sha256": "c164e5d4806f0ee37da79f871a602a799bef3f5d2b97c325c84e7ff05278e333"
+    },
+    {
+      "path": "sources/sources-numbercontrol.swift",
+      "originalPath": ".workspace/e2e/imk-system/sources-numbercontrol.swift",
+      "kind": "historical-diagnostic-source-not-authorized-replay",
+      "sizeBytes": 1629,
+      "sha256": "a6e2d3bad2d64f92fb38910db0bcbf3b15cf5b94b188435c78b3df985568c74b"
+    },
+    {
+      "path": "sources/sources.swift",
+      "originalPath": ".workspace/e2e/imk-system/sources.swift",
+      "kind": "historical-diagnostic-source-not-authorized-replay",
+      "sizeBytes": 1609,
+      "sha256": "e4feea7f6ed4ea31c95aa913644fa482b09df9fc329059458c6d0333e7cbd550"
+    },
+    {
+      "path": "sources/scripts/lib/desktop-signing.mjs",
+      "originalPath": "scripts/lib/desktop-signing.mjs",
+      "kind": "captured-successful-preparation-dependency-source",
+      "sizeBytes": 8588,
+      "sha256": "2d10cb74b49d57711f4335c3f42931d833861b2dfbeb7b454fb6d9aac806ebcb"
+    },
+    {
+      "path": "sources/scripts/lib/ime-provisioning.mjs",
+      "originalPath": "scripts/lib/ime-provisioning.mjs",
+      "kind": "captured-successful-preparation-dependency-source",
+      "sizeBytes": 7451,
+      "sha256": "4520f3d82f1de1bbbb3a7192d8d9290d0471958ce817c077cc11ed4d627e9721"
+    },
+    {
+      "path": "logs/number-control-preparation.log",
+      "originalPath": ".workspace/research/imk-alignment/number-control-preparation.log",
+      "kind": "original-failed-preparation-or-completed-retry-log",
+      "sizeBytes": 889,
+      "sha256": "9b1bce2b5170d3e603d0c7cfc06da2432edb4d0f623b0df94584b7a7cadc1f04"
+    },
+    {
+      "path": "logs/number-control-preparation-02.log",
+      "originalPath": ".workspace/research/imk-alignment/number-control-preparation-02.log",
+      "kind": "original-failed-preparation-or-completed-retry-log",
+      "sizeBytes": 99,
+      "sha256": "190d50d0f66b5dc4892fc9c3244f583adea5a6f7c0c14d54efca69387867ef2e"
+    },
+    {
+      "path": "README.md",
+      "kind": "archive-documentation-or-read-only-verifier",
+      "sizeBytes": 5491,
+      "sha256": "0aee688b882384b9433d6f0d6fe7d57321a530f14dd90bfd2bbc4800461cf81c"
+    },
+    {
+      "path": "verify.mjs",
+      "kind": "archive-documentation-or-read-only-verifier",
+      "sizeBytes": 4882,
+      "sha256": "7949737df2ad840d0b06d0ee4b663c978a36652d3feb90f3d415f12cb417bdf1"
+    },
+    {
+      "path": "final-controls/tooling-strict-policy-final.log",
+      "originalPath": ".workspace/research/imk-alignment/tooling-strict-policy-final.log",
+      "kind": "original-completed-final-control-log",
+      "sizeBytes": 8050,
+      "sha256": "832e94f6e49c29add1a2dab409bed00551b0b9230f255ab69a9b13a82cac96ca"
+    },
+    {
+      "path": "final-controls/unsigned-host-strict-policy-build.log",
+      "originalPath": ".workspace/research/imk-alignment/unsigned-host-strict-policy-build.log",
+      "kind": "original-completed-final-control-log",
+      "sizeBytes": 456,
+      "sha256": "639e27608de0a86fdf3427fb81589a4d2f51468b7936f04b49f2199b1fc23182"
+    },
+    {
+      "path": "final-controls/unsigned-host-strict-policy-verify.log",
+      "originalPath": ".workspace/research/imk-alignment/unsigned-host-strict-policy-verify.log",
+      "kind": "original-completed-final-control-log",
+      "sizeBytes": 114,
+      "sha256": "29014b6873ac4ba4d9b13d941f47104209ac44fa1e5658942e673bf89c5e8c67"
+    },
+    {
+      "path": "final-controls/signed-strict-profile-gate.log",
+      "originalPath": ".workspace/research/imk-alignment/signed-strict-profile-gate.log",
+      "kind": "original-completed-final-control-log",
+      "sizeBytes": 786,
+      "sha256": "fdfcc001633ca8cc99d4fa8fdfeca75e2e68923e035e7a395081bf3fa604023c"
+    },
+    {
+      "path": "final-sources/scripts/build-input-method.mjs",
+      "originalPath": "scripts/build-input-method.mjs",
+      "kind": "frozen-final-strict-provider-build-source",
+      "sizeBytes": 6612,
+      "sha256": "31f00c5b334c2bd1d5ea25e32ac5e905d90da7cc0bcf713d00979c2aceea907f"
+    },
+    {
+      "path": "final-sources/scripts/desktop-command.mjs",
+      "originalPath": "scripts/desktop-command.mjs",
+      "kind": "frozen-final-strict-provider-build-source",
+      "sizeBytes": 3200,
+      "sha256": "894b50726535ee13097393638d7038898e8289b55be458ef5d1423fd88500dab"
+    },
+    {
+      "path": "final-sources/scripts/verify-keyboard-bundle.mjs",
+      "originalPath": "scripts/verify-keyboard-bundle.mjs",
+      "kind": "frozen-final-strict-provider-build-source",
+      "sizeBytes": 12525,
+      "sha256": "4db8f11ca788fbab96a74f62372ee35316222dfe7c74016bc5edede02cbc9635"
+    },
+    {
+      "path": "final-sources/apps/desktop/desktop.json",
+      "originalPath": "apps/desktop/desktop.json",
+      "kind": "frozen-final-strict-provider-build-source",
+      "sizeBytes": 700,
+      "sha256": "ea34ffcde32f9b6bbf21244c12b604c7ac0f0d6ed211ef0fba29a2298b8ef2e5"
+    },
+    {
+      "path": "final-sources/tools/evaluation/test/ime-provisioning.test.mjs",
+      "originalPath": "tools/evaluation/test/ime-provisioning.test.mjs",
+      "kind": "frozen-final-strict-provider-build-source",
+      "sizeBytes": 3360,
+      "sha256": "7035a45c067d4c79cbdd3e85ed1802acd94e6425a316e40700a43b34378effbd"
+    },
+    {
+      "path": "final-sources/tools/evaluation/test/desktop-signing.test.mjs",
+      "originalPath": "tools/evaluation/test/desktop-signing.test.mjs",
+      "kind": "frozen-final-strict-provider-build-source",
+      "sizeBytes": 7768,
+      "sha256": "cd000d73ff2648f5a527400175ead7f4d0b9623c5bd318543cac0e5dc23e9e99"
+    },
+    {
+      "path": "final-sources/apps/desktop/ime/macos/Info.plist",
+      "originalPath": "apps/desktop/ime/macos/Info.plist",
+      "kind": "frozen-final-strict-provider-build-source",
+      "sizeBytes": 2245,
+      "sha256": "e6af1973e2b21140fbed3bb497e3f5c100ca84014bc001b3ecd94c7574cec5a4"
+    },
+    {
+      "path": "final-sources/apps/desktop/ime/macos/composition.h",
+      "originalPath": "apps/desktop/ime/macos/composition.h",
+      "kind": "frozen-final-strict-provider-build-source",
+      "sizeBytes": 407,
+      "sha256": "5c01971463b2d4e20492e146f0aa430c7870fcd2d2e6c1c7113d73a4b7f10dad"
+    },
+    {
+      "path": "final-sources/apps/desktop/ime/macos/composition.m",
+      "originalPath": "apps/desktop/ime/macos/composition.m",
+      "kind": "frozen-final-strict-provider-build-source",
+      "sizeBytes": 3039,
+      "sha256": "39a9e04e44a7d49df5dcce3cad5715a313fefe648e190ace0f00ad828c3a66cd"
+    },
+    {
+      "path": "final-sources/apps/desktop/ime/macos/main.m",
+      "originalPath": "apps/desktop/ime/macos/main.m",
+      "kind": "frozen-final-strict-provider-build-source",
+      "sizeBytes": 13071,
+      "sha256": "6c7ad03b5a4d09142a0ff36b1059be655e65296723ed1cbb52a3ac73fe9752e6"
+    },
+    {
+      "path": "final-sources/apps/desktop/ime/macos/keyboard-data/README.md",
+      "originalPath": "apps/desktop/ime/macos/keyboard-data/README.md",
+      "kind": "frozen-final-strict-provider-build-source",
+      "sizeBytes": 1206,
+      "sha256": "6f302ce26fa74c8116c2b2b3bd6178cc8cce255e61ce5e9044e6f92a5315663d"
+    },
+    {
+      "path": "final-sources/apps/desktop/ui/shared/copy/locales/en.json",
+      "originalPath": "apps/desktop/ui/shared/copy/locales/en.json",
+      "kind": "frozen-final-strict-provider-build-source",
+      "sizeBytes": 17443,
+      "sha256": "19894c2520275e8b2fe7e8ba136f9fa3768b5f2fac06d0a1cb3b0c19c85e1380"
+    },
+    {
+      "path": "final-sources/apps/desktop/ui/shared/copy/locales/zh-CN.json",
+      "originalPath": "apps/desktop/ui/shared/copy/locales/zh-CN.json",
+      "kind": "frozen-final-strict-provider-build-source",
+      "sizeBytes": 17306,
+      "sha256": "895de10586e61ca08804ecb0864427b60b82b68dd1b9f44020c6512c5208e64a"
+    },
+    {
+      "path": "final-sources/apps/desktop/cmd/arion-icon/main.go",
+      "originalPath": "apps/desktop/cmd/arion-icon/main.go",
+      "kind": "frozen-final-strict-provider-build-source",
+      "sizeBytes": 3111,
+      "sha256": "28f4daab3179e20390acb78d42999cc92dfa0bfbce532f19d76e2f8404a35c1d"
+    },
+    {
+      "path": "final-controls/repository-strict-policy-final.log",
+      "originalPath": ".workspace/research/imk-alignment/repository-strict-policy-final.log",
+      "kind": "original-final-repository-check-before-archive-finalization",
+      "sizeBytes": 185,
+      "sha256": "d18adfbad5dfdc602622be555b9bdd49735429e8082488d12e1cfd614780a836"
+    }
+  ],
+  "finalControls": {
+    "tooling": "final-controls/tooling-strict-policy-final.log",
+    "toolingPassed": 86,
+    "toolingTotal": 86,
+    "unsignedBuild": "final-controls/unsigned-host-strict-policy-build.log",
+    "unsignedVerify": "final-controls/unsigned-host-strict-policy-verify.log",
+    "signedGate": "final-controls/signed-strict-profile-gate.log",
+    "signedGateExpectedFailure": "missing authorizing profile before compile; no new signed artifact",
+    "sourceBindings": [
+      {
+        "originalPath": "scripts/build-input-method.mjs",
+        "sha256": "31f00c5b334c2bd1d5ea25e32ac5e905d90da7cc0bcf713d00979c2aceea907f",
+        "sizeBytes": 6612,
+        "frozenPath": "final-sources/scripts/build-input-method.mjs"
+      },
+      {
+        "originalPath": "scripts/desktop-command.mjs",
+        "sha256": "894b50726535ee13097393638d7038898e8289b55be458ef5d1423fd88500dab",
+        "sizeBytes": 3200,
+        "frozenPath": "final-sources/scripts/desktop-command.mjs"
+      },
+      {
+        "originalPath": "scripts/lib/desktop-signing.mjs",
+        "sha256": "2d10cb74b49d57711f4335c3f42931d833861b2dfbeb7b454fb6d9aac806ebcb",
+        "sizeBytes": 8588,
+        "frozenPath": "sources/scripts/lib/desktop-signing.mjs"
+      },
+      {
+        "originalPath": "scripts/lib/ime-provisioning.mjs",
+        "sha256": "4520f3d82f1de1bbbb3a7192d8d9290d0471958ce817c077cc11ed4d627e9721",
+        "sizeBytes": 7451,
+        "frozenPath": "sources/scripts/lib/ime-provisioning.mjs"
+      },
+      {
+        "originalPath": "scripts/lib/build-ime-learning.mjs",
+        "sha256": "67a75be4bf4552e50a684ad542a8d2aee73d6aa80f452961582eb0de34cba7a0",
+        "sizeBytes": 1691,
+        "frozenPath": "../imk-keyboard-v5/dp-capability/sources/scripts/lib/build-ime-learning.mjs"
+      },
+      {
+        "originalPath": "scripts/lib/pinned-file.mjs",
+        "sha256": "29931f7190430733bbf5cbe01465a71690043d3555d747bc3139de5fda236423",
+        "sizeBytes": 1186,
+        "frozenPath": "../imk-keyboard-v3/sources/scripts/lib/pinned-file.mjs"
+      },
+      {
+        "originalPath": "scripts/stage-keyboard-runtime.mjs",
+        "sha256": "8b99a7d00112579f453c526d2bd2815b8c84cdb9b88bb8b0fbcb8547d4793db5",
+        "sizeBytes": 8022,
+        "frozenPath": "../imk-keyboard-v3/sources/scripts/stage-keyboard-runtime.mjs"
+      },
+      {
+        "originalPath": "scripts/verify-keyboard-bundle.mjs",
+        "sha256": "4db8f11ca788fbab96a74f62372ee35316222dfe7c74016bc5edede02cbc9635",
+        "sizeBytes": 12525,
+        "frozenPath": "final-sources/scripts/verify-keyboard-bundle.mjs"
+      },
+      {
+        "originalPath": "scripts/keyboard-runtime.json",
+        "sha256": "58b95bd269eeb9a2a94c3f3f0d1d559e9b2d2c385854f2aa922207d8b92c5366",
+        "sizeBytes": 8729,
+        "frozenPath": "../imk-keyboard-v3/sources/scripts/keyboard-runtime.json"
+      },
+      {
+        "originalPath": "apps/desktop/desktop.json",
+        "sha256": "ea34ffcde32f9b6bbf21244c12b604c7ac0f0d6ed211ef0fba29a2298b8ef2e5",
+        "sizeBytes": 700,
+        "frozenPath": "final-sources/apps/desktop/desktop.json"
+      },
+      {
+        "originalPath": "tools/evaluation/test/ime-provisioning.test.mjs",
+        "sha256": "7035a45c067d4c79cbdd3e85ed1802acd94e6425a316e40700a43b34378effbd",
+        "sizeBytes": 3360,
+        "frozenPath": "final-sources/tools/evaluation/test/ime-provisioning.test.mjs"
+      },
+      {
+        "originalPath": "tools/evaluation/test/desktop-signing.test.mjs",
+        "sha256": "cd000d73ff2648f5a527400175ead7f4d0b9623c5bd318543cac0e5dc23e9e99",
+        "sizeBytes": 7768,
+        "frozenPath": "final-sources/tools/evaluation/test/desktop-signing.test.mjs"
+      },
+      {
+        "originalPath": "apps/desktop/ime/macos/Info.plist",
+        "sha256": "e6af1973e2b21140fbed3bb497e3f5c100ca84014bc001b3ecd94c7574cec5a4",
+        "sizeBytes": 2245,
+        "frozenPath": "final-sources/apps/desktop/ime/macos/Info.plist"
+      },
+      {
+        "originalPath": "apps/desktop/ime/macos/composition.h",
+        "sha256": "5c01971463b2d4e20492e146f0aa430c7870fcd2d2e6c1c7113d73a4b7f10dad",
+        "sizeBytes": 407,
+        "frozenPath": "final-sources/apps/desktop/ime/macos/composition.h"
+      },
+      {
+        "originalPath": "apps/desktop/ime/macos/composition.m",
+        "sha256": "39a9e04e44a7d49df5dcce3cad5715a313fefe648e190ace0f00ad828c3a66cd",
+        "sizeBytes": 3039,
+        "frozenPath": "final-sources/apps/desktop/ime/macos/composition.m"
+      },
+      {
+        "originalPath": "apps/desktop/ime/macos/keyboard.h",
+        "sha256": "7e230a99cd9788f4feb3745c14d8e4a5d1ecb008284c916cf942820c8e0d93dd",
+        "sizeBytes": 1465,
+        "frozenPath": "../imk-keyboard-v5/dp-capability/sources/apps/desktop/ime/macos/keyboard.h"
+      },
+      {
+        "originalPath": "apps/desktop/ime/macos/keyboard.m",
+        "sha256": "d9a70d0c5e2d6a11f17b2987ff83923c80ea147363a1f796f44bf69e581cac76",
+        "sizeBytes": 10869,
+        "frozenPath": "../imk-keyboard-v5/dp-capability/sources/apps/desktop/ime/macos/keyboard.m"
+      },
+      {
+        "originalPath": "apps/desktop/ime/macos/learning.h",
+        "sha256": "98e78e35c8f0f42bd4e19ef69e6f598ee10545493641a66e400e843c2b140eef",
+        "sizeBytes": 1287,
+        "frozenPath": "../imk-keyboard-v5/legacy-rejection/sources/apps/desktop/ime/macos/learning.h"
+      },
+      {
+        "originalPath": "apps/desktop/ime/macos/learning.mm",
+        "sha256": "3d8e6afc9aee3665180fc10fd4660b3f6a9c088ad5c30e88e81b25d287758300",
+        "sizeBytes": 25520,
+        "frozenPath": "../imk-keyboard-v5/legacy-rejection/sources/apps/desktop/ime/macos/learning.mm"
+      },
+      {
+        "originalPath": "apps/desktop/ime/macos/learning_crypto.swift",
+        "sha256": "9c8ed696f3b17918f1e0f4489eaf65fca0dd6d9ffd9066b6d00f869380b14ed2",
+        "sizeBytes": 3075,
+        "frozenPath": "../imk-keyboard-v5/dp-capability/sources/apps/desktop/ime/macos/learning_crypto.swift"
+      },
+      {
+        "originalPath": "apps/desktop/ime/macos/learning_tests.mm",
+        "sha256": "368d05f3a962e095964d60aa3efe89c3e26cc650e852bebb0bb290f3cbcb5cb2",
+        "sizeBytes": 10753,
+        "frozenPath": "../imk-keyboard-v5/app-legacy-rejection/sources/apps/desktop/ime/macos/learning_tests.mm"
+      },
+      {
+        "originalPath": "apps/desktop/ime/macos/main.m",
+        "sha256": "6c7ad03b5a4d09142a0ff36b1059be655e65296723ed1cbb52a3ac73fe9752e6",
+        "sizeBytes": 13071,
+        "frozenPath": "final-sources/apps/desktop/ime/macos/main.m"
+      },
+      {
+        "originalPath": "apps/desktop/ime/macos/typing.h",
+        "sha256": "e5d0e858d9c6d0f496011e872d4677365d06838fad79b14e874eea75aebf7d88",
+        "sizeBytes": 797,
+        "frozenPath": "../imk-keyboard-v5/functional/sources/apps/desktop/ime/macos/typing.h"
+      },
+      {
+        "originalPath": "apps/desktop/ime/macos/typing.m",
+        "sha256": "fb23897afe02cfb8e7b074b1c42c9e83420d77f70ecc34a2127de95aa11ca5aa",
+        "sizeBytes": 5511,
+        "frozenPath": "../imk-keyboard-v5/functional/sources/apps/desktop/ime/macos/typing.m"
+      },
+      {
+        "originalPath": "apps/desktop/ime/macos/keyboard-data/README.md",
+        "sha256": "6f302ce26fa74c8116c2b2b3bd6178cc8cce255e61ce5e9044e6f92a5315663d",
+        "sizeBytes": 1206,
+        "frozenPath": "final-sources/apps/desktop/ime/macos/keyboard-data/README.md"
+      },
+      {
+        "originalPath": "apps/desktop/ime/macos/keyboard-data/arion_pinyin.schema.yaml",
+        "sha256": "5f106fd1dc9fa7945c75f0c22ac59d3e7c8902603f3d790d29d2be767b715eda",
+        "sizeBytes": 917,
+        "frozenPath": "../imk-keyboard-v3/sources/apps/desktop/ime/macos/keyboard-data/arion_pinyin.schema.yaml"
+      },
+      {
+        "originalPath": "apps/desktop/ime/macos/keyboard-data/default.custom.yaml",
+        "sha256": "bddfaf030cc97337069c95c9f30cc0bc2c3498bebf4bfd7424a51c81cc475439",
+        "sizeBytes": 172,
+        "frozenPath": "../imk-keyboard-v3/sources/apps/desktop/ime/macos/keyboard-data/default.custom.yaml"
+      },
+      {
+        "originalPath": "apps/desktop/ui/shared/copy/locales/en.json",
+        "sha256": "19894c2520275e8b2fe7e8ba136f9fa3768b5f2fac06d0a1cb3b0c19c85e1380",
+        "sizeBytes": 17443,
+        "frozenPath": "final-sources/apps/desktop/ui/shared/copy/locales/en.json"
+      },
+      {
+        "originalPath": "apps/desktop/ui/shared/copy/locales/zh-CN.json",
+        "sha256": "895de10586e61ca08804ecb0864427b60b82b68dd1b9f44020c6512c5208e64a",
+        "sizeBytes": 17306,
+        "frozenPath": "final-sources/apps/desktop/ui/shared/copy/locales/zh-CN.json"
+      },
+      {
+        "originalPath": "apps/desktop/cmd/arion-icon/main.go",
+        "sha256": "28f4daab3179e20390acb78d42999cc92dfa0bfbce532f19d76e2f8404a35c1d",
+        "sizeBytes": 3111,
+        "frozenPath": "final-sources/apps/desktop/cmd/arion-icon/main.go"
+      }
+    ],
+    "boundary": "Exact focused build/native/signing/provisioning sources only; full 86-test suite original output retained but unrelated test modules not duplicated",
+    "repository": "final-controls/repository-strict-policy-final.log"
+  }
+}

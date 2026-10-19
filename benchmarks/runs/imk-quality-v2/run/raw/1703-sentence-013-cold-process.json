@@ -1,0 +1,680 @@
+{
+  "id" : "sentence-013",
+  "boundary" : "production engine key-processing plus synchronous snapshot copying; no OS events or rendered preedit",
+  "teardownMs" : 0.60650000000000004,
+  "timer" : "mach_absolute_time",
+  "beforeConfirmation" : {
+    "commit" : "",
+    "selection" : [
+      28,
+      0
+    ],
+    "lastPage" : false,
+    "highlighted" : 0,
+    "candidates" : [
+      "冰箱里还有鸡蛋",
+      "冰箱里",
+      "冰箱",
+      "并向",
+      "并",
+      "病",
+      "冰",
+      "兵",
+      "饼"
+    ],
+    "preedit" : "bing xiang li hai you ji dan",
+    "page" : 0,
+    "ascii" : false
+  },
+  "terminal" : "empty-preedit",
+  "warmupMs" : 0.0018749999999999999,
+  "peakRSSBytes" : 22282240,
+  "confirmations" : [
+    {
+      "keyToSnapshotMs" : 0.017041666666666667,
+      "handled" : true,
+      "key" : 32,
+      "snapshot" : {
+        "commit" : "冰箱里还有鸡蛋",
+        "selection" : [
+          0,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+
+        ],
+        "preedit" : "",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ],
+  "input" : "bingxianglihaiyoujidan",
+  "startupToSessionMs" : 12.975166666666667,
+  "committed" : "冰箱里还有鸡蛋",
+  "warmups" : [
+
+  ],
+  "inputKeysToFinalSnapshotMs" : 1.4784166666666667,
+  "status" : "completed",
+  "steps" : [
+    {
+      "keyToSnapshotMs" : 0.062458333333333338,
+      "handled" : true,
+      "key" : 98,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          1,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "不",
+          "吧",
+          "把",
+          "被",
+          "并",
+          "比",
+          "别",
+          "帮",
+          "本"
+        ],
+        "preedit" : "b",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.022333333333333334,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          2,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "比",
+          "必",
+          "笔",
+          "逼",
+          "币",
+          "俾",
+          "碧",
+          "毕",
+          "壁"
+        ],
+        "preedit" : "bi",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.021583333333333333,
+      "handled" : true,
+      "key" : 110,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          3,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "斌",
+          "彬",
+          "宾",
+          "滨",
+          "鬓",
+          "镔",
+          "濒",
+          "殡",
+          "槟"
+        ],
+        "preedit" : "bin",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.021749999999999999,
+      "handled" : true,
+      "key" : 103,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          4,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "并",
+          "病",
+          "冰",
+          "兵",
+          "饼",
+          "丙",
+          "柄",
+          "炳",
+          "秉"
+        ],
+        "preedit" : "bing",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.037083333333333336,
+      "handled" : true,
+      "key" : 120,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          6,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "冰箱",
+          "冰雪",
+          "并向",
+          "并行",
+          "冰心",
+          "并",
+          "病",
+          "冰",
+          "兵"
+        ],
+        "preedit" : "bing x",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.030374999999999999,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          7,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "并系",
+          "并",
+          "病",
+          "冰",
+          "兵",
+          "饼",
+          "丙",
+          "柄",
+          "炳"
+        ],
+        "preedit" : "bing xi",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.026291666666666668,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          8,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "并下",
+          "并",
+          "病",
+          "冰",
+          "兵",
+          "饼",
+          "丙",
+          "柄",
+          "炳"
+        ],
+        "preedit" : "bing xia",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.038166666666666661,
+      "handled" : true,
+      "key" : 110,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          9,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "并先",
+          "并",
+          "病",
+          "冰",
+          "兵",
+          "饼",
+          "丙",
+          "柄",
+          "炳"
+        ],
+        "preedit" : "bing xian",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.023875,
+      "handled" : true,
+      "key" : 103,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          10,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "冰箱",
+          "并向",
+          "并",
+          "病",
+          "冰",
+          "兵",
+          "饼",
+          "丙",
+          "柄"
+        ],
+        "preedit" : "bing xiang",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.041000000000000002,
+      "handled" : true,
+      "key" : 108,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          12,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "冰箱里",
+          "冰箱",
+          "并向",
+          "并",
+          "病",
+          "冰",
+          "兵",
+          "宾馆",
+          "饼"
+        ],
+        "preedit" : "bing xiang l",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.035499999999999997,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          13,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "冰箱里",
+          "冰箱",
+          "并向",
+          "并",
+          "病",
+          "冰",
+          "兵",
+          "饼",
+          "丙"
+        ],
+        "preedit" : "bing xiang li",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.20291666666666666,
+      "handled" : true,
+      "key" : 104,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          15,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "冰箱里和",
+          "冰箱里",
+          "冰箱",
+          "并向",
+          "并",
+          "病",
+          "冰",
+          "兵",
+          "宾馆"
+        ],
+        "preedit" : "bing xiang li h",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.044666666666666667,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          16,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "冰箱里哈",
+          "冰箱里",
+          "冰箱",
+          "并向",
+          "并",
+          "病",
+          "冰",
+          "兵",
+          "饼"
+        ],
+        "preedit" : "bing xiang li ha",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.039916666666666663,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          17,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "冰箱里还",
+          "冰箱里",
+          "冰箱",
+          "并向",
+          "并",
+          "病",
+          "冰",
+          "兵",
+          "饼"
+        ],
+        "preedit" : "bing xiang li hai",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.177375,
+      "handled" : true,
+      "key" : 121,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          19,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "冰箱里还有",
+          "冰箱里",
+          "冰箱",
+          "并向",
+          "并",
+          "病",
+          "冰",
+          "兵",
+          "宾馆"
+        ],
+        "preedit" : "bing xiang li hai y",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.048541666666666664,
+      "handled" : true,
+      "key" : 111,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          20,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "冰箱里还哟",
+          "冰箱里",
+          "冰箱",
+          "并向",
+          "并",
+          "病",
+          "冰",
+          "兵",
+          "饼"
+        ],
+        "preedit" : "bing xiang li hai yo",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.040625000000000001,
+      "handled" : true,
+      "key" : 117,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          21,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "冰箱里还有",
+          "冰箱里",
+          "冰箱",
+          "并向",
+          "并",
+          "病",
+          "冰",
+          "兵",
+          "饼"
+        ],
+        "preedit" : "bing xiang li hai you",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.18412500000000001,
+      "handled" : true,
+      "key" : 106,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          23,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "冰箱里还有就",
+          "冰箱里",
+          "冰箱",
+          "并向",
+          "并",
+          "病",
+          "冰",
+          "兵",
+          "宾馆"
+        ],
+        "preedit" : "bing xiang li hai you j",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.053999999999999999,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          24,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "冰箱里还有及",
+          "冰箱里",
+          "冰箱",
+          "并向",
+          "并",
+          "病",
+          "冰",
+          "兵",
+          "饼"
+        ],
+        "preedit" : "bing xiang li hai you ji",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.19154166666666667,
+      "handled" : true,
+      "key" : 100,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          26,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "冰箱里还有记得",
+          "冰箱里",
+          "冰箱",
+          "并向",
+          "并",
+          "病",
+          "冰",
+          "兵",
+          "宾馆"
+        ],
+        "preedit" : "bing xiang li hai you ji d",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.057583333333333334,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          27,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "冰箱里还有极大",
+          "冰箱里",
+          "冰箱",
+          "并向",
+          "并",
+          "病",
+          "冰",
+          "兵",
+          "饼"
+        ],
+        "preedit" : "bing xiang li hai you ji da",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.050708333333333334,
+      "handled" : true,
+      "key" : 110,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          28,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "冰箱里还有鸡蛋",
+          "冰箱里",
+          "冰箱",
+          "并向",
+          "并",
+          "病",
+          "冰",
+          "兵",
+          "饼"
+        ],
+        "preedit" : "bing xiang li hai you ji dan",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ]
+}

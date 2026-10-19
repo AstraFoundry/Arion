@@ -1,0 +1,232 @@
+{
+  "id" : "common-word-008",
+  "boundary" : "production engine key-processing plus synchronous snapshot copying; no OS events or rendered preedit",
+  "teardownMs" : 0.53070833333333334,
+  "timer" : "mach_absolute_time",
+  "beforeConfirmation" : {
+    "commit" : "",
+    "selection" : [
+      7,
+      0
+    ],
+    "lastPage" : false,
+    "highlighted" : 0,
+    "candidates" : [
+      "老师",
+      "老是",
+      "老实",
+      "老式",
+      "老",
+      "捞",
+      "劳",
+      "牢",
+      "佬"
+    ],
+    "preedit" : "lao shi",
+    "page" : 0,
+    "ascii" : false
+  },
+  "terminal" : "empty-preedit",
+  "warmupMs" : 0.0022499999999999998,
+  "peakRSSBytes" : 21544960,
+  "confirmations" : [
+    {
+      "keyToSnapshotMs" : 0.015583333333333334,
+      "handled" : true,
+      "key" : 32,
+      "snapshot" : {
+        "commit" : "老师",
+        "selection" : [
+          0,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+
+        ],
+        "preedit" : "",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ],
+  "input" : "laoshi",
+  "startupToSessionMs" : 12.283125,
+  "committed" : "老师",
+  "warmups" : [
+
+  ],
+  "inputKeysToFinalSnapshotMs" : 0.253,
+  "status" : "completed",
+  "steps" : [
+    {
+      "keyToSnapshotMs" : 0.062375,
+      "handled" : true,
+      "key" : 108,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          1,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "了",
+          "来",
+          "啦",
+          "里",
+          "老",
+          "咯",
+          "连",
+          "拉",
+          "路"
+        ],
+        "preedit" : "l",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.021708333333333333,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          2,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "啦",
+          "拉",
+          "喇",
+          "辣",
+          "蜡",
+          "腊",
+          "剌",
+          "落",
+          "垃"
+        ],
+        "preedit" : "la",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.019916666666666669,
+      "handled" : true,
+      "key" : 111,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          3,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "老",
+          "捞",
+          "劳",
+          "牢",
+          "佬",
+          "烙",
+          "涝",
+          "唠",
+          "姥"
+        ],
+        "preedit" : "lao",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.049166666666666664,
+      "handled" : true,
+      "key" : 115,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          5,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "老师",
+          "老是",
+          "老实",
+          "老鼠",
+          "牢骚",
+          "老三",
+          "老式",
+          "老四",
+          "老手"
+        ],
+        "preedit" : "lao s",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.057708333333333334,
+      "handled" : true,
+      "key" : 104,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          6,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "老师",
+          "老是",
+          "老实",
+          "老鼠",
+          "老式",
+          "老手",
+          "老说",
+          "老少",
+          "崂山"
+        ],
+        "preedit" : "lao sh",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.03229166666666667,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          7,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "老师",
+          "老是",
+          "老实",
+          "老式",
+          "老",
+          "捞",
+          "劳",
+          "牢",
+          "佬"
+        ],
+        "preedit" : "lao shi",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ]
+}

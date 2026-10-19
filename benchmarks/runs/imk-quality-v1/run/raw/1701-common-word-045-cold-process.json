@@ -1,0 +1,288 @@
+{
+  "id" : "common-word-045",
+  "boundary" : "production engine key-processing plus synchronous snapshot copying; no OS events or rendered preedit",
+  "teardownMs" : 0.43062499999999998,
+  "timer" : "mach_absolute_time",
+  "beforeConfirmation" : {
+    "commit" : "",
+    "selection" : [
+      9,
+      0
+    ],
+    "lastPage" : false,
+    "highlighted" : 0,
+    "candidates" : [
+      "重要",
+      "中药",
+      "中亚",
+      "重压",
+      "中",
+      "种",
+      "重",
+      "钟",
+      "仲"
+    ],
+    "preedit" : "zhong yao",
+    "page" : 0,
+    "ascii" : false
+  },
+  "terminal" : "empty-preedit",
+  "warmupMs" : 0.0027083333333333334,
+  "peakRSSBytes" : 21659648,
+  "confirmations" : [
+    {
+      "keyToSnapshotMs" : 0.014625000000000001,
+      "handled" : true,
+      "key" : 32,
+      "snapshot" : {
+        "commit" : "重要",
+        "selection" : [
+          0,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+
+        ],
+        "preedit" : "",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ],
+  "input" : "zhongyao",
+  "startupToSessionMs" : 12.281083333333333,
+  "committed" : "重要",
+  "warmups" : [
+
+  ],
+  "inputKeysToFinalSnapshotMs" : 0.43608333333333332,
+  "status" : "completed",
+  "steps" : [
+    {
+      "keyToSnapshotMs" : 0.087833333333333333,
+      "handled" : true,
+      "key" : 122,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          1,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "在",
+          "中",
+          "这",
+          "做",
+          "再",
+          "着",
+          "找",
+          "最",
+          "真"
+        ],
+        "preedit" : "z",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.085250000000000006,
+      "handled" : true,
+      "key" : 104,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          2,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "中",
+          "这",
+          "着",
+          "找",
+          "真",
+          "之",
+          "只",
+          "者",
+          "张"
+        ],
+        "preedit" : "zh",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.025708333333333333,
+      "handled" : true,
+      "key" : 111,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          3,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "中",
+          "周",
+          "种",
+          "重",
+          "钟",
+          "仲",
+          "州",
+          "众",
+          "忠"
+        ],
+        "preedit" : "zho",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.023916666666666669,
+      "handled" : true,
+      "key" : 110,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          4,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "中",
+          "种",
+          "重",
+          "钟",
+          "仲",
+          "众",
+          "忠",
+          "终",
+          "肿"
+        ],
+        "preedit" : "zhon",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.022958333333333331,
+      "handled" : true,
+      "key" : 103,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          5,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "中",
+          "种",
+          "重",
+          "钟",
+          "仲",
+          "众",
+          "忠",
+          "终",
+          "肿"
+        ],
+        "preedit" : "zhong",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.120375,
+      "handled" : true,
+      "key" : 121,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          7,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "重要",
+          "终于",
+          "中央",
+          "中医",
+          "中有",
+          "中药",
+          "中原",
+          "中意",
+          "中也"
+        ],
+        "preedit" : "zhong y",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.033291666666666664,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          8,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "中亚",
+          "重压",
+          "中",
+          "种",
+          "重",
+          "钟",
+          "仲",
+          "众",
+          "忠"
+        ],
+        "preedit" : "zhong ya",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.023875,
+      "handled" : true,
+      "key" : 111,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          9,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "重要",
+          "中药",
+          "中亚",
+          "重压",
+          "中",
+          "种",
+          "重",
+          "钟",
+          "仲"
+        ],
+        "preedit" : "zhong yao",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ]
+}

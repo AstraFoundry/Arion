@@ -1,0 +1,288 @@
+{
+  "id" : "common-word-016",
+  "boundary" : "production engine key-processing plus synchronous snapshot copying; no OS events or rendered preedit",
+  "teardownMs" : 0.53129166666666661,
+  "timer" : "mach_absolute_time",
+  "beforeConfirmation" : {
+    "commit" : "",
+    "selection" : [
+      9,
+      0
+    ],
+    "lastPage" : false,
+    "highlighted" : 0,
+    "candidates" : [
+      "房间",
+      "坊间",
+      "放",
+      "方",
+      "房",
+      "防",
+      "芳",
+      "坊",
+      "仿"
+    ],
+    "preedit" : "fang jian",
+    "page" : 0,
+    "ascii" : false
+  },
+  "terminal" : "empty-preedit",
+  "warmupMs" : 0.0024583333333333336,
+  "peakRSSBytes" : 21430272,
+  "confirmations" : [
+    {
+      "keyToSnapshotMs" : 0.015166666666666667,
+      "handled" : true,
+      "key" : 32,
+      "snapshot" : {
+        "commit" : "房间",
+        "selection" : [
+          0,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+
+        ],
+        "preedit" : "",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ],
+  "input" : "fangjian",
+  "startupToSessionMs" : 13.332333333333334,
+  "committed" : "房间",
+  "warmups" : [
+
+  ],
+  "inputKeysToFinalSnapshotMs" : 0.26237500000000002,
+  "status" : "completed",
+  "steps" : [
+    {
+      "keyToSnapshotMs" : 0.059291666666666666,
+      "handled" : true,
+      "key" : 102,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          1,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "发",
+          "分",
+          "放",
+          "法",
+          "非",
+          "副",
+          "方",
+          "风",
+          "飞"
+        ],
+        "preedit" : "f",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.022041666666666668,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          2,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "发",
+          "法",
+          "伐",
+          "罚",
+          "阀",
+          "乏",
+          "發",
+          "筏",
+          "珐"
+        ],
+        "preedit" : "fa",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.021250000000000002,
+      "handled" : true,
+      "key" : 110,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          3,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "饭",
+          "反",
+          "烦",
+          "翻",
+          "凡",
+          "范",
+          "返",
+          "犯",
+          "番"
+        ],
+        "preedit" : "fan",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.021458333333333333,
+      "handled" : true,
+      "key" : 103,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          4,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "放",
+          "方",
+          "房",
+          "防",
+          "芳",
+          "坊",
+          "仿",
+          "访",
+          "纺"
+        ],
+        "preedit" : "fang",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.050416666666666665,
+      "handled" : true,
+      "key" : 106,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          6,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "房间",
+          "房价",
+          "放假",
+          "放进",
+          "坊间",
+          "放",
+          "方",
+          "房",
+          "防"
+        ],
+        "preedit" : "fang j",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.032333333333333332,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          7,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "放及",
+          "放",
+          "方",
+          "房",
+          "防",
+          "芳",
+          "坊",
+          "仿",
+          "访"
+        ],
+        "preedit" : "fang ji",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.021874999999999999,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          8,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "房价",
+          "放假",
+          "放",
+          "方",
+          "房",
+          "防",
+          "芳",
+          "坊",
+          "仿"
+        ],
+        "preedit" : "fang jia",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.021958333333333333,
+      "handled" : true,
+      "key" : 110,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          9,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "房间",
+          "坊间",
+          "放",
+          "方",
+          "房",
+          "防",
+          "芳",
+          "坊",
+          "仿"
+        ],
+        "preedit" : "fang jian",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ]
+}

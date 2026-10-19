@@ -1,0 +1,4 @@
+=== RUN   TestInputBundleConfiguredDeveloperIDPayload
+--- PASS: TestInputBundleConfiguredDeveloperIDPayload (0.06s)
+PASS
+ok  	arion.local/desktop/infrastructure/macos	1.302s

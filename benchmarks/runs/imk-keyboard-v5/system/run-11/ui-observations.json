@@ -1,0 +1,25 @@
+{
+  "kind": "transcribed-actual-tool-observations",
+  "notOriginalScreenshot": true,
+  "actions": [
+    {
+      "tool": "cua_repl",
+      "action": "click",
+      "element": 1,
+      "label": "Register and enable test source",
+      "result": "button disabled"
+    },
+    {
+      "tool": "cua_repl",
+      "action": "getAXState",
+      "text": "Recorded actual registration result. External controller will restore the original state."
+    },
+    {
+      "tool": "cua_repl",
+      "action": "click",
+      "element": 3,
+      "label": "close button",
+      "result": "Computer Use server error -10005: timeoutReached"
+    }
+  ]
+}

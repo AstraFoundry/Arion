@@ -1,0 +1,569 @@
+{
+  "schemaVersion": 1,
+  "study": "imk-keyboard-v1",
+  "scope": "Completed synthetic real-engine/AppKit functional evidence and failed system-registration acceptance; no OS typing-dispatch pass",
+  "environment": {
+    "os": "macOS",
+    "version": "26.6.2",
+    "build": "25G83",
+    "architecture": "arm64",
+    "powerMode": "not recorded",
+    "latencyTimer": "not applicable; functional assertions only",
+    "gitRevision": "88c6c5a76f4fd025d6a8d663c49667944414b45d",
+    "workingTree": "dirty; exact executed latest source identities preserved"
+  },
+  "engine": {
+    "name": "librime",
+    "version": "1.17.0",
+    "schema": "arion_pinyin",
+    "networkDuringFunctionalTests": "no acquisition or cloud conversion; local staged data",
+    "key": "isolated synthetic source-test key; no real keychain key or user vault archived"
+  },
+  "attempts": [
+    {
+      "id": "typing-attempt-01",
+      "log": "engine/typing-attempt-01.log",
+      "status": "compile-failed",
+      "exactExecutedHarnessArchived": false,
+      "sourceLimit": "Earlier harness revisions were not retained; original output and any recorded identities preserved without claiming exact rerun sources."
+    },
+    {
+      "id": "typing-attempt-02",
+      "log": "engine/typing-attempt-02.log",
+      "status": "failed",
+      "report": "engine/typing-attempt-02.json",
+      "passed": 9,
+      "total": 11,
+      "exactExecutedHarnessArchived": false,
+      "sourceLimit": "Earlier harness revisions were not retained; original output and any recorded identities preserved without claiming exact rerun sources."
+    },
+    {
+      "id": "typing-attempt-03",
+      "log": "engine/typing-attempt-03.log",
+      "status": "failed",
+      "report": "engine/typing-attempt-03.json",
+      "passed": 9,
+      "total": 11,
+      "exactExecutedHarnessArchived": false,
+      "sourceLimit": "Earlier harness revisions were not retained; original output and any recorded identities preserved without claiming exact rerun sources."
+    },
+    {
+      "id": "typing-attempt-04",
+      "log": "engine/typing-attempt-04.log",
+      "status": "passed",
+      "report": "engine/typing-attempt-04.json",
+      "passed": 12,
+      "total": 12,
+      "exactExecutedHarnessArchived": false,
+      "sourceLimit": "Earlier harness revisions were not retained; original output and any recorded identities preserved without claiming exact rerun sources."
+    },
+    {
+      "id": "typing-attempt-05",
+      "log": "engine/typing-attempt-05.log",
+      "status": "passed",
+      "report": "engine/typing-attempt-05.json",
+      "passed": 12,
+      "total": 12,
+      "exactExecutedHarnessArchived": false,
+      "sourceLimit": "Earlier harness revisions were not retained; original output and any recorded identities preserved without claiming exact rerun sources."
+    },
+    {
+      "id": "typing-attempt-06",
+      "log": "engine/typing-attempt-06.log",
+      "status": "failed",
+      "report": "engine/typing-attempt-06.json",
+      "passed": 12,
+      "total": 13,
+      "exactExecutedHarnessArchived": false,
+      "sourceLimit": "Earlier harness revisions were not retained; original output and any recorded identities preserved without claiming exact rerun sources."
+    },
+    {
+      "id": "typing-attempt-07",
+      "log": "engine/typing-attempt-07.log",
+      "status": "compile-failed",
+      "exactExecutedHarnessArchived": false,
+      "sourceLimit": "Earlier harness revisions were not retained; original output and any recorded identities preserved without claiming exact rerun sources."
+    },
+    {
+      "id": "typing-attempt-08",
+      "log": "engine/typing-attempt-08.log",
+      "status": "passed",
+      "report": "engine/typing-attempt-08.json",
+      "passed": 14,
+      "total": 14,
+      "exactExecutedHarnessArchived": false,
+      "sourceLimit": "Earlier harness revisions were not retained; original output and any recorded identities preserved without claiming exact rerun sources."
+    },
+    {
+      "id": "typing-attempt-09",
+      "log": "engine/typing-attempt-09.log",
+      "status": "compile-failed",
+      "exactExecutedHarnessArchived": false,
+      "sourceLimit": "Earlier harness revisions were not retained; original output and any recorded identities preserved without claiming exact rerun sources."
+    },
+    {
+      "id": "typing-attempt-10",
+      "log": "engine/typing-attempt-10.log",
+      "status": "passed",
+      "report": "engine/typing-attempt-10.json",
+      "passed": 15,
+      "total": 15,
+      "exactExecutedHarnessArchived": false,
+      "sourceLimit": "Earlier harness revisions were not retained; original output and any recorded identities preserved without claiming exact rerun sources."
+    },
+    {
+      "id": "typing-attempt-11",
+      "log": "engine/typing-attempt-11.log",
+      "status": "passed",
+      "report": "engine/typing-attempt-11.json",
+      "passed": 20,
+      "total": 20,
+      "exactExecutedHarnessArchived": true
+    }
+  ],
+  "systemRuns": [
+    {
+      "id": "run-03",
+      "status": "failed",
+      "restoration": "restored",
+      "observations": "system/run-03/observations.json",
+      "state": "system/run-03/state.json",
+      "limit": "Source selection -50; no actual typing dispatch established"
+    },
+    {
+      "id": "run-04",
+      "status": "failed-reported",
+      "restoration": "restored",
+      "state": "system/run-04/state.json",
+      "limit": "Original failed install/enable response not retained in an observation file; restored state and original controller source retained. Do not infer a successful OS acceptance."
+    }
+  ],
+  "exclusions": [
+    {
+      "path": "apps/desktop/resources/darwin/keyboard/lib/librime.1.dylib",
+      "sha256": "1adb725a081b0accc1451034f6f1bb78cbfe8252a65245f1511f4b3f2038c487",
+      "reason": "Native runtime binary remains separately provisioned; not archived"
+    },
+    {
+      "path": "runtime/data dictionary binaries, native runtimes, SDKs, encrypted personal profiles and account keys",
+      "reason": "Separate provisioning or private/temporary state; excluded from evidence archive"
+    },
+    {
+      "path": ".workspace/e2e/imk-system/run-05",
+      "reason": "Unfinished signed/notarization execution remains in workspace"
+    }
+  ],
+  "files": [
+    {
+      "path": "sources/apps/desktop/ime/macos/tests/typing_test.m",
+      "originalPath": "apps/desktop/ime/macos/tests/typing_test.m",
+      "sizeBytes": 26533,
+      "sha256": "041b263e040d17fa97983dd138a5cc222fb7dab207ed16d2866568ba1b0e4a0d",
+      "kind": "exact-latest-executed-source-or-data",
+      "sourceRelation": "matches completed attempt-11 recorded identity"
+    },
+    {
+      "path": "sources/scripts/test-keyboard-input.mjs",
+      "originalPath": "scripts/test-keyboard-input.mjs",
+      "sizeBytes": 3361,
+      "sha256": "9a0fe2f4d347ac0ffd1101eaa94e470be24f9ae05e98558ba398ff2060862d24",
+      "kind": "exact-latest-executed-source-or-data",
+      "sourceRelation": "matches completed attempt-11 recorded identity"
+    },
+    {
+      "path": "sources/apps/desktop/ime/macos/keyboard.m",
+      "originalPath": "apps/desktop/ime/macos/keyboard.m",
+      "sizeBytes": 10869,
+      "sha256": "d9a70d0c5e2d6a11f17b2987ff83923c80ea147363a1f796f44bf69e581cac76",
+      "kind": "exact-latest-executed-source-or-data",
+      "sourceRelation": "matches completed attempt-11 recorded identity"
+    },
+    {
+      "path": "sources/apps/desktop/ime/macos/typing.m",
+      "originalPath": "apps/desktop/ime/macos/typing.m",
+      "sizeBytes": 5031,
+      "sha256": "5c00d394730dcd1720aabb8b07080e3bc0e216425a315ef70896ab18efd7deaa",
+      "kind": "exact-latest-executed-source-or-data",
+      "sourceRelation": "matches completed attempt-11 recorded identity"
+    },
+    {
+      "path": "sources/apps/desktop/ime/macos/learning.mm",
+      "originalPath": "apps/desktop/ime/macos/learning.mm",
+      "sizeBytes": 22573,
+      "sha256": "96e0a607864d62c1bc1e8be91e7832002bc948edcb0cfcc73ae471c7a6e6077b",
+      "kind": "exact-latest-executed-source-or-data",
+      "sourceRelation": "matches completed attempt-11 recorded identity"
+    },
+    {
+      "path": "sources/apps/desktop/ime/macos/learning_crypto.swift",
+      "originalPath": "apps/desktop/ime/macos/learning_crypto.swift",
+      "sizeBytes": 3075,
+      "sha256": "9c8ed696f3b17918f1e0f4489eaf65fca0dd6d9ffd9066b6d00f869380b14ed2",
+      "kind": "exact-latest-executed-source-or-data",
+      "sourceRelation": "matches completed attempt-11 recorded identity"
+    },
+    {
+      "path": "sources/apps/desktop/resources/darwin/keyboard/data/build/arion_pinyin.schema.yaml",
+      "originalPath": "apps/desktop/resources/darwin/keyboard/data/build/arion_pinyin.schema.yaml",
+      "sizeBytes": 39443,
+      "sha256": "5eeebe964c235877f495995912ec410ad70808f461be1e378b4e9d48bd0628ad",
+      "kind": "exact-latest-executed-source-or-data",
+      "sourceRelation": "matches completed attempt-11 recorded identity"
+    },
+    {
+      "path": "provenance/runtime.json",
+      "originalPath": "apps/desktop/resources/darwin/keyboard/runtime.json",
+      "sizeBytes": 5536,
+      "sha256": "4480566a33a0244c4d0654dca0e3f63d926f8447303e2cf84a5d305c443b80d6",
+      "kind": "exact-latest-executed-source-or-data",
+      "sourceRelation": "matches completed attempt-11 recorded identity"
+    },
+    {
+      "path": "sources/scripts/lib/build-ime-learning.mjs",
+      "originalPath": "scripts/lib/build-ime-learning.mjs",
+      "sizeBytes": 1691,
+      "sha256": "67a75be4bf4552e50a684ad542a8d2aee73d6aa80f452961582eb0de34cba7a0",
+      "kind": "exact-latest-executed-source-or-data",
+      "sourceRelation": "matches completed attempt-11 recorded identity"
+    },
+    {
+      "path": "sources/apps/desktop/ime/macos/keyboard.h",
+      "originalPath": "apps/desktop/ime/macos/keyboard.h",
+      "sizeBytes": 1465,
+      "sha256": "7e230a99cd9788f4feb3745c14d8e4a5d1ecb008284c916cf942820c8e0d93dd",
+      "kind": "supporting-reproduction-source",
+      "sourceRelation": "archive-time snapshot; no separate historical identity record"
+    },
+    {
+      "path": "sources/apps/desktop/ime/macos/typing.h",
+      "originalPath": "apps/desktop/ime/macos/typing.h",
+      "sizeBytes": 797,
+      "sha256": "e5d0e858d9c6d0f496011e872d4677365d06838fad79b14e874eea75aebf7d88",
+      "kind": "supporting-reproduction-source",
+      "sourceRelation": "archive-time snapshot; no separate historical identity record"
+    },
+    {
+      "path": "sources/apps/desktop/ime/macos/learning.h",
+      "originalPath": "apps/desktop/ime/macos/learning.h",
+      "sizeBytes": 1210,
+      "sha256": "d9e82f45a3710515c292d7f9f059ecb2ad96c247166ed22fa69de97a9cf3008d",
+      "kind": "supporting-reproduction-source",
+      "sourceRelation": "archive-time snapshot; no separate historical identity record"
+    },
+    {
+      "path": "sources/apps/desktop/ime/macos/keyboard-data/arion_pinyin.schema.yaml",
+      "originalPath": "apps/desktop/ime/macos/keyboard-data/arion_pinyin.schema.yaml",
+      "sizeBytes": 917,
+      "sha256": "5f106fd1dc9fa7945c75f0c22ac59d3e7c8902603f3d790d29d2be767b715eda",
+      "kind": "supporting-reproduction-source",
+      "sourceRelation": "archive-time snapshot; no separate historical identity record"
+    },
+    {
+      "path": "sources/apps/desktop/ime/macos/keyboard-data/default.custom.yaml",
+      "originalPath": "apps/desktop/ime/macos/keyboard-data/default.custom.yaml",
+      "sizeBytes": 172,
+      "sha256": "bddfaf030cc97337069c95c9f30cc0bc2c3498bebf4bfd7424a51c81cc475439",
+      "kind": "supporting-reproduction-source",
+      "sourceRelation": "archive-time snapshot; no separate historical identity record"
+    },
+    {
+      "path": "sources/scripts/keyboard-runtime.json",
+      "originalPath": "scripts/keyboard-runtime.json",
+      "sizeBytes": 8729,
+      "sha256": "58b95bd269eeb9a2a94c3f3f0d1d559e9b2d2c385854f2aa922207d8b92c5366",
+      "kind": "supporting-reproduction-source",
+      "sourceRelation": "archive-time snapshot; no separate historical identity record"
+    },
+    {
+      "path": "sources/scripts/stage-keyboard-runtime.mjs",
+      "originalPath": "scripts/stage-keyboard-runtime.mjs",
+      "sizeBytes": 8022,
+      "sha256": "8b99a7d00112579f453c526d2bd2815b8c84cdb9b88bb8b0fbcb8547d4793db5",
+      "kind": "supporting-reproduction-source",
+      "sourceRelation": "archive-time snapshot; no separate historical identity record"
+    },
+    {
+      "path": "sources/scripts/lib/pinned-file.mjs",
+      "originalPath": "scripts/lib/pinned-file.mjs",
+      "sizeBytes": 1186,
+      "sha256": "29931f7190430733bbf5cbe01465a71690043d3555d747bc3139de5fda236423",
+      "kind": "supporting-reproduction-source",
+      "sourceRelation": "archive-time snapshot; no separate historical identity record"
+    },
+    {
+      "path": "engine/typing-attempt-01.log",
+      "originalPath": ".workspace/research/imk-alignment/typing-attempt-01.log",
+      "sizeBytes": 1951,
+      "sha256": "1f2415aca39e23ac97e16e76849e8d371fd46bf3a49e4580a845386e59a2b8b5",
+      "kind": "original-raw-functional-attempt"
+    },
+    {
+      "path": "engine/typing-attempt-02.json",
+      "originalPath": ".workspace/research/imk-alignment/typing-attempt-02.json",
+      "sizeBytes": 4723,
+      "sha256": "393e732cde50744d78afe001632956f0e63cca8734e2d86144aff851b50943a0",
+      "kind": "original-raw-functional-attempt"
+    },
+    {
+      "path": "engine/typing-attempt-02.log",
+      "originalPath": ".workspace/research/imk-alignment/typing-attempt-02.log",
+      "sizeBytes": 1805,
+      "sha256": "d1ae8500983f088244afde15a6c0cb82c1fa23484a9691e0f938e6fedd44e5fc",
+      "kind": "original-raw-functional-attempt"
+    },
+    {
+      "path": "engine/typing-attempt-03.json",
+      "originalPath": ".workspace/research/imk-alignment/typing-attempt-03.json",
+      "sizeBytes": 8543,
+      "sha256": "1ef82a09a45ae2586294ac9ad512570414edf12d2c3c41ff0fa39d56dfb46b30",
+      "kind": "original-raw-functional-attempt"
+    },
+    {
+      "path": "engine/typing-attempt-03.log",
+      "originalPath": ".workspace/research/imk-alignment/typing-attempt-03.log",
+      "sizeBytes": 1805,
+      "sha256": "01fc697a09eefe9143afce5050d8aa6e525b8d1b893086c230bff8e97951c70d",
+      "kind": "original-raw-functional-attempt"
+    },
+    {
+      "path": "engine/typing-attempt-04-identities.json",
+      "originalPath": ".workspace/research/imk-alignment/typing-attempt-04-identities.json",
+      "sizeBytes": 1197,
+      "sha256": "c2d15b1d9843a7470cdae7d6a166883872c6f5f6038033a248c4c41426d0445b",
+      "kind": "original-raw-functional-attempt"
+    },
+    {
+      "path": "engine/typing-attempt-04.json",
+      "originalPath": ".workspace/research/imk-alignment/typing-attempt-04.json",
+      "sizeBytes": 8559,
+      "sha256": "da8a8d8fdb6cf4ff0e512746dab9e97bd4bee48511c6ac4d31870edffb7199e2",
+      "kind": "original-raw-functional-attempt"
+    },
+    {
+      "path": "engine/typing-attempt-04.log",
+      "originalPath": ".workspace/research/imk-alignment/typing-attempt-04.log",
+      "sizeBytes": 1903,
+      "sha256": "7a72384e9e06da77c5319a5be1bfbfb57b38b837b79c078b48bc9c7c3d679d45",
+      "kind": "original-raw-functional-attempt"
+    },
+    {
+      "path": "engine/typing-attempt-05-identities.json",
+      "originalPath": ".workspace/research/imk-alignment/typing-attempt-05-identities.json",
+      "sizeBytes": 1198,
+      "sha256": "24cbf4a24f4e3f3b352edab5786d7c853dba8b8967c7ded9c3c23d0e9eb965bd",
+      "kind": "original-raw-functional-attempt"
+    },
+    {
+      "path": "engine/typing-attempt-05.json",
+      "originalPath": ".workspace/research/imk-alignment/typing-attempt-05.json",
+      "sizeBytes": 8559,
+      "sha256": "da8a8d8fdb6cf4ff0e512746dab9e97bd4bee48511c6ac4d31870edffb7199e2",
+      "kind": "original-raw-functional-attempt"
+    },
+    {
+      "path": "engine/typing-attempt-05.log",
+      "originalPath": ".workspace/research/imk-alignment/typing-attempt-05.log",
+      "sizeBytes": 1409,
+      "sha256": "1de9c82084ff97c5dc68e2cd8625f1ff79e4184952d141b98bd40059f3c7a632",
+      "kind": "original-raw-functional-attempt"
+    },
+    {
+      "path": "engine/typing-attempt-06.json",
+      "originalPath": ".workspace/research/imk-alignment/typing-attempt-06.json",
+      "sizeBytes": 10175,
+      "sha256": "9dad07e386a1e7afc0c7f178a2ad27827c3a4b85f266870d3c559726d7929426",
+      "kind": "original-raw-functional-attempt"
+    },
+    {
+      "path": "engine/typing-attempt-06.log",
+      "originalPath": ".workspace/research/imk-alignment/typing-attempt-06.log",
+      "sizeBytes": 1519,
+      "sha256": "97cafdcc25207a96cc2c584dcfe6a67a1607e2a0bbe9d955a48adfad4b55221d",
+      "kind": "original-raw-functional-attempt"
+    },
+    {
+      "path": "engine/typing-attempt-07.log",
+      "originalPath": ".workspace/research/imk-alignment/typing-attempt-07.log",
+      "sizeBytes": 1835,
+      "sha256": "64cb2f0cbc65acdfcdccbe595b58f1259839cbc93b310dab3d28a121ede4d787",
+      "kind": "original-raw-functional-attempt"
+    },
+    {
+      "path": "engine/typing-attempt-08-identities.json",
+      "originalPath": ".workspace/research/imk-alignment/typing-attempt-08-identities.json",
+      "sizeBytes": 1495,
+      "sha256": "a26e72fe73cb5c67884a119b6b630e98530de4ce7781f51b680dcb69d7ba1385",
+      "kind": "original-raw-functional-attempt"
+    },
+    {
+      "path": "engine/typing-attempt-08.json",
+      "originalPath": ".workspace/research/imk-alignment/typing-attempt-08.json",
+      "sizeBytes": 10717,
+      "sha256": "1a5794f0967c9565aa722ffde74cadcd6f99f74146d27aadee0fc014b15fbf37",
+      "kind": "original-raw-functional-attempt"
+    },
+    {
+      "path": "engine/typing-attempt-08.log",
+      "originalPath": ".workspace/research/imk-alignment/typing-attempt-08.log",
+      "sizeBytes": 1631,
+      "sha256": "66ea4364d671f221cb8e705c4df035e25c0d6348b2b85f7682fbdffddf4e97b4",
+      "kind": "original-raw-functional-attempt"
+    },
+    {
+      "path": "engine/typing-attempt-09.log",
+      "originalPath": ".workspace/research/imk-alignment/typing-attempt-09.log",
+      "sizeBytes": 2239,
+      "sha256": "6e48072a97a96063427d85d19886391fc816e47b5dabff82df5e10f8641acda2",
+      "kind": "original-raw-functional-attempt"
+    },
+    {
+      "path": "engine/typing-attempt-10-identities.json",
+      "originalPath": ".workspace/research/imk-alignment/typing-attempt-10-identities.json",
+      "sizeBytes": 1495,
+      "sha256": "7e5b715a91c9bc5b44f6fa4ac433561ba7112a8375e8e619bb59c0eafb0c4dc4",
+      "kind": "original-raw-functional-attempt"
+    },
+    {
+      "path": "engine/typing-attempt-10.json",
+      "originalPath": ".workspace/research/imk-alignment/typing-attempt-10.json",
+      "sizeBytes": 12529,
+      "sha256": "4ad0dd85b371ec04cb3fb8f0905c2ea029a5fea015b4ab4a26ff9fe8b195aa67",
+      "kind": "original-raw-functional-attempt"
+    },
+    {
+      "path": "engine/typing-attempt-10.log",
+      "originalPath": ".workspace/research/imk-alignment/typing-attempt-10.log",
+      "sizeBytes": 1755,
+      "sha256": "b96c780b220fc2ecdc89a3015e32e6db121c8b36c3ade7d1c79e15d483cba89b",
+      "kind": "original-raw-functional-attempt"
+    },
+    {
+      "path": "engine/typing-attempt-11-identities.json",
+      "originalPath": ".workspace/research/imk-alignment/typing-attempt-11-identities.json",
+      "sizeBytes": 1495,
+      "sha256": "45e9b8006cc8ff82c3b368d3d0bcb1e57b5b5f38b1079855bab558bbd581fb39",
+      "kind": "original-raw-functional-attempt"
+    },
+    {
+      "path": "engine/typing-attempt-11.json",
+      "originalPath": ".workspace/research/imk-alignment/typing-attempt-11.json",
+      "sizeBytes": 16845,
+      "sha256": "5b7be0d1fbbd125aabaf0d43defe238a5c5b5de7b3a7d135a7f4a3d618dbcbaf",
+      "kind": "original-raw-functional-attempt"
+    },
+    {
+      "path": "engine/typing-attempt-11.log",
+      "originalPath": ".workspace/research/imk-alignment/typing-attempt-11.log",
+      "sizeBytes": 2257,
+      "sha256": "4668e947cf14f50a2b1c364ff6575e28a9dcb31a4d1ef41cb941e0a4459abbfe",
+      "kind": "original-raw-functional-attempt"
+    },
+    {
+      "path": "engine/typing-test-report.md",
+      "originalPath": ".workspace/research/imk-alignment/typing-test-report.md",
+      "sizeBytes": 7277,
+      "sha256": "a345c71be579d41f266d66de86ae950c1dcc0c3e6262f9e5c9c137a6e3b0678e",
+      "kind": "finding-ledger"
+    },
+    {
+      "path": "system/run-03/observations.json",
+      "originalPath": ".workspace/e2e/imk-system/run-03/observations.json",
+      "sizeBytes": 2647,
+      "sha256": "51546d711b29c92a1cd8647620314a120f4e7a01f920a4d933945fa3918f2b1e",
+      "kind": "original-allowlisted-system-observation"
+    },
+    {
+      "path": "system/run-03/state.json",
+      "originalPath": ".workspace/e2e/imk-system/run-03/state.json",
+      "sizeBytes": 1547,
+      "sha256": "a9c8c22e3b489e633b07e3e807ee2bf10855160334906dc5becfbaf6871262ed",
+      "kind": "original-allowlisted-system-observation"
+    },
+    {
+      "path": "system/run-04/state.json",
+      "originalPath": ".workspace/e2e/imk-system/run-04/state.json",
+      "sizeBytes": 1196,
+      "sha256": "8aaf977a44100886b91cef528f34cefc42a1f625c3c47dcf1d21a157c4852d07",
+      "kind": "original-allowlisted-system-observation"
+    },
+    {
+      "path": "system/drivers/controller.mjs",
+      "originalPath": ".workspace/e2e/imk-system/controller.mjs",
+      "sizeBytes": 6001,
+      "sha256": "96c30051cc7a7ca60255ef81746640bc5a5861cbbadd9af72b67fb7298909cb7",
+      "kind": "original-system-driver-source",
+      "sourceRelation": "preserved scratch-driver bytes; compiled executable binding not recorded"
+    },
+    {
+      "path": "system/drivers/controller-04.mjs",
+      "originalPath": ".workspace/e2e/imk-system/controller-04.mjs",
+      "sizeBytes": 6123,
+      "sha256": "7dcbb81b8f0685e602b745f15307959c1b785ef7959ed3c341f45e48c7bed18d",
+      "kind": "original-system-driver-source",
+      "sourceRelation": "preserved scratch-driver bytes; compiled executable binding not recorded"
+    },
+    {
+      "path": "system/drivers/sources.swift",
+      "originalPath": ".workspace/e2e/imk-system/sources.swift",
+      "sizeBytes": 1609,
+      "sha256": "e4feea7f6ed4ea31c95aa913644fa482b09df9fc329059458c6d0333e7cbd550",
+      "kind": "original-system-driver-source",
+      "sourceRelation": "preserved scratch-driver bytes; compiled executable binding not recorded"
+    },
+    {
+      "path": "system/drivers/parent-enable.swift",
+      "originalPath": ".workspace/e2e/imk-system/parent-enable.swift",
+      "sizeBytes": 1196,
+      "sha256": "2cc65cfc5c39fd93f9e1f160e8c56ef8b151dd7165fdf7d1f1ea86e6aa0998ec",
+      "kind": "original-system-driver-source",
+      "sourceRelation": "preserved scratch-driver bytes; compiled executable binding not recorded"
+    },
+    {
+      "path": "system/drivers/enable-appkit.swift",
+      "originalPath": ".workspace/e2e/imk-system/enable-appkit.swift",
+      "sizeBytes": 1349,
+      "sha256": "49c666817d933ecf0966dad8251f0ef5da3db3a2c280715c7777cf987514d43e",
+      "kind": "original-system-driver-source",
+      "sourceRelation": "preserved scratch-driver bytes; compiled executable binding not recorded"
+    },
+    {
+      "path": "system/supporting-source/apps/desktop/cmd/arion-ime-probe/main_darwin.go",
+      "originalPath": "apps/desktop/cmd/arion-ime-probe/main_darwin.go",
+      "sizeBytes": 1130,
+      "sha256": "e83d2e19151f5cae1b4a7c056863a83f4fe992e2eea325381c23da77184190db",
+      "kind": "supporting-system-source",
+      "sourceRelation": "archive-time source; no original compiled source digest available"
+    },
+    {
+      "path": "system/supporting-source/apps/desktop/e2e/fixtures/editor/main.m",
+      "originalPath": "apps/desktop/e2e/fixtures/editor/main.m",
+      "sizeBytes": 8078,
+      "sha256": "5b1130066881a55e7a02e6a14b2a9d2875f224365c8c13f7962dbc23256fbffa",
+      "kind": "supporting-system-source",
+      "sourceRelation": "archive-time source; no original compiled source digest available"
+    },
+    {
+      "path": "system/supporting-source/apps/desktop/e2e/fixtures/editor/Info.plist",
+      "originalPath": "apps/desktop/e2e/fixtures/editor/Info.plist",
+      "sizeBytes": 561,
+      "sha256": "38d31da94250bf9eecfeb25a731a93d2ccd32e6e3a3ebd0f280081bdfdb887bd",
+      "kind": "supporting-system-source",
+      "sourceRelation": "archive-time source; no original compiled source digest available"
+    },
+    {
+      "path": "verify.mjs",
+      "originalPath": null,
+      "sizeBytes": 3326,
+      "sha256": "89a46dbf5bc6ca4b0034fcd0911c3731417e6782c8f5c203d201bdd9b304c89b",
+      "kind": "new-archive-verification-or-documentation"
+    },
+    {
+      "path": "README.md",
+      "originalPath": null,
+      "sizeBytes": 5131,
+      "sha256": "7ea0a370f6a01668e89865eb1bc33994e15822be407ad6e465d4cd605146a742",
+      "kind": "new-archive-verification-or-documentation"
+    }
+  ],
+  "manifestIntegrity": "archive.json excludes its own bytes; verifier checks every declared archived file and asserts completed/failed statuses"
+}

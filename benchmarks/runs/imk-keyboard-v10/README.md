@@ -1,0 +1,11 @@
+# Input-source visibility follow-up
+
+The user reached Keyboard → Text Input, then reported Arion absent. The actual add-source dialog and an Arion search also had no result. The installed development host existed and installation diagnostics recorded pending registration. Its ad hoc signature failed Gatekeeper assessment. A controlled replacement with the existing notarized Developer ID host passed Gatekeeper but still did not appear, including after a normal full quit/relaunch of System Settings while that signed host remained installed. Thus neither signing alone nor the stale Settings process explains a sufficient fix.
+
+The two controls used the production installer. Registration returned state 1; fresh TIS queries varied between a disabled parent/default-enabled child and no own entries. Both observations are retained separately; neither establishes successful source discovery. No Arion selection or host launch occurred. The first restoration guard rejected the child's enabled flag; the corrected guard checked the disabled parent and nonselection before restoring the original development bundle. Both original byte inventories matched after restoration and Chatterfly remained current. No login/logout, preference rewrite or input-source selection occurred. The add dialog was cancelled and the user's original source settings page restored.
+
+`controls/visibility-control-summary.json` is a derived observation summary, not an original producer report. Its separate first/second-control TIS metadata/source output strings and the original UI text/install JSON remain distinct. Source snapshots bind the installer implementation used. Private control directories, signing profiles, application/runtime binaries, full filesystem inventory and UI screenshots are excluded. The screenshot of the initial report is user-supplied and is not archived.
+
+The prior source controls are in [v9](../imk-keyboard-v9/README.md), and the notarized package provenance is in [v8](../imk-keyboard-v8/README.md). Actual system discovery, consent, selection and typing remain unaccepted. Initial-install logout/login is a next controlled acceptance step, not a verified fix.
+
+Run `node benchmarks/runs/imk-keyboard-v10/verify.mjs` to verify retained hashes and bounded state assertions. It performs no OS, input-source, signing, Keychain or UI operations.

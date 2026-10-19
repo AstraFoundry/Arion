@@ -1,0 +1,260 @@
+{
+  "id" : "common-word-039",
+  "boundary" : "production engine key-processing plus synchronous snapshot copying; no OS events or rendered preedit",
+  "teardownMs" : 0.44766666666666671,
+  "timer" : "mach_absolute_time",
+  "beforeConfirmation" : {
+    "commit" : "",
+    "selection" : [
+      8,
+      0
+    ],
+    "lastPage" : false,
+    "highlighted" : 0,
+    "candidates" : [
+      "苹果",
+      "评估",
+      "平谷",
+      "平",
+      "凭",
+      "评",
+      "瓶",
+      "屏",
+      "萍"
+    ],
+    "preedit" : "ping guo",
+    "page" : 0,
+    "ascii" : false
+  },
+  "terminal" : "empty-preedit",
+  "warmupMs" : 0.0022916666666666667,
+  "peakRSSBytes" : 21348352,
+  "confirmations" : [
+    {
+      "keyToSnapshotMs" : 0.013625,
+      "handled" : true,
+      "key" : 32,
+      "snapshot" : {
+        "commit" : "苹果",
+        "selection" : [
+          0,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+
+        ],
+        "preedit" : "",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ],
+  "input" : "pingguo",
+  "startupToSessionMs" : 11.273624999999999,
+  "committed" : "苹果",
+  "warmups" : [
+
+  ],
+  "inputKeysToFinalSnapshotMs" : 0.19754166666666664,
+  "status" : "completed",
+  "steps" : [
+    {
+      "keyToSnapshotMs" : 0.057583333333333334,
+      "handled" : true,
+      "key" : 112,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          1,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "怕",
+          "跑",
+          "拍",
+          "盘",
+          "片",
+          "陪",
+          "票",
+          "平",
+          "破"
+        ],
+        "preedit" : "p",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.019666666666666669,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          2,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "皮",
+          "批",
+          "屁",
+          "披",
+          "脾",
+          "劈",
+          "匹",
+          "癖",
+          "坯"
+        ],
+        "preedit" : "pi",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.019583333333333331,
+      "handled" : true,
+      "key" : 110,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          3,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "品",
+          "拼",
+          "频",
+          "贫",
+          "聘",
+          "嫔",
+          "颦",
+          "姘",
+          "拚"
+        ],
+        "preedit" : "pin",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.016208333333333335,
+      "handled" : true,
+      "key" : 103,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          4,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "平",
+          "凭",
+          "评",
+          "瓶",
+          "屏",
+          "萍",
+          "坪",
+          "苹",
+          "娉"
+        ],
+        "preedit" : "ping",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.029791666666666668,
+      "handled" : true,
+      "key" : 103,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          6,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "评估",
+          "苹果",
+          "瓶盖",
+          "平谷",
+          "平",
+          "凭",
+          "评",
+          "瓶",
+          "屏"
+        ],
+        "preedit" : "ping g",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.023416666666666669,
+      "handled" : true,
+      "key" : 117,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          7,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "评估",
+          "平谷",
+          "平",
+          "凭",
+          "评",
+          "瓶",
+          "屏",
+          "萍",
+          "坪"
+        ],
+        "preedit" : "ping gu",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.020916666666666667,
+      "handled" : true,
+      "key" : 111,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          8,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "苹果",
+          "评估",
+          "平谷",
+          "平",
+          "凭",
+          "评",
+          "瓶",
+          "屏",
+          "萍"
+        ],
+        "preedit" : "ping guo",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ]
+}

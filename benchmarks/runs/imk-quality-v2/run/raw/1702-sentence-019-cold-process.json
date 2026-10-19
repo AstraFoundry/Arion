@@ -1,0 +1,731 @@
+{
+  "id" : "sentence-019",
+  "boundary" : "production engine key-processing plus synchronous snapshot copying; no OS events or rendered preedit",
+  "teardownMs" : 0.64695833333333341,
+  "timer" : "mach_absolute_time",
+  "beforeConfirmation" : {
+    "commit" : "",
+    "selection" : [
+      31,
+      0
+    ],
+    "lastPage" : false,
+    "highlighted" : 0,
+    "candidates" : [
+      "孩子们在草地上万",
+      "孩子",
+      "海子",
+      "还",
+      "海",
+      "害",
+      "嗨",
+      "咳",
+      "孩"
+    ],
+    "preedit" : "hai zi men zai cao di shang wan",
+    "page" : 0,
+    "ascii" : false
+  },
+  "terminal" : "empty-preedit",
+  "warmupMs" : 0.002,
+  "peakRSSBytes" : 22429696,
+  "confirmations" : [
+    {
+      "keyToSnapshotMs" : 0.016041666666666666,
+      "handled" : true,
+      "key" : 32,
+      "snapshot" : {
+        "commit" : "孩子们在草地上万",
+        "selection" : [
+          0,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+
+        ],
+        "preedit" : "",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ],
+  "input" : "haizimenzaicaodishangwan",
+  "startupToSessionMs" : 13.95125,
+  "committed" : "孩子们在草地上万",
+  "warmups" : [
+
+  ],
+  "inputKeysToFinalSnapshotMs" : 2.0723750000000001,
+  "status" : "completed",
+  "steps" : [
+    {
+      "keyToSnapshotMs" : 0.057791666666666665,
+      "handled" : true,
+      "key" : 104,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          1,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "和",
+          "好",
+          "还",
+          "会",
+          "很",
+          "后",
+          "或",
+          "号",
+          "话"
+        ],
+        "preedit" : "h",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.018166666666666668,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          2,
+          0
+        ],
+        "lastPage" : true,
+        "highlighted" : 0,
+        "candidates" : [
+          "哈",
+          "蛤",
+          "虾",
+          "铪"
+        ],
+        "preedit" : "ha",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.016708333333333332,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          3,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "还",
+          "海",
+          "害",
+          "嗨",
+          "咳",
+          "孩",
+          "還",
+          "亥",
+          "骇"
+        ],
+        "preedit" : "hai",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.043124999999999997,
+      "handled" : true,
+      "key" : 122,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          5,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "孩子",
+          "还在",
+          "还真",
+          "还早",
+          "海子",
+          "海藻",
+          "海中",
+          "海战",
+          "海贼"
+        ],
+        "preedit" : "hai z",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.02,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          6,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "孩子",
+          "海子",
+          "还",
+          "海",
+          "害",
+          "嗨",
+          "咳",
+          "孩",
+          "還"
+        ],
+        "preedit" : "hai zi",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.063791666666666663,
+      "handled" : true,
+      "key" : 109,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          8,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "孩子没",
+          "孩子",
+          "海子",
+          "还",
+          "海",
+          "害",
+          "嗨",
+          "咳",
+          "孩"
+        ],
+        "preedit" : "hai zi m",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.024166666666666666,
+      "handled" : true,
+      "key" : 101,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          9,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "孩子么",
+          "孩子",
+          "海子",
+          "还",
+          "海",
+          "害",
+          "嗨",
+          "咳",
+          "孩"
+        ],
+        "preedit" : "hai zi me",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.024333333333333332,
+      "handled" : true,
+      "key" : 110,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          10,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "孩子们",
+          "孩子",
+          "海子",
+          "还",
+          "海",
+          "害",
+          "嗨",
+          "咳",
+          "孩"
+        ],
+        "preedit" : "hai zi men",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.16012499999999999,
+      "handled" : true,
+      "key" : 122,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          12,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "孩子门诊",
+          "孩子",
+          "海子",
+          "还",
+          "海",
+          "害",
+          "嗨",
+          "咳",
+          "孩"
+        ],
+        "preedit" : "hai zi men z",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.049500000000000002,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          13,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "孩子们咋",
+          "孩子",
+          "海子",
+          "还",
+          "海",
+          "害",
+          "嗨",
+          "咳",
+          "孩"
+        ],
+        "preedit" : "hai zi men za",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.036958333333333336,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          14,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "孩子们在",
+          "孩子",
+          "海子",
+          "还",
+          "海",
+          "害",
+          "嗨",
+          "咳",
+          "孩"
+        ],
+        "preedit" : "hai zi men zai",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.17579166666666665,
+      "handled" : true,
+      "key" : 99,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          16,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "孩子们再次",
+          "孩子",
+          "海子",
+          "还",
+          "海",
+          "害",
+          "嗨",
+          "咳",
+          "孩"
+        ],
+        "preedit" : "hai zi men zai c",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.050166666666666665,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          17,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "孩子们在擦",
+          "孩子",
+          "海子",
+          "还",
+          "海",
+          "害",
+          "嗨",
+          "咳",
+          "孩"
+        ],
+        "preedit" : "hai zi men zai ca",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.039083333333333338,
+      "handled" : true,
+      "key" : 111,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          18,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "孩子们在草",
+          "孩子",
+          "海子",
+          "还",
+          "海",
+          "害",
+          "嗨",
+          "咳",
+          "孩"
+        ],
+        "preedit" : "hai zi men zai cao",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.18908333333333335,
+      "handled" : true,
+      "key" : 100,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          20,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "孩子们在草地",
+          "孩子",
+          "海子",
+          "还",
+          "海",
+          "害",
+          "嗨",
+          "咳",
+          "孩"
+        ],
+        "preedit" : "hai zi men zai cao d",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.048833333333333333,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          21,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "孩子们在草地",
+          "孩子",
+          "海子",
+          "还",
+          "海",
+          "害",
+          "嗨",
+          "咳",
+          "孩"
+        ],
+        "preedit" : "hai zi men zai cao di",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.18725,
+      "handled" : true,
+      "key" : 115,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          23,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "孩子们在草地是",
+          "孩子",
+          "海子",
+          "还",
+          "海",
+          "害",
+          "嗨",
+          "咳",
+          "孩"
+        ],
+        "preedit" : "hai zi men zai cao di s",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.22383333333333336,
+      "handled" : true,
+      "key" : 104,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          24,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "孩子们在草地是",
+          "孩子",
+          "海子",
+          "还",
+          "海",
+          "害",
+          "嗨",
+          "咳",
+          "孩"
+        ],
+        "preedit" : "hai zi men zai cao di sh",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.055833333333333339,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          25,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "孩子们在草地啥",
+          "孩子",
+          "海子",
+          "还",
+          "海",
+          "害",
+          "嗨",
+          "咳",
+          "孩"
+        ],
+        "preedit" : "hai zi men zai cao di sha",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.050916666666666666,
+      "handled" : true,
+      "key" : 110,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          26,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "孩子们在草地山",
+          "孩子",
+          "海子",
+          "还",
+          "海",
+          "害",
+          "嗨",
+          "咳",
+          "孩"
+        ],
+        "preedit" : "hai zi men zai cao di shan",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.048833333333333333,
+      "handled" : true,
+      "key" : 103,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          27,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "孩子们在草地上",
+          "孩子",
+          "海子",
+          "还",
+          "海",
+          "害",
+          "嗨",
+          "咳",
+          "孩"
+        ],
+        "preedit" : "hai zi men zai cao di shang",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.33945833333333331,
+      "handled" : true,
+      "key" : 119,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          29,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "孩子们在草地上网",
+          "孩子",
+          "海子",
+          "还",
+          "海",
+          "害",
+          "嗨",
+          "咳",
+          "孩"
+        ],
+        "preedit" : "hai zi men zai cao di shang w",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.067750000000000005,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          30,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "孩子们在草地上哇",
+          "孩子",
+          "海子",
+          "还",
+          "海",
+          "害",
+          "嗨",
+          "咳",
+          "孩"
+        ],
+        "preedit" : "hai zi men zai cao di shang wa",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.054416666666666662,
+      "handled" : true,
+      "key" : 110,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          31,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "孩子们在草地上万",
+          "孩子",
+          "海子",
+          "还",
+          "海",
+          "害",
+          "嗨",
+          "咳",
+          "孩"
+        ],
+        "preedit" : "hai zi men zai cao di shang wan",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ]
+}

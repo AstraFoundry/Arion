@@ -1,0 +1,70 @@
+{
+  "benchmark": "imk-context-v1",
+  "runs": [
+    {
+      "seed": 2411,
+      "contextRanking": false,
+      "request": "seed-2411-baseline.request.json",
+      "result": "seed-2411-baseline.result.json"
+    },
+    {
+      "seed": 2411,
+      "contextRanking": true,
+      "request": "seed-2411-ranking.request.json",
+      "result": "seed-2411-ranking.result.json"
+    },
+    {
+      "seed": 2412,
+      "contextRanking": false,
+      "request": "seed-2412-baseline.request.json",
+      "result": "seed-2412-baseline.result.json"
+    },
+    {
+      "seed": 2412,
+      "contextRanking": true,
+      "request": "seed-2412-ranking.request.json",
+      "result": "seed-2412-ranking.result.json"
+    },
+    {
+      "seed": 2413,
+      "contextRanking": false,
+      "request": "seed-2413-baseline.request.json",
+      "result": "seed-2413-baseline.result.json"
+    },
+    {
+      "seed": 2413,
+      "contextRanking": true,
+      "request": "seed-2413-ranking.request.json",
+      "result": "seed-2413-ranking.result.json"
+    }
+  ],
+  "environment": {
+    "corpusSha256": "5022c9242fd368afc1da56ce5e63569295224182afc1068580f61eee3f20d644",
+    "sources": {
+      "apps/desktop/ime/macos/keyboard.h": "d6699c431b36ba3259ef2c0a35a1cb37f570876e6447cb5b4091d3cc982606c7",
+      "apps/desktop/ime/macos/keyboard.m": "adff53981bc8d3d8127217e04b156f07d891ada03661a7948d7294acfc5f4041",
+      "apps/desktop/ime/macos/ranking.h": "204a8c2caded17dad858c4d3d792af23fa136673e0cfa8caf8fcdf410fab75cf",
+      "apps/desktop/ime/macos/ranking.m": "81c3db6b860cb4e405feab7cb01bf7004aa8ee064317919db32837c53abaf42b",
+      "apps/desktop/ime/macos/typing.h": "d9bc2f8aae24da7540369c4d6707937b22bb7ed2a0f0beb9c6e9f3ffdc2f3fbb",
+      "apps/desktop/ime/macos/typing.m": "fc410376de53d40cf5ad032eb06c4e1571667f15817338c6f29e384639731384",
+      "apps/desktop/ime/macos/candidate_panel.h": "801580b9d34d01070927838d06da2b81e038f2f7060ac9b66855c9c163945eaf",
+      "apps/desktop/ime/macos/candidate_panel.m": "a0eb827f8c07519fc755d35d8d12d481105a4ddf48b255b19d774e8f5529d311",
+      "apps/desktop/ime/macos/learning.h": "3852bafcd8c04252ed2c94016215eb9c45e2352e747e17c005941d2827da1bd9",
+      "apps/desktop/ime/macos/learning.mm": "1a448125e53f141d87c3dffa86042c62c4b0e7bced9f3d4c2ec3145974cc9192",
+      "apps/desktop/ime/macos/learning_crypto.swift": "9c8ed696f3b17918f1e0f4489eaf65fca0dd6d9ffd9066b6d00f869380b14ed2",
+      "benchmarks/reproduction/imk-context-v1/driver.mm": "82b4e04cd84b1d438758367535ffde2ac41d3bf481a3bf725face1b6855e092e",
+      "benchmarks/reproduction/imk-context-v1/run.mjs": "f138101ae7229092f2bf700f1c15c9af3e0f49b6f55fffa5f0c26fb07b23c035",
+      "benchmarks/reproduction/imk-context-v1/evaluate.mjs": "7d8da8e23ad1ba0c8c3d0f993ce115f787b294151a6fb8e063f1f0d24ff01131"
+    },
+    "runtimeManifestSha256": "4480566a33a0244c4d0654dca0e3f63d926f8447303e2cf84a5d305c443b80d6",
+    "librimeSha256": "1adb725a081b0accc1451034f6f1bb78cbfe8252a65245f1511f4b3f2038c487",
+    "driverSha256": "4a1c0b1d492cec2465948a6d82eaf404967a2e9523e5c586eabda4b2dae58dda",
+    "hardware": {
+      "model": "Mac16,12",
+      "cpu": "Apple M4"
+    },
+    "operatingSystem": "ProductName:\t\tmacOS\nProductVersion:\t\t26.6.2\nBuildVersion:\t\t25G83",
+    "gitHead": "88c6c5a76f4fd025d6a8d663c49667944414b45d",
+    "gitDirty": true
+  }
+}

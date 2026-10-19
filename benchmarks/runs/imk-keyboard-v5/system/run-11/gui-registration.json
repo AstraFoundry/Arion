@@ -1,0 +1,34 @@
+{
+  "after" : [
+    {
+      "enabled" : false,
+      "id" : "si.astrafoundry.inputmethod.arion.validation",
+      "selected" : false
+    },
+    {
+      "enabled" : true,
+      "id" : "si.astrafoundry.inputmethod.arion.validation.pinyin",
+      "selected" : false
+    }
+  ],
+  "before" : [
+    {
+      "enabled" : false,
+      "id" : "si.astrafoundry.inputmethod.arion.validation",
+      "selected" : false
+    },
+    {
+      "enabled" : true,
+      "id" : "si.astrafoundry.inputmethod.arion.validation.pinyin",
+      "selected" : false
+    }
+  ],
+  "caller" : "NSApplication button action on main thread",
+  "mainThread" : true,
+  "statuses" : {
+    "launchServices" : 0,
+    "register" : 0,
+    "si.astrafoundry.inputmethod.arion.validation" : 0,
+    "si.astrafoundry.inputmethod.arion.validation.pinyin" : 0
+  }
+}

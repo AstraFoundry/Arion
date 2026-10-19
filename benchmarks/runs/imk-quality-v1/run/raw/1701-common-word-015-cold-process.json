@@ -1,0 +1,232 @@
+{
+  "id" : "common-word-015",
+  "boundary" : "production engine key-processing plus synchronous snapshot copying; no OS events or rendered preedit",
+  "teardownMs" : 0.41649999999999998,
+  "timer" : "mach_absolute_time",
+  "beforeConfirmation" : {
+    "commit" : "",
+    "selection" : [
+      7,
+      0
+    ],
+    "lastPage" : false,
+    "highlighted" : 0,
+    "candidates" : [
+      "地方",
+      "敌方",
+      "提防",
+      "堤防",
+      "地",
+      "第",
+      "低",
+      "滴",
+      "底"
+    ],
+    "preedit" : "di fang",
+    "page" : 0,
+    "ascii" : false
+  },
+  "terminal" : "empty-preedit",
+  "warmupMs" : 0.0034583333333333337,
+  "peakRSSBytes" : 21479424,
+  "confirmations" : [
+    {
+      "keyToSnapshotMs" : 0.013416666666666665,
+      "handled" : true,
+      "key" : 32,
+      "snapshot" : {
+        "commit" : "地方",
+        "selection" : [
+          0,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+
+        ],
+        "preedit" : "",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ],
+  "input" : "difang",
+  "startupToSessionMs" : 11.649041666666665,
+  "committed" : "地方",
+  "warmups" : [
+
+  ],
+  "inputKeysToFinalSnapshotMs" : 0.18325,
+  "status" : "completed",
+  "steps" : [
+    {
+      "keyToSnapshotMs" : 0.064916666666666664,
+      "handled" : true,
+      "key" : 100,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          1,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "的",
+          "都",
+          "到",
+          "对",
+          "等",
+          "多",
+          "点",
+          "但",
+          "打"
+        ],
+        "preedit" : "d",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.020708333333333332,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          2,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "地",
+          "第",
+          "低",
+          "滴",
+          "底",
+          "睇",
+          "帝",
+          "的",
+          "迪"
+        ],
+        "preedit" : "di",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.023416666666666669,
+      "handled" : true,
+      "key" : 102,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          4,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "地方",
+          "敌方",
+          "提防",
+          "堤防",
+          "地府",
+          "低分",
+          "地",
+          "第",
+          "低"
+        ],
+        "preedit" : "di f",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.021874999999999999,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          5,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "地发",
+          "地",
+          "第",
+          "低",
+          "滴",
+          "底",
+          "睇",
+          "帝",
+          "的"
+        ],
+        "preedit" : "di fa",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.022208333333333333,
+      "handled" : true,
+      "key" : 110,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          6,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "地饭",
+          "地",
+          "第",
+          "低",
+          "滴",
+          "底",
+          "睇",
+          "帝",
+          "的"
+        ],
+        "preedit" : "di fan",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.01975,
+      "handled" : true,
+      "key" : 103,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          7,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "地方",
+          "敌方",
+          "提防",
+          "堤防",
+          "地",
+          "第",
+          "低",
+          "滴",
+          "底"
+        ],
+        "preedit" : "di fang",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ]
+}

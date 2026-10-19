@@ -1,0 +1,260 @@
+{
+  "id" : "common-word-026",
+  "boundary" : "production engine key-processing plus synchronous snapshot copying; no OS events or rendered preedit",
+  "teardownMs" : 0.56508333333333338,
+  "timer" : "mach_absolute_time",
+  "beforeConfirmation" : {
+    "commit" : "",
+    "selection" : [
+      8,
+      0
+    ],
+    "lastPage" : false,
+    "highlighted" : 0,
+    "candidates" : [
+      "超市",
+      "潮湿",
+      "超时",
+      "超",
+      "炒",
+      "朝",
+      "吵",
+      "抄",
+      "潮"
+    ],
+    "preedit" : "chao shi",
+    "page" : 0,
+    "ascii" : false
+  },
+  "terminal" : "empty-preedit",
+  "warmupMs" : 0.0025416666666666665,
+  "peakRSSBytes" : 21741568,
+  "confirmations" : [
+    {
+      "keyToSnapshotMs" : 0.019875,
+      "handled" : true,
+      "key" : 32,
+      "snapshot" : {
+        "commit" : "超市",
+        "selection" : [
+          0,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+
+        ],
+        "preedit" : "",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ],
+  "input" : "chaoshi",
+  "startupToSessionMs" : 11.903291666666666,
+  "committed" : "超市",
+  "warmups" : [
+
+  ],
+  "inputKeysToFinalSnapshotMs" : 0.50187499999999996,
+  "status" : "completed",
+  "steps" : [
+    {
+      "keyToSnapshotMs" : 0.082875000000000004,
+      "handled" : true,
+      "key" : 99,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          1,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "从",
+          "才",
+          "吃",
+          "出",
+          "成",
+          "车",
+          "错",
+          "次",
+          "此"
+        ],
+        "preedit" : "c",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.084208333333333329,
+      "handled" : true,
+      "key" : 104,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          2,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "吃",
+          "出",
+          "成",
+          "车",
+          "差",
+          "传",
+          "穿",
+          "长",
+          "处"
+        ],
+        "preedit" : "ch",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.024250000000000001,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          3,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "差",
+          "查",
+          "茶",
+          "插",
+          "叉",
+          "察",
+          "茬",
+          "搽",
+          "岔"
+        ],
+        "preedit" : "cha",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.020791666666666667,
+      "handled" : true,
+      "key" : 111,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          4,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "超",
+          "炒",
+          "朝",
+          "吵",
+          "抄",
+          "潮",
+          "巢",
+          "钞",
+          "绰"
+        ],
+        "preedit" : "chao",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.096791666666666665,
+      "handled" : true,
+      "key" : 115,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          6,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "超市",
+          "潮湿",
+          "超时",
+          "超声",
+          "抄送",
+          "超速",
+          "潮水",
+          "超生",
+          "潮汕"
+        ],
+        "preedit" : "chao s",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.13166666666666665,
+      "handled" : true,
+      "key" : 104,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          7,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "超市",
+          "潮湿",
+          "超时",
+          "超声",
+          "潮水",
+          "超生",
+          "潮汕",
+          "朝上",
+          "朝圣"
+        ],
+        "preedit" : "chao sh",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.046583333333333338,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          8,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "超市",
+          "潮湿",
+          "超时",
+          "超",
+          "炒",
+          "朝",
+          "吵",
+          "抄",
+          "潮"
+        ],
+        "preedit" : "chao shi",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ]
+}

@@ -1,0 +1,260 @@
+{
+  "id" : "common-word-003",
+  "boundary" : "production engine key-processing plus synchronous snapshot copying; no OS events or rendered preedit",
+  "teardownMs" : 0.37770833333333331,
+  "timer" : "mach_absolute_time",
+  "beforeConfirmation" : {
+    "commit" : "",
+    "selection" : [
+      8,
+      0
+    ],
+    "lastPage" : false,
+    "highlighted" : 0,
+    "candidates" : [
+      "今天",
+      "进",
+      "金",
+      "近",
+      "仅",
+      "尽",
+      "紧",
+      "今",
+      "劲"
+    ],
+    "preedit" : "jin tian",
+    "page" : 0,
+    "ascii" : false
+  },
+  "terminal" : "empty-preedit",
+  "warmupMs" : 0.0017083333333333332,
+  "peakRSSBytes" : 21430272,
+  "confirmations" : [
+    {
+      "keyToSnapshotMs" : 0.014333333333333333,
+      "handled" : true,
+      "key" : 32,
+      "snapshot" : {
+        "commit" : "今天",
+        "selection" : [
+          0,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+
+        ],
+        "preedit" : "",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ],
+  "input" : "jintian",
+  "startupToSessionMs" : 11.317333333333334,
+  "committed" : "今天",
+  "warmups" : [
+
+  ],
+  "inputKeysToFinalSnapshotMs" : 0.23591666666666666,
+  "status" : "completed",
+  "steps" : [
+    {
+      "keyToSnapshotMs" : 0.066083333333333327,
+      "handled" : true,
+      "key" : 106,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          1,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "就",
+          "将",
+          "及",
+          "叫",
+          "家",
+          "加",
+          "见",
+          "进",
+          "讲"
+        ],
+        "preedit" : "j",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.023375,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          2,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "及",
+          "级",
+          "即",
+          "几",
+          "机",
+          "既",
+          "急",
+          "集",
+          "记"
+        ],
+        "preedit" : "ji",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.0195,
+      "handled" : true,
+      "key" : 110,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          3,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "进",
+          "金",
+          "近",
+          "仅",
+          "尽",
+          "紧",
+          "今",
+          "劲",
+          "斤"
+        ],
+        "preedit" : "jin",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.037166666666666667,
+      "handled" : true,
+      "key" : 116,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          5,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "今天",
+          "尽头",
+          "津贴",
+          "紧贴",
+          "劲头",
+          "金条",
+          "进退",
+          "浸透",
+          "金泰"
+        ],
+        "preedit" : "jin t",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.030374999999999999,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          6,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "进提",
+          "进",
+          "金",
+          "近",
+          "仅",
+          "尽",
+          "紧",
+          "今",
+          "劲"
+        ],
+        "preedit" : "jin ti",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.026124999999999999,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          8,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "进提啊",
+          "进",
+          "金",
+          "近",
+          "仅",
+          "尽",
+          "紧",
+          "今",
+          "劲"
+        ],
+        "preedit" : "jin ti a",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.021541666666666667,
+      "handled" : true,
+      "key" : 110,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          8,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "今天",
+          "进",
+          "金",
+          "近",
+          "仅",
+          "尽",
+          "紧",
+          "今",
+          "劲"
+        ],
+        "preedit" : "jin tian",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ]
+}

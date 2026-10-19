@@ -1,0 +1,39 @@
+{
+  "kind": "derived-from-retained-control-and-ui-observations",
+  "install": {
+    "state": 1
+  },
+  "signedHostAcceptedByGatekeeper": true,
+  "sourceBeforeRestore": {
+    "current": "com.tencent.inputmethod.chatterfly.pinyin",
+    "learningKeyStatus": -25300,
+    "own": []
+  },
+  "metadataBeforeRestore": "",
+  "settingsSearchEmpty": true,
+  "settingsProcessRestarted": true,
+  "developmentHostRestoredByteForByte": true,
+  "sourceSelectionAttempted": false,
+  "hostLaunchAttempted": false,
+  "cause": "unresolved",
+  "loginAcceptance": "not performed",
+  "firstControlSourceBeforeRestore": {
+    "current": "com.tencent.inputmethod.chatterfly.pinyin",
+    "learningKeyStatus": -25300,
+    "own": [
+      {
+        "enabled": false,
+        "id": "si.astrafoundry.inputmethod.arion",
+        "selectable": false,
+        "selected": false
+      },
+      {
+        "enabled": true,
+        "id": "si.astrafoundry.inputmethod.arion.pinyin",
+        "selectable": true,
+        "selected": false
+      }
+    ]
+  },
+  "firstControlNativeMetadata": "{\n    TISPropertyIconImageURL = \"Contents/Resources/menu_icon.tiff -- file:///Users/steven/Library/Input%20Methods/ArionInput.app/\";\n    TISPropertyInputSourceCategory = TISCategoryKeyboardInputSource;\n    TISPropertyInputSourceID = \"si.astrafoundry.inputmethod.arion\";\n    TISPropertyInputSourceIsEnableCapable = 1;\n    TISPropertyInputSourceIsSelectCapable = 0;\n    TISPropertyInputSourceLanguages = \"(\\n    en\\n)\";\n    TISPropertyInputSourceType = TISTypeKeyboardInputMethodModeEnabled;\n    TSMInputSourcePropertyBundleID = \"si.astrafoundry.inputmethod.arion\";\n    TSMInputSourcePropertyIsEnabled = 0;\n    TSMInputSourcePropertyIsSelected = 0;\n    TSMInputSourcePropertyLocalizedName = Arion;\n}\n{\n    TISPropertyIconImageURL = \"Contents/Resources/menu_icon.tiff -- file:///Users/steven/Library/Input%20Methods/ArionInput.app/\";\n    TISPropertyInputSourceCategory = TISCategoryKeyboardInputSource;\n    TISPropertyInputSourceID = \"si.astrafoundry.inputmethod.arion.pinyin\";\n    TISPropertyInputSourceIsEnableCapable = 1;\n    TISPropertyInputSourceIsSelectCapable = 1;\n    TISPropertyInputSourceLanguages = \"(\\n    \\\"zh-Hans\\\"\\n)\";\n    TISPropertyInputSourceType = TISTypeKeyboardInputMode;\n    TSMInputSourcePropertyBundleID = \"si.astrafoundry.inputmethod.arion\";\n    TSMInputSourcePropertyInputMode = \"si.astrafoundry.inputmethod.arion.pinyin\";\n    TSMInputSourcePropertyIsEnabled = 1;\n    TSMInputSourcePropertyIsSelected = 0;\n    TSMInputSourcePropertyLocalizedName = Arion;\n}\n"
+}

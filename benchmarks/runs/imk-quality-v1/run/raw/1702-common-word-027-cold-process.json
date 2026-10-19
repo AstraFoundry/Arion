@@ -1,0 +1,316 @@
+{
+  "id" : "common-word-027",
+  "boundary" : "production engine key-processing plus synchronous snapshot copying; no OS events or rendered preedit",
+  "teardownMs" : 0.37170833333333331,
+  "timer" : "mach_absolute_time",
+  "beforeConfirmation" : {
+    "commit" : "",
+    "selection" : [
+      10,
+      0
+    ],
+    "lastPage" : false,
+    "highlighted" : 0,
+    "candidates" : [
+      "商店",
+      "上电",
+      "上帝",
+      "上地",
+      "上",
+      "商",
+      "伤",
+      "尚",
+      "赏"
+    ],
+    "preedit" : "shang dian",
+    "page" : 0,
+    "ascii" : false
+  },
+  "terminal" : "empty-preedit",
+  "warmupMs" : 0.0024583333333333336,
+  "peakRSSBytes" : 21692416,
+  "confirmations" : [
+    {
+      "keyToSnapshotMs" : 0.016958333333333332,
+      "handled" : true,
+      "key" : 32,
+      "snapshot" : {
+        "commit" : "商店",
+        "selection" : [
+          0,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+
+        ],
+        "preedit" : "",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ],
+  "input" : "shangdian",
+  "startupToSessionMs" : 11.070791666666667,
+  "committed" : "商店",
+  "warmups" : [
+
+  ],
+  "inputKeysToFinalSnapshotMs" : 0.49412499999999998,
+  "status" : "completed",
+  "steps" : [
+    {
+      "keyToSnapshotMs" : 0.078833333333333325,
+      "handled" : true,
+      "key" : 115,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          1,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "是",
+          "说",
+          "上",
+          "时",
+          "所",
+          "谁",
+          "啥",
+          "事",
+          "死"
+        ],
+        "preedit" : "s",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.105,
+      "handled" : true,
+      "key" : 104,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          2,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "是",
+          "说",
+          "上",
+          "时",
+          "时候",
+          "谁",
+          "啥",
+          "事",
+          "使"
+        ],
+        "preedit" : "sh",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.031208333333333331,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          3,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "啥",
+          "杀",
+          "傻",
+          "沙",
+          "砂",
+          "纱",
+          "煞",
+          "莎",
+          "刹"
+        ],
+        "preedit" : "sha",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.025791666666666668,
+      "handled" : true,
+      "key" : 110,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          4,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "山",
+          "删",
+          "闪",
+          "善",
+          "衫",
+          "扇",
+          "珊",
+          "杉",
+          "陕"
+        ],
+        "preedit" : "shan",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.022458333333333334,
+      "handled" : true,
+      "key" : 103,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          5,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "上",
+          "商",
+          "伤",
+          "尚",
+          "赏",
+          "殇",
+          "裳",
+          "熵",
+          "觞"
+        ],
+        "preedit" : "shang",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.11804166666666667,
+      "handled" : true,
+      "key" : 100,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          7,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "上的",
+          "上帝",
+          "商店",
+          "上当",
+          "上都",
+          "商定",
+          "闪光灯",
+          "上地",
+          "上吊"
+        ],
+        "preedit" : "shang d",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.033666666666666664,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          8,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "上帝",
+          "上地",
+          "上",
+          "商",
+          "伤",
+          "尚",
+          "赏",
+          "殇",
+          "裳"
+        ],
+        "preedit" : "shang di",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.035958333333333335,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          9,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "上嗲",
+          "上帝",
+          "上地",
+          "上",
+          "商",
+          "伤",
+          "尚",
+          "赏",
+          "殇"
+        ],
+        "preedit" : "shang dia",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.027583333333333331,
+      "handled" : true,
+      "key" : 110,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          10,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "商店",
+          "上电",
+          "上帝",
+          "上地",
+          "上",
+          "商",
+          "伤",
+          "尚",
+          "赏"
+        ],
+        "preedit" : "shang dian",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ]
+}

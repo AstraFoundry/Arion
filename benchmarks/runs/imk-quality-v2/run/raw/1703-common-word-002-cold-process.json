@@ -1,0 +1,288 @@
+{
+  "id" : "common-word-002",
+  "boundary" : "production engine key-processing plus synchronous snapshot copying; no OS events or rendered preedit",
+  "teardownMs" : 0.50724999999999998,
+  "timer" : "mach_absolute_time",
+  "beforeConfirmation" : {
+    "commit" : "",
+    "selection" : [
+      9,
+      0
+    ],
+    "lastPage" : false,
+    "highlighted" : 0,
+    "candidates" : [
+      "晚上",
+      "玩",
+      "万",
+      "完",
+      "晚",
+      "碗",
+      "湾",
+      "弯",
+      "丸"
+    ],
+    "preedit" : "wan shang",
+    "page" : 0,
+    "ascii" : false
+  },
+  "terminal" : "empty-preedit",
+  "warmupMs" : 0.0028333333333333335,
+  "peakRSSBytes" : 21528576,
+  "confirmations" : [
+    {
+      "keyToSnapshotMs" : 0.016333333333333335,
+      "handled" : true,
+      "key" : 32,
+      "snapshot" : {
+        "commit" : "晚上",
+        "selection" : [
+          0,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+
+        ],
+        "preedit" : "",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ],
+  "input" : "wanshang",
+  "startupToSessionMs" : 12.250333333333334,
+  "committed" : "晚上",
+  "warmups" : [
+
+  ],
+  "inputKeysToFinalSnapshotMs" : 0.33454166666666668,
+  "status" : "completed",
+  "steps" : [
+    {
+      "keyToSnapshotMs" : 0.065708333333333327,
+      "handled" : true,
+      "key" : 119,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          1,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "我",
+          "为",
+          "玩",
+          "问",
+          "无",
+          "万",
+          "完",
+          "网",
+          "王"
+        ],
+        "preedit" : "w",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.023625,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          2,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "哇",
+          "挖",
+          "瓦",
+          "娃",
+          "蛙",
+          "袜",
+          "洼",
+          "娲",
+          "佤"
+        ],
+        "preedit" : "wa",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.020666666666666667,
+      "handled" : true,
+      "key" : 110,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          3,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "玩",
+          "万",
+          "完",
+          "晚",
+          "碗",
+          "湾",
+          "弯",
+          "丸",
+          "婉"
+        ],
+        "preedit" : "wan",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.062375,
+      "handled" : true,
+      "key" : 115,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          5,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "晚上",
+          "完善",
+          "万岁",
+          "玩耍",
+          "万事",
+          "完事",
+          "完胜",
+          "晚睡",
+          "王安石"
+        ],
+        "preedit" : "wan s",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.064208333333333339,
+      "handled" : true,
+      "key" : 104,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          6,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "晚上",
+          "完善",
+          "玩耍",
+          "万事",
+          "完事",
+          "晚上好",
+          "完胜",
+          "晚睡",
+          "王安石"
+        ],
+        "preedit" : "wan sh",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.034791666666666665,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          7,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "玩啥",
+          "玩",
+          "万",
+          "完",
+          "晚",
+          "碗",
+          "湾",
+          "弯",
+          "丸"
+        ],
+        "preedit" : "wan sha",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.024333333333333332,
+      "handled" : true,
+      "key" : 110,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          8,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "完善",
+          "玩",
+          "万",
+          "完",
+          "晚",
+          "碗",
+          "湾",
+          "弯",
+          "丸"
+        ],
+        "preedit" : "wan shan",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.025833333333333333,
+      "handled" : true,
+      "key" : 103,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          9,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "晚上",
+          "玩",
+          "万",
+          "完",
+          "晚",
+          "碗",
+          "湾",
+          "弯",
+          "丸"
+        ],
+        "preedit" : "wan shang",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ]
+}

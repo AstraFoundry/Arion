@@ -1,0 +1,32 @@
+{
+  "exception": {
+    "codes": "0x0000000000000001, 0x0000000000000008",
+    "rawCodes": [
+      1,
+      8
+    ],
+    "type": "EXC_BAD_ACCESS",
+    "signal": "SIGSEGV",
+    "subtype": "KERN_INVALID_ADDRESS at 0x0000000000000008"
+  },
+  "frames": [
+    {
+      "imageOffset": 633048,
+      "symbol": "-[_IMKServerLegacy initWithName:controllerClass:delegateClass:]",
+      "symbolLocation": 84,
+      "imageIndex": 1
+    },
+    {
+      "imageOffset": 3380,
+      "symbol": "main",
+      "symbolLocation": 500,
+      "imageIndex": 0
+    },
+    {
+      "imageOffset": 132324,
+      "symbol": "start",
+      "symbolLocation": 6992,
+      "imageIndex": 2
+    }
+  ]
+}

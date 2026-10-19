@@ -1,0 +1,21 @@
+{
+  "operation": "enable",
+  "sources": [
+    {
+      "enabled": false,
+      "id": "si.astrafoundry.inputmethod.arion.validation",
+      "selected": false
+    },
+    {
+      "enabled": true,
+      "id": "si.astrafoundry.inputmethod.arion.validation.pinyin",
+      "selected": false
+    }
+  ],
+  "statuses": {
+    "launchServices": 0,
+    "register": 0,
+    "si.astrafoundry.inputmethod.arion.validation": 0,
+    "si.astrafoundry.inputmethod.arion.validation.pinyin": 0
+  }
+}

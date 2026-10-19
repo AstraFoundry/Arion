@@ -1,0 +1,27 @@
+{
+    TISPropertyIconImageURL = "Contents/Resources/menu_icon.tiff -- file:///Users/steven/Library/Input%20Methods/ArionTypingValidation.app/";
+    TISPropertyInputSourceCategory = TISCategoryKeyboardInputSource;
+    TISPropertyInputSourceID = "si.astrafoundry.inputmethod.arion";
+    TISPropertyInputSourceIsEnableCapable = 1;
+    TISPropertyInputSourceIsSelectCapable = 0;
+    TISPropertyInputSourceLanguages = "(\n    en\n)";
+    TISPropertyInputSourceType = TISTypeKeyboardInputMethodModeEnabled;
+    TSMInputSourcePropertyBundleID = "si.astrafoundry.inputmethod.arion";
+    TSMInputSourcePropertyIsEnabled = 0;
+    TSMInputSourcePropertyIsSelected = 0;
+    TSMInputSourcePropertyLocalizedName = Arion;
+}
+{
+    TISPropertyIconImageURL = "Contents/Resources/menu_icon.tiff -- file:///Users/steven/Library/Input%20Methods/ArionTypingValidation.app/";
+    TISPropertyInputSourceCategory = TISCategoryKeyboardInputSource;
+    TISPropertyInputSourceID = "si.astrafoundry.inputmethod.arion.pinyin";
+    TISPropertyInputSourceIsEnableCapable = 1;
+    TISPropertyInputSourceIsSelectCapable = 1;
+    TISPropertyInputSourceLanguages = "(\n    \"zh-Hans\"\n)";
+    TISPropertyInputSourceType = TISTypeKeyboardInputMode;
+    TSMInputSourcePropertyBundleID = "si.astrafoundry.inputmethod.arion";
+    TSMInputSourcePropertyInputMode = "si.astrafoundry.inputmethod.arion.pinyin";
+    TSMInputSourcePropertyIsEnabled = 1;
+    TSMInputSourcePropertyIsSelected = 0;
+    TSMInputSourcePropertyLocalizedName = Arion;
+}

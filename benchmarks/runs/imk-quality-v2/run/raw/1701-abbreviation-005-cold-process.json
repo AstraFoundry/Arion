@@ -1,0 +1,120 @@
+{
+  "id" : "abbreviation-005",
+  "boundary" : "production engine key-processing plus synchronous snapshot copying; no OS events or rendered preedit",
+  "teardownMs" : 0.48954166666666671,
+  "timer" : "mach_absolute_time",
+  "beforeConfirmation" : {
+    "commit" : "",
+    "selection" : [
+      3,
+      0
+    ],
+    "lastPage" : false,
+    "highlighted" : 0,
+    "candidates" : [
+      "出去",
+      "长期",
+      "采取",
+      "重庆",
+      "除去",
+      "重启",
+      "此前",
+      "传奇",
+      "初期"
+    ],
+    "preedit" : "c q",
+    "page" : 0,
+    "ascii" : false
+  },
+  "terminal" : "empty-preedit",
+  "warmupMs" : 0.0021250000000000002,
+  "peakRSSBytes" : 21348352,
+  "confirmations" : [
+    {
+      "keyToSnapshotMs" : 0.018166666666666668,
+      "handled" : true,
+      "key" : 32,
+      "snapshot" : {
+        "commit" : "出去",
+        "selection" : [
+          0,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+
+        ],
+        "preedit" : "",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ],
+  "input" : "cq",
+  "startupToSessionMs" : 11.668749999999999,
+  "committed" : "出去",
+  "warmups" : [
+
+  ],
+  "inputKeysToFinalSnapshotMs" : 0.16187499999999999,
+  "status" : "completed",
+  "steps" : [
+    {
+      "keyToSnapshotMs" : 0.080208333333333326,
+      "handled" : true,
+      "key" : 99,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          1,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "从",
+          "才",
+          "吃",
+          "出",
+          "成",
+          "车",
+          "错",
+          "次",
+          "此"
+        ],
+        "preedit" : "c",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.075083333333333335,
+      "handled" : true,
+      "key" : 113,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          3,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "出去",
+          "长期",
+          "采取",
+          "重庆",
+          "除去",
+          "重启",
+          "此前",
+          "传奇",
+          "初期"
+        ],
+        "preedit" : "c q",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ]
+}

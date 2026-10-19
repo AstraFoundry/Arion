@@ -1,0 +1,4 @@
+Executable=/Users/steven/code/Arion/.workspace/tests/keyboard-keychain-5a63b57a-a11b-4a5c-be69-f67721ac7a29/ArionKeychainValidation.app/Contents/MacOS/keychain-learning-test
+Executable=/Users/steven/code/Arion/.workspace/tests/keyboard-keychain-5a63b57a-a11b-4a5c-be69-f67721ac7a29/ArionKeychainValidation.app/Contents/MacOS/keychain-learning-test
+warning: Specifying ':' in the path is deprecated and will not work in a future release
+Prepared signed harness without executing it: /Users/steven/code/Arion/.workspace/tests/keyboard-keychain-5a63b57a-a11b-4a5c-be69-f67721ac7a29/prepared.json

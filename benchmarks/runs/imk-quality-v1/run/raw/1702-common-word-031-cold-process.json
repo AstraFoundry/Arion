@@ -1,0 +1,344 @@
+{
+  "id" : "common-word-031",
+  "boundary" : "production engine key-processing plus synchronous snapshot copying; no OS events or rendered preedit",
+  "teardownMs" : 0.4916666666666667,
+  "timer" : "mach_absolute_time",
+  "beforeConfirmation" : {
+    "commit" : "",
+    "selection" : [
+      12,
+      0
+    ],
+    "lastPage" : false,
+    "highlighted" : 0,
+    "candidates" : [
+      "火车站",
+      "火车",
+      "货车",
+      "或",
+      "活",
+      "货",
+      "火",
+      "获",
+      "霍"
+    ],
+    "preedit" : "huo che zhan",
+    "page" : 0,
+    "ascii" : false
+  },
+  "terminal" : "empty-preedit",
+  "warmupMs" : 0.0027916666666666667,
+  "peakRSSBytes" : 21594112,
+  "confirmations" : [
+    {
+      "keyToSnapshotMs" : 0.018583333333333334,
+      "handled" : true,
+      "key" : 32,
+      "snapshot" : {
+        "commit" : "火车站",
+        "selection" : [
+          0,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+
+        ],
+        "preedit" : "",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ],
+  "input" : "huochezhan",
+  "startupToSessionMs" : 12.767166666666666,
+  "committed" : "火车站",
+  "warmups" : [
+
+  ],
+  "inputKeysToFinalSnapshotMs" : 0.40679166666666666,
+  "status" : "completed",
+  "steps" : [
+    {
+      "keyToSnapshotMs" : 0.079208333333333325,
+      "handled" : true,
+      "key" : 104,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          1,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "和",
+          "好",
+          "还",
+          "会",
+          "很",
+          "后",
+          "或",
+          "号",
+          "话"
+        ],
+        "preedit" : "h",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.037416666666666668,
+      "handled" : true,
+      "key" : 117,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          2,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "胡",
+          "户",
+          "湖",
+          "虎",
+          "呼",
+          "沪",
+          "乎",
+          "互",
+          "护"
+        ],
+        "preedit" : "hu",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.023791666666666669,
+      "handled" : true,
+      "key" : 111,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          3,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "或",
+          "活",
+          "货",
+          "火",
+          "获",
+          "霍",
+          "祸",
+          "惑",
+          "伙"
+        ],
+        "preedit" : "huo",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.029749999999999999,
+      "handled" : true,
+      "key" : 99,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          5,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "火车",
+          "货车",
+          "火柴",
+          "或",
+          "活",
+          "货",
+          "火",
+          "获",
+          "霍"
+        ],
+        "preedit" : "huo c",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.034250000000000003,
+      "handled" : true,
+      "key" : 104,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          6,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "火车",
+          "货车",
+          "火柴",
+          "或",
+          "活",
+          "货",
+          "火",
+          "获",
+          "霍"
+        ],
+        "preedit" : "huo ch",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.024500000000000001,
+      "handled" : true,
+      "key" : 101,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          7,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "火车",
+          "货车",
+          "或",
+          "活",
+          "货",
+          "火",
+          "获",
+          "霍",
+          "祸"
+        ],
+        "preedit" : "huo che",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.041375000000000002,
+      "handled" : true,
+      "key" : 122,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          9,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "火车站",
+          "火车",
+          "货车",
+          "火柴",
+          "或",
+          "活",
+          "货",
+          "火",
+          "获"
+        ],
+        "preedit" : "huo che z",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.043749999999999997,
+      "handled" : true,
+      "key" : 104,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          10,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "火车站",
+          "火车",
+          "货车",
+          "火柴",
+          "或",
+          "活",
+          "货",
+          "火",
+          "获"
+        ],
+        "preedit" : "huo che zh",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.045249999999999999,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          11,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "火车炸",
+          "火车",
+          "货车",
+          "或",
+          "活",
+          "货",
+          "火",
+          "获",
+          "霍"
+        ],
+        "preedit" : "huo che zha",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.030624999999999999,
+      "handled" : true,
+      "key" : 110,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          12,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "火车站",
+          "火车",
+          "货车",
+          "或",
+          "活",
+          "货",
+          "火",
+          "获",
+          "霍"
+        ],
+        "preedit" : "huo che zhan",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ]
+}

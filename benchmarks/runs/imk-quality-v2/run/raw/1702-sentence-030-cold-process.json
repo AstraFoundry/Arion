@@ -1,0 +1,848 @@
+{
+  "id" : "sentence-030",
+  "boundary" : "production engine key-processing plus synchronous snapshot copying; no OS events or rendered preedit",
+  "teardownMs" : 0.48141666666666666,
+  "timer" : "mach_absolute_time",
+  "beforeConfirmation" : {
+    "commit" : "",
+    "selection" : [
+      36,
+      0
+    ],
+    "lastPage" : false,
+    "highlighted" : 0,
+    "candidates" : [
+      "回家的路上买些水果",
+      "回家",
+      "汇价",
+      "汇集",
+      "惠及",
+      "回击",
+      "徽记",
+      "会",
+      "回"
+    ],
+    "preedit" : "hui jia de lu shang mai xie shui guo",
+    "page" : 0,
+    "ascii" : false
+  },
+  "terminal" : "empty-preedit",
+  "warmupMs" : 0.0023749999999999999,
+  "peakRSSBytes" : 22413312,
+  "confirmations" : [
+    {
+      "keyToSnapshotMs" : 0.019708333333333331,
+      "handled" : true,
+      "key" : 32,
+      "snapshot" : {
+        "commit" : "回家的路上买些水果",
+        "selection" : [
+          0,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+
+        ],
+        "preedit" : "",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ],
+  "input" : "huijiadelushangmaixieshuiguo",
+  "startupToSessionMs" : 12.589666666666666,
+  "committed" : "回家的路上买些水果",
+  "warmups" : [
+
+  ],
+  "inputKeysToFinalSnapshotMs" : 2.6891250000000002,
+  "status" : "completed",
+  "steps" : [
+    {
+      "keyToSnapshotMs" : 0.065000000000000002,
+      "handled" : true,
+      "key" : 104,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          1,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "和",
+          "好",
+          "还",
+          "会",
+          "很",
+          "后",
+          "或",
+          "号",
+          "话"
+        ],
+        "preedit" : "h",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.023666666666666669,
+      "handled" : true,
+      "key" : 117,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          2,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "胡",
+          "户",
+          "湖",
+          "虎",
+          "呼",
+          "沪",
+          "乎",
+          "互",
+          "护"
+        ],
+        "preedit" : "hu",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.020500000000000001,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          3,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "会",
+          "回",
+          "灰",
+          "辉",
+          "汇",
+          "惠",
+          "慧",
+          "毁",
+          "挥"
+        ],
+        "preedit" : "hui",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.028250000000000001,
+      "handled" : true,
+      "key" : 106,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          5,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "回家",
+          "会见",
+          "汇集",
+          "汇聚",
+          "会将",
+          "回见",
+          "惠及",
+          "汇价",
+          "回绝"
+        ],
+        "preedit" : "hui j",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.017541666666666667,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          6,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "汇集",
+          "惠及",
+          "回击",
+          "徽记",
+          "会",
+          "回",
+          "灰",
+          "辉",
+          "汇"
+        ],
+        "preedit" : "hui ji",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.022249999999999999,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          7,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "回家",
+          "汇价",
+          "汇集",
+          "惠及",
+          "回击",
+          "徽记",
+          "会",
+          "回",
+          "灰"
+        ],
+        "preedit" : "hui jia",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.070416666666666669,
+      "handled" : true,
+      "key" : 100,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          9,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "回家的",
+          "回家",
+          "汇价",
+          "汇集",
+          "惠及",
+          "回击",
+          "徽记",
+          "会",
+          "回"
+        ],
+        "preedit" : "hui jia d",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.028916666666666667,
+      "handled" : true,
+      "key" : 101,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          10,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "回家的",
+          "回家",
+          "汇价",
+          "汇集",
+          "惠及",
+          "回击",
+          "徽记",
+          "会",
+          "回"
+        ],
+        "preedit" : "hui jia de",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.10299999999999999,
+      "handled" : true,
+      "key" : 108,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          12,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "回家得了",
+          "回家",
+          "汇价",
+          "汇集",
+          "惠及",
+          "回击",
+          "徽记",
+          "会",
+          "回"
+        ],
+        "preedit" : "hui jia de l",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.038291666666666661,
+      "handled" : true,
+      "key" : 117,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          13,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "回家的路",
+          "回家",
+          "汇价",
+          "汇集",
+          "惠及",
+          "回击",
+          "徽记",
+          "会",
+          "回"
+        ],
+        "preedit" : "hui jia de lu",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.09325,
+      "handled" : true,
+      "key" : 115,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          15,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "回家的路上",
+          "回家",
+          "汇价",
+          "汇集",
+          "惠及",
+          "回击",
+          "徽记",
+          "会",
+          "回"
+        ],
+        "preedit" : "hui jia de lu s",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.13554166666666664,
+      "handled" : true,
+      "key" : 104,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          16,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "回家的路上",
+          "回家",
+          "汇价",
+          "汇集",
+          "惠及",
+          "回击",
+          "徽记",
+          "会",
+          "回"
+        ],
+        "preedit" : "hui jia de lu sh",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.044541666666666667,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          17,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "回家的路啥",
+          "回家",
+          "汇价",
+          "汇集",
+          "惠及",
+          "回击",
+          "徽记",
+          "会",
+          "回"
+        ],
+        "preedit" : "hui jia de lu sha",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.043416666666666666,
+      "handled" : true,
+      "key" : 110,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          18,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "回家的庐山",
+          "回家",
+          "汇价",
+          "汇集",
+          "惠及",
+          "回击",
+          "徽记",
+          "会",
+          "回"
+        ],
+        "preedit" : "hui jia de lu shan",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.041958333333333334,
+      "handled" : true,
+      "key" : 103,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          19,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "回家的路上",
+          "回家",
+          "汇价",
+          "汇集",
+          "惠及",
+          "回击",
+          "徽记",
+          "会",
+          "回"
+        ],
+        "preedit" : "hui jia de lu shang",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.25587500000000002,
+      "handled" : true,
+      "key" : 109,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          21,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "回家的路上面",
+          "回家",
+          "汇价",
+          "汇集",
+          "惠及",
+          "回击",
+          "徽记",
+          "会",
+          "回"
+        ],
+        "preedit" : "hui jia de lu shang m",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.054875,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          22,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "回家的路上马",
+          "回家",
+          "汇价",
+          "汇集",
+          "惠及",
+          "回击",
+          "徽记",
+          "会",
+          "回"
+        ],
+        "preedit" : "hui jia de lu shang ma",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.044666666666666667,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          23,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "回家的路上买",
+          "回家",
+          "汇价",
+          "汇集",
+          "惠及",
+          "回击",
+          "徽记",
+          "会",
+          "回"
+        ],
+        "preedit" : "hui jia de lu shang mai",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.26741666666666669,
+      "handled" : true,
+      "key" : 120,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          25,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "回家的路上买下",
+          "回家",
+          "汇价",
+          "汇集",
+          "惠及",
+          "回击",
+          "徽记",
+          "会",
+          "回"
+        ],
+        "preedit" : "hui jia de lu shang mai x",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.057750000000000003,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          26,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "回家的路上买系",
+          "回家",
+          "汇价",
+          "汇集",
+          "惠及",
+          "回击",
+          "徽记",
+          "会",
+          "回"
+        ],
+        "preedit" : "hui jia de lu shang mai xi",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.051999999999999998,
+      "handled" : true,
+      "key" : 101,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          27,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "回家的路上买些",
+          "回家",
+          "汇价",
+          "汇集",
+          "惠及",
+          "回击",
+          "徽记",
+          "会",
+          "回"
+        ],
+        "preedit" : "hui jia de lu shang mai xie",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.26674999999999999,
+      "handled" : true,
+      "key" : 115,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          29,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "回家的路上买些是",
+          "回家",
+          "汇价",
+          "汇集",
+          "惠及",
+          "回击",
+          "徽记",
+          "会",
+          "回"
+        ],
+        "preedit" : "hui jia de lu shang mai xie s",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.31908333333333333,
+      "handled" : true,
+      "key" : 104,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          30,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "回家的路上买些是",
+          "回家",
+          "汇价",
+          "汇集",
+          "惠及",
+          "回击",
+          "徽记",
+          "会",
+          "回"
+        ],
+        "preedit" : "hui jia de lu shang mai xie sh",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.073999999999999996,
+      "handled" : true,
+      "key" : 117,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          31,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "回家的路上买写书",
+          "回家",
+          "汇价",
+          "汇集",
+          "惠及",
+          "回击",
+          "徽记",
+          "会",
+          "回"
+        ],
+        "preedit" : "hui jia de lu shang mai xie shu",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.060708333333333336,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          32,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "回家的路上买些谁",
+          "回家",
+          "汇价",
+          "汇集",
+          "惠及",
+          "回击",
+          "徽记",
+          "会",
+          "回"
+        ],
+        "preedit" : "hui jia de lu shang mai xie shui",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.29075000000000001,
+      "handled" : true,
+      "key" : 103,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          34,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "回家的路上买些水果",
+          "回家",
+          "汇价",
+          "汇集",
+          "惠及",
+          "回击",
+          "徽记",
+          "会",
+          "回"
+        ],
+        "preedit" : "hui jia de lu shang mai xie shui g",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.073291666666666672,
+      "handled" : true,
+      "key" : 117,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          35,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "回家的路上买些谁股",
+          "回家",
+          "汇价",
+          "汇集",
+          "惠及",
+          "回击",
+          "徽记",
+          "会",
+          "回"
+        ],
+        "preedit" : "hui jia de lu shang mai xie shui gu",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.067333333333333328,
+      "handled" : true,
+      "key" : 111,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          36,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "回家的路上买些水果",
+          "回家",
+          "汇价",
+          "汇集",
+          "惠及",
+          "回击",
+          "徽记",
+          "会",
+          "回"
+        ],
+        "preedit" : "hui jia de lu shang mai xie shui guo",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ]
+}

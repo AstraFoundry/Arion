@@ -1,0 +1,31 @@
+/var/folders/wg/ntr3cxsd34x0rw4w17rdrym40000gn/T/arion-ime-entitlements-A7rSGe/certificate-: No such file or directory
+node:internal/errors:985
+  const err = new Error(message);
+              ^
+
+Error: Command failed: codesign --display --extract-certificates /var/folders/wg/ntr3cxsd34x0rw4w17rdrym40000gn/T/arion-ime-entitlements-A7rSGe/certificate- /Users/steven/code/Arion/.workspace/tests/keyboard-keychain-2b30897a-cb61-4dee-af03-d428e3b1aac5/ArionKeychainValidation.app
+/var/folders/wg/ntr3cxsd34x0rw4w17rdrym40000gn/T/arion-ime-entitlements-A7rSGe/certificate-: No such file or directory
+
+    at genericNodeError (node:internal/errors:985:15)
+    at wrappedFn (node:internal/errors:539:14)
+    at checkExecSyncError (node:child_process:925:11)
+    at execFileSync (node:child_process:961:15)
+    at runDefault (file:///Users/steven/code/Arion/scripts/lib/ime-provisioning.mjs:9:39)
+    at verifyIMEProvisioning (file:///Users/steven/code/Arion/scripts/lib/ime-provisioning.mjs:78:5)
+    at file:///Users/steven/code/Arion/scripts/test-keyboard-keychain.mjs:84:20
+    at ModuleJob.run (node:internal/modules/esm/module_job:430:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:661:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {
+  status: 1,
+  signal: null,
+  output: [
+    null,
+    '',
+    '/var/folders/wg/ntr3cxsd34x0rw4w17rdrym40000gn/T/arion-ime-entitlements-A7rSGe/certificate-: No such file or directory\n'
+  ],
+  pid: 94478,
+  stdout: '',
+  stderr: '/var/folders/wg/ntr3cxsd34x0rw4w17rdrym40000gn/T/arion-ime-entitlements-A7rSGe/certificate-: No such file or directory\n'
+}
+
+Node.js v24.14.0

@@ -1,0 +1,204 @@
+{
+  "id" : "common-word-041",
+  "boundary" : "production engine key-processing plus synchronous snapshot copying; no OS events or rendered preedit",
+  "teardownMs" : 0.55549999999999999,
+  "timer" : "mach_absolute_time",
+  "beforeConfirmation" : {
+    "commit" : "",
+    "selection" : [
+      6,
+      0
+    ],
+    "lastPage" : false,
+    "highlighted" : 0,
+    "candidates" : [
+      "葡萄",
+      "普",
+      "铺",
+      "扑",
+      "谱",
+      "浦",
+      "蒲",
+      "朴",
+      "噗"
+    ],
+    "preedit" : "pu tao",
+    "page" : 0,
+    "ascii" : false
+  },
+  "terminal" : "empty-preedit",
+  "warmupMs" : 0.0024583333333333336,
+  "peakRSSBytes" : 21331968,
+  "confirmations" : [
+    {
+      "keyToSnapshotMs" : 0.01575,
+      "handled" : true,
+      "key" : 32,
+      "snapshot" : {
+        "commit" : "葡萄",
+        "selection" : [
+          0,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+
+        ],
+        "preedit" : "",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ],
+  "input" : "putao",
+  "startupToSessionMs" : 12.704041666666667,
+  "committed" : "葡萄",
+  "warmups" : [
+
+  ],
+  "inputKeysToFinalSnapshotMs" : 0.17962500000000001,
+  "status" : "completed",
+  "steps" : [
+    {
+      "keyToSnapshotMs" : 0.070208333333333331,
+      "handled" : true,
+      "key" : 112,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          1,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "怕",
+          "跑",
+          "拍",
+          "盘",
+          "片",
+          "陪",
+          "票",
+          "平",
+          "破"
+        ],
+        "preedit" : "p",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.022875,
+      "handled" : true,
+      "key" : 117,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          2,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "普",
+          "铺",
+          "扑",
+          "谱",
+          "浦",
+          "蒲",
+          "朴",
+          "噗",
+          "瀑"
+        ],
+        "preedit" : "pu",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.03058333333333333,
+      "handled" : true,
+      "key" : 116,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          4,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "普通",
+          "葡萄",
+          "菩提",
+          "莆田",
+          "普陀",
+          "普天",
+          "扑通",
+          "普",
+          "铺"
+        ],
+        "preedit" : "pu t",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.026833333333333331,
+      "handled" : true,
+      "key" : 97,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          5,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "普他",
+          "普",
+          "铺",
+          "扑",
+          "谱",
+          "浦",
+          "蒲",
+          "朴",
+          "噗"
+        ],
+        "preedit" : "pu ta",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.019333333333333331,
+      "handled" : true,
+      "key" : 111,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          6,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "葡萄",
+          "普",
+          "铺",
+          "扑",
+          "谱",
+          "浦",
+          "蒲",
+          "朴",
+          "噗"
+        ],
+        "preedit" : "pu tao",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ]
+}

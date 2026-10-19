@@ -1,0 +1,176 @@
+{
+  "id" : "common-word-019",
+  "boundary" : "production engine key-processing plus synchronous snapshot copying; no OS events or rendered preedit",
+  "teardownMs" : 0.40920833333333334,
+  "timer" : "mach_absolute_time",
+  "beforeConfirmation" : {
+    "commit" : "",
+    "selection" : [
+      5,
+      0
+    ],
+    "lastPage" : false,
+    "highlighted" : 0,
+    "candidates" : [
+      "椅子",
+      "一字",
+      "一",
+      "以",
+      "已",
+      "亿",
+      "易",
+      "亦",
+      "伊"
+    ],
+    "preedit" : "yi zi",
+    "page" : 0,
+    "ascii" : false
+  },
+  "terminal" : "empty-preedit",
+  "warmupMs" : 0.0028333333333333335,
+  "peakRSSBytes" : 21479424,
+  "confirmations" : [
+    {
+      "keyToSnapshotMs" : 0.015416666666666665,
+      "handled" : true,
+      "key" : 32,
+      "snapshot" : {
+        "commit" : "椅子",
+        "selection" : [
+          0,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+
+        ],
+        "preedit" : "",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ],
+  "input" : "yizi",
+  "startupToSessionMs" : 12.719083333333334,
+  "committed" : "椅子",
+  "warmups" : [
+
+  ],
+  "inputKeysToFinalSnapshotMs" : 0.16291666666666665,
+  "status" : "completed",
+  "steps" : [
+    {
+      "keyToSnapshotMs" : 0.069875000000000007,
+      "handled" : true,
+      "key" : 121,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          1,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "有",
+          "也",
+          "要",
+          "与",
+          "用",
+          "一",
+          "又",
+          "以",
+          "呀"
+        ],
+        "preedit" : "y",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.023958333333333331,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          2,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "一",
+          "以",
+          "已",
+          "亿",
+          "易",
+          "亦",
+          "伊",
+          "意",
+          "依"
+        ],
+        "preedit" : "yi",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.037624999999999999,
+      "handled" : true,
+      "key" : 122,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          4,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "一直",
+          "一种",
+          "一张",
+          "一只",
+          "一致",
+          "一周",
+          "一阵",
+          "一支",
+          "抑制"
+        ],
+        "preedit" : "yi z",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.022374999999999999,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          5,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "椅子",
+          "一字",
+          "一",
+          "以",
+          "已",
+          "亿",
+          "易",
+          "亦",
+          "伊"
+        ],
+        "preedit" : "yi zi",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ]
+}

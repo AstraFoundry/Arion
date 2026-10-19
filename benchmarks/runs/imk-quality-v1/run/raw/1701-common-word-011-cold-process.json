@@ -1,0 +1,260 @@
+{
+  "id" : "common-word-011",
+  "boundary" : "production engine key-processing plus synchronous snapshot copying; no OS events or rendered preedit",
+  "teardownMs" : 0.54045833333333337,
+  "timer" : "mach_absolute_time",
+  "beforeConfirmation" : {
+    "commit" : "",
+    "selection" : [
+      8,
+      0
+    ],
+    "lastPage" : false,
+    "highlighted" : 0,
+    "candidates" : [
+      "工作",
+      "共",
+      "工",
+      "公",
+      "供",
+      "宫",
+      "功",
+      "攻",
+      "弓"
+    ],
+    "preedit" : "gong zuo",
+    "page" : 0,
+    "ascii" : false
+  },
+  "terminal" : "empty-preedit",
+  "warmupMs" : 0.002875,
+  "peakRSSBytes" : 21430272,
+  "confirmations" : [
+    {
+      "keyToSnapshotMs" : 0.014583333333333334,
+      "handled" : true,
+      "key" : 32,
+      "snapshot" : {
+        "commit" : "工作",
+        "selection" : [
+          0,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+
+        ],
+        "preedit" : "",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ],
+  "input" : "gongzuo",
+  "startupToSessionMs" : 12.783250000000001,
+  "committed" : "工作",
+  "warmups" : [
+
+  ],
+  "inputKeysToFinalSnapshotMs" : 0.25783333333333336,
+  "status" : "completed",
+  "steps" : [
+    {
+      "keyToSnapshotMs" : 0.065916666666666665,
+      "handled" : true,
+      "key" : 103,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          1,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "个",
+          "给",
+          "过",
+          "跟",
+          "更",
+          "该",
+          "高",
+          "搞",
+          "刚"
+        ],
+        "preedit" : "g",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.023708333333333331,
+      "handled" : true,
+      "key" : 111,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          2,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "够",
+          "狗",
+          "共",
+          "工",
+          "公",
+          "供",
+          "宫",
+          "功",
+          "购"
+        ],
+        "preedit" : "go",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.020416666666666666,
+      "handled" : true,
+      "key" : 110,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          3,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "共",
+          "工",
+          "公",
+          "供",
+          "宫",
+          "功",
+          "攻",
+          "弓",
+          "龚"
+        ],
+        "preedit" : "gon",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.021666666666666667,
+      "handled" : true,
+      "key" : 103,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          4,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "共",
+          "工",
+          "公",
+          "供",
+          "宫",
+          "功",
+          "攻",
+          "弓",
+          "龚"
+        ],
+        "preedit" : "gong",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.061291666666666661,
+      "handled" : true,
+      "key" : 122,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          6,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "工作",
+          "工资",
+          "公众",
+          "公主",
+          "公子",
+          "公正",
+          "公证",
+          "公章",
+          "宫中"
+        ],
+        "preedit" : "gong z",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.032083333333333332,
+      "handled" : true,
+      "key" : 117,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          7,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "共组",
+          "共",
+          "工",
+          "公",
+          "供",
+          "宫",
+          "功",
+          "攻",
+          "弓"
+        ],
+        "preedit" : "gong zu",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.021624999999999998,
+      "handled" : true,
+      "key" : 111,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          8,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "工作",
+          "共",
+          "工",
+          "公",
+          "供",
+          "宫",
+          "功",
+          "攻",
+          "弓"
+        ],
+        "preedit" : "gong zuo",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ]
+}

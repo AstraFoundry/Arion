@@ -1,0 +1,230 @@
+{
+  "runID": "a9e75cb0-f7b7-427c-ba4d-b5f73d8aac24",
+  "directory": "/Users/steven/code/Arion/.workspace/tests/keyboard-keychain-a9e75cb0-f7b7-427c-ba4d-b5f73d8aac24",
+  "profile": "/Users/steven/code/Arion/.workspace/tests/keyboard-keychain-a9e75cb0-f7b7-427c-ba4d-b5f73d8aac24/owned-profile",
+  "data": "/Users/steven/code/Arion/apps/desktop/resources/darwin/keyboard/data",
+  "binary": "/Users/steven/code/Arion/.workspace/tests/keyboard-keychain-a9e75cb0-f7b7-427c-ba4d-b5f73d8aac24/ArionKeychainValidation.app/Contents/MacOS/keychain-learning-test",
+  "bundle": "/Users/steven/code/Arion/.workspace/tests/keyboard-keychain-a9e75cb0-f7b7-427c-ba4d-b5f73d8aac24/ArionKeychainValidation.app",
+  "legacyOnly": false,
+  "provisioning": {
+    "entitlements": {
+      "com.apple.application-identifier": "DRLCWL5U4V.si.astrafoundry.inputmethod.arion",
+      "com.apple.developer.team-identifier": "DRLCWL5U4V"
+    },
+    "uuid": "8f392c95-76b0-4e05-99bf-30b3506242ed",
+    "expiration": "2044-10-13T08:06:59.000Z",
+    "team": "DRLCWL5U4V",
+    "bundleIdentifier": "si.astrafoundry.inputmethod.arion"
+  },
+  "identifier": "si.astrafoundry.inputmethod.arion",
+  "identity": "Developer ID Application: Hongyi Ling (DRLCWL5U4V)",
+  "prepared": true,
+  "executed": true,
+  "boundary": "real OS key lifecycle only; no installed input-source or IMK dispatch",
+  "backup": {
+    "requiredKeyBaseline": "absent",
+    "keyDataExported": false,
+    "profileWasAbsent": true,
+    "inputSourcesTouched": false
+  },
+  "library": "/Users/steven/code/Arion/.workspace/tests/keyboard-keychain-a9e75cb0-f7b7-427c-ba4d-b5f73d8aac24/ArionKeychainValidation.app/Contents/Frameworks/librime.1.dylib",
+  "sourceIdentities": [
+    {
+      "path": "apps/desktop/ime/macos/keyboard.h",
+      "sha256": "7e230a99cd9788f4feb3745c14d8e4a5d1ecb008284c916cf942820c8e0d93dd"
+    },
+    {
+      "path": "apps/desktop/ime/macos/keyboard.m",
+      "sha256": "6fdf20c571fb8f20eedd14fab2e63e0861e03522dc0b293a09274620ec7492a9"
+    },
+    {
+      "path": "apps/desktop/ime/macos/learning.h",
+      "sha256": "98e78e35c8f0f42bd4e19ef69e6f598ee10545493641a66e400e843c2b140eef"
+    },
+    {
+      "path": "apps/desktop/ime/macos/learning.mm",
+      "sha256": "3d8e6afc9aee3665180fc10fd4660b3f6a9c088ad5c30e88e81b25d287758300"
+    },
+    {
+      "path": "apps/desktop/ime/macos/learning_crypto.swift",
+      "sha256": "9c8ed696f3b17918f1e0f4489eaf65fca0dd6d9ffd9066b6d00f869380b14ed2"
+    },
+    {
+      "path": "apps/desktop/ime/macos/tests/keychain_learning_test.m",
+      "sha256": "535d9ce3f688e3b87514377307dbfafe71dd4473a9e64c0ad94b6bd805d7ab44"
+    }
+  ],
+  "binarySha256": "7fbecdaf86ef4c9440181f18e0a7457c1795ad75ff92be7cf880b0f3de2abc74",
+  "librarySha256": "041062001b7bfb61f334e05b7d34e124c5fe90f6eb0ea4acd33b5652817fe2bd",
+  "runnerSha256": "927185625f76f1afc0dd8e2788721950e0ff6492bdfe7d12fdac54c775b8fa19",
+  "results": [
+    {
+      "passed": true,
+      "phase": "guard",
+      "runID": "a9e75cb0-f7b7-427c-ba4d-b5f73d8aac24",
+      "interactionPolicyRestored": 1,
+      "boundary": "production encryption/engine with real OS-kept key; owned profile; no IMK source dispatch",
+      "secretDataRequestedByHarness": false,
+      "interactionPolicyStatus": 0,
+      "baselineStatus": -25300,
+      "exitStatus": 0
+    },
+    {
+      "secretDataRequestedByHarness": false,
+      "passed": true,
+      "beforeCandidates": [
+        "实施",
+        "事实",
+        "试试",
+        "实时",
+        "适时",
+        "时时",
+        "逝世",
+        "世事",
+        "事事"
+      ],
+      "interactionPolicyStatus": 0,
+      "phase": "writer",
+      "backingEvidence": {
+        "legacy": {
+          "status": -25300,
+          "sameOwnedReference": 0,
+          "attributes": null
+        },
+        "dataProtection": {
+          "status": 0,
+          "sameOwnedReference": 1,
+          "attributes": {
+            "creationDate": 1792311165.343666,
+            "accessiblePresent": 1,
+            "accessible": "cku",
+            "synchronizablePresent": 1,
+            "synchronizable": 0,
+            "matchesAfterFirstUnlockThisDeviceOnly": true
+          }
+        }
+      },
+      "committed": "事实",
+      "keyAttributes": {
+        "creationDate": 1792311165.343666,
+        "accessiblePresent": 1,
+        "accessible": "cku",
+        "synchronizablePresent": 1,
+        "synchronizable": 0,
+        "matchesAfterFirstUnlockThisDeviceOnly": true
+      },
+      "runID": "a9e75cb0-f7b7-427c-ba4d-b5f73d8aac24",
+      "interactionPolicyRestored": 1,
+      "boundary": "production encryption/engine with real OS-kept key; owned profile; no IMK source dispatch",
+      "vaultInventory": {
+        ".learning.lock": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "sizeBytes": 0
+        },
+        "arion_pinyin.arion-userdb": {
+          "sha256": "de04fb5a5f927e9dbf332953d7265069dda6444d50a730453be2b6e3005cd1f8",
+          "sizeBytes": 214
+        },
+        "arion_pinyin.arion-userdb.lock": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "sizeBytes": 0
+        }
+      },
+      "exitStatus": 0
+    },
+    {
+      "passed": true,
+      "phase": "reader",
+      "keyAttributes": {
+        "creationDate": 1792311165.343666,
+        "accessiblePresent": 1,
+        "accessible": "cku",
+        "synchronizablePresent": 1,
+        "synchronizable": 0,
+        "matchesAfterFirstUnlockThisDeviceOnly": true
+      },
+      "runID": "a9e75cb0-f7b7-427c-ba4d-b5f73d8aac24",
+      "interactionPolicyRestored": 1,
+      "boundary": "production encryption/engine with real OS-kept key; owned profile; no IMK source dispatch",
+      "secretDataRequestedByHarness": false,
+      "afterRestartCandidates": [
+        "事实",
+        "实施",
+        "试试",
+        "实时",
+        "适时",
+        "时时",
+        "逝世",
+        "世事",
+        "事事"
+      ],
+      "interactionPolicyStatus": 0,
+      "exitStatus": 0
+    },
+    {
+      "deleteStatus": 0,
+      "phase": "delete",
+      "finalDataProtectionStatus": -25300,
+      "finalKeyStatus": -25300,
+      "passed": true,
+      "runID": "a9e75cb0-f7b7-427c-ba4d-b5f73d8aac24",
+      "interactionPolicyRestored": 1,
+      "boundary": "production encryption/engine with real OS-kept key; owned profile; no IMK source dispatch",
+      "finalLegacyStatus": -25300,
+      "secretDataRequestedByHarness": false,
+      "interactionPolicyStatus": 0,
+      "exitStatus": 0
+    },
+    {
+      "secretDataRequestedByHarness": false,
+      "startupSucceeded": false,
+      "passed": true,
+      "interactionPolicyStatus": 0,
+      "failureDomain": "si.astrafoundry.arion.keyboard.learning",
+      "phase": "missing",
+      "failureCode": 14,
+      "vaultUnchanged": true,
+      "runID": "a9e75cb0-f7b7-427c-ba4d-b5f73d8aac24",
+      "interactionPolicyRestored": 1,
+      "boundary": "production encryption/engine with real OS-kept key; owned profile; no IMK source dispatch",
+      "vaultInventory": {
+        ".learning.lock": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "sizeBytes": 0
+        },
+        "arion_pinyin.arion-userdb": {
+          "sha256": "de04fb5a5f927e9dbf332953d7265069dda6444d50a730453be2b6e3005cd1f8",
+          "sizeBytes": 214
+        },
+        "arion_pinyin.arion-userdb.lock": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "sizeBytes": 0
+        }
+      },
+      "exitStatus": 0
+    },
+    {
+      "deleteStatus": -25300,
+      "phase": "cleanup",
+      "finalDataProtectionStatus": -25300,
+      "finalKeyStatus": -25300,
+      "passed": true,
+      "runID": "a9e75cb0-f7b7-427c-ba4d-b5f73d8aac24",
+      "interactionPolicyRestored": 1,
+      "boundary": "production encryption/engine with real OS-kept key; owned profile; no IMK source dispatch",
+      "finalLegacyStatus": -25300,
+      "secretDataRequestedByHarness": false,
+      "interactionPolicyStatus": 0,
+      "exitStatus": 0
+    }
+  ],
+  "capabilityOnly": false,
+  "legacyRejectionOnly": false,
+  "restored": true,
+  "assurance": {
+    "lifecyclePassed": true,
+    "deviceBoundProtectionVerification": "not-established",
+    "scope": "Lifecycle success alone does not verify the requested accessibility class or backing-store policy."
+  },
+  "passed": true
+}

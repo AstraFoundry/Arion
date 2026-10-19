@@ -1,0 +1,3002 @@
+[
+  {
+    "seed": 1701,
+    "id": "abbreviation-009",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "abbreviation-009",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "coined-phrase-004",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "coined-phrase-004",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "sentence-002",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "sentence-002",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-028",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-028",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-037",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-037",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "sentence-015",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "sentence-015",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "sentence-005",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "sentence-005",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-035",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-035",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-041",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-041",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "sentence-009",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "sentence-009",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-045",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-045",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "coined-phrase-003",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "coined-phrase-003",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-042",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-042",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "umlaut-002",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "umlaut-002",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "sentence-004",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "sentence-004",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-008",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-008",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "umlaut-005",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "umlaut-005",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "abbreviation-003",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "abbreviation-003",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "sentence-001",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "sentence-001",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-029",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-029",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "sentence-006",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "sentence-006",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "abbreviation-010",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "abbreviation-010",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "coined-phrase-001",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "coined-phrase-001",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "abbreviation-002",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "abbreviation-002",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-001",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-001",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-003",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-003",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-023",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-023",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-013",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-013",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "sentence-024",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "sentence-024",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-020",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-020",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "sentence-019",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "sentence-019",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "sentence-010",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "sentence-010",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "coined-phrase-002",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "coined-phrase-002",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "sentence-029",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "sentence-029",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-026",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-026",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "sentence-028",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "sentence-028",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "umlaut-003",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "umlaut-003",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "sentence-020",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "sentence-020",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-010",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-010",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-009",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-009",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "umlaut-004",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "umlaut-004",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-036",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-036",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-025",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-025",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "umlaut-001",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "umlaut-001",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-033",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-033",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "sentence-017",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "sentence-017",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-004",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-004",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "sentence-003",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "sentence-003",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "sentence-022",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "sentence-022",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "abbreviation-008",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "abbreviation-008",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "abbreviation-004",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "abbreviation-004",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "abbreviation-006",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "abbreviation-006",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-018",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-018",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-012",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-012",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "sentence-023",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "sentence-023",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-021",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-021",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "sentence-034",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "sentence-034",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-005",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-005",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-043",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-043",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "sentence-030",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "sentence-030",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-016",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-016",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-034",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-034",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-022",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-022",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-015",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-015",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-039",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-039",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "sentence-026",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "sentence-026",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "abbreviation-001",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "abbreviation-001",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-007",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-007",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "sentence-013",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "sentence-013",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "sentence-033",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "sentence-033",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-006",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-006",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-019",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-019",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "sentence-021",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "sentence-021",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-044",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-044",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "coined-phrase-005",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "coined-phrase-005",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "sentence-027",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "sentence-027",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "sentence-016",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "sentence-016",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "sentence-031",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "sentence-031",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "abbreviation-007",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "abbreviation-007",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "sentence-032",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "sentence-032",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "sentence-025",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "sentence-025",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-017",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-017",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-024",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-024",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-038",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-038",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-030",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-030",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-032",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-032",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-027",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-027",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "sentence-008",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "sentence-008",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "sentence-012",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "sentence-012",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-031",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-031",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "sentence-007",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "sentence-007",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-002",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-002",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-014",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-014",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "sentence-011",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "sentence-011",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "abbreviation-005",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "abbreviation-005",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-040",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-040",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "sentence-014",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "sentence-014",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "sentence-035",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "sentence-035",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "sentence-018",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1701,
+    "id": "sentence-018",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-011",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1701,
+    "id": "common-word-011",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-005",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-005",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "coined-phrase-004",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "coined-phrase-004",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "abbreviation-004",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "abbreviation-004",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-036",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-036",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "sentence-016",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "sentence-016",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "sentence-035",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "sentence-035",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "abbreviation-007",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "abbreviation-007",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-033",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-033",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "sentence-008",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "sentence-008",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-024",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-024",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-025",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-025",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "coined-phrase-005",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "coined-phrase-005",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-039",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-039",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "sentence-010",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "sentence-010",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-045",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-045",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-035",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-035",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-010",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-010",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "sentence-021",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "sentence-021",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-027",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-027",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "sentence-024",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "sentence-024",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "sentence-004",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "sentence-004",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-017",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-017",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "sentence-018",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "sentence-018",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "sentence-020",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "sentence-020",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "sentence-023",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "sentence-023",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-014",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-014",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-037",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-037",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "sentence-013",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "sentence-013",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "sentence-031",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "sentence-031",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-006",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-006",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "umlaut-005",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "umlaut-005",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "abbreviation-006",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "abbreviation-006",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "sentence-009",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "sentence-009",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-015",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-015",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "sentence-029",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "sentence-029",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "sentence-017",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "sentence-017",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-042",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-042",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-028",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-028",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "umlaut-001",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "umlaut-001",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-008",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-008",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "sentence-002",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "sentence-002",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-004",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-004",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "abbreviation-008",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "abbreviation-008",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-029",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-029",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-001",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-001",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "sentence-019",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "sentence-019",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "abbreviation-001",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "abbreviation-001",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "sentence-028",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "sentence-028",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "sentence-012",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "sentence-012",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-013",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-013",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "sentence-005",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "sentence-005",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-021",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-021",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "sentence-006",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "sentence-006",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "sentence-026",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "sentence-026",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "umlaut-004",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "umlaut-004",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "sentence-030",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "sentence-030",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-003",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-003",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-043",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-043",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-044",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-044",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-030",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-030",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "sentence-007",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "sentence-007",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "sentence-032",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "sentence-032",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "sentence-034",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "sentence-034",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-016",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-016",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "sentence-025",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "sentence-025",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-023",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-023",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-026",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-026",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "abbreviation-005",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "abbreviation-005",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-038",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-038",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "coined-phrase-003",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "coined-phrase-003",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "sentence-033",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "sentence-033",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-012",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-012",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-032",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-032",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "abbreviation-009",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "abbreviation-009",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-018",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-018",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "coined-phrase-002",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "coined-phrase-002",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "sentence-014",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "sentence-014",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-019",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-019",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "abbreviation-002",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "abbreviation-002",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "sentence-015",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "sentence-015",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-007",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-007",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-020",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-020",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "sentence-027",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "sentence-027",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "sentence-011",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "sentence-011",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-009",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-009",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-031",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-031",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "abbreviation-003",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "abbreviation-003",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "umlaut-002",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "umlaut-002",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "coined-phrase-001",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "coined-phrase-001",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "sentence-001",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "sentence-001",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-040",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-040",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-022",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-022",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-041",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-041",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-034",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-034",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "umlaut-003",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "umlaut-003",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-002",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-002",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "abbreviation-010",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "abbreviation-010",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "sentence-003",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "sentence-003",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "sentence-022",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1702,
+    "id": "sentence-022",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-011",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1702,
+    "id": "common-word-011",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "sentence-032",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "sentence-032",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-015",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-015",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "abbreviation-010",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "abbreviation-010",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-041",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-041",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "sentence-009",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "sentence-009",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-029",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-029",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "sentence-005",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "sentence-005",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "abbreviation-001",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "abbreviation-001",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "sentence-022",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "sentence-022",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "sentence-006",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "sentence-006",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-003",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-003",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "sentence-035",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "sentence-035",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "sentence-012",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "sentence-012",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "abbreviation-004",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "abbreviation-004",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "abbreviation-006",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "abbreviation-006",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-004",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-004",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "sentence-008",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "sentence-008",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-025",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-025",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-019",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-019",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-010",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-010",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-038",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-038",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-013",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-013",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-012",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-012",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "sentence-013",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "sentence-013",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-026",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-026",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-040",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-040",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-020",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-020",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-037",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-037",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "umlaut-001",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "umlaut-001",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-035",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-035",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "sentence-028",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "sentence-028",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "coined-phrase-002",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "coined-phrase-002",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "abbreviation-007",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "abbreviation-007",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-024",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-024",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "sentence-017",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "sentence-017",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "umlaut-002",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "umlaut-002",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "sentence-027",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "sentence-027",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-022",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-022",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-007",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-007",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "sentence-004",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "sentence-004",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-039",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-039",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-045",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-045",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "sentence-001",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "sentence-001",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-023",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-023",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "coined-phrase-004",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "coined-phrase-004",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "sentence-014",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "sentence-014",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "umlaut-003",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "umlaut-003",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "abbreviation-005",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "abbreviation-005",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "sentence-019",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "sentence-019",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "sentence-018",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "sentence-018",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-021",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-021",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "sentence-029",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "sentence-029",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-027",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-027",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-032",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-032",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "sentence-023",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "sentence-023",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-016",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-016",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-030",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-030",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "sentence-011",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "sentence-011",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "sentence-015",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "sentence-015",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-002",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-002",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-042",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-042",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "sentence-031",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "sentence-031",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-005",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-005",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "sentence-016",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "sentence-016",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "sentence-033",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "sentence-033",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-001",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-001",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "sentence-010",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "sentence-010",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-008",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-008",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-018",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-018",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "abbreviation-008",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "abbreviation-008",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "sentence-020",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "sentence-020",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-006",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-006",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-036",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-036",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-043",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-043",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-031",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-031",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "umlaut-004",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "umlaut-004",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "abbreviation-003",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "abbreviation-003",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-034",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-034",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "sentence-024",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "sentence-024",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-017",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-017",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "sentence-030",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "sentence-030",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-014",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-014",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-009",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-009",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "coined-phrase-001",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "coined-phrase-001",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "sentence-026",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "sentence-026",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "coined-phrase-003",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "coined-phrase-003",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "abbreviation-002",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "abbreviation-002",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "sentence-003",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "sentence-003",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-033",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-033",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "coined-phrase-005",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "coined-phrase-005",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "sentence-025",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "sentence-025",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-028",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-028",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-044",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-044",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "sentence-002",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "sentence-002",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "sentence-034",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "sentence-034",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "sentence-007",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "sentence-007",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "umlaut-005",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "umlaut-005",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "abbreviation-009",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "abbreviation-009",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "sentence-021",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "sentence-021",
+    "stratum": "cold-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-011",
+    "stratum": "warm-process"
+  },
+  {
+    "seed": 1703,
+    "id": "common-word-011",
+    "stratum": "cold-process"
+  }
+]

@@ -1,0 +1,323 @@
+{
+  "schemaVersion": 1,
+  "study": "imk-keyboard-v2",
+  "supplements": "../imk-keyboard-v1/archive.json",
+  "scope": "Completed attempt12 real-engine/AppKit functional source regression and completed failed/restored signed-source run05; not system typing acceptance",
+  "functional": {
+    "attempt": "typing-attempt-12",
+    "status": "passed",
+    "passed": 22,
+    "total": 22,
+    "report": "engine/typing-attempt-12.json",
+    "identities": "engine/typing-attempt-12-identities.json",
+    "boundary": "Real librime1.17.0 and AppKit text-store protocol adapter, identical encrypted backend with isolated synthetic key; no Keychain or installed IMK dispatch"
+  },
+  "system": {
+    "run": "run-05",
+    "status": "failed-restored",
+    "sourceID": "si.astrafoundry.inputmethod.arion.pinyin",
+    "observations": "system/run-05/observations.json",
+    "rawRegistration": "system/run-05/diagnostic-registration.txt",
+    "rawTransition": "system/run-05/diagnostic-transition.txt",
+    "rawSelection": "system/run-05/select-status.txt",
+    "beforeRestoration": "system/run-05/before-restoration.json",
+    "restoration": "system/run-05/state.json",
+    "signedBuildLog": "system/signed-desktop-build.log",
+    "selectionStatus": -50,
+    "evidenceTypes": {
+      "buildLog": "original completed tool output; signed/notarized/Gatekeeper verification success",
+      "registrationTransitionSelection": "original standalone helper output",
+      "productionInstallAndGatekeeperSummary": "explicit transcription of actual tool/controller observations in observations.json",
+      "restoration": "original controller state"
+    },
+    "boundary": "Signed and notarized desktop artifact does not establish TIS enable or typing dispatch; parent remained disabled and ABC stayed current"
+  },
+  "privacy": {
+    "included": "Own Arion IDs, current ABC source, own-bundle hashes, owned process metadata, synthetic functional text and public build provenance only",
+    "excluded": "No profiles, key bytes, native executable/runtime/SDK, personal preferences or unrelated app data"
+  },
+  "exclusions": [
+    {
+      "path": "apps/desktop/resources/darwin/keyboard/lib/librime.1.dylib",
+      "sha256": "1adb725a081b0accc1451034f6f1bb78cbfe8252a65245f1511f4b3f2038c487",
+      "reason": "Separately provisioned native runtime binary; no executable archived"
+    },
+    {
+      "path": "unfinished final desktop build and its output/log",
+      "reason": "Not a completed observation; remains in ignored workspace"
+    }
+  ],
+  "files": [
+    {
+      "path": "sources/apps/desktop/ime/macos/tests/typing_test.m",
+      "originalPath": "apps/desktop/ime/macos/tests/typing_test.m",
+      "copiedFrom": ".workspace/research/imk-alignment/typing-attempt-12-sources/apps/desktop/ime/macos/tests/typing_test.m",
+      "sizeBytes": 32111,
+      "sha256": "07b5f0d840ec41ad5de199fa0bedede661b87b962e8680fccd41f994a4a54713",
+      "kind": "identity-matching-attempt-12-source-or-manifest"
+    },
+    {
+      "path": "sources/scripts/test-keyboard-input.mjs",
+      "originalPath": "scripts/test-keyboard-input.mjs",
+      "copiedFrom": ".workspace/research/imk-alignment/typing-attempt-12-sources/scripts/test-keyboard-input.mjs",
+      "sizeBytes": 3361,
+      "sha256": "9a0fe2f4d347ac0ffd1101eaa94e470be24f9ae05e98558ba398ff2060862d24",
+      "kind": "identity-matching-attempt-12-source-or-manifest"
+    },
+    {
+      "path": "sources/apps/desktop/ime/macos/keyboard.m",
+      "originalPath": "apps/desktop/ime/macos/keyboard.m",
+      "copiedFrom": ".workspace/research/imk-alignment/typing-attempt-12-sources/apps/desktop/ime/macos/keyboard.m",
+      "sizeBytes": 10869,
+      "sha256": "d9a70d0c5e2d6a11f17b2987ff83923c80ea147363a1f796f44bf69e581cac76",
+      "kind": "identity-matching-attempt-12-source-or-manifest"
+    },
+    {
+      "path": "sources/apps/desktop/ime/macos/typing.m",
+      "originalPath": "apps/desktop/ime/macos/typing.m",
+      "copiedFrom": ".workspace/research/imk-alignment/typing-attempt-12-sources/apps/desktop/ime/macos/typing.m",
+      "sizeBytes": 5511,
+      "sha256": "fb23897afe02cfb8e7b074b1c42c9e83420d77f70ecc34a2127de95aa11ca5aa",
+      "kind": "identity-matching-attempt-12-source-or-manifest"
+    },
+    {
+      "path": "sources/apps/desktop/ime/macos/learning.mm",
+      "originalPath": "apps/desktop/ime/macos/learning.mm",
+      "copiedFrom": ".workspace/research/imk-alignment/typing-attempt-12-sources/apps/desktop/ime/macos/learning.mm",
+      "sizeBytes": 22573,
+      "sha256": "96e0a607864d62c1bc1e8be91e7832002bc948edcb0cfcc73ae471c7a6e6077b",
+      "kind": "identity-matching-attempt-12-source-or-manifest"
+    },
+    {
+      "path": "sources/apps/desktop/ime/macos/learning_crypto.swift",
+      "originalPath": "apps/desktop/ime/macos/learning_crypto.swift",
+      "copiedFrom": ".workspace/research/imk-alignment/typing-attempt-12-sources/apps/desktop/ime/macos/learning_crypto.swift",
+      "sizeBytes": 3075,
+      "sha256": "9c8ed696f3b17918f1e0f4489eaf65fca0dd6d9ffd9066b6d00f869380b14ed2",
+      "kind": "identity-matching-attempt-12-source-or-manifest"
+    },
+    {
+      "path": "sources/apps/desktop/resources/darwin/keyboard/data/build/arion_pinyin.schema.yaml",
+      "originalPath": "apps/desktop/resources/darwin/keyboard/data/build/arion_pinyin.schema.yaml",
+      "copiedFrom": ".workspace/research/imk-alignment/typing-attempt-12-sources/apps/desktop/resources/darwin/keyboard/data/build/arion_pinyin.schema.yaml",
+      "sizeBytes": 39443,
+      "sha256": "5eeebe964c235877f495995912ec410ad70808f461be1e378b4e9d48bd0628ad",
+      "kind": "identity-matching-attempt-12-source-or-manifest"
+    },
+    {
+      "path": "sources/apps/desktop/resources/darwin/keyboard/runtime.json",
+      "originalPath": "apps/desktop/resources/darwin/keyboard/runtime.json",
+      "copiedFrom": ".workspace/research/imk-alignment/typing-attempt-12-sources/apps/desktop/resources/darwin/keyboard/runtime.json",
+      "sizeBytes": 5536,
+      "sha256": "4480566a33a0244c4d0654dca0e3f63d926f8447303e2cf84a5d305c443b80d6",
+      "kind": "identity-matching-attempt-12-source-or-manifest"
+    },
+    {
+      "path": "sources/scripts/lib/build-ime-learning.mjs",
+      "originalPath": "scripts/lib/build-ime-learning.mjs",
+      "copiedFrom": ".workspace/research/imk-alignment/typing-attempt-12-sources/scripts/lib/build-ime-learning.mjs",
+      "sizeBytes": 1691,
+      "sha256": "67a75be4bf4552e50a684ad542a8d2aee73d6aa80f452961582eb0de34cba7a0",
+      "kind": "identity-matching-attempt-12-source-or-manifest"
+    },
+    {
+      "path": "sources/apps/desktop/ime/macos/typing.h",
+      "originalPath": "apps/desktop/ime/macos/typing.h",
+      "copiedFrom": ".workspace/research/imk-alignment/typing-attempt-12-sources/apps/desktop/ime/macos/typing.h",
+      "sizeBytes": 797,
+      "sha256": "e5d0e858d9c6d0f496011e872d4677365d06838fad79b14e874eea75aebf7d88",
+      "kind": "identity-matching-attempt-12-source-or-manifest"
+    },
+    {
+      "path": "sources/apps/desktop/ime/macos/keyboard.h",
+      "originalPath": "apps/desktop/ime/macos/keyboard.h",
+      "copiedFrom": ".workspace/research/imk-alignment/typing-attempt-12-sources/apps/desktop/ime/macos/keyboard.h",
+      "sizeBytes": 1465,
+      "sha256": "7e230a99cd9788f4feb3745c14d8e4a5d1ecb008284c916cf942820c8e0d93dd",
+      "kind": "identity-matching-attempt-12-source-or-manifest"
+    },
+    {
+      "path": "sources/apps/desktop/ime/macos/learning.h",
+      "originalPath": "apps/desktop/ime/macos/learning.h",
+      "copiedFrom": ".workspace/research/imk-alignment/typing-attempt-12-sources/apps/desktop/ime/macos/learning.h",
+      "sizeBytes": 1210,
+      "sha256": "d9e82f45a3710515c292d7f9f059ecb2ad96c247166ed22fa69de97a9cf3008d",
+      "kind": "identity-matching-attempt-12-source-or-manifest"
+    },
+    {
+      "path": "engine/typing-attempt-12.json",
+      "originalPath": ".workspace/research/imk-alignment/typing-attempt-12.json",
+      "copiedFrom": ".workspace/research/imk-alignment/typing-attempt-12.json",
+      "sizeBytes": 18894,
+      "sha256": "f9d87d9376be1d3495d4cf60bbb55829862250384bd33b6cebc03ace17c9be4c",
+      "kind": "original-completed-functional-evidence"
+    },
+    {
+      "path": "engine/typing-attempt-12.log",
+      "originalPath": ".workspace/research/imk-alignment/typing-attempt-12.log",
+      "copiedFrom": ".workspace/research/imk-alignment/typing-attempt-12.log",
+      "sizeBytes": 2494,
+      "sha256": "d821df72437a6757049f1214cab301f68281187e1a0e8c5ddfa0cb13f11cf8f4",
+      "kind": "original-completed-functional-evidence"
+    },
+    {
+      "path": "engine/typing-attempt-12-identities.json",
+      "originalPath": ".workspace/research/imk-alignment/typing-attempt-12-identities.json",
+      "copiedFrom": ".workspace/research/imk-alignment/typing-attempt-12-identities.json",
+      "sizeBytes": 1910,
+      "sha256": "4a780893bd4ee1689281bbafc51ff4f6c834fc371edcd87d73259846b485ffaa",
+      "kind": "original-completed-functional-evidence"
+    },
+    {
+      "path": "engine/typing-test-report.md",
+      "originalPath": ".workspace/research/imk-alignment/typing-test-report.md",
+      "copiedFrom": ".workspace/research/imk-alignment/typing-test-report.md",
+      "sizeBytes": 8743,
+      "sha256": "96ca1e70f7834ffb77d7a808635ea283c452c4446b1af16d215a13ff1c10f73e",
+      "kind": "functional-finding-ledger"
+    },
+    {
+      "path": "sources/apps/desktop/ime/macos/keyboard-data/arion_pinyin.schema.yaml",
+      "originalPath": "apps/desktop/ime/macos/keyboard-data/arion_pinyin.schema.yaml",
+      "copiedFrom": "benchmarks/runs/imk-keyboard-v1/sources/apps/desktop/ime/macos/keyboard-data/arion_pinyin.schema.yaml",
+      "sizeBytes": 917,
+      "sha256": "5f106fd1dc9fa7945c75f0c22ac59d3e7c8902603f3d790d29d2be767b715eda",
+      "kind": "supporting-reproduction-source-frozen-v1"
+    },
+    {
+      "path": "sources/apps/desktop/ime/macos/keyboard-data/default.custom.yaml",
+      "originalPath": "apps/desktop/ime/macos/keyboard-data/default.custom.yaml",
+      "copiedFrom": "benchmarks/runs/imk-keyboard-v1/sources/apps/desktop/ime/macos/keyboard-data/default.custom.yaml",
+      "sizeBytes": 172,
+      "sha256": "bddfaf030cc97337069c95c9f30cc0bc2c3498bebf4bfd7424a51c81cc475439",
+      "kind": "supporting-reproduction-source-frozen-v1"
+    },
+    {
+      "path": "sources/scripts/keyboard-runtime.json",
+      "originalPath": "scripts/keyboard-runtime.json",
+      "copiedFrom": "benchmarks/runs/imk-keyboard-v1/sources/scripts/keyboard-runtime.json",
+      "sizeBytes": 8729,
+      "sha256": "58b95bd269eeb9a2a94c3f3f0d1d559e9b2d2c385854f2aa922207d8b92c5366",
+      "kind": "supporting-reproduction-source-frozen-v1"
+    },
+    {
+      "path": "sources/scripts/stage-keyboard-runtime.mjs",
+      "originalPath": "scripts/stage-keyboard-runtime.mjs",
+      "copiedFrom": "benchmarks/runs/imk-keyboard-v1/sources/scripts/stage-keyboard-runtime.mjs",
+      "sizeBytes": 8022,
+      "sha256": "8b99a7d00112579f453c526d2bd2815b8c84cdb9b88bb8b0fbcb8547d4793db5",
+      "kind": "supporting-reproduction-source-frozen-v1"
+    },
+    {
+      "path": "sources/scripts/lib/pinned-file.mjs",
+      "originalPath": "scripts/lib/pinned-file.mjs",
+      "copiedFrom": "benchmarks/runs/imk-keyboard-v1/sources/scripts/lib/pinned-file.mjs",
+      "sizeBytes": 1186,
+      "sha256": "29931f7190430733bbf5cbe01465a71690043d3555d747bc3139de5fda236423",
+      "kind": "supporting-reproduction-source-frozen-v1"
+    },
+    {
+      "path": "system/run-05/observations.json",
+      "originalPath": ".workspace/e2e/imk-system/run-05/observations.json",
+      "copiedFrom": ".workspace/e2e/imk-system/run-05/observations.json",
+      "sizeBytes": 1836,
+      "sha256": "393ddba11d928dade8e7f6cd971fd58d3869f18d961c559ce92b35650eaf29f8",
+      "kind": "original-completed-own-source-observation"
+    },
+    {
+      "path": "system/run-05/state.json",
+      "originalPath": ".workspace/e2e/imk-system/run-05/state.json",
+      "copiedFrom": ".workspace/e2e/imk-system/run-05/state.json",
+      "sizeBytes": 1504,
+      "sha256": "7a7917edb0c9514684d6a476a4509c22d9542317a621dbeb3ebb3099ae8e139d",
+      "kind": "original-completed-own-source-observation"
+    },
+    {
+      "path": "system/run-05/diagnostic-registration.txt",
+      "originalPath": ".workspace/e2e/imk-system/run-05/diagnostic-registration.txt",
+      "copiedFrom": ".workspace/e2e/imk-system/run-05/diagnostic-registration.txt",
+      "sizeBytes": 574,
+      "sha256": "050cdae4328dc67f597e0052b2239eb1302afd72f9001c8d7064434b9e9b4631",
+      "kind": "original-completed-own-source-observation"
+    },
+    {
+      "path": "system/run-05/diagnostic-transition.txt",
+      "originalPath": ".workspace/e2e/imk-system/run-05/diagnostic-transition.txt",
+      "copiedFrom": ".workspace/e2e/imk-system/run-05/diagnostic-transition.txt",
+      "sizeBytes": 728,
+      "sha256": "2deed208886c5f470d7ae27aa1c11f4e64a15bd59c84131a778192a0ba5b1d2f",
+      "kind": "original-completed-own-source-observation"
+    },
+    {
+      "path": "system/run-05/select-status.txt",
+      "originalPath": ".workspace/e2e/imk-system/run-05/select-status.txt",
+      "copiedFrom": ".workspace/e2e/imk-system/run-05/select-status.txt",
+      "sizeBytes": 4,
+      "sha256": "b84096a2c95f7ac535bc39b9351f3df17093723b168773f68f3b80a089a39087",
+      "kind": "original-completed-own-source-observation"
+    },
+    {
+      "path": "system/run-05/before-restoration.json",
+      "originalPath": ".workspace/e2e/imk-system/run-05/before-restoration.json",
+      "copiedFrom": ".workspace/e2e/imk-system/run-05/before-restoration.json",
+      "sizeBytes": 268,
+      "sha256": "f14be36b6eb7d248cdfa51a0ebd6689fb5396a5c39bf236b490ffc9613fa9e25",
+      "kind": "original-completed-own-source-observation"
+    },
+    {
+      "path": "system/drivers/controller-05.mjs",
+      "originalPath": ".workspace/e2e/imk-system/controller-05.mjs",
+      "copiedFrom": ".workspace/e2e/imk-system/controller-05.mjs",
+      "sizeBytes": 6061,
+      "sha256": "dfa860fc0009fccb6cea02d39b33c7a95ba412d37688dae6c65164afd6d2577d",
+      "kind": "exact-system-driver-source"
+    },
+    {
+      "path": "system/drivers/sources.swift",
+      "originalPath": ".workspace/e2e/imk-system/sources.swift",
+      "copiedFrom": ".workspace/e2e/imk-system/sources.swift",
+      "sizeBytes": 1609,
+      "sha256": "e4feea7f6ed4ea31c95aa913644fa482b09df9fc329059458c6d0333e7cbd550",
+      "kind": "exact-system-driver-source"
+    },
+    {
+      "path": "system/drivers/diagnose-complete.swift",
+      "originalPath": ".workspace/e2e/imk-system/diagnose-complete.swift",
+      "copiedFrom": ".workspace/e2e/imk-system/diagnose-complete.swift",
+      "sizeBytes": 1342,
+      "sha256": "c42d5f4cfcda0bf78acbba6372e762ef36c7fa4056ab00282e2cf8074fa89af5",
+      "kind": "exact-system-driver-source"
+    },
+    {
+      "path": "system/drivers/diagnose-transition.swift",
+      "originalPath": ".workspace/e2e/imk-system/diagnose-transition.swift",
+      "copiedFrom": ".workspace/e2e/imk-system/diagnose-transition.swift",
+      "sizeBytes": 1697,
+      "sha256": "a1d92b2eb234fb3be2d677ef9246ea964819583a6332b0db8dbc49de4921a08f",
+      "kind": "exact-system-driver-source"
+    },
+    {
+      "path": "system/signed-desktop-build.log",
+      "originalPath": ".workspace/research/imk-alignment/signed-desktop-build.log",
+      "copiedFrom": ".workspace/research/imk-alignment/signed-desktop-build.log",
+      "sizeBytes": 2387,
+      "sha256": "e975093f6cddd70b1358b21b5e252a1921c3b4cb995bc12ae84c83abd8e1dc6d",
+      "kind": "original-completed-build-log"
+    },
+    {
+      "path": "verify.mjs",
+      "originalPath": null,
+      "sizeBytes": 3696,
+      "sha256": "7f4eb58c5e61a51fc3cbb13355d5aaac1530786a828b59013177d1fb80a9dd2e",
+      "kind": "new-archive-verification-or-documentation"
+    },
+    {
+      "path": "README.md",
+      "originalPath": null,
+      "sizeBytes": 4325,
+      "sha256": "517fbaebaf8dd553c7c270dd6f6a519d6cba2f3193599bbeea2a349ee83010ea",
+      "kind": "new-archive-verification-or-documentation"
+    }
+  ],
+  "manifestIntegrity": "archive.json excludes its own bytes; model-free verifier hashes every declared archived file"
+}

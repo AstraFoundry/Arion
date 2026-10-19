@@ -1,0 +1,16 @@
+{
+  "configured": true,
+  "profilePath": "/Users/steven/code/Arion/.workspace/signing/ArionInput.provisionprofile",
+  "profileSHA256": "9674f3f94f89361da185e125a4bb04e4350e63b442f268397e482ad585d4dcf2",
+  "authorization": {
+    "entitlements": {
+      "com.apple.application-identifier": "DRLCWL5U4V.si.astrafoundry.inputmethod.arion",
+      "com.apple.developer.team-identifier": "DRLCWL5U4V"
+    },
+    "uuid": "8f392c95-76b0-4e05-99bf-30b3506242ed",
+    "expiration": "2044-10-13T08:06:59.000Z",
+    "team": "DRLCWL5U4V",
+    "bundleIdentifier": "si.astrafoundry.inputmethod.arion"
+  },
+  "scope": "Profile validation and local configuration only; no input-source installation or real key lifecycle yet."
+}
