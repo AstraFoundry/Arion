@@ -10,6 +10,7 @@ import (
 	"log"
 	"math"
 	"os"
+	"strconv"
 )
 
 const (
@@ -55,22 +56,37 @@ func bar(x, y float64) bool {
 	return false
 }
 
-// menuIcon renders the input-menu glyph: the same five bars in black on
-// transparent, which macOS tints as a template.
-func menuIcon(path string) {
-	const n = 64
+// menuIcon renders the input-menu glyph at n pixels: the same five bars in
+// black on transparent, which macOS tints as a template. The glyph is drawn
+// on a 64-unit grid and supersampled so 16 and 32 pixel slices stay crisp.
+func menuIcon(path string, n int) {
+	const grid, samples = 64.0, 4
+	scale := grid / float64(n)
 	img := image.NewNRGBA(image.Rect(0, 0, n, n))
 	heights := []float64{18, 34, 48, 30, 20}
+	inside := func(x, y float64) bool {
+		for i, h := range heights {
+			x0 := 7 + float64(i)*11
+			top, bottom := grid/2-h/2, grid/2+h/2
+			if x >= x0 && x <= x0+6 && y >= top+3 && y <= bottom-3 || math.Hypot(x-(x0+3), y-(top+3)) <= 3 || math.Hypot(x-(x0+3), y-(bottom-3)) <= 3 {
+				return true
+			}
+		}
+		return false
+	}
 	for py := 0; py < n; py++ {
 		for px := 0; px < n; px++ {
-			x, y := float64(px)+0.5, float64(py)+0.5
-			for i, h := range heights {
-				x0 := 7 + float64(i)*11
-				top, bottom := n/2.0-h/2, n/2.0+h/2
-				if x >= x0 && x <= x0+6 && y >= top+3 && y <= bottom-3 || math.Hypot(x-(x0+3), y-(top+3)) <= 3 || math.Hypot(x-(x0+3), y-(bottom-3)) <= 3 {
-					img.Set(px, py, color.NRGBA{A: 255})
+			hits := 0
+			for sy := 0; sy < samples; sy++ {
+				for sx := 0; sx < samples; sx++ {
+					x := (float64(px) + (float64(sx)+0.5)/samples) * scale
+					y := (float64(py) + (float64(sy)+0.5)/samples) * scale
+					if inside(x, y) {
+						hits++
+					}
 				}
 			}
+			img.Set(px, py, color.NRGBA{A: uint8(255 * hits / (samples * samples))})
 		}
 	}
 	write(path, img)
@@ -88,8 +104,12 @@ func write(path string, img image.Image) {
 }
 
 func main() {
-	if len(os.Args) == 3 && os.Args[1] == "-menu" {
-		menuIcon(os.Args[2])
+	if len(os.Args) == 4 && os.Args[1] == "-menu" {
+		pixels, err := strconv.Atoi(os.Args[2])
+		if err != nil || pixels <= 0 {
+			log.Fatalf("invalid menu icon size %q", os.Args[2])
+		}
+		menuIcon(os.Args[3], pixels)
 		return
 	}
 	img := image.NewNRGBA(image.Rect(0, 0, size, size))

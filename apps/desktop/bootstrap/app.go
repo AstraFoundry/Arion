@@ -361,8 +361,13 @@ func (a *App) ready() {
 	if a.ime != nil {
 		if err := a.ime.Listen(); err != nil {
 			a.record("ime_listen", err)
+		} else {
+			mygo.App.OnQuit(a.ime.Close)
 		}
 		a.state.InputMethod = a.ime.State()
+		if err := a.ime.ApplyKeyboard(a.state.Preferences.Keyboard); err != nil {
+			a.record("keyboard_settings", err)
+		}
 	}
 	a.loadVocabulary(false)
 	if days, err := a.usage.Load(); err != nil {
@@ -577,11 +582,23 @@ func (a *App) pollPermissions() {
 			if a.refreshPermissions() {
 				a.updateTray()
 			}
-			if a.ime != nil {
-				a.state.InputMethod = a.ime.State()
-			}
+			a.refreshInputMethod()
 		})
 	}
+}
+
+func (a *App) refreshInputMethod() {
+	if a.ime != nil && !a.state.InputMethodInstalling {
+		a.setInputMethodState(a.ime.State())
+	}
+}
+
+func (a *App) setInputMethodState(state arion.InputMethodState) {
+	if a.state.InputMethod == state {
+		return
+	}
+	a.state.InputMethod = state
+	a.recordEntry(diagnostics.Entry{Event: "ime_source_state", Outcome: string(state)})
 }
 
 func (a *App) refreshDevicesAsync() {

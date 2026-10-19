@@ -25,9 +25,14 @@ type InputMethod interface {
 	ports.InputTarget
 	ports.CompositionTarget
 	Listen() error
+	Close()
 	State() runtime.InputMethodState
 	Install() error
+	OpenSettings() error
 	Remove() error
+	// ApplyKeyboard hands the keyboard preferences to the input method,
+	// which reads them when a client next activates it.
+	ApplyKeyboard(application.KeyboardPreferences) error
 }
 
 // Targets is a platform's editor capture and insertion adapter.

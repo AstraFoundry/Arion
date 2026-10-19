@@ -45,8 +45,11 @@ long arion_paste(const char *utf8);
 int arion_restore_clipboard(long owned_change);
 long arion_clipboard_change_count(void);
 int arion_ime_register(const char *bundle_path);
+int arion_ime_validate_payload(const char *bundle_path, const char *bundle_id);
+int arion_ime_bundle_matches(const char *bundle_path, const char *source_id);
 int arion_ime_enable(const char *source_id);
 int arion_ime_disable(const char *source_id);
 int arion_ime_state(const char *source_id);
+int arion_ime_open_settings(void);
 
 #endif

@@ -6,7 +6,7 @@ package macos
 
 /*
 #cgo CFLAGS: -x objective-c -fobjc-arc
-#cgo LDFLAGS: -framework Cocoa -framework ApplicationServices -framework AVFoundation -framework Carbon
+#cgo LDFLAGS: -framework Cocoa -framework ApplicationServices -framework AVFoundation -framework Carbon -framework Security
 #include <stdlib.h>
 #include "native.h"
 */

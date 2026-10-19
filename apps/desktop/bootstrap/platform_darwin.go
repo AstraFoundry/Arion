@@ -89,11 +89,17 @@ func (darwinPlatform) NewInputMethod(onLeave func()) InputMethod {
 	return darwinIME{macos.NewIME(macos.DefaultIMESocket(), onLeave)}
 }
 
+func (darwinIME) ApplyKeyboard(k application.KeyboardPreferences) error {
+	return macos.WriteKeyboardSettings(k)
+}
+
 func (darwinIME) State() runtime.InputMethodState {
 	switch macos.QueryIME() {
 	case macos.IMESelected:
 		return runtime.InputMethodSelected
-	case macos.IMEEnabled, macos.IMERegistered:
+	case macos.IMECopied, macos.IMERegistered:
+		return runtime.InputMethodPending
+	case macos.IMEEnabled:
 		return runtime.InputMethodInstalled
 	}
 	return runtime.InputMethodAbsent
@@ -109,3 +115,5 @@ func (darwinIME) Install() error {
 }
 
 func (darwinIME) Remove() error { return macos.RemoveIME() }
+
+func (darwinIME) OpenSettings() error { return macos.OpenIMEKeyboardSettings() }

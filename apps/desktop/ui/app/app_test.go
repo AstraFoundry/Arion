@@ -14,6 +14,7 @@ import (
 
 	diagnosticui "arion.local/desktop/ui/features/diagnostics"
 	"arion.local/desktop/ui/features/holdkey"
+	keyboardui "arion.local/desktop/ui/features/keyboard"
 	"arion.local/desktop/ui/pages/guide"
 	"arion.local/desktop/ui/pages/menubar"
 	"arion.local/desktop/ui/pages/onboarding"
@@ -81,6 +82,7 @@ func (r *recorder) InstallInputMethod() error {
 	r.state.InputMethod = runtime.InputMethodInstalled
 	return nil
 }
+func (r *recorder) OpenInputMethodSettings() error { r.call("ime-settings"); return nil }
 func (r *recorder) RemoveInputMethod() error {
 	r.call("remove-ime")
 	r.state.InputMethod = runtime.InputMethodAbsent
@@ -130,7 +132,8 @@ func fixture() (*runtime.State, *recorder, runtime.Store) {
 	state := &runtime.State{
 		Version:     "0.1.0",
 		Permissions: runtime.Permissions{Microphone: runtime.ConsentGranted, Accessibility: runtime.ConsentGranted},
-		Preferences: runtime.Preferences{Mode: runtime.ModeShortcut, Shortcut: "Alt+Space", Delivery: runtime.DeliveryAutomatic, RemoveFillers: true, Sounds: true, CheckUpdates: true},
+		Preferences: runtime.Preferences{Mode: runtime.ModeShortcut, Shortcut: "Alt+Space", Delivery: runtime.DeliveryAutomatic, RemoveFillers: true, Sounds: true, CheckUpdates: true,
+			Keyboard: runtime.KeyboardPreferences{PageSize: 9, CandidateSize: runtime.CandidateMedium, Appearance: runtime.AppearanceSystem, ContextRanking: true}},
 		InputMethod: runtime.InputMethodAbsent,
 		Account:     runtime.Account{Phase: runtime.AccountSignedOut, Issuer: "https://astrafoundry.si", Portal: "https://astrafoundry.si/account"},
 		Shortcut:    runtime.Shortcut{Accelerator: "Alt+Space", Registered: true},
@@ -375,9 +378,27 @@ func TestSettingsSections(t *testing.T) {
 		t.Fatalf("modifier rule not shown: %q", tt.Texts())
 	}
 	snapshot(t, tt, "settings-dictation-recording")
-	// The input method is installed on request, then chosen as the mode.
+	// Dictation chooses the input-method route; installing the input method
+	// belongs to Keyboard, which the route points to until it is ready.
 	state.InputMethod = runtime.InputMethodAbsent
 	settle(tt)
+	if hasText(tt, copy.For(copy.English).Text(copy.IMEInstall)) {
+		t.Fatalf("dictation still installs the keyboard: %q", tt.Texts())
+	}
+	if err := tt.Click(copy.For(copy.English).Text(copy.ModeIME)); err != nil {
+		t.Fatal(err)
+	}
+	settle(tt)
+	if state.Preferences.Mode != runtime.ModeSystemIME || !hasText(tt, copy.For(copy.English).Text(copy.ModeIMENeedsKeyboard)) {
+		t.Fatalf("mode %v without keyboard pointer: %q", state.Preferences.Mode, tt.Texts())
+	}
+	if err := tt.Click(copy.For(copy.English).Text(copy.ModeIMEOpenKeyboard)); err != nil {
+		t.Fatal(err)
+	}
+	settle(tt)
+	if page.Section != settings.Keyboard {
+		t.Fatalf("pointer opened %s", page.Section)
+	}
 	if err := tt.Click(copy.For(copy.English).Text(copy.IMEInstall)); err != nil {
 		t.Fatal(err)
 	}
@@ -385,12 +406,12 @@ func TestSettingsSections(t *testing.T) {
 	if !actions.called("install-ime") || !hasText(tt, copy.For(copy.English).Text(copy.IMEInstalled)) {
 		t.Fatalf("input method install: %v %q", actions.calls, tt.Texts())
 	}
-	if err := tt.Click(copy.For(copy.English).Text(copy.ModeIME)); err != nil {
+	if err := tt.Click(copy.For(copy.English).Text(copy.NavDictation)); err != nil {
 		t.Fatal(err)
 	}
 	settle(tt)
-	if state.Preferences.Mode != runtime.ModeSystemIME {
-		t.Fatalf("mode not changed: %v", state.Preferences.Mode)
+	if hasText(tt, copy.For(copy.English).Text(copy.ModeIMENeedsKeyboard)) {
+		t.Fatalf("ready input method still points to Keyboard: %q", tt.Texts())
 	}
 	snapshot(t, tt, "settings-dictation-input-method")
 	if hasText(tt, copy.For(copy.English).Text(copy.DeliveryClipboard)) {
@@ -1119,5 +1140,99 @@ func TestAboutDiagnosticExport(t *testing.T) {
 			}
 			snapshot(t, card, "diagnostics-"+string(locale)+"-"+string(phase))
 		}
+	}
+}
+
+func TestInputMethodSetupStates(t *testing.T) {
+	for _, language := range []runtime.UILanguage{runtime.LanguageEnglish, runtime.LanguageChinese} {
+		t.Run(string(language), func(t *testing.T) {
+			state, actions, store := fixture()
+			state.Preferences.UILanguage = language
+			state.InputMethod = runtime.InputMethodPending
+			viewState := &keyboardui.State{}
+			tt := ui.NewTester(func(c *ui.Context) {
+				ui.Column(c).Padding(16).Gap(12).Children(func() {
+					keyboardui.Source(c, store, theme.Apply(c), viewState)
+				})
+			}, 620, 440)
+			settle(tt)
+			messages := store.Copy()
+			if !hasText(tt, messages.Text(copy.IMEPending)) || !hasText(tt, messages.Text(copy.IMESetupHint)) || hasText(tt, messages.Text(copy.IMEInstalled)) {
+				t.Fatalf("pending source misreported: %q", tt.Texts())
+			}
+			if err := tt.Click(messages.Text(copy.IMESetup)); err != nil {
+				t.Fatal(err)
+			}
+			settle(tt)
+			if !actions.called("ime-settings") {
+				t.Fatal("setup did not open system settings")
+			}
+			snapshot(t, tt, "input-method-pending-"+string(language))
+			state.InputMethodInstalling = true
+			settle(tt)
+			if !hasText(tt, messages.Text(copy.IMEInstalling)) || hasText(tt, messages.Text(copy.IMESetup)) || hasText(tt, messages.Text(copy.IMERemove)) {
+				t.Fatalf("busy source exposes competing actions: %q", tt.Texts())
+			}
+			state.InputMethodInstalling = false
+			state.InputMethod = runtime.InputMethodAbsent
+			state.InputMethodError = copy.IMEFailed
+			settle(tt)
+			if !hasText(tt, messages.Text(copy.IMEFailed)) || !hasText(tt, messages.Text(copy.IMEInstall)) {
+				t.Fatalf("failure lost retry: %q", tt.Texts())
+			}
+		})
+	}
+}
+
+func TestKeyboardSettings(t *testing.T) {
+	for _, language := range []runtime.UILanguage{runtime.LanguageEnglish, runtime.LanguageChinese} {
+		t.Run(string(language), func(t *testing.T) {
+			state, _, store := fixture()
+			state.Preferences.UILanguage = language
+			state.InputMethod = runtime.InputMethodSelected
+			messages := store.Copy()
+			page := settings.NewPage()
+			page.Section = settings.Keyboard
+			tt := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, SettingsWidth, SettingsHeight)
+			settle(tt)
+			for _, key := range []copy.Key{copy.IMESelected, copy.KbdPageSize, copy.KbdCandidateSize, copy.KbdAppearance,
+				copy.KbdContextRanking, copy.KbdSwitchLanguage} {
+				if !hasText(tt, messages.Text(key)) {
+					t.Fatalf("keyboard section missing %s: %q", key, tt.Texts())
+				}
+			}
+			snapshot(t, tt, "settings-keyboard-"+string(language))
+			if err := tt.Click("9"); err != nil {
+				t.Fatal(err)
+			}
+			settle(tt)
+			if err := tt.Click("6"); err != nil {
+				t.Fatal(err)
+			}
+			settle(tt)
+			if state.Preferences.Keyboard.PageSize != 6 {
+				t.Fatalf("page size not chosen: %+v", state.Preferences.Keyboard)
+			}
+			if err := tt.Click(messages.Text(copy.KbdSizeMedium)); err != nil {
+				t.Fatal(err)
+			}
+			settle(tt)
+			if err := tt.Click(messages.Text(copy.KbdSizeLarge)); err != nil {
+				t.Fatal(err)
+			}
+			settle(tt)
+			if state.Preferences.Keyboard.CandidateSize != runtime.CandidateLarge {
+				t.Fatalf("size not chosen: %+v", state.Preferences.Keyboard)
+			}
+		})
+	}
+	// Without an input method on this system the section is not offered.
+	state, _, store := fixture()
+	state.InputMethod = runtime.InputMethodUnsupported
+	page := settings.NewPage()
+	tt := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, SettingsWidth, SettingsHeight)
+	settle(tt)
+	if hasText(tt, copy.For(copy.English).Text(copy.NavKeyboard)) {
+		t.Fatalf("unsupported system offers Keyboard: %q", tt.Texts())
 	}
 }

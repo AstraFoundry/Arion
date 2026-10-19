@@ -4,6 +4,7 @@
 #import <ApplicationServices/ApplicationServices.h>
 #import <Carbon/Carbon.h>
 #import <Cocoa/Cocoa.h>
+#import <Security/Security.h>
 #include "native.h"
 
 int arion_mic_status(void) {
@@ -313,38 +314,194 @@ static TISInputSourceRef arion_find_source(const char *source_id) {
     return source;
 }
 
-int arion_ime_register(const char *bundle_path) {
+int arion_ime_bundle_matches(const char *bundle_path, const char *source_id) {
     @autoreleasepool {
-        NSURL *url = [NSURL fileURLWithPath:[NSString stringWithUTF8String:bundle_path]];
-        return (int)TISRegisterInputSource((__bridge CFURLRef)url);
+        NSString *path = [NSString stringWithUTF8String:bundle_path];
+        NSData *data = [NSData dataWithContentsOfFile:[path stringByAppendingPathComponent:@"Contents/Info.plist"]];
+        if (!data) return 0;
+        id plist = [NSPropertyListSerialization propertyListWithData:data options:0 format:NULL error:NULL];
+        if (![plist isKindOfClass:NSDictionary.class]) return 0;
+        NSString *identifier = [NSString stringWithUTF8String:source_id];
+        id component = plist[@"ComponentInputModeDict"];
+        if (![component isKindOfClass:NSDictionary.class]) return 0;
+        id modes = component[@"tsInputModeListKey"];
+        if (![modes isKindOfClass:NSDictionary.class]) return 0;
+        id mode = modes[identifier];
+        return [mode isKindOfClass:NSDictionary.class] && [mode[@"TISInputSourceID"] isEqual:identifier];
     }
 }
 
+// This validates Developer ID and entitlement consistency, not a fixed
+// publisher. Release packaging owns publisher/profile authorization checks.
+int arion_ime_validate_payload(const char *bundle_path, const char *bundle_id) {
+    @autoreleasepool {
+        NSURL *url = [NSURL fileURLWithPath:[NSString stringWithUTF8String:bundle_path]];
+        NSString *identifier = [NSString stringWithUTF8String:bundle_id];
+        NSCharacterSet *invalidIdentifier = [[NSCharacterSet characterSetWithCharactersInString:@"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.-"] invertedSet];
+        if (identifier.length == 0 || [identifier rangeOfCharacterFromSet:invalidIdentifier].location != NSNotFound) return errSecParam;
+        SecStaticCodeRef code = NULL;
+        OSStatus status = SecStaticCodeCreateWithPath((__bridge CFURLRef)url, kSecCSDefaultFlags, &code);
+        if (status != errSecSuccess) return (int)status;
+        SecRequirementRef requirement = NULL;
+        @try {
+            NSString *rule = [NSString stringWithFormat:@"identifier \"%@\" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] exists and certificate leaf[field.1.2.840.113635.100.6.1.13] exists", identifier];
+            status = SecRequirementCreateWithString((__bridge CFStringRef)rule, kSecCSDefaultFlags, &requirement);
+            if (status != errSecSuccess) return (int)status;
+            status = SecStaticCodeCheckValidity(code, kSecCSStrictValidate | kSecCSCheckAllArchitectures | kSecCSCheckNestedCode, requirement);
+            if (status != errSecSuccess) return (int)status;
+            CFDictionaryRef info = NULL;
+            status = SecCodeCopySigningInformation(code, kSecCSSigningInformation, &info);
+            if (status != errSecSuccess) return (int)status;
+            NSDictionary *signing = CFBridgingRelease(info);
+            NSString *team = signing[(__bridge id)kSecCodeInfoTeamIdentifier];
+            NSDictionary *entitlements = signing[(__bridge id)kSecCodeInfoEntitlementsDict];
+            if (![team isKindOfClass:NSString.class] || team.length == 0 ||
+                ![signing[(__bridge id)kSecCodeInfoIdentifier] isEqual:identifier] ||
+                ![entitlements isKindOfClass:NSDictionary.class] ||
+                ![entitlements[@"com.apple.developer.team-identifier"] isEqual:team] ||
+                ![entitlements[@"com.apple.application-identifier"] isEqual:[NSString stringWithFormat:@"%@.%@", team, identifier]]) return errSecCSReqFailed;
+            // An explicit earlier group would change the default DP key group.
+            id groups = entitlements[@"keychain-access-groups"];
+            if (groups && ![groups isEqual:@[[NSString stringWithFormat:@"%@.%@", team, identifier]]]) return errSecCSReqFailed;
+            NSString *metadata = [[url URLByAppendingPathComponent:@"Contents/Info.plist"] path];
+            NSDictionary *plist = [NSDictionary dictionaryWithContentsOfFile:metadata];
+            if (![plist[@"CFBundleIdentifier"] isEqual:identifier]) return errSecCSReqFailed;
+            NSURL *profile = [url URLByAppendingPathComponent:@"Contents/embedded.provisionprofile"];
+            NSNumber *regular = nil;
+            if (![profile getResourceValue:&regular forKey:NSURLIsRegularFileKey error:nil] || !regular.boolValue ||
+                [[NSFileManager.defaultManager attributesOfItemAtPath:profile.path error:nil][NSFileSize] unsignedLongLongValue] == 0) return errSecCSReqFailed;
+            return errSecSuccess;
+        } @finally {
+            if (requirement) CFRelease(requirement);
+            CFRelease(code);
+        }
+    }
+}
+
+// TextInputSources.h requires UI applications to call TIS on the main
+// thread. Installation copies files on a worker; marshal only native work.
+// Non-UI command-line clients may use TIS from serialized worker threads.
+static int arion_ime_on_main(int (^operation)(void)) {
+    if (!NSApp) {
+        static NSRecursiveLock *lock;
+        static dispatch_once_t once;
+        dispatch_once(&once, ^{ lock = [NSRecursiveLock new]; });
+        [lock lock];
+        @try { return operation(); }
+        @finally { [lock unlock]; }
+    }
+    if ([NSThread isMainThread]) return operation();
+    __block int result;
+    dispatch_sync(dispatch_get_main_queue(), ^{ result = operation(); });
+    return result;
+}
+
+int arion_ime_register(const char *bundle_path) {
+    return arion_ime_on_main(^int(void) {
+        @autoreleasepool {
+            NSURL *url = [NSURL fileURLWithPath:[NSString stringWithUTF8String:bundle_path]];
+            // Register the completed installed bundle before TIS resolves its ID.
+            // LaunchServices can otherwise retain a source-tree build in progress.
+            OSStatus status = LSRegisterURL((__bridge CFURLRef)url, true);
+            if (status != noErr) return (int)status;
+            return (int)TISRegisterInputSource((__bridge CFURLRef)url);
+        }
+    });
+}
+
+// Input modes may retain an enabled flag while their parent is disabled.
+// The Text Input Sources contract requires enabling the parent first.
+static TISInputSourceRef arion_ime_parent(TISInputSourceRef source) {
+    CFStringRef type = TISGetInputSourceProperty(source, kTISPropertyInputSourceType);
+    if (!type || !CFEqual(type, kTISTypeKeyboardInputMode)) return NULL;
+    CFStringRef bundle = TISGetInputSourceProperty(source, kTISPropertyBundleID);
+    if (!bundle) return NULL;
+    return arion_find_source([(__bridge NSString *)bundle UTF8String]);
+}
+
 int arion_ime_enable(const char *source_id) {
-    TISInputSourceRef source = arion_find_source(source_id);
-    if (!source) return -1;
-    OSStatus status = TISEnableInputSource(source);
-    CFRelease(source);
-    return (int)status;
+    return arion_ime_on_main(^int(void) {
+        TISInputSourceRef source = arion_find_source(source_id);
+        if (!source) return -1;
+        TISInputSourceRef parent = arion_ime_parent(source);
+        CFStringRef type = TISGetInputSourceProperty(source, kTISPropertyInputSourceType);
+        if (type && CFEqual(type, kTISTypeKeyboardInputMode) && !parent) {
+            CFRelease(source);
+            return -1;
+        }
+        OSStatus status = parent ? TISEnableInputSource(parent) : noErr;
+        if (status == noErr) status = TISEnableInputSource(source);
+        if (parent) CFRelease(parent);
+        CFRelease(source);
+        return (int)status;
+    });
 }
 
 int arion_ime_disable(const char *source_id) {
-    TISInputSourceRef source = arion_find_source(source_id);
-    if (!source) return 0;
-    OSStatus status = TISDisableInputSource(source);
-    CFRelease(source);
-    return (int)status;
+    return arion_ime_on_main(^int(void) {
+        TISInputSourceRef source = arion_find_source(source_id);
+        if (!source) return 0;
+        OSStatus status = noErr;
+        CFBooleanRef selected = TISGetInputSourceProperty(source, kTISPropertyInputSourceIsSelected);
+        if (selected && CFBooleanGetValue(selected)) {
+            // Select an existing ASCII keyboard layout before disabling this IME.
+            // Failure leaves the installed source available and is returned to Go.
+            TISInputSourceRef replacement = TISCopyCurrentASCIICapableKeyboardLayoutInputSource();
+            if (!replacement) {
+                CFRelease(source);
+                return paramErr;
+            }
+            CFStringRef replacementID = TISGetInputSourceProperty(replacement, kTISPropertyInputSourceID);
+            CFStringRef sourceID = TISGetInputSourceProperty(source, kTISPropertyInputSourceID);
+            status = (!replacementID || !sourceID || CFEqual(replacementID, sourceID))
+                ? paramErr : TISSelectInputSource(replacement);
+            CFRelease(replacement);
+            if (status != noErr) {
+                CFRelease(source);
+                return (int)status;
+            }
+            TISInputSourceRef current = TISCopyCurrentKeyboardInputSource();
+            CFStringRef currentID = current ? TISGetInputSourceProperty(current, kTISPropertyInputSourceID) : NULL;
+            BOOL moved = currentID && !CFEqual(currentID, sourceID);
+            if (current) CFRelease(current);
+            if (!moved) {
+                CFRelease(source);
+                return paramErr;
+            }
+        }
+        CFBooleanRef enabled = TISGetInputSourceProperty(source, kTISPropertyInputSourceIsEnabled);
+        if (enabled && CFBooleanGetValue(enabled)) status = TISDisableInputSource(source);
+        TISInputSourceRef parent = arion_ime_parent(source);
+        if (status == noErr && parent) status = TISDisableInputSource(parent);
+        if (parent) CFRelease(parent);
+        CFRelease(source);
+        return (int)status;
+    });
 }
 
 // arion_ime_state: 0 absent, 1 registered, 2 enabled, 3 selected.
 int arion_ime_state(const char *source_id) {
-    TISInputSourceRef source = arion_find_source(source_id);
-    if (!source) return 0;
-    int state = 1;
-    CFBooleanRef enabled = TISGetInputSourceProperty(source, kTISPropertyInputSourceIsEnabled);
-    CFBooleanRef selected = TISGetInputSourceProperty(source, kTISPropertyInputSourceIsSelected);
-    if (enabled && CFBooleanGetValue(enabled)) state = 2;
-    if (selected && CFBooleanGetValue(selected)) state = 3;
-    CFRelease(source);
-    return state;
+    return arion_ime_on_main(^int(void) {
+        TISInputSourceRef source = arion_find_source(source_id);
+        if (!source) return 0;
+        int state = 1;
+        CFBooleanRef enabled = TISGetInputSourceProperty(source, kTISPropertyInputSourceIsEnabled);
+        CFBooleanRef selected = TISGetInputSourceProperty(source, kTISPropertyInputSourceIsSelected);
+        TISInputSourceRef parent = arion_ime_parent(source);
+        CFBooleanRef parentEnabled = parent ? TISGetInputSourceProperty(parent, kTISPropertyInputSourceIsEnabled) : NULL;
+        if (enabled && CFBooleanGetValue(enabled) && (!parent || (parentEnabled && CFBooleanGetValue(parentEnabled)))) state = 2;
+        if (parent) CFRelease(parent);
+        if (selected && CFBooleanGetValue(selected)) state = 3;
+        CFRelease(source);
+        return state;
+    });
+}
+
+int arion_ime_open_settings(void) {
+    return arion_ime_on_main(^int(void) {
+        @autoreleasepool {
+            NSURL *target = [NSURL URLWithString:@"x-apple.systempreferences:com.apple.preference.keyboard?InputSources"];
+            return [[NSWorkspace sharedWorkspace] openURL:target] ? 1 : 0;
+        }
+    });
 }

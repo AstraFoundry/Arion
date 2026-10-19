@@ -15,17 +15,20 @@ import (
 
 // Re-exported core types so UI slices depend on this boundary only.
 type (
-	SessionMode   = domain.InputMode
-	SessionState  = domain.SessionState
-	ErrorCode     = domain.ErrorCode
-	CommitOutcome = contracts.CommitOutcome
-	Preferences   = application.Preferences
-	Delivery      = application.Delivery
-	UILanguage    = application.UILanguage
-	HoldKey       = application.HoldKey
-	Usage         = domain.Usage
-	UsageLog      = domain.UsageLog
-	UsageDay      = domain.UsageDay
+	SessionMode         = domain.InputMode
+	SessionState        = domain.SessionState
+	ErrorCode           = domain.ErrorCode
+	CommitOutcome       = contracts.CommitOutcome
+	Preferences         = application.Preferences
+	Delivery            = application.Delivery
+	UILanguage          = application.UILanguage
+	HoldKey             = application.HoldKey
+	KeyboardPreferences = application.KeyboardPreferences
+	CandidateSize       = application.CandidateSize
+	CandidateAppearance = application.CandidateAppearance
+	Usage               = domain.Usage
+	UsageLog            = domain.UsageLog
+	UsageDay            = domain.UsageDay
 )
 
 const (
@@ -65,6 +68,18 @@ func HoldKeysFor(platform string) []HoldKey { return application.HoldKeysFor(pla
 // GainStops are the selectable microphone gains, GainStep dB apart, and
 // the speaking distances they suit.
 var GainStops = application.GainStops
+
+// Keyboard choices.
+var CandidatePageSizes = application.CandidatePageSizes
+
+const (
+	CandidateSmall   = application.CandidateSmall
+	CandidateMedium  = application.CandidateMedium
+	CandidateLarge   = application.CandidateLarge
+	AppearanceSystem = application.AppearanceSystem
+	AppearanceLight  = application.AppearanceLight
+	AppearanceDark   = application.AppearanceDark
+)
 
 const GainStep = application.GainStep
 
@@ -250,6 +265,7 @@ type InputMethodState string
 const (
 	InputMethodUnsupported InputMethodState = "unsupported"
 	InputMethodAbsent      InputMethodState = "absent"
+	InputMethodPending     InputMethodState = "pending"
 	InputMethodInstalled   InputMethodState = "installed"
 	InputMethodSelected    InputMethodState = "selected"
 )
@@ -364,11 +380,13 @@ type State struct {
 	// undo until it expires.
 	Learned Learned
 	// Usage is the per-day dictation counts, oldest first.
-	Usage       UsageLog
-	Shortcut    Shortcut
-	InputMethod InputMethodState
-	Guide       Guide
-	Update      Update
+	Usage                 UsageLog
+	Shortcut              Shortcut
+	InputMethod           InputMethodState
+	InputMethodInstalling bool
+	InputMethodError      copy.Key
+	Guide                 Guide
+	Update                Update
 	// Focus is the settings section last asked for from outside settings.
 	Focus SettingsFocus
 	// MonitorLevels feed the microphone test meter, newest last.
@@ -416,6 +434,7 @@ type Actions interface {
 	StartLevelMonitor()
 	StopLevelMonitor()
 	InstallInputMethod() error
+	OpenInputMethodSettings() error
 	RemoveInputMethod() error
 	AddReplacement(from, to string) error
 	RemoveReplacement(id string)

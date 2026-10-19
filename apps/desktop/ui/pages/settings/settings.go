@@ -6,6 +6,7 @@ import (
 	"arion.local/desktop/ui/features/diagnostics"
 	"arion.local/desktop/ui/features/holdkey"
 	"arion.local/desktop/ui/features/inputmode"
+	"arion.local/desktop/ui/features/keyboard"
 	"arion.local/desktop/ui/features/microphone"
 	"arion.local/desktop/ui/features/modelchoice"
 	"arion.local/desktop/ui/features/permissions"
@@ -33,6 +34,7 @@ const (
 	Overview   = "overview"
 	General    = "general"
 	Dictation  = "dictation"
+	Keyboard   = "keyboard"
 	Microphone = "microphone"
 	Model      = "model"
 	Vocabulary = "vocabulary"
@@ -48,6 +50,7 @@ type Page struct {
 	draft      vocabulary.Draft
 	delivery   runtime.Delivery
 	mode       inputmode.State
+	keyboard   keyboard.State
 	focus      int
 	usage      usage.State
 	// shown is the section drawn last, so entering one can replay its
@@ -131,7 +134,7 @@ func (p *Page) Close(store runtime.Store) {
 }
 
 func title(section string, messages copy.Catalog) string {
-	return map[string]string{Overview: messages.Text(copy.NavOverview), General: messages.Text(copy.NavGeneral), Dictation: messages.Text(copy.NavDictation), Microphone: messages.Text(copy.NavMicrophone),
+	return map[string]string{Overview: messages.Text(copy.NavOverview), General: messages.Text(copy.NavGeneral), Dictation: messages.Text(copy.NavDictation), Keyboard: messages.Text(copy.NavKeyboard), Microphone: messages.Text(copy.NavMicrophone),
 		Model: messages.Text(copy.NavModel), Vocabulary: messages.Text(copy.NavVocabulary), Account: messages.Text(copy.NavAccount), About: messages.Text(copy.NavAbout)}[section]
 }
 
@@ -184,7 +187,9 @@ func (p *Page) section(c *ui.Context, store runtime.Store, tokens theme.Tokens) 
 			})
 			holdkey.Notes(c, store, tokens)
 		})
-		kit.Group(c, tokens, messages.Text(copy.ModeLabel), func() { inputmode.Choice(c, store, tokens, &p.mode) })
+		kit.Group(c, tokens, messages.Text(copy.ModeLabel), func() {
+			inputmode.Choice(c, store, tokens, &p.mode, keyboard.Ready(store), func() { p.Section = Keyboard })
+		})
 		// Insertion routes apply to shortcut mode; the input method commits
 		// through the OS input-method protocol.
 		if prefs.Mode == runtime.ModeShortcut {
@@ -198,6 +203,11 @@ func (p *Page) section(c *ui.Context, store runtime.Store, tokens theme.Tokens) 
 				}
 			})
 		})
+	case Keyboard:
+		kit.Group(c, tokens, "", func() { keyboard.Source(c, store, tokens, &p.keyboard) })
+		kit.Group(c, tokens, messages.Text(copy.KbdCandidatesGroup), func() { keyboard.Candidates(c, store, tokens) })
+		kit.Group(c, tokens, messages.Text(copy.KbdSmartGroup), func() { keyboard.Smart(c, store, tokens) })
+		kit.Group(c, tokens, messages.Text(copy.KbdKeysGroup), func() { keyboard.Keys(c, store, tokens) })
 	case Microphone:
 		kit.Card(c, tokens).Children(func() {
 			kit.Row(c, tokens, messages.Text(copy.MicDevice), "", func() { microphone.Picker(c, store) })
@@ -345,7 +355,10 @@ func (p *Page) nav(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 	ui.Sidebar(c.Key("nav"), &p.Section, func() {
 		ui.SidebarItem(c, Overview, icons.ChartLine, messages.Text(copy.NavOverview))
 		ui.SidebarItem(c, General, icons.Settings, messages.Text(copy.NavGeneral))
-		ui.SidebarItem(c, Dictation, icons.Keyboard, messages.Text(copy.NavDictation))
+		ui.SidebarItem(c, Dictation, icons.AudioLines, messages.Text(copy.NavDictation))
+		if keyboard.Supported(store) {
+			ui.SidebarItem(c, Keyboard, icons.Keyboard, messages.Text(copy.NavKeyboard))
+		}
 		ui.SidebarItem(c, Microphone, icons.Mic, messages.Text(copy.NavMicrophone))
 		ui.SidebarItem(c, Model, icons.Cpu, messages.Text(copy.NavModel))
 		ui.SidebarItem(c, Vocabulary, icons.BookOpen, messages.Text(copy.NavVocabulary))

@@ -63,8 +63,10 @@ static NSTextView *makeEditor(NSRect frame, NSString *name) {
     NSResponder *first = self.window.firstResponder;
     NSString *focused = first == self.editorA ? @"A" : first == self.editorB ? @"B" : (first == self.secure || first == self.secure.currentEditor) ? @"secure" : @"";
     return @{
-        @"A": @{@"text": self.editorA.string, @"edits": @(self.editsA), @"selection": @[@(a.location), @(a.length)]},
-        @"B": @{@"text": self.editorB.string, @"edits": @(self.editsB), @"selection": @[@(b.location), @(b.length)]},
+        @"A": @{@"text": self.editorA.string, @"edits": @(self.editsA), @"selection": @[@(a.location), @(a.length)],
+                 @"marked": @(self.editorA.hasMarkedText), @"markedRange": self.editorA.hasMarkedText ? @[@(self.editorA.markedRange.location), @(self.editorA.markedRange.length)] : @[]},
+        @"B": @{@"text": self.editorB.string, @"edits": @(self.editsB), @"selection": @[@(b.location), @(b.length)],
+                 @"marked": @(self.editorB.hasMarkedText), @"markedRange": self.editorB.hasMarkedText ? @[@(self.editorB.markedRange.location), @(self.editorB.markedRange.length)] : @[]},
         @"secure": @{@"length": @(self.secure.stringValue.length)},
         @"focused": focused,
         @"active": @(NSApp.isActive),

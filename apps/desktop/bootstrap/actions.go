@@ -7,6 +7,7 @@ import (
 	"arion.local/core/application"
 	"arion.local/core/domain"
 	"arion.local/desktop/ui/pages/settings"
+	"arion.local/desktop/ui/shared/copy"
 	arion "arion.local/desktop/ui/shared/runtime"
 	"github.com/egoist/mygo"
 )
@@ -80,6 +81,11 @@ func (x actions) UpdatePreferences(change func(*application.Preferences)) {
 	}
 	if next.MicrophoneGain != before.MicrophoneGain {
 		a.mic.SetGain(next.MicrophoneGain)
+	}
+	if next.Keyboard != before.Keyboard && a.ime != nil {
+		if err := a.ime.ApplyKeyboard(next.Keyboard); err != nil {
+			a.record("keyboard_settings", err)
+		}
 	}
 	if next.Mode != before.Mode {
 		a.core.SetMode(next.Mode)
@@ -155,13 +161,49 @@ func (x actions) SuspendShortcut(suspend bool) {
 	}
 }
 
-// InstallInputMethod installs Arion's input source at the user's request.
+// InstallInputMethod starts installation and publishes completion on the UI thread.
 func (x actions) InstallInputMethod() error {
 	if x.a.ime == nil {
 		return errInputMethodUnsupported
 	}
-	err := x.a.ime.Install()
-	x.a.state.InputMethod = x.a.ime.State()
+	a := x.a
+	if a.state.InputMethodInstalling {
+		return nil
+	}
+	a.state.InputMethodInstalling = true
+	a.state.InputMethodError = ""
+	a.record("ime_install_started", nil)
+	go func() {
+		err := a.ime.Install()
+		state := a.ime.State()
+		a.post(func() {
+			a.state.InputMethodInstalling = false
+			a.setInputMethodState(state)
+			if err != nil {
+				a.state.InputMethodError = copy.IMEFailed
+				if domain.CodeOf(err) == domain.CodeArtifactUnverified {
+					a.state.InputMethodError = copy.IMEPackageUnverified
+				}
+				a.record("ime_install_failed", err)
+			} else if state == arion.InputMethodPending {
+				a.record("ime_install_pending", nil)
+			} else {
+				a.record("ime_install_completed", nil)
+			}
+		})
+	}()
+	return nil
+}
+
+func (x actions) OpenInputMethodSettings() error {
+	if x.a.ime == nil {
+		return errInputMethodUnsupported
+	}
+	err := x.a.ime.OpenSettings()
+	x.a.record("ime_settings_open", err)
+	if err == nil {
+		x.a.state.InputMethodError = ""
+	}
 	return err
 }
 
@@ -170,9 +212,14 @@ func (x actions) RemoveInputMethod() error {
 	if x.a.ime == nil {
 		return errInputMethodUnsupported
 	}
+	if x.a.state.InputMethodInstalling {
+		return nil
+	}
+	x.a.state.InputMethodError = ""
 	err := x.a.ime.Remove()
+	x.a.record("ime_remove", err)
 	x.a.state.InputMethod = x.a.ime.State()
-	if x.a.state.Preferences.Mode == arion.ModeSystemIME {
+	if err == nil && x.a.state.Preferences.Mode == arion.ModeSystemIME {
 		x.UpdatePreferences(func(p *application.Preferences) { p.Mode = arion.ModeShortcut })
 	}
 	return err

@@ -1,5 +1,6 @@
-// Package inputmode chooses shortcut or system input-method dictation and
-// installs Arion's input source on request (DSK-01, IME-01).
+// Package inputmode chooses how dictation reaches the field: the shortcut
+// route or the system input method (DSK-01, IME-01). Installing the input
+// method belongs to the keyboard settings.
 package inputmode
 
 import (
@@ -12,12 +13,12 @@ import (
 
 // State is the choice's own view state.
 type State struct {
-	mode  runtime.SessionMode
-	Error copy.Key
+	mode runtime.SessionMode
 }
 
-// Choice draws the two modes and, for the input method, its installation.
-func Choice(c *ui.Context, store runtime.Store, tokens theme.Tokens, state *State) {
+// Choice draws the two modes. While the input method mode is chosen but its
+// input source is not ready, it points to where it is installed.
+func Choice(c *ui.Context, store runtime.Store, tokens theme.Tokens, state *State, imeReady bool, openKeyboard func()) {
 	messages := store.Copy()
 	s := store.State
 	state.mode = s.Preferences.Mode
@@ -42,39 +43,13 @@ func Choice(c *ui.Context, store runtime.Store, tokens theme.Tokens, state *Stat
 				})
 			}
 		})
-		kit.Divider(c, tokens)
-		kit.Row(c, tokens, messages.Text(copy.IMEName), messages.Text(status(s.InputMethod)), func() {
-			switch s.InputMethod {
-			case runtime.InputMethodAbsent:
-				if kit.Button(c.Key("install"), tokens, kit.Outline, messages.Text(copy.IMEInstall), true).Clicked() {
-					state.Error = ""
-					if store.Actions.InstallInputMethod() != nil {
-						state.Error = copy.IMEFailed
-					}
+		if s.Preferences.Mode == runtime.ModeSystemIME && supported && !imeReady {
+			kit.Divider(c, tokens)
+			kit.Row(c, tokens, messages.Text(copy.ModeIMENeedsKeyboard), "", func() {
+				if kit.Button(c.Key("open-keyboard"), tokens, kit.Outline, messages.Text(copy.ModeIMEOpenKeyboard), true).Clicked() {
+					openKeyboard()
 				}
-			case runtime.InputMethodInstalled, runtime.InputMethodSelected:
-				if kit.Button(c.Key("remove"), tokens, kit.Outline, messages.Text(copy.IMERemove), true).Clicked() {
-					state.Error = ""
-					if store.Actions.RemoveInputMethod() != nil {
-						state.Error = copy.IMERemoveFailed
-					}
-				}
-			}
-		})
+			})
+		}
 	})
-	if state.Error != "" {
-		ui.Text(c, messages.Text(state.Error)).FontSize(theme.Caption).TextColor(tokens.Danger)
-	}
-}
-
-func status(s runtime.InputMethodState) copy.Key {
-	switch s {
-	case runtime.InputMethodAbsent:
-		return copy.IMEAbsent
-	case runtime.InputMethodInstalled:
-		return copy.IMEInstalled
-	case runtime.InputMethodSelected:
-		return copy.IMESelected
-	}
-	return copy.IMEUnsupported
 }
