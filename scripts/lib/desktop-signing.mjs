@@ -3,10 +3,14 @@ import { randomBytes } from 'node:crypto';
 import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { imeEntitlementsPath } from './ime-provisioning.mjs';
+
+const repository = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 
 const certificateVariables = ['MACOS_CERTIFICATE_P12_BASE64', 'MACOS_CERTIFICATE_PASSWORD'];
 const notaryVariables = ['APPLE_ID', 'APPLE_TEAM_ID', 'APPLE_APP_SPECIFIC_PASSWORD'];
-const signingVariables = ['MACOS_SIGNING_IDENTITY', 'MACOS_NOTARY_PROFILE', 'MACOS_NOTARY_KEYCHAIN', ...certificateVariables, ...notaryVariables];
+const signingVariables = ['MACOS_SIGNING_IDENTITY', 'MACOS_NOTARY_PROFILE', 'MACOS_NOTARY_KEYCHAIN', 'MACOS_IME_PROVISIONING_PROFILE', ...certificateVariables, ...notaryVariables];
 
 function requireGroup(env, names) {
   const present = names.filter(name => env[name]?.trim());
@@ -22,6 +26,8 @@ export function macosSigningSettings(env) {
   if (!/^Developer ID Application: .+ \([A-Z0-9]{10}\)$/.test(identity ?? '')) {
     throw new Error('MACOS_SIGNING_IDENTITY must be a full Developer ID Application identity, including its Team ID');
   }
+  const imeProvisioningProfile = env.MACOS_IME_PROVISIONING_PROFILE?.trim();
+  if (imeProvisioningProfile && !path.isAbsolute(imeProvisioningProfile)) throw new Error('MACOS_IME_PROVISIONING_PROFILE must be an absolute path.');
   const importCertificate = requireGroup(env, certificateVariables);
   if (importCertificate) certificateBytes(env.MACOS_CERTIFICATE_P12_BASE64);
   const storeCredentials = requireGroup(env, notaryVariables);
@@ -30,7 +36,7 @@ export function macosSigningSettings(env) {
   if (storeCredentials && !identity.endsWith(`(${env.APPLE_TEAM_ID.trim()})`)) throw new Error('Apple notarization Team ID does not match the signing identity');
   if (storeCredentials && env.MACOS_NOTARY_KEYCHAIN?.trim()) throw new Error('APPLE_* credentials create a temporary keychain; do not also set MACOS_NOTARY_KEYCHAIN');
   return {
-    identity, profile, keychain: env.MACOS_NOTARY_KEYCHAIN?.trim(),
+    identity, profile, imeProvisioningProfile, keychain: env.MACOS_NOTARY_KEYCHAIN?.trim(),
     certificate: importCertificate ? env.MACOS_CERTIFICATE_P12_BASE64 : undefined,
     certificatePassword: env.MACOS_CERTIFICATE_PASSWORD,
     appleId: storeCredentials ? env.APPLE_ID.trim() : undefined,
@@ -38,13 +44,18 @@ export function macosSigningSettings(env) {
   };
 }
 
+export function requireIMEProvisioningSettings(settings) {
+  if (settings && !settings.imeProvisioningProfile) throw new Error('MACOS_IME_PROVISIONING_PROFILE is required for signed desktop builds.');
+  return settings;
+}
+
 export function macosBuildConfig(config, { command, platform = process.platform, env = process.env }) {
   if (command !== 'build' || platform !== 'darwin') return config;
-  const settings = macosSigningSettings(env);
+  const settings = requireIMEProvisioningSettings(macosSigningSettings(env));
   if (!settings) return config;
   const notarize = { keychainProfile: settings.profile };
   if (settings.keychain) notarize.keychain = settings.keychain;
-  return { ...config, macos: { ...config.macos, signingIdentity: settings.identity, notarize } };
+  return { ...config, macos: { ...config.macos, signingIdentity: settings.identity, notarize, helperEntitlements: { ...config.macos?.helperEntitlements, 'ArionInput.app': imeEntitlementsPath(repository) } } };
 }
 
 // Never include child-process argv in errors: security/notarytool receive passwords.
@@ -114,6 +125,7 @@ export function prepareMacOSSigning(settings, { run, temporaryRoot = os.tmpdir()
       run('xcrun', ['notarytool', 'history', '--keychain-profile', settings.profile, ...keychainArgs, '--output-format', 'json']);
     }
     const env = { MACOS_SIGNING_IDENTITY: settings.identity, MACOS_NOTARY_PROFILE: settings.profile };
+    if (settings.imeProvisioningProfile) env.MACOS_IME_PROVISIONING_PROFILE = settings.imeProvisioningProfile;
     if (keychain) env.MACOS_NOTARY_KEYCHAIN = keychain;
     return { env, cleanup };
   } catch (error) {

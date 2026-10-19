@@ -6,6 +6,8 @@ import { fileURLToPath } from 'node:url';
 import { resolveCenter, centerFingerprint, isStandardCenter } from './lib/center-profile.mjs';
 import { macosSigningSettings } from './lib/desktop-signing.mjs';
 import { verifyMacOSDistribution } from './lib/verify-macos-distribution.mjs';
+import { verifyIMEProvisioning } from './lib/ime-provisioning.mjs';
+import { verifyKeyboardBundle } from './verify-keyboard-bundle.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const config = JSON.parse(readFileSync(path.join(root, 'apps/desktop/desktop.json'), 'utf8'));
@@ -24,7 +26,7 @@ const systemVersion = value => {
   return major * 1000000 + minor * 1000 + patch;
 };
 const binaries = goos === 'darwin'
-  ? [path.join(built, `${config.name}.app/Contents/MacOS/${config.name}`), path.join(resources, 'lib/libsherpa-onnx-c-api.dylib'), path.join(resources, 'lib/libonnxruntime.dylib'), path.join(resources, 'ArionInput.app/Contents/MacOS/ArionInput')]
+  ? [path.join(built, `${config.name}.app/Contents/MacOS/${config.name}`), path.join(resources, 'lib/libsherpa-onnx-c-api.dylib'), path.join(resources, 'lib/libonnxruntime.dylib'), path.join(resources, 'ArionInput.app/Contents/MacOS/ArionInput'), path.join(resources, 'ArionInput.app/Contents/Frameworks/librime.1.dylib')]
   : [path.join(built, `${config.name}.exe`), path.join(resources, 'sherpa-onnx-c-api.dll'), path.join(resources, 'onnxruntime.dll')];
 for (const file of ['Arion-LICENSE', 'model-catalog.json', 'go-modules.json']) requireFile(path.join(resources, 'licenses', file));
 const notices = JSON.parse(readFileSync(path.join(resources, 'licenses/go-modules.json'), 'utf8'));
@@ -58,16 +60,18 @@ for (const file of binaries) {
   }
 }
 if (goos === 'darwin') {
+  verifyKeyboardBundle({ root, bundle: path.join(resources, 'ArionInput.app') });
   const appPlist = path.join(built, `${config.name}.app/Contents/Info.plist`);
   const imePlist = path.join(resources, 'ArionInput.app/Contents/Info.plist');
   const field = (plist, name) => execFileSync('/usr/libexec/PlistBuddy', ['-c', `Print :${name}`, plist], { encoding: 'utf8' }).trim();
-  for (const [plist, identifier] of [[appPlist, config.identifier], [imePlist, `${config.identifier}.inputmethod`]]) {
+  for (const [plist, identifier] of [[appPlist, config.identifier], [imePlist, field(path.join(root, 'apps/desktop/ime/macos/Info.plist'), 'CFBundleIdentifier')]]) {
     if (field(plist, 'CFBundleIdentifier') !== identifier || field(plist, 'CFBundleShortVersionString') !== config.version.split('-')[0] || field(plist, 'LSMinimumSystemVersion') !== config.macos.minimumSystemVersion) throw new Error(`Package identity, version or minimum OS mismatch: ${plist}`);
   }
   for (const locale of ['en', 'zh-Hans']) requireFile(path.join(resources, `${locale}.lproj/InfoPlist.strings`));
   execFileSync(process.execPath, [path.join(root, 'scripts/verify-macos-app.mjs')], { stdio: 'inherit' });
   const signing = macosSigningSettings(process.env);
   if (signing) {
+    verifyIMEProvisioning({ bundle: path.join(resources, 'ArionInput.app'), identity: signing.identity });
     verifyMacOSDistribution({ directory: built, config, platform, binaries, identity: signing.identity, updates: Boolean(process.env.MYGO_UPDATER_PRIVATE_KEY) && isStandardCenter(expectedCenter) });
     console.log('Verified Developer ID signatures, hardened runtime, notarization tickets and Gatekeeper acceptance.');
   }

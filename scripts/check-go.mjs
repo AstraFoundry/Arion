@@ -36,3 +36,6 @@ for (const module of modules) {
     run('go', ['vet', './...'], cwd, env);
   }
 }
+if (mode === 'desktop' && process.platform === 'darwin') {
+  run(process.execPath, [path.join(root, 'scripts/check-keyboard.mjs')], root, process.env);
+}

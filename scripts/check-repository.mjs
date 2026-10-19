@@ -7,13 +7,14 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const errors = [];
 const files = [];
 const trees = ['docs', 'specs', 'apps', 'packages', 'services', 'models', 'deploy', 'tools', 'benchmarks', 'tests', 'scripts'];
-const ignored = new Set(['build', 'dist', 'node_modules', '.git', '.next', 'out']);
+const ignored = new Set(['build', 'dist', 'node_modules', '.git', '.next', 'out', '.mygo']);
+const generated = new Set(['apps/desktop/resources']);
 
 async function walk(relative) {
   for (const entry of await readdir(path.join(root, relative), { withFileTypes: true })) {
     if (ignored.has(entry.name) || entry.isSymbolicLink()) continue;
     const name = path.join(relative, entry.name);
-    if (entry.isDirectory()) await walk(name);
+    if (entry.isDirectory() && !generated.has(name.split(path.sep).join('/'))) await walk(name);
     else files.push(name);
   }
 }

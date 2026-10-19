@@ -55,3 +55,6 @@ __pycache__/
 !/benchmarks/corpora/**/*.pcm
 !/benchmarks/runs/**/*.log
 !/benchmarks/reproduction/**/*.log
+
+# Staged offline keyboard engine and compiled schema data.
+/apps/desktop/resources/darwin/keyboard/

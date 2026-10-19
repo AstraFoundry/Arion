@@ -66,7 +66,10 @@
     "chain:run": "node scripts/correction-chain-command.mjs run",
     "chain:report": "node scripts/correction-chain-command.mjs report",
     "chain:test": "node scripts/correction-chain-command.mjs test",
-    "chain:review": "node scripts/correction-chain-command.mjs review"
+    "chain:review": "node scripts/correction-chain-command.mjs review",
+    "keyboard:stage": "node scripts/stage-keyboard-runtime.mjs",
+    "keyboard:check": "node scripts/check-keyboard.mjs",
+    "keyboard:verify": "node scripts/verify-keyboard-bundle.mjs"
   },
   "engines": {
     "node": ">=20.0.0"

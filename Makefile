@@ -256,3 +256,13 @@ chain-test:
 .PHONY: chain-review
 chain-review:
 	pnpm chain:review $(RESULTS) $(OUT)
+
+.PHONY: keyboard-stage keyboard-check keyboard-verify
+keyboard-stage: ## Stage pinned offline Pinyin runtime, schemas, data and notices
+	@pnpm keyboard:stage
+
+keyboard-check: ## Run actual macOS typing and encrypted learning checks in isolated fixtures
+	@pnpm keyboard:check
+
+keyboard-verify: ## Verify staged universal IMK bundle and its offline data closure
+	@pnpm keyboard:verify

@@ -4,8 +4,10 @@ import { existsSync } from 'node:fs';
 import { macosSigningSettings, prepareMacOSSigning, macosBuildConfig, signingRunner, stripAppleCredentials } from '../../../scripts/lib/desktop-signing.mjs';
 
 const identity = 'Developer ID Application: Arion Test (ABCDE12345)';
-const local = { MACOS_SIGNING_IDENTITY: identity, MACOS_NOTARY_PROFILE: 'astrafoundry' };
+const provisioning = '/private/test/ArionInput.provisionprofile';
+const local = { MACOS_IME_PROVISIONING_PROFILE: provisioning, MACOS_SIGNING_IDENTITY: identity, MACOS_NOTARY_PROFILE: 'astrafoundry' };
 const imported = {
+  MACOS_IME_PROVISIONING_PROFILE: provisioning,
   MACOS_SIGNING_IDENTITY: identity,
   MACOS_CERTIFICATE_P12_BASE64: Buffer.from('certificate test fixture').toString('base64'),
   MACOS_CERTIFICATE_PASSWORD: 'p12-test-password',
@@ -42,7 +44,11 @@ test('local signing uses an existing identity and profile without creating a key
   const session = prepareMacOSSigning(macosSigningSettings(local), { run });
   assert.equal(session.env.MACOS_NOTARY_PROFILE, 'astrafoundry');
   const config = macosBuildConfig({ macos: { entitlements: 'entitlements.plist' } }, { command: 'build', platform: 'darwin', env: { ...local, ...session.env } });
-  assert.deepEqual(config.macos, { entitlements: 'entitlements.plist', signingIdentity: identity, notarize: { keychainProfile: 'astrafoundry' } });
+  assert.equal(config.macos.entitlements, 'entitlements.plist');
+  assert.equal(config.macos.signingIdentity, identity);
+  assert.deepEqual(config.macos.notarize, { keychainProfile: 'astrafoundry' });
+  assert.match(config.macos.helperEntitlements['ArionInput.app'], /ime.entitlements.plist$/);
+  assert.equal(session.env.MACOS_IME_PROVISIONING_PROFILE, provisioning);
   session.cleanup();
   assert.ok(!calls.some(([, args]) => args.includes('create-keychain')));
 });
@@ -116,4 +122,11 @@ test('signing failures retain diagnostics without exposing secret argv or output
     assert.ok(!error.message.includes(secret));
     return true;
   });
+});
+
+
+test('generic signing stays available but canonical macOS packages require an IME profile', () => {
+  const env = { MACOS_SIGNING_IDENTITY: identity, MACOS_NOTARY_PROFILE: 'astrafoundry' };
+  assert.equal(macosSigningSettings(env).identity, identity);
+  assert.throws(() => macosBuildConfig({ macos: {} }, { command: 'build', platform: 'darwin', env }), /MACOS_IME_PROVISIONING_PROFILE/);
 });
