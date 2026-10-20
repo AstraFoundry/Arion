@@ -6,6 +6,9 @@ on:
       release:
         type: boolean
         default: false
+      native-matrix:
+        type: string
+        default: '{"include":[{"os":"macos-15","platform":"darwin-arm64"},{"os":"macos-15-intel","platform":"darwin-amd64"},{"os":"windows-2022","platform":"windows-amd64"}]}'
     secrets:
       MYGO_UPDATER_PRIVATE_KEY:
         required: false
@@ -14,6 +17,8 @@ on:
       MACOS_CERTIFICATE_P12_BASE64:
         required: false
       MACOS_CERTIFICATE_PASSWORD:
+        required: false
+      MACOS_IME_PROVISIONING_PROFILE_BASE64:
         required: false
       APPLE_ID:
         required: false
@@ -55,11 +60,7 @@ jobs:
   native-shell:
     strategy:
       fail-fast: false
-      matrix:
-        include:
-          - { os: macos-15, platform: darwin-arm64 }
-          - { os: macos-15-intel, platform: darwin-amd64 }
-          - { os: windows-2022, platform: windows-amd64 }
+      matrix: ${{ fromJSON(inputs.native-matrix || '{"include":[{"os":"macos-15","platform":"darwin-arm64"},{"os":"macos-15-intel","platform":"darwin-amd64"},{"os":"windows-2022","platform":"windows-amd64"}]}') }}
     runs-on: ${{ matrix.os }}
     env:
       # Speech runtimes (sherpa-onnx, miniaudio) are cgo libraries.
@@ -94,6 +95,22 @@ jobs:
           name: native-content-${{ matrix.os }}
           path: .workspace/e2e/
           if-no-files-found: ignore
+      - name: Provision IME signing profile
+        if: inputs.release && runner.os == 'macOS'
+        env:
+          MACOS_IME_PROVISIONING_PROFILE_BASE64: ${{ secrets.MACOS_IME_PROVISIONING_PROFILE_BASE64 }}
+        run: |
+          node --input-type=module <<'NODE'
+          import { writeFileSync, appendFileSync } from 'node:fs';
+          import path from 'node:path';
+          const value = process.env.MACOS_IME_PROVISIONING_PROFILE_BASE64?.trim();
+          if (!value) throw new Error('Missing IME provisioning profile');
+          const bytes = Buffer.from(value, 'base64');
+          if (!bytes.length || bytes.toString('base64') !== value) throw new Error('Invalid IME provisioning profile encoding');
+          const file = path.join(process.env.RUNNER_TEMP, 'ArionInput.provisionprofile');
+          writeFileSync(file, bytes, { mode: 0o600 });
+          appendFileSync(process.env.GITHUB_ENV, `MACOS_IME_PROVISIONING_PROFILE=${file}\n`);
+          NODE
       - name: Build and verify desktop package
         env:
           ARION_OFFICIAL_RELEASE: ${{ inputs.release && '1' || '' }}
@@ -105,6 +122,9 @@ jobs:
           APPLE_TEAM_ID: ${{ inputs.release && runner.os == 'macOS' && secrets.APPLE_TEAM_ID || '' }}
           APPLE_APP_SPECIFIC_PASSWORD: ${{ inputs.release && runner.os == 'macOS' && secrets.APPLE_APP_SPECIFIC_PASSWORD || '' }}
         run: node scripts/build.mjs desktop
+      - name: Remove IME signing profile
+        if: always() && inputs.release && runner.os == 'macOS'
+        run: rm -f "$RUNNER_TEMP/ArionInput.provisionprofile"
       - name: Collect installers and verify signed updates for releases
         run: node scripts/release.mjs collect ${{ matrix.platform }} .workspace/release/${{ matrix.platform }} ${{ inputs.release && '--signed' || '--unsigned' }}
       - uses: actions/upload-artifact@v4

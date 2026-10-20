@@ -16,6 +16,8 @@ concurrency:
 jobs:
   preflight:
     runs-on: ubuntu-latest
+    outputs:
+      native-matrix: ${{ steps.matrix.outputs.value }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -27,21 +29,27 @@ jobs:
           MACOS_SIGNING_IDENTITY: ${{ secrets.MACOS_SIGNING_IDENTITY }}
           MACOS_CERTIFICATE_P12_BASE64: ${{ secrets.MACOS_CERTIFICATE_P12_BASE64 }}
           MACOS_CERTIFICATE_PASSWORD: ${{ secrets.MACOS_CERTIFICATE_PASSWORD }}
+          MACOS_IME_PROVISIONING_PROFILE_BASE64: ${{ secrets.MACOS_IME_PROVISIONING_PROFILE_BASE64 }}
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
           APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
         run: node scripts/release.mjs check
+      - name: Select release platforms
+        id: matrix
+        run: echo "value=$(node scripts/release.mjs matrix)" >> "$GITHUB_OUTPUT"
 
   checks:
     needs: preflight
     uses: ./.github/workflows/ci.yml
     with:
       release: true
+      native-matrix: ${{ needs.preflight.outputs.native-matrix }}
     secrets:
       MYGO_UPDATER_PRIVATE_KEY: ${{ secrets.MYGO_UPDATER_PRIVATE_KEY }}
       MACOS_SIGNING_IDENTITY: ${{ secrets.MACOS_SIGNING_IDENTITY }}
       MACOS_CERTIFICATE_P12_BASE64: ${{ secrets.MACOS_CERTIFICATE_P12_BASE64 }}
       MACOS_CERTIFICATE_PASSWORD: ${{ secrets.MACOS_CERTIFICATE_PASSWORD }}
+      MACOS_IME_PROVISIONING_PROFILE_BASE64: ${{ secrets.MACOS_IME_PROVISIONING_PROFILE_BASE64 }}
       APPLE_ID: ${{ secrets.APPLE_ID }}
       APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
       APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}

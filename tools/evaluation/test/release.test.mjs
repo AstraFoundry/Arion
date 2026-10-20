@@ -4,7 +4,7 @@ import { generateKeyPairSync, sign } from 'node:crypto';
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { checkRelease, digest, installerName, platformAssets, releasePlatforms } from '../../../scripts/lib/release.mjs';
+import { checkRelease, digest, installerName, platformAssets, platformsForRelease, releaseMatrix, releasePlatforms } from '../../../scripts/lib/release.mjs';
 
 function fixture(t) {
   const directory = mkdtempSync(path.join(os.tmpdir(), 'arion-release-'));
@@ -42,6 +42,18 @@ test('all platform installers and archives must exist and carry valid update sig
   for (const platform of releasePlatforms) assert.equal(platformAssets(directory, config, platform).length, 3);
   rmSync(path.join(directory, installerName(config, 'windows-amd64')));
   assert.throws(() => releasePlatforms.flatMap(platform => platformAssets(directory, config, platform)), /ENOENT/);
+});
+
+test('alpha releases require ARM64 macOS while stable and other prereleases require all platforms', t => {
+  const { directory, config } = fixture(t);
+  assert.deepEqual(platformsForRelease({ version: '0.1.0-alpha.1' }), ['darwin-arm64']);
+  assert.deepEqual(releaseMatrix({ version: '0.1.0-alpha.1' }), { include: [{ os: 'macos-15', platform: 'darwin-arm64' }] });
+  for (const version of ['0.1.0', '0.1.0-beta.1', '0.1.0-alphabet']) assert.deepEqual(platformsForRelease({ version }), releasePlatforms);
+  for (const platform of ['darwin-amd64', 'windows-amd64']) rmSync(path.join(directory, installerName(config, platform)));
+  const platforms = platformsForRelease({ version: '0.1.0-alpha.1' });
+  assert.equal(platforms.flatMap(platform => platformAssets(directory, config, platform)).length, 3);
+  rmSync(path.join(directory, installerName(config, 'darwin-arm64')));
+  assert.throws(() => platforms.flatMap(platform => platformAssets(directory, config, platform)), /ENOENT/);
 });
 
 test('a same-size archive modification is rejected even when its manifest is unchanged', t => {
