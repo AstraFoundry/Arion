@@ -196,11 +196,14 @@ func draft(c *ui.Context, tokens theme.Tokens, frame dictation.Frame, color ui.C
 	for i := tail; i < len(runes); i++ {
 		spans = append(spans, ui.Span{Text: string(runes[i]), Color: color.Alpha(fadeIn(frame, len(runes), i))})
 	}
+	// Absolute text no longer follows the row's centering; center its line
+	// box in the line as the row did.
+	_, textHeight := c.MeasureText(0, ui.Span{Text: "中", Size: theme.Body})
 	line.Height(lineHeight).Children(func() {
 		// Out of the row's layout and unwrapped, the text keeps its full
 		// width instead of truncating to the line; the row clips it.
 		ui.RichText(c, spans...).FontSize(theme.Body).TextColor(color).NoWrap().
-			Absolute().Left(starts[first] - shift).Top(0).Bottom(0).Width(starts[len(runes)] - starts[first] + edgeFade)
+			Absolute().Left(starts[first] - shift).Top((lineHeight - textHeight) / 2).Width(starts[len(runes)] - starts[first] + edgeFade)
 	})
 }
 
