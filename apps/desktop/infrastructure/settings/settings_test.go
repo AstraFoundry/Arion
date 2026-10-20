@@ -73,3 +73,19 @@ func TestLegacyInputModeIsRetired(t *testing.T) {
 		}
 	}
 }
+
+func TestPrereleaseUpdatesPersistence(t *testing.T) {
+	store := Store{Path: filepath.Join(t.TempDir(), "preferences.json")}
+	prefs, _, err := store.Load()
+	if err != nil || prefs.AllowPrereleaseUpdates {
+		t.Fatalf("default: %+v %v", prefs, err)
+	}
+	prefs.AllowPrereleaseUpdates = true
+	if err := store.Save(prefs); err != nil {
+		t.Fatal(err)
+	}
+	got, _, err := store.Load()
+	if err != nil || !got.AllowPrereleaseUpdates {
+		t.Fatalf("round trip: %+v %v", got, err)
+	}
+}

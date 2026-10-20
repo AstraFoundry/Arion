@@ -103,6 +103,9 @@ func (x actions) UpdatePreferences(change func(*application.Preferences)) {
 	if before.ContextHistory && !next.ContextHistory {
 		a.history.Clear()
 	}
+	if next.AllowPrereleaseUpdates != before.AllowPrereleaseUpdates {
+		a.updates.setPrereleases(next.AllowPrereleaseUpdates)
+	}
 	if next.CheckUpdates && !before.CheckUpdates && a.updates.due(time.Now()) {
 		a.updates.check(time.Now(), false)
 	}

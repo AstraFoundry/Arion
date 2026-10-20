@@ -1236,3 +1236,7 @@ rewrite-d1-evidence-v1-test:
 .PHONY: rewrite-d1-evidence-v1-verify
 rewrite-d1-evidence-v1-verify:
 	@pnpm rewrite:d1-evidence-v1:verify $(ARGS)
+
+.PHONY: updater-check
+updater-check: ## Verify the maintained MyGo update-channel patch
+	@pnpm updater:check

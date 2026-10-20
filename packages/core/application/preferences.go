@@ -39,6 +39,8 @@ type Preferences struct {
 	// CheckUpdates asks the release feed for a newer version at launch and
 	// periodically. Profiles written before it existed load the default.
 	CheckUpdates bool `json:"checkUpdates"`
+	// AllowPrereleaseUpdates includes published preview releases when checking.
+	AllowPrereleaseUpdates bool `json:"allowPrereleaseUpdates"`
 	// Polish turns on the local LLM pipeline: live rewriting while speaking
 	// and a validated final rewrite. Off until the user downloads the model.
 	Polish bool `json:"polish"`

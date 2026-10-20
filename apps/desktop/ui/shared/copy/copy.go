@@ -282,6 +282,8 @@ const (
 	UpdateInstallFailed          Key = "UpdateInstallFailed"
 	UpdateUnsupported            Key = "UpdateUnsupported"
 	UpdateNotes                  Key = "UpdateNotes"
+	UpdatePrerelease             Key = "UpdatePrerelease"
+	UpdateNoRelease              Key = "UpdateNoRelease"
 	UpdateAuto                   Key = "UpdateAuto"
 	UpdateAutoDetail             Key = "UpdateAutoDetail"
 	ShowcaseLabel                Key = "ShowcaseLabel"

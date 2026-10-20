@@ -23,6 +23,7 @@
 | `services/sync` | Go DDD relay; account-unaware core, `AccountGate` port with `noop` and `oidc` adapters ([ADR 015](../decisions/015-hosted-relay-account-authorization.md)) |
 | `deploy` | Relay images, self-host compose and the hosted relay's compose stack with its own PostgreSQL |
 | `models` | Go module embedding the reviewed catalog: provenance, digests, licenses, bundles, evaluation summaries; no weights |
+| `third_party/mygo` | Maintained MyGo v0.4.6 snapshot with the approved update-channel patch; original hashes and licence retained |
 | `scripts` | Dependency-free repository checks and platform-neutral workflow entry points |
 | `tools/evaluation` | pnpm workspace: metrics, driver protocols, real-run orchestration and isolated Python development inference adapters |
 | `benchmarks` | Versioned research corpora/audio, raw observations, reproduction sources, provenance and reports; no weights/runtime environments or personal recordings |

@@ -23,7 +23,7 @@ const (
 // whose archive must carry a signature by the key built into the app.
 type updateSource interface {
 	Enabled() bool
-	Check(ctx context.Context) (*release, error)
+	Check(ctx context.Context, includePrereleases bool) (*release, error)
 }
 
 // release is a newer version and how to install it in place of the app.
@@ -37,8 +37,8 @@ type mygoUpdates struct{}
 
 func (mygoUpdates) Enabled() bool { return mygo.Updater.Enabled() }
 
-func (mygoUpdates) Check(ctx context.Context) (*release, error) {
-	found, err := mygo.Updater.Check(ctx)
+func (mygoUpdates) Check(ctx context.Context, includePrereleases bool) (*release, error) {
+	found, err := mygo.Updater.CheckWithOptions(ctx, mygo.UpdateCheckOptions{IncludePrereleases: includePrereleases})
 	if err != nil || found == nil {
 		return nil, err
 	}
@@ -48,12 +48,15 @@ func (mygoUpdates) Check(ctx context.Context) (*release, error) {
 // updates drives the update state on the main thread; checks and installs
 // run on their own goroutines and report through post.
 type updates struct {
-	source  updateSource
-	state   *arion.Update
-	post    func(func())
-	found   *release
-	attempt time.Time
-	record  func(string, error)
+	source             updateSource
+	state              *arion.Update
+	post               func(func())
+	found              *release
+	attempt            time.Time
+	includePrereleases bool
+	generation         uint64
+	cancel             context.CancelFunc
+	record             func(string, error)
 }
 
 func newUpdates(source updateSource, state *arion.Update, post func(func())) *updates {
@@ -63,6 +66,24 @@ func newUpdates(source updateSource, state *arion.Update, post func(func())) *up
 		state.Phase = arion.UpdateIdle
 	}
 	return u
+}
+
+// setPrereleases invalidates a result from the previous channel.
+func (u *updates) setPrereleases(include bool) {
+	if u.includePrereleases == include {
+		return
+	}
+	u.includePrereleases = include
+	u.generation++
+	if u.cancel != nil {
+		u.cancel()
+		u.cancel = nil
+	}
+	u.found = nil
+	u.attempt = time.Time{}
+	if u.state.Phase != arion.UpdateUnsupported && u.state.Phase != arion.UpdateDownloading && u.state.Phase != arion.UpdateReady {
+		*u.state = arion.Update{Phase: arion.UpdateIdle}
+	}
 }
 
 // due reports whether an automatic check should run at now.
@@ -85,17 +106,34 @@ func (u *updates) check(now time.Time, manual bool) {
 	previous := *u.state
 	u.attempt = now
 	u.state.Phase = arion.UpdateChecking
+	u.generation++
+	generation, include := u.generation, u.includePrereleases
+	ctx, cancel := context.WithTimeout(context.Background(), checkTimeout)
+	u.cancel = cancel
 	go func() {
-		ctx, cancel := context.WithTimeout(context.Background(), checkTimeout)
 		defer cancel()
-		found, err := u.source.Check(ctx)
-		u.post(func() { u.checked(found, err, previous, manual) })
+		found, err := u.source.Check(ctx, include)
+		u.post(func() {
+			if generation != u.generation {
+				return
+			}
+			u.cancel = nil
+			u.checked(found, err, previous, manual)
+		})
 	}()
 }
 
 func (u *updates) checked(found *release, err error, previous arion.Update, manual bool) {
 	if errors.Is(err, mygo.ErrUpdatesDisabled) {
 		*u.state = arion.Update{Phase: arion.UpdateUnsupported}
+		return
+	}
+	if errors.Is(err, mygo.ErrNoPublishedUpdates) {
+		u.found = nil
+		*u.state = arion.Update{Phase: arion.UpdateNoRelease, Checked: time.Now()}
+		if u.record != nil {
+			u.record("update_check", nil)
+		}
 		return
 	}
 	if err != nil {

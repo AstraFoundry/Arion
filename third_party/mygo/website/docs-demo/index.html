@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>MyGo UI preview</title>
+    <style>
+      :root { color-scheme: light dark; }
+      html, body { margin: 0; height: 100%; background: transparent; }
+      body {
+        display: flex; align-items: center; justify-content: center;
+        font: 13px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        color: #8e8e93;
+      }
+      /* AppKit's spinner: twelve spokes, fading behind the one in front,
+         which steps around once a second. */
+      .spinner { width: 24px; height: 24px; animation: spin 1s steps(12) infinite; }
+      .spinner line { stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+      @keyframes spin { to { transform: rotate(360deg); } }
+      .error { max-width: 80%; text-align: center; }
+    </style>
+  </head>
+  <body>
+    <svg class="spinner" viewBox="0 0 24 24" role="progressbar" aria-label="Loading the preview">
+      <g transform="translate(12 12)">
+        <line y1="-5.5" y2="-10" opacity="1" />
+        <line y1="-5.5" y2="-10" opacity="0.92" transform="rotate(-30)" />
+        <line y1="-5.5" y2="-10" opacity="0.84" transform="rotate(-60)" />
+        <line y1="-5.5" y2="-10" opacity="0.76" transform="rotate(-90)" />
+        <line y1="-5.5" y2="-10" opacity="0.68" transform="rotate(-120)" />
+        <line y1="-5.5" y2="-10" opacity="0.6" transform="rotate(-150)" />
+        <line y1="-5.5" y2="-10" opacity="0.52" transform="rotate(-180)" />
+        <line y1="-5.5" y2="-10" opacity="0.44" transform="rotate(-210)" />
+        <line y1="-5.5" y2="-10" opacity="0.36" transform="rotate(-240)" />
+        <line y1="-5.5" y2="-10" opacity="0.28" transform="rotate(-270)" />
+        <line y1="-5.5" y2="-10" opacity="0.2" transform="rotate(-300)" />
+        <line y1="-5.5" y2="-10" opacity="0.2" transform="rotate(-330)" />
+      </g>
+    </svg>
+    <!-- The page of a demo of the docs (website/docs-demo): /docs-demo?demo=button.
+         The scripts come after the spinner, which shows while they load. -->
+    <script>
+      // The docs' theme, which a frame's prefers-color-scheme does not
+      // follow: the app takes it from data-mygo-theme.
+      try {
+        const page = parent !== window && parent.document.documentElement
+        if (page) {
+          const sync = () => (document.documentElement.dataset.mygoTheme = page.classList.contains("dark") ? "dark" : "light")
+          sync()
+          new MutationObserver(sync).observe(page, { attributes: true, attributeFilter: ["class"] })
+        }
+      } catch {}
+    </script>
+    <script src="/docs-demo/wasm_exec.js"></script>
+    <script>
+      const demo = new URLSearchParams(location.search).get("demo") || ""
+      const go = new Go()
+      go.argv = ["docs-demo", demo]
+      WebAssembly.instantiateStreaming(fetch("/docs-demo/__WASM__"), go.importObject)
+        .then((r) => go.run(r.instance))
+        .catch((e) => {
+          const p = document.createElement("p")
+          p.className = "error"
+          p.textContent = "The preview did not load: " + e
+          document.body.replaceChildren(p)
+        })
+    </script>
+  </body>
+</html>

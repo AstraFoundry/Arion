@@ -9,3 +9,6 @@ benchmarks/corpora/** -whitespace
 benchmarks/runs/** -whitespace
 benchmarks/reproduction/** -whitespace
 benchmarks/artifacts/** -whitespace
+
+# Preserve the reviewed upstream dependency snapshot byte for byte.
+third_party/mygo/** -text !eol -whitespace

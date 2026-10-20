@@ -315,6 +315,7 @@ const (
 	UpdateIdle        UpdatePhase = "idle"
 	UpdateChecking    UpdatePhase = "checking"
 	UpdateCurrent     UpdatePhase = "current"
+	UpdateNoRelease   UpdatePhase = "no-release"
 	UpdateAvailable   UpdatePhase = "available"
 	UpdateDownloading UpdatePhase = "downloading"
 	// UpdateReady: the new version replaced the app on disk and runs after

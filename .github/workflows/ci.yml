@@ -54,6 +54,7 @@ jobs:
       - run: pnpm check
       - run: pnpm workflows:check
       - run: pnpm test
+      - run: pnpm updater:check
       - name: Marketing site (dictionaries, types, lint, tests, static export)
         run: pnpm site:check
 

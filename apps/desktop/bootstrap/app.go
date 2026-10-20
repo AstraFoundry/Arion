@@ -384,6 +384,7 @@ func (a *App) ready() {
 		source = nil
 	}
 	a.updates = newUpdates(source, &a.state.Update, a.post)
+	a.updates.setPrereleases(a.state.Preferences.AllowPrereleaseUpdates)
 	a.scheduleUpdates()
 	a.startAccountMaintenance()
 	a.registerShortcut(a.state.Preferences.Shortcut)

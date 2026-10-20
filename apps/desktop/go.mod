@@ -20,6 +20,7 @@ require (
 )
 
 replace (
+	github.com/egoist/mygo => ../../third_party/mygo
 	arion.local/core => ../../packages/core
 	arion.local/models => ../../models
 )

@@ -18,12 +18,14 @@ type fakeFeed struct {
 	err        error
 	installErr error
 	checks     int
+	include    bool
 }
 
 func (f *fakeFeed) Enabled() bool { return f.enabled }
 
-func (f *fakeFeed) Check(context.Context) (*release, error) {
+func (f *fakeFeed) Check(_ context.Context, include bool) (*release, error) {
 	f.checks++
+	f.include = include
 	return f.found, f.err
 }
 
@@ -156,5 +158,52 @@ func TestUpdatesUnsupported(t *testing.T) {
 	_, state, _ = harnessUpdates(&fakeFeed{})
 	if state.Phase != arion.UpdateUnsupported {
 		t.Fatalf("disabled source: %s", state.Phase)
+	}
+}
+
+func TestUpdateChannels(t *testing.T) {
+	feed := &fakeFeed{enabled: true, err: mygo.ErrNoPublishedUpdates}
+	u, state, drain := harnessUpdates(feed)
+	u.check(time.Now(), true)
+	drain()
+	if state.Phase != arion.UpdateNoRelease || feed.include {
+		t.Fatalf("empty stable channel: %+v", state)
+	}
+	feed.err = nil
+	feed.found = feed.release("0.1.0-alpha.6")
+	u.setPrereleases(true)
+	u.check(time.Now(), true)
+	drain()
+	if !feed.include || state.Phase != arion.UpdateAvailable {
+		t.Fatalf("preview channel: %+v", state)
+	}
+	u.setPrereleases(false)
+	if u.found != nil || state.Phase != arion.UpdateIdle {
+		t.Fatalf("old channel result retained: %+v", state)
+	}
+}
+
+type delayedUpdateFeed struct {
+	entered chan struct{}
+	finish  chan struct{}
+}
+
+func (f *delayedUpdateFeed) Enabled() bool { return true }
+func (f *delayedUpdateFeed) Check(context.Context, bool) (*release, error) {
+	close(f.entered)
+	<-f.finish
+	return &release{Version: "0.2.0-alpha.1"}, nil
+}
+func TestUpdateChannelChangeDiscardsInFlightResult(t *testing.T) {
+	feed := &delayedUpdateFeed{make(chan struct{}), make(chan struct{})}
+	u, state, drain := harnessUpdates(feed)
+	u.setPrereleases(true)
+	u.check(time.Now(), true)
+	<-feed.entered
+	u.setPrereleases(false)
+	close(feed.finish)
+	drain()
+	if state.Phase != arion.UpdateIdle || u.found != nil {
+		t.Fatalf("stale result applied: %+v", state)
 	}
 }

@@ -480,11 +480,12 @@ func TestUpdateStates(t *testing.T) {
 	}{
 		{runtime.Update{Phase: runtime.UpdateUnsupported}, en.Text(copy.UpdateUnsupported), "", ""},
 		{runtime.Update{Phase: runtime.UpdateIdle}, en.Text(copy.AboutUpdates), en.Text(copy.UpdateCheck), "check-update"},
+		{runtime.Update{Phase: runtime.UpdateNoRelease}, en.Text(copy.UpdateNoRelease), en.Text(copy.UpdateCheck), "check-update"},
 		{runtime.Update{Phase: runtime.UpdateCurrent}, en.Text(copy.UpdateCurrent), en.Text(copy.UpdateCheck), "check-update"},
 		{runtime.Update{Phase: runtime.UpdateAvailable, Version: "0.2.0"}, en.UpdateAvailable("0.2.0"), en.Text(copy.UpdateInstall), "install-update"},
 		{runtime.Update{Phase: runtime.UpdateDownloading, Version: "0.2.0", Downloaded: 3 << 20, Total: 12 << 20}, en.Progress(3<<20, 12<<20), "", ""},
 		{runtime.Update{Phase: runtime.UpdateReady, Version: "0.2.0"}, en.Text(copy.UpdateReady), en.Text(copy.UpdateRestart), "restart-update"},
-		{runtime.Update{Phase: runtime.UpdateFailed, Failed: runtime.UpdateStepCheck}, en.Text(copy.UpdateCheckFailed), en.Text(copy.Retry), "check-update"},
+		{runtime.Update{Phase: runtime.UpdateFailed, Failed: runtime.UpdateStepCheck}, en.Text(copy.UpdateCheckFailed), en.Text(copy.UpdateCheck), "check-update"},
 		{runtime.Update{Phase: runtime.UpdateFailed, Failed: runtime.UpdateStepInstall, Version: "0.2.0"}, en.Text(copy.UpdateInstallFailed), en.Text(copy.Retry), "install-update"},
 	} {
 		state.Update = step.update
@@ -506,6 +507,15 @@ func TestUpdateStates(t *testing.T) {
 	}
 	state.Update = runtime.Update{Phase: runtime.UpdateCurrent}
 	settle(tt)
+	label, ok := tt.Find(en.Text(copy.UpdatePrerelease))
+	if !ok {
+		t.Fatal("missing prerelease label")
+	}
+	tt.ClickAt(SettingsWidth-60, label.Y+label.H)
+	settle(tt)
+	if !state.Preferences.AllowPrereleaseUpdates {
+		t.Fatal("prerelease switch not persisted")
+	}
 	// The switch sits at the row's trailing edge, level with its title and detail.
 	title, ok := tt.Find(en.Text(copy.UpdateAuto))
 	if !ok {
@@ -516,6 +526,13 @@ func TestUpdateStates(t *testing.T) {
 	if state.Preferences.CheckUpdates {
 		t.Error("automatic check not turned off")
 	}
+	state.Preferences.UILanguage = runtime.LanguageChinese
+	settle(tt)
+	zh := copy.For(copy.SimplifiedChinese)
+	if !hasText(tt, zh.Text(copy.UpdatePrerelease)) {
+		t.Fatal("missing translated prerelease switch")
+	}
+	snapshot(t, tt, "settings-about-update-chinese")
 }
 
 func TestUpdateNotice(t *testing.T) {

@@ -28,6 +28,14 @@ func Card(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 				store.Actions.UpdatePreferences(func(p *runtime.Preferences) { p.CheckUpdates = auto })
 			}
 		})
+		kit.Divider(c, tokens)
+		preview := store.State.Preferences.AllowPrereleaseUpdates
+		locked := u.Phase == runtime.UpdateChecking || u.Phase == runtime.UpdateDownloading || u.Phase == runtime.UpdateReady
+		kit.Row(c, tokens, messages.Text(copy.UpdatePrerelease), "", func() {
+			if ui.Switch(c.Key("prerelease-updates"), &preview).Label(messages.Text(copy.UpdatePrerelease)).Disabled(locked).Changed() {
+				store.Actions.UpdatePreferences(func(p *runtime.Preferences) { p.AllowPrereleaseUpdates = preview })
+			}
+		})
 	})
 }
 
@@ -54,6 +62,8 @@ func status(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 		kit.Row(c, tokens, messages.Text(copy.AboutUpdates), "", func() {
 			button(kit.Outline, messages.Text(copy.UpdateChecking), false, func() {})
 		})
+	case runtime.UpdateNoRelease:
+		kit.Row(c, tokens, messages.Text(copy.UpdateNoRelease), "", check)
 	case runtime.UpdateCurrent:
 		kit.Row(c, tokens, messages.Text(copy.UpdateCurrent), "", check)
 	case runtime.UpdateAvailable:
@@ -85,9 +95,7 @@ func status(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 			})
 			return
 		}
-		kit.Row(c, tokens, messages.Text(copy.UpdateCheckFailed), "", func() {
-			button(kit.Outline, messages.Text(copy.Retry), true, actions.CheckForUpdates)
-		})
+		kit.Row(c, tokens, messages.Text(copy.UpdateCheckFailed), "", check)
 	default:
 		kit.Row(c, tokens, messages.Text(copy.AboutUpdates), "", check)
 	}

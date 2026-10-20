@@ -8,6 +8,7 @@
     "check": "node scripts/check-repository.mjs",
     "i18n:check": "node scripts/check-i18n.mjs",
     "docs:check": "node scripts/check-repository.mjs",
+    "updater:check": "node scripts/check-updater.mjs",
     "workflows:check": "node scripts/check-workflows.mjs",
     "lint": "node scripts/check-repository.mjs",
     "test": "node scripts/test.mjs",

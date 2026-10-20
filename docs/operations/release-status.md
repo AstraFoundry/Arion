@@ -1,6 +1,6 @@
 # Desktop release status
 
-This file accompanies each release as `RELEASE-STATUS.md`. The `0.1.0-alpha.4` release distributes only macOS Apple silicon packages. The other columns below describe implementation status, not assets included in this alpha. Build success verifies packaging; the evidence below limits the supported product claims.
+This file accompanies each release as `RELEASE-STATUS.md`. The `0.1.0-alpha.5` release distributes only macOS Apple silicon packages. The other columns below describe implementation status, not assets included in this alpha. Build success verifies packaging; the evidence below limits the supported product claims.
 
 | Capability | macOS Apple silicon | macOS Intel | Windows x64 |
 | --- | --- | --- | --- |
@@ -22,7 +22,7 @@ The package identifiers are `si.astrafoundry.arion` and `si.astrafoundry.inputme
 
 Ordinary macOS builds use ad hoc signing. Complete Apple environment configuration, including the matching IMK Developer ID provisioning profile, enables Developer ID signing and notarization through the same build entry point; tagged CI builds require it. A retained macOS arm64 canonical build before the strict Keychain policy/profile gate passed Developer ID signatures, hardened runtime, notarization tickets and package Gatekeeper validation; clean-machine acceptance and signed input-source activation remain open. Automated orchestration tests alone do not establish these host outcomes. Windows publisher signing remains unimplemented. Updating an ad hoc build can require granting privacy permissions again. A valid ad hoc signature does not establish Gatekeeper approval.
 
-Tagged releases require a matching Ed25519 update key and Apple signing/notarization credentials, and verify every platform's archive size and signature before upload. The update key is independent of Apple certificates. Without release credentials, ordinary CI still produces installer artifacts; the release job fails before creating a draft. Drafts and prereleases are not offered by the app's updater. Publishing remains a manual decision after acceptance.
+Tagged releases require a matching Ed25519 update key and Apple signing/notarization credentials, and verify every platform's archive size and signature before upload. The update key is independent of Apple certificates. Without release credentials, ordinary CI still produces installer artifacts; the release job fails before creating a draft. Drafts are never offered by the updater; prereleases require the persisted Allow beta updates opt-in. Publishing remains a manual decision after acceptance.
 
 ## Acceptance before broad distribution
 
