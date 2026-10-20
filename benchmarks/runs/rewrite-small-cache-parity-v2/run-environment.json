@@ -1,0 +1,9 @@
+{
+  "observedAt": "2026-10-19T16:08:16.964902+00:00",
+  "observedBeforeInference": true,
+  "environment": {
+    "LLAMA_ARG_UBATCH": "1"
+  },
+  "freezeSha256": "d5e612d5cebef9a2a0e12e0a4f84eaa8354b75f070e2a75ba55ed84b94be409c",
+  "reason": "Set physical microbatch to one token while retaining default logical batch capacity. Logical batch1 fails native startup because its capability probe requires2 tokens; source and failed run retained separately."
+}

@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "source": ".workspace/rewrite-metal-chain-v1",
+  "published": "benchmarks/runs/rewrite-metal-chain-v1",
+  "privateExcluded": [
+    "model weights",
+    "runtime binaries",
+    "cleanup executable",
+    "scratch build environment"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "newInference": false,
+  "files": {
+    "benchmarks/artifacts/rewrite-model-refresh-v1/provenance.json": "c50ebf9e7ac31347f9be52f790f7fcce30240ca0ac4af8e74776229c35297480",
+    "benchmarks/artifacts/rewrite-model-refresh-v1/lfm-export-LICENSE": "5188f2b355da20647257a3156db5834c794e5fb5e6d8dc4d4cdbb3180e75b85b",
+    "benchmarks/artifacts/rewrite-model-refresh-v1/lfm-base-README.md": "682de876c2d172eaeffff775ad8422b5fd7ada701543916e62129e3be8eab077",
+    "benchmarks/artifacts/rewrite-model-refresh-v1/lfm-base-LICENSE": "61d7e939a05911c765b7e98ffaa1ab5ca6c0174a65350766c25cb10197d19fc8",
+    "benchmarks/artifacts/rewrite-model-refresh-v1/documentation-check-failure-v1.txt": "0269a4b772151a4aca8196539dc3b80b4fb1e9ba4b934b828f0c7a2180f7b8e6",
+    "benchmarks/artifacts/rewrite-model-refresh-v1/lfm-base-api.json": "7cb3e1b2d319fc9f5cc5719ea0f15c8780b5b8502067416b344fe9f36f157974",
+    "benchmarks/artifacts/rewrite-model-refresh-v1/README.md": "933b43b8ff6d34977830a33438d4d6805a687463d765a536c9107c2a06622612",
+    "benchmarks/artifacts/rewrite-model-refresh-v1/lfm-export-README.md": "f89d69dd107c19936b98ff981456302bc59255cce34b216ecc489d7bafa782e9",
+    "benchmarks/artifacts/rewrite-model-refresh-v1/lfm-export-api.json": "cd223f312491e9cf06440ebcefa0622a39616e95c3bbaf1ee1d44979b10f4206",
+    "benchmarks/artifacts/rewrite-model-refresh-v1/qad/LICENSE": "5188f2b355da20647257a3156db5834c794e5fb5e6d8dc4d4cdbb3180e75b85b",
+    "benchmarks/artifacts/rewrite-model-refresh-v1/qad/README.md": "acd6c5deaba23bbcfaa655e39c84f6cd2390f1efee1537cdcf8d6264cc138779"
+  }
+}

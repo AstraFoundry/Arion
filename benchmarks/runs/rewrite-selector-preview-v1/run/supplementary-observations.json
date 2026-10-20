@@ -1,0 +1,13 @@
+{
+  "resultsSha256": "1112b7d0c4649d048723b4e7ba08d38f978975c7d510c2af081a0938b1d7cb3a",
+  "selectorCalls": 101,
+  "changedChoiceCases": 14,
+  "changedChoiceIds": 14,
+  "allChangedIdsKeepToReplace": true,
+  "reviewedSupportedChanges": 5,
+  "reviewedHarmfulChanges": 9,
+  "medianAdditionalSelectorInputTokens": 355,
+  "maximumSelectorInputTokens": 1740,
+  "unchangedFormatterRequests": 443,
+  "scope": "Counts derive from actual paired requests/responses and assistant meaning judgments. One-sided choice changes are observed; frequency/framing bias is a hypothesis, not a proved mechanism. Midrun other load observation does not identify latency cause."
+}

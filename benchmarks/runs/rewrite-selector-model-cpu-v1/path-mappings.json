@@ -1,0 +1,9 @@
+{
+  "source": ".workspace/rewrite-selector-model-cpu-v1",
+  "published": "benchmarks/runs/rewrite-selector-model-cpu-v1",
+  "privateExcluded": [
+    "weights",
+    "runtime executables"
+  ],
+  "preparationReference": "benchmarks/runs/rewrite-selector-screen-v1/run/preparations.jsonl"
+}

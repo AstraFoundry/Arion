@@ -1,0 +1,7 @@
+# Full historical rewrite input view
+
+401 distinct exact source/full-context/requested-scene tuples from the existing research timeline:281 exposed synthetic regressions and120 historical public read-speech ASR sources. Repeated identical tuples are deduplicated; different context/scenario ablations remain. All warmups and intermediate model-choice observations are excluded. This is zero new ASR/LLM generation, not new held-out or independent subjects. The unused fresh24 are absent.
+
+Every model-input value is checked against its exact original raw JSONL row, row/file SHA-256 and line number in lineage.json. The original timeline enumeration bytes are retained in enumeration-view.json so completeness can be verified even after the living HTML changes. That snapshot includes prior outputs and judgments and is evaluator-only. **Only inputs.json is model data**; it contains source/context/scene/identity/cohort/script-label metadata, no references, expected edits or old outputs. Language metadata describes source script and is not a requested target language. Existing natural audio/speaker/session/rights provenance remains in the separate [natural source view](../rewrite-natural-asr-v1/README.md).
+
+Verify through [the reproduction commands](../../reproduction/rewrite-history-source-v1/README.md). Historical synthetic and natural quality strata must remain separate, and retained-source fidelity must not automatically count as usable prose or successful recognition recovery.

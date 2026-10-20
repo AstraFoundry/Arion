@@ -1,0 +1,42 @@
+{
+  "generations": 16,
+  "reviewedOutputs": 16,
+  "summary": {
+    "qwen-direct": {
+      "cases": 8,
+      "rawFaithful": 1,
+      "rawSceneReady": 0,
+      "requiredRepairs": 2,
+      "repairs": 2,
+      "truncated": 0,
+      "requestP50Ms": 4576.080667087808,
+      "requestP95Ms": 12256.359833059832,
+      "prefillP50Ms": 4158.327,
+      "decodeP50Ms": 367.946,
+      "maxObservedResidentRssBytes": 2946695168,
+      "minCachedTokens": 0,
+      "maxCachedTokens": 0
+    },
+    "qwen-protected": {
+      "cases": 8,
+      "rawFaithful": 4,
+      "rawSceneReady": 3,
+      "requiredRepairs": 2,
+      "repairs": 0,
+      "truncated": 0,
+      "requestP50Ms": 5714.49725003913,
+      "requestP95Ms": 6924.331207992509,
+      "prefillP50Ms": 5209.529,
+      "decodeP50Ms": 426.426,
+      "maxObservedResidentRssBytes": 3062202368,
+      "minCachedTokens": 0,
+      "maxCachedTokens": 0
+    }
+  },
+  "protocolFailures": {
+    "qwen-direct": 0,
+    "qwen-protected": 2
+  },
+  "observedFalseProtocolRejections": 0,
+  "scope": "New synthetic stress supplement, all raw/decoded bodies inspected; not natural ASR, independent ratings, or release acceptance. Superseded/repeated terms must be assessed semantically; a missing marker is not by itself a semantic LLM failure. No hidden fallback or content filtering."
+}

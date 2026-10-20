@@ -1,0 +1,18 @@
+"""Close personally reviewed actual native decisions without claiming generated prose."""
+from pathlib import Path
+import importlib.util,json,shutil,hashlib
+R=Path.cwd();H=R/'benchmarks/reproduction/rewrite-d1-evidence-v1';P=R/'benchmarks/runs/rewrite-d1-evidence-v1';W=Path(__file__).resolve().parent
+spec=importlib.util.spec_from_file_location('d1_close_report',H/'report.py');m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m);summary,items=m.collect(False)
+reviews=[]
+for item in items:
+ r=item['row'];a=item['assessment'];b=item['budget'];note='Personally read the full source/OCR/hypotheses, actual native typed answer/probabilities and deterministic audit spelling illustration. '
+ note+='Unsupported object or literal-meaning substitution. ' if a['harmfulChoice'] else 'Required context-supported spelling repair missed. ' if a['missedRepair'] else 'The observed choice matches the frozen meaning/spelling rubric. '
+ note+='Native question instructions were clipped by the trained96-token per-question budget. ' if b['truncatedPieces'] else 'No per-piece clipping in this actual request. '
+ note+='No confidence threshold, semantic output rejection, source fallback or generated/delivered final body. Actual native CPU/Metal choices agree here but probability values differ. Six exposed sources, not independent blind or actual16GB acceptance.'
+ reviews.append(dict(group=item['group'],gpu=r['gpuLayersRequested'],id=r['id'],rowSha256=item['rowSha256'],personallyRead=True,**a,note=note))
+(P/'review.json').write_text(json.dumps(dict(method='All72 source/context/raw actual typed responses personally reviewed, plus all6 unique failed source/context/choice tuples and all24 successive changed pairs. Effective input clipping checked through60 prior usage matches,50 native prompt logs and12 corrected-policy actual usages; not independent blind review.',reviews=reviews),ensure_ascii=False,indent=2)+'\n')
+(P/'selection.json').write_text(json.dumps(dict(qualified=False,selected=None,productionActivated=False,mainComparisonExecuted=False,reason='No full-policy, no-truncation configuration passes all six probes on both backends. Compact sentence has12/12 correct but clipped trusted instructions; corrected full policy6/12 correct. Preserve all72 native answers; no further expansion or release credit.'),indent=2)+'\n')
+receipt=dict(allActualModelResponsesPersonallyRead=72,generatedTokens=0,finalBodies=0,sourceCases=6,rawReviewRanges=[[0,20],[20,40],[40,60]],policyReviewed=12,uniqueFailedTuplesReviewed=6,changedPairsReviewed=24,derivation='Audit spelling texts are deterministic illustrations of native choices; they are not generated or delivered body evidence.',bindings=[dict(group=i['group'],id=i['row']['id'],gpu=i['row']['gpuLayersRequested'],rowSha256=i['rowSha256']) for i in items])
+(P/'manual-review-completion.json').write_text(json.dumps(receipt,indent=2)+'\n')
+for name in ['unique-failed-tuples.json','changed-pairs.json']:shutil.copyfile(W/name,P/name)
+shutil.copyfile(__file__,H/'original-close.py.txt');print('Closed72 actual typed responses and full manual review; candidate unqualified.')

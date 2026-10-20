@@ -1,0 +1,68 @@
+{
+  "newGenerations": 126,
+  "sourceCases": 110,
+  "newSelectorGenerations": 0,
+  "groups": {
+    "baseline/new-synthetic-work-controls": {
+      "cases": 16,
+      "faithful": 16,
+      "unfaithful": 0,
+      "uncertain": 0,
+      "useful": 16,
+      "languagePreserved": 16
+    },
+    "candidate/historical-synthetic-regression": {
+      "cases": 94,
+      "faithful": 93,
+      "unfaithful": 1,
+      "uncertain": 0,
+      "useful": 85,
+      "languagePreserved": 94,
+      "baselineFaithful": 93,
+      "baselineUseful": 85,
+      "rawParity": 65
+    },
+    "candidate/new-synthetic-work-controls": {
+      "cases": 16,
+      "faithful": 16,
+      "unfaithful": 0,
+      "uncertain": 0,
+      "useful": 16,
+      "languagePreserved": 16,
+      "baselineFaithful": 16,
+      "baselineUseful": 16,
+      "rawParity": 4
+    }
+  },
+  "transitions": [
+    {
+      "id": "history-0036",
+      "cohort": "historical-synthetic-regression",
+      "beforeFaithful": false,
+      "afterFaithful": true,
+      "beforeUseful": false,
+      "afterUseful": true,
+      "note": "Both restored-API and ongoing-backfill background statements are now retained alongside the owners and notification time. The previous task-only omission is repaired."
+    },
+    {
+      "id": "history-0121",
+      "cohort": "historical-synthetic-regression",
+      "beforeFaithful": true,
+      "afterFaithful": false,
+      "beforeUseful": true,
+      "afterUseful": false,
+      "note": "The explicit instruction that the owner stays unchanged is omitted. Release-date change and approval gate survive; this is a new semantic regression, not merely a formatting preference."
+    }
+  ],
+  "selection": {
+    "freezeSha256": "d17f29bc1938535ead4a26e63c5a26b94268a3190a81c3af2218fb2f91000039",
+    "resultsSha256": "c3fd35d021939a867d724d9298b9f0e89e2f1d182dac40f365d90a2bcc60200c",
+    "reviewSha256": "c75294f760c6a37e5a7ad95d15a271e2c403616557961700f73482aeb500e7e0",
+    "qualified": false,
+    "selected": null,
+    "productionActivated": false,
+    "freshExecuted": false,
+    "reason": "Historical work93/94 faithful and85 useful, same counts as v2 but different failure: API background repaired, unchanged-owner requirement newly omitted. Both new-control arms16/16 faithful/useful. Individual deadlines still detached and the repeated-code phrase remains. No adoption."
+  },
+  "limits": "Exposed historical94 plus newly authored synthetic16, not independent natural data. Reused actual cleanup/selection for historical inputs; controls are source-only with no cleanup. No new ASR/OCR/selector/native/concurrent/min16/production/fresh24 or4B/olderQwen inference."
+}

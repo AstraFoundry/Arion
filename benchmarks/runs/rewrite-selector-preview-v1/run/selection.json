@@ -1,0 +1,11 @@
+{
+  "qualified": false,
+  "selected": null,
+  "developmentPassed": false,
+  "productionActivated": false,
+  "freshExecuted": false,
+  "resultsSha256": "1112b7d0c4649d048723b4e7ba08d38f978975c7d510c2af081a0938b1d7cb3a",
+  "reviewSha256": "2883248cb7794950c118df7b2bc1e2c690edf06078dd9e3b6476c1f1a7ec45f7",
+  "freezeSha256": "9ce275d096aae3646d817eb32e7742096d7442f657c7c6cd42310d89773ec4f9",
+  "reason": "Reject: improved positive corrections are accompanied by harmful ordinary-word/domain/forbidden-target substitutions. The joint positive/negative development gate fails; fresh data not consumed."
+}

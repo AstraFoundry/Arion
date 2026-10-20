@@ -1,0 +1,22 @@
+{
+  "kind": "rewrite-retrospective-v1",
+  "files": {
+    "benchmarks/reproduction/rewrite-retrospective-v1/README.md": "c7d27423c0b83bf2aecd4e1b88576ad2db4b2d835bf3ab6fe3ead853c647c2c1",
+    "benchmarks/reproduction/rewrite-retrospective-v1/report.py": "480fc676c41cfd223fc292841ef602037f9d9beadcc8048990f1a84e420e8750",
+    "benchmarks/reproduction/rewrite-retrospective-v1/review.py": "e0955a6c298152ed08f0eb5fdc0f1b632c46880b6cd312c6756fa27ce6feb681",
+    "benchmarks/reproduction/rewrite-retrospective-v1/test_report.py": "4bdf003518f253395d6e50dd8d140f23b4856d364b5cf13ddb1407d3bd2aeff8",
+    "benchmarks/reproduction/rewrite-retrospective-v1/verify.py": "d626b2d88c3cf2e14e8a710c71a015c2f6c3c98b70f25844594b5940610361d0",
+    "benchmarks/runs/rewrite-retrospective-v1/README.md": "e63b9890253bcfcd1f8e9c8d1543d9243e2cf077549fa03fe54fd82e7c294d59",
+    "benchmarks/runs/rewrite-retrospective-v1/audit-manifest.json": "4d9b86cac60383d227274333b6ef10ca8dabb3862777276a2f9d9c878b6dd93d",
+    "benchmarks/runs/rewrite-retrospective-v1/audit-review.jsonl": "13cb8aa811b17d1474dc6bd4d4055b951e58d90a02dd672248dc11ff57610341",
+    "benchmarks/runs/rewrite-retrospective-v1/dev/manifest.json": "8c181f3c4af6c0760e3929265ebf8921c74cdebc514c90fd20576b93a62f925c",
+    "benchmarks/runs/rewrite-retrospective-v1/dev/results.jsonl": "1db143348d342ce8fea9857e6b6885de8fd433c0d90de83cb9710a66294da623",
+    "benchmarks/runs/rewrite-retrospective-v1/dev/review.json": "e57f09d85aa32d4e9c87b907412815b69a219d69782f03878420f5a6ef074093",
+    "benchmarks/runs/rewrite-retrospective-v1/report/review.md": "6d97b6666d5dfe21b52c65ffe779572ef915b3281f14cd2ad922820b3a27de41",
+    "benchmarks/runs/rewrite-retrospective-v1/report/summary.json": "3c071700c1ae1a8a6a62343dbb5a53d28458ab9822fa48cd6737f32bb790b076",
+    "benchmarks/runs/rewrite-retrospective-v1/test/manifest.json": "99c21774e117e189a39ddebc59de2665f87761aa418d1f18977f079a9fb70de2",
+    "benchmarks/runs/rewrite-retrospective-v1/test/results.jsonl": "5334de43324b2bb6055c3bc5ff2446a893baad8fd5447920e1468e1ef3873967",
+    "benchmarks/runs/rewrite-retrospective-v1/test/review.json": "27ce200cbecd0bf3b771c36e5ae3250ef9c43d50f1001494593c8c431f39dddb",
+    "scripts/rewrite-evidence-command.mjs": "fe1e8df1f9fdd14dee6d9d79d16914d2cf26e20eb420a35ac2b948ac37512276"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "purpose": "Additional post-native diagnostic/report sources frozen before any202-request comparison; original570-file native freeze unchanged.",
+  "files": {
+    "benchmarks/reproduction/rewrite-selector-youtu-v1/run.py": "58af595d2660f03ab2e1e4a1a94e8f6ce080b772c864e9f4e0547bccfab10a2b",
+    "benchmarks/reproduction/rewrite-selector-youtu-v1/report.py": "7819577c269527d782b3eef2cce7a539473d4e75feab96b951bd8869bd278458",
+    "benchmarks/reproduction/rewrite-selector-youtu-v1/original-qualify.py.txt": "2aaf0a1e4bdd0b557d2e51822b6dd10392dd8f2f9df48581035345bf4b1a9719",
+    "benchmarks/reproduction/rewrite-selector-youtu-v1/sources/native-template-policy.json": "712940274b618138b6a982e9201c961a9479a24e3087107ff9bf88ab9cd27db8",
+    "benchmarks/reproduction/gguf_native_probe_evidence_v3.py": "351a1a2624569bd5a9b150520fc9fb8b77ce2a8ec43b1a0da3933d5da038b7b2"
+  }
+}

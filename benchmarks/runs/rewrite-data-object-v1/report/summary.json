@@ -1,0 +1,596 @@
+{
+  "newGenerations": 72,
+  "reviewedNewOutputs": 72,
+  "reusedBaselineGenerations": 36,
+  "reusedBaselineSummary": {
+    "cases": 36,
+    "rawFaithful": 34,
+    "rawSceneReady": 34,
+    "requiredRepairs": 11,
+    "repairs": 11,
+    "truncated": 0,
+    "requestP50Ms": 7990.370166953653,
+    "requestP95Ms": 8924.782583955675,
+    "prefillP50Ms": 7347.238,
+    "decodeP50Ms": 480.877,
+    "maxObservedResidentRssBytes": 2955935744,
+    "minCachedTokens": 0,
+    "maxCachedTokens": 0
+  },
+  "summary": {
+    "qwen-lowercase": {
+      "cases": 36,
+      "rawFaithful": 34,
+      "rawSceneReady": 34,
+      "requiredRepairs": 11,
+      "repairs": 11,
+      "truncated": 0,
+      "requestP50Ms": 6885.495958849788,
+      "requestP95Ms": 9249.931250000373,
+      "prefillP50Ms": 6368.083,
+      "decodeP50Ms": 488.095,
+      "maxObservedResidentRssBytes": 2956886016,
+      "minCachedTokens": 0,
+      "maxCachedTokens": 0
+    },
+    "qwen-data-object": {
+      "cases": 36,
+      "rawFaithful": 31,
+      "rawSceneReady": 31,
+      "requiredRepairs": 11,
+      "repairs": 9,
+      "truncated": 0,
+      "requestP50Ms": 8265.175875043496,
+      "requestP95Ms": 9351.598165929317,
+      "prefillP50Ms": 7549.292,
+      "decodeP50Ms": 569.634,
+      "maxObservedResidentRssBytes": 2964209664,
+      "minCachedTokens": 0,
+      "maxCachedTokens": 0
+    }
+  },
+  "controls": [
+    {
+      "arm": "qwen-lowercase",
+      "id": "owner-anchor",
+      "requestEqual": true,
+      "bodyEqual": true,
+      "hasContext": false
+    },
+    {
+      "arm": "qwen-lowercase",
+      "id": "p4-work-correct-name",
+      "requestEqual": false,
+      "bodyEqual": true,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-lowercase",
+      "id": "p4-work-ambiguous",
+      "requestEqual": false,
+      "bodyEqual": true,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-lowercase",
+      "id": "p4-work-code",
+      "requestEqual": false,
+      "bodyEqual": true,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-lowercase",
+      "id": "pe-exact-work",
+      "requestEqual": false,
+      "bodyEqual": false,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-lowercase",
+      "id": "pe-unknown-work",
+      "requestEqual": false,
+      "bodyEqual": true,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-lowercase",
+      "id": "pe-ordinary-work",
+      "requestEqual": false,
+      "bodyEqual": true,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-lowercase",
+      "id": "pe-two-runs",
+      "requestEqual": false,
+      "bodyEqual": true,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-lowercase",
+      "id": "sp-ordinary-repair",
+      "requestEqual": false,
+      "bodyEqual": false,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-lowercase",
+      "id": "lp-stress-multi",
+      "requestEqual": false,
+      "bodyEqual": false,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-lowercase",
+      "id": "lp-stress-correction",
+      "requestEqual": false,
+      "bodyEqual": true,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-lowercase",
+      "id": "lp-stress-repeat",
+      "requestEqual": false,
+      "bodyEqual": true,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-lowercase",
+      "id": "lp-stress-injection",
+      "requestEqual": false,
+      "bodyEqual": true,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-lowercase",
+      "id": "lp-stress-condition",
+      "requestEqual": false,
+      "bodyEqual": true,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-lowercase",
+      "id": "lp-stress-misleading-unique",
+      "requestEqual": false,
+      "bodyEqual": false,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-lowercase",
+      "id": "email-anchor",
+      "requestEqual": true,
+      "bodyEqual": true,
+      "hasContext": false
+    },
+    {
+      "arm": "qwen-lowercase",
+      "id": "recipient-wrong-relevant",
+      "requestEqual": false,
+      "bodyEqual": true,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-lowercase",
+      "id": "wrong-ocr",
+      "requestEqual": false,
+      "bodyEqual": true,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-lowercase",
+      "id": "conditional-fact",
+      "requestEqual": false,
+      "bodyEqual": true,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-lowercase",
+      "id": "sp-name-repair",
+      "requestEqual": false,
+      "bodyEqual": true,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-lowercase",
+      "id": "f-prompt-token",
+      "requestEqual": false,
+      "bodyEqual": true,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-lowercase",
+      "id": "f-prompt-context",
+      "requestEqual": false,
+      "bodyEqual": true,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-lowercase",
+      "id": "f-prompt-all",
+      "requestEqual": true,
+      "bodyEqual": true,
+      "hasContext": false
+    },
+    {
+      "arm": "qwen-lowercase",
+      "id": "f-prompt-size",
+      "requestEqual": true,
+      "bodyEqual": true,
+      "hasContext": false
+    },
+    {
+      "arm": "qwen-lowercase",
+      "id": "pe-quoted-prompt",
+      "requestEqual": false,
+      "bodyEqual": true,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-lowercase",
+      "id": "pe-ambiguous-prompt",
+      "requestEqual": false,
+      "bodyEqual": true,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-lowercase",
+      "id": "pe-unique-prompt",
+      "requestEqual": false,
+      "bodyEqual": true,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-lowercase",
+      "id": "pe-question-code",
+      "requestEqual": false,
+      "bodyEqual": true,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-lowercase",
+      "id": "sp-self-correct",
+      "requestEqual": true,
+      "bodyEqual": true,
+      "hasContext": false
+    },
+    {
+      "arm": "qwen-lowercase",
+      "id": "lp-stress-literal",
+      "requestEqual": false,
+      "bodyEqual": true,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-lowercase",
+      "id": "lp-stress-question",
+      "requestEqual": false,
+      "bodyEqual": true,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-lowercase",
+      "id": "f-chat-negative",
+      "requestEqual": false,
+      "bodyEqual": true,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-lowercase",
+      "id": "f-chat-question",
+      "requestEqual": true,
+      "bodyEqual": true,
+      "hasContext": false
+    },
+    {
+      "arm": "qwen-lowercase",
+      "id": "f-chat-branches",
+      "requestEqual": false,
+      "bodyEqual": true,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-lowercase",
+      "id": "f-chat-condition",
+      "requestEqual": true,
+      "bodyEqual": true,
+      "hasContext": false
+    },
+    {
+      "arm": "qwen-lowercase",
+      "id": "sp-oral-polish",
+      "requestEqual": true,
+      "bodyEqual": true,
+      "hasContext": false
+    },
+    {
+      "arm": "qwen-data-object",
+      "id": "owner-anchor",
+      "requestEqual": false,
+      "bodyEqual": true,
+      "hasContext": false
+    },
+    {
+      "arm": "qwen-data-object",
+      "id": "p4-work-correct-name",
+      "requestEqual": false,
+      "bodyEqual": true,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-data-object",
+      "id": "p4-work-ambiguous",
+      "requestEqual": false,
+      "bodyEqual": true,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-data-object",
+      "id": "p4-work-code",
+      "requestEqual": false,
+      "bodyEqual": false,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-data-object",
+      "id": "pe-exact-work",
+      "requestEqual": false,
+      "bodyEqual": true,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-data-object",
+      "id": "pe-unknown-work",
+      "requestEqual": false,
+      "bodyEqual": true,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-data-object",
+      "id": "pe-ordinary-work",
+      "requestEqual": false,
+      "bodyEqual": false,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-data-object",
+      "id": "pe-two-runs",
+      "requestEqual": false,
+      "bodyEqual": true,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-data-object",
+      "id": "sp-ordinary-repair",
+      "requestEqual": false,
+      "bodyEqual": false,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-data-object",
+      "id": "lp-stress-multi",
+      "requestEqual": false,
+      "bodyEqual": false,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-data-object",
+      "id": "lp-stress-correction",
+      "requestEqual": false,
+      "bodyEqual": true,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-data-object",
+      "id": "lp-stress-repeat",
+      "requestEqual": false,
+      "bodyEqual": false,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-data-object",
+      "id": "lp-stress-injection",
+      "requestEqual": false,
+      "bodyEqual": false,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-data-object",
+      "id": "lp-stress-condition",
+      "requestEqual": false,
+      "bodyEqual": false,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-data-object",
+      "id": "lp-stress-misleading-unique",
+      "requestEqual": false,
+      "bodyEqual": false,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-data-object",
+      "id": "email-anchor",
+      "requestEqual": false,
+      "bodyEqual": true,
+      "hasContext": false
+    },
+    {
+      "arm": "qwen-data-object",
+      "id": "recipient-wrong-relevant",
+      "requestEqual": false,
+      "bodyEqual": false,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-data-object",
+      "id": "wrong-ocr",
+      "requestEqual": false,
+      "bodyEqual": true,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-data-object",
+      "id": "conditional-fact",
+      "requestEqual": false,
+      "bodyEqual": true,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-data-object",
+      "id": "sp-name-repair",
+      "requestEqual": false,
+      "bodyEqual": false,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-data-object",
+      "id": "f-prompt-token",
+      "requestEqual": false,
+      "bodyEqual": true,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-data-object",
+      "id": "f-prompt-context",
+      "requestEqual": false,
+      "bodyEqual": false,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-data-object",
+      "id": "f-prompt-all",
+      "requestEqual": false,
+      "bodyEqual": false,
+      "hasContext": false
+    },
+    {
+      "arm": "qwen-data-object",
+      "id": "f-prompt-size",
+      "requestEqual": false,
+      "bodyEqual": true,
+      "hasContext": false
+    },
+    {
+      "arm": "qwen-data-object",
+      "id": "pe-quoted-prompt",
+      "requestEqual": false,
+      "bodyEqual": true,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-data-object",
+      "id": "pe-ambiguous-prompt",
+      "requestEqual": false,
+      "bodyEqual": true,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-data-object",
+      "id": "pe-unique-prompt",
+      "requestEqual": false,
+      "bodyEqual": false,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-data-object",
+      "id": "pe-question-code",
+      "requestEqual": false,
+      "bodyEqual": false,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-data-object",
+      "id": "sp-self-correct",
+      "requestEqual": false,
+      "bodyEqual": true,
+      "hasContext": false
+    },
+    {
+      "arm": "qwen-data-object",
+      "id": "lp-stress-literal",
+      "requestEqual": false,
+      "bodyEqual": true,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-data-object",
+      "id": "lp-stress-question",
+      "requestEqual": false,
+      "bodyEqual": true,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-data-object",
+      "id": "f-chat-negative",
+      "requestEqual": false,
+      "bodyEqual": true,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-data-object",
+      "id": "f-chat-question",
+      "requestEqual": false,
+      "bodyEqual": true,
+      "hasContext": false
+    },
+    {
+      "arm": "qwen-data-object",
+      "id": "f-chat-branches",
+      "requestEqual": false,
+      "bodyEqual": true,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-data-object",
+      "id": "f-chat-condition",
+      "requestEqual": false,
+      "bodyEqual": true,
+      "hasContext": false
+    },
+    {
+      "arm": "qwen-data-object",
+      "id": "sp-oral-polish",
+      "requestEqual": false,
+      "bodyEqual": false,
+      "hasContext": false
+    }
+  ],
+  "selection": {
+    "selected": null,
+    "qualified": false,
+    "freezeSha256": "2fed94bceb1d65495439d33dbcb958e9478dd709dee0d9058c84c98515e00f83",
+    "evidence": {
+      "qwen-lowercase": {
+        "resultsSha256": "e71e6488f2a4d1f5fab5697aa9d1a8742fca13479cb99d19faa5197128580896",
+        "reviewSha256": "4a7eabf82a39efa34cbef7057d7d47a55062b9142fd3f73e9cf1cdea26bfc66e"
+      },
+      "qwen-data-object": {
+        "resultsSha256": "cfb5572780277a166b7086c17881b3a71a820b503db2e02c8584e427275dfbc7",
+        "reviewSha256": "b4024aa4b0c6ea9b9aeb9abd6ca971581f5d25fd0a8c4e7607d892ca6e152e08"
+      }
+    },
+    "reason": "Lowercase reference keys do not fix unrelated OCR addition and restore definite cash/cache definition reversal despite unchanged aggregate34/36. Uniform input JSON removes that addition but loses two recipient repairs and distinct multi-term/conditional targets,31/36 faithful and9/11 repairs. No fresh24 or production adoption."
+  },
+  "productionActivated": false,
+  "scope": {
+    "cases": 36,
+    "newGenerations": 72,
+    "arms": [
+      "qwen-lowercase",
+      "qwen-data-object"
+    ],
+    "baseline": {
+      "run": "benchmarks/runs/rewrite-private-spans-v1/qwen-private-spans",
+      "resultsSha256": "4ea717bfb6a7f61ba129518c0b951eb9b121865fdf88b7cce36337918f6c05a1",
+      "reviewSha256": "05198958f149a929e35e4e877a3beb22c3c5937952bc71f8f8eb72a82ab93bf4",
+      "newInference": false
+    },
+    "scope": "Full36 exposed Chinese synthetic regressions; reused baseline observations count only in their original round, never as new generation.",
+    "treatments": [
+      "Lowercase arm changes only current reference JSON key casing, preserving all values, prompts, demonstrations and encoded source. No-context requests must be byte-identical to the frozen baseline.",
+      "Data-object arm converts all demonstration/current user turns to a uniform scene/reference/evidence/token-types/dictation JSON object and updates only the trusted system data locator. Full OCR remains; same private maps/cleanup/scene templates/decoding. This is an input-packaging package, not output JSON or a tool."
+    ],
+    "gate": "A candidate requires all36 faithful under the retained rubric, all11 required repairs, owner/email anchors retained, at least35/36 scene-ready, no truncation/new harmful correction/unexpanded tokens. Failed development does not consume fresh24 or alter the release scope.",
+    "limits": "No semantic validator, output rejection or source fallback. Normalization-sensitive ratings stay explicitly qualified, not relabeled as definition reversal. Only pinned Qwen3.5-2B/CPU4/GPU0/cacheoff/reasoningoff384. No4B/olderQwen/Granite. CurrentM4/32GB is not minimumAppleSilicon16GB or original-language/native/independent review acceptance. Reused serial baseline and clock/host drift prohibit causal timing claims."
+  }
+}

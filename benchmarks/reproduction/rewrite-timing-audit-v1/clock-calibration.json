@@ -1,0 +1,79 @@
+{
+  "scope": "Independent awake clock calibration, no model generation or power/QoS change. Native helper inherits current launch QoS; it does not observe inference thread QoS. Does not diagnose historical sleep or performance drift.",
+  "observedAt": "2026-10-19T17:21:33.210602+00:00",
+  "pythonClock": "namespace(implementation='mach_absolute_time()', monotonic=True, adjustable=False, resolution=1e-09)",
+  "records": [
+    {
+      "pythonMonotonicElapsedMs": 854.1525830514729,
+      "pythonWallElapsedMs": 854.1600704193115,
+      "native": {
+        "architecture": "arm64",
+        "qosClass": 33,
+        "timebaseNumer": 125,
+        "timebaseDenom": 3,
+        "monotonicStartMs": 4223274150.099,
+        "uptimeStartMs": 1968270871.686708,
+        "machAbsoluteStartMs": 1968270871.68675,
+        "continuousStartMs": 4223279125.852666,
+        "monotonicElapsedMs": 251.079,
+        "uptimeElapsedMs": 251.077792,
+        "absoluteElapsedMs": 251.077792,
+        "continuousElapsedMs": 251.077792
+      }
+    },
+    {
+      "pythonMonotonicElapsedMs": 264.39137500710785,
+      "pythonWallElapsedMs": 264.4023895263672,
+      "native": {
+        "architecture": "arm64",
+        "qosClass": 33,
+        "timebaseNumer": 125,
+        "timebaseDenom": 3,
+        "monotonicStartMs": 4223274415.978,
+        "uptimeStartMs": 1968271137.564375,
+        "machAbsoluteStartMs": 1968271137.564417,
+        "continuousStartMs": 4223279391.730333,
+        "monotonicElapsedMs": 250.281,
+        "uptimeElapsedMs": 250.280791,
+        "absoluteElapsedMs": 250.280792,
+        "continuousElapsedMs": 250.28075
+      }
+    },
+    {
+      "pythonMonotonicElapsedMs": 267.795457970351,
+      "pythonWallElapsedMs": 267.8070068359375,
+      "native": {
+        "architecture": "arm64",
+        "qosClass": 33,
+        "timebaseNumer": 125,
+        "timebaseDenom": 3,
+        "monotonicStartMs": 4223274678.99,
+        "uptimeStartMs": 1968271400.575708,
+        "machAbsoluteStartMs": 1968271400.57575,
+        "continuousStartMs": 4223279654.741625,
+        "monotonicElapsedMs": 255.021,
+        "uptimeElapsedMs": 255.019708,
+        "absoluteElapsedMs": 255.019708,
+        "continuousElapsedMs": 255.019749
+      }
+    },
+    {
+      "pythonMonotonicElapsedMs": 267.82599999569356,
+      "pythonWallElapsedMs": 267.8360939025879,
+      "native": {
+        "architecture": "arm64",
+        "qosClass": 33,
+        "timebaseNumer": 125,
+        "timebaseDenom": 3,
+        "monotonicStartMs": 4223274947.108,
+        "uptimeStartMs": 1968271668.692041,
+        "machAbsoluteStartMs": 1968271668.692083,
+        "continuousStartMs": 4223279922.858,
+        "monotonicElapsedMs": 254.995,
+        "uptimeElapsedMs": 254.994667,
+        "absoluteElapsedMs": 254.994667,
+        "continuousElapsedMs": 254.994667
+      }
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "version": "selector-reference-turn-v1",
+  "systemAndExampleSources": {
+    "baseline": {
+      "path": "benchmarks/reproduction/rewrite-selector-screen-v1/templates/baseline/prompts.json",
+      "sha256": "992e89acfa462c54fa893e8319b6e031fa01dcb454ab166651abc834d2c4c35a"
+    },
+    "balanced": {
+      "path": "benchmarks/reproduction/rewrite-selector-screen-v1/templates/balanced/prompts.json",
+      "sha256": "bd9df3fdec2207ae21b3bbba79f1c270798bbe73badd87c6a7537e7472bf0430"
+    }
+  },
+  "transformation": "For every example and current user message, move the complete context object to a preceding tool-role message. Preserve all field values, source, hypotheses, scene, trusted system and assistant demonstration answers. Native tool-role renders a user turn with tool_response markers; no privilege boundary or tool execution is claimed.",
+  "ownership": "Composite recipe with pinned original prompt files and per-row complete actual message hashes."
+}

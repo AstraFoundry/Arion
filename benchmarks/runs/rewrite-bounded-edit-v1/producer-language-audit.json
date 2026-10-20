@@ -1,0 +1,49 @@
+{
+  "newInference": false,
+  "method": "Actual frozen producer execution on three authored diagnostic inputs. Expected candidate is evaluator-only, not passed to prepare. No LLM output or quality score.",
+  "observations": [
+    {
+      "language": "zh",
+      "source": "给 build cache 加日志，别改设置。",
+      "context": {
+        "Screen": "build.go: func buildCache(key string)"
+      },
+      "expectedCandidate": "buildCache",
+      "actualHypotheses": [
+        {
+          "startUtf8": 4,
+          "endUtf8": 15,
+          "sourceSpan": "build cache",
+          "candidateSpellings": [
+            "buildCache"
+          ],
+          "status": "unique",
+          "kind": "english-identifier",
+          "id": "e0"
+        }
+      ],
+      "covered": true
+    },
+    {
+      "language": "en",
+      "source": "Please add logging to build cache, but do not change settings.",
+      "context": {
+        "Screen": "build.go: func buildCache(key string)"
+      },
+      "expectedCandidate": "buildCache",
+      "actualHypotheses": [],
+      "covered": false
+    },
+    {
+      "language": "mixed",
+      "source": "请 check build cache before deploy，别改设置。",
+      "context": {
+        "Screen": "build.go: func buildCache(key string)"
+      },
+      "expectedCandidate": "buildCache",
+      "actualHypotheses": [],
+      "covered": false
+    }
+  ],
+  "rootCause": "Whole consecutive-English phrase matching misses identifier subspans in longer English/mixed runs."
+}

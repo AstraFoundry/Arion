@@ -1,0 +1,13 @@
+{
+  "kind": "fixed-4b-model-serializer-screen",
+  "developmentCases": 8,
+  "freshCases": 16,
+  "formats": [
+    "labeled",
+    "json",
+    "xml"
+  ],
+  "fixed": "Identical 4B checkpoint/export, templates/examples, native worker, runtime, threads, token budget and request deadline; only serializer changes for demonstrations and final input.",
+  "selection": "Review all 24 development outputs. Run the pre-frozen fresh16 only if an arm preserves all8 meanings, completes both required repairs and organizes the owner anchor without new harm. Freeze selected format before evaluation; otherwise no promotion and no fresh inference.",
+  "scope": "Work/email authored Chinese diagnostic, not full scene/natural ASR/OCR/native release acceptance. New fresh input bytes frozen before development generation. A larger model or better layout is not by itself a release decision."
+}

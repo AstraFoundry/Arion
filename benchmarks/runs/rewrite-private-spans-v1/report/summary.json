@@ -1,0 +1,283 @@
+{
+  "controls": [
+    {
+      "id": "owner-anchor",
+      "hasPrivateSpans": false,
+      "requestEqual": false,
+      "bodyEqual": true
+    },
+    {
+      "id": "p4-work-correct-name",
+      "hasPrivateSpans": false,
+      "requestEqual": false,
+      "bodyEqual": true
+    },
+    {
+      "id": "p4-work-ambiguous",
+      "hasPrivateSpans": true,
+      "requestEqual": false,
+      "bodyEqual": true
+    },
+    {
+      "id": "p4-work-code",
+      "hasPrivateSpans": false,
+      "requestEqual": false,
+      "bodyEqual": true
+    },
+    {
+      "id": "email-anchor",
+      "hasPrivateSpans": false,
+      "requestEqual": false,
+      "bodyEqual": true
+    },
+    {
+      "id": "recipient-wrong-relevant",
+      "hasPrivateSpans": false,
+      "requestEqual": false,
+      "bodyEqual": false
+    },
+    {
+      "id": "wrong-ocr",
+      "hasPrivateSpans": false,
+      "requestEqual": false,
+      "bodyEqual": true
+    },
+    {
+      "id": "conditional-fact",
+      "hasPrivateSpans": false,
+      "requestEqual": false,
+      "bodyEqual": true
+    },
+    {
+      "id": "f-prompt-token",
+      "hasPrivateSpans": false,
+      "requestEqual": false,
+      "bodyEqual": true
+    },
+    {
+      "id": "f-prompt-context",
+      "hasPrivateSpans": false,
+      "requestEqual": false,
+      "bodyEqual": true
+    },
+    {
+      "id": "f-prompt-all",
+      "hasPrivateSpans": false,
+      "requestEqual": false,
+      "bodyEqual": true
+    },
+    {
+      "id": "f-prompt-size",
+      "hasPrivateSpans": false,
+      "requestEqual": false,
+      "bodyEqual": true
+    },
+    {
+      "id": "f-chat-negative",
+      "hasPrivateSpans": false,
+      "requestEqual": false,
+      "bodyEqual": true
+    },
+    {
+      "id": "f-chat-question",
+      "hasPrivateSpans": false,
+      "requestEqual": false,
+      "bodyEqual": true
+    },
+    {
+      "id": "f-chat-branches",
+      "hasPrivateSpans": false,
+      "requestEqual": false,
+      "bodyEqual": true
+    },
+    {
+      "id": "f-chat-condition",
+      "hasPrivateSpans": false,
+      "requestEqual": false,
+      "bodyEqual": true
+    },
+    {
+      "id": "pe-exact-work",
+      "hasPrivateSpans": false,
+      "requestEqual": false,
+      "bodyEqual": true
+    },
+    {
+      "id": "pe-quoted-prompt",
+      "hasPrivateSpans": true,
+      "requestEqual": false,
+      "bodyEqual": true
+    },
+    {
+      "id": "pe-unknown-work",
+      "hasPrivateSpans": false,
+      "requestEqual": false,
+      "bodyEqual": true
+    },
+    {
+      "id": "pe-ambiguous-prompt",
+      "hasPrivateSpans": true,
+      "requestEqual": false,
+      "bodyEqual": true
+    },
+    {
+      "id": "pe-unique-prompt",
+      "hasPrivateSpans": false,
+      "requestEqual": false,
+      "bodyEqual": true
+    },
+    {
+      "id": "pe-ordinary-work",
+      "hasPrivateSpans": false,
+      "requestEqual": false,
+      "bodyEqual": false
+    },
+    {
+      "id": "pe-two-runs",
+      "hasPrivateSpans": true,
+      "requestEqual": false,
+      "bodyEqual": false
+    },
+    {
+      "id": "pe-question-code",
+      "hasPrivateSpans": false,
+      "requestEqual": false,
+      "bodyEqual": true
+    },
+    {
+      "id": "sp-ordinary-repair",
+      "hasPrivateSpans": false,
+      "requestEqual": false,
+      "bodyEqual": true
+    },
+    {
+      "id": "sp-name-repair",
+      "hasPrivateSpans": false,
+      "requestEqual": false,
+      "bodyEqual": true
+    },
+    {
+      "id": "sp-oral-polish",
+      "hasPrivateSpans": false,
+      "requestEqual": false,
+      "bodyEqual": true
+    },
+    {
+      "id": "sp-self-correct",
+      "hasPrivateSpans": false,
+      "requestEqual": false,
+      "bodyEqual": true
+    },
+    {
+      "id": "lp-stress-multi",
+      "hasPrivateSpans": true,
+      "requestEqual": false,
+      "bodyEqual": false
+    },
+    {
+      "id": "lp-stress-correction",
+      "hasPrivateSpans": false,
+      "requestEqual": false,
+      "bodyEqual": true
+    },
+    {
+      "id": "lp-stress-repeat",
+      "hasPrivateSpans": true,
+      "requestEqual": false,
+      "bodyEqual": false
+    },
+    {
+      "id": "lp-stress-literal",
+      "hasPrivateSpans": true,
+      "requestEqual": false,
+      "bodyEqual": false
+    },
+    {
+      "id": "lp-stress-injection",
+      "hasPrivateSpans": true,
+      "requestEqual": false,
+      "bodyEqual": true
+    },
+    {
+      "id": "lp-stress-condition",
+      "hasPrivateSpans": true,
+      "requestEqual": false,
+      "bodyEqual": false
+    },
+    {
+      "id": "lp-stress-question",
+      "hasPrivateSpans": true,
+      "requestEqual": false,
+      "bodyEqual": true
+    },
+    {
+      "id": "lp-stress-misleading-unique",
+      "hasPrivateSpans": false,
+      "requestEqual": false,
+      "bodyEqual": false
+    }
+  ],
+  "generations": 72,
+  "reviewedOutputs": 72,
+  "summary": {
+    "qwen-clean-system": {
+      "cases": 36,
+      "rawFaithful": 31,
+      "rawSceneReady": 30,
+      "requiredRepairs": 11,
+      "repairs": 10,
+      "truncated": 0,
+      "requestP50Ms": 5969.527166802436,
+      "requestP95Ms": 7894.242167007178,
+      "prefillP50Ms": 5587.448,
+      "decodeP50Ms": 385.733,
+      "maxObservedResidentRssBytes": 3225321472,
+      "minCachedTokens": 0,
+      "maxCachedTokens": 0
+    },
+    "qwen-private-spans": {
+      "cases": 36,
+      "rawFaithful": 34,
+      "rawSceneReady": 34,
+      "requiredRepairs": 11,
+      "repairs": 11,
+      "truncated": 0,
+      "requestP50Ms": 7990.370166953653,
+      "requestP95Ms": 8924.782583955675,
+      "prefillP50Ms": 7347.238,
+      "decodeP50Ms": 480.877,
+      "maxObservedResidentRssBytes": 2955935744,
+      "minCachedTokens": 0,
+      "maxCachedTokens": 0
+    }
+  },
+  "selection": {
+    "selected": null,
+    "qualified": false,
+    "freezeSha256": "d219619b6b544e05db4b060b4e8ad812475c577b36cec9454639c17a0a165cd7",
+    "evidence": {
+      "qwen-clean-system": {
+        "resultsSha256": "fa3a1b4c3db8d76ed627e80177a499a147ed205620b9372fbec4edb9a219b40f",
+        "reviewSha256": "aba660fc399d4ae5d277e6fa31b58461b2b19cbe206adb81987f587446a8239d"
+      },
+      "qwen-private-spans": {
+        "resultsSha256": "4ea717bfb6a7f61ba129518c0b951eb9b121865fdf88b7cce36337918f6c05a1",
+        "reviewSha256": "05198958f149a929e35e4e877a3beb22c3c5937952bc71f8f8eb72a82ab93bf4"
+      }
+    },
+    "reason": "Candidate improves multiple ambiguity, literal protection, duplicate-task cleanup and name repair, but adds unrelated OCR function content in an ordinary cash-balance message. One further identifier normalization fails the frozen conservative rule while its explicit cash-not-cache definition is preserved. No qualification regardless of naming alignment; no fresh24 or production adoption."
+  },
+  "productionActivated": false,
+  "scope": {
+    "cases": 36,
+    "generations": 72,
+    "scope": "Complete exposed synthetic regression, not natural/held-out/independent release evidence.",
+    "arms": [
+      "qwen-clean-system",
+      "qwen-private-spans"
+    ],
+    "treatment": "Both arms use byte-verified production CleanSpeech observations as model input; original source and complete cleanup/span trace remain separate. Candidate additionally encodes literal quote/code contents, shares tokens for identical kind/written spans, keeps restoration map private and removes overlapping derived pronunciation details from model input. Full original OCR remains. Surrounding natural generation, same prior system-role templates and384-token budget; no output rejection or fallback.",
+    "gate": "All36 faithful, all11 repairs, natural owner/email anchors retained, at least35/36 scene usable, no new harmful correction or unexpanded markers/truncation. No fresh24 inference before this paired gate passes. Original rubric retained pending normalization clarification; no lexical overlap gate.",
+    "limits": "Precomputed actual cleanup is not a measured full-chain cleanup latency. Several protection/visibility changes form a package comparison. No4B/olderQwen/Granite, actual16GB/native or original-language acceptance. Existing clock/host drift precludes causal timing claims."
+  }
+}

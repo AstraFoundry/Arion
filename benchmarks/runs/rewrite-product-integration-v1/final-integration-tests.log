@@ -1,0 +1,14 @@
+ok  	arion.local/desktop/infrastructure/llm/client	(cached)
+ok  	arion.local/desktop/infrastructure/llm/engine	(cached)
+?   	arion.local/desktop/infrastructure/llm/genai	[no test files]
+ok  	arion.local/desktop/infrastructure/llm/gguf	1.233s
+ok  	arion.local/desktop/infrastructure/llm/prompt	2.074s
+?   	arion.local/desktop/infrastructure/llm/protocol	[no test files]
+ok  	arion.local/desktop/infrastructure/llm/spelling	1.704s
+?   	arion.local/desktop/infrastructure/rewriting	[no test files]
+ok  	arion.local/desktop/infrastructure/provision	(cached)
+ok  	arion.local/models	(cached)
+ok  	arion.local/core/application	(cached)
+?   	arion.local/core/contracts	[no test files]
+ok  	arion.local/core/domain	0.826s
+?   	arion.local/core/domain/ports	[no test files]

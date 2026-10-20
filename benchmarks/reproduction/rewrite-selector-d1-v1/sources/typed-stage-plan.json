@@ -1,0 +1,17 @@
+{
+  "status": "design-only",
+  "modelResponses": 0,
+  "generatedTokens": 0,
+  "productionActivated": false,
+  "component": "Local contextual spelling decision; never a final-body formatter",
+  "entrypoint": "/v1/systemone",
+  "representation": "Preserve complete original trusted rules, ten original user/assistant example pairs and complete final source/OCR/hypotheses in explicitly named state fields. Each unique hypothesis is a named typed-choice question over that state; no keyword-only OCR or source stripping.",
+  "expectedResponse": "Native typed answers/probabilities retained exactly. Do not synthesize chat-completion JSON or interpret zero generated tokens as zero model inference.",
+  "comparisonLimits": "Model, bidirectional decision architecture, serialization and task framing change together. Cannot claim isolated same-request model comparison. Compare unchanged evaluator/source scope separately.",
+  "ambiguityPolicy": "Original12 forced-original schemas per101 source cases have no autonomous decision. For a future full study retain those explicit deterministic outcomes without crediting new model responses; compare all457 source treatments and report89 inferred candidate-source cases separately. Never use a confidence threshold or semantic rejection/source fallback to hide model errors.",
+  "preflight": "Freeze sources/actual artifact/runtime/complete request payloads and native-only probe protocol before any inference; six unique-candidate source cases on Metal and CPU. Check actual native model support and documented typed response before adapting evidence loaders. Any unsupported startup or endpoint stays an explicit failure.",
+  "budget": "Official card requires whole question in one batch, b=ub4096; retain actual native token accounting and fail oversize rather than truncating. Increase only by a new preregistered protocol if necessary.",
+  "quality": "Evaluate required corrections and harmful literal/role substitutions independently. A protocol pass is not a semantic pass. Then personally read all outputs and source/context pairs; final-body/native/fresh/independent/actual16GB gates remain mandatory.",
+  "license": "Custom-license local research authorized by user; production adoption requires restriction review.",
+  "hardware": "User currently has no16GBMac and authorizes32GB development verification only; minimum acceptance unchanged."
+}

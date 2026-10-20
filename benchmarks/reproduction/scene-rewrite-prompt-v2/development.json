@@ -1,0 +1,275 @@
+[
+  {
+    "id": "dev-payment-zh",
+    "split": "dev",
+    "cluster": "payment",
+    "scene": "work",
+    "language": "zh",
+    "source": "支付接口做好了，测试环境还没准备好，等环境好了再联调，今天先别发布。",
+    "context": {},
+    "facts": [
+      "支付",
+      "(?:完成|做好)",
+      "(?:环境)",
+      "(?:联调)",
+      "(?:别|不|暂缓|禁止).*发布"
+    ],
+    "layout": true,
+    "cohort": "development-regression"
+  },
+  {
+    "id": "dev-owners-zh",
+    "split": "dev",
+    "cluster": "owners",
+    "scene": "work",
+    "language": "zh",
+    "source": "小陈负责设计，小刘负责测试，设计稿周三交，测试周五完成。",
+    "context": {},
+    "facts": [
+      "小陈.*设计|设计.*小陈",
+      "小刘.*测试|测试.*小刘",
+      "周三",
+      "周五"
+    ],
+    "layout": true,
+    "cohort": "development-regression"
+  },
+  {
+    "id": "dev-payment-en",
+    "split": "dev",
+    "cluster": "payment",
+    "scene": "work",
+    "language": "en",
+    "source": "The payment API is finished, the test environment is not ready, start integration when it is ready, and do not release today.",
+    "context": {},
+    "facts": [
+      "payment",
+      "(?:finished|complete|done)",
+      "environment",
+      "integration",
+      "(?:not|no|hold|wait|after).*release|release.*(?:not|after|wait)"
+    ],
+    "layout": true,
+    "cohort": "development-regression"
+  },
+  {
+    "id": "dev-owners-en",
+    "split": "dev",
+    "cluster": "owners",
+    "scene": "work",
+    "language": "en",
+    "source": "Mara owns design and Leo owns testing, the design is due Wednesday and testing finishes Friday.",
+    "context": {},
+    "facts": [
+      "Mara.*design|design.*Mara",
+      "Leo.*test|test.*Leo",
+      "Wednesday",
+      "Friday"
+    ],
+    "layout": true,
+    "cohort": "development-regression"
+  },
+  {
+    "id": "dev-pagination-zh",
+    "split": "dev",
+    "cluster": "pagination",
+    "scene": "prompt",
+    "language": "zh",
+    "source": "给 /api/orders 加分页，默认每页二十条，保留原来的排序，不要改返回字段。",
+    "context": {},
+    "facts": [
+      "/api/orders",
+      "(?:二十|20)",
+      "排序",
+      "(?:不要|不|保留).*字段"
+    ],
+    "layout": true,
+    "cohort": "development-regression"
+  },
+  {
+    "id": "dev-investigate-zh",
+    "split": "dev",
+    "cluster": "investigate",
+    "scene": "prompt",
+    "language": "zh",
+    "source": "分析 OrderList.tsx 里的 TS2345 报错，先解释原因，不要提交代码。",
+    "context": {},
+    "facts": [
+      "OrderList.tsx",
+      "TS2345",
+      "(?:分析|解释|原因)",
+      "(?:不要|不|暂缓).*代码"
+    ],
+    "layout": true,
+    "cohort": "development-regression"
+  },
+  {
+    "id": "dev-pagination-en",
+    "split": "dev",
+    "cluster": "pagination",
+    "scene": "prompt",
+    "language": "en",
+    "source": "Add pagination to /api/orders with twenty items per page, keep the current ordering and do not change response fields.",
+    "context": {},
+    "facts": [
+      "/api/orders",
+      "(?:twenty|20)",
+      "order",
+      "(?:not change|unchanged|keep|preserve).*fields|fields.*unchanged"
+    ],
+    "layout": true,
+    "cohort": "development-regression"
+  },
+  {
+    "id": "dev-investigate-en",
+    "split": "dev",
+    "cluster": "investigate",
+    "scene": "prompt",
+    "language": "en",
+    "source": "Investigate TS2345 in OrderList.tsx, explain the cause first, and do not submit code.",
+    "context": {},
+    "facts": [
+      "TS2345",
+      "OrderList.tsx",
+      "(?:investigate|explain|cause)",
+      "(?:not|no).*code"
+    ],
+    "layout": true,
+    "cohort": "development-regression"
+  },
+  {
+    "id": "dev-leave-zh",
+    "split": "dev",
+    "cluster": "leave",
+    "scene": "email",
+    "language": "zh",
+    "source": "周经理您好，我周四请假一天，交接给小赵了，麻烦批准，谢谢。",
+    "context": {},
+    "facts": [
+      "周经理",
+      "周四",
+      "(?:一天|1.*天)",
+      "小赵",
+      "(?:批准|审批)"
+    ],
+    "layout": true,
+    "cohort": "development-regression"
+  },
+  {
+    "id": "dev-review-zh",
+    "split": "dev",
+    "cluster": "review",
+    "scene": "email",
+    "language": "zh",
+    "source": "李老师您好，报告初稿已附上，麻烦周二之前看一下，有问题随时联系，谢谢。",
+    "context": {},
+    "facts": [
+      "李老师",
+      "(?:报告|初稿)",
+      "周二",
+      "(?:联系|沟通)"
+    ],
+    "layout": true,
+    "cohort": "development-regression"
+  },
+  {
+    "id": "dev-leave-en",
+    "split": "dev",
+    "cluster": "leave",
+    "scene": "email",
+    "language": "en",
+    "source": "Hi Rowan, I need Thursday off, I handed my work to Priya, please approve it, thanks.",
+    "context": {},
+    "facts": [
+      "Rowan",
+      "Thursday",
+      "Priya",
+      "(?:approve|approval)"
+    ],
+    "layout": true,
+    "cohort": "development-regression"
+  },
+  {
+    "id": "dev-review-en",
+    "split": "dev",
+    "cluster": "review",
+    "scene": "email",
+    "language": "en",
+    "source": "Hi Ellis, the report draft is attached, please review it before Tuesday and contact me with any questions, thanks.",
+    "context": {},
+    "facts": [
+      "Ellis",
+      "draft",
+      "Tuesday",
+      "(?:contact|reach|questions)"
+    ],
+    "layout": true,
+    "cohort": "development-regression"
+  },
+  {
+    "id": "dev-question-zh",
+    "split": "dev",
+    "cluster": "question",
+    "scene": "chat",
+    "language": "zh",
+    "source": "你能帮我看看这个接口为什么这么慢吗？",
+    "context": {},
+    "facts": [
+      "(?:吗|？|\\?)",
+      "接口",
+      "慢"
+    ],
+    "layout": false,
+    "cohort": "development-regression"
+  },
+  {
+    "id": "dev-uncertain-zh",
+    "split": "dev",
+    "cluster": "uncertain",
+    "scene": "chat",
+    "language": "zh",
+    "source": "我大概六点到，还不能确定，你们先别点我的饭。",
+    "context": {},
+    "facts": [
+      "(?:大概|可能|预计)",
+      "(?:六点|6)",
+      "(?:不能确定|不确定|未定)",
+      "(?:别|不).*饭"
+    ],
+    "layout": false,
+    "cohort": "development-regression"
+  },
+  {
+    "id": "dev-question-en",
+    "split": "dev",
+    "cluster": "question",
+    "scene": "chat",
+    "language": "en",
+    "source": "Can you check why this endpoint is so slow?",
+    "context": {},
+    "facts": [
+      "(?:can you|could you|please|\\?)",
+      "(?:endpoint|API)",
+      "slow"
+    ],
+    "layout": false,
+    "cohort": "development-regression"
+  },
+  {
+    "id": "dev-uncertain-en",
+    "split": "dev",
+    "cluster": "uncertain",
+    "scene": "chat",
+    "language": "en",
+    "source": "I may arrive around six but I am not sure yet, please do not order food for me.",
+    "context": {},
+    "facts": [
+      "(?:may|might|perhaps)",
+      "(?:six|6)",
+      "(?:not sure|uncertain|unsure)",
+      "(?:not|don.t).*order"
+    ],
+    "layout": false,
+    "cohort": "development-regression"
+  }
+]

@@ -1,0 +1,30 @@
+{
+  "scope": "Acquisition and source review only. No inference, benchmark success, runtime compatibility or production selection claimed.",
+  "upstream": "ibm-granite/granite-4.0-h-1b",
+  "upstreamRevision": "d18cca4c121edb87d022116d281ce212c9136f57",
+  "exportRepo": "unsloth/granite-4.0-h-1b-GGUF",
+  "exportRevision": "74f5511840300fdee7c70ccfc5bd57ecde0c8bbc",
+  "actualGgufParameters": 1461538368,
+  "architecture": "granitehybrid",
+  "modelFilename": "granite-4.0-h-1b-Q4_K_M.gguf",
+  "modelSha256": "fd3b85f09520df9d898e2bbcf5da22fc518dbf9d662bb52e214d946c72aafacc",
+  "modelWorkspacePath": ".workspace/rewrite-next-models/granite-4.0-h-1b-Q4_K_M.gguf",
+  "license": "Apache-2.0 declared by pinned upstream/export cards. No standalone license file in the upstream file listing; original standard Apache2 text retained separately, not misattributed as repository content.",
+  "licenseTextSource": "https://www.apache.org/licenses/LICENSE-2.0.txt",
+  "licenseTextSha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+  "otherCandidate": "LFM2.5-1.2B-Instruct upstream reports1,170,340,608 elements but uses a custom LFM license. Not represented as an Apache2 equivalent. Not provisioned or inferred.",
+  "sources": {
+    "LICENSE-2.0.txt": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+    "granite-download.json": "14b0f007c8e9cae202b7952f21fc884af438d6c199a47c84b30130654a2b333f",
+    "granite-gguf-info.json": "868b04b2f5420789052126fe83524a91ccb42ff84386e3a29bd67840971332ce",
+    "granite-sources.json": "601c0e5c75c6d2684119e96fe7f1c82bb773f4d4c808996789d5a19a3d318e19",
+    "ibm-granite--granite-4.0-h-1b--README.md": "01bbf5926a409f36c359dc40dd9af45ec48023400c167f0fe4d85c4c7b2e884c",
+    "ibm-granite--granite-4.0-h-1b--chat_template.jinja": "9524df67b77a7b25a2dfee898f75b316a157eb9d855b51e32aeac79d7c8a83ce",
+    "ibm-granite--granite-4.0-h-1b--config.json": "aafbdabf9b0ff18ab18e6d22b867b1ba006305fd666a8d9f579de7c4a98ca0b8",
+    "ibm-granite--granite-4.0-h-1b--generation_config.json": "7c04cb9d2ba771f7528fba5a7104999cdaf7566d02b5fbd58472829f62716177",
+    "ibm-granite--granite-4.0-h-1b--tokenizer_config.json": "a5ec5daab12ba090a90f3dd169c8f9c275557013a87b9c1258dc7cb497a35c86",
+    "ibm-granite--granite-4.0-h-1b.json": "fe45029b1fa72fe0c561a6bd1f2872de454e538903a82d2bba1f40f27ebcfd90",
+    "unsloth--granite-4.0-h-1b-GGUF--README.md": "03b044e941f0e242e56ab7f545f9d4652c46fc39ab9e85d7cc383ae9596c5754",
+    "unsloth--granite-4.0-h-1b-GGUF.json": "02f0698daf847dbe01dc048fddce71d0935e78831abf86423a8f4b5c1ae35089"
+  }
+}

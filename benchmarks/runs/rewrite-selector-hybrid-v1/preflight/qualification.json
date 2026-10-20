@@ -1,0 +1,11 @@
+{
+  "qualifiedForSelector": true,
+  "productionQualified": false,
+  "resultsSha256": "837e814ab54e762d5afe5cca1fe464babd89ae9541aca1da48e2fc0e54d45d7f",
+  "freezeSha256": "343f0ba4ab622560c68bad951e087e92a108033ae02bb2e708e556f2c3fc6d83",
+  "cacheRawParity": {
+    "99": true,
+    "0": true
+  },
+  "reason": "All12 native protocol probes stop with valid choiceJSON; actualMetal41/41 template exact; three positive schema requests cache-off/on/off have exact raw parity. Read-cash literal semantic failures remain failures, not runtime degen or successful final rewriting."
+}

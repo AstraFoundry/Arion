@@ -1,0 +1,54 @@
+from pathlib import Path
+import json,hashlib,shutil
+R=Path.cwd();H=R/'benchmarks/reproduction/rewrite-selector-preview-v1';H.mkdir()
+def save(p,v):p.write_text(json.dumps(v,ensure_ascii=False,indent=2)+'\n')
+def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
+p=json.loads((R/'benchmarks/reproduction/rewrite-selector-semantic-v2/prompts.json').read_text());p['version']='selector-preview-v1';save(H/'prompts.json',p)
+(H/'preview.py').write_text('''"""Show exact single-candidate substitutions without adding evaluator knowledge."""
+def augment(original_data,prepared):
+ result=original_data(prepared);source=prepared['source'];raw=source.encode()
+ if len(result['hypotheses'])!=len(prepared['hypotheses']):raise ValueError('Changed candidate projection')
+ for shown,h in zip(result['hypotheses'],prepared['hypotheses']):
+  start,end=h['startUtf8'],h['endUtf8']
+  if not 0<=start<end<=len(raw) or raw[start:end].decode()!=h['sourceSpan']:raise ValueError('Preview source span mismatch')
+  shown['candidateRewrites']=[dict(spelling=spelling,sourceAfterReplacement=(raw[:start]+spelling.encode()+raw[end:]).decode()) for spelling in h['candidateSpellings']]
+ return result
+''')
+(H/'pipeline.py').write_text('''"""Augment only selector data; preserve rules, examples, choices and formatter."""
+import pathlib,importlib.util
+HERE=pathlib.Path(__file__).resolve().parent
+def module(name,path):
+ s=importlib.util.spec_from_file_location(name,path);m=importlib.util.module_from_spec(s);s.loader.exec_module(m);return m
+prior=module('preview_prior',HERE.parent/'rewrite-selector-semantic-v2/pipeline.py')
+preview=module('candidate_replacement_preview',HERE/'preview.py')
+original_data=prior.selector.core.selection_data
+prior.selector.core.HERE=HERE
+prior.selector.core.selection_data=lambda prepared:preview.augment(original_data,prepared)
+candidates_for=prior.candidates_for
+selection_payload=prior.selection_payload
+format_payload=prior.format_payload
+def template_identity(arm,stage,scene):
+ candidates_for(arm)
+ if stage=='selection':return dict(version='selector-preview-v1-selection',path='benchmarks/reproduction/rewrite-selector-preview-v1/prompts.json')
+ return prior.template_identity(arm,stage,scene)
+''')
+(H/'run.py').write_text('''"""Execute the full457-source chain with candidate sentence previews."""
+import pathlib,sys,json
+HERE=pathlib.Path(__file__).resolve().parent;sys.path.insert(0,str(HERE.parent))
+import gguf_cleanup_chain_v3 as executor
+import pipeline
+ROOT=executor.engine.ROOT
+SOURCES=['benchmarks/corpora/rewrite-history-v1/inputs.json','benchmarks/corpora/rewrite-tone-controls-v1/inputs.json','benchmarks/corpora/rewrite-semantic-roles-v1/inputs.json']
+def plans():return [('candidate',[dict(sample=s,sourcePath=p) for p in SOURCES for s in json.loads((ROOT/p).read_text())])]
+if __name__=='__main__':executor.execute(HERE,pipeline,plans(),dict(pipeline='selector-preview-v1',sourceCases=457,plannedSourceAttempts=457,newAsrGenerations=0,newOcrGenerations=0,scope=json.loads((HERE/'protocol.json').read_text())['limits']))
+''')
+save(H/'protocol.json',dict(purpose='Isolate deterministic candidate-sentence previews in selector data. Same semantic-v2 system, demonstrations, choices, hypotheses, schema, decoding and formatter; only add candidateRewrites spelling/sourceAfterReplacement fields to each hypothesis in demonstrations and current selector data. No evaluator/reference or context trimming.',plannedSourceAttempts=457,baseline='Complete prior semantic-v2 actual558 responses, frozen raw/labels/manifest/selection and archive before this inference. Not counted as new inference.',developmentGate='All historical and old positive corrections retained; no harmful role substitutions; all four related-context role repairs succeed. No fresh held-out evaluation until this joint development gate passes.',limits='Exposed development sources, repeated contexts not independent utterances; no ASR/Vision/native integration/concurrency/min16/independent review/fresh24/4B/olderQwen. No priming or causal latency claim. Explicit v3 template ownership; no semantic rejection or source fallback.'))
+f=json.loads((R/'benchmarks/reproduction/rewrite-selector-semantic-v2/freeze.json').read_text());files=f['files']
+for path in ['benchmarks/reproduction/rewrite-selector-semantic-v2/report.py','benchmarks/reproduction/gguf_chain_evidence_v3.py']:
+ files[path]=sha(R/path)
+for p in H.iterdir():
+ if p.is_file():files[str(p.relative_to(R))]=sha(p)
+for name in ['results.jsonl','review.json','manifest.json','selection.json','reference-comparison.json']:
+ p=R/'benchmarks/runs/rewrite-selector-semantic-v2/run'/name;files[str(p.relative_to(R))]=sha(p)
+p=R/'benchmarks/runs/rewrite-selector-semantic-v2/archive.json';files[str(p.relative_to(R))]=sha(p)
+save(H/'freeze.json',f);print('Frozen',len(files),'files')

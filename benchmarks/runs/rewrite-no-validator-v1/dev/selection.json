@@ -1,0 +1,8 @@
+{
+  "selected": "anchored",
+  "freezeSha256": "07d8663192c5f8afbe61a662950cb19ceeb7015d6d6b08031232ff2636ae0350",
+  "devResultsSha256": "d8de8d5ea378136cf5c949b14f6d3665282a62951698230923911f0c8b64b27f",
+  "devReviewSha256": "d95d6e16695d2c492273ed9d8386ecd9826d9298b9c7613619560c3f39e18d58",
+  "basis": "Diagnostic selection only: anchored 14/16 intended-message passes versus minimal 12/16, better scene layout and no demonstration substitution on the no-answer question. Both retain material failures; no promotion.",
+  "productionActivation": false
+}

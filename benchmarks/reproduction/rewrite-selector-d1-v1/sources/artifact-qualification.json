@@ -1,0 +1,17 @@
+{
+  "actualTextDecisionComponentParameters": 380732161,
+  "tensorCount": 179,
+  "architecture": "lfm2",
+  "upstreamMultimodalTotalParameters": 587161089,
+  "eligibleUnder2B": true,
+  "artifactSha256": "cd94463f4cac9c700ec6750df8df005bb6846de410e159d1f5e985e1171693d3",
+  "artifactBytes": 407207584,
+  "nativeEndpointDocumented": "/v1/systemone",
+  "nativeEndpointStringObservedInPinnedBinary": true,
+  "nativeCompatibility": "not-tested",
+  "modelResponses": 0,
+  "generatedTokens": 0,
+  "productionActivated": false,
+  "licenseWhitespaceNormalizedTextMatchesReviewedLfm": true,
+  "limits": "Only text decision component provisioned; no mmproj/audio/vision weights downloaded. No model inference, latency, quality, actual16GB or production-license acceptance. A classification response is actual model inference even when output_tokens=0 and must never be relabeled as a generated chat completion."
+}

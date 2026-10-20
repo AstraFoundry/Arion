@@ -1,0 +1,38 @@
+"""Integrate reviewed contrast-demonstration evidence without new response credit."""
+from pathlib import Path
+import json
+R=Path.cwd();H=R/'benchmarks/reproduction/rewrite-selector-contrast-demo-v1';summary=json.loads((R/'benchmarks/results/rewrite-selector-contrast-demo-v1/summary.json').read_text());g=summary['groups'];arms=['baseline','contrast-demo','balanced','contrast-demo-balanced']
+conform='／'.join(str(g[a]['conforming']) for a in arms);harm='／'.join(str(g[a]['harmful']) for a in arms);miss='／'.join(str(g[a]['missed']) for a in arms);passed=summary['selection']['screenPassedArms']
+finding=f'符合{conform}（各101），有害{harm}、漏纠{miss}。'+('仅组件通过，仍需完整链路与上线验收。' if passed else '两版新增语义示例均未通过，不采用。')
+entry=dict(id='selector-contrast-demo-v1',title='新增语义正反例与逐候选判断的对照',direction='四组128token同预算；原有十个示例后新增衣物缝线／项目风险、河堤护坡／琥珀饰品四例。正例同时示范纠正缝线→风险、保留先评估，完整保留原规则、原示例与当前OCR。',finding=finding,scope='404次真实选择全部review；457次实际Go准备四组复用，1828个处理结果含1424无候选跳过。808次本地模板／分词预检零推理；零新增正文／ASR／Vision，无语义过滤或原文回退。',runs=[('rewrite-selector-contrast-demo-v1/run','staged')])
+p=R/'benchmarks/reproduction/rewrite-release/report.py';s=p.read_text();marker='\n]\nGATES=[';assert s.count(marker)==1;s=s.replace(marker,'\n '+repr(entry)+','+marker)
+metric=f"202个当前对照的请求／准备与旧实际相同，原始输出复现{summary['controlRawParity']}/202。202个新请求去除8条附加示例消息后完全还原；{summary['changedChoices']}个变化逐项review。最长完整输入2482＋输出预算128≤4096；全部实际推理token数与原生预检一致。每组12个原句唯一选项的歧义病例不代表自主语义判断。"
+s=s.replace('METRICS={','METRICS={\n '+repr(entry['id'])+':'+repr(metric)+',',1)
+s=s.replace('    unique_label_summary=',"    contrast_demo_summary=load_report('rewrite-selector-contrast-demo-v1','selector_contrast_demo').collect()[0]\n    unique_label_summary=",1)
+s=s.replace("if definition['id'] in ['selector-unique-label-v1',","if definition['id'] in ['selector-contrast-demo-v1','selector-unique-label-v1',",1)
+needle="                if definition['id']=='selector-unique-label-v1':"
+s=s.replace(needle,"""                if definition['id']=='selector-contrast-demo-v1':
+                    cases[-1]['addedContrastDemoMessages']=8 if row['arm'] in ['contrast-demo','contrast-demo-balanced'] else 0
+                    cases[-1]['nativeBudget']=dict(promptTokens=row['response']['usage']['prompt_tokens'],outputReserve=128,contextLimit=4096,preflightModelGenerations=0,reference='benchmarks/runs/rewrite-selector-contrast-demo-v1/preflight/requests.jsonl')
+"""+needle,1)
+s=s.replace('return dict(selectorUniqueLabel=', 'return dict(selectorContrastDemo=contrast_demo_summary,selectorUniqueLabel=',1)
+needle="    failure_root=ROOT/'benchmarks/runs/rewrite-small-cache-parity-v1'"
+s=s.replace(needle,"""    for path in [ROOT/'benchmarks/reproduction/rewrite-selector-contrast-demo-v1'/name for name in ['freeze.json','protocol.json','layout.json','pipeline.py','demonstrations.json']]+[ROOT/'benchmarks/runs/rewrite-selector-contrast-demo-v1/run'/name for name in ['selection.json','case-outcomes.jsonl','control-parity.json','contrast-demo-comparison.json']]+[ROOT/'benchmarks/runs/rewrite-selector-contrast-demo-v1/preflight'/name for name in ['status.json','requests.jsonl']]:
+        sources.append(dict(path=str(path.relative_to(ROOT)),sha256=digest(path)))
+"""+needle,1)
+old='最新选择阶段四组均未通过：成对展示94/101但仍4有害选择／3漏纠；未生成新正文，不能替代完整链路验收。'
+new='新增语义示例本轮符合'+conform+'（各101），有害'+harm+'、漏纠'+miss+'；'+('仅组件通过，未生成新正文，完整链路验收待完成。' if passed else '均未通过且无新增正文，不能替代完整链路验收。')
+assert old in s;s=s.replace(old,new,1);p.write_text(s)
+p=R/'benchmarks/reproduction/rewrite-release/template.html';s=p.read_text().replace('uniqueLabelsOmitted:item.uniqueLabelsOmitted','addedContrastDemoMessages:item.addedContrastDemoMessages,nativeBudget:item.nativeBudget,uniqueLabelsOmitted:item.uniqueLabelsOmitted');p.write_text(s)
+p=R/'benchmarks/reproduction/rewrite-release/test_report.py';s=p.read_text().replace('9777','10181').replace("len(data['rounds']),60","len(data['rounds']),61").replace('8293','8697').replace('8154','8558').replace("stage')=='selection' for c in data['cases']),3859","stage')=='selection' for c in data['cases']),4263")
+needle="        self.assertEqual(data['selectorUniqueLabel']['newGenerations'],404)"
+s=s.replace(needle,"""        self.assertEqual(data['selectorContrastDemo']['newGenerations'],404)
+        self.assertEqual(data['selectorContrastDemo']['contrastDemoPairs'],202)
+        self.assertEqual(data['selectorContrastDemo']['nativeBudget']['modelGenerations'],0)
+        self.assertEqual(data['selectorContrastDemo']['nativeBudget']['maximumPromptTokens'],2482)
+        demos=[c for c in data['cases'] if c['round']=='selector-contrast-demo-v1']
+        self.assertEqual(len(demos),404)
+        self.assertEqual(sum(c['addedContrastDemoMessages']==8 for c in demos),202)
+        self.assertTrue(all(c['delivery'] is None and c['nativeBudget']['promptTokens']+128<=4096 for c in demos))
+"""+needle,1);p.write_text(s)
+H.joinpath('original-integration.py.txt').write_text(Path(__file__).read_text());print('Integrated61st round',finding)

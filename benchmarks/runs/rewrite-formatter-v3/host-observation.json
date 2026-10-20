@@ -1,0 +1,11 @@
+{
+  "capture": "Post-run static host observation, not a contemporaneous power/thermal trace or minimum-device verification.",
+  "platform": "macOS-26.6.2-x86_64-i386-64bit",
+  "machine": "x86_64",
+  "hardware": {
+    "hw.model": "Mac16,12",
+    "hw.memsize": "34359738368",
+    "machdep.cpu.brand_string": "Apple M4"
+  },
+  "productionActivated": false
+}

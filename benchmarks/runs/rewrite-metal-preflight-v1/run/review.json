@@ -1,0 +1,17 @@
+{
+  "resultsSha256": "77b365c01460909eceed382b6cdb588e0979ab61cc8e6ae53072725eb158a1bd",
+  "method": "One actual native response personally inspected in full against source and identical CPU request. Same-configuration verbose load-only supplementary process observes25/25 offload; it is not GPU telemetry of the original quiet request.",
+  "reviews": [
+    {
+      "variant": "metal-capability",
+      "id": "owner-anchor",
+      "rowSha256": "ec8a4caae738277748e062fcff0e21c2459a695941d79a70e3f2ee9097674b8a",
+      "faithful": true,
+      "sceneUseful": true,
+      "issues": [
+        "provider-output-differs"
+      ],
+      "note": "Both owners, correct task/deadline associations and work bullets preserved. CPU says 周三交稿 and requested-Metal output says 周三交; source design handoff remains clear. Raw output differs across providers despite identical request. One probe cannot prove provider parity, full quality or p95 latency."
+    }
+  ]
+}

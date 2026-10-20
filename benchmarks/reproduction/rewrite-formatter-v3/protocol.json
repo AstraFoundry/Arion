@@ -1,0 +1,11 @@
+{
+  "version": "formatter-v3",
+  "newModelGenerations": 36,
+  "reusedActualSelections": 36,
+  "sourceCases": 36,
+  "selectionReference": "benchmarks/runs/rewrite-bounded-edit-v2/run/results.jsonl",
+  "selectionReferenceSha256": "4858828bc5d92cdd6b22ca0d5fa148bc44570a6226c4d8759fafdda03099d60d",
+  "scope": "Formatter-only intervention on all36 exposed regressions. Reuse separately identified actual frozen v2 native selection rows, never count them as new inference. Same exact edited source/model/runtime/budget/context routing, compare prior v2 final bodies. No fresh test or continuous two-stage end-to-end latency claim.",
+  "gate": "All36 final bodies faithful under pre-confirmed user-letter-normalization-v1, all11 local repairs, >=35 scene-ready, owner/email anchors retained, no truncation. Full source-relative selector/evidence already reviewed in v2; no new fabricated intermediate observation. Fresh24 remain unused until source-bound choice passes full gate.",
+  "limits": "Development research only. No output rejection/source fallback. No production change, no4B/olderQwen/Granite/Q8 inference. Still requires actual full-pipeline fresh/natural/independent/languages/native/min16GB/concurrent stop-to-insertion acceptance."
+}

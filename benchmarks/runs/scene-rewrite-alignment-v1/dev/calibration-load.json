@@ -1,0 +1,8 @@
+{
+  "id": 1,
+  "ok": true,
+  "loadMs": 3331.748,
+  "promptId": "meaning-audit-v1",
+  "prefixTokens": 418,
+  "peakRssBytes": 3521101824
+}

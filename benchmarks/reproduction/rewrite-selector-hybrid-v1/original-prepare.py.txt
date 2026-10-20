@@ -1,0 +1,26 @@
+from pathlib import Path
+import json,hashlib,shutil,subprocess
+R=Path.cwd();H=R/'benchmarks/reproduction/rewrite-selector-hybrid-v1';P=R/'.workspace/rewrite-granite-hybrid-v1/provisioning';W=R/'.workspace/rewrite-selector-hybrid-v1'
+def read(p):return json.loads(p.read_text())
+def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
+def rh(x):return hashlib.sha256(json.dumps(x,ensure_ascii=False,sort_keys=True).encode()).hexdigest()
+def save(p,x):p.write_text(json.dumps(x,ensure_ascii=False,indent=2)+'\n')
+for p in P.iterdir():
+ if p.is_file():shutil.copyfile(p,H/'sources'/p.name)
+shutil.copyfile(Path(__file__),H/'original-prepare.py.txt')
+refs={(r['arm'],r['id']):r for r in map(json.loads,(R/'benchmarks/runs/rewrite-selector-screen-v1/run/results.jsonl').read_text().splitlines())};jobs=[]
+for name,identity,cache,schema in [('cache-off-first','history-0095',False,True),('other-source','history-0279',True,True),('cache-on-return','history-0095',True,True),('cache-off-return','history-0095',False,True),('free-positive','history-0095',False,False),('free-negative','history-0279',False,False)]:
+ ref=refs['baseline',identity];request=json.loads(json.dumps(ref['request']));request['cache_prompt']=cache
+ if not schema:request.pop('response_format')
+ jobs.append(dict(id=name,sourceReference=dict(path='benchmarks/runs/rewrite-selector-screen-v1/run/results.jsonl',arm='baseline',id=identity,rowSha256=rh(ref)),request=request))
+save(H/'preflight-plan.json',dict(placements=[99,0],jobs=jobs,gate='Native valid JSON choices for all six Metal probes, normal stop, actual pinned template, and exact raw parity across three schema-based positive cache-off/on/off requests after an intervening source. This establishes limited runtime compatibility only; semantic correctness is separately reviewed and never substitutes for202-case/full-chain acceptance. CPU-layer0 is an explicit diagnostic comparison, not an automatic fallback.',limits='12 runtime-probe attempts, not12 independent source/quality cases. Reuse2 exposed sources, no newGo/ASR/OCR/formatter/final bodies. CPU-layer0 may retain default operation offload; actual commands/logs retained. Serial request timing excludes startup/native/concurrentASR/min16. No4B or olderQwen.'))
+save(H/'protocol.json',dict(purpose='Evaluate eligible1.46B hybrid architecture, first explicit native/cache preflight then202 unchanged baseline/balanced selector requests if Metal runtime qualifies.',arms=['baseline','balanced'],expectedGenerations=202,sourceCases=457,replayedActualGoPreparations=457,newGoPreparations=0,sourceTreatmentCount=914,expectedSkips=712,formatterGenerations=0,evaluator='benchmarks/corpora/rewrite-selector-screen-v1/evaluator.json',gate='All101 candidate cases in an arm conform to unchanged frozen rubric, preserving required context repair and literal/ambiguity/meaning boundaries with no protocol failure. Passing only permits full457-source chain and unchanged fresh/currentASR+Vision/native/offline/concurrent/independent/actual16GB acceptance.',limits='Exposed development sources/repeated arms, not independent or held-out. ReplayedGo457;zero newASR/OCR/final bodies; no semantic output rejection/source fallback or production change. Model/tokenizer/architecture change, so no checkpoint-size/quantization-only causal attribution. No4B/olderQwen. All source-level/cross-script no-hypothesis skips explicit.'))
+f=read(R/'benchmarks/reproduction/rewrite-selector-screen-v1/freeze.json');f['files']=dict(read(R/'benchmarks/runs/rewrite-selector-screen-v1/archive.json')['files']);f.pop('cleanupWorkerSha256');f['modelPath']='.workspace/rewrite-granite-hybrid-v1/weights/granite-4.0-h-1b-Q4_K_M.gguf';f['model']=dict(id='granite-4.0-h-1b',repo='ibm-granite/granite-4.0-h-1b-GGUF',revision='c2cb1972f511add21f3bae244990b8ff3a3ffb23',filename='granite-4.0-h-1b-Q4_K_M.gguf',sha256='da3d737121a96f3c9a316685212376257a7f167b74380855666dd488d6af3bcb',bytes=901162208,parameters=1461538368,license='apache-2.0',textOnly=True,quantization='Q4_K_M',upstreamRepo='ibm-granite/granite-4.0-h-1b',upstreamRevision='d18cca4c121edb87d022116d281ce212c9136f57')
+for p in H.rglob('*'):
+ if p.is_file() and '__pycache__' not in p.parts and p.name!='freeze.json':f['files'][str(p.relative_to(R))]=sha(p)
+save(H/'freeze.json',f)
+host={}
+for key,cmd in [('os',['sw_vers']),('hardware',['sysctl','hw.model','hw.memsize','hw.physicalcpu','machdep.cpu.brand_string']),('power',['pmset','-g','custom']),('thermal',['pmset','-g','therm']),('gitRevision',['git','rev-parse','HEAD']),('dirty',['git','status','--porcelain']),('runtime',['.workspace/rewrite-small-models-v1/runtime/llama-b11734/llama-server','--version'])]:
+ q=subprocess.run(cmd,text=True,capture_output=True);host[key]=dict(command=cmd,exitCode=q.returncode,stdout=q.stdout,stderr=q.stderr)
+host.update(timer='time.monotonic',freezeSha256=sha(H/'freeze.json'),modelEvidence='ActualGGUF1,461,538,368 elements; officialApache2/Chinese card; embeddedtemplateexacttopinnedupstream;40layers4attention36Mamba,zeroMoEexperts. SampledRSSnotpeak/wholehost/actual16GB acceptance.')
+save(W/'host-provenance.json',host);print('Prefrozen',len(f['files']),'files for12probes andconditional202selectors')

@@ -1,0 +1,27 @@
+{
+  "requestedModel": "opencode-go/gemini-4-argon-contributor",
+  "sessionID": "ses_ea84109f4ffeJUqCNMsy2tF7d7",
+  "explicitLocation": "/private/var/folders/wg/ntr3cxsd34x0rw4w17rdrym40000gn/T/arion-clean-prompt-wn60e7x_",
+  "permissions": [
+    {
+      "action": "*",
+      "resource": "*",
+      "effect": "deny"
+    }
+  ],
+  "briefSha256": "45d2275d59b9035516734b34ae611b6d7f0987bbbd5b84c2efc4d726ae9dd8bc",
+  "providedArtifacts": [
+    "isolated-author-brief.txt",
+    "output-contract-brief.txt"
+  ],
+  "excludedInputs": [
+    "prior model drafts",
+    "product prompt files and examples",
+    "test cases, reference answers and results",
+    "Arion repository or task conversation"
+  ],
+  "status": "complete",
+  "exitCode": 0,
+  "revision": "Formatter output protocol clarified without examples or evaluation feedback.",
+  "outputContractBriefSha256": "45403f42e7ccf7af06c10752c148f9b585b4283dac355213daf34fb1c1c13d0a"
+}

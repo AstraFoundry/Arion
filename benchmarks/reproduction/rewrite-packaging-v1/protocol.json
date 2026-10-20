@@ -1,0 +1,20 @@
+{
+  "kind": "fixed-model-prompt-packaging",
+  "model": "qwen3-1.7b-int4-cpu",
+  "formats": [
+    "xml",
+    "json",
+    "labeled"
+  ],
+  "templates": "Exact same aligned templates and demonstrations in all arms; demonstrations use the same serializer as the final request.",
+  "budget": "Common worker uses absolute 384-new-token budget in every format, 4096 total tokens, greedy decoding, four threads, ten-second request deadline. This differs from historical proportional-budget runs; only within-experiment comparisons are paired.",
+  "devCases": 18,
+  "evaluationCases": {
+    "regression": 24,
+    "fresh": 24
+  },
+  "selection": "Inspect every dev output before freezing a non-XML candidate; prioritize full fidelity, no harmful context changes, supported repairs and natural organization. Failure does not authorize promotion.",
+  "references": "Evaluator-only. All source/context bytes, assigned/effective scenes, actual prompt version, raw/cleanup/delivered results retained.",
+  "scope": "Chinese text-only macOS development diagnostic. Bilingual, natural ASR/OCR, native lifecycle and independent review remain release requirements.",
+  "productionActivated": false
+}

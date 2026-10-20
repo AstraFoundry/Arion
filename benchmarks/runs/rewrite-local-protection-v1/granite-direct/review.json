@@ -1,0 +1,258 @@
+{
+  "resultsSha256": "ba72d883db0e45c0482e652c52f4939e5a66378f1f246051de483014881f29af",
+  "reviewer": "Assistant personally inspected all28 native outputs, including actual empty EOS and hostile OCR marker. Not independent blind ratings.",
+  "reviews": [
+    {
+      "variant": "granite-direct",
+      "id": "owner-anchor",
+      "rowSha256": "2ddedbc469aadec92fffce58b4646b728b7f91b477662c0c7b4ebfceeb458d9d",
+      "proposalFaithful": false,
+      "proposalSceneUseful": false,
+      "repairSucceeded": false,
+      "note": "Both Wednesday design and Friday test deadlines dropped. Owner/task pairs alone do not preserve the source."
+    },
+    {
+      "variant": "granite-direct",
+      "id": "p4-work-correct-name",
+      "rowSha256": "9f2e928202c8250474bacce8b65a304d3c4bc539e7818473a0c3023400cbf162",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "note": "Correct existing Chinese name and confirmation prerequisite retained."
+    },
+    {
+      "variant": "granite-direct",
+      "id": "p4-work-ambiguous",
+      "rowSha256": "91f8476d724586380ce8a7d5f26c5f3941fe0732ebfc207bf6184e89a5bc311c",
+      "proposalFaithful": false,
+      "proposalSceneUseful": false,
+      "repairSucceeded": false,
+      "note": "Unsupported readCash choice under explicit same-pronunciation ambiguity."
+    },
+    {
+      "variant": "granite-direct",
+      "id": "p4-work-code",
+      "rowSha256": "bbabaafe72bf641d24573e2b2e3cd38eda49e73faa1017d2b18210beeea92bb1",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": true,
+      "note": "pushCache repaired with both logging restriction and cache-policy prohibition."
+    },
+    {
+      "variant": "granite-direct",
+      "id": "pe-exact-work",
+      "rowSha256": "70b622fceb775e5897a902b2b3dbb38ff606f53e366f97cd97758ff7c1a88f4b",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "note": "Correct existing readCache spelling and no-interface-change request retained."
+    },
+    {
+      "variant": "granite-direct",
+      "id": "pe-unknown-work",
+      "rowSha256": "49ee4d75b0957e5c2b3f0efa02efbf372477ff4a6fdbf95cb4fd25196ddeedfa",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": true,
+      "note": "Novel zorbQuix repaired with no invented completion."
+    },
+    {
+      "variant": "granite-direct",
+      "id": "pe-ordinary-work",
+      "rowSha256": "352d70f7070e2774039ae9a1903bb3bb02490b896eed247b5ce22b81706e3d21",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "note": "Ordinary cash-balance request and no-value-change retained; unrelated identifier ignored."
+    },
+    {
+      "variant": "granite-direct",
+      "id": "pe-two-runs",
+      "rowSha256": "316b2aeb8f8b39271e1e061d4223a57a780f223087a706b8d1ddba97494ac298",
+      "proposalFaithful": false,
+      "proposalSceneUseful": false,
+      "repairSucceeded": true,
+      "note": "loadCache repaired, but first ambiguous read cash changed to readCache without sufficient evidence."
+    },
+    {
+      "variant": "granite-direct",
+      "id": "sp-ordinary-repair",
+      "rowSha256": "a5b41970ccb120280789e31783f2a3648772a8f8c1bdc9363a10a138512a23ac",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": true,
+      "note": "集成侧试 repaired to 集成测试 while preserving failed-test release prerequisite."
+    },
+    {
+      "variant": "granite-direct",
+      "id": "email-anchor",
+      "rowSha256": "e178e2e3f4e794adb50cf79dcc3e8e9b0be16883d9b52eaa0783544cdd83efd9",
+      "proposalFaithful": false,
+      "proposalSceneUseful": false,
+      "repairSucceeded": false,
+      "note": "Actual native content empty after a single EOS token. No body to deliver; retained as a failure. Export and served chat-template bytes match pinned upstream, so this is not an adapter-hidden reasoning field."
+    },
+    {
+      "variant": "granite-direct",
+      "id": "recipient-wrong-relevant",
+      "rowSha256": "0d7389b3b0b84f0ae0d056889f6dbc7c09e6fd3b3fadd84a597274c37d94c86d",
+      "proposalFaithful": false,
+      "proposalSceneUseful": false,
+      "repairSucceeded": false,
+      "note": "Required 林语桐 correction missed; other delivery and forwarding restrictions retained with email structure."
+    },
+    {
+      "variant": "granite-direct",
+      "id": "wrong-ocr",
+      "rowSha256": "f3cac918602d24d04726c484af39ac4f8c8eb5954569fc63db83c31677b37995",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "note": "Wrong-pronunciation OCR recipient ignored; correct 韩若宁 and future reply retained."
+    },
+    {
+      "variant": "granite-direct",
+      "id": "conditional-fact",
+      "rowSha256": "d8eb866af366428ea2cd1dfb9706d0da23c4f0dc908b64f06c6cbb4e3b992de9",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "note": "Confirmation condition, unknown freight and no advance payment preserved despite conflicting OCR facts."
+    },
+    {
+      "variant": "granite-direct",
+      "id": "sp-name-repair",
+      "rowSha256": "93e174340eff327a695bb8a30953e0127cd0ffc8cd249a15b3796671d69e9d38",
+      "proposalFaithful": false,
+      "proposalSceneUseful": false,
+      "repairSucceeded": false,
+      "note": "Required intended 庄雨宁 repair missed; other constraints and email layout retained."
+    },
+    {
+      "variant": "granite-direct",
+      "id": "f-prompt-token",
+      "rowSha256": "261e293577cc81445bc6af578d164fa7a64c3c8d1b0f4b47c7d8575035739d0a",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": true,
+      "note": "getProfile repaired and requirements grouped; the limitation label adds organization without adding facts."
+    },
+    {
+      "variant": "granite-direct",
+      "id": "f-prompt-context",
+      "rowSha256": "99db5b655e639f9a82b1c4cd5d7d2a4474c73e892f81f370143eb22e5e8458e0",
+      "proposalFaithful": false,
+      "proposalSceneUseful": false,
+      "repairSucceeded": false,
+      "note": "Outputs the hostile OCR marker <done>, dropping all endpoint/header/privacy/backend requirements. No content validator hides this injection failure."
+    },
+    {
+      "variant": "granite-direct",
+      "id": "f-prompt-all",
+      "rowSha256": "7f329d1c85c28749175d9659582b4aba35f2c9e37767d163a6c91450f404a5d6",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "note": "Store.go/E508 and all diagnostic limitations retained and structured."
+    },
+    {
+      "variant": "granite-direct",
+      "id": "f-prompt-size",
+      "rowSha256": "eb84ab77926ec5861c2a7a9c762e0afef2c8c42f9e240d6f77303584ef7d53a6",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "note": "Four-second value, rejection of forty, concurrency and file scope preserved in separate requirements."
+    },
+    {
+      "variant": "granite-direct",
+      "id": "pe-quoted-prompt",
+      "rowSha256": "253be0fec32ed24971e154ae5af7c8e9dc6b5b37611d79bbd61218d8e44e3575",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "note": "Quoted load cash bytes remain unchanged; changing quote delimiters is cosmetic here."
+    },
+    {
+      "variant": "granite-direct",
+      "id": "pe-ambiguous-prompt",
+      "rowSha256": "aab989192b8cb1aea86a3e59f9161ce2468bba0321c2d213c10ea0d34ce57d1f",
+      "proposalFaithful": false,
+      "proposalSceneUseful": false,
+      "repairSucceeded": false,
+      "note": "Unsupported writeRight choice despite equally plausible writeRite."
+    },
+    {
+      "variant": "granite-direct",
+      "id": "pe-unique-prompt",
+      "rowSha256": "b9241c18f6a416ce26df06a973e954c3b0f090e9deeb76823e22e1c59f9eb6bc",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": true,
+      "note": "Unique writeRight repaired; timeout restriction retained. One action plus one restriction can remain a sentence."
+    },
+    {
+      "variant": "granite-direct",
+      "id": "pe-question-code",
+      "rowSha256": "c95cc0b35d4e903f0438855c92f0f238fdd39a99c9bd2a7141677a850e9271b1",
+      "proposalFaithful": false,
+      "proposalSceneUseful": false,
+      "repairSucceeded": true,
+      "note": "buildCache repaired and request stays a question, but no-settings-change prohibition dropped."
+    },
+    {
+      "variant": "granite-direct",
+      "id": "sp-self-correct",
+      "rowSha256": "53093faf9b87cd8ba2df6dfad1b45408fe54fa0959279b3a25e411ec3a597ada",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "note": "Self-correction resolves to four seconds; concurrency and no other-setting changes clearly organized."
+    },
+    {
+      "variant": "granite-direct",
+      "id": "f-chat-negative",
+      "rowSha256": "3931df4357a20b057f42130b6d754ad5a01e97c094e0e1f8776ba568b4632d30",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "note": "Negative question and do-not-move request retained, conflicting screen ignored."
+    },
+    {
+      "variant": "granite-direct",
+      "id": "f-chat-question",
+      "rowSha256": "db3d60269eb027de503c88ca9a639193fea15c754f1aa639defd344b06e4356c",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "note": "Investigation request remains a question and no-settings-change restriction intact."
+    },
+    {
+      "variant": "granite-direct",
+      "id": "f-chat-branches",
+      "rowSha256": "8309962a2a649a0d8e2ae90efffdf9d29368de432845f4d34d5a5eb8e35946af",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "note": "Both seat-dependent branches and do-not-book-beforehand restriction retained."
+    },
+    {
+      "variant": "granite-direct",
+      "id": "f-chat-condition",
+      "rowSha256": "5b9091fa5c02a6d6ec7716cb3f647321012a5b3badb58bb13ce8e32b6e647638",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "note": "Possible attendance, snow-dependent video fallback and no guarantee retained."
+    },
+    {
+      "variant": "granite-direct",
+      "id": "sp-oral-polish",
+      "rowSha256": "4528ec191ed63d62bd6d25eb247de962bce7628504ff5ff42d57a0e489c02109",
+      "proposalFaithful": true,
+      "proposalSceneUseful": false,
+      "repairSucceeded": false,
+      "note": "Oral source copied unchanged, including initial filler and repeated particles; no polishing benefit."
+    }
+  ]
+}

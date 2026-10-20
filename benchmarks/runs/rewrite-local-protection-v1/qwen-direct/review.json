@@ -1,0 +1,259 @@
+{
+  "resultsSha256": "544bbb6a57bebf7ba530dc83d2b8a37ed01f5da4e6ee79252c5dfff7ed1cf2d4",
+  "reviewer": "Assistant personally read every native body, term mapping and restored body. Not independent blind human ratings.",
+  "styleCaveat": "Scene usefulness means a reasonably usable scene message, not a perfect fluency score. Residual conversational particles and single cosmetic bullets are recorded without misclassifying them as semantic failures.",
+  "reviews": [
+    {
+      "variant": "qwen-direct",
+      "id": "owner-anchor",
+      "rowSha256": "ddbd9fed89f9271636d5fa7ba0dbcb0255211d61d6b030c82a108b49e0d7a5e5",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "note": "Correct owner/task/deadline grouping into two natural bullets."
+    },
+    {
+      "variant": "qwen-direct",
+      "id": "p4-work-correct-name",
+      "rowSha256": "cef7f217c70bfa7cfded968a9238c408208da4f459547bb9d3a8839db8257af6",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "note": "Correct existing Chinese name and confirmation prerequisite retained."
+    },
+    {
+      "variant": "qwen-direct",
+      "id": "p4-work-ambiguous",
+      "rowSha256": "80b105f74a002244c06fd6a745741dd6365d8cf421c4cba6db1cbf22a8b37a6f",
+      "proposalFaithful": false,
+      "proposalSceneUseful": false,
+      "repairSucceeded": false,
+      "note": "Unsupported readCache guess under explicit same-pronunciation ambiguity."
+    },
+    {
+      "variant": "qwen-direct",
+      "id": "p4-work-code",
+      "rowSha256": "44c90901c03cd560863b91df4f25dbb96dfc82051bc0cf9a1cb84b728f60fa22",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": true,
+      "note": "pushCache repaired with both logging restriction and cache-policy prohibition."
+    },
+    {
+      "variant": "qwen-direct",
+      "id": "pe-exact-work",
+      "rowSha256": "5f5947f54f79685725f9631703883482d1b5d965d947ea6b1f33f93a93a780a3",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "note": "Correct existing readCache spelling and no-interface-change request retained."
+    },
+    {
+      "variant": "qwen-direct",
+      "id": "pe-unknown-work",
+      "rowSha256": "89ccc619ac651b1db371fa7cfe44837cac1096bc479da5b16bf1d5f381d335ef",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": true,
+      "note": "Novel zorbQuix repaired with no invented completion."
+    },
+    {
+      "variant": "qwen-direct",
+      "id": "pe-ordinary-work",
+      "rowSha256": "187f4af361623eb73a8d00a0d5613edfe452258ed06ee7e94e91cd72c0123f04",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "note": "Ordinary cash-balance instruction not replaced by irrelevant readCash. Single bullet cosmetic."
+    },
+    {
+      "variant": "qwen-direct",
+      "id": "pe-two-runs",
+      "rowSha256": "627728e5dbba1c2d82b38378a49bb19f9891f55ada090b064952d6333435c630",
+      "proposalFaithful": false,
+      "proposalSceneUseful": false,
+      "repairSucceeded": true,
+      "note": "loadCache repaired, but first ambiguous read cash changed to readCache without sufficient evidence."
+    },
+    {
+      "variant": "qwen-direct",
+      "id": "sp-ordinary-repair",
+      "rowSha256": "9c35776aec4487461edfc55c73d697114e1af3399164d2d0e7feb53cb19bfa43",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": true,
+      "note": "集成侧试 repaired to 集成测试 while preserving failed-test release prerequisite."
+    },
+    {
+      "variant": "qwen-direct",
+      "id": "email-anchor",
+      "rowSha256": "69c4f6319f2d49c1ddfb70b0afdda9ede1b711094e008ec7e5dedde754910000",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "note": "Greeting/body structure natural; leave date, one-day duration, completed handoff and approval request retained."
+    },
+    {
+      "variant": "qwen-direct",
+      "id": "recipient-wrong-relevant",
+      "rowSha256": "117d222efd8b5361aaa6b89d42b1ebd3ff1a4e5e71fa3433e8d42bae35771841",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": true,
+      "note": "Intended recipient 林语桐 repaired; morning delivery and do-not-forward request retained."
+    },
+    {
+      "variant": "qwen-direct",
+      "id": "wrong-ocr",
+      "rowSha256": "e15d62fb73a2ac7a992f6765ff92e3760cd341e1798e39974805aa91ad5f20eb",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "note": "Wrong-pronunciation OCR recipient ignored; correct 韩若宁 and future reply retained."
+    },
+    {
+      "variant": "qwen-direct",
+      "id": "conditional-fact",
+      "rowSha256": "c9c7f269f7e99ae2eb0e014ac8ea5b4bdfea7cef57eab3c558539ad0c94a1729",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "note": "Confirmation condition, unknown freight and no advance payment preserved despite conflicting OCR facts."
+    },
+    {
+      "variant": "qwen-direct",
+      "id": "sp-name-repair",
+      "rowSha256": "c08201570d6c39e0fd41d44996b4759288a47e68c718a2be8f3c8df2bc295bfe",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": true,
+      "note": "Fixture-intended recipient 庄雨宁 repaired from relevant OCR; morning delivery and forwarding restriction intact."
+    },
+    {
+      "variant": "qwen-direct",
+      "id": "f-prompt-token",
+      "rowSha256": "b11b1c186a6c664f1d591eccf9fd818f5ab4567c576a40bd2f415bc3d6ddee38",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": true,
+      "note": "getProfile repaired and requirements grouped; the limitation label adds organization without adding facts."
+    },
+    {
+      "variant": "qwen-direct",
+      "id": "f-prompt-context",
+      "rowSha256": "f7524a9778030f9903ce0e914a9dbf74ee678dcc19bc14f160d61deff94d3b9e",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "note": "Endpoint, request header, privacy restriction and backend-only scope preserved and naturally structured."
+    },
+    {
+      "variant": "qwen-direct",
+      "id": "f-prompt-all",
+      "rowSha256": "a4c37b7e4b0596daeecce70ad3e6c7594c44ae8b2241c050433e40cf7e2f0141",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "note": "Store.go/E508 and all diagnostic limitations retained and structured."
+    },
+    {
+      "variant": "qwen-direct",
+      "id": "f-prompt-size",
+      "rowSha256": "11d1d5e52175ccf71ae4254f246884fe4d90b7173ebe71f3bb1644a72541c9bf",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "note": "Four-second value, rejection of forty, concurrency and file scope preserved in separate requirements."
+    },
+    {
+      "variant": "qwen-direct",
+      "id": "pe-quoted-prompt",
+      "rowSha256": "31d089931e3784c65c5ae4cb69c73802a5e7a8bd6c604cd39303e0fdc05a08eb",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "note": "Quoted load cash bytes remain unchanged; changing quote delimiters is cosmetic here."
+    },
+    {
+      "variant": "qwen-direct",
+      "id": "pe-ambiguous-prompt",
+      "rowSha256": "287758fe80f218211da0eee1e75404b8c9aca51043574bd51c5900ac306cdc47",
+      "proposalFaithful": false,
+      "proposalSceneUseful": false,
+      "repairSucceeded": false,
+      "note": "Unsupported writeRight choice despite equally plausible writeRite."
+    },
+    {
+      "variant": "qwen-direct",
+      "id": "pe-unique-prompt",
+      "rowSha256": "fcfb88ac3175d298e9053005306cc395bc624e0b06d7bde86040f3e9c0f42014",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": true,
+      "note": "Unique writeRight repaired; timeout restriction retained. One action plus one restriction can remain a sentence."
+    },
+    {
+      "variant": "qwen-direct",
+      "id": "pe-question-code",
+      "rowSha256": "e159b4081987e802ec3ae441f4967e8cb5fbcf83e5c26820993b00bf5d8607e2",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": true,
+      "note": "buildCache repaired; investigation remains a question/request and no-settings-change retained."
+    },
+    {
+      "variant": "qwen-direct",
+      "id": "sp-self-correct",
+      "rowSha256": "98e9018d3b23df442fcd7fab3bb67cd72278ff4cecfb22732c70ffc9acac6496",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "note": "Self-correction resolves to four seconds; concurrency and no other-setting changes clearly organized."
+    },
+    {
+      "variant": "qwen-direct",
+      "id": "f-chat-negative",
+      "rowSha256": "a7dbc1230335d73d2959ca5bf1c6d45ce1c22089f88cc3b75f9c4f33a971fd6e",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "note": "Negative question and do-not-move request retained, conflicting screen ignored."
+    },
+    {
+      "variant": "qwen-direct",
+      "id": "f-chat-question",
+      "rowSha256": "603a432f9a832f0fc8bb9f8b0d4601ae1dca0b97cd33eedf12f12089e4b30ecd",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "note": "Investigation request remains a question and no-settings-change restriction intact."
+    },
+    {
+      "variant": "qwen-direct",
+      "id": "f-chat-branches",
+      "rowSha256": "bdd8575484a38f94cf6ba593d8c6b035553b07412743bdfc97bb9d1ea8a9737d",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "note": "Both seat-dependent branches and do-not-book-beforehand restriction retained."
+    },
+    {
+      "variant": "qwen-direct",
+      "id": "f-chat-condition",
+      "rowSha256": "ff1f377b26fcb0385364a7eca04ca28f7dc32f0f6b6785e23208a36d49109080",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "note": "Possible attendance, snow-dependent video fallback and no guarantee retained."
+    },
+    {
+      "variant": "qwen-direct",
+      "id": "sp-oral-polish",
+      "rowSha256": "209ee9ef0755bf1e99dcfd9cc724f9888c4347a5d2d09446a47b94f4ae63ecae",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "note": "Initial meaningless 那个 removed; 我觉得 opinion and caution retained. Two 吧 particles remain a minor conversational-style issue. Usable chat polish, not a claim of fully refined fluency."
+    }
+  ]
+}

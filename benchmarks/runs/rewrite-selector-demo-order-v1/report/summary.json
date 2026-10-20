@@ -1,0 +1,81 @@
+{
+  "newGenerations": 404,
+  "sourcePreparations": 457,
+  "sourceTreatments": 1828,
+  "skippedSourceTreatments": 1424,
+  "finalBodies": 0,
+  "groups": {
+    "baseline": {
+      "cases": 101,
+      "conforming": 92,
+      "harmful": 3,
+      "missed": 6,
+      "requiredRepairs": 47,
+      "repaired": 41,
+      "protocolFailures": 0,
+      "requestMedianMs": 267.2435001004487,
+      "requestP95Ms": 399.3659580592066,
+      "outputTokensMedian": 7
+    },
+    "negative-last": {
+      "cases": 101,
+      "conforming": 78,
+      "harmful": 2,
+      "missed": 21,
+      "requiredRepairs": 47,
+      "repaired": 26,
+      "protocolFailures": 0,
+      "requestMedianMs": 278.4556660335511,
+      "requestP95Ms": 430.11924996972084,
+      "outputTokensMedian": 7
+    },
+    "balanced": {
+      "cases": 101,
+      "conforming": 94,
+      "harmful": 4,
+      "missed": 3,
+      "requiredRepairs": 47,
+      "repaired": 44,
+      "protocolFailures": 0,
+      "requestMedianMs": 538.4510420262814,
+      "requestP95Ms": 1138.6837079189718,
+      "outputTokensMedian": 7
+    },
+    "negative-last-balanced": {
+      "cases": 101,
+      "conforming": 88,
+      "harmful": 2,
+      "missed": 11,
+      "requiredRepairs": 47,
+      "repaired": 36,
+      "protocolFailures": 0,
+      "requestMedianMs": 492.6507908385247,
+      "requestP95Ms": 1314.7325420286506,
+      "outputTokensMedian": 7
+    }
+  },
+  "selection": {
+    "qualified": false,
+    "selected": null,
+    "screenPassedArms": [],
+    "productionActivated": false,
+    "freshExecuted": false,
+    "formatterExecuted": false,
+    "resultsSha256": "6e0d92a9056cac66e336c9d4417732ecb57b6db1d76eed3505297bc6191d87dc",
+    "reviewSha256": "80d49d0120c32041645afaae1658e1a6c4143fbe27c5a49e8d0baf3870240792",
+    "reason": "Neither reordered-example arm passes101-case conformance. No full-chain/fresh expansion or production adoption."
+  },
+  "limits": "Exposed development sources and repeated arms, not held-out/generalization/native/min16 evidence. Actual Go457 is reused within four arms. All no-hypothesis sources/cross-script coverage misses remain explicit. Zero newASR/OCR/final bodies; no semantic output rejection/source fallback or production change. No4B or olderQwen. Observed serial selector timing excludes startup/Go/formatter/native insertion/concurrentASR and is not an end-to-end SLO.",
+  "nativeBudget": {
+    "templateRequests": 404,
+    "tokenizationRequests": 404,
+    "modelGenerations": 0,
+    "maximumPromptTokens": 1891
+  },
+  "controlPairs": 202,
+  "controlRawParity": 202,
+  "controlEditedParity": 202,
+  "demoOrderPairs": 202,
+  "changedChoices": 27,
+  "timingScope": "Observed serial selector requests only; nearest-rank p95. No startup/Go/formatter/native insertion/concurrentASR/min16 acceptance."
+}

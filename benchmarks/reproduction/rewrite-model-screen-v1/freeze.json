@@ -1,0 +1,54 @@
+{
+  "files": {
+    "benchmarks/reproduction/rewrite-model-screen-v1/expectations.json": "1cca626ecd59b8c3952e6b08fb9367c66789fc54d668951d598b6386740d3e77",
+    "benchmarks/reproduction/rewrite-model-screen-v1/run.py": "cd853430d9890b9aa37390489dab6deb667be51245e7717a1b9ea5af818b28a1",
+    "benchmarks/reproduction/rewrite-model-screen-v1/model-provenance.json": "122ac8f8ed812b4d78478a8243499af0db2b8d1c1c55f7f28031e59a1ff36127",
+    "benchmarks/reproduction/rewrite-model-screen-v1/cases.json": "3df75abfacfc642352eb58a65cb0e919f8ff76c5539397019a8149d495bdad96",
+    "benchmarks/reproduction/rewrite-model-screen-v1/protocol.json": "ec6d72b0ca01ae80d1bf61cbf077d59102be6f1e28dbf395f0c821f5a555dd9d",
+    "benchmarks/reproduction/rewrite-model-screen-v1/templates/work.json": "8c21ae201967c30da9dd0ee3d4173982f818bd1a22fc4ada6443a65c87925536",
+    "benchmarks/reproduction/rewrite-model-screen-v1/templates/email.json": "1727400550e0dd0d78eff29a70e8b89e47e7556abdbc43acf9196714607f80f2",
+    "benchmarks/reproduction/rewrite-packaging-v1/run.py": "e407b8b38cc84cd647dc7fa60f0349c2d020586e062f8649ae5a4b1fd8941062",
+    "benchmarks/reproduction/rewrite-packaging-v1/freeze.json": "eb6a0ffdcbc71936d3cce05d6b52d3ac66933764a0180fc17495ae37196ea038",
+    "models/catalog.json": "3152d850d9fc23249d45404d5140963fcfcc89118ada436aa8e07208247f2a20",
+    "benchmarks/runs/qwen-diagnostics/qwen4b-text-v1/run.json": "d566b3af3b0a551e763bac44d6b534fbb19b4637c398ca77563192111194025d"
+  },
+  "runtimeFiles": {
+    "/Applications/Arion.app/Contents/Resources/llm/libonnxruntime-genai.dylib": "7cefe85ab3b96cf2f82a1eff232fe7d7157eac83ab08f0beaad676848aa69559",
+    "/Applications/Arion.app/Contents/Resources/llm/libonnxruntime.dylib": "2239177b549f0a211a1da92892dbcc8377bfecfa98707f5456468fffcc2d1e02",
+    "/Users/steven/code/Arion/.workspace/rewrite-packaging-v1/build/worker": "bbb67747d6fe21dc17aa14fdb0cb1848813a119e1db8a5cec4580e613f9066af",
+    "/Users/steven/code/Arion/.workspace/scene-rewrite-alignment-v1/build/validate": "444caf3bcd3267f62323a118592ca50817b56f58a746b674989eddaccea61388"
+  },
+  "modelPaths": {
+    "production-1.7b": "/Users/steven/Library/Application Support/Arion/models/qwen3-1.7b-int4-cpu",
+    "prior-4b-export": "/Users/steven/code/Arion/.workspace/ablation-models/qwen3-4b"
+  },
+  "modelFiles": {
+    "production-1.7b": {
+      "chat_template.jinja": "a55ee1b1660128b7098723e0abcd92caa0788061051c62d51cbe87d9cf1974d8",
+      "config.json": "14c4e163fc54e5c7301a7f26054386ac77734401355fecd530ce4a98233f070c",
+      "genai_config.json": "d328d2ad4cbd7915eee3ad047eabfc562d8daf7307b202c1e6aaef4e8a236ba2",
+      "model.onnx": "9fddc5a0a7f9c51132c376db8fe44774b17a8e42d721c4d289ade16af87da0bd",
+      "tokenizer.json": "979d160e081df25a1bf7f4e2e8f4c441b5dfdc9a8e84aec9f32e80445e1b59b8",
+      "tokenizer_config.json": "bfd13b57b2e0c2cb582f311c0895f077d16a868c0dc61e4dbbba544a835341d6"
+    },
+    "prior-4b-export": {
+      "chat_template.jinja": "a55ee1b1660128b7098723e0abcd92caa0788061051c62d51cbe87d9cf1974d8",
+      "config.json": "0bfeedcfa808cb8404e75d32cef3cdb6c566631acdb7c0edbe9e6945763c6989",
+      "genai_config.json": "dcb9aa8dd93b1acc17a2df193811c200ab540932c20a98ce4d4d23ce88a69b7d",
+      "model.onnx": "b4547cf9327bd532cb81703cf013f958117ba5a3e5a81c7c79a33aba534ff337",
+      "model.onnx.data": "d6003acd70841b99a44ce4c21d13dc42244e3ec3b7c12d70919f9b55440bbc45",
+      "tokenizer.json": "979d160e081df25a1bf7f4e2e8f4c441b5dfdc9a8e84aec9f32e80445e1b59b8",
+      "tokenizer_config.json": "bfd13b57b2e0c2cb582f311c0895f077d16a868c0dc61e4dbbba544a835341d6"
+    }
+  },
+  "build": {
+    "apps/desktop/cmd/arion-llm/main.go": "279f39b92a65c71ad112ae0348edc11bfb5cfbf4076f6f7b9bd8d4aa4b5c41f8",
+    "apps/desktop/infrastructure/llm/prompt/prompt.go": "e7c8701f00d514276972766a9c036d15b05a480612b397a1c2a8b05e4674b48a",
+    "apps/desktop/infrastructure/llm/engine/engine.go": "efcb5f3a16ce6b00001a694e5669250665f50a980c29135c6327245720135003",
+    ".workspace/rewrite-packaging-v1/build/worker.go": "803d9131652f4e71f399e1f95f5c10a75d9246f36af3ba160790f2ec69c4dc42",
+    ".workspace/rewrite-packaging-v1/build/prompt.go": "c1f06f6d49dfa40b5dba0cf19de7267bf53b2d0c4290090fa555752df9a70266",
+    ".workspace/rewrite-packaging-v1/build/engine.go": "c84892e545358943088c0f9fdde1cec0c30ad37c83e34be41f917925438a5505",
+    ".workspace/rewrite-packaging-v1/build/worker": "bbb67747d6fe21dc17aa14fdb0cb1848813a119e1db8a5cec4580e613f9066af",
+    "benchmarks/reproduction/rewrite-packaging-v1/build.py": "27929f27d1f56fab5798ded751e72c6a800940835750a39f969cb19e78bec131"
+  }
+}

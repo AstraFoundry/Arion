@@ -1,0 +1,21 @@
+from pathlib import Path
+import json,hashlib,shutil,subprocess
+R=Path.cwd();H=R/'benchmarks/reproduction/rewrite-selector-model-v1';P=R/'.workspace/rewrite-granite-dense-v1/provisioning';W=R/'.workspace/rewrite-selector-model-v1'
+def read(p):return json.loads(p.read_text())
+def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
+def save(p,x):p.write_text(json.dumps(x,ensure_ascii=False,indent=2)+'\n')
+for p in P.iterdir():
+ if p.is_file():shutil.copyfile(p,H/'sources'/p.name)
+shutil.copyfile(R/'.workspace/rewrite-small-models-v1/gguf_info.py',H/'sources/gguf_info.py')
+shutil.copyfile(Path('/tmp/arion-selector-model-prepare.py'),H/'original-prepare.py.txt')
+protocol=dict(purpose='Evaluate another current <=2B open checkpoint as selector using unchanged actual baseline/balanced model requests. No formatter. Existing Qwen observations reused as explicit paired controls, not regenerated or counted again.',arms=['baseline','balanced'],expectedGenerations=202,sourceCases=457,replayedActualGoPreparations=457,newGoPreparations=0,sourceTreatmentCount=914,expectedSkips=712,formatterGenerations=0,evaluator='benchmarks/corpora/rewrite-selector-screen-v1/evaluator.json',gate='All101 actual candidate cases conform, including required repairs and harmful/optional/literal controls, with no protocol failures. Passing only permits complete457-source chain and unchanged fresh/native/independent/16GB acceptance.',limits='Exposed development sources; repeated arms are not independent samples. No newASR/OCR/final bodies, no release/latency/min16 claim. Model/tokenizer/architecture differ, so this is checkpoint comparison, not parameter-count causality. Typed context and zero-hypothesis cross-script misses stay visible. Existing experimental semantic validator remains absent; no source fallback. No4B or olderQwen.')
+save(H/'protocol.json',protocol)
+f=read(R/'benchmarks/reproduction/rewrite-selector-screen-v1/freeze.json');f['files']=dict(read(R/'benchmarks/runs/rewrite-selector-screen-v1/archive.json')['files']);f.pop('cleanupWorkerSha256');f['modelPath']='.workspace/rewrite-granite-dense-v1/weights/granite-4.0-1b-Q4_K_M.gguf';f['model']=dict(id='granite-4.0-1b',repo='ibm-granite/granite-4.0-1b-GGUF',revision='b27c2fe3f211b7f44e80fa620177aea371099aaa',filename='granite-4.0-1b-Q4_K_M.gguf',sha256='22ec0f9cc99a90185312de3c882c84e7bd6789bdd050389844380a01a831d7f1',bytes=1023645440,parameters=1631750144,license='apache-2.0',textOnly=True,quantization='Q4_K_M',upstreamRepo='ibm-granite/granite-4.0-1b',upstreamRevision='6a7381ba1f54d684ff508d991aeb7dc580157103')
+for p in H.rglob('*'):
+ if p.is_file() and '__pycache__' not in p.parts and p.name!='freeze.json':f['files'][str(p.relative_to(R))]=sha(p)
+save(H/'freeze.json',f)
+host={}
+for key,cmd in [('os',['sw_vers']),('hardware',['sysctl','hw.model','hw.memsize','hw.physicalcpu','machdep.cpu.brand_string']),('power',['pmset','-g','custom']),('thermal',['pmset','-g','therm']),('gitRevision',['git','rev-parse','HEAD']),('dirty',['git','status','--porcelain']),('runtime',['.workspace/rewrite-small-models-v1/runtime/llama-b11734/llama-server','--version'])]:
+ q=subprocess.run(cmd,text=True,capture_output=True);host[key]=dict(command=cmd,exitCode=q.returncode,stdout=q.stdout,stderr=q.stderr)
+host.update(timer='time.monotonic',modelCard='Pinned official card lists Chinese and Apache2; actual GGUF1631750144 tensor elements; embedded template equals pinned upstream.',sampling='CPU4/Metal99/ctx4096/parallel1/greedy42/nonthinking/cachetrue/selector128/no warmup; process RSS sampled after each completion, not peak or whole-host usage.',freezeSha256=sha(H/'freeze.json'))
+save(W/'host-provenance.json',host);print('Prefrozen',len(f['files']),'files;202 planned choices,0 final bodies')

@@ -1,0 +1,10 @@
+{
+  "benchmarks/runs/scene-rewrite-audit-v1/stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "benchmarks/runs/scene-rewrite-audit-v1/results.jsonl": "9f37575d5073a5c8fb50e8be73d5c8b82011fca284a52707acb1d78259b83853",
+  "benchmarks/runs/scene-rewrite-audit-v1/inputs.json": "de2cab57476cc86dc24b8cfc5691699464672c3f1aeb4a144d5698f5d4fa5064",
+  "benchmarks/runs/scene-rewrite-audit-v1/manifest.json": "df783d9c1377ae7e8b26c9633d71e9cd0e7ddba775ab7594ff4824b9dee8e115",
+  "benchmarks/runs/scene-rewrite-audit-v1/load.json": "4e3b1674914d271534abab8988de4f7e1ef99af79b6f3a042ce583f28117911b",
+  "benchmarks/reproduction/scene-rewrite-audit-v1/README.md": "5cc5c6abc3e4133a88520351ae3eafbd9f3ab681111f8a53e842e18324a6b708",
+  "benchmarks/reproduction/scene-rewrite-audit-v1/validator-probes.json": "935d3e91ee3617611ebe1b68bb5a831885b1f39ec25a944743455bf34464722b",
+  "benchmarks/reproduction/scene-rewrite-audit-v1/inputs.json": "de2cab57476cc86dc24b8cfc5691699464672c3f1aeb4a144d5698f5d4fa5064"
+}

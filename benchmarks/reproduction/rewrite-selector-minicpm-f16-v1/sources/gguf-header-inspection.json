@@ -1,0 +1,1962 @@
+{
+  "version": 3,
+  "tensorCount": 219,
+  "parameters": 1080632832,
+  "metadata": {
+    "general.architecture": "llama",
+    "general.type": "model",
+    "general.name": "MiniCPM5 1B",
+    "general.organization": "Openbmb",
+    "general.basename": "MiniCPM5",
+    "general.size_label": "1B",
+    "llama.block_count": 24,
+    "llama.context_length": 131072,
+    "llama.embedding_length": 1536,
+    "llama.feed_forward_length": 4608,
+    "llama.attention.head_count": 16,
+    "llama.attention.head_count_kv": 2,
+    "llama.rope.freq_base": 5000000.0,
+    "llama.attention.layer_norm_rms_epsilon": 9.999999974752427e-07,
+    "llama.attention.key_length": 128,
+    "llama.attention.value_length": 128,
+    "general.file_type": 1,
+    "llama.vocab_size": 130560,
+    "llama.rope.dimension_count": 128,
+    "general.quantization_version": 2,
+    "tokenizer.ggml.model": "gpt2",
+    "tokenizer.ggml.pre": "llama-bpe",
+    "tokenizer.ggml.bos_token_id": 0,
+    "tokenizer.ggml.eos_token_id": 1,
+    "tokenizer.ggml.unknown_token_id": 130074,
+    "tokenizer.ggml.padding_token_id": 1,
+    "tokenizer.ggml.add_bos_token": false,
+    "tokenizer.ggml.add_sep_token": false,
+    "tokenizer.ggml.add_eos_token": false,
+    "tokenizer.chat_template": "{{- bos_token }}{%- if tools %}\n    {%- set tool_definitions %}\n        {{- \"# Tools\\n\\nYou are provided with function signatures within <tools></tools> XML tags:\\n<tools>\" }}\n        {%- for tool in tools %}\n            {{- \"\\n\" }}\n            {{- tool | tojson(ensure_ascii=False) }}\n        {%- endfor %}\n        {{- '\\n</tools>\\n\\nTool usage guidelines:\\n- You may call zero or more functions. If no function calls are needed, just answer normally and do not include any <function ... </function>.\\n- When calling a function, return an XML object within <function ... </function> using:\\n<function name=\"function-name\"><param name=\"param-name\">param-value</param></function>\\n- param-value may be multi-line. If it contains <, & or newline characters, wrap it in a CDATA block: <param name=\"param-name\"><![CDATA[...multi-line value...]]></param>' }}\n    {%- endset %}\n    \n    {{- '<|im_start|>system\\n' }}\n    {%- if messages[0].role == 'system' %}\n        {%- if '<tool_def_sep>' in messages[0].content %}\n            {{- messages[0].content.replace('<tool_def_sep>', tool_definitions) }}\n        {%- else %}\n            {{- messages[0].content + '\\n\\n' + tool_definitions }}\n        {%- endif %}\n    {%- else %}\n        {{- tool_definitions.lstrip() }}\n    {%- endif %}\n    {{- '<|im_end|>\\n' }}\n{%- else %}\n    {%- if messages[0].role == 'system' %}\n        {{- '<|im_start|>system\\n' + messages[0].content + '<|im_end|>\\n' }}\n    {%- endif %}\n{%- endif %}\n{%- set ns = namespace(multi_step_tool=true, last_query_index=messages|length - 1) %}\n{%- for message in messages[::-1] %}\n    {%- set index = (messages|length - 1) - loop.index0 %}\n    {%- if ns.multi_step_tool and message.role == \"user\" and message.content is string and not(message.content.startswith('<tool_response>') and message.content.endswith('</tool_response>')) %}\n        {%- set ns.multi_step_tool = false %}\n        {%- set ns.last_query_index = index %}\n    {%- endif %}\n{%- endfor %}\n{%- for message in messages %}\n    {%- if message.content is string %}\n        {%- set content = message.content %}\n    {%- else %}\n        {%- set content = '' %}\n    {%- endif %}\n    {%- if (message.role == \"user\") or (message.role == \"system\" and not loop.first) %}\n        {{- '<|im_start|>' + message.role + '\\n' + content + '<|im_end|>' + '\\n' }}\n    {%- elif message.role == \"assistant\" %}\n        {%- set reasoning_content = '' %}\n        {%- if message.reasoning_content is string %}\n            {%- set reasoning_content = message.reasoning_content %}\n        {%- else %}\n            {%- if '</think>' in content %}\n                {%- set reasoning_content = content.split('</think>')[0].rstrip('\\n').split('<think>')[-1].lstrip('\\n') %}\n                {%- set content = content.split('</think>')[-1].lstrip('\\n') %}\n            {%- endif %}\n        {%- endif %}\n        \n        {%- if message.tool_calls %}\n            {%- set content_parts = content.split('<tool_sep>') %}\n            {%- set processed_content = content_parts[0] %}\n            {%- set tool_calls_count = message.tool_calls|length %}\n            {%- set tool_sep_count = content_parts|length - 1 %}\n            {%- set min_count = [tool_calls_count, tool_sep_count]|min %}\n            \n            {%- for i in range(1, content_parts|length) %}\n                {%- set tool_index = i - 1 %}\n                {%- if tool_index < tool_calls_count %}\n                    {%- set tool_call = message.tool_calls[tool_index] %}\n                    {%- if tool_call.function %}\n                        {%- set tool_call = tool_call.function %}\n                    {%- endif %}\n                    {%- set single_tool_xml %}\n                        {{- '<function name=\"' ~ tool_call.name ~ '\">' }}\n                        {%- if tool_call.arguments %}\n                            {%- set args_dict = tool_call.arguments %}\n                            {%- for param_name, param_value in args_dict.items() %}\n                                {{- '<param name=\"' ~ param_name ~ '\">' }}\n                                {%- if param_value is string and ('<' in param_value or '&' in param_value or '\\n' in param_value) %}\n                                    {{- '<![CDATA[' + param_value + ']]>' }}\n                                {%- else %}\n                                    {{- param_value }}\n                                {%- endif %}\n                                {{- '</param>' }}\n                            {%- endfor %}\n                        {%- endif %}\n                        {{- '</function>' }}\n                    {%- endset %}\n                    {%- set processed_content = processed_content + single_tool_xml + content_parts[i] %}\n                {%- else %}\n                    {%- set processed_content = processed_content + content_parts[i] %}\n                {%- endif %}\n            {%- endfor %}\n            \n            {%- if tool_calls_count > tool_sep_count %}\n                {%- for remaining_index in range(tool_sep_count, tool_calls_count) %}\n                    {%- set tool_call = message.tool_calls[remaining_index] %}\n                    {%- if tool_call.function %}\n                        {%- set tool_call = tool_call.function %}\n                    {%- endif %}\n                    {%- set remaining_tool_xml %}\n                        {{- '<function name=\"' ~ tool_call.name ~ '\">' }}\n                        {%- if tool_call.arguments %}\n                            {%- set args_dict = tool_call.arguments %}\n                            {%- for param_name, param_value in args_dict.items() %}\n                                {{- '<param name=\"' ~ param_name ~ '\">' }}\n                                {%- if param_value is string and ('<' in param_value or '&' in param_value or '\\n' in param_value) %}\n                                    {{- '<![CDATA[' + param_value + ']]>' }}\n                                {%- else %}\n                                    {{- param_value }}\n                                {%- endif %}\n                                {{- '</param>' }}\n                            {%- endfor %}\n                        {%- endif %}\n                        {{- '</function>' }}\n                    {%- endset %}\n                    {%- set processed_content = processed_content + remaining_tool_xml %}\n                {%- endfor %}\n            {%- endif %}\n            \n            {%- set content = processed_content %}\n        {%- endif %}\n        \n        {%- if loop.index0 > ns.last_query_index %}\n            {%- if reasoning_content %}\n                {{- '<|im_start|>' + message.role + '\\n<think>\\n' + reasoning_content.strip('\\n') + '\\n</think>\\n\\n' + content.lstrip('\\n') }}\n            {%- else %}\n                {{- '<|im_start|>' + message.role + '\\n' + content }}\n            {%- endif %}\n        {%- else %}\n            {{- '<|im_start|>' + message.role + '\\n' + content }}\n        {%- endif %}\n        \n        {%- if message.tool_calls and not has_tool_sep %}\n            {%- for tool_call in message.tool_calls %}\n                {%- if (loop.first and content) or (not loop.first) %}\n                    {{- '\\n' }}\n                {%- endif %}\n                {%- if tool_call.function %}\n                    {%- set tool_call = tool_call.function %}\n                {%- endif %}\n                {{- '<function name=\"' ~ tool_call.name ~ '\">' }}\n                {%- if tool_call.arguments %}\n                    {%- set args_dict = tool_call.arguments %}\n                    {%- for param_name, param_value in args_dict.items() %}\n                        {{- '<param name=\"' ~ param_name ~ '\">' }}\n                        {%- if param_value is string and ('<' in param_value or '&' in param_value or '\\n' in param_value) %}\n                            {{- '<![CDATA[' + param_value + ']]>' }}\n                        {%- else %}\n                            {{- param_value }}\n                        {%- endif %}\n                        {{- '</param>' }}\n                    {%- endfor %}\n                {%- endif %}\n                {{- '</function>' }}\n            {%- endfor %}\n        {%- endif %}\n        {{- '<|im_end|>\\n' }}\n    {%- elif message.role == \"tool\" %}\n        {%- if loop.first or (messages[loop.index0 - 1].role != \"tool\") %}\n            {{- '<|im_start|>user' }}\n        {%- endif %}\n        {{- '\\n<tool_response>\\n' }}\n        {%- if message.content is string %}\n            {{- content }}\n        {%- else %}\n            {{- message.content | tojson(ensure_ascii=False) }}\n        {%- endif %}\n        {{- '\\n</tool_response>' }}\n        {%- if loop.last or (messages[loop.index0 + 1].role != \"tool\") %}\n            {{- '<|im_end|>\\n' }}\n        {%- endif %}\n    {%- endif %}\n{%- endfor %}\n{%- if add_generation_prompt %}\n    {{- '<|im_start|>assistant\\n' }}\n    {%- if enable_thinking is defined %}\n        {%- if enable_thinking is false %}\n            {{- '<think>\\n\\n</think>\\n\\n' }}\n        {%- elif enable_thinking is true %}\n            {{- '<think>\\n' }}\n        {%- endif %}\n    {%- endif %}\n{%- endif %}\n",
+    "tokenizer.ggml.add_space_prefix": false
+  },
+  "tensors": [
+    {
+      "name": "output.weight",
+      "shape": [
+        1536,
+        130560
+      ],
+      "type": 1,
+      "elements": 200540160
+    },
+    {
+      "name": "token_embd.weight",
+      "shape": [
+        1536,
+        130560
+      ],
+      "type": 1,
+      "elements": 200540160
+    },
+    {
+      "name": "blk.0.attn_norm.weight",
+      "shape": [
+        1536
+      ],
+      "type": 0,
+      "elements": 1536
+    },
+    {
+      "name": "blk.0.ffn_down.weight",
+      "shape": [
+        4608,
+        1536
+      ],
+      "type": 1,
+      "elements": 7077888
+    },
+    {
+      "name": "blk.0.ffn_gate.weight",
+      "shape": [
+        1536,
+        4608
+      ],
+      "type": 1,
+      "elements": 7077888
+    },
+    {
+      "name": "blk.0.ffn_up.weight",
+      "shape": [
+        1536,
+        4608
+      ],
+      "type": 1,
+      "elements": 7077888
+    },
+    {
+      "name": "blk.0.ffn_norm.weight",
+      "shape": [
+        1536
+      ],
+      "type": 0,
+      "elements": 1536
+    },
+    {
+      "name": "blk.0.attn_k.weight",
+      "shape": [
+        1536,
+        256
+      ],
+      "type": 1,
+      "elements": 393216
+    },
+    {
+      "name": "blk.0.attn_output.weight",
+      "shape": [
+        2048,
+        1536
+      ],
+      "type": 1,
+      "elements": 3145728
+    },
+    {
+      "name": "blk.0.attn_q.weight",
+      "shape": [
+        1536,
+        2048
+      ],
+      "type": 1,
+      "elements": 3145728
+    },
+    {
+      "name": "blk.0.attn_v.weight",
+      "shape": [
+        1536,
+        256
+      ],
+      "type": 1,
+      "elements": 393216
+    },
+    {
+      "name": "blk.1.attn_norm.weight",
+      "shape": [
+        1536
+      ],
+      "type": 0,
+      "elements": 1536
+    },
+    {
+      "name": "blk.1.ffn_down.weight",
+      "shape": [
+        4608,
+        1536
+      ],
+      "type": 1,
+      "elements": 7077888
+    },
+    {
+      "name": "blk.1.ffn_gate.weight",
+      "shape": [
+        1536,
+        4608
+      ],
+      "type": 1,
+      "elements": 7077888
+    },
+    {
+      "name": "blk.1.ffn_up.weight",
+      "shape": [
+        1536,
+        4608
+      ],
+      "type": 1,
+      "elements": 7077888
+    },
+    {
+      "name": "blk.1.ffn_norm.weight",
+      "shape": [
+        1536
+      ],
+      "type": 0,
+      "elements": 1536
+    },
+    {
+      "name": "blk.1.attn_k.weight",
+      "shape": [
+        1536,
+        256
+      ],
+      "type": 1,
+      "elements": 393216
+    },
+    {
+      "name": "blk.1.attn_output.weight",
+      "shape": [
+        2048,
+        1536
+      ],
+      "type": 1,
+      "elements": 3145728
+    },
+    {
+      "name": "blk.1.attn_q.weight",
+      "shape": [
+        1536,
+        2048
+      ],
+      "type": 1,
+      "elements": 3145728
+    },
+    {
+      "name": "blk.1.attn_v.weight",
+      "shape": [
+        1536,
+        256
+      ],
+      "type": 1,
+      "elements": 393216
+    },
+    {
+      "name": "blk.10.attn_norm.weight",
+      "shape": [
+        1536
+      ],
+      "type": 0,
+      "elements": 1536
+    },
+    {
+      "name": "blk.10.ffn_down.weight",
+      "shape": [
+        4608,
+        1536
+      ],
+      "type": 1,
+      "elements": 7077888
+    },
+    {
+      "name": "blk.10.ffn_gate.weight",
+      "shape": [
+        1536,
+        4608
+      ],
+      "type": 1,
+      "elements": 7077888
+    },
+    {
+      "name": "blk.10.ffn_up.weight",
+      "shape": [
+        1536,
+        4608
+      ],
+      "type": 1,
+      "elements": 7077888
+    },
+    {
+      "name": "blk.10.ffn_norm.weight",
+      "shape": [
+        1536
+      ],
+      "type": 0,
+      "elements": 1536
+    },
+    {
+      "name": "blk.10.attn_k.weight",
+      "shape": [
+        1536,
+        256
+      ],
+      "type": 1,
+      "elements": 393216
+    },
+    {
+      "name": "blk.10.attn_output.weight",
+      "shape": [
+        2048,
+        1536
+      ],
+      "type": 1,
+      "elements": 3145728
+    },
+    {
+      "name": "blk.10.attn_q.weight",
+      "shape": [
+        1536,
+        2048
+      ],
+      "type": 1,
+      "elements": 3145728
+    },
+    {
+      "name": "blk.10.attn_v.weight",
+      "shape": [
+        1536,
+        256
+      ],
+      "type": 1,
+      "elements": 393216
+    },
+    {
+      "name": "blk.11.attn_norm.weight",
+      "shape": [
+        1536
+      ],
+      "type": 0,
+      "elements": 1536
+    },
+    {
+      "name": "blk.11.ffn_down.weight",
+      "shape": [
+        4608,
+        1536
+      ],
+      "type": 1,
+      "elements": 7077888
+    },
+    {
+      "name": "blk.11.ffn_gate.weight",
+      "shape": [
+        1536,
+        4608
+      ],
+      "type": 1,
+      "elements": 7077888
+    },
+    {
+      "name": "blk.11.ffn_up.weight",
+      "shape": [
+        1536,
+        4608
+      ],
+      "type": 1,
+      "elements": 7077888
+    },
+    {
+      "name": "blk.11.ffn_norm.weight",
+      "shape": [
+        1536
+      ],
+      "type": 0,
+      "elements": 1536
+    },
+    {
+      "name": "blk.11.attn_k.weight",
+      "shape": [
+        1536,
+        256
+      ],
+      "type": 1,
+      "elements": 393216
+    },
+    {
+      "name": "blk.11.attn_output.weight",
+      "shape": [
+        2048,
+        1536
+      ],
+      "type": 1,
+      "elements": 3145728
+    },
+    {
+      "name": "blk.11.attn_q.weight",
+      "shape": [
+        1536,
+        2048
+      ],
+      "type": 1,
+      "elements": 3145728
+    },
+    {
+      "name": "blk.11.attn_v.weight",
+      "shape": [
+        1536,
+        256
+      ],
+      "type": 1,
+      "elements": 393216
+    },
+    {
+      "name": "blk.12.attn_norm.weight",
+      "shape": [
+        1536
+      ],
+      "type": 0,
+      "elements": 1536
+    },
+    {
+      "name": "blk.12.ffn_down.weight",
+      "shape": [
+        4608,
+        1536
+      ],
+      "type": 1,
+      "elements": 7077888
+    },
+    {
+      "name": "blk.12.ffn_gate.weight",
+      "shape": [
+        1536,
+        4608
+      ],
+      "type": 1,
+      "elements": 7077888
+    },
+    {
+      "name": "blk.12.ffn_up.weight",
+      "shape": [
+        1536,
+        4608
+      ],
+      "type": 1,
+      "elements": 7077888
+    },
+    {
+      "name": "blk.12.ffn_norm.weight",
+      "shape": [
+        1536
+      ],
+      "type": 0,
+      "elements": 1536
+    },
+    {
+      "name": "blk.12.attn_k.weight",
+      "shape": [
+        1536,
+        256
+      ],
+      "type": 1,
+      "elements": 393216
+    },
+    {
+      "name": "blk.12.attn_output.weight",
+      "shape": [
+        2048,
+        1536
+      ],
+      "type": 1,
+      "elements": 3145728
+    },
+    {
+      "name": "blk.12.attn_q.weight",
+      "shape": [
+        1536,
+        2048
+      ],
+      "type": 1,
+      "elements": 3145728
+    },
+    {
+      "name": "blk.12.attn_v.weight",
+      "shape": [
+        1536,
+        256
+      ],
+      "type": 1,
+      "elements": 393216
+    },
+    {
+      "name": "blk.13.attn_norm.weight",
+      "shape": [
+        1536
+      ],
+      "type": 0,
+      "elements": 1536
+    },
+    {
+      "name": "blk.13.ffn_down.weight",
+      "shape": [
+        4608,
+        1536
+      ],
+      "type": 1,
+      "elements": 7077888
+    },
+    {
+      "name": "blk.13.ffn_gate.weight",
+      "shape": [
+        1536,
+        4608
+      ],
+      "type": 1,
+      "elements": 7077888
+    },
+    {
+      "name": "blk.13.ffn_up.weight",
+      "shape": [
+        1536,
+        4608
+      ],
+      "type": 1,
+      "elements": 7077888
+    },
+    {
+      "name": "blk.13.ffn_norm.weight",
+      "shape": [
+        1536
+      ],
+      "type": 0,
+      "elements": 1536
+    },
+    {
+      "name": "blk.13.attn_k.weight",
+      "shape": [
+        1536,
+        256
+      ],
+      "type": 1,
+      "elements": 393216
+    },
+    {
+      "name": "blk.13.attn_output.weight",
+      "shape": [
+        2048,
+        1536
+      ],
+      "type": 1,
+      "elements": 3145728
+    },
+    {
+      "name": "blk.13.attn_q.weight",
+      "shape": [
+        1536,
+        2048
+      ],
+      "type": 1,
+      "elements": 3145728
+    },
+    {
+      "name": "blk.13.attn_v.weight",
+      "shape": [
+        1536,
+        256
+      ],
+      "type": 1,
+      "elements": 393216
+    },
+    {
+      "name": "blk.14.attn_norm.weight",
+      "shape": [
+        1536
+      ],
+      "type": 0,
+      "elements": 1536
+    },
+    {
+      "name": "blk.14.ffn_down.weight",
+      "shape": [
+        4608,
+        1536
+      ],
+      "type": 1,
+      "elements": 7077888
+    },
+    {
+      "name": "blk.14.ffn_gate.weight",
+      "shape": [
+        1536,
+        4608
+      ],
+      "type": 1,
+      "elements": 7077888
+    },
+    {
+      "name": "blk.14.ffn_up.weight",
+      "shape": [
+        1536,
+        4608
+      ],
+      "type": 1,
+      "elements": 7077888
+    },
+    {
+      "name": "blk.14.ffn_norm.weight",
+      "shape": [
+        1536
+      ],
+      "type": 0,
+      "elements": 1536
+    },
+    {
+      "name": "blk.14.attn_k.weight",
+      "shape": [
+        1536,
+        256
+      ],
+      "type": 1,
+      "elements": 393216
+    },
+    {
+      "name": "blk.14.attn_output.weight",
+      "shape": [
+        2048,
+        1536
+      ],
+      "type": 1,
+      "elements": 3145728
+    },
+    {
+      "name": "blk.14.attn_q.weight",
+      "shape": [
+        1536,
+        2048
+      ],
+      "type": 1,
+      "elements": 3145728
+    },
+    {
+      "name": "blk.14.attn_v.weight",
+      "shape": [
+        1536,
+        256
+      ],
+      "type": 1,
+      "elements": 393216
+    },
+    {
+      "name": "blk.15.attn_norm.weight",
+      "shape": [
+        1536
+      ],
+      "type": 0,
+      "elements": 1536
+    },
+    {
+      "name": "blk.15.ffn_down.weight",
+      "shape": [
+        4608,
+        1536
+      ],
+      "type": 1,
+      "elements": 7077888
+    },
+    {
+      "name": "blk.15.ffn_gate.weight",
+      "shape": [
+        1536,
+        4608
+      ],
+      "type": 1,
+      "elements": 7077888
+    },
+    {
+      "name": "blk.15.ffn_up.weight",
+      "shape": [
+        1536,
+        4608
+      ],
+      "type": 1,
+      "elements": 7077888
+    },
+    {
+      "name": "blk.15.ffn_norm.weight",
+      "shape": [
+        1536
+      ],
+      "type": 0,
+      "elements": 1536
+    },
+    {
+      "name": "blk.15.attn_k.weight",
+      "shape": [
+        1536,
+        256
+      ],
+      "type": 1,
+      "elements": 393216
+    },
+    {
+      "name": "blk.15.attn_output.weight",
+      "shape": [
+        2048,
+        1536
+      ],
+      "type": 1,
+      "elements": 3145728
+    },
+    {
+      "name": "blk.15.attn_q.weight",
+      "shape": [
+        1536,
+        2048
+      ],
+      "type": 1,
+      "elements": 3145728
+    },
+    {
+      "name": "blk.15.attn_v.weight",
+      "shape": [
+        1536,
+        256
+      ],
+      "type": 1,
+      "elements": 393216
+    },
+    {
+      "name": "blk.16.attn_norm.weight",
+      "shape": [
+        1536
+      ],
+      "type": 0,
+      "elements": 1536
+    },
+    {
+      "name": "blk.16.ffn_down.weight",
+      "shape": [
+        4608,
+        1536
+      ],
+      "type": 1,
+      "elements": 7077888
+    },
+    {
+      "name": "blk.16.ffn_gate.weight",
+      "shape": [
+        1536,
+        4608
+      ],
+      "type": 1,
+      "elements": 7077888
+    },
+    {
+      "name": "blk.16.ffn_up.weight",
+      "shape": [
+        1536,
+        4608
+      ],
+      "type": 1,
+      "elements": 7077888
+    },
+    {
+      "name": "blk.16.ffn_norm.weight",
+      "shape": [
+        1536
+      ],
+      "type": 0,
+      "elements": 1536
+    },
+    {
+      "name": "blk.16.attn_k.weight",
+      "shape": [
+        1536,
+        256
+      ],
+      "type": 1,
+      "elements": 393216
+    },
+    {
+      "name": "blk.16.attn_output.weight",
+      "shape": [
+        2048,
+        1536
+      ],
+      "type": 1,
+      "elements": 3145728
+    },
+    {
+      "name": "blk.16.attn_q.weight",
+      "shape": [
+        1536,
+        2048
+      ],
+      "type": 1,
+      "elements": 3145728
+    },
+    {
+      "name": "blk.16.attn_v.weight",
+      "shape": [
+        1536,
+        256
+      ],
+      "type": 1,
+      "elements": 393216
+    },
+    {
+      "name": "blk.17.attn_norm.weight",
+      "shape": [
+        1536
+      ],
+      "type": 0,
+      "elements": 1536
+    },
+    {
+      "name": "blk.17.ffn_down.weight",
+      "shape": [
+        4608,
+        1536
+      ],
+      "type": 1,
+      "elements": 7077888
+    },
+    {
+      "name": "blk.17.ffn_gate.weight",
+      "shape": [
+        1536,
+        4608
+      ],
+      "type": 1,
+      "elements": 7077888
+    },
+    {
+      "name": "blk.17.ffn_up.weight",
+      "shape": [
+        1536,
+        4608
+      ],
+      "type": 1,
+      "elements": 7077888
+    },
+    {
+      "name": "blk.17.ffn_norm.weight",
+      "shape": [
+        1536
+      ],
+      "type": 0,
+      "elements": 1536
+    },
+    {
+      "name": "blk.17.attn_k.weight",
+      "shape": [
+        1536,
+        256
+      ],
+      "type": 1,
+      "elements": 393216
+    },
+    {
+      "name": "blk.17.attn_output.weight",
+      "shape": [
+        2048,
+        1536
+      ],
+      "type": 1,
+      "elements": 3145728
+    },
+    {
+      "name": "blk.17.attn_q.weight",
+      "shape": [
+        1536,
+        2048
+      ],
+      "type": 1,
+      "elements": 3145728
+    },
+    {
+      "name": "blk.17.attn_v.weight",
+      "shape": [
+        1536,
+        256
+      ],
+      "type": 1,
+      "elements": 393216
+    },
+    {
+      "name": "blk.18.attn_norm.weight",
+      "shape": [
+        1536
+      ],
+      "type": 0,
+      "elements": 1536
+    },
+    {
+      "name": "blk.18.ffn_down.weight",
+      "shape": [
+        4608,
+        1536
+      ],
+      "type": 1,
+      "elements": 7077888
+    },
+    {
+      "name": "blk.18.ffn_gate.weight",
+      "shape": [
+        1536,
+        4608
+      ],
+      "type": 1,
+      "elements": 7077888
+    },
+    {
+      "name": "blk.18.ffn_up.weight",
+      "shape": [
+        1536,
+        4608
+      ],
+      "type": 1,
+      "elements": 7077888
+    },
+    {
+      "name": "blk.18.ffn_norm.weight",
+      "shape": [
+        1536
+      ],
+      "type": 0,
+      "elements": 1536
+    },
+    {
+      "name": "blk.18.attn_k.weight",
+      "shape": [
+        1536,
+        256
+      ],
+      "type": 1,
+      "elements": 393216
+    },
+    {
+      "name": "blk.18.attn_output.weight",
+      "shape": [
+        2048,
+        1536
+      ],
+      "type": 1,
+      "elements": 3145728
+    },
+    {
+      "name": "blk.18.attn_q.weight",
+      "shape": [
+        1536,
+        2048
+      ],
+      "type": 1,
+      "elements": 3145728
+    },
+    {
+      "name": "blk.18.attn_v.weight",
+      "shape": [
+        1536,
+        256
+      ],
+      "type": 1,
+      "elements": 393216
+    },
+    {
+      "name": "blk.19.attn_norm.weight",
+      "shape": [
+        1536
+      ],
+      "type": 0,
+      "elements": 1536
+    },
+    {
+      "name": "blk.19.ffn_down.weight",
+      "shape": [
+        4608,
+        1536
+      ],
+      "type": 1,
+      "elements": 7077888
+    },
+    {
+      "name": "blk.19.ffn_gate.weight",
+      "shape": [
+        1536,
+        4608
+      ],
+      "type": 1,
+      "elements": 7077888
+    },
+    {
+      "name": "blk.19.ffn_up.weight",
+      "shape": [
+        1536,
+        4608
+      ],
+      "type": 1,
+      "elements": 7077888
+    },
+    {
+      "name": "blk.19.ffn_norm.weight",
+      "shape": [
+        1536
+      ],
+      "type": 0,
+      "elements": 1536
+    },
+    {
+      "name": "blk.19.attn_k.weight",
+      "shape": [
+        1536,
+        256
+      ],
+      "type": 1,
+      "elements": 393216
+    },
+    {
+      "name": "blk.19.attn_output.weight",
+      "shape": [
+        2048,
+        1536
+      ],
+      "type": 1,
+      "elements": 3145728
+    },
+    {
+      "name": "blk.19.attn_q.weight",
+      "shape": [
+        1536,
+        2048
+      ],
+      "type": 1,
+      "elements": 3145728
+    },
+    {
+      "name": "blk.19.attn_v.weight",
+      "shape": [
+        1536,
+        256
+      ],
+      "type": 1,
+      "elements": 393216
+    },
+    {
+      "name": "blk.2.attn_norm.weight",
+      "shape": [
+        1536
+      ],
+      "type": 0,
+      "elements": 1536
+    },
+    {
+      "name": "blk.2.ffn_down.weight",
+      "shape": [
+        4608,
+        1536
+      ],
+      "type": 1,
+      "elements": 7077888
+    },
+    {
+      "name": "blk.2.ffn_gate.weight",
+      "shape": [
+        1536,
+        4608
+      ],
+      "type": 1,
+      "elements": 7077888
+    },
+    {
+      "name": "blk.2.ffn_up.weight",
+      "shape": [
+        1536,
+        4608
+      ],
+      "type": 1,
+      "elements": 7077888
+    },
+    {
+      "name": "blk.2.ffn_norm.weight",
+      "shape": [
+        1536
+      ],
+      "type": 0,
+      "elements": 1536
+    },
+    {
+      "name": "blk.2.attn_k.weight",
+      "shape": [
+        1536,
+        256
+      ],
+      "type": 1,
+      "elements": 393216
+    },
+    {
+      "name": "blk.2.attn_output.weight",
+      "shape": [
+        2048,
+        1536
+      ],
+      "type": 1,
+      "elements": 3145728
+    },
+    {
+      "name": "blk.2.attn_q.weight",
+      "shape": [
+        1536,
+        2048
+      ],
+      "type": 1,
+      "elements": 3145728
+    },
+    {
+      "name": "blk.2.attn_v.weight",
+      "shape": [
+        1536,
+        256
+      ],
+      "type": 1,
+      "elements": 393216
+    },
+    {
+      "name": "blk.20.attn_norm.weight",
+      "shape": [
+        1536
+      ],
+      "type": 0,
+      "elements": 1536
+    },
+    {
+      "name": "blk.20.ffn_down.weight",
+      "shape": [
+        4608,
+        1536
+      ],
+      "type": 1,
+      "elements": 7077888
+    },
+    {
+      "name": "blk.20.ffn_gate.weight",
+      "shape": [
+        1536,
+        4608
+      ],
+      "type": 1,
+      "elements": 7077888
+    },
+    {
+      "name": "blk.20.ffn_up.weight",
+      "shape": [
+        1536,
+        4608
+      ],
+      "type": 1,
+      "elements": 7077888
+    },
+    {
+      "name": "blk.20.ffn_norm.weight",
+      "shape": [
+        1536
+      ],
+      "type": 0,
+      "elements": 1536
+    },
+    {
+      "name": "blk.20.attn_k.weight",
+      "shape": [
+        1536,
+        256
+      ],
+      "type": 1,
+      "elements": 393216
+    },
+    {
+      "name": "blk.20.attn_output.weight",
+      "shape": [
+        2048,
+        1536
+      ],
+      "type": 1,
+      "elements": 3145728
+    },
+    {
+      "name": "blk.20.attn_q.weight",
+      "shape": [
+        1536,
+        2048
+      ],
+      "type": 1,
+      "elements": 3145728
+    },
+    {
+      "name": "blk.20.attn_v.weight",
+      "shape": [
+        1536,
+        256
+      ],
+      "type": 1,
+      "elements": 393216
+    },
+    {
+      "name": "blk.21.attn_norm.weight",
+      "shape": [
+        1536
+      ],
+      "type": 0,
+      "elements": 1536
+    },
+    {
+      "name": "blk.21.ffn_down.weight",
+      "shape": [
+        4608,
+        1536
+      ],
+      "type": 1,
+      "elements": 7077888
+    },
+    {
+      "name": "blk.21.ffn_gate.weight",
+      "shape": [
+        1536,
+        4608
+      ],
+      "type": 1,
+      "elements": 7077888
+    },
+    {
+      "name": "blk.21.ffn_up.weight",
+      "shape": [
+        1536,
+        4608
+      ],
+      "type": 1,
+      "elements": 7077888
+    },
+    {
+      "name": "blk.21.ffn_norm.weight",
+      "shape": [
+        1536
+      ],
+      "type": 0,
+      "elements": 1536
+    },
+    {
+      "name": "blk.21.attn_k.weight",
+      "shape": [
+        1536,
+        256
+      ],
+      "type": 1,
+      "elements": 393216
+    },
+    {
+      "name": "blk.21.attn_output.weight",
+      "shape": [
+        2048,
+        1536
+      ],
+      "type": 1,
+      "elements": 3145728
+    },
+    {
+      "name": "blk.21.attn_q.weight",
+      "shape": [
+        1536,
+        2048
+      ],
+      "type": 1,
+      "elements": 3145728
+    },
+    {
+      "name": "blk.21.attn_v.weight",
+      "shape": [
+        1536,
+        256
+      ],
+      "type": 1,
+      "elements": 393216
+    },
+    {
+      "name": "blk.22.attn_norm.weight",
+      "shape": [
+        1536
+      ],
+      "type": 0,
+      "elements": 1536
+    },
+    {
+      "name": "blk.22.ffn_down.weight",
+      "shape": [
+        4608,
+        1536
+      ],
+      "type": 1,
+      "elements": 7077888
+    },
+    {
+      "name": "blk.22.ffn_gate.weight",
+      "shape": [
+        1536,
+        4608
+      ],
+      "type": 1,
+      "elements": 7077888
+    },
+    {
+      "name": "blk.22.ffn_up.weight",
+      "shape": [
+        1536,
+        4608
+      ],
+      "type": 1,
+      "elements": 7077888
+    },
+    {
+      "name": "blk.22.ffn_norm.weight",
+      "shape": [
+        1536
+      ],
+      "type": 0,
+      "elements": 1536
+    },
+    {
+      "name": "blk.22.attn_k.weight",
+      "shape": [
+        1536,
+        256
+      ],
+      "type": 1,
+      "elements": 393216
+    },
+    {
+      "name": "blk.22.attn_output.weight",
+      "shape": [
+        2048,
+        1536
+      ],
+      "type": 1,
+      "elements": 3145728
+    },
+    {
+      "name": "blk.22.attn_q.weight",
+      "shape": [
+        1536,
+        2048
+      ],
+      "type": 1,
+      "elements": 3145728
+    },
+    {
+      "name": "blk.22.attn_v.weight",
+      "shape": [
+        1536,
+        256
+      ],
+      "type": 1,
+      "elements": 393216
+    },
+    {
+      "name": "blk.23.attn_norm.weight",
+      "shape": [
+        1536
+      ],
+      "type": 0,
+      "elements": 1536
+    },
+    {
+      "name": "blk.23.ffn_down.weight",
+      "shape": [
+        4608,
+        1536
+      ],
+      "type": 1,
+      "elements": 7077888
+    },
+    {
+      "name": "blk.23.ffn_gate.weight",
+      "shape": [
+        1536,
+        4608
+      ],
+      "type": 1,
+      "elements": 7077888
+    },
+    {
+      "name": "blk.23.ffn_up.weight",
+      "shape": [
+        1536,
+        4608
+      ],
+      "type": 1,
+      "elements": 7077888
+    },
+    {
+      "name": "blk.23.ffn_norm.weight",
+      "shape": [
+        1536
+      ],
+      "type": 0,
+      "elements": 1536
+    },
+    {
+      "name": "blk.23.attn_k.weight",
+      "shape": [
+        1536,
+        256
+      ],
+      "type": 1,
+      "elements": 393216
+    },
+    {
+      "name": "blk.23.attn_output.weight",
+      "shape": [
+        2048,
+        1536
+      ],
+      "type": 1,
+      "elements": 3145728
+    },
+    {
+      "name": "blk.23.attn_q.weight",
+      "shape": [
+        1536,
+        2048
+      ],
+      "type": 1,
+      "elements": 3145728
+    },
+    {
+      "name": "blk.23.attn_v.weight",
+      "shape": [
+        1536,
+        256
+      ],
+      "type": 1,
+      "elements": 393216
+    },
+    {
+      "name": "blk.3.attn_norm.weight",
+      "shape": [
+        1536
+      ],
+      "type": 0,
+      "elements": 1536
+    },
+    {
+      "name": "blk.3.ffn_down.weight",
+      "shape": [
+        4608,
+        1536
+      ],
+      "type": 1,
+      "elements": 7077888
+    },
+    {
+      "name": "blk.3.ffn_gate.weight",
+      "shape": [
+        1536,
+        4608
+      ],
+      "type": 1,
+      "elements": 7077888
+    },
+    {
+      "name": "blk.3.ffn_up.weight",
+      "shape": [
+        1536,
+        4608
+      ],
+      "type": 1,
+      "elements": 7077888
+    },
+    {
+      "name": "blk.3.ffn_norm.weight",
+      "shape": [
+        1536
+      ],
+      "type": 0,
+      "elements": 1536
+    },
+    {
+      "name": "blk.3.attn_k.weight",
+      "shape": [
+        1536,
+        256
+      ],
+      "type": 1,
+      "elements": 393216
+    },
+    {
+      "name": "blk.3.attn_output.weight",
+      "shape": [
+        2048,
+        1536
+      ],
+      "type": 1,
+      "elements": 3145728
+    },
+    {
+      "name": "blk.3.attn_q.weight",
+      "shape": [
+        1536,
+        2048
+      ],
+      "type": 1,
+      "elements": 3145728
+    },
+    {
+      "name": "blk.3.attn_v.weight",
+      "shape": [
+        1536,
+        256
+      ],
+      "type": 1,
+      "elements": 393216
+    },
+    {
+      "name": "blk.4.attn_norm.weight",
+      "shape": [
+        1536
+      ],
+      "type": 0,
+      "elements": 1536
+    },
+    {
+      "name": "blk.4.ffn_down.weight",
+      "shape": [
+        4608,
+        1536
+      ],
+      "type": 1,
+      "elements": 7077888
+    },
+    {
+      "name": "blk.4.ffn_gate.weight",
+      "shape": [
+        1536,
+        4608
+      ],
+      "type": 1,
+      "elements": 7077888
+    },
+    {
+      "name": "blk.4.ffn_up.weight",
+      "shape": [
+        1536,
+        4608
+      ],
+      "type": 1,
+      "elements": 7077888
+    },
+    {
+      "name": "blk.4.ffn_norm.weight",
+      "shape": [
+        1536
+      ],
+      "type": 0,
+      "elements": 1536
+    },
+    {
+      "name": "blk.4.attn_k.weight",
+      "shape": [
+        1536,
+        256
+      ],
+      "type": 1,
+      "elements": 393216
+    },
+    {
+      "name": "blk.4.attn_output.weight",
+      "shape": [
+        2048,
+        1536
+      ],
+      "type": 1,
+      "elements": 3145728
+    },
+    {
+      "name": "blk.4.attn_q.weight",
+      "shape": [
+        1536,
+        2048
+      ],
+      "type": 1,
+      "elements": 3145728
+    },
+    {
+      "name": "blk.4.attn_v.weight",
+      "shape": [
+        1536,
+        256
+      ],
+      "type": 1,
+      "elements": 393216
+    },
+    {
+      "name": "blk.5.attn_norm.weight",
+      "shape": [
+        1536
+      ],
+      "type": 0,
+      "elements": 1536
+    },
+    {
+      "name": "blk.5.ffn_down.weight",
+      "shape": [
+        4608,
+        1536
+      ],
+      "type": 1,
+      "elements": 7077888
+    },
+    {
+      "name": "blk.5.ffn_gate.weight",
+      "shape": [
+        1536,
+        4608
+      ],
+      "type": 1,
+      "elements": 7077888
+    },
+    {
+      "name": "blk.5.ffn_up.weight",
+      "shape": [
+        1536,
+        4608
+      ],
+      "type": 1,
+      "elements": 7077888
+    },
+    {
+      "name": "blk.5.ffn_norm.weight",
+      "shape": [
+        1536
+      ],
+      "type": 0,
+      "elements": 1536
+    },
+    {
+      "name": "blk.5.attn_k.weight",
+      "shape": [
+        1536,
+        256
+      ],
+      "type": 1,
+      "elements": 393216
+    },
+    {
+      "name": "blk.5.attn_output.weight",
+      "shape": [
+        2048,
+        1536
+      ],
+      "type": 1,
+      "elements": 3145728
+    },
+    {
+      "name": "blk.5.attn_q.weight",
+      "shape": [
+        1536,
+        2048
+      ],
+      "type": 1,
+      "elements": 3145728
+    },
+    {
+      "name": "blk.5.attn_v.weight",
+      "shape": [
+        1536,
+        256
+      ],
+      "type": 1,
+      "elements": 393216
+    },
+    {
+      "name": "blk.6.attn_norm.weight",
+      "shape": [
+        1536
+      ],
+      "type": 0,
+      "elements": 1536
+    },
+    {
+      "name": "blk.6.ffn_down.weight",
+      "shape": [
+        4608,
+        1536
+      ],
+      "type": 1,
+      "elements": 7077888
+    },
+    {
+      "name": "blk.6.ffn_gate.weight",
+      "shape": [
+        1536,
+        4608
+      ],
+      "type": 1,
+      "elements": 7077888
+    },
+    {
+      "name": "blk.6.ffn_up.weight",
+      "shape": [
+        1536,
+        4608
+      ],
+      "type": 1,
+      "elements": 7077888
+    },
+    {
+      "name": "blk.6.ffn_norm.weight",
+      "shape": [
+        1536
+      ],
+      "type": 0,
+      "elements": 1536
+    },
+    {
+      "name": "blk.6.attn_k.weight",
+      "shape": [
+        1536,
+        256
+      ],
+      "type": 1,
+      "elements": 393216
+    },
+    {
+      "name": "blk.6.attn_output.weight",
+      "shape": [
+        2048,
+        1536
+      ],
+      "type": 1,
+      "elements": 3145728
+    },
+    {
+      "name": "blk.6.attn_q.weight",
+      "shape": [
+        1536,
+        2048
+      ],
+      "type": 1,
+      "elements": 3145728
+    },
+    {
+      "name": "blk.6.attn_v.weight",
+      "shape": [
+        1536,
+        256
+      ],
+      "type": 1,
+      "elements": 393216
+    },
+    {
+      "name": "blk.7.attn_norm.weight",
+      "shape": [
+        1536
+      ],
+      "type": 0,
+      "elements": 1536
+    },
+    {
+      "name": "blk.7.ffn_down.weight",
+      "shape": [
+        4608,
+        1536
+      ],
+      "type": 1,
+      "elements": 7077888
+    },
+    {
+      "name": "blk.7.ffn_gate.weight",
+      "shape": [
+        1536,
+        4608
+      ],
+      "type": 1,
+      "elements": 7077888
+    },
+    {
+      "name": "blk.7.ffn_up.weight",
+      "shape": [
+        1536,
+        4608
+      ],
+      "type": 1,
+      "elements": 7077888
+    },
+    {
+      "name": "blk.7.ffn_norm.weight",
+      "shape": [
+        1536
+      ],
+      "type": 0,
+      "elements": 1536
+    },
+    {
+      "name": "blk.7.attn_k.weight",
+      "shape": [
+        1536,
+        256
+      ],
+      "type": 1,
+      "elements": 393216
+    },
+    {
+      "name": "blk.7.attn_output.weight",
+      "shape": [
+        2048,
+        1536
+      ],
+      "type": 1,
+      "elements": 3145728
+    },
+    {
+      "name": "blk.7.attn_q.weight",
+      "shape": [
+        1536,
+        2048
+      ],
+      "type": 1,
+      "elements": 3145728
+    },
+    {
+      "name": "blk.7.attn_v.weight",
+      "shape": [
+        1536,
+        256
+      ],
+      "type": 1,
+      "elements": 393216
+    },
+    {
+      "name": "blk.8.attn_norm.weight",
+      "shape": [
+        1536
+      ],
+      "type": 0,
+      "elements": 1536
+    },
+    {
+      "name": "blk.8.ffn_down.weight",
+      "shape": [
+        4608,
+        1536
+      ],
+      "type": 1,
+      "elements": 7077888
+    },
+    {
+      "name": "blk.8.ffn_gate.weight",
+      "shape": [
+        1536,
+        4608
+      ],
+      "type": 1,
+      "elements": 7077888
+    },
+    {
+      "name": "blk.8.ffn_up.weight",
+      "shape": [
+        1536,
+        4608
+      ],
+      "type": 1,
+      "elements": 7077888
+    },
+    {
+      "name": "blk.8.ffn_norm.weight",
+      "shape": [
+        1536
+      ],
+      "type": 0,
+      "elements": 1536
+    },
+    {
+      "name": "blk.8.attn_k.weight",
+      "shape": [
+        1536,
+        256
+      ],
+      "type": 1,
+      "elements": 393216
+    },
+    {
+      "name": "blk.8.attn_output.weight",
+      "shape": [
+        2048,
+        1536
+      ],
+      "type": 1,
+      "elements": 3145728
+    },
+    {
+      "name": "blk.8.attn_q.weight",
+      "shape": [
+        1536,
+        2048
+      ],
+      "type": 1,
+      "elements": 3145728
+    },
+    {
+      "name": "blk.8.attn_v.weight",
+      "shape": [
+        1536,
+        256
+      ],
+      "type": 1,
+      "elements": 393216
+    },
+    {
+      "name": "blk.9.attn_norm.weight",
+      "shape": [
+        1536
+      ],
+      "type": 0,
+      "elements": 1536
+    },
+    {
+      "name": "blk.9.ffn_down.weight",
+      "shape": [
+        4608,
+        1536
+      ],
+      "type": 1,
+      "elements": 7077888
+    },
+    {
+      "name": "blk.9.ffn_gate.weight",
+      "shape": [
+        1536,
+        4608
+      ],
+      "type": 1,
+      "elements": 7077888
+    },
+    {
+      "name": "blk.9.ffn_up.weight",
+      "shape": [
+        1536,
+        4608
+      ],
+      "type": 1,
+      "elements": 7077888
+    },
+    {
+      "name": "blk.9.ffn_norm.weight",
+      "shape": [
+        1536
+      ],
+      "type": 0,
+      "elements": 1536
+    },
+    {
+      "name": "blk.9.attn_k.weight",
+      "shape": [
+        1536,
+        256
+      ],
+      "type": 1,
+      "elements": 393216
+    },
+    {
+      "name": "blk.9.attn_output.weight",
+      "shape": [
+        2048,
+        1536
+      ],
+      "type": 1,
+      "elements": 3145728
+    },
+    {
+      "name": "blk.9.attn_q.weight",
+      "shape": [
+        1536,
+        2048
+      ],
+      "type": 1,
+      "elements": 3145728
+    },
+    {
+      "name": "blk.9.attn_v.weight",
+      "shape": [
+        1536,
+        256
+      ],
+      "type": 1,
+      "elements": 393216
+    },
+    {
+      "name": "output_norm.weight",
+      "shape": [
+        1536
+      ],
+      "type": 0,
+      "elements": 1536
+    }
+  ]
+}

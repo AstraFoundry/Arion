@@ -1,0 +1,19 @@
+{
+  "requestedModel": "opencode-go/gemini-4-argon-contributor",
+  "cwd": "/var/folders/wg/ntr3cxsd34x0rw4w17rdrym40000gn/T/arion-independent-prompts-zb7ywbd0",
+  "cliVersion": "v2.0.32",
+  "briefSha256": "75560ed122b85d4c8f916053e213c25fb084452d3fa6d1c25f26b26467d610f0",
+  "providedArtifacts": [
+    "author-brief.txt"
+  ],
+  "excludedInputs": [
+    "existing product prompts",
+    "benchmarks and fixtures",
+    "case outputs and review",
+    "prior task conversation"
+  ],
+  "toolsPermission": "deny all",
+  "output": "opencode-events.jsonl",
+  "status": "failed",
+  "exitCode": 1
+}

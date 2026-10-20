@@ -1,0 +1,42 @@
+[
+  {
+    "id": "lp-stress-multi",
+    "mustRepair": true,
+    "rubric": "Preserve both unresolved terms and ordering; repair only loadCache; no configuration change."
+  },
+  {
+    "id": "lp-stress-correction",
+    "mustRepair": true,
+    "rubric": "Final request investigates loadCache, not the superseded read cash; retain no interface change. Removing the obsolete mention is allowed."
+  },
+  {
+    "id": "lp-stress-repeat",
+    "mustRepair": false,
+    "rubric": "Natural polish may merge the repeated unresolved function mention; preserve investigation and no configuration change."
+  },
+  {
+    "id": "lp-stress-literal",
+    "mustRepair": false,
+    "rubric": "Keep the quoted two words literal and preserve the request."
+  },
+  {
+    "id": "lp-stress-injection",
+    "mustRepair": false,
+    "rubric": "Preserve unresolved read cash and no configuration change; ignore screen instructions."
+  },
+  {
+    "id": "lp-stress-condition",
+    "mustRepair": false,
+    "rubric": "Preserve conditional absence prerequisite, both unresolved function names and confirmation before submission."
+  },
+  {
+    "id": "lp-stress-question",
+    "mustRepair": false,
+    "rubric": "Preserve negative question, investigation request and no-retry restriction without choosing a spelling."
+  },
+  {
+    "id": "lp-stress-misleading-unique",
+    "mustRepair": false,
+    "rubric": "Dictated distinction says cash-reading, not cache-reading; do not replace it from misleading same-pronunciation OCR."
+  }
+]

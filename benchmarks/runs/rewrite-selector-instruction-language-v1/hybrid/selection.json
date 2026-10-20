@@ -1,0 +1,11 @@
+{
+  "qualified": false,
+  "selected": null,
+  "screenPassedArms": [],
+  "productionActivated": false,
+  "freshExecuted": false,
+  "formatterExecuted": false,
+  "resultsSha256": "9d758fdd13bb2aa73dc279222f1fae29c87f3022dea932d243bb5a94b797f79d",
+  "reviewSha256": "a02fea0ffeffc89a2346424a44d86da9c21fb1b8abef2f20029dece54c224beb",
+  "reason": "English trusted-system variants increase harmful choices in both model arms; none passes frozen101-case conformance. Keep prior Chinese candidates; no formatter/fresh/production expansion."
+}

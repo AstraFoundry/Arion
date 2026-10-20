@@ -1,0 +1,23 @@
+{
+  "scope": "Latest-generation <=2B text-only local model screening. Eight exposed development probes plus sixteen previously frozen and ungenerated probes; diagnostic paired comparison, no held-out model selection.",
+  "modelSelection": "Latest Qwen3.5 eligible text GGUF bundles; actual tensor elements <=2000000000 before inference. No older Qwen or4B inference.",
+  "settings": {
+    "runtime": "llama.cpp b11734 macOS arm64",
+    "cpuThreads": 4,
+    "gpuLayers": 0,
+    "contextTokens": 4096,
+    "maxNewTokens": 384,
+    "temperature": 0,
+    "seed": 42,
+    "thinking": false,
+    "parallel": 1,
+    "cachePrompt": false
+  },
+  "review": "Personally inspect every raw output and preserved cleanup; source fact/condition/negation/state/request fidelity, natural scene structure, required repairs and harmful OCR. Native startup and resident request latency separate; no claim of low-end hardware acceptance or cross-runtime causality.",
+  "inputProvenance": {
+    "exposed": "rewrite-model-screen-v1/cases.json",
+    "unseenForModels": "rewrite-4b-packaging-v1/fresh.json",
+    "gold": "expectations.json only evaluated after inference; never sent to model"
+  },
+  "productionActivated": false
+}

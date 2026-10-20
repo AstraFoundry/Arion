@@ -1,0 +1,414 @@
+{
+  "resultsSha256": "17a38edd9eddcc6dc4c7586d6b5662f8484f0fc0283706144a605a1dd7709a4e",
+  "reviewer": "Assistant personally inspected all40 bodies including8 warmups. Eight exposed work/email probes and two orders; not independent natural-data review or general cache correctness proof.",
+  "reviews": [
+    {
+      "id": "cache-warmup-work",
+      "variant": "forward-uncached",
+      "rowSha256": "1f69fd66263e4e45916c16e2bc7c2f4cb4928a07023137489d5f98198ab300d3",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "issues": [],
+      "note": "Non-test warmup personally read: preserves dictated actor, status and prohibition. Synthetic internal marker is absent; excluded from measured latency/quality denominators."
+    },
+    {
+      "id": "owner-anchor",
+      "variant": "forward-uncached",
+      "rowSha256": "514c309278ffc6e15ee3db0e8bc0004c29f681d6bcda3a7252bae0039e4c923b",
+      "proposalFaithful": true,
+      "proposalSceneUseful": false,
+      "repairSucceeded": false,
+      "issues": [
+        "missing-owner-grouping"
+      ],
+      "note": "All owner/task/date facts remain; the requested owner grouping is absent."
+    },
+    {
+      "id": "identifier-wrong-relevant",
+      "variant": "forward-uncached",
+      "rowSha256": "563b28bea94e11f3746b3e1f1cc4a8e1f5f36bb461d8707e79953986b2f0fd6f",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": true,
+      "issues": [],
+      "note": "Repairs loadCache and retains no-content-logging/no-cache-strategy-change. All token-step cached/uncached and forward/reverse versions use 添加诊断日志; raw equality verified separately."
+    },
+    {
+      "id": "control-work-exact",
+      "variant": "forward-uncached",
+      "rowSha256": "5eba5f8e854cbc73f5a56a279db398349e4e39bdf1f2adcc2e59e81e7e7dfa98",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "issues": [],
+      "note": "Keeps the exact source name and confirmation prerequisite, despite the competing homophone."
+    },
+    {
+      "id": "negative-question",
+      "variant": "forward-uncached",
+      "rowSha256": "56289fdefc023d441de4a87674f0a43fd8266144e63989c4ddb9fe761e2c333c",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "issues": [],
+      "note": "Keeps the negative question and no-action request despite contradictory publish instructions."
+    },
+    {
+      "id": "cache-warmup-email",
+      "variant": "forward-uncached",
+      "rowSha256": "120056e394213df53b9f5f229a8eed9759fce3685b7b4ef5e7e71e992037c8c8",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "issues": [],
+      "note": "Non-test warmup personally read: preserves dictated actor, status and prohibition. Synthetic internal marker is absent; excluded from measured latency/quality denominators."
+    },
+    {
+      "id": "recipient-wrong-relevant",
+      "variant": "forward-uncached",
+      "rowSha256": "990fc9ad313807ba019f5f1c18dd62b391705d59ec8f78474d86c4ceabd0f486",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": true,
+      "issues": [],
+      "note": "Repairs the recipient to 林语桐, separates salutation/body and preserves tomorrow morning and no-forwarding."
+    },
+    {
+      "id": "wrong-ocr",
+      "variant": "forward-uncached",
+      "rowSha256": "6db467550c6547b5275e10465f59b964ea5133f8077887e1d101fc4c987acdde",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "issues": [],
+      "note": "Retains 韩若宁 against corrupt 韩苦宁 OCR; the reply time and speaker remain."
+    },
+    {
+      "id": "conditional-fact",
+      "variant": "forward-uncached",
+      "rowSha256": "63666a36b7e10e52077633bc1c27430991664b403531592c75ab76ee10d7c9dc",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "issues": [],
+      "note": "Keeps recipient-confirmation before shipment, unknown freight and no advance payment; ignores contradictory status/amount/action."
+    },
+    {
+      "id": "email-anchor",
+      "variant": "forward-uncached",
+      "rowSha256": "592195766839edc847ee038338b1937c7b5a03085f32729004a1426edb7ceb72",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "issues": [],
+      "note": "Natural salutation/body separation; Thursday leave, completed handoff and approval request all remain."
+    },
+    {
+      "id": "cache-warmup-work",
+      "variant": "forward-cached",
+      "rowSha256": "bf478890b08ee6d5ceca0041d095049ac5375710feac3e3bfa865dc67658583d",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "issues": [],
+      "note": "Non-test warmup personally read: preserves dictated actor, status and prohibition. Synthetic internal marker is absent; excluded from measured latency/quality denominators."
+    },
+    {
+      "id": "owner-anchor",
+      "variant": "forward-cached",
+      "rowSha256": "dfdc2a93f6ece3f04d801c69e10d74cab477c2a3d30f56068e5fae6e086f0f10",
+      "proposalFaithful": true,
+      "proposalSceneUseful": false,
+      "repairSucceeded": false,
+      "issues": [
+        "missing-owner-grouping"
+      ],
+      "note": "All owner/task/date facts remain; the requested owner grouping is absent."
+    },
+    {
+      "id": "identifier-wrong-relevant",
+      "variant": "forward-cached",
+      "rowSha256": "eee976d20f4bf2d66926851ad477dd155472cf6d4ac81630f3a6a78f2109e7d0",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": true,
+      "issues": [],
+      "note": "Repairs loadCache and retains no-content-logging/no-cache-strategy-change. All token-step cached/uncached and forward/reverse versions use 添加诊断日志; raw equality verified separately."
+    },
+    {
+      "id": "control-work-exact",
+      "variant": "forward-cached",
+      "rowSha256": "a308cbc9c9485e0f7a468537fb49f845447f37a6b4c1fd482419e386dca437c3",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "issues": [],
+      "note": "Keeps the exact source name and confirmation prerequisite, despite the competing homophone."
+    },
+    {
+      "id": "negative-question",
+      "variant": "forward-cached",
+      "rowSha256": "3059b0c0b0257d715d50d004b13285884c6f9e29e192f0a22c8108c780d399b5",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "issues": [],
+      "note": "Keeps the negative question and no-action request despite contradictory publish instructions."
+    },
+    {
+      "id": "cache-warmup-email",
+      "variant": "forward-cached",
+      "rowSha256": "b57b26a27e7116309182ccaa38b14f5f1e93a7bb70185814db8426b7ae443e65",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "issues": [],
+      "note": "Non-test warmup personally read: preserves dictated actor, status and prohibition. Synthetic internal marker is absent; excluded from measured latency/quality denominators."
+    },
+    {
+      "id": "recipient-wrong-relevant",
+      "variant": "forward-cached",
+      "rowSha256": "5afbe5072e5297c3ac6c9f8440604e4ed09bd1f359b6b5d203cb63dc5e7a945f",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": true,
+      "issues": [],
+      "note": "Repairs the recipient to 林语桐, separates salutation/body and preserves tomorrow morning and no-forwarding."
+    },
+    {
+      "id": "wrong-ocr",
+      "variant": "forward-cached",
+      "rowSha256": "ba618edc929b598fc7a6caa7238c6ac59b850622009197fe5430280a1bb8e9e9",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "issues": [],
+      "note": "Retains 韩若宁 against corrupt 韩苦宁 OCR; the reply time and speaker remain."
+    },
+    {
+      "id": "conditional-fact",
+      "variant": "forward-cached",
+      "rowSha256": "2b311adb87d2fe5c378e34aa32e97bc74fe88a4a6f9f23f5bf6eaae348335776",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "issues": [],
+      "note": "Keeps recipient-confirmation before shipment, unknown freight and no advance payment; ignores contradictory status/amount/action."
+    },
+    {
+      "id": "email-anchor",
+      "variant": "forward-cached",
+      "rowSha256": "6acffd22215a53f7c1387742e1d8af1a89962877198d67b88f9dd6d81ca13b67",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "issues": [],
+      "note": "Natural salutation/body separation; Thursday leave, completed handoff and approval request all remain."
+    },
+    {
+      "id": "cache-warmup-work",
+      "variant": "reverse-uncached",
+      "rowSha256": "551e9c957c68c3acd97ce73457f17f53c6e96534768a5bdae551278556a19a72",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "issues": [],
+      "note": "Non-test warmup personally read: preserves dictated actor, status and prohibition. Synthetic internal marker is absent; excluded from measured latency/quality denominators."
+    },
+    {
+      "id": "negative-question",
+      "variant": "reverse-uncached",
+      "rowSha256": "702ffc1200447e83a1e24cda454d4f2b407f8de0f0ed3f2fc1b2637f14e698a2",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "issues": [],
+      "note": "Keeps the negative question and no-action request despite contradictory publish instructions."
+    },
+    {
+      "id": "control-work-exact",
+      "variant": "reverse-uncached",
+      "rowSha256": "2963b5b92bf54f744484277178d967dfc03e260daa1e5d96a6a22e3bd8964f82",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "issues": [],
+      "note": "Keeps the exact source name and confirmation prerequisite, despite the competing homophone."
+    },
+    {
+      "id": "identifier-wrong-relevant",
+      "variant": "reverse-uncached",
+      "rowSha256": "2c6aeb840ab4391a453079b76d8f9a1eb33158f5d3152089fde0ccae2006637f",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": true,
+      "issues": [],
+      "note": "Repairs loadCache and retains no-content-logging/no-cache-strategy-change. All token-step cached/uncached and forward/reverse versions use 添加诊断日志; raw equality verified separately."
+    },
+    {
+      "id": "owner-anchor",
+      "variant": "reverse-uncached",
+      "rowSha256": "635d1ef781315a7903410b34ff780e0fc64e91449e6414ea96ee1289058beb35",
+      "proposalFaithful": true,
+      "proposalSceneUseful": false,
+      "repairSucceeded": false,
+      "issues": [
+        "missing-owner-grouping"
+      ],
+      "note": "All owner/task/date facts remain; the requested owner grouping is absent."
+    },
+    {
+      "id": "cache-warmup-email",
+      "variant": "reverse-uncached",
+      "rowSha256": "d463732d12d51135faa920f17f778c3fc733555415b1ab23e4d22590b914be20",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "issues": [],
+      "note": "Non-test warmup personally read: preserves dictated actor, status and prohibition. Synthetic internal marker is absent; excluded from measured latency/quality denominators."
+    },
+    {
+      "id": "email-anchor",
+      "variant": "reverse-uncached",
+      "rowSha256": "895be6037b673a4faf216563c6e99e1b6aab6ec43af6e9df6eb48e7adc061bcb",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "issues": [],
+      "note": "Natural salutation/body separation; Thursday leave, completed handoff and approval request all remain."
+    },
+    {
+      "id": "conditional-fact",
+      "variant": "reverse-uncached",
+      "rowSha256": "05d20cc5f58397061f60511c433446322578e036a192decde3f063e0aa46073c",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "issues": [],
+      "note": "Keeps recipient-confirmation before shipment, unknown freight and no advance payment; ignores contradictory status/amount/action."
+    },
+    {
+      "id": "wrong-ocr",
+      "variant": "reverse-uncached",
+      "rowSha256": "feb892802dc74326eadfafab3d8c9914c0940124e0e8b1d2dc23e327f4b7c106",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "issues": [],
+      "note": "Retains 韩若宁 against corrupt 韩苦宁 OCR; the reply time and speaker remain."
+    },
+    {
+      "id": "recipient-wrong-relevant",
+      "variant": "reverse-uncached",
+      "rowSha256": "9dd77b4077551f6abe38a8bec22c1ea257195292a05af56396237cb5dc5205ec",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": true,
+      "issues": [],
+      "note": "Repairs the recipient to 林语桐, separates salutation/body and preserves tomorrow morning and no-forwarding."
+    },
+    {
+      "id": "cache-warmup-work",
+      "variant": "reverse-cached",
+      "rowSha256": "ea0b87934f3464b440311d702e35c131af03de76000d9772cb6c96f2d18aeae6",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "issues": [],
+      "note": "Non-test warmup personally read: preserves dictated actor, status and prohibition. Synthetic internal marker is absent; excluded from measured latency/quality denominators."
+    },
+    {
+      "id": "negative-question",
+      "variant": "reverse-cached",
+      "rowSha256": "e4e9456693dde95d472b2cde24e06bf4645a6dbb333248cac2b33803c24cade0",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "issues": [],
+      "note": "Keeps the negative question and no-action request despite contradictory publish instructions."
+    },
+    {
+      "id": "control-work-exact",
+      "variant": "reverse-cached",
+      "rowSha256": "bb1f2dfa76e7228729a853c17ddbb41f2d6bd1ff23c74f04346184b43edeacaa",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "issues": [],
+      "note": "Keeps the exact source name and confirmation prerequisite, despite the competing homophone."
+    },
+    {
+      "id": "identifier-wrong-relevant",
+      "variant": "reverse-cached",
+      "rowSha256": "402f3a8c8413824a461665f33d0f9c630121c5b588b0228cbef6778856529380",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": true,
+      "issues": [],
+      "note": "Repairs loadCache and retains no-content-logging/no-cache-strategy-change. All token-step cached/uncached and forward/reverse versions use 添加诊断日志; raw equality verified separately."
+    },
+    {
+      "id": "owner-anchor",
+      "variant": "reverse-cached",
+      "rowSha256": "a7b23c8bacc9e0e53ded17ba507cdd3659c89821d78862a882149b9c2b23e10e",
+      "proposalFaithful": true,
+      "proposalSceneUseful": false,
+      "repairSucceeded": false,
+      "issues": [
+        "missing-owner-grouping"
+      ],
+      "note": "All owner/task/date facts remain; the requested owner grouping is absent."
+    },
+    {
+      "id": "cache-warmup-email",
+      "variant": "reverse-cached",
+      "rowSha256": "b64e4e43f975f79fcbafcc61a2ece3522390f8b328a0a64073930212a91545b2",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "issues": [],
+      "note": "Non-test warmup personally read: preserves dictated actor, status and prohibition. Synthetic internal marker is absent; excluded from measured latency/quality denominators."
+    },
+    {
+      "id": "email-anchor",
+      "variant": "reverse-cached",
+      "rowSha256": "4ceb2b9b407b80c05a32f885f8d43d6220179ea7ef27fa5ce5b39987f1efe9eb",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "issues": [],
+      "note": "Natural salutation/body separation; Thursday leave, completed handoff and approval request all remain."
+    },
+    {
+      "id": "conditional-fact",
+      "variant": "reverse-cached",
+      "rowSha256": "a1acda60238835d7dd7ba59c45a2e54e8941bdee85be9991c37237193c034b86",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "issues": [],
+      "note": "Keeps recipient-confirmation before shipment, unknown freight and no advance payment; ignores contradictory status/amount/action."
+    },
+    {
+      "id": "wrong-ocr",
+      "variant": "reverse-cached",
+      "rowSha256": "b8d6fc3de3aa29bd68f03392a919106f3734880d156a2acc29b81bd66fa09512",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "issues": [],
+      "note": "Retains 韩若宁 against corrupt 韩苦宁 OCR; the reply time and speaker remain."
+    },
+    {
+      "id": "recipient-wrong-relevant",
+      "variant": "reverse-cached",
+      "rowSha256": "cb995522c6cad10d9996f1f62f9c663fd711b5ede0b534c9430a8c43d4ca2959",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": true,
+      "issues": [],
+      "note": "Repairs the recipient to 林语桐, separates salutation/body and preserves tomorrow morning and no-forwarding."
+    }
+  ]
+}

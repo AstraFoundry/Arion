@@ -1,0 +1,12 @@
+{
+  "freezeSha256": "1026ad56d79d22fe1f85f7977e6b81e35f895332b5ff890d6c75745d44e5cbeb",
+  "resultsSha256": "33bc7a1ecec4a3f0be2736925aa966642376666cc4f8690e4f1c2432996b05cf",
+  "reviewSha256": "43004c9672714f66c079ad9fcb026da52a119696351abb06c3869887e3bfd11b",
+  "developmentQualified": true,
+  "parityQualified": true,
+  "qualified": false,
+  "selected": null,
+  "productionActivated": false,
+  "freshExecuted": false,
+  "reason": "Actual174 measured raw responses match uncached controls; all startup outputs reviewed.36 development faithful/useful with11 repairs, natural119 verified/1 uncertain/75 useful. Two tested orders and limited canary controls do not replace independent/native/ASR/OCR/min16GB acceptance; startup costs remain disclosed."
+}

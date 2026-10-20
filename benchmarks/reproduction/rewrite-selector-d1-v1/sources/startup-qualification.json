@@ -1,0 +1,14 @@
+{
+  "status": "startup-only-supported",
+  "modelResponses": 0,
+  "generatedTokens": 0,
+  "warmup": false,
+  "workers": 2,
+  "healthProps200": 2,
+  "decisionModelTypeObserved": "lfm2-d1-omni",
+  "actualGpuPlacement": "Not established by retained startup log; commands request99/0 only.",
+  "endpointInference": "Not tested",
+  "nativeQuestionTemplate": "Not yet checked against embedded systemone template",
+  "limits": "No task answer, classification probabilities, prompt token budget or latency/quality/16GB evidence. First missing weights-subdirectory path attempt failed before server launch; frozen original and v2 correction retained.",
+  "next": "Freeze and execute declared native typed-decision probes, preserve raw native response contract before adapting any full study."
+}

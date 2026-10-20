@@ -1,0 +1,89 @@
+{
+  "resultsSha256": "eeda04b4a944236f0cd1844f9521ffd737ea4a661d8b75550023507fe3d2f2da",
+  "reviews": [
+    {
+      "id": "99-cache-off-first",
+      "variant": "metal99-cache-off-first",
+      "rowSha256": "28a2a950c3c060de5cce4e7c434a19cc49fb72c98340bb387a3ace0c1c96f526",
+      "probeConforms": true,
+      "note": "Personally read all12 raw outputs and full final-source/context/hypothesis payloads. All replace. Supported load cash->loadCache is repaired; explicit cash/not-cache source incorrectly becomes readCache. Schema-free controls agree. Two repeated exposed sources, not independent release evidence."
+    },
+    {
+      "id": "99-other-source",
+      "variant": "metal99-other-source",
+      "rowSha256": "864835aa8b0b08de93569d34a0a2986b7655386bb9b0fb0a52a205837cf8f618",
+      "probeConforms": false,
+      "note": "Personally read all12 raw outputs and full final-source/context/hypothesis payloads. All replace. Supported load cash->loadCache is repaired; explicit cash/not-cache source incorrectly becomes readCache. Schema-free controls agree. Two repeated exposed sources, not independent release evidence."
+    },
+    {
+      "id": "99-cache-on-return",
+      "variant": "metal99-cache-on-return",
+      "rowSha256": "5b506e2d1e3e63c9d9aed8c9416e093467295648681dfc749f4a4042591c7e5f",
+      "probeConforms": true,
+      "note": "Personally read all12 raw outputs and full final-source/context/hypothesis payloads. All replace. Supported load cash->loadCache is repaired; explicit cash/not-cache source incorrectly becomes readCache. Schema-free controls agree. Two repeated exposed sources, not independent release evidence."
+    },
+    {
+      "id": "99-cache-off-return",
+      "variant": "metal99-cache-off-return",
+      "rowSha256": "deeed86b39575313d0b17aab17130b6aebd440ff06b253af97cbacdb7bb58d3a",
+      "probeConforms": true,
+      "note": "Personally read all12 raw outputs and full final-source/context/hypothesis payloads. All replace. Supported load cash->loadCache is repaired; explicit cash/not-cache source incorrectly becomes readCache. Schema-free controls agree. Two repeated exposed sources, not independent release evidence."
+    },
+    {
+      "id": "99-free-positive",
+      "variant": "metal99-free-positive",
+      "rowSha256": "fd25855393eec9e163a1202101a1949483c9470ea3bd939214ca8beabf3795c2",
+      "probeConforms": true,
+      "note": "Personally read all12 raw outputs and full final-source/context/hypothesis payloads. All replace. Supported load cash->loadCache is repaired; explicit cash/not-cache source incorrectly becomes readCache. Schema-free controls agree. Two repeated exposed sources, not independent release evidence."
+    },
+    {
+      "id": "99-free-negative",
+      "variant": "metal99-free-negative",
+      "rowSha256": "83890bda5a51ea58a735158cb8c3c7234026b98f13518432c57d92ac21303a3e",
+      "probeConforms": false,
+      "note": "Personally read all12 raw outputs and full final-source/context/hypothesis payloads. All replace. Supported load cash->loadCache is repaired; explicit cash/not-cache source incorrectly becomes readCache. Schema-free controls agree. Two repeated exposed sources, not independent release evidence."
+    },
+    {
+      "id": "0-cache-off-first",
+      "variant": "cpu-layer0-cache-off-first",
+      "rowSha256": "b8d4fb334edc03f75b0c93b313c73b16305286bb09830c7661083701bd8e64ef",
+      "probeConforms": true,
+      "note": "Personally read all12 raw outputs and full final-source/context/hypothesis payloads. All replace. Supported load cash->loadCache is repaired; explicit cash/not-cache source incorrectly becomes readCache. Schema-free controls agree. Two repeated exposed sources, not independent release evidence."
+    },
+    {
+      "id": "0-other-source",
+      "variant": "cpu-layer0-other-source",
+      "rowSha256": "e4698ba44895b74d6d11e7580640b3893446f406208e2232cdc6db262b45c41c",
+      "probeConforms": false,
+      "note": "Personally read all12 raw outputs and full final-source/context/hypothesis payloads. All replace. Supported load cash->loadCache is repaired; explicit cash/not-cache source incorrectly becomes readCache. Schema-free controls agree. Two repeated exposed sources, not independent release evidence."
+    },
+    {
+      "id": "0-cache-on-return",
+      "variant": "cpu-layer0-cache-on-return",
+      "rowSha256": "6cd67918ab04e62eba4a887a4e1ee715f1f3b735ce374199ae04f02eacf4e1d5",
+      "probeConforms": true,
+      "note": "Personally read all12 raw outputs and full final-source/context/hypothesis payloads. All replace. Supported load cash->loadCache is repaired; explicit cash/not-cache source incorrectly becomes readCache. Schema-free controls agree. Two repeated exposed sources, not independent release evidence."
+    },
+    {
+      "id": "0-cache-off-return",
+      "variant": "cpu-layer0-cache-off-return",
+      "rowSha256": "a9b44866415d00a0042f3fef367a927d77cf9013fa67a9aff878fbaea2873d20",
+      "probeConforms": true,
+      "note": "Personally read all12 raw outputs and full final-source/context/hypothesis payloads. All replace. Supported load cash->loadCache is repaired; explicit cash/not-cache source incorrectly becomes readCache. Schema-free controls agree. Two repeated exposed sources, not independent release evidence."
+    },
+    {
+      "id": "0-free-positive",
+      "variant": "cpu-layer0-free-positive",
+      "rowSha256": "33e7db85d6664ac628b382c440e339f6a5301962e88e73a1ddfe11bb058220c8",
+      "probeConforms": true,
+      "note": "Personally read all12 raw outputs and full final-source/context/hypothesis payloads. All replace. Supported load cash->loadCache is repaired; explicit cash/not-cache source incorrectly becomes readCache. Schema-free controls agree. Two repeated exposed sources, not independent release evidence."
+    },
+    {
+      "id": "0-free-negative",
+      "variant": "cpu-layer0-free-negative",
+      "rowSha256": "1febd55a60663e670bb1acf7c036fd55baeb9ce5495e972b88db431d670addca",
+      "probeConforms": false,
+      "note": "Personally read all12 raw outputs and full final-source/context/hypothesis payloads. All replace. Supported load cash->loadCache is repaired; explicit cash/not-cache source incorrectly becomes readCache. Schema-free controls agree. Two repeated exposed sources, not independent release evidence."
+    }
+  ]
+}

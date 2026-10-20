@@ -1,0 +1,74 @@
+{
+  "status": "metadata-only",
+  "newInference": false,
+  "weightsAcquired": false,
+  "model": "LiquidAI/LFM2.5-1.2B-Instruct",
+  "officialClaimParameters": 1170000000,
+  "actualTensorElements": null,
+  "artifact": {
+    "repo": "LiquidAI/LFM2.5-1.2B-Instruct-GGUF",
+    "revision": "8ed288026e23958ad9dfa92d53ed773a8eee7125",
+    "filename": "LFM2.5-1.2B-Instruct-Q4_K_M.gguf",
+    "expectedSha256": "b1b3de114215d9507409a662a501a631095a479a419584e8a2ded6304b19b4f5",
+    "expectedBytes": 730895168
+  },
+  "sources": [
+    {
+      "repo": "LiquidAI/LFM2.5-1.2B-Instruct",
+      "revision": "0f604ada3f766f9f257460c4c9f0b5d6f69d431b",
+      "metadata": {
+        "path": "benchmarks/artifacts/rewrite-model-refresh-v1/lfm-base-api.json",
+        "sha256": "7cb3e1b2d319fc9f5cc5719ea0f15c8780b5b8502067416b344fe9f36f157974",
+        "url": "https://huggingface.co/api/models/LiquidAI/LFM2.5-1.2B-Instruct?blobs=true"
+      },
+      "files": [
+        {
+          "path": "benchmarks/artifacts/rewrite-model-refresh-v1/lfm-base-README.md",
+          "sha256": "682de876c2d172eaeffff775ad8422b5fd7ada701543916e62129e3be8eab077",
+          "url": "https://huggingface.co/LiquidAI/LFM2.5-1.2B-Instruct/resolve/0f604ada3f766f9f257460c4c9f0b5d6f69d431b/README.md"
+        },
+        {
+          "path": "benchmarks/artifacts/rewrite-model-refresh-v1/lfm-base-LICENSE",
+          "sha256": "61d7e939a05911c765b7e98ffaa1ab5ca6c0174a65350766c25cb10197d19fc8",
+          "url": "https://huggingface.co/LiquidAI/LFM2.5-1.2B-Instruct/resolve/0f604ada3f766f9f257460c4c9f0b5d6f69d431b/LICENSE"
+        }
+      ]
+    },
+    {
+      "repo": "LiquidAI/LFM2.5-1.2B-Instruct-GGUF",
+      "revision": "8ed288026e23958ad9dfa92d53ed773a8eee7125",
+      "metadata": {
+        "path": "benchmarks/artifacts/rewrite-model-refresh-v1/lfm-export-api.json",
+        "sha256": "cd223f312491e9cf06440ebcefa0622a39616e95c3bbaf1ee1d44979b10f4206",
+        "url": "https://huggingface.co/api/models/LiquidAI/LFM2.5-1.2B-Instruct-GGUF?blobs=true"
+      },
+      "files": [
+        {
+          "path": "benchmarks/artifacts/rewrite-model-refresh-v1/lfm-export-README.md",
+          "sha256": "f89d69dd107c19936b98ff981456302bc59255cce34b216ecc489d7bafa782e9",
+          "url": "https://huggingface.co/LiquidAI/LFM2.5-1.2B-Instruct-GGUF/resolve/8ed288026e23958ad9dfa92d53ed773a8eee7125/README.md"
+        },
+        {
+          "path": "benchmarks/artifacts/rewrite-model-refresh-v1/lfm-export-LICENSE",
+          "sha256": "5188f2b355da20647257a3156db5834c794e5fb5e6d8dc4d4cdbb3180e75b85b",
+          "url": "https://huggingface.co/LiquidAI/LFM2.5-1.2B-Instruct-GGUF/resolve/8ed288026e23958ad9dfa92d53ed773a8eee7125/LICENSE"
+        }
+      ]
+    }
+  ],
+  "license": "Custom LFM1.0, not Apache-2.0; not adopted as a production dependency.",
+  "scope": "Official instruction-model and native GGUF metadata/cards/licenses captured. Claimed languages include Chinese and English. No quality/speed/actual-memory/actual-parameter evidence, no model ranking or inferred commercial eligibility. Does not relax <=2B actual tensor gate or16GB/native/independent acceptance.",
+  "linkedDocumentation": [
+    {
+      "url": "https://huggingface.co/LiquidAI/LFM2.5-1.2B-Instruct-GGUF/resolve/8ed288026e23958ad9dfa92d53ed773a8eee7125/qad/README.md",
+      "path": "benchmarks/artifacts/rewrite-model-refresh-v1/qad/README.md",
+      "sha256": "acd6c5deaba23bbcfaa655e39c84f6cd2390f1efee1537cdcf8d6264cc138779"
+    },
+    {
+      "url": "https://huggingface.co/LiquidAI/LFM2.5-1.2B-Instruct-GGUF/resolve/8ed288026e23958ad9dfa92d53ed773a8eee7125/qad/LICENSE",
+      "path": "benchmarks/artifacts/rewrite-model-refresh-v1/qad/LICENSE",
+      "sha256": "5188f2b355da20647257a3156db5834c794e5fb5e6d8dc4d4cdbb3180e75b85b"
+    }
+  ],
+  "documentationCheckRepair": "Original imported model-card bytes kept unchanged. Retained failed link check and fetched its relative QAD README/license from the same official pinned revision. No weights/inference."
+}

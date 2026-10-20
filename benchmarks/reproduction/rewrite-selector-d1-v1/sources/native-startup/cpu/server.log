@@ -1,0 +1,14 @@
+0.00.058.929 I srv  llama_server: initializing ...
+0.00.058.939 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)
+0.00.059.223 W srv  llama_server: security: no API key is set and CORS allows all origins (see https://github.com/ggml-org/llama.cpp/pull/25655)
+0.00.060.696 I srv    load_model: loading model '/Users/steven/code/Arion/.workspace/rewrite-d1-research-v1/weights/d1-omni-600M-Q8_0.gguf'
+0.00.542.436 I decision model reads the embeddings output, enabling embedding mode
+0.00.542.774 W llama_init_from_model: model default pooling_type is [-1], but [0] was specified
+0.00.545.715 I cmn          init: llama threadpool init, n_threads = 4
+0.00.548.595 I srv          init: decision model type: lfm2-d1-omni
+0.00.548.598 W srv    load_model: speculative decoding not supported by this context
+0.00.548.599 I srv    load_model: initializing, n_slots = 1, n_ctx_slot = 4096, kv_unified = 'false'
+0.00.548.608 I srv    load_model: decision model: prompt cache disabled by default, use `--cache-ram N` to enable it
+0.00.550.179 I srv  llama_server: model loaded
+0.00.550.183 I srv  llama_server: listening on http://127.0.0.1:64821
+0.00.612.598 I srv    operator(): operator(): cleaning up before exit...

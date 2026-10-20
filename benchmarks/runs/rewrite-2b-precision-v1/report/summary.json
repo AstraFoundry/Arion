@@ -1,0 +1,318 @@
+{
+  "newGenerations": 36,
+  "reviewedNewOutputs": 36,
+  "reusedBaselineGenerations": 36,
+  "reusedBaselineSummary": {
+    "cases": 36,
+    "rawFaithful": 34,
+    "rawSceneReady": 34,
+    "requiredRepairs": 11,
+    "repairs": 11,
+    "truncated": 0,
+    "requestP50Ms": 7990.370166953653,
+    "requestP95Ms": 8924.782583955675,
+    "prefillP50Ms": 7347.238,
+    "decodeP50Ms": 480.877,
+    "maxObservedResidentRssBytes": 2955935744,
+    "minCachedTokens": 0,
+    "maxCachedTokens": 0
+  },
+  "summary": {
+    "qwen-q8-private": {
+      "cases": 36,
+      "rawFaithful": 32,
+      "rawSceneReady": 32,
+      "requiredRepairs": 11,
+      "repairs": 9,
+      "truncated": 0,
+      "requestP50Ms": 6604.078167118132,
+      "requestP95Ms": 8089.514834107831,
+      "prefillP50Ms": 5880.11,
+      "decodeP50Ms": 698.329,
+      "maxObservedResidentRssBytes": 4418600960,
+      "minCachedTokens": 0,
+      "maxCachedTokens": 0
+    }
+  },
+  "controls": [
+    {
+      "arm": "qwen-q8-private",
+      "id": "owner-anchor",
+      "requestEqual": true,
+      "bodyEqual": false,
+      "hasContext": false
+    },
+    {
+      "arm": "qwen-q8-private",
+      "id": "p4-work-correct-name",
+      "requestEqual": true,
+      "bodyEqual": true,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-q8-private",
+      "id": "p4-work-ambiguous",
+      "requestEqual": true,
+      "bodyEqual": true,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-q8-private",
+      "id": "p4-work-code",
+      "requestEqual": true,
+      "bodyEqual": true,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-q8-private",
+      "id": "pe-exact-work",
+      "requestEqual": true,
+      "bodyEqual": true,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-q8-private",
+      "id": "pe-unknown-work",
+      "requestEqual": true,
+      "bodyEqual": true,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-q8-private",
+      "id": "pe-ordinary-work",
+      "requestEqual": true,
+      "bodyEqual": false,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-q8-private",
+      "id": "pe-two-runs",
+      "requestEqual": true,
+      "bodyEqual": true,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-q8-private",
+      "id": "sp-ordinary-repair",
+      "requestEqual": true,
+      "bodyEqual": true,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-q8-private",
+      "id": "lp-stress-multi",
+      "requestEqual": true,
+      "bodyEqual": true,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-q8-private",
+      "id": "lp-stress-correction",
+      "requestEqual": true,
+      "bodyEqual": true,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-q8-private",
+      "id": "lp-stress-repeat",
+      "requestEqual": true,
+      "bodyEqual": false,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-q8-private",
+      "id": "lp-stress-injection",
+      "requestEqual": true,
+      "bodyEqual": false,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-q8-private",
+      "id": "lp-stress-condition",
+      "requestEqual": true,
+      "bodyEqual": false,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-q8-private",
+      "id": "lp-stress-misleading-unique",
+      "requestEqual": true,
+      "bodyEqual": false,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-q8-private",
+      "id": "email-anchor",
+      "requestEqual": true,
+      "bodyEqual": true,
+      "hasContext": false
+    },
+    {
+      "arm": "qwen-q8-private",
+      "id": "recipient-wrong-relevant",
+      "requestEqual": true,
+      "bodyEqual": false,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-q8-private",
+      "id": "wrong-ocr",
+      "requestEqual": true,
+      "bodyEqual": true,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-q8-private",
+      "id": "conditional-fact",
+      "requestEqual": true,
+      "bodyEqual": true,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-q8-private",
+      "id": "sp-name-repair",
+      "requestEqual": true,
+      "bodyEqual": true,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-q8-private",
+      "id": "f-prompt-token",
+      "requestEqual": true,
+      "bodyEqual": false,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-q8-private",
+      "id": "f-prompt-context",
+      "requestEqual": true,
+      "bodyEqual": false,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-q8-private",
+      "id": "f-prompt-all",
+      "requestEqual": true,
+      "bodyEqual": true,
+      "hasContext": false
+    },
+    {
+      "arm": "qwen-q8-private",
+      "id": "f-prompt-size",
+      "requestEqual": true,
+      "bodyEqual": true,
+      "hasContext": false
+    },
+    {
+      "arm": "qwen-q8-private",
+      "id": "pe-quoted-prompt",
+      "requestEqual": true,
+      "bodyEqual": true,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-q8-private",
+      "id": "pe-ambiguous-prompt",
+      "requestEqual": true,
+      "bodyEqual": true,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-q8-private",
+      "id": "pe-unique-prompt",
+      "requestEqual": true,
+      "bodyEqual": true,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-q8-private",
+      "id": "pe-question-code",
+      "requestEqual": true,
+      "bodyEqual": false,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-q8-private",
+      "id": "sp-self-correct",
+      "requestEqual": true,
+      "bodyEqual": true,
+      "hasContext": false
+    },
+    {
+      "arm": "qwen-q8-private",
+      "id": "lp-stress-literal",
+      "requestEqual": true,
+      "bodyEqual": true,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-q8-private",
+      "id": "lp-stress-question",
+      "requestEqual": true,
+      "bodyEqual": true,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-q8-private",
+      "id": "f-chat-negative",
+      "requestEqual": true,
+      "bodyEqual": true,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-q8-private",
+      "id": "f-chat-question",
+      "requestEqual": true,
+      "bodyEqual": true,
+      "hasContext": false
+    },
+    {
+      "arm": "qwen-q8-private",
+      "id": "f-chat-branches",
+      "requestEqual": true,
+      "bodyEqual": true,
+      "hasContext": true
+    },
+    {
+      "arm": "qwen-q8-private",
+      "id": "f-chat-condition",
+      "requestEqual": true,
+      "bodyEqual": true,
+      "hasContext": false
+    },
+    {
+      "arm": "qwen-q8-private",
+      "id": "sp-oral-polish",
+      "requestEqual": true,
+      "bodyEqual": true,
+      "hasContext": false
+    }
+  ],
+  "selection": {
+    "selected": null,
+    "qualified": false,
+    "freezeSha256": "b58ef3b34553c586969efc82bb2f4bdb3a90e2293dd8a75d73b78a36db9ba8bf",
+    "evidence": {
+      "qwen-q8-private": {
+        "resultsSha256": "858d43d1bee9c9e4cac1aa1085ddeed59b1f760adaccc9c82bc782b2e2eb95c6",
+        "reviewSha256": "bd26658131ece1dfea52efc1342220ba37e224a30312284a842d2e274df4be81"
+      }
+    },
+    "reason": "Q8 removes unrelated OCR addition but introduces target substitution in a condition and misses recipient/buildCache repairs; cash/cache definition reverses.32/36 faithful and9/11 repairs, below reused Q4 private34/36 and11/11. No fresh24 or production promotion; higher artifact precision is not a semantic guarantee."
+  },
+  "productionActivated": false,
+  "scope": {
+    "cases": 36,
+    "newGenerations": 36,
+    "baseline": {
+      "run": "benchmarks/runs/rewrite-private-spans-v1/qwen-private-spans",
+      "resultsSha256": "4ea717bfb6a7f61ba129518c0b951eb9b121865fdf88b7cce36337918f6c05a1",
+      "reviewSha256": "05198958f149a929e35e4e877a3beb22c3c5937952bc71f8f8eb72a82ab93bf4",
+      "newInference": false
+    },
+    "treatment": "Only Q8_0 artifact replaces Q4_K_M, from the same pinned export repository/revision with equal actual tensor layout and scalar native chat-template text. All36 actual user/system messages, private encodings, original cleanup/contexts, CPU4/GPU0/native runtime/cacheoff/reasoningoff/384 budget match. No4B, older Qwen or other checkpoint inference.",
+    "gate": "All36 faithful under the retained rubric; all11 necessary repairs; owner/email anchors retained; at least35 scene-ready, no truncation or new harmful correction. Failed dev does not consume fresh24. All outputs retained with no output rejection or source fallback.",
+    "scope": "Exposed Chinese synthetic corpus; not independent/natural/held-out or production/minimum16GB acceptance.",
+    "limits": "No independent converter-build or numeric base-weight lineage proof; therefore a quantized-artifact comparison, not fully isolated causal quantization evidence. Historical baseline and clock/host drift prohibit causal performance claims. Maximum sampled workerRSS is not peak/whole-app/ASR. Q8 acquisition completed before inference; no model download is part of measured text requests."
+  }
+}

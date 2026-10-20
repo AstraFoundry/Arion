@@ -1,0 +1,5 @@
+"""Verify the complete native typed-decision archive without model runtimes."""
+import pathlib,sys
+sys.path.insert(0,str(pathlib.Path(__file__).resolve().parent.parent))
+from verify_rewrite_archive import verify
+if __name__=='__main__':verify('rewrite-d1-evidence-v1')

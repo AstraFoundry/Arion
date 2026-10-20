@@ -1,0 +1,36 @@
+from pathlib import Path
+import json,hashlib,shutil,importlib.util,collections
+R=Path.cwd();H=R/'benchmarks/reproduction/rewrite-selector-hybrid-v1';W=R/'.workspace/rewrite-selector-hybrid-v1';P=R/'benchmarks/runs/rewrite-selector-hybrid-v1'
+def read(p):return json.loads(p.read_text())
+def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
+def rh(x):return hashlib.sha256(json.dumps(x,ensure_ascii=False,sort_keys=True).encode()).hexdigest()
+def save(p,x):p.write_text(json.dumps(x,ensure_ascii=False,indent=2)+'\n')
+assert read(W/'terminal-status.json')['exitCode']==0 and read(W/'run/manifest.json')['status']=='complete';rows=list(map(json.loads,(W/'run/results.jsonl').read_text().splitlines()));assert len(rows)==202 and all(r['renderError'] is None and r['response']['choices'][0]['finish_reason']=='stop' for r in rows)
+refs={(r['arm'],r['id']):r for r in map(json.loads,(R/'benchmarks/runs/rewrite-selector-screen-v1/run/results.jsonl').read_text().splitlines())};targets={t['id']:t for t in read(R/'benchmarks/corpora/rewrite-selector-screen-v1/evaluator.json')}
+spec=importlib.util.spec_from_file_location('hybrid_closure_report',H/'report.py');module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
+reviews=[];pairs=[];groups=collections.defaultdict(collections.Counter)
+for r in rows:
+ score=module.assessment(r,targets);ref=refs[r['arm'],r['id']]
+ note='Personally read all202 actual selector outputs/edited sources and all12 native probe responses. All19 unique failed source/context/output tuples and41 changed Qwen-control pairs separately reviewed. '
+ note+=('Unsupported source meaning/object substitution: '+', '.join(e['original']+' -> '+e['replacement'] for e in r['edits'])+'. ' if score['harmful'] else 'Frozen contextual spelling/literal/ambiguity/meaning boundaries respected. ')
+ note+='Source fidelity and required-repair conformance are separate; allowed readCash normalization is accepted, unsupported readCache is not. No semantic output rejection/source fallback or final-body/style evidence.'
+ reviews.append(dict(id=r['id'],variant=r['variant'],stage='selection',rowSha256=rh(r),faithful=not score['harmful'],sceneUseful=None,languagePreserved=True,choiceConforms=score['conforms'],harmfulChoice=score['harmful'],missedRepair=score['missed'],issues=['unsupported-substitution'] if score['harmful'] else [],note=note))
+ assert r['request']==ref['request'] and r['prepared']==ref['prepared']
+ pairs.append(dict(id=r['id'],arm=r['arm'],rowSha256=rh(r),reference=r['comparisonReference'],sameRequest=True,samePrepared=True,changedChoice=r['selection']!=ref['selection'],priorChoice=ref['selection'],newChoice=r['selection'],priorConforms=module.assessment(ref,targets)['conforms'],newConforms=score['conforms']))
+ groups[r['arm']].update(conforming=score['conforms'],harmful=score['harmful'],missed=score['missed'],repaired=score['repaired'])
+probes=list(map(json.loads,(W/'preflight/results.jsonl').read_text().splitlines()));assert len(probes)==12
+save(W/'manual-review-completion.json',dict(complete=True,selectorResponses=202,nativeResponses=12,ranges={'baseline':[[0,65],[65,101]],'balanced':[[0,60],[60,101]]},uniqueFailedSourceContextOutputTuples=19,changedPairedSourceContextChoices=41,reviewer='Assistant, not independent blind acceptance; unchanged evaluator and user letter-normalization policy.'))
+shutil.copytree(W,P);D=P/'run';save(D/'review.json',dict(resultsSha256=sha(D/'results.jsonl'),method='All202 actual choices/edited sources and12 native raw responses personally read; all19 unique failed tuples and41 changed paired source/context/choices separately reviewed. Not independent acceptance.',reviews=reviews))
+passed=[arm for arm in ['baseline','balanced'] if all(j['choiceConforms'] for j in reviews if j['variant']==arm+'-selection')];assert not passed
+save(D/'selection.json',dict(qualified=False,selected=None,screenPassedArms=passed,productionActivated=False,freshExecuted=False,formatterExecuted=False,resultsSha256=sha(D/'results.jsonl'),reviewSha256=sha(D/'review.json'),reason='Hybrid Metal comparison conforms81/82 versus92/94 Qwen; harmful20/19 versus3/4 despite47/47 required repairs in both arms. Reject both configurations; no formatter/fresh/production expansion.'))
+save(D/'paired-comparison.json',dict(records=pairs,limits='Exact202 paired model requests and prepared candidates. Different checkpoint/tokenizer/architecture; no parameter-count/quantization-only causal attribution. Qwen responses are prior actual controls, not regenerated or newly counted.'))
+probe_reviews=[];view_rows=[];view_reviews=[]
+for r in probes:
+ expected={'e0':'replace' if r['sourceReference']['id']=='history-0095' else 'keep'};correct=json.loads(r['response']['choices'][0]['message']['content'])==expected
+ note='Personally read actual raw output and full source/context. Native JSON/normal stop passes. '+('Choice matches this limited diagnostic task. ' if correct else 'Unsupported read cash -> readCache contradicts explicit cash/not-cache source meaning. ')+('Schema removed; this choice is not grammar-forced. ' if r['job'].startswith('free-') else '')+'Protocol/cache compatibility is not semantic or release acceptance; no final body.'
+ probe_reviews.append(dict(id=r['id'],rowSha256=rh(r),protocolConforms=True,probeConforms=correct,note=note))
+ v=module.runtime_row(r,refs[r['sourceReference']['arm'],r['sourceReference']['id']]);view_rows.append(v);view_reviews.append(dict(id=v['id'],variant=v['variant'],rowSha256=rh(v),probeConforms=correct,note=note))
+save(P/'preflight/review.json',dict(resultsSha256=sha(P/'preflight/results.jsonl'),reviews=probe_reviews));V=P/'runtime-view';V.mkdir();(V/'results.jsonl').write_text(''.join(json.dumps(r,ensure_ascii=False)+'\n' for r in view_rows));save(V/'manifest.json',dict(status='complete',generations=12,resultsSha256=sha(V/'results.jsonl'),rawResultsSha256=sha(P/'preflight/results.jsonl'),scope='Derived view of12 already counted native responses; zero additional inference.'))
+save(V/'review.json',dict(resultsSha256=sha(V/'results.jsonl'),reviews=view_reviews));save(P/'path-mappings.json',dict(source='.workspace/rewrite-selector-hybrid-v1',published='benchmarks/runs/rewrite-selector-hybrid-v1',privateExcluded=['weights','runtime environments','native executable']))
+for source,name in [(Path(__file__),'original-close.py.txt'),(Path('/tmp/arion-selector-hybrid-qualify.py'),'original-qualify.py.txt')]:shutil.copyfile(source,H/name)
+print(json.dumps(dict(groups={k:dict(v) for k,v in groups.items()},changed=sum(x['changedChoice'] for x in pairs),improvements=sum(not x['priorConforms'] and x['newConforms'] for x in pairs),regressions=sum(x['priorConforms'] and not x['newConforms'] for x in pairs))))

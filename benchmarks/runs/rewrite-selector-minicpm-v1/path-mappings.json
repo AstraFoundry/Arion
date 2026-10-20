@@ -1,0 +1,12 @@
+{
+  "source": ".workspace/rewrite-selector-minicpm-v1",
+  "published": "benchmarks/runs/rewrite-selector-minicpm-v1",
+  "privateExcluded": [
+    "weights",
+    "runtime environments",
+    "native binaries"
+  ],
+  "completedRun": "comparison-run",
+  "abortedAttempt": "aborted-before-qualification",
+  "legacyExecutorLabels": "Shared immutable executor names hybrid-preflight and selector-model-v1 retained; owned model/freeze/commands identify actual MiniCPM."
+}

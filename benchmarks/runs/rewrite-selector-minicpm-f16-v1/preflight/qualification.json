@@ -1,0 +1,11 @@
+{
+  "qualifiedForSelector": true,
+  "productionQualified": false,
+  "resultsSha256": "f9233f88a3db15955ed55ac0bd21229be5cf7f41de969c25cedfb92627fa5c81",
+  "freezeSha256": "51e4e10841bb3521179dd420352e6c6fa187e76a9a2849f938136debd90fedc1",
+  "cacheRawParity": {
+    "99": true,
+    "0": true
+  },
+  "reason": "Native12 completions stop with valid JSON; actual25/25Metal and0/25CPU layers, pinned template after exact final-LF lexer handling, nonthinking prefix and cache-off/on/off parity.8 task-conforming positive probes,4 harmful literal-cash probes; compatibility only, permits prefrozen202 comparison, no release."
+}

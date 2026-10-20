@@ -1,0 +1,787 @@
+{
+  "kind": "single-author-synthetic-text-development",
+  "annotation": "author-written constraints, no independent semantic review",
+  "samples": [
+    {
+      "id": "dev-payment-zh",
+      "split": "dev",
+      "cluster": "payment",
+      "scene": "work",
+      "language": "zh",
+      "source": "支付接口做好了，测试环境还没准备好，等环境好了再联调，今天先别发布。",
+      "context": {},
+      "facts": [
+        "支付",
+        "(?:完成|做好)",
+        "(?:环境)",
+        "(?:联调)",
+        "(?:别|不|暂缓|禁止).*发布"
+      ],
+      "layout": true
+    },
+    {
+      "id": "dev-payment-en",
+      "split": "dev",
+      "cluster": "payment",
+      "scene": "work",
+      "language": "en",
+      "source": "The payment API is finished, the test environment is not ready, start integration when it is ready, and do not release today.",
+      "context": {},
+      "facts": [
+        "payment",
+        "(?:finished|complete|done)",
+        "environment",
+        "integration",
+        "(?:not|no|hold|wait|after).*release|release.*(?:not|after|wait)"
+      ],
+      "layout": true
+    },
+    {
+      "id": "dev-owners-zh",
+      "split": "dev",
+      "cluster": "owners",
+      "scene": "work",
+      "language": "zh",
+      "source": "小陈负责设计，小刘负责测试，设计稿周三交，测试周五完成。",
+      "context": {},
+      "facts": [
+        "小陈.*设计|设计.*小陈",
+        "小刘.*测试|测试.*小刘",
+        "周三",
+        "周五"
+      ],
+      "layout": true
+    },
+    {
+      "id": "dev-owners-en",
+      "split": "dev",
+      "cluster": "owners",
+      "scene": "work",
+      "language": "en",
+      "source": "Mara owns design and Leo owns testing, the design is due Wednesday and testing finishes Friday.",
+      "context": {},
+      "facts": [
+        "Mara.*design|design.*Mara",
+        "Leo.*test|test.*Leo",
+        "Wednesday",
+        "Friday"
+      ],
+      "layout": true
+    },
+    {
+      "id": "dev-risk-zh",
+      "split": "dev",
+      "cluster": "risk",
+      "scene": "work",
+      "language": "zh",
+      "source": "目前可能是缓存的问题，还没有确认，先看日志，不要直接清理生产缓存。",
+      "context": {},
+      "facts": [
+        "(?:可能|也许|或许|疑似)",
+        "(?:没有确认|未确认|尚未确认|还不确定)",
+        "日志",
+        "(?:不要|不|禁止|避免).*生产"
+      ],
+      "layout": true
+    },
+    {
+      "id": "dev-risk-en",
+      "split": "dev",
+      "cluster": "risk",
+      "scene": "work",
+      "language": "en",
+      "source": "This might be a cache issue but it is not confirmed, check the logs first and do not clear the production cache.",
+      "context": {},
+      "facts": [
+        "(?:might|may|possible|perhaps)",
+        "(?:not confirmed|unconfirmed|not yet confirmed)",
+        "logs",
+        "(?:not|never|avoid).*production"
+      ],
+      "layout": true
+    },
+    {
+      "id": "dev-pagination-zh",
+      "split": "dev",
+      "cluster": "pagination",
+      "scene": "prompt",
+      "language": "zh",
+      "source": "给 /api/orders 加分页，默认每页二十条，保留原来的排序，不要改返回字段。",
+      "context": {},
+      "facts": [
+        "/api/orders",
+        "(?:二十|20)",
+        "排序",
+        "(?:不要|不|保留).*字段"
+      ],
+      "layout": true
+    },
+    {
+      "id": "dev-pagination-en",
+      "split": "dev",
+      "cluster": "pagination",
+      "scene": "prompt",
+      "language": "en",
+      "source": "Add pagination to /api/orders with twenty items per page, keep the current ordering and do not change response fields.",
+      "context": {},
+      "facts": [
+        "/api/orders",
+        "(?:twenty|20)",
+        "order",
+        "(?:not change|unchanged|keep|preserve).*fields|fields.*unchanged"
+      ],
+      "layout": true
+    },
+    {
+      "id": "dev-investigate-zh",
+      "split": "dev",
+      "cluster": "investigate",
+      "scene": "prompt",
+      "language": "zh",
+      "source": "分析 OrderList.tsx 里的 TS2345 报错，先解释原因，不要提交代码。",
+      "context": {},
+      "facts": [
+        "OrderList.tsx",
+        "TS2345",
+        "(?:分析|解释|原因)",
+        "(?:不要|不|暂缓).*代码"
+      ],
+      "layout": true
+    },
+    {
+      "id": "dev-investigate-en",
+      "split": "dev",
+      "cluster": "investigate",
+      "scene": "prompt",
+      "language": "en",
+      "source": "Investigate TS2345 in OrderList.tsx, explain the cause first, and do not submit code.",
+      "context": {},
+      "facts": [
+        "TS2345",
+        "OrderList.tsx",
+        "(?:investigate|explain|cause)",
+        "(?:not|no).*code"
+      ],
+      "layout": true
+    },
+    {
+      "id": "dev-cache-zh",
+      "split": "dev",
+      "cluster": "cache",
+      "scene": "prompt",
+      "language": "zh",
+      "source": "给 getPrices 加 Redis 缓存，过期时间五分钟，价格变动时失效，不要缓存错误。",
+      "context": {},
+      "facts": [
+        "getPrices",
+        "Redis",
+        "(?:五分钟|5.*分钟)",
+        "(?:价格|变动|变化)",
+        "(?:不要|不|禁止).*错误"
+      ],
+      "layout": true
+    },
+    {
+      "id": "dev-cache-en",
+      "split": "dev",
+      "cluster": "cache",
+      "scene": "prompt",
+      "language": "en",
+      "source": "Add Redis caching to getPrices with a five minute TTL, invalidate it when prices change and do not cache errors.",
+      "context": {},
+      "facts": [
+        "Redis",
+        "getPrices",
+        "(?:five|5)",
+        "(?:prices change|price changes|price change)",
+        "(?:not|never|exclude).*errors|errors.*(?:not|never|excluded)"
+      ],
+      "layout": true
+    },
+    {
+      "id": "dev-leave-zh",
+      "split": "dev",
+      "cluster": "leave",
+      "scene": "email",
+      "language": "zh",
+      "source": "周经理您好，我周四请假一天，交接给小赵了，麻烦批准，谢谢。",
+      "context": {},
+      "facts": [
+        "周经理",
+        "周四",
+        "(?:一天|1.*天)",
+        "小赵",
+        "(?:批准|审批)"
+      ],
+      "layout": true
+    },
+    {
+      "id": "dev-leave-en",
+      "split": "dev",
+      "cluster": "leave",
+      "scene": "email",
+      "language": "en",
+      "source": "Hi Rowan, I need Thursday off, I handed my work to Priya, please approve it, thanks.",
+      "context": {},
+      "facts": [
+        "Rowan",
+        "Thursday",
+        "Priya",
+        "(?:approve|approval)"
+      ],
+      "layout": true
+    },
+    {
+      "id": "dev-review-zh",
+      "split": "dev",
+      "cluster": "review",
+      "scene": "email",
+      "language": "zh",
+      "source": "李老师您好，报告初稿已附上，麻烦周二之前看一下，有问题随时联系，谢谢。",
+      "context": {},
+      "facts": [
+        "李老师",
+        "(?:报告|初稿)",
+        "周二",
+        "(?:联系|沟通)"
+      ],
+      "layout": true
+    },
+    {
+      "id": "dev-review-en",
+      "split": "dev",
+      "cluster": "review",
+      "scene": "email",
+      "language": "en",
+      "source": "Hi Ellis, the report draft is attached, please review it before Tuesday and contact me with any questions, thanks.",
+      "context": {},
+      "facts": [
+        "Ellis",
+        "draft",
+        "Tuesday",
+        "(?:contact|reach|questions)"
+      ],
+      "layout": true
+    },
+    {
+      "id": "dev-delay-zh",
+      "split": "dev",
+      "cluster": "delay",
+      "scene": "email",
+      "language": "zh",
+      "source": "王先生您好，样品还没到，预计周五到货，收到后我再安排测试，谢谢。",
+      "context": {},
+      "facts": [
+        "王先生",
+        "(?:没|未|尚未).*到",
+        "(?:预计|可能|预期)",
+        "周五",
+        "(?:收到|到货).*测试"
+      ],
+      "layout": true
+    },
+    {
+      "id": "dev-delay-en",
+      "split": "dev",
+      "cluster": "delay",
+      "scene": "email",
+      "language": "en",
+      "source": "Hi Jordan, the samples have not arrived, they are expected Friday, and I will schedule testing after they arrive, thanks.",
+      "context": {},
+      "facts": [
+        "Jordan",
+        "(?:not arrived|not yet arrived|still pending)",
+        "(?:expected|expect|likely)",
+        "Friday",
+        "(?:after|once|when).*arriv"
+      ],
+      "layout": true
+    },
+    {
+      "id": "dev-question-zh",
+      "split": "dev",
+      "cluster": "question",
+      "scene": "chat",
+      "language": "zh",
+      "source": "你能帮我看看这个接口为什么这么慢吗？",
+      "context": {},
+      "facts": [
+        "(?:吗|？|\\?)",
+        "接口",
+        "慢"
+      ],
+      "layout": false
+    },
+    {
+      "id": "dev-question-en",
+      "split": "dev",
+      "cluster": "question",
+      "scene": "chat",
+      "language": "en",
+      "source": "Can you check why this endpoint is so slow?",
+      "context": {},
+      "facts": [
+        "(?:can you|could you|please|\\?)",
+        "(?:endpoint|API)",
+        "slow"
+      ],
+      "layout": false
+    },
+    {
+      "id": "dev-uncertain-zh",
+      "split": "dev",
+      "cluster": "uncertain",
+      "scene": "chat",
+      "language": "zh",
+      "source": "我大概六点到，还不能确定，你们先别点我的饭。",
+      "context": {},
+      "facts": [
+        "(?:大概|可能|预计)",
+        "(?:六点|6)",
+        "(?:不能确定|不确定|未定)",
+        "(?:别|不).*饭"
+      ],
+      "layout": false
+    },
+    {
+      "id": "dev-uncertain-en",
+      "split": "dev",
+      "cluster": "uncertain",
+      "scene": "chat",
+      "language": "en",
+      "source": "I may arrive around six but I am not sure yet, please do not order food for me.",
+      "context": {},
+      "facts": [
+        "(?:may|might|perhaps)",
+        "(?:six|6)",
+        "(?:not sure|uncertain|unsure)",
+        "(?:not|don.t).*order"
+      ],
+      "layout": false
+    },
+    {
+      "id": "dev-repair-zh",
+      "split": "dev",
+      "cluster": "repair",
+      "scene": "chat",
+      "language": "zh",
+      "source": "我们约周三，不对，改成周四下午，地点还是老地方。",
+      "context": {},
+      "facts": [
+        "周四",
+        "下午",
+        "(?:老地方|原.*地点)"
+      ],
+      "layout": false
+    },
+    {
+      "id": "dev-repair-en",
+      "split": "dev",
+      "cluster": "repair",
+      "scene": "chat",
+      "language": "en",
+      "source": "Let us meet Wednesday, actually Thursday afternoon, at the usual place.",
+      "context": {},
+      "facts": [
+        "Thursday",
+        "afternoon",
+        "(?:usual|same).*place"
+      ],
+      "layout": false
+    },
+    {
+      "id": "test-export-zh",
+      "split": "test",
+      "cluster": "export",
+      "scene": "work",
+      "language": "zh",
+      "source": "导出功能完成了，安全评审还没过，等评审通过再上线，负责人是小郑。",
+      "context": {},
+      "facts": [
+        "导出",
+        "(?:完成|做好)",
+        "(?:没|未|尚未).*评审|评审.*(?:没|未|待)",
+        "(?:通过|完成).*上线",
+        "小郑"
+      ],
+      "layout": true
+    },
+    {
+      "id": "test-export-en",
+      "split": "test",
+      "cluster": "export",
+      "scene": "work",
+      "language": "en",
+      "source": "The export feature is complete, security review is still pending, release only after approval, and Quinn owns it.",
+      "context": {},
+      "facts": [
+        "export",
+        "(?:complete|done|finished)",
+        "(?:pending|not.*approved|await)",
+        "(?:after|once|until|only).*approv",
+        "Quinn"
+      ],
+      "layout": true
+    },
+    {
+      "id": "test-incident-zh",
+      "split": "test",
+      "cluster": "incident",
+      "scene": "work",
+      "language": "zh",
+      "source": "今天接口恢复了，但是数据还在补，小何负责补数，小宋核对结果，明早再通知客户。",
+      "context": {},
+      "facts": [
+        "接口",
+        "(?:恢复|正常)",
+        "小何.*补|补.*小何",
+        "小宋.*核对|核对.*小宋",
+        "明早|明天早上",
+        "客户"
+      ],
+      "layout": true
+    },
+    {
+      "id": "test-incident-en",
+      "split": "test",
+      "cluster": "incident",
+      "scene": "work",
+      "language": "en",
+      "source": "The API is back, data backfill is still running, Alex owns backfill, Blair checks results, and notify customers tomorrow morning.",
+      "context": {},
+      "facts": [
+        "API",
+        "(?:back|restored|recovered)",
+        "Alex.*backfill|backfill.*Alex",
+        "Blair.*(?:check|verif)|(?:check|verif).*Blair",
+        "tomorrow morning",
+        "customer"
+      ],
+      "layout": true
+    },
+    {
+      "id": "test-estimate-zh",
+      "split": "test",
+      "cluster": "estimate",
+      "scene": "work",
+      "language": "zh",
+      "source": "内存上涨可能跟连接池有关，暂时还不能确定，先加监控，不要重启线上服务。",
+      "context": {},
+      "facts": [
+        "(?:可能|疑似|也许)",
+        "连接池",
+        "(?:不能确定|不确定|未确认|尚未确认)",
+        "监控",
+        "(?:不要|不|禁止|避免).*重启"
+      ],
+      "layout": true
+    },
+    {
+      "id": "test-estimate-en",
+      "split": "test",
+      "cluster": "estimate",
+      "scene": "work",
+      "language": "en",
+      "source": "The memory increase may involve the connection pool, we are not sure, add monitoring first and do not restart production.",
+      "context": {},
+      "facts": [
+        "(?:may|might|possible)",
+        "connection pool",
+        "(?:not sure|uncertain|unconfirmed|not confirmed)",
+        "monitor",
+        "(?:not|never|avoid).*restart"
+      ],
+      "layout": true
+    },
+    {
+      "id": "test-upload-zh",
+      "split": "test",
+      "cluster": "upload",
+      "scene": "prompt",
+      "language": "zh",
+      "source": "给 /api/upload 加文件大小校验，最大十兆，保持错误码 E413，不要修改成功响应。",
+      "context": {},
+      "facts": [
+        "/api/upload",
+        "(?:十兆|10.*(?:兆|MB))",
+        "E413",
+        "(?:不要|不|保持).*成功"
+      ],
+      "layout": true
+    },
+    {
+      "id": "test-upload-en",
+      "split": "test",
+      "cluster": "upload",
+      "scene": "prompt",
+      "language": "en",
+      "source": "Add a file-size check to /api/upload with a ten MB limit, keep error E413 and do not change the success response.",
+      "context": {},
+      "facts": [
+        "/api/upload",
+        "(?:ten|10).*MB",
+        "E413",
+        "(?:not change|unchanged|keep|preserve).*success|success.*unchanged"
+      ],
+      "layout": true
+    },
+    {
+      "id": "test-migration-zh",
+      "split": "test",
+      "cluster": "migration",
+      "scene": "prompt",
+      "language": "zh",
+      "source": "只分析 migrate.go 为什么执行失败，保留数据库现状，先不要运行迁移。",
+      "context": {},
+      "facts": [
+        "migrate.go",
+        "(?:分析|原因|失败)",
+        "(?:保留|保持).*数据库",
+        "(?:不要|不|禁止|暂缓).*迁移"
+      ],
+      "layout": true
+    },
+    {
+      "id": "test-migration-en",
+      "split": "test",
+      "cluster": "migration",
+      "scene": "prompt",
+      "language": "en",
+      "source": "Only investigate why migrate.go fails, preserve the database state and do not run migrations yet.",
+      "context": {},
+      "facts": [
+        "migrate.go",
+        "(?:investigate|analy|why|cause)",
+        "(?:preserve|keep|unchanged).*database|database.*(?:unchanged|state)",
+        "(?:not|no|never).*migration"
+      ],
+      "layout": true
+    },
+    {
+      "id": "test-retry-zh",
+      "split": "test",
+      "cluster": "retry",
+      "scene": "prompt",
+      "language": "zh",
+      "source": "给 sendInvoice 加失败重试，最多三次，两次之间等十秒，不要重试权限错误。",
+      "context": {},
+      "facts": [
+        "sendInvoice",
+        "(?:三次|3)",
+        "(?:十秒|10.*秒)",
+        "(?:不要|不|排除).*权限"
+      ],
+      "layout": true
+    },
+    {
+      "id": "test-retry-en",
+      "split": "test",
+      "cluster": "retry",
+      "scene": "prompt",
+      "language": "en",
+      "source": "Add retries to sendInvoice, at most three attempts with ten seconds between attempts, and do not retry permission errors.",
+      "context": {},
+      "facts": [
+        "sendInvoice",
+        "(?:three|3)",
+        "(?:ten|10).*seconds",
+        "(?:not|never|exclude).*permission|permission.*(?:excluded|not retried)"
+      ],
+      "layout": true
+    },
+    {
+      "id": "test-invoice-zh",
+      "split": "test",
+      "cluster": "invoice",
+      "scene": "email",
+      "language": "zh",
+      "source": "陈女士您好，发票已经寄出，快递单号 AB123，请查收，有问题联系我，谢谢。",
+      "context": {},
+      "facts": [
+        "陈女士",
+        "发票",
+        "(?:寄出|发出)",
+        "AB123",
+        "(?:联系|问题)"
+      ],
+      "layout": true
+    },
+    {
+      "id": "test-invoice-en",
+      "split": "test",
+      "cluster": "invoice",
+      "scene": "email",
+      "language": "en",
+      "source": "Hi Morgan, the invoice has been sent, tracking is AB123, please check it and contact me with any issues, thanks.",
+      "context": {},
+      "facts": [
+        "Morgan",
+        "invoice",
+        "(?:sent|shipped)",
+        "AB123",
+        "(?:contact|issues)"
+      ],
+      "layout": true
+    },
+    {
+      "id": "test-reschedule-zh",
+      "split": "test",
+      "cluster": "reschedule",
+      "scene": "email",
+      "language": "zh",
+      "source": "张先生您好，会议从周一改到周二下午三点，线上链接不变，麻烦确认，谢谢。",
+      "context": {},
+      "facts": [
+        "张先生",
+        "周二",
+        "(?:三点|3)",
+        "(?:链接不变|原.*链接|保持.*链接)",
+        "确认"
+      ],
+      "layout": true
+    },
+    {
+      "id": "test-reschedule-en",
+      "split": "test",
+      "cluster": "reschedule",
+      "scene": "email",
+      "language": "en",
+      "source": "Hi Cameron, the meeting moves from Monday to Tuesday at three in the afternoon, the online link stays the same, please confirm, thanks.",
+      "context": {},
+      "facts": [
+        "Cameron",
+        "Tuesday",
+        "(?:three|3)",
+        "(?:same|unchanged).*link|link.*(?:same|unchanged)",
+        "confirm"
+      ],
+      "layout": true
+    },
+    {
+      "id": "test-availability-zh",
+      "split": "test",
+      "cluster": "availability",
+      "scene": "email",
+      "language": "zh",
+      "source": "刘老师您好，我可能赶不上周五的评审，还没确定，确定后会尽快告知，抱歉。",
+      "context": {},
+      "facts": [
+        "刘老师",
+        "(?:可能|或许|也许)",
+        "周五",
+        "(?:没确定|未确定|不确定|尚未确定)",
+        "(?:告知|通知|联系)"
+      ],
+      "layout": true
+    },
+    {
+      "id": "test-availability-en",
+      "split": "test",
+      "cluster": "availability",
+      "scene": "email",
+      "language": "en",
+      "source": "Hi Avery, I might miss Friday.s review, it is not confirmed, and I will let you know once I am sure, sorry.",
+      "context": {},
+      "facts": [
+        "Avery",
+        "(?:might|may|possible)",
+        "Friday",
+        "(?:not confirmed|unconfirmed|not sure)",
+        "(?:let you know|notify|inform)"
+      ],
+      "layout": true
+    },
+    {
+      "id": "test-request-zh",
+      "split": "test",
+      "cluster": "request",
+      "scene": "chat",
+      "language": "zh",
+      "source": "你看一下为什么这些改写会被丢弃，先别改代码。",
+      "context": {},
+      "facts": [
+        "(?:看|检查|分析|原因|为什么)",
+        "改写",
+        "(?:别|不要|不|暂缓).*代码"
+      ],
+      "layout": false
+    },
+    {
+      "id": "test-request-en",
+      "split": "test",
+      "cluster": "request",
+      "scene": "chat",
+      "language": "en",
+      "source": "Can you check why these rewrites are discarded, without changing code yet?",
+      "context": {},
+      "facts": [
+        "(?:can you|could you|please|check)",
+        "rewrit",
+        "(?:without|not|no).*chang|code.*unchanged"
+      ],
+      "layout": false
+    },
+    {
+      "id": "test-condition-zh",
+      "split": "test",
+      "cluster": "condition",
+      "scene": "chat",
+      "language": "zh",
+      "source": "如果明天还下雨，我们就改线上，没下雨还是在楼下见。",
+      "context": {},
+      "facts": [
+        "(?:如果|若|要是)",
+        "(?:下雨|雨)",
+        "线上",
+        "楼下"
+      ],
+      "layout": false
+    },
+    {
+      "id": "test-condition-en",
+      "split": "test",
+      "cluster": "condition",
+      "scene": "chat",
+      "language": "en",
+      "source": "If it rains tomorrow, switch to online, otherwise meet downstairs as planned.",
+      "context": {},
+      "facts": [
+        "(?:if|rain)",
+        "online",
+        "(?:otherwise|not rain|doesn.t rain)",
+        "downstairs"
+      ],
+      "layout": false
+    },
+    {
+      "id": "test-correction-zh",
+      "split": "test",
+      "cluster": "correction",
+      "scene": "chat",
+      "language": "zh",
+      "source": "预算不是八百，是九百，人数还是四个人，别弄错了。",
+      "context": {},
+      "facts": [
+        "(?:九百|900)",
+        "(?:四个|4)",
+        "(?:别|不要|不|避免).*错"
+      ],
+      "layout": false
+    },
+    {
+      "id": "test-correction-en",
+      "split": "test",
+      "cluster": "correction",
+      "scene": "chat",
+      "language": "en",
+      "source": "The budget is not eight hundred, it is nine hundred, still four people, please do not mix that up.",
+      "context": {},
+      "facts": [
+        "(?:nine hundred|900)",
+        "(?:four|4)",
+        "(?:not|don.t|avoid).*mix|(?:not|don.t).*confus"
+      ],
+      "layout": false
+    }
+  ]
+}

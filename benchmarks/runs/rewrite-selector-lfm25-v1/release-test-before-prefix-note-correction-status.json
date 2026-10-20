@@ -1,0 +1,1 @@
+{"command": ["pnpm", "rewrite:release:test"], "exitCode": 1}

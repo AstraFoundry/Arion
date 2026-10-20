@@ -1,0 +1,15 @@
+{
+  "version": "metal-prefix-v1",
+  "basePipeline": "metal-chain-v1",
+  "newGenerations": 174,
+  "sourceCases": 156,
+  "development": 36,
+  "natural": 120,
+  "actualSelectorCalls": 18,
+  "intervention": "Only payload cache_prompt false->true; same frozen continuous Go cleanup, conditional selector, formatter, raw inputs/full OCR, native model/runtime/Metal99/CPU4/ctx4096/one slot/seed42/budgets/order. Same four scene workers with empty initial state; no extra warmups or microbatch changes. Runtime default prompt cache/checkpoint management retained and observed in logs.",
+  "comparison": "Compare every actual request, raw output and final body with full174 cache-off baseline. Only cache flag normalized for request equality; downstream source changes remain disclosed. Historical serial baseline is not randomized/current interleaved timing control; no isolated causal speedup claim.",
+  "rubric": "User letter-normalization rule/explicit contrasts retained. Personally review every raw decision and full body. Meaning, scene usefulness, repairs, language, uncertain meaning separate. Cache hits need actual nonzero timings.cache_n. Any raw mismatch fails exact parity even if meaning is retained. No failure filtering/fallback.",
+  "gate": "Development all36 faithful,>=35 useful,11 repairs,anchors,no truncation. Production cache parity is not inferred from aggregate quality. All120 natural observations and uncertainties retained; no release/fresh/native/min16 acceptance from exposed probes.",
+  "privacy": "Inspect pinned native longest-common-prefix/truncation behavior and all actual outputs for prior-source additions. This corpus is not a dedicated cross-session canary test or native source-revision/focus test. Cache contents are private process memory and reset when each worker exits; no persistence endpoint is invoked.",
+  "limits": "One fixed forward order on M4/32GB; historical matched baseline, not a temporal causal control. Actual174 new model calls, no new ASR/OCR/independent humans, no fresh24/4B/olderQwen/Granite/Q8. No target insertion or concurrent-ASR/minimum16GB/complete privacy acceptance. Production unchanged."
+}

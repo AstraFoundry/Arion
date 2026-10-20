@@ -1,0 +1,12 @@
+{
+  "command": [
+    "go",
+    "test",
+    "./domain",
+    "-run",
+    "TestSpeechCleanupCopularQuantityRepair",
+    "-count=1"
+  ],
+  "exitCode": 1,
+  "scope": "Actual new regression before implementation fix"
+}

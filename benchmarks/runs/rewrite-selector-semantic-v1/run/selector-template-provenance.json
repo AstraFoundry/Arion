@@ -1,0 +1,1016 @@
+{
+  "reason": "Frozen v2 executor hardcodes the old selector template metadata even when actual candidate messages use the new policy. Raw records retained unchanged. Effective identity is verified against frozen prompts and complete regenerated actual requests, not the incorrect diagnostic label. Development evidence only; not clean release provenance.",
+  "resultsSha256": "35ab321cebbb277fe2eb7c0968f927e0cd18e16d97dc96bc4b913cf7d86179d3",
+  "records": [
+    {
+      "id": "history-0095",
+      "rowSha256": "b3d39b942dc062b6c45a8e3d52371d1d5b9579dc1def182092540fbe08c48b33",
+      "requestSha256": "1641d6948853a56bd4228cde0d05bc34e69bd5006ee8bf8f3859c3a9a2a74a1e",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "history-0099",
+      "rowSha256": "5bfeda0f19ec814caca54463e106fdbf62d076e2c39370e97381a3cc57419f0d",
+      "requestSha256": "8f6888f3a43a533922ce98de33430dce15ef37e31695237f6c60cb007862786b",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "history-0144",
+      "rowSha256": "be5c625ecc2c0e30df6dec93bb96fa654bbb208d6848393f633a85732fa932a2",
+      "requestSha256": "8f1cf92124dd1ec4da8e75e362f655b8811dc922f90ae0d82dfc3d76fd98f513",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "history-0147",
+      "rowSha256": "fa8c6665ab3533af8b4ed93ad6840fb7b9b9c2495b952fcae82db2bd9e86c03f",
+      "requestSha256": "57e1b7ead48250c19f76e71282deda45024dd8e2ac168062572dee141ab122d2",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "history-0168",
+      "rowSha256": "221486cc996eeed82688ce3332ad09e8e7f5113675b90e8b92ada6c9bc3b525b",
+      "requestSha256": "0d5ae1796dede02b3cb83c5478397723e782b5b932fec54b804c28c595355599",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "history-0169",
+      "rowSha256": "d183a84ad81031cf915f46c0f2c4c40a042f0ce822d502747316b1156e6cad32",
+      "requestSha256": "1a269aed262434dd4396d994f6ae31938a34062b7ca100739856fa77ca40b114",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "history-0171",
+      "rowSha256": "74a26257ee52ed4ca7b698f6c57e4e692485d8317c2637d1703a5e9c358d7f7e",
+      "requestSha256": "717ab7014eb656cbcc6e5f1174252d99d09c2fe1142fb3c074b3a064ebc400e1",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "history-0192",
+      "rowSha256": "c0c85e1cf7c2f9a921c2d8f934e9083392151f1a9248935f969a52c07f54b3ee",
+      "requestSha256": "bd3ab01d6dab9977694ac7fdc485069fbcfd5ffe6213ff271fe55cb94c209306",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "history-0193",
+      "rowSha256": "c29c83b8fafcc5cb416115c95d1e8a9fcd2b13ba2d29817ae8875da00edf6fe7",
+      "requestSha256": "84db75b41618f1988e92dd32161195d2ad0239bd5c44ba21fc0f6a37b381c171",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "history-0194",
+      "rowSha256": "3841232550d3b6b56508229af9feda3e36ff8c54e41b7518a62ad1815417a005",
+      "requestSha256": "8b10c316e14926407492f40ebc606e970b17638aae6f2f156dd47982b5ccd160",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "history-0215",
+      "rowSha256": "3389761f4a240985636830262de80e6a07bc58f63898c0a822a5e13ee1ed096b",
+      "requestSha256": "58b52e61329ee0832244cd2d4afa0e5c251b24c7728e170392fac40221e27acd",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "history-0223",
+      "rowSha256": "3c9475ceb8fb6f715ef7875c25061183c9f2c1e24d7ac88ff218dff20ccdd78b",
+      "requestSha256": "23a38d1c29f620e256aaf5deccae6c65d0910d78e2b414cba5ceb4c357175b0d",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "history-0224",
+      "rowSha256": "76205f50345f303a33c9c2e0ac8a4dfd9abe6a74ba6c9f96d8f92db7d5bdccaa",
+      "requestSha256": "fe21d5b85cedace434a93a2335188083eaaa9224617646e54f5a2bf6fd9f85d6",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "history-0225",
+      "rowSha256": "a8d326fdde7a2d65a20b53adb054dc40bd69dcf2cdfb3285191bf7ae02a2dc8e",
+      "requestSha256": "a62f8638af160d305e99ae545d308917c4782f14b93a9f9cfd7b08a2fed6f672",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "history-0247",
+      "rowSha256": "147aae03486dd26244800abec779f961da242239a136e2a461cd1e5f4d66e272",
+      "requestSha256": "da4fad0d71a0f8f0699870f3ba64bfef182a25fa7caa94d3a4d56c932d25fbab",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "history-0251",
+      "rowSha256": "bcb98b2f108a9299e9b71e97a6afa6e62ec0865b7e6bd24b690313c5b7176119",
+      "requestSha256": "802b5a39d885f6a13005861e6fdd7aa50bcd9b22836b2ddea45cb3f92df429ba",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "history-0263",
+      "rowSha256": "1e697c08bda23bb4e28e29157881bbece2385fa6ff3c52709a792125f10a0aff",
+      "requestSha256": "464d6b00792d5f21c30ea672b791f119a3eb27351c0244ddf08f2ad247ef86ce",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "history-0265",
+      "rowSha256": "66931733f55425e5ca6ea1264bc9a6c12892b4e081b861d0c6ca58f6bf4c5601",
+      "requestSha256": "65c672d4b739b122545929e33ff41d1ed65ee4a30d7af3b66fa4b41e1a257fca",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "history-0270",
+      "rowSha256": "63e05131e86166b816e0fe29ec0e621a21f645e46027cc513f1685b005bab221",
+      "requestSha256": "2aa5bb0c925e03f670dc10888cf124282815a2baa20c3fac78be109af001d807",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "history-0274",
+      "rowSha256": "bc49f8b9cddb7d4031e7f53955cf82cca5ddbad6242ec68e948447351c8a3659",
+      "requestSha256": "82fdafef34e50e992b0f1d9697e72589879d363b0d9001409c9faf892357d9be",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "history-0275",
+      "rowSha256": "d1d3d4b12de7d92e9242fe6264ffee66effa96c4abd116cb4ae5f6f865f4f8b9",
+      "requestSha256": "7e9383a8f60d13c74b8965b88791214a221b50e87cdea5cab978430059e3a4e2",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "history-0276",
+      "rowSha256": "b0bde69ed78974478b94742d7dbcbc1d1dc3dd567d25863b951f1c013578951f",
+      "requestSha256": "e29d483abbb690cc7fc724f7e3d4b1aa280d644b5759318a082d8966c95fa2af",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "history-0277",
+      "rowSha256": "61e8d74fd6d610e4683b799ad8ad8739f01edef2fd8051522cd9db41590b9e2c",
+      "requestSha256": "000e738f5effb51706171cc274c4a724aabf1d40f228d4fb99d6839304788f40",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "history-0278",
+      "rowSha256": "aa51830d44ddbfc887e08b5da3644c28eaec3698f13c6fe3bc2af742cb85a29d",
+      "requestSha256": "b8cb0d4cdcbad22026eb30a8e0c0c847b4c40bffabc9bf38dddeb0a4cf38a145",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "history-0279",
+      "rowSha256": "c52162108c952f203c9d8f31dd9f8673fcd7875dd41bef4ac2af605b530bb59c",
+      "requestSha256": "15e97e306804a698a3a9e5d3a7689ed64d17c9e4b7233f6ad5f909eb5c817544",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "tone-control-02",
+      "rowSha256": "0e2be7e4ceb718a493ec028614b320724a30c8490e9a1caadacf6b90329ad4ba",
+      "requestSha256": "2873ef69f3dc2e39b4b54a03c81f00d44e8d6e86dcbb12a22039094e8d12fb19",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "tone-control-03",
+      "rowSha256": "c0d6e1358ddc283191fa68e362839f2dd562c1065ba14ce21139b92efed46c83",
+      "requestSha256": "6d205fca5434c53524836e3c76b03a946bf1e0046c14980fa66b35c96c906977",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "tone-control-04",
+      "rowSha256": "a6ab53f76bf73194eb639db91bdd1e5013a3a09f6eca8701528f35b99a3de0e5",
+      "requestSha256": "202b3d22d779e3b973e4fd2fbb5b5dfb0bee62dd224061e1456c80aadaaa5f41",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "tone-control-05",
+      "rowSha256": "4f984f73b4bfab6a402cf7d237692d5daff38a01f3ac063b68b4ebc23c6df21f",
+      "requestSha256": "9ea9e01f5ef5adbc4d0f540be373e0df1b7b049464e723d3bee8f932bf6b4b08",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "tone-control-06",
+      "rowSha256": "ebe17adb2d88ccb0c39849a8aa94332ba0773ec8997978d681079f3b8fcb1ef8",
+      "requestSha256": "77158b9d8968b2508fdfb9169686bffc5de43f6f16f93aa000bf73a6764f9f32",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "tone-control-07",
+      "rowSha256": "59e23e36def9033574cb523d07a8f2b1bd817f1bfa209fe09cc2be5f3d39cc37",
+      "requestSha256": "231075427e3c3c226fd277f30c8965817f6f64b618291be66d4a55d245b4324a",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "tone-control-10",
+      "rowSha256": "dec0dbb25ab99638ba455b0ac9fcccbbacb4f3a0205c1454cde03beb73f27426",
+      "requestSha256": "b3cf518d956fb70ab2a5bef67005ae61e711e31f3c283313c7eb45a95dcbcac1",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "tone-control-13",
+      "rowSha256": "dc019478e51e4ad2279196aeecc0849f74232ec1e5185aabe3f4f5355f6476a0",
+      "requestSha256": "a1fa1423800a89e2880e392ac8fc0181ab3fc40411f62a1134622ea9b36c41e1",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "tone-control-14",
+      "rowSha256": "f683e521496e53ea036534a71befd6c05eea8636ca91e288cfd4d6810f679d5f",
+      "requestSha256": "e8323268dee40690488c5d9d3ae37ecd44194b12fe024696c23db18c3612c7cc",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "tone-control-18",
+      "rowSha256": "0ffc1deb410ea51cb3e76d1cdaa06b17780b4aa68ed2d3cf3746c937617afd45",
+      "requestSha256": "228c8fab4c16a60992ba67a3aade5587fe755c1399ffbac46a94080e32a982fd",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "tone-control-19",
+      "rowSha256": "8f511879198f2cc7faecd688761828e6391484bde24b54e4cf8b5f41e565a6ae",
+      "requestSha256": "fd2bc0e836d3ffd0f6fc992a2c6346de30f67323e51cabdb07d821945cc876ab",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "tone-control-20",
+      "rowSha256": "96cb72d9aedc1e2c1a91a3045b30927d6ee2220e4c16a5d804e4888ba2113fab",
+      "requestSha256": "ab29ade71badfafc9ae53e875409840860b842c9d2083eb942500e801d02d152",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "role-nursery-1",
+      "rowSha256": "08d72f5fd7086499385ea914e41a8c7a5f4335fc2c7509debf4dfe601a37aef2",
+      "requestSha256": "6d6ca672019e02bee5fd56c736fdaa2908937ee5e742965316e60f9d5b312edb",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "role-nursery-2",
+      "rowSha256": "2a5afb3342ef8cfc551296084983ab0337ef724ecca9a98145832118ea63b7fb",
+      "requestSha256": "0af1c9b38e034d5fd6c4834e2398c64f12212787a0f3a19a092da59c85c8f31d",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "role-nursery-3",
+      "rowSha256": "dbdbb6c12bb9e39b05ef8d0149c4d12c5035a4fb384176562a694dabb9009cd7",
+      "requestSha256": "e8323268dee40690488c5d9d3ae37ecd44194b12fe024696c23db18c3612c7cc",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "role-deployment-1",
+      "rowSha256": "1975cceb62388f3c924b8042d1fc5c79ca1181685f8552b6ea760170e6201a41",
+      "requestSha256": "0174e23bcdcc4e25de7ed5c76c1907db659f0904d71d3595609d435f8ed748c7",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "role-deployment-2",
+      "rowSha256": "b3fa688641791cba2528335b16c6b6d27e0db1c7381023419713582d3d782d88",
+      "requestSha256": "4aa12177134fd457ecbc803a9e163ba2e016ea79b9fda1fbf5b512c284b13737",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "role-deployment-3",
+      "rowSha256": "8b4c28192fe791abca19db120e4043686cc83e63fcc0b0b7d791418d04f83656",
+      "requestSha256": "e68a6164423d32bc7aed7976227d1494f953edbdb25357e1145c261bd001a059",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "role-deadline-2",
+      "rowSha256": "3a2b7b7f60752b7fa550757bd4d80d76d208f2cab02537e725c285f56e687f0f",
+      "requestSha256": "00313863749670f6b0a7dceb04f8748d0a34c022db385829623c2493cf7b8822",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "role-deadline-3",
+      "rowSha256": "9285eac22d16746f7e06e919808750af2da1e2d82c8400599d27d397776ce0c4",
+      "requestSha256": "936ac37e87817a632d5cfdcfad3c74087824385bb8cf99080d33cbd4e073f3f3",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "role-implication-1",
+      "rowSha256": "00dbde64334711ef0681a70cb59aee3b6b8068b454cbe916f67ff63efc30413f",
+      "requestSha256": "66a556bba7c07e18111cc54b9dd0edd80aba00444b21c81ab4b09818d1584352",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "role-implication-2",
+      "rowSha256": "20b6aea3f9d9cc441fd69414e9b72e60941cd9fe73c4b68f7bc0a72b2a1f3abb",
+      "requestSha256": "f17dec6a0d20bdc78971659bfb5de92437ccb978feb5b081734ff53125ec9012",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "role-implication-3",
+      "rowSha256": "724c47bcaa689b75500578df14640419532fe6fe3b34981be117c380aa9c816a",
+      "requestSha256": "8f611b60a09efa94ba75c7ff9932712890d2281aff0804fc9cb6e17788517375",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "role-travel-2",
+      "rowSha256": "ea258c0cd71fe159cd038d858d106ada2903f3f5db49273b29fe0be47bfed336",
+      "requestSha256": "d238e8e37d6ae09466a5bdbbad80b03ffac93a76d6a45121b89f8c208b2fddee",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "role-travel-3",
+      "rowSha256": "3949747bd700501807e20bf2303c4a339e8702bf93bb95d0c348bf71de78a576",
+      "requestSha256": "b6130889b897cf10f7a57fd22f31c0af6d4242af182790ba117cc47ee723afa2",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "role-customer-1",
+      "rowSha256": "bfef0a74cd5964f867de555efaec056ff3e0a113fe1b4a931899128a37966c8f",
+      "requestSha256": "deab3cee407789ae27aa68e8eae53ae4fe105e3c74f6013af062484b7c7bd1a7",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "role-customer-2",
+      "rowSha256": "7c7ad7925b99ff1137450e07189ed015983ee93dd7b0eb8d5e4a46f7a49c9351",
+      "requestSha256": "c958e9500b79ec2368fae987c671a7c58ff073bd45e1b1095d0c2a09495e8961",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "role-customer-3",
+      "rowSha256": "c6f2b7e1f3b3a3da9c462c422db74413acde6239cfea59fd87093ca0721adcd2",
+      "requestSha256": "deca08e02d3e1ebf50216782b17090137d2c384a1ab32a0c8283faf2f8b30f8c",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "role-import-2",
+      "rowSha256": "12819a4049c50a48fe2348b208202b985c9723a43f2fa5629980115b137602a0",
+      "requestSha256": "484eb0b0fe5bc430ab2dbdeb228a5300dce67e2fbd907abd1103fdca57d24927",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "role-writing-1",
+      "rowSha256": "0e5793b7cf3ed81057f9eee607e36efc56dcd38ef982c56387c0432f7bf0e844",
+      "requestSha256": "1c94bf121a7e2113289baa26436aaa2b8de79c4d939786fda2444af38f1a3d6e",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "role-writing-2",
+      "rowSha256": "19b5acec01ddb2f94f76461785db76718959aeb7609525cf0b74bbab85ad53eb",
+      "requestSha256": "76682d5f8af9edbfcb3932e44e0ad3c1a338544bf703c9cc43768eeab96f417b",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "history-0087",
+      "rowSha256": "654a6d88fbff3d1a18b65c550479b97b704beb009eb3823d0fc04554430ad2c5",
+      "requestSha256": "80d3b22b33f7f15ef271c7afbba9e4a4ae49dd65369645d2fced59b456bed8a7",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "history-0105",
+      "rowSha256": "83764cc7bdd62191d31f7d313cdf2b3cdfa6bf4614f5b3811bada35d00e3ee02",
+      "requestSha256": "9db70a294153a507052bac93237170fa70c23d7e5951269fae5d8ac9ff7e9632",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "history-0128",
+      "rowSha256": "68c38e6af8a105501ab23ab8b4450510603ab57a52e3d52e993b53b8a94da494",
+      "requestSha256": "114976d561680b5ca8de3f457884c9a08b2aa113472a0d41c96d434d5f9ded85",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "history-0149",
+      "rowSha256": "75ea7bc9709d3f32286f4c083cdb106c661fe3d9057bb18879bb2bd93fb772ae",
+      "requestSha256": "d61976b8a4533ce6ec0a737a451af51352fa6727f93854d50c7b57802b6aa5e5",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "history-0150",
+      "rowSha256": "a4310d571ecaeb9d687d39fa45000c6cfe4fea54fc6db6e2a4ad1383e768db13",
+      "requestSha256": "4de2438e87a5fc4175970e5f3bea8fc2f3ea9ea5d72f3371f95924749d75bb6d",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "history-0154",
+      "rowSha256": "df07c3a98d599ff43497963ad2f22ddcbd5b27d5f9b5b62eea26ce13c6e9f922",
+      "requestSha256": "0545fd60f710df35c7d5d3c8adca09b3ca140da6a0964e638853d85d3bd87d43",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "history-0175",
+      "rowSha256": "1b82b78641d93ee2f58aac3b9e74940710728f2ca27453fd97c81f64b69c3a8c",
+      "requestSha256": "ea875f16b94622157caf564517e4c145cd9888dfd42ba1c7fee81ee208cb0761",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "history-0178",
+      "rowSha256": "a4ed938f0af82b59ca1f9113c62ca24c728969e27d45c14ac0689de8433f33da",
+      "requestSha256": "41dec157c36e3490bde3647beefde7890fd6194a9fc1c41cc8802374c7a1a334",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "history-0197",
+      "rowSha256": "a780650627bd3a917af19c9595867f2928378bdc52ecd073eda479f5e4672c10",
+      "requestSha256": "6c48d42f42972964771da52f83d75f8e9aeadfa98fb88d29879286b147bc788f",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "history-0199",
+      "rowSha256": "f09eb72d0573d8b0ce66eab452f67cdc6d93ab3c9c48302be0e43b412afb3d9c",
+      "requestSha256": "05f7ffe6c003cfab3015a38e624b8cb8a65c914f330471a6c118edd84c70c355",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "history-0217",
+      "rowSha256": "95c2326dbf89f0ef6c363d20ab45d90d623c451ccea05f394ad23ce28132b290",
+      "requestSha256": "210721e5bc20cba568f380d8179873b4440b3f23503fd9eee9dd66bd00c5b121",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "history-0234",
+      "rowSha256": "fa851ccefd3bfc0e55a5e4aa4c08837eb3587197ce53223deb5204a8237a689c",
+      "requestSha256": "ab3381a9867faecb97b667dbcc7f665e9b1570f8f91a8e14917721125f25a744",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "history-0254",
+      "rowSha256": "93fee679faee5479b2ad444581edd08b7b40d8474037373388874a811f80c964",
+      "requestSha256": "f7614edc4ade4dee74d8cdadbd91905bb3bb49a5e1976137adcbd4e492c8d32e",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "history-0257",
+      "rowSha256": "37eaf3eabbba6c08e1000a3f9616d141f77abdbef5a7553b5fa4907e0395c373",
+      "requestSha256": "1ff42dc03ca3aea6d65311f3cab3f07bd9b16aad3aba482259df41041ab8b0e8",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "history-0271",
+      "rowSha256": "e582c8dfe8c43e1d1843bf7b4f66119f07ca7728d661b6bfd7e93184caa16873",
+      "requestSha256": "8a8b541c0725b59ba0aad9d6c05d0cdf85af1c4b1926690c02f1636549c90785",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "history-0136",
+      "rowSha256": "5d6f8c60261428ea1a32463770f85e6dfecd72d72a2100def945cdd00e31650c",
+      "requestSha256": "3bc6ed8f1a66e8890bf3e62cc6c617acc2c0067a9c552139207cd52db209c097",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "history-0155",
+      "rowSha256": "0f9bb737ed5dbce708d5168e950fa282346199e430683468931953d543a1a052",
+      "requestSha256": "bd9afda88c223cf07cdcbba4ea84c9ee4077baca73915a52ad4cac26ae332b8f",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "history-0159",
+      "rowSha256": "21aab3d62bf55c09ff9ca77e526542d4d389c2f1e26ee2d4b83b96e1c15a7d57",
+      "requestSha256": "75956be527a861cb0e3ac27bd7f796345aa189e7746589e5b0aaed47aaa6f89a",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "history-0181",
+      "rowSha256": "e4af872ff186c0146929f7bcfd89103197455f8e0e8dadc53168a4cb5207dd82",
+      "requestSha256": "2345ff785abb0fa7b39790cc2b4581286719eaf4420d60d8b7622b2435392c4d",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "history-0182",
+      "rowSha256": "b358331bb8042bdde3e1ba93b446c9b539c2665b5ba47b7e4562239bd593113a",
+      "requestSha256": "a5a8e42f5a70e2305d641c5b546b551c5c5fa38360d1197707e75d8475f5c780",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "history-0184",
+      "rowSha256": "5a5760b4cc0c78e176e753d28bcb7f54fa0542c319afff5d8b72dcf757746480",
+      "requestSha256": "8a4ee673bc3859460c63efa037ea1d6d81a2caffa3532df28b5af5684f4eabfd",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "history-0204",
+      "rowSha256": "588d643d10f0cff2af389151af13c5635198d645778b96eb0d0a18f3a5bc92d2",
+      "requestSha256": "81189d27289b4498283748afa523ea7a94d06d59f3860c6621d39ba975435bc0",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "history-0205",
+      "rowSha256": "8ea4b81e5b2f033d1ca5c76240a8e09502368e53eb36b357aace6fd3e91a6e16",
+      "requestSha256": "ad21ecd06741bd97aa657f2160cf823db8a0792b96df7019f423c1b87946df23",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "history-0206",
+      "rowSha256": "ceb626058df6b59f3cfa1d218a1c9207efd9875c46208859e65f483b3fff6fff",
+      "requestSha256": "edad47224c426670452ab04b507f27893c4df888f564298681139f7ab5715719",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "history-0238",
+      "rowSha256": "addea3dbaeb332202786d898f7878eb99db0a9cd9227449d96cfb92600f7532d",
+      "requestSha256": "b637fe906a6c0a0d1e72dc5cee1b4bad85d1ebe94372d957bdcd04679b1573bf",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "history-0239",
+      "rowSha256": "ea932d77f1e88bfcccaf8060a180919154ffd76cd21c3d3b371220401c3091dd",
+      "requestSha256": "ac71fbf0aa2443b591049f0e3cee2ee90dc37f84c98fef52aff24387b979c744",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "history-0267",
+      "rowSha256": "e93967fa649afdb33b46a13e471c5d77cc242db9a4dec8e516e23186ff63f774",
+      "requestSha256": "a81229280d69bbc88607da04faeb85101aed79a83934cf13a02e845a6b76acde",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "history-0268",
+      "rowSha256": "69aa38ccee3d7fd86d90ec5ea8642d3ff9f81db3fc28ff9519face294ff9646e",
+      "requestSha256": "3c143f04ac9dd919c3c56edd84d7d17cd32c7d3dad3a40ab9dc704adb96a8ec8",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "history-0269",
+      "rowSha256": "433fee739b5f629059faea28a6b5684906b43c56a3c54b5a15cd350ef522b025",
+      "requestSha256": "98b53533fe838b03def05846a77d0b7796b7e7088de6b600b683695c538a0fd6",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "history-0281",
+      "rowSha256": "cf32cf2f22107823f9646a2082bda3fcb7c1f259840fa09413df30ff11cce447",
+      "requestSha256": "57523d155e970ee7bd268ecd0b3f18a79f33ab81432cddae319e3706ecc118de",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "history-0161",
+      "rowSha256": "ce12da9dcc91b47bb5fce144a5fcd5aeb7d3bb0bc653052bfeafd150115122d6",
+      "requestSha256": "bb777b45a12b501fa4869c4bbf7e5f91d633b52a8af872828b06ff4ab19fdeff",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "history-0162",
+      "rowSha256": "754edd7a77483f092031f311568868fe8fc03db36f26ec36629bfb3f88d66b52",
+      "requestSha256": "d9a8024dbb13b6e7890056804b2b4767b71b0bd2e5292c0660972ee39f99323c",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "history-0165",
+      "rowSha256": "73829a02a6c488464b9e471b2f7193cec4becd06168ed39086d62aae4590a0d1",
+      "requestSha256": "3a768ac5858d1a2be23158b1152ff7f4ae701fc0b88e49dbb0aed0012a45850d",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "history-0187",
+      "rowSha256": "e6f539d0e1604dd53ea3af754aa44c379f4e88da6568fc590ec99de87a1b3d6e",
+      "requestSha256": "253f5904ba24e1daac03b8294526c59c81fa9ddd7ff39da8df937f3728c64958",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "history-0188",
+      "rowSha256": "a90f8a6621af8313e8ed4221af4c056d3c03183815720ffc3c15e4db7d394277",
+      "requestSha256": "4275cc9d99b842454b722ffe8d42f1dd3f3bba36e12a60e6a67da5be65ff551a",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "history-0210",
+      "rowSha256": "4bf7dec0ca1b4dfc47bf7aef3966b23d31aecb1e59c565d457974f9a3fb628c9",
+      "requestSha256": "d4bad6e4a632d2e85ab574b68b63f357c85204e841333ccfe0f207a8bbe579c4",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "history-0211",
+      "rowSha256": "81686ee39447cb525e739b0bb55be979073e6eefc07041a901476be92cc6abb1",
+      "requestSha256": "b36cd79b85d285418ee5f340b74b34ae78f4f0cf82a0f1b5cdaecd9b24822e65",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "history-0212",
+      "rowSha256": "1aeb3f0281d2a442882363c5bff3b2f2b911e389a37702066ff9d8861c6caefb",
+      "requestSha256": "68322bb67b77d0cdc49ef3e86bc61c9689135757b6023d20930cf7ac5af8fa5f",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "history-0221",
+      "rowSha256": "27e2dd201f972e70ba66879606f3715808899673ecae9f05747653e655093451",
+      "requestSha256": "2e0856e785859d60f7ed4d1e976d637cd78bdb33faf90226c96a0878cab69336",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "history-0242",
+      "rowSha256": "3a29bc9cb87c2806a4fdfd2caf6b22af834bcfd3fb2cd9624c780dd4424eb466",
+      "requestSha256": "a2889d4b44aa8ed79c81232c0f36f0a1eb5f4b760a13ab5dee5758647160fa57",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "tone-control-01",
+      "rowSha256": "28c643e7edb0e284f7ddfe3880d26bebde64480ed51e5bd8e4e73b1eefdd5f89",
+      "requestSha256": "3fd26b0af02b1f2aa021aa056ef88a593d18eb69ddd71d0a395f2fa26e8bd1c5",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "tone-control-08",
+      "rowSha256": "b8eb188d68534a6c80bed0818933102f370194fef35e67b7c77bb04e6d58728a",
+      "requestSha256": "c6799571f66938df4bd75f00a163fdf106642f0bad195c01537da20ba5cca3c7",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "tone-control-09",
+      "rowSha256": "fb4033e737a20b1cba7d6f4fb18156681531575ab9270bbc17b9bfe5fa9cbe4d",
+      "requestSha256": "f95507dd7462f213097f25fab62cc1f5414c0c17c15834439244bcda4daf2964",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "tone-control-11",
+      "rowSha256": "119937af3598de988a35e15cd8a10a9187c8ebbb2aecad8c368d7e0ad457e25c",
+      "requestSha256": "bf423555123aae4bfc53af48d5e472226fb12d87dc5f0bcc8993075d6988938c",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    },
+    {
+      "id": "tone-control-12",
+      "rowSha256": "afc2f0597add5eaa0fd7261aa392eb81b046ee19560993c1301ececcc694afe7",
+      "requestSha256": "a43110f1df84f6a7b57c32fa35b8869be371bcd14a7a5d9cf0d5e2a8a89ab216",
+      "recordedVersion": "bounded-edit-v2-selection",
+      "recordedSha256": "9ecd03b674b8591d622cf75addacd596e19071ad502ee988e03a95eeaed06e5a",
+      "effectiveVersion": "selector-semantic-v1-selection",
+      "effectivePromptPath": "benchmarks/reproduction/rewrite-selector-semantic-v1/prompts.json",
+      "effectivePromptSha256": "bd156da449541627224ffa77cbb87677c5717081bb4305e99ed4007bfdbc24ce"
+    }
+  ]
+}

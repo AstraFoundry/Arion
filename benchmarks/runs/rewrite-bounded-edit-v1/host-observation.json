@@ -1,0 +1,15 @@
+{
+  "capture": "Post-run read-only host observation, not a contemporaneous thermal/power trace or minimum-device acceptance.",
+  "system": "macOS-26.6.2-x86_64-i386-64bit",
+  "machine": "x86_64",
+  "hardware": {
+    "hw.model": "Mac16,12",
+    "hw.memsize": "34359738368",
+    "hw.ncpu": "10",
+    "machdep.cpu.brand_string": "Apple M4"
+  },
+  "command": "python3 -u benchmarks/reproduction/rewrite-bounded-edit-v1/run.py --out .workspace/rewrite-bounded-edit-v1/run",
+  "nativeSession": 16590,
+  "nativeExitCode": 0,
+  "privateWeights": "Weights/runtime retained in .workspace; exact identities in freeze, no artifact bundling."
+}

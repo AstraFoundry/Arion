@@ -1,0 +1,89 @@
+{
+  "resultsSha256": "7a43bf6f8acabc1163990e233de4bf98f8e14db597894adc7687659df3f426bf",
+  "reviews": [
+    {
+      "id": "99-cache-off-first",
+      "rowSha256": "7c98cd7fdf878db8d9b4ed3924646b961914bc0f8350623750940c23d2ffd9ed",
+      "protocolConforms": true,
+      "probeConforms": false,
+      "note": "Personally read full raw response/source/context. Valid JSON and normal stop; missed supported load cash -> loadCache repair. Runtime/cache compatibility only; semantic task failed, no final body."
+    },
+    {
+      "id": "99-other-source",
+      "rowSha256": "69df6158b407bbe5025b1022cc498c602df2e21e88e60cd1771fc2e561d2b2b9",
+      "protocolConforms": true,
+      "probeConforms": false,
+      "note": "Personally read full raw response/source/context. Valid JSON and normal stop; unsupported read cash -> readCache contradicts explicit cash/not-cache meaning. Runtime/cache compatibility only; semantic task failed, no final body."
+    },
+    {
+      "id": "99-cache-on-return",
+      "rowSha256": "0d14207ef4238ea8455a46064d8e8bc263aab7fde086b75fc772a91547649d22",
+      "protocolConforms": true,
+      "probeConforms": false,
+      "note": "Personally read full raw response/source/context. Valid JSON and normal stop; missed supported load cash -> loadCache repair. Runtime/cache compatibility only; semantic task failed, no final body."
+    },
+    {
+      "id": "99-cache-off-return",
+      "rowSha256": "674a7eda677daf1afe0abf5eea2ab863b0075926ac99d0309ab5d4e331f6bd71",
+      "protocolConforms": true,
+      "probeConforms": false,
+      "note": "Personally read full raw response/source/context. Valid JSON and normal stop; missed supported load cash -> loadCache repair. Runtime/cache compatibility only; semantic task failed, no final body."
+    },
+    {
+      "id": "99-free-positive",
+      "rowSha256": "4b578cf90b61cd42a9ade81cd6cf93c64088d68dec4dab6fd42cedef437bc72f",
+      "protocolConforms": true,
+      "probeConforms": false,
+      "note": "Personally read full raw response/source/context. Valid JSON and normal stop; missed supported load cash -> loadCache repair. Schema removed and error persists. Runtime/cache compatibility only; semantic task failed, no final body."
+    },
+    {
+      "id": "99-free-negative",
+      "rowSha256": "4b93af3deab83ca4a0ce3268ba5905d1288f9f76850b371e79e337eebea53aa7",
+      "protocolConforms": true,
+      "probeConforms": false,
+      "note": "Personally read full raw response/source/context. Valid JSON and normal stop; unsupported read cash -> readCache contradicts explicit cash/not-cache meaning. Schema removed and error persists. Runtime/cache compatibility only; semantic task failed, no final body."
+    },
+    {
+      "id": "0-cache-off-first",
+      "rowSha256": "b2a84e86422a4907b613ec2733612e7099de42d5497aef27c4fd3815dcf239d2",
+      "protocolConforms": true,
+      "probeConforms": false,
+      "note": "Personally read full raw response/source/context. Valid JSON and normal stop; missed supported load cash -> loadCache repair. Runtime/cache compatibility only; semantic task failed, no final body."
+    },
+    {
+      "id": "0-other-source",
+      "rowSha256": "7a50c9966422543654463a7a1f55f95efe303244ac85de1ccfeeef1885fb422d",
+      "protocolConforms": true,
+      "probeConforms": false,
+      "note": "Personally read full raw response/source/context. Valid JSON and normal stop; unsupported read cash -> readCache contradicts explicit cash/not-cache meaning. Runtime/cache compatibility only; semantic task failed, no final body."
+    },
+    {
+      "id": "0-cache-on-return",
+      "rowSha256": "10ed4e3ad014f00d8d9752b91e77f9a514446ddc57c752980ed31f96cd29babb",
+      "protocolConforms": true,
+      "probeConforms": false,
+      "note": "Personally read full raw response/source/context. Valid JSON and normal stop; missed supported load cash -> loadCache repair. Runtime/cache compatibility only; semantic task failed, no final body."
+    },
+    {
+      "id": "0-cache-off-return",
+      "rowSha256": "34a4b5283ba8a977f0189084830a26777852ae6735f38b39e274100bba5939a2",
+      "protocolConforms": true,
+      "probeConforms": false,
+      "note": "Personally read full raw response/source/context. Valid JSON and normal stop; missed supported load cash -> loadCache repair. Runtime/cache compatibility only; semantic task failed, no final body."
+    },
+    {
+      "id": "0-free-positive",
+      "rowSha256": "1147f5d7d9a32e0d00bae418f22ed6b7e42984a682a740b4ca54cd6467d5813c",
+      "protocolConforms": true,
+      "probeConforms": false,
+      "note": "Personally read full raw response/source/context. Valid JSON and normal stop; missed supported load cash -> loadCache repair. Schema removed and error persists. Runtime/cache compatibility only; semantic task failed, no final body."
+    },
+    {
+      "id": "0-free-negative",
+      "rowSha256": "7de1c2898032db52d0af8723cb1f5375ad0b41a77ffa88705e4ceddd26af0507",
+      "protocolConforms": true,
+      "probeConforms": false,
+      "note": "Personally read full raw response/source/context. Valid JSON and normal stop; unsupported read cash -> readCache contradicts explicit cash/not-cache meaning. Schema removed and error persists. Runtime/cache compatibility only; semantic task failed, no final body."
+    }
+  ]
+}

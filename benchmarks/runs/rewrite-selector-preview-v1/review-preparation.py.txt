@@ -1,0 +1,26 @@
+import pathlib,json,hashlib,shutil
+R=pathlib.Path.cwd();H=R/'benchmarks/reproduction/rewrite-selector-preview-v1';W=R/'.workspace/rewrite-selector-preview-v1';P=R/'benchmarks/runs/rewrite-selector-preview-v1';B=R/'benchmarks/runs/rewrite-selector-semantic-v2/run'
+def read(p):return json.loads(p.read_text())
+def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
+def rh(x):return hashlib.sha256(json.dumps(x,ensure_ascii=False,sort_keys=True).encode()).hexdigest()
+def save(p,x):p.write_text(json.dumps(x,ensure_ascii=False,indent=2)+'\n')
+assert read(W/'run/manifest.json')['status']=='complete';rows=list(map(json.loads,(W/'run/results.jsonl').read_text().splitlines()));assert len(rows)==558
+base={(r['stage'],r['id']):r for r in map(json.loads,(B/'results.jsonl').read_text().splitlines())};prior={(j['stage'],j['id']):j for j in read(B/'review.json')['reviews']}
+good={'history-0188','tone-control-06','role-deployment-1','role-implication-1','role-customer-1'}
+bad={'tone-control-11','tone-control-10','role-nursery-1','role-deployment-2','role-deadline-3','role-implication-2','role-customer-2','role-import-2','role-writing-2'}
+reviews=[];comparison=[]
+for r in rows:
+ key=(r['stage'],r['id']);b=base[key];body=r['response']['choices'][0]['message']['content'];same=body==b['response']['choices'][0]['message']['content'];j=dict(prior[key]);comparison.append(dict(id=r['id'],stage=r['stage'],rowSha256=rh(r),referenceRowSha256=rh(b),sameBody=same,sameRequest=r['request']==b['request']))
+ assert all(r[k]==b[k] for k in ['source','context','cleanup','prepared']),key
+ if same and all(r[k]==b[k] for k in ['editedSource','edits']):
+  j['note']='Current raw output personally read; source/context/cleanup/produced hypotheses/selected edits and raw output exactly match the frozen semantic-v2 reference. Original judgment carried. '+j['note']
+ else:
+  assert r['id'] in good|bad,(key,body)
+  positive=r['id'] in good
+  j.update(faithful=positive,sceneUseful=positive and r['stage']=='format',languagePreserved=True,sourceLimited=False if positive else j.get('sourceLimited',False),editSupported=positive,issues=[] if positive else ['unsupported-meaning-substitution'],note='Personally reviewed full source, complete context, exact byte span, every candidate sentence preview, raw decision and delivered body. '+('Supported intended spelling is now recovered; all requests, questions, timing and prohibited actions remain.' if positive else 'Candidate changes the source object/meaning, including a forbidden alternative in the nursery case. A fluent candidate preview is not evidence of the same referent. Incorrect output remains unfiltered.'))
+  if r['stage']=='selection':j['choiceConforms']=positive
+  if positive and r['stage']=='format':j.update(repairOpportunity=True,repairSucceeded=True)
+ j.update(id=r['id'],variant=r['variant'],stage=r['stage'],rowSha256=rh(r));reviews.append(j)
+shutil.copytree(W,P);D=P/'run';save(D/'review.json',dict(resultsSha256=sha(D/'results.jsonl'),method='All558 actual outputs personally read. Persisted email outputs reread after terminal observation truncation; all32 role source/full-context/edits/body pairs and changed controls separately reviewed. Unchanged judgments carried only with exact source/context/cleanup/hypothesis/edit/body parity. No model judge, word-overlap semantic score, evaluator injection or independent blind-rater claim.',reviews=reviews));save(D/'reference-comparison.json',dict(records=comparison));save(D/'selection.json',dict(qualified=False,selected=None,developmentPassed=False,productionActivated=False,freshExecuted=False,resultsSha256=sha(D/'results.jsonl'),reviewSha256=sha(D/'review.json'),freezeSha256=sha(H/'freeze.json'),reason='Reject: improved positive corrections are accompanied by harmful ordinary-word/domain/forbidden-target substitutions. The joint positive/negative development gate fails; fresh data not consumed.'))
+save(P/'path-mappings.json',dict(source='.workspace/rewrite-selector-preview-v1',published='benchmarks/runs/rewrite-selector-preview-v1',privateExcluded=['weights','runtime binaries','Go worker executable']))
+print('Closed558 actual responses with558 explicit frozen baseline comparisons')

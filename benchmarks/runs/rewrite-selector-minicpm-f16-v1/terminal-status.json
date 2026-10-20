@@ -1,0 +1,1 @@
+{"command": ["python3", "-u", "benchmarks/reproduction/rewrite-selector-minicpm-f16-v1/run.py", "--out", ".workspace/rewrite-selector-minicpm-f16-v1/run"], "exitCode": 0}

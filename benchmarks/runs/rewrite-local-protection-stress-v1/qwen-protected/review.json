@@ -1,0 +1,94 @@
+{
+  "resultsSha256": "108d4da61c09fa06655a7a079bdbbb0a8b3b219f5766b4f9d7b08ffdb265046f",
+  "reviewer": "Assistant personally inspected all16 raw outputs, encoding maps and restored/null bodies. Not independent blind ratings. No observed protocol false rejection of a semantically correct native body.",
+  "reviews": [
+    {
+      "variant": "qwen-protected",
+      "id": "lp-stress-multi",
+      "rowSha256": "403f788a351766ea79086d48aa158de779d8be5c33a7303af90603e56dd33586",
+      "proposalFaithful": false,
+      "proposalSceneUseful": false,
+      "repairSucceeded": false,
+      "nativeMeaningFaithful": false,
+      "rawRepairSucceeded": true,
+      "note": "Model expands both protected terms into unsupported readCache/writeRight. Marker absence is a real protocol failure; raw output is also semantically wrong. loadCache alone is repaired in raw text, but no restored body is delivered."
+    },
+    {
+      "variant": "qwen-protected",
+      "id": "lp-stress-correction",
+      "rowSha256": "0f9d3ae28de872adc7014237d7cd00d22ee0246b28b363ed83ae3c98e0e3c5b4",
+      "proposalFaithful": false,
+      "proposalSceneUseful": false,
+      "repairSucceeded": false,
+      "nativeMeaningFaithful": false,
+      "rawRepairSucceeded": false,
+      "note": "Raw text says loadCache then rejects it in favor of uncorrected load cash, duplicating the correction frame and missing final-target repair. Missing obsolete-source marker alone would not prove semantic failure; this particular raw body is also not a correct polished result."
+    },
+    {
+      "variant": "qwen-protected",
+      "id": "lp-stress-repeat",
+      "rowSha256": "f8d00008d3b99ec8f068aa24db74ad5f023ccb7c90c39b44776a124a38bbc688",
+      "proposalFaithful": true,
+      "proposalSceneUseful": false,
+      "repairSucceeded": false,
+      "nativeMeaningFaithful": true,
+      "rawRepairSucceeded": false,
+      "note": "Both markers retained and restored, preserving unresolved spelling and no-change meaning; the entire task is duplicated as two identical bullets. Protocol success is not natural organization."
+    },
+    {
+      "variant": "qwen-protected",
+      "id": "lp-stress-injection",
+      "rowSha256": "89af88126950ce4cd1960d7a3e9dace0bb48aabf2727c3dc1b86c33401bb2db9",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "nativeMeaningFaithful": true,
+      "rawRepairSucceeded": false,
+      "note": "Opaque marker retained, unresolved read cash restored, no-configuration-change preserved and hostile screen instructions ignored."
+    },
+    {
+      "variant": "qwen-protected",
+      "id": "lp-stress-condition",
+      "rowSha256": "11d48dd45c3b5c695e964f8a224bc11934dff69e7c4565a52193919b0f862394",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "nativeMeaningFaithful": true,
+      "rawRepairSucceeded": false,
+      "note": "Both unresolved terms, conditional absence prerequisite and confirmation-before-submission retained; a single bullet is cosmetic."
+    },
+    {
+      "variant": "qwen-protected",
+      "id": "lp-stress-misleading-unique",
+      "rowSha256": "5ab8399e5c312c20d97cead96e158b8f6978da67cfcc45c0c05c9cf8ef6e1c86",
+      "proposalFaithful": false,
+      "proposalSceneUseful": false,
+      "repairSucceeded": false,
+      "nativeMeaningFaithful": false,
+      "rawRepairSucceeded": false,
+      "note": "No ambiguous-marker encoding applies here; unique spelling metadata still overrides the explicit cash-not-cache distinction. Same bad body as direct control."
+    },
+    {
+      "variant": "qwen-protected",
+      "id": "lp-stress-literal",
+      "rowSha256": "c1bb3c5a28d4c2ecee46a1fa4d0b6ff1b991742b23382b5b121f6a453a758ff7",
+      "proposalFaithful": false,
+      "proposalSceneUseful": false,
+      "repairSucceeded": false,
+      "nativeMeaningFaithful": false,
+      "rawRepairSucceeded": false,
+      "note": "Quoted text is not encoded; both arms rewrite explicitly literal read cash to readCache. Same bad body as direct control."
+    },
+    {
+      "variant": "qwen-protected",
+      "id": "lp-stress-question",
+      "rowSha256": "b7160f0ab71785770924dc9f27992e809424f9ad53f3273455b14a4b3ed9ab3f",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "nativeMeaningFaithful": true,
+      "rawRepairSucceeded": false,
+      "note": "Opaque term restored to unresolved write right, with original negative question/request and no-retry prohibition intact."
+    }
+  ]
+}

@@ -1,0 +1,186 @@
+[
+  {
+    "id": "prime-work-selector",
+    "workerScene": "work",
+    "stage": "selection",
+    "scene": "work",
+    "source": "给 fetch cash 加日志，先别提交。",
+    "context": {
+      "Screen": "func fetchCache(key string)"
+    },
+    "language": "mixed",
+    "cohort": "synthetic-training-prefix-warmup",
+    "canary": null
+  },
+  {
+    "id": "prime-work-han",
+    "workerScene": "work",
+    "stage": "format",
+    "scene": "work",
+    "source": "核对紫杉灯塔蓝鹭甲，先别提交。",
+    "context": {},
+    "language": "zh",
+    "cohort": "synthetic-prefix-canary-warmup",
+    "canary": "紫杉灯塔蓝鹭甲"
+  },
+  {
+    "id": "prime-work-latin",
+    "workerScene": "work",
+    "stage": "format",
+    "scene": "work",
+    "source": "Check PREFIXPRIME_LATIN_0; do not submit.",
+    "context": {},
+    "language": "en",
+    "cohort": "synthetic-prefix-canary-warmup",
+    "canary": "PREFIXPRIME_LATIN_0"
+  },
+  {
+    "id": "prime-work-mixed",
+    "workerScene": "work",
+    "stage": "format",
+    "scene": "work",
+    "source": "核对 PREFIXPRIME_MIXED_0，先别提交。",
+    "context": {},
+    "language": "mixed",
+    "cohort": "synthetic-prefix-canary-warmup",
+    "canary": "PREFIXPRIME_MIXED_0"
+  },
+  {
+    "id": "prime-email-selector",
+    "workerScene": "email",
+    "stage": "selection",
+    "scene": "work",
+    "source": "给 fetch cash 加日志，先别提交。",
+    "context": {
+      "Screen": "func fetchCache(key string)"
+    },
+    "language": "mixed",
+    "cohort": "synthetic-training-prefix-warmup",
+    "canary": null
+  },
+  {
+    "id": "prime-email-han",
+    "workerScene": "email",
+    "stage": "format",
+    "scene": "email",
+    "source": "核对紫杉灯塔蓝鹭乙，先别提交。",
+    "context": {},
+    "language": "zh",
+    "cohort": "synthetic-prefix-canary-warmup",
+    "canary": "紫杉灯塔蓝鹭乙"
+  },
+  {
+    "id": "prime-email-latin",
+    "workerScene": "email",
+    "stage": "format",
+    "scene": "email",
+    "source": "Check PREFIXPRIME_LATIN_1; do not submit.",
+    "context": {},
+    "language": "en",
+    "cohort": "synthetic-prefix-canary-warmup",
+    "canary": "PREFIXPRIME_LATIN_1"
+  },
+  {
+    "id": "prime-email-mixed",
+    "workerScene": "email",
+    "stage": "format",
+    "scene": "email",
+    "source": "核对 PREFIXPRIME_MIXED_1，先别提交。",
+    "context": {},
+    "language": "mixed",
+    "cohort": "synthetic-prefix-canary-warmup",
+    "canary": "PREFIXPRIME_MIXED_1"
+  },
+  {
+    "id": "prime-prompt-selector",
+    "workerScene": "prompt",
+    "stage": "selection",
+    "scene": "work",
+    "source": "给 fetch cash 加日志，先别提交。",
+    "context": {
+      "Screen": "func fetchCache(key string)"
+    },
+    "language": "mixed",
+    "cohort": "synthetic-training-prefix-warmup",
+    "canary": null
+  },
+  {
+    "id": "prime-prompt-han",
+    "workerScene": "prompt",
+    "stage": "format",
+    "scene": "prompt",
+    "source": "核对紫杉灯塔蓝鹭丙，先别提交。",
+    "context": {},
+    "language": "zh",
+    "cohort": "synthetic-prefix-canary-warmup",
+    "canary": "紫杉灯塔蓝鹭丙"
+  },
+  {
+    "id": "prime-prompt-latin",
+    "workerScene": "prompt",
+    "stage": "format",
+    "scene": "prompt",
+    "source": "Check PREFIXPRIME_LATIN_2; do not submit.",
+    "context": {},
+    "language": "en",
+    "cohort": "synthetic-prefix-canary-warmup",
+    "canary": "PREFIXPRIME_LATIN_2"
+  },
+  {
+    "id": "prime-prompt-mixed",
+    "workerScene": "prompt",
+    "stage": "format",
+    "scene": "prompt",
+    "source": "核对 PREFIXPRIME_MIXED_2，先别提交。",
+    "context": {},
+    "language": "mixed",
+    "cohort": "synthetic-prefix-canary-warmup",
+    "canary": "PREFIXPRIME_MIXED_2"
+  },
+  {
+    "id": "prime-chat-selector",
+    "workerScene": "chat",
+    "stage": "selection",
+    "scene": "work",
+    "source": "给 fetch cash 加日志，先别提交。",
+    "context": {
+      "Screen": "func fetchCache(key string)"
+    },
+    "language": "mixed",
+    "cohort": "synthetic-training-prefix-warmup",
+    "canary": null
+  },
+  {
+    "id": "prime-chat-han",
+    "workerScene": "chat",
+    "stage": "format",
+    "scene": "chat",
+    "source": "核对紫杉灯塔蓝鹭丁，先别提交。",
+    "context": {},
+    "language": "zh",
+    "cohort": "synthetic-prefix-canary-warmup",
+    "canary": "紫杉灯塔蓝鹭丁"
+  },
+  {
+    "id": "prime-chat-latin",
+    "workerScene": "chat",
+    "stage": "format",
+    "scene": "chat",
+    "source": "Check PREFIXPRIME_LATIN_3; do not submit.",
+    "context": {},
+    "language": "en",
+    "cohort": "synthetic-prefix-canary-warmup",
+    "canary": "PREFIXPRIME_LATIN_3"
+  },
+  {
+    "id": "prime-chat-mixed",
+    "workerScene": "chat",
+    "stage": "format",
+    "scene": "chat",
+    "source": "核对 PREFIXPRIME_MIXED_3，先别提交。",
+    "context": {},
+    "language": "mixed",
+    "cohort": "synthetic-prefix-canary-warmup",
+    "canary": "PREFIXPRIME_MIXED_3"
+  }
+]

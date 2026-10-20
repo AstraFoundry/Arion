@@ -1,0 +1,6 @@
+{
+  "queryStatus": "timeout",
+  "returncode": null,
+  "scope": "Bounded read-only power-history query incomplete and not matched to the study interval. No attribution of flagged timings to host sleep. Unrelated user power-history events are not published.",
+  "matchedHistoricalSleepEvidence": false
+}

@@ -1,0 +1,45 @@
+{
+  "newGenerations": 156,
+  "groups": {
+    "development": {
+      "observations": 36,
+      "faithful": 36,
+      "unfaithful": 0,
+      "uncertain": 0,
+      "sceneReady": 35,
+      "repairs": 11,
+      "languagePreserved": 36,
+      "formatterMs": {
+        "0.5": 1112.3513330239803,
+        "0.95": 1659.1821662150323,
+        "0.99": 1762.2539170552045
+      }
+    },
+    "natural": {
+      "observations": 120,
+      "faithful": 119,
+      "unfaithful": 0,
+      "uncertain": 1,
+      "sceneReady": 75,
+      "repairs": 0,
+      "languagePreserved": 120,
+      "formatterMs": {
+        "0.5": 1215.8953330945224,
+        "0.95": 2776.2064579874277,
+        "0.99": 2987.489541992545
+      }
+    }
+  },
+  "selection": {
+    "qualified": false,
+    "developmentQualified": true,
+    "selected": null,
+    "productionActivated": false,
+    "freshExecuted": false,
+    "freezeSha256": "8382a8c42a08e5098173d121d64d617d39976d6520179792411199a436371898",
+    "resultsSha256": "397f1fb4aa28db4b9c3a7193d61b99520b49439cc6204b5763d10b1bb28c0e52",
+    "reviewSha256": "d29156f2f5b598845e0dad15912a78186a53d12519887d4f2ba01b9971d973ce",
+    "reason": "Full36 meaning/local-repair gate passes,35 scene-ready (withdrawn-value style remains). Natural120 has119 verified faithful,0 definite failures,1 uncertain af/afraid completion,75 usable,120 language-preserved. These exposed diagnostics do not establish production/native/min16GB/independent acceptance; no fresh24 yet."
+  },
+  "productionActivated": false
+}

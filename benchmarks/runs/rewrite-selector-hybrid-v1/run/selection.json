@@ -1,0 +1,11 @@
+{
+  "qualified": false,
+  "selected": null,
+  "screenPassedArms": [],
+  "productionActivated": false,
+  "freshExecuted": false,
+  "formatterExecuted": false,
+  "resultsSha256": "f60cc117be262f8d2f974d21b376a360985672486d389d37c871c963bcce1728",
+  "reviewSha256": "4e6b1f421866f7de607db5324b4c62a76ff3d2d9bbafe490cfd26d40a13051cb",
+  "reason": "Hybrid Metal comparison conforms81/82 versus92/94 Qwen; harmful20/19 versus3/4 despite47/47 required repairs in both arms. Reject both configurations; no formatter/fresh/production expansion."
+}

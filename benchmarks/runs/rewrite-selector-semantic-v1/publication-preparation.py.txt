@@ -1,0 +1,25 @@
+import pathlib,json,hashlib,shutil
+R=pathlib.Path.cwd();H=R/'benchmarks/reproduction/rewrite-selector-semantic-v1';P=R/'benchmarks/runs/rewrite-selector-semantic-v1';D=P/'run'
+def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
+def save(p,v):p.write_text(json.dumps(v,ensure_ascii=False,indent=2)+'\n')
+# Preserve the initial derived bookkeeping before correcting stale recovery flags.
+shutil.copyfile(D/'review.json',D/'review-initial.json');j=json.loads((D/'review.json').read_text());changes=[]
+miss={'history-'+x for x in ['0150','0168','0175','0187','0192','0210','0215','0221','0242']};gains={'history-'+x for x in ['0161','0188','0211']}
+for x in j['reviews']:
+ if x['id'] in miss|gains and x['stage']=='format':
+  changes.append(dict(id=x['id'],rowSha256=x['rowSha256'],previousRepairSucceeded=x.get('repairSucceeded'),repairSucceeded=x['id'] in gains));x.update(repairOpportunity=True,repairSucceeded=x['id'] in gains)
+save(D/'review.json',j);s=json.loads((D/'selection.json').read_text());s['reviewSha256']=sha(D/'review.json');save(D/'selection.json',s);save(D/'review-amendment.json',dict(reason='Correct stale carried repairSucceeded bookkeeping for12 explicitly re-reviewed changed historical bodies. Fidelity/usefulness/meaning judgments unchanged; initial derived report retained.',initialReviewSha256=sha(D/'review-initial.json'),currentReviewSha256=sha(D/'review.json'),changes=changes));shutil.move(str(R/'benchmarks/results/rewrite-selector-semantic-v1'),str(P/'initial-derived-report'))
+# Register the new diagnostic round and correct the displayed effective identity only.
+p=R/'benchmarks/reproduction/rewrite-release/report.py';s=p.read_text();s=s.replace('ROUND_DEFINITIONS=[','ROUND_DEFINITIONS=[',1);marker="\n]\n";pos=s.index(marker,s.index('ROUND_DEFINITIONS=['));entry="\n dict(id='selector-semantic-v1',title='拼写选择的语义角色与错误OCR对照',direction='候选与格式器固定，只调整选择提示词／示例；完整401历史＋24旧对照回归，新增32语义对照双臂。',finding='新对照误改6→2/32，但相关纠错仍0/4；旧纠错3→1/8，历史新增9条姓名漏纠、修复3条术语。历史可用344→338，拒绝采用。',scope='609次实际响应：120选择＋489正文，全量review；101候选选择行沿用旧模板元数据，原始记录保留，实际新请求与冻结提示词逐条绑定。开发诊断，非上线验收。',runs=[('rewrite-selector-semantic-v1/run','staged')]),"
+s=s[:pos]+entry+s[pos:];s=s.replace('METRICS={',"METRICS={\n 'selector-semantic-v1':'新对照保真26→30/32、可用14→16/32；旧24可用16→15，误改消失但漏纠增加。完整历史400确认／1待核验／338可用。无语义过滤或原文回退；完整609输出、场景、实际请求及模板身份异常均展示。',",1);s=s.replace("    tone_summary=", "    semantic_summary=load_report('rewrite-selector-semantic-v1','selector_semantic').collect()[0]\n    tone_summary=",1);s=s.replace("if definition['id']=='tone-chain-v1' and row['stage']=='format':","if definition['id'] in ['tone-chain-v1','selector-semantic-v1'] and row['stage']=='format':")
+needle="                entry['count']+=1";s=s.replace(needle,"                if definition['id']=='selector-semantic-v1' and row['stage']=='selection' and row['arm']=='candidate':\n                    cases[-1]['template']='selector-semantic-v1-selection'\n                    cases[-1]['note']+=' 原始行误记旧模板身份；本视图按已核验的实际请求显示新模板，原始标签与修正绑定保留。'\n"+needle)
+s=s.replace('return dict(toneChain=tone_summary,','return dict(selectorSemantic=semantic_summary,toneChain=tone_summary,');s=s.replace("generations=1200,latest='tone-chain-v1'","generations=1320,latest='selector-semantic-v1'")
+needle="    failure_root=ROOT/";s=s.replace(needle,"    for path in [ROOT/'benchmarks/reproduction/rewrite-selector-semantic-v1'/name for name in ['freeze.json','protocol.json','prompts.json']]+[ROOT/'benchmarks/runs/rewrite-selector-semantic-v1/run'/name for name in ['selection.json','case-outcomes.jsonl','selector-template-provenance.json','reference-comparison.json','review-amendment.json','review-initial.json']]:\n        sources.append(dict(path=str(path.relative_to(ROOT)),sha256=digest(path)))\n"+needle,1);p.write_text(s)
+p=R/'benchmarks/reproduction/rewrite-release/test_report.py';s=p.read_text()
+for a,b in [('4801','5410'),("len(data['rounds']),45","len(data['rounds']),46"),('3317','3926'),('3197','3806'),("is None for c in data['cases']),13","is None for c in data['cases']),14"),("['generations'],1200","['generations'],1320"),("=='selection' for c in data['cases']),305","=='selection' for c in data['cases']),425")]:s=s.replace(a,b)
+p.write_text(s)
+p=R/'package.json';j=json.loads(p.read_text());
+for op in ['run','report','test','verify']:j['scripts']['rewrite:selector-semantic-v1:'+op]='node scripts/rewrite-evidence-command.mjs rewrite-selector-semantic-v1 '+('test_report' if op=='test' else op)
+save(p,j)
+with (R/'Makefile').open('a') as f:
+ for op in ['run','report','test','verify']:f.write('\n.PHONY: rewrite-selector-semantic-v1-'+op+'\nrewrite-selector-semantic-v1-'+op+':\n\t@pnpm rewrite:selector-semantic-v1:'+op+' $(ARGS)\n')

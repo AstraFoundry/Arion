@@ -1,0 +1,12 @@
+{
+  "freezeSha256": "96f856a0d015e89ce3ce9a537b5c6cfd3c77af7e7cc3d6071cbf9c41723ae1df",
+  "resultsSha256": "c80fd8df711e01407950a25671ab1533c1700e596c6e77a0e6f69559fa00b900",
+  "reviewSha256": "6fa1eb39efc9be5ba4aab220024fdecf6bd8f07f52be820365310971a4206aef",
+  "developmentQualified": true,
+  "parityQualified": true,
+  "qualified": false,
+  "selected": null,
+  "productionActivated": false,
+  "freshExecuted": false,
+  "reason": "All174 raw strings match cache-off controls in this fixed forward order; dev36 faithful/usable,11 repairs; natural119 verified,1 uncertain,75 usable. Positive native cache hits and improved observed request times do not prove startup/mixed-route/warmup/reverse-order/independent/native/concurrent/min16GB release gates. No fresh24 execution or production activation."
+}

@@ -1,0 +1,21 @@
+{
+  "newGenerations": 0,
+  "id": "history-0346",
+  "rowSha256": "666ab35b883ca54b2c7fc5516425f47233cc936401a3e08bd6aaa99b2b16d63b",
+  "publishedReferencePath": "benchmarks/corpora/rewrite-natural-asr-v1/evaluator.json",
+  "publishedReferenceSha256": "1232a14c625b261276a5ee08fd59afb9ad8509e1862774ee71c1748f580b86fa",
+  "referenceRecord": {
+    "id": "libri-1320-122617-0037",
+    "referenceText": "the delaware dog he said leaning forward and peering through the dim light to catch the expression of the other's features is he afraid",
+    "unit": "wer",
+    "sourceSpeakerId": "librispeech:1320",
+    "sourceSessionId": "librispeech:1320-122617",
+    "originalSplit": "test",
+    "rubricStatus": "Published transcript only; independent intended-meaning/style ratings not yet collected. Without corrective evidence, distinguish faithful editing of ASR from repair against spoken reference."
+  },
+  "source": "The Delaware dog, he said, leaning forward and peering through the dim light to catch the expression of the other's features, is he af",
+  "body": "The Delaware dog, he said, leaning forward and peering through the dim light to catch the expression of the other's features, is he afraid?",
+  "casePunctuationNormalizedBodyMatchesPublishedTranscript": true,
+  "primaryAsrSourceFaithful": null,
+  "scope": "Post-review evaluator-only observation: af→afraid matches archived published speech transcription. This is distinct from conservative source-text fidelity and independent intended-meaning/style ratings; no pass added to original primary labels and no reference was sent to the model."
+}

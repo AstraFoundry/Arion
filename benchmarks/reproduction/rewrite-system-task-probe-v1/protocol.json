@@ -1,0 +1,7 @@
+{
+  "cases": 12,
+  "generations": 12,
+  "scope": "Hard exposed feasibility probe, not a smaller release gate. Contains all8 stress cases plus4 observed wrong-name/OCR-fact/footer-copy regressions. All36 regressions remain mandatory before qualification; no fresh24 or language/native claims.",
+  "treatment": "Retain flexible token instruction and unfiltered restoration, move the same scene/precedence task into the first system message, and replace the dangling above reference with an explicit last-user/source-label locator. Last user message ends exactly with source data; full OCR remains data. No new spelling whitelist or output filtering.",
+  "gate": "If any of12 fails, no expanded qualification. If all pass, full36 regression remains required; passing this hard subset never proves release readiness."
+}

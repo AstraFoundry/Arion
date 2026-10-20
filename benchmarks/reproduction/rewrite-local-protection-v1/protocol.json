@@ -1,0 +1,13 @@
+{
+  "arms": [
+    "qwen-direct",
+    "qwen-protected",
+    "granite-direct"
+  ],
+  "cases": 28,
+  "generations": 84,
+  "gate": "All28 faithful; all9 necessary repairs; every ambiguity, exact/quote, negative/conditional control preserved; owner grouping and email paragraphs retained; oral polish and self-correction succeed; no protocol failures; scene-ready not below direct baseline. No selection/fresh inference otherwise.",
+  "comparison": "All three arms share updated scene templates and pronunciation input evidence. Within Qwen, only local ambiguous-term source encoding, its instruction and reverse decoding differ. Model screen holds templates/inputs/decoding/runtime fixed but native model tokenizer/chat template necessarily differ. Common scene prompt edits are not causally isolated from the previous study.",
+  "retention": "Raw output, lossless encoded input, complete original source/OCR and restored body separate. Missing/duplicate required tokens are explicit protocol errors with null body, retained in denominator. No semantic output validator or fallback. No-match controls have byte-identical Qwen requests.",
+  "scope": "Exposed synthetic development only; fresh24 pre-frozen and ungenerated unless gate passes. Not independent review/natural ASR/native insertion/concurrency or16GB acceptance. Serial arm order and host drift limit timing attribution. Native post-response RSS samples are not total peak memory."
+}

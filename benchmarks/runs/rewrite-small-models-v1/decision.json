@@ -1,0 +1,23 @@
+{
+  "productionActivated": false,
+  "recommendation": "Continue0.8B prompt/cache optimization for constrained devices; retain2B as a quality comparator. Do not infer low-end acceptance or a release decision from this synthetic screen.",
+  "remainingFailures": [
+    "Ambiguous function chosen by both models",
+    "OCR list replaces one0.8B dictation",
+    "Owner grouping absent in two0.8B cases",
+    "Redundant single bullets in four2B cases"
+  ],
+  "summarySha256": "6133425f0d253cb6b71e6d843e29dd7415b15740b6b38bfce10d55548c98f0dc",
+  "evidence": {
+    "qwen3.5-0.8b": {
+      "manifest.json": "6c04f30e09dba8b0f979062b9fd6bd78f247d6d6571efd0c30917c9a3acbe3cc",
+      "results.jsonl": "2f70efdb191bc6deb6ca79bee45870144e36ae1e844bf95ddf40175ef273bd68",
+      "review.json": "29d6b21fb5008b7a53954aefadf055b67e2901c89d99a084e5170f9295108737"
+    },
+    "qwen3.5-2b": {
+      "manifest.json": "738acabc415eda1b907c0ebfb5c3f4d0ade791b7565f6cb6922321d2b97f5ab7",
+      "results.jsonl": "afe2502b2f5867535cd4eb1359d29bb50fccad1d49b992d7bc9689170bf8d57f",
+      "review.json": "2303effb59227f19c221d5a71cf841e44b45af2ba28555454ae63d0dc7b98cfc"
+    }
+  }
+}

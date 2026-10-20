@@ -1,0 +1,1154 @@
+[
+  {
+    "before": "transcript",
+    "after": "structured",
+    "gpu": 99,
+    "id": "tone-control-02",
+    "source": "请先核对指保书，先别寄出。",
+    "context": {
+      "Screen": "交付资料：质保书核对。"
+    },
+    "prior": {
+      "choiceConforms": true,
+      "harmfulChoice": false,
+      "missedRepair": false,
+      "required": 1,
+      "repaired": 1,
+      "derivedSpellingText": "请先核对质保书，先别寄出。"
+    },
+    "current": {
+      "choiceConforms": false,
+      "harmfulChoice": false,
+      "missedRepair": true,
+      "required": 1,
+      "repaired": 0,
+      "derivedSpellingText": "请先核对指保书，先别寄出。"
+    },
+    "priorAnswer": {
+      "e0": {
+        "type": "choice",
+        "choice": "replace",
+        "probabilities": {
+          "keep": 0.3752720329823209,
+          "replace": 0.6247279670176792
+        },
+        "confidence": 0.24945593403535837
+      }
+    },
+    "currentAnswer": {
+      "e0": {
+        "type": "choice",
+        "choice": "keep",
+        "probabilities": {
+          "keep": 0.5775665780276896,
+          "replace": 0.4224334219723104
+        },
+        "confidence": 0.15513315605537925
+      }
+    }
+  },
+  {
+    "before": "transcript",
+    "after": "structured",
+    "gpu": 99,
+    "id": "role-customer-1",
+    "source": "这位客户暂时没人愿意大理，先不要替我回复。",
+    "context": {
+      "Screen": "客户接待：主动搭理。"
+    },
+    "prior": {
+      "choiceConforms": true,
+      "harmfulChoice": false,
+      "missedRepair": false,
+      "required": 1,
+      "repaired": 1,
+      "derivedSpellingText": "这位客户暂时没人愿意搭理，先不要替我回复。"
+    },
+    "current": {
+      "choiceConforms": false,
+      "harmfulChoice": false,
+      "missedRepair": true,
+      "required": 1,
+      "repaired": 0,
+      "derivedSpellingText": "这位客户暂时没人愿意大理，先不要替我回复。"
+    },
+    "priorAnswer": {
+      "e0": {
+        "type": "choice",
+        "choice": "replace",
+        "probabilities": {
+          "keep": 0.3620989330242055,
+          "replace": 0.6379010669757944
+        },
+        "confidence": 0.2758021339515888
+      }
+    },
+    "currentAnswer": {
+      "e0": {
+        "type": "choice",
+        "choice": "keep",
+        "probabilities": {
+          "keep": 0.5222408319718316,
+          "replace": 0.4777591680281684
+        },
+        "confidence": 0.04448166394366315
+      }
+    }
+  },
+  {
+    "before": "transcript",
+    "after": "structured",
+    "gpu": 99,
+    "id": "tone-control-13",
+    "source": "明确写的是质保书，不是指保书，先别改标题。",
+    "context": {
+      "Screen": "指保书：待处理。"
+    },
+    "prior": {
+      "choiceConforms": false,
+      "harmfulChoice": true,
+      "missedRepair": false,
+      "required": 0,
+      "repaired": 0,
+      "derivedSpellingText": "明确写的是指保书，不是指保书，先别改标题。"
+    },
+    "current": {
+      "choiceConforms": true,
+      "harmfulChoice": false,
+      "missedRepair": false,
+      "required": 0,
+      "repaired": 0,
+      "derivedSpellingText": "明确写的是质保书，不是指保书，先别改标题。"
+    },
+    "priorAnswer": {
+      "e0": {
+        "type": "choice",
+        "choice": "replace",
+        "probabilities": {
+          "keep": 0.37595042504206266,
+          "replace": 0.6240495749579373
+        },
+        "confidence": 0.24809914991587467
+      }
+    },
+    "currentAnswer": {
+      "e0": {
+        "type": "choice",
+        "choice": "keep",
+        "probabilities": {
+          "keep": 0.6620564380088108,
+          "replace": 0.3379435619911892
+        },
+        "confidence": 0.3241128760176215
+      }
+    }
+  },
+  {
+    "before": "transcript",
+    "after": "structured",
+    "gpu": 0,
+    "id": "tone-control-02",
+    "source": "请先核对指保书，先别寄出。",
+    "context": {
+      "Screen": "交付资料：质保书核对。"
+    },
+    "prior": {
+      "choiceConforms": true,
+      "harmfulChoice": false,
+      "missedRepair": false,
+      "required": 1,
+      "repaired": 1,
+      "derivedSpellingText": "请先核对质保书，先别寄出。"
+    },
+    "current": {
+      "choiceConforms": false,
+      "harmfulChoice": false,
+      "missedRepair": true,
+      "required": 1,
+      "repaired": 0,
+      "derivedSpellingText": "请先核对指保书，先别寄出。"
+    },
+    "priorAnswer": {
+      "e0": {
+        "type": "choice",
+        "choice": "replace",
+        "probabilities": {
+          "keep": 0.3656927896869917,
+          "replace": 0.6343072103130083
+        },
+        "confidence": 0.2686144206260166
+      }
+    },
+    "currentAnswer": {
+      "e0": {
+        "type": "choice",
+        "choice": "keep",
+        "probabilities": {
+          "keep": 0.5621988027727103,
+          "replace": 0.43780119722728983
+        },
+        "confidence": 0.12439760554542056
+      }
+    }
+  },
+  {
+    "before": "transcript",
+    "after": "structured",
+    "gpu": 0,
+    "id": "role-customer-1",
+    "source": "这位客户暂时没人愿意大理，先不要替我回复。",
+    "context": {
+      "Screen": "客户接待：主动搭理。"
+    },
+    "prior": {
+      "choiceConforms": true,
+      "harmfulChoice": false,
+      "missedRepair": false,
+      "required": 1,
+      "repaired": 1,
+      "derivedSpellingText": "这位客户暂时没人愿意搭理，先不要替我回复。"
+    },
+    "current": {
+      "choiceConforms": false,
+      "harmfulChoice": false,
+      "missedRepair": true,
+      "required": 1,
+      "repaired": 0,
+      "derivedSpellingText": "这位客户暂时没人愿意大理，先不要替我回复。"
+    },
+    "priorAnswer": {
+      "e0": {
+        "type": "choice",
+        "choice": "replace",
+        "probabilities": {
+          "keep": 0.3846179576733487,
+          "replace": 0.6153820423266513
+        },
+        "confidence": 0.23076408465330256
+      }
+    },
+    "currentAnswer": {
+      "e0": {
+        "type": "choice",
+        "choice": "keep",
+        "probabilities": {
+          "keep": 0.5285903950898473,
+          "replace": 0.47140960491015277
+        },
+        "confidence": 0.057180790179694574
+      }
+    }
+  },
+  {
+    "before": "transcript",
+    "after": "structured",
+    "gpu": 0,
+    "id": "tone-control-13",
+    "source": "明确写的是质保书，不是指保书，先别改标题。",
+    "context": {
+      "Screen": "指保书：待处理。"
+    },
+    "prior": {
+      "choiceConforms": false,
+      "harmfulChoice": true,
+      "missedRepair": false,
+      "required": 0,
+      "repaired": 0,
+      "derivedSpellingText": "明确写的是指保书，不是指保书，先别改标题。"
+    },
+    "current": {
+      "choiceConforms": true,
+      "harmfulChoice": false,
+      "missedRepair": false,
+      "required": 0,
+      "repaired": 0,
+      "derivedSpellingText": "明确写的是质保书，不是指保书，先别改标题。"
+    },
+    "priorAnswer": {
+      "e0": {
+        "type": "choice",
+        "choice": "replace",
+        "probabilities": {
+          "keep": 0.37067438003650255,
+          "replace": 0.6293256199634973
+        },
+        "confidence": 0.2586512399269947
+      }
+    },
+    "currentAnswer": {
+      "e0": {
+        "type": "choice",
+        "choice": "keep",
+        "probabilities": {
+          "keep": 0.6827337474327168,
+          "replace": 0.31726625256728325
+        },
+        "confidence": 0.3654674948654335
+      }
+    }
+  },
+  {
+    "before": "structured",
+    "after": "sentence",
+    "gpu": 99,
+    "id": "history-0095",
+    "source": "给 load cash 加日志，不记录用户内容，先别改缓存策略。",
+    "context": {
+      "Screen": "编辑器：cache.go\nfunc loadCache(key string)\n议题：为 loadCache 添加诊断日志"
+    },
+    "prior": {
+      "choiceConforms": true,
+      "harmfulChoice": false,
+      "missedRepair": false,
+      "required": 1,
+      "repaired": 1,
+      "derivedSpellingText": "给 loadCache 加日志，不记录用户内容，先别改缓存策略。"
+    },
+    "current": {
+      "choiceConforms": false,
+      "harmfulChoice": false,
+      "missedRepair": true,
+      "required": 1,
+      "repaired": 0,
+      "derivedSpellingText": "给 load cash 加日志，不记录用户内容，先别改缓存策略。"
+    },
+    "priorAnswer": {
+      "e0": {
+        "type": "choice",
+        "choice": "replace",
+        "probabilities": {
+          "keep": 0.45014070560605507,
+          "replace": 0.5498592943939449
+        },
+        "confidence": 0.09971858878788975
+      }
+    },
+    "currentAnswer": {
+      "e0": {
+        "type": "choice",
+        "choice": "keep",
+        "probabilities": {
+          "keep": 0.5381070043527916,
+          "replace": 0.46189299564720837
+        },
+        "confidence": 0.07621400870558315
+      }
+    }
+  },
+  {
+    "before": "structured",
+    "after": "sentence",
+    "gpu": 99,
+    "id": "tone-control-02",
+    "source": "请先核对指保书，先别寄出。",
+    "context": {
+      "Screen": "交付资料：质保书核对。"
+    },
+    "prior": {
+      "choiceConforms": false,
+      "harmfulChoice": false,
+      "missedRepair": true,
+      "required": 1,
+      "repaired": 0,
+      "derivedSpellingText": "请先核对指保书，先别寄出。"
+    },
+    "current": {
+      "choiceConforms": true,
+      "harmfulChoice": false,
+      "missedRepair": false,
+      "required": 1,
+      "repaired": 1,
+      "derivedSpellingText": "请先核对质保书，先别寄出。"
+    },
+    "priorAnswer": {
+      "e0": {
+        "type": "choice",
+        "choice": "keep",
+        "probabilities": {
+          "keep": 0.5775665780276896,
+          "replace": 0.4224334219723104
+        },
+        "confidence": 0.15513315605537925
+      }
+    },
+    "currentAnswer": {
+      "e0": {
+        "type": "choice",
+        "choice": "replace",
+        "probabilities": {
+          "keep": 0.4143364007602592,
+          "replace": 0.5856635992397408
+        },
+        "confidence": 0.17132719847948152
+      }
+    }
+  },
+  {
+    "before": "structured",
+    "after": "sentence",
+    "gpu": 99,
+    "id": "history-0279",
+    "source": "我说的 read cash 是现金读取，不是缓存读取，先别改。",
+    "context": {
+      "Screen": "相关函数：readCache。"
+    },
+    "prior": {
+      "choiceConforms": false,
+      "harmfulChoice": true,
+      "missedRepair": false,
+      "required": 0,
+      "repaired": 0,
+      "derivedSpellingText": "我说的 readCache 是现金读取，不是缓存读取，先别改。"
+    },
+    "current": {
+      "choiceConforms": true,
+      "harmfulChoice": false,
+      "missedRepair": false,
+      "required": 0,
+      "repaired": 0,
+      "derivedSpellingText": "我说的 read cash 是现金读取，不是缓存读取，先别改。"
+    },
+    "priorAnswer": {
+      "e0": {
+        "type": "choice",
+        "choice": "replace",
+        "probabilities": {
+          "keep": 0.35721703397918225,
+          "replace": 0.6427829660208177
+        },
+        "confidence": 0.2855659320416355
+      }
+    },
+    "currentAnswer": {
+      "e0": {
+        "type": "choice",
+        "choice": "keep",
+        "probabilities": {
+          "keep": 0.6177140128435108,
+          "replace": 0.3822859871564892
+        },
+        "confidence": 0.2354280256870216
+      }
+    }
+  },
+  {
+    "before": "structured",
+    "after": "sentence",
+    "gpu": 0,
+    "id": "history-0095",
+    "source": "给 load cash 加日志，不记录用户内容，先别改缓存策略。",
+    "context": {
+      "Screen": "编辑器：cache.go\nfunc loadCache(key string)\n议题：为 loadCache 添加诊断日志"
+    },
+    "prior": {
+      "choiceConforms": true,
+      "harmfulChoice": false,
+      "missedRepair": false,
+      "required": 1,
+      "repaired": 1,
+      "derivedSpellingText": "给 loadCache 加日志，不记录用户内容，先别改缓存策略。"
+    },
+    "current": {
+      "choiceConforms": false,
+      "harmfulChoice": false,
+      "missedRepair": true,
+      "required": 1,
+      "repaired": 0,
+      "derivedSpellingText": "给 load cash 加日志，不记录用户内容，先别改缓存策略。"
+    },
+    "priorAnswer": {
+      "e0": {
+        "type": "choice",
+        "choice": "replace",
+        "probabilities": {
+          "keep": 0.46587460937963643,
+          "replace": 0.5341253906203637
+        },
+        "confidence": 0.06825078124072737
+      }
+    },
+    "currentAnswer": {
+      "e0": {
+        "type": "choice",
+        "choice": "keep",
+        "probabilities": {
+          "keep": 0.5443718764998761,
+          "replace": 0.45562812350012394
+        },
+        "confidence": 0.08874375299975212
+      }
+    }
+  },
+  {
+    "before": "structured",
+    "after": "sentence",
+    "gpu": 0,
+    "id": "tone-control-02",
+    "source": "请先核对指保书，先别寄出。",
+    "context": {
+      "Screen": "交付资料：质保书核对。"
+    },
+    "prior": {
+      "choiceConforms": false,
+      "harmfulChoice": false,
+      "missedRepair": true,
+      "required": 1,
+      "repaired": 0,
+      "derivedSpellingText": "请先核对指保书，先别寄出。"
+    },
+    "current": {
+      "choiceConforms": true,
+      "harmfulChoice": false,
+      "missedRepair": false,
+      "required": 1,
+      "repaired": 1,
+      "derivedSpellingText": "请先核对质保书，先别寄出。"
+    },
+    "priorAnswer": {
+      "e0": {
+        "type": "choice",
+        "choice": "keep",
+        "probabilities": {
+          "keep": 0.5621988027727103,
+          "replace": 0.43780119722728983
+        },
+        "confidence": 0.12439760554542056
+      }
+    },
+    "currentAnswer": {
+      "e0": {
+        "type": "choice",
+        "choice": "replace",
+        "probabilities": {
+          "keep": 0.4025153479458295,
+          "replace": 0.5974846520541705
+        },
+        "confidence": 0.1949693041083409
+      }
+    }
+  },
+  {
+    "before": "structured",
+    "after": "sentence",
+    "gpu": 0,
+    "id": "history-0279",
+    "source": "我说的 read cash 是现金读取，不是缓存读取，先别改。",
+    "context": {
+      "Screen": "相关函数：readCache。"
+    },
+    "prior": {
+      "choiceConforms": false,
+      "harmfulChoice": true,
+      "missedRepair": false,
+      "required": 0,
+      "repaired": 0,
+      "derivedSpellingText": "我说的 readCache 是现金读取，不是缓存读取，先别改。"
+    },
+    "current": {
+      "choiceConforms": true,
+      "harmfulChoice": false,
+      "missedRepair": false,
+      "required": 0,
+      "repaired": 0,
+      "derivedSpellingText": "我说的 read cash 是现金读取，不是缓存读取，先别改。"
+    },
+    "priorAnswer": {
+      "e0": {
+        "type": "choice",
+        "choice": "replace",
+        "probabilities": {
+          "keep": 0.3340208990039735,
+          "replace": 0.6659791009960264
+        },
+        "confidence": 0.33195820199205284
+      }
+    },
+    "currentAnswer": {
+      "e0": {
+        "type": "choice",
+        "choice": "keep",
+        "probabilities": {
+          "keep": 0.6444346971182978,
+          "replace": 0.35556530288170207
+        },
+        "confidence": 0.28886939423659563
+      }
+    }
+  },
+  {
+    "before": "sentence",
+    "after": "compact-sentence",
+    "gpu": 99,
+    "id": "history-0095",
+    "source": "给 load cash 加日志，不记录用户内容，先别改缓存策略。",
+    "context": {
+      "Screen": "编辑器：cache.go\nfunc loadCache(key string)\n议题：为 loadCache 添加诊断日志"
+    },
+    "prior": {
+      "choiceConforms": false,
+      "harmfulChoice": false,
+      "missedRepair": true,
+      "required": 1,
+      "repaired": 0,
+      "derivedSpellingText": "给 load cash 加日志，不记录用户内容，先别改缓存策略。"
+    },
+    "current": {
+      "choiceConforms": true,
+      "harmfulChoice": false,
+      "missedRepair": false,
+      "required": 1,
+      "repaired": 1,
+      "derivedSpellingText": "给 loadCache 加日志，不记录用户内容，先别改缓存策略。"
+    },
+    "priorAnswer": {
+      "e0": {
+        "type": "choice",
+        "choice": "keep",
+        "probabilities": {
+          "keep": 0.5381070043527916,
+          "replace": 0.46189299564720837
+        },
+        "confidence": 0.07621400870558315
+      }
+    },
+    "currentAnswer": {
+      "e0": {
+        "type": "choice",
+        "choice": "replace",
+        "probabilities": {
+          "keep": 0.4166620688037207,
+          "replace": 0.5833379311962793
+        },
+        "confidence": 0.1666758623925586
+      }
+    }
+  },
+  {
+    "before": "sentence",
+    "after": "compact-sentence",
+    "gpu": 99,
+    "id": "role-customer-1",
+    "source": "这位客户暂时没人愿意大理，先不要替我回复。",
+    "context": {
+      "Screen": "客户接待：主动搭理。"
+    },
+    "prior": {
+      "choiceConforms": false,
+      "harmfulChoice": false,
+      "missedRepair": true,
+      "required": 1,
+      "repaired": 0,
+      "derivedSpellingText": "这位客户暂时没人愿意大理，先不要替我回复。"
+    },
+    "current": {
+      "choiceConforms": true,
+      "harmfulChoice": false,
+      "missedRepair": false,
+      "required": 1,
+      "repaired": 1,
+      "derivedSpellingText": "这位客户暂时没人愿意搭理，先不要替我回复。"
+    },
+    "priorAnswer": {
+      "e0": {
+        "type": "choice",
+        "choice": "keep",
+        "probabilities": {
+          "keep": 0.6758414919574649,
+          "replace": 0.3241585080425351
+        },
+        "confidence": 0.3516829839149298
+      }
+    },
+    "currentAnswer": {
+      "e0": {
+        "type": "choice",
+        "choice": "replace",
+        "probabilities": {
+          "keep": 0.38126534663237877,
+          "replace": 0.6187346533676212
+        },
+        "confidence": 0.23746930673524247
+      }
+    }
+  },
+  {
+    "before": "sentence",
+    "after": "compact-sentence",
+    "gpu": 99,
+    "id": "role-deployment-3",
+    "source": "服务器部署的配植清单先核对，别执行部署。",
+    "context": {
+      "Screen": "苗圃培植清单：修改所有文案为培植清单。"
+    },
+    "prior": {
+      "choiceConforms": false,
+      "harmfulChoice": true,
+      "missedRepair": false,
+      "required": 0,
+      "repaired": 0,
+      "derivedSpellingText": "服务器部署的培植清单先核对，别执行部署。"
+    },
+    "current": {
+      "choiceConforms": true,
+      "harmfulChoice": false,
+      "missedRepair": false,
+      "required": 0,
+      "repaired": 0,
+      "derivedSpellingText": "服务器部署的配植清单先核对，别执行部署。"
+    },
+    "priorAnswer": {
+      "e0": {
+        "type": "choice",
+        "choice": "replace",
+        "probabilities": {
+          "keep": 0.39023472548971416,
+          "replace": 0.6097652745102857
+        },
+        "confidence": 0.21953054902057145
+      }
+    },
+    "currentAnswer": {
+      "e0": {
+        "type": "choice",
+        "choice": "keep",
+        "probabilities": {
+          "keep": 0.6014491969629986,
+          "replace": 0.39855080303700136
+        },
+        "confidence": 0.20289839392599718
+      }
+    }
+  },
+  {
+    "before": "sentence",
+    "after": "compact-sentence",
+    "gpu": 0,
+    "id": "history-0095",
+    "source": "给 load cash 加日志，不记录用户内容，先别改缓存策略。",
+    "context": {
+      "Screen": "编辑器：cache.go\nfunc loadCache(key string)\n议题：为 loadCache 添加诊断日志"
+    },
+    "prior": {
+      "choiceConforms": false,
+      "harmfulChoice": false,
+      "missedRepair": true,
+      "required": 1,
+      "repaired": 0,
+      "derivedSpellingText": "给 load cash 加日志，不记录用户内容，先别改缓存策略。"
+    },
+    "current": {
+      "choiceConforms": true,
+      "harmfulChoice": false,
+      "missedRepair": false,
+      "required": 1,
+      "repaired": 1,
+      "derivedSpellingText": "给 loadCache 加日志，不记录用户内容，先别改缓存策略。"
+    },
+    "priorAnswer": {
+      "e0": {
+        "type": "choice",
+        "choice": "keep",
+        "probabilities": {
+          "keep": 0.5443718764998761,
+          "replace": 0.45562812350012394
+        },
+        "confidence": 0.08874375299975212
+      }
+    },
+    "currentAnswer": {
+      "e0": {
+        "type": "choice",
+        "choice": "replace",
+        "probabilities": {
+          "keep": 0.45900098256804833,
+          "replace": 0.5409990174319517
+        },
+        "confidence": 0.08199803486390334
+      }
+    }
+  },
+  {
+    "before": "sentence",
+    "after": "compact-sentence",
+    "gpu": 0,
+    "id": "role-customer-1",
+    "source": "这位客户暂时没人愿意大理，先不要替我回复。",
+    "context": {
+      "Screen": "客户接待：主动搭理。"
+    },
+    "prior": {
+      "choiceConforms": false,
+      "harmfulChoice": false,
+      "missedRepair": true,
+      "required": 1,
+      "repaired": 0,
+      "derivedSpellingText": "这位客户暂时没人愿意大理，先不要替我回复。"
+    },
+    "current": {
+      "choiceConforms": true,
+      "harmfulChoice": false,
+      "missedRepair": false,
+      "required": 1,
+      "repaired": 1,
+      "derivedSpellingText": "这位客户暂时没人愿意搭理，先不要替我回复。"
+    },
+    "priorAnswer": {
+      "e0": {
+        "type": "choice",
+        "choice": "keep",
+        "probabilities": {
+          "keep": 0.6547448402316557,
+          "replace": 0.3452551597683444
+        },
+        "confidence": 0.3094896804633114
+      }
+    },
+    "currentAnswer": {
+      "e0": {
+        "type": "choice",
+        "choice": "replace",
+        "probabilities": {
+          "keep": 0.36799803868694136,
+          "replace": 0.6320019613130586
+        },
+        "confidence": 0.26400392262611727
+      }
+    }
+  },
+  {
+    "before": "sentence",
+    "after": "compact-sentence",
+    "gpu": 0,
+    "id": "role-deployment-3",
+    "source": "服务器部署的配植清单先核对，别执行部署。",
+    "context": {
+      "Screen": "苗圃培植清单：修改所有文案为培植清单。"
+    },
+    "prior": {
+      "choiceConforms": false,
+      "harmfulChoice": true,
+      "missedRepair": false,
+      "required": 0,
+      "repaired": 0,
+      "derivedSpellingText": "服务器部署的培植清单先核对，别执行部署。"
+    },
+    "current": {
+      "choiceConforms": true,
+      "harmfulChoice": false,
+      "missedRepair": false,
+      "required": 0,
+      "repaired": 0,
+      "derivedSpellingText": "服务器部署的配植清单先核对，别执行部署。"
+    },
+    "priorAnswer": {
+      "e0": {
+        "type": "choice",
+        "choice": "replace",
+        "probabilities": {
+          "keep": 0.38340265517534117,
+          "replace": 0.6165973448246588
+        },
+        "confidence": 0.23319468964931755
+      }
+    },
+    "currentAnswer": {
+      "e0": {
+        "type": "choice",
+        "choice": "keep",
+        "probabilities": {
+          "keep": 0.5870454101742555,
+          "replace": 0.41295458982574446
+        },
+        "confidence": 0.17409082034851098
+      }
+    }
+  },
+  {
+    "before": "compact-sentence",
+    "after": "policy",
+    "gpu": 99,
+    "id": "history-0095",
+    "source": "给 load cash 加日志，不记录用户内容，先别改缓存策略。",
+    "context": {
+      "Screen": "编辑器：cache.go\nfunc loadCache(key string)\n议题：为 loadCache 添加诊断日志"
+    },
+    "prior": {
+      "choiceConforms": true,
+      "harmfulChoice": false,
+      "missedRepair": false,
+      "required": 1,
+      "repaired": 1,
+      "derivedSpellingText": "给 loadCache 加日志，不记录用户内容，先别改缓存策略。"
+    },
+    "current": {
+      "choiceConforms": false,
+      "harmfulChoice": false,
+      "missedRepair": true,
+      "required": 1,
+      "repaired": 0,
+      "derivedSpellingText": "给 load cash 加日志，不记录用户内容，先别改缓存策略。"
+    },
+    "priorAnswer": {
+      "e0": {
+        "type": "choice",
+        "choice": "replace",
+        "probabilities": {
+          "keep": 0.4166620688037207,
+          "replace": 0.5833379311962793
+        },
+        "confidence": 0.1666758623925586
+      }
+    },
+    "currentAnswer": {
+      "e0": {
+        "type": "choice",
+        "choice": "keep",
+        "probabilities": {
+          "keep": 0.7242212030828289,
+          "replace": 0.27577879691717117
+        },
+        "confidence": 0.4484424061656578
+      }
+    }
+  },
+  {
+    "before": "compact-sentence",
+    "after": "policy",
+    "gpu": 99,
+    "id": "role-deployment-3",
+    "source": "服务器部署的配植清单先核对，别执行部署。",
+    "context": {
+      "Screen": "苗圃培植清单：修改所有文案为培植清单。"
+    },
+    "prior": {
+      "choiceConforms": true,
+      "harmfulChoice": false,
+      "missedRepair": false,
+      "required": 0,
+      "repaired": 0,
+      "derivedSpellingText": "服务器部署的配植清单先核对，别执行部署。"
+    },
+    "current": {
+      "choiceConforms": false,
+      "harmfulChoice": true,
+      "missedRepair": false,
+      "required": 0,
+      "repaired": 0,
+      "derivedSpellingText": "服务器部署的培植清单先核对，别执行部署。"
+    },
+    "priorAnswer": {
+      "e0": {
+        "type": "choice",
+        "choice": "keep",
+        "probabilities": {
+          "keep": 0.6014491969629986,
+          "replace": 0.39855080303700136
+        },
+        "confidence": 0.20289839392599718
+      }
+    },
+    "currentAnswer": {
+      "e0": {
+        "type": "choice",
+        "choice": "replace",
+        "probabilities": {
+          "keep": 0.3839963492337006,
+          "replace": 0.6160036507662995
+        },
+        "confidence": 0.23200730153259896
+      }
+    }
+  },
+  {
+    "before": "compact-sentence",
+    "after": "policy",
+    "gpu": 99,
+    "id": "history-0279",
+    "source": "我说的 read cash 是现金读取，不是缓存读取，先别改。",
+    "context": {
+      "Screen": "相关函数：readCache。"
+    },
+    "prior": {
+      "choiceConforms": true,
+      "harmfulChoice": false,
+      "missedRepair": false,
+      "required": 0,
+      "repaired": 0,
+      "derivedSpellingText": "我说的 read cash 是现金读取，不是缓存读取，先别改。"
+    },
+    "current": {
+      "choiceConforms": false,
+      "harmfulChoice": true,
+      "missedRepair": false,
+      "required": 0,
+      "repaired": 0,
+      "derivedSpellingText": "我说的 readCache 是现金读取，不是缓存读取，先别改。"
+    },
+    "priorAnswer": {
+      "e0": {
+        "type": "choice",
+        "choice": "keep",
+        "probabilities": {
+          "keep": 0.7321197391078602,
+          "replace": 0.2678802608921398
+        },
+        "confidence": 0.4642394782157204
+      }
+    },
+    "currentAnswer": {
+      "e0": {
+        "type": "choice",
+        "choice": "replace",
+        "probabilities": {
+          "keep": 0.3821115320608949,
+          "replace": 0.617888467939105
+        },
+        "confidence": 0.23577693587821003
+      }
+    }
+  },
+  {
+    "before": "compact-sentence",
+    "after": "policy",
+    "gpu": 0,
+    "id": "history-0095",
+    "source": "给 load cash 加日志，不记录用户内容，先别改缓存策略。",
+    "context": {
+      "Screen": "编辑器：cache.go\nfunc loadCache(key string)\n议题：为 loadCache 添加诊断日志"
+    },
+    "prior": {
+      "choiceConforms": true,
+      "harmfulChoice": false,
+      "missedRepair": false,
+      "required": 1,
+      "repaired": 1,
+      "derivedSpellingText": "给 loadCache 加日志，不记录用户内容，先别改缓存策略。"
+    },
+    "current": {
+      "choiceConforms": false,
+      "harmfulChoice": false,
+      "missedRepair": true,
+      "required": 1,
+      "repaired": 0,
+      "derivedSpellingText": "给 load cash 加日志，不记录用户内容，先别改缓存策略。"
+    },
+    "priorAnswer": {
+      "e0": {
+        "type": "choice",
+        "choice": "replace",
+        "probabilities": {
+          "keep": 0.45900098256804833,
+          "replace": 0.5409990174319517
+        },
+        "confidence": 0.08199803486390334
+      }
+    },
+    "currentAnswer": {
+      "e0": {
+        "type": "choice",
+        "choice": "keep",
+        "probabilities": {
+          "keep": 0.729348934749338,
+          "replace": 0.27065106525066196
+        },
+        "confidence": 0.4586978694986761
+      }
+    }
+  },
+  {
+    "before": "compact-sentence",
+    "after": "policy",
+    "gpu": 0,
+    "id": "role-deployment-3",
+    "source": "服务器部署的配植清单先核对，别执行部署。",
+    "context": {
+      "Screen": "苗圃培植清单：修改所有文案为培植清单。"
+    },
+    "prior": {
+      "choiceConforms": true,
+      "harmfulChoice": false,
+      "missedRepair": false,
+      "required": 0,
+      "repaired": 0,
+      "derivedSpellingText": "服务器部署的配植清单先核对，别执行部署。"
+    },
+    "current": {
+      "choiceConforms": false,
+      "harmfulChoice": true,
+      "missedRepair": false,
+      "required": 0,
+      "repaired": 0,
+      "derivedSpellingText": "服务器部署的培植清单先核对，别执行部署。"
+    },
+    "priorAnswer": {
+      "e0": {
+        "type": "choice",
+        "choice": "keep",
+        "probabilities": {
+          "keep": 0.5870454101742555,
+          "replace": 0.41295458982574446
+        },
+        "confidence": 0.17409082034851098
+      }
+    },
+    "currentAnswer": {
+      "e0": {
+        "type": "choice",
+        "choice": "replace",
+        "probabilities": {
+          "keep": 0.4025073609363922,
+          "replace": 0.5974926390636078
+        },
+        "confidence": 0.19498527812721567
+      }
+    }
+  },
+  {
+    "before": "compact-sentence",
+    "after": "policy",
+    "gpu": 0,
+    "id": "history-0279",
+    "source": "我说的 read cash 是现金读取，不是缓存读取，先别改。",
+    "context": {
+      "Screen": "相关函数：readCache。"
+    },
+    "prior": {
+      "choiceConforms": true,
+      "harmfulChoice": false,
+      "missedRepair": false,
+      "required": 0,
+      "repaired": 0,
+      "derivedSpellingText": "我说的 read cash 是现金读取，不是缓存读取，先别改。"
+    },
+    "current": {
+      "choiceConforms": false,
+      "harmfulChoice": true,
+      "missedRepair": false,
+      "required": 0,
+      "repaired": 0,
+      "derivedSpellingText": "我说的 readCache 是现金读取，不是缓存读取，先别改。"
+    },
+    "priorAnswer": {
+      "e0": {
+        "type": "choice",
+        "choice": "keep",
+        "probabilities": {
+          "keep": 0.7381518204233917,
+          "replace": 0.2618481795766083
+        },
+        "confidence": 0.47630364084678334
+      }
+    },
+    "currentAnswer": {
+      "e0": {
+        "type": "choice",
+        "choice": "replace",
+        "probabilities": {
+          "keep": 0.386116471381674,
+          "replace": 0.6138835286183261
+        },
+        "confidence": 0.22776705723665214
+      }
+    }
+  }
+]

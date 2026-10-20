@@ -1,0 +1,173 @@
+{
+  "structure/examples-v2/user-selected-anchor": {
+    "cases": 2,
+    "faithful": 2,
+    "sceneUsefulAndFaithful": 2,
+    "strictAccepted": 2,
+    "faithfulStrictRejected": 0,
+    "unfaithfulStrictAccepted": 0,
+    "envelopeFailures": 0
+  },
+  "structure/examples-v2/authored-development": {
+    "cases": 6,
+    "faithful": 5,
+    "sceneUsefulAndFaithful": 2,
+    "strictAccepted": 5,
+    "faithfulStrictRejected": 1,
+    "unfaithfulStrictAccepted": 1,
+    "envelopeFailures": 0
+  },
+  "structure/structure-v3/user-selected-anchor": {
+    "cases": 2,
+    "faithful": 2,
+    "sceneUsefulAndFaithful": 2,
+    "strictAccepted": 2,
+    "faithfulStrictRejected": 0,
+    "unfaithfulStrictAccepted": 0,
+    "envelopeFailures": 0
+  },
+  "structure/structure-v3/authored-development": {
+    "cases": 6,
+    "faithful": 6,
+    "sceneUsefulAndFaithful": 6,
+    "strictAccepted": 6,
+    "faithfulStrictRejected": 0,
+    "unfaithfulStrictAccepted": 0,
+    "envelopeFailures": 0
+  },
+  "context/production/wrong-relevant": {
+    "cases": 4,
+    "faithful": 1,
+    "sceneUsefulAndFaithful": 1,
+    "strictAccepted": 4,
+    "faithfulStrictRejected": 0,
+    "unfaithfulStrictAccepted": 3,
+    "envelopeFailures": 0
+  },
+  "context/production/clean-relevant": {
+    "cases": 4,
+    "faithful": 4,
+    "sceneUsefulAndFaithful": 4,
+    "strictAccepted": 4,
+    "faithfulStrictRejected": 0,
+    "unfaithfulStrictAccepted": 0,
+    "envelopeFailures": 0
+  },
+  "context/production/wrong-no-context": {
+    "cases": 4,
+    "faithful": 4,
+    "sceneUsefulAndFaithful": 4,
+    "strictAccepted": 4,
+    "faithfulStrictRejected": 0,
+    "unfaithfulStrictAccepted": 0,
+    "envelopeFailures": 0
+  },
+  "context/production/wrong-unrelated": {
+    "cases": 4,
+    "faithful": 4,
+    "sceneUsefulAndFaithful": 4,
+    "strictAccepted": 4,
+    "faithfulStrictRejected": 0,
+    "unfaithfulStrictAccepted": 0,
+    "envelopeFailures": 0
+  },
+  "context/production/negative-control": {
+    "cases": 8,
+    "faithful": 6,
+    "sceneUsefulAndFaithful": 3,
+    "strictAccepted": 6,
+    "faithfulStrictRejected": 0,
+    "unfaithfulStrictAccepted": 0,
+    "envelopeFailures": 0
+  },
+  "context/structure-v3/wrong-relevant": {
+    "cases": 4,
+    "faithful": 2,
+    "sceneUsefulAndFaithful": 0,
+    "strictAccepted": 4,
+    "faithfulStrictRejected": 0,
+    "unfaithfulStrictAccepted": 2,
+    "envelopeFailures": 0
+  },
+  "context/structure-v3/clean-relevant": {
+    "cases": 4,
+    "faithful": 4,
+    "sceneUsefulAndFaithful": 2,
+    "strictAccepted": 4,
+    "faithfulStrictRejected": 0,
+    "unfaithfulStrictAccepted": 0,
+    "envelopeFailures": 0
+  },
+  "context/structure-v3/wrong-no-context": {
+    "cases": 4,
+    "faithful": 4,
+    "sceneUsefulAndFaithful": 2,
+    "strictAccepted": 4,
+    "faithfulStrictRejected": 0,
+    "unfaithfulStrictAccepted": 0,
+    "envelopeFailures": 0
+  },
+  "context/structure-v3/wrong-unrelated": {
+    "cases": 4,
+    "faithful": 2,
+    "sceneUsefulAndFaithful": 1,
+    "strictAccepted": 2,
+    "faithfulStrictRejected": 0,
+    "unfaithfulStrictAccepted": 0,
+    "envelopeFailures": 0
+  },
+  "context/structure-v3/negative-control": {
+    "cases": 8,
+    "faithful": 3,
+    "sceneUsefulAndFaithful": 1,
+    "strictAccepted": 4,
+    "faithfulStrictRejected": 0,
+    "unfaithfulStrictAccepted": 1,
+    "envelopeFailures": 1
+  },
+  "context/context-repair-v1/wrong-relevant": {
+    "cases": 4,
+    "faithful": 2,
+    "sceneUsefulAndFaithful": 2,
+    "strictAccepted": 4,
+    "faithfulStrictRejected": 0,
+    "unfaithfulStrictAccepted": 2,
+    "envelopeFailures": 0
+  },
+  "context/context-repair-v1/clean-relevant": {
+    "cases": 4,
+    "faithful": 4,
+    "sceneUsefulAndFaithful": 4,
+    "strictAccepted": 4,
+    "faithfulStrictRejected": 0,
+    "unfaithfulStrictAccepted": 0,
+    "envelopeFailures": 0
+  },
+  "context/context-repair-v1/wrong-no-context": {
+    "cases": 4,
+    "faithful": 4,
+    "sceneUsefulAndFaithful": 4,
+    "strictAccepted": 4,
+    "faithfulStrictRejected": 0,
+    "unfaithfulStrictAccepted": 0,
+    "envelopeFailures": 0
+  },
+  "context/context-repair-v1/wrong-unrelated": {
+    "cases": 4,
+    "faithful": 4,
+    "sceneUsefulAndFaithful": 4,
+    "strictAccepted": 4,
+    "faithfulStrictRejected": 0,
+    "unfaithfulStrictAccepted": 0,
+    "envelopeFailures": 0
+  },
+  "context/context-repair-v1/negative-control": {
+    "cases": 8,
+    "faithful": 7,
+    "sceneUsefulAndFaithful": 7,
+    "strictAccepted": 8,
+    "faithfulStrictRejected": 0,
+    "unfaithfulStrictAccepted": 1,
+    "envelopeFailures": 0
+  }
+}

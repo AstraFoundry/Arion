@@ -1,0 +1,15 @@
+{
+  "nativeRequests": 24,
+  "layouts": [
+    "structured",
+    "sentence"
+  ],
+  "sourceCasesPerLayout": 6,
+  "gpuLayers": [
+    99,
+    0
+  ],
+  "generatedTokensExpected": 0,
+  "change": "Remove the ten state.demonstrations and corresponding example-reference phrase from each existing structured/sentence wrapper. Original complete current source/OCR/scene/hypotheses and trusted system rules/option descriptions are retained exactly. No keywords-only context or hidden evaluator input.",
+  "limits": "Two explicit packaging edits, not isolated example-count causality. Repeated exposed sources; no confidence threshold, semantic output filtering/fallback, finalbody/ASR/Vision/production/16GB acceptance. Decide expansion only after actual raw review."
+}

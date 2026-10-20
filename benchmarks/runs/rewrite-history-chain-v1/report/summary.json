@@ -1,0 +1,58 @@
+{
+  "newGenerations": 465,
+  "sourceCases": 401,
+  "finalBodies": 401,
+  "actualSelectorCalls": 64,
+  "choiceConforms": 62,
+  "groups": {
+    "historical-synthetic-regression": {
+      "cases": 281,
+      "faithful": 278,
+      "unfaithful": 2,
+      "uncertain": 1,
+      "useful": 260,
+      "languagePreserved": 281,
+      "supportedEdits": 51,
+      "missedReviewedNormalization": 7,
+      "pipelineMs": {
+        "0.5": 615.2112910058349,
+        "0.95": 1763.1794579792768,
+        "0.99": 2804.467207984999
+      }
+    },
+    "historical-natural-read-speech": {
+      "cases": 120,
+      "faithful": 119,
+      "unfaithful": 0,
+      "uncertain": 1,
+      "useful": 75,
+      "languagePreserved": 120,
+      "supportedEdits": 0,
+      "missedReviewedNormalization": 0,
+      "pipelineMs": {
+        "0.5": 466.58879215829074,
+        "0.95": 987.5755000393838,
+        "0.99": 1129.0560830384493
+      }
+    }
+  },
+  "failedFinalIds": [
+    "history-0063",
+    "history-0064"
+  ],
+  "uncertainFinalIds": [
+    "history-0057",
+    "history-0346"
+  ],
+  "selection": {
+    "freezeSha256": "11370a1566304473ff65dd75de08fe7fb08699a781de798aac99ccf904cd0cc1",
+    "resultsSha256": "a1e6c08145e91a34c978ac0701b8c39731f176bbb87987e12bfcc14ef1801563",
+    "reviewSha256": "ec351b1af634348b3ec53f32f379e5c3603ea3d6be36b806ecc2bc9f04664c89",
+    "qualified": false,
+    "selected": null,
+    "productionActivated": false,
+    "freshExecuted": false,
+    "reason": "401-source coverage:397 final bodies verified faithful,2 fail retained criterion (shared date scope, explicit numeric contrast),2 uncertain (cancellation request framing and incomplete natural predicate),335 useful.51 supported spelling-edit cases survive;7 reviewed normalization opportunities remain missed. All outcomes visible; no independent/native/min16 acceptance or production activation."
+  },
+  "limits": "Historical exposed synthetic281/read-speech120; warmups and forced empty decisions excluded. Same old inputs/context ablations/scenes preserved, no new ASR/OCR/native/independent/min16 evidence. No4B/olderQwen/Granite/Q8 or fresh24. Production unchanged."
+}

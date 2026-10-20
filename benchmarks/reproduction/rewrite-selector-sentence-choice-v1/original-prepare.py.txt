@@ -1,0 +1,19 @@
+from pathlib import Path
+import json,hashlib,shutil,subprocess
+R=Path.cwd();H=R/'benchmarks/reproduction/rewrite-selector-sentence-choice-v1';W=R/'.workspace/rewrite-selector-sentence-choice-v1'
+def read(p):return json.loads(p.read_text())
+def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
+def save(p,x):p.write_text(json.dumps(x,ensure_ascii=False,indent=2)+'\n')
+shutil.copyfile(Path(__file__),H/'original-prepare.py.txt')
+save(H/'protocol.json',dict(purpose='Counterbalanced whole-sentence A/B choice task versus unchanged baseline and balanced keep/replace controls.',arms=['baseline','balanced','sentence-ab','sentence-ba'],plannedSources=457,actualGoPreparations=457,plannedSourceTreatments=1828,expectedGenerations=404,expectedChoicesPerArm=101,expectedNoHypothesisSkips=1424,maxTokens=128,formatterGenerations=0,changes='New sentence task system, reversible sentenceChoices data, reversible example decisions and A/B output enum. Candidate producer, full source/context, ten example source tuples and semantic decisions, model/runtime/budget remain unchanged. sentence-ab usesA=original;sentence-ba usesB=original. Multiple ambiguous replacement alternatives retained, never silently pick one. Existing exact application checks remain protocol-only.',gate='Every101-case choice conforms to unchanged frozen evaluator, including all required repairs, literal/ambiguous/meaning boundaries and protocol validity. A passing arm only permits complete457-source chain, then unchanged fresh/currentASR+Vision/native/offline/concurrent/independent/actual16GB release acceptance.',review='Personally read every actual raw choice and normalized edited source, plus full source/context for all failed or changed pairs. Separate source fidelity from required-repair conformance; label order is not a meaning judgment.',limits='Exposed repeated development sources and inherited overlapping examples, not held-out/generalization or independent evidence. ActualGo457 reused within four arms; all no-hypothesis/cross-script coverage misses explicit. Zero newASR/OCR/formatter/final bodies. No semantic output rejection/source fallback or production change. No4B/olderQwen. Observed serial request timing excludes startup/Go/formatter/native/concurrentASR/min16 acceptance.'))
+f=read(R/'benchmarks/reproduction/rewrite-selector-screen-v1/freeze.json');f['files']=dict(read(R/'benchmarks/runs/rewrite-selector-screen-v1/archive.json')['files'])
+for p in H.iterdir():
+ if p.is_file() and p.name!='freeze.json':f['files'][str(p.relative_to(R))]=sha(p)
+p=R/'benchmarks/runs/rewrite-selector-source-last-v1/run/preparations.jsonl';f['files'][str(p.relative_to(R))]=sha(p)
+save(H/'freeze.json',f)
+host={}
+for key,cmd in [('os',['sw_vers']),('hardware',['sysctl','hw.model','hw.memsize','hw.physicalcpu','machdep.cpu.brand_string']),('power',['pmset','-g','custom']),('thermal',['pmset','-g','therm']),('gitRevision',['git','rev-parse','HEAD']),('dirty',['git','status','--porcelain']),('runtime',['.workspace/rewrite-small-models-v1/runtime/llama-b11734/llama-server','--version'])]:
+ q=subprocess.run(cmd,text=True,capture_output=True);host[key]=dict(command=cmd,exitCode=q.returncode,stdout=q.stdout,stderr=q.stderr)
+host.update(timer='time.monotonic',freezeSha256=sha(H/'freeze.json'),sampling='Pinned1.88B Q4/b11734/Metal99/CPU4/ctx4096/parallel1/greedy42/nonthinking/cachetrue/128tokens/no warmup. Sampled worker RSS is not peak or whole-host/min16 acceptance.',executorAdapter='Owned entrypoint injects pipeline/freeze into unchanged frozen four-arm actual-Go/Metal executor; internal label remains selector-screen-v1. Raw A/B remains original; normalized keep/replace only drives exact-span application, not semantic rejection.')
+save(W/'host-provenance.json',host)
+print('Prefrozen',len(f['files']),'files;',sha(H/'freeze.json'))

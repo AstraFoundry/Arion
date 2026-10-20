@@ -1,0 +1,3 @@
+# Fixed character pronunciation evidence
+
+All41,923 builtin pypinyin0.55.0 character entries exported through its TONE3/heteronym API, with neutral-tone5. No test-specific vocabulary or custom dictionary patches. The original dictionary/core/MIT license/package metadata, export source and output hashes are retained. This is character-level text evidence, not phrase or acoustic disambiguation. Inference replay needs only the frozen table; exporting requires separately provisioned pypinyin0.55.0. Context7 official documentation retrieval returned bot-verification text; the exact installed official package source/API was inspected instead.

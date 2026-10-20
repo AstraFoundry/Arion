@@ -1,0 +1,338 @@
+{
+  "resultsSha256": "0a6cee307bae350546541f928dbea40b18e2de427db17cac4f00cd91260aa02b",
+  "reviewer": "Assistant personally inspected all32 source/reference/raw bodies. No lexical-overlap success rule and no content validator filtering. Not independent blind review.",
+  "reviews": [
+    {
+      "id": "owner-anchor",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "note": "Correctly groups 小陈/design/Wednesday and 小刘/testing/Friday; all facts retained.",
+      "issues": [],
+      "variant": "baseline",
+      "rowSha256": "a3e95326455c3b4cff3565634b526311181b95ee165901bdf715ad10255802c3"
+    },
+    {
+      "id": "p4-work-correct-name",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "note": "Keeps exact 庄雨宁 and confirmation-before-submission despite competing OCR name.",
+      "issues": [],
+      "variant": "baseline",
+      "rowSha256": "7ed2cc063e005e2289e0ccf71bb97eccdf6a3084cce3b1f251d6d8f32e2020a0"
+    },
+    {
+      "id": "p4-work-ambiguous",
+      "proposalFaithful": false,
+      "proposalSceneUseful": false,
+      "repairSucceeded": false,
+      "note": "Still selects readCash from two plausible homophonic spellings. Baseline adds a cosmetic single bullet; the contrast package drops the bullet but does not resolve the unsupported choice.",
+      "issues": [
+        "ambiguous-entity-guess"
+      ],
+      "variant": "baseline",
+      "rowSha256": "5376e73a633e2c91f273689b629c86d19918cd7982616cf61c5316ffdb6e2e2d"
+    },
+    {
+      "id": "p4-work-code",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": true,
+      "note": "Repairs push cash to pushCache; no account logging and no cache strategy change remain.",
+      "issues": [],
+      "variant": "baseline",
+      "rowSha256": "feb43c6511dd58b1040ec849716ff7dfa166723f6da41bdbf449e669e78ce1d6"
+    },
+    {
+      "id": "email-anchor",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "note": "Natural salutation/body separation; Thursday leave, completed handoff to 小赵 and approval request all remain.",
+      "issues": [],
+      "variant": "baseline",
+      "rowSha256": "70cdb55ec8db00b221efa9f49c1c6cb6c0b48f9beee8a1f33cc48dce3ad592fa"
+    },
+    {
+      "id": "recipient-wrong-relevant",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": true,
+      "note": "Corrects 林雨桐 to 林语桐, retaining tomorrow-morning delivery and no forwarding in natural email paragraphs.",
+      "issues": [],
+      "variant": "baseline",
+      "rowSha256": "b38cbc1ef936c5c06bb4268c8b12fc35181f92c3bd7c844d829b0515559cb8d8"
+    },
+    {
+      "id": "wrong-ocr",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "note": "Protects 韩若宁 against corrupt OCR; speaker and tomorrow-morning reply remain.",
+      "issues": [],
+      "variant": "baseline",
+      "rowSha256": "4662824439581d1cf49853d8ab61eccc2c2c470803070bb8d903ea9701807225"
+    },
+    {
+      "id": "conditional-fact",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "note": "Keeps recipient confirmation before shipment, unknown freight and no advance payment despite contrary OCR.",
+      "issues": [],
+      "variant": "baseline",
+      "rowSha256": "c859cef631b0e686d80bd9549e89323d590de7fea60825916972db8c26d30f7e"
+    },
+    {
+      "id": "f-prompt-token",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": true,
+      "note": "Corrects get profile to getProfile and separates the action from both unchanged-fields/no-new-config restrictions.",
+      "issues": [],
+      "variant": "baseline",
+      "rowSha256": "d4f910a2729e8da34cce9fad1965defef76996c3fed1def77a565fc7aa5f82cc"
+    },
+    {
+      "id": "f-prompt-context",
+      "proposalFaithful": true,
+      "proposalSceneUseful": false,
+      "repairSucceeded": false,
+      "note": "Endpoint, X-Request-ID, no search-content logging and backend-only scope remain. Does not clearly organize the multiple constraints.",
+      "issues": [
+        "missing-constraint-organization"
+      ],
+      "variant": "baseline",
+      "rowSha256": "4ff6d611cdb68fd2ac6fb99a0c34687be094de669c3a2ed8ad4126779655240c"
+    },
+    {
+      "id": "f-prompt-all",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "note": "Separates Store.go/E508 investigation from every no-guessed-parameters/no-restart/no-code constraint; no diagnosis or extra action.",
+      "issues": [],
+      "variant": "baseline",
+      "rowSha256": "814c4129e9ddc0f01e2650e830485a5aafd23a8a41c04ea7bc247a1fad2a724c"
+    },
+    {
+      "id": "f-prompt-size",
+      "proposalFaithful": true,
+      "proposalSceneUseful": false,
+      "repairSucceeded": false,
+      "note": "Retains four-not-forty seconds, unchanged concurrency and transport.go-only scope. The multiple requirements remain inline.",
+      "issues": [
+        "missing-constraint-organization"
+      ],
+      "variant": "baseline",
+      "rowSha256": "a538ad0d0ec0533a1711f08cc0170b773390d11206349b6de6c493a69049ca97"
+    },
+    {
+      "id": "f-chat-negative",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "note": "Keeps negative question and no-move request, resisting contrary OCR.",
+      "issues": [],
+      "variant": "baseline",
+      "rowSha256": "6cdf7a0a3c7ac747110164a236a6e69873c57e285a27731164cbce6db82130d2"
+    },
+    {
+      "id": "f-chat-question",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "note": "Preserves the request to investigate and the prohibition on modifying settings; does not answer or execute.",
+      "issues": [],
+      "variant": "baseline",
+      "rowSha256": "1d5b23e9fb727639f0ad14fb6c829251aa7db8089d947fbafb522036ed082cbc"
+    },
+    {
+      "id": "f-chat-branches",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "note": "Preserves both transit branches and no advance booking despite booked/OK context.",
+      "issues": [],
+      "variant": "baseline",
+      "rowSha256": "063eaf620237ba9c4d0481761fe6539f7ed9a7ae9b351bc99c5899733c30a2a3"
+    },
+    {
+      "id": "f-chat-condition",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "note": "Keeps uncertainty, the snow/video condition and no guarantee.",
+      "issues": [],
+      "variant": "baseline",
+      "rowSha256": "fafae99f0738031ab9adabc015955db6fc21d4d70a583187bbd225bc025f2255"
+    },
+    {
+      "id": "owner-anchor",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "note": "Correctly groups 小陈/design/Wednesday and 小刘/testing/Friday; all facts retained.",
+      "issues": [],
+      "variant": "compact",
+      "rowSha256": "78442ce757a93350ec37838f148feb989076b313d4f1be4efd47656f3d7c8733"
+    },
+    {
+      "id": "p4-work-correct-name",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "note": "Keeps exact 庄雨宁 and confirmation-before-submission despite competing OCR name.",
+      "issues": [],
+      "variant": "compact",
+      "rowSha256": "82c9a1f30bf03ed1cb3dd8e208a8b99f5cf8256d83b92e484ca14bba21f44c16"
+    },
+    {
+      "id": "p4-work-ambiguous",
+      "proposalFaithful": false,
+      "proposalSceneUseful": false,
+      "repairSucceeded": false,
+      "note": "Still selects readCash from two plausible homophonic spellings. Baseline adds a cosmetic single bullet; the contrast package drops the bullet but does not resolve the unsupported choice.",
+      "issues": [
+        "ambiguous-entity-guess"
+      ],
+      "variant": "compact",
+      "rowSha256": "e44a0218009c1fea6414da8704c5d3d4c07ba62e17d6fc92b63976a31fb0f46b"
+    },
+    {
+      "id": "p4-work-code",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": true,
+      "note": "Repairs push cash to pushCache; no account logging and no cache strategy change remain.",
+      "issues": [],
+      "variant": "compact",
+      "rowSha256": "1aa59ec033dc7b63203209f96abe2c8d70edba5585868cfb21dec0097a9b1a52"
+    },
+    {
+      "id": "email-anchor",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "note": "Natural salutation/body separation; Thursday leave, completed handoff to 小赵 and approval request all remain.",
+      "issues": [],
+      "variant": "compact",
+      "rowSha256": "7602ce8c2bf67f5e5cc08969334a1e9e61af03545cf7d3c1fc8760fc3fac7dae"
+    },
+    {
+      "id": "recipient-wrong-relevant",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": true,
+      "note": "Corrects 林雨桐 to 林语桐, retaining tomorrow-morning delivery and no forwarding in natural email paragraphs.",
+      "issues": [],
+      "variant": "compact",
+      "rowSha256": "e2d159abd9432615db47f512420fae96c0e57a1414577d542449b0bab6823cb2"
+    },
+    {
+      "id": "wrong-ocr",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "note": "Protects 韩若宁 against corrupt OCR; speaker and tomorrow-morning reply remain.",
+      "issues": [],
+      "variant": "compact",
+      "rowSha256": "53ea5a150ffefa2b5a72f104559fbdcf0f594329e7474322ee189e73f5374dfe"
+    },
+    {
+      "id": "conditional-fact",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "note": "Keeps recipient confirmation before shipment, unknown freight and no advance payment despite contrary OCR.",
+      "issues": [],
+      "variant": "compact",
+      "rowSha256": "854fd8078570cab97f2933ad978fa6db168b0636a22d39cdc0fb81f25394db42"
+    },
+    {
+      "id": "f-prompt-token",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": true,
+      "note": "Corrects get profile to getProfile and separates the action from both unchanged-fields/no-new-config restrictions.",
+      "issues": [],
+      "variant": "compact",
+      "rowSha256": "fd935192a745d05149529bc468d9bd0167544aca91d12f6bed0bcd01f60f2674"
+    },
+    {
+      "id": "f-prompt-context",
+      "proposalFaithful": true,
+      "proposalSceneUseful": false,
+      "repairSucceeded": false,
+      "note": "Endpoint, X-Request-ID, no search-content logging and backend-only scope remain. Does not clearly organize the multiple constraints.",
+      "issues": [
+        "missing-constraint-organization"
+      ],
+      "variant": "compact",
+      "rowSha256": "85faadfe3760c9e764f9d550aaab3bb80e4cf75fb3e6a96edd4606d86296479c"
+    },
+    {
+      "id": "f-prompt-all",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "note": "Separates Store.go/E508 investigation from every no-guessed-parameters/no-restart/no-code constraint; no diagnosis or extra action.",
+      "issues": [],
+      "variant": "compact",
+      "rowSha256": "74bfcf646f2d0798b93dd8f8a7f582ea5411e67a06b57f455bf4f17f1a45ca4b"
+    },
+    {
+      "id": "f-prompt-size",
+      "proposalFaithful": true,
+      "proposalSceneUseful": false,
+      "repairSucceeded": false,
+      "note": "Retains four-not-forty seconds, unchanged concurrency and transport.go-only scope. The multiple requirements remain inline.",
+      "issues": [
+        "missing-constraint-organization"
+      ],
+      "variant": "compact",
+      "rowSha256": "633313b9e9d07fb7e7892db16f815576714022616664262c1e77f87788c478dc"
+    },
+    {
+      "id": "f-chat-negative",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "note": "Keeps negative question and no-move request, resisting contrary OCR.",
+      "issues": [],
+      "variant": "compact",
+      "rowSha256": "185d24d8f7cdd593fd1f4b1d41d98fb8d817b63594b700f7dc0425aef5fccd3c"
+    },
+    {
+      "id": "f-chat-question",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "note": "Preserves the request to investigate and the prohibition on modifying settings; does not answer or execute.",
+      "issues": [],
+      "variant": "compact",
+      "rowSha256": "08abc41e869d3d67a467df8f9930e03a50cddfa6e44fb34ee81a717b89f1baa2"
+    },
+    {
+      "id": "f-chat-branches",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "note": "Preserves both transit branches and no advance booking despite booked/OK context.",
+      "issues": [],
+      "variant": "compact",
+      "rowSha256": "9846af04ecc82b70ea93945b497b421a8d334ff1920c65d6b5de9850f0d5f855"
+    },
+    {
+      "id": "f-chat-condition",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "note": "Keeps uncertainty, the snow/video condition and no guarantee.",
+      "issues": [],
+      "variant": "compact",
+      "rowSha256": "1337205e47cb173df868e65ff8d35d04d27c25b507a5885720503e47bd2cd316"
+    }
+  ]
+}

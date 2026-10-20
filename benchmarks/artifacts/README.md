@@ -11,3 +11,5 @@ No external binary store was populated by this migration. Hashes identify the re
 `user-modify-asr-v2/` records primary-paper sources and the resolved retrieval experiment environment. Both runs retain model/tokenizer and runtime hashes; the [optimization report](../results/user-modify-asr-v2/README.md) links their actual observations. Downloaded papers and provisioned runtime binaries remain local.
 
 `user-modify-asr-v3/` and `context-memory-v1/` record paper sources, model/runtime provenance and research-driver identities for [closed-loop acquisition](../results/user-modify-asr-v3/README.md) and [text-context disambiguation](../results/context-memory-v1/README.md). AES vault keys, compiled helpers, runtime environments and weights are not archived. Recorded ciphertext and authored plaintext observations retain separate hashes.
+
+- [Small-model refresh evidence](rewrite-model-refresh-v1/README.md):official pinned LiquidAI1.2B metadata/cards/custom license; zero weights acquired or inference.

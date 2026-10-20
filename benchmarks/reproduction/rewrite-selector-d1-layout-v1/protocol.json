@@ -1,0 +1,17 @@
+{
+  "nativeRequests": 24,
+  "layouts": [
+    "structured",
+    "sentence"
+  ],
+  "sourceCasesPerLayout": 6,
+  "gpuLayers": [
+    99,
+    0
+  ],
+  "generatedTokensExpected": 0,
+  "change": "Complete decoded example inputs/answers move into native state.demonstrations; actual source/context/hypotheses/scene remain top-level. Original system content becomes question instructions. Sentence variant additionally uses exact full source versus exact single-span replacement as option descriptions.",
+  "controls": "Original12 transcript-state actual outputs retained separately. No source/context/example content filtering, semantic rejection or probability thresholds.",
+  "qualification": "Compatibility/serialization separate from semantics. Decide expansion only after personal read; no production or actual16GB acceptance.",
+  "limits": "Model and task architecture differ from original Qwen controls; no isolated causal model comparison.12 negative outcomes across layouts/backends are repeated inputs, not independent sources."
+}

@@ -1,0 +1,25 @@
+{
+  "scope": "Post-launch public metadata research; no effect on frozen sentence-choice inference inputs and no model download/generation.",
+  "observation": "Official bounded100-entry catalogs, not an exhaustive newest-model survey.",
+  "graniteHybrid": {
+    "repo": "ibm-granite/granite-4.0-h-1b",
+    "revision": "d18cca4c121edb87d022116d281ce212c9136f57",
+    "actualParameterElements": 1461538368,
+    "license": "apache-2.0",
+    "supportedChinese": true,
+    "exportRepo": "ibm-granite/granite-4.0-h-1b-GGUF",
+    "exportRevision": "c2cb1972f511add21f3bae244990b8ff3a3ffb23",
+    "q4Filename": "granite-4.0-h-1b-Q4_K_M.gguf",
+    "q4Bytes": 901162208,
+    "q4Sha256": "da3d737121a96f3c9a316685212376257a7f167b74380855666dd488d6af3bcb",
+    "status": "Eligible distinct hybrid architecture for future native preflight; performance/quality untested. Dense4.0-1b prior failure is not this model.",
+    "layers": {
+      "total": 40,
+      "attention": 4,
+      "mamba": 36,
+      "localExperts": 0
+    }
+  },
+  "smollm": "Official observed SmolLM3 entries are3B, exceeding cap; observed1.7B belongs to olderSmolLM2. No download/inference.",
+  "lfm": "ExistingLFM2.5-1.2B artifact uses customLFM OpenLicense; pending user preference. No download/inference."
+}

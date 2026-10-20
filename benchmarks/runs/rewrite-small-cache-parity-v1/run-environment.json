@@ -1,0 +1,10 @@
+{
+  "observedAt": "2026-10-19T16:06:54.248048+00:00",
+  "observedBeforeInference": true,
+  "environment": {
+    "LLAMA_ARG_BATCH": "1",
+    "LLAMA_ARG_UBATCH": "1"
+  },
+  "freezeSha256": "47303b155ed0d22d788917f1f3eb47806172666e2e6616dbf5b5a4b5e1602421",
+  "reason": "Fix logical/physical prefill batch size to one token for cached/uncached numerical-path comparison; native documented environment parameters."
+}

@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "source": ".workspace/rewrite-metal-regression-v1",
+  "published": "benchmarks/runs/rewrite-metal-regression-v1",
+  "privateExcluded": [
+    "weights",
+    "runtime binaries",
+    "environment"
+  ]
+}

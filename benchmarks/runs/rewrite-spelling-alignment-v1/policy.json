@@ -1,0 +1,38 @@
+{
+  "version": "user-letter-normalization-v1",
+  "authority": "Explicit human reply in this task",
+  "question": "ASR 是“read cash”，OCR 同时有“readCash / readCache”时，是否允许按原文字母规范成 readCash？",
+  "answer": "允许规范成 readCash，但不能无依据改成 readCache",
+  "rule": "For an unquoted identifier, case/whitespace-only normalization to an OCR spelling matching source letters is allowed. Raw source spelling also remains allowed. A different-letter homophone still requires relevant distinguishing evidence. Literal quotes, negation, conditions, target identity, dates and requests retain their existing requirements.",
+  "examples": [
+    {
+      "source": "read cash",
+      "context": [
+        "readCash",
+        "readCache"
+      ],
+      "allowed": [
+        "read cash",
+        "readCash"
+      ],
+      "unsupported": [
+        "readCache"
+      ]
+    },
+    {
+      "source": "write right",
+      "context": [
+        "writeRight",
+        "writeRite"
+      ],
+      "allowed": [
+        "write right",
+        "writeRight"
+      ],
+      "unsupported": [
+        "writeRite"
+      ]
+    }
+  ],
+  "limits": "Extension to writeRight is the same case/whitespace rule. No blanket rule for punctuation/underscores, unrelated OCR facts, quoted replacements, or semantic contradictions. This policy permits normalization; it does not mandate it. Future experiments must freeze their new policy before qualification; historical selection decisions are not silently rewritten."
+}

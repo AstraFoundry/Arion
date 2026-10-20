@@ -1,0 +1,77 @@
+{
+  "generations": 12,
+  "reviewedOutputs": 12,
+  "summary": {
+    "cases": 12,
+    "rawFaithful": 8,
+    "rawSceneReady": 7,
+    "requiredRepairs": 2,
+    "repairs": 1,
+    "truncated": 0,
+    "requestP50Ms": 6097.3726669326425,
+    "requestP95Ms": 8058.075999841094,
+    "prefillP50Ms": 5758.147,
+    "decodeP50Ms": 407.299,
+    "maxObservedResidentRssBytes": 3187359744,
+    "minCachedTokens": 0,
+    "maxCachedTokens": 0
+  },
+  "matchedPriorSubset": {
+    "qwen-protected": {
+      "cases": 12,
+      "rawFaithful": 8,
+      "rawSceneReady": 7,
+      "requiredRepairs": 2,
+      "repairs": 0,
+      "truncated": 0,
+      "requestP50Ms": 11635.318083921447,
+      "requestP95Ms": 19679.880375042558,
+      "prefillP50Ms": 10490.268,
+      "decodeP50Ms": 1015.168,
+      "maxObservedResidentRssBytes": 3104571392,
+      "minCachedTokens": 0,
+      "maxCachedTokens": 0
+    },
+    "qwen-recency": {
+      "cases": 12,
+      "rawFaithful": 4,
+      "rawSceneReady": 3,
+      "requiredRepairs": 2,
+      "repairs": 1,
+      "truncated": 1,
+      "requestP50Ms": 14937.643417157233,
+      "requestP95Ms": 41727.24033286795,
+      "prefillP50Ms": 13213.318,
+      "decodeP50Ms": 1835.153,
+      "maxObservedResidentRssBytes": 3153641472,
+      "minCachedTokens": 0,
+      "maxCachedTokens": 0
+    },
+    "qwen-flexible": {
+      "cases": 12,
+      "rawFaithful": 3,
+      "rawSceneReady": 2,
+      "requiredRepairs": 2,
+      "repairs": 1,
+      "truncated": 0,
+      "requestP50Ms": 11842.233958188444,
+      "requestP95Ms": 17778.330750064924,
+      "prefillP50Ms": 8892.486,
+      "decodeP50Ms": 1009.551,
+      "maxObservedResidentRssBytes": 2990014464,
+      "minCachedTokens": 0,
+      "maxCachedTokens": 0
+    }
+  },
+  "selection": {
+    "selected": null,
+    "qualified": false,
+    "probePassed": false,
+    "freezeSha256": "c2a13ac40598f7da45cd12c03d01229f1409f832637a6889996961cdff59712f",
+    "resultsSha256": "2e780486c03fea9d34580ca184c84d3af6ceb6c178620bd90bbfe44a17231ec7",
+    "reviewSha256": "c17c58424b29a5a3e70e810e389e0f258f44ff7481bda8c7c3966b05082231a5",
+    "reason": "Four of12 stress outcomes still fail; full36 expansion and fresh24 are not executed. System scope repairs four footer boundary regressions but restores only baseline-level hard-subset quality, not release readiness."
+  },
+  "productionActivated": false,
+  "scope": "Hard12-case exposed feasibility probe, not full36 regression or newly held-out data. Same instruction meanings move from user tail to system scope with an explicit data locator. No output rejection; all native/restored bodies retained. Four observed boundary regressions are repaired, but four stress cases still fail. No expanded36 or fresh24 inference after failed probe. Raw-input correction case is separately clarified against production CleanSpeech. No native/16GB/independent review or timing acceptance."
+}

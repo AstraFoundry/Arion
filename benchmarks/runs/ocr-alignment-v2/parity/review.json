@@ -1,0 +1,90 @@
+{
+  "kind": "assistant-inspection-of-all-12-parity-observations",
+  "resultsSha256": "6347e97e32a97de26457c78f8c0e841d750bce3ecad07e8a8453b12ef52a6a88",
+  "reviews": [
+    {
+      "arm": "cold",
+      "id": "negative-question",
+      "rowSha256": "40339eef860b8662bbc6a5476f9e75637060daac913ced6aa16e5a0054f481c0",
+      "faithful": false,
+      "note": "Matches the already inspected cold/forward/reverse output: screen/demo content replaces the dictated request; material failure."
+    },
+    {
+      "arm": "cold",
+      "id": "unrelated-fact",
+      "rowSha256": "e0e9f22dc1d9f9dd10320919a2df807f96153025994bb38c688755600a1ec16e",
+      "faithful": false,
+      "note": "Matches the already inspected cold/forward/reverse output: screen/demo content replaces the dictated request; material failure."
+    },
+    {
+      "arm": "cold",
+      "id": "homophone-wrong-no-context",
+      "rowSha256": "e5d4adfe5b2028b0b7aef22a268c3227c263861ea08b097c2e436c536022ddcf",
+      "faithful": false,
+      "note": "Matches the already inspected cold/forward/reverse output: screen/demo content replaces the dictated request; material failure."
+    },
+    {
+      "arm": "cold",
+      "id": "homophone-wrong-relevant",
+      "rowSha256": "c96ee2211bc199e87050b351ab43d027909b9bb040d48af3d92003f240c206c3",
+      "faithful": true,
+      "note": "Matches the already inspected cold/forward/reverse output: correct test spelling with preserved release restriction."
+    },
+    {
+      "arm": "forward",
+      "id": "negative-question",
+      "rowSha256": "78e2e798e319e9236f91e458e9057a6357d3c10aec39f8bca34616501fa5daec",
+      "faithful": false,
+      "note": "Matches the already inspected cold/forward/reverse output: screen/demo content replaces the dictated request; material failure."
+    },
+    {
+      "arm": "forward",
+      "id": "unrelated-fact",
+      "rowSha256": "b6aa5eef6416dff5e9dfbc2b3bade8f9e599ff1ef6839e0891d2ad4c16ad5ec0",
+      "faithful": false,
+      "note": "Matches the already inspected cold/forward/reverse output: screen/demo content replaces the dictated request; material failure."
+    },
+    {
+      "arm": "forward",
+      "id": "homophone-wrong-no-context",
+      "rowSha256": "e436c7fb494148c893b54efb73cfee049eb8243fc0db630207ad5e638d63ad0a",
+      "faithful": false,
+      "note": "Matches the already inspected cold/forward/reverse output: screen/demo content replaces the dictated request; material failure."
+    },
+    {
+      "arm": "forward",
+      "id": "homophone-wrong-relevant",
+      "rowSha256": "34c40ea46b9358adb3a66c6d57d5a25063a9bf9df7f3db3b2047d03d05a23c31",
+      "faithful": true,
+      "note": "Matches the already inspected cold/forward/reverse output: correct test spelling with preserved release restriction."
+    },
+    {
+      "arm": "reverse",
+      "id": "homophone-wrong-relevant",
+      "rowSha256": "fc4801d4e26eff7b3e2e0af8b5d4a202f9ff9ef7de77fc7f21610a2293d07fba",
+      "faithful": true,
+      "note": "Matches the already inspected cold/forward/reverse output: correct test spelling with preserved release restriction."
+    },
+    {
+      "arm": "reverse",
+      "id": "homophone-wrong-no-context",
+      "rowSha256": "b63094546df1d55086a5a0890fca0f76a11a5d89485d0efb7d0ba722460cb10c",
+      "faithful": false,
+      "note": "Matches the already inspected cold/forward/reverse output: screen/demo content replaces the dictated request; material failure."
+    },
+    {
+      "arm": "reverse",
+      "id": "unrelated-fact",
+      "rowSha256": "565fa08b6c80aa4fc2d676a6751e2146dd2f429f06cd987ab8ac3525f9e8e61e",
+      "faithful": false,
+      "note": "Matches the already inspected cold/forward/reverse output: screen/demo content replaces the dictated request; material failure."
+    },
+    {
+      "arm": "reverse",
+      "id": "negative-question",
+      "rowSha256": "ee128309118c7a10c417fd9c5abf7a9c2f75b94fd0bdebbc763614dd6d30c53c",
+      "faithful": false,
+      "note": "Matches the already inspected cold/forward/reverse output: screen/demo content replaces the dictated request; material failure."
+    }
+  ]
+}

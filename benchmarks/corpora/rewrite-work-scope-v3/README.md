@@ -1,0 +1,3 @@
+# Work-scope challenge controls
+
+Sixteen newly authored synthetic source-only work inputs, frozen before any model generation in this study. Covers completed/ongoing/failed status, individual/shared time, condition scope, uncertainty, repeated owner with different actions, genuine oral restart, quoted repetition and mixed code/path literals. No audio, OCR, source cleanup or spelling selection is executed for these controls. Baseline and candidate see exactly the same source data. They are exposed development challenge controls, not independent natural or held-out release evidence. No reference answers enter model messages.

@@ -1,0 +1,14 @@
+from pathlib import Path
+import json,hashlib,shutil,subprocess
+R=Path.cwd();H=R/'benchmarks/reproduction/rewrite-selector-model-cpu-v1';B=R/'benchmarks/reproduction/rewrite-selector-model-v1';W=R/'.workspace/rewrite-selector-model-cpu-v1';W.mkdir(exist_ok=False)
+def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
+def save(p,x):p.write_text(json.dumps(x,indent=2)+'\n')
+shutil.copyfile(Path(__file__),H/'original-prepare.py.txt');protocol=json.loads((B/'protocol.json').read_text());protocol['purpose']='Explicit CPU-layer checkpoint-quality diagnostic after recorded Metal execution failures; not an automatic runtime fallback or accelerated product candidate.';protocol['placement']='Requested GPU layers0, logs must establish0/41 layer offload; default operation offload retained and actual commands logged. CPU quality only; no directly comparable Metal performance claim.';save(H/'protocol.json',protocol)
+f=json.loads((B/'freeze.json').read_text());f['files'][str((B/'freeze.json').relative_to(R))]=sha(B/'freeze.json')
+for p in H.iterdir():
+ if p.is_file() and p.name not in ['freeze.json','report.py']:f['files'][str(p.relative_to(R))]=sha(p)
+save(H/'freeze.json',f)
+host=json.loads((R/'.workspace/rewrite-selector-model-v1/host-provenance.json').read_text());host['parentHostObservation']='benchmarks/runs/rewrite-selector-model-v1/host-provenance.json';host['freezeSha256']=sha(H/'freeze.json');host['sampling']='CPU4/requested GPU layers0/ctx4096/parallel1/greedy42/nonthinking/cachetrue/selector128/no warmup. Same202 actual requests as frozen Qwen controls. No new Go cleanup.'
+for key,cmd in [('power',['pmset','-g','custom']),('thermal',['pmset','-g','therm'])]:
+ q=subprocess.run(cmd,capture_output=True,text=True);host[key]=dict(command=cmd,exitCode=q.returncode,stdout=q.stdout,stderr=q.stderr)
+save(W/'host-provenance.json',host);print('Prefrozen CPU diagnostic',len(f['files']),'files')

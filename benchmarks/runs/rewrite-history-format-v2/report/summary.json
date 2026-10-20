@@ -1,0 +1,122 @@
+{
+  "newGenerations": 401,
+  "newSelectorGenerations": 0,
+  "reusedActualChoices": 64,
+  "groups": {
+    "historical-synthetic-regression": {
+      "cases": 281,
+      "faithful": 280,
+      "unfaithful": 1,
+      "uncertain": 0,
+      "useful": 267,
+      "baselineFaithful": 278,
+      "baselineUseful": 260,
+      "rawParity": 228,
+      "languagePreserved": 281
+    },
+    "historical-natural-read-speech": {
+      "cases": 120,
+      "faithful": 119,
+      "unfaithful": 0,
+      "uncertain": 1,
+      "useful": 75,
+      "baselineFaithful": 119,
+      "baselineUseful": 75,
+      "rawParity": 114,
+      "languagePreserved": 120
+    }
+  },
+  "transitions": [
+    {
+      "id": "history-0023",
+      "beforeFaithful": true,
+      "afterFaithful": true,
+      "beforeUseful": false,
+      "afterUseful": true,
+      "note": "Personally reviewed improved full source/body pair: all facts, shared time and gating conditions, request form, uncertainty and constraints retained in directly usable sentences or task organization."
+    },
+    {
+      "id": "history-0036",
+      "beforeFaithful": true,
+      "afterFaithful": false,
+      "beforeUseful": false,
+      "afterUseful": false,
+      "note": "New task-only bullets omit both API restoration and ongoing data backfill. This is a semantic regression despite cleaner owner/task organization; all raw output is retained."
+    },
+    {
+      "id": "history-0063",
+      "beforeFaithful": false,
+      "afterFaithful": true,
+      "beforeUseful": false,
+      "afterUseful": true,
+      "note": "Personally reviewed improved full source/body pair: all facts, shared time and gating conditions, request form, uncertainty and constraints retained in directly usable sentences or task organization."
+    },
+    {
+      "id": "history-0073",
+      "beforeFaithful": true,
+      "afterFaithful": true,
+      "beforeUseful": false,
+      "afterUseful": true,
+      "note": "Personally reviewed improved full source/body pair: all facts, shared time and gating conditions, request form, uncertainty and constraints retained in directly usable sentences or task organization."
+    },
+    {
+      "id": "history-0276",
+      "beforeFaithful": true,
+      "afterFaithful": true,
+      "beforeUseful": true,
+      "afterUseful": false,
+      "note": "The duplicated readCash log phrase is retained as an unpolished oral restart. Facts remain, but directly usable organization regresses from the prior cleaned body."
+    },
+    {
+      "id": "history-0027",
+      "beforeFaithful": true,
+      "afterFaithful": true,
+      "beforeUseful": false,
+      "afterUseful": true,
+      "note": "Personally reviewed improved full source/body pair: all facts, shared time and gating conditions, request form, uncertainty and constraints retained in directly usable sentences or task organization."
+    },
+    {
+      "id": "history-0055",
+      "beforeFaithful": true,
+      "afterFaithful": true,
+      "beforeUseful": false,
+      "afterUseful": true,
+      "note": "Personally reviewed improved full source/body pair: all facts, shared time and gating conditions, request form, uncertainty and constraints retained in directly usable sentences or task organization."
+    },
+    {
+      "id": "history-0057",
+      "beforeFaithful": null,
+      "afterFaithful": true,
+      "beforeUseful": false,
+      "afterUseful": true,
+      "note": "Personally reviewed improved full source/body pair: all facts, shared time and gating conditions, request form, uncertainty and constraints retained in directly usable sentences or task organization."
+    },
+    {
+      "id": "history-0064",
+      "beforeFaithful": false,
+      "afterFaithful": true,
+      "beforeUseful": false,
+      "afterUseful": true,
+      "note": "New English contrast demonstration retains both the chosen two seconds and explicit not-twenty-seconds emphasis, retry count and only-client.go restriction. Previous correct-value-but-missing-emphasis failure is repaired."
+    },
+    {
+      "id": "history-0014",
+      "beforeFaithful": true,
+      "afterFaithful": true,
+      "beforeUseful": false,
+      "afterUseful": true,
+      "note": "Explicit English weekday withdrawal is correctly resolved to Thursday afternoon; usual meeting place remains and no new time/location is invented."
+    }
+  ],
+  "selection": {
+    "freezeSha256": "710d22d251e29080eb0d806b5b386e40a13ca023094c460b26e71d8dd279d10f",
+    "resultsSha256": "66a164acd5f0dfe58c86c8d9367a54f2f9536bed2a6f6454a99653ab5daf77d6",
+    "reviewSha256": "a7306d77471740e87fa8d6f2c48d8e1a3afcb7e6ee393bb6a93b668449158dcc",
+    "qualified": false,
+    "selected": null,
+    "productionActivated": false,
+    "freshExecuted": false,
+    "reason": "All401 bodies reviewed:399 confirmed faithful,1 clear background-fact omission,1 uncertain incomplete predicate;342 useful versus335 prior. Shared-time scope, explicit contrast and email request framing improve, but task-only omission and repeated-phrase utility regress. Missed spelling candidates/choices fixed, not repaired by this experiment. No full-chain/native/min16/independent acceptance."
+  },
+  "limits": "Same exposed synthetic281/natural120, not independent heldout data. No ASR/OCR/native/full-chain timing/concurrency/min16 acceptance; production unchanged. No4B/olderQwen/Granite/Q8 or fresh24 inference."
+}

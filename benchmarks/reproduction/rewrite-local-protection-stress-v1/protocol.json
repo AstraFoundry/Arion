@@ -1,0 +1,10 @@
+{
+  "cases": 8,
+  "arms": [
+    "qwen-direct",
+    "qwen-protected"
+  ],
+  "generations": 16,
+  "scope": "Synthetic stress supplement frozen before its first inference, not independent natural ASR or a new model claim. Original source/OCR retained. Same selected common templates/codec as main28-case diagnostic. Tests obsolete and repeated mentions to expose false protocol rejection of allowed natural rewrites. No silent fallback or hidden failure removal.",
+  "gate": "No quality promotion based only on main28. Review all stress raw/decoded bodies, superseded-term cleanup, repetition/quote and hostile/misleading OCR controls before deciding whether broader evaluation is warranted. A raw faithful body with a missing marker is a protocol false rejection, not a semantic failure by the LLM."
+}

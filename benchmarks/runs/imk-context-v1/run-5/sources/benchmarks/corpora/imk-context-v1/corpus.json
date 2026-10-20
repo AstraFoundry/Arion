@@ -1,0 +1,614 @@
+{
+  "schemaVersion": 1,
+  "id": "imk-context-v1",
+  "purpose": "Context-dependent homophones: the intended target word depends on the word committed just before it.",
+  "repetitions": 4,
+  "seeds": [
+    2411,
+    2412,
+    2413
+  ],
+  "pageSize": 9,
+  "pairs": [
+    {
+      "id": "shiyan-zuo",
+      "group": "shiyan",
+      "context": {
+        "pinyin": "zuo",
+        "word": "做"
+      },
+      "target": {
+        "pinyin": "shiyan",
+        "word": "实验"
+      }
+    },
+    {
+      "id": "shiyan-aiqing",
+      "group": "shiyan",
+      "context": {
+        "pinyin": "aiqing",
+        "word": "爱情"
+      },
+      "target": {
+        "pinyin": "shiyan",
+        "word": "誓言"
+      }
+    },
+    {
+      "id": "shiyan-hubei",
+      "group": "shiyan",
+      "context": {
+        "pinyin": "hubei",
+        "word": "湖北"
+      },
+      "target": {
+        "pinyin": "shiyan",
+        "word": "十堰"
+      }
+    },
+    {
+      "id": "quanli-gongmin",
+      "group": "quanli",
+      "context": {
+        "pinyin": "gongmin",
+        "word": "公民"
+      },
+      "target": {
+        "pinyin": "quanli",
+        "word": "权利"
+      }
+    },
+    {
+      "id": "quanli-guojia",
+      "group": "quanli",
+      "context": {
+        "pinyin": "guojia",
+        "word": "国家"
+      },
+      "target": {
+        "pinyin": "quanli",
+        "word": "权力"
+      }
+    },
+    {
+      "id": "quanli-jiejin",
+      "group": "quanli",
+      "context": {
+        "pinyin": "jiejin",
+        "word": "竭尽"
+      },
+      "target": {
+        "pinyin": "quanli",
+        "word": "全力"
+      }
+    },
+    {
+      "id": "shili-zonghe",
+      "group": "shili",
+      "context": {
+        "pinyin": "zonghe",
+        "word": "综合"
+      },
+      "target": {
+        "pinyin": "shili",
+        "word": "实力"
+      }
+    },
+    {
+      "id": "shili-yanjing",
+      "group": "shili",
+      "context": {
+        "pinyin": "yanjing",
+        "word": "眼睛"
+      },
+      "target": {
+        "pinyin": "shili",
+        "word": "视力"
+      }
+    },
+    {
+      "id": "shili-dianxing",
+      "group": "shili",
+      "context": {
+        "pinyin": "dianxing",
+        "word": "典型"
+      },
+      "target": {
+        "pinyin": "shili",
+        "word": "事例"
+      }
+    },
+    {
+      "id": "zhiyuan-gaokao",
+      "group": "zhiyuan",
+      "context": {
+        "pinyin": "gaokao",
+        "word": "高考"
+      },
+      "target": {
+        "pinyin": "zhiyuan",
+        "word": "志愿"
+      }
+    },
+    {
+      "id": "zhiyuan-gongsi",
+      "group": "zhiyuan",
+      "context": {
+        "pinyin": "gongsi",
+        "word": "公司"
+      },
+      "target": {
+        "pinyin": "zhiyuan",
+        "word": "职员"
+      }
+    },
+    {
+      "id": "zhiyuan-qianxian",
+      "group": "zhiyuan",
+      "context": {
+        "pinyin": "qianxian",
+        "word": "前线"
+      },
+      "target": {
+        "pinyin": "zhiyuan",
+        "word": "支援"
+      }
+    },
+    {
+      "id": "xianshi-pingmu",
+      "group": "xianshi",
+      "context": {
+        "pinyin": "pingmu",
+        "word": "屏幕"
+      },
+      "target": {
+        "pinyin": "xianshi",
+        "word": "显示"
+      }
+    },
+    {
+      "id": "xianshi-miandui",
+      "group": "xianshi",
+      "context": {
+        "pinyin": "miandui",
+        "word": "面对"
+      },
+      "target": {
+        "pinyin": "xianshi",
+        "word": "现实"
+      }
+    },
+    {
+      "id": "xianshi-youhui",
+      "group": "xianshi",
+      "context": {
+        "pinyin": "youhui",
+        "word": "优惠"
+      },
+      "target": {
+        "pinyin": "xianshi",
+        "word": "限时"
+      }
+    },
+    {
+      "id": "jiaoshi-youxiu",
+      "group": "jiaoshi",
+      "context": {
+        "pinyin": "youxiu",
+        "word": "优秀"
+      },
+      "target": {
+        "pinyin": "jiaoshi",
+        "word": "教师"
+      }
+    },
+    {
+      "id": "jiaoshi-kuanchang",
+      "group": "jiaoshi",
+      "context": {
+        "pinyin": "kuanchang",
+        "word": "宽敞"
+      },
+      "target": {
+        "pinyin": "jiaoshi",
+        "word": "教室"
+      }
+    },
+    {
+      "id": "yuanyin-zhuyao",
+      "group": "yuanyin",
+      "context": {
+        "pinyin": "zhuyao",
+        "word": "主要"
+      },
+      "target": {
+        "pinyin": "yuanyin",
+        "word": "原因"
+      }
+    },
+    {
+      "id": "yuanyin-yingyu",
+      "group": "yuanyin",
+      "context": {
+        "pinyin": "yingyu",
+        "word": "英语"
+      },
+      "target": {
+        "pinyin": "yuanyin",
+        "word": "元音"
+      }
+    },
+    {
+      "id": "shixian-mengxiang",
+      "group": "shixian",
+      "context": {
+        "pinyin": "mengxiang",
+        "word": "梦想"
+      },
+      "target": {
+        "pinyin": "shixian",
+        "word": "实现"
+      }
+    },
+    {
+      "id": "shixian-guiding",
+      "group": "shixian",
+      "context": {
+        "pinyin": "guiding",
+        "word": "规定"
+      },
+      "target": {
+        "pinyin": "shixian",
+        "word": "时限"
+      }
+    },
+    {
+      "id": "lishi-zhongguo",
+      "group": "lishi",
+      "context": {
+        "pinyin": "zhongguo",
+        "word": "中国"
+      },
+      "target": {
+        "pinyin": "lishi",
+        "word": "历史"
+      }
+    },
+    {
+      "id": "lishi-xiehui",
+      "group": "lishi",
+      "context": {
+        "pinyin": "xiehui",
+        "word": "协会"
+      },
+      "target": {
+        "pinyin": "lishi",
+        "word": "理事"
+      }
+    },
+    {
+      "id": "jiyu-bawo",
+      "group": "jiyu",
+      "context": {
+        "pinyin": "bawo",
+        "word": "把握"
+      },
+      "target": {
+        "pinyin": "jiyu",
+        "word": "机遇"
+      }
+    },
+    {
+      "id": "jiyu-xinnian",
+      "group": "jiyu",
+      "context": {
+        "pinyin": "xinnian",
+        "word": "新年"
+      },
+      "target": {
+        "pinyin": "jiyu",
+        "word": "寄语"
+      }
+    },
+    {
+      "id": "gongshi-shuxue",
+      "group": "gongshi",
+      "context": {
+        "pinyin": "shuxue",
+        "word": "数学"
+      },
+      "target": {
+        "pinyin": "gongshi",
+        "word": "公式"
+      }
+    },
+    {
+      "id": "gongshi-jieguo",
+      "group": "gongshi",
+      "context": {
+        "pinyin": "jieguo",
+        "word": "结果"
+      },
+      "target": {
+        "pinyin": "gongshi",
+        "word": "公示"
+      }
+    },
+    {
+      "id": "xingshi-guoji",
+      "group": "xingshi",
+      "context": {
+        "pinyin": "guoji",
+        "word": "国际"
+      },
+      "target": {
+        "pinyin": "xingshi",
+        "word": "形势"
+      }
+    },
+    {
+      "id": "xingshi-biaoxian",
+      "group": "xingshi",
+      "context": {
+        "pinyin": "biaoxian",
+        "word": "表现"
+      },
+      "target": {
+        "pinyin": "xingshi",
+        "word": "形式"
+      }
+    },
+    {
+      "id": "xingshi-cheliang",
+      "group": "xingshi",
+      "context": {
+        "pinyin": "cheliang",
+        "word": "车辆"
+      },
+      "target": {
+        "pinyin": "xingshi",
+        "word": "行驶"
+      }
+    },
+    {
+      "id": "zhengshi-dedao",
+      "group": "zhengshi",
+      "context": {
+        "pinyin": "dedao",
+        "word": "得到"
+      },
+      "target": {
+        "pinyin": "zhengshi",
+        "word": "证实"
+      }
+    },
+    {
+      "id": "zhengshi-bixu",
+      "group": "zhengshi",
+      "context": {
+        "pinyin": "bixu",
+        "word": "必须"
+      },
+      "target": {
+        "pinyin": "zhengshi",
+        "word": "正视"
+      }
+    },
+    {
+      "id": "zhengshi-chengwei",
+      "group": "zhengshi",
+      "context": {
+        "pinyin": "chengwei",
+        "word": "成为"
+      },
+      "target": {
+        "pinyin": "zhengshi",
+        "word": "正式"
+      }
+    },
+    {
+      "id": "jingli-bumen",
+      "group": "jingli",
+      "context": {
+        "pinyin": "bumen",
+        "word": "部门"
+      },
+      "target": {
+        "pinyin": "jingli",
+        "word": "经理"
+      }
+    },
+    {
+      "id": "jingli-gongzuo",
+      "group": "jingli",
+      "context": {
+        "pinyin": "gongzuo",
+        "word": "工作"
+      },
+      "target": {
+        "pinyin": "jingli",
+        "word": "经历"
+      }
+    },
+    {
+      "id": "jingli-jizhong",
+      "group": "jingli",
+      "context": {
+        "pinyin": "jizhong",
+        "word": "集中"
+      },
+      "target": {
+        "pinyin": "jingli",
+        "word": "精力"
+      }
+    },
+    {
+      "id": "tongzhi-fabu",
+      "group": "tongzhi",
+      "context": {
+        "pinyin": "fabu",
+        "word": "发布"
+      },
+      "target": {
+        "pinyin": "tongzhi",
+        "word": "通知"
+      }
+    },
+    {
+      "id": "tongzhi-zhimin",
+      "group": "tongzhi",
+      "context": {
+        "pinyin": "zhimin",
+        "word": "殖民"
+      },
+      "target": {
+        "pinyin": "tongzhi",
+        "word": "统治"
+      }
+    },
+    {
+      "id": "tongzhi-lao",
+      "group": "tongzhi",
+      "context": {
+        "pinyin": "lao",
+        "word": "老"
+      },
+      "target": {
+        "pinyin": "tongzhi",
+        "word": "同志"
+      }
+    },
+    {
+      "id": "renshi-gejie",
+      "group": "renshi",
+      "context": {
+        "pinyin": "gejie",
+        "word": "各界"
+      },
+      "target": {
+        "pinyin": "renshi",
+        "word": "人士"
+      }
+    },
+    {
+      "id": "renshi-fuze",
+      "group": "renshi",
+      "context": {
+        "pinyin": "fuze",
+        "word": "负责"
+      },
+      "target": {
+        "pinyin": "renshi",
+        "word": "人事"
+      }
+    },
+    {
+      "id": "shiyong-feichang",
+      "group": "shiyong",
+      "context": {
+        "pinyin": "feichang",
+        "word": "非常"
+      },
+      "target": {
+        "pinyin": "shiyong",
+        "word": "实用"
+      }
+    },
+    {
+      "id": "shiyong-zhengque",
+      "group": "shiyong",
+      "context": {
+        "pinyin": "zhengque",
+        "word": "正确"
+      },
+      "target": {
+        "pinyin": "shiyong",
+        "word": "使用"
+      }
+    },
+    {
+      "id": "shiyong-mianfei",
+      "group": "shiyong",
+      "context": {
+        "pinyin": "mianfei",
+        "word": "免费"
+      },
+      "target": {
+        "pinyin": "shiyong",
+        "word": "试用"
+      }
+    },
+    {
+      "id": "chengshi-da",
+      "group": "chengshi",
+      "context": {
+        "pinyin": "da",
+        "word": "大"
+      },
+      "target": {
+        "pinyin": "chengshi",
+        "word": "城市"
+      }
+    },
+    {
+      "id": "chengshi-weiren",
+      "group": "chengshi",
+      "context": {
+        "pinyin": "weiren",
+        "word": "为人"
+      },
+      "target": {
+        "pinyin": "chengshi",
+        "word": "诚实"
+      }
+    },
+    {
+      "id": "fuqi-nianqing",
+      "group": "fuqi",
+      "context": {
+        "pinyin": "nianqing",
+        "word": "年轻"
+      },
+      "target": {
+        "pinyin": "fuqi",
+        "word": "夫妻"
+      }
+    },
+    {
+      "id": "fuqi-zhenyou",
+      "group": "fuqi",
+      "context": {
+        "pinyin": "zhenyou",
+        "word": "真有"
+      },
+      "target": {
+        "pinyin": "fuqi",
+        "word": "福气"
+      }
+    },
+    {
+      "id": "yizhi-yijian",
+      "group": "yizhi",
+      "context": {
+        "pinyin": "yijian",
+        "word": "意见"
+      },
+      "target": {
+        "pinyin": "yizhi",
+        "word": "一致"
+      }
+    },
+    {
+      "id": "yizhi-jianqiang",
+      "group": "yizhi",
+      "context": {
+        "pinyin": "jianqiang",
+        "word": "坚强"
+      },
+      "target": {
+        "pinyin": "yizhi",
+        "word": "意志"
+      }
+    }
+  ]
+}

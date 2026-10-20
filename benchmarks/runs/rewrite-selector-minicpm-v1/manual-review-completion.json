@@ -1,0 +1,27 @@
+{
+  "complete": true,
+  "selectorResponses": 202,
+  "nativeResponses": 12,
+  "interruptedLogCompletions": 1,
+  "ranges": [
+    [
+      0,
+      60
+    ],
+    [
+      60,
+      115
+    ],
+    [
+      115,
+      165
+    ],
+    [
+      165,
+      202
+    ]
+  ],
+  "uniqueFailedTuples": 32,
+  "changedPairs": 55,
+  "reviewer": "Assistant, not independent or blind release review"
+}

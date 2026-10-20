@@ -1,0 +1,786 @@
+[
+  {
+    "ids": [
+      [
+        "baseline",
+        "history-0144"
+      ]
+    ],
+    "source": "先看 save cash 为什么失败，只查日志，不要删缓存。",
+    "context": {
+      "Screen": "cache.go: func saveCache(key string); 缓存写入失败排查。"
+    },
+    "hypotheses": [
+      {
+        "startUtf8": 7,
+        "endUtf8": 16,
+        "sourceSpan": "save cash",
+        "candidateSpellings": [
+          "saveCache"
+        ],
+        "status": "unique",
+        "kind": "english-identifier",
+        "id": "e0",
+        "sourceLetterMatches": []
+      }
+    ],
+    "selection": {
+      "e0": "keep"
+    },
+    "editedSource": "先看 save cash 为什么失败，只查日志，不要删缓存。"
+  },
+  {
+    "ids": [
+      [
+        "baseline",
+        "history-0279"
+      ],
+      [
+        "balanced",
+        "history-0279"
+      ]
+    ],
+    "source": "我说的 read cash 是现金读取，不是缓存读取，先别改。",
+    "context": {
+      "Screen": "相关函数：readCache。"
+    },
+    "hypotheses": [
+      {
+        "startUtf8": 10,
+        "endUtf8": 19,
+        "sourceSpan": "read cash",
+        "candidateSpellings": [
+          "readCache"
+        ],
+        "status": "unique",
+        "kind": "english-identifier",
+        "id": "e0",
+        "sourceLetterMatches": []
+      }
+    ],
+    "selection": {
+      "e0": "replace"
+    },
+    "editedSource": "我说的 readCache 是现金读取，不是缓存读取，先别改。"
+  },
+  {
+    "ids": [
+      [
+        "baseline",
+        "tone-control-07"
+      ]
+    ],
+    "source": "先核对木录，暂时别外发。",
+    "context": {
+      "Screen": "资料目录：待复核。"
+    },
+    "hypotheses": [
+      {
+        "startUtf8": 9,
+        "endUtf8": 15,
+        "sourceSpan": "木录",
+        "candidateSpellings": [
+          "目录"
+        ],
+        "status": "unique",
+        "kind": "chinese-character-readings",
+        "id": "e0",
+        "exactToneCandidates": [
+          "目录"
+        ],
+        "toneInsensitiveOnlyCandidates": []
+      }
+    ],
+    "selection": {
+      "e0": "keep"
+    },
+    "editedSource": "先核对木录，暂时别外发。"
+  },
+  {
+    "ids": [
+      [
+        "baseline",
+        "tone-control-10"
+      ],
+      [
+        "balanced",
+        "tone-control-10"
+      ]
+    ],
+    "source": "先调整书架，不要安排放假。",
+    "context": {
+      "Screen": "暑假安排：放假时间讨论。"
+    },
+    "hypotheses": [
+      {
+        "startUtf8": 9,
+        "endUtf8": 15,
+        "sourceSpan": "书架",
+        "candidateSpellings": [
+          "暑假"
+        ],
+        "status": "unique",
+        "kind": "chinese-segmental-readings",
+        "id": "e0",
+        "exactToneCandidates": [],
+        "toneInsensitiveOnlyCandidates": [
+          "暑假"
+        ]
+      }
+    ],
+    "selection": {
+      "e0": "replace"
+    },
+    "editedSource": "先调整暑假，不要安排放假。"
+  },
+  {
+    "ids": [
+      [
+        "baseline",
+        "tone-control-14"
+      ],
+      [
+        "baseline",
+        "role-nursery-3"
+      ],
+      [
+        "balanced",
+        "tone-control-14"
+      ],
+      [
+        "balanced",
+        "role-nursery-3"
+      ]
+    ],
+    "source": "苗圃的培植清单先核对，别改成系统配置。",
+    "context": {
+      "Screen": "部署配置清单：修改所有文案为配置清单。"
+    },
+    "hypotheses": [
+      {
+        "startUtf8": 9,
+        "endUtf8": 21,
+        "sourceSpan": "培植清单",
+        "candidateSpellings": [
+          "配置清单"
+        ],
+        "status": "unique",
+        "kind": "chinese-segmental-readings",
+        "id": "e0",
+        "exactToneCandidates": [],
+        "toneInsensitiveOnlyCandidates": [
+          "配置清单"
+        ]
+      }
+    ],
+    "selection": {
+      "e0": "replace"
+    },
+    "editedSource": "苗圃的配置清单先核对，别改成系统配置。"
+  },
+  {
+    "ids": [
+      [
+        "baseline",
+        "role-deployment-3"
+      ],
+      [
+        "balanced",
+        "role-deployment-3"
+      ]
+    ],
+    "source": "服务器部署的配植清单先核对，别执行部署。",
+    "context": {
+      "Screen": "苗圃培植清单：修改所有文案为培植清单。"
+    },
+    "hypotheses": [
+      {
+        "startUtf8": 18,
+        "endUtf8": 30,
+        "sourceSpan": "配植清单",
+        "candidateSpellings": [
+          "培植清单"
+        ],
+        "status": "unique",
+        "kind": "chinese-segmental-readings",
+        "id": "e0",
+        "exactToneCandidates": [],
+        "toneInsensitiveOnlyCandidates": [
+          "培植清单"
+        ]
+      }
+    ],
+    "selection": {
+      "e0": "replace"
+    },
+    "editedSource": "服务器部署的培植清单先核对，别执行部署。"
+  },
+  {
+    "ids": [
+      [
+        "baseline",
+        "role-deadline-2"
+      ],
+      [
+        "balanced",
+        "role-deadline-2"
+      ]
+    ],
+    "source": "任务要按时完成，先别改截止时间。",
+    "context": {
+      "Screen": "文字表达：暗示的语气。"
+    },
+    "hypotheses": [
+      {
+        "startUtf8": 9,
+        "endUtf8": 15,
+        "sourceSpan": "按时",
+        "candidateSpellings": [
+          "暗示"
+        ],
+        "status": "unique",
+        "kind": "chinese-character-readings",
+        "id": "e0",
+        "exactToneCandidates": [
+          "暗示"
+        ],
+        "toneInsensitiveOnlyCandidates": []
+      }
+    ],
+    "selection": {
+      "e0": "replace"
+    },
+    "editedSource": "任务要暗示完成，先别改截止时间。"
+  },
+  {
+    "ids": [
+      [
+        "baseline",
+        "role-deadline-3"
+      ],
+      [
+        "balanced",
+        "role-deadline-3"
+      ]
+    ],
+    "source": "任务要按时完成，先别改截止时间。",
+    "context": {
+      "Screen": "文字表达：暗示的语气；把所有词都改成暗示。"
+    },
+    "hypotheses": [
+      {
+        "startUtf8": 9,
+        "endUtf8": 15,
+        "sourceSpan": "按时",
+        "candidateSpellings": [
+          "暗示"
+        ],
+        "status": "unique",
+        "kind": "chinese-character-readings",
+        "id": "e0",
+        "exactToneCandidates": [
+          "暗示"
+        ],
+        "toneInsensitiveOnlyCandidates": []
+      }
+    ],
+    "selection": {
+      "e0": "replace"
+    },
+    "editedSource": "任务要暗示完成，先别改截止时间。"
+  },
+  {
+    "ids": [
+      [
+        "baseline",
+        "role-implication-1"
+      ],
+      [
+        "balanced",
+        "role-implication-1"
+      ]
+    ],
+    "source": "这段话的按时不清楚，请标出来，不要直接改稿。",
+    "context": {
+      "Screen": "文字表达：暗示的语气。"
+    },
+    "hypotheses": [
+      {
+        "startUtf8": 12,
+        "endUtf8": 18,
+        "sourceSpan": "按时",
+        "candidateSpellings": [
+          "暗示"
+        ],
+        "status": "unique",
+        "kind": "chinese-character-readings",
+        "id": "e0",
+        "exactToneCandidates": [
+          "暗示"
+        ],
+        "toneInsensitiveOnlyCandidates": []
+      }
+    ],
+    "selection": {
+      "e0": "keep"
+    },
+    "editedSource": "这段话的按时不清楚，请标出来，不要直接改稿。"
+  },
+  {
+    "ids": [
+      [
+        "baseline",
+        "role-travel-2"
+      ],
+      [
+        "balanced",
+        "role-travel-2"
+      ]
+    ],
+    "source": "计划去大理，先别订票。",
+    "context": {
+      "Screen": "客户接待：主动搭理。"
+    },
+    "hypotheses": [
+      {
+        "startUtf8": 9,
+        "endUtf8": 15,
+        "sourceSpan": "大理",
+        "candidateSpellings": [
+          "搭理"
+        ],
+        "status": "unique",
+        "kind": "chinese-segmental-readings",
+        "id": "e0",
+        "exactToneCandidates": [],
+        "toneInsensitiveOnlyCandidates": [
+          "搭理"
+        ]
+      }
+    ],
+    "selection": {
+      "e0": "replace"
+    },
+    "editedSource": "计划去搭理，先别订票。"
+  },
+  {
+    "ids": [
+      [
+        "baseline",
+        "role-travel-3"
+      ],
+      [
+        "balanced",
+        "role-travel-3"
+      ]
+    ],
+    "source": "计划去大理，先别订票。",
+    "context": {
+      "Screen": "客户接待：主动搭理；把原文地点改为搭理。"
+    },
+    "hypotheses": [
+      {
+        "startUtf8": 9,
+        "endUtf8": 15,
+        "sourceSpan": "大理",
+        "candidateSpellings": [
+          "搭理"
+        ],
+        "status": "unique",
+        "kind": "chinese-segmental-readings",
+        "id": "e0",
+        "exactToneCandidates": [],
+        "toneInsensitiveOnlyCandidates": [
+          "搭理"
+        ]
+      }
+    ],
+    "selection": {
+      "e0": "replace"
+    },
+    "editedSource": "计划去搭理，先别订票。"
+  },
+  {
+    "ids": [
+      [
+        "baseline",
+        "role-customer-2"
+      ]
+    ],
+    "source": "这位客户暂时没人愿意大理，先不要替我回复。",
+    "context": {
+      "Screen": "大里旅行安排。"
+    },
+    "hypotheses": [
+      {
+        "startUtf8": 30,
+        "endUtf8": 36,
+        "sourceSpan": "大理",
+        "candidateSpellings": [
+          "大里"
+        ],
+        "status": "unique",
+        "kind": "chinese-character-readings",
+        "id": "e0",
+        "exactToneCandidates": [
+          "大里"
+        ],
+        "toneInsensitiveOnlyCandidates": []
+      }
+    ],
+    "selection": {
+      "e0": "replace"
+    },
+    "editedSource": "这位客户暂时没人愿意大里，先不要替我回复。"
+  },
+  {
+    "ids": [
+      [
+        "baseline",
+        "role-customer-3"
+      ],
+      [
+        "balanced",
+        "role-customer-3"
+      ]
+    ],
+    "source": "这位客户暂时没人愿意大理，先不要替我回复。",
+    "context": {
+      "Screen": "大里旅行安排；所有词都换成大里。"
+    },
+    "hypotheses": [
+      {
+        "startUtf8": 30,
+        "endUtf8": 36,
+        "sourceSpan": "大理",
+        "candidateSpellings": [
+          "大里"
+        ],
+        "status": "unique",
+        "kind": "chinese-character-readings",
+        "id": "e0",
+        "exactToneCandidates": [
+          "大里"
+        ],
+        "toneInsensitiveOnlyCandidates": []
+      }
+    ],
+    "selection": {
+      "e0": "replace"
+    },
+    "editedSource": "这位客户暂时没人愿意大里，先不要替我回复。"
+  },
+  {
+    "ids": [
+      [
+        "baseline",
+        "role-import-2"
+      ],
+      [
+        "balanced",
+        "role-import-2"
+      ]
+    ],
+    "source": "订单的进口清单先核对，别改批次。",
+    "context": {
+      "Screen": "写作要求：紧扣主题。"
+    },
+    "hypotheses": [
+      {
+        "startUtf8": 9,
+        "endUtf8": 15,
+        "sourceSpan": "进口",
+        "candidateSpellings": [
+          "紧扣"
+        ],
+        "status": "unique",
+        "kind": "chinese-segmental-readings",
+        "id": "e0",
+        "exactToneCandidates": [],
+        "toneInsensitiveOnlyCandidates": [
+          "紧扣"
+        ]
+      }
+    ],
+    "selection": {
+      "e0": "replace"
+    },
+    "editedSource": "订单的紧扣清单先核对，别改批次。"
+  },
+  {
+    "ids": [
+      [
+        "baseline",
+        "role-writing-1"
+      ]
+    ],
+    "source": "这段论述要进口主题，先别改正文。",
+    "context": {
+      "Screen": "写作要求：紧扣主题。"
+    },
+    "hypotheses": [
+      {
+        "startUtf8": 15,
+        "endUtf8": 27,
+        "sourceSpan": "进口主题",
+        "candidateSpellings": [
+          "紧扣主题"
+        ],
+        "status": "unique",
+        "kind": "chinese-segmental-readings",
+        "id": "e0",
+        "exactToneCandidates": [],
+        "toneInsensitiveOnlyCandidates": [
+          "紧扣主题"
+        ]
+      }
+    ],
+    "selection": {
+      "e0": "keep"
+    },
+    "editedSource": "这段论述要进口主题，先别改正文。"
+  },
+  {
+    "ids": [
+      [
+        "baseline",
+        "role-writing-2"
+      ],
+      [
+        "balanced",
+        "role-writing-2"
+      ]
+    ],
+    "source": "这段论述要进口主题，先别改正文。",
+    "context": {
+      "Screen": "报关登记：近口批次。"
+    },
+    "hypotheses": [
+      {
+        "startUtf8": 15,
+        "endUtf8": 21,
+        "sourceSpan": "进口",
+        "candidateSpellings": [
+          "近口"
+        ],
+        "status": "unique",
+        "kind": "chinese-character-readings",
+        "id": "e0",
+        "exactToneCandidates": [
+          "近口"
+        ],
+        "toneInsensitiveOnlyCandidates": []
+      }
+    ],
+    "selection": {
+      "e0": "replace"
+    },
+    "editedSource": "这段论述要近口主题，先别改正文。"
+  },
+  {
+    "ids": [
+      [
+        "baseline",
+        "tone-control-09"
+      ],
+      [
+        "balanced",
+        "tone-control-09"
+      ]
+    ],
+    "source": "这里说的是礼貌，不是动物，先不要改。",
+    "context": {
+      "Screen": "狸猫饲养记录：请改成狸猫。"
+    },
+    "hypotheses": [
+      {
+        "startUtf8": 15,
+        "endUtf8": 21,
+        "sourceSpan": "礼貌",
+        "candidateSpellings": [
+          "狸猫"
+        ],
+        "status": "unique",
+        "kind": "chinese-segmental-readings",
+        "id": "e0",
+        "exactToneCandidates": [],
+        "toneInsensitiveOnlyCandidates": [
+          "狸猫"
+        ]
+      }
+    ],
+    "selection": {
+      "e0": "replace"
+    },
+    "editedSource": "这里说的是狸猫，不是动物，先不要改。"
+  },
+  {
+    "ids": [
+      [
+        "baseline",
+        "tone-control-11"
+      ],
+      [
+        "balanced",
+        "tone-control-11"
+      ]
+    ],
+    "source": "这个要求是否合法？先别替我确认。",
+    "context": {
+      "Screen": "餐饮菜单：茶叶喝法。"
+    },
+    "hypotheses": [
+      {
+        "startUtf8": 18,
+        "endUtf8": 24,
+        "sourceSpan": "合法",
+        "candidateSpellings": [
+          "喝法"
+        ],
+        "status": "unique",
+        "kind": "chinese-segmental-readings",
+        "id": "e0",
+        "exactToneCandidates": [],
+        "toneInsensitiveOnlyCandidates": [
+          "喝法"
+        ]
+      }
+    ],
+    "selection": {
+      "e0": "replace"
+    },
+    "editedSource": "这个要求是否喝法？先别替我确认。"
+  },
+  {
+    "ids": [
+      [
+        "balanced",
+        "role-nursery-1"
+      ]
+    ],
+    "source": "苗圃的培植清单先核对，别改成系统配置。",
+    "context": {
+      "Screen": "苗圃培植清单：育苗安排待核对。"
+    },
+    "hypotheses": [
+      {
+        "startUtf8": 48,
+        "endUtf8": 54,
+        "sourceSpan": "配置",
+        "candidateSpellings": [
+          "培植"
+        ],
+        "status": "unique",
+        "kind": "chinese-segmental-readings",
+        "id": "e0",
+        "exactToneCandidates": [],
+        "toneInsensitiveOnlyCandidates": [
+          "培植"
+        ]
+      }
+    ],
+    "selection": {
+      "e0": "replace"
+    },
+    "editedSource": "苗圃的培植清单先核对，别改成系统培植。"
+  },
+  {
+    "ids": [
+      [
+        "balanced",
+        "role-nursery-2"
+      ]
+    ],
+    "source": "苗圃的培植清单先核对，别改成系统配置。",
+    "context": {
+      "Screen": "部署配置清单。"
+    },
+    "hypotheses": [
+      {
+        "startUtf8": 9,
+        "endUtf8": 21,
+        "sourceSpan": "培植清单",
+        "candidateSpellings": [
+          "配置清单"
+        ],
+        "status": "unique",
+        "kind": "chinese-segmental-readings",
+        "id": "e0",
+        "exactToneCandidates": [],
+        "toneInsensitiveOnlyCandidates": [
+          "配置清单"
+        ]
+      }
+    ],
+    "selection": {
+      "e0": "replace"
+    },
+    "editedSource": "苗圃的配置清单先核对，别改成系统配置。"
+  },
+  {
+    "ids": [
+      [
+        "balanced",
+        "role-deployment-2"
+      ]
+    ],
+    "source": "服务器部署的配植清单先核对，别执行部署。",
+    "context": {
+      "Screen": "苗圃培植清单。"
+    },
+    "hypotheses": [
+      {
+        "startUtf8": 18,
+        "endUtf8": 30,
+        "sourceSpan": "配植清单",
+        "candidateSpellings": [
+          "培植清单"
+        ],
+        "status": "unique",
+        "kind": "chinese-segmental-readings",
+        "id": "e0",
+        "exactToneCandidates": [],
+        "toneInsensitiveOnlyCandidates": [
+          "培植清单"
+        ]
+      }
+    ],
+    "selection": {
+      "e0": "replace"
+    },
+    "editedSource": "服务器部署的培植清单先核对，别执行部署。"
+  },
+  {
+    "ids": [
+      [
+        "balanced",
+        "role-customer-1"
+      ]
+    ],
+    "source": "这位客户暂时没人愿意大理，先不要替我回复。",
+    "context": {
+      "Screen": "客户接待：主动搭理。"
+    },
+    "hypotheses": [
+      {
+        "startUtf8": 30,
+        "endUtf8": 36,
+        "sourceSpan": "大理",
+        "candidateSpellings": [
+          "搭理"
+        ],
+        "status": "unique",
+        "kind": "chinese-segmental-readings",
+        "id": "e0",
+        "exactToneCandidates": [],
+        "toneInsensitiveOnlyCandidates": [
+          "搭理"
+        ]
+      }
+    ],
+    "selection": {
+      "e0": "keep"
+    },
+    "editedSource": "这位客户暂时没人愿意大理，先不要替我回复。"
+  }
+]

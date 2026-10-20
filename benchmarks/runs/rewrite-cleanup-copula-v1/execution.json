@@ -1,0 +1,13 @@
+{
+  "command": [
+    "go",
+    "run",
+    "/Users/steven/code/Arion/benchmarks/reproduction/rewrite-cleanup-preflight-v1/main.go",
+    "/Users/steven/code/Arion/.workspace/rewrite-cleanup-copula-v1/inputs.json"
+  ],
+  "workingDirectory": "/Users/steven/code/Arion/packages/core",
+  "exitCode": 0,
+  "newLlmInference": false,
+  "newAsrInference": false,
+  "sourceCount": 156
+}

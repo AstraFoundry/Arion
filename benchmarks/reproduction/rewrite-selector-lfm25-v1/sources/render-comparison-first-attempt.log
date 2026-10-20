@@ -1,0 +1,14 @@
+Traceback (most recent call last):
+  File "/Users/steven/code/Arion/.workspace/rewrite-lfm25-research-v1/render-compare.py", line 3, in <module>
+    import json,hashlib,sys,importlib.metadata,jinja2
+  File "/Users/steven/anaconda3/lib/python3.10/site-packages/jinja2/__init__.py", line 8, in <module>
+    from .environment import Environment as Environment
+  File "/Users/steven/anaconda3/lib/python3.10/site-packages/jinja2/environment.py", line 16, in <module>
+    from . import nodes
+  File "/Users/steven/anaconda3/lib/python3.10/site-packages/jinja2/nodes.py", line 5, in <module>
+    import inspect
+  File "/Users/steven/code/Arion/.workspace/rewrite-lfm25-research-v1/inspect.py", line 6, in <module>
+    x=json.loads((C/(name+'-api.json')).read_text());p=D/name;p.mkdir(exist_ok=False)
+  File "/Users/steven/anaconda3/lib/python3.10/pathlib.py", line 1175, in mkdir
+    self._accessor.mkdir(self, mode)
+FileExistsError: [Errno 17] File exists: '/Users/steven/code/Arion/.workspace/rewrite-lfm25-research-v1/LFM2.5-1.2B-Instruct'

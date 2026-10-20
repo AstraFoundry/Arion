@@ -1,0 +1,14 @@
+{
+  "status": "complete",
+  "modelGenerations": 0,
+  "records": 36,
+  "priorInferenceTokenMatches": 60,
+  "priorNativeLoggedPromptMatches": 50,
+  "priorTruncatedRequests": 24,
+  "policyRequestsWithoutTruncation": 6,
+  "maximumPolicyInputTokens": 514,
+  "requestsSha256": "99038103c70ddcb2d24e8d317991d20ef77c7ecaac05aba9de90a646f44bebe1",
+  "renderer": "LocalJinja3.1.2 plus exact pinned native96/45 per-piece policy and actual native tokenization/detokenization. Not official Transformers/reference-logit parity.",
+  "logScope": "Slot launch dumps the preceding completed prompt; five of six prompts are observable per worker. Missing last prompts are not credited as observed.",
+  "workerExitCode": 0
+}

@@ -1,0 +1,19 @@
+{
+  "authorModel": {
+    "id": "gemini-4-argon-contributor",
+    "providerID": "opencode-go",
+    "variant": "default"
+  },
+  "sessionID": "ses_ea84109f4ffeJUqCNMsy2tF7d7",
+  "explicitLocation": "/private/var/folders/wg/ntr3cxsd34x0rw4w17rdrym40000gn/T/arion-clean-prompt-wn60e7x_",
+  "toolEvents": 0,
+  "examples": 0,
+  "providedMaterial": "Only the archived product interface/specification and general consistency requirements; no old prompts, benchmark cases, answers, metrics or earlier drafts.",
+  "promptStringsEditedAfterModelOutput": false,
+  "localQwenEvaluationRuns": 0,
+  "productionActivated": false,
+  "scope": "Independent instruction-only candidate; no empirically established quality, budget fit or guarantee of generalization.",
+  "acceptedAuthorTurns": 2,
+  "revision": "Only the formatter plain-body output contract was clarified; no example/case/output/score feedback.",
+  "unchangedPromptFieldsVerified": true
+}

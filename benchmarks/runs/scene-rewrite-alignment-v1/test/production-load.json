@@ -1,0 +1,8 @@
+{
+  "id": 1,
+  "ok": true,
+  "loadMs": 5981.431,
+  "promptId": "live-v2",
+  "prefixTokens": 822,
+  "peakRssBytes": 2900492288
+}

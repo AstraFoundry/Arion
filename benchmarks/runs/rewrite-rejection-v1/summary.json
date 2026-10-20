@@ -1,0 +1,16 @@
+{
+  "simple": {
+    "cases": 12,
+    "verdicts": {
+      "accepted": 12
+    }
+  },
+  "requests": {
+    "cases": 12,
+    "verdicts": {
+      "truncated": 2,
+      "negation_dropped": 2,
+      "accepted": 8
+    }
+  }
+}

@@ -1,0 +1,105 @@
+{
+  "generations": 48,
+  "reviewedOutputs": 48,
+  "summary": {
+    "qwen3.5-0.8b": {
+      "all": {
+        "cases": 24,
+        "rawFaithful": 22,
+        "rawSceneReady": 20,
+        "requiredRepairs": 4,
+        "repairs": 4,
+        "truncatedOutputs": 0,
+        "minorSingleBulletOutputs": 0,
+        "requestP50Ms": 1817.2849169932306,
+        "requestP95Ms": 2028.6759168375283,
+        "maxObservedResidentRssBytes": 1647394816,
+        "prefillP50Ms": 1576.335,
+        "decodeP50Ms": 189.694,
+        "maxObservedCachedPromptTokens": 0
+      },
+      "exposed": {
+        "cases": 8,
+        "rawFaithful": 8,
+        "rawSceneReady": 7,
+        "requiredRepairs": 2,
+        "repairs": 2,
+        "truncatedOutputs": 0,
+        "minorSingleBulletOutputs": 0,
+        "requestP50Ms": 1599.5399169623852,
+        "requestP95Ms": 1963.0959581118077,
+        "maxObservedResidentRssBytes": 1538146304,
+        "prefillP50Ms": 1437.005,
+        "decodeP50Ms": 202.034,
+        "maxObservedCachedPromptTokens": 0
+      },
+      "fresh": {
+        "cases": 16,
+        "rawFaithful": 14,
+        "rawSceneReady": 13,
+        "requiredRepairs": 2,
+        "repairs": 2,
+        "truncatedOutputs": 0,
+        "minorSingleBulletOutputs": 0,
+        "requestP50Ms": 1823.6347089987248,
+        "requestP95Ms": 2029.5144580304623,
+        "maxObservedResidentRssBytes": 1647394816,
+        "prefillP50Ms": 1632.282,
+        "decodeP50Ms": 183.236,
+        "maxObservedCachedPromptTokens": 0
+      },
+      "startupMs": 5795.726333046332
+    },
+    "qwen3.5-2b": {
+      "all": {
+        "cases": 24,
+        "rawFaithful": 23,
+        "rawSceneReady": 23,
+        "requiredRepairs": 4,
+        "repairs": 4,
+        "truncatedOutputs": 0,
+        "minorSingleBulletOutputs": 4,
+        "requestP50Ms": 4107.163083972409,
+        "requestP95Ms": 4465.868583181873,
+        "maxObservedResidentRssBytes": 3161047040,
+        "prefillP50Ms": 3708.247,
+        "decodeP50Ms": 387.461,
+        "maxObservedCachedPromptTokens": 0
+      },
+      "exposed": {
+        "cases": 8,
+        "rawFaithful": 8,
+        "rawSceneReady": 8,
+        "requiredRepairs": 2,
+        "repairs": 2,
+        "truncatedOutputs": 0,
+        "minorSingleBulletOutputs": 1,
+        "requestP50Ms": 3593.5966661199927,
+        "requestP95Ms": 4346.961959032342,
+        "maxObservedResidentRssBytes": 3051913216,
+        "prefillP50Ms": 3330.763,
+        "decodeP50Ms": 392.697,
+        "maxObservedCachedPromptTokens": 0
+      },
+      "fresh": {
+        "cases": 16,
+        "rawFaithful": 15,
+        "rawSceneReady": 15,
+        "requiredRepairs": 2,
+        "repairs": 2,
+        "truncatedOutputs": 0,
+        "minorSingleBulletOutputs": 3,
+        "requestP50Ms": 4145.144833019003,
+        "requestP95Ms": 4478.463208070025,
+        "maxObservedResidentRssBytes": 3161047040,
+        "prefillP50Ms": 3715.679,
+        "decodeP50Ms": 386.258,
+        "maxObservedCachedPromptTokens": 0
+      },
+      "startupMs": 1416.0724577959627
+    }
+  },
+  "productionActivated": false,
+  "validatorMode": "none; every raw output retained and scored",
+  "scope": "Text-only GGUF <=2B tensors, CPU4 threads/GPU0, current M4 host, no visual encoder. Same packaging/template and llama.cpp across models. Eight exposed plus sixteen previously ungenerated synthetic probes. No independent natural-data review. Cache disabled; first request includes first-use effects after no-warmup startup. Timings exclude ASR and native insertion; historical ONNX prefix-cached latency is not a causal model comparison. Observed RSS samples are not peak RSS or low-end hardware acceptance."
+}

@@ -1,0 +1,10 @@
+{
+  "qualified": false,
+  "selected": null,
+  "productionActivated": false,
+  "freshExecuted": false,
+  "resultsSha256": "8a19ced3c364bc700b495967f5d59dcdfd74ca2196abd8bd927f2d032f5cb7f7",
+  "reviewSha256": "f50764027187252ec88ded152cd1caf1e37adc099ccaee804f2cb8fd8598b9f0",
+  "freezeSha256": "02d55d75b354975abbb4113852aabd3ef447ac10ae6ea0d5371c4b30cf10cc8a",
+  "reason": "Reject: restores supported entity corrections and improves old typo controls, but three wrong-domain instruction replacements remain and all four related-context role repairs are missed. Does not meet the preregistered joint positive/negative development gate; fresh evaluation not consumed."
+}

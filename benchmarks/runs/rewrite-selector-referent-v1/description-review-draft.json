@@ -1,0 +1,257 @@
+{
+  "reviewedRanges": {
+    "referent": [
+      [
+        0,
+        35
+      ],
+      [
+        35,
+        70
+      ],
+      [
+        70,
+        101
+      ]
+    ],
+    "referent-balanced": [
+      [
+        0,
+        35
+      ],
+      [
+        35,
+        70
+      ],
+      [
+        70,
+        101
+      ]
+    ]
+  },
+  "overrides": {
+    "referent/history-0144/e0": {
+      "text": "saveCash函数与saveCache函数指代不同",
+      "conforms": false,
+      "note": "Invents a distinct saveCash function absent from the source/context; the current source and cache.go point to saveCache. The description also contradicts its replace choice."
+    },
+    "referent/history-0265/e1": {
+      "text": "loadCache仅规范空格大小写",
+      "conforms": false,
+      "note": "load cash to loadCache changes letters; this is not solely whitespace/case normalization. Choice can still be supported by the unique contextual function."
+    },
+    "referent/history-0274/e2": {
+      "text": "loadCache仅规范空格大小写",
+      "conforms": false,
+      "note": "load cash and loadCache differ in letters; the proposed spelling repair has a context basis but the explanation misstates its mechanism."
+    },
+    "referent/history-0275/e0": {
+      "text": "原文字母对应loadCache",
+      "conforms": false,
+      "note": "Actual cleaned source says load cash, whose letters do not match loadCache. Context supports a repair, not same-letter normalization."
+    },
+    "referent/tone-control-02/e0": {
+      "text": "交付资料中质保书与指保书指代不同",
+      "conforms": false,
+      "note": "The delivery-document context supports a spelling error in the same certificate. No evidence establishes two distinct documents."
+    },
+    "referent/tone-control-13/e0": {
+      "text": "质保书与指保书指代不同",
+      "conforms": false,
+      "note": "Keep is supported by the explicit literal-spelling/exclusion instruction, not evidence of two different certificate referents."
+    },
+    "referent/tone-control-19/e0": {
+      "text": "原文字母对应readCash",
+      "conforms": false,
+      "note": "reed cash does not have the same letters as readCash; the source explicitly prohibits guessing among same-sound functions."
+    },
+    "referent/tone-control-20/e0": {
+      "text": "留成表与流程表指代同一审核任务",
+      "conforms": false,
+      "note": "Two contextual form candidates remain ambiguous. The description asserts a shared intended task without evidence resolving the source referent."
+    },
+    "referent/role-deployment-1/e0": {
+      "text": "植物养护与软件配置对象不同",
+      "conforms": false,
+      "note": "The source explicitly concerns server deployment, not plant care. Surface typo配植 is wrongly assigned a plant-care referent."
+    },
+    "referent/role-deployment-2/e0": {
+      "text": "苗圃培植清单的同音拼写",
+      "conforms": false,
+      "note": "The source concerns server deployment. The description adopts the unrelated nursery context as the source referent."
+    },
+    "referent/role-deadline-2/e0": {
+      "text": "任务完成时限的拼写",
+      "conforms": false,
+      "note": "The candidate暗示 means implication, not a deadline spelling. Source-side classification omits this conflict and accompanies a harmful replacement."
+    },
+    "referent/role-deadline-3/e0": {
+      "text": "任务完成时限的语义表达",
+      "conforms": false,
+      "note": "Source deadline classification is accurate but the requested comparison with candidate暗示 is missing; this is incomplete comparison, not an invented deadline."
+    },
+    "referent/role-implication-1/e0": {
+      "text": "原文“按时”与候选“暗示”指代不同含义",
+      "conforms": false,
+      "note": "Treats surface dictionary senses as the intended referents despite source这段话 and writing-expression context supporting a typo repair under the frozen development rubric."
+    },
+    "referent/role-implication-2/e0": {
+      "text": "项目排期要求的同音拼写",
+      "conforms": false,
+      "note": "The source concerns the meaning of a passage, not a project-scheduling requirement; the description adopts the irrelevant context role."
+    },
+    "referent/role-implication-3/e0": {
+      "text": "项目排期指令中的同音拼写",
+      "conforms": false,
+      "note": "The source concerns a passage. Context scheduling/instruction wording is not the intended source referent."
+    },
+    "referent/role-customer-2/e0": {
+      "text": "旅行目的地与地点名称指代不同",
+      "conforms": false,
+      "note": "The source concerns willingness to engage a customer, not a travel destination. A correct keep does not repair this wrong source classification."
+    },
+    "referent/role-import-2/e0": {
+      "text": "进口清单与批次修改对象不同",
+      "conforms": false,
+      "note": "Compares two source-side topics instead of the OCR writing/紧扣 candidate; the required source/context relation is omitted."
+    },
+    "referent/role-writing-1/e0": {
+      "text": "原文对进口主题的指代",
+      "conforms": false,
+      "note": "Repeats the faulty source phrase without identifying the writing-topic relation or comparing the紧扣 candidate; vague/incomplete comparison."
+    },
+    "referent/history-0136/e0": {
+      "text": "函数 getProfile 的拼写与权限校验需求指代同一对象",
+      "conforms": false,
+      "note": "A function name and the permission-check requirement are related, not the same referent. The required spelling comparison is get profile versus getProfile."
+    },
+    "referent/history-0184/e0": {
+      "text": "loadUser 与 loadUSER 两处均指代同一函数",
+      "conforms": false,
+      "note": "Context provides two distinct case-sensitive function spellings as unresolved alternatives; it does not establish one shared function."
+    },
+    "referent/history-0165/e0": {
+      "text": "同一讨论参与人姓名的异字拼写",
+      "conforms": false,
+      "note": "Two candidate participants are explicitly present. A unique same-person identity is not established."
+    },
+    "referent/history-0211/e0": {
+      "text": "验受报告与验收报告的指代不同",
+      "conforms": false,
+      "note": "The source and report-review context support the same report with a spelling error; no evidence establishes two reports."
+    },
+    "referent/history-0212/e0": {
+      "text": "段雨宁与段语宁指代同一人",
+      "conforms": false,
+      "note": "Two same-sound participant candidates are present; the source does not uniquely identify段语宁."
+    },
+    "referent-balanced/history-0144/e0": {
+      "text": "saveCash函数与saveCache函数指代不同",
+      "conforms": false,
+      "note": "Asserts distinct function referents without evidence; source/cache.go support one saveCache spelling repair. The replace choice is independently correct."
+    },
+    "referent-balanced/history-0169/e0": {
+      "text": "函数名 writeCash 的拼写",
+      "conforms": false,
+      "note": "Describes only the canonicalized source form writeCash while the contextual target is writeCache; the requested relation to that target is missing."
+    },
+    "referent-balanced/history-0265/e0": {
+      "text": "readCash 与 readCache 函数名拼写差异",
+      "conforms": false,
+      "note": "Compares two context function names instead of raw read cash and the selected same-letter readCash spelling."
+    },
+    "referent-balanced/history-0274/e2": {
+      "text": "原文字母对应 loadCache",
+      "conforms": false,
+      "note": "Source load cash has different letters from loadCache; context supports spelling correction, not a same-letter identity claim."
+    },
+    "referent-balanced/history-0275/e0": {
+      "text": "原文字母对应loadCache",
+      "conforms": false,
+      "note": "After actual cleanup the source is load cash; those letters do not match loadCache."
+    },
+    "referent-balanced/tone-control-02/e0": {
+      "text": "交付资料中“指保书”与“质保书”指代不同",
+      "conforms": false,
+      "note": "The same certificate is supported by the delivery context. Distinct referents are unsupported and contradict the chosen repair."
+    },
+    "referent-balanced/tone-control-13/e0": {
+      "text": "质保书与指保书指代不同",
+      "conforms": false,
+      "note": "Keep follows the explicit literal-spelling exclusion; no two distinct certificate referents are established."
+    },
+    "referent-balanced/tone-control-20/e0": {
+      "text": "留成表与流程表指代同一审核任务",
+      "conforms": false,
+      "note": "Context leaves流程表/留城表 unresolved. A shared intended task is not established by these ambiguous forms."
+    },
+    "referent-balanced/role-deployment-3/e0": {
+      "text": "服务器部署清单的拼写",
+      "conforms": false,
+      "note": "The candidate describes nursery cultivation, not a server-deployment spelling. The source-side label omits the actual context conflict."
+    },
+    "referent-balanced/role-deadline-2/e0": {
+      "text": "任务完成时限的拼写",
+      "conforms": false,
+      "note": "Candidate暗示 is an implication expression, not a deadline spelling; the actual source/context comparison is missing."
+    },
+    "referent-balanced/role-deadline-3/e0": {
+      "text": "任务完成时限的拼写",
+      "conforms": false,
+      "note": "Candidate暗示 is not a deadline spelling. The description does not identify the source/candidate meaning conflict."
+    },
+    "referent-balanced/role-implication-1/e0": {
+      "text": "原文“按时”指代时间节点而非暗示语气",
+      "conforms": false,
+      "note": "Under the frozen writing-expression case, the intended source is an implication with a typo; dictionary-only time classification misreads that source role."
+    },
+    "referent-balanced/role-implication-2/e0": {
+      "text": "项目排期要求的同音拼写",
+      "conforms": false,
+      "note": "Misclassifies a source passage-meaning question as the unrelated context scheduling requirement."
+    },
+    "referent-balanced/role-implication-3/e0": {
+      "text": "项目排期要求的同音拼写",
+      "conforms": false,
+      "note": "Context scheduling wording is not the source passage-meaning referent."
+    },
+    "referent-balanced/role-writing-2/e0": {
+      "text": "进口主题与近口主题指代不同",
+      "conforms": false,
+      "note": "Compares two surface sentence phrases rather than writing-topic intent and the OCR customs batch; the referent contrast is ungrounded."
+    },
+    "referent-balanced/history-0257/e0": {
+      "text": "同音同义人名指代不同",
+      "conforms": false,
+      "note": "Shared pronunciation does not establish synonymous names; the context supplies different unresolved participants."
+    },
+    "referent-balanced/history-0184/e0": {
+      "text": "loadUser 与 loadUSER 两处均指代同一函数",
+      "conforms": false,
+      "note": "Two case-sensitive function alternatives are present; there is no evidence they are one shared function."
+    },
+    "referent-balanced/history-0165/e0": {
+      "text": "同一讨论参与人姓名的异字拼写",
+      "conforms": false,
+      "note": "Two same-sound participants remain unresolved; a unique same-person identity is not established."
+    },
+    "referent-balanced/history-0188/e0": {
+      "text": "会议记录与会议纪要指代不同",
+      "conforms": false,
+      "note": "This source and context discuss one meeting document under the frozen normalization rubric, not two separately evidenced documents."
+    },
+    "referent-balanced/history-0212/e0": {
+      "text": "段雨宁与段语宁指代同一人",
+      "conforms": false,
+      "note": "The context supplies段语宁 and段宇宁; it does not resolve the source identity to段语宁."
+    },
+    "referent-balanced/tone-control-01/e0": {
+      "text": "验受报告与验收报告指代不同",
+      "conforms": false,
+      "note": "The report-review context supports a spelling error in the same report. No separate report referents are established."
+    }
+  },
+  "method": "Manual source/context/public-description review. Semantic paraphrases are allowed; spelling overlap is not the correctness rule. Only explicit inaccurate, unsupported, contradictory or vague claims are flagged. Descriptions never enter candidate application.",
+  "complete": true,
+  "notes": "All202 explanatory cases/212 description fields personally read with complete source/context and raw output, in six explicit ranges. Controls202 raw choices also personally read. Brief accurate semantic paraphrases are accepted; unsupported identities, false spelling mechanisms, wrong objects and omitted comparisons are flagged separately from choices."
+}

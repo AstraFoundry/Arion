@@ -1,0 +1,26 @@
+{
+  "files": {
+    "development.json": "cef9e22194f960fe79b82bffb91b8dcd4a8f3b48483acd8207e7312e76fb7795",
+    "expectations.json": "5a615fa3515f8c4609297ee6fd6b80f8a458c5a6dce1473559409fb579d04590",
+    "fresh.json": "06d99fef05b950832cbb4d1d24d26c6d5ac3c45e4e69de211fafab18ee8fbf8e",
+    "protocol.json": "0e55ecea756a7b0c08e81f884a601254e485e219730b848d1465bb14dccccb31",
+    "regression.json": "834ae10916780564d7e0a65472541d2767db7bd3ad466efd2a56c8ab74529335",
+    "run.py": "49033d51a4bc6020a8f62a71e18124bc38a57a1fac382f204ef0fa0b516879c8",
+    "templates/anchored-chat.json": "1b4f32880aae81306f2b1a13a003ac10c647568c0d4a7bd7d6f669e72b4f1d23",
+    "templates/anchored-email.json": "d17534256f829140c161895a6751a1ca09abc387da16f557e332340ecb94d3be",
+    "templates/anchored-prompt.json": "15d473d9bcbe4dcf463fe831e12d580bca285fa692511d3a65d0fb813a1a0e78",
+    "templates/anchored-work.json": "2070d2f00be721974e01de1912ec3e0d13ccf169648d0301f77ec5aa526f0f20",
+    "templates/minimal-chat.json": "8b7ce87df42b95433bdab27199ae8b7562db132bc086d9021656b421f72fa3f6",
+    "templates/minimal-email.json": "783bf843d0db49d7969b53f47169da5c43c2ea8ada4b03c1fde57594e4d75fb0",
+    "templates/minimal-prompt.json": "c0d369f8ca8485aae22e32128ce9dbea2eb6c50dd9b922db1240dba7aa9408a0",
+    "templates/minimal-work.json": "ae42e1d7ad7682a9880b30698478051cece082e596b289a9a5190ea556ec9a67"
+  },
+  "dependencies": {
+    "benchmarks/reproduction/scene-rewrite-prompt-v2/run.py": "508b06c97822d558790cc3c8decbbeb3b798b963ebc1741926691ba4600e4179",
+    "benchmarks/reproduction/scene-rewrite-alignment-v1/study.py": "ffd1c4b2fe43b9b38a80cccb53eb086caff985cc2409912195863ca4bb7bf1e8",
+    "benchmarks/reproduction/context-repair-v1/work-zh.json": "ef9cdd28b5e629ad11dff1d8933b02d190feec4fe4772bb2fe5e987d3c1bf549",
+    "benchmarks/reproduction/context-repair-v1/email-zh.json": "9f8c5a9ee29b2918acd4b741bd04d0a17db52d75fc10eefe3fe4987bcdbdc49e",
+    "benchmarks/reproduction/scene-rewrite-prompt-v2/templates/examples-prompt-zh.json": "6a073035f6a43dd5df7334bc970aa00935c4cdf1fdcb37630eb4aee461c2b5c7",
+    "benchmarks/reproduction/scene-rewrite-prompt-v2/templates/examples-chat-zh.json": "585bfe57ab966c6a5824ed4a09fc3f8771b21c58c412730889d2179f917f5792"
+  }
+}

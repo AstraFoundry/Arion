@@ -1,0 +1,9 @@
+{
+  "changedPromptFields": [
+    "/format/formatSystem",
+    "/format/formatSystemHan"
+  ],
+  "otherPromptStringsIdentical": true,
+  "designNotesUpdated": true,
+  "comparison": "First isolated draft vs same-model output-contract clarification; no evaluation feedback."
+}

@@ -1,0 +1,228 @@
+{
+  "reviewer": "assistant-manual-inspection",
+  "resultsSha256": "2317756536edfa7399307d094a7cebc798ad2d7837da9b271e49d24d19c4b929",
+  "reviews": [
+    {
+      "id": "owner-anchor",
+      "variant": "production-1.7b",
+      "rowSha256": "ff237429de82b4f2ce43660f989d2111b8671e1aa35c685841c69ea6243b5367",
+      "proposalFaithful": true,
+      "proposalSceneUseful": false,
+      "cleanupFaithful": true,
+      "cleanupSceneUseful": false,
+      "repairSucceeded": false,
+      "issues": [
+        "missing_requested_grouping"
+      ],
+      "note": "Owner/task/date facts preserved; unchanged inline ordering, no owner grouping.",
+      "cleanupNote": "Cleanup exactly equals inspected source. All original facts and intent retained, with original layout."
+    },
+    {
+      "id": "identifier-wrong-relevant",
+      "variant": "production-1.7b",
+      "rowSha256": "bfdd2adb2dd020d58d76f72f1cad1bad8d369d9d91f92c7f9188526c427c8f03",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "cleanupFaithful": false,
+      "cleanupSceneUseful": false,
+      "repairSucceeded": true,
+      "issues": [],
+      "note": "Correct loadCache repair with no-user-content logging and unchanged cache policy. Diagnostic logging wording remains consistent with the dictated task.",
+      "cleanupNote": "Cleanup exactly equals inspected source. Required intended spelling remains unrepaired."
+    },
+    {
+      "id": "control-work-exact",
+      "variant": "production-1.7b",
+      "rowSha256": "4505ddacff2980451d52b0dea908797326b2884c06f33cb1033133527e60f88c",
+      "proposalFaithful": false,
+      "proposalSceneUseful": false,
+      "cleanupFaithful": true,
+      "cleanupSceneUseful": true,
+      "repairSucceeded": false,
+      "issues": [
+        "context_replaced_dictation",
+        "negation_dropped"
+      ],
+      "note": "Copies the two-person OCR excerpt, dropping source actor/task instruction and confirmation-before-submit prohibition.",
+      "cleanupNote": "Cleanup exactly equals inspected source. All original facts and intent retained, with original layout."
+    },
+    {
+      "id": "negative-question",
+      "variant": "production-1.7b",
+      "rowSha256": "ae110e58e843708fc38088b25efe4ad70a717e81513830c68d2508224b58093d",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "cleanupFaithful": true,
+      "cleanupSceneUseful": true,
+      "repairSucceeded": false,
+      "issues": [],
+      "note": "Negative question and no-action restriction retained.",
+      "cleanupNote": "Cleanup exactly equals inspected source. All original facts and intent retained, with original layout."
+    },
+    {
+      "id": "email-anchor",
+      "variant": "production-1.7b",
+      "rowSha256": "473ad936da95e10aa78863171012f3be3ee6337775e8eeaaed058b1917447d30",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "cleanupFaithful": true,
+      "cleanupSceneUseful": false,
+      "repairSucceeded": false,
+      "issues": [],
+      "note": "Leave date/duration, completed handoff, approval request and thanks retained in salutation/body paragraphs.",
+      "cleanupNote": "Cleanup exactly equals inspected source. All original facts and intent retained, with original layout."
+    },
+    {
+      "id": "recipient-wrong-relevant",
+      "variant": "production-1.7b",
+      "rowSha256": "b8dd43a57f2c729f8920bcb8f7cf7f4cafcb6e4a9b9b13de5f1696c1865a32d3",
+      "proposalFaithful": false,
+      "proposalSceneUseful": false,
+      "cleanupFaithful": false,
+      "cleanupSceneUseful": false,
+      "repairSucceeded": false,
+      "issues": [
+        "missed_supported_repair"
+      ],
+      "note": "Keeps 林雨桐 instead of reference-supported intended 林语桐.",
+      "cleanupNote": "Cleanup exactly equals inspected source. Required intended spelling remains unrepaired."
+    },
+    {
+      "id": "wrong-ocr",
+      "variant": "production-1.7b",
+      "rowSha256": "15260dede30d5a673847e6ead34e70086471a19fb05a6e7885e3ffe330cdeac5",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "cleanupFaithful": true,
+      "cleanupSceneUseful": false,
+      "repairSucceeded": false,
+      "issues": [],
+      "note": "Correct 韩若宁 preserved against different-pronunciation OCR; sender will reply tomorrow.",
+      "cleanupNote": "Cleanup exactly equals inspected source. All original facts and intent retained, with original layout."
+    },
+    {
+      "id": "conditional-fact",
+      "variant": "production-1.7b",
+      "rowSha256": "6de0f7e744560d7fb43faf673631bd30f1b3562a3eed01cd3f02fc0aeff6b62e",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "cleanupFaithful": true,
+      "cleanupSceneUseful": false,
+      "repairSucceeded": false,
+      "issues": [],
+      "note": "Recipient confirms before sender ships; fee undetermined and no-advance-payment request preserved.",
+      "cleanupNote": "Cleanup exactly equals inspected source. All original facts and intent retained, with original layout."
+    },
+    {
+      "id": "owner-anchor",
+      "variant": "prior-4b-export",
+      "rowSha256": "cf00044ced50e145545254bf73edefd4b8f317021b9e5c30199448fa2f390035",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "cleanupFaithful": true,
+      "cleanupSceneUseful": false,
+      "repairSucceeded": false,
+      "issues": [],
+      "note": "Owner/task/date facts preserved; correct two-bullet grouping.",
+      "cleanupNote": "Cleanup exactly equals inspected source. All original facts and intent retained, with original layout."
+    },
+    {
+      "id": "identifier-wrong-relevant",
+      "variant": "prior-4b-export",
+      "rowSha256": "a6c1d50ec444920c70e8deb4651d81ee8f4575b84510e7f1334a5b96a8b93eef",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "cleanupFaithful": false,
+      "cleanupSceneUseful": false,
+      "repairSucceeded": true,
+      "issues": [],
+      "note": "Correct loadCache repair with no-user-content logging and unchanged cache policy. Diagnostic logging wording remains consistent with the dictated task.",
+      "cleanupNote": "Cleanup exactly equals inspected source. Required intended spelling remains unrepaired."
+    },
+    {
+      "id": "control-work-exact",
+      "variant": "prior-4b-export",
+      "rowSha256": "cd9b2a74941c798e2d3770ea9ab8c377fb11d1086f7d75d7d8de1d88d18d7b64",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "cleanupFaithful": true,
+      "cleanupSceneUseful": true,
+      "repairSucceeded": false,
+      "issues": [],
+      "note": "Correct name and confirmation-before-submit prohibition retained.",
+      "cleanupNote": "Cleanup exactly equals inspected source. All original facts and intent retained, with original layout."
+    },
+    {
+      "id": "negative-question",
+      "variant": "prior-4b-export",
+      "rowSha256": "b5059cbddd307f943eca4271f8e6367e64e5f454f64afc79d1879cc2cf25e0bb",
+      "proposalFaithful": false,
+      "proposalSceneUseful": false,
+      "cleanupFaithful": true,
+      "cleanupSceneUseful": true,
+      "repairSucceeded": false,
+      "issues": [
+        "context_replaced_dictation",
+        "negation_dropped",
+        "question_intent_lost"
+      ],
+      "note": "Copies permission-to-publish OCR, losing the negative question and no-action restriction. Strict rejects it.",
+      "cleanupNote": "Cleanup exactly equals inspected source. All original facts and intent retained, with original layout."
+    },
+    {
+      "id": "email-anchor",
+      "variant": "prior-4b-export",
+      "rowSha256": "7a1fa2b7ee65f3dcd7cf733194d460a9b4f0caf767a1842404f649a5fbd2c2a4",
+      "proposalFaithful": false,
+      "proposalSceneUseful": false,
+      "cleanupFaithful": true,
+      "cleanupSceneUseful": false,
+      "repairSucceeded": false,
+      "issues": [
+        "completed_action_marker_dropped",
+        "missing_email_paragraphs"
+      ],
+      "note": "Drops 了 from completed handoff and produces 交接给小赵 without completed status; salutation/body also stay inline. Strict accepts this uncertain change of action status.",
+      "cleanupNote": "Cleanup exactly equals inspected source. All original facts and intent retained, with original layout."
+    },
+    {
+      "id": "recipient-wrong-relevant",
+      "variant": "prior-4b-export",
+      "rowSha256": "4d35d516e941219a0037d88a163435fa1f9ba9d201b9d3ad6d9de54abb98899a",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "cleanupFaithful": false,
+      "cleanupSceneUseful": false,
+      "repairSucceeded": true,
+      "issues": [],
+      "note": "Correct 林语桐 repair; tomorrow-morning delivery and no-forward restriction preserved.",
+      "cleanupNote": "Cleanup exactly equals inspected source. Required intended spelling remains unrepaired."
+    },
+    {
+      "id": "wrong-ocr",
+      "variant": "prior-4b-export",
+      "rowSha256": "b999fc54b03d20a0149241bbbf7da120996c2ccd769572dfec84e73c1f4f8d59",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "cleanupFaithful": true,
+      "cleanupSceneUseful": false,
+      "repairSucceeded": false,
+      "issues": [],
+      "note": "Correct 韩若宁 preserved against different-pronunciation OCR; sender will reply tomorrow.",
+      "cleanupNote": "Cleanup exactly equals inspected source. All original facts and intent retained, with original layout."
+    },
+    {
+      "id": "conditional-fact",
+      "variant": "prior-4b-export",
+      "rowSha256": "9828c62c9bfc1c1b4d805abf967bdbe6114a39a78dd1c30cd4982d5afaf6be28",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "cleanupFaithful": true,
+      "cleanupSceneUseful": false,
+      "repairSucceeded": false,
+      "issues": [],
+      "note": "Recipient confirms before sender ships; fee undetermined and no-advance-payment request preserved.",
+      "cleanupNote": "Cleanup exactly equals inspected source. All original facts and intent retained, with original layout."
+    }
+  ]
+}

@@ -1,0 +1,339 @@
+{
+  "_id": "6900a4ede9f617a5ce765d32",
+  "id": "unsloth/granite-4.0-h-1b-GGUF",
+  "private": false,
+  "library_name": "transformers",
+  "tags": [
+    "transformers",
+    "gguf",
+    "language",
+    "unsloth",
+    "granite-4.0",
+    "arxiv:0000.00000",
+    "base_model:ibm-granite/granite-4.0-h-1b",
+    "base_model:quantized:ibm-granite/granite-4.0-h-1b",
+    "license:apache-2.0",
+    "endpoints_compatible",
+    "region:us",
+    "conversational"
+  ],
+  "downloads": 3259,
+  "likes": 19,
+  "modelId": "unsloth/granite-4.0-h-1b-GGUF",
+  "author": "unsloth",
+  "sha": "74f5511840300fdee7c70ccfc5bd57ecde0c8bbc",
+  "lastModified": "2025-10-28T11:29:21.000Z",
+  "gated": false,
+  "disabled": false,
+  "model-index": null,
+  "config": {},
+  "cardData": {
+    "license": "apache-2.0",
+    "library_name": "transformers",
+    "tags": [
+      "language",
+      "unsloth",
+      "granite-4.0"
+    ],
+    "base_model": [
+      "ibm-granite/granite-4.0-h-1b"
+    ]
+  },
+  "transformersInfo": {
+    "auto_model": "AutoModel"
+  },
+  "gguf": {
+    "total": 1461538368,
+    "architecture": "granitehybrid",
+    "context_length": 1048576,
+    "chat_template": "{%- set tools_system_message_prefix = 'You are a helpful assistant with access to the following tools. You may call one or more tools to assist with the user query.\\n\\nYou are provided with function signatures within <tools></tools> XML tags:\\n<tools>'  %}\n{%- set tools_system_message_suffix = '\\n</tools>\\n\\nFor each tool call, return a json object with function name and arguments within <tool_call></tool_call> XML tags:\\n<tool_call>\\n{\\\"name\\\": <function-name>, \\\"arguments\\\": <args-json-object>}\\n</tool_call>. If a tool does not exist in the provided list of tools, notify the user that you do not have the ability to fulfill the request.' %}\n{%- set documents_system_message_prefix = 'You are a helpful assistant with access to the following documents. You may use one or more documents to assist with the user query.\\n\\nYou are given a list of documents within <documents></documents> XML tags:\\n<documents>' %}\n{%- set documents_system_message_suffix = '\\n</documents>\\n\\nWrite the response to the user\\'s input by strictly aligning with the facts in the provided documents. If the information needed to answer the question is not available in the documents, inform the user that the question cannot be answered based on the available data.' %}\n{%- set g4_default_system_message = 'You are a helpful assistant. Please ensure responses are professional, accurate, and safe.' %}\n{%- if available_tools is defined and available_tools %}\n    {%- set tools = available_tools %}\n{%- endif %}\n{%- set ns = namespace(tools_system_message=tools_system_message_prefix,\n                       documents_system_message=documents_system_message_prefix,\n                       default_system_message=g4_default_system_message,\n                       system_message=''\n                       ) %}\n{%- if tools %}\n    {%- for tool in tools %}\n        {%- set ns.tools_system_message = ns.tools_system_message + '\\n' + (tool | tojson) %}\n    {%- endfor %}\n    {%- set ns.tools_system_message = ns.tools_system_message + tools_system_message_suffix %}\n{%- else %}\n    {%- set ns.tools_system_message = '' %}\n{%- endif %}\n{%- if documents %}\n    {%- for document in documents %}\n        {%- set ns.documents_system_message = ns.documents_system_message + '\\n' + (document | tojson) %}\n    {%- endfor %}\n    {%- set ns.documents_system_message = ns.documents_system_message + documents_system_message_suffix %}\n{%- else %}\n    {%- set ns.documents_system_message = '' %}\n{%- endif %}\n{%- if messages[0].role == 'system' %}\n    {%- if messages[0].content is string %}\n        {%- set ns.system_message = messages[0].content %}\n    {%- elif messages[0].content is iterable %}\n        {%- for entry in messages[0].content %}\n            {%- if entry.type== 'text' %}\n                {%- if ns.system_message != '' %}\n                    {%- set ns.system_message = ns.system_message + '\\n' %}\n                {%- endif %}\n                {%- set ns.system_message = ns.system_message + entry.text %}\n            {%- endif %}\n        {%- endfor %}\n    {%- endif %}\n    {%- if tools and documents %}\n        {%- set ns.system_message = ns.system_message + '\\n\\n' +  ns.tools_system_message + '\\n\\n' + ns.documents_system_message %}\n    {%- elif tools %}\n        {%- set ns.system_message = ns.system_message + '\\n\\n' + ns.tools_system_message %}\n    {%- elif documents %}\n        {%- set ns.system_message = ns.system_message + '\\n\\n' + ns.documents_system_message %}\n    {%- endif %}\n{%- else %}\n    {%- if tools and documents %}\n        {%- set ns.system_message = ns.tools_system_message + '\\n\\n' + ns.documents_system_message  %}\n    {%- elif tools %}\n        {%- set ns.system_message = ns.tools_system_message %}\n    {%- elif documents %}\n        {%- set ns.system_message = ns.documents_system_message %}\n    {%- endif %}\n{%- endif %}\n{%- if ns.system_message %}\n    {{- '<|start_of_role|>system<|end_of_role|>' + ns.system_message + '<|end_of_text|>\\n' }}\n{%- else %}\n    {{- '<|start_of_role|>system<|end_of_role|>' + ns.default_system_message + '<|end_of_text|>\\n' }}\n{%- endif %}\n{%- for message in messages %}\n    {%- set content = namespace(val='') %}\n    {%- if message.content is string %}\n        {%- set content.val = message.content %}\n    {%- else %}\n        {%- if message.content is iterable %}\n            {%- for entry in message.content %}\n                {%- if entry.type== 'text' %}\n                    {%- if content.val != '' %}\n                        {%- set content.val = content.val + '\\n' %}\n                    {%- endif %}\n                    {%- set content.val = content.val + entry.text %}\n                {%- endif %}\n            {%- endfor %}\n        {%- endif %}\n    {%- endif %}\n    {%- if (message.role == 'user') or (message.role == 'system' and not loop.first) %}\n        {{- '<|start_of_role|>' + message.role + '<|end_of_role|>' + content.val + '<|end_of_text|>\\n' }}\n    {%- elif message.role == 'assistant' %}\n        {{- '<|start_of_role|>' + message.role + '<|end_of_role|>' + content.val }}\n        {%- if message.tool_calls %}\n            {%- for tool_call in message.tool_calls %}\n                {%- if (loop.first and content.val) or (not loop.first) %}\n                    {{- '\\n' }}\n                {%- endif %}\n                {%- if tool_call.function %}\n                    {%- set tool_call = tool_call.function %}\n                {%- endif %}\n                {{- '<tool_call>\\n{\"name\": \"' }}\n                {{- tool_call.name }}\n                {{- '\", \"arguments\": ' }}\n                {%- if tool_call.arguments is string %}\n                    {{- tool_call.arguments }}\n                {%- else %}\n                    {{- tool_call.arguments | tojson }}\n                {%- endif %}\n                {{- '}\\n</tool_call>' }}\n            {%- endfor %}\n        {%- endif %}\n        {{- '<|end_of_text|>\\n' }}\n    {%- elif message.role == 'tool' %}\n        {%- if loop.first or (messages[loop.index0 - 1].role != 'tool') %}\n            {{- '<|start_of_role|>user<|end_of_role|>' }}\n        {%- endif %}\n        {{- '\\n<tool_response>\\n' }}\n        {{- content.val }}\n        {{- '\\n</tool_response>' }}\n        {%- if loop.last or (messages[loop.index0 + 1].role != 'tool') %}\n            {{- '<|end_of_text|>\\n' }}\n        {%- endif %}\n    {%- endif %}\n{%- endfor %}\n{%- if add_generation_prompt %}\n    {{- '<|start_of_role|>assistant<|end_of_role|>' }}\n{%- endif %}",
+    "bos_token": "<|end_of_text|>",
+    "eos_token": "<|end_of_text|>",
+    "totalFileSize": 2928332384
+  },
+  "siblings": [
+    {
+      "rfilename": ".gitattributes",
+      "blobId": "e6d254b5cfcd73f294404022a6aa1de1c98e0dd7",
+      "size": 3165
+    },
+    {
+      "rfilename": "README.md",
+      "blobId": "001b652433865ed1e2a3fceadf41728e43dc92e3",
+      "size": 33870
+    },
+    {
+      "rfilename": "granite-4.0-h-1b-BF16.gguf",
+      "blobId": "d90ec87ed6d9639b420160433c95c43f6c72b83c",
+      "size": 2928332384,
+      "lfs": {
+        "sha256": "3a213822758f5caad0e400b1b5d788bb03d296974ab18fb900dfcd39bfb19e87",
+        "size": 2928332384,
+        "pointerSize": 135
+      }
+    },
+    {
+      "rfilename": "granite-4.0-h-1b-IQ4_NL.gguf",
+      "blobId": "772cdd4a17f17c10c89f79d035faf3d7a3b9acf7",
+      "size": 868316736,
+      "lfs": {
+        "sha256": "6e659938a6beeb4dd09958335bd208f350ca4deb0f6936eaa2b2691f88ce497c",
+        "size": 868316736,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "granite-4.0-h-1b-IQ4_XS.gguf",
+      "blobId": "a078d456cbec552a61df2bfdc2844609cf626e73",
+      "size": 827486784,
+      "lfs": {
+        "sha256": "07f96c187f4e149603309672658dbcf5fa193e4f3cea2e44cd979f20456dc0ce",
+        "size": 827486784,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "granite-4.0-h-1b-Q2_K.gguf",
+      "blobId": "2ad153d1ed8cec6a6c07725e99b1a9f69b8c5aa4",
+      "size": 588929088,
+      "lfs": {
+        "sha256": "6e7c25ec0c75d4f0d4dab56876c6a8e229529e80432f333b1c65b8ef4cb5fdad",
+        "size": 588929088,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "granite-4.0-h-1b-Q2_K_L.gguf",
+      "blobId": "2ad153d1ed8cec6a6c07725e99b1a9f69b8c5aa4",
+      "size": 588929088,
+      "lfs": {
+        "sha256": "6e7c25ec0c75d4f0d4dab56876c6a8e229529e80432f333b1c65b8ef4cb5fdad",
+        "size": 588929088,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "granite-4.0-h-1b-Q3_K_M.gguf",
+      "blobId": "c5286f86f95163ff4c918923b79f376944c99790",
+      "size": 731653440,
+      "lfs": {
+        "sha256": "0b9817b5965f7678d33ed6489adc6f8c9e51e3337dcacd5fb3ae54f5c7692118",
+        "size": 731653440,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "granite-4.0-h-1b-Q3_K_S.gguf",
+      "blobId": "6d731938aa8b5646bc2468484a814aad292fb222",
+      "size": 694789440,
+      "lfs": {
+        "sha256": "d3a7c3ce608d3c995e4cd0f24d991fe871a6c2508a84ecfabf48c4b037170138",
+        "size": 694789440,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "granite-4.0-h-1b-Q4_0.gguf",
+      "blobId": "ce3ae1fa8b58052aa711856192219cc1d4734a0c",
+      "size": 870282816,
+      "lfs": {
+        "sha256": "82c2e01e6030126d8920b5bcd59a938b82e8fe72d958c78b0311f520feefe266",
+        "size": 870282816,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "granite-4.0-h-1b-Q4_1.gguf",
+      "blobId": "37de4b97b219ee3fb52b7eddb8753dca29527468",
+      "size": 949976640,
+      "lfs": {
+        "sha256": "d25bf65b7da6247ed7e67d7ece46db451f6c191c8eeff20aea0fad569d1f4bb3",
+        "size": 949976640,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "granite-4.0-h-1b-Q4_K_M.gguf",
+      "blobId": "1b204d24bcfc969681dbd4b163c39ef53d0899b5",
+      "size": 901162560,
+      "lfs": {
+        "sha256": "fd3b85f09520df9d898e2bbcf5da22fc518dbf9d662bb52e214d946c72aafacc",
+        "size": 901162560,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "granite-4.0-h-1b-Q4_K_S.gguf",
+      "blobId": "d698ef0649fc3b3ace7eb9489661524f6a73ac9c",
+      "size": 872642112,
+      "lfs": {
+        "sha256": "8388e61b366aa540248589242d4dc85308b53df60a12fb698fa6f13cc7e37785",
+        "size": 872642112,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "granite-4.0-h-1b-Q5_K_M.gguf",
+      "blobId": "8a8bd4b1eb2f76f880e096e64d8bbf5b387ae209",
+      "size": 1048557120,
+      "lfs": {
+        "sha256": "5c5d66ff9a3910fc66c19f860cb0f65ac4673053262c030a3061b9cfd385a4e5",
+        "size": 1048557120,
+        "pointerSize": 135
+      }
+    },
+    {
+      "rfilename": "granite-4.0-h-1b-Q5_K_S.gguf",
+      "blobId": "2b1dd10f1d9db675244a21b50520047ec83330de",
+      "size": 1031636544,
+      "lfs": {
+        "sha256": "121cd158f42e0c9ce1672fa7d39421877faff69bb22ff62f50355e72796d26e8",
+        "size": 1031636544,
+        "pointerSize": 135
+      }
+    },
+    {
+      "rfilename": "granite-4.0-h-1b-Q6_K.gguf",
+      "blobId": "e8b0d4c0f1ea496e901813696d70154d6c329286",
+      "size": 1205163840,
+      "lfs": {
+        "sha256": "cb9cb21d380b5e3128ff402503950a389ea8f53e76c3c34e198a4b1d839047db",
+        "size": 1205163840,
+        "pointerSize": 135
+      }
+    },
+    {
+      "rfilename": "granite-4.0-h-1b-Q8_0.gguf",
+      "blobId": "5dd466357fc5a5ce4ed555f92c05c3e9e73af782",
+      "size": 1558926912,
+      "lfs": {
+        "sha256": "5fbb22e0f066d94ffbd79b90b4b0d882c7eba09d80a8d3ba01abf8dd098e002c",
+        "size": 1558926912,
+        "pointerSize": 135
+      }
+    },
+    {
+      "rfilename": "granite-4.0-h-1b-UD-IQ1_M.gguf",
+      "blobId": "288c8db23944594b47335cef13cf60f5c76cfcf1",
+      "size": 413160000,
+      "lfs": {
+        "sha256": "f877dc6255e26da32c6d9798a6bece6f9c07cdc5acee291816180c75b0e6cdb7",
+        "size": 413160000,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "granite-4.0-h-1b-UD-IQ1_S.gguf",
+      "blobId": "8df4578e6947b1c481c85a96ec1a799b336bb55e",
+      "size": 384208704,
+      "lfs": {
+        "sha256": "446507fb3f6bb5af9bf6a7070cf0d0730fb40f8b1b596086971c61a3c4233d13",
+        "size": 384208704,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "granite-4.0-h-1b-UD-IQ2_M.gguf",
+      "blobId": "179ecac5177c2876dbd6b7df9b63f80e96e8cd69",
+      "size": 543110976,
+      "lfs": {
+        "sha256": "f2a4b07d6e83471d75372bd074b471f3775860c29a974e02dee374d6b30d7dc5",
+        "size": 543110976,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "granite-4.0-h-1b-UD-IQ2_XXS.gguf",
+      "blobId": "e024e8e2a220333dbcd96d19f91efeec6ab466f2",
+      "size": 459288384,
+      "lfs": {
+        "sha256": "e112b16845182a0f338a589590821909c144498fb090b585adf734bcdfd3d25c",
+        "size": 459288384,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "granite-4.0-h-1b-UD-IQ3_XXS.gguf",
+      "blobId": "88a73658230d1fcfb6c5d36259470687b1cffc2c",
+      "size": 617631552,
+      "lfs": {
+        "sha256": "9fd4e1d8b5d3d2cb1bf95e52f294d29e23bdc4371502508dcfd65ee215ee15a1",
+        "size": 617631552,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "granite-4.0-h-1b-UD-Q2_K_XL.gguf",
+      "blobId": "ed20386ff9e7b3fff9a67718d2dd6834405e4c45",
+      "size": 598298688,
+      "lfs": {
+        "sha256": "e585867a64fe772c3861132fd1933bfa624028f4b850ae1b0e08ebdc34dc050d",
+        "size": 598298688,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "granite-4.0-h-1b-UD-Q3_K_XL.gguf",
+      "blobId": "548d72efad8b8e1b52a9625120b34a6d261c23f6",
+      "size": 741809472,
+      "lfs": {
+        "sha256": "4cb64b86c6d255dfc2cfdf9517ee64553ce5836f37faa7fd3b05abcaa8427a9a",
+        "size": 741809472,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "granite-4.0-h-1b-UD-Q4_K_XL.gguf",
+      "blobId": "b4206796495daadc85ce2f6cd5f1afbd77549a1e",
+      "size": 911791680,
+      "lfs": {
+        "sha256": "b66caabd187723071cbbd623c56e221cd08e219c3e026f3d4058150486ce1d46",
+        "size": 911791680,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "granite-4.0-h-1b-UD-Q5_K_XL.gguf",
+      "blobId": "e7a99fd713cc953f2ed8073d28e61408cd924b91",
+      "size": 1049675328,
+      "lfs": {
+        "sha256": "1608ad43819c655de919567fc27d5380f4ac13e208c1e7873646d22cadb226b6",
+        "size": 1049675328,
+        "pointerSize": 135
+      }
+    },
+    {
+      "rfilename": "granite-4.0-h-1b-UD-Q6_K_XL.gguf",
+      "blobId": "693778ac03c639beca62647ef1af221e2e3e438e",
+      "size": 1276778304,
+      "lfs": {
+        "sha256": "71052b0110669da9f4ff72496068dd8b9449e441686ba25c5409d0bfae25cb97",
+        "size": 1276778304,
+        "pointerSize": 135
+      }
+    },
+    {
+      "rfilename": "granite-4.0-h-1b-UD-Q8_K_XL.gguf",
+      "blobId": "0e4e296de4e6695578a1fb90f5a1379894bd8985",
+      "size": 1794856512,
+      "lfs": {
+        "sha256": "9ed6e46ca351f89264b8ff59551d6a5d58467bee59ee15eed4fefba5c55218c0",
+        "size": 1794856512,
+        "pointerSize": 135
+      }
+    },
+    {
+      "rfilename": "imatrix_unsloth.gguf_file",
+      "blobId": "6c1a928181b9991deb0b68356eb88b60c5ddc211",
+      "size": 1940704,
+      "lfs": {
+        "sha256": "c351de620047124726ffa684e9fd9be6fbf910926e68195087394071ef54587e",
+        "size": 1940704,
+        "pointerSize": 132
+      }
+    }
+  ],
+  "spaces": [],
+  "createdAt": "2025-10-28T11:11:41.000Z",
+  "usedStorage": 23870406720
+}

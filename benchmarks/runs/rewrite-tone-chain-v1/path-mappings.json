@@ -1,0 +1,9 @@
+{
+  "source": ".workspace/rewrite-tone-chain-v1",
+  "published": "benchmarks/runs/rewrite-tone-chain-v1",
+  "privateExcluded": [
+    "weights",
+    "runtime binaries",
+    "Go worker executable"
+  ]
+}

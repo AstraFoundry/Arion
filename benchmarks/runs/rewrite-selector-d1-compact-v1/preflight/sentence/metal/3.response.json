@@ -1,0 +1,1 @@
+{"model":"/Users/steven/code/Arion/.workspace/rewrite-d1-research-v1/weights/d1-omni-600M-Q8_0.gguf","answers":{"e0":{"type":"choice","choice":"keep","probabilities":{"keep":0.7297850283008721,"replace":0.27021497169912795},"confidence":0.4595700566017442}},"usage":{"input_tokens":256,"output_tokens":0}}

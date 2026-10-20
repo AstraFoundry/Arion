@@ -1,0 +1,10 @@
+{
+  "source": ".workspace/rewrite-selector-minicpm-f16-v1",
+  "published": "benchmarks/runs/rewrite-selector-minicpm-f16-v1",
+  "privateExcluded": [
+    "weights",
+    "runtime environments",
+    "native binaries"
+  ],
+  "legacyExecutorLabels": "Shared immutable hybrid-preflight/selector-model-v1 labels retained; actual F16 model/freeze/commands identify the owned treatment."
+}

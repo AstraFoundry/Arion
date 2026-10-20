@@ -1,0 +1,420 @@
+[
+  {
+    "id": "test-export-zh",
+    "split": "test",
+    "cluster": "export",
+    "scene": "work",
+    "language": "zh",
+    "source": "导出功能完成了，安全评审还没过，等评审通过再上线，负责人是小郑。",
+    "context": {},
+    "facts": [
+      "导出",
+      "(?:完成|做好)",
+      "(?:没|未|尚未).*评审|评审.*(?:没|未|待)",
+      "(?:通过|完成).*上线",
+      "小郑"
+    ],
+    "layout": true,
+    "cohort": "previous-test-regression"
+  },
+  {
+    "id": "test-export-en",
+    "split": "test",
+    "cluster": "export",
+    "scene": "work",
+    "language": "en",
+    "source": "The export feature is complete, security review is still pending, release only after approval, and Quinn owns it.",
+    "context": {},
+    "facts": [
+      "export",
+      "(?:complete|done|finished)",
+      "(?:pending|not.*approved|await)",
+      "(?:after|once|until|only).*approv",
+      "Quinn"
+    ],
+    "layout": true,
+    "cohort": "previous-test-regression"
+  },
+  {
+    "id": "test-incident-zh",
+    "split": "test",
+    "cluster": "incident",
+    "scene": "work",
+    "language": "zh",
+    "source": "今天接口恢复了，但是数据还在补，小何负责补数，小宋核对结果，明早再通知客户。",
+    "context": {},
+    "facts": [
+      "接口",
+      "(?:恢复|正常)",
+      "小何.*补|补.*小何",
+      "小宋.*核对|核对.*小宋",
+      "明早|明天早上",
+      "客户"
+    ],
+    "layout": true,
+    "cohort": "previous-test-regression"
+  },
+  {
+    "id": "test-incident-en",
+    "split": "test",
+    "cluster": "incident",
+    "scene": "work",
+    "language": "en",
+    "source": "The API is back, data backfill is still running, Alex owns backfill, Blair checks results, and notify customers tomorrow morning.",
+    "context": {},
+    "facts": [
+      "API",
+      "(?:back|restored|recovered)",
+      "Alex.*backfill|backfill.*Alex",
+      "Blair.*(?:check|verif)|(?:check|verif).*Blair",
+      "tomorrow morning",
+      "customer"
+    ],
+    "layout": true,
+    "cohort": "previous-test-regression"
+  },
+  {
+    "id": "test-estimate-zh",
+    "split": "test",
+    "cluster": "estimate",
+    "scene": "work",
+    "language": "zh",
+    "source": "内存上涨可能跟连接池有关，暂时还不能确定，先加监控，不要重启线上服务。",
+    "context": {},
+    "facts": [
+      "(?:可能|疑似|也许)",
+      "连接池",
+      "(?:不能确定|不确定|未确认|尚未确认)",
+      "监控",
+      "(?:不要|不|禁止|避免).*重启"
+    ],
+    "layout": true,
+    "cohort": "previous-test-regression"
+  },
+  {
+    "id": "test-estimate-en",
+    "split": "test",
+    "cluster": "estimate",
+    "scene": "work",
+    "language": "en",
+    "source": "The memory increase may involve the connection pool, we are not sure, add monitoring first and do not restart production.",
+    "context": {},
+    "facts": [
+      "(?:may|might|possible)",
+      "connection pool",
+      "(?:not sure|uncertain|unconfirmed|not confirmed)",
+      "monitor",
+      "(?:not|never|avoid).*restart"
+    ],
+    "layout": true,
+    "cohort": "previous-test-regression"
+  },
+  {
+    "id": "test-upload-zh",
+    "split": "test",
+    "cluster": "upload",
+    "scene": "prompt",
+    "language": "zh",
+    "source": "给 /api/upload 加文件大小校验，最大十兆，保持错误码 E413，不要修改成功响应。",
+    "context": {},
+    "facts": [
+      "/api/upload",
+      "(?:十兆|10.*(?:兆|MB))",
+      "E413",
+      "(?:不要|不|保持).*成功"
+    ],
+    "layout": true,
+    "cohort": "previous-test-regression"
+  },
+  {
+    "id": "test-upload-en",
+    "split": "test",
+    "cluster": "upload",
+    "scene": "prompt",
+    "language": "en",
+    "source": "Add a file-size check to /api/upload with a ten MB limit, keep error E413 and do not change the success response.",
+    "context": {},
+    "facts": [
+      "/api/upload",
+      "(?:ten|10).*MB",
+      "E413",
+      "(?:not change|unchanged|keep|preserve).*success|success.*unchanged"
+    ],
+    "layout": true,
+    "cohort": "previous-test-regression"
+  },
+  {
+    "id": "test-migration-zh",
+    "split": "test",
+    "cluster": "migration",
+    "scene": "prompt",
+    "language": "zh",
+    "source": "只分析 migrate.go 为什么执行失败，保留数据库现状，先不要运行迁移。",
+    "context": {},
+    "facts": [
+      "migrate.go",
+      "(?:分析|原因|失败)",
+      "(?:保留|保持).*数据库",
+      "(?:不要|不|禁止|暂缓).*迁移"
+    ],
+    "layout": true,
+    "cohort": "previous-test-regression"
+  },
+  {
+    "id": "test-migration-en",
+    "split": "test",
+    "cluster": "migration",
+    "scene": "prompt",
+    "language": "en",
+    "source": "Only investigate why migrate.go fails, preserve the database state and do not run migrations yet.",
+    "context": {},
+    "facts": [
+      "migrate.go",
+      "(?:investigate|analy|why|cause)",
+      "(?:preserve|keep|unchanged).*database|database.*(?:unchanged|state)",
+      "(?:not|no|never).*migration"
+    ],
+    "layout": true,
+    "cohort": "previous-test-regression"
+  },
+  {
+    "id": "test-retry-zh",
+    "split": "test",
+    "cluster": "retry",
+    "scene": "prompt",
+    "language": "zh",
+    "source": "给 sendInvoice 加失败重试，最多三次，两次之间等十秒，不要重试权限错误。",
+    "context": {},
+    "facts": [
+      "sendInvoice",
+      "(?:三次|3)",
+      "(?:十秒|10.*秒)",
+      "(?:不要|不|排除).*权限"
+    ],
+    "layout": true,
+    "cohort": "previous-test-regression"
+  },
+  {
+    "id": "test-retry-en",
+    "split": "test",
+    "cluster": "retry",
+    "scene": "prompt",
+    "language": "en",
+    "source": "Add retries to sendInvoice, at most three attempts with ten seconds between attempts, and do not retry permission errors.",
+    "context": {},
+    "facts": [
+      "sendInvoice",
+      "(?:three|3)",
+      "(?:ten|10).*seconds",
+      "(?:not|never|exclude).*permission|permission.*(?:excluded|not retried)"
+    ],
+    "layout": true,
+    "cohort": "previous-test-regression"
+  },
+  {
+    "id": "test-invoice-zh",
+    "split": "test",
+    "cluster": "invoice",
+    "scene": "email",
+    "language": "zh",
+    "source": "陈女士您好，发票已经寄出，快递单号 AB123，请查收，有问题联系我，谢谢。",
+    "context": {},
+    "facts": [
+      "陈女士",
+      "发票",
+      "(?:寄出|发出)",
+      "AB123",
+      "(?:联系|问题)"
+    ],
+    "layout": true,
+    "cohort": "previous-test-regression"
+  },
+  {
+    "id": "test-invoice-en",
+    "split": "test",
+    "cluster": "invoice",
+    "scene": "email",
+    "language": "en",
+    "source": "Hi Morgan, the invoice has been sent, tracking is AB123, please check it and contact me with any issues, thanks.",
+    "context": {},
+    "facts": [
+      "Morgan",
+      "invoice",
+      "(?:sent|shipped)",
+      "AB123",
+      "(?:contact|issues)"
+    ],
+    "layout": true,
+    "cohort": "previous-test-regression"
+  },
+  {
+    "id": "test-reschedule-zh",
+    "split": "test",
+    "cluster": "reschedule",
+    "scene": "email",
+    "language": "zh",
+    "source": "张先生您好，会议从周一改到周二下午三点，线上链接不变，麻烦确认，谢谢。",
+    "context": {},
+    "facts": [
+      "张先生",
+      "周二",
+      "(?:三点|3)",
+      "(?:链接不变|原.*链接|保持.*链接)",
+      "确认"
+    ],
+    "layout": true,
+    "cohort": "previous-test-regression"
+  },
+  {
+    "id": "test-reschedule-en",
+    "split": "test",
+    "cluster": "reschedule",
+    "scene": "email",
+    "language": "en",
+    "source": "Hi Cameron, the meeting moves from Monday to Tuesday at three in the afternoon, the online link stays the same, please confirm, thanks.",
+    "context": {},
+    "facts": [
+      "Cameron",
+      "Tuesday",
+      "(?:three|3)",
+      "(?:same|unchanged).*link|link.*(?:same|unchanged)",
+      "confirm"
+    ],
+    "layout": true,
+    "cohort": "previous-test-regression"
+  },
+  {
+    "id": "test-availability-zh",
+    "split": "test",
+    "cluster": "availability",
+    "scene": "email",
+    "language": "zh",
+    "source": "刘老师您好，我可能赶不上周五的评审，还没确定，确定后会尽快告知，抱歉。",
+    "context": {},
+    "facts": [
+      "刘老师",
+      "(?:可能|或许|也许)",
+      "周五",
+      "(?:没确定|未确定|不确定|尚未确定)",
+      "(?:告知|通知|联系)"
+    ],
+    "layout": true,
+    "cohort": "previous-test-regression"
+  },
+  {
+    "id": "test-availability-en",
+    "split": "test",
+    "cluster": "availability",
+    "scene": "email",
+    "language": "en",
+    "source": "Hi Avery, I might miss Friday.s review, it is not confirmed, and I will let you know once I am sure, sorry.",
+    "context": {},
+    "facts": [
+      "Avery",
+      "(?:might|may|possible)",
+      "Friday",
+      "(?:not confirmed|unconfirmed|not sure)",
+      "(?:let you know|notify|inform)"
+    ],
+    "layout": true,
+    "cohort": "previous-test-regression"
+  },
+  {
+    "id": "test-request-zh",
+    "split": "test",
+    "cluster": "request",
+    "scene": "chat",
+    "language": "zh",
+    "source": "你看一下为什么这些改写会被丢弃，先别改代码。",
+    "context": {},
+    "facts": [
+      "(?:看|检查|分析|原因|为什么)",
+      "改写",
+      "(?:别|不要|不|暂缓).*代码"
+    ],
+    "layout": false,
+    "cohort": "previous-test-regression"
+  },
+  {
+    "id": "test-request-en",
+    "split": "test",
+    "cluster": "request",
+    "scene": "chat",
+    "language": "en",
+    "source": "Can you check why these rewrites are discarded, without changing code yet?",
+    "context": {},
+    "facts": [
+      "(?:can you|could you|please|check)",
+      "rewrit",
+      "(?:without|not|no).*chang|code.*unchanged"
+    ],
+    "layout": false,
+    "cohort": "previous-test-regression"
+  },
+  {
+    "id": "test-condition-zh",
+    "split": "test",
+    "cluster": "condition",
+    "scene": "chat",
+    "language": "zh",
+    "source": "如果明天还下雨，我们就改线上，没下雨还是在楼下见。",
+    "context": {},
+    "facts": [
+      "(?:如果|若|要是)",
+      "(?:下雨|雨)",
+      "线上",
+      "楼下"
+    ],
+    "layout": false,
+    "cohort": "previous-test-regression"
+  },
+  {
+    "id": "test-condition-en",
+    "split": "test",
+    "cluster": "condition",
+    "scene": "chat",
+    "language": "en",
+    "source": "If it rains tomorrow, switch to online, otherwise meet downstairs as planned.",
+    "context": {},
+    "facts": [
+      "(?:if|rain)",
+      "online",
+      "(?:otherwise|not rain|doesn.t rain)",
+      "downstairs"
+    ],
+    "layout": false,
+    "cohort": "previous-test-regression"
+  },
+  {
+    "id": "test-correction-zh",
+    "split": "test",
+    "cluster": "correction",
+    "scene": "chat",
+    "language": "zh",
+    "source": "预算不是八百，是九百，人数还是四个人，别弄错了。",
+    "context": {},
+    "facts": [
+      "(?:九百|900)",
+      "(?:四个|4)",
+      "(?:别|不要|不|避免).*错"
+    ],
+    "layout": false,
+    "cohort": "previous-test-regression"
+  },
+  {
+    "id": "test-correction-en",
+    "split": "test",
+    "cluster": "correction",
+    "scene": "chat",
+    "language": "en",
+    "source": "The budget is not eight hundred, it is nine hundred, still four people, please do not mix that up.",
+    "context": {},
+    "facts": [
+      "(?:nine hundred|900)",
+      "(?:four|4)",
+      "(?:not|don.t|avoid).*mix|(?:not|don.t).*confus"
+    ],
+    "layout": false,
+    "cohort": "previous-test-regression"
+  }
+]

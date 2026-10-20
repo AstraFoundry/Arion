@@ -1,0 +1,66 @@
+{
+  "newGenerations": 202,
+  "replayedSourcePreparations": 457,
+  "newGoPreparations": 0,
+  "sourceTreatments": 914,
+  "skippedSourceTreatments": 712,
+  "finalBodies": 0,
+  "groups": {
+    "baseline": {
+      "cases": 101,
+      "conforming": 79,
+      "harmful": 22,
+      "missed": 0,
+      "requiredRepairs": 47,
+      "repaired": 47,
+      "protocolFailures": 0
+    },
+    "balanced": {
+      "cases": 101,
+      "conforming": 79,
+      "harmful": 22,
+      "missed": 0,
+      "requiredRepairs": 47,
+      "repaired": 47,
+      "protocolFailures": 0
+    }
+  },
+  "selection": {
+    "qualified": false,
+    "selected": null,
+    "screenPassedArms": [],
+    "productionActivated": false,
+    "freshExecuted": false,
+    "formatterExecuted": false,
+    "resultsSha256": "1dee90ca5fa4de39be71a4f92f748a0d290ae0e9182dc76ce15f07aee9909bfc",
+    "reviewSha256": "1eadeea9364907f5b1682b85be6cf7b80071b8643f409c027eb1be9b4714897c",
+    "reason": "LFM2.5 arms both conform79/101, harmful22 each, missed0, repaired47/47. Same-request canonical controls conform92/94, harmful3/4, missed6/3. Nine improved and37 regressed choices; reject both, no formatter/fresh expansion."
+  },
+  "pairedComparison": {
+    "sameRequests": 202,
+    "changedChoices": 46,
+    "improvements": 9,
+    "regressions": 37,
+    "limits": "Same202 complete requests compared with prior actual canonical Qwen controls, not regenerated. Different architecture/tokenizer/template/quantization; no isolated parameter-count or quantization causality.46 differences include9 improvements and37 regressions; no both-correct normalization differences."
+  },
+  "limits": "Different architecture/tokenizer/template/quantization; no isolated parameter-count/quantization causality.12 forced-original ambiguity schemas per arm are not autonomous semantic choices. No newASR/OCR/final bodies or semantic rejection/source fallback. Original release requirements unchanged; no production integration.",
+  "preflight": {
+    "attempts": 12,
+    "completedResponses": 12,
+    "protocolConforming": 12,
+    "taskConforming": 8,
+    "errors": 0,
+    "qualification": {
+      "qualifiedForSelector": true,
+      "productionQualified": false,
+      "resultsSha256": "b37fe9bd0d2f5b6bcc9e280e27161882cc732b6efce87c89f9c55ccff3e34b90",
+      "freezeSha256": "6aeb818853ff68bfb99a2e2f4472b8497321df8465cfaf804a617b9ca2c6f91e",
+      "cacheRawParity": {
+        "99": true,
+        "0": true
+      },
+      "reason": "12 normal-stop valid JSON responses, actual17/17Metal and0/17CPU layers, exact embedded/native template (upstream source differs; local text-only serializer diagnostic is separate) and observed empty-thinking prefix; cache-off/on/off raw parity.8 task-conforming positive controls,4 harmful literal-cash replacements. Compatibility only, permits exposed unchanged202 research comparison, never release."
+    },
+    "finalBodies": 0
+  }
+}

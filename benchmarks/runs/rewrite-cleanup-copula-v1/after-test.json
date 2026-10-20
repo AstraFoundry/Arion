@@ -1,0 +1,9 @@
+{
+  "command": [
+    "go",
+    "test",
+    "./domain",
+    "-count=1"
+  ],
+  "exitCode": 0
+}

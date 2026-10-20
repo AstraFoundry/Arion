@@ -1,0 +1,23 @@
+{
+  "kind": "actual-production-cleanup",
+  "newAsrInference": false,
+  "newLlmInference": false,
+  "observations": 120,
+  "changedSources": 0,
+  "goVersion": "go1.27.1 darwin/arm64",
+  "workingModule": "Isolated replay module from rewrite-cleanup-preflight-v1",
+  "command": [
+    "go",
+    "run",
+    ".",
+    "/Users/steven/code/Arion/benchmarks/corpora/rewrite-natural-asr-v1/inputs.json"
+  ],
+  "environment": {
+    "GOWORK": "off"
+  },
+  "sourceSnapshotProvenance": "benchmarks/runs/rewrite-cleanup-preflight-v1/provenance.json",
+  "sourceSnapshotProvenanceSha256": "daabe62f6b155f715fa926a7a51d169d2c8b7fcbe5b618ac5d6db3a4e7048998",
+  "inputSha256": "425e9e336752fecf28e147146b46afcbabe40aade4299f087f84a02158589085",
+  "observationsSha256": "7caf23e4127371edf9b5a5d23e8c192badca50be5edd5add89db65533c6a2c99",
+  "scope": "Every cleanup output personally compared: all120 source strings unchanged. This exercises actual deterministic cleanup only, not LLM or native dictation lifecycle/latency."
+}

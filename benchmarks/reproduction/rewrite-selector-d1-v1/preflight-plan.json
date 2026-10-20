@@ -1,0 +1,32 @@
+{
+  "model": "d1-omni-600M-Q8_0 text decision component",
+  "parameters": 380732161,
+  "familyParameters": 587161089,
+  "nativeEndpoint": "/v1/systemone",
+  "nativeRequests": 12,
+  "nativeInputs": 6,
+  "questionCount": 12,
+  "modelResponsesExpected": 12,
+  "generatedTokensExpected": 0,
+  "settings": {
+    "gpuLayers": [
+      99,
+      0
+    ],
+    "context": 4096,
+    "batch": 4096,
+    "microBatch": 4096,
+    "threads": 4,
+    "parallel": 1,
+    "warmup": false,
+    "cache": "Native decision default disabled; no command override",
+    "seed": 42
+  },
+  "quality": [
+    "Three required context-supported repairs and three meaning-conflict negatives; unchanged evaluator outside all requests.",
+    "Personally read every actual typed response/source/context and applied choice. Protocol compatibility is separate from semantic quality."
+  ],
+  "qualification": "Native endpoint protocol/actual identity/template/budget are separate gates. Do not credit HTTP failures or assume native response keys. No main comparison until observed contract is understood.",
+  "comparison": "New decision architecture/task framing/serialization/model together. Full original22messages retained as state. Not isolated same-request model comparison.",
+  "limits": "No final body, ASR, Vision, production changes, semantic output rejection or source fallback. Exposed development inputs, no independent/held-out/actual16GB acceptance.12 forced-keep cases per101 in future main would remain explicit mechanical outcomes with no model credit."
+}

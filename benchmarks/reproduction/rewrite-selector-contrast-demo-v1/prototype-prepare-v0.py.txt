@@ -1,0 +1,25 @@
+"""Inspect novel contrastive demonstration feasibility with zero inference."""
+from pathlib import Path
+import json,importlib.util,hashlib
+R=Path.cwd();H=R/'benchmarks/reproduction/rewrite-selector-screen-v1'
+spec=importlib.util.spec_from_file_location('future_semantic_demo_pipeline',H/'pipeline.py');p=importlib.util.module_from_spec(spec);spec.loader.exec_module(p)
+examples=[
+ dict(id='fabric-risk-negative',source='衣服的缝线先检查，不要当成项目风险。',context={'Screen':'软件项目风险评估：待确认。'},scene='work',expected='keep'),
+ dict(id='project-risk-positive',source='这个软件项目的缝线先评估，确认前别上线。',context={'Screen':'软件项目风险评估：待确认。'},scene='work',expected='replace'),
+ dict(id='river-embankment-negative',source='河堤的护坡先检查，别拿来当琥珀饰品。',context={'Screen':'琥珀饰品清单：待核对。'},scene='work',expected='keep'),
+ dict(id='jewelry-amber-positive',source='这串护坡饰品先核对，确认前别寄出。',context={'Screen':'琥珀饰品清单：待核对。'},scene='work',expected='replace')]
+old=[]
+for name in ['rewrite-history-v1','rewrite-tone-controls-v1','rewrite-semantic-roles-v1']:
+ old+=json.loads((R/f'benchmarks/corpora/{name}/inputs.json').read_text())
+original=json.loads((H/'templates/baseline/prompts.json').read_text())['selectionExamples'];known={x['source'] for x in old+original}
+records=[]
+for e in examples:
+ assert e['source'] not in known
+ variants={}
+ for arm in ['baseline','balanced']:
+  request,prepared=p.selection_payload(arm,e,dict(text=e['source'],version='speech-spans-v2'))
+  variants[arm]=dict(prototypeUserMessage=request['messages'][-1],hypotheses=prepared['hypotheses'],schema=request['response_format'],nativePreparation=False,modelGenerations=0)
+ records.append(dict(sample=e,exactSourceCollision=False,variants=variants))
+result=dict(status='producer-feasibility-only',modelGenerations=0,newAsrGenerations=0,newVisionGenerations=0,actualGoPreparations=0,records=records,limitations='Constructed source and cleanup inputs; no model or native speech pipeline has run. Expected choices are proposed prompt demonstrations, not model results, held-out labels or independent annotation. No adoption or benefit is claimed.')
+(R/'.workspace/rewrite-semantic-demo-preflight-v1/producer-feasibility.json').write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n')
+for record in records:print(json.dumps(dict(id=record['sample']['id'],source=record['sample']['source'],expectedDemo=record['sample']['expected'],hypotheses=record['variants']['baseline']['hypotheses']),ensure_ascii=False))

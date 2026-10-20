@@ -1,0 +1,21 @@
+{
+  "cases": 36,
+  "newGenerations": 72,
+  "arms": [
+    "qwen-lowercase",
+    "qwen-data-object"
+  ],
+  "baseline": {
+    "run": "benchmarks/runs/rewrite-private-spans-v1/qwen-private-spans",
+    "resultsSha256": "4ea717bfb6a7f61ba129518c0b951eb9b121865fdf88b7cce36337918f6c05a1",
+    "reviewSha256": "05198958f149a929e35e4e877a3beb22c3c5937952bc71f8f8eb72a82ab93bf4",
+    "newInference": false
+  },
+  "scope": "Full36 exposed Chinese synthetic regressions; reused baseline observations count only in their original round, never as new generation.",
+  "treatments": [
+    "Lowercase arm changes only current reference JSON key casing, preserving all values, prompts, demonstrations and encoded source. No-context requests must be byte-identical to the frozen baseline.",
+    "Data-object arm converts all demonstration/current user turns to a uniform scene/reference/evidence/token-types/dictation JSON object and updates only the trusted system data locator. Full OCR remains; same private maps/cleanup/scene templates/decoding. This is an input-packaging package, not output JSON or a tool."
+  ],
+  "gate": "A candidate requires all36 faithful under the retained rubric, all11 required repairs, owner/email anchors retained, at least35/36 scene-ready, no truncation/new harmful correction/unexpanded tokens. Failed development does not consume fresh24 or alter the release scope.",
+  "limits": "No semantic validator, output rejection or source fallback. Normalization-sensitive ratings stay explicitly qualified, not relabeled as definition reversal. Only pinned Qwen3.5-2B/CPU4/GPU0/cacheoff/reasoningoff384. No4B/olderQwen/Granite. CurrentM4/32GB is not minimumAppleSilicon16GB or original-language/native/independent review acceptance. Reused serial baseline and clock/host drift prohibit causal timing claims."
+}

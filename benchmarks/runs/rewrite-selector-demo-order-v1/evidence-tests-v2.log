@@ -1,0 +1,9 @@
+
+> arion-monorepo@0.0.0 rewrite:selector-demo-order-v1:test /Users/steven/code/Arion
+> node scripts/rewrite-evidence-command.mjs rewrite-selector-demo-order-v1 test_report_v2
+
+...........
+----------------------------------------------------------------------
+Ran 11 tests in 26.630s
+
+OK

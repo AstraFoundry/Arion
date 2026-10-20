@@ -1,0 +1,63 @@
+{
+  "allRawResponsesRead": 404,
+  "resultsSha256": "6e0d92a9056cac66e336c9d4417732ecb57b6db1d76eed3505297bc6191d87dc",
+  "uniqueFailedTuplesRead": 25,
+  "changedPairsRead": 27,
+  "ranges": [
+    [
+      0,
+      40
+    ],
+    [
+      40,
+      85
+    ],
+    [
+      85,
+      137
+    ],
+    [
+      137,
+      190
+    ],
+    [
+      190,
+      240
+    ],
+    [
+      240,
+      260
+    ],
+    [
+      260,
+      285
+    ],
+    [
+      285,
+      315
+    ],
+    [
+      315,
+      345
+    ],
+    [
+      345,
+      375
+    ],
+    [
+      375,
+      404
+    ]
+  ],
+  "improvements": 3,
+  "regressions": 23,
+  "allowedChoiceChanges": 1,
+  "method": "Personal read of every actual source/context/hypotheses/raw choice/edited source, all25 unique failed tuples and all27 changed paired choices. Truncated review output reread before completion. Not independent blind review.",
+  "observations": [
+    "Moving three keep demonstrations to the end reduces harmful edits but misses many supported names and document spelling repairs.",
+    "Unsupported role-implication-3 and role-customer-3 edits persist in both reordered arms.",
+    "One getCash normalization change remains allowed under the unchanged user rubric.",
+    "No final body generated; current ASR/Vision/native integration and actual16GB acceptance not executed."
+  ],
+  "deviceAvailability": "User has no16GB Mac currently; continue32GB development-host verification without waiving16GB acceptance."
+}

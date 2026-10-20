@@ -1,0 +1,10 @@
+{
+  "freezeSha256": "11370a1566304473ff65dd75de08fe7fb08699a781de798aac99ccf904cd0cc1",
+  "resultsSha256": "a1e6c08145e91a34c978ac0701b8c39731f176bbb87987e12bfcc14ef1801563",
+  "reviewSha256": "0a0f7d3458c01c65ab560da45df9b6464687f633d3853154dbe3d35b742c99b2",
+  "qualified": false,
+  "selected": null,
+  "productionActivated": false,
+  "freshExecuted": false,
+  "reason": "Broad401-source coverage completed with465 actual outputs and no selector protocol failures.397 final bodies verified faithful,3 fail retained criterion (shared date scope, request-to-speaker framing, explicit numeric contrast),1 uncertain;335 usable. Two unique Chinese term choices kept and cross-script/tonal coverage gaps remain. This is historical exposed regression, not new independent release acceptance."
+}

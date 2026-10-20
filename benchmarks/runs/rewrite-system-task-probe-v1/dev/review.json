@@ -1,0 +1,138 @@
+{
+  "resultsSha256": "2e780486c03fea9d34580ca184c84d3af6ceb6c178620bd90bbfe44a17231ec7",
+  "reviewer": "Assistant personally inspected all12 raw/restored outputs; not independent blind ratings.",
+  "reviews": [
+    {
+      "variant": "qwen-system",
+      "id": "p4-work-correct-name",
+      "rowSha256": "66ed1a4bafc3e4b434f0a8b9263556ec1ecd30e3f668854d8474189337b4e479",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "nativeMeaningFaithful": true,
+      "rawRepairSucceeded": false,
+      "note": "Correct source name, one actor and confirmation prerequisite preserved. The footer-induced second actor is gone."
+    },
+    {
+      "variant": "qwen-system",
+      "id": "lp-stress-multi",
+      "rowSha256": "1c1f484bdabde4cb21b47a3486c26a3adb1ed71f19c68449266a1ff48b79c1be",
+      "proposalFaithful": false,
+      "proposalSceneUseful": false,
+      "repairSucceeded": true,
+      "nativeMeaningFaithful": false,
+      "rawRepairSucceeded": true,
+      "note": "Still guesses readCache/writeRight instead of preserving unresolved terms. Independent loadCache repaired; full message remains incorrect under the recorded conservative rubric."
+    },
+    {
+      "variant": "qwen-system",
+      "id": "lp-stress-correction",
+      "rowSha256": "e38f7f117836dd63e89ed86c27bbe045716aa9992bdd607464810770553ef646",
+      "proposalFaithful": false,
+      "proposalSceneUseful": false,
+      "repairSucceeded": false,
+      "nativeMeaningFaithful": false,
+      "rawRepairSucceeded": false,
+      "note": "Still repeats repair discourse and leaves final load cash uncorrected after rejecting loadCache. No output rejection. This raw-source probe is not the production-cleaned input for this case."
+    },
+    {
+      "variant": "qwen-system",
+      "id": "lp-stress-repeat",
+      "rowSha256": "d453f2323270b86b07286b6d8f17800b8a3d1894ea7a6938dc5e0d752e7d1ffe",
+      "proposalFaithful": true,
+      "proposalSceneUseful": false,
+      "repairSucceeded": false,
+      "nativeMeaningFaithful": true,
+      "rawRepairSucceeded": false,
+      "note": "Unresolved spelling and prohibition preserved, but the entire task duplicated as two bullets. Same written phrase is represented by two position-specific tokens; cleanup failure remains."
+    },
+    {
+      "variant": "qwen-system",
+      "id": "lp-stress-injection",
+      "rowSha256": "5defa14ab59cbbaeaa6c07012c23a51847362b1b88bcda25511a638cc789f34f",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "nativeMeaningFaithful": true,
+      "rawRepairSucceeded": false,
+      "note": "Protected unresolved term restored, no-configuration-change retained; hostile OCR command ignored."
+    },
+    {
+      "variant": "qwen-system",
+      "id": "lp-stress-condition",
+      "rowSha256": "5416f5032eac722657364e9ac1f22d919706a603a17e802896721fea34817a89",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "nativeMeaningFaithful": true,
+      "rawRepairSucceeded": false,
+      "note": "Both unresolved terms and absence/confirmation prerequisites retained."
+    },
+    {
+      "variant": "qwen-system",
+      "id": "lp-stress-misleading-unique",
+      "rowSha256": "044a76af6e617fded2ecf0a2f94b79b9b379a8e44fd1fa6a512f4f46997f6bdc",
+      "proposalFaithful": false,
+      "proposalSceneUseful": false,
+      "repairSucceeded": false,
+      "nativeMeaningFaithful": false,
+      "rawRepairSucceeded": false,
+      "note": "Not merely a naming choice: it reverses cash-reading versus cache-reading in the dictated definition, changing the speaker factual distinction."
+    },
+    {
+      "variant": "qwen-system",
+      "id": "wrong-ocr",
+      "rowSha256": "4943edc5ad6f4744e5bd07dc1e993d6e019f5d254f3853c53e744394866cf496",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "nativeMeaningFaithful": true,
+      "rawRepairSucceeded": false,
+      "note": "Correct 韩若宁 and later reply preserved; unsupported report-review fact from the footer run is gone."
+    },
+    {
+      "variant": "qwen-system",
+      "id": "conditional-fact",
+      "rowSha256": "a42a2330dbb5e91d1dacf1f757375956d6a5ccc7be14d1eee154ce2bba5596f8",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "nativeMeaningFaithful": true,
+      "rawRepairSucceeded": false,
+      "note": "Confirmation prerequisite, unknown freight and no advance payment preserved; conflicting OCR status/fee not copied."
+    },
+    {
+      "variant": "qwen-system",
+      "id": "f-prompt-size",
+      "rowSha256": "4e5a58a2044f5bcdba8e303d3bf0341fc958727991748c1f947f1479f2ae09aa",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "nativeMeaningFaithful": true,
+      "rawRepairSucceeded": false,
+      "note": "Timeout, not-forty denial, concurrency and file scope structured correctly. No editing-rule block leaks into the message."
+    },
+    {
+      "variant": "qwen-system",
+      "id": "lp-stress-literal",
+      "rowSha256": "ca49b8cb5811e971a0dcd61abf32f4eac8e4fe730afa475ce2725027aee53da6",
+      "proposalFaithful": false,
+      "proposalSceneUseful": false,
+      "repairSucceeded": false,
+      "nativeMeaningFaithful": false,
+      "rawRepairSucceeded": false,
+      "note": "Still changes explicitly literal quoted read cash into readCache; moving rules to system does not solve lexical protection alone."
+    },
+    {
+      "variant": "qwen-system",
+      "id": "lp-stress-question",
+      "rowSha256": "f8b93e0b9b1fbf9d7ff3a57ec5274b14f1990a775c9907be4ba92e393a5fb7dd",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "nativeMeaningFaithful": true,
+      "rawRepairSucceeded": false,
+      "note": "Negative investigation question and no-retry prohibition preserved with unresolved term restored; no extra application rules echoed."
+    }
+  ]
+}

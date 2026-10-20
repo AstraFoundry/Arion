@@ -1,0 +1,12 @@
+{
+  "status": "complete-artifact-inspection",
+  "fullArtifactSha256": "22ec0f9cc99a90185312de3c882c84e7bd6789bdd050389844380a01a831d7f1",
+  "parameters": 1631750144,
+  "tensorCount": 362,
+  "architecture": "granite",
+  "chatTemplateEqualsUpstream": true,
+  "upstreamTemplateUrl": "https://huggingface.co/ibm-granite/granite-4.0-1b/resolve/6a7381ba1f54d684ff508d991aeb7dc580157103/chat_template.jinja",
+  "upstreamTemplateSha256": "9524df67b77a7b25a2dfee898f75b316a157eb9d855b51e32aeac79d7c8a83ce",
+  "nativeExecuted": false,
+  "inferenceGenerations": 0
+}

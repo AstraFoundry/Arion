@@ -1,0 +1,12 @@
+{
+  "version": "history-chain-v1",
+  "sourceCases": 401,
+  "cohorts": {
+    "historical-synthetic-regression": 281,
+    "historical-natural-read-speech": 120
+  },
+  "intervention": "Unchanged current2B cache-enabled Go cleanup/conditional bounded selector/source-only script-routed formatter on the full historical union of401 exact source/context/scene tuples. No priming; startup separate. Broader quality coverage, not an isolated speed/parity or new held-out/independent test.",
+  "rubric": "Personally review every actual raw selector and final response; source/context/scene, meaning, correct terms, language and natural organization separate. Preserve uncertainty null. User permits source-letter canonical readCash, rejects unsupported readCache. All raw failures and missing final bodies retained; no validator filtering or source fallback.",
+  "completion": "Run complete means all401 attempted, not all successful. Each actual inference row plus per-source outcome stored. Invalid selector response prevents only its formatter call, records explicit missing body and continues independent fixtures. Qualification requires complete final coverage and broad meaning/style/repair acceptance, not a protocol-only pass.",
+  "limits": "Historical exposed synthetic281/read-speech120; warmups and forced empty decisions excluded. Same old inputs/context ablations/scenes preserved, no new ASR/OCR/native/independent/min16 evidence. No4B/olderQwen/Granite/Q8 or fresh24. Production unchanged."
+}

@@ -1,0 +1,37 @@
+{
+  "processes": [
+    {
+      "pid": 91890,
+      "ppid": 1,
+      "rssBytes": 999899136,
+      "command": "/Applications/Arion.app/Contents/MacOS/Arion"
+    },
+    {
+      "pid": 91928,
+      "ppid": 91890,
+      "rssBytes": 82034688,
+      "command": "/Applications/Arion.app/Contents/Resources/llm/arion-llm"
+    },
+    {
+      "pid": 91929,
+      "ppid": 91928,
+      "rssBytes": 1670742016,
+      "command": "/Applications/Arion.app/Contents/Resources/llm/llama-server --model /Users/steven/Library/Application Support/Arion/models/qwen3.5-2b-q4-k-m-metal/Qwen3.5-2B-Q4_K_M.gguf --host /var/folders/wg/ntr3cxsd34x0rw4w17rdrym40000gn/T/arion-llm-2879601822/worker.sock --threads 4 --threads-batch 4 --n-gpu-layers 99 --ctx-size 4096 --parallel 1 --batch-size 4096 --ubatch-size 4096 --reasoning off --jinja --offline --no-warmup --no-context-shift --cache-ram 0 --slots --slot-save-path /var/folders/wg/ntr3cxsd34x0rw4w17rdrym40000gn/T/arion-llm-2879601822/ --no-webui --log-disable"
+    }
+  ],
+  "tcpUdpSockets": 0,
+  "privateDirectoryMode": "0700",
+  "privateDirectoryFiles": [
+    "worker.sock"
+  ],
+  "kvFiles": 0,
+  "rewriteStatus": {
+    "run": "18c07380cea6c1c5",
+    "modelId": "qwen3.5-2b-q4-k-m-metal",
+    "phase": "ready",
+    "at": "2026-10-20T04:14:23.687253Z",
+    "event": "rewrite_status",
+    "outcome": "ready"
+  },
+  "scope": "Read-only installed product process observation, not an additional model inference; RSS is a point-in-time process measurement with shared pages, not minimum-hardware acceptance."
+}

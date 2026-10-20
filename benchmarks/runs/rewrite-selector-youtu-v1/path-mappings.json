@@ -1,0 +1,10 @@
+{
+  "source": ".workspace/rewrite-selector-youtu-v1",
+  "published": "benchmarks/runs/rewrite-selector-youtu-v1",
+  "privateExcluded": [
+    "weights",
+    "runtime environments",
+    "native binaries"
+  ],
+  "legacyExecutorLabels": "Immutable hybrid-preflight/selector-model-v1 labels retained; actual Youtu model/freeze/commands identify treatment."
+}

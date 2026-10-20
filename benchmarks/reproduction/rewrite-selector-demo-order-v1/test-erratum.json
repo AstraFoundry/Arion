@@ -1,0 +1,6 @@
+{
+  "original": "test_report.py",
+  "corrected": "test_report_v2.py",
+  "issue": "The changed-context corruption test selects nonexistent arm demo-order, raising StopIteration before the intended validation. The frozen test and its failed attempt are preserved. Version2 selects the actual negative-last treatment; all11 evidence assertions remain. No inference, score, frozen executor or output changes.",
+  "modelGenerations": 0
+}

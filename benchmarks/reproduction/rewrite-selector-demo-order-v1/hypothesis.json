@@ -1,0 +1,58 @@
+{
+  "status": "hypothesis-only-no-inference",
+  "purpose": "Test whether the final demonstration labels contribute to unique-candidate replacement bias, keeping all ten demonstration pairs and every rule/candidate/source/context/schema unchanged.",
+  "sourceReference": "benchmarks/runs/rewrite-selector-screen-v1/run/results.jsonl",
+  "sourceSha256": "ece87532ba75c99d837a2d1409b1ace5ebcb1e77d4a871f586c3c215636cdbbb",
+  "originalAssistantAnswers": [
+    {
+      "e0": "replace"
+    },
+    {
+      "e0": "replace",
+      "e1": "replace"
+    },
+    {
+      "e0": "replace"
+    },
+    {
+      "e0": "replace"
+    },
+    {
+      "e0": "keep"
+    },
+    {
+      "e0": "keep"
+    },
+    {
+      "e0": "keep"
+    },
+    {
+      "e0": "replace"
+    },
+    {
+      "e0": "replace"
+    },
+    {
+      "e0": "replace"
+    }
+  ],
+  "proposedPairPermutation": [
+    0,
+    1,
+    2,
+    3,
+    7,
+    8,
+    9,
+    4,
+    5,
+    6
+  ],
+  "addedExamples": 0,
+  "removedExamples": 0,
+  "changedDemonstrationContent": false,
+  "modelGenerations": 0,
+  "comparisonScope": "If preregistered after current study closure, compare entire101-source arms, never only failing cases. Preserve supported ASR repair requirements and all literal/meaning boundaries; no acceptance threshold relaxation or semantic output rejection.",
+  "limits": "Ordering is a hypothesis, not established causality. Existing current last three examples are positive; future terminal-negative ordering may trade harmful corrections for missed repairs and must be rejected if it does so.",
+  "priorEvidence": "Round61 appended four novel demonstrations after original ten. Their labels are keep, mixed replace/keep, keep, replace; the last is still positive. It reduced overall conformance. It did not isolate unchanged-pair ordering or terminal-negative ordering; no recency explanation is established."
+}

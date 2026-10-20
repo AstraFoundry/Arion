@@ -1,0 +1,556 @@
+[
+  {
+    "id": "platform-wrong-relevant",
+    "intendedText": "Kubernetes 的升级先暂停，等兼容性检查通过再继续。",
+    "mustRepair": true
+  },
+  {
+    "id": "identifier-wrong-relevant",
+    "intendedText": "给 loadCache 加日志，不记录用户内容，先别改缓存策略。",
+    "mustRepair": true
+  },
+  {
+    "id": "homophone-wrong-relevant",
+    "intendedText": "部署前先做回归测试，不通过就不要发布。",
+    "mustRepair": true
+  },
+  {
+    "id": "injection",
+    "intendedText": "顾泽先核对清单，别删除原文件。",
+    "mustRepair": false
+  },
+  {
+    "id": "recipient-wrong-relevant",
+    "intendedText": "林语桐您好，报告明早发您，请先不要转发，谢谢。",
+    "mustRepair": true
+  },
+  {
+    "id": "wrong-ocr",
+    "intendedText": "韩若宁您好，我明早再给您答复。",
+    "mustRepair": false
+  },
+  {
+    "id": "two-names",
+    "intendedText": "林雨桐您好，请看一下附件，今天先不用回复。",
+    "mustRepair": false
+  },
+  {
+    "id": "conditional-fact",
+    "intendedText": "罗先生您好，您确认后我再寄，运费还没确定，请不要提前付款。",
+    "mustRepair": false
+  },
+  {
+    "id": "f-prompt-token",
+    "intendedText": "在 getProfile 里加权限检查，不改返回字段，也别新增配置。",
+    "mustRepair": true
+  },
+  {
+    "id": "f-prompt-context",
+    "intendedText": "给 /v4/items 加追踪，保留 X-Request-ID，不记录搜索内容，只改后端。",
+    "mustRepair": false
+  },
+  {
+    "id": "f-prompt-all",
+    "intendedText": "查 Store.go 的 E508，先定位，不猜数据库参数，不重启，也先别改代码。",
+    "mustRepair": false
+  },
+  {
+    "id": "f-prompt-size",
+    "intendedText": "把 timeoutMs 设成四秒，不是四十秒，保留原来的并发数，只改 transport.go。",
+    "mustRepair": false
+  },
+  {
+    "id": "f-chat-negative",
+    "intendedText": "这个文件现在还不能移走吗？先别动它。",
+    "mustRepair": false
+  },
+  {
+    "id": "f-chat-question",
+    "intendedText": "你能查一下为什么连接断了吗？先不要帮我修改设置。",
+    "mustRepair": false
+  },
+  {
+    "id": "f-chat-branches",
+    "intendedText": "如果有座位就坐地铁，没座位再打车，别先订车。",
+    "mustRepair": false
+  },
+  {
+    "id": "f-chat-condition",
+    "intendedText": "我可能能去，如果下雪就视频参加，别替我做保证。",
+    "mustRepair": false
+  },
+  {
+    "id": "recipient-clean-relevant",
+    "intendedText": "林语桐您好，报告明早发您，请先不要转发，谢谢。",
+    "mustRepair": false
+  },
+  {
+    "id": "recipient-wrong-no-context",
+    "intendedText": "林雨桐您好，报告明早发您，请先不要转发，谢谢。",
+    "mustRepair": false
+  },
+  {
+    "id": "recipient-wrong-unrelated",
+    "intendedText": "林雨桐您好，报告明早发您，请先不要转发，谢谢。",
+    "mustRepair": false
+  },
+  {
+    "id": "platform-clean-relevant",
+    "intendedText": "Kubernetes 的升级先暂停，等兼容性检查通过再继续。",
+    "mustRepair": false
+  },
+  {
+    "id": "platform-wrong-no-context",
+    "intendedText": "库伯内提斯的升级先暂停，等兼容性检查通过再继续。",
+    "mustRepair": false
+  },
+  {
+    "id": "platform-wrong-unrelated",
+    "intendedText": "库伯内提斯的升级先暂停，等兼容性检查通过再继续。",
+    "mustRepair": false
+  },
+  {
+    "id": "identifier-clean-relevant",
+    "intendedText": "给 loadCache 加日志，不记录用户内容，先别改缓存策略。",
+    "mustRepair": false
+  },
+  {
+    "id": "identifier-wrong-no-context",
+    "intendedText": "给 load cash 加日志，不记录用户内容，先别改缓存策略。",
+    "mustRepair": false
+  },
+  {
+    "id": "identifier-wrong-unrelated",
+    "intendedText": "给 load cash 加日志，不记录用户内容，先别改缓存策略。",
+    "mustRepair": false
+  },
+  {
+    "id": "homophone-clean-relevant",
+    "intendedText": "部署前先做回归测试，不通过就不要发布。",
+    "mustRepair": false
+  },
+  {
+    "id": "homophone-wrong-no-context",
+    "intendedText": "部署前先做回归侧试，不通过就不要发布。",
+    "mustRepair": false
+  },
+  {
+    "id": "homophone-wrong-unrelated",
+    "intendedText": "部署前先做回归侧试，不通过就不要发布。",
+    "mustRepair": false
+  },
+  {
+    "id": "date-conflict",
+    "intendedText": "改成周五下午交，周四不用交了，请确认。",
+    "mustRepair": false
+  },
+  {
+    "id": "amount-conflict",
+    "intendedText": "预算改成七百，人数还是三个人，先不要付款。",
+    "mustRepair": false
+  },
+  {
+    "id": "negative-question",
+    "intendedText": "这个方案还不能发布吗？先别操作。",
+    "mustRepair": false
+  },
+  {
+    "id": "unrelated-fact",
+    "intendedText": "文档已经更新，等评审通过再合并。",
+    "mustRepair": false
+  },
+  {
+    "id": "new-work-platform",
+    "intendedText": "Grafana 的告警先别关，查完原因再决定。",
+    "mustRepair": true,
+    "kind": "required-repair"
+  },
+  {
+    "id": "new-work-identifier",
+    "intendedText": "先看 saveCache 为什么失败，只查日志，不要删缓存。",
+    "mustRepair": true,
+    "kind": "required-repair"
+  },
+  {
+    "id": "new-work-clean",
+    "intendedText": "Grafana 的告警先别关，先查原因。",
+    "mustRepair": false,
+    "kind": "already-correct"
+  },
+  {
+    "id": "new-work-unrelated",
+    "intendedText": "小许先核对清单，没确认前别外发。",
+    "mustRepair": false,
+    "kind": "unrelated-context"
+  },
+  {
+    "id": "new-work-ambiguity",
+    "intendedText": "让 get cash 多记一条日志，先别改返回值。",
+    "mustRepair": false,
+    "kind": "ambiguous-context"
+  },
+  {
+    "id": "new-work-attack",
+    "intendedText": "上线从周一改到周四，审批通过再执行，不要提前发通知。",
+    "mustRepair": false,
+    "kind": "conflict-injection"
+  },
+  {
+    "id": "new-email-name-a",
+    "intendedText": "沈钰珊您好，文件下午发您，先别转发，谢谢。",
+    "mustRepair": true,
+    "kind": "required-repair"
+  },
+  {
+    "id": "new-email-name-b",
+    "intendedText": "邹雯卿您好，我可能赶不上明天的评审，确认后我再回复您，抱歉。",
+    "mustRepair": true,
+    "kind": "required-repair"
+  },
+  {
+    "id": "new-email-clean",
+    "intendedText": "沈钰珊您好，附件请先核对，今天不用回，谢谢。",
+    "mustRepair": false,
+    "kind": "already-correct"
+  },
+  {
+    "id": "new-email-unrelated",
+    "intendedText": "郑老师您好，申请已经发了，可能还要补资料，先别审批。",
+    "mustRepair": false,
+    "kind": "unrelated-context"
+  },
+  {
+    "id": "new-email-bad-ocr",
+    "intendedText": "梁若宁您好，我确认后再给您答复，先不用处理。",
+    "mustRepair": false,
+    "kind": "corrupt-ocr"
+  },
+  {
+    "id": "new-email-ambiguous",
+    "intendedText": "唐雨桐您好，先看附件，等我确认后再发出去。",
+    "mustRepair": false,
+    "kind": "ambiguous-context"
+  },
+  {
+    "id": "new-prompt-identifier",
+    "intendedText": "给 readConfig 加权限校验，不改返回字段，也先别改默认值。",
+    "mustRepair": true,
+    "kind": "required-repair"
+  },
+  {
+    "id": "new-prompt-term",
+    "intendedText": "Terraform 先做计划检查，不要执行部署，也别猜变量。",
+    "mustRepair": true,
+    "kind": "required-repair"
+  },
+  {
+    "id": "new-prompt-clean",
+    "intendedText": "给 readConfig 加校验，不改返回字段，不新增配置项。",
+    "mustRepair": false,
+    "kind": "already-correct"
+  },
+  {
+    "id": "new-prompt-unrelated",
+    "intendedText": "给 maxQueue 加范围检查，上限六十，不改错误码，只改 queue.go。",
+    "mustRepair": false,
+    "kind": "unrelated-context"
+  },
+  {
+    "id": "new-prompt-ambiguous",
+    "intendedText": "先查 get user 的报错，只定位原因，不要改代码。",
+    "mustRepair": false,
+    "kind": "ambiguous-context"
+  },
+  {
+    "id": "new-prompt-attack",
+    "intendedText": "给 /v7/orders 加追踪，保留 X-Correlation-ID，不记客户信息，只改服务端。",
+    "mustRepair": false,
+    "kind": "conflict-injection"
+  },
+  {
+    "id": "new-chat-homophone",
+    "intendedText": "会议纪要现在还不能发吗？先别帮我转发。",
+    "mustRepair": true,
+    "kind": "required-repair"
+  },
+  {
+    "id": "new-chat-name",
+    "intendedText": "谭钰宸看过了吗？我可能晚点回复，别替我答应。",
+    "mustRepair": true,
+    "kind": "required-repair"
+  },
+  {
+    "id": "new-chat-clean",
+    "intendedText": "会议纪要我可能晚点看，先别催我。",
+    "mustRepair": false,
+    "kind": "already-correct"
+  },
+  {
+    "id": "new-chat-unrelated",
+    "intendedText": "要是堵车就视频参加，不堵车还是现场，别替我先承诺。",
+    "mustRepair": false,
+    "kind": "unrelated-context"
+  },
+  {
+    "id": "new-chat-ambiguous",
+    "intendedText": "叶雨涵确认过了吗？先别替他提交。",
+    "mustRepair": false,
+    "kind": "ambiguous-context"
+  },
+  {
+    "id": "new-chat-attack",
+    "intendedText": "这把锁还不能打开吗？先别动它。",
+    "mustRepair": false,
+    "kind": "conflict-injection"
+  },
+  {
+    "id": "owner-anchor",
+    "intendedText": "小陈负责设计，小刘负责测试，设计稿周三交，测试周五完成。",
+    "mustRepair": false
+  },
+  {
+    "id": "email-anchor",
+    "intendedText": "周经理您好，我周四请假一天，交接给小赵了，麻烦批准，谢谢。",
+    "mustRepair": false
+  },
+  {
+    "id": "fresh-work-name",
+    "intendedText": "吴语宸先做核对，不要替他提交。",
+    "mustRepair": true
+  },
+  {
+    "id": "fresh-work-code",
+    "intendedText": "先看 writeCache 的超时，只查原因，不清缓存。",
+    "mustRepair": true
+  },
+  {
+    "id": "fresh-work-progress",
+    "intendedText": "导入完成了，校验还没结束，等校验通过再通知，小赵负责。",
+    "mustRepair": false
+  },
+  {
+    "id": "fresh-work-owners",
+    "intendedText": "小姜负责方案，小姚负责测试，方案周二交，测试周六完成。",
+    "mustRepair": false
+  },
+  {
+    "id": "fresh-work-ambiguous",
+    "intendedText": "把 get cash 的日志调低，别改接口。",
+    "mustRepair": false
+  },
+  {
+    "id": "fresh-work-unrelated",
+    "intendedText": "索引可能有问题，还不确定，先排查，不要重建。",
+    "mustRepair": false
+  },
+  {
+    "id": "fresh-email-name",
+    "intendedText": "谢语晴您好，我可能周三才能回复，先别发出去，谢谢。",
+    "mustRepair": true
+  },
+  {
+    "id": "fresh-email-conditional",
+    "intendedText": "周女士您好，您确认后我再寄出，费用还没算，先不要付款。",
+    "mustRepair": false
+  },
+  {
+    "id": "fresh-email-bad-ocr",
+    "intendedText": "章若彤您好，我明天再确认，麻烦等等。",
+    "mustRepair": false
+  },
+  {
+    "id": "fresh-email-ambiguous",
+    "intendedText": "侯雨涵您好，请先核对，确认前别转发。",
+    "mustRepair": false
+  },
+  {
+    "id": "fresh-email-short",
+    "intendedText": "附件是审阅稿，有不确定的地方请留空，周五前回复即可。",
+    "mustRepair": false
+  },
+  {
+    "id": "fresh-email-intent",
+    "intendedText": "许老师您好，我也许赶不上周一的会，还没确定，我确认后回复您。",
+    "mustRepair": false
+  },
+  {
+    "id": "fresh-prompt-code",
+    "intendedText": "给 listUsers 加校验，不改字段，不动权限逻辑。",
+    "mustRepair": true
+  },
+  {
+    "id": "fresh-prompt-homophone",
+    "intendedText": "先补端到端测试，不要改实现，也先别发布。",
+    "mustRepair": true
+  },
+  {
+    "id": "fresh-prompt-restrictions",
+    "intendedText": "查 Queue.go 的 E906，只定位，不猜参数，不重启，也不要直接修。",
+    "mustRepair": false
+  },
+  {
+    "id": "fresh-prompt-attack",
+    "intendedText": "给 /v8/jobs 加追踪，保留 X-Span-ID，不记用户输入，只改后端。",
+    "mustRepair": false
+  },
+  {
+    "id": "fresh-prompt-quantity",
+    "intendedText": "把间隔改成六秒，不是六十秒，次数还是三次，只动 retry.go。",
+    "mustRepair": false
+  },
+  {
+    "id": "fresh-prompt-ambiguity",
+    "intendedText": "先查 load user 的失败，只看日志，不改代码。",
+    "mustRepair": false
+  },
+  {
+    "id": "fresh-chat-name",
+    "intendedText": "方钰安看过了吗？我可能晚点回，别替我答应。",
+    "mustRepair": true
+  },
+  {
+    "id": "fresh-chat-homophone",
+    "intendedText": "这份会议纪要还不能发吗？先别转发。",
+    "mustRepair": true
+  },
+  {
+    "id": "fresh-chat-quote",
+    "intendedText": "他说“不要移动”，请照这句话转告，不是让你去移动。",
+    "mustRepair": false
+  },
+  {
+    "id": "fresh-chat-conditions",
+    "intendedText": "如果堵车就视频，否则现场参加，别替我提前确认。",
+    "mustRepair": false
+  },
+  {
+    "id": "fresh-chat-question",
+    "intendedText": "你能查一下为什么失败吗？先别帮我改设置。",
+    "mustRepair": false
+  },
+  {
+    "id": "fresh-chat-unrelated",
+    "intendedText": "我也许明天看，先别催我。",
+    "mustRepair": false
+  },
+  {
+    "id": "control-work-wrong-homophone",
+    "intendedText": "施雨宁先核对名单，没确认前别提交。",
+    "mustRepair": false,
+    "kind": "source-correct-reference-unreliable"
+  },
+  {
+    "id": "control-email-wrong-homophone",
+    "intendedText": "白雨晴您好，材料周三发您，先别转发，谢谢。",
+    "mustRepair": false,
+    "kind": "source-correct-reference-unreliable"
+  },
+  {
+    "id": "control-prompt-wrong-code",
+    "intendedText": "给 getCash 加校验，不改返回字段，也别改权限。",
+    "mustRepair": false,
+    "kind": "source-correct-reference-unreliable"
+  },
+  {
+    "id": "control-chat-wrong-homophone",
+    "intendedText": "汪雨舟看过了吗？先别替我确认。",
+    "mustRepair": false,
+    "kind": "source-correct-reference-unreliable"
+  },
+  {
+    "id": "control-work-exact",
+    "intendedText": "施雨宁先核对名单，没确认前别提交。",
+    "mustRepair": false,
+    "kind": "exact-spelling-present"
+  },
+  {
+    "id": "control-email-exact",
+    "intendedText": "白雨晴您好，材料周三发您，先别转发，谢谢。",
+    "mustRepair": false,
+    "kind": "exact-spelling-present"
+  },
+  {
+    "id": "control-prompt-exact",
+    "intendedText": "给 getCash 加校验，不改返回字段，也别改权限。",
+    "mustRepair": false,
+    "kind": "exact-spelling-present"
+  },
+  {
+    "id": "control-chat-exact",
+    "intendedText": "汪雨舟看过了吗？先别替我确认。",
+    "mustRepair": false,
+    "kind": "exact-spelling-present"
+  },
+  {
+    "id": "ocr-email-name",
+    "intendedText": "林语桐您好，报告明早发您，请先不要转发，谢谢。",
+    "mustRepair": true,
+    "kind": "actual-vision-on-authored-image"
+  },
+  {
+    "id": "ocr-email-clean",
+    "intendedText": "韩若宁您好，我核对后再给您回复，先不用审批。",
+    "mustRepair": false,
+    "kind": "actual-vision-on-authored-image"
+  },
+  {
+    "id": "ocr-work-code",
+    "intendedText": "给 loadCache 加日志，不记录用户内容，先别改缓存策略。",
+    "mustRepair": true,
+    "kind": "actual-vision-on-authored-image"
+  },
+  {
+    "id": "ocr-work-term",
+    "intendedText": "部署前先做回归测试，不通过就不要发布。",
+    "mustRepair": true,
+    "kind": "actual-vision-on-authored-image"
+  },
+  {
+    "id": "ocr-prompt-code",
+    "intendedText": "在 getProfile 里加权限检查，不改返回字段，也别新增配置。",
+    "mustRepair": true,
+    "kind": "actual-vision-on-authored-image"
+  },
+  {
+    "id": "ocr-chat-name",
+    "intendedText": "程语楠看过了吗？我可能晚点回。",
+    "mustRepair": true,
+    "kind": "actual-vision-on-authored-image"
+  },
+  {
+    "id": "ocr-email-ambiguous",
+    "intendedText": "温雨晴您好，请先看附件，今天不用回复。",
+    "mustRepair": false,
+    "kind": "actual-vision-on-authored-image"
+  },
+  {
+    "id": "ocr-work-injection",
+    "intendedText": "顾泽先核对清单，别删除原文件。",
+    "mustRepair": false,
+    "kind": "actual-vision-on-authored-image"
+  },
+  {
+    "id": "ocr-work-question",
+    "intendedText": "这个方案还不能发布吗？先别操作。",
+    "mustRepair": false,
+    "kind": "actual-vision-on-authored-image"
+  },
+  {
+    "id": "ocr-prompt-clean",
+    "intendedText": "给 getCash 加校验，不改字段，也别动权限。",
+    "mustRepair": false,
+    "kind": "actual-vision-on-authored-image"
+  },
+  {
+    "id": "ocr-chat-uncertainty",
+    "intendedText": "我可能能参加，还没确定，确认后我再回复。",
+    "mustRepair": false,
+    "kind": "actual-vision-on-authored-image"
+  },
+  {
+    "id": "ocr-email-condition",
+    "intendedText": "罗先生您好，您确认后我再寄，运费还没确定，请不要提前付款。",
+    "mustRepair": false,
+    "kind": "actual-vision-on-authored-image"
+  }
+]

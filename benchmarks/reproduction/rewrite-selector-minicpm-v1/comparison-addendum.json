@@ -1,0 +1,18 @@
+{
+  "originalFreezeSha256": "5393852c01a809e061b3619494fd1334b7c4a3393545837ea0d384a5c18f3960",
+  "scope": "Qualification implementation correction only; no prompt, model, runtime, settings, evaluator, semantic gate or original evidence changed. Initial assertion failed because pinned native lexer removes precisely one trailing newline; this exact transformation, not general whitespace normalization, is now verified. Interrupted accidental attempt retained; future run uses new exclusive directory.",
+  "actualTemplatePath": "sources/gguf-header-inspection.json",
+  "nativeTemplateTransformation": "remove exactly one final LF from pinned embedded template",
+  "nativeSourceEvidence": {
+    "sources/template-diagnostic/common-jinja-lexer.cpp": "3d6774bc2dac477e10ddbee69eff403df36f5925c8512ccf8a249bde5c26dbd7",
+    "sources/template-diagnostic/request.json": "f0f560ba0d1df8e208766242a1dece32d1202248a1c7c84bf51b6b7a7708bbd6",
+    "sources/template-diagnostic/common-chat.h": "72efd31e0bc82d653bc28e18bb14299d255623c3be052dafe8f40bb6fa6a9ca5",
+    "sources/template-diagnostic/receipts.json": "8ebac4a7b7d9815bdf43dab53be950dfed759797fdd2a1bd7055b12b59a34fc9",
+    "sources/template-diagnostic/tools-server-server-context.cpp": "4ed2e401a9e566b2caf2dd208582fbd42a6b230d516b1b9d56be130cbad3caa6",
+    "sources/template-diagnostic/common-chat.cpp": "3793510ff80015d575777f01f9edcf8a58d859188d4f988190a02c50763bab49",
+    "sources/template-diagnostic/apply-template.json": "f7b18c8e47a387f4a392f798b28c1ec4cf9971ba0ee5572cd5f55233eed49d83"
+  },
+  "plannedNewSelectorResponses": 202,
+  "abortedNativeLogCompletions": 1,
+  "capturedAbortedResponses": 0
+}

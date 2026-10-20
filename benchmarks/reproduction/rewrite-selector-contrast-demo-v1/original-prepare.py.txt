@@ -1,0 +1,23 @@
+"""Freeze added semantic demonstrations and zero-inference native budget evidence."""
+from pathlib import Path
+import json,hashlib,shutil,subprocess
+R=Path.cwd();H=R/'benchmarks/reproduction/rewrite-selector-contrast-demo-v1';W=R/'.workspace/rewrite-selector-contrast-demo-v1';P=R/'benchmarks/runs/rewrite-selector-contrast-demo-v1'
+def read(p):return json.loads(p.read_text())
+def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
+def save(p,x):p.write_text(json.dumps(x,ensure_ascii=False,indent=2)+'\n')
+status=read(W/'preflight/status.json');assert status['status']=='complete' and status['modelGenerations']==0 and status['templateRequests']==404
+P.mkdir(exist_ok=False);shutil.copytree(W/'preflight',P/'preflight');shutil.copyfile(W/'preflight.py',H/'original-preflight.py.txt');shutil.copyfile(Path(__file__),H/'original-prepare.py.txt')
+paths={a:'benchmarks/reproduction/rewrite-selector-screen-v1/templates/'+a+'/prompts.json' for a in ['baseline','balanced']}
+save(H/'layout.json',dict(version='selector-contrast-demo-v1',systemAndExampleSources={a:dict(path=p,sha256=sha(R/p)) for a,p in paths.items()},authoredDemonstrations=dict(path=str((H/'demonstrations.json').relative_to(R)),sha256=sha(H/'demonstrations.json')),transformation='Insert four authored semantic-contrast user/assistant pairs immediately before current user input. Original ten examples/system/answers and complete current input/source/context/candidates/schema/settings stay unchanged. Extra sample desired texts are authored expectations, not generated observations.',ownership='Composite recipe with pinned original prompts and additional authored demonstration source. Exact removal of the8 added messages restores original requests.'))
+protocol=read(R/'benchmarks/reproduction/rewrite-selector-source-last-v1/protocol.json');protocol.update(purpose='Add four novel semantic role/domain contrast demonstrations, including a mixed replace/keep positive example, under original baseline and balanced input layouts.',arms=['baseline','contrast-demo','balanced','contrast-demo-balanced'],changes='Only eight authored few-shot messages are added before the current input. Original examples and answers, trusted rules, all current source/fullOCR/hypotheses/kind/status values, producer/schema/settings/model/runtime/output budget remain unchanged. This is exposed development prompt adaptation, not held-out or independent semantic acceptance.',nativeBudgetPreflight='404 native apply-template and404 tokenize calls, zero model generations. Every baseline/balanced prompt token count matches its prior actual request usage; max expanded prompt2482 plus output reserve128 fits4096. No context truncation or token-budget increase.',additionalExamples='Four new exact-source-disjoint authored demos, not model outputs or test-derived approved memory. Project-risk positive uses e0replace/e1keep to retain the separate spurious先评估->险评估 proposal. Desired-choice authorship is not independent annotation.')
+save(H/'protocol.json',protocol)
+f=read(R/'benchmarks/reproduction/rewrite-selector-screen-v1/freeze.json');f['files']=dict(read(R/'benchmarks/runs/rewrite-selector-screen-v1/archive.json')['files'])
+for folder in [H,P/'preflight']:
+ for p in folder.rglob('*'):
+  if p.is_file() and '__pycache__' not in p.parts and p.name!='freeze.json':f['files'][str(p.relative_to(R))]=sha(p)
+save(H/'freeze.json',f)
+host={}
+for key,cmd in [('os',['sw_vers']),('hardware',['sysctl','hw.model','hw.memsize','hw.physicalcpu','machdep.cpu.brand_string']),('power',['pmset','-g','custom']),('thermal',['pmset','-g','therm']),('gitRevision',['git','rev-parse','HEAD']),('dirty',['git','status','--porcelain']),('runtime',['.workspace/rewrite-small-models-v1/runtime/llama-b11734/llama-server','--version'])]:
+ q=subprocess.run(cmd,text=True,capture_output=True);host[key]=dict(command=cmd,exitCode=q.returncode,stdout=q.stdout,stderr=q.stderr)
+host.update(timer='time.monotonic',freezeSha256=sha(H/'freeze.json'),sampling='Actual1.88B Q4/b11734/Metal99/CPU4/ctx4096/parallel1/greedy42/nonthinking/cachetrue/128tokens/no warmup. Sampled RSS is not peak or actual16GB acceptance.',executorAdapter='Owned adapter injects frozen contrast-demo pipeline into unchanged four-arm actual-Go/Metal executor. Internal labels remain selector-screen-v1; actual augmented prompt ownership points to declared composite recipe.')
+save(W/'host-provenance.json',host);print('Prefrozen',len(f['files']),'files;404plannedactualchoices,457actualGo preparations')

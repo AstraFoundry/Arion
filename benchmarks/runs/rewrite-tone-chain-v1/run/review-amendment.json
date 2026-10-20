@@ -1,0 +1,24 @@
+{
+  "kind": "review-authoring-label-correction",
+  "initialReviewSha256": "887f5b3e87ec40d9e01e8af8cfe4c6d58c209deaec7ca012a628b1cb7ffd97d1",
+  "currentReviewSha256": "ae3c2fccb4550de2faeb93adb6a37698469fc8f45632d29a85d648c2de6df795",
+  "newGenerations": 0,
+  "changes": [
+    {
+      "id": "tone-control-18",
+      "variant": "baseline-selection",
+      "rowSha256": "990570967434db818b7f80ea0ff1256c4580547ad3c8865bdd775758201f7a52",
+      "fromChoiceConforms": false,
+      "toChoiceConforms": true
+    },
+    {
+      "id": "tone-control-18",
+      "variant": "candidate-selection",
+      "rowSha256": "a4535bc2778ad71e95db9a544a37236b50d914545c82e83cc9321125676f5583",
+      "fromChoiceConforms": false,
+      "toChoiceConforms": true
+    }
+  ],
+  "reason": "Existing user-approved source-letter canonicalization was already correct; fix intermediate grading flags without changing any output, primary final-body count or decision.",
+  "separateReferenceObservation": "history-0346 published-transcript match documented without a primary-label change"
+}

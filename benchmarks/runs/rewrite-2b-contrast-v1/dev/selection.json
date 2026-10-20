@@ -1,0 +1,8 @@
+{
+  "selected": null,
+  "qualified": false,
+  "freezeSha256": "1e3d0b9867d25cbacdd6d132e1528981048da503f052777e31df62b6855a54ec",
+  "resultsSha256": "0a6cee307bae350546541f928dbea40b18e2de427db17cac4f00cd91260aa02b",
+  "reviewSha256": "075773f12d05ee002f63f52562da05cc97ba71452d5448eba1be2d81b16a8072",
+  "reason": "Both15/16 faithful and13/16 scene-useful. Explicit phonetic-tie rule/contrast examples still choose readCash. No semantic worsening, but no required ambiguity or scene improvement; fresh24 ungenerated, no adoption."
+}

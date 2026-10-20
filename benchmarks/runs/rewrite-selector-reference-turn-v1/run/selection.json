@@ -1,0 +1,11 @@
+{
+  "qualified": false,
+  "selected": null,
+  "screenPassedArms": [],
+  "productionActivated": false,
+  "freshExecuted": false,
+  "formatterExecuted": false,
+  "resultsSha256": "6fb8284ca8445c90573e3a6c904eb36f2b0fbde04346e08a6388add40451d086",
+  "reviewSha256": "5c8f0dafeb5fedd5aa5a1f516e069d19d02bfbdd4158271207cf352bf3a26d47",
+  "reason": "Neither complete-reference separation arm passes101-case conformance. Native template markers do not resolve harmful OCR substitutions. No full-chain/fresh expansion or production adoption."
+}

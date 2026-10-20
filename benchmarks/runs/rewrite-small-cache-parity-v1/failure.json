@@ -1,0 +1,14 @@
+{
+  "status": "failed-before-generation",
+  "generations": 0,
+  "reason": "Logical batch capacity1 cannot accommodate the native capability probe that adds2 tokens; aborts in common_batch::get_sub_batch before serving a rewrite. ConnectionResetError is the client symptom, not the root cause.",
+  "source": {
+    "url": "https://raw.githubusercontent.com/ggml-org/llama.cpp/b11734/common/common.cpp",
+    "sha256": "d10ea1ff4253a1d6aedef3e73f16c3f2297975ca17254a82fac395aa2213ebd4",
+    "functions": [
+      "common_context_can_seq_rm",
+      "common_batch::get_sub_batch"
+    ]
+  },
+  "nextTreatment": "Separate v2 keeps logical capacity at native default and only sets physical microbatch1. No retry overwrites the failed run."
+}

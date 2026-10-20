@@ -1,0 +1,12 @@
+{
+  "version": "metal-regression-v1",
+  "newGenerations": 36,
+  "reusedActualSelections": 36,
+  "reusedCpuBodies": 36,
+  "sourceCases": 36,
+  "reference": "benchmarks/runs/rewrite-formatter-v3/run/results.jsonl",
+  "referenceSha256": "da20be30257fb3262e6b34f014163a11f0e8065e338b45ae8bfa497d21bf0a09",
+  "intervention": "Same full requests, weights, CPU4 threads,ctx4096,greedy seed42/cacheoff/nonthinking/output256. Request99GPU layers; verbose logging captures actual placement in each worker. CPU reference actual source requests reused, never counted as new. Not new hypothetical selector output.",
+  "gate": "Under retained original explicit-contrast rubric: all36 final bodies faithful,all11 necessary local repairs,>=35 scene-ready,owner/email anchors,no truncation. User question on redundant numeric-emphasis remains unanswered; no changed criterion inferred. Full provider screen is not itself production selection.",
+  "limits": "M4/32GB exposed synthetic development, four scenes. Formatter-only request p50/p95/p99 and sampled workerRSS, not two-stage/cold-warm/ASR-concurrent stop-to-insertion/whole-app/min16GB. Independent ratings, natural language/ASR/OCR, mixed/other scenes and native lifecycle/integration still required. Different output token lengths/serial drift preclude isolated causal latency claims. No4B/olderQwen/Granite/Q8 inference."
+}

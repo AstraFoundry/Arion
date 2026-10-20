@@ -1,0 +1,16 @@
+{
+  "purpose": "Four-arm selector-only development diagnosis: actual stage-only baseline, after-only positive control, balanced original/replacement data, balanced data plus entity/ordinary-word/negative-target policy. Every457 source is prepared; every produced request executes in every arm. No formatter or delivery inference is performed.",
+  "arms": [
+    "baseline",
+    "after",
+    "balanced",
+    "role"
+  ],
+  "sourcePreparations": 457,
+  "plannedSourceTreatments": 1828,
+  "expectedRequestsPerArm": 101,
+  "expectedGenerations": 404,
+  "formatterGenerations": 0,
+  "developmentGate": "No protocol failures; every actual candidate choice conforms to the preregistered evaluator, including all required positive repairs and all harmful-correction controls. Same-letter canonicalization remains optional under existing human policy. Passing this screen only permits a new full457-source chain; no release or final-body qualification.",
+  "limits": "Exposed development sources and repeated treatment observations, not independent samples or held-out/native/min16 acceptance. Current actual Go cleanup457 reused explicitly within four arms. Zero newASR/OCR/final-body generations; no semantic rejection or source fallback. Stage-only caching/order differs from full chain, so both baseline/after controls are regenerated and compared to frozen old actual choices. Full chain and original acceptance scope remain mandatory. No4B/olderQwen or new model selection."
+}

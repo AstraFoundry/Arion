@@ -1,0 +1,9 @@
+{
+  "source": ".workspace/rewrite-selector-instruction-language-v1",
+  "published": "benchmarks/runs/rewrite-selector-instruction-language-v1",
+  "privateExcluded": [
+    "weights",
+    "runtime environments",
+    "native executable"
+  ]
+}

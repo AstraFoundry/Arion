@@ -1,0 +1,15 @@
+{
+  "url": "https://huggingface.co/ibm-granite/granite-4.0-1b-GGUF/resolve/b27c2fe3f211b7f44e80fa620177aea371099aaa/granite-4.0-1b-Q4_K_M.gguf",
+  "revision": "b27c2fe3f211b7f44e80fa620177aea371099aaa",
+  "file": {
+    "rfilename": "granite-4.0-1b-Q4_K_M.gguf",
+    "blobId": "7d2391f0310fa14e25fbdee2410a2ad7768581e1",
+    "size": 1023645440,
+    "lfs": {
+      "sha256": "22ec0f9cc99a90185312de3c882c84e7bd6789bdd050389844380a01a831d7f1",
+      "size": 1023645440,
+      "pointerSize": 135
+    }
+  },
+  "status": "pending"
+}

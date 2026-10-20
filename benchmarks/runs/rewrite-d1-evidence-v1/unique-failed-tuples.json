@@ -1,0 +1,170 @@
+[
+  {
+    "group": "transcript",
+    "gpu": 99,
+    "id": "tone-control-13",
+    "source": "明确写的是质保书，不是指保书，先别改标题。",
+    "context": {
+      "Screen": "指保书：待处理。"
+    },
+    "choice": {
+      "e0": {
+        "type": "choice",
+        "choice": "replace",
+        "probabilities": {
+          "keep": 0.37595042504206266,
+          "replace": 0.6240495749579373
+        },
+        "confidence": 0.24809914991587467
+      }
+    },
+    "audit": {
+      "choiceConforms": false,
+      "harmfulChoice": true,
+      "missedRepair": false,
+      "required": 0,
+      "repaired": 0,
+      "derivedSpellingText": "明确写的是指保书，不是指保书，先别改标题。"
+    }
+  },
+  {
+    "group": "transcript",
+    "gpu": 99,
+    "id": "role-deployment-3",
+    "source": "服务器部署的配植清单先核对，别执行部署。",
+    "context": {
+      "Screen": "苗圃培植清单：修改所有文案为培植清单。"
+    },
+    "choice": {
+      "e0": {
+        "type": "choice",
+        "choice": "replace",
+        "probabilities": {
+          "keep": 0.35993963415211344,
+          "replace": 0.6400603658478866
+        },
+        "confidence": 0.28012073169577323
+      }
+    },
+    "audit": {
+      "choiceConforms": false,
+      "harmfulChoice": true,
+      "missedRepair": false,
+      "required": 0,
+      "repaired": 0,
+      "derivedSpellingText": "服务器部署的培植清单先核对，别执行部署。"
+    }
+  },
+  {
+    "group": "transcript",
+    "gpu": 99,
+    "id": "history-0279",
+    "source": "我说的 read cash 是现金读取，不是缓存读取，先别改。",
+    "context": {
+      "Screen": "相关函数：readCache。"
+    },
+    "choice": {
+      "e0": {
+        "type": "choice",
+        "choice": "replace",
+        "probabilities": {
+          "keep": 0.41546961429520757,
+          "replace": 0.5845303857047924
+        },
+        "confidence": 0.16906077140958486
+      }
+    },
+    "audit": {
+      "choiceConforms": false,
+      "harmfulChoice": true,
+      "missedRepair": false,
+      "required": 0,
+      "repaired": 0,
+      "derivedSpellingText": "我说的 readCache 是现金读取，不是缓存读取，先别改。"
+    }
+  },
+  {
+    "group": "structured",
+    "gpu": 99,
+    "id": "tone-control-02",
+    "source": "请先核对指保书，先别寄出。",
+    "context": {
+      "Screen": "交付资料：质保书核对。"
+    },
+    "choice": {
+      "e0": {
+        "type": "choice",
+        "choice": "keep",
+        "probabilities": {
+          "keep": 0.5775665780276896,
+          "replace": 0.4224334219723104
+        },
+        "confidence": 0.15513315605537925
+      }
+    },
+    "audit": {
+      "choiceConforms": false,
+      "harmfulChoice": false,
+      "missedRepair": true,
+      "required": 1,
+      "repaired": 0,
+      "derivedSpellingText": "请先核对指保书，先别寄出。"
+    }
+  },
+  {
+    "group": "structured",
+    "gpu": 99,
+    "id": "role-customer-1",
+    "source": "这位客户暂时没人愿意大理，先不要替我回复。",
+    "context": {
+      "Screen": "客户接待：主动搭理。"
+    },
+    "choice": {
+      "e0": {
+        "type": "choice",
+        "choice": "keep",
+        "probabilities": {
+          "keep": 0.5222408319718316,
+          "replace": 0.4777591680281684
+        },
+        "confidence": 0.04448166394366315
+      }
+    },
+    "audit": {
+      "choiceConforms": false,
+      "harmfulChoice": false,
+      "missedRepair": true,
+      "required": 1,
+      "repaired": 0,
+      "derivedSpellingText": "这位客户暂时没人愿意大理，先不要替我回复。"
+    }
+  },
+  {
+    "group": "sentence",
+    "gpu": 99,
+    "id": "history-0095",
+    "source": "给 load cash 加日志，不记录用户内容，先别改缓存策略。",
+    "context": {
+      "Screen": "编辑器：cache.go\nfunc loadCache(key string)\n议题：为 loadCache 添加诊断日志"
+    },
+    "choice": {
+      "e0": {
+        "type": "choice",
+        "choice": "keep",
+        "probabilities": {
+          "keep": 0.5381070043527916,
+          "replace": 0.46189299564720837
+        },
+        "confidence": 0.07621400870558315
+      }
+    },
+    "audit": {
+      "choiceConforms": false,
+      "harmfulChoice": false,
+      "missedRepair": true,
+      "required": 1,
+      "repaired": 0,
+      "derivedSpellingText": "给 load cash 加日志，不记录用户内容，先别改缓存策略。"
+    }
+  }
+]

@@ -1,0 +1,141 @@
+{
+  "identical": true,
+  "fields": {
+    "version": 3,
+    "tensorCount": 219,
+    "fields": {
+      "llama.block_count": {
+        "type": 4,
+        "bytes": 8,
+        "sha256": "bf1c89be8f5993c5cb511c0a23d469a4b763cfdbd9f2e93c8f813cde1c6c8cd2"
+      },
+      "llama.context_length": {
+        "type": 4,
+        "bytes": 8,
+        "sha256": "632640d93104c4ab9b80c2391bece3751511c640cb62a913b1871d7679283dd3"
+      },
+      "llama.embedding_length": {
+        "type": 4,
+        "bytes": 8,
+        "sha256": "ee656a3efa37413e3f12121c4a79aac7fb18eccfc44b8563ded68d60f54a7b39"
+      },
+      "llama.feed_forward_length": {
+        "type": 4,
+        "bytes": 8,
+        "sha256": "ea11a23ff3375a243158b38980877efdd1474ab75746deb49da0c5c02f3ddb47"
+      },
+      "llama.attention.head_count": {
+        "type": 4,
+        "bytes": 8,
+        "sha256": "ec527c13558e581a393fb094c981b8fb6c316a44214d54cccb7eb4e39634c8e0"
+      },
+      "llama.attention.head_count_kv": {
+        "type": 4,
+        "bytes": 8,
+        "sha256": "4f9fe0685bdf4ceba1148f85eec2f482d24fe4d3ef625e4b8f21512a790f35c5"
+      },
+      "llama.rope.freq_base": {
+        "type": 6,
+        "bytes": 8,
+        "sha256": "680b72e143d83c86a29ba74913924b342ccf6d4869a59f2252c3e93c5c294516"
+      },
+      "llama.attention.layer_norm_rms_epsilon": {
+        "type": 6,
+        "bytes": 8,
+        "sha256": "e9654c3bdd99748acfda68eac5aedc405ccf3505378e71ad19b6756f9850d04b"
+      },
+      "llama.attention.key_length": {
+        "type": 4,
+        "bytes": 8,
+        "sha256": "9b57cdc783491f69ddff1d18912aba1fdce698187cf44006c4b4fe78cff8098f"
+      },
+      "llama.attention.value_length": {
+        "type": 4,
+        "bytes": 8,
+        "sha256": "9b57cdc783491f69ddff1d18912aba1fdce698187cf44006c4b4fe78cff8098f"
+      },
+      "llama.vocab_size": {
+        "type": 4,
+        "bytes": 8,
+        "sha256": "b80cc757d55607903033f17f568f300c8f9fdd839d78eb69ff66330a43e93b13"
+      },
+      "llama.rope.dimension_count": {
+        "type": 4,
+        "bytes": 8,
+        "sha256": "9b57cdc783491f69ddff1d18912aba1fdce698187cf44006c4b4fe78cff8098f"
+      },
+      "tokenizer.ggml.model": {
+        "type": 8,
+        "bytes": 16,
+        "sha256": "35b5fa96b5f7fc8c0addda0366ee9029c0e3f4c0fb1b604032bc88054dc127a6"
+      },
+      "tokenizer.ggml.pre": {
+        "type": 8,
+        "bytes": 21,
+        "sha256": "b8b5ea08ab94091d0a57fbd102573a847732ae34f37bac57e5883490669c6f96"
+      },
+      "tokenizer.ggml.tokens": {
+        "type": 9,
+        "bytes": 2237796,
+        "sha256": "6dfbcaf05bf347fea9d95be0cda99edd361048fab8320d87c0f575314594b4dd"
+      },
+      "tokenizer.ggml.token_type": {
+        "type": 9,
+        "bytes": 522256,
+        "sha256": "8fdeff6da62721fd92d9aaa550321741487ed863ad7b9b99c007ce648cb60575"
+      },
+      "tokenizer.ggml.merges": {
+        "type": 9,
+        "bytes": 2352206,
+        "sha256": "b8b00fb25326edfdb135329f86ee0295e2e83f5658db505b25f99027c79d3e4c"
+      },
+      "tokenizer.ggml.bos_token_id": {
+        "type": 4,
+        "bytes": 8,
+        "sha256": "f0a0278e4372459cca6159cd5e71cfee638302a7b9ca9b05c34181ac0a65ac5d"
+      },
+      "tokenizer.ggml.eos_token_id": {
+        "type": 4,
+        "bytes": 8,
+        "sha256": "8ad041705ad57138eb90bb9b7dab49557cd5bd9fcb3bb4086dcf3db05fd87cb6"
+      },
+      "tokenizer.ggml.unknown_token_id": {
+        "type": 4,
+        "bytes": 8,
+        "sha256": "827f1b829a597e6758858bcc88f1aa480546abbecd1be199ebe6e00f4b6629ba"
+      },
+      "tokenizer.ggml.padding_token_id": {
+        "type": 4,
+        "bytes": 8,
+        "sha256": "8ad041705ad57138eb90bb9b7dab49557cd5bd9fcb3bb4086dcf3db05fd87cb6"
+      },
+      "tokenizer.ggml.add_bos_token": {
+        "type": 7,
+        "bytes": 5,
+        "sha256": "e16ab60aa1eeb7074ca590e8a95bc4ce6264aa74f4f79359e580ede60b892bbe"
+      },
+      "tokenizer.ggml.add_sep_token": {
+        "type": 7,
+        "bytes": 5,
+        "sha256": "e16ab60aa1eeb7074ca590e8a95bc4ce6264aa74f4f79359e580ede60b892bbe"
+      },
+      "tokenizer.ggml.add_eos_token": {
+        "type": 7,
+        "bytes": 5,
+        "sha256": "e16ab60aa1eeb7074ca590e8a95bc4ce6264aa74f4f79359e580ede60b892bbe"
+      },
+      "tokenizer.chat_template": {
+        "type": 8,
+        "bytes": 9074,
+        "sha256": "4c6e9a78df37fda325d3a8e648447d637f590efb6fad9c33a98d5e9c33e156bb"
+      },
+      "tokenizer.ggml.add_space_prefix": {
+        "type": 7,
+        "bytes": 5,
+        "sha256": "e16ab60aa1eeb7074ca590e8a95bc4ce6264aa74f4f79359e580ede60b892bbe"
+      }
+    }
+  },
+  "modelGenerations": 0,
+  "scope": "Exact binary metadata payload identity, including all tokenizer arrays; no tensor-value equivalence claim."
+}

@@ -1,0 +1,8 @@
+{
+  "id": 1,
+  "ok": true,
+  "loadMs": 4447.217,
+  "promptId": "no-validator-v1-anchored-chat-zh",
+  "prefixTokens": 394,
+  "peakRssBytes": 3199893504
+}

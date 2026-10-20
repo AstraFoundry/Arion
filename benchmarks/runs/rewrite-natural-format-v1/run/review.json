@@ -1,0 +1,1542 @@
+{
+  "resultsSha256": "a04d97dfbe966498b2e62dfd24a4b0471154a914dcd6d5c9ef10dfb84d482fba",
+  "method": "All120 complete natural-ASR source/output pairs personally inspected, source-only fidelity/language/naturalness separated. No audio rehearing/independent blind review; references never model input. Three ambiguous edits remain null/uncertain rather than forced pass/fail. Corrupt sources copied faithfully are not automatically natural or usable. Strong suffix completions are not credited as new acoustic evidence.",
+  "reviews": [
+    {
+      "variant": "natural-metal-v3",
+      "id": "aishell-BAC009S0770W0182",
+      "rowSha256": "041af272224d0de8df4346e4a22ef2dda07d1fcba29b9f3e448fcd02a1e8a294",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Exact price-unchanged statement retained; no forecast details added."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "aishell-BAC009S0769W0132",
+      "rowSha256": "258c4551a52ac3991d0c4db6c1ae518cc418785d745d7a004a9bad1e5706af97",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "All hundred-plus redevelopment projects and launch predicate retained."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "aishell-BAC009S0769W0488",
+      "rowSha256": "38ba6fc28b01616bbc4035a8bd07075631cb3f2ac116a76f0eda529f235d2d33",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Corrupted date-like phrase 一凌月 retained, no invented month/date. Input remains unclear."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "aishell-BAC009S0767W0403",
+      "rowSha256": "9614e075a5ff92aea6003c427a82a5d26524a5ae17084b3e22b625332420e570",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Personal name and technical phrase retained without guessing alternate homophones."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "aishell-BAC009S0767W0383",
+      "rowSha256": "46f9f840cbd9a1d9486c380be7c46bc0a400b8240748b29face3ec4d9533d700",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Group hardship/testing statement retained."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "aishell-BAC009S0767W0314",
+      "rowSha256": "f14026aded3dd12f3e48d5ae4b91020cbf7a3cd08f89a2014ad847f14c1fa498",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Early-August timing, company and capacity-resolution completion retained."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "aishell-BAC009S0767W0379",
+      "rowSha256": "c10e09a7847e74760fb21c3d5af8e6993fdf6b2ecf3d6ad8e9da7f811da69bb0",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Minor scene-setting 这其中 removed; girl description and standout evaluation preserved without new people or actions."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "aishell-BAC009S0767W0122",
+      "rowSha256": "435cdab581d6f52820647c21e695b536d2aa6ec5685fb8318230c48dc4832c7f",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Industry/new-golden-era assertion retained."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "aishell-BAC009S0769W0482",
+      "rowSha256": "e77ff40952a6c8fef74081801f0d6de4147e88d62530bf8c986803ad8f19f92f",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Unresolved-to-date problem negation retained."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "aishell-BAC009S0768W0443",
+      "rowSha256": "4570f8f741c2abd722dd218b912e896a70d2361acf7303281a2e098178dd17b9",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Government-paid relocation/building opportunity retained without inventing acceptance or completion."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "aishell-BAC009S0767W0487",
+      "rowSha256": "055f3ab32628279565beb7422d8efde1df1d4598b6c0e2101ddc8f110849a367",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Incomplete 对很多村民来说 frame preserved without invented conclusion."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "aishell-BAC009S0767W0428",
+      "rowSha256": "ef6cf73188f1d177e5d6597bbce5bb7c4469bc7a66c0d2233de5b9be4a318931",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Self-mocking attribution and childhood style statement retained, spacing/punctuation improved."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "aishell-BAC009S0768W0409",
+      "rowSha256": "88062bbdb652fbe799b6cf2a32cd1c2c314bc8c693b19881490fc2ce3a20d27d",
+      "faithful": false,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [
+        "source-meaning-changed"
+      ],
+      "note": "Ambiguous 蒙翻 phrase is replaced by 网友翻拍, inventing a different photo-rephotographing event without context. This is unsupported predicate substitution, not merely punctuation or a required hidden-reference correction."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "aishell-BAC009S0769W0378",
+      "rowSha256": "328ac780aec1eedfb0eb2007b8b22f4b70f6a68d85a40684bcacf9315727372c",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "400m-to1500m preliminary-round range/order retained."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "aishell-BAC009S0767W0350",
+      "rowSha256": "45be4e9c9c19bcf84a8b14c1f0032538d1a895c5cf148b1e02a29518dbbb2453",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Interview attribution frame and unusual personal name kept; missing main content not invented."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "aishell-BAC009S0769W0469",
+      "rowSha256": "b5c38b281df6b11713a83e72bc4c5c16e5a4cc48a5c286d10dd794c16765dce9",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Department-handling wish remains request, not a completed action."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "aishell-BAC009S0768W0142",
+      "rowSha256": "fae5c67e4206745669bf384862540ba04c37f600580f6a40a589925a40004a33",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Sales downturn statement unchanged apart from punctuation; no forced reference matching."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "aishell-BAC009S0770W0201",
+      "rowSha256": "9c3bad87eef4d13d610af677feb421cc68af42fe8b4662c5e94dda2066c9d8e4",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Debt-improvement question retained, no answer or policy invented."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "aishell-BAC009S0768W0134",
+      "rowSha256": "7b84bf9b5ddf9506eeb5436aac88bd159c180d78efc142e46013b8a7ab2fac22",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Ten-trillion quantity and enterprise-funds attribution retained."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "aishell-BAC009S0768W0262",
+      "rowSha256": "6ee9e079a7cde4c16b48c4132d0fc9284a9ae819023157bf4282829011723cc9",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "He/remote-radar/opponent-fleet/distance facts retained; pronoun not guessed from reference."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "aishell-BAC009S0769W0315",
+      "rowSha256": "e15e21ae43fb88c3dfb697b62a652a97e5f8ac82f3e9a53e206891075358846e",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Duplicated 可 in 可圈可可点 naturally removed, preserving evaluation."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "aishell-BAC009S0770W0246",
+      "rowSha256": "8e004caf5a3c85ea1e195e074af502630ce7af450f93a4a708ad113b3f31b42e",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Natural-gas consumption guidance retained."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "aishell-BAC009S0767W0172",
+      "rowSha256": "42b0ef06900dbec300b740bc1ae02edfeb2130019f329578fbf0349a39d3b17b",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Housing transaction increase retained."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "aishell-BAC009S0769W0416",
+      "rowSha256": "7ffbf12cfb044c00380d38fe0fbb30e8ac81449402a0f488ff42b93f409cc045",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Sibling/name/text-message relationship retained; no new celebrity facts asserted by the editor."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "aishell-BAC009S0770W0361",
+      "rowSha256": "a777935fa7e1d463ca1231b76312b7f8000aee67df5f7eef55e8706a8c868f4a",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Respect from media and audience retained."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "aishell-BAC009S0769W0393",
+      "rowSha256": "09cd304c5dbac3d1576067eb179f117cb042498055df51af79666901c5810f01",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Their repeated competition-highlight role retained."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "aishell-BAC009S0768W0395",
+      "rowSha256": "97fe8806d2936178a33efef013d81279acac081c0e1484f7c17bb90fcb6088e3",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Unclear race/quantity/name text copied; not promoted as readable or recovered speech."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "aishell-BAC009S0768W0122",
+      "rowSha256": "81c87df192385ae559bf2bb400ac5ed4f3887ec1020e2636ccd322b19ea3fa12",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Unintelligible source phrase retained without inventing a supply-season event."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "aishell-BAC009S0768W0412",
+      "rowSha256": "05f6f1b597015b2c863539eddf248946702fa043a68f3986e2112fd1d7bce010",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Unclear facial-description fragment retained; no guessed predicate."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "aishell-BAC009S0769W0262",
+      "rowSha256": "142c00f3e0c335254ae0cfbc8cfbccf5710aee6a563055b12a37aff2cc839619",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Not-only/lower-drug-dose meaning retained without inventing a second benefit."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "aishell-BAC009S0768W0345",
+      "rowSha256": "1600eb429a736c86a6c0c61ddc8aff804c25de62809db49fd0e04465c2e61d75",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Incomplete match-preparation fragment retained, no missing clause invented."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "aishell-BAC009S0769W0123",
+      "rowSha256": "ee57595cd7abb0e2b995529bc2a3d65694ff492aac7a90558fb9a2315c4d88b6",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Name and30-metre height retained; garbled building words not replaced from hidden reference."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "aishell-BAC009S0768W0177",
+      "rowSha256": "78fd3046e93e9fd53b4295593d035b27dc6751a85d2498bb13056492cfb9065a",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Investment/enterprise sentiment retained with spacing/punctuation polish."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "aishell-BAC009S0768W0337",
+      "rowSha256": "90a847ac3161e71fed158e300d2daf345c992e0ad7176c981c52b84514f7ffdd",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Unintelligible rights phrase retained without guessing actor or legal event."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "aishell-BAC009S0769W0431",
+      "rowSha256": "a803300ada1e82bc4b8e1dd53b137b5ebeb57d5d67d3ea8e1373589e6e0c8b7a",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Person/place/investigation status retained literally; no reference-derived name repair."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "aishell-BAC009S0769W0440",
+      "rowSha256": "22d9ed570d3eca05031ac74127f3db252066a164de3ba2476d0fa5dcc0cc860f",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Teacher name, out-of-pocket800 amount, poor-student scholarship retained; no hidden8000 recovery."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "aishell-BAC009S0769W0382",
+      "rowSha256": "f91ea36f5b07b1f5a8a5a686c799cf947ae99f3546a3a9197c7d914c626f86a1",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Rio and larger-battle comparison retained."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "aishell-BAC009S0768W0197",
+      "rowSha256": "ed3c740296179f6971d0fd771b6ee0236a24b09df24e96d6890f94c70226bdaf",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Final 确 completed to 确认 in the conventional average-cost construction. Treated as a local grammar/word completion, not proved acoustic recovery; no new quantity/status/entity."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "aishell-BAC009S0770W0196",
+      "rowSha256": "a4ae66cd946293e55b91507c0abba3bb53597b3ce67889e22bbe39fd9cf68bb9",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "We-learned introduction stays incomplete; no information manufactured."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "aishell-BAC009S0769W0121",
+      "rowSha256": "097e66bf327de9026185860a415a3ab7eeea24a08a1147c0a81c91c30386f978",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Place/site identity retained but unclear 地况 word remains, limiting polish."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "aishell-BAC009S0768W0404",
+      "rowSha256": "ccff1ce6e27e946947eead29b0e263b18868c2103f6eba1b6fccee326bfbee66",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Unclear 命运多续 adjective copied; not silently repaired using reference."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "aishell-BAC009S0769W0344",
+      "rowSha256": "fd8c41d52c1808a1ebbd192fe838801d07e07db3d44a239736e39aff5a285691",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Shot-put/name label retained; a short label need not become a full sentence."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "aishell-BAC009S0770W0272",
+      "rowSha256": "3de044094514c91f4a949ab5e95330ec192307bdc1513d990d56298533bca028",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Unclear actor/fee phrase copied, not an independently usable correction."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "aishell-BAC009S0768W0492",
+      "rowSha256": "83efa917107f1a49f700b73d35d79855ffcc610c3285ca6f601cb02fc0c5e4d7",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Severely garbled beginning retained; added punctuation does not recover event identity."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "aishell-BAC009S0770W0322",
+      "rowSha256": "69645fea40d224773ac4ab0dc6ddf4c606e753c9029c0fd3a73988d1f0887485",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Standalone 至于 retained, not completed with hidden speech."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "aishell-BAC009S0767W0234",
+      "rowSha256": "c97e4079b67ecec096f9d4b8bedf9f6ba8a723986dbbdb521741e7c680ad8717",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Debt scale/safe-range constraint retained."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "aishell-BAC009S0768W0343",
+      "rowSha256": "f06e088df1bfb4e5492bc2a28af933b70bee51c849542307f0ca477aa3bfe88d",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Training-priority statement and terminology retained, no arbitrary combat/standing substitution."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "aishell-BAC009S0769W0390",
+      "rowSha256": "20c18d06ada4afec480f3c2a583585e7b6a4d8b1c4e9107248abb9b71618df2c",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Preparation already completed and event identity retained; connective removal/order polish only."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "aishell-BAC009S0767W0423",
+      "rowSha256": "1cb50f13cb3e38115d7957be29af038c8d240951deb5feac52b9f35242ac7294",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Not-to-the-point-of-medication qualifier retained."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "aishell-BAC009S0767W0251",
+      "rowSha256": "11e1805ef7c1ed3f368df8ecbafd1061bbb718a67c9c2895203c6145b37ee983",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Fee-standard management predicate retained without hidden homophone replacement."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "aishell-BAC009S0769W0343",
+      "rowSha256": "9293f20bee20a2b6ed2084167c3e0c50aa407ca81459f24bf11c6ddb34472101",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Event/name label retained, no canonical biography inferred."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "aishell-BAC009S0770W0216",
+      "rowSha256": "09f348eed250b71724ee471dab214bb694db3d41ef9be3d309eb5ac98e44f339",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Further-improvement necessity retained."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "aishell-BAC009S0768W0398",
+      "rowSha256": "27867f1f544323ca177821e9172a7f560c6986c66f2e0e2200da925bdfa52af3",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Standalone personal name preserved; not expanded to a biography."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "aishell-BAC009S0769W0155",
+      "rowSha256": "e0bdfc125eb877c3b094a472cdcc195ef8836f0fb0e77d68c68cc4edf5b242a1",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Three-ten-thousand-plus aspiration retained but unclear allocation verb remains."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "aishell-BAC009S0769W0372",
+      "rowSha256": "6501aed3720899068a17052394566a9ae2d3dbc2e79b4875b9bf91cbe9d77176",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Only-in-April2014 return timing retained."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "aishell-BAC009S0767W0394",
+      "rowSha256": "05c6dd9f5b0fd07fa2d2c913c53153df630a25c4e237a3182f2c86d5f73dc183",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Speech-attribution lead-in left incomplete rather than inventing speech."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "aishell-BAC009S0769W0327",
+      "rowSha256": "4f8d4766558f90b8fa182e0bf4c3014132e81653b5868edc7805307c4bc39e16",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Even-if server-design condition retained as an incomplete fragment."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "aishell-BAC009S0768W0436",
+      "rowSha256": "ec49e2fa0aae42502452e2fe63c849857b7d53604b1f3e055a43f61e16593a62",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "All visible address components retained; no different place spelling inferred."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "aishell-BAC009S0767W0358",
+      "rowSha256": "87aa72ec048394edeb8784db2886d8d102aa71570c2cf621e6f5415089784274",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Today/pre-event press-conference facts retained."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "aishell-BAC009S0769W0468",
+      "rowSha256": "59e046eb5597b9a06f5be72c4639dbdc6031dafb42e985a43ae088f7fb9765e9",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Villager/name/newspaper/request-for-help facts retained."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "libri-7176-92135-0036",
+      "rowSha256": "8ce9c0735069c3e8e258b32aa470de97e1e303eebf4318e1d0098f20e4a2a9b1",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Stage scene and second-person permission to begin retained, period added."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "libri-2830-3979-0006",
+      "rowSha256": "f022f22e0761af734de7a45a08ee643980e15f9a1e158488b2919b512a20dbc5",
+      "faithful": false,
+      "sceneUseful": false,
+      "languagePreserved": false,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [
+        "unrequested-translation"
+      ],
+      "note": "English source becomes Chinese. Translation violates source-language preservation despite readable wording."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "libri-1188-133604-0000",
+      "rowSha256": "a88c38ef293a68cc61b46429ca725a506fad5e35f013a7272eb9a88b930bcdec",
+      "faithful": false,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [
+        "source-meaning-changed"
+      ],
+      "note": "You will find me becomes I will find myself, changing perspective and agency. The unclear ti llben name segment also disappears; these are independent content losses."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "libri-1284-1181-0021",
+      "rowSha256": "4a43bae67d029ff9518cc2ad3ed32aafb1d15e2547b0f15799015865197c9f85",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Unclear final axen retained; not fluent but no invented adjective."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "libri-1320-122617-0037",
+      "rowSha256": "10c38e46aa64500c0d56dc63e80f923bac8cbc58c17eccba57fcd6a6f2884b3a",
+      "faithful": null,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [
+        "meaning-uncertain"
+      ],
+      "note": "The incomplete predicate af is completed to afraid. Linguistically plausible, but too little visible predicate evidence to establish intended meaning without audio adjudication. Not marked definitively wrong or counted as verified faithful."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "libri-7176-92135-0006",
+      "rowSha256": "5da1a25121e142848c9956f2805ac6fed7a59375358dec3ecbd0eb19885cea46",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Play idea, one man/two women and tentative secret retained; and but hesitation remains awkward."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "libri-61-70968-0013",
+      "rowSha256": "a61ba7b6bcaf4c72e786c4414ed6f5bb00ef04e39cf2ae90e1ad2e53fe38de77",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Three sons and unusual names/tail retained; corruption not recovered."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "libri-8463-287645-0000",
+      "rowSha256": "f3a159037117c4d97917a454e072f4a3c077ca24c21e76870f95023720f66a23",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Meaning retained but concern inflection remains ungrammatical."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "libri-2830-3979-0010",
+      "rowSha256": "6104c950583c2a9b1f13fd95eb5ef7e000bbd29c0e1f0272815e3f520ddde799",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Luther capitalization and period polish only; argument preserved."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "libri-2300-131720-0014",
+      "rowSha256": "5bf0a6feaea856d708ca6e2d688edd1d4fc428ce558ca8abc666d3591aeaa586",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Mr. Edison and ahead-of-time comparison preserved."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "libri-4446-2275-0042",
+      "rowSha256": "86cbe2e017d1b30da2fb701fca52204566c438b313e5b040778384b11f2d1134",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Returned/caring little/no-difference meaning retained."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "libri-4446-2273-0026",
+      "rowSha256": "5c3a693f5cf760700201a6daaf547d6ed493d5a8ee270201084c8da1e295359c",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Incomplete new-what question retained without a guessed object."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "libri-8555-284447-0002",
+      "rowSha256": "d8871ce2869d04573890fec4613af306f142ed5a6b975008002de82c1ba9b297",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "breakfas completed to breakfast, a strong lexical completion in ready-for-breakfast context. Speaker name and morning/breakfast relationship unchanged, no claim of acoustic proof."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "libri-8455-210777-0018",
+      "rowSha256": "1a37fc5422bc66e231488dd48adf671496be618c1ce78ed5101f0a98e4e81c79",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Nested uncertainty and did-not-agree wording retained, not collapsed to certainty."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "libri-1188-133604-0040",
+      "rowSha256": "78eb3c38943a734d5cf842b68d64e21d9840476870ef7692fa27ce0d73f3fd84",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Rare crampness word retained rather than forced to a presumed standard word."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "libri-121-121726-0001",
+      "rowSha256": "c1b9b07d91575b1b42033cac7b8946292cfc73e2d12933aa206817d9c311bc23",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Unclear Harang/tong fragment copied, no invented name or continuation."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "libri-237-126133-0004",
+      "rowSha256": "52ccfd656a67bc94b7354256823c6a519e0cab189884851c1595ed84d2d5d953",
+      "faithful": false,
+      "sceneUseful": false,
+      "languagePreserved": false,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [
+        "unrequested-translation"
+      ],
+      "note": "English conditional fragment becomes Chinese; quoted name remains but language changes."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "libri-672-122797-0051",
+      "rowSha256": "a34a36d0ac241a4ed6bfa6efe06a47dbac10f1703d28aa4220b9a82cf193b5b6",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Not-old claim and fir-tree attribution retained."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "libri-1089-134691-0022",
+      "rowSha256": "e937194767bce2d466a08bc1ff9d3c74ccb5c5c703c873d524aa8e73c98a699e",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Stillness, calls and light-response actions retained."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "libri-5142-33396-0007",
+      "rowSha256": "f430cb576979e80d7c3ce83e7e2f8dd6e9444a123fb709ce3bc99fc075d0f9aa",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Carved-head/forked-tongue fragment kept without inventing missing direction."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "libri-2961-960-0015",
+      "rowSha256": "e9d6c664f46b98966fa6f7c725054c9a088178a2ae419cbc914e0e6cbe674541",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Source title and unclear plen word retained without arbitrary canonical title correction."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "libri-4970-29093-0013",
+      "rowSha256": "605c3033957e6e8b70ea06ad293d259b02fd4f777ec0e405e63f8658e8260cf2",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Opening And removed; return to books and dignified literary entrance retained."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "libri-3729-6852-0002",
+      "rowSha256": "f6f5aeccd499fd26f0e957c75dbde690e6055e9318cd9d46efb93586e35d6853",
+      "faithful": false,
+      "sceneUseful": false,
+      "languagePreserved": false,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [
+        "unrequested-translation"
+      ],
+      "note": "English source becomes Chinese, including a rewritten name/title. Unrequested translation is a definite contract failure."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "libri-1320-122612-0010",
+      "rowSha256": "a15cc07069096e3ff1485dddd45d906cb0751d47264b1a756a0508d23e63523b",
+      "faithful": false,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [
+        "source-meaning-changed"
+      ],
+      "note": "Spoken See, said Uncus is converted to narrator description; the explicit look request and evident-marks detail disappear. Tense changes accompany the mode conversion."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "libri-237-134493-0016",
+      "rowSha256": "d750198159c7f66fcd3199fd5d525c8835caadef78c10f2c9bfe1b782cc50692",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Both-road-sides, one-mile-before-hill distance, hedges and singular field retained."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "libri-7729-102255-0007",
+      "rowSha256": "a72555e118d085ce4777061e6071955afb1e6e5952614fe93a6e63eb1c993cb6",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Speaker stance/law/Westport retained; audit suffix/clause ambiguity remains awkward."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "libri-61-70968-0034",
+      "rowSha256": "9316fc79e95fc2c4f78543bca0f2e90f2abcff0ffe643b076c87f53fa4dc7632",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Corrupted rescue cry retained rather than inventing combatants."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "libri-4992-23283-0001",
+      "rowSha256": "7cde51b3608c3c5353bde15e14271554c4e375cc61390e46fbdc5ebedd081a7f",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Poor-health negation retained."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "libri-8555-292519-0015",
+      "rowSha256": "d79d87653a88456712ed3199d61fea7babe689f58f4b1a6ca52fd4b298a6f9e2",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Courtyard entry/completed tense retained."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "libri-1995-1836-0013",
+      "rowSha256": "7e41cdae007e7e37e14c09115a1fbca4d48d019ca6e5e47cd6f78d8b13828112",
+      "faithful": null,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [
+        "meaning-uncertain"
+      ],
+      "note": "misses Gray is normalized to Miss Gray and contrast however disappears. Source title may be an ASR rendering of Missus; honorific identity cannot be established from this input. Retain as uncertain, not proved correction."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "libri-5142-33396-0033",
+      "rowSha256": "94b312d8390175681d9390ffe40d451009cde06f13912dd858ad9b68912238bd",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Both negations, half-ale quantity and toast retained; no new response to invitation."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "libri-5683-32866-0007",
+      "rowSha256": "477e5726400451cbc2a16c05bed47b307df22f1b7cb51defa3e80cd823391c5c",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Conditional wildness/judgment retained; rare source spelling not silently canonicalized."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "libri-4992-41797-0019",
+      "rowSha256": "d52d62ffd931471ad22996068519351c44f8042c6aaa1b483f9f660546a24e79",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Nancy capitalization added, source meant verb preserved rather than hidden met replacement."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "libri-7729-102255-0036",
+      "rowSha256": "6d75008f2e485bf1bf648580b7e71cea395bf2b78b4f01470767f21c55d7f5a1",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Troop placement, demand and arms ownership retained."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "libri-5683-32865-0017",
+      "rowSha256": "7dce84c64a55ddff5132d3b2ccb6a0508329122b704cac06bc3523764d90d52f",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Visible lake word retained but unresolved reference/article limits readability."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "libri-6829-68769-0046",
+      "rowSha256": "fd8d06eae3f8c68fd11d07f8afc14150a6395739d3910500dff78c980115926d",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Your/you-are grammar issue and question punctuation remain unpolished; question words still retain intent."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "libri-8463-294828-0014",
+      "rowSha256": "1dcc5ac2c54041d6f4556ac574a848a30704e7ede12f93964d4d1f22f15a6926",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Reason-to-pause and emotionless-man comparison retained."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "libri-3575-170457-0035",
+      "rowSha256": "f72938503b56cb86c41ab1692ccf1016b592acb4ce6f89b4929aad68e0eb6d56",
+      "faithful": null,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [
+        "meaning-uncertain"
+      ],
+      "note": "stiffness the estrangement is simplified to stiffness. It may be oral restatement or two distinct feelings. Context-free source does not establish whether content was lost; modality and two-or-three count remain."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "libri-5639-40744-0017",
+      "rowSha256": "4fcb4e375e747d840fab3b5a82d5dad9100fdf0f32f0820aa22dc17af94dc72b",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Emotion/sign-to-parents/wish-to-be-alone retained, no new personal-name spelling."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "libri-4970-29095-0029",
+      "rowSha256": "e93d763cb49a06436ca5c07193425a735d0421a249985d4fc697d8e965c4e015",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Future newspaper question retained, not answered."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "libri-8224-274381-0003",
+      "rowSha256": "c6c6e345af5f169d2e596b06a8eb24e698820025ea5cbe6a6a4d7d862e17b060",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "King/Montrose/Scotland/bold-advice relation retained without hidden councils/counsels replacement."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "libri-3575-170457-0012",
+      "rowSha256": "d297b00bcba7256e556a8ae3f6831a90c2a14f0d66fc1180af886b55ea4b8db1",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Both no-need and no-peril statements retained, no advice response."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "libri-3570-5694-0022",
+      "rowSha256": "7566813a8d9c4b2817a9cc501a52e463a293acdd41d79ea73a1b3f2dc6b8ecba",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Nearly-all qualifier and required-uniform predicate retained."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "libri-8224-274381-0010",
+      "rowSha256": "b105b376e1a24566cd744a16490739a94b381d4f4b3a23c0529dd05cf0f9f6ca",
+      "faithful": false,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [
+        "source-meaning-changed"
+      ],
+      "note": "The quick and unexpected march detail is deleted. That is factual manner/context, not a hesitation or meaningless repetition."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "libri-1995-1836-0007",
+      "rowSha256": "668d161a75748f49c7bffc91a86d3c132fb6753d683723d1d8b3792eac125992",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Education question and source Mary Tayl attribution retained; no arbitrary surname expansion."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "libri-908-31957-0018",
+      "rowSha256": "23242b4304a3c18277e113ae22cc69770a677eac025e83533cbf407a33f99cd5",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Archaic thou/not-lover statement retained without modernizing or translating."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "libri-2961-961-0013",
+      "rowSha256": "5eafb220fd7ee11210e86ba8e11f203d081dcaa5bf8a9a075a5fbae8f0bddb56",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Sallen name and desire-for-details retained, no classical-name guess."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "libri-672-122797-0032",
+      "rowSha256": "278aa3a1fc0ea594d9a07b9e99726e44ed888dd34a7a493e33829bb668e48df1",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Attribution-only first clause remains incomplete; fire action retained."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "libri-7021-79730-0001",
+      "rowSha256": "4c68a8b05e7f4bba5e7f03e7337f025ee4ff1c31e2431c9d758f874531394130",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Source nature/des fragment retained without completing unseen object."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "libri-7127-75947-0011",
+      "rowSha256": "845a4834895644ecbe8cda5caac51a63bbe6dda551e63e00afbf41316bdef84f",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Stay plea retained, but most love remains ungrammatical."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "libri-2300-131720-0021",
+      "rowSha256": "234044a36b534838616d41627c8fc643530c5b432260424db6b90bc7a48aa8e3",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Visible construction/company attribution retained, source Ed/And ambiguity remains awkward."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "libri-1089-134686-0008",
+      "rowSha256": "d6f24ec6b673d9ec3cfc271a04b1df951f14ef18a0f316df303ae232c15ce0f2",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Ardor/knowledge/introspection meaning retained, punctuation only."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "libri-6930-76324-0023",
+      "rowSha256": "676f4b69c049134019bf9588541081b4fd1d84d3abd9a30aa75fd3d06c4815b1",
+      "faithful": false,
+      "sceneUseful": false,
+      "languagePreserved": false,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [
+        "unrequested-translation"
+      ],
+      "note": "English becomes Chinese, and uncertain/incomplete source continuation becomes a new how-much question. Translation alone already fails."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "libri-121-127105-0023",
+      "rowSha256": "3d28960278cbbe47e011f5497ee06a5c78e322ce9a1640e8a8322280572e0070",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Incomplete promise of narrative retained rather than adding missing give."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "libri-260-123288-0008",
+      "rowSha256": "c37d3f3b8451e15dc489359f5e15352a368c14738bef1d0e0e5c6a0477526b98",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "horiz completed to horizon, strong lexical suffix completion in point-towards context; coming storm and cry retained."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "libri-8455-210777-0017",
+      "rowSha256": "8048a47c596d7b74bb572c6685834e60bd5d6ff63f6b390874a445ddc2192a33",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "dinn completed to dinner, strong lexical suffix completion after give-a-very-good; wife/singular gentleman/moment retained."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "libri-908-157963-0026",
+      "rowSha256": "15a4c8848388f0e628232d01a99160f24550c506dbffd9283b58324707d2deea",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Archaic address, loved/given and nobody-can-take crown negation retained."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "libri-1580-141083-0024",
+      "rowSha256": "161e9e4bce0125298c254c9fda2731c0e418d7eef3edeb4c6ad6e22bd2078a80",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "All chair questions and by-window answer retained, no new answer supplied."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "libri-4507-16021-0024",
+      "rowSha256": "69e43c02ddd63f5f758714e3c9ffbb3cea783f121ec4e085eee18596ce95c84a",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Heavily corrupted subject list/tail copied; not usable or recovered."
+    },
+    {
+      "variant": "natural-metal-v3",
+      "id": "libri-6829-68769-0013",
+      "rowSha256": "7fcef58ab753a672cab4875a2b0f983edd0655740025e8196aa90a811ee8e806",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Unclear seagates/asked-Ken fragment retained without inventing a different named person or gate request."
+    }
+  ]
+}

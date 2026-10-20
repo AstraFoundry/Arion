@@ -1,0 +1,13 @@
+{
+  "actualParameters": 1961560064,
+  "tensorCount": 418,
+  "architecture": "deepseek2",
+  "eligibleParameterCap": true,
+  "embeddedTemplateSha256": "22b9b42250ff4d3515d18040bc586843dc8fa1508a6b6b58d223274d7a3e6e50",
+  "upstreamTemplateSha256": "22b9b42250ff4d3515d18040bc586843dc8fa1508a6b6b58d223274d7a3e6e50",
+  "exactTemplateBytes": true,
+  "lfStrippedTemplateTextEqual": true,
+  "nativeCompatibility": "not-tested",
+  "modelGenerations": 0,
+  "productionActivated": false
+}

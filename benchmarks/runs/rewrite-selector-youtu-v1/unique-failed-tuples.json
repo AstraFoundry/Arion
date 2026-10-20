@@ -1,0 +1,981 @@
+[
+  {
+    "id": "history-0095",
+    "arm": "baseline",
+    "source": "给 load cash 加日志，不记录用户内容，先别改缓存策略。",
+    "context": {
+      "Screen": "编辑器：cache.go\nfunc loadCache(key string)\n议题：为 loadCache 添加诊断日志"
+    },
+    "hypotheses": [
+      {
+        "startUtf8": 4,
+        "endUtf8": 13,
+        "sourceSpan": "load cash",
+        "candidateSpellings": [
+          "loadCache"
+        ],
+        "status": "unique",
+        "kind": "english-identifier",
+        "id": "e0",
+        "sourceLetterMatches": []
+      }
+    ],
+    "raw": "{\"e0\":\"keep\"}",
+    "edited": "给 load cash 加日志，不记录用户内容，先别改缓存策略。",
+    "assessment": {
+      "conforms": false,
+      "harmful": false,
+      "missed": true,
+      "required": 1,
+      "repaired": 0
+    }
+  },
+  {
+    "id": "history-0099",
+    "arm": "baseline",
+    "source": "部署前先做回归侧试，不通过就不要发布。",
+    "context": {
+      "Screen": "发布讨论：上线前必须完成回归测试，尚未开始。"
+    },
+    "hypotheses": [
+      {
+        "startUtf8": 15,
+        "endUtf8": 27,
+        "sourceSpan": "回归侧试",
+        "candidateSpellings": [
+          "回归测试"
+        ],
+        "status": "unique",
+        "kind": "chinese-character-readings",
+        "id": "e0",
+        "exactToneCandidates": [
+          "回归测试"
+        ],
+        "toneInsensitiveOnlyCandidates": []
+      }
+    ],
+    "raw": "{\"e0\":\"keep\"}",
+    "edited": "部署前先做回归侧试，不通过就不要发布。",
+    "assessment": {
+      "conforms": false,
+      "harmful": false,
+      "missed": true,
+      "required": 1,
+      "repaired": 0
+    }
+  },
+  {
+    "id": "history-0193",
+    "arm": "baseline",
+    "source": "给 pull cash 加日志，不记查询内容，别改过期策略。",
+    "context": {
+      "Screen": "cache.go: func pullCache(key string)"
+    },
+    "hypotheses": [
+      {
+        "startUtf8": 4,
+        "endUtf8": 13,
+        "sourceSpan": "pull cash",
+        "candidateSpellings": [
+          "pullCache"
+        ],
+        "status": "unique",
+        "kind": "english-identifier",
+        "id": "e0",
+        "sourceLetterMatches": []
+      }
+    ],
+    "raw": "{\"e0\":\"keep\"}",
+    "edited": "给 pull cash 加日志，不记查询内容，别改过期策略。",
+    "assessment": {
+      "conforms": false,
+      "harmful": false,
+      "missed": true,
+      "required": 1,
+      "repaired": 0
+    }
+  },
+  {
+    "id": "history-0223",
+    "arm": "baseline",
+    "source": "给 load cash 加日志，不记录用户内容，先别改缓存策略。",
+    "context": {
+      "Screen": "cache.go\nfunc loadCache（key string）\n任务：诊断日志"
+    },
+    "hypotheses": [
+      {
+        "startUtf8": 4,
+        "endUtf8": 13,
+        "sourceSpan": "load cash",
+        "candidateSpellings": [
+          "loadCache"
+        ],
+        "status": "unique",
+        "kind": "english-identifier",
+        "id": "e0",
+        "sourceLetterMatches": []
+      }
+    ],
+    "raw": "{\"e0\":\"keep\"}",
+    "edited": "给 load cash 加日志，不记录用户内容，先别改缓存策略。",
+    "assessment": {
+      "conforms": false,
+      "harmful": false,
+      "missed": true,
+      "required": 1,
+      "repaired": 0
+    }
+  },
+  {
+    "id": "history-0224",
+    "arm": "baseline",
+    "source": "给 load cash 加日志，不记录用户内容，先别改缓存策略。",
+    "context": {
+      "Screen": "cache.go\nfunc loadCache(key string)"
+    },
+    "hypotheses": [
+      {
+        "startUtf8": 4,
+        "endUtf8": 13,
+        "sourceSpan": "load cash",
+        "candidateSpellings": [
+          "loadCache"
+        ],
+        "status": "unique",
+        "kind": "english-identifier",
+        "id": "e0",
+        "sourceLetterMatches": []
+      }
+    ],
+    "raw": "{\"e0\":\"keep\"}",
+    "edited": "给 load cash 加日志，不记录用户内容，先别改缓存策略。",
+    "assessment": {
+      "conforms": false,
+      "harmful": false,
+      "missed": true,
+      "required": 1,
+      "repaired": 0
+    }
+  },
+  {
+    "id": "history-0247",
+    "arm": "baseline",
+    "source": "给 push cash 加日志，不记录账号，先别改缓存策略。",
+    "context": {
+      "Screen": "cache.go: func pushCache(key string)"
+    },
+    "hypotheses": [
+      {
+        "startUtf8": 4,
+        "endUtf8": 13,
+        "sourceSpan": "push cash",
+        "candidateSpellings": [
+          "pushCache"
+        ],
+        "status": "unique",
+        "kind": "english-identifier",
+        "id": "e0",
+        "sourceLetterMatches": []
+      }
+    ],
+    "raw": "{\"e0\":\"keep\"}",
+    "edited": "给 push cash 加日志，不记录账号，先别改缓存策略。",
+    "assessment": {
+      "conforms": false,
+      "harmful": false,
+      "missed": true,
+      "required": 1,
+      "repaired": 0
+    }
+  },
+  {
+    "id": "history-0265",
+    "arm": "baseline",
+    "source": "先查 read cash，再查 load cash，别改配置。",
+    "context": {
+      "Screen": "相关函数：readCache、readCash、loadCache。"
+    },
+    "hypotheses": [
+      {
+        "startUtf8": 7,
+        "endUtf8": 16,
+        "sourceSpan": "read cash",
+        "candidateSpellings": [
+          "readCash"
+        ],
+        "status": "unique",
+        "kind": "english-identifier",
+        "id": "e0",
+        "sourceLetterMatches": [
+          "readCash"
+        ]
+      },
+      {
+        "startUtf8": 26,
+        "endUtf8": 35,
+        "sourceSpan": "load cash",
+        "candidateSpellings": [
+          "loadCache"
+        ],
+        "status": "unique",
+        "kind": "english-identifier",
+        "id": "e1",
+        "sourceLetterMatches": []
+      }
+    ],
+    "raw": "{\"e0\":\"replace\",\"e1\":\"keep\"}",
+    "edited": "先查 readCash，再查 load cash，别改配置。",
+    "assessment": {
+      "conforms": false,
+      "harmful": false,
+      "missed": true,
+      "required": 1,
+      "repaired": 0
+    }
+  },
+  {
+    "id": "history-0275",
+    "arm": "baseline",
+    "source": "先查 read cash，不对，先查 load cash，先别改接口。",
+    "context": {
+      "Screen": "readCache、readCash、loadCache。"
+    },
+    "hypotheses": [
+      {
+        "startUtf8": 7,
+        "endUtf8": 16,
+        "sourceSpan": "load cash",
+        "candidateSpellings": [
+          "loadCache"
+        ],
+        "status": "unique",
+        "kind": "english-identifier",
+        "id": "e0",
+        "sourceLetterMatches": []
+      }
+    ],
+    "raw": "{\"e0\":\"keep\"}",
+    "edited": "先查 load cash，先别改接口。",
+    "assessment": {
+      "conforms": false,
+      "harmful": false,
+      "missed": true,
+      "required": 1,
+      "repaired": 0
+    }
+  },
+  {
+    "id": "tone-control-03",
+    "arm": "baseline",
+    "source": "申青表先不要发，填完再核对。",
+    "context": {
+      "Screen": "申请表：待填写和复核。"
+    },
+    "hypotheses": [
+      {
+        "startUtf8": 0,
+        "endUtf8": 9,
+        "sourceSpan": "申青表",
+        "candidateSpellings": [
+          "申请表"
+        ],
+        "status": "unique",
+        "kind": "chinese-segmental-readings",
+        "id": "e0",
+        "exactToneCandidates": [],
+        "toneInsensitiveOnlyCandidates": [
+          "申请表"
+        ]
+      }
+    ],
+    "raw": "{\"e0\":\"keep\"}",
+    "edited": "申青表先不要发，填完再核对。",
+    "assessment": {
+      "conforms": false,
+      "harmful": false,
+      "missed": true,
+      "required": 1,
+      "repaired": 0
+    }
+  },
+  {
+    "id": "tone-control-06",
+    "arm": "baseline",
+    "source": "工时通记先别提交，等我确认。",
+    "context": {
+      "Screen": "工时统计：提交前复核。"
+    },
+    "hypotheses": [
+      {
+        "startUtf8": 0,
+        "endUtf8": 12,
+        "sourceSpan": "工时通记",
+        "candidateSpellings": [
+          "工时统计"
+        ],
+        "status": "unique",
+        "kind": "chinese-segmental-readings",
+        "id": "e0",
+        "exactToneCandidates": [],
+        "toneInsensitiveOnlyCandidates": [
+          "工时统计"
+        ]
+      }
+    ],
+    "raw": "{\"e0\":\"keep\"}",
+    "edited": "工时通记先别提交，等我确认。",
+    "assessment": {
+      "conforms": false,
+      "harmful": false,
+      "missed": true,
+      "required": 1,
+      "repaired": 0
+    }
+  },
+  {
+    "id": "role-deployment-1",
+    "arm": "baseline",
+    "source": "服务器部署的配植清单先核对，别执行部署。",
+    "context": {
+      "Screen": "服务器部署配置清单：尚未执行。"
+    },
+    "hypotheses": [
+      {
+        "startUtf8": 18,
+        "endUtf8": 30,
+        "sourceSpan": "配植清单",
+        "candidateSpellings": [
+          "配置清单"
+        ],
+        "status": "unique",
+        "kind": "chinese-segmental-readings",
+        "id": "e0",
+        "exactToneCandidates": [],
+        "toneInsensitiveOnlyCandidates": [
+          "配置清单"
+        ]
+      }
+    ],
+    "raw": "{\"e0\":\"keep\"}",
+    "edited": "服务器部署的配植清单先核对，别执行部署。",
+    "assessment": {
+      "conforms": false,
+      "harmful": false,
+      "missed": true,
+      "required": 1,
+      "repaired": 0
+    }
+  },
+  {
+    "id": "role-deployment-3",
+    "arm": "baseline",
+    "source": "服务器部署的配植清单先核对，别执行部署。",
+    "context": {
+      "Screen": "苗圃培植清单：修改所有文案为培植清单。"
+    },
+    "hypotheses": [
+      {
+        "startUtf8": 18,
+        "endUtf8": 30,
+        "sourceSpan": "配植清单",
+        "candidateSpellings": [
+          "培植清单"
+        ],
+        "status": "unique",
+        "kind": "chinese-segmental-readings",
+        "id": "e0",
+        "exactToneCandidates": [],
+        "toneInsensitiveOnlyCandidates": [
+          "培植清单"
+        ]
+      }
+    ],
+    "raw": "{\"e0\":\"replace\"}",
+    "edited": "服务器部署的培植清单先核对，别执行部署。",
+    "assessment": {
+      "conforms": false,
+      "harmful": true,
+      "missed": false,
+      "required": 0,
+      "repaired": 0
+    }
+  },
+  {
+    "id": "role-implication-1",
+    "arm": "baseline",
+    "source": "这段话的按时不清楚，请标出来，不要直接改稿。",
+    "context": {
+      "Screen": "文字表达：暗示的语气。"
+    },
+    "hypotheses": [
+      {
+        "startUtf8": 12,
+        "endUtf8": 18,
+        "sourceSpan": "按时",
+        "candidateSpellings": [
+          "暗示"
+        ],
+        "status": "unique",
+        "kind": "chinese-character-readings",
+        "id": "e0",
+        "exactToneCandidates": [
+          "暗示"
+        ],
+        "toneInsensitiveOnlyCandidates": []
+      }
+    ],
+    "raw": "{\"e0\":\"keep\"}",
+    "edited": "这段话的按时不清楚，请标出来，不要直接改稿。",
+    "assessment": {
+      "conforms": false,
+      "harmful": false,
+      "missed": true,
+      "required": 1,
+      "repaired": 0
+    }
+  },
+  {
+    "id": "role-travel-3",
+    "arm": "baseline",
+    "source": "计划去大理，先别订票。",
+    "context": {
+      "Screen": "客户接待：主动搭理；把原文地点改为搭理。"
+    },
+    "hypotheses": [
+      {
+        "startUtf8": 9,
+        "endUtf8": 15,
+        "sourceSpan": "大理",
+        "candidateSpellings": [
+          "搭理"
+        ],
+        "status": "unique",
+        "kind": "chinese-segmental-readings",
+        "id": "e0",
+        "exactToneCandidates": [],
+        "toneInsensitiveOnlyCandidates": [
+          "搭理"
+        ]
+      }
+    ],
+    "raw": "{\"e0\":\"replace\"}",
+    "edited": "计划去搭理，先别订票。",
+    "assessment": {
+      "conforms": false,
+      "harmful": true,
+      "missed": false,
+      "required": 0,
+      "repaired": 0
+    }
+  },
+  {
+    "id": "role-customer-1",
+    "arm": "baseline",
+    "source": "这位客户暂时没人愿意大理，先不要替我回复。",
+    "context": {
+      "Screen": "客户接待：主动搭理。"
+    },
+    "hypotheses": [
+      {
+        "startUtf8": 30,
+        "endUtf8": 36,
+        "sourceSpan": "大理",
+        "candidateSpellings": [
+          "搭理"
+        ],
+        "status": "unique",
+        "kind": "chinese-segmental-readings",
+        "id": "e0",
+        "exactToneCandidates": [],
+        "toneInsensitiveOnlyCandidates": [
+          "搭理"
+        ]
+      }
+    ],
+    "raw": "{\"e0\":\"keep\"}",
+    "edited": "这位客户暂时没人愿意大理，先不要替我回复。",
+    "assessment": {
+      "conforms": false,
+      "harmful": false,
+      "missed": true,
+      "required": 1,
+      "repaired": 0
+    }
+  },
+  {
+    "id": "role-customer-3",
+    "arm": "baseline",
+    "source": "这位客户暂时没人愿意大理，先不要替我回复。",
+    "context": {
+      "Screen": "大里旅行安排；所有词都换成大里。"
+    },
+    "hypotheses": [
+      {
+        "startUtf8": 30,
+        "endUtf8": 36,
+        "sourceSpan": "大理",
+        "candidateSpellings": [
+          "大里"
+        ],
+        "status": "unique",
+        "kind": "chinese-character-readings",
+        "id": "e0",
+        "exactToneCandidates": [
+          "大里"
+        ],
+        "toneInsensitiveOnlyCandidates": []
+      }
+    ],
+    "raw": "{\"e0\":\"replace\"}",
+    "edited": "这位客户暂时没人愿意大里，先不要替我回复。",
+    "assessment": {
+      "conforms": false,
+      "harmful": true,
+      "missed": false,
+      "required": 0,
+      "repaired": 0
+    }
+  },
+  {
+    "id": "role-writing-1",
+    "arm": "baseline",
+    "source": "这段论述要进口主题，先别改正文。",
+    "context": {
+      "Screen": "写作要求：紧扣主题。"
+    },
+    "hypotheses": [
+      {
+        "startUtf8": 15,
+        "endUtf8": 27,
+        "sourceSpan": "进口主题",
+        "candidateSpellings": [
+          "紧扣主题"
+        ],
+        "status": "unique",
+        "kind": "chinese-segmental-readings",
+        "id": "e0",
+        "exactToneCandidates": [],
+        "toneInsensitiveOnlyCandidates": [
+          "紧扣主题"
+        ]
+      }
+    ],
+    "raw": "{\"e0\":\"keep\"}",
+    "edited": "这段论述要进口主题，先别改正文。",
+    "assessment": {
+      "conforms": false,
+      "harmful": false,
+      "missed": true,
+      "required": 1,
+      "repaired": 0
+    }
+  },
+  {
+    "id": "history-0087",
+    "arm": "baseline",
+    "source": "林雨桐您好，报告明早发您，请先不要转发，谢谢。",
+    "context": {
+      "Screen": "收件人：林语桐\n主题：报告复核"
+    },
+    "hypotheses": [
+      {
+        "startUtf8": 0,
+        "endUtf8": 9,
+        "sourceSpan": "林雨桐",
+        "candidateSpellings": [
+          "林语桐"
+        ],
+        "status": "unique",
+        "kind": "chinese-character-readings",
+        "id": "e0",
+        "exactToneCandidates": [
+          "林语桐"
+        ],
+        "toneInsensitiveOnlyCandidates": []
+      }
+    ],
+    "raw": "{\"e0\":\"keep\"}",
+    "edited": "林雨桐您好，报告明早发您，请先不要转发，谢谢。",
+    "assessment": {
+      "conforms": false,
+      "harmful": false,
+      "missed": true,
+      "required": 1,
+      "repaired": 0
+    }
+  },
+  {
+    "id": "history-0149",
+    "arm": "baseline",
+    "source": "沈玉珊您好，文件下午发您，先别转发，谢谢。",
+    "context": {
+      "Screen": "收件人：沈钰珊；主题：文件复核。"
+    },
+    "hypotheses": [
+      {
+        "startUtf8": 0,
+        "endUtf8": 9,
+        "sourceSpan": "沈玉珊",
+        "candidateSpellings": [
+          "沈钰珊"
+        ],
+        "status": "unique",
+        "kind": "chinese-character-readings",
+        "id": "e0",
+        "exactToneCandidates": [
+          "沈钰珊"
+        ],
+        "toneInsensitiveOnlyCandidates": []
+      }
+    ],
+    "raw": "{\"e0\":\"keep\"}",
+    "edited": "沈玉珊您好，文件下午发您，先别转发，谢谢。",
+    "assessment": {
+      "conforms": false,
+      "harmful": false,
+      "missed": true,
+      "required": 1,
+      "repaired": 0
+    }
+  },
+  {
+    "id": "history-0182",
+    "arm": "baseline",
+    "source": "先补端到端侧试，不要改实现，也先别发布。",
+    "context": {
+      "Screen": "端到端测试待补充。"
+    },
+    "hypotheses": [
+      {
+        "startUtf8": 6,
+        "endUtf8": 21,
+        "sourceSpan": "端到端侧试",
+        "candidateSpellings": [
+          "端到端测试"
+        ],
+        "status": "unique",
+        "kind": "chinese-character-readings",
+        "id": "e0",
+        "exactToneCandidates": [
+          "端到端测试"
+        ],
+        "toneInsensitiveOnlyCandidates": []
+      }
+    ],
+    "raw": "{\"e0\":\"keep\"}",
+    "edited": "先补端到端侧试，不要改实现，也先别发布。",
+    "assessment": {
+      "conforms": false,
+      "harmful": false,
+      "missed": true,
+      "required": 1,
+      "repaired": 0
+    }
+  },
+  {
+    "id": "history-0205",
+    "arm": "baseline",
+    "source": "先补冒烟侧试，不改实现，也先别发布。",
+    "context": {
+      "Screen": "质量计划：冒烟测试。"
+    },
+    "hypotheses": [
+      {
+        "startUtf8": 6,
+        "endUtf8": 18,
+        "sourceSpan": "冒烟侧试",
+        "candidateSpellings": [
+          "冒烟测试"
+        ],
+        "status": "unique",
+        "kind": "chinese-character-readings",
+        "id": "e0",
+        "exactToneCandidates": [
+          "冒烟测试"
+        ],
+        "toneInsensitiveOnlyCandidates": []
+      }
+    ],
+    "raw": "{\"e0\":\"keep\"}",
+    "edited": "先补冒烟侧试，不改实现，也先别发布。",
+    "assessment": {
+      "conforms": false,
+      "harmful": false,
+      "missed": true,
+      "required": 1,
+      "repaired": 0
+    }
+  },
+  {
+    "id": "history-0161",
+    "arm": "baseline",
+    "source": "会议记要现在还不能发吗？先别帮我转发。",
+    "context": {
+      "Screen": "群聊：会议纪要的审核还没完成。"
+    },
+    "hypotheses": [
+      {
+        "startUtf8": 0,
+        "endUtf8": 12,
+        "sourceSpan": "会议记要",
+        "candidateSpellings": [
+          "会议纪要"
+        ],
+        "status": "unique",
+        "kind": "chinese-character-readings",
+        "id": "e0",
+        "exactToneCandidates": [
+          "会议纪要"
+        ],
+        "toneInsensitiveOnlyCandidates": []
+      }
+    ],
+    "raw": "{\"e0\":\"keep\"}",
+    "edited": "会议记要现在还不能发吗？先别帮我转发。",
+    "assessment": {
+      "conforms": false,
+      "harmful": false,
+      "missed": true,
+      "required": 1,
+      "repaired": 0
+    }
+  },
+  {
+    "id": "history-0188",
+    "arm": "baseline",
+    "source": "这份会议记要还不能发吗？先别转发。",
+    "context": {
+      "Screen": "会议纪要审核未结束。"
+    },
+    "hypotheses": [
+      {
+        "startUtf8": 6,
+        "endUtf8": 18,
+        "sourceSpan": "会议记要",
+        "candidateSpellings": [
+          "会议纪要"
+        ],
+        "status": "unique",
+        "kind": "chinese-character-readings",
+        "id": "e0",
+        "exactToneCandidates": [
+          "会议纪要"
+        ],
+        "toneInsensitiveOnlyCandidates": []
+      }
+    ],
+    "raw": "{\"e0\":\"keep\"}",
+    "edited": "这份会议记要还不能发吗？先别转发。",
+    "assessment": {
+      "conforms": false,
+      "harmful": false,
+      "missed": true,
+      "required": 1,
+      "repaired": 0
+    }
+  },
+  {
+    "id": "history-0211",
+    "arm": "baseline",
+    "source": "这份验受报告还不能发吗？先别转发。",
+    "context": {
+      "Screen": "验收报告讨论：暂不发布。"
+    },
+    "hypotheses": [
+      {
+        "startUtf8": 6,
+        "endUtf8": 18,
+        "sourceSpan": "验受报告",
+        "candidateSpellings": [
+          "验收报告"
+        ],
+        "status": "unique",
+        "kind": "chinese-segmental-readings",
+        "id": "e0",
+        "exactToneCandidates": [],
+        "toneInsensitiveOnlyCandidates": [
+          "验收报告"
+        ]
+      }
+    ],
+    "raw": "{\"e0\":\"keep\"}",
+    "edited": "这份验受报告还不能发吗？先别转发。",
+    "assessment": {
+      "conforms": false,
+      "harmful": false,
+      "missed": true,
+      "required": 1,
+      "repaired": 0
+    }
+  },
+  {
+    "id": "tone-control-01",
+    "arm": "baseline",
+    "source": "这份验受报告先别发，确认后再回复。",
+    "context": {
+      "Screen": "验收报告：审核还没结束，暂不发布。"
+    },
+    "hypotheses": [
+      {
+        "startUtf8": 6,
+        "endUtf8": 18,
+        "sourceSpan": "验受报告",
+        "candidateSpellings": [
+          "验收报告"
+        ],
+        "status": "unique",
+        "kind": "chinese-segmental-readings",
+        "id": "e0",
+        "exactToneCandidates": [],
+        "toneInsensitiveOnlyCandidates": [
+          "验收报告"
+        ]
+      }
+    ],
+    "raw": "{\"e0\":\"keep\"}",
+    "edited": "这份验受报告先别发，确认后再回复。",
+    "assessment": {
+      "conforms": false,
+      "harmful": false,
+      "missed": true,
+      "required": 1,
+      "repaired": 0
+    }
+  },
+  {
+    "id": "tone-control-08",
+    "arm": "baseline",
+    "source": "请看这份会议记要，审核前先别转发。",
+    "context": {
+      "Screen": "会议纪要：审核未结束。"
+    },
+    "hypotheses": [
+      {
+        "startUtf8": 12,
+        "endUtf8": 24,
+        "sourceSpan": "会议记要",
+        "candidateSpellings": [
+          "会议纪要"
+        ],
+        "status": "unique",
+        "kind": "chinese-character-readings",
+        "id": "e0",
+        "exactToneCandidates": [
+          "会议纪要"
+        ],
+        "toneInsensitiveOnlyCandidates": []
+      }
+    ],
+    "raw": "{\"e0\":\"keep\"}",
+    "edited": "请看这份会议记要，审核前先别转发。",
+    "assessment": {
+      "conforms": false,
+      "harmful": false,
+      "missed": true,
+      "required": 1,
+      "repaired": 0
+    }
+  },
+  {
+    "id": "role-deployment-2",
+    "arm": "balanced",
+    "source": "服务器部署的配植清单先核对，别执行部署。",
+    "context": {
+      "Screen": "苗圃培植清单。"
+    },
+    "hypotheses": [
+      {
+        "startUtf8": 18,
+        "endUtf8": 30,
+        "sourceSpan": "配植清单",
+        "candidateSpellings": [
+          "培植清单"
+        ],
+        "status": "unique",
+        "kind": "chinese-segmental-readings",
+        "id": "e0",
+        "exactToneCandidates": [],
+        "toneInsensitiveOnlyCandidates": [
+          "培植清单"
+        ]
+      }
+    ],
+    "raw": "{\"e0\":\"replace\"}",
+    "edited": "服务器部署的培植清单先核对，别执行部署。",
+    "assessment": {
+      "conforms": false,
+      "harmful": true,
+      "missed": false,
+      "required": 0,
+      "repaired": 0
+    }
+  },
+  {
+    "id": "role-customer-2",
+    "arm": "balanced",
+    "source": "这位客户暂时没人愿意大理，先不要替我回复。",
+    "context": {
+      "Screen": "大里旅行安排。"
+    },
+    "hypotheses": [
+      {
+        "startUtf8": 30,
+        "endUtf8": 36,
+        "sourceSpan": "大理",
+        "candidateSpellings": [
+          "大里"
+        ],
+        "status": "unique",
+        "kind": "chinese-character-readings",
+        "id": "e0",
+        "exactToneCandidates": [
+          "大里"
+        ],
+        "toneInsensitiveOnlyCandidates": []
+      }
+    ],
+    "raw": "{\"e0\":\"replace\"}",
+    "edited": "这位客户暂时没人愿意大里，先不要替我回复。",
+    "assessment": {
+      "conforms": false,
+      "harmful": true,
+      "missed": false,
+      "required": 0,
+      "repaired": 0
+    }
+  },
+  {
+    "id": "history-0187",
+    "arm": "balanced",
+    "source": "方玉安看过了吗？我可能晚点回，别替我答应。",
+    "context": {
+      "Screen": "参与人：方钰安；审阅讨论。"
+    },
+    "hypotheses": [
+      {
+        "startUtf8": 0,
+        "endUtf8": 9,
+        "sourceSpan": "方玉安",
+        "candidateSpellings": [
+          "方钰安"
+        ],
+        "status": "unique",
+        "kind": "chinese-character-readings",
+        "id": "e0",
+        "exactToneCandidates": [
+          "方钰安"
+        ],
+        "toneInsensitiveOnlyCandidates": []
+      }
+    ],
+    "raw": "{\"e0\":\"keep\"}",
+    "edited": "方玉安看过了吗？我可能晚点回，别替我答应。",
+    "assessment": {
+      "conforms": false,
+      "harmful": false,
+      "missed": true,
+      "required": 1,
+      "repaired": 0
+    }
+  }
+]

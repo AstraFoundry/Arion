@@ -1,0 +1,22 @@
+{
+  "kind": "authored-text-images",
+  "purpose": "Actual native Vision OCR diagnostic, not real window capture.",
+  "fontPath": "/System/Library/Fonts/STHeiti Medium.ttc",
+  "fontSha256": "f8fa4a63e2cf500e98e64d4c73260daaba049306cf85dec9e3729bc285b7d645",
+  "pillowVersion": "11.3.0",
+  "pythonVersion": "3.10.9",
+  "images": {
+    "images/ocr-email-name.png": "97dd8f75bc0f0b11a5c76d68a70baa8a1163d86dcc5c9dc48b22133bbc99b577",
+    "images/ocr-email-clean.png": "f6232c4852f0de7642091c3f9483ede2e61d2e0521adfdccca32f73f7979c257",
+    "images/ocr-work-code.png": "f0334e3fcd469412b845bf24cfed14f8a57c96740ad80efeb910d11e288382ad",
+    "images/ocr-work-term.png": "0865809649908325c09d1b098a5c1208608e7408b8d9d4eeca23f73f8d288977",
+    "images/ocr-prompt-code.png": "44b9248bbcf7140dda6763970a8afd59296f3811d4171d484d5b919c6357c05a",
+    "images/ocr-chat-name.png": "08e22a3634b8048c0c4f92da16ac6b4344b3f5909f743f6eeef48c6b31ad9a84",
+    "images/ocr-email-ambiguous.png": "c9a44de91af900f658a5f8e6714c8cc8e352dec85c8aab677209f5210c3a5877",
+    "images/ocr-work-injection.png": "c4a31baa51760aa9266fae5f4f77af57b9761448427499ac2a530bdda9b608ca",
+    "images/ocr-work-question.png": "1e4f520901ab3c04bed1d9485e919dfd1d1e54a1d365ea4b8b58ae430ce887e5",
+    "images/ocr-prompt-clean.png": "dfb330a6e4f19799f8b45ba18be374eeb49bbcaa16f982f88a39f8e5ae1ddfd9",
+    "images/ocr-chat-uncertainty.png": "bb94322e3360dd898efe3596a81a80a282c0651f58206300ea53061a2dae4c44",
+    "images/ocr-email-condition.png": "f35b155a6b1f0290ee6c1f53b960cab3510c994c365dac7c4cfc5a4d05a56a47"
+  }
+}

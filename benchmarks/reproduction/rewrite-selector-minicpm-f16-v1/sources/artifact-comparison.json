@@ -1,0 +1,17 @@
+{
+  "identicalTensorNamesAndShapes": true,
+  "tensorCount": 219,
+  "parameters": 1080632832,
+  "identicalEmbeddedTemplate": true,
+  "q4TensorTypes": [
+    0,
+    12,
+    14
+  ],
+  "f16TensorTypes": [
+    0,
+    1
+  ],
+  "numericalWeightLineageEstablished": false,
+  "modelGenerations": 0
+}

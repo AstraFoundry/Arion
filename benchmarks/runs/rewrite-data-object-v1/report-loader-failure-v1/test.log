@@ -1,0 +1,23 @@
+F
+======================================================================
+FAIL: test_report_loaders_preserve_module_and_path (__main__.ReportTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/steven/code/Arion/benchmarks/reproduction/rewrite-release/test_report.py", line 33, in test_report_loaders_preserve_module_and_path
+    self.assertEqual(sys.path,before)
+AssertionError: Lists differ: ['/Us[40 chars]ction', '/Users/steven/code/Arion/benchmarks/r[987 chars]egg'] != ['/Us[40 chars]ction/rewrite-release', '/Users/steven/anacond[515 chars]egg']
+
+First differing element 0:
+'/Users/steven/code/Arion/benchmarks/reproduction'
+'/Users/steven/code/Arion/benchmarks/reproduction/rewrite-release'
+
+First list contains 8 additional elements.
+First extra element 9:
+'/Users/steven/anaconda3/lib/python310.zip'
+
+Diff is 1215 characters long. Set self.maxDiff to None to see it.
+
+----------------------------------------------------------------------
+Ran 1 test in 7.638s
+
+FAILED (failures=1)

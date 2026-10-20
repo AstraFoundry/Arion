@@ -1,0 +1,14 @@
+{
+  "model": "Pinned latest Qwen3.5-2B text-only1.882B, Q4_K_M, CPU4/GPU0/non-thinking/cache off",
+  "minimumTarget": "Apple Silicon16GB; measured host M4/32GB remains development evidence.",
+  "developmentCases": 24,
+  "variants": [
+    "baseline",
+    "evidence"
+  ],
+  "factor": "Both arms receive identical policy/examples and optional-evidence guidance. Evidence arm computes optional pronunciationEvidence for each demonstration and actual message; baseline omits it. Full dictation and OCR retained. No post-generation content validator.",
+  "producer": "Pinned CMU dictionary; all complete multiword Latin runs in work/prompt, excluding quoted/code spans, matched to complete camelCase/underscore identifiers parsed from full OCR. Stress-insensitive pronunciation sets retain all alternatives. Unknown words/products explicit; not acoustic evidence, Chinese NER or a guarantee of intended spelling.",
+  "selection": "Require all24 reviewed intended meanings, all7 required repairs, protected quoted/exact-name controls, owner grouping, all ambiguity controls unchanged, zero paired semantic worsening, and strict improvement in faithful scene output to select evidence. If only guidance-only baseline meets all quality conditions, prefer it; otherwise no evaluation. Freeze results/review selection before new24.",
+  "freshCases": 24,
+  "limitations": "Eight newly authored development controls plus16 exposed cases. New24 previously frozen and never generated; authored scenario text, not natural ASR or independent review. No release adoption from this diagnostic."
+}

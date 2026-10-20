@@ -1,0 +1,41 @@
+{
+  "status": "complete",
+  "order": "reverse",
+  "freezeSha256": "1026ad56d79d22fe1f85f7977e6b81e35f895332b5ff890d6c75745d44e5cbeb",
+  "measuredGenerations": 174,
+  "warmupGenerations": 16,
+  "actualGenerations": 190,
+  "warmupResultsSha256": "394b56ec9a7ff12db3818517fd118660ab415538a0a434e26644acaffd8aae4c",
+  "measuredResultsSha256": "4b7ddeb380967a39b5de3751695c24cf9482bbc5c950be732bea35dd020f1e57",
+  "workers": [
+    {
+      "scene": "work",
+      "modelStartupMs": 676.6609998885542,
+      "primingMs": 6698.353541083634,
+      "readyMs": 7375.014540972188,
+      "warmupResponses": 4
+    },
+    {
+      "scene": "email",
+      "modelStartupMs": 1016.2822080310434,
+      "primingMs": 6249.820625176653,
+      "readyMs": 7266.102833207697,
+      "warmupResponses": 4
+    },
+    {
+      "scene": "prompt",
+      "modelStartupMs": 1119.728583842516,
+      "primingMs": 7027.737000025809,
+      "readyMs": 8147.465583868325,
+      "warmupResponses": 4
+    },
+    {
+      "scene": "chat",
+      "modelStartupMs": 908.5027920082211,
+      "primingMs": 6584.873375017196,
+      "readyMs": 7493.376167025417,
+      "warmupResponses": 4
+    }
+  ],
+  "scope": "All prefix priming and cleanup-worker startup costs recorded before measured cases; no native/ASR/concurrent/min16 acceptance."
+}

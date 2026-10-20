@@ -1,0 +1,89 @@
+{
+  "resultsSha256": "96d8f7bbbecb9a66d9248cdb86ebed86ebaee02099b22654855d5f972729fcec",
+  "reviews": [
+    {
+      "id": "99-cache-off-first",
+      "variant": "metal99-cache-off-first",
+      "rowSha256": "2c86c48282d0b4de33b2c9eeade31653c0fc208a74174e203ff0470471445a71",
+      "probeConforms": true,
+      "note": "Personally read actual raw output and full source/context. Native JSON/normal stop passes. Choice matches this limited diagnostic task. Protocol/cache compatibility is not semantic or release acceptance; no final body."
+    },
+    {
+      "id": "99-other-source",
+      "variant": "metal99-other-source",
+      "rowSha256": "267ef1f69c358f4a5d4227151484c31f8a85aba210d949db655b757dcd50b938",
+      "probeConforms": false,
+      "note": "Personally read actual raw output and full source/context. Native JSON/normal stop passes. Unsupported read cash -> readCache contradicts explicit cash/not-cache source meaning. Protocol/cache compatibility is not semantic or release acceptance; no final body."
+    },
+    {
+      "id": "99-cache-on-return",
+      "variant": "metal99-cache-on-return",
+      "rowSha256": "422fb3938c8c71477773f04456c557e14aaf539ef591272bb916a6b9ef7cab06",
+      "probeConforms": true,
+      "note": "Personally read actual raw output and full source/context. Native JSON/normal stop passes. Choice matches this limited diagnostic task. Protocol/cache compatibility is not semantic or release acceptance; no final body."
+    },
+    {
+      "id": "99-cache-off-return",
+      "variant": "metal99-cache-off-return",
+      "rowSha256": "360243bc3529684bcf8724178c1e1353f1b05bc965908ddaeb1ccddf8a199ee2",
+      "probeConforms": true,
+      "note": "Personally read actual raw output and full source/context. Native JSON/normal stop passes. Choice matches this limited diagnostic task. Protocol/cache compatibility is not semantic or release acceptance; no final body."
+    },
+    {
+      "id": "99-free-positive",
+      "variant": "metal99-free-positive",
+      "rowSha256": "47ccf6c61fcd28c84374b65e831bc71a238da6e1c20eee0d4bfbc4ceac2b66e5",
+      "probeConforms": true,
+      "note": "Personally read actual raw output and full source/context. Native JSON/normal stop passes. Choice matches this limited diagnostic task. Schema removed; this choice is not grammar-forced. Protocol/cache compatibility is not semantic or release acceptance; no final body."
+    },
+    {
+      "id": "99-free-negative",
+      "variant": "metal99-free-negative",
+      "rowSha256": "e4a851bea06e0d168163e1d334b1094a3c16b71609a32e84c5a548d54ee87d7d",
+      "probeConforms": false,
+      "note": "Personally read actual raw output and full source/context. Native JSON/normal stop passes. Unsupported read cash -> readCache contradicts explicit cash/not-cache source meaning. Schema removed; this choice is not grammar-forced. Protocol/cache compatibility is not semantic or release acceptance; no final body."
+    },
+    {
+      "id": "0-cache-off-first",
+      "variant": "cpu-layer0-cache-off-first",
+      "rowSha256": "1cb0e9e1690468a9631643f810d5230d5da0d819687487a04836906ea7485f1f",
+      "probeConforms": true,
+      "note": "Personally read actual raw output and full source/context. Native JSON/normal stop passes. Choice matches this limited diagnostic task. Protocol/cache compatibility is not semantic or release acceptance; no final body."
+    },
+    {
+      "id": "0-other-source",
+      "variant": "cpu-layer0-other-source",
+      "rowSha256": "2322051649dee3fb5692a0bfb9b45a24ad7930718e28b4ff64c38e39cc908160",
+      "probeConforms": false,
+      "note": "Personally read actual raw output and full source/context. Native JSON/normal stop passes. Unsupported read cash -> readCache contradicts explicit cash/not-cache source meaning. Protocol/cache compatibility is not semantic or release acceptance; no final body."
+    },
+    {
+      "id": "0-cache-on-return",
+      "variant": "cpu-layer0-cache-on-return",
+      "rowSha256": "45c41bf02845d8c9b646c8fc2fe5aa78753a7fdf79bdb2d018239eceb35d06a0",
+      "probeConforms": true,
+      "note": "Personally read actual raw output and full source/context. Native JSON/normal stop passes. Choice matches this limited diagnostic task. Protocol/cache compatibility is not semantic or release acceptance; no final body."
+    },
+    {
+      "id": "0-cache-off-return",
+      "variant": "cpu-layer0-cache-off-return",
+      "rowSha256": "d24257ee489334aaa9c17fb8112945195b5b46bdd5f6849a9e69d4b74e3672f7",
+      "probeConforms": true,
+      "note": "Personally read actual raw output and full source/context. Native JSON/normal stop passes. Choice matches this limited diagnostic task. Protocol/cache compatibility is not semantic or release acceptance; no final body."
+    },
+    {
+      "id": "0-free-positive",
+      "variant": "cpu-layer0-free-positive",
+      "rowSha256": "9e6d9d1207b83f2b3ae138ebbd8a521e56eb8a60d1473c40db5320f6b68c8b1c",
+      "probeConforms": true,
+      "note": "Personally read actual raw output and full source/context. Native JSON/normal stop passes. Choice matches this limited diagnostic task. Schema removed; this choice is not grammar-forced. Protocol/cache compatibility is not semantic or release acceptance; no final body."
+    },
+    {
+      "id": "0-free-negative",
+      "variant": "cpu-layer0-free-negative",
+      "rowSha256": "d7cfa1cf21b7970c2df7f47b59f80b999ad3d3961bde37724f44d699a4a02515",
+      "probeConforms": false,
+      "note": "Personally read actual raw output and full source/context. Native JSON/normal stop passes. Unsupported read cash -> readCache contradicts explicit cash/not-cache source meaning. Schema removed; this choice is not grammar-forced. Protocol/cache compatibility is not semantic or release acceptance; no final body."
+    }
+  ]
+}

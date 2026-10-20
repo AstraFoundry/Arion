@@ -1,0 +1,9 @@
+{
+  "command": [
+    "go",
+    "test",
+    "./...",
+    "-count=1"
+  ],
+  "exitCode": 0
+}

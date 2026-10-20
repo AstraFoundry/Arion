@@ -1,0 +1,10 @@
+{
+  "qualified": false,
+  "selected": null,
+  "productionActivated": false,
+  "freshExecuted": false,
+  "resultsSha256": "35ab321cebbb277fe2eb7c0968f927e0cd18e16d97dc96bc4b913cf7d86179d3",
+  "reviewSha256": "bb25e4e070fc52b59c028602e2d3a2df200ac4b6354c4a5a907107a1ca6924d0",
+  "freezeSha256": "cbfd989395e94ad3e5ef0b886df122bd5107d06bcc4085b14c2fef2228e77f1c",
+  "reason": "Reject: fewer harmful role substitutions, but supported proper-name/term corrections regress; related role repairs still0/4. Known selector metadata defect retained with request-bound effective identity. No release acceptance."
+}

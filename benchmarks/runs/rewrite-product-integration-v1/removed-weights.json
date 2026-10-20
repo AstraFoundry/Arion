@@ -1,0 +1,107 @@
+{
+  "scope": "Retired rewrite/correction weights only; ASR, runtime environments, raw observations and provenance retained.",
+  "files": [
+    {
+      "path": ".workspace/rewrite-lfm25-research-v1/weights/LFM2.5-1.2B-Instruct-Q8_0.gguf",
+      "bytes": 1246253888,
+      "sha256": "f6b981dcb86917fa463f78a362320bd5e2dc45445df147287eedb85e5a30d26a",
+      "removed": true
+    },
+    {
+      "path": ".workspace/ablation-models/qwen3-0.6b/model.onnx",
+      "bytes": 524589133,
+      "sha256": "35fe34321ea9b1eaa43dfa648dd199903d01d93f97dc2b24fe1d16079ebea957",
+      "removed": true
+    },
+    {
+      "path": ".workspace/ablation-models/qwen3-1.7b/model.onnx",
+      "bytes": 1408943689,
+      "sha256": "9fddc5a0a7f9c51132c376db8fe44774b17a8e42d721c4d289ade16af87da0bd",
+      "removed": true
+    },
+    {
+      "path": ".workspace/ablation-models/qwen3-4b/model.onnx.data",
+      "bytes": 2885434880,
+      "sha256": "d6003acd70841b99a44ce4c21d13dc42244e3ec3b7c12d70919f9b55440bbc45",
+      "removed": true
+    },
+    {
+      "path": ".workspace/rewrite-youtu-research-v1/weights/Youtu-LLM-2B-Q8_0.gguf",
+      "bytes": 2089462528,
+      "sha256": "621a3484fa5da1615dd0c65d4b091b32db09eb69ca94c3b61da1b38a894a76a0",
+      "removed": true
+    },
+    {
+      "path": ".workspace/rewrite-d1-research-v1/weights/d1-omni-600M-Q8_0.gguf",
+      "bytes": 407207584,
+      "sha256": "cd94463f4cac9c700ec6750df8df005bb6846de410e159d1f5e985e1171693d3",
+      "removed": true
+    },
+    {
+      "path": ".workspace/rewrite-2b-precision-v1/Qwen3.5-2B-Q8_0.gguf",
+      "bytes": 2012012800,
+      "sha256": "1b04acba824817554f4ce23639bc8495ff70453b8fcb047900c731521021f2c1",
+      "removed": true
+    },
+    {
+      "path": ".workspace/rewrite-small-models-v1/Qwen3.5-0.8B-Q4_K_M.gguf",
+      "bytes": 532517120,
+      "sha256": "bd258782e35f7f458f8aced1adc053e6e92e89bc735ba3be89d38a06121dc517",
+      "removed": true
+    },
+    {
+      "path": ".workspace/correction-chain/models/flanec/model.safetensors",
+      "bytes": 990345064,
+      "sha256": "13d69b47ed6c7b132635a264ef26dd36d2c9eb959ffb33f6ec4b670f9c344d8c",
+      "removed": true
+    },
+    {
+      "path": ".workspace/correction-chain/models/bart4csc/model.safetensors",
+      "bytes": 465141468,
+      "sha256": "6e796d310afdfe4933c1823c02061ab669b42258b1143eccbb5cbbe29546bd93",
+      "removed": true
+    },
+    {
+      "path": ".workspace/rewrite-next-models/granite-4.0-h-1b-Q4_K_M.gguf",
+      "bytes": 901162560,
+      "sha256": "fd3b85f09520df9d898e2bbcf5da22fc518dbf9d662bb52e214d946c72aafacc",
+      "removed": true
+    },
+    {
+      "path": ".workspace/rewrite-minicpm5-f16-v1/weights/MiniCPM5-1B-F16.gguf",
+      "bytes": 2166551936,
+      "sha256": "68c40b08b1242754a107b9510af89aa75b10c75843ca7844643c70956b7f1e3d",
+      "removed": true
+    },
+    {
+      "path": ".workspace/rewrite-minicpm5-v1/weights/MiniCPM5-1B-Q4_K_M.gguf",
+      "bytes": 688065920,
+      "sha256": "81b64d05a23b17b34c475f42b3e72fbde62d4b92cc34541f7a8031d0752deafa",
+      "removed": true
+    },
+    {
+      "path": ".workspace/rewrite-granite-dense-v1/weights/granite-4.0-1b-Q4_K_M.gguf",
+      "bytes": 1023645440,
+      "sha256": "22ec0f9cc99a90185312de3c882c84e7bd6789bdd050389844380a01a831d7f1",
+      "removed": true
+    },
+    {
+      "path": ".workspace/rewrite-granite-hybrid-v1/weights/granite-4.0-h-1b-Q4_K_M.gguf",
+      "bytes": 901162208,
+      "sha256": "da3d737121a96f3c9a316685212376257a7f167b74380855666dd488d6af3bcb",
+      "removed": true
+    },
+    {
+      "path": ".workspace/correction-chain-reassessment/models/fastcorrect/fastcorrect_pretrain.pt",
+      "bytes": 914618147,
+      "sha256": "7563ad80eb52da182c7275cf8a725d35a3fbf883d7ac0d72f440e8d62f2bb1a4",
+      "removed": true
+    },
+    {
+      "path": ".workspace/ablation-models/qwen3-4b/model.onnx",
+      "bytes": 519634,
+      "sha256": "b4547cf9327bd532cb81703cf013f958117ba5a3e5a81c7c79a33aba534ff337",
+      "removed": true
+    }
+  ]
+}

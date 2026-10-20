@@ -1,0 +1,9 @@
+{
+  "selected": "examples",
+  "freezeSha256": "8ff88fa8195d22c3ee1c1aa0533a46f4d35f5972b0cd723102735fafd6ec8843",
+  "devResultsSha256": "979b35e4c581b9f0b6cdfc73c8c96cde0097e6b55bbb7622801c3732ef279286",
+  "devReviewSha256": "645ea8e589675546dc51a8e215ad4d49efbdee9fc65c18a951f68c9d74aca5d7",
+  "basis": "All 16 examples-arm outputs inspected as faithful and envelope-valid; 15 are scene-useful. Focused arm answers one request, leaks three scene tags and has two conservatively flagged temporal/modality changes.",
+  "productionActivation": false,
+  "reason": "Selected only for regression and fresh-case evaluation; independent/native release gates still apply."
+}

@@ -1,0 +1,9 @@
+{
+  "sources": 120,
+  "reviewed": 120,
+  "scope": "Assistant text-only audit of source/published transcript pairs before any new candidate inference. No audio rehearing, independent intent rating, new ASR or LLM inference.",
+  "inputSha256": "425e9e336752fecf28e147146b46afcbabe40aade4299f087f84a02158589085",
+  "evaluatorSha256": "1232a14c625b261276a5ee08fd59afb9ad8509e1862774ee71c1748f580b86fa",
+  "reviewSha256": "0a6cf8f627e100592dc9e2a71445d2da89a71800559327505174f314cbd51d18",
+  "keyLimitations": "Published references contain apparent artifacts; context-free ASR contains truncations, omitted names/numerals and altered negation. Never feed reference to model or claim exact-reference recovery as grounded contextual repair. These historical public read-speech regressions are not held-out spontaneous dictation."
+}

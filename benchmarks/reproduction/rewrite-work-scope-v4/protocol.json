@@ -1,0 +1,9 @@
+{
+  "purpose": "Shorter completeness policy and reordered paired shared/individual deadline demonstrations. All94 historical work sources and same16 controls regenerated for candidate; actual v3 baseline/candidate controls remain archived and reused for comparison. No new baseline generation or other307-scene generation.",
+  "newGenerations": 110,
+  "historicalCases": 94,
+  "newControls": 16,
+  "baselineNewGenerations": 0,
+  "candidateNewGenerations": 110,
+  "limits": "Same exposed historical94 and16 synthetic development controls. Only formatter generated; prior cleanup/selection reused for history, no cleanup for controls. No native/ASR/OCR/concurrent/min16/independent/production/fresh24 or4B/olderQwen evidence."
+}

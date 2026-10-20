@@ -1,0 +1,9 @@
+{
+  "source": ".workspace/rewrite-selector-source-last-v1",
+  "published": "benchmarks/runs/rewrite-selector-source-last-v1",
+  "privateExcluded": [
+    "weights",
+    "runtime binaries",
+    "Go cleanup executable"
+  ]
+}

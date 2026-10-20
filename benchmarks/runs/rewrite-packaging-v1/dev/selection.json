@@ -1,0 +1,8 @@
+{
+  "selected": "labeled",
+  "freezeSha256": "eb6a0ffdcbc71936d3cce05d6b52d3ac66933764a0180fc17495ae37196ea038",
+  "devResultsSha256": "1b53deb2a1e5c7b8e1b520fb201e88d107d795953900e54000c64a3b795d0409",
+  "devReviewSha256": "5398b48a5d24934635150baacd8dbd5966565c06ee176bba3471b78f242719e1",
+  "basis": "Labeled 16/18 faithful versus XML/JSON 15/18. Same 3/5 required repairs; labeled uniquely resists the hostile-screen case, but owner grouping and two spelling repairs still fail. Freeze for paired diagnosis, not production promotion.",
+  "productionActivated": false
+}

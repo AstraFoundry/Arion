@@ -1,0 +1,340 @@
+{
+  "kind": "Assistant inspection of every source/output pair, not independent human ratings",
+  "resultsSha256": "979b35e4c581b9f0b6cdfc73c8c96cde0097e6b55bbb7622801c3732ef279286",
+  "reviews": [
+    {
+      "id": "dev-owners-zh",
+      "variant": "focused",
+      "rowSha256": "4a5e6a3592299656eff6205fb954344ed5f379c26a66f85bd959ddec15902b06",
+      "faithful": false,
+      "sceneUseful": false,
+      "envelopeValid": true,
+      "issues": [
+        "temporal_relation_changed"
+      ],
+      "note": "Adds 周三前/周五前 to source dates stated as 周三/周五; conservatively flag possible tightened deadlines."
+    },
+    {
+      "id": "dev-payment-zh",
+      "variant": "focused",
+      "rowSha256": "342773c97cfafe103c0510e1e63c48152e2d1ca037d7885e0ea85eb9b9fe64ff",
+      "faithful": true,
+      "sceneUseful": false,
+      "envelopeValid": true,
+      "issues": [],
+      "note": "Faithful, but independent work points remain in one paragraph."
+    },
+    {
+      "id": "dev-owners-en",
+      "variant": "focused",
+      "rowSha256": "e66f7ee265b3ea2d17fe0a5f2039fe3ce70c5f90ee4cd6bd9ad198a936b67c2f",
+      "faithful": false,
+      "sceneUseful": false,
+      "envelopeValid": true,
+      "issues": [
+        "modality_softened"
+      ],
+      "note": "Adds expected to the asserted Friday testing schedule; conservatively flag a softened commitment."
+    },
+    {
+      "id": "dev-payment-en",
+      "variant": "focused",
+      "rowSha256": "d97a1dbdac07f802caab55324829325d0fec8180d35962cef50257b4e5ec1af7",
+      "faithful": true,
+      "sceneUseful": false,
+      "envelopeValid": true,
+      "issues": [],
+      "note": "Facts and prohibition retained; independent points remain in one paragraph."
+    },
+    {
+      "id": "dev-investigate-zh",
+      "variant": "focused",
+      "rowSha256": "44b27f905821f74d6dfed8145c2a4a36a0c6d02a1c73802799e87b16ec74fd06",
+      "faithful": false,
+      "sceneUseful": false,
+      "envelopeValid": true,
+      "issues": [
+        "answered_request",
+        "invented_diagnosis",
+        "omitted_constraint"
+      ],
+      "note": "Invents several TS2345 causes instead of editing the investigation request; omits the no-code-submission constraint."
+    },
+    {
+      "id": "dev-pagination-zh",
+      "variant": "focused",
+      "rowSha256": "75401b35c4ac67124aa7432e777cbe076a334eea05c24899742796a776ac3b25",
+      "faithful": true,
+      "sceneUseful": false,
+      "envelopeValid": true,
+      "issues": [],
+      "note": "Faithful unchanged developer request, but not organized."
+    },
+    {
+      "id": "dev-investigate-en",
+      "variant": "focused",
+      "rowSha256": "59da32a57722a8ea8f4b227603cc5f79875bf71527a0ee216f0e6b582efbe128",
+      "faithful": true,
+      "sceneUseful": false,
+      "envelopeValid": true,
+      "issues": [],
+      "note": "Faithful unchanged request, but not organized."
+    },
+    {
+      "id": "dev-pagination-en",
+      "variant": "focused",
+      "rowSha256": "950b5230ae4a3b6fe102e63f370e3620a52e21622c97e4a393a65b6bfe0768ad",
+      "faithful": true,
+      "sceneUseful": false,
+      "envelopeValid": true,
+      "issues": [],
+      "note": "Equivalent twenty to 20 and preserved restrictions; no structured constraints."
+    },
+    {
+      "id": "dev-review-zh",
+      "variant": "focused",
+      "rowSha256": "7e49b9cae2e79a358a053cfd4779db73265b1957de6e9a39232c521088dd25a6",
+      "faithful": true,
+      "sceneUseful": false,
+      "envelopeValid": true,
+      "issues": [],
+      "note": "All email content retained but no paragraph structure."
+    },
+    {
+      "id": "dev-leave-zh",
+      "variant": "focused",
+      "rowSha256": "3a19be2c35587bbb406c9011171ce3b329105be0a12ddde8695e696ee2106658",
+      "faithful": true,
+      "sceneUseful": false,
+      "envelopeValid": false,
+      "issues": [
+        "scene_tag"
+      ],
+      "note": "Meaning retained, but output exposes [EMAIL] and cannot be delivered."
+    },
+    {
+      "id": "dev-review-en",
+      "variant": "focused",
+      "rowSha256": "42a20970b0b6d37f77110e404f519942dc3c59a877787b7b99887d6ae7939606",
+      "faithful": true,
+      "sceneUseful": false,
+      "envelopeValid": false,
+      "issues": [
+        "scene_tag"
+      ],
+      "note": "Meaning retained, but output exposes [EMAIL] and cannot be delivered."
+    },
+    {
+      "id": "dev-leave-en",
+      "variant": "focused",
+      "rowSha256": "39b44bd4b1d3939f0a70fb2f35a144e516ac8987eaa4ed264c1ad65760981535",
+      "faithful": true,
+      "sceneUseful": false,
+      "envelopeValid": false,
+      "issues": [
+        "scene_tag"
+      ],
+      "note": "Meaning retained, but output exposes [Email] and cannot be delivered."
+    },
+    {
+      "id": "dev-uncertain-zh",
+      "variant": "focused",
+      "rowSha256": "9dd21341f8f35f505e2ea4447adb6e56506a62ea6e8ce99738b236b6c2dfc99b",
+      "faithful": true,
+      "sceneUseful": true,
+      "envelopeValid": true,
+      "issues": [],
+      "note": "Preserves uncertainty, six oclock and no-food request."
+    },
+    {
+      "id": "dev-question-zh",
+      "variant": "focused",
+      "rowSha256": "1d6997e40a438c0521fbe3f676903848ce271d6bd4f7ddb72cfc6532b84a45fa",
+      "faithful": true,
+      "sceneUseful": true,
+      "envelopeValid": true,
+      "issues": [],
+      "note": "Preserves the recipient-directed question rather than answering."
+    },
+    {
+      "id": "dev-uncertain-en",
+      "variant": "focused",
+      "rowSha256": "849aaec1fc4cb4921ff2691fe911ef066192628e10bbe42ae4463b4c90f00d56",
+      "faithful": true,
+      "sceneUseful": true,
+      "envelopeValid": true,
+      "issues": [],
+      "note": "Reordered clauses preserve uncertainty, time and food restriction."
+    },
+    {
+      "id": "dev-question-en",
+      "variant": "focused",
+      "rowSha256": "5e6df79307dc3c5225a112dbf6229cb006a5e4570e738cae37b5b0fec29ba5d3",
+      "faithful": true,
+      "sceneUseful": true,
+      "envelopeValid": true,
+      "issues": [],
+      "note": "Question preserved without an invented answer."
+    },
+    {
+      "id": "dev-owners-zh",
+      "variant": "examples",
+      "rowSha256": "9363aafcd48b8953130fe1b48b930945f2113687fc0e8eb4b8fb9281c727e839",
+      "faithful": true,
+      "sceneUseful": true,
+      "envelopeValid": true,
+      "issues": [],
+      "note": "Bullets preserve both owners and their respective dates."
+    },
+    {
+      "id": "dev-payment-zh",
+      "variant": "examples",
+      "rowSha256": "58d5153976cbee3c5266d79bc87194e7708afe6f0d20f4c4aa1e885e4c7279e3",
+      "faithful": true,
+      "sceneUseful": true,
+      "envelopeValid": true,
+      "issues": [],
+      "note": "Bullets preserve completion, unavailable environment, integration condition and release prohibition."
+    },
+    {
+      "id": "dev-owners-en",
+      "variant": "examples",
+      "rowSha256": "c505cd2243e6e20bc67f069e19c3beaee42d633c5a4a1e2e34b209beb7d5213a",
+      "faithful": true,
+      "sceneUseful": true,
+      "envelopeValid": true,
+      "issues": [],
+      "note": "Bullets preserve owner assignments and Wednesday/Friday deadlines."
+    },
+    {
+      "id": "dev-payment-en",
+      "variant": "examples",
+      "rowSha256": "6586e69ade5fad1a229a691cac99450b0562a755c993a2758089e9466ed1cc15",
+      "faithful": true,
+      "sceneUseful": true,
+      "envelopeValid": true,
+      "issues": [],
+      "note": "Four source points are separated without new action or completion claims."
+    },
+    {
+      "id": "dev-investigate-zh",
+      "variant": "examples",
+      "rowSha256": "11cba4f041da7df9873a35d23fbd2089bcd595ecd37fd5e2a1e68c1401517175",
+      "faithful": true,
+      "sceneUseful": true,
+      "envelopeValid": true,
+      "issues": [],
+      "note": "Retains investigation and explanation as a request, and no code submission; supplies no diagnosis."
+    },
+    {
+      "id": "dev-pagination-zh",
+      "variant": "examples",
+      "rowSha256": "8c711ffe812cbe25046231ce8f8a6dd6bca04a424cca611869a5a6be39753e8f",
+      "faithful": true,
+      "sceneUseful": false,
+      "envelopeValid": true,
+      "issues": [],
+      "note": "Faithful simplification of 不要改 to 不改, but requirements remain inline."
+    },
+    {
+      "id": "dev-investigate-en",
+      "variant": "examples",
+      "rowSha256": "017dae56b53fa60f2d4cd8bf456ae67a8494f97f9846ae7d50b476600f07c38c",
+      "faithful": true,
+      "sceneUseful": true,
+      "envelopeValid": true,
+      "issues": [],
+      "note": "Action and constraints separated, with no fabricated cause."
+    },
+    {
+      "id": "dev-pagination-en",
+      "variant": "examples",
+      "rowSha256": "38aab53177fd2d68e99d763b3be2c12ee59c3e9dc9b8128cdd9e75ab08e3bf43",
+      "faithful": true,
+      "sceneUseful": true,
+      "envelopeValid": true,
+      "issues": [],
+      "note": "Action, page size, ordering and unchanged fields retained in a requirements list."
+    },
+    {
+      "id": "dev-review-zh",
+      "variant": "examples",
+      "rowSha256": "756344f6862f62762b077eaa84bd2f934a51b6d855a1730469c213172a8bd99b",
+      "faithful": true,
+      "sceneUseful": true,
+      "envelopeValid": true,
+      "issues": [],
+      "note": "Original salutation, review deadline, contact request and thanks arranged into paragraphs."
+    },
+    {
+      "id": "dev-leave-zh",
+      "variant": "examples",
+      "rowSha256": "89e802b00a3104e0886559224eb3c58bbb608e8b013028c6bc2da43f817e98c4",
+      "faithful": true,
+      "sceneUseful": true,
+      "envelopeValid": true,
+      "issues": [],
+      "note": "Greeting and body separated; day off, handover, approval request and thanks preserved."
+    },
+    {
+      "id": "dev-review-en",
+      "variant": "examples",
+      "rowSha256": "18b61148e8f7dac19a27bc2755f9cc7ba8af09c80295f3066f1c722650effae8",
+      "faithful": true,
+      "sceneUseful": true,
+      "envelopeValid": true,
+      "issues": [],
+      "note": "Paragraphs preserve recipient, attachment, Tuesday deadline and questions/contact request."
+    },
+    {
+      "id": "dev-leave-en",
+      "variant": "examples",
+      "rowSha256": "b9afee999ef44e9c0a268a98d0d7ae992376bce656d83e4f2f31706848a24253",
+      "faithful": true,
+      "sceneUseful": true,
+      "envelopeValid": true,
+      "issues": [],
+      "note": "Greeting and body separated; Thursday, Priya, approval and thanks retained."
+    },
+    {
+      "id": "dev-uncertain-zh",
+      "variant": "examples",
+      "rowSha256": "8afb3fcdde87559f40e97b6bfda7a7dfa8bf8f0d5c8d0fe94467fa6e854fe72c",
+      "faithful": true,
+      "sceneUseful": true,
+      "envelopeValid": true,
+      "issues": [],
+      "note": "Uncertainty, six oclock and food restriction preserved."
+    },
+    {
+      "id": "dev-question-zh",
+      "variant": "examples",
+      "rowSha256": "3a8e16572a8cd6deb7a02e4351e8be47b78defd14ad622637ae92d4564e80752",
+      "faithful": true,
+      "sceneUseful": true,
+      "envelopeValid": true,
+      "issues": [],
+      "note": "Question retained, no answer."
+    },
+    {
+      "id": "dev-uncertain-en",
+      "variant": "examples",
+      "rowSha256": "4159083bbde485ba44093d99bb0b59878f4b3e9541734608ae3b18989faa40f6",
+      "faithful": true,
+      "sceneUseful": true,
+      "envelopeValid": true,
+      "issues": [],
+      "note": "Sentence split preserves all uncertainty, time and food restriction."
+    },
+    {
+      "id": "dev-question-en",
+      "variant": "examples",
+      "rowSha256": "d9422f3a99872fa9356a0684c83e5b0558d0e9d2e870243b6a02b76f34e23ce0",
+      "faithful": true,
+      "sceneUseful": true,
+      "envelopeValid": true,
+      "issues": [],
+      "note": "Question retained, no answer."
+    }
+  ]
+}

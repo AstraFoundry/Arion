@@ -1,0 +1,34 @@
+{
+  "selected": null,
+  "qualified": false,
+  "mainDevelopmentCandidate": "qwen-protected",
+  "mainDevelopmentGatePassed": true,
+  "freezeSha256": "815be8eff787c7a7eef8b8f9bdfe360302540a13654d70b4efc8fda193030a32",
+  "resultsSha256": "3fdedfb4ec3326801affa01acc19abe3dc5b79c189e1a21ee7da88210cd91216",
+  "reviewSha256": "9473175c5ffa3982742d57de8cf1f508c19e1f233c337ae1a0b7ecc88d84ed70",
+  "comparisonEvidence": {
+    "qwen-direct": {
+      "resultsSha256": "544bbb6a57bebf7ba530dc83d2b8a37ed01f5da4e6ee79252c5dfff7ed1cf2d4",
+      "reviewSha256": "5cb64f4fd10ff0780a708fff87cff0a009dd318337c1e8773383e23eaded3f5b"
+    },
+    "qwen-protected": {
+      "resultsSha256": "3fdedfb4ec3326801affa01acc19abe3dc5b79c189e1a21ee7da88210cd91216",
+      "reviewSha256": "9473175c5ffa3982742d57de8cf1f508c19e1f233c337ae1a0b7ecc88d84ed70"
+    },
+    "granite-direct": {
+      "resultsSha256": "ba72d883db0e45c0482e652c52f4939e5a66378f1f246051de483014881f29af",
+      "reviewSha256": "a3fcd2554093c25d69824ba85b2eb48909fac8237c8c5e373b2bfcb91376e29c"
+    }
+  },
+  "stressEvidence": {
+    "qwen-direct": {
+      "resultsSha256": "376d7b1bc107b99b77cb89e796ab7f205dcc6d64ea8dcbe8cb2a2283475c8755",
+      "reviewSha256": "fa740eff9281f07421d2edf59b843584a83da4aa70da0a9344d83b033d90dd8f"
+    },
+    "qwen-protected": {
+      "resultsSha256": "108d4da61c09fa06655a7a079bdbbb0a8b3b219f5766b4f9d7b08ffdb265046f",
+      "reviewSha256": "5ca05b6bd3b0b31df1457204868cb69b4fb3f0caad03a38a6870ff1cb350d648"
+    }
+  },
+  "reason": "Qwen protected passes known28-case main gate (28 faithful/usable,9/9 repairs), but new8-case stress has4/8 faithful bodies,3/8 usable and2 protocol failures, plus literal/misleading-OCR corruption. No broader qualification, fresh24 generation or production adoption. Granite19/28 faithful,18/28 usable,7/9 repairs; empty EOS and OCR instruction following retained. Main conversational particle caveat remains separate."
+}

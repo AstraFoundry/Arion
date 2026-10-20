@@ -1,0 +1,12 @@
+{
+  "selected": null,
+  "qualified": false,
+  "freezeSha256": "b58ef3b34553c586969efc82bb2f4bdb3a90e2293dd8a75d73b78a36db9ba8bf",
+  "evidence": {
+    "qwen-q8-private": {
+      "resultsSha256": "858d43d1bee9c9e4cac1aa1085ddeed59b1f760adaccc9c82bc782b2e2eb95c6",
+      "reviewSha256": "bd26658131ece1dfea52efc1342220ba37e224a30312284a842d2e274df4be81"
+    }
+  },
+  "reason": "Q8 removes unrelated OCR addition but introduces target substitution in a condition and misses recipient/buildCache repairs; cash/cache definition reverses.32/36 faithful and9/11 repairs, below reused Q4 private34/36 and11/11. No fresh24 or production promotion; higher artifact precision is not a semantic guarantee."
+}

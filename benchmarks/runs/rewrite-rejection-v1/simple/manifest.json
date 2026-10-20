@@ -1,0 +1,66 @@
+{
+  "status": "complete",
+  "kind": "authored development diagnostic; not historical session replay",
+  "platform": "macOS-26.6.2-x86_64-i386-64bit",
+  "assets": [
+    {
+      "name": "chat_template.jinja",
+      "sha256": "a55ee1b1660128b7098723e0abcd92caa0788061051c62d51cbe87d9cf1974d8",
+      "source": "https://huggingface.co/onnx-community/Qwen3-1.7B-ONNX/resolve/b85539623180ae64303f37373d942cb0595ca44d/onnxruntime/cpu_and_mobile/cpu-int4-kld-block-128/chat_template.jinja"
+    },
+    {
+      "name": "config.json",
+      "sha256": "14c4e163fc54e5c7301a7f26054386ac77734401355fecd530ce4a98233f070c",
+      "source": "https://huggingface.co/onnx-community/Qwen3-1.7B-ONNX/resolve/b85539623180ae64303f37373d942cb0595ca44d/onnxruntime/cpu_and_mobile/cpu-int4-kld-block-128/config.json"
+    },
+    {
+      "name": "genai_config.json",
+      "sha256": "d328d2ad4cbd7915eee3ad047eabfc562d8daf7307b202c1e6aaef4e8a236ba2",
+      "source": "https://huggingface.co/onnx-community/Qwen3-1.7B-ONNX/resolve/b85539623180ae64303f37373d942cb0595ca44d/onnxruntime/cpu_and_mobile/cpu-int4-kld-block-128/genai_config.json"
+    },
+    {
+      "name": "model.onnx",
+      "sha256": "9fddc5a0a7f9c51132c376db8fe44774b17a8e42d721c4d289ade16af87da0bd",
+      "source": "https://huggingface.co/onnx-community/Qwen3-1.7B-ONNX/resolve/b85539623180ae64303f37373d942cb0595ca44d/onnxruntime/cpu_and_mobile/cpu-int4-kld-block-128/model.onnx"
+    },
+    {
+      "name": "tokenizer.json",
+      "sha256": "979d160e081df25a1bf7f4e2e8f4c441b5dfdc9a8e84aec9f32e80445e1b59b8",
+      "source": "https://huggingface.co/onnx-community/Qwen3-1.7B-ONNX/resolve/b85539623180ae64303f37373d942cb0595ca44d/onnxruntime/cpu_and_mobile/cpu-int4-kld-block-128/tokenizer.json"
+    },
+    {
+      "name": "tokenizer_config.json",
+      "sha256": "bfd13b57b2e0c2cb582f311c0895f077d16a868c0dc61e4dbbba544a835341d6",
+      "source": "https://huggingface.co/onnx-community/Qwen3-1.7B-ONNX/resolve/b85539623180ae64303f37373d942cb0595ca44d/onnxruntime/cpu_and_mobile/cpu-int4-kld-block-128/tokenizer_config.json"
+    },
+    {
+      "name": "libonnxruntime-genai.dylib",
+      "archiveSha256": "be267c676885305267c2a416324a4a5fe522d04b3efb0386d13e40a675aa7df0",
+      "upstreamSha256": "93aece3743ebf14111a00f6b602ec0160a083e7cf4ac33feb1cee390fbca6f21",
+      "installedSha256": "7cefe85ab3b96cf2f82a1eff232fe7d7157eac83ab08f0beaad676848aa69559"
+    },
+    {
+      "name": "libonnxruntime.dylib",
+      "archiveSha256": "6ebb5062a934537c352937821f9fe9718e7de1a2db1122a93dd363ffd53a7012",
+      "upstreamSha256": "bcc9110f9d638a119de2db7afb3ba9a1da8085f0cb3401e1c48ae1caf450b6fa",
+      "installedSha256": "2239177b549f0a211a1da92892dbcc8377bfecfa98707f5456468fffcc2d1e02"
+    }
+  ],
+  "workerSha256": "fd4f308bdd1e5e8a17d5e168b2a8fcf0e780de1b7d824c64e2a050129ee1b702",
+  "inputsSha256": "c1fea09cfead578d2125ae34b883992576a0a645101c1e06f89d11b5b74cfaa8",
+  "sources": {
+    "apps/desktop/infrastructure/llm/engine/engine.go": "efcb5f3a16ce6b00001a694e5669250665f50a980c29135c6327245720135003",
+    "apps/desktop/infrastructure/llm/prompt/prompt.go": "e7c8701f00d514276972766a9c036d15b05a480612b397a1c2a8b05e4674b48a",
+    "apps/desktop/infrastructure/llm/prompt/live.json": "31ac54390ad29c7ac12c1a6c15d4ecb86ea08b71960070b5e9de73358e72f837",
+    "apps/desktop/infrastructure/llm/prompt/context.json": "1b2c3a694d72963412db167bd952a6149d4d3ac9548fd64c6022beda7cb95745",
+    "packages/core/domain/rewrite.go": "91d919a9de2048ee68480620e1e97257679df13e0634b6d083af46e039650446",
+    "packages/core/domain/context.go": "a8c6b7cb21ae4dba4f5e918c312fbbdddd614b29d894488d1bb8ec3878777260"
+  },
+  "gitHead": "4356914796f484064ffcd562846b7dcd91a1350b",
+  "gitStatus": " M Makefile\n M apps/desktop/bootstrap/actions.go\n M apps/desktop/bootstrap/actions_ime_test.go\n M apps/desktop/bootstrap/app.go\n M apps/desktop/bootstrap/guide.go\n M apps/desktop/bootstrap/guide_test.go\n M apps/desktop/bootstrap/platform.go\n M apps/desktop/bootstrap/platform_darwin.go\n M apps/desktop/infrastructure/macos/ime.go\n M apps/desktop/infrastructure/macos/ime_install_darwin_test.go\n M apps/desktop/infrastructure/macos/macos.go\n M apps/desktop/infrastructure/macos/native.h\n M apps/desktop/infrastructure/macos/native.m\n M apps/desktop/ui/app/app.go\n M apps/desktop/ui/app/app_test.go\n M apps/desktop/ui/app/polish_test.go\n M apps/desktop/ui/entities/onboarding/onboarding.go\n M apps/desktop/ui/features/keyboard/keyboard.go\n M apps/desktop/ui/features/permissions/guide.go\n M apps/desktop/ui/pages/guide/guide.go\n M apps/desktop/ui/pages/onboarding/onboarding.go\n M apps/desktop/ui/shared/copy/copy.go\n M apps/desktop/ui/shared/copy/locales/en.json\n M apps/desktop/ui/shared/copy/locales/zh-CN.json\n M apps/desktop/ui/shared/runtime/runtime.go\n M docs/decisions/003-insertion-routes.md\n M docs/decisions/006-macos-input-method-host.md\n M docs/frontend/README.md\n M docs/project/architecture.md\n M docs/quality/e2e.md\n M docs/research/README.md\n M docs/research/evidence/README.md\n M docs/research/input-source-onboarding.md\n M specs/001-desktop-input.md\n M specs/007-ime-ranking.md\n?? apps/desktop/infrastructure/macos/insertion_darwin_test.go\n?? apps/desktop/ui/entities/onboarding/input_method_test.go\n?? apps/desktop/ui/features/keyboard/guide.go\n?? apps/desktop/ui/shared/kit/settings_guide.go\n?? docs/research/evidence/chatterfly-registration.json\n?? docs/research/evidence/keyboard-voice-lexicon.json\n?? docs/research/keyboard-voice-lexicon-plan.md\n?? docs/research/keyboard-voice-lexicon.md\n",
+  "threads": 4,
+  "maxLength": 4096,
+  "maxNewTokens": 384,
+  "power": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=34668643)\t97%; charging; 0:26 remaining present: true\n",
+  "resultsSha256": "b277d8363b932866da65a207b7551cb9dd3e983c20930468ddd1691c8f2b0202"
+}

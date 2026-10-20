@@ -1,0 +1,9 @@
+#!/usr/bin/env python3
+"""Apply explicit diagnostic precision flags before executing the pinned native runtime."""
+import os,sys,json
+from pathlib import Path
+native=Path(__file__).resolve().parents[1]/'rewrite-small-models-v1/runtime/llama-b11734/llama-server'
+flags=json.loads(os.environ['ARION_PRECISION_OPTIONS'])
+command=[str(native),*sys.argv[1:],*flags]
+print('EXPLICIT_NATIVE_COMMAND '+json.dumps(command),file=sys.stderr,flush=True)
+os.execv(str(native),command)

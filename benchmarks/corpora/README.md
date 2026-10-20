@@ -37,3 +37,13 @@ it is independently verified and is not part of the historical migration manifes
 [imk-context-v1](imk-context-v1/README.md) contains 50 original context/target homophone pairs for context ranking.
 
 [imk-quality-v1](imk-quality-v1/README.md) contains 100 original synthetic full-Pinyin/abbreviation/v/ü/coined-phrase inputs with evaluator-only targets and explicit provenance. Revision 2 corrects one authored spelling typo; both frozen revisions and complete runs are preserved separately.
+
+[rewrite-history-v1](rewrite-history-v1/README.md) retains401 exact historical source/context/scene tuples and original row/file lineage; its enumeration snapshot is evaluator-only.
+
+[rewrite-work-scope-v3](rewrite-work-scope-v3/README.md) adds16 locally authored source-only work controls for status, owner/deadline scope, conditional gates and genuine versus quoted/meaningful repetition. No audio, cleanup, OCR or spelling selection is executed for these controls.
+
+[rewrite-tone-controls-v1](rewrite-tone-controls-v1/README.md) contains24 locally authored synthetic text/context pairs testing tone-related typos, semantic-role conflicts, exact/quoted spelling, English letter evidence, ambiguity, malicious facts and absent/unrelated context. No new audio or Vision capture.
+
+- [Semantic roles](rewrite-semantic-roles-v1/README.md): eight fixed source groups with four context conditions; authored evaluator frozen before inference.
+
+- [Selector-screen evaluator](rewrite-selector-screen-v1/README.md):101 preregistered source/reference-bound choice targets; same-letter canonicalization remains optional, evaluator never enters model data.

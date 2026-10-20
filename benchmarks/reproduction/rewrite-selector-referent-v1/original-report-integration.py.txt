@@ -1,0 +1,40 @@
+from pathlib import Path
+R=Path.cwd();p=R/'benchmarks/reproduction/rewrite-release/report.py';s=p.read_text();marker='\n]\nGATES=[';assert s.count(marker)==1
+s=s.replace(marker,"\n dict(id='selector-referent-v1',title='简短指代说明与有界拼写选择',direction='四组相同256token预算：原提示、含义核对、成对展示、成对展示加含义核对。保持全部457源与候选不变，实际执行404次选择，分别审查选择与说明。',finding='选择符合92／92／94／93（各101），有害3／4／4／5；说明没有改善选择。212条候选说明中44条未通过，其中27条选择正确但说明不准确或漏比对象。两版含义核对均不采用。',scope='404次新选择＋212条生成的候选说明，全部review；457次实际Go清理在四组内复用，1828源处理结果含1424无候选跳过。零新增正文／ASR／Vision，无语义过滤或原文回退。',runs=[('rewrite-selector-referent-v1/run','staged')]),"+marker)
+s=s.replace('METRICS={',"METRICS={\n 'selector-referent-v1':'202个本轮对照与旧128token请求仅上限不同，原始选择／改后源文逐字一致202/202；新说明都按referent→choice顺序生成，但这不证明内部推理。说明整例复核78／80（各101），与选择联合通过78／80；每组仍有必要纠错遗漏与错误OCR替换。',")
+s=s.replace("    cpu_model_summary=", "    referent_summary=load_report('rewrite-selector-referent-v1','selector_referent').collect()[0]\n    cpu_model_summary=",1)
+s=s.replace("if definition['id'] in ['selector-screen-v1','selector-model-cpu-v1']:","if definition['id'] in ['selector-screen-v1','selector-model-cpu-v1','selector-referent-v1']:")
+needle="                if definition['id']=='selector-preview-v1' and row['stage']=='selection':"
+insert="""                if definition['id']=='selector-referent-v1':
+                    cases[-1].update(normalizedSpellingSelection=item['normalizedChoices'],descriptionReview=item['descriptionReview'],descriptionConforms=item['descriptionConforms'],descriptionOrderConforms=item['descriptionOrderConforms'],descriptionVerdict=None if item['descriptionReview'] is None else '含义核对通过' if item['descriptionConforms'] is True else '含义核对未通过' if item['descriptionConforms'] is False else '含义核对待核验')
+"""
+assert needle in s;s=s.replace(needle,insert+needle)
+s=s.replace('return dict(selectorModelCpu=cpu_model_summary','return dict(selectorReferent=referent_summary,selectorModelCpu=cpu_model_summary')
+needle="    failure_root=ROOT/'benchmarks/runs/rewrite-small-cache-parity-v1'"
+insert="""    for path in [ROOT/'benchmarks/reproduction/rewrite-selector-referent-v1'/name for name in ['freeze.json','protocol.json','prompts.json','pipeline.py']]+[ROOT/'benchmarks/runs/rewrite-selector-referent-v1/run'/name for name in ['selection.json','case-outcomes.jsonl','control-budget-comparison.json','description-reviews.json']]:
+        sources.append(dict(path=str(path.relative_to(ROOT)),sha256=digest(path)))
+"""
+s=s.replace(needle,insert+needle);p.write_text(s)
+p=R/'benchmarks/reproduction/rewrite-release/template.html';s=p.read_text()
+needle='<label>搜索原文、OCR、输出和判断';assert needle in s
+s=s.replace(needle,'<label>含义核对<select id="descriptionFilter"><option value="">全部说明状态</option><option value="pass">通过</option><option value="fail">未通过</option><option value="uncertain">待核验</option><option value="none">未生成说明</option></select></label>'+needle)
+s=s.replace("const stage=byId('stageFilter').value;", "const stage=byId('stageFilter').value;const description=byId('descriptionFilter').value;")
+needle="return (!stage||";assert needle in s
+s=s.replace(needle,"return (!description||(description==='pass'&&item.descriptionConforms===true)||(description==='fail'&&item.descriptionConforms===false)||(description==='uncertain'&&item.descriptionReview!=null&&item.descriptionConforms===null)||(description==='none'&&item.descriptionReview==null))&&(!stage||",1)
+s=s.replace("if(item.reviewCaveat){detail.append", "if(item.descriptionReview){const explained=node('details',undefined,'context');explained.append(node('summary',item.descriptionVerdict),block('逐候选说明与独立人工判断',JSON.stringify(item.descriptionReview,null,2)));detail.append(explained);}if(item.reviewCaveat){detail.append",1)
+s=s.replace('runtimeConfiguration:item.runtimeConfiguration,selectorData:','runtimeConfiguration:item.runtimeConfiguration,normalizedSpellingSelection:item.normalizedSpellingSelection,descriptionConforms:item.descriptionConforms,descriptionOrderConforms:item.descriptionOrderConforms,selectorData:')
+s=s.replace("'stageFilter','query'", "'stageFilter','descriptionFilter','query'")
+p.write_text(s)
+p=R/'benchmarks/reproduction/rewrite-release/test_report.py';s=p.read_text().replace('7139','7543').replace("len(data['rounds']),51","len(data['rounds']),52").replace('5655','6059').replace('5528','5932').replace("stage')=='selection' for c in data['cases']),1233","stage')=='selection' for c in data['cases']),1637")
+needle="        self.assertEqual(data['runtimeDiagnostics']['completedResponses'],7)"
+insert="""        self.assertEqual(data['selectorReferent']['newGenerations'],404)
+        self.assertEqual(data['selectorReferent']['controlRawParity'],202)
+        self.assertEqual(data['selectorReferent']['publicDescriptions']['failedFields'],44)
+        self.assertEqual(data['selectorReferent']['publicDescriptions']['correctChoiceWithFailedDescription'],27)
+        descriptions=[c for c in data['cases'] if c.get('descriptionReview') is not None]
+        self.assertEqual(len(descriptions),202)
+        self.assertEqual(sum(c['descriptionConforms'] is False for c in descriptions),44)
+        self.assertEqual(sum(c['selectionConforms'] and c['descriptionConforms'] is False for c in descriptions),27)
+"""
+assert needle in s;s=s.replace(needle,insert+needle);p.write_text(s)
+print('Integrated52nd round with independent choice/description views')

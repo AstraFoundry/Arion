@@ -1,0 +1,22 @@
+[
+  {
+    "rfilename": "Youtu-LLM-2B-F16.gguf",
+    "blobId": "bae217e18de14113ec0058364481e747bdb38db3",
+    "size": 3928238848,
+    "lfs": {
+      "sha256": "332fe8e6f8254e5e9c9b2590a8adb0075c744e78c2af51d94cd85396e38d3ac2",
+      "size": 3928238848,
+      "pointerSize": 135
+    }
+  },
+  {
+    "rfilename": "Youtu-LLM-2B-Q8_0.gguf",
+    "blobId": "9d4c337ffcd0b1333fdc73077b685552dd2e3fa6",
+    "size": 2089462528,
+    "lfs": {
+      "sha256": "621a3484fa5da1615dd0c65d4b091b32db09eb69ca94c3b61da1b38a894a76a0",
+      "size": 2089462528,
+      "pointerSize": 135
+    }
+  }
+]

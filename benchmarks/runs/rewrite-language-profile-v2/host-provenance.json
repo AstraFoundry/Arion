@@ -1,0 +1,11 @@
+{
+  "capture": "Pre-run static host metadata, not thermal trace.",
+  "platform": "macOS-26.6.2-x86_64-i386-64bit",
+  "hardware": {
+    "hw.model": "Mac16,12",
+    "hw.memsize": "34359738368",
+    "machdep.cpu.brand_string": "Apple M4"
+  },
+  "power": "Battery Power:\n Sleep On Power Button 1\n lowpowermode         0\n ttyskeepawake        1\n hibernatemode        3\n hibernatefile        /var/vm/sleepimage\n displaysleep         2\n womp                 0\n networkoversleep     0\n sleep                1\n lessbright           1\n disksleep            10\nAC Power:\n Sleep On Power Button 1\n lowpowermode         0\n ttyskeepawake        1\n hibernatemode        3\n hibernatefile        /var/vm/sleepimage\n displaysleep         0\n womp                 1\n networkoversleep     0\n sleep                0\n disksleep            10\n",
+  "freezeSha256": "8382a8c42a08e5098173d121d64d617d39976d6520179792411199a436371898"
+}

@@ -1,0 +1,86 @@
+{
+  "architectures": [
+    "D1OmniModel"
+  ],
+  "auto_map": {
+    "AutoConfig": "modeling_d1.D1OmniConfig",
+    "AutoModel": "modeling_d1.D1OmniModel"
+  },
+  "model_type": "d1_omni",
+  "dtype": "float32",
+  "max_length": 16384,
+  "image_text_length": 896,
+  "audio_text_length": 15360,
+  "head_layers": 2,
+  "projector_hidden_size": 2048,
+  "temperatures": {
+    "choice:11+": 1.372515082359314,
+    "choice:2": 1.7465145587921143,
+    "choice:3-5": 1.3998981714248657,
+    "choice:6-10": 1.1751071214675903,
+    "noul:2": 1.6663223505020142,
+    "score:3-5": 1.7301132678985596,
+    "score:6-10": 1.0,
+    "choice": 1.0,
+    "score": 1.0,
+    "noul": 1.0
+  },
+  "bos_token_id": 1,
+  "pad_token_id": 0,
+  "text_config": {
+    "vocab_size": 65536,
+    "hidden_size": 1024,
+    "intermediate_size": 6656,
+    "num_hidden_layers": 16,
+    "num_attention_heads": 16,
+    "num_key_value_heads": 8,
+    "layer_types": [
+      "conv",
+      "conv",
+      "full_attention",
+      "conv",
+      "conv",
+      "full_attention",
+      "conv",
+      "conv",
+      "full_attention",
+      "conv",
+      "full_attention",
+      "conv",
+      "full_attention",
+      "conv",
+      "full_attention",
+      "conv"
+    ],
+    "norm_eps": 1e-05,
+    "conv_L_cache": 3,
+    "block_ffn_dim_multiplier": 1.0,
+    "block_multiple_of": 256,
+    "max_position_embeddings": 128000,
+    "rope_theta": 1000000.0
+  },
+  "vision_config": {
+    "attention_dropout": 0.0,
+    "hidden_act": "gelu_pytorch_tanh",
+    "hidden_size": 768,
+    "intermediate_size": 3072,
+    "layer_norm_eps": 1e-06,
+    "model_type": "siglip2_vision_model",
+    "num_attention_heads": 12,
+    "num_channels": 3,
+    "num_hidden_layers": 12,
+    "num_patches": 256,
+    "patch_size": 16,
+    "vision_use_head": false
+  },
+  "audio_config": {
+    "feat_in": 128,
+    "n_layers": 17,
+    "d_model": 512,
+    "subsampling_conv_channels": 256,
+    "ff_expansion_factor": 4,
+    "n_heads": 8,
+    "conv_kernel_size": 9,
+    "residual_width": 512
+  }
+}

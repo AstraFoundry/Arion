@@ -1,0 +1,36 @@
+{
+  "files": {
+    "expectations.json": "1e7fec26d60243248ac621d38181a24fe628563c3969816981fd1f3c99c4c895",
+    "regression.json": "46f477caac23a82f81b0725a0a999dc93fbf2926c3103dc02febb8d814947786",
+    "run.py": "e90d86c731ca3546eea5bba423cc2169418629202d8959b235faf1d742fdab0c",
+    "development.json": "c5ab3f11d2d9ba3f88511df90337b58b717c3e3b6ffd01f6f5e769eebd04a09d",
+    "fresh.json": "caada0727cbf6f955fac5f209af16863831319e58ea06fc0308d4d46072d6a4b",
+    "protocol.json": "511b58d043a7617ba14200796584388078cdda7b03dbd784c0641182bc9ddd36",
+    "templates/baseline-work.json": "8c21ae201967c30da9dd0ee3d4173982f818bd1a22fc4ada6443a65c87925536",
+    "templates/clean-en-chat.json": "8812d71d3c25ccc657bcae1a3c49b0839854b5833c1d6a81d13f660fc73a6418",
+    "templates/clean-zh-prompt.json": "3088ac305d86fde256932f8152da6b09cb39ad310a39bbaa8d34721c926514b8",
+    "templates/clean-zh-email.json": "6efb6e451fcf2ac59d5bda9b5b37da391d0b512900a297c114391fbfec8fa715",
+    "templates/clean-en-prompt.json": "4a6d57cbfa713f29d326a8e93cc2e97acfa05fa1ac9e559fe5875e59fad2b044",
+    "templates/baseline-email.json": "1727400550e0dd0d78eff29a70e8b89e47e7556abdbc43acf9196714607f80f2",
+    "templates/baseline-chat.json": "e1da90e608ed35737bdad68f856a24faaedcf244298f77c39e19a627a1931d71",
+    "templates/clean-en-work.json": "2baaee94daae4c322da906bb31aceb455b7baff0cb5ef12313ec9d0e093b7812",
+    "templates/clean-zh-chat.json": "220cea2c267b32d3dec588480a0b86b2d3b870fd5557505094e564a8c83aaae9",
+    "templates/clean-en-email.json": "6fb1d2db626b9dc6237d87f4ed2f3b8a5fae02e547e9fef30c78e6f91a9fb052",
+    "templates/baseline-prompt.json": "5dc7e1c6b9aa1ef2ae12ce4048f46e53ca59c551913c8b9c256ad2a630aaaed0",
+    "templates/clean-zh-work.json": "4ce1f2d96c35b18e0dd0800bbf73d04a61553a5fd349bae1b93ef5cef78df633"
+  },
+  "dependencies": {
+    "benchmarks/reproduction/rewrite-packaging-v1/freeze.json": "eb6a0ffdcbc71936d3cce05d6b52d3ac66933764a0180fc17495ae37196ea038",
+    "benchmarks/reproduction/rewrite-packaging-v1/run.py": "e407b8b38cc84cd647dc7fa60f0349c2d020586e062f8649ae5a4b1fd8941062"
+  },
+  "build": {
+    "apps/desktop/cmd/arion-llm/main.go": "279f39b92a65c71ad112ae0348edc11bfb5cfbf4076f6f7b9bd8d4aa4b5c41f8",
+    "apps/desktop/infrastructure/llm/prompt/prompt.go": "e7c8701f00d514276972766a9c036d15b05a480612b397a1c2a8b05e4674b48a",
+    "apps/desktop/infrastructure/llm/engine/engine.go": "efcb5f3a16ce6b00001a694e5669250665f50a980c29135c6327245720135003",
+    ".workspace/rewrite-packaging-v1/build/worker.go": "803d9131652f4e71f399e1f95f5c10a75d9246f36af3ba160790f2ec69c4dc42",
+    ".workspace/rewrite-packaging-v1/build/prompt.go": "c1f06f6d49dfa40b5dba0cf19de7267bf53b2d0c4290090fa555752df9a70266",
+    ".workspace/rewrite-packaging-v1/build/engine.go": "c84892e545358943088c0f9fdde1cec0c30ad37c83e34be41f917925438a5505",
+    ".workspace/rewrite-packaging-v1/build/worker": "bbb67747d6fe21dc17aa14fdb0cb1848813a119e1db8a5cec4580e613f9066af",
+    "benchmarks/reproduction/rewrite-packaging-v1/build.py": "27929f27d1f56fab5798ded751e72c6a800940835750a39f969cb19e78bec131"
+  }
+}

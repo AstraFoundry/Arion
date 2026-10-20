@@ -1,0 +1,6 @@
+Traceback (most recent call last):
+  File "/Users/steven/code/Arion/.workspace/rewrite-minicpm5-v1/tokenizer-parity-v1/run.py", line 9, in <module>
+    rows=list(map(json.loads((R/'benchmarks/runs/rewrite-selector-minicpm-v1/comparison-run/results.jsonl').read_text().splitlines())));assert len(rows)==202
+  File "/Users/steven/anaconda3/lib/python3.10/json/__init__.py", line 339, in loads
+    raise TypeError(f'the JSON object must be str, bytes or bytearray, '
+TypeError: the JSON object must be str, bytes or bytearray, not list

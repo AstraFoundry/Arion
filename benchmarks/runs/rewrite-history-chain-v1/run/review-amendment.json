@@ -1,0 +1,11 @@
+{
+  "kind": "documented-second-review",
+  "id": "history-0057",
+  "initialReviewSha256": "0a0f7d3458c01c65ab560da45df9b6464687f633d3853154dbe3d35b742c99b2",
+  "currentReviewSha256": "ec351b1af634348b3ec53f32f379e5c3603ea3d6be36b806ecc2bc9f04664c89",
+  "rawRowSha256": "e8a58b366ba4bdb9561981c0ef93ae4cb8c4fe66265ed362d90664b4fd63cddd",
+  "fromFaithful": false,
+  "toFaithful": null,
+  "sceneUseful": false,
+  "reason": "Textual pragmatics permit more than one actor/intention reading; do not turn uncertain interpretation into a definite error or a passing score. No output or model input changed."
+}

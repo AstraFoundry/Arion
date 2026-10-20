@@ -1,0 +1,16 @@
+{
+  "requests": 202,
+  "exactTextEqual": 202,
+  "modelGenerations": 0,
+  "nativeRequests": 0,
+  "sourcePath": "benchmarks/runs/rewrite-selector-screen-v1/run/results.jsonl",
+  "sourceSha256": "ece87532ba75c99d837a2d1409b1ace5ebcb1e77d4a871f586c3c215636cdbbb",
+  "upstreamTemplateSha256": "ba551d58630afa3190b1be3602e28301f3d2e9bbac978dfc49d6d825171648b6",
+  "headerSha256": "69fab984f68de23891ae62f5cff51ed46299d8591e43b87834431cee7fbca0eb",
+  "transformation": "Remove exactly one generation/endgeneration tracking-block marker pair from upstream for plain Jinja rendering. Does not replace production/native template.",
+  "python": "3.10.9 (main, Mar  1 2023, 12:33:47) [Clang 14.0.6 ]",
+  "jinja2Version": "3.1.2",
+  "dependencyFilesSha256": "8c096eecc259e5f66dc27efc7dd8a2697f82f28bb42bc072f116d567fadc929f",
+  "promptsSha256": "95d61ea23116bfa3a4228c2dc33c3821c0b32a5654efdfcb54557be0acbb9458",
+  "limits": "Local Jinja text-only serializer comparison, not official Transformers end-to-end, native parser, token-ID or weight/logit parity. No tools/multimodal/continuation/reasoning messages or release-quality proof."
+}

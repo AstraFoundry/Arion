@@ -1,0 +1,7 @@
+{
+  "model": "qwen3.5-2b-q4-k-m-metal",
+  "path": "/Users/steven/Library/Application Support/Arion/models/qwen3.5-2b-q4-k-m-metal/Qwen3.5-2B-Q4_K_M.gguf",
+  "bytes": 1280835840,
+  "sha256": "aaf42c8b7c3cab2bf3d69c355048d4a0ee9973d48f16c731c0520ee914699223",
+  "method": "verified artifact; hard link within the same local filesystem; original research path retained"
+}

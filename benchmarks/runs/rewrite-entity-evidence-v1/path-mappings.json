@@ -1,0 +1,32 @@
+{
+  "sourceSnapshots": {
+    "apps/desktop/cmd/arion-ocr/main.go": "benchmarks/runs/rewrite-entity-evidence-v1/source-snapshot/apps/desktop/cmd/arion-ocr/main.go",
+    "apps/desktop/go.mod": "benchmarks/runs/rewrite-entity-evidence-v1/source-snapshot/apps/desktop/go.mod",
+    "apps/desktop/go.sum": "benchmarks/runs/rewrite-entity-evidence-v1/source-snapshot/apps/desktop/go.sum",
+    "apps/desktop/infrastructure/macos/context.go": "benchmarks/runs/rewrite-entity-evidence-v1/source-snapshot/apps/desktop/infrastructure/macos/context.go",
+    "apps/desktop/infrastructure/macos/context.h": "benchmarks/runs/rewrite-entity-evidence-v1/source-snapshot/apps/desktop/infrastructure/macos/context.h",
+    "apps/desktop/infrastructure/macos/context.m": "benchmarks/runs/rewrite-entity-evidence-v1/source-snapshot/apps/desktop/infrastructure/macos/context.m",
+    "apps/desktop/infrastructure/macos/guide.go": "benchmarks/runs/rewrite-entity-evidence-v1/source-snapshot/apps/desktop/infrastructure/macos/guide.go",
+    "apps/desktop/infrastructure/macos/guide.h": "benchmarks/runs/rewrite-entity-evidence-v1/source-snapshot/apps/desktop/infrastructure/macos/guide.h",
+    "apps/desktop/infrastructure/macos/guide.m": "benchmarks/runs/rewrite-entity-evidence-v1/source-snapshot/apps/desktop/infrastructure/macos/guide.m",
+    "apps/desktop/infrastructure/macos/hold.go": "benchmarks/runs/rewrite-entity-evidence-v1/source-snapshot/apps/desktop/infrastructure/macos/hold.go",
+    "apps/desktop/infrastructure/macos/hold.h": "benchmarks/runs/rewrite-entity-evidence-v1/source-snapshot/apps/desktop/infrastructure/macos/hold.h",
+    "apps/desktop/infrastructure/macos/hold.m": "benchmarks/runs/rewrite-entity-evidence-v1/source-snapshot/apps/desktop/infrastructure/macos/hold.m",
+    "apps/desktop/infrastructure/macos/ime.go": "benchmarks/runs/rewrite-entity-evidence-v1/source-snapshot/apps/desktop/infrastructure/macos/ime.go",
+    "apps/desktop/infrastructure/macos/ime_install_darwin.go": "benchmarks/runs/rewrite-entity-evidence-v1/source-snapshot/apps/desktop/infrastructure/macos/ime_install_darwin.go",
+    "apps/desktop/infrastructure/macos/ime_install_darwin_test.go": "benchmarks/runs/rewrite-entity-evidence-v1/source-snapshot/apps/desktop/infrastructure/macos/ime_install_darwin_test.go",
+    "apps/desktop/infrastructure/macos/insertion_darwin_test.go": "benchmarks/runs/rewrite-entity-evidence-v1/source-snapshot/apps/desktop/infrastructure/macos/insertion_darwin_test.go",
+    "apps/desktop/infrastructure/macos/macos.go": "benchmarks/runs/rewrite-entity-evidence-v1/source-snapshot/apps/desktop/infrastructure/macos/macos.go",
+    "apps/desktop/infrastructure/macos/native.h": "benchmarks/runs/rewrite-entity-evidence-v1/source-snapshot/apps/desktop/infrastructure/macos/native.h",
+    "apps/desktop/infrastructure/macos/native.m": "benchmarks/runs/rewrite-entity-evidence-v1/source-snapshot/apps/desktop/infrastructure/macos/native.m",
+    "apps/desktop/infrastructure/macos/overlay.go": "benchmarks/runs/rewrite-entity-evidence-v1/source-snapshot/apps/desktop/infrastructure/macos/overlay.go",
+    "apps/desktop/infrastructure/macos/overlay.h": "benchmarks/runs/rewrite-entity-evidence-v1/source-snapshot/apps/desktop/infrastructure/macos/overlay.h",
+    "apps/desktop/infrastructure/macos/overlay.m": "benchmarks/runs/rewrite-entity-evidence-v1/source-snapshot/apps/desktop/infrastructure/macos/overlay.m",
+    "apps/desktop/infrastructure/macos/paste.go": "benchmarks/runs/rewrite-entity-evidence-v1/source-snapshot/apps/desktop/infrastructure/macos/paste.go",
+    "apps/desktop/infrastructure/macos/paste.m": "benchmarks/runs/rewrite-entity-evidence-v1/source-snapshot/apps/desktop/infrastructure/macos/paste.m",
+    "apps/desktop/infrastructure/macos/paste_test.go": "benchmarks/runs/rewrite-entity-evidence-v1/source-snapshot/apps/desktop/infrastructure/macos/paste_test.go"
+  },
+  "externalArtifacts": {
+    ".workspace/rewrite-entity-evidence-v1/arion-ocr": "b240efe4eae71b377df00f644119152d15ac403c167cc700a041f8f831d6f4ec"
+  }
+}

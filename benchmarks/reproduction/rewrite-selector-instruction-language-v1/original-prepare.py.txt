@@ -1,0 +1,23 @@
+from pathlib import Path
+import json,hashlib,shutil,subprocess
+R=Path.cwd();H=R/'benchmarks/reproduction/rewrite-selector-instruction-language-v1';W=R/'.workspace/rewrite-selector-instruction-language-v1'
+def read(p):return json.loads(p.read_text())
+def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
+def save(p,x):p.write_text(json.dumps(x,ensure_ascii=False,indent=2)+'\n')
+shutil.copyfile(Path(__file__),H/'original-prepare.py.txt')
+save(H/'protocol.json',dict(purpose='Translate only trusted system rules into English on two current eligible small model configurations; Chinese actual controls are reused, not regenerated.',modelKeys=['qwen','hybrid'],arms=['baseline','balanced'],expectedGenerations=404,sourceCases=457,replayedActualGoPreparations=457,newGoPreparations=0,sourceTreatmentCount=1828,expectedSkips=1424,newAsrGenerations=0,newOcrGenerations=0,formatterGenerations=0,maxTokens=128,factor='Only messages[0].content changes. Every example/current user object, assistant decision, source/context/candidate/schema/decoding field remains identical. Assistant-reviewed clause-aligned translation, no independent semantic-equivalence proof. No new rule or example.',gate='Every101-case model/arm conforms to unchanged frozen evaluator with all required repairs and literal/ambiguity/meaning protections, no protocol failure. Passing only allows full457-source chain, then unchanged fresh/currentASR+Vision/cross-script/native/offline/concurrent/independent/actual16GB acceptance.',review='Personally read all404 actual outputs/edited sources, all unique failures and all changed full source/context/choice pairs. Separate permitted canonicalization from semantic failure.',limits='Repeated exposed development sources and overlapping inherited examples, not independent or held-out. Chinese controls are prior actual results; no newGo/ASR/OCR/final bodies. No semantic output rejection/source fallback or production change. Eacharm12original-onlyambiguity schemas are protocol constraints, not free semantic decisions. Model-specific language effect only; no general model ranking or causal latency/min16 claim. No4B or olderQwen.'))
+q=read(R/'benchmarks/reproduction/rewrite-selector-screen-v1/freeze.json');h=read(R/'benchmarks/reproduction/rewrite-selector-hybrid-v1/freeze.json')
+f=dict(files=dict(read(R/'benchmarks/runs/rewrite-selector-hybrid-v1/archive.json')['files']),runtimeFiles=q['runtimeFiles'],models={'qwen':dict(modelPath=q['modelPath'],model=q['model'],referencePath='benchmarks/runs/rewrite-selector-screen-v1/run/results.jsonl',offloadLine='offloaded 25/25 layers to GPU'),'hybrid':dict(modelPath=h['modelPath'],model=h['model'],referencePath='benchmarks/runs/rewrite-selector-hybrid-v1/run/results.jsonl',offloadLine='offloaded 41/41 layers to GPU')})
+assert q['runtimeFiles']==h['runtimeFiles']
+paths={'qwen':'benchmarks/runs/rewrite-selector-screen-v1/run/selector-screen-v1-baseline-work-props.json','hybrid':'benchmarks/reproduction/rewrite-selector-hybrid-v1/sources/gguf-header-inspection.json'};templates={}
+for key,path in paths.items():
+ d=read(R/path);templates[key]=dict(template=d['chat_template'] if key=='qwen' else d['metadata']['tokenizer.chat_template'],source=dict(path=path,sha256=sha(R/path)))
+save(H/'runtime-templates.json',templates)
+for p in H.iterdir():
+ if p.is_file() and p.name!='freeze.json':f['files'][str(p.relative_to(R))]=sha(p)
+save(H/'freeze.json',f)
+host={}
+for key,cmd in [('os',['sw_vers']),('hardware',['sysctl','hw.model','hw.memsize','hw.physicalcpu','machdep.cpu.brand_string']),('power',['pmset','-g','custom']),('thermal',['pmset','-g','therm']),('gitRevision',['git','rev-parse','HEAD']),('dirty',['git','status','--porcelain']),('runtime',['.workspace/rewrite-small-models-v1/runtime/llama-b11734/llama-server','--version'])]:
+ q=subprocess.run(cmd,text=True,capture_output=True);host[key]=dict(command=cmd,exitCode=q.returncode,stdout=q.stdout,stderr=q.stderr)
+host.update(freezeSha256=sha(H/'freeze.json'),timer='time.monotonic',scope='Two separately loaded eligible models, sequential qwen/hybrid workers; sameMetal99/CPU4/4096context/parallel1/greedy42/reasonoff/cachetrue/128/no warmup. Post-response workerRSS sampled, not peak/whole-host/min16 acceptance.')
+save(W/'host-provenance.json',host);print('Prefrozen',len(f['files']),'files',sha(H/'freeze.json'))

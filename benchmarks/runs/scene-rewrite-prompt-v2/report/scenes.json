@@ -1,0 +1,1298 @@
+[
+  {
+    "id": "dev-owners-zh",
+    "variant": "focused",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-focused-work-zh"
+  },
+  {
+    "id": "dev-payment-zh",
+    "variant": "focused",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-focused-work-zh"
+  },
+  {
+    "id": "dev-owners-en",
+    "variant": "focused",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-focused-work-en"
+  },
+  {
+    "id": "dev-payment-en",
+    "variant": "focused",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-focused-work-en"
+  },
+  {
+    "id": "dev-investigate-zh",
+    "variant": "focused",
+    "assignedScene": "prompt",
+    "effectiveModelScene": "prompt",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-focused-prompt-zh"
+  },
+  {
+    "id": "dev-pagination-zh",
+    "variant": "focused",
+    "assignedScene": "prompt",
+    "effectiveModelScene": "prompt",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-focused-prompt-zh"
+  },
+  {
+    "id": "dev-investigate-en",
+    "variant": "focused",
+    "assignedScene": "prompt",
+    "effectiveModelScene": "prompt",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-focused-prompt-en"
+  },
+  {
+    "id": "dev-pagination-en",
+    "variant": "focused",
+    "assignedScene": "prompt",
+    "effectiveModelScene": "prompt",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-focused-prompt-en"
+  },
+  {
+    "id": "dev-review-zh",
+    "variant": "focused",
+    "assignedScene": "email",
+    "effectiveModelScene": "email",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-focused-email-zh"
+  },
+  {
+    "id": "dev-leave-zh",
+    "variant": "focused",
+    "assignedScene": "email",
+    "effectiveModelScene": "email",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-focused-email-zh"
+  },
+  {
+    "id": "dev-review-en",
+    "variant": "focused",
+    "assignedScene": "email",
+    "effectiveModelScene": "email",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-focused-email-en"
+  },
+  {
+    "id": "dev-leave-en",
+    "variant": "focused",
+    "assignedScene": "email",
+    "effectiveModelScene": "email",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-focused-email-en"
+  },
+  {
+    "id": "dev-uncertain-zh",
+    "variant": "focused",
+    "assignedScene": "chat",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-focused-chat-zh"
+  },
+  {
+    "id": "dev-question-zh",
+    "variant": "focused",
+    "assignedScene": "chat",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-focused-chat-zh"
+  },
+  {
+    "id": "dev-uncertain-en",
+    "variant": "focused",
+    "assignedScene": "chat",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-focused-chat-en"
+  },
+  {
+    "id": "dev-question-en",
+    "variant": "focused",
+    "assignedScene": "chat",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-focused-chat-en"
+  },
+  {
+    "id": "dev-owners-zh",
+    "variant": "examples",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-examples-work-zh"
+  },
+  {
+    "id": "dev-payment-zh",
+    "variant": "examples",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-examples-work-zh"
+  },
+  {
+    "id": "dev-owners-en",
+    "variant": "examples",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-examples-work-en"
+  },
+  {
+    "id": "dev-payment-en",
+    "variant": "examples",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-examples-work-en"
+  },
+  {
+    "id": "dev-investigate-zh",
+    "variant": "examples",
+    "assignedScene": "prompt",
+    "effectiveModelScene": "prompt",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-examples-prompt-zh"
+  },
+  {
+    "id": "dev-pagination-zh",
+    "variant": "examples",
+    "assignedScene": "prompt",
+    "effectiveModelScene": "prompt",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-examples-prompt-zh"
+  },
+  {
+    "id": "dev-investigate-en",
+    "variant": "examples",
+    "assignedScene": "prompt",
+    "effectiveModelScene": "prompt",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-examples-prompt-en"
+  },
+  {
+    "id": "dev-pagination-en",
+    "variant": "examples",
+    "assignedScene": "prompt",
+    "effectiveModelScene": "prompt",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-examples-prompt-en"
+  },
+  {
+    "id": "dev-review-zh",
+    "variant": "examples",
+    "assignedScene": "email",
+    "effectiveModelScene": "email",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-examples-email-zh"
+  },
+  {
+    "id": "dev-leave-zh",
+    "variant": "examples",
+    "assignedScene": "email",
+    "effectiveModelScene": "email",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-examples-email-zh"
+  },
+  {
+    "id": "dev-review-en",
+    "variant": "examples",
+    "assignedScene": "email",
+    "effectiveModelScene": "email",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-examples-email-en"
+  },
+  {
+    "id": "dev-leave-en",
+    "variant": "examples",
+    "assignedScene": "email",
+    "effectiveModelScene": "email",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-examples-email-en"
+  },
+  {
+    "id": "dev-uncertain-zh",
+    "variant": "examples",
+    "assignedScene": "chat",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-examples-chat-zh"
+  },
+  {
+    "id": "dev-question-zh",
+    "variant": "examples",
+    "assignedScene": "chat",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-examples-chat-zh"
+  },
+  {
+    "id": "dev-uncertain-en",
+    "variant": "examples",
+    "assignedScene": "chat",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-examples-chat-en"
+  },
+  {
+    "id": "dev-question-en",
+    "variant": "examples",
+    "assignedScene": "chat",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-examples-chat-en"
+  },
+  {
+    "id": "test-migration-zh",
+    "variant": "production",
+    "assignedScene": "prompt",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "live-v2"
+  },
+  {
+    "id": "test-estimate-zh",
+    "variant": "production",
+    "assignedScene": "work",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "live-v2"
+  },
+  {
+    "id": "test-estimate-en",
+    "variant": "production",
+    "assignedScene": "work",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "live-v2"
+  },
+  {
+    "id": "fresh-batch-zh",
+    "variant": "production",
+    "assignedScene": "prompt",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "live-v2"
+  },
+  {
+    "id": "fresh-literal-zh",
+    "variant": "production",
+    "assignedScene": "chat",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "live-v2"
+  },
+  {
+    "id": "test-availability-zh",
+    "variant": "production",
+    "assignedScene": "email",
+    "effectiveModelScene": "email",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "live-v2"
+  },
+  {
+    "id": "fresh-batch-en",
+    "variant": "production",
+    "assignedScene": "prompt",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "live-v2"
+  },
+  {
+    "id": "fresh-boundaries-zh",
+    "variant": "production",
+    "assignedScene": "prompt",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "live-v2"
+  },
+  {
+    "id": "fresh-permission-zh",
+    "variant": "production",
+    "assignedScene": "chat",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "live-v2"
+  },
+  {
+    "id": "test-upload-zh",
+    "variant": "production",
+    "assignedScene": "prompt",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "live-v2"
+  },
+  {
+    "id": "test-condition-en",
+    "variant": "production",
+    "assignedScene": "chat",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "live-v2"
+  },
+  {
+    "id": "fresh-cause-en",
+    "variant": "production",
+    "assignedScene": "prompt",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "live-v2"
+  },
+  {
+    "id": "test-upload-en",
+    "variant": "production",
+    "assignedScene": "prompt",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "live-v2"
+  },
+  {
+    "id": "fresh-receipt-en",
+    "variant": "production",
+    "assignedScene": "email",
+    "effectiveModelScene": "email",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "live-v2"
+  },
+  {
+    "id": "test-reschedule-en",
+    "variant": "production",
+    "assignedScene": "email",
+    "effectiveModelScene": "email",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "live-v2"
+  },
+  {
+    "id": "test-condition-zh",
+    "variant": "production",
+    "assignedScene": "chat",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "live-v2"
+  },
+  {
+    "id": "fresh-cause-zh",
+    "variant": "production",
+    "assignedScene": "prompt",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "live-v2"
+  },
+  {
+    "id": "fresh-cancel-en",
+    "variant": "production",
+    "assignedScene": "email",
+    "effectiveModelScene": "email",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "live-v2"
+  },
+  {
+    "id": "fresh-literal-en",
+    "variant": "production",
+    "assignedScene": "chat",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "live-v2"
+  },
+  {
+    "id": "fresh-capacity-en",
+    "variant": "production",
+    "assignedScene": "work",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "live-v2"
+  },
+  {
+    "id": "fresh-schedule-zh",
+    "variant": "production",
+    "assignedScene": "work",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "live-v2"
+  },
+  {
+    "id": "test-availability-en",
+    "variant": "production",
+    "assignedScene": "email",
+    "effectiveModelScene": "email",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "live-v2"
+  },
+  {
+    "id": "fresh-receipt-zh",
+    "variant": "production",
+    "assignedScene": "email",
+    "effectiveModelScene": "email",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "live-v2"
+  },
+  {
+    "id": "test-request-en",
+    "variant": "production",
+    "assignedScene": "chat",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "live-v2"
+  },
+  {
+    "id": "fresh-conditional-zh",
+    "variant": "production",
+    "assignedScene": "chat",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "live-v2"
+  },
+  {
+    "id": "fresh-rotation-zh",
+    "variant": "production",
+    "assignedScene": "work",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "live-v2"
+  },
+  {
+    "id": "fresh-units-en",
+    "variant": "production",
+    "assignedScene": "prompt",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "live-v2"
+  },
+  {
+    "id": "test-export-en",
+    "variant": "production",
+    "assignedScene": "work",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "live-v2"
+  },
+  {
+    "id": "fresh-contract-en",
+    "variant": "production",
+    "assignedScene": "email",
+    "effectiveModelScene": "email",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "live-v2"
+  },
+  {
+    "id": "test-invoice-zh",
+    "variant": "production",
+    "assignedScene": "email",
+    "effectiveModelScene": "email",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "live-v2"
+  },
+  {
+    "id": "test-reschedule-zh",
+    "variant": "production",
+    "assignedScene": "email",
+    "effectiveModelScene": "email",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "live-v2"
+  },
+  {
+    "id": "fresh-conditional-en",
+    "variant": "production",
+    "assignedScene": "chat",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "live-v2"
+  },
+  {
+    "id": "test-correction-zh",
+    "variant": "production",
+    "assignedScene": "chat",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "live-v2"
+  },
+  {
+    "id": "fresh-contract-zh",
+    "variant": "production",
+    "assignedScene": "email",
+    "effectiveModelScene": "email",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "live-v2"
+  },
+  {
+    "id": "fresh-permission-en",
+    "variant": "production",
+    "assignedScene": "chat",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "live-v2"
+  },
+  {
+    "id": "test-export-zh",
+    "variant": "production",
+    "assignedScene": "work",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "live-v2"
+  },
+  {
+    "id": "fresh-schedule-en",
+    "variant": "production",
+    "assignedScene": "work",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "live-v2"
+  },
+  {
+    "id": "test-migration-en",
+    "variant": "production",
+    "assignedScene": "prompt",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "live-v2"
+  },
+  {
+    "id": "test-invoice-en",
+    "variant": "production",
+    "assignedScene": "email",
+    "effectiveModelScene": "email",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "live-v2"
+  },
+  {
+    "id": "fresh-cancel-zh",
+    "variant": "production",
+    "assignedScene": "email",
+    "effectiveModelScene": "email",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "live-v2"
+  },
+  {
+    "id": "test-correction-en",
+    "variant": "production",
+    "assignedScene": "chat",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "live-v2"
+  },
+  {
+    "id": "fresh-handoff-en",
+    "variant": "production",
+    "assignedScene": "work",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "live-v2"
+  },
+  {
+    "id": "test-request-zh",
+    "variant": "production",
+    "assignedScene": "chat",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "live-v2"
+  },
+  {
+    "id": "test-retry-en",
+    "variant": "production",
+    "assignedScene": "prompt",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "live-v2"
+  },
+  {
+    "id": "test-incident-en",
+    "variant": "production",
+    "assignedScene": "work",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "live-v2"
+  },
+  {
+    "id": "fresh-units-zh",
+    "variant": "production",
+    "assignedScene": "prompt",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "live-v2"
+  },
+  {
+    "id": "test-retry-zh",
+    "variant": "production",
+    "assignedScene": "prompt",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "live-v2"
+  },
+  {
+    "id": "fresh-rotation-en",
+    "variant": "production",
+    "assignedScene": "work",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "live-v2"
+  },
+  {
+    "id": "fresh-handoff-zh",
+    "variant": "production",
+    "assignedScene": "work",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "live-v2"
+  },
+  {
+    "id": "fresh-capacity-zh",
+    "variant": "production",
+    "assignedScene": "work",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "live-v2"
+  },
+  {
+    "id": "test-incident-zh",
+    "variant": "production",
+    "assignedScene": "work",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "live-v2"
+  },
+  {
+    "id": "fresh-boundaries-en",
+    "variant": "production",
+    "assignedScene": "prompt",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "live-v2"
+  },
+  {
+    "id": "fresh-archive-zh",
+    "variant": "production",
+    "assignedScene": "work",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "context-v2+live-v2"
+  },
+  {
+    "id": "fresh-headers-zh",
+    "variant": "production",
+    "assignedScene": "prompt",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "context-v2+live-v2"
+  },
+  {
+    "id": "fresh-archive-en",
+    "variant": "production",
+    "assignedScene": "work",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "context-v2+live-v2"
+  },
+  {
+    "id": "fresh-headers-en",
+    "variant": "production",
+    "assignedScene": "prompt",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "context-v2+live-v2"
+  },
+  {
+    "id": "fresh-rotation-zh",
+    "variant": "examples",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-examples-work-zh"
+  },
+  {
+    "id": "fresh-handoff-zh",
+    "variant": "examples",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-examples-work-zh"
+  },
+  {
+    "id": "test-estimate-zh",
+    "variant": "examples",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-examples-work-zh"
+  },
+  {
+    "id": "test-incident-zh",
+    "variant": "examples",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-examples-work-zh"
+  },
+  {
+    "id": "fresh-schedule-zh",
+    "variant": "examples",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-examples-work-zh"
+  },
+  {
+    "id": "fresh-capacity-zh",
+    "variant": "examples",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-examples-work-zh"
+  },
+  {
+    "id": "test-export-zh",
+    "variant": "examples",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-examples-work-zh"
+  },
+  {
+    "id": "fresh-archive-zh",
+    "variant": "examples",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-examples-work-zh"
+  },
+  {
+    "id": "fresh-rotation-en",
+    "variant": "examples",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-examples-work-en"
+  },
+  {
+    "id": "fresh-handoff-en",
+    "variant": "examples",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-examples-work-en"
+  },
+  {
+    "id": "test-estimate-en",
+    "variant": "examples",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-examples-work-en"
+  },
+  {
+    "id": "test-incident-en",
+    "variant": "examples",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-examples-work-en"
+  },
+  {
+    "id": "fresh-schedule-en",
+    "variant": "examples",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-examples-work-en"
+  },
+  {
+    "id": "fresh-capacity-en",
+    "variant": "examples",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-examples-work-en"
+  },
+  {
+    "id": "test-export-en",
+    "variant": "examples",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-examples-work-en"
+  },
+  {
+    "id": "fresh-archive-en",
+    "variant": "examples",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-examples-work-en"
+  },
+  {
+    "id": "fresh-cause-zh",
+    "variant": "examples",
+    "assignedScene": "prompt",
+    "effectiveModelScene": "prompt",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-examples-prompt-zh"
+  },
+  {
+    "id": "fresh-units-zh",
+    "variant": "examples",
+    "assignedScene": "prompt",
+    "effectiveModelScene": "prompt",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-examples-prompt-zh"
+  },
+  {
+    "id": "test-retry-zh",
+    "variant": "examples",
+    "assignedScene": "prompt",
+    "effectiveModelScene": "prompt",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-examples-prompt-zh"
+  },
+  {
+    "id": "test-migration-zh",
+    "variant": "examples",
+    "assignedScene": "prompt",
+    "effectiveModelScene": "prompt",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-examples-prompt-zh"
+  },
+  {
+    "id": "fresh-boundaries-zh",
+    "variant": "examples",
+    "assignedScene": "prompt",
+    "effectiveModelScene": "prompt",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-examples-prompt-zh"
+  },
+  {
+    "id": "fresh-batch-zh",
+    "variant": "examples",
+    "assignedScene": "prompt",
+    "effectiveModelScene": "prompt",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-examples-prompt-zh"
+  },
+  {
+    "id": "test-upload-zh",
+    "variant": "examples",
+    "assignedScene": "prompt",
+    "effectiveModelScene": "prompt",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-examples-prompt-zh"
+  },
+  {
+    "id": "fresh-headers-zh",
+    "variant": "examples",
+    "assignedScene": "prompt",
+    "effectiveModelScene": "prompt",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-examples-prompt-zh"
+  },
+  {
+    "id": "fresh-cause-en",
+    "variant": "examples",
+    "assignedScene": "prompt",
+    "effectiveModelScene": "prompt",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-examples-prompt-en"
+  },
+  {
+    "id": "fresh-units-en",
+    "variant": "examples",
+    "assignedScene": "prompt",
+    "effectiveModelScene": "prompt",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-examples-prompt-en"
+  },
+  {
+    "id": "test-retry-en",
+    "variant": "examples",
+    "assignedScene": "prompt",
+    "effectiveModelScene": "prompt",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-examples-prompt-en"
+  },
+  {
+    "id": "test-migration-en",
+    "variant": "examples",
+    "assignedScene": "prompt",
+    "effectiveModelScene": "prompt",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-examples-prompt-en"
+  },
+  {
+    "id": "fresh-boundaries-en",
+    "variant": "examples",
+    "assignedScene": "prompt",
+    "effectiveModelScene": "prompt",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-examples-prompt-en"
+  },
+  {
+    "id": "fresh-batch-en",
+    "variant": "examples",
+    "assignedScene": "prompt",
+    "effectiveModelScene": "prompt",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-examples-prompt-en"
+  },
+  {
+    "id": "test-upload-en",
+    "variant": "examples",
+    "assignedScene": "prompt",
+    "effectiveModelScene": "prompt",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-examples-prompt-en"
+  },
+  {
+    "id": "fresh-headers-en",
+    "variant": "examples",
+    "assignedScene": "prompt",
+    "effectiveModelScene": "prompt",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-examples-prompt-en"
+  },
+  {
+    "id": "fresh-cancel-zh",
+    "variant": "examples",
+    "assignedScene": "email",
+    "effectiveModelScene": "email",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-examples-email-zh"
+  },
+  {
+    "id": "test-reschedule-zh",
+    "variant": "examples",
+    "assignedScene": "email",
+    "effectiveModelScene": "email",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-examples-email-zh"
+  },
+  {
+    "id": "test-availability-zh",
+    "variant": "examples",
+    "assignedScene": "email",
+    "effectiveModelScene": "email",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-examples-email-zh"
+  },
+  {
+    "id": "fresh-contract-zh",
+    "variant": "examples",
+    "assignedScene": "email",
+    "effectiveModelScene": "email",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-examples-email-zh"
+  },
+  {
+    "id": "test-invoice-zh",
+    "variant": "examples",
+    "assignedScene": "email",
+    "effectiveModelScene": "email",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-examples-email-zh"
+  },
+  {
+    "id": "fresh-receipt-zh",
+    "variant": "examples",
+    "assignedScene": "email",
+    "effectiveModelScene": "email",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-examples-email-zh"
+  },
+  {
+    "id": "fresh-cancel-en",
+    "variant": "examples",
+    "assignedScene": "email",
+    "effectiveModelScene": "email",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-examples-email-en"
+  },
+  {
+    "id": "test-reschedule-en",
+    "variant": "examples",
+    "assignedScene": "email",
+    "effectiveModelScene": "email",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-examples-email-en"
+  },
+  {
+    "id": "test-availability-en",
+    "variant": "examples",
+    "assignedScene": "email",
+    "effectiveModelScene": "email",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-examples-email-en"
+  },
+  {
+    "id": "fresh-contract-en",
+    "variant": "examples",
+    "assignedScene": "email",
+    "effectiveModelScene": "email",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-examples-email-en"
+  },
+  {
+    "id": "test-invoice-en",
+    "variant": "examples",
+    "assignedScene": "email",
+    "effectiveModelScene": "email",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-examples-email-en"
+  },
+  {
+    "id": "fresh-receipt-en",
+    "variant": "examples",
+    "assignedScene": "email",
+    "effectiveModelScene": "email",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-examples-email-en"
+  },
+  {
+    "id": "fresh-conditional-zh",
+    "variant": "examples",
+    "assignedScene": "chat",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-examples-chat-zh"
+  },
+  {
+    "id": "test-condition-zh",
+    "variant": "examples",
+    "assignedScene": "chat",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-examples-chat-zh"
+  },
+  {
+    "id": "test-correction-zh",
+    "variant": "examples",
+    "assignedScene": "chat",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-examples-chat-zh"
+  },
+  {
+    "id": "fresh-permission-zh",
+    "variant": "examples",
+    "assignedScene": "chat",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-examples-chat-zh"
+  },
+  {
+    "id": "test-request-zh",
+    "variant": "examples",
+    "assignedScene": "chat",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-examples-chat-zh"
+  },
+  {
+    "id": "fresh-literal-zh",
+    "variant": "examples",
+    "assignedScene": "chat",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-examples-chat-zh"
+  },
+  {
+    "id": "fresh-conditional-en",
+    "variant": "examples",
+    "assignedScene": "chat",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-examples-chat-en"
+  },
+  {
+    "id": "test-condition-en",
+    "variant": "examples",
+    "assignedScene": "chat",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-examples-chat-en"
+  },
+  {
+    "id": "test-correction-en",
+    "variant": "examples",
+    "assignedScene": "chat",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-examples-chat-en"
+  },
+  {
+    "id": "fresh-permission-en",
+    "variant": "examples",
+    "assignedScene": "chat",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-examples-chat-en"
+  },
+  {
+    "id": "test-request-en",
+    "variant": "examples",
+    "assignedScene": "chat",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-examples-chat-en"
+  },
+  {
+    "id": "fresh-literal-en",
+    "variant": "examples",
+    "assignedScene": "chat",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "prompt-v2-examples-chat-en"
+  }
+]

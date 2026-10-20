@@ -1,0 +1,19 @@
+{
+  "status": "complete",
+  "kind": "derived-view-of-original-inference",
+  "newGenerations": 0,
+  "originalGenerations": 48,
+  "resultsSha256": "1db143348d342ce8fea9857e6b6885de8fd433c0d90de83cb9710a66294da623",
+  "sources": [
+    {
+      "path": "benchmarks/runs/scene-rewrite-alignment-v1/dev/production.jsonl",
+      "sha256": "500488618bd6f18e75a652edde96cb7602ff526ceaca6a1960f89c35b88b27c3"
+    },
+    {
+      "path": "benchmarks/runs/scene-rewrite-alignment-v1/dev/scene.jsonl",
+      "sha256": "65ef605a5fb6e0fcaec547e453b7d605464832614a05074a7d465a43bdd215be"
+    }
+  ],
+  "corpusSha256": "346cbe73eee37c9fc6171daf6df1360c797d019a2c02ab34bea999ff7c39d79e",
+  "scope": "Post-hoc assistant inspection; original run, proxy report and selection are unchanged. Not independent review or new inference."
+}

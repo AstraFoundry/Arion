@@ -1,0 +1,65 @@
+{
+  "originalRoot": "/Users/steven/code/Arion",
+  "files": [
+    {
+      "original": ".workspace/rewrite-bounded-edit-v2/run/staged-work-server.log",
+      "archived": "benchmarks/runs/rewrite-bounded-edit-v2/run/staged-work-server.log",
+      "sha256": "4a73a47c8fa6135f2b7077300d58d544be3b2478608bdaddfedd1c205c6dd089",
+      "bytes": 32642
+    },
+    {
+      "original": ".workspace/rewrite-bounded-edit-v2/run/staged-email-props.json",
+      "archived": "benchmarks/runs/rewrite-bounded-edit-v2/run/staged-email-props.json",
+      "sha256": "98a225ee180bbf506d62c0128dbdf0da8f1494e7863c435995008087107b3363",
+      "bytes": 10602
+    },
+    {
+      "original": ".workspace/rewrite-bounded-edit-v2/run/staged-work-props.json",
+      "archived": "benchmarks/runs/rewrite-bounded-edit-v2/run/staged-work-props.json",
+      "sha256": "c0b30d21ad3e967340269cc066cc63ba9ecbc9d9bea0c33d9292a366ba8422e2",
+      "bytes": 10602
+    },
+    {
+      "original": ".workspace/rewrite-bounded-edit-v2/run/staged-email-server.log",
+      "archived": "benchmarks/runs/rewrite-bounded-edit-v2/run/staged-email-server.log",
+      "sha256": "10e74eaa0e183bb44e4120ed93ac65f917369b405b527b27a4ce5e3a8d031531",
+      "bytes": 11353
+    },
+    {
+      "original": ".workspace/rewrite-bounded-edit-v2/run/staged-chat-props.json",
+      "archived": "benchmarks/runs/rewrite-bounded-edit-v2/run/staged-chat-props.json",
+      "sha256": "5475e7faa1ecd9fffd6dfa6673daa3f7f78fd9ebb1e8da946869d2f0cad481da",
+      "bytes": 10602
+    },
+    {
+      "original": ".workspace/rewrite-bounded-edit-v2/run/staged-chat-server.log",
+      "archived": "benchmarks/runs/rewrite-bounded-edit-v2/run/staged-chat-server.log",
+      "sha256": "930013fb3854a78cf2d75fd25d3ad79365de66b1d18701294b4d42df8642a891",
+      "bytes": 11346
+    },
+    {
+      "original": ".workspace/rewrite-bounded-edit-v2/run/results.jsonl",
+      "archived": "benchmarks/runs/rewrite-bounded-edit-v2/run/results.jsonl",
+      "sha256": "4858828bc5d92cdd6b22ca0d5fa148bc44570a6226c4d8759fafdda03099d60d",
+      "bytes": 426493
+    },
+    {
+      "original": ".workspace/rewrite-bounded-edit-v2/run/manifest.json",
+      "archived": "benchmarks/runs/rewrite-bounded-edit-v2/run/manifest.json",
+      "sha256": "d5c8cab03a81d6b04c35979f9d512a3b6f4c2bcf5ccac4976f5f05cd5effd8b9",
+      "bytes": 9237
+    },
+    {
+      "original": ".workspace/rewrite-bounded-edit-v2/run/staged-prompt-props.json",
+      "archived": "benchmarks/runs/rewrite-bounded-edit-v2/run/staged-prompt-props.json",
+      "sha256": "5fb5780267e4cc6c4012e3551919308dc0041c9394a41a899b3a315b0471f07c",
+      "bytes": 10602
+    },
+    {
+      "original": ".workspace/rewrite-bounded-edit-v2/run/staged-prompt-server.log",
+      "archived": "benchmarks/runs/rewrite-bounded-edit-v2/run/staged-prompt-server.log",
+      "sha256": "fe7fe69094b7b4b5f41a16789e22f5ffac6bfe8ee56e3595a6ccc2a563226d19",
+      "bytes": 27396
+    }
+  ]
+}

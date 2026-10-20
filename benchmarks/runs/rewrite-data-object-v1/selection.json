@@ -1,0 +1,16 @@
+{
+  "selected": null,
+  "qualified": false,
+  "freezeSha256": "2fed94bceb1d65495439d33dbcb958e9478dd709dee0d9058c84c98515e00f83",
+  "evidence": {
+    "qwen-lowercase": {
+      "resultsSha256": "e71e6488f2a4d1f5fab5697aa9d1a8742fca13479cb99d19faa5197128580896",
+      "reviewSha256": "4a7eabf82a39efa34cbef7057d7d47a55062b9142fd3f73e9cf1cdea26bfc66e"
+    },
+    "qwen-data-object": {
+      "resultsSha256": "cfb5572780277a166b7086c17881b3a71a820b503db2e02c8584e427275dfbc7",
+      "reviewSha256": "b4024aa4b0c6ea9b9aeb9abd6ca971581f5d25fd0a8c4e7607d892ca6e152e08"
+    }
+  },
+  "reason": "Lowercase reference keys do not fix unrelated OCR addition and restore definite cash/cache definition reversal despite unchanged aggregate34/36. Uniform input JSON removes that addition but loses two recipient repairs and distinct multi-term/conditional targets,31/36 faithful and9/11 repairs. No fresh24 or production adoption."
+}

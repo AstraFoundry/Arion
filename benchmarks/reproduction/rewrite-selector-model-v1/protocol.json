@@ -1,0 +1,17 @@
+{
+  "purpose": "Evaluate another current <=2B open checkpoint as selector using unchanged actual baseline/balanced model requests. No formatter. Existing Qwen observations reused as explicit paired controls, not regenerated or counted again.",
+  "arms": [
+    "baseline",
+    "balanced"
+  ],
+  "expectedGenerations": 202,
+  "sourceCases": 457,
+  "replayedActualGoPreparations": 457,
+  "newGoPreparations": 0,
+  "sourceTreatmentCount": 914,
+  "expectedSkips": 712,
+  "formatterGenerations": 0,
+  "evaluator": "benchmarks/corpora/rewrite-selector-screen-v1/evaluator.json",
+  "gate": "All101 actual candidate cases conform, including required repairs and harmful/optional/literal controls, with no protocol failures. Passing only permits complete457-source chain and unchanged fresh/native/independent/16GB acceptance.",
+  "limits": "Exposed development sources; repeated arms are not independent samples. No newASR/OCR/final bodies, no release/latency/min16 claim. Model/tokenizer/architecture differ, so this is checkpoint comparison, not parameter-count causality. Typed context and zero-hypothesis cross-script misses stay visible. Existing experimental semantic validator remains absent; no source fallback. No4B or olderQwen."
+}

@@ -1,0 +1,9 @@
+{
+  "source": ".workspace/rewrite-selector-contrast-demo-v1",
+  "published": "benchmarks/runs/rewrite-selector-contrast-demo-v1",
+  "privateExcluded": [
+    "weights",
+    "runtime binaries",
+    "Go cleanup executable"
+  ]
+}

@@ -1,0 +1,5 @@
+{
+  "path": "/Applications/Arion.app/Contents/Resources/llm/arion-llm",
+  "sha256": "2a380139497ce7551d8b6f62481f2c23e1a8df957e4e277603db97bbbd5f3c92",
+  "scope": "Worker used by first packaged native observations before the equivalent producer-index optimization and output-cap guard."
+}

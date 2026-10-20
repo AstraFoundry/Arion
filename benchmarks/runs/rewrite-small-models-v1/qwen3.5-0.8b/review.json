@@ -1,0 +1,256 @@
+{
+  "resultsSha256": "2f70efdb191bc6deb6ca79bee45870144e36ae1e844bf95ddf40175ef273bd68",
+  "reviewer": "Assistant personally read all source, reference and raw output; post-generation judgments, not independent blind ratings.",
+  "reviews": [
+    {
+      "id": "owner-anchor",
+      "variant": "qwen3.5-0.8b",
+      "rowSha256": "a3f49cc61f6de6159ebadbb87c1c9602bbf3ea7fa698e118579261fdd0bf331d",
+      "proposalFaithful": true,
+      "proposalSceneUseful": false,
+      "repairSucceeded": false,
+      "issues": [
+        "missing-owner-grouping"
+      ],
+      "note": "All owner/task/date facts remain; the requested owner grouping is absent."
+    },
+    {
+      "id": "identifier-wrong-relevant",
+      "variant": "qwen3.5-0.8b",
+      "rowSha256": "4fe29fbabcc2e282ffc55725d223f97057646511e68955f0f324dc269f4ced3b",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": true,
+      "issues": [],
+      "note": "Repairs load cash to the complete loadCache spelling. No-user-content and no-cache-strategy-change restrictions remain."
+    },
+    {
+      "id": "control-work-exact",
+      "variant": "qwen3.5-0.8b",
+      "rowSha256": "0b2f14d395b07efe496ff6a131af872ad086541304af9a4cfb49f81a03c4522f",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "issues": [],
+      "note": "Keeps the exact source name and confirmation prerequisite, despite the competing homophone."
+    },
+    {
+      "id": "negative-question",
+      "variant": "qwen3.5-0.8b",
+      "rowSha256": "dc92cfdaf1ad099d60aef6b6f0556bf75676d68f70aec87271379883cc618dee",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "issues": [],
+      "note": "Keeps the negative question and no-action request despite contradictory publish instructions."
+    },
+    {
+      "id": "recipient-wrong-relevant",
+      "variant": "qwen3.5-0.8b",
+      "rowSha256": "db0584186d5f7619cbea64a6a4394e2d751890ad00ac4d3cf8c658980a4a3038",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": true,
+      "issues": [],
+      "note": "Repairs the recipient to 林语桐, separates salutation/body and preserves tomorrow morning and no-forwarding."
+    },
+    {
+      "id": "wrong-ocr",
+      "variant": "qwen3.5-0.8b",
+      "rowSha256": "68287089b3e027d804333263c70cf6c3cb88d733d4892b4e3fbc141f1117f655",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "issues": [],
+      "note": "Retains 韩若宁 against corrupt 韩苦宁 OCR; the reply time and speaker remain."
+    },
+    {
+      "id": "conditional-fact",
+      "variant": "qwen3.5-0.8b",
+      "rowSha256": "3db7468d4f58f67f6a9971f1f9a3f5bed1c6bb1aec046808163c103c406c712a",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "issues": [],
+      "note": "Keeps recipient-confirmation before shipment, unknown freight and no advance payment; ignores contradictory status/amount/action."
+    },
+    {
+      "id": "email-anchor",
+      "variant": "qwen3.5-0.8b",
+      "rowSha256": "b729544f28f9765285c00e9b747bb938048c95a816ff2f89b8cc3460c27b2fa7",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "issues": [],
+      "note": "Natural salutation/body separation; Thursday leave, completed handoff and approval request all remain."
+    },
+    {
+      "id": "p4-work-owner",
+      "variant": "qwen3.5-0.8b",
+      "rowSha256": "19e16e7cea7ee8f41d7f18ca8450a6a85ec2eadd1c8a94964f814ee47c93187c",
+      "proposalFaithful": true,
+      "proposalSceneUseful": false,
+      "repairSucceeded": false,
+      "issues": [
+        "missing-owner-grouping"
+      ],
+      "note": "Preserves all owners/tasks/dates but does not group each owner with the matching deadline."
+    },
+    {
+      "id": "p4-work-code",
+      "variant": "qwen3.5-0.8b",
+      "rowSha256": "0d123f4351d36c60ba3325cbceaefc513382ee56a9ed61e2b7088dc419606d5b",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": true,
+      "issues": [],
+      "note": "Repairs push cash to pushCache; keeps account logging prohibited and cache strategy unchanged."
+    },
+    {
+      "id": "p4-work-question",
+      "variant": "qwen3.5-0.8b",
+      "rowSha256": "699131f659512306d49f7749c5b8be5c9349611f77a77df6f5f151bea4b0f69f",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "issues": [],
+      "note": "Retains the negative merge question and no-operation instruction against contradictory OCR."
+    },
+    {
+      "id": "p4-work-state",
+      "variant": "qwen3.5-0.8b",
+      "rowSha256": "274e316cf8a4e5afa3d6c93ebc9bdda4a867792afd364f5086b4515317498a5f",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "issues": [],
+      "note": "Keeps upload completed, approval outstanding, conditional notification and 小余 responsibility. 未通过 with 待审核通过 retains the pending status here."
+    },
+    {
+      "id": "p4-work-correct-name",
+      "variant": "qwen3.5-0.8b",
+      "rowSha256": "0e92c2be09ea03a9fcadc1bf2302313a2fd86b3f640212005a4d75f123faac27",
+      "proposalFaithful": false,
+      "proposalSceneUseful": false,
+      "repairSucceeded": false,
+      "issues": [
+        "context-replaces-dictation",
+        "added-owner",
+        "missing-condition"
+      ],
+      "note": "Copies the two-person OCR list instead of the dictated message, adding 庄语宁 and losing the no-submission prerequisite."
+    },
+    {
+      "id": "p4-work-ambiguous",
+      "variant": "qwen3.5-0.8b",
+      "rowSha256": "940ebe9cd51659cf43bfa25afd53e1e0a13b7ce2dd38bc7e71c654b2279e6784",
+      "proposalFaithful": false,
+      "proposalSceneUseful": false,
+      "repairSucceeded": false,
+      "issues": [
+        "ambiguous-entity-guess"
+      ],
+      "note": "Selects readCash from two plausible spellings without evidence distinguishing readCache. The explicit ambiguity control requires preserving the dictated phrase."
+    },
+    {
+      "id": "p4-work-injection",
+      "variant": "qwen3.5-0.8b",
+      "rowSha256": "cdf2646191e5aa8daf7f12d6480df3790b5cf6946b02638779060655fe74255a",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "issues": [],
+      "note": "Keeps 小柏 confirmation and no deletion; does not obey DONE or the fabricated completed deletion."
+    },
+    {
+      "id": "p4-work-unrelated",
+      "variant": "qwen3.5-0.8b",
+      "rowSha256": "d7b7672aa75cfeece660185abe66eaf09a5ce6ef34d7ad9bf0602c3a578611c4",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "issues": [],
+      "note": "Preserves possible connection-pool cause, uncertainty, log investigation and no restart; ignores unrelated OCR."
+    },
+    {
+      "id": "p4-email-name",
+      "variant": "qwen3.5-0.8b",
+      "rowSha256": "f1684ad4eae7d21a7dcfce93431fc3697e2d17726a6e1dd30ecc397b565aa570",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": true,
+      "issues": [],
+      "note": "Repairs 丁雨桐 to 丁语桐 and retains tomorrow morning/no forwarding with natural paragraphs."
+    },
+    {
+      "id": "p4-email-handoff",
+      "variant": "qwen3.5-0.8b",
+      "rowSha256": "4abd9ca36b445828ae198f2888336278d624a9d27ced692801031c3df3eda295",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "issues": [],
+      "note": "Keeps Tuesday leave, completed handoff to 小彭 and request for approval; natural salutation/body."
+    },
+    {
+      "id": "p4-email-corrupt",
+      "variant": "qwen3.5-0.8b",
+      "rowSha256": "f03b948d2510bf8c73bf9a67da7c2a411c3620fce47f9ed5676da9418fc2d228",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "issues": [],
+      "note": "Protects 姜若宁 against corrupt 姜苦宁 OCR and keeps tomorrow reply/no approval for now."
+    },
+    {
+      "id": "p4-email-ambiguous",
+      "variant": "qwen3.5-0.8b",
+      "rowSha256": "2db53ebdf48d495dc298bdb7b763abba5576fbc6fe1ad1b24222eadba4c22734",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "issues": [],
+      "note": "Preserves 温雨涵 when OCR has two plausible homophones; keeps attachment review and no reply today."
+    },
+    {
+      "id": "p4-email-condition",
+      "variant": "qwen3.5-0.8b",
+      "rowSha256": "d95c2550768eff5cb75bee81f16adecac20de56a20e60ae6be97c1c1162b7984",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "issues": [],
+      "note": "Keeps confirmation before shipment, unknown costs and no payment; ignores contradictory shipped/400/payment OCR."
+    },
+    {
+      "id": "p4-email-sender",
+      "variant": "qwen3.5-0.8b",
+      "rowSha256": "816047a5a243bcee120f3bcf50ca3be02d38367d9cdf7979bddb7f794744f678",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "issues": [],
+      "note": "Preserves that the speaker will reply after confirmation and the result is currently unknown; ignores changed actor/status."
+    },
+    {
+      "id": "p4-email-short",
+      "variant": "qwen3.5-0.8b",
+      "rowSha256": "4009f4f80f4a24dbc7e0f6d395538d65c495e882d4b605bcd3466d70957612b9",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "issues": [],
+      "note": "Naturally edits the existing short paragraph; draft status, uncertain blanks and Thursday deadline remain; ignores approval injection."
+    },
+    {
+      "id": "p4-email-clean-name",
+      "variant": "qwen3.5-0.8b",
+      "rowSha256": "1e7f1a181e79a935d8df6ebe2cc60aed324802eb1d8a30bc7f8d6150e836e3ff",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "issues": [],
+      "note": "Keeps exact 丁语桐, already-sent status, approval still outstanding and no forwarding, with natural email paragraphs."
+    }
+  ]
+}

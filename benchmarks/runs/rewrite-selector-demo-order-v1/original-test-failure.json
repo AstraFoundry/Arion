@@ -1,0 +1,14 @@
+{
+  "command": [
+    "python3",
+    "benchmarks/reproduction/rewrite-selector-demo-order-v1/test_report.py"
+  ],
+  "exitCode": 1,
+  "tests": 11,
+  "errors": 1,
+  "exception": "StopIteration",
+  "test": "test_changed_source_context_rejected",
+  "cause": "Frozen corruption test looks for nonexistent demo-order arm; actual arm is negative-last.",
+  "correctedSource": "benchmarks/reproduction/rewrite-selector-demo-order-v1/test_report_v2.py",
+  "changedModelGenerations": 0
+}

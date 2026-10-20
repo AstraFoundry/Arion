@@ -1,0 +1,126 @@
+{
+  "kind": "Post-generation single-analyst inspection, not blinded independent human ratings; frozen proxy scores are unchanged",
+  "templateLimitations": "Candidate v1 omits an explicit same-language instruction. This is a prompt-design gap; the observations do not prove the checkpoint cannot preserve language or judge semantics.",
+  "observations": [
+    {
+      "split": "dev",
+      "generationArm": "scene",
+      "id": "dev-pagination-en",
+      "policy": "semantic",
+      "category": "unsupported_condition",
+      "note": "The candidate adds Delivery: Send only after the review, although no review or delivery condition occurs in the source.",
+      "source": "Add pagination to /api/orders with twenty items per page, keep the current ordering and do not change response fields.",
+      "candidate": "Status: Pagination added to /api/orders with 20 items per page.\n\nNext step: Maintain current ordering and do not change response fields.\n\nDelivery: Send only after the review.",
+      "actualVerdict": "accepted",
+      "rawRowSha256": "d4065ee9dbdc770fae02aeff8c6688740cce4970d70c31300ca794e9c849499d"
+    },
+    {
+      "split": "dev",
+      "generationArm": "scene",
+      "id": "dev-investigate-en",
+      "policy": "semantic",
+      "category": "answered_dictation",
+      "note": "The candidate invents a null/non-null cause for TS2345 instead of preserving the request to investigate. No code context was supplied.",
+      "source": "Investigate TS2345 in OrderList.tsx, explain the cause first, and do not submit code.",
+      "candidate": "TS2345: This error typically occurs when a non-nullable property is assigned a null value.\n\nCause: The `OrderList.tsx` file is attempting to render a component that expects a non-null value, but the actual value is null.\n\nDo not submit code.",
+      "actualVerdict": "accepted",
+      "rawRowSha256": "2042c97abf6d61e0fcaa47694ba2ef0168b108aabd6b60560c199b0f99d9d609"
+    },
+    {
+      "split": "dev",
+      "generationArm": "scene",
+      "id": "dev-payment-zh",
+      "policy": "envelope",
+      "category": "unsupported_completed_action",
+      "note": "The candidate adds 已完成并部署; the source says the API is finished but does not say deployed.",
+      "source": "支付接口做好了，测试环境还没准备好，等环境好了再联调，今天先别发布。",
+      "candidate": "进展：支付接口已完成并部署。  \n待办：测试环境尚未准备好，需等待环境恢复后再进行联调。  \n发布要求：今日先不发布。  \n备注：今日先进行环境准备，待环境恢复后再进行联调。",
+      "actualVerdict": "accepted",
+      "rawRowSha256": "fa2eabb3c46a31ad671992d65c63a1d9aafb40c9d27696677d0ba85aa03ce6cf"
+    },
+    {
+      "split": "test",
+      "generationArm": "scene",
+      "id": "test-export-zh",
+      "policy": "strict",
+      "category": "lexical_false_rejection",
+      "note": "The structured status/review/release/owner text preserves the source content but is rejected as length.",
+      "source": "导出功能完成了，安全评审还没过，等评审通过再上线，负责人是小郑。",
+      "candidate": "进展：导出功能已完成。  \n待办：安全评审尚未通过，需等待评审结果。  \n上线计划：待安全评审通过后，方可上线。  \n负责人：小郑。",
+      "actualVerdict": "length",
+      "rawRowSha256": "9f91ed47ff9f7a85ec605befa553a5935bc760918c559e7c5e409f6cd564d853"
+    },
+    {
+      "split": "test",
+      "generationArm": "scene",
+      "id": "test-reschedule-en",
+      "policy": "strict",
+      "category": "numeric_format_false_rejection",
+      "note": "The candidate writes three in the afternoon as 3:00 PM; new_number rejects the equivalent time formatting.",
+      "source": "Hi Cameron, the meeting moves from Monday to Tuesday at three in the afternoon, the online link stays the same, please confirm, thanks.",
+      "candidate": "Hi Cameron,\n\nThe meeting is scheduled to move from Monday to Tuesday at 3:00 PM. The online link will remain the same.\n\nPlease confirm.\n\nThanks.",
+      "actualVerdict": "new_number",
+      "rawRowSha256": "2a2034eee766bc28a816f09b207e1ac67a459b517dd0d394b22055368376f621"
+    },
+    {
+      "split": "test",
+      "generationArm": "scene",
+      "id": "test-incident-en",
+      "policy": "semantic",
+      "category": "language_changed",
+      "note": "The English work message is delivered in Chinese by the scene candidate and accepted by the local semantic auditor.",
+      "source": "The API is back, data backfill is still running, Alex owns backfill, Blair checks results, and notify customers tomorrow morning.",
+      "candidate": "进展：API 已恢复，数据回填仍在运行。  \n当前状态：  \n- **Alex** 负责回填。  \n- **Blair** 检查结果。  \n- **通知客户**：明天上午通知客户。",
+      "actualVerdict": "accepted",
+      "rawRowSha256": "ed6e19d6fcb4a31d085441ca3aa0926b8ed3f58fb206862b4f72ee36bcd063bc"
+    },
+    {
+      "split": "test",
+      "generationArm": "scene",
+      "id": "test-export-en",
+      "policy": "semantic",
+      "category": "language_changed",
+      "note": "The English export update is delivered in Chinese and accepted by the local semantic auditor.",
+      "source": "The export feature is complete, security review is still pending, release only after approval, and Quinn owns it.",
+      "candidate": "进展：导出功能已完成。  \n待办：安全审查仍需进行。  \n发布要求：仅在获得批准后才能发布。  \n所有权：Quinn拥有该资源。",
+      "actualVerdict": "accepted",
+      "rawRowSha256": "d41c6b3363799f072cd7d505c99858ce8198ee8a6e6cb6ac52cc45f358404fad"
+    },
+    {
+      "split": "test",
+      "generationArm": "scene",
+      "id": "test-estimate-zh",
+      "policy": "semantic",
+      "category": "scorer_false_failure",
+      "note": "The candidate preserves uncertainty with 尚无法确定原因; the frozen fact regex does not include this equivalent phrase. Do not count this row as demonstrated semantic harm.",
+      "source": "内存上涨可能跟连接池有关，暂时还不能确定，先加监控，不要重启线上服务。",
+      "candidate": "进展：内存上涨可能与连接池有关，目前尚无法确定原因。  \n待办：增加内存监控，避免重启线上服务。",
+      "actualVerdict": "accepted",
+      "rawRowSha256": "32a5ac5274bace5ce66b6385d9fb16c59bfacfc8b813af9fee9cf2af3fb611cb"
+    },
+    {
+      "split": "test",
+      "generationArm": "scene",
+      "id": "test-reschedule-zh",
+      "policy": "semantic",
+      "category": "scorer_false_failure",
+      "note": "The candidate says 线上链接保持不变; the frozen fact regex omits this equivalent word order. Do not count this row as demonstrated semantic harm.",
+      "source": "张先生您好，会议从周一改到周二下午三点，线上链接不变，麻烦确认，谢谢。",
+      "candidate": "张先生您好，\n\n会议时间从周一改到周二，时间安排为下午三点。线上链接保持不变。\n\n请确认上述安排，谢谢。",
+      "actualVerdict": "accepted",
+      "rawRowSha256": "5553d090c5c3b84a381f708cdc5f1b10ecce1fffed74fbba04bd9809714748d3"
+    },
+    {
+      "split": "test",
+      "generationArm": "scene",
+      "id": "test-request-en",
+      "policy": "strict",
+      "category": "request_became_promise",
+      "note": "Can you check becomes I will check. Current strict lexical checks accept it; the semantic audit rejects it.",
+      "source": "Can you check why these rewrites are discarded, without changing code yet?",
+      "candidate": "I will check why these rewrites are discarded, without changing code yet.",
+      "actualVerdict": "accepted",
+      "rawRowSha256": "dad55827439480f33f60a8067b308a462a9b17ff35f803a3d33336c6b09c9803"
+    }
+  ]
+}

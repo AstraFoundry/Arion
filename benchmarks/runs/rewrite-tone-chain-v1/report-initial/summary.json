@@ -1,0 +1,83 @@
+{
+  "newGenerations": 538,
+  "sourceAttempts": 449,
+  "groups": {
+    "baseline/new-synthetic-tone-controls": {
+      "cases": 24,
+      "faithful": 24,
+      "unfaithful": 0,
+      "uncertain": 0,
+      "useful": 16,
+      "languagePreserved": 24,
+      "selectorCalls": 7,
+      "choiceConforms": 5,
+      "appliedEditCases": 3,
+      "supportedEditCases": 3,
+      "harmfulEditCases": 0,
+      "reviewedRepairOpportunities": 8,
+      "repairSucceeded": 2
+    },
+    "candidate/historical-synthetic-regression": {
+      "cases": 281,
+      "faithful": 281,
+      "unfaithful": 0,
+      "uncertain": 0,
+      "useful": 269,
+      "languagePreserved": 281,
+      "selectorCalls": 65,
+      "choiceConforms": 62,
+      "appliedEditCases": 51,
+      "supportedEditCases": 51,
+      "harmfulEditCases": 0,
+      "reviewedRepairOpportunities": null,
+      "repairSucceeded": null
+    },
+    "candidate/new-synthetic-tone-controls": {
+      "cases": 24,
+      "faithful": 23,
+      "unfaithful": 1,
+      "uncertain": 0,
+      "useful": 16,
+      "languagePreserved": 24,
+      "selectorCalls": 17,
+      "choiceConforms": 10,
+      "appliedEditCases": 5,
+      "supportedEditCases": 4,
+      "harmfulEditCases": 1,
+      "reviewedRepairOpportunities": 8,
+      "repairSucceeded": 3
+    },
+    "candidate/historical-natural-read-speech": {
+      "cases": 120,
+      "faithful": 119,
+      "unfaithful": 0,
+      "uncertain": 1,
+      "useful": 75,
+      "languagePreserved": 120,
+      "selectorCalls": 0,
+      "choiceConforms": 0,
+      "appliedEditCases": 0,
+      "supportedEditCases": 0,
+      "harmfulEditCases": 0,
+      "reviewedRepairOpportunities": null,
+      "repairSucceeded": null
+    }
+  },
+  "failedBodies": [
+    {
+      "arm": "candidate",
+      "id": "tone-control-14"
+    }
+  ],
+  "selection": {
+    "freezeSha256": "16a1979d9962452a6c13a008f9022d21d16b9b10b04ffe21affb5c3dcd451667",
+    "resultsSha256": "57a4a34a81e40d318efc7eb33bd51e083f2461ed4dcad144f52c8422163ad4ee",
+    "reviewSha256": "887f5b3e87ec40d9e01e8af8cfe4c6d58c209deaec7ca012a628b1cb7ffd97d1",
+    "qualified": false,
+    "selected": null,
+    "productionActivated": false,
+    "freshExecuted": false,
+    "reason": "Reject broad tone-insensitive producer: paired24 controls gain one required repair(2/8→3/8), but nursery cultivation is wrongly changed to software configuration(24→23 faithful,16→16 useful). Candidate history401 raw bodies match prior reviewed composite400 confirmed/1uncertain/344useful. Added historical 验受候选 still kept; cross-script gaps unchanged. Current full typed chain not native/independent/min16 acceptance."
+  },
+  "limits": "No cross-script hypotheses added here; Latin canonicalization gaps remain separately open. Text-derived readings are not audio evidence. No new ASR/OCR/native/concurrent/min16/independent/production/fresh24 or4B/olderQwen/Granite/Q8 inference."
+}

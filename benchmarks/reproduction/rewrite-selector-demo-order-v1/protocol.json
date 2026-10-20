@@ -1,0 +1,23 @@
+{
+  "purpose": "Isolate the order of existing ten demonstration pairs: original positive-ending prefix versus terminal three existing keep examples.",
+  "arms": [
+    "baseline",
+    "negative-last",
+    "balanced",
+    "negative-last-balanced"
+  ],
+  "plannedSources": 457,
+  "actualGoPreparations": 457,
+  "plannedSourceTreatments": 1828,
+  "expectedGenerations": 404,
+  "expectedChoicesPerArm": 101,
+  "expectedNoHypothesisSkips": 1424,
+  "maxTokens": 128,
+  "formatterGenerations": 0,
+  "changes": "Only whole demonstration-pair order changes by[0,1,2,3,7,8,9,4,5,6]. No added/removed/edited examples, no change to rules/finalinput/fullOCR/candidates/kind/status/schema/model/runtime/decoding/output budget.",
+  "gate": "All101 candidate cases in an augmented arm conform to unchanged rubric with no protocol failure before complete-source/fresh/native/independent/actual16GB expansion. Reducing harmful changes by missing required repairs does not qualify.",
+  "review": "Personally read every actual raw choice plus complete source/context/edited-source pairs for all failed or changed choices. Keep source fidelity separate from required-repair conformance; do not infer final-body style from choices.",
+  "limits": "Exposed development sources and repeated arms, not held-out/generalization/native/min16 evidence. Actual Go457 is reused within four arms. All no-hypothesis sources/cross-script coverage misses remain explicit. Zero newASR/OCR/final bodies; no semantic output rejection/source fallback or production change. No4B or olderQwen. Observed serial selector timing excludes startup/Go/formatter/native insertion/concurrentASR and is not an end-to-end SLO.",
+  "nativeBudgetPreflight": "Completed404 native apply-template and404 tokenize calls;0model generations, maximum1891prompt tokens plus unchanged128reserve fits4096. All202control token counts match prior actual usage.",
+  "additionalExamples": "None; existing seven positive and three negative examples remain exact. Ordering hypothesis only; recency causality not established."
+}

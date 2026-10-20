@@ -1,0 +1,19 @@
+{
+  "version": "bounded-edit-v2",
+  "sourceCases": 36,
+  "newModelGenerations": 72,
+  "intermediateSelections": 36,
+  "finalBodies": 36,
+  "model": "Qwen3.5-2B-Q4_K_M",
+  "architecture": "Research only. Full OCR/context to grammar-bounded source-spelling selector, then complete visible edited source to natural formatter without OCR, private spelling tokens or output rejection/source fallback. Fixed general phonetic producer, English2..6-word windows, same-letter canonicalization priority under explicit user policy. Chinese producer unchanged.",
+  "treatment": "Whole recipe versus archived v1; producer policy/coverage, balanced repair demonstrations and visible source formatting change together. Not single-factor causal attribution. Baseline originally28/36 faithful,27 scene-ready,6/11 final repairs;33/36 selection conform and8/11 intermediate repairs.",
+  "rubric": "user-letter-normalization-v1. read cash/readCash both permitted when OCR supports readCash; unsupported readCache forbidden. Same case/space rule for writeRight. Quoted text exact, source target/name/date/negation/condition/request preserved. Proper contextual repairs separately scored; source fidelity alone does not establish required repair.",
+  "gate": "All36 final bodies faithful; all11 necessary repairs; owner/email anchors retained; >=35 scene-ready; no truncation/unexpanded token. Personally inspect all72 native choices/bodies, including forced empty/ambiguous JSON which cannot prove semantic robustness. Fresh24 not generated before a source-bound decision satisfies this full gate.",
+  "budget": "Selection128+formatter256 output token caps, CPU4/GPU0,cacheoff,reasoningoff,ctx4096. Full4 scene runs; no new4B/olderQwen/Granite/Q8 inference.",
+  "limits": "36 exposed authored Chinese synthetic development regressions, not natural ASR, independent or held-out evidence. English/mixed producer tests are zero-inference coverage diagnostics. Actual AppleSilicon16GB/native lifecycle/offline/concurrent ASR stop-to-insertion and independent full-language/other-scenes review remain required. Production routing/validator unchanged.",
+  "baseline": {
+    "results.jsonl": "8caf800de9f7f0be85f79f09551ce2d943a2ccc44b7bdf786b6b6dd281bdfc89",
+    "review.json": "b6fd9e5bb94c64833182628e5f5b707133a628e3d39ec7a4485a8b0ddb0bf289",
+    "selection.json": "4cc1765b56deae99587421eeaf92ed755429e7d3429782c980343f84d2323783"
+  }
+}

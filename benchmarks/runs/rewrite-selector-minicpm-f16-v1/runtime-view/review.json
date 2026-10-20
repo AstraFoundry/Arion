@@ -1,0 +1,89 @@
+{
+  "resultsSha256": "3a49b290a7e0956b44f01d9dc843d00ee5e6685e27586ba5aea3f4d99917a9d5",
+  "reviews": [
+    {
+      "id": "99-cache-off-first",
+      "variant": "metal99-cache-off-first",
+      "rowSha256": "fb43b77bbe416d058a6e2ef8f32888eb7a0ea0c64eaafbf9347a19da35372e58",
+      "probeConforms": true,
+      "note": "Personally read all12 actual F16 probe responses against complete source/context. Supported load cash -> loadCache is repaired, unlike prior Q4. Valid JSON/stop/cache/template are runtime evidence only; no final body or release acceptance."
+    },
+    {
+      "id": "99-other-source",
+      "variant": "metal99-other-source",
+      "rowSha256": "60da0d72902b4a5dfe85d3009717f0646325e7474007fb61cd0bf7dc808e046a",
+      "probeConforms": false,
+      "note": "Personally read all12 actual F16 probe responses against complete source/context. Unsupported read cash -> readCache violates explicit cash/not-cache meaning, unchanged from Q4. Valid JSON/stop/cache/template are runtime evidence only; no final body or release acceptance."
+    },
+    {
+      "id": "99-cache-on-return",
+      "variant": "metal99-cache-on-return",
+      "rowSha256": "7d81ac4e00cba9cbf9165f3d9aa9feee25687cf06b38b4e15c67d73bff03b90e",
+      "probeConforms": true,
+      "note": "Personally read all12 actual F16 probe responses against complete source/context. Supported load cash -> loadCache is repaired, unlike prior Q4. Valid JSON/stop/cache/template are runtime evidence only; no final body or release acceptance."
+    },
+    {
+      "id": "99-cache-off-return",
+      "variant": "metal99-cache-off-return",
+      "rowSha256": "e0e630b70101c42c62ff997a6d2203e4ad8ee24fe1103abf51e1d71dcb25631b",
+      "probeConforms": true,
+      "note": "Personally read all12 actual F16 probe responses against complete source/context. Supported load cash -> loadCache is repaired, unlike prior Q4. Valid JSON/stop/cache/template are runtime evidence only; no final body or release acceptance."
+    },
+    {
+      "id": "99-free-positive",
+      "variant": "metal99-free-positive",
+      "rowSha256": "be9ad903387fec3dd513b62e0dd8bb5dc2d6433c466fc305f76a328f2ecc314f",
+      "probeConforms": true,
+      "note": "Personally read all12 actual F16 probe responses against complete source/context. Supported load cash -> loadCache is repaired, unlike prior Q4. Valid JSON/stop/cache/template are runtime evidence only; no final body or release acceptance."
+    },
+    {
+      "id": "99-free-negative",
+      "variant": "metal99-free-negative",
+      "rowSha256": "e2bfc3bb11eb049854c6d4924ec78923b184fef6153e9de0bc417f2bdd9aa23c",
+      "probeConforms": false,
+      "note": "Personally read all12 actual F16 probe responses against complete source/context. Unsupported read cash -> readCache violates explicit cash/not-cache meaning, unchanged from Q4. Error persists without schema. Valid JSON/stop/cache/template are runtime evidence only; no final body or release acceptance."
+    },
+    {
+      "id": "0-cache-off-first",
+      "variant": "cpu-layer0-cache-off-first",
+      "rowSha256": "c7c510c94442624ecc60b070d5fa2d6098c5300ae5fa601d4786103421c5d1d5",
+      "probeConforms": true,
+      "note": "Personally read all12 actual F16 probe responses against complete source/context. Supported load cash -> loadCache is repaired, unlike prior Q4. Valid JSON/stop/cache/template are runtime evidence only; no final body or release acceptance."
+    },
+    {
+      "id": "0-other-source",
+      "variant": "cpu-layer0-other-source",
+      "rowSha256": "8bc2bde7c01689b7594ed9b56e57c4dff4159136a51af444f0be7eb81edd2c4e",
+      "probeConforms": false,
+      "note": "Personally read all12 actual F16 probe responses against complete source/context. Unsupported read cash -> readCache violates explicit cash/not-cache meaning, unchanged from Q4. Valid JSON/stop/cache/template are runtime evidence only; no final body or release acceptance."
+    },
+    {
+      "id": "0-cache-on-return",
+      "variant": "cpu-layer0-cache-on-return",
+      "rowSha256": "49529cf5602c2fff00e83b4d2c045dd34f5ce49ad8589cfe986a7a39872afd56",
+      "probeConforms": true,
+      "note": "Personally read all12 actual F16 probe responses against complete source/context. Supported load cash -> loadCache is repaired, unlike prior Q4. Valid JSON/stop/cache/template are runtime evidence only; no final body or release acceptance."
+    },
+    {
+      "id": "0-cache-off-return",
+      "variant": "cpu-layer0-cache-off-return",
+      "rowSha256": "b3c1f65299d5d41130f17cd79ae3008c850ee87264486efcd0b93d1d4a21d080",
+      "probeConforms": true,
+      "note": "Personally read all12 actual F16 probe responses against complete source/context. Supported load cash -> loadCache is repaired, unlike prior Q4. Valid JSON/stop/cache/template are runtime evidence only; no final body or release acceptance."
+    },
+    {
+      "id": "0-free-positive",
+      "variant": "cpu-layer0-free-positive",
+      "rowSha256": "38121adfcb5c5da399879b71e32bdd4e4c3411b04d52c447667c87507dac12bc",
+      "probeConforms": true,
+      "note": "Personally read all12 actual F16 probe responses against complete source/context. Supported load cash -> loadCache is repaired, unlike prior Q4. Valid JSON/stop/cache/template are runtime evidence only; no final body or release acceptance."
+    },
+    {
+      "id": "0-free-negative",
+      "variant": "cpu-layer0-free-negative",
+      "rowSha256": "820d58c2e4c9d33e5333382d3dd69266f717f2a7803cb57ac3e55d251ff3fb8a",
+      "probeConforms": false,
+      "note": "Personally read all12 actual F16 probe responses against complete source/context. Unsupported read cash -> readCache violates explicit cash/not-cache meaning, unchanged from Q4. Error persists without schema. Valid JSON/stop/cache/template are runtime evidence only; no final body or release acceptance."
+    }
+  ]
+}

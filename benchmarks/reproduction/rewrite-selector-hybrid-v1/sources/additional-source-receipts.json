@@ -1,0 +1,17 @@
+{
+  "chat_template.jinja": {
+    "url": "https://huggingface.co/ibm-granite/granite-4.0-h-1b/resolve/d18cca4c121edb87d022116d281ce212c9136f57/chat_template.jinja",
+    "sha256": "9524df67b77a7b25a2dfee898f75b316a157eb9d855b51e32aeac79d7c8a83ce",
+    "bytes": 6418
+  },
+  "tokenizer_config.json": {
+    "url": "https://huggingface.co/ibm-granite/granite-4.0-h-1b/resolve/d18cca4c121edb87d022116d281ce212c9136f57/tokenizer_config.json",
+    "sha256": "a5ec5daab12ba090a90f3dd169c8f9c275557013a87b9c1258dc7cb497a35c86",
+    "bytes": 17659
+  },
+  "generation_config.json": {
+    "url": "https://huggingface.co/ibm-granite/granite-4.0-h-1b/resolve/d18cca4c121edb87d022116d281ce212c9136f57/generation_config.json",
+    "sha256": "7c04cb9d2ba771f7528fba5a7104999cdaf7566d02b5fbd58472829f62716177",
+    "bytes": 147
+  }
+}

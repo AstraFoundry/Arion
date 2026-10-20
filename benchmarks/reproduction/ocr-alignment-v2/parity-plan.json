@@ -1,0 +1,16 @@
+{
+  "kind": "post-experiment-order-parity-diagnostic",
+  "scope": "Cold-first versus forward/reverse same-template requests; not a prompt-quality test or a production fix.",
+  "caseIds": [
+    "negative-question",
+    "unrelated-fact",
+    "homophone-wrong-no-context",
+    "homophone-wrong-relevant"
+  ],
+  "arms": [
+    "cold",
+    "forward",
+    "reverse"
+  ],
+  "runnerSha256": "3f02862520b8bf1d24ee206453616a547d420d5dfebe0153e9eed4e8093d0ac6"
+}

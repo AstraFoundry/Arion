@@ -1,0 +1,14 @@
+{
+  "status": "unrated",
+  "minimumIndependentRaters": 3,
+  "dimensions": [
+    "meaning 1-5",
+    "scene appropriateness 1-5",
+    "fluency 1-5",
+    "unsupported facts yes/no",
+    "lost requirements yes/no",
+    "language changed yes/no",
+    "answered or executed dictation yes/no"
+  ],
+  "note": "Do not share mapping-private.json with raters. These synthetic tasks do not replace a reviewed natural-speech corpus."
+}

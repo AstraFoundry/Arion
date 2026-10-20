@@ -1,0 +1,28 @@
+from pathlib import Path
+R=Path.cwd();p=R/'benchmarks/reproduction/rewrite-release/report.py';s=p.read_text();marker='\n]\nGATES=[';assert s.count(marker)==1
+s=s.replace(marker,"\n dict(id='selector-source-last-v1',title='原文置于上下文末尾的字段顺序对照',direction='四组128token同预算：原规则、原文末尾、成对展示、成对展示加原文末尾。只移动十个示例和当前输入的顶层source字段，保留完整OCR、系统提示和示例答案。',finding='符合92／93／94／88（各101），有害3／5／4／12；原文末尾减少漏纠，却增加错误对象替换，配合成对展示退化更明显。两版均不采用。',scope='404次实际选择全部review；457次实际Go清理四组复用，1828个处理结果含1424无候选跳过。零新增正文／ASR／Vision，无语义过滤或原文回退。',runs=[('rewrite-selector-source-last-v1/run','staged')]),"+marker)
+s=s.replace('METRICS={',"METRICS={\n 'selector-source-last-v1':'202个当前对照的完整请求／候选与旧实际请求相同，原始选择和改后源文复现202/202。202个字段顺序对照恢复source原位置后请求完全一致；17个选择变化逐项review。原文末尾必需纠正44/47、成对加末尾46/47，但有害替换5／12例，均不通过。',")
+s=s.replace('    referent_summary=',"    source_last_summary=load_report('rewrite-selector-source-last-v1','selector_source_last').collect()[0]\n    referent_summary=",1)
+s=s.replace("['selector-screen-v1','selector-model-cpu-v1','selector-referent-v1']:","['selector-screen-v1','selector-model-cpu-v1','selector-referent-v1','selector-source-last-v1']:")
+needle="                if definition['id']=='selector-model-cpu-v1':"
+s=s.replace(needle,"""                if definition['id']=='selector-source-last-v1':
+                    cases[-1]['sourceFieldOrder']=[list(json.loads(message['content'])) for message in row['request']['messages'] if message['role']=='user']
+"""+needle,1)
+s=s.replace('return dict(selectorReferent=referent_summary', 'return dict(selectorSourceLast=source_last_summary,selectorReferent=referent_summary')
+needle="    failure_root=ROOT/'benchmarks/runs/rewrite-small-cache-parity-v1'"
+s=s.replace(needle,"""    for path in [ROOT/'benchmarks/reproduction/rewrite-selector-source-last-v1'/name for name in ['freeze.json','protocol.json','layout.json','pipeline.py']]+[ROOT/'benchmarks/runs/rewrite-selector-source-last-v1/run'/name for name in ['selection.json','case-outcomes.jsonl','control-parity.json','input-order-comparison.json']]:
+        sources.append(dict(path=str(path.relative_to(ROOT)),sha256=digest(path)))
+"""+needle,1);p.write_text(s)
+p=R/'benchmarks/reproduction/rewrite-release/template.html';s=p.read_text();needle='selectorData:item.selectorData';assert needle in s;s=s.replace(needle,'sourceFieldOrder:item.sourceFieldOrder,selectorData:item.selectorData');p.write_text(s)
+p=R/'benchmarks/reproduction/rewrite-release/test_report.py';s=p.read_text().replace('7543','7947').replace("len(data['rounds']),52","len(data['rounds']),53").replace('6059','6463').replace('5932','6336').replace("stage')=='selection' for c in data['cases']),1637","stage')=='selection' for c in data['cases']),2041")
+needle="        self.assertEqual(data['selectorReferent']['newGenerations'],404)"
+s=s.replace(needle,"""        self.assertEqual(data['selectorSourceLast']['newGenerations'],404)
+        self.assertEqual(data['selectorSourceLast']['controlRawParity'],202)
+        self.assertEqual(data['selectorSourceLast']['changedChoices'],17)
+        self.assertEqual(data['selectorSourceLast']['groups']['source-last-balanced']['harmful'],12)
+        ordered=[c for c in data['cases'] if c['round']=='selector-source-last-v1']
+        self.assertEqual(len(ordered),404)
+        self.assertTrue(all(c['delivery'] is None and c.get('descriptionReview') is None for c in ordered))
+        self.assertEqual(sum(all(fields[-1]=='source' for fields in c['sourceFieldOrder']) for c in ordered),202)
+"""+needle,1);p.write_text(s)
+print('Integrated source-last serialization evidence as round53')

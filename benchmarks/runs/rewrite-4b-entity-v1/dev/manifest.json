@@ -1,0 +1,550 @@
+{
+  "status": "complete",
+  "phase": "dev",
+  "freezeSha256": "a73b65c7ead3ecaab3744f180047d5aab46f2247a5d5340feecb382654e7b497",
+  "selectionSha256": null,
+  "provenance": {
+    "modelFiles": {
+      "chat_template.jinja": "a55ee1b1660128b7098723e0abcd92caa0788061051c62d51cbe87d9cf1974d8",
+      "config.json": "0bfeedcfa808cb8404e75d32cef3cdb6c566631acdb7c0edbe9e6945763c6989",
+      "genai_config.json": "dcb9aa8dd93b1acc17a2df193811c200ab540932c20a98ce4d4d23ce88a69b7d",
+      "model.onnx": "b4547cf9327bd532cb81703cf013f958117ba5a3e5a81c7c79a33aba534ff337",
+      "model.onnx.data": "d6003acd70841b99a44ce4c21d13dc42244e3ec3b7c12d70919f9b55440bbc45",
+      "tokenizer.json": "979d160e081df25a1bf7f4e2e8f4c441b5dfdc9a8e84aec9f32e80445e1b59b8",
+      "tokenizer_config.json": "bfd13b57b2e0c2cb582f311c0895f077d16a868c0dc61e4dbbba544a835341d6"
+    },
+    "binaries": {
+      "/Applications/Arion.app/Contents/Resources/llm/arion-llm": "fd4f308bdd1e5e8a17d5e168b2a8fcf0e780de1b7d824c64e2a050129ee1b702",
+      "/Applications/Arion.app/Contents/Resources/llm/libonnxruntime-genai.dylib": "7cefe85ab3b96cf2f82a1eff232fe7d7157eac83ab08f0beaad676848aa69559",
+      "/Applications/Arion.app/Contents/Resources/llm/libonnxruntime.dylib": "2239177b549f0a211a1da92892dbcc8377bfecfa98707f5456468fffcc2d1e02",
+      "/Users/steven/code/Arion/.workspace/scene-rewrite-alignment-v1/build/worker": "71560ff509722cc0f5bee2eac0a63ffd45039c48801eb8cf90ff93d9b7b56e4f",
+      "/Users/steven/code/Arion/.workspace/scene-rewrite-alignment-v1/build/validate": "444caf3bcd3267f62323a118592ca50817b56f58a746b674989eddaccea61388"
+    },
+    "build": {
+      "apps/desktop/cmd/arion-llm/main.go": "279f39b92a65c71ad112ae0348edc11bfb5cfbf4076f6f7b9bd8d4aa4b5c41f8",
+      "apps/desktop/infrastructure/llm/prompt/prompt.go": "e7c8701f00d514276972766a9c036d15b05a480612b397a1c2a8b05e4674b48a",
+      "apps/desktop/infrastructure/llm/engine/engine.go": "efcb5f3a16ce6b00001a694e5669250665f50a980c29135c6327245720135003",
+      ".workspace/scene-rewrite-alignment-v1/build/worker.go": "cc8af3641ad2f371938e645c9669a74a0c5aac1a88c1bc346df9ac7c23cb8909",
+      ".workspace/scene-rewrite-alignment-v1/build/prompt.go": "9695a9f68edaa955678bd2b1ef74a12201001076acfffed4dae67abbd2f5a171",
+      ".workspace/scene-rewrite-alignment-v1/build/engine.go": "d28c568088c41ec828607a2707d8834ad18ae2a557a5eb3389360b3d24d048e4",
+      ".workspace/scene-rewrite-alignment-v1/build/worker": "71560ff509722cc0f5bee2eac0a63ffd45039c48801eb8cf90ff93d9b7b56e4f",
+      ".workspace/scene-rewrite-alignment-v1/build/validate": "444caf3bcd3267f62323a118592ca50817b56f58a746b674989eddaccea61388",
+      "benchmarks/reproduction/scene-rewrite-alignment-v1/build.py": "81e0178024fd13968c0e45230389229d68d983e19c595be9fefc555f8a21bea7"
+    },
+    "freezeSha256": "9c787f9e553a8e202fe26e36e906083a807ff1111b824dda29fd118ed2efa161",
+    "gitHead": "4356914796f484064ffcd562846b7dcd91a1350b",
+    "gitStatus": " M Makefile\n M apps/desktop/bootstrap/actions.go\n M apps/desktop/bootstrap/actions_ime_test.go\n M apps/desktop/bootstrap/app.go\n M apps/desktop/bootstrap/guide.go\n M apps/desktop/bootstrap/guide_test.go\n M apps/desktop/bootstrap/platform.go\n M apps/desktop/bootstrap/platform_darwin.go\n M apps/desktop/e2e/context_darwin_test.go\n M apps/desktop/e2e/fixtures/editor/main.m\n M apps/desktop/e2e/fullscreen_darwin_test.go\n M apps/desktop/e2e/learning_darwin_test.go\n M apps/desktop/e2e/site_darwin_test.go\n M apps/desktop/ime/macos/candidate_panel.h\n M apps/desktop/ime/macos/candidate_panel.m\n M apps/desktop/ime/macos/composition.h\n M apps/desktop/ime/macos/composition.m\n M apps/desktop/ime/macos/keyboard.h\n M apps/desktop/ime/macos/main.m\n M apps/desktop/ime/macos/tests/composition_test.m\n M apps/desktop/ime/macos/tests/typing_test.m\n M apps/desktop/ime/macos/typing.h\n M apps/desktop/ime/macos/typing.m\n M apps/desktop/infrastructure/diagnostics/entry.go\n M apps/desktop/infrastructure/macos/ime.go\n M apps/desktop/infrastructure/macos/ime_install_darwin_test.go\n M apps/desktop/infrastructure/macos/macos.go\n M apps/desktop/infrastructure/macos/native.h\n M apps/desktop/infrastructure/macos/native.m\n M apps/desktop/ui/app/app.go\n M apps/desktop/ui/app/app_test.go\n M apps/desktop/ui/app/polish_test.go\n M apps/desktop/ui/entities/dictation/dictation.go\n M apps/desktop/ui/entities/onboarding/onboarding.go\n M apps/desktop/ui/features/keyboard/keyboard.go\n M apps/desktop/ui/features/permissions/guide.go\n M apps/desktop/ui/pages/guide/guide.go\n M apps/desktop/ui/pages/onboarding/onboarding.go\n M apps/desktop/ui/pages/overlay/overlay.go\n M apps/desktop/ui/pages/settings/settings.go\n M apps/desktop/ui/shared/copy/copy.go\n M apps/desktop/ui/shared/copy/locales/en.json\n M apps/desktop/ui/shared/copy/locales/zh-CN.json\n M apps/desktop/ui/shared/runtime/runtime.go\n M apps/desktop/ui/widgets/capsule/capsule.go\n M benchmarks/results/imk-context-v1/README.md\n M benchmarks/runs/imk-context-v1/README.md\n M benchmarks/runs/imk-context-v1/archive.json\n M docs/decisions/003-insertion-routes.md\n M docs/decisions/006-macos-input-method-host.md\n M docs/decisions/017-offline-pinyin-keyboard.md\n M docs/frontend/README.md\n M docs/operations/local-dev.md\n M docs/operations/release-status.md\n M docs/project/architecture.md\n M docs/quality/e2e.md\n M docs/quality/validation.md\n M docs/research/README.md\n M docs/research/chatterfly-candidate-ui.md\n M docs/research/competitor-disfluency.md\n M docs/research/evidence/README.md\n M docs/research/input-source-onboarding.md\n M docs/research/rewrite-reliability.md\n M package.json\n M packages/core/application/dictation.go\n M packages/core/application/dictation_test.go\n M packages/core/application/preferences.go\n M packages/core/domain/errors.go\n M scripts/run-native-e2e.mjs\n M scripts/test.mjs\n M specs/001-desktop-input.md\n M specs/004-contracts.md\n M specs/007-ime-ranking.md\n M tools/evaluation/README.md\n?? .impeccable.md\n?? apps/desktop/e2e/paste_darwin_test.go\n?? apps/desktop/infrastructure/macos/insertion_darwin_test.go\n?? apps/desktop/infrastructure/macos/paste.go\n?? apps/desktop/infrastructure/macos/paste.m\n?? apps/desktop/infrastructure/macos/paste_test.go\n?? apps/desktop/infrastructure/macos/testdata/\n?? apps/desktop/ui/entities/dictation/paste_test.go\n?? apps/desktop/ui/entities/dictation/typewriter.go\n?? apps/desktop/ui/entities/dictation/typewriter_test.go\n?? apps/desktop/ui/entities/onboarding/input_method_test.go\n?? apps/desktop/ui/features/keyboard/guide.go\n?? apps/desktop/ui/shared/kit/settings_guide.go\n?? benchmarks/corpora/entity-ocr-v1/\n?? benchmarks/reproduction/context-repair-v1/\n?? benchmarks/reproduction/ocr-alignment-v2/\n?? benchmarks/reproduction/rewrite-4b-entity-v1/\n?? benchmarks/reproduction/rewrite-4b-packaging-v1/\n?? benchmarks/reproduction/rewrite-entity-evidence-v1/\n?? benchmarks/reproduction/rewrite-model-screen-v1/\n?? benchmarks/reproduction/rewrite-no-validator-v1/\n?? benchmarks/reproduction/rewrite-packaging-v1/\n?? benchmarks/reproduction/rewrite-prompt-isolation-v1/\n?? benchmarks/reproduction/rewrite-rejection-v1/\n?? benchmarks/reproduction/rewrite-release/\n?? benchmarks/reproduction/rewrite-retrospective-v1/\n?? benchmarks/reproduction/rewrite-task-wrapper-v1/\n?? benchmarks/reproduction/rewrite-validator-comparison-v1/\n?? benchmarks/reproduction/scene-rewrite-alignment-v1/\n?? benchmarks/reproduction/scene-rewrite-audit-v1/\n?? benchmarks/reproduction/scene-rewrite-prompt-v2/\n?? benchmarks/reproduction/scene-structure-v3/\n?? benchmarks/reproduction/scene_report.py\n?? benchmarks/results/context-repair-v1/\n?? benchmarks/results/ocr-alignment-v2/\n?? benchmarks/results/rewrite-entity-evidence-v1/\n?? benchmarks/results/rewrite-no-validator-v1/\n?? benchmarks/results/rewrite-packaging-v1/\n?? benchmarks/results/rewrite-release/\n?? benchmarks/results/rewrite-task-wrapper-v1/\n?? benchmarks/results/scene-rewrite-alignment-v1/\n?? benchmarks/results/scene-rewrite-prompt-v2/\n?? benchmarks/runs/context-repair-v1/\n?? benchmarks/runs/imk-context-v1/run-5/\n?? benchmarks/runs/ocr-alignment-v2/\n?? benchmarks/runs/rewrite-entity-evidence-v1/\n?? benchmarks/runs/rewrite-model-screen-v1/\n?? benchmarks/runs/rewrite-no-validator-v1/\n?? benchmarks/runs/rewrite-packaging-v1/\n?? benchmarks/runs/rewrite-prompt-isolation-v1/\n?? benchmarks/runs/rewrite-rejection-v1/\n?? benchmarks/runs/rewrite-retrospective-v1/\n?? benchmarks/runs/rewrite-task-wrapper-v1/\n?? benchmarks/runs/rewrite-validator-comparison-v1/\n?? benchmarks/runs/scene-rewrite-alignment-v1/\n?? benchmarks/runs/scene-rewrite-audit-v1/\n?? benchmarks/runs/scene-rewrite-prompt-v2/\n?? benchmarks/runs/scene-structure-v3/\n?? docs/research/competitor-text-insertion.md\n?? docs/research/evidence/chatterfly-registration.json\n?? docs/research/evidence/competitor-text-insertion.json\n?? docs/research/evidence/keyboard-voice-lexicon.json\n?? docs/research/evidence/rewrite-validator-comparison.json\n?? docs/research/evidence/shift-language-switch.json\n?? docs/research/keyboard-voice-lexicon-plan.md\n?? docs/research/keyboard-voice-lexicon.md\n?? docs/research/scene-rewrite-alignment.md\n?? docs/research/shift-language-switch.md\n?? docs/research/voice-typewriter.md\n?? scripts/lib/reset-desktop-system.mjs\n?? scripts/lib/reset-desktop.mjs\n?? scripts/lib/reset-desktop.test.mjs\n?? scripts/native/\n?? scripts/ocr-alignment-command.mjs\n?? scripts/reset-desktop.mjs\n?? scripts/rewrite-evidence-command.mjs\n?? scripts/rewrite-no-validator-command.mjs\n?? scripts/rewrite-study-command.mjs\n?? scripts/scene-context-command.mjs\n?? scripts/scene-rewrite-alignment-command.mjs\n?? scripts/scene-rewrite-prompt-command.mjs\n",
+    "hardware": {
+      "cpu": "Apple M4",
+      "ram": "34359738368",
+      "os": "ProductName:\t\tmacOS\nProductVersion:\t\t26.6.2\nBuildVersion:\t\t25G83",
+      "power": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=34668643)\t100%; charged; 0:00 remaining present: true"
+    },
+    "productionReference": {
+      "id": "qwen3-1.7b-int4-cpu",
+      "name": "Qwen3 1.7B (INT4, CPU)",
+      "runtime": {
+        "engine": "onnxruntime-genai",
+        "version": "0.17.0"
+      },
+      "repository": "onnx-community/Qwen3-1.7B-ONNX",
+      "revision": "b85539623180ae64303f37373d942cb0595ca44d",
+      "sourceRepository": "Qwen/Qwen3-1.7B@70d244cc86ccca08cf5af4e1e306ecf908b1ad5e",
+      "modelCard": "https://huggingface.co/Qwen/Qwen3-1.7B",
+      "license": {
+        "model": "Apache-2.0 (Qwen3-1.7B)",
+        "runtime": "MIT (onnxruntime, onnxruntime-genai)",
+        "reference": "https://huggingface.co/Qwen/Qwen3-1.7B/blob/main/LICENSE",
+        "status": "user-initiated download only; community ONNX export, source/export parity not established"
+      },
+      "platforms": [
+        "darwin-arm64"
+      ],
+      "languages": [
+        "zh",
+        "en",
+        "mixed"
+      ],
+      "files": {
+        "chat_template.jinja": {
+          "url": "https://huggingface.co/onnx-community/Qwen3-1.7B-ONNX/resolve/b85539623180ae64303f37373d942cb0595ca44d/onnxruntime/cpu_and_mobile/cpu-int4-kld-block-128/chat_template.jinja",
+          "sha256": "a55ee1b1660128b7098723e0abcd92caa0788061051c62d51cbe87d9cf1974d8",
+          "sizeBytes": 4168
+        },
+        "config.json": {
+          "url": "https://huggingface.co/onnx-community/Qwen3-1.7B-ONNX/resolve/b85539623180ae64303f37373d942cb0595ca44d/onnxruntime/cpu_and_mobile/cpu-int4-kld-block-128/config.json",
+          "sha256": "14c4e163fc54e5c7301a7f26054386ac77734401355fecd530ce4a98233f070c",
+          "sizeBytes": 8697
+        },
+        "genai_config.json": {
+          "url": "https://huggingface.co/onnx-community/Qwen3-1.7B-ONNX/resolve/b85539623180ae64303f37373d942cb0595ca44d/onnxruntime/cpu_and_mobile/cpu-int4-kld-block-128/genai_config.json",
+          "sha256": "d328d2ad4cbd7915eee3ad047eabfc562d8daf7307b202c1e6aaef4e8a236ba2",
+          "sizeBytes": 1520
+        },
+        "model.onnx": {
+          "url": "https://huggingface.co/onnx-community/Qwen3-1.7B-ONNX/resolve/b85539623180ae64303f37373d942cb0595ca44d/onnxruntime/cpu_and_mobile/cpu-int4-kld-block-128/model.onnx",
+          "sha256": "9fddc5a0a7f9c51132c376db8fe44774b17a8e42d721c4d289ade16af87da0bd",
+          "sizeBytes": 1408943689
+        },
+        "tokenizer.json": {
+          "url": "https://huggingface.co/onnx-community/Qwen3-1.7B-ONNX/resolve/b85539623180ae64303f37373d942cb0595ca44d/onnxruntime/cpu_and_mobile/cpu-int4-kld-block-128/tokenizer.json",
+          "sha256": "979d160e081df25a1bf7f4e2e8f4c441b5dfdc9a8e84aec9f32e80445e1b59b8",
+          "sizeBytes": 11422648
+        },
+        "tokenizer_config.json": {
+          "url": "https://huggingface.co/onnx-community/Qwen3-1.7B-ONNX/resolve/b85539623180ae64303f37373d942cb0595ca44d/onnxruntime/cpu_and_mobile/cpu-int4-kld-block-128/tokenizer_config.json",
+          "sha256": "bfd13b57b2e0c2cb582f311c0895f077d16a868c0dc61e4dbbba544a835341d6",
+          "sizeBytes": 663
+        }
+      },
+      "prompt": "live-v2",
+      "quantization": "int4 (cpu-int4-kld-block-128)",
+      "conversion": "Qwen3-1.7B exported for ONNX Runtime GenAI CPU by onnx-community; INT4 KLD block-128 quantization",
+      "evaluations": [
+        {
+          "runId": "live-rewrite-v1/audio-heldout-xfinal-1.7b",
+          "report": "benchmarks/results/live-rewrite-v1/README.md",
+          "hardware": "darwin-arm64 Apple M4",
+          "split": "heldout",
+          "cases": 27,
+          "sourcePass": 12,
+          "finalPass": 25,
+          "worsened": 0,
+          "stopToFinalP50Ms": 500,
+          "stopToFinalP95Ms": 1247
+        }
+      ]
+    },
+    "model": {
+      "id": "qwen3-4b-prior-export",
+      "path": "/Users/steven/code/Arion/.workspace/ablation-models/qwen3-4b",
+      "historicalManifestPath": "benchmarks/runs/qwen-diagnostics/qwen4b-text-v1/run.json",
+      "historicalManifestSha256": "d566b3af3b0a551e763bac44d6b534fbb19b4637c398ca77563192111194025d",
+      "artifacts": [
+        {
+          "path": "/Users/steven/code/Arion/.workspace/ablation-models/qwen3-4b/chat_template.jinja",
+          "sha256": "a55ee1b1660128b7098723e0abcd92caa0788061051c62d51cbe87d9cf1974d8",
+          "sizeBytes": 4168,
+          "source": "https://huggingface.co/onnx-community/Qwen3-4B-ONNX/resolve/5cbfbcacd84ed9e54cea017a4cbddb67cc45337f/onnxruntime/cpu_and_mobile/cpu-int4-kld-block-128/chat_template.jinja",
+          "modelId": "qwen3-4b",
+          "license": "Apache-2.0",
+          "repository": "onnx-community/Qwen3-4B-ONNX",
+          "revision": "5cbfbcacd84ed9e54cea017a4cbddb67cc45337f"
+        },
+        {
+          "path": "/Users/steven/code/Arion/.workspace/ablation-models/qwen3-4b/config.json",
+          "sha256": "0bfeedcfa808cb8404e75d32cef3cdb6c566631acdb7c0edbe9e6945763c6989",
+          "sizeBytes": 9567,
+          "source": "https://huggingface.co/onnx-community/Qwen3-4B-ONNX/resolve/5cbfbcacd84ed9e54cea017a4cbddb67cc45337f/onnxruntime/cpu_and_mobile/cpu-int4-kld-block-128/config.json",
+          "modelId": "qwen3-4b",
+          "license": "Apache-2.0",
+          "repository": "onnx-community/Qwen3-4B-ONNX",
+          "revision": "5cbfbcacd84ed9e54cea017a4cbddb67cc45337f"
+        },
+        {
+          "path": "/Users/steven/code/Arion/.workspace/ablation-models/qwen3-4b/genai_config.json",
+          "sha256": "dcb9aa8dd93b1acc17a2df193811c200ab540932c20a98ce4d4d23ce88a69b7d",
+          "sizeBytes": 1520,
+          "source": "https://huggingface.co/onnx-community/Qwen3-4B-ONNX/resolve/5cbfbcacd84ed9e54cea017a4cbddb67cc45337f/onnxruntime/cpu_and_mobile/cpu-int4-kld-block-128/genai_config.json",
+          "modelId": "qwen3-4b",
+          "license": "Apache-2.0",
+          "repository": "onnx-community/Qwen3-4B-ONNX",
+          "revision": "5cbfbcacd84ed9e54cea017a4cbddb67cc45337f"
+        },
+        {
+          "path": "/Users/steven/code/Arion/.workspace/ablation-models/qwen3-4b/model.onnx",
+          "sha256": "b4547cf9327bd532cb81703cf013f958117ba5a3e5a81c7c79a33aba534ff337",
+          "sizeBytes": 519634,
+          "source": "https://huggingface.co/onnx-community/Qwen3-4B-ONNX/resolve/5cbfbcacd84ed9e54cea017a4cbddb67cc45337f/onnxruntime/cpu_and_mobile/cpu-int4-kld-block-128/model.onnx",
+          "modelId": "qwen3-4b",
+          "license": "Apache-2.0",
+          "repository": "onnx-community/Qwen3-4B-ONNX",
+          "revision": "5cbfbcacd84ed9e54cea017a4cbddb67cc45337f"
+        },
+        {
+          "path": "/Users/steven/code/Arion/.workspace/ablation-models/qwen3-4b/model.onnx.data",
+          "sha256": "d6003acd70841b99a44ce4c21d13dc42244e3ec3b7c12d70919f9b55440bbc45",
+          "sizeBytes": 2885434880,
+          "source": "https://huggingface.co/onnx-community/Qwen3-4B-ONNX/resolve/5cbfbcacd84ed9e54cea017a4cbddb67cc45337f/onnxruntime/cpu_and_mobile/cpu-int4-kld-block-128/model.onnx.data",
+          "modelId": "qwen3-4b",
+          "license": "Apache-2.0",
+          "repository": "onnx-community/Qwen3-4B-ONNX",
+          "revision": "5cbfbcacd84ed9e54cea017a4cbddb67cc45337f"
+        },
+        {
+          "path": "/Users/steven/code/Arion/.workspace/ablation-models/qwen3-4b/tokenizer.json",
+          "sha256": "979d160e081df25a1bf7f4e2e8f4c441b5dfdc9a8e84aec9f32e80445e1b59b8",
+          "sizeBytes": 11422648,
+          "source": "https://huggingface.co/onnx-community/Qwen3-4B-ONNX/resolve/5cbfbcacd84ed9e54cea017a4cbddb67cc45337f/onnxruntime/cpu_and_mobile/cpu-int4-kld-block-128/tokenizer.json",
+          "modelId": "qwen3-4b",
+          "license": "Apache-2.0",
+          "repository": "onnx-community/Qwen3-4B-ONNX",
+          "revision": "5cbfbcacd84ed9e54cea017a4cbddb67cc45337f"
+        },
+        {
+          "path": "/Users/steven/code/Arion/.workspace/ablation-models/qwen3-4b/tokenizer_config.json",
+          "sha256": "bfd13b57b2e0c2cb582f311c0895f077d16a868c0dc61e4dbbba544a835341d6",
+          "sizeBytes": 663,
+          "source": "https://huggingface.co/onnx-community/Qwen3-4B-ONNX/resolve/5cbfbcacd84ed9e54cea017a4cbddb67cc45337f/onnxruntime/cpu_and_mobile/cpu-int4-kld-block-128/tokenizer_config.json",
+          "modelId": "qwen3-4b",
+          "license": "Apache-2.0",
+          "repository": "onnx-community/Qwen3-4B-ONNX",
+          "revision": "5cbfbcacd84ed9e54cea017a4cbddb67cc45337f"
+        }
+      ],
+      "quantization": {
+        "defaultBits": 4,
+        "groupSize": 128,
+        "overrides": {
+          "lm_head": {
+            "bits": 8
+          },
+          "model.embed_tokens": {
+            "bits": 8
+          },
+          "model.layers.0.mlp.down_proj": {
+            "bits": 8
+          },
+          "model.layers.0.self_attn.v_proj": {
+            "bits": 8
+          },
+          "model.layers.1.mlp.down_proj": {
+            "bits": 8
+          },
+          "model.layers.1.self_attn.v_proj": {
+            "bits": 8
+          },
+          "model.layers.10.mlp.up_proj": {
+            "bits": 8
+          },
+          "model.layers.10.self_attn.k_proj": {
+            "bits": 8
+          },
+          "model.layers.11.mlp.down_proj": {
+            "bits": 8
+          },
+          "model.layers.11.self_attn.k_proj": {
+            "bits": 8
+          },
+          "model.layers.11.self_attn.v_proj": {
+            "bits": 8
+          },
+          "model.layers.12.self_attn.k_proj": {
+            "bits": 8
+          },
+          "model.layers.12.self_attn.o_proj": {
+            "bits": 8
+          },
+          "model.layers.12.self_attn.v_proj": {
+            "bits": 8
+          },
+          "model.layers.13.mlp.down_proj": {
+            "bits": 8
+          },
+          "model.layers.13.self_attn.k_proj": {
+            "bits": 8
+          },
+          "model.layers.13.self_attn.q_proj": {
+            "bits": 8
+          },
+          "model.layers.13.self_attn.v_proj": {
+            "bits": 8
+          },
+          "model.layers.14.self_attn.k_proj": {
+            "bits": 8
+          },
+          "model.layers.14.self_attn.o_proj": {
+            "bits": 8
+          },
+          "model.layers.14.self_attn.v_proj": {
+            "bits": 8
+          },
+          "model.layers.15.mlp.up_proj": {
+            "bits": 8
+          },
+          "model.layers.15.self_attn.k_proj": {
+            "bits": 8
+          },
+          "model.layers.15.self_attn.q_proj": {
+            "bits": 8
+          },
+          "model.layers.15.self_attn.v_proj": {
+            "bits": 8
+          },
+          "model.layers.16.mlp.down_proj": {
+            "bits": 8
+          },
+          "model.layers.16.self_attn.k_proj": {
+            "bits": 8
+          },
+          "model.layers.16.self_attn.o_proj": {
+            "bits": 8
+          },
+          "model.layers.16.self_attn.v_proj": {
+            "bits": 8
+          },
+          "model.layers.17.self_attn.k_proj": {
+            "bits": 8
+          },
+          "model.layers.17.self_attn.o_proj": {
+            "bits": 8
+          },
+          "model.layers.17.self_attn.v_proj": {
+            "bits": 8
+          },
+          "model.layers.18.self_attn.k_proj": {
+            "bits": 8
+          },
+          "model.layers.18.self_attn.v_proj": {
+            "bits": 8
+          },
+          "model.layers.19.self_attn.k_proj": {
+            "bits": 8
+          },
+          "model.layers.19.self_attn.o_proj": {
+            "bits": 8
+          },
+          "model.layers.19.self_attn.q_proj": {
+            "bits": 8
+          },
+          "model.layers.19.self_attn.v_proj": {
+            "bits": 8
+          },
+          "model.layers.2.mlp.gate_proj": {
+            "bits": 8
+          },
+          "model.layers.2.mlp.up_proj": {
+            "bits": 8
+          },
+          "model.layers.2.self_attn.v_proj": {
+            "bits": 8
+          },
+          "model.layers.20.self_attn.k_proj": {
+            "bits": 8
+          },
+          "model.layers.20.self_attn.o_proj": {
+            "bits": 8
+          },
+          "model.layers.20.self_attn.v_proj": {
+            "bits": 8
+          },
+          "model.layers.21.self_attn.o_proj": {
+            "bits": 8
+          },
+          "model.layers.21.self_attn.q_proj": {
+            "bits": 8
+          },
+          "model.layers.21.self_attn.v_proj": {
+            "bits": 8
+          },
+          "model.layers.22.self_attn.k_proj": {
+            "bits": 8
+          },
+          "model.layers.22.self_attn.q_proj": {
+            "bits": 8
+          },
+          "model.layers.22.self_attn.v_proj": {
+            "bits": 8
+          },
+          "model.layers.23.self_attn.k_proj": {
+            "bits": 8
+          },
+          "model.layers.23.self_attn.o_proj": {
+            "bits": 8
+          },
+          "model.layers.23.self_attn.v_proj": {
+            "bits": 8
+          },
+          "model.layers.24.self_attn.k_proj": {
+            "bits": 8
+          },
+          "model.layers.24.self_attn.o_proj": {
+            "bits": 8
+          },
+          "model.layers.24.self_attn.v_proj": {
+            "bits": 8
+          },
+          "model.layers.25.self_attn.k_proj": {
+            "bits": 8
+          },
+          "model.layers.25.self_attn.q_proj": {
+            "bits": 8
+          },
+          "model.layers.25.self_attn.v_proj": {
+            "bits": 8
+          },
+          "model.layers.26.self_attn.k_proj": {
+            "bits": 8
+          },
+          "model.layers.26.self_attn.v_proj": {
+            "bits": 8
+          },
+          "model.layers.27.self_attn.q_proj": {
+            "bits": 8
+          },
+          "model.layers.27.self_attn.v_proj": {
+            "bits": 8
+          },
+          "model.layers.28.self_attn.k_proj": {
+            "bits": 8
+          },
+          "model.layers.28.self_attn.q_proj": {
+            "bits": 8
+          },
+          "model.layers.28.self_attn.v_proj": {
+            "bits": 8
+          },
+          "model.layers.29.self_attn.k_proj": {
+            "bits": 8
+          },
+          "model.layers.29.self_attn.v_proj": {
+            "bits": 8
+          },
+          "model.layers.3.mlp.gate_proj": {
+            "bits": 8
+          },
+          "model.layers.3.self_attn.k_proj": {
+            "bits": 8
+          },
+          "model.layers.3.self_attn.v_proj": {
+            "bits": 8
+          },
+          "model.layers.30.self_attn.k_proj": {
+            "bits": 8
+          },
+          "model.layers.30.self_attn.v_proj": {
+            "bits": 8
+          },
+          "model.layers.31.mlp.down_proj": {
+            "bits": 8
+          },
+          "model.layers.31.self_attn.k_proj": {
+            "bits": 8
+          },
+          "model.layers.31.self_attn.v_proj": {
+            "bits": 8
+          },
+          "model.layers.32.mlp.up_proj": {
+            "bits": 8
+          },
+          "model.layers.32.self_attn.k_proj": {
+            "bits": 8
+          },
+          "model.layers.32.self_attn.q_proj": {
+            "bits": 8
+          },
+          "model.layers.33.mlp.gate_proj": {
+            "bits": 8
+          },
+          "model.layers.33.self_attn.k_proj": {
+            "bits": 8
+          },
+          "model.layers.33.self_attn.q_proj": {
+            "bits": 8
+          },
+          "model.layers.33.self_attn.v_proj": {
+            "bits": 8
+          },
+          "model.layers.34.mlp.down_proj": {
+            "bits": 8
+          },
+          "model.layers.34.mlp.gate_proj": {
+            "bits": 8
+          },
+          "model.layers.34.mlp.up_proj": {
+            "bits": 8
+          },
+          "model.layers.34.self_attn.q_proj": {
+            "bits": 8
+          },
+          "model.layers.34.self_attn.v_proj": {
+            "bits": 8
+          },
+          "model.layers.35.mlp.down_proj": {
+            "bits": 8
+          },
+          "model.layers.35.mlp.gate_proj": {
+            "bits": 8
+          },
+          "model.layers.35.mlp.up_proj": {
+            "bits": 8
+          },
+          "model.layers.35.self_attn.k_proj": {
+            "bits": 8
+          },
+          "model.layers.35.self_attn.v_proj": {
+            "bits": 8
+          },
+          "model.layers.4.mlp.gate_proj": {
+            "bits": 8
+          },
+          "model.layers.4.mlp.up_proj": {
+            "bits": 8
+          },
+          "model.layers.4.self_attn.k_proj": {
+            "bits": 8
+          },
+          "model.layers.4.self_attn.v_proj": {
+            "bits": 8
+          },
+          "model.layers.5.mlp.up_proj": {
+            "bits": 8
+          },
+          "model.layers.5.self_attn.k_proj": {
+            "bits": 8
+          },
+          "model.layers.5.self_attn.v_proj": {
+            "bits": 8
+          },
+          "model.layers.6.mlp.down_proj": {
+            "bits": 8
+          },
+          "model.layers.6.mlp.up_proj": {
+            "bits": 8
+          },
+          "model.layers.6.self_attn.v_proj": {
+            "bits": 8
+          },
+          "model.layers.7.mlp.gate_proj": {
+            "bits": 8
+          },
+          "model.layers.7.self_attn.k_proj": {
+            "bits": 8
+          },
+          "model.layers.7.self_attn.v_proj": {
+            "bits": 8
+          },
+          "model.layers.8.mlp.down_proj": {
+            "bits": 8
+          },
+          "model.layers.8.self_attn.k_proj": {
+            "bits": 8
+          },
+          "model.layers.8.self_attn.v_proj": {
+            "bits": 8
+          },
+          "model.layers.9.self_attn.k_proj": {
+            "bits": 8
+          },
+          "model.layers.9.self_attn.v_proj": {
+            "bits": 8
+          }
+        }
+      },
+      "scope": "Existing Apache-2.0 export reused with every original byte hash verified; no download or model provisioning. This differs in checkpoint and export from production 1.7B, so it is not a causal quantization/size-only experiment."
+    },
+    "packagingBuild": {
+      "apps/desktop/cmd/arion-llm/main.go": "279f39b92a65c71ad112ae0348edc11bfb5cfbf4076f6f7b9bd8d4aa4b5c41f8",
+      "apps/desktop/infrastructure/llm/prompt/prompt.go": "e7c8701f00d514276972766a9c036d15b05a480612b397a1c2a8b05e4674b48a",
+      "apps/desktop/infrastructure/llm/engine/engine.go": "efcb5f3a16ce6b00001a694e5669250665f50a980c29135c6327245720135003",
+      ".workspace/rewrite-packaging-v1/build/worker.go": "803d9131652f4e71f399e1f95f5c10a75d9246f36af3ba160790f2ec69c4dc42",
+      ".workspace/rewrite-packaging-v1/build/prompt.go": "c1f06f6d49dfa40b5dba0cf19de7267bf53b2d0c4290090fa555752df9a70266",
+      ".workspace/rewrite-packaging-v1/build/engine.go": "c84892e545358943088c0f9fdde1cec0c30ad37c83e34be41f917925438a5505",
+      ".workspace/rewrite-packaging-v1/build/worker": "bbb67747d6fe21dc17aa14fdb0cb1848813a119e1db8a5cec4580e613f9066af",
+      "benchmarks/reproduction/rewrite-packaging-v1/build.py": "27929f27d1f56fab5798ded751e72c6a800940835750a39f969cb19e78bec131"
+    },
+    "packagingWorkerSha256": "bbb67747d6fe21dc17aa14fdb0cb1848813a119e1db8a5cec4580e613f9066af"
+  },
+  "generations": 16,
+  "resultsSha256": "3db8b1cc5478a3f1c4357eb39f414a51faa708b869bd123387c4a0490b9ddcec"
+}

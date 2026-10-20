@@ -1,0 +1,698 @@
+[
+  {
+    "pair": {
+      "id": "cal-PASS-0",
+      "source": "暂时先不要发给客户。",
+      "candidate": "暂缓发送给客户。",
+      "scene": "work",
+      "expected": "PASS"
+    },
+    "audit": {
+      "response": {
+        "id": 2,
+        "ok": true,
+        "template": "meaning-audit-v1",
+        "text": "FAIL",
+        "cleanup": {
+          "text": "{\"source\": \"暂时先不要发给客户。\", \"candidate\": \"暂缓发送给客户。\", \"scene\": \"work\"}",
+          "version": ""
+        },
+        "inputTokens": 43,
+        "outputTokens": 1,
+        "prefillMs": 174.351,
+        "decodeMs": 24.037,
+        "firstTokenMs": 174.46,
+        "peakRssBytes": 3549560832
+      },
+      "verdict": "FAIL",
+      "wallMs": 198.92954220995307
+    }
+  },
+  {
+    "pair": {
+      "id": "cal-PASS-1",
+      "source": "缓存保留五分钟。",
+      "candidate": "缓存有效期为 5 分钟。",
+      "scene": "work",
+      "expected": "PASS"
+    },
+    "audit": {
+      "response": {
+        "id": 3,
+        "ok": true,
+        "template": "meaning-audit-v1",
+        "text": "PASS",
+        "cleanup": {
+          "text": "{\"source\": \"缓存保留五分钟。\", \"candidate\": \"缓存有效期为 5 分钟。\", \"scene\": \"work\"}",
+          "version": ""
+        },
+        "inputTokens": 45,
+        "outputTokens": 1,
+        "prefillMs": 178.747,
+        "decodeMs": 23.613,
+        "firstTokenMs": 178.844,
+        "peakRssBytes": 3577348096
+      },
+      "verdict": "PASS",
+      "wallMs": 202.58541591465473
+    }
+  },
+  {
+    "pair": {
+      "id": "cal-PASS-2",
+      "source": "小钱写文档，小周做审核。",
+      "candidate": "分工：小钱编写文档；小周审核。",
+      "scene": "work",
+      "expected": "PASS"
+    },
+    "audit": {
+      "response": {
+        "id": 4,
+        "ok": true,
+        "template": "meaning-audit-v1",
+        "text": "FAIL",
+        "cleanup": {
+          "text": "{\"source\": \"小钱写文档，小周做审核。\", \"candidate\": \"分工：小钱编写文档；小周审核。\", \"scene\": \"work\"}",
+          "version": ""
+        },
+        "inputTokens": 52,
+        "outputTokens": 1,
+        "prefillMs": 210.06,
+        "decodeMs": 23.768,
+        "firstTokenMs": 210.158,
+        "peakRssBytes": 3609198592
+      },
+      "verdict": "FAIL",
+      "wallMs": 234.07433414831758
+    }
+  },
+  {
+    "pair": {
+      "id": "cal-PASS-3",
+      "source": "等审批完成，再开始采购。",
+      "candidate": "采购安排：审批完成后启动。",
+      "scene": "work",
+      "expected": "PASS"
+    },
+    "audit": {
+      "response": {
+        "id": 5,
+        "ok": true,
+        "template": "meaning-audit-v1",
+        "text": "FAIL",
+        "cleanup": {
+          "text": "{\"source\": \"等审批完成，再开始采购。\", \"candidate\": \"采购安排：审批完成后启动。\", \"scene\": \"work\"}",
+          "version": ""
+        },
+        "inputTokens": 46,
+        "outputTokens": 1,
+        "prefillMs": 179.307,
+        "decodeMs": 23.807,
+        "firstTokenMs": 179.42,
+        "peakRssBytes": 3609214976
+      },
+      "verdict": "FAIL",
+      "wallMs": 203.36620812304318
+    }
+  },
+  {
+    "pair": {
+      "id": "cal-PASS-4",
+      "source": "这个问题可能和磁盘有关。",
+      "candidate": "这个问题或许与磁盘有关。",
+      "scene": "work",
+      "expected": "PASS"
+    },
+    "audit": {
+      "response": {
+        "id": 6,
+        "ok": true,
+        "template": "meaning-audit-v1",
+        "text": "PASS",
+        "cleanup": {
+          "text": "{\"source\": \"这个问题可能和磁盘有关。\", \"candidate\": \"这个问题或许与磁盘有关。\", \"scene\": \"work\"}",
+          "version": ""
+        },
+        "inputTokens": 45,
+        "outputTokens": 1,
+        "prefillMs": 178.279,
+        "decodeMs": 23.479,
+        "firstTokenMs": 178.378,
+        "peakRssBytes": 3609264128
+      },
+      "verdict": "PASS",
+      "wallMs": 201.978542143479
+    }
+  },
+  {
+    "pair": {
+      "id": "cal-PASS-5",
+      "source": "帮我检查失败原因，先不要修复。",
+      "candidate": "目标：检查失败原因。约束：暂不修复。",
+      "scene": "work",
+      "expected": "PASS"
+    },
+    "audit": {
+      "response": {
+        "id": 7,
+        "ok": true,
+        "template": "meaning-audit-v1",
+        "text": "PASS",
+        "cleanup": {
+          "text": "{\"source\": \"帮我检查失败原因，先不要修复。\", \"candidate\": \"目标：检查失败原因。约束：暂不修复。\", \"scene\": \"work\"}",
+          "version": ""
+        },
+        "inputTokens": 52,
+        "outputTokens": 1,
+        "prefillMs": 212.106,
+        "decodeMs": 23.813,
+        "firstTokenMs": 212.218,
+        "peakRssBytes": 3609296896
+      },
+      "verdict": "PASS",
+      "wallMs": 236.1460409592837
+    }
+  },
+  {
+    "pair": {
+      "id": "cal-PASS-6",
+      "source": "Please keep the current API unchanged.",
+      "candidate": "Constraint: Preserve the existing API.",
+      "scene": "work",
+      "expected": "PASS"
+    },
+    "audit": {
+      "response": {
+        "id": 8,
+        "ok": true,
+        "template": "meaning-audit-v1",
+        "text": "PASS",
+        "cleanup": {
+          "text": "{\"source\": \"Please keep the current API unchanged.\", \"candidate\": \"Constraint: Preserve the existing API.\", \"scene\": \"work\"}",
+          "version": ""
+        },
+        "inputTokens": 43,
+        "outputTokens": 1,
+        "prefillMs": 175.46,
+        "decodeMs": 23.683,
+        "firstTokenMs": 175.564,
+        "peakRssBytes": 3609329664
+      },
+      "verdict": "PASS",
+      "wallMs": 199.36087494716048
+    }
+  },
+  {
+    "pair": {
+      "id": "cal-PASS-7",
+      "source": "Use a two second timeout.",
+      "candidate": "Set the timeout to 2 seconds.",
+      "scene": "work",
+      "expected": "PASS"
+    },
+    "audit": {
+      "response": {
+        "id": 9,
+        "ok": true,
+        "template": "meaning-audit-v1",
+        "text": "PASS",
+        "cleanup": {
+          "text": "{\"source\": \"Use a two second timeout.\", \"candidate\": \"Set the timeout to 2 seconds.\", \"scene\": \"work\"}",
+          "version": ""
+        },
+        "inputTokens": 43,
+        "outputTokens": 1,
+        "prefillMs": 181.24,
+        "decodeMs": 23.781,
+        "firstTokenMs": 181.357,
+        "peakRssBytes": 3609362432
+      },
+      "verdict": "PASS",
+      "wallMs": 205.219125142321
+    }
+  },
+  {
+    "pair": {
+      "id": "cal-PASS-8",
+      "source": "Riley handles design and Casey handles QA.",
+      "candidate": "Design: Riley. QA: Casey.",
+      "scene": "work",
+      "expected": "PASS"
+    },
+    "audit": {
+      "response": {
+        "id": 10,
+        "ok": true,
+        "template": "meaning-audit-v1",
+        "text": "PASS",
+        "cleanup": {
+          "text": "{\"source\": \"Riley handles design and Casey handles QA.\", \"candidate\": \"Design: Riley. QA: Casey.\", \"scene\": \"work\"}",
+          "version": ""
+        },
+        "inputTokens": 46,
+        "outputTokens": 1,
+        "prefillMs": 182.842,
+        "decodeMs": 24.039,
+        "firstTokenMs": 182.986,
+        "peakRssBytes": 3609378816
+      },
+      "verdict": "PASS",
+      "wallMs": 207.12287491187453
+    }
+  },
+  {
+    "pair": {
+      "id": "cal-PASS-9",
+      "source": "Do not send it until Sam approves.",
+      "candidate": "Send it only after Sam approves.",
+      "scene": "work",
+      "expected": "PASS"
+    },
+    "audit": {
+      "response": {
+        "id": 11,
+        "ok": true,
+        "template": "meaning-audit-v1",
+        "text": "FAIL",
+        "cleanup": {
+          "text": "{\"source\": \"Do not send it until Sam approves.\", \"candidate\": \"Send it only after Sam approves.\", \"scene\": \"work\"}",
+          "version": ""
+        },
+        "inputTokens": 44,
+        "outputTokens": 1,
+        "prefillMs": 186.035,
+        "decodeMs": 23.623,
+        "firstTokenMs": 186.14,
+        "peakRssBytes": 3609378816
+      },
+      "verdict": "FAIL",
+      "wallMs": 209.86537495628
+    }
+  },
+  {
+    "pair": {
+      "id": "cal-PASS-10",
+      "source": "It might arrive next week.",
+      "candidate": "It may arrive next week.",
+      "scene": "work",
+      "expected": "PASS"
+    },
+    "audit": {
+      "response": {
+        "id": 12,
+        "ok": true,
+        "template": "meaning-audit-v1",
+        "text": "PASS",
+        "cleanup": {
+          "text": "{\"source\": \"It might arrive next week.\", \"candidate\": \"It may arrive next week.\", \"scene\": \"work\"}",
+          "version": ""
+        },
+        "inputTokens": 41,
+        "outputTokens": 1,
+        "prefillMs": 163.964,
+        "decodeMs": 23.637,
+        "firstTokenMs": 164.063,
+        "peakRssBytes": 3609395200
+      },
+      "verdict": "PASS",
+      "wallMs": 187.7916669473052
+    }
+  },
+  {
+    "pair": {
+      "id": "cal-PASS-11",
+      "source": "Could you check why the test failed?",
+      "candidate": "Please investigate the test failure.",
+      "scene": "work",
+      "expected": "PASS"
+    },
+    "audit": {
+      "response": {
+        "id": 13,
+        "ok": true,
+        "template": "meaning-audit-v1",
+        "text": "FAIL",
+        "cleanup": {
+          "text": "{\"source\": \"Could you check why the test failed?\", \"candidate\": \"Please investigate the test failure.\", \"scene\": \"work\"}",
+          "version": ""
+        },
+        "inputTokens": 43,
+        "outputTokens": 1,
+        "prefillMs": 175.434,
+        "decodeMs": 24.686,
+        "firstTokenMs": 175.535,
+        "peakRssBytes": 3609427968
+      },
+      "verdict": "FAIL",
+      "wallMs": 200.41012507863343
+    }
+  },
+  {
+    "pair": {
+      "id": "cal-FAIL-0",
+      "source": "小安负责开发，小白负责测试。",
+      "candidate": "小白负责开发，小安负责测试。",
+      "scene": "work",
+      "expected": "FAIL"
+    },
+    "audit": {
+      "response": {
+        "id": 14,
+        "ok": true,
+        "template": "meaning-audit-v1",
+        "text": "FAIL",
+        "cleanup": {
+          "text": "{\"source\": \"小安负责开发，小白负责测试。\", \"candidate\": \"小白负责开发，小安负责测试。\", \"scene\": \"work\"}",
+          "version": ""
+        },
+        "inputTokens": 49,
+        "outputTokens": 1,
+        "prefillMs": 216.262,
+        "decodeMs": 23.859,
+        "firstTokenMs": 216.386,
+        "peakRssBytes": 3610001408
+      },
+      "verdict": "FAIL",
+      "wallMs": 240.41320802643895
+    }
+  },
+  {
+    "pair": {
+      "id": "cal-FAIL-1",
+      "source": "今天不能发布，明天可以发布。",
+      "candidate": "今天可以发布，明天不能发布。",
+      "scene": "work",
+      "expected": "FAIL"
+    },
+    "audit": {
+      "response": {
+        "id": 15,
+        "ok": true,
+        "template": "meaning-audit-v1",
+        "text": "FAIL",
+        "cleanup": {
+          "text": "{\"source\": \"今天不能发布，明天可以发布。\", \"candidate\": \"今天可以发布，明天不能发布。\", \"scene\": \"work\"}",
+          "version": ""
+        },
+        "inputTokens": 47,
+        "outputTokens": 1,
+        "prefillMs": 186.179,
+        "decodeMs": 23.728,
+        "firstTokenMs": 186.288,
+        "peakRssBytes": 3610001408
+      },
+      "verdict": "FAIL",
+      "wallMs": 210.13729111291468
+    }
+  },
+  {
+    "pair": {
+      "id": "cal-FAIL-2",
+      "source": "过期时间五分钟。",
+      "candidate": "过期时间六分钟。",
+      "scene": "work",
+      "expected": "FAIL"
+    },
+    "audit": {
+      "response": {
+        "id": 16,
+        "ok": true,
+        "template": "meaning-audit-v1",
+        "text": "FAIL",
+        "cleanup": {
+          "text": "{\"source\": \"过期时间五分钟。\", \"candidate\": \"过期时间六分钟。\", \"scene\": \"work\"}",
+          "version": ""
+        },
+        "inputTokens": 42,
+        "outputTokens": 1,
+        "prefillMs": 215.112,
+        "decodeMs": 31.104,
+        "firstTokenMs": 215.363,
+        "peakRssBytes": 3610427392
+      },
+      "verdict": "FAIL",
+      "wallMs": 246.54466705396771
+    }
+  },
+  {
+    "pair": {
+      "id": "cal-FAIL-3",
+      "source": "可能是网络故障，尚未确认。",
+      "candidate": "已确认是网络故障。",
+      "scene": "work",
+      "expected": "FAIL"
+    },
+    "audit": {
+      "response": {
+        "id": 17,
+        "ok": true,
+        "template": "meaning-audit-v1",
+        "text": "FAIL",
+        "cleanup": {
+          "text": "{\"source\": \"可能是网络故障，尚未确认。\", \"candidate\": \"已确认是网络故障。\", \"scene\": \"work\"}",
+          "version": ""
+        },
+        "inputTokens": 44,
+        "outputTokens": 1,
+        "prefillMs": 240.168,
+        "decodeMs": 41.592,
+        "firstTokenMs": 240.413,
+        "peakRssBytes": 3610476544
+      },
+      "verdict": "FAIL",
+      "wallMs": 282.3515839409083
+    }
+  },
+  {
+    "pair": {
+      "id": "cal-FAIL-4",
+      "source": "审批通过后再付款。",
+      "candidate": "先付款，再等审批。",
+      "scene": "work",
+      "expected": "FAIL"
+    },
+    "audit": {
+      "response": {
+        "id": 18,
+        "ok": true,
+        "template": "meaning-audit-v1",
+        "text": "FAIL",
+        "cleanup": {
+          "text": "{\"source\": \"审批通过后再付款。\", \"candidate\": \"先付款，再等审批。\", \"scene\": \"work\"}",
+          "version": ""
+        },
+        "inputTokens": 43,
+        "outputTokens": 1,
+        "prefillMs": 248.216,
+        "decodeMs": 31.277,
+        "firstTokenMs": 248.326,
+        "peakRssBytes": 3610558464
+      },
+      "verdict": "FAIL",
+      "wallMs": 279.92937504313886
+    }
+  },
+  {
+    "pair": {
+      "id": "cal-FAIL-5",
+      "source": "请分析失败原因，不要修改代码。",
+      "candidate": "失败原因是数据库超时，我已经修复了。",
+      "scene": "work",
+      "expected": "FAIL"
+    },
+    "audit": {
+      "response": {
+        "id": 19,
+        "ok": true,
+        "template": "meaning-audit-v1",
+        "text": "FAIL",
+        "cleanup": {
+          "text": "{\"source\": \"请分析失败原因，不要修改代码。\", \"candidate\": \"失败原因是数据库超时，我已经修复了。\", \"scene\": \"work\"}",
+          "version": ""
+        },
+        "inputTokens": 50,
+        "outputTokens": 1,
+        "prefillMs": 229.047,
+        "decodeMs": 23.905,
+        "firstTokenMs": 229.158,
+        "peakRssBytes": 3610591232
+      },
+      "verdict": "FAIL",
+      "wallMs": 253.21058393456042
+    }
+  },
+  {
+    "pair": {
+      "id": "cal-FAIL-6",
+      "source": "Ari writes code and Remy tests it.",
+      "candidate": "Remy writes code and Ari tests it.",
+      "scene": "work",
+      "expected": "FAIL"
+    },
+    "audit": {
+      "response": {
+        "id": 20,
+        "ok": true,
+        "template": "meaning-audit-v1",
+        "text": "FAIL",
+        "cleanup": {
+          "text": "{\"source\": \"Ari writes code and Remy tests it.\", \"candidate\": \"Remy writes code and Ari tests it.\", \"scene\": \"work\"}",
+          "version": ""
+        },
+        "inputTokens": 48,
+        "outputTokens": 1,
+        "prefillMs": 195.788,
+        "decodeMs": 23.888,
+        "firstTokenMs": 195.902,
+        "peakRssBytes": 3610640384
+      },
+      "verdict": "FAIL",
+      "wallMs": 219.8719580192119
+    }
+  },
+  {
+    "pair": {
+      "id": "cal-FAIL-7",
+      "source": "Do not deploy today. Tomorrow is allowed.",
+      "candidate": "Deploy today. Do not deploy tomorrow.",
+      "scene": "work",
+      "expected": "FAIL"
+    },
+    "audit": {
+      "response": {
+        "id": 21,
+        "ok": true,
+        "template": "meaning-audit-v1",
+        "text": "FAIL",
+        "cleanup": {
+          "text": "{\"source\": \"Do not deploy today. Tomorrow is allowed.\", \"candidate\": \"Deploy today. Do not deploy tomorrow.\", \"scene\": \"work\"}",
+          "version": ""
+        },
+        "inputTokens": 46,
+        "outputTokens": 1,
+        "prefillMs": 188.505,
+        "decodeMs": 23.479,
+        "firstTokenMs": 188.615,
+        "peakRssBytes": 3610640384
+      },
+      "verdict": "FAIL",
+      "wallMs": 212.205917108804
+    }
+  },
+  {
+    "pair": {
+      "id": "cal-FAIL-8",
+      "source": "Use five retries.",
+      "candidate": "Use six retries.",
+      "scene": "work",
+      "expected": "FAIL"
+    },
+    "audit": {
+      "response": {
+        "id": 22,
+        "ok": true,
+        "template": "meaning-audit-v1",
+        "text": "FAIL",
+        "cleanup": {
+          "text": "{\"source\": \"Use five retries.\", \"candidate\": \"Use six retries.\", \"scene\": \"work\"}",
+          "version": ""
+        },
+        "inputTokens": 37,
+        "outputTokens": 1,
+        "prefillMs": 155.838,
+        "decodeMs": 23.68,
+        "firstTokenMs": 155.957,
+        "peakRssBytes": 3610689536
+      },
+      "verdict": "FAIL",
+      "wallMs": 179.72120898775756
+    }
+  },
+  {
+    "pair": {
+      "id": "cal-FAIL-9",
+      "source": "The cause may be network loss.",
+      "candidate": "The cause is confirmed to be network loss.",
+      "scene": "work",
+      "expected": "FAIL"
+    },
+    "audit": {
+      "response": {
+        "id": 23,
+        "ok": true,
+        "template": "meaning-audit-v1",
+        "text": "FAIL",
+        "cleanup": {
+          "text": "{\"source\": \"The cause may be network loss.\", \"candidate\": \"The cause is confirmed to be network loss.\", \"scene\": \"work\"}",
+          "version": ""
+        },
+        "inputTokens": 45,
+        "outputTokens": 1,
+        "prefillMs": 184.817,
+        "decodeMs": 23.664,
+        "firstTokenMs": 184.927,
+        "peakRssBytes": 3610705920
+      },
+      "verdict": "FAIL",
+      "wallMs": 208.70612491853535
+    }
+  },
+  {
+    "pair": {
+      "id": "cal-FAIL-10",
+      "source": "Add pagination and preserve all response fields.",
+      "candidate": "Add pagination.",
+      "scene": "work",
+      "expected": "FAIL"
+    },
+    "audit": {
+      "response": {
+        "id": 24,
+        "ok": true,
+        "template": "meaning-audit-v1",
+        "text": "FAIL",
+        "cleanup": {
+          "text": "{\"source\": \"Add pagination and preserve all response fields.\", \"candidate\": \"Add pagination.\", \"scene\": \"work\"}",
+          "version": ""
+        },
+        "inputTokens": 40,
+        "outputTokens": 1,
+        "prefillMs": 192.185,
+        "decodeMs": 23.135,
+        "firstTokenMs": 192.314,
+        "peakRssBytes": 3610738688
+      },
+      "verdict": "FAIL",
+      "wallMs": 215.51983314566314
+    }
+  },
+  {
+    "pair": {
+      "id": "cal-FAIL-11",
+      "source": "Update /api/cart and keep E401 unchanged.",
+      "candidate": "Update /api/order and replace E401 with E403.",
+      "scene": "work",
+      "expected": "FAIL"
+    },
+    "audit": {
+      "response": {
+        "id": 25,
+        "ok": true,
+        "template": "meaning-audit-v1",
+        "text": "FAIL",
+        "cleanup": {
+          "text": "{\"source\": \"Update /api/cart and keep E401 unchanged.\", \"candidate\": \"Update /api/order and replace E401 with E403.\", \"scene\": \"work\"}",
+          "version": ""
+        },
+        "inputTokens": 57,
+        "outputTokens": 1,
+        "prefillMs": 237.083,
+        "decodeMs": 23.753,
+        "firstTokenMs": 237.206,
+        "peakRssBytes": 3645423616
+      },
+      "verdict": "FAIL",
+      "wallMs": 261.0570830293
+    }
+  }
+]

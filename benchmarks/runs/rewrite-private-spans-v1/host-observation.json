@@ -1,0 +1,10 @@
+{
+  "machine": "Apple M4",
+  "memoryBytes": 34359738368,
+  "platform": "macOS-26.6.2-x86_64-i386-64bit",
+  "powerAndThermal": "Not measured; no attribution",
+  "minimumTarget": "Apple Silicon16GB; current32GB is development only",
+  "cleanupSourceIdentity": "All current production snapshot source bytes match recorded preflight provenance before inference",
+  "timing": "External Python monotonic and native clocks retained, not calibrated to a single historical clock; no latency acceptance",
+  "coverage": "Sampled inference worker RSS only; not peak/total desktop+ASR"
+}

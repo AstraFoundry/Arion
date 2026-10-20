@@ -1,0 +1,75 @@
+{
+  "newGenerations": 404,
+  "sourcePreparations": 457,
+  "sourceTreatments": 1828,
+  "skippedSourceTreatments": 1424,
+  "finalBodies": 0,
+  "groups": {
+    "baseline": {
+      "cases": 101,
+      "conforming": 92,
+      "harmful": 3,
+      "missed": 6,
+      "requiredRepairs": 47,
+      "repaired": 41,
+      "protocolFailures": 0,
+      "requestMedianMs": 244.6895418688655,
+      "requestP95Ms": 374.36929205432534,
+      "outputTokensMedian": 7
+    },
+    "reference-turn": {
+      "cases": 101,
+      "conforming": 89,
+      "harmful": 9,
+      "missed": 3,
+      "requiredRepairs": 47,
+      "repaired": 44,
+      "protocolFailures": 0,
+      "requestMedianMs": 1102.2078329697251,
+      "requestP95Ms": 2018.3370830491185,
+      "outputTokensMedian": 7
+    },
+    "balanced": {
+      "cases": 101,
+      "conforming": 94,
+      "harmful": 4,
+      "missed": 3,
+      "requiredRepairs": 47,
+      "repaired": 44,
+      "protocolFailures": 0,
+      "requestMedianMs": 495.6074170768261,
+      "requestP95Ms": 960.7540408615023,
+      "outputTokensMedian": 7
+    },
+    "reference-turn-balanced": {
+      "cases": 101,
+      "conforming": 91,
+      "harmful": 8,
+      "missed": 2,
+      "requiredRepairs": 47,
+      "repaired": 45,
+      "protocolFailures": 0,
+      "requestMedianMs": 1230.2207921165973,
+      "requestP95Ms": 2153.0315421987325,
+      "outputTokensMedian": 7
+    }
+  },
+  "selection": {
+    "qualified": false,
+    "selected": null,
+    "screenPassedArms": [],
+    "productionActivated": false,
+    "freshExecuted": false,
+    "formatterExecuted": false,
+    "resultsSha256": "6fb8284ca8445c90573e3a6c904eb36f2b0fbde04346e08a6388add40451d086",
+    "reviewSha256": "5c8f0dafeb5fedd5aa5a1f516e069d19d02bfbdd4158271207cf352bf3a26d47",
+    "reason": "Neither complete-reference separation arm passes101-case conformance. Native template markers do not resolve harmful OCR substitutions. No full-chain/fresh expansion or production adoption."
+  },
+  "limits": "Exposed development sources and repeated arms, not held-out/generalization/native/min16 evidence. Actual Go457 is reused within four arms. All no-hypothesis sources/cross-script coverage misses remain explicit. Zero newASR/OCR/final bodies; no semantic output rejection/source fallback or production change. No4B or olderQwen. Observed serial selector timing excludes startup/Go/formatter/native insertion/concurrentASR and is not an end-to-end SLO.",
+  "controlPairs": 202,
+  "controlRawParity": 202,
+  "controlEditedParity": 202,
+  "referenceTurnPairs": 202,
+  "changedChoices": 16,
+  "timingScope": "Observed serial selector requests only; nearest-rank p95. No startup/Go/formatter/native insertion/concurrentASR/min16 acceptance."
+}

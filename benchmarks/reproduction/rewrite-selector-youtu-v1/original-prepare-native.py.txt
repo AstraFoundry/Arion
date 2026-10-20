@@ -1,0 +1,28 @@
+"""Freeze the exact official eligible artifact and original native requests."""
+from pathlib import Path
+import json,hashlib,shutil
+R=Path.cwd();D=Path(__file__).resolve().parent;H=R/'benchmarks/reproduction/rewrite-selector-youtu-v1';H.mkdir(exist_ok=False);S=H/'sources';S.mkdir();W=R/'.workspace/rewrite-selector-youtu-v1';W.mkdir(exist_ok=False)
+prior=R/'benchmarks/reproduction/rewrite-selector-minicpm-f16-v1';freeze=json.loads((prior/'freeze.json').read_text());freeze['files']=json.loads((R/'benchmarks/runs/rewrite-selector-minicpm-f16-v1/archive.json').read_text())['files']
+for sub in ['Youtu-LLM-2B','Youtu-LLM-2B-GGUF']:shutil.copytree(D/sub,S/sub)
+for name in ['gguf-info.json','artifact-qualification.json','receipts.json','template-receipts.json','weight-candidates.json','license-research-notes.json','provision-status.json','provision.log','provision.py','inspect.py','next-plan.json']:
+ shutil.copyfile(D/name,S/('gguf-header-inspection.json' if name=='gguf-info.json' else name))
+for name in ['Youtu-LLM-2B-api.json','Youtu-LLM-2B-GGUF-api.json']:shutil.copyfile(R/'.workspace/notes/rewrite-additional-small-model-catalog-v3/details'/name,S/name)
+(H/'preflight.py').write_text('''"""Run immutable native diagnostics with the owned Youtu artifact freeze."""
+import pathlib,importlib.util
+HERE=pathlib.Path(__file__).resolve().parent
+spec=importlib.util.spec_from_file_location('youtu_native_executor',HERE.parent/'rewrite-selector-hybrid-v1/preflight.py')
+executor=importlib.util.module_from_spec(spec);spec.loader.exec_module(executor)
+if __name__=='__main__':
+    executor.HERE=HERE
+    executor.main()
+''')
+plan=json.loads((prior/'preflight-plan.json').read_text());plan['limits']='Twelve native compatibility/cache/schema and free controls on two repeated exposed sources, not independent quality samples. Actual1.96156B officialQ8, custom-license local research authorized; no production adoption. No newASR/OCR/final bodies; no semantic rejection or source fallback. Actual16GB acceptance remains open.'
+(H/'preflight-plan.json').write_text(json.dumps(plan,ensure_ascii=False,indent=2)+'\n')
+protocol=dict(purpose='Compare an additional current non-Qwen actual<=2B open-weight model on identical complete requests, conditional on actual native qualification.',model='Youtu-LLM-2B-Q8_0',parameters=1961560064,license='custom-youtu-llm; research authorized, production restrictions unresolved',nativeProbeCount=12,conditionalSelectorGenerations=202,sourceCases=457,newGoPreparations=0,newAsrGenerations=0,newVisionGenerations=0,newFinalBodies=0,template='Exact embedded template equals pinned upstream. Observe actual lexer treatment, nonthinking prefix and layer placement before comparison.',gates=['Hash/actual parameter/template/runtime identity','Twelve actual normal-stop protocol responses; source/request coverage, CPU/Metal placement, actual nonthinking prefix and cache-off/on/off parity','Personally review every native response; semantic errors do not count as release success','Only after native qualification, execute unchanged202 development choices; all101 per arm must conform before complete-chain/fresh/native/independent/actual16GB expansion'],limits='Different architecture/tokenizer/template/quantization; not isolated parameter-count or quantization causality. Twelve forced-original ambiguity schemas per arm are not autonomous semantic judgments. Original release requirements unchanged; no production integration.')
+(H/'protocol.json').write_text(json.dumps(protocol,ensure_ascii=False,indent=2)+'\n')
+shutil.copyfile(D/'prepare-native.py',H/'original-prepare-native.py.txt')
+freeze['model']=dict(id='Youtu-LLM-2B-Q8_0',repo='tencent/Youtu-LLM-2B-GGUF',revision='698ad804316c9b815f9881a709d583c6214e0927',filename='Youtu-LLM-2B-Q8_0.gguf',sha256='621a3484fa5da1615dd0c65d4b091b32db09eb69ca94c3b61da1b38a894a76a0',bytes=2089462528,parameters=1961560064,license='custom-youtu-llm',textOnly=True,quantization='Q8_0',upstreamRepo='tencent/Youtu-LLM-2B',upstreamRevision='8b0e73594661a945a7f5aafc737b63e3d8ad3f75')
+freeze['modelPath']='.workspace/rewrite-youtu-research-v1/weights/Youtu-LLM-2B-Q8_0.gguf'
+for p in H.rglob('*'):
+ if p.is_file():freeze['files'][str(p.relative_to(R))]=hashlib.sha256(p.read_bytes()).hexdigest()
+(H/'freeze.json').write_text(json.dumps(freeze,ensure_ascii=False,indent=2)+'\n');print('Frozen',len(freeze['files']),'source identities',hashlib.sha256((H/'freeze.json').read_bytes()).hexdigest())

@@ -1,0 +1,10 @@
+{
+  "purpose": "Change Chinese tone-sensitive candidate coverage to segmental phonemes, keeping selector prompt/schema/English policies fixed. Latest work-v4/other-v2 formatter applies equally to both arms. Full history401+new24 controls candidate and same24 baseline. All generated JSON choices and final bodies retained/reviewed without semantic filtering or source fallback.",
+  "history": 401,
+  "controls": 24,
+  "sourceAttempts": 449,
+  "changes": [
+    "tone-insensitive Chinese hypotheses with explicit unverified provenance"
+  ],
+  "limits": "No cross-script hypotheses added here; Latin canonicalization gaps remain separately open. Text-derived readings are not audio evidence. No new ASR/OCR/native/concurrent/min16/independent/production/fresh24 or4B/olderQwen/Granite/Q8 inference."
+}

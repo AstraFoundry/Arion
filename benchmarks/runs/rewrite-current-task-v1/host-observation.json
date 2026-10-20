@@ -1,0 +1,15 @@
+{
+  "observedAt": "2026-10-19T17:43:25.240068+00:00",
+  "timing": "Post-run supplement, not pre-run telemetry or proof of unchanged power/thermal state.",
+  "cpu": "Apple M4",
+  "memoryBytes": 34359738368,
+  "macOS": "ProductName:\t\tmacOS\nProductVersion:\t\t26.6.2\nBuildVersion:\t\t25G83",
+  "power": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=34668643)\t100%; charged; 0:00 remaining present: true",
+  "reportedThermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+  "gitRevision": "4356914796f484064ffcd562846b7dcd91a1350b",
+  "gitDirty": true,
+  "minimumTarget": "Apple Silicon16GB",
+  "minimumHostVerified": false,
+  "rssScope": "Native post-response sample, not peak/total; excludes Python dictionary and ASR.",
+  "timer": "Python monotonic reports mach_absolute_time; native stage counters use CLOCK_MONOTONIC. Separate fixed audit flags9/396 historical pairs. No sleep/thermal/runtime-bug cause attributed; no causal timing or release SLO claim."
+}

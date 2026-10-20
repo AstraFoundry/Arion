@@ -1,0 +1,92 @@
+{
+  "newGenerations": 609,
+  "sourceAttempts": 489,
+  "groups": {
+    "baseline/new-synthetic-semantic-roles": {
+      "cases": 32,
+      "faithful": 26,
+      "unfaithful": 6,
+      "uncertain": 0,
+      "useful": 14,
+      "repairSucceeded": 0,
+      "harmfulEditCases": 6,
+      "pipelineMs": {
+        "0.5": 529.8490838613361,
+        "0.95": 1159.9723328836262,
+        "0.99": 1548.3537500258535
+      }
+    },
+    "candidate/historical-synthetic-regression": {
+      "cases": 281,
+      "faithful": 281,
+      "unfaithful": 0,
+      "uncertain": 0,
+      "useful": 263,
+      "repairSucceeded": 51,
+      "harmfulEditCases": 0,
+      "pipelineMs": {
+        "0.5": 687.783959088847,
+        "0.95": 2594.2181670106947,
+        "0.99": 3295.0259998906404
+      }
+    },
+    "candidate/new-synthetic-tone-controls": {
+      "cases": 24,
+      "faithful": 24,
+      "unfaithful": 0,
+      "uncertain": 0,
+      "useful": 15,
+      "repairSucceeded": 1,
+      "harmfulEditCases": 0,
+      "pipelineMs": {
+        "0.5": 638.3957501966506,
+        "0.95": 931.6739160567522,
+        "0.99": 987.0453339535743
+      }
+    },
+    "candidate/new-synthetic-semantic-roles": {
+      "cases": 32,
+      "faithful": 30,
+      "unfaithful": 2,
+      "uncertain": 0,
+      "useful": 16,
+      "repairSucceeded": 0,
+      "harmfulEditCases": 2,
+      "pipelineMs": {
+        "0.5": 565.9305830486119,
+        "0.95": 762.3647497966886,
+        "0.99": 785.6881250627339
+      }
+    },
+    "candidate/historical-natural-read-speech": {
+      "cases": 120,
+      "faithful": 119,
+      "unfaithful": 0,
+      "uncertain": 1,
+      "useful": 75,
+      "repairSucceeded": 0,
+      "harmfulEditCases": 0,
+      "pipelineMs": {
+        "0.5": 454.6142090111971,
+        "0.95": 988.2180409040302,
+        "0.99": 1189.4834169652313
+      }
+    }
+  },
+  "metadataAnomaly": {
+    "candidateSelectorRecords": 101,
+    "rawPreserved": true,
+    "releaseProvenanceQualified": false
+  },
+  "selection": {
+    "qualified": false,
+    "selected": null,
+    "productionActivated": false,
+    "freshExecuted": false,
+    "resultsSha256": "35ab321cebbb277fe2eb7c0968f927e0cd18e16d97dc96bc4b913cf7d86179d3",
+    "reviewSha256": "e1e5ade13638ad51017520ab224dded4d634991ce8248b419a2599a45d3d7055",
+    "freezeSha256": "cbfd989395e94ad3e5ef0b886df122bd5107d06bcc4085b14c2fef2228e77f1c",
+    "reason": "Reject: fewer harmful role substitutions, but supported proper-name/term corrections regress; related role repairs still0/4. Known selector metadata defect retained with request-bound effective identity. No release acceptance."
+  },
+  "limits": "One exposed nursery source,7 additional fixed-source formulations; contexts repeated within each group, not32 independent utterances. No cross-script producer change, ASR/Vision/native/concurrent/min16/independent-rater/production/fresh24/4B/olderQwen/Granite/Q8 evidence. No priming; quality experiment, not randomized timing comparison."
+}

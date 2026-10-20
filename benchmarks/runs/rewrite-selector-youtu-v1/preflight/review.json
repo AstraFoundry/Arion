@@ -1,0 +1,89 @@
+{
+  "resultsSha256": "40bf2e576ff639d182c846c2d3e86ba1ca66335cceebb24232a72e181c1acf73",
+  "reviews": [
+    {
+      "id": "99-cache-off-first",
+      "rowSha256": "9c85f442eb9331b017ed888327849b48a1a77e311d4702e83474e467658b674a",
+      "protocolConforms": true,
+      "probeConforms": false,
+      "note": "Personally read all12 raw outputs and full final-source/context/hypothesis payloads. All keep. Supported load cash->loadCache correction is missed; explicit cash/not-cache source correctly remains unchanged. Schema-free controls agree. Two repeated exposed sources, not independent release evidence."
+    },
+    {
+      "id": "99-other-source",
+      "rowSha256": "c73b1d9e9db8d79e1292a41b8e1da922df7ed5d6b18fd062682326b73be60b84",
+      "protocolConforms": true,
+      "probeConforms": true,
+      "note": "Personally read all12 raw outputs and full final-source/context/hypothesis payloads. All keep. Supported load cash->loadCache correction is missed; explicit cash/not-cache source correctly remains unchanged. Schema-free controls agree. Two repeated exposed sources, not independent release evidence."
+    },
+    {
+      "id": "99-cache-on-return",
+      "rowSha256": "8547be4d375be30764b6074d5d7089e38deeb1664f7c8df6f4396cb4dca059e3",
+      "protocolConforms": true,
+      "probeConforms": false,
+      "note": "Personally read all12 raw outputs and full final-source/context/hypothesis payloads. All keep. Supported load cash->loadCache correction is missed; explicit cash/not-cache source correctly remains unchanged. Schema-free controls agree. Two repeated exposed sources, not independent release evidence."
+    },
+    {
+      "id": "99-cache-off-return",
+      "rowSha256": "23a679283e6499af2e1fc7b75bb32bfd8075397d0ee33049214d2d620bebd15e",
+      "protocolConforms": true,
+      "probeConforms": false,
+      "note": "Personally read all12 raw outputs and full final-source/context/hypothesis payloads. All keep. Supported load cash->loadCache correction is missed; explicit cash/not-cache source correctly remains unchanged. Schema-free controls agree. Two repeated exposed sources, not independent release evidence."
+    },
+    {
+      "id": "99-free-positive",
+      "rowSha256": "a87e047e14e0f86e87b7ecf1c15e9267f76966883659953bbdc50e154bf7bda4",
+      "protocolConforms": true,
+      "probeConforms": false,
+      "note": "Personally read all12 raw outputs and full final-source/context/hypothesis payloads. All keep. Supported load cash->loadCache correction is missed; explicit cash/not-cache source correctly remains unchanged. Schema-free controls agree. Two repeated exposed sources, not independent release evidence."
+    },
+    {
+      "id": "99-free-negative",
+      "rowSha256": "f5496ed4daec1e69f8cd9f6dd54932d0352ee8720d9c2b4817d96cc61bd82629",
+      "protocolConforms": true,
+      "probeConforms": true,
+      "note": "Personally read all12 raw outputs and full final-source/context/hypothesis payloads. All keep. Supported load cash->loadCache correction is missed; explicit cash/not-cache source correctly remains unchanged. Schema-free controls agree. Two repeated exposed sources, not independent release evidence."
+    },
+    {
+      "id": "0-cache-off-first",
+      "rowSha256": "232a93d58597e7205de74b44f8cf4d362d615ba4753dc704ca92f826b7353457",
+      "protocolConforms": true,
+      "probeConforms": false,
+      "note": "Personally read all12 raw outputs and full final-source/context/hypothesis payloads. All keep. Supported load cash->loadCache correction is missed; explicit cash/not-cache source correctly remains unchanged. Schema-free controls agree. Two repeated exposed sources, not independent release evidence."
+    },
+    {
+      "id": "0-other-source",
+      "rowSha256": "9b3904e7f8d544a170f802e3108a826303fd0d39a48d18a92f1955142b8a128e",
+      "protocolConforms": true,
+      "probeConforms": true,
+      "note": "Personally read all12 raw outputs and full final-source/context/hypothesis payloads. All keep. Supported load cash->loadCache correction is missed; explicit cash/not-cache source correctly remains unchanged. Schema-free controls agree. Two repeated exposed sources, not independent release evidence."
+    },
+    {
+      "id": "0-cache-on-return",
+      "rowSha256": "ad3a75c547afc700bddf17d475f6be1a8c4bf1a5dc009670118344d7a2b6223f",
+      "protocolConforms": true,
+      "probeConforms": false,
+      "note": "Personally read all12 raw outputs and full final-source/context/hypothesis payloads. All keep. Supported load cash->loadCache correction is missed; explicit cash/not-cache source correctly remains unchanged. Schema-free controls agree. Two repeated exposed sources, not independent release evidence."
+    },
+    {
+      "id": "0-cache-off-return",
+      "rowSha256": "72e2df8497a21c35a0c82873dab7aa245696125a7293e78aaba06b7628d10c08",
+      "protocolConforms": true,
+      "probeConforms": false,
+      "note": "Personally read all12 raw outputs and full final-source/context/hypothesis payloads. All keep. Supported load cash->loadCache correction is missed; explicit cash/not-cache source correctly remains unchanged. Schema-free controls agree. Two repeated exposed sources, not independent release evidence."
+    },
+    {
+      "id": "0-free-positive",
+      "rowSha256": "2117fc75b45bc03eb01dadc68e1aabc20ed7ee7f36cef7fd231490591e347480",
+      "protocolConforms": true,
+      "probeConforms": false,
+      "note": "Personally read all12 raw outputs and full final-source/context/hypothesis payloads. All keep. Supported load cash->loadCache correction is missed; explicit cash/not-cache source correctly remains unchanged. Schema-free controls agree. Two repeated exposed sources, not independent release evidence."
+    },
+    {
+      "id": "0-free-negative",
+      "rowSha256": "90d73d3bc29e89a086e17b6d0f7a0bf965bc658abbdcd68bfbd0934017633367",
+      "protocolConforms": true,
+      "probeConforms": true,
+      "note": "Personally read all12 raw outputs and full final-source/context/hypothesis payloads. All keep. Supported load cash->loadCache correction is missed; explicit cash/not-cache source correctly remains unchanged. Schema-free controls agree. Two repeated exposed sources, not independent release evidence."
+    }
+  ]
+}

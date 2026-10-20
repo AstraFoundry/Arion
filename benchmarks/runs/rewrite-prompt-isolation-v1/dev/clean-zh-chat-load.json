@@ -1,0 +1,8 @@
+{
+  "id": 1,
+  "ok": true,
+  "loadMs": 3444.07,
+  "promptId": "prompt-isolation-v1-clean-zh-chat",
+  "prefixTokens": 462,
+  "peakRssBytes": 3560570880
+}

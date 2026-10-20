@@ -1,0 +1,22 @@
+{
+  "purpose": "Compare pinned official MiniCPM5-1B F16 export to prior actual Q4, holding complete messages/candidates/runtime/decoding fixed, with12 native probes before202 unchanged requests.",
+  "arms": [
+    "baseline",
+    "balanced"
+  ],
+  "expectedGenerations": 202,
+  "sourceCases": 457,
+  "replayedActualGoPreparations": 457,
+  "newGoPreparations": 0,
+  "sourceTreatmentCount": 914,
+  "expectedSkips": 712,
+  "formatterGenerations": 0,
+  "evaluator": "benchmarks/corpora/rewrite-selector-screen-v1/evaluator.json",
+  "gate": "All101 candidate cases in an arm conform to unchanged frozen rubric, preserving required context repair and literal/ambiguity/meaning boundaries with no protocol failure. Passing only permits full457-source chain and unchanged fresh/currentASR+Vision/native/offline/concurrent/independent/actual16GB acceptance.",
+  "limits": "Exposed development sources/repeated arms, not independent or held-out. ReplayedGo457;zero newASR/OCR/final bodies; no semantic output rejection/source fallback or production change. Model/tokenizer/architecture change, so no checkpoint-size/quantization-only causal attribution. No4B/olderQwen. All source-level/cross-script no-hypothesis skips explicit.",
+  "nativeProbeCount": 12,
+  "modelComparison": "Precision/export artifact comparison only: shared upstream and official revision, identical template/tokenizer expected, but no numerical conversion/quantizer lineage equivalence has been established. Do not attribute every change solely to quantization.",
+  "userCashPolicy": "read cash may normalize to readCash, but cannot change without evidence to readCache; unchanged frozen evaluator remains authoritative.",
+  "priorQ4Reference": "benchmarks/runs/rewrite-selector-minicpm-v1/comparison-run/results.jsonl",
+  "priorQ4ProbeReference": "benchmarks/runs/rewrite-selector-minicpm-v1/preflight/results.jsonl"
+}

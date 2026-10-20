@@ -1,0 +1,17 @@
+{
+  "variants": [
+    "baseline",
+    "plan"
+  ],
+  "developmentCases": 28,
+  "generations": 56,
+  "comparison": "A package comparison: free text with demonstrations versus grammar-bound editable source-unit plan without demonstrations. Fixed latest2B weights, runtime, CPU4, seed42, thinking off, cache off and384 output tokens. Token overhead/truncation remain in denominators.",
+  "gate": "All28 faithful, all9 required repairs, all ambiguity/exact/quote/negation controls preserved, owner grouping and email structure retained, oral polish and self-correction successful, at least baseline scene-ready count. Otherwise no promotion or fresh24 inference.",
+  "limitations": [
+    "Source-unit presence does not prove semantic coverage; freely editable parts may still omit/change meaning.",
+    "Anchor constraints derive from partial English dictionary hypotheses; Chinese repairs remain model-generated.",
+    "Model can repeat an unsupported name elsewhere; no final content validator masks it.",
+    "Grammar/protocol errors yield null body, retained in denominator with raw JSON. No fallback body.",
+    "Only exposed synthetic development; not native/ASR/minimum16GB or independent review acceptance."
+  ]
+}

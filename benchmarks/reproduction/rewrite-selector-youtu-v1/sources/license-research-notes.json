@@ -1,0 +1,27 @@
+{
+  "scope": "Pinned research source review, not production license clearance.",
+  "userAuthorization": "Custom-license open weights permitted for local research; production restrictions must be checked before adoption.",
+  "sameOriginalBytes": false,
+  "sameLfNormalizedText": true,
+  "files": [
+    {
+      "path": "Youtu-LLM-2B/LICENSE.txt",
+      "sha256": "7ef64a58bdbe3ca4dc3299df7ef969cb41065301852356d152309dc471f97c7b",
+      "bytes": 10233
+    },
+    {
+      "path": "Youtu-LLM-2B-GGUF/LICENSE.txt",
+      "sha256": "7ddac658d03c167cfc4af9f80759cd9519aee048a42ff94bcc1465fdbd01c17f",
+      "bytes": 10298
+    }
+  ],
+  "observations": [
+    "Section0 is titled Additional Territorial Limitation and states the model is not intended for use within the European Union, with priority in conflicts.",
+    "Redistribution conditions include license, modification and attribution notices, and applicable NOTICE content."
+  ],
+  "productionOpen": [
+    "Review intended territories and intended use against all terms.",
+    "Review shipped license/attribution/modification notices and third-party notices."
+  ],
+  "productionActivated": false
+}

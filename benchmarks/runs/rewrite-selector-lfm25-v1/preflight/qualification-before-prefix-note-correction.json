@@ -1,0 +1,11 @@
+{
+  "qualifiedForSelector": true,
+  "productionQualified": false,
+  "resultsSha256": "b37fe9bd0d2f5b6bcc9e280e27161882cc732b6efce87c89f9c55ccff3e34b90",
+  "freezeSha256": "6aeb818853ff68bfb99a2e2f4472b8497321df8465cfaf804a617b9ca2c6f91e",
+  "cacheRawParity": {
+    "99": true,
+    "0": true
+  },
+  "reason": "12 normal-stop valid JSON responses, actual17/17Metal and0/17CPU layers, exact embedded/native template (upstream source differs; local text-only serializer diagnostic is separate) and observed empty-thinking prefix; cache-off/on/off raw parity.8 task-conforming positive controls,4 harmful literal-cash replacements. Compatibility only, permits exposed unchanged202 research comparison, never release."
+}

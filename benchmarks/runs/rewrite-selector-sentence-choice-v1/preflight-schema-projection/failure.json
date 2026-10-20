@@ -1,0 +1,7 @@
+{
+  "status": "preflight-failed",
+  "modelGenerations": 0,
+  "test": "test_projection_restores_every_complete_source",
+  "error": "A/B adapter incorrectly expanded an existing keep-only ambiguous schema to both A/B options. Complete-source projection assertion caught the mismatch before inference.",
+  "repair": "Preserve each original field enum cardinality and counterbalance only its labels; restore original allowed operation enum exactly."
+}

@@ -1,0 +1,9 @@
+{
+  "purpose": "Revise work scene only; run every94 historical work formatter case plus16 new challenge controls. New controls get actual baseline and candidate responses;94 historical baseline responses are reused by raw identity. Other307 scenes unchanged, not newly rerun or counted as generations.",
+  "newGenerations": 126,
+  "historicalCases": 94,
+  "newControls": 16,
+  "baselineNewGenerations": 16,
+  "candidateNewGenerations": 110,
+  "limits": "Exposed historical94 plus newly authored synthetic16, not independent natural data. Reused actual cleanup/selection for historical inputs; controls are source-only with no cleanup. No new ASR/OCR/selector/native/concurrent/min16/production/fresh24 or4B/olderQwen inference."
+}

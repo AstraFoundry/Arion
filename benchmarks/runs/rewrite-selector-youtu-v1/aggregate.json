@@ -1,0 +1,22 @@
+{
+  "groups": {
+    "baseline": {
+      "conforming": 75,
+      "harmful": 3,
+      "missed": 23,
+      "repaired": 24,
+      "required": 47
+    },
+    "balanced": {
+      "conforming": 84,
+      "harmful": 4,
+      "missed": 13,
+      "repaired": 34,
+      "required": 47
+    }
+  },
+  "uniqueFailedTuples": 29,
+  "changedPairs": 58,
+  "improvements": 5,
+  "regressions": 32
+}

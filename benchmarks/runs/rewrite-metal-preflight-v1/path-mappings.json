@@ -1,0 +1,41 @@
+{
+  "originalRoot": "/Users/steven/code/Arion",
+  "files": [
+    {
+      "original": ".workspace/rewrite-metal-preflight-v1/run/metal-server.log",
+      "archived": "benchmarks/runs/rewrite-metal-preflight-v1/run/metal-server.log",
+      "sha256": "a894a0be22483cb4e43c2a6ccfa1bbf9f187bd77ea50d8c959d24a44c0b8e150",
+      "bytes": 1688
+    },
+    {
+      "original": ".workspace/rewrite-metal-preflight-v1/run/metal-props.json",
+      "archived": "benchmarks/runs/rewrite-metal-preflight-v1/run/metal-props.json",
+      "sha256": "207f055707c9681e03cf3089e95df6ce65ebc1b936826652189d1f2580d2dd3a",
+      "bytes": 10602
+    },
+    {
+      "original": ".workspace/rewrite-metal-preflight-v1/run/results.jsonl",
+      "archived": "benchmarks/runs/rewrite-metal-preflight-v1/run/results.jsonl",
+      "sha256": "77b365c01460909eceed382b6cdb588e0979ab61cc8e6ae53072725eb158a1bd",
+      "bytes": 5752
+    },
+    {
+      "original": ".workspace/rewrite-metal-preflight-v1/run/manifest.json",
+      "archived": "benchmarks/runs/rewrite-metal-preflight-v1/run/manifest.json",
+      "sha256": "8ad4f28954ace07538e07f2438502c260211b2611b5b1a9ffdddf4883ae531d1",
+      "bytes": 7018
+    },
+    {
+      "original": ".workspace/rewrite-metal-preflight-v1/load-observation/manifest.json",
+      "archived": "benchmarks/runs/rewrite-metal-preflight-v1/load-observation/manifest.json",
+      "sha256": "a34902ad0080ec2fe6fbcdf7c5dcc9cd8d9cfe2d9d1e7c8f7511b7550b388a5e",
+      "bytes": 6583
+    },
+    {
+      "original": ".workspace/rewrite-metal-preflight-v1/load-observation/load.log",
+      "archived": "benchmarks/runs/rewrite-metal-preflight-v1/load-observation/load.log",
+      "sha256": "8b6156e421f816cf73b4d0b02f0891300ea813fbf61c227df6c9c6e9e590490a",
+      "bytes": 334189
+    }
+  ]
+}

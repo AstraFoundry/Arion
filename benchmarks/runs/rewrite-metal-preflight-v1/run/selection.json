@@ -1,0 +1,6 @@
+{
+  "qualified": false,
+  "selected": null,
+  "reason": "Capability-only1 observation, no full regression/language/min16GB/concurrent native/SLO acceptance.",
+  "productionActivated": false
+}

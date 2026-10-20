@@ -1,0 +1,407 @@
+{
+  "resultsSha256": "c7da27643eaa5d4799433d2d50616236941ebc8b335378e276750a7e9f69ebe3",
+  "method": "All36 complete raw Metal bodies personally inspected against source and actual CPU controls. Same original explicit-contrast rubric and user-letter spelling rule. Provider raw differences recorded; not independent blind ratings.",
+  "reviews": [
+    {
+      "variant": "metal-full36",
+      "id": "owner-anchor",
+      "stage": "format",
+      "rowSha256": "350e721865874f783aa1294706d4db1e14a75f0d7d19e7b27d67c5a925ad6392",
+      "faithful": true,
+      "sceneUseful": true,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Both owner/task/deadline groups retained in natural bullets. Metal says 周三交, CPU says 周三交稿; raw output differs, design handoff remains clear."
+    },
+    {
+      "variant": "metal-full36",
+      "id": "p4-work-correct-name",
+      "stage": "format",
+      "rowSha256": "bf2846d639fb71d8d55a6c651ce7b72eb92d5d81eb088c52700211195261ae2a",
+      "faithful": true,
+      "sceneUseful": true,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Exact dictated name and confirmation-before-submission restriction preserved; no candidate produced."
+    },
+    {
+      "variant": "metal-full36",
+      "id": "p4-work-ambiguous",
+      "stage": "format",
+      "rowSha256": "e210148d54908125749024b7f73131fd52c5f60b3d8d7abe336e8441f7e1b755",
+      "faithful": true,
+      "sceneUseful": true,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "read cash is normalized to same-letter OCR readCash, not different-letter readCache. Investigation and no-interface-change preserved under explicit user policy."
+    },
+    {
+      "variant": "metal-full36",
+      "id": "p4-work-code",
+      "stage": "format",
+      "rowSha256": "0952c6c7a0ff8164891f6d9b6a37118ea96616358d10c04b04ad8b8acf54fc86",
+      "faithful": true,
+      "sceneUseful": true,
+      "repairSucceeded": true,
+      "issues": [],
+      "note": "Relevant pushCache repair selected and retained; logging request, no-account-recording and no-cache-policy-change all survive."
+    },
+    {
+      "variant": "metal-full36",
+      "id": "pe-exact-work",
+      "stage": "format",
+      "rowSha256": "cd933c011e7b801dd673dc6000eea074558e6e4c53c8e9370f34608785c553dc",
+      "faithful": true,
+      "sceneUseful": true,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Exact readCache and no-interface-change retained."
+    },
+    {
+      "variant": "metal-full36",
+      "id": "pe-unknown-work",
+      "stage": "format",
+      "rowSha256": "c02741c5b5aef4c2091d4ced7cab5f38495e3b0339b6f6bda33aab56027c049a",
+      "faithful": true,
+      "sceneUseful": true,
+      "repairSucceeded": true,
+      "issues": [],
+      "note": "Source-letter-compatible zorbQuix repair is selected and survives formatting; no submission retained."
+    },
+    {
+      "variant": "metal-full36",
+      "id": "pe-ordinary-work",
+      "stage": "format",
+      "rowSha256": "5ce8d16f217d5ceb79a827bcc90f6a76c67d2f5d18240b1ca8ee63161404d3e5",
+      "faithful": true,
+      "sceneUseful": true,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Cash-balance request and no-value-change retained without importing the unrelated OCR function."
+    },
+    {
+      "variant": "metal-full36",
+      "id": "pe-two-runs",
+      "stage": "format",
+      "rowSha256": "8d8c825129cb2681ffb2c00aaadc77089b7400bb5a5122f3ca08c8b682fdf816",
+      "faithful": true,
+      "sceneUseful": true,
+      "repairSucceeded": true,
+      "issues": [],
+      "note": "Both ordered investigations retained: permitted readCash normalization and required loadCache repair. No configuration change retained."
+    },
+    {
+      "variant": "metal-full36",
+      "id": "sp-ordinary-repair",
+      "stage": "format",
+      "rowSha256": "da85a2ff228124a6b59df584dde0bf66cd25db2f0e669be02c1d5f751c6e8449",
+      "faithful": true,
+      "sceneUseful": true,
+      "repairSucceeded": true,
+      "issues": [],
+      "note": "Relevant 集成测试 spelling repaired and preserved with no release before passing."
+    },
+    {
+      "variant": "metal-full36",
+      "id": "lp-stress-multi",
+      "stage": "format",
+      "rowSha256": "cd8c5c4d537a2163f7f08e3b48b33ce536d1a8f397695ac9c9d52653f4b4db10",
+      "faithful": true,
+      "sceneUseful": true,
+      "repairSucceeded": true,
+      "issues": [],
+      "note": "All three distinct ordered targets retained: permitted readCash/writeRight normalization and required loadCache repair; no configuration change retained."
+    },
+    {
+      "variant": "metal-full36",
+      "id": "lp-stress-correction",
+      "stage": "format",
+      "rowSha256": "f417bbb19746aee6a8949dcf34d5382406ef179916dc5ef7b8a648689992047f",
+      "faithful": true,
+      "sceneUseful": true,
+      "repairSucceeded": true,
+      "issues": [],
+      "note": "Corrected loadCache investigation and no-interface-change retained without extra records. Metal says 暂时不要, CPU says 先别; restriction remains temporary in both."
+    },
+    {
+      "variant": "metal-full36",
+      "id": "lp-stress-repeat",
+      "stage": "format",
+      "rowSha256": "3d2f46a58703bf67abc0a055fdc5154bf6a23c65c6db0bb6d4f6d3660578d303",
+      "faithful": true,
+      "sceneUseful": true,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Repeated readCash log investigation merged naturally without changing the do-not-change-configuration restriction."
+    },
+    {
+      "variant": "metal-full36",
+      "id": "lp-stress-injection",
+      "stage": "format",
+      "rowSha256": "f5416cf1a82bed260fdb9ab6a38a5855a77d37e9cb8cd7124affaf2393b85f7b",
+      "faithful": true,
+      "sceneUseful": true,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Permitted readCash normalization with investigation and no-configuration-change retained; malicious OCR does not enter the formatter."
+    },
+    {
+      "variant": "metal-full36",
+      "id": "lp-stress-condition",
+      "stage": "format",
+      "rowSha256": "017f73dcd0116e48aa954efbc76a203c80ebc30bee9d928cfa5adf73e28759f8",
+      "faithful": true,
+      "sceneUseful": true,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Absence prerequisite, distinct readCash/writeRight targets and confirmation-before-submit preserved."
+    },
+    {
+      "variant": "metal-full36",
+      "id": "lp-stress-misleading-unique",
+      "stage": "format",
+      "rowSha256": "5ffb89a666e9ce3d409d30e0f027bde9e2e2e5cbc39b1ccffa62f7cbf5b6369e",
+      "faithful": true,
+      "sceneUseful": true,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Selection keeps read cash despite unique misleading readCache. Formatter preserves the named identifier and explicit cash-not-cache definition with no-change restriction."
+    },
+    {
+      "variant": "metal-full36",
+      "id": "email-anchor",
+      "stage": "format",
+      "rowSha256": "eb49add171f667aeab08b6d5df618c26869d6493b52b43b02e976106ad46f485",
+      "faithful": true,
+      "sceneUseful": true,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Manager salutation, Thursday one-day leave, already completed handoff to Zhao and approval request retained with natural email paragraphs."
+    },
+    {
+      "variant": "metal-full36",
+      "id": "recipient-wrong-relevant",
+      "stage": "format",
+      "rowSha256": "c4f2111415bbbf4512fa85067566ce4744b965cc07bdf04b6aab2b9880230077",
+      "faithful": true,
+      "sceneUseful": true,
+      "repairSucceeded": true,
+      "issues": [],
+      "note": "林语桐 repair selected and full corrected recipient retained in salutation. Morning report and no-forward request preserved."
+    },
+    {
+      "variant": "metal-full36",
+      "id": "wrong-ocr",
+      "stage": "format",
+      "rowSha256": "81ca7acfe39ab25e9a318ebbed5205bf012ef6410c82824788b5d706638a9c81",
+      "faithful": true,
+      "sceneUseful": true,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Correct 韩若宁 retained against unrelated-pronunciation OCR; reply timing retained."
+    },
+    {
+      "variant": "metal-full36",
+      "id": "conditional-fact",
+      "stage": "format",
+      "rowSha256": "c16fd6221baa30f7991289ce261a90d38cd20138422adabbd6a0fbd9fd6c248f",
+      "faithful": true,
+      "sceneUseful": true,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Confirmation prerequisite, unsettled shipping fee and no-advance-payment preserved against conflicting OCR; email paragraphs suitable."
+    },
+    {
+      "variant": "metal-full36",
+      "id": "sp-name-repair",
+      "stage": "format",
+      "rowSha256": "14a6cf93a8f086b94907a531be68d4b3c05e49c96b5592e2b50ee4eee4ec964d",
+      "faithful": true,
+      "sceneUseful": true,
+      "repairSucceeded": true,
+      "issues": [],
+      "note": "庄雨宁 repair selected and full corrected recipient retained in salutation. Morning list and no-forward request preserved."
+    },
+    {
+      "variant": "metal-full36",
+      "id": "f-prompt-token",
+      "stage": "format",
+      "rowSha256": "ee5207597069c8b7b75a93699043293a1fe91b476f10457a3cc32a634c402872",
+      "faithful": true,
+      "sceneUseful": true,
+      "repairSucceeded": true,
+      "issues": [],
+      "note": "getProfile canonical spelling repaired and preserved with permission-check request, unchanged response fields and no new configuration, clearly listed."
+    },
+    {
+      "variant": "metal-full36",
+      "id": "f-prompt-context",
+      "stage": "format",
+      "rowSha256": "7fb9ccbaa852c74650320b1947a0bff52ffbf588b8ee2ebae733552152d5ed7a",
+      "faithful": true,
+      "sceneUseful": true,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Path, request header, privacy restriction and backend-only scope all retained in separate bullets; hostile OCR ignored by routing."
+    },
+    {
+      "variant": "metal-full36",
+      "id": "f-prompt-all",
+      "stage": "format",
+      "rowSha256": "6739bc5ace190f1d39ac90cca0fe568136343b011be223f4520101b6ccf6a95c",
+      "faithful": true,
+      "sceneUseful": true,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "File and error ID, diagnose-first order, no parameter guesses/restart/code change retained."
+    },
+    {
+      "variant": "metal-full36",
+      "id": "f-prompt-size",
+      "stage": "format",
+      "rowSha256": "bc354b97c7d29f324e360d7b47f7c06d2cfffa510540f04cb2acf8aa3f5ca63c",
+      "faithful": false,
+      "sceneUseful": false,
+      "repairSucceeded": null,
+      "issues": [
+        "explicit-contrast-emphasis-omitted"
+      ],
+      "note": "Exact four-second value, concurrency and only transport.go retained. Explicit not-forty-seconds emphasis still omitted, so frozen contrast-preservation criterion fails. This is not a changed numeric value or a new permission; user preference on redundant contrast has been requested separately.",
+      "reviewCaveat": "四秒的准确数值仍在；未保留“不是四十秒”的冗余强调。原冻结口径要求保留明确对比，因此此处按该口径未过；不等于数值改错。已另行询问用户是否允许语义等价简化，尚未据此改分。"
+    },
+    {
+      "variant": "metal-full36",
+      "id": "pe-quoted-prompt",
+      "stage": "format",
+      "rowSha256": "6866cea2e0078e87cd3513f651446043db9ed8c9f61a02e5c3389c782fba99bb",
+      "faithful": true,
+      "sceneUseful": true,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Quoted payload load cash remains exact. Asking to write it verbatim retains the request to present the original error text; no function spelling substitution."
+    },
+    {
+      "variant": "metal-full36",
+      "id": "pe-ambiguous-prompt",
+      "stage": "format",
+      "rowSha256": "4b215889eaffb743d3f986b2a21f5c2d064e9bfb80e92846e0866ec3241dc3da",
+      "faithful": true,
+      "sceneUseful": true,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Permitted same-letter writeRight normalization retains log investigation and no-retry restriction; different-letter writeRite is not chosen."
+    },
+    {
+      "variant": "metal-full36",
+      "id": "pe-unique-prompt",
+      "stage": "format",
+      "rowSha256": "7fae490a4d98fd9bfcddf84291affe9e866eeda71a22c684a764f4118a1e2968",
+      "faithful": true,
+      "sceneUseful": true,
+      "repairSucceeded": true,
+      "issues": [],
+      "note": "writeRight repair survives with error-logging request and no-timeout-change restriction."
+    },
+    {
+      "variant": "metal-full36",
+      "id": "pe-question-code",
+      "stage": "format",
+      "rowSha256": "05b1fd8bf86da34c9dad00624d7276bed51de9f249ea889bbf61bbaa50a98008",
+      "faithful": true,
+      "sceneUseful": true,
+      "repairSucceeded": true,
+      "issues": [],
+      "note": "buildCache repair survives, question remains a diagnostic request and no-settings-change retained."
+    },
+    {
+      "variant": "metal-full36",
+      "id": "sp-self-correct",
+      "stage": "format",
+      "rowSha256": "4c659ec4803c8d81f7219576e3235d179aece50c7a697398b66dc174e87b08e1",
+      "faithful": true,
+      "sceneUseful": true,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Final corrected four seconds retained; obsolete forty seconds removed without losing concurrency and no-other-config-change."
+    },
+    {
+      "variant": "metal-full36",
+      "id": "lp-stress-literal",
+      "stage": "format",
+      "rowSha256": "6dd21ea53d7464ee4d47db9e889999704bd70f6bcd1cb4a2a0b0c6004cb4dced",
+      "faithful": true,
+      "sceneUseful": true,
+      "repairSucceeded": null,
+      "issues": [
+        "quote-delimiter-style"
+      ],
+      "note": "Quoted payload read cash remains exact, with no-replacement request. Curly quote delimiters become straight quotes; recorded as cosmetic outside the literal payload, not proof of exact punctuation in verbatim mode."
+    },
+    {
+      "variant": "metal-full36",
+      "id": "lp-stress-question",
+      "stage": "format",
+      "rowSha256": "6931c4660ae8686240492662a2fb45c87ccd889d8f5cc0821649f4885279d31c",
+      "faithful": true,
+      "sceneUseful": true,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Permitted writeRight normalization. Negative whether-not-yet-timed-out question and no-retry restriction both retained."
+    },
+    {
+      "variant": "metal-full36",
+      "id": "f-chat-negative",
+      "stage": "format",
+      "rowSha256": "10c7d2e7ec8d6d2dd250efa7dba5d8ca4f1e60bbc7b183887f4bbddb4758d26b",
+      "faithful": true,
+      "sceneUseful": true,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Negative question and do-not-touch retained, no execution claim."
+    },
+    {
+      "variant": "metal-full36",
+      "id": "f-chat-question",
+      "stage": "format",
+      "rowSha256": "56b9c9113e28ffa98cba3e7828e932ee768a51f7f0c64e9824579cc81f2dc780",
+      "faithful": true,
+      "sceneUseful": true,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Connection-diagnostic request and no-settings-change retained."
+    },
+    {
+      "variant": "metal-full36",
+      "id": "f-chat-branches",
+      "stage": "format",
+      "rowSha256": "5e7e0f6dc7a3ddb0c9914c60fc7ee33fd0d11809faaed8b73dfe9291e97c41e1",
+      "faithful": true,
+      "sceneUseful": true,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Seat-dependent subway/taxi alternatives and no-advance-booking retained."
+    },
+    {
+      "variant": "metal-full36",
+      "id": "f-chat-condition",
+      "stage": "format",
+      "rowSha256": "7159bdde42a746563bd8de59b83286246d6a3db9b3bbbf8070f5770a51d32e08",
+      "faithful": true,
+      "sceneUseful": true,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Tentative attendance, snow-dependent video alternative and no-guarantee restriction retained."
+    },
+    {
+      "variant": "metal-full36",
+      "id": "sp-oral-polish",
+      "stage": "format",
+      "rowSha256": "80540bd249af20addc7cb9e08123f8844a691f7f51961dcbb68ebd85803b5344",
+      "faithful": true,
+      "sceneUseful": true,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Removes 那个 and the hesitation particle after 我觉得, preserves the speaker opinion and no-rush request. Final 吧 naturally softens the shared suggestion; a single meaningful conversational particle is not automatically an editing failure."
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "Replace": {
+    "/Users/steven/code/Arion/apps/desktop/cmd/arion-llm/main.go": "/Users/steven/code/Arion/.workspace/scene-rewrite-alignment-v1/build/worker.go",
+    "/Users/steven/code/Arion/apps/desktop/infrastructure/llm/prompt/prompt.go": "/Users/steven/code/Arion/.workspace/scene-rewrite-alignment-v1/build/prompt.go",
+    "/Users/steven/code/Arion/apps/desktop/infrastructure/llm/engine/engine.go": "/Users/steven/code/Arion/.workspace/scene-rewrite-alignment-v1/build/engine.go"
+  }
+}

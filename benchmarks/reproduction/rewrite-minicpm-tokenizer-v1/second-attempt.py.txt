@@ -1,0 +1,26 @@
+"""Compare pinned upstream and native token IDs for all complete actual selector requests."""
+import pathlib,json,sys,hashlib
+from tokenizers import Tokenizer
+import tokenizers
+R=pathlib.Path.cwd();D=pathlib.Path(__file__).resolve().parent
+sys.path.insert(0,str(R/'benchmarks/reproduction'))
+import gguf_rewrite as engine
+from gguf_session_v2 import Session
+rows=list(map(json.loads,(R/'benchmarks/runs/rewrite-selector-minicpm-v1/comparison-run/results.jsonl').read_text().splitlines()));assert len(rows)==202
+freeze=json.loads((R/'benchmarks/reproduction/rewrite-selector-minicpm-v1/freeze.json').read_text());engine.MODEL=R/freeze['modelPath'];engine.verify(freeze)
+def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
+def rh(x):return hashlib.sha256(json.dumps(x,ensure_ascii=False,sort_keys=True).encode()).hexdigest()
+plan=dict(requests=202,modelGenerations=0,model=freeze['model'],runtimeFiles=freeze['runtimeFiles'],tokenizerSha256=sha(D/'tokenizer.json'),tokenizersVersion=tokenizers.__version__,sourceResultsSha256=sha(R/'benchmarks/runs/rewrite-selector-minicpm-v1/comparison-run/results.jsonl'),comparison='Full native apply-template prompt token IDs with parse_special true/add_special false compared to pinned official Tokenizer.from_file encode(add_special_tokens=False). No numerical weights/logits or upstream chat serialization equivalence claim.',requestsAndSourceRows=[dict(id=r['id'],arm=r['arm'],rowSha256=rh(r),request=r['request']) for r in rows])
+(D/'plan.json').write_text(json.dumps(plan,ensure_ascii=False,indent=2)+'\n');tok=Tokenizer.from_file(str(D/'tokenizer.json'));out=D/'native';out.mkdir(exist_ok=False);w=Session(out,'tokenizer-parity',18826,gpu_layers=99,verbosity=5);records=[]
+try:
+ with (out/'tokenization.jsonl').open('x') as stream:
+  for r in rows:
+   request=dict(messages=r['request']['messages'],add_generation_prompt=True)
+   rendered=engine.base.request(18826,'/apply-template',request,timeout=30)
+   native_request=dict(content=rendered['prompt'],add_special=False,parse_special=True,with_pieces=False)
+   native=engine.base.request(18826,'/tokenize',native_request,timeout=30);hf=tok.encode(rendered['prompt'],add_special_tokens=False).ids
+   same=native['tokens']==hf
+   record=dict(id=r['id'],arm=r['arm'],sourceRowSha256=rh(r),applyTemplateRequest=request,applyTemplateResponse=rendered,tokenizeRequest=native_request,tokenizeResponse=native,upstreamTokenIds=hf,identical=same,actualInferencePromptTokens=r['response']['usage']['prompt_tokens'])
+   records.append(record);stream.write(json.dumps(record,ensure_ascii=False)+'\n');stream.flush()
+finally:w.close()
+status=dict(status='complete',requests=len(records),identical=sum(r['identical'] for r in records),modelGenerations=0,planSha256=sha(D/'plan.json'),rawSha256=sha(out/'tokenization.jsonl'),command=w.command,limits=plan['comparison']);(D/'status.json').write_text(json.dumps(status,indent=2)+'\n');print(json.dumps(status))

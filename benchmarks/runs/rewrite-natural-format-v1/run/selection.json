@@ -1,0 +1,10 @@
+{
+  "qualified": false,
+  "selected": null,
+  "productionActivated": false,
+  "freshExecuted": false,
+  "freezeSha256": "ca1706d4453ecaebe718e4b2c60c9138228bc24cb4e06899f3d4293316178d25",
+  "resultsSha256": "a04d97dfbe966498b2e62dfd24a4b0471154a914dcd6d5c9ef10dfb84d482fba",
+  "reviewSha256": "ebc712bcb4670556393cf57807e3d4f80760609b430a20671f01c2e5720732bc",
+  "reason": "Diagnostic-only120. Four unrequested translations plus invented predicate/perspective/request/detail losses;3 meaning-uncertain edits. Source corruption/partialness and missed grammar polish are separate from model content harm. No production promotion or intended-audio recovery claim."
+}

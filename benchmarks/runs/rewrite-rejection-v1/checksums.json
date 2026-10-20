@@ -1,0 +1,17 @@
+{
+  "benchmarks/runs/rewrite-rejection-v1/summary.json": "22984b6af69198f74f72a0a55c2718849e4cecb5777c4a65679b2a1981e477bb",
+  "benchmarks/runs/rewrite-rejection-v1/simple/stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "benchmarks/runs/rewrite-rejection-v1/simple/results.jsonl": "b277d8363b932866da65a207b7551cb9dd3e983c20930468ddd1691c8f2b0202",
+  "benchmarks/runs/rewrite-rejection-v1/simple/inputs.json": "c1fea09cfead578d2125ae34b883992576a0a645101c1e06f89d11b5b74cfaa8",
+  "benchmarks/runs/rewrite-rejection-v1/simple/manifest.json": "8fa4bd1f3de583b196e97fa6555375cbdf0d48c15c9d0f403d56a5872922975e",
+  "benchmarks/runs/rewrite-rejection-v1/simple/load.json": "d9d17831a5b56be1e871687d4da7a560e7aa87160bb3b752fe6760078d05b4f6",
+  "benchmarks/runs/rewrite-rejection-v1/requests/stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "benchmarks/runs/rewrite-rejection-v1/requests/results.jsonl": "1711ed63187b278fd0744068386d87a19ed4256cf5fa4dd12e4e751d76a19983",
+  "benchmarks/runs/rewrite-rejection-v1/requests/inputs.json": "d8efb0886c4170de71ea41c3a28096e61a186337fbed4b971a19fce95780b40d",
+  "benchmarks/runs/rewrite-rejection-v1/requests/manifest.json": "ce10d799152b529d34cbc8c78711351a8dcd6dab0e59f5db8772c639c40464a0",
+  "benchmarks/runs/rewrite-rejection-v1/requests/load.json": "fd86505ebc0fd0bbf46a8e35272e6cee4afc5db08c8dc30c2ce661875c37a1dd",
+  "benchmarks/reproduction/rewrite-rejection-v1/run.py": "46d36864281466e0b70214bc67de1d603a538331176c060f73c9e49d4e31f0ec",
+  "benchmarks/reproduction/rewrite-rejection-v1/followup-inputs.json": "d8efb0886c4170de71ea41c3a28096e61a186337fbed4b971a19fce95780b40d",
+  "benchmarks/reproduction/rewrite-rejection-v1/README.md": "aec596832b07f0448df8bf4225a95d21b8aeb1bcdd0089524904139c43041888",
+  "benchmarks/reproduction/rewrite-rejection-v1/inputs.json": "c1fea09cfead578d2125ae34b883992576a0a645101c1e06f89d11b5b74cfaa8"
+}

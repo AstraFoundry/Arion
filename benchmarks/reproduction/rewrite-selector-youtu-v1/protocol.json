@@ -1,0 +1,21 @@
+{
+  "purpose": "Compare an additional current non-Qwen actual<=2B open-weight model on identical complete requests, conditional on actual native qualification.",
+  "model": "Youtu-LLM-2B-Q8_0",
+  "parameters": 1961560064,
+  "license": "custom-youtu-llm; research authorized, production restrictions unresolved",
+  "nativeProbeCount": 12,
+  "conditionalSelectorGenerations": 202,
+  "sourceCases": 457,
+  "newGoPreparations": 0,
+  "newAsrGenerations": 0,
+  "newVisionGenerations": 0,
+  "newFinalBodies": 0,
+  "template": "Exact embedded template equals pinned upstream. Observe actual lexer treatment, nonthinking prefix and layer placement before comparison.",
+  "gates": [
+    "Hash/actual parameter/template/runtime identity",
+    "Twelve actual normal-stop protocol responses; source/request coverage, CPU/Metal placement, actual nonthinking prefix and cache-off/on/off parity",
+    "Personally review every native response; semantic errors do not count as release success",
+    "Only after native qualification, execute unchanged202 development choices; all101 per arm must conform before complete-chain/fresh/native/independent/actual16GB expansion"
+  ],
+  "limits": "Different architecture/tokenizer/template/quantization; not isolated parameter-count or quantization causality. Twelve forced-original ambiguity schemas per arm are not autonomous semantic judgments. Original release requirements unchanged; no production integration."
+}

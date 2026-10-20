@@ -1,0 +1,61 @@
+{
+  "newGenerations": 120,
+  "summary": {
+    "observations": 120,
+    "faithful": 109,
+    "unfaithful": 8,
+    "uncertain": 3,
+    "sceneReady": 72,
+    "sourceLimited": 37,
+    "languagePreserved": 116,
+    "truncated": 0
+  },
+  "languages": {
+    "zh": {
+      "observations": 60,
+      "faithful": 59,
+      "unfaithful": 1,
+      "uncertain": 0,
+      "sceneReady": 41,
+      "sourceLimited": 18,
+      "languagePreserved": 60,
+      "truncated": 0
+    },
+    "en": {
+      "observations": 60,
+      "faithful": 50,
+      "unfaithful": 7,
+      "uncertain": 3,
+      "sceneReady": 31,
+      "sourceLimited": 19,
+      "languagePreserved": 56,
+      "truncated": 0
+    }
+  },
+  "formatterMs": {
+    "0.5": 1128.5971249453723,
+    "0.95": 2098.300625104457,
+    "0.99": 2203.125749947503
+  },
+  "maxSampledWorkerRssBytes": 1652965376,
+  "newAsrGenerations": 0,
+  "newSelectorGenerations": 0,
+  "productionActivated": false,
+  "scope": {
+    "version": "natural-format-v1",
+    "newGenerations": 120,
+    "newAsrGenerations": 0,
+    "newSelectorGenerations": 0,
+    "inputs": "benchmarks/corpora/rewrite-natural-asr-v1/inputs.json",
+    "cleanup": "benchmarks/runs/rewrite-natural-text-review-v1/cleanup-observations.json",
+    "languages": {
+      "zh": 60,
+      "en": 60
+    },
+    "scene": "chat, assigned default for clips without real app metadata; not scene routing acceptance",
+    "architecture": "Formatter-v3 actual prompt, visible production-cleanup snapshot source, no OCR/memory/reference. Deterministic producer has zero context candidates; no invented LLM selection object or new selector generation. Exact native Qwen3.5-2B Q4/runtime/Metal99/cacheoff/greedy/ctx4096/output256.",
+    "evaluation": "Diagnostic only; no promotion regardless of scores. All120 source/output pairs personally reviewed for source-meaning fidelity, language preservation, unsupported facts/names/numbers/negation/modalities and naturalness separately. Grammatical punctuation/inflection edits allowed; corrupt/partial sources are not a licence to invent hidden missing content. Source-faithful nonsense is not automatically natural/usable. Published reference and audio are never passed to model. Retain refusals/empty/truncated/unchanged failures in denominators.",
+    "scope": "120 historical natural read-speech ASR sources with previous lineage/audio hash audit; source text exposed in earlier text-only review, first new candidate inference. Not new heldout/spontaneous dictation, true OCR/ASR pairing, independent human quality or speech-reference recovery. Does not consume frozen synthetic fresh24 or waive its full gate.",
+    "performance": "Single formatter request external/native timings and post-response sampled workerRSS only. No full2-stage/concurrentASR/native preview/insertion/peak whole-app/minimum AppleSilicon16GB acceptance. M4/32GB only. No4B/olderQwen/Granite/Q8 inference."
+  }
+}

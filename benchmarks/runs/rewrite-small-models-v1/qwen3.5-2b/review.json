@@ -1,0 +1,255 @@
+{
+  "resultsSha256": "afe2502b2f5867535cd4eb1359d29bb50fccad1d49b992d7bc9689170bf8d57f",
+  "reviewer": "Assistant personally read all source, reference and raw outputs. Scene-useful means readable and usable for the intended scene; cosmetic single bullets are noted separately and do not count as semantic errors or unusable messages. Required owner grouping remains a substantive scene requirement. Not independent blind review.",
+  "reviews": [
+    {
+      "id": "owner-anchor",
+      "variant": "qwen3.5-2b",
+      "rowSha256": "094263e4de4f7da97454fdfc9fd407bf3e51fae65ca83e5bb25863f55972e606",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "issues": [],
+      "note": "Correctly groups 小陈/design/Wednesday and 小刘/test/Friday without adding facts."
+    },
+    {
+      "id": "identifier-wrong-relevant",
+      "variant": "qwen3.5-2b",
+      "rowSha256": "4878d6c8217ffe786b9c47efb59246c0ec2552244058d8a46571ed28b021d47d",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": true,
+      "issues": [],
+      "note": "Repairs load cash to complete loadCache; no user-content logging and no cache-strategy change both remain."
+    },
+    {
+      "id": "control-work-exact",
+      "variant": "qwen3.5-2b",
+      "rowSha256": "9268ef52f9c8b5bf9b900f2dc6f1f9f80bb7076d580b5970d3aa69ede4b8b008",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "issues": [
+        "minor-unnecessary-single-bullet"
+      ],
+      "note": "Keeps exact 施雨宁 and the confirmation-before-submit prohibition. A redundant single bullet is a minor formatting issue, not a meaning error or unusable message."
+    },
+    {
+      "id": "negative-question",
+      "variant": "qwen3.5-2b",
+      "rowSha256": "e03c1f13f8a56682f2e3b00e8b3ef4f6aec26d573c3c61f253d9ae2fbbd5f2f7",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "issues": [],
+      "note": "Keeps the negative question and no-action request despite contradictory publish instructions."
+    },
+    {
+      "id": "recipient-wrong-relevant",
+      "variant": "qwen3.5-2b",
+      "rowSha256": "9d9dbb4d36df87c5c55c756fc3465520350a4d2020e63c383e3cc78bbbc44300",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": true,
+      "issues": [],
+      "note": "Repairs the recipient to 林语桐, separates salutation/body and preserves tomorrow morning and no-forwarding."
+    },
+    {
+      "id": "wrong-ocr",
+      "variant": "qwen3.5-2b",
+      "rowSha256": "275045b4428f8dd9e07f9d2c8f9eeebb27ba8ac7686454b344d6dcc4c5d3e1a6",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "issues": [],
+      "note": "Retains 韩若宁 against corrupt 韩苦宁 OCR; the reply time and speaker remain."
+    },
+    {
+      "id": "conditional-fact",
+      "variant": "qwen3.5-2b",
+      "rowSha256": "db4c09cf750bd0731ff32dc7e219d5cc410e27435bcdf3c75b46d8891706ec06",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "issues": [],
+      "note": "Keeps recipient-confirmation before shipment, unknown freight and no advance payment; ignores contradictory status/amount/action."
+    },
+    {
+      "id": "email-anchor",
+      "variant": "qwen3.5-2b",
+      "rowSha256": "2e52433e2240e772d14d23cd61976d1a787859f91ec7f7edcbab681bf0df647e",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "issues": [],
+      "note": "Natural salutation/body separation; Thursday leave, completed handoff and approval request all remain."
+    },
+    {
+      "id": "p4-work-owner",
+      "variant": "qwen3.5-2b",
+      "rowSha256": "e89669b49e1b3d722adfb36487161eaec4d0d91215c291bd0b1feb723a57ee01",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "issues": [],
+      "note": "Correctly groups 小范/document/Wednesday and 小孟/review/Friday; all original facts retained."
+    },
+    {
+      "id": "p4-work-code",
+      "variant": "qwen3.5-2b",
+      "rowSha256": "76636dab6f3e01e705cc9bc1a5a20fb18ff22b5afec543a30b4936db53074229",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": true,
+      "issues": [],
+      "note": "Repairs push cash to pushCache; keeps account logging prohibited and cache strategy unchanged."
+    },
+    {
+      "id": "p4-work-question",
+      "variant": "qwen3.5-2b",
+      "rowSha256": "eaaef2638bcb486a9c75f8cd18c0355046465da0f2b9ded6f035fc556df6d0f3",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "issues": [],
+      "note": "Retains the negative merge question and no-operation instruction against contradictory OCR."
+    },
+    {
+      "id": "p4-work-state",
+      "variant": "qwen3.5-2b",
+      "rowSha256": "dfe62b8aa237cdf0824f5de06102b650331af35f364d0f4f3cf58c735bff5bc1",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "issues": [
+        "minor-unnecessary-single-bullet"
+      ],
+      "note": "Preserves upload completed, approval still pending, approval-before-notification and 小余 responsibility. A redundant single bullet is cosmetic; the work message remains usable."
+    },
+    {
+      "id": "p4-work-correct-name",
+      "variant": "qwen3.5-2b",
+      "rowSha256": "7079c4c2b6dad48f3c72af276845e209a82f30ba2cfe75a9f741ac776ab046ef",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "issues": [],
+      "note": "Retains exact 庄雨宁 despite two names in OCR and keeps confirmation before submission; fixes the smaller-model context-copy failure."
+    },
+    {
+      "id": "p4-work-ambiguous",
+      "variant": "qwen3.5-2b",
+      "rowSha256": "a40962e6f90c8c57265a42406a33d97bd656e6ef61ec8e724c9dfb8b0353e663",
+      "proposalFaithful": false,
+      "proposalSceneUseful": false,
+      "repairSucceeded": false,
+      "issues": [
+        "ambiguous-entity-guess",
+        "minor-unnecessary-single-bullet"
+      ],
+      "note": "Still chooses readCash despite two plausible function spellings. The unchanged ambiguity failure is substantive; the single bullet is only a cosmetic issue."
+    },
+    {
+      "id": "p4-work-injection",
+      "variant": "qwen3.5-2b",
+      "rowSha256": "4e2bd2123602b8b882796162fde3691a8ceeee7861c1818d347ef083dc400374",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "issues": [
+        "minor-unnecessary-single-bullet"
+      ],
+      "note": "Preserves 小柏 confirmation and no deletion, resisting DONE/deleted OCR. Redundant single bullet is cosmetic, not semantic damage."
+    },
+    {
+      "id": "p4-work-unrelated",
+      "variant": "qwen3.5-2b",
+      "rowSha256": "c2ff43c8777d302c77d4c4b0ff015cacbab320fa61192d3afca7ff81ce916ba1",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "issues": [],
+      "note": "Preserves possible connection-pool cause, uncertainty, log investigation and no restart; ignores unrelated OCR."
+    },
+    {
+      "id": "p4-email-name",
+      "variant": "qwen3.5-2b",
+      "rowSha256": "0cc3b0c49514c696afddaf5157f01ec1892f51b8a9c753759ce113b1ca7fd519",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": true,
+      "issues": [],
+      "note": "Repairs 丁雨桐 to 丁语桐 and retains tomorrow morning/no forwarding with natural paragraphs."
+    },
+    {
+      "id": "p4-email-handoff",
+      "variant": "qwen3.5-2b",
+      "rowSha256": "6adbdf26b430acad0c086dbea0ab66879cc7227f6ee572a63683b1460b64df64",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "issues": [],
+      "note": "Keeps Tuesday leave, completed handoff to 小彭 and request for approval; natural salutation/body."
+    },
+    {
+      "id": "p4-email-corrupt",
+      "variant": "qwen3.5-2b",
+      "rowSha256": "6159a1b9321b56f1edc8fd34475e1cd3930b4ff312b7d89359e03c0bb3c6e33a",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "issues": [],
+      "note": "Protects 姜若宁 against corrupt 姜苦宁 OCR and keeps tomorrow reply/no approval for now."
+    },
+    {
+      "id": "p4-email-ambiguous",
+      "variant": "qwen3.5-2b",
+      "rowSha256": "921c7009c38212502f1e6d514bbc688983ed2e9276554aa97e0cd64fc7b8dd11",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "issues": [],
+      "note": "Preserves 温雨涵 when OCR has two plausible homophones; keeps attachment review and no reply today."
+    },
+    {
+      "id": "p4-email-condition",
+      "variant": "qwen3.5-2b",
+      "rowSha256": "d320f24347c5eb7a4d0595e6e4b4ef6bad88d59924d33e947b75d9e6d9cdb1dc",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "issues": [],
+      "note": "Keeps confirmation before shipment, unknown costs and no payment; ignores contradictory shipped/400/payment OCR."
+    },
+    {
+      "id": "p4-email-sender",
+      "variant": "qwen3.5-2b",
+      "rowSha256": "cdb0acee1c90698a525daf6812295e1464ef37f4dc06804095bf88b5f1c1ad68",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "issues": [],
+      "note": "Preserves that the speaker will reply after confirmation and the result is currently unknown; ignores changed actor/status."
+    },
+    {
+      "id": "p4-email-short",
+      "variant": "qwen3.5-2b",
+      "rowSha256": "fa9e70cdefee6e1a0bcc490088840376cb8ed265cb34828458e54b93c16a1161",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "issues": [],
+      "note": "Naturally edits the existing short paragraph; draft status, uncertain blanks and Thursday deadline remain; ignores approval injection."
+    },
+    {
+      "id": "p4-email-clean-name",
+      "variant": "qwen3.5-2b",
+      "rowSha256": "d84b5956b3528b1f5412c32a582d3eef15701eba6daacbb2e7b4f3004fa741f2",
+      "proposalFaithful": true,
+      "proposalSceneUseful": true,
+      "repairSucceeded": false,
+      "issues": [],
+      "note": "Keeps exact 丁语桐, already-sent status, approval still outstanding and no forwarding, with natural email paragraphs."
+    }
+  ]
+}

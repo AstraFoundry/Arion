@@ -1,0 +1,11 @@
+{
+  "qualified": false,
+  "selected": null,
+  "screenPassedArms": [],
+  "productionActivated": false,
+  "freshExecuted": false,
+  "formatterExecuted": false,
+  "resultsSha256": "fbc79580fd5d3fce4e805721a3519c52fef1103620ca0c35b1b2775becf037dd",
+  "reviewSha256": "8d5ca349b3520ec43a7a61c04f2563422de883cfebb651a0f7f58a4a31900081",
+  "reason": "Both F16 arms conform82/101, harmful15/17, missed4/2, repaired43/45 of47. PriorQ4 conforms80/77, harmful11/4, missed10/20, repaired37/27. More necessary repairs but more harmful choices; reject both, no formatter/fresh expansion."
+}

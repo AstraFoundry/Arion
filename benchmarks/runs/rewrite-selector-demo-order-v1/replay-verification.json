@@ -1,0 +1,10 @@
+{
+  "summary.json": {
+    "same": true,
+    "sha256": "cb786a7ab58621050dcdf25d160e391d860444fc731a7f7f9b46bbd074b101ef"
+  },
+  "review.md": {
+    "same": true,
+    "sha256": "ad574a19f06643dba0538cf3fd6e4d71d521cd2bef4119e412b5deb41b024ff7"
+  }
+}

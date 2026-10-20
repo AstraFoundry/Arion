@@ -1,0 +1,11 @@
+{
+  "qualified": false,
+  "selected": null,
+  "screenPassedArms": [],
+  "productionActivated": false,
+  "freshExecuted": false,
+  "formatterExecuted": false,
+  "resultsSha256": "1dee90ca5fa4de39be71a4f92f748a0d290ae0e9182dc76ce15f07aee9909bfc",
+  "reviewSha256": "1eadeea9364907f5b1682b85be6cf7b80071b8643f409c027eb1be9b4714897c",
+  "reason": "LFM2.5 arms both conform79/101, harmful22 each, missed0, repaired47/47. Same-request canonical controls conform92/94, harmful3/4, missed6/3. Nine improved and37 regressed choices; reject both, no formatter/fresh expansion."
+}

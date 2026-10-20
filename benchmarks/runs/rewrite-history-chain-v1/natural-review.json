@@ -1,0 +1,1655 @@
+{
+  "method": "All120 actual raw bodies individually read in the native log; exact source/body equality checked against reviewed controls before carrying semantic/uncertainty/usability judgments. No independent reviewer or new ASR implied.",
+  "reviews": [
+    {
+      "variant": "history-format",
+      "id": "history-0282",
+      "rowSha256": "ad480e81a9e43c8c8549ba2aa2d8382ad2c9cfff75b542a3ac2a5e4e06d80b19",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Exact price-unchanged statement retained; no forecast details added.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0283",
+      "rowSha256": "d5c04e93be55488bc96cafc2f27d78496e422913d2df3a0ed0847467bcfe151c",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. All hundred-plus redevelopment projects and launch predicate retained.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0284",
+      "rowSha256": "184e6b75966c65d8f28c46d599f8fe99db4ee1bf029daeb86bde0da518876234",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Corrupted date-like phrase 一凌月 retained, no invented month/date. Input remains unclear.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0285",
+      "rowSha256": "9fcabde4729ddbb5eb36ade7d87dc19960612c8c2ccc9e1a0d3ad679dc00930d",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Personal name and technical phrase retained without guessing alternate homophones.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0286",
+      "rowSha256": "070bc75fe429b5442b78652c1eddea1dbc5bd47f22afad1c9e4d35c0ed820cf3",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Group hardship/testing statement retained.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0287",
+      "rowSha256": "dc66add3298451c15e8d93c948cf6880db70de16763519ed0c1d64d8add44dc7",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Early-August timing, company and capacity-resolution completion retained.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0288",
+      "rowSha256": "699cee32f186d4efdc9b6e16451c66637bf83114761111d187c7c2adf71bf132",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Minor scene-setting 这其中 removed; girl description and standout evaluation preserved without new people or actions.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0289",
+      "rowSha256": "e614649cdac0cbe3bc1525197f07c7c3c54845d2b783d73590482db442c57867",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Industry/new-golden-era assertion retained.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0290",
+      "rowSha256": "75d202b6ea2313ef2b6a992d0d4510123692616fb25b1b8d4d4410664c981ea3",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Unresolved-to-date problem negation retained.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0291",
+      "rowSha256": "973e66aae11e91c6a5f04464077cb8974619b67108887e8595f04504b79c320f",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Government-paid relocation/building opportunity retained without inventing acceptance or completion.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0292",
+      "rowSha256": "61d6b9028c1c0cd2767be43e8ba509fbc15e404dff8a49420ea89b30f8032f18",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Incomplete 对很多村民来说 frame preserved without invented conclusion.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0293",
+      "rowSha256": "ef87583aba09e6e5218f553925dbb94018f3f0e95ed429f0dd80a151ecc5d9d5",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Self-mocking attribution and childhood style statement retained, spacing/punctuation improved.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0294",
+      "rowSha256": "3386daf20a3dbd8700c9d32b719c0d72e1126d4377431d3a1cada0ef8ef904d4",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Unclear 蒙翻 wording now retained instead of invented rephotographing action; faithful to source but not independently readable speech recovery.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0295",
+      "rowSha256": "23937f457fd4dbf2348064f03cc3160ca8c0478cf6f894e1284a5cff2f5e7b00",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. 400m-to1500m preliminary-round range/order retained.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0296",
+      "rowSha256": "ded9bc7656540123fc564fbf345d8e9254b6b2a7a24b0aa15c708043a53577cf",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Interview attribution frame and unusual personal name kept; missing main content not invented.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0297",
+      "rowSha256": "1f1ef5b0184ff76cfc349286da80c7b755f2950d412cec38b01a5e8bc940ad71",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Department-handling wish remains request, not a completed action.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0298",
+      "rowSha256": "14040a749656b2e3db4ba3d87202bf85509362727710560966f6f5d451cf95b8",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Sales downturn statement unchanged apart from punctuation; no forced reference matching.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0299",
+      "rowSha256": "4b644cbbbd44c06b60bff0cf3ca7fb3c18c29075fa51b5d5f87f8848099797e1",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Debt-improvement question retained, no answer or policy invented.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0300",
+      "rowSha256": "2ad7ff5a701c6e557972b09cf2e61278da363446c9f88ad7e1013fa26ab4c278",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Ten-trillion quantity and enterprise-funds attribution retained.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0301",
+      "rowSha256": "a0894b601eb7f22a500ce5a9d916dc4d3df349c7893f81bfd4841721004a83f5",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. He/remote-radar/opponent-fleet/distance facts retained; pronoun not guessed from reference.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0302",
+      "rowSha256": "17e93c7e6cde0046f283f193b0cb340224a320863475e18683f99852fc36b367",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Duplicated 可 in 可圈可可点 naturally removed, preserving evaluation.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0303",
+      "rowSha256": "0b1f101cb370a40834970fd89dd484b22d3a25a63ae9d0c2030a104768dfb298",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Natural-gas consumption guidance retained.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0304",
+      "rowSha256": "32150067cb528d1e8c028bbfde10479526dd4824206bd745779ae93c07905976",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Housing transaction increase retained.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0305",
+      "rowSha256": "81fb38321e544466902570f561b0ea1f4ed666e4394a68812d559228304dfd9b",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Sibling/name/text-message relationship retained; no new celebrity facts asserted by the editor.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0306",
+      "rowSha256": "c82612a08c0f0735a3708854cd8c6775643fc6ca961b93d50e45c99b378f48fd",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Respect from media and audience retained.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0307",
+      "rowSha256": "da3f6ef90ced6eff53326f7b1e156997c6f20327ec9d43252edba92ca27e773a",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Their repeated competition-highlight role retained.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0308",
+      "rowSha256": "8d001a9ec5098dea1fc4f1c79c70aa0c664ea175aaeaee116d9a0fba4d02669d",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Unclear race/quantity/name text copied; not promoted as readable or recovered speech.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0309",
+      "rowSha256": "266da3d0d9c553a290437218006169a7857dc9088b0cc47ac9b2285eb87976e7",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Unintelligible source phrase retained without inventing a supply-season event.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0310",
+      "rowSha256": "96e03a77ae6f20614006bcd85689d6041232e5f376a62e9663cd6ab091008180",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Unclear facial-description fragment retained; no guessed predicate.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0311",
+      "rowSha256": "f6f3a699b4246443b20389d4645bedc2ed5eec672e7758330557b57f4a284aa7",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Not-only/lower-drug-dose meaning retained without inventing a second benefit.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0312",
+      "rowSha256": "4114b61a8e4e7a19cbfcfc9796d619dc3b24117e9ee56cd0bb71ae6129d573df",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Incomplete match-preparation fragment retained, no missing clause invented.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0313",
+      "rowSha256": "20cd50fd32f90263b409db16d96abfcbc056bbf95855e9cd3aae5cfd45f44c80",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Name and30-metre height retained; garbled building words not replaced from hidden reference.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0314",
+      "rowSha256": "9797a8cf503af1ecc29733d3351cc5353ad76b8e824f83ad27567c4db095e51e",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Investment/enterprise sentiment retained with spacing/punctuation polish.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0315",
+      "rowSha256": "14139cfa63fdb468c1ff5f75c8dafd3e28ff8847eed1b2cc3fae027c826bdd3b",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Unintelligible rights phrase retained without guessing actor or legal event.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0316",
+      "rowSha256": "eccac5da2a30149b775ec9c73a35d67fdfe983ad664e95fad627ef0bd2c384a2",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Person/place/investigation status retained literally; no reference-derived name repair.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0317",
+      "rowSha256": "9da7dc9b13fb0b76ce1afda71c832da544f64911d55d379a50e2f75e1398ece8",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Teacher name, out-of-pocket800 amount, poor-student scholarship retained; no hidden8000 recovery.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0318",
+      "rowSha256": "ed7087d2863f667857079425d597409588aea5b5e54e7b915100b4aa94e9654b",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Rio and larger-battle comparison retained.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0319",
+      "rowSha256": "c1e3dfbc39887ac7d93a921ad152bfeffcafc1921eda4a7b3ac329b0a4398356",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Incomplete 确 word is kept rather than completed; source-faithful but still awkward/incomplete.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0320",
+      "rowSha256": "f2739145f5242b9b56044ac7619eca3d724473b5ee13a6eaadb4578edebeee0a",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. We-learned introduction stays incomplete; no information manufactured.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0321",
+      "rowSha256": "9e6eaab6814f0aa306e847cf7e16c9a744b456f8e29be02bc68af06d368928fe",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Place/site identity retained but unclear 地况 word remains, limiting polish.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0322",
+      "rowSha256": "bf3def4707cfac92908d4e429dc09d66e47cb6281ae9ea37877c4cdfd90b4c1f",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Unclear 命运多续 adjective copied; not silently repaired using reference.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0323",
+      "rowSha256": "e7532c8d0161551452ac9218135dd83761e3a22c705c494dd05b21279b19ff6e",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Shot-put/name label retained; a short label need not become a full sentence.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0324",
+      "rowSha256": "480c90471393a3e313831b7c50d42c1ede84e5c2f894a31462a11092b79397b3",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Unclear actor/fee phrase copied, not an independently usable correction.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0325",
+      "rowSha256": "c3718816f7b4caf640c6e2c1ffdd390c73e7445f250aac209b82f304b695f0c1",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Severely garbled beginning retained; added punctuation does not recover event identity.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0326",
+      "rowSha256": "133d131512477f493c5bb6ec17627a074de309ec3d8a0669d28afb27b3179074",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Standalone 至于 retained, not completed with hidden speech.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0327",
+      "rowSha256": "cd5d8ead117fa2ad1d489a4267522cd987da6f1cbb4694f399853bcb6424ffd2",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Debt scale/safe-range constraint retained.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0328",
+      "rowSha256": "4c0673c399c42c95b26ec0ca6b0a696ef901fcb6237791f77f2380ec7ebfed88",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Training-priority statement and terminology retained, no arbitrary combat/standing substitution.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0329",
+      "rowSha256": "ce225dd161ac4b4b127752134498374e57d4c5a9fe1842b17601e5353e2d28cc",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Completed preparation remains expressed by 做好了; redundant connective/已经 condensed without making the plan incomplete or introducing new completion.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0330",
+      "rowSha256": "67072c096305c7ea9d034812e83c6b9e4b832e3927f625b8e508c4660b0f695e",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Chinese no-medication-threshold qualifier retained in Chinese; prior reverse translation fixed.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0331",
+      "rowSha256": "11631df2acae4511bd84aed37d17a36943feb5e9192b7cffbc96aa821ce4738b",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Fee-standard management predicate retained without hidden homophone replacement.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0332",
+      "rowSha256": "e2ff5d243a70fa7dbb99984034274cbbb311413d00e19b98d19a85372bfcac03",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Event/name label retained, no canonical biography inferred.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0333",
+      "rowSha256": "9599624d2c4e2089342a782f7b4b8bd0002d944157a0ead52fe8e6d425fe9535",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Further-improvement necessity retained.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0334",
+      "rowSha256": "0f67271017605a42b2b9eb2f3dc1d44fda41ca252a657470ae514f784a65b91c",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Standalone personal name preserved; not expanded to a biography.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0335",
+      "rowSha256": "ce9e1d34708f8fecb92660e351a1b15b921fd1779389da8b020ba805c91b636c",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Three-ten-thousand-plus aspiration retained but unclear allocation verb remains.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0336",
+      "rowSha256": "fce8afbefc70bbb4470ababddf8399fec0509f74333008f4696e9b1480a8b410",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Only-in-April2014 return timing retained.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0337",
+      "rowSha256": "8ae11e0ab006b4f06a2a52f966ad956af8a64943e6eec56197e60058699a97e1",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Speech-attribution lead-in left incomplete rather than inventing speech.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0338",
+      "rowSha256": "4db7cef5d0f06ed308c71c5a2e6d69a7f3ddb0f00c1df4a42527254ff4387d98",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Even-if server-design condition retained as an incomplete fragment.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0339",
+      "rowSha256": "b59642d60e346d588927d4c534468053bc129d85d0b9ecba4c2e2820ef5b185c",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. All visible address components retained; no different place spelling inferred.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0340",
+      "rowSha256": "b820783761f92920bacf4444e1bdb2dee5ced413a4bbddb23c7d82fb4537c9e4",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Today/pre-event press-conference facts retained.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0341",
+      "rowSha256": "57f9bbc4b8bd7702888a5a3fd0984ddffc61503e1462111bc507f45e29bd7a85",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Villager/name/newspaper/request-for-help facts retained.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0342",
+      "rowSha256": "afe9d476eed4434ae9a798b3bdc24ed7b96ec49a34f4775f55fd80d1b30cdae8",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Stage scene and second-person permission to begin retained, period added.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0343",
+      "rowSha256": "763641a45e7db8e7b9ebc8a54a193073a84bca94aa1354592fca78df279798ba",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. English commentary-origin statement retained in English with title capitalization, fixing prior translation.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0344",
+      "rowSha256": "1c46bcbb9f2ddfb7d1f15564e039e2dacd617a9a0c97d48b76b69ee4d576e14a",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. You/me perspective and all unclear name tokens/four-men count retained; prior perspective/name loss fixed, source list still garbled.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0345",
+      "rowSha256": "4d97c8270132120bdd7d4f23dd25115460766eb2cdb50190563aba9b24c3c5d3",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Unclear final axen retained; not fluent but no invented adjective.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0346",
+      "rowSha256": "a1135bd15d62f34e8b1249b9efd9a9766114dba34c2427b8fcee03c5574bc599",
+      "faithful": null,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "meaning-uncertain"
+      ],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. af still completed to afraid; original uncertainty remains, no new audio/evidence supplied.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0347",
+      "rowSha256": "e6350c19bf961988e31cad35b7782da82f1d7ab6be9437eeb7936adf3271c5d7",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Play idea, one man/two women and tentative secret retained; and but hesitation remains awkward.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0348",
+      "rowSha256": "6e64c04636d1936665155dad657b74bbe7916eae7c7f0bcc1d4770f8cd0945d2",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Three sons and unusual names/tail retained; corruption not recovered.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0349",
+      "rowSha256": "37669b2aff148f8b0c741c012d5d3b7d9974319186c204ce01469ed4a346cfa9",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Meaning retained but concern inflection remains ungrammatical.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0350",
+      "rowSha256": "ac0717d105b7f3207cb964e4baa877ea57f7347e0b5835116a93ef0354361327",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Luther capitalization and period polish only; argument preserved.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0351",
+      "rowSha256": "7d3da72c82e6c697543d40d20bf1c817ae384fb41ac32f3e61393a00c4e08b3d",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Mr. Edison and ahead-of-time comparison preserved.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0352",
+      "rowSha256": "82742f2c5e02e341921ea3a04b8be70b557d20b9dd46debc64e7d87959327483",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Returned/caring little/no-difference meaning retained.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0353",
+      "rowSha256": "8f0c904e6c6ce9194dec7024c388027cffbab6c6ed7050affae285be14138c70",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Incomplete new-what question retained without a guessed object.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0354",
+      "rowSha256": "7a1df7c1194522e408a486ccf4bda263d02f3784bbc56813bb4946da58bb7bb9",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. breakfas completed to breakfast, a strong lexical completion in ready-for-breakfast context. Speaker name and morning/breakfast relationship unchanged, no claim of acoustic proof.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0355",
+      "rowSha256": "fd3f0db7f762c9846d625ec181a9d51c9cf4d89d0c4cd97f319407307f392a39",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Nested uncertainty and did-not-agree wording retained, not collapsed to certainty.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0356",
+      "rowSha256": "23e87b2b6c1310c60ddc36a40c89ededf97021190e5d06c556c3a73f5137853a",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Rare crampness word retained rather than forced to a presumed standard word.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0357",
+      "rowSha256": "9ecb0897c70917186d73efda291be13fe5032371f2af7ee0ec50f779641c6095",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Unclear Harang/tong fragment copied, no invented name or continuation.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0358",
+      "rowSha256": "23abe829f9326a0d2aeb3054ce681b6963c8317965bab6ec0c01bc75074a2237",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. English optative/conditional fragment retained without invented main clause or translation; readable as a short wish/thought.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0359",
+      "rowSha256": "9577bf76ad3347693c011bf8b1acb4899d5a04a30301e985cf1e4291f4097ddb",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Not-old claim and fir-tree attribution retained.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0360",
+      "rowSha256": "605c80f763cba75a7c062a4fb489a84732ee77244244fabc4664901af8b2b697",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Stillness, calls and light-response actions retained.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0361",
+      "rowSha256": "5f05c8e527611d3a8170f2375a1b51d7beac037378c669045a0372ac71e9e811",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Carved-head/forked-tongue fragment kept without inventing missing direction.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0362",
+      "rowSha256": "993e156f5e6dd95ab2bcfeef3a90b48f2584e876647f8ee93fadc66f925c29b8",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Source title and unclear plen word retained without arbitrary canonical title correction.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0363",
+      "rowSha256": "7cf2eeb732edbfe7438f9d270c08b1e4ab4dff5955d05fc72955295e299c946b",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Opening And removed; return to books and dignified literary entrance retained.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0364",
+      "rowSha256": "133af5fc057a48883a6839d4af7db55dabab5368c7dcdb2a5d7885e0a9569394",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Entire English statement, Abbey Conti title/name spelling, writer reference and quote-two-lines fact retained in English. Earlier translation/entity reinterpretation fixed.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0365",
+      "rowSha256": "9df7184c649e56d9ceba2f9b9ca06e38ace270251c7dc7a5b4766e9ed6e48da6",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Full See request, Uncus attribution, evident trail marks and direction retained; prior narrator conversion/detail loss fixed.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0366",
+      "rowSha256": "a5c4db3cd45b67b98d0ab9de938f94326628f84d81057ec3eb874e967965e41a",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Both-road-sides, one-mile-before-hill distance, hedges and singular field retained.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0367",
+      "rowSha256": "3e9800851eac2380d6b4823ae6f1fee9bdfaef670f10d04011ff7f2ef98c6d8f",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Speaker stance/law/Westport retained; audit suffix/clause ambiguity remains awkward.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0368",
+      "rowSha256": "9d67af35779a406601b0b531d9912129d2fe49f3cf51bbd69c7da39ac41f7c73",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Corrupted rescue cry retained rather than inventing combatants.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0369",
+      "rowSha256": "b25ce7bf04d4d7d91ae0e8f43d26bd9a7e88576124eda7e0de76ce72af0950e5",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Poor-health negation retained.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0370",
+      "rowSha256": "cb011837cde1275dda21b4b1ed9887c18c9927c4cdad217e1340de2bc1a3aeef",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Courtyard entry/completed tense retained.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0371",
+      "rowSha256": "0ed398a7fca5ae4bdd5ec396c3a1966d711a13d007455d7e943239a7fd5b6ebe",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Original however and misses Gray spelling retained. No honorific choice introduced; source title remains awkward.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0372",
+      "rowSha256": "3f7edc456e29e5dee9f71043c27893b986fc2fba0d5cf81a0c35cec5cfa31823",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Both negations, half-ale quantity and toast retained; no new response to invitation.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0373",
+      "rowSha256": "7ec96bf7e4fee345b06b39ddc173842d544812b5c5592b6dac0d5721c76b21c8",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Conditional wildness/judgment retained; rare source spelling not silently canonicalized.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0374",
+      "rowSha256": "e32ee9f40eac51466d61cfe47920bdd914da3fc29f9aeacc6007d993594504db",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Nancy capitalization added, source meant verb preserved rather than hidden met replacement.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0375",
+      "rowSha256": "b92eb69022f8f9b2658f3420b39a9c075f9cdfe5f2ffcfc7b2340453b218f346",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Troop placement, demand and arms ownership retained.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0376",
+      "rowSha256": "6ece540a9addb3b750890ea2cc752fce026052198e349a4bee592a4caa14d23c",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Visible lake word retained but unresolved reference/article limits readability.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0377",
+      "rowSha256": "51e07a6c354370f63fd2e50350a5f74f100ff787c7959e66b881f39e9eb0b1ae",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Your/you-are grammar issue and question punctuation remain unpolished; question words still retain intent.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0378",
+      "rowSha256": "ff12b05fad15bef239a35e0381449acf598deaa31169953b9f947bdf92d6022c",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Reason-to-pause and emotionless-man comparison retained.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0379",
+      "rowSha256": "5350abd75b0009e19c2b3bfa88fae77cf7de84cc42ee8434372309411586f4b9",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Both stiffness/estrangement words retained, avoiding uncertain content deletion; grammar remains awkward.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0380",
+      "rowSha256": "cbbeb9ff8d5d7ea9a4390e9e7352762722b469e811b5cd5921aecc925949446a",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Emotion/sign-to-parents/wish-to-be-alone retained, no new personal-name spelling.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0381",
+      "rowSha256": "939773f18f736b8e19f7400e1128c3dc0016fd6704ede77c9ef45d2340e5320c",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Future newspaper question retained, not answered.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0382",
+      "rowSha256": "629afb87e3034fd259b5c24a12942da77322a614d0747bc039b0950de1e8fb7d",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. King/Montrose/Scotland/bold-advice relation retained without hidden councils/counsels replacement.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0383",
+      "rowSha256": "0b7c2898df1d84f2ea35ae8b3c0425cb644bfce57609cbe69794516b4e5f37ca",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Both no-need and no-peril statements retained, no advice response.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0384",
+      "rowSha256": "2f63f0b7922f2aa81e35e023566f6558c46d4bcdbac9dcd24d9b699ca6304233",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Nearly-all qualifier and required-uniform predicate retained.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0385",
+      "rowSha256": "ee717fe0176b843509a442fa221898cb6dec9c07adcd5d98671fe7e2a97d4a3f",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Quick/unexpected march restored with original negation and place spelling. Source not a frightened covenanters phrasing remains unpolished.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0386",
+      "rowSha256": "6de5dcf0b8aac2bae2a2ccdac1e3ccaea4d50e08f46462dababb0baaba6bddea",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Education question and source Mary Tayl attribution retained; no arbitrary surname expansion.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0387",
+      "rowSha256": "0816b452cba58aa2c4117282d339c5dcc35ddbc30b01814b726c2d664ea3e491",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Archaic thou/not-lover statement retained without modernizing or translating.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0388",
+      "rowSha256": "e8d660651d1f55c6bb7604d68b1217a9d9651d2ef34edeb1f7a70c7fe390e750",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Sallen name and desire-for-details retained, no classical-name guess.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0389",
+      "rowSha256": "583bd498266d09d6d443182a18fc23498086fef8984b1412fd138cc2b7b575f9",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Attribution-only first clause remains incomplete; fire action retained.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0390",
+      "rowSha256": "962ee3f3ab2500afcda871cee58ca72311cffcd1232a2dd5fffa8d2af0974f80",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Source nature/des fragment retained without completing unseen object.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0391",
+      "rowSha256": "89ca20f3fcaf0fa7c256afadcbac1337e43be8e16343d6b35e7fab5ce7ed3cb0",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Stay plea retained, but most love remains ungrammatical.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0392",
+      "rowSha256": "c13647483b86cf577bb1fc8bbd5038ce334efb9a4296a2aae20a96a635ffcd80",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Visible construction/company attribution retained, source Ed/And ambiguity remains awkward.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0393",
+      "rowSha256": "29a86c983c1affa0e09177e0de28f55302ccab819d9689e5b4956cc0ccdbda00",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Ardor/knowledge/introspection meaning retained, punctuation only.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0394",
+      "rowSha256": "4f731761a387961171676363ec73544367733a5a335382b1c28d608760970d06",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. English is retained and no how-much question invented; usu completed to usual, a plausible lexical suffix. Initial grammar and assertion/question ambiguity in source remain unpolished.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0395",
+      "rowSha256": "444c37960dd4aa8aa1f6fe58fb10a4b1885d21f31421224dffa08d64cbf8a54e",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Incomplete promise of narrative retained rather than adding missing give.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0396",
+      "rowSha256": "a2a4f411072977633acd5f29b64d2985e71bf06daf90e6e1900eb22ee15d91db",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. horiz completed to horizon, strong lexical suffix completion in point-towards context; coming storm and cry retained.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0397",
+      "rowSha256": "ba46cf800a156c934aceaa221a8b0321a2f1fd90d08f7e16a72382d2385abc0b",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. dinn completed to dinner, strong lexical suffix completion after give-a-very-good; wife/singular gentleman/moment retained.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0398",
+      "rowSha256": "dbd9c4d7f2d14ad09448bd1ce33aa715a3a014c70ccccaaff02522980f68d9c2",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Archaic address, loved/given and nobody-can-take crown negation retained.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0399",
+      "rowSha256": "378b2e2c2a0e0f25b76b9bc0b7665a81b782ad19beed4456c1f72c5308177889",
+      "faithful": true,
+      "sceneUseful": true,
+      "languagePreserved": true,
+      "sourceLimited": false,
+      "repairSucceeded": null,
+      "issues": [],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. All chair questions and by-window answer retained, no new answer supplied.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0400",
+      "rowSha256": "078e8bac44edbf4da52b2eab559a33e21e8e568419bbf9a975b52598ada8f9b9",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Heavily corrupted subject list/tail copied; not usable or recovered.",
+      "stage": "format"
+    },
+    {
+      "variant": "history-format",
+      "id": "history-0401",
+      "rowSha256": "921b8e8b7cac4a141c29c4544e50f5be9f343dfc63056d1dfefcdc12523033f6",
+      "faithful": true,
+      "sceneUseful": false,
+      "languagePreserved": true,
+      "sourceLimited": true,
+      "repairSucceeded": null,
+      "issues": [
+        "source-limited-polish"
+      ],
+      "note": "Actual new full-history natural response individually read; frozen source and body match the previously reviewed natural control. Complete new source/output pair personally reread; body is byte-identical to the prior independently stored treatment. Unclear seagates/asked-Ken fragment retained without inventing a different named person or gate request.",
+      "stage": "format"
+    }
+  ]
+}

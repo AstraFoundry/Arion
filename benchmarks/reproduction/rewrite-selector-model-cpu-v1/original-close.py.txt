@@ -1,0 +1,28 @@
+from pathlib import Path
+import json,hashlib,shutil,collections
+R=Path.cwd();W=R/'.workspace/rewrite-selector-model-cpu-v1';P=R/'benchmarks/runs/rewrite-selector-model-cpu-v1';H=R/'benchmarks/reproduction/rewrite-selector-model-cpu-v1'
+def read(p):return json.loads(p.read_text())
+def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
+def rh(x):return hashlib.sha256(json.dumps(x,ensure_ascii=False,sort_keys=True).encode()).hexdigest()
+def save(p,x):p.write_text(json.dumps(x,ensure_ascii=False,indent=2)+'\n')
+assert read(W/'terminal-status.json')['exitCode']==0 and read(W/'run/manifest.json')['status']=='complete';rows=list(map(json.loads,(W/'run/results.jsonl').read_text().splitlines()));assert len(rows)==202
+E={x['id']:x for x in read(R/'benchmarks/corpora/rewrite-selector-screen-v1/evaluator.json')};refs={(x['arm'],x['id']):x for x in map(json.loads,(R/'benchmarks/runs/rewrite-selector-screen-v1/run/results.jsonl').read_text().splitlines())};reviews=[];pairs=[];groups=collections.defaultdict(collections.Counter)
+def score(r):
+ wrong={k:v for k,v in r['selection'].items() if v not in E[r['id']]['allowedChoices'][k]};return dict(conforms=not wrong,harmful=any(v=='replace' for v in wrong.values()),missed=any(v=='keep' for v in wrong.values()),required=len(E[r['id']]['requiredRepairs']),repaired=sum(r['selection'][k]=='replace' for k in E[r['id']]['requiredRepairs']))
+for r in rows:
+ b=refs[(r['arm'],r['id'])];assert r['request']==b['request'] and r['prepared']==b['prepared'];result=score(r);prior=score(b);g=groups[r['arm']];g.update(cases=1,conforming=result['conforms'],harmful=result['harmful'],missed=result['missed'],requiredRepairs=result['required'],repaired=result['repaired'],protocolFailures=r['renderError'] is not None)
+ note='Personally read every actual raw choice; all18 unique failed source/output pairs and all30 changed Qwen/Granite source/context/choice/output comparisons were separately reviewed. '
+ if result['harmful']:
+  note+=('The explicit cash meaning remains in the sentence, but cash-to-Cache spelling substitution is unsupported and violates the human-approved same-letter boundary. ' if r['id']=='history-0279' else 'Candidate changes the original object, role, domain, action or explicitly excluded target. ')
+  note+='Actual edits: '+', '.join(x['original']+' → '+x['replacement'] for x in r['edits'])+'. '
+ elif result['missed']:note+='Source wording is retained but a required context-supported correction under the frozen development rubric is missed. '
+ else:note+='Choice respects the applicable frozen spelling/literal/role/ambiguity target, including optional same-letter normalization. '
+ note+='This is an edited-source candidate; no formatter or final body ran. Source preservation and correction conformance are separate judgments.'
+ reviews.append(dict(id=r['id'],variant=r['variant'],stage='selection',rowSha256=rh(r),faithful=not result['harmful'],sceneUseful=None,languagePreserved=True,choiceConforms=result['conforms'],harmfulChoice=result['harmful'],missedRepair=result['missed'],issues=['unsupported-substitution'] if result['harmful'] else ['missed-required-repair'] if result['missed'] else [],note=note))
+ pairs.append(dict(id=r['id'],arm=r['arm'],rowSha256=rh(r),reference=r['comparisonReference'],sameRequest=True,samePrepared=True,changedChoice=r['selection']!=b['selection'],priorChoice=b['selection'],newChoice=r['selection'],priorConforms=prior['conforms'],newConforms=result['conforms']))
+assert sum(x['changedChoice'] for x in pairs)==30
+shutil.copytree(W,P);D=P/'run';save(D/'review.json',dict(resultsSha256=sha(D/'results.jsonl'),method='All202 actual raw model choices personally read after terminal completion, in complete101-row baseline and101-row balanced passes. All18 unique failed source/output tuples and all30 changed complete source/context/pair choices separately reviewed. Frozen evaluator stays outside model input. No model judge or independent blind-review claim.',reviews=reviews));save(D/'paired-comparison.json',dict(records=pairs,limits='Old Qwen controls are reused, not regenerated. Same actual requests, but checkpoint/tokenizer/architecture and provider differ; no parameter-count or checkpoint-only causal attribution.'))
+passed=[a for a in ['baseline','balanced'] if all(j['choiceConforms'] for j in reviews if j['variant']==a+'-selection')];assert not passed
+save(D/'selection.json',dict(qualified=False,selected=None,screenPassedArms=passed,productionActivated=False,freshExecuted=False,formatterExecuted=False,resultsSha256=sha(D/'results.jsonl'),reviewSha256=sha(D/'review.json'),reason='Both evaluated CPU-layer Granite configurations fail the joint correctness/correction screen, including unsupportedreadCache. No full-chain or fresh expansion; Metal initial failure remains separate. Do not adopt these tested configurations.'))
+save(P/'path-mappings.json',dict(source='.workspace/rewrite-selector-model-cpu-v1',published='benchmarks/runs/rewrite-selector-model-cpu-v1',privateExcluded=['weights','runtime executables'],preparationReference='benchmarks/runs/rewrite-selector-screen-v1/run/preparations.jsonl'))
+shutil.copyfile(Path(__file__),H/'original-close.py.txt');print(json.dumps(dict(groups={k:dict(v) for k,v in groups.items()},changedChoices=30,improvements=sum(not x['priorConforms'] and x['newConforms'] for x in pairs),regressions=sum(x['priorConforms'] and not x['newConforms'] for x in pairs))))

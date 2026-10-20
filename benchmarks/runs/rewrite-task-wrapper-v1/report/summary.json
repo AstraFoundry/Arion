@@ -1,0 +1,95 @@
+{
+  "generations": 132,
+  "reviewedOutputs": 132,
+  "selected": "tasked",
+  "summary": {
+    "development/development/labeled": {
+      "cases": 18,
+      "rawFaithful": 16,
+      "rawSceneReady": 12,
+      "requiredRepairs": 5,
+      "repairSucceeded": 3,
+      "harmfulContextChanges": 0,
+      "demonstrationLeakage": 0,
+      "strictFaithfulDelivered": 16,
+      "strictSceneReadyDelivered": 12,
+      "faithfulProposalsRejected": 0
+    },
+    "development/development/tasked": {
+      "cases": 18,
+      "rawFaithful": 16,
+      "rawSceneReady": 14,
+      "requiredRepairs": 5,
+      "repairSucceeded": 3,
+      "harmfulContextChanges": 0,
+      "demonstrationLeakage": 0,
+      "strictFaithfulDelivered": 16,
+      "strictSceneReadyDelivered": 14,
+      "faithfulProposalsRejected": 0
+    },
+    "evaluation/known-context-regression/labeled": {
+      "cases": 24,
+      "rawFaithful": 22,
+      "rawSceneReady": 21,
+      "requiredRepairs": 4,
+      "repairSucceeded": 2,
+      "harmfulContextChanges": 0,
+      "demonstrationLeakage": 0,
+      "strictFaithfulDelivered": 22,
+      "strictSceneReadyDelivered": 22,
+      "faithfulProposalsRejected": 1
+    },
+    "evaluation/fresh-test/labeled": {
+      "cases": 24,
+      "rawFaithful": 18,
+      "rawSceneReady": 14,
+      "requiredRepairs": 7,
+      "repairSucceeded": 4,
+      "harmfulContextChanges": 3,
+      "demonstrationLeakage": 0,
+      "strictFaithfulDelivered": 18,
+      "strictSceneReadyDelivered": 14,
+      "faithfulProposalsRejected": 0
+    },
+    "evaluation/known-context-regression/tasked": {
+      "cases": 24,
+      "rawFaithful": 21,
+      "rawSceneReady": 21,
+      "requiredRepairs": 4,
+      "repairSucceeded": 2,
+      "harmfulContextChanges": 0,
+      "demonstrationLeakage": 0,
+      "strictFaithfulDelivered": 21,
+      "strictSceneReadyDelivered": 21,
+      "faithfulProposalsRejected": 0
+    },
+    "evaluation/fresh-test/tasked": {
+      "cases": 24,
+      "rawFaithful": 18,
+      "rawSceneReady": 16,
+      "requiredRepairs": 7,
+      "repairSucceeded": 4,
+      "harmfulContextChanges": 3,
+      "demonstrationLeakage": 0,
+      "strictFaithfulDelivered": 18,
+      "strictSceneReadyDelivered": 16,
+      "faithfulProposalsRejected": 0
+    }
+  },
+  "timing": {
+    "labeled": {
+      "p50Ms": 837.8167077898979,
+      "p95Ms": 1150.0027091242373
+    },
+    "tasked": {
+      "p50Ms": 1264.511917019263,
+      "p95Ms": 1589.781624963507
+    }
+  },
+  "productionActivated": false,
+  "limitations": [
+    "Authored Chinese text; no real ASR/OCR/native app-scene test.",
+    "Shared-host timing with an experimental absolute budget; not a production latency comparison.",
+    "Assistant inspection, not independent human ratings."
+  ]
+}

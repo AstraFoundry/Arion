@@ -1,0 +1,1502 @@
+[
+  {
+    "phase": "development",
+    "id": "owner-anchor",
+    "variant": "xml",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-work-zh"
+  },
+  {
+    "phase": "development",
+    "id": "platform-wrong-relevant",
+    "variant": "xml",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-work-zh"
+  },
+  {
+    "phase": "development",
+    "id": "identifier-wrong-relevant",
+    "variant": "xml",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-work-zh"
+  },
+  {
+    "phase": "development",
+    "id": "homophone-wrong-relevant",
+    "variant": "xml",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-work-zh"
+  },
+  {
+    "phase": "development",
+    "id": "injection",
+    "variant": "xml",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-work-zh"
+  },
+  {
+    "phase": "development",
+    "id": "email-anchor",
+    "variant": "xml",
+    "assignedScene": "email",
+    "effectiveModelScene": "email",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-email-zh"
+  },
+  {
+    "phase": "development",
+    "id": "recipient-wrong-relevant",
+    "variant": "xml",
+    "assignedScene": "email",
+    "effectiveModelScene": "email",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-email-zh"
+  },
+  {
+    "phase": "development",
+    "id": "wrong-ocr",
+    "variant": "xml",
+    "assignedScene": "email",
+    "effectiveModelScene": "email",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-email-zh"
+  },
+  {
+    "phase": "development",
+    "id": "two-names",
+    "variant": "xml",
+    "assignedScene": "email",
+    "effectiveModelScene": "email",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-email-zh"
+  },
+  {
+    "phase": "development",
+    "id": "conditional-fact",
+    "variant": "xml",
+    "assignedScene": "email",
+    "effectiveModelScene": "email",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-email-zh"
+  },
+  {
+    "phase": "development",
+    "id": "f-prompt-all",
+    "variant": "xml",
+    "assignedScene": "prompt",
+    "effectiveModelScene": "prompt",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-prompt-zh"
+  },
+  {
+    "phase": "development",
+    "id": "f-prompt-size",
+    "variant": "xml",
+    "assignedScene": "prompt",
+    "effectiveModelScene": "prompt",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-prompt-zh"
+  },
+  {
+    "phase": "development",
+    "id": "f-prompt-token",
+    "variant": "xml",
+    "assignedScene": "prompt",
+    "effectiveModelScene": "prompt",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-prompt-zh"
+  },
+  {
+    "phase": "development",
+    "id": "f-prompt-context",
+    "variant": "xml",
+    "assignedScene": "prompt",
+    "effectiveModelScene": "prompt",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-prompt-zh"
+  },
+  {
+    "phase": "development",
+    "id": "f-chat-question",
+    "variant": "xml",
+    "assignedScene": "chat",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-chat-zh"
+  },
+  {
+    "phase": "development",
+    "id": "f-chat-condition",
+    "variant": "xml",
+    "assignedScene": "chat",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-chat-zh"
+  },
+  {
+    "phase": "development",
+    "id": "f-chat-negative",
+    "variant": "xml",
+    "assignedScene": "chat",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-chat-zh"
+  },
+  {
+    "phase": "development",
+    "id": "f-chat-branches",
+    "variant": "xml",
+    "assignedScene": "chat",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-chat-zh"
+  },
+  {
+    "phase": "development",
+    "id": "owner-anchor",
+    "variant": "json",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-work-zh"
+  },
+  {
+    "phase": "development",
+    "id": "platform-wrong-relevant",
+    "variant": "json",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-work-zh"
+  },
+  {
+    "phase": "development",
+    "id": "identifier-wrong-relevant",
+    "variant": "json",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-work-zh"
+  },
+  {
+    "phase": "development",
+    "id": "homophone-wrong-relevant",
+    "variant": "json",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-work-zh"
+  },
+  {
+    "phase": "development",
+    "id": "injection",
+    "variant": "json",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-work-zh"
+  },
+  {
+    "phase": "development",
+    "id": "email-anchor",
+    "variant": "json",
+    "assignedScene": "email",
+    "effectiveModelScene": "email",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-email-zh"
+  },
+  {
+    "phase": "development",
+    "id": "recipient-wrong-relevant",
+    "variant": "json",
+    "assignedScene": "email",
+    "effectiveModelScene": "email",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-email-zh"
+  },
+  {
+    "phase": "development",
+    "id": "wrong-ocr",
+    "variant": "json",
+    "assignedScene": "email",
+    "effectiveModelScene": "email",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-email-zh"
+  },
+  {
+    "phase": "development",
+    "id": "two-names",
+    "variant": "json",
+    "assignedScene": "email",
+    "effectiveModelScene": "email",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-email-zh"
+  },
+  {
+    "phase": "development",
+    "id": "conditional-fact",
+    "variant": "json",
+    "assignedScene": "email",
+    "effectiveModelScene": "email",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-email-zh"
+  },
+  {
+    "phase": "development",
+    "id": "f-prompt-all",
+    "variant": "json",
+    "assignedScene": "prompt",
+    "effectiveModelScene": "prompt",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-prompt-zh"
+  },
+  {
+    "phase": "development",
+    "id": "f-prompt-size",
+    "variant": "json",
+    "assignedScene": "prompt",
+    "effectiveModelScene": "prompt",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-prompt-zh"
+  },
+  {
+    "phase": "development",
+    "id": "f-prompt-token",
+    "variant": "json",
+    "assignedScene": "prompt",
+    "effectiveModelScene": "prompt",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-prompt-zh"
+  },
+  {
+    "phase": "development",
+    "id": "f-prompt-context",
+    "variant": "json",
+    "assignedScene": "prompt",
+    "effectiveModelScene": "prompt",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-prompt-zh"
+  },
+  {
+    "phase": "development",
+    "id": "f-chat-question",
+    "variant": "json",
+    "assignedScene": "chat",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-chat-zh"
+  },
+  {
+    "phase": "development",
+    "id": "f-chat-condition",
+    "variant": "json",
+    "assignedScene": "chat",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-chat-zh"
+  },
+  {
+    "phase": "development",
+    "id": "f-chat-negative",
+    "variant": "json",
+    "assignedScene": "chat",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-chat-zh"
+  },
+  {
+    "phase": "development",
+    "id": "f-chat-branches",
+    "variant": "json",
+    "assignedScene": "chat",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-chat-zh"
+  },
+  {
+    "phase": "development",
+    "id": "owner-anchor",
+    "variant": "labeled",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-work-zh"
+  },
+  {
+    "phase": "development",
+    "id": "platform-wrong-relevant",
+    "variant": "labeled",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-work-zh"
+  },
+  {
+    "phase": "development",
+    "id": "identifier-wrong-relevant",
+    "variant": "labeled",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-work-zh"
+  },
+  {
+    "phase": "development",
+    "id": "homophone-wrong-relevant",
+    "variant": "labeled",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-work-zh"
+  },
+  {
+    "phase": "development",
+    "id": "injection",
+    "variant": "labeled",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-work-zh"
+  },
+  {
+    "phase": "development",
+    "id": "email-anchor",
+    "variant": "labeled",
+    "assignedScene": "email",
+    "effectiveModelScene": "email",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-email-zh"
+  },
+  {
+    "phase": "development",
+    "id": "recipient-wrong-relevant",
+    "variant": "labeled",
+    "assignedScene": "email",
+    "effectiveModelScene": "email",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-email-zh"
+  },
+  {
+    "phase": "development",
+    "id": "wrong-ocr",
+    "variant": "labeled",
+    "assignedScene": "email",
+    "effectiveModelScene": "email",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-email-zh"
+  },
+  {
+    "phase": "development",
+    "id": "two-names",
+    "variant": "labeled",
+    "assignedScene": "email",
+    "effectiveModelScene": "email",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-email-zh"
+  },
+  {
+    "phase": "development",
+    "id": "conditional-fact",
+    "variant": "labeled",
+    "assignedScene": "email",
+    "effectiveModelScene": "email",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-email-zh"
+  },
+  {
+    "phase": "development",
+    "id": "f-prompt-all",
+    "variant": "labeled",
+    "assignedScene": "prompt",
+    "effectiveModelScene": "prompt",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-prompt-zh"
+  },
+  {
+    "phase": "development",
+    "id": "f-prompt-size",
+    "variant": "labeled",
+    "assignedScene": "prompt",
+    "effectiveModelScene": "prompt",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-prompt-zh"
+  },
+  {
+    "phase": "development",
+    "id": "f-prompt-token",
+    "variant": "labeled",
+    "assignedScene": "prompt",
+    "effectiveModelScene": "prompt",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-prompt-zh"
+  },
+  {
+    "phase": "development",
+    "id": "f-prompt-context",
+    "variant": "labeled",
+    "assignedScene": "prompt",
+    "effectiveModelScene": "prompt",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-prompt-zh"
+  },
+  {
+    "phase": "development",
+    "id": "f-chat-question",
+    "variant": "labeled",
+    "assignedScene": "chat",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-chat-zh"
+  },
+  {
+    "phase": "development",
+    "id": "f-chat-condition",
+    "variant": "labeled",
+    "assignedScene": "chat",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-chat-zh"
+  },
+  {
+    "phase": "development",
+    "id": "f-chat-negative",
+    "variant": "labeled",
+    "assignedScene": "chat",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-chat-zh"
+  },
+  {
+    "phase": "development",
+    "id": "f-chat-branches",
+    "variant": "labeled",
+    "assignedScene": "chat",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-chat-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "platform-wrong-no-context",
+    "variant": "xml",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-work-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "identifier-wrong-no-context",
+    "variant": "xml",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-work-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "homophone-wrong-no-context",
+    "variant": "xml",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-work-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "fresh-work-owners",
+    "variant": "xml",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-work-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "platform-wrong-relevant",
+    "variant": "xml",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-work-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "platform-clean-relevant",
+    "variant": "xml",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-work-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "platform-wrong-unrelated",
+    "variant": "xml",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-work-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "identifier-wrong-relevant",
+    "variant": "xml",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-work-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "identifier-clean-relevant",
+    "variant": "xml",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-work-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "identifier-wrong-unrelated",
+    "variant": "xml",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-work-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "homophone-wrong-relevant",
+    "variant": "xml",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-work-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "homophone-clean-relevant",
+    "variant": "xml",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-work-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "homophone-wrong-unrelated",
+    "variant": "xml",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-work-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "amount-conflict",
+    "variant": "xml",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-work-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "injection",
+    "variant": "xml",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-work-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "negative-question",
+    "variant": "xml",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-work-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "unrelated-fact",
+    "variant": "xml",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-work-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "fresh-work-name",
+    "variant": "xml",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-work-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "fresh-work-code",
+    "variant": "xml",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-work-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "fresh-work-progress",
+    "variant": "xml",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-work-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "fresh-work-ambiguous",
+    "variant": "xml",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-work-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "fresh-work-unrelated",
+    "variant": "xml",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-work-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "recipient-wrong-no-context",
+    "variant": "xml",
+    "assignedScene": "email",
+    "effectiveModelScene": "email",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-email-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "fresh-email-short",
+    "variant": "xml",
+    "assignedScene": "email",
+    "effectiveModelScene": "email",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-email-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "fresh-email-intent",
+    "variant": "xml",
+    "assignedScene": "email",
+    "effectiveModelScene": "email",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-email-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "recipient-wrong-relevant",
+    "variant": "xml",
+    "assignedScene": "email",
+    "effectiveModelScene": "email",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-email-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "recipient-clean-relevant",
+    "variant": "xml",
+    "assignedScene": "email",
+    "effectiveModelScene": "email",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-email-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "recipient-wrong-unrelated",
+    "variant": "xml",
+    "assignedScene": "email",
+    "effectiveModelScene": "email",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-email-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "date-conflict",
+    "variant": "xml",
+    "assignedScene": "email",
+    "effectiveModelScene": "email",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-email-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "two-names",
+    "variant": "xml",
+    "assignedScene": "email",
+    "effectiveModelScene": "email",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-email-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "wrong-ocr",
+    "variant": "xml",
+    "assignedScene": "email",
+    "effectiveModelScene": "email",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-email-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "conditional-fact",
+    "variant": "xml",
+    "assignedScene": "email",
+    "effectiveModelScene": "email",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-email-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "fresh-email-name",
+    "variant": "xml",
+    "assignedScene": "email",
+    "effectiveModelScene": "email",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-email-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "fresh-email-conditional",
+    "variant": "xml",
+    "assignedScene": "email",
+    "effectiveModelScene": "email",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-email-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "fresh-email-bad-ocr",
+    "variant": "xml",
+    "assignedScene": "email",
+    "effectiveModelScene": "email",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-email-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "fresh-email-ambiguous",
+    "variant": "xml",
+    "assignedScene": "email",
+    "effectiveModelScene": "email",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-email-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "fresh-prompt-restrictions",
+    "variant": "xml",
+    "assignedScene": "prompt",
+    "effectiveModelScene": "prompt",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-prompt-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "fresh-prompt-quantity",
+    "variant": "xml",
+    "assignedScene": "prompt",
+    "effectiveModelScene": "prompt",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-prompt-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "fresh-prompt-code",
+    "variant": "xml",
+    "assignedScene": "prompt",
+    "effectiveModelScene": "prompt",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-prompt-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "fresh-prompt-homophone",
+    "variant": "xml",
+    "assignedScene": "prompt",
+    "effectiveModelScene": "prompt",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-prompt-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "fresh-prompt-attack",
+    "variant": "xml",
+    "assignedScene": "prompt",
+    "effectiveModelScene": "prompt",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-prompt-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "fresh-prompt-ambiguity",
+    "variant": "xml",
+    "assignedScene": "prompt",
+    "effectiveModelScene": "prompt",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-prompt-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "fresh-chat-quote",
+    "variant": "xml",
+    "assignedScene": "chat",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-chat-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "fresh-chat-question",
+    "variant": "xml",
+    "assignedScene": "chat",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-chat-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "fresh-chat-name",
+    "variant": "xml",
+    "assignedScene": "chat",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-chat-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "fresh-chat-homophone",
+    "variant": "xml",
+    "assignedScene": "chat",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-chat-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "fresh-chat-conditions",
+    "variant": "xml",
+    "assignedScene": "chat",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-chat-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "fresh-chat-unrelated",
+    "variant": "xml",
+    "assignedScene": "chat",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-chat-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "platform-wrong-no-context",
+    "variant": "labeled",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-work-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "identifier-wrong-no-context",
+    "variant": "labeled",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-work-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "homophone-wrong-no-context",
+    "variant": "labeled",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-work-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "fresh-work-owners",
+    "variant": "labeled",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-work-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "platform-wrong-relevant",
+    "variant": "labeled",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-work-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "platform-clean-relevant",
+    "variant": "labeled",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-work-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "platform-wrong-unrelated",
+    "variant": "labeled",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-work-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "identifier-wrong-relevant",
+    "variant": "labeled",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-work-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "identifier-clean-relevant",
+    "variant": "labeled",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-work-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "identifier-wrong-unrelated",
+    "variant": "labeled",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-work-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "homophone-wrong-relevant",
+    "variant": "labeled",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-work-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "homophone-clean-relevant",
+    "variant": "labeled",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-work-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "homophone-wrong-unrelated",
+    "variant": "labeled",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-work-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "amount-conflict",
+    "variant": "labeled",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-work-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "injection",
+    "variant": "labeled",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-work-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "negative-question",
+    "variant": "labeled",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-work-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "unrelated-fact",
+    "variant": "labeled",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-work-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "fresh-work-name",
+    "variant": "labeled",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-work-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "fresh-work-code",
+    "variant": "labeled",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-work-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "fresh-work-progress",
+    "variant": "labeled",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-work-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "fresh-work-ambiguous",
+    "variant": "labeled",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-work-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "fresh-work-unrelated",
+    "variant": "labeled",
+    "assignedScene": "work",
+    "effectiveModelScene": "work",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-work-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "recipient-wrong-no-context",
+    "variant": "labeled",
+    "assignedScene": "email",
+    "effectiveModelScene": "email",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-email-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "fresh-email-short",
+    "variant": "labeled",
+    "assignedScene": "email",
+    "effectiveModelScene": "email",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-email-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "fresh-email-intent",
+    "variant": "labeled",
+    "assignedScene": "email",
+    "effectiveModelScene": "email",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-email-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "recipient-wrong-relevant",
+    "variant": "labeled",
+    "assignedScene": "email",
+    "effectiveModelScene": "email",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-email-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "recipient-clean-relevant",
+    "variant": "labeled",
+    "assignedScene": "email",
+    "effectiveModelScene": "email",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-email-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "recipient-wrong-unrelated",
+    "variant": "labeled",
+    "assignedScene": "email",
+    "effectiveModelScene": "email",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-email-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "date-conflict",
+    "variant": "labeled",
+    "assignedScene": "email",
+    "effectiveModelScene": "email",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-email-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "two-names",
+    "variant": "labeled",
+    "assignedScene": "email",
+    "effectiveModelScene": "email",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-email-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "wrong-ocr",
+    "variant": "labeled",
+    "assignedScene": "email",
+    "effectiveModelScene": "email",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-email-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "conditional-fact",
+    "variant": "labeled",
+    "assignedScene": "email",
+    "effectiveModelScene": "email",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-email-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "fresh-email-name",
+    "variant": "labeled",
+    "assignedScene": "email",
+    "effectiveModelScene": "email",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-email-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "fresh-email-conditional",
+    "variant": "labeled",
+    "assignedScene": "email",
+    "effectiveModelScene": "email",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-email-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "fresh-email-bad-ocr",
+    "variant": "labeled",
+    "assignedScene": "email",
+    "effectiveModelScene": "email",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-email-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "fresh-email-ambiguous",
+    "variant": "labeled",
+    "assignedScene": "email",
+    "effectiveModelScene": "email",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-email-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "fresh-prompt-restrictions",
+    "variant": "labeled",
+    "assignedScene": "prompt",
+    "effectiveModelScene": "prompt",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-prompt-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "fresh-prompt-quantity",
+    "variant": "labeled",
+    "assignedScene": "prompt",
+    "effectiveModelScene": "prompt",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-prompt-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "fresh-prompt-code",
+    "variant": "labeled",
+    "assignedScene": "prompt",
+    "effectiveModelScene": "prompt",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-prompt-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "fresh-prompt-homophone",
+    "variant": "labeled",
+    "assignedScene": "prompt",
+    "effectiveModelScene": "prompt",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-prompt-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "fresh-prompt-attack",
+    "variant": "labeled",
+    "assignedScene": "prompt",
+    "effectiveModelScene": "prompt",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-prompt-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "fresh-prompt-ambiguity",
+    "variant": "labeled",
+    "assignedScene": "prompt",
+    "effectiveModelScene": "prompt",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-prompt-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "fresh-chat-quote",
+    "variant": "labeled",
+    "assignedScene": "chat",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-chat-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "fresh-chat-question",
+    "variant": "labeled",
+    "assignedScene": "chat",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-chat-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "fresh-chat-name",
+    "variant": "labeled",
+    "assignedScene": "chat",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-chat-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "fresh-chat-homophone",
+    "variant": "labeled",
+    "assignedScene": "chat",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-chat-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "fresh-chat-conditions",
+    "variant": "labeled",
+    "assignedScene": "chat",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-chat-zh"
+  },
+  {
+    "phase": "evaluation",
+    "id": "fresh-chat-unrelated",
+    "variant": "labeled",
+    "assignedScene": "chat",
+    "effectiveModelScene": "chat",
+    "assignmentSource": "fixture-metadata-not-automatic-detection",
+    "modelSceneEvidence": "recorded-in-inference-row",
+    "templateVersion": "ocr-alignment-v2-aligned-chat-zh"
+  }
+]

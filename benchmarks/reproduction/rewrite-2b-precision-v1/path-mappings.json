@@ -1,0 +1,10 @@
+{
+  "kind": "metadata-source-paths",
+  "mappings": {
+    ".workspace/rewrite-2b-precision-v1/acquisition.json": "benchmarks/reproduction/rewrite-2b-precision-v1/acquisition.json",
+    ".workspace/rewrite-2b-precision-v1/export-api.json": "benchmarks/reproduction/rewrite-2b-precision-v1/export-api.json",
+    ".workspace/rewrite-2b-precision-v1/export-README.md": "benchmarks/reproduction/rewrite-2b-precision-v1/export-README.md",
+    ".workspace/rewrite-2b-precision-v1/gguf-info.json": "benchmarks/reproduction/rewrite-2b-precision-v1/gguf-info.json"
+  },
+  "weights": "Private verified model bytes are not archived; replay does not load them."
+}

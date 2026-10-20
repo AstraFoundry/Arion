@@ -1,0 +1,553 @@
+{
+  "status": "producer-feasibility-only",
+  "modelGenerations": 0,
+  "newAsrGenerations": 0,
+  "newVisionGenerations": 0,
+  "actualGoPreparations": 0,
+  "records": [
+    {
+      "sample": {
+        "id": "fabric-risk-negative",
+        "source": "衣服的缝线先检查，不要当成项目风险。",
+        "context": {
+          "Screen": "软件项目风险评估：待确认。"
+        },
+        "scene": "work",
+        "expected": {
+          "e0": "keep"
+        }
+      },
+      "exactSourceCollision": false,
+      "variants": {
+        "baseline": {
+          "proposedAssistantDemonstration": {
+            "role": "assistant",
+            "content": "{\"e0\":\"keep\"}"
+          },
+          "authoredDesiredText": "衣服的缝线先检查，不要当成项目风险。",
+          "authoredEdits": [],
+          "prototypeUserMessage": {
+            "role": "user",
+            "content": "{\"source\":\"衣服的缝线先检查，不要当成项目风险。\",\"context\":{\"Screen\":\"软件项目风险评估：待确认。\"},\"scene\":\"work\",\"unknownChineseCharacters\":[],\"hypotheses\":[{\"id\":\"e0\",\"sourceSpan\":\"缝线\",\"candidateSpellings\":[\"风险\"],\"status\":\"unique\",\"kind\":\"chinese-segmental-readings\"}]}"
+          },
+          "hypotheses": [
+            {
+              "startUtf8": 9,
+              "endUtf8": 15,
+              "sourceSpan": "缝线",
+              "candidateSpellings": [
+                "风险"
+              ],
+              "status": "unique",
+              "kind": "chinese-segmental-readings",
+              "id": "e0",
+              "exactToneCandidates": [],
+              "toneInsensitiveOnlyCandidates": [
+                "风险"
+              ]
+            }
+          ],
+          "schema": {
+            "type": "json_object",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "e0": {
+                  "type": "string",
+                  "enum": [
+                    "keep",
+                    "replace"
+                  ]
+                }
+              },
+              "required": [
+                "e0"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "nativePreparation": false,
+          "modelGenerations": 0
+        },
+        "balanced": {
+          "proposedAssistantDemonstration": {
+            "role": "assistant",
+            "content": "{\"e0\":\"keep\"}"
+          },
+          "authoredDesiredText": "衣服的缝线先检查，不要当成项目风险。",
+          "authoredEdits": [],
+          "prototypeUserMessage": {
+            "role": "user",
+            "content": "{\"source\":\"衣服的缝线先检查，不要当成项目风险。\",\"context\":{\"Screen\":\"软件项目风险评估：待确认。\"},\"scene\":\"work\",\"unknownChineseCharacters\":[],\"hypotheses\":[{\"id\":\"e0\",\"sourceSpan\":\"缝线\",\"candidateSpellings\":[\"风险\"],\"status\":\"unique\",\"kind\":\"chinese-segmental-readings\",\"candidateComparisons\":[{\"originalSource\":\"衣服的缝线先检查，不要当成项目风险。\",\"replacementSource\":\"衣服的风险先检查，不要当成项目风险。\"}]}]}"
+          },
+          "hypotheses": [
+            {
+              "startUtf8": 9,
+              "endUtf8": 15,
+              "sourceSpan": "缝线",
+              "candidateSpellings": [
+                "风险"
+              ],
+              "status": "unique",
+              "kind": "chinese-segmental-readings",
+              "id": "e0",
+              "exactToneCandidates": [],
+              "toneInsensitiveOnlyCandidates": [
+                "风险"
+              ]
+            }
+          ],
+          "schema": {
+            "type": "json_object",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "e0": {
+                  "type": "string",
+                  "enum": [
+                    "keep",
+                    "replace"
+                  ]
+                }
+              },
+              "required": [
+                "e0"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "nativePreparation": false,
+          "modelGenerations": 0
+        }
+      }
+    },
+    {
+      "sample": {
+        "id": "project-risk-positive",
+        "source": "这个软件项目的缝线先评估，确认前别上线。",
+        "context": {
+          "Screen": "软件项目风险评估：待确认。"
+        },
+        "scene": "work",
+        "expected": {
+          "e0": "replace",
+          "e1": "keep"
+        }
+      },
+      "exactSourceCollision": false,
+      "variants": {
+        "baseline": {
+          "proposedAssistantDemonstration": {
+            "role": "assistant",
+            "content": "{\"e0\":\"replace\",\"e1\":\"keep\"}"
+          },
+          "authoredDesiredText": "这个软件项目的风险先评估，确认前别上线。",
+          "authoredEdits": [
+            {
+              "startUtf8": 21,
+              "endUtf8": 27,
+              "original": "缝线",
+              "replacement": "风险",
+              "hypothesisId": "e0"
+            }
+          ],
+          "prototypeUserMessage": {
+            "role": "user",
+            "content": "{\"source\":\"这个软件项目的缝线先评估，确认前别上线。\",\"context\":{\"Screen\":\"软件项目风险评估：待确认。\"},\"scene\":\"work\",\"unknownChineseCharacters\":[],\"hypotheses\":[{\"id\":\"e0\",\"sourceSpan\":\"缝线\",\"candidateSpellings\":[\"风险\"],\"status\":\"unique\",\"kind\":\"chinese-segmental-readings\"},{\"id\":\"e1\",\"sourceSpan\":\"先评估\",\"candidateSpellings\":[\"险评估\"],\"status\":\"unique\",\"kind\":\"chinese-segmental-readings\"}]}"
+          },
+          "hypotheses": [
+            {
+              "startUtf8": 21,
+              "endUtf8": 27,
+              "sourceSpan": "缝线",
+              "candidateSpellings": [
+                "风险"
+              ],
+              "status": "unique",
+              "kind": "chinese-segmental-readings",
+              "id": "e0",
+              "exactToneCandidates": [],
+              "toneInsensitiveOnlyCandidates": [
+                "风险"
+              ]
+            },
+            {
+              "startUtf8": 27,
+              "endUtf8": 36,
+              "sourceSpan": "先评估",
+              "candidateSpellings": [
+                "险评估"
+              ],
+              "status": "unique",
+              "kind": "chinese-segmental-readings",
+              "id": "e1",
+              "exactToneCandidates": [],
+              "toneInsensitiveOnlyCandidates": [
+                "险评估"
+              ]
+            }
+          ],
+          "schema": {
+            "type": "json_object",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "e0": {
+                  "type": "string",
+                  "enum": [
+                    "keep",
+                    "replace"
+                  ]
+                },
+                "e1": {
+                  "type": "string",
+                  "enum": [
+                    "keep",
+                    "replace"
+                  ]
+                }
+              },
+              "required": [
+                "e0",
+                "e1"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "nativePreparation": false,
+          "modelGenerations": 0
+        },
+        "balanced": {
+          "proposedAssistantDemonstration": {
+            "role": "assistant",
+            "content": "{\"e0\":\"replace\",\"e1\":\"keep\"}"
+          },
+          "authoredDesiredText": "这个软件项目的风险先评估，确认前别上线。",
+          "authoredEdits": [
+            {
+              "startUtf8": 21,
+              "endUtf8": 27,
+              "original": "缝线",
+              "replacement": "风险",
+              "hypothesisId": "e0"
+            }
+          ],
+          "prototypeUserMessage": {
+            "role": "user",
+            "content": "{\"source\":\"这个软件项目的缝线先评估，确认前别上线。\",\"context\":{\"Screen\":\"软件项目风险评估：待确认。\"},\"scene\":\"work\",\"unknownChineseCharacters\":[],\"hypotheses\":[{\"id\":\"e0\",\"sourceSpan\":\"缝线\",\"candidateSpellings\":[\"风险\"],\"status\":\"unique\",\"kind\":\"chinese-segmental-readings\",\"candidateComparisons\":[{\"originalSource\":\"这个软件项目的缝线先评估，确认前别上线。\",\"replacementSource\":\"这个软件项目的风险先评估，确认前别上线。\"}]},{\"id\":\"e1\",\"sourceSpan\":\"先评估\",\"candidateSpellings\":[\"险评估\"],\"status\":\"unique\",\"kind\":\"chinese-segmental-readings\",\"candidateComparisons\":[{\"originalSource\":\"这个软件项目的缝线先评估，确认前别上线。\",\"replacementSource\":\"这个软件项目的缝线险评估，确认前别上线。\"}]}]}"
+          },
+          "hypotheses": [
+            {
+              "startUtf8": 21,
+              "endUtf8": 27,
+              "sourceSpan": "缝线",
+              "candidateSpellings": [
+                "风险"
+              ],
+              "status": "unique",
+              "kind": "chinese-segmental-readings",
+              "id": "e0",
+              "exactToneCandidates": [],
+              "toneInsensitiveOnlyCandidates": [
+                "风险"
+              ]
+            },
+            {
+              "startUtf8": 27,
+              "endUtf8": 36,
+              "sourceSpan": "先评估",
+              "candidateSpellings": [
+                "险评估"
+              ],
+              "status": "unique",
+              "kind": "chinese-segmental-readings",
+              "id": "e1",
+              "exactToneCandidates": [],
+              "toneInsensitiveOnlyCandidates": [
+                "险评估"
+              ]
+            }
+          ],
+          "schema": {
+            "type": "json_object",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "e0": {
+                  "type": "string",
+                  "enum": [
+                    "keep",
+                    "replace"
+                  ]
+                },
+                "e1": {
+                  "type": "string",
+                  "enum": [
+                    "keep",
+                    "replace"
+                  ]
+                }
+              },
+              "required": [
+                "e0",
+                "e1"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "nativePreparation": false,
+          "modelGenerations": 0
+        }
+      }
+    },
+    {
+      "sample": {
+        "id": "river-embankment-negative",
+        "source": "河堤的护坡先检查，别拿来当琥珀饰品。",
+        "context": {
+          "Screen": "琥珀饰品清单：待核对。"
+        },
+        "scene": "work",
+        "expected": {
+          "e0": "keep"
+        }
+      },
+      "exactSourceCollision": false,
+      "variants": {
+        "baseline": {
+          "proposedAssistantDemonstration": {
+            "role": "assistant",
+            "content": "{\"e0\":\"keep\"}"
+          },
+          "authoredDesiredText": "河堤的护坡先检查，别拿来当琥珀饰品。",
+          "authoredEdits": [],
+          "prototypeUserMessage": {
+            "role": "user",
+            "content": "{\"source\":\"河堤的护坡先检查，别拿来当琥珀饰品。\",\"context\":{\"Screen\":\"琥珀饰品清单：待核对。\"},\"scene\":\"work\",\"unknownChineseCharacters\":[],\"hypotheses\":[{\"id\":\"e0\",\"sourceSpan\":\"护坡\",\"candidateSpellings\":[\"琥珀\"],\"status\":\"unique\",\"kind\":\"chinese-segmental-readings\"}]}"
+          },
+          "hypotheses": [
+            {
+              "startUtf8": 9,
+              "endUtf8": 15,
+              "sourceSpan": "护坡",
+              "candidateSpellings": [
+                "琥珀"
+              ],
+              "status": "unique",
+              "kind": "chinese-segmental-readings",
+              "id": "e0",
+              "exactToneCandidates": [],
+              "toneInsensitiveOnlyCandidates": [
+                "琥珀"
+              ]
+            }
+          ],
+          "schema": {
+            "type": "json_object",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "e0": {
+                  "type": "string",
+                  "enum": [
+                    "keep",
+                    "replace"
+                  ]
+                }
+              },
+              "required": [
+                "e0"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "nativePreparation": false,
+          "modelGenerations": 0
+        },
+        "balanced": {
+          "proposedAssistantDemonstration": {
+            "role": "assistant",
+            "content": "{\"e0\":\"keep\"}"
+          },
+          "authoredDesiredText": "河堤的护坡先检查，别拿来当琥珀饰品。",
+          "authoredEdits": [],
+          "prototypeUserMessage": {
+            "role": "user",
+            "content": "{\"source\":\"河堤的护坡先检查，别拿来当琥珀饰品。\",\"context\":{\"Screen\":\"琥珀饰品清单：待核对。\"},\"scene\":\"work\",\"unknownChineseCharacters\":[],\"hypotheses\":[{\"id\":\"e0\",\"sourceSpan\":\"护坡\",\"candidateSpellings\":[\"琥珀\"],\"status\":\"unique\",\"kind\":\"chinese-segmental-readings\",\"candidateComparisons\":[{\"originalSource\":\"河堤的护坡先检查，别拿来当琥珀饰品。\",\"replacementSource\":\"河堤的琥珀先检查，别拿来当琥珀饰品。\"}]}]}"
+          },
+          "hypotheses": [
+            {
+              "startUtf8": 9,
+              "endUtf8": 15,
+              "sourceSpan": "护坡",
+              "candidateSpellings": [
+                "琥珀"
+              ],
+              "status": "unique",
+              "kind": "chinese-segmental-readings",
+              "id": "e0",
+              "exactToneCandidates": [],
+              "toneInsensitiveOnlyCandidates": [
+                "琥珀"
+              ]
+            }
+          ],
+          "schema": {
+            "type": "json_object",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "e0": {
+                  "type": "string",
+                  "enum": [
+                    "keep",
+                    "replace"
+                  ]
+                }
+              },
+              "required": [
+                "e0"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "nativePreparation": false,
+          "modelGenerations": 0
+        }
+      }
+    },
+    {
+      "sample": {
+        "id": "jewelry-amber-positive",
+        "source": "这串护坡饰品先核对，确认前别寄出。",
+        "context": {
+          "Screen": "琥珀饰品清单：待核对。"
+        },
+        "scene": "work",
+        "expected": {
+          "e0": "replace"
+        }
+      },
+      "exactSourceCollision": false,
+      "variants": {
+        "baseline": {
+          "proposedAssistantDemonstration": {
+            "role": "assistant",
+            "content": "{\"e0\":\"replace\"}"
+          },
+          "authoredDesiredText": "这串琥珀饰品先核对，确认前别寄出。",
+          "authoredEdits": [
+            {
+              "startUtf8": 6,
+              "endUtf8": 18,
+              "original": "护坡饰品",
+              "replacement": "琥珀饰品",
+              "hypothesisId": "e0"
+            }
+          ],
+          "prototypeUserMessage": {
+            "role": "user",
+            "content": "{\"source\":\"这串护坡饰品先核对，确认前别寄出。\",\"context\":{\"Screen\":\"琥珀饰品清单：待核对。\"},\"scene\":\"work\",\"unknownChineseCharacters\":[],\"hypotheses\":[{\"id\":\"e0\",\"sourceSpan\":\"护坡饰品\",\"candidateSpellings\":[\"琥珀饰品\"],\"status\":\"unique\",\"kind\":\"chinese-segmental-readings\"}]}"
+          },
+          "hypotheses": [
+            {
+              "startUtf8": 6,
+              "endUtf8": 18,
+              "sourceSpan": "护坡饰品",
+              "candidateSpellings": [
+                "琥珀饰品"
+              ],
+              "status": "unique",
+              "kind": "chinese-segmental-readings",
+              "id": "e0",
+              "exactToneCandidates": [],
+              "toneInsensitiveOnlyCandidates": [
+                "琥珀饰品"
+              ]
+            }
+          ],
+          "schema": {
+            "type": "json_object",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "e0": {
+                  "type": "string",
+                  "enum": [
+                    "keep",
+                    "replace"
+                  ]
+                }
+              },
+              "required": [
+                "e0"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "nativePreparation": false,
+          "modelGenerations": 0
+        },
+        "balanced": {
+          "proposedAssistantDemonstration": {
+            "role": "assistant",
+            "content": "{\"e0\":\"replace\"}"
+          },
+          "authoredDesiredText": "这串琥珀饰品先核对，确认前别寄出。",
+          "authoredEdits": [
+            {
+              "startUtf8": 6,
+              "endUtf8": 18,
+              "original": "护坡饰品",
+              "replacement": "琥珀饰品",
+              "hypothesisId": "e0"
+            }
+          ],
+          "prototypeUserMessage": {
+            "role": "user",
+            "content": "{\"source\":\"这串护坡饰品先核对，确认前别寄出。\",\"context\":{\"Screen\":\"琥珀饰品清单：待核对。\"},\"scene\":\"work\",\"unknownChineseCharacters\":[],\"hypotheses\":[{\"id\":\"e0\",\"sourceSpan\":\"护坡饰品\",\"candidateSpellings\":[\"琥珀饰品\"],\"status\":\"unique\",\"kind\":\"chinese-segmental-readings\",\"candidateComparisons\":[{\"originalSource\":\"这串护坡饰品先核对，确认前别寄出。\",\"replacementSource\":\"这串琥珀饰品先核对，确认前别寄出。\"}]}]}"
+          },
+          "hypotheses": [
+            {
+              "startUtf8": 6,
+              "endUtf8": 18,
+              "sourceSpan": "护坡饰品",
+              "candidateSpellings": [
+                "琥珀饰品"
+              ],
+              "status": "unique",
+              "kind": "chinese-segmental-readings",
+              "id": "e0",
+              "exactToneCandidates": [],
+              "toneInsensitiveOnlyCandidates": [
+                "琥珀饰品"
+              ]
+            }
+          ],
+          "schema": {
+            "type": "json_object",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "e0": {
+                  "type": "string",
+                  "enum": [
+                    "keep",
+                    "replace"
+                  ]
+                }
+              },
+              "required": [
+                "e0"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "nativePreparation": false,
+          "modelGenerations": 0
+        }
+      }
+    }
+  ],
+  "limitations": "Constructed source and cleanup inputs; no model or native speech pipeline has run. Expected choices are proposed prompt demonstrations, not model results, held-out labels or independent annotation. No adoption or benefit is claimed."
+}

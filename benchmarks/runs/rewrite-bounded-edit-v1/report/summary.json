@@ -1,0 +1,42 @@
+{
+  "newGenerations": 72,
+  "sourceCases": 36,
+  "intermediate": {
+    "observations": 36,
+    "faithful": 33,
+    "sceneReady": 0,
+    "repairs": 8,
+    "requiredRepairs": 11
+  },
+  "final": {
+    "observations": 36,
+    "faithful": 28,
+    "sceneReady": 27,
+    "repairs": 6,
+    "requiredRepairs": 11
+  },
+  "selection": {
+    "qualified": false,
+    "selected": null,
+    "freshExecuted": false,
+    "freezeSha256": "e199b35a05dd5c5a251eec1967482c8221505688d49d93b92e535989624c99cb",
+    "resultsSha256": "8caf800de9f7f0be85f79f09551ce2d943a2ccc44b7bdf786b6b6dd281bdfc89",
+    "reviewSha256": "b6fd9e5bb94c64833182628e5f5b707133a628e3d39ec7a4485a8b0ddb0bf289",
+    "reason": "Full36 final gate fails:28 faithful,27 scene-ready,6/11 repairs;3 necessary corrections kept,2 corrected recipient names dropped, configuration restriction reversed, negative question polarity changed, explicit identifier omitted. Optional readCash normalization cannot rescue these failures.",
+    "productionActivated": false
+  },
+  "scope": {
+    "sourceCases": 36,
+    "newModelGenerations": 72,
+    "intermediateSelections": 36,
+    "finalBodies": 36,
+    "model": "Qwen3.5-2B-Q4_K_M",
+    "scope": "All36 exposed Chinese synthetic regressions. One full-context selection and one source-only natural formatting call per case, including actual forced-empty selection on zero-candidate cases. No candidate omission, no fake intermediate result.",
+    "architecture": "Fixed CMU English and full pypinyin0.55.0 character readings generate source-relative spelling hypotheses. Exact source/quoted/numeric spans are excluded; homophone ties keep the source. Only unique candidate spans can be selected for replacement by grammar-bounded JSON. Complete original OCR/cursor/history is passed to selection. It cannot emit arbitrary source edits or facts. The formatter sees only edited source with reversible literal/code/committed/unresolved span tokens, no reference text or map; all actual messages/raw decisions/restored bodies retained.",
+    "limits": "Explicit research architecture, not current CTX-05 production routing or an adopted runtime/context decision. Not all contextual semantic/near-pronunciation corrections are covered by the finite source-derived producer; unknown outcomes remain explicit. No claims from protocol validity alone. Format output is never rejected or silently replaced. A broken selection protocol aborts and retains raw output; no invented formatter observation.",
+    "budget": "CPU4/GPU0/cacheoff/reasoningoff/4096 context, selection128 plus formatter256 output-token caps (384 total per source), versus prior single384 cap. Different prompts/demos/producers/context routing form one package, not an isolated prompt treatment. No4B/olderQwen/Granite/Q8 inference.",
+    "gate": "All36 final bodies faithful under retained rubric, all11 repairs, owner/email anchors retained and at least35 scene-ready, no new harmful changes/truncation/unexpanded tokens. All36 intermediate decisions also manually inspected; forced-empty/ambiguous choices are not evidence of model semantic robustness. No fresh24 before full gate passes.",
+    "acceptance": "M4/32GB development only. Minimum AppleSilicon16GB, independent human ratings, natural ASR/OCR, English/mixed/search/list/verbatim/native lifecycle, actual total app memory and concurrent stop-to-insertion performance remain separate gates. Native clocks and serial baseline are not causal speed proof."
+  },
+  "productionActivated": false
+}

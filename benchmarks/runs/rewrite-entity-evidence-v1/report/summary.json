@@ -1,0 +1,119 @@
+{
+  "generations": 100,
+  "reviewedOutputs": 100,
+  "actualVisionObservations": 24,
+  "metrics": {
+    "dev/development/baseline": {
+      "cases": 18,
+      "faithful": 16,
+      "sceneReady": 12,
+      "requiredGoldRepairs": 5,
+      "goldRepairs": 3,
+      "correctSourceControls": 0,
+      "correctSourcePreserved": 0,
+      "contextReplacements": 0,
+      "unsupportedDemonstrationAlias": 0,
+      "strictFaithfulDelivered": 16
+    },
+    "dev/correct-source-control/baseline": {
+      "cases": 8,
+      "faithful": 5,
+      "sceneReady": 5,
+      "requiredGoldRepairs": 0,
+      "goldRepairs": 0,
+      "correctSourceControls": 8,
+      "correctSourcePreserved": 5,
+      "contextReplacements": 2,
+      "unsupportedDemonstrationAlias": 0,
+      "strictFaithfulDelivered": 7
+    },
+    "dev/development/exact": {
+      "cases": 18,
+      "faithful": 16,
+      "sceneReady": 12,
+      "requiredGoldRepairs": 5,
+      "goldRepairs": 3,
+      "correctSourceControls": 0,
+      "correctSourcePreserved": 0,
+      "contextReplacements": 0,
+      "unsupportedDemonstrationAlias": 0,
+      "strictFaithfulDelivered": 16
+    },
+    "dev/correct-source-control/exact": {
+      "cases": 8,
+      "faithful": 5,
+      "sceneReady": 5,
+      "requiredGoldRepairs": 0,
+      "goldRepairs": 0,
+      "correctSourceControls": 8,
+      "correctSourcePreserved": 5,
+      "contextReplacements": 2,
+      "unsupportedDemonstrationAlias": 0,
+      "strictFaithfulDelivered": 7
+    },
+    "ocr/actual-vision-accurate/baseline": {
+      "cases": 12,
+      "faithful": 11,
+      "sceneReady": 10,
+      "requiredGoldRepairs": 5,
+      "goldRepairs": 4,
+      "correctSourceControls": 0,
+      "correctSourcePreserved": 0,
+      "contextReplacements": 0,
+      "unsupportedDemonstrationAlias": 0,
+      "strictFaithfulDelivered": 11
+    },
+    "ocr/actual-vision-fast/baseline": {
+      "cases": 12,
+      "faithful": 11,
+      "sceneReady": 11,
+      "requiredGoldRepairs": 5,
+      "goldRepairs": 4,
+      "correctSourceControls": 0,
+      "correctSourcePreserved": 0,
+      "contextReplacements": 0,
+      "unsupportedDemonstrationAlias": 1,
+      "strictFaithfulDelivered": 11
+    },
+    "ocr/actual-vision-accurate/exact": {
+      "cases": 12,
+      "faithful": 11,
+      "sceneReady": 10,
+      "requiredGoldRepairs": 5,
+      "goldRepairs": 4,
+      "correctSourceControls": 0,
+      "correctSourcePreserved": 0,
+      "contextReplacements": 0,
+      "unsupportedDemonstrationAlias": 0,
+      "strictFaithfulDelivered": 11
+    },
+    "ocr/actual-vision-fast/exact": {
+      "cases": 12,
+      "faithful": 11,
+      "sceneReady": 9,
+      "requiredGoldRepairs": 5,
+      "goldRepairs": 4,
+      "correctSourceControls": 0,
+      "correctSourcePreserved": 0,
+      "contextReplacements": 0,
+      "unsupportedDemonstrationAlias": 1,
+      "strictFaithfulDelivered": 11
+    }
+  },
+  "productionActivated": false,
+  "decision": {
+    "selected": "baseline",
+    "promotion": false,
+    "reason": "Exact-context-first policy does not improve the 26 paired development cases: both faithful21/26, required repairs3/5, correct-source controls5/8. Continue predeclared actual-Vision diagnostic without retuning.",
+    "freezeSha256": "2f2cbeb7b3e374f2572c2e86570e3aca67cc842c606bd88f5ff8fec48db8f65a",
+    "devResultsSha256": "b28ecdfbd6dc908e520d450af30cd94088cd8beaefed4870f164e7458feb89ac",
+    "devReviewSha256": "f236db0b9719183c024ac2533628c326dbcd2ee9646ffb8ac8978830d0153f4b"
+  },
+  "limitations": [
+    "Authored and exposed text/images, not natural or held-out generalization.",
+    "Same example alias can be reproduced without OCR; gold repair is not causal OCR benefit.",
+    "Python host reports Rosetta architecture; archived host evidence identifies Apple M4 and arm64 native executables.",
+    "No acoustic ASR, live window capture, native insertion or independent review acceptance.",
+    "Native OCR overlapped initial development model loading; request timings are not isolated release latency evidence."
+  ]
+}

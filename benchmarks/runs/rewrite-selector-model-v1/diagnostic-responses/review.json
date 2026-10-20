@@ -1,0 +1,69 @@
+{
+  "resultsSha256": "4e1b400222c05d72a71462197340dfee6668151c353d330b49453249ae84c8c6",
+  "method": "All7 actual completed native outputs and all12 diagnostic attempts personally read; no final-body or independent review claim.",
+  "reviews": [
+    {
+      "id": "probe-99-no-schema",
+      "variant": "99-no-schema",
+      "rowSha256": "fb9666bb72af858b4ee82bbd97aebc10185ea7fb108806f1cd4e5959653100b6",
+      "faithful": null,
+      "sceneUseful": null,
+      "probeConforms": false,
+      "note": "Personally read actual runtime-probe response and complete request. Repeated8 output reaches the128-token budget. This actual failure remains visible; removing schema did not recover meaningful content. No delivered final body."
+    },
+    {
+      "id": "probe-0-same-schema",
+      "variant": "0-same-schema",
+      "rowSha256": "b5ec37de0b79db67f9a8d9d9a377828266d59b3cdb5893db9e4169dc9294c271",
+      "faithful": null,
+      "sceneUseful": null,
+      "probeConforms": true,
+      "note": "Personally read actual runtime-probe response and complete request. JSON matches the single diagnostic task; this is not a final-body or full-model quality verdict."
+    },
+    {
+      "id": "probe-0-no-schema",
+      "variant": "0-no-schema",
+      "rowSha256": "92586ef66df5f8a2c293c040044cb037f38e76513b773ef302b9ef7994d43be4",
+      "faithful": null,
+      "sceneUseful": null,
+      "probeConforms": true,
+      "note": "Personally read actual runtime-probe response and complete request. JSON matches the single diagnostic task; this is not a final-body or full-model quality verdict."
+    },
+    {
+      "id": "probe-0-simple-schema",
+      "variant": "0-simple-schema",
+      "rowSha256": "02fd661bff74a6ff986df2356d26fd42649f6eb6c22f3dee4caa5e542622cb85",
+      "faithful": null,
+      "sceneUseful": null,
+      "probeConforms": true,
+      "note": "Personally read actual runtime-probe response and complete request. JSON matches the single diagnostic task; this is not a final-body or full-model quality verdict."
+    },
+    {
+      "id": "probe-f32-auto-no-schema",
+      "variant": "f32-auto-no-schema",
+      "rowSha256": "0173b7e57ac09ff6b05f5716150b52f9423bd50aca67b42007e5e44b2dfbccaa",
+      "faithful": null,
+      "sceneUseful": null,
+      "probeConforms": false,
+      "note": "Personally read actual runtime-probe response and complete request. Repeated8 output reaches the128-token budget. This actual failure remains visible; removing schema did not recover meaningful content. No delivered final body."
+    },
+    {
+      "id": "probe-f16-no-flash-no-schema",
+      "variant": "f16-no-flash-no-schema",
+      "rowSha256": "dea33276e90cc0ae5607c064a37d66b81e19bbbe956bc545a69446ec9ca3f704",
+      "faithful": null,
+      "sceneUseful": null,
+      "probeConforms": false,
+      "note": "Personally read actual runtime-probe response and complete request. Repeated8 output reaches the128-token budget. This actual failure remains visible; removing schema did not recover meaningful content. No delivered final body."
+    },
+    {
+      "id": "probe-f32-no-flash-no-schema",
+      "variant": "f32-no-flash-no-schema",
+      "rowSha256": "92a4f99239adee9e99a83f37d9b8b83a27a8da7691115cde745139ba0e1268e9",
+      "faithful": null,
+      "sceneUseful": null,
+      "probeConforms": false,
+      "note": "Personally read actual runtime-probe response and complete request. Repeated8 output reaches the128-token budget. This actual failure remains visible; removing schema did not recover meaningful content. No delivered final body."
+    }
+  ]
+}

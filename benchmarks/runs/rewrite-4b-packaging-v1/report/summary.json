@@ -1,0 +1,57 @@
+{
+  "generations": 24,
+  "reviewedOutputs": 24,
+  "summary": {
+    "labeled": {
+      "cases": 8,
+      "rawFaithful": 6,
+      "rawSceneReady": 6,
+      "requiredRepairs": 2,
+      "repairs": 2,
+      "strictFaithfulDelivered": 7,
+      "requestP50Ms": 1470.1574170030653,
+      "requestP95Ms": 1877.6038750074804,
+      "prefillP50Ms": 735.378,
+      "decodeP50Ms": 873.772,
+      "peakWorkerRssBytes": 5057822720
+    },
+    "json": {
+      "cases": 8,
+      "rawFaithful": 7,
+      "rawSceneReady": 6,
+      "requiredRepairs": 2,
+      "repairs": 1,
+      "strictFaithfulDelivered": 7,
+      "requestP50Ms": 1566.0897500347346,
+      "requestP95Ms": 1918.5387080069631,
+      "prefillP50Ms": 614.262,
+      "decodeP50Ms": 916.961,
+      "peakWorkerRssBytes": 4987420672
+    },
+    "xml": {
+      "cases": 8,
+      "rawFaithful": 5,
+      "rawSceneReady": 3,
+      "requiredRepairs": 2,
+      "repairs": 1,
+      "strictFaithfulDelivered": 7,
+      "requestP50Ms": 1477.1136669442058,
+      "requestP95Ms": 1813.275916967541,
+      "prefillP50Ms": 576.105,
+      "decodeP50Ms": 978.332,
+      "peakWorkerRssBytes": 4952506368
+    }
+  },
+  "decision": {
+    "selected": null,
+    "qualifiedForFresh": false,
+    "promotion": false,
+    "freezeSha256": "67dbcc69a0637ee4d9def051833f19d6b909b6c4de9aece576a2be3311fec235",
+    "devResultsSha256": "25489fcf0116e4dcfabaf9dd343e1d3e7578e181dae148a8e6dbc23ffa61a98f",
+    "devReviewSha256": "b3a2d0115ab4e95e2068b6e19e41ae3e5f9a3c58601720780a837076305537cc",
+    "reason": "Labeled6/8, JSON7/8 and XML5/8 faithful. No format meets the frozen8/8 and both-repairs development gate. Fresh16 remains ungenerated; no format promotion."
+  },
+  "evaluationExecuted": false,
+  "productionActivated": false,
+  "scope": "Exposed work/email diagnostic; same pinned model/template/budget within the stated factor comparison. No natural ASR, independent ratings or native acceptance. Fresh16 remain ungenerated after failed development gate. Request timing excludes native rendering/insertion and ASR contention."
+}

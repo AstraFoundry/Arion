@@ -1,0 +1,19 @@
+from pathlib import Path
+import sys,os,json,hashlib,urllib.error,shutil
+R=Path.cwd();sys.path.insert(0,str(R/'benchmarks/reproduction'));import gguf_rewrite as engine
+from gguf_session_v2 import Session
+W=R/'.workspace/rewrite-selector-model-v1/precision';W.mkdir(exist_ok=False);H=R/'benchmarks/reproduction/rewrite-selector-model-v1';engine.MODEL=R/'.workspace/rewrite-granite-dense-v1/weights/granite-4.0-1b-Q4_K_M.gguf';engine.verify(engine.read(H/'freeze.json'));native=engine.RUNTIME
+q=json.loads((R/'benchmarks/runs/rewrite-selector-model-v1/attempted-request.json').read_text());treatments={'f32-auto':['--cache-type-k','f32','--cache-type-v','f32'],'f16-no-flash':['--flash-attn','off'],'f32-no-flash':['--cache-type-k','f32','--cache-type-v','f32','--flash-attn','off']}
+shutil.copyfile(Path(__file__),W/'original-precision.py.txt');shutil.copyfile(W.parent/'precision-launcher',W/'precision-launcher.py.txt');freeze={'runtime':str(native),'nativeSha256':engine.sha(native),'modelSha256':engine.sha(engine.MODEL),'request':q,'treatments':treatments,'sourceSha256':engine.sha(Path(__file__)),'launcherSha256':engine.sha(W.parent/'precision-launcher'),'scope':'Six maximum diagnostic attempts. Same failed first request; no final bodies or quality/generalization acceptance.'};engine.write(W/'freeze.json',freeze);engine.RUNTIME=W.parent/'precision-launcher';out=[]
+for treatment,flags in treatments.items():
+ os.environ['ARION_PRECISION_OPTIONS']=json.dumps(flags);s=Session(W,treatment,18824,gpu_layers=99,verbosity=5)
+ try:
+  for mode in ['schema','no-schema']:
+   request=json.loads(json.dumps(q))
+   if mode=='no-schema':request.pop('response_format')
+   row={'treatment':treatment,'mode':mode,'request':request,'sessionCommand':s.command,'nativeCommand':[str(native),*s.command[1:],*flags],'response':None,'httpError':None}
+   try:row['response'],row['generationMs'],row['residentRssBytes']=s.generate(request)
+   except urllib.error.HTTPError as e:row['httpError']={'code':e.code,'body':e.read().decode()}
+   out.append(row);engine.write(W/'results.json',out);print(treatment,mode,row['httpError'] or repr(row['response']['choices'][0]['message']['content']),flush=True)
+ finally:s.close()
+os.environ.pop('ARION_PRECISION_OPTIONS');engine.write(W/'manifest.json',{'status':'complete','attempts':len(out),'completedResponses':sum(x['response'] is not None for x in out),'errors':sum(x['httpError'] is not None for x in out),'plannedFullScreenExecuted':False})

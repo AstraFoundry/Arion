@@ -1,0 +1,144 @@
+{
+  "newGenerations": 380,
+  "measuredGenerations": 348,
+  "warmupGenerations": 32,
+  "groups": {
+    "forward": {
+      "quality": {
+        "development": {
+          "cases": 36,
+          "faithful": 36,
+          "unfaithful": 0,
+          "uncertain": 0,
+          "useful": 36,
+          "repairs": 11,
+          "languagePreserved": 36,
+          "pipelineMs": {
+            "0.5": 620.1874581165612,
+            "0.95": 835.9975419007242,
+            "0.99": 945.8897919394076
+          }
+        },
+        "natural": {
+          "cases": 120,
+          "faithful": 119,
+          "unfaithful": 0,
+          "uncertain": 1,
+          "useful": 75,
+          "repairs": 0,
+          "languagePreserved": 120,
+          "pipelineMs": {
+            "0.5": 320.4918340779841,
+            "0.95": 790.1556249707937,
+            "0.99": 907.0999580435455
+          }
+        }
+      },
+      "cacheHits": 174,
+      "positiveCanaries": 12,
+      "negativeCanaryLeaks": [],
+      "uncachedRawParity": 174,
+      "startup": [
+        {
+          "scene": "work",
+          "modelStartupMs": 665.8774998504668,
+          "primingMs": 4100.431957980618,
+          "readyMs": 4766.309457831085,
+          "warmupResponses": 4
+        },
+        {
+          "scene": "email",
+          "modelStartupMs": 670.8456249907613,
+          "primingMs": 4205.735125113279,
+          "readyMs": 4876.58075010404,
+          "warmupResponses": 4
+        },
+        {
+          "scene": "prompt",
+          "modelStartupMs": 670.5704159103334,
+          "primingMs": 4580.0812498200685,
+          "readyMs": 5250.651665730402,
+          "warmupResponses": 4
+        },
+        {
+          "scene": "chat",
+          "modelStartupMs": 666.3308329880238,
+          "primingMs": 4520.97583306022,
+          "readyMs": 5187.306666048244,
+          "warmupResponses": 4
+        }
+      ],
+      "maxSampledWorkerRssBytes": 2154233856
+    },
+    "reverse": {
+      "quality": {
+        "development": {
+          "cases": 36,
+          "faithful": 36,
+          "unfaithful": 0,
+          "uncertain": 0,
+          "useful": 36,
+          "repairs": 11,
+          "languagePreserved": 36,
+          "pipelineMs": {
+            "0.5": 947.9032091330737,
+            "0.95": 1469.5785001385957,
+            "0.99": 1485.481457784772
+          }
+        },
+        "natural": {
+          "cases": 120,
+          "faithful": 119,
+          "unfaithful": 0,
+          "uncertain": 1,
+          "useful": 75,
+          "repairs": 0,
+          "languagePreserved": 120,
+          "pipelineMs": {
+            "0.5": 454.54112510196865,
+            "0.95": 1057.9751248005778,
+            "0.99": 1180.4026670288295
+          }
+        }
+      },
+      "cacheHits": 174,
+      "positiveCanaries": 12,
+      "negativeCanaryLeaks": [],
+      "uncachedRawParity": 174,
+      "startup": [
+        {
+          "scene": "work",
+          "modelStartupMs": 676.6609998885542,
+          "primingMs": 6698.353541083634,
+          "readyMs": 7375.014540972188,
+          "warmupResponses": 4
+        },
+        {
+          "scene": "email",
+          "modelStartupMs": 1016.2822080310434,
+          "primingMs": 6249.820625176653,
+          "readyMs": 7266.102833207697,
+          "warmupResponses": 4
+        },
+        {
+          "scene": "prompt",
+          "modelStartupMs": 1119.728583842516,
+          "primingMs": 7027.737000025809,
+          "readyMs": 8147.465583868325,
+          "warmupResponses": 4
+        },
+        {
+          "scene": "chat",
+          "modelStartupMs": 908.5027920082211,
+          "primingMs": 6584.873375017196,
+          "readyMs": 7493.376167025417,
+          "warmupResponses": 4
+        }
+      ],
+      "maxSampledWorkerRssBytes": 2102984704
+    }
+  },
+  "productionActivated": false,
+  "limits": "Two fixed within-scene orders, exposed36 synthetic+120 historical read-speech, no new ASR/OCR/independent raters/native insertion/ASRconcurrency/actual16GB. Scene-worker reset retained; not a persistent whole-app workload. No4B/olderQwen/Granite/Q8. Production unchanged.",
+  "crossOrderRawParity": 174
+}

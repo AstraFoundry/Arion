@@ -1,0 +1,25 @@
+from pathlib import Path
+import json,hashlib,shutil
+R=Path.cwd();H=R/'benchmarks/reproduction/rewrite-selector-screen-v1';W=R/'.workspace/rewrite-selector-screen-v1';P=R/'benchmarks/runs/rewrite-selector-screen-v1'
+def read(p):return json.loads(p.read_text())
+def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
+def rh(x):return hashlib.sha256(json.dumps(x,ensure_ascii=False,sort_keys=True).encode()).hexdigest()
+def save(p,x):p.write_text(json.dumps(x,ensure_ascii=False,indent=2)+'\n')
+assert read(W/'run/manifest.json')['status']=='complete';rows=list(map(json.loads,(W/'run/results.jsonl').read_text().splitlines()));assert len(rows)==404
+E={x['id']:x for x in read(R/'benchmarks/corpora/rewrite-selector-screen-v1/evaluator.json')};reviews=[]
+for r in rows:
+ e=E[r['id']];wrong={k:v for k,v in r['selection'].items() if v not in e['allowedChoices'][k]};harm=any(v=='replace' for v in wrong.values());miss=any(v=='keep' for v in wrong.values());changes=[x['original']+' → '+x['replacement'] for x in r['edits']]
+ note='Personally read actual raw choice and edited-source candidate; complete source/context and four-arm outcomes for every failed or changed tuple were reviewed separately. '
+ if harm:note+='Unsupported replacement changes the object, domain, action or excluded target: '+', '.join(changes)+'. No final formatter or target delivery ran.'
+ elif miss:note+='Source wording is retained, but a required repair under the frozen development rubric is missed. Source fidelity does not establish correction success. No final-body style is assessed.'
+ else:note+='Choice respects the relevant spelling, semantic/role/literal/ambiguity boundary. Optional same-letter case/space normalization permits both keep and replace; no final-body or release credit is added.'
+ reviews.append(dict(id=r['id'],variant=r['variant'],stage='selection',rowSha256=rh(r),faithful=not harm,sceneUseful=None,languagePreserved=True,choiceConforms=not wrong,harmfulChoice=harm,missedRepair=miss,evaluatorPath='benchmarks/corpora/rewrite-selector-screen-v1/evaluator.json',issues=['unsupported-meaning-substitution'] if harm else ['missed-required-repair'] if miss else [],note=note))
+references=[]
+for arm,study in [('baseline','rewrite-selector-semantic-v2'),('after','rewrite-selector-preview-v1')]:
+ path='benchmarks/runs/'+study+'/run/results.jsonl';base={r['id']:r for r in map(json.loads,(R/path).read_text().splitlines()) if r['stage']=='selection'}
+ for r in [x for x in rows if x['arm']==arm]:
+  b=base[r['id']];assert r['request']==b['request'] and r['selection']==b['selection'] and r['editedSource']==b['editedSource'] and r['prepared']==b['prepared'],(arm,r['id']);references.append(dict(arm=arm,id=r['id'],rowSha256=rh(r),referencePath=path,referenceRowSha256=rh(b),sameRequest=True,sameChoice=True,sameEditedSource=True))
+passed=[a for a in ['baseline','after','balanced','role'] if all(j['choiceConforms'] for j in reviews if j['variant']==a+'-selection')];assert not passed
+shutil.copytree(W,P);D=P/'run';save(D/'review.json',dict(resultsSha256=sha(D/'results.jsonl'),method='All404 actual raw selector outputs personally read from persisted records after terminal observation truncation. All unique failed/changed source/context/edited-source pairs reviewed across all four arms. Frozen evaluator precedes inference and stays out of every model request. No model judge, overlap-only semantic grading, fabricated final bodies or independent blind-review claim.',reviews=reviews));save(D/'reference-comparison.json',dict(records=references));save(D/'selection.json',dict(qualified=False,selected=None,screenPassedArms=passed,productionActivated=False,freshExecuted=False,formatterExecuted=False,resultsSha256=sha(D/'results.jsonl'),reviewSha256=sha(D/'review.json'),reason='No arm passes the preregistered joint correction/safety screen. Balanced representation improves total conformance but retains four harmful choices; the role-rule variant worsens harmful choices. No full-chain/fresh inference is authorized by this development result.'))
+save(P/'path-mappings.json',dict(source='.workspace/rewrite-selector-screen-v1',published='benchmarks/runs/rewrite-selector-screen-v1',privateExcluded=['weights','runtime binaries','Go cleanup executable']))
+print('Closed404 actual choices;202 exact full-chain-control request/choice/source parity records; no new final bodies')

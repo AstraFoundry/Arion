@@ -1,0 +1,10 @@
+{
+  "source": ".workspace/rewrite-selector-lfm25-v1",
+  "published": "benchmarks/runs/rewrite-selector-lfm25-v1",
+  "privateExcluded": [
+    "weights",
+    "runtime environments",
+    "native binaries"
+  ],
+  "legacyExecutorLabels": "Immutable hybrid-preflight/selector-model-v1 labels retained; actual LFM2.5 model/freeze/commands identify treatment."
+}

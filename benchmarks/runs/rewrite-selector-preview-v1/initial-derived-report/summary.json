@@ -1,0 +1,76 @@
+{
+  "newGenerations": 558,
+  "sourceAttempts": 457,
+  "groups": {
+    "candidate/historical-synthetic-regression": {
+      "cases": 281,
+      "faithful": 281,
+      "unfaithful": 0,
+      "uncertain": 0,
+      "useful": 272,
+      "repairSucceeded": 54,
+      "harmfulEditCases": 0,
+      "pipelineMs": {
+        "0.5": 660.8639159239829,
+        "0.95": 2018.1771249044687,
+        "0.99": 3607.0331251248717
+      }
+    },
+    "candidate/new-synthetic-tone-controls": {
+      "cases": 24,
+      "faithful": 22,
+      "unfaithful": 2,
+      "uncertain": 0,
+      "useful": 20,
+      "repairSucceeded": 8,
+      "harmfulEditCases": 2,
+      "pipelineMs": {
+        "0.5": 715.7077919691801,
+        "0.95": 1291.494500124827,
+        "0.99": 1437.2472080867738
+      }
+    },
+    "candidate/new-synthetic-semantic-roles": {
+      "cases": 32,
+      "faithful": 22,
+      "unfaithful": 10,
+      "uncertain": 0,
+      "useful": 16,
+      "repairSucceeded": 3,
+      "harmfulEditCases": 10,
+      "pipelineMs": {
+        "0.5": 647.9056670796126,
+        "0.95": 889.1225000843406,
+        "0.99": 891.2247910629958
+      }
+    },
+    "candidate/historical-natural-read-speech": {
+      "cases": 120,
+      "faithful": 119,
+      "unfaithful": 0,
+      "uncertain": 1,
+      "useful": 75,
+      "repairSucceeded": 0,
+      "harmfulEditCases": 0,
+      "pipelineMs": {
+        "0.5": 686.0506669618189,
+        "0.95": 1573.1844590045512,
+        "0.99": 1734.0839579701424
+      }
+    }
+  },
+  "changedSelectorDecisions": 14,
+  "changedFinalBodies": 14,
+  "selection": {
+    "qualified": false,
+    "selected": null,
+    "developmentPassed": false,
+    "productionActivated": false,
+    "freshExecuted": false,
+    "resultsSha256": "1112b7d0c4649d048723b4e7ba08d38f978975c7d510c2af081a0938b1d7cb3a",
+    "reviewSha256": "2883248cb7794950c118df7b2bc1e2c690edf06078dd9e3b6476c1f1a7ec45f7",
+    "freezeSha256": "9ce275d096aae3646d817eb32e7742096d7442f657c7c6cd42310d89773ec4f9",
+    "reason": "Reject: improved positive corrections are accompanied by harmful ordinary-word/domain/forbidden-target substitutions. The joint positive/negative development gate fails; fresh data not consumed."
+  },
+  "limits": "Exposed development sources, repeated contexts not independent utterances; no ASR/Vision/native integration/concurrency/min16/independent review/fresh24/4B/olderQwen. No priming or causal latency claim. Explicit v3 template ownership; no semantic rejection or source fallback."
+}

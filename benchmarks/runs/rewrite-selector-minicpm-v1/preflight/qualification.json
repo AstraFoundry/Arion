@@ -1,0 +1,11 @@
+{
+  "qualifiedForSelector": true,
+  "productionQualified": false,
+  "resultsSha256": "7a43bf6f8acabc1163990e233de4bf98f8e14db597894adc7687659df3f426bf",
+  "freezeSha256": "5393852c01a809e061b3619494fd1334b7c4a3393545837ea0d384a5c18f3960",
+  "cacheRawParity": {
+    "99": true,
+    "0": true
+  },
+  "reason": "Exact pinned native lexer strips one trailing newline; all12 actual native completions are valid choice JSON with normal stop. Actual pinned template, explicit thinking=0 and empty thinking-block generation prefix observed in logs; Metal25/25 and CPU0/25. Positive cache-off/on/off raw parity holds on both placements. All12 diagnostic semantic choices fail and remain visible. Runtime qualification only permits the prefrozen202-request comparison, not release."
+}

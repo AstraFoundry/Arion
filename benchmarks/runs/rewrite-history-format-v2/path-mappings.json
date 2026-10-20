@@ -1,0 +1,9 @@
+{
+  "version": 1,
+  "source": ".workspace/rewrite-history-format-v2",
+  "published": "benchmarks/runs/rewrite-history-format-v2",
+  "privateExcluded": [
+    "model weights",
+    "native runtime binaries"
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "newGenerations": 202,
+  "replayedSourcePreparations": 457,
+  "newGoPreparations": 0,
+  "sourceTreatments": 914,
+  "skippedSourceTreatments": 712,
+  "finalBodies": 0,
+  "groups": {
+    "baseline": {
+      "cases": 101,
+      "conforming": 81,
+      "harmful": 20,
+      "missed": 0,
+      "requiredRepairs": 47,
+      "repaired": 47,
+      "protocolFailures": 0
+    },
+    "balanced": {
+      "cases": 101,
+      "conforming": 82,
+      "harmful": 19,
+      "missed": 0,
+      "requiredRepairs": 47,
+      "repaired": 47,
+      "protocolFailures": 0
+    }
+  },
+  "selection": {
+    "qualified": false,
+    "selected": null,
+    "screenPassedArms": [],
+    "productionActivated": false,
+    "freshExecuted": false,
+    "formatterExecuted": false,
+    "resultsSha256": "f60cc117be262f8d2f974d21b376a360985672486d389d37c871c963bcce1728",
+    "reviewSha256": "4e6b1f421866f7de607db5324b4c62a76ff3d2d9bbafe490cfd26d40a13051cb",
+    "reason": "Hybrid Metal comparison conforms81/82 versus92/94 Qwen; harmful20/19 versus3/4 despite47/47 required repairs in both arms. Reject both configurations; no formatter/fresh/production expansion."
+  },
+  "pairedComparison": {
+    "sameRequests": 202,
+    "changedChoices": 41,
+    "improvements": 9,
+    "regressions": 32,
+    "limits": "Exact202 paired model requests and prepared candidates. Different checkpoint/tokenizer/architecture; no parameter-count/quantization-only causal attribution. Qwen responses are prior actual controls, not regenerated or newly counted."
+  },
+  "limits": "Exposed development sources/repeated arms, not independent or held-out. ReplayedGo457;zero newASR/OCR/final bodies; no semantic output rejection/source fallback or production change. Model/tokenizer/architecture change, so no checkpoint-size/quantization-only causal attribution. No4B/olderQwen. All source-level/cross-script no-hypothesis skips explicit.",
+  "preflight": {
+    "attempts": 12,
+    "completedResponses": 12,
+    "protocolConforming": 12,
+    "taskConforming": 8,
+    "errors": 0,
+    "qualification": {
+      "qualifiedForSelector": true,
+      "productionQualified": false,
+      "resultsSha256": "837e814ab54e762d5afe5cca1fe464babd89ae9541aca1da48e2fc0e54d45d7f",
+      "freezeSha256": "343f0ba4ab622560c68bad951e087e92a108033ae02bb2e708e556f2c3fc6d83",
+      "cacheRawParity": {
+        "99": true,
+        "0": true
+      },
+      "reason": "All12 native protocol probes stop with valid choiceJSON; actualMetal41/41 template exact; three positive schema requests cache-off/on/off have exact raw parity. Read-cash literal semantic failures remain failures, not runtime degen or successful final rewriting."
+    },
+    "finalBodies": 0
+  }
+}

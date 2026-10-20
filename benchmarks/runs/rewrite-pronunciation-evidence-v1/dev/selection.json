@@ -1,0 +1,8 @@
+{
+  "selected": null,
+  "qualified": false,
+  "freezeSha256": "dc3a87f69b0c666e8a42acb5d6cf53687776febc802e8aed73a058cf8e44ba1f",
+  "resultsSha256": "a7858ccd370697cc20ea2b83c385fd7f4045e5bfe415dda1e5533f529c32a811",
+  "reviewSha256": "dddbbdb9f5b837f02c73c2c2ce21da401b34d706210ff957781b11bd2552a0f8",
+  "reason": "Guidance-only20/24 faithful,18/24 scene-useful,6/7 required repairs; derived-evidence21/24,19/24,7/7. Three ambiguity controls remain unsupported guesses despite correctly computed metadata. Fails predeclared quality gate; fresh24 ungenerated; no production adoption."
+}

@@ -1,0 +1,38 @@
+{
+  "architectures": [
+    "YoutuForCausalLM"
+  ],
+  "attention_bias": false,
+  "attention_dropout": 0.0,
+  "bos_token_id": 128000,
+  "dtype": "bfloat16",
+  "embedding_initializer_range": null,
+  "eos_token_id": 128001,
+  "hidden_act": "silu",
+  "hidden_size": 2048,
+  "initializer_range": null,
+  "intermediate_size": 6144,
+  "kv_lora_rank": 512,
+  "max_position_embeddings": 131072,
+  "mlp_bias": false,
+  "model_type": "youtu",
+  "num_attention_heads": 16,
+  "num_hidden_layers": 32,
+  "num_key_value_heads": 16,
+  "pad_token_id": null,
+  "q_lora_rank": 1536,
+  "qk_head_dim": 192,
+  "qk_nope_head_dim": 128,
+  "qk_rope_head_dim": 64,
+  "rms_norm_eps": 1e-06,
+  "rope_interleave": true,
+  "rope_parameters": {
+    "rope_theta": 1600000,
+    "rope_type": "default"
+  },
+  "tie_word_embeddings": true,
+  "transformers_version": "5.0.0.dev0",
+  "use_cache": true,
+  "v_head_dim": 128,
+  "vocab_size": 128256
+}

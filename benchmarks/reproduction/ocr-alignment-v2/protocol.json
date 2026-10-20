@@ -1,0 +1,44 @@
+{
+  "kind": "ocr-orthographic-alignment-prompt-repair",
+  "scope": "Authored Chinese text-only local inference; no actual acoustic recognition, OCR capture or automatic scene detection.",
+  "diagnosis": [
+    "Different spellings are normal for ASR correction, not by themselves a factual conflict.",
+    "Conservative preservation can suppress supported repair; missing code-boundary and ordinary-homophone demonstrations limit coverage.",
+    "Context-only instructions/facts and nonmatching or ambiguous spellings are distinct negative controls.",
+    "Causal attribution is limited: policy/example edits are a combined treatment, and prompt-only logic has no reliable OCR confidence metadata."
+  ],
+  "dev": {
+    "candidates": [
+      "aligned",
+      "staged"
+    ],
+    "cases": 16,
+    "selection": "Review all development raw/cleanup outputs. Prioritize intended-message fidelity, supported repair and no harmful context overwrite, then natural organization. Freeze the diagnostic choice before fresh evaluation; do not promote a failed candidate."
+  },
+  "evaluation": {
+    "baseline": "The frozen no-validator-v1 anchored prompt in every scene, not the installed production template.",
+    "variants": [
+      "previous",
+      "selected"
+    ],
+    "knownContextRegression": 24,
+    "newCases": 24,
+    "freshStrata": {
+      "already-correct": 4,
+      "ambiguous-context": 4,
+      "conflict-injection": 3,
+      "corrupt-ocr": 1,
+      "required-repair": 8,
+      "unrelated-context": 4
+    },
+    "note": "Fresh semantic challenge types are related to earlier development; no independent content-family/speaker claim."
+  },
+  "deliveryPolicies": [
+    "strict",
+    "envelope",
+    "none"
+  ],
+  "review": "Inspect every raw proposal and cleanup against evaluator-only intended text. Count successful/missed required repair, wrong/context overwrites, omitted clauses and style/envelope separately. Show every assigned/effective scene and actual template version.",
+  "acceptance": "Improve required repair without introducing new harmful delivery, retaining all restrictions/intent and proportional scene organization. Independent natural-data/native release gates remain open.",
+  "productionActivation": false
+}

@@ -1,0 +1,9 @@
+{
+  "requests": 202,
+  "unchangedRuleAndFinalSourceAndOtherFields": 202,
+  "sameTenExactDemonstrationPairs": 202,
+  "onlyPairOrderChanged": true,
+  "modelGenerations": 0,
+  "source": "Frozen baseline/balanced full original requests; no added/removed examples or edited answers.",
+  "limits": "Private preparatory payload check; not a native token-budget, inference, semantic or release result."
+}

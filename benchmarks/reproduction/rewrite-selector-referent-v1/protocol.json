@@ -1,0 +1,23 @@
+{
+  "purpose": "Test concise public source/context referent descriptions plus bounded choices, with and without balanced before/after data. Same actual source scope and producer; no new tests injected into examples.",
+  "arms": [
+    "baseline",
+    "referent",
+    "balanced",
+    "referent-balanced"
+  ],
+  "plannedSources": 457,
+  "actualGoPreparations": 457,
+  "plannedSourceTreatments": 1828,
+  "expectedGenerations": 404,
+  "expectedChoicesPerArm": 101,
+  "expectedHypothesisItemsPerArm": 106,
+  "expectedNoHypothesisSkips": 1424,
+  "maxTokens": 256,
+  "formatterGenerations": 0,
+  "changes": "All four arms use256token limit. Plain controls otherwise match old128token actual requests; explanatory arms change system final task, assistant example output objects and response schema, while user messages/ten example source tuples/decisions and hypotheses remain identical.",
+  "explanationScope": "One public1-to48-character source/context referent description per candidate, then choice. Output field order is recorded; this does not establish hidden reasoning or truthful self-report. Descriptions never enter edited text or formatter instructions. Semantically wrong descriptions remain archived, not filtered.",
+  "gate": "Required full101-case choice conformance with no harmful choices/protocol failures. Explanatory arms additionally require every public referent description accurately characterize the relevant source/context comparison; vague/inaccurate/uncertain descriptions do not qualify. Passing only permits a new complete457-source chain, followed by unchanged fresh/native/independent/min16 acceptance.",
+  "review": "Personally read every actual raw JSON choice and every public description, all failed and changed full-source/context/edited-source pairs. Choice conformance, source preservation and description correctness are separate; no final-body usefulness is inferred.",
+  "limits": "Exposed development sources, not held-out/generalization or native/min16 evidence. Four treatments are repeated observations, not independent subjects. Actual Go457 reuses each result within four arms. All zero-hypothesis sources remain explicit, including cross-script misses; zero newASR/OCR/final bodies. No semantic output rejection/source fallback or production prompt/validator change. No4B/olderQwen. Official catalog observation is limited100entries, not exhaustive newest-model proof."
+}

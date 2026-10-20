@@ -1,0 +1,47 @@
+{
+  "generations": 32,
+  "reviewedOutputs": 32,
+  "summary": {
+    "baseline": {
+      "cases": 16,
+      "rawFaithful": 14,
+      "rawSceneReady": 10,
+      "requiredRepairs": 3,
+      "repairs": 3,
+      "truncated": 0,
+      "requestP50Ms": 1660.290750209242,
+      "requestP95Ms": 1944.186583859846,
+      "prefillP50Ms": 1423.278,
+      "decodeP50Ms": 194.246,
+      "maxObservedResidentRssBytes": 1432993792,
+      "minCachedTokens": 0,
+      "maxCachedTokens": 0
+    },
+    "compact": {
+      "cases": 16,
+      "rawFaithful": 14,
+      "rawSceneReady": 11,
+      "requiredRepairs": 3,
+      "repairs": 2,
+      "truncated": 0,
+      "requestP50Ms": 1733.747750055045,
+      "requestP95Ms": 2168.5240829829127,
+      "prefillP50Ms": 1489.047,
+      "decodeP50Ms": 197.274,
+      "maxObservedResidentRssBytes": 1431601152,
+      "minCachedTokens": 0,
+      "maxCachedTokens": 0
+    }
+  },
+  "selection": {
+    "selected": null,
+    "qualified": false,
+    "freezeSha256": "1fda4ace0bff99453ff3e1b6e5a7aad401a938364336583579dd8d1ae03b58bb",
+    "resultsSha256": "b5a31f0bd13679c7c37f7d6ea1557d73509abdb11e2d9003504da26ebe35f93c",
+    "reviewSha256": "91155ea6372d60c56f370dfccae3a63afd3b01c10ef9fd27407631f230d10083",
+    "reason": "Compact package still fails owner grouping and ambiguity, and worsens getProfile repair. No evaluation or production adoption. Fresh24 remain ungenerated."
+  },
+  "evaluationExecuted": false,
+  "productionActivated": false,
+  "scope": "Four-scene exposed synthetic development. New24 frozen before inference remain ungenerated after failed gate. Same model/runtime/cache policy; template policy and work demonstrations change as a package. No natural ASR or independent release review."
+}

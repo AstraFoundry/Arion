@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "source": ".workspace/rewrite-language-profile-v2",
+  "published": "benchmarks/runs/rewrite-language-profile-v2",
+  "privateExcluded": [
+    "weights",
+    "runtime binaries",
+    "environment"
+  ]
+}

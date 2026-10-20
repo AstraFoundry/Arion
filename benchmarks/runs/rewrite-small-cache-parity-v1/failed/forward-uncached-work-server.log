@@ -1,0 +1,18 @@
+0.00.046.198 I srv  llama_server: initializing ...
+0.00.046.204 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)
+0.00.046.361 W srv  llama_server: security: no API key is set and CORS allows all origins (see https://github.com/ggml-org/llama.cpp/pull/25655)
+0.00.047.807 I srv    load_model: loading model '/Users/steven/code/Arion/.workspace/rewrite-small-models-v1/Qwen3.5-0.8B-Q4_K_M.gguf'
+0.00.748.814 I cmn          init: llama threadpool init, n_threads = 4
+/Users/runner/work/llama.cpp/llama.cpp/common/common.cpp:2249: get_sub_batch: failed to add token 0 at index 1 (error -1, n = 2)
+
+WARNING: Using native backtrace. Set GGML_BACKTRACE_LLDB for more info.
+WARNING: GGML_BACKTRACE_LLDB may cause native MacOS Terminal.app to crash.
+See: https://github.com/ggml-org/llama.cpp/pull/17869
+0   libggml-base.0.27.0.dylib           0x0000000100bd53f0 ggml_print_backtrace + 276
+1   libggml-base.0.27.0.dylib           0x0000000100c463f0 ggml_abort + 156
+2   libllama-common.0.7.0.dylib         0x000000010204c044 _ZN12common_batch13get_sub_batchEii + 628
+3   libllama-common.0.7.0.dylib         0x0000000102049e4c _Z25common_context_can_seq_rmP13llama_context + 748
+4   libllama-server-impl.dylib          0x00000001017299a8 _ZN19server_context_impl10load_modelER13common_params + 4772
+5   libllama-server-impl.dylib          0x000000010166679c _Z12llama_serverR13common_paramsiPPcR12server_child + 21872
+6   libllama-server-impl.dylib          0x0000000101661184 _Z12llama_serveriPPc + 236
+7   dyld                                0x000000018bd744e4 start + 6992

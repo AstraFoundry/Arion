@@ -1,0 +1,8 @@
+{
+  "status": "failed",
+  "newGenerations": 0,
+  "operation": "derived report build before output creation",
+  "error": "SyntaxError: unmatched closing parenthesis in grouped edit metrics",
+  "rawInferenceChanged": false,
+  "repair": "Remove the extra closing parenthesis; retain actual harmful edits separately from supported edits."
+}

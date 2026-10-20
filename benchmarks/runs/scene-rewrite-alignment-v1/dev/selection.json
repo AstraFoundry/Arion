@@ -1,0 +1,9 @@
+{
+  "selected": null,
+  "decision": "no-promotion",
+  "freezeSha256": "9c787f9e553a8e202fe26e36e906083a807ff1111b824dda29fd118ed2efa161",
+  "calibrationHarmfulAccepted": 0,
+  "calibrationFaithfulAccepted": 7,
+  "devSummarySha256": "3c5cfb67f195659916926420fa9d87b0e5eb923563343b95576175aa6243da44",
+  "reason": "All frozen gates required; test runs the predeclared factorial for diagnosis even after no-promotion."
+}

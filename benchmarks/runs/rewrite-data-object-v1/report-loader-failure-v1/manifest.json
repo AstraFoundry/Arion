@@ -1,0 +1,12 @@
+{
+  "kind": "report-loader-isolation-failure",
+  "status": "failed",
+  "exitCode": 1,
+  "newModelGenerations": 0,
+  "scope": "Focused actual reproduction of the observed loader-isolation regression before repair; original native records unchanged.",
+  "sources": {
+    "benchmarks/runs/rewrite-data-object-v1/report-loader-failure-v1/report-before-fix.py": "7bd47915c4e0a20a2072fe00ae03521bac2e1af09ca9955d83864bc838911d4a",
+    "benchmarks/runs/rewrite-data-object-v1/report-loader-failure-v1/test-report.py": "209848d7081e8faa00c93d76c41985cff635736ea2e21b7acc3bf6cbd1a28904",
+    "benchmarks/runs/rewrite-data-object-v1/report-loader-failure-v1/test.log": "15a828d59a0f7ead2d936b51ea6fd7ed6834fc0ff5e838ac4392db1c67cdfa5c"
+  }
+}

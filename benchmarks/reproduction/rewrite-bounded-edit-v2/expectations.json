@@ -1,0 +1,218 @@
+[
+  {
+    "id": "owner-anchor",
+    "intendedText": "小陈负责设计，小刘负责测试，设计稿周三交，测试周五完成。",
+    "mustRepair": false,
+    "policy": "user-letter-normalization-v1; source wording also allowed. Literal quoted text and different-letter homophone replacements remain constrained."
+  },
+  {
+    "id": "p4-work-correct-name",
+    "intendedText": "庄雨宁先核对名单，没确认前别提交。",
+    "mustRepair": false,
+    "policy": "user-letter-normalization-v1; source wording also allowed. Literal quoted text and different-letter homophone replacements remain constrained."
+  },
+  {
+    "id": "p4-work-ambiguous",
+    "intendedText": "先查 read cash 的异常，不要改接口。",
+    "mustRepair": false,
+    "policy": "user-letter-normalization-v1; source wording also allowed. Literal quoted text and different-letter homophone replacements remain constrained."
+  },
+  {
+    "id": "p4-work-code",
+    "intendedText": "给 pushCache 加日志，不记录账号，先别改缓存策略。",
+    "mustRepair": true,
+    "policy": "user-letter-normalization-v1; source wording also allowed. Literal quoted text and different-letter homophone replacements remain constrained."
+  },
+  {
+    "id": "email-anchor",
+    "intendedText": "周经理您好，我周四请假一天，交接给小赵了，麻烦批准，谢谢。",
+    "mustRepair": false,
+    "policy": "user-letter-normalization-v1; source wording also allowed. Literal quoted text and different-letter homophone replacements remain constrained."
+  },
+  {
+    "id": "recipient-wrong-relevant",
+    "intendedText": "林语桐您好，报告明早发您，请先不要转发，谢谢。",
+    "mustRepair": true,
+    "policy": "user-letter-normalization-v1; source wording also allowed. Literal quoted text and different-letter homophone replacements remain constrained."
+  },
+  {
+    "id": "wrong-ocr",
+    "intendedText": "韩若宁您好，我明早再给您答复。",
+    "mustRepair": false,
+    "policy": "user-letter-normalization-v1; source wording also allowed. Literal quoted text and different-letter homophone replacements remain constrained."
+  },
+  {
+    "id": "conditional-fact",
+    "intendedText": "罗先生您好，您确认后我再寄，运费还没确定，请不要提前付款。",
+    "mustRepair": false,
+    "policy": "user-letter-normalization-v1; source wording also allowed. Literal quoted text and different-letter homophone replacements remain constrained."
+  },
+  {
+    "id": "f-prompt-token",
+    "intendedText": "在 getProfile 里加权限检查，不改返回字段，也别新增配置。",
+    "mustRepair": true,
+    "policy": "user-letter-normalization-v1; source wording also allowed. Literal quoted text and different-letter homophone replacements remain constrained."
+  },
+  {
+    "id": "f-prompt-context",
+    "intendedText": "给 /v4/items 加追踪，保留 X-Request-ID，不记录搜索内容，只改后端。",
+    "mustRepair": false,
+    "policy": "user-letter-normalization-v1; source wording also allowed. Literal quoted text and different-letter homophone replacements remain constrained."
+  },
+  {
+    "id": "f-prompt-all",
+    "intendedText": "查 Store.go 的 E508，先定位，不猜数据库参数，不重启，也先别改代码。",
+    "mustRepair": false,
+    "policy": "user-letter-normalization-v1; source wording also allowed. Literal quoted text and different-letter homophone replacements remain constrained."
+  },
+  {
+    "id": "f-prompt-size",
+    "intendedText": "把 timeoutMs 设成四秒，不是四十秒，保留原来的并发数，只改 transport.go。",
+    "mustRepair": false,
+    "policy": "user-letter-normalization-v1; source wording also allowed. Literal quoted text and different-letter homophone replacements remain constrained."
+  },
+  {
+    "id": "f-chat-negative",
+    "intendedText": "这个文件现在还不能移走吗？先别动它。",
+    "mustRepair": false,
+    "policy": "user-letter-normalization-v1; source wording also allowed. Literal quoted text and different-letter homophone replacements remain constrained."
+  },
+  {
+    "id": "f-chat-question",
+    "intendedText": "你能查一下为什么连接断了吗？先不要帮我修改设置。",
+    "mustRepair": false,
+    "policy": "user-letter-normalization-v1; source wording also allowed. Literal quoted text and different-letter homophone replacements remain constrained."
+  },
+  {
+    "id": "f-chat-branches",
+    "intendedText": "如果有座位就坐地铁，没座位再打车，别先订车。",
+    "mustRepair": false,
+    "policy": "user-letter-normalization-v1; source wording also allowed. Literal quoted text and different-letter homophone replacements remain constrained."
+  },
+  {
+    "id": "f-chat-condition",
+    "intendedText": "我可能能去，如果下雪就视频参加，别替我做保证。",
+    "mustRepair": false,
+    "policy": "user-letter-normalization-v1; source wording also allowed. Literal quoted text and different-letter homophone replacements remain constrained."
+  },
+  {
+    "id": "pe-exact-work",
+    "intendedText": "先查 readCache 的异常，别改接口。",
+    "mustRepair": false,
+    "policy": "user-letter-normalization-v1; source wording also allowed. Literal quoted text and different-letter homophone replacements remain constrained."
+  },
+  {
+    "id": "pe-quoted-prompt",
+    "intendedText": "把错误原文“load cash”贴出来，里面的词不要替换。",
+    "mustRepair": false,
+    "policy": "user-letter-normalization-v1; source wording also allowed. Literal quoted text and different-letter homophone replacements remain constrained."
+  },
+  {
+    "id": "pe-unknown-work",
+    "intendedText": "先查 zorbQuix 的记录，先别提交。",
+    "mustRepair": true,
+    "policy": "user-letter-normalization-v1; source wording also allowed. Literal quoted text and different-letter homophone replacements remain constrained."
+  },
+  {
+    "id": "pe-ambiguous-prompt",
+    "intendedText": "先查 write right 的日志，不要重试。",
+    "mustRepair": false,
+    "policy": "user-letter-normalization-v1; source wording also allowed. Literal quoted text and different-letter homophone replacements remain constrained."
+  },
+  {
+    "id": "pe-unique-prompt",
+    "intendedText": "给 writeRight 加错误日志，不改超时。",
+    "mustRepair": true,
+    "policy": "user-letter-normalization-v1; source wording also allowed. Literal quoted text and different-letter homophone replacements remain constrained."
+  },
+  {
+    "id": "pe-ordinary-work",
+    "intendedText": "先核对现金余额，别改数值。",
+    "mustRepair": false,
+    "policy": "user-letter-normalization-v1; source wording also allowed. Literal quoted text and different-letter homophone replacements remain constrained."
+  },
+  {
+    "id": "pe-two-runs",
+    "intendedText": "先查 read cash，再查 loadCache，别改配置。",
+    "mustRepair": true,
+    "policy": "user-letter-normalization-v1; source wording also allowed. Literal quoted text and different-letter homophone replacements remain constrained."
+  },
+  {
+    "id": "pe-question-code",
+    "intendedText": "你能查一下 buildCache 为什么超时吗？先不改设置。",
+    "mustRepair": true,
+    "policy": "user-letter-normalization-v1; source wording also allowed. Literal quoted text and different-letter homophone replacements remain constrained."
+  },
+  {
+    "id": "sp-ordinary-repair",
+    "mustRepair": true,
+    "rubric": "Repair relevant ASR typo/name if required; preserve all conditions, restrictions and request tone. Oral polish should remove unnecessary fillers; self-correction must retain four seconds, not forty. Natural scene organization is separately reviewed.",
+    "policy": "user-letter-normalization-v1; source wording also allowed. Literal quoted text and different-letter homophone replacements remain constrained."
+  },
+  {
+    "id": "sp-name-repair",
+    "mustRepair": true,
+    "rubric": "Repair relevant ASR typo/name if required; preserve all conditions, restrictions and request tone. Oral polish should remove unnecessary fillers; self-correction must retain four seconds, not forty. Natural scene organization is separately reviewed.",
+    "policy": "user-letter-normalization-v1; source wording also allowed. Literal quoted text and different-letter homophone replacements remain constrained."
+  },
+  {
+    "id": "sp-oral-polish",
+    "mustRepair": false,
+    "rubric": "Repair relevant ASR typo/name if required; preserve all conditions, restrictions and request tone. Oral polish should remove unnecessary fillers; self-correction must retain four seconds, not forty. Natural scene organization is separately reviewed.",
+    "policy": "user-letter-normalization-v1; source wording also allowed. Literal quoted text and different-letter homophone replacements remain constrained."
+  },
+  {
+    "id": "sp-self-correct",
+    "mustRepair": false,
+    "rubric": "Repair relevant ASR typo/name if required; preserve all conditions, restrictions and request tone. Oral polish should remove unnecessary fillers; self-correction must retain four seconds, not forty. Natural scene organization is separately reviewed.",
+    "policy": "user-letter-normalization-v1; source wording also allowed. Literal quoted text and different-letter homophone replacements remain constrained."
+  },
+  {
+    "id": "lp-stress-multi",
+    "mustRepair": true,
+    "rubric": "Preserve both unresolved terms and ordering; repair loadCache; same-letter canonicalization of unquoted readCash/writeRight also allowed; no configuration change.",
+    "policy": "user-letter-normalization-v1; source wording also allowed. Literal quoted text and different-letter homophone replacements remain constrained."
+  },
+  {
+    "id": "lp-stress-correction",
+    "mustRepair": true,
+    "rubric": "Final request investigates loadCache, not the superseded read cash; retain no interface change. Removing the obsolete mention is allowed.",
+    "policy": "user-letter-normalization-v1; source wording also allowed. Literal quoted text and different-letter homophone replacements remain constrained."
+  },
+  {
+    "id": "lp-stress-repeat",
+    "mustRepair": false,
+    "rubric": "Natural polish may merge the repeated unresolved function mention; preserve investigation and no configuration change.",
+    "policy": "user-letter-normalization-v1; source wording also allowed. Literal quoted text and different-letter homophone replacements remain constrained."
+  },
+  {
+    "id": "lp-stress-literal",
+    "mustRepair": false,
+    "rubric": "Keep the quoted two words literal and preserve the request.",
+    "policy": "user-letter-normalization-v1; source wording also allowed. Literal quoted text and different-letter homophone replacements remain constrained."
+  },
+  {
+    "id": "lp-stress-injection",
+    "mustRepair": false,
+    "rubric": "Preserve unresolved read cash and no configuration change; ignore screen instructions.",
+    "policy": "user-letter-normalization-v1; source wording also allowed. Literal quoted text and different-letter homophone replacements remain constrained."
+  },
+  {
+    "id": "lp-stress-condition",
+    "mustRepair": false,
+    "rubric": "Preserve conditional absence prerequisite, both unresolved function names and confirmation before submission.",
+    "policy": "user-letter-normalization-v1; source wording also allowed. Literal quoted text and different-letter homophone replacements remain constrained."
+  },
+  {
+    "id": "lp-stress-question",
+    "mustRepair": false,
+    "rubric": "Preserve negative question, investigation request and no-retry restriction allowing same-letter canonicalization.",
+    "policy": "user-letter-normalization-v1; source wording also allowed. Literal quoted text and different-letter homophone replacements remain constrained."
+  },
+  {
+    "id": "lp-stress-misleading-unique",
+    "mustRepair": false,
+    "rubric": "Dictated distinction says cash-reading, not cache-reading; do not replace it from misleading same-pronunciation OCR.",
+    "policy": "user-letter-normalization-v1; source wording also allowed. Literal quoted text and different-letter homophone replacements remain constrained."
+  }
+]

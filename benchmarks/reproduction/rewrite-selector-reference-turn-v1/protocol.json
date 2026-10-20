@@ -1,0 +1,22 @@
+{
+  "purpose": "Separate full untrusted reference context into a preceding tool-role reference turn, with and without balanced source/replacement data.",
+  "arms": [
+    "baseline",
+    "reference-turn",
+    "balanced",
+    "reference-turn-balanced"
+  ],
+  "plannedSources": 457,
+  "actualGoPreparations": 457,
+  "plannedSourceTreatments": 1828,
+  "expectedGenerations": 404,
+  "expectedChoicesPerArm": 101,
+  "expectedNoHypothesisSkips": 1424,
+  "maxTokens": 128,
+  "formatterGenerations": 0,
+  "changes": "Only message serialization changes: move complete context from each of11 example/current user objects into a preceding tool-role JSON object. Preserve all data/source bytes, system and assistant answers, candidates/schema/settings/model/budget. Controls remain exactly prior requests. No tools are invoked.",
+  "gate": "Every101-case choice conforms, preserving all literal/ambiguity/meaning boundaries and required context-supported repairs, with no protocol failure. Passing only permits a new complete457-source chain and unchanged fresh/native/independent/actual16GB acceptance.",
+  "review": "Personally read every actual raw choice plus complete source/context/edited-source pairs for all failed or changed choices. Keep source fidelity separate from required-repair conformance; do not infer final-body style from choices.",
+  "limits": "Exposed development sources and repeated arms, not held-out/generalization/native/min16 evidence. Actual Go457 is reused within four arms. All no-hypothesis sources/cross-script coverage misses remain explicit. Zero newASR/OCR/final bodies; no semantic output rejection/source fallback or production change. No4B or olderQwen. Observed serial selector timing excludes startup/Go/formatter/native insertion/concurrentASR and is not an end-to-end SLO.",
+  "nativePreflight": "Four actual apply-template requests before freeze, zero generations. The pinned Qwen template serializes tool messages into user turns with tool_response markers; no security boundary is assumed."
+}

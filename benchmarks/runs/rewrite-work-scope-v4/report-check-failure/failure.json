@@ -1,0 +1,12 @@
+{
+  "kind": "report-integration-test-assertion-error",
+  "newGenerations": 0,
+  "actualObservationCount": 4263,
+  "incorrectExpectedCount": 4463,
+  "observedTests": 6,
+  "observedFailures": 1,
+  "observedSeconds": 95.035,
+  "failedTestSourceSha256": "8d813cb2009eb22ff886ddc5e1fc9e316c620142fa2e1f67682f14ffaeba4dbb",
+  "reason": "Sequential literal replacement of the round count also changed the 4263-prefix in the sum assertion. Raw model observations and generated HTML counts were already correct; no model body or judgment changed.",
+  "repair": "Keep explicit actual observation count4263 and compare round-count sum to the length of the actual case array."
+}

@@ -1,0 +1,81 @@
+{
+  "complete": true,
+  "actualResponses": 404,
+  "controlRanges": {
+    "baseline": [
+      [
+        0,
+        78
+      ],
+      [
+        78,
+        101
+      ]
+    ],
+    "balanced": [
+      [
+        0,
+        78
+      ],
+      [
+        78,
+        101
+      ]
+    ]
+  },
+  "fullSourceContextRanges": {
+    "sentence-ab": [
+      [
+        0,
+        40
+      ],
+      [
+        40,
+        80
+      ],
+      [
+        80,
+        101
+      ]
+    ],
+    "sentence-ba": [
+      [
+        0,
+        40
+      ],
+      [
+        40,
+        80
+      ],
+      [
+        80,
+        99
+      ],
+      [
+        99,
+        101
+      ]
+    ]
+  },
+  "failedUniqueRanges": [
+    [
+      0,
+      20
+    ],
+    [
+      20,
+      28
+    ]
+  ],
+  "changedBalancedRanges": [
+    [
+      0,
+      16
+    ],
+    [
+      16,
+      32
+    ]
+  ],
+  "scope": "Assistant personally read actual raw output/source pairs, not an independent blind or model-judge review. Frozen evaluator unchanged."
+}

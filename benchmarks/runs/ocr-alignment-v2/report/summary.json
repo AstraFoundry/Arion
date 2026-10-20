@@ -1,0 +1,266 @@
+{
+  "crossPhaseIdenticalInputs": 8,
+  "crossPhaseOutputMismatches": [],
+  "parityGenerations": 12,
+  "parityOutputMismatches": [],
+  "generations": 128,
+  "reviewedGenerations": 128,
+  "policyDeliveries": 384,
+  "selected": "aligned",
+  "productionActivated": false,
+  "rawSummary": {
+    "development/development/aligned": {
+      "cases": 16,
+      "faithful": 13,
+      "sceneReady": 11,
+      "requiredRepairs": 5,
+      "repairSucceeded": 3,
+      "harmfulContextChanges": 1,
+      "omittedConstraints": 0,
+      "demonstrationLeakage": 0,
+      "correctTextDamaged": 0,
+      "envelopeFailures": 0
+    },
+    "development/development/staged": {
+      "cases": 16,
+      "faithful": 13,
+      "sceneReady": 11,
+      "requiredRepairs": 5,
+      "repairSucceeded": 3,
+      "harmfulContextChanges": 1,
+      "omittedConstraints": 0,
+      "demonstrationLeakage": 0,
+      "correctTextDamaged": 0,
+      "envelopeFailures": 0
+    },
+    "evaluation/known-context-regression/previous": {
+      "cases": 24,
+      "faithful": 18,
+      "sceneReady": 16,
+      "requiredRepairs": 4,
+      "repairSucceeded": 0,
+      "harmfulContextChanges": 2,
+      "omittedConstraints": 0,
+      "demonstrationLeakage": 0,
+      "correctTextDamaged": 0,
+      "envelopeFailures": 0
+    },
+    "evaluation/fresh-test/previous": {
+      "cases": 24,
+      "faithful": 12,
+      "sceneReady": 11,
+      "requiredRepairs": 8,
+      "repairSucceeded": 2,
+      "harmfulContextChanges": 5,
+      "omittedConstraints": 2,
+      "demonstrationLeakage": 0,
+      "correctTextDamaged": 2,
+      "envelopeFailures": 0
+    },
+    "evaluation/known-context-regression/aligned": {
+      "cases": 24,
+      "faithful": 17,
+      "sceneReady": 17,
+      "requiredRepairs": 4,
+      "repairSucceeded": 2,
+      "harmfulContextChanges": 4,
+      "omittedConstraints": 0,
+      "demonstrationLeakage": 1,
+      "correctTextDamaged": 0,
+      "envelopeFailures": 0
+    },
+    "evaluation/fresh-test/aligned": {
+      "cases": 24,
+      "faithful": 16,
+      "sceneReady": 13,
+      "requiredRepairs": 8,
+      "repairSucceeded": 4,
+      "harmfulContextChanges": 3,
+      "omittedConstraints": 1,
+      "demonstrationLeakage": 0,
+      "correctTextDamaged": 1,
+      "envelopeFailures": 0
+    }
+  },
+  "deliveredSummary": {
+    "development/development/aligned/strict": {
+      "cases": 16,
+      "proposalsDelivered": 15,
+      "faithfulDelivered": 14,
+      "sceneReadyDelivered": 12,
+      "repairSucceeded": 3,
+      "invalidProposalsDelivered": 0,
+      "faithfulProposalsRejected": 0
+    },
+    "development/development/aligned/envelope": {
+      "cases": 16,
+      "proposalsDelivered": 16,
+      "faithfulDelivered": 13,
+      "sceneReadyDelivered": 11,
+      "repairSucceeded": 3,
+      "invalidProposalsDelivered": 0,
+      "faithfulProposalsRejected": 0
+    },
+    "development/development/aligned/none": {
+      "cases": 16,
+      "proposalsDelivered": 16,
+      "faithfulDelivered": 13,
+      "sceneReadyDelivered": 11,
+      "repairSucceeded": 3,
+      "invalidProposalsDelivered": 0,
+      "faithfulProposalsRejected": 0
+    },
+    "development/development/staged/strict": {
+      "cases": 16,
+      "proposalsDelivered": 15,
+      "faithfulDelivered": 14,
+      "sceneReadyDelivered": 12,
+      "repairSucceeded": 3,
+      "invalidProposalsDelivered": 0,
+      "faithfulProposalsRejected": 0
+    },
+    "development/development/staged/envelope": {
+      "cases": 16,
+      "proposalsDelivered": 16,
+      "faithfulDelivered": 13,
+      "sceneReadyDelivered": 11,
+      "repairSucceeded": 3,
+      "invalidProposalsDelivered": 0,
+      "faithfulProposalsRejected": 0
+    },
+    "development/development/staged/none": {
+      "cases": 16,
+      "proposalsDelivered": 16,
+      "faithfulDelivered": 13,
+      "sceneReadyDelivered": 11,
+      "repairSucceeded": 3,
+      "invalidProposalsDelivered": 0,
+      "faithfulProposalsRejected": 0
+    },
+    "evaluation/known-context-regression/previous/strict": {
+      "cases": 24,
+      "proposalsDelivered": 23,
+      "faithfulDelivered": 19,
+      "sceneReadyDelivered": 17,
+      "repairSucceeded": 0,
+      "invalidProposalsDelivered": 0,
+      "faithfulProposalsRejected": 0
+    },
+    "evaluation/known-context-regression/previous/envelope": {
+      "cases": 24,
+      "proposalsDelivered": 24,
+      "faithfulDelivered": 18,
+      "sceneReadyDelivered": 16,
+      "repairSucceeded": 0,
+      "invalidProposalsDelivered": 0,
+      "faithfulProposalsRejected": 0
+    },
+    "evaluation/known-context-regression/previous/none": {
+      "cases": 24,
+      "proposalsDelivered": 24,
+      "faithfulDelivered": 18,
+      "sceneReadyDelivered": 16,
+      "repairSucceeded": 0,
+      "invalidProposalsDelivered": 0,
+      "faithfulProposalsRejected": 0
+    },
+    "evaluation/fresh-test/previous/strict": {
+      "cases": 24,
+      "proposalsDelivered": 19,
+      "faithfulDelivered": 16,
+      "sceneReadyDelivered": 14,
+      "repairSucceeded": 2,
+      "invalidProposalsDelivered": 0,
+      "faithfulProposalsRejected": 0
+    },
+    "evaluation/fresh-test/previous/envelope": {
+      "cases": 24,
+      "proposalsDelivered": 24,
+      "faithfulDelivered": 12,
+      "sceneReadyDelivered": 11,
+      "repairSucceeded": 2,
+      "invalidProposalsDelivered": 0,
+      "faithfulProposalsRejected": 0
+    },
+    "evaluation/fresh-test/previous/none": {
+      "cases": 24,
+      "proposalsDelivered": 24,
+      "faithfulDelivered": 12,
+      "sceneReadyDelivered": 11,
+      "repairSucceeded": 2,
+      "invalidProposalsDelivered": 0,
+      "faithfulProposalsRejected": 0
+    },
+    "evaluation/known-context-regression/aligned/strict": {
+      "cases": 24,
+      "proposalsDelivered": 19,
+      "faithfulDelivered": 22,
+      "sceneReadyDelivered": 22,
+      "repairSucceeded": 2,
+      "invalidProposalsDelivered": 0,
+      "faithfulProposalsRejected": 0
+    },
+    "evaluation/known-context-regression/aligned/envelope": {
+      "cases": 24,
+      "proposalsDelivered": 24,
+      "faithfulDelivered": 17,
+      "sceneReadyDelivered": 17,
+      "repairSucceeded": 2,
+      "invalidProposalsDelivered": 0,
+      "faithfulProposalsRejected": 0
+    },
+    "evaluation/known-context-regression/aligned/none": {
+      "cases": 24,
+      "proposalsDelivered": 24,
+      "faithfulDelivered": 17,
+      "sceneReadyDelivered": 17,
+      "repairSucceeded": 2,
+      "invalidProposalsDelivered": 0,
+      "faithfulProposalsRejected": 0
+    },
+    "evaluation/fresh-test/aligned/strict": {
+      "cases": 24,
+      "proposalsDelivered": 23,
+      "faithfulDelivered": 17,
+      "sceneReadyDelivered": 14,
+      "repairSucceeded": 4,
+      "invalidProposalsDelivered": 0,
+      "faithfulProposalsRejected": 0
+    },
+    "evaluation/fresh-test/aligned/envelope": {
+      "cases": 24,
+      "proposalsDelivered": 24,
+      "faithfulDelivered": 16,
+      "sceneReadyDelivered": 13,
+      "repairSucceeded": 4,
+      "invalidProposalsDelivered": 0,
+      "faithfulProposalsRejected": 0
+    },
+    "evaluation/fresh-test/aligned/none": {
+      "cases": 24,
+      "proposalsDelivered": 24,
+      "faithfulDelivered": 16,
+      "sceneReadyDelivered": 13,
+      "repairSucceeded": 4,
+      "invalidProposalsDelivered": 0,
+      "faithfulProposalsRejected": 0
+    }
+  },
+  "timing": {
+    "aligned": {
+      "p50Ms": 694.3439589813352,
+      "p95Ms": 962.0688329450786
+    },
+    "previous": {
+      "p50Ms": 671.4664581231773,
+      "p95Ms": 1001.3382500037551
+    }
+  },
+  "limitations": [
+    "Authored text, not executed ASR or screenshot OCR; scenes are fixture-assigned.",
+    "Single-assistant review, not independent blinded ratings.",
+    "Development and regression overlap explicitly; new cases share known challenge types.",
+    "Simultaneous policy/example edits versus old prompt are not an isolated causal attribution.",
+    "None bypasses text validation, not runtime/session/deadline protection; no native lifecycle test."
+  ]
+}

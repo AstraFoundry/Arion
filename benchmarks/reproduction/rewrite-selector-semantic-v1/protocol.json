@@ -1,0 +1,16 @@
+{
+  "purpose": "Optimize selector instructions/examples only while using the same tone-insensitive producer, schema and latest four-scene formatter in both arms. Candidate runs401 history+24 old tone controls+32 semantic-role controls; baseline runs32 role controls. Original tone-chain401/24 outputs retained only for paired comparison, not recounted as inference.",
+  "historical": 401,
+  "oldToneControls": 24,
+  "newRoleControls": 32,
+  "plannedSourceAttempts": 489,
+  "candidateSourceAttempts": 457,
+  "baselineSourceAttempts": 32,
+  "changes": [
+    "source semantics and domain/grammatical role",
+    "questions/prohibitions separate from spelling permission",
+    "ordinary words can be recognition errors",
+    "unrelated positive/negative demonstrations"
+  ],
+  "limits": "One exposed nursery source,7 additional fixed-source formulations; contexts repeated within each group, not32 independent utterances. No cross-script producer change, ASR/Vision/native/concurrent/min16/independent-rater/production/fresh24/4B/olderQwen/Granite/Q8 evidence. No priming; quality experiment, not randomized timing comparison."
+}

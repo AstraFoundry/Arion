@@ -25,6 +25,16 @@ Milliseconds, p50 / p95 / p99 (max). `run-1` is before the candidate bar stopped
 | Selection key (Space or number) | 1.66 / 4.70 / 5.37 (7.1) | 0.049 / 0.076 / 0.094 (7.2) | 0.057 / 0.084 / 0.103 (5.6) |
 | Candidate bar update alone | 0.143 / 3.23 / 4.52 (14.8) | 0.056 / 0.154 / 0.175 (15.5) | 0.057 / 0.156 / 0.181 (17.0) |
 
+`run-5` repeats the benchmark after the expanded grid was added; quality is identical (88.7% / 32.2% later top-1). Page Down now opens the grid, so every paging key the simulated user presses expands it and the next letter collapses it; each costs one window resize:
+
+| Span (`run-5`) | ranking off | ranking on |
+| --- | ---: | ---: |
+| Letter key | 0.204 / 0.814 / 2.98 (20.6) | 0.250 / 0.984 / 3.52 (19.9) |
+| Selection or paging key | 0.052 / 0.100 / 0.136 (5.7) | 0.064 / 0.127 / 0.250 (6.0) |
+| Candidate bar update alone | 0.086 / 0.231 / 2.30 (7.6) | 0.094 / 0.262 / 2.90 (5.8) |
+
+The p99 rise to about 3 ms comes from those expand/collapse resizes; typing within one state is unchanged at p95.
+
 A sampling profile showed `orderFront` (re-ordering the window into the window server after every commit) dominating the old letter-key cost. The bar now hides by becoming transparent and click-through and leaves the window list after 2 s idle; its window only grows while shown. Context ranking costs about 0.02–0.06 ms per key. The 28–29 ms maxima are each process's first key, which builds the window and loads the engine's first candidates.
 
 ## Limits

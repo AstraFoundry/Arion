@@ -1,0 +1,123 @@
+{
+  "kind": "post-review-producer-coverage-diagnostic",
+  "newGenerations": 0,
+  "resultsSha256": "a1e6c08145e91a34c978ac0701b8c39731f176bbb87987e12bfcc14ef1801563",
+  "records": [
+    {
+      "id": "history-0091",
+      "reviewedTarget": "Kubernetes",
+      "source": "库伯内提斯的升级先暂停，等兼容性检查通过再继续。",
+      "context": {
+        "Screen": "平台讨论：Kubernetes 集群升级；兼容性检查尚未通过。"
+      },
+      "rowSha256": "74fc0bf8aca973a9bb3f278af8d2f1ccf35be143c8b45278c646ed5a17227f4c",
+      "targetInScreen": true,
+      "proposed": false,
+      "modelSelectorCalled": false,
+      "actualDecision": null,
+      "finalBody": "库伯内提斯的升级先暂停，等兼容性检查通过再继续。"
+    },
+    {
+      "id": "history-0124",
+      "reviewedTarget": "Prometheus",
+      "source": "普罗米修斯的告警先别关闭，查清原因再说。",
+      "context": {
+        "Screen": "Prometheus 告警规则排查，当前告警待处理。"
+      },
+      "rowSha256": "cc6a80a25a88c2eedab1584880f9f7d15baaa252dfc1dc274bc61df9cf5d11a5",
+      "targetInScreen": true,
+      "proposed": false,
+      "modelSelectorCalled": false,
+      "actualDecision": null,
+      "finalBody": "普罗米修斯的告警先别关闭，查清原因再说。"
+    },
+    {
+      "id": "history-0143",
+      "reviewedTarget": "Grafana",
+      "source": "格拉法那的告警先别关，查完原因再决定。",
+      "context": {
+        "Screen": "平台讨论：Grafana 告警面板；告警原因待查。"
+      },
+      "rowSha256": "e02e00df86f4d47a96d4455abed07a701da7d9a5062ac99aab95471fcf06b6fe",
+      "targetInScreen": true,
+      "proposed": false,
+      "modelSelectorCalled": false,
+      "actualDecision": null,
+      "finalBody": "格拉法那的告警先别关，查完原因再决定。"
+    },
+    {
+      "id": "history-0156",
+      "reviewedTarget": "Terraform",
+      "source": "泰拉福姆先做计划检查，不要执行部署，也别猜变量。",
+      "context": {
+        "Screen": "Terraform plan 复核；部署尚未授权。"
+      },
+      "rowSha256": "f6eeac62831b1542b7e20487dcaa6f5a2812485a6d5c374f8f472629dc7b0876",
+      "targetInScreen": true,
+      "proposed": false,
+      "modelSelectorCalled": false,
+      "actualDecision": null,
+      "finalBody": "- 泰拉福姆先做计划检查，不要执行部署，也别猜变量。"
+    },
+    {
+      "id": "history-0161",
+      "reviewedTarget": "会议纪要",
+      "source": "会议记要现在还不能发吗？先别帮我转发。",
+      "context": {
+        "Screen": "群聊：会议纪要的审核还没完成。"
+      },
+      "rowSha256": "bb1564a630b302f0a6a5b130e441c7f9b935ce1ff0939d72bb6b0cb014ce452f",
+      "targetInScreen": true,
+      "proposed": true,
+      "modelSelectorCalled": true,
+      "actualDecision": {
+        "e0": "keep"
+      },
+      "finalBody": "会议记要现在还不能发吗？先别帮我转发。"
+    },
+    {
+      "id": "history-0188",
+      "reviewedTarget": "会议纪要",
+      "source": "这份会议记要还不能发吗？先别转发。",
+      "context": {
+        "Screen": "会议纪要审核未结束。"
+      },
+      "rowSha256": "02091ce1ad66e96864119a63159a856a4f4d58c8f18b7346eacbc9094dd9ffa5",
+      "targetInScreen": true,
+      "proposed": true,
+      "modelSelectorCalled": true,
+      "actualDecision": {
+        "e0": "keep"
+      },
+      "finalBody": "这份会议记要还不能发吗？先别转发。"
+    },
+    {
+      "id": "history-0211",
+      "reviewedTarget": "验收报告",
+      "source": "这份验受报告还不能发吗？先别转发。",
+      "context": {
+        "Screen": "验收报告讨论：暂不发布。"
+      },
+      "rowSha256": "b0854e9e2b9e6a8f95dbf10282da4bdfd343a0c04b76beb641e9efad1bbaa92a",
+      "targetInScreen": true,
+      "proposed": false,
+      "modelSelectorCalled": false,
+      "actualDecision": null,
+      "finalBody": "这份验受报告还不能发吗？先别转发。"
+    }
+  ],
+  "toneExample": {
+    "sourceCharacter": "受",
+    "sourceReadings": [
+      "dao4",
+      "shou4"
+    ],
+    "screenCharacter": "收",
+    "screenReadings": [
+      "shou1"
+    ],
+    "exactReadingIntersection": [],
+    "sameSegmentIgnoringTone": true
+  },
+  "scope": "Human-selected normalization opportunities are evaluator-only, not a universal recall estimate or required phonetic ground truth. Chinese aliases may preserve meaning without canonical Latin spelling. Four cross-script targets and one different-tone word lack hypotheses; two exact-reading Chinese terms reach selection but are kept. Text-derived pronunciation is not acoustic evidence."
+}

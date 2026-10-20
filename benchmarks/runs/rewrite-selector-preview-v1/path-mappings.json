@@ -1,0 +1,9 @@
+{
+  "source": ".workspace/rewrite-selector-preview-v1",
+  "published": "benchmarks/runs/rewrite-selector-preview-v1",
+  "privateExcluded": [
+    "weights",
+    "runtime binaries",
+    "Go worker executable"
+  ]
+}

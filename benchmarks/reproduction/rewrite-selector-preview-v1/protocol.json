@@ -1,0 +1,7 @@
+{
+  "purpose": "Isolate deterministic candidate-sentence previews in selector data. Same semantic-v2 system, demonstrations, choices, hypotheses, schema, decoding and formatter; only add candidateRewrites spelling/sourceAfterReplacement fields to each hypothesis in demonstrations and current selector data. No evaluator/reference or context trimming.",
+  "plannedSourceAttempts": 457,
+  "baseline": "Complete prior semantic-v2 actual558 responses, frozen raw/labels/manifest/selection and archive before this inference. Not counted as new inference.",
+  "developmentGate": "All historical and old positive corrections retained; no harmful role substitutions; all four related-context role repairs succeed. No fresh held-out evaluation until this joint development gate passes.",
+  "limits": "Exposed development sources, repeated contexts not independent utterances; no ASR/Vision/native integration/concurrency/min16/independent review/fresh24/4B/olderQwen. No priming or causal latency claim. Explicit v3 template ownership; no semantic rejection or source fallback."
+}

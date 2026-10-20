@@ -1,0 +1,24 @@
+"""Freeze complete-reference serialization treatment before any generation."""
+from pathlib import Path
+import json,hashlib,shutil,subprocess
+R=Path.cwd();H=R/'benchmarks/reproduction/rewrite-selector-reference-turn-v1';W=R/'.workspace/rewrite-selector-reference-turn-v1'
+def read(p):return json.loads(p.read_text())
+def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
+def save(p,x):p.write_text(json.dumps(x,ensure_ascii=False,indent=2)+'\n')
+assert read(W/'preflight/status.json')==dict(status='complete',generations=0,requests=4)
+D=R/'benchmarks/runs/rewrite-selector-reference-turn-v1';D.mkdir(exist_ok=False);shutil.copytree(W/'preflight',D/'preflight');shutil.copyfile(W/'preflight.py',H/'original-preflight.py.txt');shutil.copyfile(Path(__file__),H/'original-prepare.py.txt')
+paths={a:'benchmarks/reproduction/rewrite-selector-screen-v1/templates/'+a+'/prompts.json' for a in ['baseline','balanced']}
+save(H/'layout.json',dict(version='selector-reference-turn-v1',systemAndExampleSources={a:dict(path=p,sha256=sha(R/p)) for a,p in paths.items()},transformation='For every example and current user message, move the complete context object to a preceding tool-role message. Preserve all field values, source, hypotheses, scene, trusted system and assistant demonstration answers. Native tool-role renders a user turn with tool_response markers; no privilege boundary or tool execution is claimed.',ownership='Composite recipe with pinned original prompt files and per-row complete actual message hashes.'))
+protocol=read(R/'benchmarks/reproduction/rewrite-selector-source-last-v1/protocol.json')
+protocol.update(purpose='Separate full untrusted reference context into a preceding tool-role reference turn, with and without balanced source/replacement data.',arms=['baseline','reference-turn','balanced','reference-turn-balanced'],changes='Only message serialization changes: move complete context from each of11 example/current user objects into a preceding tool-role JSON object. Preserve all data/source bytes, system and assistant answers, candidates/schema/settings/model/budget. Controls remain exactly prior requests. No tools are invoked.',nativePreflight='Four actual apply-template requests before freeze, zero generations. The pinned Qwen template serializes tool messages into user turns with tool_response markers; no security boundary is assumed.')
+save(H/'protocol.json',protocol)
+f=read(R/'benchmarks/reproduction/rewrite-selector-screen-v1/freeze.json');f['files']=dict(read(R/'benchmarks/runs/rewrite-selector-screen-v1/archive.json')['files'])
+for folder in [H,D/'preflight']:
+ for p in folder.rglob('*'):
+  if p.is_file() and '__pycache__' not in p.parts and p.name!='freeze.json':f['files'][str(p.relative_to(R))]=sha(p)
+save(H/'freeze.json',f)
+host={}
+for key,cmd in [('os',['sw_vers']),('hardware',['sysctl','hw.model','hw.memsize','hw.physicalcpu','machdep.cpu.brand_string']),('power',['pmset','-g','custom']),('thermal',['pmset','-g','therm']),('gitRevision',['git','rev-parse','HEAD']),('dirty',['git','status','--porcelain']),('runtime',['.workspace/rewrite-small-models-v1/runtime/llama-b11734/llama-server','--version'])]:
+ q=subprocess.run(cmd,text=True,capture_output=True);host[key]=dict(command=cmd,exitCode=q.returncode,stdout=q.stdout,stderr=q.stderr)
+host.update(timer='time.monotonic',freezeSha256=sha(H/'freeze.json'),sampling='Pinned1.88B Q4/b11734/Metal99/CPU4/ctx4096/parallel1/greedy42/nonthinking/cachetrue/128tokens/no warmup. RSS is sampled worker memory, not peak/min16 acceptance.',executorAdapter='Owned entry point injects declared pipeline/freeze into unchanged frozen four-arm actual-Go/Metal executor; internal executor/worker labels remain selector-screen-v1. Reference-turn prompt identity owns composition, not a new system prompt.')
+save(W/'host-provenance.json',host);print('Frozen',len(f['files']),'files,404 planned actual choices')

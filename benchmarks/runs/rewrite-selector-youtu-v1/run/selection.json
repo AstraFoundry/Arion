@@ -1,0 +1,11 @@
+{
+  "qualified": false,
+  "selected": null,
+  "screenPassedArms": [],
+  "productionActivated": false,
+  "freshExecuted": false,
+  "formatterExecuted": false,
+  "resultsSha256": "6dd510ee52aa1022598628a2d563cc4f4377f6714eac7dc07b7f53b448b35a9d",
+  "reviewSha256": "f7f99ed27ea4c87a9de8df4fc03775cf09a768cc0e15d34e7680cb97102d6d01",
+  "reason": "Youtu arms conform75/84 of101, harmful3/4, missed23/13, repaired24/34 of47. Same-request canonical controls conform92/94, harmful3/4, missed6/3.5 improved and32 regressed choices; reject both, no formatter/fresh expansion."
+}

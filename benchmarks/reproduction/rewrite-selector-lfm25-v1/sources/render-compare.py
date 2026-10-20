@@ -1,0 +1,24 @@
+"""Compare exact text-only serialization, explicitly removing non-output tracking blocks."""
+from pathlib import Path
+import json,hashlib,sys,importlib.metadata,jinja2
+from jinja2.sandbox import ImmutableSandboxedEnvironment
+R=Path.cwd();D=Path(__file__).resolve().parent;out=D/'render-comparison-v2';out.mkdir(exist_ok=False)
+def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
+up_path=D/'LFM2.5-1.2B-Instruct/chat_template.jinja';header_path=D/'gguf-info.json';up=up_path.read_text();embedded=json.loads(header_path.read_text())['metadata']['tokenizer.chat_template'];cfg=json.loads((D/'LFM2.5-1.2B-Instruct/tokenizer_config.json').read_text());bos=cfg['bos_token'];bos=bos['content'] if isinstance(bos,dict) else bos
+markers=['{%- generation -%}','{%- endgeneration -%}'];assert all(up.count(m)==1 for m in markers)
+reference=up
+for marker in markers:reference=reference.replace(marker,'')
+env=ImmutableSandboxedEnvironment(trim_blocks=True,lstrip_blocks=True,autoescape=False)
+def reject(message):raise ValueError(message)
+env.globals['raise_exception']=reject;env.filters['tojson']=lambda value,**kw:json.dumps(value,ensure_ascii=False,**kw)
+left,right=env.from_string(reference),env.from_string(embedded);source=R/'benchmarks/runs/rewrite-selector-screen-v1/run/results.jsonl';rows=[r for r in map(json.loads,source.read_text().splitlines()) if r['arm'] in ['baseline','balanced']];assert len(rows)==202
+records=[]
+for r in rows:
+ messages=r['request']['messages'];assert all(isinstance(m['content'],str) and set(m)=={'role','content'} for m in messages)
+ kwargs=dict(messages=messages,bos_token=bos,add_generation_prompt=True,tools=None,preserve_thinking=False,keep_past_thinking=False)
+ a=left.render(**kwargs);b=right.render(**kwargs);records.append(dict(arm=r['arm'],id=r['id'],upstreamTrackingMarkersRemoved=a,embedded=b,exactTextEqual=a==b))
+(out/'prompts.jsonl').write_text(''.join(json.dumps(r,ensure_ascii=False)+'\n' for r in records))
+files={str(p):sha(p) for p in Path(jinja2.__file__).parent.rglob('*.py')};(out/'dependency-files.json').write_text(json.dumps(files,indent=2)+'\n')
+summary=dict(requests=202,exactTextEqual=sum(r['exactTextEqual'] for r in records),modelGenerations=0,nativeRequests=0,sourcePath=str(source.relative_to(R)),sourceSha256=sha(source),upstreamTemplateSha256=sha(up_path),headerSha256=sha(header_path),transformation='Remove exactly one generation/endgeneration tracking-block marker pair from upstream for plain Jinja rendering. Does not replace production/native template.',python=sys.version,jinja2Version=importlib.metadata.version('jinja2'),dependencyFilesSha256=sha(out/'dependency-files.json'),promptsSha256=sha(out/'prompts.jsonl'),limits='Local Jinja text-only serializer comparison, not official Transformers end-to-end, native parser, token-ID or weight/logit parity. No tools/multimodal/continuation/reasoning messages or release-quality proof.')
+(out/'summary.json').write_text(json.dumps(summary,indent=2)+'\n');print(json.dumps(summary,indent=2))
+assert summary['exactTextEqual']==202

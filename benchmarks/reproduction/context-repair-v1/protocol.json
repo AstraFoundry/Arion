@@ -1,0 +1,13 @@
+{
+  "kind": "context-supported-asr-text-repair-development",
+  "cases": 24,
+  "variants": [
+    "production",
+    "structure-v3",
+    "context-repair-v1"
+  ],
+  "scope": "Authored ASR-like corruptions and OCR-like text. Real LLM inference; neither recorded ASR errors nor an executed OCR capture pipeline.",
+  "expected": "Reference intent stays evaluator-only. Matching input fields alone reach the worker. No held-out claim: candidate design and all cases form a development diagnostic.",
+  "review": "Inspect every source/context/output pair; distinguish supported correction, omission, factual overwrite, imported context and unchanged errors. Strict validator verdict remains separate.",
+  "timing": "Request generation wall time excludes strict-check subprocess; loads separate; grouped sequential arms on a shared host."
+}

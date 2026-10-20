@@ -1,0 +1,11 @@
+{
+  "repo": "unsloth/granite-4.0-h-1b-GGUF",
+  "revision": "74f5511840300fdee7c70ccfc5bd57ecde0c8bbc",
+  "filename": "granite-4.0-h-1b-Q4_K_M.gguf",
+  "sha256": "fd3b85f09520df9d898e2bbcf5da22fc518dbf9d662bb52e214d946c72aafacc",
+  "bytes": 901162560,
+  "url": "https://huggingface.co/unsloth/granite-4.0-h-1b-GGUF/resolve/74f5511840300fdee7c70ccfc5bd57ecde0c8bbc/granite-4.0-h-1b-Q4_K_M.gguf",
+  "upstreamParameters": 1461538368,
+  "license": "apache-2.0",
+  "scope": "Acquisition only, not an inference or product selection."
+}

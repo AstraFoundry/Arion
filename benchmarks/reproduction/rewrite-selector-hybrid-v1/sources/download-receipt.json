@@ -1,0 +1,14 @@
+{
+  "status": "complete",
+  "model": "ibm-granite/granite-4.0-h-1b",
+  "upstreamRevision": "d18cca4c121edb87d022116d281ce212c9136f57",
+  "exportRevision": "c2cb1972f511add21f3bae244990b8ff3a3ffb23",
+  "filename": "granite-4.0-h-1b-Q4_K_M.gguf",
+  "expectedBytes": 901162208,
+  "expectedSha256": "da3d737121a96f3c9a316685212376257a7f167b74380855666dd488d6af3bcb",
+  "newModelGenerations": 0,
+  "url": "https://huggingface.co/ibm-granite/granite-4.0-h-1b-GGUF/resolve/c2cb1972f511add21f3bae244990b8ff3a3ffb23/granite-4.0-h-1b-Q4_K_M.gguf?download=true",
+  "actualBytes": 901162208,
+  "actualSha256": "da3d737121a96f3c9a316685212376257a7f167b74380855666dd488d6af3bcb",
+  "localPath": ".workspace/rewrite-granite-hybrid-v1/weights/granite-4.0-h-1b-Q4_K_M.gguf"
+}

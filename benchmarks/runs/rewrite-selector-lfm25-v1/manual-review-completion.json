@@ -1,0 +1,42 @@
+{
+  "complete": true,
+  "selectorResponses": 202,
+  "nativeResponses": 12,
+  "ranges": [
+    [
+      0,
+      21
+    ],
+    [
+      21,
+      52
+    ],
+    [
+      52,
+      71
+    ],
+    [
+      71,
+      89
+    ],
+    [
+      89,
+      122
+    ],
+    [
+      122,
+      160
+    ],
+    [
+      160,
+      199
+    ],
+    [
+      199,
+      202
+    ]
+  ],
+  "uniqueFailedTuples": 21,
+  "changedCanonicalPairs": 46,
+  "reviewer": "Assistant, not independent blind release acceptance"
+}

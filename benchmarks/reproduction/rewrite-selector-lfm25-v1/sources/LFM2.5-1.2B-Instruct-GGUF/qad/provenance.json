@@ -1,0 +1,18 @@
+{
+  "model": "LFM2.5-1.2B-Instruct",
+  "method": "quantization-aware distillation",
+  "weight_dtype": "float32",
+  "safetensors_sha256": "992954801538bcb9462f129df78b5ff961ee598148977bb8fbf401d1e35e13ec",
+  "qad_gguf_repository": "LiquidAI/LFM2.5-1.2B-Instruct-GGUF",
+  "qad_gguf_revision": "6767265158422fb8a19c62ceb45f16f05363615b",
+  "qad_gguf_filename": "LFM2.5-1.2B-Instruct-QAD-Q4_0.gguf",
+  "qad_gguf_sha256": "bb741ebb106d543e9de114b843a3d3d73d51c74b5801e69da2abde821a0cb3e1",
+  "chat_template_sha256": "ba551d58630afa3190b1be3602e28301f3d2e9bbac978dfc49d6d825171648b6",
+  "generation_config_source": "LiquidAI/LFM2.5-1.2B-Instruct",
+  "generation_config_revision": "0f604ada3f766f9f257460c4c9f0b5d6f69d431b",
+  "llama_cpp_revision": "74ade52741203e5c8f81eaf06a96cb1cfe15f2a3",
+  "conversion": "FP32 HF -> F16 GGUF -> Q4_0",
+  "quantized_tensors_byte_identical": true,
+  "whole_file_byte_identical_with_release_metadata": true,
+  "validation_date": "2026-09-22"
+}

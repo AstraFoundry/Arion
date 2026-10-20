@@ -1,0 +1,25 @@
+"""Extend the living report with fully reviewed LFM2.5 evidence."""
+from pathlib import Path
+R=Path.cwd();p=R/'benchmarks/reproduction/rewrite-release/report.py';s=p.read_text();anchor=']\nGATES=['
+rows=[dict(id='lfm25-preflight-v1',title='LFM2.5 1.17B的原生与缓存探针',direction='官方Q8、实际1,170,340,608参数；Metal99与CPU层0各六次。保留原完整请求、schema和自由输出对照。',finding='12次协议正常、缓存原始输出一致；实际17/17与0/17GPU层，嵌入模板和非思考前缀正确。8次正向纠错正确，4次明确现金含义被误改。',scope='12响应全部review；两个暴露源的重复诊断，兼容性仅允许后续对比。元数据日志截断出不完整UTF8，保留原始字节并精确检查，模型响应JSON均正常。',runs=[('rewrite-selector-lfm25-v1/runtime-view','runtime')]),dict(id='selector-lfm25-v1',title='LFM2.5 1.17B的相同纠错请求比较',direction='两组各101个完整请求与既有Qwen控制逐项一致，原十例、完整OCR、候选、schema、128token预算和原生参数不变。',finding='两组均符合79/101，有害22、漏纠0，必需纠错47/47。旧控制符合92／94、有害3／4；46个差异含9改善、37退化。全部修复不等于语义正确，两组仍不采用。',scope='202响应、21个不同失败组合和46个差异全部review。复用457个Go准备、914结果含712无候选跳过。零新增正文／ASR／Vision，无语义过滤或原文回退。',runs=[('rewrite-selector-lfm25-v1/run','staged')])]
+assert anchor in s;s=s.replace(anchor,''.join(' '+repr(r)+',\n' for r in rows)+anchor,1)
+s=s.replace('METRICS={\n',"METRICS={\n 'lfm25-preflight-v1':'原生实际模板与官方GGUF嵌入1783字符一致，上游5487字符模板不同。显式移除不输出文本的追踪标记后，本地Jinja202个文本请求渲染一致；新增生成0次，不能替代原生分词／官方Transformers／数值对齐。',\n 'selector-lfm25-v1':'每组89个可自主选择的唯一候选均替换，12个歧义schema强制原句。质保书被改成指保书、地点被改成行为；正确修复覆盖率高但语义边界失败。自定义许可生产采用前另核对，实际16GB／独立评审／完整交付未验收。',\n",1)
+s=s.replace("    youtu_summary=load_report(","    lfm25_summary=load_report('rewrite-selector-lfm25-v1','selector_lfm25').collect()[0]\n    youtu_summary=load_report(",1);s=s.replace("['selector-youtu-v1','selector-minicpm-f16-v1'","['selector-lfm25-v1','selector-youtu-v1','selector-minicpm-f16-v1'")
+anchor="    failure_root=ROOT/'benchmarks/runs/rewrite-small-cache-parity-v1'";extra="""    for path in [ROOT/'benchmarks/reproduction/rewrite-selector-lfm25-v1'/name for name in ['freeze.json','comparison-sources.json','protocol.json','preflight-plan.json','sources/native-template-policy.json','sources/native-log-encoding.json','sources/artifact-qualification.json','sources/render-comparison-v2/summary.json','sources/render-comparison-v2/prompts.jsonl']]+[ROOT/'benchmarks/runs/rewrite-selector-lfm25-v1/run'/name for name in ['selection.json','case-outcomes.jsonl','paired-comparison.json']]+[ROOT/'benchmarks/runs/rewrite-selector-lfm25-v1/preflight'/name for name in ['manifest.json','results.jsonl','review.json','qualification.json']]:
+        sources.append(dict(path=str(path.relative_to(ROOT)),sha256=digest(path)))
+""";assert anchor in s;s=s.replace(anchor,extra+anchor,1);s=s.replace('return dict(selectorYoutu=','return dict(selectorLfm25=lfm25_summary,selectorYoutu=',1)
+s=s.replace('新增Youtu1.96B符合75／84（各101），有害3／4、漏纠23／13；保守输出仍漏纠，错误OCR也会覆盖原意。无新增正文，不能替代完整链路验收；跨文字母术语仍待覆盖。','新增LFM2.5实际1.17B两组均符合79/101，虽47/47必需修复完成，但各有22条有害修改。错误OCR仍会覆盖明确原意，无新增正文，不能替代完整链路验收；跨文字母术语仍待覆盖。');p.write_text(s)
+p=R/'benchmarks/reproduction/rewrite-release/test_report.py';s=p.read_text()
+for old,new in [('10823','11037'),("len(data['rounds']),67","len(data['rounds']),69"),('9339','9553'),('9164','9366'),("=='runtime-probe' for c in data['cases']),55","=='runtime-probe' for c in data['cases']),67"),("=='selection' for c in data['cases']),4869","=='selection' for c in data['cases']),5071")]:s=s.replace(old,new)
+anchor="        self.assertEqual(data['selectorYoutu']['newGenerations'],202)";extra="""        self.assertEqual(data['selectorLfm25']['newGenerations'],202)
+        self.assertEqual(data['selectorLfm25']['groups']['baseline']['conforming'],79)
+        self.assertEqual(data['selectorLfm25']['groups']['balanced']['harmful'],22)
+        self.assertEqual(data['selectorLfm25']['groups']['balanced']['repaired'],47)
+        self.assertEqual(data['selectorLfm25']['pairedComparison']['improvements'],9)
+        self.assertEqual(data['selectorLfm25']['pairedComparison']['regressions'],37)
+        self.assertEqual(data['selectorLfm25']['preflight']['taskConforming'],8)
+        lfm=[c for c in data['cases'] if c['round']=='selector-lfm25-v1']
+        self.assertEqual(len(lfm),202)
+        self.assertTrue(all(c['model']=='LFM2.5-1.2B-Instruct-Q8_0' and c['delivery'] is None for c in lfm))
+""";assert anchor in s;s=s.replace(anchor,extra+anchor,1);p.write_text(s)
+print('Integrated69 rounds/11037 responses/5071 selectors/67 runtime.')
