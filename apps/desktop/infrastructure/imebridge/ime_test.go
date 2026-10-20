@@ -239,7 +239,7 @@ func TestCloseRevokesAndStopsTransport(t *testing.T) {
 	}
 }
 func TestSocketLifecycleDoesNotReplaceExistingPath(t *testing.T) {
-	directory, err := os.MkdirTemp("/tmp", "arion-ime-")
+	directory, err := os.MkdirTemp("", "arion-ime-")
 	if err != nil {
 		t.Fatal(err)
 	}
