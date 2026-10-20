@@ -1,0 +1,5 @@
+{
+  "status": "completed",
+  "arms": 8,
+  "quality": "Every output requires manual review; command completion does not pass model quality."
+}

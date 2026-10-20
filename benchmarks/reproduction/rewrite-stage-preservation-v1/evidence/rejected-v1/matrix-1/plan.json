@@ -1,0 +1,42 @@
+{
+  "config": {
+    "out": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1",
+    "runtime": "/Applications/Arion.app/Contents/Resources/llm",
+    "model": "/Users/steven/Library/Application Support/Arion/models/qwen3.5-2b-q4-k-m-metal"
+  },
+  "plan": [
+    [
+      "development",
+      "baseline"
+    ],
+    [
+      "development",
+      "no-prior"
+    ],
+    [
+      "development",
+      "no-screen"
+    ],
+    [
+      "development",
+      "candidate"
+    ],
+    [
+      "validation",
+      "candidate"
+    ],
+    [
+      "validation",
+      "baseline"
+    ],
+    [
+      "native-pairs",
+      "baseline"
+    ],
+    [
+      "native-pairs",
+      "candidate"
+    ]
+  ],
+  "limits": "Serial paired text-stage generation. Actual native input origins stay fixture-specific. Nonrandom arm order and development-host drift limit latency attribution."
+}

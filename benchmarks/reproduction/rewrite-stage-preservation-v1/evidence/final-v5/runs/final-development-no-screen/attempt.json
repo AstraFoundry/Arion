@@ -1,0 +1,12 @@
+{
+  "status": "started",
+  "started": "2026-10-20T13:48:48.170Z",
+  "operation": "run",
+  "config": {
+    "arm": "no-screen",
+    "cases": "/Users/steven/code/Arion/benchmarks/reproduction/rewrite-stage-preservation-v1/development.json",
+    "out": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/final-development-no-screen",
+    "runtime": "/Applications/Arion.app/Contents/Resources/llm",
+    "model": "/Users/steven/Library/Application Support/Arion/models/qwen3.5-2b-q4-k-m-metal"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "arms": [
+    "v3",
+    "v1",
+    "baseline"
+  ],
+  "cases": "/Users/steven/code/Arion/benchmarks/reproduction/rewrite-stage-preservation-v1/fresh-prior-controls.json",
+  "casesSha256": "c6c95008c219ffc7153367d1b0565af71c76d596a2aa812f3e71a13e20255deb",
+  "v3Overlay": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/v3-overlay/overlay.json",
+  "baselineOverlay": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/development-baseline/overlay.json",
+  "sourcePolicy": "Frozen V1 source snapshot plus V3 files; no root mutation during experiment. Four new demonstration names disjoint from all observed and fresh cases.",
+  "scope": "New assistant-authored development contrast cases; no independent human/held-out quality claim."
+}

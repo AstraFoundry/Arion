@@ -1,0 +1,736 @@
+{
+  "status": "completed-build-no-inference",
+  "sources": {
+    "packages/core/application/dictation.go": "65301cea3373be810808f399fe1791b26b06233a8c669e32931eb449e91b8670",
+    "packages/core/application/preferences_test.go": "e19292d393ce3db6a600b2b74c3daacd7a78e6e676d9740f73d57a47d69d7919",
+    "packages/core/application/hold.go": "4d7624aff25e93e5a4f52ccabf203beb376e908feba0fee1bed2c8b3072def6d",
+    "packages/core/application/gain.go": "32ade64dfad6a750800085785d561e8e552627716379f1499a49549d4f81a38c",
+    "packages/core/application/preferences.go": "53bcef6c62a1bf77eb3740942a4ffd7326a26a72dd588cc20007b2a5e6928bc0",
+    "packages/core/application/learning_test.go": "9a7753add6d14a16352e472190a5432b874ad5d1a0b0cc6de68d2d88d73f8fd7",
+    "packages/core/application/diagnostics.go": "8ca206530d9e9e44e567bdc424c07253755fc16b94390ce638b0c5d27caec5c1",
+    "packages/core/application/README.md": "2651f8ae08bbd9bbb46fcd1f0b3c429f5ab9e1d04725bcbfc7461ea8e34b3f75",
+    "packages/core/application/live_reuse_test.go": "4f0adb03447fc3bb773e1d20f9ba2bc09223e277ddd93cd25400a4f7bee858e5",
+    "packages/core/application/hold_test.go": "fa657ec70c2a16f090c78b0d062081e7817dd559d761481da7ba2d633ef8019f",
+    "packages/core/application/live.go": "4b4c2711f5d78efc4bea418cd2e9a10903b8995c193532ca74698b5ca9c05a9c",
+    "packages/core/application/context.go": "400331b4226162dacae1c4efca5387cb471f84ae009567dbdf52a7e92bd28d3d",
+    "packages/core/application/keyboard.go": "3f013e688eba7c83cabd1e267317a33ffe6f83f55798c38b531db63a913134c4",
+    "packages/core/application/usage_test.go": "ec4e579f8c84c92df16daa88ddda1c97c66cf9fa799fb41487639c67d0f13cbd",
+    "packages/core/application/usage.go": "01e92b4a0c6bbfe0b1702c6cac94c76a574e361a75c0c7f4d4a69a4dbeeec12a",
+    "packages/core/application/live_test.go": "ac5b74424e26f2467652ee356df30d4eb00d067756e0f9c32689f3395038dffe",
+    "packages/core/application/dictation_test.go": "9a8f7a884f3a04b5978b0bff83ca9eb103b11ac62fc83d8a78652d542470523c",
+    "packages/core/application/learning.go": "064d47057bdaba2db5478bfea001930c36d161a749f3b156eb15a831f5e224d7",
+    "packages/core/application/diagnostics_test.go": "6b8e018169e82c2fce4fec1d96ee6dacbf93ccd2ffa09cdfafb5a38611bfdae7",
+    "packages/core/domain/memory.go": "2c4cf5ebf22b1bad9539dfcd204e1ff66cda4c3c1aa34f414d990f4b9321faa5",
+    "packages/core/domain/modelselect.go": "8d6c2dc213e3c271e0d4b9c5217ea0c0aea37e662b186c8d82e06d5218e60c66",
+    "packages/core/domain/learning_words.go": "743f7f7abf4b7b15198d049b59109c380ddd1efc3104bea5aaa6715ca68ae87e",
+    "packages/core/domain/speech_cleanup_test.go": "60d92ba18f968019cc9b898b414ceb9441f5516d97ef8517535c29c19060305f",
+    "packages/core/domain/dictation.go": "d6e84ba3423891d2d91125e0e7ac963ab0f62f343dcc0e8e5129101d6c9a5e96",
+    "packages/core/domain/errors_test.go": "f437986e76f0a6ba9f9857b570a16fc0e4077a4d8d3ec3307346183142e9f43c",
+    "packages/core/domain/terms_test.go": "3b271c64621e1804dfb3147f67c8d4d42f662fa014d8ac7f5ca8b8493a52384f",
+    "packages/core/domain/spelling.go": "6c77fa728632440b9a4601da1577b5e9fe9a648aace8ed426379c10cc2d26a7d",
+    "packages/core/domain/terms.go": "2799ef865d831728e8320a7c3c13c619165f56640a4f23034905cfb6dba1dd20",
+    "packages/core/domain/rewrite_delivery_test.go": "a734e8f6c7847f2f67d1ab711628b3afb666392116ae3f03aa77a12a8981753f",
+    "packages/core/domain/scene.go": "abe77a316d112d43752e9d345a74978341c12834024c667103d8992c1a027a7d",
+    "packages/core/domain/session.go": "5320b7082d92da0c4f09b4d182dfe3e22ecd26c4cb8dbaaff56bc5e35245b167",
+    "packages/core/domain/scene_test.go": "14c817f528f1cc3aee0b2cd3d02c4ff57e2398d158e250a79f22af201b2020ba",
+    "packages/core/domain/learning_test.go": "b13a9aa22a6f61d3ac19ed536732f9c4dba0a255301db95eaa9438ff8c20ce12",
+    "packages/core/domain/context_test.go": "6d23dbd9ed4cf9b4cf5a53da98f58694759d766f9fbf0a3646073fb914a773b3",
+    "packages/core/domain/correction.go": "36408154dea4b21714981a6b83c539a7ad3a7f8abbea49134c4048556275f6b8",
+    "packages/core/domain/rewrite_test.go": "64d6b4b07a7c82cde0c31023ef34e2ce95048f4570d6b26cf5971ca91f5a23da",
+    "packages/core/domain/context.go": "a8c6b7cb21ae4dba4f5e918c312fbbdddd614b29d894488d1bb8ec3878777260",
+    "packages/core/domain/speech_cleanup.go": "20a199ce25b45ed826182b3e6844a5788f316d6e56bd3cdb6ba8268bcb5e0313",
+    "packages/core/domain/rewrite_fidelity.go": "bb08303a1043f74605f61b697e4f56047fe1950d1f080723ade469215bf1ea55",
+    "packages/core/domain/correction_test.go": "99f0871a34396f238cac1efb701fe346ce6243035c3f42a669875b869a2096fa",
+    "packages/core/domain/spelling_compound_test.go": "b8f3cee908139a20e623abf08579f7d7321a9b9a894c2976d1a95e88dddb3d81",
+    "packages/core/domain/vocabulary.go": "6e2fe3f6263b48e83ee98f321dd6e2e49b02daed8fbb89a1b2bd1e9a07bd0fea",
+    "packages/core/domain/usage_test.go": "444dad4e35de7a0ee282e93f852d0752c81b41a663c01a374b7d152f66d5379b",
+    "packages/core/domain/usage.go": "f2ebb6756acca1433cea17a630255015f0e15f316a432583b8d41469ac3243a4",
+    "packages/core/domain/rewrite.go": "44dd52c7b35c7f5002a1191d5942a720d2745b6c5d2d671ecde1cf091d40fa55",
+    "packages/core/domain/candidates.go": "73949da5f6e51de1c1e71a3d22cc4cdf6f04f56b9cd1bd5b0ceb3f7e7269208f",
+    "packages/core/domain/dictation_test.go": "f403a06393d58c795815ea7f88c7c21c9a730b38c4452504f1835c35830cb4b1",
+    "packages/core/domain/invariants_test.go": "8244b5812a235a15564c4061dfaa818f08af375240332c8b6f91cf4500bafa2b",
+    "packages/core/domain/learning.go": "684ae926095bef34f1f9bb3766d464aeff97c38fb80db347bdf5713a7f62da96",
+    "packages/core/domain/errors.go": "20b96a19f62185f062e97c91226893233f2001fdc1cb5e35cf9586ae6b81aa53",
+    "packages/core/domain/quotes.go": "fec70b2e226e7d5f3a306f32790b584bc8b48ba822cbab8341f8e3dbe05d6e11",
+    "packages/core/domain/ports/ports.go": "9dcc7aa8b3e8c0300d1d655e92874ef27100ab5b6fa09216a391d80a54d837fd",
+    "packages/core/domain/ports/diagnostics.go": "e88202dc8dafba11c2b373b44556ba4e4431b30eac4c2b2340c4367f1c512f4c",
+    "apps/desktop/infrastructure/llm/gguf/native_test.go": "ee1c8a188a37995e9b47613a453ad722ed3d00ea54744acbb7d10815cbb42c8f",
+    "apps/desktop/infrastructure/llm/gguf/numeric_filler_native_test.go": "1d8230bb1cff68e848437a757563c4363801e06254b5087cd0328c7860eb1dac",
+    "apps/desktop/infrastructure/llm/gguf/ambiguity_test.go": "a191ea788d64837d3431843fc6908279f14f65729bc60499a5fd94f74a49f42c",
+    "apps/desktop/infrastructure/llm/gguf/engine_test.go": "651163a86bf93bc9cf525d9755534c22517f1dca5d381f757eb6029dbf3cef78",
+    "apps/desktop/infrastructure/llm/gguf/engine.go": "21bf2461abb07150da5f73d78b1122e9fe62ea461afd307450dfe792bf282c27",
+    "apps/desktop/infrastructure/llm/gguf/stage_native_test.go": "a842af1f91f44f722b98c6a4387ddbd88340236c33fbd32c12322799c2f591f0",
+    "apps/desktop/infrastructure/llm/protocol/protocol.go": "417692d9a1812686e7b5e2533f4301696b17a714e8b6f43f3f271f6f27b3c924",
+    "apps/desktop/infrastructure/llm/prompt/prompt_test.go": "9bd13d51dffb033cd2bbc3fe0e0a2ae1d18682f50eedc0e15d1dc1e87613f05b",
+    "apps/desktop/infrastructure/llm/prompt/live.json": "31ac54390ad29c7ac12c1a6c15d4ecb86ea08b71960070b5e9de73358e72f837",
+    "apps/desktop/infrastructure/llm/prompt/selected_test.go": "25eba19e3aa52978df2d088cf0095338a4978bf7e59ccb801075d2fe86ae9146",
+    "apps/desktop/infrastructure/llm/prompt/context.json": "1b2c3a694d72963412db167bd952a6149d4d3ac9548fd64c6022beda7cb95745",
+    "apps/desktop/infrastructure/llm/prompt/selection.json": "992e89acfa462c54fa893e8319b6e031fa01dcb454ab166651abc834d2c4c35a",
+    "apps/desktop/infrastructure/llm/prompt/format.json": "dffc153d9d9f99593a6f686b1ed6f374ce7c5cd5132d8de6b6b4cb80675d4a6f",
+    "apps/desktop/infrastructure/llm/prompt/selected.go": "439f7a4712d4065054b3e5b07c1eaa79d1cc1234271b45c9c16746196b52afaf",
+    "apps/desktop/infrastructure/llm/prompt/prompt.go": "d3cfd55c37d45fae2b942fc9ee2b93331cf990ee01ce37e695ac1298b8c33d93",
+    "apps/desktop/infrastructure/llm/genai/open_unix.go": "7e28d12bec1ac93b4ee63634109f56a367b3fca4504695e9b77639c685d5f260",
+    "apps/desktop/infrastructure/llm/genai/open_windows.go": "979bc0bde6b8e2dbff9f3f9068c69a5e684aa0660a7aa77907f0028cb5b5108c",
+    "apps/desktop/infrastructure/llm/genai/genai.go": "f85ecdf9a8be95efa7a26d5e8589aa3ffc402a488f4600e92e14fcf3113a29fa",
+    "apps/desktop/infrastructure/llm/engine/parity_test.go": "fac2a2c95c39b131e547561a8788573c8e0c26b00accdfb1f92f435f6d0dfd1d",
+    "apps/desktop/infrastructure/llm/engine/engine_test.go": "cfdfa26cc6c31bf6ab4c0a916b2ee4c06cb82a64eeda27dede763863b17f26d3",
+    "apps/desktop/infrastructure/llm/engine/engine.go": "d81b90b71f26e5432e7359c8f0dd001b977d2ddb27633c2547e25be69d9539a6",
+    "apps/desktop/infrastructure/llm/client/process_unix.go": "3492e02501a2badf776da1d8da80e02a1bc585bced7fbe2db976a420f5f1cbff",
+    "apps/desktop/infrastructure/llm/client/client.go": "d76fd3d79a67361c1b61e3566c84dbe4e2d78016eea577e643e95bdda9b3f32f",
+    "apps/desktop/infrastructure/llm/client/process_windows.go": "ffb6a80b0393abcce02819b45818da964a74a5c313272a521a6c1937c0f1c987",
+    "apps/desktop/infrastructure/llm/client/client_test.go": "1aa392064712547cea1148f67eb4c80d5dd1674bcdfbc8854afb0e1c3c0229a5",
+    "apps/desktop/infrastructure/llm/spelling/lexicon_test.go": "d8148374b8e1ced10e0c101c3addeadcd23dc21b04e572cdc1d114d191895625",
+    "apps/desktop/infrastructure/llm/spelling/lexicon.go": "ae4f6dfb25de1efd5b898629b18c634aaffe022a96ccef12f97291a7f25cb339",
+    "apps/desktop/infrastructure/llm/spelling/data/pypinyin-character-readings-v1-provenance.json": "90a6ad8126bd24d74fc03a37bb8fbb050c375aff5cc57b0047114bf9509969b0",
+    "apps/desktop/infrastructure/llm/spelling/data/pypinyin-character-readings-v1-LICENSE.txt": "1e6c90014b4912815c296ee64bb6f6280af47e6d4c5d80e86232dfc5defe764c",
+    "apps/desktop/infrastructure/llm/spelling/data/cmudict-pronunciation-v1-provenance.json": "2ea5124083d7bc2c6f91bb61f0b911b9f12bfd68425b7b86d1a55e72df00530d",
+    "apps/desktop/infrastructure/llm/spelling/data/pypinyin-character-readings-v1-readings.json": "be7efc407cd64897abd2259ed98a18022e50ded1a144d6df8420f8f3b3ccdac7",
+    "apps/desktop/cmd/arion-llm/rss.go": "5c28c0e900e9aff8cb69bd2f36ae2488776cdda1f871c11e672fc0ff1f91d50e",
+    "apps/desktop/cmd/arion-llm/rss_windows.go": "2010f3b7e35e13130c2fa71a3c1acd2e438aade1d32a61b10e2f0a51e5108716",
+    "apps/desktop/cmd/arion-llm/deps_test.go": "f725418585bda2255d08067251f5481fe6ab3afb429ad3bf8a17d0ff6be6ffe4",
+    "apps/desktop/cmd/arion-llm/main.go": "c41dc2ca458a4e43cf4cff36dfc1db69c40e4a501ddd7efe1f94c05acbf995cc",
+    "apps/desktop/infrastructure/modelruntime/runtime.go": "8d5e0e4090c92b4c69e1ff7ecec62cee84d104922fc85d4940a709684117d720",
+    "apps/desktop/infrastructure/modelruntime/runtime_test.go": "3c13ca621cffd5ee578a86f3b2381c287def50fd34481ffb37eb93ab6fc0e9cf",
+    "apps/desktop/infrastructure/audio/capture.go": "72e1c525e614a2662b5053124c373004ac933e1a5443f380bac35cd2a97584e1",
+    "apps/desktop/infrastructure/audio/replay.go": "3af29ad68c0375fff8ea2b63d9ff045b7236a06cf50e0e4d521dcf1f1584fa8f",
+    "apps/desktop/infrastructure/audio/replay_test.go": "326087dc2de0a14f531782da27b529a1941db574a50dc04ea9d72acce655ced4",
+    "apps/desktop/infrastructure/macos/guide.h": "c570da8ad11cda42235cbd881248d95a3b19dc6c2ae1e5d52a120543761c1639",
+    "apps/desktop/infrastructure/macos/macos.go": "d2cd04b7ee7c54360c522a2de34e9d91f1cfbea87e1ba830c12fd8734af15970",
+    "apps/desktop/infrastructure/macos/hold.go": "a56d2616923e13ad7af96c9bf9747b8e6e40e8ae93a74c4989a21998fe0855c6",
+    "apps/desktop/infrastructure/macos/guide.go": "14d35200361317647f94be200e3932e8e3d5f6b5c719c1941685aabe94a9b348",
+    "apps/desktop/infrastructure/macos/paste.m": "6f285d79798b086a083bc0a95b91f17cafb91104eeac31974d58a5db7234f18d",
+    "apps/desktop/infrastructure/macos/native.h": "be41217614f3b5d6b56113fb2539e65187f4270119c0271aa917ddd9db27348d",
+    "apps/desktop/infrastructure/macos/overlay.go": "3a3f446fd32a8c3bcc86fc4bc8c940177c898d159f81a733233ba707a1f47c94",
+    "apps/desktop/infrastructure/macos/overlay.h": "7e07dcc2ffc4306aae025cfe87304bacb6146313b9c76b80ca08b9700826ac9d",
+    "apps/desktop/infrastructure/macos/context.h": "8904c8e7da85a9eb76be82060eed8f81910048ae6a0b7275b1d2bf4f9f998241",
+    "apps/desktop/infrastructure/macos/ime.go": "05b3c2635c11f1e0f0c4e16dd36939f5533a1d464a8e21e2333f02bdfecd65ef",
+    "apps/desktop/infrastructure/macos/hold.h": "7859ea3fcfb8f4581008614b644b64a7d232a3331351f742ff8fefefd9d04699",
+    "apps/desktop/infrastructure/macos/paste_test.go": "0f49856e1e0ca30567f324c3a08e1d25f9a74a4b4af15862bfc876395a84aced",
+    "apps/desktop/infrastructure/macos/insertion_darwin_test.go": "a5c1513f822221c20c5eacb7e9fd782b55275ad51e1b8dc33615fe257a8a1082",
+    "apps/desktop/infrastructure/macos/ime_install_darwin_test.go": "9670ed55c2d945821560d83b21f41b86f22dfdfb23cd4d0db871dbd6bbc1e551",
+    "apps/desktop/infrastructure/macos/guide.m": "a6744b550829e1a6755493462cac10abad42a6e256162062b703f3d97da358e8",
+    "apps/desktop/infrastructure/macos/ime_install_darwin.go": "3be7ff347f75753c921b1ae0f39cc8151b994551856336a7f524e9f492d2a168",
+    "apps/desktop/infrastructure/macos/context.go": "83bb5b2c84e47b8a4a2adab56ccead0da6613035626660b5675e2e779d12d9db",
+    "apps/desktop/infrastructure/macos/native.m": "74f885a36616dbe6b69feb4f1e631c1695276ca129c34d429fb9bb52daddddc1",
+    "apps/desktop/infrastructure/macos/context.m": "87028a35e05c7fe2e65f6ee39f3315e2fa2d802416a83a8c8a83488a0d6c62b7",
+    "apps/desktop/infrastructure/macos/overlay.m": "9946ab884f53af5210cb1fe44cb7624743add912d9c0500a87aacd98e172f23c",
+    "apps/desktop/infrastructure/macos/paste.go": "8585b122e2a98d5858b3de9e57f4aad093d9f39173563575dead2563ab320871",
+    "apps/desktop/infrastructure/macos/hold.m": "b516aeca6ffa444f86da06abe414c85809a1c9719ae77c39294c97f3c17a8754",
+    "apps/desktop/infrastructure/macos/testdata/pasteboard.m": "c17a62d14c2f8a4a5478f7f6e4d8382a0793414649e633ba6e4e42b6afaea7af",
+    "models/catalog.go": "89c23ae2ee680f4353b557f3dcd8d3e04690f8ab9a06f2a1ff366738e6a6d55d",
+    "models/catalog_test.go": "ab9c00a3f38792ec9ffdc1fe6ca24993630ab7b862a51a7ff20b0afc2a584dc2",
+    "models/README.md": "1f670f0e4c0a5dba85008e0b8fdac7287e9ddf50a3b5d2a94c8000473fff3e6a",
+    "models/catalog.json": "ecdc9b4bf6d3fd0498a8702b346363233d517f7590d16f60f688eb0b3e0b0d10"
+  },
+  "pathMappings": [
+    {
+      "source": "packages/core/application/dictation.go",
+      "snapshot": "source-snapshot/packages/core/application/dictation.go",
+      "sha256": "65301cea3373be810808f399fe1791b26b06233a8c669e32931eb449e91b8670"
+    },
+    {
+      "source": "packages/core/application/preferences_test.go",
+      "snapshot": "source-snapshot/packages/core/application/preferences_test.go",
+      "sha256": "e19292d393ce3db6a600b2b74c3daacd7a78e6e676d9740f73d57a47d69d7919"
+    },
+    {
+      "source": "packages/core/application/hold.go",
+      "snapshot": "source-snapshot/packages/core/application/hold.go",
+      "sha256": "4d7624aff25e93e5a4f52ccabf203beb376e908feba0fee1bed2c8b3072def6d"
+    },
+    {
+      "source": "packages/core/application/gain.go",
+      "snapshot": "source-snapshot/packages/core/application/gain.go",
+      "sha256": "32ade64dfad6a750800085785d561e8e552627716379f1499a49549d4f81a38c"
+    },
+    {
+      "source": "packages/core/application/preferences.go",
+      "snapshot": "source-snapshot/packages/core/application/preferences.go",
+      "sha256": "53bcef6c62a1bf77eb3740942a4ffd7326a26a72dd588cc20007b2a5e6928bc0"
+    },
+    {
+      "source": "packages/core/application/learning_test.go",
+      "snapshot": "source-snapshot/packages/core/application/learning_test.go",
+      "sha256": "9a7753add6d14a16352e472190a5432b874ad5d1a0b0cc6de68d2d88d73f8fd7"
+    },
+    {
+      "source": "packages/core/application/diagnostics.go",
+      "snapshot": "source-snapshot/packages/core/application/diagnostics.go",
+      "sha256": "8ca206530d9e9e44e567bdc424c07253755fc16b94390ce638b0c5d27caec5c1"
+    },
+    {
+      "source": "packages/core/application/README.md",
+      "snapshot": "source-snapshot/packages/core/application/README.md.txt",
+      "sha256": "2651f8ae08bbd9bbb46fcd1f0b3c429f5ab9e1d04725bcbfc7461ea8e34b3f75"
+    },
+    {
+      "source": "packages/core/application/live_reuse_test.go",
+      "snapshot": "source-snapshot/packages/core/application/live_reuse_test.go",
+      "sha256": "4f0adb03447fc3bb773e1d20f9ba2bc09223e277ddd93cd25400a4f7bee858e5"
+    },
+    {
+      "source": "packages/core/application/hold_test.go",
+      "snapshot": "source-snapshot/packages/core/application/hold_test.go",
+      "sha256": "fa657ec70c2a16f090c78b0d062081e7817dd559d761481da7ba2d633ef8019f"
+    },
+    {
+      "source": "packages/core/application/live.go",
+      "snapshot": "source-snapshot/packages/core/application/live.go",
+      "sha256": "4b4c2711f5d78efc4bea418cd2e9a10903b8995c193532ca74698b5ca9c05a9c"
+    },
+    {
+      "source": "packages/core/application/context.go",
+      "snapshot": "source-snapshot/packages/core/application/context.go",
+      "sha256": "400331b4226162dacae1c4efca5387cb471f84ae009567dbdf52a7e92bd28d3d"
+    },
+    {
+      "source": "packages/core/application/keyboard.go",
+      "snapshot": "source-snapshot/packages/core/application/keyboard.go",
+      "sha256": "3f013e688eba7c83cabd1e267317a33ffe6f83f55798c38b531db63a913134c4"
+    },
+    {
+      "source": "packages/core/application/usage_test.go",
+      "snapshot": "source-snapshot/packages/core/application/usage_test.go",
+      "sha256": "ec4e579f8c84c92df16daa88ddda1c97c66cf9fa799fb41487639c67d0f13cbd"
+    },
+    {
+      "source": "packages/core/application/usage.go",
+      "snapshot": "source-snapshot/packages/core/application/usage.go",
+      "sha256": "01e92b4a0c6bbfe0b1702c6cac94c76a574e361a75c0c7f4d4a69a4dbeeec12a"
+    },
+    {
+      "source": "packages/core/application/live_test.go",
+      "snapshot": "source-snapshot/packages/core/application/live_test.go",
+      "sha256": "ac5b74424e26f2467652ee356df30d4eb00d067756e0f9c32689f3395038dffe"
+    },
+    {
+      "source": "packages/core/application/dictation_test.go",
+      "snapshot": "source-snapshot/packages/core/application/dictation_test.go",
+      "sha256": "9a8f7a884f3a04b5978b0bff83ca9eb103b11ac62fc83d8a78652d542470523c"
+    },
+    {
+      "source": "packages/core/application/learning.go",
+      "snapshot": "source-snapshot/packages/core/application/learning.go",
+      "sha256": "064d47057bdaba2db5478bfea001930c36d161a749f3b156eb15a831f5e224d7"
+    },
+    {
+      "source": "packages/core/application/diagnostics_test.go",
+      "snapshot": "source-snapshot/packages/core/application/diagnostics_test.go",
+      "sha256": "6b8e018169e82c2fce4fec1d96ee6dacbf93ccd2ffa09cdfafb5a38611bfdae7"
+    },
+    {
+      "source": "packages/core/domain/memory.go",
+      "snapshot": "source-snapshot/packages/core/domain/memory.go",
+      "sha256": "2c4cf5ebf22b1bad9539dfcd204e1ff66cda4c3c1aa34f414d990f4b9321faa5"
+    },
+    {
+      "source": "packages/core/domain/modelselect.go",
+      "snapshot": "source-snapshot/packages/core/domain/modelselect.go",
+      "sha256": "8d6c2dc213e3c271e0d4b9c5217ea0c0aea37e662b186c8d82e06d5218e60c66"
+    },
+    {
+      "source": "packages/core/domain/learning_words.go",
+      "snapshot": "source-snapshot/packages/core/domain/learning_words.go",
+      "sha256": "743f7f7abf4b7b15198d049b59109c380ddd1efc3104bea5aaa6715ca68ae87e"
+    },
+    {
+      "source": "packages/core/domain/speech_cleanup_test.go",
+      "snapshot": "source-snapshot/packages/core/domain/speech_cleanup_test.go",
+      "sha256": "60d92ba18f968019cc9b898b414ceb9441f5516d97ef8517535c29c19060305f"
+    },
+    {
+      "source": "packages/core/domain/dictation.go",
+      "snapshot": "source-snapshot/packages/core/domain/dictation.go",
+      "sha256": "d6e84ba3423891d2d91125e0e7ac963ab0f62f343dcc0e8e5129101d6c9a5e96"
+    },
+    {
+      "source": "packages/core/domain/errors_test.go",
+      "snapshot": "source-snapshot/packages/core/domain/errors_test.go",
+      "sha256": "f437986e76f0a6ba9f9857b570a16fc0e4077a4d8d3ec3307346183142e9f43c"
+    },
+    {
+      "source": "packages/core/domain/terms_test.go",
+      "snapshot": "source-snapshot/packages/core/domain/terms_test.go",
+      "sha256": "3b271c64621e1804dfb3147f67c8d4d42f662fa014d8ac7f5ca8b8493a52384f"
+    },
+    {
+      "source": "packages/core/domain/spelling.go",
+      "snapshot": "source-snapshot/packages/core/domain/spelling.go",
+      "sha256": "6c77fa728632440b9a4601da1577b5e9fe9a648aace8ed426379c10cc2d26a7d"
+    },
+    {
+      "source": "packages/core/domain/terms.go",
+      "snapshot": "source-snapshot/packages/core/domain/terms.go",
+      "sha256": "2799ef865d831728e8320a7c3c13c619165f56640a4f23034905cfb6dba1dd20"
+    },
+    {
+      "source": "packages/core/domain/rewrite_delivery_test.go",
+      "snapshot": "source-snapshot/packages/core/domain/rewrite_delivery_test.go",
+      "sha256": "a734e8f6c7847f2f67d1ab711628b3afb666392116ae3f03aa77a12a8981753f"
+    },
+    {
+      "source": "packages/core/domain/scene.go",
+      "snapshot": "source-snapshot/packages/core/domain/scene.go",
+      "sha256": "abe77a316d112d43752e9d345a74978341c12834024c667103d8992c1a027a7d"
+    },
+    {
+      "source": "packages/core/domain/session.go",
+      "snapshot": "source-snapshot/packages/core/domain/session.go",
+      "sha256": "5320b7082d92da0c4f09b4d182dfe3e22ecd26c4cb8dbaaff56bc5e35245b167"
+    },
+    {
+      "source": "packages/core/domain/scene_test.go",
+      "snapshot": "source-snapshot/packages/core/domain/scene_test.go",
+      "sha256": "14c817f528f1cc3aee0b2cd3d02c4ff57e2398d158e250a79f22af201b2020ba"
+    },
+    {
+      "source": "packages/core/domain/learning_test.go",
+      "snapshot": "source-snapshot/packages/core/domain/learning_test.go",
+      "sha256": "b13a9aa22a6f61d3ac19ed536732f9c4dba0a255301db95eaa9438ff8c20ce12"
+    },
+    {
+      "source": "packages/core/domain/context_test.go",
+      "snapshot": "source-snapshot/packages/core/domain/context_test.go",
+      "sha256": "6d23dbd9ed4cf9b4cf5a53da98f58694759d766f9fbf0a3646073fb914a773b3"
+    },
+    {
+      "source": "packages/core/domain/correction.go",
+      "snapshot": "source-snapshot/packages/core/domain/correction.go",
+      "sha256": "36408154dea4b21714981a6b83c539a7ad3a7f8abbea49134c4048556275f6b8"
+    },
+    {
+      "source": "packages/core/domain/rewrite_test.go",
+      "snapshot": "source-snapshot/packages/core/domain/rewrite_test.go",
+      "sha256": "64d6b4b07a7c82cde0c31023ef34e2ce95048f4570d6b26cf5971ca91f5a23da"
+    },
+    {
+      "source": "packages/core/domain/context.go",
+      "snapshot": "source-snapshot/packages/core/domain/context.go",
+      "sha256": "a8c6b7cb21ae4dba4f5e918c312fbbdddd614b29d894488d1bb8ec3878777260"
+    },
+    {
+      "source": "packages/core/domain/speech_cleanup.go",
+      "snapshot": "source-snapshot/packages/core/domain/speech_cleanup.go",
+      "sha256": "20a199ce25b45ed826182b3e6844a5788f316d6e56bd3cdb6ba8268bcb5e0313"
+    },
+    {
+      "source": "packages/core/domain/rewrite_fidelity.go",
+      "snapshot": "source-snapshot/packages/core/domain/rewrite_fidelity.go",
+      "sha256": "bb08303a1043f74605f61b697e4f56047fe1950d1f080723ade469215bf1ea55"
+    },
+    {
+      "source": "packages/core/domain/correction_test.go",
+      "snapshot": "source-snapshot/packages/core/domain/correction_test.go",
+      "sha256": "99f0871a34396f238cac1efb701fe346ce6243035c3f42a669875b869a2096fa"
+    },
+    {
+      "source": "packages/core/domain/spelling_compound_test.go",
+      "snapshot": "source-snapshot/packages/core/domain/spelling_compound_test.go",
+      "sha256": "b8f3cee908139a20e623abf08579f7d7321a9b9a894c2976d1a95e88dddb3d81"
+    },
+    {
+      "source": "packages/core/domain/vocabulary.go",
+      "snapshot": "source-snapshot/packages/core/domain/vocabulary.go",
+      "sha256": "6e2fe3f6263b48e83ee98f321dd6e2e49b02daed8fbb89a1b2bd1e9a07bd0fea"
+    },
+    {
+      "source": "packages/core/domain/usage_test.go",
+      "snapshot": "source-snapshot/packages/core/domain/usage_test.go",
+      "sha256": "444dad4e35de7a0ee282e93f852d0752c81b41a663c01a374b7d152f66d5379b"
+    },
+    {
+      "source": "packages/core/domain/usage.go",
+      "snapshot": "source-snapshot/packages/core/domain/usage.go",
+      "sha256": "f2ebb6756acca1433cea17a630255015f0e15f316a432583b8d41469ac3243a4"
+    },
+    {
+      "source": "packages/core/domain/rewrite.go",
+      "snapshot": "source-snapshot/packages/core/domain/rewrite.go",
+      "sha256": "44dd52c7b35c7f5002a1191d5942a720d2745b6c5d2d671ecde1cf091d40fa55"
+    },
+    {
+      "source": "packages/core/domain/candidates.go",
+      "snapshot": "source-snapshot/packages/core/domain/candidates.go",
+      "sha256": "73949da5f6e51de1c1e71a3d22cc4cdf6f04f56b9cd1bd5b0ceb3f7e7269208f"
+    },
+    {
+      "source": "packages/core/domain/dictation_test.go",
+      "snapshot": "source-snapshot/packages/core/domain/dictation_test.go",
+      "sha256": "f403a06393d58c795815ea7f88c7c21c9a730b38c4452504f1835c35830cb4b1"
+    },
+    {
+      "source": "packages/core/domain/invariants_test.go",
+      "snapshot": "source-snapshot/packages/core/domain/invariants_test.go",
+      "sha256": "8244b5812a235a15564c4061dfaa818f08af375240332c8b6f91cf4500bafa2b"
+    },
+    {
+      "source": "packages/core/domain/learning.go",
+      "snapshot": "source-snapshot/packages/core/domain/learning.go",
+      "sha256": "684ae926095bef34f1f9bb3766d464aeff97c38fb80db347bdf5713a7f62da96"
+    },
+    {
+      "source": "packages/core/domain/errors.go",
+      "snapshot": "source-snapshot/packages/core/domain/errors.go",
+      "sha256": "20b96a19f62185f062e97c91226893233f2001fdc1cb5e35cf9586ae6b81aa53"
+    },
+    {
+      "source": "packages/core/domain/quotes.go",
+      "snapshot": "source-snapshot/packages/core/domain/quotes.go",
+      "sha256": "fec70b2e226e7d5f3a306f32790b584bc8b48ba822cbab8341f8e3dbe05d6e11"
+    },
+    {
+      "source": "packages/core/domain/ports/ports.go",
+      "snapshot": "source-snapshot/packages/core/domain/ports/ports.go",
+      "sha256": "9dcc7aa8b3e8c0300d1d655e92874ef27100ab5b6fa09216a391d80a54d837fd"
+    },
+    {
+      "source": "packages/core/domain/ports/diagnostics.go",
+      "snapshot": "source-snapshot/packages/core/domain/ports/diagnostics.go",
+      "sha256": "e88202dc8dafba11c2b373b44556ba4e4431b30eac4c2b2340c4367f1c512f4c"
+    },
+    {
+      "source": "apps/desktop/infrastructure/llm/gguf/native_test.go",
+      "snapshot": "source-snapshot/apps/desktop/infrastructure/llm/gguf/native_test.go",
+      "sha256": "ee1c8a188a37995e9b47613a453ad722ed3d00ea54744acbb7d10815cbb42c8f"
+    },
+    {
+      "source": "apps/desktop/infrastructure/llm/gguf/numeric_filler_native_test.go",
+      "snapshot": "source-snapshot/apps/desktop/infrastructure/llm/gguf/numeric_filler_native_test.go",
+      "sha256": "1d8230bb1cff68e848437a757563c4363801e06254b5087cd0328c7860eb1dac"
+    },
+    {
+      "source": "apps/desktop/infrastructure/llm/gguf/ambiguity_test.go",
+      "snapshot": "source-snapshot/apps/desktop/infrastructure/llm/gguf/ambiguity_test.go",
+      "sha256": "a191ea788d64837d3431843fc6908279f14f65729bc60499a5fd94f74a49f42c"
+    },
+    {
+      "source": "apps/desktop/infrastructure/llm/gguf/engine_test.go",
+      "snapshot": "source-snapshot/apps/desktop/infrastructure/llm/gguf/engine_test.go",
+      "sha256": "651163a86bf93bc9cf525d9755534c22517f1dca5d381f757eb6029dbf3cef78"
+    },
+    {
+      "source": "apps/desktop/infrastructure/llm/gguf/engine.go",
+      "snapshot": "source-snapshot/apps/desktop/infrastructure/llm/gguf/engine.go",
+      "sha256": "21bf2461abb07150da5f73d78b1122e9fe62ea461afd307450dfe792bf282c27"
+    },
+    {
+      "source": "apps/desktop/infrastructure/llm/gguf/stage_native_test.go",
+      "snapshot": "source-snapshot/apps/desktop/infrastructure/llm/gguf/stage_native_test.go",
+      "sha256": "a842af1f91f44f722b98c6a4387ddbd88340236c33fbd32c12322799c2f591f0"
+    },
+    {
+      "source": "apps/desktop/infrastructure/llm/protocol/protocol.go",
+      "snapshot": "source-snapshot/apps/desktop/infrastructure/llm/protocol/protocol.go",
+      "sha256": "417692d9a1812686e7b5e2533f4301696b17a714e8b6f43f3f271f6f27b3c924"
+    },
+    {
+      "source": "apps/desktop/infrastructure/llm/prompt/prompt_test.go",
+      "snapshot": "source-snapshot/apps/desktop/infrastructure/llm/prompt/prompt_test.go",
+      "sha256": "9bd13d51dffb033cd2bbc3fe0e0a2ae1d18682f50eedc0e15d1dc1e87613f05b"
+    },
+    {
+      "source": "apps/desktop/infrastructure/llm/prompt/live.json",
+      "snapshot": "source-snapshot/apps/desktop/infrastructure/llm/prompt/live.json",
+      "sha256": "31ac54390ad29c7ac12c1a6c15d4ecb86ea08b71960070b5e9de73358e72f837"
+    },
+    {
+      "source": "apps/desktop/infrastructure/llm/prompt/selected_test.go",
+      "snapshot": "source-snapshot/apps/desktop/infrastructure/llm/prompt/selected_test.go",
+      "sha256": "25eba19e3aa52978df2d088cf0095338a4978bf7e59ccb801075d2fe86ae9146"
+    },
+    {
+      "source": "apps/desktop/infrastructure/llm/prompt/context.json",
+      "snapshot": "source-snapshot/apps/desktop/infrastructure/llm/prompt/context.json",
+      "sha256": "1b2c3a694d72963412db167bd952a6149d4d3ac9548fd64c6022beda7cb95745"
+    },
+    {
+      "source": "apps/desktop/infrastructure/llm/prompt/selection.json",
+      "snapshot": "source-snapshot/apps/desktop/infrastructure/llm/prompt/selection.json",
+      "sha256": "992e89acfa462c54fa893e8319b6e031fa01dcb454ab166651abc834d2c4c35a"
+    },
+    {
+      "source": "apps/desktop/infrastructure/llm/prompt/format.json",
+      "snapshot": "source-snapshot/apps/desktop/infrastructure/llm/prompt/format.json",
+      "sha256": "dffc153d9d9f99593a6f686b1ed6f374ce7c5cd5132d8de6b6b4cb80675d4a6f"
+    },
+    {
+      "source": "apps/desktop/infrastructure/llm/prompt/selected.go",
+      "snapshot": "source-snapshot/apps/desktop/infrastructure/llm/prompt/selected.go",
+      "sha256": "439f7a4712d4065054b3e5b07c1eaa79d1cc1234271b45c9c16746196b52afaf"
+    },
+    {
+      "source": "apps/desktop/infrastructure/llm/prompt/prompt.go",
+      "snapshot": "source-snapshot/apps/desktop/infrastructure/llm/prompt/prompt.go",
+      "sha256": "d3cfd55c37d45fae2b942fc9ee2b93331cf990ee01ce37e695ac1298b8c33d93"
+    },
+    {
+      "source": "apps/desktop/infrastructure/llm/genai/open_unix.go",
+      "snapshot": "source-snapshot/apps/desktop/infrastructure/llm/genai/open_unix.go",
+      "sha256": "7e28d12bec1ac93b4ee63634109f56a367b3fca4504695e9b77639c685d5f260"
+    },
+    {
+      "source": "apps/desktop/infrastructure/llm/genai/open_windows.go",
+      "snapshot": "source-snapshot/apps/desktop/infrastructure/llm/genai/open_windows.go",
+      "sha256": "979bc0bde6b8e2dbff9f3f9068c69a5e684aa0660a7aa77907f0028cb5b5108c"
+    },
+    {
+      "source": "apps/desktop/infrastructure/llm/genai/genai.go",
+      "snapshot": "source-snapshot/apps/desktop/infrastructure/llm/genai/genai.go",
+      "sha256": "f85ecdf9a8be95efa7a26d5e8589aa3ffc402a488f4600e92e14fcf3113a29fa"
+    },
+    {
+      "source": "apps/desktop/infrastructure/llm/engine/parity_test.go",
+      "snapshot": "source-snapshot/apps/desktop/infrastructure/llm/engine/parity_test.go",
+      "sha256": "fac2a2c95c39b131e547561a8788573c8e0c26b00accdfb1f92f435f6d0dfd1d"
+    },
+    {
+      "source": "apps/desktop/infrastructure/llm/engine/engine_test.go",
+      "snapshot": "source-snapshot/apps/desktop/infrastructure/llm/engine/engine_test.go",
+      "sha256": "cfdfa26cc6c31bf6ab4c0a916b2ee4c06cb82a64eeda27dede763863b17f26d3"
+    },
+    {
+      "source": "apps/desktop/infrastructure/llm/engine/engine.go",
+      "snapshot": "source-snapshot/apps/desktop/infrastructure/llm/engine/engine.go",
+      "sha256": "d81b90b71f26e5432e7359c8f0dd001b977d2ddb27633c2547e25be69d9539a6"
+    },
+    {
+      "source": "apps/desktop/infrastructure/llm/client/process_unix.go",
+      "snapshot": "source-snapshot/apps/desktop/infrastructure/llm/client/process_unix.go",
+      "sha256": "3492e02501a2badf776da1d8da80e02a1bc585bced7fbe2db976a420f5f1cbff"
+    },
+    {
+      "source": "apps/desktop/infrastructure/llm/client/client.go",
+      "snapshot": "source-snapshot/apps/desktop/infrastructure/llm/client/client.go",
+      "sha256": "d76fd3d79a67361c1b61e3566c84dbe4e2d78016eea577e643e95bdda9b3f32f"
+    },
+    {
+      "source": "apps/desktop/infrastructure/llm/client/process_windows.go",
+      "snapshot": "source-snapshot/apps/desktop/infrastructure/llm/client/process_windows.go",
+      "sha256": "ffb6a80b0393abcce02819b45818da964a74a5c313272a521a6c1937c0f1c987"
+    },
+    {
+      "source": "apps/desktop/infrastructure/llm/client/client_test.go",
+      "snapshot": "source-snapshot/apps/desktop/infrastructure/llm/client/client_test.go",
+      "sha256": "1aa392064712547cea1148f67eb4c80d5dd1674bcdfbc8854afb0e1c3c0229a5"
+    },
+    {
+      "source": "apps/desktop/infrastructure/llm/spelling/lexicon_test.go",
+      "snapshot": "source-snapshot/apps/desktop/infrastructure/llm/spelling/lexicon_test.go",
+      "sha256": "d8148374b8e1ced10e0c101c3addeadcd23dc21b04e572cdc1d114d191895625"
+    },
+    {
+      "source": "apps/desktop/infrastructure/llm/spelling/lexicon.go",
+      "snapshot": "source-snapshot/apps/desktop/infrastructure/llm/spelling/lexicon.go",
+      "sha256": "ae4f6dfb25de1efd5b898629b18c634aaffe022a96ccef12f97291a7f25cb339"
+    },
+    {
+      "source": "apps/desktop/infrastructure/llm/spelling/data/pypinyin-character-readings-v1-provenance.json",
+      "snapshot": "source-snapshot/apps/desktop/infrastructure/llm/spelling/data/pypinyin-character-readings-v1-provenance.json",
+      "sha256": "90a6ad8126bd24d74fc03a37bb8fbb050c375aff5cc57b0047114bf9509969b0"
+    },
+    {
+      "source": "apps/desktop/infrastructure/llm/spelling/data/pypinyin-character-readings-v1-LICENSE.txt",
+      "snapshot": "source-snapshot/apps/desktop/infrastructure/llm/spelling/data/pypinyin-character-readings-v1-LICENSE.txt",
+      "sha256": "1e6c90014b4912815c296ee64bb6f6280af47e6d4c5d80e86232dfc5defe764c"
+    },
+    {
+      "source": "apps/desktop/infrastructure/llm/spelling/data/cmudict-pronunciation-v1-provenance.json",
+      "snapshot": "source-snapshot/apps/desktop/infrastructure/llm/spelling/data/cmudict-pronunciation-v1-provenance.json",
+      "sha256": "2ea5124083d7bc2c6f91bb61f0b911b9f12bfd68425b7b86d1a55e72df00530d"
+    },
+    {
+      "source": "apps/desktop/infrastructure/llm/spelling/data/pypinyin-character-readings-v1-readings.json",
+      "snapshot": "source-snapshot/apps/desktop/infrastructure/llm/spelling/data/pypinyin-character-readings-v1-readings.json",
+      "sha256": "be7efc407cd64897abd2259ed98a18022e50ded1a144d6df8420f8f3b3ccdac7"
+    },
+    {
+      "source": "apps/desktop/cmd/arion-llm/rss.go",
+      "snapshot": "source-snapshot/apps/desktop/cmd/arion-llm/rss.go",
+      "sha256": "5c28c0e900e9aff8cb69bd2f36ae2488776cdda1f871c11e672fc0ff1f91d50e"
+    },
+    {
+      "source": "apps/desktop/cmd/arion-llm/rss_windows.go",
+      "snapshot": "source-snapshot/apps/desktop/cmd/arion-llm/rss_windows.go",
+      "sha256": "2010f3b7e35e13130c2fa71a3c1acd2e438aade1d32a61b10e2f0a51e5108716"
+    },
+    {
+      "source": "apps/desktop/cmd/arion-llm/deps_test.go",
+      "snapshot": "source-snapshot/apps/desktop/cmd/arion-llm/deps_test.go",
+      "sha256": "f725418585bda2255d08067251f5481fe6ab3afb429ad3bf8a17d0ff6be6ffe4"
+    },
+    {
+      "source": "apps/desktop/cmd/arion-llm/main.go",
+      "snapshot": "source-snapshot/apps/desktop/cmd/arion-llm/main.go",
+      "sha256": "c41dc2ca458a4e43cf4cff36dfc1db69c40e4a501ddd7efe1f94c05acbf995cc"
+    },
+    {
+      "source": "apps/desktop/infrastructure/modelruntime/runtime.go",
+      "snapshot": "source-snapshot/apps/desktop/infrastructure/modelruntime/runtime.go",
+      "sha256": "8d5e0e4090c92b4c69e1ff7ecec62cee84d104922fc85d4940a709684117d720"
+    },
+    {
+      "source": "apps/desktop/infrastructure/modelruntime/runtime_test.go",
+      "snapshot": "source-snapshot/apps/desktop/infrastructure/modelruntime/runtime_test.go",
+      "sha256": "3c13ca621cffd5ee578a86f3b2381c287def50fd34481ffb37eb93ab6fc0e9cf"
+    },
+    {
+      "source": "apps/desktop/infrastructure/audio/capture.go",
+      "snapshot": "source-snapshot/apps/desktop/infrastructure/audio/capture.go",
+      "sha256": "72e1c525e614a2662b5053124c373004ac933e1a5443f380bac35cd2a97584e1"
+    },
+    {
+      "source": "apps/desktop/infrastructure/audio/replay.go",
+      "snapshot": "source-snapshot/apps/desktop/infrastructure/audio/replay.go",
+      "sha256": "3af29ad68c0375fff8ea2b63d9ff045b7236a06cf50e0e4d521dcf1f1584fa8f"
+    },
+    {
+      "source": "apps/desktop/infrastructure/audio/replay_test.go",
+      "snapshot": "source-snapshot/apps/desktop/infrastructure/audio/replay_test.go",
+      "sha256": "326087dc2de0a14f531782da27b529a1941db574a50dc04ea9d72acce655ced4"
+    },
+    {
+      "source": "apps/desktop/infrastructure/macos/guide.h",
+      "snapshot": "source-snapshot/apps/desktop/infrastructure/macos/guide.h",
+      "sha256": "c570da8ad11cda42235cbd881248d95a3b19dc6c2ae1e5d52a120543761c1639"
+    },
+    {
+      "source": "apps/desktop/infrastructure/macos/macos.go",
+      "snapshot": "source-snapshot/apps/desktop/infrastructure/macos/macos.go",
+      "sha256": "d2cd04b7ee7c54360c522a2de34e9d91f1cfbea87e1ba830c12fd8734af15970"
+    },
+    {
+      "source": "apps/desktop/infrastructure/macos/hold.go",
+      "snapshot": "source-snapshot/apps/desktop/infrastructure/macos/hold.go",
+      "sha256": "a56d2616923e13ad7af96c9bf9747b8e6e40e8ae93a74c4989a21998fe0855c6"
+    },
+    {
+      "source": "apps/desktop/infrastructure/macos/guide.go",
+      "snapshot": "source-snapshot/apps/desktop/infrastructure/macos/guide.go",
+      "sha256": "14d35200361317647f94be200e3932e8e3d5f6b5c719c1941685aabe94a9b348"
+    },
+    {
+      "source": "apps/desktop/infrastructure/macos/paste.m",
+      "snapshot": "source-snapshot/apps/desktop/infrastructure/macos/paste.m",
+      "sha256": "6f285d79798b086a083bc0a95b91f17cafb91104eeac31974d58a5db7234f18d"
+    },
+    {
+      "source": "apps/desktop/infrastructure/macos/native.h",
+      "snapshot": "source-snapshot/apps/desktop/infrastructure/macos/native.h",
+      "sha256": "be41217614f3b5d6b56113fb2539e65187f4270119c0271aa917ddd9db27348d"
+    },
+    {
+      "source": "apps/desktop/infrastructure/macos/overlay.go",
+      "snapshot": "source-snapshot/apps/desktop/infrastructure/macos/overlay.go",
+      "sha256": "3a3f446fd32a8c3bcc86fc4bc8c940177c898d159f81a733233ba707a1f47c94"
+    },
+    {
+      "source": "apps/desktop/infrastructure/macos/overlay.h",
+      "snapshot": "source-snapshot/apps/desktop/infrastructure/macos/overlay.h",
+      "sha256": "7e07dcc2ffc4306aae025cfe87304bacb6146313b9c76b80ca08b9700826ac9d"
+    },
+    {
+      "source": "apps/desktop/infrastructure/macos/context.h",
+      "snapshot": "source-snapshot/apps/desktop/infrastructure/macos/context.h",
+      "sha256": "8904c8e7da85a9eb76be82060eed8f81910048ae6a0b7275b1d2bf4f9f998241"
+    },
+    {
+      "source": "apps/desktop/infrastructure/macos/ime.go",
+      "snapshot": "source-snapshot/apps/desktop/infrastructure/macos/ime.go",
+      "sha256": "05b3c2635c11f1e0f0c4e16dd36939f5533a1d464a8e21e2333f02bdfecd65ef"
+    },
+    {
+      "source": "apps/desktop/infrastructure/macos/hold.h",
+      "snapshot": "source-snapshot/apps/desktop/infrastructure/macos/hold.h",
+      "sha256": "7859ea3fcfb8f4581008614b644b64a7d232a3331351f742ff8fefefd9d04699"
+    },
+    {
+      "source": "apps/desktop/infrastructure/macos/paste_test.go",
+      "snapshot": "source-snapshot/apps/desktop/infrastructure/macos/paste_test.go",
+      "sha256": "0f49856e1e0ca30567f324c3a08e1d25f9a74a4b4af15862bfc876395a84aced"
+    },
+    {
+      "source": "apps/desktop/infrastructure/macos/insertion_darwin_test.go",
+      "snapshot": "source-snapshot/apps/desktop/infrastructure/macos/insertion_darwin_test.go",
+      "sha256": "a5c1513f822221c20c5eacb7e9fd782b55275ad51e1b8dc33615fe257a8a1082"
+    },
+    {
+      "source": "apps/desktop/infrastructure/macos/ime_install_darwin_test.go",
+      "snapshot": "source-snapshot/apps/desktop/infrastructure/macos/ime_install_darwin_test.go",
+      "sha256": "9670ed55c2d945821560d83b21f41b86f22dfdfb23cd4d0db871dbd6bbc1e551"
+    },
+    {
+      "source": "apps/desktop/infrastructure/macos/guide.m",
+      "snapshot": "source-snapshot/apps/desktop/infrastructure/macos/guide.m",
+      "sha256": "a6744b550829e1a6755493462cac10abad42a6e256162062b703f3d97da358e8"
+    },
+    {
+      "source": "apps/desktop/infrastructure/macos/ime_install_darwin.go",
+      "snapshot": "source-snapshot/apps/desktop/infrastructure/macos/ime_install_darwin.go",
+      "sha256": "3be7ff347f75753c921b1ae0f39cc8151b994551856336a7f524e9f492d2a168"
+    },
+    {
+      "source": "apps/desktop/infrastructure/macos/context.go",
+      "snapshot": "source-snapshot/apps/desktop/infrastructure/macos/context.go",
+      "sha256": "83bb5b2c84e47b8a4a2adab56ccead0da6613035626660b5675e2e779d12d9db"
+    },
+    {
+      "source": "apps/desktop/infrastructure/macos/native.m",
+      "snapshot": "source-snapshot/apps/desktop/infrastructure/macos/native.m",
+      "sha256": "74f885a36616dbe6b69feb4f1e631c1695276ca129c34d429fb9bb52daddddc1"
+    },
+    {
+      "source": "apps/desktop/infrastructure/macos/context.m",
+      "snapshot": "source-snapshot/apps/desktop/infrastructure/macos/context.m",
+      "sha256": "87028a35e05c7fe2e65f6ee39f3315e2fa2d802416a83a8c8a83488a0d6c62b7"
+    },
+    {
+      "source": "apps/desktop/infrastructure/macos/overlay.m",
+      "snapshot": "source-snapshot/apps/desktop/infrastructure/macos/overlay.m",
+      "sha256": "9946ab884f53af5210cb1fe44cb7624743add912d9c0500a87aacd98e172f23c"
+    },
+    {
+      "source": "apps/desktop/infrastructure/macos/paste.go",
+      "snapshot": "source-snapshot/apps/desktop/infrastructure/macos/paste.go",
+      "sha256": "8585b122e2a98d5858b3de9e57f4aad093d9f39173563575dead2563ab320871"
+    },
+    {
+      "source": "apps/desktop/infrastructure/macos/hold.m",
+      "snapshot": "source-snapshot/apps/desktop/infrastructure/macos/hold.m",
+      "sha256": "b516aeca6ffa444f86da06abe414c85809a1c9719ae77c39294c97f3c17a8754"
+    },
+    {
+      "source": "apps/desktop/infrastructure/macos/testdata/pasteboard.m",
+      "snapshot": "source-snapshot/apps/desktop/infrastructure/macos/testdata/pasteboard.m",
+      "sha256": "c17a62d14c2f8a4a5478f7f6e4d8382a0793414649e633ba6e4e42b6afaea7af"
+    },
+    {
+      "source": "models/catalog.go",
+      "snapshot": "source-snapshot/models/catalog.go",
+      "sha256": "89c23ae2ee680f4353b557f3dcd8d3e04690f8ab9a06f2a1ff366738e6a6d55d"
+    },
+    {
+      "source": "models/catalog_test.go",
+      "snapshot": "source-snapshot/models/catalog_test.go",
+      "sha256": "ab9c00a3f38792ec9ffdc1fe6ca24993630ab7b862a51a7ff20b0afc2a584dc2"
+    },
+    {
+      "source": "models/README.md",
+      "snapshot": "source-snapshot/models/README.md.txt",
+      "sha256": "1f670f0e4c0a5dba85008e0b8fdac7287e9ddf50a3b5d2a94c8000473fff3e6a"
+    },
+    {
+      "source": "models/catalog.json",
+      "snapshot": "source-snapshot/models/catalog.json",
+      "sha256": "ecdc9b4bf6d3fd0498a8702b346363233d517f7590d16f60f688eb0b3e0b0d10"
+    }
+  ],
+  "binaries": {
+    "cache-off/arion-live-bench": "1da3e228430d2481e07abd31fd83e571370dbf722f057422e8154a3240786888",
+    "runtime/arion-llm": "cf91fab949dfc54c19525f259c1f7550b4f57fc4026881abdff9b2230d1bc85c",
+    "runtime/arion-ocr": "023ab8767480d49e366a71f7ce7113540ec3b82f9e1c5027d92b94703beb9faf",
+    "regressions/arion-live-bench": "6e2725646e02d2ea77dd8173eac9849449a28f09422d2729a2cef11dd99d6661",
+    "cache-on/arion-live-bench": "8fec0f3818a309833f20f9b8f6551f159346a2570241b1d725ed59ba155ed23a",
+    "native-three/arion-live-bench": "32f8f7cdfe9a12aee5b3baf3d77ca1a42ed1eb220d80f99c713cccdda9556503"
+  },
+  "overlaySha256": "a850f9ed2cedddf516ad088827e8fc4e1a5f0f814e092b1ea00f12532890edcd"
+}

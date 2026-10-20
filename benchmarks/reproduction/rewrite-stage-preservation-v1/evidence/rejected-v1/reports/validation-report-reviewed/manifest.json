@@ -1,0 +1,12 @@
+{
+  "schema": "rewrite-stage-archive-v1",
+  "files": {
+    "index.html": "096f314befdbf95e1be8951efd8b42e09d0fc48c74285a6b2aa0b58fa8f0df32",
+    "report.json": "fa18726e90c351c0d9319c99e0b5d60d35103264bf91478daccd91e547348687",
+    "sources/baseline.jsonl": "a8de6fba587428ce092791cbc765abf3e884cfdd067720be5493b28b35cbaaa5",
+    "sources/candidate.jsonl": "20406810c9934c586391893f9b987a9ef79d92cb682cedd2973897a4bd2a6c7e",
+    "sources/cases.json": "f96cc9a2e60e3919ee0602249dc13c5d6bd09a8d33edef2114c94c77b67115df",
+    "sources/manual-review.json": "83f7c0cb9523c42fc214516ec128c64540a0128a79e7f460c210c6e2cc04b687",
+    "sources/report.py": "c338aac6fbef784c640d062bca0101a6c18b0f24f3598775a6156c84def0c753"
+  }
+}

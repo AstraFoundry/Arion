@@ -1,0 +1,16 @@
+{
+  "kind": "exposed-development-scheduling-control",
+  "reason": "Five-second-silence pilot had completed full live rewrite only in cache-on; cache-off full live rewrite cancelled at stop, so pilot is scheduling-confounded. Matched pair uses exactly ten seconds trailing zero silence, same original speech bytes and identical copied source executables. This is the final extension attempt; no model outputs assumed.",
+  "originalAudioSha256": "21ad31efe336595252de7e60835436f4c0b961c8dc1f788575e1be19cc30a95a",
+  "derivedAudioSha256": "f6a9deb5e0d8e945b480ed59bba95c5e4484d07a480759341c1746271ec547ca",
+  "appendedZeroFrames": 160000,
+  "audioSampleRate": 16000,
+  "driverHashes": {
+    "cache-extended-on": "8fec0f3818a309833f20f9b8f6551f159346a2570241b1d725ed59ba155ed23a",
+    "cache-extended-off": "1da3e228430d2481e07abd31fd83e571370dbf722f057422e8154a3240786888"
+  },
+  "identicalDriverBinaryChecks": {
+    "on": true,
+    "off": true
+  }
+}

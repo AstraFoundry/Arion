@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "kind": "arion-live-audio",
+  "textCorpus": "corpus.json",
+  "textCorpusSha256": "1ee3a7c1c868e0b272f785dc32ba52f66b42f8ae292ed3a8e7d5ccfbdaf93813",
+  "synthesis": "macOS say (Tingting zh/mixed, Samantha en) rate 175; 1.2s pauses between parts; 0.3s lead, 0.8s trail; 16 kHz mono PCM16",
+  "limitations": "Synthetic TTS speech with inserted pauses; not natural dictation",
+  "samples": [
+    {
+      "id": "native-06",
+      "language": "zh",
+      "voice": "Tingting",
+      "segments": 2,
+      "speech": "请检查 get user profile 这个函数|不要改动函数名只补充注释",
+      "audio": {
+        "path": "native-06.wav",
+        "sha256": "b490e7678fa400bf53f63867f7561d781d0decc86a578f11129425d75a20057f",
+        "durationMs": 8052.125
+      }
+    },
+    {
+      "id": "native-07",
+      "language": "zh",
+      "voice": "Tingting",
+      "segments": 2,
+      "speech": "贝塔科技的材料不要发给张伟|先让张巍确认再发",
+      "audio": {
+        "path": "native-07.wav",
+        "sha256": "9f8d8206d9046c7a804cac9f187281382a0a362667272e4adf4af801431b6f87",
+        "durationMs": 7120.8125
+      }
+    }
+  ]
+}

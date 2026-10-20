@@ -1,0 +1,8 @@
+{
+  "status": "failed",
+  "code": 1,
+  "signal": null,
+  "evidenceComplete": false,
+  "quality": "No automatic quality pass; review exact observations and paired report",
+  "finished": "2026-10-20T13:44:41.019Z"
+}

@@ -1,0 +1,32 @@
+{
+  "kind": "archive-packaging-path-correction",
+  "reason": "Relative links in four frozen source README files resolve outside the snapshot; retain original bytes as .md.txt evidence instead of active Markdown documentation.",
+  "originalProvenance": "benchmarks/reproduction/rewrite-stage-preservation-v1/native/coordinator-memory-candidate-v1/provenance.original.json",
+  "originalProvenanceSha256": "6ffce18670057251a4fafe224c15989715039844443f88a28fb4272c4dc3c566",
+  "mappings": [
+    {
+      "originalArchivePath": "benchmarks/reproduction/rewrite-stage-preservation-v1/native/coordinator-memory-candidate-v1/source-snapshot/models/README.md",
+      "correctedArchivePath": "benchmarks/reproduction/rewrite-stage-preservation-v1/native/coordinator-memory-candidate-v1/source-snapshot/models/README.md.txt",
+      "sha256": "1f670f0e4c0a5dba85008e0b8fdac7287e9ddf50a3b5d2a94c8000473fff3e6a",
+      "correction": "Filename extension only; source evidence bytes unchanged. Frozen source Markdown is evidence text, not active repository documentation."
+    },
+    {
+      "originalArchivePath": "benchmarks/reproduction/rewrite-stage-preservation-v1/native/coordinator-memory-candidate-v1/source-snapshot/packages/core/application/README.md",
+      "correctedArchivePath": "benchmarks/reproduction/rewrite-stage-preservation-v1/native/coordinator-memory-candidate-v1/source-snapshot/packages/core/application/README.md.txt",
+      "sha256": "2651f8ae08bbd9bbb46fcd1f0b3c429f5ab9e1d04725bcbfc7461ea8e34b3f75",
+      "correction": "Filename extension only; source evidence bytes unchanged. Frozen source Markdown is evidence text, not active repository documentation."
+    },
+    {
+      "originalArchivePath": "benchmarks/reproduction/rewrite-stage-preservation-v1/native/coordinator-memory-candidate-v1/source-snapshot-pre-memory-recall/models/README.md",
+      "correctedArchivePath": "benchmarks/reproduction/rewrite-stage-preservation-v1/native/coordinator-memory-candidate-v1/source-snapshot-pre-memory-recall/models/README.md.txt",
+      "sha256": "1f670f0e4c0a5dba85008e0b8fdac7287e9ddf50a3b5d2a94c8000473fff3e6a",
+      "correction": "Filename extension only; source evidence bytes unchanged. Frozen source Markdown is evidence text, not active repository documentation."
+    },
+    {
+      "originalArchivePath": "benchmarks/reproduction/rewrite-stage-preservation-v1/native/coordinator-memory-candidate-v1/source-snapshot-pre-memory-recall/packages/core/application/README.md",
+      "correctedArchivePath": "benchmarks/reproduction/rewrite-stage-preservation-v1/native/coordinator-memory-candidate-v1/source-snapshot-pre-memory-recall/packages/core/application/README.md.txt",
+      "sha256": "2651f8ae08bbd9bbb46fcd1f0b3c429f5ab9e1d04725bcbfc7461ea8e34b3f75",
+      "correction": "Filename extension only; source evidence bytes unchanged. Frozen source Markdown is evidence text, not active repository documentation."
+    }
+  ]
+}

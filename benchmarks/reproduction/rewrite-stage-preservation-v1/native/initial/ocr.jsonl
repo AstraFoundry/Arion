@@ -1,0 +1,16 @@
+{"caseId":"native-01","level":"accurate","text":"联系人：许婧\n公司：阿尔法工作室\n待办：确认预算","ocrMs":372.778058052063}
+{"caseId":"native-01","level":"fast","text":"H*.¥A: T*I","ocrMs":27.04298496246338}
+{"caseId":"native-02","level":"accurate","text":"负责人：程语楠\n项目：德尔塔项目\n任务：检查发布说明","ocrMs":89.22004699707031}
+{"caseId":"native-02","level":"fast","text":"/J\nE*:","ocrMs":19.994020462036133}
+{"caseId":"native-03","level":"accurate","text":"联系人：张巍\n公司：贝塔科技\n待办：确认测试报告时间","ocrMs":102.81801223754883}
+{"caseId":"native-03","level":"fast","text":"H*.¥A: gk","ocrMs":20.816922187805176}
+{"caseId":"native-04","level":"accurate","text":"产品：优图\n项目：项目阿尔法\n要求：保留识别结果","ocrMs":72.95596599578857}
+{"caseId":"native-04","level":"fast","text":"lJt","ocrMs":20.44999599456787}
+{"caseId":"native-05","level":"accurate","text":"联系人：许婧、程语楠\n项目：德尔塔项目\n收件方：阿尔法工作室","ocrMs":77.21304893493652}
+{"caseId":"native-05","level":"fast","text":"H*.¥A: T*IR,\n/J","ocrMs":20.05791664123535}
+{"caseId":"native-06","level":"accurate","text":"代码符号：getUserProfile\n任务：补充注释\n约束：不要修改函数名","ocrMs":81.0929536819458}
+{"caseId":"native-06","level":"fast","text":"ItI814T getUserProfile\n*t*:","ocrMs":20.524978637695312}
+{"caseId":"native-07","level":"accurate","text":"审核人：张巍\n其他联系人：张伟\n公司：贝塔科技\n状态：等待审核","ocrMs":106.41908645629883}
+{"caseId":"native-07","level":"fast","text":"*IA*A: gk\nItÈH*.¥A: gk","ocrMs":20.578980445861816}
+{"caseId":"native-08","level":"accurate","text":"公司：阿尔法工作室\n审核人：程语楠\n产品：优图\n状态：暂不提交预算","ocrMs":74.0739107131958}
+{"caseId":"native-08","level":"fast","text":"*I\u003eAA:\nlJt\na**:","ocrMs":21.00503444671631}

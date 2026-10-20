@@ -582,7 +582,7 @@ func TestFullContextInPreviewAndFinal(t *testing.T) {
 		{"unsafe", ContextPolicy{Cursor: true, Screen: true}, false},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			w := &scriptedRewriter{answer: func(req ports.RewriteRequest) (string, error) { return req.Text, nil }}
+			w := &scriptedRewriter{answer: func(req ports.RewriteRequest) (string, error) { return "Formatted " + req.Text, nil }}
 			c, audio, events, target, _ := liveSetup(t, []string{"hello", "|", "again"}, w, RewritePolicy{Enabled: true, Context: tc.policy})
 			target.context = contracts.ContextSnapshot{SafeToRead: tc.safe, Screen: screen, Before: "before", After: "after"}
 			c.Start()
@@ -598,7 +598,9 @@ func TestFullContextInPreviewAndFinal(t *testing.T) {
 				}
 			}
 			audio.push(2, 0.2)
-			events.wait(t, draftIs("HELLO"))
+			events.wait(t, draftIs("Formatted HELLO"))
+			// New dictated text requires a separate final request with the same context.
+			audio.push(1, 0.2)
 			c.Stop()
 			events.wait(t, kindIs(contracts.CommitResultReady))
 			w.mu.Lock()

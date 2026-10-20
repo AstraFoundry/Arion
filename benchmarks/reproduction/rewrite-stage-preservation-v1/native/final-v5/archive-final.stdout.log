@@ -1,0 +1,230 @@
+{
+  "archive": "/Users/steven/code/Arion/benchmarks/reproduction/rewrite-stage-preservation-v1/native/final-v5",
+  "verifiedFiles": 207,
+  "summary": {
+    "status": "completed",
+    "qualityStatus": "known-semantic-failure-retained",
+    "promptId": "selector-contextual-v5+natural-layout-v3",
+    "nativeThree": [
+      {
+        "caseId": "native-chatterfly-01",
+        "source": "检查一下 chatter fly，看看它的流式改写是不是正确。",
+        "final": "检查 Chatterfly，看看它的流式改写是不是正确。",
+        "raw": "检查一下 chatter fly， 看看它的流式改写是不是正确。",
+        "previewEvents": 5,
+        "successfulCanonicalPreview": true,
+        "rewrite": "accepted",
+        "error": null,
+        "stopToFinalMs": 4689.121,
+        "finalCanonicalNamePresent": true
+      },
+      {
+        "caseId": "native-chatterfly-02",
+        "source": "chatter fly 的流式输入是对的，但是后面的改写又出错了。",
+        "final": "Chatterfly 的流式输入是对的，但是后面的改写又出错了。",
+        "raw": "chatter fly 的流式输入是对的， 但是后面的改写又出错了。",
+        "previewEvents": 0,
+        "successfulCanonicalPreview": false,
+        "rewrite": "accepted",
+        "error": null,
+        "stopToFinalMs": 6003.21,
+        "finalCanonicalNamePresent": true
+      },
+      {
+        "caseId": "native-chatterfly-01-memory-only",
+        "source": "检查一下 chatter fly，看看它的流式改写是不是正确。",
+        "final": "检查 Chatterfly，看看它的流式改写是不是正确。",
+        "raw": "检查一下 chatter fly， 看看它的流式改写是不是正确。",
+        "previewEvents": 4,
+        "successfulCanonicalPreview": true,
+        "rewrite": "accepted",
+        "error": null,
+        "stopToFinalMs": 4598.227,
+        "finalCanonicalNamePresent": true
+      }
+    ],
+    "cacheAblation": {
+      "fiveSecondPilot": {
+        "on": {
+          "workerRewriteCalls": 2,
+          "liveCalls": 2,
+          "finalCalls": 0,
+          "successfulLiveCalls": 1,
+          "observations": [
+            {
+              "caseId": "cache-native-chatterfly-01",
+              "source": "检查一下 chatter fly看看它的流逝改写是不是正确。",
+              "final": "检查 Chatterfly 看看它的流式改写是不是正确。",
+              "raw": "检查一下 chatter fly看看它的流逝改写是不是正确。",
+              "previewEvents": 1,
+              "successfulCanonicalPreview": true,
+              "rewrite": "accepted",
+              "error": null,
+              "stopToFinalMs": 38.178
+            }
+          ],
+          "traceFiles": [
+            "cache-on/cache-native-chatterfly-01-0-rewrite.jsonl"
+          ]
+        },
+        "off": {
+          "workerRewriteCalls": 3,
+          "liveCalls": 2,
+          "finalCalls": 1,
+          "successfulLiveCalls": 0,
+          "observations": [
+            {
+              "caseId": "cache-native-chatterfly-01",
+              "source": "检查一下 chatter fly看看它的流逝改写是不是正确。",
+              "final": "检查 Chatterfly 看看它的流式改写是不是正确。",
+              "raw": "检查一下 chatter fly看看它的流逝改写是不是正确。",
+              "previewEvents": 0,
+              "successfulCanonicalPreview": false,
+              "rewrite": "accepted",
+              "error": null,
+              "stopToFinalMs": 5270.301
+            }
+          ],
+          "traceFiles": [
+            "cache-off/cache-native-chatterfly-01-0-rewrite.jsonl"
+          ]
+        },
+        "limitation": "Scheduling-confounded: full live result completed in on only; off full live request cancelled at stop. Do not interpret timing or strict completion-matched benefit."
+      },
+      "tenSecondMatched": {
+        "on": {
+          "workerRewriteCalls": 2,
+          "liveCalls": 2,
+          "finalCalls": 0,
+          "successfulLiveCalls": 1,
+          "observations": [
+            {
+              "caseId": "cache-native-chatterfly-01",
+              "source": "检查一下 chatter fly看看它的流逝改写是不是正确。",
+              "final": "检查 Chatterfly 看看它的流式改写是不是正确。",
+              "raw": "检查一下 chatter fly看看它的流逝改写是不是正确。",
+              "previewEvents": 1,
+              "successfulCanonicalPreview": true,
+              "rewrite": "accepted",
+              "error": null,
+              "stopToFinalMs": 49.314
+            }
+          ],
+          "traceFiles": [
+            "cache-extended-on/cache-native-chatterfly-01-0-rewrite.jsonl"
+          ]
+        },
+        "off": {
+          "workerRewriteCalls": 3,
+          "liveCalls": 2,
+          "finalCalls": 1,
+          "successfulLiveCalls": 1,
+          "observations": [
+            {
+              "caseId": "cache-native-chatterfly-01",
+              "source": "检查一下 chatter fly看看它的流逝改写是不是正确。",
+              "final": "检查 Chatterfly 看看它的流式改写是不是正确。",
+              "raw": "检查一下 chatter fly看看它的流逝改写是不是正确。",
+              "previewEvents": 1,
+              "successfulCanonicalPreview": true,
+              "rewrite": "accepted",
+              "error": null,
+              "stopToFinalMs": 6034.549
+            }
+          ],
+          "traceFiles": [
+            "cache-extended-off/cache-native-chatterfly-01-0-rewrite.jsonl"
+          ]
+        },
+        "proof": {
+          "allRequestFieldsExceptLiveEqual": true,
+          "rawModelTextEqual": true,
+          "finalDeliveryEqual": true,
+          "normalizedRequest": {
+            "session_id": "cache-native-chatterfly-01-0",
+            "generation": 1,
+            "SourceRevision": 0,
+            "Text": "检查一下 chatter fly看看它的流逝改写是不是正确。",
+            "PreviousText": "",
+            "Scene": "chat",
+            "Terms": null,
+            "Context": {
+              "Screen": "软件：Chatterfly\n任务：检查流式改写",
+              "Before": "",
+              "After": "",
+              "History": null
+            },
+            "Prefill": false
+          },
+          "rawModelText": "检查 Chatterfly 看看它的流式改写是不是正确。",
+          "savedFinalModelCalls": 1,
+          "limitation": "Same synthetic speech plus ten seconds added silence; exposed diagnostic, not a claim about typical stopping behavior or comparative latency."
+        }
+      }
+    },
+    "regressions": [
+      {
+        "caseId": "native-06",
+        "source": "请检查 get user profile 这个函数，不要改动函数名之补充注释。",
+        "final": "请检查 getUserProfile 这个函数，不要改动函数名，不要补充注释。",
+        "raw": "请检查 get user profile 这个函数， 不要改动函数名之补充注释。",
+        "previewEvents": 0,
+        "successfulCanonicalPreview": false,
+        "rewrite": "accepted",
+        "error": null,
+        "stopToFinalMs": 5564.661,
+        "outcome": "semantic-failure-despite-identifier-repair",
+        "identifierRestored": true,
+        "reason": "Spoken script requests only adding comments. ASR source has ambiguous 之补充注释; final rewrite adds 不要补充注释, reversing that action. This case is not a full pass.",
+        "expectedSpeech": "请检查 get user profile 这个函数|不要改动函数名只补充注释"
+      },
+      {
+        "caseId": "native-07",
+        "source": "贝塔科技的材料不要发给张伟，先让张威确认再发。",
+        "final": "贝塔科技的材料不要发给张伟，先让张威确认再发。",
+        "raw": "贝塔科技的材料不要发给张伟， 先让张威确认再发。",
+        "previewEvents": 3,
+        "successfulCanonicalPreview": false,
+        "rewrite": "accepted",
+        "error": null,
+        "stopToFinalMs": 535.682,
+        "outcome": "ambiguous-name-unresolved-with-abstention",
+        "reason": "Screen contains both 张伟 and 张巍. Source ASR 张威 remains unchanged; no unsupported choice is made, but the intended name is not recovered."
+      },
+      {
+        "caseId": "native-numeric-01",
+        "source": "版本号是三点五，不要改成三点六。",
+        "final": "版本号是 3.5，不要改成 3.6。",
+        "raw": "版本号是三点五， 不要改成三点六。",
+        "previewEvents": 0,
+        "successfulCanonicalPreview": false,
+        "rewrite": "accepted",
+        "error": null,
+        "stopToFinalMs": 1765.098,
+        "outcome": "numeric-contrast-preserved",
+        "reason": "3.5 remains the requested version and 3.6 remains excluded."
+      },
+      {
+        "caseId": "native-numeric-02",
+        "source": "预算是一千二百元，不是一千五百元。",
+        "final": "预算是一千二百元，不是一千五百元。",
+        "raw": "预算是一千二百元， 不是一千五百元。",
+        "previewEvents": 0,
+        "successfulCanonicalPreview": false,
+        "rewrite": "accepted",
+        "error": null,
+        "stopToFinalMs": 510.282,
+        "outcome": "numeric-contrast-preserved",
+        "reason": "一千二百元 remains the budget and 一千五百元 remains excluded."
+      }
+    ],
+    "sourceFilesUnchangedDuringRuns": true,
+    "limitations": [
+      "Synthetic TTS, authored screen PNGs and actual Vision/ASR/LLM. No user microphone, native window capture, editor insertion or Windows evidence.",
+      "Original approved memory constructed after initial ASR observations: exposed development reproduction, not held-out quality or preexisting user memory.",
+      "Screen-off native01 and cache variants reuse original speech and are not independent samples.",
+      "Timings are raw observations. Five-second cache pilot has scheduling confound; ten-second pair proves request reuse without establishing typical latency.",
+      "Technical regression reveals added negation; preserve failure rather than declaring entire pipeline correct."
+    ]
+  }
+}

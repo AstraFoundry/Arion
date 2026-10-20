@@ -1,0 +1,26 @@
+{
+  "scope": "Exposed development reproduction plus separately frozen authored controls and actual synthetic ASR/Vision input. No natural voice or independent review.",
+  "model": "Pinned Qwen3.5-2B Q4_K_M; actual native runtime, seed42 greedy thinking disabled, threads4 ctx4096 output256, 10-second generation deadline.",
+  "developmentCases": 8,
+  "arms": [
+    "source-v3-baseline",
+    "compound-only",
+    "prior-and-compound-only",
+    "structure-only",
+    "full",
+    "full-no-screen"
+  ],
+  "treatment": "Same sources, unchanged selector system. Remove contextual compound/prior producer, remove fixed-gap formatter, remove screen, respectively. Cache tested separately through actual Coordinator.",
+  "mainMetrics": [
+    "correct entity preview to incorrect final",
+    "contextual repair coverage",
+    "selected spelling corruption",
+    "protocol/timeout failure coverage",
+    "manual meaning and useful layout",
+    "stage latency observations"
+  ],
+  "failurePolicy": "All raw generations/errors retained. Never credit transport success or protocol validity as meaning success. Source delivery on model failure remains explicit product outcome; score actual raw generation and inserted result separately.",
+  "selection": "Inspect every development output. Run frozen controls and native pairs without tuning their expectations. Adoption must not introduce harmful changes to prior correct controls; rejected experimental arms retained.",
+  "baselineSnapshot": ".workspace/rewrite-stage-preservation/baseline-source/provenance.json",
+  "artifacts": "No weights/runtime binaries in Git. Complete reusable evidence, scripts, fixtures, failed attempts and hashes under this directory; unfinished runs .workspace."
+}

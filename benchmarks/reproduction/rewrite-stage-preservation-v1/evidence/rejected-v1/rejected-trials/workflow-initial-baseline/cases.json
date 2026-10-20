@@ -1,0 +1,156 @@
+[
+  {
+    "id": "user-chatterfly-06",
+    "scene": "prompt",
+    "preview": "检查一下 Chatterfly。",
+    "final": "检查一下 Chatterfly 的改写 pipeline，流式输入是正确的，但是最后的大模型把正确的软件名称改错了。",
+    "screen": "Current project\nChatterfly\n腾讯 Chatterfly 输入法\nArion rewrite pipeline",
+    "pairKind": "user-reported-entity-constructed-context-and-transcript",
+    "checks": [
+      "Chatterfly"
+    ]
+  },
+  {
+    "id": "user-chatterfly-09",
+    "scene": "prompt",
+    "preview": "检查 chatterfly。",
+    "final": "检查 chad fly。",
+    "screen": "Current project\nChatterfly\n腾讯 Chatterfly 输入法\nArion rewrite pipeline",
+    "pairKind": "user-reported-entity-constructed-context-and-transcript-acoustic-variant",
+    "checks": [
+      "chatterfly"
+    ]
+  },
+  {
+    "id": "user-chatterfly-11",
+    "scene": "prompt",
+    "preview": "检查 Chatterfly。",
+    "final": "检查 chatter fly。",
+    "screen": "Current project\nChatterfly\n腾讯 Chatterfly 输入法\nArion rewrite pipeline",
+    "pairKind": "user-reported-entity-constructed-context-and-transcript-acoustic-variant",
+    "checks": [
+      "Chatterfly"
+    ]
+  },
+  {
+    "id": "native-chatterfly-01",
+    "scene": "chat",
+    "preview": "检查一下 Chapter fly， 看看它的流式改写是不是正确",
+    "final": "检查一下 chatter fly，看看它的流式改写是不是正确。",
+    "screen": "软件：Chatterfly\n任务：检查流式改写",
+    "pairKind": "native-asr-vision-synthetic-fixture",
+    "checks": [
+      "Chatterfly"
+    ],
+    "nativeEvidence": {
+      "audio": "benchmarks/reproduction/rewrite-stage-preservation-v1/native/chatterfly/audio/native-chatterfly-01.wav",
+      "audioSha256": "21ad31efe336595252de7e60835436f4c0b961c8dc1f788575e1be19cc30a95a",
+      "asrObservations": "benchmarks/reproduction/rewrite-stage-preservation-v1/native/chatterfly/asr.jsonl",
+      "asrSha256": "71dbf0c8ebfee95efef22c74daccdab513eff855ac36f7f86489fbbac774c6b1",
+      "ocrObservations": "benchmarks/reproduction/rewrite-stage-preservation-v1/native/chatterfly/ocr.jsonl",
+      "ocrSha256": "9def9891d9474481bde191a42d93d67e6f642ebfef48e47681965b432e479eed",
+      "previewSource": "Last observed production streaming ASR DraftReplaced event; not an LLM preview and not proof of closed-segment stability.",
+      "finalSource": "Production coordinator sourceText after whole-utterance offline finalization and rule correction.",
+      "limitations": "Synthetic TTS and rendered image, not live user window capture, natural voice, microphone, LLM trace or insertion evidence."
+    }
+  },
+  {
+    "id": "native-01",
+    "scene": "chat",
+    "preview": "请把会议纪要发给许静， 然后让她确认阿尔法工作室的预算",
+    "final": "请把会议纪要发给许静，然后让她确认阿尔法工作室的预算。",
+    "screen": "联系人：许婧\n公司：阿尔法工作室\n待办：确认预算",
+    "pairKind": "native-asr-vision-synthetic-fixture",
+    "checks": [
+      "许婧",
+      "阿尔法工作室"
+    ],
+    "nativeEvidence": {
+      "audio": "benchmarks/reproduction/rewrite-stage-preservation-v1/native/initial/audio/native-01.wav",
+      "audioSha256": "9a1a11ea24c12631f5691e2c28bb3f67157eb3ef63defdd4180093f49cd69784",
+      "asrObservations": "benchmarks/reproduction/rewrite-stage-preservation-v1/native/initial/asr.jsonl",
+      "asrSha256": "fe26eeefe0f023237a71d65a01cda95b72fa0ce2cfe4e30f29b990a914a18bc0",
+      "ocrObservations": "benchmarks/reproduction/rewrite-stage-preservation-v1/native/initial/ocr.jsonl",
+      "ocrSha256": "c36ee63a2b1f15a178a9a6066ca73a149e6a2ad84657e698ca050dd8f1f7c987",
+      "previewSource": "Last observed production streaming ASR DraftReplaced event; not an LLM preview and not proof of closed-segment stability.",
+      "finalSource": "Production coordinator sourceText after whole-utterance offline finalization and rule correction.",
+      "limitations": "Synthetic TTS and rendered image, not live user window capture, natural voice, microphone, LLM trace or insertion evidence."
+    }
+  },
+  {
+    "id": "control-04-literal-other-spelling",
+    "scene": "prompt",
+    "preview": "把字符串“chad fly”写进测试。",
+    "final": "把字符串“chad fly”写进测试，不要替换字符串里的字符。",
+    "screen": "软件名：Chatterfly",
+    "pairKind": "constructed-held-out-generalization-control",
+    "expectation": "preserve",
+    "checks": [
+      "chad fly"
+    ],
+    "evaluatorOnly": true,
+    "excludes": [
+      "“Chatterfly”"
+    ],
+    "expectationNote": "Quoted test literal is intentional and is not a misspelled brand."
+  },
+  {
+    "id": "control-07-repeated-name",
+    "scene": "prompt",
+    "preview": "为 Moonreader 添加日志，再启动 Moonreader。",
+    "final": "为 Moonreader 添加日志，再启动 Moonreader，最后关闭 Moonreader。",
+    "screen": "应用：Moonreader",
+    "pairKind": "constructed-held-out-generalization-control",
+    "expectation": "preserve",
+    "checks": [
+      "Moonreader"
+    ],
+    "evaluatorOnly": true,
+    "phaseChecks": {
+      "preview": {
+        "counts": {
+          "Moonreader": 2
+        }
+      },
+      "final": {
+        "counts": {
+          "Moonreader": 3
+        }
+      }
+    },
+    "expectationNote": "Preserve every explicit occurrence; singular presence alone is insufficient."
+  },
+  {
+    "id": "control-15-numeric-list",
+    "scene": "prompt",
+    "preview": "给 Voiceleaf 留两项任务，第一项把超时设成 350 毫秒。",
+    "final": "给 Voiceleaf 留两项任务，第一项把超时设成 350 毫秒，第二项重试 2 次，不要加第三项。",
+    "screen": "Voiceleaf\n默认超时：900 毫秒",
+    "pairKind": "constructed-held-out-generalization-control",
+    "expectation": "preserve",
+    "checks": [
+      "Voiceleaf",
+      "350"
+    ],
+    "evaluatorOnly": true,
+    "phaseChecks": {
+      "preview": {
+        "contains": [
+          "350"
+        ]
+      },
+      "final": {
+        "contains": [
+          "350",
+          "2",
+          "不要",
+          "第三项"
+        ],
+        "excludes": [
+          "900"
+        ]
+      }
+    },
+    "reviewRequired": true
+  }
+]

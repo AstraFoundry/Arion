@@ -603,7 +603,7 @@
           "sizeBytes": 1280835840
         }
       },
-      "prompt": "selector-screen-v1-baseline+work-scope-v4",
+      "prompt": "selector-contextual-v5+natural-layout-v3",
       "quantization": "Q4_K_M",
       "conversion": "Community GGUF from pinned Qwen3.5-2B source; actual 1,881,825,088 parameters; source/export numerical parity not established.",
       "evaluations": []

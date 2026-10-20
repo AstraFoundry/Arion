@@ -3,6 +3,7 @@ package application
 import (
 	"context"
 	"errors"
+	"slices"
 	"time"
 
 	"arion.local/core/contracts"
@@ -80,8 +81,58 @@ type liveState struct {
 	polished    string
 	polishedFor string
 	previews    int
+	completed   *completedPreview
 	// cancelPreview stops the running preview when newer text arrives.
 	cancelPreview context.CancelFunc
+}
+
+// completedPreview retains the raw proposal, before display-only ending alignment.
+// Live and final inference use the same rewrite policy; Live changes only how
+// the coordinator displays the completed proposal while capture continues.
+type completedPreview struct {
+	request ports.RewriteRequest
+	result  ports.RewriteResult
+}
+
+func snapshotRewriteRequest(request ports.RewriteRequest) ports.RewriteRequest {
+	request.Terms = slices.Clone(request.Terms)
+	request.Context.History = slices.Clone(request.Context.History)
+	return request
+}
+
+func sameRewriteRequest(a, b ports.RewriteRequest) bool {
+	return a.Identity == b.Identity && a.SourceRevision == b.SourceRevision &&
+		a.Text == b.Text && a.PreviousText == b.PreviousText && a.Scene == b.Scene && a.Prefill == b.Prefill &&
+		slices.Equal(a.Terms, b.Terms) && a.Context.Screen == b.Context.Screen &&
+		a.Context.Before == b.Context.Before && a.Context.After == b.Context.After &&
+		slices.Equal(a.Context.History, b.Context.History)
+}
+
+// previousStableSource carries only recognized, rule-corrected text from the
+// current session. Identical source adds no spelling alternatives and keeps a
+// completed preview eligible for exact reuse.
+func (c *Coordinator) previousStableSource(r *run, source string) string {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	if c.current != r || c.generation != r.identity.Generation || r.ctx.Err() != nil || r.live == nil || r.live.stable == source {
+		return ""
+	}
+	return r.live.stable
+}
+
+// completedRewrite never reuses another session's result or a proposal whose
+// effective source, scene, approved terms or context changed after preview.
+func (c *Coordinator) completedRewrite(r *run, request ports.RewriteRequest) (ports.RewriteResult, bool) {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	if c.current != r || c.generation != r.identity.Generation || r.ctx.Err() != nil || r.live == nil || r.live.completed == nil {
+		return ports.RewriteResult{}, false
+	}
+	completed := r.live.completed
+	if !sameRewriteRequest(completed.request, request) {
+		return ports.RewriteResult{}, false
+	}
+	return completed.result, true
 }
 
 func (c *Coordinator) newLive(r *run) *liveState {
@@ -251,21 +302,24 @@ func (c *Coordinator) preview(r *run, stable string) {
 	defer cancel()
 	c.mu.Lock()
 	l.cancelPreview = cancel
+	l.completed = nil
 	c.mu.Unlock()
 	// Previews use context once it is read and never wait for it.
 	rc := r.contextFor(0)
 	started := time.Now()
-	result, err := c.deps.Rewriter.Rewrite(ctx, ports.RewriteRequest{Identity: r.identity, Text: stable,
+	request := snapshotRewriteRequest(ports.RewriteRequest{Identity: r.identity, Text: stable,
 		Scene: string(domain.ModelScene(domain.Scene(l.policy.Scene), stable)), Terms: l.policy.terms(stable), Context: rc, Live: true})
+	completedRequest := snapshotRewriteRequest(request)
+	result, err := c.deps.Rewriter.Rewrite(ctx, request)
 	c.diagnostic(r, ports.DiagnosticPreview, started, err)
 	c.mu.Lock()
 	l.cancelPreview = nil
 	c.mu.Unlock()
-	if err != nil {
+	if err != nil || ctx.Err() != nil {
 		return
 	}
 	text := domain.AlignLiveEnding(stable, result.Text)
-	verdict := domain.ValidateRewriteDelivery(domain.RewriteCheck{Source: stable, Candidate: text, Truncated: result.Truncated, Terms: l.policy.terms(stable), Context: rc})
+	verdict := domain.ValidateRewriteDelivery(domain.RewriteCheck{Source: stable, Candidate: text, Truncated: result.Truncated, Terms: completedRequest.Terms, Context: completedRequest.Context})
 	if c.deps.Diagnostics != nil {
 		c.deps.Diagnostics.Observe(ports.Diagnostic{Identity: r.identity, Stage: ports.DiagnosticValidation, Verdict: verdict})
 	}
@@ -273,9 +327,11 @@ func (c *Coordinator) preview(r *run, stable string) {
 		return
 	}
 	c.mu.Lock()
-	if l.stable == stable {
+	if c.current == r && c.generation == r.identity.Generation && r.ctx.Err() == nil && ctx.Err() == nil && l.stable == stable && len(l.pending) == 0 {
 		l.polished, l.polishedFor = text, stable
 		l.previews++
+		result.Cleanup.Spans = slices.Clone(result.Cleanup.Spans)
+		l.completed = &completedPreview{request: completedRequest, result: result}
 	}
 	c.mu.Unlock()
 	c.publishLive(r)
@@ -345,10 +401,16 @@ func (c *Coordinator) rewriteFinal(r *run, source string, policy RewritePolicy) 
 	ctx, cancel := context.WithTimeout(r.ctx, policy.Timeout)
 	defer cancel()
 	rc := r.contextFor(contextWait)
-	started := time.Now()
-	result, err := c.deps.Rewriter.Rewrite(ctx, ports.RewriteRequest{Identity: r.identity, Text: source,
-		Scene: string(domain.ModelScene(domain.Scene(policy.Scene), source)), Terms: policy.terms(source), Context: rc})
-	c.diagnostic(r, ports.DiagnosticRewrite, started, err)
+	previous := c.previousStableSource(r, source)
+	request := snapshotRewriteRequest(ports.RewriteRequest{Identity: r.identity, Text: source, PreviousText: previous,
+		Scene: string(domain.ModelScene(domain.Scene(policy.Scene), source)), Terms: policy.termsForFinal(source, previous), Context: rc})
+	result, reused := c.completedRewrite(r, request)
+	var err error
+	if !reused {
+		started := time.Now()
+		result, err = c.deps.Rewriter.Rewrite(ctx, request)
+		c.diagnostic(r, ports.DiagnosticRewrite, started, err)
+	}
 	switch {
 	case r.ctx.Err() != nil:
 		return "", "", false
@@ -357,7 +419,7 @@ func (c *Coordinator) rewriteFinal(r *run, source string, policy RewritePolicy) 
 	case err != nil:
 		return cleaned, RewriteUnavailable, true
 	}
-	verdict := domain.ValidateRewriteDelivery(domain.RewriteCheck{Source: source, Candidate: result.Text, Truncated: result.Truncated, Terms: policy.terms(source), Context: rc})
+	verdict := domain.ValidateRewriteDelivery(domain.RewriteCheck{Source: source, Candidate: result.Text, Truncated: result.Truncated, Terms: request.Terms, Context: request.Context})
 	if verdict != domain.RewriteAccepted {
 		return cleaned, string(verdict), true
 	}
@@ -424,4 +486,24 @@ func (p RewritePolicy) terms(text string) []string {
 		return p.Terms
 	}
 	return append(append([]string(nil), p.Terms...), recalled...)
+}
+
+// termsForFinal retains only approved vocabulary relevant to either recognized
+// source. Earlier model output and unapproved nouns never become memory terms.
+func (p RewritePolicy) termsForFinal(source, previous string) []string {
+	recalled := p.Vocabulary.Terms(source, domain.MaxRecallTerms)
+	if previous != "" {
+		for _, term := range p.Vocabulary.Terms(previous, domain.MaxRecallTerms) {
+			if len(recalled) == domain.MaxRecallTerms {
+				break
+			}
+			if !slices.Contains(recalled, term) {
+				recalled = append(recalled, term)
+			}
+		}
+	}
+	if len(recalled) == 0 {
+		return p.Terms
+	}
+	return append(slices.Clone(p.Terms), recalled...)
 }

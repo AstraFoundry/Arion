@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "kind": "arion-live-audio",
+  "textCorpus": "corpus.json",
+  "textCorpusSha256": "1eb2277323a4f2acdf75c1e1eccc12b870d578508ba5c91de1bed595ddb298e6",
+  "synthesis": "macOS say (Tingting zh/mixed, Samantha en) rate 175; 1.2s pauses between parts; 0.3s lead, 0.8s trail; 16 kHz mono PCM16",
+  "limitations": "Synthetic TTS speech with inserted pauses; not natural dictation",
+  "samples": [
+    {
+      "id": "native-chatterfly-01",
+      "language": "zh",
+      "voice": "Tingting",
+      "segments": 2,
+      "speech": "检查一下 Chatterfly|看看它的流式改写是不是正确",
+      "audio": {
+        "path": "native-chatterfly-01.wav",
+        "sha256": "21ad31efe336595252de7e60835436f4c0b961c8dc1f788575e1be19cc30a95a",
+        "durationMs": 7080.875
+      }
+    },
+    {
+      "id": "native-chatterfly-02",
+      "language": "zh",
+      "voice": "Tingting",
+      "segments": 2,
+      "speech": "Chatterfly 的流式输入是对的|但是后面的改写又出错了",
+      "audio": {
+        "path": "native-chatterfly-02.wav",
+        "sha256": "74b664e5d1f9d52ef23f80a9de2da641e01595da7c90b654b25126e56f97f755",
+        "durationMs": 7068.375
+      }
+    }
+  ]
+}

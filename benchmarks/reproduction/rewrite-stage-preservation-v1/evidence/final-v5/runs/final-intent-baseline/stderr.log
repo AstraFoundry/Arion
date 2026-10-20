@@ -1,0 +1,3 @@
+# arion.local/desktop/infrastructure/llm/gguf [arion.local/desktop/infrastructure/llm/gguf.test]
+./.workspace/rewrite-stage-preservation/final-intent-baseline/sources/apps/desktop/infrastructure/llm/gguf/ambiguity_test.go:79:23: undefined: forcedAmbiguousSelection
+./.workspace/rewrite-stage-preservation/final-intent-baseline/sources/apps/desktop/infrastructure/llm/gguf/ambiguity_test.go:97:20: undefined: forcedAmbiguousSelection

@@ -12,7 +12,7 @@ import (
 )
 
 // SelectedVersion identifies both independently evaluated stages.
-const SelectedVersion = "selector-screen-v1-baseline+natural-layout-v3"
+const SelectedVersion = "selector-contextual-v5+natural-layout-v3"
 
 //go:embed selection.json
 var selectedSelection []byte

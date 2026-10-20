@@ -1,0 +1,32 @@
+{
+  "status": "started",
+  "command": [
+    "caffeinate",
+    "-i",
+    "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/final-native-v5/cache-extended-on/arion-live-bench",
+    "-manifest",
+    "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/final-native-v5/cache-extended-fixtures/audio/manifest.json",
+    "-corpus",
+    "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/final-native-v5/cache-extended-fixtures/corpus.json",
+    "-models",
+    "/Users/steven/code/Arion/.workspace/models/store",
+    "-bundle",
+    "xasr-160-xasr-final",
+    "-llm-worker",
+    "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/final-native-v5/runtime/arion-llm",
+    "-llm-runtime",
+    "/Applications/Arion.app/Contents/Resources/llm",
+    "-llm-model",
+    "/Users/steven/Library/Application Support/Arion/models/qwen3.5-2b-q4-k-m-metal",
+    "-variant",
+    "final-v5-cache-extended-on",
+    "-out",
+    "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/final-native-v5/cache-extended-on/asr.jsonl",
+    "-segment-finalize"
+  ],
+  "workerSha256": "cf91fab949dfc54c19525f259c1f7550b4f57fc4026881abdff9b2230d1bc85c",
+  "driverSha256": "8fec0f3818a309833f20f9b8f6551f159346a2570241b1d725ed59ba155ed23a",
+  "corpusSha256": "8ec2ef43287a6b90bd1d03a44883f40dfccd11820d467db6035dc3a987df301e",
+  "manifestSha256": "57b8675e92845a77df48ffc3881de5fb241ed0bad891e85e4ea2f22889d52b28",
+  "limitations": "Exposed development controls; no independent quality/generalization or isolated comparative latency claim."
+}

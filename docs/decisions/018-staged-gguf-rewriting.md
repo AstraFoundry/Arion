@@ -36,3 +36,7 @@ The formatter preserves numeric value and precision rather than requiring spoken
 ## Technical spelling follow-up
 
 Natural-layout-v3 permits source-grounded canonical English spellings for established phonetic technical terms in an unambiguous technical context. Keep surrounding Chinese, proper names, literal text and explicit Chinese naming. This changes the formatter policy and script guidance, not the frozen selector or its pronunciation producer. See [scoped native observations](../../benchmarks/reproduction/rewrite-technical-spelling-v1/README.md).
+
+## Preview-to-final spelling follow-up
+
+The stage-preservation investigation reproduced correct LLM previews followed by an incorrect final result on the same synthetic audio: the whole-utterance acoustic finalizer changed the source spelling and relevant memory disappeared. The selected source pipeline adds exact-letter compound nominations, independent-context-confirmed earlier-recognition nominations, bounded approved-memory continuity and exact-request preview reuse. Selector instructions and natural-layout-v3 generation policy remain unchanged. Earlier recognition is not generated model output or a new persistent memory source. A fixed-gap formatter trial was rejected after actual duplication/protocol failures; no hard entity lock or competitor-equivalent server policy is claimed. See [protocol and evidence](../../benchmarks/reproduction/rewrite-stage-preservation-v1/README.md) and [competitor boundaries](../research/rewrite-stage-preservation.md).

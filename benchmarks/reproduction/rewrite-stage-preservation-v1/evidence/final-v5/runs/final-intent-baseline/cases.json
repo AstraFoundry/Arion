@@ -1,0 +1,218 @@
+[
+  {
+    "id": "final-intent-01",
+    "scene": "prompt",
+    "preview": "请确认 Amberfield。",
+    "final": "请确认 amb field 这个短语的拼写，两个单词保持分开。",
+    "screen": "项目：Amberfield",
+    "checks": [
+      "amb field"
+    ],
+    "expectedCanonical": "amb field",
+    "expectation": "preserve",
+    "evaluatorOnly": true,
+    "reviewRequired": true,
+    "pairKind": "assistant-authored-fresh-development-input-intent-control",
+    "phaseChecks": {
+      "preview": {
+        "contains": [
+          "Amberfield"
+        ]
+      },
+      "final": {
+        "contains": [
+          "amb field"
+        ]
+      }
+    }
+  },
+  {
+    "id": "final-intent-02",
+    "scene": "prompt",
+    "preview": "请确认 Amberfield。",
+    "final": "请确认 amb field 的启动日志，这里仍指前面的项目。",
+    "screen": "项目：Amberfield",
+    "checks": [
+      "Amberfield"
+    ],
+    "expectedCanonical": "Amberfield",
+    "expectation": "correction",
+    "evaluatorOnly": true,
+    "reviewRequired": true,
+    "pairKind": "assistant-authored-fresh-development-input-intent-control",
+    "phaseChecks": {
+      "preview": {
+        "contains": [
+          "Amberfield"
+        ]
+      },
+      "final": {
+        "contains": [
+          "Amberfield"
+        ]
+      }
+    }
+  },
+  {
+    "id": "final-intent-03",
+    "scene": "prompt",
+    "preview": "Inspect Cedarbridge.",
+    "final": "Inspect ced bridge as an intentional phrase and preserve its internal space.",
+    "screen": "Product: Cedarbridge",
+    "checks": [
+      "ced bridge"
+    ],
+    "expectedCanonical": "ced bridge",
+    "expectation": "preserve",
+    "evaluatorOnly": true,
+    "reviewRequired": true,
+    "pairKind": "assistant-authored-fresh-development-input-intent-control",
+    "phaseChecks": {
+      "preview": {
+        "contains": [
+          "Cedarbridge"
+        ]
+      },
+      "final": {
+        "contains": [
+          "ced bridge"
+        ]
+      }
+    }
+  },
+  {
+    "id": "final-intent-04",
+    "scene": "prompt",
+    "preview": "Inspect Cedarbridge.",
+    "final": "Inspect ced bridge and export logs from the same application as before.",
+    "screen": "Product: Cedarbridge",
+    "checks": [
+      "Cedarbridge"
+    ],
+    "expectedCanonical": "Cedarbridge",
+    "expectation": "correction",
+    "evaluatorOnly": true,
+    "reviewRequired": true,
+    "pairKind": "assistant-authored-fresh-development-input-intent-control",
+    "phaseChecks": {
+      "preview": {
+        "contains": [
+          "Cedarbridge"
+        ]
+      },
+      "final": {
+        "contains": [
+          "Cedarbridge"
+        ]
+      }
+    }
+  },
+  {
+    "id": "final-intent-05",
+    "scene": "prompt",
+    "preview": "请确认 Maplepath。",
+    "final": "请确认 map path，刚才的识别错了，以这句话为准。",
+    "screen": "项目：Maplepath",
+    "checks": [
+      "map path"
+    ],
+    "expectedCanonical": "map path",
+    "expectation": "preserve",
+    "evaluatorOnly": true,
+    "reviewRequired": true,
+    "pairKind": "assistant-authored-fresh-development-input-intent-control",
+    "phaseChecks": {
+      "preview": {
+        "contains": [
+          "Maplepath"
+        ]
+      },
+      "final": {
+        "contains": [
+          "map path"
+        ]
+      }
+    }
+  },
+  {
+    "id": "final-intent-06",
+    "scene": "prompt",
+    "preview": "请确认 Maplepath。",
+    "final": "请确认 map path 的日志。另一个测试要保留“alpha beta”这个字面量。",
+    "screen": "项目：Maplepath",
+    "checks": [
+      "Maplepath"
+    ],
+    "expectedCanonical": "Maplepath",
+    "expectation": "correction",
+    "evaluatorOnly": true,
+    "reviewRequired": true,
+    "pairKind": "assistant-authored-fresh-development-input-intent-control",
+    "phaseChecks": {
+      "preview": {
+        "contains": [
+          "Maplepath"
+        ]
+      },
+      "final": {
+        "contains": [
+          "Maplepath"
+        ]
+      }
+    }
+  },
+  {
+    "id": "final-intent-07",
+    "scene": "prompt",
+    "preview": "Inspect Oceanframe.",
+    "final": "Inspect oce frame; the earlier transcript was mistaken about the product.",
+    "screen": "Product: Oceanframe",
+    "checks": [
+      "oce frame"
+    ],
+    "expectedCanonical": "oce frame",
+    "expectation": "preserve",
+    "evaluatorOnly": true,
+    "reviewRequired": true,
+    "pairKind": "assistant-authored-fresh-development-input-intent-control",
+    "phaseChecks": {
+      "preview": {
+        "contains": [
+          "Oceanframe"
+        ]
+      },
+      "final": {
+        "contains": [
+          "oce frame"
+        ]
+      }
+    }
+  },
+  {
+    "id": "final-intent-08",
+    "scene": "prompt",
+    "preview": "Inspect Oceanframe.",
+    "final": "Inspect oce frame and keep the timeout at 250 milliseconds; this is the same product.",
+    "screen": "Product: Oceanframe",
+    "checks": [
+      "Oceanframe"
+    ],
+    "expectedCanonical": "Oceanframe",
+    "expectation": "correction",
+    "evaluatorOnly": true,
+    "reviewRequired": true,
+    "pairKind": "assistant-authored-fresh-development-input-intent-control",
+    "phaseChecks": {
+      "preview": {
+        "contains": [
+          "Oceanframe"
+        ]
+      },
+      "final": {
+        "contains": [
+          "Oceanframe"
+        ]
+      }
+    }
+  }
+]

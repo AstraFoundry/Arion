@@ -1,0 +1,14 @@
+{
+  "schema": "rewrite-stage-archive-v1",
+  "files": {
+    "index.html": "595abf0ed4b77ed70a0e130a7b0c8723cdc0117c9e08d84b5d9c9613d0d8d9cc",
+    "report.json": "fb022e6feea866e619c9547813e62ee1094eb7156ba155718012f6432040123e",
+    "sources/baseline.jsonl": "0d101b8468cacfa42286c356aa5b1847000215afd201878b16fb1d12a96aa771",
+    "sources/candidate.jsonl": "8eea770cf04e3d06a9106c84a112b36948103d4b11079a8872fa95d77dc10b34",
+    "sources/cases.json": "85d7a1d901c987a90710e8847f525fb7910cde6b72147625999a45285e15aa8e",
+    "sources/manual-review.json": "80e0685875f5938ead5526eac490b2f536030744914ca6e4d1d31244a71cebe8",
+    "sources/no-prior.jsonl": "ccbf54ede985436d0d31e9a673dbad134679f3498510f0d526f4987aae6fabb1",
+    "sources/no-screen.jsonl": "a69d58f5c4531bc3885c819e95d73fc7717d04a5013a6592023035e62f84d040",
+    "sources/report.py": "c338aac6fbef784c640d062bca0101a6c18b0f24f3598775a6156c84def0c753"
+  }
+}

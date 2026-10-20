@@ -1,0 +1,18 @@
+
+> arion-monorepo@0.0.0 rewrite:stages:test /Users/steven/code/Arion
+> node scripts/rewrite-stage-command.mjs test
+
+test_archive_verification_rejects_tamper (test_report.ReporterTests) ... ok
+test_failure_stays_in_denominator_without_formatter_damage_claim (test_report.ReporterTests) ... ok
+test_gap_formatter_is_not_selector_and_fixed_terms_are_stitched (test_report.ReporterTests) ... ok
+test_incomplete_duplicate_and_missing_phases_rejected (test_report.ReporterTests) ... ok
+test_proxy_does_not_create_semantic_pass (test_report.ReporterTests) ... ok
+test_quantiles_use_nearest_rank (test_report.ReporterTests) ... ok
+test_raw_formatter_damage_and_delivered_repair_are_distinct (test_report.ReporterTests) ... ok
+test_review_binds_exact_arm_and_observation_bytes (test_report.ReporterTests) ... ok
+test_review_requires_explicit_rationale (test_report.ReporterTests) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.024s
+
+OK

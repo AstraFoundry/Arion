@@ -1,0 +1,43 @@
+import importlib.util,json
+from pathlib import Path
+spec=importlib.util.spec_from_file_location('r','benchmarks/reproduction/rewrite-stage-preservation-v1/report.py');r=importlib.util.module_from_spec(spec);spec.loader.exec_module(r)
+p=Path('.workspace/rewrite-stage-preservation/matrix-1');cases=Path('benchmarks/reproduction/rewrite-stage-preservation-v1/native-pairs.json');ids=[c['id'] for c in r.load_json(cases)];arms={a:r.load_arm(p/f'native-pairs-{a}'/'observations.jsonl',ids) for a in ['baseline','candidate']};review=r.review_template(cases,arms)
+review['reviewer']={'kind':'separate-assistant-output-review','independence':'Separate task from production implementation. Inspected all 48 actual native selector/formatter observations. Not independent human/blind evaluation. V1 candidate remains globally rejected due validation regressions.','inputOrigin':'Actual X-ASR draft and offline finalizer text plus actual Vision OCR over synthetic TTS/rendered images. Preview input is last recorded ASR DraftReplaced, not an observed LLM preview event. This paired stage test is distinct from Coordinator live/stop reproduction and does not establish microphone/window/insertion behavior.','rubric':'Intended synthetic fixture names, actors, prohibitions and actions; assess actual native raw model stage outputs. Brand case-only variation can preserve semantic identity while exact-canonical-spelling proxies still fail. Technical identifier spelling is separately required.','referenceSources':{str(f):r.digest(f.read_bytes()) for f in [Path('benchmarks/reproduction/rewrite-stage-preservation-v1/native/initial/corpus.json'),Path('benchmarks/reproduction/rewrite-stage-preservation-v1/native/chatterfly/corpus.json')]}}
+for x in review['records']:
+ a,i,phase=x['arm'],x['id'],x['phase'];final=phase=='final';x.update(fidelity='correct',entityCorrect=True,firstObservedDamage='none-observed')
+ if i=='native-01':n='Selector e0=replace correctly repairs actual ASR 许静 to fixture/OCR 许婧. Formatter preserves the one recipient, 阿尔法工作室 company, document-sending action and budget confirmation. Punctuation/spacing edits are faithful.'
+ elif i=='native-02':n='Selector e0=replace correctly repairs actual ASR 程宇南 to fixture/OCR 程语楠. Formatter preserves recipient, 德尔塔项目, version handoff, and release-notes check.'
+ elif i=='native-03':n='Selector e0=replace correctly repairs actual ASR 张威 to fixture/OCR 张巍. Formatter retains report-sending action, tomorrow timing, and 贝塔科技 company; no actor changes.'
+ elif i=='native-04':n='Already correct 优图 and 项目阿尔法 remain exact, and prohibition on renaming the project survives. Formatter changes only spacing/punctuation.'
+ elif i=='native-05':n='Selector e0/e1=replace correctly repairs both 许静→许婧 and 程宇楠→程语楠. Formatter preserves distinct contact roles, 德尔塔项目 documents and 阿尔法工作室 recipient.'
+ elif i=='native-06':
+  x['fidelity']='incorrect'
+  if a=='baseline':
+   x['entityCorrect']=False;x['firstObservedDamage']='unrecovered-asr-identifier' if not final else 'formatter';n='Baseline leaves intended code symbol as spaced get user profile rather than screen-supported getUserProfile. '
+   n+=('Preview changes malformed ASR 之 into a comma and retains the positive 补充注释 action, matching intended synthetic command despite absent 只 restriction. It is not a successful exact identifier repair.' if not final else 'Final formatter additionally invents 不要补充注释, reversing the intended positive add-comments command. Source has 不要改动函数名之补充注释, not a second prohibition. First action-sign mutation is formatter.')
+  else:
+   x['firstObservedDamage']='formatter';n='Selector correctly produces screen-supported getUserProfile and formatter retains its exact spelling. Formatter then invents a second prohibition 不要补充注释, reversing synthetic speech which asks to add comments while not renaming the function. '
+   n+=('This negative-action error is new relative to the baseline preview, which preserves positive 补充注释, even though baseline preview lacks exact identifier repair. Counting only entity recovery or whole-phase error counts would hide this new semantic harm.' if not final else 'Baseline final has the same negative-action error, but that existing failure does not make this result semantically correct.')
+  x['semanticActionCorrect']=bool(a=='baseline' and not final)
+ elif i=='native-07':
+  x.update(fidelity='incorrect',entityCorrect=False,firstObservedDamage='unrecovered-asr-reviewer-name');n='Actual ASR uses 张威 for intended reviewer 张巍 while separately naming excluded recipient 张伟. Selector e0=keep and formatter preserve the unresolved wrong reviewer spelling. Prohibition against sending to 张伟 and confirmation-before-sending sequence survive; no formatter conflation occurs. The screen role supports intended 张巍, but the spelling-selection protocol does not achieve repair.'
+ elif i=='native-08':
+  if final:n='Selector correctly repairs 程宇楠→程语楠. Offline finalizer has already recovered 优图 and full 费用; formatter preserves them, 阿尔法工作室 and the do-not-submit-yet instruction.'
+  else:x.update(fidelity='incorrect',entityCorrect=False,firstObservedDamage='native-streaming-asr');n='Selector repairs 乘宇楠→程语楠, but source product spelling U 图 remains unresolved instead of intended 优图. The shortened draft tail 费 is still open; this is not evidence of an LLM losing a previously complete stable utterance. Company and no-submit constraint survive. First product-name error is streaming ASR, not formatter.'
+ elif i.startswith('native-chatterfly-'):
+  k=int(i.rsplit('-',1)[1])
+  if k in (1,2) and not final:
+   x.update(fidelity='incorrect',entityCorrect=False,firstObservedDamage='native-streaming-asr');n=('Source Chapter fly' if k==1 else 'Source Chanter fly')+' is already wrong for synthetic spoken/OCR Chatterfly, and output does not restore it. '+('Source 流逝 is independently corrected to 流式, which does not fix the product name. ' if k==2 else '')+'No earlier recognized correct canonical name exists in this first draft; do not infer a prior-memory preservation failure.'
+  elif k in (1,2,3) and a=='baseline':
+   x.update(fidelity='incorrect',entityCorrect=False,firstObservedDamage='native-final-asr' if final else 'native-streaming-asr');n='Baseline retains spaced chatter fly from actual ASR instead of fixture/OCR Chatterfly. Surrounding '+('comparison with 豆包输入法 and no-renaming instruction' if k==3 else 'streaming-rewrite meaning')+' survives; no corrected selector result is observed being damaged by formatter.'
+  elif k in (1,2,3):n='Selector e0=replace correctly repairs actual ASR chatter fly to fixture/OCR Chatterfly. Formatter retains exact name once and preserves '+('豆包输入法 comparison and no-renaming instruction.' if k==3 else 'the streaming-rewrite meaning.')
+  elif k==4 and not final:x.update(fidelity='incorrect',entityCorrect=False,firstObservedDamage='native-streaming-asr');n='Actual streaming source Chapterfly has an extra p versus synthetic spoken/OCR Chatterfly. Formatter preserves that wrong product spelling despite same-window canonical reference; first error is ASR and no repair occurs.'
+  elif k==4:n='Actual final ASR source ChatterFly and output have the same letters as Chatterfly with case-only variation; product identity and instruction to preserve spelling remain semantically faithful. Exact canonical OCR casing is not restored, so an exact-string proxy still fails. This is not a demonstrated semantic name substitution by formatter.';x['exactCanonicalSpelling']=False
+  else:raise ValueError(i)
+ else:raise ValueError(i)
+ x['note']=n
+review_path=p/'native-pairs-review.json';review_path.write_text(json.dumps(review,ensure_ascii=False,indent=2)+'\n')
+summary={'reviewer':'Separate assistant, not independent human/blind evaluation','reviewSha256':r.digest(review_path.read_bytes()),'candidateStatus':'rejected','rejectionReason':'V1 already fails changed-meaning prior control. Native06 preview also introduces an action-negation error after correct identifier repair compared with baseline preview; raw and semantic fields remain visible.','arms':{}}
+for a in arms:
+ rows=[x for x in review['records'] if x['arm']==a];summary['arms'][a]={'phases':len(rows),**{s:sum(x['fidelity']==s for x in rows) for s in ['correct','incorrect','not-assessable']},'entityCorrectPhases':sum(x['entityCorrect'] is True for x in rows),'incorrectRows':[{'id':x['id'],'phase':x['phase'],'firstObservedDamage':x['firstObservedDamage']} for x in rows if x['fidelity']=='incorrect']}
+(p/'native-pairs-semantic-summary.json').write_text(json.dumps(summary,ensure_ascii=False,indent=2)+'\n');print(json.dumps(summary['arms'],ensure_ascii=False))

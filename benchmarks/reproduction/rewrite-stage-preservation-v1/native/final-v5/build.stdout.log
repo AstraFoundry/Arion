@@ -1,0 +1,6 @@
+go build -o /Users/steven/code/Arion/.workspace/rewrite-stage-preservation/final-native-v5/runtime/arion-llm ./apps/desktop/cmd/arion-llm
+go build -o /Users/steven/code/Arion/.workspace/rewrite-stage-preservation/final-native-v5/runtime/arion-ocr ./apps/desktop/cmd/arion-ocr
+go build -o /Users/steven/code/Arion/.workspace/rewrite-stage-preservation/final-native-v5/native-three/arion-live-bench /Users/steven/code/Arion/.workspace/rewrite-stage-preservation/final-native-v5/native-three/main.go
+go build -o /Users/steven/code/Arion/.workspace/rewrite-stage-preservation/final-native-v5/cache-on/arion-live-bench /Users/steven/code/Arion/.workspace/rewrite-stage-preservation/final-native-v5/cache-on/main.go
+go build -overlay /Users/steven/code/Arion/.workspace/rewrite-stage-preservation/final-native-v5/cache-off/overlay.json -o /Users/steven/code/Arion/.workspace/rewrite-stage-preservation/final-native-v5/cache-off/arion-live-bench /Users/steven/code/Arion/.workspace/rewrite-stage-preservation/final-native-v5/cache-off/main.go
+go build -o /Users/steven/code/Arion/.workspace/rewrite-stage-preservation/final-native-v5/regressions/arion-live-bench /Users/steven/code/Arion/.workspace/rewrite-stage-preservation/final-native-v5/regressions/main.go

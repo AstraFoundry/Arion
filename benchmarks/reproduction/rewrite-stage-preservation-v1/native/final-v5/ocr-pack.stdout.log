@@ -1,0 +1,1 @@
+/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/final-native-v5/runtime/arion-ocr -corpus /Users/steven/code/Arion/.workspace/rewrite-stage-preservation/final-native-v5/regressions/numeric-corpus.json -out /Users/steven/code/Arion/.workspace/rewrite-stage-preservation/final-native-v5/regressions/numeric-ocr.jsonl

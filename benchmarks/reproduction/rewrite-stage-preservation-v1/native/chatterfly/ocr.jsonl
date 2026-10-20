@@ -1,0 +1,8 @@
+{"caseId":"native-chatterfly-01","level":"accurate","text":"软件：Chatterfly\n任务：检查流式改写","ocrMs":714.6329879760742}
+{"caseId":"native-chatterfly-01","level":"fast","text":"SAhl*: Chatterfly","ocrMs":48.002004623413086}
+{"caseId":"native-chatterfly-02","level":"accurate","text":"软件：Chatterfly\n问题：流式正确，最终改写错误","ocrMs":170.3319549560547}
+{"caseId":"native-chatterfly-02","level":"fast","text":"SAhl*: Chatterfly","ocrMs":51.36609077453613}
+{"caseId":"native-chatterfly-03","level":"accurate","text":"对比软件：豆包输入法、Chatterfly\n要求：保留软件名称","ocrMs":189.9169683456421}
+{"caseId":"native-chatterfly-03","level":"fast","text":"SYEL*AI*: RÈJ*iJA'È, Chatterfly","ocrMs":57.6709508895874}
+{"caseId":"native-chatterfly-04","level":"accurate","text":"软件名称：Chatterfly\n英文拼写：Chatterfly","ocrMs":270.4991102218628}
+{"caseId":"native-chatterfly-04","level":"fast","text":"Ai*£f: Chatterfly\n*tIX % : Chatterfly","ocrMs":91.51697158813477}

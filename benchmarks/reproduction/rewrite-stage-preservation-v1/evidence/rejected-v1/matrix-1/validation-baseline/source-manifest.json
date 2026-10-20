@@ -1,0 +1,461 @@
+{
+  "files": {
+    "apps/desktop/cmd/arion-llm/main.go": "c41dc2ca458a4e43cf4cff36dfc1db69c40e4a501ddd7efe1f94c05acbf995cc",
+    "apps/desktop/go.mod": "62de8be1d3aecb99e986d32e8ebc001dce88d5b9ce2c069a7a2410245a588092",
+    "apps/desktop/go.sum": "48dada8648d1b6d4163899aa1cfda9c63088bd4f1882b2700d53b6a1197f4c4e",
+    "apps/desktop/infrastructure/llm/client/client.go": "d76fd3d79a67361c1b61e3566c84dbe4e2d78016eea577e643e95bdda9b3f32f",
+    "apps/desktop/infrastructure/llm/client/client_test.go": "1aa392064712547cea1148f67eb4c80d5dd1674bcdfbc8854afb0e1c3c0229a5",
+    "apps/desktop/infrastructure/llm/engine/engine.go": "d81b90b71f26e5432e7359c8f0dd001b977d2ddb27633c2547e25be69d9539a6",
+    "apps/desktop/infrastructure/llm/engine/engine_test.go": "cfdfa26cc6c31bf6ab4c0a916b2ee4c06cb82a64eeda27dede763863b17f26d3",
+    "apps/desktop/infrastructure/llm/engine/parity_test.go": "fac2a2c95c39b131e547561a8788573c8e0c26b00accdfb1f92f435f6d0dfd1d",
+    "apps/desktop/infrastructure/llm/gguf/engine.go": "6fc8b2630188dc289530d2aea04365fa13852be03704db4241a72025b4a3068b",
+    "apps/desktop/infrastructure/llm/gguf/engine_test.go": "651163a86bf93bc9cf525d9755534c22517f1dca5d381f757eb6029dbf3cef78",
+    "apps/desktop/infrastructure/llm/gguf/native_test.go": "ee1c8a188a37995e9b47613a453ad722ed3d00ea54744acbb7d10815cbb42c8f",
+    "apps/desktop/infrastructure/llm/gguf/numeric_filler_native_test.go": "1d8230bb1cff68e848437a757563c4363801e06254b5087cd0328c7860eb1dac",
+    "apps/desktop/infrastructure/llm/gguf/stage_native_test.go": "a842af1f91f44f722b98c6a4387ddbd88340236c33fbd32c12322799c2f591f0",
+    "apps/desktop/infrastructure/llm/prompt/context.json": "1b2c3a694d72963412db167bd952a6149d4d3ac9548fd64c6022beda7cb95745",
+    "apps/desktop/infrastructure/llm/prompt/format.json": "dffc153d9d9f99593a6f686b1ed6f374ce7c5cd5132d8de6b6b4cb80675d4a6f",
+    "apps/desktop/infrastructure/llm/prompt/live.json": "31ac54390ad29c7ac12c1a6c15d4ecb86ea08b71960070b5e9de73358e72f837",
+    "apps/desktop/infrastructure/llm/prompt/prompt.go": "d3cfd55c37d45fae2b942fc9ee2b93331cf990ee01ce37e695ac1298b8c33d93",
+    "apps/desktop/infrastructure/llm/prompt/prompt_test.go": "9bd13d51dffb033cd2bbc3fe0e0a2ae1d18682f50eedc0e15d1dc1e87613f05b",
+    "apps/desktop/infrastructure/llm/prompt/selected.go": "d9d6e1e7f93410a624b5dbec24c828c3cdccf8b8b7f345bc749b3d528d3eb4a7",
+    "apps/desktop/infrastructure/llm/prompt/selected_test.go": "25eba19e3aa52978df2d088cf0095338a4978bf7e59ccb801075d2fe86ae9146",
+    "apps/desktop/infrastructure/llm/prompt/selection.json": "992e89acfa462c54fa893e8319b6e031fa01dcb454ab166651abc834d2c4c35a",
+    "apps/desktop/infrastructure/llm/protocol/protocol.go": "417692d9a1812686e7b5e2533f4301696b17a714e8b6f43f3f271f6f27b3c924",
+    "apps/desktop/infrastructure/llm/spelling/data/cmudict-pronunciation-v1-cmudict.dict": "81917843c7f44ce2b094ac63873c2c7a4cf802040792c455ba3ca406891c3d22",
+    "apps/desktop/infrastructure/llm/spelling/data/cmudict-pronunciation-v1-provenance.json": "2ea5124083d7bc2c6f91bb61f0b911b9f12bfd68425b7b86d1a55e72df00530d",
+    "apps/desktop/infrastructure/llm/spelling/data/pypinyin-character-readings-v1-provenance.json": "90a6ad8126bd24d74fc03a37bb8fbb050c375aff5cc57b0047114bf9509969b0",
+    "apps/desktop/infrastructure/llm/spelling/data/pypinyin-character-readings-v1-readings.json": "be7efc407cd64897abd2259ed98a18022e50ded1a144d6df8420f8f3b3ccdac7",
+    "apps/desktop/infrastructure/llm/spelling/lexicon.go": "ae4f6dfb25de1efd5b898629b18c634aaffe022a96ccef12f97291a7f25cb339",
+    "apps/desktop/infrastructure/llm/spelling/lexicon_test.go": "d8148374b8e1ced10e0c101c3addeadcd23dc21b04e572cdc1d114d191895625",
+    "apps/desktop/ui/shared/copy/copy.go": "118be8e169b07d3570bbde7703768f72bee9e27d52855c8f0eb8ca0902839c3e",
+    "apps/desktop/ui/shared/copy/locales/en.json": "f9a81442361e409b0f2e186a76e95368a3e6977e76f3995901e37dba2676fd05",
+    "apps/desktop/ui/shared/copy/locales/zh-CN.json": "9d306a69e681914ab80df1cb432e784a93991166823876672fa83fe2fa6f2396",
+    "go.work": "c3ee3139ff7a0e6ddfb79127aea9e7e8afec61c091d115e8d092402d13dbca59",
+    "models/catalog.json": "267aa430c5692dcdef3e361b9739c00eccce4de9f849745ffcf92bd00a146602",
+    "models/go.mod": "7a319e69d12204a2d97c649f1683b492969a76360568a021edf75b2544355685",
+    "packages/core/application/context.go": "400331b4226162dacae1c4efca5387cb471f84ae009567dbdf52a7e92bd28d3d",
+    "packages/core/application/diagnostics.go": "8ca206530d9e9e44e567bdc424c07253755fc16b94390ce638b0c5d27caec5c1",
+    "packages/core/application/diagnostics_test.go": "6b8e018169e82c2fce4fec1d96ee6dacbf93ccd2ffa09cdfafb5a38611bfdae7",
+    "packages/core/application/dictation.go": "65301cea3373be810808f399fe1791b26b06233a8c669e32931eb449e91b8670",
+    "packages/core/application/dictation_test.go": "9a8f7a884f3a04b5978b0bff83ca9eb103b11ac62fc83d8a78652d542470523c",
+    "packages/core/application/gain.go": "32ade64dfad6a750800085785d561e8e552627716379f1499a49549d4f81a38c",
+    "packages/core/application/hold.go": "4d7624aff25e93e5a4f52ccabf203beb376e908feba0fee1bed2c8b3072def6d",
+    "packages/core/application/hold_test.go": "fa657ec70c2a16f090c78b0d062081e7817dd559d761481da7ba2d633ef8019f",
+    "packages/core/application/keyboard.go": "3f013e688eba7c83cabd1e267317a33ffe6f83f55798c38b531db63a913134c4",
+    "packages/core/application/learning.go": "064d47057bdaba2db5478bfea001930c36d161a749f3b156eb15a831f5e224d7",
+    "packages/core/application/learning_test.go": "9a7753add6d14a16352e472190a5432b874ad5d1a0b0cc6de68d2d88d73f8fd7",
+    "packages/core/application/live.go": "4b4c2711f5d78efc4bea418cd2e9a10903b8995c193532ca74698b5ca9c05a9c",
+    "packages/core/application/live_reuse_test.go": "4f0adb03447fc3bb773e1d20f9ba2bc09223e277ddd93cd25400a4f7bee858e5",
+    "packages/core/application/live_test.go": "ac5b74424e26f2467652ee356df30d4eb00d067756e0f9c32689f3395038dffe",
+    "packages/core/application/preferences.go": "53bcef6c62a1bf77eb3740942a4ffd7326a26a72dd588cc20007b2a5e6928bc0",
+    "packages/core/application/preferences_test.go": "e19292d393ce3db6a600b2b74c3daacd7a78e6e676d9740f73d57a47d69d7919",
+    "packages/core/application/usage.go": "01e92b4a0c6bbfe0b1702c6cac94c76a574e361a75c0c7f4d4a69a4dbeeec12a",
+    "packages/core/application/usage_test.go": "ec4e579f8c84c92df16daa88ddda1c97c66cf9fa799fb41487639c67d0f13cbd",
+    "packages/core/domain/candidates.go": "73949da5f6e51de1c1e71a3d22cc4cdf6f04f56b9cd1bd5b0ceb3f7e7269208f",
+    "packages/core/domain/context.go": "a8c6b7cb21ae4dba4f5e918c312fbbdddd614b29d894488d1bb8ec3878777260",
+    "packages/core/domain/context_test.go": "6d23dbd9ed4cf9b4cf5a53da98f58694759d766f9fbf0a3646073fb914a773b3",
+    "packages/core/domain/correction.go": "36408154dea4b21714981a6b83c539a7ad3a7f8abbea49134c4048556275f6b8",
+    "packages/core/domain/correction_test.go": "99f0871a34396f238cac1efb701fe346ce6243035c3f42a669875b869a2096fa",
+    "packages/core/domain/dictation.go": "d6e84ba3423891d2d91125e0e7ac963ab0f62f343dcc0e8e5129101d6c9a5e96",
+    "packages/core/domain/dictation_test.go": "f403a06393d58c795815ea7f88c7c21c9a730b38c4452504f1835c35830cb4b1",
+    "packages/core/domain/errors.go": "20b96a19f62185f062e97c91226893233f2001fdc1cb5e35cf9586ae6b81aa53",
+    "packages/core/domain/errors_test.go": "f437986e76f0a6ba9f9857b570a16fc0e4077a4d8d3ec3307346183142e9f43c",
+    "packages/core/domain/invariants_test.go": "8244b5812a235a15564c4061dfaa818f08af375240332c8b6f91cf4500bafa2b",
+    "packages/core/domain/learning.go": "684ae926095bef34f1f9bb3766d464aeff97c38fb80db347bdf5713a7f62da96",
+    "packages/core/domain/learning_test.go": "b13a9aa22a6f61d3ac19ed536732f9c4dba0a255301db95eaa9438ff8c20ce12",
+    "packages/core/domain/learning_words.go": "743f7f7abf4b7b15198d049b59109c380ddd1efc3104bea5aaa6715ca68ae87e",
+    "packages/core/domain/memory.go": "2c4cf5ebf22b1bad9539dfcd204e1ff66cda4c3c1aa34f414d990f4b9321faa5",
+    "packages/core/domain/modelselect.go": "8d6c2dc213e3c271e0d4b9c5217ea0c0aea37e662b186c8d82e06d5218e60c66",
+    "packages/core/domain/ports/diagnostics.go": "e88202dc8dafba11c2b373b44556ba4e4431b30eac4c2b2340c4367f1c512f4c",
+    "packages/core/domain/ports/ports.go": "9dcc7aa8b3e8c0300d1d655e92874ef27100ab5b6fa09216a391d80a54d837fd",
+    "packages/core/domain/quotes.go": "fec70b2e226e7d5f3a306f32790b584bc8b48ba822cbab8341f8e3dbe05d6e11",
+    "packages/core/domain/rewrite.go": "44dd52c7b35c7f5002a1191d5942a720d2745b6c5d2d671ecde1cf091d40fa55",
+    "packages/core/domain/rewrite_delivery_test.go": "a734e8f6c7847f2f67d1ab711628b3afb666392116ae3f03aa77a12a8981753f",
+    "packages/core/domain/rewrite_fidelity.go": "bb08303a1043f74605f61b697e4f56047fe1950d1f080723ade469215bf1ea55",
+    "packages/core/domain/rewrite_test.go": "64d6b4b07a7c82cde0c31023ef34e2ce95048f4570d6b26cf5971ca91f5a23da",
+    "packages/core/domain/scene.go": "abe77a316d112d43752e9d345a74978341c12834024c667103d8992c1a027a7d",
+    "packages/core/domain/scene_test.go": "14c817f528f1cc3aee0b2cd3d02c4ff57e2398d158e250a79f22af201b2020ba",
+    "packages/core/domain/session.go": "5320b7082d92da0c4f09b4d182dfe3e22ecd26c4cb8dbaaff56bc5e35245b167",
+    "packages/core/domain/speech_cleanup.go": "20a199ce25b45ed826182b3e6844a5788f316d6e56bd3cdb6ba8268bcb5e0313",
+    "packages/core/domain/speech_cleanup_test.go": "60d92ba18f968019cc9b898b414ceb9441f5516d97ef8517535c29c19060305f",
+    "packages/core/domain/spelling.go": "816f0be0ab3b62afa685a94bae1cfa022ca1307928dc238172658296666a1e55",
+    "packages/core/domain/spelling_compound_test.go": "555d0b3e0cdb50a10a8b6a74043b2394631dcaef861e6a97d1e742f9094f02a4",
+    "packages/core/domain/terms.go": "2799ef865d831728e8320a7c3c13c619165f56640a4f23034905cfb6dba1dd20",
+    "packages/core/domain/terms_test.go": "3b271c64621e1804dfb3147f67c8d4d42f662fa014d8ac7f5ca8b8493a52384f",
+    "packages/core/domain/usage.go": "f2ebb6756acca1433cea17a630255015f0e15f316a432583b8d41469ac3243a4",
+    "packages/core/domain/usage_test.go": "444dad4e35de7a0ee282e93f852d0752c81b41a663c01a374b7d152f66d5379b",
+    "packages/core/domain/vocabulary.go": "6e2fe3f6263b48e83ee98f321dd6e2e49b02daed8fbb89a1b2bd1e9a07bd0fea",
+    "packages/core/go.mod": "3e97a53127f313e259f8613754d512d2d7c970af0a118d435716ad3cdfc5a86f",
+    "scripts/build-input-method.mjs": "f939c3399e0b55913fc4641d4f3f406b23f68b1efba2127cce16091cdd360098",
+    "scripts/rewrite-stage-command.mjs": "b6303050377edbe9c1df8d8d65625f4b84ab1adb08c1c12e32e02b1415921de5",
+    "scripts/test-keyboard-input.mjs": "476404b2e2dbdda5021540f56b4891f6f2c2f711056b52c5ff2b5d14acd6c01d"
+  },
+  "overlays": {
+    "/Users/steven/code/Arion/apps/desktop/cmd/arion-llm/main.go": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/apps/desktop/cmd/arion-llm/main.go",
+      "sha256": "c41dc2ca458a4e43cf4cff36dfc1db69c40e4a501ddd7efe1f94c05acbf995cc"
+    },
+    "/Users/steven/code/Arion/apps/desktop/go.mod": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/apps/desktop/go.mod",
+      "sha256": "62de8be1d3aecb99e986d32e8ebc001dce88d5b9ce2c069a7a2410245a588092"
+    },
+    "/Users/steven/code/Arion/apps/desktop/go.sum": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/apps/desktop/go.sum",
+      "sha256": "48dada8648d1b6d4163899aa1cfda9c63088bd4f1882b2700d53b6a1197f4c4e"
+    },
+    "/Users/steven/code/Arion/apps/desktop/infrastructure/llm/client/client.go": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/apps/desktop/infrastructure/llm/client/client.go",
+      "sha256": "d76fd3d79a67361c1b61e3566c84dbe4e2d78016eea577e643e95bdda9b3f32f"
+    },
+    "/Users/steven/code/Arion/apps/desktop/infrastructure/llm/client/client_test.go": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/apps/desktop/infrastructure/llm/client/client_test.go",
+      "sha256": "1aa392064712547cea1148f67eb4c80d5dd1674bcdfbc8854afb0e1c3c0229a5"
+    },
+    "/Users/steven/code/Arion/apps/desktop/infrastructure/llm/engine/engine.go": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/apps/desktop/infrastructure/llm/engine/engine.go",
+      "sha256": "d81b90b71f26e5432e7359c8f0dd001b977d2ddb27633c2547e25be69d9539a6"
+    },
+    "/Users/steven/code/Arion/apps/desktop/infrastructure/llm/engine/engine_test.go": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/apps/desktop/infrastructure/llm/engine/engine_test.go",
+      "sha256": "cfdfa26cc6c31bf6ab4c0a916b2ee4c06cb82a64eeda27dede763863b17f26d3"
+    },
+    "/Users/steven/code/Arion/apps/desktop/infrastructure/llm/engine/parity_test.go": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/apps/desktop/infrastructure/llm/engine/parity_test.go",
+      "sha256": "fac2a2c95c39b131e547561a8788573c8e0c26b00accdfb1f92f435f6d0dfd1d"
+    },
+    "/Users/steven/code/Arion/apps/desktop/infrastructure/llm/gguf/engine.go": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/baseline-overlay/apps/desktop/infrastructure/llm/gguf/engine.go",
+      "sha256": "f724c4469ae7b5c1e5da36ed973edb6a512d4c82cf5162a5fd656fe12884d110"
+    },
+    "/Users/steven/code/Arion/apps/desktop/infrastructure/llm/gguf/engine_test.go": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/apps/desktop/infrastructure/llm/gguf/engine_test.go",
+      "sha256": "651163a86bf93bc9cf525d9755534c22517f1dca5d381f757eb6029dbf3cef78"
+    },
+    "/Users/steven/code/Arion/apps/desktop/infrastructure/llm/gguf/native_test.go": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/apps/desktop/infrastructure/llm/gguf/native_test.go",
+      "sha256": "ee1c8a188a37995e9b47613a453ad722ed3d00ea54744acbb7d10815cbb42c8f"
+    },
+    "/Users/steven/code/Arion/apps/desktop/infrastructure/llm/gguf/numeric_filler_native_test.go": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/apps/desktop/infrastructure/llm/gguf/numeric_filler_native_test.go",
+      "sha256": "1d8230bb1cff68e848437a757563c4363801e06254b5087cd0328c7860eb1dac"
+    },
+    "/Users/steven/code/Arion/apps/desktop/infrastructure/llm/gguf/stage_native_test.go": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/apps/desktop/infrastructure/llm/gguf/stage_native_test.go",
+      "sha256": "a842af1f91f44f722b98c6a4387ddbd88340236c33fbd32c12322799c2f591f0"
+    },
+    "/Users/steven/code/Arion/apps/desktop/infrastructure/llm/prompt/context.json": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/apps/desktop/infrastructure/llm/prompt/context.json",
+      "sha256": "1b2c3a694d72963412db167bd952a6149d4d3ac9548fd64c6022beda7cb95745"
+    },
+    "/Users/steven/code/Arion/apps/desktop/infrastructure/llm/prompt/format.json": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/apps/desktop/infrastructure/llm/prompt/format.json",
+      "sha256": "dffc153d9d9f99593a6f686b1ed6f374ce7c5cd5132d8de6b6b4cb80675d4a6f"
+    },
+    "/Users/steven/code/Arion/apps/desktop/infrastructure/llm/prompt/live.json": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/apps/desktop/infrastructure/llm/prompt/live.json",
+      "sha256": "31ac54390ad29c7ac12c1a6c15d4ecb86ea08b71960070b5e9de73358e72f837"
+    },
+    "/Users/steven/code/Arion/apps/desktop/infrastructure/llm/prompt/prompt.go": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/apps/desktop/infrastructure/llm/prompt/prompt.go",
+      "sha256": "d3cfd55c37d45fae2b942fc9ee2b93331cf990ee01ce37e695ac1298b8c33d93"
+    },
+    "/Users/steven/code/Arion/apps/desktop/infrastructure/llm/prompt/prompt_test.go": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/apps/desktop/infrastructure/llm/prompt/prompt_test.go",
+      "sha256": "9bd13d51dffb033cd2bbc3fe0e0a2ae1d18682f50eedc0e15d1dc1e87613f05b"
+    },
+    "/Users/steven/code/Arion/apps/desktop/infrastructure/llm/prompt/selected.go": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/baseline-overlay/apps/desktop/infrastructure/llm/prompt/selected.go",
+      "sha256": "f3704149bd5a347c7c330d6b4286aa428ef557146c7065cddb918833e9f58fec"
+    },
+    "/Users/steven/code/Arion/apps/desktop/infrastructure/llm/prompt/selected_test.go": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/apps/desktop/infrastructure/llm/prompt/selected_test.go",
+      "sha256": "25eba19e3aa52978df2d088cf0095338a4978bf7e59ccb801075d2fe86ae9146"
+    },
+    "/Users/steven/code/Arion/apps/desktop/infrastructure/llm/prompt/selection.json": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/apps/desktop/infrastructure/llm/prompt/selection.json",
+      "sha256": "992e89acfa462c54fa893e8319b6e031fa01dcb454ab166651abc834d2c4c35a"
+    },
+    "/Users/steven/code/Arion/apps/desktop/infrastructure/llm/protocol/protocol.go": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/apps/desktop/infrastructure/llm/protocol/protocol.go",
+      "sha256": "417692d9a1812686e7b5e2533f4301696b17a714e8b6f43f3f271f6f27b3c924"
+    },
+    "/Users/steven/code/Arion/apps/desktop/infrastructure/llm/spelling/data/cmudict-pronunciation-v1-cmudict.dict": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/apps/desktop/infrastructure/llm/spelling/data/cmudict-pronunciation-v1-cmudict.dict",
+      "sha256": "81917843c7f44ce2b094ac63873c2c7a4cf802040792c455ba3ca406891c3d22"
+    },
+    "/Users/steven/code/Arion/apps/desktop/infrastructure/llm/spelling/data/cmudict-pronunciation-v1-provenance.json": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/apps/desktop/infrastructure/llm/spelling/data/cmudict-pronunciation-v1-provenance.json",
+      "sha256": "2ea5124083d7bc2c6f91bb61f0b911b9f12bfd68425b7b86d1a55e72df00530d"
+    },
+    "/Users/steven/code/Arion/apps/desktop/infrastructure/llm/spelling/data/pypinyin-character-readings-v1-provenance.json": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/apps/desktop/infrastructure/llm/spelling/data/pypinyin-character-readings-v1-provenance.json",
+      "sha256": "90a6ad8126bd24d74fc03a37bb8fbb050c375aff5cc57b0047114bf9509969b0"
+    },
+    "/Users/steven/code/Arion/apps/desktop/infrastructure/llm/spelling/data/pypinyin-character-readings-v1-readings.json": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/apps/desktop/infrastructure/llm/spelling/data/pypinyin-character-readings-v1-readings.json",
+      "sha256": "be7efc407cd64897abd2259ed98a18022e50ded1a144d6df8420f8f3b3ccdac7"
+    },
+    "/Users/steven/code/Arion/apps/desktop/infrastructure/llm/spelling/lexicon.go": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/apps/desktop/infrastructure/llm/spelling/lexicon.go",
+      "sha256": "ae4f6dfb25de1efd5b898629b18c634aaffe022a96ccef12f97291a7f25cb339"
+    },
+    "/Users/steven/code/Arion/apps/desktop/infrastructure/llm/spelling/lexicon_test.go": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/apps/desktop/infrastructure/llm/spelling/lexicon_test.go",
+      "sha256": "d8148374b8e1ced10e0c101c3addeadcd23dc21b04e572cdc1d114d191895625"
+    },
+    "/Users/steven/code/Arion/apps/desktop/ui/shared/copy/copy.go": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/apps/desktop/ui/shared/copy/copy.go",
+      "sha256": "118be8e169b07d3570bbde7703768f72bee9e27d52855c8f0eb8ca0902839c3e"
+    },
+    "/Users/steven/code/Arion/apps/desktop/ui/shared/copy/locales/en.json": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/apps/desktop/ui/shared/copy/locales/en.json",
+      "sha256": "f9a81442361e409b0f2e186a76e95368a3e6977e76f3995901e37dba2676fd05"
+    },
+    "/Users/steven/code/Arion/apps/desktop/ui/shared/copy/locales/zh-CN.json": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/apps/desktop/ui/shared/copy/locales/zh-CN.json",
+      "sha256": "9d306a69e681914ab80df1cb432e784a93991166823876672fa83fe2fa6f2396"
+    },
+    "/Users/steven/code/Arion/go.work": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/go.work",
+      "sha256": "c3ee3139ff7a0e6ddfb79127aea9e7e8afec61c091d115e8d092402d13dbca59"
+    },
+    "/Users/steven/code/Arion/models/catalog.json": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/models/catalog.json",
+      "sha256": "267aa430c5692dcdef3e361b9739c00eccce4de9f849745ffcf92bd00a146602"
+    },
+    "/Users/steven/code/Arion/models/go.mod": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/models/go.mod",
+      "sha256": "7a319e69d12204a2d97c649f1683b492969a76360568a021edf75b2544355685"
+    },
+    "/Users/steven/code/Arion/packages/core/application/context.go": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/packages/core/application/context.go",
+      "sha256": "400331b4226162dacae1c4efca5387cb471f84ae009567dbdf52a7e92bd28d3d"
+    },
+    "/Users/steven/code/Arion/packages/core/application/diagnostics.go": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/packages/core/application/diagnostics.go",
+      "sha256": "8ca206530d9e9e44e567bdc424c07253755fc16b94390ce638b0c5d27caec5c1"
+    },
+    "/Users/steven/code/Arion/packages/core/application/diagnostics_test.go": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/packages/core/application/diagnostics_test.go",
+      "sha256": "6b8e018169e82c2fce4fec1d96ee6dacbf93ccd2ffa09cdfafb5a38611bfdae7"
+    },
+    "/Users/steven/code/Arion/packages/core/application/dictation.go": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/packages/core/application/dictation.go",
+      "sha256": "65301cea3373be810808f399fe1791b26b06233a8c669e32931eb449e91b8670"
+    },
+    "/Users/steven/code/Arion/packages/core/application/dictation_test.go": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/packages/core/application/dictation_test.go",
+      "sha256": "9a8f7a884f3a04b5978b0bff83ca9eb103b11ac62fc83d8a78652d542470523c"
+    },
+    "/Users/steven/code/Arion/packages/core/application/gain.go": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/packages/core/application/gain.go",
+      "sha256": "32ade64dfad6a750800085785d561e8e552627716379f1499a49549d4f81a38c"
+    },
+    "/Users/steven/code/Arion/packages/core/application/hold.go": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/packages/core/application/hold.go",
+      "sha256": "4d7624aff25e93e5a4f52ccabf203beb376e908feba0fee1bed2c8b3072def6d"
+    },
+    "/Users/steven/code/Arion/packages/core/application/hold_test.go": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/packages/core/application/hold_test.go",
+      "sha256": "fa657ec70c2a16f090c78b0d062081e7817dd559d761481da7ba2d633ef8019f"
+    },
+    "/Users/steven/code/Arion/packages/core/application/keyboard.go": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/packages/core/application/keyboard.go",
+      "sha256": "3f013e688eba7c83cabd1e267317a33ffe6f83f55798c38b531db63a913134c4"
+    },
+    "/Users/steven/code/Arion/packages/core/application/learning.go": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/packages/core/application/learning.go",
+      "sha256": "064d47057bdaba2db5478bfea001930c36d161a749f3b156eb15a831f5e224d7"
+    },
+    "/Users/steven/code/Arion/packages/core/application/learning_test.go": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/packages/core/application/learning_test.go",
+      "sha256": "9a7753add6d14a16352e472190a5432b874ad5d1a0b0cc6de68d2d88d73f8fd7"
+    },
+    "/Users/steven/code/Arion/packages/core/application/live.go": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/packages/core/application/live.go",
+      "sha256": "4b4c2711f5d78efc4bea418cd2e9a10903b8995c193532ca74698b5ca9c05a9c"
+    },
+    "/Users/steven/code/Arion/packages/core/application/live_reuse_test.go": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/packages/core/application/live_reuse_test.go",
+      "sha256": "4f0adb03447fc3bb773e1d20f9ba2bc09223e277ddd93cd25400a4f7bee858e5"
+    },
+    "/Users/steven/code/Arion/packages/core/application/live_test.go": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/packages/core/application/live_test.go",
+      "sha256": "ac5b74424e26f2467652ee356df30d4eb00d067756e0f9c32689f3395038dffe"
+    },
+    "/Users/steven/code/Arion/packages/core/application/preferences.go": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/packages/core/application/preferences.go",
+      "sha256": "53bcef6c62a1bf77eb3740942a4ffd7326a26a72dd588cc20007b2a5e6928bc0"
+    },
+    "/Users/steven/code/Arion/packages/core/application/preferences_test.go": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/packages/core/application/preferences_test.go",
+      "sha256": "e19292d393ce3db6a600b2b74c3daacd7a78e6e676d9740f73d57a47d69d7919"
+    },
+    "/Users/steven/code/Arion/packages/core/application/usage.go": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/packages/core/application/usage.go",
+      "sha256": "01e92b4a0c6bbfe0b1702c6cac94c76a574e361a75c0c7f4d4a69a4dbeeec12a"
+    },
+    "/Users/steven/code/Arion/packages/core/application/usage_test.go": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/packages/core/application/usage_test.go",
+      "sha256": "ec4e579f8c84c92df16daa88ddda1c97c66cf9fa799fb41487639c67d0f13cbd"
+    },
+    "/Users/steven/code/Arion/packages/core/domain/candidates.go": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/packages/core/domain/candidates.go",
+      "sha256": "73949da5f6e51de1c1e71a3d22cc4cdf6f04f56b9cd1bd5b0ceb3f7e7269208f"
+    },
+    "/Users/steven/code/Arion/packages/core/domain/context.go": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/packages/core/domain/context.go",
+      "sha256": "a8c6b7cb21ae4dba4f5e918c312fbbdddd614b29d894488d1bb8ec3878777260"
+    },
+    "/Users/steven/code/Arion/packages/core/domain/context_test.go": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/packages/core/domain/context_test.go",
+      "sha256": "6d23dbd9ed4cf9b4cf5a53da98f58694759d766f9fbf0a3646073fb914a773b3"
+    },
+    "/Users/steven/code/Arion/packages/core/domain/correction.go": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/packages/core/domain/correction.go",
+      "sha256": "36408154dea4b21714981a6b83c539a7ad3a7f8abbea49134c4048556275f6b8"
+    },
+    "/Users/steven/code/Arion/packages/core/domain/correction_test.go": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/packages/core/domain/correction_test.go",
+      "sha256": "99f0871a34396f238cac1efb701fe346ce6243035c3f42a669875b869a2096fa"
+    },
+    "/Users/steven/code/Arion/packages/core/domain/dictation.go": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/packages/core/domain/dictation.go",
+      "sha256": "d6e84ba3423891d2d91125e0e7ac963ab0f62f343dcc0e8e5129101d6c9a5e96"
+    },
+    "/Users/steven/code/Arion/packages/core/domain/dictation_test.go": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/packages/core/domain/dictation_test.go",
+      "sha256": "f403a06393d58c795815ea7f88c7c21c9a730b38c4452504f1835c35830cb4b1"
+    },
+    "/Users/steven/code/Arion/packages/core/domain/errors.go": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/packages/core/domain/errors.go",
+      "sha256": "20b96a19f62185f062e97c91226893233f2001fdc1cb5e35cf9586ae6b81aa53"
+    },
+    "/Users/steven/code/Arion/packages/core/domain/errors_test.go": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/packages/core/domain/errors_test.go",
+      "sha256": "f437986e76f0a6ba9f9857b570a16fc0e4077a4d8d3ec3307346183142e9f43c"
+    },
+    "/Users/steven/code/Arion/packages/core/domain/invariants_test.go": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/packages/core/domain/invariants_test.go",
+      "sha256": "8244b5812a235a15564c4061dfaa818f08af375240332c8b6f91cf4500bafa2b"
+    },
+    "/Users/steven/code/Arion/packages/core/domain/learning.go": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/packages/core/domain/learning.go",
+      "sha256": "684ae926095bef34f1f9bb3766d464aeff97c38fb80db347bdf5713a7f62da96"
+    },
+    "/Users/steven/code/Arion/packages/core/domain/learning_test.go": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/packages/core/domain/learning_test.go",
+      "sha256": "b13a9aa22a6f61d3ac19ed536732f9c4dba0a255301db95eaa9438ff8c20ce12"
+    },
+    "/Users/steven/code/Arion/packages/core/domain/learning_words.go": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/packages/core/domain/learning_words.go",
+      "sha256": "743f7f7abf4b7b15198d049b59109c380ddd1efc3104bea5aaa6715ca68ae87e"
+    },
+    "/Users/steven/code/Arion/packages/core/domain/memory.go": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/packages/core/domain/memory.go",
+      "sha256": "2c4cf5ebf22b1bad9539dfcd204e1ff66cda4c3c1aa34f414d990f4b9321faa5"
+    },
+    "/Users/steven/code/Arion/packages/core/domain/modelselect.go": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/packages/core/domain/modelselect.go",
+      "sha256": "8d6c2dc213e3c271e0d4b9c5217ea0c0aea37e662b186c8d82e06d5218e60c66"
+    },
+    "/Users/steven/code/Arion/packages/core/domain/ports/diagnostics.go": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/packages/core/domain/ports/diagnostics.go",
+      "sha256": "e88202dc8dafba11c2b373b44556ba4e4431b30eac4c2b2340c4367f1c512f4c"
+    },
+    "/Users/steven/code/Arion/packages/core/domain/ports/ports.go": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/packages/core/domain/ports/ports.go",
+      "sha256": "9dcc7aa8b3e8c0300d1d655e92874ef27100ab5b6fa09216a391d80a54d837fd"
+    },
+    "/Users/steven/code/Arion/packages/core/domain/quotes.go": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/packages/core/domain/quotes.go",
+      "sha256": "fec70b2e226e7d5f3a306f32790b584bc8b48ba822cbab8341f8e3dbe05d6e11"
+    },
+    "/Users/steven/code/Arion/packages/core/domain/rewrite.go": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/packages/core/domain/rewrite.go",
+      "sha256": "44dd52c7b35c7f5002a1191d5942a720d2745b6c5d2d671ecde1cf091d40fa55"
+    },
+    "/Users/steven/code/Arion/packages/core/domain/rewrite_delivery_test.go": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/packages/core/domain/rewrite_delivery_test.go",
+      "sha256": "a734e8f6c7847f2f67d1ab711628b3afb666392116ae3f03aa77a12a8981753f"
+    },
+    "/Users/steven/code/Arion/packages/core/domain/rewrite_fidelity.go": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/packages/core/domain/rewrite_fidelity.go",
+      "sha256": "bb08303a1043f74605f61b697e4f56047fe1950d1f080723ade469215bf1ea55"
+    },
+    "/Users/steven/code/Arion/packages/core/domain/rewrite_test.go": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/packages/core/domain/rewrite_test.go",
+      "sha256": "64d6b4b07a7c82cde0c31023ef34e2ce95048f4570d6b26cf5971ca91f5a23da"
+    },
+    "/Users/steven/code/Arion/packages/core/domain/scene.go": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/packages/core/domain/scene.go",
+      "sha256": "abe77a316d112d43752e9d345a74978341c12834024c667103d8992c1a027a7d"
+    },
+    "/Users/steven/code/Arion/packages/core/domain/scene_test.go": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/packages/core/domain/scene_test.go",
+      "sha256": "14c817f528f1cc3aee0b2cd3d02c4ff57e2398d158e250a79f22af201b2020ba"
+    },
+    "/Users/steven/code/Arion/packages/core/domain/session.go": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/packages/core/domain/session.go",
+      "sha256": "5320b7082d92da0c4f09b4d182dfe3e22ecd26c4cb8dbaaff56bc5e35245b167"
+    },
+    "/Users/steven/code/Arion/packages/core/domain/speech_cleanup.go": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/packages/core/domain/speech_cleanup.go",
+      "sha256": "20a199ce25b45ed826182b3e6844a5788f316d6e56bd3cdb6ba8268bcb5e0313"
+    },
+    "/Users/steven/code/Arion/packages/core/domain/speech_cleanup_test.go": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/packages/core/domain/speech_cleanup_test.go",
+      "sha256": "60d92ba18f968019cc9b898b414ceb9441f5516d97ef8517535c29c19060305f"
+    },
+    "/Users/steven/code/Arion/packages/core/domain/spelling.go": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/packages/core/domain/spelling.go",
+      "sha256": "816f0be0ab3b62afa685a94bae1cfa022ca1307928dc238172658296666a1e55"
+    },
+    "/Users/steven/code/Arion/packages/core/domain/spelling_compound_test.go": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/packages/core/domain/spelling_compound_test.go",
+      "sha256": "555d0b3e0cdb50a10a8b6a74043b2394631dcaef861e6a97d1e742f9094f02a4"
+    },
+    "/Users/steven/code/Arion/packages/core/domain/terms.go": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/packages/core/domain/terms.go",
+      "sha256": "2799ef865d831728e8320a7c3c13c619165f56640a4f23034905cfb6dba1dd20"
+    },
+    "/Users/steven/code/Arion/packages/core/domain/terms_test.go": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/packages/core/domain/terms_test.go",
+      "sha256": "3b271c64621e1804dfb3147f67c8d4d42f662fa014d8ac7f5ca8b8493a52384f"
+    },
+    "/Users/steven/code/Arion/packages/core/domain/usage.go": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/packages/core/domain/usage.go",
+      "sha256": "f2ebb6756acca1433cea17a630255015f0e15f316a432583b8d41469ac3243a4"
+    },
+    "/Users/steven/code/Arion/packages/core/domain/usage_test.go": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/packages/core/domain/usage_test.go",
+      "sha256": "444dad4e35de7a0ee282e93f852d0752c81b41a663c01a374b7d152f66d5379b"
+    },
+    "/Users/steven/code/Arion/packages/core/domain/vocabulary.go": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/packages/core/domain/vocabulary.go",
+      "sha256": "6e2fe3f6263b48e83ee98f321dd6e2e49b02daed8fbb89a1b2bd1e9a07bd0fea"
+    },
+    "/Users/steven/code/Arion/packages/core/go.mod": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/packages/core/go.mod",
+      "sha256": "3e97a53127f313e259f8613754d512d2d7c970af0a118d435716ad3cdfc5a86f"
+    },
+    "/Users/steven/code/Arion/scripts/build-input-method.mjs": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/scripts/build-input-method.mjs",
+      "sha256": "f939c3399e0b55913fc4641d4f3f406b23f68b1efba2127cce16091cdd360098"
+    },
+    "/Users/steven/code/Arion/scripts/rewrite-stage-command.mjs": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/scripts/rewrite-stage-command.mjs",
+      "sha256": "b6303050377edbe9c1df8d8d65625f4b84ab1adb08c1c12e32e02b1415921de5"
+    },
+    "/Users/steven/code/Arion/scripts/test-keyboard-input.mjs": {
+      "path": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/validation-baseline/sources/scripts/test-keyboard-input.mjs",
+      "sha256": "476404b2e2dbdda5021540f56b4891f6f2c2f711056b52c5ff2b5d14acd6c01d"
+    }
+  },
+  "cases": {
+    "original": "/Users/steven/code/Arion/benchmarks/reproduction/rewrite-stage-preservation-v1/validation.json",
+    "archived": "cases.json",
+    "sha256": "f96cc9a2e60e3919ee0602249dc13c5d6bd09a8d33edef2114c94c77b67115df"
+  }
+}

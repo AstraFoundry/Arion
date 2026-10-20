@@ -1,0 +1,22 @@
+{
+  "repository": "https://github.com/cmusphinx/cmudict",
+  "revision": "74790861f652b15e4ac49015a90074ad62a27690",
+  "files": {
+    "cmudict.dict": {
+      "url": "https://raw.githubusercontent.com/cmusphinx/cmudict/74790861f652b15e4ac49015a90074ad62a27690/cmudict.dict",
+      "sha256": "81917843c7f44ce2b094ac63873c2c7a4cf802040792c455ba3ca406891c3d22",
+      "bytes": 3618488
+    },
+    "LICENSE": {
+      "url": "https://raw.githubusercontent.com/cmusphinx/cmudict/74790861f652b15e4ac49015a90074ad62a27690/LICENSE",
+      "sha256": "bd4ce8e44170a5f9f481310ca85c51de3c4f851a65e679b40e603b143bd3542a",
+      "bytes": 1754
+    },
+    "README": {
+      "url": "https://raw.githubusercontent.com/cmusphinx/cmudict/74790861f652b15e4ac49015a90074ad62a27690/README",
+      "sha256": "00c34e7564f1f6a68de02e12c123d801471da92bc3091f7d89b605f238bf8554",
+      "bytes": 1412
+    }
+  },
+  "purpose": "Text-derived English pronunciation hypotheses for an input-evidence diagnostic. Not acoustic evidence, a complete pronunciation model, a gold reference or permission to correct dictation. Original license/acknowledgement retained."
+}

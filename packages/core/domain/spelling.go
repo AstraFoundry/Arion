@@ -173,10 +173,222 @@ func spellingHanWindows(s string) []SpellingHypothesis {
 	return out
 }
 
+// spellingCompoundBoundary prevents a Latin word window from splitting an
+// identifier or number while allowing adjacent Chinese text and punctuation.
+func spellingCompoundBoundary(source string, start, end int) bool {
+	attached := func(b byte) bool {
+		return b >= 'A' && b <= 'Z' || b >= 'a' && b <= 'z' || b >= '0' && b <= '9' || b == '_'
+	}
+	return (start == 0 || !attached(source[start-1])) && (end == len(source) || !attached(source[end]))
+}
+
+// earlierSourceHypotheses nominates a narrow text-similarity alternative only
+// when a caller supplies an earlier rule-corrected source and independently
+// observed context. EarlierSource must never contain generated rewrite output.
+// Shared letters are a retrieval heuristic, not acoustic or semantic evidence.
+func earlierSourceHypotheses(source string, context map[string]string, quoted [][2]int) []SpellingHypothesis {
+	earlier := context["EarlierSource"]
+	if earlier == "" {
+		return nil
+	}
+	canonical := []string{}
+	known := map[string]bool{}
+	for _, key := range []string{"Screen", "Terms", "Before", "After"} {
+		for _, name := range spellingIdentifier.FindAllString(context[key], -1) {
+			if !spellingLatinLetters(name) {
+				continue
+			}
+			known[strings.ToLower(name)] = true
+			if len(name) >= 7 {
+				canonical = append(canonical, name)
+			}
+		}
+	}
+	canonical = spellingUnique(canonical)
+	prior := spellingIdentifier.FindAllStringIndex(earlier, -1)
+	out := []SpellingHypothesis{}
+	for _, run := range spellingSpoken.FindAllStringIndex(source, -1) {
+		words := spellingWords.FindAllStringIndex(source[run[0]:run[1]], -1)
+		for n := 2; n <= min(6, len(words)); n++ {
+			for i := 0; i+n <= len(words); i++ {
+				start, end := run[0]+words[i][0], run[0]+words[i+n-1][1]
+				if !spellingCompoundBoundary(source, start, end) || spellingBlocked(start, end, quoted) || spellingLocalRepair(source, start, end) || spellingSourceIntent(source, start, end, true) {
+					continue
+				}
+				letters := strings.ToLower(strings.Join(strings.Fields(source[start:end]), ""))
+				if len(letters) < 7 || known[letters] {
+					continue
+				}
+				frame := spellingLocalFrame(source, start)
+				if !spellingMeaningfulFrame(frame) {
+					continue
+				}
+				matches := []string{}
+				for _, name := range canonical {
+					if !spellingSharedEdges(letters, strings.ToLower(name)) {
+						continue
+					}
+					for _, span := range prior {
+						if strings.EqualFold(earlier[span[0]:span[1]], name) && spellingCompoundBoundary(earlier, span[0], span[1]) && spellingLocalFrame(earlier, span[0]) == frame {
+							matches = append(matches, name)
+							break
+						}
+					}
+				}
+				if matches = spellingUnique(matches); len(matches) > 0 {
+					out = append(out, SpellingHypothesis{Start: start, End: end, Source: source[start:end], Candidates: matches, Kind: "earlier-source-identifier"})
+				}
+			}
+		}
+	}
+	return out
+}
+
+func spellingLatinLetters(s string) bool {
+	if s == "" {
+		return false
+	}
+	for i := range s {
+		if !(s[i] >= 'A' && s[i] <= 'Z' || s[i] >= 'a' && s[i] <= 'z') {
+			return false
+		}
+	}
+	return true
+}
+
+func spellingClauseBoundary(r rune) bool {
+	return strings.ContainsRune(",，。.!?！？;；\n", r)
+}
+
+func spellingLocalFrame(source string, start int) string {
+	prefix := source[:start]
+	last := -1
+	for i, r := range prefix {
+		if spellingClauseBoundary(r) {
+			last = i + utf8.RuneLen(r)
+		}
+	}
+	if last >= 0 {
+		prefix = prefix[last:]
+	}
+	return strings.TrimSpace(prefix)
+}
+
+func spellingMeaningfulFrame(frame string) bool {
+	han := 0
+	for _, r := range frame {
+		if unicode.Is(unicode.Han, r) {
+			han++
+		}
+	}
+	return han >= 2 || len(spellingWords.FindAllString(frame, -1)) > 0
+}
+
+func spellingSharedEdges(a, b string) bool {
+	shorter, longer := min(len(a), len(b)), max(len(a), len(b))
+	if shorter < 7 || shorter*100 < longer*65 {
+		return false
+	}
+	prefix := 0
+	for prefix < shorter && a[prefix] == b[prefix] {
+		prefix++
+	}
+	suffix := 0
+	for suffix < shorter-prefix && a[len(a)-1-suffix] == b[len(b)-1-suffix] {
+		suffix++
+	}
+	return prefix >= 3 && suffix >= 3
+}
+
+func spellingLocalRepair(source string, start, end int) bool {
+	clauseStart := 0
+	for i, r := range source[:start] {
+		if spellingClauseBoundary(r) {
+			clauseStart = i + utf8.RuneLen(r)
+		}
+	}
+	// Include the immediately following clause so a correction just after the
+	// name can invalidate its nomination, without examining unrelated clauses.
+	clauseEnd := len(source)
+	boundaries := 0
+	for i, r := range source[end:] {
+		if spellingClauseBoundary(r) {
+			boundaries++
+			if boundaries == 2 {
+				clauseEnd = end + i
+				break
+			}
+		}
+	}
+	local := strings.ToLower(source[clauseStart:clauseEnd])
+	for _, cue := range []string{"不对", "改用", "换成", "不是", "而是", "说错", "更正", "no wait", "rather", "instead", "i mean", "correction"} {
+		if strings.Contains(local, cue) {
+			return true
+		}
+	}
+	return false
+}
+
+var spellingLanguageDiscussion = regexp.MustCompile(`\b(?:spelling|spellings|phrase|phrases|literal|literals|intentional|intentionally)\b`)
+var spellingWordOrSpace = regexp.MustCompile(`\b(?:word|words|space|spaces)\b`)
+var spellingPreservationConstraint = regexp.MustCompile(`\b(?:preserve|keep|separate|separated|exact|exactly|between|two|three|internal)\b`)
+var spellingRecognitionReference = regexp.MustCompile(`\b(?:recognition|transcript)\b`)
+var spellingRecognitionMistake = regexp.MustCompile(`\b(?:wrong|mistaken)\b`)
+
+// spellingSourceIntent conservatively excludes English contextual nomination
+// while the current sentence discusses its words or spelling. This qualifies
+// candidate generation only: it never edits the source or repairs model output.
+// Such discussion may itself request a spelling correction; that request stays
+// outside this conservative retrieval contract rather than being guessed here.
+func spellingSourceIntent(source string, start, end int, earlier bool) bool {
+	boundary := func(r rune) bool { return strings.ContainsRune("。.!?！？\n", r) }
+	left, right := 0, len(source)
+	for i, r := range source[:start] {
+		if boundary(r) {
+			left = i + utf8.RuneLen(r)
+		}
+	}
+	for i, r := range source[end:] {
+		if boundary(r) {
+			right = end + i
+			break
+		}
+	}
+	sentence := strings.ToLower(source[left:right])
+	for _, marker := range []string{"拼写", "短语", "字面", "单词", "空格", "写法", "新名称"} {
+		if strings.Contains(sentence, marker) {
+			return true
+		}
+	}
+	if spellingLanguageDiscussion.MatchString(sentence) || spellingWordOrSpace.MatchString(sentence) && spellingPreservationConstraint.MatchString(sentence) {
+		return true
+	}
+	if earlier {
+		if strings.Contains(sentence, "识别") && (strings.Contains(sentence, "错") || strings.Contains(sentence, "不对")) {
+			return true
+		}
+		return spellingRecognitionReference.MatchString(sentence) && spellingRecognitionMistake.MatchString(sentence)
+	}
+	return false
+}
+
 // Prepare derives maximal nonoverlapping alternatives using the evaluated
 // tone-insensitive Chinese and 2..6-word English producer. No decisions or
 // replacements occur here; ambiguity is represented explicitly.
 func (l *SpellingLexicon) Prepare(source string, context map[string]string, scene string) SpellingPreparation {
+	return l.prepare(source, context, scene, false)
+}
+
+// PrepareContextual nominates exact-letter compound spellings in every scene.
+// EarlierSource, when supplied, must be earlier rule-corrected recognition,
+// never generated text. Independently evidenced names in the same source frame
+// can then produce bounded shared-letter alternatives. All nominations remain
+// unverified selector choices; quoted source spans are never nominated.
+func (l *SpellingLexicon) PrepareContextual(source string, context map[string]string, scene string) SpellingPreparation {
+	return l.prepare(source, context, scene, true)
+}
+
+func (l *SpellingLexicon) prepare(source string, context map[string]string, scene string, compounds bool) SpellingPreparation {
 	if context == nil {
 		context = map[string]string{}
 	}
@@ -188,6 +400,9 @@ func (l *SpellingLexicon) Prepare(source string, context map[string]string, scen
 	sort.Strings(keys)
 	values := []string{}
 	for _, k := range keys {
+		if compounds && k == "EarlierSource" {
+			continue
+		}
 		values = append(values, context[k])
 	}
 	screen := strings.Join(values, "\n")
@@ -197,12 +412,16 @@ func (l *SpellingLexicon) Prepare(source string, context map[string]string, scen
 		blocked = append(blocked, [2]int{m[0], m[1]})
 	}
 	hypotheses := []SpellingHypothesis{}
-	if scene == string(SceneWork) || scene == string(ScenePrompt) {
+	phoneticIdentifiers := scene == string(SceneWork) || scene == string(ScenePrompt)
+	if phoneticIdentifiers || compounds {
 		ids := []string{}
 		phones := map[string]map[string]bool{}
 		for _, id := range spellingIdentifier.FindAllString(screen, -1) {
-			if parts := spellingParts(id); len(parts) >= 2 {
+			parts := spellingParts(id)
+			if compounds || len(parts) >= 2 {
 				ids = append(ids, id)
+			}
+			if phoneticIdentifiers && len(parts) >= 2 {
 				phones[id] = l.phones(parts)
 			}
 		}
@@ -213,6 +432,9 @@ func (l *SpellingLexicon) Prepare(source string, context map[string]string, scen
 				for i := 0; i+n <= len(words); i++ {
 					start, end := run[0]+words[i][0], run[0]+words[i+n-1][1]
 					if spellingBlocked(start, end, quoted) {
+						continue
+					}
+					if compounds && (!spellingCompoundBoundary(source, start, end) || spellingSourceIntent(source, start, end, false)) {
 						continue
 					}
 					text := source[start:end]
@@ -286,6 +508,10 @@ func (l *SpellingLexicon) Prepare(source string, context map[string]string, scen
 			}
 			hypotheses = append(hypotheses, h)
 		}
+	}
+
+	if compounds {
+		hypotheses = append(hypotheses, earlierSourceHypotheses(source, context, quoted)...)
 	}
 
 	sort.SliceStable(hypotheses, func(i, j int) bool {

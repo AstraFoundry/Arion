@@ -1,0 +1,39 @@
+{
+  "status": "rejected",
+  "armSha256": "840d8c8db839d1b48c6a45b1e12d33b0ae871c3f6105d2772855b2c806831218",
+  "reason": "14/16 delivered phases contain duplicated fixed names/literals or instructions; remaining two phases retain upstream wrong names. All 16 fail intended fixture output review. This is assistant review, not independent human evaluation.",
+  "manualReviewFile": "development-full-1.review.json",
+  "metrics": {
+    "sha256": "840d8c8db839d1b48c6a45b1e12d33b0ae871c3f6105d2772855b2c806831218",
+    "pairDenominator": 8,
+    "phaseDenominator": 16,
+    "failedPhases": 0,
+    "entityEvaluablePairs": 8,
+    "previewEntityCorrectPairs": 7,
+    "previewFinalRegressionProxy": 1,
+    "selectedTermDamageProxy": 14,
+    "manualReviewCounts": {
+      "correct": 0,
+      "incorrect": 16,
+      "unreviewed": 0,
+      "not-assessable": 0
+    },
+    "latencyMs": {
+      "phases": {
+        "count": 16,
+        "p50": 3530.014,
+        "p95": 4965.33
+      },
+      "selector": {
+        "count": 4,
+        "p50": 1751.425,
+        "p95": 1898.161
+      },
+      "formatter": {
+        "count": 16,
+        "p50": 2973.786,
+        "p95": 4176.28
+      }
+    }
+  }
+}

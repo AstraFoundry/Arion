@@ -1,0 +1,15 @@
+{
+  "sources": [
+    {
+      "path": "fresh-prior-controls.json",
+      "sha256": "c6c95008c219ffc7153367d1b0565af71c76d596a2aa812f3e71a13e20255deb"
+    },
+    {
+      "path": "final-intent-controls.json",
+      "sha256": "6204a1a278e1e2f597742a684da9d656ea03f0796e576d04c4eb51c0138b20dc"
+    }
+  ],
+  "cases": 24,
+  "classification": "Fresh16 previously exposed to rejected V1/V3; final-intent8 frozen before lexical qualification implementation and not generated before final source freeze. Assistant-authored controls, not independent held-out speakers.",
+  "expectations": "Evaluator only; never sent to inference"
+}

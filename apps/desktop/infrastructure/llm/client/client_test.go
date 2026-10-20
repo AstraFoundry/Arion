@@ -50,6 +50,8 @@ func fakeWorker() {
 		case req.Op == protocol.OpClose:
 			_ = out.Encode(protocol.Response{ID: req.ID, OK: true})
 			return
+		case req.Text == "echo earlier source":
+			_ = out.Encode(protocol.Response{ID: req.ID, OK: true, Text: req.PreviousText})
 		case req.Text == "crash":
 			os.Exit(3)
 		case req.Text == "slow":
@@ -116,5 +118,14 @@ func TestWorkerExitIsExplicit(t *testing.T) {
 	}
 	if _, err := c.Rewrite(context.Background(), ports.RewriteRequest{Identity: id, Text: "again"}); domain.CodeOf(err) != domain.CodeModelUnsupported {
 		t.Fatalf("request after exit not failed: %v", err)
+	}
+}
+
+func TestEarlierSourceEvidenceSurvivesProtocolRoundTrip(t *testing.T) {
+	c := start(t)
+	earlier := "Check Chatterfly"
+	result, err := c.Rewrite(context.Background(), ports.RewriteRequest{Identity: id, Text: "echo earlier source", PreviousText: earlier})
+	if err != nil || result.Text != earlier {
+		t.Fatalf("earlier source lost: %q, %v", result.Text, err)
 	}
 }

@@ -1,0 +1,977 @@
+{
+  "schema": "rewrite-stage-review-v1",
+  "corpusSha256": "c6c95008c219ffc7153367d1b0565af71c76d596a2aa812f3e71a13e20255deb",
+  "arms": {
+    "baseline": "6f07f34a759309fe642d68e33d21a40db2b46993fa5d5275d37e39d359121fed",
+    "v1": "0f41759907a80c039abf148ef93468b831faeb4fff6d823d7f44ec4fe5a3dfce",
+    "v3": "8fa916c44bd0f6e7062638a131ae837487a09c7856953993440df82bbe928ff0"
+  },
+  "records": [
+    {
+      "arm": "baseline",
+      "id": "fresh-prior-01-zh-required-repair",
+      "phase": "preview",
+      "observationSha256": "57c96146b8a9f72d3bbaaf612e1c4557063dc735468ca10ad5f3631c58748329",
+      "fidelity": "correct",
+      "note": "Correct source product spelling is preserved, with no changed actor/action or invented final content. Final constraints are not yet present in this preview and are not required.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "baseline",
+      "id": "fresh-prior-01-zh-required-repair",
+      "phase": "final",
+      "observationSha256": "a546dc6b5d237b9aa55054752ed53713e49972d2b8538967e29632e341d78322",
+      "fidelity": "incorrect",
+      "note": "Current source explicitly refers to the same previously named, screen-supported product, but baseline leaves the shortened two-word variant Lumenboard unrecovered. Surrounding action and constraints survive; no successful selector edit is subsequently damaged by formatter.",
+      "entityCorrect": false,
+      "firstObservedDamage": "unrecovered-final-source-spelling"
+    },
+    {
+      "arm": "baseline",
+      "id": "fresh-prior-02-zh-separated-words",
+      "phase": "preview",
+      "observationSha256": "0d78a4fcd0b364a7014f0dba395986fe801ee1e0c5f7eacbee51906662bbb29c",
+      "fidelity": "correct",
+      "note": "Correct source product spelling is preserved, with no changed actor/action or invented final content. Final constraints are not yet present in this preview and are not required.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "baseline",
+      "id": "fresh-prior-02-zh-separated-words",
+      "phase": "final",
+      "observationSha256": "d831fbfe753f03df09ae1f5afec20d66314439f5a067f5e27a8876ba0354639e",
+      "fidelity": "correct",
+      "note": "Current source explicitly identifies a phrase, retains an internal space, and forbids merging it into a product name. Baseline retains the current wording without importing the earlier product.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "baseline",
+      "id": "fresh-prior-03-en-required-repair",
+      "phase": "preview",
+      "observationSha256": "f862ba504b93c292f673e77b216817564169d02a334106922cd60bb881b759dc",
+      "fidelity": "correct",
+      "note": "Correct source product spelling is preserved, with no changed actor/action or invented final content. Final constraints are not yet present in this preview and are not required.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "baseline",
+      "id": "fresh-prior-03-en-required-repair",
+      "phase": "final",
+      "observationSha256": "26e3af34d2444a4394bca6031e8e8c7ecbae8f087ca194aabaacb17fd0457be5",
+      "fidelity": "incorrect",
+      "note": "Current source explicitly refers to the same previously named, screen-supported product, but baseline leaves the shortened two-word variant Copperlane unrecovered. Surrounding action and constraints survive; no successful selector edit is subsequently damaged by formatter.",
+      "entityCorrect": false,
+      "firstObservedDamage": "unrecovered-final-source-spelling"
+    },
+    {
+      "arm": "baseline",
+      "id": "fresh-prior-04-en-spelling-preservation",
+      "phase": "preview",
+      "observationSha256": "90a46112ed8e3f74ab6a7bcd99ea0105a36d681ea772bde4e3e040df5fabe46f",
+      "fidelity": "correct",
+      "note": "Correct source product spelling is preserved, with no changed actor/action or invented final content. Final constraints are not yet present in this preview and are not required.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "baseline",
+      "id": "fresh-prior-04-en-spelling-preservation",
+      "phase": "final",
+      "observationSha256": "275cec75de39a0c53d667321e89852c8abee54b615bee185f30a3e7dfefdea77",
+      "fidelity": "correct",
+      "note": "Current source explicitly identifies two separate words and requires exact spelling preservation. Baseline retains the current wording without importing the earlier product.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "baseline",
+      "id": "fresh-prior-05-zh-required-name",
+      "phase": "preview",
+      "observationSha256": "4dfdea97e91d59d71b8ecd9b5a88cff004aaca91a1ea43deb059d234d47e4345",
+      "fidelity": "correct",
+      "note": "Correct source product spelling is preserved, with no changed actor/action or invented final content. Final constraints are not yet present in this preview and are not required.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "baseline",
+      "id": "fresh-prior-05-zh-required-name",
+      "phase": "final",
+      "observationSha256": "89440945a6d79cfb5db3d72719881bd91647b5af4b8ba3d42af954a52559171b",
+      "fidelity": "incorrect",
+      "note": "Current source explicitly refers to the same previously named, screen-supported product, but baseline leaves the shortened two-word variant Silverdock unrecovered. Surrounding action and constraints survive; no successful selector edit is subsequently damaged by formatter.",
+      "entityCorrect": false,
+      "firstObservedDamage": "unrecovered-final-source-spelling"
+    },
+    {
+      "arm": "baseline",
+      "id": "fresh-prior-06-zh-explicit-current-spelling",
+      "phase": "preview",
+      "observationSha256": "112226216277344498900f75027db119af02094b2ae8c868fadbe1a28ec2a49c",
+      "fidelity": "correct",
+      "note": "Correct source product spelling is preserved, with no changed actor/action or invented final content. Final constraints are not yet present in this preview and are not required.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "baseline",
+      "id": "fresh-prior-06-zh-explicit-current-spelling",
+      "phase": "final",
+      "observationSha256": "c60268b053be03d957f666a46f7b9d94c2c0d2e9845ceb135445b8d06c61ca7d",
+      "fidelity": "correct",
+      "note": "Current source defines the correct spelling as sil, a space, dock, and explicitly excludes a software name. Baseline retains the current wording without importing the earlier product.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "baseline",
+      "id": "fresh-prior-07-en-required-continuation",
+      "phase": "preview",
+      "observationSha256": "880f169af31afc80881227c958de2cffe6d5e2f341eed9784964bad6dfdf3b5e",
+      "fidelity": "correct",
+      "note": "Correct source product spelling is preserved, with no changed actor/action or invented final content. Final constraints are not yet present in this preview and are not required.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "baseline",
+      "id": "fresh-prior-07-en-required-continuation",
+      "phase": "final",
+      "observationSha256": "e90c3ddfb8f05415069b72999b77130731c70bb9022ea946cc6cf64e6e78441a",
+      "fidelity": "incorrect",
+      "note": "Current source explicitly refers to the same previously named, screen-supported product, but baseline leaves the shortened two-word variant Gardenlink unrecovered. Surrounding action and constraints survive; no successful selector edit is subsequently damaged by formatter.",
+      "entityCorrect": false,
+      "firstObservedDamage": "unrecovered-final-source-spelling"
+    },
+    {
+      "arm": "baseline",
+      "id": "fresh-prior-08-en-current-phrase",
+      "phase": "preview",
+      "observationSha256": "caaf9adcae9598168be634d4b04766ab63055622090861f790e7f15285ef5c27",
+      "fidelity": "correct",
+      "note": "Correct source product spelling is preserved, with no changed actor/action or invented final content. Final constraints are not yet present in this preview and are not required.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "baseline",
+      "id": "fresh-prior-08-en-current-phrase",
+      "phase": "final",
+      "observationSha256": "5ebbf16a929f0f56c61853ee6967715dfb5e28d1f16cb3afd6526e30d2dab93e",
+      "fidelity": "correct",
+      "note": "Current source defines an ordinary phrase and explicitly forbids substituting the screen application name. Baseline retains the current wording without importing the earlier product.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "baseline",
+      "id": "fresh-prior-09-zh-explicit-new-name",
+      "phase": "preview",
+      "observationSha256": "2d6f726f4dc939ca1e8ba133617be7cb29e22263099e36178f13b116fd22c054",
+      "fidelity": "correct",
+      "note": "Correct source product spelling is preserved, with no changed actor/action or invented final content. Final constraints are not yet present in this preview and are not required.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "baseline",
+      "id": "fresh-prior-09-zh-explicit-new-name",
+      "phase": "final",
+      "observationSha256": "6dc17caec69c4e7936b2ae15f3ee3541fee0e472edb6a944f7d0d98dc504c4c9",
+      "fidelity": "correct",
+      "note": "Current source explicitly says the new name is mea port and the present sentence is authoritative. Baseline retains the current wording without importing the earlier product.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "baseline",
+      "id": "fresh-prior-10-en-correct-earlier",
+      "phase": "preview",
+      "observationSha256": "5e7d0aa048c3ac36049698d080e5ffc6531c898cc511cad03c52ae7a83c2e37d",
+      "fidelity": "correct",
+      "note": "Correct source product spelling is preserved, with no changed actor/action or invented final content. Final constraints are not yet present in this preview and are not required.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "baseline",
+      "id": "fresh-prior-10-en-correct-earlier",
+      "phase": "final",
+      "observationSha256": "be2d6dffccc1fceb16a3f73f06d11d206356b34c24b371545923f05e023af947",
+      "fidelity": "correct",
+      "note": "Current source explicitly says earlier recognition was wrong and the two-word har frame is intentional. Baseline retains the current wording without importing the earlier product.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "baseline",
+      "id": "fresh-prior-11-zh-false-prior-screen",
+      "phase": "preview",
+      "observationSha256": "c27971bc5f6631c3d982c92a54558c450c92c634d2be74e024030e39c291b1e8",
+      "fidelity": "correct",
+      "note": "Correct source product spelling is preserved, with no changed actor/action or invented final content. Final constraints are not yet present in this preview and are not required.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "baseline",
+      "id": "fresh-prior-11-zh-false-prior-screen",
+      "phase": "final",
+      "observationSha256": "2a957f81fa2d8bae0a72a476830f3f6cf4ce5d5b83b59147f4a7912d906d6246",
+      "fidelity": "correct",
+      "note": "Current source explicitly identifies the screen as an old product and earlier recognition as wrong. Baseline retains the current wording without importing the earlier product.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "baseline",
+      "id": "fresh-prior-12-en-false-prior-screen",
+      "phase": "preview",
+      "observationSha256": "de2e82108adcdaa30b62576e226d7b71b67b55867a1a435ded84cbf020be2978",
+      "fidelity": "correct",
+      "note": "Correct source product spelling is preserved, with no changed actor/action or invented final content. Final constraints are not yet present in this preview and are not required.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "baseline",
+      "id": "fresh-prior-12-en-false-prior-screen",
+      "phase": "final",
+      "observationSha256": "74f760595e51b60d5971005225d2b96c49f2e04c70d55b332d71178a5ca2e8e2",
+      "fidelity": "correct",
+      "note": "Current source explicitly identifies for note as an input phrase, the displayed product as unrelated, and earlier recognition as mistaken. Baseline retains the current wording without importing the earlier product.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "baseline",
+      "id": "fresh-prior-13-zh-quoted-literal",
+      "phase": "preview",
+      "observationSha256": "8e079cbc3717ff9a0c40b04fa2c35f82b23fee5dac56bb7b06f6d175e5c495c0",
+      "fidelity": "correct",
+      "note": "Correct source product spelling is preserved, with no changed actor/action or invented final content. Final constraints are not yet present in this preview and are not required.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "baseline",
+      "id": "fresh-prior-13-zh-quoted-literal",
+      "phase": "final",
+      "observationSha256": "21940401c32b2c268dab1add220771d2a9fb3898e58d96597658c3d74053e2d0",
+      "fidelity": "correct",
+      "note": "Quoted lum board test literal retains its internal space and characters exactly. Straight-quote normalization only changes surrounding glyphs; earlier Lumenboard is not substituted.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "baseline",
+      "id": "fresh-prior-14-en-quoted-literal",
+      "phase": "preview",
+      "observationSha256": "c169bb8cceef7b71d73c3fa5d0c5fa71391a4a0a77fae8d6984f789287ff2db4",
+      "fidelity": "correct",
+      "note": "Correct source product spelling is preserved, with no changed actor/action or invented final content. Final constraints are not yet present in this preview and are not required.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "baseline",
+      "id": "fresh-prior-14-en-quoted-literal",
+      "phase": "final",
+      "observationSha256": "a21a33bc8be9fd6ef27625b007a819889ee9d531810852795dfe71c19cacca2b",
+      "fidelity": "correct",
+      "note": "Quoted English test literal \"cop lane\" retains exact content and internal space; current literal instruction overrides prior Copperlane.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "baseline",
+      "id": "fresh-prior-15-ambiguous-prior",
+      "phase": "preview",
+      "observationSha256": "e5caafd6f244d5d4e288e09e91901c9bd3b4164ff4de89ca6f308ddbb689e7be",
+      "fidelity": "correct",
+      "note": "Correct source product spelling is preserved, with no changed actor/action or invented final content. Both named products remain distinct.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "baseline",
+      "id": "fresh-prior-15-ambiguous-prior",
+      "phase": "final",
+      "observationSha256": "a5e465884191f2d5b78686b62a5ec2988cf013e933037c2528a70103fca34e6a",
+      "fidelity": "correct",
+      "note": "Two prior names match the local frame without disambiguation; formatter preserve lum board rather than guessing a product. No unavailable extra information is inferred.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "baseline",
+      "id": "fresh-prior-16-new-required-repair",
+      "phase": "preview",
+      "observationSha256": "b03856c21686911ca4860a669a107de8a6a6eaaf6ff85f68d3d85c3b7701b6d8",
+      "fidelity": "correct",
+      "note": "Correct source product spelling is preserved, with no changed actor/action or invented final content. Final constraints are not yet present in this preview and are not required.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "baseline",
+      "id": "fresh-prior-16-new-required-repair",
+      "phase": "final",
+      "observationSha256": "1cec1c5a6d872f663e049fc8e0ba6b533ccbdbaf40ec5c031a95e834c2ac2cc9",
+      "fidelity": "incorrect",
+      "note": "Current source explicitly refers to the same previously named, screen-supported product, but baseline leaves the shortened two-word variant Riverstone unrecovered. Surrounding action and constraints survive; no successful selector edit is subsequently damaged by formatter.",
+      "entityCorrect": false,
+      "firstObservedDamage": "unrecovered-final-source-spelling"
+    },
+    {
+      "arm": "v1",
+      "id": "fresh-prior-01-zh-required-repair",
+      "phase": "preview",
+      "observationSha256": "7e798d3bed4120b2d44fbce909ee8bc6589faafb8613e222c169b4159833e84a",
+      "fidelity": "correct",
+      "note": "Correct source product spelling is preserved, with no changed actor/action or invented final content. Final constraints are not yet present in this preview and are not required.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "v1",
+      "id": "fresh-prior-01-zh-required-repair",
+      "phase": "final",
+      "observationSha256": "2d5647e6d0880ec8867bdd6aecfeccbd9b582012f189b32804f063b958e78eb1",
+      "fidelity": "correct",
+      "note": "Selector e0=replace correctly restores Lumenboard using the explicit same-product continuation and independent screen evidence; formatter preserves the restored name exactly once and all requested actions/constraints.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "v1",
+      "id": "fresh-prior-02-zh-separated-words",
+      "phase": "preview",
+      "observationSha256": "17ccadf3aed64160f20b0b55711013685d5074f1192f593f01991c2c3c45f359",
+      "fidelity": "correct",
+      "note": "Correct source product spelling is preserved, with no changed actor/action or invented final content. Final constraints are not yet present in this preview and are not required.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "v1",
+      "id": "fresh-prior-02-zh-separated-words",
+      "phase": "final",
+      "observationSha256": "78074d5ff2cc28dc4a4a2ba1e30161d9351548b138e36b2ed07fce67339a07e3",
+      "fidelity": "incorrect",
+      "note": "Current source explicitly identifies a phrase, retains an internal space, and forbids merging it into a product name. Selector nevertheless chooses e0=replace and substitutes the earlier/screen product; formatter retains already-corrupted source. This violates model-visible current intent, independently of evaluator-only preferred text.",
+      "entityCorrect": false,
+      "firstObservedDamage": "selector"
+    },
+    {
+      "arm": "v1",
+      "id": "fresh-prior-03-en-required-repair",
+      "phase": "preview",
+      "observationSha256": "2f8cb0373f8548d36a0de90f809c74217e025e9474a301b8de2a17112598f47b",
+      "fidelity": "correct",
+      "note": "Correct source product spelling is preserved, with no changed actor/action or invented final content. Final constraints are not yet present in this preview and are not required.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "v1",
+      "id": "fresh-prior-03-en-required-repair",
+      "phase": "final",
+      "observationSha256": "e419edde6ff28babe3c1dfdedcf450e16cdb48cec816c392268bb47597b31498",
+      "fidelity": "correct",
+      "note": "Selector e0=replace correctly restores Copperlane using the explicit same-product continuation and independent screen evidence; formatter preserves the restored name exactly once and all requested actions/constraints.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "v1",
+      "id": "fresh-prior-04-en-spelling-preservation",
+      "phase": "preview",
+      "observationSha256": "416ad60d3ecc935936a7cbd74c7d5f72b6fa2fe1136faedea9fa9951ccbf32c6",
+      "fidelity": "correct",
+      "note": "Correct source product spelling is preserved, with no changed actor/action or invented final content. Final constraints are not yet present in this preview and are not required.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "v1",
+      "id": "fresh-prior-04-en-spelling-preservation",
+      "phase": "final",
+      "observationSha256": "eeb0fc369d8eb4c9c8c754ec199d5be55d077437d572802785c3689478591940",
+      "fidelity": "incorrect",
+      "note": "Current source explicitly identifies two separate words and requires exact spelling preservation. Selector nevertheless chooses e0=replace and substitutes the earlier/screen product; formatter retains already-corrupted source. This violates model-visible current intent, independently of evaluator-only preferred text.",
+      "entityCorrect": false,
+      "firstObservedDamage": "selector"
+    },
+    {
+      "arm": "v1",
+      "id": "fresh-prior-05-zh-required-name",
+      "phase": "preview",
+      "observationSha256": "8effaade64835a1ce65edef8e367c231f2321790b3cbace09bc1d6950c56adfa",
+      "fidelity": "correct",
+      "note": "Correct source product spelling is preserved, with no changed actor/action or invented final content. Final constraints are not yet present in this preview and are not required.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "v1",
+      "id": "fresh-prior-05-zh-required-name",
+      "phase": "final",
+      "observationSha256": "ceb4a7737e8109e0ccc29f441e73f45d51cbf0e0509ef52c968c32f74f3f5b9b",
+      "fidelity": "correct",
+      "note": "Selector e0=replace correctly restores Silverdock using the explicit same-product continuation and independent screen evidence; formatter preserves the restored name exactly once and all requested actions/constraints.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "v1",
+      "id": "fresh-prior-06-zh-explicit-current-spelling",
+      "phase": "preview",
+      "observationSha256": "dc3d2466febca8913ce18e0fae758b866fe0142f7dbb31d80cd0b6a6dde0b3a6",
+      "fidelity": "correct",
+      "note": "Correct source product spelling is preserved, with no changed actor/action or invented final content. Final constraints are not yet present in this preview and are not required.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "v1",
+      "id": "fresh-prior-06-zh-explicit-current-spelling",
+      "phase": "final",
+      "observationSha256": "4b58d5b67ea7b930ee7c03a5b593858750f1f22bebabc9677ae35f70e16d84a5",
+      "fidelity": "incorrect",
+      "note": "Current source defines the correct spelling as sil, a space, dock, and explicitly excludes a software name. Selector nevertheless chooses e0=replace and substitutes the earlier/screen product; formatter retains already-corrupted source. This violates model-visible current intent, independently of evaluator-only preferred text.",
+      "entityCorrect": false,
+      "firstObservedDamage": "selector"
+    },
+    {
+      "arm": "v1",
+      "id": "fresh-prior-07-en-required-continuation",
+      "phase": "preview",
+      "observationSha256": "2e281f0c6bb49740d0022b3f294e16ee5ce712d5ed96dc02d1803d239aa0b085",
+      "fidelity": "correct",
+      "note": "Correct source product spelling is preserved, with no changed actor/action or invented final content. Final constraints are not yet present in this preview and are not required.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "v1",
+      "id": "fresh-prior-07-en-required-continuation",
+      "phase": "final",
+      "observationSha256": "f4f328a1f918b00f609794480f948dd4609c337acd9c6b9ece09aad2145394a1",
+      "fidelity": "correct",
+      "note": "Selector e0=replace correctly restores Gardenlink using the explicit same-product continuation and independent screen evidence; formatter preserves the restored name exactly once and all requested actions/constraints.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "v1",
+      "id": "fresh-prior-08-en-current-phrase",
+      "phase": "preview",
+      "observationSha256": "8e18368323dcf27ad7d62535b9acac95108d1563327c3de58036a92390f6eac6",
+      "fidelity": "correct",
+      "note": "Correct source product spelling is preserved, with no changed actor/action or invented final content. Final constraints are not yet present in this preview and are not required.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "v1",
+      "id": "fresh-prior-08-en-current-phrase",
+      "phase": "final",
+      "observationSha256": "8a33cd216e68ea528e00167b93e2e05539d2283b6338dfe39fa9b0a72347621c",
+      "fidelity": "incorrect",
+      "note": "Current source defines an ordinary phrase and explicitly forbids substituting the screen application name. Selector nevertheless chooses e0=replace and substitutes the earlier/screen product; formatter retains already-corrupted source. This violates model-visible current intent, independently of evaluator-only preferred text.",
+      "entityCorrect": false,
+      "firstObservedDamage": "selector"
+    },
+    {
+      "arm": "v1",
+      "id": "fresh-prior-09-zh-explicit-new-name",
+      "phase": "preview",
+      "observationSha256": "013458a75901ec0703d963c59b7a701945e298fd6b277e7f7016c4e4fb182b2b",
+      "fidelity": "correct",
+      "note": "Correct source product spelling is preserved, with no changed actor/action or invented final content. Final constraints are not yet present in this preview and are not required.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "v1",
+      "id": "fresh-prior-09-zh-explicit-new-name",
+      "phase": "final",
+      "observationSha256": "402d20270dd9da32a3ec69df0696754779f7957967228549372b3051446285f8",
+      "fidelity": "incorrect",
+      "note": "Current source explicitly says the new name is mea port and the present sentence is authoritative. Selector nevertheless chooses e0=replace and substitutes the earlier/screen product; formatter retains already-corrupted source. This violates model-visible current intent, independently of evaluator-only preferred text.",
+      "entityCorrect": false,
+      "firstObservedDamage": "selector"
+    },
+    {
+      "arm": "v1",
+      "id": "fresh-prior-10-en-correct-earlier",
+      "phase": "preview",
+      "observationSha256": "77ab0b4b7ca6b959e0a20bda71221a62031992e3c58271131d7d07d936da363f",
+      "fidelity": "correct",
+      "note": "Correct source product spelling is preserved, with no changed actor/action or invented final content. Final constraints are not yet present in this preview and are not required.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "v1",
+      "id": "fresh-prior-10-en-correct-earlier",
+      "phase": "final",
+      "observationSha256": "5e35c25d0618b9a4aa7014232507e95a1a1f43cf0ca729f6e492bb8e7106cfe6",
+      "fidelity": "incorrect",
+      "note": "Current source explicitly says earlier recognition was wrong and the two-word har frame is intentional. Selector nevertheless chooses e0=replace and substitutes the earlier/screen product; formatter retains already-corrupted source. This violates model-visible current intent, independently of evaluator-only preferred text.",
+      "entityCorrect": false,
+      "firstObservedDamage": "selector"
+    },
+    {
+      "arm": "v1",
+      "id": "fresh-prior-11-zh-false-prior-screen",
+      "phase": "preview",
+      "observationSha256": "df14c27e082ff96df8a86cf992a5f8c60107032d390865bf114e054a7d690eea",
+      "fidelity": "correct",
+      "note": "Correct source product spelling is preserved, with no changed actor/action or invented final content. Final constraints are not yet present in this preview and are not required.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "v1",
+      "id": "fresh-prior-11-zh-false-prior-screen",
+      "phase": "final",
+      "observationSha256": "7441edead16f5083fcacb096fdc52364063a6745efde9b316249ae313e8f98e3",
+      "fidelity": "incorrect",
+      "note": "Current source explicitly identifies the screen as an old product and earlier recognition as wrong. Selector nevertheless chooses e0=replace and substitutes the earlier/screen product; formatter retains already-corrupted source. This violates model-visible current intent, independently of evaluator-only preferred text.",
+      "entityCorrect": false,
+      "firstObservedDamage": "selector"
+    },
+    {
+      "arm": "v1",
+      "id": "fresh-prior-12-en-false-prior-screen",
+      "phase": "preview",
+      "observationSha256": "42ed7790b6ac659822b789ec6ecb63131c1bd9066ae13c53bfb7884c8091a254",
+      "fidelity": "correct",
+      "note": "Correct source product spelling is preserved, with no changed actor/action or invented final content. Final constraints are not yet present in this preview and are not required.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "v1",
+      "id": "fresh-prior-12-en-false-prior-screen",
+      "phase": "final",
+      "observationSha256": "2a513191162d2a67826d9b0b3ad4ca89627e582ff0906d303edaf61050fea460",
+      "fidelity": "incorrect",
+      "note": "Current source explicitly identifies for note as an input phrase, the displayed product as unrelated, and earlier recognition as mistaken. Selector nevertheless chooses e0=replace and substitutes the earlier/screen product; formatter retains already-corrupted source. This violates model-visible current intent, independently of evaluator-only preferred text.",
+      "entityCorrect": false,
+      "firstObservedDamage": "selector"
+    },
+    {
+      "arm": "v1",
+      "id": "fresh-prior-13-zh-quoted-literal",
+      "phase": "preview",
+      "observationSha256": "15e3f8827884c75e5a2ac6ad051b8cc6143208a4498c8609cb80f10c316df654",
+      "fidelity": "correct",
+      "note": "Correct source product spelling is preserved, with no changed actor/action or invented final content. Final constraints are not yet present in this preview and are not required.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "v1",
+      "id": "fresh-prior-13-zh-quoted-literal",
+      "phase": "final",
+      "observationSha256": "4467f70249b475c11780ed955bf7154ec5c5db42147cac2d5c02e547aeb8f702",
+      "fidelity": "correct",
+      "note": "Quoted lum board test literal retains its internal space and characters exactly. Straight-quote normalization only changes surrounding glyphs; earlier Lumenboard is not substituted.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "v1",
+      "id": "fresh-prior-14-en-quoted-literal",
+      "phase": "preview",
+      "observationSha256": "406b6332e4c40ff7b2857782350e48e96ad818c9cf19cf76d487fd705905b121",
+      "fidelity": "correct",
+      "note": "Correct source product spelling is preserved, with no changed actor/action or invented final content. Final constraints are not yet present in this preview and are not required.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "v1",
+      "id": "fresh-prior-14-en-quoted-literal",
+      "phase": "final",
+      "observationSha256": "471840167c227ebf3991c2ec15e0312f85064cdf79a033be1136245d61b3ee91",
+      "fidelity": "correct",
+      "note": "Quoted English test literal \"cop lane\" retains exact content and internal space; current literal instruction overrides prior Copperlane.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "v1",
+      "id": "fresh-prior-15-ambiguous-prior",
+      "phase": "preview",
+      "observationSha256": "4d165aaea9fbe98a2cdf1578fe0438bb8e37ab716f2730875b63d9fe7e056754",
+      "fidelity": "correct",
+      "note": "Correct source product spelling is preserved, with no changed actor/action or invented final content. Both named products remain distinct.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "v1",
+      "id": "fresh-prior-15-ambiguous-prior",
+      "phase": "final",
+      "observationSha256": "2d25a7a862d306bcd297e98d6446458725d8e5208c997e17a95df8b71acdcd64",
+      "fidelity": "correct",
+      "note": "Two prior names match the local frame without disambiguation; selector e0=keep and formatter preserve lum board rather than guessing a product. No unavailable extra information is inferred.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "v1",
+      "id": "fresh-prior-16-new-required-repair",
+      "phase": "preview",
+      "observationSha256": "f2f442ae3921e43841f3568950d2f621f7249768a3e5a07fe8b4815f72ac8110",
+      "fidelity": "correct",
+      "note": "Correct source product spelling is preserved, with no changed actor/action or invented final content. Final constraints are not yet present in this preview and are not required.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "v1",
+      "id": "fresh-prior-16-new-required-repair",
+      "phase": "final",
+      "observationSha256": "382e1b07f5e328f9be402d298449b0686311eae814fa988f64b4dc9410141a81",
+      "fidelity": "correct",
+      "note": "Selector e0=replace correctly restores Riverstone using the explicit same-product continuation and independent screen evidence; formatter preserves the restored name exactly once and all requested actions/constraints.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "v3",
+      "id": "fresh-prior-01-zh-required-repair",
+      "phase": "preview",
+      "observationSha256": "95f930e942873bb6b8513e225a1f290dce34e73961a1a11d8f0d708adc6dfaac",
+      "fidelity": "correct",
+      "note": "Correct source product spelling is preserved, with no changed actor/action or invented final content. Final constraints are not yet present in this preview and are not required.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "v3",
+      "id": "fresh-prior-01-zh-required-repair",
+      "phase": "final",
+      "observationSha256": "f47a3017d13d2c15d87d878f75a63fc2389b77ab66fcce50474a780bc87998c0",
+      "fidelity": "correct",
+      "note": "Selector e0=replace correctly restores Lumenboard using the explicit same-product continuation and independent screen evidence; formatter preserves the restored name exactly once and all requested actions/constraints.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "v3",
+      "id": "fresh-prior-02-zh-separated-words",
+      "phase": "preview",
+      "observationSha256": "9e9a7b57937755562231939d86dbb8dcf53419d144af2f3cf76f627ef1dad131",
+      "fidelity": "correct",
+      "note": "Correct source product spelling is preserved, with no changed actor/action or invented final content. Final constraints are not yet present in this preview and are not required.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "v3",
+      "id": "fresh-prior-02-zh-separated-words",
+      "phase": "final",
+      "observationSha256": "22434b6416faff0932c21810545e4110f5a1975c24ef41e0d5d21cf4cedaae53",
+      "fidelity": "correct",
+      "note": "Current source explicitly identifies a phrase, retains an internal space, and forbids merging it into a product name. Selector e0=keep and formatter preserve the current wording without importing the earlier product.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "v3",
+      "id": "fresh-prior-03-en-required-repair",
+      "phase": "preview",
+      "observationSha256": "6f86499700b4deb8d886417d67fd523541195c1aed8ee722fdb8090e5123aefc",
+      "fidelity": "correct",
+      "note": "Correct source product spelling is preserved, with no changed actor/action or invented final content. Final constraints are not yet present in this preview and are not required.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "v3",
+      "id": "fresh-prior-03-en-required-repair",
+      "phase": "final",
+      "observationSha256": "d8ef7362e3176976f6164c8071af65c8b89fbe61f4c8f066a591654c14e6164e",
+      "fidelity": "correct",
+      "note": "Selector e0=replace correctly restores Copperlane using the explicit same-product continuation and independent screen evidence; formatter preserves the restored name exactly once and all requested actions/constraints.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "v3",
+      "id": "fresh-prior-04-en-spelling-preservation",
+      "phase": "preview",
+      "observationSha256": "c3b62c01775c70613670ca50b9e3913915dfcb598d0ddd80f0b952e71c8f4d3c",
+      "fidelity": "correct",
+      "note": "Correct source product spelling is preserved, with no changed actor/action or invented final content. Final constraints are not yet present in this preview and are not required.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "v3",
+      "id": "fresh-prior-04-en-spelling-preservation",
+      "phase": "final",
+      "observationSha256": "23fc9413f4ae20e12fed4aba4f3251d7dce7eb61ad2ded05fd1381462ebae6d9",
+      "fidelity": "correct",
+      "note": "Current source explicitly identifies two separate words and requires exact spelling preservation. Selector e0=keep and formatter preserve the current wording without importing the earlier product.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "v3",
+      "id": "fresh-prior-05-zh-required-name",
+      "phase": "preview",
+      "observationSha256": "8d7b139495584e2dd5058e50bff807fe27ad9c069af9afb1f5ab56092ce80433",
+      "fidelity": "correct",
+      "note": "Correct source product spelling is preserved, with no changed actor/action or invented final content. Final constraints are not yet present in this preview and are not required.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "v3",
+      "id": "fresh-prior-05-zh-required-name",
+      "phase": "final",
+      "observationSha256": "12ab2cd7e2b55dbb9b0db621c60f7d6f28faf1dafed0bcac4c16789f19fd6d58",
+      "fidelity": "correct",
+      "note": "Selector e0=replace correctly restores Silverdock using the explicit same-product continuation and independent screen evidence; formatter preserves the restored name exactly once and all requested actions/constraints.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "v3",
+      "id": "fresh-prior-06-zh-explicit-current-spelling",
+      "phase": "preview",
+      "observationSha256": "5f48f65fa556f995c98d8f59789b4c06bb578fde0f0e7288dd0930f0c87cb945",
+      "fidelity": "correct",
+      "note": "Correct source product spelling is preserved, with no changed actor/action or invented final content. Final constraints are not yet present in this preview and are not required.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "v3",
+      "id": "fresh-prior-06-zh-explicit-current-spelling",
+      "phase": "final",
+      "observationSha256": "1b84039ca41c1ca7f22bb5e7ea2234f98bd6f3f09d0c28dfbbcdbe6fb702e017",
+      "fidelity": "incorrect",
+      "note": "Current source defines the correct spelling as sil, a space, dock, and explicitly excludes a software name. Selector nevertheless chooses e0=replace and substitutes the earlier/screen product; formatter retains already-corrupted source. This violates model-visible current intent, independently of evaluator-only preferred text.",
+      "entityCorrect": false,
+      "firstObservedDamage": "selector"
+    },
+    {
+      "arm": "v3",
+      "id": "fresh-prior-07-en-required-continuation",
+      "phase": "preview",
+      "observationSha256": "41b9fe65676d7abfd28a3223104452ec523ade4eaec08ad88f9d979b8e12172d",
+      "fidelity": "correct",
+      "note": "Correct source product spelling is preserved, with no changed actor/action or invented final content. Final constraints are not yet present in this preview and are not required.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "v3",
+      "id": "fresh-prior-07-en-required-continuation",
+      "phase": "final",
+      "observationSha256": "bd5ed654c2ec291d93eca5ad4efcf12a7facc7f15cfb80360fb56303bbfbe2e6",
+      "fidelity": "correct",
+      "note": "Selector e0=replace correctly restores Gardenlink using the explicit same-product continuation and independent screen evidence; formatter preserves the restored name exactly once and all requested actions/constraints.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "v3",
+      "id": "fresh-prior-08-en-current-phrase",
+      "phase": "preview",
+      "observationSha256": "8cb441d8cf0579bdf9296becfb967548b7821095c44e8bfd5ab6e7ac0d7b9e57",
+      "fidelity": "correct",
+      "note": "Correct source product spelling is preserved, with no changed actor/action or invented final content. Final constraints are not yet present in this preview and are not required.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "v3",
+      "id": "fresh-prior-08-en-current-phrase",
+      "phase": "final",
+      "observationSha256": "331c220c992ea2c0bedc86a8d4b76d7334c221295fefc0a8b402f2528acedd14",
+      "fidelity": "correct",
+      "note": "Current source defines an ordinary phrase and explicitly forbids substituting the screen application name. Selector e0=keep and formatter preserve the current wording without importing the earlier product.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "v3",
+      "id": "fresh-prior-09-zh-explicit-new-name",
+      "phase": "preview",
+      "observationSha256": "e39fd4729ed45b58160052116173cf94f8b317fa350fc9fd5a6273c314164e78",
+      "fidelity": "correct",
+      "note": "Correct source product spelling is preserved, with no changed actor/action or invented final content. Final constraints are not yet present in this preview and are not required.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "v3",
+      "id": "fresh-prior-09-zh-explicit-new-name",
+      "phase": "final",
+      "observationSha256": "10e4f59f5e5475fe8f14b7a2147f1b1de42ec604389a0caf7e06d6eee2bb79d3",
+      "fidelity": "incorrect",
+      "note": "Current source explicitly says the new name is mea port and the present sentence is authoritative. Selector nevertheless chooses e0=replace and substitutes the earlier/screen product; formatter retains already-corrupted source. This violates model-visible current intent, independently of evaluator-only preferred text.",
+      "entityCorrect": false,
+      "firstObservedDamage": "selector"
+    },
+    {
+      "arm": "v3",
+      "id": "fresh-prior-10-en-correct-earlier",
+      "phase": "preview",
+      "observationSha256": "b0fffbe922c6291a1d62c29e899a76c3cb82dae0ea1c4a9bee4ed422bb02e73d",
+      "fidelity": "correct",
+      "note": "Correct source product spelling is preserved, with no changed actor/action or invented final content. Final constraints are not yet present in this preview and are not required.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "v3",
+      "id": "fresh-prior-10-en-correct-earlier",
+      "phase": "final",
+      "observationSha256": "c9c1f4e2790ec871b6257ba753c025bcf58c05bc556fd7feeaa9af36bbb1d552",
+      "fidelity": "incorrect",
+      "note": "Current source explicitly says earlier recognition was wrong and the two-word har frame is intentional. Selector nevertheless chooses e0=replace and substitutes the earlier/screen product; formatter retains already-corrupted source. This violates model-visible current intent, independently of evaluator-only preferred text.",
+      "entityCorrect": false,
+      "firstObservedDamage": "selector"
+    },
+    {
+      "arm": "v3",
+      "id": "fresh-prior-11-zh-false-prior-screen",
+      "phase": "preview",
+      "observationSha256": "219f9adad899008a7824e4694f146f811f7b79ffe83199c7fe5555cf51124514",
+      "fidelity": "correct",
+      "note": "Correct source product spelling is preserved, with no changed actor/action or invented final content. Final constraints are not yet present in this preview and are not required.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "v3",
+      "id": "fresh-prior-11-zh-false-prior-screen",
+      "phase": "final",
+      "observationSha256": "551912875310f400aaa023607cd64dfd3e17ac069ca6c7fa8b968b98236be7f2",
+      "fidelity": "incorrect",
+      "note": "Current source explicitly identifies the screen as an old product and earlier recognition as wrong. Selector nevertheless chooses e0=replace and substitutes the earlier/screen product; formatter retains already-corrupted source. This violates model-visible current intent, independently of evaluator-only preferred text.",
+      "entityCorrect": false,
+      "firstObservedDamage": "selector"
+    },
+    {
+      "arm": "v3",
+      "id": "fresh-prior-12-en-false-prior-screen",
+      "phase": "preview",
+      "observationSha256": "118da0c2b170d15488847cbaa1a67b8b21597f3d4eba1c6f348db7721479d764",
+      "fidelity": "correct",
+      "note": "Correct source product spelling is preserved, with no changed actor/action or invented final content. Final constraints are not yet present in this preview and are not required.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "v3",
+      "id": "fresh-prior-12-en-false-prior-screen",
+      "phase": "final",
+      "observationSha256": "a452c5e7ec41de0357f039bce6f650a2180a9f2248be0585553e3573524d2e8d",
+      "fidelity": "incorrect",
+      "note": "Current source explicitly identifies for note as an input phrase, the displayed product as unrelated, and earlier recognition as mistaken. Selector nevertheless chooses e0=replace and substitutes the earlier/screen product; formatter retains already-corrupted source. This violates model-visible current intent, independently of evaluator-only preferred text.",
+      "entityCorrect": false,
+      "firstObservedDamage": "selector"
+    },
+    {
+      "arm": "v3",
+      "id": "fresh-prior-13-zh-quoted-literal",
+      "phase": "preview",
+      "observationSha256": "7b6169fe7468b04933cec1efcfc706282f2b92c9f8b870024d094b269f40a94e",
+      "fidelity": "correct",
+      "note": "Correct source product spelling is preserved, with no changed actor/action or invented final content. Final constraints are not yet present in this preview and are not required.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "v3",
+      "id": "fresh-prior-13-zh-quoted-literal",
+      "phase": "final",
+      "observationSha256": "91a00f0d3ebd0dc43d7f06b133006057d346b3e99847c601755eb8e721448994",
+      "fidelity": "correct",
+      "note": "Quoted lum board test literal retains its internal space and characters exactly. Straight-quote normalization only changes surrounding glyphs; earlier Lumenboard is not substituted.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "v3",
+      "id": "fresh-prior-14-en-quoted-literal",
+      "phase": "preview",
+      "observationSha256": "9305312bce9d1321cdd65e6b78db04be70c11788af0c4cf55144d5eb6b52c58d",
+      "fidelity": "correct",
+      "note": "Correct source product spelling is preserved, with no changed actor/action or invented final content. Final constraints are not yet present in this preview and are not required.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "v3",
+      "id": "fresh-prior-14-en-quoted-literal",
+      "phase": "final",
+      "observationSha256": "7bb467690b39f820b8a324bd9faa269075f8a892ddd70fae386c09fcd63e1d10",
+      "fidelity": "correct",
+      "note": "Quoted English test literal \"cop lane\" retains exact content and internal space; current literal instruction overrides prior Copperlane.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "v3",
+      "id": "fresh-prior-15-ambiguous-prior",
+      "phase": "preview",
+      "observationSha256": "3366a04311f31fe25b59f023c735cfc9038fd3a3f95314a1051c9c40aff869bd",
+      "fidelity": "correct",
+      "note": "Correct source product spelling is preserved, with no changed actor/action or invented final content. Both named products remain distinct.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "v3",
+      "id": "fresh-prior-15-ambiguous-prior",
+      "phase": "final",
+      "observationSha256": "00bba4ec15af0f547214d7bf1bfdb88a785dc3cde51ac41fb67cead5e5ec2adf",
+      "fidelity": "not-assessable",
+      "note": "Selector conservatively returns e0=keep for two ambiguous prior products. Subsequent formatter request is cancelled by the native 10-second generation deadline; phase elapsedMs=10005.722, result cancelled=true, output empty, delivery verdict empty. There is no complete formatter proposal to judge semantically. Keep this failed phase in all availability/quality denominators; it is not a preservation success.",
+      "entityCorrect": null,
+      "firstObservedDamage": "formatter-timeout",
+      "availabilityFailure": true
+    },
+    {
+      "arm": "v3",
+      "id": "fresh-prior-16-new-required-repair",
+      "phase": "preview",
+      "observationSha256": "85a28852824f4a0ad0304f7974f34ce9a84c60424f8e8164062c6e698219be22",
+      "fidelity": "correct",
+      "note": "Correct source product spelling is preserved, with no changed actor/action or invented final content. Final constraints are not yet present in this preview and are not required.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    },
+    {
+      "arm": "v3",
+      "id": "fresh-prior-16-new-required-repair",
+      "phase": "final",
+      "observationSha256": "e73805945bc31e08ff401f077f42eeb54986bf55223f2e9692c9ad8c2c4ccc76",
+      "fidelity": "correct",
+      "note": "Selector e0=replace correctly restores Riverstone using the explicit same-product continuation and independent screen evidence; formatter preserves the restored name exactly once and all requested actions/constraints.",
+      "entityCorrect": true,
+      "firstObservedDamage": "none-observed"
+    }
+  ],
+  "reviewer": {
+    "kind": "separate-assistant-output-review",
+    "independence": "Separate task from implementation; personally inspected all 96 source/context/selector/formatter observations. Not independent human or blind review. Cases authored/frozen before V3 generation, but this is exploratory development contrast, not a held-out natural-speech estimate.",
+    "rubric": "Explicit current intent outranks agreeing previous recognition and screen. Five positive finals explicitly reference same prior product. Eleven negative/ambiguous/literal finals must preserve current words. Preview contains only the source product name and is not penalized for unspoken final constraints. Cancelled inference is not semantic success."
+  }
+}

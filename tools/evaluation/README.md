@@ -41,6 +41,12 @@ make rewrite-e2e DRIVER=/absolute/private/rewrite-os-driver.json OUT=.workspace/
 
 Use `REWRITE_CONFIG` and `REWRITE_PLAN` to select another experiment or a new plan path. Output directories are exclusive. Archive reusable research source/prompt/token/preview and completed historical task evidence under `benchmarks/`; keep personal recordings and active blind-review mappings private until their study is disclosed. Raters receive `tasks.json`, never `mapping-private.json`. The automatic report marks semantic quality pending until independent ratings are imported. On Windows without Make, use `pnpm rewrite:plan --config benchmarks/configs/desktop-rewrite.json --out ...` and the matching `rewrite:validate`, `rewrite:run`, `rewrite:report`, `rewrite:human-export`, `rewrite:human-report`, `rewrite:e2e` scripts with the documented arguments.
 
+## Rewrite stage preservation diagnostics
+
+[Stage preservation fixtures and report protocol](../../benchmarks/reproduction/rewrite-stage-preservation-v1/README.md) isolate recognized sources, contextual selection, formatting and final delivery. `pnpm rewrite:stages:run --arm candidate --cases /absolute/cases.json --out /absolute/new-run --runtime /absolute/runtime --model /absolute/model` freezes source, verifies model digest and records native requests. Arms `baseline`, `no-prior` and `no-screen` provide explicit treatments. `pnpm rewrite:stages:matrix` runs the documented development/validation/native-source matrix serially; it does not run microphone or editor acceptance. Use `final-validation.json` separately for the final source-intent controls.
+
+`pnpm rewrite:stages:test` checks the model-free reporter; `rewrite:stages:report` requires hash-bound per-output review, and `rewrite:stages:verify /absolute/report` verifies its inventory. Completed runs, original failures and reviewed reports belong in the fixture archive. Assistant reviews must remain labeled as such; command success and substring presence are not semantic acceptance.
+
 ## ASR corpus protocol v1
 
 A JSON manifest contains `version: 1`, a nonempty `license`, explicit `consent: true` for the evaluator's authorized fixture use, and `samples`. Consent is a provenance assertion, not a mechanism to obtain third-party rights. Include source card/revision/access-review records alongside private manifests.

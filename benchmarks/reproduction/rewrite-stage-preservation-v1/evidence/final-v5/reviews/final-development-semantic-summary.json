@@ -1,0 +1,76 @@
+{
+  "reviewer": "Separate assistant, not independent human/blind evaluation",
+  "arms": {
+    "baseline": {
+      "phases": 16,
+      "correct": 12,
+      "incorrect": 4,
+      "not-assessable": 0,
+      "entityCorrectPreviewPairs": 7,
+      "previewToFinalEntityRegressionPairs": [
+        "user-chatterfly-09",
+        "user-chatterfly-11"
+      ]
+    },
+    "no-prior": {
+      "phases": 16,
+      "correct": 14,
+      "incorrect": 2,
+      "not-assessable": 0,
+      "entityCorrectPreviewPairs": 7,
+      "previewToFinalEntityRegressionPairs": [
+        "user-chatterfly-09"
+      ]
+    },
+    "no-screen": {
+      "phases": 16,
+      "correct": 10,
+      "incorrect": 6,
+      "not-assessable": 0,
+      "entityCorrectPreviewPairs": 6,
+      "previewToFinalEntityRegressionPairs": [
+        "user-chatterfly-09",
+        "user-chatterfly-11"
+      ]
+    },
+    "candidate": {
+      "phases": 16,
+      "correct": 15,
+      "incorrect": 1,
+      "not-assessable": 0,
+      "entityCorrectPreviewPairs": 7,
+      "previewToFinalEntityRegressionPairs": []
+    }
+  },
+  "formerTreatmentParity": {
+    "baseline": {
+      "textEqualPhases": 16,
+      "denominator": 16,
+      "formerArmSha256": "505f1b93bc638e28ac2ab2648df814b2f5960c045cae30dac6eb96bd1e1c228f",
+      "currentArmSha256": "0d101b8468cacfa42286c356aa5b1847000215afd201878b16fb1d12a96aa771",
+      "scope": "Observed output equality only; source/treatment identities and timings remain distinct."
+    },
+    "no-prior": {
+      "textEqualPhases": 16,
+      "denominator": 16,
+      "formerArmSha256": "94cf7553d6582e97e00f01d5e45cd4afd0009eaaf43c0110ce15dd493bb8f038",
+      "currentArmSha256": "ccbf54ede985436d0d31e9a673dbad134679f3498510f0d526f4987aae6fabb1",
+      "scope": "Observed output equality only; source/treatment identities and timings remain distinct."
+    },
+    "no-screen": {
+      "textEqualPhases": 16,
+      "denominator": 16,
+      "formerArmSha256": "768dede9e7034ba0bf9e8fa682eb841b56c3849d63fea60ffd4f5e3adf170390",
+      "currentArmSha256": "a69d58f5c4531bc3885c819e95d73fc7717d04a5013a6592023035e62f84d040",
+      "scope": "Observed output equality only; source/treatment identities and timings remain distinct."
+    },
+    "candidate": {
+      "textEqualPhases": 16,
+      "denominator": 16,
+      "formerArmSha256": "432079f7ca4f6204cbacb2289f1e2c2230b509adfdc6740d986be6d738b4c2d0",
+      "currentArmSha256": "8eea770cf04e3d06a9106c84a112b36948103d4b11079a8872fa95d77dc10b34",
+      "scope": "Observed output equality only; source/treatment identities and timings remain distinct."
+    }
+  },
+  "reviewSha256": "80e0685875f5938ead5526eac490b2f536030744914ca6e4d1d31244a71cebe8"
+}

@@ -34,9 +34,10 @@ type Request struct {
 	Scene   string   `json:"scene,omitempty"`
 	Terms   []string `json:"terms,omitempty"`
 	// Context is the request's untrusted context, when it has any.
-	Context *domain.RewriteContext `json:"context,omitempty"`
-	Text    string                 `json:"text,omitempty"`
-	Live    bool                   `json:"live,omitempty"`
+	Context      *domain.RewriteContext `json:"context,omitempty"`
+	Text         string                 `json:"text,omitempty"`
+	PreviousText string                 `json:"previousText,omitempty"`
+	Live         bool                   `json:"live,omitempty"`
 	// Cancel.
 	Target uint64 `json:"target,omitempty"`
 }

@@ -1,0 +1,60 @@
+{
+  "samples": [
+    {
+      "id": "native-06",
+      "language": "zh",
+      "mode": "rewrite",
+      "scenario": "chat",
+      "speech": "请检查 get user profile 这个函数|不要改动函数名只补充注释",
+      "sourceText": "请检查 get user profile 这个函数，不要改动函数名只补充注释。",
+      "contextFixture": {
+        "image": "images/native-06.png",
+        "visibleText": "代码符号：getUserProfile\n任务：补充注释\n约束：不要修改函数名"
+      },
+      "screenText": "代码符号：getUserProfile\n任务：补充注释\n约束：不要修改函数名",
+      "screen": "代码符号：getUserProfile\n任务：补充注释\n约束：不要修改函数名"
+    },
+    {
+      "id": "native-07",
+      "language": "zh",
+      "mode": "rewrite",
+      "scenario": "chat",
+      "speech": "贝塔科技的材料不要发给张伟|先让张巍确认再发",
+      "sourceText": "贝塔科技的材料不要发给张伟，先让张巍确认再发。",
+      "contextFixture": {
+        "image": "images/native-07.png",
+        "visibleText": "审核人：张巍\n其他联系人：张伟\n公司：贝塔科技\n状态：等待审核"
+      },
+      "screenText": "审核人：张巍\n其他联系人：张伟\n公司：贝塔科技\n状态：等待审核",
+      "screen": "审核人：张巍\n其他联系人：张伟\n公司：贝塔科技\n状态：等待审核"
+    },
+    {
+      "id": "native-numeric-01",
+      "language": "zh",
+      "mode": "rewrite",
+      "scenario": "chat",
+      "speech": "版本号是三点五|不要改成三点六",
+      "sourceText": "版本号是三点五，不要改成三点六。",
+      "contextFixture": {
+        "image": "images/native-numeric-01.png",
+        "visibleText": "当前版本：3.5\n其他版本：3.6"
+      },
+      "screenText": "当前版本：3.5\n其他版本：3.6",
+      "screen": "当前版本：3.5\n其他版本：3.6"
+    },
+    {
+      "id": "native-numeric-02",
+      "language": "zh",
+      "mode": "rewrite",
+      "scenario": "chat",
+      "speech": "预算是一千二百元|不是一千五百元",
+      "sourceText": "预算是一千二百元，不是一千五百元。",
+      "contextFixture": {
+        "image": "images/native-numeric-02.png",
+        "visibleText": "批准预算：1200元\n其他报价：1500元"
+      },
+      "screenText": "批准预算：1200元\n其他报价：1500元",
+      "screen": "批准预算：1200元\n其他报价：1500元"
+    }
+  ]
+}

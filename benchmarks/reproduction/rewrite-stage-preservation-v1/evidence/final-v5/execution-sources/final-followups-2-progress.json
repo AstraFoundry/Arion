@@ -1,0 +1,97 @@
+[
+  {
+    "name": "final-intent-baseline-2",
+    "command": [
+      "node",
+      "scripts/rewrite-stage-command.mjs",
+      "run",
+      "--arm",
+      "baseline",
+      "--cases",
+      "/Users/steven/code/Arion/benchmarks/reproduction/rewrite-stage-preservation-v1/final-intent-controls.json",
+      "--out",
+      "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/final-intent-baseline-2",
+      "--runtime",
+      "/Applications/Arion.app/Contents/Resources/llm",
+      "--model",
+      "/Users/steven/Library/Application Support/Arion/models/qwen3.5-2b-q4-k-m-metal"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "final-development-baseline",
+    "command": [
+      "node",
+      "scripts/rewrite-stage-command.mjs",
+      "run",
+      "--arm",
+      "baseline",
+      "--cases",
+      "/Users/steven/code/Arion/benchmarks/reproduction/rewrite-stage-preservation-v1/development.json",
+      "--out",
+      "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/final-development-baseline",
+      "--runtime",
+      "/Applications/Arion.app/Contents/Resources/llm",
+      "--model",
+      "/Users/steven/Library/Application Support/Arion/models/qwen3.5-2b-q4-k-m-metal"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "final-development-no-prior",
+    "command": [
+      "node",
+      "scripts/rewrite-stage-command.mjs",
+      "run",
+      "--arm",
+      "no-prior",
+      "--cases",
+      "/Users/steven/code/Arion/benchmarks/reproduction/rewrite-stage-preservation-v1/development.json",
+      "--out",
+      "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/final-development-no-prior",
+      "--runtime",
+      "/Applications/Arion.app/Contents/Resources/llm",
+      "--model",
+      "/Users/steven/Library/Application Support/Arion/models/qwen3.5-2b-q4-k-m-metal"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "final-development-no-screen",
+    "command": [
+      "node",
+      "scripts/rewrite-stage-command.mjs",
+      "run",
+      "--arm",
+      "no-screen",
+      "--cases",
+      "/Users/steven/code/Arion/benchmarks/reproduction/rewrite-stage-preservation-v1/development.json",
+      "--out",
+      "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/final-development-no-screen",
+      "--runtime",
+      "/Applications/Arion.app/Contents/Resources/llm",
+      "--model",
+      "/Users/steven/Library/Application Support/Arion/models/qwen3.5-2b-q4-k-m-metal"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "final-development-candidate",
+    "command": [
+      "node",
+      "scripts/rewrite-stage-command.mjs",
+      "run",
+      "--arm",
+      "candidate",
+      "--cases",
+      "/Users/steven/code/Arion/benchmarks/reproduction/rewrite-stage-preservation-v1/development.json",
+      "--out",
+      "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/final-development-candidate",
+      "--runtime",
+      "/Applications/Arion.app/Contents/Resources/llm",
+      "--model",
+      "/Users/steven/Library/Application Support/Arion/models/qwen3.5-2b-q4-k-m-metal"
+    ],
+    "exitCode": 0
+  }
+]

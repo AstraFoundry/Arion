@@ -119,7 +119,7 @@ func (w *worker) rewrite(req protocol.Request) protocol.Response {
 	w.running = req.ID
 	w.stop.Store(false)
 	w.mu.Unlock()
-	in := engine.Request{Session: req.Session, Scene: req.Scene, Terms: req.Terms, Text: req.Text, Prefill: req.Op == protocol.OpPrefill, Live: req.Live}
+	in := engine.Request{Session: req.Session, Scene: req.Scene, Terms: req.Terms, Text: req.Text, PreviousText: req.PreviousText, Prefill: req.Op == protocol.OpPrefill, Live: req.Live}
 	if req.Context != nil {
 		in.Context = *req.Context
 	}

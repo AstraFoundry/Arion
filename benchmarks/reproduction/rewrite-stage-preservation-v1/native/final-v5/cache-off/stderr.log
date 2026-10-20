@@ -1,0 +1,3 @@
+activated xasr-160-xasr-final in 3165 ms
+llm loaded prompt=selector-contextual-v5+natural-layout-v3 in 1419 ms
+cache-native-chatterfly-01 stop→final   5270 ms previews=0 accepted

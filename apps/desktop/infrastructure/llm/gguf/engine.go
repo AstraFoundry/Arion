@@ -282,7 +282,10 @@ func (e *Engine) Run(req engine.Request, stop *atomic.Bool) (engine.Result, erro
 	if len(req.Terms) > 0 {
 		contextData["Terms"] = strings.Join(req.Terms, "\n")
 	}
-	p := e.lexicon.Prepare(cleanup.Text, contextData, req.Scene)
+	if req.PreviousText != "" && req.PreviousText != req.Text {
+		contextData["EarlierSource"] = (domain.RewriteContext{Screen: req.PreviousText}).Bounded().Screen
+	}
+	p := e.lexicon.PrepareContextual(cleanup.Text, contextData, req.Scene)
 	result := engine.Result{Cleanup: cleanup, Template: prompt.SelectedVersion}
 	edited := cleanup.Text
 	add := func(out completion) {
@@ -292,7 +295,13 @@ func (e *Engine) Run(req engine.Request, stop *atomic.Bool) (engine.Result, erro
 		result.PrefillMs += out.Timings.PromptMs
 		result.DecodeMs += out.Timings.DecodeMs
 	}
-	if len(p.Hypotheses) > 0 {
+	forced, allAmbiguous, err := forcedAmbiguousSelection(p)
+	if err != nil {
+		return result, err
+	}
+	if allAmbiguous {
+		edited = forced
+	} else if len(p.Hypotheses) > 0 {
 		out, err := e.generate(ctx, e.recipe.Selection(p), req.Prefill)
 		if err != nil {
 			if ctx.Err() != nil {
@@ -327,4 +336,31 @@ func (e *Engine) Run(req engine.Request, stop *atomic.Bool) (engine.Result, erro
 	}
 	result.Cancelled = ctx.Err() != nil || stop.Load()
 	return result, nil
+}
+
+// forcedAmbiguousSelection avoids inference only when the protocol has exactly
+// one legal result: every hypothesis must keep its original source span. The
+// normal domain validator still verifies coverage and UTF-8 source identity.
+func forcedAmbiguousSelection(p domain.SpellingPreparation) (string, bool, error) {
+	if len(p.Hypotheses) == 0 {
+		return "", false, nil
+	}
+	for _, h := range p.Hypotheses {
+		if h.Status != "ambiguous" {
+			return "", false, nil
+		}
+		if len(h.Candidates) < 2 {
+			return "", false, errors.New("invalid ambiguous spelling candidates")
+		}
+	}
+	choices := make(map[string]string, len(p.Hypotheses))
+	for _, h := range p.Hypotheses {
+		choices[h.ID] = "keep"
+	}
+	raw, err := json.Marshal(choices)
+	if err != nil {
+		return "", false, err
+	}
+	edited, err := domain.ApplySpellingChoices(string(raw), p)
+	return edited, true, err
 }

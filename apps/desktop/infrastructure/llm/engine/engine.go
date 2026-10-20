@@ -32,6 +32,8 @@ type Request struct {
 	// Context, when present, selects the context template.
 	Context domain.RewriteContext
 	Text    string
+	// PreviousText is earlier recognized source for spelling evidence only.
+	PreviousText string
 	// Prefill computes the source tokens only and generates nothing.
 	Prefill bool
 	// Live marks a preview of still-open speech; its output budget is tighter.

@@ -1,0 +1,8 @@
+native-chatterfly-01 accurate    715 ms   23 chars
+native-chatterfly-01 fast         48 ms   17 chars
+native-chatterfly-02 accurate    170 ms   28 chars
+native-chatterfly-02 fast         51 ms   17 chars
+native-chatterfly-03 accurate    190 ms   31 chars
+native-chatterfly-03 fast         58 ms   31 chars
+native-chatterfly-04 accurate    270 ms   31 chars
+native-chatterfly-04 fast         92 ms   37 chars

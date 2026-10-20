@@ -1,0 +1,126 @@
+{
+  "reviewer": "Separate assistant, not independent human/blind evaluation",
+  "reviewSha256": "d29b480594bd0f7a2c2994a155cc2c816b68478167c8e18798f8be46070ab260",
+  "candidateStatus": "rejected",
+  "rejectionReason": "V1 already fails changed-meaning prior control. Native06 preview also introduces an action-negation error after correct identifier repair compared with baseline preview; raw and semantic fields remain visible.",
+  "arms": {
+    "baseline": {
+      "phases": 24,
+      "correct": 12,
+      "incorrect": 12,
+      "not-assessable": 0,
+      "entityCorrectPhases": 12,
+      "incorrectRows": [
+        {
+          "id": "native-06",
+          "phase": "preview",
+          "firstObservedDamage": "unrecovered-asr-identifier"
+        },
+        {
+          "id": "native-06",
+          "phase": "final",
+          "firstObservedDamage": "formatter"
+        },
+        {
+          "id": "native-07",
+          "phase": "preview",
+          "firstObservedDamage": "unrecovered-asr-reviewer-name"
+        },
+        {
+          "id": "native-07",
+          "phase": "final",
+          "firstObservedDamage": "unrecovered-asr-reviewer-name"
+        },
+        {
+          "id": "native-08",
+          "phase": "preview",
+          "firstObservedDamage": "native-streaming-asr"
+        },
+        {
+          "id": "native-chatterfly-01",
+          "phase": "preview",
+          "firstObservedDamage": "native-streaming-asr"
+        },
+        {
+          "id": "native-chatterfly-01",
+          "phase": "final",
+          "firstObservedDamage": "native-final-asr"
+        },
+        {
+          "id": "native-chatterfly-02",
+          "phase": "preview",
+          "firstObservedDamage": "native-streaming-asr"
+        },
+        {
+          "id": "native-chatterfly-02",
+          "phase": "final",
+          "firstObservedDamage": "native-final-asr"
+        },
+        {
+          "id": "native-chatterfly-03",
+          "phase": "preview",
+          "firstObservedDamage": "native-streaming-asr"
+        },
+        {
+          "id": "native-chatterfly-03",
+          "phase": "final",
+          "firstObservedDamage": "native-final-asr"
+        },
+        {
+          "id": "native-chatterfly-04",
+          "phase": "preview",
+          "firstObservedDamage": "native-streaming-asr"
+        }
+      ]
+    },
+    "candidate": {
+      "phases": 24,
+      "correct": 16,
+      "incorrect": 8,
+      "not-assessable": 0,
+      "entityCorrectPhases": 18,
+      "incorrectRows": [
+        {
+          "id": "native-06",
+          "phase": "preview",
+          "firstObservedDamage": "formatter"
+        },
+        {
+          "id": "native-06",
+          "phase": "final",
+          "firstObservedDamage": "formatter"
+        },
+        {
+          "id": "native-07",
+          "phase": "preview",
+          "firstObservedDamage": "unrecovered-asr-reviewer-name"
+        },
+        {
+          "id": "native-07",
+          "phase": "final",
+          "firstObservedDamage": "unrecovered-asr-reviewer-name"
+        },
+        {
+          "id": "native-08",
+          "phase": "preview",
+          "firstObservedDamage": "native-streaming-asr"
+        },
+        {
+          "id": "native-chatterfly-01",
+          "phase": "preview",
+          "firstObservedDamage": "native-streaming-asr"
+        },
+        {
+          "id": "native-chatterfly-02",
+          "phase": "preview",
+          "firstObservedDamage": "native-streaming-asr"
+        },
+        {
+          "id": "native-chatterfly-04",
+          "phase": "preview",
+          "firstObservedDamage": "native-streaming-asr"
+        }
+      ]
+    }
+  }
+}

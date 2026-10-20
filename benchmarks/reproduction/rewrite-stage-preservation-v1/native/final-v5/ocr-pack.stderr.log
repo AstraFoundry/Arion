@@ -1,0 +1,4 @@
+native-numeric-01  accurate    337 ms   17 chars
+native-numeric-01  fast         24 ms   24 chars
+native-numeric-02  accurate     83 ms   21 chars
+native-numeric-02  fast         25 ms   34 chars

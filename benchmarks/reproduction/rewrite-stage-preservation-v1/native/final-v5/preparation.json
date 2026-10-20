@@ -1,0 +1,35 @@
+{
+  "status": "prepared-fixtures-no-model-inference",
+  "plannedCalls": {
+    "nativeThree": "approximately6 worker Rewrite calls including cancelled previews",
+    "cacheOnOff": "approximately5-6 worker Rewrite calls; actual cache hit counts determine outcome",
+    "regressionFour": "approximately8 worker Rewrite calls"
+  },
+  "plannedSettings": {
+    "maxNewTokens": 256,
+    "finalTimeoutSeconds": 10,
+    "segmentFinalizeNativeThreeAndRegressions": false,
+    "segmentFinalizeCache": true
+  },
+  "regressionCases": "Existing actual native06 technical function spelling + native07 selected person disambiguation; two fresh synthetic numeric controls. Numeric Vision outputs not observed yet.",
+  "files": {
+    "cache-fixtures/audio/manifest.json": "6a2a8bfbad2d170fc8341694d02dfee1e088a3883163ae7bc5af29cfc20359a6",
+    "cache-fixtures/audio/native-chatterfly-01-plus-silence.wav": "573d7559958f8c9d4102daa313de98e4627f63c9cd64fe07b6dce309e257369d",
+    "cache-fixtures/corpus.json": "8ec2ef43287a6b90bd1d03a44883f40dfccd11820d467db6035dc3a987df301e",
+    "cache-off/main.go": "07fc8c011f39831a579a542e83e38eac09e82d9b40fcfbb605b64ea5083eb28a",
+    "cache-on/main.go": "07fc8c011f39831a579a542e83e38eac09e82d9b40fcfbb605b64ea5083eb28a",
+    "native-three/audio/manifest.json": "2e14faef3d7717c666cee7045df72eac9a3cf71dd2f2e8b0847b689a4c66908b",
+    "native-three/audio/native-chatterfly-01.wav": "21ad31efe336595252de7e60835436f4c0b961c8dc1f788575e1be19cc30a95a",
+    "native-three/audio/native-chatterfly-02.wav": "74b664e5d1f9d52ef23f80a9de2da641e01595da7c90b654b25126e56f97f755",
+    "native-three/corpus.json": "36d3888d9a8b6d8fadd9bca92c81b739f74b225af35aee9fd9a83f379b7a1494",
+    "native-three/main.go": "07fc8c011f39831a579a542e83e38eac09e82d9b40fcfbb605b64ea5083eb28a",
+    "regressions/audio/native-06.wav": "b490e7678fa400bf53f63867f7561d781d0decc86a578f11129425d75a20057f",
+    "regressions/audio/native-07.wav": "9f8d8206d9046c7a804cac9f187281382a0a362667272e4adf4af801431b6f87",
+    "regressions/existing-audio-manifest.json": "36068f3cd2dcd96879b3e3606d3ceb2a2829c82353418209a39760d6a0f9d453",
+    "regressions/existing-corpus.json": "2b582d3de50e4a878c8c1255c7faffa4f91d8b43b864db5a30f29f3b7825892c",
+    "regressions/main.go": "07fc8c011f39831a579a542e83e38eac09e82d9b40fcfbb605b64ea5083eb28a",
+    "regressions/numeric-corpus.json": "4e080198d8aa3a3ba6fc2498c6995367f54fea00c9f47264686627bed45f3260",
+    "regressions/render-numeric.swift": "65600371250c198f3701fd1d696ac6e1af4abb53898eafb4ae61601b6ba0f62a",
+    "regressions/render.swift": "c0e716425a09e60f1b9275e762e1e42b41ee6eab9fa2279f707fda556702c112"
+  }
+}

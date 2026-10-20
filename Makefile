@@ -1243,3 +1243,15 @@ rewrite-d1-evidence-v1-verify:
 .PHONY: updater-check
 updater-check: ## Verify the maintained MyGo update-channel patch
 	@pnpm updater:check
+
+.PHONY: rewrite-stages-run rewrite-stages-matrix rewrite-stages-report rewrite-stages-test rewrite-stages-verify
+rewrite-stages-run:
+	@pnpm rewrite:stages:run $(ARGS)
+rewrite-stages-matrix:
+	@pnpm rewrite:stages:matrix $(ARGS)
+rewrite-stages-report:
+	@pnpm rewrite:stages:report $(ARGS)
+rewrite-stages-test:
+	@pnpm rewrite:stages:test
+rewrite-stages-verify:
+	@pnpm rewrite:stages:verify $(ARGS)

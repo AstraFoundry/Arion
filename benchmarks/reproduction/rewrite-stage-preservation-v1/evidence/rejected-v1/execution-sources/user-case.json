@@ -1,0 +1,134 @@
+[
+  {
+    "id": "user-chatterfly-01",
+    "scene": "prompt",
+    "preview": "chatterfly",
+    "final": "chatterfly",
+    "screen": "Current project\nChatterfly\n腾讯 Chatterfly 输入法\nArion rewrite pipeline",
+    "pairKind": "user-reported-entity-constructed-context-and-transcript",
+    "checks": [
+      "chatterfly"
+    ]
+  },
+  {
+    "id": "user-chatterfly-02",
+    "scene": "prompt",
+    "preview": "Chatterfly",
+    "final": "Chatterfly",
+    "screen": "Current project\nChatterfly\n腾讯 Chatterfly 输入法\nArion rewrite pipeline",
+    "pairKind": "user-reported-entity-constructed-context-and-transcript",
+    "checks": [
+      "Chatterfly"
+    ]
+  },
+  {
+    "id": "user-chatterfly-03",
+    "scene": "prompt",
+    "preview": "检查一下 chatterfly。",
+    "final": "检查一下 chatterfly。",
+    "screen": "Current project\nChatterfly\n腾讯 Chatterfly 输入法\nArion rewrite pipeline",
+    "pairKind": "user-reported-entity-constructed-context-and-transcript",
+    "checks": [
+      "chatterfly"
+    ]
+  },
+  {
+    "id": "user-chatterfly-04",
+    "scene": "prompt",
+    "preview": "chatterfly 的流式输入是对的。",
+    "final": "chatterfly 的流式输入是对的，但是后置的大模型又把它改成了别的词。",
+    "screen": "Current project\nChatterfly\n腾讯 Chatterfly 输入法\nArion rewrite pipeline",
+    "pairKind": "user-reported-entity-constructed-context-and-transcript",
+    "checks": [
+      "chatterfly"
+    ]
+  },
+  {
+    "id": "user-chatterfly-05",
+    "scene": "prompt",
+    "preview": "帮我看一下 chatterfly。",
+    "final": "帮我看一下 chatterfly 是怎么做的，然后对整个 pipeline 进行优化和测试。",
+    "screen": "Current project\nChatterfly\n腾讯 Chatterfly 输入法\nArion rewrite pipeline",
+    "pairKind": "user-reported-entity-constructed-context-and-transcript",
+    "checks": [
+      "chatterfly"
+    ]
+  },
+  {
+    "id": "user-chatterfly-06",
+    "scene": "prompt",
+    "preview": "检查一下 Chatterfly。",
+    "final": "检查一下 Chatterfly 的改写 pipeline，流式输入是正确的，但是最后的大模型把正确的软件名称改错了。",
+    "screen": "Current project\nChatterfly\n腾讯 Chatterfly 输入法\nArion rewrite pipeline",
+    "pairKind": "user-reported-entity-constructed-context-and-transcript",
+    "checks": [
+      "Chatterfly"
+    ]
+  },
+  {
+    "id": "user-chatterfly-07",
+    "scene": "prompt",
+    "preview": "对比豆包输入法和 chatterfly。",
+    "final": "用 reverse engineer everything 调研豆包输入法和 chatterfly 是怎么做这里的，然后优化整个 pipeline，先完整复现再校验，还要有消融实验。",
+    "screen": "Current project\nChatterfly\n腾讯 Chatterfly 输入法\nArion rewrite pipeline",
+    "pairKind": "user-reported-entity-constructed-context-and-transcript",
+    "checks": [
+      "chatterfly"
+    ]
+  },
+  {
+    "id": "user-chatterfly-08",
+    "scene": "prompt",
+    "preview": "我说的是 chatterfly。",
+    "final": "我说的是 chatterfly，屏幕或者记忆上有 chatterfly，然后流式输入是对的，LLM 那一层又被改成 chad fly。",
+    "screen": "Current project\nChatterfly\n腾讯 Chatterfly 输入法\nArion rewrite pipeline",
+    "pairKind": "user-reported-entity-constructed-context-and-transcript",
+    "checks": [
+      "chatterfly"
+    ]
+  },
+  {
+    "id": "user-chatterfly-09",
+    "scene": "prompt",
+    "preview": "检查 chatterfly。",
+    "final": "检查 chad fly。",
+    "screen": "Current project\nChatterfly\n腾讯 Chatterfly 输入法\nArion rewrite pipeline",
+    "pairKind": "user-reported-entity-constructed-context-and-transcript-acoustic-variant",
+    "checks": [
+      "chatterfly"
+    ]
+  },
+  {
+    "id": "user-chatterfly-10",
+    "scene": "prompt",
+    "preview": "检查 chatterfly。",
+    "final": "检查 chat fly。",
+    "screen": "Current project\nChatterfly\n腾讯 Chatterfly 输入法\nArion rewrite pipeline",
+    "pairKind": "user-reported-entity-constructed-context-and-transcript-acoustic-variant",
+    "checks": [
+      "chatterfly"
+    ]
+  },
+  {
+    "id": "user-chatterfly-11",
+    "scene": "prompt",
+    "preview": "检查 Chatterfly。",
+    "final": "检查 chatter fly。",
+    "screen": "Current project\nChatterfly\n腾讯 Chatterfly 输入法\nArion rewrite pipeline",
+    "pairKind": "user-reported-entity-constructed-context-and-transcript-acoustic-variant",
+    "checks": [
+      "Chatterfly"
+    ]
+  },
+  {
+    "id": "user-chatterfly-12",
+    "scene": "prompt",
+    "preview": "Please check Chatterfly.",
+    "final": "Please check Chatterfly and compare its rewriting pipeline with Doubao. Keep the product names unchanged.",
+    "screen": "Current project\nChatterfly\n腾讯 Chatterfly 输入法\nArion rewrite pipeline",
+    "pairKind": "user-reported-entity-constructed-context-and-transcript",
+    "checks": [
+      "Chatterfly"
+    ]
+  }
+]

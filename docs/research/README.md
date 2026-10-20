@@ -6,6 +6,7 @@ Research separates **observed shipped artifacts**, **static inferences**, **vend
 - [Doubao](doubao.md) — installed native IMK artifact, online/offline ASR and composition surfaces.
 - [Doubao iOS](doubao-ios.md) — App Store IPA voice/keyboard split, permission and account synchronization declarations, native typing engine and FairPlay evidence limits.
 - [Chatterfly](chatterfly.md) — installer payload and native scenario-aware post-processing paths.
+- [Rewrite stage preservation](rewrite-stage-preservation.md) — revalidated competitor stage boundaries, a real preview-to-final regression, and paired native pipeline diagnostics.
 - [Keyboard input methods](keyboard-ime.md) — Doubao/Chatterfly native Pinyin decoding, local candidate ranking, conditional model/cloud enhancement and composition/commit evidence.
 - [Installed Chatterfly keyboard](chatterfly-installed-keyboard.md) — matching installed bytes, XNet loaders, model enablement, bounded provisioning search, stored cloud preference and real keyboard probes.
 - [Chatterfly candidate UI](chatterfly-candidate-ui.md) — shipped candidate-bar size presets, light/dark themes and input-menu icon format behind Arion's candidate bar.
@@ -92,3 +93,5 @@ Competitors provide workflow evidence, not reusable implementations or approved 
 - [Existing ten-example order](../../benchmarks/reproduction/rewrite-selector-demo-order-v1/README.md):404 actual choices; moving keep examples last reduces harmful edits but loses supported repairs.3 improvements,23 regressions,1 allowed change; both treatments rejected.
 
 - [Native d1 decision packaging](../../benchmarks/reproduction/rewrite-d1-evidence-v1/README.md):72 actual typed responses over six sources/six layouts, all reviewed. Native96/45 piece clipping identified; full-policy correction remains3/6 per backend. No final bodies or production adoption.
+
+- [Chatterfly Chinese/English caret hint](chatterfly-language-hint.md) — traced hint window, default animation dispatch, timing and Arion visual differences.

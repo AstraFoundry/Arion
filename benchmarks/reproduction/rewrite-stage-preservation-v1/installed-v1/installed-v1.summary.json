@@ -1,0 +1,889 @@
+[
+  {
+    "case": {
+      "id": "user-chatterfly-01",
+      "scene": "prompt",
+      "preview": "chatterfly",
+      "final": "chatterfly",
+      "screen": "Current project\nChatterfly\n腾讯 Chatterfly 输入法\nArion rewrite pipeline",
+      "pairKind": "user-reported-entity-constructed-context-and-transcript",
+      "checks": [
+        "chatterfly"
+      ]
+    },
+    "preview": {
+      "id": 2,
+      "ok": true,
+      "template": "selector-screen-v1-baseline+natural-layout-v1",
+      "text": "chatterfly",
+      "cleanup": {
+        "text": "chatterfly",
+        "version": "speech-spans-v2"
+      },
+      "inputTokens": 839,
+      "outputTokens": 4,
+      "prefillMs": 1925.752,
+      "decodeMs": 95.258,
+      "peakRssBytes": 80838656
+    },
+    "final": {
+      "id": 3,
+      "ok": true,
+      "template": "selector-screen-v1-baseline+natural-layout-v1",
+      "text": "chatterfly",
+      "cleanup": {
+        "text": "chatterfly",
+        "version": "speech-spans-v2"
+      },
+      "inputTokens": 839,
+      "reusedTokens": 835,
+      "outputTokens": 4,
+      "prefillMs": 28.894,
+      "decodeMs": 56.589,
+      "peakRssBytes": 80953344
+    }
+  },
+  {
+    "case": {
+      "id": "user-chatterfly-02",
+      "scene": "prompt",
+      "preview": "Chatterfly",
+      "final": "Chatterfly",
+      "screen": "Current project\nChatterfly\n腾讯 Chatterfly 输入法\nArion rewrite pipeline",
+      "pairKind": "user-reported-entity-constructed-context-and-transcript",
+      "checks": [
+        "Chatterfly"
+      ]
+    },
+    "preview": {
+      "id": 5,
+      "ok": true,
+      "template": "selector-screen-v1-baseline+natural-layout-v1",
+      "text": "Chatterfly",
+      "cleanup": {
+        "text": "Chatterfly",
+        "version": "speech-spans-v2"
+      },
+      "inputTokens": 839,
+      "outputTokens": 4,
+      "prefillMs": 2237.588,
+      "decodeMs": 78.485,
+      "peakRssBytes": 80953344
+    },
+    "final": {
+      "id": 6,
+      "ok": true,
+      "template": "selector-screen-v1-baseline+natural-layout-v1",
+      "text": "Chatterfly",
+      "cleanup": {
+        "text": "Chatterfly",
+        "version": "speech-spans-v2"
+      },
+      "inputTokens": 839,
+      "reusedTokens": 835,
+      "outputTokens": 4,
+      "prefillMs": 33.86,
+      "decodeMs": 64.19,
+      "peakRssBytes": 80986112
+    }
+  },
+  {
+    "case": {
+      "id": "user-chatterfly-03",
+      "scene": "prompt",
+      "preview": "检查一下 chatterfly。",
+      "final": "检查一下 chatterfly。",
+      "screen": "Current project\nChatterfly\n腾讯 Chatterfly 输入法\nArion rewrite pipeline",
+      "pairKind": "user-reported-entity-constructed-context-and-transcript",
+      "checks": [
+        "chatterfly"
+      ]
+    },
+    "preview": {
+      "id": 8,
+      "ok": true,
+      "template": "selector-screen-v1-baseline+natural-layout-v1",
+      "text": "检查一下 chatterfly。",
+      "cleanup": {
+        "text": "检查一下 chatterfly。",
+        "version": "speech-spans-v2"
+      },
+      "inputTokens": 1206,
+      "outputTokens": 5,
+      "prefillMs": 3110.615,
+      "decodeMs": 89.621,
+      "peakRssBytes": 81133568
+    },
+    "final": {
+      "id": 9,
+      "ok": true,
+      "template": "selector-screen-v1-baseline+natural-layout-v1",
+      "text": "检查一下 chatterfly。",
+      "cleanup": {
+        "text": "检查一下 chatterfly。",
+        "version": "speech-spans-v2"
+      },
+      "inputTokens": 1206,
+      "reusedTokens": 1202,
+      "outputTokens": 5,
+      "prefillMs": 34.077,
+      "decodeMs": 95.996,
+      "peakRssBytes": 81166336
+    }
+  },
+  {
+    "case": {
+      "id": "user-chatterfly-04",
+      "scene": "prompt",
+      "preview": "chatterfly 的流式输入是对的。",
+      "final": "chatterfly 的流式输入是对的，但是后置的大模型又把它改成了别的词。",
+      "screen": "Current project\nChatterfly\n腾讯 Chatterfly 输入法\nArion rewrite pipeline",
+      "pairKind": "user-reported-entity-constructed-context-and-transcript",
+      "checks": [
+        "chatterfly"
+      ]
+    },
+    "preview": {
+      "id": 11,
+      "ok": true,
+      "template": "selector-screen-v1-baseline+natural-layout-v1",
+      "text": "chatterfly 的流式输入是对的。",
+      "cleanup": {
+        "text": "chatterfly 的流式输入是对的。",
+        "version": "speech-spans-v2"
+      },
+      "inputTokens": 1212,
+      "outputTokens": 11,
+      "prefillMs": 2738.46,
+      "decodeMs": 212.331,
+      "peakRssBytes": 81166336
+    },
+    "final": {
+      "id": 12,
+      "ok": true,
+      "template": "selector-screen-v1-baseline+natural-layout-v1",
+      "text": "chatterfly 的流式输入是对的，但是后置的大模型又把它改成了别的词。",
+      "cleanup": {
+        "text": "chatterfly 的流式输入是对的，但是后置的大模型又把它改成了别的词。",
+        "version": "speech-spans-v2"
+      },
+      "inputTokens": 1223,
+      "reusedTokens": 1173,
+      "outputTokens": 22,
+      "prefillMs": 146.818,
+      "decodeMs": 430.611,
+      "peakRssBytes": 81182720
+    }
+  },
+  {
+    "case": {
+      "id": "user-chatterfly-05",
+      "scene": "prompt",
+      "preview": "帮我看一下 chatterfly。",
+      "final": "帮我看一下 chatterfly 是怎么做的，然后对整个 pipeline 进行优化和测试。",
+      "screen": "Current project\nChatterfly\n腾讯 Chatterfly 输入法\nArion rewrite pipeline",
+      "pairKind": "user-reported-entity-constructed-context-and-transcript",
+      "checks": [
+        "chatterfly"
+      ]
+    },
+    "preview": {
+      "id": 14,
+      "ok": true,
+      "template": "selector-screen-v1-baseline+natural-layout-v1",
+      "text": "帮我看一下 chatterfly。",
+      "cleanup": {
+        "text": "帮我看一下 chatterfly。",
+        "version": "speech-spans-v2"
+      },
+      "inputTokens": 1208,
+      "outputTokens": 7,
+      "prefillMs": 3450.475,
+      "decodeMs": 123.024,
+      "peakRssBytes": 81182720
+    },
+    "final": {
+      "id": 15,
+      "ok": true,
+      "template": "selector-screen-v1-baseline+natural-layout-v1",
+      "text": "帮我看一下 chatterfly 是怎么做的，然后对整个 pipeline 进行优化和测试。",
+      "cleanup": {
+        "text": "帮我看一下 chatterfly 是怎么做的，然后对整个 pipeline 进行优化和测试。",
+        "version": "speech-spans-v2"
+      },
+      "inputTokens": 1220,
+      "reusedTokens": 1173,
+      "outputTokens": 19,
+      "prefillMs": 145.727,
+      "decodeMs": 383.458,
+      "peakRssBytes": 81182720
+    }
+  },
+  {
+    "case": {
+      "id": "user-chatterfly-06",
+      "scene": "prompt",
+      "preview": "检查一下 Chatterfly。",
+      "final": "检查一下 Chatterfly 的改写 pipeline，流式输入是正确的，但是最后的大模型把正确的软件名称改错了。",
+      "screen": "Current project\nChatterfly\n腾讯 Chatterfly 输入法\nArion rewrite pipeline",
+      "pairKind": "user-reported-entity-constructed-context-and-transcript",
+      "checks": [
+        "Chatterfly"
+      ]
+    },
+    "preview": {
+      "id": 17,
+      "ok": true,
+      "template": "selector-screen-v1-baseline+natural-layout-v1",
+      "text": "检查一下 Chatterfly。",
+      "cleanup": {
+        "text": "检查一下 Chatterfly。",
+        "version": "speech-spans-v2"
+      },
+      "inputTokens": 1207,
+      "outputTokens": 6,
+      "prefillMs": 3799.662,
+      "decodeMs": 110.943,
+      "peakRssBytes": 81199104
+    },
+    "final": {
+      "id": 18,
+      "ok": true,
+      "template": "selector-screen-v1-baseline+natural-layout-v1",
+      "text": "检查一下 Chatterfly 的改写 pipeline，流式输入是正确的，但是最后的大模型把正确的软件名称改错了。",
+      "cleanup": {
+        "text": "检查一下 Chatterfly 的改写 pipeline，流式输入是正确的，但是最后的大模型把正确的软件名称改错了。",
+        "version": "speech-spans-v2"
+      },
+      "inputTokens": 1227,
+      "reusedTokens": 1173,
+      "outputTokens": 26,
+      "prefillMs": 179.764,
+      "decodeMs": 620.149,
+      "peakRssBytes": 81199104
+    }
+  },
+  {
+    "case": {
+      "id": "user-chatterfly-07",
+      "scene": "prompt",
+      "preview": "对比豆包输入法和 chatterfly。",
+      "final": "用 reverse engineer everything 调研豆包输入法和 chatterfly 是怎么做这里的，然后优化整个 pipeline，先完整复现再校验，还要有消融实验。",
+      "screen": "Current project\nChatterfly\n腾讯 Chatterfly 输入法\nArion rewrite pipeline",
+      "pairKind": "user-reported-entity-constructed-context-and-transcript",
+      "checks": [
+        "chatterfly"
+      ]
+    },
+    "preview": {
+      "id": 20,
+      "ok": true,
+      "template": "selector-screen-v1-baseline+natural-layout-v1",
+      "text": "对比豆包输入法和 chatterfly。",
+      "cleanup": {
+        "text": "对比豆包输入法和 chatterfly。",
+        "version": "speech-spans-v2"
+      },
+      "inputTokens": 1210,
+      "outputTokens": 9,
+      "prefillMs": 3681.934,
+      "decodeMs": 156.115,
+      "peakRssBytes": 81199104
+    },
+    "final": {
+      "id": 21,
+      "ok": true,
+      "template": "selector-screen-v1-baseline+natural-layout-v1",
+      "text": "用 reverse engineer everything 调研豆包输入法和 chatterfly 是怎么做这里的，然后优化整个 pipeline，先完整复现再校验，还要有消融实验。",
+      "cleanup": {
+        "text": "用 reverse engineer everything 调研豆包输入法和 chatterfly 是怎么做这里的，然后优化整个 pipeline，先完整复现再校验，还要有消融实验。",
+        "version": "speech-spans-v2"
+      },
+      "inputTokens": 1236,
+      "reusedTokens": 1173,
+      "outputTokens": 35,
+      "prefillMs": 146.249,
+      "decodeMs": 659.214,
+      "peakRssBytes": 81199104
+    }
+  },
+  {
+    "case": {
+      "id": "user-chatterfly-08",
+      "scene": "prompt",
+      "preview": "我说的是 chatterfly。",
+      "final": "我说的是 chatterfly，屏幕或者记忆上有 chatterfly，然后流式输入是对的，LLM 那一层又被改成 chad fly。",
+      "screen": "Current project\nChatterfly\n腾讯 Chatterfly 输入法\nArion rewrite pipeline",
+      "pairKind": "user-reported-entity-constructed-context-and-transcript",
+      "checks": [
+        "chatterfly"
+      ]
+    },
+    "preview": {
+      "id": 23,
+      "ok": true,
+      "template": "selector-screen-v1-baseline+natural-layout-v1",
+      "text": "我说的是 chatterfly。",
+      "cleanup": {
+        "text": "我说的是 chatterfly。",
+        "version": "speech-spans-v2"
+      },
+      "inputTokens": 1207,
+      "outputTokens": 6,
+      "prefillMs": 3194.579,
+      "decodeMs": 104.945,
+      "peakRssBytes": 81199104
+    },
+    "final": {
+      "id": 24,
+      "ok": true,
+      "template": "selector-screen-v1-baseline+natural-layout-v1",
+      "text": "我说的是 chatterfly，屏幕或者记忆上有 chatterfly，然后流式输入是对的，LLM 那一层又被改成 chad fly。",
+      "cleanup": {
+        "text": "我说的是 chatterfly，屏幕或者记忆上有 chatterfly，然后流式输入是对的，LLM 那一层又被改成 chad fly。",
+        "version": "speech-spans-v2"
+      },
+      "inputTokens": 1231,
+      "reusedTokens": 1173,
+      "outputTokens": 30,
+      "prefillMs": 149.781,
+      "decodeMs": 628.137,
+      "peakRssBytes": 81199104
+    }
+  },
+  {
+    "case": {
+      "id": "user-chatterfly-09",
+      "scene": "prompt",
+      "preview": "检查 chatterfly。",
+      "final": "检查 chad fly。",
+      "screen": "Current project\nChatterfly\n腾讯 Chatterfly 输入法\nArion rewrite pipeline",
+      "pairKind": "user-reported-entity-constructed-context-and-transcript-acoustic-variant",
+      "checks": [
+        "chatterfly"
+      ]
+    },
+    "preview": {
+      "id": 26,
+      "ok": true,
+      "template": "selector-screen-v1-baseline+natural-layout-v1",
+      "text": "检查 chatterfly。",
+      "cleanup": {
+        "text": "检查 chatterfly。",
+        "version": "speech-spans-v2"
+      },
+      "inputTokens": 1206,
+      "outputTokens": 5,
+      "prefillMs": 3982.082,
+      "decodeMs": 83.434,
+      "peakRssBytes": 81199104
+    },
+    "final": {
+      "id": 27,
+      "ok": true,
+      "template": "selector-screen-v1-baseline+natural-layout-v1",
+      "text": "检查 chad fly。",
+      "cleanup": {
+        "text": "检查 chad fly。",
+        "version": "speech-spans-v2"
+      },
+      "inputTokens": 1207,
+      "reusedTokens": 1173,
+      "outputTokens": 6,
+      "prefillMs": 96.743,
+      "decodeMs": 96.387,
+      "peakRssBytes": 81199104
+    }
+  },
+  {
+    "case": {
+      "id": "user-chatterfly-10",
+      "scene": "prompt",
+      "preview": "检查 chatterfly。",
+      "final": "检查 chat fly。",
+      "screen": "Current project\nChatterfly\n腾讯 Chatterfly 输入法\nArion rewrite pipeline",
+      "pairKind": "user-reported-entity-constructed-context-and-transcript-acoustic-variant",
+      "checks": [
+        "chatterfly"
+      ]
+    },
+    "preview": {
+      "id": 29,
+      "ok": true,
+      "template": "selector-screen-v1-baseline+natural-layout-v1",
+      "text": "检查 chatterfly。",
+      "cleanup": {
+        "text": "检查 chatterfly。",
+        "version": "speech-spans-v2"
+      },
+      "inputTokens": 1206,
+      "outputTokens": 5,
+      "prefillMs": 2607.927,
+      "decodeMs": 84.609,
+      "peakRssBytes": 81199104
+    },
+    "final": {
+      "id": 30,
+      "ok": true,
+      "template": "selector-screen-v1-baseline+natural-layout-v1",
+      "text": "检查 chat fly。",
+      "cleanup": {
+        "text": "检查 chat fly。",
+        "version": "speech-spans-v2"
+      },
+      "inputTokens": 1206,
+      "reusedTokens": 1173,
+      "outputTokens": 5,
+      "prefillMs": 101.482,
+      "decodeMs": 80.674,
+      "peakRssBytes": 81199104
+    }
+  },
+  {
+    "case": {
+      "id": "user-chatterfly-11",
+      "scene": "prompt",
+      "preview": "检查 Chatterfly。",
+      "final": "检查 chatter fly。",
+      "screen": "Current project\nChatterfly\n腾讯 Chatterfly 输入法\nArion rewrite pipeline",
+      "pairKind": "user-reported-entity-constructed-context-and-transcript-acoustic-variant",
+      "checks": [
+        "Chatterfly"
+      ]
+    },
+    "preview": {
+      "id": 32,
+      "ok": true,
+      "template": "selector-screen-v1-baseline+natural-layout-v1",
+      "text": "检查 Chatterfly。",
+      "cleanup": {
+        "text": "检查 Chatterfly。",
+        "version": "speech-spans-v2"
+      },
+      "inputTokens": 1207,
+      "outputTokens": 6,
+      "prefillMs": 2883.634,
+      "decodeMs": 114.744,
+      "peakRssBytes": 81199104
+    },
+    "final": {
+      "id": 33,
+      "ok": true,
+      "template": "selector-screen-v1-baseline+natural-layout-v1",
+      "text": "检查 chatter fly。",
+      "cleanup": {
+        "text": "检查 chatter fly。",
+        "version": "speech-spans-v2"
+      },
+      "inputTokens": 1206,
+      "reusedTokens": 1173,
+      "outputTokens": 5,
+      "prefillMs": 105.108,
+      "decodeMs": 78.866,
+      "peakRssBytes": 81199104
+    }
+  },
+  {
+    "case": {
+      "id": "user-chatterfly-12",
+      "scene": "prompt",
+      "preview": "Please check Chatterfly.",
+      "final": "Please check Chatterfly and compare its rewriting pipeline with Doubao. Keep the product names unchanged.",
+      "screen": "Current project\nChatterfly\n腾讯 Chatterfly 输入法\nArion rewrite pipeline",
+      "pairKind": "user-reported-entity-constructed-context-and-transcript",
+      "checks": [
+        "Chatterfly"
+      ]
+    },
+    "preview": {
+      "id": 35,
+      "ok": true,
+      "template": "selector-screen-v1-baseline+natural-layout-v1",
+      "text": "Please check Chatterfly.",
+      "cleanup": {
+        "text": "Please check Chatterfly.",
+        "version": "speech-spans-v2"
+      },
+      "inputTokens": 841,
+      "outputTokens": 7,
+      "prefillMs": 1809.55,
+      "decodeMs": 127.507,
+      "peakRssBytes": 81199104
+    },
+    "final": {
+      "id": 36,
+      "ok": true,
+      "template": "selector-screen-v1-baseline+natural-layout-v1",
+      "text": "Please check Chatterfly and compare its rewriting pipeline with Doubao. Keep the product names unchanged.",
+      "cleanup": {
+        "text": "Please check Chatterfly and compare its rewriting pipeline with Doubao. Keep the product names unchanged.",
+        "version": "speech-spans-v2"
+      },
+      "inputTokens": 855,
+      "reusedTokens": 807,
+      "outputTokens": 21,
+      "prefillMs": 143.986,
+      "decodeMs": 582.703,
+      "peakRssBytes": 81215488
+    }
+  },
+  {
+    "case": {
+      "id": "native-chatterfly-01",
+      "scene": "chat",
+      "preview": "检查一下 Chapter fly， 看看它的流式改写是不是正确",
+      "final": "检查一下 chatter fly，看看它的流式改写是不是正确。",
+      "screen": "软件：Chatterfly\n任务：检查流式改写",
+      "pairKind": "native-asr-vision-synthetic-fixture",
+      "checks": [
+        "Chatterfly"
+      ],
+      "nativeEvidence": {
+        "audio": "benchmarks/reproduction/rewrite-stage-preservation-v1/native/chatterfly/audio/native-chatterfly-01.wav",
+        "audioSha256": "21ad31efe336595252de7e60835436f4c0b961c8dc1f788575e1be19cc30a95a",
+        "asrObservations": "benchmarks/reproduction/rewrite-stage-preservation-v1/native/chatterfly/asr.jsonl",
+        "asrSha256": "71dbf0c8ebfee95efef22c74daccdab513eff855ac36f7f86489fbbac774c6b1",
+        "ocrObservations": "benchmarks/reproduction/rewrite-stage-preservation-v1/native/chatterfly/ocr.jsonl",
+        "ocrSha256": "9def9891d9474481bde191a42d93d67e6f642ebfef48e47681965b432e479eed",
+        "previewSource": "Last observed production streaming ASR DraftReplaced event; not an LLM preview and not proof of closed-segment stability.",
+        "finalSource": "Production coordinator sourceText after whole-utterance offline finalization and rule correction.",
+        "limitations": "Synthetic TTS and rendered image, not live user window capture, natural voice, microphone, LLM trace or insertion evidence."
+      }
+    },
+    "preview": {
+      "id": 38,
+      "ok": true,
+      "template": "selector-screen-v1-baseline+natural-layout-v1",
+      "text": "检查 Chapter fly，看看它的流式改写是不是正确。",
+      "cleanup": {
+        "text": "检查一下 Chapter fly， 看看它的流式改写是不是正确",
+        "version": "speech-spans-v2"
+      },
+      "inputTokens": 986,
+      "outputTokens": 13,
+      "prefillMs": 3466.291,
+      "decodeMs": 253.796,
+      "peakRssBytes": 81215488
+    },
+    "final": {
+      "id": 39,
+      "ok": true,
+      "template": "selector-screen-v1-baseline+natural-layout-v1",
+      "text": "检查一下 chatter fly，看看它的流式改写是不是正确。",
+      "cleanup": {
+        "text": "检查一下 chatter fly，看看它的流式改写是不是正确。",
+        "version": "speech-spans-v2"
+      },
+      "inputTokens": 986,
+      "reusedTokens": 945,
+      "outputTokens": 13,
+      "prefillMs": 140.768,
+      "decodeMs": 241.991,
+      "peakRssBytes": 81231872
+    }
+  },
+  {
+    "case": {
+      "id": "native-chatterfly-02",
+      "scene": "chat",
+      "preview": "Chanter fly 的流逝输入是对的， 但是后面的改写又出错了",
+      "final": "chatter fly 的流式输入是对的，但是后面的改写又出错了。",
+      "screen": "软件：Chatterfly\n问题：流式正确，最终改写错误",
+      "pairKind": "native-asr-vision-synthetic-fixture",
+      "checks": [
+        "Chatterfly"
+      ],
+      "nativeEvidence": {
+        "audio": "benchmarks/reproduction/rewrite-stage-preservation-v1/native/chatterfly/audio/native-chatterfly-02.wav",
+        "audioSha256": "74b664e5d1f9d52ef23f80a9de2da641e01595da7c90b654b25126e56f97f755",
+        "asrObservations": "benchmarks/reproduction/rewrite-stage-preservation-v1/native/chatterfly/asr.jsonl",
+        "asrSha256": "71dbf0c8ebfee95efef22c74daccdab513eff855ac36f7f86489fbbac774c6b1",
+        "ocrObservations": "benchmarks/reproduction/rewrite-stage-preservation-v1/native/chatterfly/ocr.jsonl",
+        "ocrSha256": "9def9891d9474481bde191a42d93d67e6f642ebfef48e47681965b432e479eed",
+        "previewSource": "Last observed production streaming ASR DraftReplaced event; not an LLM preview and not proof of closed-segment stability.",
+        "finalSource": "Production coordinator sourceText after whole-utterance offline finalization and rule correction.",
+        "limitations": "Synthetic TTS and rendered image, not live user window capture, natural voice, microphone, LLM trace or insertion evidence."
+      }
+    },
+    "preview": {
+      "id": 41,
+      "ok": true,
+      "template": "selector-screen-v1-baseline+natural-layout-v1",
+      "text": "Chanter fly 的流式输入是对的，但是后面的改写又出错了。",
+      "cleanup": {
+        "text": "Chanter fly 的流逝输入是对的， 但是后面的改写又出错了",
+        "version": "speech-spans-v2"
+      },
+      "inputTokens": 2244,
+      "outputTokens": 25,
+      "prefillMs": 5992.984,
+      "decodeMs": 459.687,
+      "peakRssBytes": 81248256
+    },
+    "final": {
+      "id": 42,
+      "ok": true,
+      "template": "selector-screen-v1-baseline+natural-layout-v1",
+      "text": "chatter fly 的流式输入是对的，但是后面的改写又出错了。",
+      "cleanup": {
+        "text": "chatter fly 的流式输入是对的，但是后面的改写又出错了。",
+        "version": "speech-spans-v2"
+      },
+      "inputTokens": 991,
+      "reusedTokens": 945,
+      "outputTokens": 18,
+      "prefillMs": 145.799,
+      "decodeMs": 339.407,
+      "peakRssBytes": 81264640
+    }
+  },
+  {
+    "case": {
+      "id": "native-chatterfly-03",
+      "scene": "chat",
+      "preview": "帮我对比豆包输入法和 chatter fly， 不要改软件名称",
+      "final": "帮我对比豆包输入法和 chatter fly，不要改软件名称。",
+      "screen": "对比软件：豆包输入法、Chatterfly\n要求：保留软件名称",
+      "pairKind": "native-asr-vision-synthetic-fixture",
+      "checks": [
+        "Chatterfly"
+      ],
+      "nativeEvidence": {
+        "audio": "benchmarks/reproduction/rewrite-stage-preservation-v1/native/chatterfly/audio/native-chatterfly-03.wav",
+        "audioSha256": "5a044e69e85e785457c9ed66fb6f795e7b6af0166bd28a598d363657738f00b3",
+        "asrObservations": "benchmarks/reproduction/rewrite-stage-preservation-v1/native/chatterfly/asr.jsonl",
+        "asrSha256": "71dbf0c8ebfee95efef22c74daccdab513eff855ac36f7f86489fbbac774c6b1",
+        "ocrObservations": "benchmarks/reproduction/rewrite-stage-preservation-v1/native/chatterfly/ocr.jsonl",
+        "ocrSha256": "9def9891d9474481bde191a42d93d67e6f642ebfef48e47681965b432e479eed",
+        "previewSource": "Last observed production streaming ASR DraftReplaced event; not an LLM preview and not proof of closed-segment stability.",
+        "finalSource": "Production coordinator sourceText after whole-utterance offline finalization and rule correction.",
+        "limitations": "Synthetic TTS and rendered image, not live user window capture, natural voice, microphone, LLM trace or insertion evidence."
+      }
+    },
+    "preview": {
+      "id": 44,
+      "ok": true,
+      "template": "selector-screen-v1-baseline+natural-layout-v1",
+      "text": "帮我对比豆包输入法和 chatter fly，不要改软件名称。",
+      "cleanup": {
+        "text": "帮我对比豆包输入法和 chatter fly， 不要改软件名称",
+        "version": "speech-spans-v2"
+      },
+      "inputTokens": 988,
+      "outputTokens": 15,
+      "prefillMs": 2791.716,
+      "decodeMs": 380.209,
+      "peakRssBytes": 81264640
+    },
+    "final": {
+      "id": 45,
+      "ok": true,
+      "template": "selector-screen-v1-baseline+natural-layout-v1",
+      "text": "帮我对比豆包输入法和 chatter fly，不要改软件名称。",
+      "cleanup": {
+        "text": "帮我对比豆包输入法和 chatter fly，不要改软件名称。",
+        "version": "speech-spans-v2"
+      },
+      "inputTokens": 988,
+      "reusedTokens": 945,
+      "outputTokens": 15,
+      "prefillMs": 218.718,
+      "decodeMs": 463.22,
+      "peakRssBytes": 81264640
+    }
+  },
+  {
+    "case": {
+      "id": "native-chatterfly-04",
+      "scene": "chat",
+      "preview": "这里说的软件名字是 Chapterfly， 请保留这个英文拼写",
+      "final": "这里说的软件名字是 ChatterFly，请保留这个英文拼写。",
+      "screen": "软件名称：Chatterfly\n英文拼写：Chatterfly",
+      "pairKind": "native-asr-vision-synthetic-fixture",
+      "checks": [
+        "Chatterfly"
+      ],
+      "nativeEvidence": {
+        "audio": "benchmarks/reproduction/rewrite-stage-preservation-v1/native/chatterfly/audio/native-chatterfly-04.wav",
+        "audioSha256": "47ee21ec11c6da340942881c43695af37814518a5e064a606475e5e1055f4abe",
+        "asrObservations": "benchmarks/reproduction/rewrite-stage-preservation-v1/native/chatterfly/asr.jsonl",
+        "asrSha256": "71dbf0c8ebfee95efef22c74daccdab513eff855ac36f7f86489fbbac774c6b1",
+        "ocrObservations": "benchmarks/reproduction/rewrite-stage-preservation-v1/native/chatterfly/ocr.jsonl",
+        "ocrSha256": "9def9891d9474481bde191a42d93d67e6f642ebfef48e47681965b432e479eed",
+        "previewSource": "Last observed production streaming ASR DraftReplaced event; not an LLM preview and not proof of closed-segment stability.",
+        "finalSource": "Production coordinator sourceText after whole-utterance offline finalization and rule correction.",
+        "limitations": "Synthetic TTS and rendered image, not live user window capture, natural voice, microphone, LLM trace or insertion evidence."
+      }
+    },
+    "preview": {
+      "id": 47,
+      "ok": true,
+      "template": "selector-screen-v1-baseline+natural-layout-v1",
+      "text": "这里说的软件名字是 Chapterfly，请保留这个英文拼写。",
+      "cleanup": {
+        "text": "这里说的软件名字是 Chapterfly， 请保留这个英文拼写",
+        "version": "speech-spans-v2"
+      },
+      "inputTokens": 989,
+      "outputTokens": 16,
+      "prefillMs": 3059.536,
+      "decodeMs": 349.65,
+      "peakRssBytes": 81264640
+    },
+    "final": {
+      "id": 48,
+      "ok": true,
+      "template": "selector-screen-v1-baseline+natural-layout-v1",
+      "text": "这里说的软件名字是 ChatterFly，请保留这个英文拼写。",
+      "cleanup": {
+        "text": "这里说的软件名字是 ChatterFly，请保留这个英文拼写。",
+        "version": "speech-spans-v2"
+      },
+      "inputTokens": 990,
+      "reusedTokens": 945,
+      "outputTokens": 17,
+      "prefillMs": 169.954,
+      "decodeMs": 342.563,
+      "peakRssBytes": 81264640
+    }
+  },
+  {
+    "case": {
+      "id": "explicit-approved-term-none",
+      "scene": "prompt",
+      "preview": "检查 chad fly。",
+      "final": "检查 chad fly。",
+      "screen": "软件名称：Chatterfly",
+      "terms": [],
+      "pairKind": "constructed-approved-mapping-control",
+      "checks": [
+        "Chatterfly"
+      ]
+    },
+    "preview": {
+      "id": 50,
+      "ok": true,
+      "template": "selector-screen-v1-baseline+natural-layout-v1",
+      "text": "检查 chad fly。",
+      "cleanup": {
+        "text": "检查 chad fly。",
+        "version": "speech-spans-v2"
+      },
+      "inputTokens": 1207,
+      "outputTokens": 6,
+      "prefillMs": 3072.909,
+      "decodeMs": 118.257,
+      "peakRssBytes": 81264640
+    },
+    "final": {
+      "id": 51,
+      "ok": true,
+      "template": "selector-screen-v1-baseline+natural-layout-v1",
+      "text": "检查 chad fly。",
+      "cleanup": {
+        "text": "检查 chad fly。",
+        "version": "speech-spans-v2"
+      },
+      "inputTokens": 1207,
+      "reusedTokens": 1203,
+      "outputTokens": 6,
+      "prefillMs": 39.127,
+      "decodeMs": 106.021,
+      "peakRssBytes": 81264640
+    }
+  },
+  {
+    "case": {
+      "id": "explicit-approved-term-mapping",
+      "scene": "prompt",
+      "preview": "检查 chad fly。",
+      "final": "检查 chad fly。",
+      "screen": "软件名称：Chatterfly",
+      "terms": [
+        "chad fly → Chatterfly"
+      ],
+      "pairKind": "constructed-approved-mapping-control",
+      "checks": [
+        "Chatterfly"
+      ]
+    },
+    "preview": {
+      "id": 53,
+      "ok": true,
+      "template": "selector-screen-v1-baseline+natural-layout-v1",
+      "text": "检查 chad fly。",
+      "cleanup": {
+        "text": "检查 chad fly。",
+        "version": "speech-spans-v2"
+      },
+      "inputTokens": 1207,
+      "outputTokens": 6,
+      "prefillMs": 3271.195,
+      "decodeMs": 164.374,
+      "peakRssBytes": 81264640
+    },
+    "final": {
+      "id": 54,
+      "ok": true,
+      "template": "selector-screen-v1-baseline+natural-layout-v1",
+      "text": "检查 chad fly。",
+      "cleanup": {
+        "text": "检查 chad fly。",
+        "version": "speech-spans-v2"
+      },
+      "inputTokens": 1207,
+      "reusedTokens": 1203,
+      "outputTokens": 6,
+      "prefillMs": 39.853,
+      "decodeMs": 148.547,
+      "peakRssBytes": 81264640
+    }
+  },
+  {
+    "case": {
+      "id": "explicit-approved-term-name-only",
+      "scene": "prompt",
+      "preview": "检查 chad fly。",
+      "final": "检查 chad fly。",
+      "screen": "软件名称：Chatterfly",
+      "terms": [
+        "Chatterfly"
+      ],
+      "pairKind": "constructed-approved-mapping-control",
+      "checks": [
+        "Chatterfly"
+      ]
+    },
+    "preview": {
+      "id": 56,
+      "ok": true,
+      "template": "selector-screen-v1-baseline+natural-layout-v1",
+      "text": "检查 chad fly。",
+      "cleanup": {
+        "text": "检查 chad fly。",
+        "version": "speech-spans-v2"
+      },
+      "inputTokens": 1207,
+      "outputTokens": 6,
+      "prefillMs": 2972.687,
+      "decodeMs": 114.146,
+      "peakRssBytes": 81264640
+    },
+    "final": {
+      "id": 57,
+      "ok": true,
+      "template": "selector-screen-v1-baseline+natural-layout-v1",
+      "text": "检查 chad fly。",
+      "cleanup": {
+        "text": "检查 chad fly。",
+        "version": "speech-spans-v2"
+      },
+      "inputTokens": 1207,
+      "reusedTokens": 1203,
+      "outputTokens": 6,
+      "prefillMs": 38.542,
+      "decodeMs": 107.432,
+      "peakRssBytes": 81264640
+    }
+  }
+]

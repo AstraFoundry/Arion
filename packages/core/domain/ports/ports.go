@@ -102,8 +102,11 @@ type RewriteRequest struct {
 	contracts.Identity
 	SourceRevision uint64
 	Text           string
-	Scene          string
-	Terms          []string
+	// PreviousText is earlier rule-corrected streaming source from this session.
+	// It is spelling evidence, never generated text or a replacement final source.
+	PreviousText string
+	Scene        string
+	Terms        []string
 	// Context is consulted for spelling and continuation; empty uses the
 	// plain prompt.
 	Context domain.RewriteContext

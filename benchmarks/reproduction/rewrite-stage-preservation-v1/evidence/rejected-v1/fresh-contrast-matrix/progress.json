@@ -1,0 +1,47 @@
+[
+  {
+    "arm": "v3",
+    "command": [
+      "go",
+      "test",
+      "-overlay=/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/v3-overlay/overlay.json",
+      "./apps/desktop/infrastructure/llm/gguf",
+      "-run",
+      "^TestNativeStagePreservation$",
+      "-count=1",
+      "-timeout",
+      "15m"
+    ],
+    "exitCode": 0
+  },
+  {
+    "arm": "v1",
+    "command": [
+      "go",
+      "test",
+      "-overlay=/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/development-candidate/overlay.json",
+      "./apps/desktop/infrastructure/llm/gguf",
+      "-run",
+      "^TestNativeStagePreservation$",
+      "-count=1",
+      "-timeout",
+      "15m"
+    ],
+    "exitCode": 0
+  },
+  {
+    "arm": "baseline",
+    "command": [
+      "go",
+      "test",
+      "-overlay=/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/matrix-1/development-baseline/overlay.json",
+      "./apps/desktop/infrastructure/llm/gguf",
+      "-run",
+      "^TestNativeStagePreservation$",
+      "-count=1",
+      "-timeout",
+      "15m"
+    ],
+    "exitCode": 0
+  }
+]
