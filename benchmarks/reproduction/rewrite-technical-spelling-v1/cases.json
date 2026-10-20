@@ -1,0 +1,115 @@
+[
+  {
+    "id": "alpha",
+    "scene": "prompt",
+    "text": "把参数阿尔法设成零点五，不改计算公式。",
+    "contains": [
+      "alpha",
+      "0.5",
+      "不改计算公式"
+    ],
+    "excludes": [
+      "阿尔法"
+    ]
+  },
+  {
+    "id": "beta",
+    "scene": "work",
+    "text": "先发贝塔版本，不要当成正式版本发布。",
+    "contains": [
+      "beta",
+      "不要",
+      "正式版本"
+    ],
+    "excludes": [
+      "贝塔"
+    ]
+  },
+  {
+    "id": "delta",
+    "scene": "prompt",
+    "text": "计算德尔塔值，先不要修改输入数据。",
+    "contains": [
+      "delta",
+      "不要修改输入数据"
+    ],
+    "excludes": [
+      "德尔塔"
+    ]
+  },
+  {
+    "id": "mixed",
+    "scene": "prompt",
+    "text": "把阿尔法传给 computeScore，不改函数名。",
+    "contains": [
+      "alpha",
+      "computeScore",
+      "不改函数名"
+    ],
+    "excludes": [
+      "阿尔法"
+    ]
+  },
+  {
+    "id": "company",
+    "scene": "work",
+    "text": "阿尔法公司明天来开会，不要改公司名称。",
+    "contains": [
+      "阿尔法公司",
+      "不要改公司名称"
+    ],
+    "excludes": []
+  },
+  {
+    "id": "quoted",
+    "scene": "chat",
+    "text": "原文是“阿尔法”，代码里保留 `阿尔法`。",
+    "contains": [
+      "“阿尔法”",
+      "`阿尔法`"
+    ],
+    "excludes": []
+  },
+  {
+    "id": "explicit",
+    "scene": "prompt",
+    "text": "项目就叫阿尔法，不要改成英文。",
+    "contains": [
+      "阿尔法",
+      "不要改成英文"
+    ],
+    "excludes": []
+  },
+  {
+    "id": "not-translation",
+    "scene": "prompt",
+    "text": "缓存还没准备好，不要重启服务。",
+    "contains": [
+      "缓存",
+      "不要重启服务"
+    ],
+    "excludes": [
+      "cache"
+    ]
+  },
+  {
+    "id": "implicit-company",
+    "scene": "work",
+    "text": "阿尔法公司明天来开会。",
+    "contains": [
+      "阿尔法公司",
+      "明天来开会"
+    ],
+    "excludes": []
+  },
+  {
+    "id": "ambiguous",
+    "scene": "chat",
+    "text": "阿尔法，先这样。",
+    "contains": [
+      "阿尔法",
+      "先这样"
+    ],
+    "excludes": []
+  }
+]

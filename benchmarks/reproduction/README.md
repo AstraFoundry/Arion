@@ -125,3 +125,7 @@ The actual production-cleanup source replay changes one36-case input; prior raw-
 - [Selected rewrite product integration](rewrite-product-integration-v1/README.md) — production port parity fixtures, native opt-in test and offline archive verification.
 
 - [Independent instruction-only prompts](rewrite-independent-prompts-v1/README.md) — Gemini-authored candidate with no supplied benchmark examples; not activated.
+
+The [numeric and hesitation formatter check](rewrite-numeric-filler-v1/README.md) preserves baseline, failed and revised actual-worker text observations for natural-layout-v2.
+
+The [technical spelling follow-up](rewrite-technical-spelling-v1/README.md) checks phonetic English terms and protected Chinese names in the actual formatter.

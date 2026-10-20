@@ -12,7 +12,7 @@ import (
 )
 
 // SelectedVersion identifies both independently evaluated stages.
-const SelectedVersion = "selector-screen-v1-baseline+natural-layout-v1"
+const SelectedVersion = "selector-screen-v1-baseline+natural-layout-v3"
 
 //go:embed selection.json
 var selectedSelection []byte
@@ -72,12 +72,13 @@ type sceneRecipe struct {
 	Examples       []formatExample `json:"examples"`
 }
 type formatRecipe struct {
-	System         string                 `json:"formatSystem"`
-	SystemHan      string                 `json:"formatSystemHan"`
-	ProsePolicy    string                 `json:"prosePolicy"`
-	ProsePolicyHan string                 `json:"prosePolicyHan"`
-	Routes         map[string]string      `json:"routeInstructions"`
-	Scenes         map[string]sceneRecipe `json:"format"`
+	EditingExamples []formatExample        `json:"editingExamples"`
+	System          string                 `json:"formatSystem"`
+	SystemHan       string                 `json:"formatSystemHan"`
+	ProsePolicy     string                 `json:"prosePolicy"`
+	ProsePolicyHan  string                 `json:"prosePolicyHan"`
+	Routes          map[string]string      `json:"routeInstructions"`
+	Scenes          map[string]sceneRecipe `json:"format"`
 }
 
 // SelectedTemplates holds immutable parsed templates and their fixed selector turns.
@@ -213,11 +214,23 @@ func (t *SelectedTemplates) Format(source, scene string) (ChatRequest, error) {
 	}
 	system += "\n" + t.format.Routes[kind]
 	messages := []Message{{Role: "system", Content: system}}
-	for _, e := range recipe.Examples {
-		if kind != "mixed" && route(e.Source) != kind {
-			continue
+	groups := [][]formatExample{recipe.Examples, t.format.EditingExamples}
+	// Keep explicit-list demonstrations last so prose editing examples do not
+	// override the user-selected layout.
+	if scene == string(domain.SceneList) {
+		groups[0], groups[1] = groups[1], groups[0]
+	}
+	for group, examples := range groups {
+		for _, e := range examples {
+			if kind != "mixed" && route(e.Source) != kind {
+				continue
+			}
+			output := e.Output
+			if scene == string(domain.SceneList) && group == 0 {
+				output = "1. " + output
+			}
+			messages = append(messages, Message{Role: "user", Content: formatText(e.Source)}, Message{Role: "assistant", Content: output})
 		}
-		messages = append(messages, Message{Role: "user", Content: formatText(e.Source)}, Message{Role: "assistant", Content: e.Output})
 	}
 	if len(messages) == 1 {
 		return ChatRequest{}, fmt.Errorf("missing formatting examples for %s/%s", scene, kind)

@@ -1,0 +1,14 @@
+{
+  "baseline": {
+    "passed": 10,
+    "total": 16
+  },
+  "attempt-1": {
+    "passed": 12,
+    "total": 16
+  },
+  "accepted": {
+    "passed": 20,
+    "total": 20
+  }
+}

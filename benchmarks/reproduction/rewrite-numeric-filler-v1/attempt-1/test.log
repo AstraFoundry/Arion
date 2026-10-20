@@ -1,0 +1,61 @@
+=== RUN   TestNativeNumericFillers
+=== RUN   TestNativeNumericFillers/decimal/live
+=== RUN   TestNativeNumericFillers/decimal/final
+=== RUN   TestNativeNumericFillers/precision/live
+=== RUN   TestNativeNumericFillers/precision/final
+=== RUN   TestNativeNumericFillers/negative/live
+    numeric_filler_native_test.go:73: missing "-3.2" in "温度是负三点二度，不是正三点二度。"
+    numeric_filler_native_test.go:78: unexpected "负三点二" in "温度是负三点二度，不是正三点二度。"
+=== RUN   TestNativeNumericFillers/negative/final
+    numeric_filler_native_test.go:73: missing "-3.2" in "温度是负三点二度，不是正三点二度。"
+    numeric_filler_native_test.go:78: unexpected "负三点二" in "温度是负三点二度，不是正三点二度。"
+=== RUN   TestNativeNumericFillers/percent/live
+    numeric_filler_native_test.go:73: missing "2.5%" in "比例是百分之二点五，不要改预算。"
+    numeric_filler_native_test.go:78: unexpected "百分之二点五" in "比例是百分之二点五，不要改预算。"
+=== RUN   TestNativeNumericFillers/percent/final
+    numeric_filler_native_test.go:73: missing "2.5%" in "比例是百分之二点五，不要改预算。"
+    numeric_filler_native_test.go:78: unexpected "百分之二点五" in "比例是百分之二点五，不要改预算。"
+=== RUN   TestNativeNumericFillers/integer/live
+=== RUN   TestNativeNumericFillers/integer/final
+=== RUN   TestNativeNumericFillers/embedded/live
+=== RUN   TestNativeNumericFillers/embedded/final
+=== RUN   TestNativeNumericFillers/filler/live
+=== RUN   TestNativeNumericFillers/filler/final
+=== RUN   TestNativeNumericFillers/reference/live
+=== RUN   TestNativeNumericFillers/reference/final
+=== RUN   TestNativeNumericFillers/quote/live
+=== RUN   TestNativeNumericFillers/quote/final
+=== RUN   TestNativeNumericFillers/clock/live
+=== RUN   TestNativeNumericFillers/clock/final
+=== RUN   TestNativeNumericFillers/idiom/live
+=== RUN   TestNativeNumericFillers/idiom/final
+=== RUN   TestNativeNumericFillers/mixed/live
+=== RUN   TestNativeNumericFillers/mixed/final
+--- FAIL: TestNativeNumericFillers (93.56s)
+    --- PASS: TestNativeNumericFillers/decimal/live (2.39s)
+    --- PASS: TestNativeNumericFillers/decimal/final (2.27s)
+    --- PASS: TestNativeNumericFillers/precision/live (2.98s)
+    --- PASS: TestNativeNumericFillers/precision/final (2.94s)
+    --- FAIL: TestNativeNumericFillers/negative/live (2.43s)
+    --- FAIL: TestNativeNumericFillers/negative/final (2.53s)
+    --- FAIL: TestNativeNumericFillers/percent/live (2.93s)
+    --- FAIL: TestNativeNumericFillers/percent/final (2.78s)
+    --- PASS: TestNativeNumericFillers/integer/live (2.88s)
+    --- PASS: TestNativeNumericFillers/integer/final (2.82s)
+    --- PASS: TestNativeNumericFillers/embedded/live (2.91s)
+    --- PASS: TestNativeNumericFillers/embedded/final (2.78s)
+    --- PASS: TestNativeNumericFillers/filler/live (3.33s)
+    --- PASS: TestNativeNumericFillers/filler/final (3.39s)
+    --- PASS: TestNativeNumericFillers/reference/live (3.05s)
+    --- PASS: TestNativeNumericFillers/reference/final (3.07s)
+    --- PASS: TestNativeNumericFillers/quote/live (3.79s)
+    --- PASS: TestNativeNumericFillers/quote/final (5.04s)
+    --- PASS: TestNativeNumericFillers/clock/live (5.30s)
+    --- PASS: TestNativeNumericFillers/clock/final (4.33s)
+    --- PASS: TestNativeNumericFillers/idiom/live (4.22s)
+    --- PASS: TestNativeNumericFillers/idiom/final (4.43s)
+    --- PASS: TestNativeNumericFillers/mixed/live (9.86s)
+    --- PASS: TestNativeNumericFillers/mixed/final (9.55s)
+FAIL
+FAIL	arion.local/desktop/infrastructure/llm/gguf	93.984s
+FAIL

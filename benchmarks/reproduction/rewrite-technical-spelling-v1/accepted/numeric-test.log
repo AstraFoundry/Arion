@@ -1,0 +1,52 @@
+=== RUN   TestNativeNumericFillers
+=== RUN   TestNativeNumericFillers/decimal/live
+=== RUN   TestNativeNumericFillers/decimal/final
+=== RUN   TestNativeNumericFillers/precision/live
+=== RUN   TestNativeNumericFillers/precision/final
+=== RUN   TestNativeNumericFillers/negative/live
+=== RUN   TestNativeNumericFillers/negative/final
+=== RUN   TestNativeNumericFillers/percent/live
+=== RUN   TestNativeNumericFillers/percent/final
+=== RUN   TestNativeNumericFillers/integer/live
+=== RUN   TestNativeNumericFillers/integer/final
+=== RUN   TestNativeNumericFillers/embedded/live
+=== RUN   TestNativeNumericFillers/embedded/final
+=== RUN   TestNativeNumericFillers/filler/live
+=== RUN   TestNativeNumericFillers/filler/final
+=== RUN   TestNativeNumericFillers/reference/live
+=== RUN   TestNativeNumericFillers/reference/final
+=== RUN   TestNativeNumericFillers/quote/live
+=== RUN   TestNativeNumericFillers/quote/final
+=== RUN   TestNativeNumericFillers/clock/live
+=== RUN   TestNativeNumericFillers/clock/final
+=== RUN   TestNativeNumericFillers/idiom/live
+=== RUN   TestNativeNumericFillers/idiom/final
+=== RUN   TestNativeNumericFillers/mixed/live
+=== RUN   TestNativeNumericFillers/mixed/final
+--- PASS: TestNativeNumericFillers (98.30s)
+    --- PASS: TestNativeNumericFillers/decimal/live (2.12s)
+    --- PASS: TestNativeNumericFillers/decimal/final (3.05s)
+    --- PASS: TestNativeNumericFillers/precision/live (3.70s)
+    --- PASS: TestNativeNumericFillers/precision/final (3.59s)
+    --- PASS: TestNativeNumericFillers/negative/live (3.16s)
+    --- PASS: TestNativeNumericFillers/negative/final (5.59s)
+    --- PASS: TestNativeNumericFillers/percent/live (5.08s)
+    --- PASS: TestNativeNumericFillers/percent/final (5.51s)
+    --- PASS: TestNativeNumericFillers/integer/live (3.90s)
+    --- PASS: TestNativeNumericFillers/integer/final (4.04s)
+    --- PASS: TestNativeNumericFillers/embedded/live (3.75s)
+    --- PASS: TestNativeNumericFillers/embedded/final (3.25s)
+    --- PASS: TestNativeNumericFillers/filler/live (3.76s)
+    --- PASS: TestNativeNumericFillers/filler/final (4.44s)
+    --- PASS: TestNativeNumericFillers/reference/live (3.90s)
+    --- PASS: TestNativeNumericFillers/reference/final (4.19s)
+    --- PASS: TestNativeNumericFillers/quote/live (3.72s)
+    --- PASS: TestNativeNumericFillers/quote/final (3.47s)
+    --- PASS: TestNativeNumericFillers/clock/live (3.79s)
+    --- PASS: TestNativeNumericFillers/clock/final (3.51s)
+    --- PASS: TestNativeNumericFillers/idiom/live (4.72s)
+    --- PASS: TestNativeNumericFillers/idiom/final (4.04s)
+    --- PASS: TestNativeNumericFillers/mixed/live (5.50s)
+    --- PASS: TestNativeNumericFillers/mixed/final (5.49s)
+PASS
+ok  	arion.local/desktop/infrastructure/llm/gguf	98.595s

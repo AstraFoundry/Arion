@@ -1,0 +1,81 @@
+=== RUN   TestNativeNumericFillers
+=== RUN   TestNativeNumericFillers/decimal/live
+    numeric_filler_native_test.go:73: missing "0.05" in "把阈值设成零点零五，保留重试次数。"
+    numeric_filler_native_test.go:78: unexpected "零点零五" in "把阈值设成零点零五，保留重试次数。"
+=== RUN   TestNativeNumericFillers/decimal/final
+    numeric_filler_native_test.go:73: missing "0.05" in "把阈值设成零点零五，保留重试次数。"
+    numeric_filler_native_test.go:78: unexpected "零点零五" in "把阈值设成零点零五，保留重试次数。"
+=== RUN   TestNativeNumericFillers/precision/live
+    numeric_filler_native_test.go:73: missing "12.50" in "金额是十二点五零元，不要四舍五入。"
+    numeric_filler_native_test.go:78: unexpected "十二点五零" in "金额是十二点五零元，不要四舍五入。"
+=== RUN   TestNativeNumericFillers/precision/final
+    numeric_filler_native_test.go:73: missing "12.50" in "金额是十二点五零元，不要四舍五入。"
+    numeric_filler_native_test.go:78: unexpected "十二点五零" in "金额是十二点五零元，不要四舍五入。"
+=== RUN   TestNativeNumericFillers/negative/live
+    numeric_filler_native_test.go:73: missing "-3.2" in "温度是负三点二度，不是正三点二度。"
+    numeric_filler_native_test.go:78: unexpected "负三点二" in "温度是负三点二度，不是正三点二度。"
+=== RUN   TestNativeNumericFillers/negative/final
+    numeric_filler_native_test.go:73: missing "-3.2" in "温度是负三点二度，不是正三点二度。"
+    numeric_filler_native_test.go:78: unexpected "负三点二" in "温度是负三点二度，不是正三点二度。"
+=== RUN   TestNativeNumericFillers/percent/live
+    numeric_filler_native_test.go:73: missing "2.5%" in "比例是百分之二点五，不要改预算。"
+    numeric_filler_native_test.go:78: unexpected "百分之二点五" in "比例是百分之二点五，不要改预算。"
+=== RUN   TestNativeNumericFillers/percent/final
+    numeric_filler_native_test.go:73: missing "2.5%" in "比例是百分之二点五，不要改预算。"
+    numeric_filler_native_test.go:78: unexpected "百分之二点五" in "比例是百分之二点五，不要改预算。"
+=== RUN   TestNativeNumericFillers/integer/live
+    numeric_filler_native_test.go:73: missing "24" in "并发数设成二十四，超时三十秒，不改其他配置。"
+    numeric_filler_native_test.go:73: missing "30" in "并发数设成二十四，超时三十秒，不改其他配置。"
+    numeric_filler_native_test.go:78: unexpected "二十四" in "并发数设成二十四，超时三十秒，不改其他配置。"
+=== RUN   TestNativeNumericFillers/integer/final
+    numeric_filler_native_test.go:73: missing "24" in "并发数设成二十四，超时三十秒，不改其他配置。"
+    numeric_filler_native_test.go:73: missing "30" in "并发数设成二十四，超时三十秒，不改其他配置。"
+    numeric_filler_native_test.go:78: unexpected "二十四" in "并发数设成二十四，超时三十秒，不改其他配置。"
+=== RUN   TestNativeNumericFillers/embedded/live
+    numeric_filler_native_test.go:73: missing "0.75" in "请呃把阈值改成零点七五，不要重启。"
+    numeric_filler_native_test.go:78: unexpected "呃" in "请呃把阈值改成零点七五，不要重启。"
+=== RUN   TestNativeNumericFillers/embedded/final
+    numeric_filler_native_test.go:73: missing "0.75" in "请呃把阈值改成零点七五，不要重启。"
+    numeric_filler_native_test.go:78: unexpected "呃" in "请呃把阈值改成零点七五，不要重启。"
+=== RUN   TestNativeNumericFillers/filler/live
+=== RUN   TestNativeNumericFillers/filler/final
+=== RUN   TestNativeNumericFillers/reference/live
+=== RUN   TestNativeNumericFillers/reference/final
+=== RUN   TestNativeNumericFillers/quote/live
+=== RUN   TestNativeNumericFillers/quote/final
+=== RUN   TestNativeNumericFillers/clock/live
+=== RUN   TestNativeNumericFillers/clock/final
+=== RUN   TestNativeNumericFillers/idiom/live
+=== RUN   TestNativeNumericFillers/idiom/final
+=== RUN   TestNativeNumericFillers/mixed/live
+    numeric_filler_native_test.go:73: missing "1.25" in "把 timeout 设成一点二五秒，先别改 Router.go。"
+=== RUN   TestNativeNumericFillers/mixed/final
+    numeric_filler_native_test.go:73: missing "1.25" in "把 timeout 设成一点二五秒，先别改 Router.go。"
+--- FAIL: TestNativeNumericFillers (46.24s)
+    --- FAIL: TestNativeNumericFillers/decimal/live (1.19s)
+    --- FAIL: TestNativeNumericFillers/decimal/final (1.21s)
+    --- FAIL: TestNativeNumericFillers/precision/live (1.67s)
+    --- FAIL: TestNativeNumericFillers/precision/final (1.75s)
+    --- FAIL: TestNativeNumericFillers/negative/live (1.50s)
+    --- FAIL: TestNativeNumericFillers/negative/final (1.52s)
+    --- FAIL: TestNativeNumericFillers/percent/live (1.73s)
+    --- FAIL: TestNativeNumericFillers/percent/final (1.72s)
+    --- FAIL: TestNativeNumericFillers/integer/live (1.35s)
+    --- FAIL: TestNativeNumericFillers/integer/final (1.37s)
+    --- FAIL: TestNativeNumericFillers/embedded/live (1.36s)
+    --- FAIL: TestNativeNumericFillers/embedded/final (1.35s)
+    --- PASS: TestNativeNumericFillers/filler/live (1.46s)
+    --- PASS: TestNativeNumericFillers/filler/final (1.56s)
+    --- PASS: TestNativeNumericFillers/reference/live (1.45s)
+    --- PASS: TestNativeNumericFillers/reference/final (1.47s)
+    --- PASS: TestNativeNumericFillers/quote/live (1.82s)
+    --- PASS: TestNativeNumericFillers/quote/final (1.78s)
+    --- PASS: TestNativeNumericFillers/clock/live (1.72s)
+    --- PASS: TestNativeNumericFillers/clock/final (1.73s)
+    --- PASS: TestNativeNumericFillers/idiom/live (1.88s)
+    --- PASS: TestNativeNumericFillers/idiom/final (1.74s)
+    --- FAIL: TestNativeNumericFillers/mixed/live (4.05s)
+    --- FAIL: TestNativeNumericFillers/mixed/final (3.33s)
+FAIL
+FAIL	arion.local/desktop/infrastructure/llm/gguf	46.779s
+FAIL

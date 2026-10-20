@@ -1,0 +1,7 @@
+=== RUN   TestNativeSelectedPipeline
+    native_test.go:88: unexpected list layout for case 9: "核对账目，整理凭证，双方确认后再提交。"
+    native_test.go:88: unexpected list layout for case 13: "阈值设成0.8，超时5秒，不要重启。"
+--- FAIL: TestNativeSelectedPipeline (60.53s)
+FAIL
+FAIL	arion.local/desktop/infrastructure/llm/gguf	61.018s
+FAIL

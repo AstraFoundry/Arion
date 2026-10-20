@@ -1,0 +1,6 @@
+=== RUN   TestNativeSelectedPipeline
+    native_test.go:86: unexpected list layout for case 9: "核对账目，整理凭证，双方确认后再提交。"
+--- FAIL: TestNativeSelectedPipeline (40.98s)
+FAIL
+FAIL	arion.local/desktop/infrastructure/llm/gguf	41.364s
+FAIL

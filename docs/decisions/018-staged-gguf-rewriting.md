@@ -8,7 +8,7 @@ Accepted for product integration by the user. This replaces the ONNX/live-v2 rew
 
 Use the pinned Qwen3.5-2B Q4_K_M artifact and llama.cpp b11734 on macOS Apple Silicon. Retain the pipe worker contract, with a private Unix-socket native child and process-group cleanup. The packaged runtime contains no weights; existing verified provisioning installs the catalog artifact for offline inference.
 
-Use the exact baseline selector. The original integration adopted work-scope-v4 formatting; the user-requested conservative alignment replaces it with natural-layout-v1. Source-relative pronunciation hypotheses are unverified; the model selects keep/replace under a bounded ID schema, then the formatter receives only the edited source. Preserve work/email/coding-prompt/chat scenes and route language instructions/examples by actual source script.
+Use the exact baseline selector. The original integration adopted work-scope-v4 formatting; the user-requested conservative alignment replaces it with natural-layout-v2. Source-relative pronunciation hypotheses are unverified; the model selects keep/replace under a bounded ID schema, then the formatter receives only the edited source. Preserve work/email/coding-prompt/chat scenes and route language instructions/examples by actual source script.
 
 Remove production semantic rejection based on overlap, wording, numbers, negation counts and OCR credit. The user accepted the baseline's three harmful choices and six misses in the exposed 101-case development set, rather than requiring case-specific rules or a perfect score. Keep protocol/UTF-8/completeness/control-markup checks, explicit failure outcomes, recognized-original availability and cancellation/focus/source-revision ownership. This is an accepted product tradeoff, not a guarantee of semantic correctness or a held-out error-rate estimate.
 
@@ -28,3 +28,11 @@ See [local rewrite configuration](../operations/local-rewrite.md), [contextual r
 The user requested alignment with Doubao and Chatterfly after observing excessive structuring. Preserve the separate cleanup, spelling-selection and formatting stages, and recognized-original availability. Default to minimal copyediting and natural prose in work/prompt scenes. Multiple tasks or restrictions alone do not imply list intent. Lists require clear enumeration, an explicit list-layout request or the explicit list scene. Remove demonstrations that add unsolicited bullets or category labels; retain explicit-list demonstrations with owner/deadline/condition scope.
 
 This is Arion's policy choice informed by client workflow evidence. Neither competitor's complete server prompt or list-formatting threshold was recovered. Do not describe this template as a copied or behaviorally equivalent competitor prompt. See [focused verification](../../benchmarks/reproduction/rewrite-natural-layout-v1/README.md).
+
+## Numeric and hesitation follow-up
+
+The formatter preserves numeric value and precision rather than requiring spoken Chinese numeral spelling. Natural-layout-v2 adds shared script-routed editing examples for quantities, decimal points, signs, percentages and sentence-internal hesitation. Preserve meaningful referents, times, idioms and literal quotations. This is LLM formatting, not a global numeral replacement rule or a guarantee of recovery from acoustic errors. See [focused observations](../../benchmarks/reproduction/rewrite-numeric-filler-v1/README.md).
+
+## Technical spelling follow-up
+
+Natural-layout-v3 permits source-grounded canonical English spellings for established phonetic technical terms in an unambiguous technical context. Keep surrounding Chinese, proper names, literal text and explicit Chinese naming. This changes the formatter policy and script guidance, not the frozen selector or its pronunciation producer. See [scoped native observations](../../benchmarks/reproduction/rewrite-technical-spelling-v1/README.md).

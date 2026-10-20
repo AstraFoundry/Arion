@@ -1,0 +1,151 @@
+[
+  {
+    "id": "decimal",
+    "scene": "prompt",
+    "text": "把阈值设成零点零五，保留重试次数。",
+    "contains": [
+      "0.05",
+      "重试次数"
+    ],
+    "excludes": [
+      "零点零五"
+    ]
+  },
+  {
+    "id": "precision",
+    "scene": "work",
+    "text": "金额是十二点五零元，不要四舍五入。",
+    "contains": [
+      "12.50",
+      "不要四舍五入"
+    ],
+    "excludes": [
+      "十二点五零"
+    ]
+  },
+  {
+    "id": "negative",
+    "scene": "chat",
+    "text": "温度是负三点二度，不是正三点二度。",
+    "contains": [
+      "-3.2",
+      "不是"
+    ],
+    "excludes": [
+      "负三点二"
+    ]
+  },
+  {
+    "id": "percent",
+    "scene": "work",
+    "text": "比例是百分之二点五，不要改预算。",
+    "contains": [
+      "2.5%",
+      "不要改预算"
+    ],
+    "excludes": [
+      "百分之二点五"
+    ]
+  },
+  {
+    "id": "integer",
+    "scene": "prompt",
+    "text": "并发数设成二十四，超时三十秒，不改其他配置。",
+    "contains": [
+      "24",
+      "30",
+      "不改其他配置"
+    ],
+    "excludes": [
+      "二十四"
+    ]
+  },
+  {
+    "id": "embedded",
+    "scene": "prompt",
+    "text": "请呃把阈值改成零点七五，不要重启。",
+    "contains": [
+      "0.75",
+      "不要重启"
+    ],
+    "excludes": [
+      "呃"
+    ]
+  },
+  {
+    "id": "filler",
+    "scene": "chat",
+    "text": "呃，那个，我们先检查日志，然后再决定要不要重启。",
+    "contains": [
+      "检查日志",
+      "要不要重启"
+    ],
+    "excludes": [
+      "呃",
+      "那个"
+    ]
+  },
+  {
+    "id": "reference",
+    "scene": "prompt",
+    "text": "那个按钮不要删，这个配置也不要改。",
+    "contains": [
+      "那个按钮",
+      "不要删",
+      "这个配置",
+      "不要改"
+    ],
+    "excludes": []
+  },
+  {
+    "id": "quote",
+    "scene": "chat",
+    "text": "保留原文“呃，那个，三点一四”和 `三点一四`。",
+    "contains": [
+      "“呃，那个，三点一四”",
+      "`三点一四`"
+    ],
+    "excludes": []
+  },
+  {
+    "id": "clock",
+    "scene": "chat",
+    "text": "下午三点开会，不是三点一四，别改时间。",
+    "contains": [
+      "下午",
+      "开会",
+      "不是",
+      "别改时间"
+    ],
+    "excludes": [
+      "3.开会"
+    ]
+  },
+  {
+    "id": "idiom",
+    "scene": "chat",
+    "text": "这个方案有一点问题，三心二意不行。",
+    "contains": [
+      "有一点问题",
+      "三心二意"
+    ],
+    "excludes": [
+      "1点问题",
+      "3心2意"
+    ]
+  },
+  {
+    "id": "mixed",
+    "scene": "prompt",
+    "text": "把 timeout 设成一点二五秒，呃，先别改 Router.go。",
+    "contains": [
+      "timeout",
+      "1.25",
+      "先别改",
+      "Router.go"
+    ],
+    "excludes": [
+      "呃"
+    ]
+  }
+]

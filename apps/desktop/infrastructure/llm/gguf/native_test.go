@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"strings"
 	"testing"
 	"time"
 
@@ -64,6 +65,7 @@ func TestNativeSelectedPipeline(t *testing.T) {
 		{Identity: id, Scene: "chat", Text: "我可能晚点到，如果下雨就线上参加，别替我确认。"},
 		{Identity: id, Scene: "search", Text: "如何检查 syncState 的状态？"},
 		{Identity: id, Scene: "prompt", Text: "请把以下事项列成清单：给 fetchState 加日志，保留返回字段，不改配置。"},
+		{Identity: id, Scene: "list", Text: "阈值设成零点八，超时五秒，不要重启。"},
 	}
 	listLine := regexp.MustCompile(`(?m)^\s*(?:[-*•]|[0-9]+[.)、])\s+`)
 
@@ -87,6 +89,9 @@ func TestNativeSelectedPipeline(t *testing.T) {
 		}
 		if !wantsList && r.Scene != "email" && regexp.MustCompile(`(?m)^#{1,6} |(?:要求|限制|Requirements|Constraints)[:：]`).MatchString(result.Text) {
 			t.Errorf("invented heading for case %d: %q", i, result.Text)
+		}
+		if i == 13 && (!strings.Contains(result.Text, "0.8") || !strings.Contains(result.Text, "5") || !strings.Contains(result.Text, "不要重启")) {
+			t.Errorf("lost list numeric formatting or constraint: %q", result.Text)
 		}
 		if i == 0 {
 			reference = result.Text

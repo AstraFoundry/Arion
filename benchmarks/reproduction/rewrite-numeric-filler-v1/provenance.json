@@ -1,0 +1,44 @@
+{
+  "scope": "Authored exposed development text probes; no microphone, acoustic recognition, OS context, target editor or independent blind review",
+  "revision": "5e863a42965c62897c8d55e0dab56ecb100f23af",
+  "dirtyStatus": " M apps/desktop/infrastructure/llm/gguf/native_test.go\n M apps/desktop/infrastructure/llm/prompt/format.json\n M apps/desktop/infrastructure/llm/prompt/selected.go\n M apps/desktop/infrastructure/llm/prompt/selected_test.go\n M apps/desktop/ui/widgets/capsule/capsule.go\n M benchmarks/reproduction/README.md\n M docs/decisions/018-staged-gguf-rewriting.md\n M docs/operations/local-rewrite.md\n M specs/009-contextual-rewrite.md\n?? apps/desktop/infrastructure/llm/gguf/numeric_filler_native_test.go\n?? benchmarks/reproduction/rewrite-numeric-filler-v1/\n",
+  "hardware": "Apple M4\n34359738368\n",
+  "os": "ProductName:\t\tmacOS\nProductVersion:\t\t26.6.2\nBuildVersion:\t\t25G83\n",
+  "go": "go version go1.27.1 darwin/arm64\n",
+  "power": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=34668643)\t100%; charged; 0:00 remaining present: true\n",
+  "model": {
+    "file": "Qwen3.5-2B-Q4_K_M.gguf",
+    "bytes": 1280835840,
+    "sha256": "aaf42c8b7c3cab2bf3d69c355048d4a0ee9973d48f16c731c0520ee914699223"
+  },
+  "runtime": {
+    "llama-server": "981b460a278e9a0c880cef32d6fab42785a119084456b16845304cf38c32cf69",
+    "arion-llm": "493588ab1aca6b9c03cfc7d2fa719c5cd4a89aeb00d87a86270abdb8b4792f8e"
+  },
+  "decoding": {
+    "threads": 4,
+    "contextTokens": 4096,
+    "formatterMaxTokens": 256,
+    "selectorMaxTokens": 128,
+    "seed": 42,
+    "thinking": false,
+    "sampling": "greedy"
+  },
+  "attempts": {
+    "baseline": "Staged natural-layout-v1 worker. Baseline worker executable hash was not separately captured; prompt ID is recorded per response. Original template retained from HEAD.",
+    "attempt-1": "Shared examples before scene examples; negative and percent probes fail.",
+    "attempt-2": "Numeric probes pass, existing explicit-list regression fails with shared prose examples last.",
+    "attempt-3": "Shared examples before scene examples on list route; list probes still fail.",
+    "accepted": "Same non-list payloads as attempt 2; shared list examples now have numbered output and precede scene-specific examples. Final numeric harness uses the product 10-second request budget."
+  },
+  "fullProbeWorkerSha256": "61e8c3005d4520b3da862a0a5141d31db3f29f8b847529f6821443b886a82de1",
+  "metadataNote": "After full native probes, format.json version metadata is aligned to natural-layout-v2. That field is not parsed by the formatter; effective prompts are unchanged. A separate native decimal smoke check uses the rebuilt worker.",
+  "sourceMappings": {
+    "selected.go": "apps/desktop/infrastructure/llm/prompt/selected.go",
+    "format.json": "apps/desktop/infrastructure/llm/prompt/format.json",
+    "selected_test.go": "apps/desktop/infrastructure/llm/prompt/selected_test.go",
+    "numeric_filler_native_test.go": "apps/desktop/infrastructure/llm/gguf/numeric_filler_native_test.go",
+    "native_test.go": "apps/desktop/infrastructure/llm/gguf/native_test.go",
+    "engine.go": "apps/desktop/infrastructure/llm/gguf/engine.go"
+  }
+}

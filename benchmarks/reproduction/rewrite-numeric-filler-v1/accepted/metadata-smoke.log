@@ -1,0 +1,8 @@
+=== RUN   TestNativeNumericFillers
+=== RUN   TestNativeNumericFillers/decimal/live
+=== RUN   TestNativeNumericFillers/decimal/final
+--- PASS: TestNativeNumericFillers (7.06s)
+    --- PASS: TestNativeNumericFillers/decimal/live (2.35s)
+    --- PASS: TestNativeNumericFillers/decimal/final (3.03s)
+PASS
+ok  	arion.local/desktop/infrastructure/llm/gguf	7.926s

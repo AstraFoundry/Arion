@@ -134,3 +134,42 @@ func TestSelectedNaturalLayoutRouting(t *testing.T) {
 		}
 	}
 }
+
+// Every scene and script route must carry numeric and hesitation examples;
+// native probes verify behavior rather than inferring it from prompt text.
+func TestSelectedEditingExamplesRouting(t *testing.T) {
+	lexicon, err := spelling.Load()
+	if err != nil {
+		t.Fatal(err)
+	}
+	templates, err := Selected(lexicon)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, scene := range domain.Scenes {
+		for _, source := range []string{"把阈值设成零点五。", "Set the threshold to zero point five.", "把 threshold 设成零点五。"} {
+			req, err := templates.Format(source, string(scene))
+			if err != nil {
+				t.Fatal(err)
+			}
+			for _, example := range templates.format.EditingExamples {
+				if route(source) != "mixed" && route(example.Source) != route(source) {
+					continue
+				}
+				expected := example.Output
+				if scene == domain.SceneList {
+					expected = "1. " + expected
+				}
+				found := false
+				for i := 1; i+1 < len(req.Messages); i += 2 {
+					if req.Messages[i].Content == formatText(example.Source) && req.Messages[i+1].Content == expected {
+						found = true
+					}
+				}
+				if !found {
+					t.Fatalf("missing shared editing example for %s/%s", scene, route(source))
+				}
+			}
+		}
+	}
+}
