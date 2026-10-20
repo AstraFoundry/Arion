@@ -41,7 +41,7 @@ try {
   const library = path.join(runtime, 'dist/lib/librime.1.17.0.dylib');
   const architectures = run('lipo', ['-archs', library], { encoding: 'utf8' }).trim().split(/\s+/).sort();
   if (JSON.stringify(architectures) !== JSON.stringify([...manifest.engine.architectures].sort())) throw new Error('Keyboard engine must include arm64 and x86_64.');
-  const linkage = run('otool', ['-L', library], { encoding: 'utf8' });
+  const linkage = run('otool', ['-arch', 'all', '-L', library], { encoding: 'utf8' });
   const dependencies = [...linkage.matchAll(/^\s+(\S+) \(compatibility/gm)].map(match => match[1]);
   const allowed = new Set(['@rpath/librime.1.dylib', '/usr/lib/libSystem.B.dylib', '/usr/lib/libc++.1.dylib']);
   if (dependencies.length !== 6 || dependencies.some(name => !allowed.has(name))) throw new Error(`Unexpected nonportable keyboard engine linkage:\n${linkage}`);
