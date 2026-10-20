@@ -1,6 +1,7 @@
 // The InputMethodKit host owns client ranges; recognition stays in Arion.
 #import <Cocoa/Cocoa.h>
 #import <InputMethodKit/InputMethodKit.h>
+#import <CommonCrypto/CommonDigest.h>
 #import "candidate_panel.h"
 #import "composition.h"
 #import "typing.h"
@@ -8,6 +9,8 @@
 #include <sys/un.h>
 #include <errno.h>
 #include <unistd.h>
+
+static NSString *hostBuildIdentity;
 
 @class ArionInputController;
 
@@ -17,6 +20,7 @@
 @property(copy) NSString *connection;
 + (instancetype)shared;
 - (void)send:(NSDictionary *)message;
+- (BOOL)connect;
 @end
 
 @interface ArionInputController : IMKInputController
@@ -78,7 +82,11 @@ static void applyKeyboardSettings(ArionTyping *typing, ArionCandidatePanel *pane
         bridge = [ArionBridge new];
         bridge.fd = -1;
         [NSTimer scheduledTimerWithTimeInterval:2 repeats:YES block:^(NSTimer *timer) {
-            if (bridge.fd < 0 && bridge.active) [bridge send:bridge.active.activationMessage];
+            (void)timer;
+            if (bridge.fd < 0) {
+                if (bridge.active) [bridge send:bridge.active.activationMessage];
+                else [bridge connect];
+            }
         }];
     });
     return bridge;
@@ -102,6 +110,8 @@ static void applyKeyboardSettings(ArionTyping *typing, ArionCandidatePanel *pane
     if (reader < 0) { close(fd); return NO; }
     self.fd = fd;
     self.connection = NSUUID.UUID.UUIDString;
+    [self writeMessage:@{@"op": @"hello", @"build": hostBuildIdentity}];
+    if (self.fd < 0) { close(reader); return NO; }
     NSString *connection = self.connection;
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
         [self readLoop:reader connection:connection];
@@ -314,17 +324,28 @@ static void applyKeyboardSettings(ArionTyping *typing, ArionCandidatePanel *pane
 @end
 
 int main(int argc, const char *argv[]) {
+    (void)argc; (void)argv;
     @autoreleasepool {
+        // Cache the executable identity at process startup, before an updater can
+        // replace the file at this path. Every reconnection uses this identity.
+        NSData *executable = [NSData dataWithContentsOfFile:NSBundle.mainBundle.executablePath];
+        if (!executable || executable.length > UINT32_MAX) return 1;
+        unsigned char digest[CC_SHA256_DIGEST_LENGTH];
+        CC_SHA256(executable.bytes, (CC_LONG)executable.length, digest);
+        NSMutableString *identity = [NSMutableString stringWithCapacity:CC_SHA256_DIGEST_LENGTH * 2];
+        for (NSUInteger i = 0; i < CC_SHA256_DIGEST_LENGTH; i++) [identity appendFormat:@"%02x", digest[i]];
+        hostBuildIdentity = identity;
         [NSApplication sharedApplication];
         NSString *data = [NSBundle.mainBundle.resourcePath stringByAppendingPathComponent:@"keyboard/data"];
         NSString *profile = applicationSupport();
         if (profile) [ArionKeyboardEngine.shared startWithData:data
             userDirectory:[profile stringByAppendingPathComponent:@"keyboard"] error:nil];
         [NSNotificationCenter.defaultCenter addObserverForName:NSApplicationWillTerminateNotification object:nil queue:nil
-            usingBlock:^(NSNotification *notification) { [ArionKeyboardEngine.shared stop]; }];
+            usingBlock:^(NSNotification *notification) { (void)notification; [ArionKeyboardEngine.shared stop]; }];
         NSString *connection = [NSBundle.mainBundle objectForInfoDictionaryKey:@"InputMethodConnectionName"];
         __attribute__((objc_precise_lifetime)) IMKServer *server = [[IMKServer alloc] initWithName:connection bundleIdentifier:NSBundle.mainBundle.bundleIdentifier];
         if (!server) return 1;
+        [[ArionBridge shared] connect];
         [NSApp run];
         (void)server;
     }

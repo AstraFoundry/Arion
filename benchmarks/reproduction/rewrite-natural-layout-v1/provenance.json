@@ -1,0 +1,28 @@
+{
+  "scope": "Authored exposed development probes, no competitor runtime comparison or held-out acceptance",
+  "revision": "2ca6a3f0ecdeec37b4c16307503c3ee2acc9a102",
+  "dirtyStatus": " M apps/desktop/ime/macos/composition.m\n M apps/desktop/ime/macos/tests/composition_test.m\n M apps/desktop/infrastructure/llm/gguf/native_test.go\n M apps/desktop/infrastructure/llm/prompt/format.json\n M apps/desktop/infrastructure/llm/prompt/selected.go\n M apps/desktop/infrastructure/llm/prompt/selected_test.go\n M apps/desktop/ui/entities/dictation/typewriter.go\n M apps/desktop/ui/entities/dictation/typewriter_test.go\n M apps/desktop/ui/widgets/capsule/capsule.go\n M docs/decisions/018-staged-gguf-rewriting.md\n M docs/operations/local-rewrite.md\n M docs/project/architecture.md\n M docs/research/chatterfly.md\n M packages/core/domain/scene.go\n M specs/009-contextual-rewrite.md\n?? .impeccable.md\n?? benchmarks/reproduction/rewrite-natural-layout-v1/\n?? benchmarks/results/rewrite-release/data.json\n?? benchmarks/results/rewrite-release/index.html\n",
+  "host": "macOS-26.6.2-x86_64-i386-64bit",
+  "hardware": "Apple M4\n34359738368",
+  "go": "go version go1.27.1 darwin/arm64",
+  "power": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=34668643)\t100%; charged; 0:00 remaining present: true",
+  "model": {
+    "file": "Qwen3.5-2B-Q4_K_M.gguf",
+    "bytes": 1280835840,
+    "sha256": "aaf42c8b7c3cab2bf3d69c355048d4a0ee9973d48f16c731c0520ee914699223"
+  },
+  "runtime": {
+    "llama-server": "981b460a278e9a0c880cef32d6fab42785a119084456b16845304cf38c32cf69",
+    "arion-llm": "35ff2d88494b92da51bb3862d4d013de6adb9cfacc1a04848206188b06c6a859"
+  },
+  "runtimePins": "scripts/llm-runtime.json",
+  "decoding": {
+    "threads": 4,
+    "maxLength": 4096,
+    "maxNewTokens": 256,
+    "seed": 42,
+    "thinking": false,
+    "sampling": "greedy"
+  },
+  "attempts": "1-3 failed explicit list layout; 4 generated acceptable preserved English enumeration but failed an overly narrow numbered-list assertion; accepted reruns the same final template with enumeration-preservation assertion. All failed observations retained."
+}

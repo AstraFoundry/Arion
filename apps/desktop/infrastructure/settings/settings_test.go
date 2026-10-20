@@ -1,6 +1,7 @@
 package settings
 
 import (
+	"encoding/json"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -43,5 +44,32 @@ func TestLanguagePersistenceAndLegacyProfiles(t *testing.T) {
 	}
 	if _, _, err := store.Load(); err == nil {
 		t.Fatal("malformed preference accepted")
+	}
+}
+
+func TestLegacyInputModeIsRetired(t *testing.T) {
+	for _, mode := range []string{"shortcut", "system_ime"} {
+		store := Store{Path: filepath.Join(t.TempDir(), "preferences.json")}
+		if err := os.WriteFile(store.Path, []byte(`{"version":1,"mode":"`+mode+`","shortcut":"Cmd+Shift+D","sounds":false}`), 0600); err != nil {
+			t.Fatal(err)
+		}
+		prefs, repairs, err := store.Load()
+		if err != nil || len(repairs) != 0 || prefs.Shortcut != "Cmd+Shift+D" || prefs.Sounds {
+			t.Fatalf("legacy migration: %+v %v %v", prefs, repairs, err)
+		}
+		if err := store.Save(prefs); err != nil {
+			t.Fatal(err)
+		}
+		data, err := os.ReadFile(store.Path)
+		if err != nil {
+			t.Fatal(err)
+		}
+		var saved map[string]any
+		if err := json.Unmarshal(data, &saved); err != nil {
+			t.Fatal(err)
+		}
+		if _, exists := saved["mode"]; exists {
+			t.Fatal("retired input mode persisted again")
+		}
 	}
 }

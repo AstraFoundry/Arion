@@ -107,7 +107,9 @@ const (
 const (
 	DetailMicrophone    = "microphone"
 	DetailAccessibility = "accessibility"
-	DetailInputMethod   = "input method not active"
+	DetailInputMethod   = "input method connection unavailable"
+	DetailIMEClient     = "input method client unavailable"
+	DetailIMEUpdating   = "input method update in progress"
 )
 
 // Dictation is the live session projection. Text stays in RAM only.
@@ -239,6 +241,14 @@ type Guide struct {
 	App transfer.Data
 	// Shown counts the times the guide appeared, so it enters each time.
 	Shown int
+}
+
+// TrayHint floats beside the tray icon after onboarding, pointing out where
+// Arion stays.
+type TrayHint struct {
+	// Below is true when the icon is under the hint, as on a taskbar at the
+	// bottom of the display.
+	Below bool
 }
 
 // Device is a capture endpoint.
@@ -393,6 +403,7 @@ type State struct {
 	InputMethodUpdate bool
 	InputMethodError  copy.Key
 	Guide             Guide
+	TrayHint          TrayHint
 	Update            Update
 	// Focus is the settings section last asked for from outside settings.
 	Focus SettingsFocus
@@ -432,6 +443,8 @@ type Actions interface {
 	RequestScreenRecording()
 	// CloseGuide dismisses the consent guide and returns to Arion.
 	CloseGuide()
+	// CloseTrayHint dismisses the hint beside the tray icon.
+	CloseTrayHint()
 	// SuspendShortcut releases the global hotkey while a recorder listens.
 	SuspendShortcut(suspend bool)
 	// TestShortcut makes hotkey presses only report Shortcut.Pressed, for

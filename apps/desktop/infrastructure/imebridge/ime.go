@@ -18,6 +18,7 @@ import (
 )
 
 type message struct {
+	Build      string `json:"build,omitempty"`
 	Op         string `json:"op"`
 	Activation string `json:"activation"`
 	Session    string `json:"session,omitempty"`
@@ -31,6 +32,10 @@ type IME struct {
 	mu                 sync.Mutex
 	conn               net.Conn
 	listener           net.Listener
+	releaseSocket      func()
+	build              string
+	changed            chan struct{}
+	updating           bool
 	closed             bool
 	activation, client string
 	identity           contracts.Identity
@@ -41,7 +46,9 @@ type IME struct {
 	onLeave            func()
 }
 
-func New(path string, onLeave func()) *IME { return &IME{path: path, onLeave: onLeave} }
+func New(path string, onLeave func()) *IME {
+	return &IME{path: path, onLeave: onLeave, changed: make(chan struct{})}
+}
 
 func (m *IME) Listen() error {
 	m.mu.Lock()
@@ -52,24 +59,16 @@ func (m *IME) Listen() error {
 	if err := os.MkdirAll(filepath.Dir(m.path), 0700); err != nil {
 		return err
 	}
-	// Never replace a live server or an unrelated filesystem object.
-	if info, err := os.Lstat(m.path); err == nil {
-		if info.Mode()&os.ModeSocket == 0 {
-			return errors.New("input method socket path is not a socket")
-		}
-		return errors.New("input method socket path already exists")
-	} else if !os.IsNotExist(err) {
-		return err
-	}
-	listener, err := net.Listen("unix", m.path)
+	listener, release, err := listenSocket(m.path)
 	if err != nil {
 		return err
 	}
 	if err := os.Chmod(m.path, 0600); err != nil {
 		listener.Close()
+		release()
 		return err
 	}
-	m.listener = listener
+	m.listener, m.releaseSocket = listener, release
 	go func() {
 		for {
 			conn, err := listener.Accept()
@@ -111,12 +110,31 @@ func (m *IME) Close() {
 		m.conn.Close()
 		m.conn = nil
 	}
-	m.activation = ""
+	if m.releaseSocket != nil {
+		m.releaseSocket()
+		m.releaseSocket = nil
+	}
+	m.activation, m.build = "", ""
+	m.notifyLocked()
 	had := m.invalidateLocked()
 	m.mu.Unlock()
 	m.leave(had)
 }
 func (m *IME) serve(conn net.Conn) {
+	scanner := bufio.NewScanner(conn)
+	scanner.Buffer(make([]byte, 4096), 1<<20)
+	_ = conn.SetReadDeadline(time.Now().Add(time.Second))
+	if !scanner.Scan() {
+		conn.Close()
+		return
+	}
+	var hello message
+	if json.Unmarshal(scanner.Bytes(), &hello) != nil ||
+		!((hello.Op == "hello" && hello.Build != "") || (hello.Op == "activate" && hello.Activation != "")) {
+		conn.Close()
+		return
+	}
+	_ = conn.SetReadDeadline(time.Time{})
 	m.mu.Lock()
 	if m.closed {
 		m.mu.Unlock()
@@ -127,13 +145,15 @@ func (m *IME) serve(conn net.Conn) {
 		m.conn.Close()
 	}
 	had := m.invalidateLocked()
-	m.activation = ""
+	m.activation, m.client, m.build = "", "", hello.Build
+	if hello.Op == "activate" {
+		m.activation, m.client = hello.Activation, hello.Client
+	}
 	m.conn = conn
+	m.notifyLocked()
 	m.mu.Unlock()
 	m.leave(had)
 	defer conn.Close()
-	scanner := bufio.NewScanner(conn)
-	scanner.Buffer(make([]byte, 4096), 1<<20)
 	for scanner.Scan() {
 		var msg message
 		if json.Unmarshal(scanner.Bytes(), &msg) != nil {
@@ -172,7 +192,8 @@ func (m *IME) serve(conn net.Conn) {
 	had = false
 	if m.conn == conn {
 		m.conn = nil
-		m.activation = ""
+		m.activation, m.build = "", ""
+		m.notifyLocked()
 		had = m.invalidateLocked()
 	}
 	m.mu.Unlock()
@@ -226,8 +247,14 @@ func (m *IME) sendLocked(ctx context.Context, msg message) error {
 func (m *IME) Capture(ctx context.Context, id contracts.Identity) (contracts.TargetSnapshot, error) {
 	m.mu.Lock()
 	defer m.mu.Unlock()
-	if m.conn == nil || m.activation == "" {
-		return contracts.TargetSnapshot{}, domain.Fail(domain.CodeTargetUnsupported, "input method not active")
+	if m.updating {
+		return contracts.TargetSnapshot{}, domain.Fail(domain.CodeTargetUnsupported, "input method update in progress")
+	}
+	if m.conn == nil {
+		return contracts.TargetSnapshot{}, domain.Fail(domain.CodeTargetUnsupported, "input method connection unavailable")
+	}
+	if m.activation == "" {
+		return contracts.TargetSnapshot{}, domain.Fail(domain.CodeTargetUnsupported, "input method client unavailable")
 	}
 	if m.token != "" {
 		return contracts.TargetSnapshot{}, domain.Fail(domain.CodeTargetChanged, "input method already owns a session")
@@ -325,4 +352,46 @@ func (m *IME) Commit(ctx context.Context, request contracts.CommitRequest) (cont
 	}
 	m.mu.Unlock()
 	return result, nil
+}
+
+// BeginUpdate prevents new owned sessions while the host is replaced.
+func (m *IME) BeginUpdate() { m.mu.Lock(); m.updating = true; m.mu.Unlock() }
+func (m *IME) EndUpdate()   { m.mu.Lock(); m.updating = false; m.mu.Unlock() }
+
+func (m *IME) notifyLocked() { close(m.changed); m.changed = make(chan struct{}) }
+
+// WaitReady requires a connection from the expected executable, independently
+// of whether the current window has an editable IMK client.
+func (m *IME) WaitReady(ctx context.Context, build string) error {
+	if build == "" {
+		return errors.New("input method build identity is empty")
+	}
+	for {
+		m.mu.Lock()
+		ready, closed, changed := m.conn != nil && m.build == build, m.closed, m.changed
+		m.mu.Unlock()
+		if closed {
+			return errors.New("input method transport closed")
+		}
+		if ready {
+			return nil
+		}
+		select {
+		case <-ctx.Done():
+			return ctx.Err()
+		case <-changed:
+		}
+	}
+}
+
+// EnsureListening also repairs a previous failed startup attempt before an
+// update can replace the host. Closed transports cannot be restarted.
+func (m *IME) EnsureListening() error {
+	m.mu.Lock()
+	listening := m.listener != nil
+	m.mu.Unlock()
+	if listening {
+		return nil
+	}
+	return m.Listen()
 }

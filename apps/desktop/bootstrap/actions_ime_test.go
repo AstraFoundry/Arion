@@ -19,15 +19,14 @@ type failedRemovalIME struct {
 func (m failedRemovalIME) Remove() error               { return m.failure }
 func (failedRemovalIME) State() arion.InputMethodState { return arion.InputMethodInstalled }
 
-func TestFailedIMERemovalPreservesChosenInputMode(t *testing.T) {
+func TestFailedIMERemovalPreservesInstalledSource(t *testing.T) {
 	failure := errors.New("input source could not be disabled")
 	a := &App{ime: failedRemovalIME{failure: failure}}
-	a.state.Preferences.Mode = arion.ModeSystemIME
 	if err := (actions{a}).RemoveInputMethod(); !errors.Is(err, failure) {
 		t.Fatalf("removal error lost: %v", err)
 	}
-	if a.state.Preferences.Mode != arion.ModeSystemIME || a.state.InputMethod != arion.InputMethodInstalled {
-		t.Fatalf("failed removal changed input mode or hid installed source: %+v", a.state)
+	if a.state.InputMethod != arion.InputMethodInstalled {
+		t.Fatalf("failed removal hid installed source: %+v", a.state)
 	}
 }
 
@@ -67,7 +66,6 @@ func TestIMEInstallationPublishesProgressAndFinalStateWithoutBlocking(t *testing
 			adapter := &installingIME{gate: make(chan struct{}), failure: tc.failure, state: tc.state, settingsFailure: tc.settingsFailure}
 			a := &App{ime: adapter, queueReady: make(chan struct{}, 1)}
 			a.state.InputMethod = arion.InputMethodAbsent
-			a.state.Preferences.Mode = arion.ModeShortcut
 			x := actions{a}
 			if err := x.InstallInputMethod(); err != nil || !a.state.InputMethodInstalling {
 				t.Fatalf("installation did not return with immediate progress: %v", err)
@@ -92,9 +90,6 @@ func TestIMEInstallationPublishesProgressAndFinalStateWithoutBlocking(t *testing
 			}
 			if a.state.InputMethodError != tc.wantError {
 				t.Fatalf("failure message lost or pending misreported as failure: %s", a.state.InputMethodError)
-			}
-			if a.state.Preferences.Mode != arion.ModeShortcut {
-				t.Fatal("installation changed the selected input mode")
 			}
 			if adapter.settingsCalls != 0 {
 				t.Fatal("installation navigated away before native consent completed")

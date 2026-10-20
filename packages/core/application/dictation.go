@@ -20,6 +20,9 @@ import (
 // The IME adapters serve system_ime sessions: the input method owns the
 // marked-text range, receives every draft and commits the reviewed text.
 type Dependencies struct {
+	// SelectMode chooses the route once at session start. It must return quickly
+	// and must not call the coordinator. Nil uses Options.Mode for explicit hosts.
+	SelectMode  func() domain.InputMode
 	Diagnostics ports.Diagnostics
 	Audio       ports.AudioCapture
 	Recognizers ports.RecognizerFactory
@@ -163,6 +166,7 @@ func (c *Coordinator) Subscribe(listener Listener) func() {
 
 // Snapshot is the current session state for views that attach late.
 type Snapshot struct {
+	Mode     domain.InputMode
 	Identity contracts.Identity
 	State    domain.SessionState
 	Draft    string
@@ -178,7 +182,7 @@ func (c *Coordinator) Snapshot() Snapshot {
 	if r == nil {
 		return Snapshot{State: domain.Idle}
 	}
-	return Snapshot{Identity: r.identity, State: r.session.State(), Draft: r.draft, Final: r.final,
+	return Snapshot{Mode: r.session.Mode(), Identity: r.identity, State: r.session.State(), Draft: r.draft, Final: r.final,
 		Failure: r.session.Failure(), Active: !r.session.Terminal()}
 }
 
@@ -219,6 +223,10 @@ func (c *Coordinator) Start() {
 		// The next insertion changes the field: judge the last one now.
 		c.deps.Edits.Settle()
 	}
+	var selectedMode domain.InputMode
+	if c.deps.SelectMode != nil {
+		selectedMode = c.deps.SelectMode()
+	}
 	c.mu.Lock()
 	if c.current != nil && !c.current.session.Terminal() {
 		r := c.current
@@ -227,7 +235,11 @@ func (c *Coordinator) Start() {
 		return
 	}
 	c.generation++
-	session, err := domain.NewSession(c.deps.NewID(), c.generation, c.opts.Mode)
+	mode := c.opts.Mode
+	if c.deps.SelectMode != nil {
+		mode = selectedMode
+	}
+	session, err := domain.NewSession(c.deps.NewID(), c.generation, mode)
 	if err != nil {
 		c.mu.Unlock()
 		return
@@ -452,10 +464,16 @@ func (c *Coordinator) Stop() {
 
 // Cancel invalidates the active generation. Late results cannot update the
 // UI, learn or insert (DSK-A04, SPH-A02).
-func (c *Coordinator) Cancel() {
+func (c *Coordinator) Cancel() { c.cancelMode("") }
+
+// CancelMode invalidates only a session using the specified route. Losing an
+// IME client must not cancel dictation targeting an external editor.
+func (c *Coordinator) CancelMode(mode domain.InputMode) { c.cancelMode(mode) }
+
+func (c *Coordinator) cancelMode(mode domain.InputMode) {
 	c.mu.Lock()
 	r := c.current
-	if r == nil || r.session.Terminal() {
+	if r == nil || r.session.Terminal() || (mode != "" && r.session.Mode() != mode) {
 		c.mu.Unlock()
 		return
 	}

@@ -56,8 +56,11 @@ int arion_ime_enable(const char *source_id);
 int arion_ime_disable(const char *source_id);
 int arion_ime_state(const char *source_id);
 int arion_ime_open_settings(void);
-// Ends running processes of the input method bundle so the next activation
-// launches the installed binary. Returns how many were asked to end.
-int arion_ime_terminate(const char *bundle_id);
+// Select/switch without disabling an already authorized input source.
+int arion_ime_select(const char *source_id);
+int arion_ime_switch_away(const char *source_id);
+// action: 0 counts running hosts, 1 requests exit, 2 forces exit.
+// A negative result reports a failed forced termination request.
+int arion_ime_processes(const char *bundle_id, int action);
 
 #endif

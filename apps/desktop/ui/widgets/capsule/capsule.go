@@ -7,7 +7,6 @@ import (
 	"arion.local/desktop/ui/features/holdkey"
 	"hash/fnv"
 	"time"
-	"unicode/utf8"
 
 	"arion.local/desktop/ui/entities/dictation"
 	"arion.local/desktop/ui/shared/copy"
@@ -18,9 +17,25 @@ import (
 	"github.com/egoist/mygo/ui"
 )
 
-// previewRunes bounds the draft handed to the text line; the line shows its
-// tail, the part the user is speaking now.
-const previewRunes = 64
+// previewRunes bounds the draft laid out on the line; anything before it is
+// far beyond the line's left edge. The line shows the tail, the part the
+// user is speaking now.
+const previewRunes = 600
+
+// glide moves the line left as it grows: the typewriter adds a character
+// every few frames, and the spring turns those steps into one motion.
+var glide = ui.Animation{Spring: ui.SpringOptions{Duration: 180 * time.Millisecond, Bounce: 0}}
+
+// maxLag is how far the gliding line may trail its target, about one body
+// character: the newest, still-fading text never slips past the right edge.
+const maxLag = 16
+
+// edgeFade is the width over which text leaving the line's left edge fades
+// into the pill.
+const edgeFade = 28
+
+// lineHeight holds the draft line open: its text is positioned absolutely.
+const lineHeight = 22
 
 // Live is the pill's fixed width while the microphone is open and the
 // draft is finishing: streaming hypotheses grow and shrink as they are
@@ -71,7 +86,14 @@ func Render(c *ui.Context, store runtime.Store, tokens theme.Tokens, typing *dic
 			pill.Width(pill.AnimateTo("width", Live, theme.Settle))
 		}
 		pill.Children(func() {
-			row := ui.Row(c.Key(phase)).Grow(1).Gap(10).AlignItems(ui.Center).Transition(contentMotion)
+			// The live phases share one row, so the draft stays in place when
+			// speech ends instead of leaving and entering again.
+			key := any(phase)
+			switch phase {
+			case dictation.Preparing, dictation.Listening, dictation.Transcribing, dictation.Inserting:
+				key = "live"
+			}
+			row := ui.Row(c.Key(key)).Grow(1).Gap(10).AlignItems(ui.Center).Transition(contentMotion)
 			row.Children(func() {
 				switch phase {
 				case dictation.Preparing, dictation.Listening:
@@ -122,55 +144,85 @@ func listening(c *ui.Context, state *runtime.State, tokens theme.Tokens, prepari
 	})
 }
 
-// draft shows the end of the streaming text on one line: as much of the
-// tail as fits beside the meter, the start cut with an ellipsis, so
-// the line keeps its place however long the sentence grows. Widths come
-// from the previous frame's layout; before the first, the line clips. The
-// typewriter's newest characters fade in at the end of the line.
+// draft shows the end of the streaming text on one line. Once it is wider
+// than the line, the text glides left so its end stays in view, and the
+// characters leaving the left edge fade out. Widths come from the previous
+// frame's layout. The typewriter's newest characters fade in at the end.
 func draft(c *ui.Context, tokens theme.Tokens, frame dictation.Frame, color ui.Color) {
 	if frame.Animating {
 		c.AnimationFrame()
 	}
-	text := frame.Text
+	runes := []rune(frame.Text)
+	runes = runes[max(0, len(runes)-previewRunes):]
 	line := ui.Row(c.Key("draft")).Grow(1).Shrink(1).Width(0).ClipX().AlignItems(ui.Center)
-	room := line.Bounds().W
-	if room > 0 {
-		text = fit(c, tail(text, previewRunes), room)
+	// The text dims when speech ends; ease it rather than switch.
+	color = line.AnimateColor("color", color, glide)
+	// Where each character starts, from cached single-character widths. The
+	// characters drawn at those exact positions are drawn one span each.
+	starts := make([]float32, len(runes)+1)
+	for i, r := range runes {
+		starts[i+1] = starts[i] + advance(c, r)
 	}
-	runes := []rune(text)
-	fading := min(len(frame.Opacity), len(runes))
-	spans := []ui.Span{{Text: string(runes[:len(runes)-fading])}}
-	for i, opacity := range frame.Opacity[len(frame.Opacity)-fading:] {
-		r := runes[len(runes)-fading+i]
-		spans = append(spans, ui.Span{Text: string(r), Color: color.Alpha(opacity)})
+	hidden := float32(0)
+	if room := line.Bounds().W; room > 0 {
+		// Shaped as runs, the line can come out wider than its characters
+		// measured singly; keep the wider so the end stays inside.
+		shaped, _ := c.MeasureText(0, ui.Span{Text: string(runes), Size: theme.Body})
+		hidden = max(0, max(starts[len(runes)], shaped)+1-room)
 	}
-	line.Children(func() {
-		ui.RichText(c, spans...).FontSize(theme.Body).TextColor(color).SingleLine().Shrink(0)
+	shift := max(line.AnimateTo("shift", hidden, glide), hidden-maxLag)
+	// Characters wholly past the left edge are not drawn; those crossing the
+	// fade zone are drawn singly, each fading with its distance from the edge.
+	first := 0
+	for first < len(runes) && starts[first+1] <= shift {
+		first++
+	}
+	zone := first
+	for zone < len(runes) && shift > 0 && starts[zone] < shift+edgeFade {
+		zone++
+	}
+	tail := len(runes) - min(len(frame.Opacity), len(runes)-zone)
+	var spans []ui.Span
+	for i := first; i < zone; i++ {
+		x := max(0, starts[i]-shift)
+		// A span color with zero alpha reads as unset and draws in the full
+		// text color, so the faintest character keeps a trace of alpha.
+		edge := max(0.01, 1-(1-x/edgeFade)*min(1, shift/edgeFade))
+		spans = append(spans, ui.Span{Text: string(runes[i]), Color: color.Alpha(edge * fadeIn(frame, len(runes), i))})
+	}
+	if zone < tail {
+		spans = append(spans, ui.Span{Text: string(runes[zone:tail])})
+	}
+	for i := tail; i < len(runes); i++ {
+		spans = append(spans, ui.Span{Text: string(runes[i]), Color: color.Alpha(fadeIn(frame, len(runes), i))})
+	}
+	line.Height(lineHeight).Children(func() {
+		// Out of the row's layout and unwrapped, the text keeps its full
+		// width instead of truncating to the line; the row clips it.
+		ui.RichText(c, spans...).FontSize(theme.Body).TextColor(color).NoWrap().
+			Absolute().Left(starts[first]-shift).Top(0).Bottom(0).Width(starts[len(runes)]-starts[first]+edgeFade)
 	})
 }
 
-// fit returns the longest tail of text that fits in width at the body
-// size, after an ellipsis when cut.
-func fit(c *ui.Context, text string, width float32) string {
-	measure := func(s string) float32 {
-		w, _ := c.MeasureText(0, ui.Span{Text: s, Size: theme.Body})
+// fadeIn is the typewriter's opacity for rune i of n.
+func fadeIn(frame dictation.Frame, n, i int) float32 {
+	if k := i - (n - len(frame.Opacity)); k >= 0 {
+		return frame.Opacity[k]
+	}
+	return 1
+}
+
+// advances caches each character's width at the body size; the draft line
+// lays out hundreds of characters every frame while it animates.
+var advances = map[rune]float32{}
+
+func advance(c *ui.Context, r rune) float32 {
+	if w, ok := advances[r]; ok {
 		return w
 	}
-	if measure(text) <= width {
-		return text
-	}
-	runes := []rune(text)
-	// Smallest cut whose tail fits: tails shrink as the cut grows.
-	lo, hi := 1, len(runes)
-	for lo < hi {
-		mid := (lo + hi) / 2
-		if measure("…"+string(runes[mid:])) <= width {
-			hi = mid
-		} else {
-			lo = mid + 1
-		}
-	}
-	return "…" + string(runes[lo:])
+	w, _ := c.MeasureText(0, ui.Span{Text: string(r), Size: theme.Body})
+	advances[r] = w
+	return w
 }
 
 func transcribing(c *ui.Context, d runtime.Dictation, tokens theme.Tokens, messages copy.Catalog, typing *dictation.Typewriter) {
@@ -248,15 +300,6 @@ func learnedNotice(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 	if undo.Clicked() {
 		store.Actions.UndoLearned(l.ID)
 	}
-}
-
-// tail keeps the last n runes so the pill shows what is being said now.
-func tail(text string, n int) string {
-	if utf8.RuneCountInString(text) <= n {
-		return text
-	}
-	runes := []rune(text)
-	return "…" + string(runes[len(runes)-n:])
 }
 
 // run turns a session ID into a keyframe run so outcome motion replays for

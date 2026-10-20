@@ -58,3 +58,7 @@ __pycache__/
 
 # Staged offline keyboard engine and compiled schema data.
 /apps/desktop/resources/darwin/keyboard/
+
+# Regenerated aggregate reports exceed GitHub blob limits; sources remain archived.
+/benchmarks/results/rewrite-release/data.json
+/benchmarks/results/rewrite-release/index.html

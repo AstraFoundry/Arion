@@ -1,5 +1,6 @@
 // arion-ime-probe invokes the production registration adapter for authorized
-// native acceptance. Input-source selection and restoration belong to its driver.
+// native acceptance. Installation owns its temporary transport and performs the
+// same selection-preserving, build-verified handover as the desktop app.
 package main
 
 import (
@@ -25,7 +26,12 @@ func main() {
 		if *bundle == "" {
 			err = domain.Fail(domain.CodeTargetUnsupported, "input bundle path required")
 		} else {
-			err = macos.InstallIME(*bundle)
+			transport := macos.NewIME(macos.DefaultIMESocket(), nil)
+			err = transport.Listen()
+			if err == nil {
+				err = macos.InstallIME(*bundle, transport.WaitReady)
+			}
+			transport.Close()
 		}
 	case "remove":
 		err = macos.RemoveIME()

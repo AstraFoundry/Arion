@@ -499,3 +499,111 @@ func TestCancelledSessionRejectsDelayedCommittingState(t *testing.T) {
 		t.Fatal("delayed commit state resurrected cancelled session")
 	}
 }
+
+// Route selection is sampled once per session, including starts from Toggle.
+func TestAutomaticRouteStaysBoundToSession(t *testing.T) {
+	var selected atomic.Bool
+	var selections atomic.Int32
+	external := &fakeTarget{outcome: contracts.Applied, snapshot: contracts.TargetSnapshot{Target: "external"}}
+	ime := &fakeTarget{outcome: contracts.Applied, snapshot: contracts.TargetSnapshot{Target: "ime"}}
+	audio := &fakeAudio{}
+	c, err := NewCoordinator(Dependencies{
+		Audio: audio, Recognizers: fakeFactory{&fakeRecognizer{words: []string{"hello"}}}, NewID: newID,
+		Targets: external, Input: external, IMETargets: ime, IMEInput: ime, Composition: &fakeComposition{},
+		SelectMode: func() domain.InputMode {
+			selections.Add(1)
+			if selected.Load() {
+				return domain.SystemIMEMode
+			}
+			return domain.ShortcutMode
+		},
+	}, Options{AutoCommit: true})
+	if err != nil {
+		t.Fatal(err)
+	}
+	events := &recorder{}
+	c.Subscribe(events.listen)
+	for i, mode := range []domain.InputMode{domain.ShortcutMode, domain.SystemIMEMode, domain.ShortcutMode} {
+		selected.Store(mode == domain.SystemIMEMode)
+		c.Toggle()
+		capturing := events.wait(t, func(e contracts.Event) bool {
+			return e.Kind == contracts.SessionStateChanged && e.State == domain.Capturing && e.Generation == uint64(i+1)
+		})
+		if c.Snapshot().Mode != mode {
+			t.Fatalf("session selected %s, want %s", c.Snapshot().Mode, mode)
+		}
+		// A later source change cannot reroute an already captured target.
+		selected.Store(mode != domain.SystemIMEMode)
+		if mode == domain.ShortcutMode {
+			c.CancelMode(domain.SystemIMEMode)
+			if !c.Snapshot().Active {
+				t.Fatal("IME deactivation cancelled external dictation")
+			}
+		}
+		audio.push(1, 0.2)
+		events.wait(t, func(e contracts.Event) bool {
+			return e.Kind == contracts.DraftReplaced && e.SessionID == capturing.SessionID
+		})
+		c.Toggle()
+		events.wait(t, func(e contracts.Event) bool {
+			return e.Kind == contracts.CommitResultReady && e.SessionID == capturing.SessionID
+		})
+	}
+	if external.commits.Load() != 2 || ime.commits.Load() != 1 || selections.Load() != 3 {
+		t.Fatalf("wrong routing: external=%d ime=%d selections=%d", external.commits.Load(), ime.commits.Load(), selections.Load())
+	}
+}
+
+func TestCancelModeReleasesOwnedComposition(t *testing.T) {
+	audio := &fakeAudio{}
+	target := &fakeTarget{snapshot: contracts.TargetSnapshot{Target: "ime"}}
+	composition := &fakeComposition{}
+	c, err := NewCoordinator(Dependencies{Audio: audio, Recognizers: fakeFactory{&fakeRecognizer{}}, NewID: newID,
+		IMETargets: target, IMEInput: target, Targets: target, Input: target, Composition: composition,
+		SelectMode: func() domain.InputMode { return domain.SystemIMEMode },
+	}, Options{AutoCommit: true})
+	if err != nil {
+		t.Fatal(err)
+	}
+	events := &recorder{}
+	c.Subscribe(events.listen)
+	c.Start()
+	events.wait(t, stateIs(domain.Capturing))
+	c.CancelMode(domain.SystemIMEMode)
+	if c.Snapshot().State != domain.Cancelled {
+		t.Fatal("lost IME ownership did not cancel")
+	}
+	composition.mu.Lock()
+	defer composition.mu.Unlock()
+	if composition.cancels != 1 || target.commits.Load() != 0 {
+		t.Fatal("lost ownership did not release without committing")
+	}
+}
+
+func TestAutomaticIMERouteFailureDoesNotTryExternalDelivery(t *testing.T) {
+	for _, missing := range []bool{false, true} {
+		t.Run(fmt.Sprintf("missing-adapter=%t", missing), func(t *testing.T) {
+			audio := &fakeAudio{}
+			external := &fakeTarget{outcome: contracts.Applied}
+			deps := Dependencies{Audio: audio, Recognizers: fakeFactory{&fakeRecognizer{}}, NewID: newID,
+				Targets: external, Input: external,
+				SelectMode: func() domain.InputMode { return domain.SystemIMEMode },
+			}
+			if !missing {
+				ime := &fakeTarget{err: domain.Fail(domain.CodeTargetUnsupported, "input method no longer active")}
+				deps.IMETargets, deps.IMEInput = ime, ime
+			}
+			c, err := NewCoordinator(deps, Options{AutoCommit: true})
+			if err != nil {
+				t.Fatal(err)
+			}
+			events := &recorder{}
+			c.Subscribe(events.listen)
+			c.Start()
+			failed := events.wait(t, kindIs(contracts.ErrorOccurred))
+			if failed.Error != domain.CodeTargetUnsupported || audio.starts.Load() != 0 || external.commits.Load() != 0 {
+				t.Fatalf("IME failure retried external delivery: %+v starts=%d commits=%d", failed, audio.starts.Load(), external.commits.Load())
+			}
+		})
+	}
+}

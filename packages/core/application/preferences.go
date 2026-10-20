@@ -22,17 +22,16 @@ const (
 // on purpose: the best evaluated bundle loads automatically; ModelOverride
 // only exists for an explicit choice among evaluated bundles.
 type Preferences struct {
-	Version             int              `json:"version"`
-	UILanguage          UILanguage       `json:"uiLanguage"`
-	OnboardingCompleted bool             `json:"onboardingCompleted"`
-	Mode                domain.InputMode `json:"mode"`
-	Shortcut            string           `json:"shortcut"`
-	HoldKey             HoldKey          `json:"holdKey"`
-	Delivery            Delivery         `json:"delivery"`
-	RemoveFillers       bool             `json:"removeFillers"`
-	Sounds              bool             `json:"sounds"`
-	LaunchAtLogin       bool             `json:"launchAtLogin"`
-	Microphone          string           `json:"microphone"`
+	Version             int        `json:"version"`
+	UILanguage          UILanguage `json:"uiLanguage"`
+	OnboardingCompleted bool       `json:"onboardingCompleted"`
+	Shortcut            string     `json:"shortcut"`
+	HoldKey             HoldKey    `json:"holdKey"`
+	Delivery            Delivery   `json:"delivery"`
+	RemoveFillers       bool       `json:"removeFillers"`
+	Sounds              bool       `json:"sounds"`
+	LaunchAtLogin       bool       `json:"launchAtLogin"`
+	Microphone          string     `json:"microphone"`
 	// MicrophoneGain is one of GainStops' decibels; profiles written before
 	// it existed load 0 dB, the device's own level.
 	MicrophoneGain int    `json:"microphoneGain"`
@@ -85,7 +84,7 @@ const DefaultShortcut = "Alt+Space"
 // DefaultPreferences are the first-run choices.
 func DefaultPreferences() Preferences {
 	return Preferences{
-		Version: PreferencesVersion, UILanguage: English, Mode: domain.ShortcutMode, Shortcut: DefaultShortcut,
+		Version: PreferencesVersion, UILanguage: English, Shortcut: DefaultShortcut,
 		Delivery: DeliveryAutomatic, RemoveFillers: true, Sounds: true, CheckUpdates: true, MatchApp: true,
 		ContextCursor: true, ContextScreen: true, ContextHistory: true, LearnEdits: true,
 		Keyboard: DefaultKeyboardPreferences(),
@@ -104,10 +103,6 @@ func (p Preferences) Normalize() (Preferences, []string) {
 	if p.Version != PreferencesVersion {
 		p.Version = PreferencesVersion
 		repaired = append(repaired, "version")
-	}
-	if p.Mode != domain.ShortcutMode && p.Mode != domain.SystemIMEMode {
-		p.Mode = defaults.Mode
-		repaired = append(repaired, "mode")
 	}
 	if strings.TrimSpace(p.Shortcut) == "" {
 		p.Shortcut = defaults.Shortcut

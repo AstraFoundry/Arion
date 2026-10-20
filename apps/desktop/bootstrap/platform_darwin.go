@@ -103,12 +103,17 @@ func (darwinIME) State() runtime.InputMethodState {
 }
 
 // Install copies the input method shipped in the app's resources.
-func (darwinIME) Install() error {
+func (m darwinIME) Install() error {
+	if err := m.EnsureListening(); err != nil {
+		return err
+	}
+	m.BeginUpdate()
+	defer m.EndUpdate()
 	resources, err := mygo.App.Path(mygo.PathResources)
 	if err != nil {
 		return err
 	}
-	return macos.InstallIME(filepath.Join(resources, "ArionInput.app"))
+	return macos.InstallIME(filepath.Join(resources, "ArionInput.app"), m.WaitReady)
 }
 
 func (darwinIME) Remove() error { return macos.RemoveIME() }

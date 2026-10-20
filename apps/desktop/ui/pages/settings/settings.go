@@ -5,7 +5,6 @@ package settings
 import (
 	"arion.local/desktop/ui/features/diagnostics"
 	"arion.local/desktop/ui/features/holdkey"
-	"arion.local/desktop/ui/features/inputmode"
 	"arion.local/desktop/ui/features/keyboard"
 	"arion.local/desktop/ui/features/microphone"
 	"arion.local/desktop/ui/features/modelchoice"
@@ -27,7 +26,6 @@ import (
 	"arion.local/desktop/ui/widgets/showcase"
 	"arion.local/desktop/ui/widgets/usage"
 	"github.com/egoist/mygo/ui"
-	"strings"
 )
 
 // Section IDs.
@@ -49,8 +47,6 @@ type Page struct {
 	monitoring bool
 	recorder   shortcut.Recorder
 	draft      vocabulary.Draft
-	delivery   runtime.Delivery
-	mode       inputmode.State
 	keyboard   keyboard.State
 	focus      int
 	usage      usage.State
@@ -188,20 +184,6 @@ func (p *Page) section(c *ui.Context, store runtime.Store, tokens theme.Tokens) 
 			})
 			holdkey.Notes(c, store, tokens)
 		})
-		kit.Group(c, tokens, messages.Text(copy.ModeLabel), func() {
-			inputmode.Choice(c, store, tokens, &p.mode, keyboard.Ready(store), func() { p.Section = Keyboard })
-		})
-		// Insertion routes apply to shortcut mode; the input method commits
-		// through the OS input-method protocol.
-		if prefs.Mode == runtime.ModeShortcut {
-			if strings.HasPrefix(store.State.Platform, "darwin-") {
-				kit.Card(c, tokens).Children(func() {
-					kit.Row(c, tokens, messages.Text(copy.DeliveryClipboard), messages.Text(copy.DeliveryMacDetail), nil)
-				})
-			} else {
-				kit.Group(c, tokens, messages.Text(copy.DeliveryLabel), func() { p.deliveryCard(c, store, tokens) })
-			}
-		}
 		kit.Card(c, tokens).Children(func() {
 			fillers := prefs.RemoveFillers
 			kit.Row(c, tokens, messages.Text(copy.FillersLabel), messages.Text(copy.FillersDetail), func() {
@@ -327,32 +309,6 @@ func hasOthers(store runtime.Store) bool {
 		}
 	}
 	return false
-}
-
-// deliveryCard chooses how shortcut-mode text reaches the target app.
-func (p *Page) deliveryCard(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
-	messages := store.Copy()
-	kit.Card(c, tokens).Children(func() {
-		p.delivery = store.State.Preferences.Delivery
-		ui.RadioGroup(c.Key("delivery"), func() {
-			options := []struct {
-				value         runtime.Delivery
-				label, detail string
-			}{{runtime.DeliveryAutomatic, messages.Text(copy.DeliveryAutomatic), messages.Text(copy.DeliveryAutoDetail)}, {runtime.DeliveryClipboard, messages.Text(copy.DeliveryClipboard), messages.Text(copy.DeliveryClipDetail)}}
-			for i, option := range options {
-				if i > 0 {
-					kit.Divider(c, tokens)
-				}
-				value := option.value
-				ui.Column(c).Padding(12, 16).Gap(3).Children(func() {
-					if ui.Radio(c.Key(value), &p.delivery, value, option.label).Changed() {
-						store.Actions.UpdatePreferences(func(p *runtime.Preferences) { p.Delivery = value })
-					}
-					ui.Text(c, option.detail).FontSize(theme.Caption).TextColor(tokens.Muted).Margin(0, 0, 0, 24)
-				})
-			}
-		})
-	})
 }
 
 // nav lists the sections, with the account card at the foot of the

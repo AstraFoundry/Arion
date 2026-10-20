@@ -336,22 +336,12 @@ int arion_ime_disable(const char *source_id) {
         OSStatus status = noErr;
         CFBooleanRef selected = TISGetInputSourceProperty(source, kTISPropertyInputSourceIsSelected);
         if (selected && CFBooleanGetValue(selected)) {
-            // Select an existing ASCII keyboard layout before disabling this IME.
-            // Failure leaves the installed source available and is returned to Go.
-            TISInputSourceRef replacement = TISCopyCurrentASCIICapableKeyboardLayoutInputSource();
-            if (!replacement) {
-                CFRelease(source);
-                return paramErr;
-            }
-            CFStringRef replacementID = TISGetInputSourceProperty(replacement, kTISPropertyInputSourceID);
-            CFStringRef sourceID = TISGetInputSourceProperty(source, kTISPropertyInputSourceID);
-            status = (!replacementID || !sourceID || CFEqual(replacementID, sourceID))
-                ? paramErr : TISSelectInputSource(replacement);
-            CFRelease(replacement);
+            status = arion_ime_switch_away(source_id);
             if (status != noErr) {
                 CFRelease(source);
                 return (int)status;
             }
+            CFStringRef sourceID = TISGetInputSourceProperty(source, kTISPropertyInputSourceID);
             TISInputSourceRef current = TISCopyCurrentKeyboardInputSource();
             CFStringRef currentID = current ? TISGetInputSourceProperty(current, kTISPropertyInputSourceID) : NULL;
             BOOL moved = currentID && !CFEqual(currentID, sourceID);
@@ -398,14 +388,42 @@ int arion_ime_open_settings(void) {
     });
 }
 
-int arion_ime_terminate(const char *bundle_id) {
+int arion_ime_select(const char *source_id) {
+    return arion_ime_on_main(^int(void) {
+        TISInputSourceRef source = arion_find_source(source_id);
+        if (!source) return paramErr;
+        OSStatus result = TISSelectInputSource(source);
+        CFRelease(source);
+        return (int)result;
+    });
+}
+
+int arion_ime_switch_away(const char *source_id) {
+    return arion_ime_on_main(^int(void) {
+        TISInputSourceRef source = arion_find_source(source_id);
+        if (!source) return noErr;
+        CFBooleanRef selected = TISGetInputSourceProperty(source, kTISPropertyInputSourceIsSelected);
+        BOOL active = selected && CFBooleanGetValue(selected);
+        CFRelease(source);
+        if (!active) return noErr;
+        TISInputSourceRef replacement = TISCopyCurrentASCIICapableKeyboardLayoutInputSource();
+        if (!replacement) return paramErr;
+        OSStatus result = TISSelectInputSource(replacement);
+        CFRelease(replacement);
+        return (int)result;
+    });
+}
+
+int arion_ime_processes(const char *bundle_id, int action) {
     return arion_ime_on_main(^int(void) {
         @autoreleasepool {
             NSString *identifier = [NSString stringWithUTF8String:bundle_id];
             int count = 0;
             for (NSRunningApplication *app in [NSRunningApplication runningApplicationsWithBundleIdentifier:identifier]) {
-                // An input method has no documents to save; it relaunches on demand.
-                if ([app forceTerminate]) count++;
+                if (app.terminated) continue;
+                count++;
+                if (action == 1) [app terminate];
+                if (action == 2 && ![app forceTerminate]) return -1;
             }
             return count;
         }

@@ -14,7 +14,6 @@ import (
 	"arion.local/core/domain"
 	"arion.local/core/domain/ports"
 	"arion.local/desktop/infrastructure/audio"
-	arion "arion.local/desktop/ui/shared/runtime"
 	"github.com/egoist/mygo"
 )
 
@@ -23,18 +22,20 @@ import (
 // scripted fixture audio and adds fault injection for owned-scenario tests;
 // recognition, correction, target capture and insertion stay the product's.
 type harness struct {
-	app          *App
-	audio        *scriptedAudio
-	delayFinal   atomic.Bool
-	release      chan struct{}
-	releaseMu    sync.Mutex
-	loseAck      atomic.Bool
-	commits      atomic.Int32
-	audioStarts  atomic.Int32
-	captureLive  atomic.Bool
-	lastOutcome  atomic.Value
-	lastFailure  atomic.Value
-	sessionState atomic.Value
+	// routeOverride is test-only fault injection, never a saved preference.
+	routeOverride atomic.Value
+	app           *App
+	audio         *scriptedAudio
+	delayFinal    atomic.Bool
+	release       chan struct{}
+	releaseMu     sync.Mutex
+	loseAck       atomic.Bool
+	commits       atomic.Int32
+	audioStarts   atomic.Int32
+	captureLive   atomic.Bool
+	lastOutcome   atomic.Value
+	lastFailure   atomic.Value
+	sessionState  atomic.Value
 }
 
 func newHarness() *harness {
@@ -172,7 +173,7 @@ func (h *harness) observe(e contracts.Event) {
 func (h *harness) observations() map[string]any {
 	status := h.app.manager.Status()
 	model := map[string]any{"state": string(status.State), "bundle": status.Bundle}
-	modeValue := string(h.app.preferences().Mode)
+	modeValue := string(h.app.dictationMode())
 	return map[string]any{
 		"session":               map[string]any{"state": h.sessionState.Load()},
 		"commit":                map[string]any{"status": h.lastOutcome.Load()},
@@ -271,7 +272,8 @@ func (h *harness) client(conn net.Conn) {
 			mode := domain.InputMode(c.Mode)
 			done := make(chan struct{})
 			h.app.post(func() {
-				actions{h.app}.UpdatePreferences(func(p *arion.Preferences) { p.Mode = mode })
+				h.routeOverride.Store(mode)
+				h.app.core.SetMode(mode)
 				close(done)
 			})
 			<-done

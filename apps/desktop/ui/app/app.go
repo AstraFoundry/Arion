@@ -7,6 +7,7 @@ import (
 	"arion.local/desktop/ui/pages/onboarding"
 	"arion.local/desktop/ui/pages/overlay"
 	"arion.local/desktop/ui/pages/settings"
+	"arion.local/desktop/ui/pages/trayhint"
 	"arion.local/desktop/ui/shared/runtime"
 	"github.com/egoist/mygo/ui"
 )
@@ -22,6 +23,8 @@ const (
 	OverlayWidth     = 720
 	OverlayHeight    = 180
 	GuideHeight      = guide.Height
+	TrayHintWidth    = trayhint.Width
+	TrayHintHeight   = trayhint.Height
 )
 
 // View is a window's content and the hook releasing what it holds.
@@ -37,6 +40,10 @@ func Overlay(store runtime.Store) View {
 
 func Guide(store runtime.Store) View {
 	return View{Content: ui.View(func(c *ui.Context) { guide.Render(c, store) }), Close: func() {}}
+}
+
+func TrayHint(store runtime.Store) View {
+	return View{Content: ui.View(func(c *ui.Context) { trayhint.Render(c, store) }), Close: func() {}}
 }
 
 func Panel(store runtime.Store) View {

@@ -5,7 +5,7 @@ Arion is a voice input product with a native Go desktop shell. macOS and Windows
 ## Confirmed scope
 
 - Local streaming speech recognition and live correction, initially evaluated on Mandarin, English, and mixed technical vocabulary.
-- Configurable input modes: global shortcut dictation and system IME. IMK/TSF are separate OS adapters sharing the same core.
+- Unified dictation with automatic delivery through the selected Arion input method or the external editor. IMK/TSF are separate OS adapters sharing the same core.
 - Local ranking of actual candidate words/segments, preserving candidate identity and text.
 - User-controlled personal vocabulary, correction rules, and contextual preferences.
 - Encrypted memory sync: standard packages select AstraFoundry's center; source builds can select a self-hosted center through build-time environment configuration (SYNC-11, build injection implemented; desktop sync pending). Offline dictation is independent of account or server availability.

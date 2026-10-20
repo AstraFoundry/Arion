@@ -25,6 +25,7 @@ func (x actions) OpenMicrophoneSettings() {
 	}
 }
 func (x actions) CloseGuide()          { x.a.closeGuide(true) }
+func (x actions) CloseTrayHint()       { x.a.closeTrayHint() }
 func (x actions) RetryModel()          { go x.a.activate(x.a.state.Preferences.ModelOverride) }
 func (x actions) RetryPolish()         { go x.a.startPolish() }
 func (x actions) StartLevelMonitor()   { x.a.startMonitor() }
@@ -91,9 +92,6 @@ func (x actions) UpdatePreferences(change func(*application.Preferences)) {
 		if err := a.ime.ApplyKeyboard(next.Keyboard); err != nil {
 			a.record("keyboard_settings", err)
 		}
-	}
-	if next.Mode != before.Mode {
-		a.core.SetMode(next.Mode)
 	}
 	if next.Polish != before.Polish {
 		if next.Polish {
@@ -180,6 +178,9 @@ func (x actions) InstallInputMethod() error {
 	if a.state.InputMethodInstalling {
 		return nil
 	}
+	if a.core != nil {
+		a.core.CancelMode(domain.SystemIMEMode)
+	}
 	a.state.InputMethodInstalling = true
 	a.state.InputMethodError = ""
 	a.record("ime_install_started", nil)
@@ -222,7 +223,8 @@ func (x actions) OpenInputMethodSettings() error {
 	return err
 }
 
-// RemoveInputMethod removes the input source and returns to shortcut mode.
+// RemoveInputMethod removes the input source; subsequent dictation selects its
+// route from the actual current source.
 func (x actions) RemoveInputMethod() error {
 	if x.a.ime == nil {
 		return errInputMethodUnsupported
@@ -236,9 +238,6 @@ func (x actions) RemoveInputMethod() error {
 	x.a.state.InputMethod = x.a.ime.State()
 	if err == nil {
 		x.a.state.InputMethodUpdate = false
-	}
-	if err == nil && x.a.state.Preferences.Mode == arion.ModeSystemIME {
-		x.UpdatePreferences(func(p *application.Preferences) { p.Mode = arion.ModeShortcut })
 	}
 	return err
 }
@@ -281,6 +280,7 @@ func (x actions) CompleteOnboarding() {
 		a.onboarding.Close()
 	}
 	a.openSettings()
+	a.showTrayHint()
 }
 
 var _ arion.Actions = actions{}

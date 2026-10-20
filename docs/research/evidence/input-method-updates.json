@@ -1,0 +1,40 @@
+{
+  "scope": "Static macOS input-method update lifecycle; no competitor launched, installed or updated",
+  "runtimeObserved": false,
+  "artifacts": {
+    "doubao": {
+      "script": "/Library/Input Methods/DoubaoIme.app/Contents/Resources/update.sh",
+      "scriptSha256": "8a4371cdd3aa82b897ea854442417d05930205b89acc170794ad9d806554ac93",
+      "scriptBytes": 6812,
+      "version": "1.0.2",
+      "build": "1",
+      "mainSha256": "4b3836dcb8a3e06b01b4c95390c757b71f623c1f7c4141c059e49284f7f6442d"
+    },
+    "chatterfly": {
+      "script": ".workspace/research/chatterfly/extracted/install.sh",
+      "scriptSha256": "68aa82abfc51cc614928b340bcf4839056ef7e1c74e7c6736646e5ff5a80f9fa",
+      "scriptBytes": 14349,
+      "version": "1.0.6.13398",
+      "matchesRetainedRegistrationScript": true,
+      "installerArm64Sha256": "63c47b7a1f6b8edb2028ffa0760f86ca77fd2cd3abf1f0a927d8800131e8f94f"
+    }
+  },
+  "chatterflyIntervals": [
+    {
+      "label": "upgrade-post-actions",
+      "start": "0x1000781f8",
+      "endExclusive": "0x1000783a4",
+      "sha256": "dde5240258f8c405d069ca598fbf49f4f6c2327e7c1406f962ddea3ea81ea99b",
+      "instructionsByteVerified": 107,
+      "source": "ordinary LLVM disassembly checked against retained original Mach-O bytes; not new REA evidence"
+    },
+    {
+      "label": "upgrade-input-source-poll",
+      "start": "0x100079c80",
+      "endExclusive": "0x100079d7c",
+      "sha256": "b59f201e8b9993a25c35e3077fdb5e6776e577dbac140900525eb21fc9315205",
+      "instructionsByteVerified": 63,
+      "source": "ordinary LLVM disassembly checked against retained original Mach-O bytes; not new REA evidence"
+    }
+  ]
+}

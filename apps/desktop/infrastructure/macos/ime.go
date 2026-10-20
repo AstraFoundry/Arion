@@ -10,10 +10,16 @@ import "C"
 
 import (
 	"bytes"
+	"context"
+	"crypto/sha256"
+	"encoding/hex"
+	"errors"
 	"fmt"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"sync"
+	"time"
 	"unsafe"
 
 	"arion.local/core/application"
@@ -99,14 +105,53 @@ func ValidateIMEPayload(bundle string) error {
 
 // InstallIME copies the bundled input method into ~/Library/Input Methods,
 // registers and enables it. The user selects it in the input menu (IME-01).
-func InstallIME(bundled string) error {
+func InstallIME(bundled string, ready func(context.Context, string) error) error {
 	imeInstallation.Lock()
 	defer imeInstallation.Unlock()
 	if err := ValidateIMEPayload(bundled); err != nil {
 		return err
 	}
+	if ready == nil {
+		return errors.New("input method installation requires host readiness verification")
+	}
+	build, err := inputBuildIdentity(bundled)
+	if err != nil {
+		return err
+	}
 	destination := InstalledIMEPath()
 	previous := QueryIME()
+	previousBuild := ""
+	if previous != IMEAbsent {
+		previousBuild, err = inputBuildIdentity(destination)
+		if err != nil {
+			return err
+		}
+	}
+	selected := previous == IMESelected
+	quiesce := func() error {
+		id, free := cstring(IMESourceID)
+		defer free()
+		if result := C.arion_ime_switch_away(id); result != 0 {
+			return domain.Fail(domain.CodeTargetUnsupported, fmt.Sprintf("input source switch away failed: %d", result))
+		}
+		if IMEState(C.arion_ime_state(id)) == IMESelected {
+			return domain.Fail(domain.CodeTargetChanged, "input source did not switch away")
+		}
+		return stopInputMethod()
+	}
+	resume := func(build string) error {
+		if selected {
+			id, free := cstring(IMESourceID)
+			defer free()
+			if status := C.arion_ime_select(id); status != 0 {
+				return domain.Fail(domain.CodeTargetUnsupported, fmt.Sprintf("input source selection failed: %d", status))
+			}
+			if IMEState(C.arion_ime_state(id)) != IMESelected {
+				return domain.Fail(domain.CodeTargetChanged, "input source selection was not observed")
+			}
+		}
+		return launchInputMethod(destination, build, ready)
+	}
 	register := func() error {
 		path, free := cstring(destination)
 		defer free()
@@ -125,31 +170,31 @@ func InstallIME(bundled string) error {
 		defer free()
 		return IMEState(C.arion_ime_state(id))
 	}
-	err := replaceInputBundle(bundled, destination, func() error {
-		return registerAndEnableInputSource(register, requestEnable, state, false)
-	}, func() error {
-		if previous == IMEAbsent {
-			return disableIME()
+	return replaceInputBundleWithLifecycle(bundled, destination, func() error {
+		if err := registerAndEnableInputSource(register, requestEnable, state, selected); err != nil {
+			return err
 		}
-		if previous == IMECopied {
+		// First installation may still require system consent. Keep that state
+		// pending; never launch or report an operational host in its place.
+		if state() < IMEEnabled {
+			return nil
+		}
+		return resume(build)
+	}, func() error {
+		if previous == IMEAbsent || previous == IMECopied {
 			return disableIME()
 		}
 		if err := register(); err != nil {
 			return err
 		}
 		if previous == IMEEnabled || previous == IMESelected {
-			return enableInputSource(requestEnable, state, true)
+			if err := enableInputSource(requestEnable, state, true); err != nil {
+				return err
+			}
+			return resume(previousBuild)
 		}
 		return disableIME()
-	})
-	if err == nil && previous != IMEAbsent {
-		// A replaced input method keeps running its old binary until its
-		// process ends; macOS launches the new one on the next activation.
-		id, free := cstring(IMEBundleID)
-		defer free()
-		C.arion_ime_terminate(id)
-	}
-	return err
+	}, inputBundleLifecycle{beforeReplace: quiesce, beforeRollback: quiesce})
 }
 
 // IMEUpdateAvailable reports whether the installed input method differs from
@@ -248,4 +293,55 @@ func WriteKeyboardSettings(k application.KeyboardPreferences) error {
 func DefaultIMESocket() string {
 	base, _ := os.UserConfigDir()
 	return filepath.Join(base, "Arion", "ime.sock")
+}
+
+func inputBuildIdentity(bundle string) (string, error) {
+	data, err := os.ReadFile(filepath.Join(bundle, "Contents", "MacOS", "ArionInput"))
+	if err != nil {
+		return "", err
+	}
+	sum := sha256.Sum256(data)
+	return hex.EncodeToString(sum[:]), nil
+}
+
+// Process shutdown is verified before any installed bytes are changed.
+func stopInputMethod() error {
+	id, free := cstring(IMEBundleID)
+	defer free()
+	C.arion_ime_processes(id, 1)
+	if awaitInputMethodExit(func() int { return int(C.arion_ime_processes(id, 0)) }, 750*time.Millisecond) {
+		return nil
+	}
+	if C.arion_ime_processes(id, 2) < 0 {
+		return domain.Fail(domain.CodeTargetUnsupported, "input method termination failed")
+	}
+	if !awaitInputMethodExit(func() int { return int(C.arion_ime_processes(id, 0)) }, 2*time.Second) {
+		return domain.Fail(domain.CodeTargetUnsupported, "input method termination timed out")
+	}
+	return nil
+}
+
+func awaitInputMethodExit(running func() int, timeout time.Duration) bool {
+	deadline := time.Now().Add(timeout)
+	for {
+		if running() == 0 {
+			return true
+		}
+		if !time.Now().Before(deadline) {
+			return false
+		}
+		time.Sleep(25 * time.Millisecond)
+	}
+}
+
+func launchInputMethod(bundle, build string, ready func(context.Context, string) error) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
+	if err := exec.CommandContext(ctx, "/usr/bin/open", "-g", bundle).Run(); err != nil {
+		return fmt.Errorf("input method launch failed: %w", err)
+	}
+	if err := ready(ctx, build); err != nil {
+		return fmt.Errorf("input method build did not connect: %w", err)
+	}
+	return nil
 }

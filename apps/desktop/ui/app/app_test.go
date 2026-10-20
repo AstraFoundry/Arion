@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 	platform "runtime"
+	"slices"
 	"strings"
 	"testing"
 	"time"
@@ -66,6 +67,7 @@ func (r *recorder) RemoveReplacement(id string) { r.call("remove:" + id) }
 func (r *recorder) UndoLearned(id string)       { r.call("undo:" + id) }
 func (r *recorder) RequestInputMonitoring()     { r.call("request-monitoring") }
 func (r *recorder) CloseGuide()                 { r.call("close-guide") }
+func (r *recorder) CloseTrayHint()              { r.call("close-tray-hint") }
 func (r *recorder) CheckForUpdates()            { r.call("check-update") }
 func (r *recorder) InstallUpdate()              { r.call("install-update") }
 func (r *recorder) RestartToUpdate()            { r.call("restart-update") }
@@ -132,7 +134,7 @@ func fixture() (*runtime.State, *recorder, runtime.Store) {
 	state := &runtime.State{
 		Version:     "0.1.0",
 		Permissions: runtime.Permissions{Microphone: runtime.ConsentGranted, Accessibility: runtime.ConsentGranted},
-		Preferences: runtime.Preferences{Mode: runtime.ModeShortcut, Shortcut: "Alt+Space", Delivery: runtime.DeliveryAutomatic, RemoveFillers: true, Sounds: true, CheckUpdates: true,
+		Preferences: runtime.Preferences{Shortcut: "Alt+Space", Delivery: runtime.DeliveryAutomatic, RemoveFillers: true, Sounds: true, CheckUpdates: true,
 			Keyboard: runtime.KeyboardPreferences{PageSize: 9, CandidateSize: runtime.CandidateMedium, Appearance: runtime.AppearanceSystem, ContextRanking: true}},
 		InputMethod: runtime.InputMethodAbsent,
 		Account:     runtime.Account{Phase: runtime.AccountSignedOut, Issuer: "https://astrafoundry.si", Portal: "https://astrafoundry.si/account"},
@@ -386,59 +388,18 @@ func TestSettingsSections(t *testing.T) {
 		t.Fatalf("modifier rule not shown: %q", tt.Texts())
 	}
 	snapshot(t, tt, "settings-dictation-recording")
-	// Dictation chooses the input-method route; installing the input method
-	// belongs to Keyboard, which the route points to until it is ready.
+	// Keyboard setup remains available independently of dictation routing.
 	state.InputMethod = runtime.InputMethodAbsent
-	settle(tt)
-	if hasText(tt, copy.For(copy.English).Text(copy.IMEInstall)) {
-		t.Fatalf("dictation still installs the keyboard: %q", tt.Texts())
-	}
-	if err := tt.Click(copy.For(copy.English).Text(copy.ModeIME)); err != nil {
+	if err := tt.Click(copy.For(copy.English).Text(copy.NavKeyboard)); err != nil {
 		t.Fatal(err)
 	}
 	settle(tt)
-	if state.Preferences.Mode != runtime.ModeSystemIME || !hasText(tt, copy.For(copy.English).Text(copy.ModeIMENeedsKeyboard)) {
-		t.Fatalf("mode %v without keyboard pointer: %q", state.Preferences.Mode, tt.Texts())
-	}
-	if err := tt.Click(copy.For(copy.English).Text(copy.ModeIMEOpenKeyboard)); err != nil {
-		t.Fatal(err)
-	}
-	settle(tt)
-	if page.Section != settings.Keyboard {
-		t.Fatalf("pointer opened %s", page.Section)
-	}
 	if err := tt.Click(copy.For(copy.English).Text(copy.IMEInstall)); err != nil {
 		t.Fatal(err)
 	}
 	settle(tt)
 	if !actions.called("install-ime") || !hasText(tt, copy.For(copy.English).Text(copy.IMEInstalled)) {
 		t.Fatalf("input method install: %v %q", actions.calls, tt.Texts())
-	}
-	if err := tt.Click(copy.For(copy.English).Text(copy.NavDictation)); err != nil {
-		t.Fatal(err)
-	}
-	settle(tt)
-	if hasText(tt, copy.For(copy.English).Text(copy.ModeIMENeedsKeyboard)) {
-		t.Fatalf("ready input method still points to Keyboard: %q", tt.Texts())
-	}
-	snapshot(t, tt, "settings-dictation-input-method")
-	if hasText(tt, copy.For(copy.English).Text(copy.DeliveryClipboard)) {
-		t.Fatal("shortcut-only insertion options shown in input-method mode")
-	}
-	if err := tt.Click(copy.For(copy.English).Text(copy.ModeShortcut)); err != nil {
-		t.Fatal(err)
-	}
-	settle(tt)
-	// Switching insertion to paste persists through the preferences action.
-	tt.Key(0, ui.KeyEscape)
-	settle(tt)
-	reveal(t, tt, copy.For(copy.English).Text(copy.DeliveryClipboard))
-	if err := tt.Click(copy.For(copy.English).Text(copy.DeliveryClipboard)); err != nil {
-		t.Fatal(err)
-	}
-	settle(tt)
-	if state.Preferences.Delivery != runtime.DeliveryClipboard {
-		t.Fatalf("delivery not changed: %v", state.Preferences.Delivery)
 	}
 }
 
@@ -812,7 +773,7 @@ func TestOnboardingFlow(t *testing.T) {
 		t.Fatal("unconfigured input source advanced without an explicit skip")
 	}
 	click(copy.For(copy.English).Text(copy.IMEInstall))
-	if !actions.called("install-ime") || state.Preferences.Mode != runtime.ModeShortcut {
+	if !actions.called("install-ime") {
 		t.Fatal("onboarding did not reuse installation or changed dictation mode")
 	}
 	click(copy.For(copy.English).Text(copy.Continue))
@@ -1143,7 +1104,7 @@ func TestOnboardingInputMethodDeferral(t *testing.T) {
 		state.InputMethod = runtime.InputMethodPending
 		settle(tt)
 		click(copy.OnbIMELater)
-		if !hasText(tt, messages.Text(copy.OnbModelTitle)) || actions.called("install-ime") || state.Preferences.Mode != runtime.ModeShortcut {
+		if !hasText(tt, messages.Text(copy.OnbModelTitle)) || actions.called("install-ime") {
 			t.Fatal("deferring setup installed an input source or changed dictation mode")
 		}
 	}
@@ -1372,20 +1333,27 @@ func TestKeyboardSettings(t *testing.T) {
 	}
 }
 
-func TestMacShortcutUsesOneDisclosedDeliveryMethod(t *testing.T) {
-	for _, delivery := range []runtime.Delivery{runtime.DeliveryAutomatic, runtime.DeliveryClipboard} {
-		state, _, store := fixture()
-		state.Platform = "darwin-arm64"
-		state.Preferences.Mode = runtime.ModeShortcut
-		state.Preferences.Delivery = delivery
-		page := settings.NewPage()
-		page.Section = settings.Dictation
-		tt := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, SettingsWidth, SettingsHeight)
-		settle(tt)
-		messages := copy.For(copy.English)
-		reveal(t, tt, messages.Text(copy.DeliveryMacDetail))
-		if !hasText(tt, messages.Text(copy.DeliveryMacDetail)) || hasText(tt, messages.Text(copy.DeliveryAutomatic)) {
-			t.Fatalf("macOS delivery disclosure: %q", tt.Texts())
+func TestDictationHidesDeliveryInternals(t *testing.T) {
+	for _, locale := range []runtime.UILanguage{runtime.LanguageEnglish, runtime.LanguageChinese} {
+		for _, platform := range []string{"darwin-arm64", "windows-amd64"} {
+			for _, source := range []runtime.InputMethodState{runtime.InputMethodAbsent, runtime.InputMethodInstalled, runtime.InputMethodSelected} {
+				state, _, store := fixture()
+				state.Preferences.UILanguage = locale
+				state.Platform, state.InputMethod = platform, source
+				page := settings.NewPage()
+				page.Section = settings.Dictation
+				tt := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, SettingsWidth, SettingsHeight)
+				settle(tt)
+				messages := store.Copy()
+				for _, key := range []copy.Key{copy.ModeLabel, copy.ModeShortcut, copy.ModeIME, copy.DeliveryLabel, copy.DeliveryAutomatic, copy.DeliveryClipboard, copy.DeliveryMacDetail} {
+					if slices.Contains(tt.Texts(), messages.Text(key)) {
+						t.Fatalf("%s/%s/%s exposes delivery internals: %q", locale, platform, source, tt.Texts())
+					}
+				}
+				if !hasText(tt, messages.Text(copy.ShortcutLabel)) {
+					t.Fatalf("%s/%s lost dictation shortcut", locale, platform)
+				}
+			}
 		}
 	}
 }

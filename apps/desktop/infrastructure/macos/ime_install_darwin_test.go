@@ -367,3 +367,91 @@ func TestBundleDiffers(t *testing.T) {
 		t.Fatal("older build not reported")
 	}
 }
+
+func TestInputBundleHandoverPrecedesReplacement(t *testing.T) {
+	root := t.TempDir()
+	old := bundleFixture(t, root, "ArionInput.app", "previous")
+	new := bundleFixture(t, root, "source.app", "new")
+	stopped := false
+	err := replaceInputBundleWithLifecycle(new, old, func() error {
+		if !stopped || bundleContents(t, old) != "new" {
+			t.Fatal("activated before old host stopped or new bytes promoted")
+		}
+		return nil
+	}, func() error { t.Fatal("successful handover restored old host"); return nil }, inputBundleLifecycle{beforeReplace: func() error {
+		if bundleContents(t, old) != "previous" {
+			t.Fatal("old bytes changed before process exit")
+		}
+		// Staging must have completed before the running host is interrupted.
+		staged, err := filepath.Glob(filepath.Join(root, ".arion-input-install-*", "new.app", "Contents", "MacOS", "ArionInput"))
+		if err != nil || len(staged) != 1 {
+			t.Fatal("host stopped before staging completed", err)
+		}
+		stopped = true
+		return nil
+	}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	requireNoTransaction(t, root)
+}
+
+func TestInputBundleStopFailurePreservesOldBytesAndRestoresState(t *testing.T) {
+	root := t.TempDir()
+	old := bundleFixture(t, root, "ArionInput.app", "previous")
+	new := bundleFixture(t, root, "source.app", "new")
+	stopError := errors.New("old process still running")
+	restored := 0
+	err := replaceInputBundleWithLifecycle(new, old, func() error { t.Fatal("activated after stop failure"); return nil }, func() error { restored++; return nil }, inputBundleLifecycle{beforeReplace: func() error { return stopError }})
+	if !errors.Is(err, stopError) || restored != 1 || bundleContents(t, old) != "previous" {
+		t.Fatal("stop failure changed bytes or lost restoration", err, restored)
+	}
+	requireNoTransaction(t, root)
+}
+
+func TestInputBundleReadinessFailureStopsNewHostBeforeRollback(t *testing.T) {
+	root := t.TempDir()
+	old := bundleFixture(t, root, "ArionInput.app", "previous")
+	new := bundleFixture(t, root, "source.app", "new")
+	failure := errors.New("new build did not connect")
+	newStopped, restored := false, false
+	err := replaceInputBundleWithLifecycle(new, old, func() error { return failure }, func() error {
+		if !newStopped || bundleContents(t, old) != "previous" {
+			t.Fatal("restored before failed host exit or old-byte restoration")
+		}
+		restored = true
+		return nil
+	}, inputBundleLifecycle{beforeReplace: func() error { return nil }, beforeRollback: func() error {
+		if bundleContents(t, old) != "new" {
+			t.Fatal("rolled bytes back while new host was live")
+		}
+		newStopped = true
+		return nil
+	}})
+	if !errors.Is(err, failure) || !restored {
+		t.Fatal("readiness rollback failed", err)
+	}
+	requireNoTransaction(t, root)
+}
+
+func TestInputBundleRollbackStopFailurePreservesBothBuilds(t *testing.T) {
+	root := t.TempDir()
+	old := bundleFixture(t, root, "ArionInput.app", "previous")
+	new := bundleFixture(t, root, "source.app", "new")
+	failure := errors.New("handshake failed")
+	stopError := errors.New("new host cannot stop")
+	err := replaceInputBundleWithLifecycle(new, old, func() error { return failure }, func() error { t.Fatal("restored over running new host"); return nil }, inputBundleLifecycle{beforeReplace: func() error { return nil }, beforeRollback: func() error { return stopError }})
+	backups, _ := filepath.Glob(filepath.Join(root, ".arion-input-install-*", "previous.app"))
+	if !errors.Is(err, failure) || !errors.Is(err, stopError) || len(backups) != 1 || bundleContents(t, old) != "new" || bundleContents(t, backups[0]) != "previous" {
+		t.Fatal("failed rollback lost recovery build", err)
+	}
+}
+
+func TestProcessExitWaitCannotReportLiveHostAsStopped(t *testing.T) {
+	if awaitInputMethodExit(func() int { return 1 }, 0) {
+		t.Fatal("reported live process as stopped")
+	}
+	if !awaitInputMethodExit(func() int { return 0 }, 0) {
+		t.Fatal("did not observe process exit")
+	}
+}

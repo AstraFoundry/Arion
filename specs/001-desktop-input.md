@@ -2,12 +2,12 @@
 
 ## Requirements
 
-- DSK-01: Users MUST choose `shortcut` or `system_ime` mode. Changing mode cancels the current session and invalidates its generation.
+- DSK-01: Dictation MUST select its delivery route at session start from the actual OS input source: the selected Arion input method uses its owned client; other sources use external-editor delivery. The route stays fixed for that session. Settings MUST NOT expose input-mode or delivery-transport controls. Legacy stored `mode` values are ignored and omitted on the next preference save. Losing an owned IME client cancels that session and invalidates its generation; it MUST NOT cancel external-editor dictation or trigger a second delivery route.
 - DSK-02: Shortcut mode MUST offer explicit toggle activation. An optional hold key, off by default, MAY dictate while held through a tested native key-down/key-up adapter (macOS listen-only event tap with Input Monitoring consent; Windows low-level keyboard hook); MyGo activation callbacks alone are insufficient. Holding past the threshold (300 ms) stops on release; a shorter tap keeps dictating until the next press; another key during a hold that started the session cancels it. A hold key that cannot listen MUST report why without disabling the toggle shortcut.
 - DSK-03: The user MUST see recording, processing, candidate preview, permission failure and insertion failure states, including above another application's native macOS fullscreen Space without activating Arion or taking the editor's focus. Permission requests occur only for enabled capabilities.
 - DSK-04: Capture starts only after microphone consent and ends on stop, cancellation, OS suspend or device removal. Quit releases microphone, hotkeys and owned IME composition.
 - DSK-05: A target snapshot MUST include stable platform identity, editor capability, selection/range ownership, generation and sensitive-field status. The portable token is opaque; native handles stay in the adapter.
-- DSK-06: On macOS, shortcut delivery MUST use disclosed system paste with per-transaction clipboard snapshots and ownership-checked restoration; system-IME delivery retains the owned IMK client. Posted paste MUST remain `unknown` without a host acknowledgement; restoration failure MUST retain that outcome and warn before user retry. Cancellation MUST reach the adapter, prevent pre-post writes and suppress late completion. Shortcut drafts stay in Arion's preview. Commit MUST revalidate target and selection and insert once. A focus change, uncertain write result or unsupported target MUST require user action rather than a second automatic attempt.
+- DSK-06: On macOS, shortcut delivery MUST use system paste with per-transaction clipboard snapshots and ownership-checked restoration; system-IME delivery retains the owned IMK client. Posted paste MUST remain `unknown` without a host acknowledgement; restoration failure MUST retain that outcome and warn before user retry. Cancellation MUST reach the adapter, prevent pre-post writes and suppress late completion. Shortcut drafts stay in Arion's preview. Commit MUST revalidate target and selection and insert once. A focus change, uncertain write result or unsupported target MUST require user action rather than a second automatic attempt.
 - DSK-07: IME mode MUST follow the host's composition/candidate lifecycle and release all owned ranges on cancellation/deactivation. See [007](007-ime-ranking.md).
 - DSK-08: Block context extraction and memory learning from secure/password fields. If the adapter cannot establish field safety, it cannot read its content.
 - DSK-09: Model missing/unsupported hardware/permission denied MUST be actionable explicit errors; never silently use cloud inference.
@@ -16,7 +16,7 @@
 - DSK-12: Settings › Microphone MUST offer a stepped software input gain from −6 dB to +12 dB in 3 dB steps, 0 dB by default, labeling each step with the speaking distance it suits (15 cm at −6 dB to 120 cm at +12 dB; speech level falls 6 dB per doubling of distance from a 30 cm reference). Gain scales only Arion's capture, clipping at full scale, applies to the live meter and to dictation without reopening the device, persists, and never changes the OS input volume.
 
 - DSK-13: Settings › About MUST offer a user-triggered local diagnostic ZIP export through the native save dialog, with progress and explicit failure feedback in both interface languages. Cancellation creates no export; success reveals the file for inspection. No automatic upload is permitted.
-- DSK-14: First launch MUST show onboarding. Completing onboarding MUST open and focus Settings so the app remains visible; subsequent launches with completed onboarding remain resident in the menu bar or system tray.
+- DSK-14: First launch MUST show onboarding. Completing onboarding MUST open and focus Settings so the app remains visible, and SHOULD show a nonactivating card beside the tray icon pointing out where Arion stays until it is dismissed or the icon is used; subsequent launches with completed onboarding remain resident in the menu bar or system tray.
 
 ## Acceptance
 
@@ -27,7 +27,7 @@
 | DSK-A03 | Start in editor A → focus editor B → stop → neither receives an unreviewed insertion |
 | DSK-A04 | Escape/cancel during ASR, correction or pending commit → pre-post work cannot write; late results cannot complete or resurrect composition |
 | DSK-A05 | Existing clipboard changes during system paste → do not overwrite the new clipboard or retry insertion |
-| DSK-A06 | Switch modes during capture → old generation closed; new mode requires a new session |
+| DSK-A06 | Change/loss of IME ownership during capture → old IME generation closed; the next session selects its route again; unrelated IME deactivation leaves external-editor dictation active |
 | DSK-A07 | Secure field or unknown field safety → no context, no automatic memory learning |
 | DSK-A08 | Sleep, microphone unplug, hotkey conflict or adapter loss → capture stops with explicit reason |
 | DSK-A09 | Choose Simplified Chinese → settings/onboarding/panel/overlay and native window titles update → restart retains the choice → switch back to English; existing drafts, forms and recognition preferences remain intact |

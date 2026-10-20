@@ -278,7 +278,7 @@ improves some repairs but fails adoption; no production defaults are changed.
 [fixed-model serializer comparison](../../benchmarks/reproduction/rewrite-packaging-v1/README.md).
 Make provides `rewrite-packaging-build/bench/report/verify/test`; the report takes
 `DEV`, `EVALUATION`, `OUT`. `pnpm rewrite:release:report/test` rebuild and validate
-the [offline iteration report](../../benchmarks/results/rewrite-release/index.html).
+the [offline iteration report](../../benchmarks/results/rewrite-release/README.md).
 The HTML includes every reviewed output and keeps text-only assistant review
 separate from independent natural-data and actual macOS acceptance requirements.
 

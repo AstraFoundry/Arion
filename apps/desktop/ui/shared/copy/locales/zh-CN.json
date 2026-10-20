@@ -53,8 +53,8 @@
   "FailNoSpeechTitle": "未检测到语音",
   "FailNoSpeechHint": "请在设置中检查麦克风音量",
   "FailBusyTitle": "仍在转写中",
-  "FailIMETitle": "Arion 不是当前输入源",
-  "FailIMEHint": "请在输入法菜单中选择后重试",
+  "FailIMETitle": "Arion 尚未就绪",
+  "FailIMEHint": "请重新启动 Arion 后重试",
   "FailGenericTitle": "听写已停止",
   "PanelLastDictation": "上次听写",
   "PanelEmpty": "听写内容会保留在此处，直到退出应用。",
@@ -84,6 +84,7 @@
   "AXPermissionText": "允许 Arion 向当前应用输入文字",
   "GuideDrag": "将 Arion 拖到上方列表中；如果已在列表里，打开它的开关即可。",
   "GuideClose": "关闭",
+  "TrayHintHere": "Arion 常驻在这里",
   "ShortcutLabel": "听写快捷键",
   "ShortcutDetail": "按一次开始，再按一次结束。按 Esc 取消。",
   "ShortcutRecord": "修改",
@@ -427,5 +428,8 @@
   "FailClipboardTitle": "无法粘贴文字",
   "FailClipboardHint": "剪贴板已改变或暂不可用，听写内容仍可复制。",
   "FailClipboardRestoreTitle": "无法恢复剪贴板",
-  "FailClipboardRestoreHint": "文字可能已粘贴，请检查输入框后再决定是否重试。"
+  "FailClipboardRestoreHint": "文字可能已粘贴，请检查输入框后再决定是否重试。",
+  "FailIMEClientHint": "请点击可编辑的输入框后重试",
+  "FailIMEUpdatingTitle": "Arion 正在更新",
+  "FailIMEUpdatingHint": "请在更新完成后重试"
 }

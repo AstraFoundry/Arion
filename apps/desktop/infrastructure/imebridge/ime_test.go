@@ -13,6 +13,7 @@ import (
 
 	"arion.local/core/application"
 	"arion.local/core/contracts"
+	"arion.local/core/domain"
 )
 
 type host struct {
@@ -382,4 +383,56 @@ func TestWriteKeyboardSettings(t *testing.T) {
 	if entries, _ := os.ReadDir(filepath.Dir(path)); len(entries) != 1 {
 		t.Fatalf("temporary file left behind: %v", entries)
 	}
+}
+
+func TestReadinessRequiresExpectedBuildAndReconnectsWithoutClient(t *testing.T) {
+	m := New("", nil)
+	defer m.Close()
+	connect := func(build string) net.Conn {
+		server, client := net.Pipe()
+		go m.serve(server)
+		if err := json.NewEncoder(client).Encode(message{Op: "hello", Build: build}); err != nil {
+			t.Fatal(err)
+		}
+		return client
+	}
+	old := connect("old-build")
+	defer old.Close()
+	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Millisecond)
+	if err := m.WaitReady(ctx, "new-build"); err == nil {
+		t.Fatal("old build satisfied new readiness")
+	}
+	cancel()
+	current := connect("new-build")
+	defer current.Close()
+	ctx, cancel = context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+	if err := m.WaitReady(ctx, "new-build"); err != nil {
+		t.Fatal(err)
+	}
+	m.mu.Lock()
+	active := m.activation
+	m.mu.Unlock()
+	if active != "" {
+		t.Fatal("readiness invented an editable client")
+	}
+	current.Close()
+	wait(t, func() bool { m.mu.Lock(); defer m.mu.Unlock(); return m.conn == nil })
+	ctx2, cancel2 := context.WithTimeout(context.Background(), 20*time.Millisecond)
+	defer cancel2()
+	if err := m.WaitReady(ctx2, "new-build"); err == nil {
+		t.Fatal("disconnected host remained ready")
+	}
+}
+
+func TestUpdateRejectsNewOwnedCapture(t *testing.T) {
+	m := New("", nil)
+	defer m.Close()
+	h := attach(t, m, "a")
+	m.BeginUpdate()
+	if _, err := m.Capture(context.Background(), contracts.Identity{SessionID: "blocked"}); domain.CodeOf(err) != domain.CodeTargetUnsupported {
+		t.Fatal("update allowed capture", err)
+	}
+	m.EndUpdate()
+	capture(t, m, h, "allowed")
 }

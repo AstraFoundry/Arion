@@ -58,17 +58,19 @@ static NSArray<NSString *> *characters(NSString *text) {
               replacementRange:NSMakeRange(NSNotFound, NSNotFound)];
 }
 
-// Types toward the latest draft: keeps the shown characters that still agree
-// with it and types the rest at the spring's pace.
+// Types toward the latest draft. Characters already shown follow revisions
+// in place, so the marked text never retreats; only new characters are
+// typed. A draft shorter than what is shown cuts the display to it now.
 - (void)typeToward:(NSString *)text {
     NSArray<NSString *> *target = characters(text);
-    NSUInteger common = 0, shown = (NSUInteger)self.shown;
-    while (common < shown && common < target.count && common < self.target.count && [self.target[common] isEqual:target[common]]) common++;
-    BOOL rolledBack = common < shown;
-    self.shown = MIN(self.shown, (double)common);
+    BOOL cut = (double)target.count < self.shown;
+    self.shown = MIN(self.shown, (double)target.count);
+    NSUInteger shown = (NSUInteger)self.shown;
+    BOOL changed = !cut && shown > 0 && ![[self.target subarrayWithRange:NSMakeRange(0, MIN(shown, self.target.count))]
+        isEqualToArray:[target subarrayWithRange:NSMakeRange(0, shown)]];
     self.target = target;
-    // A changed ending disappears now rather than with the next character.
-    if (rolledBack) [self showMarked:[[target subarrayWithRange:NSMakeRange(0, common)] componentsJoinedByString:@""]];
+    if (cut || changed) [self showMarked:[[target subarrayWithRange:NSMakeRange(0, shown)] componentsJoinedByString:@""]];
+    // The host may reenter and invalidate while the marked text is set.
     if (!self.live || !self.target) return;
     if (!self.timer) {
         self.lastTick = NSDate.timeIntervalSinceReferenceDate;

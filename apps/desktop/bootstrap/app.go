@@ -101,6 +101,7 @@ type App struct {
 	settingsWin     *mygo.Window
 	onboarding      *mygo.Window
 	guide           *guideSession
+	trayHint        *mygo.Window
 	views           map[*mygo.Window]uiapp.View
 	testingShortcut bool
 	shortcutActive  bool
@@ -195,9 +196,7 @@ func New(opts Options) (*App, error) {
 	// The input method ends a system_ime session when it loses the client
 	// or the user presses Escape (IME-A03).
 	a.ime = a.platform.NewInputMethod(func() {
-		if a.preferences().Mode == domain.SystemIMEMode {
-			a.core.Cancel()
-		}
+		a.core.CancelMode(domain.SystemIMEMode)
 	})
 	var finalizer ports.Finalizer = a.manager
 	var targets Targets = a.targets
@@ -209,12 +208,12 @@ func New(opts Options) (*App, error) {
 		targets = countingTargets{Targets: a.targets, h: a.harness}
 	}
 	a.edits = &application.EditTracker{Report: a.learnEdit, Segmenter: wordseg.Segmenter{}}
-	deps := application.Dependencies{Diagnostics: a, Audio: capture, Recognizers: a.manager, Finalizer: finalizer, Targets: targets, Input: targets,
+	deps := application.Dependencies{SelectMode: a.dictationMode, Diagnostics: a, Audio: capture, Recognizers: a.manager, Finalizer: finalizer, Targets: targets, Input: targets,
 		Rewriter: a.rewriter, History: a.history, Edits: a.edits, NewID: newID}
 	if a.ime != nil {
 		deps.IMETargets, deps.IMEInput, deps.Composition = a.ime, a.ime, a.ime
 	}
-	a.core, err = application.NewCoordinator(deps, application.Options{Mode: prefs.Mode, AutoCommit: true, Correction: true, Policy: a.policy,
+	a.core, err = application.NewCoordinator(deps, application.Options{AutoCommit: true, Correction: true, Policy: a.policy,
 		Rewrite: a.rewritePolicy, Learning: a.learning, Recalled: a.recalled})
 	if err != nil {
 		return nil, err
@@ -492,7 +491,7 @@ func (a *App) apply(e contracts.Event) {
 		setState(domain.Reviewing)
 	case contracts.CommitResultReady:
 		d.Outcome, d.Failure = e.Outcome, e.Error
-		d.Pasted = a.state.Preferences.Mode == domain.ShortcutMode && (runtime.GOOS == "darwin" || a.state.Preferences.Delivery == application.DeliveryClipboard) && e.Outcome != contracts.NotApplied
+		d.Pasted = a.core.Snapshot().Mode == domain.ShortcutMode && (runtime.GOOS == "darwin" || a.state.Preferences.Delivery == application.DeliveryClipboard) && e.Outcome != contracts.NotApplied
 		a.state.LastText, a.state.LastOriginal = e.Text, d.Original
 		setState(e.State)
 	case contracts.ErrorOccurred:

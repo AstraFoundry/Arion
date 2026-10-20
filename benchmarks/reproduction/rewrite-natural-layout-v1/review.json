@@ -1,0 +1,119 @@
+[
+  {
+    "case": 1,
+    "source": "小陈负责设计，小刘负责测试，设计稿周三交，测试周五完成。",
+    "scene": "work",
+    "output": "小陈负责设计，小刘负责测试，设计稿周三交，测试周五完成。",
+    "layoutReview": "pass",
+    "meaningReview": "preserved",
+    "reviewer": "assistant, exposed author review; not independent or blind"
+  },
+  {
+    "case": 2,
+    "source": "周经理您好，我周四请假一天，交接给小赵了，麻烦批准，谢谢。",
+    "scene": "email",
+    "output": "周经理您好：\n\n我周四请假一天，已经交接给小赵。麻烦批准，谢谢。",
+    "layoutReview": "pass",
+    "meaningReview": "preserved",
+    "reviewer": "assistant, exposed author review; not independent or blind"
+  },
+  {
+    "case": 3,
+    "source": "给 fetchState 加校验，不改返回字段，也别动数据库。",
+    "scene": "prompt",
+    "output": "给 fetchState 加校验，不改返回字段，也别动数据库。",
+    "layoutReview": "pass",
+    "meaningReview": "preserved",
+    "reviewer": "assistant, exposed author review; not independent or blind"
+  },
+  {
+    "case": 4,
+    "source": "请确认 syncState 是不是还没准备好，暂时不要重启。",
+    "scene": "prompt",
+    "output": "请确认 syncState 是不是还没准备好，暂时不要重启。",
+    "layoutReview": "pass",
+    "meaningReview": "preserved",
+    "reviewer": "assistant, exposed author review; not independent or blind"
+  },
+  {
+    "case": 5,
+    "source": "Can you check why fetchState is slow? Keep the response shape and do not restart it.",
+    "scene": "prompt",
+    "output": "Can you check why fetchState is slow? Keep the response shape and do not restart it.",
+    "layoutReview": "pass",
+    "meaningReview": "preserved",
+    "reviewer": "assistant, exposed author review; not independent or blind"
+  },
+  {
+    "case": 6,
+    "source": "Zion prepares receipts and Remy checks figures, receipts are due Monday and figures are due Thursday.",
+    "scene": "work",
+    "output": "Zion prepares receipts and Remy checks figures. Receipts are due Monday and figures are due Thursday.",
+    "layoutReview": "pass",
+    "meaningReview": "preserved",
+    "reviewer": "assistant, exposed author review; not independent or blind"
+  },
+  {
+    "case": 7,
+    "source": "把间隔设成六十秒，不对，是六秒，保留重试次数，只改 Router.go。",
+    "scene": "prompt",
+    "output": "把间隔设成六秒，保留重试次数，只改 Router.go。",
+    "layoutReview": "pass",
+    "meaningReview": "preserved",
+    "reviewer": "assistant, exposed author review; not independent or blind"
+  },
+  {
+    "case": 8,
+    "source": "第一，给 fetchState 加日志。第二，保留返回字段。第三，不改配置。",
+    "scene": "prompt",
+    "output": "1. 给 fetchState 加日志。\n2. 保留返回字段。\n3. 不改配置。",
+    "layoutReview": "pass",
+    "meaningReview": "preserved",
+    "reviewer": "assistant, exposed author review; not independent or blind"
+  },
+  {
+    "case": 9,
+    "source": "First, Jules checks inventory on Monday. Second, Morgan packs the orders on Thursday. Ship only after inspection clears.",
+    "scene": "work",
+    "output": "First, Jules checks inventory on Monday. Second, Morgan packs the orders on Thursday. Ship only after inspection clears.",
+    "layoutReview": "pass",
+    "meaningReview": "preserved",
+    "reviewer": "assistant, exposed author review; not independent or blind"
+  },
+  {
+    "case": 10,
+    "source": "核对账目，整理凭证，双方确认后再提交。",
+    "scene": "list",
+    "output": "1. 核对账目。\n2. 整理凭证。\n\n双方确认后再提交。",
+    "layoutReview": "pass",
+    "meaningReview": "preserved",
+    "reviewer": "assistant, exposed author review; not independent or blind"
+  },
+  {
+    "case": 11,
+    "source": "我可能晚点到，如果下雨就线上参加，别替我确认。",
+    "scene": "chat",
+    "output": "我可能晚点到，如果下雨就线上参加，别替我确认。",
+    "layoutReview": "pass",
+    "meaningReview": "preserved",
+    "reviewer": "assistant, exposed author review; not independent or blind"
+  },
+  {
+    "case": 12,
+    "source": "如何检查 syncState 的状态？",
+    "scene": "search",
+    "output": "如何检查 syncState 的状态？",
+    "layoutReview": "pass",
+    "meaningReview": "preserved",
+    "reviewer": "assistant, exposed author review; not independent or blind"
+  },
+  {
+    "case": 13,
+    "source": "请把以下事项列成清单：给 fetchState 加日志，保留返回字段，不改配置。",
+    "scene": "prompt",
+    "output": "1. 给 fetchState 加日志。\n2. 保留返回字段。\n3. 不改配置。",
+    "layoutReview": "pass",
+    "meaningReview": "preserved",
+    "reviewer": "assistant, exposed author review; not independent or blind"
+  }
+]

@@ -290,7 +290,7 @@ improve raw fidelity from 17/24 to 22/24 on old regressions and 17/24 to 20/24 o
 new probes, but required fresh repairs only improve from 3/7 to 4/7. Ambiguous
 spelling guesses and missing task grouping remain failures. It is a development
 baseline, not a release decision. No production integration is claimed. The
-[offline HTML](../../benchmarks/results/rewrite-release/index.html) consolidates
+[offline report and rebuild instructions](../../benchmarks/results/rewrite-release/README.md) consolidates
 reviewed iterations and explicitly tracks remaining macOS release evidence.
 
 The clean-demonstration / instruction-language development follow-up reviewed

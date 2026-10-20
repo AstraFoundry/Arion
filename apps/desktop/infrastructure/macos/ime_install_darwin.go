@@ -10,6 +10,15 @@ import (
 // Stage the complete bundle before replacing installed bytes. Keep the old
 // bundle until registration/enablement succeeds, and restore it on failure.
 func replaceInputBundle(source, destination string, activate, restore func() error) (result error) {
+	return replaceInputBundleWithLifecycle(source, destination, activate, restore, inputBundleLifecycle{})
+}
+
+type inputBundleLifecycle struct {
+	beforeReplace  func() error
+	beforeRollback func() error
+}
+
+func replaceInputBundleWithLifecycle(source, destination string, activate, restore func() error, lifecycle inputBundleLifecycle) (result error) {
 	info, err := os.Lstat(source)
 	if err != nil {
 		return err
@@ -36,6 +45,17 @@ func replaceInputBundle(source, destination string, activate, restore func() err
 	if err := copyInputBundle(source, staged); err != nil {
 		return err
 	}
+	if lifecycle.beforeReplace != nil {
+		if err := lifecycle.beforeReplace(); err != nil {
+			return errors.Join(err, restore())
+		}
+	}
+	handover := lifecycle.beforeReplace != nil
+	defer func() {
+		if result != nil && handover && !preserve {
+			result = errors.Join(result, restore())
+		}
+	}()
 	hadPrevious := false
 	if info, err := os.Lstat(destination); err == nil {
 		if !info.IsDir() {
@@ -58,6 +78,12 @@ func replaceInputBundle(source, destination string, activate, restore func() err
 		return err
 	}
 	if err := activate(); err != nil {
+		if lifecycle.beforeRollback != nil {
+			if stopErr := lifecycle.beforeRollback(); stopErr != nil {
+				preserve = true
+				return errors.Join(err, fmt.Errorf("input method rollback cannot stop new host; recovery files retained at %s: %w", transaction, stopErr))
+			}
+		}
 		// Retain failed bytes separately while restoring the old path. Never
 		// delete the sole previous copy if filesystem restoration fails.
 		if rollback := os.Rename(destination, staged); rollback != nil {
@@ -70,6 +96,7 @@ func replaceInputBundle(source, destination string, activate, restore func() err
 				return errors.Join(err, fmt.Errorf("input method rollback failed; previous bundle retained at %s: %w", backup, rollback))
 			}
 		}
+		handover = false
 		return errors.Join(err, restore())
 	}
 	return nil

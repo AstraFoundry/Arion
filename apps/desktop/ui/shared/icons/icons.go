@@ -22,6 +22,7 @@ func load(name string) *ui.SVG {
 
 var (
 	Accessibility     = load("accessibility")
+	ArrowDown         = load("arrow-down")
 	ArrowRight        = load("arrow-right")
 	ArrowUp           = load("arrow-up")
 	AudioLines        = load("audio-lines")

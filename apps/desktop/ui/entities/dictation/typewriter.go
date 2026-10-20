@@ -7,8 +7,10 @@ import "time"
 // ASRTypeWriter and TypewriterSpring (docs/research/voice-typewriter.md).
 // The spring keeps a small backlog of unshown characters: the further the
 // display falls behind the recognizer, the faster it types; when it catches
-// up, it slows to a calm pace. A revision that changes already-shown text
-// rolls the display back to the shared prefix and types the new ending.
+// up, it slows to a calm pace. Recognition keeps revising text already shown
+// (refined segments, live rewrites, the streaming tail); those characters
+// change in place, so the line never retreats and only new characters are
+// typed. A revision shorter than what is shown cuts the display to it.
 type Typewriter struct {
 	session string
 	target  []rune
@@ -28,8 +30,10 @@ const (
 	// fastest pace, so the final text never waits on the animation long.
 	minInterval = 12 * time.Millisecond
 	maxInterval = 90 * time.Millisecond
-	// FadeIn is how long a new character takes to reach full opacity.
-	FadeIn = 180 * time.Millisecond
+	// FadeIn is how long a new character takes to reach full opacity, from
+	// fadeFrom: a short, partial fade reads as ink settling, not blinking.
+	FadeIn   = 150 * time.Millisecond
+	fadeFrom = 0.35
 )
 
 // Frame is what the pill draws now.
@@ -49,15 +53,9 @@ func (t *Typewriter) Update(session, text string, final bool, now time.Time) Fra
 		*t = Typewriter{session: session, last: now}
 	}
 	target := []rune(text)
-	// Keep what is shown and still agrees; type the rest anew.
-	shown := int(t.shown)
-	common := 0
-	for common < shown && common < len(target) && common < len(t.target) && t.target[common] == target[common] {
-		common++
-	}
-	if common < shown {
-		t.shown = float64(common)
-		t.at = t.at[:common]
+	if n := len(target); int(t.shown) > n {
+		t.shown = float64(n)
+		t.at = t.at[:n]
 	}
 	t.target = target
 	elapsed := now.Sub(t.last)
@@ -86,7 +84,7 @@ func (t *Typewriter) Update(session, text string, final bool, now time.Time) Fra
 		if age >= FadeIn {
 			break
 		}
-		frame.Opacity = append([]float32{float32(age) / float32(FadeIn)}, frame.Opacity...)
+		frame.Opacity = append([]float32{fadeFrom + (1-fadeFrom)*float32(age)/float32(FadeIn)}, frame.Opacity...)
 		frame.Animating = true
 	}
 	return frame

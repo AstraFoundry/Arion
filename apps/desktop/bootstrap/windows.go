@@ -55,6 +55,7 @@ func (a *App) createTray() {
 	a.tray = tray
 	tray.OnClick(a.togglePanel)
 	tray.OnRightClick(func() {
+		a.closeTrayHint()
 		if a.panel != nil {
 			a.panel.Close()
 		}
@@ -93,6 +94,7 @@ func (a *App) updateTray() {
 }
 
 func (a *App) togglePanel() {
+	a.closeTrayHint()
 	if a.panel != nil {
 		a.panel.Close()
 		return
@@ -104,6 +106,33 @@ func (a *App) togglePanel() {
 		Focusable: true, Shadow: true, Popover: true, Content: view.Content,
 	})
 	a.track(a.panel, view, func() { a.panel = nil })
+}
+
+// showTrayHint points at the tray icon once onboarding finishes. It never
+// takes the keyboard, and stays until dismissed or the icon is used.
+func (a *App) showTrayHint() {
+	if a.tray == nil || a.trayHint != nil {
+		return
+	}
+	icon := a.tray.Bounds()
+	area := mygo.Screen.DisplayMatching(icon).WorkArea
+	a.state.TrayHint = arion.TrayHint{Below: icon.Y+icon.Height/2 > area.Y+area.Height/2}
+	view := uiapp.TrayHint(a.ui)
+	a.trayHint = mygo.NewFlyout(mygo.FlyoutOptions{
+		Tray: a.tray, Placement: mygo.PlacementBottom, Gap: 4, Width: uiapp.TrayHintWidth, Height: uiapp.TrayHintHeight,
+		Shadow: true, Hidden: true, Content: view.Content,
+	})
+	a.track(a.trayHint, view, func() {
+		a.trayHint = nil
+		a.state.TrayHint = arion.TrayHint{}
+	})
+	a.trayHint.ShowInactive()
+}
+
+func (a *App) closeTrayHint() {
+	if a.trayHint != nil {
+		a.trayHint.Close()
+	}
 }
 
 // track registers a window for invalidation and its close hook.

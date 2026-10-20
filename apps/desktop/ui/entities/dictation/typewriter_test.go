@@ -63,16 +63,33 @@ func TestTypewriterSpringCatchesUpWithBacklog(t *testing.T) {
 	}
 }
 
-func TestTypewriterRevisionRollsBackToSharedPrefix(t *testing.T) {
+func TestTypewriterRevisesInPlaceWithoutRetreating(t *testing.T) {
 	var w Typewriter
 	now, _ := run(t, &w, "s", "我们明天见面", false, time.Unix(0, 0))
-	f := w.Update("s", "我们明天再说", false, now.Add(16*time.Millisecond))
-	if f.Text != "我们明天" && f.Text != "我们明天再" {
-		t.Fatalf("revision did not roll back to the shared prefix: %q", f.Text)
+	// The ending changes: the same length shows the new text at once.
+	if f := w.Update("s", "我们明天再说", false, now.Add(16*time.Millisecond)); f.Text != "我们明天再说" || len(f.Opacity) != 0 {
+		t.Fatalf("in-place revision retyped or faded: %+v", f)
 	}
-	_, frames := run(t, &w, "s", "我们明天再说", false, now.Add(32*time.Millisecond))
-	if frames[len(frames)-1].Text != "我们明天再说" {
-		t.Fatalf("revision not typed: %q", frames[len(frames)-1].Text)
+	// A rewrite of early text while the tail is still typing never shrinks
+	// the line.
+	stream := []string{"今天下午三点", "今天下午三点我们开", "今天下午三点，我们开会", "今天下午 3 点，我们开会讨论", "今天下午3点，我们开会讨论一下"}
+	var v Typewriter
+	at := time.Unix(10, 0)
+	shown := 0
+	for _, text := range stream {
+		for i := 0; i < 6; i++ {
+			f := v.Update("r", text, false, at)
+			n := len([]rune(f.Text))
+			if n < shown && n < len([]rune(text)) {
+				t.Fatalf("line retreated from %d to %d runes on %q", shown, n, text)
+			}
+			shown = n
+			at = at.Add(16 * time.Millisecond)
+		}
+	}
+	// A shorter revision cuts the display to it.
+	if f := v.Update("r", "今天", false, at); f.Text != "今天" {
+		t.Fatalf("shorter revision not cut: %q", f.Text)
 	}
 }
 

@@ -6,10 +6,12 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"regexp"
 	"testing"
 	"time"
 
 	"arion.local/core/contracts"
+	"arion.local/core/domain"
 	"arion.local/core/domain/ports"
 	"arion.local/desktop/infrastructure/llm/client"
 	"arion.local/desktop/infrastructure/llm/prompt"
@@ -52,7 +54,19 @@ func TestNativeSelectedPipeline(t *testing.T) {
 		{Identity: id, Scene: "work", Text: "小陈负责设计，小刘负责测试，设计稿周三交，测试周五完成。"},
 		{Identity: id, Scene: "email", Text: "周经理您好，我周四请假一天，交接给小赵了，麻烦批准，谢谢。"},
 		{Identity: id, Scene: "prompt", Text: "给 fetchState 加校验，不改返回字段，也别动数据库。"},
+		{Identity: id, Scene: "prompt", Text: "请确认 syncState 是不是还没准备好，暂时不要重启。"},
+		{Identity: id, Scene: "prompt", Text: "Can you check why fetchState is slow? Keep the response shape and do not restart it."},
+		{Identity: id, Scene: "work", Text: "Zion prepares receipts and Remy checks figures, receipts are due Monday and figures are due Thursday."},
+		{Identity: id, Scene: "prompt", Text: "把间隔设成六十秒，不对，是六秒，保留重试次数，只改 Router.go。"},
+		{Identity: id, Scene: "prompt", Text: "第一，给 fetchState 加日志。第二，保留返回字段。第三，不改配置。"},
+		{Identity: id, Scene: "work", Text: "First, Jules checks inventory on Monday. Second, Morgan packs the orders on Thursday. Ship only after inspection clears."},
+		{Identity: id, Scene: "list", Text: "核对账目，整理凭证，双方确认后再提交。"},
+		{Identity: id, Scene: "chat", Text: "我可能晚点到，如果下雨就线上参加，别替我确认。"},
+		{Identity: id, Scene: "search", Text: "如何检查 syncState 的状态？"},
+		{Identity: id, Scene: "prompt", Text: "请把以下事项列成清单：给 fetchState 加日志，保留返回字段，不改配置。"},
 	}
+	listLine := regexp.MustCompile(`(?m)^\s*(?:[-*•]|[0-9]+[.)、])\s+`)
+
 	var reference string
 	for i, r := range cases {
 		started := time.Now()
@@ -60,6 +74,19 @@ func TestNativeSelectedPipeline(t *testing.T) {
 		record("rewrite", r, result, err, time.Since(started))
 		if err != nil || result.Text == "" || result.Template != prompt.SelectedVersion {
 			t.Fatalf("%+v %v", result, err)
+		}
+
+		wantsList := r.Scene == "list" || i == 12
+		enumerated := domain.Enumerated(r.Text)
+		hasList := listLine.MatchString(result.Text)
+		if enumerated && !hasList && !domain.Enumerated(result.Text) {
+			t.Errorf("lost explicit enumeration for case %d: %q", i, result.Text)
+		}
+		if !enumerated && hasList != wantsList {
+			t.Errorf("unexpected list layout for case %d: %q", i, result.Text)
+		}
+		if !wantsList && r.Scene != "email" && regexp.MustCompile(`(?m)^#{1,6} |(?:要求|限制|Requirements|Constraints)[:：]`).MatchString(result.Text) {
+			t.Errorf("invented heading for case %d: %q", i, result.Text)
 		}
 		if i == 0 {
 			reference = result.Text

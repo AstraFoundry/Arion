@@ -124,8 +124,13 @@ func NoticeOf(d runtime.Dictation, permissions runtime.Permissions) Notice {
 	case runtime.CodeTargetChanged:
 		return Notice{copy.FailTargetTitle, copy.FailTargetHint}
 	case runtime.CodeTargetUnsupported:
-		if d.FailureDetail == runtime.DetailInputMethod {
+		switch d.FailureDetail {
+		case runtime.DetailInputMethod:
 			return Notice{copy.FailIMETitle, copy.FailIMEHint}
+		case runtime.DetailIMEClient:
+			return Notice{copy.FailUnsupportedTitle, copy.FailIMEClientHint}
+		case runtime.DetailIMEUpdating:
+			return Notice{copy.FailIMEUpdatingTitle, copy.FailIMEUpdatingHint}
 		}
 		return Notice{copy.FailUnsupportedTitle, copy.FailTargetHint}
 	case runtime.CodeClipboardUnavailable:

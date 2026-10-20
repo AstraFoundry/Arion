@@ -12,7 +12,7 @@ import (
 )
 
 // SelectedVersion identifies both independently evaluated stages.
-const SelectedVersion = "selector-screen-v1-baseline+work-scope-v4"
+const SelectedVersion = "selector-screen-v1-baseline+natural-layout-v1"
 
 //go:embed selection.json
 var selectedSelection []byte
@@ -72,10 +72,12 @@ type sceneRecipe struct {
 	Examples       []formatExample `json:"examples"`
 }
 type formatRecipe struct {
-	System    string                 `json:"formatSystem"`
-	SystemHan string                 `json:"formatSystemHan"`
-	Routes    map[string]string      `json:"routeInstructions"`
-	Scenes    map[string]sceneRecipe `json:"format"`
+	System         string                 `json:"formatSystem"`
+	SystemHan      string                 `json:"formatSystemHan"`
+	ProsePolicy    string                 `json:"prosePolicy"`
+	ProsePolicyHan string                 `json:"prosePolicyHan"`
+	Routes         map[string]string      `json:"routeInstructions"`
+	Scenes         map[string]sceneRecipe `json:"format"`
 }
 
 // SelectedTemplates holds immutable parsed templates and their fixed selector turns.
@@ -188,13 +190,10 @@ func formatText(source string) string {
 }
 
 // Format receives only the explicitly edited source, never OCR or surrounding
-// context. Work/email/prompt layouts use the exact evaluated v4 recipe.
+// context. Scene hints preserve natural prose unless list layout is explicit.
 func (t *SelectedTemplates) Format(source, scene string) (ChatRequest, error) {
 	if scene == string(domain.SceneSearch) {
 		scene = string(domain.SceneChat)
-	}
-	if scene == string(domain.SceneList) {
-		scene = string(domain.SceneWork)
 	}
 	recipe, ok := t.format.Scenes[scene]
 	if !ok {
@@ -204,6 +203,13 @@ func (t *SelectedTemplates) Format(source, scene string) (ChatRequest, error) {
 	system := t.format.System + "\n" + recipe.Instruction
 	if kind == "han" {
 		system = t.format.SystemHan + "\n" + recipe.InstructionHan
+	}
+	if scene != string(domain.SceneList) {
+		policy := t.format.ProsePolicy
+		if kind == "han" {
+			policy = t.format.ProsePolicyHan
+		}
+		system += "\n" + policy
 	}
 	system += "\n" + t.format.Routes[kind]
 	messages := []Message{{Role: "system", Content: system}}

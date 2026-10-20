@@ -12,11 +12,11 @@ const (
 	SceneChat Scene = "chat"
 	// SceneEmail lays out greeting, body and closing.
 	SceneEmail Scene = "email"
-	// SceneWork is a workplace message; enumerated points become numbered
-	// lines.
+	// SceneWork is a natural workplace message. Explicit enumerations may
+	// use list layout; multiple tasks alone do not imply a list.
 	SceneWork Scene = "work"
 	// ScenePrompt is an instruction for a coding agent or AI assistant;
-	// enumerated requirements become numbered lines.
+	// only explicit enumerations or list-layout requests add list formatting.
 	ScenePrompt Scene = "prompt"
 	// SceneSearch is a query without sentence-final punctuation.
 	SceneSearch Scene = "search"
@@ -32,7 +32,7 @@ var Scenes = []Scene{SceneChat, SceneEmail, SceneWork, ScenePrompt, SceneSearch,
 var ChoosableScenes = []Scene{SceneChat, SceneEmail, SceneWork, ScenePrompt, SceneSearch}
 
 // ModelScenes are the distinct layouts taught by the shipped staged recipe.
-// Search and explicit list layouts are adapted mechanically by the worker.
+// Search is adapted mechanically; explicit list has a dedicated recipe.
 var ModelScenes = []Scene{SceneChat, SceneEmail, SceneWork, ScenePrompt, SceneList}
 
 // Known reports whether s is a scene.

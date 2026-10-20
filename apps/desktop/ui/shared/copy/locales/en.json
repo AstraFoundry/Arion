@@ -53,8 +53,8 @@
   "FailNoSpeechTitle": "No speech heard",
   "FailNoSpeechHint": "Check the microphone level in Settings",
   "FailBusyTitle": "Still transcribing",
-  "FailIMETitle": "Arion isn't the active input source",
-  "FailIMEHint": "Choose it in the input menu, then try again",
+  "FailIMETitle": "Arion isn't ready",
+  "FailIMEHint": "Restart Arion, then try again",
   "FailGenericTitle": "Dictation stopped",
   "PanelLastDictation": "Last dictation",
   "PanelEmpty": "Your dictations appear here until you quit.",
@@ -84,6 +84,7 @@
   "AXPermissionText": "Lets Arion type into the app you're using",
   "GuideDrag": "Drag Arion into the list above, or switch it on if it's already there.",
   "GuideClose": "Close",
+  "TrayHintHere": "Arion lives here",
   "ShortcutLabel": "Dictation shortcut",
   "ShortcutDetail": "Press once to start, again to finish. Esc cancels.",
   "ShortcutRecord": "Change",
@@ -427,5 +428,8 @@
   "FailClipboardTitle": "Could not paste",
   "FailClipboardHint": "The clipboard changed or was unavailable. Your text is available to copy.",
   "FailClipboardRestoreTitle": "Clipboard could not be restored",
-  "FailClipboardRestoreHint": "Text may already be pasted. Check the editor before trying again."
+  "FailClipboardRestoreHint": "Text may already be pasted. Check the editor before trying again.",
+  "FailIMEClientHint": "Click an editable field, then try again",
+  "FailIMEUpdatingTitle": "Arion is updating",
+  "FailIMEUpdatingHint": "Try again when the update finishes"
 }

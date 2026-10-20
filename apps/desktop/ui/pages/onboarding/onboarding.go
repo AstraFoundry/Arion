@@ -289,18 +289,30 @@ func (p *Page) step(c *ui.Context, store runtime.Store, tokens theme.Tokens, ste
 			return
 		}
 		ui.Column(c).Gap(12).Children(func() {
-			keys := ui.Row(c).Gap(6)
-			if heard {
-				lift := keys.Keyframes("press", []ui.Keyframe{{Value: 0}, {At: 90 * time.Millisecond, Value: 3, Ease: ui.EaseOut}, {At: 260 * time.Millisecond, Value: 0, Ease: ui.EaseOut}},
-					ui.KeyframeOptions{Run: uint64(state.Shortcut.Pressed.UnixNano())})
-				keys.Translate(0, lift)
+			if p.recorder.Listening {
+				shortcut.Capture(c, store, tokens, &p.recorder).Height(40).Padding(0, 14)
+				shortcut.Error(c, store, tokens, &p.recorder)
+				return
 			}
-			keys.Children(func() {
-				for _, key := range kit.Keys(state.Shortcut.Accelerator) {
-					cap := kit.Keycap(c, tokens, key, false).Height(40).MinWidth(44).Padding(0, 14)
-					if heard {
-						cap.Border(1, tokens.AccentInk).Background(cap.AnimateColor("face", tokens.AccentSoft, theme.Quick))
+			ui.Row(c).Gap(12).AlignItems(ui.Center).Children(func() {
+				keys := ui.Row(c).Gap(6)
+				if heard {
+					lift := keys.Keyframes("press", []ui.Keyframe{{Value: 0}, {At: 90 * time.Millisecond, Value: 3, Ease: ui.EaseOut}, {At: 260 * time.Millisecond, Value: 0, Ease: ui.EaseOut}},
+						ui.KeyframeOptions{Run: uint64(state.Shortcut.Pressed.UnixNano())})
+					keys.Translate(0, lift)
+				}
+				keys.Children(func() {
+					for _, key := range kit.Keys(state.Shortcut.Accelerator) {
+						cap := kit.Keycap(c, tokens, key, false).Height(40).MinWidth(44).Padding(0, 14)
+						if heard {
+							cap.Border(1, tokens.AccentInk).Background(cap.AnimateColor("face", tokens.AccentSoft, theme.Quick))
+						}
 					}
+				})
+				// A changed shortcut is tested afresh.
+				if kit.Button(c.Key("change"), tokens, kit.Ghost, messages.Text(copy.ShortcutRecord), true).Clicked() {
+					p.entered = c.Now()
+					shortcut.Start(store, &p.recorder)
 				}
 			})
 			if heard {

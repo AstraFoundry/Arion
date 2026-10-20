@@ -64,55 +64,74 @@ func Accelerator(mods ui.Modifiers, key ui.Key) (string, bool) {
 	return strings.Join(append(parts, name), "+"), true
 }
 
+// Start begins listening for a new shortcut, releasing the current one so
+// pressing it is recorded instead of starting a dictation.
+func Start(store runtime.Store, recorder *Recorder) {
+	recorder.Listening, recorder.Error = true, ""
+	store.Actions.SuspendShortcut(true)
+}
+
+// Capture is the focused box that records the next key combination. Esc
+// cancels and restores the current shortcut.
+func Capture(c *ui.Context, store runtime.Store, tokens theme.Tokens, recorder *Recorder) ui.Element {
+	messages := store.Copy()
+	capture := ui.Row(c.Key("capture")).Height(28).Padding(0, 10).AlignItems(ui.Center).Radius(theme.RadiusControl).
+		Border(1, tokens.AccentInk).Background(tokens.AccentSoft).Focusable().AutoFocus().FocusRing(false)
+	capture.HandleInput(func(ev ui.InputEvent) bool {
+		if ev.Kind != ui.InputKeyDown || ev.Repeat {
+			return false
+		}
+		if ev.Key == ui.KeyEscape && ev.Mods == 0 {
+			recorder.Listening, recorder.Error = false, ""
+			store.Actions.SuspendShortcut(false)
+			return true
+		}
+		accelerator, ok := Accelerator(ev.Mods, ev.Key)
+		if !ok {
+			recorder.Error = copy.ShortcutNeedsModifier
+			if platform.GOOS == "windows" {
+				recorder.Error = copy.ShortcutNeedsModifierWindows
+			}
+			return true
+		}
+		if err := store.Actions.SetShortcut(accelerator); err != nil {
+			recorder.Error = copy.ShortcutTaken
+			return true
+		}
+		recorder.Listening, recorder.Error = false, ""
+		return true
+	})
+	capture.Children(func() {
+		ui.Text(c, messages.Text(copy.ShortcutRecording)).FontSize(theme.Caption).TextColor(tokens.Text)
+	})
+	if !capture.FocusWithin() && !capture.Focused() {
+		capture.Focus()
+	}
+	return capture
+}
+
+// Error explains why the last recorded combination was refused.
+func Error(c *ui.Context, store runtime.Store, tokens theme.Tokens, recorder *Recorder) {
+	if recorder.Error != "" {
+		ui.Text(c.Key("error"), store.Copy().Text(recorder.Error)).FontSize(theme.Caption).TextColor(tokens.Danger).
+			Transition(ui.ElementTransition{Enter: &ui.Motion{Y: -4}})
+	}
+}
+
 // Field shows the current shortcut and records a new one on request.
 func Field(c *ui.Context, store runtime.Store, tokens theme.Tokens, recorder *Recorder) {
 	messages := store.Copy()
 	ui.Column(c).Gap(6).AlignItems(ui.End).Children(func() {
 		ui.Row(c).Gap(8).AlignItems(ui.Center).Children(func() {
 			if recorder.Listening {
-				capture := ui.Row(c.Key("capture")).Height(28).Padding(0, 10).AlignItems(ui.Center).Radius(theme.RadiusControl).
-					Border(1, tokens.AccentInk).Background(tokens.AccentSoft).Focusable().AutoFocus().FocusRing(false)
-				capture.HandleInput(func(ev ui.InputEvent) bool {
-					if ev.Kind != ui.InputKeyDown || ev.Repeat {
-						return false
-					}
-					if ev.Key == ui.KeyEscape && ev.Mods == 0 {
-						recorder.Listening, recorder.Error = false, ""
-						store.Actions.SuspendShortcut(false)
-						return true
-					}
-					accelerator, ok := Accelerator(ev.Mods, ev.Key)
-					if !ok {
-						recorder.Error = copy.ShortcutNeedsModifier
-						if platform.GOOS == "windows" {
-							recorder.Error = copy.ShortcutNeedsModifierWindows
-						}
-						return true
-					}
-					if err := store.Actions.SetShortcut(accelerator); err != nil {
-						recorder.Error = copy.ShortcutTaken
-						return true
-					}
-					recorder.Listening, recorder.Error = false, ""
-					return true
-				})
-				capture.Children(func() {
-					ui.Text(c, messages.Text(copy.ShortcutRecording)).FontSize(theme.Caption).TextColor(tokens.Text)
-				})
-				if !capture.FocusWithin() && !capture.Focused() {
-					capture.Focus()
-				}
+				Capture(c, store, tokens, recorder)
 			} else {
 				kit.Keycaps(c, tokens, store.State.Shortcut.Accelerator, false)
 				if kit.Button(c.Key("change"), tokens, kit.Outline, messages.Text(copy.ShortcutRecord), true).Clicked() {
-					recorder.Listening, recorder.Error = true, ""
-					store.Actions.SuspendShortcut(true)
+					Start(store, recorder)
 				}
 			}
 		})
-		if recorder.Error != "" {
-			ui.Text(c.Key("error"), messages.Text(recorder.Error)).FontSize(theme.Caption).TextColor(tokens.Danger).
-				Transition(ui.ElementTransition{Enter: &ui.Motion{Y: -4}})
-		}
+		Error(c, store, tokens, recorder)
 	})
 }

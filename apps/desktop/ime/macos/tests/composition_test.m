@@ -134,9 +134,12 @@ int main(void) {
         require([paced.view.string isEqual:@"今天下午三点我们开会"] && paced.view.hasMarkedText && steps >= 4,
                 @"the draft types out in several steps");
         mark(typing, @"paced", @"今天下午三点他们开会", @2);
-        require([paced.view.string isEqual:@"今天下午三点"] || [paced.view.string isEqual:@"今天下午三点他"],
-                @"a revision rolls back to the agreeing prefix");
-        mark(typing, @"paced", @"今天下午三点他们开会讨论新版本的发布计划", @3);
+        require([paced.view.string isEqual:@"今天下午三点他们开会"], @"a revision changes shown characters in place");
+        mark(typing, @"paced", @"今天下午 3 点他们开会", @3);
+        require(paced.view.string.length >= 10, @"an early rewrite never retreats the marked text");
+        mark(typing, @"paced", @"今天", @4);
+        require([paced.view.string isEqual:@"今天"], @"a shorter draft cuts the display at once");
+        mark(typing, @"paced", @"今天下午三点他们开会讨论新版本的发布计划", @5);
         [typing apply:message(typing, @"commit", @"paced", @"今天下午三点他们开会讨论新版本的发布计划。", nil)];
         require([paced.view.string isEqual:@"今天下午三点他们开会讨论新版本的发布计划。"] && !paced.view.hasMarkedText && paced.insertions == 1,
                 @"commit inserts the final text exactly while typing is behind");
