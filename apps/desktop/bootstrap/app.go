@@ -133,6 +133,8 @@ type App struct {
 	accountMu          sync.Mutex
 	accountSeq         uint64
 	accountCancel      context.CancelFunc
+	imeSetupCancel     context.CancelFunc
+	imeSetupGeneration uint64
 }
 
 // New builds the application without starting the event loop.
@@ -282,6 +284,7 @@ func (a *App) Start() {
 	mygo.App.SetActivationPolicy(mygo.ActivationPolicyAccessory)
 	mygo.App.OnWindowAllClosed(func() {})
 	mygo.App.OnQuit(a.closeDiagnostics)
+	mygo.App.OnWillQuit(func(*mygo.QuitEvent) { actions{a}.CancelInputMethodSetup() })
 	mygo.App.OnSecondInstance(func([]string, string) { a.openSettings() })
 	mygo.App.WhenReady(a.ready)
 }

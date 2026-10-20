@@ -3,6 +3,7 @@
 package bootstrap
 
 import (
+	"context"
 	"path/filepath"
 
 	"arion.local/core/application"
@@ -94,7 +95,9 @@ func (darwinIME) State() runtime.InputMethodState {
 	switch macos.QueryIME() {
 	case macos.IMESelected:
 		return runtime.InputMethodSelected
-	case macos.IMECopied, macos.IMERegistered:
+	case macos.IMECopied:
+		return runtime.InputMethodDiscovering
+	case macos.IMERegistered:
 		return runtime.InputMethodPending
 	case macos.IMEEnabled:
 		return runtime.InputMethodInstalled
@@ -127,3 +130,12 @@ func (darwinIME) UpdateAvailable() bool {
 }
 
 func (darwinIME) OpenSettings() error { return macos.OpenIMEKeyboardSettings() }
+
+func (m darwinIME) Activate(ctx context.Context) error {
+	if err := m.EnsureListening(); err != nil {
+		return &macos.IMESetupError{Stage: "connection", Err: err}
+	}
+	m.BeginUpdate()
+	defer m.EndUpdate()
+	return macos.ActivateIME(ctx, m.WaitReady)
+}

@@ -84,6 +84,8 @@ func (r *recorder) InstallInputMethod() error {
 	r.state.InputMethod = runtime.InputMethodInstalled
 	return nil
 }
+func (r *recorder) ActivateInputMethod() error     { r.call("activate-ime"); return nil }
+func (r *recorder) CancelInputMethodSetup()        { r.call("cancel-ime-setup") }
 func (r *recorder) OpenInputMethodSettings() error { r.call("ime-settings"); return nil }
 func (r *recorder) RemoveInputMethod() error {
 	r.call("remove-ime")
@@ -1268,6 +1270,45 @@ func TestInputMethodSetupStates(t *testing.T) {
 				t.Fatal("setup did not open system settings")
 			}
 			snapshot(t, tt, "input-method-pending-"+string(language))
+			if err := tt.Click(messages.Text(copy.IMEEnable)); err != nil {
+				t.Fatal(err)
+			}
+			settle(tt)
+			if !actions.called("activate-ime") || actions.called("install-ime") {
+				t.Fatal("enable replaced installed files")
+			}
+			state.InputMethodActivating = true
+			settle(tt)
+			if !hasText(tt, messages.Text(copy.IMEActivating)) || hasText(tt, messages.Text(copy.IMEEnable)) || hasText(tt, messages.Text(copy.IMERemove)) {
+				t.Fatalf("activation exposed conflicting controls: %q", tt.Texts())
+			}
+			if err := tt.Click(messages.Text(copy.IMECancelSetup)); err != nil {
+				t.Fatal(err)
+			}
+			if !actions.called("cancel-ime-setup") {
+				t.Fatal("cancel did not revoke setup")
+			}
+			snapshot(t, tt, "input-method-activating-"+string(language))
+			state.InputMethodActivating = false
+			state.InputMethod = runtime.InputMethodDiscovering
+			settle(tt)
+			if !hasText(tt, messages.Text(copy.IMEDiscovering)) {
+				t.Fatal("undiscovered source collapsed into enablement")
+			}
+			state.InputMethod = runtime.InputMethodInstalled
+			settle(tt)
+			if err := tt.Click(messages.Text(copy.IMESelect)); err != nil {
+				t.Fatal(err)
+			}
+			state.InputMethod = runtime.InputMethodSelected
+			state.InputMethodError = copy.IMEConnectionFailed
+			settle(tt)
+			if !hasText(tt, messages.Text(copy.IMEEnable)) || !hasText(tt, messages.Text(copy.IMEConnectionFailed)) {
+				t.Fatal("selected but disconnected source lost retry")
+			}
+			state.InputMethodError = ""
+			state.InputMethod = runtime.InputMethodPending
+
 			state.InputMethodInstalling = true
 			settle(tt)
 			if !hasText(tt, messages.Text(copy.IMEInstalling)) || hasText(tt, messages.Text(copy.IMESetup)) || hasText(tt, messages.Text(copy.IMERemove)) {

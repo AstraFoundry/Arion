@@ -5,8 +5,11 @@ package copy
 type Key string
 
 const (
+	IMECancelSetup               Key = "IMECancelSetup"
 	KeyboardResetLearning        Key = "KeyboardResetLearning"
 	KeyboardCopyPending          Key = "KeyboardCopyPending"
+	KeyboardModeChinese          Key = "KeyboardModeChinese"
+	KeyboardModeEnglish          Key = "KeyboardModeEnglish"
 	KeyboardSwitchChinese        Key = "KeyboardSwitchChinese"
 	KeyboardSwitchEnglish        Key = "KeyboardSwitchEnglish"
 	KeyboardUnavailable          Key = "KeyboardUnavailable"
@@ -129,6 +132,14 @@ const (
 	IMEName                      Key = "IMEName"
 	IMEAbsent                    Key = "IMEAbsent"
 	IMEEnabled                   Key = "IMEEnabled"
+	IMEDiscovering               Key = "IMEDiscovering"
+	IMEEnable                    Key = "IMEEnable"
+	IMESelect                    Key = "IMESelect"
+	IMEActivating                Key = "IMEActivating"
+	IMEDiscoveryFailed           Key = "IMEDiscoveryFailed"
+	IMEEnableFailed              Key = "IMEEnableFailed"
+	IMESelectFailed              Key = "IMESelectFailed"
+	IMEConnectionFailed          Key = "IMEConnectionFailed"
 	IMEInstalled                 Key = "IMEInstalled"
 	IMESelected                  Key = "IMESelected"
 	IMEUnsupported               Key = "IMEUnsupported"

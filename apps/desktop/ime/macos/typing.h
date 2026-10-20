@@ -14,6 +14,8 @@
 @property(readonly) NSUInteger revision;
 @property(readonly, strong) ArionKeyboardSnapshot *snapshot;
 @property(copy) void (^changed)(void);
+// Fires only after an explicit successful language switch.
+@property(copy) void (^modeChanged)(void);
 // Candidates per page, 1–9. Applies from the next composition update.
 @property(nonatomic) NSUInteger pageSize;
 // Context ranking and its learning (上下文调频).

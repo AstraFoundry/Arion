@@ -8,6 +8,7 @@ static const NSUInteger kRankWindow = 27;
 static const NSUInteger kExpandedRows = 6;
 // A previous commit older than this no longer predicts the next word.
 static const NSTimeInterval kContextLifetime = 120;
+static const NSTimeInterval kShiftTapDuration = 0.3;
 
 static BOOL containsHan(NSString *text) {
     static NSRegularExpression *han;
@@ -41,6 +42,10 @@ static BOOL containsHan(NSString *text) {
 @property NSUInteger topRow;
 @property(copy) NSString *previousCommit;
 @property NSTimeInterval previousCommitTime;
+@property BOOL shiftHeld;
+@property BOOL shiftPending;
+@property unsigned short shiftKeyCode;
+@property NSTimeInterval shiftPressedAt;
 @end
 
 @implementation ArionTyping
@@ -85,6 +90,8 @@ static BOOL containsHan(NSString *text) {
     self.previousCommit = nil;
 }
 - (void)cancel {
+    self.shiftHeld = NO;
+    self.shiftPending = NO;
     if (self.engineGeneration == self.engine.generation) [self.engine clear:self.session];
     BOOL clear = self.composing;
     self.composing = NO;
@@ -104,14 +111,36 @@ static BOOL containsHan(NSString *text) {
     [self cancel];
     self.previousCommit = nil;
     [self.engine setASCII:!self.ascii session:self.session];
-    [self refresh:nil];
+    if ([self refresh:nil] && self.modeChanged) self.modeChanged();
 }
 - (BOOL)live {
     return self.session && self.available && self.engineGeneration == self.engine.generation;
 }
 - (BOOL)handleEvent:(NSEvent *)event {
-    if (!self.live || event.type != NSEventTypeKeyDown) return NO;
+    if (!self.live) return NO;
     NSEventModifierFlags flags = event.modifierFlags;
+    if (event.type == NSEventTypeFlagsChanged) {
+        BOOL shift = (flags & NSEventModifierFlagShift) != 0;
+        BOOL shiftKey = event.keyCode == 56 || event.keyCode == 60;
+        BOOL otherModifiers = (flags & (NSEventModifierFlagCommand | NSEventModifierFlagControl |
+                                      NSEventModifierFlagOption | NSEventModifierFlagCapsLock | NSEventModifierFlagFunction)) != 0;
+        BOOL toggle = shiftKey && !shift && self.shiftHeld && self.shiftPending &&
+            event.keyCode == self.shiftKeyCode && !otherModifiers &&
+            event.timestamp >= self.shiftPressedAt && event.timestamp - self.shiftPressedAt < kShiftTapDuration;
+        // A second Shift or any other modifier invalidates a pending tap.
+        if (shiftKey && shift && !self.shiftHeld && !otherModifiers) {
+            self.shiftPending = YES;
+            self.shiftKeyCode = event.keyCode;
+            self.shiftPressedAt = event.timestamp;
+        } else {
+            self.shiftPending = NO;
+        }
+        self.shiftHeld = shift;
+        if (toggle) [self toggleASCII];
+        return toggle;
+    }
+    if (event.type != NSEventTypeKeyDown) return NO;
+    self.shiftPending = NO;
     if (event.keyCode == 49 && (flags & NSEventModifierFlagShift) &&
         !(flags & (NSEventModifierFlagCommand | NSEventModifierFlagControl | NSEventModifierFlagOption))) {
         [self toggleASCII];

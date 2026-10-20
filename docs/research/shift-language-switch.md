@@ -37,6 +37,6 @@ The Pinyin switch path calls `deactivate:withIdentifier:isMaskFlagKey:` at `0x10
 
 Both inspected implementations support a standalone short Shift press that switches on release and keeps the new mode. A Shift chord must invalidate the pending switch so uppercase letters and shortcuts do not change language. This is separate from a temporary English mode while Shift is held.
 
-Arion currently supports Shift+Space and the input menu; `ArionTyping.handleEvent` accepts only key-down events. Adding standalone Shift requires modifier-event delivery and pending press state with chord/focus/deactivation invalidation, rather than treating every Shift event as a toggle.
+Arion now supports standalone left/right Shift release in less than 0.3 seconds, with chord, cancellation and deactivation invalidation; Shift+Space and the input menu remain available. The IMK controller requests modifier events and the typing owner tracks the pending press. A separate caret badge provides transient feedback. The badge's appearance and 0.8-second lifetime are Arion choices, not recovered Chatterfly behavior.
 
 Arion's existing KBD-04 rule discards unconfirmed composition on mode switch. The competitors' commit paths above differ from that rule. This research does not change KBD-04, choose a duration threshold for Arion, or authorize a different composition policy.

@@ -227,7 +227,6 @@ func TestInputBundleRegistrationCompletionRejectsRealFailures(t *testing.T) {
 		final        IMEState
 	}{
 		{"registration refused", errors.New("registration refused"), IMEAbsent, 0, IMEAbsent},
-		{"not discovered", nil, IMEAbsent, 0, IMEAbsent},
 		{"enable refused", nil, IMERegistered, -50, IMERegistered},
 		{"disappeared after enable", nil, IMERegistered, 0, IMEAbsent},
 	} {
@@ -453,5 +452,21 @@ func TestProcessExitWaitCannotReportLiveHostAsStopped(t *testing.T) {
 	}
 	if !awaitInputMethodExit(func() int { return 0 }, 0) {
 		t.Fatal("did not observe process exit")
+	}
+}
+
+func TestInputBundlePendingDiscoveryRetainsBytesWithoutEnableRequest(t *testing.T) {
+	root := t.TempDir()
+	old := bundleFixture(t, root, "ArionInput.app", "previous")
+	source := bundleFixture(t, root, "source.app", "new")
+	err := replaceInputBundle(source, old, func() error {
+		return registerAndEnableInputSource(func() error { return nil }, func() int { t.Fatal("enabled undiscovered source"); return -1 }, func() IMEState { return IMEAbsent }, false)
+	}, func() error { t.Fatal("discovery delay rolled back validated bytes"); return nil })
+	if err != nil || bundleContents(t, old) != "new" {
+		t.Fatal("pending discovery lost bytes", err)
+	}
+	requireNoTransaction(t, root)
+	if err := registerAndEnableInputSource(func() error { return nil }, func() int { return 0 }, func() IMEState { return IMEAbsent }, true); err == nil {
+		t.Fatal("upgrade restored selected source as undiscovered")
 	}
 }

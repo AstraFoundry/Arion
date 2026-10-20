@@ -1,13 +1,14 @@
 package onboarding
 
 import (
+	"arion.local/desktop/ui/shared/copy"
 	"testing"
 
 	"arion.local/desktop/ui/shared/runtime"
 )
 
 func TestInputMethodSetupIsOptionalButSelectionGatesContinue(t *testing.T) {
-	for _, state := range []runtime.InputMethodState{runtime.InputMethodAbsent, runtime.InputMethodPending, runtime.InputMethodInstalled} {
+	for _, state := range []runtime.InputMethodState{runtime.InputMethodAbsent, runtime.InputMethodDiscovering, runtime.InputMethodPending, runtime.InputMethodInstalled} {
 		s := &runtime.State{InputMethod: state}
 		flow := Flow{Index: int(InputMethod)}
 		if flow.Next(s) {
@@ -36,5 +37,21 @@ func TestUnsupportedInputMethodSkippedInBothDirections(t *testing.T) {
 	}
 	if !flow.Move(-1, s) || flow.Step() != Accessibility {
 		t.Fatal("unsupported source exposed during backward navigation")
+	}
+}
+
+func TestInputMethodConnectionFailureGatesContinueAfterSelection(t *testing.T) {
+	s := &runtime.State{InputMethod: runtime.InputMethodSelected, InputMethodError: copy.IMEConnectionFailed}
+	if Ready(InputMethod, s) {
+		t.Fatal("selected but unconnected host completed setup")
+	}
+	s.InputMethodError = ""
+	s.InputMethodActivating = true
+	if Ready(InputMethod, s) {
+		t.Fatal("continued before activation worker completed")
+	}
+	s.InputMethodActivating = false
+	if !Ready(InputMethod, s) {
+		t.Fatal("verified selected host could not continue")
 	}
 }

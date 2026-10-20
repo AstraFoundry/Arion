@@ -499,3 +499,77 @@ static NSColor *srgb(CGFloat r, CGFloat g, CGFloat b, CGFloat a) {
     });
 }
 @end
+
+@interface ArionLanguagePanel ()
+@property(strong) ArionCandidateWindow *window;
+@property(strong) NSTextField *label;
+@property(strong) NSTimer *dismissal;
+@end
+
+@implementation ArionLanguagePanel
+- (instancetype)init {
+    if (!(self = [super init])) return nil;
+    self.window = [[ArionCandidateWindow alloc] initWithContentRect:NSMakeRect(0, 0, 44, 36)
+        styleMask:NSWindowStyleMaskBorderless | NSWindowStyleMaskNonactivatingPanel
+        backing:NSBackingStoreBuffered defer:YES];
+    self.window.opaque = NO;
+    self.window.backgroundColor = NSColor.clearColor;
+    self.window.hasShadow = YES;
+    self.window.ignoresMouseEvents = YES;
+    self.window.hidesOnDeactivate = NO;
+    self.window.releasedWhenClosed = NO;
+    self.window.level = CGWindowLevelForKey(kCGCursorWindowLevelKey) - 2;
+    self.window.collectionBehavior = NSWindowCollectionBehaviorCanJoinAllSpaces |
+        NSWindowCollectionBehaviorFullScreenAuxiliary | NSWindowCollectionBehaviorStationary |
+        NSWindowCollectionBehaviorIgnoresCycle;
+    NSVisualEffectView *surface = [[NSVisualEffectView alloc] initWithFrame:NSMakeRect(0, 0, 44, 36)];
+    surface.material = NSVisualEffectMaterialPopover;
+    surface.state = NSVisualEffectStateActive;
+    surface.wantsLayer = YES;
+    surface.layer.cornerRadius = 8;
+    surface.layer.masksToBounds = YES;
+    self.label = [NSTextField labelWithString:@""];
+    self.label.frame = NSMakeRect(0, 8, 44, 20);
+    self.label.font = [NSFont systemFontOfSize:15 weight:NSFontWeightMedium];
+    self.label.textColor = NSColor.labelColor;
+    self.label.alignment = NSTextAlignmentCenter;
+    [surface addSubview:self.label];
+    self.window.contentView = surface;
+    return self;
+}
+- (void)setAppearance:(ArionCandidateAppearance)appearance {
+    _appearance = appearance;
+    self.window.appearance = appearance == ArionCandidateAppearanceLight ? [NSAppearance appearanceNamed:NSAppearanceNameAqua] :
+        appearance == ArionCandidateAppearanceDark ? [NSAppearance appearanceNamed:NSAppearanceNameDarkAqua] : nil;
+}
+- (void)showASCII:(BOOL)ascii caretRect:(NSRect)caret {
+    [self hide];
+    // A host that cannot supply a caret must not produce a stray screen-corner hint.
+    if (NSHeight(caret) <= 0) return;
+    self.label.stringValue = NSLocalizedString(ascii ? @"KeyboardModeEnglish" : @"KeyboardModeChinese", nil);
+    NSScreen *screen = nil;
+    for (NSScreen *candidate in NSScreen.screens) {
+        if (NSPointInRect(NSMakePoint(NSMinX(caret), NSMidY(caret)), candidate.frame)) { screen = candidate; break; }
+    }
+    if (!screen) return;
+    NSRect visible = screen.visibleFrame;
+    NSSize size = self.window.frame.size;
+    CGFloat x = MAX(NSMinX(visible), MIN(NSMinX(caret), NSMaxX(visible) - size.width));
+    CGFloat y = NSMinY(caret) - kCaretGap - size.height;
+    if (y < NSMinY(visible)) y = NSMaxY(caret) + kCaretGap;
+    y = MAX(NSMinY(visible), MIN(y, NSMaxY(visible) - size.height));
+    [self.window setFrameOrigin:NSMakePoint(x, y)];
+    [self.window orderFrontRegardless];
+    __weak ArionLanguagePanel *weakSelf = self;
+    self.dismissal = [NSTimer scheduledTimerWithTimeInterval:0.8 repeats:NO block:^(NSTimer *timer) {
+        (void)timer;
+        [weakSelf hide];
+    }];
+}
+- (void)hide {
+    [self.dismissal invalidate];
+    self.dismissal = nil;
+    [self.window orderOut:nil];
+}
+- (void)dealloc { [_dismissal invalidate]; }
+@end

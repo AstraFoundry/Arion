@@ -46,7 +46,7 @@ let status = 2;
 try {
   const source = path.join(root, 'apps/desktop/ime/macos');
   const learning = buildIMELearning({ root, outputDir: temporary, arch, testing: true });
-  const objects = ['keyboard.m', 'ranking.m', 'typing.m', 'tests/typing_test.m'].map((file, i) => {
+  const objects = ['keyboard.m', 'ranking.m', 'typing.m', 'candidate_panel.m', 'tests/typing_test.m'].map((file, i) => {
     const object = path.join(temporary, `typing-${i}.o`);
     execFileSync('xcrun', [file.startsWith('tests/') ? 'clang++' : 'clang',
       ...(file.startsWith('tests/') ? ['-x', 'objective-c++', '-std=c++17'] : []),
@@ -60,7 +60,7 @@ try {
   const library = path.join(runtime, 'lib');
   execFileSync('xcrun', [learning.linker, '-target', learning.target, ...objects, ...learning.objects,
     path.join(library, 'librime.1.dylib'), '-Xlinker', '-rpath', '-Xlinker', library,
-    '-framework', 'Cocoa', '-framework', 'InputMethodKit', ...learning.linkArgs, '-o', binary],
+    '-framework', 'Cocoa', '-framework', 'QuartzCore', '-framework', 'InputMethodKit', ...learning.linkArgs, '-o', binary],
   { cwd: root, stdio: 'inherit' });
   const executableArchitecture = execFileSync('xcrun', ['lipo', '-archs', binary], { encoding: 'utf8' }).trim();
   if (executableArchitecture !== arch) throw new Error(`Built keyboard test architecture differs: ${executableArchitecture}`);

@@ -178,12 +178,14 @@ func (x actions) InstallInputMethod() error {
 		return errInputMethodUnsupported
 	}
 	a := x.a
-	if a.state.InputMethodInstalling {
+	if a.state.InputMethodInstalling || a.state.InputMethodActivating {
 		return nil
 	}
 	if a.core != nil {
 		a.core.CancelMode(domain.SystemIMEMode)
 	}
+	generation := a.imeSetupGeneration
+	updating := a.state.InputMethodUpdate && a.state.InputMethod != arion.InputMethodAbsent
 	a.state.InputMethodInstalling = true
 	a.state.InputMethodError = ""
 	a.record("ime_install_started", nil)
@@ -201,10 +203,13 @@ func (x actions) InstallInputMethod() error {
 					a.state.InputMethodError = copy.IMEPackageUnverified
 				}
 				a.record("ime_install_failed", err)
-			} else if state == arion.InputMethodPending {
+			} else if state == arion.InputMethodPending || state == arion.InputMethodDiscovering {
 				a.record("ime_install_pending", nil)
 			} else {
 				a.record("ime_install_completed", nil)
+			}
+			if err == nil && !updating && generation == a.imeSetupGeneration {
+				_ = x.ActivateInputMethod()
 			}
 		})
 	}()
@@ -232,7 +237,7 @@ func (x actions) RemoveInputMethod() error {
 	if x.a.ime == nil {
 		return errInputMethodUnsupported
 	}
-	if x.a.state.InputMethodInstalling {
+	if x.a.state.InputMethodInstalling || x.a.state.InputMethodActivating {
 		return nil
 	}
 	x.a.state.InputMethodError = ""

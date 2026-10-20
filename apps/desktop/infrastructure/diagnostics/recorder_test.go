@@ -410,3 +410,22 @@ func TestFullExportQueueDoesNotBlockProducers(t *testing.T) {
 		t.Fatal("export did not close")
 	}
 }
+
+func TestInputMethodSetupDiagnosticsUseClosedStages(t *testing.T) {
+	for _, event := range []string{"ime_setup_started", "ime_setup_completed", "ime_setup_cancelled", "ime_setup_failed"} {
+		for _, phase := range []string{"discovery", "enable", "selection", "connection"} {
+			entry := Entry{At: time.Now(), Event: event, Phase: phase}
+			if !entry.valid() {
+				t.Fatalf("setup stage rejected: %+v", entry)
+			}
+		}
+	}
+	entry := Entry{At: time.Now(), Event: "ime_source_state", Outcome: "discovering"}
+	if !entry.valid() {
+		t.Fatal("discovery state lost")
+	}
+	entry.Phase = "private filesystem path"
+	if entry.valid() {
+		t.Fatal("arbitrary stage accepted")
+	}
+}

@@ -41,7 +41,7 @@ func Ready(step Step, s *runtime.State) bool {
 	case Accessibility:
 		return s.Permissions.Accessibility == runtime.ConsentGranted
 	case InputMethod:
-		return !s.InputMethodInstalling && (s.InputMethod == runtime.InputMethodSelected || s.InputMethod == runtime.InputMethodUnsupported)
+		return !s.InputMethodInstalling && !s.InputMethodActivating && s.InputMethodError == "" && (s.InputMethod == runtime.InputMethodSelected || s.InputMethod == runtime.InputMethodUnsupported)
 	case Model:
 		// Setup continues in the background; the user may move on once the
 		// download started, and the try step waits for readiness.

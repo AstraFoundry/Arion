@@ -1,0 +1,12 @@
+{
+  "files": {
+    "ime.sock.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "keyboard/user.yaml": "98792adfbe593a657dcccfced56c4305a9f0f51b48746eb79e094c2b53a859d5",
+    "keyboard/learning/arion_context.arion-userdb": "90b1826e191493f10e89fb910f9cf60c3070df9b85cf29c17f30f8376753fa22",
+    "keyboard/learning/arion_pinyin.arion-userdb": "9407bb41cc590a1db1a35a592c4c7992eacd68ca46c26d9d9e9f2d84e12e3bba",
+    "keyboard/learning/arion_context.arion-userdb.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "keyboard/learning/arion_pinyin.arion-userdb.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "keyboard/learning/.learning.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "boundary": "synthetic keyboard profile; personal keyboard directory not used for editor typing"
+}

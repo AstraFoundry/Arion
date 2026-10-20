@@ -1,0 +1,36 @@
+
+> arion-monorepo@0.0.0 e2e:native /Users/steven/code/Arion
+> node scripts/run-native-e2e.mjs
+
+# arion.local/desktop/e2e.test
+ld: warning: ignoring duplicate libraries: '-lobjc'
+=== RUN   TestReadContextFromWindow
+    context_darwin_test.go:27: set ARION_E2E_CONTEXT=1 after granting Accessibility and Screen Recording to the test runner
+--- SKIP: TestReadContextFromWindow (0.00s)
+=== RUN   TestOverlayInForeignFullscreenSpace
+    fullscreen_darwin_test.go:83: foreign fullscreen compositor observation: {OnActiveSpace:true OnScreen:true AboveFixture:true OverlapsFixture:true FrontmostPID:42219 Behavior:262473}; editor: {ClipboardOwned:false Web:{Text: Edits:0 Focused:false} PID:42219 A:{Text: Edits:0} Active:true Fullscreen:true Transitioning:false Focused:A}
+--- PASS: TestOverlayInForeignFullscreenSpace (3.33s)
+=== RUN   TestLearnFromEditInOwnedEditor
+    learning_darwin_test.go:25: set ARION_E2E_LEARNING=1 after granting Accessibility to the test runner
+--- SKIP: TestLearnFromEditInOwnedEditor (0.00s)
+=== RUN   TestOverlayExplainsFailure
+--- PASS: TestOverlayExplainsFailure (0.75s)
+=== RUN   TestSettingsWindowLifecycle
+--- PASS: TestSettingsWindowLifecycle (0.15s)
+=== RUN   TestOnboardingWindowLifecycle
+--- PASS: TestOnboardingWindowLifecycle (0.18s)
+=== RUN   TestOnboardingCompletionOpensSettings
+--- PASS: TestOnboardingCompletionOpensSettings (0.18s)
+=== RUN   TestInterfaceLanguageUpdatesNativeWindows
+--- PASS: TestInterfaceLanguageUpdatesNativeWindows (0.28s)
+=== RUN   TestDiagnosticExportNativeDialog
+    native_test.go:263: requires a UI driver for native save sheets
+--- SKIP: TestDiagnosticExportNativeDialog (0.00s)
+=== RUN   TestGuardedSystemPaste
+    paste_darwin_test.go:27: set ARION_E2E_PASTE=1 to exercise real system paste
+--- SKIP: TestGuardedSystemPaste (0.00s)
+=== RUN   TestCaptureReadsWebSite
+    site_darwin_test.go:26: set ARION_E2E_SITE=1 after granting Accessibility to the test runner
+--- SKIP: TestCaptureReadsWebSite (0.00s)
+PASS
+ok  	arion.local/desktop/e2e	5.655s

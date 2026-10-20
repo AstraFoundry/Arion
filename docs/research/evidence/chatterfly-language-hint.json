@@ -1,0 +1,176 @@
+{
+  "schemaVersion": 1,
+  "target": {
+    "path": "/Library/Input Methods/Chatterfly.app/Contents/MacOS/Chatterfly",
+    "version": "1.0.8.13459 (13459)",
+    "sha256": "595e502f74e41e1b28904affa9093974f6cbc197a3756a74a007ef562f9ee767"
+  },
+  "reaEvidence": {
+    "macho": "ev_d610f14c9a0052e5d4a20192869665ae142b6c207c3438bc09e1b0c9e92860ef",
+    "signature": "ev_2abe363949eccb40d58ecea6d36dc01c33830e6fb71d32a98562d53e84c0c2b3",
+    "skin": "ev_1737214a1a481a93b2de530249ae247a4bb99e5dad1f1f23bdb1dfe40246f916"
+  },
+  "boundary": "REA identifies the installed Mach-O, signature and packaged plist. Function behavior comes from ordinary Apple LLVM instructions verified byte-for-byte, not REA decompilation or runtime traces.",
+  "callChain": [
+    "SGInputControllerBase.funcSwitchCnEn:",
+    "SGInputStatusNotification.updateSGInputStatus:andGrowlSwitch:andTouchBar:",
+    "SGNotification.showGrowWithType:",
+    "SGInputHummingWindow.showHummingWithType:"
+  ],
+  "findings": {
+    "dismissalSeconds": 1,
+    "defaultNodeAnimationTypes": [
+      0,
+      0
+    ],
+    "packagedSkinAnimationTypes": [
+      301,
+      302
+    ],
+    "unsupportedTypes": [
+      0,
+      301,
+      302
+    ],
+    "unsupportedTypeResult": "nil animation group",
+    "brandProfileHummingPureImage": true,
+    "brandImageHasWindowShadow": false,
+    "packagedImagePixels": [
+      23,
+      23
+    ],
+    "genericViewPoints": [
+      36,
+      36
+    ],
+    "arionViewPoints": [
+      44,
+      36
+    ],
+    "arionDismissalSeconds": 0.8
+  },
+  "skinSha256": "5bbc99648beacffc9dcd16b6f8997af1f336706f930154fd755cfacfbd6cb42a",
+  "verifiedListings": [
+    {
+      "path": "window-init.asm.txt",
+      "instructionsVerified": 96,
+      "sha256": "567d21ae270aead0b09b17439fba090b476c8ba0d50d2f373754d8f4076a68bb"
+    },
+    {
+      "path": "stop.asm.txt",
+      "instructionsVerified": 53,
+      "sha256": "565721075670d129b97fc921c3526f8af5ad11f7e1dae1bd896b3b8e5e463d7f"
+    },
+    {
+      "path": "profile-option.asm.txt",
+      "instructionsVerified": 38,
+      "sha256": "a93b17e79b014ebc4b413a52ad10b12473c0555ceb04528809f647adfd92f6ef"
+    },
+    {
+      "path": "show-humming.asm.txt",
+      "instructionsVerified": 54,
+      "sha256": "b0df4f0b0f5f4e47d70713ac396f346ae7a96e19286794b2fa7e099092c22482"
+    },
+    {
+      "path": "animation-in.asm.txt",
+      "instructionsVerified": 44,
+      "sha256": "253b7e2b66f1a73d0674e896f28c707d4915f468a9c76e5061b82204d3ed9dd2"
+    },
+    {
+      "path": "brand-window.asm.txt",
+      "instructionsVerified": 94,
+      "sha256": "9f49c5a2f94c360b3d64c9d43b3e63917e71b803e443a315ecd9798bae3ed072"
+    },
+    {
+      "path": "growl-node.asm.txt",
+      "instructionsVerified": 151,
+      "sha256": "d573b59bc776982e11e2d5a6a67c2cc1bfdb4d0c310e1a575cb6583cd809fb04"
+    },
+    {
+      "path": "show-grow.asm.txt",
+      "instructionsVerified": 98,
+      "sha256": "f0f4b0e6b994a68994193b634564d3a3ae86be1d5b65689e9ad78d022348a38d"
+    },
+    {
+      "path": "brand-profile.asm.txt",
+      "instructionsVerified": 24,
+      "sha256": "50001f0d4c80a518f9b0a634f16977bc78bc1af7605774cc4f731f110b2c458f"
+    },
+    {
+      "path": "disappear.asm.txt",
+      "instructionsVerified": 53,
+      "sha256": "a8a480f377085a52772e97bfa993f149fa79511aaecb523b6aeb460e7abb30b4"
+    },
+    {
+      "path": "show-animation.asm.txt",
+      "instructionsVerified": 65,
+      "sha256": "62c2e8385173d8b8598ae21b7e25f689f0abaf5d759a66e598e1f231d637bc5c"
+    },
+    {
+      "path": "product-profile.asm.txt",
+      "instructionsVerified": 448,
+      "sha256": "8b208105dfdaa37cea806f14d8a47c8c70e22e332a73d3ee8a76a5cea30d13fa"
+    },
+    {
+      "path": "animation-stop.asm.txt",
+      "instructionsVerified": 93,
+      "sha256": "516e519de91686639c6077959d8107455de3bab184eab5afd51c25b6f393393b"
+    },
+    {
+      "path": "show-block.asm.txt",
+      "instructionsVerified": 145,
+      "sha256": "4b1d063fb49828f6664121bd502aa8b9dad1858d5051807f6a20425aa90f99b3"
+    },
+    {
+      "path": "default-nodes.asm.txt",
+      "instructionsVerified": 430,
+      "sha256": "3fdc56392ad703b1bb8329ee09a19e97f101ad59f4e8f7268383ff920c059c27"
+    },
+    {
+      "path": "default-window.asm.txt",
+      "instructionsVerified": 127,
+      "sha256": "1bd0ca4dc6f8abec77ec4b748d1a20877ae03afbd8f6e4dffde188fe72ddfe81"
+    },
+    {
+      "path": "timer.asm.txt",
+      "instructionsVerified": 41,
+      "sha256": "80ea955ad191b58c87a394320ce8c37949f9959e2a0ab3b7a904f81264f40cb7"
+    },
+    {
+      "path": "animation-group.asm.txt",
+      "instructionsVerified": 1311,
+      "sha256": "e068a8f6e646f1a290c64be36bb4159a6ff79336bb076547feda7736b1e1818f"
+    },
+    {
+      "path": "animation-out.asm.txt",
+      "instructionsVerified": 44,
+      "sha256": "75032e1f0ec2d4ad701d5fb17c3f4b7f41a0d7eb5cea325cfbf1e652adbdf61c"
+    },
+    {
+      "path": "status-notification.asm.txt",
+      "instructionsVerified": 130,
+      "sha256": "5f150616afdcec7f271de146e36246646d8fa8dee7cebdf8778dcec06031789f"
+    },
+    {
+      "path": "point.asm.txt",
+      "instructionsVerified": 203,
+      "sha256": "477c9404ced5d2299aed956fc289f3da1a5aa88e21b44988346a48e881edd077"
+    },
+    {
+      "path": "node-init.asm.txt",
+      "instructionsVerified": 68,
+      "sha256": "9d1a5c164c611a6b781799f9f9126aca548b1d66136520feed7ac9b7f1eff067"
+    },
+    {
+      "path": "set-nodes.asm.txt",
+      "instructionsVerified": 149,
+      "sha256": "e600e112eedac3ee356822dcb14b82ae23ada40ef58c59acc110926b4b94892b"
+    }
+  ],
+  "runtime": {
+    "chatterflyShiftMovieCaptured": false,
+    "arionProductionViewCaptured": true,
+    "arionImageLocalPath": "/Users/steven/code/Arion/.workspace/research/chatterfly-language-hint/arion-production-hint.png",
+    "limitation": "CUA rejects modifier-only Shift events; Chatterfly background window capture failed. Arion screenshots establish appearance only; screenshot API can return hidden-window backing pixels, so equal frames do not establish live visibility timing."
+  }
+}

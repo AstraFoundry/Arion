@@ -28,6 +28,7 @@ static NSString *hostBuildIdentity;
 @property(copy) NSString *clientBundle;
 @property(strong) ArionTyping *typing;
 @property(strong) ArionCandidatePanel *candidateWindow;
+@property(strong) ArionLanguagePanel *languageWindow;
 @property BOOL keyboardReady;
 - (NSDictionary *)activationMessage;
 - (void)apply:(NSDictionary *)message;
@@ -194,6 +195,14 @@ static void applyKeyboardSettings(ArionTyping *typing, ArionCandidatePanel *pane
         self.typing = [[ArionTyping alloc] initWithEngine:ArionKeyboardEngine.shared];
         __weak ArionInputController *weakSelf = self;
         self.typing.changed = ^{ [weakSelf refreshCandidates]; };
+        self.typing.modeChanged = ^{
+            ArionInputController *controller = weakSelf;
+            if ([ArionBridge shared].active != controller) return;
+            [controller interrupt];
+            NSRect caret = NSZeroRect;
+            [controller.client attributesForCharacterIndex:0 lineHeightRectangle:&caret];
+            [controller.languageWindow showASCII:controller.typing.ascii caretRect:caret];
+        };
     }
     if (!self.candidateWindow) {
         self.candidateWindow = [ArionCandidatePanel new];
@@ -207,7 +216,9 @@ static void applyKeyboardSettings(ArionTyping *typing, ArionCandidatePanel *pane
             if ([ArionBridge shared].active == controller) [controller.typing toggleExpanded:revision];
         };
     }
+    if (!self.languageWindow) self.languageWindow = [ArionLanguagePanel new];
     applyKeyboardSettings(self.typing, self.candidateWindow);
+    self.languageWindow.appearance = self.candidateWindow.appearance;
     self.keyboardReady = [self.typing activate:sender error:nil];
     self.clientBundle = [sender respondsToSelector:@selector(bundleIdentifier)] ? [sender bundleIdentifier] : @"";
     [ArionBridge shared].active = self;
@@ -217,6 +228,7 @@ static void applyKeyboardSettings(ArionTyping *typing, ArionCandidatePanel *pane
 - (void)deactivateServer:(id)sender {
     [self.typing deactivate];
     [self.candidateWindow hide];
+    [self.languageWindow hide];
     [self.composition invalidate];
     if ([ArionBridge shared].active == self) {
         [[ArionBridge shared] send:@{@"op": @"deactivate", @"activation": self.composition.activation}];
@@ -231,8 +243,18 @@ static void applyKeyboardSettings(ArionTyping *typing, ArionCandidatePanel *pane
     [[ArionBridge shared] send:@{@"op": @"escape", @"activation": self.composition.activation, @"session": self.composition.session}];
 }
 
+- (NSUInteger)recognizedEvents:(id)sender {
+    (void)sender;
+    return NSEventMaskKeyDown | NSEventMaskFlagsChanged;
+}
+
 - (BOOL)handleEvent:(NSEvent *)event client:(id)sender {
+    (void)sender;
+    if (event.type == NSEventTypeFlagsChanged) {
+        return self.keyboardReady && self.typing.available && [self.typing handleEvent:event];
+    }
     if (event.type != NSEventTypeKeyDown) return NO;
+    [self.languageWindow hide];
     BOOL hadVoice = self.composition.live;
     [self interrupt];
     if (hadVoice && event.keyCode == 53) return YES;
@@ -261,6 +283,7 @@ static void applyKeyboardSettings(ArionTyping *typing, ArionCandidatePanel *pane
     if (ack) [[ArionBridge shared] send:ack];
 }
 - (void)refreshCandidates {
+    [self.languageWindow hide];
     ArionKeyboardSnapshot *snapshot = self.typing.snapshot;
     if (!self.typing.composing || snapshot.candidates.count == 0) {
         [self.candidateWindow hide];

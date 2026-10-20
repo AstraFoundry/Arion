@@ -1,5 +1,6 @@
 #import <Cocoa/Cocoa.h>
 #import "../typing.h"
+#import "../candidate_panel.h"
 #import "../learning.h"
 #include <rime/dict/db.h>
 #include <rime_api.h>
@@ -34,6 +35,12 @@ static NSEvent *key(NSString *characters, unsigned short code, NSEventModifierFl
     return [NSEvent keyEventWithType:NSEventTypeKeyDown location:NSZeroPoint modifierFlags:flags
         timestamp:0 windowNumber:0 context:nil characters:characters charactersIgnoringModifiers:characters
         isARepeat:NO keyCode:code];
+}
+static BOOL modifier(ArionTyping *typing, unsigned short code, NSEventModifierFlags flags, NSTimeInterval timestamp) {
+    NSEvent *event = [NSEvent keyEventWithType:NSEventTypeFlagsChanged location:NSZeroPoint modifierFlags:flags
+        timestamp:timestamp windowNumber:0 context:nil characters:@"" charactersIgnoringModifiers:@""
+        isARepeat:NO keyCode:code];
+    return [typing handleEvent:event];
 }
 static BOOL press(ArionTyping *typing, NSString *characters, unsigned short code) {
     return [typing handleEvent:key(characters, code, 0)];
@@ -330,6 +337,95 @@ int main(int argc, const char *argv[]) {
             require([[typing.snapshot.preedit stringByReplacingOccurrencesOfString:@" " withString:@""] isEqual:@"ihao"], @"forward Delete removes character at engine caret");
             type(typing, @"n"); press(typing, @"", 119); press(typing, @" ", 49);
             require([editor.view.string isEqual:@"你好"], @"reinserted prefix preserves suffix conversion");
+        });
+        run(@"standalone left and right Shift switch on short release", @"KBD-A05", ^{
+            __block NSUInteger switches = 0;
+            typing.modeChanged = ^{ switches++; };
+            type(typing, @"nihao");
+            NSUInteger stale = typing.revision;
+            require(!modifier(typing, 56, NSEventModifierFlagShift, 1) && !typing.ascii && typing.composing,
+                    @"Shift press leaves mode and draft unchanged");
+            require(modifier(typing, 56, 0, 1.1) && typing.ascii && !typing.composing && editor.view.string.length == 0,
+                    @"short release switches and clears unconfirmed draft");
+            require(switches == 1 && ![typing select:0 revision:stale], @"one mode notification and no stale candidate write");
+            require(!modifier(typing, 56, 0, 1.11) && switches == 1, @"duplicate release cannot toggle");
+            modifier(typing, 60, NSEventModifierFlagShift, 2);
+            require(modifier(typing, 60, 0, 2.1) && !typing.ascii && switches == 2, @"right Shift switches back persistently");
+        });
+        run(@"Shift chords long holds and lifecycle changes cannot switch", @"KBD-A05", ^{
+            modifier(typing, 56, NSEventModifierFlagShift, 1);
+            [typing handleEvent:key(@"A", 0, NSEventModifierFlagShift)];
+            require(!modifier(typing, 56, 0, 1.1) && !typing.ascii, @"uppercase chord does not switch");
+            [typing cancel];
+            modifier(typing, 56, NSEventModifierFlagShift, 2);
+            require(!modifier(typing, 56, 0, 2.4) && !typing.ascii, @"long hold does not switch");
+            modifier(typing, 56, NSEventModifierFlagShift, 3);
+            modifier(typing, 55, NSEventModifierFlagShift | NSEventModifierFlagCommand, 3.02);
+            modifier(typing, 55, NSEventModifierFlagShift, 3.04);
+            require(!modifier(typing, 56, 0, 3.1) && !typing.ascii, @"modifier chord does not switch");
+            modifier(typing, 56, NSEventModifierFlagShift, 4);
+            modifier(typing, 60, NSEventModifierFlagShift, 4.02);
+            modifier(typing, 56, NSEventModifierFlagShift, 4.04);
+            require(!modifier(typing, 60, 0, 4.1) && !typing.ascii, @"overlapping Shift keys do not switch");
+            modifier(typing, 56, NSEventModifierFlagShift, 5);
+            [typing cancel];
+            require(!modifier(typing, 56, 0, 5.1), @"cancel invalidates pending Shift");
+            modifier(typing, 56, NSEventModifierFlagShift, 6);
+            [typing deactivate];
+            require([typing activate:editor error:nil] && !modifier(typing, 56, 0, 6.1) && !typing.ascii,
+                    @"activation cannot inherit pending Shift from another focus");
+        });
+        run(@"Shift Space release does not switch twice", @"KBD-A05", ^{
+            modifier(typing, 56, NSEventModifierFlagShift, 1);
+            require([typing handleEvent:key(@" ", 49, NSEventModifierFlagShift)] && typing.ascii, @"legacy chord switches");
+            require(!modifier(typing, 56, 0, 1.1) && typing.ascii, @"chord release keeps the selected mode");
+        });
+        run(@"symbols commit directly without candidate composition", @"KBD-A02", ^{
+            NSArray *inputs = @[@"/", @"\\", @"%", @"$", @"*", @"~", @"<", @">", @"[", @"]", @"{", @"}", @"|", @"^", @"_", @"(", @")", @"!", @"?", @";", @":", @"'", @"'", @"\"", @"\""];
+            NSArray *outputs = @[@"、", @"、", @"%", @"￥", @"*", @"～", @"《", @"》", @"【", @"】", @"｛", @"｝", @"|", @"……", @"——", @"（", @"）", @"！", @"？", @"；", @"：", @"‘", @"’", @"“", @"”"];
+            NSMutableString *expected = [NSMutableString string];
+            for (NSUInteger i = 0; i < inputs.count; i++) {
+                require(press(typing, inputs[i], 0), @"symbol handled by engine");
+                [expected appendString:outputs[i]];
+                require([editor.view.string isEqual:expected] && !typing.composing && !editor.view.hasMarkedText &&
+                        typing.snapshot.candidates.count == 0, @"each symbol commits immediately without a menu");
+            }
+        });
+        run(@"shifted punctuation preserves language and ASCII passes through", @"KBD-A02 KBD-A05", ^{
+            modifier(typing, 56, NSEventModifierFlagShift, 1);
+            require([typing handleEvent:key(@"!", 18, NSEventModifierFlagShift)] && [editor.view.string isEqual:@"！"] &&
+                    !typing.composing, @"actual Shift symbol chord commits directly");
+            require(!modifier(typing, 56, 0, 1.1) && !typing.ascii, @"symbol chord release does not switch");
+            type(typing, @"nihao");
+            NSString *candidate = typing.snapshot.candidates[typing.snapshot.highlighted];
+            require(press(typing, @"/", 44) && [editor.view.string isEqual:[@"！" stringByAppendingFormat:@"%@、", candidate]] &&
+                    !typing.composing, @"slash commits the highlighted phrase and punctuation without symbol candidates");
+            [typing toggleASCII];
+            require(!press(typing, @"/", 44) && ![typing handleEvent:key(@"!", 18, NSEventModifierFlagShift)],
+                    @"English-mode symbols pass to the host unchanged");
+        });
+        run(@"language hint stays by caret without taking focus and expires", @"KBD-A05", ^{
+            ArionLanguagePanel *hint = [ArionLanguagePanel new];
+            NSWindow *window = [hint valueForKey:@"window"];
+            NSWindow *keyWindow = NSApp.keyWindow;
+            NSRect screen = NSScreen.mainScreen.visibleFrame;
+            NSRect caret = NSMakeRect(NSMaxX(screen) - 1, NSMinY(screen) + 1, 0, 20);
+            [hint showASCII:YES caretRect:caret];
+            require(window.visible && !window.canBecomeKeyWindow && window.ignoresMouseEvents && NSApp.keyWindow == keyWindow,
+                    @"zero-width caret shows a click-through hint without changing key window");
+            require(NSContainsRect(screen, window.frame) && NSMinY(window.frame) >= NSMaxY(caret),
+                    @"hint fits screen and flips above bottom-edge caret");
+            [NSRunLoop.currentRunLoop runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.5]];
+            [hint showASCII:NO caretRect:caret];
+            [NSRunLoop.currentRunLoop runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.4]];
+            require(window.visible, @"previous dismissal cannot hide the new mode hint");
+            [NSRunLoop.currentRunLoop runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.45]];
+            require(!window.visible, @"hint automatically disappears");
+            [hint showASCII:YES caretRect:caret];
+            [hint hide];
+            require(!window.visible, @"typing or focus loss can hide immediately");
+            [hint showASCII:YES caretRect:NSZeroRect];
+            require(!window.visible, @"missing caret never produces screen-corner feedback");
         });
         run(@"Shift Space discards draft and passes ASCII", @"KBD-A05", ^{
             type(typing, @"nihao");

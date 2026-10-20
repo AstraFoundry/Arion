@@ -4,6 +4,7 @@ These directories retain actual per-case outputs, source/prompt observations, wa
 
 | Study | Evidence |
 | --- | --- |
+| [ime-activation-v1/](ime-activation-v1/README.md) | Signed macOS activation/retry/cancel/reinstall through production adapter, real isolated IMK Pinyin commit/cancel, retained connection failure, check logs/source hashes; clean-account first consent remains open |
 | [imk-quality-v2/](imk-quality-v2/README.md) | Corrected 100-fixture corpus revision 2; 600 actual native cold/warm processes, candidate/commit outputs, monotonic timings, source/hardware/runtime hashes and independent report replay |
 | [imk-context-v1/](imk-context-v1/README.md) | Context ranking off/on over three seeded homophone streams in fresh profiles, before/after candidate-bar latency runs, copied sources and SHA-256 manifest |
 | [imk-quality-v1/](imk-quality-v1/README.md) | Original 600-process attempt retained unchanged with one known authored-input typo; complete original corpus, outputs and provisional 70% score |

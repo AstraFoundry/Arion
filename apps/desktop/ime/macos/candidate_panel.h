@@ -45,3 +45,10 @@ typedef NS_ENUM(NSInteger, ArionCandidateAppearance) {
              caretRect:(NSRect)caret;
 - (void)hide;
 @end
+
+// Brief, click-through language feedback at the host caret.
+@interface ArionLanguagePanel : NSObject
+@property(nonatomic) ArionCandidateAppearance appearance;
+- (void)showASCII:(BOOL)ascii caretRect:(NSRect)caret;
+- (void)hide;
+@end

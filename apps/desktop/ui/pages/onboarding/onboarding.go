@@ -90,35 +90,36 @@ func (p *Page) Render(c *ui.Context, store runtime.Store) {
 			})
 			ui.Row(c).Padding(16, Inset, 24, Inset).Gap(8).AlignItems(ui.Center).Children(func() {
 				if p.flow.Index > 0 && step != onboarding.Finished {
-					kit.Button(c.Key("back"), tokens, kit.Ghost, messages.Text(copy.Back), step != onboarding.InputMethod || !state.InputMethodInstalling).OnClick(func() { p.move(c, -1, state) })
+					kit.Button(c.Key("back"), tokens, kit.Ghost, messages.Text(copy.Back), step != onboarding.InputMethod || !state.InputMethodInstalling).OnClick(func() { p.move(c, -1, store) })
 				}
 				ui.Spacer(c)
 				switch step {
 				case onboarding.Welcome:
-					kit.Button(c.Key("next"), tokens, kit.Primary, messages.Text(copy.OnbStart), true).OnClick(func() { p.move(c, 1, state) })
+					kit.Button(c.Key("next"), tokens, kit.Primary, messages.Text(copy.OnbStart), true).OnClick(func() { p.move(c, 1, store) })
 				case onboarding.Account:
 					// Signed out, moving on is continuing locally.
 					label := messages.Text(copy.Continue)
 					if account.StageOf(state.Account) == account.SignedOut {
 						label = messages.Text(copy.OnbContinueLocally)
 					}
-					kit.Button(c.Key("next"), tokens, kit.Primary, label, onboarding.Ready(step, state)).OnClick(func() { p.move(c, 1, state) })
+					kit.Button(c.Key("next"), tokens, kit.Primary, label, onboarding.Ready(step, state)).OnClick(func() { p.move(c, 1, store) })
 				case onboarding.InputMethod:
 					if !onboarding.Ready(step, state) {
 						kit.Button(c.Key("later"), tokens, kit.Ghost, messages.Text(copy.OnbIMELater), !state.InputMethodInstalling).OnClick(func() {
 							if p.flow.SkipInputMethod(state) {
+								store.Actions.CancelInputMethodSetup()
 								p.entered = c.Now()
 							}
 						})
 					}
-					kit.Button(c.Key("next"), tokens, kit.Primary, messages.Text(copy.Continue), onboarding.Ready(step, state) && !state.InputMethodInstalling).OnClick(func() { p.move(c, 1, state) })
+					kit.Button(c.Key("next"), tokens, kit.Primary, messages.Text(copy.Continue), onboarding.Ready(step, state) && !state.InputMethodInstalling).OnClick(func() { p.move(c, 1, store) })
 				case onboarding.Finished:
 					kit.Button(c.Key("finish"), tokens, kit.Primary, messages.Text(copy.OnbFinish), true).OnClick(func() {
 						p.release(store)
 						store.Actions.CompleteOnboarding()
 					})
 				default:
-					kit.Button(c.Key("next"), tokens, kit.Primary, messages.Text(copy.Continue), onboarding.Ready(step, state)).OnClick(func() { p.move(c, 1, state) })
+					kit.Button(c.Key("next"), tokens, kit.Primary, messages.Text(copy.Continue), onboarding.Ready(step, state)).OnClick(func() { p.move(c, 1, store) })
 				}
 			})
 		})
@@ -132,7 +133,7 @@ func (p *Page) Render(c *ui.Context, store runtime.Store) {
 			c.After(wait)
 		} else {
 			p.axRequested = false
-			p.move(c, 1, state)
+			p.move(c, 1, store)
 		}
 	}
 }
@@ -154,8 +155,12 @@ func illustration(step onboarding.Step, state *runtime.State) (showcase.Scene, [
 	return showcase.Dictating, nil
 }
 
-func (p *Page) move(c *ui.Context, delta int, state *runtime.State) {
-	moved := p.flow.Move(delta, state)
+func (p *Page) move(c *ui.Context, delta int, store runtime.Store) {
+	previous := p.flow.Step()
+	moved := p.flow.Move(delta, store.State)
+	if moved && previous == onboarding.InputMethod {
+		store.Actions.CancelInputMethodSetup()
+	}
 	if moved {
 		p.entered = c.Now()
 	}
@@ -187,6 +192,7 @@ func (p *Page) sync(store runtime.Store, step onboarding.Step) {
 func (p *Page) Close(store runtime.Store) { p.release(store) }
 
 func (p *Page) release(store runtime.Store) {
+	store.Actions.CancelInputMethodSetup()
 	if p.monitoring {
 		p.monitoring = false
 		store.Actions.StopLevelMonitor()
@@ -260,7 +266,7 @@ func (p *Page) step(c *ui.Context, store runtime.Store, tokens theme.Tokens, ste
 		ui.Text(c, messages.Text(copy.OnbIMETitle)).FontSize(theme.Title + 4).FontWeight(650)
 		ui.Column(c).Width(Content).Gap(12).Children(func() {
 			keyboard.Setup(c, store, tokens, &p.keyboard)
-			if state.InputMethod == runtime.InputMethodPending {
+			if state.InputMethod == runtime.InputMethodPending || state.InputMethod == runtime.InputMethodDiscovering {
 				ui.Text(c, messages.Text(copy.OnbIMEPending)).FontSize(theme.Body).TextColor(tokens.Muted)
 			}
 			if keyboard.Ready(store) {

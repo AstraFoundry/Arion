@@ -279,6 +279,7 @@ type InputMethodState string
 const (
 	InputMethodUnsupported InputMethodState = "unsupported"
 	InputMethodAbsent      InputMethodState = "absent"
+	InputMethodDiscovering InputMethodState = "discovering"
 	InputMethodPending     InputMethodState = "pending"
 	InputMethodInstalled   InputMethodState = "installed"
 	InputMethodSelected    InputMethodState = "selected"
@@ -399,6 +400,7 @@ type State struct {
 	Shortcut              Shortcut
 	InputMethod           InputMethodState
 	InputMethodInstalling bool
+	InputMethodActivating bool
 	// InputMethodUpdate: the installed input method differs from the one
 	// this app bundles, so installing again updates it.
 	InputMethodUpdate bool
@@ -455,6 +457,8 @@ type Actions interface {
 	StartLevelMonitor()
 	StopLevelMonitor()
 	InstallInputMethod() error
+	ActivateInputMethod() error
+	CancelInputMethodSetup()
 	OpenInputMethodSettings() error
 	RemoveInputMethod() error
 	AddReplacement(from, to string) error

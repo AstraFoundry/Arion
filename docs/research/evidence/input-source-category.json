@@ -1,0 +1,92 @@
+{
+  "scope": "Installed macOS input-method category declarations; retained installer registration evidence remains separately version-bound",
+  "runtimeObserved": false,
+  "artifacts": [
+    {
+      "product": "doubao",
+      "version": "1.0.2",
+      "plistPath": "/Library/Input Methods/DoubaoIme.app/Contents/Info.plist",
+      "plistSha256": "82e6c717df702b7ec5688f99459fef1db39a9a936edb24ce808aedb5684d05dd",
+      "reaEvidenceId": "ev_ab0cf18cfebbbfdaeb04776d7794499e8daa4ebe64c6ea2d1def5c6b60ac2936",
+      "reaEvidencePath": ".workspace/research/input-source-category/doubao-plist-rea.json",
+      "bundleIdentifier": "com.bytedance.inputmethod.doubaoime",
+      "characterRepertoire": [
+        "Latn",
+        "Hans",
+        "Hant"
+      ],
+      "modes": {
+        "com.bytedance.inputmethod.doubaoime.pinyin": {
+          "TISInputSourceID": "com.bytedance.inputmethod.doubaoime.pinyin",
+          "tsInputModeDefaultStateKey": true,
+          "tsInputModeIsVisibleKey": true,
+          "tsInputModeKeyEquivalentKey": "",
+          "tsInputModeKeyEquivalentModifiersKey": 4608,
+          "tsInputModeMenuIconFileKey": "menu_icon.pdf",
+          "tsInputModePaletteIconFileKey": "menu_icon.pdf",
+          "tsInputModePrimaryInScriptKey": true,
+          "tsInputModeScriptKey": "smSimpChinese"
+        }
+      }
+    },
+    {
+      "product": "chatterfly",
+      "version": "1.0.8.13459",
+      "plistPath": "/Library/Input Methods/Chatterfly.app/Contents/Info.plist",
+      "plistSha256": "e44a21e03e3c3fd204215d5408f620257a82c399a4f94cb5003338d25e25c374",
+      "reaEvidenceId": "ev_9e726a6f1741bc7dfe448d1e53507eb9fb49da25d8097a232328e0d9bc6846a3",
+      "reaEvidencePath": ".workspace/research/input-source-category/chatterfly-plist-rea.json",
+      "bundleIdentifier": "com.tencent.inputmethod.chatterfly",
+      "characterRepertoire": [
+        "Latn",
+        "Hans",
+        "Hant"
+      ],
+      "modes": {
+        "com.tencent.inputmethod.chatterfly.pinyin": {
+          "TISInputSourceID": "com.tencent.inputmethod.chatterfly.pinyin",
+          "tsInputModeAlternateMenuIconFileKey": "menubarpinyin.pdf",
+          "tsInputModeDefaultStateKey": true,
+          "tsInputModeIsVisibleKey": true,
+          "tsInputModeKeyEquivalentKey": "",
+          "tsInputModeKeyEquivalentModifiersKey": 4608,
+          "tsInputModeLocalizedNameKey": "Chatterfly",
+          "tsInputModeMenuIconFileKey": "menubarpinyin.pdf",
+          "tsInputModePaletteIconFileKey": "menubarpinyin.pdf",
+          "tsInputModePrimaryInScriptKey": true,
+          "tsInputModeScriptKey": "smSimpChinese"
+        }
+      }
+    },
+    {
+      "product": "arion",
+      "evidenceType": "ordinary plistlib parse, not REA",
+      "plistPath": "/Users/steven/Library/Input Methods/ArionInput.app/Contents/Info.plist",
+      "plistSha256": "6e22ea9364da5fe062855293e531c504eb343f7da7872b392dd11b1b8bff02eb",
+      "modes": {
+        "si.astrafoundry.inputmethod.arion.pinyin": {
+          "TISInputSourceID": "si.astrafoundry.inputmethod.arion.pinyin",
+          "TISIntendedLanguage": "zh-Hans",
+          "tsInputModeDefaultStateKey": true,
+          "tsInputModeIsVisibleKey": true,
+          "tsInputModeLocalizedNameKey": "Arion",
+          "tsInputModeMenuIconFileKey": "menu_icon.tiff",
+          "tsInputModePaletteIconFileKey": "menu_icon.tiff",
+          "tsInputModePrimaryInScriptKey": true,
+          "tsInputModeScriptKey": "smSimpChinese"
+        }
+      }
+    }
+  ],
+  "registrationEvidence": [
+    "docs/research/evidence/input-source-onboarding.json",
+    "docs/research/evidence/chatterfly-registration.json"
+  ],
+  "limits": [
+    "No input-source state or preferences changed.",
+    "No fresh-install or System Settings add-dialog runtime observation.",
+    "Chatterfly 1.0.8.13459 metadata does not authenticate the older 1.0.6.13398 installer behavior.",
+    "Script and language declarations alone do not prove the precise System Settings grouping algorithm.",
+    "Arion declares TISIntendedLanguage=zh-Hans; its independent effect was not tested."
+  ]
+}

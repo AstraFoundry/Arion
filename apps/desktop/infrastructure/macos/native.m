@@ -429,3 +429,60 @@ int arion_ime_processes(const char *bundle_id, int action) {
         }
     });
 }
+
+
+// The observer belongs to one explicit setup attempt. Cancellation is checked
+// on the main thread immediately before selection, including queued requests.
+@interface ArionInputSourceWatch : NSObject
+@property(atomic) BOOL cancelled;
+@property(nonatomic, strong) dispatch_semaphore_t signal;
+@end
+@implementation ArionInputSourceWatch
+@end
+
+static void arion_ime_source_changed(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef info) {
+    ArionInputSourceWatch *watch = (__bridge ArionInputSourceWatch *)observer;
+    dispatch_semaphore_signal(watch.signal);
+}
+
+void *arion_ime_watch_create(void) {
+    __block void *result = NULL;
+    arion_ime_on_main(^int(void) {
+        ArionInputSourceWatch *watch = [ArionInputSourceWatch new];
+        watch.signal = dispatch_semaphore_create(0);
+        result = (__bridge_retained void *)watch;
+        CFNotificationCenterRef center = CFNotificationCenterGetDistributedCenter();
+        CFNotificationCenterAddObserver(center, result, arion_ime_source_changed, kTISNotifyEnabledKeyboardInputSourcesChanged, NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
+        CFNotificationCenterAddObserver(center, result, arion_ime_source_changed, kTISNotifySelectedKeyboardInputSourceChanged, NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
+        return 0;
+    });
+    return result;
+}
+
+void arion_ime_watch_cancel(void *value) {
+    ArionInputSourceWatch *watch = (__bridge ArionInputSourceWatch *)value;
+    watch.cancelled = YES;
+    dispatch_semaphore_signal(watch.signal);
+}
+
+void arion_ime_watch_wait(void *value, int milliseconds) {
+    ArionInputSourceWatch *watch = (__bridge ArionInputSourceWatch *)value;
+    dispatch_semaphore_wait(watch.signal, dispatch_time(DISPATCH_TIME_NOW, (int64_t)milliseconds * NSEC_PER_MSEC));
+}
+
+void arion_ime_watch_close(void *value) {
+    arion_ime_on_main(^int(void) {
+        CFNotificationCenterRemoveEveryObserver(CFNotificationCenterGetDistributedCenter(), value);
+        ArionInputSourceWatch *watch = (__bridge_transfer ArionInputSourceWatch *)value;
+        watch.cancelled = YES;
+        return 0;
+    });
+}
+
+int arion_ime_watch_select(void *value, const char *source_id) {
+    return arion_ime_on_main(^int(void) {
+        ArionInputSourceWatch *watch = (__bridge ArionInputSourceWatch *)value;
+        if (watch.cancelled) return userCanceledErr;
+        return arion_ime_select(source_id);
+    });
+}

@@ -28,6 +28,8 @@ type InputMethod interface {
 	Close()
 	State() runtime.InputMethodState
 	Install() error
+	// Activate retries installed-source setup without replacing its bundle.
+	Activate(context.Context) error
 	OpenSettings() error
 	Remove() error
 	// ApplyKeyboard hands the keyboard preferences to the input method,

@@ -1,0 +1,11 @@
+{
+  "selectedSource": "com.bytedance.inputmethod.doubaoime.pinyin",
+  "state": {
+    "state": 2
+  },
+  "files": {
+    "Contents/MacOS/ArionInput": "20f840fd0dbe0b330df08766234861f152c4369d0552bf5190076afe6a0bd22c",
+    "Contents/Info.plist": "6e22ea9364da5fe062855293e531c504eb343f7da7872b392dd11b1b8bff02eb",
+    "Contents/_CodeSignature/CodeResources": "7d48acbf2a5ade6c3e9da2dfe9b980fe9c1637c01677c8178d54a75e956705c7"
+  }
+}

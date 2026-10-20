@@ -58,6 +58,11 @@ int arion_ime_state(const char *source_id);
 int arion_ime_open_settings(void);
 // Select/switch without disabling an already authorized input source.
 int arion_ime_select(const char *source_id);
+void *arion_ime_watch_create(void);
+void arion_ime_watch_cancel(void *watch);
+void arion_ime_watch_wait(void *watch, int milliseconds);
+void arion_ime_watch_close(void *watch);
+int arion_ime_watch_select(void *watch, const char *source_id);
 int arion_ime_switch_away(const char *source_id);
 // action: 0 counts running hosts, 1 requests exit, 2 forces exit.
 // A negative result reports a failed forced termination request.

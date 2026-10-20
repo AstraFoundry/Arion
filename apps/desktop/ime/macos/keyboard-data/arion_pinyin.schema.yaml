@@ -18,6 +18,43 @@ __patch:
   translator/enable_user_dict: true
   reverse_lookup: null
   recognizer/patterns/reverse_lookup: null
+  recognizer/patterns/punct: null
+  # Ordinary punctuation commits directly, never opens a symbol menu.
+  punctuator:
+    half_shape: &punctuation
+      ',': { commit: ， }
+      '.': { commit: 。 }
+      '<': { commit: 《 }
+      '>': { commit: 》 }
+      '/': { commit: 、 }
+      '?': { commit: ？ }
+      ';': { commit: ； }
+      ':': { commit: ： }
+      "'": { pair: [ '‘', '’' ] }
+      '"': { pair: [ '“', '”' ] }
+      '\': { commit: 、 }
+      '|': { commit: '|' }
+      '`': { commit: '`' }
+      '~': { commit: ～ }
+      '!': { commit: ！ }
+      '@': { commit: '@' }
+      '#': { commit: '#' }
+      '%': { commit: '%' }
+      '$': { commit: ￥ }
+      '^': { commit: …… }
+      '&': { commit: '&' }
+      '*': { commit: '*' }
+      '(': { commit: （ }
+      ')': { commit: ） }
+      '-': { commit: '-' }
+      '_': { commit: —— }
+      '+': { commit: '+' }
+      '=': { commit: '=' }
+      '[': { commit: 【 }
+      ']': { commit: 】 }
+      '{': { commit: ｛ }
+      '}': { commit: ｝ }
+    full_shape: *punctuation
   key_binder/import_preset: null
   key_binder/bindings:
     - { when: has_menu, accept: minus, send: Page_Up }

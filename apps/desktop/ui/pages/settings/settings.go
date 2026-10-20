@@ -71,6 +71,9 @@ func (p *Page) Render(c *ui.Context, store runtime.Store) {
 		signin.Check(store)
 	}
 	if p.Section != p.shown {
+		if p.shown == Keyboard {
+			store.Actions.CancelInputMethodSetup()
+		}
 		p.shown = p.Section
 		if p.Section == Overview {
 			p.usage.Replay()
@@ -119,6 +122,9 @@ func (p *Page) syncMonitor(store runtime.Store) {
 
 // Close releases resources the page holds.
 func (p *Page) Close(store runtime.Store) {
+	if p.Section == Keyboard {
+		store.Actions.CancelInputMethodSetup()
+	}
 	// The window opens again with its section's entrance.
 	p.shown = ""
 	if p.monitoring {

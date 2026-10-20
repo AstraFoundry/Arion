@@ -1,0 +1,5 @@
+
+> arion-monorepo@0.0.0 i18n:check /Users/steven/code/Arion
+> node scripts/check-i18n.mjs
+
+ok  	arion.local/desktop/ui/shared/copy	0.410s

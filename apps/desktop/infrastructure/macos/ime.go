@@ -228,7 +228,13 @@ func registerAndEnableInputSource(register func() error, enable func() int, stat
 	if err := register(); err != nil {
 		return err
 	}
-	if current := state(); current < IMERegistered || current > IMESelected {
+	current := state()
+	if !requireEnabled && (current == IMEAbsent || current == IMECopied) {
+		// A successful request can precede discovery. Keep validated bytes so
+		// the explicit activation flow can observe discovery without recopying.
+		return nil
+	}
+	if current < IMERegistered || current > IMESelected {
 		return domain.Fail(domain.CodeTargetUnsupported, "input source was not discovered after registration")
 	}
 	return enableInputSource(enable, state, requireEnabled)
@@ -335,7 +341,11 @@ func awaitInputMethodExit(running func() int, timeout time.Duration) bool {
 }
 
 func launchInputMethod(bundle, build string, ready func(context.Context, string) error) error {
-	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	return launchInputMethodContext(context.Background(), bundle, build, ready)
+}
+
+func launchInputMethodContext(parent context.Context, bundle, build string, ready func(context.Context, string) error) error {
+	ctx, cancel := context.WithTimeout(parent, 15*time.Second)
 	defer cancel()
 	if err := exec.CommandContext(ctx, "/usr/bin/open", "-g", bundle).Run(); err != nil {
 		return fmt.Errorf("input method launch failed: %w", err)

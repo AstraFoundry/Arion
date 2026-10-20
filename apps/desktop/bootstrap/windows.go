@@ -190,7 +190,7 @@ func (a *App) openSettings() {
 		Title: a.ui.Copy().Text(copy.SettingsTitle), Width: uiapp.SettingsWidth, Height: uiapp.SettingsHeight, MinWidth: 640, MinHeight: 440,
 		TitleBarStyle: mygo.TitleBarHidden, Vibrancy: mygo.VibrancySidebar, StateKey: "settings", Content: view.Content,
 	})
-	a.track(a.settingsWin, view, func() { a.settingsWin = nil })
+	a.track(a.settingsWin, view, func() { actions{a}.CancelInputMethodSetup(); a.settingsWin = nil })
 	mygo.App.Focus()
 	a.settingsWin.Focus()
 }
