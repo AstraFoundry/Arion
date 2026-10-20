@@ -1,0 +1,3 @@
+module arion.local/updates
+
+go 1.27.1

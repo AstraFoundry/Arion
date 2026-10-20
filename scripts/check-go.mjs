@@ -5,8 +5,8 @@ import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const mode = process.argv[2];
-if (!['core', 'desktop', 'format', 'sync'].includes(mode)) throw new Error('Use core, desktop, format, or sync');
-const modules = mode === 'format' ? ['packages/core', 'models', 'apps/desktop', 'services/sync'] : mode === 'core' ? ['packages/core', 'models'] : mode === 'sync' ? ['services/sync'] : ['apps/desktop'];
+if (!['core', 'desktop', 'format', 'sync', 'updates'].includes(mode)) throw new Error('Use core, desktop, format, sync, or updates');
+const modules = mode === 'format' ? ['packages/core', 'models', 'apps/desktop', 'services/sync', 'services/updates'] : mode === 'core' ? ['packages/core', 'models'] : mode === 'sync' ? ['services/sync'] : mode === 'updates' ? ['services/updates'] : ['apps/desktop'];
 function sourceFiles(directory) {
   return readdirSync(directory, { withFileTypes: true }).flatMap(entry => {
     if (['build', 'dist'].includes(entry.name)) return [];

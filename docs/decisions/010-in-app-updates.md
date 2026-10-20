@@ -1,6 +1,6 @@
 # ADR 010: In-app updates from GitHub releases
 
-Status: Accepted; signed macOS ARM64 alpha distribution is published.
+Status: Accepted; signed macOS ARM64 alpha distribution is published. The **Source of truth** below is superseded by [ADR 019](019-center-update-channels.md): apps check the Arion center's `stable`/`beta` channels, not the GitHub API.
 
 ## Context
 

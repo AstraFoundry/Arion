@@ -1,0 +1,90 @@
+name: arion-center
+
+services:
+  postgres:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: arion
+      POSTGRES_PASSWORD: ${ARION_SYNC_POSTGRES_PASSWORD:?set ARION_SYNC_POSTGRES_PASSWORD}
+      POSTGRES_DB: arion_sync
+    volumes:
+      - arion-center-pg:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U arion -d arion_sync"]
+      interval: 2s
+      timeout: 5s
+      retries: 30
+
+  migrate:
+    build:
+      context: ../..
+      dockerfile: deploy/sync/Dockerfile
+    command: ["migrate"]
+    environment:
+      ARION_SYNC_DATABASE_URL: postgres://arion:${ARION_SYNC_POSTGRES_PASSWORD}@postgres:5432/arion_sync?sslmode=disable
+      ARION_SYNC_ACCOUNT_GATE: ${ARION_SYNC_ACCOUNT_GATE:-oidc}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
+
+  sync:
+    build:
+      context: ../..
+      dockerfile: deploy/sync/Dockerfile
+    command: ["serve"]
+    environment:
+      ARION_SYNC_DATABASE_URL: postgres://arion:${ARION_SYNC_POSTGRES_PASSWORD}@postgres:5432/arion_sync?sslmode=disable
+      ARION_SYNC_HTTP_ADDR: ":8080"
+      ARION_SYNC_ACCOUNT_GATE: ${ARION_SYNC_ACCOUNT_GATE:-oidc}
+      ARION_SYNC_LOG_LEVEL: ${ARION_SYNC_LOG_LEVEL:-info}
+      ARION_SYNC_OIDC_ISSUER: ${ARION_SYNC_OIDC_ISSUER:-https://astrafoundry.si}
+      ARION_SYNC_OIDC_AUDIENCE: ${ARION_SYNC_OIDC_AUDIENCE:-https://api.arion.astrafoundry.si}
+      ARION_SYNC_OIDC_CLIENT_ID: ${ARION_SYNC_OIDC_CLIENT_ID:-arion-sync}
+      ARION_SYNC_OIDC_ENTITLEMENT: ${ARION_SYNC_OIDC_ENTITLEMENT:-arion.sync.hosted}
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    restart: unless-stopped
+
+  updates:
+    build:
+      context: ../..
+      dockerfile: deploy/center/Dockerfile.updates
+    environment:
+      ARION_UPDATES_HTTP_ADDR: ":8081"
+      ARION_UPDATES_PUBLIC_URL: https://${ARION_CENTER_DOMAIN:?set ARION_CENTER_DOMAIN}
+      ARION_UPDATES_S3_ENDPOINT: ${ARION_UPDATES_S3_ENDPOINT:?set ARION_UPDATES_S3_ENDPOINT}
+      ARION_UPDATES_S3_REGION: ${ARION_UPDATES_S3_REGION:?set ARION_UPDATES_S3_REGION}
+      ARION_UPDATES_S3_BUCKET: ${ARION_UPDATES_S3_BUCKET:?set ARION_UPDATES_S3_BUCKET}
+      ARION_UPDATES_S3_PREFIX: ${ARION_UPDATES_S3_PREFIX:-arion}
+      ARION_UPDATES_S3_PATH_STYLE: ${ARION_UPDATES_S3_PATH_STYLE:-true}
+      ARION_UPDATES_S3_ACCESS_KEY_ID: ${ARION_UPDATES_S3_ACCESS_KEY_ID:?set ARION_UPDATES_S3_ACCESS_KEY_ID}
+      ARION_UPDATES_S3_SECRET_ACCESS_KEY_FILE: /run/secrets/updates_s3_secret
+      ARION_UPDATES_LOG_LEVEL: ${ARION_UPDATES_LOG_LEVEL:-info}
+    secrets:
+      - updates_s3_secret
+    restart: unless-stopped
+
+  caddy:
+    image: caddy:2
+    environment:
+      ARION_CENTER_DOMAIN: ${ARION_CENTER_DOMAIN}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - arion-center-caddy:/data
+    depends_on:
+      - sync
+      - updates
+    restart: unless-stopped
+
+secrets:
+  updates_s3_secret:
+    file: ${ARION_UPDATES_S3_SECRET_FILE:-./secrets/updates-s3-secret}
+
+volumes:
+  arion-center-pg:
+  arion-center-caddy:

@@ -6,7 +6,11 @@
   "out": "build",
   "updates": {
     "publicKey": "WEZ2tNHPgq2KP405pHaCZU7hxPtss2P9lQ7nFqP7evk=",
-    "github": "AstraFoundry/Arion"
+    "url": "https://api.arion.astrafoundry.si/v1/updates"
+  },
+  "release": {
+    "product": "arion",
+    "repository": "AstraFoundry/Arion"
   },
   "macos": {
     "minimumSystemVersion": "14.0",

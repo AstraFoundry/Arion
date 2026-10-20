@@ -1,9 +1,10 @@
 // Release checks never create keys or weaken update signature verification.
 import { execFileSync, spawnSync } from 'node:child_process';
-import { copyFileSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
+import { copyFileSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { checkRelease, digest, githubAssetName, platformAssets, platformsForRelease, releaseMatrix, releaseStatus } from './lib/release.mjs';
+import { checkRelease, digest, githubAssetName, platformAssets, platformsForRelease, releaseMatrix, releaseStatus, stagedRecord, stagedRecordKey, stagingSettings, stagingUploads } from './lib/release.mjs';
 import { checkOfficialCenter } from './lib/center-profile.mjs';
 import { macosSigningSettings } from './lib/desktop-signing.mjs';
 
@@ -20,7 +21,8 @@ if (operation === 'matrix') {
   if (!signing?.certificate || !signing.appleId) throw new Error('Tagged releases require a Developer ID certificate, its password, signing identity and Apple notarization credentials');
   const profile = process.env.MACOS_IME_PROVISIONING_PROFILE_BASE64?.trim();
   if (!profile || !Buffer.from(profile, 'base64').length || Buffer.from(profile, 'base64').toString('base64') !== profile) throw new Error('Tagged releases require MACOS_IME_PROVISIONING_PROFILE_BASE64');
-  if (process.env.GITHUB_REPOSITORY !== config.updates.github) throw new Error('Release repository does not match the configured update source');
+  if (process.env.GITHUB_REPOSITORY !== config.release.repository) throw new Error('Release repository does not match desktop.json release.repository');
+  stagingSettings(process.env);
   console.log(`Verified release configuration for v${config.version}.`);
 } else if (operation === 'collect') {
   if (!['--signed', '--unsigned'].includes(mode)) throw new Error('Choose --signed for releases or --unsigned for preview installers');
@@ -31,7 +33,7 @@ if (operation === 'matrix') {
   mkdirSync(destination, { recursive: true });
   for (const file of files) copyFileSync(path.join(source, file), path.join(destination, file));
   console.log(`Collected ${platform}: ${files.join(', ')}`);
-} else if (operation === 'verify' || operation === 'upload') {
+} else if (operation === 'verify' || operation === 'upload' || operation === 'stage') {
   const directory = path.resolve(first);
   const platforms = platformsForRelease(config);
   const files = platforms.flatMap(platform => platformAssets(directory, config, platform));
@@ -43,16 +45,48 @@ if (operation === 'matrix') {
     console.log(`Verified installers and signed updates for ${platforms.join(', ')}.`);
   } else {
     const tag = `v${config.version}`;
-    if (process.env.GITHUB_REF_NAME !== tag || process.env.GITHUB_REPOSITORY !== config.updates.github) throw new Error('Release tag or repository mismatch');
+    if (process.env.GITHUB_REF_NAME !== tag || process.env.GITHUB_REPOSITORY !== config.release.repository) throw new Error('Release tag or repository mismatch');
     const allFiles = [...files, 'RELEASE-STATUS.md', 'SHA256SUMS'];
     if (readFileSync(path.join(directory, 'SHA256SUMS'), 'utf8') !== checksumList(directory, files)) throw new Error('Release checksums changed after verification');
+    if (operation === 'stage') {
+      stage(directory, platforms);
+      process.exit(0);
+    }
     // A failed lookup must not be treated as permission to create a new release.
-    const list = execFileSync('gh', ['release', 'list', '--repo', config.updates.github, '--limit', '100', '--json', 'tagName,isDraft'], { encoding: 'utf8' });
+    const list = execFileSync('gh', ['release', 'list', '--repo', config.release.repository, '--limit', '100', '--json', 'tagName,isDraft'], { encoding: 'utf8' });
     const existing = JSON.parse(list).find(release => release.tagName === tag);
     if (existing && !existing.isDraft) throw new Error('Refusing to modify a published release');
-    if (!existing) execFileSync('gh', ['release', 'create', tag, '--repo', config.updates.github, '--draft', '--verify-tag', '--title', tag, '--generate-notes', ...(config.version.includes('-') ? ['--prerelease'] : [])], { stdio: 'inherit' });
-    const result = spawnSync('gh', ['release', 'upload', tag, '--repo', config.updates.github, '--clobber', ...allFiles.map(file => path.join(directory, file))], { stdio: 'inherit' });
+    if (!existing) execFileSync('gh', ['release', 'create', tag, '--repo', config.release.repository, '--draft', '--verify-tag', '--title', tag, '--generate-notes', ...(config.version.includes('-') ? ['--prerelease'] : [])], { stdio: 'inherit' });
+    const result = spawnSync('gh', ['release', 'upload', tag, '--repo', config.release.repository, '--clobber', ...allFiles.map(file => path.join(directory, file))], { stdio: 'inherit' });
     if (result.error) throw result.error;
     if (result.status !== 0) process.exit(result.status ?? 1);
   }
-} else throw new Error('Use release.mjs matrix | check | collect <platform> <directory> --signed|--unsigned | verify <directory> | upload <directory>');
+} else throw new Error('Use release.mjs matrix | check | collect <platform> <directory> --signed|--unsigned | verify <directory> | stage <directory> | upload <directory>');
+
+// Stages the verified set in the release bucket (packages/contracts/releases).
+// Nothing is published: the platform admin decides which channel offers it.
+function stage(directory, platforms) {
+  const settings = stagingSettings(process.env);
+  const prefixed = key => (settings.prefix ? `${settings.prefix}/${key}` : key);
+  const aws = (args, capture = false) => spawnSync('aws', ['s3api', ...args, '--bucket', settings.bucket, '--endpoint-url', settings.endpoint, '--region', settings.region], { encoding: 'utf8', stdio: capture ? 'pipe' : ['ignore', 'ignore', 'inherit'] });
+  const record = stagedRecord(directory, config, platforms, { commit: process.env.GITHUB_SHA ?? '', createdAt: new Date().toISOString() });
+  // A failed lookup must not be treated as permission to stage over a release.
+  const existing = aws(['head-object', '--key', prefixed(stagedRecordKey(config.version))], true);
+  if (existing.error) throw existing.error;
+  if (existing.status === 0) throw new Error(`Refusing to replace the staged release ${config.version}`);
+  if (!/\b404\b|Not Found/.test(existing.stderr)) throw new Error(`Release storage lookup failed: ${existing.stderr.trim()}`);
+  const scratch = mkdtempSync(path.join(tmpdir(), 'arion-stage-'));
+  try {
+    for (const upload of stagingUploads(directory, record)) {
+      let body = upload.path;
+      if (upload.body !== undefined) writeFileSync(body = path.join(scratch, 'release.json'), upload.body);
+      const result = aws(['put-object', '--key', prefixed(upload.key), '--body', body, '--content-type', upload.contentType, '--cache-control', upload.cacheControl]);
+      if (result.error) throw result.error;
+      if (result.status !== 0) throw new Error(`Uploading ${upload.key} failed`);
+      console.log(`Staged ${upload.key}`);
+    }
+  } finally {
+    rmSync(scratch, { recursive: true, force: true });
+  }
+  console.log(`Staged ${config.version} for ${platforms.join(', ')}; publish it from the AstraFoundry admin.`);
+}

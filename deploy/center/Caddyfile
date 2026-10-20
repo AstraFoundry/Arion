@@ -1,0 +1,22 @@
+# Arion center: one public origin for the sync relay and the update channels.
+{$ARION_CENTER_DOMAIN} {
+	encode zstd gzip
+
+	@updates path /v1/updates/* /v1/releases/* /v1/downloads/*
+	handle @updates {
+		reverse_proxy updates:8081
+	}
+
+	@sync path /v1/sync/* /v1/security-events
+	handle @sync {
+		reverse_proxy sync:8080
+	}
+
+	handle /healthz {
+		respond "ok" 200
+	}
+
+	handle {
+		respond 404
+	}
+}

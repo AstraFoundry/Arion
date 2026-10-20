@@ -1,0 +1,25 @@
+{
+  "schema": "astrafoundry.release.v1",
+  "product": "arion",
+  "version": "0.1.0-alpha.6",
+  "prerelease": true,
+  "createdAt": "2026-10-20T07:00:00Z",
+  "notes": "- Update checks use the Arion center",
+  "source": { "kind": "ci", "repository": "AstraFoundry/Arion", "tag": "v0.1.0-alpha.6", "commit": "0000000000000000000000000000000000000000" },
+  "targets": {
+    "darwin-arm64": {
+      "installer": { "name": "Arion.0.1.0-alpha.6.arm64.dmg", "size": 104857600, "sha256": "0000000000000000000000000000000000000000000000000000000000000000" },
+      "update": { "name": "arion-0.1.0-alpha.6-darwin-arm64.tar.gz", "size": 99614720, "sha256": "0000000000000000000000000000000000000000000000000000000000000000" },
+      "deltas": [],
+      "manifest": {
+        "version": "0.1.0-alpha.6",
+        "notes": "- Update checks use the Arion center",
+        "date": "2026-10-20T07:00:00Z",
+        "url": "https://api.arion.astrafoundry.si/v1/updates/arion-0.1.0-alpha.6-darwin-arm64.tar.gz",
+        "size": 99614720,
+        "signature": "c2lnbmF0dXJl"
+      }
+    }
+  },
+  "documents": ["SHA256SUMS", "RELEASE-STATUS.md"]
+}

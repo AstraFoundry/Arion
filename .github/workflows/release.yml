@@ -1,7 +1,8 @@
 name: Release
 
 # Tagged releases run the same checks and packaging as pull requests.
-# Only complete, verified sets are uploaded; publishing the draft stays manual.
+# Only complete, verified sets are staged in release storage and a GitHub draft;
+# publishing a channel stays a manual decision in the AstraFoundry admin.
 on:
   push:
     tags: ['v*']
@@ -33,6 +34,12 @@ jobs:
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
           APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+          ARION_RELEASES_S3_ENDPOINT: ${{ secrets.ARION_RELEASES_S3_ENDPOINT }}
+          ARION_RELEASES_S3_REGION: ${{ secrets.ARION_RELEASES_S3_REGION }}
+          ARION_RELEASES_S3_BUCKET: ${{ secrets.ARION_RELEASES_S3_BUCKET }}
+          ARION_RELEASES_S3_PREFIX: ${{ secrets.ARION_RELEASES_S3_PREFIX }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.ARION_RELEASES_S3_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.ARION_RELEASES_S3_SECRET_ACCESS_KEY }}
         run: node scripts/release.mjs check
       - name: Select release platforms
         id: matrix
@@ -71,6 +78,15 @@ jobs:
           path: .workspace/release/verified
       - name: Verify the complete release and write SHA256SUMS
         run: node scripts/release.mjs verify .workspace/release/verified
+      - name: Stage verified assets in release storage
+        env:
+          ARION_RELEASES_S3_ENDPOINT: ${{ secrets.ARION_RELEASES_S3_ENDPOINT }}
+          ARION_RELEASES_S3_REGION: ${{ secrets.ARION_RELEASES_S3_REGION }}
+          ARION_RELEASES_S3_BUCKET: ${{ secrets.ARION_RELEASES_S3_BUCKET }}
+          ARION_RELEASES_S3_PREFIX: ${{ secrets.ARION_RELEASES_S3_PREFIX }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.ARION_RELEASES_S3_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.ARION_RELEASES_S3_SECRET_ACCESS_KEY }}
+        run: node scripts/release.mjs stage .workspace/release/verified
       - name: Upload verified assets to a draft release
         env:
           GH_TOKEN: ${{ github.token }}

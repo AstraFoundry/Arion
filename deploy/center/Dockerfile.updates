@@ -1,0 +1,12 @@
+FROM golang:1.27.1-bookworm AS build
+WORKDIR /src
+COPY services/updates/go.mod ./
+COPY services/updates/ ./
+ENV CGO_ENABLED=0 GOWORK=off
+RUN go build -trimpath -ldflags="-s -w" -o /out/arion-updates ./cmd/updates
+
+FROM gcr.io/distroless/static-debian12:nonroot
+COPY --from=build /out/arion-updates /arion-updates
+USER 65532:65532
+EXPOSE 8081
+ENTRYPOINT ["/arion-updates"]

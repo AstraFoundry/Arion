@@ -12,14 +12,14 @@ function fixture(t) {
   const { privateKey, publicKey } = generateKeyPairSync('ed25519');
   const rawPublic = publicKey.export({ type: 'spki', format: 'der' }).subarray(-32);
   const rawPrivate = privateKey.export({ type: 'pkcs8', format: 'der' }).subarray(-32);
-  const config = { name: 'Arion', version: '0.1.0', updates: { github: 'example/arion', publicKey: rawPublic.toString('base64') } };
+  const config = { name: 'Arion', version: '0.1.0', updates: { url: 'https://updates.example/v1/updates', publicKey: rawPublic.toString('base64') } };
   const manifests = {};
   for (const platform of releasePlatforms) {
     writeFileSync(path.join(directory, installerName(config, platform)), 'installer fixture');
     const name = `arion-${config.version}-${platform}.tar.gz`;
     const bytes = Buffer.from(`archive fixture for ${platform}`);
     writeFileSync(path.join(directory, name), bytes);
-    const manifest = { version: config.version, url: `https://github.com/example/arion/releases/download/v${config.version}/${name}`, size: bytes.length, signature: sign(null, digest(bytes), privateKey).toString('base64') };
+    const manifest = { version: config.version, url: `https://updates.example/v1/updates/${name}`, size: bytes.length, signature: sign(null, digest(bytes), privateKey).toString('base64') };
     manifests[platform] = manifest;
     writeFileSync(path.join(directory, `update-${platform}.json`), JSON.stringify(manifest));
   }

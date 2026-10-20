@@ -13,7 +13,7 @@ REWRITE_CONFIG ?= benchmarks/configs/desktop-rewrite.json
 REWRITE_PLAN ?= .workspace/benchmarks/rewrite-plan.json
 export CORPUS DRIVER OUT RESULTS MANIFEST BUNDLE SEGMENT LLM_MODEL LLM_RUNTIME VARIANT RUNS CONFIG PLAN SUITE REWRITE_CONFIG REWRITE_PLAN REVIEW RATINGS RATERS RATING_SEED EVAL_PYTHON MODELS MODEL_IDS QWEN_CONFIG QWEN_PROMPTS QWEN_ASR AUDIO_CORPUS PREFIX_CONFIG CASES DEV TEST REPS
 
-.PHONY: install check test lint format docs core-check sync-check sync-integration tooling-test build desktop-check desktop-libs desktop-dev site-check site-assets site-deploy e2e e2e-paste e2e-macos e2e-scenarios bench-plan ablation-plan bench-validate bench-run bench-report datasets-check i18n-check stream-plan stream-bench rewrite-plan rewrite-validate rewrite-run rewrite-report rewrite-human-export rewrite-human-report rewrite-e2e qwen-env qwen-provision qwen-diagnostic qwen-report qwen-asr-diagnostic qwen-prefix-diagnostic live-fixtures live-text-bench live-audio-bench live-report scene-bench context-ocr memory-bench help
+.PHONY: install check test lint format docs core-check sync-check updates-check sync-integration tooling-test build desktop-check desktop-libs desktop-dev site-check site-assets site-deploy e2e e2e-paste e2e-macos e2e-scenarios bench-plan ablation-plan bench-validate bench-run bench-report datasets-check i18n-check stream-plan stream-bench rewrite-plan rewrite-validate rewrite-run rewrite-report rewrite-human-export rewrite-human-report rewrite-e2e qwen-env qwen-provision qwen-diagnostic qwen-report qwen-asr-diagnostic qwen-prefix-diagnostic live-fixtures live-text-bench live-audio-bench live-report scene-bench context-ocr memory-bench help
 
 # Make treats the component as a second goal; validate before any recipes run.
 ifneq ($(filter build,$(MAKECMDGOALS)),)
@@ -70,6 +70,9 @@ core-check: ## Run portable core tests, vet and formatting checks
 
 sync-check: ## Test and vet the sync relay module
 	@cd services/sync && GOWORK=off go test ./... && GOWORK=off go vet ./...
+
+updates-check: ## Test and vet the update channel service
+	@node scripts/check-go.mjs updates
 
 sync-integration: ## Run the PostgreSQL relay test; requires ARION_SYNC_TEST_DATABASE_URL
 	@cd services/sync && GOWORK=off go test -tags integration ./infrastructure/postgres/

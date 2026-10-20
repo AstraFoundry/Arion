@@ -1,0 +1,16 @@
+{
+  "schema": "astrafoundry.release-channel.v1",
+  "product": "arion",
+  "channel": "beta",
+  "updatedAt": "2026-10-20T08:00:00Z",
+  "targets": {
+    "darwin-arm64": {
+      "version": "0.1.0-alpha.6",
+      "prerelease": true,
+      "publishedAt": "2026-10-20T08:00:00Z",
+      "notes": "- Update checks use the Arion center",
+      "installer": { "name": "Arion.0.1.0-alpha.6.arm64.dmg", "size": 104857600, "sha256": "0000000000000000000000000000000000000000000000000000000000000000" },
+      "update": { "name": "arion-0.1.0-alpha.6-darwin-arm64.tar.gz", "size": 99614720, "sha256": "0000000000000000000000000000000000000000000000000000000000000000" }
+    }
+  }
+}

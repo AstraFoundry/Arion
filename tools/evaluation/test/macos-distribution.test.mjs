@@ -40,14 +40,14 @@ test('updates must retain their notarization ticket after archiving, and extract
   const directory = mkdtempSync(path.join(os.tmpdir(), 'arion-distribution-test-'));
   t.after(() => rmSync(directory, { recursive: true, force: true }));
   const { privateKey, publicKey } = generateKeyPairSync('ed25519');
-  const config = { name: 'Arion', version: '0.1.0', updates: { github: 'example/arion', publicKey: publicKey.export({ type: 'spki', format: 'der' }).subarray(-32).toString('base64') } };
+  const config = { name: 'Arion', version: '0.1.0', updates: { url: 'https://updates.example/v1/updates', publicKey: publicKey.export({ type: 'spki', format: 'der' }).subarray(-32).toString('base64') } };
   const archive = 'arion-0.1.0-darwin-arm64.tar.gz';
   // Archive extraction and Apple tools are mocked; signature verification is real.
   const bytes = Buffer.from('archive test fixture');
   writeFileSync(path.join(directory, archive), bytes);
   writeFileSync(path.join(directory, 'Arion 0.1.0 arm64.dmg'), 'installer test fixture');
   writeFileSync(path.join(directory, 'update-darwin-arm64.json'), JSON.stringify({
-    version: '0.1.0', url: `https://github.com/example/arion/releases/download/v0.1.0/${archive}`,
+    version: '0.1.0', url: `https://updates.example/v1/updates/${archive}`,
     size: bytes.length, signature: sign(null, digest(bytes), privateKey).toString('base64'),
   }));
   let extracted;

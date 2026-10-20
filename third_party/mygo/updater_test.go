@@ -9,6 +9,7 @@ import (
 	"crypto/sha256"
 	"encoding/base64"
 	"encoding/json"
+	"errors"
 	"math/rand/v2"
 	"net/http"
 	"net/http/httptest"
@@ -280,14 +281,40 @@ func TestUpdaterWaitsForOpenFiles(t *testing.T) {
 	}
 }
 
+func TestURLFeedChannels(t *testing.T) {
+	ctx := context.Background()
+	srv, key, _, _ := updateServer(t, "1.2.0", "v2", "")
+	channels := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path != "/update.json" || r.URL.Query().Get("channel") != "beta" {
+			http.NotFound(w, r)
+			return
+		}
+		http.Redirect(w, r, srv.URL+"/update.json", http.StatusFound)
+	}))
+	t.Cleanup(channels.Close)
+	up, err := checkChannel(ctx, channels.URL+"/update.json", key, "1.1.0", UpdateCheckOptions{IncludePrereleases: true})
+	if err != nil || up == nil || up.Version != "1.2.0" {
+		t.Fatalf("beta channel = %+v, %v", up, err)
+	}
+	if _, err := checkChannel(ctx, channels.URL+"/update.json", key, "1.1.0", UpdateCheckOptions{}); !errors.Is(err, ErrNoPublishedUpdates) {
+		t.Fatalf("empty stable channel: %v", err)
+	}
+	if _, err := checkUpdate(ctx, channels.URL+"/update.json", key, "1.1.0"); err == nil || errors.Is(err, ErrNoPublishedUpdates) {
+		t.Fatalf("Check keeps reporting a 404 as a failure: %v", err)
+	}
+}
+
 func TestChannelFeedAndSemanticVersion(t *testing.T) {
 	stable := "https://github.com/me/app/releases/latest/download/update-darwin-arm64.json"
-	if got := channelUpdateFeed(stable); got != update.TaggedFeed("me/app", "v", "update-darwin-arm64.json") {
+	if got := channelUpdateFeed(stable, UpdateCheckOptions{IncludePrereleases: true}); got != update.TaggedFeed("me/app", "v", "update-darwin-arm64.json") {
 		t.Fatalf("channel feed: %s", got)
 	}
-	custom := "https://example.com/update.json"
-	if got := channelUpdateFeed(custom); got != custom {
-		t.Fatalf("custom feed changed: %s", got)
+	custom := "https://example.com/updates/update-darwin-arm64.json"
+	if got := channelUpdateFeed(custom, UpdateCheckOptions{}); got != custom+"?channel=stable" {
+		t.Fatalf("stable URL feed: %s", got)
+	}
+	if got := channelUpdateFeed(custom, UpdateCheckOptions{IncludePrereleases: true}); got != custom+"?channel=beta" {
+		t.Fatalf("beta URL feed: %s", got)
 	}
 	before := packageVersion
 	defer func() { packageVersion = before }()

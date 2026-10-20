@@ -112,17 +112,47 @@ func (u *UpdaterModule) CheckWithOptions(ctx context.Context, options UpdateChec
 	if !u.Enabled() {
 		return nil, ErrUpdatesDisabled
 	}
-	return checkUpdateWithOptions(ctx, channelUpdateFeed(packageUpdateFeed), packageUpdateKey, App.Version(), options)
+	return checkChannel(ctx, packageUpdateFeed, packageUpdateKey, App.Version(), options)
 }
 
-func channelUpdateFeed(feed string) string {
-	if u, err := url.Parse(feed); err == nil && u.Host == "github.com" {
+func checkChannel(ctx context.Context, feed, key, current string, options UpdateCheckOptions) (*Update, error) {
+	up, err := checkUpdateWithOptions(ctx, channelUpdateFeed(feed, options), key, current, options)
+	// A channel server answers 404 while the channel has no release.
+	var status *httpStatusError
+	if errors.As(err, &status) && status.code == http.StatusNotFound {
+		return nil, fmt.Errorf("mygo: checking for updates: %w", ErrNoPublishedUpdates)
+	}
+	return up, err
+}
+
+// Update channels of a URL feed (updates.url) are selected with the
+// channel query parameter: "stable", or "beta" when prereleases are
+// included. The server answers with the manifest of the newest release of
+// the channel, or 404 when the channel has none.
+const (
+	stableChannel = "stable"
+	betaChannel   = "beta"
+)
+
+func channelUpdateFeed(feed string, options UpdateCheckOptions) string {
+	u, err := url.Parse(feed)
+	if err != nil {
+		return feed
+	}
+	if u.Host == "github.com" {
 		parts := strings.Split(strings.Trim(u.Path, "/"), "/")
 		if len(parts) == 6 && parts[2] == "releases" && parts[3] == "latest" && parts[4] == "download" {
 			feed = update.TaggedFeed(parts[0]+"/"+parts[1], "v", parts[5])
 		}
+		return feed
 	}
-	return feed
+	query := u.Query()
+	query.Set("channel", stableChannel)
+	if options.IncludePrereleases {
+		query.Set("channel", betaChannel)
+	}
+	u.RawQuery = query.Encode()
+	return u.String()
 }
 
 func checkUpdate(ctx context.Context, feed, key, current string) (*Update, error) {
@@ -435,10 +465,18 @@ func httpGet(ctx context.Context, rawURL string) (io.ReadCloser, error) {
 	}
 	if resp.StatusCode != http.StatusOK {
 		resp.Body.Close()
-		return nil, fmt.Errorf("GET %s: %s", rawURL, resp.Status)
+		return nil, &httpStatusError{url: rawURL, code: resp.StatusCode, status: resp.Status}
 	}
 	return resp.Body, nil
 }
+
+// httpStatusError is a response other than 200 OK.
+type httpStatusError struct {
+	url, status string
+	code        int
+}
+
+func (e *httpStatusError) Error() string { return fmt.Sprintf("GET %s: %s", e.url, e.status) }
 
 func isLoopback(host string) bool {
 	if host == "localhost" {

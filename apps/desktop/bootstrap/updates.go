@@ -19,7 +19,8 @@ const (
 )
 
 // updateSource finds and installs newer versions. In production it is
-// mygo.Updater: the latest GitHub release of the repository in desktop.json,
+// mygo.Updater: the channel manifest that the Arion center serves at the
+// desktop.json updates.url, selected by the Allow beta updates switch,
 // whose archive must carry a signature by the key built into the app.
 type updateSource interface {
 	Enabled() bool
