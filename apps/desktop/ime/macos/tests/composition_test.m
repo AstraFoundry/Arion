@@ -123,16 +123,22 @@ int main(void) {
         ArionComposition *typing = [ArionComposition new];
         [typing activate:paced];
         begin(typing, @"paced");
+        // Count delivered host updates, rather than samples of a busy run loop.
+        __block NSUInteger previous = paced.view.string.length, steps = 0;
+        __weak Editor *weakPaced = paced;
+        paced.onMark = ^{
+            NSUInteger length = weakPaced.view.string.length;
+            if (length != previous) { steps++; previous = length; }
+        };
         mark(typing, @"paced", @"今天下午三点我们开会", @1);
         require(paced.view.string.length < 10, @"a paced draft does not appear whole");
-        NSUInteger previous = paced.view.string.length, steps = 0;
         NSDate *deadline = [NSDate dateWithTimeIntervalSinceNow:2];
         while (paced.view.string.length < 10 && [deadline timeIntervalSinceNow] > 0) {
             [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.02]];
-            if (paced.view.string.length != previous) { steps++; previous = paced.view.string.length; }
         }
         require([paced.view.string isEqual:@"今天下午三点我们开会"] && paced.view.hasMarkedText && steps >= 4,
                 @"the draft types out in several steps");
+        paced.onMark = nil;
         mark(typing, @"paced", @"今天下午三点他们开会", @2);
         require([paced.view.string isEqual:@"今天下午三点他们开会"], @"a revision changes shown characters in place");
         mark(typing, @"paced", @"今天下午 3 点他们开会", @3);
