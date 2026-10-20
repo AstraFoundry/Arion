@@ -51,6 +51,11 @@ export function requireIMEProvisioningSettings(settings) {
 
 export function macosBuildConfig(config, { command, platform = process.platform, env = process.env }) {
   if (command !== 'build' || platform !== 'darwin') return config;
+  if (config.version?.includes('-')) {
+    const version = config.version.split('-')[0];
+    config = { ...config, macos: { ...config.macos, infoPlist: { ...config.macos?.infoPlist,
+      CFBundleShortVersionString: version, CFBundleVersion: version } } };
+  }
   const settings = requireIMEProvisioningSettings(macosSigningSettings(env));
   if (!settings) return config;
   const notarize = { keychainProfile: settings.profile };

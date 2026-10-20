@@ -35,6 +35,18 @@ test('partial Apple configuration cannot silently produce an unsigned build', ()
   assert.throws(() => macosSigningSettings({ ...imported, MACOS_CERTIFICATE_P12_BASE64: '%invalid' }), /Base64/);
 });
 
+test('macOS prerelease bundles use numeric metadata while archives retain the full version', () => {
+  const config = { version: '0.1.0-alpha.4', macos: { infoPlist: { LSUIElement: true } } };
+  for (const env of [{}, local]) {
+    const built = macosBuildConfig(config, { command: 'build', platform: 'darwin', env });
+    assert.equal(built.version, config.version);
+    assert.equal(built.macos.infoPlist.CFBundleShortVersionString, '0.1.0');
+    assert.equal(built.macos.infoPlist.CFBundleVersion, '0.1.0');
+    assert.equal(built.macos.infoPlist.LSUIElement, true);
+  }
+  assert.equal(config.macos.infoPlist.CFBundleShortVersionString, undefined);
+});
+
 test('local signing uses an existing identity and profile without creating a keychain', () => {
   const calls = [];
   const run = (command, args) => {
