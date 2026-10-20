@@ -17,14 +17,15 @@ Run from the repository root with the pinned pnpm (`make install` first):
 
 ## Configuration
 
-Two build-time variables, inlined into the bundle (`src/shared/config/env.ts`). The build fails if either is missing or is not a bare http(s) origin.
+Three build-time variables, inlined into the bundle (`src/shared/config/env.ts`). The build fails if any is missing or is not a bare http(s) origin.
 
 | Variable | Production value | Used for |
 | --- | --- | --- |
 | `NEXT_PUBLIC_SITE_URL` | `https://arion.astrafoundry.si` | Canonical URLs, hreflang, sitemap, robots, Open Graph |
 | `NEXT_PUBLIC_PLATFORM_URL` | `https://astrafoundry.si` | The AstraFoundry account link (`/account`) and the hosted sync waitlist link (`/products/arion/waitlist/hosted-sync`) |
+| `NEXT_PUBLIC_CENTER_URL` | `https://api.arion.astrafoundry.si` | Download buttons (`/v1/downloads/<channel>/<target>`) and the browser read of the channel summaries (`/v1/releases/{stable,beta}`) |
 
-`.env.production` holds the production values; `.env.example` documents them. Override them in the environment for a preview build. The site only links to the platform; it never calls it and never reads a session.
+`.env.production` holds the production values; `.env.example` documents them. Override them in the environment for a preview build. The site only links to the platform; it never calls it and never reads a session. The download section is the one runtime request: the browser reads the center's public channel summaries to show versions and checksums ([services/updates](../../services/updates/README.md)).
 
 ## Images
 

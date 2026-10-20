@@ -8,11 +8,14 @@ export interface PublicEnv {
   siteUrl: string;
   /** Origin of the AstraFoundry platform, without a trailing slash. */
   platformUrl: string;
+  /** Origin of the Arion center (update channels and downloads). */
+  centerUrl: string;
 }
 
 export interface RawPublicEnv {
   siteUrl: string | undefined;
   platformUrl: string | undefined;
+  centerUrl: string | undefined;
 }
 
 export class PublicEnvError extends Error {
@@ -45,5 +48,6 @@ export function parsePublicEnv(raw: RawPublicEnv): PublicEnv {
   return {
     siteUrl: parseOrigin("NEXT_PUBLIC_SITE_URL", raw.siteUrl),
     platformUrl: parseOrigin("NEXT_PUBLIC_PLATFORM_URL", raw.platformUrl),
+    centerUrl: parseOrigin("NEXT_PUBLIC_CENTER_URL", raw.centerUrl),
   };
 }

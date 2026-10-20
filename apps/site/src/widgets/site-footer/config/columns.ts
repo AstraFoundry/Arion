@@ -1,4 +1,4 @@
-import { routes, sections, anchor, siteConfig } from "@/shared/config";
+import { routes, sections, anchor, siteConfig, downloadHref } from "@/shared/config";
 import type { Messages } from "@/shared/i18n";
 
 export interface FooterColumn {
@@ -11,7 +11,7 @@ export function footerColumns(copy: Messages): FooterColumn[] {
     {
       title: copy.footer.product,
       links: [
-        { label: copy.common.download, href: siteConfig.releasesUrl },
+        { label: copy.common.download, href: downloadHref },
         { label: copy.nav.privacy, href: routes.privacy },
         { label: copy.nav.selfHosting, href: routes.selfHosting },
         { label: copy.nav.openSource, href: anchor(sections.openSource) },

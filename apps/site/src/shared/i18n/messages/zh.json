@@ -93,8 +93,18 @@
   },
   "download": {
     "title": "下载 Arion",
-    "lead": "macOS（Apple 芯片和 Intel）与 Windows 的版本发布在 GitHub Releases。已安装的应用从那里更新，安装前会先校验更新的签名。",
-    "note": "Windows 版本是早期预览版。"
+    "lead": "macOS（Apple 芯片和 Intel）与 Windows 的版本由 Arion 自己的更新中心提供。已安装的应用从同一渠道更新，安装前会先校验更新的签名。",
+    "note": "Windows 版本是早期预览版。",
+    "targets": {
+      "darwinArm64": "macOS · Apple 芯片",
+      "darwinAmd64": "macOS · Intel",
+      "windowsAmd64": "Windows · x64"
+    },
+    "version": "版本 {version}",
+    "preview": "预览版",
+    "unavailable": "暂未提供",
+    "checksum": "SHA-256 {sum}",
+    "failed": "无法加载版本信息，下载按钮仍可使用。"
   },
   "privacyPage": {
     "title": "隐私与加密",

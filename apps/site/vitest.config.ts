@@ -11,6 +11,7 @@ export default defineConfig({
     env: {
       NEXT_PUBLIC_SITE_URL: "https://arion.astrafoundry.si",
       NEXT_PUBLIC_PLATFORM_URL: "https://astrafoundry.si",
+      NEXT_PUBLIC_CENTER_URL: "https://api.arion.astrafoundry.si",
     },
   },
 });

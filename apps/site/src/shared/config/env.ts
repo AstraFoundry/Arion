@@ -5,4 +5,5 @@ import { parsePublicEnv } from "./env-schema";
 export const publicEnv = parsePublicEnv({
   siteUrl: process.env.NEXT_PUBLIC_SITE_URL,
   platformUrl: process.env.NEXT_PUBLIC_PLATFORM_URL,
+  centerUrl: process.env.NEXT_PUBLIC_CENTER_URL,
 });

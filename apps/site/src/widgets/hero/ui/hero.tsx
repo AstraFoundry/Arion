@@ -1,5 +1,5 @@
 import { TextReveal } from "@/shared/beui/components/motion/text-reveal";
-import { siteConfig } from "@/shared/config";
+import { downloadHref, siteConfig } from "@/shared/config";
 import { format, useCopy } from "@/shared/i18n";
 import { Backdrop, Container, LinkButton, Reveal } from "@/shared/ui";
 import { HeroDemo } from "./hero-demo";
@@ -27,7 +27,7 @@ export function Hero() {
             {format(copy.hero.lead, { shortcut })}
           </p>
           <div className="mt-9 flex flex-col items-center gap-3 sm:flex-row">
-            <LinkButton href={siteConfig.releasesUrl} size="lg">
+            <LinkButton href={downloadHref} size="lg">
               {copy.common.downloadLong}
             </LinkButton>
             <LinkButton href={siteConfig.repositoryUrl} size="lg" variant="secondary">

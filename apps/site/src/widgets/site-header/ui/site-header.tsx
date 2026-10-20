@@ -5,7 +5,7 @@ import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "motion/
 import { useState } from "react";
 import { LocaleList, LocaleSwitch } from "@/features/switch-locale";
 import { ThemeSwitch } from "@/features/theme-switch";
-import { routes, siteConfig } from "@/shared/config";
+import { downloadHref, routes, siteConfig } from "@/shared/config";
 import { useCopy } from "@/shared/i18n";
 import { cn } from "@/shared/lib";
 import { AppLink, BrandMark, BrandWord, GitHubMark, LinkButton } from "@/shared/ui";
@@ -76,7 +76,7 @@ export function SiteHeader() {
             {copy.nav.account}
           </LinkButton>
           <LinkButton
-            href={siteConfig.releasesUrl}
+            href={downloadHref}
             size="sm"
             className="ml-1 hidden sm:inline-flex"
           >
@@ -125,7 +125,7 @@ export function SiteHeader() {
                 <LinkButton href={siteConfig.accountUrl} variant="secondary" className="flex-1">
                   {copy.common.account}
                 </LinkButton>
-                <LinkButton href={siteConfig.releasesUrl} className="flex-1">
+                <LinkButton href={downloadHref} className="flex-1">
                   {copy.common.download}
                 </LinkButton>
               </li>

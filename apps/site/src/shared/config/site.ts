@@ -14,7 +14,7 @@ export const siteConfig = {
   hostedSyncWaitlistUrl: `${publicEnv.platformUrl}/products/arion/waitlist/hosted-sync`,
   repositoryUrl: REPOSITORY,
   repositoryCloneUrl: `${REPOSITORY}.git`,
-  releasesUrl: `${REPOSITORY}/releases`,
+  centerUrl: publicEnv.centerUrl,
   licenseUrl: `${REPOSITORY}/blob/main/LICENSE`,
   issuesUrl: `${REPOSITORY}/issues`,
   syncServiceUrl: `${REPOSITORY}/tree/main/services/sync`,
@@ -49,3 +49,21 @@ export const buildCommands = [
 ] as const;
 
 export const anchor = (id: string) => `/#${id}`;
+
+/** Every "Download" link goes to the download section, which picks the build. */
+export const downloadHref = anchor(sections.download);
+
+/** Desktop builds the download section offers, in display order. */
+export const downloadTargets = ["darwin-arm64", "darwin-amd64", "windows-amd64"] as const;
+export type DownloadTarget = (typeof downloadTargets)[number];
+
+/** Update channels of the Arion center (services/updates). */
+export type ReleaseChannel = "stable" | "beta";
+
+/** The center's public summary of a channel. */
+export const centerReleaseUrl = (channel: ReleaseChannel) =>
+  `${siteConfig.centerUrl}/v1/releases/${channel}`;
+
+/** Redirects to the channel's current installer for target. */
+export const centerDownloadUrl = (channel: ReleaseChannel, target: DownloadTarget) =>
+  `${siteConfig.centerUrl}/v1/downloads/${channel}/${target}`;

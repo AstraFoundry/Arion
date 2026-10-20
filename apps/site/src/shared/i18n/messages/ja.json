@@ -93,8 +93,18 @@
   },
   "download": {
     "title": "Arion をダウンロード",
-    "lead": "macOS（Apple シリコンと Intel）と Windows 向けのビルドを GitHub Releases で公開しています。インストール済みのアプリはそこから更新され、適用前に署名を検証します。",
-    "note": "Windows 版は初期のプレビュー版です。"
+    "lead": "macOS（Apple シリコンと Intel）と Windows 向けのビルドは Arion 自身の更新センターから配信しています。インストール済みのアプリは同じチャンネルから更新され、適用前に署名を検証します。",
+    "note": "Windows 版は初期のプレビュー版です。",
+    "targets": {
+      "darwinArm64": "macOS · Apple シリコン",
+      "darwinAmd64": "macOS · Intel",
+      "windowsAmd64": "Windows · x64"
+    },
+    "version": "バージョン {version}",
+    "preview": "プレビュー版",
+    "unavailable": "まだ提供していません",
+    "checksum": "SHA-256 {sum}",
+    "failed": "リリース情報を読み込めませんでした。ダウンロードボタンは引き続き使えます。"
   },
   "privacyPage": {
     "title": "プライバシーと暗号化",

@@ -93,8 +93,18 @@
   },
   "download": {
     "title": "Download Arion",
-    "lead": "Builds for macOS (Apple silicon and Intel) and Windows are published on GitHub Releases. Installed apps update from there and verify each update's signature first.",
-    "note": "The Windows build is an early preview."
+    "lead": "Builds for macOS (Apple silicon and Intel) and Windows are served from Arion's own update center. Installed apps update from the same channels and verify each update's signature first.",
+    "note": "The Windows build is an early preview.",
+    "targets": {
+      "darwinArm64": "macOS · Apple silicon",
+      "darwinAmd64": "macOS · Intel",
+      "windowsAmd64": "Windows · x64"
+    },
+    "version": "Version {version}",
+    "preview": "Preview build",
+    "unavailable": "Not available yet",
+    "checksum": "SHA-256 {sum}",
+    "failed": "Release details could not be loaded. The download buttons still work."
   },
   "privacyPage": {
     "title": "Privacy and encryption",
