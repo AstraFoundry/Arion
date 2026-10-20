@@ -3,14 +3,14 @@ import { execFileSync, spawnSync } from 'node:child_process';
 import { copyFileSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { checkRelease, digest, platformAssets, platformsForRelease, releaseMatrix, releaseStatus } from './lib/release.mjs';
+import { checkRelease, digest, githubAssetName, platformAssets, platformsForRelease, releaseMatrix, releaseStatus } from './lib/release.mjs';
 import { checkOfficialCenter } from './lib/center-profile.mjs';
 import { macosSigningSettings } from './lib/desktop-signing.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const config = JSON.parse(readFileSync(path.join(root, 'apps/desktop/desktop.json'), 'utf8'));
 const [operation, first, second, mode] = process.argv.slice(2);
-const checksumList = (directory, files) => [...files, 'RELEASE-STATUS.md'].sort().map(file => `${digest(readFileSync(path.join(directory, file))).toString('hex')}  ${file}\n`).join('');
+const checksumList = (directory, files) => [...files, 'RELEASE-STATUS.md'].sort().map(file => `${digest(readFileSync(path.join(directory, file))).toString('hex')}  ${githubAssetName(file)}\n`).join('');
 if (operation === 'matrix') {
   console.log(JSON.stringify(releaseMatrix(config)));
 } else if (operation === 'check') {

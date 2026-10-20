@@ -10,6 +10,7 @@ export function releaseMatrix(config) {
   return { include: platformsForRelease(config).map(platform => ({ os: runners[platform], platform })) };
 }
 export const digest = bytes => createHash('sha256').update(bytes).digest();
+export const githubAssetName = name => name.replaceAll(' ', '.');
 export const releaseStatus = (config, markdown) => markdown.replace(/\]\(([^)]+)\)/g, (link, target) => {
   if (/^(https?:|#)/.test(target)) return link;
   return `](https://github.com/${config.updates.github}/blob/v${config.version}/${path.posix.normalize(path.posix.join('docs/operations', target))})`;

@@ -4,7 +4,7 @@ import { generateKeyPairSync, sign } from 'node:crypto';
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { checkRelease, digest, installerName, platformAssets, platformsForRelease, releaseMatrix, releasePlatforms } from '../../../scripts/lib/release.mjs';
+import { checkRelease, digest, githubAssetName, installerName, platformAssets, platformsForRelease, releaseMatrix, releasePlatforms } from '../../../scripts/lib/release.mjs';
 
 function fixture(t) {
   const directory = mkdtempSync(path.join(os.tmpdir(), 'arion-release-'));
@@ -25,6 +25,11 @@ function fixture(t) {
   }
   return { directory, config, manifests, secret: Buffer.concat([rawPrivate, rawPublic]).toString('base64') };
 }
+
+test('checksum names match GitHub uploaded installer filenames', () => {
+  assert.equal(githubAssetName('Arion 0.1.0-alpha.4 arm64.dmg'), 'Arion.0.1.0-alpha.4.arm64.dmg');
+  assert.equal(githubAssetName('update-darwin-arm64.json'), 'update-darwin-arm64.json');
+});
 
 test('release preflight rejects missing, mismatched and malformed signing credentials', t => {
   const { config, secret } = fixture(t);
