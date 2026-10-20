@@ -32,8 +32,15 @@ export function inspectIMEProvisioning({ profilePath, identity, bundleIdentifier
     // Decode Apple's signed CMS profile; final entitlement authorization is
     // still enforced by macOS when the profile-bearing signed host runs.
     writeFileSync(decoded, run('security', ['cms', '-D', '-i', profilePath]), { mode: 0o600 });
-    const field = (key, format = 'json', expected) => run('plutil', ['-extract', key, format,
-      ...(expected ? ['-expect', expected] : []), '-o', '-', decoded]);
+    const field = (key, format = 'json', expected) => {
+      if (format !== 'json') return run('plutil', ['-extract', key, format,
+        ...(expected ? ['-expect', expected] : []), '-o', '-', decoded]);
+      // macOS 15 JSON extraction rejects profiles containing date/data values,
+      // even when the selected field is JSON-compatible. Extract XML first.
+      const selected = path.join(directory, 'field.plist');
+      writeFileSync(selected, run('plutil', ['-extract', key, 'xml1', '-o', '-', decoded]), { mode: 0o600 });
+      return run('plutil', ['-convert', 'json', '-o', '-', selected]);
+    };
     const profile = Object.fromEntries(['TeamIdentifier', 'Platform', 'Entitlements'].map(key => [key, JSON.parse(field(key))]));
     // plutil cannot emit a standalone boolean as a JSON property list.
     profile.ProvisionsAllDevices = JSON.parse(field('ProvisionsAllDevices', 'raw', 'bool'));

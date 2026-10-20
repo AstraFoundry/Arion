@@ -53,7 +53,7 @@ test('failed profile preparation never emits restricted entitlements or embeds a
   } finally { rmSync(directory, { recursive: true, force: true }); }
 });
 
-test('native plist decoding accepts a boolean scalar and rejects a string impersonating it', { skip: process.platform !== 'darwin' }, () => {
+test('native plist decoding isolates JSON fields from dates/data and preserves boolean type checks', { skip: process.platform !== 'darwin' }, () => {
   const directory = mkdtempSync(path.join(os.tmpdir(), 'ime-profile-plist-'));
   const profilePath = path.join(directory, 'synthetic.provisionprofile');
   const certificate = Buffer.from('synthetic profile certificate bytes');
@@ -72,8 +72,12 @@ test('native plist decoding accepts a boolean scalar and rejects a string impers
     <key>DeveloperCertificates</key><array><data>${certificate.toString('base64')}</data></array>
   </dict></plist>`;
   const inspect = value => inspectIMEProvisioning({ profilePath, ...options, certificateHashes,
-    run: (command, args) => command === 'security' ? xml(value) :
-      execFileSync(command, args, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }).trim() });
+    run: (command, args) => {
+      if (command === 'security') return xml(value);
+      // Reproduce macOS 15 rejecting direct JSON extraction from this profile.
+      if (args[0] === '-extract' && args[2] === 'json') throw new Error('invalid object in plist for destination format');
+      return execFileSync(command, args, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }).trim();
+    } });
   try {
     assert.deepEqual(inspect('<true/>').entitlements, valid().Entitlements);
     assert.throws(() => inspect('<false/>'), /Developer ID distribution/);

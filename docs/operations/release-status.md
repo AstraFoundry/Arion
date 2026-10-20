@@ -1,6 +1,6 @@
 # Desktop release status
 
-This file accompanies each release as `RELEASE-STATUS.md`. The `0.1.0-alpha.2` release distributes only macOS Apple silicon packages. The other columns below describe implementation status, not assets included in this alpha. Build success verifies packaging; the evidence below limits the supported product claims.
+This file accompanies each release as `RELEASE-STATUS.md`. The `0.1.0-alpha.3` release distributes only macOS Apple silicon packages. The other columns below describe implementation status, not assets included in this alpha. Build success verifies packaging; the evidence below limits the supported product claims.
 
 | Capability | macOS Apple silicon | macOS Intel | Windows x64 |
 | --- | --- | --- | --- |
