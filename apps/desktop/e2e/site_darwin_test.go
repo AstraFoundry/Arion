@@ -42,7 +42,7 @@ func TestCaptureReadsWebSite(t *testing.T) {
 			if err := exec.Command("open", "-a", path, page.URL).Run(); err != nil {
 				t.Fatal(err)
 			}
-			targets := macos.NewTargets(func() macos.Delivery { return macos.DeliveryAutomatic })
+			targets := macos.NewTargets()
 			read := true
 			targets.ReadSite = func() bool { return read }
 			var snap contracts.TargetSnapshot
@@ -58,10 +58,16 @@ func TestCaptureReadsWebSite(t *testing.T) {
 			if snap.Site != "127.0.0.1" || snap.Field != domain.FieldText {
 				t.Fatalf("captured app=%q field=%q site=%q", snap.Application, snap.Field, snap.Site)
 			}
+			if route := targets.RouteOf(snap.Target); route != macos.RouteClipboard {
+				t.Fatalf("web field route %q, want clipboard", route)
+			}
 			read = false
 			off, err := targets.Capture(context.Background(), contracts.Identity{SessionID: "site", Generation: 2})
 			if err != nil || off.Site != "" {
 				t.Fatalf("site read with scene selection off: %q (%v)", off.Site, err)
+			}
+			if route := targets.RouteOf(off.Target); route != macos.RouteClipboard {
+				t.Fatalf("web field route with scene selection off %q, want clipboard", route)
 			}
 		})
 	}

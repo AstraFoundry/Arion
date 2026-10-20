@@ -1,28 +1,33 @@
 # ADR 003: Shortcut-mode insertion routes
 
-Status: Accepted; macOS implemented, Windows adapter compiled.
+Status: Accepted; macOS implemented. Windows behavior unchanged.
 
 ## Context
 
-DSK-06 requires a commit that revalidates the target and inserts once; an unsupported target or uncertain result must not trigger a second automatic attempt, and clipboard use must be visible (architecture: input ownership). Chromium and Electron editors report a settable `AXSelectedText` attribute yet ignore the write, so "try Accessibility, then something else" would be a hidden second attempt.
+DSK-06 requires target/selection revalidation and one commit attempt. AX selected-text writability does not prove that a web renderer implements insertion. Field ancestry, application names and framework names cannot establish a reliable universal editing transport. The [competitor investigation](../research/competitor-text-insertion.md) distinguishes an owned IMK client from external application delivery; its static findings are evidence, not external-app acceptance.
 
 ## Decision
 
-The macOS adapter chooses **one route when dictation starts**, from declared capabilities, and the commit never switches routes:
+macOS system-IME mode commits through its existing owned IMK client. macOS global-shortcut mode uses one guarded system-paste transaction for every target, disclosed in Settings. There is no AX write, Unicode-event route, application allowlist, ancestor-based route selection, probing write or automatic second transport. AX remains available for target capture, focus/selection validation and consent-gated reading.
 
-1. **Accessibility** when the focused element exposes a settable selected-text attribute and a readable value, and the host is not a Chromium/Electron editor (known bundle IDs or an embedded `Electron Framework.framework`).
-2. **Keystrokes** otherwise: the text is posted as Unicode keyboard events in short composed-character chunks. Line breaks become spaces: Return is never synthesized, so Arion cannot send a message or run a terminal command.
-3. **Paste** only when the user selects it in settings: Arion saves every clipboard item, writes the text, posts Command-V, and restores the saved items only if the clipboard change count is still Arion's own (DSK-A05).
+A captured opaque target belongs to one session/generation and is consumed by one matching commit. A stale identity cannot consume another session's target. Commit carries the session's cancellation context. Before preparing, staging and posting, the adapter validates cancellation, the same frontmost process and focused element, secure input, and the captured selected range when AX exposes it. Without a readable range, only process/element focus can be checked. The final native post repeats target/selection/secure and clipboard checks. OS focus/clipboard APIs provide no atomic validation-and-write primitive; these checks reduce races without claiming to eliminate them.
 
-Before the single attempt the adapter requires the same focused element (or the same frontmost process when no element is exposed) and rejects secure input. When the field value is readable, a length increase after the attempt reports `applied`; otherwise the outcome is `unknown`, which the UI labels "Typed" or "Pasted" rather than "Inserted", and which is never retried (CTR-A06). A focus change yields `not_applied/TARGET_CHANGED` and the text stays available to copy from the menu bar.
+Transactions serialize access to the system clipboard across target-provider instances. Each owns its complete snapshot (all items and data types), text, unique ownership marker and preallocated Command-V events. Snapshot/read or staging errors stop before posting. A changed clipboard before posting stops the attempt. Cleanup restores the snapshot only while its change count and marker still belong to Arion; another application's newer clipboard is preserved. Snapshot failures and restoration failures have explicit typed errors. Clipboard contents and target text are never diagnostics.
 
-Known secure fields (`AXSecureTextField` or secure event input) block the session before the microphone opens. Unknown field safety disables context reading but not insertion (DSK-08).
+Command-V is posted once. A 400 ms hold gives the target time to consume the board; this interval is not an acknowledgement and cannot guarantee arbitrarily delayed consumption. Cancellation after posting cannot undo delivery or shorten clipboard retention; cleanup still runs once. No fallback or retry follows a posted/uncertain result. Text is preserved exactly, including Unicode and line breaks; Arion does not synthesize Return. Hosts can apply their own paste policies, so terminal and rich-editor compatibility still needs actual host testing.
 
-## Consequences
+## Commit outcome
 
-Electron and browser editors receive keystrokes, which IMEs or key remappers in the target app can still observe. Verification is best-effort where the value is unreadable. Windows uses `SendInput` Unicode events with foreground-window revalidation; UI Automation value-pattern verification is a follow-up.
+A posted paste returns `unknown` and is labeled "Pasted", never inferred `applied` from a length increase or matching substring. `CLIPBOARD_RESTORE_FAILED` preserves that uncertain outcome and displays a warning to check the editor before retrying. A pre-post rejection returns `not_applied` with an explicit reason; text remains available for user-controlled copying. A cancelled session cannot publish a late completion or start edit learning. Windows retains its existing Unicode/default and explicit clipboard routes; old persisted delivery values remain compatible and do not change macOS shortcut transport.
 
-## Alternatives considered
+## Root-cause evidence
 
-- Clipboard paste everywhere (Typeless-style): simplest, but touches user data on every dictation.
-- Accessibility first with keystroke fallback: violates the single-attempt rule when the first write silently fails.
+In Chromium `147.0.7727.149` (matching the inspected Lark framework's version), [`setAccessibilitySelectedText:`](https://github.com/chromium/chromium/blob/147.0.7727.149/ui/accessibility/platform/ax_platform_node_cocoa.mm#L3463) dispatches `kReplaceSelectedText` and discards the action's boolean result. The web node's [`BrowserAccessibility::AccessibilityPerformAction`](https://github.com/chromium/chromium/blob/147.0.7727.149/ui/accessibility/platform/browser_accessibility.cc#L1284) implements `kSetValue` but not `kReplaceSelectedText`; its default returns false. The renderer also lists replacement as an [unreachable action](https://github.com/chromium/chromium/blob/147.0.7727.149/content/renderer/accessibility/render_accessibility_impl.cc#L400). This explains why replacing the whole AX value and inserting through selected text have different behavior. These are upstream sources, not proof that a vendor's binary is unmodified.
+
+Lark's inspected chat editor is under `AXWebArea`. A temporary Computer Use AX value-write draft was cleared without sending; it does not exercise Arion's selected-text or Unicode commit. Historical diagnostics omit target identity and route, so an `unknown` outcome cannot be attributed to Lark or to a particular API. App/framework classification tests alone do not reproduce an insertion failure.
+
+## Verification
+
+Isolated adapter tests cover cancellation at transaction boundaries, serialization/queue cancellation, clipboard failures, unknown outcomes and identity/duplicate rejection. Native transaction tests use real named pasteboards and real CGEvent construction, intercepting delivery: multi-item/binary restoration, empty originals, ownership changes, secure/focus/selection refusal and one post. They do not establish external-editor delivery.
+
+`TestGuardedSystemPaste` runs the production adapter against a separate owned AppKit/WebKit application with actual Command-V dispatch and editor input observations. It covers exact mixed Unicode/multiline selection replacement, duplicate commit, focus and range changes, cancellation, stale identity, secure fields and clipboard restoration. See [E2E](../quality/e2e.md) for the opt-in command and evidence limits. An installed Chrome is also tested with an isolated temporary profile and local textarea/contenteditable fixtures. Actual Lark, Codex, office and terminal acceptance remains separate.

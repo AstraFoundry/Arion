@@ -31,7 +31,8 @@ type View struct {
 }
 
 func Overlay(store runtime.Store) View {
-	return View{Content: ui.View(func(c *ui.Context) { overlay.Render(c, store) }), Close: func() {}}
+	page := overlay.NewPage()
+	return View{Content: ui.View(func(c *ui.Context) { page.Render(c, store) }), Close: func() {}}
 }
 
 func Guide(store runtime.Store) View {
@@ -52,3 +53,6 @@ func Onboarding(store runtime.Store) View {
 	page := onboarding.NewPage()
 	return View{Content: ui.View(func(c *ui.Context) { page.Render(c, store) }), Close: func() { page.Close(store) }}
 }
+
+// GuideHeightFor sizes each System Settings guide for its content.
+func GuideHeightFor(pane runtime.GuidePane) int { return guide.HeightFor(pane) }

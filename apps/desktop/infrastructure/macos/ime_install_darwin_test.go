@@ -333,3 +333,37 @@ func TestInputBundleConfiguredDeveloperIDPayload(t *testing.T) {
 		t.Fatalf("configured release payload did not pass runtime preflight: %v", err)
 	}
 }
+
+func TestBundleDiffers(t *testing.T) {
+	write := func(root, build string) {
+		for _, name := range []string{"Contents/MacOS/ArionInput", "Contents/_CodeSignature/CodeResources", "Contents/Info.plist"} {
+			path := filepath.Join(root, name)
+			if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
+				t.Fatal(err)
+			}
+			if err := os.WriteFile(path, []byte(build+name), 0o644); err != nil {
+				t.Fatal(err)
+			}
+		}
+	}
+	dir := t.TempDir()
+	installed, bundled := filepath.Join(dir, "installed.app"), filepath.Join(dir, "bundled.app")
+	write(bundled, "new")
+	if bundleDiffers(installed, bundled) {
+		t.Fatal("absent installation reported as an update")
+	}
+	write(installed, "new")
+	if bundleDiffers(installed, bundled) {
+		t.Fatal("identical build reported as an update")
+	}
+	if err := os.WriteFile(filepath.Join(installed, "Contents/_CodeSignature/CodeResources"), []byte("old"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	if !bundleDiffers(installed, bundled) {
+		t.Fatal("changed resources not reported")
+	}
+	write(installed, "old")
+	if !bundleDiffers(installed, bundled) {
+		t.Fatal("older build not reported")
+	}
+}

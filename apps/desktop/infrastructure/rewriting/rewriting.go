@@ -16,14 +16,13 @@ import (
 	"arion.local/core/domain"
 	"arion.local/core/domain/ports"
 	"arion.local/desktop/infrastructure/llm/client"
-	"arion.local/desktop/infrastructure/llm/genai"
 	"arion.local/desktop/infrastructure/provision"
 	"arion.local/models"
 )
 
 // DefaultModel is the catalog rewriter the live pipeline uses; the
 // benchmark report records why it was chosen.
-const DefaultModel = "qwen3-1.7b-int4-cpu"
+const DefaultModel = "qwen3.5-2b-q4-k-m-metal"
 
 // State is the capability's user-visible readiness.
 type State string
@@ -51,11 +50,11 @@ type Status struct {
 }
 
 // Locate returns the bundled LLM directory holding the worker and the
-// GenAI runtime, or "" when this build ships none. Packaged apps flatten
+// GGUF runtime, or "" when this build ships none. Packaged apps flatten
 // platform resources; development runs keep them per platform.
 func Locate(resources string) string {
 	for _, dir := range []string{filepath.Join(resources, "llm"), filepath.Join(resources, runtime.GOOS+"-"+runtime.GOARCH, "llm")} {
-		if fileExists(filepath.Join(dir, workerName())) && fileExists(filepath.Join(dir, genai.LibraryName())) {
+		if fileExists(filepath.Join(dir, workerName())) && fileExists(filepath.Join(dir, "llama-server")) {
 			return dir
 		}
 	}
@@ -180,7 +179,7 @@ func (s *Service) Enable(ctx context.Context) error {
 	}
 	s.set(func(st *Status) { st.State, st.Installed = Loading, true })
 	c, _, err := client.Start(ctx, client.Config{Worker: filepath.Join(s.bundled, workerName()), Runtime: s.bundled, Model: dir,
-		Threads: s.threads, MaxLength: 4096, MaxNewTokens: 384}, s.diag)
+		Threads: s.threads, MaxLength: 4096, MaxNewTokens: 256}, s.diag)
 	if err != nil {
 		return s.fail(err)
 	}

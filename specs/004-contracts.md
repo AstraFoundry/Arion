@@ -18,11 +18,11 @@ Session states: `idle → preparing → capturing → finalizing → reviewing �
 - `TargetToken` is opaque. OS-native handles and editor pointers must not appear in JSON or core DTOs.
 - Text offsets in portable DTOs count Unicode scalar values in the exact source text. Convert explicitly to UTF-16, byte offsets or host ranges inside the OS adapter; include source revision to prevent index drift.
 - Candidate IDs are producer-owned and unique within a revision. Ranking returns IDs and scores only; selected text remains the exact producer text.
-- `CommitResult` separates `applied`, `not_applied`, and `unknown`. Never retry an `unknown` insertion automatically.
+- `CommitResult` separates `applied`, `not_applied`, and `unknown`. Never retry an `unknown` insertion automatically. A clipboard cleanup warning may accompany `unknown`; it must not be converted into `not_applied` or interpreted as permission to retry.
 
 ## Error taxonomy
 
-Stable codes include `PERMISSION_DENIED`, `MODEL_MISSING`, `MODEL_UNSUPPORTED`, `AUDIO_DISCONTINUITY`, `TARGET_CHANGED`, `TARGET_UNSUPPORTED`, `STALE_REVISION`, `CANCELLED`, `INSERTION_UNCERTAIN`, `SYNC_UNAUTHORIZED`, `SYNC_CONFLICT`, and `CONTRACT_UNSUPPORTED`, plus `DEVICE_UNAVAILABLE`, `INVALID_TRANSITION`, `SESSION_BUSY`, `NO_SPEECH`, `ARTIFACT_UNVERIFIED`, `PROVISIONING_FAILED`, `SECURE_FIELD_BLOCKED` and `EVALUATION_UNAVAILABLE`.
+Stable codes include `PERMISSION_DENIED`, `MODEL_MISSING`, `MODEL_UNSUPPORTED`, `AUDIO_DISCONTINUITY`, `TARGET_CHANGED`, `TARGET_UNSUPPORTED`, `STALE_REVISION`, `CANCELLED`, `INSERTION_UNCERTAIN`, `SYNC_UNAUTHORIZED`, `SYNC_CONFLICT`, and `CONTRACT_UNSUPPORTED`, plus `DEVICE_UNAVAILABLE`, `INVALID_TRANSITION`, `SESSION_BUSY`, `NO_SPEECH`, `ARTIFACT_UNVERIFIED`, `PROVISIONING_FAILED`, `SECURE_FIELD_BLOCKED`, `EVALUATION_UNAVAILABLE`, `CLIPBOARD_UNAVAILABLE` and `CLIPBOARD_RESTORE_FAILED`.
 
 Adapters may attach diagnostic categories, not transcript/context/token bodies. UI maps codes to centralized copy. No silent catches or success defaults. Future relay HTTP uses the [API conventions](../docs/backend/api-conventions.md).
 

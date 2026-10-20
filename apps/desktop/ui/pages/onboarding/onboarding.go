@@ -9,6 +9,7 @@ import (
 
 	"arion.local/desktop/ui/entities/account"
 	"arion.local/desktop/ui/entities/onboarding"
+	"arion.local/desktop/ui/features/keyboard"
 	"arion.local/desktop/ui/features/microphone"
 	"arion.local/desktop/ui/features/permissions"
 	"arion.local/desktop/ui/features/polish"
@@ -39,14 +40,16 @@ const (
 
 // Page keeps the flow's own state.
 type Page struct {
-	flow        onboarding.Flow
-	entered     time.Time
-	monitoring  bool
-	testing     bool
-	practice    string
-	axRequested bool
-	axGranted   time.Time
-	recorder    shortcut.Recorder
+	flow             onboarding.Flow
+	entered          time.Time
+	monitoring       bool
+	testing          bool
+	practice         string
+	keyboardPractice string
+	axRequested      bool
+	axGranted        time.Time
+	keyboard         keyboard.State
+	recorder         shortcut.Recorder
 }
 
 func NewPage() *Page { return &Page{} }
@@ -87,7 +90,7 @@ func (p *Page) Render(c *ui.Context, store runtime.Store) {
 			})
 			ui.Row(c).Padding(16, Inset, 24, Inset).Gap(8).AlignItems(ui.Center).Children(func() {
 				if p.flow.Index > 0 && step != onboarding.Finished {
-					kit.Button(c.Key("back"), tokens, kit.Ghost, messages.Text(copy.Back), true).OnClick(func() { p.move(c, -1, state) })
+					kit.Button(c.Key("back"), tokens, kit.Ghost, messages.Text(copy.Back), step != onboarding.InputMethod || !state.InputMethodInstalling).OnClick(func() { p.move(c, -1, state) })
 				}
 				ui.Spacer(c)
 				switch step {
@@ -100,6 +103,15 @@ func (p *Page) Render(c *ui.Context, store runtime.Store) {
 						label = messages.Text(copy.OnbContinueLocally)
 					}
 					kit.Button(c.Key("next"), tokens, kit.Primary, label, onboarding.Ready(step, state)).OnClick(func() { p.move(c, 1, state) })
+				case onboarding.InputMethod:
+					if !onboarding.Ready(step, state) {
+						kit.Button(c.Key("later"), tokens, kit.Ghost, messages.Text(copy.OnbIMELater), !state.InputMethodInstalling).OnClick(func() {
+							if p.flow.SkipInputMethod(state) {
+								p.entered = c.Now()
+							}
+						})
+					}
+					kit.Button(c.Key("next"), tokens, kit.Primary, messages.Text(copy.Continue), onboarding.Ready(step, state) && !state.InputMethodInstalling).OnClick(func() { p.move(c, 1, state) })
 				case onboarding.Finished:
 					kit.Button(c.Key("finish"), tokens, kit.Primary, messages.Text(copy.OnbFinish), true).OnClick(func() {
 						p.release(store)
@@ -242,6 +254,20 @@ func (p *Page) step(c *ui.Context, store runtime.Store, tokens theme.Tokens, ste
 					ui.Spinner(c).Size(14, 14)
 					ui.Text(c, messages.Text(copy.OnbAXWaiting)).FontSize(theme.Caption).TextColor(tokens.Muted)
 				})
+			}
+		})
+	case onboarding.InputMethod:
+		ui.Text(c, messages.Text(copy.OnbIMETitle)).FontSize(theme.Title + 4).FontWeight(650)
+		ui.Column(c).Width(Content).Gap(12).Children(func() {
+			keyboard.Setup(c, store, tokens, &p.keyboard)
+			if state.InputMethod == runtime.InputMethodPending {
+				ui.Text(c, messages.Text(copy.OnbIMEPending)).FontSize(theme.Body).TextColor(tokens.Muted)
+			}
+			if keyboard.Ready(store) {
+				if state.InputMethod != runtime.InputMethodSelected {
+					ui.Text(c, messages.Text(copy.OnbIMETest)).FontSize(theme.Body).TextColor(tokens.Muted)
+				}
+				ui.TextArea(c.Key("keyboard-practice"), &p.keyboardPractice).Placeholder(messages.Text(copy.OnbIMEPlaceholder)).Height(64)
 			}
 		})
 	case onboarding.Model:

@@ -151,7 +151,7 @@ func TestNoTechnicalModelNames(t *testing.T) {
 		onb := onboarding.NewPage()
 		ot := ui.NewTester(func(c *ui.Context) { onb.Render(c, store) }, OnboardingWidth, OnboardingHeight)
 		settle(ot)
-		for _, label := range []copy.Key{copy.OnbStart, copy.OnbContinueLocally, copy.Continue, copy.Continue} {
+		for _, label := range []copy.Key{copy.OnbStart, copy.OnbContinueLocally, copy.Continue, copy.Continue, copy.OnbIMELater} {
 			if err := ot.Click(messages.Text(label)); err != nil {
 				t.Fatalf("%s: %v", label, err)
 			}

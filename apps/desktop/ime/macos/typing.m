@@ -4,6 +4,8 @@
 // The engine's leading candidates the ranker may reorder; later pages keep
 // engine order and load on demand.
 static const NSUInteger kRankWindow = 27;
+// Rows the expanded grid shows at once, as Chatterfly's expandedRowCount.
+static const NSUInteger kExpandedRows = 6;
 // A previous commit older than this no longer predicts the next word.
 static const NSTimeInterval kContextLifetime = 120;
 
@@ -34,6 +36,9 @@ static BOOL containsHan(NSString *text) {
 @property BOOL exhausted;
 @property NSUInteger page;
 @property NSUInteger highlightIndex;
+@property BOOL expanded;
+// First page shown as a row of the expanded grid.
+@property NSUInteger topRow;
 @property(copy) NSString *previousCommit;
 @property NSTimeInterval previousCommitTime;
 @end
@@ -83,6 +88,8 @@ static BOOL containsHan(NSString *text) {
     if (self.engineGeneration == self.engine.generation) [self.engine clear:self.session];
     BOOL clear = self.composing;
     self.composing = NO;
+    self.expanded = NO;
+    self.topRow = 0;
     self.snapshot = nil;
     self.engineSnapshot = nil;
     self.menuTexts = nil;
@@ -144,10 +151,26 @@ static BOOL containsHan(NSString *text) {
         return YES;
     }
     if (character == ' ') { [self choose:self.highlightIndex]; return YES; }
-    if (character == '-' || character == '[' || event.keyCode == 116) { [self turn:-1]; return YES; }
-    if (character == '=' || character == ']' || event.keyCode == 121) { [self turn:1]; return YES; }
-    if (event.keyCode == 126) { [self move:-1]; return YES; }
-    if (event.keyCode == 125) { [self move:1]; return YES; }
+    BOOL previous = character == '-' || character == '[' || event.keyCode == 116 || event.keyCode == 126;
+    BOOL next = character == '=' || character == ']' || event.keyCode == 121 || event.keyCode == 125;
+    if (self.expanded) {
+        // Rows are pages: move between them; above the first row collapses.
+        if (previous) { if (self.page == 0) [self setGrid:NO]; else [self turn:-1]; return YES; }
+        if (next) { [self turn:1]; return YES; }
+        if (event.keyCode == 123 || event.keyCode == 124) { [self moveInRow:event.keyCode == 123 ? -1 : 1]; return YES; }
+        return -1;
+    }
+    if (previous) { [self turn:-1]; return YES; }
+    // The next page opens the grid with that page as the current row, as
+    // Chatterfly's spread list; a single page has nothing to expand.
+    if (next) {
+        if ([self verify] && [self load:(self.page + 1) * self.pageSize] && (self.page + 1) * self.pageSize < self.menuTexts.count) {
+            self.expanded = YES;
+            self.topRow = self.page;
+            if (![self turn:1]) self.expanded = NO;
+        }
+        return YES;
+    }
     return -1;
 }
 - (BOOL)choose:(NSUInteger)index {
@@ -167,6 +190,30 @@ static BOOL containsHan(NSString *text) {
 - (BOOL)nextPage:(NSUInteger)revision {
     if (!self.live || revision != self.revision || !self.composing) return NO;
     return [self turn:1];
+}
+- (BOOL)select:(NSUInteger)index row:(NSUInteger)row revision:(NSUInteger)revision {
+    if (!self.live || revision != self.revision || row >= self.snapshot.rows.count || index >= self.snapshot.rows[row].count) return NO;
+    return [self choose:(self.topRow + row) * self.pageSize + index];
+}
+- (BOOL)toggleExpanded:(NSUInteger)revision {
+    if (!self.live || revision != self.revision || !self.composing || ![self verify]) return NO;
+    if (self.expanded) return [self setGrid:NO];
+    if (![self load:(self.page + 1) * self.pageSize] || (self.page + 1) * self.pageSize >= self.menuTexts.count) return NO;
+    return [self setGrid:YES];
+}
+// Expands with the current page as the first row, or collapses to the
+// current page; the highlight stays on its candidate.
+- (BOOL)setGrid:(BOOL)expanded {
+    self.expanded = expanded;
+    self.topRow = self.page;
+    return [self publishMenu];
+}
+- (BOOL)moveInRow:(NSInteger)delta {
+    NSUInteger first = self.page * self.pageSize;
+    NSInteger index = (NSInteger)self.highlightIndex + delta;
+    if (index < (NSInteger)first || index >= (NSInteger)MIN(first + self.pageSize, self.menuTexts.count) || ![self verify]) return NO;
+    self.highlightIndex = (NSUInteger)index;
+    return [self publishMenu];
 }
 // Loads engine candidates until index exists or the engine runs out.
 - (BOOL)load:(NSUInteger)index {
@@ -189,14 +236,9 @@ static BOOL containsHan(NSString *text) {
     if (![self load:page * self.pageSize] || page * self.pageSize >= self.menuTexts.count) return NO;
     self.page = page;
     self.highlightIndex = page * self.pageSize;
-    return [self publishMenu];
-}
-- (BOOL)move:(NSInteger)delta {
-    if ((delta < 0 && self.highlightIndex == 0) || ![self verify]) return NO;
-    NSUInteger index = (NSUInteger)((NSInteger)self.highlightIndex + delta);
-    if (![self load:index] || index >= self.menuTexts.count) return NO;
-    self.highlightIndex = index;
-    self.page = index / self.pageSize;
+    // The grid scrolls by whole rows to keep the current row visible.
+    if (page < self.topRow) self.topRow = page;
+    if (page >= self.topRow + kExpandedRows) self.topRow = page + 1 - kExpandedRows;
     return [self publishMenu];
 }
 // Menu-only operations still surface engine or learning storage failures.
@@ -220,6 +262,9 @@ static BOOL containsHan(NSString *text) {
     self.exhausted = NO;
     self.page = 0;
     self.highlightIndex = 0;
+    // Typing changes the candidates; the grid closes with the old ones.
+    self.expanded = NO;
+    self.topRow = 0;
     NSArray<NSString *> *window = [self.engine candidates:self.session from:0 limit:MAX(kRankWindow, self.pageSize + 1)];
     if (!window) return NO;
     self.fetched = window.count;
@@ -256,6 +301,21 @@ static BOOL containsHan(NSString *text) {
     visible.page = self.page;
     visible.lastPage = first + count >= self.menuTexts.count;
     visible.highlighted = self.highlightIndex >= first ? self.highlightIndex - first : 0;
+    visible.expanded = self.expanded;
+    if (self.expanded) {
+        NSMutableArray *rows = [NSMutableArray array];
+        if (![self load:(self.topRow + kExpandedRows) * self.pageSize]) return NO;
+        for (NSUInteger row = self.topRow; row < self.topRow + kExpandedRows && row * self.pageSize < self.menuTexts.count; row++) {
+            NSUInteger start = row * self.pageSize;
+            [rows addObject:[self.menuTexts subarrayWithRange:NSMakeRange(start, MIN(self.pageSize, self.menuTexts.count - start))]];
+        }
+        visible.rows = rows;
+        visible.currentRow = self.page - self.topRow;
+        visible.moreRows = (self.topRow + rows.count) * self.pageSize < self.menuTexts.count;
+    } else {
+        visible.rows = @[visible.candidates];
+        visible.currentRow = 0;
+    }
     self.snapshot = visible;
     self.revision++;
     if (self.changed) self.changed();

@@ -99,7 +99,7 @@ func (t Template) Prompt(in Input) string {
 func user(in Input) string {
 	// The template formats the model scenes; anything else is chat.
 	scene := string(domain.SceneChat)
-	for _, s := range domain.ModelScenes {
+	for _, s := range []domain.Scene{domain.SceneChat, domain.SceneEmail, domain.SceneList} {
 		if string(s) == in.Scene {
 			scene = in.Scene
 		}

@@ -572,21 +572,21 @@
   ],
   "rewriters": [
     {
-      "id": "qwen3-1.7b-int4-cpu",
-      "name": "Qwen3 1.7B (INT4, CPU)",
+      "id": "qwen3.5-2b-q4-k-m-metal",
+      "name": "Qwen3.5 2B (Q4_K_M, Metal)",
       "runtime": {
-        "engine": "onnxruntime-genai",
-        "version": "0.17.0"
+        "engine": "llama.cpp",
+        "version": "b11734"
       },
-      "repository": "onnx-community/Qwen3-1.7B-ONNX",
-      "revision": "b85539623180ae64303f37373d942cb0595ca44d",
-      "sourceRepository": "Qwen/Qwen3-1.7B@70d244cc86ccca08cf5af4e1e306ecf908b1ad5e",
-      "modelCard": "https://huggingface.co/Qwen/Qwen3-1.7B",
+      "repository": "unsloth/Qwen3.5-2B-GGUF",
+      "revision": "f6d5376be1edb4d416d56da11e5397a961aca8ae",
+      "sourceRepository": "Qwen/Qwen3.5-2B@15852e8c16360a2fea060d615a32b45270f8a8fc",
+      "modelCard": "https://huggingface.co/Qwen/Qwen3.5-2B",
       "license": {
-        "model": "Apache-2.0 (Qwen3-1.7B)",
-        "runtime": "MIT (onnxruntime, onnxruntime-genai)",
-        "reference": "https://huggingface.co/Qwen/Qwen3-1.7B/blob/main/LICENSE",
-        "status": "user-initiated download only; community ONNX export, source/export parity not established"
+        "model": "Apache-2.0 (Qwen3.5-2B)",
+        "runtime": "MIT (llama.cpp)",
+        "reference": "https://huggingface.co/Qwen/Qwen3.5-2B/blob/15852e8c16360a2fea060d615a32b45270f8a8fc/LICENSE",
+        "status": "User-authorized product adoption; pinned community GGUF. Known OCR choice errors accepted; 16GB host acceptance remains open."
       },
       "platforms": [
         "darwin-arm64"
@@ -597,54 +597,16 @@
         "mixed"
       ],
       "files": {
-        "chat_template.jinja": {
-          "url": "https://huggingface.co/onnx-community/Qwen3-1.7B-ONNX/resolve/b85539623180ae64303f37373d942cb0595ca44d/onnxruntime/cpu_and_mobile/cpu-int4-kld-block-128/chat_template.jinja",
-          "sha256": "a55ee1b1660128b7098723e0abcd92caa0788061051c62d51cbe87d9cf1974d8",
-          "sizeBytes": 4168
-        },
-        "config.json": {
-          "url": "https://huggingface.co/onnx-community/Qwen3-1.7B-ONNX/resolve/b85539623180ae64303f37373d942cb0595ca44d/onnxruntime/cpu_and_mobile/cpu-int4-kld-block-128/config.json",
-          "sha256": "14c4e163fc54e5c7301a7f26054386ac77734401355fecd530ce4a98233f070c",
-          "sizeBytes": 8697
-        },
-        "genai_config.json": {
-          "url": "https://huggingface.co/onnx-community/Qwen3-1.7B-ONNX/resolve/b85539623180ae64303f37373d942cb0595ca44d/onnxruntime/cpu_and_mobile/cpu-int4-kld-block-128/genai_config.json",
-          "sha256": "d328d2ad4cbd7915eee3ad047eabfc562d8daf7307b202c1e6aaef4e8a236ba2",
-          "sizeBytes": 1520
-        },
-        "model.onnx": {
-          "url": "https://huggingface.co/onnx-community/Qwen3-1.7B-ONNX/resolve/b85539623180ae64303f37373d942cb0595ca44d/onnxruntime/cpu_and_mobile/cpu-int4-kld-block-128/model.onnx",
-          "sha256": "9fddc5a0a7f9c51132c376db8fe44774b17a8e42d721c4d289ade16af87da0bd",
-          "sizeBytes": 1408943689
-        },
-        "tokenizer.json": {
-          "url": "https://huggingface.co/onnx-community/Qwen3-1.7B-ONNX/resolve/b85539623180ae64303f37373d942cb0595ca44d/onnxruntime/cpu_and_mobile/cpu-int4-kld-block-128/tokenizer.json",
-          "sha256": "979d160e081df25a1bf7f4e2e8f4c441b5dfdc9a8e84aec9f32e80445e1b59b8",
-          "sizeBytes": 11422648
-        },
-        "tokenizer_config.json": {
-          "url": "https://huggingface.co/onnx-community/Qwen3-1.7B-ONNX/resolve/b85539623180ae64303f37373d942cb0595ca44d/onnxruntime/cpu_and_mobile/cpu-int4-kld-block-128/tokenizer_config.json",
-          "sha256": "bfd13b57b2e0c2cb582f311c0895f077d16a868c0dc61e4dbbba544a835341d6",
-          "sizeBytes": 663
+        "Qwen3.5-2B-Q4_K_M.gguf": {
+          "url": "https://huggingface.co/unsloth/Qwen3.5-2B-GGUF/resolve/f6d5376be1edb4d416d56da11e5397a961aca8ae/Qwen3.5-2B-Q4_K_M.gguf",
+          "sha256": "aaf42c8b7c3cab2bf3d69c355048d4a0ee9973d48f16c731c0520ee914699223",
+          "sizeBytes": 1280835840
         }
       },
-      "prompt": "live-v2",
-      "quantization": "int4 (cpu-int4-kld-block-128)",
-      "conversion": "Qwen3-1.7B exported for ONNX Runtime GenAI CPU by onnx-community; INT4 KLD block-128 quantization",
-      "evaluations": [
-        {
-          "runId": "live-rewrite-v1/audio-heldout-xfinal-1.7b",
-          "report": "benchmarks/results/live-rewrite-v1/README.md",
-          "hardware": "darwin-arm64 Apple M4",
-          "split": "heldout",
-          "cases": 27,
-          "sourcePass": 12,
-          "finalPass": 25,
-          "worsened": 0,
-          "stopToFinalP50Ms": 500,
-          "stopToFinalP95Ms": 1247
-        }
-      ]
+      "prompt": "selector-screen-v1-baseline+work-scope-v4",
+      "quantization": "Q4_K_M",
+      "conversion": "Community GGUF from pinned Qwen3.5-2B source; actual 1,881,825,088 parameters; source/export numerical parity not established.",
+      "evaluations": []
     }
   ]
 }

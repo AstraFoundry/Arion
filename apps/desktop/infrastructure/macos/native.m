@@ -50,22 +50,16 @@ static AXUIElementRef focused_element(int *error) {
     return (AXUIElementRef)element;
 }
 
-static int is_role(AXUIElementRef element, CFStringRef wanted) {
-    CFTypeRef role = NULL;
-    int match = AXUIElementCopyAttributeValue(element, kAXRoleAttribute, &role) == kAXErrorSuccess && role &&
-                CFGetTypeID(role) == CFStringGetTypeID() && CFStringCompare((CFStringRef)role, wanted, 0) == kCFCompareEqualTo;
-    if (role) CFRelease(role);
-    return match;
-}
-
-// copy_site writes the host of the top-level web page containing element:
-// the outermost AXWebArea ancestor's AXURL. Only http(s) hosts are kept;
-// the path, query and page title are never read.
+// copy_site reads only the authorized outermost web area's http(s) host.
 static void copy_site(AXUIElementRef element, char *out, size_t size) {
     out[0] = 0;
     AXUIElementRef current = (AXUIElementRef)CFRetain(element);
     for (int depth = 0; current && depth < 64; depth++) {
-        if (is_role(current, CFSTR("AXWebArea"))) {
+        CFTypeRef role = NULL;
+        AXError error = AXUIElementCopyAttributeValue(current, kAXRoleAttribute, &role);
+        int web = error == kAXErrorSuccess && role && CFEqual(role, CFSTR("AXWebArea"));
+        if (role) CFRelease(role);
+        if (web) {
             CFTypeRef url = NULL;
             if (AXUIElementCopyAttributeValue(current, kAXURLAttribute, &url) == kAXErrorSuccess && url) {
                 if (CFGetTypeID(url) == CFURLGetTypeID()) {
@@ -79,11 +73,27 @@ static void copy_site(AXUIElementRef element, char *out, size_t size) {
             }
         }
         CFTypeRef parent = NULL;
-        AXError error = AXUIElementCopyAttributeValue(current, kAXParentAttribute, &parent);
+        error = AXUIElementCopyAttributeValue(current, kAXParentAttribute, &parent);
         CFRelease(current);
         current = error == kAXErrorSuccess ? (AXUIElementRef)parent : NULL;
     }
     if (current) CFRelease(current);
+}
+
+static CFTypeRef selected_range(AXUIElementRef element) {
+    CFTypeRef range = NULL;
+    if (!element || AXUIElementCopyAttributeValue(element, kAXSelectedTextRangeAttribute, &range) != kAXErrorSuccess) return NULL;
+    if (range && CFGetTypeID(range) == AXValueGetTypeID() && AXValueGetType((AXValueRef)range) == kAXValueCFRangeType) return range;
+    if (range) CFRelease(range);
+    return NULL;
+}
+
+int arion_selection_matches(void *element, void *selection) {
+    if (!selection) return 1;
+    CFTypeRef current = selected_range((AXUIElementRef)element);
+    int same = current && CFEqual(current, (CFTypeRef)selection);
+    if (current) CFRelease(current);
+    return same;
 }
 
 int arion_capture_target(arion_target *out, int read_site) {
@@ -94,18 +104,11 @@ int arion_capture_target(arion_target *out, int read_site) {
         if (!app) return ARION_TARGET_NONE;
         out->pid = app.processIdentifier;
         if (app.bundleIdentifier) strlcpy(out->bundle, app.bundleIdentifier.UTF8String, sizeof(out->bundle));
-        if (app.bundleURL) strlcpy(out->bundle_path, app.bundleURL.fileSystemRepresentation, sizeof(out->bundle_path));
         if (app.localizedName) strlcpy(out->app_name, app.localizedName.UTF8String, sizeof(out->app_name));
         out->secure_input = IsSecureEventInputEnabled() ? 1 : 0;
         int error = 0;
         AXUIElementRef element = focused_element(&error);
         if (!element) return ARION_TARGET_OK; // app-level target; safety unknown
-        pid_t owner = 0;
-        AXUIElementGetPid(element, &owner);
-        if (owner != app.processIdentifier) {
-            // Focus belongs to another process (e.g. a panel); keep it.
-            out->pid = owner;
-        }
         CFTypeRef role = NULL, subrole = NULL;
         AXUIElementCopyAttributeValue(element, kAXRoleAttribute, &role);
         AXUIElementCopyAttributeValue(element, kAXSubroleAttribute, &subrole);
@@ -113,16 +116,14 @@ int arion_capture_target(arion_target *out, int read_site) {
         copy_string(subrole, out->subrole, sizeof(out->subrole));
         if (role) CFRelease(role);
         if (subrole) CFRelease(subrole);
-        Boolean settable = false;
-        if (AXUIElementIsAttributeSettable(element, kAXSelectedTextAttribute, &settable) == kAXErrorSuccess) {
-            out->selected_text_settable = settable ? 1 : 0;
-        }
         CFTypeRef value = NULL;
         if (AXUIElementCopyAttributeValue(element, kAXValueAttribute, &value) == kAXErrorSuccess && value) {
             out->value_readable = CFGetTypeID(value) == CFStringGetTypeID() ? 1 : 0;
             CFRelease(value);
         }
-        if (read_site) copy_site(element, out->site, sizeof(out->site));
+        int secure = out->secure_input || strcmp(out->subrole, "AXSecureTextField") == 0;
+        if (read_site && !secure) copy_site(element, out->site, sizeof(out->site));
+        if (!secure) out->selection = (void *)selected_range(element);
         out->element = (void *)element; // retained; released by arion_release
         return ARION_TARGET_OK;
     }
@@ -163,7 +164,7 @@ int arion_peek_target(int pid, arion_target *out, int read_site) {
         copy_string(subrole, out->subrole, sizeof(out->subrole));
         if (role) CFRelease(role);
         if (subrole) CFRelease(subrole);
-        if (read_site && strcmp(out->subrole, "AXSecureTextField") != 0) copy_site((AXUIElementRef)element, out->site, sizeof(out->site));
+        if (read_site && !out->secure_input && strcmp(out->subrole, "AXSecureTextField") != 0) copy_site((AXUIElementRef)element, out->site, sizeof(out->site));
         CFRelease(element);
         return ARION_TARGET_OK;
     }
@@ -183,122 +184,13 @@ int arion_focus_matches(void *element, int pid) {
             return app && app.processIdentifier == pid;
         }
         if (!current) return 0;
-        int same = CFEqual(current, (CFTypeRef)element) ? 1 : 0;
+        int same = app && app.processIdentifier == pid && CFEqual(current, (CFTypeRef)element);
         CFRelease(current);
         return same;
     }
 }
 
 int arion_secure_input(void) { return IsSecureEventInputEnabled() ? 1 : 0; }
-
-long arion_value_length(void *element) {
-    CFTypeRef value = NULL;
-    if (!element || AXUIElementCopyAttributeValue((AXUIElementRef)element, kAXValueAttribute, &value) != kAXErrorSuccess || !value) return -1;
-    long length = -1;
-    if (CFGetTypeID(value) == CFStringGetTypeID()) length = (long)CFStringGetLength((CFStringRef)value);
-    CFRelease(value);
-    return length;
-}
-
-int arion_ax_insert(void *element, const char *utf8) {
-    @autoreleasepool {
-        NSString *text = [NSString stringWithUTF8String:utf8];
-        if (!text) return -1;
-        return (int)AXUIElementSetAttributeValue((AXUIElementRef)element, kAXSelectedTextAttribute, (__bridge CFStringRef)text);
-    }
-}
-
-// arion_type_unicode posts the text as keyboard Unicode events in short
-// chunks. Callers remove line breaks first: Return is never synthesized.
-int arion_type_unicode(const char *utf8) {
-    @autoreleasepool {
-        NSString *text = [NSString stringWithUTF8String:utf8];
-        if (!text) return -1;
-        CGEventSourceRef source = CGEventSourceCreate(kCGEventSourceStateHIDSystemState);
-        NSUInteger length = text.length, offset = 0;
-        while (offset < length) {
-            NSRange range = [text rangeOfComposedCharacterSequencesForRange:NSMakeRange(offset, MIN((NSUInteger)16, length - offset))];
-            unichar buffer[32];
-            NSUInteger count = MIN(range.length, (NSUInteger)32);
-            [text getCharacters:buffer range:NSMakeRange(range.location, count)];
-            CGEventRef down = CGEventCreateKeyboardEvent(source, 0, true);
-            CGEventRef up = CGEventCreateKeyboardEvent(source, 0, false);
-            if (!down || !up) {
-                if (down) CFRelease(down);
-                if (up) CFRelease(up);
-                if (source) CFRelease(source);
-                return -2;
-            }
-            CGEventSetFlags(down, 0);
-            CGEventSetFlags(up, 0);
-            CGEventKeyboardSetUnicodeString(down, (UniCharCount)count, buffer);
-            CGEventKeyboardSetUnicodeString(up, (UniCharCount)count, buffer);
-            CGEventPost(kCGAnnotatedSessionEventTap, down);
-            CGEventPost(kCGAnnotatedSessionEventTap, up);
-            CFRelease(down);
-            CFRelease(up);
-            offset = range.location + count;
-            usleep(4000);
-        }
-        if (source) CFRelease(source);
-        return 0;
-    }
-}
-
-static NSArray<NSPasteboardItem *> *saved_items = nil;
-static NSInteger written_change = -1;
-
-// arion_paste saves the clipboard, writes the text and posts Command-V. It
-// returns the change count Arion owns for the later restore check.
-long arion_paste(const char *utf8) {
-    @autoreleasepool {
-        NSPasteboard *board = [NSPasteboard generalPasteboard];
-        NSMutableArray<NSPasteboardItem *> *copies = [NSMutableArray array];
-        for (NSPasteboardItem *item in board.pasteboardItems) {
-            NSPasteboardItem *copy = [[NSPasteboardItem alloc] init];
-            for (NSPasteboardType type in item.types) {
-                NSData *data = [item dataForType:type];
-                if (data) [copy setData:data forType:type];
-            }
-            [copies addObject:copy];
-        }
-        NSString *text = [NSString stringWithUTF8String:utf8];
-        if (!text) return -1;
-        saved_items = copies;
-        [board clearContents];
-        [board setString:text forType:NSPasteboardTypeString];
-        written_change = board.changeCount;
-        CGEventSourceRef source = CGEventSourceCreate(kCGEventSourceStateHIDSystemState);
-        CGEventRef down = CGEventCreateKeyboardEvent(source, (CGKeyCode)kVK_ANSI_V, true);
-        CGEventRef up = CGEventCreateKeyboardEvent(source, (CGKeyCode)kVK_ANSI_V, false);
-        CGEventSetFlags(down, kCGEventFlagMaskCommand);
-        CGEventSetFlags(up, kCGEventFlagMaskCommand);
-        CGEventPost(kCGAnnotatedSessionEventTap, down);
-        CGEventPost(kCGAnnotatedSessionEventTap, up);
-        CFRelease(down);
-        CFRelease(up);
-        if (source) CFRelease(source);
-        return (long)written_change;
-    }
-}
-
-// arion_restore_clipboard restores the saved items only when nobody wrote
-// the clipboard since Arion did (DSK-A05). Returns 1 when restored.
-int arion_restore_clipboard(long owned_change) {
-    @autoreleasepool {
-        NSPasteboard *board = [NSPasteboard generalPasteboard];
-        int restored = 0;
-        if (board.changeCount == owned_change && saved_items) {
-            [board clearContents];
-            if (saved_items.count > 0) [board writeObjects:saved_items];
-            restored = 1;
-        }
-        saved_items = nil;
-        return restored;
-    }
-}
-
-long arion_clipboard_change_count(void) { return (long)[NSPasteboard generalPasteboard].changeCount; }
 
 // Input source registration for Arion's IMK bundle (IME-01): explicit,
 // user-initiated install and removal.
@@ -502,6 +394,20 @@ int arion_ime_open_settings(void) {
         @autoreleasepool {
             NSURL *target = [NSURL URLWithString:@"x-apple.systempreferences:com.apple.preference.keyboard?InputSources"];
             return [[NSWorkspace sharedWorkspace] openURL:target] ? 1 : 0;
+        }
+    });
+}
+
+int arion_ime_terminate(const char *bundle_id) {
+    return arion_ime_on_main(^int(void) {
+        @autoreleasepool {
+            NSString *identifier = [NSString stringWithUTF8String:bundle_id];
+            int count = 0;
+            for (NSRunningApplication *app in [NSRunningApplication runningApplicationsWithBundleIdentifier:identifier]) {
+                // An input method has no documents to save; it relaunches on demand.
+                if ([app forceTerminate]) count++;
+            }
+            return count;
         }
     });
 }

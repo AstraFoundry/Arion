@@ -27,6 +27,7 @@ import (
 	"arion.local/desktop/ui/widgets/showcase"
 	"arion.local/desktop/ui/widgets/usage"
 	"github.com/egoist/mygo/ui"
+	"strings"
 )
 
 // Section IDs.
@@ -193,7 +194,13 @@ func (p *Page) section(c *ui.Context, store runtime.Store, tokens theme.Tokens) 
 		// Insertion routes apply to shortcut mode; the input method commits
 		// through the OS input-method protocol.
 		if prefs.Mode == runtime.ModeShortcut {
-			kit.Group(c, tokens, messages.Text(copy.DeliveryLabel), func() { p.deliveryCard(c, store, tokens) })
+			if strings.HasPrefix(store.State.Platform, "darwin-") {
+				kit.Card(c, tokens).Children(func() {
+					kit.Row(c, tokens, messages.Text(copy.DeliveryClipboard), messages.Text(copy.DeliveryMacDetail), nil)
+				})
+			} else {
+				kit.Group(c, tokens, messages.Text(copy.DeliveryLabel), func() { p.deliveryCard(c, store, tokens) })
+			}
 		}
 		kit.Card(c, tokens).Children(func() {
 			fillers := prefs.RemoveFillers

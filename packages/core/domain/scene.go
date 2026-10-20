@@ -31,10 +31,9 @@ var Scenes = []Scene{SceneChat, SceneEmail, SceneWork, ScenePrompt, SceneSearch,
 // layout the coordinator derives, not a place.
 var ChoosableScenes = []Scene{SceneChat, SceneEmail, SceneWork, ScenePrompt, SceneSearch}
 
-// ModelScenes are the layouts the rewrite model is taught. Other scenes
-// are expressed through them by ModelScene and finished by FinishScene, so
-// adding a scene never changes the model's prompt.
-var ModelScenes = []Scene{SceneChat, SceneEmail, SceneList}
+// ModelScenes are the distinct layouts taught by the shipped staged recipe.
+// Search and explicit list layouts are adapted mechanically by the worker.
+var ModelScenes = []Scene{SceneChat, SceneEmail, SceneWork, ScenePrompt, SceneList}
 
 // Known reports whether s is a scene.
 func (s Scene) Known() bool {
@@ -46,19 +45,15 @@ func (s Scene) Known() bool {
 	return false
 }
 
-// ModelScene is the layout the rewrite model is asked for. Work messages
-// and coding prompts become numbered lines only when the speaker
-// enumerates; search queries are written as plain text.
+// ModelScene preserves work and coding-prompt intent for the staged formatter.
+// Search uses plain chat copyediting before FinishScene removes punctuation.
 func ModelScene(s Scene, source string) Scene {
 	switch s {
-	case SceneEmail, SceneList:
+	case SceneChat, SceneEmail, SceneWork, ScenePrompt, SceneList:
 		return s
-	case SceneWork, ScenePrompt:
-		if Enumerated(source) {
-			return SceneList
-		}
+	default:
+		return SceneChat
 	}
-	return SceneChat
 }
 
 // FinishScene applies the mechanical part of a scene's layout to the text

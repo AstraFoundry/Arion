@@ -14,6 +14,7 @@ const (
 	Account
 	Microphone
 	Accessibility
+	InputMethod
 	Model
 	Shortcut
 	Try
@@ -21,7 +22,7 @@ const (
 )
 
 // Steps is the page order.
-var Steps = []Step{Welcome, Account, Microphone, Accessibility, Model, Shortcut, Try, Finished}
+var Steps = []Step{Welcome, Account, Microphone, Accessibility, InputMethod, Model, Shortcut, Try, Finished}
 
 // Flow is the user's position; Direction drives the page slide.
 type Flow struct {
@@ -39,6 +40,8 @@ func Ready(step Step, s *runtime.State) bool {
 		return s.Permissions.Microphone == runtime.ConsentGranted
 	case Accessibility:
 		return s.Permissions.Accessibility == runtime.ConsentGranted
+	case InputMethod:
+		return !s.InputMethodInstalling && (s.InputMethod == runtime.InputMethodSelected || s.InputMethod == runtime.InputMethodUnsupported)
 	case Model:
 		// Setup continues in the background; the user may move on once the
 		// download started, and the try step waits for readiness.
@@ -77,6 +80,9 @@ func Progress(f Flow) (current, total int) {
 
 // Move advances through supported setup steps in either direction.
 func (f *Flow) Move(delta int, s *runtime.State) bool {
+	if f.Step() == InputMethod && s.InputMethodInstalling {
+		return false
+	}
 	moved := false
 	if delta > 0 {
 		moved = f.Next(s)
@@ -84,12 +90,24 @@ func (f *Flow) Move(delta int, s *runtime.State) bool {
 		f.Back()
 		moved = true
 	}
-	if moved && f.Step() == Account && s.Account.Disabled {
+	for moved && ((f.Step() == Account && s.Account.Disabled) ||
+		(f.Step() == InputMethod && s.InputMethod == runtime.InputMethodUnsupported)) {
 		if delta > 0 {
-			f.Next(s)
+			moved = f.Next(s)
 		} else {
 			f.Back()
 		}
 	}
 	return moved
+}
+
+// SkipInputMethod leaves optional keyboard setup for Settings without changing
+// the user's dictation mode. An in-flight installation must finish first.
+func (f *Flow) SkipInputMethod(s *runtime.State) bool {
+	if f.Step() != InputMethod || s.InputMethodInstalling {
+		return false
+	}
+	f.Index++
+	f.Direction = 1
+	return true
 }

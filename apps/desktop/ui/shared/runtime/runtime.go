@@ -85,20 +85,22 @@ const GainStep = application.GainStep
 
 // Error codes the UI explains.
 const (
-	CodePermissionDenied   = domain.CodePermissionDenied
-	CodeModelMissing       = domain.CodeModelMissing
-	CodeModelUnsupported   = domain.CodeModelUnsupported
-	CodeAudioDiscontinuity = domain.CodeAudioDiscontinuity
-	CodeTargetChanged      = domain.CodeTargetChanged
-	CodeTargetUnsupported  = domain.CodeTargetUnsupported
-	CodeDeviceUnavailable  = domain.CodeDeviceUnavailable
-	CodeSessionBusy        = domain.CodeSessionBusy
-	CodeNoSpeech           = domain.CodeNoSpeech
-	CodeSecureFieldBlocked = domain.CodeSecureFieldBlocked
-	CodeArtifactUnverified = domain.CodeArtifactUnverified
-	CodeProvisioningFailed = domain.CodeProvisioningFailed
-	CodeEvaluationMissing  = domain.CodeEvaluationUnavailable
-	CodeCancelled          = domain.CodeCancelled
+	CodePermissionDenied       = domain.CodePermissionDenied
+	CodeModelMissing           = domain.CodeModelMissing
+	CodeModelUnsupported       = domain.CodeModelUnsupported
+	CodeAudioDiscontinuity     = domain.CodeAudioDiscontinuity
+	CodeTargetChanged          = domain.CodeTargetChanged
+	CodeTargetUnsupported      = domain.CodeTargetUnsupported
+	CodeClipboardUnavailable   = domain.CodeClipboardUnavailable
+	CodeClipboardRestoreFailed = domain.CodeClipboardRestoreFailed
+	CodeDeviceUnavailable      = domain.CodeDeviceUnavailable
+	CodeSessionBusy            = domain.CodeSessionBusy
+	CodeNoSpeech               = domain.CodeNoSpeech
+	CodeSecureFieldBlocked     = domain.CodeSecureFieldBlocked
+	CodeArtifactUnverified     = domain.CodeArtifactUnverified
+	CodeProvisioningFailed     = domain.CodeProvisioningFailed
+	CodeEvaluationMissing      = domain.CodeEvaluationUnavailable
+	CodeCancelled              = domain.CodeCancelled
 )
 
 // Diagnostic categories adapters attach to PERMISSION_DENIED.
@@ -224,10 +226,12 @@ type GuidePane string
 const (
 	GuideAccessibility   GuidePane = "accessibility"
 	GuideInputMonitoring GuidePane = "input-monitoring"
+	GuideKeyboard        GuidePane = "keyboard"
+	GuideMicrophone      GuidePane = "microphone"
+	GuideScreenRecording GuidePane = "screen-recording"
 )
 
-// Guide is the consent guide that floats under System Settings while the
-// user adds Arion to a privacy list.
+// Guide floats under System Settings for privacy consent or input-source setup.
 type Guide struct {
 	// Pane is the list being guided; empty when no guide is open.
 	Pane GuidePane
@@ -384,9 +388,12 @@ type State struct {
 	Shortcut              Shortcut
 	InputMethod           InputMethodState
 	InputMethodInstalling bool
-	InputMethodError      copy.Key
-	Guide                 Guide
-	Update                Update
+	// InputMethodUpdate: the installed input method differs from the one
+	// this app bundles, so installing again updates it.
+	InputMethodUpdate bool
+	InputMethodError  copy.Key
+	Guide             Guide
+	Update            Update
 	// Focus is the settings section last asked for from outside settings.
 	Focus SettingsFocus
 	// MonitorLevels feed the microphone test meter, newest last.

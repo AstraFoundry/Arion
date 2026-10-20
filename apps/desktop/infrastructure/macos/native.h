@@ -16,14 +16,13 @@ enum {
 
 typedef struct {
     void *element;
+    void *selection;
     int pid;
     int secure_input;
-    int selected_text_settable;
     int value_readable;
     char role[64];
     char subrole[64];
     char bundle[256];
-    char bundle_path[1024];
     char site[256];
     char app_name[256];
 } arion_target;
@@ -38,12 +37,18 @@ int arion_peek_target(int pid, arion_target *out, int read_site);
 void arion_release(void *element);
 int arion_focus_matches(void *element, int pid);
 int arion_secure_input(void);
-long arion_value_length(void *element);
-int arion_ax_insert(void *element, const char *utf8);
-int arion_type_unicode(const char *utf8);
-long arion_paste(const char *utf8);
-int arion_restore_clipboard(long owned_change);
-long arion_clipboard_change_count(void);
+enum {
+    ARION_PASTE_OK = 0,
+    ARION_PASTE_FAILED = 1,
+    ARION_PASTE_CHANGED = 2,
+    ARION_PASTE_TARGET_CHANGED = 3,
+    ARION_PASTE_SECURE = 4,
+};
+void *arion_paste_begin(const char *utf8);
+int arion_paste_stage(void *transaction);
+int arion_paste_post(void *transaction, void *element, void *selection, int pid);
+int arion_paste_finish(void *transaction);
+int arion_selection_matches(void *element, void *selection);
 int arion_ime_register(const char *bundle_path);
 int arion_ime_validate_payload(const char *bundle_path, const char *bundle_id);
 int arion_ime_bundle_matches(const char *bundle_path, const char *source_id);
@@ -51,5 +56,8 @@ int arion_ime_enable(const char *source_id);
 int arion_ime_disable(const char *source_id);
 int arion_ime_state(const char *source_id);
 int arion_ime_open_settings(void);
+// Ends running processes of the input method bundle so the next activation
+// launches the installed binary. Returns how many were asked to end.
+int arion_ime_terminate(const char *bundle_id);
 
 #endif

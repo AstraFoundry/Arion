@@ -9,11 +9,9 @@ import (
 	"github.com/egoist/mygo/transfer"
 )
 
-// The consent guide: System Settings opens on a privacy list that macOS
-// never prompts for again, and a nonactivating panel under its window
-// offers Arion's app to drag into the list. The panel follows the window,
-// shows only while System Settings is frontmost, and closes when consent
-// arrives, when the user closes it, or when System Settings quits.
+// The settings guide follows System Settings with a nonactivating panel.
+// Privacy panes offer Arion as a file to drag; keyboard setup shows add-source
+// instructions. It closes on observed completion, dismissal or settings exit.
 const (
 	// guideTick paces the window-server reads: smooth enough to follow a
 	// dragged window, and only while a guide is open.
@@ -41,16 +39,29 @@ type guideSession struct {
 // guideFrame is one observation of the settings window by the worker.
 type guideFrame struct {
 	settings SettingsWindow
-	granted  bool
+	ready    bool
 	ended    bool
 }
 
-// guideConsent reads the consent a pane grants.
-func (a *App) guideConsent(pane arion.GuidePane) arion.Consent {
-	if pane == arion.GuideInputMonitoring {
-		return a.platform.InputMonitoring()
+// inputMethodGuideReady acknowledges actual source enablement.
+func inputMethodGuideReady(state arion.InputMethodState) bool {
+	return state == arion.InputMethodInstalled || state == arion.InputMethodSelected
+}
+
+func (a *App) guideReady(pane arion.GuidePane) bool {
+	switch pane {
+	case arion.GuideKeyboard:
+		return a.ime != nil && inputMethodGuideReady(a.ime.State())
+	case arion.GuideInputMonitoring:
+		return a.platform.InputMonitoring() == arion.ConsentGranted
+	case arion.GuideAccessibility:
+		return a.platform.Accessibility() == arion.ConsentGranted
+	case arion.GuideMicrophone:
+		return a.platform.Microphone() == arion.ConsentGranted
+	case arion.GuideScreenRecording:
+		return a.platform.ScreenRecording() == arion.ConsentGranted
 	}
-	return a.platform.Accessibility()
+	return false
 }
 
 // openGuide opens System Settings on pane with the drag guide under it. It
@@ -61,20 +72,32 @@ func (a *App) openGuide(pane arion.GuidePane) bool {
 	if app == "" || a.tray == nil {
 		return false
 	}
-	drag, err := transfer.FileData(app)
-	if err != nil {
-		a.record("consent_guide", err)
+	var drag transfer.Data
+	if pane == arion.GuideAccessibility || pane == arion.GuideInputMonitoring {
+		var err error
+		drag, err = transfer.FileData(app)
+		if err != nil {
+			a.record("consent_guide", err)
+			return false
+		}
+	}
+	a.platform.OpenGuidePane(pane)
+	return a.showGuide(pane, drag)
+}
+
+// showGuide shares positioning, lifecycle and return focus between settings panes.
+func (a *App) showGuide(pane arion.GuidePane, drag transfer.Data) bool {
+	if a.tray == nil {
 		return false
 	}
 	if a.guide != nil && a.guide.pane != pane {
 		a.closeGuide(false)
 	}
-	a.platform.OpenGuidePane(pane)
 	if a.guide != nil {
 		return true
 	}
 	view := uiapp.Guide(a.ui)
-	window := mygo.NewFlyout(mygo.FlyoutOptions{Tray: a.tray, Width: guideMinWidth, Height: uiapp.GuideHeight,
+	window := mygo.NewFlyout(mygo.FlyoutOptions{Tray: a.tray, Width: guideMinWidth, Height: uiapp.GuideHeightFor(pane),
 		Shadow: true, Hidden: true, Content: view.Content})
 	g := &guideSession{pane: pane, window: window, returnTo: mygo.FocusedWindow(), stop: make(chan struct{})}
 	a.guide = g
@@ -116,12 +139,20 @@ func (a *App) followGuide(g *guideSession) {
 	started := time.Now()
 	var seen, last time.Time
 	var previous guideFrame
+	var checked time.Time
+	var ready bool
 	for {
 		select {
 		case <-g.stop:
 			return
 		case now := <-ticker.C:
-			frame := guideFrame{settings: a.platform.SettingsWindow(), granted: a.guideConsent(g.pane) == arion.ConsentGranted}
+			// Input-source enumeration needs only the same one-second cadence
+			// as the main status refresh; positioning remains smooth.
+			if g.pane != arion.GuideKeyboard || checked.IsZero() || now.Sub(checked) >= time.Second {
+				ready = a.guideReady(g.pane)
+				checked = now
+			}
+			frame := guideFrame{settings: a.platform.SettingsWindow(), ready: ready}
 			if frame.settings.Running {
 				seen, last = now, now
 			}
@@ -140,8 +171,12 @@ func (a *App) updateGuide(g *guideSession, frame guideFrame) {
 		return
 	}
 	switch {
-	case frame.granted:
-		a.refreshPermissions()
+	case frame.ready:
+		if g.pane == arion.GuideKeyboard {
+			a.refreshInputMethod()
+		} else {
+			a.refreshPermissions()
+		}
 		a.updateTray()
 		a.closeGuide(true)
 		return
@@ -155,7 +190,7 @@ func (a *App) updateGuide(g *guideSession, frame guideFrame) {
 		return
 	}
 	area := mygo.Screen.DisplayMatching(settings.Bounds).WorkArea
-	g.window.SetBounds(guideBounds(settings.Bounds, area, uiapp.GuideHeight))
+	g.window.SetBounds(guideBounds(settings.Bounds, area, uiapp.GuideHeightFor(g.pane)))
 	if !g.window.IsVisible() {
 		a.state.Guide.Shown++
 		g.window.ShowInactive()

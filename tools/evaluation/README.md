@@ -156,6 +156,25 @@ The audio driver now matches the product default (`RemoveFillers=true`). Use `FI
 
 `pnpm memory:loop-verify` / `make memory-loop-verify` verify their two archive manifests, including exact audio, observations and frozen sources. Explicit manifest paths may be supplied to the pnpm command. Verification is read-only and needs no model, private key or original workspace paths.
 
+## Scene rewrite alignment experiments
+
+`pnpm rewrite:alignment:build` (`make rewrite-alignment-build`) builds an isolated
+production-engine overlay for the [scene rewrite study](../../benchmarks/reproduction/scene-rewrite-alignment-v1/README.md).
+Provision the pinned Apple Silicon model/runtime separately; no command downloads
+weights. `rewrite:alignment:run --split dev --out <new-directory>` runs calibration
+and development. A test run additionally requires `--selection <dev/selection.json>`.
+Both variants use the predeclared policy, including an explicit no-promotion
+selection when development fails. Existing run/build directories are not overwritten.
+
+`rewrite:alignment:report --dev <dev-run> --test <test-run> --out <new-directory>`
+replays checked rows and exports unrated blind review tasks. `rewrite:alignment:verify`
+and `rewrite:alignment:test` validate the archive and report integrity without
+loading a model. Make exposes `rewrite-alignment-bench` with `SPLIT`, `OUT` and
+optional `SELECTION`, `rewrite-alignment-report` with `DEV`, `TEST`, `OUT`, and
+the corresponding verify/test targets. [The completed results](../../benchmarks/results/scene-rewrite-alignment-v1/README.md)
+retain actual failures and distinguish automatic proxies from semantic release
+acceptance. Production rewriting is unchanged by this experiment.
+
 ## Archived benchmark research
 
 [The archive contract](../../benchmarks/migration/README.md) describes the byte-preserving research snapshot and its limitations. Corpora and recorded audio are under `benchmarks/corpora/`, raw outputs and failure metadata under `benchmarks/runs/`, and frozen scripts/evaluators under `benchmarks/reproduction/`. Original machine paths and hashes remain in historical metadata; the archive map resolves them explicitly without a local-workspace fallback.
@@ -188,3 +207,148 @@ provisioning and incomplete attempts are retained without successful substitutes
 synthetic corpus. The [study workflow](../../benchmarks/reproduction/correction-chain-expanded-v2/README.md)
 separates spoken cases from silence and original regression fixtures. Semantic
 ratings allow paraphrase and structure; exact substring gates are not the outcome.
+
+## Focused scene prompt experiments
+
+`pnpm rewrite:prompt:run --phase dev|evaluation --out <new-directory>` runs the
+[frozen v2 prompt study](../../benchmarks/reproduction/scene-rewrite-prompt-v2/README.md)
+using the v1 isolated worker build; evaluation requires `--selection` frozen
+from complete development review. `rewrite:prompt:report --dev <run> --evaluation
+<run> --out <new-directory>` checks and replays every reviewed generation.
+`rewrite:prompt:verify` and `rewrite:prompt:test` need no model. Make exposes
+`rewrite-prompt-bench`, `rewrite-prompt-report`, `rewrite-prompt-verify` and
+`rewrite-prompt-test`. Review coverage is mandatory, and assistant judgments
+must not be represented as independent human ratings. The completed v2
+candidate improves structure but fails fidelity acceptance; production is unchanged.
+
+## Context-supported ASR-text correction diagnostics
+
+`pnpm rewrite:context:run --out <new-directory>` runs three frozen local prompt
+arms on 24 authored ASR-like/OCR-like inputs. `rewrite:context:structure --out
+<new-directory>` reruns the companion eight-case structural comparison.
+`rewrite:context:report --context <run> --structure <run> --out <new-directory>`
+checks every reviewed source/context/output pair. `rewrite:context:verify` and
+`rewrite:context:test` require no model. Make exposes the corresponding
+`rewrite-context-bench/report/verify/test` targets. See the
+[protocol and reproduction workflow](../../benchmarks/reproduction/context-repair-v1/README.md).
+Supported repair is judged against intended speech, not ASR character identity;
+missed corrections and harmful context overwrites are separate errors. These
+text-only development diagnostics do not claim executed ASR/OCR or held-out
+quality, and do not change production defaults.
+
+Scene review reports display both the fixture-assigned scene and the effective
+model scene, plus the actual worker-reported prompt version. Explicit test
+assignment must not be reported as automatic scene detection. Any reconstructed
+scene value must identify the frozen runner as its evidence. `scenes.json`
+contains this provenance for every case; v2 CSV exports also include model scene
+and template version. Report-only revisions retain the previous rendering while
+leaving raw inference and review judgments unchanged.
+
+## Prompt and text-validator removal diagnostics
+
+`pnpm rewrite:ungated:run --phase dev|evaluation --out <new-directory>` runs the
+[frozen ablation](../../benchmarks/reproduction/rewrite-no-validator-v1/README.md);
+evaluation requires `--selection` from completed development review.
+`rewrite:ungated:report --dev <run> --evaluation <run> --out <new-directory>`
+exports every raw proposal, cleanup judgment and strict/envelope/none delivery,
+including the full no-text-validator evaluation view. `rewrite:ungated:verify`
+and `rewrite:ungated:test` require no model. Make provides corresponding
+`rewrite-ungated-bench/report/verify/test` targets. No-text-validation is a
+policy replay on the same actual inference output, not extra generation or
+removal of session/deadline/cancellation ownership. The experiment failed
+adoption; application behavior is unchanged.
+
+## OCR spelling alignment prompt diagnostics
+
+`pnpm rewrite:ocr:run --phase dev|evaluation --out <new-directory>` runs the
+[frozen prompt repair study](../../benchmarks/reproduction/ocr-alignment-v2/README.md).
+Evaluation requires `--selection` from completed development review.
+`rewrite:ocr:parity --out <new-directory>` runs the separately frozen 12-call
+cold/forward/reverse diagnostic. `rewrite:ocr:report --dev <run> --evaluation
+<run> --parity <run> --out <new-directory>` validates and exports all reviewed
+raw/cleanup and strict/envelope/none deliveries, with required-repair recall,
+harmful context changes and correct-text damage distinct. `rewrite:ocr:verify`
+and `rewrite:ocr:test` need no model. Make provides
+`rewrite-ocr-bench/report/verify/test` with the documented arguments. The study
+improves some repairs but fails adoption; no production defaults are changed.
+
+## Input packaging and iteration HTML
+
+`pnpm rewrite:packaging:build/run/report/verify/test` reproduce the
+[fixed-model serializer comparison](../../benchmarks/reproduction/rewrite-packaging-v1/README.md).
+Make provides `rewrite-packaging-build/bench/report/verify/test`; the report takes
+`DEV`, `EVALUATION`, `OUT`. `pnpm rewrite:release:report/test` rebuild and validate
+the [offline iteration report](../../benchmarks/results/rewrite-release/index.html).
+The HTML includes every reviewed output and keeps text-only assistant review
+separate from independent natural-data and actual macOS acceptance requirements.
+
+`rewrite:entity:ocr/run/report/test/verify` reproduce the
+[entity evidence and actual Vision diagnostic](../../benchmarks/reproduction/rewrite-entity-evidence-v1/README.md).
+Make provides `rewrite-entity-ocr/bench/report/test/verify` with `PHASE`, `OUT` and
+optional `OCR`. `rewrite:retrospective:verify` and `rewrite-retrospective-verify`
+check the separately archived historical manual review. Original old-run proxy
+scores remain unchanged; derived views preserve original row identities.
+
+Completed historical rewrite screens can be replayed without inference using `pnpm rewrite:model-screen:report --out <new-directory>`, `pnpm rewrite:4b-packaging:report --out <new-directory>` and `pnpm rewrite:4b-entity:report --out <new-directory>`. Matching `:test` and `:verify` commands check review coverage and archive bytes. These historical4B runs predate the user constraint; no further4B or older-Qwen inference is authorized. Current model screening prioritizes latest-generation candidates <=2B.
+
+For the latest <=2B screen use `pnpm rewrite:small-models:report --out <new-directory>`, `pnpm rewrite:small-models:test` and `pnpm rewrite:small-models:verify`. `rewrite-small-models-run MODEL=... RUNTIME=... OUT=...` uses the pinned text GGUF/runtime and explicit CPU configuration. Reports retain unfiltered raw output, full request, model/scene identities and individual judgments. This runtime/cache policy differs from historical ONNX studies.
+
+Latest0.8B follow-up reports use `pnpm rewrite:small-prompt:report`, `rewrite:small-cache:report`, `rewrite:cache-failed:report` and `rewrite:cache-parity:report`, each with `--out <new-directory>`. Matching `:test` and `:verify` commands check complete reviews and frozen bytes. The failed logical-batch1 experiment has zero generations and cannot become a completed inference report. Cache reports separate32 measured calls from8 warmups and disclose raw-string parity, order parity, cache token counts and sampled RSS. All output is retained without content validators. These are M4 diagnostics; no weak-host or native end-to-end acceptance follows.
+
+Latest2B ambiguity evidence: `pnpm rewrite:2b-contrast:test` and `pnpm rewrite:pronunciation:test` validate complete raw request/review bindings. The pronunciation producer has additional stdlib tests in its reproduction directory. `:report --out <new-directory>` replays without inference; `:verify` checks frozen archive hashes. All experimental outputs remain visible without content filtering. Minimum target Apple Silicon16GB; actual minimum-device and ASR concurrency acceptance remain open.
+
+Source-plan evidence: `pnpm rewrite:source-plan:test` checks schema/request reconstruction, derived units, constructed bodies and complete reviews; `:report --out <new-directory>` replays without inference and `:verify` checks the archive. Raw JSON and body remain separate; grammar success never establishes semantic rewrite success.
+
+Local-protection reproduction: `pnpm rewrite:local-protection:test` checks three models/treatments; `pnpm rewrite:protection-stress:test` checks the new stress supplement. Their `:report --out <new-directory>` and `:verify` commands replay without inference. Seven codec tests cover reversible UTF8 offsets, quote/exact controls, identical unaffected requests and explicit missing/duplicate token failures; invented content is deliberately not filtered. A protocol error is not by itself an LLM semantic failure.
+
+## Current rewrite evidence
+
+- [rewrite-current-task-v1](../../benchmarks/reproduction/rewrite-current-task-v1/README.md)
+- [rewrite-system-task-probe-v1](../../benchmarks/reproduction/rewrite-system-task-probe-v1/README.md)
+- [rewrite-cleanup-preflight-v1](../../benchmarks/reproduction/rewrite-cleanup-preflight-v1/README.md)
+- [rewrite-natural-source-audit-v1](../../benchmarks/reproduction/rewrite-natural-source-audit-v1/README.md)
+- [rewrite-timing-audit-v1](../../benchmarks/reproduction/rewrite-timing-audit-v1/README.md)
+
+Current-task108 and system-probe12 native outputs are fully inspected. User-tail rules can be copied as editable text; trusted system placement fixes four regressions but returns only to8/12 faithful and7/12 scene-ready on the same hard subset. No candidate qualifies, and the mandatory36-case pool and fresh24 are not reduced. Removing rejection alone does not repair wrong native content. Original request messages and restored bodies are both visible in the living HTML.
+
+The actual production-cleanup source replay changes one36-case input; prior raw-direct experiments remain unchanged and correctly scoped. Natural-ASR preparation verifies120 historical public read-speech sources, not new candidate inference or independent held-out data. Timing audit flags9/396 historical observations without attributing a sleep/runtime cause or approving latency. Minimum target remains Apple Silicon16GB; the M4/32GB host does not substitute for it. Original-language/mixed-input and native-chain acceptance remain pending.
+
+## Cleanup-aligned rewrite diagnostics
+
+- [rewrite-private-spans-v1](../../benchmarks/reproduction/rewrite-private-spans-v1/README.md)
+- [rewrite-natural-text-review-v1](../../benchmarks/reproduction/rewrite-natural-text-review-v1/README.md)
+
+## Input-object and2B artifact diagnostics
+
+- [rewrite-data-object-v1](../../benchmarks/reproduction/rewrite-data-object-v1/README.md)
+- [rewrite-2b-precision-v1](../../benchmarks/reproduction/rewrite-2b-precision-v1/README.md)
+
+Candidate-preview integrity and evidence checks use `pnpm rewrite:selector-preview-v1:payload-test`, `pnpm rewrite:selector-preview-v1:test` and `pnpm rewrite:selector-preview-v1:verify`; the payload checks add no model inference.
+
+Selector-only diagnosis uses `pnpm rewrite:selector-screen-v1:run`, `:test`, `:report` and `:verify` under the same command prefix. It retains all source preparations/skips and generates no final bodies; passing is only a prerequisite for complete-chain evaluation.
+
+Granite runtime diagnosis uses `pnpm rewrite:selector-model-v1:report/test/verify`; the original `:run` configuration retains its first-request failure. The explicit CPU-layer follow-up uses `pnpm rewrite:selector-model-cpu-v1:run/report/test/verify`. Runtime probe responses and HTTP errors remain separate from selector choices and delivered bodies. See the [runtime evidence](../../benchmarks/reproduction/rewrite-selector-model-v1/README.md) and [CPU comparison](../../benchmarks/reproduction/rewrite-selector-model-cpu-v1/README.md).
+
+Public referent-description diagnosis uses `pnpm rewrite:selector-referent-v1:run/report/test/verify` and `:payload-test`. The portable evidence wrapper supports the explicit `test_payload` operation. Choice conformance and description review remain separate; all descriptions and normalized choices are retained. See the [protocol and evidence](../../benchmarks/reproduction/rewrite-selector-referent-v1/README.md).
+
+Source-order diagnosis uses `pnpm rewrite:selector-source-last-v1:run/report/test/verify` and `:payload-test`. Complete decoded inputs and nested ordering remain unchanged; every example/current top-level source moves last. All404 actual choices,457 preparations and1,828 outcomes remain source-bound. See the [protocol](../../benchmarks/reproduction/rewrite-selector-source-last-v1/README.md).
+
+Counterbalanced whole-sentence diagnosis uses `pnpm rewrite:selector-sentence-choice-v1:run/report/test/verify` and `:payload-test`. Preserve raw A/B labels separately from normalized operations and existing exact-span application. Twelve forced-original ambiguity cases per arm are not free semantic decisions. See the [protocol](../../benchmarks/reproduction/rewrite-selector-sentence-choice-v1/README.md).
+
+Hybrid-model diagnosis uses `pnpm rewrite:selector-hybrid-v1:preflight/run/report/test/verify`. Native probes retain actualGPU/template/cache evidence separately from semantic task success; the full comparison reuses457 actualGo preparations and prior Qwen requests. The native adapter keeps historical frozen command sources unchanged. See [complete protocol](../../benchmarks/reproduction/rewrite-selector-hybrid-v1/README.md).
+
+Trusted instruction-language diagnosis uses `pnpm rewrite:selector-instruction-language-v1:run --model-key qwen|hybrid --out <new-private-directory>`, plus `:payload-test`, `:test`, `:report` and `:verify`. Every non-system request field remains unchanged; comparisons preserve original Chinese rows and use explicit system-language projections. See [complete protocol](../../benchmarks/reproduction/rewrite-selector-instruction-language-v1/README.md).
+
+MiniCPM5-1B comparison uses `pnpm rewrite:selector-minicpm-v1:run/report/test/verify`, with matching Make targets. Native preflight and its manual qualification requirement are documented in the [protocol](../../benchmarks/reproduction/rewrite-selector-minicpm-v1/README.md). Reports separate202 complete choices,12 native responses and1 interrupted log-only completion; no new final bodies or production adoption.
+
+Official F16 comparison uses `pnpm rewrite:selector-minicpm-f16-v1:run/report/test/verify` with matching Make targets. Native manual qualification and precise Q4 comparison population are documented in the [protocol](../../benchmarks/reproduction/rewrite-selector-minicpm-f16-v1/README.md).202 complete choices and12 probes are separate; both arms fail adoption.
+
+Youtu research replay: `pnpm rewrite:selector-youtu-v1:{report,test,verify}`; fresh execution requires private pinned weights and sequential native qualification. See [protocol](../../benchmarks/reproduction/rewrite-selector-youtu-v1/README.md).
+
+Repository link checks accept explicit HTML id anchors and legacy a-name anchors in Markdown, including original model cards. Fenced examples do not satisfy links. Regression checks: `pnpm exec node --test scripts/lib/markdown-anchors.test.mjs`.
+
+LFM2.5 research: `pnpm rewrite:selector-lfm25-v1:{report,test,verify}`. Native metadata logs are byte evidence because diagnostic previews may split UTF8 tokens; [protocol](../../benchmarks/reproduction/rewrite-selector-lfm25-v1/README.md) preserves raw bytes and original failures.
+
+Existing-example ordering: `pnpm rewrite:selector-demo-order-v1:{run,payload-test,test,verify,report}`. The test alias uses the documented version2 correction; original frozen test/failure remain in the [study](../../benchmarks/reproduction/rewrite-selector-demo-order-v1/README.md).404 actual choices and zero-generation native input checks are separate.
+
+Native d1 typed-decision evidence: `pnpm rewrite:d1-evidence-v1:{report,test,verify}`. Zero output tokens still means actual model inference. [The protocol](../../benchmarks/reproduction/rewrite-d1-evidence-v1/README.md) separates native96/45 piece clipping from total context and retains direct native answers without fabricating chat completions.

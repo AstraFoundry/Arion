@@ -1,8 +1,4 @@
-// Stages the local rewrite worker into the desktop platform resources:
-// the pinned ONNX Runtime GenAI and ONNX Runtime libraries (verified by
-// SHA-256) and an `arion-llm` build without cgo. `mygo build` packages and
-// signs them with the app. The worker runs in its own process, so its ONNX
-// Runtime never shares an address space with the speech runtime's.
+// Stage the pinned offline GGUF runtime and pipe worker for the selected platform.
 import { execFileSync } from 'node:child_process';
 import { copyFileSync, mkdirSync, readFileSync, rmSync, chmodSync } from 'node:fs';
 import path from 'node:path';
@@ -34,9 +30,12 @@ for (const archive of spec.archives) {
     const target = path.join(destination, name);
     mkdirSync(path.dirname(target), { recursive: true });
     copyFileSync(path.join(unpacked, member), target);
-    chmodSync(target, name.endsWith('.dylib') ? 0o755 : 0o644);
+    chmodSync(target, name.endsWith('.dylib') || name === 'llama-server' ? 0o755 : 0o644);
   }
   rmSync(unpacked, { recursive: true, force: true });
+}
+for (const name of ['cmudict-pronunciation-v1-LICENSE', 'pypinyin-character-readings-v1-LICENSE.txt', 'cmudict-pronunciation-v1-provenance.json', 'pypinyin-character-readings-v1-provenance.json']) {
+  copyFileSync(path.join(desktop, 'infrastructure/llm/spelling/data', name), path.join(destination, 'licenses', name));
 }
 const [goos, goarch] = platform.split('-');
 const worker = path.join(destination, goos === 'windows' ? 'arion-llm.exe' : 'arion-llm');

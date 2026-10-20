@@ -1,0 +1,567 @@
+{
+  "doubao": {
+    "scope": "Installed Doubao IME 1.0.2 static keyboard/voice lexicon bridge; no execution or private profile access. DBL IDs are ordinary byte-verified LLVM observations, not REA IDs.",
+    "identities": {
+      "main": {
+        "path": "/Library/Input Methods/DoubaoIme.app/Contents/MacOS/DoubaoIme",
+        "sha256": "4b3836dcb8a3e06b01b4c95390c757b71f623c1f7c4141c059e49284f7f6442d",
+        "arm64Sha256": "266f49f6bcb62e43c5170620d4b86e2e4c4ef873bcce624ef1a90b9c46244983",
+        "arm64UniversalOffset": 21757952
+      },
+      "engine": {
+        "path": "/Library/Input Methods/DoubaoIme.app/Contents/Frameworks/OimeEngine.framework/Versions/A/OimeEngine",
+        "sha256": "d1cebd7c9a9d888acc2a6d2f4aad372cb3b31570ff68a7e631cba930517f5db8",
+        "arm64Sha256": "eec270b3d90e670a55edd91534d985a3371dd5819a54e0089bb7ec17a92509ff",
+        "arm64UniversalOffset": 7520256
+      }
+    },
+    "intervals": [
+      {
+        "id": "DBL-user-words",
+        "artifact": "engine",
+        "range": [
+          "0x1d046c",
+          "0x1d1328"
+        ],
+        "intervalSHA256": "4934620831cfc2b5ff83fd07172e51d070dfcb39b169d2069fc35481ffe72c94",
+        "assemblySHA256": "703cdca520899b8de96f6d755d219f403fd665d47a859a4166aa99b4df048e2f",
+        "verifiedInstructions": 937,
+        "undecodedSlots": [
+          "1d04c8:\t\t.long\t0x38bfc108",
+          "1d04f0:\t\t.long\t0x38bfc268",
+          "1d058c:\t\t.long\t0x38bfc268",
+          "1d05a0:\t\t.long\t0x38bfc268",
+          "1d0648:\t\t.long\t0x38bfc2c8",
+          "1d0fc8:\t\t.long\t0xf8e90108"
+        ]
+      },
+      {
+        "id": "DBL-global-context",
+        "artifact": "engine",
+        "range": [
+          "0x1d1328",
+          "0x1d2200"
+        ],
+        "intervalSHA256": "cd66f9e7e0a7e40911a3dee1a4c67a0ba9c7709042fa628443704515cda9e8e7",
+        "assemblySHA256": "e4cb85c1d60cebdc4ae04081b2989f4be72d9fed7c2cbf6ce6909ce014bb77eb",
+        "verifiedInstructions": 944,
+        "undecodedSlots": [
+          "1d1390:\t\t.long\t0x38bfc108",
+          "1d13b8:\t\t.long\t0x38bfc2a8",
+          "1d1488:\t\t.long\t0x38bfc2a8",
+          "1d149c:\t\t.long\t0x38bfc2a8",
+          "1d1568:\t\t.long\t0x38bfc2c8",
+          "1d1f3c:\t\t.long\t0xf8e90108"
+        ]
+      },
+      {
+        "id": "DBL-wrapper",
+        "artifact": "engine",
+        "range": [
+          "0xb8fc",
+          "0xc130"
+        ],
+        "intervalSHA256": "b5866947919da7d6b19da561e3213d8bab3374a1c2e8577e187da985a97f257e",
+        "assemblySHA256": "f43d2a52ae36c0c8ada6daec3f9e4af79278f96ae108807a7e6e3c35a8e69030",
+        "verifiedInstructions": 525,
+        "undecodedSlots": []
+      },
+      {
+        "id": "DBL-task",
+        "artifact": "engine",
+        "range": [
+          "0x1cbb74",
+          "0x1cc244"
+        ],
+        "intervalSHA256": "b6fc3fe456d1c7de530eddd634f82b9e6287646bbe54cb71fa3e6c7bd1cbeb97",
+        "assemblySHA256": "724a721d74104b17dabed236b11fd49e87705069fc5c972fa45b41c3d0d95253",
+        "verifiedInstructions": 436,
+        "undecodedSlots": []
+      },
+      {
+        "id": "DBL-asr-context",
+        "artifact": "main",
+        "range": [
+          "0x1000efe98",
+          "0x1000f098c"
+        ],
+        "intervalSHA256": "8a8bafa4a9f2b7d5672c48d42e7acece6dcf0307717f33ac64bfb2e5cf44b75a",
+        "assemblySHA256": "42f5b3d53904dc79e5eb471abec33c8757ecf52a468268b85c3c70d15b6d57ec",
+        "verifiedInstructions": 701,
+        "undecodedSlots": []
+      },
+      {
+        "id": "DBL-hotword-setter",
+        "artifact": "main",
+        "range": [
+          "0x100b0cffc",
+          "0x100b0d0f0"
+        ],
+        "intervalSHA256": "2ee13f033bbfb59957db2ee0c0676722b45ad0953935ec7194282a2d787b1b48",
+        "assemblySHA256": "6761bd696dc8207ee3249ed22227cb8d92791cdc7dab2b1c5d36671146ef7beb",
+        "verifiedInstructions": 61,
+        "undecodedSlots": []
+      },
+      {
+        "id": "DBL-upload",
+        "artifact": "main",
+        "range": [
+          "0x100195330",
+          "0x100195c98"
+        ],
+        "intervalSHA256": "cd6de897eaf38727a3cfbe5ff61d1a0ec2b7d0ca794905deaef68bb4f162b5e9",
+        "assemblySHA256": "fad164309111613a12c565db306830938c8ebbe974854c54a8b04c73eaf5b843",
+        "verifiedInstructions": 602,
+        "undecodedSlots": []
+      },
+      {
+        "id": "DBL-ner-ingest",
+        "artifact": "engine",
+        "range": [
+          "0x2a543c",
+          "0x2a5e20"
+        ],
+        "intervalSHA256": "0a64217851aa7f79524b2aca0a25838d3bd9183638b02953fc0eff87ca1ae117",
+        "assemblySHA256": "3adc28b7e2105e0a218628e06fc989fe469cf5c754adc17aa1a9711e8d051c04",
+        "verifiedInstructions": 626,
+        "undecodedSlots": [
+          "2a5464:\t\t.long\t0x38bfc108",
+          "2a547c:\t\t.long\t0x38bfc108",
+          "2a548c:\t\t.long\t0x38bfc108",
+          "2a5980:\t\t.long\t0x38bfc108",
+          "2a5998:\t\t.long\t0x38bfc108",
+          "2a59a8:\t\t.long\t0x38bfc108",
+          "2a5da8:\t\t.long\t0x38bfc108"
+        ]
+      },
+      {
+        "id": "DBL-keyboard-ner",
+        "artifact": "engine",
+        "range": [
+          "0x1dfd88",
+          "0x1e0390"
+        ],
+        "intervalSHA256": "27338d24bc94900b4a03b9f29a849c0806068112c653ea79005351d5b5cbb54c",
+        "assemblySHA256": "1fc1e1c2c256b84e6400fdaa326fe6de7c97bf8c1c578473ac56de6945d1308e",
+        "verifiedInstructions": 384,
+        "undecodedSlots": [
+          "1dfe54:\t\t.long\t0x38bfc108",
+          "1dff14:\t\t.long\t0x38bfc108"
+        ]
+      },
+      {
+        "id": "DBL-keyboard-user-call",
+        "artifact": "engine",
+        "range": [
+          "0x1bc990",
+          "0x1bcab0"
+        ],
+        "intervalSHA256": "78aa08f5d752e3a52744c018bc6f8fb9b1d40dcb23b7f0dc45cfc7f38df54035",
+        "assemblySHA256": "1ae7c99bd7b1c379f2c3539692022b48097fdb2ceeff649beab12881956e1810",
+        "verifiedInstructions": 72,
+        "undecodedSlots": []
+      }
+    ],
+    "hotwordsSetterSlot": {
+      "address": "0x101335eb0",
+      "rawHex": "fccfb00001000000",
+      "target": "0x100b0cffc",
+      "class": "ASRContext",
+      "classAddress": "0x101335de8",
+      "slotOffset": "0xc8",
+      "ivarOffsetCell": "0x101357f68",
+      "ivarName": "hotwordsInfo"
+    },
+    "limits": [
+      "Static reachability does not establish active settings, runtime receiver or recognition benefit.",
+      "Selected intervals can include adjacent helpers and undecoded atomic instructions.",
+      "Full filter policy, all account gates and offline-model hotword consumer remain incomplete."
+    ],
+    "rea": [
+      {
+        "evidenceId": "ev_f30ad536737c0529fdd53b8219bb92ac09764490c2a6436e9db3c814f990fffb",
+        "operation": "analyze_function",
+        "procedure": "0x1d046c",
+        "body": {
+          "available": true,
+          "provenance": "ghidra-function-body-address-set",
+          "ranges": [
+            {
+              "start": "0x1d046c",
+              "end": "0x1d116b"
+            }
+          ],
+          "total_bytes": 3328,
+          "span_bytes": 3328,
+          "non_contiguous": false,
+          "contains_entry": true
+        },
+        "limitations": [
+          "The session serves operations only after Ghidra reports default auto-analysis complete; incomplete analysis does not expose partial results.",
+          "The imported Program and temporary project are ephemeral and deleted on close. Annotation operations edit session database metadata; original executable bytes are never written.",
+          "Cancelling an active Ghidra request terminates its ephemeral database and discards session annotations. The selected target remains open; the next provider query imports the original artifact again.",
+          "Default-space addresses use lowercase 0x-prefixed hexadecimal; other address spaces use <percent-encoded-space>:0x<hex>.",
+          "References cover the complete Ghidra function-body AddressSet and exact entry. Dossier incoming edges omit sources owned by that function; procedure_references also retains those internal edges.",
+          "The dossier combines Ghidra FunctionManager, Listing, ReferenceManager, BasicBlockModel, and decompiler observations; provider-specific pseudocode and assembly are not cross-provider text invariants.",
+          "Resolved reference metadata identifies computed, indirect, external, call, jump, and data edges; unresolved targetless flows remain unknown, and function classifications distinguish thunks and externals.",
+          "Synthetic Ghidra entry-point references without actionable memory sources are omitted.",
+          "The Java bridge serializes one function request per Program and lets each decompilation run until it completes or the caller cancels.",
+          "Ghidra Listing reports a terminal call at 0x1d1150 to 0x3ac9c4 ___stack_chk_fail (external=false, thunk=true, hasNoReturn=true); fallthrough is excluded by Ghidra's flow model. This records Ghidra's FunctionManager flag, not an independent verification that the callee cannot return.",
+          "macOS sessions require a matching executable Ghidra native decompiler; REA checks for it but does not build native components or change Gatekeeper quarantine state."
+        ],
+        "localRecord": "asr-get-user-word.json"
+      },
+      {
+        "evidenceId": "ev_23f354667daceba72f870462e561495c1d4619ff948bcd6be98e4808abe2db18",
+        "operation": "analyze_function",
+        "procedure": "0x1d1328",
+        "body": {
+          "available": true,
+          "provenance": "ghidra-function-body-address-set",
+          "ranges": [
+            {
+              "start": "0x1d1328",
+              "end": "0x1d20ab"
+            }
+          ],
+          "total_bytes": 3460,
+          "span_bytes": 3460,
+          "non_contiguous": false,
+          "contains_entry": true
+        },
+        "limitations": [
+          "The session serves operations only after Ghidra reports default auto-analysis complete; incomplete analysis does not expose partial results.",
+          "The imported Program and temporary project are ephemeral and deleted on close. Annotation operations edit session database metadata; original executable bytes are never written.",
+          "Cancelling an active Ghidra request terminates its ephemeral database and discards session annotations. The selected target remains open; the next provider query imports the original artifact again.",
+          "Default-space addresses use lowercase 0x-prefixed hexadecimal; other address spaces use <percent-encoded-space>:0x<hex>.",
+          "References cover the complete Ghidra function-body AddressSet and exact entry. Dossier incoming edges omit sources owned by that function; procedure_references also retains those internal edges.",
+          "The dossier combines Ghidra FunctionManager, Listing, ReferenceManager, BasicBlockModel, and decompiler observations; provider-specific pseudocode and assembly are not cross-provider text invariants.",
+          "Resolved reference metadata identifies computed, indirect, external, call, jump, and data edges; unresolved targetless flows remain unknown, and function classifications distinguish thunks and externals.",
+          "Synthetic Ghidra entry-point references without actionable memory sources are omitted.",
+          "The Java bridge serializes one function request per Program and lets each decompilation run until it completes or the caller cancels.",
+          "Ghidra Listing reports a terminal call at 0x1d2028 to 0x3ac9c4 ___stack_chk_fail (external=false, thunk=true, hasNoReturn=true); fallthrough is excluded by Ghidra's flow model. This records Ghidra's FunctionManager flag, not an independent verification that the callee cannot return.",
+          "macOS sessions require a matching executable Ghidra native decompiler; REA checks for it but does not build native components or change Gatekeeper quarantine state."
+        ],
+        "localRecord": "asr-get-global-context.json"
+      },
+      {
+        "evidenceId": "ev_204fdd8f6abfe67ee5c9bcb7e688acaab2da6b7901f0adda60db18167a4b6d96",
+        "operation": "analyze_function",
+        "procedure": "0xb8fc",
+        "body": {
+          "available": true,
+          "provenance": "ghidra-function-body-address-set",
+          "ranges": [
+            {
+              "start": "0xb8fc",
+              "end": "0xbb1b"
+            }
+          ],
+          "total_bytes": 544,
+          "span_bytes": 544,
+          "non_contiguous": false,
+          "contains_entry": true
+        },
+        "limitations": [
+          "The session serves operations only after Ghidra reports default auto-analysis complete; incomplete analysis does not expose partial results.",
+          "The imported Program and temporary project are ephemeral and deleted on close. Annotation operations edit session database metadata; original executable bytes are never written.",
+          "Cancelling an active Ghidra request terminates its ephemeral database and discards session annotations. The selected target remains open; the next provider query imports the original artifact again.",
+          "Default-space addresses use lowercase 0x-prefixed hexadecimal; other address spaces use <percent-encoded-space>:0x<hex>.",
+          "References cover the complete Ghidra function-body AddressSet and exact entry. Dossier incoming edges omit sources owned by that function; procedure_references also retains those internal edges.",
+          "The dossier combines Ghidra FunctionManager, Listing, ReferenceManager, BasicBlockModel, and decompiler observations; provider-specific pseudocode and assembly are not cross-provider text invariants.",
+          "Resolved reference metadata identifies computed, indirect, external, call, jump, and data edges; unresolved targetless flows remain unknown, and function classifications distinguish thunks and externals.",
+          "Synthetic Ghidra entry-point references without actionable memory sources are omitted.",
+          "The Java bridge serializes one function request per Program and lets each decompilation run until it completes or the caller cancels.",
+          "Ghidra Listing reports a terminal call at 0xbad0 to 0x3acd48 _objc_autoreleaseReturnValue (external=false, thunk=true, hasNoReturn=false); fallthrough is excluded by Ghidra's flow model. The reason for the terminal flow is not established by this observation.",
+          "macOS sessions require a matching executable Ghidra native decompiler; REA checks for it but does not build native components or change Gatekeeper quarantine state."
+        ],
+        "localRecord": "wrapper-user-words.json"
+      }
+    ],
+    "taskDispatch": [
+      {
+        "task": "0x26",
+        "tableAddress": "0x4bb59a",
+        "rawHex": "0900",
+        "branchStart": "0x1cbbe4",
+        "tailBranch": "0x1cbc04",
+        "callee": "0x1d046c"
+      },
+      {
+        "task": "0x35",
+        "tableAddress": "0x4bb5b8",
+        "rawHex": "9201",
+        "branchStart": "0x1cc208",
+        "tailBranch": "0x1cc228",
+        "callee": "0x1d1328"
+      }
+    ]
+  },
+  "limitations": [
+    "Static client bridges only; no target execution, private user data, traffic capture, recognition-quality experiment or cross-device convergence test.",
+    "REA/Ghidra dossiers are for Doubao only. Current Chatterfly evidence is ordinary byte-verified LLVM analysis."
+  ],
+  "chatterfly": {
+    "version": "1.0.8.13459",
+    "universalSHA256": "595e502f74e41e1b28904affa9093974f6cbc197a3756a74a007ef562f9ee767",
+    "arm64SHA256": "3406894676fd6b9028795858907d1821f54977aa0f9ec5716d42eba12848fe21",
+    "records": [
+      {
+        "id": "CF108-0",
+        "entry": "0x10006fd14",
+        "end": "0x10006fe1c",
+        "symbol": "__Z18pc_build_voice_usrNSt3__18functionIFvvEEE",
+        "asm": ".workspace/research/lexicon-bridge/chatterfly/CF108-0.txt",
+        "functionSHA256": "face86f382d54b55dafd8a78b5715c32a7529f585a4e64ba2fac44673f0de09f",
+        "validatedInstructions": 65
+      },
+      {
+        "id": "CF108-1",
+        "entry": "0x1008e9e60",
+        "end": "0x1008ea524",
+        "symbol": "__ZN19_sgime_core_pinyin_9n_newDict13t_dictManager25TriggerVoiceDictBuildSyncENSt3__18functionIFvvEEE",
+        "asm": ".workspace/research/lexicon-bridge/chatterfly/CF108-1.txt",
+        "functionSHA256": "61854c6d9996cf5f07846ad020272d338b3e673c282a8668dee6009be40c36e4",
+        "validatedInstructions": 425
+      },
+      {
+        "id": "CF108-2",
+        "entry": "0x1008e9a24",
+        "end": "0x1008e9dd4",
+        "symbol": "__ZN19_sgime_core_pinyin_9n_newDict17BuildVoiceUsrDictERKNS0_17DictBuildResponseE",
+        "asm": ".workspace/research/lexicon-bridge/chatterfly/CF108-2.txt",
+        "functionSHA256": "0b2a6371c1757f58549a369932d8c2961f93db56fbaf71bf59d41ff5ffd8b510",
+        "validatedInstructions": 236
+      },
+      {
+        "id": "CF108-3",
+        "entry": "0x1008e8198",
+        "end": "0x1008e8bf0",
+        "symbol": "__ZN19_sgime_core_pinyin_9n_newDict22ParseDictBuildResponseERKNS0_17DictBuildResponseERNSt3__16vectorINS0_15VoiceTermRecordENS4_9allocatorIS6_EEEE",
+        "asm": ".workspace/research/lexicon-bridge/chatterfly/CF108-3.txt",
+        "functionSHA256": "f7bf679efb4d6570247c128dd8e630cc50c839ce7417be2f155f9b3a14fc95e2",
+        "validatedInstructions": 662
+      },
+      {
+        "id": "CF108-4",
+        "entry": "0x1008e9594",
+        "end": "0x1008e9a24",
+        "symbol": "__ZN19_sgime_core_pinyin_9n_newDict22BuildVoiceUsrDictInnerERNSt3__16vectorINS0_15VoiceTermRecordENS1_9allocatorIS3_EEEEbj",
+        "asm": ".workspace/research/lexicon-bridge/chatterfly/CF108-4.txt",
+        "functionSHA256": "199af9a05b2104f727844dd70c59a82d306b11e58a7093d711642d00c8f2e4a6",
+        "validatedInstructions": 289
+      },
+      {
+        "id": "CF108-5",
+        "entry": "0x100c06f1c",
+        "end": "0x100c07a80",
+        "symbol": "__ZN19_sgime_core_pinyin_13t_entryLoader16AddVoiceUsrEntryEPNS_11t_arrayWordEifsPKNS_8t_pysArcEb",
+        "asm": ".workspace/research/lexicon-bridge/chatterfly/CF108-5.txt",
+        "functionSHA256": "860fcbe471a02860c1031383b2fad6b19305b205649dc82ffd8f98f08c268600",
+        "validatedInstructions": 729
+      },
+      {
+        "id": "CF108-6",
+        "entry": "0x1008e8d88",
+        "end": "0x1008e9594",
+        "symbol": "__ZN19_sgime_core_pinyin_9n_newDict21AddVoiceUsrDictRecordERNSt3__16vectorINS0_15VoiceTermRecordENS1_9allocatorIS3_EEEEPNS0_12VoiceUsrDictE",
+        "asm": ".workspace/research/lexicon-bridge/chatterfly/CF108-6.txt",
+        "functionSHA256": "4a8eab7f9b778a71d5c5c2c118c04f2f1aca4b3a9baaf364c483d44e6f43fa7d",
+        "validatedInstructions": 514
+      },
+      {
+        "id": "CF108-7",
+        "entry": "0x1003a0614",
+        "end": "0x1003a070c",
+        "symbol": "-[YBVoiceDictSyncManager ybvds_shouldSync]",
+        "asm": ".workspace/research/lexicon-bridge/chatterfly/CF108-7.txt",
+        "functionSHA256": "2d5bb7920e860fccb3416ea3cd17c56ebe9e0edd2379ea1995abb2ef1eb55bba",
+        "validatedInstructions": 62
+      },
+      {
+        "id": "CF108-fill-asr",
+        "entry": "0x1003c5fcc",
+        "end": "0x1003c615c",
+        "symbol": "+[SGMacSpeechASRParamsBuilder fillASRParams:withPostProcessContext:]",
+        "asm": ".workspace/research/lexicon-bridge/chatterfly/CF108-fill-asr.txt",
+        "functionSHA256": "4b4d00b2eed4c7f69ff53082148d3d9f5c9cfd0f57ad49c9f7711efd3daf5d17",
+        "validatedInstructions": 100
+      },
+      {
+        "id": "CF108-collector-flush",
+        "entry": "0x1003bfd74",
+        "end": "0x1003bff0c",
+        "symbol": "-[SGInputHistoryCollector flushToStore]",
+        "asm": ".workspace/research/lexicon-bridge/chatterfly/CF108-collector-flush.txt",
+        "functionSHA256": "a5b1946631c976f8c8e49e87372c0f02b5743e1957a75ba6f94ee74cb01d8bba",
+        "validatedInstructions": 102
+      },
+      {
+        "id": "CF108-collector-append",
+        "entry": "0x1003bfb48",
+        "end": "0x1003bfc2c",
+        "symbol": "-[SGInputHistoryCollector appendText:]",
+        "asm": ".workspace/research/lexicon-bridge/chatterfly/CF108-collector-append.txt",
+        "functionSHA256": "73677bbd3fc89b116deb3e2e73e17829a8fa2ab8ce98ee7b556f36b3bd8fbc80",
+        "validatedInstructions": 57
+      },
+      {
+        "id": "CF108-history-save",
+        "entry": "0x1003c0dfc",
+        "end": "0x1003c0fb0",
+        "symbol": "-[SGInputHistoryStore saveRecordWithApp:content:]",
+        "asm": ".workspace/research/lexicon-bridge/chatterfly/CF108-history-save.txt",
+        "functionSHA256": "3921e7eea5bf73fcdc4ab5369a03c47a9015bd8c3cd4389af47ae3318f254e31",
+        "validatedInstructions": 109
+      },
+      {
+        "id": "CF108-context-builder",
+        "entry": "0x1003c674c",
+        "end": "0x1003c6a70",
+        "symbol": "-[SGMacSpeechContextBuilder buildPostProcessContext]",
+        "asm": ".workspace/research/lexicon-bridge/chatterfly/CF108-context-builder.txt",
+        "functionSHA256": "facd8f2fc2e6b6f7e8b4e63238dc78d399cef76677dd258b98eb998792d03ce2",
+        "validatedInstructions": 201
+      },
+      {
+        "id": "CF108-keyboard-commit",
+        "entry": "0x1000023a0",
+        "end": "0x10000246c",
+        "symbol": "____ZL26SGYuanbaoMainCustomizationv_block_invoke_8",
+        "asm": ".workspace/research/lexicon-bridge/chatterfly/CF108-keyboard-commit.txt",
+        "functionSHA256": "ca0b55d99b8f69b23d5b9fba72147ff3ee31b7a7e22fc23a4a07b4afaf9d4857",
+        "validatedInstructions": 51
+      },
+      {
+        "id": "CF108-asr-start",
+        "entry": "0x1003de17c",
+        "end": "0x1003de770",
+        "symbol": "-[SGSpeechASREngine startRecognizeLive:]",
+        "asm": ".workspace/research/lexicon-bridge/chatterfly/CF108-asr-start.txt",
+        "functionSHA256": "7f12ae92c744233ad71b476767d7288b5e76758a101c267628299c660080466b",
+        "validatedInstructions": 381
+      },
+      {
+        "id": "CF108-asr-config",
+        "entry": "0x1003e0a8c",
+        "end": "0x1003e1738",
+        "symbol": "-[SGSpeechASREngine buildAsrConfig:sessionID:]",
+        "asm": ".workspace/research/lexicon-bridge/chatterfly/CF108-asr-config.txt",
+        "functionSHA256": "198b464390deda7f69dea175327dbb31f44e505c360b1668c489633a535e8948",
+        "validatedInstructions": 811
+      },
+      {
+        "id": "CF108-record-asr",
+        "entry": "0x100421254",
+        "end": "0x100421380",
+        "symbol": "-[SGSpeechPostProcessInputRecord toASRDict]",
+        "asm": ".workspace/research/lexicon-bridge/chatterfly/CF108-record-asr.txt",
+        "functionSHA256": "b003b0446f1b5c001c3ac819e058277b20dd5c18c1391d91d5eed491bc133a25",
+        "validatedInstructions": 75
+      },
+      {
+        "id": "CF108-customization",
+        "entry": "0x100001fdc",
+        "end": "0x10000220c",
+        "symbol": "___main_block_invoke",
+        "asm": ".workspace/research/lexicon-bridge/chatterfly/CF108-customization.txt",
+        "functionSHA256": "4572c2bfe6f151ae94a5b1205b20dd7fdc9e27280c8a51113c6e45aa97a8dec3",
+        "validatedInstructions": 140
+      }
+    ],
+    "type": "ordinary-static-arm64-instructions",
+    "target": "/Library/Input Methods/Chatterfly.app/Contents/MacOS/Chatterfly",
+    "scope": "Shipped package bytes only; no execution, private profile data, settings, account state or network traffic accessed.",
+    "limitations": [
+      "CF108 identifiers are local static observation IDs, not REA Evidence IDs.",
+      "REA inventory/extraction IDs from earlier 1.0.6 artifact must not authenticate current 1.0.8 bytes.",
+      "No successful native REA pseudocode dossier was available for Chatterfly; the prior Ghidra request timed out.",
+      "Static calls establish a possible shipped path, not enabled current settings, observed inference, server acceptance, retention or model training.",
+      "No wholesale base typing dictionary to speech dictionary copy was established; learned text and manually managed account terms have distinct paths."
+    ],
+    "commitBlockBinding": {
+      "blockVA": "0x10208e560",
+      "fileOffset": 34137440,
+      "bytes": "00000000000000000000005000000000a02300000100000040e5080201000000",
+      "invokeVA": "0x1000023a0",
+      "maps": [
+        [
+          0,
+          4294967296,
+          0,
+          "__PAGEZERO"
+        ],
+        [
+          4294967296,
+          4329095168,
+          0,
+          "__TEXT"
+        ],
+        [
+          4329095168,
+          4330110976,
+          34127872,
+          "__DATA_CONST"
+        ],
+        [
+          4330110976,
+          4332863488,
+          35143680,
+          "__DATA"
+        ],
+        [
+          4332863488,
+          4350705664,
+          36388864,
+          "__LINKEDIT"
+        ]
+      ]
+    },
+    "findings": [
+      {
+        "id": "CF108-typing-history-to-asr",
+        "status": "answered-static",
+        "confidence": "high for client path",
+        "claim": "A registered commit-text callback appends text to input-history collector. Collector flushes app-tagged committed text into store. Enhanced-recognition flag gates per-app cached history retrieval. ASR params builder serializes records with text, timestamp, app_name; ASR config supplies context_hist. Payload JSON UTF-8 over 6000 bytes causes context_hist to be removed.",
+        "sources": [
+          "CF108-customization",
+          "CF108-keyboard-commit",
+          "CF108-collector-append",
+          "CF108-collector-flush",
+          "CF108-history-save",
+          "CF108-context-builder",
+          "CF108-fill-asr",
+          "CF108-record-asr",
+          "CF108-asr-config"
+        ]
+      },
+      {
+        "id": "CF108-personal-terms-to-typing",
+        "status": "answered-static",
+        "confidence": "high for client cache build and typing consumption; server behavior unknown",
+        "claim": "TriggerVoiceDictBuildSync requests logical account lexicon term sync endpoint with Authorization and delta/since support. BuildVoiceUsrDict parses response into VoiceTermRecords, builds/saves dictionary type 0x9e. Typing candidate loader AddVoiceUsrEntry reads same 0x9e VoiceUsrDict and its words. Thus this build function supplies personal voice/account terms to keyboard candidates; its name does not prove typing dictionary upload to ASR.",
+        "sources": [
+          "CF108-1",
+          "CF108-2",
+          "CF108-3",
+          "CF108-4",
+          "CF108-5",
+          "CF108-6"
+        ]
+      },
+      {
+        "id": "CF108-term-sync-interval",
+        "status": "answered-static-partial",
+        "claim": "ybvds_shouldSync compares elapsed time since voice_dict_sync_time against literal double 14400 seconds. Actual timer trigger execution was not observed.",
+        "sources": [
+          "CF108-7"
+        ],
+        "constant": {
+          "va": "0x101dacc30",
+          "arm64FileOffset": 31116336,
+          "double": 14400.0
+        }
+      }
+    ]
+  }
+}

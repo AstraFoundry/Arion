@@ -41,7 +41,8 @@ var contentMotion = ui.ElementTransition{
 }
 
 // Render builds the pill bottom-centered in a transparent overlay window.
-func Render(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
+// typing paces the streaming draft across frames.
+func Render(c *ui.Context, store runtime.Store, tokens theme.Tokens, typing *dictation.Typewriter) {
 	messages := store.Copy()
 	state := store.State
 	d := state.Dictation
@@ -74,9 +75,9 @@ func Render(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 			row.Children(func() {
 				switch phase {
 				case dictation.Preparing, dictation.Listening:
-					listening(c, state, tokens, phase == dictation.Preparing)
+					listening(c, state, tokens, phase == dictation.Preparing, typing)
 				case dictation.Transcribing, dictation.Inserting:
-					transcribing(c, d, tokens, store.Copy())
+					transcribing(c, d, tokens, store.Copy(), typing)
 				case dictation.Done:
 					outcome(c, d, tokens, store.Copy())
 				case dictation.Failed:
@@ -90,7 +91,7 @@ func Render(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 	})
 }
 
-func listening(c *ui.Context, state *runtime.State, tokens theme.Tokens, preparing bool) {
+func listening(c *ui.Context, state *runtime.State, tokens theme.Tokens, preparing bool, typing *dictation.Typewriter) {
 	messages := copy.For(copy.Locale(state.Preferences.UILanguage))
 	d := state.Dictation
 	// The dot and the meter say "listening"; the word is their name for
@@ -106,7 +107,7 @@ func listening(c *ui.Context, state *runtime.State, tokens theme.Tokens, prepari
 	// One slot holds the draft once speech arrives, and until then how to
 	// finish: a key and a few words, as Doubao's 「松手结束」.
 	if text := dictation.Text(d); text != "" {
-		draft(c, tokens, text, tokens.PillText)
+		draft(c, tokens, typing.Update(d.SessionID, text, d.Final != "", c.Now()), tokens.PillText)
 		return
 	}
 	ui.Row(c.Key("hint")).Grow(1).Gap(6).AlignItems(ui.Center).Justify(ui.End).
@@ -124,15 +125,27 @@ func listening(c *ui.Context, state *runtime.State, tokens theme.Tokens, prepari
 // draft shows the end of the streaming text on one line: as much of the
 // tail as fits beside the meter, the start cut with an ellipsis, so
 // the line keeps its place however long the sentence grows. Widths come
-// from the previous frame's layout; before the first, the line clips.
-func draft(c *ui.Context, tokens theme.Tokens, text string, color ui.Color) {
+// from the previous frame's layout; before the first, the line clips. The
+// typewriter's newest characters fade in at the end of the line.
+func draft(c *ui.Context, tokens theme.Tokens, frame dictation.Frame, color ui.Color) {
+	if frame.Animating {
+		c.AnimationFrame()
+	}
+	text := frame.Text
 	line := ui.Row(c.Key("draft")).Grow(1).Shrink(1).Width(0).ClipX().AlignItems(ui.Center)
 	room := line.Bounds().W
 	if room > 0 {
 		text = fit(c, tail(text, previewRunes), room)
 	}
+	runes := []rune(text)
+	fading := min(len(frame.Opacity), len(runes))
+	spans := []ui.Span{{Text: string(runes[:len(runes)-fading])}}
+	for i, opacity := range frame.Opacity[len(frame.Opacity)-fading:] {
+		r := runes[len(runes)-fading+i]
+		spans = append(spans, ui.Span{Text: string(r), Color: color.Alpha(opacity)})
+	}
 	line.Children(func() {
-		ui.Text(c, text).FontSize(theme.Body).TextColor(color).SingleLine().Shrink(0)
+		ui.RichText(c, spans...).FontSize(theme.Body).TextColor(color).SingleLine().Shrink(0)
 	})
 }
 
@@ -160,7 +173,7 @@ func fit(c *ui.Context, text string, width float32) string {
 	return "…" + string(runes[lo:])
 }
 
-func transcribing(c *ui.Context, d runtime.Dictation, tokens theme.Tokens, messages copy.Catalog) {
+func transcribing(c *ui.Context, d runtime.Dictation, tokens theme.Tokens, messages copy.Catalog, typing *dictation.Typewriter) {
 	ui.Row(c).Gap(4).AlignItems(ui.Center).Children(func() {
 		for i := 0; i < 3; i++ {
 			dot := ui.Box(c.Key(i)).Size(5, 5).Radius(2.5).Background(tokens.PillText)
@@ -178,11 +191,12 @@ func transcribing(c *ui.Context, d runtime.Dictation, tokens theme.Tokens, messa
 			dot.Translate(0, -lift).Opacity(0.5 + 0.5*lift/4)
 		}
 	})
-	text := dictation.Text(d)
-	if text == "" {
-		text = messages.Text(copy.PillTranscribing)
+	// Recognition has ended: the rest of the draft drains at full speed.
+	frame := dictation.Frame{Text: messages.Text(copy.PillTranscribing)}
+	if text := dictation.Text(d); text != "" {
+		frame = typing.Update(d.SessionID, text, true, c.Now())
 	}
-	draft(c, tokens, text, tokens.PillMuted)
+	draft(c, tokens, frame, tokens.PillMuted)
 }
 
 func outcome(c *ui.Context, d runtime.Dictation, tokens theme.Tokens, messages copy.Catalog) {

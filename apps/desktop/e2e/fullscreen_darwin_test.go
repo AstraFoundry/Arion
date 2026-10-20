@@ -16,9 +16,16 @@ import (
 )
 
 type editorState struct {
+	ClipboardOwned bool `json:"clipboardOwned"`
+	Web            struct {
+		Text    string `json:"text"`
+		Edits   int    `json:"edits"`
+		Focused bool   `json:"focused"`
+	} `json:"web"`
 	PID int `json:"pid"`
 	A   struct {
-		Text string `json:"text"`
+		Text  string `json:"text"`
+		Edits int    `json:"edits"`
 	} `json:"A"`
 	Active        bool   `json:"active"`
 	Fullscreen    bool   `json:"fullscreen"`
@@ -102,7 +109,7 @@ func startEditorFixture(t *testing.T) func(op string, values map[string]any) edi
 		t.Fatal(err)
 	}
 	binary := filepath.Join(bundle, "MacOS", "ArionEditorFixture")
-	if out, err := exec.Command("clang", "-fobjc-arc", "-framework", "Cocoa", "fixtures/editor/main.m", "-o", binary).CombinedOutput(); err != nil {
+	if out, err := exec.Command("clang", "-fobjc-arc", "-framework", "Cocoa", "-framework", "WebKit", "fixtures/editor/main.m", "-o", binary).CombinedOutput(); err != nil {
 		t.Fatalf("compile editor fixture: %v\n%s", err, out)
 	}
 	// macOS Unix socket paths must fit sockaddr_un.sun_path.

@@ -9,6 +9,7 @@ package macos
 import "C"
 
 import (
+	"bytes"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -24,6 +25,9 @@ var imeInstallation sync.Mutex
 
 // IMESourceID is the input source Arion's IMK bundle declares.
 const IMESourceID = "si.astrafoundry.inputmethod.arion.pinyin"
+
+// IMEBundleID is the IMK bundle's own identifier.
+const IMEBundleID = "si.astrafoundry.inputmethod.arion"
 
 // IMEState is the registration state of Arion's input source.
 type IMEState int
@@ -85,7 +89,7 @@ func ValidateIMEPayload(bundle string) error {
 	}
 	path, freePath := cstring(bundle)
 	defer freePath()
-	identifier, freeID := cstring("si.astrafoundry.inputmethod.arion")
+	identifier, freeID := cstring(IMEBundleID)
 	defer freeID()
 	if status := C.arion_ime_validate_payload(path, identifier); status != 0 {
 		return domain.Fail(domain.CodeArtifactUnverified, fmt.Sprintf("input method payload signature or provisioning identity is invalid: %d", status))
@@ -121,7 +125,7 @@ func InstallIME(bundled string) error {
 		defer free()
 		return IMEState(C.arion_ime_state(id))
 	}
-	return replaceInputBundle(bundled, destination, func() error {
+	err := replaceInputBundle(bundled, destination, func() error {
 		return registerAndEnableInputSource(register, requestEnable, state, false)
 	}, func() error {
 		if previous == IMEAbsent {
@@ -138,6 +142,39 @@ func InstallIME(bundled string) error {
 		}
 		return disableIME()
 	})
+	if err == nil && previous != IMEAbsent {
+		// A replaced input method keeps running its old binary until its
+		// process ends; macOS launches the new one on the next activation.
+		id, free := cstring(IMEBundleID)
+		defer free()
+		C.arion_ime_terminate(id)
+	}
+	return err
+}
+
+// IMEUpdateAvailable reports whether the installed input method differs from
+// the bundled one. The executable and the signature's resource list
+// (_CodeSignature/CodeResources, which hashes every resource) identify a
+// build without reading the whole bundle.
+func IMEUpdateAvailable(bundled string) bool {
+	return bundleDiffers(InstalledIMEPath(), bundled)
+}
+
+func bundleDiffers(installed, bundled string) bool {
+	if _, err := os.Stat(installed); err != nil {
+		return false
+	}
+	for _, name := range []string{"Contents/MacOS/ArionInput", "Contents/_CodeSignature/CodeResources", "Contents/Info.plist"} {
+		a, errA := os.ReadFile(filepath.Join(installed, name))
+		b, errB := os.ReadFile(filepath.Join(bundled, name))
+		if errB != nil {
+			return false
+		}
+		if errA != nil || !bytes.Equal(a, b) {
+			return true
+		}
+	}
+	return false
 }
 
 // Registration can finish while macOS still requires the user to enable the

@@ -8,10 +8,15 @@ if (!['darwin', 'win32'].includes(process.platform)) {
   console.error('Native E2E requires macOS or Windows with an interactive desktop session.');
   process.exit(2);
 }
+const paste = process.argv.slice(2).includes('--paste');
+if (paste && process.platform !== 'darwin') {
+  console.error('Guarded system paste E2E requires macOS.');
+  process.exit(2);
+}
 const desktop = path.join(root, 'apps/desktop');
 const output = path.join(root, '.workspace/e2e', process.platform);
-const env = { ...process.env, ARION_NATIVE_E2E: '1', ARION_E2E_OUTPUT: output };
-const testFlags = ['-count=1', '-timeout=120s', '-v'];
+const env = { ...process.env, ARION_NATIVE_E2E: '1', ARION_E2E_OUTPUT: output, ...(paste ? { ARION_E2E_PASTE: '1' } : {}) };
+const testFlags = ['-count=1', '-timeout=120s', '-v', ...(paste ? ['-run=^TestGuardedSystemPaste$'] : [])];
 
 function run(command, args, cwd) {
   const result = spawnSync(command, args, { cwd, stdio: 'inherit', env });

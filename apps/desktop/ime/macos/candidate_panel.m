@@ -31,24 +31,33 @@ static const CGFloat kWidthSlack = 96;
 // bar returns with the next word. Hiding only makes it transparent and
 // click-through; it leaves the window list after this idle time.
 static const NSTimeInterval kOrderOutDelay = 2;
+// -[SGCandidatesController updateWindow:] animates spreading over 0.3 s and
+// folding over 0.2 s with the default ease-in-out curve.
+static const NSTimeInterval kExpandDuration = 0.3;
+static const NSTimeInterval kCollapseDuration = 0.2;
+// The grid's rows fade in once the bar has started to grow.
+static const NSTimeInterval kRowsFadeDelay = 0.08;
+static const NSTimeInterval kRowsFadeDuration = 0.2;
 
 static NSColor *srgb(CGFloat r, CGFloat g, CGFloat b, CGFloat a) {
     return [NSColor colorWithSRGBRed:r green:g blue:b alpha:a];
 }
 
-// Draws the numbers, candidate text and chevron over the layer chrome.
+// Draws the numbers, candidate text and chevron over the layer chrome, in
+// flipped window coordinates.
 @interface ArionCandidateText : NSView
-@property(copy) NSArray<NSString *> *candidates;
-@property(copy) NSArray<NSValue *> *itemRects;
-@property(copy) NSArray<NSNumber *> *textWidths;
+@property(copy) NSArray<NSArray<NSString *> *> *rows;
+@property(copy) NSArray<NSArray<NSValue *> *> *itemRects;
+@property NSUInteger currentRow;
 @property NSUInteger highlighted;
-@property BOOL paged;
+@property BOOL expanded;
+@property BOOL chevron;
 @property NSRect arrowRect;
 @property Preset preset;
 @property(strong) NSFont *bodyFont;
 @property(strong) NSFont *numberFont;
 @property BOOL dark;
-@property(copy) void (^clicked)(NSInteger index);
+@property(copy) void (^clicked)(NSUInteger index, NSUInteger row);
 @property(copy) void (^clickedArrow)(void);
 @end
 
@@ -66,25 +75,33 @@ static NSColor *srgb(CGFloat r, CGFloat g, CGFloat b, CGFloat a) {
     NSDictionary *hotBodyStyle = @{NSFontAttributeName: self.bodyFont, NSForegroundColorAttributeName: srgb(1, 1, 1, 1)};
     CGFloat numberHeight = self.numberFont.ascender - self.numberFont.descender;
     CGFloat bodyHeight = self.bodyFont.ascender - self.bodyFont.descender;
-    for (NSUInteger index = 0; index < self.itemRects.count; index++) {
-        NSRect item = self.itemRects[index].rectValue;
-        BOOL hot = index == self.highlighted;
-        NSString *label = [NSString stringWithFormat:@"%lu", (unsigned long)(index + 1)];
-        NSDictionary *style = hot ? hotNumberStyle : numberStyle;
-        CGFloat x = NSMinX(item) + kSelectionPadding;
-        CGFloat numberWidth = [label sizeWithAttributes:style].width;
-        [label drawAtPoint:NSMakePoint(x + (self.preset.numberWidth - numberWidth) / 2, NSMidY(item) - numberHeight / 2)
-            withAttributes:style];
-        [self.candidates[index] drawAtPoint:NSMakePoint(x + self.preset.numberWidth + kNumberTextSpacing, NSMidY(item) - bodyHeight / 2)
-                             withAttributes:hot ? hotBodyStyle : bodyStyle];
+    for (NSUInteger row = 0; row < self.rows.count; row++) {
+        BOOL current = row == self.currentRow;
+        for (NSUInteger index = 0; index < self.rows[row].count; index++) {
+            NSRect item = self.itemRects[row][index].rectValue;
+            BOOL hot = current && index == self.highlighted;
+            CGFloat x = NSMinX(item) + kSelectionPadding;
+            // Number keys act on the current row only, so only it is numbered.
+            if (current) {
+                NSString *label = [NSString stringWithFormat:@"%lu", (unsigned long)(index + 1)];
+                NSDictionary *style = hot ? hotNumberStyle : numberStyle;
+                CGFloat width = [label sizeWithAttributes:style].width;
+                [label drawAtPoint:NSMakePoint(x + (self.preset.numberWidth - width) / 2, NSMidY(item) - numberHeight / 2)
+                    withAttributes:style];
+            }
+            [self.rows[row][index] drawAtPoint:NSMakePoint(x + self.preset.numberWidth + kNumberTextSpacing, NSMidY(item) - bodyHeight / 2)
+                                withAttributes:hot ? hotBodyStyle : bodyStyle];
+        }
     }
-    if (self.paged) {
-        // Outlined chevron, as Chatterfly's pageButtonIconStyle.
+    if (self.chevron) {
+        // Outlined chevron, as Chatterfly's pageButtonIconStyle: down to
+        // expand, up to collapse.
         NSRect arrow = self.arrowRect;
+        CGFloat tip = self.expanded ? -2.5 : 2.5;
         NSBezierPath *chevron = [NSBezierPath bezierPath];
-        [chevron moveToPoint:NSMakePoint(NSMidX(arrow) - 4.5, NSMidY(arrow) - 2)];
-        [chevron lineToPoint:NSMakePoint(NSMidX(arrow), NSMidY(arrow) + 2.5)];
-        [chevron lineToPoint:NSMakePoint(NSMidX(arrow) + 4.5, NSMidY(arrow) - 2)];
+        [chevron moveToPoint:NSMakePoint(NSMidX(arrow) - 4.5, NSMidY(arrow) - tip * 0.8)];
+        [chevron lineToPoint:NSMakePoint(NSMidX(arrow), NSMidY(arrow) + tip)];
+        [chevron lineToPoint:NSMakePoint(NSMidX(arrow) + 4.5, NSMidY(arrow) - tip * 0.8)];
         chevron.lineWidth = 1.5;
         chevron.lineCapStyle = NSLineCapStyleRound;
         chevron.lineJoinStyle = NSLineJoinStyleRound;
@@ -95,27 +112,40 @@ static NSColor *srgb(CGFloat r, CGFloat g, CGFloat b, CGFloat a) {
 
 - (void)mouseDown:(NSEvent *)event {
     NSPoint point = [self convertPoint:event.locationInWindow fromView:nil];
-    if (self.paged && NSPointInRect(point, self.arrowRect)) {
+    // The window is already the final size while the bar is still opening or
+    // closing. Hits outside the presented bar would select a row that is not
+    // drawn yet.
+    CALayer *mask = self.layer.mask.presentationLayer ?: self.layer.mask;
+    if (mask && !CGRectContainsPoint(mask.frame, point)) return;
+    if (self.chevron && NSPointInRect(point, NSInsetRect(self.arrowRect, -4, -4))) {
         if (self.clickedArrow) self.clickedArrow();
         return;
     }
-    for (NSUInteger index = 0; index < self.itemRects.count; index++) {
-        if (NSPointInRect(point, self.itemRects[index].rectValue)) {
-            if (self.clicked) self.clicked((NSInteger)index);
-            return;
+    for (NSUInteger row = 0; row < self.itemRects.count; row++) {
+        for (NSUInteger index = 0; index < self.itemRects[row].count; index++) {
+            if (NSPointInRect(point, self.itemRects[row][index].rectValue)) {
+                if (self.clicked) self.clicked(index, row);
+                return;
+            }
         }
     }
 }
 @end
 
-// Hosts the chrome layers; geometry is symmetric about the bar's center, so
-// the unflipped layer space only matters for the downward shadow offsets.
+// Hosts the chrome layers in unflipped layer space; the text view above
+// them uses flipped coordinates of the same window.
 @interface ArionCandidateView : NSView
 @property(strong) CALayer *wideShadow;
 @property(strong) CALayer *tightShadow;
 @property(strong) CALayer *bar;
+@property(strong) CALayer *rowTint;
+@property(strong) CAShapeLayer *separators;
 @property(strong) CALayer *selection;
+// Clips the text to the bar, so rows appear inside it as it grows.
+@property(strong) CALayer *textMask;
 @property(strong) ArionCandidateText *text;
+// The bar's last frame, where an expand or collapse animation starts.
+@property CGRect barFrame;
 @end
 
 @implementation ArionCandidateView
@@ -126,6 +156,8 @@ static NSColor *srgb(CGFloat r, CGFloat g, CGFloat b, CGFloat a) {
     self.wideShadow = [CALayer layer];
     self.tightShadow = [CALayer layer];
     self.bar = [CALayer layer];
+    self.rowTint = [CALayer layer];
+    self.separators = [CAShapeLayer layer];
     self.selection = [CALayer layer];
     for (CALayer *shadow in @[self.wideShadow, self.tightShadow]) shadow.shadowOpacity = 1;
     self.wideShadow.shadowRadius = 8;
@@ -135,10 +167,18 @@ static NSColor *srgb(CGFloat r, CGFloat g, CGFloat b, CGFloat a) {
     self.tightShadow.shadowOffset = CGSizeMake(0, -2);
     self.tightShadow.shadowColor = srgb(24 / 255.0, 26 / 255.0, 24 / 255.0, 15 / 255.0).CGColor;
     self.bar.borderWidth = kBorderWidth;
-    for (CALayer *layer in @[self.wideShadow, self.tightShadow, self.bar, self.selection]) [self.layer addSublayer:layer];
+    self.separators.lineWidth = kBorderWidth;
+    self.separators.fillColor = NULL;
+    for (CALayer *layer in @[self.wideShadow, self.tightShadow, self.bar, self.rowTint, self.separators, self.selection]) {
+        [self.layer addSublayer:layer];
+    }
     self.text = [[ArionCandidateText alloc] initWithFrame:self.bounds];
     self.text.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
+    self.text.wantsLayer = YES;
     [self addSubview:self.text];
+    self.textMask = [CALayer layer];
+    self.textMask.backgroundColor = NSColor.blackColor.CGColor;
+    self.text.layer.mask = self.textMask;
     return self;
 }
 
@@ -147,66 +187,162 @@ static NSColor *srgb(CGFloat r, CGFloat g, CGFloat b, CGFloat a) {
         isEqualToString:NSAppearanceNameDarkAqua];
 }
 
-// Lays out the page and returns the window size, shadow margin included.
-- (NSSize)layoutCandidates:(NSArray<NSString *> *)candidates highlighted:(NSUInteger)highlighted
-                     paged:(BOOL)paged preset:(Preset)preset {
+// Measures the content (bar) size for rows without changing anything.
+- (NSSize)contentSizeForRows:(NSArray<NSArray<NSString *> *> *)rows expanded:(BOOL)expanded
+                     chevron:(BOOL)chevron preset:(Preset)preset widths:(NSArray<NSNumber *> **)columns {
+    [self prepareFonts:preset];
+    NSDictionary *body = @{NSFontAttributeName: self.text.bodyFont};
+    CGFloat cell = kSelectionPadding + preset.numberWidth + kNumberTextSpacing + kSelectionPadding;
+    NSMutableArray<NSNumber *> *widths = [NSMutableArray array];
+    // Collapsed, each candidate is as wide as its text; expanded, a column is
+    // as wide as its widest candidate, so the rows line up.
+    NSArray<NSArray<NSString *> *> *measured = expanded ? rows : @[rows.firstObject ?: @[]];
+    for (NSArray<NSString *> *row in measured) {
+        for (NSUInteger i = 0; i < row.count; i++) {
+            CGFloat width = cell + ceil([row[i] sizeWithAttributes:body].width);
+            if (!expanded) { [widths addObject:@(width)]; continue; }
+            if (i < widths.count) widths[i] = @(MAX(widths[i].doubleValue, width));
+            else [widths addObject:@(width)];
+        }
+    }
+    CGFloat gap = kCandidateSpacing - 2 * kSelectionPadding;
+    CGFloat width = kContentInset;
+    for (NSNumber *column in widths) width += column.doubleValue + gap;
+    width -= widths.count ? gap : 0;
+    width += chevron ? kArrowTrailingInset + kArrowSize + kArrowTrailingInset : kContentInset;
+    if (columns) *columns = widths;
+    return NSMakeSize(width, preset.barHeight * (expanded ? rows.count : 1));
+}
+
+- (void)prepareFonts:(Preset)preset {
     ArionCandidateText *text = self.text;
     if (text.preset.bodyFont != preset.bodyFont || !text.bodyFont) {
         text.bodyFont = [NSFont fontWithName:@"PingFangSC-Regular" size:preset.bodyFont] ?: [NSFont systemFontOfSize:preset.bodyFont];
         text.numberFont = [NSFont monospacedDigitSystemFontOfSize:preset.numberFont weight:NSFontWeightRegular];
     }
     text.preset = preset;
-    NSDictionary *body = @{NSFontAttributeName: text.bodyFont};
-    NSMutableArray<NSValue *> *rects = [NSMutableArray arrayWithCapacity:candidates.count];
-    CGFloat x = kShadowMargin + kContentInset;
-    CGFloat top = kShadowMargin + (preset.barHeight - preset.selectionHeight) / 2;
+}
+
+// Lays out rows in a canvas of the window's size. The bar hangs from the
+// canvas top (anchorTop) or stands on its bottom, inside the shadow margin.
+// animation is 0 for none, else the expand or collapse duration.
+- (void)layoutRows:(NSArray<NSArray<NSString *> *> *)rows currentRow:(NSUInteger)currentRow highlighted:(NSUInteger)highlighted
+          expanded:(BOOL)expanded chevron:(BOOL)chevron preset:(Preset)preset canvas:(NSSize)canvas
+         anchorTop:(BOOL)anchorTop animation:(NSTimeInterval)animation {
+    NSArray<NSNumber *> *columns = nil;
+    NSSize content = [self contentSizeForRows:rows expanded:expanded chevron:chevron preset:preset widths:&columns];
+    ArionCandidateText *text = self.text;
+    // Flipped (text) space: top of the bar.
+    CGFloat top = anchorTop ? kShadowMargin : canvas.height - kShadowMargin - content.height;
+    NSArray<NSArray<NSString *> *> *shown = expanded ? rows : @[rows.firstObject ?: @[]];
+    NSUInteger current = expanded ? currentRow : 0;
     CGFloat gap = kCandidateSpacing - 2 * kSelectionPadding;
-    for (NSString *candidate in candidates) {
-        CGFloat width = kSelectionPadding + preset.numberWidth + kNumberTextSpacing +
-            ceil([candidate sizeWithAttributes:body].width) + kSelectionPadding;
-        [rects addObject:[NSValue valueWithRect:NSMakeRect(x, top, width, preset.selectionHeight)]];
-        x += width + gap;
+    NSMutableArray<NSArray<NSValue *> *> *rects = [NSMutableArray array];
+    for (NSUInteger row = 0; row < shown.count; row++) {
+        NSMutableArray<NSValue *> *items = [NSMutableArray array];
+        CGFloat x = kShadowMargin + kContentInset;
+        CGFloat y = top + row * preset.barHeight + (preset.barHeight - preset.selectionHeight) / 2;
+        for (NSUInteger i = 0; i < shown[row].count; i++) {
+            CGFloat width = columns[i].doubleValue;
+            [items addObject:[NSValue valueWithRect:NSMakeRect(x, y, width, preset.selectionHeight)]];
+            x += width + gap;
+        }
+        [rects addObject:items];
     }
-    x -= gap;
-    if (paged) {
-        x += kArrowTrailingInset;
-        text.arrowRect = NSMakeRect(x, kShadowMargin + (preset.barHeight - kArrowSize) / 2, kArrowSize, kArrowSize);
-        x += kArrowSize + kArrowTrailingInset;
-    } else {
-        x += kContentInset;
-    }
-    text.candidates = candidates;
+    CGFloat barRight = kShadowMargin + content.width;
+    text.arrowRect = NSMakeRect(barRight - kArrowTrailingInset - kArrowSize, top + (preset.barHeight - kArrowSize) / 2, kArrowSize, kArrowSize);
+    text.rows = shown;
     text.itemRects = rects;
+    text.currentRow = current;
     text.highlighted = highlighted;
-    text.paged = paged;
+    text.expanded = expanded;
+    text.chevron = chevron;
     BOOL dark = self.dark;
     text.dark = dark;
     text.needsDisplay = YES;
 
-    NSSize size = NSMakeSize(x + kShadowMargin, preset.barHeight + 2 * kShadowMargin);
-    CGRect bar = CGRectMake(kShadowMargin, kShadowMargin, size.width - 2 * kShadowMargin, preset.barHeight);
+    // Unflipped (layer) space.
+    CGFloat flip = canvas.height;
+    CGRect bar = CGRectMake(kShadowMargin, flip - top - content.height, content.width, content.height);
+    CGRect from = CGRectIsEmpty(self.barFrame) ? bar : self.barFrame;
+    // A collapse or expand keeps the anchored edge where it was.
+    if (animation > 0) from.origin.y = anchorTop ? NSMaxY(bar) - from.size.height : bar.origin.y;
     CGColorRef background = (dark ? srgb(23 / 255.0, 23 / 255.0, 23 / 255.0, 1) : srgb(1, 1, 1, 1)).CGColor;
     [CATransaction begin];
     [CATransaction setDisableActions:YES];
     CGPathRef outline = CGPathCreateWithRoundedRect(CGRectMake(0, 0, bar.size.width, bar.size.height),
                                                     preset.outerRadius, preset.outerRadius, NULL);
-    for (CALayer *shadow in @[self.wideShadow, self.tightShadow]) {
-        shadow.frame = bar;
-        shadow.shadowPath = outline;
+    CGPathRef fromOutline = CGPathCreateWithRoundedRect(CGRectMake(0, 0, from.size.width, from.size.height),
+                                                        preset.outerRadius, preset.outerRadius, NULL);
+    self.textMask.cornerRadius = preset.outerRadius;
+    for (CALayer *layer in @[self.wideShadow, self.tightShadow, self.bar, self.textMask]) {
+        // The text view's layer is flipped, so its mask uses flipped frames.
+        BOOL flipped = layer == self.textMask;
+        CGRect to = flipped ? CGRectMake(bar.origin.x, flip - CGRectGetMaxY(bar), bar.size.width, bar.size.height) : bar;
+        CGRect start = flipped ? CGRectMake(from.origin.x, flip - CGRectGetMaxY(from), from.size.width, from.size.height) : from;
+        layer.frame = to;
+        if (layer != self.bar && layer != self.textMask) layer.shadowPath = outline;
+        if (animation <= 0) continue;
+        CAMediaTimingFunction *curve = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+        CABasicAnimation *bounds = [CABasicAnimation animationWithKeyPath:@"bounds"];
+        bounds.fromValue = [NSValue valueWithRect:NSMakeRect(0, 0, from.size.width, from.size.height)];
+        CABasicAnimation *position = [CABasicAnimation animationWithKeyPath:@"position"];
+        position.fromValue = [NSValue valueWithPoint:NSMakePoint(CGRectGetMidX(start), CGRectGetMidY(start))];
+        NSMutableArray *animations = [NSMutableArray arrayWithObjects:bounds, position, nil];
+        if (layer != self.bar && layer != self.textMask) {
+            CABasicAnimation *path = [CABasicAnimation animationWithKeyPath:@"shadowPath"];
+            path.fromValue = (__bridge id)fromOutline;
+            [animations addObject:path];
+        }
+        CAAnimationGroup *group = [CAAnimationGroup animation];
+        group.animations = animations;
+        group.duration = animation;
+        group.timingFunction = curve;
+        [layer addAnimation:group forKey:@"resize"];
     }
     CGPathRelease(outline);
-    self.bar.frame = bar;
+    CGPathRelease(fromOutline);
+    self.barFrame = bar;
     self.bar.cornerRadius = preset.outerRadius;
     self.bar.backgroundColor = background;
     self.bar.borderColor = (dark ? srgb(1, 1, 1, 0.2) : srgb(0, 0, 0, 0.2)).CGColor;
-    // Layer space is unflipped; the selection is vertically centered.
-    NSRect item = highlighted < rects.count ? rects[highlighted].rectValue : NSZeroRect;
-    self.selection.hidden = highlighted >= rects.count;
-    self.selection.frame = CGRectMake(NSMinX(item), size.height - NSMaxY(item), NSWidth(item), NSHeight(item));
+
+    // The current row of the grid is tinted; rows are separated by hairlines.
+    CGFloat rowTop = flip - top - (current + 1) * preset.barHeight;
+    self.rowTint.hidden = !expanded;
+    self.rowTint.frame = CGRectMake(kShadowMargin + 2, rowTop + 2, content.width - 4, preset.barHeight - 4);
+    self.rowTint.cornerRadius = preset.selectionRadius + 2;
+    self.rowTint.backgroundColor = (dark ? srgb(1, 1, 1, 0.07) : srgb(0, 0, 0, 0.045)).CGColor;
+    CGMutablePathRef lines = CGPathCreateMutable();
+    for (NSUInteger row = 1; expanded && row < shown.count; row++) {
+        CGFloat y = flip - top - row * preset.barHeight;
+        CGPathMoveToPoint(lines, NULL, kShadowMargin + kContentInset + kSelectionPadding, y);
+        CGPathAddLineToPoint(lines, NULL, kShadowMargin + content.width - kContentInset - kSelectionPadding, y);
+    }
+    self.separators.path = lines;
+    CGPathRelease(lines);
+    self.separators.strokeColor = (dark ? srgb(1, 1, 1, 0.08) : srgb(0, 0, 0, 0.06)).CGColor;
+
+    NSArray<NSValue *> *currentItems = rects.count > current ? rects[current] : @[];
+    NSRect item = highlighted < currentItems.count ? currentItems[highlighted].rectValue : NSZeroRect;
+    self.selection.hidden = highlighted >= currentItems.count;
+    self.selection.frame = CGRectMake(NSMinX(item), flip - NSMaxY(item), NSWidth(item), NSHeight(item));
     self.selection.cornerRadius = preset.selectionRadius;
     self.selection.backgroundColor = (dark ? srgb(0, 0.6, 0.949, 1) : srgb(0, 0.533, 1, 1)).CGColor;
+    if (animation >= kExpandDuration) {
+        // The growing mask reveals new rows. The current row's text and
+        // highlight stay visible; only the new row chrome fades in.
+        for (CALayer *layer in @[self.rowTint, self.separators]) {
+            CABasicAnimation *fade = [CABasicAnimation animationWithKeyPath:@"opacity"];
+            fade.fromValue = @0;
+            fade.toValue = @1;
+            fade.beginTime = CACurrentMediaTime() + kRowsFadeDelay;
+            fade.duration = kRowsFadeDuration;
+            fade.fillMode = kCAFillModeBackwards;
+            [layer addAnimation:fade forKey:@"appear"];
+        }
+    }
     [CATransaction commit];
-    return size;
 }
 @end
 
@@ -223,7 +359,12 @@ static NSColor *srgb(CGFloat r, CGFloat g, CGFloat b, CGFloat a) {
 @property(strong) ArionCandidateView *view;
 @property NSUInteger revision;
 @property BOOL shown;
+@property BOOL expanded;
 @property NSUInteger hideGeneration;
+// Bumped by every show; a finished collapse only shrinks the window if no
+// later show replaced its state.
+@property NSUInteger showGeneration;
+@property(copy) void (^reshow)(void);
 @end
 
 @implementation ArionCandidatePanel
@@ -245,13 +386,13 @@ static NSColor *srgb(CGFloat r, CGFloat g, CGFloat b, CGFloat a) {
     self.view = [[ArionCandidateView alloc] initWithFrame:NSZeroRect];
     self.window.contentView = self.view;
     __weak ArionCandidatePanel *weakSelf = self;
-    self.view.text.clicked = ^(NSInteger index) {
+    self.view.text.clicked = ^(NSUInteger index, NSUInteger row) {
         ArionCandidatePanel *panel = weakSelf;
-        if (panel.selected) panel.selected((NSUInteger)index, panel.revision);
+        if (panel.selected) panel.selected(index, row, panel.revision);
     };
     self.view.text.clickedArrow = ^{
         ArionCandidatePanel *panel = weakSelf;
-        if (panel.nextPage) panel.nextPage(panel.revision);
+        if (panel.toggled) panel.toggled(panel.revision);
     };
     return self;
 }
@@ -271,28 +412,68 @@ static NSColor *srgb(CGFloat r, CGFloat g, CGFloat b, CGFloat a) {
               lastPage:(BOOL)lastPage
               revision:(NSUInteger)revision
              caretRect:(NSRect)caret {
-    if (candidates.count == 0) { [self hide]; return; }
+    [self showRows:@[candidates] currentRow:0 highlighted:highlighted expanded:NO more:!lastPage revision:revision caretRect:caret];
+}
+
+- (void)showRows:(NSArray<NSArray<NSString *> *> *)rows
+      currentRow:(NSUInteger)currentRow
+     highlighted:(NSUInteger)highlighted
+        expanded:(BOOL)expanded
+            more:(BOOL)more
+        revision:(NSUInteger)revision
+       caretRect:(NSRect)caret {
+    if (rows.count == 0 || rows[MIN(currentRow, rows.count - 1)].count == 0) { [self hide]; return; }
     self.revision = revision;
-    // The chevron is the next-page affordance; earlier pages stay on keys.
-    NSSize size = [self.view layoutCandidates:candidates highlighted:highlighted paged:!lastPage preset:kPresets[self.size]];
-    CGFloat barHeight = size.height - 2 * kShadowMargin;
+    self.reshow = nil;
+    NSUInteger generation = ++self.showGeneration;
+    Preset preset = kPresets[self.size];
+    BOOL chevron = expanded || more;
+    NSSize content = [self.view contentSizeForRows:rows expanded:expanded chevron:chevron preset:preset widths:NULL];
+    NSSize size = NSMakeSize(content.width + 2 * kShadowMargin, content.height + 2 * kShadowMargin);
 
     NSScreen *screen = NSScreen.mainScreen;
     for (NSScreen *candidate in NSScreen.screens) {
         if (NSPointInRect(NSMakePoint(NSMinX(caret), NSMidY(caret)), candidate.frame)) { screen = candidate; break; }
     }
     NSRect visible = screen.visibleFrame;
-    // Align the first candidate's number with the caret, below its line;
-    // above it when the bar would leave the screen.
+    // Align the first candidate's number with the caret. The bar hangs below
+    // the caret line and grows downward; without room it stands above the
+    // line and grows upward.
     CGFloat x = NSMinX(caret) - kShadowMargin - kContentInset - kSelectionPadding;
-    CGFloat y = NSMinY(caret) - kCaretGap - barHeight - kShadowMargin;
-    if (y + kShadowMargin < NSMinY(visible)) y = NSMaxY(caret) + kCaretGap - kShadowMargin;
+    CGFloat below = NSMinY(caret) - kCaretGap + kShadowMargin;
+    BOOL anchorTop = below - size.height >= NSMinY(visible);
+    CGFloat y = anchorTop ? below - size.height : NSMaxY(caret) + kCaretGap - kShadowMargin;
     x = MAX(NSMinX(visible) - kShadowMargin, MIN(x, NSMaxX(visible) + kShadowMargin - size.width));
+
+    BOOL changing = self.shown && expanded != self.expanded;
+    NSTimeInterval animation = changing ? (expanded ? kExpandDuration : kCollapseDuration) : 0;
+    self.expanded = expanded;
     NSRect current = self.window.frame;
     BOOL fits = self.shown && NSHeight(current) == size.height && NSWidth(current) >= size.width;
     NSRect frame = NSMakeRect(x, y, fits ? NSWidth(current) : size.width + kWidthSlack, size.height);
+    if (changing && !expanded) {
+        // Collapsing: keep the tall window while the bar shrinks inside it,
+        // then fit the window to the bar.
+        frame = NSMakeRect(x, anchorTop ? NSMaxY(current) - NSHeight(current) : y, MAX(NSWidth(current), NSWidth(frame)), NSHeight(current));
+        __weak ArionCandidatePanel *weakSelf = self;
+        NSArray *saved = [rows copy];
+        self.reshow = ^{
+            ArionCandidatePanel *panel = weakSelf;
+            if (!panel || panel.showGeneration != generation || !panel.shown) return;
+            [panel showRows:saved currentRow:currentRow highlighted:highlighted expanded:NO more:more revision:revision caretRect:caret];
+        };
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(kCollapseDuration * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            ArionCandidatePanel *panel = weakSelf;
+            if (!panel || panel.showGeneration != generation || !panel.reshow) return;
+            void (^reshow)(void) = panel.reshow;
+            panel.reshow = nil;
+            reshow();
+        });
+    }
     if (!NSEqualSizes(frame.size, current.size)) [self.window setFrame:frame display:NO];
     else if (!NSEqualPoints(frame.origin, current.origin)) [self.window setFrameOrigin:frame.origin];
+    [self.view layoutRows:rows currentRow:currentRow highlighted:highlighted expanded:expanded chevron:chevron preset:preset
+                   canvas:frame.size anchorTop:anchorTop animation:animation];
     if (!self.window.visible) [self.window orderFront:nil];
     if (!self.shown) {
         self.shown = YES;
@@ -305,6 +486,9 @@ static NSColor *srgb(CGFloat r, CGFloat g, CGFloat b, CGFloat a) {
 - (void)hide {
     if (!self.shown) return;
     self.shown = NO;
+    self.expanded = NO;
+    self.reshow = nil;
+    self.view.barFrame = CGRectZero;
     self.window.alphaValue = 0;
     self.window.ignoresMouseEvents = YES;
     NSUInteger generation = ++self.hideGeneration;

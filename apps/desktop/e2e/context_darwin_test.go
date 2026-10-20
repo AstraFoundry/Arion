@@ -40,7 +40,7 @@ func TestReadContextFromWindow(t *testing.T) {
 	if err := exec.Command("open", "-a", "/Applications/Safari.app", page.URL).Run(); err != nil {
 		t.Fatal(err)
 	}
-	targets := macos.NewTargets(func() macos.Delivery { return macos.DeliveryAutomatic })
+	targets := macos.NewTargets()
 	open := true
 	targets.ReadCursor = func() bool { return open }
 	targets.ReadScreen = func() bool { return open }

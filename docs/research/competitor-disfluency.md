@@ -41,6 +41,34 @@ The traced client path is stable ASR text plus context/configuration, then a sep
 
 Packaged product copy describes automatic correction, concise wording and organizing spoken developer requests. It does not reveal the rule deciding whether `那个` is padding or a demonstrative, or how contradictory clauses are repaired. No specific filler/self-correction prompt was recovered; those semantics remain a server-side unknown.
 
+## Installed rewrite-validator comparison
+
+The [validator comparison ledger](evidence/rewrite-validator-comparison.json)
+revalidates installed Doubao **1.0.2 (1)** against all six retained instruction
+ranges. Installed Chatterfly is now **1.0.8.13459 (13459)**, distinct from the
+1.0.6 artifact above. Nine freshly decoded, byte-verified methods cover its
+CMode response, result selection, final commit, input validation and edit metrics
+(1,951 verified instructions). New CVA IDs are ordinary LLVM observations, not
+REA decompilation results. No app was launched, user content read or network
+traffic captured. Full local instructions remain in
+`.workspace/research/rewrite-validator-audit/`.
+
+| Client path | Recovered checks | Boundary |
+| --- | --- | --- |
+| Doubao completed-result handler | Request identity, state/decision, completed/no-rewrite handling, nonempty content and timeout lifecycle | No lexical-ratio or filler-word gate in this bounded handler; other handlers and service policies remain unknown |
+| Chatterfly 1.0.8 CMode and result/commit methods | Delta/final result handling, error/security/command branches, focus/delivery state, enhanced text and original/result-panel separation | No source-versus-candidate lexical coverage, novelty, numeral-spelling or negation-count gate in these bounded methods |
+| Chatterfly `validateAsrText` | Nonempty ASR input or pause detection enabled; otherwise reports input error | Pre-request input validation, not generated-output fidelity validation |
+| Chatterfly edit metrics | Edit distance used by edit-beacon reporting; edited-text validity trims whitespace and tests nonempty | This inspected reporting path does not veto the initial rewrite |
+
+Arion differs: the shared validator applies character-multiset coverage, lexical
+novelty, length ratios, literal digit-run evidence and recognized negation counts
+without a scene policy. [Seven reproducible probes](../../benchmarks/reproduction/rewrite-validator-comparison-v1/README.md)
+show rejected paraphrases and accepted changes to assignees or release-day
+restrictions. For scene-aware rewriting, these are overly restrictive lexical
+gates and incomplete meaning checks. This finding supports replacing their role
+as unconditional polishing gates, not asserting that competitors have no
+server-side validation or that operational/protocol protections should disappear.
+
 ## Language boundary
 
 Chatterfly's live-ASR parameter builder explicitly sets `zh-cmn-Hans-CN` (`CFD-asm-asr-params`, `0x1003c202c–0x1003c2034`). That does not rule out server language identification or mixed speech, but it supplies no proof of general multilingual cleanup. Doubao's tag parser operates on spans without checking their linguistic content; that is a property of the parser, not proof that its producer labels every language correctly. Neither client analysis establishes the quality of English, Japanese, French or Spanish disfluency handling.

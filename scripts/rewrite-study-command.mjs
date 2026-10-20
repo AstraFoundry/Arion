@@ -1,0 +1,12 @@
+import { spawnSync } from 'node:child_process';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const [study, operation, ...args] = process.argv.slice(2);
+const studies = { packaging: 'rewrite-packaging-v1', release: 'rewrite-release' };
+const operations = { build: 'build.py', run: 'run.py', report: 'report.py', verify: 'verify.py', test: 'test_report.py' };
+if (!Object.hasOwn(studies, study) || !Object.hasOwn(operations, operation)) throw new Error('Unknown study or operation');
+const python = process.env.EVAL_PYTHON || (process.platform === 'win32' ? 'python' : 'python3');
+const result = spawnSync(python, [path.join(root, 'benchmarks/reproduction', studies[study], operations[operation]), ...args], { cwd: root, stdio: 'inherit' });
+if (result.error) throw result.error;
+process.exit(result.status ?? 1);

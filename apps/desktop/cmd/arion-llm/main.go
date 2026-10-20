@@ -1,8 +1,6 @@
-// Command arion-llm is the local rewrite worker. It loads a provisioned
-// ONNX Runtime GenAI runtime and model in its own process, so the speech
-// runtime's ONNX Runtime and the LLM's never share an address space, and
-// serves protocol requests on stdin/stdout. It never opens a network
-// connection; stderr carries content-free diagnostics only.
+// Command arion-llm serves rewrite requests on stdin/stdout. It owns a
+// pinned offline GGUF child through a private Unix socket; no TCP listener
+// or remote inference route is opened.
 package main
 
 import (
@@ -15,13 +13,13 @@ import (
 	"sync/atomic"
 
 	"arion.local/desktop/infrastructure/llm/engine"
-	"arion.local/desktop/infrastructure/llm/genai"
+	"arion.local/desktop/infrastructure/llm/gguf"
 	"arion.local/desktop/infrastructure/llm/prompt"
 	"arion.local/desktop/infrastructure/llm/protocol"
 )
 
 type worker struct {
-	engine *engine.Engine
+	engine *gguf.Engine
 	out    *json.Encoder
 
 	mu        sync.Mutex
@@ -100,16 +98,12 @@ func (w *worker) load(req protocol.Request) protocol.Response {
 	if req.Threads <= 0 || req.MaxLength <= 0 || req.MaxNewTokens <= 0 {
 		return fail(errors.New("threads and token budgets are required"))
 	}
-	if err := genai.Load(req.Runtime); err != nil {
-		return fail(err)
-	}
-	template := prompt.Live()
-	e, loadMs, err := engine.Load(engine.Config{ModelDir: req.Model, Threads: req.Threads, MaxLength: req.MaxLength, MaxNewTokens: req.MaxNewTokens}, template, prompt.Context())
+	e, loadMs, err := gguf.Load(engine.Config{ModelDir: req.Model, Threads: req.Threads, MaxLength: req.MaxLength, MaxNewTokens: req.MaxNewTokens}, req.Runtime)
 	if err != nil {
 		return fail(err)
 	}
 	w.engine = e
-	return protocol.Response{OK: true, LoadMs: loadMs, PromptID: template.Version, PrefixTokens: e.PrefixTokens(), PeakRSS: peakRSS()}
+	return protocol.Response{OK: true, LoadMs: loadMs, PromptID: prompt.SelectedVersion, PrefixTokens: e.PrefixTokens(), PeakRSS: peakRSS()}
 }
 
 func (w *worker) rewrite(req protocol.Request) protocol.Response {
@@ -146,7 +140,6 @@ func (w *worker) close() {
 	if w.engine != nil {
 		w.engine.Close()
 		w.engine = nil
-		genai.Shutdown()
 	}
 }
 

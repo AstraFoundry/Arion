@@ -1,0 +1,298 @@
+{
+  "schemaVersion": 1,
+  "scope": "Installed macOS Doubao 1.0.2 (1) and Chatterfly 1.0.8.13459 (13459): standalone Shift language switching only.",
+  "evidenceBoundary": "Ordinary static LLVM instructions verified against installed arm64 bytes; not target execution, original source, or new REA Evidence. No source/preference changes or private storage reads.",
+  "doubao": {
+    "type": "ordinary LLVM static instructions checked against installed arm64 bytes",
+    "runtimeObserved": false,
+    "identity": {
+      "path": "/Library/Input Methods/DoubaoIme.app/Contents/MacOS/DoubaoIme",
+      "universalSha256": "4b3836dcb8a3e06b01b4c95390c757b71f623c1f7c4141c059e49284f7f6442d",
+      "arm64Sha256": "266f49f6bcb62e43c5170620d4b86e2e4c4ef873bcce624ef1a90b9c46244983",
+      "arm64Offset": 21757952,
+      "arm64Size": 20965728
+    },
+    "version": {
+      "CFBundleShortVersionString": "1.0.2",
+      "CFBundleVersion": "1"
+    },
+    "intervals": [
+      {
+        "id": "DB-shift-shift-handler",
+        "start": "0x100141bfc",
+        "endExclusive": "0x100144f80",
+        "instructionsValidated": 3297,
+        "sha256": "b8ce2843b1e791caf95c857982804e6012cab0f0d9a38f4a6c92251da178e3c3",
+        "assembly": ".workspace/research/shift-switch/doubao/shift-handler.asm.txt"
+      },
+      {
+        "id": "DB-shift-clear-pending",
+        "start": "0x100148760",
+        "endExclusive": "0x100148890",
+        "instructionsValidated": 76,
+        "sha256": "4010f7758a2705c776e29c8ef9cb899491bab21f106f0ab32fabfee9307171fd",
+        "assembly": ".workspace/research/shift-switch/doubao/clear-pending.asm.txt"
+      },
+      {
+        "id": "DB-shift-mode-toggle",
+        "start": "0x100195e64",
+        "endExclusive": "0x100195fd4",
+        "instructionsValidated": 92,
+        "sha256": "85ead33da26700003755f9e2a433c83bd6c7854206210036304f6c40c05470c2",
+        "assembly": ".workspace/research/shift-switch/doubao/mode-toggle.asm.txt"
+      },
+      {
+        "id": "DB-shift-ordinary-key-cancel",
+        "start": "0x100146530",
+        "endExclusive": "0x100146584",
+        "instructionsValidated": 21,
+        "sha256": "6973a107f4fd38219c45409939171e94c28ed3352cf9ba51029a7f5fc6779934",
+        "assembly": ".workspace/research/shift-switch/doubao/ordinary-key-cancel.asm.txt"
+      },
+      {
+        "id": "DB-shift-global-key-cancel",
+        "start": "0x100090350",
+        "endExclusive": "0x1000903d8",
+        "instructionsValidated": 34,
+        "sha256": "4c4971e02a3692ce81e9c2315a0c5587258880516ca0802a8744e62929ca77ab",
+        "assembly": ".workspace/research/shift-switch/doubao/global-key-cancel.asm.txt"
+      },
+      {
+        "id": "DB-shift-raw-commit-prefix",
+        "start": "0x1001883e4",
+        "endExclusive": "0x1001887a0",
+        "instructionsValidated": 239,
+        "sha256": "630b2914c9291728d168ea5ee6428099f95f971ec03e3e0dbf29316fcdadf879",
+        "assembly": ".workspace/research/shift-switch/doubao/raw-commit-prefix.asm.txt"
+      }
+    ],
+    "constants": {
+      "0x100da8450": 0.05,
+      "0x100da8a08": 0.1
+    },
+    "tapThresholdSeconds": 0.35
+  },
+  "chatterfly": {
+    "evidenceType": "ordinary LLVM ARM64 disassembly, not REA Evidence",
+    "target": "/Library/Input Methods/Chatterfly.app/Contents/MacOS/Chatterfly",
+    "version": "1.0.8.13459",
+    "build": "13459",
+    "bundleId": "com.tencent.inputmethod.chatterfly",
+    "installedSha256": "595e502f74e41e1b28904affa9093974f6cbc197a3756a74a007ef562f9ee767",
+    "arm64Sha256": "3406894676fd6b9028795858907d1821f54977aa0f9ec5716d42eba12848fe21",
+    "savedSliceByteIdenticalToCurrentInstalledArm64": true,
+    "threshold": {
+      "address": "0x101daf128",
+      "littleEndianDouble": 0.3
+    },
+    "records": [
+      {
+        "path": ".workspace/research/shift-switch/chatterfly/any-key.txt",
+        "sha256": "eb56ce8a307515d095f4d2baa16351d5c57b832e30cebee6d830c617901d160f",
+        "instructionsValidated": 79
+      },
+      {
+        "path": ".workspace/research/shift-switch/chatterfly/base-event.txt",
+        "sha256": "45b780af00e66f1d1d8c8c086a3e4190260efa1171aec58f920f13c14f35a53e",
+        "instructionsValidated": 386
+      },
+      {
+        "path": ".workspace/research/shift-switch/chatterfly/base-key.txt",
+        "sha256": "c92f977a78b4e3158228eef5e2dd9a061a079e3e6b27592f7714700e7fd5ac7d",
+        "instructionsValidated": 107
+      },
+      {
+        "path": ".workspace/research/shift-switch/chatterfly/build-key.txt",
+        "sha256": "fe0597f8b6fac2d451dd0f145d4e74e3faebcdf11f84104377c3d5486a01029a",
+        "instructionsValidated": 110
+      },
+      {
+        "path": ".workspace/research/shift-switch/chatterfly/config-init.txt",
+        "sha256": "041be54cb2af6688c460928673535c34dda0bbe978df304142c161d21d83eead",
+        "instructionsValidated": 55
+      },
+      {
+        "path": ".workspace/research/shift-switch/chatterfly/en-key.txt",
+        "sha256": "15818fd9fe3cdaa50e728d5baf36c0ea8d93cc4037f09681c65e5f52ee284476",
+        "instructionsValidated": 278
+      },
+      {
+        "path": ".workspace/research/shift-switch/chatterfly/en-setup.txt",
+        "sha256": "7a0a3a57bc57651296814062d5b8df982bc922aa85f7215271efdb17afda7af1",
+        "instructionsValidated": 973
+      },
+      {
+        "path": ".workspace/research/shift-switch/chatterfly/force-commit.txt",
+        "sha256": "57cc41f81c5b921dc03c9660919fcdc09543dded961e5f4daf202dcb1f23b3bb",
+        "instructionsValidated": 146
+      },
+      {
+        "path": ".workspace/research/shift-switch/chatterfly/idle-key.txt",
+        "sha256": "96117799c58e6d83d59c3ff56ac00a01bb7606edeeeb214d42efa3d73c5d8528",
+        "instructionsValidated": 441
+      },
+      {
+        "path": ".workspace/research/shift-switch/chatterfly/idle-setup.txt",
+        "sha256": "be363c5c0a5c1ffc28753b48f2f985ab68403b7daaa4c75885a6e90ac67d213d",
+        "instructionsValidated": 515
+      },
+      {
+        "path": ".workspace/research/shift-switch/chatterfly/left-down.txt",
+        "sha256": "0634199f04f2ccc78b182a933991b98d3d980afbfe83d8bc8d1ea68f65ec5528",
+        "instructionsValidated": 95
+      },
+      {
+        "path": ".workspace/research/shift-switch/chatterfly/left-up.txt",
+        "sha256": "e697114137d18c6961a5681afd3d143db755fbacd04dd077c90cdbdd05e09c25",
+        "instructionsValidated": 99
+      },
+      {
+        "path": ".workspace/research/shift-switch/chatterfly/py-any.txt",
+        "sha256": "9e0c4d163f15a2b15f96c51e011b6ddecc9b21b1fb5f95634d0250b721154b75",
+        "instructionsValidated": 100
+      },
+      {
+        "path": ".workspace/research/shift-switch/chatterfly/py-deactivate.txt",
+        "sha256": "d6c37c32e8a777db9b4d591acfbe918b9b8f2c81c4ccb6737a10859abb476e3a",
+        "instructionsValidated": 153
+      },
+      {
+        "path": ".workspace/research/shift-switch/chatterfly/py-key.txt",
+        "sha256": "14ddd9b0aba714f0c7c132cbaa173c8ada051e859536e41ccebe595e10132508",
+        "instructionsValidated": 297
+      },
+      {
+        "path": ".workspace/research/shift-switch/chatterfly/py-left-up.txt",
+        "sha256": "e746087197a037e5ece6c8e5b464b3d7a3aeb0ef3e5dc94a78148cdab6ad9d11",
+        "instructionsValidated": 40
+      },
+      {
+        "path": ".workspace/research/shift-switch/chatterfly/py-setup.txt",
+        "sha256": "9999a1edcaccdd0e46220bc6f5100eae3666e74bc6eaeb299ab9942e9d4ffae0",
+        "instructionsValidated": 1711
+      },
+      {
+        "path": ".workspace/research/shift-switch/chatterfly/reset-time.txt",
+        "sha256": "3b85ec10423224daa9bc69048f556d394e3f787835c804aad460c624f94f4125",
+        "instructionsValidated": 30
+      },
+      {
+        "path": ".workspace/research/shift-switch/chatterfly/right-down.txt",
+        "sha256": "5a8d4e51bedbba8617d0d30ae3b84be61a92761174a9c9ade3110f8b771e9ffc",
+        "instructionsValidated": 96
+      },
+      {
+        "path": ".workspace/research/shift-switch/chatterfly/right-up.txt",
+        "sha256": "0c3b2fab8d489bb9b2db727217f83a989f8a50b58e4a32caa49822110cca2426",
+        "instructionsValidated": 100
+      },
+      {
+        "path": ".workspace/research/shift-switch/chatterfly/sender-selected.txt",
+        "sha256": "9b28036bf6fa69991bf229c64b8953f67f32487490f00962b7794c205f5a7e33",
+        "instructionsValidated": 79
+      },
+      {
+        "path": ".workspace/research/shift-switch/chatterfly/status-switch.txt",
+        "sha256": "5f94e5b1abcf4a030ec3c97928ea04967d8970a55c816613cfa2d252060abd1d",
+        "instructionsValidated": 59
+      },
+      {
+        "path": ".workspace/research/shift-switch/chatterfly/switch-base.txt",
+        "sha256": "2a7774b0a731c2d2c2968b4caa464d0591899271622d06140362fe6751d4dbba",
+        "instructionsValidated": 189
+      },
+      {
+        "path": ".workspace/research/shift-switch/chatterfly/switch-en.txt",
+        "sha256": "7395c44acfdd584a9167895b342f44c857615dd876bee66334a4e8c13c5024c1",
+        "instructionsValidated": 46
+      },
+      {
+        "path": ".workspace/research/shift-switch/chatterfly/switch-idle.txt",
+        "sha256": "0b6932958e1bfa0faf5ab4996bd9a92b3cb14cff845fdf79fa6f1731b97d2d50",
+        "instructionsValidated": 40
+      },
+      {
+        "path": ".workspace/research/shift-switch/chatterfly/switch-py.txt",
+        "sha256": "0c8f5d7389827e0f690385b1f04567585c5b8edb952added2995004cc5312739",
+        "instructionsValidated": 61
+      }
+    ],
+    "limitations": [
+      "No target execution or injected keyboard input in this investigation.",
+      "Objective-C receiver and app-specific commit behavior remain static inference.",
+      "REA MCP tools absent; reused prior tools availability result and ordinary LLVM tooling."
+    ]
+  },
+  "observations": [
+    {
+      "id": "SHIFT-D01",
+      "product": "doubao",
+      "claim": "Standalone left/right Shift release under 0.35 seconds reaches mode toggle; another physical key clears the pending press.",
+      "anchors": [
+        "0x100141dcc",
+        "0x100141de0",
+        "0x1001420a0",
+        "0x1001424e8",
+        "0x1001424fc",
+        "0x100142798",
+        "0x10014657c",
+        "0x100148760"
+      ]
+    },
+    {
+      "id": "SHIFT-D02",
+      "product": "doubao",
+      "claim": "Mode toggle commits the composed prefix and remaining raw input through enterCommit(false) before changing the English flag.",
+      "anchors": [
+        "0x100195ef0",
+        "0x100195ef4",
+        "0x100195f14",
+        "0x100195f24",
+        "0x1001885c0",
+        "0x1001885dc",
+        "0x10018871c"
+      ]
+    },
+    {
+      "id": "SHIFT-C01",
+      "product": "chatterfly",
+      "claim": "ShiftDown binds a null action; ShiftUp binds the language switch with a strict 0.3-second duration gate; another key clears the timestamp.",
+      "anchors": [
+        "0x101daf128",
+        "0x1002ca074",
+        "0x1002ca08c"
+      ],
+      "retainedRecords": [
+        "left-down.txt",
+        "left-up.txt",
+        "right-down.txt",
+        "right-up.txt",
+        "any-key.txt",
+        "py-setup.txt",
+        "status-switch.txt"
+      ]
+    },
+    {
+      "id": "SHIFT-C02",
+      "product": "chatterfly",
+      "claim": "Pinyin switch reaches deactivation and a guarded force-commit of realComposingText, with conversion before host insertion.",
+      "anchors": [
+        "0x1002dd328",
+        "0x1002d9280",
+        "0x1002d92ec",
+        "0x1002e0ca0"
+      ],
+      "retainedRecords": [
+        "switch-py.txt",
+        "py-deactivate.txt",
+        "force-commit.txt"
+      ]
+    }
+  ],
+  "unresolved": [
+    "Runtime event delivery and actual editor results",
+    "Each user preference and shipped defaults",
+    "All host-specific composition exceptions",
+    "Dual-Shift interactions"
+  ]
+}

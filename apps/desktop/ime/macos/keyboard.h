@@ -10,6 +10,12 @@
 @property NSUInteger highlighted;
 @property NSUInteger page;
 @property BOOL lastPage;
+// The expanded grid (Arion's menu only): its visible rows, one page each,
+// and which of them is the current page (candidates).
+@property BOOL expanded;
+@property(copy) NSArray<NSArray<NSString *> *> *rows;
+@property NSUInteger currentRow;
+@property BOOL moreRows;
 @property BOOL ascii;
 @property(copy) NSString *commit;
 @property(strong) NSError *failure;

@@ -31,10 +31,31 @@ func Ready(store runtime.Store) bool {
 // Source shows the input source's state with its install, setup and
 // removal actions.
 func Source(c *ui.Context, store runtime.Store, tokens theme.Tokens, state *State) {
+	source(c, store, tokens, state, true)
+}
+
+// Setup reuses installation and status controls during first-run setup.
+func Setup(c *ui.Context, store runtime.Store, tokens theme.Tokens, state *State) {
+	source(c, store, tokens, state, false)
+}
+
+func source(c *ui.Context, store runtime.Store, tokens theme.Tokens, state *State, removal bool) {
 	messages := store.Copy()
 	s := store.State
 	kit.Card(c, tokens).Children(func() {
-		kit.Row(c, tokens, messages.Text(copy.IMEName), messages.Text(status(s.InputMethod)), func() {
+		detail := messages.Text(status(s.InputMethod))
+		update := s.InputMethodUpdate && s.InputMethod != runtime.InputMethodAbsent
+		if update {
+			detail = messages.Text(copy.IMEUpdateAvailable)
+		}
+		label := messages.Text(copy.IMEName)
+		if !removal {
+			label, detail = detail, ""
+			if s.InputMethod == runtime.InputMethodInstalled && !update {
+				label = messages.Text(copy.IMEEnabled)
+			}
+		}
+		kit.Row(c, tokens, label, detail, func() {
 			if s.InputMethodInstalling {
 				kit.Button(c.Key("installing"), tokens, kit.Outline, messages.Text(copy.IMEInstalling), false)
 				return
@@ -48,7 +69,17 @@ func Source(c *ui.Context, store runtime.Store, tokens theme.Tokens, state *Stat
 					}
 				}
 			case runtime.InputMethodPending, runtime.InputMethodInstalled, runtime.InputMethodSelected:
-				if s.InputMethod == runtime.InputMethodPending {
+				// Installing over the current source replaces it with the
+				// bundled build and restarts the input method.
+				if update {
+					if kit.Button(c.Key("update"), tokens, kit.Primary, messages.Text(copy.IMEUpdate), true).Clicked() {
+						state.Error = ""
+						if store.Actions.InstallInputMethod() != nil {
+							state.Error = copy.IMEFailed
+						}
+					}
+				}
+				if s.InputMethod == runtime.InputMethodPending || s.InputMethod == runtime.InputMethodInstalled {
 					if kit.Button(c.Key("setup"), tokens, kit.Primary, messages.Text(copy.IMESetup), true).Clicked() {
 						state.Error = ""
 						if store.Actions.OpenInputMethodSettings() != nil {
@@ -56,7 +87,7 @@ func Source(c *ui.Context, store runtime.Store, tokens theme.Tokens, state *Stat
 						}
 					}
 				}
-				if kit.Button(c.Key("remove"), tokens, kit.Outline, messages.Text(copy.IMERemove), true).Clicked() {
+				if removal && kit.Button(c.Key("remove"), tokens, kit.Outline, messages.Text(copy.IMERemove), true).Clicked() {
 					state.Error = ""
 					if store.Actions.RemoveInputMethod() != nil {
 						state.Error = copy.IMERemoveFailed
@@ -65,7 +96,7 @@ func Source(c *ui.Context, store runtime.Store, tokens theme.Tokens, state *Stat
 			}
 		})
 	})
-	if s.InputMethod == runtime.InputMethodPending && !s.InputMethodInstalling {
+	if removal && s.InputMethod == runtime.InputMethodPending && !s.InputMethodInstalling {
 		ui.Text(c, messages.Text(copy.IMESetupHint)).FontSize(theme.Caption).TextColor(tokens.Muted)
 	}
 	if state.Error != "" {

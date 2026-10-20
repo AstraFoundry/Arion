@@ -45,6 +45,8 @@ int main(void) {
         [NSApplication sharedApplication];
         Editor *editor = [Editor new];
         ArionComposition *state = [ArionComposition new];
+        // Ownership cases check each mark as it arrives; pacing is tested below.
+        state.pacing = NO;
         [state activate:editor];
         editor.view.string = @"A😀Z";
         [editor.view setSelectedRange:NSMakeRange(3, 0)];
@@ -115,6 +117,36 @@ int main(void) {
         mark(state, @"reentrant-mark", @"temporary", @1);
         require(!state.live && !state.composing && !reentrant.view.hasMarkedText,
                 @"reentrant mark cancellation never resurrects ownership");
+        // Paced drafts type into the marked text over time; revisions keep the
+        // agreeing prefix; commit replaces the draft exactly and at once.
+        Editor *paced = [Editor new];
+        ArionComposition *typing = [ArionComposition new];
+        [typing activate:paced];
+        begin(typing, @"paced");
+        mark(typing, @"paced", @"今天下午三点我们开会", @1);
+        require(paced.view.string.length < 10, @"a paced draft does not appear whole");
+        NSUInteger previous = paced.view.string.length, steps = 0;
+        NSDate *deadline = [NSDate dateWithTimeIntervalSinceNow:2];
+        while (paced.view.string.length < 10 && [deadline timeIntervalSinceNow] > 0) {
+            [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.02]];
+            if (paced.view.string.length != previous) { steps++; previous = paced.view.string.length; }
+        }
+        require([paced.view.string isEqual:@"今天下午三点我们开会"] && paced.view.hasMarkedText && steps >= 4,
+                @"the draft types out in several steps");
+        mark(typing, @"paced", @"今天下午三点他们开会", @2);
+        require([paced.view.string isEqual:@"今天下午三点"] || [paced.view.string isEqual:@"今天下午三点他"],
+                @"a revision rolls back to the agreeing prefix");
+        mark(typing, @"paced", @"今天下午三点他们开会讨论新版本的发布计划", @3);
+        [typing apply:message(typing, @"commit", @"paced", @"今天下午三点他们开会讨论新版本的发布计划。", nil)];
+        require([paced.view.string isEqual:@"今天下午三点他们开会讨论新版本的发布计划。"] && !paced.view.hasMarkedText && paced.insertions == 1,
+                @"commit inserts the final text exactly while typing is behind");
+        [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.2]];
+        require(!paced.view.hasMarkedText && paced.insertions == 1, @"no typing continues after commit");
+        begin(typing, @"paced-cancel");
+        mark(typing, @"paced-cancel", @"草稿草稿草稿", @1);
+        [typing apply:message(typing, @"cancel", @"paced-cancel", @"", nil)];
+        [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.2]];
+        require(!paced.view.hasMarkedText, @"no typing continues after cancel");
         NSLog(@"PASS: native AppKit composition ownership, terminality, revisions and Unicode");
     }
     return 0;

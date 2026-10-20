@@ -1,0 +1,11 @@
+import { spawnSync } from 'node:child_process';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const [operation, ...args] = process.argv.slice(2);
+const scripts = { run: 'run.py', parity: 'parity_probe.py', report: 'report.py', verify: 'verify.py', test: 'test_report.py' };
+if (!Object.hasOwn(scripts, operation)) throw new Error('Expected run, parity, report, verify or test');
+const python = process.env.EVAL_PYTHON || (process.platform === 'win32' ? 'python' : 'python3');
+const result = spawnSync(python, [path.join(root, 'benchmarks/reproduction/ocr-alignment-v2', scripts[operation]), ...args], { cwd: root, stdio: 'inherit' });
+if (result.error) throw result.error;
+process.exit(result.status ?? 1);

@@ -33,11 +33,14 @@ func TestLearnFromEditInOwnedEditor(t *testing.T) {
 		state := request("focus", map[string]any{"target": "A"})
 		return state.Active && state.Focused == "A"
 	})
-	targets := macos.NewTargets(func() macos.Delivery { return macos.DeliveryAutomatic })
+	targets := macos.NewTargets()
 	id := contracts.Identity{SessionID: "learn", Generation: 1}
 	target, err := targets.Capture(context.Background(), id)
 	if err != nil || target.Sensitive {
 		t.Fatalf("capture: %+v %v", target, err)
+	}
+	if route := targets.RouteOf(target.Target); route != macos.RouteClipboard {
+		t.Fatalf("native editor route %q, want clipboard", route)
 	}
 	if !targets.Follow(target.Target) {
 		t.Fatal("a readable editor was not followed")

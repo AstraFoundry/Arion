@@ -16,9 +16,6 @@ import (
 	"context"
 	"crypto/rand"
 	"encoding/hex"
-	"os"
-	"path/filepath"
-	"strings"
 	"sync"
 	"time"
 	"unicode/utf16"
@@ -85,29 +82,18 @@ func (Permissions) Open(pane Pane) {
 	C.arion_open_url(url)
 }
 
-// Route is how a commit reaches the target editor. It is chosen once, at
-// capture time, from declared capabilities; a commit never switches routes.
+// Route names the only shortcut delivery transport on macOS.
 type Route string
 
-const (
-	RouteAccessibility Route = "accessibility"
-	RouteKeystrokes    Route = "keystrokes"
-	RouteClipboard     Route = "clipboard"
-)
-
-// Delivery is the user's insertion preference.
-type Delivery string
-
-const (
-	DeliveryAutomatic Delivery = "automatic"
-	DeliveryClipboard Delivery = "clipboard"
-)
+const RouteClipboard Route = "clipboard"
 
 type target struct {
-	element  unsafe.Pointer
-	pid      int
-	route    Route
-	readable bool
+	element   unsafe.Pointer
+	selection unsafe.Pointer
+	identity  contracts.Identity
+	pid       int
+	route     Route
+	readable  bool
 	// secure and app gate context reads (DSK-08).
 	secure  bool
 	app     string
@@ -133,8 +119,7 @@ type Targets struct {
 	mu       sync.Mutex
 	targets  map[contracts.TargetToken]*target
 	followed map[contracts.TargetToken]*followed
-	delivery func() Delivery
-	// ClipboardRestoreDelay waits for the host to read the pasted text.
+	// ClipboardRestoreDelay is a consumption grace period, not a host acknowledgement.
 	ClipboardRestoreDelay time.Duration
 	// ReadSite reports whether Capture may read the host of the focused web
 	// page for scene selection; nil never reads it.
@@ -147,30 +132,12 @@ type Targets struct {
 	ScreenTimeout time.Duration
 }
 
-func NewTargets(delivery func() Delivery) *Targets {
+func NewTargets() *Targets {
 	return &Targets{targets: map[contracts.TargetToken]*target{}, followed: map[contracts.TargetToken]*followed{},
-		delivery: delivery, ClipboardRestoreDelay: 400 * time.Millisecond}
+		ClipboardRestoreDelay: 400 * time.Millisecond}
 }
 
 const keptTargets = 4
-
-var chromiumBundles = map[string]bool{
-	"com.google.Chrome": true, "com.google.Chrome.canary": true, "com.microsoft.edgemac": true, "com.brave.Browser": true,
-	"company.thebrowser.Browser": true, "com.operasoftware.Opera": true, "com.vivaldi.Vivaldi": true, "org.chromium.Chromium": true,
-}
-
-// usesChromiumEditor reports hosts whose AX text attributes accept writes
-// without applying them; those targets use keystroke delivery.
-func usesChromiumEditor(bundleID, bundlePath string) bool {
-	if chromiumBundles[bundleID] {
-		return true
-	}
-	if bundlePath == "" {
-		return false
-	}
-	_, err := os.Stat(filepath.Join(bundlePath, "Contents", "Frameworks", "Electron Framework.framework"))
-	return err == nil
-}
 
 func newToken() contracts.TargetToken {
 	var b [12]byte
@@ -193,18 +160,11 @@ func (t *Targets) Capture(_ context.Context, id contracts.Identity) (contracts.T
 		return contracts.TargetSnapshot{}, domain.Fail(domain.CodeTargetUnsupported, "no frontmost application")
 	}
 	role, subrole := C.GoString(&native.role[0]), C.GoString(&native.subrole[0])
-	bundle, bundlePath := C.GoString(&native.bundle[0]), C.GoString(&native.bundle_path[0])
+	bundle := C.GoString(&native.bundle[0])
 	secure := native.secure_input == 1 || subrole == "AXSecureTextField"
 	known := native.element != nil && role != ""
-	tgt := &target{element: native.element, pid: int(native.pid), readable: native.value_readable == 1, secure: secure, app: bundle, created: time.Now()}
-	switch {
-	case t.delivery() == DeliveryClipboard:
-		tgt.route = RouteClipboard
-	case native.selected_text_settable == 1 && tgt.readable && !usesChromiumEditor(bundle, bundlePath):
-		tgt.route = RouteAccessibility
-	default:
-		tgt.route = RouteKeystrokes
-	}
+	tgt := &target{element: native.element, selection: native.selection, identity: id, pid: int(native.pid), readable: native.value_readable == 1, secure: secure, app: bundle, created: time.Now()}
+	tgt.route = RouteClipboard
 	token := newToken()
 	t.mu.Lock()
 	t.targets[token] = tgt
@@ -270,6 +230,7 @@ func (t *Targets) evictLocked() {
 			}
 		}
 		C.arion_release(t.targets[oldest].element)
+		C.arion_release(t.targets[oldest].selection)
 		delete(t.targets, oldest)
 	}
 }
@@ -331,72 +292,32 @@ func (t *Targets) ReadContext(_ context.Context, id contracts.Identity, token co
 }
 
 // Commit revalidates focus and inserts once through the captured route.
-func (t *Targets) Commit(_ context.Context, request contracts.CommitRequest) (contracts.CommitResult, error) {
+func (t *Targets) Commit(ctx context.Context, request contracts.CommitRequest) (contracts.CommitResult, error) {
 	result := contracts.CommitResult{Identity: request.Identity, Outcome: contracts.NotApplied}
 	t.mu.Lock()
 	tgt := t.targets[request.Target]
+	if tgt != nil && tgt.identity != request.Identity {
+		t.mu.Unlock()
+		result.Failure = domain.CodeStaleRevision
+		return result, nil
+	}
 	delete(t.targets, request.Target)
 	t.mu.Unlock()
 	if tgt == nil {
 		result.Failure = domain.CodeTargetChanged
 		return result, nil
 	}
+	defer C.arion_release(tgt.selection)
 	if tgt.follow {
 		t.keepFollowed(request.Target, tgt)
 	} else {
 		defer C.arion_release(tgt.element)
 	}
-	// DSK-A03: a focus change means the user must act; nothing is inserted.
-	if C.arion_focus_matches(tgt.element, C.int(tgt.pid)) != 1 {
-		result.Failure = domain.CodeTargetChanged
-		return result, nil
-	}
-	if C.arion_secure_input() == 1 {
+	if tgt.secure {
 		result.Failure = domain.CodeSecureFieldBlocked
 		return result, nil
 	}
-	text := request.Text
-	before := int64(-1)
-	if tgt.readable {
-		before = int64(C.arion_value_length(tgt.element))
-	}
-	ctext := C.CString(text)
-	defer C.free(unsafe.Pointer(ctext))
-	switch tgt.route {
-	case RouteAccessibility:
-		if C.arion_ax_insert(tgt.element, ctext) != 0 {
-			result.Failure = domain.CodeTargetUnsupported
-			return result, nil
-		}
-	case RouteKeystrokes:
-		typed := C.CString(singleLine(text))
-		defer C.free(unsafe.Pointer(typed))
-		if C.arion_type_unicode(typed) != 0 {
-			result.Failure = domain.CodeTargetUnsupported
-			return result, nil
-		}
-	case RouteClipboard:
-		owned := C.arion_paste(ctext)
-		time.Sleep(t.ClipboardRestoreDelay)
-		C.arion_restore_clipboard(owned)
-	}
-	result.Outcome = contracts.Unknown
-	if before >= 0 {
-		// Keystroke delivery is asynchronous; give the host a moment.
-		deadline := time.Now().Add(300 * time.Millisecond)
-		for {
-			after := int64(C.arion_value_length(tgt.element))
-			if after > before {
-				result.Outcome = contracts.Applied
-				break
-			}
-			if time.Now().After(deadline) {
-				break
-			}
-			time.Sleep(15 * time.Millisecond)
-		}
-	}
-	return result, nil
+	return commitPaste(ctx, request.Identity, request.Text, t.ClipboardRestoreDelay, nativePasteTarget{tgt})
 }
 
 // Follow marks a captured target to stay readable after Commit. Secure,
@@ -475,12 +396,6 @@ func (f *followed) release() {
 		C.arion_release(f.element)
 		f.element = nil
 	}
-}
-
-// singleLine replaces line breaks: synthesized Return could send a message
-// or run a terminal command, which Arion never does.
-func singleLine(text string) string {
-	return strings.Join(strings.Fields(strings.NewReplacer("\r\n", " ", "\n", " ", "\r", " ").Replace(text)), " ")
 }
 
 // UTF16Length counts host string units for AX range conversion (CTR-A05).

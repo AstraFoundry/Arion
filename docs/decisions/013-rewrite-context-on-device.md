@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted (product decision). Amends the consent rule of [009](../../specs/009-contextual-rewrite.md) step 2 and PRV-02 of [005](../../specs/005-privacy.md) for these three sources. Extends [ADR 011](011-live-local-rewriting.md) and [ADR 012](012-context-scene-selection.md).
+Accepted (product decision). Amends the consent rule of [009](../../specs/009-contextual-rewrite.md) step 2 and PRV-02 of [005](../../specs/005-privacy.md) for these three sources. Extends [ADR 011](011-live-local-rewriting.md) and [ADR 012](012-context-scene-selection.md). [ADR 018](018-staged-gguf-rewriting.md) keeps this context on the selector only; the formatter receives the edited source.
 
 ## Context
 

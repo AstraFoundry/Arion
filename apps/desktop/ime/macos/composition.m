@@ -1,6 +1,17 @@
 #import "composition.h"
 #import <InputMethodKit/InputMethodKit.h>
 
+// The same spring as the dictation pill (ui/entities/dictation/typewriter.go,
+// after Doubao's TypewriterSpring): a backlog near balance types at interval;
+// each composed character above or below it speeds the pace up or down by
+// elastic, within the bounds.
+static const double kBalance = 6;
+static const NSTimeInterval kInterval = 0.045;
+static const double kElastic = 0.25;
+static const NSTimeInterval kMinInterval = 0.012;
+static const NSTimeInterval kMaxInterval = 0.090;
+static const NSTimeInterval kTick = 1.0 / 60;
+
 @interface ArionComposition ()
 @property(weak) id client;
 @property(readwrite, copy) NSString *activation;
@@ -9,9 +20,82 @@
 @property(readwrite) BOOL composing;
 @property BOOL committed;
 @property unsigned long long revision;
+// The draft being typed, as composed characters, and how many are shown.
+@property(copy) NSArray<NSString *> *target;
+@property double shown;
+@property(strong) NSTimer *timer;
+@property NSTimeInterval lastTick;
 @end
 
 @implementation ArionComposition
+- (instancetype)init {
+    if ((self = [super init])) self.pacing = YES;
+    return self;
+}
+
+- (void)dealloc {
+    [_timer invalidate];
+}
+
+- (void)stopTyping {
+    [self.timer invalidate];
+    self.timer = nil;
+    self.target = nil;
+    self.shown = 0;
+}
+
+static NSArray<NSString *> *characters(NSString *text) {
+    NSMutableArray *result = [NSMutableArray array];
+    [text enumerateSubstringsInRange:NSMakeRange(0, text.length) options:NSStringEnumerationByComposedCharacterSequences
+        usingBlock:^(NSString *s, __unused NSRange r, __unused NSRange e, __unused BOOL *stop) { [result addObject:s]; }];
+    return result;
+}
+
+- (void)showMarked:(NSString *)text {
+    NSAttributedString *marked = [[NSAttributedString alloc] initWithString:text
+        attributes:@{NSUnderlineStyleAttributeName: @(NSUnderlineStyleSingle)}];
+    [self.client setMarkedText:marked selectionRange:NSMakeRange(text.length, 0)
+              replacementRange:NSMakeRange(NSNotFound, NSNotFound)];
+}
+
+// Types toward the latest draft: keeps the shown characters that still agree
+// with it and types the rest at the spring's pace.
+- (void)typeToward:(NSString *)text {
+    NSArray<NSString *> *target = characters(text);
+    NSUInteger common = 0, shown = (NSUInteger)self.shown;
+    while (common < shown && common < target.count && common < self.target.count && [self.target[common] isEqual:target[common]]) common++;
+    BOOL rolledBack = common < shown;
+    self.shown = MIN(self.shown, (double)common);
+    self.target = target;
+    // A changed ending disappears now rather than with the next character.
+    if (rolledBack) [self showMarked:[[target subarrayWithRange:NSMakeRange(0, common)] componentsJoinedByString:@""]];
+    if (!self.live || !self.target) return;
+    if (!self.timer) {
+        self.lastTick = NSDate.timeIntervalSinceReferenceDate;
+        __weak ArionComposition *weakSelf = self;
+        self.timer = [NSTimer timerWithTimeInterval:kTick repeats:YES block:^(__unused NSTimer *timer) { [weakSelf tick]; }];
+        [NSRunLoop.mainRunLoop addTimer:self.timer forMode:NSRunLoopCommonModes];
+    }
+    [self tick];
+}
+
+- (void)tick {
+    if (!self.live || !self.target) { [self stopTyping]; return; }
+    NSTimeInterval now = NSDate.timeIntervalSinceReferenceDate;
+    NSTimeInterval elapsed = MIN(MAX(now - self.lastTick, 0), 0.25);
+    self.lastTick = now;
+    double backlog = (double)self.target.count - self.shown;
+    double scale = MAX(0.1, 1 + kElastic * (backlog - kBalance));
+    NSTimeInterval pace = MAX(kMinInterval, MIN(kMaxInterval, kInterval / scale));
+    NSUInteger before = (NSUInteger)self.shown;
+    self.shown = MIN((double)self.target.count, self.shown + elapsed / pace);
+    NSUInteger count = (NSUInteger)self.shown;
+    NSArray<NSString *> *target = self.target;
+    if (count == target.count) { [self.timer invalidate]; self.timer = nil; }
+    // The host may reenter and invalidate while the marked text is set.
+    if (count != before || count == target.count) [self showMarked:[[target subarrayWithRange:NSMakeRange(0, count)] componentsJoinedByString:@""]];
+}
+
 - (void)activate:(id)client {
     [self invalidate];
     self.client = client;
@@ -20,6 +104,7 @@
 }
 
 - (void)invalidate {
+    [self stopTyping];
     BOOL clear = self.composing;
     id client = self.client;
     self.composing = NO;
@@ -62,14 +147,19 @@
         if (![revision isKindOfClass:NSNumber.class] || revision.doubleValue < 1 ||
             revision.doubleValue != (double)revision.unsignedLongLongValue ||
             revision.unsignedLongLongValue <= self.revision) return nil;
-        NSAttributedString *marked = [[NSAttributedString alloc] initWithString:text
-            attributes:@{NSUnderlineStyleAttributeName: @(NSUnderlineStyleSingle)}];
         self.revision = revision.unsignedLongLongValue;
         self.composing = YES;
-        [self.client setMarkedText:marked selectionRange:NSMakeRange(text.length, 0)
-                  replacementRange:NSMakeRange(NSNotFound, NSNotFound)];
+        // An empty draft releases the host's composition at once.
+        if (self.pacing && text.length > 0) {
+            [self typeToward:text];
+        } else {
+            [self stopTyping];
+            [self showMarked:text];
+        }
     } else if ([op isEqual:@"commit"]) {
         // Terminal before calling the host, which can reenter the input method.
+        // The final text replaces whatever the typewriter had shown.
+        [self stopTyping];
         self.live = NO;
         self.committed = YES;
         self.composing = NO;

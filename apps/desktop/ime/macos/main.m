@@ -188,13 +188,13 @@ static void applyKeyboardSettings(ArionTyping *typing, ArionCandidatePanel *pane
     if (!self.candidateWindow) {
         self.candidateWindow = [ArionCandidatePanel new];
         __weak ArionInputController *weakSelf = self;
-        self.candidateWindow.selected = ^(NSUInteger index, NSUInteger revision) {
+        self.candidateWindow.selected = ^(NSUInteger index, NSUInteger row, NSUInteger revision) {
             ArionInputController *controller = weakSelf;
-            if ([ArionBridge shared].active == controller) [controller.typing select:index revision:revision];
+            if ([ArionBridge shared].active == controller) [controller.typing select:index row:row revision:revision];
         };
-        self.candidateWindow.nextPage = ^(NSUInteger revision) {
+        self.candidateWindow.toggled = ^(NSUInteger revision) {
             ArionInputController *controller = weakSelf;
-            if ([ArionBridge shared].active == controller) [controller.typing nextPage:revision];
+            if ([ArionBridge shared].active == controller) [controller.typing toggleExpanded:revision];
         };
     }
     applyKeyboardSettings(self.typing, self.candidateWindow);
@@ -259,11 +259,13 @@ static void applyKeyboardSettings(ArionTyping *typing, ArionCandidatePanel *pane
     // The marked text starts at index 0; its line rectangle is in screen space.
     NSRect caret = NSZeroRect;
     [self.client attributesForCharacterIndex:0 lineHeightRectangle:&caret];
-    [self.candidateWindow showCandidates:snapshot.candidates
-                             highlighted:MIN(snapshot.highlighted, snapshot.candidates.count - 1)
-                                lastPage:snapshot.lastPage
-                                revision:self.typing.revision
-                               caretRect:caret];
+    [self.candidateWindow showRows:snapshot.rows
+                        currentRow:snapshot.currentRow
+                       highlighted:MIN(snapshot.highlighted, snapshot.candidates.count - 1)
+                          expanded:snapshot.expanded
+                              more:!snapshot.lastPage
+                          revision:self.typing.revision
+                         caretRect:caret];
 }
 
 - (NSMenu *)menu {

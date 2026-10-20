@@ -2,16 +2,24 @@
 // views and a secure field whose real contents and edit counts it reports
 // over a local socket. It never stores or transmits text elsewhere.
 #import <Cocoa/Cocoa.h>
+#import <WebKit/WebKit.h>
 #include <sys/socket.h>
 #include <sys/un.h>
 
-@interface Fixture : NSObject <NSApplicationDelegate, NSTextViewDelegate, NSWindowDelegate>
+@interface Fixture : NSObject <NSApplicationDelegate, NSTextViewDelegate, NSWindowDelegate, WKScriptMessageHandler>
 @property(strong) NSWindow *window;
 @property(strong) NSTextView *editorA;
 @property(strong) NSTextView *editorB;
 @property(strong) NSSecureTextField *secure;
 @property(assign) NSInteger editsA, editsB;
 @property(assign) BOOL transitioning;
+@property(strong) WKWebView *web;
+@property(copy) NSString *webText;
+@property(assign) NSInteger webEdits;
+@property(assign) BOOL webFocused;
+@property(strong) NSArray<NSPasteboardItem *> *savedClipboard;
+@property(assign) NSInteger clipboardChange;
+
 @end
 
 static NSTextView *makeEditor(NSRect frame, NSString *name) {
@@ -28,6 +36,14 @@ static NSTextView *makeEditor(NSRect frame, NSString *name) {
 
 @implementation Fixture
 - (void)applicationDidFinishLaunching:(NSNotification *)note {
+    // AppKit dispatches Command-V through the application's Edit menu.
+    NSMenu *menu = [NSMenu new];
+    NSMenuItem *edit = [[NSMenuItem alloc] initWithTitle:@"Edit" action:nil keyEquivalent:@""];
+    NSMenu *commands = [[NSMenu alloc] initWithTitle:@"Edit"];
+    [commands addItemWithTitle:@"Paste" action:@selector(paste:) keyEquivalent:@"v"];
+    edit.submenu = commands;
+    [menu addItem:edit];
+    NSApp.mainMenu = menu;
     self.window = [[NSWindow alloc] initWithContentRect:NSMakeRect(200, 200, 520, 360)
                                               styleMask:NSWindowStyleMaskTitled | NSWindowStyleMaskClosable | NSWindowStyleMaskResizable
                                                 backing:NSBackingStoreBuffered defer:NO];
@@ -42,10 +58,23 @@ static NSTextView *makeEditor(NSRect frame, NSString *name) {
     [content addSubview:self.editorA];
     [content addSubview:self.editorB];
     [content addSubview:self.secure];
+    WKWebViewConfiguration *config = [WKWebViewConfiguration new];
+    [config.userContentController addScriptMessageHandler:self name:@"state"];
+    self.web = [[WKWebView alloc] initWithFrame:content.bounds configuration:config];
+    self.web.hidden = YES;
+    self.webText = @"";
+    [content addSubview:self.web];
+    [self.web loadHTMLString:@"<textarea id='t' style='width:95%;height:90%'></textarea><script>let n=0;function report(){webkit.messageHandlers.state.postMessage({text:t.value,edits:n,focused:document.activeElement===t})}t.oninput=()=>{n++;report()};t.onfocus=report;t.onblur=report;</script>" baseURL:nil];
     [self.window makeKeyAndOrderFront:nil];
     [NSApp activateIgnoringOtherApps:YES];
     NSString *socketPath = NSProcessInfo.processInfo.environment[@"ARION_FIXTURE_SOCKET"];
     if (socketPath.length) [self serve:socketPath];
+}
+
+- (void)userContentController:(WKUserContentController *)controller didReceiveScriptMessage:(WKScriptMessage *)message {
+    self.webText = message.body[@"text"];
+    self.webEdits = [message.body[@"edits"] integerValue];
+    self.webFocused = [message.body[@"focused"] boolValue];
 }
 
 - (void)textDidChange:(NSNotification *)note {
@@ -63,6 +92,8 @@ static NSTextView *makeEditor(NSRect frame, NSString *name) {
     NSResponder *first = self.window.firstResponder;
     NSString *focused = first == self.editorA ? @"A" : first == self.editorB ? @"B" : (first == self.secure || first == self.secure.currentEditor) ? @"secure" : @"";
     return @{
+        @"web": @{@"text": self.webText, @"edits": @(self.webEdits), @"focused": @(self.webFocused)},
+        @"clipboardOwned": @((BOOL)([NSPasteboard generalPasteboard].changeCount == self.clipboardChange)),
         @"A": @{@"text": self.editorA.string, @"edits": @(self.editsA), @"selection": @[@(a.location), @(a.length)],
                  @"marked": @(self.editorA.hasMarkedText), @"markedRange": self.editorA.hasMarkedText ? @[@(self.editorA.markedRange.location), @(self.editorA.markedRange.length)] : @[]},
         @"B": @{@"text": self.editorB.string, @"edits": @(self.editsB), @"selection": @[@(b.location), @(b.length)],
@@ -82,8 +113,53 @@ static NSTextView *makeEditor(NSRect frame, NSString *name) {
         NSString *target = command[@"target"];
         [NSApp activateIgnoringOtherApps:YES];
         [self.window makeKeyAndOrderFront:nil];
+        self.web.hidden = ![target isEqual:@"web"];
+        if ([target isEqual:@"web"]) {
+            [self.window makeFirstResponder:self.web];
+            [self.web evaluateJavaScript:@"t.focus();report()" completionHandler:nil];
+            return [self state];
+        }
         NSResponder *responder = [target isEqual:@"A"] ? self.editorA : [target isEqual:@"B"] ? self.editorB : self.secure;
         [self.window makeFirstResponder:responder];
+    } else if ([op isEqual:@"set"]) {
+        NSTextView *editor = [command[@"target"] isEqual:@"B"] ? self.editorB : self.editorA;
+        editor.string = command[@"text"] ?: @"";
+        NSUInteger location = [command[@"location"] unsignedIntegerValue];
+        NSUInteger length = [command[@"length"] unsignedIntegerValue];
+        if (location <= editor.string.length && length <= editor.string.length - location) {
+            editor.selectedRange = NSMakeRange(location, length);
+        }
+        self.editsA = self.editsB = 0;
+    } else if ([op isEqual:@"clipboardSave"]) {
+        NSPasteboard *board = NSPasteboard.generalPasteboard;
+        NSInteger initialChange = board.changeCount;
+        NSMutableArray *saved = [NSMutableArray new];
+        for (NSPasteboardItem *source in board.pasteboardItems) {
+            NSPasteboardItem *item = [NSPasteboardItem new];
+            for (NSPasteboardType type in source.types) {
+                NSData *data = [source dataForType:type];
+                if (!data || ![item setData:data forType:type]) abort();
+            }
+            [saved addObject:item];
+        }
+        if (board.changeCount != initialChange) abort();
+        self.savedClipboard = saved;
+        self.clipboardChange = board.changeCount;
+    } else if ([op isEqual:@"clipboardSet"]) {
+        NSPasteboard *board = NSPasteboard.generalPasteboard;
+        [board clearContents];
+        [board setString:command[@"text"] forType:NSPasteboardTypeString];
+        self.clipboardChange = board.changeCount;
+    } else if ([op isEqual:@"clipboardCheck"]) {
+        NSPasteboard *board = NSPasteboard.generalPasteboard;
+        // Only acknowledge the expected test-owned value for cleanup.
+        if ([[board stringForType:NSPasteboardTypeString] isEqual:command[@"text"]]) self.clipboardChange = board.changeCount;
+    } else if ([op isEqual:@"clipboardRestore"]) {
+        NSPasteboard *board = NSPasteboard.generalPasteboard;
+        if (self.savedClipboard && board.changeCount == self.clipboardChange) {
+            [board clearContents];
+            if (self.savedClipboard.count) [board writeObjects:self.savedClipboard];
+        }
     } else if ([op isEqual:@"fullscreen"]) {
         BOOL requested = [command[@"enabled"] boolValue];
         BOOL current = (self.window.styleMask & NSWindowStyleMaskFullScreen) != 0;

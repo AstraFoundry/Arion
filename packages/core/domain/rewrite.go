@@ -60,9 +60,31 @@ var listMarkers = regexp.MustCompile(`(?m)^\s*\d{1,2}[.、)]\s*`)
 var zhNegations = []string{"不要", "不能", "不用", "不会", "不该", "不必", "不可", "不准", "别", "没", "未", "勿"}
 var enNegations = []string{"not", "n't", "never", "nothing", "nobody", "cannot"}
 
-// ValidateRewrite applies conservative fidelity proxies. Passing does not
-// prove the meaning is preserved; failing proves the proposal is unsafe to
-// insert without review.
+// ValidateRewriteDelivery checks transport completeness and control markup.
+// It does not judge overlap, wording, semantic fidelity, numbers, or OCR use.
+func ValidateRewriteDelivery(c RewriteCheck) RewriteVerdict {
+	if c.Truncated {
+		return RewriteTruncated
+	}
+	candidate := strings.TrimSpace(c.Candidate)
+	if candidate == "" {
+		return RewriteEmpty
+	}
+	if !utf8.ValidString(candidate) {
+		return RewriteMarkup
+	}
+	lower := strings.ToLower(candidate)
+	for _, marker := range markers {
+		if strings.Contains(lower, marker) {
+			return RewriteMarkup
+		}
+	}
+	return RewriteAccepted
+}
+
+// ValidateRewrite is the historical fidelity-proxy diagnostic, retained for
+// benchmark replay. Production uses ValidateRewriteDelivery; proxy failures
+// do not prove that a structured rewrite is semantically wrong.
 func ValidateRewrite(c RewriteCheck) RewriteVerdict {
 	candidate := strings.TrimSpace(c.Candidate)
 	if c.Truncated {

@@ -1,0 +1,361 @@
+{
+  "method": "Ordinary byte-verified Apple LLVM static disassembly; no new REA decompilation; no target execution or private data access",
+  "chatterfly": {
+    "version": "1.0.8.13459 (13459)",
+    "mainSha256": "595e502f74e41e1b28904affa9093974f6cbc197a3756a74a007ef562f9ee767",
+    "arm64Sha256": "3406894676fd6b9028795858907d1821f54977aa0f9ec5716d42eba12848fe21",
+    "sourceSlice": {
+      "offset": 58785792,
+      "size": 54216592,
+      "byteEquality": true
+    },
+    "functions": [
+      {
+        "id": "CVA-CF108-result",
+        "method": "-[SGMacSpeechService handleLivePostProcessResult:error:]",
+        "start": "0x1003cd6a8",
+        "exclusiveEnd": "0x1003cde38",
+        "fileOffset": 3987112,
+        "bytesSha256": "79d97852d1f186d00243fc17f5617b45131a5bd9f8c76a348c84583b260d1fda",
+        "assemblySha256": "0d1b7b1c0d5c613b6b625f026e1361b28c95742f04a17b331244bf67904e6053",
+        "instructionsVerified": 484,
+        "universalFileOffset": 62772904,
+        "directObjCSelectors": [
+          "date",
+          "sessionData",
+          "setLlmEndTime:",
+          "setLlmResponse:",
+          "perf",
+          "setPerfInfo:",
+          "code",
+          "recognizeMode",
+          "handleCommandTimeoutWithError:",
+          "setSecurityResult:",
+          "asrStableText",
+          "commandIntentType",
+          "setIsIntentFallback:",
+          "nameForIntentType:",
+          "asrSessionID",
+          "log:tag:file:func:line:format:",
+          "setSessionError:",
+          "data",
+          "text",
+          "setEnhancedText:",
+          "setSessionState:",
+          "saveLiveSessionDataToHistory:",
+          "isIntentFallback",
+          "enhancedText",
+          "recordVPHistoryWithSession:resultText:",
+          "setState:",
+          "setRecognizeStartTime:",
+          "setSpeechSwitchEnabled:",
+          "sharedInstance",
+          "reportLLMFinalWithSessionData:",
+          "commitFinalSpeechText",
+          "reportSuccessWithSessionData:extraParams:",
+          "reportSessionCommitWithSessionData:",
+          "showLLMErrorUI:",
+          "reportSessionDiscardWithSessionData:"
+        ]
+      },
+      {
+        "id": "CVA-CF108-commit",
+        "method": "-[SGMacSpeechService commitFinalSpeechText]",
+        "start": "0x1003ce898",
+        "exclusiveEnd": "0x1003cf320",
+        "fileOffset": 3991704,
+        "bytesSha256": "387e2c92c93dbaee6030795885cc29d180e32002a0c402a5ff90804cd5e6783d",
+        "assemblySha256": "e7c7477c5a08b2056b8d7db9173da11054a59e95b7a0201a6beadaa5bba3b057",
+        "instructionsVerified": 674,
+        "universalFileOffset": 62777496,
+        "directObjCSelectors": [
+          "sessionData",
+          "llmResponse",
+          "data",
+          "rawTextTail",
+          "sharedInstance",
+          "enhancedText",
+          "recordSpeechText:rawTail:",
+          "sessionError",
+          "code",
+          "isIntentFallback",
+          "provider",
+          "isCurrentSystemInputMethod",
+          "hasInputFocus",
+          "editableTextFocusResult",
+          "hasEditableFocus",
+          "source",
+          "log:tag:file:func:line:format:",
+          "asrStableText",
+          "skillInfo",
+          "sg_beaconVoiceType",
+          "shouldResultPanelShowCommandRejectedToast",
+          "p_showVoiceResultPanelWithText:originalText:skillInfo:beaconVoiceType:showCommandRejectedToast:",
+          "prepareForVoiceCommitWithText:sessionData:",
+          "prepareForVoiceCommitWithText:",
+          "commitVoiceText:",
+          "switchToTarget:",
+          "date",
+          "setRenderFinishTime:",
+          "sharedLogger",
+          "logEvent:payload:",
+          "sessionState",
+          "numberWithInteger:",
+          "voiceFilePath",
+          "dictionaryWithObjects:forKeys:count:",
+          "commitVoiceTextViaSystemPaste:",
+          "bundleId",
+          "verifyVoiceTextInsertion:bundleId:onFail:"
+        ]
+      },
+      {
+        "id": "CVA-CF108-cmode",
+        "method": "-[SGSpeechPostProcessorSSE handleCModePacket:delta:finish:eventSource:]",
+        "start": "0x1004264d0",
+        "exclusiveEnd": "0x1004268e4",
+        "fileOffset": 4351184,
+        "bytesSha256": "25ab55955713973e8e7aec704a7738af9e4e34aa7e7137db34ea0220b8bfeabe",
+        "assemblySha256": "e7ae4edd2686e2c981a5f54ed4bdfae1012babd632982ed34220b94a6f576e69",
+        "instructionsVerified": 261,
+        "universalFileOffset": 63136976,
+        "directObjCSelectors": [
+          "length",
+          "deltaBuffer",
+          "appendString:",
+          "objectForKeyedSubscript:",
+          "class",
+          "isKindOfClass:",
+          "onDelta",
+          "copy",
+          "init",
+          "setText:",
+          "setTips:",
+          "setRawTextTail:",
+          "pendingResponse",
+          "setData:",
+          "text",
+          "requestId",
+          "log:tag:file:func:line:format:"
+        ]
+      },
+      {
+        "id": "CVA-CF108-validate-asr",
+        "method": "-[SGSpeechPostProcessorSSE validateAsrText:enablePauseDetect:completion:]",
+        "start": "0x100424384",
+        "exclusiveEnd": "0x100424434",
+        "fileOffset": 4342660,
+        "bytesSha256": "93d64250a5071d763975a581c97c7a03d554566216b34e56b746b7f2ba32e3c7",
+        "assemblySha256": "4110c665124c48d7dc50a97622489dc9d6b99bd1dbd9821c96168521280c946a",
+        "instructionsVerified": 44,
+        "universalFileOffset": 63128452,
+        "directObjCSelectors": [
+          "length"
+        ]
+      },
+      {
+        "id": "CVA-CF108-validate-asr-callback",
+        "method": "___73-[SGSpeechPostProcessorSSE validateAsrText:enablePauseDetect:completion:]_block_invoke",
+        "start": "0x100424434",
+        "exclusiveEnd": "0x10042448c",
+        "fileOffset": 4342836,
+        "bytesSha256": "5b6575773e0ac44d57e3516ef4985dc2722486a55bf2c7cfb21b7eee82468013",
+        "assemblySha256": "ceb51aedc7f129b801fd3b58f9ce8f765ab77b38395ed0c67e6deb7e004cece8",
+        "instructionsVerified": 22,
+        "universalFileOffset": 63128628,
+        "directObjCSelectors": [
+          "errorWithCode:message:"
+        ]
+      },
+      {
+        "id": "CVA-CF108-edit-distance",
+        "method": "-[SGVoiceEditTracker p_editDistanceBetween:and:]",
+        "start": "0x100431f9c",
+        "exclusiveEnd": "0x1004321a8",
+        "fileOffset": 4399004,
+        "bytesSha256": "f0cfd404ce62e92e378507e5f79c37a96bd565bf65b107c0dc4232deaba1d38f",
+        "assemblySha256": "e68b7bdf81ee3e9932c06eed691a2c1bb884b63e7064869f687e3425ac752c64",
+        "instructionsVerified": 131,
+        "universalFileOffset": 63184796,
+        "directObjCSelectors": [
+          "length",
+          "characterAtIndex:"
+        ]
+      },
+      {
+        "id": "CVA-CF108-edit-beacon",
+        "method": "-[SGVoiceEditTracker p_reportEditBeaconWithSegment:finalText:changed:trigger:]",
+        "start": "0x100431ba8",
+        "exclusiveEnd": "0x100431f9c",
+        "fileOffset": 4397992,
+        "bytesSha256": "ca031bfbd24e8a0c812d40ed7619ebf9639287f68629fe7422a3c9570ea5083c",
+        "assemblySha256": "9364961a49156c74942f6d8b279dfca1cc90c2f99cd9be50371344accaceecbb",
+        "instructionsVerified": 253,
+        "universalFileOffset": 63183784,
+        "directObjCSelectors": [
+          "dictionary",
+          "voiceSessionId",
+          "setObject:forKeyedSubscript:",
+          "voiceText",
+          "p_textChangeTypeWithOriginal:edited:",
+          "numberWithInteger:",
+          "p_sendTextValidWithSegment:finalText:trigger:",
+          "finishMethod",
+          "length",
+          "numberWithUnsignedInteger:",
+          "scenePath",
+          "skillId",
+          "p_editDistanceBetween:and:",
+          "p_editTypeWithOriginal:edited:",
+          "log:tag:file:func:line:format:",
+          "reportEditWithParams:"
+        ]
+      },
+      {
+        "id": "CVA-CF108-valid-edited-text",
+        "method": "-[SGVoiceEditTracker p_isValidText:]",
+        "start": "0x100432638",
+        "exclusiveEnd": "0x1004326c4",
+        "fileOffset": 4400696,
+        "bytesSha256": "dfcde258385de3ba38cd6a82df6383e3452444f4aa54c2cf0c4c97105b1c12e7",
+        "assemblySha256": "b8cfa199bf65a74b321af54597a6173f5b290dd2aea5b9f4c921ea088a299aac",
+        "instructionsVerified": 35,
+        "universalFileOffset": 63186488,
+        "directObjCSelectors": [
+          "whitespaceAndNewlineCharacterSet",
+          "stringByTrimmingCharactersInSet:",
+          "length"
+        ]
+      },
+      {
+        "id": "CVA-CF108-send-edited-text",
+        "method": "-[SGVoiceEditTracker p_sendTextValidWithSegment:finalText:trigger:]",
+        "start": "0x10043257c",
+        "exclusiveEnd": "0x100432638",
+        "fileOffset": 4400508,
+        "bytesSha256": "afd181d076efaf5ed85d67e3370b4f7a73d733cb9cb4aa23a190a826ad852db9",
+        "assemblySha256": "15ee7dce9fe292254f3959d9d205e667d62e7ffbc4054238f4956f761a512a22",
+        "instructionsVerified": 47,
+        "universalFileOffset": 63186300,
+        "directObjCSelectors": [
+          "isEqualToString:",
+          "p_isValidText:",
+          "atDocStart"
+        ]
+      }
+    ]
+  },
+  "doubao": {
+    "version": "1.0.2 (1)",
+    "mainSha256": "4b3836dcb8a3e06b01b4c95390c757b71f623c1f7c4141c059e49284f7f6442d",
+    "arm64Sha256": "266f49f6bcb62e43c5170620d4b86e2e4c4ef873bcce624ef1a90b9c46244983",
+    "revalidatedRanges": [
+      {
+        "id": "DBD-decoder-config",
+        "bytesSha256": "ae874f18b0814025d34c057c038d5f2d7d0e998c3fc0da071c19ffd5773c33ba",
+        "byteEquality": true
+      },
+      {
+        "id": "DBD-decoder-call",
+        "bytesSha256": "450033b925ad07163966df8d23e733c77cb659d80b19ada4dbe8e4be6d090081",
+        "byteEquality": true
+      },
+      {
+        "id": "DBD-decoder-tags",
+        "bytesSha256": "a691fd2a23cbb46e0cb54cb48d22edb7786d7b5cbd9d50a6770443af468d0da3",
+        "byteEquality": true
+      },
+      {
+        "id": "DBD-request-builder",
+        "bytesSha256": "444016aaa5d45cc9ab41f63196334988922821c2e6e0214d5d78e4c3f3c353ed",
+        "byteEquality": true
+      },
+      {
+        "id": "DBD-completed",
+        "bytesSha256": "8ffe73e963ccf75932c01076777f3e9ddb2bb49ddba0d4dabe7d95a282ebf481",
+        "byteEquality": true
+      },
+      {
+        "id": "DBD-filler-setting",
+        "bytesSha256": "4c67402b0de5e244dd0f8b50c7118ac8cd18d294a2522589584eed5de4c9d054",
+        "byteEquality": true
+      }
+    ]
+  },
+  "limitations": [
+    "Bounded client handlers only, not whole-program proof of absence.",
+    "Service-side validators, prompts and observed inference quality remain unknown.",
+    "Chatterfly edit-distance caller and text-validity methods inspected separately from rewrite result delivery."
+  ],
+  "scope": "Installed-client static validation comparison: Doubao 1.0.2 and Chatterfly 1.0.8; Arion source and authored validator probes",
+  "findings": [
+    {
+      "id": "CVA-CF108-result-policy",
+      "evidence": [
+        "CVA-CF108-result",
+        "CVA-CF108-commit",
+        "CVA-CF108-cmode"
+      ],
+      "observation": "CMode accumulates deltas and uses final response text or the delta buffer. The service success path stores response data.text as enhancedText and reaches commitFinalSpeechText; the commit helper checks mode/focus and delivers enhancedText or a result panel. Bounded methods contain no source/candidate lexical coverage, novelty, number spelling or negation-count gate.",
+      "anchors": [
+        "0x1003cda1c-0x1003cda64",
+        "0x1003cdbf8-0x1003cdc0c",
+        "0x1003cec38-0x1003ced44"
+      ],
+      "limitation": "Not a whole-program or server-side proof of absence. Command/fallback, security errors, insertion verification and target state are separate gates."
+    },
+    {
+      "id": "CVA-CF108-input-validation",
+      "evidence": [
+        "CVA-CF108-validate-asr",
+        "CVA-CF108-validate-asr-callback"
+      ],
+      "observation": "validateAsrText returns input-length-nonzero OR enablePauseDetect. An empty input without pause detection invokes completion with code 0x765c. No rewritten candidate or similarity comparison is consumed.",
+      "anchors": [
+        "0x1004243ac-0x1004243c0",
+        "0x100424440-0x100424478"
+      ]
+    },
+    {
+      "id": "CVA-CF108-edit-metrics",
+      "evidence": [
+        "CVA-CF108-edit-distance",
+        "CVA-CF108-edit-beacon",
+        "CVA-CF108-send-edited-text",
+        "CVA-CF108-valid-edited-text"
+      ],
+      "observation": "The edit-distance call is in edit-beacon reporting. p_isValidText trims whitespace and tests nonempty edited text; its inspected caller categorizes edited text in that reporting path. Neither inspected method blocks delivery of the initial rewrite.",
+      "anchors": [
+        "0x100431e50-0x100431eb0",
+        "0x100432648-0x1004326a4"
+      ]
+    },
+    {
+      "id": "CVA-DB102-completion",
+      "evidence": [
+        "DBD-completed",
+        "DBD-completion-contract"
+      ],
+      "observation": "Revalidated existing installed bytes and all six recorded ranges. Completed handler enforces matching request identity, state/decision, completion and nonempty text and handles its timeout. No lexical ratio gate occurs in this bounded handler.",
+      "anchors": [
+        "0x100be95b4-0x100be9624",
+        "0x100be9658-0x100be9730"
+      ],
+      "limitation": "Other handlers, shared services and server rules remain unknown."
+    }
+  ],
+  "arion": {
+    "source": "packages/core/domain/rewrite.go",
+    "sha256": "91d919a9de2048ee68480620e1e97257679df13e0634b6d083af46e039650446",
+    "revision": "4356914796f484064ffcd562846b7dcd91a1350b",
+    "probes": "benchmarks/runs/rewrite-validator-comparison-v1/results.json",
+    "rules": {
+      "expansion": "candidate letter/digit runes <= floor(source runes * 5/4) + 6",
+      "shrink": "candidate runes * 4 >= cleaned-source runes",
+      "novelty": "reject novel > 3 and novel * 7 > total CJK-character/Latin-word units",
+      "coverage": "require >= 70% cleaned-source character-multiset coverage with declared exceptions",
+      "numbers": "candidate digit runs excluding list labels must occur literally in source/terms/context evidence",
+      "negation": "candidate recognized-negation count must not decrease"
+    },
+    "finding": "Scene-independent lexical gates produce both false rejections and false acceptance; authored probes are not LLM inference or semantic accuracy rates."
+  }
+}

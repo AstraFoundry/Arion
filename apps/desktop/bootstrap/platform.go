@@ -33,6 +33,10 @@ type InputMethod interface {
 	// ApplyKeyboard hands the keyboard preferences to the input method,
 	// which reads them when a client next activates it.
 	ApplyKeyboard(application.KeyboardPreferences) error
+	// UpdateAvailable reports an installed input method older or otherwise
+	// different from the one this app bundles. It reads files; call it off
+	// the UI thread.
+	UpdateAvailable() bool
 }
 
 // Targets is a platform's editor capture and insertion adapter.

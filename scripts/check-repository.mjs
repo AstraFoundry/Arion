@@ -2,6 +2,7 @@ import { spawnSync } from 'node:child_process';
 import { readdir, readFile, stat } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { markdownAnchors } from './lib/markdown-anchors.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const errors = [];
@@ -27,17 +28,6 @@ for (const name of files.filter(name => name.endsWith('.md'))) {
   markdown.set(name, source.replace(/^\s*(`{3,}|~{3,})[^\n]*\n[\s\S]*?^\s*\1\s*$/gm, ''));
 }
 
-function headings(source) {
-  const slugs = new Set();
-  const counts = new Map();
-  for (const match of source.matchAll(/^#{1,6}\s+(.+)$/gm)) {
-    const base = match[1].toLowerCase().replace(/[`*_]/g, '').replace(/[^\p{L}\p{N}\s_-]/gu, '').replace(/\s/g, '-');
-    const count = counts.get(base) ?? 0;
-    slugs.add(count ? `${base}-${count}` : base);
-    counts.set(base, count + 1);
-  }
-  return slugs;
-}
 
 for (const [name, source] of markdown) {
   for (const match of source.matchAll(/!?\[[^\]\n]*\]\((<[^>]+>|[^\s)]+)(?:\s+"[^"]*")?\)/g)) {
@@ -49,7 +39,7 @@ for (const [name, source] of markdown) {
       const info = await stat(resolved);
       if (fragment && info.isFile() && resolved.endsWith('.md')) {
         const text = await readFile(resolved, 'utf8');
-        if (!headings(text).has(decodeURIComponent(fragment))) errors.push(`${name}: missing anchor ${target}`);
+        if (!markdownAnchors(text).has(decodeURIComponent(fragment))) errors.push(`${name}: missing anchor ${target}`);
       }
     } catch {
       errors.push(`${name}: missing local target ${target}`);

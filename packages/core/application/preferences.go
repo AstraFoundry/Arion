@@ -10,8 +10,8 @@ import (
 type Delivery string
 
 const (
-	// DeliveryAutomatic picks Accessibility insertion for native editors and
-	// typed keystrokes elsewhere, once, when dictation starts.
+	// DeliveryAutomatic uses the platform standard: system paste on macOS,
+	// Unicode keyboard input on Windows. IME commits do not use this choice.
 	DeliveryAutomatic Delivery = "automatic"
 	// DeliveryClipboard pastes through the clipboard and restores it unless
 	// another app wrote it meanwhile.

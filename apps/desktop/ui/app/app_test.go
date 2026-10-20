@@ -211,7 +211,8 @@ func hasText(tt *ui.Tester, text string) bool {
 
 func TestOverlayPhases(t *testing.T) {
 	state, _, store := fixture()
-	tt := ui.NewTester(func(c *ui.Context) { overlay.Render(c, store) }, OverlayWidth, OverlayHeight)
+	overlayPage := overlay.NewPage()
+	tt := ui.NewTester(func(c *ui.Context) { overlayPage.Render(c, store) }, OverlayWidth, OverlayHeight)
 	now := time.Now()
 	cases := []struct {
 		name string
@@ -230,6 +231,13 @@ func TestOverlayPhases(t *testing.T) {
 		state.Dictation = tc.d
 		state.Dictation.Changed = time.Now()
 		settle(tt)
+		if tc.d.Draft != "" {
+			// The draft types out rather than appearing whole.
+			if tc.name == "draft" && hasText(tt, tc.d.Draft) {
+				t.Errorf("draft appeared at once: %q", tt.Texts())
+			}
+			rest(tt, 1500*time.Millisecond)
+		}
 		if !hasText(tt, tc.want) {
 			t.Errorf("%s: want %q in %q", tc.name, tc.want, tt.Texts())
 		}
@@ -790,14 +798,38 @@ func TestOnboardingFlow(t *testing.T) {
 	snapshot(t, tt, "onboarding-4-accessibility-waiting")
 	state.Permissions.Accessibility = runtime.ConsentGranted
 	deadline := time.Now().Add(2 * time.Second)
-	for !hasText(tt, copy.For(copy.English).Text(copy.OnbModelTitle)) && time.Now().Before(deadline) {
+	for !hasText(tt, copy.For(copy.English).Text(copy.OnbIMETitle)) && time.Now().Before(deadline) {
 		tt.Frame()
 		time.Sleep(20 * time.Millisecond)
 	}
-	if !hasText(tt, copy.For(copy.English).Text(copy.OnbModelTitle)) {
+	if !hasText(tt, copy.For(copy.English).Text(copy.OnbIMETitle)) {
 		t.Fatalf("did not advance after accessibility grant: %q", tt.Texts())
 	}
 	settle(tt)
+	snapshot(t, tt, "onboarding-input-method-absent")
+	click(copy.For(copy.English).Text(copy.Continue))
+	if !hasText(tt, copy.For(copy.English).Text(copy.OnbIMETitle)) {
+		t.Fatal("unconfigured input source advanced without an explicit skip")
+	}
+	click(copy.For(copy.English).Text(copy.IMEInstall))
+	if !actions.called("install-ime") || state.Preferences.Mode != runtime.ModeShortcut {
+		t.Fatal("onboarding did not reuse installation or changed dictation mode")
+	}
+	click(copy.For(copy.English).Text(copy.Continue))
+	if !hasText(tt, copy.For(copy.English).Text(copy.OnbIMETitle)) {
+		t.Fatal("enabled source counted as current selection")
+	}
+	state.InputMethod = runtime.InputMethodPending
+	settle(tt)
+	click(copy.For(copy.English).Text(copy.IMESetup))
+	if !actions.called("ime-settings") {
+		t.Fatal("onboarding did not open the shared settings guide action")
+	}
+	snapshot(t, tt, "onboarding-input-method-pending")
+	state.InputMethod = runtime.InputMethodSelected
+	settle(tt)
+	snapshot(t, tt, "onboarding-input-method-selected")
+	click(copy.For(copy.English).Text(copy.Continue))
 	snapshot(t, tt, "onboarding-5-model")
 	click(copy.For(copy.English).Text(copy.Continue))
 	if !actions.called("test-shortcut") {
@@ -943,7 +975,8 @@ func TestChineseSettingsAndTransientErrors(t *testing.T) {
 func TestChineseOverlayAndDownload(t *testing.T) {
 	state, _, store := fixture()
 	state.Preferences.UILanguage = runtime.LanguageChinese
-	tt := ui.NewTester(func(c *ui.Context) { overlay.Render(c, store) }, OverlayWidth, OverlayHeight)
+	overlayPage := overlay.NewPage()
+	tt := ui.NewTester(func(c *ui.Context) { overlayPage.Render(c, store) }, OverlayWidth, OverlayHeight)
 	for _, tc := range []struct {
 		session runtime.Dictation
 		want    string
@@ -1023,7 +1056,8 @@ func TestHoldKeySettingsAndPill(t *testing.T) {
 	}
 	snapshot(t, tt, "settings-dictation-hold")
 
-	pill := ui.NewTester(func(c *ui.Context) { overlay.Render(c, store) }, OverlayWidth, OverlayHeight)
+	overlayPage := overlay.NewPage()
+	pill := ui.NewTester(func(c *ui.Context) { overlayPage.Render(c, store) }, OverlayWidth, OverlayHeight)
 	state.Dictation = runtime.Dictation{SessionID: "h", State: runtime.StateCapturing, Levels: levels(40), Changed: time.Now()}
 	state.Shortcut.Holding = true
 	settle(pill)
@@ -1074,6 +1108,93 @@ func TestPermissionGuide(t *testing.T) {
 	snapshot(t, tt, "dark-guide")
 }
 
+func TestOnboardingInputMethodDeferral(t *testing.T) {
+	for _, locale := range []copy.Locale{copy.English, copy.SimplifiedChinese} {
+		state, actions, store := fixture()
+		state.Preferences.UILanguage = runtime.UILanguage(locale)
+		page := onboarding.NewPage()
+		tt := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, OnboardingWidth, OnboardingHeight)
+		settle(tt)
+		messages := copy.For(locale)
+		click := func(key copy.Key) {
+			t.Helper()
+			if err := tt.Click(messages.Text(key)); err != nil {
+				t.Fatalf("%s: %v", key, err)
+			}
+			settle(tt)
+		}
+		for _, key := range []copy.Key{copy.OnbStart, copy.OnbContinueLocally, copy.Continue, copy.Continue} {
+			click(key)
+		}
+		state.InputMethod = runtime.InputMethodPending
+		settle(tt)
+		snapshot(t, tt, "onboarding-input-method-pending-"+string(locale))
+		state.InputMethodInstalling = true
+		settle(tt)
+		click(copy.Back)
+		click(copy.OnbIMELater)
+		if !hasText(tt, messages.Text(copy.OnbIMETitle)) {
+			t.Fatal("left input setup while installation was in flight")
+		}
+		state.InputMethodInstalling = false
+		state.InputMethod = runtime.InputMethodSelected
+		settle(tt)
+		snapshot(t, tt, "onboarding-input-method-selected-"+string(locale))
+		state.InputMethod = runtime.InputMethodPending
+		settle(tt)
+		click(copy.OnbIMELater)
+		if !hasText(tt, messages.Text(copy.OnbModelTitle)) || actions.called("install-ime") || state.Preferences.Mode != runtime.ModeShortcut {
+			t.Fatal("deferring setup installed an input source or changed dictation mode")
+		}
+	}
+}
+
+func TestSwitchPermissionGuides(t *testing.T) {
+	for pane, key := range map[runtime.GuidePane]copy.Key{
+		runtime.GuideMicrophone:      copy.GuideMicrophone,
+		runtime.GuideScreenRecording: copy.GuideScreenRecording,
+	} {
+		state, actions, store := fixture()
+		state.Guide = runtime.Guide{Pane: pane, Shown: 1}
+		tt := ui.NewTester(func(c *ui.Context) { guide.Render(c, store) }, 360, guide.HeightFor(pane))
+		for _, locale := range []copy.Locale{copy.English, copy.SimplifiedChinese} {
+			state.Preferences.UILanguage = runtime.UILanguage(locale)
+			rest(tt, 600*time.Millisecond)
+			messages := copy.For(locale)
+			if !hasText(tt, messages.Text(key)) || hasText(tt, messages.Text(copy.GuideDrag)) {
+				t.Fatalf("switch guide had missing or redundant content: %q", tt.Texts())
+			}
+			for _, text := range tt.Texts() {
+				if text == messages.Text(copy.Title) {
+					t.Fatal("switch guide exposed a redundant app tile")
+				}
+			}
+			snapshot(t, tt, "guide-"+string(pane)+"-"+string(locale))
+		}
+		if err := tt.Click(store.Copy().Text(copy.GuideClose)); err != nil || !actions.called("close-guide") {
+			t.Fatalf("switch guide could not close: %v", err)
+		}
+	}
+}
+
+func TestKeyboardSettingsGuide(t *testing.T) {
+	state, actions, store := fixture()
+	state.Guide = runtime.Guide{Pane: runtime.GuideKeyboard, Shown: 1}
+	tt := ui.NewTester(func(c *ui.Context) { guide.Render(c, store) }, 360, GuideHeight)
+	for _, locale := range []copy.Locale{copy.English, copy.SimplifiedChinese} {
+		state.Preferences.UILanguage = runtime.UILanguage(locale)
+		rest(tt, 600*time.Millisecond)
+		messages := copy.For(locale)
+		if !hasText(tt, messages.Text(copy.GuideKeyboardAdd)) || hasText(tt, messages.Text(copy.GuideDrag)) {
+			t.Fatalf("keyboard guide offered the wrong settings operation: %q", tt.Texts())
+		}
+		snapshot(t, tt, "guide-keyboard-"+string(locale))
+	}
+	if err := tt.Click(store.Copy().Text(copy.GuideClose)); err != nil || !actions.called("close-guide") {
+		t.Fatalf("keyboard guide could not close: %v", err)
+	}
+}
+
 // ADR 014: a learned correction shows with an undo, in both languages, and
 // a running session hides it.
 func TestLearnedNoticeUndo(t *testing.T) {
@@ -1082,7 +1203,8 @@ func TestLearnedNoticeUndo(t *testing.T) {
 		state.Preferences.UILanguage = runtime.UILanguage(locale)
 		messages := copy.For(locale)
 		state.Learned = runtime.Learned{ID: "e1", From: "jason", To: "Jayson", At: time.Now()}
-		pill := ui.NewTester(func(c *ui.Context) { overlay.Render(c, store) }, OverlayWidth, OverlayHeight)
+		overlayPage := overlay.NewPage()
+		pill := ui.NewTester(func(c *ui.Context) { overlayPage.Render(c, store) }, OverlayWidth, OverlayHeight)
 		settle(pill)
 		if !hasText(pill, messages.Text(copy.PillLearned)) || !hasText(pill, "jason") || !hasText(pill, "Jayson") {
 			t.Fatalf("%s: notice missing: %q", locale, pill.Texts())
@@ -1187,7 +1309,7 @@ func TestInputMethodSetupStates(t *testing.T) {
 func TestKeyboardSettings(t *testing.T) {
 	for _, language := range []runtime.UILanguage{runtime.LanguageEnglish, runtime.LanguageChinese} {
 		t.Run(string(language), func(t *testing.T) {
-			state, _, store := fixture()
+			state, actions, store := fixture()
 			state.Preferences.UILanguage = language
 			state.InputMethod = runtime.InputMethodSelected
 			messages := store.Copy()
@@ -1224,6 +1346,19 @@ func TestKeyboardSettings(t *testing.T) {
 			if state.Preferences.Keyboard.CandidateSize != runtime.CandidateLarge {
 				t.Fatalf("size not chosen: %+v", state.Preferences.Keyboard)
 			}
+			// A rebuilt app offers to replace the installed input method.
+			if hasText(tt, messages.Text(copy.IMEUpdate)) {
+				t.Fatalf("update offered for the current build: %q", tt.Texts())
+			}
+			state.InputMethodUpdate = true
+			settle(tt)
+			if !hasText(tt, messages.Text(copy.IMEUpdateAvailable)) {
+				t.Fatalf("update not explained: %q", tt.Texts())
+			}
+			snapshot(t, tt, "settings-keyboard-update-"+string(language))
+			if err := tt.Click(messages.Text(copy.IMEUpdate)); err != nil || !actions.called("install-ime") {
+				t.Fatalf("update click: %v %v", err, actions.calls)
+			}
 		})
 	}
 	// Without an input method on this system the section is not offered.
@@ -1234,5 +1369,23 @@ func TestKeyboardSettings(t *testing.T) {
 	settle(tt)
 	if hasText(tt, copy.For(copy.English).Text(copy.NavKeyboard)) {
 		t.Fatalf("unsupported system offers Keyboard: %q", tt.Texts())
+	}
+}
+
+func TestMacShortcutUsesOneDisclosedDeliveryMethod(t *testing.T) {
+	for _, delivery := range []runtime.Delivery{runtime.DeliveryAutomatic, runtime.DeliveryClipboard} {
+		state, _, store := fixture()
+		state.Platform = "darwin-arm64"
+		state.Preferences.Mode = runtime.ModeShortcut
+		state.Preferences.Delivery = delivery
+		page := settings.NewPage()
+		page.Section = settings.Dictation
+		tt := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, SettingsWidth, SettingsHeight)
+		settle(tt)
+		messages := copy.For(copy.English)
+		reveal(t, tt, messages.Text(copy.DeliveryMacDetail))
+		if !hasText(tt, messages.Text(copy.DeliveryMacDetail)) || hasText(tt, messages.Text(copy.DeliveryAutomatic)) {
+			t.Fatalf("macOS delivery disclosure: %q", tt.Texts())
+		}
 	}
 }

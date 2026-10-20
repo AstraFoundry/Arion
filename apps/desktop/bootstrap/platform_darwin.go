@@ -59,6 +59,8 @@ func (p darwinPlatform) OpenGuidePane(pane runtime.GuidePane) {
 		p.permissions.Open(macos.PaneAccessibility)
 	case runtime.GuideInputMonitoring:
 		p.permissions.Open(macos.PaneInputMonitoring)
+	case runtime.GuideMicrophone:
+		p.permissions.Open(macos.PaneMicrophone)
 	}
 }
 
@@ -72,13 +74,8 @@ func (darwinPlatform) StartHoldKey(key application.HoldKey, sink func(holdkey.Ev
 }
 func (darwinPlatform) StopHoldKey() { macos.StopHold() }
 
-func (p darwinPlatform) NewTargets(delivery func() application.Delivery, gates TargetGates) Targets {
-	targets := macos.NewTargets(func() macos.Delivery {
-		if delivery() == application.DeliveryClipboard {
-			return macos.DeliveryClipboard
-		}
-		return macos.DeliveryAutomatic
-	})
+func (p darwinPlatform) NewTargets(_ func() application.Delivery, gates TargetGates) Targets {
+	targets := macos.NewTargets()
 	targets.ReadSite, targets.ReadCursor, targets.ReadScreen = gates.Site, gates.Cursor, gates.Screen
 	return targets
 }
@@ -115,5 +112,13 @@ func (darwinIME) Install() error {
 }
 
 func (darwinIME) Remove() error { return macos.RemoveIME() }
+
+func (darwinIME) UpdateAvailable() bool {
+	resources, err := mygo.App.Path(mygo.PathResources)
+	if err != nil {
+		return false
+	}
+	return macos.IMEUpdateAvailable(filepath.Join(resources, "ArionInput.app"))
+}
 
 func (darwinIME) OpenSettings() error { return macos.OpenIMEKeyboardSettings() }

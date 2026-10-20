@@ -10,26 +10,31 @@ import (
 	"arion.local/desktop/ui/shared/copy"
 	arion "arion.local/desktop/ui/shared/runtime"
 	"github.com/egoist/mygo"
+	"github.com/egoist/mygo/transfer"
 )
 
 // actions implements runtime.Actions. Views call it on the main thread.
 type actions struct{ a *App }
 
-func (x actions) ToggleDictation()        { x.a.record("dictation_toggle", nil); x.a.core.Toggle() }
-func (x actions) CancelDictation()        { x.a.record("dictation_cancel", nil); x.a.core.Cancel() }
-func (x actions) RequestMicrophone()      { x.a.platform.RequestMicrophone() }
-func (x actions) OpenMicrophoneSettings() { x.a.platform.OpenMicrophoneSettings() }
-func (x actions) CloseGuide()             { x.a.closeGuide(true) }
-func (x actions) RetryModel()             { go x.a.activate(x.a.state.Preferences.ModelOverride) }
-func (x actions) RetryPolish()            { go x.a.startPolish() }
-func (x actions) StartLevelMonitor()      { x.a.startMonitor() }
-func (x actions) StopLevelMonitor()       { x.a.stopMonitor() }
-func (x actions) RefreshDevices()         { go x.a.refreshDevicesAsync() }
-func (x actions) CopyText(text string)    { mygo.Clipboard.WriteText(text) }
-func (x actions) OpenSettings()           { x.a.openSettings() }
-func (x actions) CheckForUpdates()        { x.a.updates.check(time.Now(), true) }
-func (x actions) InstallUpdate()          { x.a.updates.install() }
-func (x actions) RestartToUpdate()        { mygo.App.Relaunch() }
+func (x actions) ToggleDictation()   { x.a.record("dictation_toggle", nil); x.a.core.Toggle() }
+func (x actions) CancelDictation()   { x.a.record("dictation_cancel", nil); x.a.core.Cancel() }
+func (x actions) RequestMicrophone() { x.a.platform.RequestMicrophone() }
+func (x actions) OpenMicrophoneSettings() {
+	if !x.a.openGuide(arion.GuideMicrophone) {
+		x.a.platform.OpenMicrophoneSettings()
+	}
+}
+func (x actions) CloseGuide()          { x.a.closeGuide(true) }
+func (x actions) RetryModel()          { go x.a.activate(x.a.state.Preferences.ModelOverride) }
+func (x actions) RetryPolish()         { go x.a.startPolish() }
+func (x actions) StartLevelMonitor()   { x.a.startMonitor() }
+func (x actions) StopLevelMonitor()    { x.a.stopMonitor() }
+func (x actions) RefreshDevices()      { go x.a.refreshDevicesAsync() }
+func (x actions) CopyText(text string) { mygo.Clipboard.WriteText(text) }
+func (x actions) OpenSettings()        { x.a.openSettings() }
+func (x actions) CheckForUpdates()     { x.a.updates.check(time.Now(), true) }
+func (x actions) InstallUpdate()       { x.a.updates.install() }
+func (x actions) RestartToUpdate()     { mygo.App.Relaunch() }
 
 // OpenUpdate shows Settings › About, where the update is installed.
 func (x actions) OpenUpdate() {
@@ -139,7 +144,12 @@ func (x actions) OpenAccessibilitySettings() {
 }
 
 // RequestScreenRecording asks for the consent screen context needs.
-func (x actions) RequestScreenRecording() { x.a.platform.RequestScreenRecording() }
+func (x actions) RequestScreenRecording() {
+	x.a.platform.RequestScreenRecording()
+	if x.a.platform.ScreenRecording() != arion.ConsentGranted && x.a.platform.AppBundle() != "" {
+		x.a.showGuide(arion.GuideScreenRecording, transfer.Data{})
+	}
+}
 
 // RequestInputMonitoring asks for the consent a macOS hold key needs.
 func (x actions) RequestInputMonitoring() {
@@ -176,8 +186,10 @@ func (x actions) InstallInputMethod() error {
 	go func() {
 		err := a.ime.Install()
 		state := a.ime.State()
+		update := a.ime.UpdateAvailable()
 		a.post(func() {
 			a.state.InputMethodInstalling = false
+			a.state.InputMethodUpdate = update
 			a.setInputMethodState(state)
 			if err != nil {
 				a.state.InputMethodError = copy.IMEFailed
@@ -203,6 +215,9 @@ func (x actions) OpenInputMethodSettings() error {
 	x.a.record("ime_settings_open", err)
 	if err == nil {
 		x.a.state.InputMethodError = ""
+		if !inputMethodGuideReady(x.a.ime.State()) {
+			x.a.showGuide(arion.GuideKeyboard, transfer.Data{})
+		}
 	}
 	return err
 }
@@ -219,6 +234,9 @@ func (x actions) RemoveInputMethod() error {
 	err := x.a.ime.Remove()
 	x.a.record("ime_remove", err)
 	x.a.state.InputMethod = x.a.ime.State()
+	if err == nil {
+		x.a.state.InputMethodUpdate = false
+	}
 	if err == nil && x.a.state.Preferences.Mode == arion.ModeSystemIME {
 		x.UpdatePreferences(func(p *application.Preferences) { p.Mode = arion.ModeShortcut })
 	}

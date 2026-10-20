@@ -28,4 +28,8 @@
 - (BOOL)select:(NSUInteger)index revision:(NSUInteger)revision;
 - (BOOL)highlight:(NSUInteger)index revision:(NSUInteger)revision;
 - (BOOL)nextPage:(NSUInteger)revision;
+// Chooses a candidate in a visible row of the expanded grid.
+- (BOOL)select:(NSUInteger)index row:(NSUInteger)row revision:(NSUInteger)revision;
+// The chevron: expands the bar into the grid, or collapses it.
+- (BOOL)toggleExpanded:(NSUInteger)revision;
 @end

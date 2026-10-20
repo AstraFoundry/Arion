@@ -1,29 +1,37 @@
 {
-  "version": 1,
-  "scope": "ONNX Runtime GenAI worker runtime shipped inside the desktop app; staged by scripts/stage-llm-runtime.mjs",
+  "version": 2,
+  "scope": "Offline GGUF worker; private Unix socket, one Metal slot; staged by scripts/stage-llm-runtime.mjs",
   "platforms": {
     "darwin-arm64": {
       "archives": [
         {
-          "url": "https://github.com/microsoft/onnxruntime-genai/releases/download/v0.17.0/onnxruntime-genai-0.17.0-osx-arm64.tar.gz",
-          "sha256": "be267c676885305267c2a416324a4a5fe522d04b3efb0386d13e40a675aa7df0",
-          "sizeBytes": 4303989,
+          "url": "https://github.com/ggml-org/llama.cpp/releases/download/b11734/llama-b11734-bin-macos-arm64.tar.gz",
+          "sha256": "c823aad1d1c40728e8f1565663078fa2b3b7fd06bf484fa43e9e48b8b1b2509c",
+          "sizeBytes": 12292927,
           "license": "MIT",
+          "revision": "f3fb2fcdbc93a8f677e893b8dbd36462b3190ffd",
           "members": {
-            "onnxruntime-genai-0.17.0-osx-arm64/lib/libonnxruntime-genai.dylib": "libonnxruntime-genai.dylib",
-            "onnxruntime-genai-0.17.0-osx-arm64/LICENSE": "licenses/onnxruntime-genai-LICENSE",
-            "onnxruntime-genai-0.17.0-osx-arm64/ThirdPartyNotices.txt": "licenses/onnxruntime-genai-ThirdPartyNotices.txt"
-          }
-        },
-        {
-          "url": "https://github.com/microsoft/onnxruntime/releases/download/v1.30.0/onnxruntime-osx-arm64-1.30.0.tgz",
-          "sha256": "6ebb5062a934537c352937821f9fe9718e7de1a2db1122a93dd363ffd53a7012",
-          "sizeBytes": 42373116,
-          "license": "MIT",
-          "members": {
-            "./onnxruntime-osx-arm64-1.30.0/lib/libonnxruntime.1.30.0.dylib": "libonnxruntime.dylib",
-            "./onnxruntime-osx-arm64-1.30.0/LICENSE": "licenses/onnxruntime-LICENSE",
-            "./onnxruntime-osx-arm64-1.30.0/ThirdPartyNotices.txt": "licenses/onnxruntime-ThirdPartyNotices.txt"
+            "llama-b11734/libggml-base.0.dylib": "libggml-base.0.dylib",
+            "llama-b11734/libggml-blas.0.dylib": "libggml-blas.0.dylib",
+            "llama-b11734/libggml-cpu.0.dylib": "libggml-cpu.0.dylib",
+            "llama-b11734/libggml-metal.0.dylib": "libggml-metal.0.dylib",
+            "llama-b11734/libggml-rpc.0.dylib": "libggml-rpc.0.dylib",
+            "llama-b11734/libggml.0.dylib": "libggml.0.dylib",
+            "llama-b11734/libllama-common.0.dylib": "libllama-common.0.dylib",
+            "llama-b11734/libllama-server-impl.dylib": "libllama-server-impl.dylib",
+            "llama-b11734/libllama.0.dylib": "libllama.0.dylib",
+            "llama-b11734/libmtmd.0.dylib": "libmtmd.0.dylib",
+            "llama-b11734/llama-server": "llama-server",
+            "llama-b11734/libggml-base.0.27.0.dylib": "libggml-base.0.27.0.dylib",
+            "llama-b11734/libggml-rpc.0.27.0.dylib": "libggml-rpc.0.27.0.dylib",
+            "llama-b11734/libllama.0.7.0.dylib": "libllama.0.7.0.dylib",
+            "llama-b11734/libggml-metal.0.27.0.dylib": "libggml-metal.0.27.0.dylib",
+            "llama-b11734/libggml-blas.0.27.0.dylib": "libggml-blas.0.27.0.dylib",
+            "llama-b11734/libmtmd.0.7.0.dylib": "libmtmd.0.7.0.dylib",
+            "llama-b11734/libllama-common.0.7.0.dylib": "libllama-common.0.7.0.dylib",
+            "llama-b11734/libggml-cpu.0.27.0.dylib": "libggml-cpu.0.27.0.dylib",
+            "llama-b11734/libggml.0.27.0.dylib": "libggml.0.27.0.dylib",
+            "llama-b11734/LICENSE": "licenses/llama.cpp-LICENSE"
           }
         }
       ]

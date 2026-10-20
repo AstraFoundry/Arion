@@ -95,7 +95,7 @@ func (e Entry) valid() bool {
 
 func validCode(code domain.ErrorCode) bool {
 	switch code {
-	case "", "IO_FAILED", domain.CodePermissionDenied, domain.CodeModelMissing, domain.CodeModelUnsupported, domain.CodeAudioDiscontinuity, domain.CodeTargetChanged, domain.CodeTargetUnsupported, domain.CodeStaleRevision, domain.CodeCancelled, domain.CodeInsertionUncertain, domain.CodeSyncUnauthorized, domain.CodeSyncConflict, domain.CodeContractUnsupported, domain.CodeDeviceUnavailable, domain.CodeInvalidTransition, domain.CodeSessionBusy, domain.CodeNoSpeech, domain.CodeArtifactUnverified, domain.CodeProvisioningFailed, domain.CodeSecureFieldBlocked, domain.CodeEvaluationUnavailable, domain.CodeRewriteRejected, domain.CodeRewriteTimeout:
+	case "", "IO_FAILED", domain.CodePermissionDenied, domain.CodeModelMissing, domain.CodeModelUnsupported, domain.CodeAudioDiscontinuity, domain.CodeTargetChanged, domain.CodeTargetUnsupported, domain.CodeStaleRevision, domain.CodeCancelled, domain.CodeInsertionUncertain, domain.CodeClipboardUnavailable, domain.CodeClipboardRestoreFailed, domain.CodeSyncUnauthorized, domain.CodeSyncConflict, domain.CodeContractUnsupported, domain.CodeDeviceUnavailable, domain.CodeInvalidTransition, domain.CodeSessionBusy, domain.CodeNoSpeech, domain.CodeArtifactUnverified, domain.CodeProvisioningFailed, domain.CodeSecureFieldBlocked, domain.CodeEvaluationUnavailable, domain.CodeRewriteRejected, domain.CodeRewriteTimeout:
 		return true
 	}
 	return false

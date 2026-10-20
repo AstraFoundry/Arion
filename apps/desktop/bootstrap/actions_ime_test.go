@@ -46,6 +46,7 @@ func (m *installingIME) Install() error {
 	<-m.gate
 	return m.failure
 }
+func (m *installingIME) UpdateAvailable() bool         { return false }
 func (m *installingIME) State() arion.InputMethodState { return m.state }
 func (m *installingIME) OpenSettings() error           { m.settingsCalls++; return m.settingsFailure }
 

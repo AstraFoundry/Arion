@@ -113,3 +113,39 @@ func FuzzSpeechCleanupContract(f *testing.F) {
 		}
 	})
 }
+
+func TestSpeechCleanupCopularQuantityRepair(t *testing.T) {
+	cases := []struct {
+		name, source, want string
+		repaired           bool
+	}{
+		{"quantity", "把超时设成四十秒，不对，是四秒，保留并发数，先别改其他配置。", "把超时设成四秒，保留并发数，先别改其他配置。", true},
+		{"digits", "超时40秒，不对，是4秒，先别重试。", "超时4秒，先别重试。", true},
+		{"unicode spacing", "超时40秒，不对，　是　4秒，先别重试。", "超时4秒，先别重试。", true},
+		{"unrelated units", "预算四十元，不对，是四秒，先别提交。", "预算四十元，不对，是四秒，先别提交。", false},
+		{"negated replacement", "超时四十秒，不对，不是四秒，先别改。", "超时四十秒，不对，不是四秒，先别改。", false},
+		{"uncertain replacement", "超时四十秒，不对，也许是四秒，先别改。", "超时四十秒，不对，也许是四秒，先别改。", false},
+		{"different predicate", "超时四十秒，不对，是四秒后重试，先别提交。", "超时四十秒，不对，是四秒后重试，先别提交。", false},
+		{"explicit exclusion", "把超时设成四秒，不是四十秒，先别改配置。", "把超时设成四秒，不是四十秒，先别改配置。", false},
+		{"literal", "保留“超时四十秒，不对，是四秒”。", "保留“超时四十秒，不对，是四秒”。", false},
+		{"untyped entity", "地点北京，不对，是上海。", "地点北京，不对，是上海。", false},
+	}
+	for _, tt := range cases {
+		t.Run(tt.name, func(t *testing.T) {
+			got := CleanSpeech(tt.source)
+			if got.Text != tt.want {
+				t.Fatalf("got %q, want %q; spans=%+v", got.Text, tt.want, got.Spans)
+			}
+			if tt.repaired && (len(got.Spans) != 1 || got.Spans[0].Kind != SpeechRepair) {
+				t.Fatalf("missing scoped repair: %+v", got.Spans)
+			}
+			if !tt.repaired && len(got.Spans) != 0 {
+				t.Fatalf("unsupported deletion: %+v", got.Spans)
+			}
+			applied, err := ApplySpeechSpans(tt.source, got.Spans)
+			if err != nil || applied != tt.want || CleanSpeech(got.Text).Text != got.Text {
+				t.Fatalf("invalid byte-span replay or idempotence: %q, %v", applied, err)
+			}
+		})
+	}
+}

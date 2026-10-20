@@ -22,13 +22,14 @@ Write an ADR when the decision:
 - [008: Contextual rewrite evaluation](008-contextual-rewrite-evaluation.md) — evaluation boundary; its review-before-insert rule is superseded by ADR 011.
 - [009: AGPL-3.0 license](009-agpl-license.md) — open source with a commercial hosted edition kept possible.
 - [010: In-app updates from GitHub releases](010-in-app-updates.md) — signed MyGo updates, automatic checks on by default.
-- [011: Live local rewriting](011-live-local-rewriting.md) — Qwen3 1.7B in an isolated worker edits while you speak; validated rewrite inserts automatically.
-- [012: Scene selection from the focused field, site and app](012-context-scene-selection.md) — local metadata picks email, work, prompt, search or chat layout; the rewrite prompt stays unchanged.
-- [013: Rewrite context from the cursor, the screen and recent dictations](013-rewrite-context-on-device.md) — on by default, on-device only; reaches the model as extracted terms.
+- [011: Live local rewriting](011-live-local-rewriting.md) — edits while you speak and inserts one validated rewrite; the runtime and templates are superseded by ADR 018.
+- [012: Scene selection from the focused field, site and app](012-context-scene-selection.md) — local metadata picks email, work, prompt, search or chat; formatting follows ADR 018.
+- [013: Rewrite context from the cursor, the screen and recent dictations](013-rewrite-context-on-device.md) — on by default and on-device only; the selector may see it, and the formatter does not.
 - [014: Learn vocabulary from the user's corrections](014-edit-learning.md) — on-device edit tracking, one-shot learning with undo, one-pass recall and bounded prompt terms.
 - [015: Hosted relay account authorization layer](015-hosted-relay-account-authorization.md) — `AccountGate` (`noop` self-host, `oidc` hosted) on top of device auth, `(issuer, subject)` tenants, security events; login never grants decryption.
 - [016: Marketing site in `apps/site`](016-marketing-site.md) — static Next.js export with the shared design package; ADR 001's no-React rule covers the desktop app only.
 - [017: Offline Pinyin keyboard in the macOS IMK host](017-offline-pinyin-keyboard.md) — local conversion, independent composition ownership and encrypted learning.
+- [018: Staged GGUF rewriting](018-staged-gguf-rewriting.md) — selected Qwen3.5-2B artifact, two-stage prompts and accepted delivery tradeoff.
 - [`adr-template.md`](adr-template.md) — template for new ADRs.
 
 ## Naming

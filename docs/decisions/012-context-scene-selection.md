@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted (product decision). Extends [ADR 011](011-live-local-rewriting.md); its prompt `live-v2` stays unchanged.
+Accepted (product decision). Extends [ADR 011](011-live-local-rewriting.md). Scene selection remains; prompt `live-v2` is superseded by [ADR 018](018-staged-gguf-rewriting.md).
 
 ## Context
 

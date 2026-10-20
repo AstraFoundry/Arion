@@ -265,7 +265,7 @@ func (c *Coordinator) preview(r *run, stable string) {
 		return
 	}
 	text := domain.AlignLiveEnding(stable, result.Text)
-	verdict := domain.ValidateRewrite(domain.RewriteCheck{Source: stable, Candidate: text, Truncated: result.Truncated, Terms: l.policy.terms(stable), Context: rc})
+	verdict := domain.ValidateRewriteDelivery(domain.RewriteCheck{Source: stable, Candidate: text, Truncated: result.Truncated, Terms: l.policy.terms(stable), Context: rc})
 	if c.deps.Diagnostics != nil {
 		c.deps.Diagnostics.Observe(ports.Diagnostic{Identity: r.identity, Stage: ports.DiagnosticValidation, Verdict: verdict})
 	}
@@ -357,7 +357,7 @@ func (c *Coordinator) rewriteFinal(r *run, source string, policy RewritePolicy) 
 	case err != nil:
 		return cleaned, RewriteUnavailable, true
 	}
-	verdict := domain.ValidateRewrite(domain.RewriteCheck{Source: source, Candidate: result.Text, Truncated: result.Truncated, Terms: policy.terms(source), Context: rc})
+	verdict := domain.ValidateRewriteDelivery(domain.RewriteCheck{Source: source, Candidate: result.Text, Truncated: result.Truncated, Terms: policy.terms(source), Context: rc})
 	if verdict != domain.RewriteAccepted {
 		return cleaned, string(verdict), true
 	}

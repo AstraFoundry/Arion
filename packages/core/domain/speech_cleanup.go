@@ -11,7 +11,7 @@ import (
 
 // SpeechCleanupVersion identifies the local span producer, independently
 // of rule correction and the organization prompt.
-const SpeechCleanupVersion = "speech-spans-v1"
+const SpeechCleanupVersion = "speech-spans-v2"
 
 type SpeechSpanKind string
 
@@ -198,6 +198,7 @@ func CleanSpeech(source string) SpeechCleanup {
 			continue
 		}
 		repairStart := -1
+		repairEnd := cue[1]
 		cueText := strings.ToLower(source[cue[0]:cue[1]])
 		englishRepair := strings.Contains(cueText, "no wait") || strings.Contains(cueText, "i mean")
 		chineseRepair := strings.Contains(cueText, "不对") || strings.Contains(cueText, "说错") || strings.Contains(cueText, "哦不")
@@ -233,16 +234,26 @@ func CleanSpeech(source string) SpeechCleanup {
 			}
 		}
 		if repairStart < 0 {
+			value := right
+			copular := chineseRepair && strings.HasPrefix(value, "是")
+			if copular {
+				value = strings.TrimLeftFunc(value[len("是"):], unicode.IsSpace)
+			}
 			for _, pattern := range []*regexp.Regexp{cleanupQuantity, cleanupDay} {
-				l, r := pattern.FindAllStringIndex(left, -1), pattern.FindStringIndex(right)
+				l, r := pattern.FindAllStringIndex(left, -1), pattern.FindStringIndex(value)
 				if len(l) == 0 || r == nil || r[0] != 0 {
+					continue
+				}
+				// A copular replacement must be the entire clause, not a
+				// different action that merely starts with the same unit.
+				if copular && r[1] != len(value) {
 					continue
 				}
 				last := l[len(l)-1]
 				if last[1] != len(left) {
 					continue
 				}
-				old, new := left[last[0]:], right[:r[1]]
+				old, new := left[last[0]:], value[:r[1]]
 				if pattern == cleanupQuantity {
 					a, _ := utf8.DecodeLastRuneInString(old)
 					b, _ := utf8.DecodeLastRuneInString(new)
@@ -251,13 +262,18 @@ func CleanSpeech(source string) SpeechCleanup {
 					}
 				}
 				repairStart = start + strings.Index(source[start:cue[0]], left) + last[0]
+				if copular {
+					rawRight := source[cue[1]:end]
+					leading := len(rawRight) - len(strings.TrimLeftFunc(rawRight, unicode.IsSpace))
+					repairEnd += leading + len(right) - len(value)
+				}
 				break
 			}
 		}
 		if repairStart >= 0 {
-			candidate := source[:repairStart] + source[cue[1]:]
+			candidate := source[:repairStart] + source[repairEnd:]
 			if negations(candidate) >= negations(source) && !losesUncertainty(source, candidate) {
-				mark(repairStart, cue[1], SpeechRepair)
+				mark(repairStart, repairEnd, SpeechRepair)
 			}
 		}
 	}

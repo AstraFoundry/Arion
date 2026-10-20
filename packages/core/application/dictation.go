@@ -605,15 +605,23 @@ func (c *Coordinator) commit(r *run, revision uint64, text string) {
 		return
 	}
 	c.mu.Unlock()
-	c.emitState(r, domain.Committing)
+	c.emitCurrentState(r, domain.Committing)
 	_, input := c.targets(r)
 	follower := c.follower(r, input)
 	started := time.Now()
-	result, err := input.Commit(context.Background(), contracts.CommitRequest{
+	result, err := input.Commit(r.ctx, contracts.CommitRequest{
 		Identity: r.identity, Target: r.target.Target, SourceRevision: revision, Text: text})
 	c.diagnostic(r, ports.DiagnosticCommit, started, err)
 	if err != nil {
 		result = contracts.CommitResult{Identity: r.identity, Outcome: contracts.NotApplied, Failure: codeOr(err, domain.CodeTargetUnsupported)}
+	}
+	c.mu.Lock()
+	if c.current != r || r.ctx.Err() != nil || r.session.State() != domain.Committing {
+		c.mu.Unlock()
+		if follower != nil {
+			follower.Release(r.target.Target)
+		}
+		return
 	}
 	if follower != nil {
 		if result.Outcome == contracts.NotApplied {
@@ -622,7 +630,6 @@ func (c *Coordinator) commit(r *run, revision uint64, text string) {
 			c.deps.Edits.Track(follower, r.target.Target, r.identity, text)
 		}
 	}
-	c.mu.Lock()
 	var event contracts.Event
 	switch result.Outcome {
 	case contracts.Applied, contracts.Unknown:
@@ -631,7 +638,7 @@ func (c *Coordinator) commit(r *run, revision uint64, text string) {
 		if result.Outcome == contracts.Applied {
 			c.remember(r, text)
 		}
-		event = contracts.Event{Envelope: contracts.Envelope{Kind: contracts.CommitResultReady, Revision: revision}, State: domain.Completed, Outcome: result.Outcome, Text: text}
+		event = contracts.Event{Envelope: contracts.Envelope{Kind: contracts.CommitResultReady, Revision: revision}, State: domain.Completed, Outcome: result.Outcome, Error: result.Failure, Text: text}
 	default:
 		code := result.Failure
 		if code == "" {
@@ -665,9 +672,27 @@ func (c *Coordinator) emitState(r *run, state domain.SessionState) {
 	c.emit(r, contracts.Event{Envelope: contracts.Envelope{Kind: contracts.SessionStateChanged}, State: state})
 }
 
+// emitCurrentState serializes validation with publication, so cancellation
+// cannot publish first and then be overwritten by a delayed commit state.
+func (c *Coordinator) emitCurrentState(r *run, state domain.SessionState) {
+	c.emitMu.Lock()
+	defer c.emitMu.Unlock()
+	c.mu.Lock()
+	current := c.current == r && r.session.State() == state && r.ctx.Err() == nil
+	c.mu.Unlock()
+	if current {
+		c.publish(r, contracts.Event{Envelope: contracts.Envelope{Kind: contracts.SessionStateChanged}, State: state})
+	}
+}
+
 func (c *Coordinator) emit(r *run, event contracts.Event) {
 	c.emitMu.Lock()
 	defer c.emitMu.Unlock()
+	c.publish(r, event)
+}
+
+// publish requires emitMu, keeping per-session sequence and listener order.
+func (c *Coordinator) publish(r *run, event contracts.Event) {
 	event.Version = contracts.Version
 	event.Identity = r.identity
 	event.Sequence = r.sequence.Add(1)

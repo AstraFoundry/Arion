@@ -91,7 +91,8 @@ func (f fakeFactory) NewRecognizer(context.Context, contracts.Identity) (ports.R
 }
 
 type fakeTarget struct {
-	snapshot contracts.TargetSnapshot
+	commitHook func(context.Context, contracts.CommitRequest) (contracts.CommitResult, error)
+	snapshot   contracts.TargetSnapshot
 	// context is what ReadContext returns; reads counts its calls.
 	context contracts.ContextSnapshot
 	reads   atomic.Int32
@@ -112,8 +113,11 @@ func (t *fakeTarget) ReadContext(context.Context, contracts.Identity, contracts.
 	t.reads.Add(1)
 	return t.context, nil
 }
-func (t *fakeTarget) Commit(_ context.Context, request contracts.CommitRequest) (contracts.CommitResult, error) {
+func (t *fakeTarget) Commit(ctx context.Context, request contracts.CommitRequest) (contracts.CommitResult, error) {
 	t.commits.Add(1)
+	if t.commitHook != nil {
+		return t.commitHook(ctx, request)
+	}
 	t.mu.Lock()
 	t.texts = append(t.texts, request.Text)
 	t.mu.Unlock()
@@ -424,5 +428,74 @@ func TestSystemIMEWithoutAdapterFails(t *testing.T) {
 	failed := events.wait(t, kindIs(contracts.ErrorOccurred))
 	if failed.Error != domain.CodeTargetUnsupported || audio.starts.Load() != 0 {
 		t.Fatalf("got %s starts=%d", failed.Error, audio.starts.Load())
+	}
+}
+
+// Cancellation reaches the adapter and a late post/cleanup result cannot
+// resurrect a cancelled session or cause an automatic second commit.
+func TestCancelDuringCommitDropsLateOutcome(t *testing.T) {
+	for _, outcome := range []contracts.CommitOutcome{contracts.NotApplied, contracts.Unknown} {
+		t.Run(string(outcome), func(t *testing.T) {
+			entered, returned := make(chan struct{}), make(chan struct{})
+			target := &fakeTarget{snapshot: contracts.TargetSnapshot{Target: "owned"}}
+			target.commitHook = func(ctx context.Context, request contracts.CommitRequest) (contracts.CommitResult, error) {
+				close(entered)
+				<-ctx.Done()
+				defer close(returned)
+				return contracts.CommitResult{Identity: request.Identity, Outcome: outcome}, nil
+			}
+			c, audio, events := setup(t, &fakeRecognizer{words: []string{"text"}}, target, Options{AutoCommit: true})
+			c.Start()
+			events.wait(t, stateIs(domain.Capturing))
+			audio.push(1, 0.2)
+			c.Stop()
+			select {
+			case <-entered:
+			case <-time.After(3 * time.Second):
+				t.Fatal("commit not entered")
+			}
+			c.Cancel()
+			select {
+			case <-returned:
+			case <-time.After(time.Second):
+				t.Fatal("adapter did not receive cancellation")
+			}
+			time.Sleep(20 * time.Millisecond)
+			c.CommitReviewed()
+			if c.Snapshot().State != domain.Cancelled || events.count(kindIs(contracts.CommitResultReady)) != 0 || target.commits.Load() != 1 {
+				t.Fatal("cancelled commit produced a result or retry")
+			}
+		})
+	}
+}
+
+func TestCommitPreservesUncertainCleanupWarning(t *testing.T) {
+	target := &fakeTarget{snapshot: contracts.TargetSnapshot{Target: "owned"}}
+	target.commitHook = func(ctx context.Context, r contracts.CommitRequest) (contracts.CommitResult, error) {
+		return contracts.CommitResult{Identity: r.Identity, Outcome: contracts.Unknown, Failure: domain.CodeClipboardRestoreFailed}, nil
+	}
+	c, audio, events := setup(t, &fakeRecognizer{words: []string{"text"}}, target, Options{AutoCommit: true})
+	c.Start()
+	events.wait(t, stateIs(domain.Capturing))
+	audio.push(1, 0.2)
+	c.Stop()
+	e := events.wait(t, kindIs(contracts.CommitResultReady))
+	c.CommitReviewed()
+	if e.State != domain.Completed || e.Outcome != contracts.Unknown || e.Error != domain.CodeClipboardRestoreFailed || target.commits.Load() != 1 {
+		t.Fatalf("cleanup result: %+v", e)
+	}
+}
+
+func TestCancelledSessionRejectsDelayedCommittingState(t *testing.T) {
+	c, _, events := setup(t, &fakeRecognizer{}, &fakeTarget{}, Options{})
+	c.Start()
+	events.wait(t, stateIs(domain.Capturing))
+	c.mu.Lock()
+	r := c.current
+	c.mu.Unlock()
+	c.Cancel()
+	c.emitCurrentState(r, domain.Committing)
+	if events.count(stateIs(domain.Committing)) != 0 || c.Snapshot().State != domain.Cancelled {
+		t.Fatal("delayed commit state resurrected cancelled session")
 	}
 }

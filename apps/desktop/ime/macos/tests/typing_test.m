@@ -237,6 +237,38 @@ int main(int argc, const char *argv[]) {
             require([editor.view.string hasSuffix:[ours stringByAppendingString:@"，"]] && editor.insertions == before + 1,
                     @"punctuation commits Arion's highlighted candidate");
         });
+        run(@"next page opens the expanded grid", @"KBD-A03", ^{
+            type(typing, @"shi");
+            NSArray *first = typing.snapshot.candidates;
+            press(typing, @"=", 24);
+            record(@"expanded", typing, editor);
+            require(typing.snapshot.expanded && typing.snapshot.rows.count >= 2 && typing.snapshot.currentRow == 1 &&
+                    [typing.snapshot.rows[0] isEqual:first] && [typing.snapshot.rows[1] isEqual:typing.snapshot.candidates],
+                    @"= expands with the next page as the current row");
+            press(typing, @"", 125);
+            require(typing.snapshot.currentRow == 2 && typing.snapshot.page == 2, @"Down moves to the next row");
+            press(typing, @"", 124);
+            require(typing.snapshot.highlighted == 1, @"Right moves within the row");
+            NSString *chosen = typing.snapshot.candidates[1];
+            NSUInteger revision = typing.revision;
+            press(typing, @"-", 27); press(typing, @"-", 27);
+            require(typing.snapshot.expanded && typing.snapshot.currentRow == 0, @"- moves up to the first row");
+            require(![typing select:1 row:2 revision:revision], @"stale grid click refused");
+            require([typing select:1 row:2 revision:typing.revision] && [editor.view.string isEqual:chosen],
+                    @"a click on another row chooses that candidate");
+            type(typing, @"shi"); press(typing, @"=", 24);
+            require(typing.snapshot.expanded, @"expanded again");
+            type(typing, @"j");
+            require(!typing.snapshot.expanded && typing.snapshot.rows.count == 1, @"typing collapses the grid");
+            press(typing, @"=", 24); press(typing, @"-", 27); press(typing, @"-", 27);
+            require(!typing.snapshot.expanded && typing.composing, @"- above the first row collapses");
+            press(typing, @"=", 24); press(typing, @"\x1b", 53);
+            require(!typing.composing && editor.insertions == 1, @"Escape cancels from the grid too (KBD-03)");
+            type(typing, @"shi");
+            require([typing toggleExpanded:typing.revision] && typing.snapshot.expanded && typing.snapshot.currentRow == 0,
+                    @"the chevron expands in place");
+            require([typing toggleExpanded:typing.revision] && !typing.snapshot.expanded, @"the chevron collapses");
+        });
         run(@"short pages consume numbers past the page", @"KBD-A03", ^{
             typing.pageSize = 5;
             type(typing, @"shi");

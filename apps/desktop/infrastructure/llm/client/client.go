@@ -8,7 +8,6 @@ import (
 	"context"
 	"encoding/json"
 	"io"
-	"os"
 	"os/exec"
 	"strconv"
 	"sync"
@@ -57,7 +56,7 @@ type Client struct {
 // caller's choice of diag writer; it never contains content.
 func Start(ctx context.Context, config Config, diag io.Writer) (*Client, LoadInfo, error) {
 	cmd := exec.Command(config.Worker)
-	cmd.Env = append(os.Environ(), "ORT_LIB_PATH="+config.Runtime)
+	prepareProcess(cmd)
 	cmd.Stderr = diag
 	stdin, err := cmd.StdinPipe()
 	if err != nil {
@@ -98,6 +97,7 @@ func (c *Client) read(stdout io.Reader) {
 		}
 	}
 	_ = c.cmd.Wait()
+	stopProcessTree(c.cmd)
 	c.mu.Lock()
 	c.dead = domain.Fail(domain.CodeModelUnsupported, "llm worker exited")
 	for id, ch := range c.pending {
@@ -192,7 +192,7 @@ func (c *Client) Close() {
 	select {
 	case <-c.done:
 	case <-time.After(5 * time.Second):
-		_ = c.cmd.Process.Kill()
+		stopProcessTree(c.cmd)
 		<-c.done
 	}
 }

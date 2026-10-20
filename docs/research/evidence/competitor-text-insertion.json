@@ -1,0 +1,392 @@
+{
+  "schemaVersion": 1,
+  "scope": "macOS Chatterfly and Doubao voice-result text delivery; static evidence, not external-editor execution",
+  "runtimeObserved": false,
+  "chatterfly": {
+    "app": "Chatterfly",
+    "version": "1.0.8.13459",
+    "build": "13459",
+    "originalPath": "/Library/Input Methods/Chatterfly.app/Contents/MacOS/Chatterfly",
+    "originalSha256": "595e502f74e41e1b28904affa9093974f6cbc197a3756a74a007ef562f9ee767",
+    "derivedArm64Sha256": "3406894676fd6b9028795858907d1821f54977aa0f9ec5716d42eba12848fe21",
+    "routeSummary": "IMK client insertText for normal own-IME hosts; explicit browser/runtime-config clipboard policy; system clipboard paste outside own-IME; AX focus and readback verification",
+    "runtimeExecuted": false,
+    "builtinPasteBundleIds": [
+      "com.google.Chrome",
+      "com.google.Chrome.canary",
+      "com.google.Chrome.beta",
+      "com.google.Chrome.dev",
+      "org.chromium.Chromium",
+      "com.microsoft.edgemac",
+      "com.microsoft.edgemac.Canary",
+      "com.brave.Browser",
+      "com.vivaldi.Vivaldi"
+    ],
+    "functions": [
+      {
+        "kind": "ordinary-static-machine-code",
+        "method": "-[SGMacSpeechService commitFinalSpeechText]",
+        "address": "0x1003ce898",
+        "exclusiveEndFromNextTextSymbol": "0x1003cf320",
+        "fileOffset": 3991704,
+        "functionBytesSha256": "387e2c92c93dbaee6030795885cc29d180e32002a0c402a5ff90804cd5e6783d",
+        "claim": "Gates command support and editable focus; own IME delegates commitVoiceText, other IME calls system paste, shows result panel on failure; only system paste success invokes asynchronous AX readback verification.",
+        "evidenceType": "static-observation-and-analyst-control-flow-inference",
+        "reaEvidenceId": null
+      },
+      {
+        "kind": "ordinary-static-machine-code",
+        "method": "-[SGInputContextRuntimeProvider commitVoiceText:]",
+        "address": "0x1002c9e5c",
+        "exclusiveEndFromNextTextSymbol": "0x1002c9eb4",
+        "fileOffset": 2924124,
+        "functionBytesSha256": "d8c819ef8c3ec16936e7b8d581d4d78237601116002e529ec00a7c44fc973542",
+        "claim": "Forwards to SGInputHelper commitVoiceText:sender: with nil sender.",
+        "evidenceType": "static-observation-and-analyst-control-flow-inference",
+        "reaEvidenceId": null
+      },
+      {
+        "kind": "ordinary-static-machine-code",
+        "method": "-[SGInputHelper commitVoiceText:sender:]",
+        "address": "0x1002e2c50",
+        "exclusiveEndFromNextTextSymbol": "0x1002e2e54",
+        "fileOffset": 3026000,
+        "functionBytesSha256": "868aa1749a9dc12825b6c979667a34fd69b2a1f55f2b9ad38a262125a7861233",
+        "claim": "Resolves effective IMK client; checks nonempty text/client; routes host policy to clipboard helper or calls client insertText:replacementRange: with NSNotFound.",
+        "evidenceType": "static-observation-and-analyst-control-flow-inference",
+        "reaEvidenceId": null
+      },
+      {
+        "kind": "ordinary-static-machine-code",
+        "method": "-[SGInputHelper sg_isPasteCommitHostBundleID:]",
+        "address": "0x1002e2e54",
+        "exclusiveEndFromNextTextSymbol": "0x1002e3284",
+        "fileOffset": 3026516,
+        "functionBytesSha256": "aa62746234717e8afef02e7e145143c4f0dbd0742e07999b1c1ca31f04f79c43",
+        "claim": "Exact bundle ID membership in built-in set or speech_commit_text_config.commit_via_paste_bundles array.",
+        "evidenceType": "static-observation-and-analyst-control-flow-inference",
+        "reaEvidenceId": null
+      },
+      {
+        "kind": "ordinary-static-machine-code",
+        "method": "___46-[SGInputHelper sg_isPasteCommitHostBundleID:]_block_invoke",
+        "address": "0x1002e3284",
+        "exclusiveEndFromNextTextSymbol": "0x1002e3384",
+        "fileOffset": 3027588,
+        "functionBytesSha256": "b39f2c2ec8ae375d2c66faef3b44302d83935f38bf7384631f24882c8f45c235",
+        "claim": "Built-in set contains 9 Chromium browser IDs.",
+        "evidenceType": "static-observation-and-analyst-control-flow-inference",
+        "reaEvidenceId": null
+      },
+      {
+        "kind": "ordinary-static-machine-code",
+        "method": "-[SGInputHelper sg_commitVoiceTextViaPaste:sender:bundleID:]",
+        "address": "0x1002e3384",
+        "exclusiveEndFromNextTextSymbol": "0x1002e36a0",
+        "fileOffset": 3027844,
+        "functionBytesSha256": "b08f2c563a3456ce027120da0377ab434d3b302728e1682ade8f9aae2acbf794",
+        "claim": "Permission-gated clipboard route activates single-space marked text and clears its marked range, then pastes. No permission or failed clipboard write falls back to client insertText.",
+        "evidenceType": "static-observation-and-analyst-control-flow-inference",
+        "reaEvidenceId": null
+      },
+      {
+        "kind": "ordinary-static-machine-code",
+        "method": "-[SGInputHelper sg_pasteTextViaClipboard:]",
+        "address": "0x1002e36a0",
+        "exclusiveEndFromNextTextSymbol": "0x1002e3818",
+        "fileOffset": 3028640,
+        "functionBytesSha256": "12d1249fb6f2a905e750198527ac2fd34d278fb36e415054a928b531a82d148e",
+        "claim": "Snapshots and writes general pasteboard; posts Command+V on successful write; schedules restore after 250ms; false write restores immediately and returns false.",
+        "evidenceType": "static-observation-and-analyst-control-flow-inference",
+        "reaEvidenceId": null
+      },
+      {
+        "kind": "ordinary-static-machine-code",
+        "method": "___42-[SGInputHelper sg_pasteTextViaClipboard:]_block_invoke",
+        "address": "0x1002e3818",
+        "exclusiveEndFromNextTextSymbol": "0x1002e3828",
+        "fileOffset": 3029016,
+        "functionBytesSha256": "61946e040490f3a3590515a776daf1b445b23add050e8feaf7f842527c0114b1",
+        "claim": "Unconditional tail-call to pasteboard restore from captured self/pasteboard/items, no changeCount guard.",
+        "evidenceType": "static-observation-and-analyst-control-flow-inference",
+        "reaEvidenceId": null
+      },
+      {
+        "kind": "ordinary-static-machine-code",
+        "method": "-[SGInputHelper sg_restorePasteboard:withItems:]",
+        "address": "0x1002e3c70",
+        "exclusiveEndFromNextTextSymbol": "0x1002e3cfc",
+        "fileOffset": 3030128,
+        "functionBytesSha256": "accd3ccfc78fba30eceeea8de9bdf36bbbf92ee2cc88a340fc8e8e197b8f081a",
+        "claim": "Unconditionally clears pasteboard and restores snapshot items when nonempty. No changeCount guard in full scheduling/callback/restore chain inspected.",
+        "evidenceType": "static-observation-and-analyst-control-flow-inference",
+        "reaEvidenceId": null
+      },
+      {
+        "kind": "ordinary-static-machine-code",
+        "method": "-[SGInputHelper sg_postCommandV]",
+        "address": "0x1002e3cfc",
+        "exclusiveEndFromNextTextSymbol": "0x1002e3d8c",
+        "fileOffset": 3030268,
+        "functionBytesSha256": "a4d293a39678fbc1b9016762e9cbfab12c9f67ab61113acda78d33ad0f81ce63",
+        "claim": "CGEventCreateKeyboardEvent virtual key 9 down/up, Command modifier 0x100000, CGEventPost at tap 0. No Unicode payload in this helper.",
+        "evidenceType": "static-observation-and-analyst-control-flow-inference",
+        "reaEvidenceId": null
+      },
+      {
+        "kind": "ordinary-static-machine-code",
+        "method": "-[SGInputHelper commitVoiceTextViaSystemPaste:]",
+        "address": "0x1002e3828",
+        "exclusiveEndFromNextTextSymbol": "0x1002e3918",
+        "fileOffset": 3029032,
+        "functionBytesSha256": "96c6b482e9701d39bb39e1b7e177593d8e3366066ae9ee27d250b1b64614d1a8",
+        "claim": "Requires nonempty text and accessibility permission; returns clipboard helper boolean.",
+        "evidenceType": "static-observation-and-analyst-control-flow-inference",
+        "reaEvidenceId": null
+      },
+      {
+        "kind": "ordinary-static-machine-code",
+        "method": "-[SGAXHostChecker p_verifyOutcomeForText:bundleId:]",
+        "address": "0x1003b9624",
+        "exclusiveEndFromNextTextSymbol": "0x1003b9b28",
+        "fileOffset": 3905060,
+        "functionBytesSha256": "239538800e104da3e6b8a773e91036b03f36f422f8ac79914c7126957a8e333a",
+        "claim": "Matches frontmost bundle and reads AX focused element AXValue plus AX text-marker text; substring presence succeeds; unreadable/placeholder-size content is inconclusive; readable editable content missing text reports missing.",
+        "evidenceType": "static-observation-and-analyst-control-flow-inference",
+        "reaEvidenceId": null
+      },
+      {
+        "kind": "ordinary-static-machine-code",
+        "method": "-[SGAXHostChecker p_verifyInsertionOfText:bundleId:attempt:onFail:]",
+        "address": "0x1003b9304",
+        "exclusiveEndFromNextTextSymbol": "0x1003b9448",
+        "fileOffset": 3904260,
+        "functionBytesSha256": "bcaa5c7f6a018c3fcbe3db3ca556c5c5d998e401c2cb8cd3e9f2cc960cd037d9",
+        "claim": "Schedules first readback at 350ms, second at 450ms.",
+        "evidenceType": "static-observation-and-analyst-control-flow-inference",
+        "reaEvidenceId": null
+      },
+      {
+        "kind": "ordinary-static-machine-code",
+        "method": "___67-[SGAXHostChecker p_verifyInsertionOfText:bundleId:attempt:onFail:]_block_invoke",
+        "address": "0x1003b9478",
+        "exclusiveEndFromNextTextSymbol": "0x1003b9624",
+        "fileOffset": 3904632,
+        "functionBytesSha256": "8236bc9d37bb5304ae813c2b93a001a79209988a51dc139a51b5548c47f4f72b",
+        "claim": "Stops for success/inconclusive; retries observation once for missing; dispatches onFail after second missing. Does not repeat insertion.",
+        "evidenceType": "static-observation-and-analyst-control-flow-inference",
+        "reaEvidenceId": null
+      },
+      {
+        "kind": "ordinary-static-machine-code",
+        "method": "___43-[SGMacSpeechService commitFinalSpeechText]_block_invoke",
+        "address": "0x1003cf320",
+        "exclusiveEndFromNextTextSymbol": "0x1003cf428",
+        "fileOffset": 3994400,
+        "functionBytesSha256": "6577a6f326cb1766f936f1879f83bf6d6b9550e0d7622db9cacf6cd9ec842c6e",
+        "claim": "Requires same session then shows owned result panel on failed verification.",
+        "evidenceType": "static-observation-and-analyst-control-flow-inference",
+        "reaEvidenceId": null
+      }
+    ],
+    "unknowns": [
+      "Actual dynamic config bundle array",
+      "Actual execution in Lark or Codex",
+      "Whether every editor correctly handles IMK or paste",
+      "No claim of global absence of Unicode injection or AX write outside inspected delivery chain"
+    ],
+    "reaStatus": "Metadata inspections succeeded and metadata session close_binary returned success. Native analyze_function produced no dossier: stopped owned Ghidra after about 11 minutes of whole-binary startup; captured execution_failure (exit143) and diagnostics. A queued subsequent query began a new engine, then REA received SIGTERM and its documented shutdown session.close handler exited0; all owned REA/Ghidra processes were verified absent. No successful native code-flow REA Evidence ID is claimed.",
+    "reaMetadataEvidence": [
+      {
+        "record": "macho.json",
+        "evidenceId": "ev_c20f00868862c08f514a8440bd2e1927ffb146145953921eca23ce5d31f5ef47",
+        "subject": {
+          "name": "installed-arm64",
+          "digest": {
+            "sha256": "3406894676fd6b9028795858907d1821f54977aa0f9ec5716d42eba12848fe21"
+          },
+          "format": "mach-o",
+          "architecture": "arm64"
+        },
+        "operation": "inspect_macho"
+      },
+      {
+        "record": "plist.json",
+        "evidenceId": "ev_e26a35ae14f63e007da0f3e64f99958cb423a76c8fc29140b62d7c1f2536b7f1",
+        "subject": {
+          "name": "installed-arm64",
+          "digest": {
+            "sha256": "3406894676fd6b9028795858907d1821f54977aa0f9ec5716d42eba12848fe21"
+          },
+          "format": "mach-o",
+          "architecture": "arm64"
+        },
+        "operation": "inspect_plist"
+      }
+    ],
+    "nativeAnalysisLimitations": [
+      "No native code-flow Evidence returned before bounded investigation stopped Ghidra automatic whole-binary startup; this is not a completed or failed reproduction in the target app.",
+      "Saved ghidra-analysis.log and fn-final.json preserve diagnostics: invalid embedded PNG data, non-returning-function analyzer restart, unresolved decompiler reads, intentional engine termination exit143.",
+      "Queued subsequent native query restarted the provider. Graceful REA SIGTERM shutdown closed the active BinarySession and exited0, all owned engine processes absent; queued close_binary RPC did not execute.",
+      "Prior different-version Chatterfly native analysis timed out at1200000ms; prior raw machine-code evidence does not replace current artifact identity."
+    ]
+  },
+  "doubao": {
+    "artifact": {
+      "bundle": "/Library/Input Methods/DoubaoIme.app",
+      "bundle_version": "1.0.2 (1)",
+      "universal_sha256": "4b3836dcb8a3e06b01b4c95390c757b71f623c1f7c4141c059e49284f7f6442d",
+      "analyzed_slice": "arm64 via lipo -thin",
+      "analyzed_sha256": "266f49f6bcb62e43c5170620d4b86e2e4c4ef873bcce624ef1a90b9c46244983",
+      "analysis_profile_digest": "20565088524a2d0359b9b96f46ac48e679d774c7b0092c56abc06de8fdbec11c"
+    },
+    "currentIdentityEvidence": "ev_66516fc55867516031ba4c3c21cfcfd36c135cf6b7e3d1a9cbc94dbd80198f0e",
+    "retainedNativeEvidence": [
+      {
+        "id": "DD-paste-handoff",
+        "evidence_id": "ev_f83fcb7dbd1d806506760b9dcd8270e70e79ed45279a4066d91fe105c5465bac",
+        "function": "0x100176dd8",
+        "properties": [
+          "asrPastePreparingToken_",
+          "asrPasteRestoreSnapshot_",
+          "asrPasteWrittenChangeCount_",
+          "asrPasteRestoreToken_",
+          "asrPasteRestoreWorkItem_"
+        ],
+        "selectors": [
+          "generalPasteboard",
+          "changeCount"
+        ],
+        "literals": [
+          "[ASR][FinalCommit] pasteboard handoff, trigger=smartOrganizeUndoCopy, seq=",
+          "[ASR][FinalCommit] skip pasteboard handoff, reason=changedAfterPaste, trigger=smartOrganizeUndoCopy, seq=",
+          ", expectedChangeCount=",
+          ", currentChangeCount="
+        ],
+        "observed": "With a restore snapshot and a recorded written change count, the function increments the restore token, cancels and clears the scheduled restore DispatchWorkItem, then compares NSPasteboard.generalPasteboard.changeCount with the recorded count: equal logs a handoff, different logs a skip with reason changedAfterPaste."
+      },
+      {
+        "id": "DD-paste-gate",
+        "evidence_id": "ev_7813c9cf5cfd974f88db927e1d3ec7e857a490b646f2b4d8968d44ded8cdb348",
+        "function": "0x10017dce4",
+        "properties": [
+          "asrFinalGeneration_",
+          "asrPasteInFlight_",
+          "asrPasteCommandVPosted_",
+          "asrFinalTextWriteCount_",
+          "asrPasteCommitSeq_",
+          "asrPastePendingRestore_",
+          "asrPasteAfterPreparation_",
+          "asrAXProbeToken_",
+          "asrFinalCommitTransaction_"
+        ],
+        "selectors": [
+          "pressedMouseButtons",
+          "generalPasteboard",
+          "changeCount",
+          "setString:forType:",
+          "setData:forType:",
+          "addTypes:owner:",
+          "prepareForNewContentsWithOptions:",
+          "markedRange",
+          "selectedRange",
+          "systemUptime"
+        ],
+        "literals": [
+          "com.microsoft.Excel",
+          "[ASR][FinalCommit] wait_mouse_release transaction=",
+          "[ASR][FinalCommit] mouse_released transaction=",
+          "[ASR][FinalCommit] delayed paste skipped session=",
+          ", reason=staleBeforeCommandV, host=",
+          "[ASR][FinalCommit] delayed paste canceled session=",
+          ", reason=preSendGateFailed, host=",
+          "targetChangedBeforePost",
+          "pasteboardChangedDuringWrite",
+          "pasteboardRestoreChanged",
+          "setPasteboardFailed",
+          "setPasteboardMarkerFailed",
+          ", reason=preferredTargetChanged, host=",
+          ", reason=preferredTargetChangedAfterHook, host=",
+          ", outcome=pastePosted, host=",
+          ", markedBeforeSend={",
+          ", hostAck=unknown"
+        ],
+        "observed": "Before posting Command-V the delayed paste proceeds only if the session is unchanged, asrFinalGeneration_ equals the captured generation, a paste is in flight, Command-V has not been posted, asrFinalTextWriteCount_ is zero and asrPasteCommitSeq_ equals the captured sequence; otherwise it logs staleBeforeCommandV. When the host bundle identifier equals com.microsoft.Excel and NSEvent.pressedMouseButtons is non-zero, the commit waits for mouse release. Named failure reasons cover target change before post, pasteboard change during write and pasteboard write failures; a posted paste is logged with hostAck=unknown."
+      },
+      {
+        "id": "DD-commit-strategy",
+        "evidence_id": "ev_3af76376fc6472a824bed1678d3f5b5a2975d70d8a2733140195b4be57bbb3c7",
+        "function": "0x1001ab16c",
+        "properties": [
+          "asrHostCommitResolution_",
+          "asrFinalCommitStrategy_",
+          "asrAXInputImplementation_",
+          "asrFinalGeneration_",
+          "asrFinalTextWriteCount_",
+          "asrNeedDirectCommitNewline_",
+          "asrFinalUsedNewlineNormalization_",
+          "asrSmartOrganizeContext_"
+        ],
+        "literals": [
+          "imeCommitRequired",
+          "hostCommitted",
+          "ambiguous",
+          "contextInvalid",
+          "commitRequested",
+          "[ASR][FinalCommit] selected session=",
+          ", strategy=skipSystemCommitted, writes=0, reason=hostCommittedOriginal, host="
+        ],
+        "observed": "A host commit resolution with the values hostCommitted, imeCommitRequired, ambiguous and contextInvalid is evaluated before delivery; resolutions that are not hostCommitted return early. On the path that logs strategy skipSystemCommitted with zero writes (reason hostCommittedOriginal), the function increments asrFinalGeneration_, resets asrFinalTextWriteCount_ and stores 2 in asrFinalCommitStrategy_. It also reads a host text-implementation classification (asrAXInputImplementation_) whose inline names include web and qt."
+      }
+    ],
+    "sharedIMKCommit": {
+      "entry": "0x10018dbac",
+      "callsite": "0x10018eaf4",
+      "selector": "insertText:replacementRange:",
+      "sourceLedger": "doubao-keyboard-commit.json",
+      "sourceObservation": "DB-chain2-host-insert",
+      "evidenceKind": "previously byte-verified LLVM instructions; not new REA decompilation"
+    },
+    "implementationNames": {
+      "0": "web",
+      "1": "qt",
+      "2": "nsTextView",
+      "3": "nsTextField",
+      "4": "customMultiline",
+      "5": "customDrawn",
+      "other": "unknown"
+    },
+    "implementationNamesSource": "DD-commit-strategy static decoding; names do not establish classification or routing predicates",
+    "unknowns": [
+      "Exact direct-versus-paste predicate and complete classification implementation remain unresolved.",
+      "Actual Lark/Codex input, sender identity and paste acknowledgement were not observed.",
+      "Presence of AX attribute setter imports does not establish AXSelectedText delivery."
+    ]
+  },
+  "reproduction": {
+    "workspace": ".workspace/research/insertion-comparison",
+    "skill": "reverse-engineer-anything",
+    "rea": "6.4.0",
+    "nativeProvider": "Ghidra 12.1.4 / OpenJDK 21",
+    "newNativeAnalysis": {
+      "doubao": {
+        "freshNativeDossiersReturned": false,
+        "status": "cancelled_after_provider_resource_errors",
+        "observedDiagnostics": [
+          "VarnodeContext: out of address spaces",
+          "Repeated decompiler unmapped-address warnings"
+        ],
+        "reusedEvidence": "Retained Doubao native records match current installed and derived arm64 SHA256",
+        "cleanup": "Broker/server exited; owned Ghidra process group terminated and exact owned temporary directory removed. No competitor executed.",
+        "closeBinaryCompleted": false
+      },
+      "chatterfly": "Metadata inspections succeeded and metadata session close_binary returned success. Native analyze_function produced no dossier: stopped owned Ghidra after about 11 minutes of whole-binary startup; captured execution_failure (exit143) and diagnostics. A queued subsequent query began a new engine, then REA received SIGTERM and its documented shutdown session.close handler exited0; all owned REA/Ghidra processes were verified absent. No successful native code-flow REA Evidence ID is claimed."
+    }
+  },
+  "limitations": [
+    "Static executable control flow is not a live host compatibility test.",
+    "Competitor code and decompiler output remain in ignored workspace; this ledger records bounded observations only.",
+    "Chatterfly built-in exact bundle policy and dynamic config must not be generalized into universal host support.",
+    "No competitor app was launched, no user audio recorded, no network traffic captured or messages sent."
+  ]
+}

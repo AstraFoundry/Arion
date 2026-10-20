@@ -1,5 +1,6 @@
 # Operations
 
+- [Local rewriting](local-rewrite.md) — selected GGUF model, two-stage prompts, private runtime and delivery policy.
 - [Local development](local-dev.md) — actual repository commands and module toolchains.
 - [Evaluation commands](../../tools/evaluation/README.md) — Make/pnpm benchmarks and real drivers.
 - [Deployment](deployment.md) — desktop/model/IME and self-hosted relay release gates, and the marketing site.

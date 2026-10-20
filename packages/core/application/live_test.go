@@ -182,7 +182,7 @@ func TestLivePreviewThenFinalRewrite(t *testing.T) {
 // its verdict visible.
 func TestRejectedRewriteKeepsSource(t *testing.T) {
 	rewriter := &scriptedRewriter{answer: func(req ports.RewriteRequest) (string, error) {
-		return "我们明天在北京总部开会讨论新的预算方案", nil
+		return "<think>unfinished model reasoning</think>", nil
 	}}
 	c, audio, events, target, _ := liveSetup(t, []string{"我们明天开会"}, rewriter, RewritePolicy{Enabled: true})
 	c.Start()
@@ -190,7 +190,7 @@ func TestRejectedRewriteKeepsSource(t *testing.T) {
 	audio.push(1, 0.2)
 	c.Stop()
 	ready := events.wait(t, kindIs(contracts.CorrectionReady))
-	if ready.Text != "我们明天开会" || ready.Rewrite != string(domain.RewriteLength) {
+	if ready.Text != "我们明天开会" || ready.Rewrite != string(domain.RewriteMarkup) {
 		t.Fatalf("unexpected final %+v", ready)
 	}
 	events.wait(t, kindIs(contracts.CommitResultReady))
@@ -512,7 +512,7 @@ func TestCleanupSurvivesOrganizationFailure(t *testing.T) {
 			switch outcome {
 			case "rejected":
 				rewriter = &scriptedRewriter{answer: func(ports.RewriteRequest) (string, error) {
-					return "A completely unrelated answer with 987654 added facts.", nil
+					return "", nil
 				}}
 			case "unavailable":
 				rewriter = &scriptedRewriter{answer: func(ports.RewriteRequest) (string, error) {

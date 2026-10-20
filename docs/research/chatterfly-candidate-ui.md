@@ -51,6 +51,10 @@ Other config values: `defaultPageSize` 6, `defaultFontSize` 16, `numFontDelta` 3
 - The chevron turns Arion's menu to the next page; earlier pages stay on `-`/`[`.
 - The input-menu icon must be a 16 pt image. Arion's previous single 64 px, 72 dpi TIFF was read as 64 pt and enlarged the "Arion" row in the input menu. The build now combines 16 px (72 dpi) and 32 px (144 dpi) slices with `tiffutil -cathidpicheck`.
 
+## Spread (expanded) list
+
+Pressing past the page spreads the candidates into rows (`SGCandViewControllerScroll`, `SGCandidatesTextViewScroll`, `isScrollSpreading`, `expandedRowCount` 6). The scroll view keeps per-column maxima (`candidateMaxs`) so rows align, a current row (`curRow`, `focusLineBgColor`), row separators (`SGCandidateLineSeparatorRenderer drawSeparatorsForCandidateFrames:pageSize:…`) and an expanded focus box. `-[SGCandidatesController updateWindow:]` animates the window frame with an `NSViewAnimation` of 0.3 s when spreading and 0.2 s when folding, default ease-in-out; `animationDidEnd:` refreshes the window. The bar itself appears without a fade. Arion's grid follows this structure; the row tint and separator colors are Arion's choice, since the focus-line color is skin data not read here.
+
 ## Limits
 
 These are static reads of one build. A live screenshot of Chatterfly's bar was not captured: synthetic keystrokes did not reach a focused field, and the earlier REA native-UI request had already been unavailable ([installed keyboard](chatterfly-installed-keyboard.md)). Runtime size-level overrides from user preferences were not traced.

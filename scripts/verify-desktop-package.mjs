@@ -39,9 +39,10 @@ if (spec) {
   for (const archive of spec.archives) for (const name of Object.values(archive.members)) {
     const file = path.join(resources, 'llm', name);
     requireFile(file);
-    if (/\.(dylib|dll)$/.test(name)) binaries.push(file);
+    if (/\.(dylib|dll)$/.test(name) || name === 'llama-server') binaries.push(file);
   }
 }
+if (spec) for (const name of ['cmudict-pronunciation-v1-LICENSE', 'pypinyin-character-readings-v1-LICENSE.txt']) requireFile(path.join(resources, 'llm/licenses', name));
 const expectedCenter = resolveCenter(process.env);
 const embeddedCenter = JSON.parse(execFileSync(binaries[0], ['--print-center-profile'], { encoding: 'utf8', env: { PATH: process.env.PATH, SystemRoot: process.env.SystemRoot, HOME: process.env.HOME } }));
 if (JSON.stringify(embeddedCenter.profile) !== JSON.stringify(expectedCenter) || embeddedCenter.fingerprint !== centerFingerprint(expectedCenter)) throw new Error('Packaged center profile does not match build configuration');

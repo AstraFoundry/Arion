@@ -1,5 +1,7 @@
 # ADR 011: Live local rewriting with Qwen while dictating
 
+The current runtime, templates and delivery policy are superseded by [ADR 018](018-staged-gguf-rewriting.md); the live scheduling and insertion ownership requirements remain.
+
 ## Status
 
 Accepted (product decision). Supersedes the review-before-insert rule of [ADR 008](008-contextual-rewrite-evaluation.md) for the live pipeline; ADR 008's evaluation boundary otherwise stands.

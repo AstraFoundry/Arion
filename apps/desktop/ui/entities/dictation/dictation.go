@@ -51,6 +51,12 @@ func PhaseOf(d runtime.Dictation, now time.Time) Phase {
 	case runtime.StateCommitting:
 		return Inserting
 	case runtime.StateCompleted:
+		if d.Failure != "" {
+			if since < FailedVisible {
+				return Failed
+			}
+			return Hidden
+		}
 		if since < DoneVisible {
 			return Done
 		}
@@ -71,6 +77,9 @@ func Remaining(d runtime.Dictation, now time.Time) time.Duration {
 	visible := map[runtime.SessionState]time.Duration{
 		runtime.StateCompleted: DoneVisible, runtime.StateFailed: FailedVisible, runtime.StateCancelled: CancelledVisible,
 	}[d.State]
+	if d.State == runtime.StateCompleted && d.Failure != "" {
+		visible = FailedVisible
+	}
 	if visible == 0 {
 		return 0
 	}
@@ -119,6 +128,10 @@ func NoticeOf(d runtime.Dictation, permissions runtime.Permissions) Notice {
 			return Notice{copy.FailIMETitle, copy.FailIMEHint}
 		}
 		return Notice{copy.FailUnsupportedTitle, copy.FailTargetHint}
+	case runtime.CodeClipboardUnavailable:
+		return Notice{copy.FailClipboardTitle, copy.FailClipboardHint}
+	case runtime.CodeClipboardRestoreFailed:
+		return Notice{copy.FailClipboardRestoreTitle, copy.FailClipboardRestoreHint}
 	case runtime.CodeSecureFieldBlocked:
 		return Notice{copy.FailSecureTitle, copy.FailSecureHint}
 	case runtime.CodeNoSpeech:

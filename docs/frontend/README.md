@@ -11,10 +11,10 @@ This section defines how the frontend is organized using **Feature-Sliced Design
 
 | Layer | Slices |
 | --- | --- |
-| `app` | One view per window: overlay, menu bar panel, settings, onboarding, macOS consent guide |
+| `app` | One view per window: overlay, menu bar panel, settings, onboarding, macOS settings guide |
 | `pages` | `overlay`, `menubar`, `settings`, `onboarding` |
 | `widgets` | `capsule` (dictation pill), `statusheader`, `modelcard`, `stepper`, `showcase` (illustrations: mock UI over a photograph) |
-| `features` | `dictate`, `permissions`, `provision`, `shortcut`, `microphone`, `vocabulary`, `transcript`, `modelchoice`, `uilanguage`, `diagnostics` (About log export), `signin` (AstraFoundry account and hosted-sync waitlist) |
+| `features` | `dictate`, `permissions`, `provision`, `shortcut`, `keyboard` (input-source setup and settings guide), `microphone`, `vocabulary`, `transcript`, `modelchoice`, `uilanguage`, `diagnostics` (About log export), `signin` (AstraFoundry account and hosted-sync waitlist) |
 | `entities` | `dictation` (phase/notice projection), `model`, `onboarding` (step rules), `account` (account stage and copy for errors and waitlist phases) |
 | `shared` | `runtime` (state and actions boundary), `copy`, `theme` (Sunbeam tokens, motion presets), `kit` (coss-anatomy primitives), `icons` (Lucide, ISC), `assets` (app mark, photographs) |
 
