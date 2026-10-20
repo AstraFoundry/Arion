@@ -200,7 +200,7 @@ func draft(c *ui.Context, tokens theme.Tokens, frame dictation.Frame, color ui.C
 		// Out of the row's layout and unwrapped, the text keeps its full
 		// width instead of truncating to the line; the row clips it.
 		ui.RichText(c, spans...).FontSize(theme.Body).TextColor(color).NoWrap().
-			Absolute().Left(starts[first]-shift).Top(0).Bottom(0).Width(starts[len(runes)]-starts[first]+edgeFade)
+			Absolute().Left(starts[first] - shift).Top(0).Bottom(0).Width(starts[len(runes)] - starts[first] + edgeFade)
 	})
 }
 
