@@ -82,7 +82,7 @@ func Render(c *ui.Context, store runtime.Store, tokens theme.Tokens, typing *dic
 		}
 		pill := kit.Pill(c.Key("pill"), tokens).MaxWidth(600).Transition(pillMotion)
 		switch phase {
-		case dictation.Preparing, dictation.Listening, dictation.Transcribing, dictation.Inserting:
+		case dictation.Preparing, dictation.Listening, dictation.Transcribing, dictation.Polishing, dictation.Reviewing, dictation.Inserting:
 			pill.Width(pill.AnimateTo("width", Live, theme.Settle))
 		}
 		pill.Children(func() {
@@ -90,7 +90,7 @@ func Render(c *ui.Context, store runtime.Store, tokens theme.Tokens, typing *dic
 			// speech ends instead of leaving and entering again.
 			key := any(phase)
 			switch phase {
-			case dictation.Preparing, dictation.Listening, dictation.Transcribing, dictation.Inserting:
+			case dictation.Preparing, dictation.Listening, dictation.Transcribing, dictation.Polishing, dictation.Reviewing, dictation.Inserting:
 				key = "live"
 			}
 			row := ui.Row(c.Key(key)).Grow(1).Gap(10).AlignItems(ui.Center).Transition(contentMotion)
@@ -101,7 +101,7 @@ func Render(c *ui.Context, store runtime.Store, tokens theme.Tokens, typing *dic
 				switch phase {
 				case dictation.Preparing, dictation.Listening:
 					listening(c, state, tokens, typing)
-				case dictation.Transcribing, dictation.Inserting:
+				case dictation.Transcribing, dictation.Polishing, dictation.Reviewing, dictation.Inserting:
 					transcribing(c, d, tokens, store.Copy(), typing)
 				case dictation.Done:
 					outcome(c, d, tokens, store.Copy())
@@ -118,12 +118,22 @@ func Render(c *ui.Context, store runtime.Store, tokens theme.Tokens, typing *dic
 
 // liveMark is the live phases' one glyph: the app mark's bars as the meter
 // while listening, folded into three waiting dots while the microphone
-// opens and while recognition finishes. It stays the same element across
-// those phases, so each change is one continuous fold.
+// opens and while recognition finishes, the dots turning on a circle while
+// the rewrite organizes the text, and the full mark again once the text is
+// decided. It stays the same element across those phases, so each change
+// is one continuous motion.
 func liveMark(c *ui.Context, state *runtime.State, tokens theme.Tokens, phase dictation.Phase) {
-	waiting := phase != dictation.Listening
-	glyph := kit.VoiceMark(c.Key("mark"), state.Dictation.Levels, 20, waiting, tokens.PillText, tokens.Live).Shrink(0)
-	if !waiting {
+	mode := kit.MarkWaiting
+	switch phase {
+	case dictation.Listening:
+		mode = kit.MarkListening
+	case dictation.Polishing:
+		mode = kit.MarkOrbiting
+	case dictation.Reviewing, dictation.Inserting:
+		mode = kit.MarkResting
+	}
+	glyph := kit.VoiceMark(c.Key("mark"), state.Dictation.Levels, 20, mode, tokens.PillText, tokens.Live).Shrink(0)
+	if mode == kit.MarkListening {
 		// The live dot and the meter say "listening"; the word is their name
 		// for assistive technology rather than text competing for the line.
 		glyph.Label(copy.For(copy.Locale(state.Preferences.UILanguage)).Text(copy.PillListening))

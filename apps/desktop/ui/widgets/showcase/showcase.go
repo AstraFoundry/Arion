@@ -144,7 +144,7 @@ func pill(c *ui.Context, tokens theme.Tokens, messages copy.Catalog, scene Scene
 					ui.Text(c, messages.Text(copy.PillInserted)).FontSize(theme.Body).FontWeight(500)
 					return
 				}
-				kit.VoiceMark(c, levels, 18, false, tokens.PillText, tokens.Live)
+				kit.VoiceMark(c, levels, 18, kit.MarkListening, tokens.PillText, tokens.Live)
 				// The streaming draft, or the key that finishes: the
 				// illustration is too narrow for the live pill's full row.
 				if draft := head(messages.Text(copy.ShowcaseSentence), spoken); draft != "" && scene == Dictating {
