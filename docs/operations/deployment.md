@@ -76,6 +76,8 @@ The app checks the Arion center's `stable` channel, or `beta` with **Allow beta 
 
 Builds through `0.1.0-alpha.5` contain the GitHub feed. Publish the first center-feed release on GitHub as well as on a channel, so those installs update once to a build that uses the center.
 
+For Tencent COS, use the regional endpoint `https://cos.<region>.myqcloud.com`, the matching region (for example `ap-hongkong`), and the complete bucket name including its APPID suffix. Release CI configures virtual-hosted-style S3 addressing; COS rejects path-style requests with `PathStyleDomainForbidden`. Keep anonymous writes disabled. Use a dedicated API-only CAM user whose `PutObject`, `HeadObject` and `GetObject` permissions cover only `<prefix>/files/*` and `<prefix>/releases/*`; channel writes belong to the platform publisher. A missing staged record must return HTTP 404, rather than an authorization error. Validate upload/readiness and denial of channel writes before enabling CI credentials. Store the dedicated key only in Actions Secrets, independently of local TCCLI login credentials.
+
 ## Desktop release gates
 
 1. Validate the compatibility matrix, model artifact checksums/licenses and privacy/latency gates on macOS and Windows.
