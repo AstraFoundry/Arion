@@ -37,5 +37,6 @@ for (const module of modules) {
   }
 }
 if (mode === 'desktop' && process.platform === 'darwin') {
+  run(process.execPath, [path.join(root, 'scripts/test-macos-hold.mjs')], root, process.env);
   run(process.execPath, [path.join(root, 'scripts/check-keyboard.mjs')], root, process.env);
 }

@@ -352,6 +352,50 @@ int main(int argc, const char *argv[]) {
             modifier(typing, 60, NSEventModifierFlagShift, 2);
             require(modifier(typing, 60, 0, 2.1) && !typing.ascii && switches == 2, @"right Shift switches back persistently");
         });
+        run(@"duplicated host modifier notifications preserve one Shift tap", @"KBD-A05", ^{
+            __block NSUInteger switches = 0;
+            typing.modeChanged = ^{ switches++; };
+            for (NSNumber *code in @[@56, @60, @0, @255]) {
+                BOOL before = typing.ascii;
+                modifier(typing, code.unsignedShortValue, NSEventModifierFlagShift, 1);
+                require(!modifier(typing, code.unsignedShortValue, NSEventModifierFlagShift, 1.014), @"duplicate press does not switch");
+                require(modifier(typing, code.unsignedShortValue, 0, 1.176) && typing.ascii != before,
+                        @"captured duplicate-press sequence switches once on release");
+                require(!modifier(typing, code.unsignedShortValue, 0, 1.178), @"duplicate release does not switch twice");
+            }
+            require(switches == 4 && !typing.ascii, @"known and anonymous taps each notify exactly once");
+            modifier(typing, 56, NSEventModifierFlagShift, 2);
+            modifier(typing, 56, NSEventModifierFlagShift, 2.29);
+            require(!modifier(typing, 56, 0, 2.31) && !typing.ascii, @"duplicate press never extends the short-press deadline");
+            modifier(typing, 56, NSEventModifierFlagShift, 3);
+            [typing handleEvent:key(@"A", 0, NSEventModifierFlagShift)];
+            modifier(typing, 56, NSEventModifierFlagShift, 3.05);
+            require(!modifier(typing, 56, 0, 3.1) && !typing.ascii, @"duplicate after typing cannot restore a cancelled tap");
+            typing.modeChanged = nil;
+        });
+        run(@"anonymous IMK Shift events switch only on an unambiguous transition", @"KBD-A05", ^{
+            for (NSNumber *code in @[@0, @255]) {
+                modifier(typing, code.unsignedShortValue, NSEventModifierFlagShift, 1);
+                require(modifier(typing, code.unsignedShortValue, 0, 1.1) && typing.ascii,
+                        @"missing keycode is identified from the Shift transition");
+                modifier(typing, 60, NSEventModifierFlagShift, 2);
+                require(modifier(typing, code.unsignedShortValue, 0, 2.1) && !typing.ascii,
+                        @"anonymous release pairs with known right Shift");
+            }
+            modifier(typing, 0, NSEventModifierFlagShift | NSEventModifierFlagCommand, 3);
+            require(!modifier(typing, 0, 0, 3.1) && !typing.ascii, @"ambiguous modifier changes never switch");
+            modifier(typing, 0, NSEventModifierFlagShift, 4);
+            [typing handleEvent:key(@"A", 0, NSEventModifierFlagShift)];
+            require(!modifier(typing, 0, 0, 4.1) && !typing.ascii, @"anonymous Shift chords never switch");
+            modifier(typing, 255, NSEventModifierFlagShift, 5);
+            require(!modifier(typing, 255, 0, 5.4) && !typing.ascii, @"anonymous long holds never switch");
+            modifier(typing, 0, NSEventModifierFlagShift, 6);
+            [typing cancel];
+            require(!modifier(typing, 0, 0, 6.1) && !typing.ascii, @"cancel invalidates anonymous Shift");
+            modifier(typing, 0, NSEventModifierFlagShift, 7);
+            require(modifier(typing, 60, 0, 7.1) && typing.ascii, @"anonymous press pairs with known right release");
+            [typing toggleASCII];
+        });
         run(@"Shift chords long holds and lifecycle changes cannot switch", @"KBD-A05", ^{
             modifier(typing, 56, NSEventModifierFlagShift, 1);
             [typing handleEvent:key(@"A", 0, NSEventModifierFlagShift)];

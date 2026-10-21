@@ -42,6 +42,7 @@ static BOOL containsHan(NSString *text) {
 @property NSUInteger topRow;
 @property(copy) NSString *previousCommit;
 @property NSTimeInterval previousCommitTime;
+@property NSEventModifierFlags lastModifierFlags;
 @property BOOL shiftHeld;
 @property BOOL shiftPending;
 @property unsigned short shiftKeyCode;
@@ -119,18 +120,29 @@ static BOOL containsHan(NSString *text) {
 - (BOOL)handleEvent:(NSEvent *)event {
     if (!self.live) return NO;
     NSEventModifierFlags flags = event.modifierFlags;
+    NSEventModifierFlags previousFlags = self.lastModifierFlags;
+    NSEventModifierFlags changes = (flags ^ previousFlags) & NSEventModifierFlagDeviceIndependentFlagsMask;
+    self.lastModifierFlags = flags;
     if (event.type == NSEventTypeFlagsChanged) {
         BOOL shift = (flags & NSEventModifierFlagShift) != 0;
-        BOOL shiftKey = event.keyCode == 56 || event.keyCode == 60;
+        unsigned short keyCode = event.keyCode;
+        // Some IMK clients omit the modifier keycode. Recognize Shift only
+        // when the flag transition identifies that modifier unambiguously.
+        BOOL anonymous = keyCode == 0 || keyCode == 255;
+        BOOL shiftKey = keyCode == 56 || keyCode == 60 || (anonymous && changes == NSEventModifierFlagShift);
         BOOL otherModifiers = (flags & (NSEventModifierFlagCommand | NSEventModifierFlagControl |
                                       NSEventModifierFlagOption | NSEventModifierFlagCapsLock | NSEventModifierFlagFunction)) != 0;
+        // Some clients deliver each modifier notification twice. A repeated
+        // press of the same side/state must neither cancel nor restart a tap.
+        if (shift && self.shiftHeld && flags == previousFlags && !otherModifiers &&
+            ((anonymous && self.shiftKeyCode == 0) || keyCode == self.shiftKeyCode)) return NO;
         BOOL toggle = shiftKey && !shift && self.shiftHeld && self.shiftPending &&
-            event.keyCode == self.shiftKeyCode && !otherModifiers &&
+            (anonymous || self.shiftKeyCode == 0 || keyCode == self.shiftKeyCode) && !otherModifiers &&
             event.timestamp >= self.shiftPressedAt && event.timestamp - self.shiftPressedAt < kShiftTapDuration;
         // A second Shift or any other modifier invalidates a pending tap.
         if (shiftKey && shift && !self.shiftHeld && !otherModifiers) {
             self.shiftPending = YES;
-            self.shiftKeyCode = event.keyCode;
+            self.shiftKeyCode = anonymous ? 0 : keyCode;
             self.shiftPressedAt = event.timestamp;
         } else {
             self.shiftPending = NO;

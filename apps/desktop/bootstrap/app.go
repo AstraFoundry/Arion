@@ -115,6 +115,9 @@ type App struct {
 	recommended  string
 	updates      *updates
 
+	// holdGeneration rejects queued events from a retired native listener.
+	holdGeneration uint64
+
 	// Snapshot read by worker goroutines (correction policy, delivery).
 	snapshot sync.Mutex
 	prefs    application.Preferences

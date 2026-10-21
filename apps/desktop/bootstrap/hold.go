@@ -13,6 +13,8 @@ import (
 // global activation. A key that cannot listen stays chosen and reports why,
 // so granting consent later starts it without the user choosing again.
 func (a *App) startHoldKey() {
+	a.holdGeneration++
+	generation := a.holdGeneration
 	a.platform.StopHoldKey()
 	a.hold.Reset()
 	a.state.Hold.Active, a.state.Hold.Failure, a.state.Hold.Holding = false, "", false
@@ -23,7 +25,11 @@ func (a *App) startHoldKey() {
 	}
 	err := a.platform.StartHoldKey(key, func(e holdkey.Event) {
 		now := time.Now()
-		a.post(func() { a.onHoldKey(e, now) })
+		a.post(func() {
+			if generation == a.holdGeneration {
+				a.onHoldKey(e, now)
+			}
+		})
 	})
 	a.record("hold_register", err)
 	if err != nil {
@@ -96,6 +102,14 @@ func (a *App) finishDictation() {
 
 // refreshHoldConsent restarts a waiting hold key once consent arrives.
 func (a *App) refreshHoldConsent(previous arion.Consent) {
+	if a.state.Permissions.InputMonitoring != arion.ConsentGranted && a.state.Hold.Active {
+		a.holdGeneration++
+		a.platform.StopHoldKey()
+		a.hold.Reset()
+		a.state.Hold.Active, a.state.Hold.Holding = false, false
+		a.state.Hold.Failure = domain.CodePermissionDenied
+		a.core.Cancel()
+	}
 	if previous != arion.ConsentGranted && a.state.Permissions.InputMonitoring == arion.ConsentGranted &&
 		a.state.Preferences.HoldKey != "" && !a.state.Hold.Active {
 		a.startHoldKey()

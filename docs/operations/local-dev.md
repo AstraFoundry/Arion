@@ -92,6 +92,11 @@ SYNC-11 selects AstraFoundry as the standard packaged center and build-time `ARI
 
 ## Troubleshooting
 
+- Standalone Shift switching: duplicate modifier notifications from Codex/Cursor preserve the original short-press deadline and switch once on release. Another physical key/modifier or a long hold still cancels the switch; Shift+Space remains available.
+
+- If macOS Input Monitoring shows Arion enabled but the current signed app still reports denied after relaunch, verify the entry belongs to `/Applications/Arion.app`. Old development identities such as `local.arion.desktop` can leave stale entries. Remove only the obsolete Arion entry and add the current app again through System Settings with the user’s explicit consent, then use the OS Quit & Reopen action; never modify the TCC database directly.
+- macOS dictation key: Right Option is side-specific and requires Input Monitoring for Arion. A non-null event tap is insufficient: startup checks consent and actual enabled state before reporting readiness. Missing consent leaves the key selected with a permission failure; granting consent restarts it. Revocation stops the listener and cancels the active session. Listener replacement waits for its native thread to exit and rejects old queued transitions.
+
 - Missing toolchain/network: provision matching Go and module cache explicitly; do not lower MyGo's required version.
 - Model unavailable: open the menu bar panel or Settings › Model; a failed download or checksum shows its reason and a retry. `go run ./cmd/arion-models import` installs an already-downloaded archive into a store without network.
 - Platform build failure: capture compiler/SDK errors and compare pinned upstream source before choosing an adapter.

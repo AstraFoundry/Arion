@@ -64,9 +64,12 @@ func StartHold(key application.HoldKey, sink func(holdkey.Event)) error {
 	hold.Lock()
 	hold.interpreter, hold.sink = interpreter, sink
 	hold.Unlock()
-	if C.arion_hold_start() != 0 {
+	if status := C.arion_hold_start(); status != 0 {
 		StopHold()
-		return domain.Fail(domain.CodePermissionDenied, "input monitoring")
+		if status == C.ARION_HOLD_PERMISSION_DENIED {
+			return domain.Fail(domain.CodePermissionDenied, "input monitoring")
+		}
+		return domain.Fail(domain.CodeTargetUnsupported, "dictation key listener unavailable")
 	}
 	return nil
 }
