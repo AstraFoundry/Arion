@@ -134,6 +134,7 @@ int main(int argc, const char *argv[]) {
             } @catch (NSException *exception) {
                 result[@"passed"] = @NO;
                 result[@"failure"] = exception.reason ?: exception.name;
+                NSLog(@"Assertion failed in %@: %@", name, result[@"failure"]);
             }
             result[@"trace"] = trace;
             result[@"observed"] = capture(typing, editor);
@@ -454,7 +455,9 @@ int main(int argc, const char *argv[]) {
             NSWindow *keyWindow = NSApp.keyWindow;
             NSRect screen = NSScreen.mainScreen.visibleFrame;
             NSRect caret = NSMakeRect(NSMaxX(screen) - 1, NSMinY(screen) + 1, 0, 20);
+            NSDate *firstShownAt = NSDate.date;
             [hint showASCII:YES caretRect:caret];
+            NSDate *firstShowFinishedAt = NSDate.date;
             require(window.visible && !window.canBecomeKeyWindow && window.ignoresMouseEvents && NSApp.keyWindow == keyWindow,
                     @"zero-width caret shows a click-through hint without changing key window");
             require(NSEqualSizes(window.frame.size, NSMakeSize(23, 23)) && !window.hasShadow &&
@@ -462,14 +465,27 @@ int main(int argc, const char *argv[]) {
                     @"compact shadowless badge uses immediate window transitions");
             require(NSContainsRect(screen, window.frame) && NSMinY(window.frame) >= NSMaxY(caret),
                     @"hint fits screen and flips above bottom-edge caret");
-            [NSRunLoop.currentRunLoop runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.5]];
+            NSTimer *previousDismissal = [hint valueForKey:@"dismissal"];
+            require(previousDismissal.valid && [previousDismissal.fireDate timeIntervalSinceDate:firstShownAt] >= 1.0 &&
+                    [previousDismissal.fireDate timeIntervalSinceDate:firstShowFinishedAt] <= 1.0,
+                    @"hint schedules the documented one-second lifetime");
+            NSDate *nextShownAt = NSDate.date;
             [hint showASCII:NO caretRect:caret];
-            [NSRunLoop.currentRunLoop runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.6]];
-            require(window.visible, @"previous dismissal cannot hide the new mode hint");
-            [NSRunLoop.currentRunLoop runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.25]];
-            require(window.visible, @"hint remains visible beyond the former 0.8-second lifetime");
-            [NSRunLoop.currentRunLoop runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.2]];
+            NSDate *nextShowFinishedAt = NSDate.date;
+            NSTimer *currentDismissal = [hint valueForKey:@"dismissal"];
+            require(!previousDismissal.valid && currentDismissal != previousDismissal &&
+                    currentDismissal.valid && [currentDismissal.fireDate timeIntervalSinceDate:nextShownAt] >= 1.0 &&
+                    [currentDismissal.fireDate timeIntervalSinceDate:nextShowFinishedAt] <= 1.0 && window.visible,
+                    @"new mode invalidates the previous timer and starts a full one-second lifetime");
+            // Host scheduling may overshoot a fixed sleep. Check the declared
+            // interval directly, then wait for actual run-loop delivery.
+            NSDate *deadline = [NSDate dateWithTimeIntervalSinceNow:3];
+            while (window.visible && deadline.timeIntervalSinceNow > 0) {
+                [NSRunLoop.currentRunLoop runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
+            }
             require(!window.visible, @"hint automatically disappears after one second");
+            require(!currentDismissal.valid && ![hint valueForKey:@"dismissal"],
+                    @"delivered dismissal retires its timer");
             [hint showASCII:YES caretRect:caret];
             [hint hide];
             require(!window.visible, @"typing or focus loss can hide immediately");

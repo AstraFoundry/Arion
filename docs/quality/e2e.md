@@ -40,6 +40,8 @@ MyGo `CapturePage()` renders Content; it does not verify the OS compositor, GPU 
 
 ## Dictation listener regression checks
 
+The typing harness checks the language badge's one-second scheduled dismissal date, replacement-timer invalidation and actual run-loop dismissal with a bounded deadline. It does not sample visibility after several fixed sleeps near the expiry boundary: CI scheduling can overshoot those samples. Assertion reasons are emitted to CI logs as well as the JSON report.
+
 On macOS, `pnpm desktop:check` also runs `node scripts/test-macos-hold.mjs`. It compiles the production native listener against a controlled Core Graphics boundary and real CFRunLoop/pthread lifecycle. It checks denied consent before tap creation, null/disabled taps, 100 immediate start/stop cycles, raw callback delivery, timeout re-enable and revocation/recovery. It never requests or changes system consent. Bootstrap tests cover visible registration failure, automatic restart after consent, revocation and rejection of events queued by a retired listener. These automated checks do not establish physical Right Option delivery or a real OS permission-grant flow. A separate user-assisted local arm64 run subsequently rebuilt the stale Arion Input Monitoring entry through System Settings, verified granted consent and an enabled tap, and recorded physical Right Option start/capture/stop plus a successful text commit. The same user confirmed repaired Shift switching in the previously affected chat-input workflow; this is manual host acceptance, separate from the automated suite.
 
 ## IMK composition regression checks
