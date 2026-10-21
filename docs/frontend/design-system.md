@@ -63,7 +63,7 @@ The macOS consent guide is a whole window floating over System Settings: its car
 | `Status` | Colored icon plus a word in text ink |
 | `Pill` | The dictation HUD surface, shared by the live pill and illustrations |
 | `Mark` | The app icon bitmap; the brand mark is never a glyph in an accent tile |
-| `Keycap(s)`, `LevelBars`, `Press` | Shortcut display, live meter, press feedback |
+| `Kbd`, `KbdGroup`, `LevelBars`, `Press` | coss `Kbd`/`KbdGroup` for keys (20 DIP, radius 4, `Subtle` fill, 12 DIP medium `Muted` text; pill variant on the substrate), live meter, press feedback |
 | `SelectPopup`, `SelectItem`, `SelectSeparator` | coss `Select` popup over `ui.SelectBase`: a card face 4 DIP below the trigger, radius 10, hairline, top light and `Lifted` elevation, 4 DIP padding; 28 DIP options with a 16 DIP check column, washed in `AccentSoft` while highlighted; inset hairline separators. The trigger keeps the look of the control it is (the scene card) |
 
 | `CardHeader` | coss `CardHeader`: a 15 DIP semibold title and an optional action (select, ghost button, figure) on one 44 DIP row |

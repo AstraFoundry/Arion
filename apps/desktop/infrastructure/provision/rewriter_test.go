@@ -77,3 +77,31 @@ func TestEnsureRewriterOffline(t *testing.T) {
 		t.Fatalf("offline store downloaded: %v", err)
 	}
 }
+
+// Individual ASR graphs share download verification and atomic publication
+// with rewriters, while preserving artifact roles for the recognizer.
+func TestRemoteASRArtifactVerification(t *testing.T) {
+	r := rewriterFixture(t, map[string][]byte{"encoder.onnx": []byte("encoder"), "vocab.json": []byte("tokenizer")}, map[string][]byte{"encoder.onnx": []byte("encoder"), "vocab.json": []byte("tokenizer")})
+	a := models.Artifact{ID: r.ID, Source: models.Source{Format: "files"}, Files: map[string]models.File{}}
+	for name, f := range r.Files {
+		a.Files[name] = models.File{Member: "model/" + name, URL: f.URL, SHA256: f.SHA256, SizeBytes: f.SizeBytes}
+	}
+	store := NewStore(t.TempDir())
+	dir, err := store.Ensure(context.Background(), a, func(string, Phase, int64, int64) {})
+	if err != nil {
+		t.Fatal(err)
+	}
+	store.Offline = true
+	if _, err := store.Ensure(context.Background(), a, func(string, Phase, int64, int64) {}); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(dir, "encoder.onnx"), []byte("tamper!"), 0600); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := store.Installed(a); err == nil {
+		t.Fatal("accepted corrupt ASR graph")
+	}
+	if _, err := store.Ensure(context.Background(), a, func(string, Phase, int64, int64) {}); err == nil {
+		t.Fatal("repaired corrupt model while offline")
+	}
+}

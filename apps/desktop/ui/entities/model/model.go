@@ -86,13 +86,8 @@ func PolishPhaseLabel(p runtime.Polish) copy.Key {
 // names gives catalog bundles plain names; catalog identifiers and engine
 // names never reach the interface.
 var names = map[string]copy.Key{
-	"xasr-160-xasr-final":       copy.ModelNameAccurate,
-	"xasr-480-xasr-final":       copy.ModelNameAccurateSteady,
-	"xasr-160":                  copy.ModelNameFast,
-	"xasr-480":                  copy.ModelNameSteady,
-	"zipformer-2023":            copy.ModelNameLight,
-	"xasr-160-sensevoice-final": copy.ModelNameAlternate,
-	"xasr-160-qwen3asr-final":   copy.ModelNameDeep,
+	"qwen3-asr-1.7b-mlx-8bit": copy.ModelNameGeneric,
+	"qwen3-asr-1.7b-gguf-q8":  copy.ModelNameGeneric,
 }
 
 // NameKey is a bundle's user-facing name.

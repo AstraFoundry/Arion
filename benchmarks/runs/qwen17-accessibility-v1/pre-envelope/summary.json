@@ -1,0 +1,3562 @@
+{
+  "version": 1,
+  "status": "complete",
+  "normalization": "arion-nfkc-lower-punctuation-space-v1",
+  "observations": 236,
+  "configHash": "d8801deb6c575559ec30c9a287061644cfc65ba7de0f1ceaa17e260b398d0fde",
+  "corpusHash": "9a6d7c13fbccaaddbe511e34ed896cd830aaa02c42218e94e029a11deeffedd7",
+  "summaries": {
+    "xasr-160-xasr-final:warm": {
+      "overall": {
+        "count": 118,
+        "raw_cer": {
+          "errors": 45,
+          "referenceUnits": 635,
+          "rate": 0.07086614173228346
+        },
+        "selected_cer": {
+          "errors": 45,
+          "referenceUnits": 635,
+          "rate": 0.07086614173228346
+        },
+        "final_cer": {
+          "errors": 45,
+          "referenceUnits": 635,
+          "rate": 0.07086614173228346
+        },
+        "raw_wer": {
+          "errors": 23,
+          "referenceUnits": 620,
+          "rate": 0.037096774193548385
+        },
+        "selected_wer": {
+          "errors": 23,
+          "referenceUnits": 620,
+          "rate": 0.037096774193548385
+        },
+        "final_wer": {
+          "errors": 23,
+          "referenceUnits": 620,
+          "rate": 0.037096774193548385
+        },
+        "raw_mer": {
+          "errors": 93,
+          "referenceUnits": 368,
+          "rate": 0.25271739130434784
+        },
+        "selected_mer": {
+          "errors": 93,
+          "referenceUnits": 368,
+          "rate": 0.25271739130434784
+        },
+        "final_mer": {
+          "errors": 93,
+          "referenceUnits": 368,
+          "rate": 0.25271739130434784
+        },
+        "streaming": {
+          "count": 0,
+          "prematureEndpoints": 0,
+          "missedEndpointRate": null,
+          "endpointLagMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "annotatedFirstPartialMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "annotatedStopToReviewMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "previewFirstPartialMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "previewNormalizedErasure": null,
+          "stableUnitDelayMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "stableUnitCoverage": null,
+          "droppedSampleRate": null,
+          "maxQueueAgeMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "tailExactMatchRate": null
+        },
+        "ranking": {
+          "count": 115,
+          "oracleRecall": 0.5043478260869565,
+          "top1": 0.5043478260869565,
+          "conditionalTop1": 1,
+          "mrr": 0.5043478260869565
+        },
+        "silence": {
+          "count": 3,
+          "falseEmissionRate": 0
+        },
+        "harmfulCorrectionRate": 0,
+        "protectedSpanRecall": null,
+        "normalizedErasure": 0.45471349353049906,
+        "firstPartialMissingCount": 1,
+        "corpusRtf": 0.1474045548929379,
+        "peakRssBytes": {
+          "count": 118,
+          "p50": 999309312,
+          "p95": 999309312,
+          "p99": 999309312
+        },
+        "loadMs": {
+          "count": 118,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "firstPartialMs": {
+          "count": 114,
+          "p50": 1149.8355000000001,
+          "p95": 1622.8897,
+          "p99": 2343.9291100000028
+        },
+        "stopToReviewMs": {
+          "count": 118,
+          "p50": 92.42349999999988,
+          "p95": 145.59550000000044,
+          "p99": 175.7596399999998
+        },
+        "rankerMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "p99": null
+        },
+        "rtf": {
+          "count": 118,
+          "p50": 0.16448113980504941,
+          "p95": 0.18150959564294603,
+          "p99": 0.20036981900646517
+        }
+      },
+      "language:zh": {
+        "count": 48,
+        "raw_cer": {
+          "errors": 45,
+          "referenceUnits": 635,
+          "rate": 0.07086614173228346
+        },
+        "selected_cer": {
+          "errors": 45,
+          "referenceUnits": 635,
+          "rate": 0.07086614173228346
+        },
+        "final_cer": {
+          "errors": 45,
+          "referenceUnits": 635,
+          "rate": 0.07086614173228346
+        },
+        "raw_wer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "selected_wer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "final_wer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "raw_mer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "selected_mer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "final_mer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "streaming": {
+          "count": 0,
+          "prematureEndpoints": 0,
+          "missedEndpointRate": null,
+          "endpointLagMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "annotatedFirstPartialMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "annotatedStopToReviewMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "previewFirstPartialMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "previewNormalizedErasure": null,
+          "stableUnitDelayMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "stableUnitCoverage": null,
+          "droppedSampleRate": null,
+          "maxQueueAgeMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "tailExactMatchRate": null
+        },
+        "ranking": {
+          "count": 45,
+          "oracleRecall": 0.6222222222222222,
+          "top1": 0.6222222222222222,
+          "conditionalTop1": 1,
+          "mrr": 0.6222222222222222
+        },
+        "silence": {
+          "count": 3,
+          "falseEmissionRate": 0
+        },
+        "harmfulCorrectionRate": 0,
+        "protectedSpanRecall": null,
+        "normalizedErasure": 0.18627450980392157,
+        "firstPartialMissingCount": 1,
+        "corpusRtf": 0.1461456763276414,
+        "peakRssBytes": {
+          "count": 48,
+          "p50": 999309312,
+          "p95": 999309312,
+          "p99": 999309312
+        },
+        "loadMs": {
+          "count": 48,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "firstPartialMs": {
+          "count": 44,
+          "p50": 1452.2930000000001,
+          "p95": 1623.4907,
+          "p99": 1629.38707
+        },
+        "stopToReviewMs": {
+          "count": 48,
+          "p50": 94.97200000000066,
+          "p95": 131.68850000000074,
+          "p99": 148.59632000000025
+        },
+        "rankerMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "p99": null
+        },
+        "rtf": {
+          "count": 48,
+          "p50": 0.16639232296619932,
+          "p95": 0.18164931746629198,
+          "p99": 0.1965473757879587
+        }
+      },
+      "language:mixed": {
+        "count": 30,
+        "raw_cer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "selected_cer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "final_cer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "raw_wer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "selected_wer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "final_wer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "raw_mer": {
+          "errors": 93,
+          "referenceUnits": 368,
+          "rate": 0.25271739130434784
+        },
+        "selected_mer": {
+          "errors": 93,
+          "referenceUnits": 368,
+          "rate": 0.25271739130434784
+        },
+        "final_mer": {
+          "errors": 93,
+          "referenceUnits": 368,
+          "rate": 0.25271739130434784
+        },
+        "streaming": {
+          "count": 0,
+          "prematureEndpoints": 0,
+          "missedEndpointRate": null,
+          "endpointLagMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "annotatedFirstPartialMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "annotatedStopToReviewMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "previewFirstPartialMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "previewNormalizedErasure": null,
+          "stableUnitDelayMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "stableUnitCoverage": null,
+          "droppedSampleRate": null,
+          "maxQueueAgeMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "tailExactMatchRate": null
+        },
+        "ranking": {
+          "count": 30,
+          "oracleRecall": 0.06666666666666667,
+          "top1": 0.06666666666666667,
+          "conditionalTop1": 1,
+          "mrr": 0.06666666666666667
+        },
+        "silence": {
+          "count": 0,
+          "falseEmissionRate": null
+        },
+        "harmfulCorrectionRate": 0,
+        "protectedSpanRecall": null,
+        "normalizedErasure": 0.6812339331619537,
+        "firstPartialMissingCount": 0,
+        "corpusRtf": 0.14670677653046815,
+        "peakRssBytes": {
+          "count": 30,
+          "p50": 999309312,
+          "p95": 999309312,
+          "p99": 999309312
+        },
+        "loadMs": {
+          "count": 30,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "firstPartialMs": {
+          "count": 30,
+          "p50": 822.8544999999999,
+          "p95": 2137.096149999998,
+          "p99": 2541.89225
+        },
+        "stopToReviewMs": {
+          "count": 30,
+          "p50": 83.77200000000016,
+          "p95": 99.42830000000002,
+          "p99": 102.7035100000002
+        },
+        "rankerMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "p99": null
+        },
+        "rtf": {
+          "count": 30,
+          "p50": 0.16406162229323237,
+          "p95": 0.17911279761147555,
+          "p99": 0.19682237866862745
+        }
+      },
+      "language:en": {
+        "count": 40,
+        "raw_cer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "selected_cer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "final_cer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "raw_wer": {
+          "errors": 23,
+          "referenceUnits": 620,
+          "rate": 0.037096774193548385
+        },
+        "selected_wer": {
+          "errors": 23,
+          "referenceUnits": 620,
+          "rate": 0.037096774193548385
+        },
+        "final_wer": {
+          "errors": 23,
+          "referenceUnits": 620,
+          "rate": 0.037096774193548385
+        },
+        "raw_mer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "selected_mer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "final_mer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "streaming": {
+          "count": 0,
+          "prematureEndpoints": 0,
+          "missedEndpointRate": null,
+          "endpointLagMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "annotatedFirstPartialMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "annotatedStopToReviewMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "previewFirstPartialMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "previewNormalizedErasure": null,
+          "stableUnitDelayMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "stableUnitCoverage": null,
+          "droppedSampleRate": null,
+          "maxQueueAgeMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "tailExactMatchRate": null
+        },
+        "ranking": {
+          "count": 40,
+          "oracleRecall": 0.7,
+          "top1": 0.7,
+          "conditionalTop1": 1,
+          "mrr": 0.7
+        },
+        "silence": {
+          "count": 0,
+          "falseEmissionRate": null
+        },
+        "harmfulCorrectionRate": 0,
+        "protectedSpanRecall": null,
+        "normalizedErasure": 0.5771704180064309,
+        "firstPartialMissingCount": 0,
+        "corpusRtf": 0.14888017121599212,
+        "peakRssBytes": {
+          "count": 40,
+          "p50": 999309312,
+          "p95": 999309312,
+          "p99": 999309312
+        },
+        "loadMs": {
+          "count": 40,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "firstPartialMs": {
+          "count": 40,
+          "p50": 1139.9225000000001,
+          "p95": 1465.36975,
+          "p99": 1467.5480400000001
+        },
+        "stopToReviewMs": {
+          "count": 40,
+          "p50": 95.86049999999977,
+          "p95": 156.79939999999976,
+          "p99": 197.08423999999994
+        },
+        "rankerMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "p99": null
+        },
+        "rtf": {
+          "count": 40,
+          "p50": 0.16467500305264643,
+          "p95": 0.17814347406540507,
+          "p99": 0.18238550133499182
+        }
+      },
+      "condition:read": {
+        "count": 85,
+        "raw_cer": {
+          "errors": 45,
+          "referenceUnits": 635,
+          "rate": 0.07086614173228346
+        },
+        "selected_cer": {
+          "errors": 45,
+          "referenceUnits": 635,
+          "rate": 0.07086614173228346
+        },
+        "final_cer": {
+          "errors": 45,
+          "referenceUnits": 635,
+          "rate": 0.07086614173228346
+        },
+        "raw_wer": {
+          "errors": 23,
+          "referenceUnits": 620,
+          "rate": 0.037096774193548385
+        },
+        "selected_wer": {
+          "errors": 23,
+          "referenceUnits": 620,
+          "rate": 0.037096774193548385
+        },
+        "final_wer": {
+          "errors": 23,
+          "referenceUnits": 620,
+          "rate": 0.037096774193548385
+        },
+        "raw_mer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "selected_mer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "final_mer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "streaming": {
+          "count": 0,
+          "prematureEndpoints": 0,
+          "missedEndpointRate": null,
+          "endpointLagMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "annotatedFirstPartialMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "annotatedStopToReviewMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "previewFirstPartialMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "previewNormalizedErasure": null,
+          "stableUnitDelayMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "stableUnitCoverage": null,
+          "droppedSampleRate": null,
+          "maxQueueAgeMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "tailExactMatchRate": null
+        },
+        "ranking": {
+          "count": 85,
+          "oracleRecall": 0.6588235294117647,
+          "top1": 0.6588235294117647,
+          "conditionalTop1": 1,
+          "mrr": 0.6588235294117647
+        },
+        "silence": {
+          "count": 0,
+          "falseEmissionRate": null
+        },
+        "harmfulCorrectionRate": 0,
+        "protectedSpanRecall": null,
+        "normalizedErasure": 0.3833063209076175,
+        "firstPartialMissingCount": 1,
+        "corpusRtf": 0.14733722969320753,
+        "peakRssBytes": {
+          "count": 85,
+          "p50": 999309312,
+          "p95": 999309312,
+          "p99": 999309312
+        },
+        "loadMs": {
+          "count": 85,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "firstPartialMs": {
+          "count": 84,
+          "p50": 1302.47,
+          "p95": 1592.6707999999992,
+          "p99": 1626.3266700000001
+        },
+        "stopToReviewMs": {
+          "count": 85,
+          "p50": 94.875,
+          "p95": 150.48540000000028,
+          "p99": 184.40143999999975
+        },
+        "rankerMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "p99": null
+        },
+        "rtf": {
+          "count": 85,
+          "p50": 0.16546591900311527,
+          "p95": 0.18151728476982754,
+          "p99": 0.18754636316332102
+        }
+      },
+      "condition:aishell1": {
+        "count": 45,
+        "raw_cer": {
+          "errors": 45,
+          "referenceUnits": 635,
+          "rate": 0.07086614173228346
+        },
+        "selected_cer": {
+          "errors": 45,
+          "referenceUnits": 635,
+          "rate": 0.07086614173228346
+        },
+        "final_cer": {
+          "errors": 45,
+          "referenceUnits": 635,
+          "rate": 0.07086614173228346
+        },
+        "raw_wer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "selected_wer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "final_wer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "raw_mer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "selected_mer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "final_mer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "streaming": {
+          "count": 0,
+          "prematureEndpoints": 0,
+          "missedEndpointRate": null,
+          "endpointLagMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "annotatedFirstPartialMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "annotatedStopToReviewMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "previewFirstPartialMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "previewNormalizedErasure": null,
+          "stableUnitDelayMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "stableUnitCoverage": null,
+          "droppedSampleRate": null,
+          "maxQueueAgeMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "tailExactMatchRate": null
+        },
+        "ranking": {
+          "count": 45,
+          "oracleRecall": 0.6222222222222222,
+          "top1": 0.6222222222222222,
+          "conditionalTop1": 1,
+          "mrr": 0.6222222222222222
+        },
+        "silence": {
+          "count": 0,
+          "falseEmissionRate": null
+        },
+        "harmfulCorrectionRate": 0,
+        "protectedSpanRecall": null,
+        "normalizedErasure": 0.18627450980392157,
+        "firstPartialMissingCount": 1,
+        "corpusRtf": 0.14560133898984468,
+        "peakRssBytes": {
+          "count": 45,
+          "p50": 999309312,
+          "p95": 999309312,
+          "p99": 999309312
+        },
+        "loadMs": {
+          "count": 45,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "firstPartialMs": {
+          "count": 44,
+          "p50": 1452.2930000000001,
+          "p95": 1623.4907,
+          "p99": 1629.38707
+        },
+        "stopToReviewMs": {
+          "count": 45,
+          "p50": 94.10500000000047,
+          "p95": 131.92700000000076,
+          "p99": 148.78964000000022
+        },
+        "rankerMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "p99": null
+        },
+        "rtf": {
+          "count": 45,
+          "p50": 0.1663072691552063,
+          "p95": 0.18167924057658508,
+          "p99": 0.1972771876223888
+        }
+      },
+      "condition:synthetic-tts": {
+        "count": 30,
+        "raw_cer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "selected_cer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "final_cer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "raw_wer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "selected_wer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "final_wer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "raw_mer": {
+          "errors": 93,
+          "referenceUnits": 368,
+          "rate": 0.25271739130434784
+        },
+        "selected_mer": {
+          "errors": 93,
+          "referenceUnits": 368,
+          "rate": 0.25271739130434784
+        },
+        "final_mer": {
+          "errors": 93,
+          "referenceUnits": 368,
+          "rate": 0.25271739130434784
+        },
+        "streaming": {
+          "count": 0,
+          "prematureEndpoints": 0,
+          "missedEndpointRate": null,
+          "endpointLagMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "annotatedFirstPartialMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "annotatedStopToReviewMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "previewFirstPartialMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "previewNormalizedErasure": null,
+          "stableUnitDelayMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "stableUnitCoverage": null,
+          "droppedSampleRate": null,
+          "maxQueueAgeMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "tailExactMatchRate": null
+        },
+        "ranking": {
+          "count": 30,
+          "oracleRecall": 0.06666666666666667,
+          "top1": 0.06666666666666667,
+          "conditionalTop1": 1,
+          "mrr": 0.06666666666666667
+        },
+        "silence": {
+          "count": 0,
+          "falseEmissionRate": null
+        },
+        "harmfulCorrectionRate": 0,
+        "protectedSpanRecall": null,
+        "normalizedErasure": 0.6812339331619537,
+        "firstPartialMissingCount": 0,
+        "corpusRtf": 0.14670677653046815,
+        "peakRssBytes": {
+          "count": 30,
+          "p50": 999309312,
+          "p95": 999309312,
+          "p99": 999309312
+        },
+        "loadMs": {
+          "count": 30,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "firstPartialMs": {
+          "count": 30,
+          "p50": 822.8544999999999,
+          "p95": 2137.096149999998,
+          "p99": 2541.89225
+        },
+        "stopToReviewMs": {
+          "count": 30,
+          "p50": 83.77200000000016,
+          "p95": 99.42830000000002,
+          "p99": 102.7035100000002
+        },
+        "rankerMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "p99": null
+        },
+        "rtf": {
+          "count": 30,
+          "p50": 0.16406162229323237,
+          "p95": 0.17911279761147555,
+          "p99": 0.19682237866862745
+        }
+      },
+      "condition:technical": {
+        "count": 30,
+        "raw_cer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "selected_cer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "final_cer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "raw_wer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "selected_wer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "final_wer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "raw_mer": {
+          "errors": 93,
+          "referenceUnits": 368,
+          "rate": 0.25271739130434784
+        },
+        "selected_mer": {
+          "errors": 93,
+          "referenceUnits": 368,
+          "rate": 0.25271739130434784
+        },
+        "final_mer": {
+          "errors": 93,
+          "referenceUnits": 368,
+          "rate": 0.25271739130434784
+        },
+        "streaming": {
+          "count": 0,
+          "prematureEndpoints": 0,
+          "missedEndpointRate": null,
+          "endpointLagMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "annotatedFirstPartialMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "annotatedStopToReviewMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "previewFirstPartialMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "previewNormalizedErasure": null,
+          "stableUnitDelayMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "stableUnitCoverage": null,
+          "droppedSampleRate": null,
+          "maxQueueAgeMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "tailExactMatchRate": null
+        },
+        "ranking": {
+          "count": 30,
+          "oracleRecall": 0.06666666666666667,
+          "top1": 0.06666666666666667,
+          "conditionalTop1": 1,
+          "mrr": 0.06666666666666667
+        },
+        "silence": {
+          "count": 0,
+          "falseEmissionRate": null
+        },
+        "harmfulCorrectionRate": 0,
+        "protectedSpanRecall": null,
+        "normalizedErasure": 0.6812339331619537,
+        "firstPartialMissingCount": 0,
+        "corpusRtf": 0.14670677653046815,
+        "peakRssBytes": {
+          "count": 30,
+          "p50": 999309312,
+          "p95": 999309312,
+          "p99": 999309312
+        },
+        "loadMs": {
+          "count": 30,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "firstPartialMs": {
+          "count": 30,
+          "p50": 822.8544999999999,
+          "p95": 2137.096149999998,
+          "p99": 2541.89225
+        },
+        "stopToReviewMs": {
+          "count": 30,
+          "p50": 83.77200000000016,
+          "p95": 99.42830000000002,
+          "p99": 102.7035100000002
+        },
+        "rankerMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "p99": null
+        },
+        "rtf": {
+          "count": 30,
+          "p50": 0.16406162229323237,
+          "p95": 0.17911279761147555,
+          "p99": 0.19682237866862745
+        }
+      },
+      "condition:librispeech": {
+        "count": 40,
+        "raw_cer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "selected_cer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "final_cer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "raw_wer": {
+          "errors": 23,
+          "referenceUnits": 620,
+          "rate": 0.037096774193548385
+        },
+        "selected_wer": {
+          "errors": 23,
+          "referenceUnits": 620,
+          "rate": 0.037096774193548385
+        },
+        "final_wer": {
+          "errors": 23,
+          "referenceUnits": 620,
+          "rate": 0.037096774193548385
+        },
+        "raw_mer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "selected_mer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "final_mer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "streaming": {
+          "count": 0,
+          "prematureEndpoints": 0,
+          "missedEndpointRate": null,
+          "endpointLagMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "annotatedFirstPartialMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "annotatedStopToReviewMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "previewFirstPartialMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "previewNormalizedErasure": null,
+          "stableUnitDelayMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "stableUnitCoverage": null,
+          "droppedSampleRate": null,
+          "maxQueueAgeMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "tailExactMatchRate": null
+        },
+        "ranking": {
+          "count": 40,
+          "oracleRecall": 0.7,
+          "top1": 0.7,
+          "conditionalTop1": 1,
+          "mrr": 0.7
+        },
+        "silence": {
+          "count": 0,
+          "falseEmissionRate": null
+        },
+        "harmfulCorrectionRate": 0,
+        "protectedSpanRecall": null,
+        "normalizedErasure": 0.5771704180064309,
+        "firstPartialMissingCount": 0,
+        "corpusRtf": 0.14888017121599212,
+        "peakRssBytes": {
+          "count": 40,
+          "p50": 999309312,
+          "p95": 999309312,
+          "p99": 999309312
+        },
+        "loadMs": {
+          "count": 40,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "firstPartialMs": {
+          "count": 40,
+          "p50": 1139.9225000000001,
+          "p95": 1465.36975,
+          "p99": 1467.5480400000001
+        },
+        "stopToReviewMs": {
+          "count": 40,
+          "p50": 95.86049999999977,
+          "p95": 156.79939999999976,
+          "p99": 197.08423999999994
+        },
+        "rankerMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "p99": null
+        },
+        "rtf": {
+          "count": 40,
+          "p50": 0.16467500305264643,
+          "p95": 0.17814347406540507,
+          "p99": 0.18238550133499182
+        }
+      },
+      "condition:nonspeech": {
+        "count": 3,
+        "raw_cer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "selected_cer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "final_cer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "raw_wer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "selected_wer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "final_wer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "raw_mer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "selected_mer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "final_mer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "streaming": {
+          "count": 0,
+          "prematureEndpoints": 0,
+          "missedEndpointRate": null,
+          "endpointLagMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "annotatedFirstPartialMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "annotatedStopToReviewMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "previewFirstPartialMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "previewNormalizedErasure": null,
+          "stableUnitDelayMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "stableUnitCoverage": null,
+          "droppedSampleRate": null,
+          "maxQueueAgeMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "tailExactMatchRate": null
+        },
+        "ranking": {
+          "count": 0,
+          "oracleRecall": null,
+          "top1": null,
+          "conditionalTop1": null,
+          "mrr": null
+        },
+        "silence": {
+          "count": 3,
+          "falseEmissionRate": 0
+        },
+        "harmfulCorrectionRate": 0,
+        "protectedSpanRecall": null,
+        "normalizedErasure": null,
+        "firstPartialMissingCount": 0,
+        "corpusRtf": 0.15813988888888889,
+        "peakRssBytes": {
+          "count": 3,
+          "p50": 999309312,
+          "p95": 999309312,
+          "p99": 999309312
+        },
+        "loadMs": {
+          "count": 3,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "firstPartialMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "p99": null
+        },
+        "stopToReviewMs": {
+          "count": 3,
+          "p50": 104.57999999999993,
+          "p95": 117.79199999999977,
+          "p99": 118.96639999999977
+        },
+        "rankerMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "p99": null
+        },
+        "rtf": {
+          "count": 3,
+          "p50": 0.171382,
+          "p95": 0.1719445,
+          "p99": 0.1719945
+        }
+      },
+      "condition:silence": {
+        "count": 1,
+        "raw_cer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "selected_cer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "final_cer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "raw_wer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "selected_wer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "final_wer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "raw_mer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "selected_mer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "final_mer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "streaming": {
+          "count": 0,
+          "prematureEndpoints": 0,
+          "missedEndpointRate": null,
+          "endpointLagMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "annotatedFirstPartialMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "annotatedStopToReviewMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "previewFirstPartialMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "previewNormalizedErasure": null,
+          "stableUnitDelayMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "stableUnitCoverage": null,
+          "droppedSampleRate": null,
+          "maxQueueAgeMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "tailExactMatchRate": null
+        },
+        "ranking": {
+          "count": 0,
+          "oracleRecall": null,
+          "top1": null,
+          "conditionalTop1": null,
+          "mrr": null
+        },
+        "silence": {
+          "count": 1,
+          "falseEmissionRate": 0
+        },
+        "harmfulCorrectionRate": 0,
+        "protectedSpanRecall": null,
+        "normalizedErasure": null,
+        "firstPartialMissingCount": 0,
+        "corpusRtf": 0.11085500000000001,
+        "peakRssBytes": {
+          "count": 1,
+          "p50": 999309312,
+          "p95": 999309312,
+          "p99": 999309312
+        },
+        "loadMs": {
+          "count": 1,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "firstPartialMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "p99": null
+        },
+        "stopToReviewMs": {
+          "count": 1,
+          "p50": 66.40000000000009,
+          "p95": 66.40000000000009,
+          "p99": 66.40000000000009
+        },
+        "rankerMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "p99": null
+        },
+        "rtf": {
+          "count": 1,
+          "p50": 0.11085500000000001,
+          "p95": 0.11085500000000001,
+          "p99": 0.11085500000000001
+        }
+      },
+      "condition:noise": {
+        "count": 2,
+        "raw_cer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "selected_cer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "final_cer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "raw_wer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "selected_wer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "final_wer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "raw_mer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "selected_mer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "final_mer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "streaming": {
+          "count": 0,
+          "prematureEndpoints": 0,
+          "missedEndpointRate": null,
+          "endpointLagMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "annotatedFirstPartialMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "annotatedStopToReviewMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "previewFirstPartialMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "previewNormalizedErasure": null,
+          "stableUnitDelayMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "stableUnitCoverage": null,
+          "droppedSampleRate": null,
+          "maxQueueAgeMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "tailExactMatchRate": null
+        },
+        "ranking": {
+          "count": 0,
+          "oracleRecall": null,
+          "top1": null,
+          "conditionalTop1": null,
+          "mrr": null
+        },
+        "silence": {
+          "count": 2,
+          "falseEmissionRate": 0
+        },
+        "harmfulCorrectionRate": 0,
+        "protectedSpanRecall": null,
+        "normalizedErasure": null,
+        "firstPartialMissingCount": 0,
+        "corpusRtf": 0.17164985714285713,
+        "peakRssBytes": {
+          "count": 2,
+          "p50": 999309312,
+          "p95": 999309312,
+          "p99": 999309312
+        },
+        "loadMs": {
+          "count": 2,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "firstPartialMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "p99": null
+        },
+        "stopToReviewMs": {
+          "count": 2,
+          "p50": 111.91999999999985,
+          "p95": 118.52599999999977,
+          "p99": 119.11319999999976
+        },
+        "rankerMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "p99": null
+        },
+        "rtf": {
+          "count": 2,
+          "p50": 0.1716945,
+          "p95": 0.17197574999999998,
+          "p99": 0.17200074999999998
+        }
+      }
+    },
+    "xasr-160-qwen3asr-17-final:warm": {
+      "overall": {
+        "count": 118,
+        "raw_cer": {
+          "errors": 157,
+          "referenceUnits": 635,
+          "rate": 0.247244094488189
+        },
+        "selected_cer": {
+          "errors": 157,
+          "referenceUnits": 635,
+          "rate": 0.247244094488189
+        },
+        "final_cer": {
+          "errors": 157,
+          "referenceUnits": 635,
+          "rate": 0.247244094488189
+        },
+        "raw_wer": {
+          "errors": 40,
+          "referenceUnits": 620,
+          "rate": 0.06451612903225806
+        },
+        "selected_wer": {
+          "errors": 40,
+          "referenceUnits": 620,
+          "rate": 0.06451612903225806
+        },
+        "final_wer": {
+          "errors": 40,
+          "referenceUnits": 620,
+          "rate": 0.06451612903225806
+        },
+        "raw_mer": {
+          "errors": 128,
+          "referenceUnits": 368,
+          "rate": 0.34782608695652173
+        },
+        "selected_mer": {
+          "errors": 128,
+          "referenceUnits": 368,
+          "rate": 0.34782608695652173
+        },
+        "final_mer": {
+          "errors": 128,
+          "referenceUnits": 368,
+          "rate": 0.34782608695652173
+        },
+        "streaming": {
+          "count": 0,
+          "prematureEndpoints": 0,
+          "missedEndpointRate": null,
+          "endpointLagMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "annotatedFirstPartialMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "annotatedStopToReviewMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "previewFirstPartialMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "previewNormalizedErasure": null,
+          "stableUnitDelayMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "stableUnitCoverage": null,
+          "droppedSampleRate": null,
+          "maxQueueAgeMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "tailExactMatchRate": null
+        },
+        "ranking": {
+          "count": 115,
+          "oracleRecall": 0.46956521739130436,
+          "top1": 0.46956521739130436,
+          "conditionalTop1": 1,
+          "mrr": 0.46956521739130436
+        },
+        "silence": {
+          "count": 3,
+          "falseEmissionRate": 0
+        },
+        "harmfulCorrectionRate": 0,
+        "protectedSpanRecall": null,
+        "normalizedErasure": 0.5243632336655593,
+        "firstPartialMissingCount": 1,
+        "corpusRtf": 0.34220127999568734,
+        "peakRssBytes": {
+          "count": 118,
+          "p50": 4926717952,
+          "p95": 4926717952,
+          "p99": 4926717952
+        },
+        "loadMs": {
+          "count": 118,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "firstPartialMs": {
+          "count": 114,
+          "p50": 1150.63,
+          "p95": 1624.3579,
+          "p99": 2339.162580000003
+        },
+        "stopToReviewMs": {
+          "count": 118,
+          "p50": 778.3934999999997,
+          "p95": 1851.602399999999,
+          "p99": 2700.2227499999995
+        },
+        "rankerMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "p99": null
+        },
+        "rtf": {
+          "count": 118,
+          "p50": 0.3401938660712122,
+          "p95": 0.4027129865023061,
+          "p99": 0.42252128264026406
+        }
+      },
+      "language:zh": {
+        "count": 48,
+        "raw_cer": {
+          "errors": 157,
+          "referenceUnits": 635,
+          "rate": 0.247244094488189
+        },
+        "selected_cer": {
+          "errors": 157,
+          "referenceUnits": 635,
+          "rate": 0.247244094488189
+        },
+        "final_cer": {
+          "errors": 157,
+          "referenceUnits": 635,
+          "rate": 0.247244094488189
+        },
+        "raw_wer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "selected_wer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "final_wer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "raw_mer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "selected_mer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "final_mer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "streaming": {
+          "count": 0,
+          "prematureEndpoints": 0,
+          "missedEndpointRate": null,
+          "endpointLagMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "annotatedFirstPartialMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "annotatedStopToReviewMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "previewFirstPartialMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "previewNormalizedErasure": null,
+          "stableUnitDelayMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "stableUnitCoverage": null,
+          "droppedSampleRate": null,
+          "maxQueueAgeMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "tailExactMatchRate": null
+        },
+        "ranking": {
+          "count": 45,
+          "oracleRecall": 0.6,
+          "top1": 0.6,
+          "conditionalTop1": 1,
+          "mrr": 0.6
+        },
+        "silence": {
+          "count": 3,
+          "falseEmissionRate": 0
+        },
+        "harmfulCorrectionRate": 0,
+        "protectedSpanRecall": null,
+        "normalizedErasure": 0.26164383561643834,
+        "firstPartialMissingCount": 1,
+        "corpusRtf": 0.32187405290098653,
+        "peakRssBytes": {
+          "count": 48,
+          "p50": 4926717952,
+          "p95": 4926717952,
+          "p99": 4926717952
+        },
+        "loadMs": {
+          "count": 48,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "firstPartialMs": {
+          "count": 44,
+          "p50": 1452.444,
+          "p95": 1627.3248999999998,
+          "p99": 1633.77178
+        },
+        "stopToReviewMs": {
+          "count": 48,
+          "p50": 718.5144999999998,
+          "p95": 1175.2444,
+          "p99": 2062.563980000002
+        },
+        "rankerMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "p99": null
+        },
+        "rtf": {
+          "count": 48,
+          "p50": 0.32089411725632855,
+          "p95": 0.37023810022902265,
+          "p99": 0.49997894236100704
+        }
+      },
+      "language:mixed": {
+        "count": 30,
+        "raw_cer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "selected_cer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "final_cer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "raw_wer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "selected_wer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "final_wer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "raw_mer": {
+          "errors": 128,
+          "referenceUnits": 368,
+          "rate": 0.34782608695652173
+        },
+        "selected_mer": {
+          "errors": 128,
+          "referenceUnits": 368,
+          "rate": 0.34782608695652173
+        },
+        "final_mer": {
+          "errors": 128,
+          "referenceUnits": 368,
+          "rate": 0.34782608695652173
+        },
+        "streaming": {
+          "count": 0,
+          "prematureEndpoints": 0,
+          "missedEndpointRate": null,
+          "endpointLagMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "annotatedFirstPartialMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "annotatedStopToReviewMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "previewFirstPartialMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "previewNormalizedErasure": null,
+          "stableUnitDelayMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "stableUnitCoverage": null,
+          "droppedSampleRate": null,
+          "maxQueueAgeMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "tailExactMatchRate": null
+        },
+        "ranking": {
+          "count": 30,
+          "oracleRecall": 0.1,
+          "top1": 0.1,
+          "conditionalTop1": 1,
+          "mrr": 0.1
+        },
+        "silence": {
+          "count": 0,
+          "falseEmissionRate": null
+        },
+        "harmfulCorrectionRate": 0,
+        "protectedSpanRecall": null,
+        "normalizedErasure": 0.6405529953917051,
+        "firstPartialMissingCount": 0,
+        "corpusRtf": 0.3584765143062982,
+        "peakRssBytes": {
+          "count": 30,
+          "p50": 4926717952,
+          "p95": 4926717952,
+          "p99": 4926717952
+        },
+        "loadMs": {
+          "count": 30,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "firstPartialMs": {
+          "count": 30,
+          "p50": 823.2194999999999,
+          "p95": 2132.943699999998,
+          "p99": 2538.43825
+        },
+        "stopToReviewMs": {
+          "count": 30,
+          "p50": 717.663,
+          "p95": 979.7245500000002,
+          "p99": 1019.2222400000007
+        },
+        "rankerMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "p99": null
+        },
+        "rtf": {
+          "count": 30,
+          "p50": 0.35047224839467905,
+          "p95": 0.40255416670286204,
+          "p99": 0.40288826665398836
+        }
+      },
+      "language:en": {
+        "count": 40,
+        "raw_cer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "selected_cer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "final_cer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "raw_wer": {
+          "errors": 40,
+          "referenceUnits": 620,
+          "rate": 0.06451612903225806
+        },
+        "selected_wer": {
+          "errors": 40,
+          "referenceUnits": 620,
+          "rate": 0.06451612903225806
+        },
+        "final_wer": {
+          "errors": 40,
+          "referenceUnits": 620,
+          "rate": 0.06451612903225806
+        },
+        "raw_mer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "selected_mer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "final_mer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "streaming": {
+          "count": 0,
+          "prematureEndpoints": 0,
+          "missedEndpointRate": null,
+          "endpointLagMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "annotatedFirstPartialMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "annotatedStopToReviewMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "previewFirstPartialMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "previewNormalizedErasure": null,
+          "stableUnitDelayMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "stableUnitCoverage": null,
+          "droppedSampleRate": null,
+          "maxQueueAgeMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "tailExactMatchRate": null
+        },
+        "ranking": {
+          "count": 40,
+          "oracleRecall": 0.6,
+          "top1": 0.6,
+          "conditionalTop1": 1,
+          "mrr": 0.6
+        },
+        "silence": {
+          "count": 0,
+          "falseEmissionRate": null
+        },
+        "harmfulCorrectionRate": 0,
+        "protectedSpanRecall": null,
+        "normalizedErasure": 0.7445482866043613,
+        "firstPartialMissingCount": 0,
+        "corpusRtf": 0.35395450674555134,
+        "peakRssBytes": {
+          "count": 40,
+          "p50": 4926717952,
+          "p95": 4926717952,
+          "p99": 4926717952
+        },
+        "loadMs": {
+          "count": 40,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "firstPartialMs": {
+          "count": 40,
+          "p50": 1144.8890000000001,
+          "p95": 1470.5368500000002,
+          "p99": 1472.82736
+        },
+        "stopToReviewMs": {
+          "count": 40,
+          "p50": 1042.1384999999996,
+          "p95": 1894.6026999999983,
+          "p99": 2710.82582
+        },
+        "rankerMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "p99": null
+        },
+        "rtf": {
+          "count": 40,
+          "p50": 0.35848819199817517,
+          "p95": 0.41857949629629626,
+          "p99": 0.42208200290429043
+        }
+      },
+      "condition:read": {
+        "count": 85,
+        "raw_cer": {
+          "errors": 157,
+          "referenceUnits": 635,
+          "rate": 0.247244094488189
+        },
+        "selected_cer": {
+          "errors": 157,
+          "referenceUnits": 635,
+          "rate": 0.247244094488189
+        },
+        "final_cer": {
+          "errors": 157,
+          "referenceUnits": 635,
+          "rate": 0.247244094488189
+        },
+        "raw_wer": {
+          "errors": 40,
+          "referenceUnits": 620,
+          "rate": 0.06451612903225806
+        },
+        "selected_wer": {
+          "errors": 40,
+          "referenceUnits": 620,
+          "rate": 0.06451612903225806
+        },
+        "final_wer": {
+          "errors": 40,
+          "referenceUnits": 620,
+          "rate": 0.06451612903225806
+        },
+        "raw_mer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "selected_mer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "final_mer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "streaming": {
+          "count": 0,
+          "prematureEndpoints": 0,
+          "missedEndpointRate": null,
+          "endpointLagMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "annotatedFirstPartialMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "annotatedStopToReviewMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "previewFirstPartialMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "previewNormalizedErasure": null,
+          "stableUnitDelayMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "stableUnitCoverage": null,
+          "droppedSampleRate": null,
+          "maxQueueAgeMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "tailExactMatchRate": null
+        },
+        "ranking": {
+          "count": 85,
+          "oracleRecall": 0.6,
+          "top1": 0.6,
+          "conditionalTop1": 1,
+          "mrr": 0.6
+        },
+        "silence": {
+          "count": 0,
+          "falseEmissionRate": null
+        },
+        "harmfulCorrectionRate": 0,
+        "protectedSpanRecall": null,
+        "normalizedErasure": 0.48760932944606417,
+        "firstPartialMissingCount": 1,
+        "corpusRtf": 0.33961851517067176,
+        "peakRssBytes": {
+          "count": 85,
+          "p50": 4926717952,
+          "p95": 4926717952,
+          "p99": 4926717952
+        },
+        "loadMs": {
+          "count": 85,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "firstPartialMs": {
+          "count": 84,
+          "p50": 1302.9805000000001,
+          "p95": 1591.4636999999993,
+          "p99": 1633.27018
+        },
+        "stopToReviewMs": {
+          "count": 85,
+          "p50": 827.3469999999998,
+          "p95": 1863.0591999999997,
+          "p99": 2831.45792
+        },
+        "rankerMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "p99": null
+        },
+        "rtf": {
+          "count": 85,
+          "p50": 0.3364950650440467,
+          "p95": 0.40746277032992406,
+          "p99": 0.4513492345131173
+        }
+      },
+      "condition:aishell1": {
+        "count": 45,
+        "raw_cer": {
+          "errors": 157,
+          "referenceUnits": 635,
+          "rate": 0.247244094488189
+        },
+        "selected_cer": {
+          "errors": 157,
+          "referenceUnits": 635,
+          "rate": 0.247244094488189
+        },
+        "final_cer": {
+          "errors": 157,
+          "referenceUnits": 635,
+          "rate": 0.247244094488189
+        },
+        "raw_wer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "selected_wer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "final_wer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "raw_mer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "selected_mer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "final_mer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "streaming": {
+          "count": 0,
+          "prematureEndpoints": 0,
+          "missedEndpointRate": null,
+          "endpointLagMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "annotatedFirstPartialMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "annotatedStopToReviewMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "previewFirstPartialMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "previewNormalizedErasure": null,
+          "stableUnitDelayMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "stableUnitCoverage": null,
+          "droppedSampleRate": null,
+          "maxQueueAgeMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "tailExactMatchRate": null
+        },
+        "ranking": {
+          "count": 45,
+          "oracleRecall": 0.6,
+          "top1": 0.6,
+          "conditionalTop1": 1,
+          "mrr": 0.6
+        },
+        "silence": {
+          "count": 0,
+          "falseEmissionRate": null
+        },
+        "harmfulCorrectionRate": 0,
+        "protectedSpanRecall": null,
+        "normalizedErasure": 0.26164383561643834,
+        "firstPartialMissingCount": 1,
+        "corpusRtf": 0.32348976749564035,
+        "peakRssBytes": {
+          "count": 45,
+          "p50": 4926717952,
+          "p95": 4926717952,
+          "p99": 4926717952
+        },
+        "loadMs": {
+          "count": 45,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "firstPartialMs": {
+          "count": 44,
+          "p50": 1452.444,
+          "p95": 1627.3248999999998,
+          "p99": 1633.77178
+        },
+        "stopToReviewMs": {
+          "count": 45,
+          "p50": 734.5029999999997,
+          "p95": 1194.6327999999999,
+          "p99": 2109.386960000004
+        },
+        "rankerMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "p99": null
+        },
+        "rtf": {
+          "count": 45,
+          "p50": 0.32055474421219565,
+          "p95": 0.3577592425425543,
+          "p99": 0.5022823328824739
+        }
+      },
+      "condition:synthetic-tts": {
+        "count": 30,
+        "raw_cer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "selected_cer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "final_cer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "raw_wer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "selected_wer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "final_wer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "raw_mer": {
+          "errors": 128,
+          "referenceUnits": 368,
+          "rate": 0.34782608695652173
+        },
+        "selected_mer": {
+          "errors": 128,
+          "referenceUnits": 368,
+          "rate": 0.34782608695652173
+        },
+        "final_mer": {
+          "errors": 128,
+          "referenceUnits": 368,
+          "rate": 0.34782608695652173
+        },
+        "streaming": {
+          "count": 0,
+          "prematureEndpoints": 0,
+          "missedEndpointRate": null,
+          "endpointLagMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "annotatedFirstPartialMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "annotatedStopToReviewMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "previewFirstPartialMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "previewNormalizedErasure": null,
+          "stableUnitDelayMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "stableUnitCoverage": null,
+          "droppedSampleRate": null,
+          "maxQueueAgeMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "tailExactMatchRate": null
+        },
+        "ranking": {
+          "count": 30,
+          "oracleRecall": 0.1,
+          "top1": 0.1,
+          "conditionalTop1": 1,
+          "mrr": 0.1
+        },
+        "silence": {
+          "count": 0,
+          "falseEmissionRate": null
+        },
+        "harmfulCorrectionRate": 0,
+        "protectedSpanRecall": null,
+        "normalizedErasure": 0.6405529953917051,
+        "firstPartialMissingCount": 0,
+        "corpusRtf": 0.3584765143062982,
+        "peakRssBytes": {
+          "count": 30,
+          "p50": 4926717952,
+          "p95": 4926717952,
+          "p99": 4926717952
+        },
+        "loadMs": {
+          "count": 30,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "firstPartialMs": {
+          "count": 30,
+          "p50": 823.2194999999999,
+          "p95": 2132.943699999998,
+          "p99": 2538.43825
+        },
+        "stopToReviewMs": {
+          "count": 30,
+          "p50": 717.663,
+          "p95": 979.7245500000002,
+          "p99": 1019.2222400000007
+        },
+        "rankerMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "p99": null
+        },
+        "rtf": {
+          "count": 30,
+          "p50": 0.35047224839467905,
+          "p95": 0.40255416670286204,
+          "p99": 0.40288826665398836
+        }
+      },
+      "condition:technical": {
+        "count": 30,
+        "raw_cer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "selected_cer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "final_cer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "raw_wer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "selected_wer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "final_wer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "raw_mer": {
+          "errors": 128,
+          "referenceUnits": 368,
+          "rate": 0.34782608695652173
+        },
+        "selected_mer": {
+          "errors": 128,
+          "referenceUnits": 368,
+          "rate": 0.34782608695652173
+        },
+        "final_mer": {
+          "errors": 128,
+          "referenceUnits": 368,
+          "rate": 0.34782608695652173
+        },
+        "streaming": {
+          "count": 0,
+          "prematureEndpoints": 0,
+          "missedEndpointRate": null,
+          "endpointLagMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "annotatedFirstPartialMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "annotatedStopToReviewMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "previewFirstPartialMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "previewNormalizedErasure": null,
+          "stableUnitDelayMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "stableUnitCoverage": null,
+          "droppedSampleRate": null,
+          "maxQueueAgeMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "tailExactMatchRate": null
+        },
+        "ranking": {
+          "count": 30,
+          "oracleRecall": 0.1,
+          "top1": 0.1,
+          "conditionalTop1": 1,
+          "mrr": 0.1
+        },
+        "silence": {
+          "count": 0,
+          "falseEmissionRate": null
+        },
+        "harmfulCorrectionRate": 0,
+        "protectedSpanRecall": null,
+        "normalizedErasure": 0.6405529953917051,
+        "firstPartialMissingCount": 0,
+        "corpusRtf": 0.3584765143062982,
+        "peakRssBytes": {
+          "count": 30,
+          "p50": 4926717952,
+          "p95": 4926717952,
+          "p99": 4926717952
+        },
+        "loadMs": {
+          "count": 30,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "firstPartialMs": {
+          "count": 30,
+          "p50": 823.2194999999999,
+          "p95": 2132.943699999998,
+          "p99": 2538.43825
+        },
+        "stopToReviewMs": {
+          "count": 30,
+          "p50": 717.663,
+          "p95": 979.7245500000002,
+          "p99": 1019.2222400000007
+        },
+        "rankerMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "p99": null
+        },
+        "rtf": {
+          "count": 30,
+          "p50": 0.35047224839467905,
+          "p95": 0.40255416670286204,
+          "p99": 0.40288826665398836
+        }
+      },
+      "condition:librispeech": {
+        "count": 40,
+        "raw_cer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "selected_cer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "final_cer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "raw_wer": {
+          "errors": 40,
+          "referenceUnits": 620,
+          "rate": 0.06451612903225806
+        },
+        "selected_wer": {
+          "errors": 40,
+          "referenceUnits": 620,
+          "rate": 0.06451612903225806
+        },
+        "final_wer": {
+          "errors": 40,
+          "referenceUnits": 620,
+          "rate": 0.06451612903225806
+        },
+        "raw_mer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "selected_mer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "final_mer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "streaming": {
+          "count": 0,
+          "prematureEndpoints": 0,
+          "missedEndpointRate": null,
+          "endpointLagMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "annotatedFirstPartialMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "annotatedStopToReviewMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "previewFirstPartialMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "previewNormalizedErasure": null,
+          "stableUnitDelayMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "stableUnitCoverage": null,
+          "droppedSampleRate": null,
+          "maxQueueAgeMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "tailExactMatchRate": null
+        },
+        "ranking": {
+          "count": 40,
+          "oracleRecall": 0.6,
+          "top1": 0.6,
+          "conditionalTop1": 1,
+          "mrr": 0.6
+        },
+        "silence": {
+          "count": 0,
+          "falseEmissionRate": null
+        },
+        "harmfulCorrectionRate": 0,
+        "protectedSpanRecall": null,
+        "normalizedErasure": 0.7445482866043613,
+        "firstPartialMissingCount": 0,
+        "corpusRtf": 0.35395450674555134,
+        "peakRssBytes": {
+          "count": 40,
+          "p50": 4926717952,
+          "p95": 4926717952,
+          "p99": 4926717952
+        },
+        "loadMs": {
+          "count": 40,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "firstPartialMs": {
+          "count": 40,
+          "p50": 1144.8890000000001,
+          "p95": 1470.5368500000002,
+          "p99": 1472.82736
+        },
+        "stopToReviewMs": {
+          "count": 40,
+          "p50": 1042.1384999999996,
+          "p95": 1894.6026999999983,
+          "p99": 2710.82582
+        },
+        "rankerMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "p99": null
+        },
+        "rtf": {
+          "count": 40,
+          "p50": 0.35848819199817517,
+          "p95": 0.41857949629629626,
+          "p99": 0.42208200290429043
+        }
+      },
+      "condition:nonspeech": {
+        "count": 3,
+        "raw_cer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "selected_cer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "final_cer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "raw_wer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "selected_wer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "final_wer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "raw_mer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "selected_mer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "final_mer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "streaming": {
+          "count": 0,
+          "prematureEndpoints": 0,
+          "missedEndpointRate": null,
+          "endpointLagMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "annotatedFirstPartialMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "annotatedStopToReviewMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "previewFirstPartialMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "previewNormalizedErasure": null,
+          "stableUnitDelayMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "stableUnitCoverage": null,
+          "droppedSampleRate": null,
+          "maxQueueAgeMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "tailExactMatchRate": null
+        },
+        "ranking": {
+          "count": 0,
+          "oracleRecall": null,
+          "top1": null,
+          "conditionalTop1": null,
+          "mrr": null
+        },
+        "silence": {
+          "count": 3,
+          "falseEmissionRate": 0
+        },
+        "harmfulCorrectionRate": 0,
+        "protectedSpanRecall": null,
+        "normalizedErasure": null,
+        "firstPartialMissingCount": 0,
+        "corpusRtf": 0.2862725555555556,
+        "peakRssBytes": {
+          "count": 3,
+          "p50": 4926717952,
+          "p95": 4926717952,
+          "p99": 4926717952
+        },
+        "loadMs": {
+          "count": 3,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "firstPartialMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "p99": null
+        },
+        "stopToReviewMs": {
+          "count": 3,
+          "p50": 439.23900000000003,
+          "p95": 690.8735999999997,
+          "p99": 713.2411199999997
+        },
+        "rankerMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "p99": null
+        },
+        "rtf": {
+          "count": 3,
+          "p50": 0.32589100000000004,
+          "p95": 0.3801319,
+          "p99": 0.3849533133333334
+        }
+      },
+      "condition:silence": {
+        "count": 1,
+        "raw_cer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "selected_cer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "final_cer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "raw_wer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "selected_wer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "final_wer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "raw_mer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "selected_mer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "final_mer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "streaming": {
+          "count": 0,
+          "prematureEndpoints": 0,
+          "missedEndpointRate": null,
+          "endpointLagMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "annotatedFirstPartialMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "annotatedStopToReviewMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "previewFirstPartialMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "previewNormalizedErasure": null,
+          "stableUnitDelayMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "stableUnitCoverage": null,
+          "droppedSampleRate": null,
+          "maxQueueAgeMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "tailExactMatchRate": null
+        },
+        "ranking": {
+          "count": 0,
+          "oracleRecall": null,
+          "top1": null,
+          "conditionalTop1": null,
+          "mrr": null
+        },
+        "silence": {
+          "count": 1,
+          "falseEmissionRate": 0
+        },
+        "harmfulCorrectionRate": 0,
+        "protectedSpanRecall": null,
+        "normalizedErasure": null,
+        "firstPartialMissingCount": 0,
+        "corpusRtf": 0.32589100000000004,
+        "peakRssBytes": {
+          "count": 1,
+          "p50": 4926717952,
+          "p95": 4926717952,
+          "p99": 4926717952
+        },
+        "loadMs": {
+          "count": 1,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "firstPartialMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "p99": null
+        },
+        "stopToReviewMs": {
+          "count": 1,
+          "p50": 347.61400000000003,
+          "p95": 347.61400000000003,
+          "p99": 347.61400000000003
+        },
+        "rankerMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "p99": null
+        },
+        "rtf": {
+          "count": 1,
+          "p50": 0.32589100000000004,
+          "p95": 0.32589100000000004,
+          "p99": 0.32589100000000004
+        }
+      },
+      "condition:noise": {
+        "count": 2,
+        "raw_cer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "selected_cer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "final_cer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "raw_wer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "selected_wer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "final_wer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "raw_mer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "selected_mer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "final_mer": {
+          "errors": 0,
+          "referenceUnits": 0,
+          "rate": null
+        },
+        "streaming": {
+          "count": 0,
+          "prematureEndpoints": 0,
+          "missedEndpointRate": null,
+          "endpointLagMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "annotatedFirstPartialMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "annotatedStopToReviewMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "previewFirstPartialMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "previewNormalizedErasure": null,
+          "stableUnitDelayMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "stableUnitCoverage": null,
+          "droppedSampleRate": null,
+          "maxQueueAgeMs": {
+            "count": 0,
+            "p50": null,
+            "p95": null,
+            "p99": null
+          },
+          "tailExactMatchRate": null
+        },
+        "ranking": {
+          "count": 0,
+          "oracleRecall": null,
+          "top1": null,
+          "conditionalTop1": null,
+          "mrr": null
+        },
+        "silence": {
+          "count": 2,
+          "falseEmissionRate": 0
+        },
+        "harmfulCorrectionRate": 0,
+        "protectedSpanRecall": null,
+        "normalizedErasure": null,
+        "firstPartialMissingCount": 0,
+        "corpusRtf": 0.27495300000000006,
+        "peakRssBytes": {
+          "count": 2,
+          "p50": 4926717952,
+          "p95": 4926717952,
+          "p99": 4926717952
+        },
+        "loadMs": {
+          "count": 2,
+          "p50": 0,
+          "p95": 0,
+          "p99": 0
+        },
+        "firstPartialMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "p99": null
+        },
+        "stopToReviewMs": {
+          "count": 2,
+          "p50": 579.0359999999998,
+          "p95": 704.8532999999996,
+          "p99": 716.0370599999997
+        },
+        "rankerMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "p99": null
+        },
+        "rtf": {
+          "count": 2,
+          "p50": 0.28885370833333335,
+          "p95": 0.37642817083333335,
+          "p99": 0.38421256750000005
+        }
+      }
+    }
+  },
+  "comparisons": [
+    {
+      "baseline": "xasr-160-xasr-final",
+      "treatment": "xasr-160-qwen3asr-17-final",
+      "cacheState": "warm",
+      "metric": "final_cer",
+      "direction": "lower",
+      "status": "ok",
+      "clusters": 3,
+      "iterations": 2000,
+      "seed": 1729,
+      "delta": 0.1763779527559055,
+      "ci95": [
+        0.027272727272727275,
+        0.37606837606837606
+      ]
+    },
+    {
+      "baseline": "xasr-160-xasr-final",
+      "treatment": "xasr-160-qwen3asr-17-final",
+      "cacheState": "warm",
+      "metric": "final_wer",
+      "direction": "lower",
+      "status": "ok",
+      "clusters": 26,
+      "iterations": 2000,
+      "seed": 1729,
+      "delta": 0.027419354838709678,
+      "ci95": [
+        0.001694629914968899,
+        0.05737335649701894
+      ]
+    },
+    {
+      "baseline": "xasr-160-xasr-final",
+      "treatment": "xasr-160-qwen3asr-17-final",
+      "cacheState": "warm",
+      "metric": "final_mer",
+      "direction": "lower",
+      "status": "ok",
+      "clusters": 3,
+      "iterations": 2000,
+      "seed": 1729,
+      "delta": 0.09510869565217389,
+      "ci95": [
+        0.039370078740157466,
+        0.13934426229508198
+      ]
+    },
+    {
+      "baseline": "xasr-160-xasr-final",
+      "treatment": "xasr-160-qwen3asr-17-final",
+      "cacheState": "warm",
+      "metric": "stopToReviewMs.p95",
+      "direction": "lower",
+      "status": "ok",
+      "clusters": 33,
+      "iterations": 2000,
+      "seed": 1729,
+      "delta": 1706.0068999999987,
+      "ci95": [
+        1214.0350037499995,
+        2079.4759299999996
+      ]
+    }
+  ],
+  "rankerPairs": [],
+  "inference": "Exploratory paired speaker-cluster percentile CIs; no family-wise significance claim."
+}

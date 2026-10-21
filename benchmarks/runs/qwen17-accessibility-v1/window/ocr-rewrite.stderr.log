@@ -1,0 +1,13 @@
+loaded vision-ocr prompt=selector-contextual-v5+natural-layout-v3 prefix=0 in 865 ms
+ocr-email-name     email   accepted               3994 ms reuse=0/2610
+ocr-email-clean    email   accepted               2113 ms reuse=0/1343
+ocr-work-code      work    accepted               5277 ms reuse=0/3296
+ocr-work-term      work    accepted               4336 ms reuse=0/2743
+ocr-prompt-code    prompt  accepted               5457 ms reuse=0/3338
+ocr-chat-name      chat    accepted               4332 ms reuse=0/2638
+ocr-email-ambiguous email   accepted               2234 ms reuse=0/1341
+ocr-work-injection work    accepted               2473 ms reuse=0/1484
+ocr-work-question  work    accepted               2374 ms reuse=0/1483
+ocr-prompt-clean   prompt  accepted               3241 ms reuse=0/2062
+ocr-chat-uncertainty chat    accepted               2329 ms reuse=0/1377
+ocr-email-condition email   accepted               2375 ms reuse=0/1345

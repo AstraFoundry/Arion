@@ -104,6 +104,11 @@ func main() {
 		os.Exit(1)
 	}
 	d := &driver{catalog: catalog, store: provision.NewStore(*modelRoot), configPath: *configPath, managers: map[string]*modelruntime.Manager{}}
+	defer func() {
+		for _, manager := range d.managers {
+			manager.Close()
+		}
+	}()
 	in := bufio.NewScanner(os.Stdin)
 	in.Buffer(make([]byte, 1<<20), 8<<20)
 	out := json.NewEncoder(os.Stdout)
@@ -177,7 +182,11 @@ func (d *driver) hello(req request) (map[string]any, error) {
 	}
 	attested := map[string]string{}
 	for _, artifact := range config.Artifacts {
-		digest, err := hashFile(filepath.Join(filepath.Dir(d.configPath), artifact.Path))
+		filename := artifact.Path
+		if !filepath.IsAbs(filename) {
+			filename = filepath.Join(filepath.Dir(d.configPath), filename)
+		}
+		digest, err := hashFile(filename)
 		if err != nil {
 			return nil, err
 		}
@@ -188,8 +197,8 @@ func (d *driver) hello(req request) (map[string]any, error) {
 		"execution": "live", "purpose": req.Purpose, "artifacts": attested,
 		"hardware": map[string]any{"os": runtime.GOOS, "arch": runtime.GOARCH, "cpu": sysctl("machdep.cpu.brand_string"),
 			"powerMode": powerMode(), "ramBytes": ramBytes(), "osBuild": sysctl("kern.osversion"), "logicalCpus": runtime.NumCPU()},
-		"runtime": map[string]any{"version": "arion-desktop pipeline; sherpa-onnx-go v1.13.8; " + runtime.Version(),
-			"buildFlags": "CGO_ENABLED=1 GOARCH=" + runtime.GOARCH, "timer": "Go monotonic clock (mach_absolute_time)", "provider": "onnxruntime CPU"},
+		"runtime": map[string]any{"version": "arion-desktop native Qwen3-ASR pipeline; " + runtime.Version(),
+			"buildFlags": "CGO_ENABLED=1 GOARCH=" + runtime.GOARCH, "timer": "Go monotonic clock (mach_absolute_time)", "provider": "native Qwen3-ASR worker"},
 	}, nil
 }
 
@@ -258,16 +267,19 @@ type timedRecognizer struct {
 }
 
 func (r timedRecognizer) Accept(ctx context.Context, frame contracts.Frame) error {
-	defer r.t.add(time.Now())
 	return r.Recognizer.Accept(ctx, frame)
 }
 func (r timedRecognizer) Partial(ctx context.Context) (contracts.Draft, error) {
-	defer r.t.add(time.Now())
 	return r.Recognizer.Partial(ctx)
 }
 func (r timedRecognizer) Finish(ctx context.Context) (contracts.Draft, error) {
-	defer r.t.add(time.Now())
-	return r.Recognizer.Finish(ctx)
+	draft, err := r.Recognizer.Finish(ctx)
+	if counter, ok := r.Recognizer.(interface{ ComputeTime() time.Duration }); ok {
+		r.t.mu.Lock()
+		r.t.compute += counter.ComputeTime()
+		r.t.mu.Unlock()
+	}
+	return draft, err
 }
 
 type timedFinalizer struct {
@@ -287,7 +299,8 @@ func (d *driver) manager(bundle models.Bundle, threads int, cold bool) (*modelru
 	}
 	// Cold requests reset model residency: every resident bundle is dropped
 	// and the requested one is loaded again, its load time recorded.
-	for k := range d.managers {
+	for k, manager := range d.managers {
+		manager.Close()
 		delete(d.managers, k)
 	}
 	runtime.GC()
@@ -347,7 +360,7 @@ func (d *driver) infer(req request) (map[string]any, error) {
 	threads, _ := number(req.Pipeline, "threads")
 	rate, _ := number(req.Pipeline, "sampleRate")
 	endpoint, _ := number(req.Pipeline, "endpointSilenceMs")
-	if rate != audio.SampleRate || req.Pipeline["pace"] != "realtime" || req.Pipeline["endpoint"] != "sherpa-rules-v1" || chunk <= 0 || threads <= 0 {
+	if rate != audio.SampleRate || req.Pipeline["pace"] != "realtime" || req.Pipeline["endpoint"] != "qwen-chunked-v1" || chunk <= 0 || threads <= 0 {
 		return nil, errors.New("pipeline settings not supported")
 	}
 	if int(endpoint) != bundle.EndpointMs {

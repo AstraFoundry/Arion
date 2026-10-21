@@ -91,6 +91,7 @@ const (
 )
 
 type target struct {
+	identity   contracts.Identity
 	foreground uintptr
 	focus      uintptr
 	clipboard  bool
@@ -141,7 +142,7 @@ func (t *Targets) Capture(_ context.Context, id contracts.Identity) (contracts.T
 	_, _ = rand.Read(b[:])
 	token := contracts.TargetToken(hex.EncodeToString(b[:]))
 	t.mu.Lock()
-	t.targets[token] = &target{foreground: foreground, focus: focus, clipboard: t.delivery() == DeliveryClipboard, secure: secure, created: time.Now()}
+	t.targets[token] = &target{identity: id, foreground: foreground, focus: focus, clipboard: t.delivery() == DeliveryClipboard, secure: secure, created: time.Now()}
 	for len(t.targets) > 4 {
 		var oldest contracts.TargetToken
 		for k, v := range t.targets {
@@ -183,7 +184,7 @@ func (t *Targets) Capabilities(_ context.Context, token contracts.TargetToken) (
 	return contracts.Capabilities{SingleInsertion: true}, nil
 }
 
-// ReadContext recognizes the captured foreground window's text when allowed.
+// ReadContext reads visible UI Automation text from the captured foreground window.
 // Text around the cursor is not read on Windows.
 func (t *Targets) ReadContext(ctx context.Context, id contracts.Identity, token contracts.TargetToken) (contracts.ContextSnapshot, error) {
 	snap := contracts.ContextSnapshot{Identity: id, Target: token}
@@ -193,7 +194,10 @@ func (t *Targets) ReadContext(ctx context.Context, id contracts.Identity, token 
 	if tgt == nil {
 		return snap, domain.Fail(domain.CodeTargetChanged, "unknown target")
 	}
-	if tgt.secure {
+	if tgt.identity != id || ctx.Err() != nil {
+		return snap, domain.Fail(domain.CodeTargetChanged, "context identity changed")
+	}
+	if tgt.secure || tgt.focus == 0 {
 		return snap, nil
 	}
 	snap.SafeToRead = true
@@ -201,9 +205,17 @@ func (t *Targets) ReadContext(ctx context.Context, id contracts.Identity, token 
 		ctx, cancel := context.WithTimeout(ctx, screenTimeout)
 		defer cancel()
 		start := time.Now()
-		if text, err := recognizeWindow(ctx, tgt.foreground); err == nil {
-			snap.Screen, snap.ScreenOCRMs = text, float64(time.Since(start).Microseconds())/1000
+		if foreground, _, _ := procGetForegroundWindow.Call(); foreground != tgt.foreground || focusOf(foreground) != tgt.focus {
+			return snap, domain.Fail(domain.CodeTargetChanged, "context target changed")
 		}
+		text, err := readWindowText(ctx, tgt.foreground)
+		if err != nil {
+			return snap, err
+		}
+		if foreground, _, _ := procGetForegroundWindow.Call(); foreground != tgt.foreground || focusOf(foreground) != tgt.focus {
+			return snap, domain.Fail(domain.CodeTargetChanged, "context target changed")
+		}
+		snap.Screen, snap.ScreenCaptureMs = text, float64(time.Since(start).Microseconds())/1000
 	}
 	return snap, nil
 }

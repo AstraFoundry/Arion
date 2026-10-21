@@ -8,7 +8,7 @@ on:
         default: false
       native-matrix:
         type: string
-        default: '{"include":[{"os":"macos-15","platform":"darwin-arm64"},{"os":"macos-15-intel","platform":"darwin-amd64"},{"os":"windows-2022","platform":"windows-amd64"}]}'
+        default: '{"include":[{"os":"macos-26","platform":"darwin-arm64"},{"os":"macos-15-intel","platform":"darwin-amd64"},{"os":"windows-2022","platform":"windows-amd64"}]}'
     secrets:
       MYGO_UPDATER_PRIVATE_KEY:
         required: false
@@ -61,10 +61,10 @@ jobs:
   native-shell:
     strategy:
       fail-fast: false
-      matrix: ${{ fromJSON(inputs.native-matrix || '{"include":[{"os":"macos-15","platform":"darwin-arm64"},{"os":"macos-15-intel","platform":"darwin-amd64"},{"os":"windows-2022","platform":"windows-amd64"}]}') }}
+      matrix: ${{ fromJSON(inputs.native-matrix || '{"include":[{"os":"macos-26","platform":"darwin-arm64"},{"os":"macos-15-intel","platform":"darwin-amd64"},{"os":"windows-2022","platform":"windows-amd64"}]}') }}
     runs-on: ${{ matrix.os }}
     env:
-      # Speech runtimes (sherpa-onnx, miniaudio) are cgo libraries.
+      # Native audio capture and MyGo require cgo.
       CGO_ENABLED: '1'
     steps:
       - uses: actions/checkout@v4
@@ -80,14 +80,13 @@ jobs:
         with:
           go-version: '1.27.1'
           cache-dependency-path: apps/desktop/go.sum
-      - name: Put the speech runtime DLLs on PATH (Windows)
-        if: runner.os == 'Windows'
-        shell: bash
-        working-directory: apps/desktop
+      - name: Require native MLX toolchain
+        if: matrix.platform == 'darwin-arm64'
         run: |
-          go mod download github.com/k2-fsa/sherpa-onnx-go-windows
-          dir=$(go list -m -f '{{.Dir}}' github.com/k2-fsa/sherpa-onnx-go-windows)
-          cygpath -w "$dir/lib/x86_64-pc-windows-gnu" >> "$GITHUB_PATH"
+          sudo xcode-select -s /Applications/Xcode_26.4.1.app
+          xcodebuild -version
+          swift --version
+          swift -e 'import Foundation; print("Native MLX toolchain")'
       - run: pnpm desktop:check
       - run: pnpm e2e:native
       - uses: actions/upload-artifact@v4

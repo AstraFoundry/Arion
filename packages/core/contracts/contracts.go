@@ -73,11 +73,12 @@ type ContextSnapshot struct {
 	SelectionEnd   uint32
 	SafeToRead     bool
 	// Before and After are the field's text around the selection; Screen
-	// is text recognized in the focused window. All stay in session RAM.
+	// is visible text read from the captured window. All stay in session RAM.
 	Before string
 	After  string
 	Screen string
-	// ScreenCaptureMs and ScreenOCRMs are content-free timings.
+	// ScreenCaptureMs measures context acquisition (including Accessibility);
+	// ScreenOCRMs is zero for direct text reads. Both are content-free timings.
 	ScreenCaptureMs float64
 	ScreenOCRMs     float64
 }

@@ -28,6 +28,10 @@ int arion_ocr_image(const void *bytes, long length, int level, char **out, doubl
 // function. *out is malloc'd UTF-8 the caller frees.
 int arion_ocr_window(int pid, int level, double timeout_seconds, char **out, double *capture_ms, double *ocr_ms);
 
+// Reads visible text from the captured element's window using Accessibility.
+// No screenshots or OCR; returns no partial text on a limit or focus change.
+int arion_accessibility_window(void *element, int pid, double timeout_seconds, char **out, double *ms);
+
 // arion_cursor_context reads up to max characters before and after the
 // focused element's selection. Strings are malloc'd UTF-8 the caller frees.
 int arion_cursor_context(void *element, long max, char **before, char **after);

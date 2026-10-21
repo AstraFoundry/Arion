@@ -1,0 +1,4 @@
+
+> arion-monorepo@0.0.0 workflows:check /Users/steven/code/Arion
+> node scripts/check-workflows.mjs
+

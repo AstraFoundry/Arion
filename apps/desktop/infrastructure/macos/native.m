@@ -170,6 +170,10 @@ int arion_peek_target(int pid, arion_target *out, int read_site) {
     }
 }
 
+void *arion_retain(void *element) {
+    return element ? (void *)CFRetain((CFTypeRef)element) : NULL;
+}
+
 void arion_release(void *element) {
     if (element) CFRelease((CFTypeRef)element);
 }

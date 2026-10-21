@@ -1,0 +1,25 @@
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import {Driver,validateResponse} from '../../tools/evaluation/src/protocol.mjs';
+import {inferenceRequest,verifyDriverArtifacts} from '../../tools/evaluation/src/runner.mjs';
+import {loadCorpus} from '../../tools/evaluation/src/manifest.mjs';
+const dir=path.resolve('.workspace/qwen17');
+const config=JSON.parse(await fs.readFile('benchmarks/configs/qwen17-accessibility-asr.json','utf8'));
+const driverConfig=JSON.parse(await fs.readFile(path.join(dir,'driver-final.json'),'utf8'));
+const corpusFile=path.resolve('benchmarks/corpora/asr-v1/corpus.json');
+const corpus=await loadCorpus(corpusFile);
+const driver=new Driver(driverConfig,dir);
+const output=await fs.open(path.join(dir,'parsed-smoke.jsonl'),'wx');
+try {
+ const artifacts=await verifyDriverArtifacts(driverConfig,dir);
+ const hello=await driver.request({op:'hello',purpose:'benchmark',artifacts});
+ await output.appendFile(JSON.stringify({hello})+'\n');
+ for(const id of ['aishell-BAC009S0766W0178','libri-2035-147961-0010','tts-dev-29-reed']){
+  const sample=corpus.samples.find(s=>s.id===id);
+  const request=inferenceRequest(sample,{seed:11,cacheState:'warm',variant:config.variants[1]},config,corpusFile,false);
+  const response=await driver.request(request);
+  validateResponse(response,{...request,requestId:response.requestId});
+  await output.appendFile(JSON.stringify({id,request,response})+'\n');
+  if(response.finalText.startsWith('language ')||response.finalText.startsWith('<asr_text>'))throw new Error('Protocol envelope leaked');
+ }
+}finally{await output.close();driver.close();}

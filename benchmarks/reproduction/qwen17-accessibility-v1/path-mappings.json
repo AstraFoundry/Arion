@@ -1,0 +1,13 @@
+{
+  "originalToArchive": {
+    ".workspace/qwen17/asr-dev": "benchmarks/runs/qwen17-accessibility-v1/failed-hello",
+    ".workspace/qwen17/asr-dev-attempt2": "benchmarks/runs/qwen17-accessibility-v1/pre-envelope",
+    ".workspace/qwen17/asr-clean": "benchmarks/runs/qwen17-accessibility-v1/qwen17-asr-dev-v1",
+    ".workspace/qwen17/context-audio": "benchmarks/corpora/asr-window-v1",
+    ".workspace/qwen17/window-observations-attempt1.jsonl": "benchmarks/runs/qwen17-accessibility-v1/window/window-observations.jsonl",
+    ".workspace/qwen17/ax-rewrite.jsonl": "benchmarks/runs/qwen17-accessibility-v1/window/ax-rewrite.jsonl",
+    ".workspace/qwen17/ocr-rewrite.jsonl": "benchmarks/runs/qwen17-accessibility-v1/window/ocr-rewrite.jsonl"
+  },
+  "runnerRestoration": "The exact saved .mjs.txt runner bytes originally lived in .workspace/qwen17; their relative imports resolve there. Restore them there in a new checkout, copy the archived audio corpus into context-audio, provision exact model/runtime bytes, rebase historical absolute driver paths and choose exclusive new outputs. Existing results must not be overwritten.",
+  "excluded": "Model weights, runtime binaries, environments and personal data are excluded; identities remain in native run/provenance files."
+}

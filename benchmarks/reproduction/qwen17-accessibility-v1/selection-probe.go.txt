@@ -1,0 +1,3 @@
+package main
+import("encoding/json";"os";"arion.local/models";"arion.local/desktop/infrastructure/modelruntime";"arion.local/core/domain")
+func main(){c,e:=models.Load();if e!=nil{panic(e)};b,s,e:=modelruntime.SelectDefault(c);if e!=nil{panic(e)};json.NewEncoder(os.Stdout).Encode(map[string]any{"bundle":b.ID,"score":s.Score,"latencyMeasured":s.LatencyMeasured,"policy":domain.DefaultSelectionPolicy(modelruntime.Platform())})}

@@ -61,7 +61,7 @@ export function buildReport(metadata, rows) {
       rankerPairs.push({ baseline: off.id, treatment: on.id, cacheState, candidatesMatched: matched, metric: 'ranking.top1', direction: 'higher', ...(matched ? pairedBootstrap(a, b, group => aggregate(group).ranking.top1, config.bootstrap) : { status: 'candidate_set_mismatch', delta: null, ci95: null }) });
     }
   }
-  return { version: 1, status: 'complete', normalization: NORMALIZATION, observations: rows.length, configHash: metadata.configHash, corpusHash: metadata.corpusHash, summaries, comparisons, rankerPairs, inference: 'Exploratory paired speaker-cluster percentile CIs; no family-wise significance claim.' };
+  return { version: 1, status: 'complete', normalization: NORMALIZATION, observations: rows.length, configHash: metadata.configHash, corpusHash: metadata.corpusHash, summaries, comparisons, rankerPairs, inference: config.design === 'validation' ? 'Single-backend validation; descriptive results without a paired treatment or significance claim.' : 'Exploratory paired speaker-cluster percentile CIs; no family-wise significance claim.' };
 }
 
 export async function writeReport(directory) {
@@ -81,7 +81,7 @@ export async function writeReport(directory) {
     const s = strata.overall;
     lines.push(`| ${name} | ${s.count} | ${show(s.final_cer.rate)} | ${show(s.final_wer.rate)} | ${show(s.final_mer.rate)} | ${show(s.ranking.oracleRecall)} | ${show(s.ranking.top1)} | ${show(s.stopToReviewMs.p95)} | ${show(s.rtf.p95)} |`);
   }
-  lines.push('', 'Per-language/condition results, paired confidence intervals, protected-span proxies and ranker candidate-set checks are in `summary.json`. Hardware/artifact provenance and exact settings are in `run.json`. Missing first partials and silence outputs remain in their denominator counts.', '');
+  lines.push('', 'Per-language/condition results, comparisons where present, protected-span proxies and ranker candidate-set checks are in `summary.json`. Hardware/artifact provenance and exact settings are in `run.json`. Missing first partials and silence outputs remain in their denominator counts.', '');
   await writeFile(path.join(directory, 'summary.md'), lines.join('\n'), { mode: 0o600 });
   return report;
 }

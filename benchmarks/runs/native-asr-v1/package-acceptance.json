@@ -1,0 +1,43 @@
+{
+  "status": "passed",
+  "platform": "darwin-arm64",
+  "model": "qwen3-asr-1.7b-mlx-8bit",
+  "packageFiles": [
+    {
+      "path": "apps/desktop/build/darwin-arm64/Arion.app/Contents/MacOS/Arion",
+      "sha256": "9a0a2e0c901709b90a4f7adc5508d61249468d81af181559ba1b9c27dda0775d",
+      "sizeBytes": 15555296
+    },
+    {
+      "path": "apps/desktop/build/darwin-arm64/Arion.app/Contents/Resources/asr/arion-asr",
+      "sha256": "7e53aedc959fc1a0f7e57db5d477ba048805bba79bbdb400ac3aab38488e6697",
+      "sizeBytes": 40756720
+    },
+    {
+      "path": "apps/desktop/build/darwin-arm64/Arion 0.1.0-alpha.5 arm64.dmg",
+      "sha256": "046f4183089e9c4cbddc2fcbf493b47b67627952adbe0934b24b54c1b778ad86",
+      "sizeBytes": 35765374
+    }
+  ],
+  "checks": [
+    "Developer ID",
+    "hardened runtime",
+    "notarization",
+    "stapled tickets",
+    "Gatekeeper",
+    "required runtime closure",
+    "no retired runtime resources",
+    "full 118-case network-denied signed-worker inference",
+    "actual offline packaged bootstrap ready without worker override"
+  ],
+  "notChecked": [
+    "Windows native package/inference/signing",
+    "physical Intel inference",
+    "clean macOS 14 host",
+    "microphone/editor acceptance",
+    "local signed updater archive"
+  ],
+  "sourcePins": "scripts/asr-runtime.json",
+  "localUpdatePrivateKey": false,
+  "repositoryUpdateSecretConfigured": true
+}

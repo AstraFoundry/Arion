@@ -88,12 +88,13 @@ type Route string
 const RouteClipboard Route = "clipboard"
 
 type target struct {
-	element   unsafe.Pointer
-	selection unsafe.Pointer
-	identity  contracts.Identity
-	pid       int
-	route     Route
-	readable  bool
+	contextReadable bool
+	element         unsafe.Pointer
+	selection       unsafe.Pointer
+	identity        contracts.Identity
+	pid             int
+	route           Route
+	readable        bool
 	// secure and app gate context reads (DSK-08).
 	secure  bool
 	app     string
@@ -125,10 +126,10 @@ type Targets struct {
 	// page for scene selection; nil never reads it.
 	ReadSite func() bool
 	// ReadCursor and ReadScreen gate ReadContext's text around the cursor
-	// and the focused window's recognized text; nil never reads them.
+	// and visible Accessibility window text; nil never reads them.
 	ReadCursor func() bool
 	ReadScreen func() bool
-	// ScreenTimeout bounds window capture.
+	// ScreenTimeout bounds Accessibility window traversal.
 	ScreenTimeout time.Duration
 }
 
@@ -162,8 +163,9 @@ func (t *Targets) Capture(_ context.Context, id contracts.Identity) (contracts.T
 	role, subrole := C.GoString(&native.role[0]), C.GoString(&native.subrole[0])
 	bundle := C.GoString(&native.bundle[0])
 	secure := native.secure_input == 1 || subrole == "AXSecureTextField"
-	known := native.element != nil && role != ""
+	known := native.element != nil && fieldKind(role, subrole) != domain.FieldUnknown
 	tgt := &target{element: native.element, selection: native.selection, identity: id, pid: int(native.pid), readable: native.value_readable == 1, secure: secure, app: bundle, created: time.Now()}
+	tgt.contextReadable = known && !secure && tgt.readable
 	tgt.route = RouteClipboard
 	token := newToken()
 	t.mu.Lock()
@@ -175,7 +177,7 @@ func (t *Targets) Capture(_ context.Context, id contracts.Identity) (contracts.T
 		Field: fieldKind(role, subrole), Site: C.GoString(&native.site[0]), ApplicationName: C.GoString(&native.app_name[0]),
 		Capabilities: contracts.Capabilities{
 			// DSK-08: context is readable only from a known, non-secure field.
-			ContextRead:     known && !secure && tgt.readable,
+			ContextRead:     tgt.contextReadable,
 			SingleInsertion: true,
 		},
 	}, nil
@@ -254,39 +256,55 @@ func (t *Targets) Capabilities(_ context.Context, token contracts.TargetToken) (
 	return contracts.Capabilities{SingleInsertion: true}, nil
 }
 
-// ReadContext is not offered: Arion does not read foreign field content in
-// this release, so the capability stays declared unsupported.
 // ReadContext reads the context the user allows for a captured target:
-// text around its cursor and the recognized text of its window. Secure
-// fields and denied apps read nothing (DSK-08); each source that fails is
-// left empty, so the rewrite proceeds with whatever was read.
-func (t *Targets) ReadContext(_ context.Context, id contracts.Identity, token contracts.TargetToken) (contracts.ContextSnapshot, error) {
+// text around its cursor and visible Accessibility text in its window.
+// Secure fields and denied apps read nothing (DSK-08). Unavailable window
+// text is an explicit failure; screenshots and OCR are never substituted.
+func (t *Targets) ReadContext(ctx context.Context, id contracts.Identity, token contracts.TargetToken) (contracts.ContextSnapshot, error) {
 	snap := contracts.ContextSnapshot{Identity: id, Target: token}
 	t.mu.Lock()
 	tgt := t.targets[token]
-	if tgt == nil {
+	if tgt == nil || tgt.identity != id {
 		t.mu.Unlock()
-		return snap, domain.Fail(domain.CodeTargetChanged, "unknown target")
+		return snap, domain.Fail(domain.CodeTargetChanged, "context target changed")
 	}
-	if tgt.secure || domain.ContextDenied(tgt.app) {
+	if !tgt.contextReadable || domain.ContextDenied(tgt.app) {
 		t.mu.Unlock()
 		return snap, nil
 	}
-	snap.SafeToRead = true
-	if t.ReadCursor != nil && t.ReadCursor() && tgt.readable && tgt.element != nil {
-		// The element stays retained while the lock prevents its eviction.
-		snap.Before, snap.After, _ = cursorContext(tgt.element, domain.MaxCursorContext)
-	}
-	pid := tgt.pid
+	// Retain this read's element so eviction can proceed without waiting on AX.
+	element, pid := C.arion_retain(tgt.element), tgt.pid
 	t.mu.Unlock()
+	defer C.arion_release(element)
+	if ctx.Err() != nil {
+		return snap, domain.Fail(domain.CodeCancelled, "context cancelled")
+	}
+	if C.arion_focus_matches(element, C.int(pid)) != 1 {
+		return snap, domain.Fail(domain.CodeTargetChanged, "context target changed")
+	}
+	snap.SafeToRead = true
+	if t.ReadCursor != nil && t.ReadCursor() {
+		snap.Before, snap.After, _ = cursorContext(element, domain.MaxCursorContext)
+	}
 	if t.ReadScreen != nil && t.ReadScreen() {
 		timeout := t.ScreenTimeout
 		if timeout <= 0 {
 			timeout = 1500 * time.Millisecond
 		}
-		if screen, err := RecognizeWindow(pid, OCRAccurate, timeout); err == nil {
-			snap.Screen, snap.ScreenCaptureMs, snap.ScreenOCRMs = screen.Text, screen.CaptureMs, screen.OCRMs
+		if deadline, ok := ctx.Deadline(); ok && time.Until(deadline) < timeout {
+			timeout = time.Until(deadline)
 		}
+		screen, err := ReadWindowText(element, pid, timeout)
+		if err != nil {
+			return snap, err
+		}
+		snap.Screen, snap.ScreenCaptureMs = screen.Text, screen.CaptureMs
+	}
+	if ctx.Err() != nil {
+		return snap, domain.Fail(domain.CodeCancelled, "context cancelled")
+	}
+	if C.arion_focus_matches(element, C.int(pid)) != 1 {
+		return snap, domain.Fail(domain.CodeTargetChanged, "context target changed")
 	}
 	return snap, nil
 }

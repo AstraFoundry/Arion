@@ -6,6 +6,7 @@ import (
 	"context"
 	"runtime"
 	"sync"
+	"time"
 
 	"arion.local/core/contracts"
 	"arion.local/core/domain"
@@ -26,7 +27,7 @@ func Options(catalog models.Catalog) []domain.ModelOption {
 		if !ok {
 			continue
 		}
-		option := domain.ModelOption{ID: bundle.ID, Platforms: streaming.Platforms, Languages: streaming.Languages, SizeBytes: catalog.DownloadBytes(bundle)}
+		option := domain.ModelOption{ID: bundle.ID, Adopted: bundle.Adopted, Platforms: streaming.Platforms, Languages: streaming.Languages, SizeBytes: catalog.DownloadBytes(bundle)}
 		if bundle.Finalizer != "" {
 			finalizer, _ := catalog.Artifact(bundle.Finalizer)
 			option.Platforms = intersect(option.Platforms, finalizer.Platforms)
@@ -72,7 +73,7 @@ func SpecFor(artifact models.Artifact, dir string, bundle models.Bundle, threads
 	for role, file := range artifact.Files {
 		files[role] = provision.FileName(file)
 	}
-	return asr.Spec{Kind: asr.Kind(artifact.Kind), Directory: dir, Files: files, ModelingUnit: artifact.ModelingUnit,
+	return asr.Spec{Kind: asr.Kind(artifact.Kind), Directory: dir, Files: files,
 		SampleRate: artifact.Audio.SampleRate, Threads: threads, EndpointSilence: float32(bundle.EndpointMs) / 1000}
 }
 
@@ -197,7 +198,7 @@ func (m *Manager) Activate(ctx context.Context, bundle models.Bundle) error {
 	}
 	m.setStatus(func(s *Status) { s.State, s.Done = StateLoading, completed })
 	streamingArtifact, _ := m.catalog.Artifact(bundle.Streaming)
-	streaming, err := asr.LoadStreaming(SpecFor(streamingArtifact, dirs[bundle.Streaming], bundle, m.threads))
+	streaming, err := asr.LoadStreamingContext(ctx, SpecFor(streamingArtifact, dirs[bundle.Streaming], bundle, m.threads))
 	if err != nil {
 		return m.failed(bundle, err)
 	}
@@ -300,4 +301,26 @@ func (m *Manager) LatinCase() domain.LatinCase {
 		return domain.LatinCaseUpper
 	}
 	return domain.LatinCaseNatural
+}
+
+// Close releases resident native worker processes after sessions have stopped.
+func (m *Manager) Close() {
+	m.mu.Lock()
+	streaming, offline := m.streaming, m.offline
+	m.streaming, m.offline = nil, nil
+	m.mu.Unlock()
+	if streaming != nil {
+		streaming.Close()
+	}
+	if offline != nil {
+		offline.Close()
+	}
+}
+
+// ComputeTime forwards infrastructure timing without widening the domain port.
+func (t *tracked) ComputeTime() time.Duration {
+	if recorder, ok := t.Recognizer.(interface{ ComputeTime() time.Duration }); ok {
+		return recorder.ComputeTime()
+	}
+	return 0
 }

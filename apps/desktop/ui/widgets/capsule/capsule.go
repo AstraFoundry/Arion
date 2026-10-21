@@ -4,7 +4,7 @@
 package capsule
 
 import (
-	"arion.local/desktop/ui/features/holdkey"
+	"arion.local/desktop/ui/entities/holdkey"
 	"hash/fnv"
 	"time"
 
@@ -134,13 +134,12 @@ func listening(c *ui.Context, state *runtime.State, tokens theme.Tokens, prepari
 	}
 	ui.Row(c.Key("hint")).Grow(1).Gap(6).AlignItems(ui.Center).Justify(ui.End).
 		Transition(ui.ElementTransition{Enter: &ui.Motion{Y: 4}}).Children(func() {
-		if state.Shortcut.Holding {
-			kit.Keycap(c, tokens, holdkey.Name(messages, state.Preferences.HoldKey), true)
+		kit.Kbd(c, tokens, holdkey.Legend(state.Preferences.HoldKey), true)
+		if state.Hold.Holding {
 			ui.Text(c, messages.Text(copy.PillReleaseHint)).FontSize(theme.Caption).TextColor(tokens.PillMuted).SingleLine()
 			return
 		}
-		kit.Keycaps(c, tokens, state.Shortcut.Accelerator, true)
-		ui.Text(c, messages.Text(copy.PillShortcutHint)).FontSize(theme.Caption).TextColor(tokens.PillMuted).SingleLine()
+		ui.Text(c, messages.Text(copy.PillFinishHint)).FontSize(theme.Caption).TextColor(tokens.PillMuted).SingleLine()
 	})
 }
 

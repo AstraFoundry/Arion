@@ -1,14 +1,16 @@
 package application
 
-import "time"
+import (
+	"slices"
+	"time"
+)
 
-// HoldKey is the key that dictates while held (DSK-02). It complements the
-// toggle shortcut and is off until the user picks one, because listening to
-// a key needs its own OS consent on macOS.
+// HoldKey is the key that dictates while held, or starts and finishes a
+// dictation when tapped (DSK-02). It is the only global activation, so a
+// platform with an adapter always has one chosen.
 type HoldKey string
 
 const (
-	HoldOff          HoldKey = ""
 	HoldFn           HoldKey = "fn"
 	HoldRightOption  HoldKey = "right_option"
 	HoldRightCommand HoldKey = "right_command"
@@ -28,15 +30,20 @@ func HoldKeysFor(platform string) []HoldKey {
 	return nil
 }
 
-func knownHoldKey(key HoldKey) bool {
-	for _, platform := range []string{"darwin", "windows"} {
-		for _, k := range HoldKeysFor(platform) {
-			if k == key {
-				return true
-			}
-		}
+// DefaultHoldKey is the first-run key: Right Option on macOS and Right Alt
+// on Windows. A platform without an adapter has none.
+func DefaultHoldKey(platform string) HoldKey {
+	switch platform {
+	case "darwin":
+		return HoldRightOption
+	case "windows":
+		return HoldRightAlt
 	}
-	return key == HoldOff
+	return ""
+}
+
+func knownHoldKey(platform string, key HoldKey) bool {
+	return key == DefaultHoldKey(platform) || slices.Contains(HoldKeysFor(platform), key)
 }
 
 // DefaultHoldThreshold separates a hold from a tap.

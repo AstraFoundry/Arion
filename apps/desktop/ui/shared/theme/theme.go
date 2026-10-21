@@ -88,6 +88,7 @@ type Tokens struct {
 	Hairline   ui.Color // dividers inside a card
 	Text       ui.Color
 	Muted      ui.Color
+	Subtle     ui.Color // coss bg-muted: quiet fills such as keycaps
 	Faint      ui.Color
 
 	Accent     ui.Color // the yellow fill of primary actions and marks
@@ -125,6 +126,7 @@ func Resolve(dark bool) Tokens {
 		Hairline:    ink100,
 		Text:        ink900,
 		Muted:       ink500,
+		Subtle:      ink100,
 		Faint:       ink400,
 		Accent:      yellow500,
 		AccentText:  ink900,
@@ -152,6 +154,7 @@ func Resolve(dark bool) Tokens {
 		t.Hairline = ui.Hex("#2a2622")
 		t.Text = ink50
 		t.Muted = ink300
+		t.Subtle = ink700
 		t.Faint = ink400
 		t.AccentSoft = yellow500.Alpha(0.14)
 		t.AccentInk = yellow400

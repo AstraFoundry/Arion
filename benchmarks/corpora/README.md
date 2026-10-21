@@ -47,3 +47,5 @@ it is independently verified and is not part of the historical migration manifes
 - [Semantic roles](rewrite-semantic-roles-v1/README.md): eight fixed source groups with four context conditions; authored evaluator frozen before inference.
 
 - [Selector-screen evaluator](rewrite-selector-screen-v1/README.md):101 preregistered source/reference-bound choice targets; same-letter canonicalization remains optional, evaluator never enters model data.
+
+- [asr-window-v1](asr-window-v1/README.md) — twelve authored Tingting utterances with original AIFF and hash-bound WAV for paired native ASR/window-context/final-rewrite integration.

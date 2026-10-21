@@ -3,6 +3,7 @@ package dictate
 
 import (
 	"arion.local/desktop/ui/entities/dictation"
+	"arion.local/desktop/ui/entities/holdkey"
 	"arion.local/desktop/ui/shared/copy"
 	"arion.local/desktop/ui/shared/icons"
 	"arion.local/desktop/ui/shared/kit"
@@ -11,7 +12,7 @@ import (
 	"github.com/egoist/mygo/ui"
 )
 
-// Toggle is the main dictation button with its shortcut. It turns into a
+// Toggle is the main dictation button with its key. It turns into a
 // live "Finish" control while the microphone is open.
 func Toggle(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 	messages := store.Copy()
@@ -38,11 +39,7 @@ func Toggle(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 		}
 		ui.Text(c, label).FontSize(theme.Body).FontWeight(600).SingleLine().ContentTransition(ui.ContentTransition{})
 		ui.Spacer(c)
-		ui.Row(c).Gap(3).Opacity(0.72).Children(func() {
-			for _, key := range kit.Keys(store.State.Shortcut.Accelerator) {
-				ui.Text(c, key).FontSize(theme.Caption).FontWeight(500)
-			}
-		})
+		kit.Kbd(c, tokens, holdkey.Legend(store.State.Preferences.HoldKey), false)
 	})
 	if button.Clicked() {
 		store.Actions.ToggleDictation()

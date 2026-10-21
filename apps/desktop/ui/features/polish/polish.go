@@ -49,8 +49,7 @@ func MatchApp(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 }
 
 // Context lists the switches for the context polishing may read. Shown
-// only while polishing is on; the screen switch asks for Screen Recording
-// where macOS needs it.
+// only while polishing is on; visible window text uses Accessibility.
 func Context(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 	if !store.State.Preferences.Polish || store.State.Polish.State == runtime.PolishUnsupported {
 		return
@@ -73,14 +72,14 @@ func Context(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 		func(p *runtime.Preferences, on bool) { p.ContextCursor = on }, nil)
 	row("context-screen", copy.ContextScreenLabel, copy.ContextScreenDetail, prefs.ContextScreen,
 		func(p *runtime.Preferences, on bool) { p.ContextScreen = on }, func() {
-			if !prefs.ContextScreen || store.State.Permissions.ScreenRecording == runtime.ConsentGranted {
+			if !prefs.ContextScreen || store.State.Permissions.Accessibility == runtime.ConsentGranted {
 				return
 			}
 			ui.Row(c.Key("screen-permission")).Padding(0, 16, 12, 16).Gap(8).AlignItems(ui.Center).Children(func() {
 				ui.Icon(c, icons.TriangleAlert).FontSize(14).TextColor(tokens.Warning)
 				ui.Text(c, messages.Text(copy.ContextScreenPermission)).FontSize(theme.Caption).Grow(1)
 				if kit.Button(c, tokens, kit.Outline, messages.Text(copy.Allow), true).Clicked() {
-					store.Actions.RequestScreenRecording()
+					store.Actions.RequestAccessibility()
 				}
 			})
 		})

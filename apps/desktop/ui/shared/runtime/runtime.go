@@ -51,7 +51,6 @@ const (
 	LanguageEnglish   = application.English
 	LanguageChinese   = application.SimplifiedChinese
 
-	HoldOff          = application.HoldOff
 	HoldFn           = application.HoldFn
 	HoldRightOption  = application.HoldRightOption
 	HoldRightCommand = application.HoldRightCommand
@@ -61,6 +60,9 @@ const (
 
 // DayKey names the local calendar day of t, as UsageDay.Date does.
 func DayKey(t time.Time) string { return domain.DayKey(t) }
+
+// DefaultHoldKey is a platform's first-run dictation key.
+func DefaultHoldKey(platform string) HoldKey { return application.DefaultHoldKey(platform) }
 
 // HoldKeysFor lists the hold keys a platform supports.
 func HoldKeysFor(platform string) []HoldKey { return application.HoldKeysFor(platform) }
@@ -218,7 +220,7 @@ type Permissions struct {
 	Accessibility Consent
 	// InputMonitoring is needed only for a hold key on macOS.
 	InputMonitoring Consent
-	// ScreenRecording is needed for screen context on macOS.
+	// ScreenRecording retains legacy permission diagnostics and guide state.
 	ScreenRecording Consent
 }
 
@@ -291,18 +293,16 @@ const (
 	ModeSystemIME = domain.SystemIMEMode
 )
 
-// Shortcut is the registered dictation hotkey.
-type Shortcut struct {
-	Accelerator string
-	Registered  bool
-	// Pressed is when the shortcut last fired, for the onboarding test.
+// Hold is the hold key's listener, the only global dictation activation.
+type Hold struct {
+	// Pressed is when the key last went down, for the onboarding test.
 	Pressed time.Time
-	// HoldActive reports the hold-key listener is running.
-	HoldActive bool
-	// HoldFailure explains why a chosen hold key is not listening:
-	// PERMISSION_DENIED means Input Monitoring consent is missing.
-	HoldFailure ErrorCode
-	// Holding marks a session that dictates until the hold key is released.
+	// Active reports the listener is running.
+	Active bool
+	// Failure explains why the key is not listening: PERMISSION_DENIED
+	// means Input Monitoring consent is missing.
+	Failure ErrorCode
+	// Holding marks a session that dictates until the key is released.
 	Holding bool
 }
 
@@ -397,7 +397,7 @@ type State struct {
 	Learned Learned
 	// Usage is the per-day dictation counts, oldest first.
 	Usage                 UsageLog
-	Shortcut              Shortcut
+	Hold                  Hold
 	InputMethod           InputMethodState
 	InputMethodInstalling bool
 	InputMethodActivating bool
@@ -438,21 +438,18 @@ type Actions interface {
 	UseBundle(id string)
 	UseRecommendedBundle()
 	UpdatePreferences(func(*Preferences))
-	SetShortcut(accelerator string) error
-	// SetHoldKey chooses the hold-to-talk key, or HoldOff.
+	// SetHoldKey chooses the dictation key.
 	SetHoldKey(key HoldKey)
 	RequestInputMonitoring()
-	// RequestScreenRecording asks for the consent screen context needs.
+	// RequestScreenRecording retains the legacy screen-capture consent action.
 	RequestScreenRecording()
 	// CloseGuide dismisses the consent guide and returns to Arion.
 	CloseGuide()
 	// CloseTrayHint dismisses the hint beside the tray icon.
 	CloseTrayHint()
-	// SuspendShortcut releases the global hotkey while a recorder listens.
-	SuspendShortcut(suspend bool)
-	// TestShortcut makes hotkey presses only report Shortcut.Pressed, for
+	// TestHoldKey makes hold key presses only report Hold.Pressed, for
 	// the onboarding check, instead of starting dictation.
-	TestShortcut(testing bool)
+	TestHoldKey(testing bool)
 	RefreshDevices()
 	StartLevelMonitor()
 	StopLevelMonitor()

@@ -25,7 +25,9 @@ type ModelEvaluation struct {
 
 // ModelOption is one approved, provisionable recognition bundle.
 type ModelOption struct {
-	ID         string
+	ID string
+	// Adopted marks an explicit product migration, independently of benchmark gates.
+	Adopted    bool
 	Platforms  []string
 	Languages  []string
 	SizeBytes  int64
@@ -85,7 +87,8 @@ func (p SelectionPolicy) eligible(e ModelEvaluation) bool {
 		e.StopToReviewP95Ms <= p.MaxStopToReviewMs && e.RealTimeFactor < p.MaxRealTimeFactor
 }
 
-// SelectDefaultModel returns the best evaluated bundle for the platform: the
+// SelectDefaultModel first honors an explicitly adopted platform bundle,
+// reporting measurements only when they exist. Otherwise it returns the best evaluated bundle: the
 // lowest mean error among bundles whose latency/RTF measured on this hardware
 // class pass the gates. When no bundle was measured on this hardware class,
 // recognition accuracy is hardware-independent for identical weights and
@@ -93,6 +96,28 @@ func (p SelectionPolicy) eligible(e ModelEvaluation) bool {
 // LatencyMeasured false. Ties prefer lower latency, then smaller downloads,
 // then the ID. Unmeasured bundles are never chosen.
 func SelectDefaultModel(options []ModelOption, policy SelectionPolicy) (Selection, error) {
+	var adopted *ModelOption
+	for i := range options {
+		option := &options[i]
+		if !option.Adopted || !contains(option.Platforms, policy.Platform) || !containsAll(option.Languages, policy.RequiredLanguages) {
+			continue
+		}
+		if adopted != nil {
+			return Selection{}, Fail(CodeModelUnsupported, "multiple adopted models for platform")
+		}
+		adopted = option
+	}
+	if adopted != nil {
+		selection := Selection{Option: *adopted}
+		for _, evaluation := range adopted.Evaluation {
+			if score, ok := policy.Score(evaluation); ok && evaluation.Hardware == policy.Platform && evaluation.Observations >= policy.MinObservations {
+				selection.Evaluation, selection.Score, selection.LatencyMeasured = evaluation, score, true
+				break
+			}
+		}
+		return selection, nil
+	}
+
 	var local, elsewhere []Selection
 	for _, option := range options {
 		if !contains(option.Platforms, policy.Platform) || !containsAll(option.Languages, policy.RequiredLanguages) {

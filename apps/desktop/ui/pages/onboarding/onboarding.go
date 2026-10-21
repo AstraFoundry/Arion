@@ -1,6 +1,6 @@
 // Package onboarding is the first-run flow: the choice between signing in
 // to AstraFoundry and staying local, permissions, the automatically chosen
-// model, the shortcut and a first dictation, each step beside an
+// model, the dictation key and a first dictation, each step beside an
 // illustration of what it enables.
 package onboarding
 
@@ -8,12 +8,13 @@ import (
 	"time"
 
 	"arion.local/desktop/ui/entities/account"
+	holdname "arion.local/desktop/ui/entities/holdkey"
 	"arion.local/desktop/ui/entities/onboarding"
+	"arion.local/desktop/ui/features/holdkey"
 	"arion.local/desktop/ui/features/keyboard"
 	"arion.local/desktop/ui/features/microphone"
 	"arion.local/desktop/ui/features/permissions"
 	"arion.local/desktop/ui/features/polish"
-	"arion.local/desktop/ui/features/shortcut"
 	"arion.local/desktop/ui/features/signin"
 	"arion.local/desktop/ui/features/uilanguage"
 	"arion.local/desktop/ui/shared/copy"
@@ -49,7 +50,6 @@ type Page struct {
 	axRequested      bool
 	axGranted        time.Time
 	keyboard         keyboard.State
-	recorder         shortcut.Recorder
 }
 
 func NewPage() *Page { return &Page{} }
@@ -69,7 +69,7 @@ func (p *Page) Render(c *ui.Context, store runtime.Store) {
 	ui.Row(c).Fill().AlignItems(ui.Stretch).Background(tokens.Canvas).Children(func() {
 		ui.Column(c).Width(Pane).Children(func() {
 			scene, levels := illustration(step, state)
-			showcase.Render(c, tokens, store.Copy(), scene, state.Shortcut.Accelerator, levels)
+			showcase.Render(c, tokens, store.Copy(), scene, holdname.Legend(state.Preferences.HoldKey), levels)
 			ui.Box(c).Absolute().Top(0).Left(0).Right(0).Height(top).DragWindow()
 		})
 		ui.Column(c).Grow(1).Children(func() {
@@ -147,7 +147,7 @@ func illustration(step onboarding.Step, state *runtime.State) (showcase.Scene, [
 			return showcase.Listening, state.MonitorLevels
 		}
 		return showcase.Listening, nil
-	case onboarding.Shortcut:
+	case onboarding.HoldKey:
 		return showcase.Listening, nil
 	case onboarding.Accessibility, onboarding.Finished:
 		return showcase.Inserted, nil
@@ -166,7 +166,7 @@ func (p *Page) move(c *ui.Context, delta int, store runtime.Store) {
 	}
 }
 
-// sync runs the microphone monitor and shortcut test only on their steps,
+// sync runs the microphone monitor and hold key test only on their steps,
 // and reads whether a sign-in is stored on the account step.
 func (p *Page) sync(store runtime.Store, step onboarding.Step) {
 	monitor := step == onboarding.Microphone && store.State.Permissions.Microphone == runtime.ConsentGranted
@@ -181,10 +181,10 @@ func (p *Page) sync(store runtime.Store, step onboarding.Step) {
 	if step == onboarding.Account {
 		signin.Check(store)
 	}
-	testing := step == onboarding.Shortcut
+	testing := step == onboarding.HoldKey
 	if testing != p.testing {
 		p.testing = testing
-		store.Actions.TestShortcut(testing)
+		store.Actions.TestHoldKey(testing)
 	}
 }
 
@@ -199,11 +199,7 @@ func (p *Page) release(store runtime.Store) {
 	}
 	if p.testing {
 		p.testing = false
-		store.Actions.TestShortcut(false)
-	}
-	if p.recorder.Listening {
-		p.recorder.Listening = false
-		store.Actions.SuspendShortcut(false)
+		store.Actions.TestHoldKey(false)
 	}
 }
 
@@ -283,48 +279,33 @@ func (p *Page) step(c *ui.Context, store runtime.Store, tokens theme.Tokens, ste
 			modelcard.Render(c, store, tokens, true)
 			kit.Card(c, tokens).Children(func() { polish.Row(c, store, tokens) })
 		})
-	case onboarding.Shortcut:
-		heading(c, tokens, messages.Text(copy.OnbShortcutTitle), messages.Text(copy.OnbShortcutBody))
-		heard := state.Shortcut.Pressed.After(p.entered)
-		if !state.Shortcut.Registered {
-			// The default is taken by another app: choose another here.
-			ui.Column(c).Gap(8).AlignItems(ui.Start).Children(func() {
-				ui.Text(c, messages.Text(copy.ShortcutTaken)).FontSize(theme.Caption).TextColor(tokens.Danger)
-				shortcut.Field(c, store, tokens, &p.recorder)
-			})
-			return
-		}
+	case onboarding.HoldKey:
+		heading(c, tokens, messages.Text(copy.OnbHoldKeyTitle), messages.Text(copy.OnbHoldKeyBody))
+		heard := state.Hold.Pressed.After(p.entered)
 		ui.Column(c).Gap(12).Children(func() {
-			if p.recorder.Listening {
-				shortcut.Capture(c, store, tokens, &p.recorder).Height(40).Padding(0, 14)
-				shortcut.Error(c, store, tokens, &p.recorder)
-				return
-			}
-			ui.Row(c).Gap(12).AlignItems(ui.Center).Children(func() {
-				keys := ui.Row(c).Gap(6)
+			ui.Row(c).AlignItems(ui.Center).Children(func() {
+				keys := ui.Row(c)
 				if heard {
 					lift := keys.Keyframes("press", []ui.Keyframe{{Value: 0}, {At: 90 * time.Millisecond, Value: 3, Ease: ui.EaseOut}, {At: 260 * time.Millisecond, Value: 0, Ease: ui.EaseOut}},
-						ui.KeyframeOptions{Run: uint64(state.Shortcut.Pressed.UnixNano())})
+						ui.KeyframeOptions{Run: uint64(state.Hold.Pressed.UnixNano())})
 					keys.Translate(0, lift)
 				}
 				keys.Children(func() {
-					for _, key := range kit.Keys(state.Shortcut.Accelerator) {
-						cap := kit.Keycap(c, tokens, key, false).Height(40).MinWidth(44).Padding(0, 14)
-						if heard {
-							cap.Border(1, tokens.AccentInk).Background(cap.AnimateColor("face", tokens.AccentSoft, theme.Quick))
-						}
+					cap := kit.Kbd(c, tokens, holdname.Legend(state.Preferences.HoldKey), false)
+					if heard {
+						cap.Background(cap.AnimateColor("face", tokens.AccentSoft, theme.Quick))
 					}
 				})
-				// A changed shortcut is tested afresh.
-				if kit.Button(c.Key("change"), tokens, kit.Ghost, messages.Text(copy.ShortcutRecord), true).Clicked() {
-					p.entered = c.Now()
-					shortcut.Start(store, &p.recorder)
-				}
 			})
-			if heard {
-				kit.Status(c.Key("heard"), tokens, icons.CircleCheck, tokens.Success, messages.Text(copy.OnbShortcutHeard))
-			} else {
-				ui.Text(c.Key("press"), messages.Text(copy.OnbShortcutPress)).FontSize(theme.Caption).FontWeight(500).TextColor(tokens.Muted)
+			if holdkey.HasNotes(store) {
+				holdkey.Notes(c, store, tokens)
+			}
+			switch {
+			case !state.Hold.Active:
+			case heard:
+				kit.Status(c.Key("heard"), tokens, icons.CircleCheck, tokens.Success, messages.Text(copy.OnbHoldKeyHeard))
+			default:
+				ui.Text(c.Key("press"), messages.Text(copy.OnbHoldKeyPress)).FontSize(theme.Caption).FontWeight(500).TextColor(tokens.Muted)
 			}
 		})
 	case onboarding.Try:

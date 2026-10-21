@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 	"reflect"
+	"runtime"
 	"slices"
 	"testing"
 
@@ -29,8 +30,17 @@ func TestLanguagePersistenceAndLegacyProfiles(t *testing.T) {
 		t.Fatal(err)
 	}
 	loaded, repairs, err = store.Load()
-	if err != nil || len(repairs) != 0 || loaded.UILanguage != application.English || loaded.Sounds || loaded.Shortcut != "Cmd+Shift+D" || !loaded.CheckUpdates {
+	if err != nil || len(repairs) != 0 || loaded.UILanguage != application.English || loaded.Sounds || loaded.HoldKey != application.DefaultHoldKey(runtime.GOOS) || !loaded.CheckUpdates {
 		t.Fatalf("legacy profile: %v %v %v", loaded, repairs, err)
+	}
+	// The retired toggle shortcut left profiles with the hold key off; they
+	// move to this platform's default key.
+	if err := os.WriteFile(store.Path, []byte(`{"version":1,"shortcut":"Alt+Space","holdKey":""}`), 0600); err != nil {
+		t.Fatal(err)
+	}
+	loaded, repairs, err = store.Load()
+	if err != nil || loaded.HoldKey != application.DefaultHoldKey(runtime.GOOS) || !slices.Contains(repairs, "holdKey") {
+		t.Fatalf("hold key off: %v %v %v", loaded, repairs, err)
 	}
 	if err := os.WriteFile(store.Path, []byte(`{"version":1,"uiLanguage":"fr"}`), 0600); err != nil {
 		t.Fatal(err)
@@ -54,7 +64,7 @@ func TestLegacyInputModeIsRetired(t *testing.T) {
 			t.Fatal(err)
 		}
 		prefs, repairs, err := store.Load()
-		if err != nil || len(repairs) != 0 || prefs.Shortcut != "Cmd+Shift+D" || prefs.Sounds {
+		if err != nil || len(repairs) != 0 || prefs.Sounds {
 			t.Fatalf("legacy migration: %+v %v %v", prefs, repairs, err)
 		}
 		if err := store.Save(prefs); err != nil {
@@ -68,8 +78,10 @@ func TestLegacyInputModeIsRetired(t *testing.T) {
 		if err := json.Unmarshal(data, &saved); err != nil {
 			t.Fatal(err)
 		}
-		if _, exists := saved["mode"]; exists {
-			t.Fatal("retired input mode persisted again")
+		for _, retired := range []string{"mode", "shortcut"} {
+			if _, exists := saved[retired]; exists {
+				t.Fatalf("retired %s persisted again", retired)
+			}
 		}
 	}
 }

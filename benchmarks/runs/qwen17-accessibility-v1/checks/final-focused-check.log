@@ -1,0 +1,5 @@
+ok  	arion.local/desktop/infrastructure/macos	2.035s
+ok  	arion.local/desktop/infrastructure/provision	(cached)
+ok  	arion.local/models	0.386s
+ok  	arion.local/desktop/cmd/arion-eval-driver	(cached)
+?   	arion.local/desktop/infrastructure/windows	[no test files]

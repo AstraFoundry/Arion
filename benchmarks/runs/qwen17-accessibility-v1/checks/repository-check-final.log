@@ -1,0 +1,7 @@
+
+> arion-monorepo@0.0.0 check /Users/steven/code/Arion
+> node scripts/check-repository.mjs
+
+benchmarks/reproduction/qwen17-accessibility-v1/source/models/README.md: missing local target ../specs/006-models.md
+benchmarks/reproduction/qwen17-accessibility-v1/source/models/README.md: missing local target ../docs/decisions/004-automatic-model-selection.md
+ ELIFECYCLE  Command failed with exit code 1.

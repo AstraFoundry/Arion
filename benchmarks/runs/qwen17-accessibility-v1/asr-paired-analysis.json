@@ -1,0 +1,845 @@
+{
+  "parity": {
+    "xasr-160-qwen3asr-17-final": {
+      "cases": 118,
+      "transcriptionBodyMatchesOriginal": 118,
+      "protocolLeaks": 0
+    },
+    "xasr-160-xasr-final": {
+      "cases": 118,
+      "transcriptionBodyMatchesOriginal": 118,
+      "protocolLeaks": 0
+    }
+  },
+  "improved": 19,
+  "worsened": 18,
+  "unchangedErrorCount": 81,
+  "cases": [
+    {
+      "id": "aishell-BAC009S0764W0492",
+      "language": "zh",
+      "oldErrors": 1,
+      "newErrors": 0,
+      "delta": -1
+    },
+    {
+      "id": "aishell-BAC009S0766W0392",
+      "language": "zh",
+      "oldErrors": 0,
+      "newErrors": 0,
+      "delta": 0
+    },
+    {
+      "id": "aishell-BAC009S0765W0299",
+      "language": "zh",
+      "oldErrors": 0,
+      "newErrors": 0,
+      "delta": 0
+    },
+    {
+      "id": "tts-dev-00-eddy",
+      "language": "mixed",
+      "oldErrors": 6,
+      "newErrors": 8,
+      "delta": 2
+    },
+    {
+      "id": "tts-dev-21-eddy",
+      "language": "mixed",
+      "oldErrors": 5,
+      "newErrors": 8,
+      "delta": 3
+    },
+    {
+      "id": "libri-5694-64038-0019",
+      "language": "en",
+      "oldErrors": 2,
+      "newErrors": 2,
+      "delta": 0
+    },
+    {
+      "id": "libri-2035-147961-0010",
+      "language": "en",
+      "oldErrors": 0,
+      "newErrors": 0,
+      "delta": 0
+    },
+    {
+      "id": "tts-dev-26-reed",
+      "language": "mixed",
+      "oldErrors": 3,
+      "newErrors": 3,
+      "delta": 0
+    },
+    {
+      "id": "aishell-BAC009S0766W0178",
+      "language": "zh",
+      "oldErrors": 0,
+      "newErrors": 0,
+      "delta": 0
+    },
+    {
+      "id": "tts-dev-12-eddy",
+      "language": "mixed",
+      "oldErrors": 4,
+      "newErrors": 5,
+      "delta": 1
+    },
+    {
+      "id": "tts-dev-10-flo",
+      "language": "mixed",
+      "oldErrors": 2,
+      "newErrors": 3,
+      "delta": 1
+    },
+    {
+      "id": "aishell-BAC009S0766W0180",
+      "language": "zh",
+      "oldErrors": 2,
+      "newErrors": 2,
+      "delta": 0
+    },
+    {
+      "id": "tts-dev-25-flo",
+      "language": "mixed",
+      "oldErrors": 1,
+      "newErrors": 2,
+      "delta": 1
+    },
+    {
+      "id": "aishell-BAC009S0766W0124",
+      "language": "zh",
+      "oldErrors": 0,
+      "newErrors": 0,
+      "delta": 0
+    },
+    {
+      "id": "aishell-BAC009S0764W0404",
+      "language": "zh",
+      "oldErrors": 0,
+      "newErrors": 0,
+      "delta": 0
+    },
+    {
+      "id": "aishell-BAC009S0765W0495",
+      "language": "zh",
+      "oldErrors": 2,
+      "newErrors": 0,
+      "delta": -2
+    },
+    {
+      "id": "aishell-BAC009S0764W0149",
+      "language": "zh",
+      "oldErrors": 0,
+      "newErrors": 0,
+      "delta": 0
+    },
+    {
+      "id": "aishell-BAC009S0766W0139",
+      "language": "zh",
+      "oldErrors": 2,
+      "newErrors": 2,
+      "delta": 0
+    },
+    {
+      "id": "libri-2277-149874-0002",
+      "language": "en",
+      "oldErrors": 0,
+      "newErrors": 0,
+      "delta": 0
+    },
+    {
+      "id": "tts-dev-13-flo",
+      "language": "mixed",
+      "oldErrors": 1,
+      "newErrors": 2,
+      "delta": 1
+    },
+    {
+      "id": "tts-dev-18-eddy",
+      "language": "mixed",
+      "oldErrors": 4,
+      "newErrors": 4,
+      "delta": 0
+    },
+    {
+      "id": "aishell-BAC009S0766W0171",
+      "language": "zh",
+      "oldErrors": 0,
+      "newErrors": 0,
+      "delta": 0
+    },
+    {
+      "id": "libri-84-121550-0004",
+      "language": "en",
+      "oldErrors": 6,
+      "newErrors": 2,
+      "delta": -4
+    },
+    {
+      "id": "aishell-BAC009S0764W0137",
+      "language": "zh",
+      "oldErrors": 0,
+      "newErrors": 0,
+      "delta": 0
+    },
+    {
+      "id": "tts-dev-24-eddy",
+      "language": "mixed",
+      "oldErrors": 4,
+      "newErrors": 4,
+      "delta": 0
+    },
+    {
+      "id": "libri-2428-83705-0041",
+      "language": "en",
+      "oldErrors": 0,
+      "newErrors": 2,
+      "delta": 2
+    },
+    {
+      "id": "tts-dev-29-reed",
+      "language": "mixed",
+      "oldErrors": 1,
+      "newErrors": 3,
+      "delta": 2
+    },
+    {
+      "id": "libri-2277-149874-0017",
+      "language": "en",
+      "oldErrors": 0,
+      "newErrors": 0,
+      "delta": 0
+    },
+    {
+      "id": "libri-174-168635-0014",
+      "language": "en",
+      "oldErrors": 1,
+      "newErrors": 0,
+      "delta": -1
+    },
+    {
+      "id": "libri-2412-153954-0007",
+      "language": "en",
+      "oldErrors": 1,
+      "newErrors": 1,
+      "delta": 0
+    },
+    {
+      "id": "libri-1988-147956-0013",
+      "language": "en",
+      "oldErrors": 0,
+      "newErrors": 0,
+      "delta": 0
+    },
+    {
+      "id": "libri-3000-15664-0014",
+      "language": "en",
+      "oldErrors": 2,
+      "newErrors": 3,
+      "delta": 1
+    },
+    {
+      "id": "aishell-BAC009S0764W0490",
+      "language": "zh",
+      "oldErrors": 1,
+      "newErrors": 1,
+      "delta": 0
+    },
+    {
+      "id": "libri-3536-23268-0006",
+      "language": "en",
+      "oldErrors": 0,
+      "newErrors": 0,
+      "delta": 0
+    },
+    {
+      "id": "libri-1919-142785-0059",
+      "language": "en",
+      "oldErrors": 0,
+      "newErrors": 0,
+      "delta": 0
+    },
+    {
+      "id": "aishell-BAC009S0765W0152",
+      "language": "zh",
+      "oldErrors": 0,
+      "newErrors": 0,
+      "delta": 0
+    },
+    {
+      "id": "libri-84-121550-0019",
+      "language": "en",
+      "oldErrors": 1,
+      "newErrors": 0,
+      "delta": -1
+    },
+    {
+      "id": "libri-7976-105575-0004",
+      "language": "en",
+      "oldErrors": 2,
+      "newErrors": 1,
+      "delta": -1
+    },
+    {
+      "id": "aishell-BAC009S0764W0399",
+      "language": "zh",
+      "oldErrors": 1,
+      "newErrors": 1,
+      "delta": 0
+    },
+    {
+      "id": "aishell-BAC009S0764W0293",
+      "language": "zh",
+      "oldErrors": 1,
+      "newErrors": 0,
+      "delta": -1
+    },
+    {
+      "id": "libri-3081-166546-0068",
+      "language": "en",
+      "oldErrors": 0,
+      "newErrors": 0,
+      "delta": 0
+    },
+    {
+      "id": "libri-5536-43359-0002",
+      "language": "en",
+      "oldErrors": 0,
+      "newErrors": 0,
+      "delta": 0
+    },
+    {
+      "id": "libri-3752-4944-0065",
+      "language": "en",
+      "oldErrors": 2,
+      "newErrors": 0,
+      "delta": -2
+    },
+    {
+      "id": "libri-7976-110124-0005",
+      "language": "en",
+      "oldErrors": 0,
+      "newErrors": 0,
+      "delta": 0
+    },
+    {
+      "id": "libri-777-126732-0038",
+      "language": "en",
+      "oldErrors": 2,
+      "newErrors": 1,
+      "delta": -1
+    },
+    {
+      "id": "libri-2086-149220-0023",
+      "language": "en",
+      "oldErrors": 0,
+      "newErrors": 0,
+      "delta": 0
+    },
+    {
+      "id": "libri-6241-61943-0014",
+      "language": "en",
+      "oldErrors": 1,
+      "newErrors": 1,
+      "delta": 0
+    },
+    {
+      "id": "tts-dev-09-eddy",
+      "language": "mixed",
+      "oldErrors": 3,
+      "newErrors": 0,
+      "delta": -3
+    },
+    {
+      "id": "aishell-BAC009S0766W0148",
+      "language": "zh",
+      "oldErrors": 0,
+      "newErrors": 0,
+      "delta": 0
+    },
+    {
+      "id": "aishell-BAC009S0764W0359",
+      "language": "zh",
+      "oldErrors": 0,
+      "newErrors": 0,
+      "delta": 0
+    },
+    {
+      "id": "nonspeech-dev-0",
+      "language": "zh",
+      "oldErrors": 0,
+      "newErrors": 0,
+      "delta": 0
+    },
+    {
+      "id": "tts-dev-07-flo",
+      "language": "mixed",
+      "oldErrors": 1,
+      "newErrors": 4,
+      "delta": 3
+    },
+    {
+      "id": "libri-5895-34629-0023",
+      "language": "en",
+      "oldErrors": 0,
+      "newErrors": 0,
+      "delta": 0
+    },
+    {
+      "id": "aishell-BAC009S0764W0250",
+      "language": "zh",
+      "oldErrors": 0,
+      "newErrors": 0,
+      "delta": 0
+    },
+    {
+      "id": "aishell-BAC009S0765W0487",
+      "language": "zh",
+      "oldErrors": 4,
+      "newErrors": 2,
+      "delta": -2
+    },
+    {
+      "id": "aishell-BAC009S0764W0254",
+      "language": "zh",
+      "oldErrors": 1,
+      "newErrors": 1,
+      "delta": 0
+    },
+    {
+      "id": "aishell-BAC009S0765W0408",
+      "language": "zh",
+      "oldErrors": 0,
+      "newErrors": 0,
+      "delta": 0
+    },
+    {
+      "id": "tts-dev-16-flo",
+      "language": "mixed",
+      "oldErrors": 4,
+      "newErrors": 6,
+      "delta": 2
+    },
+    {
+      "id": "tts-dev-08-reed",
+      "language": "mixed",
+      "oldErrors": 2,
+      "newErrors": 2,
+      "delta": 0
+    },
+    {
+      "id": "libri-2035-147961-0024",
+      "language": "en",
+      "oldErrors": 0,
+      "newErrors": 0,
+      "delta": 0
+    },
+    {
+      "id": "aishell-BAC009S0765W0290",
+      "language": "zh",
+      "oldErrors": 0,
+      "newErrors": 0,
+      "delta": 0
+    },
+    {
+      "id": "tts-dev-05-reed",
+      "language": "mixed",
+      "oldErrors": 2,
+      "newErrors": 4,
+      "delta": 2
+    },
+    {
+      "id": "tts-dev-14-reed",
+      "language": "mixed",
+      "oldErrors": 8,
+      "newErrors": 6,
+      "delta": -2
+    },
+    {
+      "id": "nonspeech-dev-1",
+      "language": "zh",
+      "oldErrors": 0,
+      "newErrors": 0,
+      "delta": 0
+    },
+    {
+      "id": "tts-dev-04-flo",
+      "language": "mixed",
+      "oldErrors": 2,
+      "newErrors": 1,
+      "delta": -1
+    },
+    {
+      "id": "aishell-BAC009S0764W0459",
+      "language": "zh",
+      "oldErrors": 1,
+      "newErrors": 1,
+      "delta": 0
+    },
+    {
+      "id": "libri-2428-83705-0024",
+      "language": "en",
+      "oldErrors": 0,
+      "newErrors": 0,
+      "delta": 0
+    },
+    {
+      "id": "tts-dev-15-eddy",
+      "language": "mixed",
+      "oldErrors": 3,
+      "newErrors": 2,
+      "delta": -1
+    },
+    {
+      "id": "libri-3536-23268-0013",
+      "language": "en",
+      "oldErrors": 0,
+      "newErrors": 0,
+      "delta": 0
+    },
+    {
+      "id": "libri-2078-142845-0011",
+      "language": "en",
+      "oldErrors": 0,
+      "newErrors": 0,
+      "delta": 0
+    },
+    {
+      "id": "aishell-BAC009S0766W0137",
+      "language": "zh",
+      "oldErrors": 2,
+      "newErrors": 2,
+      "delta": 0
+    },
+    {
+      "id": "aishell-BAC009S0764W0474",
+      "language": "zh",
+      "oldErrors": 19,
+      "newErrors": 19,
+      "delta": 0
+    },
+    {
+      "id": "aishell-BAC009S0764W0360",
+      "language": "zh",
+      "oldErrors": 0,
+      "newErrors": 0,
+      "delta": 0
+    },
+    {
+      "id": "libri-174-84280-0005",
+      "language": "en",
+      "oldErrors": 0,
+      "newErrors": 0,
+      "delta": 0
+    },
+    {
+      "id": "tts-dev-01-flo",
+      "language": "mixed",
+      "oldErrors": 4,
+      "newErrors": 2,
+      "delta": -2
+    },
+    {
+      "id": "libri-5694-64038-0009",
+      "language": "en",
+      "oldErrors": 0,
+      "newErrors": 0,
+      "delta": 0
+    },
+    {
+      "id": "aishell-BAC009S0765W0360",
+      "language": "zh",
+      "oldErrors": 0,
+      "newErrors": 0,
+      "delta": 0
+    },
+    {
+      "id": "aishell-BAC009S0764W0205",
+      "language": "zh",
+      "oldErrors": 1,
+      "newErrors": 1,
+      "delta": 0
+    },
+    {
+      "id": "libri-1272-141231-0010",
+      "language": "en",
+      "oldErrors": 0,
+      "newErrors": 0,
+      "delta": 0
+    },
+    {
+      "id": "aishell-BAC009S0764W0224",
+      "language": "zh",
+      "oldErrors": 0,
+      "newErrors": 0,
+      "delta": 0
+    },
+    {
+      "id": "aishell-BAC009S0764W0408",
+      "language": "zh",
+      "oldErrors": 0,
+      "newErrors": 0,
+      "delta": 0
+    },
+    {
+      "id": "libri-1462-170145-0018",
+      "language": "en",
+      "oldErrors": 0,
+      "newErrors": 0,
+      "delta": 0
+    },
+    {
+      "id": "libri-7850-281318-0019",
+      "language": "en",
+      "oldErrors": 0,
+      "newErrors": 0,
+      "delta": 0
+    },
+    {
+      "id": "libri-3170-137482-0012",
+      "language": "en",
+      "oldErrors": 0,
+      "newErrors": 0,
+      "delta": 0
+    },
+    {
+      "id": "tts-dev-06-eddy",
+      "language": "mixed",
+      "oldErrors": 1,
+      "newErrors": 2,
+      "delta": 1
+    },
+    {
+      "id": "tts-dev-22-flo",
+      "language": "mixed",
+      "oldErrors": 3,
+      "newErrors": 7,
+      "delta": 4
+    },
+    {
+      "id": "tts-dev-11-reed",
+      "language": "mixed",
+      "oldErrors": 2,
+      "newErrors": 2,
+      "delta": 0
+    },
+    {
+      "id": "aishell-BAC009S0766W0384",
+      "language": "zh",
+      "oldErrors": 0,
+      "newErrors": 0,
+      "delta": 0
+    },
+    {
+      "id": "aishell-BAC009S0766W0325",
+      "language": "zh",
+      "oldErrors": 2,
+      "newErrors": 1,
+      "delta": -1
+    },
+    {
+      "id": "aishell-BAC009S0766W0386",
+      "language": "zh",
+      "oldErrors": 0,
+      "newErrors": 0,
+      "delta": 0
+    },
+    {
+      "id": "aishell-BAC009S0764W0304",
+      "language": "zh",
+      "oldErrors": 1,
+      "newErrors": 1,
+      "delta": 0
+    },
+    {
+      "id": "tts-dev-03-eddy",
+      "language": "mixed",
+      "oldErrors": 5,
+      "newErrors": 1,
+      "delta": -4
+    },
+    {
+      "id": "aishell-BAC009S0766W0442",
+      "language": "zh",
+      "oldErrors": 3,
+      "newErrors": 4,
+      "delta": 1
+    },
+    {
+      "id": "libri-2086-149220-0005",
+      "language": "en",
+      "oldErrors": 2,
+      "newErrors": 2,
+      "delta": 0
+    },
+    {
+      "id": "tts-dev-27-eddy",
+      "language": "mixed",
+      "oldErrors": 3,
+      "newErrors": 5,
+      "delta": 2
+    },
+    {
+      "id": "aishell-BAC009S0766W0424",
+      "language": "zh",
+      "oldErrors": 0,
+      "newErrors": 0,
+      "delta": 0
+    },
+    {
+      "id": "tts-dev-23-reed",
+      "language": "mixed",
+      "oldErrors": 6,
+      "newErrors": 4,
+      "delta": -2
+    },
+    {
+      "id": "libri-251-137823-0017",
+      "language": "en",
+      "oldErrors": 0,
+      "newErrors": 0,
+      "delta": 0
+    },
+    {
+      "id": "libri-8297-275156-0000",
+      "language": "en",
+      "oldErrors": 0,
+      "newErrors": 0,
+      "delta": 0
+    },
+    {
+      "id": "aishell-BAC009S0766W0310",
+      "language": "zh",
+      "oldErrors": 0,
+      "newErrors": 0,
+      "delta": 0
+    },
+    {
+      "id": "aishell-BAC009S0765W0410",
+      "language": "zh",
+      "oldErrors": 0,
+      "newErrors": 0,
+      "delta": 0
+    },
+    {
+      "id": "libri-7850-286674-0008",
+      "language": "en",
+      "oldErrors": 0,
+      "newErrors": 0,
+      "delta": 0
+    },
+    {
+      "id": "aishell-BAC009S0766W0138",
+      "language": "zh",
+      "oldErrors": 0,
+      "newErrors": 0,
+      "delta": 0
+    },
+    {
+      "id": "aishell-BAC009S0766W0494",
+      "language": "zh",
+      "oldErrors": 0,
+      "newErrors": 0,
+      "delta": 0
+    },
+    {
+      "id": "libri-5895-34615-0008",
+      "language": "en",
+      "oldErrors": 0,
+      "newErrors": 0,
+      "delta": 0
+    },
+    {
+      "id": "tts-dev-20-reed",
+      "language": "mixed",
+      "oldErrors": 0,
+      "newErrors": 0,
+      "delta": 0
+    },
+    {
+      "id": "libri-1462-170145-0009",
+      "language": "en",
+      "oldErrors": 0,
+      "newErrors": 0,
+      "delta": 0
+    },
+    {
+      "id": "tts-dev-02-reed",
+      "language": "mixed",
+      "oldErrors": 4,
+      "newErrors": 5,
+      "delta": 1
+    },
+    {
+      "id": "tts-dev-19-flo",
+      "language": "mixed",
+      "oldErrors": 2,
+      "newErrors": 2,
+      "delta": 0
+    },
+    {
+      "id": "aishell-BAC009S0764W0261",
+      "language": "zh",
+      "oldErrors": 0,
+      "newErrors": 0,
+      "delta": 0
+    },
+    {
+      "id": "aishell-BAC009S0766W0125",
+      "language": "zh",
+      "oldErrors": 0,
+      "newErrors": 0,
+      "delta": 0
+    },
+    {
+      "id": "libri-3170-137482-0015",
+      "language": "en",
+      "oldErrors": 0,
+      "newErrors": 0,
+      "delta": 0
+    },
+    {
+      "id": "aishell-BAC009S0764W0387",
+      "language": "zh",
+      "oldErrors": 1,
+      "newErrors": 0,
+      "delta": -1
+    },
+    {
+      "id": "tts-dev-17-reed",
+      "language": "mixed",
+      "oldErrors": 7,
+      "newErrors": 7,
+      "delta": 0
+    },
+    {
+      "id": "aishell-BAC009S0764W0417",
+      "language": "zh",
+      "oldErrors": 0,
+      "newErrors": 2,
+      "delta": 2
+    },
+    {
+      "id": "libri-3081-166546-0006",
+      "language": "en",
+      "oldErrors": 1,
+      "newErrors": 1,
+      "delta": 0
+    },
+    {
+      "id": "nonspeech-dev-2",
+      "language": "zh",
+      "oldErrors": 0,
+      "newErrors": 0,
+      "delta": 0
+    },
+    {
+      "id": "tts-dev-28-flo",
+      "language": "mixed",
+      "oldErrors": 0,
+      "newErrors": 0,
+      "delta": 0
+    }
+  ]
+}

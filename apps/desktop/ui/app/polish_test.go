@@ -141,7 +141,7 @@ func TestNoTechnicalModelNames(t *testing.T) {
 		tt := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, SettingsWidth, SettingsHeight)
 		settle(tt)
 		messages := copy.For(copy.Locale(locale))
-		if !hasText(tt, messages.Text(copy.ModelNameAccurate)) || !hasText(tt, messages.Text(copy.PolishLabel)) {
+		if !hasText(tt, messages.Text(copy.ModelNameGeneric)) || !hasText(tt, messages.Text(copy.PolishLabel)) {
 			t.Fatalf("model page lacks recognition or polish: %q", tt.Texts())
 		}
 		check("settings", tt.Texts())
@@ -166,9 +166,10 @@ func TestNoTechnicalModelNames(t *testing.T) {
 }
 
 // The context switches show while polishing is on, start on, write their
-// preference, and the screen switch asks for Screen Recording when missing.
+// preference, and the screen switch asks for Accessibility when missing.
 func TestContextRows(t *testing.T) {
 	state, actions, store := fixture()
+	state.Permissions.Accessibility = runtime.ConsentDenied
 	state.Preferences.Polish = true
 	state.Preferences.ContextCursor, state.Preferences.ContextScreen, state.Preferences.ContextHistory = true, true, true
 	state.Polish = runtime.Polish{State: runtime.PolishReady, Installed: true}
@@ -183,7 +184,7 @@ func TestContextRows(t *testing.T) {
 		}
 	}
 	snapshot(t, tt, "settings-context")
-	if err := tt.Click(en.Text(copy.Allow)); err != nil || !actions.called("screen-recording") {
+	if err := tt.Click(en.Text(copy.Allow)); err != nil || !actions.called("request-ax") {
 		t.Fatalf("permission request: %v", err)
 	}
 	title, _ := tt.Find(en.Text(copy.ContextHistoryLabel))
@@ -193,7 +194,7 @@ func TestContextRows(t *testing.T) {
 	if state.Preferences.ContextHistory {
 		t.Fatal("history switch did not turn off")
 	}
-	state.Permissions.ScreenRecording = runtime.ConsentGranted
+	state.Permissions.Accessibility = runtime.ConsentGranted
 	settle(tt)
 	if hasText(tt, en.Text(copy.ContextScreenPermission)) {
 		t.Fatal("permission prompt shown after access was granted")

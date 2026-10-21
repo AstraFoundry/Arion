@@ -1,10 +1,6 @@
 package application
 
-import (
-	"strings"
-
-	"arion.local/core/domain"
-)
+import "arion.local/core/domain"
 
 // Delivery selects how shortcut-mode commits reach other applications.
 type Delivery string
@@ -25,7 +21,6 @@ type Preferences struct {
 	Version             int        `json:"version"`
 	UILanguage          UILanguage `json:"uiLanguage"`
 	OnboardingCompleted bool       `json:"onboardingCompleted"`
-	Shortcut            string     `json:"shortcut"`
 	HoldKey             HoldKey    `json:"holdKey"`
 	Delivery            Delivery   `json:"delivery"`
 	RemoveFillers       bool       `json:"removeFillers"`
@@ -80,13 +75,10 @@ const (
 	SimplifiedChinese UILanguage = "zh-CN"
 )
 
-// DefaultShortcut is Option+Space on macOS and Alt+Space on Windows.
-const DefaultShortcut = "Alt+Space"
-
-// DefaultPreferences are the first-run choices.
-func DefaultPreferences() Preferences {
+// DefaultPreferences are the first-run choices on platform (a GOOS value).
+func DefaultPreferences(platform string) Preferences {
 	return Preferences{
-		Version: PreferencesVersion, UILanguage: English, Shortcut: DefaultShortcut,
+		Version: PreferencesVersion, UILanguage: English, HoldKey: DefaultHoldKey(platform),
 		Delivery: DeliveryAutomatic, RemoveFillers: true, Sounds: true, CheckUpdates: true, MatchApp: true,
 		ContextCursor: true, ContextScreen: true, ContextHistory: true, LearnEdits: true,
 		Keyboard: DefaultKeyboardPreferences(),
@@ -94,9 +86,11 @@ func DefaultPreferences() Preferences {
 }
 
 // Normalize repairs fields that cannot be valid and reports what changed, so
-// a damaged file never yields an unusable configuration silently.
-func (p Preferences) Normalize() (Preferences, []string) {
-	defaults := DefaultPreferences()
+// a damaged file never yields an unusable configuration silently. A hold key
+// this platform cannot observe, including the retired "off", becomes the
+// platform default.
+func (p Preferences) Normalize(platform string) (Preferences, []string) {
+	defaults := DefaultPreferences(platform)
 	var repaired []string
 	if p.UILanguage != English && p.UILanguage != SimplifiedChinese {
 		p.UILanguage = defaults.UILanguage
@@ -106,12 +100,8 @@ func (p Preferences) Normalize() (Preferences, []string) {
 		p.Version = PreferencesVersion
 		repaired = append(repaired, "version")
 	}
-	if strings.TrimSpace(p.Shortcut) == "" {
-		p.Shortcut = defaults.Shortcut
-		repaired = append(repaired, "shortcut")
-	}
-	if !knownHoldKey(p.HoldKey) {
-		p.HoldKey = HoldOff
+	if !knownHoldKey(platform, p.HoldKey) {
+		p.HoldKey = defaults.HoldKey
 		repaired = append(repaired, "holdKey")
 	}
 	if p.Delivery != DeliveryAutomatic && p.Delivery != DeliveryClipboard {

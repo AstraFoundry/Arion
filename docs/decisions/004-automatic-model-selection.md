@@ -1,6 +1,6 @@
 # ADR 004: The default model is chosen by measured evaluation
 
-Status: Accepted.
+Status: Accepted for measured ranking; explicit native Qwen3-ASR adoption is governed by [ADR 020](020-native-qwen-asr.md).
 
 ## Context
 

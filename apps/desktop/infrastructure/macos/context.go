@@ -25,15 +25,15 @@ const (
 	OCRFast     OCRLevel = C.ARION_OCR_FAST
 )
 
-// ScreenText is text recognized in a window and where its time went.
+// ScreenText carries collected window text and acquisition/recognition timings.
 type ScreenText struct {
 	Text      string
 	CaptureMs float64
 	OCRMs     float64
 }
 
-// ScreenRecording reports Screen Recording access, which window text
-// recognition needs. macOS does not tell undecided from denied.
+// ScreenRecording reports the historical OCR benchmark permission. Product
+// window context uses Accessibility. macOS does not tell undecided from denied.
 func (Permissions) ScreenRecording() AuthStatus {
 	if C.arion_screen_permission() == 1 {
 		return AuthGranted
@@ -65,8 +65,8 @@ func RecognizeImage(data []byte, level OCRLevel) (ScreenText, error) {
 	return screenText(status, out, 0, ms)
 }
 
-// RecognizeWindow captures the frontmost window of pid and recognizes its
-// text. The image is released inside the call and never stored.
+// RecognizeWindow is the historical OCR benchmark control. It captures the
+// frontmost window of pid; product context uses ReadWindowText instead.
 func RecognizeWindow(pid int, level OCRLevel, timeout time.Duration) (ScreenText, error) {
 	var out *C.char
 	var captureMs, ocrMs C.double
@@ -106,4 +106,29 @@ func cursorContext(element unsafe.Pointer, max int) (before, after string, ok bo
 	C.free(unsafe.Pointer(b))
 	C.free(unsafe.Pointer(a))
 	return before, after, true
+}
+
+// ReadWindowText reads the captured target window's visible Accessibility text.
+// Read duration uses CaptureMs; OCRMs is zero because no recognition runs.
+func ReadWindowText(element unsafe.Pointer, pid int, timeout time.Duration) (ScreenText, error) {
+	var out *C.char
+	var ms C.double
+	status := C.arion_accessibility_window(element, C.int(pid), C.double(timeout.Seconds()), &out, &ms)
+	text := ""
+	if out != nil {
+		text = C.GoString(out)
+		C.free(unsafe.Pointer(out))
+	}
+	result := ScreenText{Text: text, CaptureMs: float64(ms)}
+	switch status {
+	case C.ARION_CONTEXT_OK:
+		return result, nil
+	case C.ARION_CONTEXT_NO_PERMISSION:
+		return result, domain.Fail(domain.CodePermissionDenied, "accessibility")
+	case C.ARION_CONTEXT_NO_WINDOW:
+		return result, domain.Fail(domain.CodeTargetChanged, "context target changed")
+	case C.ARION_CONTEXT_TIMEOUT:
+		return result, domain.Fail(domain.CodeTargetUnsupported, "accessibility read timed out")
+	}
+	return result, domain.Fail(domain.CodeTargetUnsupported, "visible accessibility text unavailable or exceeds bounds")
 }

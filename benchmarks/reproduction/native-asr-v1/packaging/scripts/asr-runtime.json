@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "mlx": {"revision": "a5506c1c7978aeea9a3295f83d43beff3f06bcdf", "toolchain": "Swift 6.3.1 / Xcode 26.4.1", "minimumMacOS": "14.0"},
+  "speech": {
+    "version": "0.8.11",
+    "repository": "https://github.com/nyosegawa/speech.cpp.git",
+    "revision": "c4bdcd0e751bd29460cb1353e6d54499828a1d90",
+    "windowsVulkan": {"url": "https://github.com/nyosegawa/speech.cpp/releases/download/v0.8.11/speech-0.8.11-windows-x64-vulkan.zip", "sha256": "63f4c5b5c60aeab9d4c90193298fe4ee5d2a6c931cdbdcbc8cbb126fbffc56d0", "sizeBytes": 28886830}
+  }
+}

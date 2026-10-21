@@ -5,14 +5,14 @@ This file accompanies each release as `RELEASE-STATUS.md`. The `0.1.0-alpha.5` r
 | Capability | macOS Apple silicon | macOS Intel | Windows x64 |
 | --- | --- | --- | --- |
 | Native package | App and DMG | App and DMG | Per-user NSIS installer |
-| Local speech recognition | Implemented; fixture replay measured | Runtime packaged; host acceptance pending | Runtime packaged; complete packaged dictation acceptance pending |
+| Local speech recognition | Native MLX 1.7B 8-bit; 118 development fixtures measured | Native speech.cpp Q8_0 CPU executable cross-built; actual Intel inference pending | Native CPU/Vulkan staging implemented; actual Windows package/inference/signing acceptance pending |
 | Local polishing | Worker and pinned runtime bundled | Unsupported; no approved runtime/model pair | Unsupported; no approved runtime/model pair |
 | System input method | Offline Pinyin/voice IMK host bundled with its own horizontal candidate bar and context ranking; native 28/28 cases pass; signed source selection still fails | x86_64 23/23 cases pass under Rosetta on arm64; physical Intel/system dispatch untested | TSF not implemented |
 | Encrypted sync | Desktop enrollment and outbox pending | Desktop enrollment and outbox pending | Desktop enrollment and outbox pending |
 
 Windows is an early preview. Polishing on unsupported platforms reports its unavailable state; no content is routed to cloud inference. Model weights are downloaded separately from the pinned catalog and are not embedded in installers.
 
-The macOS package requires macOS 14 or later. Speech recognition still stages ONNX Runtime, whose Mach-O minimum is 14.0; rewriting stages llama.cpp ([local rewrite](local-rewrite.md)). Package verification rejects any executable whose minimum exceeds the advertised package minimum. Minimum-version host acceptance and minimum RAM measurements remain open.
+The macOS package requires macOS 14 or later. Speech recognition now packages native Qwen3-ASR workers and the Swift/Metal resource closure ([ADR 020](../decisions/020-native-qwen-asr.md)); rewriting stages llama.cpp ([local rewrite](local-rewrite.md)). Package verification rejects any executable whose minimum exceeds the advertised package minimum. Minimum-version host acceptance and minimum RAM measurements remain open.
 
 The latest native arm64 actual-engine/AppKit run passes 28 cases. The translated x86_64 run passes 23 cases under Rosetta 2 on arm64 hardware, not physical Intel. Both use isolated synthetic learning keys. These isolated runs do not exercise installed IMK event dispatch, an external editor or the user's Keychain. A completed macOS arm64 Developer ID signed/notarized desktop build passed package Gatekeeper checks, and the exact copied nested host was accepted as Notarized Developer ID after installation. Nevertheless, on macOS 26.6.2 its parent source remained disabled while its child mode was enabled: native enable returned `0`, but select returned `-50`. No actual typing dispatch was reached. Run 05 restored the original bundle after that failed probe. A later final-app UI attempt observed onboarding/menus but never reached installation; it ended with ABC, no own-source entries, original bundle bytes and absent keyboard key restored without errors. Source activation is still unaccepted, and signing alone does not explain or resolve the failure ([alignment report](../research/imk-typing-alignment.md)).
 
@@ -39,3 +39,5 @@ The strict keyboard learning provider now requires the Data Protection Keychain 
 The [100-case development baseline](../../benchmarks/results/imk-quality-v1/README.md) records 71% exact intended commit and 13.43% character error rate. These engine measurements do not establish competitor parity, population accuracy, actual IMK key-to-preedit latency or concurrent speech behavior.
 
 The [v7 evidence archive](../../benchmarks/runs/imk-keyboard-v7/README.md) preserves the literal-umlaut failure and corrected 23-case native/translated runs, rebuilt unsigned bundle checks, the inconclusive inactive-client candidate probe and bounded Doubao UI-refresh follow-up.
+
+The [native ASR migration acceptance](../../benchmarks/results/native-asr-v1/README.md) replaces the old speech stack. Native MLX loading, real-time replay and offline signed-worker inference pass; first-partial and final-latency budgets remain failed. Windows/Intel/minimum-OS and clean-editor acceptance are still open.

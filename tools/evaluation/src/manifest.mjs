@@ -74,7 +74,8 @@ export function validateExperiment(config) {
   requireValue(Array.isArray(config.cacheStates) && config.cacheStates.length > 0 && new Set(config.cacheStates).size === config.cacheStates.length && config.cacheStates.every(s => ['cold', 'warm'].includes(s)), 'Invalid cache-state strata');
   requireValue(config.pipeline && typeof config.pipeline.asr === 'string' && config.pipeline.pace === 'realtime' && Number.isFinite(config.pipeline.chunkMs) && config.pipeline.chunkMs > 0 && config.pipeline.sampleRate === 16000, 'Pinned realtime pipeline settings required');
   requireValue(Number.isInteger(config.bootstrap?.iterations) && config.bootstrap.iterations >= 100 && Number.isInteger(config.bootstrap.seed), 'Bootstrap settings required');
-  requireValue(Array.isArray(config.variants) && config.variants.length > 1, 'Ablation requires variants');
+  requireValue(config.design === undefined || ['ablation','validation'].includes(config.design), 'Unknown experiment design');
+  requireValue(Array.isArray(config.variants) && config.variants.length >= (config.design === 'validation' ? 1 : 2), 'Ablation requires variants; single-backend validation must declare its design');
   const ids = new Set();
   for (const variant of config.variants) {
     requireValue(typeof variant.id === 'string' && /^[\w-]+$/.test(variant.id) && !ids.has(variant.id), 'Duplicate or unsafe variant ID');

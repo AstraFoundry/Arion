@@ -34,6 +34,7 @@ void arion_open_url(const char *url);
 int arion_capture_target(arion_target *out, int read_site);
 int arion_frontmost_pid(void);
 int arion_peek_target(int pid, arion_target *out, int read_site);
+void *arion_retain(void *element);
 void arion_release(void *element);
 int arion_focus_matches(void *element, int pid);
 int arion_secure_input(void);

@@ -1,0 +1,12 @@
+{
+  "cancel": {
+    "id": "cancel",
+    "type": "cancelled"
+  },
+  "reuse": {
+    "stop": "complete",
+    "text": "",
+    "id": "reuse",
+    "type": "end"
+  }
+}

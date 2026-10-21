@@ -9,7 +9,7 @@ import (
 // resolve plausible recognition errors or continue the surrounding text. It comes from
 // other applications and is data, never instructions (009).
 type RewriteContext struct {
-	// Screen is text recognized in the focused window.
+	// Screen is visible text read from the captured window.
 	Screen string
 	// Before and After are the field's text around the cursor.
 	Before string

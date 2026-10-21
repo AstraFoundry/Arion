@@ -1,6 +1,9 @@
 package models
 
-import "testing"
+import (
+	"encoding/json"
+	"testing"
+)
 
 func TestEmbeddedCatalogValid(t *testing.T) {
 	catalog, err := Load()
@@ -26,4 +29,27 @@ func TestCatalogRejectsMissingProvenance(t *testing.T) {
 			t.Fatalf("accepted %s", data)
 		}
 	}
+}
+
+func TestRemoteArtifactInventoryCannotDrift(t *testing.T) {
+	c, err := Load()
+	if err != nil {
+		t.Fatal(err)
+	}
+	for i, a := range c.Artifacts {
+		if a.Source.Format != "files" {
+			continue
+		}
+		for role, f := range a.Files {
+			f.URL += "-changed"
+			c.Artifacts[i].Files[role] = f
+			break
+		}
+		data, _ := json.Marshal(c)
+		if _, err := Parse(data); err == nil {
+			t.Fatal("accepted changed remote inventory")
+		}
+		return
+	}
+	t.Fatal("missing remote artifact")
 }

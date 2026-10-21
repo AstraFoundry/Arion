@@ -10,7 +10,7 @@ import (
 
 // RWT-A06: loading or missing workers must not silently disable polishing.
 func TestRewritePolicyPreservesChoiceBeforeWorkerReady(t *testing.T) {
-	a := &App{prefs: application.DefaultPreferences(), rewriter: &rewriting.Service{}}
+	a := &App{prefs: application.DefaultPreferences("darwin"), rewriter: &rewriting.Service{}}
 	if a.rewritePolicy().Enabled {
 		t.Fatal("polishing enabled without the user's choice")
 	}

@@ -20,6 +20,7 @@ import (
 	"arion.local/core/contracts"
 	"arion.local/core/domain"
 	"arion.local/core/domain/ports"
+	"arion.local/desktop/infrastructure/asr"
 	"arion.local/desktop/infrastructure/audio"
 	"arion.local/desktop/infrastructure/browser"
 	"arion.local/desktop/infrastructure/diagnostics"
@@ -97,23 +98,22 @@ type App struct {
 	overlay *mygo.Window
 	panel   *mygo.Window
 	// sceneSeq drops a scene peek answered after a newer panel opened.
-	sceneSeq        int
-	settingsWin     *mygo.Window
-	onboarding      *mygo.Window
-	guide           *guideSession
-	trayHint        *mygo.Window
-	views           map[*mygo.Window]uiapp.View
-	testingShortcut bool
-	shortcutActive  bool
-	escapeActive    bool
-	hold            application.HoldGesture
-	harness         *harness
-	monitor         ports.AudioStream
-	vocab           *vocabulary.Store
-	startCue        *mygoaudio.Sound
-	stopCue         *mygoaudio.Sound
-	recommended     string
-	updates         *updates
+	sceneSeq     int
+	settingsWin  *mygo.Window
+	onboarding   *mygo.Window
+	guide        *guideSession
+	trayHint     *mygo.Window
+	views        map[*mygo.Window]uiapp.View
+	testingHold  bool
+	escapeActive bool
+	hold         application.HoldGesture
+	harness      *harness
+	monitor      ports.AudioStream
+	vocab        *vocabulary.Store
+	startCue     *mygoaudio.Sound
+	stopCue      *mygoaudio.Sound
+	recommended  string
+	updates      *updates
 
 	// Snapshot read by worker goroutines (correction policy, delivery).
 	snapshot sync.Mutex
@@ -177,6 +177,7 @@ func New(opts Options) (*App, error) {
 	a.store.Offline = opts.Offline
 	a.manager = modelruntime.NewManager(catalog, a.store, opts.Threads)
 	resources, _ := mygo.App.Path(mygo.PathResources)
+	asr.Resources = resources
 	a.rewriter = rewriting.New(catalog, a.store, rewriting.Locate(resources), opts.Threads, modelruntime.Platform())
 	a.history = application.NewHistory(30 * time.Minute)
 	a.mic = audio.NewMicrophone(a.platform)
@@ -221,7 +222,7 @@ func New(opts Options) (*App, error) {
 		return nil, err
 	}
 	a.state = arion.State{Preferences: prefs, Platform: modelruntime.Platform(),
-		Shortcut: arion.Shortcut{Accelerator: prefs.Shortcut}, Model: arion.Model{State: arion.ModelUnselected},
+		Model:   arion.Model{State: arion.ModelUnselected},
 		Account: arion.Account{Phase: arion.AccountSignedOut, Issuer: profile.Issuer, Portal: accountPortal(profile), Disabled: profile.AuthMode == "device", WaitlistDisabled: !profile.Standard()}}
 	// Construction stays idle; restoration starts off the main thread after readiness.
 	accounts, err := account.New(opts.Account, account.Dependencies{Store: keystore.OpenForProfile(profile.Fingerprint()), Browser: browser.Open})
@@ -358,6 +359,7 @@ func (a *App) ready() {
 	a.applyPolish(a.rewriter.Status())
 	go a.startPolish()
 	mygo.App.OnQuit(a.rewriter.Disable)
+	mygo.App.OnQuit(func() { a.core.Cancel(); a.manager.Close() })
 	a.refreshPermissions()
 	a.state.InputMethod = arion.InputMethodUnsupported
 	if a.ime != nil {
@@ -390,7 +392,6 @@ func (a *App) ready() {
 	a.updates.setPrereleases(a.state.Preferences.AllowPrereleaseUpdates)
 	a.scheduleUpdates()
 	a.startAccountMaintenance()
-	a.registerShortcut(a.state.Preferences.Shortcut)
 	a.startHoldKey()
 	mygo.App.OnQuit(a.platform.StopHoldKey)
 	a.createTray()
@@ -538,31 +539,6 @@ func (a *App) updateEscape() {
 	a.escapeActive = false
 }
 
-func (a *App) registerShortcut(accelerator string) error {
-	if a.shortcutActive {
-		mygo.GlobalShortcut.Unregister(a.state.Shortcut.Accelerator)
-		a.shortcutActive = false
-	}
-	err := mygo.GlobalShortcut.Register(accelerator, a.onShortcut)
-	a.record("shortcut_register", err)
-	if err == nil {
-		a.shortcutActive = true
-		a.state.Shortcut.Accelerator = accelerator
-	}
-	a.state.Shortcut.Registered = a.shortcutActive
-	return err
-}
-
-func (a *App) onShortcut() {
-	a.state.Shortcut.Pressed = time.Now()
-	if a.testingShortcut {
-		a.invalidate()
-		return
-	}
-	a.record("dictation_toggle", nil)
-	a.core.Toggle()
-}
-
 func (a *App) refreshPermissions() bool {
 	next := arion.Permissions{Microphone: a.platform.Microphone(), Accessibility: a.platform.Accessibility(),
 		InputMonitoring: a.platform.InputMonitoring(), ScreenRecording: a.platform.ScreenRecording()}
@@ -633,6 +609,19 @@ func (a *App) bundles() []arion.Bundle {
 	platform := modelruntime.Platform()
 	var out []arion.Bundle
 	for _, b := range a.catalog.Bundles {
+		artifact, ok := a.catalog.Artifact(b.Streaming)
+		supported := false
+		if ok {
+			for _, target := range artifact.Platforms {
+				if target == platform {
+					supported = true
+				}
+			}
+		}
+		if !supported {
+			continue
+		}
+
 		bundle := arion.Bundle{ID: b.ID, Streaming: b.Streaming, Finalizer: b.Finalizer, SizeBytes: a.catalog.DownloadBytes(b), Recommended: b.ID == a.recommended}
 		for _, e := range b.Evaluations {
 			if e.Hardware == platform || !bundle.Evaluated {

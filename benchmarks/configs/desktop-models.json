@@ -1,9 +1,9 @@
 {
   "version": 1,
-  "id": "desktop-models-v1",
-  "purpose": "Select the default recognition bundle: same corpus, settings and correction-off treatment; only the bundle varies",
+  "id": "desktop-native-models-v1",
+  "purpose": "Evaluate the adopted native Qwen3-ASR backend on the actual target OS",
   "split": "dev",
-  "baseline": "xasr-160",
+  "baseline": "qwen17-mlx8-native",
   "seeds": [
     11
   ],
@@ -13,10 +13,10 @@
     "warm"
   ],
   "pipeline": {
-    "asr": "xasr-160",
+    "asr": "qwen3-asr-1.7b-mlx-8bit",
     "sampleRate": 16000,
     "chunkMs": 20,
-    "endpoint": "sherpa-rules-v1",
+    "endpoint": "qwen-chunked-v1",
     "pace": "realtime",
     "threads": 4,
     "endpointSilenceMs": 800
@@ -27,70 +27,16 @@
   },
   "variants": [
     {
-      "id": "xasr-160",
+      "id": "qwen17-mlx8-native",
       "features": {
         "memory": false,
         "ranker": "source",
         "correction": "none"
       },
       "pipelineOverrides": {
-        "asr": "xasr-160"
-      }
-    },
-    {
-      "id": "xasr-480",
-      "features": {
-        "memory": false,
-        "ranker": "source",
-        "correction": "none"
-      },
-      "pipelineOverrides": {
-        "asr": "xasr-480"
-      }
-    },
-    {
-      "id": "xasr-160-xasr-final",
-      "features": {
-        "memory": false,
-        "ranker": "source",
-        "correction": "none"
-      },
-      "pipelineOverrides": {
-        "asr": "xasr-160-xasr-final"
-      }
-    },
-    {
-      "id": "xasr-480-xasr-final",
-      "features": {
-        "memory": false,
-        "ranker": "source",
-        "correction": "none"
-      },
-      "pipelineOverrides": {
-        "asr": "xasr-480-xasr-final"
-      }
-    },
-    {
-      "id": "xasr-160-sensevoice-final",
-      "features": {
-        "memory": false,
-        "ranker": "source",
-        "correction": "none"
-      },
-      "pipelineOverrides": {
-        "asr": "xasr-160-sensevoice-final"
-      }
-    },
-    {
-      "id": "zipformer-2023",
-      "features": {
-        "memory": false,
-        "ranker": "source",
-        "correction": "none"
-      },
-      "pipelineOverrides": {
-        "asr": "zipformer-2023"
+        "asr": "qwen3-asr-1.7b-mlx-8bit"
       }
     }
-  ]
+  ],
+  "design": "validation"
 }

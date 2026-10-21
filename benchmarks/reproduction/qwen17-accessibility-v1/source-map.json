@@ -1,0 +1,151 @@
+{
+  "baseGitRevision": "f3374fdf70ae092d637f391c6d4ff5f5fd62c811",
+  "dirty": true,
+  "files": {
+    "apps/desktop/cmd/arion-eval-driver/main.go": {
+      "archived": "benchmarks/reproduction/qwen17-accessibility-v1/source/apps/desktop/cmd/arion-eval-driver/main.go",
+      "sha256": "1d063a589938050f879315723d600d324feef4e6f70f40b5ad84f29ed2eecdb8"
+    },
+    "apps/desktop/cmd/arion-eval-driver/main_test.go": {
+      "archived": "benchmarks/reproduction/qwen17-accessibility-v1/source/apps/desktop/cmd/arion-eval-driver/main_test.go",
+      "sha256": "a1e06783d85f3b6e07a6c07ef78d4fb324e0954629dd656b5432b1664a34e21e"
+    },
+    "apps/desktop/cmd/arion-models/main.go": {
+      "archived": "benchmarks/reproduction/qwen17-accessibility-v1/source/apps/desktop/cmd/arion-models/main.go",
+      "sha256": "a09a47ecde4d1cbc24293b6e0f8bf2542a78e763ff658ccb943e92128bd45dbd"
+    },
+    "apps/desktop/go.mod": {
+      "archived": "benchmarks/reproduction/qwen17-accessibility-v1/source/apps/desktop/go.mod",
+      "sha256": "62de8be1d3aecb99e986d32e8ebc001dce88d5b9ce2c069a7a2410245a588092"
+    },
+    "apps/desktop/go.sum": {
+      "archived": "benchmarks/reproduction/qwen17-accessibility-v1/source/apps/desktop/go.sum",
+      "sha256": "48dada8648d1b6d4163899aa1cfda9c63088bd4f1882b2700d53b6a1197f4c4e"
+    },
+    "apps/desktop/infrastructure/asr/sherpa.go": {
+      "archived": "benchmarks/reproduction/qwen17-accessibility-v1/source/apps/desktop/infrastructure/asr/sherpa.go",
+      "sha256": "fb793e7668d0ada3e6cc2007a28bd9de128887e51afb83e90efab2c8e908dbd8"
+    },
+    "apps/desktop/infrastructure/macos/accessibility.m": {
+      "archived": "benchmarks/reproduction/qwen17-accessibility-v1/source/apps/desktop/infrastructure/macos/accessibility.m",
+      "sha256": "e9931aded2e7d59f38119d01472b81b93a3d3dda22285b5cfae9fed0b37408ac"
+    },
+    "apps/desktop/infrastructure/macos/context.go": {
+      "archived": "benchmarks/reproduction/qwen17-accessibility-v1/source/apps/desktop/infrastructure/macos/context.go",
+      "sha256": "3211566200a75c6e5b06b95297146fd1d92c57424697e40fd2f73c483a8fddb4"
+    },
+    "apps/desktop/infrastructure/macos/context.h": {
+      "archived": "benchmarks/reproduction/qwen17-accessibility-v1/source/apps/desktop/infrastructure/macos/context.h",
+      "sha256": "31faf73065bd6fbbbfc8a934fa163f47162af83409503801f95838dde3c88676"
+    },
+    "apps/desktop/infrastructure/macos/macos.go": {
+      "archived": "benchmarks/reproduction/qwen17-accessibility-v1/source/apps/desktop/infrastructure/macos/macos.go",
+      "sha256": "e7b8b2cf7b9e5ac062699934e6bef5e209c33695f244b4cddd1a446f8673f791"
+    },
+    "apps/desktop/infrastructure/modelruntime/runtime.go": {
+      "archived": "benchmarks/reproduction/qwen17-accessibility-v1/source/apps/desktop/infrastructure/modelruntime/runtime.go",
+      "sha256": "8d5e0e4090c92b4c69e1ff7ecec62cee84d104922fc85d4940a709684117d720"
+    },
+    "apps/desktop/infrastructure/provision/provision.go": {
+      "archived": "benchmarks/reproduction/qwen17-accessibility-v1/source/apps/desktop/infrastructure/provision/provision.go",
+      "sha256": "8c78eee0ff1c31358445c2ec6905f6308b54c6ca84fc1c74a15addf325c76f9a"
+    },
+    "apps/desktop/infrastructure/provision/rewriter_test.go": {
+      "archived": "benchmarks/reproduction/qwen17-accessibility-v1/source/apps/desktop/infrastructure/provision/rewriter_test.go",
+      "sha256": "c05e074aa10568df93eef2e9e5d26bc21be772d712e4e525a5b84efc37cae273"
+    },
+    "apps/desktop/infrastructure/windows/accessibility.go": {
+      "archived": "benchmarks/reproduction/qwen17-accessibility-v1/source/apps/desktop/infrastructure/windows/accessibility.go",
+      "sha256": "9097daeb5a3545a8032c8ea6c6f518754f1cb24ac26ebeb52881d7167057d3fd"
+    },
+    "apps/desktop/infrastructure/windows/windows.go": {
+      "archived": "benchmarks/reproduction/qwen17-accessibility-v1/source/apps/desktop/infrastructure/windows/windows.go",
+      "sha256": "54fd8018388e4abe47a8a28ea7de43b19cec69b7fe53e3fd5952101b988935fd"
+    },
+    "apps/desktop/ui/app/polish_test.go": {
+      "archived": "benchmarks/reproduction/qwen17-accessibility-v1/source/apps/desktop/ui/app/polish_test.go",
+      "sha256": "cfafb08209c3d944abcbc7cee8c47ab5ef20eb2100668df8b13b58d17d71e75e"
+    },
+    "apps/desktop/ui/features/polish/polish.go": {
+      "archived": "benchmarks/reproduction/qwen17-accessibility-v1/source/apps/desktop/ui/features/polish/polish.go",
+      "sha256": "726014fe269e4fba3fc33495919d24e0b09e99618c990c431f899e051250c19e"
+    },
+    "apps/desktop/ui/shared/copy/locales/en.json": {
+      "archived": "benchmarks/reproduction/qwen17-accessibility-v1/source/apps/desktop/ui/shared/copy/locales/en.json",
+      "sha256": "60a31699b523e4bf07355c38df6fc61f97b3a36b22b5874d8c681572f586e070"
+    },
+    "apps/desktop/ui/shared/copy/locales/zh-CN.json": {
+      "archived": "benchmarks/reproduction/qwen17-accessibility-v1/source/apps/desktop/ui/shared/copy/locales/zh-CN.json",
+      "sha256": "7b70a910de5ba11721a3b36bfc1406bfc87e4de4005aa76cfbff54ea0364fc34"
+    },
+    "apps/desktop/ui/shared/runtime/runtime.go": {
+      "archived": "benchmarks/reproduction/qwen17-accessibility-v1/source/apps/desktop/ui/shared/runtime/runtime.go",
+      "sha256": "961b0c7695269e48728f161b4c82b8fca2772b47005e6ab70001a4c1dac7f98c"
+    },
+    "go.work": {
+      "archived": "benchmarks/reproduction/qwen17-accessibility-v1/source/go.work",
+      "sha256": "de039f4fc70f3fd7ec502fb95a252d42b983d3324123b7c2b56c6dddfd59f2d9"
+    },
+    "models/README.md": {
+      "archived": "benchmarks/reproduction/qwen17-accessibility-v1/source/models/README.md.txt",
+      "sha256": "006ef9260c974c7268d74aa5e0fc73cf88f946a48549ed69363289d1d0135a31"
+    },
+    "models/catalog.go": {
+      "archived": "benchmarks/reproduction/qwen17-accessibility-v1/source/models/catalog.go",
+      "sha256": "32e20c22d0ca8f1466e6e2ec6b14e52f2c2f8b3c90fd20e121a1bef6a6e0201b"
+    },
+    "models/catalog.json": {
+      "archived": "benchmarks/reproduction/qwen17-accessibility-v1/source/models/catalog.json",
+      "sha256": "5d59f349d959083acedceba24ef487a553aba406638d53c3de50096cb38c02d7"
+    },
+    "models/catalog_test.go": {
+      "archived": "benchmarks/reproduction/qwen17-accessibility-v1/source/models/catalog_test.go",
+      "sha256": "37af8631792793fc8db9d30e4b410c5c0fa418072a689cb1f273c9825a330d3e"
+    },
+    "tools/evaluation/cli.mjs": {
+      "archived": "benchmarks/reproduction/qwen17-accessibility-v1/source/tools/evaluation/cli.mjs",
+      "sha256": "44600dfc9d6149cf8468d04fddfb583cde0207866c2d4b97881e698b052deef9"
+    },
+    "tools/evaluation/src/manifest.mjs": {
+      "archived": "benchmarks/reproduction/qwen17-accessibility-v1/source/tools/evaluation/src/manifest.mjs",
+      "sha256": "50da3c47ce4c3d404c187fd4d120ef93d923f1ff6d67300db998d3494ad5ab03"
+    },
+    "tools/evaluation/src/metrics.mjs": {
+      "archived": "benchmarks/reproduction/qwen17-accessibility-v1/source/tools/evaluation/src/metrics.mjs",
+      "sha256": "01cbdf07a875555679304a8fe0df49ec72ce86c0cc21f92674f3788c1a80c867"
+    },
+    "tools/evaluation/src/protocol.mjs": {
+      "archived": "benchmarks/reproduction/qwen17-accessibility-v1/source/tools/evaluation/src/protocol.mjs",
+      "sha256": "5ac9c3865cd1bce605577612b850fa4c03cce6b352a800a0d259141a19a82063"
+    },
+    "tools/evaluation/src/report.mjs": {
+      "archived": "benchmarks/reproduction/qwen17-accessibility-v1/source/tools/evaluation/src/report.mjs",
+      "sha256": "7f2f52fcceecabcda58a1a1e3d9478f7a00e9246a5256b4fd01e62fa858a68c3"
+    },
+    "tools/evaluation/src/runner.mjs": {
+      "archived": "benchmarks/reproduction/qwen17-accessibility-v1/source/tools/evaluation/src/runner.mjs",
+      "sha256": "71a9727f6255496833e02314b6db8698f5f2c9d67f431471282b519c56186a46"
+    },
+    "tools/evaluation/src/statistics.mjs": {
+      "archived": "benchmarks/reproduction/qwen17-accessibility-v1/source/tools/evaluation/src/statistics.mjs",
+      "sha256": "54c2b46b88eb3da5a9c81bcd6bda70ae72a01a15390980ac5cefb5522df7b365"
+    },
+    "tools/evaluation/src/streaming.mjs": {
+      "archived": "benchmarks/reproduction/qwen17-accessibility-v1/source/tools/evaluation/src/streaming.mjs",
+      "sha256": "bd13d62d40b170643c2945c923374a075dfa5141d32884833cbc5356d14848e2"
+    },
+    "apps/desktop/infrastructure/macos/context.m": {
+      "archived": "benchmarks/reproduction/qwen17-accessibility-v1/source/apps/desktop/infrastructure/macos/context.m",
+      "sha256": "87028a35e05c7fe2e65f6ee39f3315e2fa2d802416a83a8c8a83488a0d6c62b7"
+    },
+    "apps/desktop/infrastructure/macos/native.m": {
+      "archived": "benchmarks/reproduction/qwen17-accessibility-v1/source/apps/desktop/infrastructure/macos/native.m",
+      "sha256": "f5c671c0a0a628ffcd99f8ddde87582ccba3589ef7b6f252c6a01f36772223b8"
+    },
+    "apps/desktop/infrastructure/macos/native.h": {
+      "archived": "benchmarks/reproduction/qwen17-accessibility-v1/source/apps/desktop/infrastructure/macos/native.h",
+      "sha256": "aa112edba439e773fe72f0b6e68ceccdf6582ef481cb3689f2a3aeced90922df"
+    }
+  },
+  "note": "ASR driver binary includes the same measured catalog and ASR adapter. Window collection uses separately retained original window-source; subsequent visibility controls use the final source snapshot."
+}

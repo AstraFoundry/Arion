@@ -509,12 +509,13 @@ static NSColor *srgb(CGFloat r, CGFloat g, CGFloat b, CGFloat a) {
 @implementation ArionLanguagePanel
 - (instancetype)init {
     if (!(self = [super init])) return nil;
-    self.window = [[ArionCandidateWindow alloc] initWithContentRect:NSMakeRect(0, 0, 44, 36)
+    self.window = [[ArionCandidateWindow alloc] initWithContentRect:NSMakeRect(0, 0, 23, 23)
         styleMask:NSWindowStyleMaskBorderless | NSWindowStyleMaskNonactivatingPanel
         backing:NSBackingStoreBuffered defer:YES];
     self.window.opaque = NO;
     self.window.backgroundColor = NSColor.clearColor;
-    self.window.hasShadow = YES;
+    self.window.hasShadow = NO;
+    self.window.animationBehavior = NSWindowAnimationBehaviorNone;
     self.window.ignoresMouseEvents = YES;
     self.window.hidesOnDeactivate = NO;
     self.window.releasedWhenClosed = NO;
@@ -522,16 +523,18 @@ static NSColor *srgb(CGFloat r, CGFloat g, CGFloat b, CGFloat a) {
     self.window.collectionBehavior = NSWindowCollectionBehaviorCanJoinAllSpaces |
         NSWindowCollectionBehaviorFullScreenAuxiliary | NSWindowCollectionBehaviorStationary |
         NSWindowCollectionBehaviorIgnoresCycle;
-    NSVisualEffectView *surface = [[NSVisualEffectView alloc] initWithFrame:NSMakeRect(0, 0, 44, 36)];
-    surface.material = NSVisualEffectMaterialPopover;
-    surface.state = NSVisualEffectStateActive;
+    NSView *surface = [[NSView alloc] initWithFrame:NSMakeRect(0, 0, 23, 23)];
     surface.wantsLayer = YES;
-    surface.layer.cornerRadius = 8;
+    // Original vector badge; no packaged competitor artwork or material blur.
+    surface.layer.backgroundColor = NSColor.blackColor.CGColor;
+    surface.layer.borderColor = NSColor.darkGrayColor.CGColor;
+    surface.layer.borderWidth = kBorderWidth;
+    surface.layer.cornerRadius = 5;
     surface.layer.masksToBounds = YES;
     self.label = [NSTextField labelWithString:@""];
-    self.label.frame = NSMakeRect(0, 8, 44, 20);
+    self.label.frame = NSMakeRect(0, 2, 23, 19);
     self.label.font = [NSFont systemFontOfSize:15 weight:NSFontWeightMedium];
-    self.label.textColor = NSColor.labelColor;
+    self.label.textColor = NSColor.whiteColor;
     self.label.alignment = NSTextAlignmentCenter;
     [surface addSubview:self.label];
     self.window.contentView = surface;
@@ -561,7 +564,7 @@ static NSColor *srgb(CGFloat r, CGFloat g, CGFloat b, CGFloat a) {
     [self.window setFrameOrigin:NSMakePoint(x, y)];
     [self.window orderFrontRegardless];
     __weak ArionLanguagePanel *weakSelf = self;
-    self.dismissal = [NSTimer scheduledTimerWithTimeInterval:0.8 repeats:NO block:^(NSTimer *timer) {
+    self.dismissal = [NSTimer scheduledTimerWithTimeInterval:1.0 repeats:NO block:^(NSTimer *timer) {
         (void)timer;
         [weakSelf hide];
     }];

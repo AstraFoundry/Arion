@@ -1,0 +1,98 @@
+{
+  "runId": "qwen17-asr-dev-v1",
+  "status": "complete",
+  "config": {
+    "version": 1,
+    "id": "qwen17-accessibility-asr-v1",
+    "purpose": "Paired development comparison: X-ASR streaming held fixed; X-ASR versus Qwen3-ASR 1.7B INT8 acoustic finalizer; correction, ranking and memory off",
+    "split": "dev",
+    "baseline": "xasr-160-xasr-final",
+    "seeds": [
+      11
+    ],
+    "orderSeed": 1729,
+    "warmupCount": 2,
+    "cacheStates": [
+      "warm"
+    ],
+    "pipeline": {
+      "asr": "xasr-160-xasr-final",
+      "sampleRate": 16000,
+      "chunkMs": 20,
+      "endpoint": "sherpa-rules-v1",
+      "pace": "realtime",
+      "threads": 4,
+      "endpointSilenceMs": 800
+    },
+    "bootstrap": {
+      "iterations": 2000,
+      "seed": 1729
+    },
+    "variants": [
+      {
+        "id": "xasr-160-xasr-final",
+        "features": {
+          "memory": false,
+          "ranker": "source",
+          "correction": "none"
+        },
+        "pipelineOverrides": {
+          "asr": "xasr-160-xasr-final"
+        }
+      },
+      {
+        "id": "xasr-160-qwen3asr-17-final",
+        "features": {
+          "memory": false,
+          "ranker": "source",
+          "correction": "none"
+        },
+        "pipelineOverrides": {
+          "asr": "xasr-160-qwen3asr-17-final"
+        }
+      }
+    ]
+  },
+  "configHash": "d8801deb6c575559ec30c9a287061644cfc65ba7de0f1ceaa17e260b398d0fde",
+  "corpusHash": "9a6d7c13fbccaaddbe511e34ed896cd830aaa02c42218e94e029a11deeffedd7",
+  "gitRevision": "f3374fdf70ae092d637f391c6d4ff5f5fd62c811",
+  "gitDirty": true,
+  "observations": 236,
+  "hardware": {
+    "arch": "arm64",
+    "cpu": "Apple M4",
+    "logicalCpus": 10,
+    "os": "darwin",
+    "osBuild": "25G83",
+    "powerMode": "ac",
+    "ramBytes": 34359738368
+  },
+  "runtime": {
+    "buildFlags": "CGO_ENABLED=1 GOARCH=arm64",
+    "provider": "onnxruntime CPU",
+    "timer": "Go monotonic clock (mach_absolute_time)",
+    "version": "arion-desktop pipeline; sherpa-onnx-go v1.13.8; go1.27.1"
+  },
+  "artifacts": {
+    "0-arion-eval-driver": "c89fa508b42cc235c3ed18f2b804ab07716e04719eb2e3a3c8d48223749950a2",
+    "1-catalog.json": "0637019094dff4f43c67a5814e04f72d7b1a58146cbfea0959c33277f0434744",
+    "10-conv_frontend.onnx": "fa894a4ba53da6a4238f2a6ca0b09362e505d39cecbd646051b033e2e8d7e2fb",
+    "11-decoder.int8.onnx": "c43c853fa6e97d08365cb8a5502b360b595cd43c00dc60e4d8ca7cc18cad460b",
+    "12-encoder.int8.onnx": "436fbd910a0c8914851e5ac1354e807be9f283d08a5da728adaa609731c41469",
+    "13-merges.txt": "8831e4f1a044471340f7c0a83d7bd71306a5b867e95fd870f74d0c5308a904d5",
+    "14-tokenizer_config.json": "4942d005604266809309cabc9f4e9cb89ce855d59b14681fdc0e1cc62ea26c4c",
+    "15-vocab.json": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910",
+    "16-libsherpa-onnx-c-api.dylib": "579e3d8765b27eea31a6bf55018a7735e32f1f69734b35bf239c8cd332ae59ed",
+    "17-libsherpa-onnx-cxx-api.dylib": "fa3dfbc10af9af9f59d7b53386d47be99bc8e2ba12aab63ca5a3c91bbd483a00",
+    "18-libonnxruntime.dylib": "b0613d0ae53199a83b05fa48e169211498e9d40d54beaa372068ebe5ec5b0929",
+    "2-encoder.int8.onnx": "68633dced8b8891be5b9309496cd939bbeba9188f1c1774957196f11a491aa25",
+    "3-decoder.onnx": "a1cbc9eac2d5e3fb6617a218c67ad6daaa7f4e0fd225f08b2c22ab0413c8c257",
+    "4-joiner.int8.onnx": "aedb7fa697b2ab43f20499826fff7c997eea7d67db77be97769aeeeb726e63b3",
+    "5-tokens.txt": "b818a60878b9aae978cbb8ad594acbd403d76d1af2e31ef4197c84e2dbdba27c",
+    "6-encoder-epoch-99-avg-1.int8.onnx": "7f6aa62056efd8af9da13e0faa81cd3f284d2fb2e3b63de56fd2dfd3450910dc",
+    "7-decoder-epoch-99-avg-1.onnx": "72f47405d3c1033bebccbef82f90071e7b4ba3e71b9c986f2b74244b25723aed",
+    "8-joiner-epoch-99-avg-1.int8.onnx": "aedb7fa697b2ab43f20499826fff7c997eea7d67db77be97769aeeeb726e63b3",
+    "9-tokens.txt": "b818a60878b9aae978cbb8ad594acbd403d76d1af2e31ef4197c84e2dbdba27c"
+  },
+  "resultsSha256": "06fa37d550440107c365de535e4243d14f598a90d3a69a852d9bfdb4cc013dde"
+}

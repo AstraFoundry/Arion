@@ -16,13 +16,15 @@ const (
 	Accessibility
 	InputMethod
 	Model
-	Shortcut
+	// HoldKey confirms the dictation key listens, which on macOS needs
+	// Input Monitoring, and lets the user try it.
+	HoldKey
 	Try
 	Finished
 )
 
 // Steps is the page order.
-var Steps = []Step{Welcome, Account, Microphone, Accessibility, InputMethod, Model, Shortcut, Try, Finished}
+var Steps = []Step{Welcome, Account, Microphone, Accessibility, InputMethod, Model, HoldKey, Try, Finished}
 
 // Flow is the user's position; Direction drives the page slide.
 type Flow struct {
@@ -46,8 +48,8 @@ func Ready(step Step, s *runtime.State) bool {
 		// Setup continues in the background; the user may move on once the
 		// download started, and the try step waits for readiness.
 		return s.Model.State == runtime.ModelReady || s.Model.State == runtime.ModelProvisioning || s.Model.State == runtime.ModelLoading
-	case Shortcut:
-		return s.Shortcut.Registered
+	case HoldKey:
+		return s.Hold.Active
 	case Account:
 		// A sign-in in flight is cancelled or finished before moving on.
 		return !s.Account.Busy()

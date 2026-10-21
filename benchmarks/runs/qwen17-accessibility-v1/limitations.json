@@ -1,0 +1,8 @@
+{
+  "scope": "Warm development ASR comparison on Apple M4/32 GiB, one seed, 118 exposed clips per arm. No held-out or release claim.",
+  "timing": "Shared desktop, not thermally/energy isolated. The original pre-envelope run overlapped validation and later probes. The fresh comparison had no competing model run; brief code/report preparation and targeted checks occurred during its baseline block. No slow observations were excluded.",
+  "window": "36 actual paired reads on owned AppKit fixtures, 24 fixed-source rewrites and 24 stopped-audio/context rewrites. Earlier stable-recognition evidence, live preview and insertion are not replayed.",
+  "privacy": "Local native inference and offline provisioning; no separate firewall/air-gap experiment.",
+  "lineage": "Community ONNX INT8 export; original floating-point parity unverified.",
+  "metadataCorrection": "The original catalog snapshot recorded 10:04:52Z for the export timestamp; final catalog corrects it to metadata-derived 09:44:52Z. Payload revisions and digests are identical."
+}

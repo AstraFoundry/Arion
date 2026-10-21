@@ -41,7 +41,7 @@ try {
     // Explicit flags also invalidate cgo's cache when the target changes.
     env.CGO_CFLAGS = `-O2 -g -mmacosx-version-min=${minimum}`;
     env.CGO_CXXFLAGS = `-O2 -g -mmacosx-version-min=${minimum}`;
-    env.CGO_LDFLAGS = `-mmacosx-version-min=${minimum} -Wl,-rpath,@executable_path/../Resources/lib`;
+    env.CGO_LDFLAGS = `-mmacosx-version-min=${minimum}`;
   }
   execFileSync(process.execPath, [path.join(root, 'scripts/stage-desktop-resources.mjs')], { cwd: root, env, stdio: 'inherit' });
   execFileSync('go', ['tool', 'mygo', operation], { cwd: desktop, env, stdio: 'inherit' });

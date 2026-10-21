@@ -7,6 +7,7 @@ import (
 	"errors"
 	"os"
 	"path/filepath"
+	"runtime"
 
 	"arion.local/core/application"
 )
@@ -29,16 +30,23 @@ func DefaultPath() (string, error) {
 func (s Store) Load() (application.Preferences, []string, error) {
 	data, err := os.ReadFile(s.Path)
 	if errors.Is(err, os.ErrNotExist) {
-		return application.DefaultPreferences(), nil, nil
+		return application.DefaultPreferences(runtime.GOOS), nil, nil
 	}
 	if err != nil {
 		return application.Preferences{}, nil, err
 	}
-	prefs := application.DefaultPreferences()
+	prefs := application.DefaultPreferences(runtime.GOOS)
 	if err := json.Unmarshal(data, &prefs); err != nil {
 		return application.Preferences{}, nil, err
 	}
-	normalized, repaired := prefs.Normalize()
+	normalized, repaired := prefs.Normalize(runtime.GOOS)
+	// Known retired backend choices migrate to the explicitly adopted native
+	// default. Unknown IDs remain visible errors rather than silent repairs.
+	switch normalized.ModelOverride {
+	case "zipformer-2023", "xasr-160", "xasr-480", "xasr-160-xasr-final", "xasr-480-xasr-final", "xasr-160-sensevoice-final", "xasr-160-qwen3asr-final", "xasr-160-qwen3asr-17-final":
+		normalized.ModelOverride = ""
+		repaired = append(repaired, "modelOverride")
+	}
 	return normalized, repaired, nil
 }
 

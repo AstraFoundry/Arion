@@ -1,0 +1,9 @@
+
+> arion-monorepo@0.0.0 core:check /Users/steven/code/Arion
+> node scripts/check-go.mjs core
+
+ok  	arion.local/core/application	(cached)
+?   	arion.local/core/contracts	[no test files]
+ok  	arion.local/core/domain	(cached)
+?   	arion.local/core/domain/ports	[no test files]
+ok  	arion.local/models	(cached)

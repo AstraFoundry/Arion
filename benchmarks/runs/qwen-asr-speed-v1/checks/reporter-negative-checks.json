@@ -1,0 +1,22 @@
+[
+  {
+    "case": "changed-text",
+    "rejected": true,
+    "error": "Error: Result hash mismatch"
+  },
+  {
+    "case": "rebound-truncated",
+    "rejected": true,
+    "error": "Error: Incomplete or duplicate observations"
+  },
+  {
+    "case": "rebound-audio",
+    "rejected": true,
+    "error": "Error: Missing or changed audio"
+  },
+  {
+    "case": "incomplete-status",
+    "rejected": true,
+    "error": "Error: Incomplete/mismatched run"
+  }
+]

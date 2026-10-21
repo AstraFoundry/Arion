@@ -1,0 +1,42 @@
+{
+  "version": 1,
+  "id": "desktop-native-models-v1",
+  "purpose": "Evaluate the adopted native Qwen3-ASR backend on the actual target OS",
+  "split": "dev",
+  "baseline": "qwen17-mlx8-native",
+  "seeds": [
+    11
+  ],
+  "orderSeed": 1729,
+  "warmupCount": 2,
+  "cacheStates": [
+    "warm"
+  ],
+  "pipeline": {
+    "asr": "qwen3-asr-1.7b-mlx-8bit",
+    "sampleRate": 16000,
+    "chunkMs": 20,
+    "endpoint": "qwen-chunked-v1",
+    "pace": "realtime",
+    "threads": 4,
+    "endpointSilenceMs": 800
+  },
+  "bootstrap": {
+    "iterations": 2000,
+    "seed": 1729
+  },
+  "variants": [
+    {
+      "id": "qwen17-mlx8-native",
+      "features": {
+        "memory": false,
+        "ranker": "source",
+        "correction": "none"
+      },
+      "pipelineOverrides": {
+        "asr": "qwen3-asr-1.7b-mlx-8bit"
+      }
+    }
+  ],
+  "design": "validation"
+}

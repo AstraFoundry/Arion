@@ -9,21 +9,21 @@ import (
 )
 
 func TestUILanguagePreference(t *testing.T) {
-	if DefaultPreferences().UILanguage != English {
+	if DefaultPreferences("darwin").UILanguage != English {
 		t.Fatal("first-run UI must be English")
 	}
 	for _, language := range []UILanguage{English, SimplifiedChinese} {
-		prefs := DefaultPreferences()
+		prefs := DefaultPreferences("darwin")
 		prefs.UILanguage = language
-		normalized, repairs := prefs.Normalize()
+		normalized, repairs := prefs.Normalize("darwin")
 		if normalized.UILanguage != language || len(repairs) != 0 {
 			t.Fatalf("supported language changed: %v %v", normalized, repairs)
 		}
 	}
 	for _, language := range []UILanguage{"", "fr", "zh-TW"} {
-		prefs := DefaultPreferences()
+		prefs := DefaultPreferences("darwin")
 		prefs.UILanguage = language
-		normalized, repairs := prefs.Normalize()
+		normalized, repairs := prefs.Normalize("darwin")
 		if normalized.UILanguage != English || !slices.Contains(repairs, "uiLanguage") {
 			t.Fatalf("invalid language not explicitly repaired: %v %v", normalized, repairs)
 		}
@@ -31,7 +31,7 @@ func TestUILanguagePreference(t *testing.T) {
 }
 
 func TestMicrophoneGainPreference(t *testing.T) {
-	if DefaultPreferences().MicrophoneGain != 0 {
+	if DefaultPreferences("darwin").MicrophoneGain != 0 {
 		t.Fatal("first-run gain must be the device's own level")
 	}
 	for i, stop := range GainStops {
@@ -43,16 +43,16 @@ func TestMicrophoneGainPreference(t *testing.T) {
 		if math.Abs(float64(stop.DistanceCM)-want) > 1 {
 			t.Errorf("%d dB suggests %d cm, want about %.0f", stop.DB, stop.DistanceCM, want)
 		}
-		prefs := DefaultPreferences()
+		prefs := DefaultPreferences("darwin")
 		prefs.MicrophoneGain = stop.DB
-		if normalized, repairs := prefs.Normalize(); normalized.MicrophoneGain != stop.DB || len(repairs) != 0 {
+		if normalized, repairs := prefs.Normalize("darwin"); normalized.MicrophoneGain != stop.DB || len(repairs) != 0 {
 			t.Fatalf("supported gain changed: %v %v", normalized, repairs)
 		}
 	}
 	for _, db := range []int{-9, 1, 15} {
-		prefs := DefaultPreferences()
+		prefs := DefaultPreferences("darwin")
 		prefs.MicrophoneGain = db
-		normalized, repairs := prefs.Normalize()
+		normalized, repairs := prefs.Normalize("darwin")
 		if normalized.MicrophoneGain != 0 || !slices.Contains(repairs, "microphoneGain") {
 			t.Fatalf("invalid gain %d not explicitly repaired: %v %v", db, normalized, repairs)
 		}
@@ -63,7 +63,7 @@ func TestMicrophoneGainPreference(t *testing.T) {
 }
 
 func TestSceneOverridesRoundTripAndRepair(t *testing.T) {
-	prefs := DefaultPreferences()
+	prefs := DefaultPreferences("darwin")
 	prefs.SceneOverrides = domain.SceneOverrides{"mail.google.com": domain.SceneWork, "search@com.apple.mail": domain.SceneChat}
 	data, err := json.Marshal(prefs)
 	if err != nil {
@@ -75,7 +75,7 @@ func TestSceneOverridesRoundTripAndRepair(t *testing.T) {
 	}
 	loaded.SceneOverrides = loaded.SceneOverrides.WithScene("poem.example", "poem").WithScene("list.example", domain.SceneList)
 	stored := loaded.SceneOverrides
-	normalized, repairs := loaded.Normalize()
+	normalized, repairs := loaded.Normalize("darwin")
 	if len(normalized.SceneOverrides) != 2 || len(repairs) == 0 {
 		t.Fatalf("invalid overrides kept: %+v %v", normalized.SceneOverrides, repairs)
 	}
@@ -86,20 +86,20 @@ func TestSceneOverridesRoundTripAndRepair(t *testing.T) {
 
 func TestKeyboardPreferences(t *testing.T) {
 	var old Preferences
-	prefs := DefaultPreferences()
+	prefs := DefaultPreferences("darwin")
 	if err := json.Unmarshal([]byte(`{"version":1,"uiLanguage":"en","mode":"shortcut","shortcut":"Alt+Space"}`), &prefs); err != nil {
 		t.Fatal(err)
 	}
 	if prefs.Keyboard != DefaultKeyboardPreferences() || !prefs.Keyboard.ContextRanking {
 		t.Fatalf("profile without keyboard preferences did not load defaults: %+v", prefs.Keyboard)
 	}
-	old = DefaultPreferences()
+	old = DefaultPreferences("darwin")
 	old.Keyboard = KeyboardPreferences{PageSize: 6, CandidateSize: CandidateLarge, Appearance: AppearanceDark}
-	if normalized, repairs := old.Normalize(); normalized.Keyboard != old.Keyboard || len(repairs) != 0 {
+	if normalized, repairs := old.Normalize("darwin"); normalized.Keyboard != old.Keyboard || len(repairs) != 0 {
 		t.Fatalf("valid keyboard choice changed: %+v %v", normalized.Keyboard, repairs)
 	}
 	old.Keyboard = KeyboardPreferences{PageSize: 12, CandidateSize: "huge", Appearance: "sepia", ContextRanking: true}
-	normalized, repairs := old.Normalize()
+	normalized, repairs := old.Normalize("darwin")
 	if normalized.Keyboard != DefaultKeyboardPreferences() || !slices.Contains(repairs, "keyboard") {
 		t.Fatalf("invalid keyboard choice not explicitly repaired: %+v %v", normalized.Keyboard, repairs)
 	}

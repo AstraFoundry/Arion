@@ -46,7 +46,7 @@ const Window = 248
 // bottom-right, bottom-left) where it meets a rounded container: each layer
 // carries the corners itself, because the GPU renderers leave bitmaps and
 // gradients square under a parent's rounded clip.
-func Render(c *ui.Context, tokens theme.Tokens, messages copy.Catalog, scene Scene, accelerator string, levels []float32, radius ...float32) {
+func Render(c *ui.Context, tokens theme.Tokens, messages copy.Catalog, scene Scene, key string, levels []float32, radius ...float32) {
 	now := c.Now()
 	// The dictation loop is decoration: with reduced motion it holds its
 	// final frame.
@@ -78,7 +78,7 @@ func Render(c *ui.Context, tokens theme.Tokens, messages copy.Catalog, scene Sce
 			LinearGradient(ui.LinearGradient{From: tokens.Scrim.Alpha(0), To: tokens.Scrim.Alpha(0.45), Angle: 180})
 		ui.Column(c).Absolute().Top(0).Left(0).Right(0).Bottom(0).Justify(ui.Center).AlignItems(ui.Center).Children(func() {
 			editor(c, tokens, messages, inserted)
-			pill(c, tokens, messages, scene, accelerator, levels, spoken, inserted)
+			pill(c, tokens, messages, scene, key, levels, spoken, inserted)
 		})
 	})
 }
@@ -129,7 +129,7 @@ func editor(c *ui.Context, tokens theme.Tokens, messages copy.Catalog, inserted 
 
 // pill mirrors the live pill: an open microphone with its meter and the
 // streaming draft, or the outcome once the text landed.
-func pill(c *ui.Context, tokens theme.Tokens, messages copy.Catalog, scene Scene, accelerator string, levels []float32, spoken float32, inserted bool) {
+func pill(c *ui.Context, tokens theme.Tokens, messages copy.Catalog, scene Scene, key string, levels []float32, spoken float32, inserted bool) {
 	phase := "listening"
 	if inserted {
 		phase = "inserted"
@@ -147,12 +147,12 @@ func pill(c *ui.Context, tokens theme.Tokens, messages copy.Catalog, scene Scene
 				dot := ui.Box(c).Size(8, 8).Radius(4).Background(tokens.Live)
 				dot.Opacity(0.45 + 0.55*dot.Loop("pulse", 1400*time.Millisecond, ui.Bounce(ui.EaseInOut)))
 				kit.LevelBars(c, levels, 9, 3, 18, 3, tokens.PillText)
-				// The streaming draft, or the shortcut that finishes: the
+				// The streaming draft, or the key that finishes: the
 				// illustration is too narrow for the live pill's full row.
 				if draft := head(messages.Text(copy.ShowcaseSentence), spoken); draft != "" && scene == Dictating {
 					ui.Text(c, tail(draft, 8)).FontSize(theme.Body).SingleLine().MaxWidth(150)
 				} else {
-					kit.Keycaps(c, tokens, accelerator, true)
+					kit.Kbd(c, tokens, key, true)
 				}
 			})
 	})

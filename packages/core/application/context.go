@@ -13,7 +13,7 @@ import (
 type ContextPolicy struct {
 	// Cursor is the field's text around the cursor.
 	Cursor bool
-	// Screen is the text recognized in the focused window.
+	// Screen is visible text read from the captured window.
 	Screen bool
 	// History is the user's recent dictations in the same place.
 	History bool

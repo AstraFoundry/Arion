@@ -44,3 +44,5 @@ Scenario-aware generative rewriting uses the separate [009 contract](009-context
 | STR-A03 | Engine and rendered-preview traces are distinct; absent first partials remain visible |
 | STR-A04 | Long continuous input retains session state; bounded queues/drops/resource growth are measured |
 | STR-A05 | Imported HF data pins revision, original split and access terms; no test labels enter memory/context |
+
+Single-backend runtime acceptance may declare experiment `design: "validation"` with one variant. This is validation, not an ablation or a paired comparison. The default ablation design continues to require at least two distinct treatments. Background inference and cancelled work must count toward compute time.

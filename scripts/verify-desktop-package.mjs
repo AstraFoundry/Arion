@@ -1,6 +1,6 @@
 // Verify required resources in the packaged app, never mutate signed output.
 import { execFileSync } from 'node:child_process';
-import { readFileSync, statSync } from 'node:fs';
+import { readFileSync, statSync, readdirSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { resolveCenter, centerFingerprint, isStandardCenter } from './lib/center-profile.mjs';
@@ -26,8 +26,22 @@ const systemVersion = value => {
   return major * 1000000 + minor * 1000 + patch;
 };
 const binaries = goos === 'darwin'
-  ? [path.join(built, `${config.name}.app/Contents/MacOS/${config.name}`), path.join(resources, 'lib/libsherpa-onnx-c-api.dylib'), path.join(resources, 'lib/libonnxruntime.dylib'), path.join(resources, 'ArionInput.app/Contents/MacOS/ArionInput'), path.join(resources, 'ArionInput.app/Contents/Frameworks/librime.1.dylib')]
-  : [path.join(built, `${config.name}.exe`), path.join(resources, 'sherpa-onnx-c-api.dll'), path.join(resources, 'onnxruntime.dll')];
+  ? [path.join(built, `${config.name}.app/Contents/MacOS/${config.name}`), path.join(resources, 'ArionInput.app/Contents/MacOS/ArionInput'), path.join(resources, 'ArionInput.app/Contents/Frameworks/librime.1.dylib')]
+  : [path.join(built, `${config.name}.exe`)];
+const asr = path.join(resources, 'asr');
+binaries.push(path.join(asr, platform === 'darwin-arm64' ? 'arion-asr' : goos === 'windows' ? 'speech.exe' : 'speech'));
+if (platform === 'windows-amd64') binaries.push(path.join(asr, 'speech-vulkan.exe'));
+if (platform === 'darwin-arm64') {
+  requireFile(path.join(asr, 'mlx.metallib'));
+  requireFile(path.join(asr, 'Package.resolved'));
+  for (const name of readdirSync(path.join(asr, 'lib'))) if (name.endsWith('.dylib')) binaries.push(path.join(asr,'lib',name));
+  requireFile(path.join(asr, 'lib/libswiftCompatibilitySpan.dylib'));
+
+}
+requireFile(path.join(asr, 'runtime.json'));
+const scan = directory => readdirSync(directory, { withFileTypes: true }).flatMap(entry => entry.isDirectory() ? scan(path.join(directory,entry.name)) : [path.join(directory,entry.name)]);
+for (const file of scan(resources)) if (/sherpa|onnxruntime|x[-_]?asr/i.test(path.basename(file))) throw new Error(`Retired runtime in package: ${file}`);
+if (!scan(path.join(asr, 'licenses')).length) throw new Error('Missing native ASR dependency licenses');
 for (const file of ['Arion-LICENSE', 'model-catalog.json', 'go-modules.json']) requireFile(path.join(resources, 'licenses', file));
 const notices = JSON.parse(readFileSync(path.join(resources, 'licenses/go-modules.json'), 'utf8'));
 for (const record of notices) for (const file of record.licenses) requireFile(path.join(resources, 'licenses', file));
@@ -53,6 +67,13 @@ for (const file of binaries) {
     const architectures = execFileSync('lipo', ['-archs', file], { encoding: 'utf8' }).trim().split(/\s+/);
     if (!architectures.includes(arch === 'amd64' ? 'x86_64' : arch)) throw new Error(`Wrong architecture in ${file}: ${architectures}`);
     const commands = execFileSync('otool', ['-l', file], { encoding: 'utf8' });
+    if (file.startsWith(asr + path.sep)) {
+      const rpaths = [...commands.matchAll(/cmd LC_RPATH[\s\S]*?path (.+?) \(offset/g)].map(m => m[1]);
+      if (rpaths.some(p => !p.startsWith('@') && p !== '/usr/lib/swift')) throw new Error(`Build-machine ASR runtime path: ${file}`);
+      const dependencies = execFileSync('otool', ['-L', file], {encoding:'utf8'});
+      for (const match of dependencies.matchAll(/@rpath\/(.+?) \(compatibility/g)) requireFile(path.join(asr, 'lib', match[1]));
+    }
+
     const minimums = [...commands.matchAll(/\bminos ([\d.]+)|cmd LC_VERSION_MIN_MACOSX[\s\S]*?\bversion ([\d.]+)/g)].map(match => match[1] ?? match[2]);
     if (!minimums.length || minimums.some(version => systemVersion(version) > systemVersion(config.macos.minimumSystemVersion))) throw new Error(`Native minimum OS exceeds macOS ${config.macos.minimumSystemVersion}: ${file} (${minimums.join(', ')})`);
   } else {

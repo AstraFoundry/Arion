@@ -1,0 +1,7 @@
+ok  	arion.local/desktop/infrastructure/asr	(cached)
+ok  	arion.local/desktop/infrastructure/modelruntime	0.435s
+ok  	arion.local/desktop/infrastructure/settings	(cached)
+# arion.local/desktop/bootstrap.test
+ld: warning: ignoring duplicate libraries: '-lobjc'
+ok  	arion.local/desktop/bootstrap	(cached)
+ok  	arion.local/desktop/cmd/arion-eval-driver	0.451s

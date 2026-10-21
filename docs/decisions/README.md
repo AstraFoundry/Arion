@@ -31,6 +31,7 @@ Write an ADR when the decision:
 - [017: Offline Pinyin keyboard in the macOS IMK host](017-offline-pinyin-keyboard.md) — local conversion, independent composition ownership and encrypted learning.
 - [019: Update channels served by the Arion center](019-center-update-channels.md) — `stable`/`beta` manifests and downloads from `api.arion.astrafoundry.si`, staged by CI and published from the AstraFoundry admin; supersedes ADR 010's GitHub source.
 - [018: Staged GGUF rewriting](018-staged-gguf-rewriting.md) — selected Qwen3.5-2B artifact, two-stage prompts and accepted delivery tradeoff.
+- [020: Native Qwen3-ASR workers](020-native-qwen-asr.md) — native Swift MLX on Apple silicon and native Q8_0 on Intel/Windows, with explicit adoption and separate acceptance.
 - [`adr-template.md`](adr-template.md) — template for new ADRs.
 
 ## Naming

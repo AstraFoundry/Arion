@@ -1,0 +1,19 @@
+package main
+import (
+ "encoding/json"
+ "os"
+ "path/filepath"
+ "arion.local/desktop/infrastructure/audio"
+ sherpa "github.com/k2-fsa/sherpa-onnx-go/sherpa_onnx"
+)
+func main(){
+ d:=os.Args[1]
+ c:=sherpa.OfflineRecognizerConfig{FeatConfig:sherpa.FeatureConfig{SampleRate:16000,FeatureDim:80},DecodingMethod:"greedy_search"}
+ c.ModelConfig.NumThreads=4;c.ModelConfig.Provider="cpu"
+ c.ModelConfig.Qwen3ASR=sherpa.OfflineQwen3ASRModelConfig{ConvFrontend:filepath.Join(d,"conv_frontend.onnx"),Encoder:filepath.Join(d,"encoder.int8.onnx"),Decoder:filepath.Join(d,"decoder.int8.onnx"),Tokenizer:d,MaxTotalLen:512,MaxNewTokens:128,Temperature:1e-6,TopP:1,Seed:11}
+ r:=sherpa.NewOfflineRecognizer(&c);if r==nil{panic("load failed")};defer sherpa.DeleteOfflineRecognizer(r)
+ s:=sherpa.NewOfflineStream(r);defer sherpa.DeleteOfflineStream(s)
+ pcm,e:=audio.ReadWAV(os.Args[2]);if e!=nil{panic(e)}
+ s.AcceptWaveform(16000,pcm);r.Decode(s)
+ json.NewEncoder(os.Stdout).Encode(s.GetResult())
+}

@@ -14,6 +14,7 @@ Capture → bounded frames → explicit resampling → VAD/streaming recognizer 
 - SPH-07: Candidate ranking MUST only reorder producer-owned candidates. Models producing only one hypothesis must not be described as exposing n-best. See [007](007-ime-ranking.md).
 - SPH-08: Offline operation after provisioning MUST include capture, ASR, ranking and correction without server reachability. Unavailable optional correction leaves raw/rule-corrected text visibly identified.
 - SPH-09: Silence MUST not create committed hallucinated text. Session audio is discarded when processing ends by default.
+- SPH-10: Vendor recognition envelopes are transport metadata, never dictated text. Qwen3-ASR language headers and `<asr_text>` delimiters are parsed at the ASR adapter boundary, including leading whitespace. Plain text and literal markers within a transcription remain unchanged.
 
 ## Acceptance
 

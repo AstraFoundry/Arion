@@ -1,0 +1,144 @@
+
+> arion-monorepo@0.0.0 test /Users/steven/code/Arion
+> node scripts/test.mjs
+
+✔ official card HTML anchors resolve alongside generated heading slugs (2.046792ms)
+✔ code examples and unrelated attributes do not satisfy a missing link (0.10925ms)
+✔ verified assets are staged under the contract layout (8.300834ms)
+✔ a manifest pointing outside the center is rejected (3.538ms)
+✔ staging settings are complete or rejected (0.291958ms)
+✔ full reset removes every profile entry, including backups and unknown future files (12.793917ms)
+✔ combined exclusions preserve model bytes and preference files while clearing other data (8.484833ms)
+✔ content exclusions retain their keys and keep-system preserves OS scopes and DPAPI blob (9.839375ms)
+✔ unsafe roots and symlinked profiles are rejected; child links never erase their targets (13.760625ms)
+✔ unknown suffixes fail and dry-run leaves the fixture byte-for-byte intact (48.531792ms)
+✔ Make validates all reset goals before executing any mutation (121.725083ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 276.752375
+ok  	arion.local/core/application	(cached)
+?   	arion.local/core/contracts	[no test files]
+ok  	arion.local/core/domain	(cached)
+?   	arion.local/core/domain/ports	[no test files]
+ok  	arion.local/models	(cached)
+?   	arion.local/sync/application	[no test files]
+?   	arion.local/sync/cmd/sync	[no test files]
+ok  	arion.local/sync/domain	(cached)
+ok  	arion.local/sync/infrastructure/config	(cached)
+ok  	arion.local/sync/infrastructure/logging	(cached)
+?   	arion.local/sync/infrastructure/memory	[no test files]
+?   	arion.local/sync/infrastructure/noop	[no test files]
+ok  	arion.local/sync/infrastructure/oidc	(cached)
+?   	arion.local/sync/infrastructure/postgres	[no test files]
+ok  	arion.local/sync/interfaces/http	(cached)
+ok  	arion.local/updates/application	(cached)
+?   	arion.local/updates/cmd/updates	[no test files]
+ok  	arion.local/updates/domain	(cached)
+ok  	arion.local/updates/infrastructure/config	(cached)
+ok  	arion.local/updates/infrastructure/s3	(cached)
+ok  	arion.local/updates/interfaces/http	(cached)
+ok  	arion.local/desktop/ui/shared/copy	(cached)
+✔ archive reads original absolute and relative identities after relocation without workspace files (124.880792ms)
+✔ archive rejects changed bytes and does not substitute an original local file (32.002291ms)
+✔ archive rejects duplicate identities and destinations outside benchmarks (49.8945ms)
+✔ archive rejects symlinks rather than reading mutable external evidence (62.587083ms)
+✔ phonetic archive option cannot be used to start inference (186.448292ms)
+✔ center defaults are complete and custom device/OIDC modes remain separate (2.272125ms)
+✔ empty, partial, unknown and secret-bearing settings fail before compilation (0.573041ms)
+✔ custom packages disable official updates and require the build injection path (17.612833ms)
+✔ official release paths reject custom profiles before packaging (0.332792ms)
+✔ no Apple configuration keeps preview builds unsigned; update signing is independent (1.419042ms)
+✔ partial Apple configuration cannot silently produce an unsigned build (0.881416ms)
+✔ macOS prerelease bundles use numeric metadata while archives retain the full version (0.220083ms)
+✔ local signing uses an existing identity and profile without creating a keychain (3.976958ms)
+✔ CI credentials are isolated and cleanup restores the keychain search list (15.258584ms)
+✔ import failure still deletes the temporary keychain and files (27.399083ms)
+✔ build subprocesses receive keychain references and keep the independent update key (0.317041ms)
+✔ notary authentication failure restores the search list and removes imported credentials (5.07ms)
+✔ signing failures retain diagnostics without exposing secret argv or output (66.911209ms)
+✔ generic signing stays available but canonical macOS packages require an IME profile (0.337916ms)
+✔ manifest rejects speaker/audio split leakage and reference-derived memory (2.03175ms)
+✔ factorial plan is deterministic, unique and contains all controlled factors (4.086584ms)
+✔ inference boundary withholds labels and removes memory in ablation (0.29075ms)
+✔ driver outputs reject mock execution, stale IDs, mismatched features and traces (1.23525ms)
+✔ reports reject incomplete, duplicated or mismatched candidate observations (4221.178625ms)
+✔ E2E assertions cannot pass with missing or self-reported success alone (0.389917ms)
+✔ persistent driver transport handles multiple messages and rejects unsolicited output (96.457166ms)
+✔ single host requests only profile-authorized application and team identity (3.451042ms)
+✔ missing profile fails before CMS or certificate commands (1.005792ms)
+✔ expired, wrong-platform, development, team, app and certificate profiles are rejected (0.433ms)
+✔ failed profile preparation never emits restricted entitlements or embeds a profile (3.588ms)
+✔ native plist decoding isolates JSON fields from dates/data and preserves boolean type checks (913.115416ms)
+✔ text scoring separates proposals, delivered text and worsening (4.862709ms)
+✔ text scoring breaks results down by expected scene (1.580333ms)
+✔ text scoring rejects incomplete coverage (0.286709ms)
+✔ audio scoring reports acoustic error, latency and previews before stop (0.873041ms)
+✔ cleanup and multilingual constraint counts remain separate from error rates (0.738125ms)
+✔ live report rejects checksum changes instead of publishing altered observations (479.537084ms)
+✔ audio reports distinguish legacy unknown filler policy and reject mixed treatments (1.16625ms)
+✔ formal packages require a Developer ID, runtime, timestamp and valid tickets (1.666292ms)
+✔ a complete package checks the helper, App and DMG without changing signatures (0.424917ms)
+✔ updates must retain their notarization ticket after archiving, and extraction is cleaned on failure (41.347833ms)
+✔ normalization, CER and MER have explicit Unicode units (2.907792ms)
+✔ known Levenshtein oracles include insertions above 100% (2.357875ms)
+✔ corpus rates are micro-averaged and silence has its own denominator (1.774708ms)
+✔ normalized erasure counts suffix withdrawal including final revisions (0.429583ms)
+✔ rank accuracy does not hide missing producer oracle candidates (0.536709ms)
+✔ type-7 quantiles interpolate and reject nonfinite values (0.138208ms)
+✔ paired cluster bootstrap preserves repeats and known constant treatment delta (2.245166ms)
+✔ native validation pins the selected backend (2.673958ms)
+✔ malformed bundle overrides are rejected (0.991709ms)
+✔ single-backend validation does not relax ablation requirements (0.357709ms)
+✔ error-risk AUC handles direction, ties and missing classes (0.718042ms)
+✔ confidence scoring excludes silence and counts missing scores explicitly (1.53175ms)
+✔ preflight separates missing phoneme capability from text output-contract failures (2.445ms)
+✔ preflight rejects test leakage, changed prompts and incomplete evidence (0.422458ms)
+✔ chat role boundaries use actual newline bytes and copy examples return plain text (1.086417ms)
+✔ phonetic treatments expose exactly their permitted evidence (0.900125ms)
+✔ scoring distinguishes recovery from corruption and pools corpus errors (5.282833ms)
+✔ reports refuse missing, duplicate and invented treatment observations (1.088791ms)
+✔ diagnostic prompt withholds gold labels and independently removes treatment inputs (1.343334ms)
+✔ fluent output can fail final-intent preservation (1.072208ms)
+✔ token-budget truncation and verbatim changes fail even when strings match (0.351208ms)
+✔ thinking treatment removes forced non-thinking prefix without adding outcome labels (0.18225ms)
+✔ Make-style empty optional environment values preserve declared CLI defaults (259.457833ms)
+✔ prefix prefill contains only the fixed system instruction and is an exact prompt boundary (0.729125ms)
+✔ checksum names match GitHub uploaded installer filenames (0.735625ms)
+✔ release preflight rejects missing, mismatched and malformed signing credentials (81.875167ms)
+✔ all platform installers and archives must exist and carry valid update signatures (145.011209ms)
+✔ alpha releases require ARM64 macOS while stable and other prereleases require all platforms (27.746917ms)
+✔ a same-size archive modification is rejected even when its manifest is unchanged (28.012334ms)
+✔ update versions, origins and platform archive names cannot be substituted (275.835625ms)
+✔ ordinary CI can retain installers without an update key, signed releases cannot (28.710541ms)
+✔ rewrite plan reproduces factorial/precision strata and rejects duplicate conditions (5.180041ms)
+✔ rewrite inputs withhold gold intent/reference and physically remove ablated context/memory/scenario (0.604916ms)
+✔ rewrite split guards reject sibling documents and test-derived memory/context (2.28425ms)
+✔ rewrite token/preview/cold identity gates cannot attest fabricated events (1.353917ms)
+✔ rewrite cancellation forbids late preview and any target commit (1.815125ms)
+✔ rewrite resources distinguish cumulative high-water marks from sampled request/worker peaks (1.687ms)
+✔ concurrent rewrite requires ASR duration, overlap and measured queue/sample traces (0.465542ms)
+✔ rewrite metrics expose changed negation/number, attack success and reject-all coverage (0.514084ms)
+✔ cancelled rewrite fixtures cannot lower normal latency or inflate preview stability (0.513958ms)
+✔ rewrite loader checks reviewed annotation/audio hashes and CLI refuses missing drivers/overwrite (553.823625ms)
+✔ rewrite runner rejects fixture execution and preserves an unreportable failed run (722.246ms)
+✔ rewrite report recomputes metrics, enforces coverage and blind human ratings (107.826375ms)
+✔ CLI cannot report absent adapters as a passing run or overwrite plans (432.083958ms)
+✔ real runner refuses fixture drivers and retains a non-reportable failure (209.857584ms)
+✔ report serialization validates file hashes and retains null metric strata (89.851458ms)
+✔ streaming sweep controls chunk and endpoint while fixing model treatments (1.866ms)
+✔ thinking-pause endpoint is premature; real end is matched once (1.611458ms)
+✔ stable latency requires final exact correctness and includes its coverage (0.147834ms)
+✔ streaming annotations cannot be silently fabricated or misaligned (0.834708ms)
+ℹ tests 91
+ℹ suites 0
+ℹ pass 91
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4477.723584

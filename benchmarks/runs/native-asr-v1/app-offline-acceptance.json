@@ -1,0 +1,31 @@
+{
+  "networkMode": "ARION_OFFLINE=1",
+  "isolatedRuntimeDirectory": true,
+  "workerOverride": false,
+  "response": {
+    "observations": {
+      "capture": {
+        "active": false,
+        "starts": 0
+      },
+      "commit": {
+        "status": ""
+      },
+      "commitCount": 0,
+      "error": {
+        "code": ""
+      },
+      "input": {
+        "mode": "shortcut"
+      },
+      "insertionAttemptCount": 0,
+      "model": {
+        "bundle": "qwen3-asr-1.7b-mlx-8bit",
+        "state": "ready"
+      },
+      "session": {
+        "state": "idle"
+      }
+    }
+  }
+}

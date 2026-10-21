@@ -44,10 +44,10 @@
       36
     ],
     "arionViewPoints": [
-      44,
-      36
+      23,
+      23
     ],
-    "arionDismissalSeconds": 0.8
+    "arionDismissalSeconds": 1
   },
   "skinSha256": "5bbc99648beacffc9dcd16b6f8997af1f336706f930154fd755cfacfbd6cb42a",
   "verifiedListings": [
@@ -172,5 +172,10 @@
     "arionProductionViewCaptured": true,
     "arionImageLocalPath": "/Users/steven/code/Arion/.workspace/research/chatterfly-language-hint/arion-production-hint.png",
     "limitation": "CUA rejects modifier-only Shift events; Chatterfly background window capture failed. Arion screenshots establish appearance only; screenshot API can return hidden-window backing pixels, so equal frames do not establish live visibility timing."
+  },
+  "arionAlignmentVerification": {
+    "rendering": "Original native solid rounded badge; no window shadow or window animation",
+    "screenshot": ".workspace/research/chatterfly-language-hint/arion-aligned-hint.png",
+    "comparisonBoundary": "Competitor static defaults; no paired live Shift recording"
   }
 }

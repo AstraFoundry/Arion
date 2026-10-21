@@ -1,0 +1,247 @@
+{
+  "version": 1,
+  "license": "Developer-authored text from entity-ocr-v1; macOS system voice synthesis for local evaluation",
+  "consent": true,
+  "samples": [
+    {
+      "id": "ocr-email-name",
+      "split": "dev",
+      "speakerId": "synthetic:Tingting:context",
+      "sessionId": "authored:ocr-email-name",
+      "language": "zh",
+      "unit": "cer",
+      "tags": [
+        "synthetic-tts",
+        "owned-window-integration"
+      ],
+      "audio": {
+        "path": "ocr-email-name.wav",
+        "sha256": "2bfc11340e24697e506405301e6437ea27875becca9afa58728bd5257e42fc3b",
+        "durationMs": 5669.6875
+      },
+      "reference": "林雨桐您好，报告明早发您，请先不要转发，谢谢。",
+      "context": "",
+      "approvedMemory": []
+    },
+    {
+      "id": "ocr-email-clean",
+      "split": "dev",
+      "speakerId": "synthetic:Tingting:context",
+      "sessionId": "authored:ocr-email-clean",
+      "language": "zh",
+      "unit": "cer",
+      "tags": [
+        "synthetic-tts",
+        "owned-window-integration"
+      ],
+      "audio": {
+        "path": "ocr-email-clean.wav",
+        "sha256": "a7ab07dce5a274166fb43c4ec28f12a49f1e7cefc1b9a8c4e5d5c848a20b7f3c",
+        "durationMs": 5220.1875
+      },
+      "reference": "韩若宁您好，我核对后再给您回复，先不用审批。",
+      "context": "",
+      "approvedMemory": []
+    },
+    {
+      "id": "ocr-work-code",
+      "split": "dev",
+      "speakerId": "synthetic:Tingting:context",
+      "sessionId": "authored:ocr-work-code",
+      "language": "mixed",
+      "unit": "mer",
+      "tags": [
+        "synthetic-tts",
+        "owned-window-integration"
+      ],
+      "audio": {
+        "path": "ocr-work-code.wav",
+        "sha256": "d35453c256f80827668ec783259031b1781543759cf423d8d7fbf1f52e06023a",
+        "durationMs": 5420.5625
+      },
+      "reference": "给 load cash 加日志，不记录用户内容，先别改缓存策略。",
+      "context": "",
+      "approvedMemory": []
+    },
+    {
+      "id": "ocr-work-term",
+      "split": "dev",
+      "speakerId": "synthetic:Tingting:context",
+      "sessionId": "authored:ocr-work-term",
+      "language": "zh",
+      "unit": "cer",
+      "tags": [
+        "synthetic-tts",
+        "owned-window-integration"
+      ],
+      "audio": {
+        "path": "ocr-work-term.wav",
+        "sha256": "2424fd6203bfed0fc6264371d6334314cee209e22ab9c8d4dca524c5f3b97158",
+        "durationMs": 4318.875
+      },
+      "reference": "部署前先做回归侧试，不通过就不要发布。",
+      "context": "",
+      "approvedMemory": []
+    },
+    {
+      "id": "ocr-prompt-code",
+      "split": "dev",
+      "speakerId": "synthetic:Tingting:context",
+      "sessionId": "authored:ocr-prompt-code",
+      "language": "mixed",
+      "unit": "mer",
+      "tags": [
+        "synthetic-tts",
+        "owned-window-integration"
+      ],
+      "audio": {
+        "path": "ocr-prompt-code.wav",
+        "sha256": "6100066c8fbbcbee16ca592f145d8263527b7bdc8c856a9a8c171338258353eb",
+        "durationMs": 6278.9375
+      },
+      "reference": "在 get profile 里加权限检查，不改返回字段，也别新增配置。",
+      "context": "",
+      "approvedMemory": []
+    },
+    {
+      "id": "ocr-chat-name",
+      "split": "dev",
+      "speakerId": "synthetic:Tingting:context",
+      "sessionId": "authored:ocr-chat-name",
+      "language": "zh",
+      "unit": "cer",
+      "tags": [
+        "synthetic-tts",
+        "owned-window-integration"
+      ],
+      "audio": {
+        "path": "ocr-chat-name.wav",
+        "sha256": "e78168b4bd3c1e25757d7f0312c4db4ef3e0100a04dd0a1c20ea157d434fb577",
+        "durationMs": 3073.125
+      },
+      "reference": "程雨南看过了吗？我可能晚点回。",
+      "context": "",
+      "approvedMemory": []
+    },
+    {
+      "id": "ocr-email-ambiguous",
+      "split": "dev",
+      "speakerId": "synthetic:Tingting:context",
+      "sessionId": "authored:ocr-email-ambiguous",
+      "language": "zh",
+      "unit": "cer",
+      "tags": [
+        "synthetic-tts",
+        "owned-window-integration"
+      ],
+      "audio": {
+        "path": "ocr-email-ambiguous.wav",
+        "sha256": "b6aed9fd18dc63d2ca6d89df8ae021e83412934e7fa11e0bae0d267930f6db80",
+        "durationMs": 4635.75
+      },
+      "reference": "温雨晴您好，请先看附件，今天不用回复。",
+      "context": "",
+      "approvedMemory": []
+    },
+    {
+      "id": "ocr-work-injection",
+      "split": "dev",
+      "speakerId": "synthetic:Tingting:context",
+      "sessionId": "authored:ocr-work-injection",
+      "language": "zh",
+      "unit": "cer",
+      "tags": [
+        "synthetic-tts",
+        "owned-window-integration"
+      ],
+      "audio": {
+        "path": "ocr-work-injection.wav",
+        "sha256": "34c2af665040957d06efc1b45799b3d754411ed8c0b4a1febca48385ec1d4e79",
+        "durationMs": 3458.6875
+      },
+      "reference": "顾泽先核对清单，别删除原文件。",
+      "context": "",
+      "approvedMemory": []
+    },
+    {
+      "id": "ocr-work-question",
+      "split": "dev",
+      "speakerId": "synthetic:Tingting:context",
+      "sessionId": "authored:ocr-work-question",
+      "language": "zh",
+      "unit": "cer",
+      "tags": [
+        "synthetic-tts",
+        "owned-window-integration"
+      ],
+      "audio": {
+        "path": "ocr-work-question.wav",
+        "sha256": "9f0fb0615424aef15edc23eec68809be80a6d5dfc1f1ecbccb285466debb9b75",
+        "durationMs": 3191.375
+      },
+      "reference": "这个方案还不能发布吗？先别操作。",
+      "context": "",
+      "approvedMemory": []
+    },
+    {
+      "id": "ocr-prompt-clean",
+      "split": "dev",
+      "speakerId": "synthetic:Tingting:context",
+      "sessionId": "authored:ocr-prompt-clean",
+      "language": "mixed",
+      "unit": "mer",
+      "tags": [
+        "synthetic-tts",
+        "owned-window-integration"
+      ],
+      "audio": {
+        "path": "ocr-prompt-clean.wav",
+        "sha256": "f166f8e01566fc74a06529a7988c8619279119e449a0f719497401d2f0a951d9",
+        "durationMs": 4398.875
+      },
+      "reference": "给 getCash 加校验，不改字段，也别动权限。",
+      "context": "",
+      "approvedMemory": []
+    },
+    {
+      "id": "ocr-chat-uncertainty",
+      "split": "dev",
+      "speakerId": "synthetic:Tingting:context",
+      "sessionId": "authored:ocr-chat-uncertainty",
+      "language": "zh",
+      "unit": "cer",
+      "tags": [
+        "synthetic-tts",
+        "owned-window-integration"
+      ],
+      "audio": {
+        "path": "ocr-chat-uncertainty.wav",
+        "sha256": "47bc72a844213244d4e3da324a09cf412ebf1d8acf8128caef8b5ce93dcc9454",
+        "durationMs": 4694.3125
+      },
+      "reference": "我可能能参加，还没确定，确认后我再回复。",
+      "context": "",
+      "approvedMemory": []
+    },
+    {
+      "id": "ocr-email-condition",
+      "split": "dev",
+      "speakerId": "synthetic:Tingting:context",
+      "sessionId": "authored:ocr-email-condition",
+      "language": "zh",
+      "unit": "cer",
+      "tags": [
+        "synthetic-tts",
+        "owned-window-integration"
+      ],
+      "audio": {
+        "path": "ocr-email-condition.wav",
+        "sha256": "1a58dd4b5db48c234749529cd289c446f3e072a0a1ec971c1316554ad00f6d91",
+        "durationMs": 7225.0
+      },
+      "reference": "罗先生您好，您确认后我再寄，运费还没确定，请不要提前付款。",
+      "context": "",
+      "approvedMemory": []
+    }
+  ]
+}

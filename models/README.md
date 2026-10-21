@@ -2,19 +2,13 @@
 
 `catalog.json` is the reviewed, embedded catalog ([006 Models](../specs/006-models.md), [ADR 004](../docs/decisions/004-automatic-model-selection.md)). Weights are never committed: the app downloads them from the pinned URLs and verifies them.
 
-## Artifacts
 
-Each artifact records its ID and purpose (`streaming-asr` or `offline-asr`), sherpa-onnx model kind and runtime version, the upstream archive URL, release, publication time, archive SHA-256 and byte size, model card and source repository, model and runtime license references with a review status, languages, platforms, audio format, and every loaded file: its archive member path, SHA-256 and size. Latin casing, punctuation, quantization and conversion provenance are explicit; vendor training notes are kept, including undisclosed test-set exposure.
+## Native recognition
 
-Provisioning downloads into a bounded, resumable partial file, verifies the archive digest, extracts only the listed members into a staging directory, verifies each member digest and publishes by rename. A corrupt or unverified install never loads; the previous verified install stays until a replacement verifies.
+The catalog contains Qwen3-ASR 1.7B MLX affine 8-bit for `darwin-arm64` and speech.cpp Q8_0 for `darwin-amd64` / `windows-amd64`. Each has a distinct immutable revision, file inventory, digest, runtime and quantization provenance. They are explicitly adopted defaults under [ADR 020](../docs/decisions/020-native-qwen-asr.md), with native measurements recorded independently. Historical X-ASR/ONNX results remain in `benchmarks/` and are not selectable product backends.
 
-## Bundles and evaluations
+`arion-models ensure -artifact qwen3-asr-1.7b-mlx-8bit -root <cache>` provisions pinned files; `-offline` verifies without downloads. `arion-models import-files -directory <downloaded-files> -artifact <id> -root <cache>` verifies local files and uses the same atomic provisioning path. No tokenizer or checkpoint is accepted by filename alone. Old model caches are not automatically deleted.
 
-A bundle pairs a streaming preview artifact with an optional acoustic finalizer and fixes the pipeline settings it was measured with. `evaluations` holds content-free summaries copied from completed benchmark reports by `scripts/catalog-evaluation.mjs`: run ID, report path, hardware class, split, per-language error rates, warm stop-to-review and first-partial p95, real-time factor and observation count. The app loads the best evaluated bundle by default; unevaluated bundles are never chosen.
+Weights are outside the installer. Native runtime code, Metal shaders, Swift compatibility libraries and dependency licenses are staged by `scripts/stage-asr-runtime.mjs`; `Package.resolved` and `scripts/asr-runtime.json` pin the source/runtime closure. Intel and Windows acceptance must execute on their actual hosts.
 
-## Adding an artifact
-
-1. Download the archive from its immutable release URL into `.workspace/`.
-2. `go run ./cmd/arion-models inspect -archive <file>` (from `apps/desktop`) prints the archive digest and every member's size and SHA-256.
-3. Record the entry, licenses and conversion provenance; `go test ./...` in `models/` rejects missing provenance.
-4. Benchmark bundles that use it and record their evaluation summaries before they can become the default.
+The existing local rewrite model and its evaluation provenance remain in `catalog.json`; recognition adoption does not change rewriting.

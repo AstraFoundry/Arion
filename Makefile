@@ -1255,3 +1255,17 @@ rewrite-stages-test:
 	@pnpm rewrite:stages:test
 rewrite-stages-verify:
 	@pnpm rewrite:stages:verify $(ARGS)
+
+.PHONY: qwen17-context-report qwen17-context-test
+qwen17-context-report:
+	pnpm qwen17:context:report --run "$(RESULTS)" --out "$(OUT)"
+qwen17-context-test:
+	pnpm qwen17:context:test
+
+.PHONY: qwen17-verify
+qwen17-verify:
+	pnpm qwen17:verify
+
+.PHONY: native-asr-verify
+native-asr-verify: ## Verify the native ASR acceptance archive without models
+	pnpm asr:native:verify

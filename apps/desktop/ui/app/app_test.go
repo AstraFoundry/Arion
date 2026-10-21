@@ -13,8 +13,8 @@ import (
 	"testing"
 	"time"
 
+	holdname "arion.local/desktop/ui/entities/holdkey"
 	diagnosticui "arion.local/desktop/ui/features/diagnostics"
-	"arion.local/desktop/ui/features/holdkey"
 	keyboardui "arion.local/desktop/ui/features/keyboard"
 	"arion.local/desktop/ui/pages/guide"
 	"arion.local/desktop/ui/pages/menubar"
@@ -31,9 +31,8 @@ import (
 
 // recorder implements runtime.Actions for view tests.
 type recorder struct {
-	calls    []string
-	state    *runtime.State
-	shortcut error
+	calls []string
+	state *runtime.State
 }
 
 func (r *recorder) call(name string)            { r.calls = append(r.calls, name) }
@@ -61,8 +60,7 @@ func (r *recorder) SignOut()                    { r.call("sign-out") }
 func (r *recorder) JoinHostedSyncWaitlist()     { r.call("join-waitlist") }
 func (r *recorder) CheckStoredAccount()         { r.call("check-stored") }
 func (r *recorder) Quit()                       { r.call("quit") }
-func (r *recorder) SuspendShortcut(s bool)      { r.call("suspend") }
-func (r *recorder) TestShortcut(testing bool)   { r.call("test-shortcut") }
+func (r *recorder) TestHoldKey(testing bool)    { r.call("test-hold") }
 func (r *recorder) RemoveReplacement(id string) { r.call("remove:" + id) }
 func (r *recorder) UndoLearned(id string)       { r.call("undo:" + id) }
 func (r *recorder) RequestInputMonitoring()     { r.call("request-monitoring") }
@@ -102,14 +100,6 @@ func (r *recorder) UpdatePreferences(change func(*runtime.Preferences)) {
 	change(&r.state.Preferences)
 	r.call("prefs")
 }
-func (r *recorder) SetShortcut(accelerator string) error {
-	r.call("shortcut:" + accelerator)
-	if r.shortcut != nil {
-		return r.shortcut
-	}
-	r.state.Shortcut.Accelerator = accelerator
-	return nil
-}
 func (r *recorder) AddReplacement(from, to string) error {
 	if from == "" || to == "" {
 		return errors.New("invalid")
@@ -129,18 +119,18 @@ func (r *recorder) called(name string) bool {
 }
 
 func fixture() (*runtime.State, *recorder, runtime.Store) {
-	recommended := runtime.Bundle{ID: "xasr-160-xasr-final", Evaluated: true, Recommended: true,
+	recommended := runtime.Bundle{ID: "qwen3-asr-1.7b-mlx-8bit", Evaluated: true, Recommended: true,
 		ErrorRates: map[string]float64{"zh": 0.041, "en": 0.052, "mixed": 0.087}, ReviewP95Ms: 312, SizeBytes: 270 << 20}
-	other := runtime.Bundle{ID: "xasr-160", Evaluated: true,
+	other := runtime.Bundle{ID: "qwen3-asr-1.7b-gguf-q8", Evaluated: true,
 		ErrorRates: map[string]float64{"zh": 0.06, "en": 0.07, "mixed": 0.11}, ReviewP95Ms: 41, SizeBytes: 134 << 20}
 	state := &runtime.State{
 		Version:     "0.1.0",
 		Permissions: runtime.Permissions{Microphone: runtime.ConsentGranted, Accessibility: runtime.ConsentGranted},
-		Preferences: runtime.Preferences{Shortcut: "Alt+Space", Delivery: runtime.DeliveryAutomatic, RemoveFillers: true, Sounds: true, CheckUpdates: true,
+		Preferences: runtime.Preferences{HoldKey: runtime.DefaultHoldKey(platform.GOOS), Delivery: runtime.DeliveryAutomatic, RemoveFillers: true, Sounds: true, CheckUpdates: true,
 			Keyboard: runtime.KeyboardPreferences{PageSize: 9, CandidateSize: runtime.CandidateMedium, Appearance: runtime.AppearanceSystem, ContextRanking: true}},
 		InputMethod: runtime.InputMethodAbsent,
 		Account:     runtime.Account{Phase: runtime.AccountSignedOut, Issuer: "https://astrafoundry.si", Portal: "https://astrafoundry.si/account"},
-		Shortcut:    runtime.Shortcut{Accelerator: "Alt+Space", Registered: true},
+		Hold:        runtime.Hold{Active: true},
 		Model:       runtime.Model{State: runtime.ModelReady, Active: recommended, Automatic: true, LatencyMeasured: true, Bundles: []runtime.Bundle{recommended, other}},
 		Devices:     []runtime.Device{{ID: "a", Name: "MacBook Pro Microphone", Default: true}, {ID: "b", Name: "AirPods Pro"}},
 	}
@@ -270,7 +260,7 @@ func TestMenuBarPanel(t *testing.T) {
 	if !hasText(tt, copy.For(copy.English).Text(copy.StatusReady)) || !hasText(tt, copy.For(copy.English).Text(copy.PanelEmpty)) {
 		t.Fatalf("idle panel: %q", tt.Texts())
 	}
-	if hasText(tt, copy.For(copy.English).Text(copy.ModelNameAccurate)) {
+	if hasText(tt, copy.For(copy.English).Text(copy.ModelNameGeneric)) {
 		t.Fatalf("ready panel shows the model, which settings owns: %q", tt.Texts())
 	}
 	snapshot(t, tt, "panel-ready")
@@ -325,7 +315,7 @@ func TestSettingsSections(t *testing.T) {
 	for _, section := range []struct{ id, label, want string }{
 		{settings.Overview, copy.For(copy.English).Text(copy.NavOverview), copy.For(copy.English).Text(copy.UsageActivity)},
 		{settings.General, copy.For(copy.English).Text(copy.NavGeneral), copy.For(copy.English).Text(copy.LaunchAtLogin)},
-		{settings.Dictation, copy.For(copy.English).Text(copy.NavDictation), copy.For(copy.English).Text(copy.ShortcutLabel)},
+		{settings.Dictation, copy.For(copy.English).Text(copy.NavDictation), copy.For(copy.English).Text(copy.HoldKeyLabel)},
 		{settings.Microphone, copy.For(copy.English).Text(copy.NavMicrophone), copy.For(copy.English).Text(copy.MicTest)},
 		{settings.Model, copy.For(copy.English).Text(copy.NavModel), copy.For(copy.English).Text(copy.ModelReason)},
 		{settings.Vocabulary, copy.For(copy.English).Text(copy.NavVocabulary), copy.For(copy.English).Text(copy.VocabEmpty)},
@@ -365,31 +355,6 @@ func TestSettingsSections(t *testing.T) {
 		t.Fatalf("vocabulary not added: %v %q", state.Vocabulary, tt.Texts())
 	}
 	snapshot(t, tt, "settings-vocabulary-filled")
-	// Dictation: record a new shortcut.
-	if err := tt.Click(copy.For(copy.English).Text(copy.NavDictation)); err != nil {
-		t.Fatal(err)
-	}
-	settle(tt)
-	if err := tt.Click(copy.For(copy.English).Text(copy.ShortcutRecord)); err != nil {
-		t.Fatal(err)
-	}
-	settle(tt)
-	tt.Key(ui.Super|ui.Shift, ui.KeyD)
-	settle(tt)
-	if state.Shortcut.Accelerator != "Cmd+Shift+D" {
-		t.Fatalf("shortcut not recorded: %q calls=%v", state.Shortcut.Accelerator, actions.calls)
-	}
-	// Plain letters are rejected so typing is never captured.
-	if err := tt.Click(copy.For(copy.English).Text(copy.ShortcutRecord)); err != nil {
-		t.Fatal(err)
-	}
-	settle(tt)
-	tt.Key(0, ui.KeyD)
-	settle(tt)
-	if !hasText(tt, copy.For(copy.English).Text(modifierHint())) {
-		t.Fatalf("modifier rule not shown: %q", tt.Texts())
-	}
-	snapshot(t, tt, "settings-dictation-recording")
 	// Keyboard setup remains available independently of dictation routing.
 	state.InputMethod = runtime.InputMethodAbsent
 	if err := tt.Click(copy.For(copy.English).Text(copy.NavKeyboard)); err != nil {
@@ -812,16 +777,29 @@ func TestOnboardingFlow(t *testing.T) {
 	click(copy.For(copy.English).Text(copy.Continue))
 	snapshot(t, tt, "onboarding-5-model")
 	click(copy.For(copy.English).Text(copy.Continue))
-	if !actions.called("test-shortcut") {
-		t.Fatal("shortcut test mode not entered")
+	if !actions.called("test-hold") {
+		t.Fatal("hold key test mode not entered")
 	}
-	snapshot(t, tt, "onboarding-6-shortcut")
-	state.Shortcut.Pressed = time.Now().Add(time.Second)
+	// A key that cannot listen holds the step until Input Monitoring is granted.
+	state.Hold = runtime.Hold{Failure: runtime.CodePermissionDenied}
 	settle(tt)
-	if !hasText(tt, copy.For(copy.English).Text(copy.OnbShortcutHeard)) {
-		t.Fatalf("shortcut press not acknowledged: %q", tt.Texts())
+	if !hasText(tt, copy.For(copy.English).Text(copy.HoldKeyNeedsMonitoring)) {
+		t.Fatalf("missing consent not explained: %q", tt.Texts())
 	}
-	snapshot(t, tt, "onboarding-6-shortcut-heard")
+	snapshot(t, tt, "onboarding-6-hold-key-consent")
+	click(copy.For(copy.English).Text(copy.Continue))
+	if !hasText(tt, copy.For(copy.English).Text(copy.OnbHoldKeyTitle)) {
+		t.Fatal("onboarding moved past a hold key that cannot listen")
+	}
+	state.Hold = runtime.Hold{Active: true}
+	settle(tt)
+	snapshot(t, tt, "onboarding-6-hold-key")
+	state.Hold.Pressed = time.Now().Add(time.Second)
+	settle(tt)
+	if !hasText(tt, copy.For(copy.English).Text(copy.OnbHoldKeyHeard)) {
+		t.Fatalf("hold key press not acknowledged: %q", tt.Texts())
+	}
+	snapshot(t, tt, "onboarding-6-hold-key-heard")
 	click(copy.For(copy.English).Text(copy.Continue))
 	snapshot(t, tt, "onboarding-7-try")
 	click(copy.For(copy.English).Text(copy.Continue))
@@ -890,7 +868,7 @@ func TestChineseSettingsAndTransientErrors(t *testing.T) {
 		id  string
 		key copy.Key
 	}{
-		{settings.General, copy.LanguageLabel}, {settings.Dictation, copy.ShortcutLabel},
+		{settings.General, copy.LanguageLabel}, {settings.Dictation, copy.HoldKeyLabel},
 		{settings.Microphone, copy.MicTest}, {settings.Model, copy.ModelReason},
 		{settings.Vocabulary, copy.VocabEmpty}, {settings.About, copy.PrivacyLocal},
 	} {
@@ -934,22 +912,6 @@ func TestChineseSettingsAndTransientErrors(t *testing.T) {
 	if len(state.Vocabulary) != 1 || state.Vocabulary[0].From != "阿里昂 {value}" || state.Vocabulary[0].To != "Arion {value}" {
 		t.Fatalf("language switch changed vocabulary draft: %v", state.Vocabulary)
 	}
-	page.Section = settings.Dictation
-	settle(tt)
-	if err := tt.Click("修改"); err != nil {
-		t.Fatal(err)
-	}
-	settle(tt)
-	tt.Key(0, ui.KeyD)
-	settle(tt)
-	if !hasText(tt, zh.Text(modifierHint())) {
-		t.Fatal("shortcut error untranslated")
-	}
-	state.Preferences.UILanguage = runtime.LanguageEnglish
-	settle(tt)
-	if !hasText(tt, copy.For(copy.English).Text(modifierHint())) {
-		t.Fatal("shortcut error did not change language")
-	}
 }
 
 func TestChineseOverlayAndDownload(t *testing.T) {
@@ -986,13 +948,6 @@ func TestChineseOverlayAndDownload(t *testing.T) {
 	}
 }
 
-func modifierHint() copy.Key {
-	if platform.GOOS == "windows" {
-		return copy.ShortcutNeedsModifierWindows
-	}
-	return copy.ShortcutNeedsModifier
-}
-
 // Hold-to-talk: the Dictation section offers this platform's keys, explains
 // missing Input Monitoring with a way to grant it, and the pill says to
 // release the key while a hold dictates.
@@ -1008,19 +963,20 @@ func TestHoldKeySettingsAndPill(t *testing.T) {
 	if !hasText(tt, en.Text(copy.HoldKeyLabel)) {
 		t.Fatalf("hold row missing: %q", tt.Texts())
 	}
-	choice := holdkey.Choices()[1]
-	if err := tt.Click(en.Text(copy.HoldKeyOff)); err != nil {
+	keys := runtime.HoldKeysFor(platform.GOOS)
+	choice := keys[len(keys)-1]
+	if err := tt.Click(holdname.Name(en, state.Preferences.HoldKey)); err != nil {
 		t.Fatal(err)
 	}
 	settle(tt)
-	if err := tt.Click(holdkey.Name(en, choice)); err != nil {
+	if err := tt.Click(holdname.Name(en, choice)); err != nil {
 		t.Fatal(err)
 	}
 	settle(tt)
 	if !actions.called("hold:"+string(choice)) || state.Preferences.HoldKey != choice {
 		t.Fatalf("hold key not chosen: %v", actions.calls)
 	}
-	state.Shortcut.HoldFailure = runtime.CodePermissionDenied
+	state.Hold = runtime.Hold{Failure: runtime.CodePermissionDenied}
 	settle(tt)
 	if !hasText(tt, en.Text(copy.HoldKeyNeedsMonitoring)) {
 		t.Fatalf("missing consent not explained: %q", tt.Texts())
@@ -1039,15 +995,15 @@ func TestHoldKeySettingsAndPill(t *testing.T) {
 	overlayPage := overlay.NewPage()
 	pill := ui.NewTester(func(c *ui.Context) { overlayPage.Render(c, store) }, OverlayWidth, OverlayHeight)
 	state.Dictation = runtime.Dictation{SessionID: "h", State: runtime.StateCapturing, Levels: levels(40), Changed: time.Now()}
-	state.Shortcut.Holding = true
+	state.Hold.Holding = true
 	settle(pill)
-	if !hasText(pill, en.Text(copy.PillReleaseHint)) || !hasText(pill, holdkey.Name(en, choice)) {
+	if !hasText(pill, en.Text(copy.PillReleaseHint)) || !hasText(pill, holdname.Legend(choice)) {
 		t.Fatalf("release hint missing: %q", pill.Texts())
 	}
 	snapshot(t, pill, "overlay-holding")
-	state.Shortcut.Holding = false
+	state.Hold.Holding = false
 	settle(pill)
-	if !hasText(pill, en.Text(copy.PillShortcutHint)) {
+	if !hasText(pill, en.Text(copy.PillFinishHint)) || !hasText(pill, holdname.Legend(choice)) {
 		t.Fatalf("toggle hint missing after tap: %q", pill.Texts())
 	}
 }
@@ -1408,8 +1364,8 @@ func TestDictationHidesDeliveryInternals(t *testing.T) {
 						t.Fatalf("%s/%s/%s exposes delivery internals: %q", locale, platform, source, tt.Texts())
 					}
 				}
-				if !hasText(tt, messages.Text(copy.ShortcutLabel)) {
-					t.Fatalf("%s/%s lost dictation shortcut", locale, platform)
+				if !hasText(tt, messages.Text(copy.HoldKeyLabel)) {
+					t.Fatalf("%s/%s lost the dictation key", locale, platform)
 				}
 			}
 		}

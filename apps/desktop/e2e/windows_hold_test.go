@@ -58,10 +58,12 @@ func TestWindowsHoldKeyHook(t *testing.T) {
 func TestWindowsHoldKeyDictates(t *testing.T) {
 	editor := startNotepad(t)
 	editor.focus(t)
+	var previous arion.HoldKey
+	app.Update(func(s *arion.State) { previous = s.Preferences.HoldKey })
 	mygo.RunOnMain(func() { app.Store().Actions.SetHoldKey(arion.HoldRightCtrl) })
-	defer mygo.RunOnMain(func() { app.Store().Actions.SetHoldKey(arion.HoldOff) })
+	defer mygo.RunOnMain(func() { app.Store().Actions.SetHoldKey(previous) })
 	var active bool
-	app.Update(func(s *arion.State) { active = s.Shortcut.HoldActive })
+	app.Update(func(s *arion.State) { active = s.Hold.Active })
 	if !active {
 		t.Fatal("hold key listener not active")
 	}
@@ -69,14 +71,14 @@ func TestWindowsHoldKeyDictates(t *testing.T) {
 	eventually(t, "hold started a session", func() bool {
 		var holding bool
 		var id string
-		app.Update(func(s *arion.State) { holding, id = s.Shortcut.Holding, s.Dictation.SessionID })
+		app.Update(func(s *arion.State) { holding, id = s.Hold.Holding, s.Dictation.SessionID })
 		return holding && id != ""
 	})
 	time.Sleep(application.DefaultHoldThreshold + 200*time.Millisecond)
 	procKeybdEvent.Call(vkRControl, 0, keyeventExtended|keyUp, 0)
 	eventually(t, "release ended the hold", func() bool {
 		var holding bool
-		app.Update(func(s *arion.State) { holding = s.Shortcut.Holding })
+		app.Update(func(s *arion.State) { holding = s.Hold.Holding })
 		return !holding && !app.Coordinator().Snapshot().Active
 	})
 	if text := editor.text(); text != "" {

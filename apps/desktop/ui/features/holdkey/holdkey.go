@@ -1,10 +1,11 @@
-// Package holdkey chooses the hold-to-talk key and explains why a chosen
-// key is not listening.
+// Package holdkey chooses the dictation key, the only global activation,
+// and explains why it is not listening.
 package holdkey
 
 import (
 	platform "runtime"
 
+	holdname "arion.local/desktop/ui/entities/holdkey"
 	"arion.local/desktop/ui/shared/copy"
 	"arion.local/desktop/ui/shared/kit"
 	"arion.local/desktop/ui/shared/runtime"
@@ -12,31 +13,14 @@ import (
 	"github.com/egoist/mygo/ui"
 )
 
-var names = map[runtime.HoldKey]copy.Key{
-	runtime.HoldOff:          copy.HoldKeyOff,
-	runtime.HoldFn:           copy.HoldKeyFn,
-	runtime.HoldRightOption:  copy.HoldKeyRightOption,
-	runtime.HoldRightCommand: copy.HoldKeyRightCommand,
-	runtime.HoldRightAlt:     copy.HoldKeyRightAlt,
-	runtime.HoldRightCtrl:    copy.HoldKeyRightCtrl,
-}
-
-// Name is the key's display name.
-func Name(messages copy.Catalog, key runtime.HoldKey) string { return messages.Text(names[key]) }
-
-// Choices are Off followed by this platform's keys.
-func Choices() []runtime.HoldKey {
-	return append([]runtime.HoldKey{runtime.HoldOff}, runtime.HoldKeysFor(platform.GOOS)...)
-}
-
-// Picker selects the hold key.
+// Picker selects the hold key among this platform's keys.
 func Picker(c *ui.Context, store runtime.Store) {
 	messages := store.Copy()
-	choices := Choices()
+	choices := runtime.HoldKeysFor(platform.GOOS)
 	labels := make([]string, len(choices))
-	selected := Name(messages, store.State.Preferences.HoldKey)
+	selected := holdname.Name(messages, store.State.Preferences.HoldKey)
 	for i, key := range choices {
-		labels[i] = Name(messages, key)
+		labels[i] = holdname.Name(messages, key)
 	}
 	if ui.Select(c.Key("hold"), &selected, labels).Changed() {
 		for i, label := range labels {
@@ -47,27 +31,28 @@ func Picker(c *ui.Context, store runtime.Store) {
 	}
 }
 
-// Notes explain what the chosen key still needs, under the picker's row.
+// HasNotes reports whether Notes has anything to say.
+func HasNotes(store runtime.Store) bool {
+	return !store.State.Hold.Active || store.State.Preferences.HoldKey == runtime.HoldFn
+}
+
+// Notes explain what the chosen key still needs.
 func Notes(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 	messages := store.Copy()
-	key := store.State.Preferences.HoldKey
-	if key == runtime.HoldOff {
-		return
-	}
-	shortcut := store.State.Shortcut
-	ui.Column(c).Padding(0, 16, 12, 16).Gap(8).Children(func() {
+	hold := store.State.Hold
+	ui.Column(c).Gap(8).Children(func() {
 		switch {
-		case shortcut.HoldFailure == runtime.CodePermissionDenied:
+		case hold.Failure == runtime.CodePermissionDenied:
 			ui.Row(c).Gap(10).AlignItems(ui.Center).Children(func() {
 				ui.Text(c, messages.Text(copy.HoldKeyNeedsMonitoring)).FontSize(theme.Caption).TextColor(tokens.Danger).Grow(1)
 				if kit.Button(c.Key("monitoring"), tokens, kit.Outline, messages.Text(copy.Allow), true).Clicked() {
 					store.Actions.RequestInputMonitoring()
 				}
 			})
-		case !shortcut.HoldActive:
+		case !hold.Active:
 			ui.Text(c, messages.Text(copy.HoldKeyUnavailable)).FontSize(theme.Caption).TextColor(tokens.Danger)
 		}
-		if key == runtime.HoldFn {
+		if store.State.Preferences.HoldKey == runtime.HoldFn {
 			ui.Text(c, messages.Text(copy.HoldKeyFnHint)).FontSize(theme.Caption).TextColor(tokens.Muted)
 		}
 	})

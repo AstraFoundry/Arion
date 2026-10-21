@@ -1,0 +1,6 @@
+
+> arion-monorepo@0.0.0 bench:run /Users/steven/code/Arion
+> node tools/evaluation/cli.mjs run --config benchmarks/configs/desktop-models.json --corpus benchmarks/corpora/asr-v1/corpus.json --driver .workspace/native-asr-migration/native-driver.json --out .workspace/native-asr-migration/pipeline-v1
+
+Evaluation failed: Ablation requires variants
+ ELIFECYCLE  Command failed with exit code 1.

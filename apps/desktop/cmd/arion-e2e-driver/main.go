@@ -145,7 +145,7 @@ func (d *driver) hello() (map[string]any, error) {
 	if err := os.Symlink(d.path(d.config.Models), filepath.Join(profile, "models")); err != nil {
 		return nil, err
 	}
-	prefs := map[string]any{"version": 1, "onboardingCompleted": true, "mode": "shortcut", "shortcut": "Ctrl+Alt+Shift+F9",
+	prefs := map[string]any{"version": 1, "onboardingCompleted": true, "mode": "shortcut",
 		"delivery": "automatic", "removeFillers": true, "sounds": false}
 	data, _ := json.Marshal(prefs)
 	if err := os.WriteFile(filepath.Join(profile, "preferences.json"), data, 0o600); err != nil {

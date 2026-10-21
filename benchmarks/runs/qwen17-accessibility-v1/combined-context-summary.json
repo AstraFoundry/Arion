@@ -1,0 +1,41 @@
+{
+  "status": "complete",
+  "windowCases": 12,
+  "pairedWindowReads": 36,
+  "reviewer": "assistant inspection; not independent human ratings",
+  "canaryLeaks": 0,
+  "sources": {
+    "ax": {
+      "readMsP50": 0.898000318557024,
+      "readMsP95": 5.038749892264605,
+      "completeFixtureTextPresent": 36,
+      "reviewPass": 12
+    },
+    "ocr": {
+      "readMsP50": 140.37001132965088,
+      "readMsP95": 156.69593214988708,
+      "completeFixtureTextPresent": 27,
+      "reviewPass": 12
+    }
+  },
+  "nativeControls": {
+    "visibleRangeAndCanariesPass": true,
+    "staleRejected": true,
+    "limitRejectedWithoutPartialText": true
+  },
+  "equalFinalOutputs": 12,
+  "integration": {
+    "cases": 12,
+    "reviewer": "assistant inspection, not independent human ratings",
+    "oldPass": 10,
+    "newPass": 8,
+    "gained": [
+      "ocr-work-code"
+    ],
+    "regressed": [
+      "ocr-prompt-code",
+      "ocr-chat-name",
+      "ocr-prompt-clean"
+    ]
+  }
+}

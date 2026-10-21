@@ -3,9 +3,12 @@
 package models
 
 import (
+	"crypto/sha256"
 	_ "embed"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"path"
 	"regexp"
 	"strings"
 )
@@ -107,9 +110,10 @@ type Runtime struct {
 	Version string `json:"version"`
 }
 
-// Source pins the archive: the release asset URL is immutable only together
-// with its SHA-256 and byte size, which provisioning verifies.
+// Source pins an archive, or a canonical file inventory for format "files".
+// Every payload is size- and digest-verified before loading.
 type Source struct {
+	Format     string `json:"format,omitempty"`
 	URL        string `json:"url"`
 	Release    string `json:"release"`
 	Published  string `json:"published"`
@@ -134,6 +138,7 @@ type Audio struct {
 // File is one archive member the runtime loads; Member is its path inside
 // the archive and SHA256 its digest after extraction.
 type File struct {
+	URL       string `json:"url,omitempty"`
 	Member    string `json:"member"`
 	SHA256    string `json:"sha256"`
 	SizeBytes int64  `json:"sizeBytes"`
@@ -149,6 +154,7 @@ type Bundle struct {
 	ChunkMs     int          `json:"chunkMs"`
 	EndpointMs  int          `json:"endpointSilenceMs"`
 	Evaluations []Evaluation `json:"evaluations"`
+	Adopted     bool         `json:"adopted,omitempty"`
 }
 
 // Evaluation is a content-free summary of a completed benchmark report.
@@ -198,6 +204,26 @@ func Parse(data []byte) (Catalog, error) {
 				return Catalog{}, fmt.Errorf("catalog: %s file %s lacks digest", a.ID, role)
 			}
 		}
+		if a.Source.Format != "" && a.Source.Format != "files" {
+			return Catalog{}, fmt.Errorf("catalog: unsupported source format")
+		}
+		if a.Source.Format == "files" {
+			data, _ := json.Marshal(a.Files)
+			digest := sha256.Sum256(data)
+			var total int64
+			names := map[string]bool{}
+			for _, f := range a.Files {
+				name := path.Base(f.Member)
+				if f.URL == "" || name == "." || name == ".." || name == ".verified.json" || strings.ContainsAny(name, `/\`) || names[name] {
+					return Catalog{}, fmt.Errorf("catalog: invalid remote file")
+				}
+				names[name] = true
+				total += f.SizeBytes
+			}
+			if hex.EncodeToString(digest[:]) != a.Source.SHA256 || total != a.Source.SizeBytes {
+				return Catalog{}, fmt.Errorf("catalog: remote file inventory mismatch")
+			}
+		}
 		artifacts[a.ID] = a
 	}
 	rewriters := map[string]bool{}
@@ -227,7 +253,7 @@ func Parse(data []byte) (Catalog, error) {
 			return Catalog{}, fmt.Errorf("catalog: missing or duplicate bundle id %q", b.ID)
 		}
 		bundles[b.ID] = true
-		if artifacts[b.Streaming].Purpose != "streaming-asr" {
+		if artifacts[b.Streaming].Purpose != "streaming-asr" && artifacts[b.Streaming].Purpose != "chunked-asr" {
 			return Catalog{}, fmt.Errorf("catalog: bundle %s needs a streaming artifact", b.ID)
 		}
 		if b.Finalizer != "" && artifacts[b.Finalizer].Purpose != "offline-asr" {

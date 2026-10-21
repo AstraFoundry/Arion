@@ -95,3 +95,5 @@ Competitors provide workflow evidence, not reusable implementations or approved 
 - [Native d1 decision packaging](../../benchmarks/reproduction/rewrite-d1-evidence-v1/README.md):72 actual typed responses over six sources/six layouts, all reviewed. Native96/45 piece clipping identified; full-policy correction remains3/6 per backend. No final bodies or production adoption.
 
 - [Chatterfly Chinese/English caret hint](chatterfly-language-hint.md) — traced hint window, default animation dispatch, timing and Arion visual differences.
+
+- [Native Qwen3-ASR 1.7B and accessibility context](../../benchmarks/reproduction/qwen17-accessibility-v1/README.md) — paired production ASR development comparison, owned-window Accessibility versus OCR collection and downstream rewrite controls.

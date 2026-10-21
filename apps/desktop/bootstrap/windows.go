@@ -64,7 +64,7 @@ func (a *App) createTray() {
 			label = a.ui.Copy().Text(copy.TrayStop)
 		}
 		items := []*mygo.MenuItem{
-			{Label: label, Accelerator: a.state.Shortcut.Accelerator, Click: func(*mygo.MenuItem, *mygo.Window) { a.core.Toggle() }},
+			{Label: label, Click: func(*mygo.MenuItem, *mygo.Window) { a.core.Toggle() }},
 			mygo.Separator(),
 			{Label: a.ui.Copy().Text(copy.TraySettings), Accelerator: "CmdOrCtrl+,", Click: func(*mygo.MenuItem, *mygo.Window) { a.openSettings() }},
 		}

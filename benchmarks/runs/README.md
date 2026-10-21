@@ -145,3 +145,9 @@ The actual production-cleanup source replay changes one36-case input; prior raw-
 - [Selected rewrite product integration](rewrite-product-integration-v1/README.md) — adopted GGUF worker, exact prompt/producer parity, actual output review and retired-weight receipts.
 
 - [Independent prompt authoring](rewrite-independent-prompts-v1/README.md) — explicit directory/model/permission provenance, original author responses and discarded attempts.
+
+- [Qwen3-ASR 1.7B and accessibility](qwen17-accessibility-v1/README.md) — original protocol failure, corrected full comparison, paired actual window reads, combined audio/text outputs and retained verification failures.
+
+- [Qwen ASR size and quantization diagnostic](../results/qwen-asr-speed-v1/README.md) — same-development-corpus native 0.6B/1.7B INT8 and separate MLX 8-bit/4-bit compute/accuracy evidence.
+
+- [Native Qwen3-ASR migration acceptance](../results/native-asr-v1/README.md) — native Swift model loading, offline signed-package inference, live coordinator replay and explicit remaining platform/performance gates.

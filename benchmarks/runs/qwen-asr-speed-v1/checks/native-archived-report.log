@@ -1,0 +1,5 @@
+
+> arion-monorepo@0.0.0 bench:report /Users/steven/code/Arion
+> node tools/evaluation/cli.mjs report --results benchmarks/runs/qwen-asr-speed-v1/native-paired
+
+Report written for 236 observations; no transcripts printed.

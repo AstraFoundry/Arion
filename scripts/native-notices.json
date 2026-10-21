@@ -1,17 +1,11 @@
 {
-  "runtime": "ONNX Runtime 1.28.2, shipped by sherpa-onnx-go 1.13.8 on the three desktop targets",
+  "runtime": "Swift compatibility runtime 6.3.1; additional native ASR notices are staged under asr/licenses",
   "files": [
     {
-      "name": "onnxruntime-speech-LICENSE",
-      "url": "https://raw.githubusercontent.com/microsoft/onnxruntime/v1.28.2/LICENSE",
-      "sha256": "2f07c72751aed99790b8a4869cf2311df85a860b22ded05fa22803587a48922c",
-      "sizeBytes": 1073
-    },
-    {
-      "name": "onnxruntime-speech-ThirdPartyNotices.txt",
-      "url": "https://raw.githubusercontent.com/microsoft/onnxruntime/v1.28.2/ThirdPartyNotices.txt",
-      "sha256": "0e07b95f3a8d6230037707c5c4a2b554d12c4cb67369669ac255635528ffcee2",
-      "sizeBytes": 325054
+      "name": "swift-runtime-LICENSE.txt",
+      "url": "https://raw.githubusercontent.com/swiftlang/swift/swift-6.3.1-RELEASE/LICENSE.txt",
+      "sha256": "770af8291f708538d8ff885a0bbc4e045cd700531741c4f99528d435c14d7f55",
+      "sizeBytes": 11751
     }
   ]
 }

@@ -1,0 +1,5 @@
+# Owned-window speech integration fixtures
+
+Twelve developer-authored utterances from [entity-ocr-v1](../entity-ocr-v1/corpus.json), synthesized by the installed macOS Tingting voice for the [Qwen3-ASR 1.7B/accessibility diagnostic](../../reproduction/qwen17-accessibility-v1/README.md). Original AIFF output and the exact PCM16 mono 16 kHz WAV inputs are retained. `corpus.json` binds WAV SHA-256/duration and the spoken source; `provenance.json` binds the parent text and conversion commands. This is authored development material, not independent natural speech or a new held-out set.
+
+Inference receives audio only. The original source/reference stays in the evaluator. Later rewriting receives the actual native ASR output plus the paired text collected from the owned window (historical OCR for the old arm, Accessibility for the new arm), never the intended final answer. Context supplies the spelling of names and case-sensitive code identifiers. Final meaning/entity judgments are explicitly assistant inspection.

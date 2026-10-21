@@ -9,15 +9,16 @@ import (
 	arion "arion.local/desktop/ui/shared/runtime"
 )
 
-// startHoldKey (re)starts the listener for the preferred hold key. A key
-// that cannot listen stays chosen and reports why, so granting consent later
-// starts it without the user choosing again.
+// startHoldKey (re)starts the listener for the preferred hold key, the only
+// global activation. A key that cannot listen stays chosen and reports why,
+// so granting consent later starts it without the user choosing again.
 func (a *App) startHoldKey() {
 	a.platform.StopHoldKey()
 	a.hold.Reset()
-	a.state.Shortcut.HoldActive, a.state.Shortcut.HoldFailure, a.state.Shortcut.Holding = false, "", false
+	a.state.Hold.Active, a.state.Hold.Failure, a.state.Hold.Holding = false, "", false
 	key := a.state.Preferences.HoldKey
-	if key == application.HoldOff {
+	if key == "" {
+		// This platform has no hold key adapter.
 		return
 	}
 	err := a.platform.StartHoldKey(key, func(e holdkey.Event) {
@@ -26,10 +27,10 @@ func (a *App) startHoldKey() {
 	})
 	a.record("hold_register", err)
 	if err != nil {
-		a.state.Shortcut.HoldFailure = domain.CodeOf(err)
+		a.state.Hold.Failure = domain.CodeOf(err)
 		return
 	}
-	a.state.Shortcut.HoldActive = true
+	a.state.Hold.Active = true
 }
 
 // holdSession projects the coordinator state onto the gesture's view.
@@ -45,9 +46,9 @@ func (a *App) holdSession() application.HoldSession {
 }
 
 func (a *App) onHoldKey(e holdkey.Event, at time.Time) {
-	if a.testingShortcut {
+	if a.testingHold {
 		if e == holdkey.Down {
-			a.state.Shortcut.Pressed = at
+			a.state.Hold.Pressed = at
 			a.invalidate()
 		}
 		return
@@ -64,20 +65,20 @@ func (a *App) onHoldKey(e holdkey.Event, at time.Time) {
 	switch action {
 	case application.HoldStart:
 		a.record("hold_start", nil)
-		a.state.Shortcut.Holding = true
+		a.state.Hold.Holding = true
 		a.core.Start()
 	case application.HoldStop:
 		a.record("hold_stop", nil)
-		a.state.Shortcut.Holding = false
+		a.state.Hold.Holding = false
 		a.finishDictation()
 	case application.HoldCancel:
 		a.record("hold_cancel", nil)
-		a.state.Shortcut.Holding = false
+		a.state.Hold.Holding = false
 		a.core.Cancel()
 	}
 	if e == holdkey.Up && action == application.HoldNone {
 		// A tap: the session keeps dictating until the next press.
-		a.state.Shortcut.Holding = false
+		a.state.Hold.Holding = false
 	}
 	a.invalidate()
 }
@@ -96,7 +97,7 @@ func (a *App) finishDictation() {
 // refreshHoldConsent restarts a waiting hold key once consent arrives.
 func (a *App) refreshHoldConsent(previous arion.Consent) {
 	if previous != arion.ConsentGranted && a.state.Permissions.InputMonitoring == arion.ConsentGranted &&
-		a.state.Preferences.HoldKey != application.HoldOff && !a.state.Shortcut.HoldActive {
+		a.state.Preferences.HoldKey != "" && !a.state.Hold.Active {
 		a.startHoldKey()
 	}
 }

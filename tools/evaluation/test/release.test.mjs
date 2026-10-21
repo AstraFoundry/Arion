@@ -52,7 +52,7 @@ test('all platform installers and archives must exist and carry valid update sig
 test('alpha releases require ARM64 macOS while stable and other prereleases require all platforms', t => {
   const { directory, config } = fixture(t);
   assert.deepEqual(platformsForRelease({ version: '0.1.0-alpha.1' }), ['darwin-arm64']);
-  assert.deepEqual(releaseMatrix({ version: '0.1.0-alpha.1' }), { include: [{ os: 'macos-15', platform: 'darwin-arm64' }] });
+  assert.deepEqual(releaseMatrix({ version: '0.1.0-alpha.1' }), { include: [{ os: 'macos-26', platform: 'darwin-arm64' }] });
   for (const version of ['0.1.0', '0.1.0-beta.1', '0.1.0-alphabet']) assert.deepEqual(platformsForRelease({ version }), releasePlatforms);
   for (const platform of ['darwin-amd64', 'windows-amd64']) rmSync(path.join(directory, installerName(config, platform)));
   const platforms = platformsForRelease({ version: '0.1.0-alpha.1' });

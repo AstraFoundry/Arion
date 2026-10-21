@@ -63,3 +63,8 @@ __pycache__/
 /benchmarks/results/rewrite-release/data.json
 /benchmarks/results/rewrite-release/index.html
 /deploy/center/secrets/
+
+# Native ASR staging and Swift build state.
+/apps/desktop/resources/*/asr/
+/apps/desktop/native/mlx-asr/.build/
+/apps/desktop/native/mlx-asr/.swiftpm/

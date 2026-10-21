@@ -28,7 +28,7 @@ Jev is TypeSafe’s System One typed decision model. Laya Multilingual is the pr
 | Shared domain/application | Portable Go module | Implemented: session aggregate, coordinator, correction rules, model selection |
 | macOS | miniaudio/CoreAudio capture; AX target and insertion; offline Pinyin/voice InputMethodKit host | Native arm64 and Rosetta x86_64 runs each pass 22 engine/AppKit cases; physical Intel/system IMK source acceptance remain open |
 | Windows | miniaudio/WASAPI capture; SendInput insertion; DPAPI | Code compiled for windows/amd64; not run on Windows; TSF pending |
-| ASR | sherpa-onnx 1.13.8 via Go/cgo; streaming preview plus acoustic finalizer | Default bundle chosen by measured evaluation ([ADR 004](../decisions/004-automatic-model-selection.md)) |
+| ASR | Native Qwen3-ASR 1.7B workers: Swift MLX 8-bit on Apple silicon; speech.cpp Q8_0 CPU/Vulkan on Intel/Windows | Explicit platform adoption; independent native evaluation and packaging gates ([ADR 020](../decisions/020-native-qwen-asr.md)) |
 | Correction | Conservative rules (`arion-rules-v3`) and approved vocabulary, including entries learned from the user's corrections | Implemented ([ADR 014](../decisions/014-edit-learning.md)); optional Qwen3.5-2B staged local rewriting adopted on macOS Apple Silicon; known development errors accepted ([configuration](../operations/local-rewrite.md)) |
 | Candidate ranking | Laya Multilingual local Choice evaluation adapter | Not implemented: recognizers expose one hypothesis |
 | Local storage | Preferences JSON; AES-256-GCM vocabulary with OS-kept key | Implemented ([ADR 005](../decisions/005-local-encryption.md)); SQLite/outbox pending |

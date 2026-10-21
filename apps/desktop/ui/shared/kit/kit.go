@@ -3,9 +3,7 @@ package kit
 
 import (
 	"math"
-	"runtime"
 	"strconv"
-	"strings"
 	"time"
 
 	"arion.local/desktop/ui/shared/assets"
@@ -220,59 +218,22 @@ func Mark(c *ui.Context, size float32) ui.Element {
 	return ui.Image(c, assets.Mark).Size(size, size).Fit(ui.Contain)
 }
 
-// Keycap draws one key of a shortcut.
-func Keycap(c *ui.Context, tokens theme.Tokens, key string, onDark bool) ui.Element {
-	face, edge, ink := tokens.Card, tokens.CardBorder, tokens.Text
+// Kbd is coss Kbd: one key on a muted fill, 20 DIP high and at least as
+// wide, radius 4, 12 DIP medium muted text. OnDark draws it on the pill's
+// substrate.
+func Kbd(c *ui.Context, tokens theme.Tokens, key string, onDark bool) ui.Element {
+	fill, ink := tokens.Subtle, tokens.Muted
 	if onDark {
-		face, edge, ink = tokens.PillBorder, tokens.PillBorder, tokens.PillText
+		fill, ink = tokens.PillBorder, tokens.PillMuted
 	}
-	return ui.Row(c).MinWidth(24).Height(24).Padding(0, 7).Justify(ui.Center).AlignItems(ui.Center).
-		Radius(theme.RadiusMD).Background(face).Border(1, edge).Shadow(0, 1, 0, 0, edge).Children(func() {
+	return ui.Row(c).Height(20).MinWidth(20).Padding(0, 4).Gap(4).Justify(ui.Center).AlignItems(ui.Center).
+		Radius(theme.RadiusSM).Background(fill).Children(func() {
 		ui.Text(c, key).FontSize(12).FontWeight(500).TextColor(ink).SingleLine()
 	})
 }
 
-// Keycaps draws an accelerator such as "Alt+Space" as platform keys.
-func Keycaps(c *ui.Context, tokens theme.Tokens, accelerator string, onDark bool) ui.Element {
-	return ui.Row(c).Gap(4).AlignItems(ui.Center).Children(func() {
-		for _, key := range Keys(accelerator) {
-			Keycap(c, tokens, key, onDark)
-		}
-	})
-}
-
-var macKeys = map[string]string{
-	"cmd": "⌘", "command": "⌘", "cmdorctrl": "⌘", "commandorcontrol": "⌘", "super": "⌘", "meta": "⌘",
-	"alt": "⌥", "option": "⌥", "ctrl": "⌃", "control": "⌃", "shift": "⇧",
-	"space": "Space", "enter": "↩", "return": "↩", "escape": "esc", "tab": "⇥", "backspace": "⌫",
-	"up": "↑", "down": "↓", "left": "←", "right": "→",
-}
-
-var windowsKeys = map[string]string{
-	"cmdorctrl": "Ctrl", "commandorcontrol": "Ctrl", "ctrl": "Ctrl", "control": "Ctrl", "alt": "Alt", "option": "Alt",
-	"shift": "Shift", "super": "Win", "meta": "Win", "space": "Space", "escape": "Esc", "enter": "Enter",
-}
-
-// Keys splits an accelerator into display keys for this platform.
-func Keys(accelerator string) []string {
-	names := windowsKeys
-	if runtime.GOOS == "darwin" {
-		names = macKeys
-	}
-	var keys []string
-	for _, part := range strings.Split(accelerator, "+") {
-		part = strings.TrimSpace(part)
-		if part == "" {
-			continue
-		}
-		if display, ok := names[strings.ToLower(part)]; ok {
-			keys = append(keys, display)
-		} else {
-			keys = append(keys, strings.ToUpper(part[:1])+part[1:])
-		}
-	}
-	return keys
-}
+// KbdGroup is coss KbdGroup: the keys of one combination, 4 DIP apart.
+func KbdGroup(c *ui.Context) ui.Element { return ui.Row(c).Gap(4).AlignItems(ui.Center) }
 
 // LevelBars draws a live input meter: recent levels as rounded bars that
 // ease toward their targets, louder in the middle like a voice.

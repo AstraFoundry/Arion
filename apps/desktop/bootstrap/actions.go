@@ -1,6 +1,7 @@
 package bootstrap
 
 import (
+	"runtime"
 	"strings"
 	"time"
 
@@ -52,7 +53,7 @@ func (x actions) ChooseScene(scene domain.Scene) {
 	}
 	x.UpdatePreferences(func(p *application.Preferences) { p.SceneOverrides = p.SceneOverrides.WithScene(key, scene) })
 }
-func (x actions) TestShortcut(testing bool) { x.a.testingShortcut = testing }
+func (x actions) TestHoldKey(testing bool) { x.a.testingHold = testing }
 
 func (x actions) UseBundle(id string) {
 	x.UpdatePreferences(func(p *application.Preferences) { p.ModelOverride = id })
@@ -70,7 +71,7 @@ func (x actions) UpdatePreferences(change func(*application.Preferences)) {
 	before := a.state.Preferences
 	next := before
 	change(&next)
-	next, _ = next.Normalize()
+	next, _ = next.Normalize(runtime.GOOS)
 	a.savePreferences(next)
 	if next.UILanguage != before.UILanguage {
 		a.updateLanguage()
@@ -111,18 +112,6 @@ func (x actions) UpdatePreferences(change func(*application.Preferences)) {
 	}
 }
 
-// SetShortcut registers a new hotkey, keeping the old one when it fails.
-func (x actions) SetShortcut(accelerator string) error {
-	a := x.a
-	previous := a.state.Shortcut.Accelerator
-	if err := a.registerShortcut(accelerator); err != nil {
-		_ = a.registerShortcut(previous)
-		return err
-	}
-	x.UpdatePreferences(func(p *application.Preferences) { p.Shortcut = accelerator })
-	return nil
-}
-
 // SetHoldKey persists the hold-to-talk key and restarts its listener.
 func (x actions) SetHoldKey(key application.HoldKey) {
 	x.UpdatePreferences(func(p *application.Preferences) { p.HoldKey = key })
@@ -158,18 +147,6 @@ func (x actions) RequestInputMonitoring() {
 		x.a.platform.RequestInputMonitoring()
 	}
 	x.a.refreshPermissions()
-}
-
-func (x actions) SuspendShortcut(suspend bool) {
-	a := x.a
-	if suspend && a.shortcutActive {
-		mygo.GlobalShortcut.Unregister(a.state.Shortcut.Accelerator)
-		a.shortcutActive = false
-		return
-	}
-	if !suspend && !a.shortcutActive {
-		_ = a.registerShortcut(a.state.Shortcut.Accelerator)
-	}
 }
 
 // InstallInputMethod starts installation and publishes completion on the UI thread.

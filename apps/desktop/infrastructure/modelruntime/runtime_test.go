@@ -54,20 +54,22 @@ func TestNoEvaluationIsExplicit(t *testing.T) {
 	}
 }
 
-// The shipped catalog selects a default for every platform it supports.
-func TestEmbeddedCatalogSelectsDefault(t *testing.T) {
+// Explicitly adopted native backends do not borrow evaluations from retired runtimes.
+func TestEmbeddedNativeAdoption(t *testing.T) {
 	catalog, err := models.Load()
 	if err != nil {
 		t.Fatal(err)
 	}
-	for _, platform := range []string{"darwin-arm64", "darwin-amd64", "windows-amd64"} {
-		selection, err := domain.SelectDefaultModel(Options(catalog), domain.DefaultSelectionPolicy(platform))
-		if err != nil {
-			t.Fatalf("%s: %v", platform, err)
-		}
-		t.Logf("%s: %s (score %.4f, latency measured %v)", platform, selection.Option.ID, selection.Score, selection.LatencyMeasured)
-		if _, ok := catalog.Bundle(selection.Option.ID); !ok {
-			t.Fatalf("%s: selected unknown bundle", platform)
+	bundle, selection, err := SelectDefault(catalog)
+	if err != nil || !bundle.Adopted {
+		t.Fatalf("adoption: %+v %+v %v", bundle, selection, err)
+	}
+	if Platform() == "darwin-arm64" && (!selection.LatencyMeasured || selection.Evaluation.Observations != 118) {
+		t.Fatalf("native measurement missing: %+v", selection)
+	}
+	for _, artifact := range catalog.Artifacts {
+		if artifact.Kind != "qwen3-asr-mlx" && artifact.Kind != "qwen3-asr-gguf" {
+			t.Fatalf("retired artifact: %s", artifact.Kind)
 		}
 	}
 }

@@ -1,0 +1,265 @@
+{
+  "version": 1,
+  "status": "complete",
+  "normalization": "arion-nfkc-lower-punctuation-space-v1",
+  "config": {
+    "version": 1,
+    "id": "qwen17-accessibility-asr-v1",
+    "purpose": "Paired development comparison: X-ASR streaming held fixed; X-ASR versus Qwen3-ASR 1.7B INT8 acoustic finalizer; correction, ranking and memory off",
+    "split": "dev",
+    "baseline": "xasr-160-xasr-final",
+    "seeds": [
+      11
+    ],
+    "orderSeed": 1729,
+    "warmupCount": 2,
+    "cacheStates": [
+      "warm"
+    ],
+    "pipeline": {
+      "asr": "xasr-160-xasr-final",
+      "sampleRate": 16000,
+      "chunkMs": 20,
+      "endpoint": "sherpa-rules-v1",
+      "pace": "realtime",
+      "threads": 4,
+      "endpointSilenceMs": 800
+    },
+    "bootstrap": {
+      "iterations": 2000,
+      "seed": 1729
+    },
+    "variants": [
+      {
+        "id": "xasr-160-xasr-final",
+        "features": {
+          "memory": false,
+          "ranker": "source",
+          "correction": "none"
+        },
+        "pipelineOverrides": {
+          "asr": "xasr-160-xasr-final"
+        }
+      },
+      {
+        "id": "xasr-160-qwen3asr-17-final",
+        "features": {
+          "memory": false,
+          "ranker": "source",
+          "correction": "none"
+        },
+        "pipelineOverrides": {
+          "asr": "xasr-160-qwen3asr-17-final"
+        }
+      }
+    ]
+  },
+  "configHash": "d8801deb6c575559ec30c9a287061644cfc65ba7de0f1ceaa17e260b398d0fde",
+  "corpusHash": "9a6d7c13fbccaaddbe511e34ed896cd830aaa02c42218e94e029a11deeffedd7",
+  "driverConfigHash": "381d1e6e6c0da7f081571d3517972d1c86b4cffed0ee3f44b6deec6a6ec7e12c",
+  "provenance": {
+    "artifacts": {
+      "0-arion-eval-driver": "e7ae11cb01ff02dc6fc471c5f9a3a1cd3b3dff6b0a8a5c5f51b39a24a28a96e0",
+      "1-catalog.json": "5d59f349d959083acedceba24ef487a553aba406638d53c3de50096cb38c02d7",
+      "10-conv_frontend.onnx": "fa894a4ba53da6a4238f2a6ca0b09362e505d39cecbd646051b033e2e8d7e2fb",
+      "11-decoder.int8.onnx": "c43c853fa6e97d08365cb8a5502b360b595cd43c00dc60e4d8ca7cc18cad460b",
+      "12-encoder.int8.onnx": "436fbd910a0c8914851e5ac1354e807be9f283d08a5da728adaa609731c41469",
+      "13-merges.txt": "8831e4f1a044471340f7c0a83d7bd71306a5b867e95fd870f74d0c5308a904d5",
+      "14-tokenizer_config.json": "4942d005604266809309cabc9f4e9cb89ce855d59b14681fdc0e1cc62ea26c4c",
+      "15-vocab.json": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910",
+      "16-libsherpa-onnx-c-api.dylib": "579e3d8765b27eea31a6bf55018a7735e32f1f69734b35bf239c8cd332ae59ed",
+      "17-libsherpa-onnx-cxx-api.dylib": "fa3dfbc10af9af9f59d7b53386d47be99bc8e2ba12aab63ca5a3c91bbd483a00",
+      "18-libonnxruntime.dylib": "b0613d0ae53199a83b05fa48e169211498e9d40d54beaa372068ebe5ec5b0929",
+      "2-encoder.int8.onnx": "68633dced8b8891be5b9309496cd939bbeba9188f1c1774957196f11a491aa25",
+      "3-decoder.onnx": "a1cbc9eac2d5e3fb6617a218c67ad6daaa7f4e0fd225f08b2c22ab0413c8c257",
+      "4-joiner.int8.onnx": "aedb7fa697b2ab43f20499826fff7c997eea7d67db77be97769aeeeb726e63b3",
+      "5-tokens.txt": "b818a60878b9aae978cbb8ad594acbd403d76d1af2e31ef4197c84e2dbdba27c",
+      "6-encoder-epoch-99-avg-1.int8.onnx": "7f6aa62056efd8af9da13e0faa81cd3f284d2fb2e3b63de56fd2dfd3450910dc",
+      "7-decoder-epoch-99-avg-1.onnx": "72f47405d3c1033bebccbef82f90071e7b4ba3e71b9c986f2b74244b25723aed",
+      "8-joiner-epoch-99-avg-1.int8.onnx": "aedb7fa697b2ab43f20499826fff7c997eea7d67db77be97769aeeeb726e63b3",
+      "9-tokens.txt": "b818a60878b9aae978cbb8ad594acbd403d76d1af2e31ef4197c84e2dbdba27c"
+    },
+    "execution": "live",
+    "hardware": {
+      "arch": "arm64",
+      "cpu": "Apple M4",
+      "logicalCpus": 10,
+      "os": "darwin",
+      "osBuild": "25G83",
+      "powerMode": "ac",
+      "ramBytes": 34359738368
+    },
+    "protocol": 1,
+    "purpose": "benchmark",
+    "requestId": "1",
+    "runtime": {
+      "buildFlags": "CGO_ENABLED=1 GOARCH=arm64",
+      "provider": "onnxruntime CPU",
+      "timer": "Go monotonic clock (mach_absolute_time)",
+      "version": "arion-desktop pipeline; sherpa-onnx-go v1.13.8; go1.27.1"
+    }
+  },
+  "gitRevision": "f3374fdf70ae092d637f391c6d4ff5f5fd62c811",
+  "gitDirty": true,
+  "plan": {
+    "version": 1,
+    "configHash": "d8801deb6c575559ec30c9a287061644cfc65ba7de0f1ceaa17e260b398d0fde",
+    "normalization": "arion-nfkc-lower-punctuation-space-v1",
+    "blocks": [
+      {
+        "seed": 11,
+        "cacheState": "warm",
+        "variant": {
+          "id": "xasr-160-xasr-final",
+          "features": {
+            "memory": false,
+            "ranker": "source",
+            "correction": "none"
+          },
+          "pipelineOverrides": {
+            "asr": "xasr-160-xasr-final"
+          }
+        }
+      },
+      {
+        "seed": 11,
+        "cacheState": "warm",
+        "variant": {
+          "id": "xasr-160-qwen3asr-17-final",
+          "features": {
+            "memory": false,
+            "ranker": "source",
+            "correction": "none"
+          },
+          "pipelineOverrides": {
+            "asr": "xasr-160-qwen3asr-17-final"
+          }
+        }
+      }
+    ],
+    "cases": [
+      "aishell-BAC009S0766W0137",
+      "aishell-BAC009S0766W0325",
+      "aishell-BAC009S0766W0180",
+      "aishell-BAC009S0764W0205",
+      "aishell-BAC009S0765W0290",
+      "aishell-BAC009S0766W0171",
+      "aishell-BAC009S0765W0152",
+      "aishell-BAC009S0766W0392",
+      "aishell-BAC009S0766W0138",
+      "aishell-BAC009S0766W0125",
+      "aishell-BAC009S0764W0408",
+      "aishell-BAC009S0765W0360",
+      "aishell-BAC009S0766W0494",
+      "aishell-BAC009S0766W0124",
+      "aishell-BAC009S0764W0359",
+      "aishell-BAC009S0764W0399",
+      "aishell-BAC009S0764W0360",
+      "aishell-BAC009S0764W0490",
+      "aishell-BAC009S0766W0384",
+      "aishell-BAC009S0764W0250",
+      "aishell-BAC009S0764W0254",
+      "aishell-BAC009S0764W0404",
+      "aishell-BAC009S0764W0137",
+      "aishell-BAC009S0764W0459",
+      "aishell-BAC009S0764W0417",
+      "aishell-BAC009S0765W0495",
+      "aishell-BAC009S0766W0386",
+      "aishell-BAC009S0764W0293",
+      "aishell-BAC009S0766W0442",
+      "aishell-BAC009S0764W0492",
+      "aishell-BAC009S0765W0408",
+      "aishell-BAC009S0764W0304",
+      "aishell-BAC009S0766W0178",
+      "aishell-BAC009S0765W0299",
+      "aishell-BAC009S0764W0474",
+      "aishell-BAC009S0765W0487",
+      "aishell-BAC009S0766W0310",
+      "aishell-BAC009S0764W0261",
+      "aishell-BAC009S0765W0410",
+      "aishell-BAC009S0766W0148",
+      "aishell-BAC009S0764W0224",
+      "aishell-BAC009S0764W0149",
+      "aishell-BAC009S0766W0424",
+      "aishell-BAC009S0766W0139",
+      "aishell-BAC009S0764W0387",
+      "libri-2086-149220-0005",
+      "libri-3081-166546-0006",
+      "libri-251-137823-0017",
+      "libri-6241-61943-0014",
+      "libri-7976-110124-0005",
+      "libri-2086-149220-0023",
+      "libri-2277-149874-0017",
+      "libri-2035-147961-0024",
+      "libri-1988-147956-0013",
+      "libri-7850-281318-0019",
+      "libri-1919-142785-0059",
+      "libri-2428-83705-0041",
+      "libri-1272-141231-0010",
+      "libri-1462-170145-0018",
+      "libri-2035-147961-0010",
+      "libri-2277-149874-0002",
+      "libri-5694-64038-0009",
+      "libri-174-168635-0014",
+      "libri-7850-286674-0008",
+      "libri-84-121550-0004",
+      "libri-3170-137482-0012",
+      "libri-5536-43359-0002",
+      "libri-3752-4944-0065",
+      "libri-5694-64038-0019",
+      "libri-5895-34615-0008",
+      "libri-2078-142845-0011",
+      "libri-174-84280-0005",
+      "libri-2428-83705-0024",
+      "libri-7976-105575-0004",
+      "libri-8297-275156-0000",
+      "libri-84-121550-0019",
+      "libri-3536-23268-0013",
+      "libri-3000-15664-0014",
+      "libri-3536-23268-0006",
+      "libri-1462-170145-0009",
+      "libri-5895-34629-0023",
+      "libri-3081-166546-0068",
+      "libri-777-126732-0038",
+      "libri-2412-153954-0007",
+      "libri-3170-137482-0015",
+      "tts-dev-00-eddy",
+      "tts-dev-01-flo",
+      "tts-dev-02-reed",
+      "tts-dev-03-eddy",
+      "tts-dev-04-flo",
+      "tts-dev-05-reed",
+      "tts-dev-06-eddy",
+      "tts-dev-07-flo",
+      "tts-dev-08-reed",
+      "tts-dev-09-eddy",
+      "tts-dev-10-flo",
+      "tts-dev-11-reed",
+      "tts-dev-12-eddy",
+      "tts-dev-13-flo",
+      "tts-dev-14-reed",
+      "tts-dev-15-eddy",
+      "tts-dev-16-flo",
+      "tts-dev-17-reed",
+      "tts-dev-18-eddy",
+      "tts-dev-19-flo",
+      "tts-dev-20-reed",
+      "tts-dev-21-eddy",
+      "tts-dev-22-flo",
+      "tts-dev-23-reed",
+      "tts-dev-24-eddy",
+      "tts-dev-25-flo",
+      "tts-dev-26-reed",
+      "tts-dev-27-eddy",
+      "tts-dev-28-flo",
+      "tts-dev-29-reed",
+      "nonspeech-dev-0",
+      "nonspeech-dev-1",
+      "nonspeech-dev-2"
+    ],
+    "measuredRequests": 236
+  },
+  "observations": 236,
+  "resultsSha256": "6a901d1d33927e1e036e41ad5c3cfdc9d29c641ba3e3981a4a011783bc09c3de",
+  "warmupsSha256": "f8bd6e859f0fc23286a3cfc69f862467e508bb2f6dff9f8b4e8b10dda3cfd1f4"
+}

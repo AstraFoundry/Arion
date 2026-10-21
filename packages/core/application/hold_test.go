@@ -80,19 +80,28 @@ func TestBusyIgnoresPress(t *testing.T) {
 }
 
 func TestHoldKeyNormalization(t *testing.T) {
-	p := DefaultPreferences()
-	p.HoldKey = "caps_lock"
-	p, repaired := p.Normalize()
-	if p.HoldKey != HoldOff || len(repaired) != 1 || repaired[0] != "holdKey" {
-		t.Fatalf("got %q %v", p.HoldKey, repaired)
-	}
 	for _, platform := range []string{"darwin", "windows"} {
+		if got := DefaultPreferences(platform).HoldKey; got != DefaultHoldKey(platform) || got == "" {
+			t.Fatalf("%s default hold key %q", platform, got)
+		}
+		// Unknown keys and the retired "off" become the platform default.
+		for _, bad := range []HoldKey{"caps_lock", ""} {
+			p := DefaultPreferences(platform)
+			p.HoldKey = bad
+			p, repaired := p.Normalize(platform)
+			if p.HoldKey != DefaultHoldKey(platform) || len(repaired) != 1 || repaired[0] != "holdKey" {
+				t.Fatalf("%s %q: got %q %v", platform, bad, p.HoldKey, repaired)
+			}
+		}
 		for _, key := range HoldKeysFor(platform) {
-			q := DefaultPreferences()
+			q := DefaultPreferences(platform)
 			q.HoldKey = key
-			if _, repaired := q.Normalize(); len(repaired) != 0 {
+			if _, repaired := q.Normalize(platform); len(repaired) != 0 {
 				t.Fatalf("%s repaired %v", key, repaired)
 			}
 		}
+	}
+	if DefaultHoldKey("darwin") != HoldRightOption || DefaultHoldKey("windows") != HoldRightAlt {
+		t.Fatal("default hold keys changed")
 	}
 }

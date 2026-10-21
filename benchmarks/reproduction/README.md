@@ -129,3 +129,9 @@ The actual production-cleanup source replay changes one36-case input; prior raw-
 The [numeric and hesitation formatter check](rewrite-numeric-filler-v1/README.md) preserves baseline, failed and revised actual-worker text observations for natural-layout-v2.
 
 The [technical spelling follow-up](rewrite-technical-spelling-v1/README.md) checks phonetic English terms and protected Chinese names in the actual formatter.
+
+- [Native Qwen3-ASR 1.7B and system accessibility](qwen17-accessibility-v1/README.md) — pinned files, native window probes, protocol diagnosis, code snapshots and model-free report/verification commands.
+
+- [Qwen ASR size and quantization diagnostic](qwen-asr-speed-v1/README.md) — same-development-corpus native 0.6B/1.7B INT8 and separate MLX 8-bit/4-bit compute/accuracy evidence.
+
+- [Native Qwen3-ASR migration acceptance](../results/native-asr-v1/README.md) — native Swift model loading, offline signed-package inference, live coordinator replay and explicit remaining platform/performance gates.

@@ -1,0 +1,92 @@
+
+> arion-monorepo@0.0.0 desktop:check /Users/steven/code/Arion
+> node scripts/check-go.mjs desktop
+
+?   	arion.local/desktop	[no test files]
+# arion.local/desktop/bootstrap.test
+ld: warning: ignoring duplicate libraries: '-lobjc'
+ok  	arion.local/desktop/bootstrap	1.161s
+?   	arion.local/desktop/cmd/arion-context-probe	[no test files]
+?   	arion.local/desktop/cmd/arion-e2e-driver	[no test files]
+?   	arion.local/desktop/cmd/arion-eval-driver	[no test files]
+?   	arion.local/desktop/cmd/arion-icon	[no test files]
+?   	arion.local/desktop/cmd/arion-ime-probe	[no test files]
+?   	arion.local/desktop/cmd/arion-live-bench	[no test files]
+ok  	arion.local/desktop/cmd/arion-llm	(cached)
+?   	arion.local/desktop/cmd/arion-memory-bench	[no test files]
+ok  	arion.local/desktop/cmd/arion-memory-loop	(cached)
+?   	arion.local/desktop/cmd/arion-models	[no test files]
+?   	arion.local/desktop/cmd/arion-ocr	[no test files]
+?   	arion.local/desktop/cmd/arion-rewrite-bench	[no test files]
+?   	arion.local/desktop/cmd/arion-scene-bench	[no test files]
+?   	arion.local/desktop/infrastructure/asr	[no test files]
+ok  	arion.local/desktop/infrastructure/audio	(cached)
+ok  	arion.local/desktop/infrastructure/browser	(cached)
+ok  	arion.local/desktop/infrastructure/diagnostics	3.728s
+ok  	arion.local/desktop/infrastructure/holdkey	(cached)
+ok  	arion.local/desktop/infrastructure/imebridge	(cached)
+ok  	arion.local/desktop/infrastructure/keystore	(cached)
+ok  	arion.local/desktop/infrastructure/llm/client	(cached)
+ok  	arion.local/desktop/infrastructure/llm/engine	(cached)
+?   	arion.local/desktop/infrastructure/llm/genai	[no test files]
+ok  	arion.local/desktop/infrastructure/llm/gguf	(cached)
+ok  	arion.local/desktop/infrastructure/llm/prompt	(cached)
+?   	arion.local/desktop/infrastructure/llm/protocol	[no test files]
+ok  	arion.local/desktop/infrastructure/llm/spelling	(cached)
+ok  	arion.local/desktop/infrastructure/macos	5.357s
+ok  	arion.local/desktop/infrastructure/modelruntime	(cached)
+ok  	arion.local/desktop/infrastructure/netproxy	(cached)
+ok  	arion.local/desktop/infrastructure/provision	2.828s
+?   	arion.local/desktop/infrastructure/rewriting	[no test files]
+?   	arion.local/desktop/infrastructure/secrets	[no test files]
+ok  	arion.local/desktop/infrastructure/settings	(cached)
+ok  	arion.local/desktop/infrastructure/usage	(cached)
+ok  	arion.local/desktop/infrastructure/vocabulary	(cached)
+ok  	arion.local/desktop/infrastructure/wordseg	(cached)
+ok  	arion.local/desktop/internal/account	(cached)
+ok  	arion.local/desktop/internal/center	(cached)
+--- FAIL: TestContextRows (0.00s)
+    polish_test.go:182: missing ContextScreenPermission: ["Text around the cursor" "Reads a few lines before and after the cursor to spell names and continue your text" "Text around the cursor" "Screen content" "Reads visible text in the current window through Accessibility. Nothing is saved" "Screen content" "Recent dictations" "Remembers your last few dictations in each app for 30 minutes, in memory only" "Recent dictations"]
+FAIL
+FAIL	arion.local/desktop/ui/app	110.523s
+ok  	arion.local/desktop/ui/entities/account	1.631s
+ok  	arion.local/desktop/ui/entities/dictation	1.991s
+?   	arion.local/desktop/ui/entities/model	[no test files]
+ok  	arion.local/desktop/ui/entities/onboarding	4.100s
+?   	arion.local/desktop/ui/features/diagnostics	[no test files]
+?   	arion.local/desktop/ui/features/dictate	[no test files]
+?   	arion.local/desktop/ui/features/holdkey	[no test files]
+?   	arion.local/desktop/ui/features/keyboard	[no test files]
+?   	arion.local/desktop/ui/features/microphone	[no test files]
+?   	arion.local/desktop/ui/features/modelchoice	[no test files]
+?   	arion.local/desktop/ui/features/permissions	[no test files]
+?   	arion.local/desktop/ui/features/polish	[no test files]
+?   	arion.local/desktop/ui/features/provision	[no test files]
+?   	arion.local/desktop/ui/features/scene	[no test files]
+?   	arion.local/desktop/ui/features/shortcut	[no test files]
+?   	arion.local/desktop/ui/features/signin	[no test files]
+?   	arion.local/desktop/ui/features/transcript	[no test files]
+?   	arion.local/desktop/ui/features/uilanguage	[no test files]
+?   	arion.local/desktop/ui/features/update	[no test files]
+?   	arion.local/desktop/ui/features/vocabulary	[no test files]
+?   	arion.local/desktop/ui/pages/guide	[no test files]
+?   	arion.local/desktop/ui/pages/menubar	[no test files]
+?   	arion.local/desktop/ui/pages/onboarding	[no test files]
+?   	arion.local/desktop/ui/pages/overlay	[no test files]
+?   	arion.local/desktop/ui/pages/settings	[no test files]
+?   	arion.local/desktop/ui/pages/trayhint	[no test files]
+?   	arion.local/desktop/ui/shared/assets	[no test files]
+?   	arion.local/desktop/ui/shared/config	[no test files]
+ok  	arion.local/desktop/ui/shared/copy	3.755s
+?   	arion.local/desktop/ui/shared/icons	[no test files]
+ok  	arion.local/desktop/ui/shared/kit	(cached)
+ok  	arion.local/desktop/ui/shared/runtime	4.705s
+?   	arion.local/desktop/ui/shared/theme	[no test files]
+?   	arion.local/desktop/ui/widgets/capsule	[no test files]
+?   	arion.local/desktop/ui/widgets/modelcard	[no test files]
+?   	arion.local/desktop/ui/widgets/showcase	[no test files]
+?   	arion.local/desktop/ui/widgets/statusheader	[no test files]
+?   	arion.local/desktop/ui/widgets/stepper	[no test files]
+ok  	arion.local/desktop/ui/widgets/usage	3.992s
+FAIL
+ ELIFECYCLE  Command failed with exit code 1.

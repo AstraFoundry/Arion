@@ -3,6 +3,7 @@
 package settings
 
 import (
+	holdname "arion.local/desktop/ui/entities/holdkey"
 	"arion.local/desktop/ui/features/diagnostics"
 	"arion.local/desktop/ui/features/holdkey"
 	"arion.local/desktop/ui/features/keyboard"
@@ -10,7 +11,6 @@ import (
 	"arion.local/desktop/ui/features/modelchoice"
 	"arion.local/desktop/ui/features/permissions"
 	"arion.local/desktop/ui/features/polish"
-	"arion.local/desktop/ui/features/shortcut"
 	"arion.local/desktop/ui/features/signin"
 	"arion.local/desktop/ui/features/uilanguage"
 	"arion.local/desktop/ui/features/update"
@@ -45,7 +45,6 @@ const (
 type Page struct {
 	Section    string
 	monitoring bool
-	recorder   shortcut.Recorder
 	draft      vocabulary.Draft
 	keyboard   keyboard.State
 	focus      int
@@ -131,9 +130,6 @@ func (p *Page) Close(store runtime.Store) {
 		p.monitoring = false
 		store.Actions.StopLevelMonitor()
 	}
-	if p.recorder.Listening {
-		store.Actions.SuspendShortcut(false)
-	}
 }
 
 func title(section string, messages copy.Catalog) string {
@@ -181,14 +177,12 @@ func (p *Page) section(c *ui.Context, store runtime.Store, tokens theme.Tokens) 
 		})
 	case Dictation:
 		kit.Card(c, tokens).Children(func() {
-			kit.Row(c, tokens, messages.Text(copy.ShortcutLabel), messages.Text(copy.ShortcutDetail), func() {
-				shortcut.Field(c, store, tokens, &p.recorder)
-			})
-			kit.Divider(c, tokens)
 			kit.Row(c, tokens, messages.Text(copy.HoldKeyLabel), messages.Text(copy.HoldKeyDetail), func() {
 				holdkey.Picker(c, store)
 			})
-			holdkey.Notes(c, store, tokens)
+			if holdkey.HasNotes(store) {
+				ui.Column(c).Padding(0, 16, 12, 16).Children(func() { holdkey.Notes(c, store, tokens) })
+			}
 		})
 		kit.Card(c, tokens).Children(func() {
 			fillers := prefs.RemoveFillers
@@ -246,7 +240,7 @@ func (p *Page) section(c *ui.Context, store runtime.Store, tokens theme.Tokens) 
 			ui.Column(c).Height(200).Children(func() {
 				// The banner's top corners nest inside the card's border.
 				inner := float32(theme.RadiusCard - 1)
-				showcase.Render(c, tokens, store.Copy(), showcase.Dictating, store.State.Shortcut.Accelerator, nil, inner, inner, 0, 0)
+				showcase.Render(c, tokens, store.Copy(), showcase.Dictating, holdname.Legend(store.State.Preferences.HoldKey), nil, inner, inner, 0, 0)
 			})
 			ui.Row(c).Padding(16).Gap(10).AlignItems(ui.Center).Children(func() {
 				kit.Mark(c, 44).Margin(-4)

@@ -1,0 +1,11 @@
+{
+  "runtime": "Swift compatibility runtime 6.3.1; additional native ASR notices are staged under asr/licenses",
+  "files": [
+    {
+      "name": "swift-runtime-LICENSE.txt",
+      "url": "https://raw.githubusercontent.com/swiftlang/swift/swift-6.3.1-RELEASE/LICENSE.txt",
+      "sha256": "770af8291f708538d8ff885a0bbc4e045cd700531741c4f99528d435c14d7f55",
+      "sizeBytes": 11751
+    }
+  ]
+}

@@ -136,6 +136,9 @@ func FileName(file models.File) string { return path.Base(file.Member) }
 // Installed verifies an installed artifact file-by-file. A corrupt or
 // partial installation is reported, never loaded (MOD-A01).
 func (s *Store) Installed(a models.Artifact) (string, error) {
+	if a.Source.Format == "files" {
+		return s.InstalledRewriter(remoteArtifact(a))
+	}
 	dir := s.dir(a)
 	data, err := os.ReadFile(filepath.Join(dir, ".verified.json"))
 	if err != nil {
@@ -161,6 +164,9 @@ func (s *Store) Installed(a models.Artifact) (string, error) {
 // Ensure returns a verified installation, downloading it when missing. The
 // previous installation stays until a replacement verifies (MOD-A04).
 func (s *Store) Ensure(ctx context.Context, a models.Artifact, progress Progress) (string, error) {
+	if a.Source.Format == "files" {
+		return s.EnsureRewriter(ctx, remoteArtifact(a), progress)
+	}
 	if dir, err := s.Installed(a); err == nil {
 		progress(a.ID, PhaseReady, a.Source.SizeBytes, a.Source.SizeBytes)
 		return dir, nil
@@ -403,4 +409,13 @@ func hashFile(name string) (string, error) {
 		return "", err
 	}
 	return hex.EncodeToString(hash.Sum(nil)), nil
+}
+
+// remoteArtifact shares the verified individual-file provisioning path with LLMs.
+func remoteArtifact(a models.Artifact) models.Rewriter {
+	files := make(map[string]models.RemoteFile, len(a.Files))
+	for _, f := range a.Files {
+		files[FileName(f)] = models.RemoteFile{URL: f.URL, SHA256: f.SHA256, SizeBytes: f.SizeBytes}
+	}
+	return models.Rewriter{ID: a.ID, Files: files}
 }

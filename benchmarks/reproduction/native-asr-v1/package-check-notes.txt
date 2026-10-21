@@ -1,0 +1,2 @@
+Repository secret MYGO_UPDATER_PRIVATE_KEY exists (GH CLI metadata only). GitHub does not return secret plaintext. Local Apple signing and notary profile configured; no local update signing private key. Organization secret metadata not accessible with current token (403). No credentials were printed or changed.
+Swift 6.3.1 requires Xcode 26.4.1; ARM CI runner updated to macos-26 and selected Xcode 26.4.1, confirmed present in the runner-images manifest.

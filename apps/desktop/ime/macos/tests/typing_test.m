@@ -413,14 +413,19 @@ int main(int argc, const char *argv[]) {
             [hint showASCII:YES caretRect:caret];
             require(window.visible && !window.canBecomeKeyWindow && window.ignoresMouseEvents && NSApp.keyWindow == keyWindow,
                     @"zero-width caret shows a click-through hint without changing key window");
+            require(NSEqualSizes(window.frame.size, NSMakeSize(23, 23)) && !window.hasShadow &&
+                    window.animationBehavior == NSWindowAnimationBehaviorNone,
+                    @"compact shadowless badge uses immediate window transitions");
             require(NSContainsRect(screen, window.frame) && NSMinY(window.frame) >= NSMaxY(caret),
                     @"hint fits screen and flips above bottom-edge caret");
             [NSRunLoop.currentRunLoop runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.5]];
             [hint showASCII:NO caretRect:caret];
-            [NSRunLoop.currentRunLoop runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.4]];
+            [NSRunLoop.currentRunLoop runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.6]];
             require(window.visible, @"previous dismissal cannot hide the new mode hint");
-            [NSRunLoop.currentRunLoop runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.45]];
-            require(!window.visible, @"hint automatically disappears");
+            [NSRunLoop.currentRunLoop runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.25]];
+            require(window.visible, @"hint remains visible beyond the former 0.8-second lifetime");
+            [NSRunLoop.currentRunLoop runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.2]];
+            require(!window.visible, @"hint automatically disappears after one second");
             [hint showASCII:YES caretRect:caret];
             [hint hide];
             require(!window.visible, @"typing or focus loss can hide immediately");
