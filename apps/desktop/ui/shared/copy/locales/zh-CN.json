@@ -435,5 +435,8 @@
   "IMEEnableFailed": "Arion 尚未启用。如果 macOS 询问，请允许，然后重试或打开键盘设置。",
   "IMESelectFailed": "未能切换到 Arion。请重试或从输入法菜单选择。",
   "IMEConnectionFailed": "Arion 输入法未连接。请重试；若仍失败，请更新输入法。",
-  "IMECancelSetup": "取消"
+  "IMECancelSetup": "取消",
+  "AccCallbackTitle": "返回 Arion",
+  "AccCallbackBody": "登录结果会显示在 Arion 中，可以关闭此标签页。",
+  "AccCallbackOpen": "打开 Arion"
 }

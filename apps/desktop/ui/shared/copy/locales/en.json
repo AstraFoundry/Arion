@@ -435,5 +435,8 @@
   "IMEEnableFailed": "Arion is not enabled. Allow it if macOS asks, then retry or open Keyboard Settings.",
   "IMESelectFailed": "Could not switch to Arion. Retry or select it from the input menu.",
   "IMEConnectionFailed": "Arion’s input method did not connect. Retry; if this continues, update the input method.",
-  "IMECancelSetup": "Cancel"
+  "IMECancelSetup": "Cancel",
+  "AccCallbackTitle": "Return to Arion",
+  "AccCallbackBody": "Arion shows the result of this sign-in. You can close this tab.",
+  "AccCallbackOpen": "Open Arion"
 }

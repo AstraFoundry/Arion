@@ -442,4 +442,7 @@ const (
 	AccPortalConnections      Key = "AccPortalConnections"
 	AccPortalProducts         Key = "AccPortalProducts"
 	AccPortalData             Key = "AccPortalData"
+	AccCallbackTitle          Key = "AccCallbackTitle"
+	AccCallbackBody           Key = "AccCallbackBody"
+	AccCallbackOpen           Key = "AccCallbackOpen"
 )

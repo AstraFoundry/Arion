@@ -44,7 +44,7 @@ One sign-in or refresh runs at a time. A second request fails with `SIGN_IN_IN_P
 
 `ErrorDetail` is an OAuth error code (`access_denied`, `invalid_grant`, `server_error`), an `http_N` label, or another short token such as `issuer_mismatch` or `s256_required`. It is not `error_description`, a token, or an authorization code. Show catalog copy for `ErrorCode`, not `Error()` from the service.
 
-The loopback response is an empty `200` with `Cache-Control: no-store`. The onboarding copy that tells the user to return to Arion lives in the app, not on that page.
+The loopback answers `200` with `Cache-Control: no-store`, `Referrer-Policy: no-referrer` and a CSP that allows no scripts. The body is `Dependencies.CallbackPage`, rendered when the callback arrives; nil leaves it empty. `bootstrap` supplies a static page in the interface language (`AccCallbackTitle`, `AccCallbackBody`, `AccCallbackOpen`) with an **Open Arion** link to `arion://open`. The page does not report the outcome; the app does. `arion` is declared as `urlSchemes` in `desktop.json`, so the packaged app registers it (macOS Info.plist, Windows installer). An `arion:` URL focuses onboarding while it is open and Settings otherwise; a second instance started with that URL does not also open Settings.
 
 ## Views
 
@@ -88,7 +88,7 @@ func (s *Service) Stored() (bool, error)
 
 `Stored` calls only `RefreshTokenStore.Get`, under the same lock that commits a token. `ErrNotFound` means false. Any other failure is a `SECURE_STORE` error.
 
-`Dependencies.Store` is a `RefreshTokenStore` (`Put`, `Get`, `Delete`). `Delete` removes the refresh token only. `Dependencies.Browser` opens the authorization URL. `New` returns an error when either is nil.
+`Dependencies.Store` is a `RefreshTokenStore` (`Put`, `Get`, `Delete`). `Delete` removes the refresh token only. `Dependencies.Browser` opens the authorization URL. `New` returns an error when either is nil. `Dependencies.CallbackPage` is optional.
 
 `Session.AccessToken` is for the composition root's bearer calls. `TokenType` is `Bearer` when the token response omits it. `HasHostedSync()` reports the entitlement. The refresh token is never on `Session`.
 

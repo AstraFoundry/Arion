@@ -37,6 +37,7 @@ import (
 	"arion.local/desktop/internal/account"
 	"arion.local/desktop/internal/center"
 	uiapp "arion.local/desktop/ui/app"
+	"arion.local/desktop/ui/shared/copy"
 	arion "arion.local/desktop/ui/shared/runtime"
 	"arion.local/models"
 	"github.com/egoist/mygo"
@@ -228,7 +229,8 @@ func New(opts Options) (*App, error) {
 		Model:   arion.Model{State: arion.ModelUnselected},
 		Account: arion.Account{Phase: arion.AccountSignedOut, Issuer: profile.Issuer, Portal: accountPortal(profile), Disabled: profile.AuthMode == "device", WaitlistDisabled: !profile.Standard()}}
 	// Construction stays idle; restoration starts off the main thread after readiness.
-	accounts, err := account.New(opts.Account, account.Dependencies{Store: keystore.OpenForProfile(profile.Fingerprint()), Browser: browser.Open})
+	accounts, err := account.New(opts.Account, account.Dependencies{Store: keystore.OpenForProfile(profile.Fingerprint()), Browser: browser.Open,
+		CallbackPage: func() []byte { return callbackPage(copy.Locale(a.preferences().UILanguage)) }})
 	if err != nil {
 		return nil, err
 	}
@@ -289,7 +291,18 @@ func (a *App) Start() {
 	mygo.App.OnWindowAllClosed(func() {})
 	mygo.App.OnQuit(a.closeDiagnostics)
 	mygo.App.OnWillQuit(func(*mygo.QuitEvent) { actions{a}.CancelInputMethodSetup() })
-	mygo.App.OnSecondInstance(func([]string, string) { a.openSettings() })
+	mygo.App.OnSecondInstance(func(args []string, _ string) {
+		if !hasAppURL(args) {
+			a.openSettings()
+		}
+	})
+	// The sign-in callback page links here (Windows forwards it as a second
+	// instance's argument, which reaches OnOpenURL too).
+	mygo.App.OnOpenURL(func(url string) {
+		if isAppURL(url) {
+			a.revealWindow()
+		}
+	})
 	mygo.App.WhenReady(a.ready)
 }
 

@@ -18,7 +18,9 @@ type loopback struct {
 	ch  chan callback
 }
 
-func startLoopback(ctx context.Context) (*loopback, string, error) {
+// startLoopback serves one callback. page renders the response body when it
+// is not nil; otherwise the response is empty.
+func startLoopback(ctx context.Context, page func() []byte) (*loopback, string, error) {
 	ln, err := net.Listen("tcp", "127.0.0.1:0")
 	if err != nil {
 		return nil, "", wrap(CodeBrowser, "listen", err)
@@ -38,7 +40,17 @@ func startLoopback(ctx context.Context) (*loopback, string, error) {
 		default:
 		}
 		w.Header().Set("Cache-Control", "no-store")
+		if page == nil {
+			w.WriteHeader(http.StatusOK)
+			return
+		}
+		// The URL carries the authorization code: no referrer, no scripts.
+		w.Header().Set("Referrer-Policy", "no-referrer")
+		w.Header().Set("Content-Security-Policy", "default-src 'none'; style-src 'unsafe-inline'; form-action 'none'; base-uri 'none'")
+		w.Header().Set("X-Content-Type-Options", "nosniff")
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write(page())
 	})
 	lb.srv = &http.Server{
 		Handler:           mux,

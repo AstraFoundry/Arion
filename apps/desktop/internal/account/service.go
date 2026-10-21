@@ -21,6 +21,9 @@ type Dependencies struct {
 	Browser Browser
 	// Now defaults to time.Now. Tests set it.
 	Now func() time.Time
+	// CallbackPage renders the HTML the browser shows after the loopback
+	// callback, at the time it arrives. Nil answers with an empty body.
+	CallbackPage func() []byte
 }
 
 // Service is safe for concurrent use. One sign-in or refresh runs at a time.
@@ -29,6 +32,7 @@ type Service struct {
 	store   RefreshTokenStore
 	browser Browser
 	now     func() time.Time
+	page    func() []byte
 
 	mu         sync.Mutex
 	idle       sync.Cond
@@ -60,7 +64,7 @@ func New(cfg Config, deps Dependencies) (*Service, error) {
 	if deps.Browser == nil {
 		return nil, &Error{Code: CodeBrowser, Detail: "missing"}
 	}
-	svc := &Service{cfg: normalized, store: deps.Store, browser: deps.Browser, now: deps.Now}
+	svc := &Service{cfg: normalized, store: deps.Store, browser: deps.Browser, now: deps.Now, page: deps.CallbackPage}
 	svc.idle.L = &svc.mu
 	return svc, nil
 }
@@ -123,7 +127,7 @@ func (s *Service) SignIn(ctx context.Context) (Session, error) {
 	if err != nil {
 		return Session{}, wrap(CodeToken, "state", err)
 	}
-	lb, redirect, err := startLoopback(opCtx)
+	lb, redirect, err := startLoopback(opCtx, s.page)
 	if err != nil {
 		return Session{}, s.aborted(ctx, opCtx, err)
 	}

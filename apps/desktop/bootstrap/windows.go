@@ -195,6 +195,17 @@ func (a *App) openSettings() {
 	a.settingsWin.Focus()
 }
 
+// revealWindow brings onboarding to the front while it is open, and settings
+// otherwise.
+func (a *App) revealWindow() {
+	if a.onboarding != nil {
+		mygo.App.Focus()
+		a.onboarding.Focus()
+		return
+	}
+	a.openSettings()
+}
+
 func (a *App) openOnboarding() {
 	if a.onboarding != nil {
 		a.onboarding.Focus()
