@@ -1,5 +1,7 @@
 # 020: Native Qwen3-ASR workers
 
+The macOS Intel support commitment below is superseded by [ADR 021](021-apple-silicon-only-macos.md). Its runtime and evaluation records remain historical evidence; future macOS releases support Apple silicon only.
+
 ## Decision
 
 Use Qwen3-ASR 1.7B as the recognition model. Apple silicon uses the pinned Swift MLX implementation with the community affine 8-bit checkpoint. Windows x64 and macOS Intel use the separately converted speech.cpp Q8_0 checkpoint. The quantization formats and implementations differ; quality and latency evidence does not transfer between them.

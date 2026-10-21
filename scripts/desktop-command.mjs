@@ -14,6 +14,7 @@ const desktop = path.join(root, 'apps', 'desktop');
 const operation = process.argv[2];
 if (!['build', 'dev'].includes(operation)) throw new Error('Use desktop-command.mjs build|dev');
 if (!['darwin', 'win32'].includes(process.platform)) throw new Error('Native desktop commands require macOS or Windows');
+if (process.platform === 'darwin' && process.arch !== 'arm64') throw new Error('macOS desktop builds require Apple silicon; Intel macOS is unsupported');
 const config = JSON.parse(readFileSync(path.join(desktop, 'desktop.json'), 'utf8'));
 const settings = operation === 'build' && process.platform === 'darwin' ? requireIMEProvisioningSettings(macosSigningSettings(process.env)) : null;
 let signing;

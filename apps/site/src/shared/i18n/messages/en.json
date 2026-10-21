@@ -93,11 +93,10 @@
   },
   "download": {
     "title": "Download Arion",
-    "lead": "Builds for macOS (Apple silicon and Intel) and Windows are served from Arion's own update center. Installed apps update from the same channels and verify each update's signature first.",
+    "lead": "Builds for macOS on Apple silicon and Windows x64 are served from Arion's own update center. Installed apps update from the same channels and verify each update's signature first.",
     "note": "The Windows build is an early preview.",
     "targets": {
       "darwinArm64": "macOS · Apple silicon",
-      "darwinAmd64": "macOS · Intel",
       "windowsAmd64": "Windows · x64"
     },
     "version": "Version {version}",

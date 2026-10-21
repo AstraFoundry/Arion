@@ -1,6 +1,6 @@
 # Arion product
 
-Arion is a voice input product with a native Go desktop shell. macOS and Windows are the initial implementation targets; mobile work must preserve portable contracts without creating mobile apps yet.
+Arion is a voice input product with a native Go desktop shell. macOS on Apple silicon and Windows x64 are the supported implementation targets ([ADR 021](../decisions/021-apple-silicon-only-macos.md)); mobile work must preserve portable contracts without creating mobile apps yet.
 
 ## Confirmed scope
 
@@ -26,9 +26,9 @@ Jev is TypeSafe’s System One typed decision model. Laya Multilingual is the pr
 | --- | --- | --- |
 | Desktop UI | MyGo v0.4.6 native, Go 1.27.1; Sunbeam design system with coss anatomy in Go ([ADR 007](../decisions/007-sunbeam-design-system.md)) | Implemented: menu bar panel, overlay pill, settings, onboarding |
 | Shared domain/application | Portable Go module | Implemented: session aggregate, coordinator, correction rules, model selection |
-| macOS | miniaudio/CoreAudio capture; AX target and insertion; offline Pinyin/voice InputMethodKit host | Native arm64 and Rosetta x86_64 runs each pass 22 engine/AppKit cases; physical Intel/system IMK source acceptance remain open |
+| macOS | miniaudio/CoreAudio capture; AX target and insertion; offline Pinyin/voice InputMethodKit host | Native arm64 and Rosetta x86_64 runs each pass 36 engine/AppKit cases; Intel macOS is unsupported; clean-machine IMK acceptance remains open |
 | Windows | miniaudio/WASAPI capture; SendInput insertion; DPAPI | Code compiled for windows/amd64; not run on Windows; TSF pending |
-| ASR | Native Qwen3-ASR 1.7B workers: Swift MLX 8-bit on Apple silicon; speech.cpp Q8_0 CPU/Vulkan on Intel/Windows | Explicit platform adoption; independent native evaluation and packaging gates ([ADR 020](../decisions/020-native-qwen-asr.md)) |
+| ASR | Native Qwen3-ASR 1.7B workers: Swift MLX 8-bit on Apple silicon; speech.cpp Q8_0 CPU/Vulkan on Windows x64 | Explicit platform adoption; independent native evaluation and packaging gates ([ADR 020](../decisions/020-native-qwen-asr.md)) |
 | Correction | Conservative rules (`arion-rules-v3`) and approved vocabulary, including entries learned from the user's corrections | Implemented ([ADR 014](../decisions/014-edit-learning.md)); optional Qwen3.5-2B staged local rewriting adopted on macOS Apple Silicon; known development errors accepted ([configuration](../operations/local-rewrite.md)) |
 | Candidate ranking | Laya Multilingual local Choice evaluation adapter | Not implemented: recognizers expose one hypothesis |
 | Local storage | Preferences JSON; AES-256-GCM vocabulary with OS-kept key | Implemented ([ADR 005](../decisions/005-local-encryption.md)); SQLite/outbox pending |

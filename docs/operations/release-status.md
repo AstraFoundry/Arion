@@ -1,14 +1,14 @@
 # Desktop release status
 
-This file accompanies each release as `RELEASE-STATUS.md`. The `0.1.0-alpha.6` release distributes only macOS Apple silicon packages. The other columns below describe implementation status, not assets included in this alpha. Build success verifies packaging; the evidence below limits the supported product claims.
+This file accompanies each release as `RELEASE-STATUS.md`. The `0.1.0-alpha.6` release distributes only macOS Apple silicon packages. The Windows column below describes implementation status, not assets included in this alpha. Future macOS releases support Apple silicon only ([ADR 021](../decisions/021-apple-silicon-only-macos.md)); Intel macOS is unsupported. Build success verifies packaging; the evidence below limits the supported product claims.
 
-| Capability | macOS Apple silicon | macOS Intel | Windows x64 |
-| --- | --- | --- | --- |
-| Native package | App and DMG | App and DMG | Per-user NSIS installer |
-| Local speech recognition | Native MLX 1.7B 8-bit; 118 development fixtures measured | Native speech.cpp Q8_0 CPU executable cross-built; actual Intel inference pending | Native CPU/Vulkan staging implemented; actual Windows package/inference/signing acceptance pending |
-| Local polishing | Worker and pinned runtime bundled | Unsupported; no approved runtime/model pair | Unsupported; no approved runtime/model pair |
-| System input method | Offline Pinyin/voice IMK host with horizontal candidates and context ranking; native 36/36 cases pass; installed physical Shift and dictation accepted locally in Codex/Cursor | x86_64 36/36 cases pass under Rosetta on arm64; physical Intel/system dispatch untested | TSF not implemented |
-| Encrypted sync | Desktop enrollment and outbox pending | Desktop enrollment and outbox pending | Desktop enrollment and outbox pending |
+| Capability | macOS Apple silicon | Windows x64 |
+| --- | --- | --- |
+| Native package | App and DMG | Per-user NSIS installer |
+| Local speech recognition | Native MLX 1.7B 8-bit; 118 development fixtures measured | Native CPU/Vulkan staging implemented; actual Windows package/inference/signing acceptance pending |
+| Local polishing | Worker and pinned runtime bundled | Unsupported; no approved runtime/model pair |
+| System input method | Offline Pinyin/voice IMK host with horizontal candidates and context ranking; native 36/36 cases pass; installed physical Shift and dictation accepted locally in Codex/Cursor | TSF not implemented |
+| Encrypted sync | Desktop enrollment and outbox pending | Desktop enrollment and outbox pending |
 
 Windows is an early preview. Polishing on unsupported platforms reports its unavailable state; no content is routed to cloud inference. Model weights are downloaded separately from the pinned catalog and are not embedded in installers.
 
@@ -42,4 +42,4 @@ The [100-case development baseline](../../benchmarks/results/imk-quality-v1/READ
 
 The [v7 evidence archive](../../benchmarks/runs/imk-keyboard-v7/README.md) preserves the literal-umlaut failure and corrected 23-case native/translated runs, rebuilt unsigned bundle checks, the inconclusive inactive-client candidate probe and bounded Doubao UI-refresh follow-up.
 
-The [native ASR migration acceptance](../../benchmarks/results/native-asr-v1/README.md) replaces the old speech stack. Native MLX loading, real-time replay and offline signed-worker inference pass; first-partial and final-latency budgets remain failed. Windows/Intel/minimum-OS and clean-editor acceptance are still open.
+The [native ASR migration acceptance](../../benchmarks/results/native-asr-v1/README.md) replaces the old speech stack. Native MLX loading, real-time replay and offline signed-worker inference pass; first-partial and final-latency budgets remain failed. Windows, minimum-OS and clean-editor acceptance are still open. Intel macOS is retired from future product support; its existing evidence remains historical.

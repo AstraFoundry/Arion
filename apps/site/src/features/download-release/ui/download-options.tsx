@@ -19,7 +19,6 @@ type Channels =
 const targetLabel = (copy: Messages["download"], target: DownloadTarget) =>
   ({
     "darwin-arm64": copy.targets.darwinArm64,
-    "darwin-amd64": copy.targets.darwinAmd64,
     "windows-amd64": copy.targets.windowsAmd64,
   })[target];
 

@@ -54,7 +54,7 @@ export const anchor = (id: string) => `/#${id}`;
 export const downloadHref = anchor(sections.download);
 
 /** Desktop builds the download section offers, in display order. */
-export const downloadTargets = ["darwin-arm64", "darwin-amd64", "windows-amd64"] as const;
+export const downloadTargets = ["darwin-arm64", "windows-amd64"] as const;
 export type DownloadTarget = (typeof downloadTargets)[number];
 
 /** Update channels of the Arion center (services/updates). */

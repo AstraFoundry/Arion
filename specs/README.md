@@ -16,7 +16,7 @@ These documents are normative for implementation. Research recommendations requi
 
 ## Product choices
 
-Both input modes are selectable by the user. Self-hosting is the sync priority. macOS and Windows are P0; iOS and Android are P2 future targets. macOS IME work includes offline Simplified Chinese full-Pinyin typing, candidate selection/editing and encrypted learning alongside voice composition ([ADR 017](../docs/decisions/017-offline-pinyin-keyboard.md)); implementation and native acceptance remain required.
+Both input modes are selectable by the user. Self-hosting is the sync priority. macOS on Apple silicon and Windows x64 are P0; Intel macOS is unsupported for future releases ([ADR 021](../docs/decisions/021-apple-silicon-only-macos.md)); iOS and Android are P2 future targets. macOS IME work includes offline Simplified Chinese full-Pinyin typing, candidate selection/editing and encrypted learning alongside voice composition ([ADR 017](../docs/decisions/017-offline-pinyin-keyboard.md)); implementation and native acceptance remain required.
 
 Jev-style local candidate ranking is explicitly requested. [Research](../docs/research/on-device-speech.md) identifies TypeSafe Jev and independent local implementations. Evaluate Laya Multilingual Choice first; the adapter contract remains model-independent.
 

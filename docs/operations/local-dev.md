@@ -109,4 +109,4 @@ SYNC-11 selects AstraFoundry as the standard packaged center and build-time `ARI
 
 System input-source installation requires the profile-bearing Developer ID host. Runtime preflight rejects unsigned/ad hoc payloads before replacing installed files; `desktop-dev` remains suitable for shell/shortcut development but must not install its ad hoc IMK payload. Use the signed DMG for the complete installation/authorization scenario. A valid copied host that is temporarily absent from TIS stays pending; it is not treated as missing installation. The installer still does not automatically select the input source.
 
-Native MLX builds require Xcode 26.4.1 / Swift 6.3.1, while their deployment target remains macOS 14.0. Intel and Windows CPU builds require CMake and a native C++ compiler; the Windows Vulkan executable is digest-pinned. See [native ASR packaging](../decisions/020-native-qwen-asr.md).
+Native MLX builds require Xcode 26.4.1 / Swift 6.3.1, while their deployment target remains macOS 14.0. Windows CPU builds require CMake and a native C++ compiler; the Windows Vulkan executable is digest-pinned. See [native ASR packaging](../decisions/020-native-qwen-asr.md).
