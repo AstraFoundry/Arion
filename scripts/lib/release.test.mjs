@@ -4,9 +4,15 @@ import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
-import { digest, platformAssets, stagedRecord, stagingSettings, stagingUploads } from './release.mjs';
+import { checkReleaseChangelog, digest, platformAssets, stagedRecord, stagingSettings, stagingUploads } from './release.mjs';
 
 const fixture = JSON.parse(readFileSync(new URL('../../packages/contracts/releases/staged-release-v1.json', import.meta.url), 'utf8'));
+
+test('release preflight rejects a changelog left at the previous version', () => {
+  assert.throws(() => checkReleaseChangelog('0.1.0-alpha.6', '## 0.1.0-alpha.5\n\n- Previous release\n'), /CHANGELOG.md requires/);
+  const config = JSON.parse(readFileSync(new URL('../../apps/desktop/desktop.json', import.meta.url), 'utf8'));
+  assert.doesNotThrow(() => checkReleaseChangelog(config.version, readFileSync(new URL('../../apps/desktop/CHANGELOG.md', import.meta.url), 'utf8')));
+});
 
 function signedRelease() {
   const { publicKey, privateKey } = generateKeyPairSync('ed25519');

@@ -10,6 +10,9 @@ export function releaseMatrix(config) {
   return { include: platformsForRelease(config).map(platform => ({ os: runners[platform], platform })) };
 }
 export const digest = bytes => createHash('sha256').update(bytes).digest();
+export function checkReleaseChangelog(version, markdown) {
+  if (!markdown.split(/\r?\n/).includes(`## ${version}`)) throw new Error(`CHANGELOG.md requires a "## ${version}" section before release packaging`);
+}
 export const githubAssetName = name => name.replaceAll(' ', '.');
 export const releaseStatus = (config, markdown) => markdown.replace(/\]\(([^)]+)\)/g, (link, target) => {
   if (/^(https?:|#)/.test(target)) return link;

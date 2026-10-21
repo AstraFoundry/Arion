@@ -4,7 +4,7 @@ import { copyFileSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { checkRelease, digest, githubAssetName, platformAssets, platformsForRelease, releaseMatrix, releaseStatus, stagedRecord, stagedRecordKey, stagingSettings, stagingUploads } from './lib/release.mjs';
+import { checkRelease, checkReleaseChangelog, digest, githubAssetName, platformAssets, platformsForRelease, releaseMatrix, releaseStatus, stagedRecord, stagedRecordKey, stagingSettings, stagingUploads } from './lib/release.mjs';
 import { checkOfficialCenter } from './lib/center-profile.mjs';
 import { macosSigningSettings } from './lib/desktop-signing.mjs';
 
@@ -15,6 +15,7 @@ const checksumList = (directory, files) => [...files, 'RELEASE-STATUS.md'].sort(
 if (operation === 'matrix') {
   console.log(JSON.stringify(releaseMatrix(config)));
 } else if (operation === 'check') {
+  checkReleaseChangelog(config.version, readFileSync(path.join(root, 'apps/desktop/CHANGELOG.md'), 'utf8'));
   checkOfficialCenter({ ...process.env, ARION_OFFICIAL_RELEASE: '1' });
   checkRelease(config, process.env.GITHUB_REF_NAME, process.env.MYGO_UPDATER_PRIVATE_KEY);
   const signing = macosSigningSettings(process.env);
