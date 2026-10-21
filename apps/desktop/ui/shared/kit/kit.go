@@ -241,20 +241,8 @@ func LevelBars(c *ui.Context, levels []float32, count int, width, height, gap fl
 	box := ui.Box(c).Size(float32(count)*(width+gap)-gap, height)
 	heights := make([]float32, count)
 	for i := 0; i < count; i++ {
-		var level float32
-		if n := len(levels); n > 0 {
-			// Newest level at the center, older ones spread outward.
-			distance := i - count/2
-			if distance < 0 {
-				distance = -distance
-			}
-			index := n - 1 - distance*max(n/count, 1)
-			if index >= 0 {
-				level = levels[index]
-			}
-		}
 		shape := 1 - 0.55*float32(absInt(i-count/2))/float32(count/2+1)
-		target := width + (height-width)*level*shape
+		target := width + (height-width)*levelAt(levels, i, count)*shape
 		heights[i] = box.AnimateTo(barKey(i), target, ui.Animation{Spring: ui.SpringOptions{Stiffness: 520, Damping: 32}})
 	}
 	return box.Draw(func(p *ui.Painter, r ui.Rect) {
@@ -263,6 +251,20 @@ func LevelBars(c *ui.Context, levels []float32, count int, width, height, gap fl
 			p.Fill(ui.Rect{X: x, Y: r.Y + (r.H-h)/2, W: width, H: h}, color, width/2)
 		}
 	})
+}
+
+// levelAt is the level bar i of count shows: the newest level at the
+// center, older ones spread outward.
+func levelAt(levels []float32, i, count int) float32 {
+	n := len(levels)
+	if n == 0 {
+		return 0
+	}
+	index := n - 1 - absInt(i-count/2)*max(n/count, 1)
+	if index < 0 {
+		return 0
+	}
+	return levels[index]
 }
 
 var barKeys [64]string

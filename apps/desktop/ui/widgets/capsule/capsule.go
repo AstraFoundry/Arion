@@ -95,9 +95,12 @@ func Render(c *ui.Context, store runtime.Store, tokens theme.Tokens, typing *dic
 			}
 			row := ui.Row(c.Key(key)).Grow(1).Gap(10).AlignItems(ui.Center).Transition(contentMotion)
 			row.Children(func() {
+				if key == "live" {
+					liveMark(c, state, tokens, phase)
+				}
 				switch phase {
 				case dictation.Preparing, dictation.Listening:
-					listening(c, state, tokens, phase == dictation.Preparing, typing)
+					listening(c, state, tokens, typing)
 				case dictation.Transcribing, dictation.Inserting:
 					transcribing(c, d, tokens, store.Copy(), typing)
 				case dictation.Done:
@@ -113,19 +116,23 @@ func Render(c *ui.Context, store runtime.Store, tokens theme.Tokens, typing *dic
 	})
 }
 
-func listening(c *ui.Context, state *runtime.State, tokens theme.Tokens, preparing bool, typing *dictation.Typewriter) {
+// liveMark is the live phases' one glyph: the app mark's bars as the meter
+// while listening, folded into three waiting dots while the microphone
+// opens and while recognition finishes. It stays the same element across
+// those phases, so each change is one continuous fold.
+func liveMark(c *ui.Context, state *runtime.State, tokens theme.Tokens, phase dictation.Phase) {
+	waiting := phase != dictation.Listening
+	glyph := kit.VoiceMark(c.Key("mark"), state.Dictation.Levels, 20, waiting, tokens.PillText, tokens.Live).Shrink(0)
+	if !waiting {
+		// The live dot and the meter say "listening"; the word is their name
+		// for assistive technology rather than text competing for the line.
+		glyph.Label(copy.For(copy.Locale(state.Preferences.UILanguage)).Text(copy.PillListening))
+	}
+}
+
+func listening(c *ui.Context, state *runtime.State, tokens theme.Tokens, typing *dictation.Typewriter) {
 	messages := copy.For(copy.Locale(state.Preferences.UILanguage))
 	d := state.Dictation
-	// The dot and the meter say "listening"; the word is their name for
-	// assistive technology rather than text competing for the line.
-	ui.Row(c).Gap(10).AlignItems(ui.Center).Shrink(0).Label(messages.Text(copy.PillListening)).Children(func() {
-		dot := ui.Box(c).Size(8, 8).Radius(4).Background(tokens.Live)
-		if !preparing {
-			pulse := dot.Loop("pulse", 1400*time.Millisecond, ui.Bounce(ui.EaseInOut))
-			dot.Opacity(0.45 + 0.55*pulse)
-		}
-		kit.LevelBars(c, d.Levels, 11, 3, 20, 3, tokens.PillText)
-	})
 	// One slot holds the draft once speech arrives, and until then how to
 	// finish: a key and a few words, as Doubao's 「松手结束」.
 	if text := dictation.Text(d); text != "" {
@@ -228,23 +235,6 @@ func advance(c *ui.Context, r rune) float32 {
 }
 
 func transcribing(c *ui.Context, d runtime.Dictation, tokens theme.Tokens, messages copy.Catalog, typing *dictation.Typewriter) {
-	ui.Row(c).Gap(4).AlignItems(ui.Center).Children(func() {
-		for i := 0; i < 3; i++ {
-			dot := ui.Box(c.Key(i)).Size(5, 5).Radius(2.5).Background(tokens.PillText)
-			wave := dot.Loop("wave", 900*time.Millisecond, ui.Linear)
-			phase := wave - float32(i)*0.18
-			if phase < 0 {
-				phase += 1
-			}
-			lift := float32(0)
-			if phase < 0.5 {
-				lift = ui.EaseInOut(phase*2) * 4
-			} else {
-				lift = ui.EaseInOut((1-phase)*2) * 4
-			}
-			dot.Translate(0, -lift).Opacity(0.5 + 0.5*lift/4)
-		}
-	})
 	// Recognition has ended: the rest of the draft drains at full speed.
 	frame := dictation.Frame{Text: messages.Text(copy.PillTranscribing)}
 	if text := dictation.Text(d); text != "" {
