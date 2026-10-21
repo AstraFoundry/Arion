@@ -94,12 +94,16 @@ func (x actions) UpdatePreferences(change func(*application.Preferences)) {
 			a.record("keyboard_settings", err)
 		}
 	}
-	if next.Polish != before.Polish {
-		if next.Polish {
+	if next.Polish != before.Polish || next.PolishEngine != before.PolishEngine {
+		// The local worker runs only while local polishing is on.
+		if next.Polish && next.PolishEngine == application.PolishLocal {
 			go a.startPolish()
 		} else {
 			go a.rewriter.Disable()
 		}
+	}
+	if next.CloudModel != before.CloudModel {
+		a.cloud.SetModel(next.CloudModel)
 	}
 	if before.ContextHistory && !next.ContextHistory {
 		a.history.Clear()

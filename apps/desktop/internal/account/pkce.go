@@ -1,33 +1,13 @@
 package account
 
-import (
-	"crypto/rand"
-	"crypto/sha256"
-	"crypto/subtle"
-	"encoding/base64"
-)
+import "arion.local/desktop/internal/oauthloopback"
 
-func newPKCE() (verifier, challenge string, err error) {
-	buf := make([]byte, 32)
-	if _, err = rand.Read(buf); err != nil {
-		return "", "", err
-	}
-	verifier = base64.RawURLEncoding.EncodeToString(buf)
-	sum := sha256.Sum256([]byte(verifier))
-	challenge = base64.RawURLEncoding.EncodeToString(sum[:])
-	return verifier, challenge, nil
-}
+func newPKCE() (verifier, challenge string, err error) { return oauthloopback.NewPKCE() }
 
-func newState() (string, error) {
-	buf := make([]byte, 32)
-	if _, err := rand.Read(buf); err != nil {
-		return "", err
-	}
-	return base64.RawURLEncoding.EncodeToString(buf), nil
-}
+func newState() (string, error) { return oauthloopback.NewState() }
 
 func matchState(expected, got string) error {
-	if expected == "" || got == "" || subtle.ConstantTimeCompare([]byte(expected), []byte(got)) != 1 {
+	if !oauthloopback.MatchState(expected, got) {
 		return ErrStateMismatch
 	}
 	return nil

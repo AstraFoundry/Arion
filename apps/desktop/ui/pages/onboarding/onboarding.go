@@ -10,6 +10,7 @@ import (
 	"arion.local/desktop/ui/entities/account"
 	holdname "arion.local/desktop/ui/entities/holdkey"
 	"arion.local/desktop/ui/entities/onboarding"
+	"arion.local/desktop/ui/features/cloud"
 	"arion.local/desktop/ui/features/holdkey"
 	"arion.local/desktop/ui/features/keyboard"
 	"arion.local/desktop/ui/features/microphone"
@@ -50,6 +51,7 @@ type Page struct {
 	axRequested      bool
 	axGranted        time.Time
 	keyboard         keyboard.State
+	cloud            cloud.Draft
 }
 
 func NewPage() *Page { return &Page{} }
@@ -277,7 +279,11 @@ func (p *Page) step(c *ui.Context, store runtime.Store, tokens theme.Tokens, ste
 		// Recognition and the optional polishing are set up together.
 		ui.Column(c).Width(Content).Gap(12).Children(func() {
 			modelcard.Render(c, store, tokens, true)
-			kit.Card(c, tokens).Children(func() { polish.Row(c, store, tokens) })
+			kit.Card(c, tokens).Children(func() {
+				polish.Row(c, store, tokens)
+				polish.Engine(c, store, tokens)
+				cloud.Rows(c, store, tokens, &p.cloud)
+			})
 		})
 	case onboarding.HoldKey:
 		heading(c, tokens, messages.Text(copy.OnbHoldKeyTitle), messages.Text(copy.OnbHoldKeyBody))

@@ -82,3 +82,24 @@ func TestFullOCRIsSeparateFromDictation(t *testing.T) {
 		t.Fatal("OCR must not be reduced to terms")
 	}
 }
+
+// Turns carry the same system prompt, demonstrations and user turn as the
+// rendered local prompt, without its chat markup.
+func TestTurnsMatchPrompt(t *testing.T) {
+	tpl := Live()
+	in := Input{Scene: "email", Terms: []string{"Arion"}, Text: "hi team"}
+	turns := tpl.Turns(in)
+	if len(turns) != 2+2*len(tpl.Examples) || turns[0].Role != "system" || turns[0].Content != tpl.System {
+		t.Fatalf("fixed turns %+v", turns[:1])
+	}
+	var b strings.Builder
+	for _, x := range turns {
+		turn(&b, x.Role, x.Content)
+	}
+	if got := b.String(); !strings.HasPrefix(tpl.Prompt(in), strings.TrimSuffix(got, "<|im_end|>\n")) {
+		t.Fatalf("turns differ from the prompt")
+	}
+	if last := turns[len(turns)-1]; last.Role != "user" || last.Content != "[email] [terms: Arion]\nhi team" {
+		t.Fatalf("user turn %+v", last)
+	}
+}

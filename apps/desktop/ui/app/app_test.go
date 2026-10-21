@@ -35,30 +35,37 @@ type recorder struct {
 	state *runtime.State
 }
 
-func (r *recorder) call(name string)            { r.calls = append(r.calls, name) }
-func (r *recorder) ExportDiagnostics()          { r.call("export-diagnostics") }
-func (r *recorder) ToggleDictation()            { r.call("toggle") }
-func (r *recorder) CancelDictation()            { r.call("cancel") }
-func (r *recorder) RequestMicrophone()          { r.call("request-mic") }
-func (r *recorder) RequestAccessibility()       { r.call("request-ax") }
-func (r *recorder) OpenMicrophoneSettings()     { r.call("open-mic") }
-func (r *recorder) OpenAccessibilitySettings()  { r.call("open-ax") }
-func (r *recorder) RetryModel()                 { r.call("retry") }
-func (r *recorder) RetryPolish()                { r.call("retry-polish") }
-func (r *recorder) UseBundle(id string)         { r.call("use:" + id) }
-func (r *recorder) UseRecommendedBundle()       { r.call("use-recommended") }
-func (r *recorder) RefreshDevices()             { r.call("devices") }
-func (r *recorder) StartLevelMonitor()          { r.call("monitor-start") }
-func (r *recorder) StopLevelMonitor()           { r.call("monitor-stop") }
-func (r *recorder) CopyText(text string)        { r.call("copy:" + text) }
-func (r *recorder) OpenSettings()               { r.call("settings") }
-func (r *recorder) CompleteOnboarding()         { r.call("complete") }
-func (r *recorder) SignIn()                     { r.call("sign-in") }
-func (r *recorder) CancelSignIn()               { r.call("cancel-sign-in") }
-func (r *recorder) RefreshAccount()             { r.call("refresh-account") }
-func (r *recorder) SignOut()                    { r.call("sign-out") }
-func (r *recorder) JoinHostedSyncWaitlist()     { r.call("join-waitlist") }
-func (r *recorder) CheckStoredAccount()         { r.call("check-stored") }
+func (r *recorder) call(name string)           { r.calls = append(r.calls, name) }
+func (r *recorder) ExportDiagnostics()         { r.call("export-diagnostics") }
+func (r *recorder) ToggleDictation()           { r.call("toggle") }
+func (r *recorder) CancelDictation()           { r.call("cancel") }
+func (r *recorder) RequestMicrophone()         { r.call("request-mic") }
+func (r *recorder) RequestAccessibility()      { r.call("request-ax") }
+func (r *recorder) OpenMicrophoneSettings()    { r.call("open-mic") }
+func (r *recorder) OpenAccessibilitySettings() { r.call("open-ax") }
+func (r *recorder) RetryModel()                { r.call("retry") }
+func (r *recorder) RetryPolish()               { r.call("retry-polish") }
+func (r *recorder) UseBundle(id string)        { r.call("use:" + id) }
+func (r *recorder) UseRecommendedBundle()      { r.call("use-recommended") }
+func (r *recorder) RefreshDevices()            { r.call("devices") }
+func (r *recorder) StartLevelMonitor()         { r.call("monitor-start") }
+func (r *recorder) StopLevelMonitor()          { r.call("monitor-stop") }
+func (r *recorder) CopyText(text string)       { r.call("copy:" + text) }
+func (r *recorder) OpenSettings()              { r.call("settings") }
+func (r *recorder) CompleteOnboarding()        { r.call("complete") }
+func (r *recorder) SignIn()                    { r.call("sign-in") }
+func (r *recorder) CancelSignIn()              { r.call("cancel-sign-in") }
+func (r *recorder) RefreshAccount()            { r.call("refresh-account") }
+func (r *recorder) SignOut()                   { r.call("sign-out") }
+func (r *recorder) JoinHostedSyncWaitlist()    { r.call("join-waitlist") }
+func (r *recorder) CheckStoredAccount()        { r.call("check-stored") }
+func (r *recorder) SignInChatGPT()             { r.call("cloud-sign-in") }
+func (r *recorder) CancelCloud()               { r.call("cloud-cancel") }
+func (r *recorder) DisconnectCloud()           { r.call("cloud-disconnect") }
+func (r *recorder) ListCloudModels()           { r.call("cloud-models") }
+func (r *recorder) ConnectCloudKey(provider, key string) {
+	r.call("cloud-key:" + provider + ":" + key)
+}
 func (r *recorder) Quit()                       { r.call("quit") }
 func (r *recorder) TestHoldKey(testing bool)    { r.call("test-hold") }
 func (r *recorder) RemoveReplacement(id string) { r.call("remove:" + id) }

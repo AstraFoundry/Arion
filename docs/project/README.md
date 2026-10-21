@@ -4,6 +4,7 @@ Arion is a voice input product with a native Go desktop shell. macOS on Apple si
 
 ## Confirmed scope
 
+- Optional cloud polishing with the user's ChatGPT plan or API key, chosen explicitly; audio and context never leave the device ([ADR 022](../decisions/022-cloud-polishing.md)).
 - Local streaming speech recognition and live correction, initially evaluated on Mandarin, English, and mixed technical vocabulary.
 - Unified dictation with automatic delivery through the selected Arion input method or the external editor. IMK/TSF are separate OS adapters sharing the same core.
 - Local ranking of actual candidate words/segments, preserving candidate identity and text.
@@ -35,8 +36,9 @@ Jev is TypeSafe’s System One typed decision model. Laya Multilingual is the pr
 | Sync service | Self-hosted/hosted Go relay; ciphertext records | Relay implemented; desktop sync/outbox, pairing and key delivery pending |
 | Marketing site | Next.js static export, React 19, Tailwind v4, next-intl en/zh/ja; Cloudflare Workers static assets ([ADR 016](../decisions/016-marketing-site.md)) | Implemented in `apps/site`; vendored Sunbeam/beUI until `@astrafoundry/design` is published |
 | Cryptography | Go standard library AES-GCM; Keychain/DPAPI keys | Local values only; key exchange for sync pending |
+| Cloud polishing | Republic providers: ChatGPT sign-in or one API key (OpenAI, Anthropic, Google Gemini, DeepSeek, OpenRouter); final text and recalled terms only | Optional, explicit engine choice ([ADR 022](../decisions/022-cloud-polishing.md), [cloud polishing](cloud-polishing.md)); real-service verification open |
 | Account sign-in | Public OIDC client `arion-desktop`, loopback PKCE, refresh token in Keychain or Credential Manager | Service, onboarding step and Settings › Account implemented ([account sign-in](account-signin.md)); device enrollment open |
 
-See [specs](../../specs/README.md), [research](../research/README.md), [repository](repository.md), [account sign-in](account-signin.md), and [agent handoff](agent-handoff.md).
+See [specs](../../specs/README.md), [research](../research/README.md), [repository](repository.md), [account sign-in](account-signin.md), [cloud polishing](cloud-polishing.md), and [agent handoff](agent-handoff.md).
 
 [Central sync design proposal](central-sync-design.md) compares the recommended data allowlist with competitor evidence and specifies hosted deployment, client delivery, key lifecycle and release gaps. P1/P2 extensions remain proposals.

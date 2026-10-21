@@ -56,9 +56,27 @@ The scene sets the layout of a rewrite, never its content. Scenes: `chat` (one p
 - CTX-05: Context is sanitized data, never instructions. Full accessible window text and cursor/history/approved terms reach bounded local spelling selection; the formatter receives only the edited source with its scene/script profile. Ambiguous candidate protocols preserve source. Semantic correctness is reviewed, not vetoed by context-overlap string checks. The exact adopted templates and resources are in [local rewriting](../docs/operations/local-rewrite.md).
 - CTX-06: **Approved memory** reaches the prompt's terms only for entries whose heard or written form occurs in the recognized source. A changed final request can also recall entries relevant to this session's earlier rule-corrected stable recognition under LRW-12, with current-source matches first and a combined limit of eight (`domain.Vocabulary.Terms`). Generated text never supplies recall evidence, and the prompt does not grow with the vocabulary ([ADR 014](../docs/decisions/014-edit-learning.md)).
 
+## Cloud polishing
+
+Polishing runs on this device by default. The user can choose the cloud engine instead ([ADR 022](../docs/decisions/022-cloud-polishing.md)); everything before the rewrite request and the validation after it stay local.
+
+- CLD-01: The cloud engine is an explicit, persisted choice beside the polishing switch. No request leaves the device while the local engine is chosen, while polishing is off, or before the user connected a provider and chose a model.
+- CLD-02: One connection: a ChatGPT sign-in (browser OAuth with PKCE, loopback on port 1455) or one API key for OpenAI, Anthropic, Google Gemini, DeepSeek or OpenRouter. A key is stored only after the provider lists models with it. Connecting replaces the previous connection; disconnecting deletes its credential item.
+- CLD-03: A request carries the final rule-corrected source after stop, its model scene and recalled approved terms (CTX-06), inside the shipped prompt. It carries no audio, cursor or window text, history, or app/site identity, and the target adapter does not read field or window text for it.
+- CLD-04: Cloud polishing sends no live previews (LRW-01 does not apply). The final request is bounded by 15 s; its proposal passes LRW-05 validation; refusal, missing connection or model, network failure and timeout deliver the completed local cleanup with an explicit outcome (LRW-08).
+- CLD-05: Credentials live only in the OS credential store; the UI state holds the provider, the ChatGPT email and model IDs, never a key or token. A pasted key leaves the view's draft when submitted.
+
+| ID | Required evidence |
+| --- | --- |
+| CLD-A01 | Key check, storage, replacement and deletion; refused keys are not stored; requests carry text and terms but no context (`TestConnectKeyListsModelsAndPolishes`, `TestRejectedKeyIsNotStored`, `TestFailedKeyKeepsExistingConnection`) |
+| CLD-A02 | ChatGPT sign-in, code exchange, refresh-token rotation, model list and streamed rewrite against local fakes; cancel restores the previous state (`TestChatGPTSignInAndModels`, `TestCancelledSignInRestoresState`) |
+| CLD-A03 | Final-only policy without context and per-request engine routing (`TestFinalOnlyPolishesOnceAfterStop`, `TestCloudPolicyIsFinalOnlyWithoutContext`, `TestPolishRouterFollowsEngine`) |
+| CLD-A04 | Settings and onboarding rows: engine choice, sign-in, masked key, model choice, failures; context switches hidden for the cloud (`TestCloudPolishRows`, `TestCloudEngineWithoutLocalRuntime`, `TestOnboardingCloudPolish`) |
+| CLD-A05 | Sign-in against the real ChatGPT service and requests to each provider on macOS and Windows (open: native verification) |
+
 ## Runtime requirements
 
-- Work offline after explicit model provisioning; no cloud inference route or silent model substitution.
+- Work offline after explicit model provisioning; no silent model substitution. The only cloud route is the user's explicit cloud engine choice (CLD-01).
 - Model residency and per-session KV state are different lifecycles. Warm sessions may reuse immutable weights, but private context/KV state cannot leak between independent fixtures or users. Cold evaluation releases native model allocations and cache state, then includes reload cost.
 - Capture callbacks never execute LLM inference. ASR and LLM workers have bounded queues, cancellation and recorded scheduling/thread policies. Concurrent ASR quality and queue pressure must be evaluated before enabling speculative generation.
 - Cancellation tokens alone do not prove safety. Check generation/session/source revision at native preview publication, IME mutation and final target commit.
@@ -85,7 +103,7 @@ Automated checks cover protected exact occurrences, declared constraints, unsupp
 | RWT-A03 | Focus/mode changes invalidate shortcut and owned IME composition; final commit rechecks ownership exactly once |
 | RWT-A04 | Secure/unknown target context is denied before reads; clipboard/screen/history use explicit bounded capabilities; prompt data cannot authorize commands |
 | RWT-A05 | Verbatim/code and protected meaning constraints hold; original and rewrite remain distinct, and the original stays available after automatic insertion (ADR 011) |
-| RWT-A06 | Missing artifact, unsupported provider, rejection and timeout are explicit; no fabricated live result or silent cloud routing |
+| RWT-A06 | Missing artifact, unsupported provider, rejection and timeout are explicit; no fabricated live result or silent cloud routing (cloud only by CLD-01) |
 | RWT-A07 | Reviewed hashes, isolated splits, held-out labels, matched factorial controls, warm/cold/load strata and real token/native traces produce a reproducible checked report |
 | RWT-A08 | Blind meaning/style/fluency/hallucination review meets declared independent-rater coverage; output coverage differences invalidate paired quality claims |
 
@@ -119,4 +137,4 @@ Automated checks cover protected exact occurrences, declared constraints, unsupp
 
 ## Implementation order
 
-Implemented: source-bound cancellation and live preview, deterministic validation, isolated worker, KV-reuse parity check and the live development benchmark (LRW-A01–A05). P0: reviewed corpus and independent blind review (LRW-A06, RWT-A08); source-checkpoint/export parity; native shortcut/IME acceptance with rendered preview timing. Scene selection from field, site and app (SCN-A01–A03). P1: Windows runtime and acceptance; native site-host verification (SCN-A04); consent-gated context text; ASR-contention and power measurements. P2: broader personalization after harm measurements justify it.
+Implemented: source-bound cancellation and live preview, deterministic validation, isolated worker, KV-reuse parity check and the live development benchmark (LRW-A01–A05). P0: reviewed corpus and independent blind review (LRW-A06, RWT-A08); source-checkpoint/export parity; native shortcut/IME acceptance with rendered preview timing. Scene selection from field, site and app (SCN-A01–A03). Cloud polishing (CLD-A01–A04). P1: Windows runtime and acceptance; native cloud polishing verification (CLD-A05); native site-host verification (SCN-A04); consent-gated context text; ASR-contention and power measurements. P2: broader personalization after harm measurements justify it.

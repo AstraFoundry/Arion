@@ -1,5 +1,6 @@
-// Package polish lets the user turn on live rewriting by the local LLM and
-// shows its one-time download and readiness.
+// Package polish lets the user turn on polishing, choose whether it runs on
+// this device or in the cloud, and shows the local model's one-time
+// download and readiness. The cloud connection is features/cloud.
 package polish
 
 import (
@@ -12,30 +13,58 @@ import (
 	"github.com/egoist/mygo/ui"
 )
 
-// Row is the switch row; the switch is disabled where the runtime is not
-// shipped.
+// Row is the switch row; the switch is disabled while the chosen engine
+// cannot run here. The local model's status follows it.
 func Row(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 	messages := store.Copy()
-	p := store.State.Polish
-	// Where the runtime is not shipped the capability cannot be on,
+	// Where the local runtime is not shipped, local polishing cannot be on,
 	// whatever an earlier profile saved.
-	on := store.State.Preferences.Polish && p.State != runtime.PolishUnsupported
-	kit.Row(c, tokens, messages.Text(copy.PolishLabel), messages.Text(copy.PolishDetail), func() {
+	on := runtime.PolishOn(store.State)
+	cloud := store.State.Preferences.PolishEngine == runtime.PolishCloud
+	detail := copy.PolishDetail
+	if cloud {
+		detail = copy.PolishCloudDetail
+	}
+	kit.Row(c, tokens, messages.Text(copy.PolishLabel), messages.Text(detail), func() {
 		toggle := ui.Switch(c.Key("polish"), &on).Label(messages.Text(copy.PolishLabel))
-		if p.State == runtime.PolishUnsupported {
+		if !runtime.PolishAvailable(store.State) {
 			toggle.Disabled(true)
 		}
 		if toggle.Changed() {
 			store.Actions.UpdatePreferences(func(prefs *runtime.Preferences) { prefs.Polish = on })
 		}
 	})
-	Status(c, store, tokens)
+	if !cloud {
+		Status(c, store, tokens)
+	}
+}
+
+// Engine chooses where polishing runs. It shows while polishing is off
+// too: choosing the cloud is what makes polishing available where the
+// local runtime is not shipped.
+func Engine(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
+	messages := store.Copy()
+	selected := 0
+	if store.State.Preferences.PolishEngine == runtime.PolishCloud {
+		selected = 1
+	}
+	kit.Divider(c, tokens)
+	kit.Row(c, tokens, messages.Text(copy.PolishEngineLabel), "", func() {
+		if ui.Segmented(c.Key("polish-engine"), &selected, messages.Text(copy.PolishEngineLocal), messages.Text(copy.PolishEngineCloud)).
+			Label(messages.Text(copy.PolishEngineLabel)).Changed() {
+			engine := runtime.PolishLocal
+			if selected == 1 {
+				engine = runtime.PolishCloud
+			}
+			store.Actions.UpdatePreferences(func(prefs *runtime.Preferences) { prefs.PolishEngine = engine })
+		}
+	})
 }
 
 // MatchApp is the switch letting polishing follow the focused app, field and
 // web site. It is shown only while polishing is on.
 func MatchApp(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
-	if !store.State.Preferences.Polish || store.State.Polish.State == runtime.PolishUnsupported {
+	if !runtime.PolishOn(store.State) {
 		return
 	}
 	messages := store.Copy()
@@ -49,9 +78,10 @@ func MatchApp(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 }
 
 // Context lists the switches for the context polishing may read. Shown
-// only while polishing is on; visible window text uses Accessibility.
+// only while polishing is on this device: the cloud never receives
+// context (ADR 022). Visible window text uses Accessibility.
 func Context(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
-	if !store.State.Preferences.Polish || store.State.Polish.State == runtime.PolishUnsupported {
+	if !runtime.PolishOn(store.State) || store.State.Preferences.PolishEngine == runtime.PolishCloud {
 		return
 	}
 	messages := store.Copy()

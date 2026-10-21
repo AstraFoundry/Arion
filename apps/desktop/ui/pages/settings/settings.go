@@ -4,6 +4,7 @@ package settings
 
 import (
 	holdname "arion.local/desktop/ui/entities/holdkey"
+	"arion.local/desktop/ui/features/cloud"
 	"arion.local/desktop/ui/features/diagnostics"
 	"arion.local/desktop/ui/features/holdkey"
 	"arion.local/desktop/ui/features/keyboard"
@@ -46,6 +47,7 @@ type Page struct {
 	Section    string
 	monitoring bool
 	draft      vocabulary.Draft
+	cloud      cloud.Draft
 	keyboard   keyboard.State
 	focus      int
 	usage      usage.State
@@ -219,6 +221,8 @@ func (p *Page) section(c *ui.Context, store runtime.Store, tokens theme.Tokens) 
 		kit.Group(c, tokens, messages.Text(copy.ModelPolishGroup), func() {
 			kit.Card(c, tokens).Children(func() {
 				polish.Row(c, store, tokens)
+				polish.Engine(c, store, tokens)
+				cloud.Rows(c, store, tokens, &p.cloud)
 				polish.MatchApp(c, store, tokens)
 				polish.Context(c, store, tokens)
 			})
