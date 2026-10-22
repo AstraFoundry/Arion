@@ -131,6 +131,9 @@ type Dictation struct {
 	FailureDetail string
 	// Original is the recognized text when a rewrite replaced it.
 	Original string
+	// Rewriting marks that the final rewrite is running on the recognized
+	// text; it stays set once the result arrives.
+	Rewriting bool
 	// Pasted marks a commit delivered through the clipboard.
 	Pasted  bool
 	Outcome CommitOutcome

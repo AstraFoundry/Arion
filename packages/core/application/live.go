@@ -410,6 +410,7 @@ func (c *Coordinator) rewriteFinal(r *run, source string, policy RewritePolicy) 
 	result, reused := c.completedRewrite(r, request)
 	var err error
 	if !reused {
+		c.emit(r, contracts.Event{Envelope: contracts.Envelope{Kind: contracts.RewriteStarted}, State: domain.Finalizing})
 		started := time.Now()
 		result, err = c.deps.Rewriter.Rewrite(ctx, request)
 		c.diagnostic(r, ports.DiagnosticRewrite, started, err)

@@ -20,6 +20,9 @@ const (
 	CorrectionReady     EventKind = "correction_ready"
 	CommitResultReady   EventKind = "commit_result"
 	ErrorOccurred       EventKind = "error"
+	// RewriteStarted marks that the final rewrite is running on the
+	// recognized text; it carries no text.
+	RewriteStarted EventKind = "rewrite_started"
 	// AudioLevel carries a content-free input level for meters.
 	AudioLevel EventKind = "audio_level"
 )

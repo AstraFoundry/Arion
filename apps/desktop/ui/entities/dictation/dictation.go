@@ -16,6 +16,10 @@ const (
 	Preparing
 	Listening
 	Transcribing
+	// Polishing is the final rewrite organizing the recognized text.
+	Polishing
+	// Reviewing holds the final text, decided, before it is inserted.
+	Reviewing
 	Inserting
 	Done
 	Failed
@@ -46,8 +50,13 @@ func PhaseOf(d runtime.Dictation, now time.Time) Phase {
 		return Preparing
 	case runtime.StateCapturing:
 		return Listening
-	case runtime.StateFinalizing, runtime.StateReviewing:
+	case runtime.StateFinalizing:
+		if d.Rewriting {
+			return Polishing
+		}
 		return Transcribing
+	case runtime.StateReviewing:
+		return Reviewing
 	case runtime.StateCommitting:
 		return Inserting
 	case runtime.StateCompleted:

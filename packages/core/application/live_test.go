@@ -207,6 +207,32 @@ func TestFinalOnlyPolishesOnceAfterStop(t *testing.T) {
 	}
 }
 
+// The final rewrite announces itself before its result, so the overlay can
+// show organization under way; without a rewriter nothing is announced.
+func TestFinalRewriteAnnouncesItsStart(t *testing.T) {
+	rewriter := &scriptedRewriter{answer: func(req ports.RewriteRequest) (string, error) { return req.Text, nil }}
+	c, audio, events, _, _ := liveSetup(t, []string{"hello"}, rewriter, RewritePolicy{Enabled: true})
+	c.Start()
+	events.wait(t, stateIs(domain.Capturing))
+	audio.push(1, 0.2)
+	c.Stop()
+	ready := events.wait(t, kindIs(contracts.CorrectionReady))
+	started := events.wait(t, kindIs(contracts.RewriteStarted))
+	if started.Sequence >= ready.Sequence || started.State != domain.Finalizing || started.Text != "" {
+		t.Fatalf("started %+v before ready %d", started, ready.Sequence)
+	}
+
+	c, audio, events, _, _ = liveSetup(t, []string{"hello"}, nil, RewritePolicy{Enabled: true})
+	c.Start()
+	events.wait(t, stateIs(domain.Capturing))
+	audio.push(1, 0.2)
+	c.Stop()
+	events.wait(t, kindIs(contracts.CorrectionReady))
+	if n := events.count(kindIs(contracts.RewriteStarted)); n != 0 {
+		t.Fatalf("%d rewrite starts without a rewriter", n)
+	}
+}
+
 // A proposal that fails validation is never inserted; the source is, with
 // its verdict visible.
 func TestRejectedRewriteKeepsSource(t *testing.T) {
