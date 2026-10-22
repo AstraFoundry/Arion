@@ -51,9 +51,9 @@ type Page struct {
 	// section; cloud is where they are.
 	cloudOpen bool
 	cloud     cloud.Nav
-	keyboard   keyboard.State
-	focus      int
-	usage      usage.State
+	keyboard  keyboard.State
+	focus     int
+	usage     usage.State
 	// shown is the section drawn last, so entering one can replay its
 	// entrance.
 	shown string

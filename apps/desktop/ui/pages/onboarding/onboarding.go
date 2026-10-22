@@ -93,11 +93,11 @@ func (p *Page) Render(c *ui.Context, store runtime.Store) {
 			ui.Row(c).Padding(16, Inset, 24, Inset).Gap(8).AlignItems(ui.Center).Children(func() {
 				if p.flow.Index > 0 && step != onboarding.Finished {
 					kit.Button(c.Key("back"), tokens, kit.Ghost, messages.Text(copy.Back), step != onboarding.InputMethod || !state.InputMethodInstalling).OnClick(func() {
-							// The cloud step's provider page goes back to its list first.
-							if step != onboarding.Cloud || !p.cloud.Back() {
-								p.move(c, -1, store)
-							}
-						})
+						// The cloud step's provider page goes back to its list first.
+						if step != onboarding.Cloud || !p.cloud.Back() {
+							p.move(c, -1, store)
+						}
+					})
 				}
 				ui.Spacer(c)
 				switch step {
@@ -298,7 +298,7 @@ func (p *Page) step(c *ui.Context, store runtime.Store, tokens theme.Tokens, ste
 		ui.Column(c).Width(Content).Children(func() { polish.Choice(c, store, tokens) })
 	case onboarding.Cloud:
 		ui.Text(c.Key("cloud-title"), cloud.Title(store, &p.cloud)).FontSize(theme.Title + 4).FontWeight(650).ContentTransition(ui.ContentTransition{})
-		ui.Column(c.Key("cloud-"+p.cloud.Provider)).Width(Content).Gap(theme.GapRelated).Transition(ui.ElementTransition{Animation: &theme.Page, Enter: &ui.Motion{Y: 8}}).
+		ui.Column(c.Key("cloud-" + p.cloud.Provider)).Width(Content).Gap(theme.GapRelated).Transition(ui.ElementTransition{Animation: &theme.Page, Enter: &ui.Motion{Y: 8}}).
 			Children(func() { cloud.Pages(c, store, tokens, &p.cloud) })
 	case onboarding.HoldKey:
 		heading(c, tokens, messages.Text(copy.OnbHoldKeyTitle), messages.Text(copy.OnbHoldKeyBody))
