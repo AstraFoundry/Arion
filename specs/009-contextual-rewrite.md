@@ -71,7 +71,7 @@ Polishing runs on this device by default. The user can choose the cloud engine i
 | CLD-A01 | Key check, storage, replacement and deletion; refused keys are not stored; requests carry text and terms but no context (`TestConnectKeyListsModelsAndPolishes`, `TestRejectedKeyIsNotStored`, `TestFailedKeyKeepsExistingConnection`) |
 | CLD-A02 | ChatGPT sign-in, code exchange, refresh-token rotation, model list and streamed rewrite against local fakes; cancel restores the previous state (`TestChatGPTSignInAndModels`, `TestCancelledSignInRestoresState`) |
 | CLD-A03 | Final-only policy without context and per-request engine routing (`TestFinalOnlyPolishesOnceAfterStop`, `TestCloudPolicyIsFinalOnlyWithoutContext`, `TestPolishRouterFollowsEngine`) |
-| CLD-A04 | Settings and onboarding rows: engine choice, sign-in, masked key, model choice, failures; context switches hidden for the cloud (`TestCloudPolishRows`, `TestCloudEngineWithoutLocalRuntime`, `TestOnboardingCloudPolish`) |
+| CLD-A04 | Paged setup in onboarding and Settings: polish choice, provider list, sign-in, masked key, model choice, failures; context switches hidden for the cloud (`TestCloudPages`, `TestSettingsCloudModel`, `TestOnboardingCloudPolish`) |
 | CLD-A05 | Sign-in against the real ChatGPT service and requests to each provider on macOS and Windows (open: native verification) |
 
 ## Runtime requirements

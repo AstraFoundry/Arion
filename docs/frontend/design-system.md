@@ -74,6 +74,10 @@ The macOS consent guide is a whole window floating over System Settings: its car
 
 Use these instead of `ui.Button` / `ui.PrimaryButton`. MyGo's stock switches, radios, fields, selects and progress bars are themed by `theme.Apply` and are used as is. A choice made from a custom trigger uses the `kit` select, not a native `Element.Menu`.
 
+## Icons
+
+Interface glyphs are Lucide (`ui/shared/icons`). Cloud polishing providers are shown by their marks from [LobeHub Icons](https://icons.lobehub.com) (`@lobehub/icons-static-svg`, MIT, `svg/LICENSE-lobehub`), drawn by `features/cloud.Mark`: monochrome marks in `Text` ink with `ui.Icon`, the Gemini and DeepSeek marks in their own colors with `ui.Image`. ChatGPT uses the OpenAI mark. Marks stand alone at 16–32 DIP, never inside a tinted tile.
+
 ## Overview
 
 Settings › Overview (`widgets/usage`) is the window's first section and its default. Cards are laid out in equal pairs: time dictating and words dictated, words polished and average speed (`Stat`), the daily-words heatmap (full width), then scenes and vocabulary.

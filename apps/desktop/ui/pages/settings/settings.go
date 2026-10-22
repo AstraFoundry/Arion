@@ -47,7 +47,10 @@ type Page struct {
 	Section    string
 	monitoring bool
 	draft      vocabulary.Draft
-	cloud      cloud.Draft
+	// cloudOpen shows the cloud model's pages in place of the Model
+	// section; cloud is where they are.
+	cloudOpen bool
+	cloud     cloud.Nav
 	keyboard   keyboard.State
 	focus      int
 	usage      usage.State
@@ -76,10 +79,12 @@ func (p *Page) Render(c *ui.Context, store runtime.Store) {
 			store.Actions.CancelInputMethodSetup()
 		}
 		p.shown = p.Section
+		p.cloudOpen, p.cloud = false, cloud.Nav{}
 		if p.Section == Overview {
 			p.usage.Replay()
 		}
 	}
+	sub := p.Section == Model && p.cloudOpen && store.State.Preferences.PolishEngine == runtime.PolishCloud
 	bar := c.TitleBar()
 	ui.Row(c).Fill().AlignItems(ui.Stretch).Children(func() {
 		side := ui.Column(c).Width(210).Padding(max(bar.Height, 12)+8, 10, 12, 10)
@@ -91,13 +96,31 @@ func (p *Page) Render(c *ui.Context, store runtime.Store) {
 		})
 		ui.Column(c).Grow(1).Background(tokens.Canvas).Children(func() {
 			ui.Row(c).Height(max(bar.Height, 12)+40).Padding(max(bar.Height, 12), theme.Gutter, 0, theme.Gutter).AlignItems(ui.Center).
-				DragWindow().Children(func() {
-				ui.Text(c, title(p.Section, store.Copy())).FontSize(theme.Title).FontWeight(600).ContentTransition(ui.ContentTransition{})
+				DragWindow().Gap(4).Children(func() {
+				heading := title(p.Section, store.Copy())
+				if sub {
+					// A page under Model: back steps out one page at a time.
+					heading = cloud.Title(store, &p.cloud)
+					if kit.IconButton(c.Key("back"), tokens, icons.ChevronLeft, store.Copy().Text(copy.Back)).Margin(0, 0, 0, -6).Clicked() && !p.cloud.Back() {
+						p.cloudOpen = false
+					}
+				}
+				ui.Text(c, heading).FontSize(theme.Title).FontWeight(600).ContentTransition(ui.ContentTransition{})
 			})
 			ui.Scroll(c).Grow(1).Children(func() {
-				content := ui.Column(c.Key(p.Section)).Gap(theme.GapGroup).Padding(8, theme.Gutter, theme.Gutter, theme.Gutter).
+				key := p.Section
+				if sub {
+					key += "/cloud/" + p.cloud.Provider
+				}
+				content := ui.Column(c.Key(key)).Gap(theme.GapGroup).Padding(8, theme.Gutter, theme.Gutter, theme.Gutter).
 					Transition(ui.ElementTransition{Animation: &theme.Settle, Enter: &ui.Motion{Y: 8}})
-				content.Children(func() { p.section(c, store, tokens) })
+				content.Children(func() {
+					if sub {
+						ui.Column(c).Gap(theme.GapRelated).Children(func() { cloud.Pages(c, store, tokens, &p.cloud) })
+						return
+					}
+					p.section(c, store, tokens)
+				})
 			})
 		})
 	})
@@ -222,7 +245,9 @@ func (p *Page) section(c *ui.Context, store runtime.Store, tokens theme.Tokens) 
 			kit.Card(c, tokens).Children(func() {
 				polish.Row(c, store, tokens)
 				polish.Engine(c, store, tokens)
-				cloud.Rows(c, store, tokens, &p.cloud)
+				if store.State.Preferences.PolishEngine == runtime.PolishCloud && cloud.Summary(c, store, tokens) {
+					p.cloudOpen = true
+				}
 				polish.MatchApp(c, store, tokens)
 				polish.Context(c, store, tokens)
 			})

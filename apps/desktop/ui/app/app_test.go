@@ -784,6 +784,12 @@ func TestOnboardingFlow(t *testing.T) {
 	click(copy.For(copy.English).Text(copy.Continue))
 	snapshot(t, tt, "onboarding-5-model")
 	click(copy.For(copy.English).Text(copy.Continue))
+	// Polishing stays off; the cloud step is skipped.
+	if !hasText(tt, copy.For(copy.English).Text(copy.OnbPolishTitle)) {
+		t.Fatalf("polish step missing: %q", tt.Texts())
+	}
+	snapshot(t, tt, "onboarding-5-polish")
+	click(copy.For(copy.English).Text(copy.Continue))
 	if !actions.called("test-hold") {
 		t.Fatal("hold key test mode not entered")
 	}

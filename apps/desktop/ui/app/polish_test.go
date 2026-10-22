@@ -157,11 +157,20 @@ func TestNoTechnicalModelNames(t *testing.T) {
 			}
 			settle(ot)
 		}
-		if !hasText(ot, messages.Text(copy.OnbModelTitle)) || !hasText(ot, messages.Text(copy.PolishLabel)) {
-			t.Fatalf("onboarding model step lacks polish: %q", ot.Texts())
+		if !hasText(ot, messages.Text(copy.OnbModelTitle)) {
+			t.Fatalf("onboarding model step: %q", ot.Texts())
 		}
 		check("onboarding", ot.Texts())
 		snapshot(t, ot, "onboarding-5-model-"+string(locale))
+		if err := ot.Click(messages.Text(copy.Continue)); err != nil {
+			t.Fatal(err)
+		}
+		settle(ot)
+		if !hasText(ot, messages.Text(copy.OnbPolishTitle)) || !hasText(ot, messages.Text(copy.PolishEngineLocal)) {
+			t.Fatalf("onboarding polish step: %q", ot.Texts())
+		}
+		check("onboarding polish", ot.Texts())
+		snapshot(t, ot, "onboarding-6-polish-"+string(locale))
 	}
 }
 
