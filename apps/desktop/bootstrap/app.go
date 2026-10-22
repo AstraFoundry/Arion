@@ -506,6 +506,8 @@ func (a *App) apply(e contracts.Event) {
 		d.Levels = appendLevel(d.Levels, e.Level)
 	case contracts.DraftReplaced:
 		d.Draft = e.Text
+	case contracts.RewriteStarted:
+		d.Rewriting = true
 	case contracts.CorrectionReady:
 		d.Final = e.Text
 		d.Original = dictationOriginal(e)
