@@ -129,7 +129,8 @@ func source(c *ui.Context, store runtime.Store, tokens theme.Tokens, state *Stat
 	}
 }
 
-// Candidates chooses the page size, text size and theme of the candidate bar.
+// Candidates chooses the page size, text size, theme and highlight color of
+// the candidate bar.
 func Candidates(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 	messages := store.Copy()
 	prefs := store.State.Preferences.Keyboard
@@ -162,6 +163,13 @@ func Candidates(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 				{runtime.AppearanceSystem, messages.Text(copy.KbdAppearanceSystem)}, {runtime.AppearanceLight, messages.Text(copy.KbdAppearanceLight)},
 				{runtime.AppearanceDark, messages.Text(copy.KbdAppearanceDark)}}, func(appearance runtime.CandidateAppearance) {
 				update(func(k *runtime.KeyboardPreferences) { k.Appearance = appearance })
+			})
+		})
+		kit.Divider(c, tokens)
+		kit.Row(c, tokens, messages.Text(copy.KbdAccent), "", func() {
+			choice(c, "accent", messages.Text(copy.KbdAccent), prefs.Accent, []option[runtime.CandidateAccent]{
+				{runtime.AccentYellow, messages.Text(copy.KbdAccentYellow)}, {runtime.AccentBlue, messages.Text(copy.KbdAccentBlue)}}, func(accent runtime.CandidateAccent) {
+				update(func(k *runtime.KeyboardPreferences) { k.Accent = accent })
 			})
 		})
 	})

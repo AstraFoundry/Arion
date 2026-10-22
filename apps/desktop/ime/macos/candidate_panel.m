@@ -57,6 +57,8 @@ static NSColor *srgb(CGFloat r, CGFloat g, CGFloat b, CGFloat a) {
 @property(strong) NSFont *bodyFont;
 @property(strong) NSFont *numberFont;
 @property BOOL dark;
+// The highlighted candidate's text, on the accent fill.
+@property(strong) NSColor *selectedText;
 @property(copy) void (^clicked)(NSUInteger index, NSUInteger row);
 @property(copy) void (^clickedArrow)(void);
 @end
@@ -70,9 +72,10 @@ static NSColor *srgb(CGFloat r, CGFloat g, CGFloat b, CGFloat a) {
     NSColor *text = self.dark ? srgb(1, 1, 1, 0.8) : srgb(29 / 255.0, 29 / 255.0, 29 / 255.0, 1);
     NSColor *number = [text colorWithAlphaComponent:self.dark ? 0.45 : 0.5];
     NSDictionary *numberStyle = @{NSFontAttributeName: self.numberFont, NSForegroundColorAttributeName: number};
-    NSDictionary *hotNumberStyle = @{NSFontAttributeName: self.numberFont, NSForegroundColorAttributeName: srgb(1, 1, 1, 0.8)};
+    NSDictionary *hotNumberStyle = @{NSFontAttributeName: self.numberFont,
+                                     NSForegroundColorAttributeName: [self.selectedText colorWithAlphaComponent:0.8]};
     NSDictionary *bodyStyle = @{NSFontAttributeName: self.bodyFont, NSForegroundColorAttributeName: text};
-    NSDictionary *hotBodyStyle = @{NSFontAttributeName: self.bodyFont, NSForegroundColorAttributeName: srgb(1, 1, 1, 1)};
+    NSDictionary *hotBodyStyle = @{NSFontAttributeName: self.bodyFont, NSForegroundColorAttributeName: self.selectedText};
     CGFloat numberHeight = self.numberFont.ascender - self.numberFont.descender;
     CGFloat bodyHeight = self.bodyFont.ascender - self.bodyFont.descender;
     for (NSUInteger row = 0; row < self.rows.count; row++) {
@@ -144,6 +147,7 @@ static NSColor *srgb(CGFloat r, CGFloat g, CGFloat b, CGFloat a) {
 // Clips the text to the bar, so rows appear inside it as it grows.
 @property(strong) CALayer *textMask;
 @property(strong) ArionCandidateText *text;
+@property ArionCandidateAccent accent;
 // The bar's last frame, where an expand or collapse animation starts.
 @property CGRect barFrame;
 @end
@@ -259,6 +263,10 @@ static NSColor *srgb(CGFloat r, CGFloat g, CGFloat b, CGFloat a) {
     text.chevron = chevron;
     BOOL dark = self.dark;
     text.dark = dark;
+    // Sunbeam's yellow is the same in both appearances and always carries
+    // ink (#14110F); Chatterfly's blue carries white.
+    BOOL yellow = self.accent == ArionCandidateAccentYellow;
+    text.selectedText = yellow ? srgb(20 / 255.0, 17 / 255.0, 15 / 255.0, 1) : srgb(1, 1, 1, 1);
     text.needsDisplay = YES;
 
     // Unflipped (layer) space.
@@ -328,7 +336,7 @@ static NSColor *srgb(CGFloat r, CGFloat g, CGFloat b, CGFloat a) {
     self.selection.hidden = highlighted >= currentItems.count;
     self.selection.frame = CGRectMake(NSMinX(item), flip - NSMaxY(item), NSWidth(item), NSHeight(item));
     self.selection.cornerRadius = preset.selectionRadius;
-    self.selection.backgroundColor = (dark ? srgb(0, 0.6, 0.949, 1) : srgb(0, 0.533, 1, 1)).CGColor;
+    self.selection.backgroundColor = (yellow ? srgb(1, 0.8, 0, 1) : dark ? srgb(0, 0.6, 0.949, 1) : srgb(0, 0.533, 1, 1)).CGColor;
     if (animation >= kExpandDuration) {
         // The growing mask reveals new rows. The current row's text and
         // highlight stay visible; only the new row chrome fades in.
@@ -401,6 +409,11 @@ static NSColor *srgb(CGFloat r, CGFloat g, CGFloat b, CGFloat a) {
     _appearance = appearance;
     self.window.appearance = appearance == ArionCandidateAppearanceLight ? [NSAppearance appearanceNamed:NSAppearanceNameAqua] :
         appearance == ArionCandidateAppearanceDark ? [NSAppearance appearanceNamed:NSAppearanceNameDarkAqua] : nil;
+}
+
+- (void)setAccent:(ArionCandidateAccent)accent {
+    _accent = accent;
+    self.view.accent = accent;
 }
 
 - (void)setSize:(ArionCandidateSize)size {

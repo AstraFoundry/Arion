@@ -366,7 +366,7 @@ func TestCancelledCancelDisconnectsToClearNativeOwnership(t *testing.T) {
 
 func TestWriteKeyboardSettings(t *testing.T) {
 	path := filepath.Join(t.TempDir(), "Arion", "keyboard.json")
-	want := application.KeyboardPreferences{PageSize: 6, CandidateSize: application.CandidateLarge, Appearance: application.AppearanceDark}
+	want := application.KeyboardPreferences{PageSize: 6, CandidateSize: application.CandidateLarge, Appearance: application.AppearanceDark, Accent: application.AccentBlue}
 	if err := WriteKeyboardSettings(path, want); err != nil {
 		t.Fatal(err)
 	}
@@ -377,7 +377,7 @@ func TestWriteKeyboardSettings(t *testing.T) {
 	// The input method reads exactly these keys.
 	var raw map[string]any
 	if err := json.Unmarshal(data, &raw); err != nil || raw["pageSize"] != 6.0 || raw["candidateSize"] != "large" ||
-		raw["appearance"] != "dark" || raw["contextRanking"] != false {
+		raw["appearance"] != "dark" || raw["accent"] != "blue" || raw["contextRanking"] != false {
 		t.Fatalf("unexpected settings file %s (%v)", data, err)
 	}
 	if entries, _ := os.ReadDir(filepath.Dir(path)); len(entries) != 1 {

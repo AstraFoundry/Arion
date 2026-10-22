@@ -26,6 +26,7 @@ type (
 	KeyboardPreferences = application.KeyboardPreferences
 	CandidateSize       = application.CandidateSize
 	CandidateAppearance = application.CandidateAppearance
+	CandidateAccent     = application.CandidateAccent
 	Usage               = domain.Usage
 	UsageLog            = domain.UsageLog
 	UsageDay            = domain.UsageDay
@@ -85,6 +86,8 @@ const (
 	AppearanceSystem = application.AppearanceSystem
 	AppearanceLight  = application.AppearanceLight
 	AppearanceDark   = application.AppearanceDark
+	AccentYellow     = application.AccentYellow
+	AccentBlue       = application.AccentBlue
 )
 
 const GainStep = application.GainStep

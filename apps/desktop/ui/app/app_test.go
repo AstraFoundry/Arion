@@ -134,7 +134,7 @@ func fixture() (*runtime.State, *recorder, runtime.Store) {
 		Version:     "0.1.0",
 		Permissions: runtime.Permissions{Microphone: runtime.ConsentGranted, Accessibility: runtime.ConsentGranted},
 		Preferences: runtime.Preferences{HoldKey: runtime.DefaultHoldKey(platform.GOOS), Delivery: runtime.DeliveryAutomatic, RemoveFillers: true, Sounds: true, CheckUpdates: true,
-			Keyboard: runtime.KeyboardPreferences{PageSize: 9, CandidateSize: runtime.CandidateMedium, Appearance: runtime.AppearanceSystem, ContextRanking: true}},
+			Keyboard: runtime.KeyboardPreferences{PageSize: 9, CandidateSize: runtime.CandidateMedium, Appearance: runtime.AppearanceSystem, Accent: runtime.AccentYellow, ContextRanking: true}},
 		InputMethod: runtime.InputMethodAbsent,
 		Account:     runtime.Account{Phase: runtime.AccountSignedOut, Issuer: "https://astrafoundry.si", Portal: "https://astrafoundry.si/account"},
 		Hold:        runtime.Hold{Active: true},
@@ -1318,7 +1318,7 @@ func TestKeyboardSettings(t *testing.T) {
 			page.Section = settings.Keyboard
 			tt := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, SettingsWidth, SettingsHeight)
 			settle(tt)
-			for _, key := range []copy.Key{copy.IMESelected, copy.KbdPageSize, copy.KbdCandidateSize, copy.KbdAppearance,
+			for _, key := range []copy.Key{copy.IMESelected, copy.KbdPageSize, copy.KbdCandidateSize, copy.KbdAppearance, copy.KbdAccent,
 				copy.KbdContextRanking, copy.KbdSwitchLanguage} {
 				if !hasText(tt, messages.Text(key)) {
 					t.Fatalf("keyboard section missing %s: %q", key, tt.Texts())
@@ -1346,6 +1346,17 @@ func TestKeyboardSettings(t *testing.T) {
 			settle(tt)
 			if state.Preferences.Keyboard.CandidateSize != runtime.CandidateLarge {
 				t.Fatalf("size not chosen: %+v", state.Preferences.Keyboard)
+			}
+			if err := tt.Click(messages.Text(copy.KbdAccentYellow)); err != nil {
+				t.Fatal(err)
+			}
+			settle(tt)
+			if err := tt.Click(messages.Text(copy.KbdAccentBlue)); err != nil {
+				t.Fatal(err)
+			}
+			settle(tt)
+			if state.Preferences.Keyboard.Accent != runtime.AccentBlue {
+				t.Fatalf("accent not chosen: %+v", state.Preferences.Keyboard)
 			}
 			// A rebuilt app offers to replace the installed input method.
 			if hasText(tt, messages.Text(copy.IMEUpdate)) {

@@ -53,6 +53,7 @@ static void applyKeyboardSettings(ArionTyping *typing, ArionCandidatePanel *pane
     NSUInteger pageSize = 9;
     ArionCandidateSize size = ArionCandidateSizeMedium;
     ArionCandidateAppearance appearance = ArionCandidateAppearanceSystem;
+    ArionCandidateAccent accent = ArionCandidateAccentYellow;
     BOOL contextRanking = YES;
     NSData *data = [NSData dataWithContentsOfFile:[applicationSupport() stringByAppendingPathComponent:@"keyboard.json"]];
     NSDictionary *settings = data ? [NSJSONSerialization JSONObjectWithData:data options:0 error:nil] : nil;
@@ -62,10 +63,13 @@ static void applyKeyboardSettings(ArionTyping *typing, ArionCandidatePanel *pane
         NSDictionary *sizes = @{@"small": @(ArionCandidateSizeSmall), @"medium": @(ArionCandidateSizeMedium), @"large": @(ArionCandidateSizeLarge)};
         NSDictionary *appearances = @{@"system": @(ArionCandidateAppearanceSystem), @"light": @(ArionCandidateAppearanceLight),
                                       @"dark": @(ArionCandidateAppearanceDark)};
+        NSDictionary *accents = @{@"yellow": @(ArionCandidateAccentYellow), @"blue": @(ArionCandidateAccentBlue)};
         id value = settings[@"candidateSize"];
         if ([value isKindOfClass:NSString.class] && sizes[value]) size = [sizes[value] integerValue];
         value = settings[@"appearance"];
         if ([value isKindOfClass:NSString.class] && appearances[value]) appearance = [appearances[value] integerValue];
+        value = settings[@"accent"];
+        if ([value isKindOfClass:NSString.class] && accents[value]) accent = [accents[value] integerValue];
         value = settings[@"contextRanking"];
         if ([value isKindOfClass:NSNumber.class]) contextRanking = [value boolValue];
     }
@@ -73,6 +77,7 @@ static void applyKeyboardSettings(ArionTyping *typing, ArionCandidatePanel *pane
     typing.contextRanking = contextRanking;
     panel.size = size;
     panel.appearance = appearance;
+    panel.accent = accent;
 }
 
 @implementation ArionBridge

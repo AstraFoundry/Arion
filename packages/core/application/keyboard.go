@@ -18,6 +18,17 @@ const (
 	AppearanceDark   CandidateAppearance = "dark"
 )
 
+// CandidateAccent chooses the fill of the highlighted candidate.
+type CandidateAccent string
+
+const (
+	// AccentYellow is Sunbeam's yellow with ink text, as the app's own
+	// primary actions (ADR 007).
+	AccentYellow CandidateAccent = "yellow"
+	// AccentBlue is Chatterfly's focus box with white text.
+	AccentBlue CandidateAccent = "blue"
+)
+
 // CandidatePageSizes are the selectable candidates per page.
 var CandidatePageSizes = []int{5, 6, 7, 9}
 
@@ -28,14 +39,16 @@ type KeyboardPreferences struct {
 	PageSize      int                 `json:"pageSize"`
 	CandidateSize CandidateSize       `json:"candidateSize"`
 	Appearance    CandidateAppearance `json:"appearance"`
+	Accent        CandidateAccent     `json:"accent"`
 	// ContextRanking moves the word the user chose after the same previous
 	// word to the front while typing, and learns those choices (上下文调频).
 	ContextRanking bool `json:"contextRanking"`
 }
 
-// DefaultKeyboardPreferences keep the engine's nine-candidate page.
+// DefaultKeyboardPreferences keep the engine's nine-candidate page and the
+// app's yellow accent.
 func DefaultKeyboardPreferences() KeyboardPreferences {
-	return KeyboardPreferences{PageSize: 9, CandidateSize: CandidateMedium, Appearance: AppearanceSystem, ContextRanking: true}
+	return KeyboardPreferences{PageSize: 9, CandidateSize: CandidateMedium, Appearance: AppearanceSystem, Accent: AccentYellow, ContextRanking: true}
 }
 
 // normalize repairs fields that cannot be valid.
@@ -54,6 +67,9 @@ func (k KeyboardPreferences) normalize() (KeyboardPreferences, bool) {
 	}
 	if k.Appearance != AppearanceSystem && k.Appearance != AppearanceLight && k.Appearance != AppearanceDark {
 		k.Appearance, repaired = defaults.Appearance, true
+	}
+	if k.Accent != AccentYellow && k.Accent != AccentBlue {
+		k.Accent, repaired = defaults.Accent, true
 	}
 	return k, repaired
 }
