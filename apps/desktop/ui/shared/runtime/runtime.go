@@ -32,6 +32,7 @@ type (
 	UsageLog            = domain.UsageLog
 	UsageDay            = domain.UsageDay
 	PolishEngine        = application.PolishEngine
+	Punctuation         = domain.Punctuation
 )
 
 const (
@@ -51,6 +52,11 @@ const (
 
 	PolishLocal = application.PolishLocal
 	PolishCloud = application.PolishCloud
+
+	PunctuationSmart  = domain.PunctuationSmart
+	PunctuationFull   = domain.PunctuationFull
+	PunctuationOmit   = domain.PunctuationOmit
+	PunctuationSpaces = domain.PunctuationSpaces
 
 	DeliveryAutomatic = application.DeliveryAutomatic
 	DeliveryClipboard = application.DeliveryClipboard

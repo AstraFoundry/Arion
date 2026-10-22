@@ -44,7 +44,7 @@ type RewriteCheck struct {
 // markers are chat/prompt structures that must never reach a target,
 // including every scene tag of the rewrite prompt.
 var markers = func() []string {
-	out := append([]string{"<think", "</think", "<|", "|>", "[terms", `"transcript"`}, contextTags...)
+	out := append([]string{"<think", "</think", "<source>", "</source>", "<|", "|>", "[terms", `"transcript"`}, contextTags...)
 	for _, scene := range Scenes {
 		out = append(out, "["+string(scene)+"]")
 	}

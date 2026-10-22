@@ -37,7 +37,9 @@ type Request struct {
 	Context      *domain.RewriteContext `json:"context,omitempty"`
 	Text         string                 `json:"text,omitempty"`
 	PreviousText string                 `json:"previousText,omitempty"`
-	Live         bool                   `json:"live,omitempty"`
+	// Punctuation is the cleanup mode. Empty is smart.
+	Punctuation string `json:"punctuation,omitempty"`
+	Live        bool   `json:"live,omitempty"`
 	// Cancel.
 	Target uint64 `json:"target,omitempty"`
 }

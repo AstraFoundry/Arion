@@ -110,6 +110,51 @@ func TestMatchAppRow(t *testing.T) {
 	}
 }
 
+// Punctuation is shown beside polish and accepts a choice only while the
+// polish switch is on.
+func TestPunctuationControl(t *testing.T) {
+	state, actions, store := fixture()
+	tt := ui.NewTester(func(c *ui.Context) {
+		ui.Column(c).Children(func() { polish.Punctuation(c, store, theme.Resolve(false)) })
+	}, 640, 480)
+	en := copy.For(copy.English)
+	state.Preferences.Punctuation = runtime.PunctuationSmart
+	state.Preferences.Polish = false
+	settle(tt)
+	if !hasText(tt, en.Text(copy.PunctuationLabel)) || !hasText(tt, en.Text(copy.PunctuationSmart)) {
+		t.Fatalf("control missing: %q", tt.Texts())
+	}
+	snapshot(t, tt, "settings-punctuation-disabled")
+	if err := tt.Click(en.Text(copy.PunctuationSmart)); err != nil {
+		t.Fatal(err)
+	}
+	settle(tt)
+	if hasText(tt, en.Text(copy.PunctuationFull)) || state.Preferences.Punctuation != runtime.PunctuationSmart {
+		t.Fatal("punctuation changed while polish is off")
+	}
+	state.Preferences.Polish = true
+	settle(tt)
+	snapshot(t, tt, "settings-punctuation-smart")
+	if err := tt.Click(en.Text(copy.PunctuationSmart)); err != nil {
+		t.Fatal(err)
+	}
+	settle(tt)
+	if err := tt.Click(en.Text(copy.PunctuationOmit)); err != nil {
+		t.Fatalf("menu did not open: %v texts %q", err, tt.Texts())
+	}
+	settle(tt)
+	if state.Preferences.Punctuation != runtime.PunctuationOmit || !actions.called("prefs") {
+		t.Fatalf("choice not saved: %q", state.Preferences.Punctuation)
+	}
+	snapshot(t, tt, "settings-punctuation-omit")
+	state.Preferences.UILanguage = runtime.LanguageChinese
+	settle(tt)
+	if !hasText(tt, copy.For(copy.SimplifiedChinese).Text(copy.PunctuationOmit)) || hasText(tt, en.Text(copy.PunctuationOmit)) {
+		t.Fatalf("chinese label: %q", tt.Texts())
+	}
+	snapshot(t, tt, "settings-punctuation-omit-zh-CN")
+}
+
 // A rewritten dictation keeps its recognized original one click away.
 func TestCopyOriginal(t *testing.T) {
 	state, actions, store := fixture()

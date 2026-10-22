@@ -24,6 +24,8 @@ type Request struct {
 	Text    string
 	// PreviousText is earlier recognized source for spelling evidence only.
 	PreviousText string
+	// Punctuation selects the cleanup prompt's optional punctuation bullet.
+	Punctuation domain.Punctuation
 	// Prefill computes the source tokens only and generates nothing.
 	Prefill bool
 	// Live marks a preview of still-open speech; its output budget is tighter.

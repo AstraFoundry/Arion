@@ -61,6 +61,40 @@ func Engine(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 	})
 }
 
+// Punctuation chooses how polished text is punctuated. The control stays
+// visible while polish is off and does not change the preference then.
+func Punctuation(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
+	messages := store.Copy()
+	labels := []string{
+		messages.Text(copy.PunctuationSmart),
+		messages.Text(copy.PunctuationFull),
+		messages.Text(copy.PunctuationOmit),
+		messages.Text(copy.PunctuationSpaces),
+	}
+	modes := []runtime.Punctuation{runtime.PunctuationSmart, runtime.PunctuationFull, runtime.PunctuationOmit, runtime.PunctuationSpaces}
+	selected := labels[0]
+	for i, mode := range modes {
+		if store.State.Preferences.Punctuation == mode {
+			selected = labels[i]
+		}
+	}
+	kit.Divider(c, tokens)
+	kit.TipRow(c, tokens, messages.Text(copy.PunctuationLabel), "", func() {
+		menu := ui.Select(c.Key("punctuation"), &selected, labels).Label(messages.Text(copy.PunctuationLabel)).Width(280)
+		if !store.State.Preferences.Polish {
+			menu.Disabled(true)
+		}
+		if menu.Changed() && store.State.Preferences.Polish {
+			for i, label := range labels {
+				if label == selected {
+					mode := modes[i]
+					store.Actions.UpdatePreferences(func(p *runtime.Preferences) { p.Punctuation = mode })
+				}
+			}
+		}
+	})
+}
+
 // MatchApp is the switch row letting polishing follow the focused app,
 // field and web site. It is shown only while polishing is on.
 func MatchApp(c *ui.Context, store runtime.Store, tokens theme.Tokens) {

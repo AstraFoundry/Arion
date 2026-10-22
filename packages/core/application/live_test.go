@@ -444,6 +444,79 @@ func TestFollowAppDecidesScene(t *testing.T) {
 	}
 }
 
+// Polish off never asks the rewriter, so no cleanup prompt is sent.
+func TestPolishOffSendsNoCleanup(t *testing.T) {
+	rewriter := &scriptedRewriter{answer: func(ports.RewriteRequest) (string, error) { return "应该不会发送。", nil }}
+	c, audio, events, target, _ := liveSetup(t, []string{"你好。"}, rewriter, RewritePolicy{Enabled: false, Punctuation: domain.PunctuationFull})
+	c.Start()
+	events.wait(t, stateIs(domain.Capturing))
+	audio.push(1, 0.2)
+	c.Stop()
+	ready := events.wait(t, kindIs(contracts.CorrectionReady))
+	if ready.Text != "你好。" || ready.Rewrite != "" {
+		t.Fatalf("polish off changed the text: %+v", ready)
+	}
+	events.wait(t, kindIs(contracts.CommitResultReady))
+	rewriter.mu.Lock()
+	defer rewriter.mu.Unlock()
+	if len(rewriter.requests) != 0 || target.texts[0] != "你好。" {
+		t.Fatalf("cleanup sent: requests=%d committed=%q", len(rewriter.requests), target.texts)
+	}
+}
+
+// Each punctuation mode post-edits the live preview and the inserted text
+// the same way. Search still strips a sentence-final mark afterward.
+func TestPunctuationModes(t *testing.T) {
+	const proposal = "你好，世界。"
+	for _, mode := range []domain.Punctuation{domain.PunctuationSmart, domain.PunctuationFull, domain.PunctuationOmit, domain.PunctuationSpaces} {
+		t.Run(string(mode), func(t *testing.T) {
+			rewriter := &scriptedRewriter{answer: func(ports.RewriteRequest) (string, error) { return proposal, nil }}
+			c, audio, events, target, _ := liveSetup(t, []string{"你好。", "|", "尾"}, rewriter, RewritePolicy{Enabled: true, Scene: "chat", Punctuation: mode})
+			c.Start()
+			events.wait(t, stateIs(domain.Capturing))
+			audio.push(2, 0.2)
+			want := domain.ApplyPunctuation(mode, proposal)
+			wantLive := proposal
+			if mode == domain.PunctuationOmit || mode == domain.PunctuationSpaces {
+				// Display joins trim the trailing space spaces mode leaves.
+				wantLive = strings.TrimSpace(want)
+			}
+			live := events.wait(t, draftIs(wantLive))
+			c.Stop()
+			ready := events.wait(t, kindIs(contracts.CorrectionReady))
+			events.wait(t, kindIs(contracts.CommitResultReady))
+			if live.Text != wantLive {
+				t.Fatalf("live %q want %q", live.Text, wantLive)
+			}
+			if ready.Text != want || target.texts[0] != want {
+				t.Fatalf("final %q committed %q want %q", ready.Text, target.texts, want)
+			}
+			rewriter.mu.Lock()
+			defer rewriter.mu.Unlock()
+			if len(rewriter.requests) == 0 {
+				t.Fatal("no cleanup prompt")
+			}
+			for _, req := range rewriter.requests {
+				if req.Punctuation != string(mode) {
+					t.Fatalf("request punctuation %q", req.Punctuation)
+				}
+			}
+		})
+	}
+
+	rewriter := &scriptedRewriter{answer: func(ports.RewriteRequest) (string, error) { return "天气，", nil }}
+	c, audio, events, target, _ := liveSetup(t, []string{"天气"}, rewriter, RewritePolicy{Enabled: true, Scene: "chat", FollowApp: true, Punctuation: domain.PunctuationOmit})
+	target.snapshot.Field = domain.FieldSearch
+	c.Start()
+	events.wait(t, stateIs(domain.Capturing))
+	audio.push(1, 0.2)
+	c.Stop()
+	ready := events.wait(t, kindIs(contracts.CorrectionReady))
+	if ready.Scene != string(domain.SceneSearch) || ready.Text != "天气，" || target.texts[0] != "天气，" {
+		t.Fatalf("search removed a comma: %+v %q", ready, target.texts)
+	}
+}
+
 // A search field asks the model for plain text and delivers a query
 // without sentence-final punctuation, whether or not the rewrite passed.
 func TestSearchSceneFinishesQuery(t *testing.T) {

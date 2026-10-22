@@ -12,6 +12,7 @@ import (
 	"sync"
 	"sync/atomic"
 
+	"arion.local/core/domain"
 	"arion.local/desktop/infrastructure/llm/engine"
 	"arion.local/desktop/infrastructure/llm/gguf"
 	"arion.local/desktop/infrastructure/llm/prompt"
@@ -119,7 +120,7 @@ func (w *worker) rewrite(req protocol.Request) protocol.Response {
 	w.running = req.ID
 	w.stop.Store(false)
 	w.mu.Unlock()
-	in := engine.Request{Session: req.Session, Scene: req.Scene, Terms: req.Terms, Text: req.Text, PreviousText: req.PreviousText, Prefill: req.Op == protocol.OpPrefill, Live: req.Live}
+	in := engine.Request{Session: req.Session, Scene: req.Scene, Terms: req.Terms, Text: req.Text, PreviousText: req.PreviousText, Punctuation: domain.Punctuation(req.Punctuation), Prefill: req.Op == protocol.OpPrefill, Live: req.Live}
 	if req.Context != nil {
 		in.Context = *req.Context
 	}
