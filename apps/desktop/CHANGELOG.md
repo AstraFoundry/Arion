@@ -1,3 +1,27 @@
+## 0.1.0-alpha.8
+
+### English
+
+macOS Apple silicon (ARM64) preview, requiring macOS 14 or later.
+
+- Animate the input method's Chinese/English caret badge when switching modes. The previous label folds away and the selected mode unfolds in its place; Reduce Motion skips the flip.
+- Add a scrolling feature tour to the marketing site, with product demonstrations for dictation, polishing, mixed-language input, keyboard learning and offline use.
+
+This is an early preview. Clean-machine installation, real-service cloud sign-in/provider requests, minimum OS/RAM and old-to-new updates still need acceptance. Recognition stays local and works offline after model provisioning; model weights are downloaded separately. Desktop encrypted sync enrollment remains pending. This alpha includes only the macOS ARM64 installer.
+
+See RELEASE-STATUS.md for evidence and limitations, and SHA256SUMS for file verification. GitHub publication and COS staging do not publish the Arion center beta channel.
+
+### 中文
+
+适用于 macOS Apple 芯片（ARM64）的预览版本，需要 macOS 14 或更高版本。
+
+- 输入法切换中英文时，光标旁的语言标记加入翻转动画：原标签折叠后展开为所选模式；开启“减弱动态效果”时跳过翻转。
+- 官网新增随滚动切换的功能导览，展示听写、润色、中英混输、键盘学习和离线使用。
+
+这是早期预览版。全新机器安装、真实云端登录及服务商请求、最低系统和内存要求、旧版本升级仍待验收。语音识别在本机完成，模型准备完成后可离线使用；模型权重需单独下载。桌面加密同步的设备注册尚未完成。本次 alpha 仅提供 macOS ARM64 安装包。
+
+验证记录和限制见 RELEASE-STATUS.md，文件校验值见 SHA256SUMS。GitHub 发布及 COS 暂存不会自动发布 Arion 中心的 beta 渠道。
+
 ## 0.1.0-alpha.7
 
 ### English
