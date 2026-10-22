@@ -6,6 +6,7 @@ package capsule
 import (
 	"arion.local/desktop/ui/entities/holdkey"
 	"hash/fnv"
+	"math"
 	"time"
 
 	"arion.local/desktop/ui/entities/dictation"
@@ -37,11 +38,36 @@ const edgeFade = 28
 // lineHeight holds the draft line open: its text is positioned absolutely.
 const lineHeight = 22
 
-// Live is the pill's fixed width while the microphone is open and the
-// draft is finishing: streaming hypotheses grow and shrink as they are
-// revised, so a pill sized by its text would breathe with every partial.
-// As Typeless's recording bar, the pill changes size only between states.
-const Live = 380
+// The text slot starts as wide as the finishing hint and grows with the
+// draft in slotStep steps, keeping slotHeadroom free past its end, up to
+// slotMax; a long draft then glides left. Streaming hypotheses grow and
+// shrink as they are revised, so the slot never narrows within a session:
+// a pill sized by its text would breathe with every partial, while a fixed
+// width leaves a short reply in a long, mostly empty bar.
+const (
+	slotStep     = 24
+	slotHeadroom = 16
+	slotMax      = 248
+)
+
+// State keeps the pill's state across frames.
+type State struct {
+	// Typing paces the streaming draft.
+	Typing dictation.Typewriter
+	// session and slot are the widest the text slot has been in session.
+	session string
+	slot    float32
+}
+
+// widen grows the text slot of session to w, up to slotMax, and returns its
+// width.
+func (s *State) widen(session string, w float32) float32 {
+	if session != s.session {
+		s.session, s.slot = session, 0
+	}
+	s.slot = max(s.slot, min(slotMax, w))
+	return s.slot
+}
 
 var pillMotion = ui.ElementTransition{
 	Animation: &theme.Settle,
@@ -56,8 +82,8 @@ var contentMotion = ui.ElementTransition{
 }
 
 // Render builds the pill bottom-centered in a transparent overlay window.
-// typing paces the streaming draft across frames.
-func Render(c *ui.Context, store runtime.Store, tokens theme.Tokens, typing *dictation.Typewriter) {
+// s carries the draft's pacing and the slot's width across frames.
+func Render(c *ui.Context, store runtime.Store, tokens theme.Tokens, s *State) {
 	messages := store.Copy()
 	state := store.State
 	d := state.Dictation
@@ -80,12 +106,7 @@ func Render(c *ui.Context, store runtime.Store, tokens theme.Tokens, typing *dic
 		if phase == dictation.Hidden {
 			return
 		}
-		pill := kit.Pill(c.Key("pill"), tokens).MaxWidth(600).Transition(pillMotion)
-		switch phase {
-		case dictation.Preparing, dictation.Listening, dictation.Transcribing, dictation.Polishing, dictation.Reviewing, dictation.Inserting:
-			pill.Width(pill.AnimateTo("width", Live, theme.Settle))
-		}
-		pill.Children(func() {
+		kit.Pill(c.Key("pill"), tokens).MaxWidth(600).Transition(pillMotion).Children(func() {
 			// The live phases share one row, so the draft stays in place when
 			// speech ends instead of leaving and entering again.
 			key := any(phase)
@@ -100,9 +121,9 @@ func Render(c *ui.Context, store runtime.Store, tokens theme.Tokens, typing *dic
 				}
 				switch phase {
 				case dictation.Preparing, dictation.Listening:
-					listening(c, state, tokens, typing)
+					listening(c, state, tokens, s)
 				case dictation.Transcribing, dictation.Polishing, dictation.Reviewing, dictation.Inserting:
-					transcribing(c, d, tokens, store.Copy(), typing)
+					transcribing(c, d, tokens, store.Copy(), s)
 				case dictation.Done:
 					outcome(c, d, tokens, store.Copy())
 				case dictation.Failed:
@@ -140,17 +161,21 @@ func liveMark(c *ui.Context, state *runtime.State, tokens theme.Tokens, phase di
 	}
 }
 
-func listening(c *ui.Context, state *runtime.State, tokens theme.Tokens, typing *dictation.Typewriter) {
+func listening(c *ui.Context, state *runtime.State, tokens theme.Tokens, s *State) {
 	messages := copy.For(copy.Locale(state.Preferences.UILanguage))
 	d := state.Dictation
 	// One slot holds the draft once speech arrives, and until then how to
 	// finish: a key and a few words, as Doubao's 「松手结束」.
 	if text := dictation.Text(d); text != "" {
-		draft(c, tokens, typing.Update(d.SessionID, text, d.Final != "", c.Now()), tokens.PillText)
+		draft(c, tokens, s, d.SessionID, s.Typing.Update(d.SessionID, text, d.Final != "", c.Now()), tokens.PillText)
 		return
 	}
-	ui.Row(c.Key("hint")).Grow(1).Gap(6).AlignItems(ui.Center).Justify(ui.End).
-		Transition(ui.ElementTransition{Enter: &ui.Motion{Y: 4}}).Children(func() {
+	hint := ui.Row(c.Key("hint")).Gap(6).AlignItems(ui.Center).
+		Transition(ui.ElementTransition{Enter: &ui.Motion{Y: 4}})
+	// The draft takes over the hint's room, so the pill does not narrow
+	// when speech arrives.
+	s.widen(d.SessionID, hint.LayoutBounds().W)
+	hint.Children(func() {
 		kit.Kbd(c, tokens, holdkey.Legend(state.Preferences.HoldKey), true)
 		if state.Hold.Holding {
 			ui.Text(c, messages.Text(copy.PillReleaseHint)).FontSize(theme.Caption).TextColor(tokens.PillMuted).SingleLine()
@@ -160,32 +185,33 @@ func listening(c *ui.Context, state *runtime.State, tokens theme.Tokens, typing 
 	})
 }
 
-// draft shows the end of the streaming text on one line. Once it is wider
-// than the line, the text glides left so its end stays in view, and the
-// characters leaving the left edge fade out. Widths come from the previous
-// frame's layout. The typewriter's newest characters fade in at the end.
-func draft(c *ui.Context, tokens theme.Tokens, frame dictation.Frame, color ui.Color) {
+// draft shows the end of the streaming text on one line, in the text slot
+// of session grown to fit it. Once the text is wider than the slot at its
+// widest, it glides left so its end stays in view, and the characters
+// leaving the left edge fade out. The typewriter's newest characters fade
+// in at the end.
+func draft(c *ui.Context, tokens theme.Tokens, s *State, session string, frame dictation.Frame, color ui.Color) {
 	if frame.Animating {
 		c.AnimationFrame()
 	}
 	runes := []rune(frame.Text)
 	runes = runes[max(0, len(runes)-previewRunes):]
-	line := ui.Row(c.Key("draft")).Grow(1).Shrink(1).Width(0).ClipX().AlignItems(ui.Center)
-	// The text dims when speech ends; ease it rather than switch.
-	color = line.AnimateColor("color", color, glide)
 	// Where each character starts, from cached single-character widths. The
 	// characters drawn at those exact positions are drawn one span each.
 	starts := make([]float32, len(runes)+1)
 	for i, r := range runes {
 		starts[i+1] = starts[i] + advance(c, r)
 	}
-	hidden := float32(0)
-	if room := line.Bounds().W; room > 0 {
-		// Shaped as runs, the line can come out wider than its characters
-		// measured singly; keep the wider so the end stays inside.
-		shaped, _ := c.MeasureText(0, ui.Span{Text: string(runes), Size: theme.Body})
-		hidden = max(0, max(starts[len(runes)], shaped)+1-room)
-	}
+	// Shaped as runs, the line can come out wider than its characters
+	// measured singly; keep the wider so the end stays inside.
+	shaped, _ := c.MeasureText(0, ui.Span{Text: string(runes), Size: theme.Body})
+	full := max(starts[len(runes)], shaped) + 1
+	room := s.widen(session, slotStep*float32(math.Ceil(float64((full+slotHeadroom)/slotStep))))
+	hidden := max(0, full-room)
+	line := ui.Row(c.Key("draft")).Shrink(1).ClipX().AlignItems(ui.Center)
+	line.Width(line.AnimateTo("width", room, glide))
+	// The text dims when speech ends; ease it rather than switch.
+	color = line.AnimateColor("color", color, glide)
 	shift := max(line.AnimateTo("shift", hidden, glide), hidden-maxLag)
 	// Characters wholly past the left edge are not drawn; those crossing the
 	// fade zone are drawn singly, each fading with its distance from the edge.
@@ -244,13 +270,13 @@ func advance(c *ui.Context, r rune) float32 {
 	return w
 }
 
-func transcribing(c *ui.Context, d runtime.Dictation, tokens theme.Tokens, messages copy.Catalog, typing *dictation.Typewriter) {
+func transcribing(c *ui.Context, d runtime.Dictation, tokens theme.Tokens, messages copy.Catalog, s *State) {
 	// Recognition has ended: the rest of the draft drains at full speed.
 	frame := dictation.Frame{Text: messages.Text(copy.PillTranscribing)}
 	if text := dictation.Text(d); text != "" {
-		frame = typing.Update(d.SessionID, text, true, c.Now())
+		frame = s.Typing.Update(d.SessionID, text, true, c.Now())
 	}
-	draft(c, tokens, frame, tokens.PillMuted)
+	draft(c, tokens, s, d.SessionID, frame, tokens.PillMuted)
 }
 
 func outcome(c *ui.Context, d runtime.Dictation, tokens theme.Tokens, messages copy.Catalog) {

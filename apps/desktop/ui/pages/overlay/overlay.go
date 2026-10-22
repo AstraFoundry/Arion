@@ -3,7 +3,6 @@
 package overlay
 
 import (
-	"arion.local/desktop/ui/entities/dictation"
 	"arion.local/desktop/ui/shared/runtime"
 	"arion.local/desktop/ui/shared/theme"
 	"arion.local/desktop/ui/widgets/capsule"
@@ -12,7 +11,7 @@ import (
 
 // Page keeps the overlay's state across frames.
 type Page struct {
-	typing dictation.Typewriter
+	pill capsule.State
 }
 
 func NewPage() *Page { return &Page{} }
@@ -21,5 +20,5 @@ func NewPage() *Page { return &Page{} }
 func (p *Page) Render(c *ui.Context, store runtime.Store) {
 	tokens := theme.Apply(c)
 	c.Root().Background(ui.Transparent)
-	capsule.Render(c, store, tokens, &p.typing)
+	capsule.Render(c, store, tokens, &p.pill)
 }
