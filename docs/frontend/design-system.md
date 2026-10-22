@@ -24,6 +24,8 @@ Rules:
 
 - Yellow is never text or an icon color on a light surface; it is under 3:1 there. Use `AccentInk`, or ink.
 - Navigation controls that tint icons with the accent are built inside `theme.Ink`, so the sidebar is ink and yellow stays for actions.
+- Selection and hover in the sidebar, including its account card, use MyGo's neutral `SurfacePressed` / `SurfaceHover`, never the `AccentSoft` wash.
+- `kit.AttentionDot` is the one yellow mark in the sidebar: a 7 pt dot right of a section's label when something there waits for the user, with a darker edge for light surfaces. It carries no count. Which sections show it comes from the `attention` check of each entry in `pages/settings/sections.go`, the one list of Settings sections that also drives the sidebar items and window titles: currently missing permissions (General), a dictation key that is not listening (Dictation), a recognition model to choose or retry (Model) and a pending update (About). Add a section, or a state that waits for the user, to that table, never to the sidebar directly.
 - State is carried in words first. `kit.Status` colors only the icon; the label stays `Text`.
 
 ## Type, radius, spacing

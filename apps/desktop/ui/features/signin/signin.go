@@ -181,11 +181,13 @@ func SidebarCard(c *ui.Context, store runtime.Store, tokens theme.Tokens, select
 	a := store.State.Account
 	card := ui.ButtonBase(c.Key("account-card")).Gap(10).Padding(8, 10).Radius(theme.RadiusCard).AlignItems(ui.Center).
 		Border(1, tokens.CardBorder)
+	// Selection and hover use the sidebar's neutral fills, not the accent.
+	surface := c.Theme()
 	switch {
 	case selected:
-		card.Background(tokens.AccentSoft.Over(tokens.Card))
+		card.Background(surface.SurfacePressed)
 	case card.Hovered():
-		card.Background(tokens.AccentSoft.Alpha(0.5).Over(tokens.Card))
+		card.Background(surface.SurfaceHover)
 	default:
 		card.Background(tokens.Card)
 	}

@@ -32,6 +32,11 @@ func Granted(store runtime.Store, kind Kind) bool {
 	return consent(store, kind) == runtime.ConsentGranted
 }
 
+// Missing reports a capability still without consent.
+func Missing(store runtime.Store) bool {
+	return !Granted(store, Microphone) || !Granted(store, Accessibility)
+}
+
 // Status shows the consent as a colored label.
 func Status(c *ui.Context, store runtime.Store, tokens theme.Tokens, kind Kind) {
 	messages := store.Copy()

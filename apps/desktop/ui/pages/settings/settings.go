@@ -80,7 +80,7 @@ func (p *Page) Render(c *ui.Context, store runtime.Store) {
 	if focus := store.State.Focus; focus.Seq != p.focus {
 		p.focus, p.Section = focus.Seq, focus.Section
 	}
-	if p.Section == Account && store.State.Account.Disabled {
+	if s, ok := sectionOf(p.Section); !ok || !s.visible(store) {
 		p.Section = Overview
 	}
 	p.syncMonitor(store)
@@ -169,9 +169,9 @@ func (p *Page) Close(store runtime.Store) {
 	}
 }
 
-func title(section string, messages copy.Catalog) string {
-	return map[string]string{Overview: messages.Text(copy.NavOverview), General: messages.Text(copy.NavGeneral), Dictation: messages.Text(copy.NavDictation), Keyboard: messages.Text(copy.NavKeyboard), Microphone: messages.Text(copy.NavMicrophone),
-		Model: messages.Text(copy.NavModel), Vocabulary: messages.Text(copy.NavVocabulary), Account: messages.Text(copy.NavAccount), About: messages.Text(copy.NavAbout)}[section]
+func title(id string, messages copy.Catalog) string {
+	s, _ := sectionOf(id)
+	return messages.Text(s.title)
 }
 
 func (p *Page) section(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
@@ -343,18 +343,17 @@ func hasOthers(store runtime.Store) bool {
 func (p *Page) nav(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 	messages := store.Copy()
 	ui.Sidebar(c.Key("nav"), &p.Section, func() {
-		ui.SidebarItem(c, Overview, icons.ChartLine, messages.Text(copy.NavOverview))
-		ui.SidebarItem(c, General, icons.Settings, messages.Text(copy.NavGeneral))
-		ui.SidebarItem(c, Dictation, icons.AudioLines, messages.Text(copy.NavDictation))
-		if keyboard.Supported(store) {
-			ui.SidebarItem(c, Keyboard, icons.Keyboard, messages.Text(copy.NavKeyboard))
+		for _, s := range sections {
+			if s.card || !s.visible(store) {
+				continue
+			}
+			row := ui.SidebarItem(c, s.id, s.icon, messages.Text(s.title))
+			if s.waiting(store) {
+				row.Children(func() { kit.AttentionDot(c, tokens) })
+			}
 		}
-		ui.SidebarItem(c, Microphone, icons.Mic, messages.Text(copy.NavMicrophone))
-		ui.SidebarItem(c, Model, icons.Cpu, messages.Text(copy.NavModel))
-		ui.SidebarItem(c, Vocabulary, icons.BookOpen, messages.Text(copy.NavVocabulary))
-		ui.SidebarItem(c, About, icons.Info, messages.Text(copy.NavAbout))
 	}).Grow(1)
-	if !store.State.Account.Disabled && signin.SidebarCard(c, store, tokens, p.Section == Account) {
+	if account, _ := sectionOf(Account); account.visible(store) && signin.SidebarCard(c, store, tokens, p.Section == Account) {
 		p.Section = Account
 	}
 }

@@ -31,9 +31,12 @@ func Picker(c *ui.Context, store runtime.Store) {
 	}
 }
 
+// Unavailable reports a dictation key that is not listening.
+func Unavailable(store runtime.Store) bool { return !store.State.Hold.Active }
+
 // HasNotes reports whether Notes has anything to say.
 func HasNotes(store runtime.Store) bool {
-	return !store.State.Hold.Active || store.State.Preferences.HoldKey == runtime.HoldFn
+	return Unavailable(store) || store.State.Preferences.HoldKey == runtime.HoldFn
 }
 
 // Notes explain what the chosen key still needs.

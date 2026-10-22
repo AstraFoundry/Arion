@@ -181,6 +181,14 @@ func Row(c *ui.Context, tokens theme.Tokens, title, detail string, control func(
 	})
 }
 
+// AttentionDot marks a sidebar item with something waiting for the user:
+// a small yellow dot right of its label. Its edge keeps it visible on light
+// surfaces, where yellow alone is too faint.
+func AttentionDot(c *ui.Context, tokens theme.Tokens) ui.Element {
+	return ui.Box(c).Size(7, 7).Radius(3.5).Shrink(0).Background(tokens.Accent).
+		Border(1, tokens.Accent.Mix(tokens.Shade, 0.2)).Margin(0, 4, 0, 0)
+}
+
 // Divider separates rows inside a card, inset like AppKit's.
 func Divider(c *ui.Context, tokens theme.Tokens) {
 	ui.Box(c).Height(1).Margin(0, 0, 0, 16).Background(tokens.Hairline)
