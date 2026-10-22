@@ -54,7 +54,6 @@ int arion_ime_register(const char *bundle_path);
 int arion_ime_validate_payload(const char *bundle_path, const char *bundle_id);
 int arion_ime_bundle_matches(const char *bundle_path, const char *source_id);
 int arion_ime_enable(const char *source_id);
-int arion_ime_disable(const char *source_id);
 int arion_ime_state(const char *source_id);
 int arion_ime_open_settings(void);
 // Select/switch without disabling an already authorized input source.

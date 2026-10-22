@@ -102,8 +102,8 @@ func replaceInputBundleWithLifecycle(source, destination string, activate, resto
 	return nil
 }
 
-func removeInputBundle(destination string, disable func() error) error {
-	if err := disable(); err != nil {
+func removeInputBundle(destination string, release func() error) error {
+	if err := release(); err != nil {
 		return err
 	}
 	return os.RemoveAll(destination)

@@ -155,18 +155,18 @@ func TestInputBundleFailedRollbackRetainsRecoveryCopy(t *testing.T) {
 	}
 }
 
-func TestInputBundleRemovalStopsOnDisableFailure(t *testing.T) {
+func TestInputBundleRemovalStopsOnReleaseFailure(t *testing.T) {
 	root := t.TempDir()
 	old := bundleFixture(t, root, "ArionInput.app", "previous")
 	failure := errors.New("source still selected")
 	if err := removeInputBundle(old, func() error { return failure }); !errors.Is(err, failure) || bundleContents(t, old) != "previous" {
-		t.Fatalf("disabled failure deleted installed bundle: %v", err)
+		t.Fatalf("release failure deleted installed bundle: %v", err)
 	}
 	if err := removeInputBundle(old, func() error { return nil }); err != nil {
 		t.Fatal(err)
 	}
 	if _, err := os.Stat(old); !os.IsNotExist(err) {
-		t.Fatalf("disabled bundle not removed: %v", err)
+		t.Fatalf("released bundle not removed: %v", err)
 	}
 }
 

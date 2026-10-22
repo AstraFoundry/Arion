@@ -128,17 +128,6 @@ func InstallIME(bundled string, ready func(context.Context, string) error) error
 		}
 	}
 	selected := previous == IMESelected
-	quiesce := func() error {
-		id, free := cstring(IMESourceID)
-		defer free()
-		if result := C.arion_ime_switch_away(id); result != 0 {
-			return domain.Fail(domain.CodeTargetUnsupported, fmt.Sprintf("input source switch away failed: %d", result))
-		}
-		if IMEState(C.arion_ime_state(id)) == IMESelected {
-			return domain.Fail(domain.CodeTargetChanged, "input source did not switch away")
-		}
-		return stopInputMethod()
-	}
 	resume := func(build string) error {
 		if selected {
 			id, free := cstring(IMESourceID)
@@ -182,7 +171,7 @@ func InstallIME(bundled string, ready func(context.Context, string) error) error
 		return resume(build)
 	}, func() error {
 		if previous == IMEAbsent || previous == IMECopied {
-			return disableIME()
+			return nil
 		}
 		if err := register(); err != nil {
 			return err
@@ -193,8 +182,8 @@ func InstallIME(bundled string, ready func(context.Context, string) error) error
 			}
 			return resume(previousBuild)
 		}
-		return disableIME()
-	}, inputBundleLifecycle{beforeReplace: quiesce, beforeRollback: quiesce})
+		return nil
+	}, inputBundleLifecycle{beforeReplace: releaseIME, beforeRollback: releaseIME})
 }
 
 // IMEUpdateAvailable reports whether the installed input method differs from
@@ -262,20 +251,29 @@ func OpenIMEKeyboardSettings() error {
 	return nil
 }
 
-func disableIME() error {
+// releaseIME switches away from this source and stops its host. It never
+// disables the source: the macOS platform policy denies third-party writes to
+// com.apple.inputsources, and TISDisableInputSource still reports the rejected
+// change through this process's TIS cache until it restarts. The enabled entry
+// is inert while the bundle is absent and lets a reinstall resume without a
+// second consent.
+func releaseIME() error {
 	id, free := cstring(IMESourceID)
 	defer free()
-	if status := C.arion_ime_disable(id); status != 0 {
-		return domain.Fail(domain.CodeTargetUnsupported, fmt.Sprintf("input source disable failed: %d", status))
+	if result := C.arion_ime_switch_away(id); result != 0 {
+		return domain.Fail(domain.CodeTargetUnsupported, fmt.Sprintf("input source switch away failed: %d", result))
 	}
-	return nil
+	if IMEState(C.arion_ime_state(id)) == IMESelected {
+		return domain.Fail(domain.CodeTargetChanged, "input source did not switch away")
+	}
+	return stopInputMethod()
 }
 
-// RemoveIME changes away from this source before disabling and deleting it.
+// RemoveIME switches away and stops the host before deleting its bundle.
 func RemoveIME() error {
 	imeInstallation.Lock()
 	defer imeInstallation.Unlock()
-	return removeInputBundle(InstalledIMEPath(), disableIME)
+	return removeInputBundle(InstalledIMEPath(), releaseIME)
 }
 
 // IME is the session-bound local transport used by the InputMethodKit host.

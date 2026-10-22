@@ -333,38 +333,6 @@ int arion_ime_enable(const char *source_id) {
     });
 }
 
-int arion_ime_disable(const char *source_id) {
-    return arion_ime_on_main(^int(void) {
-        TISInputSourceRef source = arion_find_source(source_id);
-        if (!source) return 0;
-        OSStatus status = noErr;
-        CFBooleanRef selected = TISGetInputSourceProperty(source, kTISPropertyInputSourceIsSelected);
-        if (selected && CFBooleanGetValue(selected)) {
-            status = arion_ime_switch_away(source_id);
-            if (status != noErr) {
-                CFRelease(source);
-                return (int)status;
-            }
-            CFStringRef sourceID = TISGetInputSourceProperty(source, kTISPropertyInputSourceID);
-            TISInputSourceRef current = TISCopyCurrentKeyboardInputSource();
-            CFStringRef currentID = current ? TISGetInputSourceProperty(current, kTISPropertyInputSourceID) : NULL;
-            BOOL moved = currentID && !CFEqual(currentID, sourceID);
-            if (current) CFRelease(current);
-            if (!moved) {
-                CFRelease(source);
-                return paramErr;
-            }
-        }
-        CFBooleanRef enabled = TISGetInputSourceProperty(source, kTISPropertyInputSourceIsEnabled);
-        if (enabled && CFBooleanGetValue(enabled)) status = TISDisableInputSource(source);
-        TISInputSourceRef parent = arion_ime_parent(source);
-        if (status == noErr && parent) status = TISDisableInputSource(parent);
-        if (parent) CFRelease(parent);
-        CFRelease(source);
-        return (int)status;
-    });
-}
-
 // arion_ime_state: 0 absent, 1 registered, 2 enabled, 3 selected.
 int arion_ime_state(const char *source_id) {
     return arion_ime_on_main(^int(void) {
