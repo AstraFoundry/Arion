@@ -149,6 +149,19 @@ Example: `feat(orders): add checkout use case`.
 
 ---
 
+## Pull request conventions
+
+- **Title:** the same Conventional Commits form as a commit subject.
+- **Body:** English, in these sections, in this order:
+  1. `## Summary` — what changes and why, one numbered item per independent change. Cite the spec acceptance IDs and ADRs involved.
+  2. `## Changes` — grouped by area (e.g. **Desktop IME**, **Site**). Name the files and what changed in each. Include doc, spec and ADR updates, and corrections made in passing (e.g. a doc that disagreed with the code).
+  3. `## Screenshots` — required for any visible UI change, on the site or in the desktop app. Show every changed state: each locale whose layout differs, mobile width for the site, and intermediate animation frames when the change is motion. Lay out pairs in Markdown tables with a bold label per cell.
+  4. `## Testing` — every check that ran and its result (e.g. `pnpm site:check`, native tests, a browser check). Under **Not run**, list each check that could not run here (e.g. native tests that need macOS) and the exact command or manual step a reviewer should use.
+- **Screenshot hosting:** never commit screenshots to the feature branch. Push them to a separate image-only branch (`claude/pr-screenshots-<topic>`, under `pr-screenshots/`). Link them as `https://github.com/AstraFoundry/Arion/blob/<branch>/pr-screenshots/<file>.png?raw=true`. Say in the body that the branch can be deleted after merge.
+- **Claims:** describe only verified results. Do not present unverified behavior as working.
+
+---
+
 ## `.workspace` directory
 
 The `.workspace/` directory is for local, untracked work:

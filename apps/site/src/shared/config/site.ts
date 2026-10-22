@@ -21,6 +21,8 @@ export const siteConfig = {
   organizationUrl: "https://github.com/AstraFoundry",
   license: "AGPL-3.0",
   shortcut: ["⌥", "Space"],
+  /** Tapped alone, it switches the input method between Chinese and English. */
+  languageSwitchKey: "Shift",
   minimumMacOS: "14",
 } as const;
 

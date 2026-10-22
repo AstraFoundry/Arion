@@ -41,28 +41,76 @@
     ],
     "sentence": "把这个 PR merge 到 main 之前，先跑一下 CI。",
     "finishHint": "to finish",
-    "inserted": "Inserted"
+    "inserted": "Inserted",
+    "learned": "Learned",
+    "undo": "Undo"
   },
-  "values": {
+  "tour": {
     "title": "Built for the way you talk at work",
-    "items": [
-      {
-        "title": "Works offline",
-        "body": "Speech recognition runs on your device. After the one-time model download, dictation needs no network, and no audio or text is sent anywhere."
-      },
-      {
-        "title": "Two languages in one sentence",
-        "body": "Switch between Chinese and English mid-sentence, the way people talk about code and meetings. You never pick a language first."
-      },
-      {
-        "title": "Learns from your fixes",
-        "body": "Correct a word Arion typed and it applies the fix next time, with an undo. Learned words stay on the device, encrypted."
-      },
-      {
-        "title": "Optional polishing",
-        "body": "A small language model on your Mac can tidy the wording and apply spoken self-corrections before the text lands. Off by default; Apple silicon only."
-      }
-    ]
+    "offline": {
+      "title": "Works offline",
+      "body": "Speech recognition runs on your device. After the one-time model download, dictation needs no network, and no audio or text is sent anywhere.",
+      "mockLabel": "Illustration: the menu bar shows the network off, and Arion's panel still receives a dictation recognized on the Mac.",
+      "networkOn": "Wi-Fi",
+      "networkOff": "Offline",
+      "model": "Model",
+      "modelChoice": "Chosen automatically",
+      "lastDictation": "Last dictation",
+      "empty": "Your dictations appear here until you quit.",
+      "sentence": "Move the design review to Thursday and send Lena the new build."
+    },
+    "mixed": {
+      "title": "Two languages in one sentence",
+      "body": "Switch between Chinese and English mid-sentence, the way people talk about code and meetings. You never pick a language first. While you speak, the text stays a draft in the pill; only the finished sentence is typed.",
+      "mockLabel": "Illustration: a chat composer. Arion's pill shows the mixed Chinese and English draft revising as it streams, then the finished sentence is typed into the message box.",
+      "channel": "# release",
+      "author": "Lena",
+      "message": "今晚能发 beta 吗？",
+      "composer": "Message #release",
+      "partials": [
+        "hot fix",
+        "hot fix 先合进",
+        "hotfix 先合进 main，",
+        "hotfix 先合进 main，等 CI 过了"
+      ],
+      "sentence": "hotfix 先合进 main，等 CI 过了就发 beta。"
+    },
+    "learning": {
+      "title": "Learns from your fixes",
+      "body": "Correct a word Arion typed and it applies the fix next time, with an undo. Learned words stay on the device, encrypted.",
+      "mockLabel": "Illustration: a document where Arion typed “Orion”. The word is corrected to “Arion”, and the pill reports it as learned, with an undo.",
+      "document": "Meeting notes",
+      "sentence": "Sync with the {term} team on the roadmap tomorrow.",
+      "wrong": "Orion",
+      "right": "Arion"
+    },
+    "polish": {
+      "title": "Optional polishing",
+      "body": "A small language model on your Mac can tidy the wording and apply spoken self-corrections before the text lands. Off by default; Apple silicon only.",
+      "mockLabel": "Illustration: the words as spoken, with fillers and a correction mid-sentence, above the tidy sentence Arion typed.",
+      "heard": "Heard",
+      "typed": "Typed",
+      "spoken": "um, so let's meet on Wednesday, no wait, Thursday at three",
+      "polished": "Let's meet on Thursday at three."
+    },
+    "keyboard": {
+      "title": "A Pinyin keyboard in the same input method",
+      "body": "On macOS, Arion's input method also types full Pinyin offline, with candidates that learn from the words you pick. Tap Shift to switch between Chinese and English; the badge by the cursor flips over to show which one is on.",
+      "mockLabel": "Illustration: typing “nihao” opens the candidate bar, the first candidate types 你好, then tapping Shift flips the badge by the cursor from 中 to A.",
+      "document": "Notes",
+      "pinyinStart": "ni",
+      "pinyin": "nihao",
+      "candidates": [
+        "你好",
+        "拟好",
+        "你",
+        "尼",
+        "泥"
+      ],
+      "committed": "你好，",
+      "chinese": "中",
+      "english": "A"
+    }
   },
   "privacy": {
     "title": "Signing in never unlocks your words",

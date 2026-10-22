@@ -41,28 +41,76 @@
     ],
     "sentence": "把这个 PR merge 到 main 之前，先跑一下 CI。",
     "finishHint": "结束听写",
-    "inserted": "已插入"
+    "inserted": "已插入",
+    "learned": "已记住",
+    "undo": "撤销"
   },
-  "values": {
+  "tour": {
     "title": "按你工作时说话的方式设计",
-    "items": [
-      {
-        "title": "离线可用",
-        "body": "语音识别在本机运行。模型下载一次之后，听写不需要网络，音频和文字都不会发往任何地方。"
-      },
-      {
-        "title": "一句话，两种语言",
-        "body": "像讨论代码和会议时那样，在一句话里中英切换。不需要先选语言。"
-      },
-      {
-        "title": "从你的修改中学习",
-        "body": "改掉 Arion 输入错的词，下次它就会照你的改法来，并且可以撤销。学到的词只留在本机，加密保存。"
-      },
-      {
-        "title": "可选的润色",
-        "body": "Mac 上的小型语言模型可以在文字输入前理顺措辞，并执行你口头的更正。默认关闭，仅支持 Apple 芯片。"
-      }
-    ]
+    "offline": {
+      "title": "离线可用",
+      "body": "语音识别在本机运行。模型下载一次之后，听写不需要网络，音频和文字都不会发往任何地方。",
+      "mockLabel": "示意图：菜单栏显示网络已断开，Arion 面板仍收到在 Mac 上识别的一次听写。",
+      "networkOn": "Wi-Fi",
+      "networkOff": "离线",
+      "model": "模型",
+      "modelChoice": "自动选择",
+      "lastDictation": "上次听写",
+      "empty": "听写内容会保留在此处，直到退出应用。",
+      "sentence": "设计评审改到周四，新的 build 发给 Lena。"
+    },
+    "mixed": {
+      "title": "一句话，两种语言",
+      "body": "像讨论代码和会议时那样，在一句话里中英切换。不需要先选语言。说话时，文字先作为草稿留在胶囊里，说完的整句才会输入。",
+      "mockLabel": "示意图：聊天输入框。Arion 胶囊里的中英混说草稿随识别不断修正，说完后整句输入到消息框。",
+      "channel": "# release",
+      "author": "Lena",
+      "message": "今晚能发 beta 吗？",
+      "composer": "发送消息到 #release",
+      "partials": [
+        "hot fix",
+        "hot fix 先合进",
+        "hotfix 先合进 main，",
+        "hotfix 先合进 main，等 CI 过了"
+      ],
+      "sentence": "hotfix 先合进 main，等 CI 过了就发 beta。"
+    },
+    "learning": {
+      "title": "从你的修改中学习",
+      "body": "改掉 Arion 输入错的词，下次它就会照你的改法来，并且可以撤销。学到的词只留在本机，加密保存。",
+      "mockLabel": "示意图：文档里 Arion 输入了“Orion”，改成“Arion”后，胶囊提示已记住这个词，并可撤销。",
+      "document": "会议记录",
+      "sentence": "明天和 {term} 团队对一下 roadmap。",
+      "wrong": "Orion",
+      "right": "Arion"
+    },
+    "polish": {
+      "title": "可选的润色",
+      "body": "Mac 上的小型语言模型可以在文字输入前理顺措辞，并执行你口头的更正。默认关闭，仅支持 Apple 芯片。",
+      "mockLabel": "示意图：上方是原话，带有语气词和中途的更正；下方是 Arion 输入的整洁句子。",
+      "heard": "听到的",
+      "typed": "输入的",
+      "spoken": "嗯，那个，我们周三，不对，周四下午三点开会吧",
+      "polished": "我们周四下午三点开会吧。"
+    },
+    "keyboard": {
+      "title": "同一个输入法里的拼音键盘",
+      "body": "在 macOS 上，Arion 输入法也能离线打全拼，候选会从你选过的词里学习。轻按 Shift 切换中英文，光标旁的标识会翻过来，显示当前是哪一种。",
+      "mockLabel": "示意图：输入“nihao”弹出候选栏，选第一个候选输入“你好”，再轻按 Shift，光标旁的标识从“中”翻成“英”。",
+      "document": "备忘录",
+      "pinyinStart": "ni",
+      "pinyin": "nihao",
+      "candidates": [
+        "你好",
+        "拟好",
+        "你",
+        "尼",
+        "泥"
+      ],
+      "committed": "你好，",
+      "chinese": "中",
+      "english": "英"
+    }
   },
   "privacy": {
     "title": "登录，不等于能读你的内容",
