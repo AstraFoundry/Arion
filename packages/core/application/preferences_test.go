@@ -129,3 +129,29 @@ func TestPolishEnginePreference(t *testing.T) {
 		t.Fatalf("unknown engine not repaired: %q %v", got.PolishEngine, repaired)
 	}
 }
+
+func TestPunctuationPreference(t *testing.T) {
+	if got := DefaultPreferences("darwin").Punctuation; got != domain.PunctuationSmart {
+		t.Fatalf("default punctuation %q", got)
+	}
+	prefs := DefaultPreferences("darwin")
+	if err := json.Unmarshal([]byte(`{"version":1,"uiLanguage":"en"}`), &prefs); err != nil {
+		t.Fatal(err)
+	}
+	if normalized, repairs := prefs.Normalize("darwin"); normalized.Punctuation != domain.PunctuationSmart || len(repairs) != 0 {
+		t.Fatalf("older profile did not keep smart: %q %v", normalized.Punctuation, repairs)
+	}
+	for _, mode := range []domain.Punctuation{domain.PunctuationSmart, domain.PunctuationFull, domain.PunctuationOmit, domain.PunctuationSpaces} {
+		prefs = DefaultPreferences("darwin")
+		prefs.Punctuation = mode
+		if normalized, repairs := prefs.Normalize("darwin"); normalized.Punctuation != mode || len(repairs) != 0 {
+			t.Fatalf("mode %q changed: %q %v", mode, normalized.Punctuation, repairs)
+		}
+	}
+	prefs = DefaultPreferences("darwin")
+	prefs.Punctuation = "comma"
+	normalized, repairs := prefs.Normalize("darwin")
+	if normalized.Punctuation != domain.PunctuationSmart || !slices.Contains(repairs, "punctuation") {
+		t.Fatalf("invalid punctuation not repaired: %q %v", normalized.Punctuation, repairs)
+	}
+}

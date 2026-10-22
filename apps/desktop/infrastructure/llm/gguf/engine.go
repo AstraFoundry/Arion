@@ -318,7 +318,7 @@ func (e *Engine) Run(req engine.Request, stop *atomic.Bool) (engine.Result, erro
 			}
 		}
 	}
-	request, err := e.recipe.Format(edited, req.Scene)
+	request, err := e.recipe.Format(edited, req.Scene, req.Punctuation)
 	if err != nil {
 		return result, err
 	}

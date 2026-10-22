@@ -7,7 +7,7 @@ Optional polishing with a cloud model the user connects ([ADR 022](../decisions/
 One decision per page:
 
 - **Onboarding.** The model step sets up recognition only. The **Polish** step offers Off, This device (with its download size) and Cloud. Only with Cloud, a **Cloud model** step follows: the provider list, then the chosen provider's page (Sign in with ChatGPT, or the masked API key and Connect), then, once connected, Disconnect and the model. Back leaves a provider page before the step; the footer says Skip until a model is chosen.
-- **Settings › Model** keeps the settings on the section: a **Recognition model** row (opening the recognition model's page), then the Polish card with the polish switch, **Runs on** (This device / Cloud), with Cloud one **Cloud model** row (the provider's mark and the model, opening the cloud pages), and Match the app; Context is its own group. Every explanation is a tooltip on the row's info hint. The title's back button steps out one page at a time.
+- **Settings › Model** keeps the settings on the section: a **Recognition model** row (opening the recognition model's page), then the Polish card with the polish switch, **Runs on** (This device / Cloud), **Punctuation** (enabled only while polish is on), with Cloud one **Cloud model** row (the provider's mark and the model, opening the cloud pages), and Match the app; Context is its own group. Every explanation is a tooltip on the row's info hint. The title's back button steps out one page at a time.
 - Providers are shown by their [LobeHub](https://icons.lobehub.com) marks.
 - The context switches (cursor, screen, history) hide while Cloud is chosen; the cloud never receives them. Match the app still chooses the scene locally.
 

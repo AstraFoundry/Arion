@@ -15,7 +15,7 @@ func TestDeliveryAllowsStructuredRewritingWithoutSemanticVeto(t *testing.T) {
 	}
 }
 func TestDeliveryStillRejectsIncompleteTransport(t *testing.T) {
-	for _, c := range []RewriteCheck{{Candidate: ""}, {Candidate: "正文", Truncated: true}, {Candidate: "<think>reasoning</think>"}, {Candidate: string([]byte{0xff})}} {
+	for _, c := range []RewriteCheck{{Candidate: ""}, {Candidate: "正文", Truncated: true}, {Candidate: "<think>reasoning</think>"}, {Candidate: "见 <source>原文</source>"}, {Candidate: "copied </source>"}, {Candidate: string([]byte{0xff})}} {
 		if ValidateRewriteDelivery(c) == RewriteAccepted {
 			t.Fatal("accepted incomplete/control output")
 		}

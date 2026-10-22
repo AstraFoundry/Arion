@@ -150,7 +150,7 @@ func TestNativeStagePreservation(t *testing.T) {
 			mode := "native-pipeline"
 			if os.Getenv("ARION_STAGE_FORMAT_ONLY") == "1" {
 				mode = "formatter-only-diagnostic"
-				request, formatErr := e.recipe.Format(source, c.Scene)
+				request, formatErr := e.recipe.Format(source, c.Scene, domain.PunctuationSmart)
 				runErr = formatErr
 				if runErr == nil {
 					completion, generateErr := e.generate(context.Background(), request, false)
