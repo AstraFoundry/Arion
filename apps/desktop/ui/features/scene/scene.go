@@ -46,7 +46,7 @@ func Icon(s runtime.Scene) *ui.SVG {
 // on and the panel found another app's field.
 func Visible(store runtime.Store) bool {
 	s := store.State
-	return s.SceneTarget.Known && s.Preferences.Polish && s.Preferences.MatchApp && s.Polish.State != runtime.PolishUnsupported
+	return s.SceneTarget.Known && runtime.PolishOn(s) && s.Preferences.MatchApp
 }
 
 // Card shows the scene and opens a select to choose another one, or to follow

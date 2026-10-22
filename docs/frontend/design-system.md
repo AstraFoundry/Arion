@@ -71,8 +71,19 @@ The macOS consent guide is a whole window floating over System Settings: its car
 | `Figure`, `Rolls` | A number on odometer wheels: the text is laid out invisibly for size and assistive technology, and each digit is painted rolling up over it, clipped to the line, the leaving digit fading as the next arrives. Digits roll in from the left 35 ms apart on a 900 ms spring; `enter` starts them from 0. `Rolls` keeps each wheel's turns so a growing value rolls forward through 9 → 0, never back |
 | `SelectTrigger` | coss `Select` trigger for a plain value: the `Outline` button anatomy at 28 DIP, the value and an up-down chevron; its popup is `SelectPopup` |
 | `Empty` | coss `Empty`: one muted, centered line filling a card body that has nothing to show yet |
+| `Tooltip`, `Hint` | coss `Tooltip` over `ui.TooltipBase`: Caption text on a card face, hairline, radius 6, `Lifted`, at most 260 DIP; shown on hover or focus and named to assistive technology as the anchor's description. `Hint` is a focusable 13 DIP info glyph in `Faint` (`Muted` when hovered) carrying one |
+| `TipRow` | A setting row whose explanation is a `Hint` after the title instead of a detail line, so dense cards stay one line per setting |
+| `LinkRow` | A row that opens a page: optional leading glyph or mark, title, its current value in `Muted`, and a `Faint` chevron |
 
 Use these instead of `ui.Button` / `ui.PrimaryButton`. MyGo's stock switches, radios, fields, selects and progress bars are themed by `theme.Apply` and are used as is. A choice made from a custom trigger uses the `kit` select, not a native `Element.Menu`.
+
+## Pages and density
+
+Settings stay on their section; a model's own details and choices take a page, opened by a `LinkRow` that shows the current value, whose title carries a back `IconButton` that steps out one page at a time. Settings › Model keeps the recognition and polish settings on the section; the recognition model and the cloud model each open their pages. Settings explain themselves in `Hint` tooltips, not detail lines; state (a download, a failure) stays visible in words.
+
+## Icons
+
+Interface glyphs are Lucide (`ui/shared/icons`). Cloud polishing providers are shown by their marks from [LobeHub Icons](https://icons.lobehub.com) (`@lobehub/icons-static-svg`, MIT, `svg/LICENSE-lobehub`), drawn by `features/cloud.Mark`: monochrome marks in `Text` ink with `ui.Icon`, the Gemini and DeepSeek marks in their own colors with `ui.Image`. ChatGPT uses the OpenAI mark. Marks stand alone at 16–32 DIP, never inside a tinted tile.
 
 ## Overview
 

@@ -10,6 +10,7 @@ import (
 	"arion.local/desktop/ui/entities/account"
 	holdname "arion.local/desktop/ui/entities/holdkey"
 	"arion.local/desktop/ui/entities/onboarding"
+	"arion.local/desktop/ui/features/cloud"
 	"arion.local/desktop/ui/features/holdkey"
 	"arion.local/desktop/ui/features/keyboard"
 	"arion.local/desktop/ui/features/microphone"
@@ -50,6 +51,7 @@ type Page struct {
 	axRequested      bool
 	axGranted        time.Time
 	keyboard         keyboard.State
+	cloud            cloud.Nav
 }
 
 func NewPage() *Page { return &Page{} }
@@ -74,7 +76,7 @@ func (p *Page) Render(c *ui.Context, store runtime.Store) {
 		})
 		ui.Column(c).Grow(1).Children(func() {
 			ui.Row(c).Height(top).Padding(0, Inset).AlignItems(ui.End).DragWindow().Children(func() {
-				current, total := onboarding.Progress(p.flow)
+				current, total := onboarding.Progress(p.flow, state)
 				stepper.Render(c, tokens, store.Copy(), current, total)
 				ui.Spacer(c)
 				uilanguage.Picker(c, store)
@@ -90,7 +92,12 @@ func (p *Page) Render(c *ui.Context, store runtime.Store) {
 			})
 			ui.Row(c).Padding(16, Inset, 24, Inset).Gap(8).AlignItems(ui.Center).Children(func() {
 				if p.flow.Index > 0 && step != onboarding.Finished {
-					kit.Button(c.Key("back"), tokens, kit.Ghost, messages.Text(copy.Back), step != onboarding.InputMethod || !state.InputMethodInstalling).OnClick(func() { p.move(c, -1, store) })
+					kit.Button(c.Key("back"), tokens, kit.Ghost, messages.Text(copy.Back), step != onboarding.InputMethod || !state.InputMethodInstalling).OnClick(func() {
+						// The cloud step's provider page goes back to its list first.
+						if step != onboarding.Cloud || !p.cloud.Back() {
+							p.move(c, -1, store)
+						}
+					})
 				}
 				ui.Spacer(c)
 				switch step {
@@ -113,6 +120,14 @@ func (p *Page) Render(c *ui.Context, store runtime.Store) {
 						})
 					}
 					kit.Button(c.Key("next"), tokens, kit.Primary, messages.Text(copy.Continue), onboarding.Ready(step, state) && !state.InputMethodInstalling).OnClick(func() { p.move(c, 1, store) })
+				case onboarding.Cloud:
+					// The page's own sign-in or Connect is the main action until
+					// a model is chosen; moving on before that is skipping.
+					label, variant := messages.Text(copy.Continue), kit.Primary
+					if state.Cloud.Phase != runtime.CloudConnected || state.Preferences.CloudModel == "" {
+						label, variant = messages.Text(copy.Skip), kit.Ghost
+					}
+					kit.Button(c.Key("next"), tokens, variant, label, !state.Cloud.Busy()).OnClick(func() { p.move(c, 1, store) })
 				case onboarding.Finished:
 					kit.Button(c.Key("finish"), tokens, kit.Primary, messages.Text(copy.OnbFinish), true).OnClick(func() {
 						p.release(store)
@@ -277,8 +292,14 @@ func (p *Page) step(c *ui.Context, store runtime.Store, tokens theme.Tokens, ste
 		// Recognition and the optional polishing are set up together.
 		ui.Column(c).Width(Content).Gap(12).Children(func() {
 			modelcard.Render(c, store, tokens, true)
-			kit.Card(c, tokens).Children(func() { polish.Row(c, store, tokens) })
 		})
+	case onboarding.Polish:
+		heading(c, tokens, messages.Text(copy.OnbPolishTitle), messages.Text(copy.OnbPolishBody))
+		ui.Column(c).Width(Content).Children(func() { polish.Choice(c, store, tokens) })
+	case onboarding.Cloud:
+		ui.Text(c.Key("cloud-title"), cloud.Title(store, &p.cloud)).FontSize(theme.Title + 4).FontWeight(650).ContentTransition(ui.ContentTransition{})
+		ui.Column(c.Key("cloud-" + p.cloud.Provider)).Width(Content).Gap(theme.GapRelated).Transition(ui.ElementTransition{Animation: &theme.Page, Enter: &ui.Motion{Y: 8}}).
+			Children(func() { cloud.Pages(c, store, tokens, &p.cloud) })
 	case onboarding.HoldKey:
 		heading(c, tokens, messages.Text(copy.OnbHoldKeyTitle), messages.Text(copy.OnbHoldKeyBody))
 		heard := state.Hold.Pressed.After(p.entered)

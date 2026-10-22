@@ -178,6 +178,35 @@ func TestLivePreviewThenFinalRewrite(t *testing.T) {
 	}
 }
 
+// FinalOnly sends no previews while speaking; the text after stop is
+// still polished once (ADR 022).
+func TestFinalOnlyPolishesOnceAfterStop(t *testing.T) {
+	rewriter := &scriptedRewriter{answer: func(req ports.RewriteRequest) (string, error) {
+		return strings.ReplaceAll(req.Text, "UM ", ""), nil
+	}}
+	c, audio, events, target, _ := liveSetup(t, []string{"um hello", "|", "b"}, rewriter, RewritePolicy{Enabled: true, Scene: "chat", FinalOnly: true})
+	c.Start()
+	events.wait(t, stateIs(domain.Capturing))
+	audio.push(2, 0.2)
+	events.wait(t, draftIs("UM HELLO"))
+	audio.push(1, 0.2)
+	events.wait(t, draftIs("UM HELLO b"))
+	c.Stop()
+	ready := events.wait(t, kindIs(contracts.CorrectionReady))
+	if ready.Text != "HELLO B" || ready.Rewrite != string(domain.RewriteAccepted) {
+		t.Fatalf("unexpected final %+v", ready)
+	}
+	events.wait(t, kindIs(contracts.CommitResultReady))
+	if target.texts[0] != "HELLO B" {
+		t.Fatalf("committed %q", target.texts[0])
+	}
+	rewriter.mu.Lock()
+	defer rewriter.mu.Unlock()
+	if len(rewriter.requests) != 1 || rewriter.requests[0].Live {
+		t.Fatalf("requests %+v", rewriter.requests)
+	}
+}
+
 // The final rewrite announces itself before its result, so the overlay can
 // show organization under way; without a rewriter nothing is announced.
 func TestFinalRewriteAnnouncesItsStart(t *testing.T) {

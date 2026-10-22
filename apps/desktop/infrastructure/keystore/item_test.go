@@ -50,3 +50,15 @@ func TestCenterProfilesHaveSeparateCredentials(t *testing.T) {
 		}
 	}
 }
+
+func TestCloudPolishItemIsSeparate(t *testing.T) {
+	cloud := OpenItem(CloudPolishAccount)
+	if cloud.target() == Target() || cloud.target() == OpenForProfile("p").target() {
+		t.Fatal("cloud credential shares the refresh-token item")
+	}
+	for _, args := range [][]string{cloud.putArgs("secret"), cloud.getArgs(), cloud.deleteArgs()} {
+		if !hasPair(args, "-s", Service) || !hasPair(args, "-a", CloudPolishAccount) {
+			t.Fatalf("args = %q", args)
+		}
+	}
+}

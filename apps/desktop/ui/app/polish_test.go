@@ -3,6 +3,7 @@ package app
 import (
 	"strings"
 	"testing"
+	"time"
 
 	"arion.local/desktop/ui/features/polish"
 	"arion.local/desktop/ui/features/transcript"
@@ -80,13 +81,24 @@ func TestMatchAppRow(t *testing.T) {
 	state.Preferences.Polish = true
 	settle(tt)
 	title, ok := tt.Find(en.Text(copy.MatchAppLabel))
-	if !ok || !hasText(tt, en.Text(copy.MatchAppDetail)) {
-		t.Fatalf("row missing: %q", tt.Texts())
+	if !ok || hasText(tt, en.Text(copy.MatchAppDetail)) {
+		t.Fatalf("row missing or its detail inline: %q", tt.Texts())
 	}
-	snapshot(t, tt, "settings-match-app")
-	// The switch is centered on the row, whose detail wraps.
-	detail, _ := tt.Find(en.Text(copy.MatchAppDetail))
-	tt.ClickAt(560-40, (title.Y+detail.Y+detail.H)/2)
+	// The explanation is the hint's tooltip, shown on hover.
+	tt.Move(title.X+title.W+14, title.Y+title.H/2)
+	for range 40 {
+		tt.Frame()
+		if hasText(tt, en.Text(copy.MatchAppDetail)) {
+			break
+		}
+		time.Sleep(25 * time.Millisecond)
+	}
+	if !hasText(tt, en.Text(copy.MatchAppDetail)) {
+		t.Fatalf("tooltip not shown: %q", tt.Texts())
+	}
+	snapshot(t, tt, "settings-match-app-tooltip")
+	tt.Move(0, 0)
+	tt.ClickAt(560-40, title.Y+title.H/2)
 	settle(tt)
 	if state.Preferences.MatchApp || !actions.called("prefs") {
 		t.Fatal("switch did not turn Match the app off")
@@ -141,11 +153,24 @@ func TestNoTechnicalModelNames(t *testing.T) {
 		tt := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, SettingsWidth, SettingsHeight)
 		settle(tt)
 		messages := copy.For(copy.Locale(locale))
-		if !hasText(tt, messages.Text(copy.ModelNameGeneric)) || !hasText(tt, messages.Text(copy.PolishLabel)) {
-			t.Fatalf("model page lacks recognition or polish: %q", tt.Texts())
-		}
 		check("settings", tt.Texts())
 		snapshot(t, tt, "settings-model-"+string(locale))
+		if !hasText(tt, messages.Text(copy.PolishLabel)) || hasText(tt, messages.Text(copy.ModelReason)) {
+			t.Fatalf("model section: %q", tt.Texts())
+		}
+		if err := tt.Click(messages.Text(copy.ModelRecognitionPage)); err != nil {
+			t.Fatal(err)
+		}
+		settle(tt)
+		if !hasText(tt, messages.Text(copy.ModelNameGeneric)) || hasText(tt, messages.Text(copy.PolishLabel)) {
+			t.Fatalf("recognition page: %q", tt.Texts())
+		}
+		check("settings", tt.Texts())
+		snapshot(t, tt, "settings-model-recognition-"+string(locale))
+		if err := tt.Click(messages.Text(copy.Back)); err != nil {
+			t.Fatal(err)
+		}
+		settle(tt)
 
 		state.Permissions = runtime.Permissions{Microphone: runtime.ConsentGranted, Accessibility: runtime.ConsentGranted}
 		onb := onboarding.NewPage()
@@ -157,11 +182,20 @@ func TestNoTechnicalModelNames(t *testing.T) {
 			}
 			settle(ot)
 		}
-		if !hasText(ot, messages.Text(copy.OnbModelTitle)) || !hasText(ot, messages.Text(copy.PolishLabel)) {
-			t.Fatalf("onboarding model step lacks polish: %q", ot.Texts())
+		if !hasText(ot, messages.Text(copy.OnbModelTitle)) {
+			t.Fatalf("onboarding model step: %q", ot.Texts())
 		}
 		check("onboarding", ot.Texts())
 		snapshot(t, ot, "onboarding-5-model-"+string(locale))
+		if err := ot.Click(messages.Text(copy.Continue)); err != nil {
+			t.Fatal(err)
+		}
+		settle(ot)
+		if !hasText(ot, messages.Text(copy.OnbPolishTitle)) || !hasText(ot, messages.Text(copy.PolishEngineLocal)) {
+			t.Fatalf("onboarding polish step: %q", ot.Texts())
+		}
+		check("onboarding polish", ot.Texts())
+		snapshot(t, ot, "onboarding-6-polish-"+string(locale))
 	}
 }
 
@@ -188,8 +222,7 @@ func TestContextRows(t *testing.T) {
 		t.Fatalf("permission request: %v", err)
 	}
 	title, _ := tt.Find(en.Text(copy.ContextHistoryLabel))
-	detail, _ := tt.Find(en.Text(copy.ContextHistoryDetail))
-	tt.ClickAt(560-40, (title.Y+detail.Y+detail.H)/2)
+	tt.ClickAt(560-40, title.Y+title.H/2)
 	settle(tt)
 	if state.Preferences.ContextHistory {
 		t.Fatal("history switch did not turn off")

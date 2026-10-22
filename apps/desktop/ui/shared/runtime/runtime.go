@@ -29,6 +29,7 @@ type (
 	Usage               = domain.Usage
 	UsageLog            = domain.UsageLog
 	UsageDay            = domain.UsageDay
+	PolishEngine        = application.PolishEngine
 )
 
 const (
@@ -45,6 +46,9 @@ const (
 	OutcomeApplied    = contracts.Applied
 	OutcomeNotApplied = contracts.NotApplied
 	OutcomeUnknown    = contracts.Unknown
+
+	PolishLocal = application.PolishLocal
+	PolishCloud = application.PolishCloud
 
 	DeliveryAutomatic = application.DeliveryAutomatic
 	DeliveryClipboard = application.DeliveryClipboard
@@ -424,6 +428,8 @@ type State struct {
 	SceneTarget SceneTarget
 	// Account is the hosted-sync sign-in projection. It has no tokens.
 	Account Account
+	// Cloud is the cloud polishing connection. It has no secrets.
+	Cloud Cloud
 }
 
 // Actions are requests views make; implementations return quickly and do
@@ -495,6 +501,17 @@ type Actions interface {
 	CheckStoredAccount()
 	// JoinHostedSyncWaitlist joins the hosted-sync waitlist for the signed-in user.
 	JoinHostedSyncWaitlist()
+	// SignInChatGPT opens the ChatGPT sign-in in the browser for cloud
+	// polishing. It returns immediately.
+	SignInChatGPT()
+	// ConnectCloudKey checks an API key for provider and connects it.
+	ConnectCloudKey(provider, key string)
+	// CancelCloud stops a sign-in or key check in flight.
+	CancelCloud()
+	// DisconnectCloud forgets the connection and deletes its credential.
+	DisconnectCloud()
+	// ListCloudModels asks the connected provider for its models.
+	ListCloudModels()
 	Quit()
 }
 

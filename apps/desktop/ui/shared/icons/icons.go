@@ -1,6 +1,8 @@
-// Package icons exposes the vendored Lucide icon set (ISC, see svg/LICENSE)
-// and the Google and GitHub marks of the AstraFoundry sign-in methods, kept
-// in their brand colors.
+// Package icons exposes the vendored Lucide icon set (ISC, see svg/LICENSE),
+// the Google and GitHub marks of the AstraFoundry sign-in methods, kept in
+// their brand colors, and the cloud polishing providers' marks from LobeHub
+// Icons (MIT, see svg/LICENSE-lobehub). Monochrome marks are tinted with
+// ui.Icon; Gemini and DeepSeek keep their colors and are drawn with ui.Image.
 package icons
 
 import (
@@ -30,6 +32,7 @@ var (
 	Briefcase         = load("briefcase")
 	Check             = load("check")
 	ChartLine         = load("chart-line")
+	ChevronLeft       = load("chevron-left")
 	ChevronRight      = load("chevron-right")
 	ExternalLink      = load("external-link")
 	ChevronsUpDown    = load("chevrons-up-down")
@@ -64,4 +67,13 @@ var (
 	Type              = load("type")
 	X                 = load("x")
 	Zap               = load("zap")
+)
+
+// Cloud polishing provider marks. ChatGPT uses the OpenAI mark.
+var (
+	OpenAI     = load("lobe-openai")
+	Anthropic  = load("lobe-anthropic")
+	OpenRouter = load("lobe-openrouter")
+	Gemini     = load("lobe-gemini")
+	DeepSeek   = load("lobe-deepseek")
 )

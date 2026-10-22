@@ -14,7 +14,7 @@ The repository is licensed under the **GNU Affero General Public License v3.0** 
 
 - Anyone may use, modify and redistribute Arion; a third party that offers a modified Arion or relay over a network must publish its source under the same license.
 - AstraFoundry, as copyright holder, can run its own hosted edition or license the code commercially. This holds only while AstraFoundry owns, or is licensed to relicense, every contribution: external contributions need a contributor license agreement (CLA) before merge.
-- Bundled third-party components keep their own licenses (sherpa-onnx and ONNX Runtime under Apache-2.0, Lucide under ISC, see `ui/shared/icons/svg/LICENSE`); all are compatible with AGPL-3.0 distribution.
+- Bundled third-party components keep their own licenses (sherpa-onnx and ONNX Runtime under Apache-2.0, Lucide under ISC, see `ui/shared/icons/svg/LICENSE`; LobeHub Icons provider marks under MIT, see `svg/LICENSE-lobehub`); all are compatible with AGPL-3.0 distribution.
 
 ## Alternatives considered
 

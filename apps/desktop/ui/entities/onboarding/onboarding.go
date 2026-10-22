@@ -16,6 +16,11 @@ const (
 	Accessibility
 	InputMethod
 	Model
+	// Polish chooses whether polishing is off, on this device or in the
+	// cloud.
+	Polish
+	// Cloud connects the cloud model; only shown when the cloud is chosen.
+	Cloud
 	// HoldKey confirms the dictation key listens, which on macOS needs
 	// Input Monitoring, and lets the user try it.
 	HoldKey
@@ -24,7 +29,7 @@ const (
 )
 
 // Steps is the page order.
-var Steps = []Step{Welcome, Account, Microphone, Accessibility, InputMethod, Model, HoldKey, Try, Finished}
+var Steps = []Step{Welcome, Account, Microphone, Accessibility, InputMethod, Model, Polish, Cloud, HoldKey, Try, Finished}
 
 // Flow is the user's position; Direction drives the page slide.
 type Flow struct {
@@ -75,9 +80,32 @@ func (f *Flow) Back() {
 	}
 }
 
-// Progress counts the steps between welcome and finish, for the indicator.
-func Progress(f Flow) (current, total int) {
-	return f.Index, len(Steps) - 1
+// Skipped reports a step that does not apply to this setup.
+func Skipped(step Step, s *runtime.State) bool {
+	switch step {
+	case Account:
+		return s.Account.Disabled
+	case InputMethod:
+		return s.InputMethod == runtime.InputMethodUnsupported
+	case Cloud:
+		return !s.Preferences.Polish || s.Preferences.PolishEngine != runtime.PolishCloud
+	}
+	return false
+}
+
+// Progress counts the steps between welcome and finish that apply, for the
+// indicator.
+func Progress(f Flow, s *runtime.State) (current, total int) {
+	for i, step := range Steps {
+		if i == 0 || Skipped(step, s) {
+			continue
+		}
+		total++
+		if i <= f.Index {
+			current++
+		}
+	}
+	return current, total
 }
 
 // Move advances through supported setup steps in either direction.
@@ -92,8 +120,7 @@ func (f *Flow) Move(delta int, s *runtime.State) bool {
 		f.Back()
 		moved = true
 	}
-	for moved && ((f.Step() == Account && s.Account.Disabled) ||
-		(f.Step() == InputMethod && s.InputMethod == runtime.InputMethodUnsupported)) {
+	for moved && Skipped(f.Step(), s) {
 		if delta > 0 {
 			moved = f.Next(s)
 		} else {

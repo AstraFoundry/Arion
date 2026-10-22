@@ -55,11 +55,15 @@ func (p *Panel) Render(c *ui.Context, store arion.Store) {
 		if store.State.Model.State != arion.ModelReady {
 			provision.Progress(c, store, tokens)
 		}
+		// A pending update takes its own line, so a long version never
+		// crowds Settings and Quit off the footer.
+		if label, ok := update.Notice(store); ok {
+			ui.Row(c.Key("update")).Margin(0, 0, -10, 0).Children(func() {
+				footerButton(c, tokens, icons.Download, label, store.Actions.OpenUpdate)
+			})
+		}
 		ui.Row(c).Gap(4).AlignItems(ui.Center).Children(func() {
 			footerButton(c, tokens, icons.Settings, messages.Text(copy.SettingsMenu), store.Actions.OpenSettings)
-			if label, ok := update.Notice(store); ok {
-				footerButton(c, tokens, icons.Download, label, store.Actions.OpenUpdate)
-			}
 			ui.Spacer(c)
 			footerButton(c, tokens, icons.Power, messages.Text(copy.Quit), store.Actions.Quit)
 		})
@@ -67,7 +71,7 @@ func (p *Panel) Render(c *ui.Context, store arion.Store) {
 }
 
 func footerButton(c *ui.Context, tokens theme.Tokens, icon *ui.SVG, label string, action func()) {
-	button := ui.ButtonBase(c.Key(label)).Gap(6).Height(30).Padding(0, 10).Radius(8).AlignItems(ui.Center).TextColor(tokens.Muted)
+	button := ui.ButtonBase(c.Key(label)).Gap(6).Height(30).Padding(0, 10).Radius(8).AlignItems(ui.Center).Shrink(0).TextColor(tokens.Muted)
 	kit.Press(button)
 	if button.Hovered() {
 		button.Background(tokens.AccentSoft).TextColor(tokens.Text)
@@ -75,7 +79,7 @@ func footerButton(c *ui.Context, tokens theme.Tokens, icon *ui.SVG, label string
 	button.Transition(ui.ElementTransition{Colors: true, Duration: theme.Quick.Duration})
 	button.Children(func() {
 		ui.Icon(c, icon).FontSize(13)
-		ui.Text(c, label).FontSize(theme.Caption)
+		ui.Text(c, label).FontSize(theme.Caption).SingleLine()
 	})
 	if button.Clicked() {
 		action()

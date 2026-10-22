@@ -23,6 +23,7 @@ import (
 	"arion.local/desktop/infrastructure/asr"
 	"arion.local/desktop/infrastructure/audio"
 	"arion.local/desktop/infrastructure/browser"
+	"arion.local/desktop/infrastructure/cloudpolish"
 	"arion.local/desktop/infrastructure/diagnostics"
 	"arion.local/desktop/infrastructure/keystore"
 	"arion.local/desktop/infrastructure/modelruntime"
@@ -80,6 +81,7 @@ type App struct {
 	store               *provision.Store
 	manager             *modelruntime.Manager
 	rewriter            *rewriting.Service
+	cloud               *cloudpolish.Service
 	// history keeps recent dictations per place for rewrite context, in
 	// memory only.
 	history   *application.History
@@ -187,12 +189,16 @@ func New(opts Options) (*App, error) {
 	a.mic = audio.NewMicrophone(a.platform)
 	a.mic.Select(prefs.Microphone)
 	a.mic.SetGain(prefs.MicrophoneGain)
+	a.cloud = cloudpolish.New(keystore.OpenItem(keystore.CloudPolishAccount), browser.Open,
+		func() []byte { return callbackPage(copy.Locale(a.preferences().UILanguage)) })
+	a.cloud.SetModel(prefs.CloudModel)
 	// Hosts, field text and window text are read only when a rewrite will
-	// use them.
+	// use them; cloud polishing never uses field or window text.
+	local := func(p application.Preferences) bool { return p.Polish && p.PolishEngine == application.PolishLocal }
 	a.targets = a.platform.NewTargets(func() application.Delivery { return a.preferences().Delivery }, TargetGates{
 		Site:   func() bool { p := a.preferences(); return p.Polish && p.MatchApp },
-		Cursor: func() bool { p := a.preferences(); return p.Polish && p.ContextCursor },
-		Screen: func() bool { p := a.preferences(); return p.Polish && p.ContextScreen },
+		Cursor: func() bool { p := a.preferences(); return local(p) && p.ContextCursor },
+		Screen: func() bool { p := a.preferences(); return local(p) && p.ContextScreen },
 	})
 	a.vocabPath = filepath.Join(opts.DataDir, "vocabulary.bin")
 	a.usage = usage.Store{Path: filepath.Join(opts.DataDir, "usage.json")}
@@ -216,7 +222,7 @@ func New(opts Options) (*App, error) {
 	}
 	a.edits = &application.EditTracker{Report: a.learnEdit, Segmenter: wordseg.Segmenter{}}
 	deps := application.Dependencies{SelectMode: a.dictationMode, Diagnostics: a, Audio: capture, Recognizers: a.manager, Finalizer: finalizer, Targets: targets, Input: targets,
-		Rewriter: a.rewriter, History: a.history, Edits: a.edits, NewID: newID}
+		Rewriter: polishRouter{a}, History: a.history, Edits: a.edits, NewID: newID}
 	if a.ime != nil {
 		deps.IMETargets, deps.IMEInput, deps.Composition = a.ime, a.ime, a.ime
 	}
@@ -269,9 +275,15 @@ func (a *App) rewritePolicy() application.RewritePolicy {
 	if !a.prefs.Polish {
 		return application.RewritePolicy{}
 	}
-	return application.RewritePolicy{Enabled: true, Scene: string(domain.SceneChat), FollowApp: a.prefs.MatchApp,
-		SceneOverrides: a.prefs.SceneOverrides, Vocabulary: a.vocabulary,
-		Context: application.ContextPolicy{Cursor: a.prefs.ContextCursor, Screen: a.prefs.ContextScreen, History: a.prefs.ContextHistory}}
+	policy := application.RewritePolicy{Enabled: true, Scene: string(domain.SceneChat), FollowApp: a.prefs.MatchApp,
+		SceneOverrides: a.prefs.SceneOverrides, Vocabulary: a.vocabulary}
+	if a.prefs.PolishEngine == application.PolishCloud {
+		// One request per dictation, with no context sources (ADR 022).
+		policy.FinalOnly, policy.Timeout = true, cloudRewriteTimeout
+		return policy
+	}
+	policy.Context = application.ContextPolicy{Cursor: a.prefs.ContextCursor, Screen: a.prefs.ContextScreen, History: a.prefs.ContextHistory}
+	return policy
 }
 
 // Run starts the event loop; it returns when the app quits.
@@ -374,6 +386,8 @@ func (a *App) ready() {
 	a.rewriter.OnStatus(func(s rewriting.Status) { a.post(func() { a.applyPolish(s) }) })
 	a.applyPolish(a.rewriter.Status())
 	go a.startPolish()
+	a.cloud.OnStatus(func(s cloudpolish.Status) { a.post(func() { a.applyCloud(s) }) })
+	go a.cloud.Load()
 	mygo.App.OnQuit(a.rewriter.Disable)
 	mygo.App.OnQuit(func() { a.core.Cancel(); a.manager.Close() })
 	a.refreshPermissions()
@@ -700,10 +714,10 @@ func (a *App) applyModel(s modelruntime.Status) {
 }
 
 // startPolish refreshes installation state and starts the worker when the
-// user has the capability on; it never downloads without that choice.
+// user has local polishing on; it never downloads without that choice.
 func (a *App) startPolish() {
 	a.rewriter.Refresh()
-	if a.preferences().Polish {
+	if p := a.preferences(); p.Polish && p.PolishEngine == application.PolishLocal {
 		_ = a.rewriter.Enable(context.Background())
 	}
 }

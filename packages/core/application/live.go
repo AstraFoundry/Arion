@@ -32,6 +32,9 @@ type RewritePolicy struct {
 	Vocabulary *domain.Vocabulary
 	// Timeout bounds the final rewrite after the user stops.
 	Timeout time.Duration
+	// FinalOnly skips live previews: only the text after stop is polished.
+	// Cloud polishing uses it so one request is sent per dictation (ADR 022).
+	FinalOnly bool
 }
 
 // Rewrite outcomes that are not validation verdicts.
@@ -263,7 +266,7 @@ func (c *Coordinator) liveWorker(r *run) {
 		c.mu.Unlock()
 		c.publishLive(r)
 		// Latest wins: only preview once every queued segment is refined.
-		if len(l.units) > 0 || !l.policy.Enabled || l.rewriteCtx.Err() != nil {
+		if len(l.units) > 0 || !l.policy.Enabled || l.policy.FinalOnly || l.rewriteCtx.Err() != nil {
 			continue
 		}
 		c.preview(r, stable)

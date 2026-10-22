@@ -35,30 +35,37 @@ type recorder struct {
 	state *runtime.State
 }
 
-func (r *recorder) call(name string)            { r.calls = append(r.calls, name) }
-func (r *recorder) ExportDiagnostics()          { r.call("export-diagnostics") }
-func (r *recorder) ToggleDictation()            { r.call("toggle") }
-func (r *recorder) CancelDictation()            { r.call("cancel") }
-func (r *recorder) RequestMicrophone()          { r.call("request-mic") }
-func (r *recorder) RequestAccessibility()       { r.call("request-ax") }
-func (r *recorder) OpenMicrophoneSettings()     { r.call("open-mic") }
-func (r *recorder) OpenAccessibilitySettings()  { r.call("open-ax") }
-func (r *recorder) RetryModel()                 { r.call("retry") }
-func (r *recorder) RetryPolish()                { r.call("retry-polish") }
-func (r *recorder) UseBundle(id string)         { r.call("use:" + id) }
-func (r *recorder) UseRecommendedBundle()       { r.call("use-recommended") }
-func (r *recorder) RefreshDevices()             { r.call("devices") }
-func (r *recorder) StartLevelMonitor()          { r.call("monitor-start") }
-func (r *recorder) StopLevelMonitor()           { r.call("monitor-stop") }
-func (r *recorder) CopyText(text string)        { r.call("copy:" + text) }
-func (r *recorder) OpenSettings()               { r.call("settings") }
-func (r *recorder) CompleteOnboarding()         { r.call("complete") }
-func (r *recorder) SignIn()                     { r.call("sign-in") }
-func (r *recorder) CancelSignIn()               { r.call("cancel-sign-in") }
-func (r *recorder) RefreshAccount()             { r.call("refresh-account") }
-func (r *recorder) SignOut()                    { r.call("sign-out") }
-func (r *recorder) JoinHostedSyncWaitlist()     { r.call("join-waitlist") }
-func (r *recorder) CheckStoredAccount()         { r.call("check-stored") }
+func (r *recorder) call(name string)           { r.calls = append(r.calls, name) }
+func (r *recorder) ExportDiagnostics()         { r.call("export-diagnostics") }
+func (r *recorder) ToggleDictation()           { r.call("toggle") }
+func (r *recorder) CancelDictation()           { r.call("cancel") }
+func (r *recorder) RequestMicrophone()         { r.call("request-mic") }
+func (r *recorder) RequestAccessibility()      { r.call("request-ax") }
+func (r *recorder) OpenMicrophoneSettings()    { r.call("open-mic") }
+func (r *recorder) OpenAccessibilitySettings() { r.call("open-ax") }
+func (r *recorder) RetryModel()                { r.call("retry") }
+func (r *recorder) RetryPolish()               { r.call("retry-polish") }
+func (r *recorder) UseBundle(id string)        { r.call("use:" + id) }
+func (r *recorder) UseRecommendedBundle()      { r.call("use-recommended") }
+func (r *recorder) RefreshDevices()            { r.call("devices") }
+func (r *recorder) StartLevelMonitor()         { r.call("monitor-start") }
+func (r *recorder) StopLevelMonitor()          { r.call("monitor-stop") }
+func (r *recorder) CopyText(text string)       { r.call("copy:" + text) }
+func (r *recorder) OpenSettings()              { r.call("settings") }
+func (r *recorder) CompleteOnboarding()        { r.call("complete") }
+func (r *recorder) SignIn()                    { r.call("sign-in") }
+func (r *recorder) CancelSignIn()              { r.call("cancel-sign-in") }
+func (r *recorder) RefreshAccount()            { r.call("refresh-account") }
+func (r *recorder) SignOut()                   { r.call("sign-out") }
+func (r *recorder) JoinHostedSyncWaitlist()    { r.call("join-waitlist") }
+func (r *recorder) CheckStoredAccount()        { r.call("check-stored") }
+func (r *recorder) SignInChatGPT()             { r.call("cloud-sign-in") }
+func (r *recorder) CancelCloud()               { r.call("cloud-cancel") }
+func (r *recorder) DisconnectCloud()           { r.call("cloud-disconnect") }
+func (r *recorder) ListCloudModels()           { r.call("cloud-models") }
+func (r *recorder) ConnectCloudKey(provider, key string) {
+	r.call("cloud-key:" + provider + ":" + key)
+}
 func (r *recorder) Quit()                       { r.call("quit") }
 func (r *recorder) TestHoldKey(testing bool)    { r.call("test-hold") }
 func (r *recorder) RemoveReplacement(id string) { r.call("remove:" + id) }
@@ -317,7 +324,7 @@ func TestSettingsSections(t *testing.T) {
 		{settings.General, copy.For(copy.English).Text(copy.NavGeneral), copy.For(copy.English).Text(copy.LaunchAtLogin)},
 		{settings.Dictation, copy.For(copy.English).Text(copy.NavDictation), copy.For(copy.English).Text(copy.HoldKeyLabel)},
 		{settings.Microphone, copy.For(copy.English).Text(copy.NavMicrophone), copy.For(copy.English).Text(copy.MicTest)},
-		{settings.Model, copy.For(copy.English).Text(copy.NavModel), copy.For(copy.English).Text(copy.ModelReason)},
+		{settings.Model, copy.For(copy.English).Text(copy.NavModel), copy.For(copy.English).Text(copy.PanelAutomatic)},
 		{settings.Vocabulary, copy.For(copy.English).Text(copy.NavVocabulary), copy.For(copy.English).Text(copy.VocabEmpty)},
 		{settings.About, copy.For(copy.English).Text(copy.NavAbout), copy.For(copy.English).Text(copy.PrivacyLocal)},
 	} {
@@ -511,8 +518,21 @@ func TestUpdateNotice(t *testing.T) {
 	if hasText(tt, en.UpdateTo("0.2.0")) {
 		t.Fatal("notice without an update")
 	}
+	quit, _ := tt.Find(en.Text(copy.Quit))
+	state.Update = runtime.Update{Phase: runtime.UpdateAvailable, Version: "0.1.0-alpha.6"}
+	state.Preferences.UILanguage = runtime.LanguageChinese
+	settle(tt)
+	zh := copy.For(copy.SimplifiedChinese)
+	if q, ok := tt.Find(zh.Text(copy.Quit)); !ok || q.X+q.W > PanelWidth-16 {
+		t.Fatalf("a long update crowds Quit: %+v", q)
+	}
+	snapshot(t, tt, "panel-update-zh-CN")
+	state.Preferences.UILanguage = runtime.LanguageEnglish
 	state.Update = runtime.Update{Phase: runtime.UpdateAvailable, Version: "0.2.0"}
 	settle(tt)
+	if q, _ := tt.Find(en.Text(copy.Quit)); q.W != quit.W || q.X != quit.X {
+		t.Fatalf("the update moved Quit: %+v from %+v", q, quit)
+	}
 	snapshot(t, tt, "panel-update")
 	if err := tt.Click(en.UpdateTo("0.2.0")); err != nil || !actions.called("open-update") {
 		t.Fatalf("notice: %v %q", err, actions.calls)
@@ -777,6 +797,12 @@ func TestOnboardingFlow(t *testing.T) {
 	click(copy.For(copy.English).Text(copy.Continue))
 	snapshot(t, tt, "onboarding-5-model")
 	click(copy.For(copy.English).Text(copy.Continue))
+	// Polishing stays off; the cloud step is skipped.
+	if !hasText(tt, copy.For(copy.English).Text(copy.OnbPolishTitle)) {
+		t.Fatalf("polish step missing: %q", tt.Texts())
+	}
+	snapshot(t, tt, "onboarding-5-polish")
+	click(copy.For(copy.English).Text(copy.Continue))
 	if !actions.called("test-hold") {
 		t.Fatal("hold key test mode not entered")
 	}
@@ -869,7 +895,7 @@ func TestChineseSettingsAndTransientErrors(t *testing.T) {
 		key copy.Key
 	}{
 		{settings.General, copy.LanguageLabel}, {settings.Dictation, copy.HoldKeyLabel},
-		{settings.Microphone, copy.MicTest}, {settings.Model, copy.ModelReason},
+		{settings.Microphone, copy.MicTest}, {settings.Model, copy.PanelAutomatic},
 		{settings.Vocabulary, copy.VocabEmpty}, {settings.About, copy.PrivacyLocal},
 	} {
 		page.Section = section.id

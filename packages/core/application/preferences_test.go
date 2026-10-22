@@ -104,3 +104,19 @@ func TestKeyboardPreferences(t *testing.T) {
 		t.Fatalf("invalid keyboard choice not explicitly repaired: %+v %v", normalized.Keyboard, repairs)
 	}
 }
+
+func TestPolishEnginePreference(t *testing.T) {
+	if got := DefaultPreferences("darwin").PolishEngine; got != PolishLocal {
+		t.Fatalf("default engine %q", got)
+	}
+	p := DefaultPreferences("darwin")
+	p.PolishEngine = PolishCloud
+	if got, repaired := p.Normalize("darwin"); got.PolishEngine != PolishCloud || len(repaired) != 0 {
+		t.Fatalf("cloud engine changed: %q %v", got.PolishEngine, repaired)
+	}
+	p.PolishEngine = "remote"
+	got, repaired := p.Normalize("darwin")
+	if got.PolishEngine != PolishLocal || len(repaired) != 1 || repaired[0] != "polishEngine" {
+		t.Fatalf("unknown engine not repaired: %q %v", got.PolishEngine, repaired)
+	}
+}

@@ -39,6 +39,13 @@ type Preferences struct {
 	// Polish turns on the local LLM pipeline: live rewriting while speaking
 	// and a validated final rewrite. Off until the user downloads the model.
 	Polish bool `json:"polish"`
+	// PolishEngine is where polishing runs: on this device, or with the
+	// cloud model the user connected (ADR 022). Profiles written before it
+	// existed load PolishLocal.
+	PolishEngine PolishEngine `json:"polishEngine"`
+	// CloudModel is the model ID chosen for cloud polishing, among those the
+	// connected provider lists. Credentials are never preferences.
+	CloudModel string `json:"cloudModel,omitempty"`
 	// MatchApp lets polishing follow the focused app, field and web site
 	// (email, work chat, coding prompt, search) instead of always writing
 	// plain chat text. Profiles written before it existed load the default.
@@ -64,6 +71,16 @@ type Preferences struct {
 	Keyboard KeyboardPreferences `json:"keyboard"`
 }
 
+// PolishEngine selects where polishing runs.
+type PolishEngine string
+
+const (
+	PolishLocal PolishEngine = "local"
+	// PolishCloud sends only the dictated text and its recalled terms to
+	// the connected provider; context sources stay on the device.
+	PolishCloud PolishEngine = "cloud"
+)
+
 // PreferencesVersion is the current schema; older files are migrated.
 const PreferencesVersion = 1
 
@@ -79,7 +96,7 @@ const (
 func DefaultPreferences(platform string) Preferences {
 	return Preferences{
 		Version: PreferencesVersion, UILanguage: English, HoldKey: DefaultHoldKey(platform),
-		Delivery: DeliveryAutomatic, RemoveFillers: true, Sounds: true, CheckUpdates: true, MatchApp: true,
+		Delivery: DeliveryAutomatic, PolishEngine: PolishLocal, RemoveFillers: true, Sounds: true, CheckUpdates: true, MatchApp: true,
 		ContextCursor: true, ContextScreen: true, ContextHistory: true, LearnEdits: true,
 		Keyboard: DefaultKeyboardPreferences(),
 	}
@@ -103,6 +120,10 @@ func (p Preferences) Normalize(platform string) (Preferences, []string) {
 	if !knownHoldKey(platform, p.HoldKey) {
 		p.HoldKey = defaults.HoldKey
 		repaired = append(repaired, "holdKey")
+	}
+	if p.PolishEngine != PolishLocal && p.PolishEngine != PolishCloud {
+		p.PolishEngine = defaults.PolishEngine
+		repaired = append(repaired, "polishEngine")
 	}
 	if p.Delivery != DeliveryAutomatic && p.Delivery != DeliveryClipboard {
 		p.Delivery = defaults.Delivery

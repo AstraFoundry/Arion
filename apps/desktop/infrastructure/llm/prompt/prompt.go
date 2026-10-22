@@ -69,17 +69,33 @@ type Input struct {
 	Text    string
 }
 
-// Prefix is the fixed system and demonstration part shared by all requests.
-func (t Template) Prefix() string {
-	var b strings.Builder
-	turn(&b, "system", t.System)
+// Turn is one chat message of the prompt.
+type Turn struct{ Role, Content string }
+
+// fixed is the system turn and the demonstrations shared by all requests.
+func (t Template) fixed() []Turn {
+	turns := []Turn{{"system", t.System}}
 	for _, e := range t.Examples {
 		in := Input{Scene: e.Scene, Terms: e.Terms, Text: e.Input}
 		if e.Context != nil {
 			in.Context = *e.Context
 		}
-		turn(&b, "user", user(in))
-		turn(&b, "assistant", e.Output)
+		turns = append(turns, Turn{"user", user(in)}, Turn{"assistant", e.Output})
+	}
+	return turns
+}
+
+// Turns is the whole prompt as chat messages, for a chat API that applies
+// its own template: the fixed turns, then the request's user turn.
+func (t Template) Turns(in Input) []Turn {
+	return append(t.fixed(), Turn{"user", user(in)})
+}
+
+// Prefix is the fixed system and demonstration part shared by all requests.
+func (t Template) Prefix() string {
+	var b strings.Builder
+	for _, x := range t.fixed() {
+		turn(&b, x.Role, x.Content)
 	}
 	return b.String()
 }

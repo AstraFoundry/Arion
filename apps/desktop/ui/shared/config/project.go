@@ -21,3 +21,13 @@ const (
 	// tagged v1.2.0 and so on.
 	ReleaseURL = RepositoryURL + "/releases/tag/v"
 )
+
+// CloudProviders names the cloud polishing providers by their runtime IDs.
+var CloudProviders = map[string]string{
+	"chatgpt":    "ChatGPT",
+	"openai":     "OpenAI",
+	"anthropic":  "Anthropic",
+	"google":     "Google Gemini",
+	"deepseek":   "DeepSeek",
+	"openrouter": "OpenRouter",
+}

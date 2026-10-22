@@ -12,7 +12,17 @@ import (
 // Views map State.Account.ErrorCode through the copy catalog, so every code
 // the account service declares must be one the runtime boundary lists.
 func TestAccountCodesMatchService(t *testing.T) {
-	file, err := parser.ParseFile(token.NewFileSet(), "../../../internal/account/errors.go", nil, 0)
+	matchCodes(t, "../../../internal/account/errors.go", AccountCodes)
+}
+
+// The same holds for State.Cloud.Failure and the cloud polishing service.
+func TestCloudCodesMatchService(t *testing.T) {
+	matchCodes(t, "../../../infrastructure/cloudpolish/errors.go", CloudCodes)
+}
+
+func matchCodes(t *testing.T, path string, runtime []string) {
+	t.Helper()
+	file, err := parser.ParseFile(token.NewFileSet(), path, nil, 0)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -36,10 +46,10 @@ func TestAccountCodesMatchService(t *testing.T) {
 		service = append(service, code)
 		return true
 	})
-	declared := slices.Clone(AccountCodes)
+	declared := slices.Clone(runtime)
 	slices.Sort(service)
 	slices.Sort(declared)
 	if len(service) == 0 || !slices.Equal(service, declared) {
-		t.Fatalf("account codes differ:\nservice %v\nruntime %v", service, declared)
+		t.Fatalf("%s codes differ:\nservice %v\nruntime %v", path, service, declared)
 	}
 }
