@@ -20,6 +20,8 @@ IME-04: A host refusing composition/read/write or a secure field produces an exp
 
 IME-05: Candidates must support keyboard navigation, selection, accessible names and bounded display. Selected ID/revision survives a reorder only while still present; user navigation freezes automatic selection until the next explicit composition update.
 
+IME-06: The macOS input menu's first item is Voice input, titled with the configured dictation key ("Voice input — Right Option" / "语音输入 — 右 Option") and separated from the keyboard items. Choosing it sends an activation-bound `dictate` message; the app toggles dictation exactly as its tray item does (idle starts, capturing stops, preparing cancels, finalizing reports busy), and the delivery route is still selected per [DSK-01](001-desktop-input.md). The item is disabled while the host has no connection to the app. A `dictate` with a stale or empty activation, or from a replaced connection, is ignored. The app writes the dictation key to `keyboard.json` as `dictationKey`; the host reads it on activation, and an absent or unknown key leaves the key out of the title.
+
 ## Offline macOS keyboard typing
 
 KBD-01: The installed IMK host provides Simplified Chinese full-Pinyin conversion without the menu-bar app or network. Pin independently licensed engine/data bytes and complete schema dependencies. Missing/corrupt runtime/data is an explicit unavailable state, never simulated conversion or silent Latin substitution.
@@ -58,6 +60,7 @@ RNK-05: Short candidate ranking must coexist with ASR without breaking audio dea
 | IME-A03 | Cancel/deactivate/target change → clear owned composition; late callbacks ignored |
 | IME-A04 | User types/navigates during inference → host updates win and stale range never changes |
 | IME-A05 | Emoji/CJK/surrogate pairs → exact adapter range conversion; no neighboring deletion |
+| IME-A07 | Arion selected, app running → choose Voice input → dictation starts in the focused field; choose it again → stops and commits once; app not running → item disabled; change the dictation key → the next activation shows the new key; stale-activation or replaced-connection `dictate` → ignored |
 | KBD-A01 | Offline first activation with menu-bar app stopped → real Pinyin composition/candidates/commit |
 | KBD-A02 | Apostrophes, abbreviations, v/ü, mixed punctuation and unknown input → declared schema results without fabricated alternatives |
 | KBD-A03 | Page/number/mouse/navigation, partial selection and suffix continuation → selected engine identity preserved |

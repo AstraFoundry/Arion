@@ -27,7 +27,7 @@ func TestOrphanedSocketRecoversAndAcceptsHost(t *testing.T) {
 	}
 	old.SetUnlinkOnClose(false)
 	old.Close()
-	m := New(path, nil)
+	m := New(path, nil, nil)
 	if err := m.Listen(); err != nil {
 		t.Fatal(err)
 	}
@@ -69,7 +69,7 @@ func TestRecoveryNeverRemovesUnrelatedOrLivePaths(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			m := New(path, nil)
+			m := New(path, nil, nil)
 			if err := m.Listen(); err == nil {
 				m.Close()
 				t.Fatal("replaced protected path")
@@ -83,7 +83,7 @@ func TestRecoveryNeverRemovesUnrelatedOrLivePaths(t *testing.T) {
 }
 
 func TestSocketProbeDoesNotRevokeActiveComposition(t *testing.T) {
-	m := New(socketFixture(t), nil)
+	m := New(socketFixture(t), nil, nil)
 	if err := m.Listen(); err != nil {
 		t.Fatal(err)
 	}

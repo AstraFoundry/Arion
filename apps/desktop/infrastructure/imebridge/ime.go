@@ -44,10 +44,14 @@ type IME struct {
 	committing         bool
 	ack                chan bool
 	onLeave            func()
+	onDictate          func()
 }
 
-func New(path string, onLeave func()) *IME {
-	return &IME{path: path, onLeave: onLeave, changed: make(chan struct{})}
+// New serves the socket at path. onLeave runs when an owned session loses
+// its client; onDictate runs when the current client chooses Voice Input
+// from the input menu (IME-06). Both run on a connection goroutine.
+func New(path string, onLeave, onDictate func()) *IME {
+	return &IME{path: path, onLeave: onLeave, onDictate: onDictate, changed: make(chan struct{})}
 }
 
 func (m *IME) Listen() error {
@@ -160,7 +164,7 @@ func (m *IME) serve(conn net.Conn) {
 			continue
 		}
 		m.mu.Lock()
-		had = false
+		had, dictate := false, false
 		if m.conn != conn {
 			m.mu.Unlock()
 			break
@@ -184,9 +188,14 @@ func (m *IME) serve(conn net.Conn) {
 				m.ack <- true
 				m.ack = nil
 			}
+		case "dictate":
+			dictate = msg.Activation != "" && msg.Activation == m.activation
 		}
 		m.mu.Unlock()
 		m.leave(had)
+		if dictate && m.onDictate != nil {
+			m.onDictate()
+		}
 	}
 	m.mu.Lock()
 	had = false

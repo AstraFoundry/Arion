@@ -210,6 +210,9 @@ func New(opts Options) (*App, error) {
 	// or the user presses Escape (IME-A03).
 	a.ime = a.platform.NewInputMethod(func() {
 		a.core.CancelMode(domain.SystemIMEMode)
+	}, func() {
+		// The input menu's Voice Input item is the tray toggle (IME-06).
+		a.post(actions{a}.ToggleDictation)
 	})
 	var finalizer ports.Finalizer = a.manager
 	var targets Targets = a.targets
@@ -399,7 +402,7 @@ func (a *App) ready() {
 			mygo.App.OnQuit(a.ime.Close)
 		}
 		a.state.InputMethod = a.ime.State()
-		if err := a.ime.ApplyKeyboard(a.state.Preferences.Keyboard); err != nil {
+		if err := a.ime.ApplyKeyboard(a.state.Preferences.Keyboard, a.state.Preferences.HoldKey); err != nil {
 			a.record("keyboard_settings", err)
 		}
 		go func() {

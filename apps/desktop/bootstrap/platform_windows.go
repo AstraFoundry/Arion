@@ -59,4 +59,4 @@ func (windowsPlatform) NewTargets(delivery func() application.Delivery, gates Ta
 
 // NewInputMethod: the TSF text service is not implemented (TSF-01), so the
 // input-method mode is reported unsupported rather than simulated.
-func (windowsPlatform) NewInputMethod(func()) InputMethod { return nil }
+func (windowsPlatform) NewInputMethod(_, _ func()) InputMethod { return nil }

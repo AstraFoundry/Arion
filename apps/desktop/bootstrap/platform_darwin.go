@@ -83,12 +83,12 @@ func (p darwinPlatform) NewTargets(_ func() application.Delivery, gates TargetGa
 
 type darwinIME struct{ *macos.IME }
 
-func (darwinPlatform) NewInputMethod(onLeave func()) InputMethod {
-	return darwinIME{macos.NewIME(macos.DefaultIMESocket(), onLeave)}
+func (darwinPlatform) NewInputMethod(onLeave, onDictate func()) InputMethod {
+	return darwinIME{macos.NewIME(macos.DefaultIMESocket(), onLeave, onDictate)}
 }
 
-func (darwinIME) ApplyKeyboard(k application.KeyboardPreferences) error {
-	return macos.WriteKeyboardSettings(k)
+func (darwinIME) ApplyKeyboard(k application.KeyboardPreferences, dictationKey application.HoldKey) error {
+	return macos.WriteKeyboardSettings(k, dictationKey)
 }
 
 func (darwinIME) State() runtime.InputMethodState {

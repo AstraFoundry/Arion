@@ -84,7 +84,7 @@ func capture(t *testing.T, m *IME, h *host, id string) contracts.TargetSnapshot 
 }
 func TestActivationRevokesOldSessionAndMessages(t *testing.T) {
 	var leaves atomic.Int32
-	m := New("", func() { leaves.Add(1) })
+	m := New("", func() { leaves.Add(1) }, nil)
 	defer m.Close()
 	h := attach(t, m, "first")
 	old := capture(t, m, h, "s1")
@@ -107,7 +107,7 @@ func TestActivationRevokesOldSessionAndMessages(t *testing.T) {
 }
 func TestDisconnectInvalidatesAndNotifies(t *testing.T) {
 	var leaves atomic.Int32
-	m := New("", func() { leaves.Add(1) })
+	m := New("", func() { leaves.Add(1) }, nil)
 	defer m.Close()
 	h := attach(t, m, "a")
 	s := capture(t, m, h, "s")
@@ -118,7 +118,7 @@ func TestDisconnectInvalidatesAndNotifies(t *testing.T) {
 	}
 }
 func TestCommitAcknowledgementScopedAndExactlyOnce(t *testing.T) {
-	m := New("", nil)
+	m := New("", nil, nil)
 	defer m.Close()
 	h := attach(t, m, "a")
 	s := capture(t, m, h, "s")
@@ -146,7 +146,7 @@ func TestCommitAcknowledgementScopedAndExactlyOnce(t *testing.T) {
 	capture(t, m, h, "next")
 }
 func TestCancelledCommitRetiresCapability(t *testing.T) {
-	m := New("", nil)
+	m := New("", nil, nil)
 	defer m.Close()
 	h := attach(t, m, "a")
 	s := capture(t, m, h, "s")
@@ -170,7 +170,7 @@ func TestCancelledCommitRetiresCapability(t *testing.T) {
 	capture(t, m, h, "next")
 }
 func TestRevisionAndIdentityValidation(t *testing.T) {
-	m := New("", nil)
+	m := New("", nil, nil)
 	defer m.Close()
 	h := attach(t, m, "a")
 	s := capture(t, m, h, "s")
@@ -195,7 +195,7 @@ func TestRevisionAndIdentityValidation(t *testing.T) {
 }
 func TestOldConnectionCannotDeactivateReplacement(t *testing.T) {
 	var leaves atomic.Int32
-	m := New("", func() { leaves.Add(1) })
+	m := New("", func() { leaves.Add(1) }, nil)
 	defer m.Close()
 	first := attach(t, m, "a")
 	capture(t, m, first, "old")
@@ -207,8 +207,34 @@ func TestOldConnectionCannotDeactivateReplacement(t *testing.T) {
 	}
 }
 
+// The input menu's Voice Input item toggles dictation only for the client
+// that is active now on the current connection (IME-06).
+func TestDictateIsActivationScoped(t *testing.T) {
+	var dictations atomic.Int32
+	m := New("", nil, func() { dictations.Add(1) })
+	defer m.Close()
+	first := attach(t, m, "a")
+	first.send(t, message{Op: "dictate", Activation: "stale"})
+	first.send(t, message{Op: "dictate"})
+	first.send(t, message{Op: "dictate", Activation: "a"})
+	wait(t, func() bool { return dictations.Load() == 1 })
+	first.send(t, message{Op: "deactivate", Activation: "a"})
+	first.send(t, message{Op: "dictate", Activation: "a"})
+	second := attach(t, m, "b")
+	// The replaced connection is closed; its late message never arrives.
+	_ = json.NewEncoder(first.conn).Encode(message{Op: "dictate", Activation: "b"})
+	second.send(t, message{Op: "dictate", Activation: "b"})
+	wait(t, func() bool { return dictations.Load() == 2 })
+	// Pipes are synchronous: this activation is read after the dictate.
+	second.send(t, message{Op: "activate", Activation: "c"})
+	wait(t, func() bool { m.mu.Lock(); defer m.mu.Unlock(); return m.activation == "c" })
+	if n := dictations.Load(); n != 2 {
+		t.Fatalf("stale or deactivated dictate toggled dictation: %d", n)
+	}
+}
+
 func TestCancelledContextBeforeCommitDoesNotConsumeSession(t *testing.T) {
-	m := New("", nil)
+	m := New("", nil, nil)
 	defer m.Close()
 	h := attach(t, m, "a")
 	s := capture(t, m, h, "s")
@@ -223,7 +249,7 @@ func TestCancelledContextBeforeCommitDoesNotConsumeSession(t *testing.T) {
 }
 func TestCloseRevokesAndStopsTransport(t *testing.T) {
 	var leaves atomic.Int32
-	m := New("", func() { leaves.Add(1) })
+	m := New("", func() { leaves.Add(1) }, nil)
 	h := attach(t, m, "a")
 	s := capture(t, m, h, "s")
 	m.Close()
@@ -245,18 +271,18 @@ func TestSocketLifecycleDoesNotReplaceExistingPath(t *testing.T) {
 	}
 	defer os.RemoveAll(directory)
 	path := filepath.Join(directory, "ime.sock")
-	m := New(path, nil)
+	m := New(path, nil, nil)
 	if err := m.Listen(); err != nil {
 		t.Fatal(err)
 	}
 	defer m.Close()
-	other := New(path, nil)
+	other := New(path, nil, nil)
 	if err := other.Listen(); err == nil {
 		other.Close()
 		t.Fatal("existing socket was replaced")
 	}
 	m.Close()
-	replacement := New(path, nil)
+	replacement := New(path, nil, nil)
 	if err := replacement.Listen(); err != nil {
 		t.Fatal(err)
 	}
@@ -264,7 +290,7 @@ func TestSocketLifecycleDoesNotReplaceExistingPath(t *testing.T) {
 }
 
 func TestBlockedCommitHonorsContextAndReturnsUncertain(t *testing.T) {
-	m := New("", nil)
+	m := New("", nil, nil)
 	defer m.Close()
 	h := attach(t, m, "a")
 	s := capture(t, m, h, "s")
@@ -284,7 +310,7 @@ func TestBlockedCommitHonorsContextAndReturnsUncertain(t *testing.T) {
 
 func TestEscapeIsSessionScopedAndLeavesSourceActive(t *testing.T) {
 	var leaves atomic.Int32
-	m := New("", func() { leaves.Add(1) })
+	m := New("", func() { leaves.Add(1) }, nil)
 	defer m.Close()
 	h := attach(t, m, "a")
 	s := capture(t, m, h, "s")
@@ -301,7 +327,7 @@ func TestEscapeIsSessionScopedAndLeavesSourceActive(t *testing.T) {
 }
 
 func TestEmptyMarkAndCommitPreserveStringField(t *testing.T) {
-	m := New("", nil)
+	m := New("", nil, nil)
 	defer m.Close()
 	h := attach(t, m, "a")
 	s := capture(t, m, h, "s")
@@ -346,7 +372,7 @@ func TestEmptyMarkAndCommitPreserveStringField(t *testing.T) {
 	}
 }
 func TestCancelledCancelDisconnectsToClearNativeOwnership(t *testing.T) {
-	m := New("", nil)
+	m := New("", nil, nil)
 	defer m.Close()
 	h := attach(t, m, "a")
 	s := capture(t, m, h, "s")
@@ -367,7 +393,7 @@ func TestCancelledCancelDisconnectsToClearNativeOwnership(t *testing.T) {
 func TestWriteKeyboardSettings(t *testing.T) {
 	path := filepath.Join(t.TempDir(), "Arion", "keyboard.json")
 	want := application.KeyboardPreferences{PageSize: 6, CandidateSize: application.CandidateLarge, Appearance: application.AppearanceDark, Accent: application.AccentBlue}
-	if err := WriteKeyboardSettings(path, want); err != nil {
+	if err := WriteKeyboardSettings(path, want, application.HoldRightCommand); err != nil {
 		t.Fatal(err)
 	}
 	data, err := os.ReadFile(path)
@@ -377,7 +403,8 @@ func TestWriteKeyboardSettings(t *testing.T) {
 	// The input method reads exactly these keys.
 	var raw map[string]any
 	if err := json.Unmarshal(data, &raw); err != nil || raw["pageSize"] != 6.0 || raw["candidateSize"] != "large" ||
-		raw["appearance"] != "dark" || raw["accent"] != "blue" || raw["contextRanking"] != false {
+		raw["appearance"] != "dark" || raw["accent"] != "blue" || raw["contextRanking"] != false ||
+		raw["dictationKey"] != "right_command" {
 		t.Fatalf("unexpected settings file %s (%v)", data, err)
 	}
 	// The highlight arrives resolved for each appearance.
@@ -393,7 +420,7 @@ func TestWriteKeyboardSettings(t *testing.T) {
 }
 
 func TestReadinessRequiresExpectedBuildAndReconnectsWithoutClient(t *testing.T) {
-	m := New("", nil)
+	m := New("", nil, nil)
 	defer m.Close()
 	connect := func(build string) net.Conn {
 		server, client := net.Pipe()
@@ -433,7 +460,7 @@ func TestReadinessRequiresExpectedBuildAndReconnectsWithoutClient(t *testing.T) 
 }
 
 func TestUpdateRejectsNewOwnedCapture(t *testing.T) {
-	m := New("", nil)
+	m := New("", nil, nil)
 	defer m.Close()
 	h := attach(t, m, "a")
 	m.BeginUpdate()

@@ -424,6 +424,8 @@
   "KeyboardModeHalfWidth": "半",
   "KeyboardModeEnglishPunctuation": ".",
   "KeyboardModeChinesePunctuation": "。",
+  "KeyboardVoiceInput": "语音输入",
+  "KeyboardVoiceInputKey": "语音输入 — {key}",
   "NavKeyboard": "键盘",
   "KbdCandidatesGroup": "候选",
   "KbdPageSize": "每页候选数",

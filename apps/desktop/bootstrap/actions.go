@@ -89,8 +89,8 @@ func (x actions) UpdatePreferences(change func(*application.Preferences)) {
 	if next.MicrophoneGain != before.MicrophoneGain {
 		a.mic.SetGain(next.MicrophoneGain)
 	}
-	if next.Keyboard != before.Keyboard && a.ime != nil {
-		if err := a.ime.ApplyKeyboard(next.Keyboard); err != nil {
+	if (next.Keyboard != before.Keyboard || next.HoldKey != before.HoldKey) && a.ime != nil {
+		if err := a.ime.ApplyKeyboard(next.Keyboard, next.HoldKey); err != nil {
 			a.record("keyboard_settings", err)
 		}
 	}

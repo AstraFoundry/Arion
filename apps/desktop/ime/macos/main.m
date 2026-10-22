@@ -30,6 +30,7 @@ static NSString *hostBuildIdentity;
 @property(strong) ArionCandidatePanel *candidateWindow;
 @property(strong) ArionLanguagePanel *languageWindow;
 @property BOOL keyboardReady;
+@property(copy) NSString *dictationKey;
 - (NSDictionary *)activationMessage;
 - (void)apply:(NSDictionary *)message;
 - (void)interrupt;
@@ -60,13 +61,15 @@ static NSColor *highlightColor(NSDictionary *highlight, NSString *appearance, NS
 
 // Keyboard preferences the app writes (application.KeyboardPreferences). The
 // input method works without the app, so an absent file means the defaults;
-// unknown values keep the defaults for that field.
-static void applyKeyboardSettings(ArionTyping *typing, ArionCandidatePanel *panel) {
+// unknown values keep the defaults for that field. Returns the app's
+// dictation key (application.HoldKey), or nil.
+static NSString *applyKeyboardSettings(ArionTyping *typing, ArionCandidatePanel *panel) {
     NSUInteger pageSize = 9;
     ArionCandidateSize size = ArionCandidateSizeMedium;
     ArionCandidateAppearance appearance = ArionCandidateAppearanceSystem;
     NSColor *lightFill = nil, *lightText = nil, *darkFill = nil, *darkText = nil;
     BOOL contextRanking = YES;
+    NSString *dictationKey = nil;
     NSData *data = [NSData dataWithContentsOfFile:[applicationSupport() stringByAppendingPathComponent:@"keyboard.json"]];
     NSDictionary *settings = data ? [NSJSONSerialization JSONObjectWithData:data options:0 error:nil] : nil;
     if ([settings isKindOfClass:NSDictionary.class]) {
@@ -88,6 +91,8 @@ static void applyKeyboardSettings(ArionTyping *typing, ArionCandidatePanel *pane
         }
         value = settings[@"contextRanking"];
         if ([value isKindOfClass:NSNumber.class]) contextRanking = [value boolValue];
+        value = settings[@"dictationKey"];
+        if ([value isKindOfClass:NSString.class]) dictationKey = value;
     }
     typing.pageSize = pageSize;
     typing.contextRanking = contextRanking;
@@ -97,6 +102,17 @@ static void applyKeyboardSettings(ArionTyping *typing, ArionCandidatePanel *pane
     panel.lightText = lightText;
     panel.darkFill = darkFill;
     panel.darkText = darkText;
+    return dictationKey;
+}
+
+// The Voice Input item's title names the dictation key with the app's copy
+// for it; an absent or unknown key leaves the key out (IME-06).
+static NSString *voiceInputTitle(NSString *dictationKey) {
+    NSDictionary *names = @{@"fn": @"HoldKeyFn", @"right_option": @"HoldKeyRightOption", @"right_command": @"HoldKeyRightCommand"};
+    NSString *name = dictationKey ? names[dictationKey] : nil;
+    if (!name) return NSLocalizedString(@"KeyboardVoiceInput", nil);
+    return [NSLocalizedString(@"KeyboardVoiceInputKey", nil) stringByReplacingOccurrencesOfString:@"{key}"
+                                                                                     withString:NSLocalizedString(name, nil)];
 }
 
 @implementation ArionBridge
@@ -249,7 +265,7 @@ static void applyKeyboardSettings(ArionTyping *typing, ArionCandidatePanel *pane
         };
     }
     if (!self.languageWindow) self.languageWindow = [ArionLanguagePanel new];
-    applyKeyboardSettings(self.typing, self.candidateWindow);
+    self.dictationKey = applyKeyboardSettings(self.typing, self.candidateWindow);
     self.languageWindow.appearance = self.candidateWindow.appearance;
     self.keyboardReady = [self.typing activate:sender error:nil];
     self.clientBundle = [sender respondsToSelector:@selector(bundleIdentifier)] ? [sender bundleIdentifier] : @"";
@@ -338,6 +354,15 @@ static void applyKeyboardSettings(ArionTyping *typing, ArionCandidatePanel *pane
 - (NSMenu *)menu {
     NSMenu *menu = [[NSMenu alloc] initWithTitle:@""];
     menu.autoenablesItems = NO;
+    // Voice input needs the app; reconnect now so the item reflects it.
+    ArionBridge *bridge = [ArionBridge shared];
+    if (bridge.fd < 0 && bridge.active == self) [bridge send:self.activationMessage];
+    NSMenuItem *voice = [[NSMenuItem alloc] initWithTitle:voiceInputTitle(self.dictationKey)
+        action:@selector(dictate:) keyEquivalent:@""];
+    voice.target = self;
+    voice.enabled = bridge.fd >= 0 && bridge.active == self;
+    [menu addItem:voice];
+    [menu addItem:NSMenuItem.separatorItem];
     NSString *key = (!self.keyboardReady || !self.typing.available) ? @"KeyboardUnavailable" :
         (self.typing.ascii ? @"KeyboardSwitchChinese" : @"KeyboardSwitchEnglish");
     NSMenuItem *item = [self menuItem:key action:@selector(toggleLanguage:)];
@@ -390,6 +415,13 @@ static void applyKeyboardSettings(ArionTyping *typing, ArionCandidatePanel *pane
     if (self.typing.recoveryText.length == 0) return;
     [NSPasteboard.generalPasteboard clearContents];
     [NSPasteboard.generalPasteboard setString:self.typing.recoveryText forType:NSPasteboardTypeString];
+}
+
+// The app toggles dictation as its tray item does; the session then binds
+// to this client through begin (IME-06).
+- (void)dictate:(id)sender {
+    if (!self.composition.activation || [ArionBridge shared].active != self) return;
+    [[ArionBridge shared] send:@{@"op": @"dictate", @"activation": self.composition.activation}];
 }
 
 - (void)toggleLanguage:(id)sender {

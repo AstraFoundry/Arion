@@ -32,9 +32,10 @@ type InputMethod interface {
 	Activate(context.Context) error
 	OpenSettings() error
 	Remove() error
-	// ApplyKeyboard hands the keyboard preferences to the input method,
-	// which reads them when a client next activates it.
-	ApplyKeyboard(application.KeyboardPreferences) error
+	// ApplyKeyboard hands the keyboard preferences and the dictation key
+	// that titles the menu's Voice Input item to the input method, which
+	// reads them when a client next activates it.
+	ApplyKeyboard(application.KeyboardPreferences, application.HoldKey) error
 	// UpdateAvailable reports an installed input method older or otherwise
 	// different from the one this app bundles. It reads files; call it off
 	// the UI thread.
@@ -94,5 +95,7 @@ type Platform interface {
 	StopHoldKey()
 	NewTargets(delivery func() application.Delivery, gates TargetGates) Targets
 	// NewInputMethod returns nil where no input method host exists yet.
-	NewInputMethod(onLeave func()) InputMethod
+	// onDictate runs off the UI thread when the input menu's Voice Input
+	// item is chosen.
+	NewInputMethod(onLeave, onDictate func()) InputMethod
 }

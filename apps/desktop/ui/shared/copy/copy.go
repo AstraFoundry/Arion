@@ -14,6 +14,8 @@ const (
 	KeyboardSwitchChinese     Key = "KeyboardSwitchChinese"
 	KeyboardSwitchEnglish     Key = "KeyboardSwitchEnglish"
 	KeyboardUnavailable       Key = "KeyboardUnavailable"
+	KeyboardVoiceInput        Key = "KeyboardVoiceInput"
+	KeyboardVoiceInputKey     Key = "KeyboardVoiceInputKey"
 	SystemMicrophoneUsage     Key = "SystemMicrophoneUsage"
 	Title                     Key = "Title"
 	Tagline                   Key = "Tagline"

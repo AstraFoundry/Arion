@@ -33,7 +33,7 @@ func main() {
 		if *bundle == "" {
 			err = domain.Fail(domain.CodeTargetUnsupported, "input bundle path required")
 		} else {
-			transport := macos.NewIME(*socket, nil)
+			transport := macos.NewIME(*socket, nil, nil)
 			err = transport.Listen()
 			if err == nil {
 				err = macos.InstallIME(*bundle, transport.WaitReady)
@@ -41,7 +41,7 @@ func main() {
 			transport.Close()
 		}
 	case "activate":
-		transport := macos.NewIME(*socket, nil)
+		transport := macos.NewIME(*socket, nil, nil)
 		err = transport.Listen()
 		if err == nil {
 			parent, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)

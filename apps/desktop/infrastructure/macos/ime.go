@@ -279,18 +279,18 @@ func RemoveIME() error {
 // IME is the session-bound local transport used by the InputMethodKit host.
 type IME = imebridge.IME
 
-func NewIME(path string, onLeave func()) *IME {
-	return imebridge.New(path, onLeave)
+func NewIME(path string, onLeave, onDictate func()) *IME {
+	return imebridge.New(path, onLeave, onDictate)
 }
 
 // WriteKeyboardSettings writes keyboard.json beside the socket, where the
 // IMK bundle reads it on activation.
-func WriteKeyboardSettings(k application.KeyboardPreferences) error {
+func WriteKeyboardSettings(k application.KeyboardPreferences, dictationKey application.HoldKey) error {
 	base, err := os.UserConfigDir()
 	if err != nil {
 		return err
 	}
-	return imebridge.WriteKeyboardSettings(filepath.Join(base, "Arion", "keyboard.json"), k)
+	return imebridge.WriteKeyboardSettings(filepath.Join(base, "Arion", "keyboard.json"), k, dictationKey)
 }
 
 // DefaultIMESocket matches the path the IMK bundle dials.
