@@ -325,27 +325,40 @@ static void applyKeyboardSettings(ArionTyping *typing, ArionCandidatePanel *pane
                          caretRect:caret];
 }
 
+// The input menu follows the system input sources: the mode switch with its
+// shortcut, keyboard maintenance, then the app that owns settings.
 - (NSMenu *)menu {
     NSMenu *menu = [[NSMenu alloc] initWithTitle:@""];
     menu.autoenablesItems = NO;
     NSString *key = (!self.keyboardReady || !self.typing.available) ? @"KeyboardUnavailable" :
         (self.typing.ascii ? @"KeyboardSwitchChinese" : @"KeyboardSwitchEnglish");
-    NSMenuItem *item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(key, nil)
-        action:@selector(toggleLanguage:) keyEquivalent:@""];
-    item.target = self;
+    NSMenuItem *item = [self menuItem:key action:@selector(toggleLanguage:)];
     item.enabled = self.keyboardReady && self.typing.available;
     [menu addItem:item];
-    NSMenuItem *reset = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"KeyboardResetLearning", nil)
-        action:@selector(resetLearning:) keyEquivalent:@""];
-    reset.target = self;
-    [menu addItem:reset];
-    if (self.typing.recoveryText.length > 0) {
-        NSMenuItem *copy = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"KeyboardCopyPending", nil)
-            action:@selector(copyPending:) keyEquivalent:@""];
-        copy.target = self;
-        [menu addItem:copy];
+    [menu addItem:NSMenuItem.separatorItem];
+    if (self.typing.recoveryText.length > 0) [menu addItem:[self menuItem:@"KeyboardCopyPending" action:@selector(copyPending:)]];
+    [menu addItem:[self menuItem:@"KeyboardResetLearning" action:@selector(resetLearning:)]];
+    NSString *app = [NSBundle.mainBundle objectForInfoDictionaryKey:@"ArionAppIdentifier"];
+    if ([app isKindOfClass:NSString.class] && [NSWorkspace.sharedWorkspace URLForApplicationWithBundleIdentifier:app]) {
+        [menu addItem:NSMenuItem.separatorItem];
+        [menu addItem:[self menuItem:@"KeyboardOpenApp" action:@selector(openApp:)]];
     }
     return menu;
+}
+
+- (NSMenuItem *)menuItem:(NSString *)key action:(SEL)action {
+    NSMenuItem *item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(key, nil) action:action keyEquivalent:@""];
+    item.target = self;
+    return item;
+}
+
+- (void)openApp:(id)sender {
+    NSString *app = [NSBundle.mainBundle objectForInfoDictionaryKey:@"ArionAppIdentifier"];
+    NSURL *url = [app isKindOfClass:NSString.class] ? [NSWorkspace.sharedWorkspace URLForApplicationWithBundleIdentifier:app] : nil;
+    if (!url) { NSBeep(); return; }
+    NSWorkspaceOpenConfiguration *configuration = [NSWorkspaceOpenConfiguration configuration];
+    configuration.activates = YES;
+    [NSWorkspace.sharedWorkspace openApplicationAtURL:url configuration:configuration completionHandler:nil];
 }
 
 - (void)resetLearning:(id)sender {

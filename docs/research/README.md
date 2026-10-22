@@ -13,6 +13,7 @@ Research separates **observed shipped artifacts**, **static inferences**, **vend
 - [Typing-time candidate re-ranking](context-ranking.md) — Doubao's feature/MLP candidate sort and user-bigram context, Chatterfly's 上下文调频 option and Arion's local context ranker.
 - [Voice typewriter](voice-typewriter.md) — Doubao's spring-paced ASR typewriter and replace decisions, Chatterfly's speech-bar animations and Arion's paced, fading dictation text.
 - [Input-source onboarding](input-source-onboarding.md) — bounded Doubao/Chatterfly register, enable, selection, notification, manual guide and refresh evidence with version limits.
+- [Input menu items](input-menu.md) — Chatterfly/Doubao input-menu items compared with Arion, the implemented alignment and the deferred toggles.
 - [Shift language switching](shift-language-switch.md) — Doubao/Chatterfly short-press release gates, chord suppression and composition commit paths, with static evidence limits.
 - [IMK typing alignment](imk-typing-alignment.md) — focused competitor paging/editing/mode-switch evidence, Arion composition ownership fixes, full-keyboard implementation gates and restored post-profile diagnostics with system acceptance deferred.
 - [Doubao keyboard commit chain](doubao-keyboard-commit.md) — byte-verified keyboard selection-to-host insertion and partial reconversion paths, with exact artifact identity and static evidence limits.

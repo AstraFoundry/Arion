@@ -8,6 +8,7 @@ const (
 	IMECancelSetup            Key = "IMECancelSetup"
 	KeyboardResetLearning     Key = "KeyboardResetLearning"
 	KeyboardCopyPending       Key = "KeyboardCopyPending"
+	KeyboardOpenApp           Key = "KeyboardOpenApp"
 	KeyboardModeChinese       Key = "KeyboardModeChinese"
 	KeyboardModeEnglish       Key = "KeyboardModeEnglish"
 	KeyboardSwitchChinese     Key = "KeyboardSwitchChinese"

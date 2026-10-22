@@ -36,6 +36,8 @@ try {
   run('/usr/libexec/PlistBuddy', ['-c', `Set :CFBundleShortVersionString ${config.version.split('-')[0]}`, path.join(bundle, 'Info.plist')]);
   run('/usr/libexec/PlistBuddy', ['-c', `Set :CFBundleVersion ${config.version.split('-')[0]}`, path.join(bundle, 'Info.plist')]);
   run('/usr/libexec/PlistBuddy', ['-c', `Set :LSMinimumSystemVersion ${config.macos.minimumSystemVersion}`, path.join(bundle, 'Info.plist')]);
+  // The input menu opens the app that shipped this input method.
+  run('/usr/libexec/PlistBuddy', ['-c', `Add :ArionAppIdentifier string ${config.identifier}`, path.join(bundle, 'Info.plist')]);
   // Compile every native source and the CryptoKit boundary for each architecture.
   const objects = path.join(root, '.workspace', 'keyboard-runtime', 'host-build');
   const slices = [];
@@ -64,7 +66,7 @@ try {
   copyFileSync(path.join(keyboard, 'runtime.json'), path.join(bundle, 'Resources/keyboard/runtime.json'));
   for (const [locale, language] of [['en', 'en'], ['zh-CN', 'zh-Hans']]) {
     const catalog = JSON.parse(readFileSync(path.join(desktop, 'ui/shared/copy/locales', `${locale}.json`), 'utf8'));
-    const strings = ['KeyboardModeChinese', 'KeyboardModeEnglish', 'KeyboardSwitchChinese', 'KeyboardSwitchEnglish', 'KeyboardUnavailable', 'KeyboardResetLearning', 'KeyboardCopyPending'].map(key => {
+    const strings = ['KeyboardModeChinese', 'KeyboardModeEnglish', 'KeyboardSwitchChinese', 'KeyboardSwitchEnglish', 'KeyboardUnavailable', 'KeyboardResetLearning', 'KeyboardCopyPending', 'KeyboardOpenApp'].map(key => {
       if (!catalog[key]) throw new Error(`Missing keyboard copy: ${locale}/${key}`);
       return `${JSON.stringify(key)} = ${JSON.stringify(catalog[key])};`;
     });
