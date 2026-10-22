@@ -107,10 +107,10 @@ func TestCloudPages(t *testing.T) {
 	}
 }
 
-// Settings › Model is an index of recognition and polish; the polish page
-// keeps one row for the cloud, which opens its pages, and back leaves them
-// one page at a time. Context switches hide for the cloud, which works
-// where the local runtime is not shipped.
+// Settings › Model keeps its settings on one page; the recognition model
+// and the cloud model each open their own pages, and back leaves them one
+// page at a time. Context switches hide for the cloud, which works where
+// the local runtime is not shipped.
 func TestSettingsCloudModel(t *testing.T) {
 	state, _, store := fixture()
 	state.Polish = runtime.Polish{State: runtime.PolishUnsupported}
@@ -129,16 +129,12 @@ func TestSettingsCloudModel(t *testing.T) {
 		}
 		settle(tt)
 	}
-	if !hasText(tt, en.Text(copy.PolishEngineCloud)+" · deepseek-chat") || hasText(tt, en.Text(copy.PolishLabel)) {
-		t.Fatalf("model index: %q", tt.Texts())
+	if !hasText(tt, en.Text(copy.ModelRecognitionPage)) || !hasText(tt, en.Text(copy.MatchAppLabel)) || hasText(tt, en.Text(copy.ContextScreenLabel)) ||
+		hasText(tt, en.Text(copy.PolishUnsupported)) || !hasText(tt, "deepseek-chat") || hasText(tt, en.Text(copy.CloudDisconnect)) ||
+		hasText(tt, en.Text(copy.PolishCloudDetail)) || hasText(tt, en.Text(copy.ModelReason)) {
+		t.Fatalf("model section: %q", tt.Texts())
 	}
-	snapshot(t, tt, "settings-model-index")
-	click(en.Text(copy.ModelPolishGroup))
-	if !hasText(tt, en.Text(copy.MatchAppLabel)) || hasText(tt, en.Text(copy.ContextScreenLabel)) || hasText(tt, en.Text(copy.PolishUnsupported)) ||
-		!hasText(tt, "deepseek-chat") || hasText(tt, en.Text(copy.CloudDisconnect)) || hasText(tt, en.Text(copy.PolishCloudDetail)) {
-		t.Fatalf("polish page: %q", tt.Texts())
-	}
-	snapshot(t, tt, "settings-model-polish-cloud")
+	snapshot(t, tt, "settings-model-cloud")
 	click(en.Text(copy.CloudTitle))
 	if !hasText(tt, config.CloudProviders[runtime.CloudChatGPT]) || hasText(tt, en.Text(copy.MatchAppLabel)) {
 		t.Fatalf("cloud list: %q", tt.Texts())
@@ -152,16 +148,17 @@ func TestSettingsCloudModel(t *testing.T) {
 	click(en.Text(copy.Back))
 	click(en.Text(copy.Back))
 	if !hasText(tt, en.Text(copy.MatchAppLabel)) {
-		t.Fatalf("back to polish: %q", tt.Texts())
+		t.Fatalf("back to Model: %q", tt.Texts())
 	}
+	click(en.Text(copy.ModelRecognitionPage))
+	if !hasText(tt, en.Text(copy.ModelReason)) {
+		t.Fatalf("recognition page: %q", tt.Texts())
+	}
+	click(en.Text(copy.Back))
 	state.Preferences.PolishEngine = runtime.PolishLocal
 	settle(tt)
 	if hasText(tt, en.Text(copy.MatchAppLabel)) || !hasText(tt, en.Text(copy.PolishUnsupported)) || hasText(tt, en.Text(copy.CloudTitle)) {
 		t.Fatalf("local on an unsupported platform: %q", tt.Texts())
-	}
-	click(en.Text(copy.Back))
-	if !hasText(tt, en.Text(copy.PanelAutomatic)) {
-		t.Fatalf("back to the index: %q", tt.Texts())
 	}
 }
 

@@ -304,6 +304,7 @@
   "ModelNameGeneric": "Voice recognition",
   "ModelRecognitionGroup": "Recognition",
   "ModelPolishGroup": "Polish",
+  "ModelRecognitionPage": "Recognition model",
   "ContextGroup": "Context",
   "NavOverview": "Overview",
   "UsageSpeechTime": "Time dictating",

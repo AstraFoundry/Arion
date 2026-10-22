@@ -518,8 +518,21 @@ func TestUpdateNotice(t *testing.T) {
 	if hasText(tt, en.UpdateTo("0.2.0")) {
 		t.Fatal("notice without an update")
 	}
+	quit, _ := tt.Find(en.Text(copy.Quit))
+	state.Update = runtime.Update{Phase: runtime.UpdateAvailable, Version: "0.1.0-alpha.6"}
+	state.Preferences.UILanguage = runtime.LanguageChinese
+	settle(tt)
+	zh := copy.For(copy.SimplifiedChinese)
+	if q, ok := tt.Find(zh.Text(copy.Quit)); !ok || q.X+q.W > PanelWidth-16 {
+		t.Fatalf("a long update crowds Quit: %+v", q)
+	}
+	snapshot(t, tt, "panel-update-zh-CN")
+	state.Preferences.UILanguage = runtime.LanguageEnglish
 	state.Update = runtime.Update{Phase: runtime.UpdateAvailable, Version: "0.2.0"}
 	settle(tt)
+	if q, _ := tt.Find(en.Text(copy.Quit)); q.W != quit.W || q.X != quit.X {
+		t.Fatalf("the update moved Quit: %+v from %+v", q, quit)
+	}
 	snapshot(t, tt, "panel-update")
 	if err := tt.Click(en.UpdateTo("0.2.0")); err != nil || !actions.called("open-update") {
 		t.Fatalf("notice: %v %q", err, actions.calls)

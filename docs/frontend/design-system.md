@@ -79,7 +79,7 @@ Use these instead of `ui.Button` / `ui.PrimaryButton`. MyGo's stock switches, ra
 
 ## Pages and density
 
-A section with more than one subject is an index of `LinkRow`s, each opening its own page; the page's title carries a back `IconButton` that steps out one page at a time. Settings › Model is the index of Recognition and Polish; Polish opens the cloud model's pages. Settings explain themselves in `Hint` tooltips, not detail lines; state (a download, a failure) stays visible in words.
+Settings stay on their section; a model's own details and choices take a page, opened by a `LinkRow` that shows the current value, whose title carries a back `IconButton` that steps out one page at a time. Settings › Model keeps the recognition and polish settings on the section; the recognition model and the cloud model each open their pages. Settings explain themselves in `Hint` tooltips, not detail lines; state (a download, a failure) stays visible in words.
 
 ## Icons
 

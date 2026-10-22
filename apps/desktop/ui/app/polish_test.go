@@ -155,21 +155,22 @@ func TestNoTechnicalModelNames(t *testing.T) {
 		messages := copy.For(copy.Locale(locale))
 		check("settings", tt.Texts())
 		snapshot(t, tt, "settings-model-"+string(locale))
-		for _, sub := range []struct{ open, want copy.Key }{{copy.ModelRecognitionGroup, copy.ModelNameGeneric}, {copy.ModelPolishGroup, copy.PolishLabel}} {
-			if err := tt.Click(messages.Text(sub.open)); err != nil {
-				t.Fatal(err)
-			}
-			settle(tt)
-			if !hasText(tt, messages.Text(sub.want)) {
-				t.Fatalf("%s page lacks %s: %q", sub.open, sub.want, tt.Texts())
-			}
-			check("settings", tt.Texts())
-			snapshot(t, tt, "settings-model-"+string(sub.open)+"-"+string(locale))
-			if err := tt.Click(messages.Text(copy.Back)); err != nil {
-				t.Fatal(err)
-			}
-			settle(tt)
+		if !hasText(tt, messages.Text(copy.PolishLabel)) || hasText(tt, messages.Text(copy.ModelReason)) {
+			t.Fatalf("model section: %q", tt.Texts())
 		}
+		if err := tt.Click(messages.Text(copy.ModelRecognitionPage)); err != nil {
+			t.Fatal(err)
+		}
+		settle(tt)
+		if !hasText(tt, messages.Text(copy.ModelNameGeneric)) || hasText(tt, messages.Text(copy.PolishLabel)) {
+			t.Fatalf("recognition page: %q", tt.Texts())
+		}
+		check("settings", tt.Texts())
+		snapshot(t, tt, "settings-model-recognition-"+string(locale))
+		if err := tt.Click(messages.Text(copy.Back)); err != nil {
+			t.Fatal(err)
+		}
+		settle(tt)
 
 		state.Permissions = runtime.Permissions{Microphone: runtime.ConsentGranted, Accessibility: runtime.ConsentGranted}
 		onb := onboarding.NewPage()

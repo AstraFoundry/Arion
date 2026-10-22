@@ -191,6 +191,7 @@ const (
 	ModelNameGeneric          Key = "ModelNameGeneric"
 	ModelRecognitionGroup     Key = "ModelRecognitionGroup"
 	ModelPolishGroup          Key = "ModelPolishGroup"
+	ModelRecognitionPage      Key = "ModelRecognitionPage"
 	ContextGroup              Key = "ContextGroup"
 	PolishLabel               Key = "PolishLabel"
 	PolishDetail              Key = "PolishDetail"

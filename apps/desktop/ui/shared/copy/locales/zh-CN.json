@@ -304,6 +304,7 @@
   "ModelNameGeneric": "语音识别",
   "ModelRecognitionGroup": "语音识别",
   "ModelPolishGroup": "润色",
+  "ModelRecognitionPage": "识别模型",
   "ContextGroup": "上下文",
   "NavOverview": "概览",
   "UsageSpeechTime": "口述时间",
