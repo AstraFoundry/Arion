@@ -68,45 +68,24 @@ func Check(store runtime.Store) {
 }
 
 // Summary is the polish card's row that opens the pages: the connected
-// provider and model, or that nothing is connected. It reports a click.
+// provider's mark and model, or that nothing is connected. It reports a
+// click.
 func Summary(c *ui.Context, store runtime.Store, tokens theme.Tokens) bool {
 	messages := store.Copy()
 	cl := store.State.Cloud
-	detail := messages.Text(copy.CloudNotConnected)
+	value := messages.Text(copy.CloudNotConnected)
 	if cl.Phase == runtime.CloudConnected {
-		detail = config.CloudProviders[cl.Provider]
+		value = config.CloudProviders[cl.Provider]
 		if m := store.State.Preferences.CloudModel; m != "" {
-			detail += " · " + m
+			value = m
 		}
 	}
 	kit.Divider(c, tokens)
-	return link(c, tokens, "cloud-summary", messages.Text(copy.CloudTitle), detail, func() {
+	return kit.LinkRow(c.Key("cloud-summary"), tokens, messages.Text(copy.CloudTitle), value, func() {
 		if cl.Phase == runtime.CloudConnected {
 			Mark(c, tokens, cl.Provider, 16)
 		}
 	})
-}
-
-// link is a row that opens a page: title, detail, an optional leading mark
-// and a chevron.
-func link(c *ui.Context, tokens theme.Tokens, key, title, detail string, lead func()) bool {
-	row := ui.ButtonBase(c.Key(key)).Gap(12).Padding(12, 16).AlignItems(ui.Center).Label(title)
-	if row.Hovered() {
-		row.Background(tokens.AccentSoft.Alpha(0.5).Over(tokens.Card))
-	}
-	row.Children(func() {
-		if lead != nil {
-			lead()
-		}
-		ui.Column(c).Grow(1).Shrink(1).Gap(2).Children(func() {
-			ui.Text(c, title).FontSize(theme.Body).FontWeight(500)
-			if detail != "" {
-				ui.Text(c, detail).FontSize(theme.Caption).TextColor(tokens.Muted).SingleLine()
-			}
-		})
-		ui.Icon(c, icons.ChevronRight).FontSize(14).TextColor(tokens.Muted)
-	})
-	return row.Clicked()
 }
 
 // Pages draws the provider list or the chosen provider's page.
@@ -128,14 +107,12 @@ func list(c *ui.Context, store runtime.Store, tokens theme.Tokens, nav *Nav) {
 			if i > 0 {
 				kit.Divider(c, tokens)
 			}
-			detail := messages.Text(copy.CloudKeyLabel)
-			if id == runtime.CloudChatGPT {
-				detail = messages.Text(copy.CloudChatGPTDetail)
-			}
+			// Only the connection is named; the provider's page says the rest.
+			value := ""
 			if cl.Phase == runtime.CloudConnected && cl.Provider == id {
-				detail = messages.Text(copy.CloudConnected)
+				value = messages.Text(copy.CloudConnected)
 			}
-			if link(c, tokens, "provider-"+id, config.CloudProviders[id], detail, func() { Mark(c, tokens, id, 20) }) {
+			if kit.LinkRow(c.Key("provider-"+id), tokens, config.CloudProviders[id], value, func() { Mark(c, tokens, id, 18) }) {
 				nav.Provider = id
 			}
 		}

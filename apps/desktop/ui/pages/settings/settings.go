@@ -42,18 +42,29 @@ const (
 	About      = "about"
 )
 
+// modelPage is a page under Model: its index, recognition, polish, or the
+// cloud model's pages under polish.
+type modelPage string
+
+const (
+	modelIndex       modelPage = ""
+	modelRecognition modelPage = "recognition"
+	modelPolish      modelPage = "polish"
+	modelCloud       modelPage = "cloud"
+)
+
 // Page keeps the window's own state.
 type Page struct {
 	Section    string
 	monitoring bool
 	draft      vocabulary.Draft
-	// cloudOpen shows the cloud model's pages in place of the Model
-	// section; cloud is where they are.
-	cloudOpen bool
-	cloud     cloud.Nav
-	keyboard  keyboard.State
-	focus     int
-	usage     usage.State
+	// model is the page shown under Model; cloud is where the cloud
+	// model's pages are.
+	model    modelPage
+	cloud    cloud.Nav
+	keyboard keyboard.State
+	focus    int
+	usage    usage.State
 	// shown is the section drawn last, so entering one can replay its
 	// entrance.
 	shown string
@@ -79,12 +90,15 @@ func (p *Page) Render(c *ui.Context, store runtime.Store) {
 			store.Actions.CancelInputMethodSetup()
 		}
 		p.shown = p.Section
-		p.cloudOpen, p.cloud = false, cloud.Nav{}
+		p.model, p.cloud = modelIndex, cloud.Nav{}
 		if p.Section == Overview {
 			p.usage.Replay()
 		}
 	}
-	sub := p.Section == Model && p.cloudOpen && store.State.Preferences.PolishEngine == runtime.PolishCloud
+	if p.model == modelCloud && store.State.Preferences.PolishEngine != runtime.PolishCloud {
+		p.model, p.cloud = modelPolish, cloud.Nav{}
+	}
+	sub := p.Section == Model && p.model != modelIndex
 	bar := c.TitleBar()
 	ui.Row(c).Fill().AlignItems(ui.Stretch).Children(func() {
 		side := ui.Column(c).Width(210).Padding(max(bar.Height, 12)+8, 10, 12, 10)
@@ -100,9 +114,9 @@ func (p *Page) Render(c *ui.Context, store runtime.Store) {
 				heading := title(p.Section, store.Copy())
 				if sub {
 					// A page under Model: back steps out one page at a time.
-					heading = cloud.Title(store, &p.cloud)
-					if kit.IconButton(c.Key("back"), tokens, icons.ChevronLeft, store.Copy().Text(copy.Back)).Margin(0, 0, 0, -6).Clicked() && !p.cloud.Back() {
-						p.cloudOpen = false
+					heading = p.modelTitle(store)
+					if kit.IconButton(c.Key("back"), tokens, icons.ChevronLeft, store.Copy().Text(copy.Back)).Margin(0, 0, 0, -6).Clicked() {
+						p.modelBack()
 					}
 				}
 				ui.Text(c, heading).FontSize(theme.Title).FontWeight(600).ContentTransition(ui.ContentTransition{})
@@ -110,15 +124,11 @@ func (p *Page) Render(c *ui.Context, store runtime.Store) {
 			ui.Scroll(c).Grow(1).Children(func() {
 				key := p.Section
 				if sub {
-					key += "/cloud/" + p.cloud.Provider
+					key += "/" + string(p.model) + "/" + p.cloud.Provider
 				}
 				content := ui.Column(c.Key(key)).Gap(theme.GapGroup).Padding(8, theme.Gutter, theme.Gutter, theme.Gutter).
 					Transition(ui.ElementTransition{Animation: &theme.Settle, Enter: &ui.Motion{Y: 8}})
 				content.Children(func() {
-					if sub {
-						ui.Column(c).Gap(theme.GapRelated).Children(func() { cloud.Pages(c, store, tokens, &p.cloud) })
-						return
-					}
 					p.section(c, store, tokens)
 				})
 			})
@@ -240,21 +250,7 @@ func (p *Page) section(c *ui.Context, store runtime.Store, tokens theme.Tokens) 
 			})
 		})
 	case Model:
-		kit.Group(c, tokens, messages.Text(copy.ModelRecognitionGroup), func() { modelcard.Render(c, store, tokens, false) })
-		kit.Group(c, tokens, messages.Text(copy.ModelPolishGroup), func() {
-			kit.Card(c, tokens).Children(func() {
-				polish.Row(c, store, tokens)
-				polish.Engine(c, store, tokens)
-				if store.State.Preferences.PolishEngine == runtime.PolishCloud && cloud.Summary(c, store, tokens) {
-					p.cloudOpen = true
-				}
-				polish.MatchApp(c, store, tokens)
-				polish.Context(c, store, tokens)
-			})
-		})
-		if hasOthers(store) {
-			kit.Group(c, tokens, messages.Text(copy.ModelOthers), func() { modelchoice.Others(c, store, tokens) })
-		}
+		p.modelSection(c, store, tokens)
 	case Vocabulary:
 		vocabulary.Learning(c, store, tokens)
 		vocabulary.Editor(c, store, tokens, &p.draft)
@@ -358,5 +354,74 @@ func (p *Page) nav(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 	}).Grow(1)
 	if !store.State.Account.Disabled && signin.SidebarCard(c, store, tokens, p.Section == Account) {
 		p.Section = Account
+	}
+}
+
+func (p *Page) modelTitle(store runtime.Store) string {
+	messages := store.Copy()
+	switch p.model {
+	case modelRecognition:
+		return messages.Text(copy.ModelRecognitionGroup)
+	case modelPolish:
+		return messages.Text(copy.ModelPolishGroup)
+	}
+	return cloud.Title(store, &p.cloud)
+}
+
+// modelBack leaves the current page under Model for the one above it.
+func (p *Page) modelBack() {
+	switch {
+	case p.model == modelCloud && p.cloud.Back():
+	case p.model == modelCloud:
+		p.model = modelPolish
+	default:
+		p.model = modelIndex
+	}
+}
+
+// modelSection is Model's index of recognition and polish, or one of their
+// pages.
+func (p *Page) modelSection(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
+	messages := store.Copy()
+	switch p.model {
+	case modelIndex:
+		kit.Card(c, tokens).Children(func() {
+			source := messages.Text(copy.PanelAutomatic)
+			if !store.State.Model.Automatic {
+				source = messages.Text(copy.PanelChosen)
+			}
+			if kit.LinkRow(c.Key("recognition"), tokens, messages.Text(copy.ModelRecognitionGroup), source, func() {
+				ui.Icon(c, icons.AudioLines).FontSize(16).TextColor(tokens.Muted)
+			}) {
+				p.model = modelRecognition
+			}
+			kit.Divider(c, tokens)
+			if kit.LinkRow(c.Key("polish"), tokens, messages.Text(copy.ModelPolishGroup), polish.Summary(store), func() {
+				ui.Icon(c, icons.Sparkles).FontSize(16).TextColor(tokens.Muted)
+			}) {
+				p.model = modelPolish
+			}
+		})
+	case modelRecognition:
+		modelcard.Render(c, store, tokens, false)
+		if hasOthers(store) {
+			kit.Group(c, tokens, messages.Text(copy.ModelOthers), func() { modelchoice.Others(c, store, tokens) })
+		}
+	case modelPolish:
+		kit.Card(c, tokens).Children(func() {
+			polish.Row(c, store, tokens)
+			polish.Engine(c, store, tokens)
+			if store.State.Preferences.PolishEngine == runtime.PolishCloud && cloud.Summary(c, store, tokens) {
+				p.model = modelCloud
+			}
+		})
+		if runtime.PolishOn(store.State) {
+			kit.Card(c, tokens).Children(func() { polish.MatchApp(c, store, tokens) })
+		}
+		if polish.ContextShown(store) {
+			kit.Group(c, tokens, messages.Text(copy.ContextGroup), func() { polish.Context(c, store, tokens) })
+		}
+	case modelCloud:
+		ui.Column(c).Gap(theme.GapRelated).Children(func() { cloud.Pages(c, store, tokens, &p.cloud) })
 	}
 }

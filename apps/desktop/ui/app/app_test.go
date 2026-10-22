@@ -324,7 +324,7 @@ func TestSettingsSections(t *testing.T) {
 		{settings.General, copy.For(copy.English).Text(copy.NavGeneral), copy.For(copy.English).Text(copy.LaunchAtLogin)},
 		{settings.Dictation, copy.For(copy.English).Text(copy.NavDictation), copy.For(copy.English).Text(copy.HoldKeyLabel)},
 		{settings.Microphone, copy.For(copy.English).Text(copy.NavMicrophone), copy.For(copy.English).Text(copy.MicTest)},
-		{settings.Model, copy.For(copy.English).Text(copy.NavModel), copy.For(copy.English).Text(copy.ModelReason)},
+		{settings.Model, copy.For(copy.English).Text(copy.NavModel), copy.For(copy.English).Text(copy.PanelAutomatic)},
 		{settings.Vocabulary, copy.For(copy.English).Text(copy.NavVocabulary), copy.For(copy.English).Text(copy.VocabEmpty)},
 		{settings.About, copy.For(copy.English).Text(copy.NavAbout), copy.For(copy.English).Text(copy.PrivacyLocal)},
 	} {
@@ -882,7 +882,7 @@ func TestChineseSettingsAndTransientErrors(t *testing.T) {
 		key copy.Key
 	}{
 		{settings.General, copy.LanguageLabel}, {settings.Dictation, copy.HoldKeyLabel},
-		{settings.Microphone, copy.MicTest}, {settings.Model, copy.ModelReason},
+		{settings.Microphone, copy.MicTest}, {settings.Model, copy.PanelAutomatic},
 		{settings.Vocabulary, copy.VocabEmpty}, {settings.About, copy.PrivacyLocal},
 	} {
 		page.Section = section.id

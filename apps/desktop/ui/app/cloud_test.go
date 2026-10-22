@@ -107,9 +107,10 @@ func TestCloudPages(t *testing.T) {
 	}
 }
 
-// Settings › Model keeps one row for the cloud, which opens its pages;
-// back leaves them one page at a time. Context switches hide for the
-// cloud, which works where the local runtime is not shipped.
+// Settings › Model is an index of recognition and polish; the polish page
+// keeps one row for the cloud, which opens its pages, and back leaves them
+// one page at a time. Context switches hide for the cloud, which works
+// where the local runtime is not shipped.
 func TestSettingsCloudModel(t *testing.T) {
 	state, _, store := fixture()
 	state.Polish = runtime.Polish{State: runtime.PolishUnsupported}
@@ -121,40 +122,46 @@ func TestSettingsCloudModel(t *testing.T) {
 	tt := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, SettingsWidth, SettingsHeight)
 	settle(tt)
 	en := copy.For(copy.English)
+	click := func(label string) {
+		t.Helper()
+		if err := tt.Click(label); err != nil {
+			t.Fatalf("%s: %v (%q)", label, err, tt.Texts())
+		}
+		settle(tt)
+	}
+	if !hasText(tt, en.Text(copy.PolishEngineCloud)+" · deepseek-chat") || hasText(tt, en.Text(copy.PolishLabel)) {
+		t.Fatalf("model index: %q", tt.Texts())
+	}
+	snapshot(t, tt, "settings-model-index")
+	click(en.Text(copy.ModelPolishGroup))
 	if !hasText(tt, en.Text(copy.MatchAppLabel)) || hasText(tt, en.Text(copy.ContextScreenLabel)) || hasText(tt, en.Text(copy.PolishUnsupported)) ||
-		!hasText(tt, "DeepSeek · deepseek-chat") || hasText(tt, en.Text(copy.CloudDisconnect)) {
-		t.Fatalf("model section: %q", tt.Texts())
+		!hasText(tt, "deepseek-chat") || hasText(tt, en.Text(copy.CloudDisconnect)) || hasText(tt, en.Text(copy.PolishCloudDetail)) {
+		t.Fatalf("polish page: %q", tt.Texts())
 	}
-	snapshot(t, tt, "settings-model-cloud")
-	if err := tt.Click(en.Text(copy.CloudTitle)); err != nil {
-		t.Fatal(err)
-	}
-	settle(tt)
+	snapshot(t, tt, "settings-model-polish-cloud")
+	click(en.Text(copy.CloudTitle))
 	if !hasText(tt, config.CloudProviders[runtime.CloudChatGPT]) || hasText(tt, en.Text(copy.MatchAppLabel)) {
 		t.Fatalf("cloud list: %q", tt.Texts())
 	}
 	snapshot(t, tt, "settings-cloud-providers")
-	if err := tt.Click(config.CloudProviders[runtime.CloudDeepSeek]); err != nil {
-		t.Fatal(err)
-	}
-	settle(tt)
+	click(config.CloudProviders[runtime.CloudDeepSeek])
 	if !hasText(tt, en.Text(copy.CloudDisconnect)) {
 		t.Fatalf("provider page: %q", tt.Texts())
 	}
 	snapshot(t, tt, "settings-cloud-deepseek")
-	for range 2 {
-		if err := tt.Click(en.Text(copy.Back)); err != nil {
-			t.Fatal(err)
-		}
-		settle(tt)
-	}
+	click(en.Text(copy.Back))
+	click(en.Text(copy.Back))
 	if !hasText(tt, en.Text(copy.MatchAppLabel)) {
-		t.Fatalf("back to Model: %q", tt.Texts())
+		t.Fatalf("back to polish: %q", tt.Texts())
 	}
 	state.Preferences.PolishEngine = runtime.PolishLocal
 	settle(tt)
 	if hasText(tt, en.Text(copy.MatchAppLabel)) || !hasText(tt, en.Text(copy.PolishUnsupported)) || hasText(tt, en.Text(copy.CloudTitle)) {
 		t.Fatalf("local on an unsupported platform: %q", tt.Texts())
+	}
+	click(en.Text(copy.Back))
+	if !hasText(tt, en.Text(copy.PanelAutomatic)) {
+		t.Fatalf("back to the index: %q", tt.Texts())
 	}
 }
 

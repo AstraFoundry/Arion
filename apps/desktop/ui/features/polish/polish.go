@@ -25,7 +25,7 @@ func Row(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 	if cloud {
 		detail = copy.PolishCloudDetail
 	}
-	kit.Row(c, tokens, messages.Text(copy.PolishLabel), messages.Text(detail), func() {
+	kit.TipRow(c, tokens, messages.Text(copy.PolishLabel), messages.Text(detail), func() {
 		toggle := ui.Switch(c.Key("polish"), &on).Label(messages.Text(copy.PolishLabel))
 		if !runtime.PolishAvailable(store.State) {
 			toggle.Disabled(true)
@@ -49,7 +49,7 @@ func Engine(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 		selected = 1
 	}
 	kit.Divider(c, tokens)
-	kit.Row(c, tokens, messages.Text(copy.PolishEngineLabel), "", func() {
+	kit.TipRow(c, tokens, messages.Text(copy.PolishEngineLabel), "", func() {
 		if ui.Segmented(c.Key("polish-engine"), &selected, messages.Text(copy.PolishEngineLocal), messages.Text(copy.PolishEngineCloud)).
 			Label(messages.Text(copy.PolishEngineLabel)).Changed() {
 			engine := runtime.PolishLocal
@@ -61,60 +61,84 @@ func Engine(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 	})
 }
 
-// MatchApp is the switch letting polishing follow the focused app, field and
-// web site. It is shown only while polishing is on.
+// MatchApp is the switch row letting polishing follow the focused app,
+// field and web site. It is shown only while polishing is on.
 func MatchApp(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 	if !runtime.PolishOn(store.State) {
 		return
 	}
 	messages := store.Copy()
 	on := store.State.Preferences.MatchApp
-	kit.Divider(c, tokens)
-	kit.Row(c, tokens, messages.Text(copy.MatchAppLabel), messages.Text(copy.MatchAppDetail), func() {
+	kit.TipRow(c, tokens, messages.Text(copy.MatchAppLabel), messages.Text(copy.MatchAppDetail), func() {
 		if ui.Switch(c.Key("match-app"), &on).Label(messages.Text(copy.MatchAppLabel)).Changed() {
 			store.Actions.UpdatePreferences(func(prefs *runtime.Preferences) { prefs.MatchApp = on })
 		}
 	})
 }
 
-// Context lists the switches for the context polishing may read. Shown
-// only while polishing is on this device: the cloud never receives
-// context (ADR 022). Visible window text uses Accessibility.
+// Shown reports whether polishing reads context: it is on, on this device.
+// The cloud never receives context (ADR 022).
+func ContextShown(store runtime.Store) bool {
+	return runtime.PolishOn(store.State) && store.State.Preferences.PolishEngine != runtime.PolishCloud
+}
+
+// Context is the card of switches for the context polishing may read,
+// each explained in its tooltip. Visible window text uses Accessibility.
 func Context(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
-	if !runtime.PolishOn(store.State) || store.State.Preferences.PolishEngine == runtime.PolishCloud {
+	if !ContextShown(store) {
 		return
 	}
 	messages := store.Copy()
 	prefs := store.State.Preferences
-	row := func(key string, label, detail copy.Key, value bool, set func(*runtime.Preferences, bool), extra func()) {
-		on := value
-		kit.Divider(c, tokens)
-		kit.Row(c, tokens, messages.Text(label), messages.Text(detail), func() {
-			if ui.Switch(c.Key(key), &on).Label(messages.Text(label)).Changed() {
-				store.Actions.UpdatePreferences(func(p *runtime.Preferences) { set(p, on) })
+	kit.Card(c, tokens).Children(func() {
+		row := func(key string, label, detail copy.Key, value bool, set func(*runtime.Preferences, bool), extra func()) {
+			on := value
+			if key != "context-cursor" {
+				kit.Divider(c, tokens)
 			}
-		})
-		if extra != nil {
-			extra()
-		}
-	}
-	row("context-cursor", copy.ContextCursorLabel, copy.ContextCursorDetail, prefs.ContextCursor,
-		func(p *runtime.Preferences, on bool) { p.ContextCursor = on }, nil)
-	row("context-screen", copy.ContextScreenLabel, copy.ContextScreenDetail, prefs.ContextScreen,
-		func(p *runtime.Preferences, on bool) { p.ContextScreen = on }, func() {
-			if !prefs.ContextScreen || store.State.Permissions.Accessibility == runtime.ConsentGranted {
-				return
-			}
-			ui.Row(c.Key("screen-permission")).Padding(0, 16, 12, 16).Gap(8).AlignItems(ui.Center).Children(func() {
-				ui.Icon(c, icons.TriangleAlert).FontSize(14).TextColor(tokens.Warning)
-				ui.Text(c, messages.Text(copy.ContextScreenPermission)).FontSize(theme.Caption).Grow(1)
-				if kit.Button(c, tokens, kit.Outline, messages.Text(copy.Allow), true).Clicked() {
-					store.Actions.RequestAccessibility()
+			kit.TipRow(c, tokens, messages.Text(label), messages.Text(detail), func() {
+				if ui.Switch(c.Key(key), &on).Label(messages.Text(label)).Changed() {
+					store.Actions.UpdatePreferences(func(p *runtime.Preferences) { set(p, on) })
 				}
 			})
-		})
-	row("context-history", copy.ContextHistoryLabel, copy.ContextHistoryDetail, prefs.ContextHistory,
-		func(p *runtime.Preferences, on bool) { p.ContextHistory = on }, nil)
+			if extra != nil {
+				extra()
+			}
+		}
+		row("context-cursor", copy.ContextCursorLabel, copy.ContextCursorDetail, prefs.ContextCursor,
+			func(p *runtime.Preferences, on bool) { p.ContextCursor = on }, nil)
+		row("context-screen", copy.ContextScreenLabel, copy.ContextScreenDetail, prefs.ContextScreen,
+			func(p *runtime.Preferences, on bool) { p.ContextScreen = on }, func() {
+				if !prefs.ContextScreen || store.State.Permissions.Accessibility == runtime.ConsentGranted {
+					return
+				}
+				ui.Row(c.Key("screen-permission")).Padding(0, 16, 12, 16).Gap(8).AlignItems(ui.Center).Children(func() {
+					ui.Icon(c, icons.TriangleAlert).FontSize(14).TextColor(tokens.Warning)
+					ui.Text(c, messages.Text(copy.ContextScreenPermission)).FontSize(theme.Caption).Grow(1)
+					if kit.Button(c, tokens, kit.Outline, messages.Text(copy.Allow), true).Clicked() {
+						store.Actions.RequestAccessibility()
+					}
+				})
+			})
+		row("context-history", copy.ContextHistoryLabel, copy.ContextHistoryDetail, prefs.ContextHistory,
+			func(p *runtime.Preferences, on bool) { p.ContextHistory = on }, nil)
+	})
+}
+
+// Summary is the polish setting in words: off, this device, or the cloud
+// with its model.
+func Summary(store runtime.Store) string {
+	messages := store.Copy()
+	prefs := store.State.Preferences
+	switch {
+	case !runtime.PolishOn(store.State):
+		return messages.Text(copy.PolishOff)
+	case prefs.PolishEngine == runtime.PolishCloud && prefs.CloudModel != "":
+		return messages.Text(copy.PolishEngineCloud) + " · " + prefs.CloudModel
+	case prefs.PolishEngine == runtime.PolishCloud:
+		return messages.Text(copy.PolishEngineCloud)
+	}
+	return messages.Text(copy.PolishEngineLocal)
 }
 
 // Status is the line under the row: what enabling costs, progress, or a
