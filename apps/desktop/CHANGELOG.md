@@ -1,3 +1,33 @@
+## 0.1.0-alpha.10
+
+### English
+
+macOS Apple silicon (ARM64) preview, requiring macOS 14 or later.
+
+- Add Voice input to the macOS input menu, showing the configured dictation key. It toggles dictation while Arion is connected. Group the menu actions and add Open Arion.
+- Add full-width character and English punctuation switches to the Chinese input menu. Ctrl+. switches punctuation; the input method remembers both choices.
+- Fix input-source removal so reinstalling does not wait on a stale disabled state. Removal switches away, waits for the host to exit and deletes the bundle without disabling the source.
+- Mark Settings sections that need attention with a yellow dot for permissions, the dictation key, recognition models or a pending update.
+- Add embedded GitHub contributors and Discord/Feishu community links to Settings > About.
+
+This is an early preview. Clean-machine installation, real-service cloud sign-in/provider requests, minimum OS/RAM and old-to-new updates still need acceptance. Recognition stays local and works offline after model provisioning; model weights are downloaded separately. Desktop encrypted sync enrollment remains pending. This alpha includes only the macOS ARM64 installer.
+
+See RELEASE-STATUS.md for evidence and limitations, and SHA256SUMS for file verification. GitHub publication and COS staging do not publish the Arion center beta channel.
+
+### 中文
+
+适用于 macOS Apple 芯片（ARM64）的预览版本，需要 macOS 14 或更高版本。
+
+- macOS 输入法菜单新增“语音输入”，显示当前听写快捷键；Arion 已连接时可切换听写。菜单按功能分组，并新增“打开 Arion”。
+- 中文输入菜单新增全角字符及英文标点开关，Ctrl+. 可切换标点；输入法会记住所选状态。
+- 修复卸载输入源后重新安装等待过期禁用状态的问题。卸载时先切换到其他输入源，等待输入法进程退出，再删除安装包，不再禁用输入源。
+- 设置侧栏用黄色圆点标记需要处理的权限、听写快捷键、识别模型和待安装更新。
+- 设置 > 关于新增内置的 GitHub 贡献者列表，以及 Discord、飞书社区入口。
+
+这是早期预览版。全新机器安装、真实云端登录及服务商请求、最低系统和内存要求、旧版本升级仍待验收。语音识别在本机完成，模型准备完成后可离线使用；模型权重需单独下载。桌面加密同步的设备注册尚未完成。本次 alpha 仅提供 macOS ARM64 安装包。
+
+验证记录和限制见 RELEASE-STATUS.md，文件校验值见 SHA256SUMS。GitHub 发布及 COS 暂存不会自动发布 Arion 中心的 beta 渠道。
+
 ## 0.1.0-alpha.9
 
 ### English
