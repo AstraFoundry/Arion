@@ -1,6 +1,7 @@
 // Regenerates the site's raster assets in public/ from the desktop app's
 // sources, so the site and the app share one photograph and one icon:
-//   apps/desktop/ui/shared/assets/backdrop.jpg  → public/backdrops/*.webp, public/og.jpg
+//   apps/desktop/ui/shared/assets/backdrop.jpg  → public/backdrops/*.webp (hero and
+//                                                 feature-tour crops), public/og.jpg
 //   apps/desktop/resources/icon.png             → public/brand/*.png
 // Run with `pnpm --filter @arion/site assets:build` and commit the output.
 import { mkdir } from "node:fs/promises";
@@ -28,6 +29,24 @@ for (const width of [1200, 1600]) {
     .toFile(out("backdrops", `flowers-wide-${width}.webp`));
 }
 await sharp(backdrop).webp({ quality: 80 }).toFile(out("backdrops", "flowers-tall-800.webp"));
+
+// The feature tour gives each chapter its own 4:5 region of the photograph,
+// so the sticky stage changes ground as the reader moves through it. Keys are
+// the chapter ids in src/widgets/feature-tour/config/chapters.ts.
+const tourRegions = {
+  offline: { left: 120, top: 0, width: 480, height: 600 },
+  mixed: { left: 320, top: 0, width: 480, height: 600 },
+  learning: { left: 200, top: 290, width: 480, height: 600 },
+  polish: { left: 0, top: 320, width: 480, height: 600 },
+  keyboard: { left: 180, top: 400, width: 480, height: 600 },
+};
+for (const [chapter, region] of Object.entries(tourRegions)) {
+  await sharp(backdrop)
+    .extract(region)
+    .resize({ width: 800, kernel: "lanczos3" })
+    .webp({ quality: 78 })
+    .toFile(out("backdrops", `tour-${chapter}-800.webp`));
+}
 
 // The icon has a transparent margin around its rounded square; web icons use
 // the square itself.

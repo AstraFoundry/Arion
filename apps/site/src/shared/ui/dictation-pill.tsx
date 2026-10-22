@@ -1,6 +1,6 @@
 "use client";
 
-import { Check } from "lucide-react";
+import { Check, Undo2 } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { siteConfig } from "@/shared/config";
 import { useCopy } from "@/shared/i18n";
@@ -39,9 +39,14 @@ function Keycap({ children }: { children: string }) {
 
 export type PillState =
   | { kind: "listening"; draft: string }
-  | { kind: "inserted" };
+  | { kind: "inserted" }
+  | { kind: "learned"; term: string };
 
-/** The floating dictation pill, drawn like the desktop overlay's. */
+/**
+ * The floating dictation pill, drawn like the desktop overlay's: listening
+ * with the streaming draft, the insertion report, or a word just learned from
+ * a correction with its undo.
+ */
 export function DictationPill({ state }: { state: PillState }) {
   const { demo } = useCopy();
   const live = state.kind === "listening";
@@ -79,7 +84,7 @@ export function DictationPill({ state }: { state: PillState }) {
               </span>
             )}
           </motion.span>
-        ) : (
+        ) : state.kind === "inserted" ? (
           <motion.span
             key="inserted"
             className="flex items-center gap-2"
@@ -88,6 +93,21 @@ export function DictationPill({ state }: { state: PillState }) {
           >
             <Check className="size-4 text-success" aria-hidden="true" />
             {demo.inserted}
+          </motion.span>
+        ) : (
+          <motion.span
+            key="learned"
+            className="flex items-center gap-2"
+            initial={{ opacity: 0, scale: 0.94 }}
+            animate={{ opacity: 1, scale: 1 }}
+          >
+            <Check className="size-4 text-success" aria-hidden="true" />
+            <span className="text-substrate-muted">{demo.learned}</span>
+            <span className="text-substrate-hi">{state.term}</span>
+            <span className="ml-1 flex items-center gap-1 rounded-full bg-substrate-raised px-2.5 py-1 text-xs">
+              <Undo2 className="size-3" aria-hidden="true" />
+              {demo.undo}
+            </span>
           </motion.span>
         )}
       </AnimatePresence>

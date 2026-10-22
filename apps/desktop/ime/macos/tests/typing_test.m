@@ -1,4 +1,5 @@
 #import <Cocoa/Cocoa.h>
+#import <QuartzCore/QuartzCore.h>
 #import "../typing.h"
 #import "../candidate_panel.h"
 #import "../learning.h"
@@ -465,6 +466,15 @@ int main(int argc, const char *argv[]) {
                     @"compact shadowless badge uses immediate window transitions");
             require(NSContainsRect(screen, window.frame) && NSMinY(window.frame) >= NSMaxY(caret),
                     @"hint fits screen and flips above bottom-edge caret");
+            CATextLayer *label = [hint valueForKey:@"label"];
+            CATextLayer *outgoing = [hint valueForKey:@"outgoing"];
+            BOOL reduceMotion = NSWorkspace.sharedWorkspace.accessibilityDisplayShouldReduceMotion;
+            require([label.string isEqual:NSLocalizedString(@"KeyboardModeEnglish", nil)] &&
+                    [outgoing.string isEqual:NSLocalizedString(@"KeyboardModeChinese", nil)] && outgoing.opacity == 0,
+                    @"badge settles on the new mode and keeps the previous one only for the flip");
+            require(reduceMotion ? (![label animationForKey:@"flip"] && ![outgoing animationForKey:@"flip"])
+                                 : ([label animationForKey:@"flip"] && [outgoing animationForKey:@"flip"]),
+                    @"mode change flips the label unless Reduce Motion is on");
             NSTimer *previousDismissal = [hint valueForKey:@"dismissal"];
             require(previousDismissal.valid && [previousDismissal.fireDate timeIntervalSinceDate:firstShownAt] >= 1.0 &&
                     [previousDismissal.fireDate timeIntervalSinceDate:firstShowFinishedAt] <= 1.0,

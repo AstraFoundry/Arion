@@ -500,16 +500,37 @@ static NSColor *srgb(CGFloat r, CGFloat g, CGFloat b, CGFloat a) {
 }
 @end
 
+// The badge turns over like a flip card when the mode changes: the previous
+// label folds away around the horizontal axis, then the new one unfolds. The
+// two halves fit well inside the badge's one-second lifetime.
+static const CGFloat kBadgeSize = 23;
+static const NSTimeInterval kFlipHalfDuration = 0.12;
+// Eye distance for the flip's perspective, in points.
+static const CGFloat kFlipPerspective = 60;
+
+static CATextLayer *modeLabelLayer(NSFont *font) {
+    CATextLayer *layer = [CATextLayer layer];
+    CGFloat height = ceil(font.ascender - font.descender);
+    layer.frame = CGRectMake(0, floor((kBadgeSize - height) / 2), kBadgeSize, height);
+    layer.font = (__bridge CFTypeRef)font;
+    layer.fontSize = font.pointSize;
+    layer.foregroundColor = NSColor.whiteColor.CGColor;
+    layer.alignmentMode = kCAAlignmentCenter;
+    return layer;
+}
+
 @interface ArionLanguagePanel ()
 @property(strong) ArionCandidateWindow *window;
-@property(strong) NSTextField *label;
+// The selected mode, and the previous one while it folds away.
+@property(strong) CATextLayer *label;
+@property(strong) CATextLayer *outgoing;
 @property(strong) NSTimer *dismissal;
 @end
 
 @implementation ArionLanguagePanel
 - (instancetype)init {
     if (!(self = [super init])) return nil;
-    self.window = [[ArionCandidateWindow alloc] initWithContentRect:NSMakeRect(0, 0, 23, 23)
+    self.window = [[ArionCandidateWindow alloc] initWithContentRect:NSMakeRect(0, 0, kBadgeSize, kBadgeSize)
         styleMask:NSWindowStyleMaskBorderless | NSWindowStyleMaskNonactivatingPanel
         backing:NSBackingStoreBuffered defer:YES];
     self.window.opaque = NO;
@@ -523,7 +544,7 @@ static NSColor *srgb(CGFloat r, CGFloat g, CGFloat b, CGFloat a) {
     self.window.collectionBehavior = NSWindowCollectionBehaviorCanJoinAllSpaces |
         NSWindowCollectionBehaviorFullScreenAuxiliary | NSWindowCollectionBehaviorStationary |
         NSWindowCollectionBehaviorIgnoresCycle;
-    NSView *surface = [[NSView alloc] initWithFrame:NSMakeRect(0, 0, 23, 23)];
+    NSView *surface = [[NSView alloc] initWithFrame:NSMakeRect(0, 0, kBadgeSize, kBadgeSize)];
     surface.wantsLayer = YES;
     // Original vector badge; no packaged competitor artwork or material blur.
     surface.layer.backgroundColor = NSColor.blackColor.CGColor;
@@ -531,12 +552,20 @@ static NSColor *srgb(CGFloat r, CGFloat g, CGFloat b, CGFloat a) {
     surface.layer.borderWidth = kBorderWidth;
     surface.layer.cornerRadius = 5;
     surface.layer.masksToBounds = YES;
-    self.label = [NSTextField labelWithString:@""];
-    self.label.frame = NSMakeRect(0, 2, 23, 19);
-    self.label.font = [NSFont systemFontOfSize:15 weight:NSFontWeightMedium];
-    self.label.textColor = NSColor.whiteColor;
-    self.label.alignment = NSTextAlignmentCenter;
-    [surface addSubview:self.label];
+    // The view owns its backing layer's geometry, so the perspective lives
+    // on a plain sublayer.
+    CALayer *card = [CALayer layer];
+    card.frame = surface.bounds;
+    CATransform3D perspective = CATransform3DIdentity;
+    perspective.m34 = -1.0 / kFlipPerspective;
+    card.sublayerTransform = perspective;
+    NSFont *font = [NSFont systemFontOfSize:15 weight:NSFontWeightMedium];
+    self.label = modeLabelLayer(font);
+    self.outgoing = modeLabelLayer(font);
+    self.outgoing.opacity = 0;
+    [card addSublayer:self.outgoing];
+    [card addSublayer:self.label];
+    [surface.layer addSublayer:card];
     self.window.contentView = surface;
     return self;
 }
@@ -549,7 +578,6 @@ static NSColor *srgb(CGFloat r, CGFloat g, CGFloat b, CGFloat a) {
     [self hide];
     // A host that cannot supply a caret must not produce a stray screen-corner hint.
     if (NSHeight(caret) <= 0) return;
-    self.label.stringValue = NSLocalizedString(ascii ? @"KeyboardModeEnglish" : @"KeyboardModeChinese", nil);
     NSScreen *screen = nil;
     for (NSScreen *candidate in NSScreen.screens) {
         if (NSPointInRect(NSMakePoint(NSMinX(caret), NSMidY(caret)), candidate.frame)) { screen = candidate; break; }
@@ -562,12 +590,53 @@ static NSColor *srgb(CGFloat r, CGFloat g, CGFloat b, CGFloat a) {
     if (y < NSMinY(visible)) y = NSMaxY(caret) + kCaretGap;
     y = MAX(NSMinY(visible), MIN(y, NSMaxY(visible) - size.height));
     [self.window setFrameOrigin:NSMakePoint(x, y)];
+    [self showLabel:NSLocalizedString(ascii ? @"KeyboardModeEnglish" : @"KeyboardModeChinese", nil)
+           previous:NSLocalizedString(ascii ? @"KeyboardModeChinese" : @"KeyboardModeEnglish", nil)
+              scale:screen.backingScaleFactor];
     [self.window orderFrontRegardless];
+    // The badge only appears for a switch, so it always turns over from the
+    // mode that was just left.
+    if (!NSWorkspace.sharedWorkspace.accessibilityDisplayShouldReduceMotion) [self flip];
     __weak ArionLanguagePanel *weakSelf = self;
     self.dismissal = [NSTimer scheduledTimerWithTimeInterval:1.0 repeats:NO block:^(NSTimer *timer) {
         (void)timer;
         [weakSelf hide];
     }];
+}
+- (void)showLabel:(NSString *)label previous:(NSString *)previous scale:(CGFloat)scale {
+    [CATransaction begin];
+    [CATransaction setDisableActions:YES];
+    for (CATextLayer *layer in @[self.label, self.outgoing]) {
+        [layer removeAllAnimations];
+        layer.contentsScale = scale;
+    }
+    self.label.string = label;
+    self.outgoing.string = previous;
+    [CATransaction commit];
+}
+- (void)flip {
+    // The outgoing label stays transparent in the model; the animation shows
+    // it only while it folds to edge-on.
+    CABasicAnimation *fold = [CABasicAnimation animationWithKeyPath:@"transform.rotation.x"];
+    fold.fromValue = @0;
+    fold.toValue = @(M_PI_2);
+    CABasicAnimation *shown = [CABasicAnimation animationWithKeyPath:@"opacity"];
+    shown.fromValue = @1;
+    shown.toValue = @1;
+    CAAnimationGroup *away = [CAAnimationGroup animation];
+    away.animations = @[fold, shown];
+    away.duration = kFlipHalfDuration;
+    away.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn];
+    [self.outgoing addAnimation:away forKey:@"flip"];
+    // The new label waits edge-on, then unfolds into place.
+    CABasicAnimation *unfold = [CABasicAnimation animationWithKeyPath:@"transform.rotation.x"];
+    unfold.fromValue = @(-M_PI_2);
+    unfold.toValue = @0;
+    unfold.beginTime = [self.label convertTime:CACurrentMediaTime() fromLayer:nil] + kFlipHalfDuration;
+    unfold.duration = kFlipHalfDuration;
+    unfold.fillMode = kCAFillModeBackwards;
+    unfold.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut];
+    [self.label addAnimation:unfold forKey:@"flip"];
 }
 - (void)hide {
     [self.dismissal invalidate];

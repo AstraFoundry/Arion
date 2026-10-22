@@ -4,8 +4,8 @@ import { RotateCcw } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useCopy } from "@/shared/i18n";
 import { useInViewOnce, useStepTimeline } from "@/shared/lib";
+import { DictationPill, MockWindow } from "@/shared/ui";
 import { HERO_DELAYS, HERO_STEP, partialText } from "../config/timeline";
-import { DictationPill } from "./dictation-pill";
 
 function Caret() {
   return (
@@ -34,12 +34,7 @@ export function HeroDemo() {
     <div ref={ref} className="relative">
       <div role="img" aria-label={copy.hero.demoLabel}>
         <div inert className="flex flex-col items-center gap-6 select-none">
-          <div className="w-full max-w-2xl overflow-hidden rounded-2xl border border-border bg-card text-left text-card-foreground shadow-4">
-            <div className="flex h-10 items-center gap-1.5 border-b border-border px-4">
-              <span className="size-2.5 rounded-full bg-muted" />
-              <span className="size-2.5 rounded-full bg-muted" />
-              <span className="size-2.5 rounded-full bg-muted" />
-            </div>
+          <MockWindow className="max-w-2xl">
             <div className="flex min-h-56 flex-col gap-3 px-6 py-6 sm:px-10 sm:py-8">
               <p className="font-display text-2xl">{demo.editorTitle}</p>
               <ul className="flex list-disc flex-col gap-1.5 pl-5 text-base text-muted-foreground">
@@ -63,7 +58,7 @@ export function HeroDemo() {
                 <Caret />
               </p>
             </div>
-          </div>
+          </MockWindow>
 
           <div className="flex h-11 w-full justify-center">
             <AnimatePresence>

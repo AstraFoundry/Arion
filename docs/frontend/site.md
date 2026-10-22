@@ -12,7 +12,7 @@ The site at `arion.astrafoundry.si` is the one place in the repository where Rea
 | `pages/` | Empty on purpose: it stops Next from reading `src/pages` as the Pages Router |
 | `src/app` | Document shell (`LocaleRootLayout`), providers, root metadata, global CSS |
 | `src/pages` | `home`, `privacy`, `self-hosting`, `credits`, `not-found`: a page component and its metadata |
-| `src/widgets` | `site-header`, `site-footer`, `hero`, `values`, `privacy-summary`, `open-source`, `download-cta` |
+| `src/widgets` | `site-header`, `site-footer`, `hero`, `feature-tour`, `privacy-summary`, `open-source`, `download-cta` |
 | `src/features` | `switch-locale`, `theme-switch`, `download-release` |
 | `src/shared` | `config` (env, links, credits), `i18n`, `lib`, `ui`, and the temporary `beui` copy |
 
@@ -26,8 +26,12 @@ Route files only set the locale and render a page from `src/pages`. Imports poin
 - **Download targets** are macOS Apple silicon and Windows x64; Intel macOS is not offered ([ADR 021](../decisions/021-apple-silicon-only-macos.md)).
 - **Minimum macOS** is 14 in `src/shared/config/site.ts`, matching `apps/desktop/desktop.json` and the packaged native runtime minimum.
 - **Product claims** follow the specs: offline after model download, no cloud recognition or telemetry, encrypted vocabulary, and sync described as in development until SYNC-01 ships ([003](../../specs/003-memory-sync.md), [005](../../specs/005-privacy.md), [ADR 015](../decisions/015-hosted-relay-account-authorization.md)). Change the copy in the same change set as the behavior it describes.
-- **Illustrations** follow [ADR 007](../decisions/007-sunbeam-design-system.md): solid mock surfaces floating over the motion-blurred photograph, no glass, glow or gradients. A mock is a picture of the product: its wrapper has `role="img"` and an `aria-label` from the dictionary, and its content is `inert`. Scripted mocks start when scrolled into view (`useInViewOnce`) and drive their steps with `useStepTimeline`, which jumps to the final step under reduced motion.
+- **Illustrations** follow [ADR 007](../decisions/007-sunbeam-design-system.md): solid mock surfaces floating over the motion-blurred photograph, no glass, glow or gradients. A mock is a picture of the product: its wrapper has `role="img"` and an `aria-label` from the dictionary, and its content is `inert`. Scripted mocks start when scrolled into view (`useInViewOnce`) and drive their steps with `useStepTimeline`, which jumps to the final step under reduced motion. Mocks share `MockWindow` and `DictationPill` from `shared/ui` rather than redrawing window chrome or the pill.
 - **Hydration.** The static HTML carries each animated element's initial state, and hydration does not patch attributes that differ on the client. A component must render the same element with the same initial props whether or not reduced motion is on, and express the difference through its animation targets and transitions (`MotionConfig reducedMotion="user"` skips transform motion).
+
+## Feature tour
+
+`feature-tour` is the home page's highlights section (anchor `#values`). Its chapters are `CHAPTERS` in `config/chapters.ts`; each id names its copy under `tour.<id>`, its mock in `ui/mocks/` and its backdrop crop `public/backdrops/tour-<id>-800.webp`. From `lg` up, a sticky stage on the left shows the active chapter's backdrop and mock, and turns a page (rise or fall with the scroll direction) when another chapter's copy crosses the middle of the viewport; inactive copy dims. Below `lg`, each chapter carries its own stage above its copy. A mock replays its timeline each time its chapter becomes active. The keyboard chapter's 中/英 badge flips with the same two 0.12 s halves as the native badge ([KBD-04](../../specs/007-ime-ranking.md)). Adding a chapter means a copy entry in all three dictionaries, a mock, a timeline in `MOCK_DELAYS` and a crop in `scripts/build-assets.mjs`.
 
 ## Deployment
 
