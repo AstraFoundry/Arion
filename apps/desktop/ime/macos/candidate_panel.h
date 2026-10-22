@@ -13,13 +13,6 @@ typedef NS_ENUM(NSInteger, ArionCandidateAppearance) {
     ArionCandidateAppearanceDark,
 };
 
-// Fill of the highlighted candidate: Sunbeam yellow with ink text, the app's
-// accent (ADR 007), or Chatterfly's blue with white text.
-typedef NS_ENUM(NSInteger, ArionCandidateAccent) {
-    ArionCandidateAccentYellow,
-    ArionCandidateAccentBlue,
-};
-
 // Candidate bar drawn by the input method itself: one horizontal row, or the
 // expanded grid of up to six rows (one page each, columns aligned), as
 // Chatterfly's spread list. Geometry and colors follow Chatterfly's shipped
@@ -31,7 +24,13 @@ typedef NS_ENUM(NSInteger, ArionCandidateAccent) {
 @interface ArionCandidatePanel : NSObject
 @property(nonatomic) ArionCandidateSize size;
 @property(nonatomic) ArionCandidateAppearance appearance;
-@property(nonatomic) ArionCandidateAccent accent;
+// The highlighted candidate's fill and text in the light and dark
+// appearances, as the app resolves them (application.Highlight); nil keeps
+// Sunbeam's yellow with ink text.
+@property(strong, nonatomic) NSColor *lightFill;
+@property(strong, nonatomic) NSColor *lightText;
+@property(strong, nonatomic) NSColor *darkFill;
+@property(strong, nonatomic) NSColor *darkText;
 // A click on a candidate: its index in its visible row, and that row.
 @property(copy) void (^selected)(NSUInteger index, NSUInteger row, NSUInteger revision);
 // A click on the chevron, which expands the bar or collapses the grid.

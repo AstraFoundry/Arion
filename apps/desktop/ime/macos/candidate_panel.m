@@ -147,7 +147,10 @@ static NSColor *srgb(CGFloat r, CGFloat g, CGFloat b, CGFloat a) {
 // Clips the text to the bar, so rows appear inside it as it grows.
 @property(strong) CALayer *textMask;
 @property(strong) ArionCandidateText *text;
-@property ArionCandidateAccent accent;
+@property(strong) NSColor *lightFill;
+@property(strong) NSColor *lightText;
+@property(strong) NSColor *darkFill;
+@property(strong) NSColor *darkText;
 // The bar's last frame, where an expand or collapse animation starts.
 @property CGRect barFrame;
 @end
@@ -263,10 +266,9 @@ static NSColor *srgb(CGFloat r, CGFloat g, CGFloat b, CGFloat a) {
     text.chevron = chevron;
     BOOL dark = self.dark;
     text.dark = dark;
-    // Sunbeam's yellow is the same in both appearances and always carries
-    // ink (#14110F); Chatterfly's blue carries white.
-    BOOL yellow = self.accent == ArionCandidateAccentYellow;
-    text.selectedText = yellow ? srgb(20 / 255.0, 17 / 255.0, 15 / 255.0, 1) : srgb(1, 1, 1, 1);
+    // Without settings, Sunbeam's yellow (#FFCC00) with ink (#14110F).
+    NSColor *fill = (dark ? self.darkFill : self.lightFill) ?: srgb(1, 0.8, 0, 1);
+    text.selectedText = (dark ? self.darkText : self.lightText) ?: srgb(20 / 255.0, 17 / 255.0, 15 / 255.0, 1);
     text.needsDisplay = YES;
 
     // Unflipped (layer) space.
@@ -336,7 +338,7 @@ static NSColor *srgb(CGFloat r, CGFloat g, CGFloat b, CGFloat a) {
     self.selection.hidden = highlighted >= currentItems.count;
     self.selection.frame = CGRectMake(NSMinX(item), flip - NSMaxY(item), NSWidth(item), NSHeight(item));
     self.selection.cornerRadius = preset.selectionRadius;
-    self.selection.backgroundColor = (yellow ? srgb(1, 0.8, 0, 1) : dark ? srgb(0, 0.6, 0.949, 1) : srgb(0, 0.533, 1, 1)).CGColor;
+    self.selection.backgroundColor = fill.CGColor;
     if (animation >= kExpandDuration) {
         // The growing mask reveals new rows. The current row's text and
         // highlight stay visible; only the new row chrome fades in.
@@ -411,10 +413,10 @@ static NSColor *srgb(CGFloat r, CGFloat g, CGFloat b, CGFloat a) {
         appearance == ArionCandidateAppearanceDark ? [NSAppearance appearanceNamed:NSAppearanceNameDarkAqua] : nil;
 }
 
-- (void)setAccent:(ArionCandidateAccent)accent {
-    _accent = accent;
-    self.view.accent = accent;
-}
+- (void)setLightFill:(NSColor *)color { _lightFill = color; self.view.lightFill = color; }
+- (void)setLightText:(NSColor *)color { _lightText = color; self.view.lightText = color; }
+- (void)setDarkFill:(NSColor *)color { _darkFill = color; self.view.darkFill = color; }
+- (void)setDarkText:(NSColor *)color { _darkText = color; self.view.darkText = color; }
 
 - (void)setSize:(ArionCandidateSize)size {
     _size = MAX(ArionCandidateSizeSmall, MIN(ArionCandidateSizeLarge, size));

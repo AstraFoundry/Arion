@@ -1351,6 +1351,7 @@ func TestKeyboardSettings(t *testing.T) {
 				t.Fatal(err)
 			}
 			settle(tt)
+			snapshot(t, tt, "settings-keyboard-accent-"+string(language))
 			if err := tt.Click(messages.Text(copy.KbdAccentBlue)); err != nil {
 				t.Fatal(err)
 			}
@@ -1358,6 +1359,22 @@ func TestKeyboardSettings(t *testing.T) {
 			if state.Preferences.Keyboard.Accent != runtime.AccentBlue {
 				t.Fatalf("accent not chosen: %+v", state.Preferences.Keyboard)
 			}
+			// Custom starts from the current fill and adds a color well.
+			if err := tt.Click(messages.Text(copy.KbdAccentBlue)); err != nil {
+				t.Fatal(err)
+			}
+			settle(tt)
+			if err := tt.Click(messages.Text(copy.KbdAccentCustom)); err != nil {
+				t.Fatal(err)
+			}
+			settle(tt)
+			if k := state.Preferences.Keyboard; k.Accent != runtime.AccentCustom || k.AccentColor != "#0088ff" {
+				t.Fatalf("custom accent not started from the fill: %+v", k)
+			}
+			if _, ok := tt.Find(messages.Text(copy.KbdAccentCustomColor)); !ok {
+				t.Fatalf("no custom color well: %q", tt.Texts())
+			}
+			snapshot(t, tt, "settings-keyboard-accent-custom-"+string(language))
 			// A rebuilt app offers to replace the installed input method.
 			if hasText(tt, messages.Text(copy.IMEUpdate)) {
 				t.Fatalf("update offered for the current build: %q", tt.Texts())

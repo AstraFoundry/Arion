@@ -380,6 +380,13 @@ func TestWriteKeyboardSettings(t *testing.T) {
 		raw["appearance"] != "dark" || raw["accent"] != "blue" || raw["contextRanking"] != false {
 		t.Fatalf("unexpected settings file %s (%v)", data, err)
 	}
+	// The highlight arrives resolved for each appearance.
+	highlight, _ := raw["highlight"].(map[string]any)
+	light, _ := highlight["light"].(map[string]any)
+	dark, _ := highlight["dark"].(map[string]any)
+	if light["fill"] != "#0088ff" || light["text"] != "#ffffff" || dark["fill"] != "#0099f2" || dark["text"] != "#ffffff" {
+		t.Fatalf("unexpected highlight %s", data)
+	}
 	if entries, _ := os.ReadDir(filepath.Dir(path)); len(entries) != 1 {
 		t.Fatalf("temporary file left behind: %v", entries)
 	}

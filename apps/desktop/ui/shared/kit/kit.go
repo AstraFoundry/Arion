@@ -315,6 +315,12 @@ func SelectItem[T comparable](c *ui.Context, tokens theme.Tokens, sel ui.SelectP
 	return item
 }
 
+// Swatch previews a color in a select: a small rounded square with a
+// hairline, so a fill close to the surface keeps its edge.
+func Swatch(c *ui.Context, tokens theme.Tokens, color ui.Color) ui.Element {
+	return ui.Box(c).Size(12, 12).Shrink(0).Radius(theme.RadiusXS+1).Background(color).Border(1, tokens.CardBorder)
+}
+
 // SelectSeparator divides groups of options in a select's popup.
 func SelectSeparator(c *ui.Context, tokens theme.Tokens) ui.Element {
 	return ui.Box(c).Height(1).Margin(4, 8).Background(tokens.Hairline)

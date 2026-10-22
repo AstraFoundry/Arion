@@ -3,6 +3,7 @@
 package keyboard
 
 import (
+	"fmt"
 	"strconv"
 
 	"arion.local/desktop/ui/shared/copy"
@@ -166,12 +167,7 @@ func Candidates(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 			})
 		})
 		kit.Divider(c, tokens)
-		kit.Row(c, tokens, messages.Text(copy.KbdAccent), "", func() {
-			choice(c, "accent", messages.Text(copy.KbdAccent), prefs.Accent, []option[runtime.CandidateAccent]{
-				{runtime.AccentYellow, messages.Text(copy.KbdAccentYellow)}, {runtime.AccentBlue, messages.Text(copy.KbdAccentBlue)}}, func(accent runtime.CandidateAccent) {
-				update(func(k *runtime.KeyboardPreferences) { k.Accent = accent })
-			})
-		})
+		kit.Row(c, tokens, messages.Text(copy.KbdAccent), "", func() { accent(c, messages, tokens, prefs, update) })
 	})
 }
 
@@ -199,6 +195,54 @@ func Keys(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 			}
 			kit.Row(c, tokens, messages.Text(row[0]), "", func() {
 				ui.Text(c, messages.Text(row[1])).FontSize(theme.Body).TextColor(tokens.Muted)
+			})
+		}
+	})
+}
+
+// accentLabels name the candidate highlight colors.
+var accentLabels = map[runtime.CandidateAccent]copy.Key{
+	runtime.AccentYellow: copy.KbdAccentYellow, runtime.AccentOrange: copy.KbdAccentOrange, runtime.AccentRed: copy.KbdAccentRed,
+	runtime.AccentPink: copy.KbdAccentPink, runtime.AccentPurple: copy.KbdAccentPurple, runtime.AccentBlue: copy.KbdAccentBlue,
+	runtime.AccentGreen: copy.KbdAccentGreen, runtime.AccentGraphite: copy.KbdAccentGraphite, runtime.AccentCustom: copy.KbdAccentCustom,
+}
+
+// accent chooses the candidate highlight color, previewing each fill before
+// its name. Custom starts from the current fill and adds a color well.
+func accent(c *ui.Context, messages copy.Catalog, tokens theme.Tokens, prefs runtime.KeyboardPreferences, update func(func(*runtime.KeyboardPreferences))) {
+	// Swatches show the fill of the appearance the candidate bar wears.
+	dark := prefs.Appearance == runtime.AppearanceDark || prefs.Appearance == runtime.AppearanceSystem && tokens.Dark
+	fill := func(accent runtime.CandidateAccent) string {
+		choice := prefs
+		choice.Accent = accent
+		return choice.Highlight(dark).Fill
+	}
+	swatch := func(accent runtime.CandidateAccent) {
+		// Custom has no fill until a color is chosen.
+		color := ui.Transparent
+		if accent != runtime.AccentCustom || prefs.AccentColor != "" {
+			color = ui.Hex(fill(accent))
+		}
+		kit.Swatch(c, tokens, color)
+	}
+	label := func(accent runtime.CandidateAccent) string { return messages.Text(accentLabels[accent]) }
+	ui.Row(c).Gap(theme.GapRelated).AlignItems(ui.Center).Children(func() {
+		if prefs.Accent == runtime.AccentCustom {
+			color := ui.Hex(prefs.AccentColor)
+			if ui.ColorWell(c.Key("accent-color"), &color).Label(messages.Text(copy.KbdAccentCustomColor)).Changed() {
+				update(func(k *runtime.KeyboardPreferences) {
+					k.AccentColor = fmt.Sprintf("#%02x%02x%02x", color.R, color.G, color.B)
+				})
+			}
+		}
+		selected := prefs.Accent
+		if kit.Select(c.Key("accent"), &selected, runtime.CandidateAccents, label, swatch).Label(messages.Text(copy.KbdAccent)).Width(140).Changed() {
+			current := prefs.Highlight(dark).Fill
+			update(func(k *runtime.KeyboardPreferences) {
+				k.Accent = selected
+				if selected == runtime.AccentCustom && k.AccentColor == "" {
+					k.AccentColor = current
+				}
 			})
 		}
 	})

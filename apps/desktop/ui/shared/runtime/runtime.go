@@ -27,6 +27,7 @@ type (
 	CandidateSize       = application.CandidateSize
 	CandidateAppearance = application.CandidateAppearance
 	CandidateAccent     = application.CandidateAccent
+	Highlight           = application.Highlight
 	Usage               = domain.Usage
 	UsageLog            = domain.UsageLog
 	UsageDay            = domain.UsageDay
@@ -77,7 +78,10 @@ func HoldKeysFor(platform string) []HoldKey { return application.HoldKeysFor(pla
 var GainStops = application.GainStops
 
 // Keyboard choices.
-var CandidatePageSizes = application.CandidatePageSizes
+var (
+	CandidatePageSizes = application.CandidatePageSizes
+	CandidateAccents   = application.CandidateAccents
+)
 
 const (
 	CandidateSmall   = application.CandidateSmall
@@ -87,7 +91,14 @@ const (
 	AppearanceLight  = application.AppearanceLight
 	AppearanceDark   = application.AppearanceDark
 	AccentYellow     = application.AccentYellow
+	AccentOrange     = application.AccentOrange
+	AccentRed        = application.AccentRed
+	AccentPink       = application.AccentPink
+	AccentPurple     = application.AccentPurple
 	AccentBlue       = application.AccentBlue
+	AccentGreen      = application.AccentGreen
+	AccentGraphite   = application.AccentGraphite
+	AccentCustom     = application.AccentCustom
 )
 
 const GainStep = application.GainStep

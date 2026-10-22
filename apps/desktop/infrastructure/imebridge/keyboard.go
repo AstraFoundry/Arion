@@ -8,11 +8,24 @@ import (
 	"arion.local/core/application"
 )
 
+// keyboardSettings is the file the input method reads: the preferences, and
+// the candidate highlight resolved for each appearance, so the palette and
+// its text rule live only in application.
+type keyboardSettings struct {
+	application.KeyboardPreferences
+	Highlight struct {
+		Light application.Highlight `json:"light"`
+		Dark  application.Highlight `json:"dark"`
+	} `json:"highlight"`
+}
+
 // WriteKeyboardSettings replaces the file the input method reads its
 // keyboard preferences from when a client activates it. The write is atomic,
 // so the input method never reads a partial file.
 func WriteKeyboardSettings(path string, settings application.KeyboardPreferences) error {
-	data, err := json.Marshal(settings)
+	file := keyboardSettings{KeyboardPreferences: settings}
+	file.Highlight.Light, file.Highlight.Dark = settings.Highlight(false), settings.Highlight(true)
+	data, err := json.Marshal(file)
 	if err != nil {
 		return err
 	}

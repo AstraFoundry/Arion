@@ -46,6 +46,18 @@ static NSString *socketPath(void) {
     return [applicationSupport() stringByAppendingPathComponent:@"ime.sock"];
 }
 
+// A #rrggbb color of the app-resolved candidate highlight, or nil.
+static NSColor *highlightColor(NSDictionary *highlight, NSString *appearance, NSString *part) {
+    NSDictionary *colors = highlight[appearance];
+    NSString *hex = [colors isKindOfClass:NSDictionary.class] ? colors[part] : nil;
+    if (![hex isKindOfClass:NSString.class] || hex.length != 7 || ![hex hasPrefix:@"#"]) return nil;
+    unsigned int value = 0;
+    NSScanner *scanner = [NSScanner scannerWithString:[hex substringFromIndex:1]];
+    if (![scanner scanHexInt:&value] || !scanner.isAtEnd) return nil;
+    return [NSColor colorWithSRGBRed:((value >> 16) & 0xff) / 255.0 green:((value >> 8) & 0xff) / 255.0
+                                blue:(value & 0xff) / 255.0 alpha:1];
+}
+
 // Keyboard preferences the app writes (application.KeyboardPreferences). The
 // input method works without the app, so an absent file means the defaults;
 // unknown values keep the defaults for that field.
@@ -53,7 +65,7 @@ static void applyKeyboardSettings(ArionTyping *typing, ArionCandidatePanel *pane
     NSUInteger pageSize = 9;
     ArionCandidateSize size = ArionCandidateSizeMedium;
     ArionCandidateAppearance appearance = ArionCandidateAppearanceSystem;
-    ArionCandidateAccent accent = ArionCandidateAccentYellow;
+    NSColor *lightFill = nil, *lightText = nil, *darkFill = nil, *darkText = nil;
     BOOL contextRanking = YES;
     NSData *data = [NSData dataWithContentsOfFile:[applicationSupport() stringByAppendingPathComponent:@"keyboard.json"]];
     NSDictionary *settings = data ? [NSJSONSerialization JSONObjectWithData:data options:0 error:nil] : nil;
@@ -63,13 +75,17 @@ static void applyKeyboardSettings(ArionTyping *typing, ArionCandidatePanel *pane
         NSDictionary *sizes = @{@"small": @(ArionCandidateSizeSmall), @"medium": @(ArionCandidateSizeMedium), @"large": @(ArionCandidateSizeLarge)};
         NSDictionary *appearances = @{@"system": @(ArionCandidateAppearanceSystem), @"light": @(ArionCandidateAppearanceLight),
                                       @"dark": @(ArionCandidateAppearanceDark)};
-        NSDictionary *accents = @{@"yellow": @(ArionCandidateAccentYellow), @"blue": @(ArionCandidateAccentBlue)};
         id value = settings[@"candidateSize"];
         if ([value isKindOfClass:NSString.class] && sizes[value]) size = [sizes[value] integerValue];
         value = settings[@"appearance"];
         if ([value isKindOfClass:NSString.class] && appearances[value]) appearance = [appearances[value] integerValue];
-        value = settings[@"accent"];
-        if ([value isKindOfClass:NSString.class] && accents[value]) accent = [accents[value] integerValue];
+        value = settings[@"highlight"];
+        if ([value isKindOfClass:NSDictionary.class]) {
+            lightFill = highlightColor(value, @"light", @"fill");
+            lightText = highlightColor(value, @"light", @"text");
+            darkFill = highlightColor(value, @"dark", @"fill");
+            darkText = highlightColor(value, @"dark", @"text");
+        }
         value = settings[@"contextRanking"];
         if ([value isKindOfClass:NSNumber.class]) contextRanking = [value boolValue];
     }
@@ -77,7 +93,10 @@ static void applyKeyboardSettings(ArionTyping *typing, ArionCandidatePanel *pane
     typing.contextRanking = contextRanking;
     panel.size = size;
     panel.appearance = appearance;
-    panel.accent = accent;
+    panel.lightFill = lightFill;
+    panel.lightText = lightText;
+    panel.darkFill = darkFill;
+    panel.darkText = darkText;
 }
 
 @implementation ArionBridge
