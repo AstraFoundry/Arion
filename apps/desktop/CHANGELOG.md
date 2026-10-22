@@ -1,3 +1,31 @@
+## 0.1.0-alpha.7
+
+### English
+
+macOS Apple silicon (ARM64) preview, requiring macOS 14 or later.
+
+- Add optional cloud polishing through ChatGPT sign-in or an API key for OpenAI, Anthropic, Google Gemini, DeepSeek or OpenRouter. Local polishing remains the default. Cloud requests require an explicit engine choice, a connected provider and a selected model; they send final text, its scene and recalled vocabulary only. Audio, cursor/window context and dictation history stay on the device. Credentials use the OS credential store.
+- Add guided cloud-provider and model setup in onboarding and Settings. Keep model settings on one section, open recognition and cloud models on their own pages, and show explanations in tooltips. Give update controls their own row.
+- Refine the dictation mark: its bars fold into waiting dots, which orbit while polishing runs.
+- Retire Intel macOS support for future releases. Supported development targets are macOS Apple silicon and Windows x64; this alpha includes only the macOS ARM64 installer.
+
+This is an early preview. Real-service cloud sign-in/provider requests, clean-machine installation, minimum OS/RAM and old-to-new updates still need acceptance. Cloud polishing has no benchmarked quality or latency claim. Recognition stays local and works offline after model provisioning; model weights are downloaded separately. Desktop encrypted sync enrollment remains pending.
+
+See RELEASE-STATUS.md for evidence and limitations, and SHA256SUMS for file verification. GitHub publication and COS staging do not publish the Arion center beta channel.
+
+### 中文
+
+适用于 macOS Apple 芯片（ARM64）的预览版本，需要 macOS 14 或更高版本。
+
+- 新增可选的云端润色：可登录 ChatGPT，或使用 OpenAI、Anthropic、Google Gemini、DeepSeek、OpenRouter 的 API 密钥。本机润色仍为默认选项。只有主动选择云端、连接服务商并选定模型后才会发送请求；仅发送最终文本、场景和召回的词汇。音频、光标周边及窗口上下文、听写历史均保留在本机，凭据存入系统凭据库。
+- 在引导和设置中加入分步的云端服务商及模型配置。模型设置保留在同一分区，识别模型和云端模型分别进入详情页，说明使用提示框呈现；更新控制独占一行。
+- 改进听写标记：竖条折叠为等待圆点，润色期间圆点环绕运动。
+- 后续版本不再支持 Intel Mac。开发支持范围为 macOS Apple 芯片与 Windows x64；本次 alpha 仅提供 macOS ARM64 安装包。
+
+这是早期预览版。真实云端登录及服务商请求、全新机器安装、最低系统与内存要求、旧版本升级仍待验收，尚无云端润色质量或延迟的基准结论。语音识别仍在本机完成，模型准备完成后可离线使用；模型权重需单独下载。桌面加密同步的设备注册尚未完成。
+
+验证记录和限制见 RELEASE-STATUS.md，文件校验值见 SHA256SUMS。GitHub 发布及 COS 暂存不会自动发布 Arion 中心的 beta 渠道。
+
 ## 0.1.0-alpha.6
 
 ### English

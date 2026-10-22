@@ -1,16 +1,17 @@
 # Desktop release status
 
-This file accompanies each release as `RELEASE-STATUS.md`. The `0.1.0-alpha.6` release distributes only macOS Apple silicon packages. The Windows column below describes implementation status, not assets included in this alpha. Future macOS releases support Apple silicon only ([ADR 021](../decisions/021-apple-silicon-only-macos.md)); Intel macOS is unsupported. Build success verifies packaging; the evidence below limits the supported product claims.
+This file accompanies each release as `RELEASE-STATUS.md`. The `0.1.0-alpha.7` release distributes only macOS Apple silicon packages. The Windows column below describes implementation status, not assets included in this alpha. Future macOS releases support Apple silicon only ([ADR 021](../decisions/021-apple-silicon-only-macos.md)); Intel macOS is unsupported. Build success verifies packaging; the evidence below limits the supported product claims.
 
 | Capability | macOS Apple silicon | Windows x64 |
 | --- | --- | --- |
 | Native package | App and DMG | Per-user NSIS installer |
 | Local speech recognition | Native MLX 1.7B 8-bit; 118 development fixtures measured | Native CPU/Vulkan staging implemented; actual Windows package/inference/signing acceptance pending |
 | Local polishing | Worker and pinned runtime bundled | Unsupported; no approved runtime/model pair |
+| Optional cloud polishing | Explicit engine/provider/model choice; unit and view coverage; real-service acceptance open | Implemented with the same explicit choice; real-service/native acceptance open |
 | System input method | Offline Pinyin/voice IMK host with horizontal candidates and context ranking; native 36/36 cases pass; installed physical Shift and dictation accepted locally in Codex/Cursor | TSF not implemented |
 | Encrypted sync | Desktop enrollment and outbox pending | Desktop enrollment and outbox pending |
 
-Windows is an early preview. Polishing on unsupported platforms reports its unavailable state; no content is routed to cloud inference. Model weights are downloaded separately from the pinned catalog and are not embedded in installers.
+Windows is an early preview; no local polishing runtime is approved there. Cloud polishing is a separate, explicit choice ([ADR 022](../decisions/022-cloud-polishing.md)): with a connected provider and selected model it sends final text, scene and recalled terms only. Audio, cursor/window context and dictation history remain on-device. Local remains the default; no cloud request is made for that engine. Real ChatGPT sign-in and provider requests on supported hosts remain unaccepted (CLD-A05); cloud quality and latency have not been benchmarked. Model weights are downloaded separately from the pinned catalog and are not embedded in installers.
 
 The macOS package requires macOS 14 or later. Speech recognition now packages native Qwen3-ASR workers and the Swift/Metal resource closure ([ADR 020](../decisions/020-native-qwen-asr.md)); rewriting stages llama.cpp ([local rewrite](local-rewrite.md)). Package verification rejects any executable whose minimum exceeds the advertised package minimum. Minimum-version host acceptance and minimum RAM measurements remain open.
 

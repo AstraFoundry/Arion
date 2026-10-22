@@ -97,7 +97,9 @@ func TestMarkLayoutMovesContinuously(t *testing.T) {
 		pose func(t float32) markPose
 	}{
 		{"fold", func(t float32) markPose { return markPose{Levels: levels, Live: 1 - t, Fold: t, Wave: 0.2} }},
-		{"orbit", func(t float32) markPose { return markPose{Fold: 1, Orbit: t, Wave: 0.2, Spin: [3]float32{0.4, 0.3, 0.2}} }},
+		{"orbit", func(t float32) markPose {
+			return markPose{Fold: 1, Orbit: t, Wave: 0.2, Spin: [3]float32{0.4, 0.3, 0.2}}
+		}},
 		{"rest", func(t float32) markPose {
 			return markPose{Levels: [5]float32{1, 1, 1, 1, 1}, Fold: 1 - t, Orbit: 1 - t, Spin: [3]float32{0.4, 0.3, 0.2}}
 		}},
