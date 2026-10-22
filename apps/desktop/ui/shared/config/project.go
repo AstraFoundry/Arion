@@ -15,8 +15,11 @@ const (
 	TeamURL       = "https://github.com/AstraFoundry"
 	RepositoryURL = "https://github.com/AstraFoundry/Arion"
 	XURL          = "https://x.com/AstraFoundry"
-	IssuesURL     = RepositoryURL + "/issues/new"
-	LicenseURL    = RepositoryURL + "/blob/main/LICENSE"
+	// DiscordURL and FeishuURL invite to the community chats.
+	DiscordURL = "https://discord.com/invite/72kh465mMm"
+	FeishuURL  = "https://applink.feishu.cn/client/chat/chatter/add_by_link?link_token=640t6cde-d38e-4a81-875b-7799e44b77ae"
+	IssuesURL  = RepositoryURL + "/issues/new"
+	LicenseURL = RepositoryURL + "/blob/main/LICENSE"
 	// ReleaseURL is the page of a release, before its version; releases are
 	// tagged v1.2.0 and so on.
 	ReleaseURL = RepositoryURL + "/releases/tag/v"

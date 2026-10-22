@@ -15,6 +15,8 @@ var (
 	backdropJPEG []byte
 	//go:embed astrafoundry.png
 	teamPNG []byte
+	//go:embed feishu.png
+	feishuPNG []byte
 )
 
 // Mark is the app icon, drawn wherever Arion names itself.
@@ -25,6 +27,9 @@ var Backdrop = mustDecode(backdropJPEG)
 
 // Team is the AstraFoundry organization avatar, as GitHub shows it.
 var Team = mustDecode(teamPNG)
+
+// Feishu is Feishu's logo, which links to the community group.
+var Feishu = mustDecode(feishuPNG)
 
 // mustDecode decodes an embedded image; one that does not decode is a
 // build defect, not a runtime condition.

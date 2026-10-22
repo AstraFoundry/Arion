@@ -1,8 +1,10 @@
 // Package icons exposes the vendored Lucide icon set (ISC, see svg/LICENSE),
 // the Google and GitHub marks of the AstraFoundry sign-in methods, kept in
 // their brand colors, and the cloud polishing providers' marks from LobeHub
-// Icons (MIT, see svg/LICENSE-lobehub). Monochrome marks are tinted with
-// ui.Icon; Gemini and DeepSeek keep their colors and are drawn with ui.Image.
+// Icons (MIT, see svg/LICENSE-lobehub), and Discord's mark from SVG Logos
+// (CC0, see svg/LICENSE-svg-logos). Monochrome marks are tinted with
+// ui.Icon; Gemini, DeepSeek and Discord keep their colors and are drawn
+// with ui.Image.
 package icons
 
 import (
@@ -75,5 +77,7 @@ var (
 	Anthropic  = load("lobe-anthropic")
 	OpenRouter = load("lobe-openrouter")
 	Gemini     = load("lobe-gemini")
-	DeepSeek   = load("lobe-deepseek")
+	// Discord is the community server's mark, in its brand color.
+	Discord  = load("logos-discord")
+	DeepSeek = load("lobe-deepseek")
 )

@@ -48,9 +48,37 @@ func TipRow(c *ui.Context, tokens theme.Tokens, title, tip string, control func(
 	})
 }
 
+// AppButton is an app's logo on a small tile that opens it: it rises a
+// little on hover and names the app in a Tooltip. It reports a click.
+func AppButton(c *ui.Context, tokens theme.Tokens, logo ui.ImageSource, name string) bool {
+	button := ui.ButtonBase(c).Size(28, 28).Radius(7).Justify(ui.Center).AlignItems(ui.Center).
+		Background(tokens.Card).Border(1, tokens.CardBorder).Label(name)
+	pose := ui.Pose{}
+	if button.Hovered() {
+		pose.Y = -1.5
+	}
+	if button.Pressed() {
+		pose.Scale = 0.96
+	}
+	button.AnimatePose(pose, theme.Quick)
+	button.Children(func() { ui.Image(c, logo).Size(18, 18) })
+	Tooltip(c, tokens, button, name)
+	return button.Clicked()
+}
+
 // LinkRow is a row that opens a page: an optional leading mark, the title,
 // its current value and a chevron. It reports a click.
 func LinkRow(c *ui.Context, tokens theme.Tokens, title, value string, lead func()) bool {
+	var trailing func()
+	if value != "" {
+		trailing = func() { ui.Text(c, value).FontSize(theme.Body).TextColor(tokens.Muted).SingleLine().Shrink(1) }
+	}
+	return LinkRowWith(c, tokens, title, lead, trailing)
+}
+
+// LinkRowWith is LinkRow with its own content before the chevron in place
+// of a value, as a stack of avatars.
+func LinkRowWith(c *ui.Context, tokens theme.Tokens, title string, lead, trailing func()) bool {
 	row := ui.ButtonBase(c).Gap(12).Padding(12, 16).AlignItems(ui.Center).Label(title)
 	if row.Hovered() {
 		row.Background(tokens.AccentSoft.Alpha(0.5).Over(tokens.Card))
@@ -60,8 +88,8 @@ func LinkRow(c *ui.Context, tokens theme.Tokens, title, value string, lead func(
 			lead()
 		}
 		ui.Text(c, title).FontSize(theme.Body).FontWeight(500).Grow(1).Shrink(1).SingleLine()
-		if value != "" {
-			ui.Text(c, value).FontSize(theme.Body).TextColor(tokens.Muted).SingleLine().Shrink(1)
+		if trailing != nil {
+			trailing()
 		}
 		ui.Icon(c, icons.ChevronRight).FontSize(14).TextColor(tokens.Faint)
 	})

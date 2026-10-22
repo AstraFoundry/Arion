@@ -215,6 +215,11 @@ func (c Catalog) UpdateAvailable(version string) string {
 	return c.format(FormatUpdateAvailable, "version", version)
 }
 
+// MoreContributors counts the contributors a stack of avatars leaves out.
+func (c Catalog) MoreContributors(n int) string {
+	return c.format(FormatMoreContributors, "count", strconv.Itoa(n))
+}
+
 func (c Catalog) UpdateTo(version string) string {
 	return c.format(FormatUpdateTo, "version", version)
 }

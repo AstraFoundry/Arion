@@ -1,0 +1,26 @@
+{
+  "repository": "AstraFoundry/Arion",
+  "contributors": [
+    {
+      "login": "stvlynn",
+      "profile": "https://github.com/stvlynn",
+      "contributions": 119,
+      "avatar": "stvlynn.jpg",
+      "avatarSHA256": "d28927d19055f97443380b446f0469981a243c705fd06bcc4eac60e094619482"
+    },
+    {
+      "login": "claude",
+      "profile": "https://github.com/claude",
+      "contributions": 14,
+      "avatar": "claude.png",
+      "avatarSHA256": "f0afb27ccee414d94affd2af8cb1b1103fe59fea43784c1b685be6c7966c343e"
+    },
+    {
+      "login": "zacharyhaha",
+      "profile": "https://github.com/zacharyhaha",
+      "contributions": 1,
+      "avatar": "zacharyhaha.png",
+      "avatarSHA256": "f76313497cab548a6065303b57e87c0f730380ec9948541d6036994f573b2b85"
+    }
+  ]
+}

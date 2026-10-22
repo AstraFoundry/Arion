@@ -316,6 +316,10 @@ rewrite-alignment-test: ## Test report evidence integrity guards without inferen
 keyboard-stage: ## Stage pinned offline Pinyin runtime, schemas, data and notices
 	@pnpm keyboard:stage
 
+.PHONY: contributors-update
+contributors-update: ## Refresh the contributors and avatars shown in Settings › About from GitHub
+	@pnpm contributors:update
+
 keyboard-check: ## Run actual macOS typing and encrypted learning checks in isolated fixtures
 	@pnpm keyboard:check
 

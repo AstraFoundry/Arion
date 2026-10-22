@@ -6,6 +6,7 @@ import (
 	holdname "arion.local/desktop/ui/entities/holdkey"
 	"arion.local/desktop/ui/entities/model"
 	"arion.local/desktop/ui/features/cloud"
+	"arion.local/desktop/ui/features/contributors"
 	"arion.local/desktop/ui/features/diagnostics"
 	"arion.local/desktop/ui/features/holdkey"
 	"arion.local/desktop/ui/features/keyboard"
@@ -55,6 +56,14 @@ const (
 	modelCloud       modelPage = "cloud"
 )
 
+// aboutPage is a page under About: the section itself or its contributors.
+type aboutPage string
+
+const (
+	aboutIndex        aboutPage = ""
+	aboutContributors aboutPage = "contributors"
+)
+
 // Page keeps the window's own state.
 type Page struct {
 	Section    string
@@ -64,6 +73,7 @@ type Page struct {
 	// model's pages are.
 	model    modelPage
 	cloud    cloud.Nav
+	about    aboutPage
 	keyboard keyboard.State
 	focus    int
 	usage    usage.State
@@ -92,7 +102,7 @@ func (p *Page) Render(c *ui.Context, store runtime.Store) {
 			store.Actions.CancelInputMethodSetup()
 		}
 		p.shown = p.Section
-		p.model, p.cloud = modelIndex, cloud.Nav{}
+		p.model, p.cloud, p.about = modelIndex, cloud.Nav{}, aboutIndex
 		if p.Section == Overview {
 			p.usage.Replay()
 		}
@@ -100,7 +110,7 @@ func (p *Page) Render(c *ui.Context, store runtime.Store) {
 	if p.model == modelCloud && store.State.Preferences.PolishEngine != runtime.PolishCloud {
 		p.model, p.cloud = modelIndex, cloud.Nav{}
 	}
-	sub := p.Section == Model && p.model != modelIndex
+	sub := p.subPage()
 	bar := c.TitleBar()
 	ui.Row(c).Fill().AlignItems(ui.Stretch).Children(func() {
 		side := ui.Column(c).Width(210).Padding(max(bar.Height, 12)+8, 10, 12, 10)
@@ -115,10 +125,10 @@ func (p *Page) Render(c *ui.Context, store runtime.Store) {
 				DragWindow().Gap(4).Children(func() {
 				heading := title(p.Section, store.Copy())
 				if sub {
-					// A page under Model: back steps out one page at a time.
-					heading = p.modelTitle(store)
+					// A page under a section: back steps out one page at a time.
+					heading = p.subTitle(store)
 					if kit.IconButton(c.Key("back"), tokens, icons.ChevronLeft, store.Copy().Text(copy.Back)).Margin(0, 0, 0, -6).Clicked() {
-						p.modelBack()
+						p.back()
 					}
 				}
 				ui.Text(c, heading).FontSize(theme.Title).FontWeight(600).ContentTransition(ui.ContentTransition{})
@@ -126,7 +136,7 @@ func (p *Page) Render(c *ui.Context, store runtime.Store) {
 			ui.Scroll(c).Grow(1).Children(func() {
 				key := p.Section
 				if sub {
-					key += "/" + string(p.model) + "/" + p.cloud.Provider
+					key += "/" + string(p.model) + "/" + p.cloud.Provider + "/" + string(p.about)
 				}
 				content := ui.Column(c.Key(key)).Gap(theme.GapGroup).Padding(8, theme.Gutter, theme.Gutter, theme.Gutter).
 					Transition(ui.ElementTransition{Animation: &theme.Settle, Enter: &ui.Motion{Y: 8}})
@@ -263,6 +273,10 @@ func (p *Page) section(c *ui.Context, store runtime.Store, tokens theme.Tokens) 
 		}
 		signin.Portal(c, store, tokens)
 	case About:
+		if p.about == aboutContributors {
+			contributors.Page(c, tokens)
+			return
+		}
 		kit.Card(c, tokens).Children(func() {
 			ui.Column(c).Height(200).Children(func() {
 				// The banner's top corners nest inside the card's border.
@@ -280,7 +294,9 @@ func (p *Page) section(c *ui.Context, store runtime.Store, tokens theme.Tokens) 
 		update.Card(c, store, tokens)
 		diagnostics.Card(c, store, tokens)
 		kit.Group(c, tokens, messages.Text(copy.NavPrivacy), func() { privacy(c, messages, tokens) })
-		aboutLinks(c, messages, tokens)
+		if aboutLinks(c, store, tokens) {
+			p.about = aboutContributors
+		}
 	}
 }
 
@@ -307,8 +323,11 @@ func privacy(c *ui.Context, messages copy.Catalog, tokens theme.Tokens) {
 }
 
 // aboutLinks names the team and where the project, its news, bug reports
-// and license live.
-func aboutLinks(c *ui.Context, messages copy.Catalog, tokens theme.Tokens) {
+// and license live, and ends with the contributors. It reports a click on
+// the contributors.
+func aboutLinks(c *ui.Context, store runtime.Store, tokens theme.Tokens) bool {
+	messages := store.Copy()
+	open := false
 	kit.Card(c, tokens).Children(func() {
 		kit.Row(c, tokens, messages.Text(copy.AboutTeam), "", func() {
 			ui.Row(c).Gap(8).AlignItems(ui.Center).Children(func() {
@@ -317,16 +336,33 @@ func aboutLinks(c *ui.Context, messages copy.Catalog, tokens theme.Tokens) {
 				ui.Link(c, config.Team, config.TeamURL)
 			})
 		})
-		for _, link := range []struct{ title, label, url string }{
-			{messages.Text(copy.AboutSource), config.Repository, config.RepositoryURL},
-			{messages.Text(copy.AboutX), config.XHandle, config.XURL},
-			{messages.Text(copy.AboutFeedback), messages.Text(copy.AboutFeedbackLink), config.IssuesURL},
-			{messages.Text(copy.AboutLicense), config.License, config.LicenseURL},
-		} {
-			kit.Divider(c, tokens)
-			kit.Row(c, tokens, link.title, "", func() { ui.Link(c, link.label, link.url) })
+		links := func(list ...[3]string) {
+			for _, link := range list {
+				kit.Divider(c, tokens)
+				kit.Row(c, tokens, link[0], "", func() { ui.Link(c, link[1], link[2]) })
+			}
 		}
+		links([3]string{messages.Text(copy.AboutSource), config.Repository, config.RepositoryURL},
+			[3]string{messages.Text(copy.AboutX), config.XHandle, config.XURL})
+		kit.Divider(c, tokens)
+		kit.Row(c, tokens, messages.Text(copy.AboutCommunity), "", func() {
+			ui.Row(c).Gap(8).AlignItems(ui.Center).Children(func() {
+				for _, app := range []struct {
+					logo      ui.ImageSource
+					name, url string
+				}{{icons.Discord, messages.Text(copy.AboutDiscord), config.DiscordURL}, {assets.Feishu, messages.Text(copy.AboutFeishu), config.FeishuURL}} {
+					if kit.AppButton(c.Key(app.url), tokens, app.logo, app.name) {
+						c.OpenURL(app.url)
+					}
+				}
+			})
+		})
+		links([3]string{messages.Text(copy.AboutFeedback), messages.Text(copy.AboutFeedbackLink), config.IssuesURL},
+			[3]string{messages.Text(copy.AboutLicense), config.License, config.LicenseURL})
+		kit.Divider(c, tokens)
+		open = contributors.Row(c, store, tokens)
 	})
+	return open
 }
 
 func hasOthers(store runtime.Store) bool {
@@ -356,6 +392,27 @@ func (p *Page) nav(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 	if account, _ := sectionOf(Account); account.visible(store) && signin.SidebarCard(c, store, tokens, p.Section == Account) {
 		p.Section = Account
 	}
+}
+
+// subPage reports a page under the current section.
+func (p *Page) subPage() bool {
+	return (p.Section == Model && p.model != modelIndex) || (p.Section == About && p.about != aboutIndex)
+}
+
+func (p *Page) subTitle(store runtime.Store) string {
+	if p.Section == About {
+		return store.Copy().Text(copy.AboutContributors)
+	}
+	return p.modelTitle(store)
+}
+
+// back leaves the current page for the one above it.
+func (p *Page) back() {
+	if p.Section == About {
+		p.about = aboutIndex
+		return
+	}
+	p.modelBack()
 }
 
 func (p *Page) modelTitle(store runtime.Store) string {

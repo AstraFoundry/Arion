@@ -104,6 +104,7 @@
     "chain:expanded-test": "node --test benchmarks/reproduction/correction-chain-expanded-v2/report.test.mjs",
     "chain:expanded-verify": "node benchmarks/reproduction/correction-chain-expanded-v2/verify.mjs",
     "keyboard:stage": "node scripts/stage-keyboard-runtime.mjs",
+    "contributors:update": "node scripts/update-contributors.mjs",
     "keyboard:check": "node scripts/check-keyboard.mjs",
     "keyboard:verify": "node scripts/verify-keyboard-bundle.mjs",
     "rewrite:packaging:build": "node scripts/rewrite-study-command.mjs packaging build",
