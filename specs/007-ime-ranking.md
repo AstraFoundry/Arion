@@ -34,6 +34,8 @@ KBD-05: Learn only confirmed candidate selections through an encrypted local use
 
 KBD-06: Ship a universal arm64+x86_64 input source with relocatable native dependencies, all notices and prebuilt data. Schema deployment/download must not run on the typing path. Actual editor behavior, offline first activation, word/sentence quality and key-to-preedit latency require host observations; unit or engine-only results are insufficient.
 
+KBD-07: Chinese mode offers two independent switches, both off by default. Full width commits unconverted ASCII letters, digits, space and symbols as full-width forms (`1` → `１`, Space → U+3000); Pinyin letters still compose and Chinese punctuation is unchanged. English punctuation passes ASCII punctuation through instead of the Chinese table; quote alternation does not apply. With both on, punctuation commits the full-width ASCII form (`.` → `．`). English mode passes keys through unchanged under either switch. The input menu names each item by its action (Use full-width/half-width characters, Use English/Chinese punctuation (⌃.)); Ctrl+. switches punctuation in Chinese mode and passes through in English mode. Full width has no shortcut because Shift+Space is KBD-04's language switch. A switch discards unconfirmed composition and shows the KBD-04 caret badge turning over to the new state. The input method owns both choices in its user directory, shared by all clients; restart retains them, an absent file means the defaults, and a choice that cannot be saved is refused and leaves the option unchanged.
+
 ## Local scoring
 
 RNK-01: Sources may be actual recognizer alternatives, a documented phonetic/lexicon engine, or approved dictionary-derived alternatives with explicit provenance. Their absence yields a one-item set; never invent ASR n-best or neural probabilities.
@@ -64,6 +66,7 @@ RNK-05: Short candidate ranking must coexist with ASR without breaking audio dea
 | KBD-A06 | CJK/emoji neighbors and UTF-8/UTF-16 caret boundaries → exact owned-range writes in actual editors |
 | KBD-A07 | Confirmed learning survives restart; cancellation does not learn; reset/delete work; wrong/missing key, tamper and I/O failure fail closed without plaintext |
 | KBD-A08 | Universal bundle/dependency/data/license checks and actual offline host quality/latency observations |
+| KBD-A09 | Full-width and English-punctuation switches from the menu and Ctrl+. → next commits use the selected forms; defaults off; restart retains state; unsaved choices refused; English mode unaffected; switching discards composition and shows the caret badge |
 | RNK-A01 | Rank result adds/drops/duplicates IDs or nonfinite scores → reject result |
 | RNK-A02 | User-selected candidate moved by ranking → same ID retained, no unexpected text replacement |
 | RNK-A03 | Older composition result arrives late → ignored |

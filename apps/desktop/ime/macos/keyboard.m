@@ -71,6 +71,8 @@ static BOOL verifyData(NSString *directory) {
 @property(copy) NSString *userDirectory;
 @property BOOL ready;
 @property BOOL ascii;
+@property(readwrite) BOOL fullWidth;
+@property(readwrite) BOOL englishPunctuation;
 @property(readwrite, strong) ArionContextRanker *ranker;
 @property ArionContextStore *contextStore;
 @property(strong) dispatch_queue_t contextQueue;
@@ -98,6 +100,7 @@ static BOOL verifyData(NSString *directory) {
     }
     self.dataDirectory = data;
     self.userDirectory = user;
+    [self loadOptions];
     RIME_STRUCT(RimeTraits, traits);
     traits.shared_data_dir = self.dataDirectory.fileSystemRepresentation;
     traits.prebuilt_data_dir = [self.dataDirectory stringByAppendingPathComponent:@"build"].fileSystemRepresentation;
@@ -163,8 +166,35 @@ static BOOL verifyData(NSString *directory) {
         if (session) self.api->destroy_session(session);
         return 0;
     }
-    self.api->set_option(session, "ascii_mode", self.ascii);
+    [self applyOptions:session];
     return session;
+}
+
+// Width and punctuation options outlive the process (KBD-07). The input
+// method owns this file; an absent file or unknown value means the default.
+- (NSString *)optionsPath {
+    return [self.userDirectory stringByAppendingPathComponent:@"options.json"];
+}
+- (void)loadOptions {
+    NSData *data = [NSData dataWithContentsOfFile:self.optionsPath];
+    NSDictionary *options = data ? [NSJSONSerialization JSONObjectWithData:data options:0 error:nil] : nil;
+    if (![options isKindOfClass:NSDictionary.class]) options = nil;
+    NSNumber *fullWidth = options[@"fullWidth"], *englishPunctuation = options[@"englishPunctuation"];
+    self.fullWidth = [fullWidth isKindOfClass:NSNumber.class] && fullWidth.boolValue;
+    self.englishPunctuation = [englishPunctuation isKindOfClass:NSNumber.class] && englishPunctuation.boolValue;
+}
+- (BOOL)saveFullWidth:(BOOL)fullWidth englishPunctuation:(BOOL)englishPunctuation {
+    NSData *data = [NSJSONSerialization dataWithJSONObject:@{@"fullWidth": @(fullWidth), @"englishPunctuation": @(englishPunctuation)}
+        options:NSJSONWritingSortedKeys error:nil];
+    return self.userDirectory && data && [data writeToFile:self.optionsPath options:NSDataWritingAtomic error:nil];
+}
+- (void)applyOptions:(uintptr_t)session {
+    if (!session) return;
+    self.api->set_option(session, "ascii_mode", self.ascii);
+    // Rime's shape post-processor also widens keys ascii_mode rejects; English
+    // mode stays half-width, so the engine sees full_shape only in Chinese mode.
+    self.api->set_option(session, "full_shape", self.fullWidth && !self.ascii);
+    self.api->set_option(session, "ascii_punct", self.englishPunctuation);
 }
 
 - (void)stop {
@@ -186,7 +216,21 @@ static BOOL verifyData(NSString *directory) {
 
 - (void)setASCII:(BOOL)ascii session:(uintptr_t)session {
     self.ascii = ascii;
-    if (session) self.api->set_option(session, "ascii_mode", ascii);
+    [self applyOptions:session];
+}
+
+- (BOOL)setFullWidth:(BOOL)fullWidth session:(uintptr_t)session {
+    if (![self saveFullWidth:fullWidth englishPunctuation:self.englishPunctuation]) return NO;
+    self.fullWidth = fullWidth;
+    [self applyOptions:session];
+    return YES;
+}
+
+- (BOOL)setEnglishPunctuation:(BOOL)englishPunctuation session:(uintptr_t)session {
+    if (![self saveFullWidth:self.fullWidth englishPunctuation:englishPunctuation]) return NO;
+    self.englishPunctuation = englishPunctuation;
+    [self applyOptions:session];
+    return YES;
 }
 
 - (void)destroySession:(uintptr_t)session {

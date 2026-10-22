@@ -112,7 +112,29 @@ static BOOL containsHan(NSString *text) {
     [self cancel];
     self.previousCommit = nil;
     [self.engine setASCII:!self.ascii session:self.session];
-    if ([self refresh:nil] && self.modeChanged) self.modeChanged();
+    if ([self refresh:nil] && self.modeChanged) self.modeChanged(ArionTypingSwitchLanguage);
+}
+- (BOOL)fullWidth {
+    return self.engine.fullWidth;
+}
+- (BOOL)englishPunctuation {
+    return self.engine.englishPunctuation;
+}
+- (BOOL)toggleFullWidth {
+    if (!self.live) return NO;
+    [self cancel];
+    self.previousCommit = nil;
+    if (![self.engine setFullWidth:!self.engine.fullWidth session:self.session]) return NO;
+    if (self.modeChanged) self.modeChanged(ArionTypingSwitchWidth);
+    return YES;
+}
+- (BOOL)toggleEnglishPunctuation {
+    if (!self.live) return NO;
+    [self cancel];
+    self.previousCommit = nil;
+    if (![self.engine setEnglishPunctuation:!self.engine.englishPunctuation session:self.session]) return NO;
+    if (self.modeChanged) self.modeChanged(ArionTypingSwitchPunctuation);
+    return YES;
 }
 - (BOOL)live {
     return self.session && self.available && self.engineGeneration == self.engine.generation;
@@ -156,6 +178,12 @@ static BOOL containsHan(NSString *text) {
     if (event.keyCode == 49 && (flags & NSEventModifierFlagShift) &&
         !(flags & (NSEventModifierFlagCommand | NSEventModifierFlagControl | NSEventModifierFlagOption))) {
         [self toggleASCII];
+        return YES;
+    }
+    // Ctrl+. switches Chinese-mode punctuation; English mode passes it through.
+    if (!self.ascii && [event.charactersIgnoringModifiers isEqual:@"."] &&
+        (flags & (NSEventModifierFlagCommand | NSEventModifierFlagControl | NSEventModifierFlagOption | NSEventModifierFlagShift)) == NSEventModifierFlagControl) {
+        if (![self toggleEnglishPunctuation]) NSBeep();
         return YES;
     }
     if (flags & (NSEventModifierFlagCommand | NSEventModifierFlagControl | NSEventModifierFlagOption)) {

@@ -219,13 +219,21 @@ static void applyKeyboardSettings(ArionTyping *typing, ArionCandidatePanel *pane
         self.typing = [[ArionTyping alloc] initWithEngine:ArionKeyboardEngine.shared];
         __weak ArionInputController *weakSelf = self;
         self.typing.changed = ^{ [weakSelf refreshCandidates]; };
-        self.typing.modeChanged = ^{
+        self.typing.modeChanged = ^(ArionTypingSwitch change) {
             ArionInputController *controller = weakSelf;
             if ([ArionBridge shared].active != controller) return;
             [controller interrupt];
+            ArionTyping *typing = controller.typing;
+            BOOL on = change == ArionTypingSwitchLanguage ? typing.ascii :
+                change == ArionTypingSwitchWidth ? typing.fullWidth : typing.englishPunctuation;
+            NSString *key = change == ArionTypingSwitchLanguage ? @"KeyboardModeEnglish" :
+                change == ArionTypingSwitchWidth ? @"KeyboardModeFullWidth" : @"KeyboardModeEnglishPunctuation";
+            NSString *other = change == ArionTypingSwitchLanguage ? @"KeyboardModeChinese" :
+                change == ArionTypingSwitchWidth ? @"KeyboardModeHalfWidth" : @"KeyboardModeChinesePunctuation";
             NSRect caret = NSZeroRect;
             [controller.client attributesForCharacterIndex:0 lineHeightRectangle:&caret];
-            [controller.languageWindow showASCII:controller.typing.ascii caretRect:caret];
+            [controller.languageWindow show:NSLocalizedString(on ? key : other, nil)
+                                   previous:NSLocalizedString(on ? other : key, nil) caretRect:caret];
         };
     }
     if (!self.candidateWindow) {
@@ -335,6 +343,14 @@ static void applyKeyboardSettings(ArionTyping *typing, ArionCandidatePanel *pane
     NSMenuItem *item = [self menuItem:key action:@selector(toggleLanguage:)];
     item.enabled = self.keyboardReady && self.typing.available;
     [menu addItem:item];
+    NSMenuItem *width = [self menuItem:self.typing.fullWidth ? @"KeyboardUseHalfWidth" : @"KeyboardUseFullWidth"
+                                action:@selector(toggleWidth:)];
+    width.enabled = item.enabled;
+    [menu addItem:width];
+    NSMenuItem *punctuation = [self menuItem:self.typing.englishPunctuation ? @"KeyboardUseChinesePunctuation" : @"KeyboardUseEnglishPunctuation"
+                                      action:@selector(togglePunctuation:)];
+    punctuation.enabled = item.enabled;
+    [menu addItem:punctuation];
     [menu addItem:NSMenuItem.separatorItem];
     if (self.typing.recoveryText.length > 0) [menu addItem:[self menuItem:@"KeyboardCopyPending" action:@selector(copyPending:)]];
     [menu addItem:[self menuItem:@"KeyboardResetLearning" action:@selector(resetLearning:)]];
@@ -379,6 +395,16 @@ static void applyKeyboardSettings(ArionTyping *typing, ArionCandidatePanel *pane
 - (void)toggleLanguage:(id)sender {
     [self interrupt];
     [self.typing toggleASCII];
+}
+
+- (void)toggleWidth:(id)sender {
+    [self interrupt];
+    if (![self.typing toggleFullWidth]) NSBeep();
+}
+
+- (void)togglePunctuation:(id)sender {
+    [self interrupt];
+    if (![self.typing toggleEnglishPunctuation]) NSBeep();
 }
 
 @end

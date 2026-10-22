@@ -56,6 +56,7 @@ typedef NS_ENUM(NSInteger, ArionCandidateAppearance) {
 // Brief, click-through language feedback at the host caret.
 @interface ArionLanguagePanel : NSObject
 @property(nonatomic) ArionCandidateAppearance appearance;
-- (void)showASCII:(BOOL)ascii caretRect:(NSRect)caret;
+// Turns over from previous to label beside the caret (KBD-04, KBD-07).
+- (void)show:(NSString *)label previous:(NSString *)previous caretRect:(NSRect)caret;
 - (void)hide;
 @end

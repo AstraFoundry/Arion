@@ -24,6 +24,10 @@
 // One process-wide Rime service; sessions never share client pointers.
 @interface ArionKeyboardEngine : NSObject
 @property(readonly) NSUInteger generation;
+// Chinese-mode width and punctuation (KBD-07), shared by all sessions and
+// persisted in the user directory.
+@property(readonly) BOOL fullWidth;
+@property(readonly) BOOL englishPunctuation;
 // Nil when the encrypted context store could not open: candidates then keep
 // the engine's order (RNK-03).
 @property(readonly, strong) ArionContextRanker *ranker;
@@ -33,6 +37,9 @@
 - (void)stop;
 - (BOOL)resetLearning:(NSError **)error;
 - (void)setASCII:(BOOL)ascii session:(uintptr_t)session;
+// NO when the choice could not be persisted; the option is then unchanged.
+- (BOOL)setFullWidth:(BOOL)fullWidth session:(uintptr_t)session;
+- (BOOL)setEnglishPunctuation:(BOOL)englishPunctuation session:(uintptr_t)session;
 - (void)destroySession:(uintptr_t)session;
 - (BOOL)processKey:(int)key modifiers:(int)modifiers session:(uintptr_t)session;
 - (BOOL)select:(NSUInteger)index session:(uintptr_t)session;

@@ -489,3 +489,15 @@ const (
 	AccCallbackBody           Key = "AccCallbackBody"
 	AccCallbackOpen           Key = "AccCallbackOpen"
 )
+
+// Input menu width and punctuation switches (KBD-07).
+const (
+	KeyboardUseFullWidth           Key = "KeyboardUseFullWidth"
+	KeyboardUseHalfWidth           Key = "KeyboardUseHalfWidth"
+	KeyboardUseEnglishPunctuation  Key = "KeyboardUseEnglishPunctuation"
+	KeyboardUseChinesePunctuation  Key = "KeyboardUseChinesePunctuation"
+	KeyboardModeFullWidth          Key = "KeyboardModeFullWidth"
+	KeyboardModeHalfWidth          Key = "KeyboardModeHalfWidth"
+	KeyboardModeEnglishPunctuation Key = "KeyboardModeEnglishPunctuation"
+	KeyboardModeChinesePunctuation Key = "KeyboardModeChinesePunctuation"
+)

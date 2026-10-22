@@ -589,7 +589,7 @@ static CATextLayer *modeLabelLayer(NSFont *font) {
     self.window.appearance = appearance == ArionCandidateAppearanceLight ? [NSAppearance appearanceNamed:NSAppearanceNameAqua] :
         appearance == ArionCandidateAppearanceDark ? [NSAppearance appearanceNamed:NSAppearanceNameDarkAqua] : nil;
 }
-- (void)showASCII:(BOOL)ascii caretRect:(NSRect)caret {
+- (void)show:(NSString *)label previous:(NSString *)previous caretRect:(NSRect)caret {
     [self hide];
     // A host that cannot supply a caret must not produce a stray screen-corner hint.
     if (NSHeight(caret) <= 0) return;
@@ -605,12 +605,10 @@ static CATextLayer *modeLabelLayer(NSFont *font) {
     if (y < NSMinY(visible)) y = NSMaxY(caret) + kCaretGap;
     y = MAX(NSMinY(visible), MIN(y, NSMaxY(visible) - size.height));
     [self.window setFrameOrigin:NSMakePoint(x, y)];
-    [self showLabel:NSLocalizedString(ascii ? @"KeyboardModeEnglish" : @"KeyboardModeChinese", nil)
-           previous:NSLocalizedString(ascii ? @"KeyboardModeChinese" : @"KeyboardModeEnglish", nil)
-              scale:screen.backingScaleFactor];
+    [self showLabel:label previous:previous scale:screen.backingScaleFactor];
     [self.window orderFrontRegardless];
     // The badge only appears for a switch, so it always turns over from the
-    // mode that was just left.
+    // state that was just left.
     if (!NSWorkspace.sharedWorkspace.accessibilityDisplayShouldReduceMotion) [self flip];
     __weak ArionLanguagePanel *weakSelf = self;
     self.dismissal = [NSTimer scheduledTimerWithTimeInterval:1.0 repeats:NO block:^(NSTimer *timer) {

@@ -1,6 +1,13 @@
 #import <Cocoa/Cocoa.h>
 #import "keyboard.h"
 
+// What an explicit switch changed, for its caret badge.
+typedef NS_ENUM(NSInteger, ArionTypingSwitch) {
+    ArionTypingSwitchLanguage,
+    ArionTypingSwitchWidth,
+    ArionTypingSwitchPunctuation,
+};
+
 // Owns keyboard composition independently of the asynchronous voice draft.
 // The candidate menu is Arion's: the engine supplies candidates in its own
 // order, the context ranker may reorder the leading ones, and Arion pages and
@@ -9,13 +16,16 @@
 @interface ArionTyping : NSObject
 @property(readonly) BOOL composing;
 @property(readonly) BOOL ascii;
+// Chinese-mode options (KBD-07), shared by every client.
+@property(readonly) BOOL fullWidth;
+@property(readonly) BOOL englishPunctuation;
 @property(readonly) BOOL available;
 @property(readonly, copy) NSString *recoveryText;
 @property(readonly) NSUInteger revision;
 @property(readonly, strong) ArionKeyboardSnapshot *snapshot;
 @property(copy) void (^changed)(void);
-// Fires only after an explicit successful language switch.
-@property(copy) void (^modeChanged)(void);
+// Fires only after an explicit successful language, width or punctuation switch.
+@property(copy) void (^modeChanged)(ArionTypingSwitch change);
 // Candidates per page, 1–9. Applies from the next composition update.
 @property(nonatomic) NSUInteger pageSize;
 // Context ranking and its learning (上下文调频).
@@ -25,6 +35,10 @@
 - (void)deactivate;
 - (void)cancel;
 - (void)toggleASCII;
+// Both discard unconfirmed composition; NO when the engine is not live or the
+// choice could not be saved.
+- (BOOL)toggleFullWidth;
+- (BOOL)toggleEnglishPunctuation;
 - (BOOL)handleEvent:(NSEvent *)event;
 // index is relative to the visible page.
 - (BOOL)select:(NSUInteger)index revision:(NSUInteger)revision;

@@ -342,7 +342,7 @@ int main(int argc, const char *argv[]) {
         });
         run(@"standalone left and right Shift switch on short release", @"KBD-A05", ^{
             __block NSUInteger switches = 0;
-            typing.modeChanged = ^{ switches++; };
+            typing.modeChanged = ^(ArionTypingSwitch change) { require(change == ArionTypingSwitchLanguage, @"Shift reports a language switch"); switches++; };
             type(typing, @"nihao");
             NSUInteger stale = typing.revision;
             require(!modifier(typing, 56, NSEventModifierFlagShift, 1) && !typing.ascii && typing.composing,
@@ -356,7 +356,7 @@ int main(int argc, const char *argv[]) {
         });
         run(@"duplicated host modifier notifications preserve one Shift tap", @"KBD-A05", ^{
             __block NSUInteger switches = 0;
-            typing.modeChanged = ^{ switches++; };
+            typing.modeChanged = ^(ArionTypingSwitch change) { require(change == ArionTypingSwitchLanguage, @"Shift reports a language switch"); switches++; };
             for (NSNumber *code in @[@56, @60, @0, @255]) {
                 BOOL before = typing.ascii;
                 modifier(typing, code.unsignedShortValue, NSEventModifierFlagShift, 1);
@@ -450,6 +450,97 @@ int main(int argc, const char *argv[]) {
             require(!press(typing, @"/", 44) && ![typing handleEvent:key(@"!", 18, NSEventModifierFlagShift)],
                     @"English-mode symbols pass to the host unchanged");
         });
+        run(@"full width commits wide ASCII in Chinese mode only", @"KBD-A09", ^{
+            NSMutableArray *changes = [NSMutableArray array];
+            typing.modeChanged = ^(ArionTypingSwitch change) { [changes addObject:@(change)]; };
+            @try {
+                require(!typing.fullWidth && !typing.englishPunctuation, @"both options default off");
+                require(!press(typing, @"1", 18) && editor.view.string.length == 0, @"half-width digit passes to the host");
+                type(typing, @"nihao");
+                require([typing toggleFullWidth] && typing.fullWidth && !typing.composing && !editor.view.hasMarkedText &&
+                        editor.insertions == 0, @"switch discards unconfirmed composition without committing it");
+                require([changes isEqual:@[@(ArionTypingSwitchWidth)]], @"switch notifies once for the width badge");
+                require(press(typing, @"1", 18) && [editor.view.string isEqual:@"１"], @"digit commits full-width");
+                require(press(typing, @"@", 19) && [editor.view.string isEqual:@"１＠"], @"ASCII symbol from the Chinese table commits full-width");
+                require(press(typing, @".", 47) && [editor.view.string isEqual:@"１＠。"], @"Chinese punctuation is unchanged");
+                type(typing, @"nihao"); press(typing, @" ", 49);
+                require([editor.view.string isEqual:@"１＠。你好"], @"Pinyin letters still compose");
+                [typing toggleASCII];
+                require(typing.ascii && !press(typing, @"1", 18) && !press(typing, @"a", 0) &&
+                        [editor.view.string isEqual:@"１＠。你好"], @"English mode passes keys through half-width");
+                [typing toggleASCII];
+                require(press(typing, @"2", 19) && [editor.view.string isEqual:@"１＠。你好２"], @"returning to Chinese restores full width");
+                require([typing toggleFullWidth] && !typing.fullWidth && !press(typing, @"3", 20), @"switching back restores half width");
+            } @finally {
+                if (typing.fullWidth) [typing toggleFullWidth];
+                typing.modeChanged = nil;
+            }
+        });
+        run(@"English punctuation switches by Ctrl period and combines with full width", @"KBD-A09", ^{
+            NSMutableArray *changes = [NSMutableArray array];
+            typing.modeChanged = ^(ArionTypingSwitch change) { [changes addObject:@(change)]; };
+            @try {
+                require(press(typing, @",", 43) && [editor.view.string isEqual:@"，"], @"default commits Chinese punctuation");
+                editor.view.string = @""; editor.insertions = 0;
+                type(typing, @"nihao");
+                require([typing handleEvent:key(@".", 47, NSEventModifierFlagControl)] && typing.englishPunctuation &&
+                        !typing.composing && editor.insertions == 0, @"Ctrl+. switches and discards unconfirmed composition");
+                require([changes isEqual:@[@(ArionTypingSwitchPunctuation)]], @"switch notifies once for the punctuation badge");
+                require(!press(typing, @",", 43) && !press(typing, @".", 47) && ![typing handleEvent:key(@"\"", 39, NSEventModifierFlagShift)] &&
+                        editor.view.string.length == 0, @"ASCII punctuation passes to the host");
+                type(typing, @"nihao");
+                NSString *candidate = typing.snapshot.candidates[typing.snapshot.highlighted];
+                require(!press(typing, @",", 43) && [editor.view.string isEqual:candidate] && !typing.composing,
+                        @"punctuation commits the highlighted phrase, then passes through");
+                editor.view.string = @""; editor.insertions = 0;
+                require([typing toggleFullWidth], @"enable full width with English punctuation");
+                require(press(typing, @".", 47) && press(typing, @",", 43) && [editor.view.string isEqual:@"．，"],
+                        @"English punctuation commits full-width ASCII forms");
+                [typing toggleFullWidth];
+                require(![typing handleEvent:key(@".", 47, NSEventModifierFlagControl | NSEventModifierFlagShift)] &&
+                        ![typing handleEvent:key(@".", 47, NSEventModifierFlagCommand)] && typing.englishPunctuation,
+                        @"other period chords pass through");
+                [typing toggleASCII];
+                require(![typing handleEvent:key(@".", 47, NSEventModifierFlagControl)] && typing.englishPunctuation,
+                        @"English mode passes Ctrl+. to the host");
+                [typing toggleASCII];
+                require([typing handleEvent:key(@".", 47, NSEventModifierFlagControl)] && !typing.englishPunctuation &&
+                        press(typing, @".", 47) && [editor.view.string hasSuffix:@"。"], @"Ctrl+. switches back to Chinese punctuation");
+            } @finally {
+                if (typing.fullWidth) [typing toggleFullWidth];
+                if (typing.englishPunctuation) [typing toggleEnglishPunctuation];
+                typing.modeChanged = nil;
+            }
+        });
+        run(@"width and punctuation survive engine restart", @"KBD-A09", ^{
+            NSString *options = [user stringByAppendingPathComponent:@"options.json"];
+            NSString *vault = [user stringByAppendingPathComponent:@"encrypted"];
+            NSError *restartError = nil;
+            @try {
+                require([typing toggleFullWidth] && [typing toggleEnglishPunctuation], @"enable both options");
+                [typing deactivate]; [engine stop];
+                require(ArionRegisterTestEncryptedLearning(vault, testKey, &restartError) &&
+                        [engine startWithData:data userDirectory:user error:&restartError], @"restart real engine");
+                require(engine.fullWidth && engine.englishPunctuation, @"restart reads both options");
+                require([typing activate:editor error:&restartError] && press(typing, @".", 47) && [editor.view.string isEqual:@"．"],
+                        @"new session applies persisted options");
+                NSDictionary *saved = [NSJSONSerialization JSONObjectWithData:[NSData dataWithContentsOfFile:options] options:0 error:nil];
+                require([saved isEqual:@{@"fullWidth": @YES, @"englishPunctuation": @YES}], @"options file holds only the two choices");
+                // A choice that cannot be saved leaves the option unchanged.
+                [NSFileManager.defaultManager removeItemAtPath:options error:nil];
+                require([NSFileManager.defaultManager createDirectoryAtPath:options withIntermediateDirectories:NO attributes:nil error:&restartError],
+                        @"block the isolated options path");
+                require(![typing toggleFullWidth] && typing.fullWidth, @"unsaved width choice is refused");
+                [NSFileManager.defaultManager removeItemAtPath:options error:nil];
+            } @finally {
+                [NSFileManager.defaultManager removeItemAtPath:options error:nil];
+                [typing deactivate]; [engine stop];
+                require(ArionRegisterTestEncryptedLearning(vault, testKey, &restartError) &&
+                        [engine startWithData:data userDirectory:user error:&restartError], @"restore real engine for remaining tests");
+                require(!engine.fullWidth && !engine.englishPunctuation, @"absent options file means defaults");
+                require([typing activate:editor error:&restartError], @"reactivate for the shared fixture teardown");
+            }
+        });
         run(@"language hint stays by caret without taking focus and expires", @"KBD-A05", ^{
             ArionLanguagePanel *hint = [ArionLanguagePanel new];
             NSWindow *window = [hint valueForKey:@"window"];
@@ -457,7 +548,7 @@ int main(int argc, const char *argv[]) {
             NSRect screen = NSScreen.mainScreen.visibleFrame;
             NSRect caret = NSMakeRect(NSMaxX(screen) - 1, NSMinY(screen) + 1, 0, 20);
             NSDate *firstShownAt = NSDate.date;
-            [hint showASCII:YES caretRect:caret];
+            [hint show:NSLocalizedString(@"KeyboardModeEnglish", nil) previous:NSLocalizedString(@"KeyboardModeChinese", nil) caretRect:caret];
             NSDate *firstShowFinishedAt = NSDate.date;
             require(window.visible && !window.canBecomeKeyWindow && window.ignoresMouseEvents && NSApp.keyWindow == keyWindow,
                     @"zero-width caret shows a click-through hint without changing key window");
@@ -480,7 +571,7 @@ int main(int argc, const char *argv[]) {
                     [previousDismissal.fireDate timeIntervalSinceDate:firstShowFinishedAt] <= 1.0,
                     @"hint schedules the documented one-second lifetime");
             NSDate *nextShownAt = NSDate.date;
-            [hint showASCII:NO caretRect:caret];
+            [hint show:NSLocalizedString(@"KeyboardModeChinese", nil) previous:NSLocalizedString(@"KeyboardModeEnglish", nil) caretRect:caret];
             NSDate *nextShowFinishedAt = NSDate.date;
             NSTimer *currentDismissal = [hint valueForKey:@"dismissal"];
             require(!previousDismissal.valid && currentDismissal != previousDismissal &&
@@ -496,10 +587,10 @@ int main(int argc, const char *argv[]) {
             require(!window.visible, @"hint automatically disappears after one second");
             require(!currentDismissal.valid && ![hint valueForKey:@"dismissal"],
                     @"delivered dismissal retires its timer");
-            [hint showASCII:YES caretRect:caret];
+            [hint show:NSLocalizedString(@"KeyboardModeEnglish", nil) previous:NSLocalizedString(@"KeyboardModeChinese", nil) caretRect:caret];
             [hint hide];
             require(!window.visible, @"typing or focus loss can hide immediately");
-            [hint showASCII:YES caretRect:NSZeroRect];
+            [hint show:NSLocalizedString(@"KeyboardModeEnglish", nil) previous:NSLocalizedString(@"KeyboardModeChinese", nil) caretRect:NSZeroRect];
             require(!window.visible, @"missing caret never produces screen-corner feedback");
         });
         run(@"Shift Space discards draft and passes ASCII", @"KBD-A05", ^{
