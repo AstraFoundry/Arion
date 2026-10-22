@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"slices"
+	"strings"
 	"time"
 
 	"arion.local/core/contracts"
@@ -324,8 +325,7 @@ func (c *Coordinator) preview(r *run, stable string) {
 	if err != nil || ctx.Err() != nil {
 		return
 	}
-	text := punctuate(l.policy.Punctuation, result.Text, true, stable)
-	verdict := domain.ValidateRewriteDelivery(domain.RewriteCheck{Source: stable, Candidate: text, Truncated: result.Truncated, Terms: completedRequest.Terms, Context: completedRequest.Context})
+	text, verdict := deliverableRewrite(l.policy.Punctuation, stable, result, true, completedRequest.Terms, completedRequest.Context)
 	if c.deps.Diagnostics != nil {
 		c.deps.Diagnostics.Observe(ports.Diagnostic{Identity: r.identity, Stage: ports.DiagnosticValidation, Verdict: verdict})
 	}
@@ -426,12 +426,28 @@ func (c *Coordinator) rewriteFinal(r *run, source string, policy RewritePolicy) 
 	case err != nil:
 		return cleaned, RewriteUnavailable, true
 	}
-	text = punctuate(policy.Punctuation, result.Text, false, source)
-	verdict := domain.ValidateRewriteDelivery(domain.RewriteCheck{Source: source, Candidate: text, Truncated: result.Truncated, Terms: request.Terms, Context: request.Context})
+	var verdict domain.RewriteVerdict
+	text, verdict = deliverableRewrite(policy.Punctuation, source, result, false, request.Terms, request.Context)
 	if verdict != domain.RewriteAccepted {
 		return cleaned, string(verdict), true
 	}
 	return text, string(verdict), true
+}
+
+// deliverableRewrite checks the raw proposal before punctuation can hide a
+// control marker. Preview, final delivery, and cache reuse share this order:
+// validate result.Text, then apply the mode, then reject an empty conversion.
+// The caller caches result only when the verdict is accepted.
+func deliverableRewrite(mode domain.Punctuation, source string, result ports.RewriteResult, live bool, terms []string, context domain.RewriteContext) (string, domain.RewriteVerdict) {
+	verdict := domain.ValidateRewriteDelivery(domain.RewriteCheck{Source: source, Candidate: result.Text, Truncated: result.Truncated, Terms: terms, Context: context})
+	if verdict != domain.RewriteAccepted {
+		return "", verdict
+	}
+	text := punctuate(mode, result.Text, live, source)
+	if strings.TrimSpace(text) == "" {
+		return "", domain.RewriteEmpty
+	}
+	return text, domain.RewriteAccepted
 }
 
 // punctuate applies the punctuation mode to a model proposal. Smart and
