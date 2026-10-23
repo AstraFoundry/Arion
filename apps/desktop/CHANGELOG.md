@@ -1,3 +1,29 @@
+## 0.1.0-alpha.11
+
+### English
+
+macOS Apple silicon (ARM64) preview, requiring macOS 14 or later.
+
+- Update the local polishing cleanup prompt, preserving separate scene and language rules and isolating source text from context.
+- Add polishing punctuation choices: smart, full, omit sentence-final punctuation, or spaces instead of punctuation. Apply the selected mode to live previews and final text.
+- Validate raw polishing output before punctuation conversion so control markers cannot be hidden. Reject conversions that leave only whitespace and keep rejected output out of the preview cache.
+
+This is an early preview. Clean-machine installation, real-service cloud sign-in/provider requests, minimum OS/RAM and old-to-new updates still need acceptance. Recognition stays local and works offline after model provisioning; model weights are downloaded separately. Desktop encrypted sync enrollment remains pending. This alpha includes only the macOS ARM64 installer.
+
+See RELEASE-STATUS.md for evidence and limitations, and SHA256SUMS for file verification. GitHub publication and COS staging do not publish the Arion center beta channel.
+
+### 中文
+
+适用于 macOS Apple 芯片（ARM64）的预览版本，需要 macOS 14 或更高版本。
+
+- 更新本地润色的整理提示词，保留按场景和语言划分的规则，并隔离原文与上下文。
+- 新增润色标点选项：智能标点、完整标点、省略句末标点、以空格代替标点；所选模式同时应用于实时预览和最终文本。
+- 在标点转换前校验润色原始输出，避免控制标记被转换隐藏；拒绝转换后仅剩空白的结果，并防止被拒绝的输出进入预览缓存。
+
+这是早期预览版。全新机器安装、真实云端登录及服务商请求、最低系统和内存要求、旧版本升级仍待验收。语音识别在本机完成，模型准备完成后可离线使用；模型权重需单独下载。桌面加密同步的设备注册尚未完成。本次 alpha 仅提供 macOS ARM64 安装包。
+
+验证记录和限制见 RELEASE-STATUS.md，文件校验值见 SHA256SUMS。GitHub 发布及 COS 暂存不会自动发布 Arion 中心的 beta 渠道。
+
 ## 0.1.0-alpha.10
 
 ### English

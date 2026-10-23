@@ -1,6 +1,6 @@
 # Desktop release status
 
-This file accompanies each release as `RELEASE-STATUS.md`. The `0.1.0-alpha.10` release distributes only macOS Apple silicon packages. The Windows column below describes implementation status, not assets included in this alpha. Future macOS releases support Apple silicon only ([ADR 021](../decisions/021-apple-silicon-only-macos.md)); Intel macOS is unsupported. Build success verifies packaging; the evidence below limits the supported product claims.
+This file accompanies each release as `RELEASE-STATUS.md`. The `0.1.0-alpha.11` release distributes only macOS Apple silicon packages. The Windows column below describes implementation status, not assets included in this alpha. Future macOS releases support Apple silicon only ([ADR 021](../decisions/021-apple-silicon-only-macos.md)); Intel macOS is unsupported. Build success verifies packaging; the evidence below limits the supported product claims.
 
 | Capability | macOS Apple silicon | Windows x64 |
 | --- | --- | --- |
