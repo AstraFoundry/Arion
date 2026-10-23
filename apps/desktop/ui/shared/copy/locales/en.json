@@ -246,7 +246,7 @@
   "FormatUpdateAvailable": "Version {version} is available",
   "FormatUpdateTo": "Update to {version}",
   "SystemMicrophoneUsage": "Arion listens only while you dictate. Speech is recognized on this Mac.",
-  "PolishLabel": "Polish while speaking",
+  "PolishLabel": "Polish",
   "PolishDetail": "Cleans up self-corrections, fillers and repeats on this Mac after you stop",
   "PolishLoading": "Starting the model…",
   "PolishReady": "Running on this Mac",

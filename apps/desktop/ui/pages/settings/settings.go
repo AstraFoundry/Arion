@@ -453,10 +453,10 @@ func (p *Page) modelSection(c *ui.Context, store runtime.Store, tokens theme.Tok
 			kit.Card(c, tokens).Children(func() {
 				polish.Row(c, store, tokens)
 				polish.Engine(c, store, tokens)
-				polish.Punctuation(c, store, tokens)
 				if store.State.Preferences.PolishEngine == runtime.PolishCloud && cloud.Summary(c, store, tokens) {
 					p.model = modelCloud
 				}
+				polish.Punctuation(c, store, tokens)
 				if runtime.PolishOn(store.State) {
 					kit.Divider(c, tokens)
 					polish.MatchApp(c, store, tokens)

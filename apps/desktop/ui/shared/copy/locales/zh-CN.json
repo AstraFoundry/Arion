@@ -246,7 +246,7 @@
   "FormatUpdateAvailable": "新版本 {version} 可用",
   "FormatUpdateTo": "更新到 {version}",
   "SystemMicrophoneUsage": "Arion 仅在听写时使用麦克风。语音识别完全在此 Mac 上进行。",
-  "PolishLabel": "边说边润色",
+  "PolishLabel": "润色",
   "PolishDetail": "说完后在本机整理改口、语气词和重复",
   "PolishLoading": "正在启动模型…",
   "PolishReady": "已在本机运行",
