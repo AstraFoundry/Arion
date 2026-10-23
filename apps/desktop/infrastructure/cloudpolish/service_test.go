@@ -14,6 +14,7 @@ import (
 
 	"arion.local/core/domain"
 	"arion.local/core/domain/ports"
+	"arion.local/desktop/infrastructure/llm/prompt"
 	"arion.local/desktop/internal/account"
 )
 
@@ -80,7 +81,22 @@ func keyServer(t *testing.T, key string, bodies *[]map[string]any) *httptest.Ser
 			var body map[string]any
 			_ = json.NewDecoder(r.Body).Decode(&body)
 			*bodies = append(*bodies, body)
-			_, _ = io.WriteString(w, `{"id":"r","object":"response","status":"completed","output":[{"type":"message","role":"assistant","status":"completed","content":[{"type":"output_text","text":" Polished. "}]}]}`)
+			text := " Polished. "
+			payload := lastCloudPayload(t, body)
+			if hypotheses, ok := payload["hypotheses"].([]any); ok {
+				choices := map[string]string{}
+				for _, item := range hypotheses {
+					h := item.(map[string]any)
+					choice := "keep"
+					if h["status"] == "unique" {
+						choice = "replace"
+					}
+					choices[h["id"].(string)] = choice
+				}
+				raw, _ := json.Marshal(choices)
+				text = string(raw)
+			}
+			_ = json.NewEncoder(w).Encode(map[string]any{"id": "r", "object": "response", "status": "completed", "output": []any{map[string]any{"type": "message", "role": "assistant", "status": "completed", "content": []any{map[string]any{"type": "output_text", "text": text}}}}})
 		default:
 			t.Errorf("unexpected path %s", r.URL.Path)
 			w.WriteHeader(http.StatusNotFound)
@@ -111,14 +127,28 @@ func TestConnectKeyListsModelsAndPolishes(t *testing.T) {
 		t.Fatalf("rewrite without a model: %v", err)
 	}
 	s.SetModel("model-a")
-	result, err := s.Rewrite(context.Background(), ports.RewriteRequest{Text: "um polished", Scene: "email", Terms: []string{"Arion"},
-		Context: domain.RewriteContext{Screen: "SECRET SCREEN", Before: "SECRET BEFORE", History: []string{"SECRET HISTORY"}}})
-	if err != nil || result.Text != "Polished." || !strings.HasPrefix(result.Template, "cloud+") {
+	result, err := s.Rewrite(context.Background(), ports.RewriteRequest{Text: "检查 write value。", Scene: "email", Terms: []string{"writeValue"},
+		Context: domain.RewriteContext{Screen: "writeValue SCREEN_CANARY", Before: "BEFORE_CANARY", After: "AFTER_CANARY", History: []string{"HISTORY_CANARY"}}})
+	if err != nil || result.Text != "Polished." || result.Template != "cloud+"+prompt.SelectedVersion {
 		t.Fatalf("result %+v %v", result, err)
 	}
-	raw, _ := json.Marshal(bodies)
-	if body := string(raw); !strings.Contains(body, "um polished") || !strings.Contains(body, "[terms: Arion]") || strings.Contains(body, "SECRET") {
-		t.Fatalf("request body %s", body)
+	if len(bodies) != 2 {
+		t.Fatalf("want selector and formatter, got %d", len(bodies))
+	}
+	selected := lastCloudPayload(t, bodies[0])
+	contextData := selected["context"].(map[string]any)
+	for key, want := range map[string]string{"Screen": "writeValue SCREEN_CANARY", "Before": "BEFORE_CANARY", "After": "AFTER_CANARY", "History": "HISTORY_CANARY", "Terms": "writeValue"} {
+		if contextData[key] != want {
+			t.Errorf("%s = %v", key, contextData[key])
+		}
+	}
+	formatted := lastCloudPayload(t, bodies[1])
+	if formatted["source"] != "检查 writeValue。" {
+		t.Fatalf("formatter source %v", formatted)
+	}
+	raw, _ := json.Marshal(bodies[1])
+	if strings.Contains(string(raw), "CANARY") {
+		t.Fatal("context leaked to formatter")
 	}
 	if bodies[0]["model"] != "model-a" {
 		t.Fatalf("model %v", bodies[0]["model"])
@@ -280,7 +310,7 @@ func TestChatGPTSignInAndModels(t *testing.T) {
 		t.Fatalf("status %+v", st)
 	}
 	s.SetModel("m-1")
-	if result, err := s.Rewrite(context.Background(), ports.RewriteRequest{Text: "done"}); err != nil || result.Text != "Done." {
+	if result, err := s.Rewrite(context.Background(), ports.RewriteRequest{Text: "done", Scene: "chat"}); err != nil || result.Text != "Done." {
 		t.Fatalf("rewrite %+v %v", result, err)
 	}
 	mu.Lock()
@@ -312,4 +342,14 @@ func TestCancelledSignInRestoresState(t *testing.T) {
 	if st := s.Status(); st.Phase != Disconnected || st.Failure != "" || secrets.puts != 0 {
 		t.Fatalf("status %+v", st)
 	}
+}
+
+// Read the task data from the last Responses input turn, excluding examples.
+func lastCloudPayload(t *testing.T, body map[string]any) map[string]any {
+	t.Helper()
+	payload, err := gatewayPayload(body, "responses")
+	if err != nil {
+		t.Fatal(err)
+	}
+	return payload
 }

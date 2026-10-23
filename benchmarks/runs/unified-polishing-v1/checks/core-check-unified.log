@@ -1,0 +1,5 @@
+ok  	arion.local/core/application	4.705s
+?   	arion.local/core/contracts	[no test files]
+ok  	arion.local/core/domain	1.419s
+?   	arion.local/core/domain/ports	[no test files]
+ok  	arion.local/models	(cached)

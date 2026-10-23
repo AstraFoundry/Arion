@@ -4,7 +4,7 @@ Arion is a voice input product with a native Go desktop shell. macOS on Apple si
 
 ## Confirmed scope
 
-- Optional cloud polishing with the user's ChatGPT plan or API key, chosen explicitly; audio and context never leave the device ([ADR 022](../decisions/022-cloud-polishing.md)).
+- Optional cloud polishing with the user's ChatGPT plan or API key, chosen explicitly; audio stays local, while enabled context can accompany cloud polishing ([ADR 022](../decisions/022-cloud-polishing.md)).
 - Local streaming speech recognition and live correction, initially evaluated on Mandarin, English, and mixed technical vocabulary.
 - Unified dictation with automatic delivery through the selected Arion input method or the external editor. IMK/TSF are separate OS adapters sharing the same core.
 - Local ranking of actual candidate words/segments, preserving candidate identity and text.
@@ -17,7 +17,7 @@ Language coverage and latency are evaluation targets, not measured product claim
 
 ## Explicit boundaries
 
-Raw microphone audio and temporary foreign-window context stay on the device. Persisting dictation history is separately opt-in and is not in the initial sync scope. Candidate sorting must not introduce unseen text or overwrite committed content. Offline Simplified Chinese full-Pinyin typing in the macOS IMK host is now in scope ([ADR 017](../decisions/017-offline-pinyin-keyboard.md)); the native implementation and isolated engine/AppKit/storage checks are complete, while system input-source acceptance remains open. Cloud recognition, voice chat, autonomous commands, additional keyboard schemes and mobile keyboard extensions require their own scope decision.
+Raw microphone audio stays on the device. Temporary foreign-window context stays local unless the user selects cloud polishing with its source switch enabled ([ADR 024](../decisions/024-shared-polishing-pipeline.md)). Persisting dictation history is separately opt-in and is not in the initial sync scope. Candidate sorting must not introduce unseen text or overwrite committed content. Offline Simplified Chinese full-Pinyin typing in the macOS IMK host is now in scope ([ADR 017](../decisions/017-offline-pinyin-keyboard.md)); the native implementation and isolated engine/AppKit/storage checks are complete, while system input-source acceptance remains open. Cloud recognition, voice chat, autonomous commands, additional keyboard schemes and mobile keyboard extensions require their own scope decision.
 
 Jev is TypeSafe’s System One typed decision model. Laya Multilingual is the proposed independent local Choice implementation; exact checkpoint, native conversion and candidate accuracy require evaluation.
 
@@ -36,7 +36,7 @@ Jev is TypeSafe’s System One typed decision model. Laya Multilingual is the pr
 | Sync service | Self-hosted/hosted Go relay; ciphertext records | Relay implemented; desktop sync/outbox, pairing and key delivery pending |
 | Marketing site | Next.js static export, React 19, Tailwind v4, next-intl en/zh/ja; Cloudflare Workers static assets ([ADR 016](../decisions/016-marketing-site.md)) | Implemented in `apps/site`; vendored Sunbeam/beUI until `@astrafoundry/design` is published |
 | Cryptography | Go standard library AES-GCM; Keychain/DPAPI keys | Local values only; key exchange for sync pending |
-| Cloud polishing | Republic providers: ChatGPT sign-in or one API key (OpenAI, Anthropic, Google Gemini, DeepSeek, OpenRouter); final text and recalled terms only | Optional, explicit engine choice ([ADR 022](../decisions/022-cloud-polishing.md), [cloud polishing](cloud-polishing.md)); real-service verification open |
+| Cloud polishing | Republic providers: ChatGPT sign-in or one API key (OpenAI, Anthropic, Google Gemini, DeepSeek, OpenRouter); shared staged polishing with enabled context | Optional, explicit engine choice ([ADR 022](../decisions/022-cloud-polishing.md), [cloud polishing](cloud-polishing.md)); real-service verification open |
 | Account sign-in | Public OIDC client `arion-desktop`, loopback PKCE, refresh token in Keychain or Credential Manager | Service, onboarding step and Settings › Account implemented ([account sign-in](account-signin.md)); device enrollment open |
 
 See [specs](../../specs/README.md), [research](../research/README.md), [repository](repository.md), [account sign-in](account-signin.md), [cloud polishing](cloud-polishing.md), and [agent handoff](agent-handoff.md).

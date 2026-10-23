@@ -33,7 +33,8 @@ Write an ADR when the decision:
 - [018: Staged GGUF rewriting](018-staged-gguf-rewriting.md) — selected Qwen3.5-2B artifact, two-stage prompts and accepted delivery tradeoff.
 - [020: Native Qwen3-ASR workers](020-native-qwen-asr.md) — native Swift MLX on Apple silicon and native Q8_0 on Intel/Windows, with explicit adoption and separate acceptance.
 - [021: Support macOS on Apple silicon only](021-apple-silicon-only-macos.md) — retires Intel macOS product support, CI and future release artifacts; Windows x64 remains in scope.
-- [022: Optional cloud polishing through Republic](022-cloud-polishing.md) — ChatGPT sign-in or one API key, final text and recalled terms only, no context; local stays the default.
+- [022: Optional cloud polishing through Republic](022-cloud-polishing.md) — ChatGPT sign-in or one API key, explicit cloud choice; amended by ADR 024 for shared context.
+- [024: Shared polishing pipeline and context controls](024-shared-polishing-pipeline.md) — one staged recipe for local and cloud models, with the same context switches.
 - [023: Final-only polishing](023-final-only-polishing.md) — local and cloud rewriting both run once after the dictation key is released; segmentation stays, and no polished preview is shown during speech.
 - [`adr-template.md`](adr-template.md) — template for new ADRs.
 

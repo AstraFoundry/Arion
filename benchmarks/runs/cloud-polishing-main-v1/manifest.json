@@ -1,0 +1,52 @@
+{
+  "files": {
+    "README.md": {
+      "sha256": "c88daa24d34b11f350f6e12b8bf7d1c74a77d0356a8ea69b28d64d67cc27d44f",
+      "sizeBytes": 2367
+    },
+    "checks/desktop-final.log": {
+      "sha256": "744a84dbed5c6381c0614f6cb56aff452226be5fb0b9d84f6b06493493da577f",
+      "sizeBytes": 10468
+    },
+    "checks/merged-go-final.log": {
+      "sha256": "eff9dca691268812488e8fe0179faf3b63f221fc05260ad1cc621425e74246b8",
+      "sizeBytes": 346
+    },
+    "checks/merged-go-punctuation.log": {
+      "sha256": "1095f2b392608ce60d14a65b4876ca92884b6f091473643375fccf2060e48445",
+      "sizeBytes": 346
+    },
+    "checks/merged-go.log": {
+      "sha256": "60890af57cb20ccbf56f04c3f3ab7431cca4b07ec20627b8c83dcfb033877d2f",
+      "sizeBytes": 641
+    },
+    "checks/repository-final.log": {
+      "sha256": "18971c0b598c6c087b9b51ed6d6496942782940fbd88e78165542c5255b3b158",
+      "sizeBytes": 220
+    },
+    "checks/repository.log": {
+      "sha256": "938b1f101929ff7aac70f1eb051bdb267d8b794922ace726f665c6cbd742e058",
+      "sizeBytes": 220
+    },
+    "checks/ui-focused-final.log": {
+      "sha256": "c65b262fead9fc207df152639fc1b3624616316a2d7c6dda0d1c7d4080bc6f09",
+      "sizeBytes": 39
+    },
+    "checks/ui-focused.log": {
+      "sha256": "6cf4479bebe87724cc5beff987f1ed9029c3e6923db44fe785f15777079038c9",
+      "sizeBytes": 262
+    },
+    "checks/ui.log": {
+      "sha256": "53ec84538c28b6befa4d26c5a502959953a737e89a152c3c89402f6d88cfb9b0",
+      "sizeBytes": 1026
+    },
+    "checks/vet.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "sizeBytes": 0
+    },
+    "source-hashes.json": {
+      "sha256": "c521b0628987770ac3d0532b8fce3cf0572cd6f6da73a885bc2cb3997a84e0d1",
+      "sizeBytes": 4257
+    }
+  }
+}

@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted (product decision). Amends PRV-01 of [005](../../specs/005-privacy.md) and adds the cloud engine to [009](../../specs/009-contextual-rewrite.md#cloud-polishing). Extends [ADR 011](011-live-local-rewriting.md); [ADR 013](013-rewrite-context-on-device.md) is unchanged: context stays on the device.
+Accepted (product decision), amended by [ADR 024](024-shared-polishing-pipeline.md) for shared stages and enabled context transmission. The original context exclusion and single-call recipe below are superseded. Amends PRV-01 of [005](../../specs/005-privacy.md) and adds the cloud engine to [009](../../specs/009-contextual-rewrite.md#cloud-polishing). Extends [ADR 011](011-live-local-rewriting.md); [ADR 013](013-rewrite-context-on-device.md) is amended by ADR 024 for explicitly enabled cloud context.
 
 ## Context
 

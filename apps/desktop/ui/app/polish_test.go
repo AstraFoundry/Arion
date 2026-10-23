@@ -348,7 +348,7 @@ func TestPunctuationControl(t *testing.T) {
 	snapshot(t, tt, "settings-punctuation-cloud")
 	texts = tt.Texts()
 	punct, engine, cloud, match := firstExact(texts, en.Text(copy.PunctuationLabel)), firstExact(texts, en.Text(copy.PolishEngineLabel)), firstExact(texts, en.Text(copy.CloudTitle)), firstExact(texts, en.Text(copy.MatchAppLabel))
-	if punct < 0 || engine < 0 || cloud < 0 || match < 0 || !(engine < cloud && cloud < punct && punct < match) || firstExact(texts, en.Text(copy.ContextGroup)) >= 0 {
+	if punct < 0 || engine < 0 || cloud < 0 || match < 0 || !(engine < cloud && cloud < punct && punct < match) || firstExact(texts, en.Text(copy.ContextGroup)) < 0 {
 		t.Fatalf("punctuation row is not after Cloud model: engine %d cloud %d punct %d match %d texts %q", engine, cloud, punct, match, texts)
 	}
 }

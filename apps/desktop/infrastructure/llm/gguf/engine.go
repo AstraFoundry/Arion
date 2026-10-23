@@ -19,10 +19,9 @@ import (
 	"time"
 	"unicode/utf8"
 
-	"arion.local/core/domain"
 	"arion.local/desktop/infrastructure/llm/engine"
 	"arion.local/desktop/infrastructure/llm/prompt"
-	"arion.local/desktop/infrastructure/llm/spelling"
+	"arion.local/desktop/infrastructure/llm/rewrite"
 )
 
 // ModelFile is the catalog's single digest-verified weight file.
@@ -36,19 +35,14 @@ type Engine struct {
 	exited    chan struct{}
 	socketDir string
 	http      *http.Client
-	recipe    *prompt.SelectedTemplates
-	lexicon   *domain.SpellingLexicon
+	pipeline  *rewrite.Pipeline
 	session   string
 }
 
 // Load starts the pinned runtime with a private socket and fixed budgets.
 func Load(config engine.Config, runtimeDir string) (*Engine, float64, error) {
 	started := time.Now()
-	lexicon, err := spelling.Load()
-	if err != nil {
-		return nil, 0, err
-	}
-	recipe, err := prompt.Selected(lexicon)
+	pipeline, err := rewrite.Load()
 	if err != nil {
 		return nil, 0, err
 	}
@@ -61,7 +55,7 @@ func Load(config engine.Config, runtimeDir string) (*Engine, float64, error) {
 		os.RemoveAll(dir)
 		return nil, 0, errors.New("private runtime socket path exceeds platform limit")
 	}
-	e := &Engine{config: config, socketDir: dir, recipe: recipe, lexicon: lexicon, exited: make(chan struct{})}
+	e := &Engine{config: config, socketDir: dir, pipeline: pipeline, exited: make(chan struct{})}
 	transport := &http.Transport{Proxy: nil, DialContext: func(ctx context.Context, _, _ string) (net.Conn, error) {
 		return (&net.Dialer{}).DialContext(ctx, "unix", socket)
 	}}
@@ -230,12 +224,8 @@ func (e *Engine) generate(ctx context.Context, request prompt.ChatRequest, prefi
 	return result, nil
 }
 
-// Run applies local deletion, optional bounded spelling selection, then
-// formatting. The formatter never receives OCR, cursor text, or history.
+// Run preserves the native session while the shared pipeline prepares stages.
 func (e *Engine) Run(req engine.Request, stop *atomic.Bool) (engine.Result, error) {
-	if strings.Contains(req.Text, "<|") || strings.Contains(req.Text, "|>") {
-		return engine.Result{}, engine.ErrControlInput
-	}
 	if stop.Load() {
 		return engine.Result{Cancelled: true}, nil
 	}
@@ -264,103 +254,17 @@ func (e *Engine) Run(req engine.Request, stop *atomic.Bool) (engine.Result, erro
 		}
 		e.session = req.Session
 	}
-	cleanup := domain.CleanSpeech(req.Text)
-	contextData := map[string]string{}
-	c := req.Context.Bounded()
-	if c.Screen != "" {
-		contextData["Screen"] = c.Screen
-	}
-	if c.Before != "" {
-		contextData["Before"] = c.Before
-	}
-	if c.After != "" {
-		contextData["After"] = c.After
-	}
-	if len(c.History) > 0 {
-		contextData["History"] = strings.Join(c.History, "\n")
-	}
-	if len(req.Terms) > 0 {
-		contextData["Terms"] = strings.Join(req.Terms, "\n")
-	}
-	if req.PreviousText != "" && req.PreviousText != req.Text {
-		contextData["EarlierSource"] = (domain.RewriteContext{Screen: req.PreviousText}).Bounded().Screen
-	}
-	p := e.lexicon.PrepareContextual(cleanup.Text, contextData, req.Scene)
-	result := engine.Result{Cleanup: cleanup, Template: prompt.SelectedVersion}
-	edited := cleanup.Text
-	add := func(out completion) {
-		result.InputTokens += out.Usage.Input
-		result.OutputTokens += out.Usage.Output
-		result.ReusedTokens += out.Timings.Cached
-		result.PrefillMs += out.Timings.PromptMs
-		result.DecodeMs += out.Timings.DecodeMs
-	}
-	forced, allAmbiguous, err := forcedAmbiguousSelection(p)
-	if err != nil {
-		return result, err
-	}
-	if allAmbiguous {
-		edited = forced
-	} else if len(p.Hypotheses) > 0 {
-		out, err := e.generate(ctx, e.recipe.Selection(p), req.Prefill)
-		if err != nil {
-			if ctx.Err() != nil {
-				result.Cancelled = true
-				return result, nil
-			}
-			return result, err
-		}
-		add(out)
-		if !req.Prefill {
-			edited, err = domain.ApplySpellingChoices(out.Choices[0].Message.Content, p)
-			if err != nil {
-				return result, err
-			}
-		}
-	}
-	request, err := e.recipe.Format(edited, req.Scene, req.Punctuation)
-	if err != nil {
-		return result, err
-	}
-	out, err := e.generate(ctx, request, req.Prefill)
-	if err != nil {
-		if ctx.Err() != nil {
-			result.Cancelled = true
-			return result, nil
-		}
-		return result, err
-	}
-	add(out)
-	if !req.Prefill {
-		result.Text = strings.TrimSpace(out.Choices[0].Message.Content)
-	}
-	result.Cancelled = ctx.Err() != nil || stop.Load()
-	return result, nil
+	result, err := e.pipeline.Run(ctx, req, e.generateStage)
+	result.Cancelled = result.Cancelled || stop.Load()
+	return result, err
 }
 
-// forcedAmbiguousSelection avoids inference only when the protocol has exactly
-// one legal result: every hypothesis must keep its original source span. The
-// normal domain validator still verifies coverage and UTF-8 source identity.
-func forcedAmbiguousSelection(p domain.SpellingPreparation) (string, bool, error) {
-	if len(p.Hypotheses) == 0 {
-		return "", false, nil
+func (e *Engine) generateStage(ctx context.Context, req prompt.ChatRequest, prefill bool) (engine.Result, error) {
+	out, err := e.generate(ctx, req, prefill)
+	result := engine.Result{InputTokens: out.Usage.Input, OutputTokens: out.Usage.Output,
+		ReusedTokens: out.Timings.Cached, PrefillMs: out.Timings.PromptMs, DecodeMs: out.Timings.DecodeMs}
+	if len(out.Choices) == 1 {
+		result.Text = out.Choices[0].Message.Content
 	}
-	for _, h := range p.Hypotheses {
-		if h.Status != "ambiguous" {
-			return "", false, nil
-		}
-		if len(h.Candidates) < 2 {
-			return "", false, errors.New("invalid ambiguous spelling candidates")
-		}
-	}
-	choices := make(map[string]string, len(p.Hypotheses))
-	for _, h := range p.Hypotheses {
-		choices[h.ID] = "keep"
-	}
-	raw, err := json.Marshal(choices)
-	if err != nil {
-		return "", false, err
-	}
-	edited, err := domain.ApplySpellingChoices(string(raw), p)
-	return edited, true, err
+	return result, err
 }

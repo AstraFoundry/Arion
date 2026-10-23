@@ -1,0 +1,12 @@
+{
+  "status": "started",
+  "started": "2026-10-23T10:07:38.265Z",
+  "operation": "run",
+  "config": {
+    "arm": "candidate",
+    "cases": "/Users/steven/code/Arion/benchmarks/reproduction/rewrite-stage-preservation-v1/evidence/final-v5/runs/final-validation-candidate/cases.json",
+    "out": "/Users/steven/code/Arion/.workspace/unified-polish-native-v1",
+    "runtime": "/Users/steven/code/Arion/apps/desktop/resources/darwin-arm64/llm",
+    "model": "/Users/steven/code/Arion/.workspace/rewrite-small-models-v1"
+  }
+}

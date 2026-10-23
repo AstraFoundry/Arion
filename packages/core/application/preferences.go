@@ -36,9 +36,8 @@ type Preferences struct {
 	CheckUpdates bool `json:"checkUpdates"`
 	// AllowPrereleaseUpdates includes published preview releases when checking.
 	AllowPrereleaseUpdates bool `json:"allowPrereleaseUpdates"`
-	// Polish turns on the rewrite that runs after the dictation key is
-	// released. It does not send text to the model while the user is speaking.
-	// Off until the user downloads the model.
+	// Polish enables the shared rewrite after the dictation key is released.
+	// Neither engine rewrites while the user is speaking.
 	Polish bool `json:"polish"`
 	// Punctuation chooses how polished text is punctuated. It is used only
 	// while Polish is on. Profiles written before it existed load smart.
@@ -61,7 +60,7 @@ type Preferences struct {
 	// ContextCursor, ContextScreen and ContextHistory let polishing read the
 	// field's text around the cursor, the focused window's recognized text
 	// and the user's recent dictations in the same place (ADR 013). On by
-	// default; everything stays on this device. Profiles written before
+	// default; cloud polishing sends enabled sources (ADR 024). Profiles written before
 	// they existed load the defaults.
 	ContextCursor  bool `json:"contextCursor"`
 	ContextScreen  bool `json:"contextScreen"`
@@ -80,8 +79,8 @@ type PolishEngine string
 
 const (
 	PolishLocal PolishEngine = "local"
-	// PolishCloud sends only the dictated text and its recalled terms to
-	// the connected provider; context sources stay on the device.
+	// PolishCloud sends text, recalled terms and enabled context to
+	// the connected provider; disabled context sources stay on the device.
 	PolishCloud PolishEngine = "cloud"
 )
 

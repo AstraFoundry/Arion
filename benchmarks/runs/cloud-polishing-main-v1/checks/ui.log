@@ -1,0 +1,10 @@
+--- FAIL: TestContextSettingsSharedAcrossEngines (0.26s)
+    --- FAIL: TestContextSettingsSharedAcrossEngines/en (0.14s)
+        cloud_test.go:255: cloud history switch did not turn off
+    --- FAIL: TestContextSettingsSharedAcrossEngines/zh-CN (0.12s)
+        cloud_test.go:255: cloud history switch did not turn off
+--- FAIL: TestPunctuationControl (0.89s)
+    polish_test.go:352: punctuation row is not after Cloud model: engine 17 cloud 21 punct 24 match 27 texts ["Overview" "General" "Dictation" "Keyboard" "Microphone" "Model" "Vocabulary" "About" "Account" "Model" "Recognition" "Recognition model" "Recognition model" "Chosen automatically" "Polish" "Polish" "Polish" "Runs on" "Runs on" "This device" "Cloud" "Cloud model" "Cloud model" "Not connected" "Punctuation" "Punctuation" "Omit last mark" "Match the app" "Match the app" "Context" "Text around the cursor" "Text around the cursor" "Screen content" "Screen content" "Recent dictations" "Recent dictations"]
+FAIL
+FAIL	arion.local/desktop/ui/app	155.098s
+FAIL

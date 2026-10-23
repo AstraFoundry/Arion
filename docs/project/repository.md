@@ -15,6 +15,7 @@
 | `apps/desktop/infrastructure/cloudpolish` | Optional cloud polishing ([ADR 022](../decisions/022-cloud-polishing.md)): ChatGPT sign-in, API key check, model list and a `Rewriter` over Republic ([cloud polishing](cloud-polishing.md)) |
 | `apps/desktop/infrastructure/browser` | System browser for http(s) authorization URLs |
 | `apps/desktop/cmd` | Evaluation and E2E drivers, the `arion-llm` rewrite worker (no cgo), live rewrite benchmarks, model catalog tool, icon renderer |
+| `apps/desktop/infrastructure/llm/rewrite` | Shared staged polishing: cleanup, context-backed bounded spelling choices and scene formatting; model adapters supply stage generation ([ADR 024](../decisions/024-shared-polishing-pipeline.md)) |
 | `apps/desktop/infrastructure/llm` | Pinned GGUF adapter, selected staged templates and pronunciation resources, pipe worker protocol and process client; legacy GenAI code retained for historical replay |
 | `apps/desktop/infrastructure/rewriting` | Rewrite capability service: bundled runtime location, model provisioning, worker lifecycle, `Rewriter` port |
 | `packages/core/domain` | Session and candidate invariants; standard-library only |

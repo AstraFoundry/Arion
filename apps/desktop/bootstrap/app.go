@@ -196,13 +196,11 @@ func New(opts Options) (*App, error) {
 	a.cloud = cloudpolish.New(keystore.OpenItem(keystore.CloudPolishAccount), browser.Open,
 		func() []byte { return callbackPage(copy.Locale(a.preferences().UILanguage)) })
 	a.cloud.SetModel(prefs.CloudModel)
-	// Hosts, field text and window text are read only when a rewrite will
-	// use them; cloud polishing never uses field or window text.
-	local := func(p application.Preferences) bool { return p.Polish && p.PolishEngine == application.PolishLocal }
+	// Both engines read the same consent-gated context sources.
 	a.targets = a.platform.NewTargets(func() application.Delivery { return a.preferences().Delivery }, TargetGates{
 		Site:   func() bool { p := a.preferences(); return p.Polish && p.MatchApp },
-		Cursor: func() bool { p := a.preferences(); return local(p) && p.ContextCursor },
-		Screen: func() bool { p := a.preferences(); return local(p) && p.ContextScreen },
+		Cursor: func() bool { p := a.preferences(); return p.Polish && p.ContextCursor },
+		Screen: func() bool { p := a.preferences(); return p.Polish && p.ContextScreen },
 	})
 	a.vocabPath = filepath.Join(opts.DataDir, "vocabulary.bin")
 	a.usage = usage.Store{Path: filepath.Join(opts.DataDir, "usage.json")}
@@ -285,12 +283,11 @@ func (a *App) rewritePolicy() application.RewritePolicy {
 	policy := application.RewritePolicy{Enabled: true, Scene: string(domain.SceneChat), FollowApp: a.prefs.MatchApp,
 		Punctuation: a.prefs.Punctuation, SceneOverrides: a.prefs.SceneOverrides, Vocabulary: a.vocabulary,
 		FinalOnly: true}
-	if a.prefs.PolishEngine == application.PolishCloud {
-		// One request per dictation, with no context sources (ADR 022).
-		policy.Timeout = cloudRewriteTimeout
-		return policy
-	}
 	policy.Context = application.ContextPolicy{Cursor: a.prefs.ContextCursor, Screen: a.prefs.ContextScreen, History: a.prefs.ContextHistory}
+	if a.prefs.PolishEngine == application.PolishCloud {
+		// The shared stages use one overall cloud deadline (ADR 024).
+		policy.Timeout = cloudRewriteTimeout
+	}
 	return policy
 }
 

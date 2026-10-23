@@ -14,6 +14,8 @@ import (
 
 	"arion.local/core/domain"
 	"arion.local/desktop/infrastructure/llm/engine"
+	"arion.local/desktop/infrastructure/llm/prompt"
+	"arion.local/desktop/infrastructure/llm/spelling"
 )
 
 // stageCase describes constructed transcript/context input. Evaluator checks
@@ -150,7 +152,15 @@ func TestNativeStagePreservation(t *testing.T) {
 			mode := "native-pipeline"
 			if os.Getenv("ARION_STAGE_FORMAT_ONLY") == "1" {
 				mode = "formatter-only-diagnostic"
-				request, formatErr := e.recipe.Format(source, c.Scene, domain.PunctuationSmart)
+				lexicon, loadErr := spelling.Load()
+				if loadErr != nil {
+					t.Fatal(loadErr)
+				}
+				recipe, loadErr := prompt.Selected(lexicon)
+				if loadErr != nil {
+					t.Fatal(loadErr)
+				}
+				request, formatErr := recipe.Format(source, c.Scene, domain.PunctuationSmart)
 				runErr = formatErr
 				if runErr == nil {
 					completion, generateErr := e.generate(context.Background(), request, false)

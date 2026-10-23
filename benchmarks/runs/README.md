@@ -1,5 +1,12 @@
 # Recorded experiment evidence
 
+- [Cloud polishing main integration](cloud-polishing-main-v1/README.md): merged final-only timing and punctuation configuration, 68 gateway cases and related race/UI checks.
+
+- [Cloud polishing gateway verification](cloud-polishing-gateway-v1/README.md): 60 synthetic OpenAI HTTP integration cases, both wire formats, context switches, coordinator delivery, failures and cancellation; no real inference claim.
+
+- [Unified polishing verification](unified-polishing-v1/README.md): shared native/cloud pipeline checks, actual worker integration and retained repeated native timeout/session-erasure failure. Real cloud and full product E2E remain unverified.
+
+
 These directories retain actual per-case outputs, source/prompt observations, warmups, failure records, timings and logs. See the [archive map](../migration/archive.json) for byte identities and original locations, the [corpora index](../corpora/README.md) for inputs and the [benchmark index](../README.md) for findings.
 
 | Study | Evidence |
@@ -151,5 +158,6 @@ The actual production-cleanup source replay changes one36-case input; prior raw-
 - [Qwen ASR size and quantization diagnostic](../results/qwen-asr-speed-v1/README.md) — same-development-corpus native 0.6B/1.7B INT8 and separate MLX 8-bit/4-bit compute/accuracy evidence.
 
 - [Native Qwen3-ASR migration acceptance](../results/native-asr-v1/README.md) — native Swift model loading, offline signed-package inference, live coordinator replay and explicit remaining platform/performance gates.
+
 
 - [IME bundle-directory exchange](ime-bundle-swap-v1/README.md): native arm64 and initial x86_64-process filesystem observations; no IME acceptance claim.

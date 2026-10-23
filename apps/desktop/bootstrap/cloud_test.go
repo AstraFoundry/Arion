@@ -19,10 +19,8 @@ func (noSecrets) Put(string) error     { return nil }
 func (noSecrets) Get() (string, error) { return "", nil }
 func (noSecrets) Delete() error        { return nil }
 
-// Cloud polishing sends one request per dictation and reads no context.
-// Local polishing uses the same final-only timing and keeps the context
-// switches (ADR 022, ADR 023).
-func TestCloudPolicyIsFinalOnlyWithoutContext(t *testing.T) {
+// Both engines honor the same context switches; cloud stages run after stop.
+func TestCloudPolicyUsesSharedContext(t *testing.T) {
 	a := &App{prefs: application.DefaultPreferences("darwin"), rewriter: &rewriting.Service{}}
 	a.prefs.Polish = true
 	local := a.rewritePolicy()
@@ -31,7 +29,7 @@ func TestCloudPolicyIsFinalOnlyWithoutContext(t *testing.T) {
 	}
 	a.prefs.PolishEngine = application.PolishCloud
 	cloud := a.rewritePolicy()
-	if !cloud.Enabled || !cloud.FinalOnly || cloud.Context != (application.ContextPolicy{}) || cloud.Timeout != cloudRewriteTimeout {
+	if !cloud.Enabled || !cloud.FinalOnly || cloud.Context != local.Context || cloud.Timeout != cloudRewriteTimeout {
 		t.Fatalf("cloud policy %+v", cloud)
 	}
 }
@@ -59,5 +57,26 @@ func TestPolishRouterFollowsEngine(t *testing.T) {
 func TestCloudProvidersMatchUI(t *testing.T) {
 	if !slices.Equal(arion.CloudKeyProviders, cloudpolish.KeyProviders) || arion.CloudChatGPT != cloudpolish.ChatGPT {
 		t.Fatalf("UI %v, service %v", arion.CloudKeyProviders, cloudpolish.KeyProviders)
+	}
+}
+
+func TestContextSwitchesApplyToBothEngines(t *testing.T) {
+	for mask := 0; mask < 8; mask++ {
+		a := &App{prefs: application.DefaultPreferences("darwin")}
+		a.prefs.Polish = true
+		a.prefs.ContextCursor = mask&1 != 0
+		a.prefs.ContextScreen = mask&2 != 0
+		a.prefs.ContextHistory = mask&4 != 0
+		want := application.ContextPolicy{Cursor: a.prefs.ContextCursor, Screen: a.prefs.ContextScreen, History: a.prefs.ContextHistory}
+		for _, engine := range []application.PolishEngine{application.PolishLocal, application.PolishCloud} {
+			a.prefs.PolishEngine = engine
+			if got := a.rewritePolicy().Context; got != want {
+				t.Fatalf("%s mask %d: %+v", engine, mask, got)
+			}
+		}
+		a.prefs.Polish = false
+		if got := a.rewritePolicy(); got.Enabled || got.Context.Any() {
+			t.Fatalf("off: %+v", got)
+		}
 	}
 }

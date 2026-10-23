@@ -11,7 +11,7 @@ import (
 	"arion.local/core/domain"
 	"arion.local/desktop/infrastructure/llm/engine"
 	"arion.local/desktop/infrastructure/llm/prompt"
-	"arion.local/desktop/infrastructure/llm/spelling"
+	"arion.local/desktop/infrastructure/llm/rewrite"
 )
 
 func TestAmbiguousOnlySkipsSelectorAndFormatsUnchangedSource(t *testing.T) {
@@ -24,16 +24,12 @@ func TestMixedAmbiguityStillRunsSelectorForRealDecision(t *testing.T) {
 
 func testSpellingGenerationCalls(t *testing.T, source, screen string, wantSelectors int, wantFormatted string) {
 	t.Helper()
-	lexicon, err := spelling.Load()
-	if err != nil {
-		t.Fatal(err)
-	}
-	recipe, err := prompt.Selected(lexicon)
+	pipeline, err := rewrite.Load()
 	if err != nil {
 		t.Fatal(err)
 	}
 	selectors, formatters := 0, 0
-	worker := &Engine{lexicon: lexicon, recipe: recipe, config: engine.Config{MaxLength: 4096}, http: &http.Client{Transport: roundTrip(func(r *http.Request) (*http.Response, error) {
+	worker := &Engine{pipeline: pipeline, config: engine.Config{MaxLength: 4096}, http: &http.Client{Transport: roundTrip(func(r *http.Request) (*http.Response, error) {
 		body := `{"prompt":"rendered"}`
 		switch r.URL.Path {
 		case "/tokenize":
@@ -66,32 +62,5 @@ func testSpellingGenerationCalls(t *testing.T, source, screen string, wantSelect
 	}
 	if result.Text != wantFormatted || selectors != wantSelectors || formatters != 1 {
 		t.Fatalf("result=%q selectors=%d formatters=%d", result.Text, selectors, formatters)
-	}
-}
-
-func TestForcedAmbiguityStillValidatesPreparation(t *testing.T) {
-	valid := domain.SpellingPreparation{Source: "read config", Hypotheses: []domain.SpellingHypothesis{{ID: "e0", Start: 0, End: 11, Source: "read config", Candidates: []string{"readConfig", "ReadConfig"}, Status: "ambiguous"}}}
-	text, forced, err := forcedAmbiguousSelection(valid)
-	if err != nil || !forced || text != valid.Source {
-		t.Fatalf("result=%q forced=%v err=%v", text, forced, err)
-	}
-	for _, name := range []string{"wrong source span", "out of range", "duplicate IDs", "inconsistent ambiguity"} {
-		t.Run(name, func(t *testing.T) {
-			p := valid
-			p.Hypotheses = append([]domain.SpellingHypothesis(nil), valid.Hypotheses...)
-			switch name {
-			case "wrong source span":
-				p.Hypotheses[0].Source = "other words"
-			case "out of range":
-				p.Hypotheses[0].End = 99
-			case "duplicate IDs":
-				p.Hypotheses = append(p.Hypotheses, p.Hypotheses[0])
-			case "inconsistent ambiguity":
-				p.Hypotheses[0].Candidates = []string{"readConfig"}
-			}
-			if _, _, err := forcedAmbiguousSelection(p); err == nil {
-				t.Fatal("invalid preparation bypassed validation")
-			}
-		})
 	}
 }

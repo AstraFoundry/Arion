@@ -1,9 +1,8 @@
 // Package cloudpolish is the optional cloud polishing capability (ADR 022):
 // the connected provider's credential in the OS credential store, its model
-// list, and a ports.Rewriter that sends the dictated text and its recalled
-// terms through Republic. It never reads or sends context sources, and no
-// request is made unless the user connected a provider and chose cloud
-// polishing.
+// list, and a ports.Rewriter using the shared staged pipeline. Enabled context
+// sources reach spelling selection through Republic; the formatter receives
+// only the edited source. Cloud polishing requires an explicit engine choice.
 package cloudpolish
 
 import (
