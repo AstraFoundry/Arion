@@ -286,7 +286,7 @@
   "PunctuationSmart": "Smart",
   "PunctuationFull": "Complete",
   "PunctuationOmit": "Omit last mark",
-  "PunctuationSpaces": "Spaces",
+  "PunctuationSpaces": "Spaces instead of punctuation",
   "ContextCursorLabel": "Text around the cursor",
   "ContextCursorDetail": "Reads a few lines before and after the cursor to spell names and continue your text",
   "ContextScreenLabel": "Screen content",
