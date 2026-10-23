@@ -31,6 +31,12 @@ Sources are pinned in [`skills-lock.json`](../../skills-lock.json).
 |-------|----------|
 | `make-interfaces-feel-better` | Polishing UI details: radius, type, shadows, icons, micro-interactions. |
 
+### `wheresryan22/anatomy`
+
+| Skill | Use when |
+|-------|----------|
+| `anatomy` | Drawing isometric technical figures from the kit in `kit/`, such as the onboarding dictation key figure (`scripts/build-holdkey-figures.mjs`). The examples' generated pages and PDFs are not committed; `node .agents/skills/anatomy/examples/<name>/build.mjs` rebuilds a page. |
+
 ### `yetone/kill-ai-slop`
 
 | Skill | Use when |

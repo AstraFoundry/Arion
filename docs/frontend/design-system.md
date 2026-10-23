@@ -119,6 +119,15 @@ A dictation committed while the overview shows rolls the figures and reshades th
 - Mock surfaces are solid with real elevation; no glass panes, glows or tinted gradients. Scrims are ink gradients only where text or controls overlap the photo.
 - Mock copy comes from `copy` (`ShowcaseSentence` mixes Chinese and English, as real dictation does), and the illustration is labeled for assistive technology (`ShowcaseLabel`).
 
+### Dictation key figure
+
+The onboarding dictation key step shows `widgets/keyfigure` in the left pane instead of the photograph: an isometric keyboard on a desk mat, wired to a desk microphone, drawn with the `anatomy` Agent Skill's kit.
+
+- The platform's keyboard (macOS: fn, Right Option and Right Command on a Magic Keyboard–style layout; Windows: Right Alt and Right Ctrl) is the base layer. The chosen key is a layer over it, lit in the accent; choosing another key in the step's picker crossfades the light to it.
+- A press of the chosen key fades in its pressed layer: the cap sinks into the deck and the microphone's ring turns `Live`, for 90 ms in, 610 ms held and 260 ms out. The step's "That works" status starts over when another key is chosen.
+- The figure's paper is the `Card` token, so the pane is `Card` with no photograph. Its palette (ink tones, accent and live) is written into each SVG: regenerate with `pnpm figures:holdkey` after changing a token, the layout or a key. It is labeled for assistive technology (`HoldKeyFigureLabel`).
+- MyGo draws the SVGs itself: class selectors, no CSS variables, filters or text. Legends are stroked paths and the contact shadows are stacked translucent outlines.
+
 ## Review
 
 Render every surface with `ARION_UI_SNAPSHOTS=<dir> go test ./ui/app` (light, plus `TestDarkAppearance` for dark) and look at the frames. The `kill-ai-slop` skill's taxonomy applies: one accent, hierarchy from scale and space, no decorative tiles, pulses or one-hue status boxes.

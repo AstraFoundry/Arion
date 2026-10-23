@@ -348,6 +348,7 @@ const (
 	UpdateAutoDetail          Key = "UpdateAutoDetail"
 	ShowcaseLabel             Key = "ShowcaseLabel"
 	ShowcaseSentence          Key = "ShowcaseSentence"
+	HoldKeyFigureLabel        Key = "HoldKeyFigureLabel"
 	OnbStepWelcome            Key = "OnbStepWelcome"
 	OnbStepMic                Key = "OnbStepMic"
 	OnbStepAX                 Key = "OnbStepAX"

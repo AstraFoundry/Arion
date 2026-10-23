@@ -23,6 +23,7 @@ import (
 	"arion.local/desktop/ui/shared/kit"
 	"arion.local/desktop/ui/shared/runtime"
 	"arion.local/desktop/ui/shared/theme"
+	"arion.local/desktop/ui/widgets/keyfigure"
 	"arion.local/desktop/ui/widgets/modelcard"
 	"arion.local/desktop/ui/widgets/showcase"
 	"arion.local/desktop/ui/widgets/stepper"
@@ -50,6 +51,7 @@ type Page struct {
 	keyboardPractice string
 	axRequested      bool
 	axGranted        time.Time
+	holdKey          runtime.HoldKey
 	keyboard         keyboard.State
 	cloud            cloud.Nav
 }
@@ -65,13 +67,17 @@ func (p *Page) Render(c *ui.Context, store runtime.Store) {
 	if p.entered.IsZero() {
 		p.entered = c.Now()
 	}
-	p.sync(store, step)
+	p.sync(c, store, step)
 	bar := c.TitleBar()
 	top := max(bar.Height, 28) + 16
 	ui.Row(c).Fill().AlignItems(ui.Stretch).Background(tokens.Canvas).Children(func() {
 		ui.Column(c).Width(Pane).Children(func() {
-			scene, levels := illustration(step, state)
-			showcase.Render(c, tokens, store.Copy(), scene, holdname.Legend(state.Preferences.HoldKey), levels)
+			if step == onboarding.HoldKey && keyfigure.Shows(state.Preferences.HoldKey) {
+				keyfigure.Render(c, tokens, messages, state.Preferences.HoldKey, p.heard(state))
+			} else {
+				scene, levels := illustration(step, state)
+				showcase.Render(c, tokens, messages, scene, holdname.Legend(state.Preferences.HoldKey), levels)
+			}
 			ui.Box(c).Absolute().Top(0).Left(0).Right(0).Height(top).DragWindow()
 		})
 		ui.Column(c).Grow(1).Children(func() {
@@ -183,7 +189,7 @@ func (p *Page) move(c *ui.Context, delta int, store runtime.Store) {
 
 // sync runs the microphone monitor and hold key test only on their steps,
 // and reads whether a sign-in is stored on the account step.
-func (p *Page) sync(store runtime.Store, step onboarding.Step) {
+func (p *Page) sync(c *ui.Context, store runtime.Store, step onboarding.Step) {
 	monitor := step == onboarding.Microphone && store.State.Permissions.Microphone == runtime.ConsentGranted
 	if monitor != p.monitoring {
 		p.monitoring = monitor
@@ -197,10 +203,26 @@ func (p *Page) sync(store runtime.Store, step onboarding.Step) {
 		signin.Check(store)
 	}
 	testing := step == onboarding.HoldKey
+	// Another key starts the test over.
+	if testing && store.State.Preferences.HoldKey != p.holdKey {
+		if p.holdKey != "" {
+			p.entered = c.Now()
+		}
+		p.holdKey = store.State.Preferences.HoldKey
+	}
 	if testing != p.testing {
 		p.testing = testing
 		store.Actions.TestHoldKey(testing)
 	}
+}
+
+// heard is when the hold key test last heard the chosen key, or zero: a
+// press before the step, or before another key was chosen, does not count.
+func (p *Page) heard(state *runtime.State) time.Time {
+	if state.Hold.Pressed.After(p.entered) {
+		return state.Hold.Pressed
+	}
+	return time.Time{}
 }
 
 // Close releases resources if the window closes mid-flow.
@@ -302,22 +324,10 @@ func (p *Page) step(c *ui.Context, store runtime.Store, tokens theme.Tokens, ste
 			Children(func() { cloud.Pages(c, store, tokens, &p.cloud) })
 	case onboarding.HoldKey:
 		heading(c, tokens, messages.Text(copy.OnbHoldKeyTitle), messages.Text(copy.OnbHoldKeyBody))
-		heard := state.Hold.Pressed.After(p.entered)
+		heard := !p.heard(state).IsZero()
 		ui.Column(c).Gap(12).Children(func() {
-			ui.Row(c).AlignItems(ui.Center).Children(func() {
-				keys := ui.Row(c)
-				if heard {
-					lift := keys.Keyframes("press", []ui.Keyframe{{Value: 0}, {At: 90 * time.Millisecond, Value: 3, Ease: ui.EaseOut}, {At: 260 * time.Millisecond, Value: 0, Ease: ui.EaseOut}},
-						ui.KeyframeOptions{Run: uint64(state.Hold.Pressed.UnixNano())})
-					keys.Translate(0, lift)
-				}
-				keys.Children(func() {
-					cap := kit.Kbd(c, tokens, holdname.Legend(state.Preferences.HoldKey), false)
-					if heard {
-						cap.Background(cap.AnimateColor("face", tokens.AccentSoft, theme.Quick))
-					}
-				})
-			})
+			// The figure beside the step shows the chosen key and each press.
+			ui.Row(c).Width(240).Children(func() { holdkey.Picker(c, store) })
 			if holdkey.HasNotes(store) {
 				holdkey.Notes(c, store, tokens)
 			}

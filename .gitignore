@@ -68,3 +68,8 @@ __pycache__/
 /apps/desktop/resources/*/asr/
 /apps/desktop/native/mlx-asr/.build/
 /apps/desktop/native/mlx-asr/.swiftpm/
+
+# Anatomy skill examples: generated pages and printed sheets, rebuilt by
+# each example's build.mjs
+.claude/skills/anatomy/examples/**/*.html
+.claude/skills/anatomy/examples/**/*.pdf

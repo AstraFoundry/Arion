@@ -197,6 +197,7 @@
   "UpdateAutoDetail": "启动时及每 6 小时检查一次",
   "ShowcaseLabel": "Arion 向其他应用听写的示意图",
   "ShowcaseSentence": "把这个 PR merge 到 main 之前，先跑一下 CI。",
+  "HoldKeyFigureLabel": "键盘连着麦克风的示意图，听写按键已点亮",
   "OnbStepWelcome": "欢迎",
   "OnbStepMic": "麦克风",
   "OnbStepAX": "辅助功能",
