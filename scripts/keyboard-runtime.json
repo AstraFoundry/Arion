@@ -172,11 +172,12 @@
       "source": "https://github.com/rime/librime/tree/33e78140250125871856cdc5b42ddc6a5fcd3cd4"
     },
     {
-      "url": "https://www.gnu.org/licenses/gpl-3.0.txt",
+      "path": "scripts/licenses/GPL-3.0.txt",
       "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
       "sizeBytes": 35149,
       "to": "licenses/GPL-3.0.txt",
-      "license": "GPL-3.0"
+      "license": "GPL-3.0",
+      "source": "https://www.gnu.org/licenses/gpl-3.0.txt"
     }
   ]
 }
