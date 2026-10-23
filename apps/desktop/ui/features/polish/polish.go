@@ -61,7 +61,8 @@ func Engine(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 	})
 }
 
-// Punctuation chooses how polished text is punctuated. The control stays
+// Punctuation chooses how polished text is punctuated. The Model page
+// gives it its own group; this card is that group's control. It stays
 // visible while polish is off and does not change the preference then.
 func Punctuation(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 	messages := store.Copy()
@@ -78,20 +79,22 @@ func Punctuation(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 			selected = labels[i]
 		}
 	}
-	kit.Divider(c, tokens)
-	kit.TipRow(c, tokens, messages.Text(copy.PunctuationLabel), "", func() {
-		menu := ui.Select(c.Key("punctuation"), &selected, labels).Label(messages.Text(copy.PunctuationLabel)).Width(280)
-		if !store.State.Preferences.Polish {
-			menu.Disabled(true)
-		}
-		if menu.Changed() && store.State.Preferences.Polish {
-			for i, label := range labels {
-				if label == selected {
-					mode := modes[i]
-					store.Actions.UpdatePreferences(func(p *runtime.Preferences) { p.Punctuation = mode })
+	// The group title names the setting, so the card shows only the mode.
+	kit.Card(c, tokens).Children(func() {
+		ui.Row(c).Padding(12, 16).AlignItems(ui.Center).Children(func() {
+			menu := ui.Select(c.Key("punctuation"), &selected, labels).Label(messages.Text(copy.PunctuationLabel)).Grow(1)
+			if !store.State.Preferences.Polish {
+				menu.Disabled(true)
+			}
+			if menu.Changed() && store.State.Preferences.Polish {
+				for i, label := range labels {
+					if label == selected {
+						mode := modes[i]
+						store.Actions.UpdatePreferences(func(p *runtime.Preferences) { p.Punctuation = mode })
+					}
 				}
 			}
-		}
+		})
 	})
 }
 
