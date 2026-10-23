@@ -32,12 +32,13 @@ type RewritePolicy struct {
 	// text reach the model, at most domain.MaxRecallTerms (ADR 014).
 	Vocabulary *domain.Vocabulary
 	// Punctuation is the polished-text punctuation mode. Empty is smart.
-	// Live preview and the inserted final text use the same mode.
+	// The rewrite after release uses it.
 	Punctuation domain.Punctuation
 	// Timeout bounds the final rewrite after the user stops.
 	Timeout time.Duration
-	// FinalOnly skips live previews: only the text after stop is polished.
-	// Cloud polishing uses it so one request is sent per dictation (ADR 022).
+	// FinalOnly records that polishing runs after the user stops. The
+	// coordinator does not send a rewrite during speech. Local and cloud
+	// polishing both set it (ADR 022, ADR 023).
 	FinalOnly bool
 }
 
@@ -62,10 +63,9 @@ type unit struct {
 	samples []float32
 }
 
-// liveState runs the edit-while-speaking pipeline of one session: each
-// closed segment is re-decoded by the finalizer, and the stable text is
-// rewritten as a preview while the speaker continues. Previews never commit;
-// the final rewrite after stop is the only inserted proposal.
+// liveState refines closed segments of one session while capture continues.
+// The rewriter runs once after stop, on the full recognized text. A polished
+// preview is not requested or shown during speech.
 type liveState struct {
 	policy RewritePolicy
 	units  chan unit
@@ -173,7 +173,7 @@ func (c *Coordinator) queueClosed(r *run, draft contracts.Draft) bool {
 	select {
 	case l.units <- u:
 		l.closed, l.bound = len(draft.Segments), cut
-		// Latest wins: a preview of older text would only delay refinement.
+		// A newer closed segment supersedes any in-flight preview.
 		c.mu.Lock()
 		if l.cancelPreview != nil {
 			l.cancelPreview()
@@ -218,9 +218,9 @@ func (c *Coordinator) acceptLiveDraft(r *run, draft contracts.Draft) {
 	c.publishLive(r)
 }
 
-// display joins the best available closed text with the open segment:
-// the validated preview of the stable source, else the refined text, then
-// segments still waiting for refinement, then the open tail.
+// display joins closed text with the open segment: the refined source, then
+// segments still waiting for refinement, then the open tail. The capture
+// worker does not store a polished preview for that source.
 func (l *liveState) display() (string, bool) {
 	closed, previewed := l.stable, false
 	if l.polished != "" && l.polishedFor == l.stable {
@@ -249,8 +249,9 @@ func (c *Coordinator) publishLive(r *run) {
 	c.acceptDisplay(r, text, rewrite)
 }
 
-// liveWorker refines closed segments in order and previews the latest
-// stable text. Inference never runs on the capture or pump goroutines.
+// liveWorker refines closed segments in order. It does not call the rewriter:
+// the final rewrite runs after the user releases the dictation key. Inference
+// never runs on the capture or pump goroutines.
 func (c *Coordinator) liveWorker(r *run) {
 	l := r.live
 	defer close(l.done)
@@ -266,14 +267,8 @@ func (c *Coordinator) liveWorker(r *run) {
 		l.refined = append(l.refined, text)
 		l.pending = l.pending[1:]
 		l.stable = c.correct(domain.JoinText(l.refined...))
-		stable := l.stable
 		c.mu.Unlock()
 		c.publishLive(r)
-		// Latest wins: only preview once every queued segment is refined.
-		if len(l.units) > 0 || !l.policy.Enabled || l.policy.FinalOnly || l.rewriteCtx.Err() != nil {
-			continue
-		}
-		c.preview(r, stable)
 	}
 }
 
@@ -297,9 +292,10 @@ func (c *Coordinator) correct(raw string) string {
 	return domain.Correct(raw, c.opts.Policy()).Text
 }
 
-// preview requests a live rewrite of the stable source. Failures and
-// rejections leave the refined source on screen; they never end the
-// session, because the final rewrite decides what is inserted.
+// preview rewrites one stable source. The capture worker does not call it.
+// A session shows recognized text until release, then rewriteFinal sends the
+// full recognized text. Failures leave the refined source unchanged and never
+// end the session.
 func (c *Coordinator) preview(r *run, stable string) {
 	l := r.live
 	if stable == "" || c.deps.Rewriter == nil {

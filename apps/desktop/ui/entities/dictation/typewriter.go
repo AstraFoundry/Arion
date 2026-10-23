@@ -8,7 +8,7 @@ import "time"
 // The spring keeps a small backlog of unshown characters: the further the
 // display falls behind the recognizer, the faster it types; when it catches
 // up, it slows to a calm pace. Recognition keeps revising text already shown
-// (refined segments, live rewrites, the streaming tail); those characters
+// (refined segments, the rewrite after release, the streaming tail); those characters
 // change in place, so the line never retreats and only new characters are
 // typed. A revision shorter than what is shown cuts the display to it.
 type Typewriter struct {

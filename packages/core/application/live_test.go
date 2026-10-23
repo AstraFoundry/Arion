@@ -133,9 +133,10 @@ func draftIs(text string) func(contracts.Event) bool {
 	return func(e contracts.Event) bool { return e.Kind == contracts.DraftReplaced && e.Text == text }
 }
 
-// Closed segments are refined and previewed while capture continues; the
-// final rewrite of the whole text is the only inserted proposal.
-func TestLivePreviewThenFinalRewrite(t *testing.T) {
+// Closed segments stay recognized while capture continues. The rewriter runs
+// once after release, on the full recognized text, and that result is the
+// only inserted proposal.
+func TestNoLiveRewriteUntilRelease(t *testing.T) {
 	rewriter := &scriptedRewriter{answer: func(req ports.RewriteRequest) (string, error) {
 		return strings.ReplaceAll(req.Text, "UM ", ""), nil
 	}}
@@ -143,11 +144,19 @@ func TestLivePreviewThenFinalRewrite(t *testing.T) {
 	c.Start()
 	events.wait(t, stateIs(domain.Capturing))
 	audio.push(2, 0.2)
-	// The first segment is refined (upper case) and previewed (filler gone)
-	// while the user is still speaking.
-	events.wait(t, draftIs("HELLO"))
+	// The first segment is refined (upper case) and still contains the filler.
+	events.wait(t, draftIs("UM HELLO"))
 	audio.push(3, 0.2)
-	events.wait(t, draftIs("HELLO B c"))
+	events.wait(t, draftIs("UM HELLO B c"))
+	rewriter.mu.Lock()
+	during := len(rewriter.requests)
+	rewriter.mu.Unlock()
+	if during != 0 {
+		t.Fatalf("%d rewrite requests during speech", during)
+	}
+	if events.count(func(e contracts.Event) bool { return e.Rewrite == RewritePreview }) != 0 {
+		t.Fatal("polished preview displayed")
+	}
 	c.Stop()
 	ready := events.wait(t, kindIs(contracts.CorrectionReady))
 	if ready.Raw != "UM HELLO B C" || ready.Source != "UM HELLO B C" || ready.Text != "HELLO B C" || ready.Rewrite != string(domain.RewriteAccepted) {
@@ -165,21 +174,13 @@ func TestLivePreviewThenFinalRewrite(t *testing.T) {
 	}
 	rewriter.mu.Lock()
 	defer rewriter.mu.Unlock()
-	live, final := 0, 0
-	for _, r := range rewriter.requests {
-		if r.Live {
-			live++
-		} else {
-			final++
-		}
-	}
-	if live < 1 || final != 1 || len(rewriter.ended) != 1 {
-		t.Fatalf("live=%d final=%d ended=%d", live, final, len(rewriter.ended))
+	if len(rewriter.requests) != 1 || rewriter.requests[0].Live || rewriter.requests[0].Text != "UM HELLO B C" || len(rewriter.ended) != 1 {
+		t.Fatalf("requests %+v ended=%d", rewriter.requests, len(rewriter.ended))
 	}
 }
 
-// FinalOnly sends no previews while speaking; the text after stop is
-// still polished once (ADR 022).
+// Final-only polishing sends no rewrite while speaking; the text after stop
+// is still polished once (ADR 022, ADR 023).
 func TestFinalOnlyPolishesOnceAfterStop(t *testing.T) {
 	rewriter := &scriptedRewriter{answer: func(req ports.RewriteRequest) (string, error) {
 		return strings.ReplaceAll(req.Text, "UM ", ""), nil
@@ -309,11 +310,10 @@ func TestCancelDuringFinalRewrite(t *testing.T) {
 	}
 }
 
-// A preview computed for an older stable text is never displayed after a
-// newer segment closes (RWT-A02 for previews).
-func TestStalePreviewNotDisplayed(t *testing.T) {
-	gate := make(chan struct{})
-	rewriter := &scriptedRewriter{liveBlock: gate, answer: func(req ports.RewriteRequest) (string, error) { return req.Text, nil }}
+// Recognized text stays on screen while capture continues. A model result
+// is not shown until release, so nothing computed during speech can replace it.
+func TestNoPolishedPreviewDuringSpeech(t *testing.T) {
+	rewriter := &scriptedRewriter{answer: func(req ports.RewriteRequest) (string, error) { return "STALE " + req.Text, nil }}
 	c, audio, events, _, _ := liveSetup(t, []string{"a", "|", "b", "|", "c"}, rewriter, RewritePolicy{Enabled: true})
 	c.Start()
 	events.wait(t, stateIs(domain.Capturing))
@@ -321,13 +321,20 @@ func TestStalePreviewNotDisplayed(t *testing.T) {
 	events.wait(t, draftIs("A"))
 	audio.push(3, 0.2)
 	events.wait(t, func(e contracts.Event) bool {
-		return e.Kind == contracts.DraftReplaced && strings.HasPrefix(e.Text, "A B")
+		return e.Kind == contracts.DraftReplaced && e.Text == "A B c" && e.Rewrite == ""
 	})
-	close(gate)
+	rewriter.mu.Lock()
+	during := len(rewriter.requests)
+	rewriter.mu.Unlock()
+	if during != 0 {
+		t.Fatalf("%d rewrite requests during speech", during)
+	}
 	c.Stop()
-	events.wait(t, kindIs(contracts.CorrectionReady))
-	if events.count(func(e contracts.Event) bool { return strings.Contains(e.Text, "STALE") }) != 0 {
-		t.Fatal("stale preview displayed")
+	ready := events.wait(t, kindIs(contracts.CorrectionReady))
+	if ready.Text != "STALE A B C" || events.count(func(e contracts.Event) bool {
+		return e.Kind == contracts.DraftReplaced && (e.Rewrite == RewritePreview || strings.Contains(e.Text, "STALE"))
+	}) != 0 {
+		t.Fatal("polished preview displayed during speech")
 	}
 }
 
@@ -369,13 +376,11 @@ func TestQuietCutFindsPause(t *testing.T) {
 	}
 }
 
-// Without per-segment finalization, previews show streaming text and the
-// finalizer decodes the whole utterance once after stop.
-func TestWholeUtteranceFinalizationWithPreviews(t *testing.T) {
+// Without per-segment finalization, speech shows streaming text and the
+// finalizer decodes the whole utterance once after stop. The rewriter is
+// not called until then.
+func TestWholeUtteranceFinalizationWithoutLiveRewrite(t *testing.T) {
 	rewriter := &scriptedRewriter{answer: func(req ports.RewriteRequest) (string, error) {
-		if req.Live {
-			return strings.ToUpper(req.Text), nil
-		}
 		return req.Text, nil
 	}}
 	audio := &fakeAudio{}
@@ -392,9 +397,15 @@ func TestWholeUtteranceFinalizationWithPreviews(t *testing.T) {
 	c.Start()
 	events.wait(t, stateIs(domain.Capturing))
 	audio.push(3, 0.2)
-	events.wait(t, func(e contracts.Event) bool {
-		return e.Kind == contracts.DraftReplaced && e.Rewrite == RewritePreview && e.Text == "A b"
-	})
+	shown := events.wait(t, draftIs("a b"))
+	if shown.Rewrite == RewritePreview {
+		t.Fatalf("preview shown: %+v", shown)
+	}
+	rewriter.mu.Lock()
+	if len(rewriter.requests) != 0 {
+		t.Fatalf("rewrite during speech: %+v", rewriter.requests)
+	}
+	rewriter.mu.Unlock()
 	c.Stop()
 	ready := events.wait(t, kindIs(contracts.CorrectionReady))
 	if ready.Raw != "A B" {
@@ -405,10 +416,15 @@ func TestWholeUtteranceFinalizationWithPreviews(t *testing.T) {
 	if len(finalizer.calls) != 1 {
 		t.Fatalf("expected one whole-utterance decode, got %d", len(finalizer.calls))
 	}
+	rewriter.mu.Lock()
+	defer rewriter.mu.Unlock()
+	if len(rewriter.requests) != 1 || rewriter.requests[0].Live || rewriter.requests[0].Text != "A B" {
+		t.Fatalf("final request %+v", rewriter.requests)
+	}
 }
 
-// SCN-A01: with FollowApp the captured target decides the scene of every
-// preview and the final rewrite, and the review reports it.
+// SCN-A01: with FollowApp the captured target decides the scene of the
+// final rewrite, and the review reports it.
 func TestFollowAppDecidesScene(t *testing.T) {
 	rewriter := &scriptedRewriter{answer: func(req ports.RewriteRequest) (string, error) { return req.Text, nil }}
 	c, audio, events, target, _ := liveSetup(t, []string{"hello", "|", "b"}, rewriter, RewritePolicy{Enabled: true, Scene: "chat", FollowApp: true})
@@ -552,8 +568,8 @@ func TestSpacesModeValidatesBeforePunctuation(t *testing.T) {
 	}
 }
 
-// Each punctuation mode post-edits the live preview and the inserted text
-// the same way. Search still strips a sentence-final mark afterward.
+// Each punctuation mode post-edits the inserted text. Speech shows the
+// recognized source. Search still strips a sentence-final mark afterward.
 func TestPunctuationModes(t *testing.T) {
 	const proposal = "你好，世界。"
 	for _, mode := range []domain.Punctuation{domain.PunctuationSmart, domain.PunctuationFull, domain.PunctuationOmit, domain.PunctuationSpaces} {
@@ -564,30 +580,23 @@ func TestPunctuationModes(t *testing.T) {
 			events.wait(t, stateIs(domain.Capturing))
 			audio.push(2, 0.2)
 			want := domain.ApplyPunctuation(mode, proposal)
-			wantLive := proposal
-			if mode == domain.PunctuationOmit || mode == domain.PunctuationSpaces {
-				// Display joins trim the trailing space spaces mode leaves.
-				wantLive = strings.TrimSpace(want)
+			recognized := events.wait(t, draftIs("你好。"))
+			if recognized.Rewrite == RewritePreview {
+				t.Fatalf("preview during speech: %+v", recognized)
 			}
-			live := events.wait(t, draftIs(wantLive))
 			c.Stop()
 			ready := events.wait(t, kindIs(contracts.CorrectionReady))
 			events.wait(t, kindIs(contracts.CommitResultReady))
-			if live.Text != wantLive {
-				t.Fatalf("live %q want %q", live.Text, wantLive)
-			}
 			if ready.Text != want || target.texts[0] != want {
 				t.Fatalf("final %q committed %q want %q", ready.Text, target.texts, want)
 			}
 			rewriter.mu.Lock()
 			defer rewriter.mu.Unlock()
-			if len(rewriter.requests) == 0 {
-				t.Fatal("no cleanup prompt")
+			if len(rewriter.requests) != 1 || rewriter.requests[0].Live || rewriter.requests[0].Text != "你好。" {
+				t.Fatalf("requests %+v", rewriter.requests)
 			}
-			for _, req := range rewriter.requests {
-				if req.Punctuation != string(mode) {
-					t.Fatalf("request punctuation %q", req.Punctuation)
-				}
+			if rewriter.requests[0].Punctuation != string(mode) {
+				t.Fatalf("request punctuation %q", rewriter.requests[0].Punctuation)
 			}
 		})
 	}
@@ -783,8 +792,9 @@ func TestCleanupSurvivesOrganizationFailure(t *testing.T) {
 }
 
 // Full OCR, including discussion beyond the old character cutoff, must reach
-// previews and final inference. Each source remains independently gated.
-func TestFullContextInPreviewAndFinal(t *testing.T) {
+// the final rewrite. Each source remains independently gated. No rewrite
+// runs while capture continues.
+func TestFullContextReachesFinalRewrite(t *testing.T) {
 	screen := strings.Repeat("界面内容。", 300) + "同事：软件订阅可以报销。"
 	for _, tc := range []struct {
 		name   string
@@ -814,8 +824,10 @@ func TestFullContextInPreviewAndFinal(t *testing.T) {
 				}
 			}
 			audio.push(2, 0.2)
-			events.wait(t, draftIs("Formatted HELLO"))
-			// New dictated text requires a separate final request with the same context.
+			shown := events.wait(t, draftIs("HELLO"))
+			if shown.Rewrite == RewritePreview || strings.Contains(shown.Text, "Formatted") {
+				t.Fatalf("polished during speech: %+v", shown)
+			}
 			audio.push(1, 0.2)
 			c.Stop()
 			events.wait(t, kindIs(contracts.CommitResultReady))
@@ -846,8 +858,8 @@ func TestFullContextInPreviewAndFinal(t *testing.T) {
 					t.Fatalf("context was also extracted into terms: %q", req.Terms)
 				}
 			}
-			if !live || !final {
-				t.Fatalf("missing preview or final: %v %v", live, final)
+			if live || !final || len(w.requests) != 1 {
+				t.Fatalf("rewrite timing: live=%v final=%v requests=%d", live, final, len(w.requests))
 			}
 		})
 	}

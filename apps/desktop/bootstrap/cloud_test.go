@@ -19,13 +19,14 @@ func (noSecrets) Put(string) error     { return nil }
 func (noSecrets) Get() (string, error) { return "", nil }
 func (noSecrets) Delete() error        { return nil }
 
-// Cloud polishing sends one request per dictation and reads no context;
-// local polishing keeps previews and the context switches (ADR 022).
+// Cloud polishing sends one request per dictation and reads no context.
+// Local polishing uses the same final-only timing and keeps the context
+// switches (ADR 022, ADR 023).
 func TestCloudPolicyIsFinalOnlyWithoutContext(t *testing.T) {
 	a := &App{prefs: application.DefaultPreferences("darwin"), rewriter: &rewriting.Service{}}
 	a.prefs.Polish = true
 	local := a.rewritePolicy()
-	if !local.Enabled || local.FinalOnly || !local.Context.Screen || !local.Context.Cursor || !local.Context.History {
+	if !local.Enabled || !local.FinalOnly || !local.Context.Screen || !local.Context.Cursor || !local.Context.History {
 		t.Fatalf("local policy %+v", local)
 	}
 	a.prefs.PolishEngine = application.PolishCloud

@@ -51,8 +51,9 @@ type Options struct {
 	AutoCommit bool
 	Correction bool
 	Policy     func() domain.CorrectionPolicy
-	// Rewrite is read when a session starts; enabling it turns on the live
-	// pipeline: per-segment finalization, live previews and a final rewrite.
+	// Rewrite is read when a session starts. When it is enabled, release runs
+	// one final rewrite of the recognized text. Closed segments are not sent
+	// to the model during speech.
 	Rewrite func() RewritePolicy
 	// SegmentFinalize runs the finalizer per closed segment while speaking
 	// even without rewriting.

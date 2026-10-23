@@ -18,7 +18,7 @@ Local polishing needs the bundled GGUF runtime, which ships only on macOS on App
 - **API keys** are checked by listing the provider's models before they are stored; a refused key is not stored.
 - **Model choice.** The user chooses among the models the connected provider lists (`Preferences.CloudModel`). ChatGPT models come from the Codex backend's model list, which Republic leaves unsupported; Arion supplies that listing through a Republic provider spec.
 - **Payload.** Only the final rule-corrected text after stop, its scene and the recalled vocabulary terms (at most eight, as for the local model), inside the shipped `live` prompt as chat turns. No audio, no text around the cursor, no window text, no dictation history, no app or site identity. Context switches hide while the cloud engine is chosen, and the target adapter does not read field or window text for it.
-- **Final only.** No live previews: one request per dictation (`RewritePolicy.FinalOnly`), bounded by a 15 s timeout. The result passes `domain.ValidateRewriteDelivery` like any local proposal; failures, refusals and timeouts deliver the local cleanup with an explicit outcome (LRW-08).
+- **Final only.** No live previews: one request per dictation (`RewritePolicy.FinalOnly`), bounded by a 15 s timeout. Local polishing uses the same timing ([ADR 023](023-final-only-polishing.md)). The result passes `domain.ValidateRewriteDelivery` like any local proposal; failures, refusals and timeouts deliver the local cleanup with an explicit outcome (LRW-08).
 
 ## Consequences
 
