@@ -39,6 +39,9 @@ type Preferences struct {
 	// Polish turns on the local LLM pipeline: live rewriting while speaking
 	// and a validated final rewrite. Off until the user downloads the model.
 	Polish bool `json:"polish"`
+	// Punctuation chooses how polished text is punctuated. It is used only
+	// while Polish is on. Profiles written before it existed load smart.
+	Punctuation domain.Punctuation `json:"punctuation,omitempty"`
 	// PolishEngine is where polishing runs: on this device, or with the
 	// cloud model the user connected (ADR 022). Profiles written before it
 	// existed load PolishLocal.
@@ -96,7 +99,7 @@ const (
 func DefaultPreferences(platform string) Preferences {
 	return Preferences{
 		Version: PreferencesVersion, UILanguage: English, HoldKey: DefaultHoldKey(platform),
-		Delivery: DeliveryAutomatic, PolishEngine: PolishLocal, RemoveFillers: true, Sounds: true, CheckUpdates: true, MatchApp: true,
+		Delivery: DeliveryAutomatic, PolishEngine: PolishLocal, Punctuation: domain.PunctuationSmart, RemoveFillers: true, Sounds: true, CheckUpdates: true, MatchApp: true,
 		ContextCursor: true, ContextScreen: true, ContextHistory: true, LearnEdits: true,
 		Keyboard: DefaultKeyboardPreferences(),
 	}
@@ -124,6 +127,10 @@ func (p Preferences) Normalize(platform string) (Preferences, []string) {
 	if p.PolishEngine != PolishLocal && p.PolishEngine != PolishCloud {
 		p.PolishEngine = defaults.PolishEngine
 		repaired = append(repaired, "polishEngine")
+	}
+	if !p.Punctuation.Known() {
+		p.Punctuation = defaults.Punctuation
+		repaired = append(repaired, "punctuation")
 	}
 	if p.Delivery != DeliveryAutomatic && p.Delivery != DeliveryClipboard {
 		p.Delivery = defaults.Delivery

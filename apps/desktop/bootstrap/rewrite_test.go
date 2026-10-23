@@ -11,15 +11,17 @@ import (
 // RWT-A06: loading or missing workers must not silently disable polishing.
 func TestRewritePolicyPreservesChoiceBeforeWorkerReady(t *testing.T) {
 	a := &App{prefs: application.DefaultPreferences("darwin"), rewriter: &rewriting.Service{}}
-	if a.rewritePolicy().Enabled {
-		t.Fatal("polishing enabled without the user's choice")
+	a.prefs.Punctuation = "omit"
+	if policy := a.rewritePolicy(); policy.Enabled || policy.Punctuation != "" {
+		t.Fatal("polish off still configures a cleanup prompt")
 	}
 	a.prefs.Polish = true
 	if a.rewriter.Ready() {
 		t.Fatal("test worker unexpectedly ready")
 	}
-	if !a.rewritePolicy().Enabled {
-		t.Fatal("worker readiness silently disabled the user's choice")
+	policy := a.rewritePolicy()
+	if !policy.Enabled || policy.Punctuation != "omit" {
+		t.Fatalf("worker readiness changed the choice: enabled=%v punctuation=%q", policy.Enabled, policy.Punctuation)
 	}
 }
 

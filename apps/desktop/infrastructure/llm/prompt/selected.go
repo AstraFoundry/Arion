@@ -12,7 +12,7 @@ import (
 )
 
 // SelectedVersion identifies both independently evaluated stages.
-const SelectedVersion = "selector-contextual-v5+natural-layout-v3"
+const SelectedVersion = "selector-contextual-v5+cleanup-rules-v1"
 
 //go:embed selection.json
 var selectedSelection []byte
@@ -75,9 +75,13 @@ type formatRecipe struct {
 	EditingExamples []formatExample        `json:"editingExamples"`
 	System          string                 `json:"formatSystem"`
 	SystemHan       string                 `json:"formatSystemHan"`
+	Rules           string                 `json:"formatRules"`
+	RulesHan        string                 `json:"formatRulesHan"`
 	ProsePolicy     string                 `json:"prosePolicy"`
 	ProsePolicyHan  string                 `json:"prosePolicyHan"`
 	Routes          map[string]string      `json:"routeInstructions"`
+	Punctuation     string                 `json:"punctuationRule"`
+	PunctuationHan  string                 `json:"punctuationRuleHan"`
 	Scenes          map[string]sceneRecipe `json:"format"`
 }
 
@@ -156,43 +160,59 @@ func (t *SelectedTemplates) Selection(p domain.SpellingPreparation) ChatRequest 
 	return req
 }
 
-type sourceScripts struct {
-	Han   bool `json:"hasHan"`
-	Latin bool `json:"hasLatin"`
-}
-
-func profile(source string) sourceScripts {
-	p := sourceScripts{}
+func profile(source string) (han, latin bool) {
 	for _, r := range source {
 		if unicode.In(r, unicode.Han) && (r >= 0x3400 || r >= 0xf900) {
-			p.Han = true
+			han = true
 		}
 		if unicode.In(r, unicode.Latin) {
-			p.Latin = true
+			latin = true
 		}
 	}
-	return p
+	return han, latin
 }
 func route(source string) string {
-	p := profile(source)
-	if p.Han && !p.Latin {
+	han, latin := profile(source)
+	if han && !latin {
 		return "han"
 	}
-	if p.Latin && !p.Han {
+	if latin && !han {
 		return "latin"
 	}
 	return "mixed"
 }
 func formatText(source string) string {
-	return jsonText(struct {
-		Source  string        `json:"source"`
-		Scripts sourceScripts `json:"sourceScripts"`
-	}{source, profile(source)})
+	return "<source>" + source + "</source>"
+}
+
+// systemPrompt is a preamble plus one rules list. Scene text is rule 6,
+// layout is rule 7 (omitted for list), and the script route is rule 8.
+// Full, omit, and spaces append one punctuation bullet; smart does not.
+func (t *SelectedTemplates) systemPrompt(kind, scene string, punctuation domain.Punctuation) string {
+	preamble, rules, sceneRule, layout, routeLine, punct := t.format.System, t.format.Rules, "", t.format.ProsePolicy, t.format.Routes[kind], t.format.Punctuation
+	recipe := t.format.Scenes[scene]
+	sceneRule = recipe.Instruction
+	if kind == "han" {
+		preamble, rules, sceneRule, layout, punct = t.format.SystemHan, t.format.RulesHan, recipe.InstructionHan, t.format.ProsePolicyHan, t.format.PunctuationHan
+	}
+	lines := strings.Split(rules, "\n")
+	lines = append(lines, sceneRule)
+	if scene != string(domain.SceneList) {
+		lines = append(lines, layout)
+	}
+	lines = append(lines, routeLine)
+	switch punctuation {
+	case domain.PunctuationFull, domain.PunctuationOmit, domain.PunctuationSpaces:
+		lines = append(lines, punct)
+	}
+	return preamble + "\n\n<rules>\n" + strings.Join(lines, "\n") + "\n</rules>"
 }
 
 // Format receives only the explicitly edited source, never OCR or surrounding
 // context. Scene hints preserve natural prose unless list layout is explicit.
-func (t *SelectedTemplates) Format(source, scene string) (ChatRequest, error) {
+// punctuation appends the complete-punctuation bullet for full, omit, and
+// spaces; smart and empty leave the approved prompt unchanged.
+func (t *SelectedTemplates) Format(source, scene string, punctuation domain.Punctuation) (ChatRequest, error) {
 	if scene == string(domain.SceneSearch) {
 		scene = string(domain.SceneChat)
 	}
@@ -201,19 +221,7 @@ func (t *SelectedTemplates) Format(source, scene string) (ChatRequest, error) {
 		return ChatRequest{}, fmt.Errorf("unsupported formatting scene %q", scene)
 	}
 	kind := route(source)
-	system := t.format.System + "\n" + recipe.Instruction
-	if kind == "han" {
-		system = t.format.SystemHan + "\n" + recipe.InstructionHan
-	}
-	if scene != string(domain.SceneList) {
-		policy := t.format.ProsePolicy
-		if kind == "han" {
-			policy = t.format.ProsePolicyHan
-		}
-		system += "\n" + policy
-	}
-	system += "\n" + t.format.Routes[kind]
-	messages := []Message{{Role: "system", Content: system}}
+	messages := []Message{{Role: "system", Content: t.systemPrompt(kind, scene, punctuation)}}
 	groups := [][]formatExample{recipe.Examples, t.format.EditingExamples}
 	// Keep explicit-list demonstrations last so prose editing examples do not
 	// override the user-selected layout.

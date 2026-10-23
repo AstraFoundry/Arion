@@ -279,7 +279,7 @@ func (a *App) rewritePolicy() application.RewritePolicy {
 		return application.RewritePolicy{}
 	}
 	policy := application.RewritePolicy{Enabled: true, Scene: string(domain.SceneChat), FollowApp: a.prefs.MatchApp,
-		SceneOverrides: a.prefs.SceneOverrides, Vocabulary: a.vocabulary}
+		Punctuation: a.prefs.Punctuation, SceneOverrides: a.prefs.SceneOverrides, Vocabulary: a.vocabulary}
 	if a.prefs.PolishEngine == application.PolishCloud {
 		// One request per dictation, with no context sources (ADR 022).
 		policy.FinalOnly, policy.Timeout = true, cloudRewriteTimeout

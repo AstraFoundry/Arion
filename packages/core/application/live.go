@@ -30,6 +30,9 @@ type RewritePolicy struct {
 	// Vocabulary is the approved memory; only its entries relevant to the
 	// text reach the model, at most domain.MaxRecallTerms (ADR 014).
 	Vocabulary *domain.Vocabulary
+	// Punctuation is the polished-text punctuation mode. Empty is smart.
+	// Live preview and the inserted final text use the same mode.
+	Punctuation domain.Punctuation
 	// Timeout bounds the final rewrite after the user stops.
 	Timeout time.Duration
 	// FinalOnly skips live previews: only the text after stop is polished.
@@ -105,7 +108,7 @@ func snapshotRewriteRequest(request ports.RewriteRequest) ports.RewriteRequest {
 
 func sameRewriteRequest(a, b ports.RewriteRequest) bool {
 	return a.Identity == b.Identity && a.SourceRevision == b.SourceRevision &&
-		a.Text == b.Text && a.PreviousText == b.PreviousText && a.Scene == b.Scene && a.Prefill == b.Prefill &&
+		a.Text == b.Text && a.PreviousText == b.PreviousText && a.Scene == b.Scene && a.Punctuation == b.Punctuation && a.Prefill == b.Prefill &&
 		slices.Equal(a.Terms, b.Terms) && a.Context.Screen == b.Context.Screen &&
 		a.Context.Before == b.Context.Before && a.Context.After == b.Context.After &&
 		slices.Equal(a.Context.History, b.Context.History)
@@ -311,7 +314,7 @@ func (c *Coordinator) preview(r *run, stable string) {
 	rc := r.contextFor(0)
 	started := time.Now()
 	request := snapshotRewriteRequest(ports.RewriteRequest{Identity: r.identity, Text: stable,
-		Scene: string(domain.ModelScene(domain.Scene(l.policy.Scene), stable)), Terms: l.policy.terms(stable), Context: rc, Live: true})
+		Scene: string(domain.ModelScene(domain.Scene(l.policy.Scene), stable)), Punctuation: string(l.policy.Punctuation), Terms: l.policy.terms(stable), Context: rc, Live: true})
 	completedRequest := snapshotRewriteRequest(request)
 	result, err := c.deps.Rewriter.Rewrite(ctx, request)
 	c.diagnostic(r, ports.DiagnosticPreview, started, err)
@@ -321,7 +324,7 @@ func (c *Coordinator) preview(r *run, stable string) {
 	if err != nil || ctx.Err() != nil {
 		return
 	}
-	text := domain.AlignLiveEnding(stable, result.Text)
+	text := punctuate(l.policy.Punctuation, result.Text, true, stable)
 	verdict := domain.ValidateRewriteDelivery(domain.RewriteCheck{Source: stable, Candidate: text, Truncated: result.Truncated, Terms: completedRequest.Terms, Context: completedRequest.Context})
 	if c.deps.Diagnostics != nil {
 		c.deps.Diagnostics.Observe(ports.Diagnostic{Identity: r.identity, Stage: ports.DiagnosticValidation, Verdict: verdict})
@@ -406,7 +409,7 @@ func (c *Coordinator) rewriteFinal(r *run, source string, policy RewritePolicy) 
 	rc := r.contextFor(contextWait)
 	previous := c.previousStableSource(r, source)
 	request := snapshotRewriteRequest(ports.RewriteRequest{Identity: r.identity, Text: source, PreviousText: previous,
-		Scene: string(domain.ModelScene(domain.Scene(policy.Scene), source)), Terms: policy.termsForFinal(source, previous), Context: rc})
+		Scene: string(domain.ModelScene(domain.Scene(policy.Scene), source)), Punctuation: string(policy.Punctuation), Terms: policy.termsForFinal(source, previous), Context: rc})
 	result, reused := c.completedRewrite(r, request)
 	var err error
 	if !reused {
@@ -423,11 +426,29 @@ func (c *Coordinator) rewriteFinal(r *run, source string, policy RewritePolicy) 
 	case err != nil:
 		return cleaned, RewriteUnavailable, true
 	}
-	verdict := domain.ValidateRewriteDelivery(domain.RewriteCheck{Source: source, Candidate: result.Text, Truncated: result.Truncated, Terms: request.Terms, Context: request.Context})
+	text = punctuate(policy.Punctuation, result.Text, false, source)
+	verdict := domain.ValidateRewriteDelivery(domain.RewriteCheck{Source: source, Candidate: text, Truncated: result.Truncated, Terms: request.Terms, Context: request.Context})
 	if verdict != domain.RewriteAccepted {
 		return cleaned, string(verdict), true
 	}
-	return result.Text, string(verdict), true
+	return text, string(verdict), true
+}
+
+// punctuate applies the punctuation mode to a model proposal. Smart and
+// full keep the model's punctuation; a live preview of those modes still
+// aligns its ending with the open source. Omit and spaces post-edit both
+// the live preview and the inserted text, so the mode is what is shown.
+// Search removes a sentence-final mark later, in FinishScene.
+func punctuate(mode domain.Punctuation, candidate string, live bool, source string) string {
+	switch mode {
+	case domain.PunctuationOmit, domain.PunctuationSpaces:
+		return domain.ApplyPunctuation(mode, candidate)
+	default:
+		if live {
+			return domain.AlignLiveEnding(source, candidate)
+		}
+		return candidate
+	}
 }
 
 // LiveStats reports how many validated previews a session displayed.
