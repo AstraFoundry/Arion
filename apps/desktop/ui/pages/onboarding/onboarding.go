@@ -234,7 +234,7 @@ func (p *Page) step(c *ui.Context, store runtime.Store, tokens theme.Tokens, ste
 			kit.Mark(c, 64).Margin(-6)
 			ui.Column(c).Gap(10).Children(func() {
 				ui.Text(c, messages.Text(copy.OnbWelcomeTitle)).FontSize(theme.Display).FontWeight(700)
-				ui.Text(c, messages.Text(copy.OnbWelcomeBody)).FontSize(theme.Heading).TextColor(tokens.Muted).MaxWidth(380)
+				ui.Text(c, messages.Text(copy.OnbWelcomeBody)).FontSize(theme.Heading).TextColor(tokens.Muted).MaxWidth(Content)
 			})
 		})
 	case onboarding.Microphone:
