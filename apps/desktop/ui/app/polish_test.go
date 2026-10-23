@@ -159,6 +159,9 @@ func TestPunctuationControl(t *testing.T) {
 		t.Fatal(err)
 	}
 	settle(tt)
+	if hasText(tt, en.Text(copy.PunctuationSpaces)) || !hasText(tt, en.Text(copy.PunctuationFull)) {
+		t.Fatalf("english menu: %q", tt.Texts())
+	}
 	if err := tt.Click(en.Text(copy.PunctuationOmit)); err != nil {
 		t.Fatalf("menu did not open: %v texts %q", err, tt.Texts())
 	}
@@ -179,6 +182,45 @@ func TestPunctuationControl(t *testing.T) {
 		t.Fatalf("chinese punctuation row order: punct %d match %d context %d texts %q", punct, match, context, texts)
 	}
 	snapshot(t, tt, "settings-punctuation-omit-zh-CN")
+	reveal(t, tt, zh.Text(copy.PunctuationOmit))
+	if err := tt.Click(zh.Text(copy.PunctuationOmit)); err != nil {
+		t.Fatal(err)
+	}
+	settle(tt)
+	if !hasText(tt, zh.Text(copy.PunctuationSpaces)) {
+		t.Fatalf("chinese menu hides spaces: %q", tt.Texts())
+	}
+	if err := tt.Click(zh.Text(copy.PunctuationSpaces)); err != nil {
+		t.Fatal(err)
+	}
+	settle(tt)
+	if state.Preferences.Punctuation != runtime.PunctuationSpaces {
+		t.Fatalf("chinese spaces choice not saved: %q", state.Preferences.Punctuation)
+	}
+	snapshot(t, tt, "settings-punctuation-spaces-zh-CN")
+	saved := len(actions.calls)
+	state.Preferences.UILanguage = runtime.LanguageEnglish
+	settle(tt)
+	if state.Preferences.Punctuation != runtime.PunctuationSpaces || len(actions.calls) != saved || hasText(tt, en.Text(copy.PunctuationSpaces)) {
+		t.Fatalf("english showed or replaced spaces: %q calls %d", tt.Texts(), len(actions.calls)-saved)
+	}
+	snapshot(t, tt, "settings-punctuation-spaces-hidden-en")
+	title, ok := tt.Find(en.Text(copy.PunctuationLabel))
+	if !ok {
+		t.Fatal("punctuation label missing")
+	}
+	tt.ClickAt(SettingsWidth-80, title.Y+title.H/2)
+	settle(tt)
+	if hasText(tt, en.Text(copy.PunctuationSpaces)) || !hasText(tt, en.Text(copy.PunctuationSmart)) || !hasText(tt, en.Text(copy.PunctuationOmit)) || state.Preferences.Punctuation != runtime.PunctuationSpaces || len(actions.calls) != saved {
+		t.Fatalf("english menu while spaces is saved: %q preference %q", tt.Texts(), state.Preferences.Punctuation)
+	}
+	if err := tt.Click(en.Text(copy.PunctuationOmit)); err != nil {
+		t.Fatal(err)
+	}
+	settle(tt)
+	if state.Preferences.Punctuation != runtime.PunctuationOmit {
+		t.Fatalf("english choice did not replace spaces: %q", state.Preferences.Punctuation)
+	}
 	state.Preferences.UILanguage = runtime.LanguageEnglish
 	state.Preferences.PolishEngine = runtime.PolishCloud
 	settle(tt)

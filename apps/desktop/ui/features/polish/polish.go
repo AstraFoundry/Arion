@@ -64,18 +64,21 @@ func Engine(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 // Punctuation chooses how polished text is punctuated. It is a row in the
 // Polish card, label on the left and the mode menu on the right, like
 // Runs on. The control stays visible while polish is off and does not
-// change the preference then.
+// change the preference then. English lists three modes. Spaces remains
+// a saved preference and a Simplified Chinese option; the English menu
+// does not show it and does not replace a saved spaces value.
 func Punctuation(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 	messages := store.Copy()
-	labels := []string{
-		messages.Text(copy.PunctuationSmart),
-		messages.Text(copy.PunctuationFull),
-		messages.Text(copy.PunctuationOmit),
-		messages.Text(copy.PunctuationSpaces),
+	modes := []runtime.Punctuation{runtime.PunctuationSmart, runtime.PunctuationFull, runtime.PunctuationOmit}
+	keys := []copy.Key{copy.PunctuationSmart, copy.PunctuationFull, copy.PunctuationOmit}
+	if store.State.Preferences.UILanguage == runtime.LanguageChinese {
+		modes = append(modes, runtime.PunctuationSpaces)
+		keys = append(keys, copy.PunctuationSpaces)
 	}
-	modes := []runtime.Punctuation{runtime.PunctuationSmart, runtime.PunctuationFull, runtime.PunctuationOmit, runtime.PunctuationSpaces}
-	selected := labels[0]
+	labels := make([]string, len(modes))
+	selected := ""
 	for i, mode := range modes {
+		labels[i] = messages.Text(keys[i])
 		if store.State.Preferences.Punctuation == mode {
 			selected = labels[i]
 		}
@@ -86,7 +89,7 @@ func Punctuation(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 		if !store.State.Preferences.Polish {
 			menu.Disabled(true)
 		}
-		if menu.Changed() && store.State.Preferences.Polish {
+		if menu.Changed() && store.State.Preferences.Polish && selected != "" {
 			for i, label := range labels {
 				if label == selected {
 					mode := modes[i]
