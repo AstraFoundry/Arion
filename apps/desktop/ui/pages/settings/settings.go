@@ -429,8 +429,8 @@ func (p *Page) modelBack() {
 	}
 }
 
-// modelSection is Model's recognition, polish and punctuation settings,
-// or the page of the recognition model or the cloud model.
+// modelSection is Model's recognition and polish settings, or the page of
+// the recognition model or the cloud model.
 func (p *Page) modelSection(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 	messages := store.Copy()
 	switch p.model {
@@ -453,6 +453,7 @@ func (p *Page) modelSection(c *ui.Context, store runtime.Store, tokens theme.Tok
 			kit.Card(c, tokens).Children(func() {
 				polish.Row(c, store, tokens)
 				polish.Engine(c, store, tokens)
+				polish.Punctuation(c, store, tokens)
 				if store.State.Preferences.PolishEngine == runtime.PolishCloud && cloud.Summary(c, store, tokens) {
 					p.model = modelCloud
 				}
@@ -461,9 +462,6 @@ func (p *Page) modelSection(c *ui.Context, store runtime.Store, tokens theme.Tok
 					polish.MatchApp(c, store, tokens)
 				}
 			})
-		})
-		kit.Group(c, tokens, messages.Text(copy.PunctuationLabel), func() {
-			polish.Punctuation(c, store, tokens)
 		})
 		if polish.ContextShown(store) {
 			kit.Group(c, tokens, messages.Text(copy.ContextGroup), func() { polish.Context(c, store, tokens) })

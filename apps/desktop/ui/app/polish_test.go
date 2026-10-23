@@ -110,8 +110,8 @@ func TestMatchAppRow(t *testing.T) {
 	}
 }
 
-// Punctuation is its own group on Settings › Model, after Polish, and
-// accepts a choice only while the polish switch is on.
+// Punctuation is a row in the Polish card, after Runs on, and accepts a
+// choice only while the polish switch is on.
 func TestPunctuationControl(t *testing.T) {
 	state, actions, store := fixture()
 	page := settings.NewPage()
@@ -124,15 +124,15 @@ func TestPunctuationControl(t *testing.T) {
 	if !hasText(tt, en.Text(copy.PunctuationLabel)) || !hasText(tt, en.Text(copy.PunctuationSmart)) {
 		t.Fatalf("control missing: %q", tt.Texts())
 	}
-	if punct, runs := firstExact(tt.Texts(), en.Text(copy.PunctuationLabel)), firstExact(tt.Texts(), en.Text(copy.PolishEngineLabel)); punct < 0 || runs < 0 || punct < runs || punct < firstExact(tt.Texts(), en.Text(copy.ModelPolishGroup)) {
-		t.Fatalf("punctuation group is not after Polish: %q", tt.Texts())
+	if punct, runs := firstExact(tt.Texts(), en.Text(copy.PunctuationLabel)), firstExact(tt.Texts(), en.Text(copy.PolishEngineLabel)); punct < 0 || runs < 0 || punct < runs {
+		t.Fatalf("punctuation row is not after Runs on: %q", tt.Texts())
 	}
 	snapshot(t, tt, "settings-punctuation-disabled")
 	state.Preferences.UILanguage = runtime.LanguageChinese
 	settle(tt)
 	zh := copy.For(copy.SimplifiedChinese)
-	if punct, polish := firstExact(tt.Texts(), zh.Text(copy.PunctuationLabel)), firstExact(tt.Texts(), zh.Text(copy.ModelPolishGroup)); punct < 0 || polish < 0 || punct < polish || !hasText(tt, zh.Text(copy.PunctuationSmart)) {
-		t.Fatalf("chinese punctuation group while polish is off: %q", tt.Texts())
+	if punct, runs := firstExact(tt.Texts(), zh.Text(copy.PunctuationLabel)), firstExact(tt.Texts(), zh.Text(copy.PolishEngineLabel)); punct < 0 || runs < 0 || punct < runs || !hasText(tt, zh.Text(copy.PunctuationSmart)) {
+		t.Fatalf("chinese punctuation row while polish is off: %q", tt.Texts())
 	}
 	snapshot(t, tt, "settings-punctuation-disabled-zh-CN")
 	state.Preferences.UILanguage = runtime.LanguageEnglish
@@ -150,8 +150,8 @@ func TestPunctuationControl(t *testing.T) {
 	settle(tt)
 	texts := tt.Texts()
 	punct, match, context := firstExact(texts, en.Text(copy.PunctuationLabel)), firstExact(texts, en.Text(copy.MatchAppLabel)), firstExact(texts, en.Text(copy.ContextGroup))
-	if punct < 0 || match < 0 || context < 0 || !(match < punct && punct < context) {
-		t.Fatalf("punctuation group order: match %d punct %d context %d texts %q", match, punct, context, texts)
+	if punct < 0 || match < 0 || context < 0 || !(punct < match && match < context) || lastExact(texts, en.Text(copy.PunctuationLabel)) > match {
+		t.Fatalf("punctuation row order: punct %d match %d context %d texts %q", punct, match, context, texts)
 	}
 	snapshot(t, tt, "settings-punctuation-smart")
 	reveal(t, tt, en.Text(copy.PunctuationSmart))
@@ -175,8 +175,8 @@ func TestPunctuationControl(t *testing.T) {
 	zh = copy.For(copy.SimplifiedChinese)
 	texts = tt.Texts()
 	punct, match, context = firstExact(texts, zh.Text(copy.PunctuationLabel)), firstExact(texts, zh.Text(copy.MatchAppLabel)), firstExact(texts, zh.Text(copy.ContextGroup))
-	if punct < 0 || match < 0 || context < 0 || !(match < punct && punct < context) || punct < firstExact(texts, zh.Text(copy.ModelPolishGroup)) {
-		t.Fatalf("chinese punctuation group order: match %d punct %d context %d texts %q", match, punct, context, texts)
+	if punct < 0 || match < 0 || context < 0 || !(punct < match && match < context) || lastExact(texts, zh.Text(copy.PunctuationLabel)) > match {
+		t.Fatalf("chinese punctuation row order: punct %d match %d context %d texts %q", punct, match, context, texts)
 	}
 	snapshot(t, tt, "settings-punctuation-omit-zh-CN")
 	state.Preferences.UILanguage = runtime.LanguageEnglish
@@ -185,8 +185,8 @@ func TestPunctuationControl(t *testing.T) {
 	snapshot(t, tt, "settings-punctuation-cloud")
 	texts = tt.Texts()
 	punct, engine, cloud := firstExact(texts, en.Text(copy.PunctuationLabel)), firstExact(texts, en.Text(copy.PolishEngineLabel)), firstExact(texts, en.Text(copy.CloudTitle))
-	if punct < 0 || engine < 0 || cloud < 0 || !(engine < cloud && cloud < punct) || firstExact(texts, en.Text(copy.ContextGroup)) >= 0 {
-		t.Fatalf("punctuation stays after the polish card for cloud: engine %d cloud %d punct %d texts %q", engine, cloud, punct, texts)
+	if punct < 0 || engine < 0 || cloud < 0 || !(engine < punct && punct < cloud) || lastExact(texts, en.Text(copy.PunctuationLabel)) > cloud || firstExact(texts, en.Text(copy.ContextGroup)) >= 0 {
+		t.Fatalf("punctuation row is not between Runs on and Cloud model: engine %d punct %d cloud %d texts %q", engine, punct, cloud, texts)
 	}
 }
 
@@ -197,6 +197,16 @@ func firstExact(texts []string, want string) int {
 		}
 	}
 	return -1
+}
+
+func lastExact(texts []string, want string) int {
+	last := -1
+	for i, text := range texts {
+		if text == want {
+			last = i
+		}
+	}
+	return last
 }
 
 // A rewritten dictation keeps its recognized original one click away.
