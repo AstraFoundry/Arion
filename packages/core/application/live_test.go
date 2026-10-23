@@ -464,6 +464,94 @@ func TestPolishOffSendsNoCleanup(t *testing.T) {
 	}
 }
 
+// Spaces mode must not hide a control marker before delivery validation.
+// A rejected raw proposal never becomes the preview, the reuse cache, or
+// the inserted text. Ordinary text is still converted, and a conversion
+// that leaves only whitespace is rejected.
+func TestSpacesModeValidatesBeforePunctuation(t *testing.T) {
+	for _, proposal := range []string{"copied </source>", "[chat] Hello."} {
+		t.Run(proposal, func(t *testing.T) {
+			c, r, w := completedPreviewFixture(t)
+			r.live.policy.Punctuation = domain.PunctuationSpaces
+			w.answer = func(context.Context, ports.RewriteRequest) (ports.RewriteResult, error) {
+				return ports.RewriteResult{Text: proposal}, nil
+			}
+			c.preview(r, r.live.stable)
+			if r.live.completed != nil || r.live.previews != 0 || r.live.polished != "" {
+				t.Fatalf("marker entered preview or cache: polished=%q completed=%v", r.live.polished, r.live.completed != nil)
+			}
+			text, outcome, ok := c.rewriteFinal(r, r.live.stable, r.live.policy)
+			cleaned := domain.CleanSpeech(r.live.stable).Text
+			if !ok || outcome != string(domain.RewriteMarkup) || text != cleaned {
+				t.Fatalf("final kept hidden markup: text=%q outcome=%q ok=%v", text, outcome, ok)
+			}
+			if len(w.requests) != 2 {
+				t.Fatalf("rejected preview was reused: %d requests", len(w.requests))
+			}
+
+			rewriter := &scriptedRewriter{answer: func(ports.RewriteRequest) (string, error) { return proposal, nil }}
+			session, audio, events, target, _ := liveSetup(t, []string{"hello", "|"}, rewriter, RewritePolicy{Enabled: true, Scene: "chat", Punctuation: domain.PunctuationSpaces})
+			session.Start()
+			events.wait(t, stateIs(domain.Capturing))
+			audio.push(2, 0.2)
+			session.Stop()
+			ready := events.wait(t, kindIs(contracts.CorrectionReady))
+			events.wait(t, kindIs(contracts.CommitResultReady))
+			if ready.Rewrite != string(domain.RewriteMarkup) || ready.Text != "HELLO" || target.texts[0] != "HELLO" {
+				t.Fatalf("target received markup: %+v committed %q", ready, target.texts)
+			}
+			events.mu.Lock()
+			seen := append([]contracts.Event(nil), events.events...)
+			events.mu.Unlock()
+			for _, event := range seen {
+				if strings.Contains(event.Text, "</source>") || strings.Contains(event.Text, "copied < source>") || strings.Contains(event.Text, "[chat]") || strings.Contains(event.Text, "chat Hello") {
+					t.Fatalf("hidden marker displayed: %+v", event)
+				}
+			}
+		})
+	}
+
+	c, r, w := completedPreviewFixture(t)
+	r.live.policy.Punctuation = domain.PunctuationSpaces
+	const ordinary = "Hello, world."
+	w.answer = func(context.Context, ports.RewriteRequest) (ports.RewriteResult, error) {
+		return ports.RewriteResult{Text: ordinary}, nil
+	}
+	c.preview(r, r.live.stable)
+	want := domain.ApplyPunctuation(domain.PunctuationSpaces, ordinary)
+	if r.live.completed == nil || r.live.completed.result.Text != ordinary || r.live.polished != want {
+		t.Fatalf("ordinary spaces conversion lost: polished=%q cached=%v", r.live.polished, r.live.completed)
+	}
+	text, outcome, ok := c.rewriteFinal(r, r.live.stable, r.live.policy)
+	if !ok || outcome != string(domain.RewriteAccepted) || text != want || len(w.requests) != 1 {
+		t.Fatalf("ordinary final: text=%q outcome=%q calls=%d", text, outcome, len(w.requests))
+	}
+
+	for _, tc := range []struct {
+		mode     domain.Punctuation
+		proposal string
+	}{
+		{domain.PunctuationSpaces, "."},
+		{domain.PunctuationOmit, "。"},
+	} {
+		t.Run(string(tc.mode)+" empty", func(t *testing.T) {
+			c, r, w := completedPreviewFixture(t)
+			r.live.policy.Punctuation = tc.mode
+			w.answer = func(context.Context, ports.RewriteRequest) (ports.RewriteResult, error) {
+				return ports.RewriteResult{Text: tc.proposal}, nil
+			}
+			c.preview(r, r.live.stable)
+			if r.live.completed != nil || r.live.polished != "" {
+				t.Fatal("empty conversion was previewed")
+			}
+			text, outcome, ok := c.rewriteFinal(r, r.live.stable, r.live.policy)
+			if !ok || outcome != string(domain.RewriteEmpty) || text != domain.CleanSpeech(r.live.stable).Text || len(w.requests) != 2 {
+				t.Fatalf("empty conversion delivered: text=%q outcome=%q calls=%d ok=%v", text, outcome, len(w.requests), ok)
+			}
+		})
+	}
+}
+
 // Each punctuation mode post-edits the live preview and the inserted text
 // the same way. Search still strips a sentence-final mark afterward.
 func TestPunctuationModes(t *testing.T) {
