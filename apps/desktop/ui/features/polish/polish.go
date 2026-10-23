@@ -62,11 +62,12 @@ func Engine(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 }
 
 // Punctuation chooses how polished text is punctuated. It is a row in the
-// Polish card, label on the left and the mode menu on the right, like
-// Runs on. The control stays visible while polish is off and does not
-// change the preference then. English lists three modes. Spaces remains
-// a saved preference and a Simplified Chinese option; the English menu
-// does not show it and does not replace a saved spaces value.
+// Polish card after Runs on, and after Cloud model when that row is shown.
+// The label stays on the left and the mode menu on the right. The menu
+// uses the select's natural width. The control stays visible while polish is
+// off and does not change the preference then. English lists three modes.
+// Spaces remains a saved preference and a Simplified Chinese option; the
+// English menu does not show it and does not replace a saved spaces value.
 func Punctuation(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 	messages := store.Copy()
 	modes := []runtime.Punctuation{runtime.PunctuationSmart, runtime.PunctuationFull, runtime.PunctuationOmit}
