@@ -82,7 +82,7 @@ func Punctuation(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 	}
 	kit.Divider(c, tokens)
 	kit.TipRow(c, tokens, messages.Text(copy.PunctuationLabel), "", func() {
-		menu := ui.Select(c.Key("punctuation"), &selected, labels).Label(messages.Text(copy.PunctuationLabel)).Width(280)
+		menu := ui.Select(c.Key("punctuation"), &selected, labels).Label(messages.Text(copy.PunctuationLabel))
 		if !store.State.Preferences.Polish {
 			menu.Disabled(true)
 		}
