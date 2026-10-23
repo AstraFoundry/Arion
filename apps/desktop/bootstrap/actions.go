@@ -1,6 +1,8 @@
 package bootstrap
 
 import (
+	"context"
+	"errors"
 	"runtime"
 	"strings"
 	"time"
@@ -154,15 +156,17 @@ func (x actions) RequestInputMonitoring() {
 }
 
 // InstallInputMethod starts installation and publishes completion on the UI thread.
-func (x actions) InstallInputMethod() error {
+func (x actions) InstallInputMethod() error { return x.installInputMethod(false) }
+
+func (x actions) installInputMethod(automatic bool) error {
 	if x.a.ime == nil {
 		return errInputMethodUnsupported
 	}
 	a := x.a
-	if a.state.InputMethodInstalling || a.state.InputMethodActivating {
+	if a.state.InputMethodInstalling || a.state.InputMethodActivating || a.state.InputMethodRemoving {
 		return nil
 	}
-	if a.core != nil {
+	if a.core != nil && !automatic {
 		a.core.CancelMode(domain.SystemIMEMode)
 	}
 	generation := a.imeSetupGeneration
@@ -171,13 +175,23 @@ func (x actions) InstallInputMethod() error {
 	a.state.InputMethodError = ""
 	a.record("ime_install_started", nil)
 	go func() {
-		err := a.ime.Install()
+		var err error
+		if automatic {
+			err = a.ime.(automaticInputMethod).UpdateAutomatically()
+		} else {
+			err = a.ime.Install()
+		}
 		state := a.ime.State()
 		update := a.ime.UpdateAvailable()
 		a.post(func() {
 			a.state.InputMethodInstalling = false
 			a.state.InputMethodUpdate = update
 			a.setInputMethodState(state)
+			var deferred interface{ InputMethodUpdateDeferred() bool }
+			if automatic && errors.As(err, &deferred) && deferred.InputMethodUpdateDeferred() {
+				return
+			}
+			a.state.InputMethodUpdateFailed = updating && err != nil
 			if err != nil {
 				a.state.InputMethodError = copy.IMEFailed
 				if domain.CodeOf(err) == domain.CodeArtifactUnverified {
@@ -215,20 +229,45 @@ func (x actions) OpenInputMethodSettings() error {
 // RemoveInputMethod removes the input source; subsequent dictation selects its
 // route from the actual current source.
 func (x actions) RemoveInputMethod() error {
-	if x.a.ime == nil {
+	a := x.a
+	if a.ime == nil {
 		return errInputMethodUnsupported
 	}
-	if x.a.state.InputMethodInstalling || x.a.state.InputMethodActivating {
+	if a.state.InputMethodInstalling || a.state.InputMethodActivating || a.state.InputMethodRemoving {
 		return nil
 	}
-	x.a.state.InputMethodError = ""
-	err := x.a.ime.Remove()
-	x.a.record("ime_remove", err)
-	x.a.state.InputMethod = x.a.ime.State()
-	if err == nil {
-		x.a.state.InputMethodUpdate = false
+	if a.core != nil {
+		a.core.CancelMode(domain.SystemIMEMode)
 	}
-	return err
+	a.imeSetupGeneration++
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	a.imeSetupCancel = cancel
+	a.state.InputMethodRemoving = true
+	a.state.InputMethodError = ""
+	go func() {
+		err := a.ime.Remove(ctx)
+		cancel()
+		state := a.ime.State()
+		a.post(func() {
+			a.imeSetupCancel = nil
+			a.state.InputMethodRemoving = false
+			a.setInputMethodState(state)
+			a.record("ime_remove", err)
+			if err == nil {
+				a.state.InputMethodUpdate = false
+				return
+			}
+			if errors.Is(err, context.Canceled) {
+				return
+			}
+			a.state.InputMethodError = copy.IMERemoveFailed
+			var pending interface{ InputMethodRemovalPending() bool }
+			if errors.As(err, &pending) && pending.InputMethodRemovalPending() {
+				a.state.InputMethodError = copy.IMERemovePending
+			}
+		})
+	}()
+	return nil
 }
 
 func (x actions) AddReplacement(from, to string) error {

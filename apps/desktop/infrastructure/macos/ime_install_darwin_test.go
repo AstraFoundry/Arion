@@ -35,14 +35,9 @@ func bundleContents(t *testing.T, bundle string) string {
 
 func requireNoTransaction(t *testing.T, root string) {
 	t.Helper()
-	entries, err := os.ReadDir(root)
-	if err != nil {
-		t.Fatal(err)
-	}
-	for _, entry := range entries {
-		if strings.HasPrefix(entry.Name(), ".arion-input-install-") {
-			t.Fatalf("transaction directory left after cleanup: %s", entry.Name())
-		}
+	entries, err := filepath.Glob(filepath.Join(root, ".arion-transactions", "install-*"))
+	if err != nil || len(entries) != 0 {
+		t.Fatalf("transaction directory left after cleanup: %v %v", entries, err)
 	}
 }
 
@@ -89,21 +84,22 @@ func TestInputBundleRegistrationFailureRestoresPreviousBytes(t *testing.T) {
 	requireNoTransaction(t, root)
 }
 
-func TestInputBundleFirstInstallFailureRemovesFailedPayload(t *testing.T) {
+func TestInputBundleFirstInstallFailureRetainsRegisteredPayload(t *testing.T) {
 	root := t.TempDir()
 	new := bundleFixture(t, root, "source.app", "new")
 	destination := filepath.Join(root, "ArionInput.app")
-	failure, cleanup := errors.New("enable refused"), errors.New("disable refused")
+	failure := errors.New("enable refused")
 	err := replaceInputBundle(new, destination, func() error { return failure }, func() error {
-		if _, err := os.Stat(destination); !os.IsNotExist(err) {
-			t.Fatalf("failed first install remains: %v", err)
-		}
-		return cleanup
+		t.Fatal("first-install failure must not delete a potentially registered source")
+		return nil
 	})
-	if !errors.Is(err, failure) || !errors.Is(err, cleanup) {
-		t.Fatalf("registration or cleanup failure lost: %v", err)
+	if !errors.Is(err, failure) || bundleContents(t, destination) != "new" {
+		t.Fatal(err)
 	}
-	requireNoTransaction(t, root)
+	records, _ := filepath.Glob(filepath.Join(root, ".arion-transactions", "install-*", "transaction.json"))
+	if len(records) != 1 {
+		t.Fatal("missing recovery record", records)
+	}
 }
 
 func TestInputBundleReplacementPreservesExecutableAndSymlink(t *testing.T) {
@@ -149,7 +145,7 @@ func TestInputBundleFailedRollbackRetainsRecoveryCopy(t *testing.T) {
 	if !errors.Is(err, failure) || !strings.Contains(err.Error(), "recovery files retained") {
 		t.Fatalf("rollback failure not reported: %v", err)
 	}
-	backups, err := filepath.Glob(filepath.Join(root, ".arion-input-install-*", "previous.app"))
+	backups, err := filepath.Glob(filepath.Join(root, ".arion-transactions", "install-*", "exchange.app"))
 	if err != nil || len(backups) != 1 || bundleContents(t, backups[0]) != "previous" {
 		t.Fatalf("sole previous payload was discarded: %v %v", backups, err)
 	}
@@ -382,7 +378,7 @@ func TestInputBundleHandoverPrecedesReplacement(t *testing.T) {
 			t.Fatal("old bytes changed before process exit")
 		}
 		// Staging must have completed before the running host is interrupted.
-		staged, err := filepath.Glob(filepath.Join(root, ".arion-input-install-*", "new.app", "Contents", "MacOS", "ArionInput"))
+		staged, err := filepath.Glob(filepath.Join(root, ".arion-transactions", "install-*", "exchange.app", "Contents", "MacOS", "ArionInput"))
 		if err != nil || len(staged) != 1 {
 			t.Fatal("host stopped before staging completed", err)
 		}
@@ -440,7 +436,7 @@ func TestInputBundleRollbackStopFailurePreservesBothBuilds(t *testing.T) {
 	failure := errors.New("handshake failed")
 	stopError := errors.New("new host cannot stop")
 	err := replaceInputBundleWithLifecycle(new, old, func() error { return failure }, func() error { t.Fatal("restored over running new host"); return nil }, inputBundleLifecycle{beforeReplace: func() error { return nil }, beforeRollback: func() error { return stopError }})
-	backups, _ := filepath.Glob(filepath.Join(root, ".arion-input-install-*", "previous.app"))
+	backups, _ := filepath.Glob(filepath.Join(root, ".arion-transactions", "install-*", "exchange.app"))
 	if !errors.Is(err, failure) || !errors.Is(err, stopError) || len(backups) != 1 || bundleContents(t, old) != "new" || bundleContents(t, backups[0]) != "previous" {
 		t.Fatal("failed rollback lost recovery build", err)
 	}

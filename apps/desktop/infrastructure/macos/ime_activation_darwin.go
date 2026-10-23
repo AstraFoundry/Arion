@@ -102,6 +102,11 @@ func activateInputSource(ctx context.Context, op activationOperations) error {
 func ActivateIME(ctx context.Context, ready func(context.Context, string) error) error {
 	imeInstallation.Lock()
 	defer imeInstallation.Unlock()
+	unlock, lockErr := lockIMEMaintenance()
+	if lockErr != nil {
+		return lockErr
+	}
+	defer unlock()
 	if err := ctx.Err(); err != nil {
 		return err
 	}
@@ -137,20 +142,20 @@ func ActivateIME(ctx context.Context, ready func(context.Context, string) error)
 	defer freeID()
 	return activateInputSource(ctx, activationOperations{
 		register: func() error {
-			if status := C.arion_ime_register(path); status != 0 {
+			if status := traceInputMethodNative("register", func() C.int { return C.arion_ime_register(path) }); status != 0 {
 				return fmt.Errorf("registration returned %d", status)
 			}
 			return nil
 		},
 		state: func() IMEState { return QueryIME() },
 		enable: func() error {
-			if status := C.arion_ime_enable(id); status != 0 {
+			if status := traceInputMethodNative("enable", func() C.int { return C.arion_ime_enable(id) }); status != 0 {
 				return fmt.Errorf("enable returned %d", status)
 			}
 			return nil
 		},
 		selectSource: func() error {
-			if status := C.arion_ime_watch_select(watch, id); status != 0 {
+			if status := traceInputMethodNative("select", func() C.int { return C.arion_ime_watch_select(watch, id) }); status != 0 {
 				return fmt.Errorf("selection returned %d", status)
 			}
 			return nil

@@ -421,14 +421,16 @@ type State struct {
 	Hold                  Hold
 	InputMethod           InputMethodState
 	InputMethodInstalling bool
+	InputMethodRemoving   bool
 	InputMethodActivating bool
 	// InputMethodUpdate: the installed input method differs from the one
 	// this app bundles, so installing again updates it.
-	InputMethodUpdate bool
-	InputMethodError  copy.Key
-	Guide             Guide
-	TrayHint          TrayHint
-	Update            Update
+	InputMethodUpdate       bool
+	InputMethodUpdateFailed bool
+	InputMethodError        copy.Key
+	Guide                   Guide
+	TrayHint                TrayHint
+	Update                  Update
 	// Focus is the settings section last asked for from outside settings.
 	Focus SettingsFocus
 	// MonitorLevels feed the microphone test meter, newest last.

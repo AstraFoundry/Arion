@@ -6,6 +6,10 @@
 #import <Cocoa/Cocoa.h>
 #import <Security/Security.h>
 #include "native.h"
+#import "../../ime/macos/source_maintenance.h"
+#include <fcntl.h>
+#include <stdio.h>
+#include <errno.h>
 
 int arion_mic_status(void) {
     switch ([AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeAudio]) {
@@ -351,6 +355,44 @@ int arion_ime_state(const char *source_id) {
     });
 }
 
+static int arion_ime_source_flags(TISInputSourceRef source, CFStringRef expected) {
+    if (!source) return 0;
+    int flags = 1;
+    CFStringRef identity = TISGetInputSourceProperty(source, kTISPropertyInputSourceID);
+    if (identity && CFEqual(identity, expected)) flags |= 16;
+    const CFStringRef keys[] = {kTISPropertyInputSourceIsEnabled, kTISPropertyInputSourceIsSelected, kTISPropertyInputSourceIsSelectCapable};
+    const int bits[] = {2, 4, 8};
+    for (int i = 0; i < 3; i++) {
+        CFBooleanRef value = TISGetInputSourceProperty(source, keys[i]);
+        if (value && CFGetTypeID(value) == CFBooleanGetTypeID() && CFBooleanGetValue(value)) flags |= bits[i];
+    }
+    return flags;
+}
+
+void arion_ime_inspect(const char *source_id, const char *parent_id, arion_ime_snapshot *out) {
+    arion_ime_on_main(^int(void) {
+        @autoreleasepool {
+            NSString *modeID = [NSString stringWithUTF8String:source_id];
+            NSString *parentID = [NSString stringWithUTF8String:parent_id];
+            TISInputSourceRef mode = arion_find_source(source_id);
+            TISInputSourceRef parent = arion_find_source(parent_id);
+            out->mode_flags = arion_ime_source_flags(mode, (__bridge CFStringRef)modeID);
+            out->parent_flags = arion_ime_source_flags(parent, (__bridge CFStringRef)parentID);
+            out->selected_kind = 0;
+            TISInputSourceRef current = TISCopyCurrentKeyboardInputSource();
+            if (current) {
+                CFStringRef identifier = TISGetInputSourceProperty(current, kTISPropertyInputSourceID);
+                if (identifier) out->selected_kind = CFEqual(identifier, (__bridge CFStringRef)modeID) ? 1 :
+                    CFEqual(identifier, (__bridge CFStringRef)parentID) ? 2 : 3;
+                CFRelease(current);
+            }
+            if (mode) CFRelease(mode);
+            if (parent) CFRelease(parent);
+            return 0;
+        }
+    });
+}
+
 int arion_ime_open_settings(void) {
     return arion_ime_on_main(^int(void) {
         @autoreleasepool {
@@ -457,4 +499,61 @@ int arion_ime_watch_select(void *value, const char *source_id) {
         if (watch.cancelled) return userCanceledErr;
         return arion_ime_select(source_id);
     });
+}
+
+char *arion_ime_removal_observation(void) {
+    __block char *result = NULL;
+    arion_ime_on_main(^int(void) {
+        NSData *json = [NSJSONSerialization dataWithJSONObject:ArionSourceObservation() options:0 error:nil];
+        if (json) result = strndup(json.bytes, json.length);
+        return 0;
+    });
+    return result;
+}
+
+char *arion_ime_current_id(void) {
+    __block char *result = NULL;
+    arion_ime_on_main(^int(void) {
+        TISInputSourceRef current = TISCopyCurrentKeyboardInputSource();
+        if (current) {
+            NSString *value = (__bridge NSString *)TISGetInputSourceProperty(current, kTISPropertyInputSourceID);
+            if (value) result = strdup(value.UTF8String);
+            CFRelease(current);
+        }
+        return 0;
+    });
+    return result;
+}
+
+int arion_ime_swap_supported(const char *path) {
+    @autoreleasepool {
+        NSNumber *supported = nil;
+        NSURL *url = [NSURL fileURLWithPath:[NSString stringWithUTF8String:path]];
+        if (![url getResourceValue:&supported forKey:NSURLVolumeSupportsSwapRenamingKey error:nil]) return 0;
+        return supported.boolValue ? 1 : 0;
+    }
+}
+
+int arion_ime_exchange(const char *first, const char *second, int existing) {
+    @autoreleasepool {
+        NSString *a = [NSString stringWithUTF8String:first];
+        NSString *b = [NSString stringWithUTF8String:second];
+        int aFD = open(a.stringByDeletingLastPathComponent.fileSystemRepresentation, O_RDONLY | O_DIRECTORY | O_NOFOLLOW | O_CLOEXEC);
+        if (aFD < 0) return errno;
+        int bFD = open(b.stringByDeletingLastPathComponent.fileSystemRepresentation, O_RDONLY | O_DIRECTORY | O_NOFOLLOW | O_CLOEXEC);
+        if (bFD < 0) { int status = errno; close(aFD); return status; }
+        unsigned int flags = (existing ? RENAME_SWAP : RENAME_EXCL) | RENAME_NOFOLLOW_ANY;
+        int status = renameatx_np(aFD, a.lastPathComponent.fileSystemRepresentation,
+                                 bFD, b.lastPathComponent.fileSystemRepresentation, flags) == 0 ? 0 : errno;
+        close(aFD); close(bFD);
+        return status;
+    }
+}
+
+int arion_ime_maintenance_version(const char *path) {
+    @autoreleasepool {
+        NSString *metadata = [[NSString stringWithUTF8String:path] stringByAppendingPathComponent:@"Contents/Info.plist"];
+        NSDictionary *info = [NSDictionary dictionaryWithContentsOfURL:[NSURL fileURLWithPath:metadata] error:nil];
+        return [info[@"ArionMaintenanceProtocol"] intValue];
+    }
 }

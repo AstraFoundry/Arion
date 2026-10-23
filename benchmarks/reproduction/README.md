@@ -135,3 +135,5 @@ The [technical spelling follow-up](rewrite-technical-spelling-v1/README.md) chec
 - [Qwen ASR size and quantization diagnostic](qwen-asr-speed-v1/README.md) — same-development-corpus native 0.6B/1.7B INT8 and separate MLX 8-bit/4-bit compute/accuracy evidence.
 
 - [Native Qwen3-ASR migration acceptance](../results/native-asr-v1/README.md) — native Swift model loading, offline signed-package inference, live coordinator replay and explicit remaining platform/performance gates.
+
+- [IME bundle-directory exchange](ime-bundle-swap-v1/README.md): owned macOS swap/reverse/error fixtures and source-bound raw observations.

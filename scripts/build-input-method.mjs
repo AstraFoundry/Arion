@@ -55,7 +55,7 @@ try {
     const learning = buildIMELearning({ root, outputDir: output, arch, minimumSystemVersion: config.macos.minimumSystemVersion });
     const executable = path.join(output, 'ArionInput');
     run('xcrun', [learning.linker, '-target', target, ...native, ...learning.objects,
-      path.join(keyboard, 'lib/librime.1.dylib'), ...learning.linkArgs, '-framework', 'Cocoa', '-framework', 'QuartzCore', '-framework', 'InputMethodKit',
+      path.join(keyboard, 'lib/librime.1.dylib'), ...learning.linkArgs, '-framework', 'Cocoa', '-framework', 'QuartzCore', '-framework', 'InputMethodKit', '-framework', 'Carbon',
       '-Xlinker', '-rpath', '-Xlinker', '@executable_path/../Frameworks', '-o', executable]);
     slices.push(executable);
   }

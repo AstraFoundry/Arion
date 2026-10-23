@@ -30,10 +30,10 @@ import (
 var imeInstallation sync.Mutex
 
 // IMESourceID is the input source Arion's IMK bundle declares.
-const IMESourceID = "si.astrafoundry.inputmethod.arion.pinyin"
+const IMESourceID = imebridge.SourceID
 
 // IMEBundleID is the IMK bundle's own identifier.
-const IMEBundleID = "si.astrafoundry.inputmethod.arion"
+const IMEBundleID = imebridge.BundleID
 
 // IMEState is the registration state of Arion's input source.
 type IMEState int
@@ -69,11 +69,13 @@ func inputBundleMatches(bundle string) bool {
 
 // QueryIME reports the input source state.
 func QueryIME() IMEState {
-	return queryInstalledIME(InstalledIMEPath(), func() IMEState {
+	state := queryInstalledIME(InstalledIMEPath(), func() IMEState {
 		id, free := cstring(IMESourceID)
 		defer free()
 		return IMEState(C.arion_ime_state(id))
 	})
+	observeInputMethod("query", "observed", nil, nil)
+	return state
 }
 
 func queryInstalledIME(bundle string, state func() IMEState) IMEState {
@@ -106,8 +108,34 @@ func ValidateIMEPayload(bundle string) error {
 // InstallIME copies the bundled input method into ~/Library/Input Methods,
 // registers and enables it. The user selects it in the input menu (IME-01).
 func InstallIME(bundled string, ready func(context.Context, string) error) error {
+	return installIME(bundled, ready, false)
+}
+
+// UpdateIME automatically replaces an existing, enabled, unselected source.
+// Older hosts cannot report composition idleness, so selected hosts are deferred.
+func UpdateIME(bundled string, ready func(context.Context, string) error) error {
+	return installIME(bundled, ready, true)
+}
+
+type imeUpdateDeferred struct{}
+
+func (imeUpdateDeferred) Error() string                   { return "input method update deferred until source is unused" }
+func (imeUpdateDeferred) InputMethodUpdateDeferred() bool { return true }
+
+func installIME(bundled string, ready func(context.Context, string) error, automatic bool) (result error) {
 	imeInstallation.Lock()
 	defer imeInstallation.Unlock()
+	unlock, lockErr := lockIMEMaintenance()
+	if lockErr != nil {
+		return lockErr
+	}
+	defer unlock()
+	transactionRoot, rootErr := imeMaintenanceDirectory()
+	if rootErr != nil {
+		return rootErr
+	}
+	observeInputMethod("install", "before", nil, nil)
+	defer func() { observeInputMethod("install", "after", nil, result) }()
 	if err := ValidateIMEPayload(bundled); err != nil {
 		return err
 	}
@@ -120,6 +148,9 @@ func InstallIME(bundled string, ready func(context.Context, string) error) error
 	}
 	destination := InstalledIMEPath()
 	previous := QueryIME()
+	if automatic && previous != IMEEnabled {
+		return imeUpdateDeferred{}
+	}
 	previousBuild := ""
 	if previous != IMEAbsent {
 		previousBuild, err = inputBuildIdentity(destination)
@@ -128,11 +159,12 @@ func InstallIME(bundled string, ready func(context.Context, string) error) error
 		}
 	}
 	selected := previous == IMESelected
+	resumeSource := ""
 	resume := func(build string) error {
-		if selected {
+		if selected && resumeSource != "" && currentInputSourceID() == resumeSource {
 			id, free := cstring(IMESourceID)
 			defer free()
-			if status := C.arion_ime_select(id); status != 0 {
+			if status := traceInputMethodNative("select", func() C.int { return C.arion_ime_select(id) }); status != 0 {
 				return domain.Fail(domain.CodeTargetUnsupported, fmt.Sprintf("input source selection failed: %d", status))
 			}
 			if IMEState(C.arion_ime_state(id)) != IMESelected {
@@ -144,7 +176,7 @@ func InstallIME(bundled string, ready func(context.Context, string) error) error
 	register := func() error {
 		path, free := cstring(destination)
 		defer free()
-		if status := C.arion_ime_register(path); status != 0 {
+		if status := traceInputMethodNative("register", func() C.int { return C.arion_ime_register(path) }); status != 0 {
 			return domain.Fail(domain.CodeTargetUnsupported, fmt.Sprintf("input source registration failed: %d", status))
 		}
 		return nil
@@ -152,7 +184,7 @@ func InstallIME(bundled string, ready func(context.Context, string) error) error
 	requestEnable := func() int {
 		id, free := cstring(IMESourceID)
 		defer free()
-		return int(C.arion_ime_enable(id))
+		return int(traceInputMethodNative("enable", func() C.int { return C.arion_ime_enable(id) }))
 	}
 	state := func() IMEState {
 		id, free := cstring(IMESourceID)
@@ -160,7 +192,10 @@ func InstallIME(bundled string, ready func(context.Context, string) error) error
 		return IMEState(C.arion_ime_state(id))
 	}
 	return replaceInputBundleWithLifecycle(bundled, destination, func() error {
-		if err := registerAndEnableInputSource(register, requestEnable, state, selected); err != nil {
+		if previous == IMERegistered {
+			return register()
+		}
+		if err := registerAndEnableInputSource(register, requestEnable, state, previous == IMESelected || previous == IMEEnabled); err != nil {
 			return err
 		}
 		// First installation may still require system consent. Keep that state
@@ -183,7 +218,22 @@ func InstallIME(bundled string, ready func(context.Context, string) error) error
 			return resume(previousBuild)
 		}
 		return nil
-	}, inputBundleLifecycle{beforeReplace: releaseIME, beforeRollback: releaseIME})
+	}, inputBundleLifecycle{validate: ValidateIMEPayload, transactionRoot: transactionRoot,
+		beforeReplace: func() error {
+			if automatic {
+				// Recheck after staging; never switch the user's input source.
+				if QueryIME() != IMEEnabled {
+					return imeUpdateDeferred{}
+				}
+				return stopInputMethod()
+			}
+			selected = selected && currentInputSourceID() == IMESourceID
+			err := releaseIME()
+			if err == nil {
+				resumeSource = currentInputSourceID()
+			}
+			return err
+		}, beforeRollback: releaseIME})
 }
 
 // IMEUpdateAvailable reports whether the installed input method differs from
@@ -251,29 +301,29 @@ func OpenIMEKeyboardSettings() error {
 	return nil
 }
 
-// releaseIME switches away from this source and stops its host. It never
-// disables the source: the macOS platform policy denies third-party writes to
-// com.apple.inputsources, and TISDisableInputSource still reports the rejected
-// change through this process's TIS cache until it restarts. The enabled entry
-// is inert while the bundle is absent and lets a reinstall resume without a
-// second consent.
+// releaseIME prepares update handover without changing source authorization.
 func releaseIME() error {
+	if err := switchAwayIME(); err != nil {
+		return err
+	}
+	return stopInputMethod()
+}
+
+func switchAwayIME() error {
 	id, free := cstring(IMESourceID)
 	defer free()
-	if result := C.arion_ime_switch_away(id); result != 0 {
+	if result := traceInputMethodNative("switch_away", func() C.int { return C.arion_ime_switch_away(id) }); result != 0 {
 		return domain.Fail(domain.CodeTargetUnsupported, fmt.Sprintf("input source switch away failed: %d", result))
 	}
 	if IMEState(C.arion_ime_state(id)) == IMESelected {
 		return domain.Fail(domain.CodeTargetChanged, "input source did not switch away")
 	}
-	return stopInputMethod()
+	return nil
 }
 
-// RemoveIME switches away and stops the host before deleting its bundle.
+// RemoveIME uses the installed signed host's maintenance entry.
 func RemoveIME() error {
-	imeInstallation.Lock()
-	defer imeInstallation.Unlock()
-	return removeInputBundle(InstalledIMEPath(), releaseIME)
+	return RemoveIMEWithHelper(context.Background(), InstalledIMEPath())
 }
 
 // IME is the session-bound local transport used by the InputMethodKit host.
@@ -309,7 +359,9 @@ func inputBuildIdentity(bundle string) (string, error) {
 }
 
 // Process shutdown is verified before any installed bytes are changed.
-func stopInputMethod() error {
+func stopInputMethod() (result error) {
+	observeInputMethod("host_stop", "before", nil, nil)
+	defer func() { observeInputMethod("host_stop", "after", nil, result) }()
 	id, free := cstring(IMEBundleID)
 	defer free()
 	C.arion_ime_processes(id, 1)
@@ -342,13 +394,19 @@ func launchInputMethod(bundle, build string, ready func(context.Context, string)
 	return launchInputMethodContext(context.Background(), bundle, build, ready)
 }
 
-func launchInputMethodContext(parent context.Context, bundle, build string, ready func(context.Context, string) error) error {
+func launchInputMethodContext(parent context.Context, bundle, build string, ready func(context.Context, string) error) (result error) {
 	ctx, cancel := context.WithTimeout(parent, 15*time.Second)
 	defer cancel()
+	observeInputMethod("host_launch", "before", nil, nil)
 	if err := exec.CommandContext(ctx, "/usr/bin/open", "-g", bundle).Run(); err != nil {
+		observeInputMethod("host_launch", "after", nil, err)
 		return fmt.Errorf("input method launch failed: %w", err)
 	}
-	if err := ready(ctx, build); err != nil {
+	observeInputMethod("host_launch", "after", nil, nil)
+	observeInputMethod("host_ready", "before", nil, nil)
+	err := ready(ctx, build)
+	observeInputMethod("host_ready", "after", nil, err)
+	if err != nil {
 		return fmt.Errorf("input method build did not connect: %w", err)
 	}
 	return nil

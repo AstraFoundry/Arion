@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 
 	"arion.local/core/application"
+	"arion.local/desktop/infrastructure/diagnostics"
 	"arion.local/desktop/infrastructure/holdkey"
 	"arion.local/desktop/infrastructure/macos"
 	"arion.local/desktop/ui/shared/runtime"
@@ -16,6 +17,10 @@ import (
 type darwinPlatform struct{ permissions macos.Permissions }
 
 func newPlatform() Platform { return darwinPlatform{} }
+
+func configureInputMethodDiagnostics(record func(diagnostics.Entry)) {
+	macos.SetIMEDiagnostics(record)
+}
 
 func configureOverlay(window *mygo.Window) {
 	macos.ConfigureOverlay(window.NativeHandle())
@@ -106,7 +111,11 @@ func (darwinIME) State() runtime.InputMethodState {
 }
 
 // Install copies the input method shipped in the app's resources.
-func (m darwinIME) Install() error {
+func (m darwinIME) Install() error { return m.install(false) }
+
+func (m darwinIME) UpdateAutomatically() error { return m.install(true) }
+
+func (m darwinIME) install(automatic bool) error {
 	if err := m.EnsureListening(); err != nil {
 		return err
 	}
@@ -116,10 +125,21 @@ func (m darwinIME) Install() error {
 	if err != nil {
 		return err
 	}
+	if automatic {
+		return macos.UpdateIME(filepath.Join(resources, "ArionInput.app"), m.WaitReady)
+	}
 	return macos.InstallIME(filepath.Join(resources, "ArionInput.app"), m.WaitReady)
 }
 
-func (darwinIME) Remove() error { return macos.RemoveIME() }
+func (m darwinIME) Remove(ctx context.Context) error {
+	resources, err := mygo.App.Path(mygo.PathResources)
+	if err != nil {
+		return err
+	}
+	m.BeginUpdate()
+	defer m.EndUpdate()
+	return macos.RemoveIMEWithHelper(ctx, filepath.Join(resources, "ArionInput.app"))
+}
 
 func (darwinIME) UpdateAvailable() bool {
 	resources, err := mygo.App.Path(mygo.PathResources)

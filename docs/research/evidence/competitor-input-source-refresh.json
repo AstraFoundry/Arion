@@ -1,0 +1,737 @@
+{
+  "scope": "Read-only installed competitor static caller/guard investigation; no competitor process or service restart executed, no source preference or application cache changed",
+  "versions": {
+    "doubao": "1.0.2 (1)",
+    "chatterflyInstalled": "1.0.8.13459 (13459)",
+    "chatterflyRetainedInstaller": "1.0.6.13398"
+  },
+  "artifacts": [
+    {
+      "id": "doubao-plist",
+      "path": "/Library/Input Methods/DoubaoIme.app/Contents/Info.plist",
+      "sha256": "82e6c717df702b7ec5688f99459fef1db39a9a936edb24ce808aedb5684d05dd",
+      "bytes": 3993
+    },
+    {
+      "id": "doubao-main",
+      "path": "/Library/Input Methods/DoubaoIme.app/Contents/MacOS/DoubaoIme",
+      "sha256": "4b3836dcb8a3e06b01b4c95390c757b71f623c1f7c4141c059e49284f7f6442d",
+      "bytes": 42723680
+    },
+    {
+      "id": "doubao-settings",
+      "path": "/Library/Input Methods/DoubaoIme.app/Contents/Applications/DoubaoImeSettings.app/Contents/MacOS/DoubaoImeSettings",
+      "sha256": "13fff30333c99fcd706e30f1e8408d49d04cb5748146a8befa72dff381f57762",
+      "bytes": 15578128
+    },
+    {
+      "id": "doubao-update",
+      "path": "/Library/Input Methods/DoubaoIme.app/Contents/Resources/update.sh",
+      "sha256": "8a4371cdd3aa82b897ea854442417d05930205b89acc170794ad9d806554ac93",
+      "bytes": 6812
+    },
+    {
+      "id": "chatterfly-plist",
+      "path": "/Library/Input Methods/Chatterfly.app/Contents/Info.plist",
+      "sha256": "e44a21e03e3c3fd204215d5408f620257a82c399a4f94cb5003338d25e25c374",
+      "bytes": 5278
+    },
+    {
+      "id": "chatterfly-main",
+      "path": "/Library/Input Methods/Chatterfly.app/Contents/MacOS/Chatterfly",
+      "sha256": "595e502f74e41e1b28904affa9093974f6cbc197a3756a74a007ef562f9ee767",
+      "bytes": 113002384
+    },
+    {
+      "id": "chatterfly-helper",
+      "path": "/Library/Input Methods/Chatterfly.app/Contents/ChatterflyHelper",
+      "sha256": "ad9f40a8dd20a88bf17ec8fca6f0fc50820b07ae3356a45165082f8ff6b65f50",
+      "bytes": 983376
+    },
+    {
+      "id": "chatterfly-helper-arm64",
+      "path": ".workspace/notes/wechat-ime-crash/rea/ChatterflyHelper-arm64",
+      "sha256": "e6c650946a83e0a1bb6c92703eb15f93d42c68977207dc090215c9c5100de81e",
+      "bytes": 491856
+    },
+    {
+      "id": "chatterfly-retained-install-script",
+      "path": ".workspace/research/chatterfly/extracted/install.sh",
+      "sha256": "68aa82abfc51cc614928b340bcf4839056ef7e1c74e7c6736646e5ff5a80f9fa",
+      "bytes": 14349
+    },
+    {
+      "id": "chatterfly-current-host-disable",
+      "path": ".workspace/notes/wechat-ime-crash/chatterfly-current-deselect.asm.txt",
+      "sha256": "57da99a24bd49ba568cdb0fe25d72db8982b4d2f8327801a1c5c9aa597352433",
+      "bytes": 3566
+    }
+  ],
+  "findings": [
+    {
+      "product": "Doubao",
+      "type": "shipped static behavior",
+      "claim": "Settings selection with resolved mode dispatches on main and calls menu restart before testing selection OSStatus; no mode returns failure without restart",
+      "procedures": [
+        "0x1001ceca8",
+        "0x1001cf1e4",
+        "0x1001cf4c8"
+      ],
+      "evidenceIDs": [
+        "ev_c8d288007691d36dd3fee1618e69238cd1c2c1b0d6fb9052c04ff368cf5e9c4d",
+        "ev_5c9b79cf27e4f376b67792a7f24eefd4648dfa18da580599ae7d287c1e560128"
+      ]
+    },
+    {
+      "product": "Doubao",
+      "type": "script and matching assembly",
+      "claim": "Successful update tail restarts SystemUIServer; enabled-source preferences method reads, no focused write established"
+    },
+    {
+      "product": "Chatterfly",
+      "type": "shipped static behavior with helper main argument reachability",
+      "claim": "useSogouAuth enable-success flow force-restarts TextInputMenuAgent and pboard; macOS>=13 enableOS12 path kills pboard before enable",
+      "evidenceIDs": [
+        "ev_8fd0507a3bb55e707b5f42aea7d8bcf990607edeced0b88c9d940644ed5e4bd0",
+        "ev_013d678647ef0ee8b4758754f7c292bf74c8f597908d2f23594e8a2943af4a4f",
+        "ev_12d435856b8699b626482f398fb30077090bdc5e59a341741dda7eec8d7c56c5",
+        "ev_45e4d2b08c7a90dfe59f2022aa8e86216cdb2fb992dc1c6d4e112c64eacfd11f",
+        "ev_b625efee7f4463c4dea948fc97cfb16caa5adf057a4992fc80b52949041a86da"
+      ]
+    },
+    {
+      "product": "Chatterfly",
+      "type": "shipped routine; entry reachability unresolved",
+      "claim": "New child-selection retry uses0.5s intervals/5s timeout and200ms service restart only after successful TISSelect; helper selectNow argument uses older method, no resolved direct callers of new entry",
+      "evidenceIDs": [
+        "ev_31769d2fb44a3d0ccd90f84feb59341f9d53e33b7b4a67dcf724f62d949bc653",
+        "ev_dcf1b24f414b4a75d3b9cfa71bc216868cf9aebc74a39adaa03268e6b5d01f51",
+        "ev_05506f9be8ac5bafd3f0f03b10ea13320b9700e457b5d3b49dee22447613fca9"
+      ]
+    },
+    {
+      "product": "Chatterfly",
+      "type": "focused preference reader",
+      "claim": "AppleEnabledThirdPartyInputSources method reads NSDictionary; finding key is not evidence of direct preference write",
+      "evidenceIDs": [
+        "ev_42e41d90c72b960501b25fc8045a6583d76e31a00dace82b6867648df377cadf"
+      ]
+    }
+  ],
+  "literalSearch": {
+    "selectedFiles": {
+      "/Library/Input Methods/DoubaoIme.app": 49,
+      "/Library/Input Methods/Chatterfly.app": 41
+    },
+    "encodings": [
+      "utf8",
+      "utf-16-le"
+    ],
+    "notFound": [
+      "IntlDataCache",
+      ".kbdx",
+      "islcInputSourceCacheInvalidate",
+      "/var/folders",
+      "cfprefsd",
+      "TSMLanguageIndicatorEnabled"
+    ],
+    "limits": "Literal membership only in selected installed Mach-O/shell/plist files; constructed names/indirection/downloaded or other-version components not excluded."
+  },
+  "priorREARecords": [
+    {
+      "path": ".workspace/notes/wechat-ime-crash/rea/doubao-refresh-function.json",
+      "sha256": "4010f4203c552631d16a57387cc3705ee9fb981e78533e2f6c2f2dfdaed9f362",
+      "evidence_id": "ev_c8d288007691d36dd3fee1618e69238cd1c2c1b0d6fb9052c04ff368cf5e9c4d",
+      "target": {
+        "name": "DoubaoImeSettings-arm64",
+        "digest": {
+          "sha256": "8cc8ad24e94234817231c791e6c09fa578221992ee0e9f434b3d858da56f2ef6"
+        },
+        "format": "mach-o",
+        "architecture": "arm64",
+        "local_path": "/Users/steven/code/Arion/.workspace/notes/wechat-ime-crash/rea/DoubaoImeSettings-arm64"
+      }
+    },
+    {
+      "path": ".workspace/notes/wechat-ime-crash/rea/doubao-select-function.json",
+      "sha256": "9951cff1e9e3076f8b544c8a00302c2a867c01ce4fc3ef68cf92e4b8b953d1fd",
+      "evidence_id": "ev_5c9b79cf27e4f376b67792a7f24eefd4648dfa18da580599ae7d287c1e560128",
+      "target": {
+        "name": "DoubaoImeSettings-arm64",
+        "digest": {
+          "sha256": "8cc8ad24e94234817231c791e6c09fa578221992ee0e9f434b3d858da56f2ef6"
+        },
+        "format": "mach-o",
+        "architecture": "arm64",
+        "local_path": "/Users/steven/code/Arion/.workspace/notes/wechat-ime-crash/rea/DoubaoImeSettings-arm64"
+      }
+    },
+    {
+      "path": ".workspace/notes/wechat-ime-crash/rea/helper-enable-main-function.json",
+      "evidenceID": "ev_8fd0507a3bb55e707b5f42aea7d8bcf990607edeced0b88c9d940644ed5e4bd0",
+      "operation": "analyze_function",
+      "subject": {
+        "name": "ChatterflyHelper-arm64",
+        "digest": {
+          "sha256": "e6c650946a83e0a1bb6c92703eb15f93d42c68977207dc090215c9c5100de81e"
+        },
+        "format": "mach-o",
+        "architecture": "arm64",
+        "local_path": "/Users/steven/code/Arion/.workspace/notes/wechat-ime-crash/rea/ChatterflyHelper-arm64"
+      },
+      "recordSHA256": "7eaa5505ab454659a5c99de9f612a03f3ac85461bbcf9ead1956810c47dc6ff3",
+      "limitations": [
+        "The session serves operations only after Ghidra reports default auto-analysis complete; incomplete analysis does not expose partial results.",
+        "The imported Program and temporary project are ephemeral and deleted on close. Annotation operations edit session database metadata; original executable bytes are never written.",
+        "Cancelling an active Ghidra request terminates its ephemeral database and discards session annotations. The selected target remains open; the next provider query imports the original artifact again.",
+        "Default-space addresses use lowercase 0x-prefixed hexadecimal; other address spaces use <percent-encoded-space>:0x<hex>.",
+        "References cover the complete Ghidra function-body AddressSet and exact entry. Dossier incoming edges omit sources owned by that function; procedure_references also retains those internal edges.",
+        "The dossier combines Ghidra FunctionManager, Listing, ReferenceManager, BasicBlockModel, and decompiler observations; provider-specific pseudocode and assembly are not cross-provider text invariants.",
+        "Resolved reference metadata identifies computed, indirect, external, call, jump, and data edges; unresolved targetless flows remain unknown, and function classifications distinguish thunks and externals.",
+        "Synthetic Ghidra entry-point references without actionable memory sources are omitted.",
+        "The Java bridge serializes one function request per Program and lets each decompilation run until it completes or the caller cancels.",
+        "macOS sessions require a matching executable Ghidra native decompiler; REA checks for it but does not build native components or change Gatekeeper quarantine state."
+      ]
+    },
+    {
+      "path": ".workspace/notes/wechat-ime-crash/rea/helper-refresh-block-function.json",
+      "evidenceID": "ev_59f61c183c9d568b63f246e26482df6520cc38e87cf82b1d727c9cfdcffb0fce",
+      "operation": "analyze_function",
+      "subject": {
+        "name": "ChatterflyHelper-arm64",
+        "digest": {
+          "sha256": "e6c650946a83e0a1bb6c92703eb15f93d42c68977207dc090215c9c5100de81e"
+        },
+        "format": "mach-o",
+        "architecture": "arm64",
+        "local_path": "/Users/steven/code/Arion/.workspace/notes/wechat-ime-crash/rea/ChatterflyHelper-arm64"
+      },
+      "recordSHA256": "dab6741cd11d400b1a81a719d2f676dc0975c8de1097fd02ceae4fc2437fce2b",
+      "limitations": [
+        "The session serves operations only after Ghidra reports default auto-analysis complete; incomplete analysis does not expose partial results.",
+        "The imported Program and temporary project are ephemeral and deleted on close. Annotation operations edit session database metadata; original executable bytes are never written.",
+        "Cancelling an active Ghidra request terminates its ephemeral database and discards session annotations. The selected target remains open; the next provider query imports the original artifact again.",
+        "Default-space addresses use lowercase 0x-prefixed hexadecimal; other address spaces use <percent-encoded-space>:0x<hex>.",
+        "References cover the complete Ghidra function-body AddressSet and exact entry. Dossier incoming edges omit sources owned by that function; procedure_references also retains those internal edges.",
+        "The dossier combines Ghidra FunctionManager, Listing, ReferenceManager, BasicBlockModel, and decompiler observations; provider-specific pseudocode and assembly are not cross-provider text invariants.",
+        "Resolved reference metadata identifies computed, indirect, external, call, jump, and data edges; unresolved targetless flows remain unknown, and function classifications distinguish thunks and externals.",
+        "Synthetic Ghidra entry-point references without actionable memory sources are omitted.",
+        "The Java bridge serializes one function request per Program and lets each decompilation run until it completes or the caller cancels.",
+        "Ghidra Listing reports a terminal call at 0x100011bb4 to 0x1000267e0 objc_stub::killProcessByName:forceKill: (external=false, thunk=false, hasNoReturn=false); fallthrough is excluded by Ghidra's flow model. The reason for the terminal flow is not established by this observation.",
+        "macOS sessions require a matching executable Ghidra native decompiler; REA checks for it but does not build native components or change Gatekeeper quarantine state."
+      ]
+    },
+    {
+      "path": ".workspace/notes/wechat-ime-crash/rea/helper-refresh-function.json",
+      "evidenceID": "ev_77277957871b3ef10dee7f4190709130feb6724e391d07209aae84a43f751307",
+      "operation": "analyze_function",
+      "subject": {
+        "name": "ChatterflyHelper-arm64",
+        "digest": {
+          "sha256": "e6c650946a83e0a1bb6c92703eb15f93d42c68977207dc090215c9c5100de81e"
+        },
+        "format": "mach-o",
+        "architecture": "arm64",
+        "local_path": "/Users/steven/code/Arion/.workspace/notes/wechat-ime-crash/rea/ChatterflyHelper-arm64"
+      },
+      "recordSHA256": "ab2bad7dae21bf962d2b464936e541b409fd9c5d52a37a933892ff156db17921",
+      "limitations": [
+        "The session serves operations only after Ghidra reports default auto-analysis complete; incomplete analysis does not expose partial results.",
+        "The imported Program and temporary project are ephemeral and deleted on close. Annotation operations edit session database metadata; original executable bytes are never written.",
+        "Cancelling an active Ghidra request terminates its ephemeral database and discards session annotations. The selected target remains open; the next provider query imports the original artifact again.",
+        "Default-space addresses use lowercase 0x-prefixed hexadecimal; other address spaces use <percent-encoded-space>:0x<hex>.",
+        "References cover the complete Ghidra function-body AddressSet and exact entry. Dossier incoming edges omit sources owned by that function; procedure_references also retains those internal edges.",
+        "The dossier combines Ghidra FunctionManager, Listing, ReferenceManager, BasicBlockModel, and decompiler observations; provider-specific pseudocode and assembly are not cross-provider text invariants.",
+        "Resolved reference metadata identifies computed, indirect, external, call, jump, and data edges; unresolved targetless flows remain unknown, and function classifications distinguish thunks and externals.",
+        "Synthetic Ghidra entry-point references without actionable memory sources are omitted.",
+        "The Java bridge serializes one function request per Program and lets each decompilation run until it completes or the caller cancels.",
+        "macOS sessions require a matching executable Ghidra native decompiler; REA checks for it but does not build native components or change Gatekeeper quarantine state."
+      ]
+    },
+    {
+      "path": ".workspace/notes/wechat-ime-crash/rea/helper-select-auth-function.json",
+      "evidenceID": "ev_013d678647ef0ee8b4758754f7c292bf74c8f597908d2f23594e8a2943af4a4f",
+      "operation": "analyze_function",
+      "subject": {
+        "name": "ChatterflyHelper-arm64",
+        "digest": {
+          "sha256": "e6c650946a83e0a1bb6c92703eb15f93d42c68977207dc090215c9c5100de81e"
+        },
+        "format": "mach-o",
+        "architecture": "arm64",
+        "local_path": "/Users/steven/code/Arion/.workspace/notes/wechat-ime-crash/rea/ChatterflyHelper-arm64"
+      },
+      "recordSHA256": "9a9e1abb49d1f17268715895dbc11e7caaed8fd888538bd00a018a52750a9e3d",
+      "limitations": [
+        "The session serves operations only after Ghidra reports default auto-analysis complete; incomplete analysis does not expose partial results.",
+        "The imported Program and temporary project are ephemeral and deleted on close. Annotation operations edit session database metadata; original executable bytes are never written.",
+        "Cancelling an active Ghidra request terminates its ephemeral database and discards session annotations. The selected target remains open; the next provider query imports the original artifact again.",
+        "Default-space addresses use lowercase 0x-prefixed hexadecimal; other address spaces use <percent-encoded-space>:0x<hex>.",
+        "References cover the complete Ghidra function-body AddressSet and exact entry. Dossier incoming edges omit sources owned by that function; procedure_references also retains those internal edges.",
+        "The dossier combines Ghidra FunctionManager, Listing, ReferenceManager, BasicBlockModel, and decompiler observations; provider-specific pseudocode and assembly are not cross-provider text invariants.",
+        "Resolved reference metadata identifies computed, indirect, external, call, jump, and data edges; unresolved targetless flows remain unknown, and function classifications distinguish thunks and externals.",
+        "Synthetic Ghidra entry-point references without actionable memory sources are omitted.",
+        "The Java bridge serializes one function request per Program and lets each decompilation run until it completes or the caller cancels.",
+        "Ghidra Listing reports a terminal call at 0x10000fa28 to 0x100023f88 _objc_release (external=false, thunk=true, hasNoReturn=false); fallthrough is excluded by Ghidra's flow model. The reason for the terminal flow is not established by this observation.",
+        "Ghidra Listing reports a terminal call at 0x10000fa4c to 0x100028100 objc_stub::terminate: (external=false, thunk=false, hasNoReturn=false); fallthrough is excluded by Ghidra's flow model. The reason for the terminal flow is not established by this observation.",
+        "macOS sessions require a matching executable Ghidra native decompiler; REA checks for it but does not build native components or change Gatekeeper quarantine state."
+      ]
+    }
+  ],
+  "freshREARecords": [
+    {
+      "path": ".workspace/notes/wechat-ime-crash/competitor-cache/chatterfly/enable-os12.json",
+      "sha256": "d74c662d10e5030b614b9362df09e2436c09986d69ca135b945887abe73aa4f1",
+      "evidenceID": "ev_12d435856b8699b626482f398fb30077090bdc5e59a341741dda7eec8d7c56c5",
+      "operation": "analyze_function",
+      "parameters": {
+        "procedure": "0x100010b04"
+      },
+      "subject": {
+        "name": "ChatterflyHelper-arm64",
+        "digest": {
+          "sha256": "e6c650946a83e0a1bb6c92703eb15f93d42c68977207dc090215c9c5100de81e"
+        },
+        "format": "mach-o",
+        "architecture": "arm64",
+        "local_path": "/Users/steven/code/Arion/.workspace/notes/wechat-ime-crash/rea/ChatterflyHelper-arm64"
+      }
+    },
+    {
+      "path": ".workspace/notes/wechat-ime-crash/competitor-cache/chatterfly/helper-main.json",
+      "sha256": "51595d1f10576c55eab059363a2cfbb94c2b0cb60aaf350b86841cb48db746ea",
+      "evidenceID": "ev_45e4d2b08c7a90dfe59f2022aa8e86216cdb2fb992dc1c6d4e112c64eacfd11f",
+      "operation": "analyze_function",
+      "parameters": {
+        "procedure": "0x10000d8a4"
+      },
+      "subject": {
+        "name": "ChatterflyHelper-arm64",
+        "digest": {
+          "sha256": "e6c650946a83e0a1bb6c92703eb15f93d42c68977207dc090215c9c5100de81e"
+        },
+        "format": "mach-o",
+        "architecture": "arm64",
+        "local_path": "/Users/steven/code/Arion/.workspace/notes/wechat-ime-crash/rea/ChatterflyHelper-arm64"
+      }
+    },
+    {
+      "path": ".workspace/notes/wechat-ime-crash/competitor-cache/chatterfly/kill-process.json",
+      "sha256": "a74d04f34f7cfe49fd44c67445947f18dfb56daa8ad86b81f31d6fa076ca877b",
+      "evidenceID": "ev_b625efee7f4463c4dea948fc97cfb16caa5adf057a4992fc80b52949041a86da",
+      "operation": "analyze_function",
+      "parameters": {
+        "procedure": "0x100011dd4"
+      },
+      "subject": {
+        "name": "ChatterflyHelper-arm64",
+        "digest": {
+          "sha256": "e6c650946a83e0a1bb6c92703eb15f93d42c68977207dc090215c9c5100de81e"
+        },
+        "format": "mach-o",
+        "architecture": "arm64",
+        "local_path": "/Users/steven/code/Arion/.workspace/notes/wechat-ime-crash/rea/ChatterflyHelper-arm64"
+      }
+    },
+    {
+      "path": ".workspace/notes/wechat-ime-crash/competitor-cache/chatterfly/select-retry-entry-callers.json",
+      "sha256": "741b9eb7bb995935aeb5a3ede4484194bb72934c38742cd049f3432381e6a023",
+      "evidenceID": "ev_05506f9be8ac5bafd3f0f03b10ea13320b9700e457b5d3b49dee22447613fca9",
+      "operation": "procedure_callers",
+      "parameters": {
+        "procedure": "0x100010bb0"
+      },
+      "subject": {
+        "name": "ChatterflyHelper-arm64",
+        "digest": {
+          "sha256": "e6c650946a83e0a1bb6c92703eb15f93d42c68977207dc090215c9c5100de81e"
+        },
+        "format": "mach-o",
+        "architecture": "arm64",
+        "local_path": "/Users/steven/code/Arion/.workspace/notes/wechat-ime-crash/rea/ChatterflyHelper-arm64"
+      }
+    },
+    {
+      "path": ".workspace/notes/wechat-ime-crash/competitor-cache/chatterfly/select-retry-entry.json",
+      "sha256": "01ad6f3985f48d0bddc8143e48339ac065184506094f66a0ec5cd7a2f1c3a8e6",
+      "evidenceID": "ev_31769d2fb44a3d0ccd90f84feb59341f9d53e33b7b4a67dcf724f62d949bc653",
+      "operation": "analyze_function",
+      "parameters": {
+        "procedure": "0x100010bb0"
+      },
+      "subject": {
+        "name": "ChatterflyHelper-arm64",
+        "digest": {
+          "sha256": "e6c650946a83e0a1bb6c92703eb15f93d42c68977207dc090215c9c5100de81e"
+        },
+        "format": "mach-o",
+        "architecture": "arm64",
+        "local_path": "/Users/steven/code/Arion/.workspace/notes/wechat-ime-crash/rea/ChatterflyHelper-arm64"
+      }
+    },
+    {
+      "path": ".workspace/notes/wechat-ime-crash/competitor-cache/chatterfly/third-party-preferences.json",
+      "sha256": "fa799815bdbf614410454abffe3f62e638b917d81990a44b79df6c0d49eea409",
+      "evidenceID": "ev_42e41d90c72b960501b25fc8045a6583d76e31a00dace82b6867648df377cadf",
+      "operation": "analyze_function",
+      "parameters": {
+        "procedure": "0x1000110ec"
+      },
+      "subject": {
+        "name": "ChatterflyHelper-arm64",
+        "digest": {
+          "sha256": "e6c650946a83e0a1bb6c92703eb15f93d42c68977207dc090215c9c5100de81e"
+        },
+        "format": "mach-o",
+        "architecture": "arm64",
+        "local_path": "/Users/steven/code/Arion/.workspace/notes/wechat-ime-crash/rea/ChatterflyHelper-arm64"
+      }
+    },
+    {
+      "path": ".workspace/notes/wechat-ime-crash/competitor-cache/chatterfly/try-select-callers.json",
+      "sha256": "629ab21067dda72828ef0a9643a34ba19544b7d8854743375e26649494f8bd94",
+      "evidenceID": "ev_1c346e8b874d67cb203b39c6b54c0644aa6cf5467e6ddc17ad438c9d1f426d55",
+      "operation": "procedure_callers",
+      "parameters": {
+        "procedure": "0x100011620"
+      },
+      "subject": {
+        "name": "ChatterflyHelper-arm64",
+        "digest": {
+          "sha256": "e6c650946a83e0a1bb6c92703eb15f93d42c68977207dc090215c9c5100de81e"
+        },
+        "format": "mach-o",
+        "architecture": "arm64",
+        "local_path": "/Users/steven/code/Arion/.workspace/notes/wechat-ime-crash/rea/ChatterflyHelper-arm64"
+      }
+    },
+    {
+      "path": ".workspace/notes/wechat-ime-crash/competitor-cache/chatterfly/try-select.json",
+      "sha256": "62a9cf417b90687e2e8087f51faa00f7bfa35c4528327c01c661e460596ee8e5",
+      "evidenceID": "ev_dcf1b24f414b4a75d3b9cfa71bc216868cf9aebc74a39adaa03268e6b5d01f51",
+      "operation": "analyze_function",
+      "parameters": {
+        "procedure": "0x100011620"
+      },
+      "subject": {
+        "name": "ChatterflyHelper-arm64",
+        "digest": {
+          "sha256": "e6c650946a83e0a1bb6c92703eb15f93d42c68977207dc090215c9c5100de81e"
+        },
+        "format": "mach-o",
+        "architecture": "arm64",
+        "local_path": "/Users/steven/code/Arion/.workspace/notes/wechat-ime-crash/rea/ChatterflyHelper-arm64"
+      }
+    },
+    {
+      "path": ".workspace/notes/wechat-ime-crash/competitor-cache/doubao/refresh-callers.json",
+      "sha256": "a7bc38a4f478327d01c8cb0ce62dcc9941a5bf4cf51580b95323939f398a43e6",
+      "evidenceID": "ev_da0e5b8bd8364814aeaa604f5a350c4d701b2ee6835e7430296f79d8c44874fa",
+      "operation": "procedure_callers",
+      "parameters": {
+        "procedure": "0x1001cf4c8"
+      },
+      "subject": {
+        "name": "DoubaoImeSettings-arm64",
+        "digest": {
+          "sha256": "8cc8ad24e94234817231c791e6c09fa578221992ee0e9f434b3d858da56f2ef6"
+        },
+        "format": "mach-o",
+        "architecture": "arm64",
+        "local_path": "/Users/steven/code/Arion/.workspace/notes/wechat-ime-crash/rea/DoubaoImeSettings-arm64"
+      },
+      "claimLimit": null
+    },
+    {
+      "path": ".workspace/notes/wechat-ime-crash/competitor-cache/doubao/select-entry.json",
+      "sha256": "5ab2f17b64a97464da92a95340b9395b2ff3baad6dbde60ca8260db640e310f8",
+      "evidenceID": "ev_f82ca193b7ad4865eb256fc24da53e3f3ca0bee7991b12d36857261a2ff414e5",
+      "operation": "analyze_function",
+      "parameters": {
+        "procedure": "0x1001ceca8"
+      },
+      "subject": {
+        "name": "DoubaoImeSettings-arm64",
+        "digest": {
+          "sha256": "8cc8ad24e94234817231c791e6c09fa578221992ee0e9f434b3d858da56f2ef6"
+        },
+        "format": "mach-o",
+        "architecture": "arm64",
+        "local_path": "/Users/steven/code/Arion/.workspace/notes/wechat-ime-crash/rea/DoubaoImeSettings-arm64"
+      },
+      "claimLimit": null
+    },
+    {
+      "path": ".workspace/notes/wechat-ime-crash/competitor-cache/doubao/prefs-enabled-read.json",
+      "sha256": "77408e3183c97552a94989ec238ebf1410ca59d7175dd0b071237b8ed56b20e2",
+      "evidenceID": "ev_5fe21ce05617ef01134038359dbb131075d19f25c98c158960d5d73a376fc368",
+      "operation": "analyze_function",
+      "parameters": {
+        "procedure": "0x1001c78e4"
+      },
+      "subject": {
+        "name": "DoubaoImeSettings-arm64",
+        "digest": {
+          "sha256": "8cc8ad24e94234817231c791e6c09fa578221992ee0e9f434b3d858da56f2ef6"
+        },
+        "format": "mach-o",
+        "architecture": "arm64",
+        "local_path": "/Users/steven/code/Arion/.workspace/notes/wechat-ime-crash/rea/DoubaoImeSettings-arm64"
+      },
+      "claimLimit": null
+    },
+    {
+      "path": ".workspace/notes/wechat-ime-crash/competitor-cache/doubao/activation-entry.json",
+      "sha256": "c4ef02a0f567d6e03eb3819dcdf43f6a9ff556725075019741b205a56484d96b",
+      "evidenceID": "ev_b7507722adf1e2a6fd4ff81132722a9b36aac995469ad251998f7634d9144b5f",
+      "operation": "analyze_function",
+      "parameters": {
+        "procedure": "0x1001cd9b0"
+      },
+      "subject": {
+        "name": "DoubaoImeSettings-arm64",
+        "digest": {
+          "sha256": "8cc8ad24e94234817231c791e6c09fa578221992ee0e9f434b3d858da56f2ef6"
+        },
+        "format": "mach-o",
+        "architecture": "arm64",
+        "local_path": "/Users/steven/code/Arion/.workspace/notes/wechat-ime-crash/rea/DoubaoImeSettings-arm64"
+      },
+      "claimLimit": null
+    },
+    {
+      "path": ".workspace/notes/wechat-ime-crash/competitor-cache/doubao/activation-orchestration.json",
+      "sha256": "8289e5a37cfc2efe03e189fd85457aec9760059a482b7f7ab74200c5d01ef072",
+      "evidenceID": "ev_e2c06dd3f21ca303bd02c8b36675a21cfab2412e7b4fa9656993fd53f681d114",
+      "operation": "analyze_function",
+      "parameters": {
+        "procedure": "0x1001cd9a8"
+      },
+      "subject": {
+        "name": "DoubaoImeSettings-arm64",
+        "digest": {
+          "sha256": "8cc8ad24e94234817231c791e6c09fa578221992ee0e9f434b3d858da56f2ef6"
+        },
+        "format": "mach-o",
+        "architecture": "arm64",
+        "local_path": "/Users/steven/code/Arion/.workspace/notes/wechat-ime-crash/rea/DoubaoImeSettings-arm64"
+      },
+      "claimLimit": "Source-bound fresh output; the requested interior address0x1001cd9a8 maps to canonical0x1001cd7bc and is excluded from claimed activation-entry semantics."
+    },
+    {
+      "path": ".workspace/notes/wechat-ime-crash/competitor-cache/doubao/cache-strings.json",
+      "sha256": "65a94bcd1af1a4fdb4239206264c802b2606919b539fab8b9cedc80bce11f798",
+      "evidenceID": "ev_b64adf1532cd1c3cc0654278ab0af0f44bbee10271717bb73847bf55b9282252",
+      "operation": "search_strings",
+      "parameters": {
+        "pattern": "kbdx|IntlDataCache|TextInputMenuAgent|TextInputSwitcher|killall|pboard|touch|Input Methods|lsregister",
+        "mode": "regex",
+        "case_sensitive": false
+      },
+      "subject": {
+        "name": "DoubaoImeSettings-arm64",
+        "digest": {
+          "sha256": "8cc8ad24e94234817231c791e6c09fa578221992ee0e9f434b3d858da56f2ef6"
+        },
+        "format": "mach-o",
+        "architecture": "arm64",
+        "local_path": "/Users/steven/code/Arion/.workspace/notes/wechat-ime-crash/rea/DoubaoImeSettings-arm64"
+      },
+      "claimLimit": null
+    },
+    {
+      "path": ".workspace/notes/wechat-ime-crash/competitor-cache/doubao/lifecycle-procedures.json",
+      "sha256": "9c70b52120f99ad202d49f6633191a4a01a2c00e08954aa8ce4d559e3610eeb2",
+      "evidenceID": "ev_d6ffa22f94782c43abdd1ed7f374ceb2990a3298961f6561fb618e8f957869bb",
+      "operation": "search_procedures",
+      "parameters": {
+        "pattern": "uninstall|removeInput|disableInput|refresh|RegisterInput|EnableInput|DisableInput",
+        "mode": "regex",
+        "case_sensitive": false
+      },
+      "subject": {
+        "name": "DoubaoImeSettings-arm64",
+        "digest": {
+          "sha256": "8cc8ad24e94234817231c791e6c09fa578221992ee0e9f434b3d858da56f2ef6"
+        },
+        "format": "mach-o",
+        "architecture": "arm64",
+        "local_path": "/Users/steven/code/Arion/.workspace/notes/wechat-ime-crash/rea/DoubaoImeSettings-arm64"
+      },
+      "claimLimit": null
+    }
+  ],
+  "cacheMechanismRelationship": {
+    "observed": "Apple cache loader consults shared pasteboard modification metadata; see prior cache-invalidation-evidence.json",
+    "inference": "Chatterfly pboard restart is a plausible candidate for broader refresh than menu-only restart",
+    "unverified": "No restart treatment executed or per-client persistent/mapped cache repair proved."
+  },
+  "limits": [
+    "No runtime competitor behavior or persistent preference acceptance observed.",
+    "Current1.0.8 installer path not established by retained1.0.6 installer.",
+    "A function present in shipped code does not establish installer reachability or every-client recovery.",
+    "Old cached competitor availability may predate Arion; installation order confounds comparison.",
+    "Doubao fresh import logged an internal nonfatal analyzer exception; complete requested records returned before shutdown. Returned source-bound functions are used; no partial pending analysis is claimed."
+  ],
+  "files": [
+    {
+      "path": ".workspace/notes/wechat-ime-crash/competitor-cache/artifact-marker-scan.json",
+      "sha256": "42645306cd38cf38f99d4554fe6eb5bba3d20bf5b2a495b897b25d1dde1c7f39"
+    },
+    {
+      "path": ".workspace/notes/wechat-ime-crash/competitor-cache/scan-artifacts.py",
+      "sha256": "6e2dd0582186670cb78abf823ef179d74d5a157f2279cf06fbfa95ba2cb69128"
+    },
+    {
+      "path": ".workspace/notes/wechat-ime-crash/competitor-cache/signing-context.json",
+      "sha256": "e4bfd1da0f7e06fbf960a0fa4b4befc4e66f3a53f736f87c77cb26373fc8f8ff"
+    },
+    {
+      "path": ".workspace/notes/wechat-ime-crash/competitor-cache/chatterfly/findings.md",
+      "sha256": "388e10d5910d6c0595eb7c730556b44a2cac64d64724d3df2db7bc6b69ca797d"
+    },
+    {
+      "path": ".workspace/notes/wechat-ime-crash/competitor-cache/chatterfly/evidence-index.json",
+      "sha256": "fa862a030d98c32ff1a086c9fb04356bf90262e508ff5307194b4456e8fd2efe"
+    },
+    {
+      "path": ".workspace/notes/wechat-ime-crash/competitor-cache/chatterfly/slice-binding.json",
+      "sha256": "7b10f5772a5bce97fe7c8687d3b5a450f98f28135b3bbdf5caa51ecf6f5c7e1f"
+    },
+    {
+      "path": ".workspace/notes/wechat-ime-crash/competitor-cache/chatterfly/close-helper.json",
+      "sha256": "3b5be5db3d664f1e8b795f069730aed627bd051cd394917c90b183bebff1e276"
+    },
+    {
+      "path": ".workspace/notes/wechat-ime-crash/competitor-cache/doubao/identity-and-prior-evidence.json",
+      "sha256": "65f409fbcf2ac377d60dcfbcfef4992c4f09335581fad39f0aae0587696f933f"
+    },
+    {
+      "path": ".workspace/notes/wechat-ime-crash/competitor-cache/doubao/assembly-provenance.json",
+      "sha256": "451c2753e177065155dcee564a21545e599173bd2f721f9a2d75f2ad07e6e0fb"
+    },
+    {
+      "path": ".workspace/notes/wechat-ime-crash/competitor-cache/doubao/script-provenance.json",
+      "sha256": "a53cd726bee7e7ec23c37cded23d81c836e8eba00617809817f445a4e07397d2"
+    },
+    {
+      "path": ".workspace/notes/wechat-ime-crash/competitor-cache/doubao/literal-scan.json",
+      "sha256": "6f71e8245d6a9119583eb43f7a78ef331f9da07111d204c1e0c4443f1ae0153b"
+    },
+    {
+      "path": ".workspace/notes/wechat-ime-crash/competitor-cache/doubao/select-entry.asm.txt",
+      "sha256": "c758c7c098be762b26e1a6a524e16f44870c238299c79c3613b1a5614b0db038"
+    },
+    {
+      "path": ".workspace/notes/wechat-ime-crash/competitor-cache/doubao/activation-entry.asm.txt",
+      "sha256": "a9abf9cfbd5e4879ef2ce8e92414c01c3f9cc5c996473d64070ab84332750335"
+    },
+    {
+      "path": ".workspace/notes/wechat-ime-crash/competitor-cache/doubao/enabled-preferences-read.asm.txt",
+      "sha256": "a3952d22809499a5a697f0742bea40b34da847cdf3468639e592193bc3e3e29e"
+    },
+    {
+      "path": ".workspace/notes/wechat-ime-crash/competitor-cache/doubao/refresh-task-setup.asm.txt",
+      "sha256": "510c126233336fe8bcfd23b0046d59f346c48ece7e14217aaa4d9c76adb2fb46"
+    },
+    {
+      "path": ".workspace/notes/wechat-ime-crash/competitor-cache/doubao/installed-update.sh",
+      "sha256": "8a4371cdd3aa82b897ea854442417d05930205b89acc170794ad9d806554ac93"
+    },
+    {
+      "path": ".workspace/notes/wechat-ime-crash/competitor-cache/doubao/findings.md",
+      "sha256": "c0e239e717540cb83641a13ac96b37ab46fe54dfdb2272d158f371ca587d6e15"
+    },
+    {
+      "path": ".workspace/notes/wechat-ime-crash/competitor-cache/doubao/fresh-pass-status.json",
+      "sha256": "580fe5e7ed57e26f3bd924a6c00d303b86950af309f591a9ba9c39d0a6483e0c"
+    },
+    {
+      "path": ".workspace/notes/wechat-ime-crash/competitor-cache/doubao/manifest.json",
+      "sha256": "9c6ab22b6e950f2e20e80176511bf47be115086c5e29a22e391f97bf65246250"
+    },
+    {
+      "path": ".workspace/notes/wechat-ime-crash/competitor-cache/doubao/fresh-evidence-index.json",
+      "sha256": "be77ca1d7257201b2cafa329c048dfa16895fbdbcde3aa91a913622c02d932c0"
+    }
+  ],
+  "documentationSuitabilityReview": {
+    "scope": "Official documentation and installed manuals only; no process termination or clipboard/source mutation",
+    "context7": {
+      "library": "/websites/developer_apple_appkit",
+      "topics": [
+        "Shared server/multiple clipboard items and Universal Clipboard",
+        "Ownership, lazy representations, item staleness and changeCount"
+      ]
+    },
+    "officialRetrievals": [
+      {
+        "name": "nspasteboard",
+        "url": "https://developer.apple.com/tutorials/data/documentation/appkit/nspasteboard.json",
+        "status": 200,
+        "path": ".workspace/notes/wechat-ime-crash/documentation-review/nspasteboard.json",
+        "bytes": 98040,
+        "sha256": "688d0a9473263cd90fb413634382d928e9e0b937e06843471fe7b757927939f4",
+        "securityVerification": false
+      },
+      {
+        "name": "pasteboard-item",
+        "url": "https://developer.apple.com/tutorials/data/documentation/appkit/nspasteboarditem.json",
+        "status": 200,
+        "path": ".workspace/notes/wechat-ime-crash/documentation-review/pasteboard-item.json",
+        "bytes": 54671,
+        "sha256": "4f8f849618fc97465520a7f00078b13c338c60074c1ed3746da83919e7a3eca3",
+        "securityVerification": false
+      },
+      {
+        "name": "change-count",
+        "url": "https://developer.apple.com/tutorials/data/documentation/appkit/nspasteboard/changecount.json",
+        "status": 200,
+        "path": ".workspace/notes/wechat-ime-crash/documentation-review/change-count.json",
+        "bytes": 12933,
+        "sha256": "2b694e83175a73a3ed8d69f861faf5b214248a087d3520586ff5d727e9ca69eb",
+        "securityVerification": false
+      },
+      {
+        "name": "pasteboard-guide",
+        "url": "https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/PasteboardGuide106/Articles/pbConcepts.html",
+        "status": 200,
+        "path": ".workspace/notes/wechat-ime-crash/documentation-review/pasteboard-guide.html",
+        "bytes": 21966,
+        "sha256": "ddb5e1f158ea5bbd1dd06239cada3e1b0756caef31215f2bcb72e4925f00711a",
+        "securityVerification": false
+      }
+    ],
+    "localContracts": [
+      {
+        "path": "/usr/share/man/man8/pboard.8",
+        "sha256": "1b3e495bfe54de8e12e7d9295ce8ff1dbd5bfdb86e6d050aa2be46050efe429e"
+      },
+      {
+        "path": "/usr/share/man/man1/killall.1",
+        "sha256": "5577eebd2ec52f8ccb7c6c38a8eb9496b8def7febafcf875a39cfa302ca888cc"
+      },
+      {
+        "path": "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Carbon.framework/Frameworks/HIToolbox.framework/Headers/TextInputSources.h",
+        "sha256": "e3c1a70e0cb8e21476a8f88f1e247a897a0c7d5723d43e3d63ff091d05927cd9"
+      }
+    ],
+    "conclusions": [
+      "Public TIS lifecycle/state observation is supported; caller success does not certify all client caches.",
+      "Input-menu restarts are recovery workarounds with no reviewed global per-client-cache guarantee.",
+      "pboard restart affects shared infrastructure; normal activation/update should not use it by default absent causal validation.",
+      "String-only restoration is not lossless clipboard preservation; items/representations/promises and ownership matter.",
+      "No Apple blanket prohibition or automatic distribution rejection is inferred."
+    ],
+    "forumRevalidation": {
+      "url": "https://developer.apple.com/forums/thread/775526",
+      "status": "Web timeout; direct HTTP returned Security Verification HTML, not thread content",
+      "file": {
+        "path": ".workspace/notes/wechat-ime-crash/documentation-review/apple-dts-775526.html",
+        "sha256": "239efd645fae36e90c1a1bfea925ac6c820b55d6d7e37027d8778ecac7692366"
+      },
+      "limit": "Do not treat security response as staff text; earlier research remains separate historical context."
+    },
+    "searchLimit": "Reviewed AppKit docs/guide, installed TIS header/manuals and bounded official-domain searches. No documented process-kill-based global keyboard-cache refresh contract found; not an exhaustive proof no such guidance exists anywhere."
+  }
+}

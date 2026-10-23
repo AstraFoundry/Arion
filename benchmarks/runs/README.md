@@ -151,3 +151,5 @@ The actual production-cleanup source replay changes one36-case input; prior raw-
 - [Qwen ASR size and quantization diagnostic](../results/qwen-asr-speed-v1/README.md) — same-development-corpus native 0.6B/1.7B INT8 and separate MLX 8-bit/4-bit compute/accuracy evidence.
 
 - [Native Qwen3-ASR migration acceptance](../results/native-asr-v1/README.md) — native Swift model loading, offline signed-package inference, live coordinator replay and explicit remaining platform/performance gates.
+
+- [IME bundle-directory exchange](ime-bundle-swap-v1/README.md): native arm64 and initial x86_64-process filesystem observations; no IME acceptance claim.

@@ -1297,6 +1297,20 @@ func TestInputMethodSetupStates(t *testing.T) {
 				t.Fatalf("busy source exposes competing actions: %q", tt.Texts())
 			}
 			state.InputMethodInstalling = false
+			state.InputMethodRemoving = true
+			settle(tt)
+			if !hasText(tt, messages.Text(copy.IMERemoving)) || slices.Contains(tt.Texts(), messages.Text(copy.IMERemove)) || slices.Contains(tt.Texts(), messages.Text(copy.IMEEnable)) {
+				t.Fatalf("removal exposed competing controls: %q", tt.Texts())
+			}
+			snapshot(t, tt, "input-method-removing-"+string(language))
+			state.InputMethodRemoving = false
+			state.InputMethod = runtime.InputMethodInstalled
+			state.InputMethodError = copy.IMERemovePending
+			settle(tt)
+			if !hasText(tt, messages.Text(copy.IMERemovePending)) || !hasText(tt, messages.Text(copy.IMESetup)) || !hasText(tt, messages.Text(copy.IMERemove)) {
+				t.Fatalf("pending removal lost retained source or recovery: %q", tt.Texts())
+			}
+			snapshot(t, tt, "input-method-removal-pending-"+string(language))
 			state.InputMethod = runtime.InputMethodAbsent
 			state.InputMethodError = copy.IMEFailed
 			settle(tt)
@@ -1375,7 +1389,7 @@ func TestKeyboardSettings(t *testing.T) {
 				t.Fatalf("no custom color well: %q", tt.Texts())
 			}
 			snapshot(t, tt, "settings-keyboard-accent-custom-"+string(language))
-			// A rebuilt app offers to replace the installed input method.
+			// A rebuilt app updates automatically; only a failed attempt offers retry.
 			if hasText(tt, messages.Text(copy.IMEUpdate)) {
 				t.Fatalf("update offered for the current build: %q", tt.Texts())
 			}
@@ -1385,6 +1399,12 @@ func TestKeyboardSettings(t *testing.T) {
 				t.Fatalf("update not explained: %q", tt.Texts())
 			}
 			snapshot(t, tt, "settings-keyboard-update-"+string(language))
+			if hasText(tt, messages.Text(copy.IMEUpdate)) {
+				t.Fatal("automatic update requires a manual action")
+			}
+			state.InputMethodUpdateFailed = true
+			settle(tt)
+			snapshot(t, tt, "settings-keyboard-update-retry-"+string(language))
 			if err := tt.Click(messages.Text(copy.IMEUpdate)); err != nil || !actions.called("install-ime") {
 				t.Fatalf("update click: %v %v", err, actions.calls)
 			}

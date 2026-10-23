@@ -2,6 +2,7 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+    <key>ArionMaintenanceProtocol</key><integer>1</integer>
   <key>CFBundleIdentifier</key><string>si.astrafoundry.inputmethod.arion</string>
   <key>CFBundleName</key><string>Arion</string>
   <key>CFBundleDisplayName</key><string>Arion</string>

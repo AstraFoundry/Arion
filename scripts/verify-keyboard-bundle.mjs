@@ -25,6 +25,17 @@ const safeMember = name => {
   return name;
 };
 
+export function verifyInputMethodIdentity({ bundleId, sourceId, adapter, identity }) {
+  const sharedBundle = identity.match(/^\s*BundleID\s*=\s*"([^"]+)"\s*$/m)?.[1];
+  const suffix = identity.match(/^\s*SourceID\s*=\s*BundleID\s*\+\s*"([^"]+)"\s*$/m)?.[1];
+  if (sharedBundle !== bundleId || suffix !== '.pinyin' || sourceId !== sharedBundle + suffix ||
+      !adapter.includes('"arion.local/desktop/infrastructure/imebridge"') ||
+      !/^const IMESourceID = imebridge\.SourceID$/m.test(adapter) ||
+      !/^const IMEBundleID = imebridge\.BundleID$/m.test(adapter)) {
+    throw new Error('Input mode identity must match the shared bridge identity, registration adapter and parent bundle.');
+  }
+}
+
 export function verifyKeyboardBundle({ root = repository, bundle = path.join(root, 'apps/desktop/resources/darwin/ArionInput.app') } = {}) {
   if (process.platform !== 'darwin') throw new Error('Keyboard bundle verification requires macOS.');
   bundle = path.resolve(bundle);
@@ -49,7 +60,8 @@ export function verifyKeyboardBundle({ root = repository, bundle = path.join(roo
   if (sourceIds.length !== 1) throw new Error('Expected one full-Pinyin input mode.');
   const sourceId = sourceIds[0];
   const adapter = readFileSync(path.join(root, 'apps/desktop/infrastructure/macos/ime.go'), 'utf8');
-  if (!sourceId.startsWith(`${actualPlist.CFBundleIdentifier}.`) || !adapter.includes(`const IMESourceID = "${sourceId}"`)) throw new Error('Input mode identity must match the registration adapter and parent bundle.');
+  const identity = readFileSync(path.join(root, 'apps/desktop/infrastructure/imebridge/identity.go'), 'utf8');
+  verifyInputMethodIdentity({ bundleId: actualPlist.CFBundleIdentifier, sourceId, adapter, identity });
   const mode = actualPlist.ComponentInputModeDict?.tsInputModeListKey?.[sourceId];
   if (mode?.TISInputSourceID !== sourceId || mode.TISIntendedLanguage !== 'zh-Hans' || !mode.tsInputModeIsVisibleKey ||
       !isDeepStrictEqual(actualPlist.ComponentInputModeDict.tsVisibleInputModeOrderedArrayKey, [sourceId])) throw new Error('Keyboard input-source identity is invalid.');

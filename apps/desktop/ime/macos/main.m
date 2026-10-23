@@ -5,6 +5,7 @@
 #import "candidate_panel.h"
 #import "composition.h"
 #import "typing.h"
+#import "source_maintenance.h"
 #include <sys/socket.h>
 #include <sys/un.h>
 #include <errno.h>
@@ -442,8 +443,19 @@ static NSString *voiceInputTitle(NSString *dictationKey) {
 @end
 
 int main(int argc, const char *argv[]) {
-    (void)argc; (void)argv;
     @autoreleasepool {
+        if (argc == 3 && strcmp(argv[1], "--arion-source-maintenance") == 0) {
+            NSString *operation = [NSString stringWithUTF8String:argv[2]];
+            if (![operation isEqual:@"observe"] && ![operation isEqual:@"disable"]) return 2;
+            NSArray *statuses = [operation isEqual:@"disable"] ? ArionDisableOwnSources() : @[];
+            NSDictionary *result = @{@"version": @1, @"pid": @(getpid()), @"operation": operation,
+                @"statuses": statuses, @"observation": ArionSourceObservation()};
+            NSData *json = [NSJSONSerialization dataWithJSONObject:result options:0 error:nil];
+            if (!json) return 3;
+            fwrite(json.bytes, 1, json.length, stdout);
+            fputc('\n', stdout);
+            return 0;
+        }
         // Cache the executable identity at process startup, before an updater can
         // replace the file at this path. Every reconnection uses this identity.
         NSData *executable = [NSData dataWithContentsOfFile:NSBundle.mainBundle.executablePath];

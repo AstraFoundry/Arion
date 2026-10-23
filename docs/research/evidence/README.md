@@ -1,5 +1,8 @@
 # Evidence provenance
 
+- [WeChat input-source crash ledger](wechat-input-source-crash.json) — matching system NULL-release reports, current artifact hashes, fresh Chatterfly helper REA/Ghidra dossiers, Apple contracts and unresolved trigger limits.
+- [Competitor input-source refresh ledger](competitor-input-source-refresh.json) — current Doubao/Chatterfly caller conditions, helper arguments, service restarts, direct-cache search limits and source-bound REA/assembly identities.
+- [IME lifecycle repair ledger](ime-lifecycle-repair.json) — source-bound lifecycle audit, Apple rename/TIS contracts, exact owned swap/reverse/error observations and unexecuted acceptance limits.
 - [Typeless ledger](typeless-static.json) — compact derivative of actual REA analysis plus ordinary shell artifact findings; includes original Evidence IDs, SHA-256, offsets and coverage limitations.
 - [Doubao ledger](doubao-static.json) — ordinary shell static observations; locally assigned DS identifiers, not REA Evidence.
 - [Doubao iOS ledger](doubao-ios.json) — REA IPA inventory/property-list Evidence IDs and byte-checked local export/symbol, permission, entitlement, voice and keyboard observations; encrypted instruction bodies and runtime policy remain unresolved.

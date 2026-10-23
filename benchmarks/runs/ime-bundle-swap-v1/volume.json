@@ -1,0 +1,7 @@
+{
+  "resourceQuerySucceeded" : true,
+  "filesystem" : "apfs",
+  "resourceErrorCode" : 0,
+  "statfsErrno" : 0,
+  "swapSupported" : true
+}

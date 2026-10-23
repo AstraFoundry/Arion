@@ -100,6 +100,7 @@ func (x actions) ExportDiagnostics() {
 }
 
 func (a *App) closeDiagnostics() {
+	configureInputMethodDiagnostics(nil)
 	if a.diagnostics == nil {
 		return
 	}

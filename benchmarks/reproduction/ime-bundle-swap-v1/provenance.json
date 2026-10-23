@@ -1,0 +1,31 @@
+{
+  "design": "validation",
+  "provenance": "Original agent-authored directory markers and source; no personal or competitor bytes",
+  "files": [
+    {
+      "original": ".workspace/notes/wechat-ime-crash/lifecycle-repair/swap_probe.py",
+      "archived": "benchmarks/reproduction/ime-bundle-swap-v1/swap_probe.py",
+      "sha256": "722a90909152e3c663b3e357c6fcb707aae3f14d9f59fdbe3a0d4a6295bea481"
+    },
+    {
+      "original": ".workspace/notes/wechat-ime-crash/lifecycle-repair/volume_probe.m",
+      "archived": "benchmarks/reproduction/ime-bundle-swap-v1/volume_probe.m",
+      "sha256": "ed6028bc83de734c1bc4344157ba0325cf20ec4c6905a47c8900a3ed16ec1ac2"
+    },
+    {
+      "original": ".workspace/notes/wechat-ime-crash/lifecycle-repair/0a65813e-9322-4081-8a90-72d3f607cc88/result.json",
+      "archived": "benchmarks/runs/ime-bundle-swap-v1/0a65813e-9322-4081-8a90-72d3f607cc88/result.json",
+      "sha256": "fa809574935cf94eabf7bb9104c8a077cb8f1f695b96d59c2fd3f047b363596a"
+    },
+    {
+      "original": ".workspace/notes/wechat-ime-crash/lifecycle-repair/225f0f5e-cb60-4346-9f32-6b44b024930c/result.json",
+      "archived": "benchmarks/runs/ime-bundle-swap-v1/225f0f5e-cb60-4346-9f32-6b44b024930c/result.json",
+      "sha256": "2ae21ca21a02da8ca7349d1b63a4cbc4701d910d0b1c05252f308a6edaa76ab6"
+    },
+    {
+      "original": ".workspace/notes/wechat-ime-crash/lifecycle-repair/volume.json",
+      "archived": "benchmarks/runs/ime-bundle-swap-v1/volume.json",
+      "sha256": "950383e995acb8f27b58898b2a75519b6796fbae3d53736a61e00340c5175b44"
+    }
+  ]
+}

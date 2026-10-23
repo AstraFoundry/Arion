@@ -13,6 +13,11 @@ Research separates **observed shipped artifacts**, **static inferences**, **vend
 - [Typing-time candidate re-ranking](context-ranking.md) — Doubao's feature/MLP candidate sort and user-bigram context, Chatterfly's 上下文调频 option and Arion's local context ranker.
 - [Voice typewriter](voice-typewriter.md) — Doubao's spring-paced ASR typewriter and replace decisions, Chatterfly's speech-bar animations and Arion's paced, fading dictation text.
 - [Input-source onboarding](input-source-onboarding.md) — bounded Doubao/Chatterfly register, enable, selection, notification, manual guide and refresh evidence with version limits.
+- [WeChat input-source crash](wechat-input-source-crash.md) — matching system NULL-release failures, fresh Chatterfly helper decompilation, Doubao lifecycle comparison, Apple contracts and prioritized repair recommendations.
+- [Input-source cache prevention](input-source-cache-prevention.md) — cross-application exposure, matched cache/control reproduction, supported API limits and prioritized lifecycle prevention with native acceptance gates.
+- [Competitor input-source refresh](competitor-input-source-refresh.md) — Doubao and Chatterfly registration/selection service restarts, exact caller guards and retry reachability, with cache-remediation limits.
+- [IME lifecycle repair proposal](ime-lifecycle-repair-plan.md) — concrete pending-removal and atomic-update transactions, rollback/recovery gates and owned macOS directory-exchange validation.
+- [IME lifecycle acceptance](ime-lifecycle-acceptance.md) — implemented repair, automatic update policy and actual verification limits.
 - [Input menu items](input-menu.md) — Chatterfly/Doubao input-menu items compared with Arion, the implemented alignment and the deferred toggles.
 - [Shift language switching](shift-language-switch.md) — Doubao/Chatterfly short-press release gates, chord suppression and composition commit paths, with static evidence limits.
 - [IMK typing alignment](imk-typing-alignment.md) — focused competitor paging/editing/mode-switch evidence, Arion composition ownership fixes, full-keyboard implementation gates and restored post-profile diagnostics with system acceptance deferred.
