@@ -36,8 +36,9 @@ type Preferences struct {
 	CheckUpdates bool `json:"checkUpdates"`
 	// AllowPrereleaseUpdates includes published preview releases when checking.
 	AllowPrereleaseUpdates bool `json:"allowPrereleaseUpdates"`
-	// Polish turns on the local LLM pipeline: live rewriting while speaking
-	// and a validated final rewrite. Off until the user downloads the model.
+	// Polish turns on the rewrite that runs after the dictation key is
+	// released. It does not send text to the model while the user is speaking.
+	// Off until the user downloads the model.
 	Polish bool `json:"polish"`
 	// Punctuation chooses how polished text is punctuated. It is used only
 	// while Polish is on. Profiles written before it existed load smart.

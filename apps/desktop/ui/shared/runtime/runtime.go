@@ -221,7 +221,7 @@ const (
 	PolishFailed       PolishState = "failed"
 )
 
-// Polish is the live rewrite capability and its download progress.
+// Polish is the rewrite that runs after release, and its download progress.
 type Polish struct {
 	State     PolishState
 	Phase     ProvisionPhase
