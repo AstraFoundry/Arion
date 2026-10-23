@@ -193,8 +193,6 @@ const (
 	FailClipboardHint         Key = "FailClipboardHint"
 	FailClipboardRestoreTitle Key = "FailClipboardRestoreTitle"
 	FailClipboardRestoreHint  Key = "FailClipboardRestoreHint"
-	FillersLabel              Key = "FillersLabel"
-	FillersDetail             Key = "FillersDetail"
 	ModelNameAccurate         Key = "ModelNameAccurate"
 	ModelNameAccurateSteady   Key = "ModelNameAccurateSteady"
 	ModelNameFast             Key = "ModelNameFast"

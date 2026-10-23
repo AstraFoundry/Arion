@@ -134,7 +134,7 @@ func fixture() (*runtime.State, *recorder, runtime.Store) {
 	state := &runtime.State{
 		Version:     "0.1.0",
 		Permissions: runtime.Permissions{Microphone: runtime.ConsentGranted, Accessibility: runtime.ConsentGranted},
-		Preferences: runtime.Preferences{HoldKey: runtime.DefaultHoldKey(platform.GOOS), Delivery: runtime.DeliveryAutomatic, RemoveFillers: true, Sounds: true, CheckUpdates: true,
+		Preferences: runtime.Preferences{HoldKey: runtime.DefaultHoldKey(platform.GOOS), Delivery: runtime.DeliveryAutomatic, Sounds: true, CheckUpdates: true,
 			Keyboard: runtime.KeyboardPreferences{PageSize: 9, CandidateSize: runtime.CandidateMedium, Appearance: runtime.AppearanceSystem, Accent: runtime.AccentYellow, ContextRanking: true}},
 		InputMethod: runtime.InputMethodAbsent,
 		Account:     runtime.Account{Phase: runtime.AccountSignedOut, Issuer: "https://astrafoundry.si", Portal: "https://astrafoundry.si/account"},

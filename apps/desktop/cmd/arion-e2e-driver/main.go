@@ -146,7 +146,7 @@ func (d *driver) hello() (map[string]any, error) {
 		return nil, err
 	}
 	prefs := map[string]any{"version": 1, "onboardingCompleted": true, "mode": "shortcut",
-		"delivery": "automatic", "removeFillers": true, "sounds": false}
+		"delivery": "automatic", "sounds": false}
 	data, _ := json.Marshal(prefs)
 	if err := os.WriteFile(filepath.Join(profile, "preferences.json"), data, 0o600); err != nil {
 		return nil, err

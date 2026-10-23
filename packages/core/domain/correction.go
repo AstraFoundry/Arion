@@ -7,7 +7,8 @@ import (
 )
 
 // RulesVersion identifies the conservative rule set used for a correction.
-const RulesVersion = "arion-rules-v3"
+// arion-rules-v4 leaves standalone hesitation to speech-spans-v2.
+const RulesVersion = "arion-rules-v4"
 
 // LatinCase declares how a recognizer emits Latin letters.
 type LatinCase string
@@ -25,12 +26,12 @@ type Replacement struct {
 }
 
 // CorrectionPolicy selects deterministic rules. Every rule only rewrites
-// spacing, case of recognizer-uppercased Latin, standalone fillers and
-// approved replacements; it never adds words (SPH-06).
+// spacing, case of recognizer-uppercased Latin and approved replacements.
+// Standalone hesitation stays for speech cleanup when polishing runs.
+// A rule never adds words (SPH-06).
 type CorrectionPolicy struct {
-	LatinCase     LatinCase
-	RemoveFillers bool
-	Replacements  []Replacement
+	LatinCase    LatinCase
+	Replacements []Replacement
 	// Vocabulary is Replacements prebuilt once by the caller; when nil it is
 	// built from Replacements for this call.
 	Vocabulary *Vocabulary
@@ -61,9 +62,6 @@ func Correct(raw string, policy CorrectionPolicy) CorrectionOutcome {
 		apply("latin-case", naturalizeUppercaseLatin)
 	}
 	apply("acronyms", joinSpelledAcronyms)
-	if policy.RemoveFillers {
-		apply("fillers", removeFillers)
-	}
 	vocabulary := policy.Vocabulary
 	if vocabulary == nil && len(policy.Replacements) > 0 {
 		vocabulary = NewVocabulary(policy.Replacements)
@@ -193,24 +191,9 @@ func joinUnquotedAcronyms(s string) string {
 
 var fillerWords = map[string]bool{"嗯": true, "呃": true, "额": true, "um": true, "uh": true, "erm": true, "uhm": true}
 
-// removeFillers drops hesitation tokens outside quotes. CJK hesitations may
-// attach to adjacent speech; the ambiguous noun suffix 额 needs both boundaries.
-func removeFillers(s string) string {
-	return transformUnquoted(s, removeUnquotedFillers)
-}
-
-func removeUnquotedFillers(s string) string {
-	var b strings.Builder
-	cursor := 0
-	for _, span := range hesitationSpans(s) {
-		b.WriteString(s[cursor:span.Start])
-		cursor = span.End
-	}
-	b.WriteString(s[cursor:])
-	return b.String()
-}
-
-// hesitationSpans shares correction's token boundaries with polishing.
+// hesitationSpans marks standalone hesitation for speech cleanup.
+// Rule correction leaves these tokens in place. CJK hesitations may attach
+// to adjacent speech; the ambiguous noun suffix 额 needs both boundaries.
 func hesitationSpans(s string) []SpeechSpan {
 	runes := []rune(s)
 	offsets := make([]int, 0, len(runes)+1)

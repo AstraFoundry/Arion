@@ -120,8 +120,6 @@
   "DeliveryAutoDetail": "Types text into the focused app",
   "DeliveryClipboard": "Paste",
   "DeliveryClipDetail": "Restores previous contents if the clipboard is unchanged",
-  "FillersLabel": "Remove filler words",
-  "FillersDetail": "嗯, 呃, um and uh, when they stand alone",
   "MicDevice": "Input device",
   "MicSystem": "System default",
   "MicTest": "Speak to test the level",

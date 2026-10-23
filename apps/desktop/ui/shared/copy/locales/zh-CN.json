@@ -120,8 +120,6 @@
   "DeliveryAutoDetail": "向当前应用模拟键入文本",
   "DeliveryClipboard": "粘贴",
   "DeliveryClipDetail": "剪贴板未被更改时恢复原有内容",
-  "FillersLabel": "移除语气词",
-  "FillersDetail": "独立出现时移除嗯、呃、um 和 uh",
   "MicDevice": "输入设备",
   "MicSystem": "系统默认",
   "MicTest": "说话以测试音量",

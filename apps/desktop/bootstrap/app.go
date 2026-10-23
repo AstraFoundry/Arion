@@ -266,7 +266,7 @@ func (a *App) preferences() application.Preferences {
 func (a *App) policy() domain.CorrectionPolicy {
 	a.snapshot.Lock()
 	defer a.snapshot.Unlock()
-	return domain.CorrectionPolicy{LatinCase: a.manager.LatinCase(), RemoveFillers: a.prefs.RemoveFillers,
+	return domain.CorrectionPolicy{LatinCase: a.manager.LatinCase(),
 		Replacements: a.replaces, Vocabulary: a.vocabulary}
 }
 
