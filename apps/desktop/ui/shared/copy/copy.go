@@ -211,6 +211,8 @@ const (
 	PolishDetail              Key = "PolishDetail"
 	PolishLoading             Key = "PolishLoading"
 	PolishReady               Key = "PolishReady"
+	PolishDownload            Key = "PolishDownload"
+	PolishCancelDownload      Key = "PolishCancelDownload"
 	PolishUnsupported         Key = "PolishUnsupported"
 	PolishEngineLabel         Key = "PolishEngineLabel"
 	PolishEngineLocal         Key = "PolishEngineLocal"

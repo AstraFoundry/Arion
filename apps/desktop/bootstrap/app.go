@@ -117,6 +117,10 @@ type App struct {
 	stopCue      *mygoaudio.Sound
 	recommended  string
 	updates      *updates
+	// Local model operations are scheduled on the main thread. New choices
+	// cancel older work immediately and wait for it before replacing the worker.
+	polishCancel context.CancelFunc
+	polishDone   <-chan struct{}
 
 	// holdGeneration rejects queued events from a retired native listener.
 	holdGeneration uint64
@@ -389,10 +393,15 @@ func (a *App) ready() {
 	a.manager.OnStatus(func(s modelruntime.Status) { a.post(func() { a.applyModel(s) }) })
 	a.rewriter.OnStatus(func(s rewriting.Status) { a.post(func() { a.applyPolish(s) }) })
 	a.applyPolish(a.rewriter.Status())
-	go a.startPolish()
+	a.startPolish(false)
 	a.cloud.OnStatus(func(s cloudpolish.Status) { a.post(func() { a.applyCloud(s) }) })
 	go a.cloud.Load()
-	mygo.App.OnQuit(a.rewriter.Disable)
+	mygo.App.OnQuit(func() {
+		if a.polishCancel != nil {
+			a.polishCancel()
+		}
+		a.rewriter.Disable()
+	})
 	mygo.App.OnQuit(func() { a.core.Cancel(); a.manager.Close() })
 	a.refreshPermissions()
 	a.state.InputMethod = arion.InputMethodUnsupported
@@ -717,13 +726,35 @@ func (a *App) applyModel(s modelruntime.Status) {
 	a.updateTray()
 }
 
-// startPolish refreshes installation state and starts the worker when the
-// user has local polishing on; it never downloads without that choice.
-func (a *App) startPolish() {
-	a.rewriter.Refresh()
-	if p := a.preferences(); p.Polish && p.PolishEngine == application.PolishLocal {
-		_ = a.rewriter.Enable(context.Background())
+// startPolish schedules the latest selection without blocking the main thread.
+// Only an explicit download or retry authorizes provisioning missing files.
+func (a *App) startPolish(download bool) {
+	if a.polishCancel != nil {
+		a.polishCancel()
 	}
+	ctx, cancel := context.WithCancel(context.Background())
+	previous := a.polishDone
+	done := make(chan struct{})
+	a.polishCancel, a.polishDone = cancel, done
+	go func() {
+		defer close(done)
+		defer cancel()
+		if previous != nil {
+			<-previous
+		}
+		if ctx.Err() != nil {
+			return
+		}
+		a.rewriter.Disable()
+		a.rewriter.Refresh()
+		if p := a.preferences(); ctx.Err() == nil && p.Polish && p.PolishEngine == application.PolishLocal {
+			if download {
+				_ = a.rewriter.Download(ctx)
+			} else {
+				_ = a.rewriter.Enable(ctx)
+			}
+		}
+	}()
 }
 
 func (a *App) applyPolish(s rewriting.Status) {

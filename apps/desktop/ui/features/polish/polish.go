@@ -180,9 +180,12 @@ func Summary(store runtime.Store) string {
 	return messages.Text(copy.PolishEngineLocal)
 }
 
-// Status is the line under the row: what enabling costs, progress, or a
-// failure with its retry.
+// Status shows the explicit download offer, progress, or a failure with retry.
 func Status(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
+	status(c, store, tokens, true)
+}
+
+func status(c *ui.Context, store runtime.Store, tokens theme.Tokens, showControls bool) {
 	messages := store.Copy()
 	p := store.State.Polish
 	on := store.State.Preferences.Polish
@@ -208,81 +211,28 @@ func Status(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 					ui.Text(c, messages.Progress(p.Done, p.Total)).FontSize(theme.Caption).TextColor(tokens.Muted).FontFeatures("tnum")
 				}
 			})
+			if p.State == runtime.PolishProvisioning && showControls {
+				cancelDownload(c.Key("cancel-download"), store, tokens, kit.Ghost)
+			}
 		case p.State == runtime.PolishReady:
 			kit.Status(c.Key("ready"), tokens, icons.ShieldCheck, tokens.Success, messages.Text(copy.PolishReady))
-		case !on && !p.Installed:
+		case on && !p.Installed:
+			ui.Row(c).Gap(8).AlignItems(ui.Center).Children(func() {
+				if showControls {
+					ui.Text(c, messages.DownloadSize(p.SizeBytes)).FontSize(theme.Caption).TextColor(tokens.Muted).Grow(1)
+				}
+				if kit.Button(c.Key("download"), tokens, kit.Outline, messages.Text(copy.PolishDownload), true).Clicked() {
+					store.Actions.DownloadPolish()
+				}
+			})
+		case !p.Installed && showControls:
 			ui.Text(c, messages.DownloadSize(p.SizeBytes)).FontSize(theme.Caption).TextColor(tokens.Muted)
 		}
 	})
 }
 
-// Choice is the onboarding page's choice of polishing: off, on this device
-// or in the cloud, one option per row. Choosing this device starts the
-// model's download, whose progress follows.
-func Choice(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
-	messages := store.Copy()
-	state := store.State
-	const off, local, cloud = "off", "local", "cloud"
-	selected := off
-	switch {
-	case state.Preferences.Polish && state.Preferences.PolishEngine == runtime.PolishCloud:
-		selected = cloud
-	case runtime.PolishOn(state):
-		selected = local
-	}
-	localDetail := messages.DownloadSize(state.Polish.SizeBytes)
-	unsupported := state.Polish.State == runtime.PolishUnsupported
-	switch {
-	case unsupported:
-		localDetail = messages.Text(copy.PolishUnsupported)
-	case state.Polish.Installed:
-		localDetail = messages.Text(copy.PolishDetail)
-	}
-	kit.Card(c, tokens).Children(func() {
-		ui.RadioGroup(c, func() {
-			for i, option := range []struct {
-				value, title, detail string
-				disabled             bool
-			}{
-				{off, messages.Text(copy.PolishOff), messages.Text(copy.PolishOffDetail), false},
-				{local, messages.Text(copy.PolishEngineLocal), localDetail, unsupported},
-				{cloud, messages.Text(copy.PolishEngineCloud), messages.Text(copy.PolishCloudOption), false},
-			} {
-				if i > 0 {
-					kit.Divider(c, tokens)
-				}
-				row := ui.RadioBase(c.Key("polish-"+option.value), &selected, option.value).Gap(12).Padding(12, 16).AlignItems(ui.Center).
-					Label(option.title).Disabled(option.disabled)
-				if row.Hovered() && !option.disabled {
-					row.Background(tokens.AccentSoft.Alpha(0.5).Over(tokens.Card))
-				}
-				row.Children(func() {
-					ui.Column(c).Grow(1).Shrink(1).Gap(2).Children(func() {
-						title := ui.Text(c, option.title).FontSize(theme.Body).FontWeight(500)
-						if option.disabled {
-							title.TextColor(tokens.Muted)
-						}
-						ui.Text(c, option.detail).FontSize(theme.Caption).TextColor(tokens.Muted)
-					})
-					if selected == option.value {
-						ui.Icon(c, icons.Check).FontSize(16).TextColor(tokens.AccentInk)
-					}
-				})
-				if row.Changed() {
-					value := option.value
-					store.Actions.UpdatePreferences(func(p *runtime.Preferences) {
-						p.Polish = value != off
-						if value == cloud {
-							p.PolishEngine = runtime.PolishCloud
-						} else if value == local {
-							p.PolishEngine = runtime.PolishLocal
-						}
-					})
-				}
-			}
-		}).Label(messages.Text(copy.PolishLabel))
-		if selected == local {
-			Status(c, store, tokens)
-		}
+func cancelDownload(c *ui.Context, store runtime.Store, tokens theme.Tokens, variant kit.Variant) ui.Element {
+	return kit.Button(c, tokens, variant, store.Copy().Text(copy.PolishCancelDownload), true).OnClick(func() {
+		store.Actions.UpdatePreferences(func(prefs *runtime.Preferences) { prefs.Polish = false })
 	})
 }

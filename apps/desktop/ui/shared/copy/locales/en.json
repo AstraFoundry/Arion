@@ -250,6 +250,8 @@
   "PolishDetail": "Cleans up self-corrections, fillers and repeats on this Mac after you stop",
   "PolishLoading": "Starting the model…",
   "PolishReady": "Running on this Mac",
+  "PolishDownload": "Download",
+  "PolishCancelDownload": "Cancel download",
   "PolishUnsupported": "Needs a Mac with Apple silicon",
   "PolishEngineLabel": "Runs on",
   "PolishEngineLocal": "This device",

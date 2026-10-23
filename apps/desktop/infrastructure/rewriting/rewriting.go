@@ -146,9 +146,19 @@ func (s *Service) Refresh() {
 	s.set(func(st *Status) { st.Installed = err == nil })
 }
 
-// Enable provisions the model when needed and starts the worker. It blocks
-// until the worker is ready or fails; failures are explicit statuses.
+// Enable starts an installed model without downloading. A missing model stays
+// off until the user explicitly requests Download.
 func (s *Service) Enable(ctx context.Context) error {
+	return s.enable(ctx, false)
+}
+
+// Download provisions the model with the user's explicit consent, then starts
+// the worker. It blocks until ready, cancelled or failed.
+func (s *Service) Download(ctx context.Context) error {
+	return s.enable(ctx, true)
+}
+
+func (s *Service) enable(ctx context.Context, download bool) error {
 	s.mu.Lock()
 	switch {
 	case s.status.State == Unsupported:
@@ -170,10 +180,16 @@ func (s *Service) Enable(ctx context.Context) error {
 		s.mu.Unlock()
 		cancel()
 	}()
-	s.set(func(st *Status) { st.State, st.Failure = Provisioning, "" })
-	dir, err := s.store.EnsureRewriter(ctx, s.model, func(_ string, phase provision.Phase, done, total int64) {
-		s.set(func(st *Status) { st.Phase, st.Done, st.Total = phase, done, total })
-	})
+	dir, err := s.store.InstalledRewriter(s.model)
+	if download {
+		s.set(func(st *Status) { st.State, st.Failure = Provisioning, "" })
+		dir, err = s.store.EnsureRewriter(ctx, s.model, func(_ string, phase provision.Phase, done, total int64) {
+			s.set(func(st *Status) { st.Phase, st.Done, st.Total = phase, done, total })
+		})
+	} else if domain.CodeOf(err) == domain.CodeModelMissing {
+		s.set(func(st *Status) { st.State, st.Failure, st.Installed = Off, "", false })
+		return nil
+	}
 	if err != nil {
 		return s.fail(err)
 	}

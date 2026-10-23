@@ -250,6 +250,8 @@
   "PolishDetail": "说完后在本机整理改口、语气词和重复",
   "PolishLoading": "正在启动模型…",
   "PolishReady": "已在本机运行",
+  "PolishDownload": "下载",
+  "PolishCancelDownload": "取消下载",
   "PolishUnsupported": "需要配备 Apple 芯片的 Mac",
   "PolishEngineLabel": "运行于",
   "PolishEngineLocal": "本机",

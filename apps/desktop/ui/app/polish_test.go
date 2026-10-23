@@ -39,6 +39,12 @@ func TestPolishRowStates(t *testing.T) {
 	if !state.Preferences.Polish || !actions.called("prefs") {
 		t.Fatal("switch did not turn polishing on")
 	}
+	if !hasText(tt, en.Text(copy.PolishDownload)) || actions.called("download-polish") {
+		t.Fatal("enabling local polishing did not wait for download confirmation")
+	}
+	if err := tt.Click(en.Text(copy.PolishDownload)); err != nil || !actions.called("download-polish") {
+		t.Fatalf("download confirmation: %v", err)
+	}
 	state.Polish = runtime.Polish{State: runtime.PolishProvisioning, Phase: runtime.PhaseDownloading, Done: 300 << 20, Total: 1430 << 20}
 	settle(tt)
 	if !hasText(tt, en.Progress(300<<20, 1430<<20)) {
@@ -62,6 +68,115 @@ func TestPolishRowStates(t *testing.T) {
 		t.Fatalf("unsupported zh: %q", tt.Texts())
 	}
 	snapshot(t, tt, "settings-polish-unsupported-zh-CN")
+}
+
+func TestOnboardingLocalPolishDownload(t *testing.T) {
+	for _, locale := range []runtime.UILanguage{runtime.LanguageEnglish, runtime.LanguageChinese} {
+		t.Run(string(locale), func(t *testing.T) {
+			state, actions, store := fixture()
+			state.Preferences.UILanguage = locale
+			state.Polish = runtime.Polish{State: runtime.PolishOff, SizeBytes: 1280835840}
+			page := onboarding.NewPage()
+			tt := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, OnboardingWidth, OnboardingHeight)
+			settle(tt)
+			messages := store.Copy()
+			click := func(key copy.Key) {
+				t.Helper()
+				if err := tt.Click(messages.Text(key)); err != nil {
+					t.Fatal(err)
+				}
+				settle(tt)
+			}
+			for _, key := range []copy.Key{copy.OnbStart, copy.OnbContinueLocally, copy.Continue, copy.Continue, copy.OnbIMELater, copy.Continue} {
+				click(key)
+			}
+			click(copy.PolishEngineLocal)
+			if !state.Preferences.Polish || actions.called("download-polish") || !hasText(tt, messages.Text(copy.PolishDownload)) {
+				t.Fatal("selecting local polishing did not offer a separate download")
+			}
+			download, _ := tt.Find(messages.Text(copy.PolishDownload))
+			local, _ := tt.Find(messages.Text(copy.PolishEngineLocal))
+			if download.X < local.X+200 || download.Y > local.Y+local.H || download.Y+download.H < local.Y {
+				t.Fatal("download action is not at the trailing edge of the local header")
+			}
+			if hasText(tt, messages.Text(copy.PolishReady)) {
+				t.Fatal("unprovisioned local choice already shows a ready check")
+			}
+			snapshot(t, tt, "onboarding-polish-confirm-"+string(locale))
+			click(copy.Continue)
+			if !hasText(tt, messages.Text(copy.OnbPolishTitle)) {
+				t.Fatal("continued before confirming the local download")
+			}
+			click(copy.PolishDownload)
+			if !actions.called("download-polish") {
+				t.Fatal("confirmation did not request the download")
+			}
+			state.Polish.State, state.Polish.Phase = runtime.PolishProvisioning, runtime.PhaseDownloading
+			state.Polish.Done, state.Polish.Total = 4<<20, state.Polish.SizeBytes
+			settle(tt)
+			assertLocalStatus := func(label string) {
+				t.Helper()
+				progress, ok := tt.Find(label)
+				cloud, cloudOK := tt.Find(messages.Text(copy.PolishEngineCloud))
+				local, localOK := tt.Find(messages.Text(copy.PolishEngineLocal))
+				if !ok || !cloudOK || !localOK || progress.Y < local.Y || progress.Y+progress.H > cloud.Y {
+					t.Fatalf("local status appears outside its option: %q", tt.Texts())
+				}
+			}
+			assertLocalStatus(messages.Progress(state.Polish.Done, state.Polish.Total))
+			cancel, ok := tt.Find(messages.Text(copy.PolishCancelDownload))
+			local, _ = tt.Find(messages.Text(copy.PolishEngineLocal))
+			if !ok || cancel.X < local.X+200 || cancel.Y > local.Y+local.H || cancel.Y+cancel.H < local.Y {
+				t.Fatal("cancel action is not at the trailing edge of the local header")
+			}
+			cancelCount := 0
+			for _, text := range tt.Texts() {
+				if text == messages.Text(copy.PolishCancelDownload) {
+					cancelCount++
+				}
+			}
+			if cancelCount != 1 {
+				t.Fatal("cancel action is duplicated below the progress bar")
+			}
+			snapshot(t, tt, "onboarding-polish-download-"+string(locale))
+			click(copy.PolishCancelDownload)
+			rest(tt, theme.Disclosure.Duration)
+			tt.Frame()
+			if state.Preferences.Polish || hasText(tt, messages.Text(copy.PolishCancelDownload)) {
+				t.Fatal("cancelling did not turn polishing off")
+			}
+			state.Polish.State = runtime.PolishOff
+			click(copy.PolishEngineLocal)
+			state.Polish.State, state.Polish.Failure = runtime.PolishFailed, runtime.CodeProvisioningFailed
+			settle(tt)
+			assertLocalStatus(messages.Text(copy.Retry))
+			snapshot(t, tt, "onboarding-polish-failed-"+string(locale))
+			click(copy.Retry)
+			if !actions.called("retry-polish") {
+				t.Fatal("download failure had no retry action")
+			}
+			state.Polish.State = runtime.PolishProvisioning
+			settle(tt)
+			click(copy.Continue)
+			if !hasText(tt, messages.Text(copy.OnbHoldKeyTitle)) {
+				t.Fatal("confirmed download prevented continuing setup")
+			}
+			click(copy.Back)
+			state.Polish.State, state.Polish.Installed, state.Polish.Failure = runtime.PolishReady, true, ""
+			rest(tt, theme.Disclosure.Duration)
+			tt.Frame()
+			assertLocalStatus(messages.Text(copy.PolishReady))
+			check, _ := tt.Find(messages.Text(copy.PolishReady))
+			local, _ = tt.Find(messages.Text(copy.PolishEngineLocal))
+			if check.X < local.X+200 || check.Y > local.Y+local.H || check.Y+check.H < local.Y {
+				t.Fatal("ready check is not at the trailing edge of the local header")
+			}
+			if hasText(tt, messages.Text(copy.PolishDownload)) || hasText(tt, messages.Text(copy.PolishCancelDownload)) {
+				t.Fatal("installed local model still offered download controls")
+			}
+			snapshot(t, tt, "onboarding-polish-ready-"+string(locale))
+		})
+	}
 }
 
 // Match the app appears only while polishing is on, starts on, and its

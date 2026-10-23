@@ -28,7 +28,8 @@ func (x actions) OpenMicrophoneSettings() {
 func (x actions) CloseGuide()          { x.a.closeGuide(true) }
 func (x actions) CloseTrayHint()       { x.a.closeTrayHint() }
 func (x actions) RetryModel()          { go x.a.activate(x.a.state.Preferences.ModelOverride) }
-func (x actions) RetryPolish()         { go x.a.startPolish() }
+func (x actions) DownloadPolish()      { x.a.startPolish(true) }
+func (x actions) RetryPolish()         { x.DownloadPolish() }
 func (x actions) StartLevelMonitor()   { x.a.startMonitor() }
 func (x actions) StopLevelMonitor()    { x.a.stopMonitor() }
 func (x actions) RefreshDevices()      { go x.a.refreshDevicesAsync() }
@@ -95,12 +96,7 @@ func (x actions) UpdatePreferences(change func(*application.Preferences)) {
 		}
 	}
 	if next.Polish != before.Polish || next.PolishEngine != before.PolishEngine {
-		// The local worker runs only while local polishing is on.
-		if next.Polish && next.PolishEngine == application.PolishLocal {
-			go a.startPolish()
-		} else {
-			go a.rewriter.Disable()
-		}
+		a.startPolish(false)
 	}
 	if next.CloudModel != before.CloudModel {
 		a.cloud.SetModel(next.CloudModel)

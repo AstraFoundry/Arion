@@ -13,6 +13,8 @@ The macOS Apple Silicon product selects `qwen3.5-2b-q4-k-m-metal` from [the mode
 
 Weights remain outside Git, under the profile's `models/<id>/` directory. Existing provisioning verifies every file's size and SHA-256 and atomically publishes the model. The old ONNX rewriter is absent from the active catalog; there is no silent fallback. Intel and Windows remain unsupported for local rewriting.
 
+Selecting local polishing or enabling its switch does not authorize network provisioning. `rewriting.Service.Enable` loads installed verified files only; `Download` is reserved for the explicit Download/Retry action. Missing files stay off with a visible download offer, while corrupt files report failure. The composition root cancels superseded operations immediately and serializes worker replacement; switching off/to cloud or cancelling cannot leave a queued download authorized. Restarting does not automatically resume an unfinished download.
+
 ## Prompt ownership and delivery
 
 The source identifier is `selector-contextual-v5+cleanup-rules-v1`. The selector stage is unchanged. The formatter is the approved cleanup prompt: a preamble plus one `<rules>` list (shared rules, the scene line, the layout line omitted for list, then the `han`, `latin` or `mixed` route). User turns are `<source>…</source>` with no `sourceScripts` field. Updating source does not replace an already installed worker; the investigated installed app still reported `natural-layout-v1`.

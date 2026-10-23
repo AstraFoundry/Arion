@@ -462,6 +462,8 @@ type Actions interface {
 	OpenMicrophoneSettings()
 	OpenAccessibilitySettings()
 	RetryModel()
+	// DownloadPolish confirms the local model download and starts its worker.
+	DownloadPolish()
 	// RetryPolish downloads or restarts the rewrite model after a failure.
 	RetryPolish()
 	UseBundle(id string)

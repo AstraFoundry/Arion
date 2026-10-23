@@ -45,6 +45,7 @@ func (r *recorder) OpenMicrophoneSettings()    { r.call("open-mic") }
 func (r *recorder) OpenAccessibilitySettings() { r.call("open-ax") }
 func (r *recorder) RetryModel()                { r.call("retry") }
 func (r *recorder) RetryPolish()               { r.call("retry-polish") }
+func (r *recorder) DownloadPolish()            { r.call("download-polish") }
 func (r *recorder) UseBundle(id string)        { r.call("use:" + id) }
 func (r *recorder) UseRecommendedBundle()      { r.call("use-recommended") }
 func (r *recorder) RefreshDevices()            { r.call("devices") }
