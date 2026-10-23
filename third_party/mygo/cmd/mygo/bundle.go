@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/binary"
 	"encoding/xml"
+	"errors"
 	"fmt"
 	"io"
 	"math"
@@ -292,6 +293,9 @@ func codesign(c *Config, path, identity string, production bool) error {
 		}
 		return nil
 	}
+	if err := removeSigningMetadata(path); err != nil {
+		return err
+	}
 	if err := signNestedCode(c, path, identity, production); err != nil {
 		return err
 	}
@@ -299,9 +303,56 @@ func codesign(c *Config, path, identity string, production bool) error {
 	if c.MacOS.Entitlements != "" {
 		entitlements = c.path(c.MacOS.Entitlements)
 	}
+	// Nested signing creates signature resources, which can trigger fresh
+	// Finder metadata in file-provider directories before the outer seal.
+	if err := removeSigningMetadata(path); err != nil {
+		return err
+	}
 	out, err := exec.Command("codesign", codesignArgs(path, identity, entitlements, production)...).CombinedOutput()
 	if err != nil {
 		return fmt.Errorf("codesign %s: %v\n%s", filepath.Base(path), err, out)
+	}
+	return nil
+}
+
+// removeSigningMetadata cleans only the generated bundle, without following
+// symlinks or clearing unrelated attributes. xattr requires write permission
+// even when an attribute is absent, so restore read-only resource modes before
+// signing. Finder and file providers can add these attributes to fresh copies.
+func removeSigningMetadata(app string) (err error) {
+	type originalMode struct {
+		path string
+		mode os.FileMode
+	}
+	var changed []originalMode
+	defer func() {
+		for i := len(changed) - 1; i >= 0; i-- {
+			entry := changed[i]
+			if restoreErr := os.Chmod(entry.path, entry.mode); restoreErr != nil {
+				err = errors.Join(err, fmt.Errorf("restore signing resource mode: %w", restoreErr))
+			}
+		}
+	}()
+	if err := filepath.Walk(app, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+		if info.Mode()&os.ModeSymlink != 0 || info.Mode().Perm()&0o200 != 0 {
+			return nil
+		}
+		if err := os.Chmod(path, info.Mode()|0o200); err != nil {
+			return err
+		}
+		changed = append(changed, originalMode{path, info.Mode()})
+		return nil
+	}); err != nil {
+		return fmt.Errorf("prepare signing resource permissions: %w", err)
+	}
+	for _, attribute := range []string{"com.apple.FinderInfo", "com.apple.ResourceFork"} {
+		out, err := exec.Command("/usr/bin/xattr", "-r", "-s", "-d", attribute, app).CombinedOutput()
+		if err != nil {
+			return fmt.Errorf("remove signing metadata %s from %s: %v\n%s", attribute, filepath.Base(app), err, out)
+		}
 	}
 	return nil
 }
