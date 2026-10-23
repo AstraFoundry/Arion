@@ -1,0 +1,1487 @@
+{
+  "scope": "Competitor comparison, historical logs, user-authorized WeChat single-cache recovery, read-only cross-application inventory and owned matched-cache lookup experiments; no competitor execution or input-source preference mutation",
+  "versions": {
+    "doubao": "1.0.2 (1)",
+    "chatterflyInstalled": "1.0.8.13459 (13459)",
+    "chatterflyRetainedInstaller": "1.0.6.13398"
+  },
+  "tools": {
+    "rea": "6.4.0",
+    "ghidra": "12.1.4",
+    "configuration": "Existing Ghidra/Java paths set only in analysis child environment; no persistent setup change or engine installation"
+  },
+  "artifacts": [
+    {
+      "id": "doubao-plist",
+      "path": "/Library/Input Methods/DoubaoIme.app/Contents/Info.plist",
+      "sha256": "82e6c717df702b7ec5688f99459fef1db39a9a936edb24ce808aedb5684d05dd",
+      "bytes": 3993
+    },
+    {
+      "id": "doubao-main",
+      "path": "/Library/Input Methods/DoubaoIme.app/Contents/MacOS/DoubaoIme",
+      "sha256": "4b3836dcb8a3e06b01b4c95390c757b71f623c1f7c4141c059e49284f7f6442d",
+      "bytes": 42723680
+    },
+    {
+      "id": "doubao-settings",
+      "path": "/Library/Input Methods/DoubaoIme.app/Contents/Applications/DoubaoImeSettings.app/Contents/MacOS/DoubaoImeSettings",
+      "sha256": "13fff30333c99fcd706e30f1e8408d49d04cb5748146a8befa72dff381f57762",
+      "bytes": 15578128
+    },
+    {
+      "id": "doubao-update",
+      "path": "/Library/Input Methods/DoubaoIme.app/Contents/Resources/update.sh",
+      "sha256": "8a4371cdd3aa82b897ea854442417d05930205b89acc170794ad9d806554ac93",
+      "bytes": 6812
+    },
+    {
+      "id": "chatterfly-plist",
+      "path": "/Library/Input Methods/Chatterfly.app/Contents/Info.plist",
+      "sha256": "e44a21e03e3c3fd204215d5408f620257a82c399a4f94cb5003338d25e25c374",
+      "bytes": 5278
+    },
+    {
+      "id": "chatterfly-main",
+      "path": "/Library/Input Methods/Chatterfly.app/Contents/MacOS/Chatterfly",
+      "sha256": "595e502f74e41e1b28904affa9093974f6cbc197a3756a74a007ef562f9ee767",
+      "bytes": 113002384
+    },
+    {
+      "id": "chatterfly-helper",
+      "path": "/Library/Input Methods/Chatterfly.app/Contents/ChatterflyHelper",
+      "sha256": "ad9f40a8dd20a88bf17ec8fca6f0fc50820b07ae3356a45165082f8ff6b65f50",
+      "bytes": 983376
+    },
+    {
+      "id": "chatterfly-helper-arm64",
+      "path": ".workspace/notes/wechat-ime-crash/rea/ChatterflyHelper-arm64",
+      "sha256": "e6c650946a83e0a1bb6c92703eb15f93d42c68977207dc090215c9c5100de81e",
+      "bytes": 491856
+    },
+    {
+      "id": "chatterfly-retained-install-script",
+      "path": ".workspace/research/chatterfly/extracted/install.sh",
+      "sha256": "68aa82abfc51cc614928b340bcf4839056ef7e1c74e7c6736646e5ff5a80f9fa",
+      "bytes": 14349
+    },
+    {
+      "id": "apple-sdk-tis",
+      "path": "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Carbon.framework/Frameworks/HIToolbox.framework/Headers/TextInputSources.h",
+      "sha256": "e3c1a70e0cb8e21476a8f88f1e247a897a0c7d5723d43e3d63ff091d05927cd9",
+      "bytes": 54937
+    },
+    {
+      "id": "system-helper-raw-instructions",
+      "path": ".workspace/notes/wechat-ime-crash/helper-instructions-resolved.txt",
+      "sha256": "754a498f80f6550ee62a7a1d6f23609b9084b553e84372034f8018dec11e9861",
+      "bytes": 2131
+    },
+    {
+      "id": "chatterfly-current-host-disable",
+      "path": ".workspace/notes/wechat-ime-crash/chatterfly-current-deselect.asm.txt",
+      "sha256": "57da99a24bd49ba568cdb0fe25d72db8982b4d2f8327801a1c5c9aa597352433",
+      "bytes": 3566
+    }
+  ],
+  "reaRecords": [
+    {
+      "path": ".workspace/notes/wechat-ime-crash/rea/chatterfly-plist-final.json",
+      "evidenceID": "ev_3f0807175d3c42a5112deaabdb750cc786b7a427107b0758c414aa1e47fb6711",
+      "operation": "inspect_plist",
+      "subject": {
+        "name": "Info.plist",
+        "digest": {
+          "sha256": "e44a21e03e3c3fd204215d5408f620257a82c399a4f94cb5003338d25e25c374"
+        },
+        "format": "plist",
+        "architecture": null,
+        "local_path": "/Library/Input Methods/Chatterfly.app/Contents/Info.plist"
+      },
+      "recordSHA256": "58f3bd372ea3377c8970c6730458a2a3aded24bc58f9e9f4d3d899ede51f387a",
+      "limitations": []
+    },
+    {
+      "path": ".workspace/notes/wechat-ime-crash/rea/doubao-plist-final.json",
+      "evidenceID": "ev_f712d861bd262c32f31f5d137fc32073e491a8128addc63bc460912cd69f1a7e",
+      "operation": "inspect_plist",
+      "subject": {
+        "name": "Info.plist",
+        "digest": {
+          "sha256": "82e6c717df702b7ec5688f99459fef1db39a9a936edb24ce808aedb5684d05dd"
+        },
+        "format": "plist",
+        "architecture": null,
+        "local_path": "/Library/Input Methods/DoubaoIme.app/Contents/Info.plist"
+      },
+      "recordSHA256": "9d30d6fac0c6f21efa19c699f9bb2f567753b9262b098e16a2a43fa729f179a5",
+      "limitations": []
+    },
+    {
+      "path": ".workspace/notes/wechat-ime-crash/rea/doubao-refresh-function.json",
+      "evidenceID": "ev_c8d288007691d36dd3fee1618e69238cd1c2c1b0d6fb9052c04ff368cf5e9c4d",
+      "operation": "analyze_function",
+      "subject": {
+        "name": "DoubaoImeSettings-arm64",
+        "digest": {
+          "sha256": "8cc8ad24e94234817231c791e6c09fa578221992ee0e9f434b3d858da56f2ef6"
+        },
+        "format": "mach-o",
+        "architecture": "arm64",
+        "local_path": "/Users/steven/code/Arion/.workspace/notes/wechat-ime-crash/rea/DoubaoImeSettings-arm64"
+      },
+      "recordSHA256": "4010f4203c552631d16a57387cc3705ee9fb981e78533e2f6c2f2dfdaed9f362",
+      "limitations": [
+        "The session serves operations only after Ghidra reports default auto-analysis complete; incomplete analysis does not expose partial results.",
+        "The imported Program and temporary project are ephemeral and deleted on close. Annotation operations edit session database metadata; original executable bytes are never written.",
+        "Cancelling an active Ghidra request terminates its ephemeral database and discards session annotations. The selected target remains open; the next provider query imports the original artifact again.",
+        "Default-space addresses use lowercase 0x-prefixed hexadecimal; other address spaces use <percent-encoded-space>:0x<hex>.",
+        "References cover the complete Ghidra function-body AddressSet and exact entry. Dossier incoming edges omit sources owned by that function; procedure_references also retains those internal edges.",
+        "The dossier combines Ghidra FunctionManager, Listing, ReferenceManager, BasicBlockModel, and decompiler observations; provider-specific pseudocode and assembly are not cross-provider text invariants.",
+        "Resolved reference metadata identifies computed, indirect, external, call, jump, and data edges; unresolved targetless flows remain unknown, and function classifications distinguish thunks and externals.",
+        "Synthetic Ghidra entry-point references without actionable memory sources are omitted.",
+        "The Java bridge serializes one function request per Program and lets each decompilation run until it completes or the caller cancels.",
+        "Ghidra Listing reports a terminal call at 0x1001cf8d0 to 0x1004a7d08 ___stack_chk_fail (external=false, thunk=true, hasNoReturn=true); fallthrough is excluded by Ghidra's flow model. This records Ghidra's FunctionManager flag, not an independent verification that the callee cannot return.",
+        "macOS sessions require a matching executable Ghidra native decompiler; REA checks for it but does not build native components or change Gatekeeper quarantine state."
+      ]
+    },
+    {
+      "path": ".workspace/notes/wechat-ime-crash/rea/doubao-select-function.json",
+      "evidenceID": "ev_5c9b79cf27e4f376b67792a7f24eefd4648dfa18da580599ae7d287c1e560128",
+      "operation": "analyze_function",
+      "subject": {
+        "name": "DoubaoImeSettings-arm64",
+        "digest": {
+          "sha256": "8cc8ad24e94234817231c791e6c09fa578221992ee0e9f434b3d858da56f2ef6"
+        },
+        "format": "mach-o",
+        "architecture": "arm64",
+        "local_path": "/Users/steven/code/Arion/.workspace/notes/wechat-ime-crash/rea/DoubaoImeSettings-arm64"
+      },
+      "recordSHA256": "9951cff1e9e3076f8b544c8a00302c2a867c01ce4fc3ef68cf92e4b8b953d1fd",
+      "limitations": [
+        "The session serves operations only after Ghidra reports default auto-analysis complete; incomplete analysis does not expose partial results.",
+        "The imported Program and temporary project are ephemeral and deleted on close. Annotation operations edit session database metadata; original executable bytes are never written.",
+        "Cancelling an active Ghidra request terminates its ephemeral database and discards session annotations. The selected target remains open; the next provider query imports the original artifact again.",
+        "Default-space addresses use lowercase 0x-prefixed hexadecimal; other address spaces use <percent-encoded-space>:0x<hex>.",
+        "References cover the complete Ghidra function-body AddressSet and exact entry. Dossier incoming edges omit sources owned by that function; procedure_references also retains those internal edges.",
+        "The dossier combines Ghidra FunctionManager, Listing, ReferenceManager, BasicBlockModel, and decompiler observations; provider-specific pseudocode and assembly are not cross-provider text invariants.",
+        "Resolved reference metadata identifies computed, indirect, external, call, jump, and data edges; unresolved targetless flows remain unknown, and function classifications distinguish thunks and externals.",
+        "Synthetic Ghidra entry-point references without actionable memory sources are omitted.",
+        "The Java bridge serializes one function request per Program and lets each decompilation run until it completes or the caller cancels.",
+        "macOS sessions require a matching executable Ghidra native decompiler; REA checks for it but does not build native components or change Gatekeeper quarantine state."
+      ]
+    },
+    {
+      "path": ".workspace/notes/wechat-ime-crash/rea/helper-deselect-callers.json",
+      "evidenceID": "ev_a9b3a97147d3d43f24c32a8a0536486b584c52b3ea393a4d199e4e10a50b0552",
+      "operation": "procedure_callers",
+      "subject": {
+        "name": "ChatterflyHelper-arm64",
+        "digest": {
+          "sha256": "e6c650946a83e0a1bb6c92703eb15f93d42c68977207dc090215c9c5100de81e"
+        },
+        "format": "mach-o",
+        "architecture": "arm64",
+        "local_path": "/Users/steven/code/Arion/.workspace/notes/wechat-ime-crash/rea/ChatterflyHelper-arm64"
+      },
+      "recordSHA256": "639bb978ef863a4cd9c866db6380aba732a0703ec598d877e0eded457e912002",
+      "limitations": [
+        "The session serves operations only after Ghidra reports default auto-analysis complete; incomplete analysis does not expose partial results.",
+        "The imported Program and temporary project are ephemeral and deleted on close. Annotation operations edit session database metadata; original executable bytes are never written.",
+        "Cancelling an active Ghidra request terminates its ephemeral database and discards session annotations. The selected target remains open; the next provider query imports the original artifact again.",
+        "Default-space addresses use lowercase 0x-prefixed hexadecimal; other address spaces use <percent-encoded-space>:0x<hex>.",
+        "Only resolved Ghidra call references are returned; unresolved computed or indirect calls remain unknown, while function classifications distinguish thunks and externals.",
+        "macOS sessions require a matching executable Ghidra native decompiler; REA checks for it but does not build native components or change Gatekeeper quarantine state."
+      ]
+    },
+    {
+      "path": ".workspace/notes/wechat-ime-crash/rea/helper-deselect-function.json",
+      "evidenceID": "ev_288bbc0a67fd18436b8ae7faebdf7462470cb659e7bf266ec389ba41d537766b",
+      "operation": "analyze_function",
+      "subject": {
+        "name": "ChatterflyHelper-arm64",
+        "digest": {
+          "sha256": "e6c650946a83e0a1bb6c92703eb15f93d42c68977207dc090215c9c5100de81e"
+        },
+        "format": "mach-o",
+        "architecture": "arm64",
+        "local_path": "/Users/steven/code/Arion/.workspace/notes/wechat-ime-crash/rea/ChatterflyHelper-arm64"
+      },
+      "recordSHA256": "bb2d0a876211ef03f8139ce31709b95a1dbc2fe60094adf6fd6aeb8a07fed5ba",
+      "limitations": [
+        "The session serves operations only after Ghidra reports default auto-analysis complete; incomplete analysis does not expose partial results.",
+        "The imported Program and temporary project are ephemeral and deleted on close. Annotation operations edit session database metadata; original executable bytes are never written.",
+        "Cancelling an active Ghidra request terminates its ephemeral database and discards session annotations. The selected target remains open; the next provider query imports the original artifact again.",
+        "Default-space addresses use lowercase 0x-prefixed hexadecimal; other address spaces use <percent-encoded-space>:0x<hex>.",
+        "References cover the complete Ghidra function-body AddressSet and exact entry. Dossier incoming edges omit sources owned by that function; procedure_references also retains those internal edges.",
+        "The dossier combines Ghidra FunctionManager, Listing, ReferenceManager, BasicBlockModel, and decompiler observations; provider-specific pseudocode and assembly are not cross-provider text invariants.",
+        "Resolved reference metadata identifies computed, indirect, external, call, jump, and data edges; unresolved targetless flows remain unknown, and function classifications distinguish thunks and externals.",
+        "Synthetic Ghidra entry-point references without actionable memory sources are omitted.",
+        "The Java bridge serializes one function request per Program and lets each decompilation run until it completes or the caller cancels.",
+        "Ghidra Listing reports a terminal call at 0x10001012c to 0x100023ce8 _TISDisableInputSource (external=false, thunk=true, hasNoReturn=false); fallthrough is excluded by Ghidra's flow model. The reason for the terminal flow is not established by this observation.",
+        "macOS sessions require a matching executable Ghidra native decompiler; REA checks for it but does not build native components or change Gatekeeper quarantine state."
+      ]
+    },
+    {
+      "path": ".workspace/notes/wechat-ime-crash/rea/helper-disable-xrefs.json",
+      "evidenceID": "ev_93786fd0b404568a8e785062b24e3d8610114613b0776245d9e8a99f3b42e18a",
+      "operation": "find_xrefs_to_name",
+      "subject": {
+        "name": "ChatterflyHelper-arm64",
+        "digest": {
+          "sha256": "e6c650946a83e0a1bb6c92703eb15f93d42c68977207dc090215c9c5100de81e"
+        },
+        "format": "mach-o",
+        "architecture": "arm64",
+        "local_path": "/Users/steven/code/Arion/.workspace/notes/wechat-ime-crash/rea/ChatterflyHelper-arm64"
+      },
+      "recordSHA256": "bea3f20732d7e2e525f147bf033bf2813ce17e3eb79521f0f29afce156982b33",
+      "limitations": [
+        "Derived by an REA composed workflow."
+      ]
+    },
+    {
+      "path": ".workspace/notes/wechat-ime-crash/rea/helper-enable-main-function.json",
+      "evidenceID": "ev_8fd0507a3bb55e707b5f42aea7d8bcf990607edeced0b88c9d940644ed5e4bd0",
+      "operation": "analyze_function",
+      "subject": {
+        "name": "ChatterflyHelper-arm64",
+        "digest": {
+          "sha256": "e6c650946a83e0a1bb6c92703eb15f93d42c68977207dc090215c9c5100de81e"
+        },
+        "format": "mach-o",
+        "architecture": "arm64",
+        "local_path": "/Users/steven/code/Arion/.workspace/notes/wechat-ime-crash/rea/ChatterflyHelper-arm64"
+      },
+      "recordSHA256": "7eaa5505ab454659a5c99de9f612a03f3ac85461bbcf9ead1956810c47dc6ff3",
+      "limitations": [
+        "The session serves operations only after Ghidra reports default auto-analysis complete; incomplete analysis does not expose partial results.",
+        "The imported Program and temporary project are ephemeral and deleted on close. Annotation operations edit session database metadata; original executable bytes are never written.",
+        "Cancelling an active Ghidra request terminates its ephemeral database and discards session annotations. The selected target remains open; the next provider query imports the original artifact again.",
+        "Default-space addresses use lowercase 0x-prefixed hexadecimal; other address spaces use <percent-encoded-space>:0x<hex>.",
+        "References cover the complete Ghidra function-body AddressSet and exact entry. Dossier incoming edges omit sources owned by that function; procedure_references also retains those internal edges.",
+        "The dossier combines Ghidra FunctionManager, Listing, ReferenceManager, BasicBlockModel, and decompiler observations; provider-specific pseudocode and assembly are not cross-provider text invariants.",
+        "Resolved reference metadata identifies computed, indirect, external, call, jump, and data edges; unresolved targetless flows remain unknown, and function classifications distinguish thunks and externals.",
+        "Synthetic Ghidra entry-point references without actionable memory sources are omitted.",
+        "The Java bridge serializes one function request per Program and lets each decompilation run until it completes or the caller cancels.",
+        "macOS sessions require a matching executable Ghidra native decompiler; REA checks for it but does not build native components or change Gatekeeper quarantine state."
+      ]
+    },
+    {
+      "path": ".workspace/notes/wechat-ime-crash/rea/helper-refresh-block-function.json",
+      "evidenceID": "ev_59f61c183c9d568b63f246e26482df6520cc38e87cf82b1d727c9cfdcffb0fce",
+      "operation": "analyze_function",
+      "subject": {
+        "name": "ChatterflyHelper-arm64",
+        "digest": {
+          "sha256": "e6c650946a83e0a1bb6c92703eb15f93d42c68977207dc090215c9c5100de81e"
+        },
+        "format": "mach-o",
+        "architecture": "arm64",
+        "local_path": "/Users/steven/code/Arion/.workspace/notes/wechat-ime-crash/rea/ChatterflyHelper-arm64"
+      },
+      "recordSHA256": "dab6741cd11d400b1a81a719d2f676dc0975c8de1097fd02ceae4fc2437fce2b",
+      "limitations": [
+        "The session serves operations only after Ghidra reports default auto-analysis complete; incomplete analysis does not expose partial results.",
+        "The imported Program and temporary project are ephemeral and deleted on close. Annotation operations edit session database metadata; original executable bytes are never written.",
+        "Cancelling an active Ghidra request terminates its ephemeral database and discards session annotations. The selected target remains open; the next provider query imports the original artifact again.",
+        "Default-space addresses use lowercase 0x-prefixed hexadecimal; other address spaces use <percent-encoded-space>:0x<hex>.",
+        "References cover the complete Ghidra function-body AddressSet and exact entry. Dossier incoming edges omit sources owned by that function; procedure_references also retains those internal edges.",
+        "The dossier combines Ghidra FunctionManager, Listing, ReferenceManager, BasicBlockModel, and decompiler observations; provider-specific pseudocode and assembly are not cross-provider text invariants.",
+        "Resolved reference metadata identifies computed, indirect, external, call, jump, and data edges; unresolved targetless flows remain unknown, and function classifications distinguish thunks and externals.",
+        "Synthetic Ghidra entry-point references without actionable memory sources are omitted.",
+        "The Java bridge serializes one function request per Program and lets each decompilation run until it completes or the caller cancels.",
+        "Ghidra Listing reports a terminal call at 0x100011bb4 to 0x1000267e0 objc_stub::killProcessByName:forceKill: (external=false, thunk=false, hasNoReturn=false); fallthrough is excluded by Ghidra's flow model. The reason for the terminal flow is not established by this observation.",
+        "macOS sessions require a matching executable Ghidra native decompiler; REA checks for it but does not build native components or change Gatekeeper quarantine state."
+      ]
+    },
+    {
+      "path": ".workspace/notes/wechat-ime-crash/rea/helper-refresh-function.json",
+      "evidenceID": "ev_77277957871b3ef10dee7f4190709130feb6724e391d07209aae84a43f751307",
+      "operation": "analyze_function",
+      "subject": {
+        "name": "ChatterflyHelper-arm64",
+        "digest": {
+          "sha256": "e6c650946a83e0a1bb6c92703eb15f93d42c68977207dc090215c9c5100de81e"
+        },
+        "format": "mach-o",
+        "architecture": "arm64",
+        "local_path": "/Users/steven/code/Arion/.workspace/notes/wechat-ime-crash/rea/ChatterflyHelper-arm64"
+      },
+      "recordSHA256": "ab2bad7dae21bf962d2b464936e541b409fd9c5d52a37a933892ff156db17921",
+      "limitations": [
+        "The session serves operations only after Ghidra reports default auto-analysis complete; incomplete analysis does not expose partial results.",
+        "The imported Program and temporary project are ephemeral and deleted on close. Annotation operations edit session database metadata; original executable bytes are never written.",
+        "Cancelling an active Ghidra request terminates its ephemeral database and discards session annotations. The selected target remains open; the next provider query imports the original artifact again.",
+        "Default-space addresses use lowercase 0x-prefixed hexadecimal; other address spaces use <percent-encoded-space>:0x<hex>.",
+        "References cover the complete Ghidra function-body AddressSet and exact entry. Dossier incoming edges omit sources owned by that function; procedure_references also retains those internal edges.",
+        "The dossier combines Ghidra FunctionManager, Listing, ReferenceManager, BasicBlockModel, and decompiler observations; provider-specific pseudocode and assembly are not cross-provider text invariants.",
+        "Resolved reference metadata identifies computed, indirect, external, call, jump, and data edges; unresolved targetless flows remain unknown, and function classifications distinguish thunks and externals.",
+        "Synthetic Ghidra entry-point references without actionable memory sources are omitted.",
+        "The Java bridge serializes one function request per Program and lets each decompilation run until it completes or the caller cancels.",
+        "macOS sessions require a matching executable Ghidra native decompiler; REA checks for it but does not build native components or change Gatekeeper quarantine state."
+      ]
+    },
+    {
+      "path": ".workspace/notes/wechat-ime-crash/rea/helper-select-auth-function.json",
+      "evidenceID": "ev_013d678647ef0ee8b4758754f7c292bf74c8f597908d2f23594e8a2943af4a4f",
+      "operation": "analyze_function",
+      "subject": {
+        "name": "ChatterflyHelper-arm64",
+        "digest": {
+          "sha256": "e6c650946a83e0a1bb6c92703eb15f93d42c68977207dc090215c9c5100de81e"
+        },
+        "format": "mach-o",
+        "architecture": "arm64",
+        "local_path": "/Users/steven/code/Arion/.workspace/notes/wechat-ime-crash/rea/ChatterflyHelper-arm64"
+      },
+      "recordSHA256": "9a9e1abb49d1f17268715895dbc11e7caaed8fd888538bd00a018a52750a9e3d",
+      "limitations": [
+        "The session serves operations only after Ghidra reports default auto-analysis complete; incomplete analysis does not expose partial results.",
+        "The imported Program and temporary project are ephemeral and deleted on close. Annotation operations edit session database metadata; original executable bytes are never written.",
+        "Cancelling an active Ghidra request terminates its ephemeral database and discards session annotations. The selected target remains open; the next provider query imports the original artifact again.",
+        "Default-space addresses use lowercase 0x-prefixed hexadecimal; other address spaces use <percent-encoded-space>:0x<hex>.",
+        "References cover the complete Ghidra function-body AddressSet and exact entry. Dossier incoming edges omit sources owned by that function; procedure_references also retains those internal edges.",
+        "The dossier combines Ghidra FunctionManager, Listing, ReferenceManager, BasicBlockModel, and decompiler observations; provider-specific pseudocode and assembly are not cross-provider text invariants.",
+        "Resolved reference metadata identifies computed, indirect, external, call, jump, and data edges; unresolved targetless flows remain unknown, and function classifications distinguish thunks and externals.",
+        "Synthetic Ghidra entry-point references without actionable memory sources are omitted.",
+        "The Java bridge serializes one function request per Program and lets each decompilation run until it completes or the caller cancels.",
+        "Ghidra Listing reports a terminal call at 0x10000fa28 to 0x100023f88 _objc_release (external=false, thunk=true, hasNoReturn=false); fallthrough is excluded by Ghidra's flow model. The reason for the terminal flow is not established by this observation.",
+        "Ghidra Listing reports a terminal call at 0x10000fa4c to 0x100028100 objc_stub::terminate: (external=false, thunk=false, hasNoReturn=false); fallthrough is excluded by Ghidra's flow model. The reason for the terminal flow is not established by this observation.",
+        "macOS sessions require a matching executable Ghidra native decompiler; REA checks for it but does not build native components or change Gatekeeper quarantine state."
+      ]
+    },
+    {
+      "path": ".workspace/notes/wechat-ime-crash/rea/helper-select-show-function.json",
+      "evidenceID": "ev_6523b6b068c6161ed1f43a744fa59e0c7bfbdd297cddb761bbf2463cbdd21a8e",
+      "operation": "analyze_function",
+      "subject": {
+        "name": "ChatterflyHelper-arm64",
+        "digest": {
+          "sha256": "e6c650946a83e0a1bb6c92703eb15f93d42c68977207dc090215c9c5100de81e"
+        },
+        "format": "mach-o",
+        "architecture": "arm64",
+        "local_path": "/Users/steven/code/Arion/.workspace/notes/wechat-ime-crash/rea/ChatterflyHelper-arm64"
+      },
+      "recordSHA256": "072e61ee9f83a1d3bbcaf4ceaf50a37de1bc0b3cded41bbe8a1edc10e9b2b345",
+      "limitations": [
+        "The session serves operations only after Ghidra reports default auto-analysis complete; incomplete analysis does not expose partial results.",
+        "The imported Program and temporary project are ephemeral and deleted on close. Annotation operations edit session database metadata; original executable bytes are never written.",
+        "Cancelling an active Ghidra request terminates its ephemeral database and discards session annotations. The selected target remains open; the next provider query imports the original artifact again.",
+        "Default-space addresses use lowercase 0x-prefixed hexadecimal; other address spaces use <percent-encoded-space>:0x<hex>.",
+        "References cover the complete Ghidra function-body AddressSet and exact entry. Dossier incoming edges omit sources owned by that function; procedure_references also retains those internal edges.",
+        "The dossier combines Ghidra FunctionManager, Listing, ReferenceManager, BasicBlockModel, and decompiler observations; provider-specific pseudocode and assembly are not cross-provider text invariants.",
+        "Resolved reference metadata identifies computed, indirect, external, call, jump, and data edges; unresolved targetless flows remain unknown, and function classifications distinguish thunks and externals.",
+        "Synthetic Ghidra entry-point references without actionable memory sources are omitted.",
+        "The Java bridge serializes one function request per Program and lets each decompilation run until it completes or the caller cancels.",
+        "Ghidra Listing reports a terminal call at 0x10000f87c to 0x1000124f8 SGTools::selectShowInputMenuInMenuBarNeedsReload: (external=false, thunk=false, hasNoReturn=false), 0x100027560 objc_stub::selectShowInputMenuInMenuBarNeedsReload: (external=false, thunk=false, hasNoReturn=false); fallthrough is excluded by Ghidra's flow model. The reason for the terminal flow is not established by this observation.",
+        "macOS sessions require a matching executable Ghidra native decompiler; REA checks for it but does not build native components or change Gatekeeper quarantine state."
+      ]
+    }
+  ],
+  "crashes": [
+    {
+      "file": "WeChat-2026-10-19-175702.ips",
+      "sha256": "9e9693b754303192087c0d6378e4dfd1b4bb5210cf96471be4cf6deb071f75e8",
+      "captureTime": "2026-10-19 17:56:57.0250 +0800",
+      "processLaunch": "2026-10-19 14:45:00.6616 +0800",
+      "bundle": {
+        "CFBundleShortVersionString": "3.7.0",
+        "CFBundleVersion": "25070",
+        "CFBundleIdentifier": "com.tencent.xinWeChat"
+      },
+      "os": {
+        "train": "macOS 26.6.2",
+        "build": "25G83",
+        "releaseType": "User"
+      },
+      "exception": {
+        "codes": "0x0000000000000001, 0x000000018c36c998",
+        "rawCodes": [
+          1,
+          6647368088
+        ],
+        "type": "EXC_BREAKPOINT",
+        "signal": "SIGTRAP"
+      },
+      "applicationSpecificInformation": {
+        "CoreFoundation": [
+          "*** CFRelease() called with NULL ***"
+        ]
+      },
+      "topFrames": [
+        {
+          "image": "CoreFoundation",
+          "symbol": "CFRelease.cold.2",
+          "symbolLocation": 16
+        },
+        {
+          "image": "CoreFoundation",
+          "symbol": "CFRelease",
+          "symbolLocation": 344
+        },
+        {
+          "image": "TextInputUIMacHelper",
+          "symbol": "-[TUINSCursorUIController _selectCurrentInputSource]",
+          "symbolLocation": 84
+        },
+        {
+          "image": "TextInputUIMacHelper",
+          "symbol": "-[TUINSCursorUIController moveTextInputMenuHUD:]",
+          "symbolLocation": 272
+        },
+        {
+          "image": "HIToolbox",
+          "symbol": "TSMMessagePortCallBack",
+          "symbolLocation": 144
+        }
+      ],
+      "lookupResultX20": 0
+    },
+    {
+      "file": "WeChat-2026-10-22-150147.ips",
+      "sha256": "95a4952aad9aed7c92882ca8a5fc6c6e9ee03d2e2a12c9d625bfa9cc1213e69c",
+      "captureTime": "2026-10-22 15:01:40.1793 +0800",
+      "processLaunch": "2026-10-20 11:22:27.7910 +0800",
+      "bundle": {
+        "CFBundleShortVersionString": "3.7.0",
+        "CFBundleVersion": "25070",
+        "CFBundleIdentifier": "com.tencent.xinWeChat"
+      },
+      "os": {
+        "train": "macOS 26.6.2",
+        "build": "25G83",
+        "releaseType": "User"
+      },
+      "exception": {
+        "codes": "0x0000000000000001, 0x000000018c36c998",
+        "rawCodes": [
+          1,
+          6647368088
+        ],
+        "type": "EXC_BREAKPOINT",
+        "signal": "SIGTRAP"
+      },
+      "applicationSpecificInformation": {
+        "CoreFoundation": [
+          "*** CFRelease() called with NULL ***"
+        ]
+      },
+      "topFrames": [
+        {
+          "image": "CoreFoundation",
+          "symbol": "CFRelease.cold.2",
+          "symbolLocation": 16
+        },
+        {
+          "image": "CoreFoundation",
+          "symbol": "CFRelease",
+          "symbolLocation": 344
+        },
+        {
+          "image": "TextInputUIMacHelper",
+          "symbol": "-[TUINSCursorUIController _selectCurrentInputSource]",
+          "symbolLocation": 84
+        },
+        {
+          "image": "TextInputUIMacHelper",
+          "symbol": "-[TUINSCursorUIController moveTextInputMenuHUD:]",
+          "symbolLocation": 272
+        },
+        {
+          "image": "HIToolbox",
+          "symbol": "TSMMessagePortCallBack",
+          "symbolLocation": 144
+        }
+      ],
+      "lookupResultX20": 0
+    },
+    {
+      "file": "WeChat-2026-10-23-104711.ips",
+      "sha256": "0d647c7a63d82bf5eddf6fb7f27bbcbbee93f549d4c4cb8f3c5e0ec6f73b33e5",
+      "captureTime": "2026-10-23 10:47:07.8691 +0800",
+      "processLaunch": "2026-10-22 15:01:44.5981 +0800",
+      "bundle": {
+        "CFBundleShortVersionString": "3.7.0",
+        "CFBundleVersion": "25070",
+        "CFBundleIdentifier": "com.tencent.xinWeChat"
+      },
+      "os": {
+        "train": "macOS 26.6.2",
+        "build": "25G83",
+        "releaseType": "User"
+      },
+      "exception": {
+        "codes": "0x0000000000000001, 0x000000018c36c998",
+        "rawCodes": [
+          1,
+          6647368088
+        ],
+        "type": "EXC_BREAKPOINT",
+        "signal": "SIGTRAP"
+      },
+      "applicationSpecificInformation": {
+        "CoreFoundation": [
+          "*** CFRelease() called with NULL ***"
+        ]
+      },
+      "topFrames": [
+        {
+          "image": "CoreFoundation",
+          "symbol": "CFRelease.cold.2",
+          "symbolLocation": 16
+        },
+        {
+          "image": "CoreFoundation",
+          "symbol": "CFRelease",
+          "symbolLocation": 344
+        },
+        {
+          "image": "TextInputUIMacHelper",
+          "symbol": "-[TUINSCursorUIController _selectCurrentInputSource]",
+          "symbolLocation": 84
+        },
+        {
+          "image": "TextInputUIMacHelper",
+          "symbol": "-[TUINSCursorUIController moveTextInputMenuHUD:]",
+          "symbolLocation": 272
+        },
+        {
+          "image": "HIToolbox",
+          "symbol": "TSMMessagePortCallBack",
+          "symbolLocation": 144
+        }
+      ],
+      "lookupResultX20": 0
+    },
+    {
+      "file": "WeChat-2026-10-23-104827.ips",
+      "sha256": "5e5267fbf39af69a62da4c5e8a776fa7dbf4bc283d37cbe24c4abf25cec03adc",
+      "captureTime": "2026-10-23 10:48:24.3740 +0800",
+      "processLaunch": "2026-10-23 10:47:19.9445 +0800",
+      "bundle": {
+        "CFBundleShortVersionString": "3.7.0",
+        "CFBundleVersion": "25070",
+        "CFBundleIdentifier": "com.tencent.xinWeChat"
+      },
+      "os": {
+        "train": "macOS 26.6.2",
+        "build": "25G83",
+        "releaseType": "User"
+      },
+      "exception": {
+        "codes": "0x0000000000000001, 0x000000018c36c998",
+        "rawCodes": [
+          1,
+          6647368088
+        ],
+        "type": "EXC_BREAKPOINT",
+        "signal": "SIGTRAP"
+      },
+      "applicationSpecificInformation": {
+        "CoreFoundation": [
+          "*** CFRelease() called with NULL ***"
+        ]
+      },
+      "topFrames": [
+        {
+          "image": "CoreFoundation",
+          "symbol": "CFRelease.cold.2",
+          "symbolLocation": 16
+        },
+        {
+          "image": "CoreFoundation",
+          "symbol": "CFRelease",
+          "symbolLocation": 344
+        },
+        {
+          "image": "TextInputUIMacHelper",
+          "symbol": "-[TUINSCursorUIController _selectCurrentInputSource]",
+          "symbolLocation": 84
+        },
+        {
+          "image": "TextInputUIMacHelper",
+          "symbol": "-[TUINSCursorUIController moveTextInputMenuHUD:]",
+          "symbolLocation": 272
+        },
+        {
+          "image": "HIToolbox",
+          "symbol": "TSMMessagePortCallBack",
+          "symbolLocation": 144
+        }
+      ],
+      "lookupResultX20": 0
+    }
+  ],
+  "sourceContracts": [
+    {
+      "url": "https://developer.apple.com/documentation/corefoundation/cfrelease",
+      "supports": "NULL is invalid and crashes"
+    },
+    {
+      "url": "https://developer.apple.com/forums/thread/775526",
+      "supports": "Apple DTS acknowledges new-source System Settings discovery may require logout; not a verified crash cure"
+    },
+    {
+      "url": "https://support.apple.com/guide/mac-help/write-in-another-language-on-mac-mchlp1406/mac",
+      "supports": "Manual Input Sources management"
+    }
+  ],
+  "limitations": [
+    "Exact failed source ID and crash-time installed bytes not captured",
+    "Current post-crash installed metadata cannot prove crash-time metadata",
+    "Static competitor API calls do not establish successful preference persistence or OS acceptance",
+    "Path gaps also exist in compared competitor updaters; atomic exchange is hardening only",
+    "Broad Doubao LLVM disassembly reported invalid encodings; only bounded TIS wrapper observations are used, not completeness of that output",
+    "No product implementation or passing native crash-remediation validation",
+    "Initial Ghidra auto-analysis logged a decompiler ArrayIndexOutOfBoundsException, then reported analysis succeeded; the two requested Doubao dossiers completed. Swift pseudocode arguments remain imperfect, with exact refresh constants corroborated by retained instruction/data evidence."
+  ],
+  "hudReconstruction": {
+    "authority": "historical runtime logs plus controlled replay of local system switcher; no direct WeChat argument capture",
+    "crashProcessID": 61101,
+    "crashTime": "2026-10-23 11:52:33.7789 +0800",
+    "showTime": "11:52:32.544",
+    "sourceIDs": [
+      "com.bytedance.inputmethod.doubaoime.pinyin",
+      "com.apple.keylayout.ABC",
+      "com.tencent.inputmethod.chatterfly.pinyin",
+      "com.apple.inputmethod.Kotoeri.RomajiTyping.Japanese",
+      "com.apple.inputmethod.SCIM.ITABC",
+      "si.astrafoundry.inputmethod.arion.pinyin"
+    ],
+    "initialIndex": 1,
+    "moves": [
+      {
+        "time": "11:52:33.139",
+        "delta": 1
+      },
+      {
+        "time": "11:52:33.351",
+        "delta": 1
+      },
+      {
+        "time": "11:52:33.550",
+        "delta": 1
+      },
+      {
+        "time": "11:52:33.756",
+        "delta": 1
+      }
+    ],
+    "replayResult": {
+      "initial": "com.apple.keylayout.ABC",
+      "targets": [
+        "com.tencent.inputmethod.chatterfly.pinyin",
+        "com.apple.inputmethod.Kotoeri.RomajiTyping.Japanese",
+        "com.apple.inputmethod.SCIM.ITABC",
+        "si.astrafoundry.inputmethod.arion.pinyin"
+      ],
+      "finalIndex": 5,
+      "finalID": "si.astrafoundry.inputmethod.arion.pinyin"
+    },
+    "staticBinding": {
+      "show": "tsmEnabledInputSourceIDs and tsmSelection are passed to switcher setInputSourceIDs/show",
+      "move": "tsmDelta is passed to switcher move; _selectCurrentInputSource is called immediately afterward",
+      "lookup": "inputSourceID returns the accessory sourceIDs[selectedIndex]"
+    },
+    "directAttach": "LLDB task_for_pid denied; target signature and SIP unchanged",
+    "limits": [
+      "Inference reconstructed from retained HUD events and the same installed system implementation, not a sampled live x0 argument",
+      "Replay creates only a local switcher with nil assertion controller; it does not invoke the cursor controller selection method",
+      "Why the correct Arion child ID fails resolution in WeChat remains unresolved"
+    ],
+    "files": [
+      {
+        "path": ".workspace/notes/wechat-ime-crash/live-capture/attach-check.log",
+        "sha256": "233d86b5d8db5909042ef7984c68defd02d9dc2657c0a5f663a6908992ff6a80"
+      },
+      {
+        "path": ".workspace/notes/wechat-ime-crash/live-capture/crash-input-source-system.log",
+        "sha256": "4d30b298d9db8fe245ac20fe2747507fa1cd0b6c481e2b0ed5243e161d923e8b"
+      },
+      {
+        "path": ".workspace/notes/wechat-ime-crash/live-capture/read-method.m",
+        "sha256": "e62c3a4aad260ac7a6c8caf387abb1778356c68c31f0cf22662998e25f56f121"
+      },
+      {
+        "path": ".workspace/notes/wechat-ime-crash/live-capture/move-method.txt",
+        "sha256": "9773fff5d57600e4923c9f3f25b423a3ce14d229f749681cc4c630a35b1fc8d3"
+      },
+      {
+        "path": ".workspace/notes/wechat-ime-crash/live-capture/TUINSCursorUIController-showTextInputMenuHUD:.txt",
+        "sha256": "cd1501dbb01515ac0bb5d562a60dd8423e1daf061c039a5d9ed1d223f02b509c"
+      },
+      {
+        "path": ".workspace/notes/wechat-ime-crash/live-capture/TUINSCursorUISwitcher-show:.txt",
+        "sha256": "0ed7945cc71c76486a40e6dfcb8e24d253c36e07a3ffc483075a0d7f25d850df"
+      },
+      {
+        "path": ".workspace/notes/wechat-ime-crash/live-capture/TUINSCursorUISwitcher-move:.txt",
+        "sha256": "5d9fd897bc32df052c7eea0a01fc086d68efa37cbd489b3fa6d09a2bc275ac9a"
+      },
+      {
+        "path": ".workspace/notes/wechat-ime-crash/live-capture/TUINSCursorUISwitcher-inputSourceID.txt",
+        "sha256": "c73ff48a61e26166122410e0b2aa9d6300f3346b41aba8ac0f8ede0373fde1b7"
+      },
+      {
+        "path": ".workspace/notes/wechat-ime-crash/live-capture/replay-switcher.m",
+        "sha256": "ee1b1d81f63fb53dac418fba36ebcce96a6f32ab90a8453d52b2236b8e32a829"
+      },
+      {
+        "path": ".workspace/notes/wechat-ime-crash/live-capture/replayed-ids.txt",
+        "sha256": "017e9f871b7389ce3fc451c46b6e0ca1b9170bd4fd305107eceeb67ac53e8a3f"
+      }
+    ]
+  },
+  "priorHUDCorroboration": {
+    "evidenceType": "retained unified runtime logs plus previously verified local system switcher index semantics",
+    "sequences": [
+      {
+        "processID": 57229,
+        "showTime": "2026-10-22 15:01:38.654",
+        "sourceIDs": [
+          "com.apple.keylayout.ABC",
+          "com.bytedance.inputmethod.doubaoime.pinyin",
+          "com.apple.inputmethod.Kotoeri.RomajiTyping.Japanese",
+          "com.apple.inputmethod.SCIM.ITABC",
+          "com.tencent.inputmethod.chatterfly.pinyin",
+          "si.astrafoundry.inputmethod.arion.pinyin"
+        ],
+        "initialIndex": 1,
+        "initialID": "com.bytedance.inputmethod.doubaoime.pinyin",
+        "moves": [
+          {
+            "time": "2026-10-22 15:01:39.459",
+            "delta": 1,
+            "reconstructedIndex": 2,
+            "reconstructedID": "com.apple.inputmethod.Kotoeri.RomajiTyping.Japanese"
+          },
+          {
+            "time": "2026-10-22 15:01:39.614",
+            "delta": 1,
+            "reconstructedIndex": 3,
+            "reconstructedID": "com.apple.inputmethod.SCIM.ITABC"
+          },
+          {
+            "time": "2026-10-22 15:01:39.760",
+            "delta": 1,
+            "reconstructedIndex": 4,
+            "reconstructedID": "com.tencent.inputmethod.chatterfly.pinyin"
+          },
+          {
+            "time": "2026-10-22 15:01:40.149",
+            "delta": 1,
+            "reconstructedIndex": 5,
+            "reconstructedID": "si.astrafoundry.inputmethod.arion.pinyin"
+          }
+        ],
+        "finalIndex": 5,
+        "finalID": "si.astrafoundry.inputmethod.arion.pinyin",
+        "rawFile": ".workspace/notes/wechat-ime-crash/prior-hud/oct22-hud.log"
+      },
+      {
+        "processID": 30163,
+        "showTime": "2026-10-23 10:47:06.226",
+        "sourceIDs": [
+          "com.apple.keylayout.ABC",
+          "com.apple.inputmethod.SCIM.ITABC",
+          "com.apple.inputmethod.Kotoeri.RomajiTyping.Japanese",
+          "com.bytedance.inputmethod.doubaoime.pinyin",
+          "com.tencent.inputmethod.chatterfly.pinyin",
+          "si.astrafoundry.inputmethod.arion.pinyin"
+        ],
+        "initialIndex": 1,
+        "initialID": "com.apple.inputmethod.SCIM.ITABC",
+        "moves": [
+          {
+            "time": "2026-10-23 10:47:07.185",
+            "delta": 1,
+            "reconstructedIndex": 2,
+            "reconstructedID": "com.apple.inputmethod.Kotoeri.RomajiTyping.Japanese"
+          },
+          {
+            "time": "2026-10-23 10:47:07.352",
+            "delta": 1,
+            "reconstructedIndex": 3,
+            "reconstructedID": "com.bytedance.inputmethod.doubaoime.pinyin"
+          },
+          {
+            "time": "2026-10-23 10:47:07.487",
+            "delta": 1,
+            "reconstructedIndex": 4,
+            "reconstructedID": "com.tencent.inputmethod.chatterfly.pinyin"
+          },
+          {
+            "time": "2026-10-23 10:47:07.837",
+            "delta": 1,
+            "reconstructedIndex": 5,
+            "reconstructedID": "si.astrafoundry.inputmethod.arion.pinyin"
+          }
+        ],
+        "finalIndex": 5,
+        "finalID": "si.astrafoundry.inputmethod.arion.pinyin",
+        "rawFile": ".workspace/notes/wechat-ime-crash/prior-hud/oct23-hud.log"
+      },
+      {
+        "processID": 719,
+        "showTime": "2026-10-23 10:48:23.356",
+        "sourceIDs": [
+          "com.bytedance.inputmethod.doubaoime.pinyin",
+          "com.tencent.inputmethod.chatterfly.pinyin",
+          "com.apple.inputmethod.Kotoeri.RomajiTyping.Japanese",
+          "com.apple.inputmethod.SCIM.ITABC",
+          "com.apple.keylayout.ABC",
+          "si.astrafoundry.inputmethod.arion.pinyin"
+        ],
+        "initialIndex": 1,
+        "initialID": "com.tencent.inputmethod.chatterfly.pinyin",
+        "moves": [
+          {
+            "time": "2026-10-23 10:48:23.870",
+            "delta": 1,
+            "reconstructedIndex": 2,
+            "reconstructedID": "com.apple.inputmethod.Kotoeri.RomajiTyping.Japanese"
+          },
+          {
+            "time": "2026-10-23 10:48:24.028",
+            "delta": 1,
+            "reconstructedIndex": 3,
+            "reconstructedID": "com.apple.inputmethod.SCIM.ITABC"
+          },
+          {
+            "time": "2026-10-23 10:48:24.198",
+            "delta": 1,
+            "reconstructedIndex": 4,
+            "reconstructedID": "com.apple.keylayout.ABC"
+          },
+          {
+            "time": "2026-10-23 10:48:24.362",
+            "delta": 1,
+            "reconstructedIndex": 5,
+            "reconstructedID": "si.astrafoundry.inputmethod.arion.pinyin"
+          }
+        ],
+        "finalIndex": 5,
+        "finalID": "si.astrafoundry.inputmethod.arion.pinyin",
+        "rawFile": ".workspace/notes/wechat-ime-crash/prior-hud/oct23-hud.log"
+      }
+    ],
+    "limitations": [
+      "Not a direct sampled function argument or direct observation of TIS lookup return value.",
+      "Index interpretation reuses the prior static analysis and isolated switcher replay documented in live-capture/reconstruction.json; no additional switcher or target launched in this pass.",
+      "Absence of filtered reset messages does not prove absence of any unlogged state mutation.",
+      "Bounded logs establish repeat target identity, not why WeChat lookup fails."
+    ],
+    "files": [
+      {
+        "path": ".workspace/notes/wechat-ime-crash/prior-hud/oct22-hud.log",
+        "sha256": "bd559faf5e7add283dc6d8b7d85df5bce70da68abf68f6c30ec5f38d03073e13"
+      },
+      {
+        "path": ".workspace/notes/wechat-ime-crash/prior-hud/oct23-hud.log",
+        "sha256": "a9b9c4b79b56dee81562bf99790c76e65bea0194e5fd9281cd4f13c4dffa9596"
+      },
+      {
+        "path": ".workspace/notes/wechat-ime-crash/prior-hud/reconstruction.json",
+        "sha256": "e9e1aefdecf9644d01e09197e1a76ee8496fe6f5d1251bd3391e0f62fa70f5f7"
+      }
+    ]
+  },
+  "processKeyboardCacheInvestigation": {
+    "evidenceType": "Read-only cache identity/content comparison and live open-file mapping; controlled replay modifies only an owned fixture cache",
+    "observations": [
+      {
+        "scope": "com.tencent.xinWeChat",
+        "bytes": 140020,
+        "sha256": "3eb9582ffc35bd15d33daa15e431b4df0cc6376e8aafc8ede328fb9b13fc4151",
+        "mtime": 1792392315.9036891,
+        "matches": {
+          "si.astrafoundry.inputmethod.arion": {
+            "utf8": 0,
+            "utf16le": 0
+          },
+          "com.tencent.inputmethod.chatterfly": {
+            "utf8": 4,
+            "utf16le": 0
+          },
+          "com.bytedance.inputmethod.doubaoime": {
+            "utf8": 4,
+            "utf16le": 0
+          },
+          "ArionInput.app": {
+            "utf8": 0,
+            "utf16le": 0
+          }
+        }
+      },
+      {
+        "scope": "si.astrafoundry.arion.ime-diagnostic-probe",
+        "bytes": 140436,
+        "sha256": "0637493472825fbd5850ee27136768ccfbf6171bfacc1b954f4fbf1d4fdc9707",
+        "mtime": 1792732042.9368634,
+        "matches": {
+          "si.astrafoundry.inputmethod.arion": {
+            "utf8": 4,
+            "utf16le": 0
+          },
+          "com.tencent.inputmethod.chatterfly": {
+            "utf8": 4,
+            "utf16le": 0
+          },
+          "com.bytedance.inputmethod.doubaoime": {
+            "utf8": 4,
+            "utf16le": 0
+          },
+          "ArionInput.app": {
+            "utf8": 2,
+            "utf16le": 0
+          }
+        }
+      },
+      {
+        "scope": "ordinary_process",
+        "bytes": 140436,
+        "sha256": "f46f6a572245eb2fedc58ab698d77b7a4c1ae23dbdb047606473f677513ab9f9",
+        "mtime": 1792723749.9177058,
+        "matches": {
+          "si.astrafoundry.inputmethod.arion": {
+            "utf8": 4,
+            "utf16le": 0
+          },
+          "com.tencent.inputmethod.chatterfly": {
+            "utf8": 4,
+            "utf16le": 0
+          },
+          "com.bytedance.inputmethod.doubaoime": {
+            "utf8": 4,
+            "utf16le": 0
+          },
+          "ArionInput.app": {
+            "utf8": 2,
+            "utf16le": 0
+          }
+        }
+      }
+    ],
+    "liveWeChatProcessId": 65098,
+    "liveMapping": "Reopened WeChat maps its existing com.tencent.xinWeChat/com.apple.IntlDataCache.le.kbdx, whose original bytes lack the Arion ID",
+    "lookupProbes": "Fresh ordinary and hardened App Sandbox fixture processes resolve both Arion parent and Pinyin child through public enumeration and the same private lookup used by the HUD",
+    "controlledReplay": {
+      "originalSHA256": "3eb9582ffc35bd15d33daa15e431b4df0cc6376e8aafc8ede328fb9b13fc4151",
+      "freshSHA256": "0637493472825fbd5850ee27136768ccfbf6171bfacc1b954f4fbf1d4fdc9707",
+      "originalUnchanged": true,
+      "results": [
+        {
+          "label": "fresh-baseline",
+          "before": "0637493472825fbd5850ee27136768ccfbf6171bfacc1b954f4fbf1d4fdc9707",
+          "after": "0637493472825fbd5850ee27136768ccfbf6171bfacc1b954f4fbf1d4fdc9707",
+          "observed": {
+            "sources": [
+              {
+                "id": "si.astrafoundry.inputmethod.arion",
+                "enabledOnly": {
+                  "count": 1,
+                  "first": {
+                    "found": true,
+                    "enabled": true,
+                    "selected": false,
+                    "selectable": false
+                  }
+                },
+                "allInstalled": {
+                  "count": 1,
+                  "first": {
+                    "found": true,
+                    "enabled": true,
+                    "selected": false,
+                    "selectable": false
+                  }
+                },
+                "privateLookup": {
+                  "found": true,
+                  "enabled": true,
+                  "selected": false,
+                  "selectable": false
+                }
+              },
+              {
+                "id": "si.astrafoundry.inputmethod.arion.pinyin",
+                "enabledOnly": {
+                  "count": 1,
+                  "first": {
+                    "found": true,
+                    "enabled": true,
+                    "selected": false,
+                    "selectable": true
+                  }
+                },
+                "allInstalled": {
+                  "count": 1,
+                  "first": {
+                    "found": true,
+                    "enabled": true,
+                    "selected": false,
+                    "selectable": true
+                  }
+                },
+                "privateLookup": {
+                  "found": true,
+                  "enabled": true,
+                  "selected": false,
+                  "selectable": true
+                }
+              }
+            ],
+            "processId": 62867
+          }
+        },
+        {
+          "label": "wechat-cache-copy",
+          "before": "3eb9582ffc35bd15d33daa15e431b4df0cc6376e8aafc8ede328fb9b13fc4151",
+          "after": "a052c5e2c3ad169f38c82b4cc6ed07b12190f1480fc9ad7599876111f78e9f1a",
+          "observed": {
+            "sources": [
+              {
+                "id": "si.astrafoundry.inputmethod.arion",
+                "enabledOnly": {
+                  "count": 1,
+                  "first": {
+                    "found": true,
+                    "enabled": true,
+                    "selected": false,
+                    "selectable": false
+                  }
+                },
+                "allInstalled": {
+                  "count": 1,
+                  "first": {
+                    "found": true,
+                    "enabled": true,
+                    "selected": false,
+                    "selectable": false
+                  }
+                },
+                "privateLookup": {
+                  "found": true,
+                  "enabled": true,
+                  "selected": false,
+                  "selectable": false
+                }
+              },
+              {
+                "id": "si.astrafoundry.inputmethod.arion.pinyin",
+                "enabledOnly": {
+                  "count": 1,
+                  "first": {
+                    "found": true,
+                    "enabled": true,
+                    "selected": false,
+                    "selectable": true
+                  }
+                },
+                "allInstalled": {
+                  "count": 1,
+                  "first": {
+                    "found": true,
+                    "enabled": true,
+                    "selected": false,
+                    "selectable": true
+                  }
+                },
+                "privateLookup": {
+                  "found": true,
+                  "enabled": true,
+                  "selected": false,
+                  "selectable": true
+                }
+              }
+            ],
+            "processId": 62868
+          }
+        },
+        {
+          "label": "restored-fresh",
+          "before": "0637493472825fbd5850ee27136768ccfbf6171bfacc1b954f4fbf1d4fdc9707",
+          "after": "0637493472825fbd5850ee27136768ccfbf6171bfacc1b954f4fbf1d4fdc9707",
+          "observed": {
+            "sources": [
+              {
+                "id": "si.astrafoundry.inputmethod.arion",
+                "enabledOnly": {
+                  "count": 1,
+                  "first": {
+                    "found": true,
+                    "enabled": true,
+                    "selected": false,
+                    "selectable": false
+                  }
+                },
+                "allInstalled": {
+                  "count": 1,
+                  "first": {
+                    "found": true,
+                    "enabled": true,
+                    "selected": false,
+                    "selectable": false
+                  }
+                },
+                "privateLookup": {
+                  "found": true,
+                  "enabled": true,
+                  "selected": false,
+                  "selectable": false
+                }
+              },
+              {
+                "id": "si.astrafoundry.inputmethod.arion.pinyin",
+                "enabledOnly": {
+                  "count": 1,
+                  "first": {
+                    "found": true,
+                    "enabled": true,
+                    "selected": false,
+                    "selectable": true
+                  }
+                },
+                "allInstalled": {
+                  "count": 1,
+                  "first": {
+                    "found": true,
+                    "enabled": true,
+                    "selected": false,
+                    "selectable": true
+                  }
+                },
+                "privateLookup": {
+                  "found": true,
+                  "enabled": true,
+                  "selected": false,
+                  "selectable": true
+                }
+              }
+            ],
+            "processId": 62869
+          }
+        }
+      ]
+    },
+    "interpretation": "WeChat has a persistent per-application keyboard-cache discrepancy consistent with an unresolved HUD ID. Copying its old cache into the owned fixture triggers automatic regeneration, so old bytes alone do not reproduce failed resolution and causality remains unproved.",
+    "limits": [
+      "No live lookup argument or return sampled inside WeChat; hardened runtime attachment was denied.",
+      "A raw byte search is not a complete cache-format parser.",
+      "Why the owned fixture rejects/rebuilds the old cache, while WeChat maps its existing cache, remains unknown.",
+      "Private lookup is research-only and is not added to product code.",
+      "After explicit user authorization, only the single WeChat keyboard cache was isolated with two byte-identical backups and normal application restart; no other WeChat cache, chat data or source preferences changed."
+    ],
+    "files": [
+      {
+        "path": ".workspace/notes/wechat-ime-crash/live-capture/cache-comparison.json",
+        "sha256": "b65e9def8534090f5a99468fb18caed9d6d7e79bae3de04611c8dce790d68485"
+      },
+      {
+        "path": ".workspace/notes/wechat-ime-crash/live-capture/lookup-probe.m",
+        "sha256": "a282f631f73891ae529856e238944b2100a039d83d6e32325d84f8eb293b1d1c"
+      },
+      {
+        "path": ".workspace/notes/wechat-ime-crash/live-capture/fresh-lookup-results.json",
+        "sha256": "5363c75b7a619e2936e84337b2d1b82bb028550b2d699d350df43e02683c345b"
+      },
+      {
+        "path": ".workspace/notes/wechat-ime-crash/live-capture/sandbox-lookup-results.json",
+        "sha256": "e6565106fa65c20d9f4440901112b7de5a9c5d115466582b2688702b58848e30"
+      },
+      {
+        "path": ".workspace/notes/wechat-ime-crash/live-capture/tis-lookup-function.txt",
+        "sha256": "640fd326445baf034a959765b91c6288354ca3c8a1372b55abc81523067a0228"
+      },
+      {
+        "path": ".workspace/notes/wechat-ime-crash/live-capture/tis-create-list-function.txt",
+        "sha256": "1923d0fa943a00355e9b36110266aff0f5e658dce75fba85651d3ed86797e5ea"
+      },
+      {
+        "path": ".workspace/notes/wechat-ime-crash/live-capture/wechat-live-cache-mapping.txt",
+        "sha256": "078f7c37cf45c549563a57257cdef53900729848f084d996be30e911c2ffad9f"
+      },
+      {
+        "path": ".workspace/notes/wechat-ime-crash/live-capture/cache-replay.mjs",
+        "sha256": "12c3c5907d412a0b06391a1aa93142c4f4f1e9cd6b0c8d26d6e79c15ad666a2e"
+      },
+      {
+        "path": ".workspace/notes/wechat-ime-crash/live-capture/cache-replay-c3761c35-da66-482b-9a63-c0f9d1753968/result.json",
+        "sha256": "999b466dfada7617411d4e7754755074ec07150f0f9ca5317569181bc3593fd6"
+      },
+      {
+        "path": ".workspace/notes/wechat-ime-crash/live-capture/cache-replay-c3761c35-da66-482b-9a63-c0f9d1753968/wechat-cache-copy.stderr.txt",
+        "sha256": "dac6606774c152a3096f663d8f6579af6836d77f3e81f8f7b698b820db279b4c"
+      },
+      {
+        "path": ".workspace/notes/wechat-ime-crash/live-capture/wechat-cache-recovery-105f169a-7ad6-43b3-9828-f6a724d890f9/result.json",
+        "sha256": "8fa73a44542f72221ea9eea948d8cfe58f21f5af9a7fecea0b6c512228fab29c"
+      },
+      {
+        "path": ".workspace/notes/wechat-ime-crash/live-capture/rebuild-wechat-keyboard-cache.py",
+        "sha256": "573ba3e67d1e380463000cecdd572cfda8d08507fafd21bc6bddf987aa5ee4f3"
+      },
+      {
+        "path": ".workspace/notes/wechat-ime-crash/live-capture/recovery-verification.json",
+        "sha256": "b32664ae6d0bc9dd4543b1444a57646af278b63748fb31ea1a30299e6399d8c8"
+      },
+      {
+        "path": ".workspace/notes/wechat-ime-crash/live-capture/recovery-hud-verification.log",
+        "sha256": "d9291865fab3836bc0d53b2893554bf475c4a1f7d0551490e93347a90f5ffb10"
+      }
+    ],
+    "authorizedRecovery": {
+      "authorization": "User explicitly authorized backup and regeneration of the single keyboard cache",
+      "originalPath": "/private/var/folders/wg/ntr3cxsd34x0rw4w17rdrym40000gn/C/com.tencent.xinWeChat/com.apple.IntlDataCache.le.kbdx",
+      "backup": "/Users/steven/code/Arion/.workspace/notes/wechat-ime-crash/live-capture/wechat-cache-recovery-105f169a-7ad6-43b3-9828-f6a724d890f9/original.kbdx",
+      "originalSHA256": "3eb9582ffc35bd15d33daa15e431b4df0cc6376e8aafc8ede328fb9b13fc4151",
+      "originalBytes": 140020,
+      "stage": "reopened",
+      "quitStatus": 0,
+      "quarantine": "/private/var/folders/wg/ntr3cxsd34x0rw4w17rdrym40000gn/C/com.tencent.xinWeChat/com.apple.IntlDataCache.le.kbdx.arion-diagnostic-backup-105f169a-7ad6-43b3-9828-f6a724d890f9",
+      "quarantineSHA256": "3eb9582ffc35bd15d33daa15e431b4df0cc6376e8aafc8ede328fb9b13fc4151",
+      "openStatus": 0,
+      "rebuilt": true,
+      "rebuiltSHA256": "94f4217a79a83913f7ab1b341a2564d0f7e2488e782a4ea1bd503b6b5be88fa2",
+      "rebuiltBytes": 140436,
+      "arionIDOccurrences": 4,
+      "arionBundleOccurrences": 2,
+      "processIds": [
+        "66569"
+      ],
+      "verification": "Cache regenerated with Arion; user subsequently confirmed shortcut switching succeeds without crashing. Independent check found a live WeChat process and no newer WeChat report in the inspected crash directory."
+    },
+    "recoveryVerification": {
+      "userObservedResult": "User repeated the previously failing shortcut switch to Arion and reported successful switching with no crash.",
+      "evidenceType": "User-reported native interaction plus independent process, cache and crash-directory checks",
+      "verificationLocalTime": "2026-10-23 13:21 Asia/Shanghai",
+      "liveWeChatProcessId": 71120,
+      "liveWeChatLaunchLocalTime": "2026-10-23 13:20:25 Asia/Shanghai",
+      "recoveryReopenProcessId": 66569,
+      "processLimit": "The active PID differs from the immediate recovery reopen PID; this pass did not establish why that earlier process ended. No later WeChat crash report was present in the inspected directory.",
+      "currentCacheSHA256": "94f4217a79a83913f7ab1b341a2564d0f7e2488e782a4ea1bd503b6b5be88fa2",
+      "currentCacheBytes": 140436,
+      "currentArionIDOccurrences": 4,
+      "latestWeChatCrashReport": "WeChat-2026-10-23-115237.ips",
+      "hudLogLimit": "Retained logs contain CursorUI activity and hide events, but do not supply a complete successful source-ID show/move sequence; success is user-reported, not reconstructed from these events.",
+      "conclusion": "Targeted keyboard-cache regeneration restored Arion cache membership and was followed by a user-verified successful retry. Persistent stale cache is the leading trigger supported by this recovery; exact refresh failure and long-term prevention remain unresolved."
+    }
+  },
+  "preventionAndCrossApplicationStudy": {
+    "scope": "Read-only exact keyboard-cache inventory and matching crash-report search; static system-function inspection in owned process; matched cache/control experiments modify only owned fixture files, restored exactly; no personal client switching or intentional crash",
+    "cacheInventory": {
+      "accessibleCacheCount": 69,
+      "withoutArionChildBytes": 42,
+      "withArionChildBytes": 27,
+      "runningMappedExamplesWithoutArion": [
+        "TextEdit",
+        "Mail",
+        "Calendar",
+        "Preview",
+        "QuickTime Player"
+      ],
+      "limits": [
+        "Byte membership is not full table decoding and does not prove that a process maps or accepts this cache.",
+        "Missing Arion does not prove a crashing client or failed lookup.",
+        "Only the current user cache root and accessible one-level app caches are covered.",
+        "Only open files/mappings reported by lsof for accessible processes at inspection; no live TIS call or switching test performed."
+      ]
+    },
+    "localCrashSearch": {
+      "checkedReports": 420,
+      "matchingReports": 5,
+      "matchingProcesses": [
+        "WeChat"
+      ],
+      "limits": [
+        "Not a system-wide historical guarantee; archived/removed reports and inaccessible accounts are not covered."
+      ]
+    },
+    "matchedCacheExperiment": {
+      "sourceApp": "com.apple.TextEdit",
+      "originalUnchanged": true,
+      "ownedCacheRestoredExactly": true,
+      "treatments": [
+        {
+          "label": "fresh-baseline",
+          "sources": [
+            {
+              "id": "com.apple.keylayout.ABC",
+              "enabledOnlyCount": 1,
+              "allInstalledCount": 1,
+              "privateLookupFound": true
+            },
+            {
+              "id": "com.bytedance.inputmethod.doubaoime.pinyin",
+              "enabledOnlyCount": 1,
+              "allInstalledCount": 1,
+              "privateLookupFound": true
+            },
+            {
+              "id": "si.astrafoundry.inputmethod.arion",
+              "enabledOnlyCount": 1,
+              "allInstalledCount": 1,
+              "privateLookupFound": true
+            },
+            {
+              "id": "si.astrafoundry.inputmethod.arion.pinyin",
+              "enabledOnlyCount": 1,
+              "allInstalledCount": 1,
+              "privateLookupFound": true
+            }
+          ]
+        },
+        {
+          "label": "matched-old-pair",
+          "sources": [
+            {
+              "id": "com.apple.keylayout.ABC",
+              "enabledOnlyCount": 1,
+              "allInstalledCount": 1,
+              "privateLookupFound": true
+            },
+            {
+              "id": "com.bytedance.inputmethod.doubaoime.pinyin",
+              "enabledOnlyCount": 1,
+              "allInstalledCount": 1,
+              "privateLookupFound": true
+            },
+            {
+              "id": "si.astrafoundry.inputmethod.arion",
+              "enabledOnlyCount": -1,
+              "allInstalledCount": -1,
+              "privateLookupFound": false
+            },
+            {
+              "id": "si.astrafoundry.inputmethod.arion.pinyin",
+              "enabledOnlyCount": -1,
+              "allInstalledCount": -1,
+              "privateLookupFound": false
+            }
+          ]
+        },
+        {
+          "label": "restored-fresh",
+          "sources": [
+            {
+              "id": "com.apple.keylayout.ABC",
+              "enabledOnlyCount": 1,
+              "allInstalledCount": 1,
+              "privateLookupFound": true
+            },
+            {
+              "id": "com.bytedance.inputmethod.doubaoime.pinyin",
+              "enabledOnlyCount": 1,
+              "allInstalledCount": 1,
+              "privateLookupFound": true
+            },
+            {
+              "id": "si.astrafoundry.inputmethod.arion",
+              "enabledOnlyCount": 1,
+              "allInstalledCount": 1,
+              "privateLookupFound": true
+            },
+            {
+              "id": "si.astrafoundry.inputmethod.arion.pinyin",
+              "enabledOnlyCount": 1,
+              "allInstalledCount": 1,
+              "privateLookupFound": true
+            }
+          ]
+        }
+      ],
+      "conclusion": "Matching old cache/control pair selectively prevents lookup of correct Arion IDs in an independent sandbox; ABC and Doubao remain queryable; restoring fresh pair restores Arion. No selection or null release invoked."
+    },
+    "singleComponentReplayCorrection": "Control file expects component length 140436 but old component length is140020, causing native mapping rejection; earlier rebuild does not demonstrate consistent old cache self-refresh.",
+    "primarySources": [
+      {
+        "url": "https://github.com/qingjian-team/qingjian/issues/31",
+        "supports": "Complete Youdao9.1.7(924), macOS15.7.7 same nullrelease selection stack with another IME; other named apps have no complete attached reports."
+      },
+      {
+        "url": "https://github.com/rime/squirrel/issues/951",
+        "supports": "WeChat3.8.8.18 macOS15.0beta same stack, reported reboot recovery, no keyboardcache analysis."
+      },
+      {
+        "url": "https://developer.apple.com/forums/thread/775526",
+        "supports": "Apple staff new-source SystemSettings discovery/logout guidance, not guaranteed crash prevention."
+      }
+    ],
+    "recommendations": [
+      "P0 separate uninstall from update shutdown; retain valid bundle while source removal unavailable/unverified.",
+      "P1 evaluate continuous-path atomic replacement and rollback while preserving stable IDs.",
+      "P1 fresh public enabled-only/all-installed comparison and persistent-client native HUD acceptance.",
+      "P2 owned minimal Apple Feedback reproducer; no external submission performed."
+    ],
+    "unresolved": [
+      "Original missed invalidation event and reliable supported cross-client refresh.",
+      "Actual crash/switching results in other personal applications; cacheabsence alone is insufficient.",
+      "Product lifecycle prevention changes and their full native regression matrix; not implemented in this research."
+    ],
+    "files": [
+      {
+        "path": ".workspace/notes/wechat-ime-crash/inspect-other-caches.py",
+        "sha256": "bbe45b283cbae78ac2f0c8408b8af1cd995fa32d241394fb6daf24b5ac04b04a"
+      },
+      {
+        "path": ".workspace/notes/wechat-ime-crash/other-app-cache-inventory.json",
+        "sha256": "e85137b8e8f32f7ee964db1eb5d885683a2178bc3f576f857b1e41296300efa9"
+      },
+      {
+        "path": ".workspace/notes/wechat-ime-crash/cross-app-local-crashes.json",
+        "sha256": "a137f444d8232abf17d35ea9913890c4a0a2c3fb1e9c86c0d2241bfab6031055"
+      },
+      {
+        "path": ".workspace/notes/wechat-ime-crash/live-other-cache-mappings.json",
+        "sha256": "325b82c33ff6be71bcc5d51de8ef321461cd4250e9534f44617178726e802463"
+      },
+      {
+        "path": ".workspace/notes/wechat-ime-crash/cross-app-risk-summary.json",
+        "sha256": "5ceea586ccfd33da8cc8e17358f0d0ec833354af87cbe5623c0c26e70d27df0d"
+      },
+      {
+        "path": ".workspace/notes/wechat-ime-crash/standard-install-identity-audit.json",
+        "sha256": "b636206d4fe458680aecb110266efdcbd0663cf1866666d56a0717c53bfd8526"
+      },
+      {
+        "path": ".workspace/notes/wechat-ime-crash/cross-app-prevention.md",
+        "sha256": "ae5e773bfd8bfda77032ac0f98c56d96d2c4d796d28dc3cf98b24e5ffcf87bbf"
+      },
+      {
+        "path": ".workspace/notes/wechat-ime-crash/cache-invalidation.md",
+        "sha256": "3414cbd9ebd77242ad2da6f73d45fcdb16e83e38077feef250f4ea5be94a1a50"
+      },
+      {
+        "path": ".workspace/notes/wechat-ime-crash/prevention-lifecycle.md",
+        "sha256": "7113eb2d44b68699dc3937ca31d511d0e49d2380390934446b33594c4463a4e9"
+      },
+      {
+        "path": ".workspace/notes/wechat-ime-crash/live-capture/cache-invalidation-evidence.json",
+        "sha256": "c326fe4b04a15f0c0e8ffd8d79923f5f4427137ded8e48284c6e63c12a774d03"
+      },
+      {
+        "path": ".workspace/notes/wechat-ime-crash/live-capture/matched-cache-replay.mjs",
+        "sha256": "c0ee6d8c3e1b0d43e28f17b14691f595cafa571ec24a44987d023c3cd6b40b07"
+      },
+      {
+        "path": ".workspace/notes/wechat-ime-crash/live-capture/matched-cache-replay-10f7a94c-e757-433f-abbd-c40432cc7ced/result.json",
+        "sha256": "f7637b0337676c1ad44bf196a54e863bf3a8919ab68c1e9d7f17b250ae9a2b26"
+      },
+      {
+        "path": ".workspace/notes/wechat-ime-crash/live-capture/matched-cache-positive-controls.mjs",
+        "sha256": "26982bb41f9fb96d10eac644c1693027c2c2a0705eb53dc15c3b9710d82648e9"
+      },
+      {
+        "path": ".workspace/notes/wechat-ime-crash/live-capture/lookup-positive-controls.m",
+        "sha256": "1fef4cb76aadd76558cd5483cfccdebaa4a01d3dc83417c9410242e7658d1a65"
+      },
+      {
+        "path": ".workspace/notes/wechat-ime-crash/live-capture/matched-cache-positive-controls-eb452c7b-5c3f-42a5-9c0b-a058b620501a/result.json",
+        "sha256": "a90166716f1ef0dedc35fa674f1a893dae5141e37d997914fe4b8daab525a582"
+      }
+    ]
+  }
+}

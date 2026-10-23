@@ -18,17 +18,29 @@ type failedRemovalIME struct {
 	failure error
 }
 
-func (m failedRemovalIME) Remove() error               { return m.failure }
-func (failedRemovalIME) State() arion.InputMethodState { return arion.InputMethodInstalled }
+func (m failedRemovalIME) Remove(context.Context) error { return m.failure }
+func (failedRemovalIME) State() arion.InputMethodState  { return arion.InputMethodInstalled }
 
 func TestFailedIMERemovalPreservesInstalledSource(t *testing.T) {
 	failure := errors.New("input source could not be disabled")
-	a := &App{ime: failedRemovalIME{failure: failure}}
-	if err := (actions{a}).RemoveInputMethod(); !errors.Is(err, failure) {
-		t.Fatalf("removal error lost: %v", err)
+	a := &App{ime: failedRemovalIME{failure: failure}, queueReady: make(chan struct{}, 1)}
+	if err := (actions{a}).RemoveInputMethod(); err != nil || !a.state.InputMethodRemoving {
+		t.Fatal(err)
 	}
-	if a.state.InputMethod != arion.InputMethodInstalled {
-		t.Fatalf("failed removal hid installed source: %+v", a.state)
+	select {
+	case <-a.queueReady:
+		a.queueMu.Lock()
+		queued := a.queue
+		a.queue = nil
+		a.queueMu.Unlock()
+		for _, fn := range queued {
+			fn()
+		}
+	case <-time.After(2 * time.Second):
+		t.Fatal("removal completion not posted")
+	}
+	if a.state.InputMethod != arion.InputMethodInstalled || a.state.InputMethodRemoving || a.state.InputMethodError != copy.IMERemoveFailed {
+		t.Fatalf("failed removal hid installed source or failure: %+v", a.state)
 	}
 }
 

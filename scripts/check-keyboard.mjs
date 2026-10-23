@@ -6,6 +6,6 @@ import { fileURLToPath } from 'node:url';
 
 if (process.platform !== 'darwin') throw new Error('Keyboard checks require macOS.');
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-for (const script of ['stage-keyboard-runtime', 'test-input-method', 'test-keyboard-learning', 'test-keyboard-input']) {
+for (const script of ['stage-keyboard-runtime', 'test-input-method', 'test-input-source-maintenance', 'test-keyboard-learning', 'test-keyboard-input']) {
   execFileSync(process.execPath, [path.join(root, 'scripts', `${script}.mjs`)], { cwd: root, stdio: 'inherit' });
 }

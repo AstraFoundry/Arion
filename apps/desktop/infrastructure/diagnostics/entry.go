@@ -19,15 +19,16 @@ import (
 // Entry deliberately has no message, error object or arbitrary attribute map.
 // Strings are checked against closed sets before writing and again on export.
 type Entry struct {
-	QueueDepth    int    `json:"queueDepth,omitempty"`
-	QueueOverflow bool   `json:"queueOverflow,omitempty"`
-	Run           string `json:"run,omitempty"`
-	ModelID       string `json:"modelId,omitempty"`
-	Capability    string `json:"capability,omitempty"`
-	Phase         string `json:"phase,omitempty"`
-	Reason        string `json:"reason,omitempty"`
-	Reads         int    `json:"reads,omitempty"`
-	Failures      int    `json:"failures,omitempty"`
+	InputMethod   *InputMethodDiagnostic `json:"inputMethod,omitempty"`
+	QueueDepth    int                    `json:"queueDepth,omitempty"`
+	QueueOverflow bool                   `json:"queueOverflow,omitempty"`
+	Run           string                 `json:"run,omitempty"`
+	ModelID       string                 `json:"modelId,omitempty"`
+	Capability    string                 `json:"capability,omitempty"`
+	Phase         string                 `json:"phase,omitempty"`
+	Reason        string                 `json:"reason,omitempty"`
+	Reads         int                    `json:"reads,omitempty"`
+	Failures      int                    `json:"failures,omitempty"`
 
 	At         time.Time           `json:"at"`
 	Event      string              `json:"event"`
@@ -49,8 +50,11 @@ var errInvalidEntry = errors.New("invalid diagnostic entry")
 
 func (e Entry) valid() bool {
 	switch e.Event {
-	case "app_started", "app_stopped", "preferences_repaired", "preferences_save", "usage_load", "usage_save", "vocabulary_key", "vocabulary_load", "vocabulary_save", "vocabulary_recall", "edit_learning", "e2e_listen", "ime_listen", "ime_source_state", "ime_setup_started", "ime_setup_completed", "ime_setup_cancelled", "ime_setup_failed", "ime_install_started", "ime_install_failed", "ime_install_pending", "ime_install_completed", "ime_settings_open", "ime_remove", "consent_guide", "hold_register", "permissions_changed", "devices_list", "model_status", "rewrite_status", "model_activate", "update_check", "update_install", "export_started", "export_completed", "export_failed", "export_cancelled", "events_dropped", "session_state", "session_error", "correction_ready", "commit_result", "first_draft", "target_capture", "recognizer_create", "audio_start", "acoustic_finalize", "context_read", "rewrite_preview", "rewrite_final", "target_commit", "segment_queue", "rewrite_validation", "dictation_toggle", "dictation_cancel", "power_suspend", "screen_locked", "hold_start", "hold_stop", "hold_cancel":
+	case "app_started", "app_stopped", "preferences_repaired", "preferences_save", "usage_load", "usage_save", "vocabulary_key", "vocabulary_load", "vocabulary_save", "vocabulary_recall", "edit_learning", "e2e_listen", "ime_listen", "ime_native", "ime_source_state", "ime_setup_started", "ime_setup_completed", "ime_setup_cancelled", "ime_setup_failed", "ime_install_started", "ime_install_failed", "ime_install_pending", "ime_install_completed", "ime_settings_open", "ime_remove", "consent_guide", "hold_register", "permissions_changed", "devices_list", "model_status", "rewrite_status", "model_activate", "update_check", "update_install", "export_started", "export_completed", "export_failed", "export_cancelled", "events_dropped", "session_state", "session_error", "correction_ready", "commit_result", "first_draft", "target_capture", "recognizer_create", "audio_start", "acoustic_finalize", "context_read", "rewrite_preview", "rewrite_final", "target_commit", "segment_queue", "rewrite_validation", "dictation_toggle", "dictation_cancel", "power_suspend", "screen_locked", "hold_start", "hold_stop", "hold_cancel":
 	default:
+		return false
+	}
+	if (e.Event == "ime_native") != (e.InputMethod != nil) || (e.InputMethod != nil && !e.InputMethod.valid()) {
 		return false
 	}
 	for _, id := range []string{e.Run, e.Session} {

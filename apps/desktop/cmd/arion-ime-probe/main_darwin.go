@@ -6,6 +6,7 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"flag"
 	"os"
 	"os/signal"
@@ -14,6 +15,7 @@ import (
 	"time"
 
 	"arion.local/core/domain"
+	"arion.local/desktop/infrastructure/diagnostics"
 	"arion.local/desktop/infrastructure/macos"
 )
 
@@ -25,7 +27,17 @@ func main() {
 	socket := flag.String("socket", macos.DefaultIMESocket(), "listener socket; the host must use the matching profile")
 	timeout := flag.Duration("timeout", 30*time.Second, "activation deadline")
 	cancelAfter := flag.Duration("cancel-after", 0, "cancel activation after this interval")
+	includeDiagnostics := flag.Bool("diagnostics", false, "include bounded native input-source observations")
+	rejectReady := flag.Bool("reject-first-ready", false, "native acceptance: reject the first verified host to exercise rollback")
 	flag.Parse()
+	var observations []diagnostics.Entry
+	if *includeDiagnostics {
+		macos.SetIMEDiagnostics(func(e diagnostics.Entry) {
+			e.At = time.Now().UTC()
+			observations = append(observations, e)
+		})
+		defer macos.SetIMEDiagnostics(nil)
+	}
 	var err error
 	switch *op {
 	case "query":
@@ -36,7 +48,16 @@ func main() {
 			transport := macos.NewIME(*socket, nil, nil)
 			err = transport.Listen()
 			if err == nil {
-				err = macos.InstallIME(*bundle, transport.WaitReady)
+				calls := 0
+				ready := func(ctx context.Context, build string) error {
+					err := transport.WaitReady(ctx, build)
+					calls++
+					if err == nil && *rejectReady && calls == 1 {
+						return errors.New("native acceptance rejected first verified host")
+					}
+					return err
+				}
+				err = macos.InstallIME(*bundle, ready)
 			}
 			transport.Close()
 		}
@@ -59,11 +80,18 @@ func main() {
 		}
 		transport.Close()
 	case "remove":
-		err = macos.RemoveIME()
+		helper := *bundle
+		if helper == "" {
+			helper = macos.InstalledIMEPath()
+		}
+		err = macos.RemoveIMEWithHelper(context.Background(), helper)
 	default:
 		err = domain.Fail(domain.CodeTargetUnsupported, "unknown input source operation")
 	}
 	result := map[string]any{"state": macos.QueryIME()}
+	if *includeDiagnostics {
+		result["inputMethodDiagnostics"] = observations
+	}
 	if err != nil {
 		result["errorCode"] = domain.CodeOf(err)
 		result["detail"] = err.Error()

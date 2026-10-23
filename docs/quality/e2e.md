@@ -100,3 +100,9 @@ A real OS run must separately record initial source state, actual selected sourc
 
 
 The [activation-alignment run](../../benchmarks/runs/ime-activation-v1/README.md) passes known-authorization macOS arm64 activation/retry/cancel and cached-authorization remove/reinstall, with expected-build connection and a real `nihao` → `你好` IMK commit in an isolated keyboard profile. It also passes cancelled composition without another commit. These observations close the local known-authorization path, not clean-account first-consent/denial. The failed isolated direct-launch connection attempt is retained alongside the successful configured LaunchServices attempt. Native GUI lifecycle/view checks are separate from the real adapter/host/editor observations.
+
+### Automatic IME update and verified removal
+
+Automatic-update acceptance starts with a signed main app containing a different signed IME build and an existing enabled source. Launch while Arion is selected: the payload must remain unchanged and the UI must show automatic deferral without an Update button. Switch normally to another source: verify old-host exit, installed payload identity matching bundled resources, expected-build readiness and a completed install diagnostic without clicking Update. Missing/disabled sources must not be automatically installed/enabled. Active dictation and rival maintenance must defer. Inject an update failure: preserve recovery and expose retry without repeated polling attempts.
+
+Removal acceptance requires fresh-process and local agreement that the own selectable source is unavailable, not merely a successful TIS return code. Denial/unknown state retains files. Test a disabled parent with a still-enabled child, system removal followed by retry, and restoration separately. See [local acceptance report](../research/ime-lifecycle-acceptance.md) for executed cases and limitations.

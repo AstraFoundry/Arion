@@ -1,5 +1,10 @@
 #ifndef ARION_NATIVE_H
 #define ARION_NATIVE_H
+int arion_ime_maintenance_version(const char *path);
+char *arion_ime_removal_observation(void);
+char *arion_ime_current_id(void);
+int arion_ime_exchange(const char *first, const char *second, int existing);
+int arion_ime_swap_supported(const char *path);
 
 enum {
     ARION_AUTH_UNDETERMINED = 0,
@@ -55,6 +60,14 @@ int arion_ime_validate_payload(const char *bundle_path, const char *bundle_id);
 int arion_ime_bundle_matches(const char *bundle_path, const char *source_id);
 int arion_ime_enable(const char *source_id);
 int arion_ime_state(const char *source_id);
+typedef struct {
+    int mode_flags;
+    int parent_flags;
+    int selected_kind;
+} arion_ime_snapshot;
+// Flags: found=1, enabled=2, selected=4, selectable=8, matching ID=16.
+// Selected kind: unavailable=0, Arion mode=1, Arion parent=2, other=3.
+void arion_ime_inspect(const char *source_id, const char *parent_id, arion_ime_snapshot *out);
 int arion_ime_open_settings(void);
 // Select/switch without disabling an already authorized input source.
 int arion_ime_select(const char *source_id);

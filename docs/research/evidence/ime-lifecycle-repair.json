@@ -1,0 +1,268 @@
+{
+  "scope": "Read-only source/spec/API research and owned unsigned directory experiments; no production lifecycle code, installed bundle, TIS state or client cache changed",
+  "sourceBindings": [
+    {
+      "path": "apps/desktop/infrastructure/macos/ime.go",
+      "sha256": "27f5a5200ec62ebac41e28b5e70c9a6e5f3d89a0bb9060b67d7ca81f96ca4c7a"
+    },
+    {
+      "path": "apps/desktop/infrastructure/macos/ime_install_darwin.go",
+      "sha256": "7bb9460bb888e04413143bbdf2721ebf94ddbcfa7f84c854cced2513793c019b"
+    },
+    {
+      "path": "apps/desktop/infrastructure/macos/native.m",
+      "sha256": "ace1bc1e45dac251ef26be55593a49562cb5941985e1ceefebc60f9ac46265bd"
+    },
+    {
+      "path": "apps/desktop/bootstrap/actions.go",
+      "sha256": "801cecaab6130ae86d4eaa223e6d17e96bb8960d79e9eed8b7a5c562f853a802"
+    },
+    {
+      "path": "apps/desktop/bootstrap/platform_darwin.go",
+      "sha256": "e2528fc4e8a1b59fe8dfd0a656b536f56bd7a48224f6dac4615df90360523f04"
+    },
+    {
+      "path": "specs/007-ime-ranking.md",
+      "sha256": "66223347110a12678a6228186750ba0319af9420f4f7744b0efb1771b53d0acf"
+    },
+    {
+      "path": "docs/decisions/006-macos-input-method-host.md",
+      "sha256": "116e8a6cc5b812e689dcdc9048e5900067c1792a0c9c09f18edfe0a6d4469c81"
+    }
+  ],
+  "contracts": {
+    "context7": {
+      "renameResolution": "No matching Darwin library; unrelated Nix/UI results excluded",
+      "foundationLibrary": "/websites/developer_apple_foundation",
+      "source": "https://developer.apple.com/documentation/foundation/urlresourcevalues/volumesupportsswaprenaming"
+    },
+    "sdkFiles": [
+      {
+        "path": "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/share/man/man2/rename.2",
+        "sha256": "896c6a278dcfd14601147661cf2a4588d85b271ec8798bbec7913c1d17967033"
+      },
+      {
+        "path": "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/stdio.h",
+        "sha256": "a8078ae1cba1a46a66d0de6fe7f13bbc969cdb7e78fc2d4b9a5c5cdaaf16126b"
+      },
+      {
+        "path": "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Carbon.framework/Frameworks/HIToolbox.framework/Headers/TextInputSources.h",
+        "sha256": "e3c1a70e0cb8e21476a8f88f1e247a897a0c7d5723d43e3d63ff091d05927cd9"
+      }
+    ]
+  },
+  "ownedValidation": {
+    "source": {
+      "path": "benchmarks/reproduction/ime-bundle-swap-v1/swap_probe.py",
+      "sha256": "722a90909152e3c663b3e357c6fcb707aae3f14d9f59fdbe3a0d4a6295bea481"
+    },
+    "volumeSource": {
+      "path": "benchmarks/reproduction/ime-bundle-swap-v1/volume_probe.m",
+      "sha256": "ed6028bc83de734c1bc4344157ba0325cf20ec4c6905a47c8900a3ed16ec1ac2"
+    },
+    "provenance": {
+      "path": "benchmarks/reproduction/ime-bundle-swap-v1/provenance.json",
+      "sha256": "1c7bb385087d045358103f632359846f62263d12d4f3f6c5154522f0805474e6"
+    },
+    "results": [
+      {
+        "file": {
+          "path": "benchmarks/runs/ime-bundle-swap-v1/0a65813e-9322-4081-8a90-72d3f607cc88/result.json",
+          "sha256": "fa809574935cf94eabf7bb9104c8a077cb8f1f695b96d59c2fd3f047b363596a"
+        },
+        "observation": {
+          "scope": "Owned unsigned directory fixtures only; no source API, installed bundle, application cache, or running IME modified",
+          "system": {
+            "macOS": "26.6.2",
+            "build": "25G83",
+            "machine": "x86_64"
+          },
+          "sameDeviceAsInstalledParent": true,
+          "before": {
+            "installed": "ad5896df7174175181dc94e609d63a0d372dde7811bf1ac3cb49fa0f6130e5f6",
+            "candidate": "733a525751e9e029f29826da64051331e3b7863ca07187b0f48893c3d8679e86"
+          },
+          "promotion": {
+            "return": 0,
+            "errno": 0
+          },
+          "afterPromotion": {
+            "installed": "733a525751e9e029f29826da64051331e3b7863ca07187b0f48893c3d8679e86",
+            "candidate": "ad5896df7174175181dc94e609d63a0d372dde7811bf1ac3cb49fa0f6130e5f6"
+          },
+          "rollback": {
+            "return": 0,
+            "errno": 0
+          },
+          "afterRollback": {
+            "installed": "ad5896df7174175181dc94e609d63a0d372dde7811bf1ac3cb49fa0f6130e5f6",
+            "candidate": "733a525751e9e029f29826da64051331e3b7863ca07187b0f48893c3d8679e86"
+          },
+          "missingTarget": {
+            "return": -1,
+            "errno": 2
+          },
+          "afterError": {
+            "installed": "ad5896df7174175181dc94e609d63a0d372dde7811bf1ac3cb49fa0f6130e5f6",
+            "candidate": "733a525751e9e029f29826da64051331e3b7863ca07187b0f48893c3d8679e86"
+          },
+          "repeatedExchanges": 2000,
+          "exchangeFailures": [],
+          "concurrentDestinationStat": {
+            "exists": 104292,
+            "missing": 0,
+            "errors": []
+          },
+          "limits": [
+            "Only local fixture volume tested; no unsupported/cross-volume target or signed app validation tested",
+            "Stat observations are finite sampling, not proof of absence of all namespace races",
+            "Atomic name exchange does not establish crash/power-loss recovery, stable resource reads across multiple lookups, or TIS cache coherence"
+          ],
+          "passed": true,
+          "sourceSHA256": "722a90909152e3c663b3e357c6fcb707aae3f14d9f59fdbe3a0d4a6295bea481"
+        }
+      },
+      {
+        "file": {
+          "path": "benchmarks/runs/ime-bundle-swap-v1/225f0f5e-cb60-4346-9f32-6b44b024930c/result.json",
+          "sha256": "2ae21ca21a02da8ca7349d1b63a4cbc4701d910d0b1c05252f308a6edaa76ab6"
+        },
+        "observation": {
+          "scope": "Owned unsigned directory fixtures only; no source API, installed bundle, application cache, or running IME modified",
+          "system": {
+            "macOS": "26.6.2",
+            "build": "25G83",
+            "machine": "arm64"
+          },
+          "sameDeviceAsInstalledParent": true,
+          "before": {
+            "installed": "ad5896df7174175181dc94e609d63a0d372dde7811bf1ac3cb49fa0f6130e5f6",
+            "candidate": "733a525751e9e029f29826da64051331e3b7863ca07187b0f48893c3d8679e86"
+          },
+          "promotion": {
+            "return": 0,
+            "errno": 0
+          },
+          "afterPromotion": {
+            "installed": "733a525751e9e029f29826da64051331e3b7863ca07187b0f48893c3d8679e86",
+            "candidate": "ad5896df7174175181dc94e609d63a0d372dde7811bf1ac3cb49fa0f6130e5f6"
+          },
+          "rollback": {
+            "return": 0,
+            "errno": 0
+          },
+          "afterRollback": {
+            "installed": "ad5896df7174175181dc94e609d63a0d372dde7811bf1ac3cb49fa0f6130e5f6",
+            "candidate": "733a525751e9e029f29826da64051331e3b7863ca07187b0f48893c3d8679e86"
+          },
+          "missingTarget": {
+            "return": -1,
+            "errno": 2
+          },
+          "afterError": {
+            "installed": "ad5896df7174175181dc94e609d63a0d372dde7811bf1ac3cb49fa0f6130e5f6",
+            "candidate": "733a525751e9e029f29826da64051331e3b7863ca07187b0f48893c3d8679e86"
+          },
+          "repeatedExchanges": 2000,
+          "exchangeFailures": [],
+          "concurrentDestinationStat": {
+            "exists": 160955,
+            "missing": 0,
+            "errors": []
+          },
+          "limits": [
+            "Only local fixture volume tested; no unsupported/cross-volume target or signed app validation tested",
+            "Stat observations are finite sampling, not proof of absence of all namespace races",
+            "Atomic name exchange does not establish crash/power-loss recovery, stable resource reads across multiple lookups, or TIS cache coherence"
+          ],
+          "passed": true,
+          "sourceSHA256": "722a90909152e3c663b3e357c6fcb707aae3f14d9f59fdbe3a0d4a6295bea481"
+        }
+      }
+    ],
+    "volume": {
+      "file": {
+        "path": "benchmarks/runs/ime-bundle-swap-v1/volume.json",
+        "sha256": "950383e995acb8f27b58898b2a75519b6796fbae3d53736a61e00340c5175b44"
+      },
+      "observation": {
+        "resourceQuerySucceeded": true,
+        "filesystem": "apfs",
+        "resourceErrorCode": 0,
+        "statfsErrno": 0,
+        "swapSupported": true
+      }
+    }
+  },
+  "proposedDecisions": [
+    "Automatic-first public disable via a short-lived signed maintenance context, independently verified before deletion; manual SystemSettings recovery only if denied/unverified. Retain files throughout pending states.",
+    "Use independent successful public native enumerations and a fresh signed helper, bypassing installed-file-gated product state; unknown/conflicting results retain bytes.",
+    "Use capability-checked atomic exchange of complete signed staged/installed bundles and symmetrical rollback; no silent two-rename fallback.",
+    "Use cross-process maintenance lock, staged-copy validation, operation generations and explicit transaction recovery; preserve intervening user selection."
+  ],
+  "limits": [
+    "Proposal not implemented; current source still deletes after release and uses two renames.",
+    "Independent helper cannot guarantee every other client cache refreshed; lifecycle changes are risk reduction, not proven permanent crash prevention.",
+    "Owned filesystem runs are same-parent nonempty unsigned fixtures on one local APFS volume; native arm64 and initial x86_64-process runs are not separate hardware samples.",
+    "Unsupported/cross-volume/different-parent/permission, signed-bundle, crash/power-loss and native source/client acceptance remain unexecuted.",
+    "No public atomic transaction couples TIS preference state and bundle filesystem deletion."
+  ],
+  "silentRemovalReview": {
+    "publicContract": "TISDisableInputSource is intended for input methods/source-supplying apps and removes sources from selection availability/systemUI; manualSettings not specified as prerequisite.",
+    "priorObservation": "Arion desktop process policy denied com.apple.inputsources write; local cache nevertheless reported disabled while freshprocess reported enabled.",
+    "scopeLimit": "Actual signed helper and IME-host maintenance attempts have not been verified. No new disable or system mutation performed. A different process is not an assumed policy bypass.",
+    "recommendedFlow": "User Remove -> short-lived signed mutation process -> independent fresh public observations -> verified unavailable+hostexit -> delete; denied/unknown -> retain files and offer manual recovery.",
+    "sources": [
+      {
+        "path": "docs/research/input-source-onboarding.md",
+        "section": "Removal and the input-source preference policy"
+      },
+      {
+        "path": "docs/research/competitor-input-source-refresh.md",
+        "section": "Chatterfly entry paths and timing"
+      }
+    ]
+  },
+  "publishedRouteComparison": {
+    "basis": "Published alpha.11 tag source; public-release channel rollout to every user not inferred. Installed executable has dirty source flag and is not asserted byte-identical to release assets.",
+    "tag": "v0.1.0-alpha.11",
+    "tagCommit": "253d86130d9611d45069e623ad0291d786cf7f77",
+    "releaseURL": "https://github.com/AstraFoundry/Arion/releases/tag/v0.1.0-alpha.11",
+    "sourceBindings": [
+      {
+        "path": "apps/desktop/infrastructure/macos/ime.go",
+        "alpha10SHA256": "ae470a8b384e32304802ffc8832afaa508f698e729b7fc4b2f1ad46bd087fc3b",
+        "alpha11SHA256": "ae470a8b384e32304802ffc8832afaa508f698e729b7fc4b2f1ad46bd087fc3b",
+        "identical": true
+      },
+      {
+        "path": "apps/desktop/infrastructure/macos/ime_install_darwin.go",
+        "alpha10SHA256": "7bb9460bb888e04413143bbdf2721ebf94ddbcfa7f84c854cced2513793c019b",
+        "alpha11SHA256": "7bb9460bb888e04413143bbdf2721ebf94ddbcfa7f84c854cced2513793c019b",
+        "identical": true
+      },
+      {
+        "path": "apps/desktop/infrastructure/macos/ime_activation_darwin.go",
+        "alpha10SHA256": "edf401e45cb47cec006da98503577929a64579b5eb306d27946d1bd8d96eb3c1",
+        "alpha11SHA256": "edf401e45cb47cec006da98503577929a64579b5eb306d27946d1bd8d96eb3c1",
+        "identical": true
+      },
+      {
+        "path": "apps/desktop/infrastructure/macos/native.m",
+        "alpha10SHA256": "fb2bc4548359a96707c013b8bc80dbbdc84fcb9b453253993110edc979827995",
+        "alpha11SHA256": "fb2bc4548359a96707c013b8bc80dbbdc84fcb9b453253993110edc979827995",
+        "identical": true
+      }
+    ],
+    "installedMain": {
+      "path": "/Applications/Arion.app/Contents/MacOS/Arion",
+      "sha256": "e23d3150f809c2e38658dd311d59074a43bd3bb76ec4db9bc595815d0a5bdf19",
+      "vcsFields": [
+        "build\tvcs.revision=253d86130d9611d45069e623ad0291d786cf7f77",
+        "build\tvcs.time=2026-10-23T04:03:13Z",
+        "build\tvcs.modified=true"
+      ]
+    },
+    "summary": "Published route already stages, validates source, stops old host, checks expected new host and rolls back; proposal adds automatic verified disable before deletion, atomic promotion/reversal, cross-process ownership and durable transaction design."
+  }
+}

@@ -45,7 +45,7 @@ func source(c *ui.Context, store runtime.Store, tokens theme.Tokens, state *Stat
 	s := store.State
 	kit.Card(c, tokens).Children(func() {
 		detail := messages.Text(status(s.InputMethod))
-		update := s.InputMethodUpdate && s.InputMethod != runtime.InputMethodAbsent
+		update := s.InputMethodUpdate && (s.InputMethod == runtime.InputMethodInstalled || s.InputMethod == runtime.InputMethodSelected)
 		if update {
 			detail = messages.Text(copy.IMEUpdateAvailable)
 		}
@@ -60,6 +60,10 @@ func source(c *ui.Context, store runtime.Store, tokens theme.Tokens, state *Stat
 			}
 		}
 		kit.Row(c, tokens, label, detail, func() {
+			if s.InputMethodRemoving {
+				kit.Button(c.Key("removing"), tokens, kit.Outline, messages.Text(copy.IMERemoving), false)
+				return
+			}
 			if s.InputMethodInstalling {
 				kit.Button(c.Key("installing"), tokens, kit.Outline, messages.Text(copy.IMEInstalling), false)
 				return
@@ -81,7 +85,7 @@ func source(c *ui.Context, store runtime.Store, tokens theme.Tokens, state *Stat
 			case runtime.InputMethodDiscovering, runtime.InputMethodPending, runtime.InputMethodInstalled, runtime.InputMethodSelected:
 				// Installing over the current source replaces it with the
 				// bundled build and restarts the input method.
-				if update {
+				if update && s.InputMethodUpdateFailed {
 					if kit.Button(c.Key("update"), tokens, kit.Primary, messages.Text(copy.IMEUpdate), true).Clicked() {
 						state.Error = ""
 						if store.Actions.InstallInputMethod() != nil {
@@ -111,7 +115,7 @@ func source(c *ui.Context, store runtime.Store, tokens theme.Tokens, state *Stat
 			}
 		})
 	})
-	if !s.InputMethodInstalling && !s.InputMethodActivating && (s.InputMethod == runtime.InputMethodDiscovering || s.InputMethod == runtime.InputMethodPending || s.InputMethod == runtime.InputMethodInstalled) {
+	if !s.InputMethodInstalling && !s.InputMethodActivating && !s.InputMethodRemoving && (s.InputMethod == runtime.InputMethodDiscovering || s.InputMethod == runtime.InputMethodPending || s.InputMethod == runtime.InputMethodInstalled || s.InputMethodError == copy.IMERemovePending) {
 		if kit.Button(c.Key("setup"), tokens, kit.Ghost, messages.Text(copy.IMESetup), true).Clicked() {
 			state.Error = ""
 			if store.Actions.OpenInputMethodSettings() != nil {
@@ -120,7 +124,7 @@ func source(c *ui.Context, store runtime.Store, tokens theme.Tokens, state *Stat
 		}
 	}
 
-	if removal && (s.InputMethod == runtime.InputMethodPending || s.InputMethod == runtime.InputMethodDiscovering) && !s.InputMethodInstalling && !s.InputMethodActivating {
+	if removal && (s.InputMethod == runtime.InputMethodPending || s.InputMethod == runtime.InputMethodDiscovering) && !s.InputMethodInstalling && !s.InputMethodActivating && !s.InputMethodRemoving {
 		ui.Text(c, messages.Text(copy.IMESetupHint)).FontSize(theme.Caption).TextColor(tokens.Muted)
 	}
 	if state.Error != "" {

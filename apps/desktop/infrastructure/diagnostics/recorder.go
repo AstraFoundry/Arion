@@ -158,6 +158,15 @@ func (r *Recorder) rotate() error {
 }
 
 func (r *Recorder) Record(e Entry) {
+	if e.InputMethod != nil {
+		// Own nested values before validation and asynchronous serialization.
+		d := *e.InputMethod
+		if d.OSStatus != nil {
+			status := *d.OSStatus
+			d.OSStatus = &status
+		}
+		e.InputMethod = &d
+	}
 	e.At = r.now().UTC()
 	e.Run = r.runID
 	if !e.valid() || !knownModel(e.ModelID) {

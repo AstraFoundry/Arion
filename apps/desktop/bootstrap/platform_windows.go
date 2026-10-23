@@ -4,6 +4,7 @@ package bootstrap
 
 import (
 	"arion.local/core/application"
+	"arion.local/desktop/infrastructure/diagnostics"
 	"arion.local/desktop/infrastructure/holdkey"
 	"arion.local/desktop/infrastructure/windows"
 	"arion.local/desktop/ui/shared/runtime"
@@ -16,6 +17,8 @@ import (
 type windowsPlatform struct{}
 
 func newPlatform() Platform { return windowsPlatform{} }
+
+func configureInputMethodDiagnostics(func(diagnostics.Entry)) {}
 
 func configureOverlay(*mygo.Window) {}
 

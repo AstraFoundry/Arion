@@ -374,6 +374,7 @@ func (a *App) ready() {
 		}
 	}
 	a.setupDiagnosticExport()
+	configureInputMethodDiagnostics(a.recordEntry)
 	a.startCue, a.stopCue = cue(true), cue(false)
 	go a.drain()
 	a.core.Subscribe(func(e contracts.Event) {
@@ -417,7 +418,7 @@ func (a *App) ready() {
 		}
 		go func() {
 			update := a.ime.UpdateAvailable()
-			a.post(func() { a.state.InputMethodUpdate = update })
+			a.post(func() { a.state.InputMethodUpdate = update; a.updateInputMethodAutomatically() })
 		}()
 	}
 	a.loadVocabulary(false)
@@ -616,8 +617,9 @@ func (a *App) pollPermissions() {
 }
 
 func (a *App) refreshInputMethod() {
-	if a.ime != nil && !a.state.InputMethodInstalling {
+	if a.ime != nil && !a.state.InputMethodInstalling && !a.state.InputMethodRemoving {
 		a.setInputMethodState(a.ime.State())
+		a.updateInputMethodAutomatically()
 	}
 }
 

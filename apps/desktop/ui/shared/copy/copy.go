@@ -391,6 +391,8 @@ const (
 	LanguageChinese           Key = "LanguageChinese"
 	VocabSaveFailed           Key = "VocabSaveFailed"
 	IMERemoveFailed           Key = "IMERemoveFailed"
+	IMERemovePending          Key = "IMERemovePending"
+	IMERemoving               Key = "IMERemoving"
 	FormatBytesMB             Key = "FormatBytesMB"
 	FormatBytesGB             Key = "FormatBytesGB"
 	FormatProgress            Key = "FormatProgress"

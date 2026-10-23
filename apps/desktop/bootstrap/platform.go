@@ -31,7 +31,7 @@ type InputMethod interface {
 	// Activate retries installed-source setup without replacing its bundle.
 	Activate(context.Context) error
 	OpenSettings() error
-	Remove() error
+	Remove(context.Context) error
 	// ApplyKeyboard hands the keyboard preferences and the dictation key
 	// that titles the menu's Voice Input item to the input method, which
 	// reads them when a client next activates it.
