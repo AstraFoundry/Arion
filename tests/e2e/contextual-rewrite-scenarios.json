@@ -52,7 +52,7 @@
         }
       ],
       "assertions": {
-        "rewrite.previewObserved": true,
+        "rewrite.previewObserved": false,
         "rewrite.protectedConstraintsPassed": true,
         "editors.A.beforeConfirmText": "",
         "rewrite.committedCandidateMatchesPreview": true,

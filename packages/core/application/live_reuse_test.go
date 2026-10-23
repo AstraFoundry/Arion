@@ -169,13 +169,19 @@ func TestCancelledSessionCannotDeliverCompletedPreview(t *testing.T) {
 	}
 }
 
-func TestCompletedPreviewReuseCommitsOnce(t *testing.T) {
+// Release sends the recognized text once. The rewrite is committed once.
+func TestFinalRewriteReceivesRecognizedText(t *testing.T) {
 	w := &scriptedRewriter{answer: func(ports.RewriteRequest) (string, error) { return "Hello.", nil }}
 	c, audio, events, target, _ := liveSetup(t, []string{"hello", "|"}, w, RewritePolicy{Enabled: true, Scene: "chat"})
 	c.Start()
 	events.wait(t, stateIs(domain.Capturing))
 	audio.push(2, 0.2)
-	events.wait(t, draftIs("Hello"))
+	events.wait(t, draftIs("HELLO"))
+	w.mu.Lock()
+	if len(w.requests) != 0 {
+		t.Fatalf("rewrite during speech: %+v", w.requests)
+	}
+	w.mu.Unlock()
 	c.Stop()
 	ready := events.wait(t, kindIs(contracts.CorrectionReady))
 	events.wait(t, kindIs(contracts.CommitResultReady))
@@ -185,7 +191,7 @@ func TestCompletedPreviewReuseCommitsOnce(t *testing.T) {
 	}
 	w.mu.Lock()
 	defer w.mu.Unlock()
-	if len(w.requests) != 1 || !w.requests[0].Live || len(w.ended) != 1 {
+	if len(w.requests) != 1 || w.requests[0].Live || w.requests[0].Text != "HELLO" || len(w.ended) != 1 {
 		t.Fatalf("unexpected worker lifecycle: %+v ended=%d", w.requests, len(w.ended))
 	}
 }
