@@ -35,6 +35,12 @@ Private execution logs are under `.workspace/windows-validation/`; in particular
 - Portable test cleanup waits for owned child processes to exit before removing their Windows working directories. Signing fixture assertions use platform path handling.
 - Native tests use owned Win32 controls instead of relying on modern Notepad process/window behavior. The packaged speech test exposes only a test-control pending-final observation so cancellation really occurs after recognition, rather than merely before it.
 
+## Hosted Windows context initialization
+
+The [first alpha.12 main CI run](https://github.com/AstraFoundry/Arion/actions/runs/40050619822) passed Windows desktop and updater tests but timed out in the owned-window UI Automation test: the original 1.5-second traversal budget also covered PowerShell/provider initialization. The reader now allows up to five seconds for initialization without target access, revalidates the target, then grants the unchanged 1.5-second traversal budget through a READY/GO handshake. Caller cancellation applies throughout; final rewrite context waiting remains 1.5 seconds. Real subprocess tests cover both deadlines, cancellation, authorization and rejection of incomplete output. The actual local UIA read passes with a 740.48 ms total capture; hosted-runner success is checked again before tagging.
+
+Two full local E2E reruns after this repair passed UIA (740.48 ms and 672.14 ms) and the remaining target/hold/input cases, but both failed the unchanged onboarding-to-settings focus assertion. Those runs are not full-suite passes; their logs remain in `.workspace/windows-validation/release/native-uia-phases.log` and `native-uia-phases-repeat.log`. That onboarding case passed in the first hosted run above and remains enabled in subsequent CI.
+
 ## MSVC release runtime validation
 
 The CI-style CPU worker was additionally built with Visual Studio 2022 / MSVC 19.44.35228.0, x64, static `/MT`, and OpenMP disabled. A minimal `/MT` + OpenMP executable still imported `VCOMP140.DLL`; the new PE gate rejects that unbundled dependency. The full pinned CPU worker imports only `ws2_32.dll`, `shell32.dll`, `kernel32.dll` and `advapi32.dll`, and its `--version` succeeds with only Windows system directories on `PATH`. Staging and package verification now check normal/delay-loaded import closure and this CPU launch; four portable dependency-gate tests pass. Vulkan's optional loader remains supplied by the GPU driver.

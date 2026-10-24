@@ -175,6 +175,7 @@ func TestWindowsContextFromOwnedWindow(t *testing.T) {
 	if err != nil || !read.SafeToRead || !strings.Contains(read.Screen, visible) || strings.Contains(read.Screen, secret) {
 		t.Fatalf("visible context: %+v %v", read, err)
 	}
+	t.Logf("owned-window UI Automation total capture time: %.2f ms", read.ScreenCaptureMs)
 	enabled = false
 	read, err = targets.ReadContext(context.Background(), identity(), snapshot.Target)
 	if err != nil || !read.SafeToRead || read.Screen != "" || read.Before != "" || read.After != "" {

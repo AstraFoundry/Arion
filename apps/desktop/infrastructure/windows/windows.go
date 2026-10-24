@@ -222,13 +222,24 @@ func (t *Targets) ReadContext(ctx context.Context, id contracts.Identity, token 
 	}
 	snap.SafeToRead = true
 	if t.readScreen != nil && t.readScreen() {
-		ctx, cancel := context.WithTimeout(ctx, screenTimeout)
-		defer cancel()
 		start := time.Now()
 		if foreground, _, _ := procGetForegroundWindow.Call(); foreground != tgt.foreground || focusOf(foreground) != tgt.focus {
 			return snap, domain.Fail(domain.CodeTargetChanged, "context target changed")
 		}
-		text, err := readWindowText(ctx, tgt.foreground)
+		text, err := readWindowText(ctx, tgt.foreground, func() error {
+			foreground, _, _ := procGetForegroundWindow.Call()
+			if foreground != tgt.foreground || focusOf(foreground) != tgt.focus {
+				return domain.Fail(domain.CodeTargetChanged, "context target changed during initialization")
+			}
+			if !strings.EqualFold(className(tgt.focus), "Edit") {
+				return domain.Fail(domain.CodeTargetChanged, "context field safety changed during initialization")
+			}
+			style, _, _ := procGetWindowLongW.Call(tgt.focus, gwlStyle)
+			if style&esPassword != 0 {
+				return domain.Fail(domain.CodeSecureFieldBlocked, "context field became secure")
+			}
+			return nil
+		})
 		if ctx.Err() != nil {
 			return snap, domain.Fail(domain.CodeCancelled, "context cancelled")
 		}

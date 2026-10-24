@@ -7,6 +7,7 @@ Preview for macOS Apple silicon (macOS 14 or later) and Windows x64.
 - Include the Windows installer and cryptographically signed update archive in alpha releases. The Windows application and installer do not have an Authenticode publisher signature; Windows security policies may warn or block execution.
 - Protect Windows text delivery against stale sessions, cancellation, changed focus/selection and standard password fields; stop remaining input batches when a session loses ownership.
 - Repair Windows UI Automation provider initialization and refuse context reads when field safety cannot be established.
+- Give Windows accessibility initialization a separate bounded startup phase while preserving the 1.5-second window traversal limit.
 - Fix update rollback leaving newly added files or directories behind when another destination is locked.
 - Remove the MSVC OpenMP redistributable dependency from the Windows CPU speech worker and reject unbundled runtime DLLs during packaging.
 - Reload the same speech runtime for a new request after cancellation times out and retires its process; cancelled requests are never replayed.
@@ -21,6 +22,7 @@ This is an early preview. Mixed-language technical terms still have recognition 
 - Alpha 发布新增 Windows 安装包及带加密签名的更新归档。Windows 程序和安装包尚无 Authenticode 发布者签名，系统安全策略可能警告或阻止运行。
 - 加强 Windows 文本输入保护：拒绝过期会话、取消、焦点或选区变化及标准密码框；会话失去目标所有权时停止后续输入批次。
 - 修复 Windows UI Automation 提供程序初始化，并在无法确认字段安全时拒绝读取上下文。
+- 为 Windows 辅助功能初始化设置独立、有界的启动阶段，同时保留 1.5 秒的窗口遍历限制。
 - 修复更新过程中目标文件被锁定时，回滚遗留新增文件或目录的问题。
 - 移除 Windows CPU 语音运行时对 MSVC OpenMP 可再发行库的依赖，并在打包时检查未随包提供的运行库 DLL。
 - 修复取消超时回收语音进程后无法继续识别的问题：新请求重新加载同一运行时，已取消请求不会重放。
