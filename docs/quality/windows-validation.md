@@ -35,7 +35,13 @@ Private execution logs are under `.workspace/windows-validation/`; in particular
 - Portable test cleanup waits for owned child processes to exit before removing their Windows working directories. Signing fixture assertions use platform path handling.
 - Native tests use owned Win32 controls instead of relying on modern Notepad process/window behavior. The packaged speech test exposes only a test-control pending-final observation so cancellation really occurs after recognition, rather than merely before it.
 
-## Final artifacts
+## MSVC release runtime validation
+
+The CI-style CPU worker was additionally built with Visual Studio 2022 / MSVC 19.44.35228.0, x64, static `/MT`, and OpenMP disabled. A minimal `/MT` + OpenMP executable still imported `VCOMP140.DLL`; the new PE gate rejects that unbundled dependency. The full pinned CPU worker imports only `ws2_32.dll`, `shell32.dll`, `kernel32.dll` and `advapi32.dll`, and its `--version` succeeds with only Windows system directories on `PATH`. Staging and package verification now check normal/delay-loaded import closure and this CPU launch; four portable dependency-gate tests pass. Vulkan's optional loader remains supplied by the GPU driver.
+
+This run exposed a separate cancellation lifecycle defect: an otherwise healthy MSVC worker acknowledges the long diagnostic cancellation after approximately 5.6–5.9 seconds, so the adapter's existing five-second watchdog retired it and left later requests using a dead process. Recovery now retires/reaps that generation after the same drain budget and loads the same immutable worker/specification only for a later explicit request; the cancelled request is never retried. Arbitrary crashes and real reload failures remain explicit failures, while caller cancellation during reload does not poison later requests. The final source-bound real MSVC run passes six offline utterances, cancellation followed by a new request, and three realtime streaming cases. Cancellation took 5,183.821 ms; the next request succeeded, including replacement loading, in 6,717.508 ms. These diagnostic timings do not establish latency budgets or recognition quality. The [durable archive](../../benchmarks/reproduction/windows-native-asr-v1/README.md#msvc-release-runtime-validation) retains the original failure, raw protocol observations, intermediate attempt, final outputs and exact source/runtime hashes.
+
+## Retained development artifacts
 
 The retained preview installer is `apps/desktop/build/windows-amd64/Arion Setup 0.1.0-alpha.11 amd64.exe` (15,298,202 bytes), SHA-256 `fe2256cf7738d3d83a4c24d879efe767930cadc3b19149a777a5f57eaf4231b1`. Its application is 23,900,672 bytes, SHA-256 `c822189b8acec48b403dc9f655cca6f09a029257f021a2a54065dee1068089af`. A second retained copy is under `.workspace/windows-validation/release/final-collected/`.
 
