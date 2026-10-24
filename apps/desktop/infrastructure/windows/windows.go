@@ -30,6 +30,7 @@ var (
 	procGetGUIThreadInfo         = user32.NewProc("GetGUIThreadInfo")
 	procGetWindowLongW           = user32.NewProc("GetWindowLongW")
 	procGetClassNameW            = user32.NewProc("GetClassNameW")
+	procSendMessageTimeoutW      = user32.NewProc("SendMessageTimeoutW")
 	procSendInput                = user32.NewProc("SendInput")
 	procOpenClipboard            = user32.NewProc("OpenClipboard")
 	procCloseClipboard           = user32.NewProc("CloseClipboard")
@@ -96,6 +97,9 @@ type target struct {
 	focus      uintptr
 	clipboard  bool
 	secure     bool
+	readable   bool
+	selection  bool
+	start, end uint32
 	created    time.Time
 }
 
@@ -133,16 +137,20 @@ func (t *Targets) Capture(_ context.Context, id contracts.Identity) (contracts.T
 		return contracts.TargetSnapshot{}, domain.Fail(domain.CodeTargetUnsupported, "no foreground window")
 	}
 	focus := focusOf(foreground)
-	secure := false
+	secure, readable := false, false
+	var start, end uint32
+	selection := false
 	if focus != 0 && strings.EqualFold(className(focus), "Edit") {
 		style, _, _ := procGetWindowLongW.Call(focus, gwlStyle)
 		secure = style&esPassword != 0
+		readable = !secure
+		start, end, selection = editSelection(focus)
 	}
 	var b [12]byte
 	_, _ = rand.Read(b[:])
 	token := contracts.TargetToken(hex.EncodeToString(b[:]))
 	t.mu.Lock()
-	t.targets[token] = &target{identity: id, foreground: foreground, focus: focus, clipboard: t.delivery() == DeliveryClipboard, secure: secure, created: time.Now()}
+	t.targets[token] = &target{identity: id, foreground: foreground, focus: focus, clipboard: t.delivery() == DeliveryClipboard, secure: secure, readable: readable, selection: selection, start: start, end: end, created: time.Now()}
 	for len(t.targets) > 4 {
 		var oldest contracts.TargetToken
 		for k, v := range t.targets {
@@ -194,10 +202,22 @@ func (t *Targets) ReadContext(ctx context.Context, id contracts.Identity, token 
 	if tgt == nil {
 		return snap, domain.Fail(domain.CodeTargetChanged, "unknown target")
 	}
-	if tgt.identity != id || ctx.Err() != nil {
+	if tgt.identity != id {
 		return snap, domain.Fail(domain.CodeTargetChanged, "context identity changed")
 	}
-	if tgt.secure || tgt.focus == 0 {
+	if ctx.Err() != nil {
+		return snap, domain.Fail(domain.CodeCancelled, "context cancelled")
+	}
+	if !tgt.readable || tgt.secure || tgt.focus == 0 {
+		return snap, nil
+	}
+	if foreground, _, _ := procGetForegroundWindow.Call(); foreground != tgt.foreground || focusOf(foreground) != tgt.focus {
+		return snap, domain.Fail(domain.CodeTargetChanged, "context target changed")
+	}
+	// A standard edit can become a password field after capture. Other control
+	// classes have no verified safety contract and are never read.
+	style, _, _ := procGetWindowLongW.Call(tgt.focus, gwlStyle)
+	if !strings.EqualFold(className(tgt.focus), "Edit") || style&esPassword != 0 {
 		return snap, nil
 	}
 	snap.SafeToRead = true
@@ -209,6 +229,9 @@ func (t *Targets) ReadContext(ctx context.Context, id contracts.Identity, token 
 			return snap, domain.Fail(domain.CodeTargetChanged, "context target changed")
 		}
 		text, err := readWindowText(ctx, tgt.foreground)
+		if ctx.Err() != nil {
+			return snap, domain.Fail(domain.CodeCancelled, "context cancelled")
+		}
 		if err != nil {
 			return snap, err
 		}
@@ -220,15 +243,44 @@ func (t *Targets) ReadContext(ctx context.Context, id contracts.Identity, token 
 	return snap, nil
 }
 
-func (t *Targets) Commit(_ context.Context, request contracts.CommitRequest) (contracts.CommitResult, error) {
+func (t *Targets) Commit(ctx context.Context, request contracts.CommitRequest) (contracts.CommitResult, error) {
 	result := contracts.CommitResult{Identity: request.Identity, Outcome: contracts.NotApplied}
 	t.mu.Lock()
 	tgt := t.targets[request.Target]
+	if tgt != nil && tgt.identity != request.Identity {
+		t.mu.Unlock()
+		result.Failure = domain.CodeStaleRevision
+		return result, nil
+	}
 	delete(t.targets, request.Target)
 	t.mu.Unlock()
+	if ctx.Err() != nil {
+		result.Failure = domain.CodeCancelled
+		return result, nil
+	}
+	if tgt != nil && tgt.secure {
+		result.Failure = domain.CodeSecureFieldBlocked
+		return result, nil
+	}
 	foreground, _, _ := procGetForegroundWindow.Call()
 	if tgt == nil || foreground != tgt.foreground || (tgt.focus != 0 && focusOf(foreground) != tgt.focus) {
 		result.Failure = domain.CodeTargetChanged
+		return result, nil
+	}
+	if tgt.focus != 0 && strings.EqualFold(className(tgt.focus), "Edit") {
+		style, _, _ := procGetWindowLongW.Call(tgt.focus, gwlStyle)
+		if style&esPassword != 0 {
+			result.Failure = domain.CodeSecureFieldBlocked
+			return result, nil
+		}
+		start, end, ok := editSelection(tgt.focus)
+		if !tgt.selection || !ok || start != tgt.start || end != tgt.end {
+			result.Failure = domain.CodeTargetChanged
+			return result, nil
+		}
+	}
+	if ctx.Err() != nil {
+		result.Failure = domain.CodeCancelled
 		return result, nil
 	}
 	if tgt.clipboard {
@@ -236,12 +288,27 @@ func (t *Targets) Commit(_ context.Context, request contracts.CommitRequest) (co
 			result.Failure = domain.CodeTargetUnsupported
 			return result, nil
 		}
-	} else if !typeText(singleLine(request.Text)) {
-		result.Failure = domain.CodeTargetUnsupported
+	} else {
+		posted, failure := typeText(ctx, singleLine(request.Text), func() bool {
+			foreground, _, _ := procGetForegroundWindow.Call()
+			return foreground == tgt.foreground && (tgt.focus == 0 || focusOf(foreground) == tgt.focus)
+		})
+		if posted {
+			result.Outcome = contracts.Unknown
+		}
+		result.Failure = failure
 		return result, nil
 	}
 	result.Outcome = contracts.Unknown
 	return result, nil
+}
+
+// EM_GETSEL reports UTF-16 offsets for a standard EDIT. Bound the cross-process
+// call so a hung editor cannot block cancellation indefinitely.
+func editSelection(hwnd uintptr) (start, end uint32, ok bool) {
+	var result uintptr
+	completed, _, _ := procSendMessageTimeoutW.Call(hwnd, 0x00B0, uintptr(unsafe.Pointer(&start)), uintptr(unsafe.Pointer(&end)), 0x0002, 100, uintptr(unsafe.Pointer(&result)))
+	return start, end, completed != 0
 }
 
 // memory converts a Win32 memory handle returned as uintptr by a lazy proc
@@ -253,29 +320,43 @@ func singleLine(text string) string {
 }
 
 func send(inputs []keyboardInput) bool {
+	return sendCount(inputs) == len(inputs)
+}
+
+func sendCount(inputs []keyboardInput) int {
 	if len(inputs) == 0 {
-		return true
+		return 0
 	}
 	sent, _, _ := procSendInput.Call(uintptr(len(inputs)), uintptr(unsafe.Pointer(&inputs[0])), unsafe.Sizeof(inputs[0]))
-	return int(sent) == len(inputs)
+	return int(sent)
 }
 
 // typeText sends UTF-16 units as Unicode key events in small batches.
-func typeText(text string) bool {
+// Once any input is posted, cancellation or a partial send cannot claim that
+// nothing was applied: Windows supplies no editor acknowledgement.
+func typeText(ctx context.Context, text string, focused func() bool) (posted bool, failure domain.ErrorCode) {
 	units := utf16.Encode([]rune(text))
 	for start := 0; start < len(units); start += 16 {
+		if ctx.Err() != nil {
+			return posted, domain.CodeCancelled
+		}
+		if !focused() {
+			return posted, domain.CodeTargetChanged
+		}
 		var batch []keyboardInput
 		for _, unit := range units[start:min(start+16, len(units))] {
 			batch = append(batch,
 				keyboardInput{Type: inputKeyboard, Scan: unit, Flags: keyeventfUnicode},
 				keyboardInput{Type: inputKeyboard, Scan: unit, Flags: keyeventfUnicode | keyeventfKeyUp})
 		}
-		if !send(batch) {
-			return false
+		sent := sendCount(batch)
+		posted = posted || sent > 0
+		if sent != len(batch) {
+			return posted, domain.CodeTargetUnsupported
 		}
 		time.Sleep(4 * time.Millisecond)
 	}
-	return true
+	return posted, ""
 }
 
 func readClipboardText() (string, bool) {

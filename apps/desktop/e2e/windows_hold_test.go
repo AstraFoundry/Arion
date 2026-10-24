@@ -56,7 +56,7 @@ func TestWindowsHoldKeyHook(t *testing.T) {
 // Holding the key through the production app starts a session that shows
 // the release hint; releasing after the threshold leaves no live capture.
 func TestWindowsHoldKeyDictates(t *testing.T) {
-	editor := startNotepad(t)
+	editor := startWindowsEditor(t)
 	editor.focus(t)
 	var previous arion.HoldKey
 	app.Update(func(s *arion.State) { previous = s.Preferences.HoldKey })

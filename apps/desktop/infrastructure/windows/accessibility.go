@@ -22,6 +22,12 @@ const accessibilityScript = `$ErrorActionPreference = 'Stop'
 Add-Type -AssemblyName UIAutomationClient
 Add-Type -AssemblyName UIAutomationTypes
 Add-Type -AssemblyName WindowsBase
+Add-Type -AssemblyName UIAutomationClientsideProviders
+# PowerShell's dynamic call frames break the managed proxy loader's stack walk.
+# Reflection keeps provider registration on a typed framework call stack.
+$providers = [UIAutomationClientsideProviders.UIAutomationClientSideProviders].Assembly.GetName()
+$register = [System.Windows.Automation.ClientSettings].GetMethod('RegisterClientSideProviderAssembly')
+$register.Invoke($null, @($providers))
 $root = [System.Windows.Automation.AutomationElement]::FromHandle([IntPtr]::new([long]$env:ARION_CONTEXT_HWND))
 if ($null -eq $root) { throw 'Window unavailable' }
 $walker = [System.Windows.Automation.TreeWalker]::ControlViewWalker
