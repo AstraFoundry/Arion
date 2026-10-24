@@ -4,6 +4,7 @@ import { cpSync, copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync,
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { pinnedFile } from './lib/pinned-file.mjs';
+import { verifyWindowsASRPackage } from './lib/windows-pe.mjs';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const platform = process.argv[2] ?? `${process.platform === 'win32' ? 'windows' : process.platform}-${process.arch === 'x64' ? 'amd64' : process.arch}`;
 const pins = JSON.parse(readFileSync(path.join(root, 'scripts/asr-runtime.json')));
@@ -51,6 +52,9 @@ if (platform === 'darwin-arm64') {
   const build = path.join(work, `speech-${platform}`);
   const flags = ['-S', source, '-B', build, '-DCMAKE_BUILD_TYPE=Release', '-DGGML_NATIVE=OFF', '-DGGML_METAL=OFF', '-DGGML_VULKAN=OFF', '-DGGML_AVX2=OFF', '-DGGML_FMA=OFF', '-DGGML_F16C=OFF', '-DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded'];
   if (platform.startsWith('darwin')) flags.push('-DCMAKE_OSX_ARCHITECTURES=x86_64', '-DCMAKE_OSX_DEPLOYMENT_TARGET=14.0');
+  // MSVC /MT does not statically link OpenMP's VCOMP140.DLL. The CPU worker
+  // uses ggml's own thread pool and must run without a compiler redistributable.
+  if (platform === 'windows-amd64') flags.push('-DGGML_OPENMP=OFF');
   run('cmake', flags);
   run('cmake', ['--build', build, '--config', 'Release', '--target', 'speech-cli', '--parallel', '6']);
   const executable = platform.startsWith('windows') ? 'speech.exe' : 'speech';
@@ -76,6 +80,8 @@ if (platform === 'darwin-arm64') {
     const executable = find(extracted).find(f => path.basename(f) === 'speech.exe');
     if (!executable) throw new Error('Missing pinned Vulkan executable');
     copyFileSync(executable, path.join(destination, 'speech-vulkan.exe'));
+    const checked = verifyWindowsASRPackage(destination, pins.speech.version);
+    console.log(`Verified Windows ASR DLL closure and isolated CPU launch: ${checked.version}.`);
   }
 } else throw new Error(`Unsupported native ASR platform: ${platform}`);
 writeFileSync(path.join(destination, 'runtime.json'), JSON.stringify({ platform, ...pins }, null, 2) + '\n');

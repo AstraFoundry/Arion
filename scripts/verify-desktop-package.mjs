@@ -8,6 +8,7 @@ import { macosSigningSettings } from './lib/desktop-signing.mjs';
 import { verifyMacOSDistribution } from './lib/verify-macos-distribution.mjs';
 import { verifyIMEProvisioning } from './lib/ime-provisioning.mjs';
 import { verifyKeyboardBundle } from './verify-keyboard-bundle.mjs';
+import { verifyWindowsASRPackage, verifyWindowsPEDependencies } from './lib/windows-pe.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const config = JSON.parse(readFileSync(path.join(root, 'apps/desktop/desktop.json'), 'utf8'));
@@ -97,5 +98,11 @@ if (goos === 'darwin') {
     verifyMacOSDistribution({ directory: built, config, platform, binaries, identity: signing.identity, updates: Boolean(process.env.MYGO_UPDATER_PRIVATE_KEY) && isStandardCenter(expectedCenter) });
     console.log('Verified Developer ID signatures, hardened runtime, notarization tickets and Gatekeeper acceptance.');
   }
+}
+if (goos === 'windows') {
+  verifyWindowsPEDependencies([binaries[0]]);
+  const asrPins = JSON.parse(readFileSync(path.join(root, 'scripts/asr-runtime.json'), 'utf8'));
+  const checked = verifyWindowsASRPackage(asr, asrPins.speech.version);
+  console.log(`Verified packaged Windows DLL closure and isolated CPU launch: ${checked.version}.`);
 }
 console.log(`Verified ${platform} resources, licenses and architectures; local rewriting ${spec ? 'bundled' : 'unsupported'}.`);
