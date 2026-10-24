@@ -88,6 +88,9 @@ jobs:
           swift --version
           swift -e 'import Foundation; print("Native MLX toolchain")'
       - run: pnpm desktop:check
+      - name: Windows updater regression checks
+        if: runner.os == 'Windows'
+        run: pnpm updater:check
       - run: pnpm e2e:native
       - uses: actions/upload-artifact@v4
         if: always()

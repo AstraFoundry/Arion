@@ -1,11 +1,11 @@
 # Desktop release status
 
-This file accompanies each release as `RELEASE-STATUS.md`. The `0.1.0-alpha.11` release distributes only macOS Apple silicon packages. The Windows column below describes implementation status, not assets included in this alpha. Future macOS releases support Apple silicon only ([ADR 021](../decisions/021-apple-silicon-only-macos.md)); Intel macOS is unsupported. Build success verifies packaging; the evidence below limits the supported product claims.
+This file accompanies each release as `RELEASE-STATUS.md`. The `0.1.0-alpha.12` release includes macOS Apple silicon and Windows x64 packages. Windows application/installer publisher signing is omitted for this preview; update archives still require Ed25519 signatures. Future macOS releases support Apple silicon only ([ADR 021](../decisions/021-apple-silicon-only-macos.md)); Intel macOS is unsupported. Build success verifies packaging; the evidence below limits the supported product claims.
 
 | Capability | macOS Apple silicon | Windows x64 |
 | --- | --- | --- |
 | Native package | App and DMG | Per-user NSIS installer |
-| Local speech recognition | Native MLX 1.7B 8-bit; 118 development fixtures measured | Native CPU/Vulkan staging implemented; actual Windows package/inference/signing acceptance pending |
+| Local speech recognition | Native MLX 1.7B 8-bit; 118 development fixtures measured | CPU/Vulkan and installed-product speech checks pass on one development host; mixed-language quality errors, publisher signing and clean-host acceptance remain open |
 | Local polishing | Worker and pinned runtime bundled | Unsupported; no approved runtime/model pair |
 | Optional cloud polishing | Explicit engine/provider/model choice; unit and view coverage; real-service acceptance open | Implemented with the same explicit choice; real-service/native acceptance open |
 | System input method | Offline Pinyin/voice IMK host with horizontal candidates and context ranking; native 36/36 cases pass; installed physical Shift and dictation accepted locally in Codex/Cursor | TSF not implemented |
@@ -37,10 +37,14 @@ Tagged releases require a matching Ed25519 update key and Apple signing/notariza
 
 Detailed evidence and remaining limits are in [validation](../quality/validation.md) and [desktop release gates](deployment.md#desktop-release-gates).
 
+The [Windows validation](../quality/windows-validation.md) records actual native interaction, microphone lifecycle, installed-app speech delivery, installer/uninstaller and isolated updater checks. These pass on the documented Windows 11 host; production signed-channel upgrade and broad editor/device acceptance remain open.
+
+Windows packaging rejects unbundled runtime DLL imports and checks the CPU worker with a system-only search path. This catches compiler-library dependencies on build machines; it does not replace installation and device acceptance on a clean end-user machine.
+
 The strict keyboard learning provider now requires the Data Protection Keychain and rejects legacy keys without changing their vaults. Native arm64 and Rosetta regressions each pass 23 cases after this change, and real owned legacy-key rejection restores both stores to absence. A Developer ID certificate alone returned missing entitlement (`-34018`); a matching profile is now available and a profile-authorized signed harness passes the real six-phase lifecycle with verified device-only/nonsynchronizing OS attributes and cleanup. The current canonical app/DMG completed signing, Accepted notarization, profile/entitlement validation and Gatekeeper/package checks. Earlier signed artifacts predate this protected-key verification ([deployment](deployment.md), [v5 evidence](../../benchmarks/runs/imk-keyboard-v5/README.md)).
 
 The [100-case development baseline](../../benchmarks/results/imk-quality-v1/README.md) records 71% exact intended commit and 13.43% character error rate. These engine measurements do not establish competitor parity, population accuracy, actual IMK key-to-preedit latency or concurrent speech behavior.
 
 The [v7 evidence archive](../../benchmarks/runs/imk-keyboard-v7/README.md) preserves the literal-umlaut failure and corrected 23-case native/translated runs, rebuilt unsigned bundle checks, the inconclusive inactive-client candidate probe and bounded Doubao UI-refresh follow-up.
 
-The [native ASR migration acceptance](../../benchmarks/results/native-asr-v1/README.md) replaces the old speech stack. Native MLX loading, real-time replay and offline signed-worker inference pass; first-partial and final-latency budgets remain failed. Windows, minimum-OS and clean-editor acceptance are still open. Intel macOS is retired from future product support; its existing evidence remains historical.
+The [native ASR migration acceptance](../../benchmarks/results/native-asr-v1/README.md) replaces the old speech stack. Native MLX loading, real-time replay and offline signed-worker inference pass; first-partial and final-latency budgets remain failed. Windows development-host runtime and installed speech checks now pass as documented above; minimum-OS and clean-editor acceptance remain open. Intel macOS is retired from future product support; its existing evidence remains historical.

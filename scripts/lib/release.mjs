@@ -3,8 +3,8 @@ import { readFileSync, readdirSync, statSync } from 'node:fs';
 import path from 'node:path';
 
 export const releasePlatforms = ['darwin-arm64', 'windows-amd64'];
-// Alpha distribution is limited to the accepted packaging host.
-export const platformsForRelease = config => /^\d+\.\d+\.\d+-alpha(?:\.|$)/.test(config.version) ? ['darwin-arm64'] : releasePlatforms;
+// Every release, including alpha previews, requires both supported targets.
+export const platformsForRelease = () => [...releasePlatforms];
 export function releaseMatrix(config) {
   const runners = { 'darwin-arm64': 'macos-26', 'windows-amd64': 'windows-2022' };
   return { include: platformsForRelease(config).map(platform => ({ os: runners[platform], platform })) };
