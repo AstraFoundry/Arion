@@ -1,6 +1,6 @@
 # Agent skills
 
-Project-level Agent Skills live in [`.agents/skills/`](../../.agents/skills/) (the same directory as `.claude/skills/`). Cursor and Claude Code both discover them from this path.
+Project-level Agent Skills live in [`.claude/skills/`](../../.claude/skills/). The `.agents` symlink points to `.claude`; Windows checkouts without Git symlink support can read the canonical `.claude/skills/` directory directly.
 
 These skills encode UI craft, motion, and anti-slop conventions. When writing or reviewing frontend UI, apply the relevant skill instead of inventing visual defaults.
 

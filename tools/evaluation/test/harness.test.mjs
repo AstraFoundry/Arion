@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { mkdtemp, readFile, writeFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
+import { once } from 'node:events';
 import path from 'node:path';
 import { Driver, validateResponse } from '../src/protocol.mjs';
 import { digest, validateManifest, validateExperiment } from '../src/manifest.mjs';
@@ -83,16 +84,26 @@ test('E2E assertions cannot pass with missing or self-reported success alone', (
 
 test('persistent driver transport handles multiple messages and rejects unsolicited output', async t => {
   const directory = await mkdtemp(path.join(tmpdir(), 'arion-driver-test-'));
-  t.after(() => rm(directory, { recursive: true, force: true }));
+  const drivers = [];
+  t.after(async () => {
+    // Windows holds a subprocess working directory until the process exits.
+    await Promise.all(drivers.map(async driver => {
+      const closed = driver.process.exitCode !== null || driver.process.signalCode !== null
+        ? Promise.resolve() : once(driver.process, 'close');
+      driver.close();
+      await closed;
+    }));
+    await rm(directory, { recursive: true, force: true });
+  });
   const driverFile = path.join(directory, 'echo.mjs');
   await writeFile(driverFile, "import {createInterface} from 'node:readline';\nconst lines = createInterface({input:process.stdin});\nlines.on('line',line=>{const r=JSON.parse(line); console.log(JSON.stringify({protocol:1,requestId:r.requestId,execution:'fixture',op:r.op}));});\n");
   const driver = new Driver({ executable: process.execPath, args: [driverFile], timeoutMs: 1000 }, directory);
-  t.after(() => driver.close());
+  drivers.push(driver);
   assert.equal((await driver.request({ op: 'hello' })).execution, 'fixture');
   assert.equal((await driver.request({ op: 'infer' })).requestId, '2');
   const brokenFile = path.join(directory, 'broken.mjs');
   await writeFile(brokenFile, "console.log('not JSON'); setTimeout(()=>{},1000);\n");
   const broken = new Driver({ executable: process.execPath, args: [brokenFile], timeoutMs: 1000 }, directory);
-  t.after(() => broken.close());
+  drivers.push(broken);
   await assert.rejects(broken.request({ op: 'hello' }), /JSONL/);
 });

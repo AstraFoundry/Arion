@@ -71,7 +71,7 @@ import { t } from 'shared/i18n';
 
 ## Agent skills
 
-When building or reviewing UI, apply the project Agent Skills in [`.agents/skills/`](../../.agents/skills/). See [`docs/quality/agent-skills.md`](../quality/agent-skills.md) for the catalog.
+When building or reviewing UI, apply the project Agent Skills in [`.claude/skills/`](../../.claude/skills/). See [`docs/quality/agent-skills.md`](../quality/agent-skills.md) for the catalog and the `.agents` alias.
 
 - `make-interfaces-feel-better` and `emil-design-eng` for polish, motion, and detail work.
 - `kill-ai-slop` when the UI or copy looks generic, templated, or machine-default.
