@@ -19,7 +19,7 @@ Remove production semantic rejection based on overlap, wording, numbers, negatio
 - Fixed pypinyin/CMU resources ship with provenance and licenses; the Go producer and payload construction are checked against frozen experimental fixtures.
 - Preparation checks native template/token budgets but does not compute KV state or sample tokens. The native slot is erased at session boundaries; save/restore APIs are never called.
 - Retired research weights can be removed while preserving raw observations, source hashes and reproduction artifacts. Retired inference requires downloading the pinned weights again.
-- Actual integration uses M4/32GB. Apple Silicon/16GB, supported older macOS versions, concurrent speech load and native editor delivery remain distinct acceptance scopes. Intel/Windows have no selected runtime.
+- Original integration uses M4/32GB. Apple Silicon/16GB, supported older macOS versions, concurrent speech load and native editor delivery remain distinct acceptance scopes. Intel macOS remains unsupported. [ADR 025](025-windows-local-polishing.md) extends the same model and shared recipe to Windows x64 with a pinned CPU runtime.
 
 See [local rewrite configuration](../operations/local-rewrite.md), [contextual rewriting](../../specs/009-contextual-rewrite.md), and [product integration evidence](../../benchmarks/reproduction/rewrite-product-integration-v1/README.md).
 

@@ -20,7 +20,7 @@ func newPlatform() Platform { return windowsPlatform{} }
 
 func configureInputMethodDiagnostics(func(diagnostics.Entry)) {}
 
-func configureOverlay(*mygo.Window) {}
+func configureOverlay(window *mygo.Window) { windows.ConfigureOverlay(window.NativeHandle()) }
 
 func (windowsPlatform) Microphone() runtime.Consent    { return runtime.ConsentGranted }
 func (windowsPlatform) Accessibility() runtime.Consent { return runtime.ConsentGranted }
@@ -60,6 +60,7 @@ func (windowsPlatform) NewTargets(delivery func() application.Delivery, gates Ta
 	})
 }
 
-// NewInputMethod: the TSF text service is not implemented (TSF-01), so the
-// input-method mode is reported unsupported rather than simulated.
-func (windowsPlatform) NewInputMethod(_, _ func()) InputMethod { return nil }
+// Windows ships a separate x64 in-process TSF service for owned voice ranges.
+func (windowsPlatform) NewInputMethod(onLeave, onDictate func()) InputMethod {
+	return newWindowsIME(onLeave, onDictate)
+}

@@ -64,7 +64,7 @@ func (a *App) createTray() {
 			label = a.ui.Copy().Text(copy.TrayStop)
 		}
 		items := []*mygo.MenuItem{
-			{Label: label, Click: func(*mygo.MenuItem, *mygo.Window) { a.core.Toggle() }},
+			{Label: label, Click: func(*mygo.MenuItem, *mygo.Window) { actions{a}.ToggleDictation() }},
 			mygo.Separator(),
 			{Label: a.ui.Copy().Text(copy.TraySettings), Accelerator: "CmdOrCtrl+,", Click: func(*mygo.MenuItem, *mygo.Window) { a.openSettings() }},
 		}
@@ -152,7 +152,7 @@ func (a *App) createOverlay() {
 	a.overlay = mygo.NewWindow(mygo.WindowOptions{
 		Title: a.ui.Copy().Text(copy.Title), Width: uiapp.OverlayWidth, Height: uiapp.OverlayHeight, Frameless: true, Transparent: true,
 		AlwaysOnTop: true, SkipTaskbar: true, DisableResize: true, DisableMinimize: true, DisableMaximize: true,
-		DisableFullScreen: true, DisableShadow: true, Hidden: true, Content: view.Content,
+		DisableFullScreen: true, DisableClose: true, DisableShadow: true, Hidden: true, Content: view.Content,
 	})
 	a.overlay.SetIgnoreMouseEvents(true)
 	a.overlay.SetVisibleOnAllWorkspaces(true)
@@ -164,7 +164,7 @@ func (a *App) createOverlay() {
 // pointer, where the user is working, and shows it without activation.
 func (a *App) positionOverlay() {
 	if a.overlay == nil {
-		return
+		a.createOverlay()
 	}
 	display := mygo.Screen.DisplayNearestPoint(mygo.Screen.CursorScreenPoint())
 	area := display.WorkArea

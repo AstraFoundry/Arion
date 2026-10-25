@@ -86,6 +86,9 @@ const (
 	StateLoading      State = "loading"
 	StateReady        State = "ready"
 	StateFailed       State = "failed"
+	// DetailNotLoaded identifies a readiness failure before any audio capture,
+	// rather than a closed/crashed worker that requires an explicit retry.
+	DetailNotLoaded = "no verified model loaded"
 )
 
 // Status is a content-free snapshot for the UI.
@@ -243,7 +246,7 @@ func (m *Manager) NewRecognizer(ctx context.Context, id contracts.Identity) (por
 	streaming := m.streaming
 	if streaming == nil {
 		m.mu.Unlock()
-		return nil, domain.Fail(domain.CodeModelMissing, "no verified model loaded")
+		return nil, domain.Fail(domain.CodeModelMissing, DetailNotLoaded)
 	}
 	m.active++
 	m.mu.Unlock()

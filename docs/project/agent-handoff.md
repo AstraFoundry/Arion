@@ -4,6 +4,8 @@ Read [AGENTS.md](../../AGENTS.md), [architecture](architecture.md), [repository]
 
 ## Implemented
 
+- **TSF-01 (voice primitives):** x64 COM service, locked owned ranges, same-user/session/integrity-bound pipe, build/session/revision validation and acquisition acknowledgement before recording. Actual RichEdit and ACP-store checks cover Unicode commits, duplicate refusal, selected-text restoration, focus/selection invalidation and protected-field refusal; ACP additionally covers host refusal and deferred-lock cancellation. Windows Settings exposes explicit UAC installation/selection/status/removal. Global registration/UAC, installed speech and editor compatibility acceptance remain open; Pinyin/live replacement are unsupported. See [runbook](../operations/windows-input-method.md).
+
 - **CORE-01:** session aggregate (monotonic revisions, exactly-once commit claim, terminal immutability), stable error codes, dictation coordinator with generations, bounded queues, cancellation, acoustic finalization, correction and single commit; mode routing for shortcut and system IME sessions. Race-tested (CTR-A01/A02/A04/A06, DSK-A02/A04/A06/A07, SPH-A01/A02/A04/A07, IME-A02/A03 at core level).
 - **MAC-01:** microphone consent and capture (miniaudio/CoreAudio, 16 kHz mono, persisted software input gain, device loss as discontinuity), Accessibility consent, target capture with secure-field detection, one-route insertion ([ADR 003](../decisions/003-insertion-routes.md)), global dictation key (hold or tap) with Escape cancellation, sleep/lock cancellation.
 - **ASR-01 / model provisioning:** sherpa-onnx streaming and offline adapters, pinned catalog with member digests, verified resumable downloads with atomic publish, evaluation-driven automatic bundle selection ([ADR 004](../decisions/004-automatic-model-selection.md)).
@@ -25,7 +27,7 @@ Verification results and their limits are recorded in [validation](../quality/va
 | Task | Priority | Depends on | Concrete completion gate |
 | --- | --- | --- | --- |
 | WIN-01 runtime | P0 | Windows host | Run native window E2E and product scenarios on real Windows; UI Automation value verification for insertion |
-| TSF-01 | P0 | WIN-01 | TSF text service with edit sessions, registration/removal, IME-A01–A05 on real Windows |
+| TSF-01 acceptance | P0 | User-approved Windows installation | Actual UAC install/remove, Win+Space selection, installed-package dictation and per-app/editor matrix; native owned-range primitives implemented |
 | IMK-01 acceptance | P0 | A test profile or VM | IME-A01 install/select/remove and IME-A04/A05 host edits measured on a real input-source list |
 | RNK-01 | P0 | A candidate producer exposing real alternatives | Laya Choice vs source order; the current recognizers expose one hypothesis, so no ranking is shown |
 | COR-01 (model) | P1 | Correction evaluation fixtures | Optional bounded local LLM correction with harmful-edit and intent review |
@@ -33,7 +35,7 @@ Verification results and their limits are recorded in [validation](../quality/va
 | RWT-ABI-01 | P0 | Pinned research candidates + native host | Verify reference tokenizer/logit/stop/cache parity and explicit native teardown; resolve sherpa/GenAI shared-library coexistence or specify isolated IPC |
 | RWT-DRIVER-01 | P0 | RWT-DATA-01 + RWT-ABI-01 | Reviewed native benchmark driver emits real tokens/preview/lifecycle, warm/cold reset, concurrent ASR and cleanup; preserves evaluator-only labels |
 | RWT-EVAL-01 | P0 | RWT-DRIVER-01 | Run gold-text and frozen-ASR strata with full ablations, concurrent-ASR evidence and blind human ratings per [009](../../specs/009-contextual-rewrite.md); select model/provider using held-out results |
-| RWT-RUN-01 | P1 | RWT-EVAL-01 | macOS final rewrite integrated (LRW-01, ADR 023); remaining: Windows GenAI runtime pin, worker and acceptance; rendered draft and IME-composition timing on a real host |
+| RWT-RUN-01 | P1 | RWT-EVAL-01 | macOS final rewrite integrated (LRW-01, ADR 023); Windows x64 GGUF CPU runtime and worker implemented (ADR 025); remaining: Windows deadline, concurrent-ASR and clean-host acceptance; rendered draft and IME-composition timing on a real host |
 | LRW-REVIEW-01 | P0 | Independent raters | Blind meaning/style/hallucination review of held-out live output (LRW-A06); natural consented speech; same-fixture Typeless/Doubao comparison in an owned editor |
 | STR (streaming sweep) | P1 | Reviewed timestamp annotations | Chunk/endpoint sweep with annotated onsets (STR-A01–A04) |
 | MEM-01 (sync parts) | P1 | Crypto/pairing ADR | Outbox, approval provenance UI, export/delete |
@@ -50,7 +52,7 @@ RNK-01 cannot fabricate n-best from a recognizer that exposes a single hypothesi
 - Ranking/correction checkpoints after measured gates; recognition bundles are selected by ADR 004.
 - Recovery-secret enrollment stays rejected (`RECOVERY_UNSUPPORTED`) until a vetted format exists. Revocation rotates the key epoch; clients re-encrypt because the relay cannot read ciphertext.
 - Local SQLite driver and encryption boundary before persistence migration code.
-- Windows TSF host/lifecycle decisions remain open. The macOS IMK host and scoped local IPC are implemented; known-authorization activation/retry/cancel, cached-authorization reinstall and real editor typing pass on the local arm64 host ([run](../../benchmarks/runs/ime-activation-v1/README.md)); clean-account first-consent/denial acceptance remains open; Intel macOS is unsupported ([ADR 021](../decisions/021-apple-silicon-only-macos.md)).
+- Windows uses an x64 COM voice service and same-user pipe; remaining system/editor acceptance is in the [runbook](../operations/windows-input-method.md). The macOS IMK host and scoped local IPC are implemented; known-authorization activation/retry/cancel, cached-authorization reinstall and real editor typing pass on the local arm64 host ([run](../../benchmarks/runs/ime-activation-v1/README.md)); clean-account first-consent/denial acceptance remains open; Intel macOS is unsupported ([ADR 021](../decisions/021-apple-silicon-only-macos.md)).
 - App identifier/signing identities, minimum OS/RAM and update trust before public packages. The controlled identifiers are `si.astrafoundry.arion` and `si.astrafoundry.inputmethod.arion`; signed input-source and host acceptance remain open.
 
 These are bounded open decisions, not permission prompts for already-authorized research or reversible scaffolding. Continue independent work, use evidence, and ask only when a choice changes user-visible scope or trust.

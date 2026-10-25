@@ -1,3 +1,31 @@
+## 0.1.0-alpha.13
+
+### English
+
+Preview for macOS Apple silicon (macOS 14 or later) and Windows x64.
+
+- Add Windows offline Pinyin and TSF voice input, with shared Rime schemas, candidate ordering and learning logic across macOS and Windows.
+- Repair Windows candidate layout refresh after composition changes, input-method registration and model readiness reporting.
+- Add a stable Windows input-method loader and versioned cores. Compatible active cores remain usable until safe release; legacy components already loaded in applications may require those applications to fully exit once.
+- Enable Windows local GGUF polishing with a bundled CPU runtime and protected worker lifecycle.
+- Fix Windows overlay transparency and background worker console windows, and improve the EXE installer and onboarding flow.
+- Extend native input-method, package, update and shared-engine regression coverage.
+
+This is an early preview. Windows publisher signing, clean-machine acceptance and broad editor compatibility remain open. Installed owned-editor candidate checks pass; this does not establish seamless upgrades in every already-running application. Model weights download separately. GitHub publication and release-storage staging do not publish the Arion center beta channel. See RELEASE-STATUS.md and SHA256SUMS.
+
+### 中文
+
+适用于 macOS Apple 芯片（macOS 14 或更高版本）和 Windows x64 的预览版本。
+
+- 新增 Windows 离线拼音和 TSF 语音输入，两端共用 Rime 方案、候选排序和学习逻辑。
+- 修复 Windows 组合输入后的候选框布局刷新、输入法注册和模型就绪状态判断。
+- 新增固定的 Windows 输入法加载入口与版本化核心。兼容的活动核心可继续使用直到安全释放；已经加载早期旧组件的应用可能需要完全退出一次。
+- 支持 Windows 本地 GGUF 润色，随包提供 CPU 运行时并完善工作进程生命周期。
+- 修复 Windows 悬浮窗透明度及后台工作进程的控制台窗口，改进 EXE 安装器和首次使用流程。
+- 扩展原生输入法、打包、更新和共享引擎回归测试。
+
+这是早期预览版。Windows 发布者签名、全新机器和广泛编辑器兼容性仍待验收。已安装版本在自有测试编辑器的候选框检查通过，但不代表所有运行中应用均可无感升级。模型权重单独下载；GitHub 发布及存储暂存不会自动发布 Arion 中心的 beta 渠道。详见 RELEASE-STATUS.md 与 SHA256SUMS。
+
 ## 0.1.0-alpha.12
 
 ### English

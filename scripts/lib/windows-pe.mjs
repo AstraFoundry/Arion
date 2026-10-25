@@ -1,5 +1,5 @@
 import { readFileSync, readdirSync } from 'node:fs';
-import { execFileSync } from 'node:child_process';
+import { execFileSync, spawnSync } from 'node:child_process';
 import path from 'node:path';
 
 // Windows system components, excluding compiler redistributables. Presence on
@@ -108,4 +108,22 @@ export function verifyWindowsASRPackage(directory, version) {
   }).trim();
   if (!output.startsWith(`speech.cpp ${version}, C API `)) throw new Error(`Unexpected Windows CPU ASR version: ${output}`);
   return { verified, version: output };
+}
+
+export function verifyWindowsLLMPackage(directory) {
+  directory = path.resolve(directory);
+  const binary = path.join(directory, 'llama-server.exe');
+  const binaries = [binary, path.join(directory, 'llama-server-avx2.exe')];
+  const verified = verifyWindowsPEDependencies(binaries);
+  const systemRoot = process.env.SystemRoot;
+  if (!systemRoot) throw new Error('Windows GGUF smoke requires SystemRoot');
+  const result = spawnSync(binary, ['--version'], {
+    cwd: directory, encoding: 'utf8', timeout: 15000, windowsHide: true,
+    env: { SystemRoot: systemRoot, WINDIR: systemRoot, PATH: path.join(systemRoot, 'System32'), TEMP: process.env.TEMP, TMP: process.env.TMP },
+  });
+  if (result.error) throw result.error;
+  if (result.status !== 0) throw new Error(`Windows GGUF runtime version check failed: ${result.status}`);
+  const output = `${result.stdout}${result.stderr}`.trim();
+  if (!/^version: 0\.7\.0-dev \(build 11734, commit f3fb2fc/.test(output)) throw new Error(`Unexpected Windows GGUF runtime version: ${output}`);
+  return { verified, version: output.split('\n')[0].trim() };
 }

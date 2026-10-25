@@ -5,6 +5,7 @@
 #import "../learning.h"
 #include <rime/dict/db.h>
 #include <rime_api.h>
+#include "../../shared/input.h"
 #include <map>
 #include <memory>
 
@@ -277,6 +278,21 @@ int main(int argc, const char *argv[]) {
             require([typing toggleExpanded:typing.revision] && typing.snapshot.expanded && typing.snapshot.currentRow == 0,
                     @"the chevron expands in place");
             require([typing toggleExpanded:typing.revision] && !typing.snapshot.expanded, @"the chevron collapses");
+        });
+        run(@"page preference preserves the displayed candidate mapping", @"KBD-A03", ^{
+            typing.pageSize = 9;
+            type(typing, @"shi");
+            require(typing.snapshot.candidates.count == 9, @"initial menu has nine candidates");
+            typing.pageSize = 5;
+            press(typing, @"", 121);
+            require(typing.snapshot.page == 1 && typing.snapshot.candidates.count == 9,
+                    @"existing menu keeps its page width after preference change");
+            NSString *chosen = typing.snapshot.candidates[8];
+            press(typing, @"9", 25);
+            require([editor.view.string isEqual:chosen], @"number selects the displayed ninth candidate");
+            type(typing, @"shi");
+            require(typing.snapshot.candidates.count == 5, @"new composition applies the five-candidate preference");
+            typing.pageSize = 9;
         });
         run(@"short pages consume numbers past the page", @"KBD-A03", ^{
             typing.pageSize = 5;
@@ -651,7 +667,8 @@ int main(int argc, const char *argv[]) {
             }
             require(index != NSNotFound, @"literal umlaut resolves the actual schema candidate");
             require([typing select:index revision:typing.revision] && [editor.view.string isEqual:@"绿色"], @"literal umlaut commits engine text");
-            require(ArionKeyboardKey(key(@"Ü", 0, NSEventModifierFlagShift)) == 'V', @"uppercase umlaut retains uppercase alias semantics");
+            int rawUmlaut = ArionKeyboardKey(key(@"Ü", 0, NSEventModifierFlagShift));
+            require(rawUmlaut == 0x00dc && arion_key_normalize(rawUmlaut, 1, 0) == 'V', @"uppercase umlaut uses shared schema alias semantics");
             type(typing, @"l");
             require(![typing handleEvent:key(@"ü", 0, NSEventModifierFlagOption)] && !typing.composing &&
                     [editor.view.string isEqual:@"绿色"], @"Option-modified umlaut relinquishes composition before host pass-through");

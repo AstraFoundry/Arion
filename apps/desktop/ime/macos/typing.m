@@ -1,20 +1,13 @@
 #import "typing.h"
+#include "../shared/input.h"
+#include "../shared/ranking_bridge.h"
 #import <InputMethodKit/InputMethodKit.h>
 
-// The engine's leading candidates the ranker may reorder; later pages keep
-// engine order and load on demand.
-static const NSUInteger kRankWindow = 27;
-// Rows the expanded grid shows at once, as Chatterfly's expandedRowCount.
-static const NSUInteger kExpandedRows = 6;
 // A previous commit older than this no longer predicts the next word.
 static const NSTimeInterval kContextLifetime = 120;
-static const NSTimeInterval kShiftTapDuration = 0.3;
 
 static BOOL containsHan(NSString *text) {
-    static NSRegularExpression *han;
-    static dispatch_once_t once;
-    dispatch_once(&once, ^{ han = [NSRegularExpression regularExpressionWithPattern:@"\\p{Han}" options:0 error:nil]; });
-    return [han firstMatchInString:text options:0 range:NSMakeRange(0, text.length)] != nil;
+    return arion_ranker_contains_han(text.UTF8String,[text lengthOfBytesUsingEncoding:NSUTF8StringEncoding])==1;
 }
 
 @interface ArionTyping ()
@@ -30,25 +23,33 @@ static BOOL containsHan(NSString *text) {
 @property(readwrite, strong) ArionKeyboardSnapshot *snapshot;
 // The engine snapshot the visible page was derived from.
 @property(strong) ArionKeyboardSnapshot *engineSnapshot;
-// Menu in display order, with each entry's engine index.
-@property(strong) NSMutableArray<NSString *> *menuTexts;
-@property(strong) NSMutableArray<NSNumber *> *menuIndices;
-@property NSUInteger fetched;
-@property BOOL exhausted;
-@property NSUInteger page;
-@property NSUInteger highlightIndex;
-@property BOOL expanded;
-// First page shown as a row of the expanded grid.
-@property NSUInteger topRow;
+@property ArionPinyinMenu menu;
 @property(copy) NSString *previousCommit;
 @property NSTimeInterval previousCommitTime;
 @property NSEventModifierFlags lastModifierFlags;
-@property BOOL shiftHeld;
-@property BOOL shiftPending;
-@property unsigned short shiftKeyCode;
-@property NSTimeInterval shiftPressedAt;
+@property ArionShiftTap shiftTap;
 @end
 
+static int rankSharedMenu(void *context, const char *const *texts, size_t count, size_t *order) {
+    NSDictionary *ranking = (__bridge NSDictionary *)context;
+    NSMutableArray *candidates = [NSMutableArray arrayWithCapacity:count];
+    for (size_t i = 0; i < count; i++) {
+        NSString *text = [[NSString alloc] initWithUTF8String:texts[i]];
+        if (!text) return 0;
+        [candidates addObject:text];
+    }
+    NSArray<NSNumber *> *indices = [ranking[@"ranker"] order:candidates after:ranking[@"previous"]];
+    if (indices.count != count) return 0;
+    for (size_t i = 0; i < count; i++) order[i] = indices[i].unsignedIntegerValue;
+    return 1;
+}
+
+static NSArray<NSString *> *sharedMenuTexts(const ArionPinyinMenu *menu, NSUInteger start, NSUInteger count) {
+    NSMutableArray *texts = [NSMutableArray arrayWithCapacity:count];
+    for (NSUInteger i = start; i < start + count; i++)
+        [texts addObject:[[NSString alloc] initWithUTF8String:menu->texts[i]]];
+    return texts;
+}
 @implementation ArionTyping
 - (instancetype)initWithEngine:(ArionKeyboardEngine *)engine {
     if ((self = [super init])) {
@@ -62,6 +63,7 @@ static BOOL containsHan(NSString *text) {
     _pageSize = MAX(1, MIN(9, pageSize));
 }
 - (void)dealloc {
+    arion_menu_dispose(&_menu);
     // Engine sessions outlive their Objective-C owner unless explicitly closed.
     // Destruction must not call into a disappearing client or its UI callbacks.
     if (_session && _engineGeneration == _engine.generation) {
@@ -91,17 +93,16 @@ static BOOL containsHan(NSString *text) {
     self.previousCommit = nil;
 }
 - (void)cancel {
-    self.shiftHeld = NO;
-    self.shiftPending = NO;
+    arion_shift_reset(&_shiftTap);
     if (self.engineGeneration == self.engine.generation) [self.engine clear:self.session];
     BOOL clear = self.composing;
     self.composing = NO;
-    self.expanded = NO;
-    self.topRow = 0;
+    _menu.expanded = NO;
+    _menu.top_row = 0;
     self.snapshot = nil;
     self.engineSnapshot = nil;
-    self.menuTexts = nil;
-    self.menuIndices = nil;
+    arion_menu_dispose(&_menu);
+
     self.revision++;
     if (clear) [self.client setMarkedText:@"" selectionRange:NSMakeRange(0, 0)
                        replacementRange:NSMakeRange(NSNotFound, NSNotFound)];
@@ -154,48 +155,34 @@ static BOOL containsHan(NSString *text) {
         BOOL shiftKey = keyCode == 56 || keyCode == 60 || (anonymous && changes == NSEventModifierFlagShift);
         BOOL otherModifiers = (flags & (NSEventModifierFlagCommand | NSEventModifierFlagControl |
                                       NSEventModifierFlagOption | NSEventModifierFlagCapsLock | NSEventModifierFlagFunction)) != 0;
-        // Some clients deliver each modifier notification twice. A repeated
-        // press of the same side/state must neither cancel nor restart a tap.
-        if (shift && self.shiftHeld && flags == previousFlags && !otherModifiers &&
-            ((anonymous && self.shiftKeyCode == 0) || keyCode == self.shiftKeyCode)) return NO;
-        BOOL toggle = shiftKey && !shift && self.shiftHeld && self.shiftPending &&
-            (anonymous || self.shiftKeyCode == 0 || keyCode == self.shiftKeyCode) && !otherModifiers &&
-            event.timestamp >= self.shiftPressedAt && event.timestamp - self.shiftPressedAt < kShiftTapDuration;
-        // A second Shift or any other modifier invalidates a pending tap.
-        if (shiftKey && shift && !self.shiftHeld && !otherModifiers) {
-            self.shiftPending = YES;
-            self.shiftKeyCode = anonymous ? 0 : keyCode;
-            self.shiftPressedAt = event.timestamp;
-        } else {
-            self.shiftPending = NO;
-        }
-        self.shiftHeld = shift;
+        BOOL toggle = arion_shift_transition(&_shiftTap, shiftKey, shift, anonymous ? 0 : keyCode,
+            otherModifiers, flags == previousFlags, event.timestamp);
         if (toggle) [self toggleASCII];
         return toggle;
     }
     if (event.type != NSEventTypeKeyDown) return NO;
-    self.shiftPending = NO;
-    if (event.keyCode == 49 && (flags & NSEventModifierFlagShift) &&
-        !(flags & (NSEventModifierFlagCommand | NSEventModifierFlagControl | NSEventModifierFlagOption))) {
+    arion_shift_interrupt(&_shiftTap);
+    int policyKey = event.keyCode == 49 ? ' ' : [event.charactersIgnoringModifiers isEqual:@"."] ? '.' : ArionKeyboardKey(event);
+    ArionKeyAction action = arion_key_action(policyKey, ArionKeyboardModifiers(event), self.ascii);
+    if (action == ARION_KEY_TOGGLE_ASCII) {
         [self toggleASCII];
         return YES;
     }
     // Ctrl+. switches Chinese-mode punctuation; English mode passes it through.
-    if (!self.ascii && [event.charactersIgnoringModifiers isEqual:@"."] &&
-        (flags & (NSEventModifierFlagCommand | NSEventModifierFlagControl | NSEventModifierFlagOption | NSEventModifierFlagShift)) == NSEventModifierFlagControl) {
+    if (action == ARION_KEY_TOGGLE_PUNCTUATION) {
         if (![self toggleEnglishPunctuation]) NSBeep();
         return YES;
     }
-    if (flags & (NSEventModifierFlagCommand | NSEventModifierFlagControl | NSEventModifierFlagOption)) {
+    if (action == ARION_KEY_PASS) {
         [self cancel];
         self.previousCommit = nil;
         return NO;
     }
-    if (self.composing && self.menuTexts.count > 0 && !self.ascii) {
+    if (self.composing && _menu.count > 0 && !self.ascii) {
         NSInteger handled = [self menuKey:event];
         if (handled >= 0) return handled;
     }
-    int key = ArionKeyboardKey(event);
+    int key = arion_key_normalize(ArionKeyboardKey(event), ArionKeyboardModifiers(event), self.ascii);
     if (key < 0) { [self cancel]; self.previousCommit = nil; return NO; }
     BOOL wasComposing = self.composing;
     BOOL handled = [self.engine processKey:key modifiers:ArionKeyboardModifiers(event) session:self.session];
@@ -212,19 +199,19 @@ static BOOL containsHan(NSString *text) {
 - (NSInteger)menuKey:(NSEvent *)event {
     NSString *characters = event.characters;
     unichar character = characters.length == 1 ? [characters characterAtIndex:0] : 0;
-    NSUInteger first = self.page * self.pageSize;
+    NSUInteger first = _menu.page * _menu.page_size;
     if (character >= '1' && character <= '9') {
         NSUInteger index = first + (NSUInteger)(character - '1');
         // A number past the page's end selects nothing but stays a selection key.
-        if (character - '1' < (int)self.pageSize && index < self.menuTexts.count) [self choose:index];
+        if (character - '1' < (int)_menu.page_size && index < _menu.count) [self choose:index];
         return YES;
     }
-    if (character == ' ') { [self choose:self.highlightIndex]; return YES; }
+    if (character == ' ') { [self choose:_menu.highlight]; return YES; }
     BOOL previous = character == '-' || character == '[' || event.keyCode == 116 || event.keyCode == 126;
     BOOL next = character == '=' || character == ']' || event.keyCode == 121 || event.keyCode == 125;
-    if (self.expanded) {
+    if (_menu.expanded) {
         // Rows are pages: move between them; above the first row collapses.
-        if (previous) { if (self.page == 0) [self setGrid:NO]; else [self turn:-1]; return YES; }
+        if (previous) { if (_menu.page == 0) [self setGrid:NO]; else [self turn:-1]; return YES; }
         if (next) { [self turn:1]; return YES; }
         if (event.keyCode == 123 || event.keyCode == 124) { [self moveInRow:event.keyCode == 123 ? -1 : 1]; return YES; }
         return -1;
@@ -233,27 +220,27 @@ static BOOL containsHan(NSString *text) {
     // The next page opens the grid with that page as the current row, as
     // Chatterfly's spread list; a single page has nothing to expand.
     if (next) {
-        if ([self verify] && [self load:(self.page + 1) * self.pageSize] && (self.page + 1) * self.pageSize < self.menuTexts.count) {
-            self.expanded = YES;
-            self.topRow = self.page;
-            if (![self turn:1]) self.expanded = NO;
+        if ([self verify] && [self load:(_menu.page + 1) * _menu.page_size] && (_menu.page + 1) * _menu.page_size < _menu.count) {
+            _menu.expanded = YES;
+            _menu.top_row = _menu.page;
+            if (![self turn:1]) _menu.expanded = NO;
         }
         return YES;
     }
     return -1;
 }
 - (BOOL)choose:(NSUInteger)index {
-    if (index >= self.menuIndices.count) return NO;
-    if (![self.engine selectCandidate:self.menuIndices[index].unsignedIntegerValue session:self.session]) return NO;
+    if (index >= _menu.count) return NO;
+    if (![self.engine selectCandidate:_menu.indices[index] session:self.session]) return NO;
     return [self refresh:nil];
 }
 - (BOOL)select:(NSUInteger)index revision:(NSUInteger)revision {
     if (!self.live || revision != self.revision || index >= self.snapshot.candidates.count) return NO;
-    return [self choose:self.page * self.pageSize + index];
+    return [self choose:_menu.page * _menu.page_size + index];
 }
 - (BOOL)highlight:(NSUInteger)index revision:(NSUInteger)revision {
     if (!self.live || revision != self.revision || index >= self.snapshot.candidates.count || ![self verify]) return NO;
-    self.highlightIndex = self.page * self.pageSize + index;
+    _menu.highlight = _menu.page * _menu.page_size + index;
     return [self publishMenu];
 }
 - (BOOL)nextPage:(NSUInteger)revision {
@@ -262,52 +249,30 @@ static BOOL containsHan(NSString *text) {
 }
 - (BOOL)select:(NSUInteger)index row:(NSUInteger)row revision:(NSUInteger)revision {
     if (!self.live || revision != self.revision || row >= self.snapshot.rows.count || index >= self.snapshot.rows[row].count) return NO;
-    return [self choose:(self.topRow + row) * self.pageSize + index];
+    return [self choose:(_menu.top_row + row) * _menu.page_size + index];
 }
 - (BOOL)toggleExpanded:(NSUInteger)revision {
     if (!self.live || revision != self.revision || !self.composing || ![self verify]) return NO;
-    if (self.expanded) return [self setGrid:NO];
-    if (![self load:(self.page + 1) * self.pageSize] || (self.page + 1) * self.pageSize >= self.menuTexts.count) return NO;
+    if (_menu.expanded) return [self setGrid:NO];
+    if (![self load:(_menu.page + 1) * _menu.page_size] || (_menu.page + 1) * _menu.page_size >= _menu.count) return NO;
     return [self setGrid:YES];
 }
 // Expands with the current page as the first row, or collapses to the
 // current page; the highlight stays on its candidate.
 - (BOOL)setGrid:(BOOL)expanded {
-    self.expanded = expanded;
-    self.topRow = self.page;
+    if (!arion_menu_grid(&_menu, self.engine.api, self.session, expanded)) return NO;
     return [self publishMenu];
 }
 - (BOOL)moveInRow:(NSInteger)delta {
-    NSUInteger first = self.page * self.pageSize;
-    NSInteger index = (NSInteger)self.highlightIndex + delta;
-    if (index < (NSInteger)first || index >= (NSInteger)MIN(first + self.pageSize, self.menuTexts.count) || ![self verify]) return NO;
-    self.highlightIndex = (NSUInteger)index;
+    if (![self verify] || !arion_menu_move(&_menu, (int)delta)) return NO;
     return [self publishMenu];
 }
 // Loads engine candidates until index exists or the engine runs out.
 - (BOOL)load:(NSUInteger)index {
-    while (index >= self.menuTexts.count && !self.exhausted) {
-        NSUInteger limit = MAX(self.pageSize * 3, index + 1 - self.menuTexts.count);
-        NSArray<NSString *> *more = [self.engine candidates:self.session from:self.fetched limit:limit];
-        if (!more) return NO;
-        for (NSUInteger i = 0; i < more.count; i++) {
-            [self.menuTexts addObject:more[i]];
-            [self.menuIndices addObject:@(self.fetched + i)];
-        }
-        self.fetched += more.count;
-        self.exhausted = more.count < limit;
-    }
-    return YES;
+    return arion_menu_load(&_menu, self.engine.api, self.session, index);
 }
 - (BOOL)turn:(NSInteger)delta {
-    if ((delta < 0 && self.page == 0) || ![self verify]) return NO;
-    NSUInteger page = (NSUInteger)((NSInteger)self.page + delta);
-    if (![self load:page * self.pageSize] || page * self.pageSize >= self.menuTexts.count) return NO;
-    self.page = page;
-    self.highlightIndex = page * self.pageSize;
-    // The grid scrolls by whole rows to keep the current row visible.
-    if (page < self.topRow) self.topRow = page;
-    if (page >= self.topRow + kExpandedRows) self.topRow = page + 1 - kExpandedRows;
+    if (![self verify] || !arion_menu_turn(&_menu, self.engine.api, self.session, (int)delta)) return NO;
     return [self publishMenu];
 }
 // Menu-only operations still surface engine or learning storage failures.
@@ -325,62 +290,40 @@ static BOOL containsHan(NSString *text) {
 }
 // Rebuilds the menu for a new engine state: the ranked window, page one.
 - (BOOL)buildMenu {
-    self.menuTexts = [NSMutableArray array];
-    self.menuIndices = [NSMutableArray array];
-    self.fetched = 0;
-    self.exhausted = NO;
-    self.page = 0;
-    self.highlightIndex = 0;
-    // Typing changes the candidates; the grid closes with the old ones.
-    self.expanded = NO;
-    self.topRow = 0;
-    NSArray<NSString *> *window = [self.engine candidates:self.session from:0 limit:MAX(kRankWindow, self.pageSize + 1)];
-    if (!window) return NO;
-    self.fetched = window.count;
-    self.exhausted = window.count < MAX(kRankWindow, self.pageSize + 1);
     ArionContextRanker *ranker = self.contextRanking ? self.engine.ranker : nil;
-    NSArray<NSNumber *> *order = ranker ? [ranker order:window after:self.context] : nil;
-    for (NSUInteger i = 0; i < window.count; i++) {
-        NSUInteger source = order ? order[i].unsignedIntegerValue : i;
-        [self.menuTexts addObject:window[source]];
-        [self.menuIndices addObject:@(source)];
-    }
-    return YES;
+    NSDictionary *ranking = ranker ? @{ @"ranker": ranker, @"previous": self.context ?: @"" } : nil;
+    return arion_menu_build(&_menu, self.engine.api, self.session, self.pageSize,
+        ranking ? rankSharedMenu : NULL, (__bridge void *)ranking);
 }
 // Shows the current page and makes the engine's highlight match Arion's, so
 // a key the engine resolves itself (punctuation) commits the same candidate.
 - (BOOL)publishMenu {
     ArionKeyboardSnapshot *base = self.engineSnapshot;
     if (!base) return NO;
-    // The engine reports false when the highlight is already there.
-    if (self.highlightIndex < self.menuIndices.count)
-        [self.engine highlightCandidate:self.menuIndices[self.highlightIndex].unsignedIntegerValue session:self.session];
-    NSUInteger first = MIN(self.page * self.pageSize, self.menuTexts.count);
-    NSUInteger count = MIN(self.pageSize, self.menuTexts.count - first);
-    // The page is last once nothing follows it, loading one more if needed.
-    if (![self load:first + count]) return NO;
+    if (!arion_menu_prepare(&_menu, self.engine.api, self.session)) return NO;
+    NSUInteger first = MIN(_menu.page * _menu.page_size, _menu.count);
+    NSUInteger count = arion_menu_visible_count(&_menu);
     ArionKeyboardSnapshot *visible = [ArionKeyboardSnapshot new];
     visible.preedit = base.preedit;
     visible.selection = base.selection;
     visible.ascii = base.ascii;
     visible.commit = base.commit;
     visible.failure = base.failure;
-    visible.candidates = [self.menuTexts subarrayWithRange:NSMakeRange(first, count)];
+    visible.candidates = sharedMenuTexts(&_menu, first, count);
     visible.comments = @[];
-    visible.page = self.page;
-    visible.lastPage = first + count >= self.menuTexts.count;
-    visible.highlighted = self.highlightIndex >= first ? self.highlightIndex - first : 0;
-    visible.expanded = self.expanded;
-    if (self.expanded) {
+    visible.page = _menu.page;
+    visible.lastPage = first + count >= _menu.count;
+    visible.highlighted = _menu.highlight >= first ? _menu.highlight - first : 0;
+    visible.expanded = _menu.expanded;
+    if (_menu.expanded) {
         NSMutableArray *rows = [NSMutableArray array];
-        if (![self load:(self.topRow + kExpandedRows) * self.pageSize]) return NO;
-        for (NSUInteger row = self.topRow; row < self.topRow + kExpandedRows && row * self.pageSize < self.menuTexts.count; row++) {
-            NSUInteger start = row * self.pageSize;
-            [rows addObject:[self.menuTexts subarrayWithRange:NSMakeRange(start, MIN(self.pageSize, self.menuTexts.count - start))]];
+        for (NSUInteger row = _menu.top_row; row < _menu.top_row + arion_menu_row_count(&_menu); row++) {
+            NSUInteger start = row * _menu.page_size;
+            [rows addObject:sharedMenuTexts(&_menu, start, MIN(_menu.page_size, _menu.count - start))];
         }
         visible.rows = rows;
-        visible.currentRow = self.page - self.topRow;
-        visible.moreRows = (self.topRow + rows.count) * self.pageSize < self.menuTexts.count;
+        visible.currentRow = _menu.page - _menu.top_row;
+        visible.moreRows = (_menu.top_row + rows.count) * _menu.page_size < _menu.count;
     } else {
         visible.rows = @[visible.candidates];
         visible.currentRow = 0;
@@ -441,8 +384,8 @@ static BOOL containsHan(NSString *text) {
         }
         return YES;
     }
-    self.menuTexts = nil;
-    self.menuIndices = nil;
+    arion_menu_dispose(&_menu);
+
     if (self.changed) self.changed();
     return YES;
 }

@@ -5,16 +5,20 @@ import (
 	arion "arion.local/desktop/ui/shared/runtime"
 )
 
-// automaticInputMethod guarantees deferral if the source becomes selected
-// during staging. Explicit installation remains a separate user action.
+// Platform adapters enforce their native handover boundary. A stable Windows
+// loader may publish a core while selected; other adapters defer until idle.
 type automaticInputMethod interface{ UpdateAutomatically() error }
+type selectedInputMethodUpdater interface{ CanUpdateWhileSelected() bool }
 
 func (a *App) updateInputMethodAutomatically() {
 	if _, ok := a.ime.(automaticInputMethod); !ok {
 		return
 	}
-	if !a.state.InputMethodUpdate || a.state.InputMethodUpdateFailed ||
-		a.state.InputMethod != arion.InputMethodInstalled ||
+	available := a.state.InputMethod == arion.InputMethodInstalled
+	if updater, ok := a.ime.(selectedInputMethodUpdater); ok && a.state.InputMethod == arion.InputMethodSelected {
+		available = updater.CanUpdateWhileSelected()
+	}
+	if !a.state.InputMethodUpdate || a.state.InputMethodUpdateFailed || !available ||
 		a.state.InputMethodInstalling || a.state.InputMethodRemoving || a.state.InputMethodActivating ||
 		a.state.Hold.Holding {
 		return

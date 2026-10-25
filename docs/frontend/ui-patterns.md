@@ -66,6 +66,7 @@ import { t } from 'shared/i18n';
 
 - Use Flexbox to partition the screen into stable regions (header, content, footer).
 - Only designated containers scroll. Do not allow the body or arbitrary containers to scroll.
+- Hidden-title-bar windows must keep interactive controls outside the native caption bounds reported by `Context.TitleBar()`. Onboarding places its progress/language header below right-side caption buttons; left-side macOS controls remain over the illustration. Use DIP metrics from the window, not fixed pixel offsets.
 - Set `min-height: 0` on every flex container that participates in the scroll chain.
 - The page root should fill the viewport (`min-h-dvh` / `h-dvh`).
 
@@ -80,6 +81,8 @@ When building or reviewing UI, apply the project Agent Skills in [`.claude/skill
 Do not introduce a second styling system just to apply a polish fix. Express the change in the project's existing tokens and FSD layers.
 
 ## Accessibility
+
+The shared Pinyin worktree uses the same candidate appearance, ranking and key controls on both platforms, while preserving Windows-specific setup and error guidance. Windows replacement offers removal and reinstall rather than macOS's live-update action. These controls must ship together with the verified full native keyboard runtime; the older installed voice-only package does not support them. Native Windows Pinyin acceptance remains pending.
 
 - Use semantic HTML (`button`, `a`, `label`, `nav`, `main`).
 - Every interactive element must have an accessible name.

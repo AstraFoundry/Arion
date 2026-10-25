@@ -92,6 +92,22 @@ jobs:
         if: runner.os == 'Windows'
         run: pnpm updater:check
       - run: pnpm e2e:native
+      - name: Windows shared Pinyin and native module checks
+        if: runner.os == 'Windows'
+        run: ./scripts/check-windows-keyboard-ci.ps1
+      - name: macOS shared Pinyin and native adapter checks
+        if: runner.os == 'macOS'
+        run: pnpm keyboard:check
+      - name: Retain native keyboard evidence
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: keyboard-evidence-${{ matrix.os }}
+          path: |
+            ${{ runner.os == 'Windows' && '.workspace/keyboard-evidence.zip' || '.workspace/tests/' }}
+            ${{ runner.temp }}/keyboard-standard-user.stdout.log
+            ${{ runner.temp }}/keyboard-standard-user.stderr.log
+          if-no-files-found: ignore
       - uses: actions/upload-artifact@v4
         if: always()
         with:

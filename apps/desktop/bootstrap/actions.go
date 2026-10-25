@@ -19,7 +19,7 @@ import (
 // actions implements runtime.Actions. Views call it on the main thread.
 type actions struct{ a *App }
 
-func (x actions) ToggleDictation()   { x.a.record("dictation_toggle", nil); x.a.core.Toggle() }
+func (x actions) ToggleDictation()   { x.a.record("dictation_toggle", nil); x.a.toggleDictation() }
 func (x actions) CancelDictation()   { x.a.record("dictation_cancel", nil); x.a.core.Cancel() }
 func (x actions) RequestMicrophone() { x.a.platform.RequestMicrophone() }
 func (x actions) OpenMicrophoneSettings() {
@@ -181,7 +181,9 @@ func (x actions) installInputMethod(automatic bool) error {
 		update := a.ime.UpdateAvailable()
 		a.post(func() {
 			a.state.InputMethodInstalling = false
-			a.state.InputMethodUpdate = update
+			// Keep Retry available if the machine transaction committed but
+			// ordinary-user setup failed after the build already matched.
+			a.state.InputMethodUpdate = update || updating && err != nil
 			a.setInputMethodState(state)
 			var deferred interface{ InputMethodUpdateDeferred() bool }
 			if automatic && errors.As(err, &deferred) && deferred.InputMethodUpdateDeferred() {

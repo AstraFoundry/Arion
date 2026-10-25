@@ -27,6 +27,7 @@ type worker struct {
 	cancelled map[uint64]bool
 	running   uint64
 	stop      atomic.Bool
+	fatal     bool
 }
 
 func main() {
@@ -39,7 +40,7 @@ func main() {
 		if err := w.out.Encode(response); err != nil {
 			os.Exit(1)
 		}
-		if req.Op == protocol.OpClose {
+		if req.Op == protocol.OpClose || w.fatal {
 			return
 		}
 	}
@@ -130,6 +131,10 @@ func (w *worker) rewrite(req protocol.Request) protocol.Response {
 	delete(w.cancelled, req.ID)
 	w.mu.Unlock()
 	if err != nil {
+		if errors.Is(err, gguf.ErrRuntimeUnavailable) {
+			w.close()
+			w.fatal = true
+		}
 		return fail(err)
 	}
 	return protocol.Response{OK: true, Text: result.Text, Cleanup: &result.Cleanup, Template: result.Template, InputTokens: result.InputTokens, ReusedTokens: result.ReusedTokens,

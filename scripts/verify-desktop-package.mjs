@@ -1,5 +1,6 @@
 // Verify required resources in the packaged app, never mutate signed output.
 import { execFileSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import { readFileSync, statSync, readdirSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -8,7 +9,8 @@ import { macosSigningSettings } from './lib/desktop-signing.mjs';
 import { verifyMacOSDistribution } from './lib/verify-macos-distribution.mjs';
 import { verifyIMEProvisioning } from './lib/ime-provisioning.mjs';
 import { verifyKeyboardBundle } from './verify-keyboard-bundle.mjs';
-import { verifyWindowsASRPackage, verifyWindowsPEDependencies } from './lib/windows-pe.mjs';
+import { verifyWindowsASRPackage, verifyWindowsLLMPackage, verifyWindowsPEDependencies } from './lib/windows-pe.mjs';
+import { verifyWindowsKeyboardRuntime } from './lib/windows-keyboard.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const config = JSON.parse(readFileSync(path.join(root, 'apps/desktop/desktop.json'), 'utf8'));
@@ -51,10 +53,10 @@ for (const spec of native.files) requireFile(path.join(resources, 'licenses', sp
 const spec = pins.platforms[platform];
 if (spec) {
   binaries.push(path.join(resources, 'llm', goos === 'windows' ? 'arion-llm.exe' : 'arion-llm'));
-  for (const archive of spec.archives) for (const name of Object.values(archive.members)) {
+  for (const name of [...(spec.files ?? []), ...(spec.archives ?? []).flatMap(archive => Object.values(archive.members))]) {
     const file = path.join(resources, 'llm', name);
     requireFile(file);
-    if (/\.(dylib|dll)$/.test(name) || name === 'llama-server') binaries.push(file);
+    if (/\.(dylib|dll|exe)$/.test(name) || name === 'llama-server') binaries.push(file);
   }
 }
 if (spec) for (const name of ['cmudict-pronunciation-v1-LICENSE', 'pypinyin-character-readings-v1-LICENSE.txt']) requireFile(path.join(resources, 'llm/licenses', name));
@@ -101,8 +103,32 @@ if (goos === 'darwin') {
 }
 if (goos === 'windows') {
   verifyWindowsPEDependencies([binaries[0]]);
+  const ime = path.join(resources, 'ime');
+  const imeManifest = JSON.parse(readFileSync(path.join(ime, 'runtime.json'), 'utf8'));
+  const imeFiles = ['ArionTSFLoader.dll', 'ArionTSF.dll', 'arion-ime.exe'];
+  if (imeManifest.schema !== 2 || imeManifest.architecture !== 'amd64' || Object.keys(imeManifest.files ?? {}).sort().join(',') !== [...imeFiles].sort().join(',')) throw new Error('Invalid packaged Windows input-method manifest');
+  for (const name of imeFiles) {
+    const file = path.join(ime, name);
+    requireFile(file);
+    const bytes = readFileSync(file);
+    if (createHash('sha256').update(bytes).digest('hex') !== imeManifest.files[name]) throw new Error(`Packaged Windows input-method hash mismatch: ${name}`);
+    if (bytes.toString('ascii', 0, 2) !== 'MZ' || bytes.readUInt16LE(bytes.readUInt32LE(0x3c) + 4) !== 0x8664) throw new Error(`Not a Windows x64 input-method binary: ${name}`);
+  }
+  verifyWindowsPEDependencies(imeFiles.map(name => path.join(ime, name)));
+  console.log('Verified packaged Windows input-method hashes, x64 architecture and DLL closure.');
+  verifyWindowsKeyboardRuntime(path.join(resources, 'keyboard'));
+  const keyboardManifestHash = createHash('sha256').update(readFileSync(path.join(resources, 'keyboard/runtime.json'))).digest('hex');
+  if (imeManifest.keyboardManifestSHA256 !== keyboardManifestHash) throw new Error('Packaged Windows input method is bound to a different keyboard runtime.');
+  execFileSync(path.join(ime, 'arion-ime.exe'), ['verify', path.join(ime, 'ArionTSF.dll'), imeManifest.files['ArionTSF.dll']],
+    { cwd: resources, stdio: 'inherit', windowsHide: true, timeout: 30000 });
+  console.log('Verified packaged Windows shared Pinyin runtime, encrypted schema and native module closure.');
   const asrPins = JSON.parse(readFileSync(path.join(root, 'scripts/asr-runtime.json'), 'utf8'));
   const checked = verifyWindowsASRPackage(asr, asrPins.speech.version);
   console.log(`Verified packaged Windows DLL closure and isolated CPU launch: ${checked.version}.`);
+  if (spec) {
+    verifyWindowsPEDependencies([path.join(resources, 'llm', 'arion-llm.exe')]);
+    const checkedLLM = verifyWindowsLLMPackage(path.join(resources, 'llm'));
+    console.log(`Verified packaged Windows GGUF DLL closure and isolated CPU launch: ${checkedLLM.version}.`);
+  }
 }
 console.log(`Verified ${platform} resources, licenses and architectures; local rewriting ${spec ? 'bundled' : 'unsupported'}.`);

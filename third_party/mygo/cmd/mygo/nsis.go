@@ -311,6 +311,11 @@ func writeInstaller(c *Config, stage, work, exe, goarch string, installed []stri
 	uninstallKey := `Software\Microsoft\Windows\CurrentVersion\Uninstall\` + c.Identifier
 	shortcut := nsisEscape(fsName(c.Name)) + ".lnk"
 	register, unregister := nsisAssociations(c, exe)
+	prepare, commit := nsisPayloadTransaction(exe, installed)
+	removePayload, err := nsisRemovePayload(stage, installed)
+	if err != nil {
+		return "", err
+	}
 	script := `Unicode true
 ManifestDPIAware true
 SetCompressor /SOLID lzma
@@ -330,10 +335,30 @@ BrandingText " "
 !insertmacro MUI_UNPAGE_CONFIRM
 !insertmacro MUI_UNPAGE_INSTFILES
 !insertmacro MUI_LANGUAGE "English"
+Var PayloadStage
+Var PayloadMoved
+Var PayloadExecutable
+Var PayloadMutex
+Var PayloadRestoreFailed
+
+Function .onInit
+  System::Call 'kernel32::CreateMutexW(p 0, i 0, w "Local\mygo-installer-` + nsisEscape(c.Identifier) + `") p.r0 ?e'
+  Pop $1
+  StrCpy $PayloadMutex $0
+  StrCmp $PayloadMutex 0 installer_busy
+  IntCmp $1 183 installer_busy
+  Return
+installer_busy:
+  MessageBox MB_OK|MB_ICONEXCLAMATION "Another installer is running." /SD IDOK
+  SetErrorLevel 1
+  Abort
+FunctionEnd
 
 Section
-  SetOutPath "$INSTDIR"
-` + files.String() + `  WriteUninstaller "$INSTDIR\Uninstall.exe"
+` + prepare + files.String() + `  IfErrors payload_extract_failed
+  WriteUninstaller "$PayloadStage\payload\Uninstall.exe"
+  IfErrors payload_extract_failed
+` + commit + `
   CreateShortCut "$SMPROGRAMS\` + shortcut + `" "$INSTDIR\` + nsisEscape(exe) + `"
   WriteRegStr HKCU ` + nsisString(uninstallKey) + ` "DisplayName" ` + nsisString(c.Name) + `
   WriteRegStr HKCU ` + nsisString(uninstallKey) + ` "DisplayVersion" ` + nsisString(c.Version) + `
@@ -378,9 +403,8 @@ Section "Uninstall"
   Push "$DESKTOP\` + shortcut + `"
   Call un.DeleteShortcut
   DeleteRegKey HKCU ` + nsisString(uninstallKey) + `
-` + unregister + `  ; Last, so that the app's folder is gone once the uninstall is done:
-  ; the uninstaller runs from a copy of itself that nothing waits for.
-  RMDir /r "$INSTDIR"
+` + unregister + removePayload + `  Delete "$INSTDIR\Uninstall.exe"
+  RMDir "$INSTDIR"
 SectionEnd
 `
 	nsi := filepath.Join(work, "installer.nsi")
@@ -399,6 +423,136 @@ SectionEnd
 	}
 	t.done("Created " + filepath.Base(out))
 	return out, nil
+}
+
+// Stage the entire payload before touching installed files. Each successful
+// rename is tracked so a locked entry cannot leave a mixture of releases.
+// Unknown installation-directory entries are preserved.
+func nsisPayloadTransaction(exe string, installed []string) (string, string) {
+	prepare := `  InitPluginsDir
+  CreateDirectory "$INSTDIR"
+  StrCpy $PayloadExecutable -1
+  IfFileExists "$INSTDIR\` + nsisEscape(exe) + `" 0 payload_stage
+  ; A mapped executable cannot be opened for writing. Hold this handle
+  ; through the transaction, allowing renames but not another writer.
+  System::Call 'kernel32::CreateFileW(w "$INSTDIR\` + nsisEscape(exe) + `", i 0xC0000000, i 5, p 0, i 3, i 0, p 0) p.r0'
+  StrCpy $PayloadExecutable $0
+  StrCmp $PayloadExecutable -1 0 payload_stage
+  MessageBox MB_OK|MB_ICONEXCLAMATION "Close the app before installing this update." /SD IDOK
+  SetErrorLevel 1
+  Abort
+payload_stage:
+  ClearErrors
+  GetTempFileName $PayloadStage "$INSTDIR"
+  IfErrors payload_stage_failed
+  Delete "$PayloadStage"
+  CreateDirectory "$PayloadStage\previous"
+  SetOutPath "$PayloadStage\payload"
+  IfErrors payload_extract_failed
+  ClearErrors
+`
+	var b strings.Builder
+	b.WriteString("  StrCpy $PayloadMoved 0\n")
+	// Publish the executable last: it can only launch once every resource
+	// belongs to the new release. The old executable remains write-locked.
+	var names []string
+	for _, name := range installed {
+		if name != exe {
+			names = append(names, name)
+		}
+	}
+	names = append(names, "Uninstall.exe", exe)
+	for i, name := range names {
+		n := nsisEscape(name)
+		fmt.Fprintf(&b, `  IfFileExists "$INSTDIR\%s" 0 payload_move_%d
+  ClearErrors
+  Rename "$INSTDIR\%s" "$PayloadStage\previous\%s"
+  IfErrors payload_rollback
+payload_move_%d:
+  StrCpy $PayloadMoved %d
+  ClearErrors
+  Rename "$PayloadStage\payload\%s" "$INSTDIR\%s"
+  IfErrors payload_rollback
+`, n, i, n, n, i, i+1, n, n)
+	}
+	b.WriteString(`  Goto payload_success
+payload_rollback:
+  SetOutPath "$INSTDIR"
+  StrCpy $PayloadRestoreFailed 0
+`)
+	for i := len(names) - 1; i >= 0; i-- {
+		n := nsisEscape(names[i])
+		fmt.Fprintf(&b, `  IntCmp $PayloadMoved %d 0 payload_undo_done_%d 0
+  RMDir /r "$INSTDIR\%s"
+  Delete "$INSTDIR\%s"
+  IfFileExists "$INSTDIR\%s" 0 payload_restore_%d
+  StrCpy $PayloadRestoreFailed 1
+  Goto payload_undo_done_%d
+payload_restore_%d:
+  IfFileExists "$PayloadStage\previous\%s" 0 payload_undo_done_%d
+  ClearErrors
+  Rename "$PayloadStage\previous\%s" "$INSTDIR\%s"
+  IfErrors 0 payload_undo_done_%d
+  StrCpy $PayloadRestoreFailed 1
+payload_undo_done_%d:
+`, i+1, i, n, n, n, i, i, i, n, i, n, n, i, i)
+	}
+	b.WriteString(`  StrCmp $PayloadRestoreFailed 1 payload_restore_failed
+payload_extract_failed:
+  SetOutPath "$INSTDIR"
+  System::Call 'kernel32::CloseHandle(p $PayloadExecutable)'
+  RMDir /r "$PayloadStage"
+  MessageBox MB_OK|MB_ICONSTOP "Installation failed. The previous version has been preserved." /SD IDOK
+  SetErrorLevel 1
+  Abort
+payload_restore_failed:
+  System::Call 'kernel32::CloseHandle(p $PayloadExecutable)'
+  MessageBox MB_OK|MB_ICONSTOP "Installation failed. Previous files are preserved in $PayloadStage\previous." /SD IDOK
+  SetErrorLevel 1
+  Abort
+payload_stage_failed:
+  System::Call 'kernel32::CloseHandle(p $PayloadExecutable)'
+  MessageBox MB_OK|MB_ICONSTOP "Cannot prepare the installation folder." /SD IDOK
+  SetErrorLevel 1
+  Abort
+payload_success:
+  System::Call 'kernel32::CloseHandle(p $PayloadExecutable)'
+  SetOutPath "$INSTDIR"
+  RMDir /r "$PayloadStage"
+`)
+	return prepare, b.String()
+}
+
+// Remove only packaged paths, then empty directories. A user-selected install
+// directory can contain unrelated files which an uninstaller must preserve.
+func nsisRemovePayload(stage string, installed []string) (string, error) {
+	var b strings.Builder
+	var directories []string
+	for _, name := range installed {
+		err := filepath.WalkDir(filepath.Join(stage, name), func(p string, entry fs.DirEntry, err error) error {
+			if err != nil {
+				return err
+			}
+			rel, err := filepath.Rel(stage, p)
+			if err != nil {
+				return err
+			}
+			rel = nsisEscape(strings.ReplaceAll(rel, "/", `\`))
+			if entry.IsDir() {
+				directories = append(directories, rel)
+			} else {
+				fmt.Fprintf(&b, "  Delete \"$INSTDIR\\%s\"\n", rel)
+			}
+			return nil
+		})
+		if err != nil {
+			return "", err
+		}
+	}
+	for i := len(directories) - 1; i >= 0; i-- {
+		fmt.Fprintf(&b, "  RMDir \"$INSTDIR\\%s\"\n", directories[i])
+	}
+	return b.String(), nil
 }
 
 // uninstallerSigning returns the NSIS command that signs the uninstaller

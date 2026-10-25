@@ -12,6 +12,37 @@ type automaticIME struct{ *installingIME }
 
 func (m automaticIME) UpdateAutomatically() error { return m.Install() }
 
+type selectedAutomaticIME struct{ automaticIME }
+
+func (selectedAutomaticIME) CanUpdateWhileSelected() bool { return true }
+
+func TestAutomaticIMEUpdateCanPublishStableCoreWhileSelected(t *testing.T) {
+	m := &installingIME{gate: make(chan struct{}), state: arion.InputMethodSelected}
+	a := &App{ime: selectedAutomaticIME{automaticIME{m}}, queueReady: make(chan struct{}, 1)}
+	a.state.InputMethodUpdate = true
+	a.state.InputMethod = arion.InputMethodSelected
+	a.updateInputMethodAutomatically()
+	if !a.state.InputMethodInstalling {
+		t.Fatal("stable core publication was deferred solely because the source is selected")
+	}
+	close(m.gate)
+	select {
+	case <-a.queueReady:
+		a.queueMu.Lock()
+		queued := a.queue
+		a.queue = nil
+		a.queueMu.Unlock()
+		for _, fn := range queued {
+			fn()
+		}
+	case <-time.After(2 * time.Second):
+		t.Fatal("missing core publication completion")
+	}
+	if m.calls.Load() != 1 || m.activationCalls.Load() != 0 {
+		t.Fatal("core publication repeated or reactivated the source")
+	}
+}
+
 func TestAutomaticIMEUpdateWaitsForUnusedSourceAndDoesNotLoopOnFailure(t *testing.T) {
 	m := &installingIME{gate: make(chan struct{}), state: arion.InputMethodInstalled, failure: errors.New("replacement failed")}
 	a := &App{ime: automaticIME{m}, queueReady: make(chan struct{}, 1)}
@@ -48,7 +79,7 @@ func TestAutomaticIMEUpdateWaitsForUnusedSourceAndDoesNotLoopOnFailure(t *testin
 	case <-time.After(2 * time.Second):
 		t.Fatal("missing update completion")
 	}
-	if !a.state.InputMethodUpdateFailed || m.calls.Load() != 1 || m.activationCalls.Load() != 0 {
+	if !a.state.InputMethodUpdate || !a.state.InputMethodUpdateFailed || m.calls.Load() != 1 || m.activationCalls.Load() != 0 {
 		t.Fatal("update failed to retain failure or started activation")
 	}
 	a.state.InputMethodUpdate = true

@@ -3,14 +3,24 @@ package gguf
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"io"
 	"net/http"
 	"strings"
+	"sync/atomic"
 	"testing"
 
 	"arion.local/desktop/infrastructure/llm/engine"
 	"arion.local/desktop/infrastructure/llm/prompt"
 )
+
+func TestFailedNativeReloadCannotContinueServing(t *testing.T) {
+	e := &Engine{reload: true, runtimeDir: t.TempDir(), config: engine.Config{ModelDir: t.TempDir(), Threads: 1, MaxLength: 4096, MaxNewTokens: 256}}
+	_, err := e.Run(engine.Request{Session: "after-cancellation"}, &atomic.Bool{})
+	if !errors.Is(err, ErrRuntimeUnavailable) {
+		t.Fatalf("failed native reload was not fatal: %v", err)
+	}
+}
 
 type roundTrip func(*http.Request) (*http.Response, error)
 

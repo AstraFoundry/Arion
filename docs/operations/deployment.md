@@ -10,6 +10,8 @@ The identifiers are `si.astrafoundry.arion` and `si.astrafoundry.inputmethod.ari
 
 Windows CPU ASR disables OpenMP and retains ggml's native thread pool. MSVC uses the static C/C++ runtime (`MultiThreaded`); `/MT` alone does not remove OpenMP's `VCOMP140.DLL` dependency. Staging and final package verification read normal and delay-loaded PE imports recursively, reject unbundled DLL dependencies, and execute the CPU worker's `--version` with only Windows system directories on `PATH`. The optional Vulkan worker may import the GPU driver's `vulkan-1.dll`; CPU recognition must run without that driver or compiler redistributables.
 
+The Windows EXE installer stages its complete payload on the destination volume before replacing installed entries. It rejects a running application, serializes installers for the same product, and rolls back renamed entries if replacement fails. It never treats an ignored extraction error as a successful installation. Unrelated top-level files remain untouched; model and keyboard user data remain in the separate user profile. A failed rollback retains its backup path for recovery. This handles ordinary installation errors, not abrupt power loss. The isolated NSIS regression installs, rejects a running app and a locked resource, checks rollback, retries the upgrade and uninstalls the test application. Windows `pnpm updater:check` runs this real installer regression alongside the shared signed-update checks in CI.
+
 ```sh
 make build desktop
 ```

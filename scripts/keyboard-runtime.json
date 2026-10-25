@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "scope": "Offline macOS universal full-Pinyin engine and build-only SDK; staged by scripts/stage-keyboard-runtime.mjs",
+  "scope": "Offline macOS universal and Windows x64 full-Pinyin engine with build-only private SDKs",
   "engine": {
     "name": "librime",
     "version": "1.17.0",
@@ -178,6 +178,69 @@
       "to": "licenses/GPL-3.0.txt",
       "license": "GPL-3.0",
       "source": "https://www.gnu.org/licenses/gpl-3.0.txt"
+    },
+    {
+      "path": "apps/desktop/ime/shared/ranking_unicode_LICENSE.txt",
+      "sha256": "e7a93b009565cfce55919a381437ac4db883e9da2126fa28b91d12732bc53d96",
+      "sizeBytes": 1995,
+      "to": "licenses/ranking-unicode-LICENSE.txt",
+      "license": "Unicode-3.0",
+      "source": "https://www.unicode.org/license.txt"
+    },
+    {
+      "path": "apps/desktop/ime/shared/ranking_unicode_sources.json",
+      "sha256": "289e0d3409f257956acb9b5ff940cad058bad9574e3a146e09857f6b0944c96e",
+      "sizeBytes": 1638,
+      "to": "licenses/ranking-unicode-sources.json",
+      "license": "Unicode-3.0",
+      "source": "https://www.unicode.org/Public/17.0.0/ucd/"
     }
-  ]
+  ],
+  "windows": {
+    "architectures": [
+      "x86_64"
+    ],
+    "toolchain": "MinGW-w64 GCC C++17; build the engine and private adapters with the same compiler",
+    "logging": false,
+    "dependencies": {
+      "leveldb": {
+        "url": "https://codeload.github.com/google/leveldb/tar.gz/99b3c03b3284f5886f9ef9a4ef703d57373e61be",
+        "revision": "99b3c03b3284f5886f9ef9a4ef703d57373e61be",
+        "sha256": "bc87b9bbc5674c91246a89813355e78401759761342cc049e1c3d56350a8a9d1",
+        "sizeBytes": 243094,
+        "directory": "leveldb-99b3c03b3284f5886f9ef9a4ef703d57373e61be"
+      },
+      "marisa": {
+        "url": "https://codeload.github.com/s-yata/marisa-trie/tar.gz/3e87d53b78e15f2f43783d5e376561a8c9722051",
+        "revision": "3e87d53b78e15f2f43783d5e376561a8c9722051",
+        "sha256": "c24516edc43be8049ef4e23e50a574d4670036fe3595c49c0f01d4d87ce58f57",
+        "sizeBytes": 212943,
+        "directory": "marisa-trie-3e87d53b78e15f2f43783d5e376561a8c9722051"
+      },
+      "yaml": {
+        "url": "https://codeload.github.com/jbeder/yaml-cpp/tar.gz/2f86d13775d119edbb69af52e5f566fd65c6953b",
+        "revision": "2f86d13775d119edbb69af52e5f566fd65c6953b",
+        "sha256": "923b2298148581b14ef21d9ce29d83eca102ff671a547dfdbd227245a199bcd8",
+        "sizeBytes": 1050633,
+        "directory": "yaml-cpp-2f86d13775d119edbb69af52e5f566fd65c6953b"
+      },
+      "opencc": {
+        "url": "https://codeload.github.com/BYVoid/OpenCC/tar.gz/556ed22496d650bd0b13b6c163be9814637970ae",
+        "revision": "556ed22496d650bd0b13b6c163be9814637970ae",
+        "sha256": "2792fc0944359c5d099bd79e08bfffce250bf3760aa0ec306e975cc58314482a",
+        "sizeBytes": 3424904,
+        "directory": "OpenCC-556ed22496d650bd0b13b6c163be9814637970ae"
+      }
+    },
+    "files": [
+      {
+        "url": "https://raw.githubusercontent.com/Tencent/rapidjson/v1.1.0/license.txt",
+        "sha256": "a140e5d46fe734a1c78f1a3c3ef207871dd75648be71fdda8e309b23ab8b1f32",
+        "sizeBytes": 5152,
+        "to": "licenses/rapidjson-LICENSE",
+        "license": "MIT",
+        "source": "https://github.com/Tencent/rapidjson/tree/v1.1.0"
+      }
+    ]
+  }
 }

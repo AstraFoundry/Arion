@@ -12,7 +12,7 @@ func newGPURenderer(n platform.SurfaceNative) (gpuRenderer, error) {
 		return nil, errors.New("the surface has no window")
 	}
 	if n.Composed {
-		// The window shows its material where the frames are transparent.
+		// Transparent pixels reveal the desktop or the window's material.
 		return d3d11.NewComposed(n.HWND)
 	}
 	return d3d11.New(n.HWND)

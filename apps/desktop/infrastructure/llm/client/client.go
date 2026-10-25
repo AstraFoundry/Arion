@@ -17,6 +17,7 @@ import (
 	"arion.local/core/contracts"
 	"arion.local/core/domain"
 	"arion.local/core/domain/ports"
+	"arion.local/desktop/infrastructure/llm/internal/subprocess"
 	"arion.local/desktop/infrastructure/llm/protocol"
 )
 
@@ -41,9 +42,10 @@ type LoadInfo struct {
 // Client is one running worker. A dead worker fails every request with
 // MODEL_UNSUPPORTED; it is never silently replaced.
 type Client struct {
-	cmd   *exec.Cmd
-	stdin io.WriteCloser
-	next  atomic.Uint64
+	cmd     *exec.Cmd
+	process *subprocess.Process
+	stdin   io.WriteCloser
+	next    atomic.Uint64
 
 	writeMu sync.Mutex
 	mu      sync.Mutex
@@ -56,7 +58,6 @@ type Client struct {
 // caller's choice of diag writer; it never contains content.
 func Start(ctx context.Context, config Config, diag io.Writer) (*Client, LoadInfo, error) {
 	cmd := exec.Command(config.Worker)
-	prepareProcess(cmd)
 	cmd.Stderr = diag
 	stdin, err := cmd.StdinPipe()
 	if err != nil {
@@ -66,10 +67,11 @@ func Start(ctx context.Context, config Config, diag io.Writer) (*Client, LoadInf
 	if err != nil {
 		return nil, LoadInfo{}, err
 	}
-	if err := cmd.Start(); err != nil {
+	process, err := subprocess.Start(cmd)
+	if err != nil {
 		return nil, LoadInfo{}, domain.Fail(domain.CodeModelUnsupported, "llm worker start")
 	}
-	c := &Client{cmd: cmd, stdin: stdin, pending: map[uint64]chan protocol.Response{}, done: make(chan struct{})}
+	c := &Client{cmd: cmd, process: process, stdin: stdin, pending: map[uint64]chan protocol.Response{}, done: make(chan struct{})}
 	go c.read(stdout)
 	response, err := c.call(ctx, protocol.Request{Op: protocol.OpLoad, Runtime: config.Runtime, Model: config.Model,
 		Threads: config.Threads, MaxLength: config.MaxLength, MaxNewTokens: config.MaxNewTokens})
@@ -97,7 +99,7 @@ func (c *Client) read(stdout io.Reader) {
 		}
 	}
 	_ = c.cmd.Wait()
-	stopProcessTree(c.cmd)
+	c.process.Stop()
 	c.mu.Lock()
 	c.dead = domain.Fail(domain.CodeModelUnsupported, "llm worker exited")
 	for id, ch := range c.pending {
@@ -192,7 +194,7 @@ func (c *Client) Close() {
 	select {
 	case <-c.done:
 	case <-time.After(5 * time.Second):
-		stopProcessTree(c.cmd)
+		c.process.Stop()
 		<-c.done
 	}
 }

@@ -11,6 +11,7 @@ import (
 	"path/filepath"
 	"runtime"
 	"sync"
+	"time"
 
 	"arion.local/core/contracts"
 	"arion.local/core/domain"
@@ -23,6 +24,15 @@ import (
 // DefaultModel is the catalog rewriter the live pipeline uses; the
 // benchmark report records why it was chosen.
 const DefaultModel = "qwen3.5-2b-q4-k-m-metal"
+
+// Timeout gives the Windows CPU pipeline a bounded final-request budget. Zero
+// preserves the coordinator's default on other platforms; cloud owns its limit.
+func Timeout(platform string) time.Duration {
+	if platform == "windows-amd64" {
+		return 30 * time.Second
+	}
+	return 0
+}
 
 // State is the capability's user-visible readiness.
 type State string
@@ -54,7 +64,7 @@ type Status struct {
 // platform resources; development runs keep them per platform.
 func Locate(resources string) string {
 	for _, dir := range []string{filepath.Join(resources, "llm"), filepath.Join(resources, runtime.GOOS+"-"+runtime.GOARCH, "llm")} {
-		if fileExists(filepath.Join(dir, workerName())) && fileExists(filepath.Join(dir, "llama-server")) {
+		if fileExists(filepath.Join(dir, workerName())) && fileExists(filepath.Join(dir, runtimeName())) {
 			return dir
 		}
 	}
@@ -66,6 +76,13 @@ func workerName() string {
 		return "arion-llm.exe"
 	}
 	return "arion-llm"
+}
+
+func runtimeName() string {
+	if runtime.GOOS == "windows" {
+		return "llama-server.exe"
+	}
+	return "llama-server"
 }
 
 func fileExists(path string) bool {
