@@ -28,7 +28,7 @@ if ($Child) {
         New-Item -ItemType Directory -Path $preflightDirectory -Force | Out-Null
         $preflightSource = Join-Path $Repository 'apps/desktop/ime/windows/ci_preflight.cpp'
         $preflightBinary = Join-Path $preflightDirectory 'preflight.exe'
-        $compiler = (Get-Command g++ -CommandType Application).Source
+        $compiler = (Get-Command g++ -CommandType Application | Select-Object -First 1).Source
         $compileArguments = @('-std=c++17', '-DINITGUID', '-O2', '-Wall', '-Wextra', '-Werror', '-static', '-municode',
             $preflightSource, '-o', $preflightBinary, '-lole32', '-loleaut32', '-luuid', '-ladvapi32', '-lcrypt32', '-lgdi32')
         @{ compiler = $compiler; arguments = $compileArguments; sid = $ExpectedSID; profile = $env:USERPROFILE;
@@ -70,7 +70,7 @@ if ($Repository -ne (Resolve-Path -LiteralPath $env:GITHUB_WORKSPACE).Path) {
     throw 'The test repository must be the current GitHub workspace.'
 }
 & (Join-Path $PSScriptRoot 'test-windows-keyboard-ci-desktop.ps1')
-$Node = (Get-Command node -CommandType Application).Source
+$Node = (Get-Command node -CommandType Application | Select-Object -First 1).Source
 $account = 'arion-test-' + [Guid]::NewGuid().ToString('N').Substring(0, 8)
 $password = ConvertTo-SecureString ('Aa1!' + [Convert]::ToBase64String([Security.Cryptography.RandomNumberGenerator]::GetBytes(32))) -AsPlainText -Force
 $originalACL = Get-Acl -LiteralPath $Repository
