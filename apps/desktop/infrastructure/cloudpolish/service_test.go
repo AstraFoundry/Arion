@@ -353,3 +353,30 @@ func lastCloudPayload(t *testing.T, body map[string]any) map[string]any {
 	}
 	return payload
 }
+
+func TestDeepSeekDisablesThinking(t *testing.T) {
+	var body map[string]any
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path != "/chat/completions" {
+			t.Errorf("unexpected path %s", r.URL.Path)
+			w.WriteHeader(http.StatusNotFound)
+			return
+		}
+		_ = json.NewDecoder(r.Body).Decode(&body)
+		_ = json.NewEncoder(w).Encode(gatewayResponse("chat", "今天天气很好。", ""))
+	}))
+	defer srv.Close()
+	s, err := NewAPICompletion(DeepSeek, "synthetic-deepseek-key", "deepseek-flash", srv.URL, "chat")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer s.CloseCompletion()
+	res, err := s.Rewrite(context.Background(), ports.RewriteRequest{Text: "今天天气很好。", Scene: "chat", Punctuation: "omit"})
+	if err != nil || res.Text != "今天天气很好。" {
+		t.Fatalf("res=%+v err=%v", res, err)
+	}
+	thinking, ok := body["thinking"].(map[string]any)
+	if !ok || thinking["type"] != "disabled" {
+		t.Fatalf("deepseek thinking not disabled: %+v", body["thinking"])
+	}
+}
