@@ -44,12 +44,11 @@ func TestSelectedSelectorParityAndFormatterIsolation(t *testing.T) {
 	}
 	compare := func(got, want ChatRequest) {
 		t.Helper()
-		// The old server had reasoning disabled globally. The product also pins
-		// the equivalent per-request template argument explicitly.
-		if !reflect.DeepEqual(got.TemplateArgs, map[string]bool{"enable_thinking": false}) {
+		// Thinking stays off on the request. The local worker writes the template
+		// argument when it sends the request.
+		if got.AllowThinking || len(got.TemplateArgs) != 0 {
 			t.Fatal("thinking enabled")
 		}
-		got.TemplateArgs = nil
 		var a, b any
 		json.Unmarshal([]byte(jsonText(got)), &a)
 		json.Unmarshal([]byte(jsonText(want)), &b)
@@ -108,7 +107,7 @@ func TestSelectedNaturalLayoutRouting(t *testing.T) {
 			if last != "<source>"+source+"</source>" || strings.Contains(last, "sourceScripts") {
 				t.Fatalf("source wrapper changed: %q", last)
 			}
-			if request.MaxTokens != 256 || !reflect.DeepEqual(request.TemplateArgs, map[string]bool{"enable_thinking": false}) {
+			if request.MaxTokens != 256 || request.AllowThinking || len(request.TemplateArgs) != 0 {
 				t.Fatal("formatter generation settings changed")
 			}
 			effective := scene

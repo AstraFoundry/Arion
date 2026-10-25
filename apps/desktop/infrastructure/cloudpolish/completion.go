@@ -68,9 +68,11 @@ func (s *Service) completeChat(ctx context.Context, chat *republic.ChatModel, re
 	if chat.Provider.Name != "codex" {
 		options["max_tokens"] = req.MaxTokens
 	}
-	if enable, ok := req.TemplateArgs["enable_thinking"]; ok && !enable && chat.Provider.Name == DeepSeek {
-		options["extra_body"] = map[string]any{"thinking": map[string]any{"type": "disabled"}}
+	// Republic translates none into each provider's off switch.
+	if !req.AllowThinking {
+		options["reasoning_effort"] = "none"
 	}
+	// Selection is validated by the shared bounded-choice protocol. Cloud
 	// models receive its JSON instruction in the prompt; native grammar fields
 	// are specific to llama.cpp and are never copied into provider requests.
 	response, err := chat.Chat(ctx, messages, options)

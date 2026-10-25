@@ -32,7 +32,9 @@ type Message struct {
 	Content string `json:"content"`
 }
 
-// ChatRequest uses the checkpoint's embedded Jinja template, with thinking off.
+// ChatRequest is one polishing stage. AllowThinking permits reasoning tokens.
+// The zero value keeps thinking off. Adapters translate that policy; this
+// struct does not carry a provider field.
 type ChatRequest struct {
 	Messages       []Message       `json:"messages"`
 	ResponseFormat any             `json:"response_format,omitempty"`
@@ -41,7 +43,19 @@ type ChatRequest struct {
 	MaxTokens      int             `json:"max_tokens"`
 	CachePrompt    bool            `json:"cache_prompt"`
 	Stream         bool            `json:"stream"`
-	TemplateArgs   map[string]bool `json:"chat_template_kwargs"`
+	TemplateArgs   map[string]bool `json:"chat_template_kwargs,omitempty"`
+	AllowThinking  bool            `json:"-"`
+}
+
+// LocalWire copies the thinking policy into the llama.cpp template argument.
+func (r ChatRequest) LocalWire() ChatRequest {
+	args := make(map[string]bool, len(r.TemplateArgs)+1)
+	for key, value := range r.TemplateArgs {
+		args[key] = value
+	}
+	args["enable_thinking"] = r.AllowThinking
+	r.TemplateArgs = args
+	return r
 }
 
 func jsonText(value any) string {
@@ -54,7 +68,7 @@ func jsonText(value any) string {
 	return strings.TrimSuffix(b.String(), "\n")
 }
 func chat(messages []Message, tokens int) ChatRequest {
-	return ChatRequest{Messages: messages, Seed: 42, MaxTokens: tokens, CachePrompt: true, TemplateArgs: map[string]bool{"enable_thinking": false}}
+	return ChatRequest{Messages: messages, Seed: 42, MaxTokens: tokens, CachePrompt: true}
 }
 
 type selectionExample struct {

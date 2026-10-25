@@ -94,8 +94,9 @@ func TestConfiguredOutputBudgetIsEnforced(t *testing.T) {
 			if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
 				t.Fatal(err)
 			}
-			if request.MaxTokens != 8 {
-				t.Fatalf("ignored configured token cap: %d", request.MaxTokens)
+			enabled, ok := request.TemplateArgs["enable_thinking"]
+			if request.MaxTokens != 8 || !ok || enabled {
+				t.Fatalf("token cap %d thinking %v ok %v", request.MaxTokens, enabled, ok)
 			}
 			body = `{"choices":[{"message":{"content":"text"},"finish_reason":"stop"}]}`
 		}

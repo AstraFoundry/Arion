@@ -240,6 +240,7 @@ type completion struct {
 }
 
 func (e *Engine) generate(ctx context.Context, request prompt.ChatRequest, prefill bool) (completion, error) {
+	request = request.LocalWire()
 	if e.config.MaxNewTokens > 0 && request.MaxTokens > e.config.MaxNewTokens {
 		request.MaxTokens = e.config.MaxNewTokens
 	}
