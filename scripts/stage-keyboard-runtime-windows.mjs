@@ -44,7 +44,9 @@ function source(spec, directory, members = []) {
 const flags = ['-G', 'Ninja', '-DCMAKE_BUILD_TYPE=Release', '-DCMAKE_POLICY_VERSION_MINIMUM=3.5',
   `-DCMAKE_CXX_COMPILER=${compiler}`, `-DCMAKE_C_COMPILER=${process.env.CC ?? 'gcc'}`,
   `-DCMAKE_INSTALL_PREFIX=${sdk}`, '-DCMAKE_INSTALL_LIBDIR=lib', '-DBUILD_SHARED_LIBS=OFF',
-  '-DCMAKE_EXE_LINKER_FLAGS=-static', '-DCMAKE_SHARED_LINKER_FLAGS=-static-libgcc -static-libstdc++ -Wl,-Bstatic -lwinpthread',
+  // Apply static dependency resolution to the whole DLL link. A leading
+  // -lwinpthread alone can be discarded before later C++ objects need it.
+  '-DCMAKE_EXE_LINKER_FLAGS=-static', '-DCMAKE_SHARED_LINKER_FLAGS=-static -static-libgcc -static-libstdc++',
   '-DBUILD_TESTING=OFF'];
 function build(name, sourceDirectory, options, targets = [], install = true) {
   const directory = path.join(work, 'build', name);
