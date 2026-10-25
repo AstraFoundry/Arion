@@ -128,7 +128,7 @@ public:
         if (!selection || !fetched) return E_POINTER;
         *fetched = 0;
         if (!readable()) return TS_E_NOLOCK;
-        if ((index != TS_DEFAULT_SELECTION && index != 0) || !count) return E_INVALIDARG;
+        if ((index != static_cast<ULONG>(TS_DEFAULT_SELECTION) && index != 0) || !count) return E_INVALIDARG;
         selection[0] = {start,end,{TS_AE_END,FALSE}}; *fetched = 1; return S_OK;
     }
     HRESULT STDMETHODCALLTYPE SetSelection(ULONG count, const TS_SELECTION_ACP *selection) override {
