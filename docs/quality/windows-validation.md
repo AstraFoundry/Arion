@@ -1,5 +1,15 @@
 # Windows validation
 
+The alpha.13 release preparation found hosted-runner UI Automation traversal
+timeouts despite successful owned-editor runs locally. The reader now compiles
+its typed managed traversal during initialization, before READY, instead of
+binding every node dynamically in PowerShell. Target access still starts only
+after GO and ownership revalidation; password/offscreen filtering, node/text
+limits, the five-second startup budget and 1.5-second traversal budget remain.
+CI security tests use an ordinary account, while actual OS-input fixtures use
+the runner's original interactive session. Neither scope establishes clean-host
+or broad third-party editor compatibility.
+
 The Windows x64 development-host validation passes native interaction, installed-application speech delivery, packaging, installation/removal and isolated updater mechanics for `0.1.0-alpha.11`. This is not broad-release acceptance: the package is unsigned, production-channel upgrades were not published or exercised, and mixed-language recognition errors remain.
 
 ## Plan and environment

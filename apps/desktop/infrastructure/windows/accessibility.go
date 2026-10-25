@@ -25,48 +25,61 @@ Add-Type -AssemblyName UIAutomationClient
 Add-Type -AssemblyName UIAutomationTypes
 Add-Type -AssemblyName WindowsBase
 Add-Type -AssemblyName UIAutomationClientsideProviders
-# PowerShell's dynamic call frames break the managed proxy loader's stack walk.
-# Reflection keeps provider registration on a typed framework call stack.
 $providers = [UIAutomationClientsideProviders.UIAutomationClientSideProviders].Assembly.GetName()
 $register = [System.Windows.Automation.ClientSettings].GetMethod('RegisterClientSideProviderAssembly')
 $register.Invoke($null, @($providers))
+# Compile traversal before READY to avoid dynamic per-node PowerShell binding
+# inside the target traversal budget. Provider registration needs a typed
+# framework call stack for the managed proxy loader.
+$references = @([System.Windows.Automation.AutomationElement].Assembly.Location,
+ [System.Windows.Automation.ControlType].Assembly.Location,
+ [System.Windows.Rect].Assembly.Location,
+ [UIAutomationClientsideProviders.UIAutomationClientSideProviders].Assembly.Location)
+Add-Type -ReferencedAssemblies $references -TypeDefinition @'
+using System;
+using System.Collections.Generic;
+using System.Windows.Automation;
+public sealed class ArionContextReader {
+ private int count, length;
+ private readonly List<string> lines = new List<string>();
+ public static string Read(long handle) {
+  var root = AutomationElement.FromHandle(new IntPtr(handle));
+  if (root == null) throw new InvalidOperationException("Window unavailable");
+  var reader = new ArionContextReader();
+  reader.Visit(root, 0);
+  if (reader.lines.Count == 0) throw new InvalidOperationException("Visible text unavailable");
+  return string.Join("\n", reader.lines);
+ }
+ private void Visit(AutomationElement node, int depth) {
+  if (depth > 32 || ++count > 512) throw new InvalidOperationException("Traversal limit");
+  var current = node.Current;
+  if (current.IsPassword || current.IsOffscreen) return;
+  string text = "";
+  object pattern;
+  if (node.TryGetCurrentPattern(TextPattern.Pattern, out pattern)) {
+   foreach (var range in ((TextPattern)pattern).GetVisibleRanges()) {
+    text += range.GetText(32769);
+    if (length + text.Length > 32768) throw new InvalidOperationException("Text limit");
+   }
+  } else if (current.ControlType == ControlType.Text) {
+   text = current.Name;
+  }
+  if (text.Length > 0) {
+   length += text.Length;
+   if (length > 32768) throw new InvalidOperationException("Text limit");
+   lines.Add(text);
+   return;
+  }
+  var walker = TreeWalker.ControlViewWalker;
+  for (var child = walker.GetFirstChild(node); child != null; child = walker.GetNextSibling(child)) Visit(child, depth + 1);
+ }
+}
+'@
 [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)
 [Console]::Out.WriteLine('ARION_CONTEXT_READY')
 [Console]::Out.Flush()
 if ([Console]::In.ReadLine() -ne 'GO') { throw 'Traversal not authorized' }
-$root = [System.Windows.Automation.AutomationElement]::FromHandle([IntPtr]::new([long]$env:ARION_CONTEXT_HWND))
-if ($null -eq $root) { throw 'Window unavailable' }
-$walker = [System.Windows.Automation.TreeWalker]::ControlViewWalker
-$script:count = 0
-$script:length = 0
-$lines = [System.Collections.Generic.List[string]]::new()
-function Read-Visible($node, [int]$depth) {
- $script:count += 1
- if ($depth -gt 32 -or $script:count -gt 512) { throw 'Traversal limit' }
- $current = $node.Current
- if ($current.IsPassword -or $current.IsOffscreen) { return }
- $text = ''
- $pattern = $null
- if ($node.TryGetCurrentPattern([System.Windows.Automation.TextPattern]::Pattern, [ref]$pattern)) {
-  foreach ($range in $pattern.GetVisibleRanges()) {
-   $text += $range.GetText(32769)
-   if ($script:length + $text.Length -gt 32768) { throw 'Text limit' }
-  }
- } elseif ($current.ControlType -eq [System.Windows.Automation.ControlType]::Text) {
-  $text = $current.Name
- }
- if ($text.Length -gt 0) {
-  $script:length += $text.Length
-  if ($script:length -gt 32768) { throw 'Text limit' }
-  $lines.Add($text)
-  return
- }
- $child = $walker.GetFirstChild($node)
- while ($null -ne $child) { Read-Visible $child ($depth + 1); $child = $walker.GetNextSibling($child) }
-}
-Read-Visible $root 0
-if ($lines.Count -eq 0) { throw 'Visible text unavailable' }
-[Console]::Write(($lines -join "` + "`n" + `"))`
+[Console]::Write([ArionContextReader]::Read([long]$env:ARION_CONTEXT_HWND))`
 
 func readWindowText(ctx context.Context, hwnd uintptr, authorize func() error) (string, error) {
 	encoded := utf16.Encode([]rune(accessibilityScript))
