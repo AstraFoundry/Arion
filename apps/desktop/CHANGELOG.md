@@ -1,3 +1,25 @@
+## 0.1.0-alpha.14
+
+### English
+
+Preview for macOS Apple silicon (macOS 14 or later) and Windows x64.
+
+- Update dictation-key onboarding with an animated native laptop illustration, a key picker and visual key-press feedback.
+- Share the illustration and animation implementation across macOS and Windows.
+- Include the latest main-branch onboarding changes in versioned release installers and signed update archives.
+
+macOS release packages require Developer ID signing and Apple notarization. Windows publisher signing remains unavailable for this preview. Model weights download separately. GitHub publication and release-storage staging do not publish the Arion center beta channel. See RELEASE-STATUS.md and SHA256SUMS for acceptance limits and verification.
+
+### 中文
+
+适用于 macOS Apple 芯片（macOS 14 或更高版本）和 Windows x64 的预览版本。
+
+- 更新听写按键引导，加入原生笔记本动画、按键选择和按下反馈。
+- macOS 和 Windows 共用插图与动画实现。
+- 将最新 main 分支的引导改进纳入新版安装包及带签名的更新归档。
+
+macOS 发布包要求 Developer ID 签名和 Apple 公证；Windows 预览版仍无发布者签名。模型权重单独下载。GitHub 发布及存储暂存不会自动发布 Arion 中心的 beta 渠道。验收范围及校验信息见 RELEASE-STATUS.md 与 SHA256SUMS。
+
 ## 0.1.0-alpha.13
 
 ### English
