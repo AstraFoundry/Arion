@@ -9,7 +9,6 @@
     "qwen17:verify": "node scripts/qwen17-context-command.mjs verify",
     "qwen17:context:test": "node scripts/qwen17-context-command.mjs test",
     "check": "node scripts/check-repository.mjs",
-    "figures:holdkey": "node scripts/build-holdkey-figures.mjs",
     "i18n:check": "node scripts/check-i18n.mjs",
     "docs:check": "node scripts/check-repository.mjs",
     "updater:check": "node scripts/check-updater.mjs",

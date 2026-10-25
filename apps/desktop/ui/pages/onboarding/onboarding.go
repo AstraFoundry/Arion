@@ -52,6 +52,7 @@ type Page struct {
 	axRequested      bool
 	axGranted        time.Time
 	holdKey          runtime.HoldKey
+	switched         time.Time
 	keyboard         keyboard.State
 	cloud            cloud.Nav
 }
@@ -73,7 +74,7 @@ func (p *Page) Render(c *ui.Context, store runtime.Store) {
 	ui.Row(c).Fill().AlignItems(ui.Stretch).Background(tokens.Canvas).Children(func() {
 		ui.Column(c).Width(Pane).Children(func() {
 			if step == onboarding.HoldKey && keyfigure.Shows(state.Preferences.HoldKey) {
-				keyfigure.Render(c, tokens, messages, state.Preferences.HoldKey, p.heard(state))
+				keyfigure.Render(c, tokens, messages, state.Preferences.HoldKey, p.switched, p.heard(state))
 			} else {
 				scene, levels := illustration(step, state)
 				showcase.Render(c, tokens, messages, scene, holdname.Legend(state.Preferences.HoldKey), levels)
@@ -206,7 +207,7 @@ func (p *Page) sync(c *ui.Context, store runtime.Store, step onboarding.Step) {
 	// Another key starts the test over.
 	if testing && store.State.Preferences.HoldKey != p.holdKey {
 		if p.holdKey != "" {
-			p.entered = c.Now()
+			p.entered, p.switched = c.Now(), c.Now()
 		}
 		p.holdKey = store.State.Preferences.HoldKey
 	}

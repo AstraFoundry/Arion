@@ -17,15 +17,17 @@ import (
 
 const width, height = 320, 560
 
-// render draws the figure for key, pressed at press, after enough frames
-// for its transitions to finish.
-func render(t *testing.T, dark bool, key *runtime.HoldKey, press *time.Time) *ui.Tester {
-	t.Helper()
+// figure is the widget under test with the inputs a test changes.
+type figure struct {
+	key              runtime.HoldKey
+	changed, pressed time.Time
+}
+
+func render(dark bool, f *figure) *ui.Tester {
 	tt := ui.NewTester(func(c *ui.Context) {
-		Render(c, theme.Resolve(dark), copy.For(copy.English), *key, *press)
+		Render(c, theme.Resolve(dark), copy.For(copy.English), f.key, f.changed, f.pressed)
 	}, width, height)
 	tt.SetDark(dark)
-	rest(tt, 500*time.Millisecond)
 	return tt
 }
 
@@ -75,38 +77,51 @@ func snapshot(t *testing.T, tt *ui.Tester, name string) {
 	}
 }
 
-// Every key of every platform has its keyboard and lit key in both
-// appearances; a press shows, and choosing another key moves the light.
+// The laptop arrives closed and opens zoomed in on the key; choosing
+// another key moves there, pulling back on the way; a press shows and goes.
 func TestFigureFollowsTheKey(t *testing.T) {
 	for _, platform := range platforms {
 		keys := runtime.HoldKeysFor(platform)
 		for _, dark := range []bool{false, true} {
 			appearance := map[bool]string{false: "light", true: "dark"}[dark]
-			key, press := keys[0], time.Time{}
-			tt := render(t, dark, &key, &press)
+			name := func(stage string) string { return "keyfigure-" + platform + "-" + appearance + "-" + stage }
+			f := &figure{key: keys[0]}
+			tt := render(dark, f)
+			tt.Frame()
 			if _, ok := tt.Find(copy.For(copy.English).Text(copy.HoldKeyFigureLabel)); !ok {
 				t.Fatalf("%s %s: the figure is not labeled", platform, appearance)
 			}
+			closed := clone(tt.Image())
+			snapshot(t, tt, name("0-closed"))
+			for i, at := range []time.Duration{700, 1200, 1700} {
+				rest(tt, at*time.Millisecond-time.Duration([]int{0, 700, 1200}[i])*time.Millisecond)
+				snapshot(t, tt, name("1-arriving-"+string(rune('a'+i))))
+			}
+			rest(tt, 900*time.Millisecond)
 			before := clone(tt.Image())
-			snapshot(t, tt, "keyfigure-"+string(key)+"-"+appearance)
+			if differs(closed, before) == 0 {
+				t.Errorf("%s %s: the laptop did not open", platform, appearance)
+			}
+			snapshot(t, tt, name("2-"+string(f.key)))
 			for _, next := range keys[1:] {
-				key = next
-				rest(tt, 600*time.Millisecond)
+				f.key, f.changed = next, time.Now()
+				rest(tt, 200*time.Millisecond)
+				snapshot(t, tt, name("3-moving-to-"+string(next)))
+				rest(tt, 700*time.Millisecond)
 				after := clone(tt.Image())
 				if differs(before, after) == 0 {
 					t.Errorf("%s %s: choosing %s left the figure as it was", platform, appearance, next)
 				}
-				snapshot(t, tt, "keyfigure-"+string(key)+"-"+appearance)
+				snapshot(t, tt, name("4-"+string(next)))
 				before = after
 			}
-			press = time.Now()
-			rest(tt, 300*time.Millisecond)
+			f.pressed = time.Now()
+			rest(tt, 200*time.Millisecond)
 			if differs(before, tt.Image()) == 0 {
-				t.Errorf("%s %s: a press of %s did not show", platform, appearance, key)
+				t.Errorf("%s %s: a press of %s did not show", platform, appearance, f.key)
 			}
-			snapshot(t, tt, "keyfigure-"+string(key)+"-"+appearance+"-pressed")
-			// The press is let go: the figure is at rest again.
-			rest(tt, 900*time.Millisecond)
+			snapshot(t, tt, name("5-pressed"))
+			rest(tt, 700*time.Millisecond)
 			if n := differs(before, tt.Image()); n != 0 {
 				t.Errorf("%s %s: %d pixels still differ after the press", platform, appearance, n)
 			}

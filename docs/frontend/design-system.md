@@ -121,12 +121,13 @@ A dictation committed while the overview shows rolls the figures and reshades th
 
 ### Dictation key figure
 
-The onboarding dictation key step shows `widgets/keyfigure` in the left pane instead of the photograph: an isometric keyboard on a desk mat, wired to a desk microphone, drawn with the `anatomy` Agent Skill's kit.
+The onboarding dictation key step shows `widgets/keyfigure` in the left pane instead of the photograph: an isometric laptop drawn live, every frame, by `ui/shared/iso`, a Go port of the `anatomy` Agent Skill's kit (its camera, solids shaded by facing, outlines where a face turns away, creases where a top meets a side, painter's order).
 
-- The platform's keyboard (macOS: fn, Right Option and Right Command on a Magic Keyboard–style layout; Windows: Right Alt and Right Ctrl) is the base layer. The chosen key is a layer over it, lit in the accent; choosing another key in the step's picker crossfades the light to it.
-- A press of the chosen key fades in its pressed layer: the cap sinks into the deck and the microphone's ring turns `Live`, for 90 ms in, 610 ms held and 260 ms out. The step's "That works" status starts over when another key is chosen.
-- The figure's paper is the `Card` token, so the pane is `Card` with no photograph. Its palette (ink tones, accent and live) is written into each SVG: regenerate with `pnpm figures:holdkey` after changing a token, the layout or a key. It is labeled for assistive technology (`HoldKeyFigureLabel`).
-- MyGo draws the SVGs itself: class selectors, no CSS variables, filters or text. Legends are stroked paths and the contact shadows are stacked translucent outlines.
+- The laptop arrives closed with its back to the viewer. It turns 180° (250–1350 ms), its lid opens to 112° (650–1650 ms), and the camera closes in until a key pitch spans 46 DIPs, centred on the chosen key (1000–2100 ms). With Reduce Motion it shows the last frame at once.
+- The keyboard is the platform's: fn, Right Option and Right Command on a MacBook-style layout, Right Alt and Right Ctrl on a Windows one. The chosen key is lit in the accent. Choosing another key in the step's picker glides the camera to it while pulling back to 78% of the zoom and closing in again (620 ms). The step's "That works" status starts over then.
+- A press sinks the chosen cap (80 ms down, held to 480 ms, up by 700 ms).
+- Its inks come from the Sunbeam tokens: paper and keycaps from `Card`, shading toward `Shade`, lines from `Faint` and `CardBorder`, the lit key from `Accent` and `AccentInk`, the screen from the pill's substrate. It is labeled for assistive technology (`HoldKeyFigureLabel`).
+- MyGo rasterizes each path whole into its mask atlas, so `iso` clips every polygon and line to the visible box first, and solids fill only their faces; without that, the zoomed-in lid's masks overflow the atlas and fills drop out.
 
 ## Review
 

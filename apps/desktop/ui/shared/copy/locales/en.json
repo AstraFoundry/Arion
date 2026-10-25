@@ -197,7 +197,7 @@
   "UpdateAutoDetail": "At launch and every 6 hours",
   "ShowcaseLabel": "Illustration of Arion dictating into another app",
   "ShowcaseSentence": "把这个 PR merge 到 main 之前，先跑一下 CI。",
-  "HoldKeyFigureLabel": "Illustration of a keyboard wired to a microphone, with the dictation key lit",
+  "HoldKeyFigureLabel": "Illustration of a laptop keyboard with the dictation key lit",
   "OnbStepWelcome": "Welcome",
   "OnbStepMic": "Microphone",
   "OnbStepAX": "Accessibility",
