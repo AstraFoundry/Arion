@@ -1,9 +1,12 @@
-// Package iso draws isometric solids with MyGo's painter, following the
+// Package iso draws isometric solids, following the
 // Anatomy skill's kit (.agents/skills/anatomy/kit/iso-kit.ts): the same
 // camera, solids filled in paper and shaded by facing, one outline where a
 // face turns away, a faint crease where a top meets a side, and painter's
 // order back to front. Unlike the kit's static SVG it projects every frame,
-// so a figure can turn, open and zoom.
+// so a figure can turn, open and zoom. Shapes rasterize into a Canvas on
+// the CPU, which a view shows as one bitmap: MyGo's own paths each take a
+// mask in the atlas text shares, and a frame of a few hundred large,
+// ever-changing masks overflows it, dropping fills and text alike.
 //
 // World units are about a millimetre: x and y on the floor, z up.
 package iso
@@ -104,60 +107,57 @@ func (pal Palette) Face(c Camera, n Vec) ui.Color {
 	return pal.Shadow.Mix(pal.Lit, lit).Mix(pal.Top, max(0, n[2]))
 }
 
-// Poly builds the path of points as they show, clipped to the view: a
-// closed polygon is cut to it, and an open line keeps the pieces inside.
-func Poly(c Camera, points []Vec, closed bool) *ui.Path {
-	path := &ui.Path{}
-	c.add(path, points, closed)
-	return path
+// Shape is outlines or lines in DIPs: each element one polygon or polyline.
+type Shape [][][2]float32
+
+// Poly is points as they show, clipped to the view: a closed polygon is
+// cut to it, and an open line keeps the pieces inside.
+func Poly(c Camera, points []Vec, closed bool) Shape {
+	return c.add(nil, points, closed)
 }
 
-// Outline builds the outline of a closed shape, clipped to the view as a
-// line, so that the view's edge never draws as part of it.
-func Outline(c Camera, points []Vec) *ui.Path {
+// Outline is the outline of a closed shape, clipped to the view as a line,
+// so that the view's edge never draws as part of it.
+func Outline(c Camera, points []Vec) Shape {
 	return Poly(c, append(append([]Vec{}, points...), points[0]), false)
 }
 
-func (c Camera) add(path *ui.Path, points []Vec, closed bool) {
+func (c Camera) add(shape Shape, points []Vec, closed bool) Shape {
 	flat := make([][2]float32, len(points))
 	for i, p := range points {
 		flat[i][0], flat[i][1] = c.Project(p)
 	}
-	if closed {
-		addPolygon(path, clipPolygon(flat, c.bounds()))
-		return
-	}
 	b := c.bounds()
-	pen := false
+	if closed {
+		if clipped := clipPolygon(flat, b); len(clipped) >= 3 {
+			shape = append(shape, clipped)
+		}
+		return shape
+	}
+	var run [][2]float32
 	for i := 1; i < len(flat); i++ {
 		a, z, ok := clipSegment(flat[i-1], flat[i], b)
 		if !ok {
-			pen = false
 			continue
 		}
-		if !pen || a != flat[i-1] {
-			path.MoveTo(a[0], a[1])
+		if len(run) == 0 || run[len(run)-1] != a {
+			if len(run) > 1 {
+				shape = append(shape, run)
+			}
+			run = [][2]float32{a}
 		}
-		path.LineTo(z[0], z[1])
-		pen = z == flat[i]
+		run = append(run, z)
 	}
+	if len(run) > 1 {
+		shape = append(shape, run)
+	}
+	return shape
 }
 
 // bounds is the view with room for strokes.
 func (c Camera) bounds() [4]float32 {
 	const margin = 4
 	return [4]float32{c.View.X - margin, c.View.Y - margin, c.View.X + c.View.W + margin, c.View.Y + c.View.H + margin}
-}
-
-func addPolygon(path *ui.Path, points [][2]float32) {
-	if len(points) < 3 {
-		return
-	}
-	path.MoveTo(points[0][0], points[0][1])
-	for _, q := range points[1:] {
-		path.LineTo(q[0], q[1])
-	}
-	path.Close()
 }
 
 // clipPolygon cuts a polygon to the box b (x0, y0, x1, y1): Sutherland–Hodgman.
@@ -271,24 +271,22 @@ func (pr Prism) Facing(c Camera) Faces {
 	return f
 }
 
-// Draw paints the prism: each face it shows in its tone, which together
-// cover its silhouette, then its creases and outline, width DIPs wide. top, when
-// not nil, paints on the top face once it is filled.
-func (pr Prism) Draw(p *ui.Painter, c Camera, pal Palette, width float32, top func()) {
+// Draw paints the prism into k: each face it shows in its tone, which
+// together cover its silhouette, then its creases and outline, width DIPs
+// wide. top, when not nil, paints on the top face once it is filled.
+func (pr Prism) Draw(k *Canvas, c Camera, pal Palette, width float32, top func()) {
 	n := len(pr.Ring)
 	f := pr.Facing(c)
 	upper := make([]Vec, n)
 	for i, v := range pr.Ring {
 		upper[i] = v.Add(pr.Up)
 	}
-	// Sides of one tone go in one path.
-	var run *ui.Path
+	// Sides of one tone fill together.
+	var run Shape
 	var tone ui.Color
 	flush := func() {
-		if run != nil {
-			p.FillPath(run, tone)
-			run = nil
-		}
+		k.Fill(run, tone)
+		run = nil
 	}
 	for i := range pr.Ring {
 		if !f.Sides[i] {
@@ -299,43 +297,39 @@ func (pr Prism) Draw(p *ui.Painter, c Camera, pal Palette, width float32, top fu
 		if run != nil && color != tone {
 			flush()
 		}
-		if run == nil {
-			run, tone = &ui.Path{}, color
-		}
+		tone = color
 		j := (i + 1) % n
-		c.add(run, []Vec{pr.Ring[i], pr.Ring[j], upper[j], upper[i]}, true)
+		run = c.add(run, []Vec{pr.Ring[i], pr.Ring[j], upper[j], upper[i]}, true)
 	}
 	flush()
 	if f.Top {
-		p.FillPath(Poly(c, upper, true), pal.Face(c, f.up))
+		k.Fill(Poly(c, upper, true), pal.Face(c, f.up))
 		if top != nil {
 			top()
 		}
 	}
 	if f.Bottom {
-		p.FillPath(Poly(c, pr.Ring, true), pal.Face(c, f.up.Scale(-1)))
+		k.Fill(Poly(c, pr.Ring, true), pal.Face(c, f.up.Scale(-1)))
 	}
-	outline, crease := &ui.Path{}, &ui.Path{}
-	edge := func(path *ui.Path, a, b Vec) { c.add(path, []Vec{a, b}, false) }
+	var outline, crease Shape
 	for i := range pr.Ring {
 		j := (i + 1) % n
 		side := f.Sides[i]
-		switch {
-		case side != f.Bottom:
-			edge(outline, pr.Ring[i], pr.Ring[j])
+		if side != f.Bottom {
+			outline = c.add(outline, []Vec{pr.Ring[i], pr.Ring[j]}, false)
 		}
 		switch {
 		case side != f.Top:
-			edge(outline, upper[i], upper[j])
+			outline = c.add(outline, []Vec{upper[i], upper[j]}, false)
 		case side && f.Top:
-			edge(crease, upper[i], upper[j])
+			crease = c.add(crease, []Vec{upper[i], upper[j]}, false)
 		}
 		if side != f.Sides[(i+n-1)%n] {
-			edge(outline, pr.Ring[i], upper[i])
+			outline = c.add(outline, []Vec{pr.Ring[i], upper[i]}, false)
 		}
 	}
-	p.StrokePath(crease, width, pal.Crease)
-	p.StrokePath(outline, width, pal.Edge)
+	k.Stroke(crease, width, pal.Crease)
+	k.Stroke(outline, width, pal.Edge)
 }
 
 // RoundedRect is the kit's rounded plan: a rectangle x, y, w, d with

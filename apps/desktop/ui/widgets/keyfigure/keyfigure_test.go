@@ -129,6 +129,47 @@ func TestFigureFollowsTheKey(t *testing.T) {
 	}
 }
 
+// The figure draws as one bitmap of its own, so however much it changes
+// while it moves, text beside it keeps every glyph (MyGo's paths share an
+// atlas with text, and the figure as paths once pushed glyphs out).
+func TestTextBesideStaysWhileMoving(t *testing.T) {
+	f := &figure{key: runtime.HoldRightOption}
+	messages := copy.For(copy.English)
+	tt := ui.NewTester(func(c *ui.Context) {
+		ui.Row(c).Fill().Children(func() {
+			ui.Column(c).Width(width).Children(func() {
+				Render(c, theme.Resolve(false), messages, f.key, f.changed, f.pressed)
+			})
+			ui.Column(c).Grow(1).Padding(40).Gap(12).Children(func() {
+				ui.Text(c, messages.Text(copy.OnbHoldKeyTitle)).FontSize(theme.Title)
+				ui.Text(c, messages.Text(copy.OnbHoldKeyBody)).FontSize(theme.Body)
+			})
+		})
+	}, width*2, height)
+	tt.SetScale(2)
+	rest(tt, 2500*time.Millisecond)
+	still := clone(tt.Image())
+	text := func(img *image.RGBA) *image.RGBA {
+		return img.SubImage(image.Rect(width*2, 0, width*4, height*2)).(*image.RGBA)
+	}
+	check := func(stage string) {
+		t.Helper()
+		if n := differs(text(still), text(tt.Image())); n != 0 {
+			t.Errorf("%s: %d pixels of the text changed", stage, n)
+		}
+	}
+	f.changed, f.key = time.Now(), runtime.HoldFn
+	for i := 0; i < 8; i++ {
+		tt.Frame()
+		check("switching")
+	}
+	f.pressed = time.Now()
+	for i := 0; i < 8; i++ {
+		tt.Frame()
+		check("pressing")
+	}
+}
+
 func TestShows(t *testing.T) {
 	for _, key := range append(runtime.HoldKeysFor("darwin"), runtime.HoldKeysFor("windows")...) {
 		if !Shows(key) {
@@ -137,5 +178,17 @@ func TestShows(t *testing.T) {
 	}
 	if Shows("") {
 		t.Error("a figure for no key")
+	}
+}
+
+// BenchmarkFrame draws the zoomed-in figure at Retina scale, as every
+// frame of a press does: it has to fit in a frame at 60 Hz.
+func BenchmarkFrame(b *testing.B) {
+	at := pose{turn: 1, open: 1, zoom: 1, dip: 1, focus: layouts["darwin"][0].center(0)}
+	f := frame{colorsOf(theme.Resolve(false)), "darwin", "right_option", at}
+	var v picture
+	for i := 0; b.Loop(); i++ {
+		f.at.press = float32(i%2) / 2
+		v.show(ui.Rect{W: width, H: height}, 2, f)
 	}
 }

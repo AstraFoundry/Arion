@@ -7,6 +7,7 @@
 package keyfigure
 
 import (
+	"image"
 	"math"
 	"slices"
 	"sort"
@@ -92,7 +93,57 @@ func Render(c *ui.Context, tokens theme.Tokens, messages copy.Catalog, chosen ru
 		at.press = box.Keyframes("press", pressFrames, ui.KeyframeOptions{Run: uint64(pressed.UnixNano())})
 	}
 	colors := colorsOf(tokens)
-	box.Draw(func(p *ui.Painter, r ui.Rect) { draw(p, r, colors, keys, string(chosen), at) })
+	box.Draw(func(p *ui.Painter, r ui.Rect) {
+		p.Image(view.show(r, p.Scale(), frame{colors, platform, string(chosen), at}), r, ui.FillBox)
+	})
+}
+
+// frame is everything a picture depends on: the same frame is not drawn
+// twice, so a figure at rest costs nothing.
+type frame struct {
+	ink      colors
+	platform string
+	chosen   string
+	at       pose
+}
+
+// picture keeps the figure's bitmap. Two images take turns, as the GPU
+// may still read the one last shown.
+type picture struct {
+	canvas iso.Canvas
+	images [2]*image.RGBA
+	turn   int
+	bitmap *ui.Bitmap
+	last   frame
+	size   image.Point
+}
+
+// view is the one figure onboarding shows.
+var view picture
+
+// show returns the bitmap of f in a box r DIPs at scale pixels to a DIP,
+// drawing it if it changed.
+func (v *picture) show(r ui.Rect, scale float32, f frame) *ui.Bitmap {
+	size := image.Pt(int(math.Ceil(float64(r.W*scale))), int(math.Ceil(float64(r.H*scale))))
+	if v.bitmap != nil && size == v.size && f == v.last {
+		return v.bitmap
+	}
+	if size != v.size {
+		v.images = [2]*image.RGBA{image.NewRGBA(image.Rectangle{Max: size}), image.NewRGBA(image.Rectangle{Max: size})}
+		v.size = size
+	}
+	v.turn = 1 - v.turn
+	img := v.images[v.turn]
+	v.canvas.Begin(img, ui.Rect{W: r.W, H: r.H}, scale)
+	draw(&v.canvas, ui.Rect{W: r.W, H: r.H}, f.ink, layouts[f.platform], f.chosen, f.at)
+	v.canvas.End()
+	if v.bitmap == nil {
+		v.bitmap = ui.NewBitmap(img)
+	} else {
+		v.bitmap.Update(img)
+	}
+	v.last = f
+	return v.bitmap
 }
 
 // colors are the figure's inks, all from the Sunbeam tokens.
@@ -114,14 +165,14 @@ func colorsOf(t theme.Tokens) colors {
 	return colors{
 		body: body, lit: lit,
 		well: t.Card.Mix(t.Shade, well), pad: top.Mix(t.Shade, well/3), screen: screen,
-		halo: t.Shade.Alpha(map[bool]float32{false: 0.05, true: 0.14}[t.Dark]),
+		halo: t.Shade.Alpha(map[bool]float32{false: 0.08, true: 0.22}[t.Dark]),
 		ink:  edge, litInk: t.AccentInk, lens: t.Faint,
 	}
 }
 
 func lerp(a, b, t float32) float32 { return a + (b-a)*t }
 
-func draw(p *ui.Painter, r ui.Rect, ink colors, keys []key, chosen string, at pose) {
+func draw(k *iso.Canvas, r ui.Rect, ink colors, keys []key, chosen string, at pose) {
 	overview := iso.Vec{base.x + base.w/2, base.y + base.d/2, baseH}
 	fit := iso.ScaleFor(r.W-32, float32(math.Hypot(float64(base.w), float64(base.d))))
 	close := iso.ScaleFor(keyPitch, U)
@@ -131,25 +182,32 @@ func draw(p *ui.Painter, r ui.Rect, ink colors, keys []key, chosen string, at po
 	width := lerp(0.6, 1, at.zoom)
 	lid := lidAt(lidOpen * at.open)
 	stroke := func(lines [][]iso.Vec, w float32, color ui.Color) {
+		var s iso.Shape
 		for _, l := range lines {
-			p.StrokePath(iso.Poly(cam, l, false), w, color)
+			s = append(s, iso.Poly(cam, l, false)...)
 		}
+		k.Stroke(s, w, color)
 	}
 	shape := func(points []iso.Vec, fill, edge ui.Color) {
-		p.FillPath(iso.Poly(cam, points, true), fill)
-		p.StrokePath(iso.Outline(cam, points), width, edge)
+		k.Fill(iso.Poly(cam, points, true), fill)
+		k.Stroke(iso.Outline(cam, points), width, edge)
 	}
 
 	// A soft contact shadow: the footprint grown in steps, each faint.
-	for i := 0; i < 4; i++ {
-		grow := float32(i) * 3
-		p.FillPath(iso.Poly(cam, iso.On(iso.RoundedRect(base.x-grow, base.y-grow, base.w+2*grow, base.d+2*grow, 10+grow, 6), iso.Floor(0)), true), ink.halo)
+	// Only a rim shows past the base, so each step is a ring: the
+	// footprint, wound the other way, cuts its middle out.
+	footprint := iso.On(iso.RoundedRect(base.x, base.y, base.w, base.d, 10, 6), iso.Floor(0))
+	slices.Reverse(footprint)
+	for i := 0; i < 2; i++ {
+		grow := float32(i)*6 + 2
+		ring := iso.Poly(cam, iso.On(iso.RoundedRect(base.x-grow, base.y-grow, base.w+2*grow, base.d+2*grow, 10+grow, 6), iso.Floor(0)), true)
+		k.Fill(append(ring, iso.Poly(cam, footprint, true)...), ink.halo)
 	}
 
 	// The base, with the keyboard well, trackpad and thumb scoop on its deck.
 	deck := iso.Floor(baseH)
 	slab := iso.Prism{Ring: iso.On(iso.RoundedRect(base.x, base.y, base.w, base.d, 10, 6), iso.Floor(0)), Up: iso.Vec{0, 0, baseH}}
-	slab.Draw(p, cam, ink.body, width, func() {
+	slab.Draw(k, cam, ink.body, width, func() {
 		shape(iso.On(iso.RoundedRect(-3, -3, 15*U+6, keysDepth+6, 4, 4), deck), ink.well, ink.body.Crease)
 		padY := keysDepth + padGap
 		shape(iso.On(iso.RoundedRect(7.5*U-padW/2, padY, padW, padD, 6, 6), deck), ink.pad, ink.body.Crease)
@@ -170,11 +228,11 @@ func draw(p *ui.Painter, r ui.Rect, ink colors, keys []key, chosen string, at po
 	shell := iso.Prism{Ring: iso.On(iso.RoundedRect(base.x, 0, base.w, base.d, 10, 6), func(u, v float32) iso.Vec { return lid(u, v, 0) }), Up: lid(0, 0, lidH).Sub(lid(0, 0, 0))}
 	inner := lid(0, 0, 0).Sub(lid(0, 0, 1))
 	drawLid := func() {
-		shell.Draw(p, cam, ink.body, width, nil)
+		shell.Draw(k, cam, ink.body, width, nil)
 		if cam.Sees(inner) {
 			face := func(u, v float32) iso.Vec { return lid(u, v, 0) }
 			shape(iso.On(iso.RoundedRect(base.x+9, 14, base.w-18, base.d-23, 3, 4), face), ink.screen, ink.body.Edge)
-			p.FillPath(iso.Poly(cam, iso.On(iso.Circle(base.x+base.w/2, base.d-4.5, 1.1, 12), face), true), ink.lens)
+			k.Fill(iso.Poly(cam, iso.On(iso.Circle(base.x+base.w/2, base.d-4.5, 1.1, 12), face), true), ink.lens)
 		}
 	}
 	barrel := iso.Prism{
@@ -183,11 +241,11 @@ func draw(p *ui.Painter, r ui.Rect, ink colors, keys []key, chosen string, at po
 	}
 
 	// The caps, back to front, skipping those out of view.
+	canvas := k
 	drawKeys := func() {
 		order := make([]int, 0, len(keys))
 		for i, k := range keys {
-			x, y := cam.Project(k.center(0))
-			if x < r.X-40 || x > r.X+r.W+40 || y < r.Y-40 || y > r.Y+r.H+40 {
+			if !k.inView(cam, r) {
 				continue
 			}
 			order = append(order, i)
@@ -201,7 +259,7 @@ func draw(p *ui.Painter, r ui.Rect, ink colors, keys []key, chosen string, at po
 				pal.Top = pal.Top.Mix(ink.lit.Edge, 0.25*at.press)
 			}
 			top := k.center(sink)
-			k.prism(sink).Draw(p, cam, pal, width, func() {
+			k.prism(sink).Draw(canvas, cam, pal, width, func() {
 				if k.mark != "" {
 					stroke(legend(k.mark, top), width*1.25, legendInk)
 				}
@@ -209,7 +267,7 @@ func draw(p *ui.Painter, r ui.Rect, ink colors, keys []key, chosen string, at po
 					stroke([][]iso.Vec{{{top[0] - 2.2, k.y + k.d - 3, top[2]}, {top[0] + 2.2, k.y + k.d - 3, top[2]}}}, width*1.4, legendInk)
 				}
 				if k.touch {
-					p.StrokePath(iso.Outline(cam, iso.On(iso.Circle(top[0], top[1], 4, 24), iso.Floor(top[2]))), width, legendInk)
+					canvas.Stroke(iso.Outline(cam, iso.On(iso.Circle(top[0], top[1], 4, 24), iso.Floor(top[2]))), width, legendInk)
 				}
 			})
 		}
@@ -219,11 +277,11 @@ func draw(p *ui.Painter, r ui.Rect, ink colors, keys []key, chosen string, at po
 	// outside, the lid covers them.
 	if cam.Sees(inner) {
 		drawLid()
-		barrel.Draw(p, cam, ink.body, width, nil)
+		barrel.Draw(k, cam, ink.body, width, nil)
 		drawKeys()
 	} else {
 		drawKeys()
-		barrel.Draw(p, cam, ink.body, width, nil)
+		barrel.Draw(k, cam, ink.body, width, nil)
 		drawLid()
 	}
 }
