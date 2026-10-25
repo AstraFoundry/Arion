@@ -189,8 +189,8 @@
     },
     {
       "path": "apps/desktop/ime/shared/ranking_unicode_sources.json",
-      "sha256": "289e0d3409f257956acb9b5ff940cad058bad9574e3a146e09857f6b0944c96e",
-      "sizeBytes": 1638,
+      "sha256": "b76a2ecbb0b470758344ec1ca997d60a54003831a604a4b87bed28d237b55a1c",
+      "sizeBytes": 1601,
       "to": "licenses/ranking-unicode-sources.json",
       "license": "Unicode-3.0",
       "source": "https://www.unicode.org/Public/17.0.0/ucd/"
