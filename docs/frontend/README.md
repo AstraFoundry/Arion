@@ -13,10 +13,10 @@ This section defines how the frontend is organized using **Feature-Sliced Design
 | --- | --- |
 | `app` | One view per window: overlay, menu bar panel, settings, onboarding, macOS settings guide |
 | `pages` | `overlay`, `menubar`, `settings`, `onboarding` |
-| `widgets` | `capsule` (dictation pill), `statusheader`, `modelcard`, `stepper`, `showcase` (illustrations: mock UI over a photograph) |
+| `widgets` | `capsule` (dictation pill), `statusheader`, `modelcard`, `stepper`, `showcase` (illustrations: mock UI over a photograph), `keyfigure` (the dictation key figure, drawn live with `shared/iso`) |
 | `features` | `dictate`, `permissions`, `provision`, `holdkey` (dictation key picker and consent notes), `keyboard` (input-source setup and settings guide), `microphone`, `vocabulary`, `transcript`, `modelchoice`, `uilanguage`, `diagnostics` (About log export), `signin` (AstraFoundry account and hosted-sync waitlist) |
 | `entities` | `dictation` (phase/notice projection), `model`, `onboarding` (step rules), `holdkey` (dictation key names), `account` (account stage and copy for errors and waitlist phases) |
-| `shared` | `runtime` (state and actions boundary), `copy`, `theme` (Sunbeam tokens, motion presets), `kit` (coss-anatomy primitives), `icons` (Lucide, ISC; cloud provider marks from [LobeHub Icons](https://icons.lobehub.com), MIT), `assets` (app mark, photographs) |
+| `shared` | `runtime` (state and actions boundary), `copy`, `theme` (Sunbeam tokens, motion presets), `kit` (coss-anatomy primitives), `icons` (Lucide, ISC; cloud provider marks from [LobeHub Icons](https://icons.lobehub.com), MIT), `assets` (app mark, photographs), `iso` (isometric solids drawn live, after the `anatomy` skill's kit) |
 
 Views read `runtime.State` and request `runtime.Actions`; the composition root mutates state on the main thread. Headless view tests in `ui/app` render every surface with MyGo's `ui.Tester`.
 

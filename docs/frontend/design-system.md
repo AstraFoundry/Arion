@@ -119,6 +119,16 @@ A dictation committed while the overview shows rolls the figures and reshades th
 - Mock surfaces are solid with real elevation; no glass panes, glows or tinted gradients. Scrims are ink gradients only where text or controls overlap the photo.
 - Mock copy comes from `copy` (`ShowcaseSentence` mixes Chinese and English, as real dictation does), and the illustration is labeled for assistive technology (`ShowcaseLabel`).
 
+### Dictation key figure
+
+The onboarding dictation key step shows `widgets/keyfigure` in the left pane instead of the photograph: an isometric laptop drawn live, every frame, by `ui/shared/iso`, a Go port of the `anatomy` Agent Skill's kit (its camera, solids shaded by facing, outlines where a face turns away, creases where a top meets a side, painter's order).
+
+- The laptop arrives closed with its back to the viewer. It turns 180° (250–1350 ms), its lid opens to 112° (650–1650 ms), and the camera closes in until a key pitch spans 46 DIPs, centred on the chosen key (1000–2100 ms). With Reduce Motion it shows the last frame at once.
+- The keyboard is the platform's: fn, Right Option and Right Command on a MacBook-style layout, Right Alt and Right Ctrl on a Windows one. The chosen key is lit in the accent. Choosing another key in the step's picker glides the camera to it while pulling back to 78% of the zoom and closing in again (620 ms). The step's "That works" status starts over then.
+- A press sinks the chosen cap (80 ms down, held to 480 ms, up by 700 ms).
+- Its inks come from the Sunbeam tokens: paper and keycaps from `Card`, shading toward `Shade`, lines from `Faint` and `CardBorder`, the lit key from `Accent` and `AccentInk`, the screen from the pill's substrate. It is labeled for assistive technology (`HoldKeyFigureLabel`).
+- MyGo rasterizes each path whole into its mask atlas, so `iso` clips every polygon and line to the visible box first, and solids fill only their faces; without that, the zoomed-in lid's masks overflow the atlas and fills drop out.
+
 ## Review
 
 Render every surface with `ARION_UI_SNAPSHOTS=<dir> go test ./ui/app` (light, plus `TestDarkAppearance` for dark) and look at the frames. The `kill-ai-slop` skill's taxonomy applies: one accent, hierarchy from scale and space, no decorative tiles, pulses or one-hue status boxes.
