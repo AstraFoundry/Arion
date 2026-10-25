@@ -1,0 +1,9 @@
+{"event":"provenance","driverSha256":"c3feb4658a969b7e5dc80adc49bb851e1467c7d1963d4a2700dce49d56248035","workerSha256":"942d9831d45fd776ef6805ed93eb28d72de6afa27e0b418ec14db6b3589cbc6d","modelSha256":"5f219b78a1d9c3b9e97da27708b36f8a0bc1bfc1650b541c0a6dbaf87c9a62d0","audioSha256":["8bc76e3746211962d65b47cfff79c6f18f6750b2cf1bfaf611330798495d11eb","5f0ef6809a5fcd07764139cfe5b7d67a27a6cd0045dcd48109f1c717d40b66e1"],"threads":4,"cancellationDeadlineMs":100,"adapterTimeoutApplied":false}
+{"event":"ready","protocol":3}
+{"event":"cancel-request","cycle":0,"elapsedMs":118.1278000000002}
+{"event":"cancel","cycle":0,"elapsedMs":5858.441500000001,"answer":{"type":"cancelled","id":"cancel-0"}}
+{"event":"reuse","cycle":0,"elapsedMs":4911.3837,"answer":{"type":"end","id":"reuse-0","text":"Anyhow, we want to help. Got a job for us.","stop":"complete","languages":["en"]}}
+{"event":"cancel-request","cycle":1,"elapsedMs":115.97800000000097}
+{"event":"cancel","cycle":1,"elapsedMs":5563.262100000002,"answer":{"type":"cancelled","id":"cancel-1"}}
+{"event":"reuse","cycle":1,"elapsedMs":4873.447,"answer":{"type":"end","id":"reuse-1","text":"Anyhow, we want to help. Got a job for us.","stop":"complete","languages":["en"]}}
+{"event":"exit","code":0}

@@ -44,6 +44,11 @@ func (a *App) holdSession() application.HoldSession {
 	snapshot := a.core.Snapshot()
 	switch {
 	case !snapshot.Active:
+		if a.state.Model.State != arion.ModelReady {
+			// Consume the gesture while loading without starting a failed
+			// session or arming capture when the held key is later released.
+			return application.HoldBusy
+		}
 		return application.HoldIdle
 	case snapshot.State == domain.Preparing || snapshot.State == domain.Capturing:
 		return application.HoldCapturing

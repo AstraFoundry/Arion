@@ -53,10 +53,10 @@ func TestWindowsHoldKeyHook(t *testing.T) {
 	}
 }
 
-// Holding the key through the production app starts a session that shows
-// the release hint; releasing after the threshold leaves no live capture.
-func TestWindowsHoldKeyDictates(t *testing.T) {
-	editor := startNotepad(t)
+// The isolated profile has no model. A real hold must not start a doomed
+// session or arm capture for release; ready-model capture has separate tests.
+func TestWindowsHoldKeyWithoutModel(t *testing.T) {
+	editor := startWindowsEditor(t)
 	editor.focus(t)
 	var previous arion.HoldKey
 	app.Update(func(s *arion.State) { previous = s.Preferences.HoldKey })
@@ -67,20 +67,30 @@ func TestWindowsHoldKeyDictates(t *testing.T) {
 	if !active {
 		t.Fatal("hold key listener not active")
 	}
+	var previousID string
+	var ready bool
+	app.Update(func(s *arion.State) {
+		ready = s.Model.State == arion.ModelReady
+		previousID = s.Dictation.SessionID
+	})
+	if ready {
+		t.Fatal("fixture unexpectedly has a ready model")
+	}
 	procKeybdEvent.Call(vkRControl, 0, keyeventExtended, 0)
-	eventually(t, "hold started a session", func() bool {
+	defer procKeybdEvent.Call(vkRControl, 0, keyeventExtended|keyUp, 0)
+	assertIdle := func() {
 		var holding bool
 		var id string
 		app.Update(func(s *arion.State) { holding, id = s.Hold.Holding, s.Dictation.SessionID })
-		return holding && id != ""
-	})
+		if holding || id != previousID || app.Coordinator().Snapshot().Active {
+			t.Fatal("unready model hold started or armed a session")
+		}
+	}
 	time.Sleep(application.DefaultHoldThreshold + 200*time.Millisecond)
+	assertIdle()
 	procKeybdEvent.Call(vkRControl, 0, keyeventExtended|keyUp, 0)
-	eventually(t, "release ended the hold", func() bool {
-		var holding bool
-		app.Update(func(s *arion.State) { holding = s.Hold.Holding })
-		return !holding && !app.Coordinator().Snapshot().Active
-	})
+	time.Sleep(200 * time.Millisecond)
+	assertIdle()
 	if text := editor.text(); text != "" {
 		t.Fatalf("text inserted without a model: %q", text)
 	}

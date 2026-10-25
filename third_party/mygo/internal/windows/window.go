@@ -40,7 +40,7 @@ type window struct {
 	frameless              bool
 	hiddenTitleBar         bool        // a TitleBarStyle that hides the caption
 	caption                *captionBar // the controls in its place, nil if they failed
-	noRedirect             bool        // no redirection bitmap, for a material behind the page
+	noRedirect             bool        // no redirection bitmap, for transparency or a system material
 	fullScreen             bool
 	reframing              bool     // SetFullScreen is changing the frame
 	showMaximized          bool     // on the first show (WindowOptions.Maximized)
@@ -124,6 +124,16 @@ func (b *Backend) NewWindow(o *platform.WindowOptions, h platform.WindowHandler)
 	// style is the window's for life: Windows neither adds it nor removes it
 	// later.
 	w.noRedirect = o.Vibrancy != "" && systemBackdrops() && (!w.hiddenTitleBar && !o.Surface || b.composition() != nil)
+	if o.Surface && o.Transparent {
+		// Both native renderers need composition to preserve per-pixel
+		// alpha: the ordinary DXGI swap chain and GDI bitmap are opaque.
+		// Refuse creation when this contract cannot be met, rather than
+		// showing an opaque rectangle in place of transparent content.
+		if b.composition() == nil {
+			return nil, errors.New("mygo: transparent native windows require DirectComposition")
+		}
+		w.noRedirect = true
+	}
 	if o.Flyout != nil {
 		// What the content leaves transparent shows what is behind.
 		w.noRedirect = b.composition() != nil

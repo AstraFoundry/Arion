@@ -124,6 +124,7 @@ const (
 	CodeNoSpeech               = domain.CodeNoSpeech
 	CodeSecureFieldBlocked     = domain.CodeSecureFieldBlocked
 	CodeArtifactUnverified     = domain.CodeArtifactUnverified
+	CodeContractUnsupported    = domain.CodeContractUnsupported
 	CodeProvisioningFailed     = domain.CodeProvisioningFailed
 	CodeEvaluationMissing      = domain.CodeEvaluationUnavailable
 	CodeCancelled              = domain.CodeCancelled
@@ -131,11 +132,14 @@ const (
 
 // Diagnostic categories adapters attach to PERMISSION_DENIED.
 const (
-	DetailMicrophone    = "microphone"
-	DetailAccessibility = "accessibility"
-	DetailInputMethod   = "input method connection unavailable"
-	DetailIMEClient     = "input method client unavailable"
-	DetailIMEUpdating   = "input method update in progress"
+	DetailMicrophone             = "microphone"
+	DetailAccessibility          = "accessibility"
+	DetailInputMethod            = "input method connection unavailable"
+	DetailIMEClient              = "input method client unavailable"
+	DetailIMEUpdating            = "input method update in progress"
+	DetailIMEClientOutdated      = domain.DetailInputMethodClientOutdated
+	DetailIMEArtifactUnverified  = domain.DetailInputMethodArtifactUnverified
+	DetailIMEProtocolUnsupported = domain.DetailInputMethodProtocolUnsupported
 )
 
 // Dictation is the live session projection. Text stays in RAM only.

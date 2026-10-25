@@ -37,6 +37,12 @@ a double click on it maximizes the window.
 
 ## Vibrancy
 
+On Windows, `Transparent: true` native windows preserve per-pixel alpha
+through DirectComposition, with either the GPU or CPU renderer. Window
+creation fails explicitly if DirectComposition is unavailable. Set the
+root background to `ui.Transparent` to leave the desktop visible outside
+the content; the root otherwise draws the theme's background.
+
 A window's `Vibrancy` shows wherever its native UI draws no background, on
 macOS and, in a window created with one, on Windows 11 22H2 and later.
 `c.Vibrancy()` tells whether it shows: elsewhere, what the view leaves

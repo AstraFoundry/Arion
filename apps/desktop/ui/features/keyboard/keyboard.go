@@ -5,6 +5,7 @@ package keyboard
 import (
 	"fmt"
 	"strconv"
+	"strings"
 
 	"arion.local/desktop/ui/shared/copy"
 	"arion.local/desktop/ui/shared/kit"
@@ -22,6 +23,9 @@ type State struct {
 func Supported(store runtime.Store) bool {
 	return store.State.InputMethod != runtime.InputMethodUnsupported
 }
+
+// windows selects native installation and recovery guidance.
+func windows(store runtime.Store) bool { return strings.HasPrefix(store.State.Platform, "windows-") }
 
 // Ready reports whether the input source is installed and enabled.
 func Ready(store runtime.Store) bool {
@@ -45,14 +49,22 @@ func source(c *ui.Context, store runtime.Store, tokens theme.Tokens, state *Stat
 	s := store.State
 	kit.Card(c, tokens).Children(func() {
 		detail := messages.Text(status(s.InputMethod))
-		update := s.InputMethodUpdate && (s.InputMethod == runtime.InputMethodInstalled || s.InputMethod == runtime.InputMethodSelected)
-		if update {
+		update := s.InputMethodUpdate && (s.InputMethod == runtime.InputMethodInstalled || s.InputMethod == runtime.InputMethodSelected || s.InputMethod == runtime.InputMethodPending)
+		if update && !s.InputMethodUpdateFailed && s.InputMethod != runtime.InputMethodPending {
 			detail = messages.Text(copy.IMEUpdateAvailable)
 		}
 		if s.InputMethodActivating {
 			detail = messages.Text(copy.IMEActivating)
 		}
 		label := messages.Text(copy.IMEName)
+		if windows(store) {
+			label = messages.Text(copy.IMEWindowsName)
+			if s.InputMethod == runtime.InputMethodAbsent {
+				detail = messages.Text(copy.IMEWindowsInstallHint)
+			} else if s.InputMethod == runtime.InputMethodPending && !s.InputMethodActivating {
+				detail = messages.Text(copy.IMEWindowsPending)
+			}
+		}
 		if !removal {
 			label, detail = detail, ""
 			if s.InputMethod == runtime.InputMethodInstalled && !update {
@@ -83,9 +95,7 @@ func source(c *ui.Context, store runtime.Store, tokens theme.Tokens, state *Stat
 					}
 				}
 			case runtime.InputMethodDiscovering, runtime.InputMethodPending, runtime.InputMethodInstalled, runtime.InputMethodSelected:
-				// Installing over the current source replaces it with the
-				// bundled build and restarts the input method.
-				if update && s.InputMethodUpdateFailed {
+				if update && (s.InputMethodUpdateFailed || s.InputMethod == runtime.InputMethodPending) {
 					if kit.Button(c.Key("update"), tokens, kit.Primary, messages.Text(copy.IMEUpdate), true).Clicked() {
 						state.Error = ""
 						if store.Actions.InstallInputMethod() != nil {
@@ -124,14 +134,28 @@ func source(c *ui.Context, store runtime.Store, tokens theme.Tokens, state *Stat
 		}
 	}
 
-	if removal && (s.InputMethod == runtime.InputMethodPending || s.InputMethod == runtime.InputMethodDiscovering) && !s.InputMethodInstalling && !s.InputMethodActivating && !s.InputMethodRemoving {
+	if removal && !windows(store) && (s.InputMethod == runtime.InputMethodPending || s.InputMethod == runtime.InputMethodDiscovering) && !s.InputMethodInstalling && !s.InputMethodActivating && !s.InputMethodRemoving {
 		ui.Text(c, messages.Text(copy.IMESetupHint)).FontSize(theme.Caption).TextColor(tokens.Muted)
 	}
 	if state.Error != "" {
-		ui.Text(c, messages.Text(state.Error)).FontSize(theme.Caption).TextColor(tokens.Danger)
+		ui.Text(c, messages.Text(errorKey(store, state.Error))).FontSize(theme.Caption).TextColor(tokens.Danger)
 	} else if s.InputMethodError != "" {
-		ui.Text(c, messages.Text(s.InputMethodError)).FontSize(theme.Caption).TextColor(tokens.Danger)
+		ui.Text(c, messages.Text(errorKey(store, s.InputMethodError))).FontSize(theme.Caption).TextColor(tokens.Danger)
 	}
+}
+
+func errorKey(store runtime.Store, key copy.Key) copy.Key {
+	if windows(store) {
+		switch key {
+		case copy.IMEDiscoveryFailed:
+			return copy.IMEWindowsDiscoveryFailed
+		case copy.IMEEnableFailed:
+			return copy.IMEWindowsEnableFailed
+		case copy.IMESettingsFailed:
+			return copy.IMEWindowsSettingsFailed
+		}
+	}
+	return key
 }
 
 // Candidates chooses the page size, text size, theme and highlight color of

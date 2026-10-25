@@ -42,6 +42,17 @@ func TestSpeechCleanup(t *testing.T) {
 		{"unrelated clause", "The report is ready, sorry, I have a question.", "The report is ready, sorry, I have a question."},
 		{"unfinished repair", "Send it to Alice, no wait, ", "Send it to Alice, no wait,"},
 		{"all padding", "呃，嗯", "呃，嗯"},
+		{"latin inside word", "umbrella and hum", "umbrella and hum"},
+		{"quoted chinese filler", "文案里的“呃”和“那个”都保留，别删除。", "文案里的“呃”和“那个”都保留，别删除。"},
+		{"quoted english filler", `Keep the exact word "um" in the title.`, `Keep the exact word "um" in the title.`},
+		{"single quoted filler", `Um, don't delete 'uh' or 'um'.`, `don't delete 'uh' or 'um'.`},
+		{"french apostrophe", "um l'équipe arrive", "l'équipe arrive"},
+		{"unquoted around quote", `um keep "uh" here, uh please`, `keep "uh" here,  please`},
+		{"unfinished quote", "保留原文“呃", "保留原文“呃"},
+		{"noun suffix", "余额，名额，金额。", "余额，名额，金额。"},
+		{"connected hesitation", "嗯我觉得这个可以，呃这个还不行。", "我觉得这个可以，这个还不行。"},
+		{"demonstrative stays", "那个按钮别删，啊不对，删这个按钮。", "那个按钮别删，啊不对，删这个按钮。"},
+		{"mixed fillers", "嗯，我觉得 um 这个可以", "我觉得  这个可以"},
 	}
 	for _, tt := range cases {
 		t.Run(tt.name, func(t *testing.T) {

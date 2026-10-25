@@ -1,0 +1,4 @@
+=== RUN   TestNativeWindowsLifecycle
+--- PASS: TestNativeWindowsLifecycle (60.81s)
+PASS
+ok  	arion.local/desktop/infrastructure/llm/gguf	62.193s

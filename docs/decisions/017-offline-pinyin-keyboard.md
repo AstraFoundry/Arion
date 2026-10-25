@@ -1,6 +1,16 @@
-# ADR 017: Offline Pinyin keyboard in the macOS IMK host
+# ADR 017: Shared offline Pinyin keyboard with native input-method hosts
 
-Status: Accepted; native implementation and isolated engine/AppKit/storage tests complete. System input-source acceptance remains open.
+Status: Accepted. Shared-core integration and Windows host implementation are in progress. Earlier macOS isolated tests remain historical evidence; fresh cross-platform native and installed-source acceptance is required.
+
+## Shared implementation extension
+
+The Windows implementation reuses the actual keyboard core rather than copying the macOS engine wrapper. `apps/desktop/ime/shared` owns Rime sessions, candidate snapshots, strict UTF-8/UTF-16 boundaries, key policy, Shift tap state, configurable candidate pages and expanded rows, display-to-engine candidate indices, ranking and encrypted database transactions. macOS keeps IMK/AppKit and Keychain/CryptoKit adapters; Windows supplies TSF/native windows and a current-user DPAPI provider. Both stage the same reviewed schema and dictionary sources from `shared/keyboard-data` with the same pinned engine version. Each platform compiles its own native binaries.
+
+Windows builds the pinned Rime sources and dependencies using one C++ ABI. Its private encrypted database adapter requires exported `rime::Db` metadata, methods and virtual table; the official prebuilt Windows library did not provide the required complete ABI. The reviewed source patch and compiler provenance are recorded in the Windows runtime manifest. The unique `ArionRime.dll` dependency belongs beside `ArionKeyboard.dll`; the TSF host loads the verified absolute module path instead of relying on another editor's DLL search path or an unrelated Rime installation.
+
+The shared transaction codec retains the existing macOS encrypted snapshot contents and Keychain policy. Windows uses its own authenticated DPAPI envelope, without plaintext fallback. Ranking uses one Unicode 17 grapheme implementation and preserves the existing trailing-character context policy. The independently encoded legacy-format fixture, official Unicode corpus and native encrypted-storage tests are recorded in [the learning corpus](../../benchmarks/corpora/ime-learning-v1/README.md).
+
+`node scripts/test-shared-pinyin.mjs` checks ownership, malformed Unicode, commit consumption and menu/key policy boundaries. `node scripts/test-windows-pinyin.mjs` runs actual pinned Rime and the production encrypted provider, including full/abbreviated Pinyin, apostrophes, v spelling, partial selection, editing, paging, configured menus, independent sessions and direct punctuation. These gates do not establish installed TSF editor dispatch. Both installed Windows acceptance and a fresh macOS native regression run of the shared implementation remain required.
 
 ## Context
 

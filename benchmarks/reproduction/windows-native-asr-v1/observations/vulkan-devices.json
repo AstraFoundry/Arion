@@ -1,0 +1,1 @@
+{"devices":[{"name":"Vulkan0","description":"AMD Radeon 780M Graphics","kind":"igpu","memory_total":18641977344,"memory_free":17709878576},{"name":"CPU","description":"AMD Ryzen 7 7840U w/ Radeon 780M Graphics      ","kind":"cpu","memory_total":30841532416,"memory_free":13503827968}]}

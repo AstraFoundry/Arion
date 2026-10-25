@@ -71,6 +71,12 @@ func (p *Page) Render(c *ui.Context, store runtime.Store) {
 	p.sync(c, store, step)
 	bar := c.TitleBar()
 	top := max(bar.Height, 28) + 16
+	// Right-side caption buttons occupy the language picker's column.
+	// Keep the whole header below their native hit area; left-side macOS
+	// controls already sit over the illustration, away from this header.
+	if bar.Right > 0 {
+		top += bar.Height
+	}
 	ui.Row(c).Fill().AlignItems(ui.Stretch).Background(tokens.Canvas).Children(func() {
 		ui.Column(c).Width(Pane).Children(func() {
 			if step == onboarding.HoldKey && keyfigure.Shows(state.Preferences.HoldKey) {

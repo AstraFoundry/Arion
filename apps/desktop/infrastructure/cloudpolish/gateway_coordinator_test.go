@@ -97,7 +97,7 @@ func gatewaySession(t *testing.T, s *Service, policy application.RewritePolicy) 
 }
 func gatewayWait(t *testing.T, events <-chan contracts.Event, match func(contracts.Event) bool) contracts.Event {
 	t.Helper()
-	timer := time.NewTimer(5 * time.Second)
+	timer := time.NewTimer(15 * time.Second)
 	defer timer.Stop()
 	for {
 		select {
@@ -117,7 +117,9 @@ func TestOpenAIGatewayCoordinatorContextSwitches(t *testing.T) {
 		for mask := 0; mask < 8; mask++ {
 			t.Run(fmt.Sprintf("%s/mask%d", format, mask), func(t *testing.T) {
 				g, s := newGateway(t, format, "", 0)
-				policy := application.RewritePolicy{Enabled: true, FinalOnly: true, Scene: "prompt", Terms: []string{"writeValue"}, Timeout: time.Second, Context: application.ContextPolicy{Cursor: mask&1 != 0, Screen: mask&2 != 0, History: mask&4 != 0}}
+				// This matrix verifies context routing, not latency. Cold CI hosts
+				// may spend over a second scheduling the two local HTTP stages.
+				policy := application.RewritePolicy{Enabled: true, FinalOnly: true, Scene: "prompt", Terms: []string{"writeValue"}, Timeout: 10 * time.Second, Context: application.ContextPolicy{Cursor: mask&1 != 0, Screen: mask&2 != 0, History: mask&4 != 0}}
 				c, _, editor, events := gatewaySession(t, s, policy)
 				bodies, _ := g.snapshot()
 				if len(bodies) != 0 {

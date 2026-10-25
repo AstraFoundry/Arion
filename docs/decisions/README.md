@@ -36,6 +36,7 @@ Write an ADR when the decision:
 - [022: Optional cloud polishing through Republic](022-cloud-polishing.md) — ChatGPT sign-in or one API key, explicit cloud choice; amended by ADR 024 for shared context.
 - [024: Shared polishing pipeline and context controls](024-shared-polishing-pipeline.md) — one staged recipe for local and cloud models, with the same context switches.
 - [023: Final-only polishing](023-final-only-polishing.md) — local and cloud rewriting both run once after the dictation key is released; segmentation stays, and no polished preview is shown during speech.
+- [025: Windows local polishing](025-windows-local-polishing.md) — the shared pinned GGUF pipeline on Windows x64, CPU backend dispatch, private AF_UNIX IPC and process ownership.
 - [`adr-template.md`](adr-template.md) — template for new ADRs.
 
 ## Naming

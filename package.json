@@ -342,7 +342,9 @@
     "rewrite:selector-d1-layout-v1:payload-test": "node scripts/rewrite-evidence-command.mjs rewrite-selector-d1-layout-v1 test_payload",
     "rewrite:selector-d1-compact-v1:payload-test": "node scripts/rewrite-evidence-command.mjs rewrite-selector-d1-compact-v1 test_payload",
     "rewrite:selector-d1-policy-v1:payload-test": "node scripts/rewrite-evidence-command.mjs rewrite-selector-d1-policy-v1 test_payload",
-    "asr:native:verify": "node benchmarks/reproduction/native-asr-v1/verify.mjs"
+    "asr:native:verify": "node benchmarks/reproduction/native-asr-v1/verify.mjs",
+    "keyboard:shared:check": "node scripts/check-shared-keyboard.mjs",
+    "keyboard:windows:check": "node scripts/check-windows-keyboard.mjs"
   },
   "engines": {
     "node": ">=20.0.0"

@@ -10,10 +10,23 @@ import (
 
 	"arion.local/core/application"
 	"arion.local/core/contracts"
+	"arion.local/desktop/infrastructure/modelruntime"
 	"arion.local/desktop/infrastructure/provision"
 	"arion.local/desktop/infrastructure/rewriting"
 	"arion.local/models"
 )
+
+func TestRewritePolicyKeepsSeparateLocalAndCloudBudgets(t *testing.T) {
+	a := &App{prefs: application.DefaultPreferences("windows")}
+	a.prefs.Polish = true
+	if got := a.rewritePolicy().Timeout; got != rewriting.Timeout(modelruntime.Platform()) {
+		t.Fatalf("local timeout: %v", got)
+	}
+	a.prefs.PolishEngine = application.PolishCloud
+	if got := a.rewritePolicy().Timeout; got != cloudRewriteTimeout {
+		t.Fatalf("cloud timeout: %v", got)
+	}
+}
 
 // RWT-A06: loading or missing workers must not silently disable polishing.
 func TestRewritePolicyPreservesChoiceBeforeWorkerReady(t *testing.T) {

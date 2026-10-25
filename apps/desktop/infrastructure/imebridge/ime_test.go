@@ -7,6 +7,7 @@ import (
 	"net"
 	"os"
 	"path/filepath"
+	"runtime"
 	"sync/atomic"
 	"testing"
 	"time"
@@ -271,6 +272,9 @@ func TestSocketLifecycleDoesNotReplaceExistingPath(t *testing.T) {
 	}
 	defer os.RemoveAll(directory)
 	path := filepath.Join(directory, "ime.sock")
+	if runtime.GOOS == "windows" {
+		path = `\\.\pipe\Arion.Voice.TSF.Test.` + filepath.Base(directory)
+	}
 	m := New(path, nil, nil)
 	if err := m.Listen(); err != nil {
 		t.Fatal(err)

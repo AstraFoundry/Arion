@@ -370,11 +370,13 @@ func swapFiles(dir, target string) error {
 		return errors.New("the update is empty")
 	}
 	suffix := ".old-" + strconv.Itoa(os.Getpid())
-	var moved [][2]string // renamed away: old name, new name
+	var moved [][2]string // target name, previous name (empty for added entries)
 	undo := func() {
 		for i := len(moved) - 1; i >= 0; i-- {
 			_ = os.RemoveAll(moved[i][0])
-			_ = rename(moved[i][1], moved[i][0])
+			if moved[i][1] != "" {
+				_ = rename(moved[i][1], moved[i][0])
+			}
 		}
 	}
 	for _, e := range entries {
@@ -386,6 +388,11 @@ func swapFiles(dir, target string) error {
 				return err
 			}
 			moved = append(moved, [2]string{dst, aside})
+		} else if errors.Is(err, os.ErrNotExist) {
+			moved = append(moved, [2]string{dst, ""})
+		} else {
+			undo()
+			return err
 		}
 		if err := rename(filepath.Join(dir, e.Name()), dst); err != nil {
 			undo()
@@ -393,7 +400,9 @@ func swapFiles(dir, target string) error {
 		}
 	}
 	for _, m := range moved {
-		_ = os.RemoveAll(m[1])
+		if m[1] != "" {
+			_ = os.RemoveAll(m[1])
+		}
 	}
 	return nil
 }

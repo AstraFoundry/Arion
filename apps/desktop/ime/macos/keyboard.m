@@ -1,6 +1,7 @@
 #import "keyboard.h"
 #import "learning.h"
 #import <rime_api.h>
+#include "../shared/pinyin.h"
 #include <limits.h>
 
 extern int32_t arion_keyboard_sha256(const void *, size_t, unsigned char *);
@@ -18,14 +19,6 @@ static BOOL keyboardFailure(NSError **error, NSInteger code) {
 
 static NSString *fromUTF8(const char *bytes) {
     return bytes ? [[NSString alloc] initWithUTF8String:bytes] : @"";
-}
-
-static BOOL utf16Position(const char *bytes, int offset, NSUInteger *position) {
-    if (!bytes || offset < 0 || (size_t)offset > strlen(bytes)) return NO;
-    NSString *prefix = [[NSString alloc] initWithBytes:bytes length:(NSUInteger)offset encoding:NSUTF8StringEncoding];
-    if (!prefix) return NO;
-    *position = prefix.length;
-    return YES;
 }
 
 // The signed bundle supplies this manifest. Verify immutable data before
@@ -65,7 +58,7 @@ static BOOL verifyData(NSString *directory) {
 }
 
 @interface ArionKeyboardEngine ()
-@property RimeApi *api;
+@property(readwrite) RimeApi *api;
 @property(readwrite) NSUInteger generation;
 @property(copy) NSString *dataDirectory;
 @property(copy) NSString *userDirectory;
@@ -94,8 +87,7 @@ static BOOL verifyData(NSString *directory) {
     if (![NSFileManager.defaultManager createDirectoryAtPath:user withIntermediateDirectories:YES
          attributes:@{NSFilePosixPermissions: @0700} error:error]) return NO;
     self.api = rime_get_api();
-    if (!RIME_PROVIDED(self.api, highlight_candidate_on_current_page) || !RIME_PROVIDED(self.api, change_page) ||
-        !RIME_PROVIDED(self.api, highlight_candidate) || !RIME_PROVIDED(self.api, candidate_list_from_index)) {
+    if (!arion_pinyin_api_supported(self.api)) {
         return keyboardFailure(error, 3);
     }
     self.dataDirectory = data;
@@ -161,11 +153,8 @@ static BOOL verifyData(NSString *directory) {
 
 - (uintptr_t)createSession {
     if (!self.ready) return 0;
-    RimeSessionId session = self.api->create_session();
-    if (!session || !self.api->select_schema(session, ArionKeyboardSchema.UTF8String)) {
-        if (session) self.api->destroy_session(session);
-        return 0;
-    }
+    uintptr_t session = arion_pinyin_create_session(self.api);
+    if (!session) return 0;
     [self applyOptions:session];
     return session;
 }
@@ -189,12 +178,7 @@ static BOOL verifyData(NSString *directory) {
     return self.userDirectory && data && [data writeToFile:self.optionsPath options:NSDataWritingAtomic error:nil];
 }
 - (void)applyOptions:(uintptr_t)session {
-    if (!session) return;
-    self.api->set_option(session, "ascii_mode", self.ascii);
-    // Rime's shape post-processor also widens keys ascii_mode rejects; English
-    // mode stays half-width, so the engine sees full_shape only in Chinese mode.
-    self.api->set_option(session, "full_shape", self.fullWidth && !self.ascii);
-    self.api->set_option(session, "ascii_punct", self.englishPunctuation);
+    arion_pinyin_set_options(self.api, session, self.ascii, self.fullWidth, self.englishPunctuation);
 }
 
 - (void)stop {
@@ -234,87 +218,65 @@ static BOOL verifyData(NSString *directory) {
 }
 
 - (void)destroySession:(uintptr_t)session {
-    if (session) self.api->destroy_session(session);
+    arion_pinyin_destroy_session(self.api, session);
 }
 - (BOOL)processKey:(int)key modifiers:(int)modifiers session:(uintptr_t)session {
-    return session && key >= 0 && self.api->process_key(session, key, modifiers);
+    return arion_pinyin_process_key(self.api, session, key, modifiers);
 }
 - (BOOL)select:(NSUInteger)index session:(uintptr_t)session {
-    return session && self.api->select_candidate_on_current_page(session, index);
+    return arion_pinyin_select(self.api, session, index, 1);
 }
 - (BOOL)highlight:(NSUInteger)index session:(uintptr_t)session {
-    return session && self.api->highlight_candidate_on_current_page(session, index);
+    return arion_pinyin_highlight(self.api, session, index, 1);
 }
 - (NSArray<NSString *> *)candidates:(uintptr_t)session from:(NSUInteger)start limit:(NSUInteger)limit {
-    if (!session || start > INT_MAX) return nil;
-    RimeCandidateListIterator iterator = {0};
+    char **values = NULL;
+    size_t count = 0;
+    if (!arion_pinyin_candidates(self.api, session, start, limit, &values, &count)) return nil;
     NSMutableArray<NSString *> *texts = [NSMutableArray arrayWithCapacity:limit];
-    if (!self.api->candidate_list_from_index(session, &iterator, (int)start)) return texts;
-    while (texts.count < limit && self.api->candidate_list_next(&iterator)) {
-        NSString *text = fromUTF8(iterator.candidate.text);
+    for (size_t i = 0; i < count; i++) {
+        NSString *text = fromUTF8(values[i]);
         if (!text) { texts = nil; break; }
         [texts addObject:text];
     }
-    self.api->candidate_list_end(&iterator);
+    arion_pinyin_candidates_dispose(values, count);
     return texts;
 }
 - (BOOL)selectCandidate:(NSUInteger)index session:(uintptr_t)session {
-    return session && self.api->select_candidate(session, index);
+    return arion_pinyin_select(self.api, session, index, 0);
 }
 - (BOOL)highlightCandidate:(NSUInteger)index session:(uintptr_t)session {
-    return session && self.api->highlight_candidate(session, index);
+    return arion_pinyin_highlight(self.api, session, index, 0);
 }
 - (void)clear:(uintptr_t)session {
-    if (session) self.api->clear_composition(session);
+    arion_pinyin_clear(self.api, session);
 }
 
 - (ArionKeyboardSnapshot *)snapshot:(uintptr_t)session error:(NSError **)error {
     if (!self.ready || !session) { keyboardFailure(error, 4); return nil; }
     // A learning I/O error must not swallow an already produced text commit.
     NSError *learningFailure = ArionEncryptedLearningError();
-    RIME_STRUCT(RimeContext, context);
-    RIME_STRUCT(RimeStatus, status);
-    if (!self.api->get_context(session, &context)) { keyboardFailure(error, 5); return nil; }
-    if (!self.api->get_status(session, &status)) {
-        self.api->free_context(&context);
-        keyboardFailure(error, 5);
-        return nil;
-    }
+    ArionPinyinSnapshot snapshot;
+    int failure = arion_pinyin_snapshot(self.api, session, &snapshot);
+    if (failure) { keyboardFailure(error, failure); return nil; }
     ArionKeyboardSnapshot *result = [ArionKeyboardSnapshot new];
     result.failure = learningFailure;
-    result.preedit = fromUTF8(context.composition.preedit);
-    result.ascii = status.is_ascii_mode;
-    BOOL valid = result.preedit != nil;
-    NSUInteger cursor = 0;
-    if (result.preedit.length > 0) valid = valid && utf16Position(context.composition.preedit, context.composition.cursor_pos, &cursor);
-    result.selection = NSMakeRange(cursor, 0);
-    NSMutableArray *candidates = [NSMutableArray array];
-    NSMutableArray *comments = [NSMutableArray array];
-    if (context.menu.num_candidates < 0 || context.menu.num_candidates > 9 || context.menu.page_no < 0) valid = NO;
-    if (valid) {
-        for (int i = 0; i < context.menu.num_candidates; i++) {
-            NSString *text = fromUTF8(context.menu.candidates[i].text);
-            NSString *comment = fromUTF8(context.menu.candidates[i].comment);
-            if (!text || !comment) { valid = NO; break; }
-            [candidates addObject:text];
-            [comments addObject:comment];
-        }
+    result.preedit = fromUTF8(snapshot.preedit);
+    result.commit = fromUTF8(snapshot.commit);
+    result.ascii = snapshot.ascii;
+    result.selection = NSMakeRange(snapshot.cursor_utf16, 0);
+    NSMutableArray *candidates = [NSMutableArray arrayWithCapacity:snapshot.count];
+    NSMutableArray *comments = [NSMutableArray arrayWithCapacity:snapshot.count];
+    for (size_t i = 0; i < snapshot.count; i++) {
+        [candidates addObject:fromUTF8(snapshot.candidates[i])];
+        [comments addObject:fromUTF8(snapshot.comments[i])];
     }
     result.candidates = candidates;
     result.comments = comments;
-    result.page = (NSUInteger)MAX(0, context.menu.page_no);
-    result.lastPage = context.menu.is_last_page;
-    result.highlighted = (NSUInteger)MAX(0, context.menu.highlighted_candidate_index);
-    self.api->free_context(&context);
-    self.api->free_status(&status);
-    if (!valid) { keyboardFailure(error, 6); return nil; }
-    RIME_STRUCT(RimeCommit, commit);
-    result.commit = @"";
-    if (self.api->get_commit(session, &commit)) {
-        result.commit = fromUTF8(commit.text);
-        self.api->free_commit(&commit);
-        if (!result.commit) { keyboardFailure(error, 6); return nil; }
-    }
+    result.page = snapshot.page;
+    result.lastPage = snapshot.last_page;
+    result.highlighted = snapshot.highlighted;
+    arion_pinyin_snapshot_dispose(&snapshot);
     return result;
 }
 @end
@@ -339,11 +301,8 @@ int ArionKeyboardKey(NSEvent *event) {
     NSString *characters = event.characters;
     if (characters.length != 1) return -1;
     unichar key = [characters characterAtIndex:0];
-    // The declared Pinyin schema spells umlaut with v. The original event stays
-    // unchanged when the typing owner passes English or modified input through.
-    if (key == 0x00fc) return 'v';
-    if (key == 0x00dc) return 'V';
-    return key < 0x80 ? key : -1;
+    // Shared typing policy maps direct umlaut spelling after mode/shortcut checks.
+    return key < 0x80 || key == 0x00fc || key == 0x00dc ? key : -1;
 }
 
 int ArionKeyboardModifiers(NSEvent *event) {

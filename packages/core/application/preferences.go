@@ -23,7 +23,6 @@ type Preferences struct {
 	OnboardingCompleted bool       `json:"onboardingCompleted"`
 	HoldKey             HoldKey    `json:"holdKey"`
 	Delivery            Delivery   `json:"delivery"`
-	RemoveFillers       bool       `json:"removeFillers"`
 	Sounds              bool       `json:"sounds"`
 	LaunchAtLogin       bool       `json:"launchAtLogin"`
 	Microphone          string     `json:"microphone"`
@@ -99,7 +98,7 @@ const (
 func DefaultPreferences(platform string) Preferences {
 	return Preferences{
 		Version: PreferencesVersion, UILanguage: English, HoldKey: DefaultHoldKey(platform),
-		Delivery: DeliveryAutomatic, PolishEngine: PolishLocal, Punctuation: domain.PunctuationSmart, RemoveFillers: true, Sounds: true, CheckUpdates: true, MatchApp: true,
+		Delivery: DeliveryAutomatic, PolishEngine: PolishLocal, Punctuation: domain.PunctuationSmart, Sounds: true, CheckUpdates: true, MatchApp: true,
 		ContextCursor: true, ContextScreen: true, ContextHistory: true, LearnEdits: true,
 		Keyboard: DefaultKeyboardPreferences(),
 	}

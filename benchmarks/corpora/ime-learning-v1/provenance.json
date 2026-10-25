@@ -1,0 +1,23 @@
+{
+  "fixtures": [
+    {
+      "file": "legacy-nsdata-pairs.bplist",
+      "sha256": "b61531266aa0de3ef6eb50e351f1d83cda89fd2874e8dfc833d052d6898ac064",
+      "source": "Original synthetic fixture; Python standard-library plistlib binary array of binary key/value pairs",
+      "purpose": "Compatibility with the macOS NSData-pair property-list format; independent of the shared encoder"
+    },
+    {
+      "file": "Scripts-17.0.0.txt",
+      "sha256": "9f5e50d3abaee7d6ce09480f325c706f485ae3240912527e651954d2d6b035bf",
+      "source": "https://www.unicode.org/Public/17.0.0/ucd/Scripts.txt",
+      "license": "../../../apps/desktop/ime/shared/ranking_unicode_LICENSE.txt",
+      "purpose": "Independent Script=Han oracle for every Unicode scalar, including unlisted Unknown values"
+    },
+    {
+      "file": "GraphemeBreakTest-17.0.0.txt",
+      "sha256": "e2d134d2c52919bace503ebb6a551c1855fe1a1faec18478c78fff254a1793ec",
+      "source": "https://www.unicode.org/Public/17.0.0/ucd/auxiliary/GraphemeBreakTest.txt",
+      "license": "../../../apps/desktop/ime/shared/ranking_unicode_LICENSE.txt"
+    }
+  ]
+}

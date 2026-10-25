@@ -266,7 +266,7 @@ func (a *App) preferences() application.Preferences {
 func (a *App) policy() domain.CorrectionPolicy {
 	a.snapshot.Lock()
 	defer a.snapshot.Unlock()
-	return domain.CorrectionPolicy{LatinCase: a.manager.LatinCase(), RemoveFillers: a.prefs.RemoveFillers,
+	return domain.CorrectionPolicy{LatinCase: a.manager.LatinCase(),
 		Replacements: a.replaces, Vocabulary: a.vocabulary}
 }
 
@@ -287,6 +287,8 @@ func (a *App) rewritePolicy() application.RewritePolicy {
 	if a.prefs.PolishEngine == application.PolishCloud {
 		// The shared stages use one overall cloud deadline (ADR 024).
 		policy.Timeout = cloudRewriteTimeout
+	} else {
+		policy.Timeout = rewriting.Timeout(modelruntime.Platform())
 	}
 	return policy
 }
@@ -551,6 +553,7 @@ func (a *App) apply(e contracts.Event) {
 			a.state.LastText, a.state.LastOriginal = e.Text, ""
 		}
 		setState(e.State)
+		a.clearUnavailableModelFailure()
 	}
 	a.updateEscape()
 	a.updateTray()
@@ -616,6 +619,13 @@ func (a *App) pollPermissions() {
 func (a *App) refreshInputMethod() {
 	if a.ime != nil && !a.state.InputMethodInstalling && !a.state.InputMethodRemoving {
 		a.setInputMethodState(a.ime.State())
+		if observer, ok := a.ime.(interface{ ObservationError() error }); ok {
+			if err := observer.ObservationError(); err != nil {
+				a.state.InputMethodError = copy.IMEObservationFailed
+			} else if a.state.InputMethodError == copy.IMEObservationFailed {
+				a.state.InputMethodError = ""
+			}
+		}
 		a.updateInputMethodAutomatically()
 	}
 }
@@ -717,6 +727,7 @@ func (a *App) applyModel(s modelruntime.Status) {
 		m.State = arion.ModelLoading
 	case modelruntime.StateReady:
 		m.State = arion.ModelReady
+		a.clearUnavailableModelFailure()
 	case modelruntime.StateFailed:
 		m.State = arion.ModelFailed
 	case modelruntime.StateUnselected:

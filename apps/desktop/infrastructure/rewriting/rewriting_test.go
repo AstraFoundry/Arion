@@ -6,6 +6,7 @@ import (
 	"net/http/httptest"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"sync/atomic"
 	"testing"
@@ -15,6 +16,49 @@ import (
 	"arion.local/desktop/infrastructure/provision"
 	"arion.local/models"
 )
+
+func TestTimeoutIsScopedToWindowsCPU(t *testing.T) {
+	if Timeout("windows-amd64") != 30*time.Second || Timeout("darwin-arm64") != 0 || Timeout("unsupported") != 0 {
+		t.Fatal("local CPU timeout escaped the supported Windows platform")
+	}
+}
+
+func TestLocateRequiresBothPlatformExecutables(t *testing.T) {
+	root := t.TempDir()
+	dir := filepath.Join(root, runtime.GOOS+"-"+runtime.GOARCH, "llm")
+	if err := os.MkdirAll(dir, 0700); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(dir, workerName()), nil, 0600); err != nil {
+		t.Fatal(err)
+	}
+	if Locate(root) != "" {
+		t.Fatal("reported readiness without native runtime")
+	}
+	if err := os.WriteFile(filepath.Join(dir, runtimeName()), nil, 0600); err != nil {
+		t.Fatal(err)
+	}
+	if Locate(root) != dir {
+		t.Fatal("did not locate the platform runtime pair")
+	}
+}
+
+func TestWindowsCatalogCapabilityRemainsOffUntilProvisioned(t *testing.T) {
+	catalog, err := models.Load()
+	if err != nil {
+		t.Fatal(err)
+	}
+	s := New(catalog, provision.NewStore(t.TempDir()), t.TempDir(), 4, "windows-amd64")
+	if s.Status().State != Off || s.Ready() {
+		t.Fatal("Windows support must not fabricate ready state")
+	}
+	if err := s.Enable(context.Background()); err != nil {
+		t.Fatal(err)
+	}
+	if s.Status().State != Off || s.Ready() {
+		t.Fatal("missing model became ready")
+	}
+}
 
 func downloadFixture(t *testing.T, handler http.HandlerFunc) (*Service, *provision.Store) {
 	t.Helper()

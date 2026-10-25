@@ -12,3 +12,6 @@ benchmarks/artifacts/** -whitespace
 
 # Preserve the reviewed upstream dependency snapshot byte for byte.
 third_party/mygo/** -text !eol -whitespace
+
+# Pinned license text is hashed; never normalize.
+scripts/licenses/GPL-3.0.txt -text !eol

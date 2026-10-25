@@ -124,7 +124,19 @@ func NoticeOf(d runtime.Dictation, permissions runtime.Permissions) Notice {
 			return Notice{copy.FailMicTitle, copy.FailMicHint}
 		}
 		return Notice{copy.FailAXTitle, copy.FailAXHint}
-	case runtime.CodeModelMissing, runtime.CodeModelUnsupported, runtime.CodeArtifactUnverified:
+	case runtime.CodeArtifactUnverified:
+		if d.FailureDetail == runtime.DetailIMEClientOutdated {
+			return Notice{copy.FailIMEProtocolTitle, copy.FailIMEProtocolHint}
+		}
+		if d.FailureDetail == runtime.DetailIMEArtifactUnverified {
+			return Notice{copy.FailIMEArtifactTitle, copy.FailIMEArtifactHint}
+		}
+		return Notice{copy.FailModelTitle, copy.FailModelHint}
+	case runtime.CodeContractUnsupported:
+		if d.FailureDetail == runtime.DetailIMEProtocolUnsupported {
+			return Notice{copy.FailIMEProtocolTitle, copy.FailIMEProtocolHint}
+		}
+	case runtime.CodeModelMissing, runtime.CodeModelUnsupported:
 		return Notice{copy.FailModelTitle, copy.FailModelHint}
 	case runtime.CodeAudioDiscontinuity:
 		return Notice{copy.FailDiscontinuityTitle, copy.FailDiscontinuityHint}

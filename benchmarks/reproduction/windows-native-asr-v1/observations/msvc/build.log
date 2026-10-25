@@ -1,0 +1,243 @@
+适用于 .NET Framework MSBuild 版本 17.14.51+25f168cee
+
+  Checking File Globs
+  Building Custom Rule C:/project/Arion/.workspace/native-asr-migration/speech.cpp/ggml/src/CMakeLists.txt
+  ggml.c
+  ggml.cpp
+  ggml-alloc.c
+  ggml-quants.c
+  正在生成代码...
+  ggml-backend.cpp
+  ggml-backend-meta.cpp
+  ggml-opt.cpp
+  ggml-threading.cpp
+  gguf.cpp
+  正在生成代码...
+  ggml-base.vcxproj -> C:\project\Arion\.workspace\native-asr-migration\speech-windows-amd64-msvc-validation\ggml\src\Release\ggml-base.lib
+  Building Custom Rule C:/project/Arion/.workspace/native-asr-migration/speech.cpp/ggml/src/CMakeLists.txt
+  ggml-cpu.c
+  ggml-cpu.cpp
+  repack.cpp
+  hbm.cpp
+  traits.cpp
+  amx.cpp
+  mmq.cpp
+  tiled.cpp
+  tiled-kernel.cpp
+  binary-ops.cpp
+  unary-ops.cpp
+  vec.cpp
+  ops.cpp
+  正在生成代码...
+  quants.c
+  quants.c
+  repack.cpp
+  ggml-cpu.vcxproj -> C:\project\Arion\.workspace\native-asr-migration\speech-windows-amd64-msvc-validation\ggml\src\Release\ggml-cpu.lib
+  Building Custom Rule C:/project/Arion/.workspace/native-asr-migration/speech.cpp/ggml/src/CMakeLists.txt
+  ggml-backend-dl.cpp
+  ggml-backend-reg.cpp
+  正在生成代码...
+  ggml.vcxproj -> C:\project\Arion\.workspace\native-asr-migration\speech-windows-amd64-msvc-validation\ggml\src\Release\ggml.lib
+  Building Custom Rule C:/project/Arion/.workspace/native-asr-migration/speech.cpp/CMakeLists.txt
+  model-file.cpp
+  storage.cpp
+  quantize.cpp
+  backend.cpp
+  wav.cpp
+  args.cpp
+  language.cpp
+  graph.cpp
+  resample.cpp
+  fft.cpp
+  sampling.cpp
+  log.cpp
+  qwen3-decoder.cpp
+  qwen2-tokenizer.cpp
+  added-vocabulary.cpp
+  utf8.cpp
+  unicode.cpp
+  正在生成代码...
+  speechcommon.vcxproj -> C:\project\Arion\.workspace\native-asr-migration\speech-windows-amd64-msvc-validation\Release\speechcommon.lib
+  Building Custom Rule C:/project/Arion/.workspace/native-asr-migration/speech.cpp/CMakeLists.txt
+  Building Custom Rule C:/project/Arion/.workspace/native-asr-migration/speech.cpp/CMakeLists.txt
+  Building Custom Rule C:/project/Arion/.workspace/native-asr-migration/speech.cpp/CMakeLists.txt
+  Building Custom Rule C:/project/Arion/.workspace/native-asr-migration/speech.cpp/CMakeLists.txt
+  Building Custom Rule C:/project/Arion/.workspace/native-asr-migration/speech.cpp/CMakeLists.txt
+  Building Custom Rule C:/project/Arion/.workspace/native-asr-migration/speech.cpp/CMakeLists.txt
+  layout.cpp
+  layout.cpp
+  layout.cpp
+  layout.cpp
+  layout.cpp
+  layout.cpp
+  network.cpp
+  frontend.cpp
+  codec.cpp
+  text-normalizer.cpp
+  codec.cpp
+  frontend.cpp
+  regions.cpp
+  tokenizer.cpp
+  sampler.cpp
+  encoder.cpp
+  talker.cpp
+  encoder.cpp
+  detector.cpp
+  text-encoder.cpp
+  tokenizer.cpp
+  attention.cpp
+  prompt.cpp
+  正在生成代码...
+  transducer.cpp
+  layers.cpp
+  audio-decoder.cpp
+  prompt.cpp
+  decoder-step.cpp
+  sampler.cpp
+  loudness.cpp
+  decoder.cpp
+  text-model.cpp
+  silerovad.vcxproj -> C:\project\Arion\.workspace\native-asr-migration\speech-windows-amd64-msvc-validation\Release\silerovad.lib
+  codec.cpp
+  decoder.cpp
+  graph-sampler.cpp
+  transcript.cpp
+  prompt.cpp
+  tdt.cpp
+  reference.cpp
+  alsd.cpp
+  split.cpp
+  synthesizer.cpp
+C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\xmemory(732,82): warning C4244: “初始化”: 从“const double”转换到“_Objty”，可能丢失数据 [C:\project\Arion\.workspace\native-asr-migration\speech-windows-amd64-msvc-validation\qwen3tts.vcxproj]
+C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\xmemory(732,82): warning C4244:         with [C:\project\Arion\.workspace\native-asr-migration\speech-windows-amd64-msvc-validation\qwen3tts.vcxproj]
+C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\xmemory(732,82): warning C4244:         [ [C:\project\Arion\.workspace\native-asr-migration\speech-windows-amd64-msvc-validation\qwen3tts.vcxproj]
+C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\xmemory(732,82): warning C4244:             _Objty=float [C:\project\Arion\.workspace\native-asr-migration\speech-windows-amd64-msvc-validation\qwen3tts.vcxproj]
+C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\xmemory(732,82): warning C4244:         ] [C:\project\Arion\.workspace\native-asr-migration\speech-windows-amd64-msvc-validation\qwen3tts.vcxproj]
+  (编译源文件“../speech.cpp/src/families/qwen3-tts/graph-sampler.cpp”)
+      C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\xmemory(732,82):
+      模板实例化上下文(最早的实例化上下文)为
+          C:\project\Arion\.workspace\native-asr-migration\speech.cpp\src\families\qwen3-tts\graph-sampler.cpp(72,49):
+          查看对正在编译的函数 模板 实例化“std::vector<float,std::allocator<float>>::vector<std::_Vector_const_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>,0>(_Iter,_Iter,const _Alloc &)”的引用
+          with
+          [
+              _Ty=double,
+              _Iter=std::_Vector_const_iterator<std::_Vector_val<std::_Simple_types<double>>>,
+              _Alloc=std::allocator<float>
+          ]
+              C:\project\Arion\.workspace\native-asr-migration\speech.cpp\src\families\qwen3-tts\graph-sampler.cpp(72,22):
+              请参阅 "GraphSampler::draw" 中对 "std::vector<float,std::allocator<float>>::vector" 的第一个引用
+          C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\vector(700,13):
+          查看对正在编译的函数 模板 实例化“void std::vector<float,std::allocator<float>>::_Construct_n<const double*,const double*>(const unsigned __int64,const double *&&,const double *&&)”的引用
+          C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\vector(2120,41):
+          查看对正在编译的函数 模板 实例化“float *std::_Uninitialized_copy<_Ty,_Ty,std::allocator<float>>(_InIt,_Se,float *,_Alloc &)”的引用
+          with
+          [
+              _Ty=const double *,
+              _InIt=const double *,
+              _Se=const double *,
+              _Alloc=std::allocator<float>
+          ]
+          C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\xmemory(1902,18):
+          查看对正在编译的函数 模板 实例化“void std::_Uninitialized_backout_al<_Alloc>::_Emplace_back<const double&>(const double &)”的引用
+          with
+          [
+              _Alloc=std::allocator<float>
+          ]
+          C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\include\xmemory(1844,35):
+          查看对正在编译的函数 模板 实例化“void std::_Default_allocator_traits<_Alloc>::construct<_Ty,const double&>(_Alloc &,_Objty *const ,const double &)”的引用
+          with
+          [
+              _Alloc=std::allocator<float>,
+              _Ty=float,
+              _Objty=float
+          ]
+  
+  chunking.cpp
+  speaker-encoder.cpp
+  recognizer.cpp
+  synthesizer.cpp
+  duration.cpp
+  rnnt-greedy.cpp
+  正在生成代码...
+  dit.cpp
+  detokenizer.cpp
+  正在生成代码...
+  voice-file.cpp
+  sampler.cpp
+  times.cpp
+  recognizer.cpp
+  placement.cpp
+  synthesizer.cpp
+  正在生成代码...
+  正在生成代码...
+  voice-file.cpp
+  正在生成代码...
+  qwen3asr.vcxproj -> C:\project\Arion\.workspace\native-asr-migration\speech-windows-amd64-msvc-validation\Release\qwen3asr.lib
+  qwen3tts.vcxproj -> C:\project\Arion\.workspace\native-asr-migration\speech-windows-amd64-msvc-validation\Release\qwen3tts.lib
+  fastconformer.vcxproj -> C:\project\Arion\.workspace\native-asr-migration\speech-windows-amd64-msvc-validation\Release\fastconformer.lib
+  drama3.vcxproj -> C:\project\Arion\.workspace\native-asr-migration\speech-windows-amd64-msvc-validation\Release\drama3.lib
+  irodoritts.vcxproj -> C:\project\Arion\.workspace\native-asr-migration\speech-windows-amd64-msvc-validation\Release\irodoritts.lib
+  Building Custom Rule C:/project/Arion/.workspace/native-asr-migration/speech.cpp/CMakeLists.txt
+  speech.cpp
+  info.cpp
+  request.cpp
+  detection.cpp
+  voice.cpp
+  qwen3-tts-engine.cpp
+  irodori-tts-engine.cpp
+  drama3-engine.cpp
+  fastconformer-engine.cpp
+  qwen3-asr-engine.cpp
+  silero-vad-engine.cpp
+  正在生成代码...
+  speech-static.vcxproj -> C:\project\Arion\.workspace\native-asr-migration\speech-windows-amd64-msvc-validation\Release\speech-static.lib
+  Building Custom Rule C:/project/Arion/.workspace/native-asr-migration/speech.cpp/CMakeLists.txt
+  main.cpp
+  tts.cpp
+  asr.cpp
+  asr-stream.cpp
+  microphone.cpp
+  vad.cpp
+  model.cpp
+  models.cpp
+  quantize.cpp
+  update.cpp
+  catalog.cpp
+  cache.cpp
+  curl.cpp
+  fetch.cpp
+  release.cpp
+  sha256.cpp
+  catalog-json.cpp
+  page-files.cpp
+  command-line.cpp
+  json-reader.cpp
+  正在生成代码...
+  正在编译...
+  request-options.cpp
+  openai-error.cpp
+  realtime-events.cpp
+  realtime-session.cpp
+  regions.cpp
+  sentences.cpp
+  spelling.cpp
+  terminal.cpp
+C:\project\Arion\.workspace\native-asr-migration\speech.cpp\tools\common\terminal.cpp(8,9): warning C4005: “NOMINMAX”: 宏重定义 [C:\project\Arion\.workspace\native-asr-migration\speech-windows-amd64-msvc-validation\speech-cli.vcxproj]
+      C:\project\Arion\.workspace\native-asr-migration\speech.cpp\tools\common\terminal.cpp(8,9):
+      之前在命令行上声明的“NOMINMAX”
+  
+  transcript.cpp
+  utterances.cpp
+  worker.cpp
+  inbox.cpp
+  server.cpp
+  audio-speech.cpp
+  openai-api.cpp
+  served-models.cpp
+  log.cpp
+  access.cpp
+  page.cpp
+  realtime.cpp
+  正在生成代码...
+  miniaudio.c
+  speech-cli.vcxproj -> C:\project\Arion\.workspace\native-asr-migration\speech-windows-amd64-msvc-validation\Release\speech.exe

@@ -1,3 +1,63 @@
+## 0.1.0-alpha.13
+
+### English
+
+Preview for macOS Apple silicon (macOS 14 or later) and Windows x64.
+
+- Add Windows offline Pinyin and TSF voice input, with shared Rime schemas, candidate ordering and learning logic across macOS and Windows.
+- Repair Windows candidate layout refresh after composition changes, input-method registration and model readiness reporting.
+- Add a stable Windows input-method loader and versioned cores. Compatible active cores remain usable until safe release; legacy components already loaded in applications may require those applications to fully exit once.
+- Enable Windows local GGUF polishing with a bundled CPU runtime and protected worker lifecycle.
+- Fix Windows overlay transparency and background worker console windows, and improve the EXE installer and onboarding flow.
+- Extend native input-method, package, update and shared-engine regression coverage.
+
+This is an early preview. Windows publisher signing, clean-machine acceptance and broad editor compatibility remain open. Installed owned-editor candidate checks pass; this does not establish seamless upgrades in every already-running application. Model weights download separately. GitHub publication and release-storage staging do not publish the Arion center beta channel. See RELEASE-STATUS.md and SHA256SUMS.
+
+### 中文
+
+适用于 macOS Apple 芯片（macOS 14 或更高版本）和 Windows x64 的预览版本。
+
+- 新增 Windows 离线拼音和 TSF 语音输入，两端共用 Rime 方案、候选排序和学习逻辑。
+- 修复 Windows 组合输入后的候选框布局刷新、输入法注册和模型就绪状态判断。
+- 新增固定的 Windows 输入法加载入口与版本化核心。兼容的活动核心可继续使用直到安全释放；已经加载早期旧组件的应用可能需要完全退出一次。
+- 支持 Windows 本地 GGUF 润色，随包提供 CPU 运行时并完善工作进程生命周期。
+- 修复 Windows 悬浮窗透明度及后台工作进程的控制台窗口，改进 EXE 安装器和首次使用流程。
+- 扩展原生输入法、打包、更新和共享引擎回归测试。
+
+这是早期预览版。Windows 发布者签名、全新机器和广泛编辑器兼容性仍待验收。已安装版本在自有测试编辑器的候选框检查通过，但不代表所有运行中应用均可无感升级。模型权重单独下载；GitHub 发布及存储暂存不会自动发布 Arion 中心的 beta 渠道。详见 RELEASE-STATUS.md 与 SHA256SUMS。
+
+## 0.1.0-alpha.12
+
+### English
+
+Preview for macOS Apple silicon (macOS 14 or later) and Windows x64.
+
+- Include the Windows installer and cryptographically signed update archive in alpha releases. The Windows application and installer do not have an Authenticode publisher signature; Windows security policies may warn or block execution.
+- Protect Windows text delivery against stale sessions, cancellation, changed focus/selection and standard password fields; stop remaining input batches when a session loses ownership.
+- Repair Windows UI Automation provider initialization and refuse context reads when field safety cannot be established.
+- Give Windows accessibility initialization a separate bounded startup phase while preserving the 1.5-second window traversal limit.
+- Fix update rollback leaving newly added files or directories behind when another destination is locked.
+- Remove the MSVC OpenMP redistributable dependency from the Windows CPU speech worker and reject unbundled runtime DLLs during packaging.
+- Reload the same speech runtime for a new request after cancellation times out and retires its process; cancelled requests are never replayed.
+- Add Windows native, installed-application speech, microphone and updater regression coverage. Actual CPU/Vulkan recognition and five installed-product speech scenarios pass on the documented development host.
+
+This is an early preview. Mixed-language technical terms still have recognition errors. Windows TSF and local polishing are unsupported. Clean-machine/editor compatibility and a real production-channel old-to-new upgrade remain open. Model weights download separately. GitHub publication and release-storage staging do not publish the Arion center beta channel. See RELEASE-STATUS.md and SHA256SUMS for limits and verification.
+
+### 中文
+
+适用于 macOS Apple 芯片（macOS 14 或更高版本）和 Windows x64 的预览版本。
+
+- Alpha 发布新增 Windows 安装包及带加密签名的更新归档。Windows 程序和安装包尚无 Authenticode 发布者签名，系统安全策略可能警告或阻止运行。
+- 加强 Windows 文本输入保护：拒绝过期会话、取消、焦点或选区变化及标准密码框；会话失去目标所有权时停止后续输入批次。
+- 修复 Windows UI Automation 提供程序初始化，并在无法确认字段安全时拒绝读取上下文。
+- 为 Windows 辅助功能初始化设置独立、有界的启动阶段，同时保留 1.5 秒的窗口遍历限制。
+- 修复更新过程中目标文件被锁定时，回滚遗留新增文件或目录的问题。
+- 移除 Windows CPU 语音运行时对 MSVC OpenMP 可再发行库的依赖，并在打包时检查未随包提供的运行库 DLL。
+- 修复取消超时回收语音进程后无法继续识别的问题：新请求重新加载同一运行时，已取消请求不会重放。
+- 新增原生交互、安装后语音、麦克风及更新回归测试；CPU/Vulkan 真实识别与五项安装后语音场景已在记录的开发机通过。
+
+这是早期预览版。中英混合技术词仍有识别错误；Windows TSF 和本地润色尚不支持。全新机器、第三方编辑器兼容性及生产渠道旧版本升级仍待验收。模型权重需单独下载。GitHub 发布及存储暂存不会自动发布 Arion 中心的 beta 渠道。验证限制和校验值见 RELEASE-STATUS.md 与 SHA256SUMS。
+
 ## 0.1.0-alpha.11
 
 ### English

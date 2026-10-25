@@ -113,7 +113,7 @@ func CleanSpeech(source string) SpeechCleanup {
 		}
 		return clauseLeading(before.String(), before.Len())
 	}
-	// Reuse exactly the conservative correction hesitation detector.
+	// Standalone hesitation is deleted here, not by rule correction.
 	for _, span := range hesitationSpans(source) {
 		mark(span.Start, span.End, SpeechHesitation)
 	}
