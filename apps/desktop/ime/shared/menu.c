@@ -35,9 +35,11 @@ int arion_menu_load(ArionPinyinMenu *menu,RimeApi *api,uintptr_t session,size_t 
     return 1;
 }
 int arion_menu_build(ArionPinyinMenu *menu,RimeApi *api,uintptr_t session,size_t page_size,ArionMenuRank rank,void *context) {
+    int expanded=menu->expanded;
     arion_menu_dispose(menu);
     if (page_size<1 || page_size>9) return 0;
     menu->page_size=page_size;
+    menu->expanded=expanded;
     if (!arion_menu_load(menu,api,session,rank_window-1)) return 0;
     if (rank && menu->count) {
         size_t *order=(size_t *)calloc(menu->count,sizeof(size_t));

@@ -58,7 +58,10 @@ static NSDictionary *capture(ArionTyping *typing, TypingEditor *editor) {
     return @{@"text": editor.view.string.copy, @"marked": @(editor.view.hasMarkedText),
         @"insertions": @(editor.insertions), @"preedit": typing.snapshot.preedit ?: @"",
         @"candidates": typing.snapshot.candidates ?: @[], @"page": @(typing.snapshot.page),
-        @"revision": @(typing.revision), @"caret": @(typing.snapshot.selection.location), @"ascii": @(typing.ascii), @"available": @(typing.available), @"recoveryText": typing.recoveryText ?: @""};
+        @"revision": @(typing.revision), @"caret": @(typing.snapshot.selection.location), @"ascii": @(typing.ascii),
+        @"expanded": @(typing.snapshot.expanded), @"rows": typing.snapshot.rows ?: @[],
+        @"currentRow": @(typing.snapshot.currentRow), @"highlighted": @(typing.snapshot.highlighted),
+        @"available": @(typing.available), @"recoveryText": typing.recoveryText ?: @""};
 }
 
 static void record(NSString *step, ArionTyping *typing, TypingEditor *editor) {
@@ -269,7 +272,8 @@ int main(int argc, const char *argv[]) {
             type(typing, @"shi"); press(typing, @"=", 24);
             require(typing.snapshot.expanded, @"expanded again");
             type(typing, @"j");
-            require(!typing.snapshot.expanded && typing.snapshot.rows.count == 1, @"typing collapses the grid");
+            require(typing.snapshot.expanded && typing.snapshot.rows.count > 1 && typing.snapshot.currentRow == 0,
+                    @"typing refreshes the grid from the first row without collapsing");
             press(typing, @"=", 24); press(typing, @"-", 27); press(typing, @"-", 27);
             require(!typing.snapshot.expanded && typing.composing, @"- above the first row collapses");
             press(typing, @"=", 24); press(typing, @"\x1b", 53);
@@ -318,6 +322,63 @@ int main(int argc, const char *argv[]) {
             require(typing.composing && editor.insertions == 0, @"prefix remains provisional while suffix exists");
             press(typing, @" ", 49);
             require([editor.view.string isEqual:@"你好"] && editor.insertions == 1, @"suffix conversion commits whole confirmed phrase");
+        });
+        run(@"expanded grid survives partial selection and suffix edits", @"KBD-A03 KBD-A04", ^{
+            ArionCandidatePanel *panel = [ArionCandidatePanel new];
+            NSRect screen = NSScreen.mainScreen.visibleFrame;
+            NSRect caret = NSMakeRect(NSMidX(screen), NSMidY(screen), 0, 20);
+            __weak ArionTyping *owner = typing;
+            typing.changed = ^{
+                ArionTyping *current = owner;
+                ArionKeyboardSnapshot *snapshot = current.snapshot;
+                if (!current.composing || !snapshot.candidates.count) { [panel hide]; return; }
+                [panel showRows:snapshot.rows currentRow:snapshot.currentRow highlighted:snapshot.highlighted
+                      expanded:snapshot.expanded more:snapshot.moreRows revision:current.revision caretRect:caret];
+            };
+            @try {
+                type(typing, @"nihaoma");
+                press(typing, @"", 125);
+                require(typing.snapshot.expanded, @"Down expands the three-syllable composition");
+                NSUInteger prefixRow = NSNotFound, prefixIndex = NSNotFound;
+                for (NSUInteger row = 0; row < typing.snapshot.rows.count; row++) {
+                    NSUInteger index = [typing.snapshot.rows[row] indexOfObject:@"你好"];
+                    if (index != NSNotFound) { prefixRow = row; prefixIndex = index; break; }
+                }
+                require(prefixRow != NSNotFound, @"real grid offers the two-character prefix");
+                NSWindow *window = [panel valueForKey:@"window"];
+                NSRect expandedFrame = window.frame;
+                NSUInteger stale = typing.revision;
+                record(@"expanded three syllables", typing, editor);
+                require([typing select:prefixIndex row:prefixRow revision:stale], @"choose two characters from the grid");
+                record(@"one syllable remains expanded", typing, editor);
+                require(typing.composing && !editor.insertions && typing.snapshot.expanded &&
+                        typing.snapshot.page == 0 && typing.snapshot.currentRow == 0 && typing.snapshot.highlighted == 0,
+                        @"prefix stays provisional and remaining candidates restart in the expanded grid");
+                require([[panel valueForKey:@"expanded"] boolValue] && ![panel valueForKey:@"reshow"] &&
+                        NSHeight(window.frame) == NSHeight(expandedFrame) && NSMaxY(window.frame) == NSMaxY(expandedFrame),
+                        @"partial selection keeps panel height and anchored edge without a collapse transition");
+                require(![typing select:prefixIndex row:prefixRow revision:stale], @"old grid callback cannot select the suffix");
+                type(typing, @"n");
+                require(typing.snapshot.expanded, @"extending the suffix keeps the grid expanded");
+                press(typing, @"\x7f", 51);
+                require(typing.snapshot.expanded, @"editing the suffix keeps the grid expanded");
+                NSUInteger suffix = [typing.snapshot.candidates indexOfObject:@"吗"];
+                require(suffix != NSNotFound && [typing select:suffix revision:typing.revision], @"choose the remaining character");
+                require(!typing.composing && [editor.view.string isEqual:@"你好吗"] && editor.insertions == 1,
+                        @"only the fully confirmed phrase reaches the client");
+                type(typing, @"shi");
+                require(!typing.snapshot.expanded, @"the next composition starts collapsed after a commit");
+                press(typing, @"", 125); press(typing, @"\x1b", 53);
+                type(typing, @"shi");
+                require(!typing.snapshot.expanded, @"cancellation clears expansion for the next composition");
+                press(typing, @"", 125);
+                require([typing toggleExpanded:typing.revision], @"explicitly collapse the grid");
+                type(typing, @"j");
+                require(!typing.snapshot.expanded, @"explicit collapse remains in effect during later edits");
+            } @finally {
+                typing.changed = nil;
+                [panel hide];
+            }
         });
         run(@"partial-selection Backspace rollback", @"KBD-A04", ^{
             type(typing, @"nihao");

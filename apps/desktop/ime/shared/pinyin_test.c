@@ -8,6 +8,7 @@
 static char text[] = "\xe4\xbd\xa0\xf0\x9f\x98\x80";
 static RimeCandidate candidate;
 static int invalid_cursor, invalid_candidate, commit_pending, contexts_freed, statuses_freed, commits_freed;
+static int candidate_count = 40;
 static Bool context_read(RimeSessionId session, RimeContext *context) {
     assert(session == 42);
     context->composition.preedit = text;
@@ -36,10 +37,13 @@ static Bool list_from(RimeSessionId session,RimeCandidateListIterator *iterator,
     (void)session; iterator->index=index-1; return True;
 }
 static Bool list_next(RimeCandidateListIterator *iterator) {
-    if (++iterator->index>=40) return False;
+    if (++iterator->index>=candidate_count) return False;
     iterator->candidate.text=text; iterator->candidate.comment=""; return True;
 }
 static void list_end(RimeCandidateListIterator *iterator) { (void)iterator; }
+static Bool highlight_candidate(RimeSessionId session, size_t index) {
+    assert(session==42 && index<(size_t)candidate_count); return True;
+}
 static int reverse_order(void *context,const char *const *texts,size_t count,size_t *order) {
     (void)context; (void)texts;
     for (size_t i=0;i<count;i++) order[i]=count-i-1;
@@ -111,6 +115,7 @@ int main(void) {
     assert(arion_key_normalize(0x00dc, 1 << 26, 0) == 0x00dc);
     assert(arion_key_normalize('v', 0, 0) == 'v');
     api.candidate_list_from_index=list_from; api.candidate_list_next=list_next; api.candidate_list_end=list_end;
+    api.highlight_candidate=highlight_candidate;
     ArionPinyinMenu menu={0}; size_t engine_index=0;
     assert(arion_menu_build(&menu,&api,42,5,reverse_order,NULL));
     assert(menu.count==27 && menu.indices[0]==26 && arion_menu_visible_count(&menu)==5);
@@ -121,6 +126,21 @@ int main(void) {
     assert(arion_menu_row_count(&menu)==6);
     assert(arion_menu_engine_index(&menu,1,1,1,&engine_index) && engine_index==15);
     assert(!arion_menu_engine_index(&menu,5,0,0,&engine_index));
+    assert(arion_menu_build(&menu,&api,42,5,reverse_order,NULL));
+    assert(menu.expanded && menu.page==0 && menu.top_row==0 && menu.highlight==0);
+    assert(menu.indices[0]==26 && arion_menu_prepare(&menu,&api,42));
+    candidate_count=3;
+    assert(arion_menu_build(&menu,&api,42,5,reverse_order,NULL));
+    assert(menu.expanded && menu.count==3 && arion_menu_prepare(&menu,&api,42));
+    assert(arion_menu_row_count(&menu)==1 && arion_menu_visible_count(&menu)==3);
+    assert(arion_menu_engine_index(&menu,2,0,1,&engine_index) && engine_index==0);
+    assert(arion_menu_grid(&menu,&api,42,0));
+    assert(arion_menu_build(&menu,&api,42,5,NULL,NULL) && !menu.expanded);
+    candidate_count=40;
+    assert(arion_menu_build(&menu,&api,42,5,NULL,NULL));
+    assert(arion_menu_grid(&menu,&api,42,1) && menu.expanded);
+    arion_menu_dispose(&menu);
+    assert(arion_menu_build(&menu,&api,42,5,NULL,NULL) && !menu.expanded);
     assert(!arion_menu_build(&menu,&api,42,5,invalid_order,NULL));
     arion_menu_dispose(&menu);
     puts("Shared Pinyin ownership, UTF boundaries, commit consumption and key policy tests passed.");

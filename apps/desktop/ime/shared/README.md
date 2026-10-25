@@ -29,3 +29,5 @@ grapheme and trailing-character masks remain unchanged.
 ## Engine and candidates
 
 `pinyin.c` owns the Rime C API session/candidate operations and copied immutable snapshots, with strict Unicode boundary validation. `input.c` owns shortcut policy, Shift tap transitions and direct umlaut-to-v spelling normalization in Chinese mode; English and modified host events keep their original key values. `menu.c` owns the ranked leading window, lazy candidate loading, configurable pages, expanded rows and engine-index mapping. Native adapters retain editor composition, window rendering and platform key translation. A displayed candidate is never inserted directly; selection goes back through the actual Rime session.
+
+Menu rebuilds reset candidate pages and highlights while preserving expansion during the current composition, including partial choices and suffix edits. Explicit collapse changes that retained state. The native owner disposes the menu when composition ends, so the next composition starts collapsed.

@@ -14,6 +14,8 @@ typedef struct ArionPinyinMenu {
 typedef int (*ArionMenuRank)(void *context, const char *const *texts, size_t count, size_t *order);
 
 void arion_menu_dispose(ArionPinyinMenu *menu);
+// Refresh candidates at page one, preserving expansion until explicitly
+// collapsed or disposed at the end of the composition.
 int arion_menu_build(ArionPinyinMenu *menu, RimeApi *api, uintptr_t session,
     size_t page_size, ArionMenuRank rank, void *context);
 int arion_menu_load(ArionPinyinMenu *menu, RimeApi *api, uintptr_t session, size_t index);
