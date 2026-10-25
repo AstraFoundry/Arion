@@ -77,3 +77,6 @@ __pycache__/
 # each example's build.mjs
 .claude/skills/anatomy/examples/**/*.html
 .claude/skills/anatomy/examples/**/*.pdf
+
+# Go test binaries from profiling
+*.test

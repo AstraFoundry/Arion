@@ -4,6 +4,7 @@ import (
 	"math"
 
 	"arion.local/desktop/ui/shared/iso"
+	"github.com/egoist/mygo/ui"
 )
 
 // The laptop, in world units of about a millimetre: one key pitch is U.
@@ -129,6 +130,16 @@ func keysOf(platform string) []key {
 // center is the middle of a cap's top.
 func (k key) center(sink float32) iso.Vec {
 	return iso.Vec{k.x + k.w/2, k.y + k.d/2, baseH + capLift + capH - sink}
+}
+
+// inView reports whether any of the cap shows in r.
+func (k key) inView(cam iso.Camera, r ui.Rect) bool {
+	x0, y0, x1, y1 := float32(math.MaxFloat32), float32(math.MaxFloat32), float32(-math.MaxFloat32), float32(-math.MaxFloat32)
+	for _, c := range [][3]float32{{k.x, k.y, baseH}, {k.x + k.w, k.y, baseH}, {k.x, k.y + k.d, baseH}, {k.x + k.w, k.y + k.d, baseH}} {
+		x, y := cam.Project(iso.Vec(c))
+		x0, y0, x1, y1 = min(x0, x), min(y0, y), max(x1, x), max(y1, y)
+	}
+	return x1 > r.X-4 && x0 < r.X+r.W+4 && y1 > r.Y-8 && y0 < r.Y+r.H+4
 }
 
 func (k key) prism(sink float32) iso.Prism {
