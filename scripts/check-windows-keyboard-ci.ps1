@@ -39,6 +39,10 @@ if ($Child) {
         $preflight = & $preflightBinary $ExpectedSID $Station $Desktop
         if ($LASTEXITCODE -ne 0) { throw 'Standard-user GUI/TSF/DPAPI preflight failed.' }
         $preflight | Tee-Object -FilePath (Join-Path $preflightDirectory 'preflight.json')
+        # Pipe identity, private ACL and canonical-path checks require this
+        # ordinary token and its real profile temp directory, too.
+        & $Node (Join-Path $Repository 'scripts/check-go.mjs') desktop
+        if ($LASTEXITCODE -ne 0) { throw 'Standard-user desktop checks failed.' }
         & $Node (Join-Path $Repository 'scripts/check-windows-keyboard.mjs')
         $testExitCode = $LASTEXITCODE
     } finally {

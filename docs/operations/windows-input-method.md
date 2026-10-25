@@ -73,6 +73,12 @@ This architecture cannot alter a direct legacy DLL already loaded before the loa
 
 ## Build and tests
 
+Hosted Windows CI runs both the Go desktop suite and native keyboard suite under
+the disposable standard-user launcher. The administrator runner token and its
+redirected temporary directory do not satisfy the pipe-identity and immutable
+path test preconditions. These checks remain mandatory; production identity and
+path validation are not relaxed for CI.
+
 `node scripts/build-windows-input-method.mjs` stages the pinned Rime sources, shared schema/data, native keyboard module and TSF binaries. It requires x64 MinGW-w64 GCC; `CC`/`CXX` select that toolchain, and the engine and private encrypted-database adapter must use the same C++ ABI. First provisioning can download hash-pinned public dependencies; installed typing requires no network or external Rime installation. Package verification checks x64 imports, exact runtime closure and hashes, then invokes the packaged helper's read-only `verify <sourceDLL> <expectedSHA>` operation to check its compiled keyboard-manifest binding. This operation does not register a profile or request elevation.
 
 `pnpm keyboard:windows:check` builds the runtime and runs shared core/storage, real conversion, dynamic module/filesystem and owned ACP editor tests. The ACP fixture manually calls key/focus callbacks into real TSF text stores; it does not prove registered system event dispatch. Native menu/mode/voice acceptance, real installed editors and a fresh macOS regression remain required before claiming the shared implementation complete.

@@ -87,12 +87,14 @@ jobs:
           xcodebuild -version
           swift --version
           swift -e 'import Foundation; print("Native MLX toolchain")'
-      - run: pnpm desktop:check
+      - name: Desktop checks (macOS)
+        if: runner.os == 'macOS'
+        run: pnpm desktop:check
       - name: Windows updater regression checks
         if: runner.os == 'Windows'
         run: pnpm updater:check
       - run: pnpm e2e:native
-      - name: Windows shared Pinyin and native module checks
+      - name: Windows desktop, shared Pinyin and native module checks
         if: runner.os == 'Windows'
         run: ./scripts/check-windows-keyboard-ci.ps1
       - name: macOS shared Pinyin and native adapter checks
