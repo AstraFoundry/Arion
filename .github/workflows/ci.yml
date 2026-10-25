@@ -93,7 +93,9 @@ jobs:
       - name: Windows updater regression checks
         if: runner.os == 'Windows'
         run: pnpm updater:check
-      - run: pnpm e2e:native
+      - name: Native window tests (macOS)
+        if: runner.os == 'macOS'
+        run: pnpm e2e:native
       - name: Windows desktop, shared Pinyin and native module checks
         if: runner.os == 'Windows'
         run: ./scripts/check-windows-keyboard-ci.ps1

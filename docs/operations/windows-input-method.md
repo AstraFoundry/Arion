@@ -73,7 +73,7 @@ This architecture cannot alter a direct legacy DLL already loaded before the loa
 
 ## Build and tests
 
-Hosted Windows CI runs both the Go desktop suite and native keyboard suite under
+Hosted Windows CI runs the Go desktop, native window and native keyboard suites under
 the disposable standard-user launcher. The administrator runner token and its
 redirected temporary directory do not satisfy the pipe-identity and immutable
 path test preconditions. These checks remain mandatory; production identity and
