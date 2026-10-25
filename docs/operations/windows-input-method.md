@@ -73,11 +73,15 @@ This architecture cannot alter a direct legacy DLL already loaded before the loa
 
 ## Build and tests
 
-Hosted Windows CI runs the Go desktop, native window and native keyboard suites under
+Hosted Windows CI runs the Go desktop and native keyboard suites under
 the disposable standard-user launcher. The administrator runner token and its
 redirected temporary directory do not satisfy the pipe-identity and immutable
 path test preconditions. These checks remain mandatory; production identity and
 path validation are not relaxed for CI.
+Actual OS-key native window tests run in the runner's original interactive user
+session after the Windows platform tests. The secondary standard-user account
+can create windows and ACP contexts but cannot reliably acquire foreground/input
+ownership over the administrator desktop. These two test scopes remain distinct.
 
 `node scripts/build-windows-input-method.mjs` stages the pinned Rime sources, shared schema/data, native keyboard module and TSF binaries. It requires x64 MinGW-w64 GCC; `CC`/`CXX` select that toolchain, and the engine and private encrypted-database adapter must use the same C++ ABI. First provisioning can download hash-pinned public dependencies; installed typing requires no network or external Rime installation. Package verification checks x64 imports, exact runtime closure and hashes, then invokes the packaged helper's read-only `verify <sourceDLL> <expectedSHA>` operation to check its compiled keyboard-manifest binding. This operation does not register a profile or request elevation.
 

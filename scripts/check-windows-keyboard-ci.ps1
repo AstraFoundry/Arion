@@ -43,8 +43,6 @@ if ($Child) {
         # ordinary token and its real profile temp directory, too.
         & $Node (Join-Path $Repository 'scripts/check-go.mjs') desktop
         if ($LASTEXITCODE -ne 0) { throw 'Standard-user desktop checks failed.' }
-        & $Node (Join-Path $Repository 'scripts/run-native-e2e.mjs')
-        if ($LASTEXITCODE -ne 0) { throw 'Standard-user native window checks failed.' }
         & $Node (Join-Path $Repository 'scripts/check-windows-keyboard.mjs')
         $testExitCode = $LASTEXITCODE
     } finally {
