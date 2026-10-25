@@ -212,7 +212,7 @@ func (s *Service) enable(ctx context.Context, download bool) error {
 	}
 	s.set(func(st *Status) { st.State, st.Installed = Loading, true })
 	c, _, err := client.Start(ctx, client.Config{Worker: filepath.Join(s.bundled, workerName()), Runtime: s.bundled, Model: dir,
-		Threads: s.threads, MaxLength: 4096, MaxNewTokens: 256}, s.diag)
+		Threads: s.threads, MaxLength: 4096, MaxNewTokens: 2048}, s.diag)
 	if err != nil {
 		return s.fail(err)
 	}

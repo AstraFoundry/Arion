@@ -302,3 +302,28 @@ func rulesOf(t *testing.T, system string) []string {
 	}
 	return strings.Split(system[start+len("<rules>\n"):end], "\n")
 }
+
+func TestFormatDynamicTokenBudget(t *testing.T) {
+	lexicon, err := spelling.Load()
+	if err != nil {
+		t.Fatal(err)
+	}
+	templates, err := Selected(lexicon)
+	if err != nil {
+		t.Fatal(err)
+	}
+	short, err := templates.Format("请确认是否准备好。", string(domain.SceneChat), domain.PunctuationSmart)
+	if err != nil || short.MaxTokens != 256 {
+		t.Fatalf("short MaxTokens = %d, want 256 (%v)", short.MaxTokens, err)
+	}
+	mediumSource := strings.Repeat("今天先检查日志并确认参数状态。", 20) // 300 runes
+	medium, err := templates.Format(mediumSource, string(domain.SceneChat), domain.PunctuationSmart)
+	if err != nil || medium.MaxTokens != 300+128 {
+		t.Fatalf("medium MaxTokens = %d, want %d (%v)", medium.MaxTokens, 300+128, err)
+	}
+	longSource := strings.Repeat("Please check the service logs and keep the configuration unchanged. ", 40)
+	long, err := templates.Format(longSource, string(domain.SceneChat), domain.PunctuationSmart)
+	if err != nil || long.MaxTokens != 2048 {
+		t.Fatalf("long MaxTokens = %d, want 2048 (%v)", long.MaxTokens, err)
+	}
+}

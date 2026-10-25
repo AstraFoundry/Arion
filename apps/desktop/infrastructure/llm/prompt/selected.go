@@ -7,8 +7,14 @@ import (
 	"fmt"
 	"strings"
 	"unicode"
+	"unicode/utf8"
 
 	"arion.local/core/domain"
+)
+
+const (
+	minFormatTokens = 256
+	maxFormatTokens = 2048
 )
 
 // SelectedVersion identifies both independently evaluated stages.
@@ -185,6 +191,12 @@ func formatText(source string) string {
 	return "<source>" + source + "</source>"
 }
 
+// formatTokens scales the formatter output budget with the source length,
+// keeping a 256-token floor for short utterances and a 2048-token ceiling.
+func formatTokens(source string) int {
+	return min(maxFormatTokens, max(minFormatTokens, utf8.RuneCountInString(source)+128))
+}
+
 // systemPrompt is a preamble plus one rules list. Scene text is rule 7,
 // layout is rule 8 (omitted for list), and the script route is rule 9.
 // Full, omit, and spaces append one punctuation bullet; smart does not.
@@ -243,5 +255,5 @@ func (t *SelectedTemplates) Format(source, scene string, punctuation domain.Punc
 	if len(messages) == 1 {
 		return ChatRequest{}, fmt.Errorf("missing formatting examples for %s/%s", scene, kind)
 	}
-	return chat(append(messages, Message{Role: "user", Content: formatText(source)}), 256), nil
+	return chat(append(messages, Message{Role: "user", Content: formatText(source)}), formatTokens(source)), nil
 }
