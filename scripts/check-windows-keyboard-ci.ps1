@@ -76,7 +76,7 @@ $password = ConvertTo-SecureString ('Aa1!' + [Convert]::ToBase64String([Security
 $originalACL = Get-Acl -LiteralPath $Repository
 $created = $false
 $desktopAccess = $null
-$child = $null
+$testProcess = $null
 $failure = $null
 $cleanupFailures = [Collections.Generic.List[string]]::new()
 try {
@@ -95,26 +95,26 @@ try {
         $PSCommandPath, $Repository, $Node, $user.SID.Value, $desktopAccess.StationName, $desktopAccess.DesktopName
     # Only the tool search path is forwarded; release credentials and other
     # workflow environment variables are not inherited by the test process.
-    $child = Start-Process -FilePath (Join-Path $PSHOME 'pwsh.exe') -ArgumentList $arguments `
+    $testProcess = Start-Process -FilePath (Join-Path $PSHOME 'pwsh.exe') -ArgumentList $arguments `
         -Credential $credential -LoadUserProfile -UseNewEnvironment -Environment @{ PATH = $env:PATH } `
         -WorkingDirectory $Repository -WindowStyle Hidden -PassThru `
         -RedirectStandardOutput (Join-Path $env:RUNNER_TEMP 'keyboard-standard-user.stdout.log') `
         -RedirectStandardError (Join-Path $env:RUNNER_TEMP 'keyboard-standard-user.stderr.log')
     # Bound the entire owned suite, including a hung build, before restoring its
     # desktop permissions. Kill(true) is restricted to this spawned process tree.
-    if (!$child.WaitForExit(30 * 60 * 1000)) {
-        $child.Kill($true)
-        if (!$child.WaitForExit(15000)) { throw 'Timed-out keyboard CI process did not terminate.' }
+    if (!$testProcess.WaitForExit(30 * 60 * 1000)) {
+        $testProcess.Kill($true)
+        if (!$testProcess.WaitForExit(15000)) { throw 'Timed-out keyboard CI process did not terminate.' }
         throw 'Standard-user keyboard checks exceeded 30 minutes.'
     }
     Get-Content -LiteralPath (Join-Path $env:RUNNER_TEMP 'keyboard-standard-user.stdout.log')
     Get-Content -LiteralPath (Join-Path $env:RUNNER_TEMP 'keyboard-standard-user.stderr.log')
-    if ($child.ExitCode -ne 0) { throw "Standard-user keyboard checks failed ($($child.ExitCode))." }
+    if ($testProcess.ExitCode -ne 0) { throw "Standard-user keyboard checks failed ($($testProcess.ExitCode))." }
 } catch {
     $failure = $_
 } finally {
-    if ($child -and !$child.HasExited) {
-        try { $child.Kill($true); if (!$child.WaitForExit(15000)) { throw 'Keyboard CI process is still running.' } }
+    if ($testProcess -and !$testProcess.HasExited) {
+        try { $testProcess.Kill($true); if (!$testProcess.WaitForExit(15000)) { throw 'Keyboard CI process is still running.' } }
         catch { $cleanupFailures.Add("Child cleanup: $_") }
     }
     if ($desktopAccess) {
