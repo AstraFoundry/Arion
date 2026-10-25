@@ -16,6 +16,18 @@ The Windows EXE installer stages its complete payload on the destination volume 
 make build desktop
 ```
 
+Apple silicon `make build desktop` and `make desktop-dev` compile `ArionASR` with `xcodebuild`. Install the full Xcode 26.4.1 / Swift 6.3.1 application, point `xcode-select` at `Xcode.app/Contents/Developer`, complete first-launch initialization, and install the Metal toolchain; Command Line Tools alone are not enough:
+
+```sh
+sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
+sudo xcodebuild -license accept && sudo xcodebuild -runFirstLaunch
+xcodebuild -downloadComponent MetalToolchain
+```
+
+On a clean checkout, the first `ArionASR` build runs `xcodebuild -quiet` and takes 2–5 minutes without per-line output while fetching SwiftPM packages and compiling `mlx-swift` and Metal shaders. Without Apple signing variables in `.env` or the shell, `make build desktop` produces an ad hoc signed preview (`apps/desktop/build/Arion.app` and `.dmg`): shortcut dictation works after granting permissions, but macOS TCC consent does not persist across ad hoc rebuilds and system input-method (`ArionInput.app`) installation is refused with `ARTIFACT_UNVERIFIED` until signed with `MACOS_IME_PROVISIONING_PROFILE`.
+
+When running `make desktop-dev` for local macOS development (`Arion Dev`, `si.astrafoundry.arion.dev`, output under `~/Library/Caches/Arion/desktop-dev/<checkout-hash>/darwin-arm64/Arion Dev.app`), see the diagnostic table in [macOS development build and TCC permission diagnostics](local-dev.md#macos-development-build-and-tcc-permission-diagnostics) (covering `xcodebuild` / `MetalToolchain` setup, the 2–5 minute silent cold build, avoiding the ad hoc `CDHash` permission invalidation loop by launching the cached bundle with `open` instead of rerunning `make desktop-dev`, resetting Microphone / Accessibility / Input Monitoring TCC records with `tccutil reset`, adding Screen Recording via `+` and `⌘⇧G`, `ARTIFACT_UNVERIFIED` on ad hoc IME installation, and testing `AXValue` edit learning in Notes/TextEdit). See also [ADR 020](../decisions/020-native-qwen-asr.md).
+
 ## Center configuration
 
 `make build desktop` and `make desktop-dev` read the same public center profile from shell ENV or the root `.env`. Omit all `ARION_CENTER_*` variables for AstraFoundry defaults. For a device-authenticated self-hosted center:
@@ -96,11 +108,12 @@ For Tencent COS, use the regional endpoint `https://cos.<region>.myqcloud.com`, 
 6. Prove mode switching, host crashes, shutdown and update/uninstall clean owned composition and don't strand OS registrations.
 7. Update trust (Ed25519-signed archives) and swap rollback are in place ([ADR 010](../decisions/010-in-app-updates.md)); model migration checks and Developer ID signing, which keeps privacy consent across updates, remain before broad distribution.
 
-## Self-hosted relay
+## Self-hosted center and sync relay
 
-[deploy/sync](../../deploy/sync/README.md) builds the relay and runs PostgreSQL 17 plus a one-shot migration. Put TLS on a reverse proxy in front of `127.0.0.1:8080`. Keep private keys on clients; operators back up ciphertext and routing metadata. A restore cannot invent plaintext or silently discard client conflicts. Revocation rotates the key epoch; clients re-encrypt, and previously downloaded plaintext cannot be remotely erased.
-
-`noop` is the self-host default. `oidc` is the hosted gate for `api.arion.astrafoundry.si` and must not share the platform database. Kubernetes packaging under [deploy/k8s](../../deploy/k8s/README.md) is still unused.
+- **Complete center (`deploy/center`)**: [deploy/center](../../deploy/center/README.md) runs Caddy (automatic TLS for `ARION_CENTER_DOMAIN`), `services/updates` (`/v1/updates/*`, `/v1/releases/*`, `/v1/downloads/*`), `services/sync` (`/v1/sync/*`, `/v1/security-events`, `oidc` gate by default), and PostgreSQL 17 with one-shot migrations. Copy `deploy/center/.env.example` to `deploy/center/.env`, place the read-only S3/COS secret in `deploy/center/secrets/updates-s3-secret`, and run `docker compose up -d --build`.
+- **Standalone ciphertext relay (`deploy/sync`)**: [deploy/sync](../../deploy/sync/README.md) builds only the `services/sync` relay and runs PostgreSQL 17 plus a one-shot migration. Put TLS on a reverse proxy in front of `127.0.0.1:8080`. `ARION_SYNC_ACCOUNT_GATE=noop` is the self-host default (device signatures only); `oidc` is the hosted gate for `api.arion.astrafoundry.si` and must not share the platform database. Kubernetes packaging under [deploy/k8s](../../deploy/k8s/README.md) is still unused.
+- **Desktop build-time binding (`ARION_CENTER_*`)**: Configuring `deploy/sync/.env` or `deploy/center/.env` only configures the server containers and does not retarget an already-built desktop app. Packaged desktop apps ignore runtime `ARION_CENTER_*` environment variables; to point a desktop build at a self-hosted center or relay, set `ARION_CENTER_URL` and `ARION_CENTER_AUTH_MODE` (plus the five `ARION_CENTER_OIDC_*` variables when using `oidc`) in the root `.env` or shell **before** running `make build desktop` or `make desktop-dev` ([Center configuration](#center-configuration)).
+- **Key and backup boundaries**: Keep private encryption keys on clients; operators back up ciphertext and routing metadata. A restore cannot invent plaintext or silently discard client conflicts. Revocation rotates the key epoch; clients re-encrypt, and previously downloaded plaintext cannot be remotely erased.
 
 ## Marketing site
 

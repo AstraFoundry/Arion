@@ -20,7 +20,7 @@ Completed native-worker and coordinator evaluations are recorded separately. Pyt
 
 ## Packaging
 
-- Apple silicon: Xcode 26.4.1 / Swift 6.3.1, macOS deployment target 14.0, pinned Package.resolved, arion-asr, colocated mlx.metallib, SwiftPM bundles and the Swift compatibility-library closure. Sign nested code before the outer app and notarize through the normal build command.
+- Apple silicon: the Xcode 26.4.1 application / Swift 6.3.1 (`xcode-select` must point at `Xcode.app`, not Command Line Tools), macOS deployment target 14.0, pinned Package.resolved, arion-asr, colocated mlx.metallib, SwiftPM bundles and the Swift compatibility-library closure. Sign nested code before the outer app and notarize through the normal build command.
 - macOS Intel: pinned speech.cpp source and ggml submodule, CPU/Accelerate executable, generic CPU flags and macOS 14.0 deployment target. Cross-build inspection is not native-host acceptance.
 - Windows: source-built CPU executable with the static MSVC runtime plus a digest-pinned Vulkan executable. Select Vulkan only when the system Vulkan loader is available. Failure of a selected runtime is surfaced. Vulkan drivers are installed by the GPU vendor. No CUDA or DirectML support is claimed for this package.
 - Weights stay in the verified model store. Package verification rejects obsolete runtime files and verifies architecture, minimum OS, notices and signatures.

@@ -2,7 +2,7 @@
 
 - [Local rewriting](local-rewrite.md) — selected GGUF model, two-stage prompts, private runtime and delivery policy.
 - [Windows input method](windows-input-method.md) — TSF setup, shared Pinyin integration, security boundary and native verification.
-- [Local development](local-dev.md) — actual repository commands and module toolchains.
+- [Local development](local-dev.md) — actual repository commands, module toolchains, and [macOS development build and TCC permission diagnostics](local-dev.md#macos-development-build-and-tcc-permission-diagnostics).
 - [Evaluation commands](../../tools/evaluation/README.md) — Make/pnpm benchmarks and real drivers.
 - [Deployment](deployment.md) — desktop/model/IME and self-hosted relay release gates, and the marketing site.
 - [Release status](release-status.md) — shipped platform capabilities, preview signing status and host acceptance limits.
