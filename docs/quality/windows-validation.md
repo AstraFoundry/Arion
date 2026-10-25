@@ -5,7 +5,11 @@ timeouts despite successful owned-editor runs locally. The reader now compiles
 its typed managed traversal during initialization, before READY, instead of
 binding every node dynamically in PowerShell. Target access still starts only
 after GO and ownership revalidation; password/offscreen filtering, node/text
-limits, the five-second startup budget and 1.5-second traversal budget remain.
+limits and the 1.5-second traversal budget remain. Repeated fresh hosted runners
+exceeded the previous five-second initialization limit before authorization.
+Managed initialization now has a separate 15-second ceiling, remains cancellable,
+and records elapsed time in its real initialization test; the final rewrite's
+independent context wait is unchanged.
 CI security tests use an ordinary account, while actual OS-input fixtures use
 the runner's original interactive session. Neither scope establishes clean-host
 or broad third-party editor compatibility.
@@ -47,7 +51,7 @@ Private execution logs are under `.workspace/windows-validation/`; in particular
 
 ## Hosted Windows context initialization
 
-The [first alpha.12 main CI run](https://github.com/AstraFoundry/Arion/actions/runs/40050619822) passed Windows desktop and updater tests but timed out in the owned-window UI Automation test: the original 1.5-second traversal budget also covered PowerShell/provider initialization. The reader now allows up to five seconds for initialization without target access, revalidates the target, then grants the unchanged 1.5-second traversal budget through a READY/GO handshake. Caller cancellation applies throughout; final rewrite context waiting remains 1.5 seconds. Real subprocess tests cover both deadlines, cancellation, authorization and rejection of incomplete output. The actual local UIA read passes with a 740.48 ms total capture; hosted-runner success is checked again before tagging.
+The [first alpha.12 main CI run](https://github.com/AstraFoundry/Arion/actions/runs/40050619822) passed Windows desktop and updater tests but timed out in the owned-window UI Automation test: the original 1.5-second traversal budget also covered PowerShell/provider initialization. The reader now allows up to 15 seconds for initialization without target access, revalidates the target, then grants the unchanged 1.5-second traversal budget through a READY/GO handshake. Caller cancellation applies throughout; final rewrite context waiting remains 1.5 seconds. Real subprocess tests cover both deadlines, cancellation, authorization and rejection of incomplete output. The actual local UIA read passes with a 740.48 ms total capture; hosted-runner success is checked again before tagging.
 
 Two full local E2E reruns after this repair passed UIA (740.48 ms and 672.14 ms) and the remaining target/hold/input cases, but both failed the unchanged onboarding-to-settings focus assertion. Those runs are not full-suite passes; their logs remain in `.workspace/windows-validation/release/native-uia-phases.log` and `native-uia-phases-repeat.log`. That onboarding case passed in the first hosted run above and remains enabled in subsequent CI.
 

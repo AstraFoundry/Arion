@@ -94,7 +94,9 @@ func readWindowText(ctx context.Context, hwnd uintptr, authorize func() error) (
 }
 
 const (
-	contextStartupTimeout = 5 * time.Second
+	// Cold PowerShell/.NET provider loading and compilation can exceed five
+	// seconds on hosted Windows. No target is inspected during this phase.
+	contextStartupTimeout = 15 * time.Second
 	screenTimeout         = 1500 * time.Millisecond
 	contextReadyFrame     = "ARION_CONTEXT_READY\n"
 	maxContextOutput      = 32768 * 4 // Maximum UTF-8 bytes for the UTF-16 text limit.

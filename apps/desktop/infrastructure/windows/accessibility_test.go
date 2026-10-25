@@ -88,10 +88,12 @@ func requireContextProcessReaped(t *testing.T, cmd *exec.Cmd) {
 // Compile and register the real managed reader, then deny GO. An invalid HWND
 // must never be inspected before the parent's ownership authorization succeeds.
 func TestContextReaderInitializesBeforeAuthorization(t *testing.T) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), contextStartupTimeout+time.Second)
 	defer cancel()
 	denied := errors.New("synthetic target ownership refusal")
+	started := time.Now()
 	text, err := readWindowText(ctx, 0, func() error { return denied })
+	t.Logf("managed reader initialization: %s", time.Since(started))
 	if !errors.Is(err, denied) || text != "" {
 		t.Fatalf("reader initialization/authorization: text=%q error=%v", text, err)
 	}
