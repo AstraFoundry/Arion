@@ -29,6 +29,10 @@ Custom `oidc` requires all five `ARION_CENTER_OIDC_*` fields in [`.env.example`]
 
 The app embeds the validated public profile and ignores launch-time center ENV. Package verification checks the executable's `--print-center-profile` result without center ENV. Custom profiles isolate account refresh tokens and disable the official update feed; device mode offers no account sign-in, and custom OIDC never calls the official waitlist API. Official tagged releases require the exact standard profile. Existing legacy account tokens are retained but no longer read: sign in again. Local vocabulary is unchanged. See the [profile contract and remaining sync limits](../project/central-sync-design.md#implemented-profile-boundaries).
 
+## Manual signed macOS installer
+
+Run [Signed macOS build](../../.github/workflows/signed-macos.yml) from GitHub Actions on the intended branch or tag when signing credentials are held by the team. It reuses the existing CI checks and signed packaging with the macOS ARM64 matrix only, using the configured organization/repository secrets. Download the `desktop-darwin-arm64` artifact after success. The independent concurrency group lets this build finish while cross-platform releases are retried. This workflow creates installer artifacts; it does not create tags, stage release storage or publish an update channel. The source commit is recorded by the workflow run.
+
 ## macOS signing configuration
 
 The build entry point reads the root `.env` when present; existing shell variables take precedence, including deliberately empty values. Copy [`.env.example`](../../.env.example) for the settings. `make build desktop` is the only packaging command: no Apple variables produces a preview, partial Apple configuration fails, and complete configuration signs and notarizes. `MYGO_UPDATER_PRIVATE_KEY` independently enables signed updates. `desktop-dev` keeps development signing and does not import release credentials.
