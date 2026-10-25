@@ -185,8 +185,8 @@ func formatText(source string) string {
 	return "<source>" + source + "</source>"
 }
 
-// systemPrompt is a preamble plus one rules list. Scene text is rule 6,
-// layout is rule 7 (omitted for list), and the script route is rule 8.
+// systemPrompt is a preamble plus one rules list. Scene text is rule 7,
+// layout is rule 8 (omitted for list), and the script route is rule 9.
 // Full, omit, and spaces append one punctuation bullet; smart does not.
 func (t *SelectedTemplates) systemPrompt(kind, scene string, punctuation domain.Punctuation) string {
 	preamble, rules, sceneRule, layout, routeLine, punct := t.format.System, t.format.Rules, "", t.format.ProsePolicy, t.format.Routes[kind], t.format.Punctuation

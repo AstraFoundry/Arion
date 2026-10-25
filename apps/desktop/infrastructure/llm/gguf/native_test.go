@@ -66,6 +66,9 @@ func TestNativeSelectedPipeline(t *testing.T) {
 		{Identity: id, Scene: "search", Text: "如何检查 syncState 的状态？"},
 		{Identity: id, Scene: "prompt", Text: "请把以下事项列成清单：给 fetchState 加日志，保留返回字段，不改配置。"},
 		{Identity: id, Scene: "list", Text: "阈值设成零点八，超时五秒，不要重启。"},
+		{Identity: id, Scene: "chat", Text: "这个接口的参数，中间有一些多余的空格。需要去掉，先不要上线。"},
+		{Identity: id, Scene: "work", Text: "如果今晚部署失败。你能先帮我看一下报错日志吗。"},
+		{Identity: id, Scene: "prompt", Text: "我想看下就是。你帮我查一下为什么这个接口这么慢。"},
 	}
 	listLine := regexp.MustCompile(`(?m)^\s*(?:[-*•]|[0-9]+[.)、])\s+`)
 
@@ -92,6 +95,15 @@ func TestNativeSelectedPipeline(t *testing.T) {
 		}
 		if i == 13 && (!strings.Contains(result.Text, "0.8") || !strings.Contains(result.Text, "5") || !strings.Contains(result.Text, "不要重启")) {
 			t.Errorf("lost list numeric formatting or constraint: %q", result.Text)
+		}
+		if i == 14 && (strings.Contains(result.Text, "参数，") || strings.Contains(result.Text, "空格。")) {
+			t.Errorf("kept redundant or mid-clause ASR punctuation: %q", result.Text)
+		}
+		if i == 15 && (strings.Contains(result.Text, "失败。") || !strings.HasSuffix(result.Text, "？")) {
+			t.Errorf("kept mis-punctuated ASR marks: %q", result.Text)
+		}
+		if i == 16 && (strings.Contains(result.Text, "就是。") || !strings.Contains(result.Text, "为什么这个接口这么慢")) {
+			t.Errorf("kept abandoned false start: %q", result.Text)
 		}
 		if i == 0 {
 			reference = result.Text
