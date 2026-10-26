@@ -196,12 +196,12 @@ func (p *Page) section(c *ui.Context, store runtime.Store, tokens theme.Tokens) 
 		})
 		kit.Group(c, tokens, messages.Text(copy.PermissionsHeader), func() {
 			kit.Card(c, tokens).Children(func() {
-				kit.Row(c, tokens, messages.Text(copy.MicPermission), messages.Text(copy.MicPermissionText), func() {
+				kit.TipRow(c, tokens, messages.Text(copy.MicPermission), messages.Text(copy.MicPermissionText), func() {
 					permissions.Status(c, store, tokens, permissions.Microphone)
 					permissions.Request(c, store, tokens, permissions.Microphone, messages.Text(copy.Allow), false)
 				})
 				kit.Divider(c, tokens)
-				kit.Row(c, tokens, messages.Text(copy.AXPermission), messages.Text(copy.AXPermissionText), func() {
+				kit.TipRow(c, tokens, messages.Text(copy.AXPermission), messages.Text(copy.AXPermissionText), func() {
 					permissions.Status(c, store, tokens, permissions.Accessibility)
 					permissions.Request(c, store, tokens, permissions.Accessibility, messages.Text(copy.Allow), false)
 				})
@@ -216,7 +216,7 @@ func (p *Page) section(c *ui.Context, store runtime.Store, tokens theme.Tokens) 
 			})
 			kit.Divider(c, tokens)
 			sounds := prefs.Sounds
-			kit.Row(c, tokens, messages.Text(copy.Sounds), messages.Text(copy.SoundsDetail), func() {
+			kit.TipRow(c, tokens, messages.Text(copy.Sounds), messages.Text(copy.SoundsDetail), func() {
 				if ui.Switch(c.Key("sounds"), &sounds).Label(messages.Text(copy.Sounds)).Changed() {
 					store.Actions.UpdatePreferences(func(p *runtime.Preferences) { p.Sounds = sounds })
 				}
@@ -224,7 +224,7 @@ func (p *Page) section(c *ui.Context, store runtime.Store, tokens theme.Tokens) 
 		})
 	case Dictation:
 		kit.Card(c, tokens).Children(func() {
-			kit.Row(c, tokens, messages.Text(copy.HoldKeyLabel), messages.Text(copy.HoldKeyDetail), func() {
+			kit.TipRow(c, tokens, messages.Text(copy.HoldKeyLabel), messages.Text(copy.HoldKeyDetail), func() {
 				holdkey.Picker(c, store)
 			})
 			if holdkey.HasNotes(store) {
@@ -233,7 +233,7 @@ func (p *Page) section(c *ui.Context, store runtime.Store, tokens theme.Tokens) 
 		})
 		kit.Group(c, tokens, messages.Text(copy.TranslateGroup), func() {
 			kit.Card(c, tokens).Children(func() {
-				kit.Row(c, tokens, messages.Text(copy.TranslateKeyLabel), messages.Text(copy.TranslateKeyDetail), func() {
+				kit.TipRow(c, tokens, messages.Text(copy.TranslateKeyLabel), messages.Text(copy.TranslateKeyDetail), func() {
 					holdkey.TranslatePicker(c, store)
 				})
 				kit.Divider(c, tokens)
@@ -251,7 +251,7 @@ func (p *Page) section(c *ui.Context, store runtime.Store, tokens theme.Tokens) 
 		kit.Card(c, tokens).Children(func() {
 			kit.Row(c, tokens, messages.Text(copy.MicDevice), "", func() { microphone.Picker(c, store) })
 			kit.Divider(c, tokens)
-			kit.Row(c, tokens, messages.Text(copy.MicGain), messages.Text(copy.MicGainDetail), func() { microphone.GainValue(c, store, tokens) })
+			kit.TipRow(c, tokens, messages.Text(copy.MicGain), messages.Text(copy.MicGainDetail), func() { microphone.GainValue(c, store, tokens) })
 			// Inset so the end labels, centered on the end ticks, align with the row's text.
 			ui.Column(c).Padding(0, 28, 14, 28).Children(func() { microphone.Gain(c, store, tokens) })
 			kit.Divider(c, tokens)
@@ -303,22 +303,22 @@ func (p *Page) section(c *ui.Context, store runtime.Store, tokens theme.Tokens) 
 	}
 }
 
-// privacy states what stays on this device and the network's two uses.
+// privacy states what stays on this device and when Arion uses the network.
 func privacy(c *ui.Context, messages copy.Catalog, tokens theme.Tokens) {
 	kit.Card(c, tokens).Children(func() {
 		for i, item := range []struct {
-			icon          *ui.SVG
-			title, detail string
+			icon       *ui.SVG
+			title, tip string
 		}{{icons.Cpu, messages.Text(copy.PrivacyLocal), messages.Text(copy.PrivacyLocalTxt)}, {icons.MicOff, messages.Text(copy.PrivacyAudio), messages.Text(copy.PrivacyAudioTxt)},
 			{icons.Lock, messages.Text(copy.PrivacyLogs), messages.Text(copy.PrivacyLogsTxt)}, {icons.HardDriveDownload, messages.Text(copy.PrivacyNetwork), messages.Text(copy.PrivacyNetTxt)}} {
 			if i > 0 {
 				kit.Divider(c, tokens)
 			}
-			ui.Row(c).Gap(12).Padding(12, 16).Children(func() {
-				ui.Icon(c, item.icon).FontSize(16).TextColor(tokens.Muted).Margin(2, 0, 0, 0)
-				ui.Column(c).Gap(2).Grow(1).Children(func() {
-					ui.Text(c, item.title).FontSize(theme.Body).FontWeight(500)
-					ui.Text(c, item.detail).FontSize(theme.Caption).TextColor(tokens.Muted)
+			ui.Row(c).Gap(12).Padding(12, 16).AlignItems(ui.Center).Children(func() {
+				ui.Icon(c, item.icon).FontSize(16).TextColor(tokens.Muted)
+				ui.Row(c).Grow(1).Shrink(1).Gap(6).AlignItems(ui.Center).Children(func() {
+					ui.Text(c, item.title).FontSize(theme.Body).FontWeight(500).Shrink(1)
+					kit.Hint(c, tokens, item.tip)
 				})
 			})
 		}
