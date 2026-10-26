@@ -11,7 +11,7 @@
 | `apps/desktop/internal/center` | Compiled public center profile, validation and fingerprint; no runtime ENV or credential access |
 | `apps/desktop/internal/account` | OIDC public client for hosted sync: loopback PKCE, in-memory access token, refresh rotation, waitlist join ([account sign-in](account-signin.md)) |
 | `apps/desktop/internal/oauthloopback` | Native-app OAuth helpers shared by both sign-ins: PKCE S256, state, one-shot loopback callback listener |
-| `apps/desktop/infrastructure/keystore` | Credential items in the macOS Keychain or Windows Credential Manager: the refresh token and the cloud polishing credential |
+| `apps/desktop/infrastructure/keystore` | Credential items in the macOS Keychain or Windows Credential Manager: the refresh token, the active cloud-provider pointer, and one cloud polishing credential per provider |
 | `apps/desktop/infrastructure/cloudpolish` | Optional cloud polishing ([ADR 022](../decisions/022-cloud-polishing.md)): ChatGPT sign-in, API key check, model list and a `Rewriter` over Republic ([cloud polishing](cloud-polishing.md)) |
 | `apps/desktop/infrastructure/browser` | System browser for http(s) authorization URLs |
 | `apps/desktop/cmd` | Evaluation and E2E drivers, the `arion-llm` rewrite worker (no cgo), live rewrite benchmarks, model catalog tool, icon renderer |

@@ -2,8 +2,12 @@
 // store: the login Keychain on macOS and Credential Manager on Windows.
 //
 // Production items use service "Arion", account "account-refresh-token/<profile fingerprint>";
-// the cloud polishing credential (ADR 022) is account "cloud-polish".
-// Unscoped helpers address legacy items only; production never reads or migrates them. The vocabulary
+// cloud polishing keeps one item per provider at "cloud-polish/<provider>"
+// (ADR 022). Account "cloud-polish" stores only which provider is active.
+// A previous build stored the single credential in "cloud-polish"; cloudpolish
+// copies that secret to the provider item on load.
+// Unscoped refresh-token helpers address legacy account items only; production
+// never reads or migrates those. The vocabulary
 // encryption key is a different account ("vocabulary-key") created by
 // infrastructure/secrets. Delete addresses only the refresh-token account.
 //
@@ -28,7 +32,9 @@ const (
 	// VocabularyKeyAccount is the ADR 005 encryption key. This package never
 	// reads or writes it.
 	VocabularyKeyAccount = "vocabulary-key"
-	// CloudPolishAccount holds the connected cloud provider's credential.
+	// CloudPolishAccount is the active cloud-polishing provider. The item
+	// JSON is {"provider":"<id>"} with no secret. CloudPolishProviderAccount
+	// holds that provider's API key or ChatGPT refresh token.
 	CloudPolishAccount = "cloud-polish"
 	// MaxCredentialBlob is the Windows Credential Manager limit.
 	MaxCredentialBlob = 5 * 512
@@ -90,3 +96,17 @@ func OpenForProfile(fingerprint string) Store { return Store{profile: fingerprin
 // OpenItem addresses another item of the Arion service by account name, such
 // as CloudPolishAccount. Delete removes that item only.
 func OpenItem(account string) Store { return Store{item: account} }
+
+// CloudPolishProviderAccount is one cloud provider's credential item.
+func CloudPolishProviderAccount(provider string) string {
+	return CloudPolishAccount + "/" + provider
+}
+
+// Catalog addresses every Arion credential item by account name.
+type Catalog struct{}
+
+func (Catalog) Put(account, secret string) error { return OpenItem(account).Put(secret) }
+func (Catalog) Get(account string) (string, error) {
+	return OpenItem(account).Get()
+}
+func (Catalog) Delete(account string) error { return OpenItem(account).Delete() }

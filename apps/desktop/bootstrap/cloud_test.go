@@ -8,16 +8,22 @@ import (
 	"arion.local/core/application"
 	"arion.local/core/domain"
 	"arion.local/core/domain/ports"
+	"path/filepath"
+
 	"arion.local/desktop/infrastructure/cloudpolish"
+	"arion.local/desktop/infrastructure/keystore"
 	"arion.local/desktop/infrastructure/rewriting"
+	"arion.local/desktop/infrastructure/settings"
 	arion "arion.local/desktop/ui/shared/runtime"
 )
 
 type noSecrets struct{}
 
-func (noSecrets) Put(string) error     { return nil }
-func (noSecrets) Get() (string, error) { return "", nil }
-func (noSecrets) Delete() error        { return nil }
+func (noSecrets) Put(string, string) error   { return nil }
+func (noSecrets) Get(string) (string, error) { return "", nil }
+func (noSecrets) Delete(string) error        { return nil }
+
+var _ cloudpolish.SecretStore = keystore.Catalog{}
 
 // Both engines honor the same context switches; cloud stages run after stop.
 func TestCloudPolicyUsesSharedContext(t *testing.T) {
@@ -78,5 +84,36 @@ func TestContextSwitchesApplyToBothEngines(t *testing.T) {
 		if got := a.rewritePolicy(); got.Enabled || got.Context.Any() {
 			t.Fatalf("off: %+v", got)
 		}
+	}
+}
+
+// Switching the connected provider restores that provider's model. The first
+// load keeps a model that was already chosen, and disconnecting clears it.
+func TestApplyCloudRestoresProviderModel(t *testing.T) {
+	dir := t.TempDir()
+	cloud := cloudpolish.New(noSecrets{}, func(string) error { return nil }, nil)
+	a := &App{
+		prefs:     application.Preferences{CloudModel: "deepseek-chat"},
+		prefStore: settings.Store{Path: filepath.Join(dir, "preferences.json")},
+		cloud:     cloud,
+		state:     arion.State{Preferences: application.Preferences{CloudModel: "deepseek-chat"}},
+	}
+	a.applyCloud(cloudpolish.Status{Phase: cloudpolish.Connected, Provider: cloudpolish.DeepSeek, Model: "deepseek-chat",
+		Saved: []string{cloudpolish.DeepSeek}})
+	if a.cloudProvider != cloudpolish.DeepSeek || a.preferences().CloudModel != "deepseek-chat" || !slices.Equal(a.state.Cloud.Saved, []string{cloudpolish.DeepSeek}) {
+		t.Fatalf("load %+v model %q provider %q", a.state.Cloud, a.preferences().CloudModel, a.cloudProvider)
+	}
+	a.applyCloud(cloudpolish.Status{Phase: cloudpolish.Connected, Provider: cloudpolish.OpenRouter, Model: "or-model",
+		Saved: []string{cloudpolish.DeepSeek, cloudpolish.OpenRouter}})
+	if a.preferences().CloudModel != "or-model" || a.state.Preferences.CloudModel != "or-model" || a.state.Cloud.Provider != cloudpolish.OpenRouter {
+		t.Fatalf("switch model %q state %+v", a.preferences().CloudModel, a.state.Cloud)
+	}
+	a.applyCloud(cloudpolish.Status{Phase: cloudpolish.Verifying, Provider: cloudpolish.DeepSeek})
+	if a.preferences().CloudModel != "or-model" || a.cloudProvider != cloudpolish.OpenRouter {
+		t.Fatalf("key check changed model %q provider %q", a.preferences().CloudModel, a.cloudProvider)
+	}
+	a.applyCloud(cloudpolish.Status{Phase: cloudpolish.Disconnected})
+	if a.preferences().CloudModel != "" || a.cloudProvider != "" || a.state.Cloud.Phase != arion.CloudDisconnected {
+		t.Fatalf("disconnect model %q provider %q phase %q", a.preferences().CloudModel, a.cloudProvider, a.state.Cloud.Phase)
 	}
 }

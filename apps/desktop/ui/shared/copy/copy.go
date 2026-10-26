@@ -251,6 +251,7 @@ const (
 	CloudTitle                Key = "CloudTitle"
 	CloudNotConnected         Key = "CloudNotConnected"
 	CloudConnected            Key = "CloudConnected"
+	CloudSaved                Key = "CloudSaved"
 	CloudChatGPTSignIn        Key = "CloudChatGPTSignIn"
 	MatchAppLabel             Key = "MatchAppLabel"
 	MatchAppDetail            Key = "MatchAppDetail"

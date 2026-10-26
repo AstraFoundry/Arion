@@ -61,4 +61,14 @@ func TestCloudPolishItemIsSeparate(t *testing.T) {
 			t.Fatalf("args = %q", args)
 		}
 	}
+	deep := OpenItem(CloudPolishProviderAccount("deepseek"))
+	route := OpenItem(CloudPolishProviderAccount("openrouter"))
+	if deep.target() == route.target() || deep.target() == cloud.target() || deep.target() == Target() {
+		t.Fatal("provider credentials collide")
+	}
+	for _, args := range [][]string{deep.putArgs("secret"), deep.getArgs(), deep.deleteArgs()} {
+		if !hasPair(args, "-s", Service) || !hasPair(args, "-a", "cloud-polish/deepseek") {
+			t.Fatalf("args = %q", args)
+		}
+	}
 }
