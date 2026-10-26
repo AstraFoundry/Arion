@@ -95,19 +95,13 @@ func (x actions) UpdatePreferences(change func(*application.Preferences)) {
 	change(&next)
 	next, _ = next.Normalize(runtime.GOOS)
 	if !a.savePreferences(next) {
-		if next.ProductNotifications != before.ProductNotifications {
-			a.state.ProductNotifications.Failed = true
-		}
-		if next.CheckUpdates != before.CheckUpdates || next.AutoInstallUpdates != before.AutoInstallUpdates || next.SystemUpdateReminders != before.SystemUpdateReminders || next.AllowPrereleaseUpdates != before.AllowPrereleaseUpdates {
+		if next.CheckUpdates != before.CheckUpdates || next.AutoInstallUpdates != before.AutoInstallUpdates || next.AllowPrereleaseUpdates != before.AllowPrereleaseUpdates {
 			a.state.Update.StateError = true
 			if a.updatePolicy != nil {
 				a.updatePolicy.failed = true
 			}
 		}
 		return
-	}
-	if next.ProductNotifications != before.ProductNotifications {
-		a.configureProductNotifications()
 	}
 	if next.UILanguage != before.UILanguage {
 		a.updateLanguage()
@@ -146,9 +140,6 @@ func (x actions) UpdatePreferences(change func(*application.Preferences)) {
 	}
 	if a.updates != nil {
 		a.updates.preferences(next.CheckUpdates, next.AutoInstallUpdates)
-	}
-	if !next.SystemUpdateReminders && before.SystemUpdateReminders {
-		a.clearUpdateNotification()
 	}
 	if next.CheckUpdates && !before.CheckUpdates && a.updates.due(time.Now()) {
 		a.updates.check(time.Now(), false)

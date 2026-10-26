@@ -28,6 +28,8 @@ type updatePolicy struct {
 	notification      string
 	notifying         bool
 	permissionPending bool
+	permissionChecked bool
+	requestPermission func() (mygo.NotificationAuthorization, error)
 	nextCheck         time.Time
 	applying          bool
 	verifiedInstalled bool
@@ -37,7 +39,7 @@ type updatePolicy struct {
 
 func (a *App) scheduleUpdates() {
 	a.updates.record = a.record
-	p := &updatePolicy{store: updatestate.Store{Path: filepath.Join(a.opts.DataDir, "updates.json")}, lastBusy: time.Now(), stop: make(chan struct{})}
+	p := &updatePolicy{store: updatestate.Store{Path: filepath.Join(a.opts.DataDir, "updates.json")}, lastBusy: time.Now(), stop: make(chan struct{}), requestPermission: mygo.RequestNotificationPermission}
 	a.updatePolicy = p
 	saved, err := p.store.Load()
 	if err != nil {
@@ -226,6 +228,12 @@ func (a *App) updateTick(now time.Time) {
 	if phase != arion.UpdateAvailable && phase != arion.UpdateStaged && phase != arion.UpdateReady {
 		return
 	}
+	if permission := a.state.UpdateNotifications.Permission; permission == "" || permission == arion.UpdateNotificationsUnknown {
+		a.requestSystemNotificationPermission()
+		if p.permissionPending || !p.permissionChecked {
+			return
+		}
+	}
 	key := a.reminderKey()
 	for _, r := range p.saved.Reminders {
 		if r.Key == key && (r.Dismissed || now.Before(r.Later) || (!r.Submitted.IsZero() && r.Later.IsZero())) {
@@ -235,7 +243,7 @@ func (a *App) updateTick(now time.Time) {
 	if err := a.saveReminder(key, func(r *updatestate.Reminder) { r.Submitted = now; r.Later = time.Time{} }); err != nil {
 		return
 	}
-	if a.state.Preferences.SystemUpdateReminders && a.state.UpdateNotifications.Permission == arion.UpdateNotificationsAllowed {
+	if a.state.UpdateNotifications.Permission == arion.UpdateNotificationsAllowed {
 		a.showUpdateNotification(key)
 	} else {
 		a.showUpdateReminder()
@@ -340,7 +348,7 @@ func (a *App) showUpdateNotification(key string) {
 		err := notification.Show()
 		a.post(func() {
 			p.notifying = false
-			if generation != a.updates.generation || a.reminderKey() != key || !a.state.Preferences.SystemUpdateReminders || a.updateBusy() || a.updateApplying() {
+			if generation != a.updates.generation || a.reminderKey() != key || a.state.UpdateNotifications.Permission != arion.UpdateNotificationsAllowed || a.updateBusy() || a.updateApplying() {
 				mygo.RemoveNotification(key)
 				return
 			}
@@ -390,10 +398,16 @@ func (a *App) refreshUpdatePermission() {
 	p.permissionPending = true
 	go func() {
 		permission, err := mygo.NotificationPermission()
-		a.post(func() { p.permissionPending = false; a.applyUpdatePermission(permission, err) })
+		a.post(func() {
+			defer func() { p.permissionPending = false }()
+			a.applyUpdatePermission(permission, err)
+		})
 	}()
 }
 func (a *App) applyUpdatePermission(permission mygo.NotificationAuthorization, err error) {
+	if a.updatePolicy != nil {
+		a.updatePolicy.permissionChecked = true
+	}
 	state := arion.UpdateNotificationsUnknown
 	switch permission {
 	case mygo.NotificationAuthorizationAllowed:
@@ -508,21 +522,26 @@ func (x actions) CancelUpdateRestart() {
 		x.a.state.Update.RestartQueued = false
 	}
 }
-func (x actions) EnableUpdateReminders() {
-	a := x.a
+
+// requestSystemNotificationPermission is shared by product and update delivery.
+// Authorization belongs to the OS; unknown authorization gets one idle attempt
+// per process, after its initial query and outside onboarding or maintenance.
+func (a *App) requestSystemNotificationPermission() {
 	p := a.updatePolicy
-	if p == nil || p.permissionPending {
+	permission := a.state.UpdateNotifications.Permission
+	if p == nil || p.permissionPending || !p.permissionChecked || a.notificationPermissionAttempted ||
+		a.opts.Offline || a.harness != nil || !a.center.Standard() ||
+		(permission != "" && permission != arion.UpdateNotificationsUnknown) ||
+		!a.state.Preferences.OnboardingCompleted || a.onboarding != nil || a.updateBusy() || a.updateApplying() || time.Since(p.lastBusy) < updateQuiet {
 		return
 	}
+	a.notificationPermissionAttempted = true
 	p.permissionPending = true
 	go func() {
-		permission, err := mygo.RequestNotificationPermission()
+		permission, err := p.requestPermission()
 		a.post(func() {
-			p.permissionPending = false
+			defer func() { p.permissionPending = false }()
 			a.applyUpdatePermission(permission, err)
-			if err == nil && permission == mygo.NotificationAuthorizationAllowed {
-				(actions{a}).UpdatePreferences(func(p *arion.Preferences) { p.SystemUpdateReminders = true })
-			}
 		})
 	}()
 }

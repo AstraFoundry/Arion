@@ -63,7 +63,7 @@ func TestUpdateDeliveryStates(t *testing.T) {
 	}
 }
 
-func TestUpdatePreferencesAreIndependentAndPermissionIsExplicit(t *testing.T) {
+func TestUpdatePreferencesAreIndependent(t *testing.T) {
 	state, actions, store := fixture()
 	state.Update.Phase = runtime.UpdateCurrent
 	state.Update.StateError = true
@@ -90,42 +90,11 @@ func TestUpdatePreferencesAreIndependentAndPermissionIsExplicit(t *testing.T) {
 	if state.Preferences.CheckUpdates || !state.Preferences.AutoInstallUpdates {
 		t.Fatal("turning checks off lost automatic download choice")
 	}
-	actions.calls = nil
-	toggle(copy.UpdateSystemReminders)
-	if !actions.called("enable-update-reminders") || state.Preferences.SystemUpdateReminders {
-		t.Fatalf("permission interaction bypassed controller: %v", actions.calls)
-	}
-	state.Preferences.SystemUpdateReminders = true
-	settle(tt)
-	toggle(copy.UpdateSystemReminders)
-	if state.Preferences.SystemUpdateReminders {
-		t.Fatal("reminders did not turn off")
-	}
-	for _, step := range []struct {
-		permission runtime.UpdateNotificationPermission
-		text       copy.Key
-	}{
-		{runtime.UpdateNotificationsDenied, copy.UpdatePermissionDenied},
-		{runtime.UpdateNotificationsFailed, copy.UpdatePermissionFailed},
-	} {
-		state.UpdateNotifications.Permission = step.permission
-		settle(tt)
-		if !hasText(tt, messages.Text(step.text)) {
-			t.Fatalf("missing notification permission status %s", step.permission)
-		}
-	}
-	state.UpdateNotifications.Permission = runtime.UpdateNotificationsUnsupported
-	actions.calls = nil
-	settle(tt)
-	toggle(copy.UpdateSystemReminders)
-	if actions.called("enable-update-reminders") {
-		t.Fatal("unsupported notification control enabled")
-	}
 	state.Update.Phase = runtime.UpdateApplying
 	state.UpdateNotifications.Permission = runtime.UpdateNotificationsAllowed
 	actions.calls = nil
 	settle(tt)
-	for _, key := range []copy.Key{copy.UpdateAuto, copy.UpdateAutoInstall, copy.UpdateSystemReminders, copy.UpdatePrerelease} {
+	for _, key := range []copy.Key{copy.UpdateAuto, copy.UpdateAutoInstall, copy.UpdatePrerelease} {
 		toggle(key)
 	}
 	if len(actions.calls) != 0 {

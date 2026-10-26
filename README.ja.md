@@ -40,7 +40,7 @@
 - **ネイティブ Go デスクトップシェル** — Electron や WebView を使わず、[MyGo](https://github.com/egoist/mygo)（`v0.4.6`）と Go における Feature-Sliced Design で構築されています（[ADR 001](docs/decisions/001-desktop-native-boundaries.md)、[ADR 007](docs/decisions/007-sunbeam-design-system.md)）。メニューバー/システムトレイに常駐し、フルスクリーン Space に追従するクリックスルー可能なピルがエディタのフォーカスを奪わずに動作します。英語 / 簡体字中国語 UI のリアルタイム切り替えに対応しています（[i18n](docs/frontend/i18n.md)）。
 - **ゼロ知識同期と署名付きアップデート** — 個人語彙は macOS キーチェーンまたは Windows DPAPI に保存された鍵を用いて AES-256-GCM でローカル暗号化されます（[ADR 005](docs/decisions/005-local-encryption.md)）。Docker でセルフホスト可能かつ復号鍵を保持しない Go 暗号文リレー `services/sync`（[ADR 015](docs/decisions/015-hosted-relay-account-authorization.md)）と、Ed25519 署名付きの `stable`/`beta` チャネルを配信する `services/updates`（[ADR 019](docs/decisions/019-center-update-channels.md)）を提供します。
 
-- **更新と製品通知の制御** — 自動確認、検証済みダウンロード、システム通知は個別に設定します。ダウンロードした更新は、ユーザーが安全な再起動を選ぶまで待機します。アカウント向け通知には別途オプトインとサインインが必要で、アプリの実行中と次回起動時に取得します。[更新ライフサイクル](docs/project/update-lifecycle.md)と[製品通知](docs/project/product-notifications.md)を参照してください。
+- **更新と製品通知の制御** — 自動確認と検証済みダウンロードは個別に設定します。ダウンロードした更新は、ユーザーが安全な再起動を選ぶまで待機します。システムの通知設定に従い、更新通知とサインイン済みアカウント向け通知をアプリの実行中と次回起動時に取得します。[更新ライフサイクル](docs/project/update-lifecycle.md)と[製品通知](docs/project/product-notifications.md)を参照してください。
 
 ## 対応プラットフォーム
 

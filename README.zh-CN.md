@@ -40,7 +40,7 @@
 - **原生 Go 桌面外壳** — 基于 [MyGo](https://github.com/egoist/mygo)（`v0.4.6`）并在 Go 中采用功能切片设计（FSD）构建，无 Electron 或 WebView（[ADR 001](docs/decisions/001-desktop-native-boundaries.md)、[ADR 007](docs/decisions/007-sunbeam-design-system.md)）。常驻菜单栏/系统托盘，悬浮胶囊支持跨全屏空间展示与点击穿透，不抢占编辑器焦点，支持中英文界面实时切换（[i18n](docs/frontend/i18n.md)）。
 - **零知识加密同步与签名更新** — 个人词库使用存储在 macOS Keychain 或 Windows DPAPI 中的密钥进行本地 AES-256-GCM 加密（[ADR 005](docs/decisions/005-local-encryption.md)）。仓库内置支持 Docker 自托管且不持有解密密钥的 Go 密文中继服务 `services/sync`（[ADR 015](docs/decisions/015-hosted-relay-account-authorization.md)），以及提供 Ed25519 签名 `stable`/`beta` 通道的更新服务 `services/updates`（[ADR 019](docs/decisions/019-center-update-channels.md)）。
 
-- **可控更新与产品通知** — 自动检查、已验证下载和系统提醒各自独立设置。下载后的更新等待用户明确选择安全重启。账户定向通知需单独开启并登录，支持应用运行时接收及下次启动补收。参阅[更新生命周期](docs/project/update-lifecycle.md)与[产品通知](docs/project/product-notifications.md)。
+- **可控更新与产品通知** — 自动检查与已验证下载独立设置，下载后的更新等待用户明确选择安全重启。系统通知设置统一控制更新提醒和登录后的账户定向通知，支持应用运行时接收及下次启动补收。参阅[更新生命周期](docs/project/update-lifecycle.md)与[产品通知](docs/project/product-notifications.md)。
 
 ## 平台支持
 

@@ -36,12 +36,6 @@ type Preferences struct {
 	// AutoInstallUpdates downloads and verifies updates when automatic checks are
 	// enabled. Installation waits for an explicit protected restart.
 	AutoInstallUpdates bool `json:"autoInstallUpdates"`
-	// SystemUpdateReminders allows silent system update notifications after
-	// the user explicitly enables them. New and migrated profiles leave it off.
-	SystemUpdateReminders bool `json:"systemUpdateReminders"`
-	// ProductNotifications opts into account-targeted product notices while running.
-	// New and migrated profiles leave it off. OS submission is not a read receipt.
-	ProductNotifications bool `json:"productNotifications"`
 	// AllowPrereleaseUpdates includes published preview releases when checking.
 	AllowPrereleaseUpdates bool `json:"allowPrereleaseUpdates"`
 	// Polish enables the shared rewrite after the dictation key is released.

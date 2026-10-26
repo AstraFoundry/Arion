@@ -45,4 +45,4 @@ See [specs](../../specs/README.md), [research](../research/README.md), [reposito
 
 [Update lifecycle](update-lifecycle.md) describes idle reminders, native notification registration and protected staged installation.
 
-[Product notifications](product-notifications.md) describes opt-in account notices, bounded authenticated catchup and current-server action authorization.
+[Product notifications](product-notifications.md) describes signed-in, OS-authorized account notices, bounded authenticated catchup and current-server action authorization.

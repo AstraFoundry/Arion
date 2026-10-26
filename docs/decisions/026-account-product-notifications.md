@@ -6,11 +6,15 @@ Accepted for running-app reception and next-launch catchup.
 
 ## Decision
 
-The standard AstraFoundry package may poll an authenticated, product-scoped
-account inbox when the user explicitly enables Product notifications in General
-settings and OS authorization is available. New and migrated profiles keep the
-choice off. Custom/device-only centers and offline/E2E profiles make no product
-notification requests. Local dictation remains independent of sign-in.
+The standard AstraFoundry package automatically polls an authenticated,
+product-scoped account inbox when signed in and OS notification authorization is
+available. OS notification settings are the sole notification control; General
+and About contain no notification switches. If permission is unknown, Arion
+requests it once at a natural idle point after sign-in or an eligible update. A
+denied permission is not requested again automatically. Current OS permission is
+refreshed when Arion becomes active. Custom/device-only centers and offline/E2E
+profiles make no product notification requests. Local dictation remains
+independent of sign-in.
 
 The inbox and selected-recipient admin workflow belong to AstraFoundry. Arion
 uses the existing account bearer token without acquiring a new scope or hosted
@@ -37,8 +41,8 @@ prevent repeat submissions across devices and after acknowledged local pruning.
 ## Consequences
 
 Administrators can select recipients, author title/body/buttons and publish via
-the central product workflow. Desktop consent and current OS settings remain
-independent. Published payloads remain immutable; withdrawing a destination host
+the central product workflow. Current OS authorization controls native delivery without a
+second application preference. Published payloads remain immutable; withdrawing a destination host
 suppresses affected inbox notices and rejects stale actions. Already displayed
 OS banners are removed only on known local cleanup; absence from a paginated
 response cannot prove withdrawal. Current-server validation protects old buttons.

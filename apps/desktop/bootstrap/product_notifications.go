@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"arion.local/desktop/infrastructure/browser"
+	"arion.local/desktop/infrastructure/diagnostics"
 	infra "arion.local/desktop/infrastructure/productnotifications"
 	policy "arion.local/desktop/internal/productnotifications"
 	"arion.local/desktop/ui/pages/settings"
@@ -21,7 +22,7 @@ type productNotificationTransport struct{ a *App }
 func (t productNotificationTransport) Show(ctx context.Context, m policy.Message, id string) error {
 	allowed := false
 	mygo.RunOnMain(func() {
-		allowed = ctx.Err() == nil && t.a.state.Preferences.ProductNotifications && t.a.state.UpdateNotifications.Permission == arion.UpdateNotificationsAllowed && !t.a.updateBusy() && !t.a.updateApplying()
+		allowed = ctx.Err() == nil && t.a.productNotificationsAvailable() && t.a.state.UpdateNotifications.Permission == arion.UpdateNotificationsAllowed && !t.a.updateBusy() && !t.a.updateApplying()
 	})
 	if !allowed {
 		return policy.ErrDeferred
@@ -42,9 +43,12 @@ func (t productNotificationTransport) Show(ctx context.Context, m policy.Message
 }
 func (t productNotificationTransport) Remove(id string) { mygo.RemoveNotification(id) }
 
+func (a *App) productNotificationsAvailable() bool {
+	return a.center.Standard() && !a.opts.Offline && a.harness == nil
+}
+
 func (a *App) startProductNotifications() {
-	a.state.ProductNotifications.Supported = a.center.Standard() && !a.opts.Offline && a.harness == nil
-	if !a.state.ProductNotifications.Supported {
+	if !a.productNotificationsAvailable() {
 		return
 	}
 	client, err := infra.NewClient(a.center.Issuer, a.opts.Account.HTTP)
@@ -58,16 +62,15 @@ func (a *App) startProductNotifications() {
 				if !ok || (policy.Session{Issuer: current.Issuer, Subject: current.Subject}).Key() != status.AccountKey {
 					return
 				}
-				a.state.ProductNotifications.Failed = status.Error != nil
-				a.state.ProductNotifications.Uncertain = status.Uncertain
 				if status.Error != nil {
 					a.record("product_notification", status.Error)
+				} else if status.Uncertain {
+					a.recordEntry(diagnostics.Entry{Event: "product_notification", Outcome: "unknown"})
 				}
 			})
 		})
 	}
 	if err != nil {
-		a.state.ProductNotifications.Failed = true
 		a.record("product_notification", err)
 		return
 	}
@@ -97,8 +100,13 @@ func (a *App) configureProductNotifications() {
 			session = policy.Session{Issuer: current.Issuer, Subject: current.Subject, Token: current.AccessToken}
 		}
 	}
-	a.productNotifications.Configure(session, a.state.Preferences.ProductNotifications, a.state.UpdateNotifications.Permission == arion.UpdateNotificationsAllowed, !a.updateBusy() && !a.updateApplying())
+	available := a.productNotificationsAvailable()
+	safe := !a.updateBusy() && !a.updateApplying()
+	a.productNotifications.Configure(session, available, a.state.UpdateNotifications.Permission == arion.UpdateNotificationsAllowed, safe)
 	permission := a.state.UpdateNotifications.Permission
+	if available && session.Valid() && a.state.Account.Phase == arion.AccountSignedIn && safe && (permission == "" || permission == arion.UpdateNotificationsUnknown) {
+		a.requestSystemNotificationPermission()
+	}
 	if permission != "" && permission != arion.UpdateNotificationsUnknown && permission != arion.UpdateNotificationsAllowed {
 		a.pendingProductActions = nil
 	}
@@ -126,7 +134,7 @@ func (a *App) productNotificationAction(id, action string) {
 	if !strings.HasPrefix(id, policy.NativePrefix) || len(id) != len(policy.NativePrefix)+64 || action != "" && action != "button-0" && action != "button-1" {
 		return
 	}
-	if !a.state.Preferences.ProductNotifications {
+	if !a.productNotificationsAvailable() {
 		return
 	}
 	// Permission discovery and account restoration may finish in either order
@@ -164,12 +172,12 @@ func (a *App) productNotificationAction(id, action string) {
 }
 
 func (a *App) finishProductNotificationAction(generation uint64, action string, err error) {
-	if !a.accountLive(generation) || a.state.Account.Phase != arion.AccountSignedIn || !a.state.Preferences.ProductNotifications {
+	if !a.accountLive(generation) || a.state.Account.Phase != arion.AccountSignedIn || !a.productNotificationsAvailable() || a.state.UpdateNotifications.Permission != arion.UpdateNotificationsAllowed {
 		return
 	}
 	if err != nil {
 		if !errors.Is(err, policy.ErrStale) {
-			a.state.ProductNotifications.Failed = true
+			a.record("product_notification", err)
 		}
 		return
 	}
@@ -177,26 +185,4 @@ func (a *App) finishProductNotificationAction(generation uint64, action string, 
 		a.state.Focus = arion.SettingsFocus{Section: settings.Account, Seq: a.state.Focus.Seq + 1}
 		a.openSettings()
 	}
-}
-func (x actions) EnableProductNotifications() {
-	a := x.a
-	if !a.state.ProductNotifications.Supported || a.productPermissionPending || a.state.Account.Phase != arion.AccountSignedIn {
-		return
-	}
-	a.productPermissionPending = true
-	generation := a.accountGeneration()
-	go func() {
-		permission, err := mygo.RequestNotificationPermission()
-		a.post(func() {
-			a.productPermissionPending = false
-			a.applyUpdatePermission(permission, err)
-			if !a.accountLive(generation) || a.state.Account.Phase != arion.AccountSignedIn {
-				return
-			}
-			if err == nil && permission == mygo.NotificationAuthorizationAllowed {
-				(actions{a}).UpdatePreferences(func(p *arion.Preferences) { p.ProductNotifications = true })
-				a.pollProductNotifications()
-			}
-		})
-	}()
 }

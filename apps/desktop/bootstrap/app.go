@@ -103,28 +103,28 @@ type App struct {
 	overlay *mygo.Window
 	panel   *mygo.Window
 	// sceneSeq drops a scene peek answered after a newer panel opened.
-	sceneSeq                 int
-	settingsWin              *mygo.Window
-	onboarding               *mygo.Window
-	guide                    *guideSession
-	trayHint                 *mygo.Window
-	views                    map[*mygo.Window]uiapp.View
-	testingHold              bool
-	escapeActive             bool
-	hold                     application.HoldGesture
-	harness                  *harness
-	monitor                  ports.AudioStream
-	vocab                    *vocabulary.Store
-	startCue                 *mygoaudio.Sound
-	stopCue                  *mygoaudio.Sound
-	recommended              string
-	updates                  *updates
-	updatePolicy             *updatePolicy
-	pendingUpdateAction      [2]string
-	productNotifications     *productnotifications.Service
-	pendingProductActions    [][2]string
-	productPermissionPending bool
-	resourceJobs             atomic.Int64
+	sceneSeq                        int
+	settingsWin                     *mygo.Window
+	onboarding                      *mygo.Window
+	guide                           *guideSession
+	trayHint                        *mygo.Window
+	views                           map[*mygo.Window]uiapp.View
+	testingHold                     bool
+	escapeActive                    bool
+	hold                            application.HoldGesture
+	harness                         *harness
+	monitor                         ports.AudioStream
+	vocab                           *vocabulary.Store
+	startCue                        *mygoaudio.Sound
+	stopCue                         *mygoaudio.Sound
+	recommended                     string
+	updates                         *updates
+	updatePolicy                    *updatePolicy
+	pendingUpdateAction             [2]string
+	productNotifications            *productnotifications.Service
+	pendingProductActions           [][2]string
+	notificationPermissionAttempted bool
+	resourceJobs                    atomic.Int64
 	// Local model operations are scheduled on the main thread. New choices
 	// cancel older work immediately and wait for it before replacing the worker.
 	polishCancel context.CancelFunc

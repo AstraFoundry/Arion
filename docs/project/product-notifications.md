@@ -2,16 +2,19 @@
 
 [ADR 026](../decisions/026-account-product-notifications.md) covers account notices
 sent from the AstraFoundry product admin. This is independent of app-update
-reminders. General settings has a separate opt-in switch, off for new/migrated
-profiles, with explicit notification authorization. The standard center and an
-authenticated account are required; hosted-sync entitlement is not required.
+reminders. Reception is automatic for a signed-in standard-center account when
+OS notifications are allowed; hosted-sync entitlement is not required. OS
+notification settings are the sole control, with no General or About notification
+switch. Unknown permission is requested once at a natural idle point after
+sign-in or an eligible update. Denied permission is not requested again
+automatically; activation refreshes the current OS setting.
 
 While Arion runs, its five-second scheduling tick evaluates a one-minute network
 deadline. A network interval reads the newest page plus at most one saved catchup
 page. This discovers new notices during a large history replay without unbounded
 requests. Empty filtered pages can still have a continuation cursor. Input,
 managed resource work and update/IME maintenance defer fetching/submission; no
-input event queries the server. Disabling, signing out or switching accounts
+input event queries the server. OS permission withdrawal, signing out or switching accounts
 cancels in-flight requests and removes known old native IDs. Token refresh also
 invalidates work. Existing account maintenance renews tokens before expiry through
 the shared refresh controller; product polling never rotates refresh tokens itself. Quit stops polling. Missed notices are fetched after the next
@@ -84,8 +87,10 @@ absence and are not guaranteed remotely retractable.
   private atomic `product-notifications.json` ledger.
 - `bootstrap/product_notifications.go`: account lifecycle, scheduling, input and
   maintenance checks, native MyGo transport and system browser composition.
-- `ui/features/productnotifications`: localized opt-in control and permission,
-  account, failure and uncertain-submission states; no adapter imports.
+
+General and About expose no notification preference or permission retry action.
+The native adapter queries/requests OS permission; bootstrap schedules the
+one-time idle request and respects denial.
 
 A reservation is saved before `Show`, ensuring cold buttons have durable lookup.
 Successful submission is saved before its idempotent receipt. Receipt retries
@@ -104,11 +109,10 @@ success. Server transport data is not claimed to be end-to-end encrypted.
 ## Verification
 
 Run `go -C apps/desktop test -race ./internal/productnotifications ./infrastructure/productnotifications`
-and `go -C apps/desktop test ./ui/app -run TestProductNotification` for validation,
-receipt ordering, account switch/sign-out cancellation, active-input deferral,
-interval/cursor behavior, cold metadata, storage corruption/privacy and bilingual
-view behavior. Core defaults/round trips are covered by
-`TestProductNotificationsAreExplicitAndPersisted`.
+for validation, receipt ordering, account switch/sign-out cancellation, active-input deferral,
+interval/cursor behavior, cold metadata, storage corruption/privacy. `go -C apps/desktop test ./ui/app -run TestNotificationControlsUseSystemSettings`
+checks both languages and General/About across native permission states. Core
+preference migration tests reject retaining obsolete notification switches.
 
 `TestProductNotificationBackendIntegration` is opt-in through
 `ARION_NOTIFICATION_E2E_CONFIG`, an isolated loopback fixture config containing

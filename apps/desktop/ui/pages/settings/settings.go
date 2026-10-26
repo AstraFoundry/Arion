@@ -14,7 +14,6 @@ import (
 	"arion.local/desktop/ui/features/modelchoice"
 	"arion.local/desktop/ui/features/permissions"
 	"arion.local/desktop/ui/features/polish"
-	"arion.local/desktop/ui/features/productnotifications"
 	"arion.local/desktop/ui/features/provision"
 	"arion.local/desktop/ui/features/signin"
 	"arion.local/desktop/ui/features/uilanguage"
@@ -223,7 +222,6 @@ func (p *Page) section(c *ui.Context, store runtime.Store, tokens theme.Tokens) 
 				}
 			})
 		})
-		productnotifications.Card(c, store, tokens)
 	case Dictation:
 		kit.Card(c, tokens).Children(func() {
 			kit.Row(c, tokens, messages.Text(copy.HoldKeyLabel), messages.Text(copy.HoldKeyDetail), func() {

@@ -8,18 +8,17 @@ import (
 func TestUpdatePreferencesPreserveExistingConsent(t *testing.T) {
 	for _, platform := range []string{"darwin", "windows"} {
 		p := DefaultPreferences(platform)
-		if !p.CheckUpdates || p.AutoInstallUpdates || p.SystemUpdateReminders {
+		if !p.CheckUpdates || p.AutoInstallUpdates {
 			t.Fatalf("%s: new profile update defaults: %+v", platform, p)
 		}
 		if err := json.Unmarshal([]byte(`{"version":1,"checkUpdates":false,"allowPrereleaseUpdates":true}`), &p); err != nil {
 			t.Fatal(err)
 		}
 		p, _ = p.Normalize(platform)
-		if p.CheckUpdates || p.AutoInstallUpdates || p.SystemUpdateReminders || !p.AllowPrereleaseUpdates {
+		if p.CheckUpdates || p.AutoInstallUpdates || !p.AllowPrereleaseUpdates {
 			t.Fatalf("%s: migrated profile gained consent or lost channel: %+v", platform, p)
 		}
 		p.AutoInstallUpdates = true
-		p.SystemUpdateReminders = true
 		data, err := json.Marshal(p)
 		if err != nil {
 			t.Fatal(err)
@@ -29,7 +28,7 @@ func TestUpdatePreferencesPreserveExistingConsent(t *testing.T) {
 			t.Fatal(err)
 		}
 		loaded, repaired := loaded.Normalize(platform)
-		if loaded.CheckUpdates || !loaded.AutoInstallUpdates || !loaded.SystemUpdateReminders || len(repaired) != 0 {
+		if loaded.CheckUpdates || !loaded.AutoInstallUpdates || len(repaired) != 0 {
 			t.Fatalf("%s: independent choices failed round trip: %+v repairs=%v", platform, loaded, repaired)
 		}
 	}

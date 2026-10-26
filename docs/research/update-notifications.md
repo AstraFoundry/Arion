@@ -33,7 +33,7 @@ The native sequence is:
 
 1. Attach the notification delegate during launch, before launch completes. Install the application-level click handler early and queue any activation until bootstrap is ready.
 2. Query `getNotificationSettings`; distinguish unknown, denied, permitted and API failure. Re-query after returning from system settings instead of caching permission forever.
-3. Ask for authorization in the explicit “enable system update reminders” interaction. Request alert presentation; updates should be silent. Do not make an unexpected permission dialog the first thing shown after dictation.
+3. Request unknown authorization once at a natural idle point after sign-in or an eligible update. Request alert presentation; updates should be silent. Do not request again automatically after denial or interrupt active input. There is no separate application notification switch.
 4. Submit a local request with a stable update identifier. Use a category and action identifiers for “View update” and “Later” if native action buttons are required.
 5. Handle responses on the UI thread. Body/view activation opens the existing update view; later changes reminder policy without activating an unrelated window. Remove obsolete requests after install/channel changes.
 
@@ -95,13 +95,13 @@ Limitations matter: `autoSkip` is an in-memory field in the inspected updater. A
 
 ## Proposed Arion behavior
 
-Recommended initial defaults, pending product acceptance: retain automatic checks on; automatic download/install off; automatic restart off and outside the first implementation. Existing installs migrate without gaining new network or restart behavior. System reminders require an explicit permission-enabling interaction on macOS.
+Accepted defaults: retain automatic checks on; automatic download/install off; automatic restart off and outside the first implementation. OS notification settings are the sole reminder/product-notice control, without application switches. Unknown OS permission is requested once at a natural idle point after an eligible update or sign-in; denial is not requested again automatically. This accepted policy supersedes the earlier separate reminder opt-in proposal. See [update lifecycle](../project/update-lifecycle.md) and [ADR 026](../decisions/026-account-product-notifications.md).
 
-Automatic check and automatic install remain separate persisted controls. With checks off, nothing schedules background checks; a manual check only discovers a version, and automatic installation additionally requires both switches on. The UI explains this dependency. Notifications are another presentation preference and never determine whether an update exists.
+Automatic check and automatic install remain separate persisted controls. With checks off, nothing schedules background checks; a manual check only discovers a version, and automatic installation additionally requires both switches on. The UI explains this dependency. OS notification permission controls native presentation and never determines whether an update exists.
 
 ### Reminder policy for #12
 
-- Keep the persistent tray/menu entry. A nonactivating, dismissible post-input reminder supplies a discoverable surface even without OS permission; system notification is an additional chosen surface, not an error-masking fallback.
+- Keep the persistent tray/menu entry. A nonactivating, dismissible post-input reminder supplies a discoverable surface even without OS permission; OS-authorized system notification is an alternative presentation surface.
 - Evaluate pending reminders after successful input commit and during ordinary idle transitions. Never show during preparing, capturing, finalizing, reviewing or committing, or while an IME composition is owned.
 - Proposed suppression key: channel plus semantic version plus phase (`available`/`ready`). Persist last submission, explicit later deadline and dismissal separately from updater progress. A proposed later period is 24 hours; it is a product parameter, not an OS guarantee.
 - Avoid simultaneously showing the native reminder and in-app reminder. Record “submitted” rather than “seen”; do not repeatedly resubmit because Focus hid it. Switching channels or installing clears obsolete notifications.

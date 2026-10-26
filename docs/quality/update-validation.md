@@ -2,11 +2,29 @@
 
 Scope: DSK-A16–19, maintained MyGo staging and native notification transport. Results below distinguish source/unit/build evidence from actual OS execution. No test replaces the production installation.
 
-## Verified
+## Current OS-permission control revision
+
+General and About no longer contain product-notice or system-reminder switches.
+OS notification settings control delivery. The focused UI command below passes, covering both languages and all five OS
+permission states with no notification controls, independent check/download
+preferences, update delivery states and post-input reminder actions:
+
+```sh
+go -C apps/desktop test ./ui/app ./ui/shared/copy -run 'Test(NotificationControlsUseSystemSettings|UpdatePreferencesAreIndependent|UpdateDeliveryStates|PostInputUpdateReminder)' -count=1
+```
+
+`node scripts/check-i18n.mjs` and `node scripts/check-repository.mjs` also pass
+(543 Markdown documents). Refreshed English/Chinese General/About, delivery and
+reminder snapshots are under `.workspace/notification-os-permission-snapshots/`.
+The full desktop/native rerun for this revision is pending. Earlier results below
+remain historical evidence and do not establish a rerun of the revised permission
+scheduling or settings surfaces.
+
+## Earlier verified implementation
 
 - Core application race tests pass, including input exclusion, canceled-worker ownership and a canceled manual commit retaining ownership until its write finishes.
 - Desktop bootstrap, update-state persistence and IME bridge race tests pass, including old-channel rejection, late download cancellation, staged-before-apply, persistence failure, completion-receipt acknowledgement failure and rollback retry/repair handling.
-- Headless native UI tests pass, including both languages, staged/applying/queued/recovery states, notification enable actions and disabled controls during replacement.
+- Headless native UI tests pass, including both languages, staged/applying/queued/recovery states, the then-present notification enable actions and disabled controls during replacement.
 - The owned macOS app fixture stages version 2 while version 1 and its resources remain unchanged; exits; cold-recovers verified bytes; applies; uses actual MyGo relaunch; and observes version 2 with its matching resource. An invalid signature leaves version 1 intact. Fixture apps are ad-hoc signed, not production notarized releases.
 
 Repository, workflow, i18n, core and full desktop checks also pass. Native notification API/installer tests, all activation-envelope tests and Windows amd64/arm64 cross-builds pass; Windows-only COM/shortcut tests compile but were not executed.

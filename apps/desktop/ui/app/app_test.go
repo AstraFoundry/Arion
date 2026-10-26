@@ -80,8 +80,6 @@ func (r *recorder) RestartToUpdate()            { r.call("restart-update") }
 func (r *recorder) CancelUpdateRestart()        { r.call("cancel-update-restart") }
 func (r *recorder) LaterUpdate()                { r.call("later-update") }
 func (r *recorder) DismissUpdateReminder()      { r.call("dismiss-update-reminder") }
-func (r *recorder) EnableProductNotifications() { r.call("enable-product-notifications") }
-func (r *recorder) EnableUpdateReminders()      { r.call("enable-update-reminders") }
 
 func (r *recorder) OpenUpdate() {
 	r.call("open-update")

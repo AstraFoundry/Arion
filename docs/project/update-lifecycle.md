@@ -6,7 +6,7 @@ Issues [#12](https://github.com/AstraFoundry/Arion/issues/12) and [#13](https://
 
 Automatic checks retain their existing default (on), launch check, six-hour interval and fifteen-minute feed polling. A separate one-second local policy tick handles idle reminders and queued restart; it does not check the feed on every shortcut. Automatic downloading defaults off. Both switches must be on for a scheduled check to prepare an update. Manual checking only discovers it. Downloading prepares and verifies; the About status explicitly says installation waits for restart. There is no automatic restart setting.
 
-System reminders default off. Enable asks for OS authorization; normal notification delivery never prompts. The current OS permission is queried again when Arion becomes active. The persistent tray/About update entry remains available when OS notification delivery is disabled. The nonactivating in-app card and opted-in system notification are alternative presentation surfaces; neither repeats input text.
+OS notification settings control system reminders; About has no separate reminder switch. Unknown permission is requested once at a natural idle point after an eligible update or account sign-in. Denied permission is not requested again automatically. The current OS permission is queried again when Arion becomes active. The persistent tray/About update entry remains available when OS notification delivery is disabled. The nonactivating in-app card and authorized system notification are alternative presentation surfaces; neither repeats input text.
 
 The content-free `updates.json` in the existing profile stores the staging handle/channel/version and up to 32 reminder decisions. A reminder key includes channel, version and available/ready phase. Submission suppresses repeats; Later allows one new reminder after 24 hours; Dismiss suppresses that phase. Visiting About clears dismissal but retains the last-submission suppression. A new version or newly downloaded phase is eligible independently. Submission is not a read receipt. Disk errors pause reminders and show a persistence warning.
 
@@ -24,7 +24,7 @@ macOS uses the main app's existing bundle identity and UserNotifications. The ma
 
 Windows uses native WinRT toast delivery and COM activation, with a deterministic AUMID/CLSID derived from the package identifier. `desktop.json` opts into installer registration through `windows.notifications`. The installer invokes exact registration/unregistration commands handled before application bootstrap; normal app operation is not elevated. The startup bridge forwards validated cold activation to an existing instance when necessary. A missing registration is an explicit error; there is no silent tray-balloon substitution.
 
-Actions accept only previously persisted notification IDs and the fixed view/later actions. A stale notification opens the current About view; it cannot supply an installation URL or executable command. Channel changes and preference opt-out remove owned notifications; stale asynchronous completions remove their obsolete request again.
+Actions accept only previously persisted notification IDs and the fixed view/later actions. A stale notification opens the current About view; it cannot supply an installation URL or executable command. Channel changes and OS permission withdrawal remove owned notifications; stale asynchronous completions remove their obsolete request again.
 
 ## Verification
 

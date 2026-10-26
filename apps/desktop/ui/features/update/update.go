@@ -11,7 +11,7 @@ import (
 	"github.com/egoist/mygo/ui"
 )
 
-// Card shows update progress and the separate check, download and reminder choices.
+// Card shows update progress and independent check, download and channel choices.
 func Card(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 	messages := store.Copy()
 	u := store.State.Update
@@ -38,8 +38,6 @@ func Card(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 				store.Actions.UpdatePreferences(func(p *runtime.Preferences) { p.AutoInstallUpdates = autoInstall })
 			}
 		})
-		kit.Divider(c, tokens)
-		reminderPreference(c, store, tokens, preferencesLocked)
 		kit.Divider(c, tokens)
 		preview := store.State.Preferences.AllowPrereleaseUpdates
 		locked := preferencesLocked || u.Phase == runtime.UpdateChecking || u.Phase == runtime.UpdateDownloading || u.Phase == runtime.UpdateApplying || u.Phase == runtime.UpdateReady || u.RestartQueued
@@ -168,31 +166,4 @@ func restartQueued(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 			store.Actions.CancelUpdateRestart()
 		}
 	})
-}
-
-func reminderPreference(c *ui.Context, store runtime.Store, tokens theme.Tokens, locked bool) {
-	messages := store.Copy()
-	permission := store.State.UpdateNotifications.Permission
-	enabled := store.State.Preferences.SystemUpdateReminders
-	detail := copy.UpdateSystemRemindersDetail
-	switch permission {
-	case runtime.UpdateNotificationsDenied:
-		detail = copy.UpdatePermissionDenied
-	case runtime.UpdateNotificationsFailed:
-		detail = copy.UpdatePermissionFailed
-	case runtime.UpdateNotificationsUnsupported:
-		detail = copy.UpdatePermissionUnsupported
-	}
-	kit.TipRow(c, tokens, messages.Text(copy.UpdateSystemReminders), messages.Text(detail), func() {
-		if ui.Switch(c.Key("system-update-reminders"), &enabled).Label(messages.Text(copy.UpdateSystemReminders)).Disabled(locked || permission == runtime.UpdateNotificationsUnsupported).Changed() {
-			if enabled {
-				store.Actions.EnableUpdateReminders()
-			} else {
-				store.Actions.UpdatePreferences(func(p *runtime.Preferences) { p.SystemUpdateReminders = false })
-			}
-		}
-	})
-	if permission == runtime.UpdateNotificationsDenied || permission == runtime.UpdateNotificationsFailed {
-		ui.Text(c, messages.Text(detail)).FontSize(theme.Caption).TextColor(tokens.Muted).Padding(0, 16, 10, 16)
-	}
 }

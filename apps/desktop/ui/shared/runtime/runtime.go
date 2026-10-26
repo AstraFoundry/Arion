@@ -405,7 +405,7 @@ func (u Update) Pending() bool {
 }
 
 // UpdateNotificationPermission describes current OS authorization, independently
-// of the persisted choice to submit update reminders.
+// of update checking and account sign-in.
 type UpdateNotificationPermission string
 
 const (
@@ -417,13 +417,7 @@ const (
 )
 
 // UpdateNotifications is the notification adapter's current capability and
-// authorization. Failed queries are visible and never treated as permission.
-type ProductNotifications struct {
-	Supported bool
-	Failed    bool
-	Uncertain bool
-}
-
+// authorization. Failed queries remain distinct from granted permission.
 type UpdateNotifications struct {
 	Permission UpdateNotificationPermission
 }
@@ -487,7 +481,6 @@ type State struct {
 	TrayHint                TrayHint
 	Update                  Update
 	UpdateNotifications     UpdateNotifications
-	ProductNotifications    ProductNotifications
 	// Focus is the settings section last asked for from outside settings.
 	Focus SettingsFocus
 	// MonitorLevels feed the microphone test meter, newest last.
@@ -565,10 +558,6 @@ type Actions interface {
 	LaterUpdate()
 	// DismissUpdateReminder suppresses this reminder until the update view opens.
 	DismissUpdateReminder()
-	// EnableUpdateReminders requests permission in an explicit user interaction.
-	EnableUpdateReminders()
-	// EnableProductNotifications explicitly requests OS authorization for account notices.
-	EnableProductNotifications()
 	// ExportDiagnostics saves a local content-free ZIP through the system chooser.
 	ExportDiagnostics()
 	CompleteOnboarding()
