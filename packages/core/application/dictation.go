@@ -275,7 +275,7 @@ func (c *Coordinator) start(target domain.TranslationLanguage) {
 	ctx, cancel := context.WithCancel(context.Background())
 	r := &run{session: session, identity: contracts.Identity{SessionID: session.ID(), Generation: session.Generation()},
 		ctx: ctx, cancel: cancel, started: time.Now(), frames: make(chan contracts.Frame, c.opts.QueueFrames), pumpDone: make(chan struct{})}
-	r.live = c.newLive(r, target)
+	r.live = c.newLive(target)
 	_ = session.Advance(domain.Preparing)
 	c.current = r
 	c.workers.Add(1)

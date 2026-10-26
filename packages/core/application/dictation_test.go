@@ -106,9 +106,6 @@ type fakeTarget struct {
 func (t *fakeTarget) Capture(context.Context, contracts.Identity) (contracts.TargetSnapshot, error) {
 	return t.snapshot, t.err
 }
-func (t *fakeTarget) Capabilities(context.Context, contracts.TargetToken) (contracts.Capabilities, error) {
-	return contracts.Capabilities{SingleInsertion: true}, nil
-}
 func (t *fakeTarget) ReadContext(context.Context, contracts.Identity, contracts.TargetToken) (contracts.ContextSnapshot, error) {
 	t.reads.Add(1)
 	return t.context, nil

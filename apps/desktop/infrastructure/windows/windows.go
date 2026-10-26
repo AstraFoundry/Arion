@@ -161,8 +161,7 @@ func (t *Targets) Capture(_ context.Context, id contracts.Identity) (contracts.T
 		delete(t.targets, oldest)
 	}
 	t.mu.Unlock()
-	return contracts.TargetSnapshot{Identity: id, Target: token, Sensitive: secure,
-		Capabilities: contracts.Capabilities{SingleInsertion: true}}, nil
+	return contracts.TargetSnapshot{Identity: id, Target: token, Sensitive: secure}, nil
 }
 
 // FocusOwner and Peek: the Windows adapter does not describe targets for
@@ -182,15 +181,6 @@ func (t *Targets) ReadField(context.Context, contracts.TargetToken) (ports.Field
 }
 
 func (t *Targets) Release(contracts.TargetToken) {}
-
-func (t *Targets) Capabilities(_ context.Context, token contracts.TargetToken) (contracts.Capabilities, error) {
-	t.mu.Lock()
-	defer t.mu.Unlock()
-	if t.targets[token] == nil {
-		return contracts.Capabilities{}, domain.Fail(domain.CodeTargetChanged, "unknown target")
-	}
-	return contracts.Capabilities{SingleInsertion: true}, nil
-}
 
 // ReadContext reads visible UI Automation text from the captured foreground window.
 // Text around the cursor is not read on Windows.

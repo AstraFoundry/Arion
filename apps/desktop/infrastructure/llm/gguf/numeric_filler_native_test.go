@@ -54,40 +54,34 @@ func runNativeRewriteCases(t *testing.T, fixture string) {
 	}
 	defer c.Close()
 	for _, tc := range cases {
-		for _, live := range []bool{true, false} {
-			name := tc.ID + "/final"
-			if live {
-				name = tc.ID + "/live"
+		t.Run(tc.ID, func(t *testing.T) {
+			id := contracts.Identity{SessionID: tc.ID, Generation: 1}
+			req := ports.RewriteRequest{Identity: id, Text: tc.Text, Scene: tc.Scene}
+			ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+			defer cancel()
+			start := time.Now()
+			result, err := c.Rewrite(ctx, req)
+			message := ""
+			if err != nil {
+				message = err.Error()
 			}
-			t.Run(name, func(t *testing.T) {
-				id := contracts.Identity{SessionID: name, Generation: 1}
-				req := ports.RewriteRequest{Identity: id, Text: tc.Text, Scene: tc.Scene, Live: live}
-				ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-				defer cancel()
-				start := time.Now()
-				result, err := c.Rewrite(ctx, req)
-				message := ""
-				if err != nil {
-					message = err.Error()
+			if err := encoder.Encode(map[string]any{"id": tc.ID, "request": req, "response": result, "error": message, "elapsedMs": float64(time.Since(start).Microseconds()) / 1000, "load": info}); err != nil {
+				t.Fatal(err)
+			}
+			c.End(id)
+			if err != nil {
+				t.Fatal(err)
+			}
+			for _, text := range tc.Contains {
+				if !strings.Contains(result.Text, text) {
+					t.Errorf("missing %q in %q", text, result.Text)
 				}
-				if err := encoder.Encode(map[string]any{"id": tc.ID, "request": req, "response": result, "error": message, "elapsedMs": float64(time.Since(start).Microseconds()) / 1000, "load": info}); err != nil {
-					t.Fatal(err)
+			}
+			for _, text := range tc.Excludes {
+				if strings.Contains(result.Text, text) {
+					t.Errorf("unexpected %q in %q", text, result.Text)
 				}
-				c.End(id)
-				if err != nil {
-					t.Fatal(err)
-				}
-				for _, text := range tc.Contains {
-					if !strings.Contains(result.Text, text) {
-						t.Errorf("missing %q in %q", text, result.Text)
-					}
-				}
-				for _, text := range tc.Excludes {
-					if strings.Contains(result.Text, text) {
-						t.Errorf("unexpected %q in %q", text, result.Text)
-					}
-				}
-			})
-		}
+			}
+		})
 	}
 }

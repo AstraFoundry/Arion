@@ -10,10 +10,9 @@ flowchart LR
     PCM --> VAD[VAD and streaming ASR]
     Session --> VAD
     Context[Consent-gated target context] --> Memory[Local memory snapshot]
-    Memory --> Rank[Local candidate ranker]
+    Memory --> Correct[Conservative correction candidate]
     VAD --> Draft[Revisioned recognition draft]
-    Draft --> Rank
-    Rank --> Correct[Conservative correction candidate]
+    Draft --> Correct
     Correct --> Preview[Native preview or owned IME composition]
     Preview --> Commit[Explicit session-bound commit]
     Commit --> Target[Captured target editor]
@@ -101,7 +100,7 @@ The host verifies staged immutable data against its bundled manifest before prov
 
 ## Cloud polishing
 
-The coordinator's `Rewriter` is `bootstrap.polishRouter`: per request it calls the local worker (`infrastructure/rewriting`) or `infrastructure/cloudpolish`, as `Preferences.PolishEngine` says ([ADR 022](../decisions/022-cloud-polishing.md)). Both engines invoke `infrastructure/llm/rewrite` for cleanup, context-backed spelling selection and scene formatting ([ADR 024](../decisions/024-shared-polishing-pipeline.md)). `rewritePolicy` applies the same context switches to both; both engines use `FinalOnly` (no previews, ADR 023), and cloud execution adds a 15 s deadline for all stages. The cloud selector receives enabled context, recalled terms and earlier recognized source through Republic; its formatter receives only the edited source and scene/script profile; the result is validated locally like a local proposal. The ChatGPT sign-in shares `internal/oauthloopback` (PKCE, state, one-shot loopback listener) with the account sign-in. The call surface is [cloud polishing](cloud-polishing.md).
+The coordinator's `Rewriter` is `bootstrap.polishRouter`: per request it calls the local worker (`infrastructure/rewriting`) or `infrastructure/cloudpolish`, as `Preferences.PolishEngine` says ([ADR 022](../decisions/022-cloud-polishing.md)). Both engines invoke `infrastructure/llm/rewrite` for cleanup, context-backed spelling selection and scene formatting ([ADR 024](../decisions/024-shared-polishing-pipeline.md)). `rewritePolicy` applies the same context switches to both. Both engines run one rewrite after release (ADR 023). Cloud execution adds a 15 s deadline for all stages. The cloud selector receives enabled context, recalled terms and earlier recognized source through Republic; its formatter receives only the edited source and scene/script profile; the result is validated locally like a local proposal. The ChatGPT sign-in shares `internal/oauthloopback` (PKCE, state, one-shot loopback listener) with the account sign-in. The call surface is [cloud polishing](cloud-polishing.md).
 
 ## Account sign-in
 

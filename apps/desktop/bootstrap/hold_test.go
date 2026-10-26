@@ -19,18 +19,14 @@ type holdPlatform struct {
 	sink          func(holdkey.Event)
 }
 
-func (p *holdPlatform) StartHoldKey(_ application.HoldKey, sink func(holdkey.Event)) error {
-	p.sink = sink
-	p.starts++
-	return p.failure
-}
-
 func (p *holdPlatform) StartHoldKeys(keys []application.HoldKey, sink func(application.HoldKey, holdkey.Event)) error {
 	var key application.HoldKey
 	if len(keys) > 0 {
 		key = keys[0]
 	}
-	return p.StartHoldKey(key, func(e holdkey.Event) { sink(key, e) })
+	p.sink = func(e holdkey.Event) { sink(key, e) }
+	p.starts++
+	return p.failure
 }
 func (p *holdPlatform) StopHoldKey() { p.stops++ }
 

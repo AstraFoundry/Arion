@@ -64,34 +64,19 @@ func (f *upperFinalizer) Finalize(_ context.Context, request ports.FinalizeReque
 
 // scriptedRewriter maps sources to proposals and records every request.
 type scriptedRewriter struct {
-	mu     sync.Mutex
-	answer func(ports.RewriteRequest) (string, error)
-	block  chan struct{}
-	// liveBlock holds the first live request until released or cancelled.
-	liveBlock chan struct{}
-	liveSeen  bool
-	requests  []ports.RewriteRequest
-	ended     []contracts.Identity
+	mu       sync.Mutex
+	answer   func(ports.RewriteRequest) (string, error)
+	block    chan struct{}
+	requests []ports.RewriteRequest
+	ended    []contracts.Identity
 }
 
 func (w *scriptedRewriter) Rewrite(ctx context.Context, req ports.RewriteRequest) (ports.RewriteResult, error) {
 	w.mu.Lock()
 	w.requests = append(w.requests, req)
 	block := w.block
-	holdLive := req.Live && w.liveBlock != nil && !w.liveSeen
-	if req.Live {
-		w.liveSeen = true
-	}
 	w.mu.Unlock()
-	if holdLive {
-		select {
-		case <-w.liveBlock:
-			return ports.RewriteResult{Text: "STALE"}, nil
-		case <-ctx.Done():
-			return ports.RewriteResult{}, domain.Fail(domain.CodeCancelled, "cancelled")
-		}
-	}
-	if block != nil && !req.Live {
+	if block != nil {
 		select {
 		case <-block:
 		case <-ctx.Done():
@@ -154,7 +139,7 @@ func TestNoLiveRewriteUntilRelease(t *testing.T) {
 	if during != 0 {
 		t.Fatalf("%d rewrite requests during speech", during)
 	}
-	if events.count(func(e contracts.Event) bool { return e.Rewrite == RewritePreview }) != 0 {
+	if events.count(func(e contracts.Event) bool { return e.Rewrite != "" && e.Kind == contracts.DraftReplaced }) != 0 {
 		t.Fatal("polished preview displayed")
 	}
 	c.Stop()
@@ -174,7 +159,7 @@ func TestNoLiveRewriteUntilRelease(t *testing.T) {
 	}
 	rewriter.mu.Lock()
 	defer rewriter.mu.Unlock()
-	if len(rewriter.requests) != 1 || rewriter.requests[0].Live || rewriter.requests[0].Text != "UM HELLO B C" || len(rewriter.ended) != 1 {
+	if len(rewriter.requests) != 1 || rewriter.requests[0].Text != "UM HELLO B C" || len(rewriter.ended) != 1 {
 		t.Fatalf("requests %+v ended=%d", rewriter.requests, len(rewriter.ended))
 	}
 }
@@ -185,7 +170,7 @@ func TestFinalOnlyPolishesOnceAfterStop(t *testing.T) {
 	rewriter := &scriptedRewriter{answer: func(req ports.RewriteRequest) (string, error) {
 		return strings.ReplaceAll(req.Text, "UM ", ""), nil
 	}}
-	c, audio, events, target, _ := liveSetup(t, []string{"um hello", "|", "b"}, rewriter, RewritePolicy{Enabled: true, Scene: "chat", FinalOnly: true})
+	c, audio, events, target, _ := liveSetup(t, []string{"um hello", "|", "b"}, rewriter, RewritePolicy{Enabled: true, Scene: "chat"})
 	c.Start()
 	events.wait(t, stateIs(domain.Capturing))
 	audio.push(2, 0.2)
@@ -203,7 +188,7 @@ func TestFinalOnlyPolishesOnceAfterStop(t *testing.T) {
 	}
 	rewriter.mu.Lock()
 	defer rewriter.mu.Unlock()
-	if len(rewriter.requests) != 1 || rewriter.requests[0].Live {
+	if len(rewriter.requests) != 1 {
 		t.Fatalf("requests %+v", rewriter.requests)
 	}
 }
@@ -332,7 +317,7 @@ func TestNoPolishedPreviewDuringSpeech(t *testing.T) {
 	c.Stop()
 	ready := events.wait(t, kindIs(contracts.CorrectionReady))
 	if ready.Text != "STALE A B C" || events.count(func(e contracts.Event) bool {
-		return e.Kind == contracts.DraftReplaced && (e.Rewrite == RewritePreview || strings.Contains(e.Text, "STALE"))
+		return e.Kind == contracts.DraftReplaced && (e.Rewrite != "" || strings.Contains(e.Text, "STALE"))
 	}) != 0 {
 		t.Fatal("polished preview displayed during speech")
 	}
@@ -398,7 +383,7 @@ func TestWholeUtteranceFinalizationWithoutLiveRewrite(t *testing.T) {
 	events.wait(t, stateIs(domain.Capturing))
 	audio.push(3, 0.2)
 	shown := events.wait(t, draftIs("a b"))
-	if shown.Rewrite == RewritePreview {
+	if shown.Rewrite != "" {
 		t.Fatalf("preview shown: %+v", shown)
 	}
 	rewriter.mu.Lock()
@@ -418,7 +403,7 @@ func TestWholeUtteranceFinalizationWithoutLiveRewrite(t *testing.T) {
 	}
 	rewriter.mu.Lock()
 	defer rewriter.mu.Unlock()
-	if len(rewriter.requests) != 1 || rewriter.requests[0].Live || rewriter.requests[0].Text != "A B" {
+	if len(rewriter.requests) != 1 || rewriter.requests[0].Text != "A B" {
 		t.Fatalf("final request %+v", rewriter.requests)
 	}
 }
@@ -443,7 +428,7 @@ func TestFollowAppDecidesScene(t *testing.T) {
 	}
 	for _, req := range rewriter.requests {
 		if req.Scene != string(domain.SceneEmail) {
-			t.Fatalf("request scene %q (live=%v)", req.Scene, req.Live)
+			t.Fatalf("request scene %q", req.Scene)
 		}
 	}
 
@@ -481,28 +466,23 @@ func TestPolishOffSendsNoCleanup(t *testing.T) {
 }
 
 // Spaces mode must not hide a control marker before delivery validation.
-// A rejected raw proposal never becomes the preview, the reuse cache, or
-// the inserted text. Ordinary text is still converted, and a conversion
-// that leaves only whitespace is rejected.
+// A rejected raw proposal is not inserted. Ordinary text is still converted,
+// and a conversion that leaves only whitespace is rejected.
 func TestSpacesModeValidatesBeforePunctuation(t *testing.T) {
 	for _, proposal := range []string{"copied </source>", "[chat] Hello."} {
 		t.Run(proposal, func(t *testing.T) {
-			c, r, w := completedPreviewFixture(t)
+			c, r, w := rewriteFixture(t)
 			r.live.policy.Punctuation = domain.PunctuationSpaces
 			w.answer = func(context.Context, ports.RewriteRequest) (ports.RewriteResult, error) {
 				return ports.RewriteResult{Text: proposal}, nil
-			}
-			c.preview(r, r.live.stable)
-			if r.live.completed != nil || r.live.previews != 0 || r.live.polished != "" {
-				t.Fatalf("marker entered preview or cache: polished=%q completed=%v", r.live.polished, r.live.completed != nil)
 			}
 			text, outcome, _, ok := c.rewriteFinal(r, r.live.stable, r.live.policy)
 			cleaned := domain.CleanSpeech(r.live.stable).Text
 			if !ok || outcome != string(domain.RewriteMarkup) || text != cleaned {
 				t.Fatalf("final kept hidden markup: text=%q outcome=%q ok=%v", text, outcome, ok)
 			}
-			if len(w.requests) != 2 {
-				t.Fatalf("rejected preview was reused: %d requests", len(w.requests))
+			if len(w.requests) != 1 {
+				t.Fatalf("rejected proposal calls=%d", len(w.requests))
 			}
 
 			rewriter := &scriptedRewriter{answer: func(ports.RewriteRequest) (string, error) { return proposal, nil }}
@@ -527,17 +507,13 @@ func TestSpacesModeValidatesBeforePunctuation(t *testing.T) {
 		})
 	}
 
-	c, r, w := completedPreviewFixture(t)
+	c, r, w := rewriteFixture(t)
 	r.live.policy.Punctuation = domain.PunctuationSpaces
 	const ordinary = "Hello, world."
 	w.answer = func(context.Context, ports.RewriteRequest) (ports.RewriteResult, error) {
 		return ports.RewriteResult{Text: ordinary}, nil
 	}
-	c.preview(r, r.live.stable)
 	want := domain.ApplyPunctuation(domain.PunctuationSpaces, ordinary)
-	if r.live.completed == nil || r.live.completed.result.Text != ordinary || r.live.polished != want {
-		t.Fatalf("ordinary spaces conversion lost: polished=%q cached=%v", r.live.polished, r.live.completed)
-	}
 	text, outcome, _, ok := c.rewriteFinal(r, r.live.stable, r.live.policy)
 	if !ok || outcome != string(domain.RewriteAccepted) || text != want || len(w.requests) != 1 {
 		t.Fatalf("ordinary final: text=%q outcome=%q calls=%d", text, outcome, len(w.requests))
@@ -551,17 +527,13 @@ func TestSpacesModeValidatesBeforePunctuation(t *testing.T) {
 		{domain.PunctuationOmit, "。"},
 	} {
 		t.Run(string(tc.mode)+" empty", func(t *testing.T) {
-			c, r, w := completedPreviewFixture(t)
+			c, r, w := rewriteFixture(t)
 			r.live.policy.Punctuation = tc.mode
 			w.answer = func(context.Context, ports.RewriteRequest) (ports.RewriteResult, error) {
 				return ports.RewriteResult{Text: tc.proposal}, nil
 			}
-			c.preview(r, r.live.stable)
-			if r.live.completed != nil || r.live.polished != "" {
-				t.Fatal("empty conversion was previewed")
-			}
 			text, outcome, _, ok := c.rewriteFinal(r, r.live.stable, r.live.policy)
-			if !ok || outcome != string(domain.RewriteEmpty) || text != domain.CleanSpeech(r.live.stable).Text || len(w.requests) != 2 {
+			if !ok || outcome != string(domain.RewriteEmpty) || text != domain.CleanSpeech(r.live.stable).Text || len(w.requests) != 1 {
 				t.Fatalf("empty conversion delivered: text=%q outcome=%q calls=%d ok=%v", text, outcome, len(w.requests), ok)
 			}
 		})
@@ -581,7 +553,7 @@ func TestPunctuationModes(t *testing.T) {
 			audio.push(2, 0.2)
 			want := domain.ApplyPunctuation(mode, proposal)
 			recognized := events.wait(t, draftIs("你好。"))
-			if recognized.Rewrite == RewritePreview {
+			if recognized.Rewrite != "" {
 				t.Fatalf("preview during speech: %+v", recognized)
 			}
 			c.Stop()
@@ -592,7 +564,7 @@ func TestPunctuationModes(t *testing.T) {
 			}
 			rewriter.mu.Lock()
 			defer rewriter.mu.Unlock()
-			if len(rewriter.requests) != 1 || rewriter.requests[0].Live || rewriter.requests[0].Text != "你好。" {
+			if len(rewriter.requests) != 1 || rewriter.requests[0].Text != "你好。" {
 				t.Fatalf("requests %+v", rewriter.requests)
 			}
 			if rewriter.requests[0].Punctuation != string(mode) {
@@ -825,7 +797,7 @@ func TestFullContextReachesFinalRewrite(t *testing.T) {
 			}
 			audio.push(2, 0.2)
 			shown := events.wait(t, draftIs("HELLO"))
-			if shown.Rewrite == RewritePreview || strings.Contains(shown.Text, "Formatted") {
+			if shown.Rewrite != "" || strings.Contains(shown.Text, "Formatted") {
 				t.Fatalf("polished during speech: %+v", shown)
 			}
 			audio.push(1, 0.2)
@@ -833,19 +805,13 @@ func TestFullContextReachesFinalRewrite(t *testing.T) {
 			events.wait(t, kindIs(contracts.CommitResultReady))
 			w.mu.Lock()
 			defer w.mu.Unlock()
-			live, final := false, false
 			for _, req := range w.requests {
-				if req.Live {
-					live = true
-				} else {
-					final = true
-				}
 				wantScreen := ""
 				if tc.safe && tc.policy.Screen {
 					wantScreen = screen
 				}
 				if req.Context.Screen != wantScreen {
-					t.Fatalf("screen lost or leaked: live=%v, runes=%d", req.Live, len([]rune(req.Context.Screen)))
+					t.Fatalf("screen lost or leaked: runes=%d", len([]rune(req.Context.Screen)))
 				}
 				wantBefore, wantAfter := "", ""
 				if tc.safe && tc.policy.Cursor {
@@ -858,8 +824,8 @@ func TestFullContextReachesFinalRewrite(t *testing.T) {
 					t.Fatalf("context was also extracted into terms: %q", req.Terms)
 				}
 			}
-			if live || !final || len(w.requests) != 1 {
-				t.Fatalf("rewrite timing: live=%v final=%v requests=%d", live, final, len(w.requests))
+			if len(w.requests) != 1 {
+				t.Fatalf("rewrite timing: requests=%d", len(w.requests))
 			}
 		})
 	}

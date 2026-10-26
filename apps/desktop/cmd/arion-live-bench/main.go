@@ -2,10 +2,10 @@
 
 // Command arion-live-bench replays pause-segmented speech fixtures in real
 // time through the production dictation coordinator: streaming recognition,
-// optional per-segment finalization, live LLM previews in the arion-llm
-// worker and the final validated rewrite. It records every displayed draft
-// and the final review on one monotonic clock as JSON lines. It is a
-// development benchmark; it does not measure native insertion.
+// optional per-segment finalization and the final validated rewrite. It
+// records every displayed draft and the final review on one monotonic clock
+// as JSON lines. It is a development benchmark; it does not measure native
+// insertion.
 package main
 
 import (
@@ -180,16 +180,9 @@ func runCase(manager *modelruntime.Manager, rewriter *client.Client, bundle mode
 				capturing <- struct{}{}
 			}
 		case contracts.DraftReplaced:
-			preview := e.Rewrite == application.RewritePreview
-			r.Events = append(r.Events, draftEvent{Ms: since, Text: e.Text, Preview: preview})
+			r.Events = append(r.Events, draftEvent{Ms: since, Text: e.Text})
 			if r.FirstPartialMs == nil && strings.TrimSpace(e.Text) != "" {
 				r.FirstPartialMs = &since
-			}
-			if preview {
-				r.PreviewEvents++
-				if r.FirstPreviewMs == nil {
-					r.FirstPreviewMs = &since
-				}
 			}
 		case contracts.CorrectionReady:
 			r.RawText, r.SourceText, r.FinalText, r.Rewrite = e.Raw, e.Source, e.Text, e.Rewrite

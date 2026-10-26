@@ -52,14 +52,6 @@ type Finalizer interface {
 	Finalize(context.Context, FinalizeRequest) (string, error)
 }
 
-type Corrector interface {
-	Correct(context.Context, contracts.CorrectionRequest) (contracts.CorrectionResult, error)
-}
-
-type CandidateRanker interface {
-	Rank(context.Context, contracts.RankRequest) (contracts.RankResult, error)
-}
-
 // TargetProvider captures the focused editor when dictation starts. It must
 // return PERMISSION_DENIED without reading anything when untrusted.
 type TargetProvider interface {
@@ -67,7 +59,6 @@ type TargetProvider interface {
 }
 
 type InputTarget interface {
-	Capabilities(context.Context, contracts.TargetToken) (contracts.Capabilities, error)
 	ReadContext(context.Context, contracts.Identity, contracts.TargetToken) (contracts.ContextSnapshot, error)
 	Commit(context.Context, contracts.CommitRequest) (contracts.CommitResult, error)
 }
@@ -100,8 +91,7 @@ type CompositionTarget interface {
 // source text. Prefill only computes the source ahead of a later request.
 type RewriteRequest struct {
 	contracts.Identity
-	SourceRevision uint64
-	Text           string
+	Text string
 	// PreviousText is earlier rule-corrected streaming source from this session.
 	// It is spelling evidence, never generated text or a replacement final source.
 	PreviousText string
@@ -117,8 +107,6 @@ type RewriteRequest struct {
 	// the formatting stage receives only the edited source.
 	Context domain.RewriteContext
 	Prefill bool
-	// Live marks a preview of speech that is still being captured.
-	Live bool
 }
 
 // RewriteResult is an unvalidated proposal; Truncated output is unusable.

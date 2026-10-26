@@ -75,9 +75,6 @@ func (darwinPlatform) SettingsWindow() SettingsWindow {
 	return SettingsWindow{Running: w.Running, Visible: w.Visible, Frontmost: w.Frontmost,
 		Bounds: mygo.Rectangle{X: w.X, Y: w.Y, Width: w.Width, Height: w.Height}}
 }
-func (darwinPlatform) StartHoldKey(key application.HoldKey, sink func(holdkey.Event)) error {
-	return macos.StartHold(key, sink)
-}
 func (darwinPlatform) StartHoldKeys(keys []application.HoldKey, sink func(application.HoldKey, holdkey.Event)) error {
 	return macos.StartHoldKeys(keys, sink)
 }

@@ -63,9 +63,6 @@ type gatewayEditor struct {
 func (*gatewayEditor) Capture(context.Context, contracts.Identity) (contracts.TargetSnapshot, error) {
 	return contracts.TargetSnapshot{Target: "synthetic-editor", Application: "com.apple.mail"}, nil
 }
-func (*gatewayEditor) Capabilities(context.Context, contracts.TargetToken) (contracts.Capabilities, error) {
-	return contracts.Capabilities{SingleInsertion: true}, nil
-}
 func (e *gatewayEditor) ReadContext(context.Context, contracts.Identity, contracts.TargetToken) (contracts.ContextSnapshot, error) {
 	e.reads.Add(1)
 	return contracts.ContextSnapshot{SafeToRead: true, Before: "BEFORE_CANARY", After: "AFTER_CANARY", Screen: "SCREEN_CANARY"}, nil
@@ -119,7 +116,7 @@ func TestOpenAIGatewayCoordinatorContextSwitches(t *testing.T) {
 				g, s := newGateway(t, format, "", 0)
 				// This matrix verifies context routing, not latency. Cold CI hosts
 				// may spend over a second scheduling the two local HTTP stages.
-				policy := application.RewritePolicy{Enabled: true, FinalOnly: true, Scene: "prompt", Terms: []string{"writeValue"}, Timeout: 10 * time.Second, Context: application.ContextPolicy{Cursor: mask&1 != 0, Screen: mask&2 != 0, History: mask&4 != 0}}
+				policy := application.RewritePolicy{Enabled: true, Scene: "prompt", Terms: []string{"writeValue"}, Timeout: 10 * time.Second, Context: application.ContextPolicy{Cursor: mask&1 != 0, Screen: mask&2 != 0, History: mask&4 != 0}}
 				c, _, editor, events := gatewaySession(t, s, policy)
 				bodies, _ := g.snapshot()
 				if len(bodies) != 0 {
@@ -164,7 +161,7 @@ func TestOpenAIGatewayCoordinatorFailureDelivery(t *testing.T) {
 		for _, mode := range []string{"400", "truncated", "block"} {
 			t.Run(format+"/"+mode, func(t *testing.T) {
 				_, s := newGateway(t, format, mode, 2)
-				policy := application.RewritePolicy{Enabled: true, FinalOnly: true, Scene: "prompt", Terms: []string{"writeValue"}, Timeout: 200 * time.Millisecond}
+				policy := application.RewritePolicy{Enabled: true, Scene: "prompt", Terms: []string{"writeValue"}, Timeout: 200 * time.Millisecond}
 				c, _, editor, events := gatewaySession(t, s, policy)
 				c.Stop()
 				correction := gatewayWait(t, events, func(e contracts.Event) bool { return e.Kind == contracts.CorrectionReady })

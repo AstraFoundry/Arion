@@ -396,10 +396,7 @@ func (m *IME) Capture(ctx context.Context, id contracts.Identity) (contracts.Tar
 			return contracts.TargetSnapshot{}, domain.Fail(domain.CodeTargetUnsupported, "input method refused composition acquisition")
 		}
 	}
-	return contracts.TargetSnapshot{Identity: id, Target: m.token, Application: m.client, Capabilities: capabilities()}, nil
-}
-func capabilities() contracts.Capabilities {
-	return contracts.Capabilities{OwnedComposition: true, SingleInsertion: true}
+	return contracts.TargetSnapshot{Identity: id, Target: m.token, Application: m.client}, nil
 }
 func (m *IME) Update(ctx context.Context, token contracts.TargetToken, draft contracts.Draft) error {
 	m.mu.Lock()
@@ -425,14 +422,6 @@ func (m *IME) Cancel(ctx context.Context, id contracts.Identity, token contracts
 	}
 	m.invalidateLocked()
 	return err
-}
-func (m *IME) Capabilities(_ context.Context, token contracts.TargetToken) (contracts.Capabilities, error) {
-	m.mu.Lock()
-	defer m.mu.Unlock()
-	if !m.ownsLocked(token) {
-		return contracts.Capabilities{}, changed()
-	}
-	return capabilities(), nil
 }
 func (m *IME) ReadContext(context.Context, contracts.Identity, contracts.TargetToken) (contracts.ContextSnapshot, error) {
 	return contracts.ContextSnapshot{}, domain.Fail(domain.CodeTargetUnsupported, "context read not offered")

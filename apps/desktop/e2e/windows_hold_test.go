@@ -28,7 +28,7 @@ func tap(vk uintptr, flags uintptr) {
 // release, and another key during the hold as a chord.
 func TestWindowsHoldKeyHook(t *testing.T) {
 	events := make(chan holdkey.Event, 16)
-	if err := windows.StartHold(application.HoldRightCtrl, func(e holdkey.Event) { events <- e }); err != nil {
+	if err := windows.StartHoldKeys([]application.HoldKey{application.HoldRightCtrl}, func(_ application.HoldKey, e holdkey.Event) { events <- e }); err != nil {
 		t.Fatal(err)
 	}
 	defer windows.StopHold()

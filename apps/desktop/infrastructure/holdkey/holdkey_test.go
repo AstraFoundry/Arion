@@ -33,7 +33,7 @@ func TestMacFn(t *testing.T) {
 		{"shift alone", MacFlagsChanged, 0x38, 0x20000, false, step{}},
 	}
 	for _, s := range steps {
-		got, ok := m.Interpret(s.eventType, s.keycode, s.flags, s.autorepeat)
+		_, got, ok := m.InterpretKey(s.eventType, s.keycode, s.flags, s.autorepeat)
 		if ok != s.want.ok || (ok && got != s.want.got) {
 			t.Fatalf("%s: got %v %v, want %v", s.name, got, ok, s.want)
 		}
@@ -44,12 +44,12 @@ func TestMacFn(t *testing.T) {
 // Alternate flag set and must not hold the key down.
 func TestMacRightOptionUsesDeviceBit(t *testing.T) {
 	m, _ := NewMac(application.HoldRightOption)
-	if got, ok := m.Interpret(MacFlagsChanged, 0x3D, 0x80040, false); !ok || got != Down {
+	if _, got, ok := m.InterpretKey(MacFlagsChanged, 0x3D, 0x80040, false); !ok || got != Down {
 		t.Fatalf("down: %v %v", got, ok)
 	}
 	// Right released while left Option still held: Alternate (0x80000)
 	// remains, the right device bit (0x40) clears.
-	if got, ok := m.Interpret(MacFlagsChanged, 0x3D, 0x80020, false); !ok || got != Up {
+	if _, got, ok := m.InterpretKey(MacFlagsChanged, 0x3D, 0x80020, false); !ok || got != Up {
 		t.Fatalf("up: %v %v", got, ok)
 	}
 }
@@ -59,22 +59,22 @@ func TestWindowsRightCtrl(t *testing.T) {
 	if !ok {
 		t.Fatal("right ctrl unsupported")
 	}
-	if got, ok := w.Interpret(WinKeyDown, 0xA3, 0x11D); !ok || got != Down {
+	if _, got, ok := w.InterpretKey(WinKeyDown, 0xA3, 0x11D); !ok || got != Down {
 		t.Fatalf("down: %v %v", got, ok)
 	}
-	if _, ok := w.Interpret(WinKeyDown, 0xA3, 0x11D); ok {
+	if _, _, ok := w.InterpretKey(WinKeyDown, 0xA3, 0x11D); ok {
 		t.Fatal("auto-repeat reported")
 	}
-	if got, ok := w.Interpret(WinKeyDown, 0x41, 0x1E); !ok || got != Other {
+	if _, got, ok := w.InterpretKey(WinKeyDown, 0x41, 0x1E); !ok || got != Other {
 		t.Fatalf("chord: %v %v", got, ok)
 	}
-	if _, ok := w.Interpret(WinKeyUp, 0x41, 0x1E); ok {
+	if _, _, ok := w.InterpretKey(WinKeyUp, 0x41, 0x1E); ok {
 		t.Fatal("other key release reported")
 	}
-	if got, ok := w.Interpret(WinKeyUp, 0xA3, 0x11D); !ok || got != Up {
+	if _, got, ok := w.InterpretKey(WinKeyUp, 0xA3, 0x11D); !ok || got != Up {
 		t.Fatalf("up: %v %v", got, ok)
 	}
-	if _, ok := w.Interpret(WinKeyDown, 0x41, 0x1E); ok {
+	if _, _, ok := w.InterpretKey(WinKeyDown, 0x41, 0x1E); ok {
 		t.Fatal("typing without a hold reported")
 	}
 }
@@ -83,16 +83,16 @@ func TestWindowsRightCtrl(t *testing.T) {
 // count as a chord while right Alt repeats.
 func TestWindowsAltGrIsNotAChord(t *testing.T) {
 	w, _ := NewWindows(application.HoldRightAlt)
-	if _, ok := w.Interpret(WinKeyDown, vkLControl, altGrScan); ok {
+	if _, _, ok := w.InterpretKey(WinKeyDown, vkLControl, altGrScan); ok {
 		t.Fatal("synthetic ctrl reported before hold")
 	}
-	if got, ok := w.Interpret(WinSysKeyDown, 0xA5, 0x138); !ok || got != Down {
+	if _, got, ok := w.InterpretKey(WinSysKeyDown, 0xA5, 0x138); !ok || got != Down {
 		t.Fatalf("down: %v %v", got, ok)
 	}
-	if _, ok := w.Interpret(WinKeyDown, vkLControl, altGrScan); ok {
+	if _, _, ok := w.InterpretKey(WinKeyDown, vkLControl, altGrScan); ok {
 		t.Fatal("synthetic ctrl repeat reported as chord")
 	}
-	if got, ok := w.Interpret(WinSysKeyUp, 0xA5, 0x138); !ok || got != Up {
+	if _, got, ok := w.InterpretKey(WinSysKeyUp, 0xA5, 0x138); !ok || got != Up {
 		t.Fatalf("up: %v %v", got, ok)
 	}
 }

@@ -148,12 +148,6 @@ func (m *Mac) InterpretKey(eventType int, keycode int64, flags uint64, autorepea
 	return "", 0, false
 }
 
-// Interpret maps one event; ok is false when it is not a transition.
-func (m *Mac) Interpret(eventType int, keycode int64, flags uint64, autorepeat bool) (Event, bool) {
-	_, event, ok := m.InterpretKey(eventType, keycode, flags, autorepeat)
-	return event, ok
-}
-
 // Windows low-level keyboard hook messages and virtual keys.
 const (
 	WinKeyDown    = 0x0100
@@ -250,10 +244,4 @@ func (w *Windows) InterpretKey(message uintptr, vk, scan uint32) (application.Ho
 		return target.key, Up, true
 	}
 	return "", 0, false
-}
-
-// Interpret maps one event; ok is false when it is not a transition.
-func (w *Windows) Interpret(message uintptr, vk, scan uint32) (Event, bool) {
-	_, event, ok := w.InterpretKey(message, vk, scan)
-	return event, ok
 }

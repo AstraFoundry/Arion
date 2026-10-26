@@ -56,13 +56,6 @@ func arionHoldRaw(eventType C.int, keycode C.longlong, flags C.ulonglong, autore
 	}
 }
 
-// StartHold observes key. sink runs on the tap's thread and must not block.
-func StartHold(key application.HoldKey, sink func(holdkey.Event)) error {
-	return StartHoldKeys([]application.HoldKey{key}, func(_ application.HoldKey, e holdkey.Event) {
-		sink(e)
-	})
-}
-
 // StartHoldKeys observes keys. sink runs on the tap's thread and must not block.
 func StartHoldKeys(keys []application.HoldKey, sink func(application.HoldKey, holdkey.Event)) error {
 	interpreter, ok := holdkey.NewMac(keys...)

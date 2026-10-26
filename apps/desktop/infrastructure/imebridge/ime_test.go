@@ -22,6 +22,12 @@ type host struct {
 	input *bufio.Reader
 }
 
+func owns(m *IME, token contracts.TargetToken) bool {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	return m.ownsLocked(token)
+}
+
 func attach(t *testing.T, m *IME, activation string) *host {
 	t.Helper()
 	server, client := net.Pipe()
@@ -93,16 +99,16 @@ func TestActivationRevokesOldSessionAndMessages(t *testing.T) {
 	wait(t, func() bool { return leaves.Load() == 1 })
 	next := capture(t, m, h, "s2")
 	h.send(t, message{Op: "deactivate", Activation: "first"})
-	if _, err := m.Capabilities(context.Background(), old.Target); err == nil {
+	if owns(m, old.Target) {
 		t.Fatal("old capability survived activation")
 	}
-	if _, err := m.Capabilities(context.Background(), next.Target); err != nil {
-		t.Fatal(err)
+	if !owns(m, next.Target) {
+		t.Fatal("current target is not owned")
 	}
 	if err := m.Cancel(context.Background(), old.Identity, old.Target); err != nil {
 		t.Fatal(err)
 	}
-	if _, err := m.Capabilities(context.Background(), next.Target); err != nil {
+	if !owns(m, next.Target) {
 		t.Fatal("stale cancel revoked current session")
 	}
 }
@@ -114,7 +120,7 @@ func TestDisconnectInvalidatesAndNotifies(t *testing.T) {
 	s := capture(t, m, h, "s")
 	h.conn.Close()
 	wait(t, func() bool { return leaves.Load() == 1 })
-	if _, err := m.Capabilities(context.Background(), s.Target); err == nil {
+	if owns(m, s.Target) {
 		t.Fatal("disconnected capability survived")
 	}
 }
@@ -203,8 +209,8 @@ func TestOldConnectionCannotDeactivateReplacement(t *testing.T) {
 	second := attach(t, m, "b")
 	next := capture(t, m, second, "new")
 	wait(t, func() bool { return leaves.Load() == 1 })
-	if _, err := m.Capabilities(context.Background(), next.Target); err != nil {
-		t.Fatal(err)
+	if !owns(m, next.Target) {
+		t.Fatal("current target is not owned")
 	}
 }
 
@@ -244,8 +250,8 @@ func TestCancelledContextBeforeCommitDoesNotConsumeSession(t *testing.T) {
 	if result, err := m.Commit(ctx, contracts.CommitRequest{Identity: s.Identity, Target: s.Target}); err == nil || result.Outcome != contracts.NotApplied {
 		t.Fatal(result, err)
 	}
-	if _, err := m.Capabilities(context.Background(), s.Target); err != nil {
-		t.Fatal(err)
+	if !owns(m, s.Target) {
+		t.Fatal("current target is not owned")
 	}
 }
 func TestCloseRevokesAndStopsTransport(t *testing.T) {
@@ -257,7 +263,7 @@ func TestCloseRevokesAndStopsTransport(t *testing.T) {
 	if leaves.Load() != 1 {
 		t.Fatal("missing close notification")
 	}
-	if _, err := m.Capabilities(context.Background(), s.Target); err == nil {
+	if owns(m, s.Target) {
 		t.Fatal("closed capability survived")
 	}
 	m.Close()
@@ -319,12 +325,12 @@ func TestEscapeIsSessionScopedAndLeavesSourceActive(t *testing.T) {
 	h := attach(t, m, "a")
 	s := capture(t, m, h, "s")
 	h.send(t, message{Op: "escape", Activation: "a", Session: "old"})
-	if _, err := m.Capabilities(context.Background(), s.Target); err != nil {
+	if !owns(m, s.Target) {
 		t.Fatal("old escape revoked current session")
 	}
 	h.send(t, message{Op: "escape", Activation: "a", Session: "s"})
 	wait(t, func() bool { return leaves.Load() == 1 })
-	if _, err := m.Capabilities(context.Background(), s.Target); err == nil {
+	if owns(m, s.Target) {
 		t.Fatal("escaped capability survived")
 	}
 	capture(t, m, h, "next")
@@ -389,7 +395,7 @@ func TestCancelledCancelDisconnectsToClearNativeOwnership(t *testing.T) {
 	if _, err := h.input.ReadByte(); err == nil {
 		t.Fatal("transport stayed connected with uncleared native ownership")
 	}
-	if _, err := m.Capabilities(context.Background(), s.Target); err == nil {
+	if owns(m, s.Target) {
 		t.Fatal("cancelled capability survived")
 	}
 }

@@ -61,10 +61,6 @@ func (a *App) holdSession() application.HoldSession {
 	return application.HoldBusy
 }
 
-func (a *App) onHoldKey(e holdkey.Event, at time.Time) {
-	a.onHoldKeyEvent(a.state.Preferences.HoldKey, e, at)
-}
-
 func (a *App) onHoldKeyEvent(key application.HoldKey, e holdkey.Event, at time.Time) {
 	if a.testingHold {
 		if e == holdkey.Down {

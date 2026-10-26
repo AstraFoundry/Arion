@@ -160,7 +160,7 @@ func (c *Client) Rewrite(ctx context.Context, req ports.RewriteRequest) (ports.R
 	if req.Prefill {
 		op = protocol.OpPrefill
 	}
-	request := protocol.Request{Op: op, Session: session(req.Identity), Scene: req.Scene, Terms: req.Terms, Text: req.Text, PreviousText: req.PreviousText, Punctuation: req.Punctuation, TargetLanguage: req.TargetLanguage, Live: req.Live}
+	request := protocol.Request{Op: op, Session: session(req.Identity), Scene: req.Scene, Terms: req.Terms, Text: req.Text, PreviousText: req.PreviousText, Punctuation: req.Punctuation, TargetLanguage: req.TargetLanguage}
 	if c := req.Context.Bounded(); !c.Empty() {
 		request.Context = &c
 	}
