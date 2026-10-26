@@ -13,20 +13,25 @@ func Card(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 	messages := store.Copy()
 	phase := store.State.Diagnostics.Phase
 	label := copy.DiagnosticsExport
-	detail := copy.DiagnosticsDetail
+	var status copy.Key
 	switch phase {
 	case runtime.DiagnosticsExporting:
 		label = copy.DiagnosticsExporting
 	case runtime.DiagnosticsSaved:
-		detail = copy.DiagnosticsSaved
+		status = copy.DiagnosticsSaved
 	case runtime.DiagnosticsFailed:
-		detail = copy.DiagnosticsFailed
+		status = copy.DiagnosticsFailed
+	}
+	control := func() {
+		if kit.Button(c.Key("export-diagnostics"), tokens, kit.Outline, messages.Text(label), phase != runtime.DiagnosticsExporting).Clicked() {
+			store.Actions.ExportDiagnostics()
+		}
 	}
 	kit.Card(c, tokens).Children(func() {
-		kit.Row(c, tokens, messages.Text(copy.DiagnosticsTitle), messages.Text(detail), func() {
-			if kit.Button(c.Key("export-diagnostics"), tokens, kit.Outline, messages.Text(label), phase != runtime.DiagnosticsExporting).Clicked() {
-				store.Actions.ExportDiagnostics()
-			}
-		})
+		if status != "" {
+			kit.Row(c, tokens, messages.Text(copy.DiagnosticsTitle), messages.Text(status), control)
+			return
+		}
+		kit.TipRow(c, tokens, messages.Text(copy.DiagnosticsTitle), messages.Text(copy.DiagnosticsDetail), control)
 	})
 }

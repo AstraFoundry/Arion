@@ -229,7 +229,7 @@ func hardcodedCopy(file *ast.File) []token.Pos {
 			if index, ok := indices[owner.Name+"."+selector.Sel.Name]; ok && len(call.Args) > index {
 				check(call.Args[index])
 			}
-			if owner.Name == "kit" && selector.Sel.Name == "Row" && len(call.Args) > 3 {
+			if owner.Name == "kit" && (selector.Sel.Name == "Row" || selector.Sel.Name == "TipRow") && len(call.Args) > 3 {
 				check(call.Args[2])
 				check(call.Args[3])
 			}

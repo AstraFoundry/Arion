@@ -204,7 +204,7 @@ func Smart(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 	messages := store.Copy()
 	ranking := store.State.Preferences.Keyboard.ContextRanking
 	kit.Card(c, tokens).Children(func() {
-		kit.Row(c, tokens, messages.Text(copy.KbdContextRanking), messages.Text(copy.KbdContextRankingDetail), func() {
+		kit.TipRow(c, tokens, messages.Text(copy.KbdContextRanking), messages.Text(copy.KbdContextRankingDetail), func() {
 			if ui.Switch(c.Key("context-ranking"), &ranking).Label(messages.Text(copy.KbdContextRanking)).Changed() {
 				store.Actions.UpdatePreferences(func(p *runtime.Preferences) { p.Keyboard.ContextRanking = ranking })
 			}
