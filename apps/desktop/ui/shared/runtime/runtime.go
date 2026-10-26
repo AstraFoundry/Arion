@@ -64,8 +64,18 @@ const (
 	LanguageEnglish   = application.English
 	LanguageChinese   = application.SimplifiedChinese
 
-	TargetEnglish = domain.TargetEnglish
-	TargetChinese = domain.TargetChinese
+	TargetEnglish            = domain.TargetEnglish
+	TargetChinese            = domain.TargetChinese
+	TargetChineseTraditional = domain.TargetChineseTraditional
+	TargetJapanese           = domain.TargetJapanese
+	TargetKorean             = domain.TargetKorean
+	TargetSpanish            = domain.TargetSpanish
+	TargetFrench             = domain.TargetFrench
+	TargetGerman             = domain.TargetGerman
+	TargetPortuguese         = domain.TargetPortuguese
+	TargetItalian            = domain.TargetItalian
+	TargetRussian            = domain.TargetRussian
+	TargetArabic             = domain.TargetArabic
 
 	HoldOff          = application.HoldOff
 	HoldFn           = application.HoldFn

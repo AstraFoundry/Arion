@@ -52,16 +52,25 @@ func Render(c *ui.Context, tokens theme.Tokens, messages copy.Catalog, scene Sce
 	render(c, tokens, messages, scene, key, levels, sentence, sentence, radius)
 }
 
+// sentences are the mock sentence in each translation target language.
+var sentences = map[runtime.TranslationLanguage]copy.Key{
+	runtime.TargetEnglish: copy.ShowcaseSentenceEnglish, runtime.TargetChinese: copy.ShowcaseSentence,
+	runtime.TargetChineseTraditional: copy.ShowcaseSentenceChineseTraditional, runtime.TargetJapanese: copy.ShowcaseSentenceJapanese,
+	runtime.TargetKorean: copy.ShowcaseSentenceKorean, runtime.TargetSpanish: copy.ShowcaseSentenceSpanish,
+	runtime.TargetFrench: copy.ShowcaseSentenceFrench, runtime.TargetGerman: copy.ShowcaseSentenceGerman,
+	runtime.TargetPortuguese: copy.ShowcaseSentencePortuguese, runtime.TargetItalian: copy.ShowcaseSentenceItalian,
+	runtime.TargetRussian: copy.ShowcaseSentenceRussian, runtime.TargetArabic: copy.ShowcaseSentenceArabic,
+}
+
 // Translate loops through a voice translation into target: the sentence
-// streams in the pill in the other language and lands in the editor in
-// target's.
+// streams in the pill in Chinese, or English for a Chinese target, and
+// lands in the editor in target's language.
 func Translate(c *ui.Context, tokens theme.Tokens, messages copy.Catalog, target runtime.TranslationLanguage, key string, radius ...float32) {
-	chinese, english := messages.Text(copy.ShowcaseSentence), messages.Text(copy.ShowcaseSentenceEnglish)
-	if target == runtime.TargetChinese {
-		render(c, tokens, messages, Dictating, key, nil, english, chinese, radius)
-		return
+	said := messages.Text(copy.ShowcaseSentence)
+	if target == runtime.TargetChinese || target == runtime.TargetChineseTraditional {
+		said = messages.Text(copy.ShowcaseSentenceEnglish)
 	}
-	render(c, tokens, messages, Dictating, key, nil, chinese, english, radius)
+	render(c, tokens, messages, Dictating, key, nil, said, messages.Text(sentences[target]), radius)
 }
 
 // render draws scene hearing said and inserting written.

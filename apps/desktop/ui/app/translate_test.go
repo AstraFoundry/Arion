@@ -6,6 +6,7 @@ import (
 	"time"
 
 	holdname "arion.local/desktop/ui/entities/holdkey"
+	"arion.local/desktop/ui/features/holdkey"
 	"arion.local/desktop/ui/pages/onboarding"
 	"arion.local/desktop/ui/shared/copy"
 	"arion.local/desktop/ui/shared/runtime"
@@ -27,12 +28,8 @@ func TestOnboardingVoiceTranslation(t *testing.T) {
 				hold, translate = keys[0], keys[1]
 			}
 			state.Preferences.HoldKey, state.Preferences.TranslateKey = hold, translate
-			// Each locale switches to the language whose name the interface
-			// language picker beside it does not also show.
-			from, to, name := runtime.TargetEnglish, runtime.TargetChinese, copy.TranslateChinese
-			if locale == copy.SimplifiedChinese {
-				from, to, name = runtime.TargetChinese, runtime.TargetEnglish, copy.TranslateEnglish
-			}
+			// Neither name is the interface language picker's beside it.
+			from, to := runtime.TargetJapanese, runtime.TargetFrench
 			state.Preferences.TranslateLanguage = from
 			messages := copy.For(locale)
 			page := onboarding.NewPage()
@@ -61,7 +58,14 @@ func TestOnboardingVoiceTranslation(t *testing.T) {
 			}
 			rest(tt, 2*time.Second)
 			snapshot(t, tt, "onboarding-translate-"+string(from)+"-"+string(locale))
-			click(messages.Text(name))
+			click(holdkey.LanguageName(messages, from))
+			for _, language := range runtime.TranslationLanguages {
+				if !hasText(tt, holdkey.LanguageName(messages, language)) {
+					t.Fatalf("%s not offered: %q", language, tt.Texts())
+				}
+			}
+			snapshot(t, tt, "onboarding-translate-languages-"+string(locale))
+			click(holdkey.LanguageName(messages, to))
 			if state.Preferences.TranslateLanguage != to {
 				t.Fatalf("target language not chosen: %q", state.Preferences.TranslateLanguage)
 			}

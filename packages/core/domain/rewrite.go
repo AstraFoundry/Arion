@@ -2,6 +2,7 @@ package domain
 
 import (
 	"regexp"
+	"slices"
 	"strings"
 	"unicode"
 	"unicode/utf8"
@@ -16,22 +17,28 @@ type RewriteVerdict string
 type TranslationLanguage string
 
 const (
-	TargetEnglish TranslationLanguage = "en"
-	TargetChinese TranslationLanguage = "zh-CN"
+	TargetEnglish            TranslationLanguage = "en"
+	TargetChinese            TranslationLanguage = "zh-CN"
+	TargetChineseTraditional TranslationLanguage = "zh-TW"
+	TargetJapanese           TranslationLanguage = "ja"
+	TargetKorean             TranslationLanguage = "ko"
+	TargetSpanish            TranslationLanguage = "es"
+	TargetFrench             TranslationLanguage = "fr"
+	TargetGerman             TranslationLanguage = "de"
+	TargetPortuguese         TranslationLanguage = "pt"
+	TargetItalian            TranslationLanguage = "it"
+	TargetRussian            TranslationLanguage = "ru"
+	TargetArabic             TranslationLanguage = "ar"
 )
 
 // TranslationLanguages lists the supported translation target languages.
-var TranslationLanguages = []TranslationLanguage{TargetEnglish, TargetChinese}
+var TranslationLanguages = []TranslationLanguage{
+	TargetEnglish, TargetChinese, TargetChineseTraditional, TargetJapanese, TargetKorean, TargetSpanish,
+	TargetFrench, TargetGerman, TargetPortuguese, TargetItalian, TargetRussian, TargetArabic,
+}
 
 // Known reports whether l is a supported translation target language.
-func (l TranslationLanguage) Known() bool {
-	switch l {
-	case TargetEnglish, TargetChinese:
-		return true
-	default:
-		return false
-	}
-}
+func (l TranslationLanguage) Known() bool { return slices.Contains(TranslationLanguages, l) }
 
 const (
 	RewriteAccepted    RewriteVerdict = "accepted"

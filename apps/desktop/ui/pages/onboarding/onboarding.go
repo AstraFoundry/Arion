@@ -381,7 +381,7 @@ func (p *Page) step(c *ui.Context, store runtime.Store, tokens theme.Tokens, ste
 		})
 	case onboarding.Translate:
 		heading(c, tokens, messages.Text(copy.OnbTranslateTitle), messages.Text(copy.OnbTranslateBody))
-		ui.Column(c).Width(Content).Children(func() { holdkey.TranslateLanguageChoice(c, store, tokens) })
+		ui.Row(c).Width(240).Children(func() { holdkey.TranslateLanguagePicker(c, store) })
 	case onboarding.TranslateKey:
 		heading(c, tokens, messages.Text(copy.OnbTranslateKeyTitle), messages.Text(copy.OnbTranslateKeyBody))
 		ui.Column(c).Gap(12).Children(func() {

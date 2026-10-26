@@ -7,6 +7,7 @@ import (
 	"reflect"
 	"strings"
 	"testing"
+	"unicode"
 
 	"arion.local/core/domain"
 	"arion.local/desktop/infrastructure/llm/spelling"
@@ -329,6 +330,30 @@ func TestFormatDynamicTokenBudget(t *testing.T) {
 	}
 }
 
+// scripts are the writing systems each target's examples must use; Han
+// appears only where the target is written with it.
+var scripts = map[domain.TranslationLanguage][]*unicode.RangeTable{
+	domain.TargetEnglish: {unicode.Latin}, domain.TargetChinese: {unicode.Han}, domain.TargetChineseTraditional: {unicode.Han},
+	domain.TargetJapanese: {unicode.Hiragana, unicode.Katakana}, domain.TargetKorean: {unicode.Hangul},
+	domain.TargetSpanish: {unicode.Latin}, domain.TargetFrench: {unicode.Latin}, domain.TargetGerman: {unicode.Latin},
+	domain.TargetPortuguese: {unicode.Latin}, domain.TargetItalian: {unicode.Latin},
+	domain.TargetRussian: {unicode.Cyrillic}, domain.TargetArabic: {unicode.Arabic},
+}
+
+func inScript(target domain.TranslationLanguage, out string) bool {
+	tables, hanAllowed := scripts[target], target == domain.TargetChinese || target == domain.TargetChineseTraditional || target == domain.TargetJapanese
+	found := false
+	for _, r := range out {
+		if unicode.Is(unicode.Han, r) && !hanAllowed {
+			return false
+		}
+		if unicode.In(r, tables...) {
+			found = true
+		}
+	}
+	return found
+}
+
 func TestFormatTranslationPromptsAndTokenBudget(t *testing.T) {
 	lexicon, err := spelling.Load()
 	if err != nil {
@@ -350,13 +375,8 @@ func TestFormatTranslationPromptsAndTokenBudget(t *testing.T) {
 					t.Fatalf("unexpected messages for %s/%s", target, scene)
 				}
 				for i := 2; i < len(req.Messages)-1; i += 2 {
-					out := req.Messages[i].Content
-					han, latin := profile(out)
-					if target == domain.TargetEnglish && (han || !latin) {
-						t.Fatalf("en translation example %d contains Han or lacks Latin: %q", i, out)
-					}
-					if target == domain.TargetChinese && !han {
-						t.Fatalf("zh-CN translation example %d lacks Han: %q", i, out)
+					if out := req.Messages[i].Content; !inScript(target, out) {
+						t.Fatalf("%s translation example %d is not in the target's script: %q", target, i, out)
 					}
 				}
 			}
@@ -367,7 +387,10 @@ func TestFormatTranslationPromptsAndTokenBudget(t *testing.T) {
 	if err != nil || trReq.MaxTokens != 300*2+128 {
 		t.Fatalf("translation MaxTokens = %d, want %d (%v)", trReq.MaxTokens, 300*2+128, err)
 	}
-	if _, err := templates.FormatTranslation("你好", "chat", "", "fr"); err == nil {
+	if len(scripts) != len(domain.TranslationLanguages) {
+		t.Fatalf("scripts cover %d of %d targets", len(scripts), len(domain.TranslationLanguages))
+	}
+	if _, err := templates.FormatTranslation("你好", "chat", "", "fr-CA"); err == nil {
 		t.Fatal("unsupported target language accepted")
 	}
 }

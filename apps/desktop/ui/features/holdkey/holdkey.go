@@ -8,7 +8,6 @@ import (
 
 	holdname "arion.local/desktop/ui/entities/holdkey"
 	"arion.local/desktop/ui/shared/copy"
-	"arion.local/desktop/ui/shared/icons"
 	"arion.local/desktop/ui/shared/kit"
 	"arion.local/desktop/ui/shared/runtime"
 	"arion.local/desktop/ui/shared/theme"
@@ -63,67 +62,31 @@ func translatePicker(c *ui.Context, store runtime.Store, choices []runtime.HoldK
 	}
 }
 
-// targets are the translation languages with their names.
-var targets = []struct {
-	language runtime.TranslationLanguage
-	name     copy.Key
-}{
-	{runtime.TargetEnglish, copy.TranslateEnglish},
-	{runtime.TargetChinese, copy.TranslateChinese},
+// languages name the translation target languages.
+var languages = map[runtime.TranslationLanguage]copy.Key{
+	runtime.TargetEnglish: copy.TranslateEnglish, runtime.TargetChinese: copy.TranslateChinese,
+	runtime.TargetChineseTraditional: copy.TranslateChineseTraditional, runtime.TargetJapanese: copy.TranslateJapanese,
+	runtime.TargetKorean: copy.TranslateKorean, runtime.TargetSpanish: copy.TranslateSpanish,
+	runtime.TargetFrench: copy.TranslateFrench, runtime.TargetGerman: copy.TranslateGerman,
+	runtime.TargetPortuguese: copy.TranslatePortuguese, runtime.TargetItalian: copy.TranslateItalian,
+	runtime.TargetRussian: copy.TranslateRussian, runtime.TargetArabic: copy.TranslateArabic,
 }
 
-// TranslateLanguagePicker selects the target language for voice translation.
+// LanguageName is a translation target language's display name.
+func LanguageName(messages copy.Catalog, language runtime.TranslationLanguage) string {
+	return messages.Text(languages[language])
+}
+
+// TranslateLanguagePicker selects the target language for voice
+// translation; its list scrolls, so it fits the onboarding window.
 func TranslateLanguagePicker(c *ui.Context, store runtime.Store) {
 	messages := store.Copy()
-	labels := make([]string, len(targets))
-	selected := messages.Text(copy.TranslateEnglish)
-	for i, target := range targets {
-		labels[i] = messages.Text(target.name)
-		if store.State.Preferences.TranslateLanguage == target.language {
-			selected = labels[i]
-		}
-	}
-	if ui.Select(c.Key("translate-language"), &selected, labels).Label(messages.Text(copy.TranslateLanguageLabel)).Changed() {
-		for i, label := range labels {
-			if label == selected {
-				setLanguage(store, targets[i].language)
-			}
-		}
-	}
-}
-
-// TranslateLanguageChoice lays the target languages out as a card of
-// options, for onboarding.
-func TranslateLanguageChoice(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
-	messages := store.Copy()
 	selected := store.State.Preferences.TranslateLanguage
-	if !selected.Known() {
-		selected = runtime.TargetEnglish
+	name := func(l runtime.TranslationLanguage) string { return LanguageName(messages, l) }
+	if kit.Select(c.Key("translate-language"), &selected, runtime.TranslationLanguages, name, nil).
+		Label(messages.Text(copy.TranslateLanguageLabel)).Changed() {
+		setLanguage(store, selected)
 	}
-	kit.Card(c, tokens).Children(func() {
-		ui.RadioGroup(c, func() {
-			for i, target := range targets {
-				if i > 0 {
-					kit.Divider(c, tokens)
-				}
-				name := messages.Text(target.name)
-				row := ui.RadioBase(c.Key("translate-"+string(target.language)), &selected, target.language).
-					Gap(12).Padding(12, 16).AlignItems(ui.Center).Label(name)
-				if row.Hovered() && selected != target.language {
-					row.Background(tokens.AccentSoft.Alpha(0.5).Over(tokens.Card))
-				}
-				row.Children(func() {
-					ui.Text(c, name).FontSize(theme.Body).FontWeight(500).Grow(1)
-					if selected == target.language {
-						ui.Icon(c, icons.Check).FontSize(16).TextColor(tokens.AccentInk)
-					}
-				})
-				if row.Changed() {
-					setLanguage(store, target.language)
-				}
-			}
-		}).Gap(0).Label(messages.Text(copy.TranslateLanguageLabel))
-	})
 }
 
 func setLanguage(store runtime.Store, language runtime.TranslationLanguage) {

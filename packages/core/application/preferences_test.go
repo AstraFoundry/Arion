@@ -188,7 +188,7 @@ func TestTranslationPreferences(t *testing.T) {
 		}
 		prefs := DefaultPreferences(platform)
 		prefs.TranslateKey = "caps_lock"
-		prefs.TranslateLanguage = "fr"
+		prefs.TranslateLanguage = "fr-CA"
 		normalized, repairs := prefs.Normalize(platform)
 		if normalized.TranslateKey != DefaultTranslateKey(platform) || !slices.Contains(repairs, "translateKey") {
 			t.Fatalf("%s invalid translateKey not repaired: %q %v", platform, normalized.TranslateKey, repairs)

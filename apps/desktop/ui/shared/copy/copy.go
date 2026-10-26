@@ -570,3 +570,27 @@ const (
 	UpdateRecoveryDetail           Key = "UpdateRecoveryDetail"
 	UpdateStateFailed              Key = "UpdateStateFailed"
 )
+
+// Voice translation target languages and the onboarding mock sentence in each.
+const (
+	TranslateChineseTraditional        Key = "TranslateChineseTraditional"
+	TranslateJapanese                  Key = "TranslateJapanese"
+	TranslateKorean                    Key = "TranslateKorean"
+	TranslateSpanish                   Key = "TranslateSpanish"
+	TranslateFrench                    Key = "TranslateFrench"
+	TranslateGerman                    Key = "TranslateGerman"
+	TranslatePortuguese                Key = "TranslatePortuguese"
+	TranslateItalian                   Key = "TranslateItalian"
+	TranslateRussian                   Key = "TranslateRussian"
+	TranslateArabic                    Key = "TranslateArabic"
+	ShowcaseSentenceChineseTraditional Key = "ShowcaseSentenceChineseTraditional"
+	ShowcaseSentenceJapanese           Key = "ShowcaseSentenceJapanese"
+	ShowcaseSentenceKorean             Key = "ShowcaseSentenceKorean"
+	ShowcaseSentenceSpanish            Key = "ShowcaseSentenceSpanish"
+	ShowcaseSentenceFrench             Key = "ShowcaseSentenceFrench"
+	ShowcaseSentenceGerman             Key = "ShowcaseSentenceGerman"
+	ShowcaseSentencePortuguese         Key = "ShowcaseSentencePortuguese"
+	ShowcaseSentenceItalian            Key = "ShowcaseSentenceItalian"
+	ShowcaseSentenceRussian            Key = "ShowcaseSentenceRussian"
+	ShowcaseSentenceArabic             Key = "ShowcaseSentenceArabic"
+)

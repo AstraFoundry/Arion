@@ -118,7 +118,7 @@ A dictation committed while the overview shows rolls the figures and reshades th
 - Settings › About holds, in order: the illustration with name and version, software update (`features/update`), the Privacy group, and the team, source, X account, bug reports and license. Their URLs and proper names live in `ui/shared/config`; only the row titles are copy keys.
 - Mock surfaces are solid with real elevation; no glass panes, glows or tinted gradients. Scrims are ink gradients only where text or controls overlap the photo.
 - Mock copy comes from `copy` (`ShowcaseSentence` mixes Chinese and English, as real dictation does), and the illustration is labeled for assistive technology (`ShowcaseLabel`).
-- `showcase.Translate` loops a voice translation for the onboarding translation step: the draft streams in one language and the sentence lands in the chosen target (`ShowcaseSentence` for Chinese, `ShowcaseSentenceEnglish` for English, the same in both catalogs).
+- `showcase.Translate` loops a voice translation for the onboarding translation step: the draft streams in one language and the sentence lands in the chosen target (`ShowcaseSentence` for Simplified Chinese, `ShowcaseSentenceEnglish` and one `ShowcaseSentence<Language>` per other target, the same in both catalogs). The sentence is spoken in Chinese, or in English for a Chinese target.
 
 ### Dictation key figure
 

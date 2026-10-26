@@ -79,7 +79,7 @@ func TestTranslationLanguageKnown(t *testing.T) {
 			t.Fatalf("expected %q to be known", lang)
 		}
 	}
-	for _, invalid := range []TranslationLanguage{"", "fr", "zh-TW", "ja"} {
+	for _, invalid := range []TranslationLanguage{"", "fr-CA", "zh", "ja-JP", "EN"} {
 		if invalid.Known() {
 			t.Fatalf("expected %q to be unknown", invalid)
 		}
