@@ -297,6 +297,7 @@ func TestSignNestedCode(t *testing.T) {
 		"A.app/Contents/Resources/Docs.bundle/Contents/Info.plist":           string(infoPlist(&Config{Name: "Docs", Identifier: "com.example.docs"}, "Docs", "", "")),
 		"A.app/Contents/Resources/Docs.bundle/Contents/Resources/index.html": "<h1>Docs</h1>",
 		"A.app/Contents/Resources/data.txt":                                  "data",
+		"A.app/Contents/Resources/readonly.txt":                              "read-only license",
 		"jit.plist":                                                          plist("com.apple.security.cs.allow-jit"),
 		"helper.plist":                                                       plist("com.apple.security.cs.disable-library-validation"),
 	})
@@ -324,9 +325,49 @@ func TestSignNestedCode(t *testing.T) {
 	sign("--force", "--sign", "-", "--identifier", "com.example.kept", filepath.Join(res, "bin", "signed"))
 	sign("--force", "--sign", "-", "--entitlements", filepath.Join(dir, "helper.plist"), helper)
 
+	// Finder and file providers can attach metadata after resources are copied.
+	// It must be removed from the generated bundle before signing any code.
+	xattr := func(args ...string) string {
+		t.Helper()
+		out, err := exec.Command("/usr/bin/xattr", args...).CombinedOutput()
+		if err != nil {
+			t.Fatalf("xattr %q: %v\n%s", args, err, out)
+		}
+		return string(out)
+	}
+	metadataPaths := []string{app, helper, filepath.Join(res, "Docs.bundle"), filepath.Join(res, "data.txt")}
+	for _, path := range metadataPaths {
+		xattr("-wx", "com.apple.FinderInfo", strings.Repeat("00", 32), path)
+	}
+	xattr("-w", "com.apple.ResourceFork", "test resource fork", filepath.Join(res, "data.txt"))
+	xattr("-w", "com.example.mygo-test", "preserved", app)
+	readonlyPaths := []string{filepath.Join(res, "data.txt"), filepath.Join(res, "readonly.txt")}
+	for _, path := range readonlyPaths {
+		if err := os.Chmod(path, 0o444); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if out, err := exec.Command("codesign", codesignArgs(app, "-", "", false)...).CombinedOutput(); err == nil || !strings.Contains(string(out), "resource fork, Finder information") {
+		t.Fatalf("contaminated bundle should fail signing: %v\n%s", err, out)
+	}
+
 	c := &Config{root: dir, MacOS: MacOS{HelperEntitlements: map[string]string{"./bin/jit": "jit.plist"}}}
 	if err := codesign(c, app, "-", false); err != nil {
 		t.Fatal(err)
+	}
+	for _, path := range metadataPaths {
+		attrs := xattr(path)
+		if strings.Contains(attrs, "com.apple.FinderInfo") || strings.Contains(attrs, "com.apple.ResourceFork") {
+			t.Errorf("forbidden signing metadata remains at %s: %s", path, attrs)
+		}
+	}
+	if got := xattr("-p", "com.example.mygo-test", app); got != "preserved\n" {
+		t.Errorf("unrelated metadata changed: %q", got)
+	}
+	for _, path := range readonlyPaths {
+		if info, err := os.Stat(path); err != nil || info.Mode().Perm() != 0o444 {
+			t.Errorf("read-only resource mode changed at %s: %v, %v", path, info, err)
+		}
 	}
 	details := func(path string, args ...string) string {
 		out, err := exec.Command("codesign", append(append([]string{"--display"}, args...), path)...).CombinedOutput()

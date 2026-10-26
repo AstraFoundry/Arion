@@ -53,10 +53,10 @@ func TestSharedStagesIsolateContextAndPreserveEarlierSource(t *testing.T) {
 			t.Fatal("unexpected prefill")
 		}
 		var payload map[string]any
-		if err := json.Unmarshal([]byte(chat.Messages[len(chat.Messages)-1].Content), &payload); err != nil {
-			t.Fatal(err)
-		}
 		if calls == 1 {
+			if err := json.Unmarshal([]byte(chat.Messages[len(chat.Messages)-1].Content), &payload); err != nil {
+				t.Fatal(err)
+			}
 			if chat.ResponseFormat == nil {
 				t.Fatal("missing selector schema")
 			}
@@ -68,7 +68,7 @@ func TestSharedStagesIsolateContextAndPreserveEarlierSource(t *testing.T) {
 			}
 			return engine.Result{Text: `{"e0":"replace"}`, InputTokens: 10, OutputTokens: 5}, nil
 		}
-		if chat.ResponseFormat != nil || payload["source"] != "检查 writeValue。" {
+		if chat.ResponseFormat != nil || chat.Messages[len(chat.Messages)-1].Content != "<source>检查 writeValue。</source>" {
 			t.Fatalf("formatter %+v", payload)
 		}
 		raw, _ := json.Marshal(chat)

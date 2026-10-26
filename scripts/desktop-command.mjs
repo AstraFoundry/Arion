@@ -1,6 +1,8 @@
 // Build and development use identical resource and native compiler settings.
 import { execFileSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import { existsSync, readFileSync } from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { inspectIMEProvisioning } from './lib/ime-provisioning.mjs';
@@ -45,7 +47,14 @@ try {
     env.CGO_LDFLAGS = `-mmacosx-version-min=${minimum}`;
   }
   execFileSync(process.execPath, [path.join(root, 'scripts/stage-desktop-resources.mjs')], { cwd: root, env, stdio: 'inherit' });
-  execFileSync('go', ['tool', 'mygo', operation], { cwd: desktop, env, stdio: 'inherit' });
+  const args = ['tool', 'mygo', operation];
+  if (operation === 'dev' && process.platform === 'darwin') {
+    const checkout = createHash('sha256').update(root).digest('hex').slice(0, 16);
+    const output = path.join(os.homedir(), 'Library', 'Caches', 'Arion', 'desktop-dev', checkout);
+    args.push('-out', output);
+    console.log(`Development output: ${output}`);
+  }
+  execFileSync('go', args, { cwd: desktop, env, stdio: 'inherit' });
   if (operation === 'build') execFileSync(process.execPath, [path.join(root, 'scripts/verify-desktop-package.mjs')], { cwd: root, env, stdio: 'inherit' });
 } finally {
   process.removeListener('exit', cleanup);

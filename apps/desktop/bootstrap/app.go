@@ -125,6 +125,10 @@ type App struct {
 	pendingProductActions    [][2]string
 	productPermissionPending bool
 	resourceJobs             atomic.Int64
+	// Local model operations are scheduled on the main thread. New choices
+	// cancel older work immediately and wait for it before replacing the worker.
+	polishCancel context.CancelFunc
+	polishDone   <-chan struct{}
 
 	// holdGeneration rejects queued events from a retired native listener.
 	holdGeneration uint64
@@ -270,7 +274,7 @@ func (a *App) preferences() application.Preferences {
 func (a *App) policy() domain.CorrectionPolicy {
 	a.snapshot.Lock()
 	defer a.snapshot.Unlock()
-	return domain.CorrectionPolicy{LatinCase: a.manager.LatinCase(), RemoveFillers: a.prefs.RemoveFillers,
+	return domain.CorrectionPolicy{LatinCase: a.manager.LatinCase(),
 		Replacements: a.replaces, Vocabulary: a.vocabulary}
 }
 
@@ -285,11 +289,14 @@ func (a *App) rewritePolicy() application.RewritePolicy {
 		return application.RewritePolicy{}
 	}
 	policy := application.RewritePolicy{Enabled: true, Scene: string(domain.SceneChat), FollowApp: a.prefs.MatchApp,
-		SceneOverrides: a.prefs.SceneOverrides, Vocabulary: a.vocabulary}
+		Punctuation: a.prefs.Punctuation, SceneOverrides: a.prefs.SceneOverrides, Vocabulary: a.vocabulary,
+		FinalOnly: true}
 	policy.Context = application.ContextPolicy{Cursor: a.prefs.ContextCursor, Screen: a.prefs.ContextScreen, History: a.prefs.ContextHistory}
 	if a.prefs.PolishEngine == application.PolishCloud {
-		// Cloud execution runs the shared stages after stop (ADR 023).
-		policy.FinalOnly, policy.Timeout = true, cloudRewriteTimeout
+		// The shared stages use one overall cloud deadline (ADR 024).
+		policy.Timeout = cloudRewriteTimeout
+	} else {
+		policy.Timeout = rewriting.Timeout(modelruntime.Platform())
 	}
 	return policy
 }
@@ -400,10 +407,15 @@ func (a *App) ready() {
 	a.manager.OnStatus(func(s modelruntime.Status) { a.post(func() { a.applyModel(s) }) })
 	a.rewriter.OnStatus(func(s rewriting.Status) { a.post(func() { a.applyPolish(s) }) })
 	a.applyPolish(a.rewriter.Status())
-	a.runResource(a.startPolish)
+	a.startPolish(false)
 	a.cloud.OnStatus(func(s cloudpolish.Status) { a.post(func() { a.applyCloud(s) }) })
 	go a.cloud.Load()
-	mygo.App.OnQuit(a.rewriter.Disable)
+	mygo.App.OnQuit(func() {
+		if a.polishCancel != nil {
+			a.polishCancel()
+		}
+		a.rewriter.Disable()
+	})
 	mygo.App.OnQuit(func() { a.core.Cancel(); a.manager.Close() })
 	a.refreshPermissions()
 	a.state.InputMethod = arion.InputMethodUnsupported
@@ -561,6 +573,7 @@ func (a *App) apply(e contracts.Event) {
 			a.state.LastText, a.state.LastOriginal = e.Text, ""
 		}
 		setState(e.State)
+		a.clearUnavailableModelFailure()
 	}
 	a.updateEscape()
 	a.updateTray()
@@ -626,6 +639,13 @@ func (a *App) pollPermissions() {
 func (a *App) refreshInputMethod() {
 	if a.ime != nil && !a.state.InputMethodInstalling && !a.state.InputMethodRemoving {
 		a.setInputMethodState(a.ime.State())
+		if observer, ok := a.ime.(interface{ ObservationError() error }); ok {
+			if err := observer.ObservationError(); err != nil {
+				a.state.InputMethodError = copy.IMEObservationFailed
+			} else if a.state.InputMethodError == copy.IMEObservationFailed {
+				a.state.InputMethodError = ""
+			}
+		}
 		a.updateInputMethodAutomatically()
 	}
 }
@@ -727,6 +747,7 @@ func (a *App) applyModel(s modelruntime.Status) {
 		m.State = arion.ModelLoading
 	case modelruntime.StateReady:
 		m.State = arion.ModelReady
+		a.clearUnavailableModelFailure()
 	case modelruntime.StateFailed:
 		m.State = arion.ModelFailed
 	case modelruntime.StateUnselected:
@@ -735,13 +756,40 @@ func (a *App) applyModel(s modelruntime.Status) {
 	a.updateTray()
 }
 
-// startPolish refreshes installation state and starts the worker when the
-// user has local polishing on; it never downloads without that choice.
-func (a *App) startPolish() {
-	a.rewriter.Refresh()
-	if p := a.preferences(); p.Polish && p.PolishEngine == application.PolishLocal {
-		_ = a.rewriter.Enable(context.Background())
+// startPolish schedules the latest selection without blocking the main thread.
+// Only an explicit download or retry authorizes provisioning missing files.
+func (a *App) startPolish(download bool) {
+	if a.updateApplying() {
+		return
 	}
+	if a.polishCancel != nil {
+		a.polishCancel()
+	}
+	ctx, cancel := context.WithCancel(context.Background())
+	previous := a.polishDone
+	done := make(chan struct{})
+	a.polishCancel, a.polishDone = cancel, done
+	a.resourceJobs.Add(1)
+	go func() {
+		defer a.resourceJobs.Add(-1)
+		defer close(done)
+		defer cancel()
+		if previous != nil {
+			<-previous
+		}
+		if ctx.Err() != nil {
+			return
+		}
+		a.rewriter.Disable()
+		a.rewriter.Refresh()
+		if p := a.preferences(); ctx.Err() == nil && p.Polish && p.PolishEngine == application.PolishLocal {
+			if download {
+				_ = a.rewriter.Download(ctx)
+			} else {
+				_ = a.rewriter.Enable(ctx)
+			}
+		}
+	}()
 }
 
 func (a *App) applyPolish(s rewriting.Status) {

@@ -463,7 +463,12 @@ func (s *surface) message(hwnd uintptr, m uint32, wp, lp uintptr) (uintptr, bool
 		case wmMButtonDown, wmMButtonDblClk:
 			button = 2
 		}
-		procSetFocus.Call(hwnd)
+		// Nonactivating native overlays can accept pointer actions without
+		// taking the editor's keyboard focus. SetFocus would activate their
+		// parent despite its WS_EX_NOACTIVATE window policy.
+		if windowLong(s.w.hwnd, gwlExStyle)&wsExNoActivate == 0 {
+			procSetFocus.Call(hwnd)
+		}
 		if s.buttons == 0 {
 			procSetCapture.Call(hwnd)
 		}

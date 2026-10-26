@@ -10,6 +10,7 @@ import (
 	"net"
 	"os"
 	"path/filepath"
+	"runtime"
 	"sync"
 	"time"
 
@@ -19,6 +20,7 @@ import (
 
 type message struct {
 	Build      string `json:"build,omitempty"`
+	Protocol   int    `json:"protocol,omitempty"`
 	Op         string `json:"op"`
 	Activation string `json:"activation"`
 	Session    string `json:"session,omitempty"`
@@ -34,6 +36,13 @@ type IME struct {
 	listener           net.Listener
 	releaseSocket      func()
 	build              string
+	verifyClient       ClientVerifier
+	clientVerified     bool
+	clientError        error
+	peer               PeerIdentity
+	admission          uint64
+	publishedAdmission uint64
+	verifying          int
 	changed            chan struct{}
 	updating           bool
 	closed             bool
@@ -43,6 +52,8 @@ type IME struct {
 	revision           uint64
 	committing         bool
 	ack                chan bool
+	begin              chan bool
+	requireBegin       bool
 	onLeave            func()
 	onDictate          func()
 }
@@ -54,23 +65,43 @@ func New(path string, onLeave, onDictate func()) *IME {
 	return &IME{path: path, onLeave: onLeave, onDictate: onDictate, changed: make(chan struct{})}
 }
 
+// RequireBeginAcknowledgement makes capture wait for the host's successful
+// edit-session acquisition. Windows TSF uses it to refuse unsafe text stores
+// before recording starts; older IMK hosts retain their existing protocol.
+func (m *IME) RequireBeginAcknowledgement() { m.mu.Lock(); m.requireBegin = true; m.mu.Unlock() }
+
+// ActiveClient reports a live activation. Windows hosts announce only the
+// currently focused TSF thread and invalidate it on source or focus changes.
+func (m *IME) ActiveClient() bool {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	return m.conn != nil && m.activation != ""
+}
+
+// ConnectedBuild is the executable hash announced by the current native host.
+func (m *IME) ConnectedBuild() string { m.mu.Lock(); defer m.mu.Unlock(); return m.build }
+
 func (m *IME) Listen() error {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 	if m.listener != nil || m.closed {
 		return errors.New("input method listener already started or closed")
 	}
-	if err := os.MkdirAll(filepath.Dir(m.path), 0700); err != nil {
-		return err
+	if runtime.GOOS != "windows" {
+		if err := os.MkdirAll(filepath.Dir(m.path), 0700); err != nil {
+			return err
+		}
 	}
 	listener, release, err := listenSocket(m.path)
 	if err != nil {
 		return err
 	}
-	if err := os.Chmod(m.path, 0600); err != nil {
-		listener.Close()
-		release()
-		return err
+	if runtime.GOOS != "windows" {
+		if err := os.Chmod(m.path, 0600); err != nil {
+			listener.Close()
+			release()
+			return err
+		}
 	}
 	m.listener, m.releaseSocket = listener, release
 	go func() {
@@ -95,6 +126,10 @@ func (m *IME) invalidateLocked() bool {
 	if m.ack != nil {
 		m.ack <- false
 		m.ack = nil
+	}
+	if m.begin != nil {
+		m.begin <- false
+		m.begin = nil
 	}
 	return had
 }
@@ -138,9 +173,41 @@ func (m *IME) serve(conn net.Conn) {
 		conn.Close()
 		return
 	}
+	m.mu.Lock()
+	verify := m.verifyClient
+	m.admission++
+	ticket := m.admission
+	if verify != nil {
+		m.verifying++
+	}
+	m.mu.Unlock()
+	verificationPending := verify != nil
+	defer func() {
+		if verificationPending {
+			m.mu.Lock()
+			m.verifying--
+			m.notifyLocked()
+			m.mu.Unlock()
+		}
+	}()
+	var peer PeerIdentity
+	if verify != nil {
+		var release func()
+		var err error
+		peer, release, err = inspectPeer(conn)
+		defer release()
+		if err == nil {
+			err = verify(peer, ClientHello{Build: hello.Build, Protocol: hello.Protocol})
+		}
+		if err != nil {
+			m.rejectClient(err)
+			conn.Close()
+			return
+		}
+	}
 	_ = conn.SetReadDeadline(time.Time{})
 	m.mu.Lock()
-	if m.closed {
+	if m.closed || ticket < m.publishedAdmission {
 		m.mu.Unlock()
 		conn.Close()
 		return
@@ -154,6 +221,12 @@ func (m *IME) serve(conn net.Conn) {
 		m.activation, m.client = hello.Activation, hello.Client
 	}
 	m.conn = conn
+	m.publishedAdmission = ticket
+	if verificationPending {
+		m.verifying--
+		verificationPending = false
+	}
+	m.peer, m.clientVerified, m.clientError = peer, verify != nil, nil
 	m.notifyLocked()
 	m.mu.Unlock()
 	m.leave(had)
@@ -170,11 +243,17 @@ func (m *IME) serve(conn net.Conn) {
 			break
 		}
 		switch msg.Op {
+		case "begun":
+			if msg.Activation == m.activation && msg.Session == m.identity.SessionID && m.begin != nil {
+				m.begin <- true
+				m.begin = nil
+			}
 		case "activate":
 			if msg.Activation != "" && msg.Activation != m.activation {
 				had = m.invalidateLocked()
 				m.activation = msg.Activation
 				m.client = msg.Client
+				m.notifyLocked()
 			}
 		case "deactivate", "escape":
 			if msg.Activation != "" && msg.Activation == m.activation && (msg.Op == "deactivate" || (m.token != "" && msg.Session == m.identity.SessionID)) {
@@ -201,6 +280,7 @@ func (m *IME) serve(conn net.Conn) {
 	had = false
 	if m.conn == conn {
 		m.conn = nil
+		m.clientVerified = false
 		m.activation, m.build = "", ""
 		m.notifyLocked()
 		had = m.invalidateLocked()
@@ -254,13 +334,24 @@ func (m *IME) sendLocked(ctx context.Context, msg message) error {
 	return nil
 }
 func (m *IME) Capture(ctx context.Context, id contracts.Identity) (contracts.TargetSnapshot, error) {
+	if err := m.waitForClientVerification(ctx); err != nil {
+		return contracts.TargetSnapshot{}, err
+	}
 	m.mu.Lock()
 	defer m.mu.Unlock()
 	if m.updating {
 		return contracts.TargetSnapshot{}, domain.Fail(domain.CodeTargetUnsupported, "input method update in progress")
 	}
 	if m.conn == nil {
+		if m.clientError != nil {
+			return contracts.TargetSnapshot{}, m.clientError
+		}
 		return contracts.TargetSnapshot{}, domain.Fail(domain.CodeTargetUnsupported, "input method connection unavailable")
+	}
+	// The proof and capability are checked under the same lock as the begin
+	// write. A concurrent replacement cannot substitute another connection.
+	if m.verifyClient != nil && (!m.clientVerified || !m.peer.Alive()) {
+		return contracts.TargetSnapshot{}, domain.Fail(domain.CodeArtifactUnverified, domain.DetailInputMethodArtifactUnverified)
 	}
 	if m.activation == "" {
 		return contracts.TargetSnapshot{}, domain.Fail(domain.CodeTargetUnsupported, "input method client unavailable")
@@ -271,11 +362,40 @@ func (m *IME) Capture(ctx context.Context, id contracts.Identity) (contracts.Tar
 	if id.SessionID == "" {
 		return contracts.TargetSnapshot{}, changed()
 	}
+	var acknowledged chan bool
+	if m.requireBegin {
+		acknowledged = make(chan bool, 1)
+		m.begin = acknowledged
+	}
 	if err := m.sendLocked(ctx, message{Op: "begin", Session: id.SessionID}); err != nil {
+		m.begin = nil
 		return contracts.TargetSnapshot{}, err
 	}
 	m.identity = id
 	m.token = contracts.TargetToken("ime:" + m.activation + ":" + id.SessionID)
+	if acknowledged != nil {
+		token := m.token
+		m.mu.Unlock()
+		timer := time.NewTimer(time.Second)
+		accepted := false
+		select {
+		case accepted = <-acknowledged:
+		case <-ctx.Done():
+		case <-timer.C:
+		}
+		timer.Stop()
+		m.mu.Lock()
+		if !accepted || ctx.Err() != nil || m.token != token || !m.ownsLocked(token) {
+			if m.token == token {
+				_ = m.sendLocked(context.Background(), message{Op: "cancel", Session: id.SessionID})
+				m.invalidateLocked()
+			}
+			if ctx.Err() != nil {
+				return contracts.TargetSnapshot{}, ctx.Err()
+			}
+			return contracts.TargetSnapshot{}, domain.Fail(domain.CodeTargetUnsupported, "input method refused composition acquisition")
+		}
+	}
 	return contracts.TargetSnapshot{Identity: id, Target: m.token, Application: m.client, Capabilities: capabilities()}, nil
 }
 func capabilities() contracts.Capabilities {

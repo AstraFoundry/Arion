@@ -1,5 +1,7 @@
 # Recorded experiment evidence
 
+- [Cloud polishing main integration](cloud-polishing-main-v1/README.md): merged final-only timing and punctuation configuration, 68 gateway cases and related race/UI checks.
+
 - [Cloud polishing gateway verification](cloud-polishing-gateway-v1/README.md): 60 synthetic OpenAI HTTP integration cases, both wire formats, context switches, coordinator delivery, failures and cancellation; no real inference claim.
 
 - [Unified polishing verification](unified-polishing-v1/README.md): shared native/cloud pipeline checks, actual worker integration and retained repeated native timeout/session-erasure failure. Real cloud and full product E2E remain unverified.

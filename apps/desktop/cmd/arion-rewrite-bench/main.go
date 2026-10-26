@@ -90,7 +90,7 @@ func main() {
 	variant := flag.String("variant", "", "variant id recorded in rows")
 	liveEdits := flag.Bool("live", true, "rewrite each closed segment before the final request")
 	threads := flag.Int("threads", 4, "intra-op threads")
-	correct := flag.Bool("correct", false, "apply the product's default rule correction (fillers) before rewriting, as dictation does")
+	correct := flag.Bool("correct", false, "apply rule correction before rewriting, as dictation does")
 	contextFlag := flag.String("context", "", "comma-separated context sources: cursor, history, screen")
 	screenFlag := flag.String("screen", "oracle", "screen text: oracle (true visible text), accurate or fast (Vision OCR rows from -ocr)")
 	ocrPath := flag.String("ocr", "", "arion-ocr JSONL for -screen accurate|fast")
@@ -150,7 +150,7 @@ func main() {
 		}
 		source := s.SourceText
 		if *correct && s.Mode != "verbatim" {
-			source = domain.Correct(source, domain.CorrectionPolicy{RemoveFillers: true}).Text
+			source = domain.Correct(source, domain.CorrectionPolicy{}).Text
 		}
 		r.Source = source
 		scene := domain.Scene(r.Scene)

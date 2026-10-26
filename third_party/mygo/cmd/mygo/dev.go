@@ -30,6 +30,8 @@ the app serves frontendDist from disk. The development app is "<name> Dev" with 
 identifier "<identifier>.dev", in .mygo/dev: a real bundle on macOS, and
 on Windows an executable with the icon, manifest and version information
 that mygo build embeds.
+Use -out to place development builds outside the project, such as in a
+local cache when file-provider synchronization would alter signed bundles.
 
 Changes to the Go code, mygo.json or mygo.config.ts, the icon or the
 resources rebuild the app, regenerate the TypeScript client and relaunch
@@ -45,6 +47,7 @@ opens it, and rebuilds it as its code changes, which reloads the page; the
 page shows why a build failed.`)
 	skipDevCommand := flags.Bool("skip-dev-command", false, "do not run devCommand")
 	sign := flags.String("sign", "-", "macOS signing identity for the development app")
+	output := flags.String("out", "", "development output directory (default .mygo/dev)")
 	web := flags.Bool("web", false, "develop the app in browsers")
 	port := flags.Int("port", 5174, "with -web, the port to serve the app at, or the next free one")
 	openPage := flags.Bool("open", true, "with -web, open the app in the browser")
@@ -64,7 +67,7 @@ page shows why a build failed.`)
 
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
-	s := &devSession{root: c.root, sign: *sign, name: devConfig(c).Name, env: []string{"MYGO_ENV=development"}}
+	s := &devSession{root: c.root, output: *output, sign: *sign, name: devConfig(c).Name, env: []string{"MYGO_ENV=development"}}
 	var server atomic.Pointer[exec.Cmd] // the dev command
 	go func() {
 		// Ctrl+C again does not wait for the app to quit.
@@ -166,10 +169,11 @@ page shows why a build failed.`)
 
 // devSession builds and runs development builds of an app.
 type devSession struct {
-	root string
-	sign string
-	name string   // of the development app, for messages
-	env  []string // for the app
+	root   string
+	output string
+	sign   string
+	name   string   // of the development app, for messages
+	env    []string // for the app
 
 	// Used by one build at a time.
 	iconKey string
@@ -184,6 +188,16 @@ type devSession struct {
 	// live is app, which a build stops before it starts.
 	liveMu sync.Mutex
 	live   *devProcess
+}
+
+func (s *devSession) outputDir() string {
+	base := s.output
+	if base == "" {
+		base = filepath.Join(s.root, ".mygo", "dev")
+	} else if !filepath.IsAbs(base) {
+		base = filepath.Join(s.root, base)
+	}
+	return filepath.Join(base, runtime.GOOS+"-"+runtime.GOARCH)
 }
 
 // setApp makes p the running build.
@@ -491,7 +505,7 @@ func (s *devSession) buildAndLaunch(ctx context.Context, t *task, running [32]by
 	if err != nil {
 		return nil, sum, err
 	}
-	dir := filepath.Join(s.root, ".mygo", "dev", runtime.GOOS+"-"+runtime.GOARCH)
+	dir := s.outputDir()
 	if err := os.MkdirAll(dir, 0o755); err != nil {
 		return nil, sum, err
 	}

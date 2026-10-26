@@ -12,6 +12,7 @@ import (
 	"sync"
 	"sync/atomic"
 
+	"arion.local/core/domain"
 	"arion.local/desktop/infrastructure/llm/engine"
 	"arion.local/desktop/infrastructure/llm/gguf"
 	"arion.local/desktop/infrastructure/llm/prompt"
@@ -26,6 +27,7 @@ type worker struct {
 	cancelled map[uint64]bool
 	running   uint64
 	stop      atomic.Bool
+	fatal     bool
 }
 
 func main() {
@@ -38,7 +40,7 @@ func main() {
 		if err := w.out.Encode(response); err != nil {
 			os.Exit(1)
 		}
-		if req.Op == protocol.OpClose {
+		if req.Op == protocol.OpClose || w.fatal {
 			return
 		}
 	}
@@ -116,12 +118,16 @@ func (w *worker) rewrite(req protocol.Request) protocol.Response {
 		return protocol.Response{OK: true, Cancelled: true}
 	}
 	defer w.finished(req.ID)
-	in := engine.Request{Session: req.Session, Scene: req.Scene, Terms: req.Terms, Text: req.Text, PreviousText: req.PreviousText, Prefill: req.Op == protocol.OpPrefill, Live: req.Live}
+	in := engine.Request{Session: req.Session, Scene: req.Scene, Terms: req.Terms, Text: req.Text, PreviousText: req.PreviousText, Punctuation: domain.Punctuation(req.Punctuation), Prefill: req.Op == protocol.OpPrefill, Live: req.Live}
 	if req.Context != nil {
 		in.Context = *req.Context
 	}
 	result, err := w.engine.Run(in, &w.stop)
 	if err != nil {
+		if errors.Is(err, gguf.ErrRuntimeUnavailable) {
+			w.close()
+			w.fatal = true
+		}
 		return fail(err)
 	}
 	return protocol.Response{OK: true, Text: result.Text, Cleanup: &result.Cleanup, Template: result.Template, InputTokens: result.InputTokens, ReusedTokens: result.ReusedTokens,

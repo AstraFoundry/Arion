@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { existsSync } from 'node:fs';
+import path from 'node:path';
 import { macosSigningSettings, prepareMacOSSigning, macosBuildConfig, signingRunner, stripAppleCredentials } from '../../../scripts/lib/desktop-signing.mjs';
 
 const identity = 'Developer ID Application: Arion Test (ABCDE12345)';
@@ -75,12 +76,12 @@ test('CI credentials are isolated and cleanup restores the keychain search list'
   };
   const session = prepareMacOSSigning(macosSigningSettings(imported), { run });
   const keychain = session.env.MACOS_NOTARY_KEYCHAIN;
-  assert.ok(existsSync(keychain.substring(0, keychain.lastIndexOf('/'))));
+  assert.ok(existsSync(path.dirname(keychain)));
   assert.ok(calls.some(([command, args]) => command === 'security' && args[0] === 'import' && args.includes('-T') && !args.includes('-A')));
   assert.ok(calls.some(([, args]) => args[0] === 'find-identity' && args.at(-1) === keychain));
   assert.ok(calls.some(([command, args]) => command === 'xcrun' && args[0] === 'notarytool' && args.includes('--keychain') && args.includes(keychain)));
   session.cleanup();
-  assert.ok(!existsSync(keychain.substring(0, keychain.lastIndexOf('/'))));
+  assert.ok(!existsSync(path.dirname(keychain)));
   assert.ok(calls.some(([, args]) => JSON.stringify(args) === JSON.stringify(['list-keychains', '-d', 'user', '-s', '/Users/test/Library/Keychains/login.keychain-db'])));
   assert.ok(calls.some(([, args]) => args[0] === 'delete-keychain' && args[1] === keychain));
 });
@@ -97,7 +98,7 @@ test('import failure still deletes the temporary keychain and files', () => {
   };
   assert.throws(() => prepareMacOSSigning(macosSigningSettings(imported), { run }), /import rejected/);
   assert.ok(deleted);
-  assert.ok(!existsSync(keychain.substring(0, keychain.lastIndexOf('/'))));
+  assert.ok(!existsSync(path.dirname(keychain)));
 });
 
 test('build subprocesses receive keychain references and keep the independent update key', () => {
@@ -115,7 +116,7 @@ test('notary authentication failure restores the search list and removes importe
   const run = (command, args) => {
     calls.push([command, args]);
     if (args[0] === 'list-keychains' && !args.includes('-s')) return '"/Users/test/login.keychain-db"';
-    if (args[0] === 'create-keychain') directory = args.at(-1).substring(0, args.at(-1).lastIndexOf('/'));
+    if (args[0] === 'create-keychain') directory = path.dirname(args.at(-1));
     if (args[0] === 'find-identity') return `1) 1234 "${identity}"`;
     if (args[0] === 'notarytool') throw new Error('notary authentication rejected');
     return '';

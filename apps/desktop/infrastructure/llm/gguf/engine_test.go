@@ -3,14 +3,24 @@ package gguf
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"io"
 	"net/http"
 	"strings"
+	"sync/atomic"
 	"testing"
 
 	"arion.local/desktop/infrastructure/llm/engine"
 	"arion.local/desktop/infrastructure/llm/prompt"
 )
+
+func TestFailedNativeReloadCannotContinueServing(t *testing.T) {
+	e := &Engine{reload: true, runtimeDir: t.TempDir(), config: engine.Config{ModelDir: t.TempDir(), Threads: 1, MaxLength: 4096, MaxNewTokens: 256}}
+	_, err := e.Run(engine.Request{Session: "after-cancellation"}, &atomic.Bool{})
+	if !errors.Is(err, ErrRuntimeUnavailable) {
+		t.Fatalf("failed native reload was not fatal: %v", err)
+	}
+}
 
 type roundTrip func(*http.Request) (*http.Response, error)
 
@@ -84,8 +94,9 @@ func TestConfiguredOutputBudgetIsEnforced(t *testing.T) {
 			if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
 				t.Fatal(err)
 			}
-			if request.MaxTokens != 8 {
-				t.Fatalf("ignored configured token cap: %d", request.MaxTokens)
+			enabled, ok := request.TemplateArgs["enable_thinking"]
+			if request.MaxTokens != 8 || !ok || enabled {
+				t.Fatalf("token cap %d thinking %v ok %v", request.MaxTokens, enabled, ok)
 			}
 			body = `{"choices":[{"message":{"content":"text"},"finish_reason":"stop"}]}`
 		}

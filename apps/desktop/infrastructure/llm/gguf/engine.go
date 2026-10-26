@@ -1,5 +1,5 @@
 // Package gguf runs the selected GGUF pipeline through a private Unix socket.
-// The child runtime is offline, owns one Metal slot, and never exposes TCP.
+// The child runtime is offline, owns one slot, and never exposes TCP.
 package gguf
 
 import (
@@ -14,12 +14,14 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"sync/atomic"
 	"time"
 	"unicode/utf8"
 
 	"arion.local/desktop/infrastructure/llm/engine"
+	"arion.local/desktop/infrastructure/llm/internal/subprocess"
 	"arion.local/desktop/infrastructure/llm/prompt"
 	"arion.local/desktop/infrastructure/llm/rewrite"
 )
@@ -27,26 +29,49 @@ import (
 // ModelFile is the catalog's single digest-verified weight file.
 const ModelFile = "Qwen3.5-2B-Q4_K_M.gguf"
 
+// ErrRuntimeUnavailable requires the pipe worker to exit after reporting the
+// failed reload, so a dead native capability cannot remain apparently ready.
+var ErrRuntimeUnavailable = errors.New("GGUF runtime reload failed")
+
 // Engine serializes requests from the pipe worker. Private context is erased
 // between sessions; no prompt cache is saved to disk.
 type Engine struct {
-	config    engine.Config
-	cmd       *exec.Cmd
-	exited    chan struct{}
-	socketDir string
-	http      *http.Client
-	pipeline  *rewrite.Pipeline
-	session   string
+	config     engine.Config
+	runtimeDir string
+	reload     bool
+	cmd        *exec.Cmd
+	process    *subprocess.Process
+	exited     chan struct{}
+	socketDir  string
+	http       *http.Client
+	pipeline   *rewrite.Pipeline
+	session    string
 }
 
 // Load starts the pinned runtime with a private socket and fixed budgets.
 func Load(config engine.Config, runtimeDir string) (*Engine, float64, error) {
+	return load(config, runtimeDir, nil)
+}
+
+func load(config engine.Config, runtimeDir string, stop *atomic.Bool) (*Engine, float64, error) {
 	started := time.Now()
+	if stop != nil && stop.Load() {
+		return nil, 0, context.Canceled
+	}
+	var err error
+	runtimeDir, err = filepath.Abs(runtimeDir)
+	if err != nil {
+		return nil, 0, err
+	}
+	config.ModelDir, err = filepath.Abs(config.ModelDir)
+	if err != nil {
+		return nil, 0, err
+	}
 	pipeline, err := rewrite.Load()
 	if err != nil {
 		return nil, 0, err
 	}
-	dir, err := os.MkdirTemp("", "arion-llm-")
+	dir, err := privateDirectory()
 	if err != nil {
 		return nil, 0, err
 	}
@@ -55,28 +80,52 @@ func Load(config engine.Config, runtimeDir string) (*Engine, float64, error) {
 		os.RemoveAll(dir)
 		return nil, 0, errors.New("private runtime socket path exceeds platform limit")
 	}
-	e := &Engine{config: config, socketDir: dir, pipeline: pipeline, exited: make(chan struct{})}
+	e := &Engine{config: config, runtimeDir: runtimeDir, socketDir: dir, pipeline: pipeline, exited: make(chan struct{})}
 	transport := &http.Transport{Proxy: nil, DialContext: func(ctx context.Context, _, _ string) (net.Conn, error) {
 		return (&net.Dialer{}).DialContext(ctx, "unix", socket)
 	}}
 	e.http = &http.Client{Transport: transport, CheckRedirect: func(*http.Request, []*http.Request) error { return http.ErrUseLastResponse }}
 	args := []string{"--model", filepath.Join(config.ModelDir, ModelFile), "--host", socket, "--threads", fmt.Sprint(config.Threads), "--threads-batch", fmt.Sprint(config.Threads), "--n-gpu-layers", "99", "--ctx-size", fmt.Sprint(config.MaxLength), "--parallel", "1", "--batch-size", "4096", "--ubatch-size", "4096", "--reasoning", "off", "--jinja", "--offline", "--no-warmup", "--no-context-shift", "--cache-ram", "0", "--slots", "--slot-save-path", dir + string(os.PathSeparator), "--no-webui", "--log-disable"}
-	e.cmd = exec.Command(filepath.Join(runtimeDir, "llama-server"), args...)
+	if runtime.GOOS == "windows" {
+		// The pinned Windows baseline is CPU-only, independent of GPU drivers.
+		// Bound CPU prefill batches and use physical-core-scale parallelism.
+		for i := range args {
+			if args[i] == "--n-gpu-layers" {
+				args[i+1] = "0"
+			}
+			if args[i] == "--batch-size" {
+				args[i+1] = "512"
+			}
+			if args[i] == "--ubatch-size" {
+				args[i+1] = "512"
+			}
+			if args[i] == "--threads-batch" {
+				args[i+1] = fmt.Sprint(max(config.Threads, min(8, runtime.NumCPU()/2)))
+			}
+		}
+	}
+	e.cmd = exec.Command(filepath.Join(runtimeDir, runtimeExecutable()), args...)
+	// Keep the runtime's working directory private instead of inheriting an
+	// editor or repository directory.
+	e.cmd.Dir = dir
 	// Model/runtime options come exclusively from the pinned product config.
 	for _, v := range os.Environ() {
-		if !strings.HasPrefix(v, "LLAMA_ARG_") {
+		upper := strings.ToUpper(v)
+		if !strings.HasPrefix(upper, "LLAMA_ARG_") && !strings.HasPrefix(upper, "GGML_") {
 			e.cmd.Env = append(e.cmd.Env, v)
 		}
 	}
 	e.cmd.Stdout = io.Discard
 	e.cmd.Stderr = io.Discard
-	if err = e.cmd.Start(); err != nil {
+	if e.process, err = subprocess.StartChild(e.cmd); err != nil {
 		e.Close()
 		return nil, 0, errors.New("GGUF runtime start failed")
 	}
 	go func() { _ = e.cmd.Wait(); close(e.exited) }()
 	ctx, cancel := context.WithTimeout(context.Background(), 90*time.Second)
 	defer cancel()
+	stopObserving := observeCancellation(stop, func() { e.process.Stop(); cancel() })
+	defer stopObserving()
 	for {
 		if err = e.request(ctx, "GET", "/health", nil, &struct{}{}); err == nil {
 			break
@@ -133,7 +182,16 @@ func (e *Engine) PrefixTokens() int { return 0 }
 
 // EndSession erases the sole native slot, including hybrid recurrent state.
 func (e *Engine) EndSession() error {
-	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	if e.reload {
+		return nil
+	} // cancellation already destroyed the native process and its KV state
+	deadline := 3 * time.Second
+	if runtime.GOOS == "windows" {
+		// The server observes a disconnected request on its next one-second
+		// poll, then processes cancellation after the active CPU batch ends.
+		deadline = 6 * time.Second
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), deadline)
 	defer cancel()
 	if err := e.request(ctx, "POST", "/slots/0?action=erase", nil, &struct{}{}); err != nil {
 		return err
@@ -144,14 +202,15 @@ func (e *Engine) EndSession() error {
 
 // Close stops the native child before removing its private socket.
 func (e *Engine) Close() {
-	if e.cmd != nil && e.cmd.Process != nil {
+	if e.process != nil {
 		_ = e.cmd.Process.Signal(os.Interrupt)
 		select {
 		case <-e.exited:
 		case <-time.After(time.Second):
-			_ = e.cmd.Process.Kill()
+			e.process.Stop()
 			<-e.exited
 		}
+		e.process.Stop()
 	}
 	if e.http != nil {
 		e.http.CloseIdleConnections()
@@ -181,6 +240,7 @@ type completion struct {
 }
 
 func (e *Engine) generate(ctx context.Context, request prompt.ChatRequest, prefill bool) (completion, error) {
+	request = request.LocalWire()
 	if e.config.MaxNewTokens > 0 && request.MaxTokens > e.config.MaxNewTokens {
 		request.MaxTokens = e.config.MaxNewTokens
 	}
@@ -229,8 +289,41 @@ func (e *Engine) Run(req engine.Request, stop *atomic.Bool) (engine.Result, erro
 	if stop.Load() {
 		return engine.Result{Cancelled: true}, nil
 	}
-	ctx, cancel := StopContext(stop)
+	if e.reload {
+		fresh, _, err := load(e.config, e.runtimeDir, stop)
+		if err != nil {
+			if stop.Load() {
+				return engine.Result{Cancelled: true}, nil
+			}
+			return engine.Result{}, ErrRuntimeUnavailable
+		}
+		*e = *fresh
+		if stop.Load() {
+			e.Close()
+			e.reload = true
+			return engine.Result{Cancelled: true}, nil
+		}
+	}
+	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
+	stopObserving := observeCancellation(stop, func() {
+		if runtime.GOOS == "windows" {
+			e.process.Stop()
+		}
+		cancel()
+	})
+	defer func() {
+		stopObserving()
+		if runtime.GOOS == "windows" && stop.Load() {
+			// Erasure can race an HTTP handler that has not yet enqueued its
+			// native task. Destroying the child guarantees that no cancelled
+			// request can populate a later session's slot. Reload only when
+			// another explicit rewrite arrives; never retry cancelled content.
+			e.Close()
+			e.reload = true
+			e.session = ""
+		}
+	}()
 	if req.Session != e.session {
 		if err := e.EndSession(); err != nil {
 			return engine.Result{}, err
@@ -240,6 +333,30 @@ func (e *Engine) Run(req engine.Request, stop *atomic.Bool) (engine.Result, erro
 	result, err := e.pipeline.Run(ctx, req, e.generateStage)
 	result.Cancelled = result.Cancelled || stop.Load()
 	return result, err
+}
+
+func observeCancellation(stop *atomic.Bool, onStop func()) func() {
+	if stop == nil {
+		return func() {}
+	}
+	finished, observed := make(chan struct{}), make(chan struct{})
+	go func() {
+		defer close(observed)
+		ticker := time.NewTicker(5 * time.Millisecond)
+		defer ticker.Stop()
+		for {
+			select {
+			case <-finished:
+				return
+			case <-ticker.C:
+				if stop.Load() {
+					onStop()
+					return
+				}
+			}
+		}
+	}()
+	return func() { close(finished); <-observed }
 }
 
 func (e *Engine) generateStage(ctx context.Context, req prompt.ChatRequest, prefill bool) (engine.Result, error) {

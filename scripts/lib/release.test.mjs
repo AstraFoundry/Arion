@@ -15,18 +15,17 @@ test('release preflight rejects a changelog left at the previous version', () =>
 });
 
 test('future releases require supported targets and reject Intel macOS installers', () => {
-  for (const version of ['0.1.0', '0.1.0-beta.1']) {
+  for (const version of ['0.1.0', '0.1.0-beta.1', '0.1.0-alpha', '0.1.0-alpha.12']) {
     assert.deepEqual(platformsForRelease({ version }), ['darwin-arm64', 'windows-amd64']);
     assert.deepEqual(releaseMatrix({ version }).include, [
       { os: 'macos-26', platform: 'darwin-arm64' },
       { os: 'windows-2022', platform: 'windows-amd64' },
     ]);
   }
-  assert.deepEqual(releaseMatrix({ version: '0.1.0-alpha.6' }).include, [{ os: 'macos-26', platform: 'darwin-arm64' }]);
   assert.throws(() => installerName({ name: 'Arion', version: '0.1.0' }, 'darwin-amd64'), /Unsupported release platform/);
 });
 
-function signedRelease() {
+function signedRelease(platform = 'darwin-arm64') {
   const { publicKey, privateKey } = generateKeyPairSync('ed25519');
   const config = {
     name: 'Arion',
@@ -36,10 +35,10 @@ function signedRelease() {
   };
   const directory = mkdtempSync(path.join(tmpdir(), 'arion-release-'));
   const archive = Buffer.from('archive bytes');
-  writeFileSync(path.join(directory, 'Arion 0.1.0-alpha.6 arm64.dmg'), 'installer bytes');
-  writeFileSync(path.join(directory, 'arion-0.1.0-alpha.6-darwin-arm64.tar.gz'), archive);
-  const manifest = { version: config.version, notes: '- Faster', url: `${config.updates.url}/arion-0.1.0-alpha.6-darwin-arm64.tar.gz`, size: archive.length, signature: sign(null, digest(archive), privateKey).toString('base64') };
-  writeFileSync(path.join(directory, 'update-darwin-arm64.json'), JSON.stringify(manifest));
+  writeFileSync(path.join(directory, installerName(config, platform)), 'installer bytes');
+  writeFileSync(path.join(directory, `arion-0.1.0-alpha.6-${platform}.tar.gz`), archive);
+  const manifest = { version: config.version, notes: '- Faster', url: `${config.updates.url}/arion-0.1.0-alpha.6-${platform}.tar.gz`, size: archive.length, signature: sign(null, digest(archive), privateKey).toString('base64') };
+  writeFileSync(path.join(directory, `update-${platform}.json`), JSON.stringify(manifest));
   for (const name of ['SHA256SUMS', 'RELEASE-STATUS.md']) writeFileSync(path.join(directory, name), name);
   return { config, directory, manifest };
 }
@@ -65,6 +64,25 @@ test('verified assets are staged under the contract layout', () => {
       'releases/0.1.0-alpha.6/release.json',
     ]);
     assert.equal(uploads[0].path, path.join(directory, 'Arion 0.1.0-alpha.6 arm64.dmg'));
+  } finally {
+    rmSync(directory, { recursive: true, force: true });
+  }
+});
+
+test('Windows release assets require a matching signed archive and manifest', () => {
+  const platform = 'windows-amd64';
+  const { config, directory, manifest } = signedRelease(platform);
+  const manifestPath = path.join(directory, `update-${platform}.json`);
+  try {
+    assert.deepEqual(platformAssets(directory, config, platform), ['Arion Setup 0.1.0-alpha.6 amd64.exe', 'arion-0.1.0-alpha.6-windows-amd64.tar.gz', 'update-windows-amd64.json']);
+    for (const changed of [{ size: manifest.size + 1 }, { signature: Buffer.alloc(64).toString('base64') }]) {
+      writeFileSync(manifestPath, JSON.stringify({ ...manifest, ...changed }));
+      assert.throws(() => platformAssets(directory, config, platform), /size or signature verification failed/);
+    }
+    writeFileSync(manifestPath, JSON.stringify({ ...manifest, version: '0.1.0-alpha.5' }));
+    assert.throws(() => platformAssets(directory, config, platform), /Wrong update version/);
+    writeFileSync(manifestPath, JSON.stringify({ ...manifest, url: manifest.url.replace('windows-amd64', 'darwin-arm64') }));
+    assert.throws(() => platformAssets(directory, config, platform), /Wrong update archive URL/);
   } finally {
     rmSync(directory, { recursive: true, force: true });
   }

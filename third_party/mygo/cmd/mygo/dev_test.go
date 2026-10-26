@@ -393,3 +393,18 @@ func TestDevConfig(t *testing.T) {
 		t.Errorf("devConfig = %q %q (original %q)", d.Name, d.Identifier, c.Name)
 	}
 }
+
+func TestDevOutputDir(t *testing.T) {
+	root := t.TempDir()
+	absolute := filepath.Join(t.TempDir(), "local cache")
+	for _, tc := range []struct{ output, base string }{
+		{"", filepath.Join(root, ".mygo", "dev")},
+		{"custom", filepath.Join(root, "custom")},
+		{absolute, absolute},
+	} {
+		s := &devSession{root: root, output: tc.output}
+		if got, want := s.outputDir(), filepath.Join(tc.base, runtime.GOOS+"-"+runtime.GOARCH); got != want {
+			t.Errorf("outputDir(%q) = %q, want %q", tc.output, got, want)
+		}
+	}
+}

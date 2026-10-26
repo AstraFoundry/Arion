@@ -180,7 +180,7 @@
   "rewriters": [
     {
       "id": "qwen3.5-2b-q4-k-m-metal",
-      "name": "Qwen3.5 2B (Q4_K_M, Metal)",
+      "name": "Qwen3.5 2B (Q4_K_M)",
       "runtime": {
         "engine": "llama.cpp",
         "version": "b11734"
@@ -196,7 +196,8 @@
         "status": "User-authorized product adoption; pinned community GGUF. Known OCR choice errors accepted; 16GB host acceptance remains open."
       },
       "platforms": [
-        "darwin-arm64"
+        "darwin-arm64",
+        "windows-amd64"
       ],
       "languages": [
         "zh",

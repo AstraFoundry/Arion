@@ -1,6 +1,6 @@
-import { execFileSync } from 'node:child_process';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { checkWorkflows } from './lib/workflow-check.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-execFileSync('go', ['run', 'github.com/rhysd/actionlint/cmd/actionlint@v1.7.11', '-shellcheck=', '-pyflakes='], { cwd: root, stdio: 'inherit' });
+process.exitCode = checkWorkflows(root);

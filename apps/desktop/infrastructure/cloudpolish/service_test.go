@@ -274,6 +274,14 @@ func TestChatGPTSignInAndModels(t *testing.T) {
 			if r.Header.Get("originator") != "arion" || r.Header.Get("ChatGPT-Account-Id") != "acct" {
 				t.Errorf("responses headers %v", r.Header)
 			}
+			var body map[string]any
+			if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+				t.Errorf("responses body: %v", err)
+			}
+			reasoning, _ := body["reasoning"].(map[string]any)
+			if reasoning["effort"] != "none" {
+				t.Errorf("codex reasoning %+v", body["reasoning"])
+			}
 			w.Header().Set("Content-Type", "text/event-stream")
 			_, _ = io.WriteString(w, "event: response.output_text.delta\ndata: {\"type\":\"response.output_text.delta\",\"delta\":\"Done.\",\"output_index\":0,\"content_index\":0}\n\n"+
 				"event: response.completed\ndata: {\"type\":\"response.completed\",\"response\":{\"id\":\"r\",\"status\":\"completed\",\"output\":[{\"type\":\"message\",\"role\":\"assistant\",\"content\":[{\"type\":\"output_text\",\"text\":\"Done.\"}]}]}}\n\n")
@@ -347,11 +355,142 @@ func TestCancelledSignInRestoresState(t *testing.T) {
 // Read the task data from the last Responses input turn, excluding examples.
 func lastCloudPayload(t *testing.T, body map[string]any) map[string]any {
 	t.Helper()
-	input := body["input"].([]any)
-	content := input[len(input)-1].(map[string]any)["content"].([]any)
-	var payload map[string]any
-	if err := json.Unmarshal([]byte(content[0].(map[string]any)["text"].(string)), &payload); err != nil {
+	payload, err := gatewayPayload(body, "responses")
+	if err != nil {
 		t.Fatal(err)
 	}
 	return payload
+}
+
+func TestRecipeDisablesThinking(t *testing.T) {
+	cases := []struct {
+		provider, model, format, path string
+		check                         func(*testing.T, map[string]any)
+	}{
+		{OpenAI, "gpt", "responses", "/responses", expectReasoningNone},
+		{OpenAI, "gpt", "chat", "/chat/completions", expectChatReasoningNone},
+		{Anthropic, "claude", "", "/messages", expectThinkingDisabled},
+		{Google, "gemini-2.5-flash", "", "/models/gemini-2.5-flash:generateContent", expectThinkingBudgetZero},
+		{DeepSeek, "deepseek-flash", "chat", "/chat/completions", expectThinkingDisabled},
+		{DeepSeek, "deepseek-flash", "responses", "/responses", expectReasoningNone},
+		{OpenRouter, "vendor/model", "responses", "/responses", expectReasoningNone},
+		{OpenRouter, "vendor/model", "chat", "/chat/completions", expectReasoningNone},
+	}
+	for _, tc := range cases {
+		t.Run(tc.provider+"/"+tc.model+"/"+tc.format, func(t *testing.T) {
+			var body map[string]any
+			srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				if r.URL.Path != tc.path {
+					t.Errorf("path %s", r.URL.Path)
+					w.WriteHeader(http.StatusNotFound)
+					return
+				}
+				if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+					t.Errorf("body: %v", err)
+				}
+				_ = json.NewEncoder(w).Encode(thinkingOffResponse(r.URL.Path))
+			}))
+			defer srv.Close()
+			s, err := NewAPICompletion(tc.provider, "synthetic-key", tc.model, srv.URL, tc.format)
+			if err != nil {
+				t.Fatal(err)
+			}
+			defer s.CloseCompletion()
+			res, err := s.Rewrite(context.Background(), ports.RewriteRequest{Text: "今天天气很好。", Scene: "chat", Punctuation: "omit"})
+			if err != nil || res.Text != "今天天气很好。" {
+				t.Fatalf("res=%+v err=%v", res, err)
+			}
+			tc.check(t, body)
+		})
+	}
+}
+
+func TestEnabledThinkingIsNotOverridden(t *testing.T) {
+	var body map[string]any
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		_ = json.NewDecoder(r.Body).Decode(&body)
+		_ = json.NewEncoder(w).Encode(gatewayResponse("chat", "ok", ""))
+	}))
+	defer srv.Close()
+	s, err := NewAPICompletion(DeepSeek, "synthetic-key", "deepseek-flash", srv.URL, "chat")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer s.CloseCompletion()
+	_, err = s.Complete(context.Background(), prompt.ChatRequest{
+		Messages:      []prompt.Message{{Role: "user", Content: "hi"}},
+		MaxTokens:     16,
+		AllowThinking: true,
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, ok := body["thinking"]; ok {
+		t.Fatalf("explicit thinking was disabled: %+v", body["thinking"])
+	}
+	if _, ok := body["reasoning_effort"]; ok {
+		t.Fatalf("reasoning effort sent: %+v", body["reasoning_effort"])
+	}
+}
+
+func thinkingOffResponse(path string) map[string]any {
+	switch {
+	case strings.Contains(path, "generateContent"):
+		return map[string]any{"candidates": []any{map[string]any{
+			"content":      map[string]any{"role": "model", "parts": []any{map[string]any{"text": "今天天气很好。"}}},
+			"finishReason": "STOP",
+		}}}
+	case strings.HasSuffix(path, "/messages"):
+		return map[string]any{
+			"id": "m", "type": "message", "role": "assistant", "stop_reason": "end_turn",
+			"content": []any{map[string]any{"type": "text", "text": "今天天气很好。"}},
+		}
+	case strings.HasSuffix(path, "/responses"):
+		return gatewayResponse("responses", "今天天气很好。", "")
+	default:
+		return gatewayResponse("chat", "今天天气很好。", "")
+	}
+}
+
+func expectReasoningNone(t *testing.T, body map[string]any) {
+	t.Helper()
+	reasoning, _ := body["reasoning"].(map[string]any)
+	if reasoning["effort"] != "none" {
+		t.Fatalf("reasoning effort: %+v", body["reasoning"])
+	}
+}
+
+func expectChatReasoningNone(t *testing.T, body map[string]any) {
+	t.Helper()
+	if body["reasoning_effort"] != "none" {
+		t.Fatalf("reasoning_effort: %+v", body["reasoning_effort"])
+	}
+}
+
+func expectThinkingDisabled(t *testing.T, body map[string]any) {
+	t.Helper()
+	thinking, _ := body["thinking"].(map[string]any)
+	if thinking["type"] != "disabled" {
+		t.Fatalf("thinking: %+v", body["thinking"])
+	}
+	if _, ok := body["reasoning_effort"]; ok {
+		t.Fatalf("reasoning_effort must stay unset: %+v", body["reasoning_effort"])
+	}
+}
+
+func expectThinkingBudgetZero(t *testing.T, body map[string]any) {
+	t.Helper()
+	if thinkingConfig(t, body)["thinkingBudget"] != float64(0) {
+		t.Fatalf("thinkingConfig: %+v", thinkingConfig(t, body))
+	}
+}
+
+func thinkingConfig(t *testing.T, body map[string]any) map[string]any {
+	t.Helper()
+	cfg, _ := body["generationConfig"].(map[string]any)
+	thinking, _ := cfg["thinkingConfig"].(map[string]any)
+	if thinking == nil {
+		t.Fatalf("missing thinkingConfig: %+v", body["generationConfig"])
+	}
+	return thinking
 }

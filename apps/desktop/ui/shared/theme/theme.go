@@ -231,6 +231,8 @@ var (
 	Pop = ui.Animation{Spring: ui.SpringOptions{Duration: 380 * time.Millisecond, Bounce: 0.18}}
 	// Quick is for hover and color feedback.
 	Quick = ui.Animation{Duration: 120 * time.Millisecond, Ease: ui.EaseOut}
+	// Disclosure reveals measured content without overshoot.
+	Disclosure = ui.Animation{Duration: 200 * time.Millisecond, Ease: ui.CubicBezier(0.23, 1, 0.32, 1)}
 	// Exit leaves faster than things arrive.
 	Exit = ui.Animation{Duration: 160 * time.Millisecond, Ease: ui.EaseIn}
 	// Page slides onboarding steps.

@@ -84,7 +84,12 @@ if (mode.startsWith('--prepare')) {
   if (!legacyOnly) verifyIMEProvisioning({ bundle, identity: settings.identity });
   const identity = sign('codesign', ['--display', '--verbose=4', manifest.binary]);
   if (!identity.includes(`Identifier=${manifest.identifier}`) || !identity.includes(`TeamIdentifier=${settings.identity.match(/\(([A-Z0-9]{10})\)$/)[1]}`)) throw new Error('Prepared harness signing identity differs from the IMK host.');
-  manifest.sourceIdentities = ['keyboard.h', 'keyboard.m', 'learning.h', 'learning.mm', 'learning_crypto.swift', 'tests/keychain_learning_test.m']
+  manifest.sourceIdentities = ['keyboard.h', 'keyboard.m', 'learning.h', 'learning.mm', 'learning_crypto.swift',
+    '../shared/pinyin.h', '../shared/pinyin.c', '../shared/input.h', '../shared/input.c',
+    '../shared/menu.h', '../shared/menu.c', '../shared/learning.h', '../shared/learning.cpp',
+    '../shared/learning_rime.h', '../shared/learning_rime.cpp', '../shared/ranking.h', '../shared/ranking.cpp',
+    '../shared/ranking_bridge.h', '../shared/ranking_unicode.h', '../shared/ranking_unicode.cpp',
+    '../shared/ranking_unicode_data.h', 'tests/keychain_learning_test.m']
     .map(member => ({ path: path.relative(root, path.join(source, member)), sha256: digest(path.join(source, member)) }));
   manifest.binarySha256 = digest(manifest.binary);
   manifest.librarySha256 = digest(lib);

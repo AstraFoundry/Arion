@@ -45,14 +45,9 @@ func testSpellingGenerationCalls(t *testing.T, source, screen string, wantSelect
 				output = `{"e0":"keep","e1":"replace"}`
 			} else {
 				formatters++
-				var payload struct {
-					Source string `json:"source"`
-				}
-				if err := json.Unmarshal([]byte(request.Messages[len(request.Messages)-1].Content), &payload); err != nil {
-					t.Fatal(err)
-				}
-				if payload.Source != wantFormatted {
-					t.Fatalf("formatter source=%q want=%q", payload.Source, wantFormatted)
+				got := request.Messages[len(request.Messages)-1].Content
+				if got != "<source>"+wantFormatted+"</source>" {
+					t.Fatalf("formatter source=%q", got)
 				}
 			}
 			raw, _ := json.Marshal(map[string]any{"choices": []any{map[string]any{"message": map[string]string{"content": output}, "finish_reason": "stop"}}})

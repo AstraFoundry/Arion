@@ -233,14 +233,6 @@ func (p *Page) section(c *ui.Context, store runtime.Store, tokens theme.Tokens) 
 				ui.Column(c).Padding(0, 16, 12, 16).Children(func() { holdkey.Notes(c, store, tokens) })
 			}
 		})
-		kit.Card(c, tokens).Children(func() {
-			fillers := prefs.RemoveFillers
-			kit.Row(c, tokens, messages.Text(copy.FillersLabel), messages.Text(copy.FillersDetail), func() {
-				if ui.Switch(c.Key("fillers"), &fillers).Label(messages.Text(copy.FillersLabel)).Changed() {
-					store.Actions.UpdatePreferences(func(p *runtime.Preferences) { p.RemoveFillers = fillers })
-				}
-			})
-		})
 	case Keyboard:
 		kit.Group(c, tokens, "", func() { keyboard.Source(c, store, tokens, &p.keyboard) })
 		kit.Group(c, tokens, messages.Text(copy.KbdCandidatesGroup), func() { keyboard.Candidates(c, store, tokens) })
@@ -458,6 +450,7 @@ func (p *Page) modelSection(c *ui.Context, store runtime.Store, tokens theme.Tok
 				if store.State.Preferences.PolishEngine == runtime.PolishCloud && cloud.Summary(c, store, tokens) {
 					p.model = modelCloud
 				}
+				polish.Punctuation(c, store, tokens)
 				if runtime.PolishOn(store.State) {
 					kit.Divider(c, tokens)
 					polish.MatchApp(c, store, tokens)

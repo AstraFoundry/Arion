@@ -245,6 +245,7 @@ func TestContextSettingsSharedAcrossEngines(t *testing.T) {
 				snapshot(t, tt, "settings-context-"+string(engine)+"-"+string(locale))
 			}
 			// Changing a source in cloud mode changes the same preference seen locally.
+			reveal(t, tt, messages.Text(copy.ContextHistoryLabel))
 			title, ok := tt.Find(messages.Text(copy.ContextHistoryLabel))
 			if !ok {
 				t.Fatal("history row missing")

@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted (product decision). [ADR 023](023-shared-polishing-pipeline.md) supersedes the on-device-only transport restriction: enabled context may reach the explicitly selected cloud polishing provider. Amends the consent rule of [009](../../specs/009-contextual-rewrite.md) step 2 and PRV-02 of [005](../../specs/005-privacy.md) for these three sources. Extends [ADR 011](011-live-local-rewriting.md) and [ADR 012](012-context-scene-selection.md). [ADR 018](018-staged-gguf-rewriting.md) keeps this context on the selector only; the formatter receives the edited source.
+Accepted (product decision). [ADR 024](024-shared-polishing-pipeline.md) supersedes the on-device-only transport restriction: enabled context may reach the explicitly selected cloud polishing provider. Amends the consent rule of [009](../../specs/009-contextual-rewrite.md) step 2 and PRV-02 of [005](../../specs/005-privacy.md) for these three sources. Extends [ADR 011](011-live-local-rewriting.md) and [ADR 012](012-context-scene-selection.md). [ADR 018](018-staged-gguf-rewriting.md) keeps this context on the selector only; the formatter receives the edited source.
 
 ## Context
 

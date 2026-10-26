@@ -27,6 +27,7 @@ type harness struct {
 	app           *App
 	audio         *scriptedAudio
 	delayFinal    atomic.Bool
+	finalPending  atomic.Bool
 	release       chan struct{}
 	releaseMu     sync.Mutex
 	loseAck       atomic.Bool
@@ -134,7 +135,9 @@ func (g gatedFinalizer) Finalize(ctx context.Context, request ports.FinalizeRequ
 		g.h.releaseMu.Lock()
 		release := g.h.release
 		g.h.releaseMu.Unlock()
+		g.h.finalPending.Store(true)
 		<-release
+		g.h.finalPending.Store(false)
 	}
 	return g.inner.Finalize(context.WithoutCancel(ctx), request)
 }
@@ -183,6 +186,7 @@ func (h *harness) observations() map[string]any {
 		"capture":               map[string]any{"active": h.captureLive.Load(), "starts": int(h.audioStarts.Load())},
 		"input":                 map[string]any{"mode": modeValue},
 		"model":                 model,
+		"finalizer":             map[string]any{"pending": h.finalPending.Load()},
 	}
 }
 

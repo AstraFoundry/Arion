@@ -1,7 +1,21 @@
 {
   "version": 2,
-  "scope": "Offline GGUF worker; private Unix socket, one Metal slot; staged by scripts/stage-llm-runtime.mjs",
+  "scope": "Offline GGUF worker; private Unix socket, one slot (Metal on macOS, CPU on Windows); staged by scripts/stage-llm-runtime.mjs",
   "platforms": {
+    "windows-amd64": {
+      "source": {
+        "url": "https://github.com/ggml-org/llama.cpp/archive/f3fb2fcdbc93a8f677e893b8dbd36462b3190ffd.tar.gz",
+        "sha256": "51555a5755b51dec708ee8ce2572730a73b450f5b42f0f2e01270162b4b5ba04",
+        "sizeBytes": 38343500,
+        "license": "MIT",
+        "revision": "f3fb2fcdbc93a8f677e893b8dbd36462b3190ffd",
+        "version": "b11734"
+      },
+      "files": [
+        "llama-server.exe", "llama-server-avx2.exe",
+        "licenses/llama.cpp-LICENSE", "licenses/cpp-httplib-LICENSE", "licenses/jsonhpp-LICENSE"
+      ]
+    },
     "darwin-arm64": {
       "archives": [
         {

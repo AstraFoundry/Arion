@@ -20,7 +20,7 @@ import (
 // actions implements runtime.Actions. Views call it on the main thread.
 type actions struct{ a *App }
 
-func (x actions) ToggleDictation()   { x.a.record("dictation_toggle", nil); x.a.core.Toggle() }
+func (x actions) ToggleDictation()   { x.a.record("dictation_toggle", nil); x.a.toggleDictation() }
 func (x actions) CancelDictation()   { x.a.record("dictation_cancel", nil); x.a.core.Cancel() }
 func (x actions) RequestMicrophone() { x.a.platform.RequestMicrophone() }
 func (x actions) OpenMicrophoneSettings() {
@@ -35,11 +35,8 @@ func (x actions) RetryModel() {
 		x.a.runResource(func() { x.a.activate(x.a.state.Preferences.ModelOverride) })
 	}
 }
-func (x actions) RetryPolish() {
-	if !x.a.updateApplying() {
-		x.a.runResource(x.a.startPolish)
-	}
-}
+func (x actions) DownloadPolish()      { x.a.startPolish(true) }
+func (x actions) RetryPolish()         { x.DownloadPolish() }
 func (x actions) StartLevelMonitor()   { x.a.startMonitor() }
 func (x actions) StopLevelMonitor()    { x.a.stopMonitor() }
 func (x actions) RefreshDevices()      { go x.a.refreshDevicesAsync() }
@@ -134,12 +131,7 @@ func (x actions) UpdatePreferences(change func(*application.Preferences)) {
 		}
 	}
 	if next.Polish != before.Polish || next.PolishEngine != before.PolishEngine {
-		// The local worker runs only while local polishing is on.
-		if next.Polish && next.PolishEngine == application.PolishLocal {
-			a.runResource(a.startPolish)
-		} else {
-			a.runResource(a.rewriter.Disable)
-		}
+		a.startPolish(false)
 	}
 	if next.CloudModel != before.CloudModel {
 		a.cloud.SetModel(next.CloudModel)
@@ -230,7 +222,9 @@ func (x actions) installInputMethod(automatic bool) error {
 		update := a.ime.UpdateAvailable()
 		a.post(func() {
 			a.state.InputMethodInstalling = false
-			a.state.InputMethodUpdate = update
+			// Keep Retry available if the machine transaction committed but
+			// ordinary-user setup failed after the build already matched.
+			a.state.InputMethodUpdate = update || updating && err != nil
 			a.setInputMethodState(state)
 			var deferred interface{ InputMethodUpdateDeferred() bool }
 			if automatic && errors.As(err, &deferred) && deferred.InputMethodUpdateDeferred() {

@@ -13,6 +13,12 @@ func (a *App) dictationMode() domain.InputMode {
 			return mode
 		}
 	}
+	if source, ok := a.ime.(interface{ SelectedForSession() bool }); ok {
+		if source.SelectedForSession() {
+			return domain.SystemIMEMode
+		}
+		return domain.ShortcutMode
+	}
 	if a.ime != nil && a.ime.State() == runtime.InputMethodSelected {
 		return domain.SystemIMEMode
 	}

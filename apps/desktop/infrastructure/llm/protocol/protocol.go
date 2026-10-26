@@ -43,6 +43,8 @@ type Request struct {
 	PreviousText string                 `json:"previousText,omitempty"`
 	Live         bool                   `json:"live,omitempty"`
 	Chat         *prompt.ChatRequest    `json:"chat,omitempty"`
+	// Punctuation is the cleanup mode. Empty is smart.
+	Punctuation string `json:"punctuation,omitempty"`
 	// Cancel.
 	Target uint64 `json:"target,omitempty"`
 }

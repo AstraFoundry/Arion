@@ -88,8 +88,37 @@ jobs:
           xcodebuild -version
           swift --version
           swift -e 'import Foundation; print("Native MLX toolchain")'
-      - run: pnpm desktop:check
-      - run: pnpm e2e:native
+      - name: Desktop checks (macOS)
+        if: runner.os == 'macOS'
+        run: pnpm desktop:check
+      - name: Windows updater regression checks
+        if: runner.os == 'Windows'
+        run: pnpm updater:check
+      - name: Native window tests (macOS)
+        if: runner.os == 'macOS'
+        run: pnpm e2e:native
+      - name: Windows platform and native window tests
+        if: runner.os == 'Windows'
+        run: |
+          go test -v ./apps/desktop/infrastructure/windows
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          pnpm e2e:native
+      - name: Windows desktop, shared Pinyin and native module checks
+        if: runner.os == 'Windows'
+        run: ./scripts/check-windows-keyboard-ci.ps1
+      - name: macOS shared Pinyin and native adapter checks
+        if: runner.os == 'macOS'
+        run: pnpm keyboard:check
+      - name: Retain native keyboard evidence
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: keyboard-evidence-${{ matrix.os }}
+          path: |
+            ${{ runner.os == 'Windows' && '.workspace/keyboard-evidence.zip' || '.workspace/tests/' }}
+            ${{ runner.temp }}/keyboard-standard-user.stdout.log
+            ${{ runner.temp }}/keyboard-standard-user.stderr.log
+          if-no-files-found: ignore
       - name: Isolated native updater lifecycle
         if: runner.os == 'macOS'
         run: pnpm updater:e2e

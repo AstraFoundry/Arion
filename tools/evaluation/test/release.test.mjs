@@ -49,15 +49,16 @@ test('all platform installers and archives must exist and carry valid update sig
   assert.throws(() => releasePlatforms.flatMap(platform => platformAssets(directory, config, platform)), /ENOENT/);
 });
 
-test('alpha releases require ARM64 macOS while other releases require both supported platforms', t => {
+test('alpha releases require complete assets for both supported platforms', t => {
   const { directory, config } = fixture(t);
-  assert.deepEqual(platformsForRelease({ version: '0.1.0-alpha.1' }), ['darwin-arm64']);
-  assert.deepEqual(releaseMatrix({ version: '0.1.0-alpha.1' }), { include: [{ os: 'macos-26', platform: 'darwin-arm64' }] });
-  for (const version of ['0.1.0', '0.1.0-beta.1', '0.1.0-alphabet']) assert.deepEqual(platformsForRelease({ version }), releasePlatforms);
+  assert.deepEqual(releaseMatrix({ version: '0.1.0-alpha.12' }), { include: [
+    { os: 'macos-26', platform: 'darwin-arm64' },
+    { os: 'windows-2022', platform: 'windows-amd64' },
+  ] });
+  for (const version of ['0.1.0', '0.1.0-beta.1', '0.1.0-alpha.12']) assert.deepEqual(platformsForRelease({ version }), releasePlatforms);
+  const platforms = platformsForRelease({ version: '0.1.0-alpha.12' });
+  assert.equal(platforms.flatMap(platform => platformAssets(directory, config, platform)).length, 6);
   rmSync(path.join(directory, installerName(config, 'windows-amd64')));
-  const platforms = platformsForRelease({ version: '0.1.0-alpha.1' });
-  assert.equal(platforms.flatMap(platform => platformAssets(directory, config, platform)).length, 3);
-  rmSync(path.join(directory, installerName(config, 'darwin-arm64')));
   assert.throws(() => platforms.flatMap(platform => platformAssets(directory, config, platform)), /ENOENT/);
 });
 

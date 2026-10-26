@@ -1,0 +1,120 @@
+{
+  "base_commit": "c5531aa9af2a8da3ef7f0c1df87dd906b14e4b5f",
+  "files": [
+    {
+      "path": "apps/desktop/bootstrap/app.go",
+      "sha256": "24a4dfbcb323ea6002bb94f411bef4d219b7591036b6d6baa6eb84ce109cf123",
+      "bytes": 28609
+    },
+    {
+      "path": "apps/desktop/bootstrap/cloud_test.go",
+      "sha256": "7cc68a152839116373850162ec22a73c5e4995c0bf802cb1a4242de55ba53846",
+      "bytes": 3121
+    },
+    {
+      "path": "apps/desktop/infrastructure/cloudpolish/completion.go",
+      "sha256": "918028338e2d7320c0b6d3b0f656d4b4055508f48aa9ca53dac52f2e82b4a1eb",
+      "bytes": 3646
+    },
+    {
+      "path": "apps/desktop/infrastructure/cloudpolish/gateway_coordinator_test.go",
+      "sha256": "21595df72421b3aab48966b25bf6d468c2ca3c8a595aeab3d2a57778ff0e80c7",
+      "bytes": 7207
+    },
+    {
+      "path": "apps/desktop/infrastructure/cloudpolish/gateway_test.go",
+      "sha256": "8173eb63a2e6426f8e37fbfca9b46ec08d4a5d25624bf4e754c2a7cb5c224bdb",
+      "bytes": 13114
+    },
+    {
+      "path": "apps/desktop/infrastructure/cloudpolish/provider.go",
+      "sha256": "2512a902d875e567c14d4164d620ec5d9fd85402793b27655ae83d25db3bdac8",
+      "bytes": 3519
+    },
+    {
+      "path": "apps/desktop/infrastructure/cloudpolish/service.go",
+      "sha256": "87df7fda3d93c2501e20db955339923b6b7db075867acfdcaf67c893ed8ab328",
+      "bytes": 13117
+    },
+    {
+      "path": "apps/desktop/infrastructure/cloudpolish/service_test.go",
+      "sha256": "25d82cf909dd7b4bc1c5f8ea93962422980cea423b63bcc2ee05d43531a0022a",
+      "bytes": 12359
+    },
+    {
+      "path": "apps/desktop/infrastructure/llm/engine/engine.go",
+      "sha256": "167d885a30f54b7a7c26c99fc3eb5bceec1cd0b7828ee319114bbd2454ab93ac",
+      "bytes": 1740
+    },
+    {
+      "path": "apps/desktop/infrastructure/llm/gguf/ambiguity_test.go",
+      "sha256": "2e3c85e29c8bd6bad73b0daccd3a0d272ffa9deed1dc94bd5b6424053b15068e",
+      "bytes": 2314
+    },
+    {
+      "path": "apps/desktop/infrastructure/llm/gguf/engine.go",
+      "sha256": "3f2672b87c4a0477ee4863e890ac47220deb78cb3a5646ac37cff3385a4a4f39",
+      "bytes": 8625
+    },
+    {
+      "path": "apps/desktop/infrastructure/llm/gguf/stage_native_test.go",
+      "sha256": "5847d654a37cd8852983d0ed70f2c62614db046e267451f69ab0ddea073fc618",
+      "bytes": 6457
+    },
+    {
+      "path": "apps/desktop/infrastructure/llm/rewrite/pipeline.go",
+      "sha256": "8497b9545a011166667d47f7cf54bcfc600ea3acb195ce8f05387feebdfc4475",
+      "bytes": 4774
+    },
+    {
+      "path": "apps/desktop/infrastructure/llm/rewrite/pipeline_test.go",
+      "sha256": "0b252da094f981389e318eff547ef20d073f154b37fec583f97528264f0cb1b6",
+      "bytes": 5702
+    },
+    {
+      "path": "apps/desktop/ui/app/cloud_test.go",
+      "sha256": "ab85636b2df69dfdb503f0607c27ae1ed1cdeed7e27e97ee09262ccab71b24c9",
+      "bytes": 10407
+    },
+    {
+      "path": "apps/desktop/ui/app/polish_test.go",
+      "sha256": "615b056f58205b7003705a845132cf58b5a9b3816fb8ac79500a6c0ec3fd4b14",
+      "bytes": 21500
+    },
+    {
+      "path": "apps/desktop/ui/features/polish/polish.go",
+      "sha256": "4ad586221852fb9ac4089fe37801a5a1cff5d8e02fadffda37f849e9ed30d7fd",
+      "bytes": 10012
+    },
+    {
+      "path": "apps/desktop/ui/shared/copy/locales/en.json",
+      "sha256": "1d06e5ab995d19c6e608800db4167152ae647e9a6a9fdd1e2c2987993a2cfdb0",
+      "bytes": 23754
+    },
+    {
+      "path": "apps/desktop/ui/shared/copy/locales/zh-CN.json",
+      "sha256": "a784c7d3c1f24e584bffaf26f353ec5af07d7bc85f6d4755733d838747134b2e",
+      "bytes": 23574
+    },
+    {
+      "path": "packages/core/application/context_policy_test.go",
+      "sha256": "7e9170699c685f8046d9bc4025ac3b0f2c524201dd04a7bbb88a12b94a4be464",
+      "bytes": 1652
+    },
+    {
+      "path": "packages/core/application/preferences.go",
+      "sha256": "bae4e6db798f0ebffb0909104b4437b29c26c1abb431313e7a512dd327712d00",
+      "bytes": 6737
+    },
+    {
+      "path": "packages/core/domain/ports/ports.go",
+      "sha256": "0e7b3147a03744cc671863c2a6922f25cc705fa60315c7fec5d68d7b72e62e3b",
+      "bytes": 5136
+    },
+    {
+      "path": "scripts/rewrite-stage-command.mjs",
+      "sha256": "32d0b391da56ddae403836044857dc33176648d2e364c38a3474b184cd34cdb9",
+      "bytes": 14222
+    }
+  ]
+}

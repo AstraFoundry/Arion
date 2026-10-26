@@ -18,21 +18,11 @@ func TestCorrectionRules(t *testing.T) {
 		{"uppercase recognizer", "I THINK WE SHOULD SHIP IT. OK THEN", CorrectionPolicy{LatinCase: LatinCaseUpper}, "I think we should ship it. Ok then"},
 		{"uppercase mixed", "我们 用 GITHUB 部署", CorrectionPolicy{LatinCase: LatinCaseUpper}, "我们用 github 部署"},
 		{"natural case untouched", "Use GitHub API", CorrectionPolicy{}, "Use GitHub API"},
-		{"fillers", "嗯，我觉得 um 这个可以", CorrectionPolicy{RemoveFillers: true}, "我觉得这个可以"},
-		{"filler inside word kept", "umbrella and hum", CorrectionPolicy{RemoveFillers: true}, "umbrella and hum"},
-		{"quoted chinese filler kept", "文案里的“呃”和“那个”都保留，别删除。", CorrectionPolicy{RemoveFillers: true}, "文案里的“呃”和“那个”都保留，别删除。"},
-		{"quoted english filler kept", `Keep the exact word "um" in the title.`, CorrectionPolicy{RemoveFillers: true}, `Keep the exact word "um" in the title.`},
-		{"single quoted filler and contraction kept", `Um, don't delete 'uh' or 'um'.`, CorrectionPolicy{RemoveFillers: true}, `don't delete 'uh' or 'um'.`},
-		{"french apostrophe is not a quotation", "um l'équipe arrive", CorrectionPolicy{RemoveFillers: true}, "l'équipe arrive"},
-		{"unquoted filler around quote removed", `um keep "uh" here, uh please`, CorrectionPolicy{RemoveFillers: true}, `keep "uh" here, please`},
-		{"unfinished quoted filler kept", "保留原文“呃", CorrectionPolicy{RemoveFillers: true}, "保留原文“呃"},
-		{"word ending in filler character kept", "余额，名额，金额。", CorrectionPolicy{RemoveFillers: true}, "余额，名额，金额。"},
-		{"connected hesitation removed", "嗯我觉得这个可以，呃这个还不行。", CorrectionPolicy{RemoveFillers: true}, "我觉得这个可以，这个还不行。"},
-		{"demonstrative and repair left to rewrite", "那个按钮别删，啊不对，删这个按钮。", CorrectionPolicy{RemoveFillers: true}, "那个按钮别删，啊不对，删这个按钮。"},
+		{"hesitation left for cleanup", "嗯，我觉得 um 这个可以", CorrectionPolicy{}, "嗯，我觉得 um 这个可以"},
 		{"vocabulary whole word", "push to arion and arionic", CorrectionPolicy{Replacements: []Replacement{{From: "arion", To: "Arion"}}}, "push to Arion and arionic"},
 		{"vocabulary cjk", "打开阿里昂设置", CorrectionPolicy{Replacements: []Replacement{{From: "阿里昂", To: "Arion"}}}, "打开Arion设置"},
-		{"numbers and urls untouched", "visit https://a.io/x?y=1 at 3.14 pm", CorrectionPolicy{RemoveFillers: true}, "visit https://a.io/x?y=1 at 3.14 pm"},
-		{"negation kept", "我不 想 去", CorrectionPolicy{RemoveFillers: true}, "我不想去"},
+		{"numbers and urls untouched", "visit https://a.io/x?y=1 at 3.14 pm", CorrectionPolicy{}, "visit https://a.io/x?y=1 at 3.14 pm"},
+		{"negation kept", "我不 想 去", CorrectionPolicy{}, "我不想去"},
 		{"spelled acronym", "请把这个 P R merge 到 main 分支。", CorrectionPolicy{}, "请把这个 PR merge 到 main 分支。"},
 		{"spelled acronym run", "call the A P I now", CorrectionPolicy{}, "call the API now"},
 		{"single letters kept", "I think a B grade is fine", CorrectionPolicy{}, "I think a B grade is fine"},
@@ -53,9 +43,20 @@ func TestCorrectionReportsAppliedRules(t *testing.T) {
 	if len(got.Applied) != 0 {
 		t.Fatalf("no-op correction reported rules %v", got.Applied)
 	}
-	got = Correct("嗯 好", CorrectionPolicy{RemoveFillers: true})
-	if !reflect.DeepEqual(got.Applied, []string{"fillers", "cjk-spacing"}) || got.Text != "好" {
+	got = Correct("我不 想 去", CorrectionPolicy{})
+	if !reflect.DeepEqual(got.Applied, []string{"cjk-spacing"}) || got.Text != "我不想去" {
 		t.Fatalf("got %q %v", got.Text, got.Applied)
+	}
+}
+
+func TestCorrectionLeavesHesitationForCleanup(t *testing.T) {
+	raw := "嗯 好"
+	corrected := Correct(raw, CorrectionPolicy{})
+	if corrected.Text != "嗯好" {
+		t.Fatalf("rules edited hesitation: %q", corrected.Text)
+	}
+	if got := CleanSpeech(corrected.Text).Text; got != "好" {
+		t.Fatalf("cleanup: %q", got)
 	}
 }
 
@@ -114,7 +115,7 @@ func TestSpelledAcronymsPreserveFirstPersonAndQuotedWords(t *testing.T) {
 		}
 	}
 	raw := "I I might need the earlier train."
-	corrected := Correct(raw, CorrectionPolicy{RemoveFillers: true})
+	corrected := Correct(raw, CorrectionPolicy{})
 	if got := CleanSpeech(corrected.Text).Text; got != "I might need the earlier train." {
 		t.Fatal(got)
 	}

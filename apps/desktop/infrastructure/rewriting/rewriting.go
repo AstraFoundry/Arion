@@ -11,6 +11,7 @@ import (
 	"path/filepath"
 	"runtime"
 	"sync"
+	"time"
 
 	"arion.local/core/contracts"
 	"arion.local/core/domain"
@@ -23,6 +24,15 @@ import (
 // DefaultModel is the catalog rewriter the live pipeline uses; the
 // benchmark report records why it was chosen.
 const DefaultModel = "qwen3.5-2b-q4-k-m-metal"
+
+// Timeout gives the Windows CPU pipeline a bounded final-request budget. Zero
+// preserves the coordinator's default on other platforms; cloud owns its limit.
+func Timeout(platform string) time.Duration {
+	if platform == "windows-amd64" {
+		return 30 * time.Second
+	}
+	return 0
+}
 
 // State is the capability's user-visible readiness.
 type State string
@@ -54,7 +64,7 @@ type Status struct {
 // platform resources; development runs keep them per platform.
 func Locate(resources string) string {
 	for _, dir := range []string{filepath.Join(resources, "llm"), filepath.Join(resources, runtime.GOOS+"-"+runtime.GOARCH, "llm")} {
-		if fileExists(filepath.Join(dir, workerName())) && fileExists(filepath.Join(dir, "llama-server")) {
+		if fileExists(filepath.Join(dir, workerName())) && fileExists(filepath.Join(dir, runtimeName())) {
 			return dir
 		}
 	}
@@ -66,6 +76,13 @@ func workerName() string {
 		return "arion-llm.exe"
 	}
 	return "arion-llm"
+}
+
+func runtimeName() string {
+	if runtime.GOOS == "windows" {
+		return "llama-server.exe"
+	}
+	return "llama-server"
 }
 
 func fileExists(path string) bool {
@@ -146,9 +163,19 @@ func (s *Service) Refresh() {
 	s.set(func(st *Status) { st.Installed = err == nil })
 }
 
-// Enable provisions the model when needed and starts the worker. It blocks
-// until the worker is ready or fails; failures are explicit statuses.
+// Enable starts an installed model without downloading. A missing model stays
+// off until the user explicitly requests Download.
 func (s *Service) Enable(ctx context.Context) error {
+	return s.enable(ctx, false)
+}
+
+// Download provisions the model with the user's explicit consent, then starts
+// the worker. It blocks until ready, cancelled or failed.
+func (s *Service) Download(ctx context.Context) error {
+	return s.enable(ctx, true)
+}
+
+func (s *Service) enable(ctx context.Context, download bool) error {
 	s.mu.Lock()
 	switch {
 	case s.status.State == Unsupported:
@@ -170,16 +197,22 @@ func (s *Service) Enable(ctx context.Context) error {
 		s.mu.Unlock()
 		cancel()
 	}()
-	s.set(func(st *Status) { st.State, st.Failure = Provisioning, "" })
-	dir, err := s.store.EnsureRewriter(ctx, s.model, func(_ string, phase provision.Phase, done, total int64) {
-		s.set(func(st *Status) { st.Phase, st.Done, st.Total = phase, done, total })
-	})
+	dir, err := s.store.InstalledRewriter(s.model)
+	if download {
+		s.set(func(st *Status) { st.State, st.Failure = Provisioning, "" })
+		dir, err = s.store.EnsureRewriter(ctx, s.model, func(_ string, phase provision.Phase, done, total int64) {
+			s.set(func(st *Status) { st.Phase, st.Done, st.Total = phase, done, total })
+		})
+	} else if domain.CodeOf(err) == domain.CodeModelMissing {
+		s.set(func(st *Status) { st.State, st.Failure, st.Installed = Off, "", false })
+		return nil
+	}
 	if err != nil {
 		return s.fail(err)
 	}
 	s.set(func(st *Status) { st.State, st.Installed = Loading, true })
 	c, _, err := client.Start(ctx, client.Config{Worker: filepath.Join(s.bundled, workerName()), Runtime: s.bundled, Model: dir,
-		Threads: s.threads, MaxLength: 4096, MaxNewTokens: 256}, s.diag)
+		Threads: s.threads, MaxLength: 4096, MaxNewTokens: 2048}, s.diag)
 	if err != nil {
 		return s.fail(err)
 	}

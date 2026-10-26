@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"slices"
+	"strings"
 	"time"
 
 	"arion.local/core/contracts"
@@ -30,10 +31,14 @@ type RewritePolicy struct {
 	// Vocabulary is the approved memory; only its entries relevant to the
 	// text reach the model, at most domain.MaxRecallTerms (ADR 014).
 	Vocabulary *domain.Vocabulary
+	// Punctuation is the polished-text punctuation mode. Empty is smart.
+	// The rewrite after release uses it.
+	Punctuation domain.Punctuation
 	// Timeout bounds the final rewrite after the user stops.
 	Timeout time.Duration
-	// FinalOnly skips live previews: only the text after stop is polished.
-	// Cloud polishing uses it so one request is sent per dictation (ADR 022).
+	// FinalOnly records that polishing runs after the user stops. The
+	// coordinator does not send a rewrite during speech. Local and cloud
+	// polishing both set it (ADR 022, ADR 023).
 	FinalOnly bool
 }
 
@@ -58,10 +63,9 @@ type unit struct {
 	samples []float32
 }
 
-// liveState runs the edit-while-speaking pipeline of one session: each
-// closed segment is re-decoded by the finalizer, and the stable text is
-// rewritten as a preview while the speaker continues. Previews never commit;
-// the final rewrite after stop is the only inserted proposal.
+// liveState refines closed segments of one session while capture continues.
+// The rewriter runs once after stop, on the full recognized text. A polished
+// preview is not requested or shown during speech.
 type liveState struct {
 	policy RewritePolicy
 	units  chan unit
@@ -105,7 +109,7 @@ func snapshotRewriteRequest(request ports.RewriteRequest) ports.RewriteRequest {
 
 func sameRewriteRequest(a, b ports.RewriteRequest) bool {
 	return a.Identity == b.Identity && a.SourceRevision == b.SourceRevision &&
-		a.Text == b.Text && a.PreviousText == b.PreviousText && a.Scene == b.Scene && a.Prefill == b.Prefill &&
+		a.Text == b.Text && a.PreviousText == b.PreviousText && a.Scene == b.Scene && a.Punctuation == b.Punctuation && a.Prefill == b.Prefill &&
 		slices.Equal(a.Terms, b.Terms) && a.Context.Screen == b.Context.Screen &&
 		a.Context.Before == b.Context.Before && a.Context.After == b.Context.After &&
 		slices.Equal(a.Context.History, b.Context.History)
@@ -169,7 +173,7 @@ func (c *Coordinator) queueClosed(r *run, draft contracts.Draft) bool {
 	select {
 	case l.units <- u:
 		l.closed, l.bound = len(draft.Segments), cut
-		// Latest wins: a preview of older text would only delay refinement.
+		// A newer closed segment supersedes any in-flight preview.
 		c.mu.Lock()
 		if l.cancelPreview != nil {
 			l.cancelPreview()
@@ -214,9 +218,9 @@ func (c *Coordinator) acceptLiveDraft(r *run, draft contracts.Draft) {
 	c.publishLive(r)
 }
 
-// display joins the best available closed text with the open segment:
-// the validated preview of the stable source, else the refined text, then
-// segments still waiting for refinement, then the open tail.
+// display joins closed text with the open segment: the refined source, then
+// segments still waiting for refinement, then the open tail. The capture
+// worker does not store a polished preview for that source.
 func (l *liveState) display() (string, bool) {
 	closed, previewed := l.stable, false
 	if l.polished != "" && l.polishedFor == l.stable {
@@ -245,8 +249,9 @@ func (c *Coordinator) publishLive(r *run) {
 	c.acceptDisplay(r, text, rewrite)
 }
 
-// liveWorker refines closed segments in order and previews the latest
-// stable text. Inference never runs on the capture or pump goroutines.
+// liveWorker refines closed segments in order. It does not call the rewriter:
+// the final rewrite runs after the user releases the dictation key. Inference
+// never runs on the capture or pump goroutines.
 func (c *Coordinator) liveWorker(r *run) {
 	l := r.live
 	defer close(l.done)
@@ -262,14 +267,8 @@ func (c *Coordinator) liveWorker(r *run) {
 		l.refined = append(l.refined, text)
 		l.pending = l.pending[1:]
 		l.stable = c.correct(domain.JoinText(l.refined...))
-		stable := l.stable
 		c.mu.Unlock()
 		c.publishLive(r)
-		// Latest wins: only preview once every queued segment is refined.
-		if len(l.units) > 0 || !l.policy.Enabled || l.policy.FinalOnly || l.rewriteCtx.Err() != nil {
-			continue
-		}
-		c.preview(r, stable)
 	}
 }
 
@@ -293,9 +292,10 @@ func (c *Coordinator) correct(raw string) string {
 	return domain.Correct(raw, c.opts.Policy()).Text
 }
 
-// preview requests a live rewrite of the stable source. Failures and
-// rejections leave the refined source on screen; they never end the
-// session, because the final rewrite decides what is inserted.
+// preview rewrites one stable source. The capture worker does not call it.
+// A session shows recognized text until release, then rewriteFinal sends the
+// full recognized text. Failures leave the refined source unchanged and never
+// end the session.
 func (c *Coordinator) preview(r *run, stable string) {
 	l := r.live
 	if stable == "" || c.deps.Rewriter == nil {
@@ -311,7 +311,7 @@ func (c *Coordinator) preview(r *run, stable string) {
 	rc := r.contextFor(0)
 	started := time.Now()
 	request := snapshotRewriteRequest(ports.RewriteRequest{Identity: r.identity, Text: stable,
-		Scene: string(domain.ModelScene(domain.Scene(l.policy.Scene), stable)), Terms: l.policy.terms(stable), Context: rc, Live: true})
+		Scene: string(domain.ModelScene(domain.Scene(l.policy.Scene), stable)), Punctuation: string(l.policy.Punctuation), Terms: l.policy.terms(stable), Context: rc, Live: true})
 	completedRequest := snapshotRewriteRequest(request)
 	result, err := c.deps.Rewriter.Rewrite(ctx, request)
 	c.diagnostic(r, ports.DiagnosticPreview, started, err)
@@ -321,8 +321,7 @@ func (c *Coordinator) preview(r *run, stable string) {
 	if err != nil || ctx.Err() != nil {
 		return
 	}
-	text := domain.AlignLiveEnding(stable, result.Text)
-	verdict := domain.ValidateRewriteDelivery(domain.RewriteCheck{Source: stable, Candidate: text, Truncated: result.Truncated, Terms: completedRequest.Terms, Context: completedRequest.Context})
+	text, verdict := deliverableRewrite(l.policy.Punctuation, stable, result, true, completedRequest.Terms, completedRequest.Context)
 	if c.deps.Diagnostics != nil {
 		c.deps.Diagnostics.Observe(ports.Diagnostic{Identity: r.identity, Stage: ports.DiagnosticValidation, Verdict: verdict})
 	}
@@ -406,7 +405,7 @@ func (c *Coordinator) rewriteFinal(r *run, source string, policy RewritePolicy) 
 	rc := r.contextFor(contextWait)
 	previous := c.previousStableSource(r, source)
 	request := snapshotRewriteRequest(ports.RewriteRequest{Identity: r.identity, Text: source, PreviousText: previous,
-		Scene: string(domain.ModelScene(domain.Scene(policy.Scene), source)), Terms: policy.termsForFinal(source, previous), Context: rc})
+		Scene: string(domain.ModelScene(domain.Scene(policy.Scene), source)), Punctuation: string(policy.Punctuation), Terms: policy.termsForFinal(source, previous), Context: rc})
 	result, reused := c.completedRewrite(r, request)
 	var err error
 	if !reused {
@@ -423,11 +422,45 @@ func (c *Coordinator) rewriteFinal(r *run, source string, policy RewritePolicy) 
 	case err != nil:
 		return cleaned, RewriteUnavailable, true
 	}
-	verdict := domain.ValidateRewriteDelivery(domain.RewriteCheck{Source: source, Candidate: result.Text, Truncated: result.Truncated, Terms: request.Terms, Context: request.Context})
+	var verdict domain.RewriteVerdict
+	text, verdict = deliverableRewrite(policy.Punctuation, source, result, false, request.Terms, request.Context)
 	if verdict != domain.RewriteAccepted {
 		return cleaned, string(verdict), true
 	}
-	return result.Text, string(verdict), true
+	return text, string(verdict), true
+}
+
+// deliverableRewrite checks the raw proposal before punctuation can hide a
+// control marker. Preview, final delivery, and cache reuse share this order:
+// validate result.Text, then apply the mode, then reject an empty conversion.
+// The caller caches result only when the verdict is accepted.
+func deliverableRewrite(mode domain.Punctuation, source string, result ports.RewriteResult, live bool, terms []string, context domain.RewriteContext) (string, domain.RewriteVerdict) {
+	verdict := domain.ValidateRewriteDelivery(domain.RewriteCheck{Source: source, Candidate: result.Text, Truncated: result.Truncated, Terms: terms, Context: context})
+	if verdict != domain.RewriteAccepted {
+		return "", verdict
+	}
+	text := punctuate(mode, result.Text, live, source)
+	if strings.TrimSpace(text) == "" {
+		return "", domain.RewriteEmpty
+	}
+	return text, domain.RewriteAccepted
+}
+
+// punctuate applies the punctuation mode to a model proposal. Smart and
+// full keep the model's punctuation; a live preview of those modes still
+// aligns its ending with the open source. Omit and spaces post-edit both
+// the live preview and the inserted text, so the mode is what is shown.
+// Search removes a sentence-final mark later, in FinishScene.
+func punctuate(mode domain.Punctuation, candidate string, live bool, source string) string {
+	switch mode {
+	case domain.PunctuationOmit, domain.PunctuationSpaces:
+		return domain.ApplyPunctuation(mode, candidate)
+	default:
+		if live {
+			return domain.AlignLiveEnding(source, candidate)
+		}
+		return candidate
+	}
 }
 
 // LiveStats reports how many validated previews a session displayed.

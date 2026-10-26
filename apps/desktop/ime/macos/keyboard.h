@@ -1,5 +1,6 @@
 #import <Cocoa/Cocoa.h>
 #import "ranking.h"
+#include "../shared/menu.h"
 
 // Immutable output copied from a single synchronous engine revision.
 @interface ArionKeyboardSnapshot : NSObject
@@ -23,6 +24,7 @@
 
 // One process-wide Rime service; sessions never share client pointers.
 @interface ArionKeyboardEngine : NSObject
+@property(readonly) RimeApi *api;
 @property(readonly) NSUInteger generation;
 // Chinese-mode width and punctuation (KBD-07), shared by all sessions and
 // persisted in the user directory.

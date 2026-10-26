@@ -1,6 +1,6 @@
 # Product notifications
 
-[ADR 024](../decisions/024-account-product-notifications.md) covers account notices
+[ADR 026](../decisions/026-account-product-notifications.md) covers account notices
 sent from the AstraFoundry product admin. This is independent of app-update
 reminders. General settings has a separate opt-in switch, off for new/migrated
 profiles, with explicit notification authorization. The standard center and an

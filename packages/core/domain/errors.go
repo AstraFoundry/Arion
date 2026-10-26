@@ -8,6 +8,15 @@ import (
 // ErrorCode is a stable, content-free failure category from the 004 contract.
 type ErrorCode string
 
+// DetailInputMethodClientOutdated identifies an editor that still has the
+// previous native input-method build loaded after an application upgrade.
+const DetailInputMethodClientOutdated = "input method client build outdated"
+
+const (
+	DetailInputMethodArtifactUnverified  = "input method artifact unverified"
+	DetailInputMethodProtocolUnsupported = "input method protocol unsupported"
+)
+
 const (
 	CodePermissionDenied       ErrorCode = "PERMISSION_DENIED"
 	CodeModelMissing           ErrorCode = "MODEL_MISSING"

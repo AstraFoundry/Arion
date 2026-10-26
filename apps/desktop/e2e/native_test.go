@@ -155,6 +155,30 @@ func TestOverlayExplainsFailure(t *testing.T) {
 	capture(t, overlay, "overlay-failure", uiapp.OverlayWidth, uiapp.OverlayHeight)
 }
 
+// The pill is an owned status surface, not a document that can be closed.
+// If its native window is destroyed, the next session must restore it.
+func TestOverlayRestoredAfterDestroy(t *testing.T) {
+	var original *mygo.Window
+	eventually(t, "overlay exists", func() bool {
+		original = app.Windows()["overlay"]
+		return original != nil
+	})
+	if original.IsClosable() {
+		t.Fatal("status overlay exposes a close action")
+	}
+	original.Destroy()
+	eventually(t, "destroyed overlay released", func() bool { return app.Windows()["overlay"] == nil })
+	app.Coordinator().Start()
+	var restored *mygo.Window
+	eventually(t, "next session restores overlay", func() bool {
+		restored = app.Windows()["overlay"]
+		return restored != nil && restored != original && restored.IsVisible()
+	})
+	if restored.IsFocused() || restored.IsClosable() {
+		t.Fatal("restored overlay can take focus or be closed")
+	}
+}
+
 func TestSettingsWindowLifecycle(t *testing.T) {
 	app.OpenSettings()
 	var settings *mygo.Window

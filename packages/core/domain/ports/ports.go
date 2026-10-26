@@ -106,7 +106,10 @@ type RewriteRequest struct {
 	// It is spelling evidence, never generated text or a replacement final source.
 	PreviousText string
 	Scene        string
-	Terms        []string
+	// Punctuation is the cleanup punctuation mode (a domain.Punctuation).
+	// Empty is smart. It selects a prompt bullet and is not a sentence type.
+	Punctuation string
+	Terms       []string
 	// Context supplies spelling evidence to the shared selection stage;
 	// the formatting stage receives only the edited source.
 	Context domain.RewriteContext

@@ -150,7 +150,7 @@ The existing `live:text`, `live:audio` and `live:report` commands also evaluate 
 
 Freeze and hash new test cases before candidate generation; previous challenge sets are regression/development data. Pin the worker, benchmark binary, cleanup source, prompt, model and runtime, and use fresh output paths for every arm. [The alignment report](../../benchmarks/results/disfluency-alignment-v2/README.md) records the paired local runs and the limits of synthetic text/TTS evaluation. This does not establish measured competitor parity or multilingual ASR coverage.
 
-The audio driver now matches the product default (`RemoveFillers=true`). Use `FILLERS=0` only for an explicitly labelled diagnostic ablation. New audio rows record `removeFillers`; legacy rows report null, never an inferred false. Mixed policies in one run and mismatches with an explicitly declared report policy fail. The final report retains the older filler-off arm separately, including its regression.
+Rule correction (`arion-rules-v4`) leaves the standalone hesitation list in place. `speech-spans-v2` deletes it when polishing runs. The audio driver no longer accepts `FILLERS` or `-remove-fillers`. Historical audio rows may still record `removeFillers`; legacy rows report null, never an inferred false. Mixed policies in one historical run and mismatches with an explicitly declared report policy fail. The final report retains the older filler-off arm separately, including its regression.
 
 ## Recognition-stage memory research
 

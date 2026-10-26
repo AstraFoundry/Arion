@@ -1,13 +1,19 @@
 // Stage a pinned universal offline keyboard engine; SDK headers remain build-only.
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { chmodSync, copyFileSync, cpSync, existsSync, mkdirSync, readFileSync, readdirSync, renameSync, rmSync, statSync, utimesSync, writeFileSync } from 'node:fs';
+import { chmodSync, copyFileSync, cpSync, existsSync, mkdirSync, readFileSync, readdirSync, renameSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { pinnedFile } from './lib/pinned-file.mjs';
+import { stageKeyboardData } from './lib/keyboard-data.mjs';
+
+if (process.platform === 'win32') {
+  await import('./stage-keyboard-runtime-windows.mjs');
+  process.exit(0);
+}
 
 if (process.platform !== 'darwin') {
-  console.log('The offline keyboard runtime is macOS-only; skipped.');
+  console.log('No offline keyboard runtime is pinned for this platform; skipped.');
   process.exit(0);
 }
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -17,7 +23,7 @@ const work = path.join(root, '.workspace/keyboard-runtime');
 const destination = path.join(root, 'apps/desktop/resources/darwin/keyboard');
 const staging = path.join(work, `staging-${process.pid}`);
 const sdk = path.join(work, 'sdk');
-const profile = path.join(root, 'apps/desktop/ime/macos/keyboard-data');
+const profile = path.join(root, 'apps/desktop/ime/shared/keyboard-data');
 const hash = file => createHash('sha256').update(readFileSync(file)).digest('hex');
 const run = (command, args, options = {}) => execFileSync(command, args, { cwd: root, ...options });
 const copy = (from, to) => { mkdirSync(path.dirname(to), { recursive: true }); copyFileSync(from, to); };
@@ -74,34 +80,12 @@ try {
   copy(path.join(sdk, 'boost-LICENSE'), path.join(staging, 'licenses/boost-LICENSE'));
   member(archives.dependencies, 'include/COPYING.darts-clone', path.join(staging, 'licenses/darts-clone-COPYING'));
   member(archives.dependencies, 'include/utf8.h', path.join(staging, 'licenses/utf8cpp-notice.h'));
-  for (const spec of manifest.files) copy(pinnedFile(spec), path.join(staging, spec.to));
-  for (const name of ['arion_pinyin.schema.yaml', 'default.custom.yaml']) copy(path.join(profile, name), path.join(staging, 'data', name));
-  copy(path.join(profile, 'README.md'), path.join(staging, 'licenses/Arion-profile-README.md'));
-  copy(manifestPath, path.join(staging, 'licenses/keyboard-runtime.json'));
-
-  const data = path.join(staging, 'data');
-  const build = path.join(data, 'build');
-  const user = path.join(staging, 'compile-profile');
-  mkdirSync(user, { recursive: true });
-  mkdirSync(build, { recursive: true });
-  // Compiler schema metadata uses source modification times; keep them stable.
-  for (const name of readdirSync(data)) if (statSync(path.join(data, name)).isFile()) utimesSync(path.join(data, name), 1, 1);
-  try {
-    run(path.join(runtime, 'dist/bin/rime_deployer'), ['--build', user, data, build], {
+  stageKeyboardData({ manifest, manifestPath, profile, staging, work,
+    deploy: args => run(path.join(runtime, 'dist/bin/rime_deployer'), args, {
       env: { ...process.env, DYLD_LIBRARY_PATH: path.join(runtime, 'dist/lib'), GLOG_logtostderr: '1' },
       stdio: ['ignore', 'ignore', 'pipe'], maxBuffer: 8 * 1024 * 1024,
-    });
-  } catch (error) {
-    const log = path.join(work, 'deployment-failure.log');
-    writeFileSync(log, error.stderr ?? error.message);
-    throw new Error(`Keyboard schema deployment failed; inspect ${log}`, { cause: error.message });
-  }
-  for (const name of ['default.yaml', 'arion_pinyin.schema.yaml', 'pinyin_simp.table.bin', 'pinyin_simp.reverse.bin', 'pinyin_simp.prism.bin']) {
-    if (!existsSync(path.join(build, name))) throw new Error(`Keyboard prebuild is incomplete: ${name}`);
-  }
-  const schema = readFileSync(path.join(build, 'arion_pinyin.schema.yaml'), 'utf8');
-  if (!schema.includes('db_class: arion_encrypted_userdb') || !schema.includes('schema_id: arion_pinyin')) throw new Error('Compiled keyboard schema lost encrypted database or schema identity.');
-  rmSync(user, { recursive: true, force: true });
+    }),
+  });
   const files = {};
   const inventory = directory => {
     for (const entry of readdirSync(directory, { withFileTypes: true })) {

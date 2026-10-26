@@ -45,6 +45,7 @@ func (r *recorder) OpenMicrophoneSettings()    { r.call("open-mic") }
 func (r *recorder) OpenAccessibilitySettings() { r.call("open-ax") }
 func (r *recorder) RetryModel()                { r.call("retry") }
 func (r *recorder) RetryPolish()               { r.call("retry-polish") }
+func (r *recorder) DownloadPolish()            { r.call("download-polish") }
 func (r *recorder) UseBundle(id string)        { r.call("use:" + id) }
 func (r *recorder) UseRecommendedBundle()      { r.call("use-recommended") }
 func (r *recorder) RefreshDevices()            { r.call("devices") }
@@ -139,7 +140,7 @@ func fixture() (*runtime.State, *recorder, runtime.Store) {
 	state := &runtime.State{
 		Version:     "0.1.0",
 		Permissions: runtime.Permissions{Microphone: runtime.ConsentGranted, Accessibility: runtime.ConsentGranted},
-		Preferences: runtime.Preferences{HoldKey: runtime.DefaultHoldKey(platform.GOOS), Delivery: runtime.DeliveryAutomatic, RemoveFillers: true, Sounds: true, CheckUpdates: true,
+		Preferences: runtime.Preferences{HoldKey: runtime.DefaultHoldKey(platform.GOOS), Delivery: runtime.DeliveryAutomatic, Sounds: true, CheckUpdates: true,
 			Keyboard: runtime.KeyboardPreferences{PageSize: 9, CandidateSize: runtime.CandidateMedium, Appearance: runtime.AppearanceSystem, Accent: runtime.AccentYellow, ContextRanking: true}},
 		InputMethod: runtime.InputMethodAbsent,
 		Account:     runtime.Account{Phase: runtime.AccountSignedOut, Issuer: "https://astrafoundry.si", Portal: "https://astrafoundry.si/account"},
@@ -843,6 +844,50 @@ func TestOnboardingFlow(t *testing.T) {
 	}
 }
 
+func TestOnboardingLanguageClearsCaptionButtons(t *testing.T) {
+	for _, chrome := range []struct {
+		name string
+		bar  ui.TitleBar
+	}{
+		{"windows", ui.TitleBar{Height: 32, Right: 138}},
+		{"tall-caption", ui.TitleBar{Height: 48, Right: 180}},
+		{"macos", ui.TitleBar{Height: 28, Left: 80}},
+	} {
+		t.Run(chrome.name, func(t *testing.T) {
+			state, _, store := fixture()
+			page := onboarding.NewPage()
+			tt := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, OnboardingWidth, OnboardingHeight)
+			tt.SetTitleBar(chrome.bar)
+			settle(tt)
+			for _, label := range []string{"English", "简体中文"} {
+				r, ok := tt.Find(store.Copy().Text(copy.LanguageLabel))
+				if !ok {
+					t.Fatal("language picker missing")
+				}
+				if r.Y < chrome.bar.Height && (r.X < chrome.bar.Left || r.X+r.W > OnboardingWidth-chrome.bar.Right) {
+					t.Fatalf("language picker %+v intersects native caption controls %+v", r, chrome.bar)
+				}
+				snapshot(t, tt, "onboarding-caption-"+chrome.name+"-"+label)
+				if err := tt.Click(label); err != nil {
+					t.Fatal(err)
+				}
+				settle(tt)
+				next := "简体中文"
+				if label == next {
+					next = "English"
+				}
+				if err := tt.Click(next); err != nil {
+					t.Fatal(err)
+				}
+				settle(tt)
+			}
+			if state.Preferences.UILanguage != runtime.LanguageEnglish {
+				t.Fatal("language round trip failed")
+			}
+		})
+	}
+}
+
 func TestInterfaceLanguageSwitch(t *testing.T) {
 	state, actions, store := fixture()
 	page := settings.NewPage()
@@ -1010,7 +1055,8 @@ func TestHoldKeySettingsAndPill(t *testing.T) {
 		t.Fatalf("hold key not chosen: %v", actions.calls)
 	}
 	state.Hold = runtime.Hold{Failure: runtime.CodePermissionDenied}
-	settle(tt)
+	// Finish the card height transition before clicking the revealed consent.
+	rest(tt, 200*time.Millisecond)
 	if !hasText(tt, en.Text(copy.HoldKeyNeedsMonitoring)) {
 		t.Fatalf("missing consent not explained: %q", tt.Texts())
 	}
@@ -1323,6 +1369,99 @@ func TestInputMethodSetupStates(t *testing.T) {
 			settle(tt)
 			if !hasText(tt, messages.Text(copy.IMEFailed)) || !hasText(tt, messages.Text(copy.IMEInstall)) {
 				t.Fatalf("failure lost retry: %q", tt.Texts())
+			}
+		})
+	}
+}
+
+func TestWindowsKeyboardSettings(t *testing.T) {
+	for _, language := range []runtime.UILanguage{runtime.LanguageEnglish, runtime.LanguageChinese} {
+		t.Run(string(language), func(t *testing.T) {
+			state, actions, store := fixture()
+			state.Platform = "windows-amd64"
+			state.Preferences.UILanguage = language
+			page := settings.NewPage()
+			page.Section = settings.Keyboard
+			messages := store.Copy()
+			tt := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, SettingsWidth, SettingsHeight)
+			settle(tt)
+			for _, key := range []copy.Key{copy.IMEWindowsName, copy.IMEWindowsInstallHint, copy.IMEInstall} {
+				if !hasText(tt, messages.Text(key)) {
+					t.Fatalf("Windows setup missing %s: %q", key, tt.Texts())
+				}
+			}
+			for _, key := range []copy.Key{copy.KbdPageSize, copy.KbdCandidateSize, copy.KbdAppearance, copy.KbdAccent, copy.KbdContextRanking, copy.KbdSwitchLanguage} {
+				if !hasText(tt, messages.Text(key)) {
+					t.Fatalf("Windows keyboard setting missing %s", key)
+				}
+			}
+			if hasText(tt, messages.Text(copy.IMESetupHint)) {
+				t.Fatal("Windows setup exposes macOS instructions")
+			}
+			snapshot(t, tt, "settings-windows-keyboard-"+string(language))
+			if err := tt.Click("9"); err != nil {
+				t.Fatal(err)
+			}
+			settle(tt)
+			if err := tt.Click("6"); err != nil {
+				t.Fatal(err)
+			}
+			settle(tt)
+			if state.Preferences.Keyboard.PageSize != 6 {
+				t.Fatalf("Windows page-size preference was not saved: %+v", state.Preferences.Keyboard)
+			}
+			if err := tt.Click(messages.Text(copy.IMEInstall)); err != nil {
+				t.Fatal(err)
+			}
+			if !actions.called("install-ime") {
+				t.Fatalf("install action missing: %v", actions.calls)
+			}
+			state.InputMethod = runtime.InputMethodInstalled
+			state.InputMethodUpdate = true
+			settle(tt)
+			if !hasText(tt, messages.Text(copy.IMEUpdateAvailable)) || hasText(tt, messages.Text(copy.IMEUpdate)) {
+				t.Fatalf("Windows update requires an unnecessary manual action: %q", tt.Texts())
+			}
+			state.InputMethodUpdateFailed = true
+			settle(tt)
+			if hasText(tt, messages.Text(copy.IMEUpdateAvailable)) || !hasText(tt, messages.Text(copy.IMEUpdate)) {
+				t.Fatalf("failed Windows update must offer a retry: %q", tt.Texts())
+			}
+			beforeRetry := len(actions.calls)
+			if err := tt.Click(messages.Text(copy.IMEUpdate)); err != nil {
+				t.Fatal(err)
+			}
+			if len(actions.calls) != beforeRetry+1 || actions.calls[beforeRetry] != "install-ime" {
+				t.Fatal("Windows update retry did not invoke installation")
+			}
+			snapshot(t, tt, "settings-windows-keyboard-update-"+string(language))
+			state.InputMethod = runtime.InputMethodPending
+			settle(tt)
+			if !hasText(tt, messages.Text(copy.IMEUpdate)) {
+				t.Fatal("failed enablement after update lost its retry action")
+			}
+			state.InputMethodUpdateFailed = false
+			settle(tt)
+			if !hasText(tt, messages.Text(copy.IMEUpdate)) || hasText(tt, messages.Text(copy.IMEUpdateAvailable)) {
+				t.Fatal("interrupted pending upgrade must offer explicit recovery without claiming automatic enablement")
+			}
+			state.InputMethodUpdate = false
+			state.InputMethodUpdateFailed = false
+			state.InputMethod = runtime.InputMethodPending
+			settle(tt)
+			if !hasText(tt, messages.Text(copy.IMEWindowsPending)) || hasText(tt, messages.Text(copy.IMEPending)) || hasText(tt, messages.Text(copy.IMEUpdate)) {
+				t.Fatalf("Windows registration status uses the wrong platform copy: %q", tt.Texts())
+			}
+			for original, translated := range map[copy.Key]copy.Key{
+				copy.IMEDiscoveryFailed: copy.IMEWindowsDiscoveryFailed,
+				copy.IMEEnableFailed:    copy.IMEWindowsEnableFailed,
+				copy.IMESettingsFailed:  copy.IMEWindowsSettingsFailed,
+			} {
+				state.InputMethodError = original
+				settle(tt)
+				if !hasText(tt, messages.Text(translated)) || hasText(tt, messages.Text(original)) {
+					t.Fatalf("Windows failure uses the wrong platform copy: %q", tt.Texts())
+				}
 			}
 		})
 	}

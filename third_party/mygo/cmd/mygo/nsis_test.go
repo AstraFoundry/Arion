@@ -35,9 +35,10 @@ func TestWindowsInstaller(t *testing.T) {
 		t.Skip("NSIS is not installed")
 	}
 	dir := testModule(t, map[string]string{
-		"main.go":              "package main\n\nfunc main() {}\n",
+		"main.go":              "package main\nimport (\"os\"; \"time\")\nfunc main() { if len(os.Args)>1 { _ = os.WriteFile(os.Args[1], []byte(\"ready\"), 0600); for {time.Sleep(time.Second)} } }\n",
 		"mygo.json":            `{"name": "Setup Test", "identifier": "com.example.setuptest", "version": "2.0.0", "urlSchemes": ["setuptest"], "fileAssociations": [{"ext": ["setuptest"], "name": "Setup Test File"}], "windows": {"signCommand": "echo %1>>signed.txt"}}`,
 		"resources/data/a.txt": "a",
+		"resources/b.txt":      "b",
 		"resources/icon.png":   string(defaultIcon()),
 	})
 	c, err := loadConfig(dir)
@@ -79,6 +80,71 @@ func TestWindowsInstaller(t *testing.T) {
 			t.Errorf("not installed: %s", f)
 		}
 	}
+	// Reject a running app before changing any payload file.
+	ready := filepath.Join(t.TempDir(), "ready")
+	running := exec.Command(filepath.Join(install, "Setup Test.exe"), ready)
+	if err := running.Start(); err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { _ = running.Process.Kill() })
+	deadline := time.Now().Add(10 * time.Second)
+	for !fileExists(ready) && time.Now().Before(deadline) {
+		time.Sleep(20 * time.Millisecond)
+	}
+	if !fileExists(ready) {
+		t.Fatal("owned app did not start")
+	}
+	if err := exec.Command(setup, "/S", "/D="+install).Run(); err == nil {
+		t.Fatal("installer accepted a running application")
+	}
+	_ = running.Process.Kill()
+	_ = running.Wait()
+	unknown := filepath.Join(install, "user-added.txt")
+	if err := os.WriteFile(unknown, []byte("preserve"), 0600); err != nil {
+		t.Fatal(err)
+	}
+	// A locked later payload entry must roll back entries already promoted.
+	// This reproduces the old installer's mixed-version failure without
+	// touching any real installation or user data.
+	oldExecutable := filepath.Join(install, "Setup Test.exe")
+	oldBytes, err := os.ReadFile(oldExecutable)
+	if err != nil {
+		t.Fatal(err)
+	}
+	previous := append(append([]byte{}, oldBytes...), []byte("previous release")...)
+	if err := os.WriteFile(oldExecutable, previous, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(install, "b.txt"), []byte("previous b"), 0600); err != nil {
+		t.Fatal(err)
+	}
+	locked, err := os.Open(filepath.Join(install, "data", "a.txt"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	_, installErr := exec.Command(setup, "/S", "/D="+install).CombinedOutput()
+	_ = locked.Close()
+	if installErr == nil {
+		t.Fatal("installation succeeded while an installed resource was locked")
+	}
+	if got, err := os.ReadFile(oldExecutable); err != nil || !bytes.Equal(got, previous) {
+		t.Fatalf("failed upgrade did not restore the previous executable: %v", err)
+	}
+	if got, err := os.ReadFile(filepath.Join(install, "b.txt")); err != nil || string(got) != "previous b" {
+		t.Fatalf("failed upgrade did not restore the previous resource: %q, %v", got, err)
+	}
+	if got, err := os.ReadFile(filepath.Join(install, "data", "a.txt")); err != nil || string(got) != "a" {
+		t.Fatalf("failed upgrade lost the previous resource: %q, %v", got, err)
+	}
+	if out, err := exec.Command(setup, "/S", "/D="+install).CombinedOutput(); err != nil {
+		t.Fatalf("retrying unlocked upgrade: %v\n%s", err, out)
+	}
+	if got, err := os.ReadFile(oldExecutable); err != nil || !bytes.Equal(got, oldBytes) {
+		t.Fatalf("successful upgrade did not replace the executable: %v", err)
+	}
+	if got, err := os.ReadFile(unknown); err != nil || string(got) != "preserve" {
+		t.Fatalf("upgrade changed an unrelated file: %q, %v", got, err)
+	}
 	registered := func(key string) bool {
 		return exec.Command("reg", "query", `HKCU\Software\Classes\`+key).Run() == nil
 	}
@@ -119,6 +185,9 @@ func TestWindowsInstaller(t *testing.T) {
 		}
 	}()
 	uninstall(t, install)
+	if got, err := os.ReadFile(unknown); err != nil || string(got) != "preserve" {
+		t.Fatalf("uninstall changed an unrelated file: %q, %v", got, err)
+	}
 }
 
 // uninstall runs the uninstaller of the app installed in dir silently, and
@@ -132,11 +201,11 @@ func uninstall(t *testing.T, dir string) {
 	// the app's folder last.
 	deadline := time.Now().Add(30 * time.Second)
 	for {
-		if _, err := os.Stat(dir); os.IsNotExist(err) {
+		if _, err := os.Stat(filepath.Join(dir, "Uninstall.exe")); os.IsNotExist(err) {
 			return
 		}
 		if time.Now().After(deadline) {
-			t.Fatal("the uninstaller left the app installed")
+			t.Fatal("the uninstaller left its executable installed")
 		}
 		time.Sleep(100 * time.Millisecond)
 	}

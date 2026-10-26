@@ -59,7 +59,6 @@ type draftEvent struct {
 }
 
 type row struct {
-	RemoveFillers  bool         `json:"removeFillers"`
 	CaseID         string       `json:"caseId"`
 	VariantID      string       `json:"variantId"`
 	Events         []draftEvent `json:"events"`
@@ -82,7 +81,6 @@ func main() {
 	corpusPath := flag.String("corpus", "", "text corpus the manifest was built from")
 	storeRoot := flag.String("models", "", "verified model store root")
 	bundleID := flag.String("bundle", "", "catalog bundle id")
-	removeFillers := flag.Bool("remove-fillers", true, "remove hesitation tokens before rewriting, matching the product default")
 	segment := flag.Bool("segment-finalize", false, "finalize closed segments while speaking")
 	worker := flag.String("llm-worker", "", "arion-llm executable (enables rewriting)")
 	runtimeDir := flag.String("llm-runtime", "", "GenAI runtime directory")
@@ -143,14 +141,14 @@ func main() {
 		samples, err := audio.ReadWAV(path)
 		check(err)
 		text := texts[s.ID]
-		r := runCase(manager, rewriter, bundle, *segment, *removeFillers, *chunk, samples, text, fmt.Sprintf("%s-%d", s.ID, i))
+		r := runCase(manager, rewriter, bundle, *segment, *chunk, samples, text, fmt.Sprintf("%s-%d", s.ID, i))
 		r.CaseID, r.VariantID, r.Segments = s.ID, *variant, s.Segments
 		check(encoder.Encode(r))
 		fmt.Fprintf(os.Stderr, "%-18s stop→final %6.0f ms previews=%d %s\n", s.ID, r.StopToFinalMs, r.PreviewEvents, r.Rewrite)
 	}
 }
 
-func runCase(manager *modelruntime.Manager, rewriter *client.Client, bundle models.Bundle, segment, removeFillers bool, chunk int, samples []float32, text textSample, id string) row {
+func runCase(manager *modelruntime.Manager, rewriter *client.Client, bundle models.Bundle, segment bool, chunk int, samples []float32, text textSample, id string) row {
 	replay := &audio.Replay{Samples: samples, ChunkMs: chunk}
 	deps := application.Dependencies{Audio: replay, Recognizers: manager, NewID: func() string { return id }}
 	if bundle.Finalizer != "" {
@@ -163,12 +161,12 @@ func runCase(manager *modelruntime.Manager, rewriter *client.Client, bundle mode
 	}
 	coordinator, err := application.NewCoordinator(deps, application.Options{Correction: true, SegmentFinalize: segment,
 		Policy: func() domain.CorrectionPolicy {
-			return domain.CorrectionPolicy{LatinCase: manager.LatinCase(), RemoveFillers: removeFillers}
+			return domain.CorrectionPolicy{LatinCase: manager.LatinCase()}
 		},
 		Rewrite: func() application.RewritePolicy { return policy }})
 	check(err)
 	var mu sync.Mutex
-	r := row{RemoveFillers: removeFillers}
+	r := row{}
 	var finalAt time.Time
 	finished := make(chan struct{}, 1)
 	capturing := make(chan struct{}, 1)

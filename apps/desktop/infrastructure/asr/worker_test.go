@@ -15,6 +15,10 @@ import (
 )
 
 func TestMain(m *testing.M) {
+	if os.Getenv("ARION_ASR_LIFECYCLE_WORKER") == "1" {
+		lifecycleWorker()
+		os.Exit(0)
+	}
 	if os.Getenv("ARION_ASR_TEST_WORKER") == "1" {
 		out := json.NewEncoder(os.Stdout)
 		_ = out.Encode(message{Type: "ready", Protocol: 3})

@@ -55,6 +55,11 @@ func Ready(step Step, s *runtime.State) bool {
 		return s.Model.State == runtime.ModelReady || s.Model.State == runtime.ModelProvisioning || s.Model.State == runtime.ModelLoading
 	case HoldKey:
 		return s.Hold.Active
+	case Polish:
+		if !runtime.PolishOn(s) || s.Preferences.PolishEngine == runtime.PolishCloud {
+			return true
+		}
+		return s.Polish.State == runtime.PolishProvisioning || s.Polish.State == runtime.PolishLoading || s.Polish.State == runtime.PolishReady
 	case Account:
 		// A sign-in in flight is cancelled or finished before moving on.
 		return !s.Account.Busy()

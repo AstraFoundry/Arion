@@ -7,6 +7,7 @@ import (
 	"arion.local/desktop/ui/shared/theme"
 	"github.com/egoist/mygo/ui"
 	"testing"
+	"time"
 )
 
 func TestProductNotificationPreferenceIsExplicit(t *testing.T) {
@@ -21,6 +22,7 @@ func TestProductNotificationPreferenceIsExplicit(t *testing.T) {
 		if !hasText(tt, messages.Text(copy.ProductNotificationsLabel)) || !hasText(tt, messages.Text(copy.ProductNotificationsDetail)) {
 			t.Fatal(tt.Texts())
 		}
+		snapshot(t, tt, "product-notifications-"+string(language)+"-off")
 		toggle := func(detail copy.Key) {
 			t.Helper()
 			label, ok := tt.Find(messages.Text(copy.ProductNotificationsLabel))
@@ -39,12 +41,14 @@ func TestProductNotificationPreferenceIsExplicit(t *testing.T) {
 			t.Fatal("switch bypassed explicit authorization")
 		}
 		state.Preferences.ProductNotifications = true
-		settle(tt)
+		rest(tt, 160*time.Millisecond)
+		snapshot(t, tt, "product-notifications-"+string(language)+"-enabled")
 		toggle(copy.ProductNotificationsDetail)
 		settle(tt)
 		if state.Preferences.ProductNotifications {
 			t.Fatal("switch did not disable")
 		}
+		rest(tt, 160*time.Millisecond)
 		for _, step := range []struct {
 			name              string
 			permission        runtime.UpdateNotificationPermission
@@ -67,6 +71,7 @@ func TestProductNotificationPreferenceIsExplicit(t *testing.T) {
 		if !hasText(tt, messages.Text(copy.ProductNotificationsSignIn)) {
 			t.Fatal("missing account requirement")
 		}
+		snapshot(t, tt, "product-notifications-"+string(language)+"-signed-out")
 		actions.calls = nil
 		toggle(copy.ProductNotificationsSignIn)
 		settle(tt)

@@ -32,6 +32,7 @@ type (
 	UsageLog            = domain.UsageLog
 	UsageDay            = domain.UsageDay
 	PolishEngine        = application.PolishEngine
+	Punctuation         = domain.Punctuation
 )
 
 const (
@@ -51,6 +52,11 @@ const (
 
 	PolishLocal = application.PolishLocal
 	PolishCloud = application.PolishCloud
+
+	PunctuationSmart  = domain.PunctuationSmart
+	PunctuationFull   = domain.PunctuationFull
+	PunctuationOmit   = domain.PunctuationOmit
+	PunctuationSpaces = domain.PunctuationSpaces
 
 	DeliveryAutomatic = application.DeliveryAutomatic
 	DeliveryClipboard = application.DeliveryClipboard
@@ -118,6 +124,7 @@ const (
 	CodeNoSpeech               = domain.CodeNoSpeech
 	CodeSecureFieldBlocked     = domain.CodeSecureFieldBlocked
 	CodeArtifactUnverified     = domain.CodeArtifactUnverified
+	CodeContractUnsupported    = domain.CodeContractUnsupported
 	CodeProvisioningFailed     = domain.CodeProvisioningFailed
 	CodeEvaluationMissing      = domain.CodeEvaluationUnavailable
 	CodeCancelled              = domain.CodeCancelled
@@ -125,11 +132,14 @@ const (
 
 // Diagnostic categories adapters attach to PERMISSION_DENIED.
 const (
-	DetailMicrophone    = "microphone"
-	DetailAccessibility = "accessibility"
-	DetailInputMethod   = "input method connection unavailable"
-	DetailIMEClient     = "input method client unavailable"
-	DetailIMEUpdating   = "input method update in progress"
+	DetailMicrophone             = "microphone"
+	DetailAccessibility          = "accessibility"
+	DetailInputMethod            = "input method connection unavailable"
+	DetailIMEClient              = "input method client unavailable"
+	DetailIMEUpdating            = "input method update in progress"
+	DetailIMEClientOutdated      = domain.DetailInputMethodClientOutdated
+	DetailIMEArtifactUnverified  = domain.DetailInputMethodArtifactUnverified
+	DetailIMEProtocolUnsupported = domain.DetailInputMethodProtocolUnsupported
 )
 
 // Dictation is the live session projection. Text stays in RAM only.
@@ -215,7 +225,7 @@ const (
 	PolishFailed       PolishState = "failed"
 )
 
-// Polish is the live rewrite capability and its download progress.
+// Polish is the rewrite that runs after release, and its download progress.
 type Polish struct {
 	State     PolishState
 	Phase     ProvisionPhase
@@ -505,6 +515,8 @@ type Actions interface {
 	OpenMicrophoneSettings()
 	OpenAccessibilitySettings()
 	RetryModel()
+	// DownloadPolish confirms the local model download and starts its worker.
+	DownloadPolish()
 	// RetryPolish downloads or restarts the rewrite model after a failure.
 	RetryPolish()
 	UseBundle(id string)

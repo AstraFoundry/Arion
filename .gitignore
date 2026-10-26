@@ -58,6 +58,10 @@ __pycache__/
 
 # Staged offline keyboard engine and compiled schema data.
 /apps/desktop/resources/darwin/keyboard/
+/apps/desktop/resources/windows-amd64/keyboard/
+
+# Generated Windows TSF service and payload manifest.
+/apps/desktop/resources/windows-amd64/ime/
 
 # Regenerated aggregate reports exceed GitHub blob limits; sources remain archived.
 /benchmarks/results/rewrite-release/data.json
@@ -68,3 +72,11 @@ __pycache__/
 /apps/desktop/resources/*/asr/
 /apps/desktop/native/mlx-asr/.build/
 /apps/desktop/native/mlx-asr/.swiftpm/
+
+# Anatomy skill examples: generated pages and printed sheets, rebuilt by
+# each example's build.mjs
+.claude/skills/anatomy/examples/**/*.html
+.claude/skills/anatomy/examples/**/*.pdf
+
+# Go test binaries from profiling
+*.test

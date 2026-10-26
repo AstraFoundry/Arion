@@ -7,12 +7,18 @@ import (
 	"fmt"
 	"strings"
 	"unicode"
+	"unicode/utf8"
 
 	"arion.local/core/domain"
 )
 
+const (
+	minFormatTokens = 256
+	maxFormatTokens = 2048
+)
+
 // SelectedVersion identifies both independently evaluated stages.
-const SelectedVersion = "selector-contextual-v5+natural-layout-v3"
+const SelectedVersion = "selector-contextual-v5+cleanup-rules-v1"
 
 //go:embed selection.json
 var selectedSelection []byte
@@ -26,7 +32,9 @@ type Message struct {
 	Content string `json:"content"`
 }
 
-// ChatRequest uses the checkpoint's embedded Jinja template, with thinking off.
+// ChatRequest is one polishing stage. AllowThinking permits reasoning tokens.
+// The zero value keeps thinking off. Adapters translate that policy; this
+// struct does not carry a provider field.
 type ChatRequest struct {
 	Messages       []Message       `json:"messages"`
 	ResponseFormat any             `json:"response_format,omitempty"`
@@ -35,7 +43,19 @@ type ChatRequest struct {
 	MaxTokens      int             `json:"max_tokens"`
 	CachePrompt    bool            `json:"cache_prompt"`
 	Stream         bool            `json:"stream"`
-	TemplateArgs   map[string]bool `json:"chat_template_kwargs"`
+	TemplateArgs   map[string]bool `json:"chat_template_kwargs,omitempty"`
+	AllowThinking  bool            `json:"-"`
+}
+
+// LocalWire copies the thinking policy into the llama.cpp template argument.
+func (r ChatRequest) LocalWire() ChatRequest {
+	args := make(map[string]bool, len(r.TemplateArgs)+1)
+	for key, value := range r.TemplateArgs {
+		args[key] = value
+	}
+	args["enable_thinking"] = r.AllowThinking
+	r.TemplateArgs = args
+	return r
 }
 
 func jsonText(value any) string {
@@ -48,7 +68,7 @@ func jsonText(value any) string {
 	return strings.TrimSuffix(b.String(), "\n")
 }
 func chat(messages []Message, tokens int) ChatRequest {
-	return ChatRequest{Messages: messages, Seed: 42, MaxTokens: tokens, CachePrompt: true, TemplateArgs: map[string]bool{"enable_thinking": false}}
+	return ChatRequest{Messages: messages, Seed: 42, MaxTokens: tokens, CachePrompt: true}
 }
 
 type selectionExample struct {
@@ -75,9 +95,13 @@ type formatRecipe struct {
 	EditingExamples []formatExample        `json:"editingExamples"`
 	System          string                 `json:"formatSystem"`
 	SystemHan       string                 `json:"formatSystemHan"`
+	Rules           string                 `json:"formatRules"`
+	RulesHan        string                 `json:"formatRulesHan"`
 	ProsePolicy     string                 `json:"prosePolicy"`
 	ProsePolicyHan  string                 `json:"prosePolicyHan"`
 	Routes          map[string]string      `json:"routeInstructions"`
+	Punctuation     string                 `json:"punctuationRule"`
+	PunctuationHan  string                 `json:"punctuationRuleHan"`
 	Scenes          map[string]sceneRecipe `json:"format"`
 }
 
@@ -156,43 +180,65 @@ func (t *SelectedTemplates) Selection(p domain.SpellingPreparation) ChatRequest 
 	return req
 }
 
-type sourceScripts struct {
-	Han   bool `json:"hasHan"`
-	Latin bool `json:"hasLatin"`
-}
-
-func profile(source string) sourceScripts {
-	p := sourceScripts{}
+func profile(source string) (han, latin bool) {
 	for _, r := range source {
 		if unicode.In(r, unicode.Han) && (r >= 0x3400 || r >= 0xf900) {
-			p.Han = true
+			han = true
 		}
 		if unicode.In(r, unicode.Latin) {
-			p.Latin = true
+			latin = true
 		}
 	}
-	return p
+	return han, latin
 }
 func route(source string) string {
-	p := profile(source)
-	if p.Han && !p.Latin {
+	han, latin := profile(source)
+	if han && !latin {
 		return "han"
 	}
-	if p.Latin && !p.Han {
+	if latin && !han {
 		return "latin"
 	}
 	return "mixed"
 }
 func formatText(source string) string {
-	return jsonText(struct {
-		Source  string        `json:"source"`
-		Scripts sourceScripts `json:"sourceScripts"`
-	}{source, profile(source)})
+	return "<source>" + source + "</source>"
+}
+
+// formatTokens scales the formatter output budget with the source length,
+// keeping a 256-token floor for short utterances and a 2048-token ceiling.
+func formatTokens(source string) int {
+	return min(maxFormatTokens, max(minFormatTokens, utf8.RuneCountInString(source)+128))
+}
+
+// systemPrompt is a preamble plus one rules list. Scene text is rule 7,
+// layout is rule 8 (omitted for list), and the script route is rule 9.
+// Full, omit, and spaces append one punctuation bullet; smart does not.
+func (t *SelectedTemplates) systemPrompt(kind, scene string, punctuation domain.Punctuation) string {
+	preamble, rules, sceneRule, layout, routeLine, punct := t.format.System, t.format.Rules, "", t.format.ProsePolicy, t.format.Routes[kind], t.format.Punctuation
+	recipe := t.format.Scenes[scene]
+	sceneRule = recipe.Instruction
+	if kind == "han" {
+		preamble, rules, sceneRule, layout, punct = t.format.SystemHan, t.format.RulesHan, recipe.InstructionHan, t.format.ProsePolicyHan, t.format.PunctuationHan
+	}
+	lines := strings.Split(rules, "\n")
+	lines = append(lines, sceneRule)
+	if scene != string(domain.SceneList) {
+		lines = append(lines, layout)
+	}
+	lines = append(lines, routeLine)
+	switch punctuation {
+	case domain.PunctuationFull, domain.PunctuationOmit, domain.PunctuationSpaces:
+		lines = append(lines, punct)
+	}
+	return preamble + "\n\n<rules>\n" + strings.Join(lines, "\n") + "\n</rules>"
 }
 
 // Format receives only the explicitly edited source, never OCR or surrounding
 // context. Scene hints preserve natural prose unless list layout is explicit.
-func (t *SelectedTemplates) Format(source, scene string) (ChatRequest, error) {
+// punctuation appends the complete-punctuation bullet for full, omit, and
+// spaces; smart and empty leave the approved prompt unchanged.
+func (t *SelectedTemplates) Format(source, scene string, punctuation domain.Punctuation) (ChatRequest, error) {
 	if scene == string(domain.SceneSearch) {
 		scene = string(domain.SceneChat)
 	}
@@ -201,19 +247,7 @@ func (t *SelectedTemplates) Format(source, scene string) (ChatRequest, error) {
 		return ChatRequest{}, fmt.Errorf("unsupported formatting scene %q", scene)
 	}
 	kind := route(source)
-	system := t.format.System + "\n" + recipe.Instruction
-	if kind == "han" {
-		system = t.format.SystemHan + "\n" + recipe.InstructionHan
-	}
-	if scene != string(domain.SceneList) {
-		policy := t.format.ProsePolicy
-		if kind == "han" {
-			policy = t.format.ProsePolicyHan
-		}
-		system += "\n" + policy
-	}
-	system += "\n" + t.format.Routes[kind]
-	messages := []Message{{Role: "system", Content: system}}
+	messages := []Message{{Role: "system", Content: t.systemPrompt(kind, scene, punctuation)}}
 	groups := [][]formatExample{recipe.Examples, t.format.EditingExamples}
 	// Keep explicit-list demonstrations last so prose editing examples do not
 	// override the user-selected layout.
@@ -235,5 +269,5 @@ func (t *SelectedTemplates) Format(source, scene string) (ChatRequest, error) {
 	if len(messages) == 1 {
 		return ChatRequest{}, fmt.Errorf("missing formatting examples for %s/%s", scene, kind)
 	}
-	return chat(append(messages, Message{Role: "user", Content: formatText(source)}), 256), nil
+	return chat(append(messages, Message{Role: "user", Content: formatText(source)}), formatTokens(source)), nil
 }

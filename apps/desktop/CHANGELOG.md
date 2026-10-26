@@ -1,3 +1,133 @@
+## 0.1.0-alpha.15
+
+### English
+
+Preview for macOS Apple silicon (macOS 14 or later) and Windows x64.
+
+- Keep expanded candidates open during partial selection and suffix edits; preserve the macOS candidate panel height until collapse or completion.
+- Render the onboarding laptop illustration as one CPU-rasterized bitmap to prevent missing keycaps and text during animation.
+- Redraw the illustration only when its pose changes, using pixel-aligned parallel rasterization shared across macOS and Windows.
+
+macOS release packages require Developer ID signing and Apple notarization. Windows publisher signing remains unavailable for this preview. Model weights download separately. GitHub publication and release-storage staging do not publish the Arion center beta channel. See RELEASE-STATUS.md and SHA256SUMS for acceptance limits and verification.
+
+### 中文
+
+适用于 macOS Apple 芯片（macOS 14 或更高版本）和 Windows x64 的预览版本。
+
+- 候选展开后，部分选词和剩余拼音编辑保持展开；macOS 候选窗口保留高度，直到主动收起或本次输入结束。
+- 将引导页笔记本插图绘制为单张 CPU 位图，修复动画期间键帽和文字缺失的问题。
+- 插图仅在姿态变化时重绘，macOS 和 Windows 共用像素对齐的并行绘制实现。
+
+macOS 发布包要求 Developer ID 签名和 Apple 公证；Windows 预览版仍无发布者签名。模型权重单独下载。GitHub 发布及存储暂存不会自动发布 Arion 中心的 beta 渠道。验收范围及校验信息见 RELEASE-STATUS.md 与 SHA256SUMS。
+
+## 0.1.0-alpha.14
+
+### English
+
+Preview for macOS Apple silicon (macOS 14 or later) and Windows x64.
+
+- Update dictation-key onboarding with an animated native laptop illustration, a key picker and visual key-press feedback.
+- Share the illustration and animation implementation across macOS and Windows.
+- Include the latest main-branch onboarding changes in versioned release installers and signed update archives.
+
+macOS release packages require Developer ID signing and Apple notarization. Windows publisher signing remains unavailable for this preview. Model weights download separately. GitHub publication and release-storage staging do not publish the Arion center beta channel. See RELEASE-STATUS.md and SHA256SUMS for acceptance limits and verification.
+
+### 中文
+
+适用于 macOS Apple 芯片（macOS 14 或更高版本）和 Windows x64 的预览版本。
+
+- 更新听写按键引导，加入原生笔记本动画、按键选择和按下反馈。
+- macOS 和 Windows 共用插图与动画实现。
+- 将最新 main 分支的引导改进纳入新版安装包及带签名的更新归档。
+
+macOS 发布包要求 Developer ID 签名和 Apple 公证；Windows 预览版仍无发布者签名。模型权重单独下载。GitHub 发布及存储暂存不会自动发布 Arion 中心的 beta 渠道。验收范围及校验信息见 RELEASE-STATUS.md 与 SHA256SUMS。
+
+## 0.1.0-alpha.13
+
+### English
+
+Preview for macOS Apple silicon (macOS 14 or later) and Windows x64.
+
+- Add Windows offline Pinyin and TSF voice input, with shared Rime schemas, candidate ordering and learning logic across macOS and Windows.
+- Repair Windows candidate layout refresh after composition changes, input-method registration and model readiness reporting.
+- Add a stable Windows input-method loader and versioned cores. Compatible active cores remain usable until safe release; legacy components already loaded in applications may require those applications to fully exit once.
+- Enable Windows local GGUF polishing with a bundled CPU runtime and protected worker lifecycle.
+- Fix Windows overlay transparency and background worker console windows, and improve the EXE installer and onboarding flow.
+- Extend native input-method, package, update and shared-engine regression coverage.
+
+This is an early preview. Windows publisher signing, clean-machine acceptance and broad editor compatibility remain open. Installed owned-editor candidate checks pass; this does not establish seamless upgrades in every already-running application. Model weights download separately. GitHub publication and release-storage staging do not publish the Arion center beta channel. See RELEASE-STATUS.md and SHA256SUMS.
+
+### 中文
+
+适用于 macOS Apple 芯片（macOS 14 或更高版本）和 Windows x64 的预览版本。
+
+- 新增 Windows 离线拼音和 TSF 语音输入，两端共用 Rime 方案、候选排序和学习逻辑。
+- 修复 Windows 组合输入后的候选框布局刷新、输入法注册和模型就绪状态判断。
+- 新增固定的 Windows 输入法加载入口与版本化核心。兼容的活动核心可继续使用直到安全释放；已经加载早期旧组件的应用可能需要完全退出一次。
+- 支持 Windows 本地 GGUF 润色，随包提供 CPU 运行时并完善工作进程生命周期。
+- 修复 Windows 悬浮窗透明度及后台工作进程的控制台窗口，改进 EXE 安装器和首次使用流程。
+- 扩展原生输入法、打包、更新和共享引擎回归测试。
+
+这是早期预览版。Windows 发布者签名、全新机器和广泛编辑器兼容性仍待验收。已安装版本在自有测试编辑器的候选框检查通过，但不代表所有运行中应用均可无感升级。模型权重单独下载；GitHub 发布及存储暂存不会自动发布 Arion 中心的 beta 渠道。详见 RELEASE-STATUS.md 与 SHA256SUMS。
+
+## 0.1.0-alpha.12
+
+### English
+
+Preview for macOS Apple silicon (macOS 14 or later) and Windows x64.
+
+- Include the Windows installer and cryptographically signed update archive in alpha releases. The Windows application and installer do not have an Authenticode publisher signature; Windows security policies may warn or block execution.
+- Protect Windows text delivery against stale sessions, cancellation, changed focus/selection and standard password fields; stop remaining input batches when a session loses ownership.
+- Repair Windows UI Automation provider initialization and refuse context reads when field safety cannot be established.
+- Give Windows accessibility initialization a separate bounded startup phase while preserving the 1.5-second window traversal limit.
+- Fix update rollback leaving newly added files or directories behind when another destination is locked.
+- Remove the MSVC OpenMP redistributable dependency from the Windows CPU speech worker and reject unbundled runtime DLLs during packaging.
+- Reload the same speech runtime for a new request after cancellation times out and retires its process; cancelled requests are never replayed.
+- Add Windows native, installed-application speech, microphone and updater regression coverage. Actual CPU/Vulkan recognition and five installed-product speech scenarios pass on the documented development host.
+
+This is an early preview. Mixed-language technical terms still have recognition errors. Windows TSF and local polishing are unsupported. Clean-machine/editor compatibility and a real production-channel old-to-new upgrade remain open. Model weights download separately. GitHub publication and release-storage staging do not publish the Arion center beta channel. See RELEASE-STATUS.md and SHA256SUMS for limits and verification.
+
+### 中文
+
+适用于 macOS Apple 芯片（macOS 14 或更高版本）和 Windows x64 的预览版本。
+
+- Alpha 发布新增 Windows 安装包及带加密签名的更新归档。Windows 程序和安装包尚无 Authenticode 发布者签名，系统安全策略可能警告或阻止运行。
+- 加强 Windows 文本输入保护：拒绝过期会话、取消、焦点或选区变化及标准密码框；会话失去目标所有权时停止后续输入批次。
+- 修复 Windows UI Automation 提供程序初始化，并在无法确认字段安全时拒绝读取上下文。
+- 为 Windows 辅助功能初始化设置独立、有界的启动阶段，同时保留 1.5 秒的窗口遍历限制。
+- 修复更新过程中目标文件被锁定时，回滚遗留新增文件或目录的问题。
+- 移除 Windows CPU 语音运行时对 MSVC OpenMP 可再发行库的依赖，并在打包时检查未随包提供的运行库 DLL。
+- 修复取消超时回收语音进程后无法继续识别的问题：新请求重新加载同一运行时，已取消请求不会重放。
+- 新增原生交互、安装后语音、麦克风及更新回归测试；CPU/Vulkan 真实识别与五项安装后语音场景已在记录的开发机通过。
+
+这是早期预览版。中英混合技术词仍有识别错误；Windows TSF 和本地润色尚不支持。全新机器、第三方编辑器兼容性及生产渠道旧版本升级仍待验收。模型权重需单独下载。GitHub 发布及存储暂存不会自动发布 Arion 中心的 beta 渠道。验证限制和校验值见 RELEASE-STATUS.md 与 SHA256SUMS。
+
+## 0.1.0-alpha.11
+
+### English
+
+macOS Apple silicon (ARM64) preview, requiring macOS 14 or later.
+
+- Update the local polishing cleanup prompt, preserving separate scene and language rules and isolating source text from context.
+- Add polishing punctuation choices: smart, full, omit sentence-final punctuation, or spaces instead of punctuation. Apply the selected mode to live previews and final text.
+- Validate raw polishing output before punctuation conversion so control markers cannot be hidden. Reject conversions that leave only whitespace and keep rejected output out of the preview cache.
+
+This is an early preview. Clean-machine installation, real-service cloud sign-in/provider requests, minimum OS/RAM and old-to-new updates still need acceptance. Recognition stays local and works offline after model provisioning; model weights are downloaded separately. Desktop encrypted sync enrollment remains pending. This alpha includes only the macOS ARM64 installer.
+
+See RELEASE-STATUS.md for evidence and limitations, and SHA256SUMS for file verification. GitHub publication and COS staging do not publish the Arion center beta channel.
+
+### 中文
+
+适用于 macOS Apple 芯片（ARM64）的预览版本，需要 macOS 14 或更高版本。
+
+- 更新本地润色的整理提示词，保留按场景和语言划分的规则，并隔离原文与上下文。
+- 新增润色标点选项：智能标点、完整标点、省略句末标点、以空格代替标点；所选模式同时应用于实时预览和最终文本。
+- 在标点转换前校验润色原始输出，避免控制标记被转换隐藏；拒绝转换后仅剩空白的结果，并防止被拒绝的输出进入预览缓存。
+
+这是早期预览版。全新机器安装、真实云端登录及服务商请求、最低系统和内存要求、旧版本升级仍待验收。语音识别在本机完成，模型准备完成后可离线使用；模型权重需单独下载。桌面加密同步的设备注册尚未完成。本次 alpha 仅提供 macOS ARM64 安装包。
+
+验证记录和限制见 RELEASE-STATUS.md，文件校验值见 SHA256SUMS。GitHub 发布及 COS 暂存不会自动发布 Arion 中心的 beta 渠道。
+
 ## 0.1.0-alpha.10
 
 ### English

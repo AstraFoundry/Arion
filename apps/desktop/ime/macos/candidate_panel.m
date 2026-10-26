@@ -218,7 +218,11 @@ static NSColor *srgb(CGFloat r, CGFloat g, CGFloat b, CGFloat a) {
     width -= widths.count ? gap : 0;
     width += chevron ? kArrowTrailingInset + kArrowSize + kArrowTrailingInset : kContentInset;
     if (columns) *columns = widths;
-    return NSMakeSize(width, preset.barHeight * (expanded ? rows.count : 1));
+    CGFloat height = preset.barHeight * (expanded ? rows.count : 1);
+    // Partial choices can leave fewer rows. Keep the expanded viewport until
+    // the user folds it or the composition hides the panel.
+    if (expanded) height = MAX(height, CGRectGetHeight(self.barFrame));
+    return NSMakeSize(width, height);
 }
 
 - (void)prepareFonts:(Preset)preset {

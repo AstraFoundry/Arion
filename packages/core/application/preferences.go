@@ -23,7 +23,6 @@ type Preferences struct {
 	OnboardingCompleted bool       `json:"onboardingCompleted"`
 	HoldKey             HoldKey    `json:"holdKey"`
 	Delivery            Delivery   `json:"delivery"`
-	RemoveFillers       bool       `json:"removeFillers"`
 	Sounds              bool       `json:"sounds"`
 	LaunchAtLogin       bool       `json:"launchAtLogin"`
 	Microphone          string     `json:"microphone"`
@@ -45,9 +44,12 @@ type Preferences struct {
 	ProductNotifications bool `json:"productNotifications"`
 	// AllowPrereleaseUpdates includes published preview releases when checking.
 	AllowPrereleaseUpdates bool `json:"allowPrereleaseUpdates"`
-	// Polish enables the shared rewrite pipeline for the selected engine.
-	// Local execution also provides previews while speaking.
+	// Polish enables the shared rewrite after the dictation key is released.
+	// Neither engine rewrites while the user is speaking.
 	Polish bool `json:"polish"`
+	// Punctuation chooses how polished text is punctuated. It is used only
+	// while Polish is on. Profiles written before it existed load smart.
+	Punctuation domain.Punctuation `json:"punctuation,omitempty"`
 	// PolishEngine is where polishing runs: on this device, or with the
 	// cloud model the user connected (ADR 022). Profiles written before it
 	// existed load PolishLocal.
@@ -66,7 +68,7 @@ type Preferences struct {
 	// ContextCursor, ContextScreen and ContextHistory let polishing read the
 	// field's text around the cursor, the focused window's recognized text
 	// and the user's recent dictations in the same place (ADR 013). On by
-	// default; cloud polishing sends enabled sources (ADR 023). Profiles written before
+	// default; cloud polishing sends enabled sources (ADR 024). Profiles written before
 	// they existed load the defaults.
 	ContextCursor  bool `json:"contextCursor"`
 	ContextScreen  bool `json:"contextScreen"`
@@ -86,7 +88,7 @@ type PolishEngine string
 const (
 	PolishLocal PolishEngine = "local"
 	// PolishCloud sends text, recalled terms and enabled context to
-	// the connected provider; context sources stay on the device.
+	// the connected provider; disabled context sources stay on the device.
 	PolishCloud PolishEngine = "cloud"
 )
 
@@ -105,7 +107,7 @@ const (
 func DefaultPreferences(platform string) Preferences {
 	return Preferences{
 		Version: PreferencesVersion, UILanguage: English, HoldKey: DefaultHoldKey(platform),
-		Delivery: DeliveryAutomatic, PolishEngine: PolishLocal, RemoveFillers: true, Sounds: true, CheckUpdates: true, MatchApp: true,
+		Delivery: DeliveryAutomatic, PolishEngine: PolishLocal, Punctuation: domain.PunctuationSmart, Sounds: true, CheckUpdates: true, MatchApp: true,
 		ContextCursor: true, ContextScreen: true, ContextHistory: true, LearnEdits: true,
 		Keyboard: DefaultKeyboardPreferences(),
 	}
@@ -133,6 +135,10 @@ func (p Preferences) Normalize(platform string) (Preferences, []string) {
 	if p.PolishEngine != PolishLocal && p.PolishEngine != PolishCloud {
 		p.PolishEngine = defaults.PolishEngine
 		repaired = append(repaired, "polishEngine")
+	}
+	if !p.Punctuation.Known() {
+		p.Punctuation = defaults.Punctuation
+		repaired = append(repaired, "punctuation")
 	}
 	if p.Delivery != DeliveryAutomatic && p.Delivery != DeliveryClipboard {
 		p.Delivery = defaults.Delivery

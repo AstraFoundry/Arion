@@ -13,6 +13,8 @@ import (
 
 	"arion.local/core/domain"
 	"arion.local/core/domain/ports"
+	"arion.local/desktop/infrastructure/llm/prompt"
+	"arion.local/desktop/infrastructure/llm/spelling"
 )
 
 // gatewayFixture mocks only the remote HTTP boundary, leaving the provider SDK,
@@ -143,6 +145,9 @@ func gatewayPayload(body map[string]any, format string) (map[string]any, error) 
 			part, _ := parts[0].(map[string]any)
 			content, _ = part["text"].(string)
 		}
+	}
+	if strings.HasPrefix(content, "<source>") && strings.HasSuffix(content, "</source>") {
+		return map[string]any{"source": strings.TrimSuffix(strings.TrimPrefix(content, "<source>"), "</source>")}, nil
 	}
 	var payload map[string]any
 	err := json.Unmarshal([]byte(content), &payload)
@@ -330,5 +335,51 @@ func TestOpenAIGatewayWithoutSpellingCandidates(t *testing.T) {
 				t.Fatalf("unexpected stage requests: %+v", payloads)
 			}
 		})
+	}
+}
+
+// The main-branch punctuation choice must reach the shared formatter unchanged.
+func TestOpenAIGatewayPunctuation(t *testing.T) {
+	lexicon, err := spelling.Load()
+	if err != nil {
+		t.Fatal(err)
+	}
+	recipe, err := prompt.Selected(lexicon)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, format := range []string{"responses", "chat"} {
+		for _, punctuation := range []domain.Punctuation{domain.PunctuationSmart, domain.PunctuationFull, domain.PunctuationOmit, domain.PunctuationSpaces} {
+			t.Run(format+"/"+string(punctuation), func(t *testing.T) {
+				g, s := newGateway(t, format, "", 0)
+				req := ports.RewriteRequest{Text: "今天天气很好。", Scene: "prompt", Punctuation: string(punctuation)}
+				if _, err := s.Rewrite(context.Background(), req); err != nil {
+					t.Fatal(err)
+				}
+				bodies, _ := g.snapshot()
+				if len(bodies) != 1 {
+					t.Fatalf("calls=%d", len(bodies))
+				}
+				expected, err := recipe.Format(req.Text, req.Scene, punctuation)
+				if err != nil {
+					t.Fatal(err)
+				}
+				// Compare the serialized system instruction, not just the output: the
+				// synthetic formatter echoes text and cannot prove punctuation forwarding.
+				key := "input"
+				if format == "chat" {
+					key = "messages"
+				}
+				messages := bodies[0][key].([]any)
+				first := messages[0].(map[string]any)
+				content, ok := first["content"].(string)
+				if !ok {
+					content = first["content"].([]any)[0].(map[string]any)["text"].(string)
+				}
+				if content != expected.Messages[0].Content {
+					t.Fatal("punctuation instruction lost in cloud adapter")
+				}
+			})
+		}
 	}
 }

@@ -84,6 +84,10 @@ Use these instead of `ui.Button` / `ui.PrimaryButton`. MyGo's stock switches, ra
 
 ## Pages and density
 
+The onboarding welcome description uses the shared 420-DIP content width so its Simplified Chinese copy does not leave a single character on a second line.
+
+The onboarding polishing choice keeps the local resource size and explicit Download action, progress, cancellation and retry within the local option, above the divider before Cloud. The selected local header stays compact, with a primary yellow Download button at its trailing edge. During provisioning, Cancel download replaces Download in the same trailing slot; the expanded progress panel has no separate cancel row. Selection alone does not download or show a ready check. Confirmed provisioning expands a measured, clipped progress panel with the shared `Disclosure` token (200 ms, cubic Bézier `0.23, 1, 0.32, 1`), fading as it opens and closes. Interrupted motion retargets from its current value; Reduce Motion applies the final layout immediately. The trailing check appears only when the local worker is ready; completion collapses the progress panel. Continue is disabled until a selected local download is confirmed or its worker is loading/ready; Off and Cloud do not wait for local resources.
+
 Settings stay on their section; a model's own details and choices take a page, opened by a `LinkRow` that shows the current value, whose title carries a back `IconButton` that steps out one page at a time. Settings › Model keeps the recognition and polish settings on the section; the recognition model and the cloud model each open their pages. Settings explain themselves in `Hint` tooltips, not detail lines; state (a download, a failure) stays visible in words.
 
 ## Icons
@@ -114,6 +118,16 @@ A dictation committed while the overview shows rolls the figures and reshades th
 - Settings › About holds, in order: the illustration with name and version, software update (`features/update`), the Privacy group, and the team, source, X account, bug reports and license. Their URLs and proper names live in `ui/shared/config`; only the row titles are copy keys.
 - Mock surfaces are solid with real elevation; no glass panes, glows or tinted gradients. Scrims are ink gradients only where text or controls overlap the photo.
 - Mock copy comes from `copy` (`ShowcaseSentence` mixes Chinese and English, as real dictation does), and the illustration is labeled for assistive technology (`ShowcaseLabel`).
+
+### Dictation key figure
+
+The onboarding dictation key step shows `widgets/keyfigure` in the left pane instead of the photograph: an isometric laptop drawn live by `ui/shared/iso`, a Go port of the `anatomy` Agent Skill's kit (its camera, solids shaded by facing, outlines where a face turns away, creases where a top meets a side, painter's order).
+
+- The laptop arrives closed with its back to the viewer. It turns 180° (250–1350 ms), its lid opens to 112° (650–1650 ms), and the camera closes in until a key pitch spans 46 DIPs, centred on the chosen key (1000–2100 ms). With Reduce Motion it shows the last frame at once.
+- The keyboard is the platform's: fn, Right Option and Right Command on a MacBook-style layout, Right Alt and Right Ctrl on a Windows one. The chosen key is lit in the accent. Choosing another key in the step's picker glides the camera to it while pulling back to 78% of the zoom and closing in again (620 ms). The step's "That works" status starts over then.
+- A press sinks the chosen cap (80 ms down, held to 480 ms, up by 700 ms).
+- Its inks come from the Sunbeam tokens: paper and keycaps from `Card`, shading toward `Shade`, lines from `Faint` and `CardBorder`, the lit key from `Accent` and `AccentInk`, the screen from the pill's substrate. It is labeled for assistive technology (`HoldKeyFigureLabel`).
+- The figure rasterizes on the CPU (`iso.Canvas`, with `golang.org/x/image/vector`) into one image shown with `ui.Bitmap.Update`, and only when its pose changes. Do not draw it with MyGo's `FillPath`/`StrokePath`: each path takes a mask in the atlas that text glyphs share, and a moving frame of a few hundred large masks overflowed it, dropping keycap fills and the step's text. The canvas paints in pixel-aligned 64 px columns, so long diagonal edges cost about their own area, and in one horizontal band per processor. A zoomed-in frame at 2× takes about 9 ms on a 4-core 2.8 GHz Linux VM (`go test -bench BenchmarkFrame ./ui/widgets/keyfigure`). `TestTextBesideStaysWhileMoving` guards the text beside it.
 
 ## Review
 
