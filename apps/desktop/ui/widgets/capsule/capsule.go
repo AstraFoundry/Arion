@@ -176,7 +176,11 @@ func listening(c *ui.Context, state *runtime.State, tokens theme.Tokens, s *Stat
 	// when speech arrives.
 	s.widen(d.SessionID, hint.LayoutBounds().W)
 	hint.Children(func() {
-		kit.Kbd(c, tokens, holdkey.Legend(state.Preferences.HoldKey), true)
+		key := state.Preferences.HoldKey
+		if d.Translating && state.Preferences.TranslateKey != "" && state.Preferences.TranslateKey != runtime.HoldOff {
+			key = state.Preferences.TranslateKey
+		}
+		kit.Kbd(c, tokens, holdkey.Legend(key), true)
 		if state.Hold.Holding {
 			ui.Text(c, messages.Text(copy.PillReleaseHint)).FontSize(theme.Caption).TextColor(tokens.PillMuted).SingleLine()
 			return

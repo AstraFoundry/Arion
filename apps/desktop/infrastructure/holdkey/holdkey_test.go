@@ -104,4 +104,65 @@ func TestUnsupportedKeys(t *testing.T) {
 	if _, ok := NewWindows(application.HoldFn); ok {
 		t.Fatal("Windows accepted fn")
 	}
+	if _, ok := NewMac(application.HoldOff); ok {
+		t.Fatal("macOS accepted HoldOff alone")
+	}
+	if _, ok := NewWindows(application.HoldOff); ok {
+		t.Fatal("Windows accepted HoldOff alone")
+	}
+}
+
+func TestMacDualHoldKeys(t *testing.T) {
+	m, ok := NewMac(application.HoldRightOption, application.HoldRightCommand)
+	if !ok {
+		t.Fatal("dual macOS hold keys unsupported")
+	}
+	// Right Option press and release.
+	if key, ev, ok := m.InterpretKey(MacFlagsChanged, 0x3D, 0x40, false); !ok || key != application.HoldRightOption || ev != Down {
+		t.Fatalf("right option down: %q %v %v", key, ev, ok)
+	}
+	if key, ev, ok := m.InterpretKey(MacFlagsChanged, 0x3D, 0, false); !ok || key != application.HoldRightOption || ev != Up {
+		t.Fatalf("right option up: %q %v %v", key, ev, ok)
+	}
+	// Right Command press and release.
+	if key, ev, ok := m.InterpretKey(MacFlagsChanged, 0x36, 0x10, false); !ok || key != application.HoldRightCommand || ev != Down {
+		t.Fatalf("right command down: %q %v %v", key, ev, ok)
+	}
+	// Pressing Right Option while Right Command is held is a chord on Right Command, not a Right Option start.
+	if key, ev, ok := m.InterpretKey(MacFlagsChanged, 0x3D, 0x50, false); !ok || key != application.HoldRightCommand || ev != Other {
+		t.Fatalf("chord while right command held: %q %v %v", key, ev, ok)
+	}
+	// Releasing the chorded Right Option produces no transition.
+	if _, _, ok := m.InterpretKey(MacFlagsChanged, 0x3D, 0x10, false); ok {
+		t.Fatal("releasing chorded second key reported a transition")
+	}
+	if key, ev, ok := m.InterpretKey(MacFlagsChanged, 0x36, 0, false); !ok || key != application.HoldRightCommand || ev != Up {
+		t.Fatalf("right command up: %q %v %v", key, ev, ok)
+	}
+}
+
+func TestWindowsDualHoldKeys(t *testing.T) {
+	w, ok := NewWindows(application.HoldRightAlt, application.HoldRightCtrl)
+	if !ok {
+		t.Fatal("dual Windows hold keys unsupported")
+	}
+	if key, ev, ok := w.InterpretKey(WinSysKeyDown, 0xA5, 0x138); !ok || key != application.HoldRightAlt || ev != Down {
+		t.Fatalf("right alt down: %q %v %v", key, ev, ok)
+	}
+	if key, ev, ok := w.InterpretKey(WinSysKeyUp, 0xA5, 0x138); !ok || key != application.HoldRightAlt || ev != Up {
+		t.Fatalf("right alt up: %q %v %v", key, ev, ok)
+	}
+	if key, ev, ok := w.InterpretKey(WinKeyDown, 0xA3, 0x11D); !ok || key != application.HoldRightCtrl || ev != Down {
+		t.Fatalf("right ctrl down: %q %v %v", key, ev, ok)
+	}
+	// Pressing Right Alt while Right Ctrl is held is a chord on Right Ctrl.
+	if key, ev, ok := w.InterpretKey(WinSysKeyDown, 0xA5, 0x138); !ok || key != application.HoldRightCtrl || ev != Other {
+		t.Fatalf("chord while right ctrl held: %q %v %v", key, ev, ok)
+	}
+	if _, _, ok := w.InterpretKey(WinSysKeyUp, 0xA5, 0x138); ok {
+		t.Fatal("releasing chorded right alt reported a transition")
+	}
+	if key, ev, ok := w.InterpretKey(WinKeyUp, 0xA3, 0x11D); !ok || key != application.HoldRightCtrl || ev != Up {
+		t.Fatalf("right ctrl up: %q %v %v", key, ev, ok)
+	}
 }

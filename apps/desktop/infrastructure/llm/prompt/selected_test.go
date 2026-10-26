@@ -326,3 +326,46 @@ func TestFormatDynamicTokenBudget(t *testing.T) {
 		t.Fatalf("long MaxTokens = %d, want 2048 (%v)", long.MaxTokens, err)
 	}
 }
+
+func TestFormatTranslationPromptsAndTokenBudget(t *testing.T) {
+	lexicon, err := spelling.Load()
+	if err != nil {
+		t.Fatal(err)
+	}
+	templates, err := Selected(lexicon)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, target := range domain.TranslationLanguages {
+		for _, scene := range domain.Scenes {
+			for _, punct := range []domain.Punctuation{domain.PunctuationSmart, domain.PunctuationFull, domain.PunctuationOmit, domain.PunctuationSpaces} {
+				source := "请检查 fetchState 的返回结果，暂时不要重启。"
+				req, err := templates.FormatTranslation(source, string(scene), punct, target)
+				if err != nil {
+					t.Fatalf("%s/%s/%s: %v", target, scene, punct, err)
+				}
+				if len(req.Messages) < 5 || req.Messages[len(req.Messages)-1].Content != "<source>"+source+"</source>" {
+					t.Fatalf("unexpected messages for %s/%s", target, scene)
+				}
+				for i := 2; i < len(req.Messages)-1; i += 2 {
+					out := req.Messages[i].Content
+					han, latin := profile(out)
+					if target == domain.TargetEnglish && (han || !latin) {
+						t.Fatalf("en translation example %d contains Han or lacks Latin: %q", i, out)
+					}
+					if target == domain.TargetChinese && !han {
+						t.Fatalf("zh-CN translation example %d lacks Han: %q", i, out)
+					}
+				}
+			}
+		}
+	}
+	mediumSource := strings.Repeat("今天先检查日志并确认参数状态。", 20) // 300 runes
+	trReq, err := templates.FormatTranslation(mediumSource, string(domain.SceneChat), domain.PunctuationSmart, domain.TargetEnglish)
+	if err != nil || trReq.MaxTokens != 300*2+128 {
+		t.Fatalf("translation MaxTokens = %d, want %d (%v)", trReq.MaxTokens, 300*2+128, err)
+	}
+	if _, err := templates.FormatTranslation("你好", "chat", "", "fr"); err == nil {
+		t.Fatal("unsupported target language accepted")
+	}
+}

@@ -72,3 +72,16 @@ func TestAlignLiveEnding(t *testing.T) {
 		}
 	}
 }
+
+func TestTranslationLanguageKnown(t *testing.T) {
+	for _, lang := range TranslationLanguages {
+		if !lang.Known() {
+			t.Fatalf("expected %q to be known", lang)
+		}
+	}
+	for _, invalid := range []TranslationLanguage{"", "fr", "zh-TW", "ja"} {
+		if invalid.Known() {
+			t.Fatalf("expected %q to be unknown", invalid)
+		}
+	}
+}

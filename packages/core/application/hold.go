@@ -11,6 +11,7 @@ import (
 type HoldKey string
 
 const (
+	HoldOff          HoldKey = "off"
 	HoldFn           HoldKey = "fn"
 	HoldRightOption  HoldKey = "right_option"
 	HoldRightCommand HoldKey = "right_command"
@@ -30,6 +31,16 @@ func HoldKeysFor(platform string) []HoldKey {
 	return nil
 }
 
+// TranslateKeysFor lists the translation hold-key choices for a platform,
+// including HoldOff to disable the translation shortcut.
+func TranslateKeysFor(platform string) []HoldKey {
+	keys := HoldKeysFor(platform)
+	if len(keys) == 0 {
+		return nil
+	}
+	return append([]HoldKey{HoldOff}, keys...)
+}
+
 // DefaultHoldKey is the first-run key: Right Option on macOS and Right Alt
 // on Windows. A platform without an adapter has none.
 func DefaultHoldKey(platform string) HoldKey {
@@ -42,8 +53,27 @@ func DefaultHoldKey(platform string) HoldKey {
 	return ""
 }
 
+// DefaultTranslateKey is the first-run translation key: Right Command on
+// macOS and Right Ctrl on Windows. A platform without an adapter has none.
+func DefaultTranslateKey(platform string) HoldKey {
+	switch platform {
+	case "darwin":
+		return HoldRightCommand
+	case "windows":
+		return HoldRightCtrl
+	}
+	return ""
+}
+
 func knownHoldKey(platform string, key HoldKey) bool {
 	return key == DefaultHoldKey(platform) || slices.Contains(HoldKeysFor(platform), key)
+}
+
+func knownTranslateKey(platform string, key HoldKey) bool {
+	if DefaultTranslateKey(platform) == "" {
+		return key == "" || key == HoldOff
+	}
+	return key == HoldOff || slices.Contains(HoldKeysFor(platform), key)
 }
 
 // DefaultHoldThreshold separates a hold from a tap.

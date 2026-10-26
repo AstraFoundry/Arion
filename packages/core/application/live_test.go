@@ -864,3 +864,128 @@ func TestFullContextReachesFinalRewrite(t *testing.T) {
 		})
 	}
 }
+
+func TestTranslationSessionForcesRewriteAndSkipsEditLearning(t *testing.T) {
+	rewriter := &scriptedRewriter{answer: func(req ports.RewriteRequest) (string, error) {
+		if req.TargetLanguage != string(domain.TargetEnglish) {
+			t.Errorf("expected target language %q, got %q", domain.TargetEnglish, req.TargetLanguage)
+		}
+		return "Let's meet at 3 PM.", nil
+	}}
+	audio := &fakeAudio{}
+	field := &fakeField{text: "Let's meet at 4 PM.", focused: true}
+	ft := &fakeTarget{outcome: contracts.Applied, snapshot: contracts.TargetSnapshot{Target: "t1"}}
+	target := fieldTarget{ft, field}
+	var learned atomic.Int32
+	tracker := &EditTracker{
+		Poll: 5 * time.Millisecond,
+		Idle: 15 * time.Millisecond,
+		Max:  100 * time.Millisecond,
+		Report: func(EditReport) {
+			learned.Add(1)
+		},
+	}
+	// Polish is disabled in the base policy, but StartTranslation must force rewriting.
+	c, err := NewCoordinator(
+		Dependencies{Audio: audio, Recognizers: segmentFactory{&segmentRecognizer{script: []string{"我们下午三点开会"}}}, Targets: target, Input: target, Rewriter: rewriter, Edits: tracker, NewID: newID},
+		Options{AutoCommit: true, Learning: func() bool { return true }, Rewrite: func() RewritePolicy { return RewritePolicy{Enabled: false, Scene: "chat"} }},
+	)
+	if err != nil {
+		t.Fatal(err)
+	}
+	events := &recorder{}
+	c.Subscribe(events.listen)
+	c.StartTranslation(domain.TargetEnglish)
+	events.wait(t, stateIs(domain.Capturing))
+	audio.push(1, 0.2)
+	c.Stop()
+	ready := events.wait(t, kindIs(contracts.CorrectionReady))
+	if ready.Source != "我们下午三点开会" || ready.Text != "Let's meet at 3 PM." || ready.Rewrite != string(domain.RewriteAccepted) {
+		t.Fatalf("unexpected translation review: %+v", ready)
+	}
+	events.wait(t, kindIs(contracts.CommitResultReady))
+	if ft.commits.Load() != 1 || ft.texts[0] != "Let's meet at 3 PM." {
+		t.Fatalf("unexpected commits: %+v", ft.texts)
+	}
+	if field.followed.Load() != 0 || learned.Load() != 0 {
+		t.Fatalf("translation session armed edit learning: followed=%d learned=%d", field.followed.Load(), learned.Load())
+	}
+}
+
+func TestTranslationFailureAbortsCommitAndPreservesSource(t *testing.T) {
+	for _, tc := range []struct {
+		name     string
+		rewriter *scriptedRewriter
+		timeout  time.Duration
+		wantCode domain.ErrorCode
+		wantOut  string
+	}{
+		{
+			name:     "missing rewriter",
+			rewriter: nil,
+			wantCode: domain.CodeModelMissing,
+			wantOut:  RewriteUnavailable,
+		},
+		{
+			name: "model not running",
+			rewriter: &scriptedRewriter{answer: func(ports.RewriteRequest) (string, error) {
+				return "", domain.Fail(domain.CodeModelMissing, "rewrite model not running")
+			}},
+			wantCode: domain.CodeModelMissing,
+			wantOut:  RewriteUnavailable,
+		},
+		{
+			name: "worker error",
+			rewriter: &scriptedRewriter{answer: func(ports.RewriteRequest) (string, error) {
+				return "", domain.Fail(domain.CodeModelUnsupported, "worker exited")
+			}},
+			wantCode: domain.CodeModelUnsupported,
+			wantOut:  RewriteUnavailable,
+		},
+		{
+			name:     "timeout",
+			rewriter: &scriptedRewriter{block: make(chan struct{}), answer: func(ports.RewriteRequest) (string, error) { return "Translated", nil }},
+			timeout:  30 * time.Millisecond,
+			wantCode: domain.CodeRewriteTimeout,
+			wantOut:  RewriteTimeout,
+		},
+		{
+			name: "rejected markup",
+			rewriter: &scriptedRewriter{answer: func(ports.RewriteRequest) (string, error) {
+				return "<think>unclosed reasoning", nil
+			}},
+			wantCode: domain.CodeRewriteRejected,
+			wantOut:  string(domain.RewriteMarkup),
+		},
+		{
+			name: "empty output",
+			rewriter: &scriptedRewriter{answer: func(ports.RewriteRequest) (string, error) {
+				return "   ", nil
+			}},
+			wantCode: domain.CodeRewriteRejected,
+			wantOut:  string(domain.RewriteEmpty),
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			source := "今天下午三点开会。"
+			policy := RewritePolicy{Enabled: true, TargetLanguage: domain.TargetEnglish, Timeout: tc.timeout}
+			c, audio, events, target, _ := liveSetup(t, []string{source}, tc.rewriter, policy)
+			c.StartTranslation(domain.TargetEnglish)
+			events.wait(t, stateIs(domain.Capturing))
+			audio.push(1, 0.2)
+			c.Stop()
+			failed := events.wait(t, func(e contracts.Event) bool {
+				return e.Kind == contracts.ErrorOccurred && e.State == domain.Failed
+			})
+			if failed.Error != tc.wantCode || failed.Rewrite != tc.wantOut {
+				t.Fatalf("got error=%q rewrite=%q, want error=%q rewrite=%q (%+v)", failed.Error, failed.Rewrite, tc.wantCode, tc.wantOut, failed)
+			}
+			if failed.Source != source || failed.Text != source {
+				t.Fatalf("failed translation lost source text: source=%q text=%q", failed.Source, failed.Text)
+			}
+			if target.commits.Load() != 0 || events.count(kindIs(contracts.CorrectionReady)) != 0 || events.count(kindIs(contracts.CommitResultReady)) != 0 {
+				t.Fatalf("failed translation committed or reviewed untranslated text: commits=%d", target.commits.Load())
+			}
+		})
+	}
+}

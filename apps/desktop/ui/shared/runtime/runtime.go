@@ -33,6 +33,7 @@ type (
 	UsageDay            = domain.UsageDay
 	PolishEngine        = application.PolishEngine
 	Punctuation         = domain.Punctuation
+	TranslationLanguage = domain.TranslationLanguage
 )
 
 const (
@@ -63,6 +64,10 @@ const (
 	LanguageEnglish   = application.English
 	LanguageChinese   = application.SimplifiedChinese
 
+	TargetEnglish = domain.TargetEnglish
+	TargetChinese = domain.TargetChinese
+
+	HoldOff          = application.HoldOff
 	HoldFn           = application.HoldFn
 	HoldRightOption  = application.HoldRightOption
 	HoldRightCommand = application.HoldRightCommand
@@ -70,14 +75,23 @@ const (
 	HoldRightCtrl    = application.HoldRightCtrl
 )
 
+// TranslationLanguages are the selectable translation target languages.
+var TranslationLanguages = domain.TranslationLanguages
+
 // DayKey names the local calendar day of t, as UsageDay.Date does.
 func DayKey(t time.Time) string { return domain.DayKey(t) }
 
 // DefaultHoldKey is a platform's first-run dictation key.
 func DefaultHoldKey(platform string) HoldKey { return application.DefaultHoldKey(platform) }
 
+// DefaultTranslateKey is a platform's first-run translation key.
+func DefaultTranslateKey(platform string) HoldKey { return application.DefaultTranslateKey(platform) }
+
 // HoldKeysFor lists the hold keys a platform supports.
 func HoldKeysFor(platform string) []HoldKey { return application.HoldKeysFor(platform) }
+
+// TranslateKeysFor lists the translation hold keys a platform supports, including HoldOff.
+func TranslateKeysFor(platform string) []HoldKey { return application.TranslateKeysFor(platform) }
 
 // GainStops are the selectable microphone gains, GainStep dB apart, and
 // the speaking distances they suit.
@@ -128,12 +142,15 @@ const (
 	CodeProvisioningFailed     = domain.CodeProvisioningFailed
 	CodeEvaluationMissing      = domain.CodeEvaluationUnavailable
 	CodeCancelled              = domain.CodeCancelled
+	CodeRewriteRejected        = domain.CodeRewriteRejected
+	CodeRewriteTimeout         = domain.CodeRewriteTimeout
 )
 
 // Diagnostic categories adapters attach to PERMISSION_DENIED.
 const (
 	DetailMicrophone             = "microphone"
 	DetailAccessibility          = "accessibility"
+	DetailTranslationModel       = "translation model"
 	DetailInputMethod            = "input method connection unavailable"
 	DetailIMEClient              = "input method client unavailable"
 	DetailIMEUpdating            = "input method update in progress"
@@ -158,6 +175,8 @@ type Dictation struct {
 	// Rewriting marks that the final rewrite is running on the recognized
 	// text; it stays set once the result arrives.
 	Rewriting bool
+	// Translating marks a session started with the translation hold key.
+	Translating bool
 	// Pasted marks a commit delivered through the clipboard.
 	Pasted  bool
 	Outcome CommitOutcome
@@ -517,6 +536,8 @@ type Actions interface {
 	UpdatePreferences(func(*Preferences))
 	// SetHoldKey chooses the dictation key.
 	SetHoldKey(key HoldKey)
+	// SetTranslateKey chooses the translation key, or HoldOff to disable it.
+	SetTranslateKey(key HoldKey)
 	RequestInputMonitoring()
 	// RequestScreenRecording retains the legacy screen-capture consent action.
 	RequestScreenRecording()

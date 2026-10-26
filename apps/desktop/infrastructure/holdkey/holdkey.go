@@ -35,41 +35,109 @@ var macSpecs = map[application.HoldKey]macSpec{
 	application.HoldRightCommand: {keycode: 0x36, flag: 0x10},
 }
 
-// Mac interprets Quartz keyboard events for one hold key.
-type Mac struct {
+type macTarget struct {
+	key  application.HoldKey
 	spec macSpec
 	down bool
 }
 
-// NewMac returns false for keys macOS cannot observe alone.
-func NewMac(key application.HoldKey) (*Mac, bool) {
-	spec, ok := macSpecs[key]
-	return &Mac{spec: spec}, ok
+// Mac interprets Quartz keyboard events for one or more hold keys.
+type Mac struct {
+	targets []macTarget
+}
+
+// NewMac returns false when no supported key is given or any key is
+// unavailable on macOS. HoldOff and empty entries are ignored when paired
+// with a primary key.
+func NewMac(keys ...application.HoldKey) (*Mac, bool) {
+	var targets []macTarget
+	for _, key := range keys {
+		if key == "" || key == application.HoldOff {
+			continue
+		}
+		spec, ok := macSpecs[key]
+		if !ok {
+			return nil, false
+		}
+		duplicate := false
+		for _, existing := range targets {
+			if existing.key == key {
+				duplicate = true
+				break
+			}
+		}
+		if !duplicate {
+			targets = append(targets, macTarget{key: key, spec: spec})
+		}
+	}
+	if len(targets) == 0 {
+		return nil, false
+	}
+	return &Mac{targets: targets}, true
+}
+
+func (m *Mac) held() *macTarget {
+	for i := range m.targets {
+		if m.targets[i].down {
+			return &m.targets[i]
+		}
+	}
+	return nil
+}
+
+func (m *Mac) targetFor(keycode int64) *macTarget {
+	for i := range m.targets {
+		if m.targets[i].spec.keycode == keycode {
+			return &m.targets[i]
+		}
+	}
+	return nil
+}
+
+// InterpretKey maps one event and identifies which hold key it applies to;
+// ok is false when it is not a transition.
+func (m *Mac) InterpretKey(eventType int, keycode int64, flags uint64, autorepeat bool) (application.HoldKey, Event, bool) {
+	switch eventType {
+	case MacKeyDown:
+		if autorepeat {
+			return "", 0, false
+		}
+		if held := m.held(); held != nil {
+			return held.key, Other, true
+		}
+		return m.targets[0].key, Other, true
+	case MacFlagsChanged:
+		held := m.held()
+		target := m.targetFor(keycode)
+		if target == nil {
+			if held != nil {
+				return held.key, Other, true
+			}
+			return "", 0, false
+		}
+		if held != nil && held != target {
+			if flags&target.spec.flag != 0 {
+				return held.key, Other, true
+			}
+			return "", 0, false
+		}
+		down := flags&target.spec.flag != 0
+		if down == target.down {
+			return "", 0, false
+		}
+		target.down = down
+		if down {
+			return target.key, Down, true
+		}
+		return target.key, Up, true
+	}
+	return "", 0, false
 }
 
 // Interpret maps one event; ok is false when it is not a transition.
 func (m *Mac) Interpret(eventType int, keycode int64, flags uint64, autorepeat bool) (Event, bool) {
-	switch eventType {
-	case MacKeyDown:
-		if autorepeat {
-			return 0, false
-		}
-		return Other, true
-	case MacFlagsChanged:
-		if keycode != m.spec.keycode {
-			return Other, m.down
-		}
-		down := flags&m.spec.flag != 0
-		if down == m.down {
-			return 0, false
-		}
-		m.down = down
-		if down {
-			return Down, true
-		}
-		return Up, true
-	}
-	return 0, false
+	_, event, ok := m.InterpretKey(eventType, keycode, flags, autorepeat)
+	return event, ok
 }
 
 // Windows low-level keyboard hook messages and virtual keys.
@@ -90,35 +158,100 @@ var winKeys = map[application.HoldKey]uint32{
 	application.HoldRightCtrl: 0xA3, // VK_RCONTROL
 }
 
-// Windows interprets low-level hook events for one hold key.
-type Windows struct {
+type winTarget struct {
+	key  application.HoldKey
 	vk   uint32
 	down bool
 }
 
-// NewWindows returns false for keys Windows cannot observe alone.
-func NewWindows(key application.HoldKey) (*Windows, bool) {
-	vk, ok := winKeys[key]
-	return &Windows{vk: vk}, ok
+// Windows interprets low-level hook events for one or more hold keys.
+type Windows struct {
+	targets []winTarget
+}
+
+// NewWindows returns false when no supported key is given or any key is
+// unavailable on Windows. HoldOff and empty entries are ignored when paired
+// with a primary key.
+func NewWindows(keys ...application.HoldKey) (*Windows, bool) {
+	var targets []winTarget
+	for _, key := range keys {
+		if key == "" || key == application.HoldOff {
+			continue
+		}
+		vk, ok := winKeys[key]
+		if !ok {
+			return nil, false
+		}
+		duplicate := false
+		for _, existing := range targets {
+			if existing.key == key {
+				duplicate = true
+				break
+			}
+		}
+		if !duplicate {
+			targets = append(targets, winTarget{key: key, vk: vk})
+		}
+	}
+	if len(targets) == 0 {
+		return nil, false
+	}
+	return &Windows{targets: targets}, true
+}
+
+func (w *Windows) held() *winTarget {
+	for i := range w.targets {
+		if w.targets[i].down {
+			return &w.targets[i]
+		}
+	}
+	return nil
+}
+
+func (w *Windows) targetFor(vk uint32) *winTarget {
+	for i := range w.targets {
+		if w.targets[i].vk == vk {
+			return &w.targets[i]
+		}
+	}
+	return nil
+}
+
+// InterpretKey maps one event and identifies which hold key it applies to;
+// ok is false when it is not a transition.
+func (w *Windows) InterpretKey(message uintptr, vk, scan uint32) (application.HoldKey, Event, bool) {
+	pressed := message == WinKeyDown || message == WinSysKeyDown
+	released := message == WinKeyUp || message == WinSysKeyUp
+	if vk == vkLControl && scan == altGrScan {
+		return "", 0, false
+	}
+	held := w.held()
+	target := w.targetFor(vk)
+	if target == nil {
+		if pressed && held != nil {
+			return held.key, Other, true
+		}
+		return "", 0, false
+	}
+	if held != nil && held != target {
+		if pressed {
+			return held.key, Other, true
+		}
+		return "", 0, false
+	}
+	switch {
+	case pressed && !target.down:
+		target.down = true
+		return target.key, Down, true
+	case released && target.down:
+		target.down = false
+		return target.key, Up, true
+	}
+	return "", 0, false
 }
 
 // Interpret maps one event; ok is false when it is not a transition.
 func (w *Windows) Interpret(message uintptr, vk, scan uint32) (Event, bool) {
-	pressed := message == WinKeyDown || message == WinSysKeyDown
-	released := message == WinKeyUp || message == WinSysKeyUp
-	if vk == vkLControl && scan == altGrScan {
-		return 0, false
-	}
-	if vk != w.vk {
-		return Other, pressed && w.down
-	}
-	switch {
-	case pressed && !w.down:
-		w.down = true
-		return Down, true
-	case released && w.down:
-		w.down = false
-		return Up, true
-	}
-	return 0, false
+	_, event, ok := w.InterpretKey(message, vk, scan)
+	return event, ok
 }

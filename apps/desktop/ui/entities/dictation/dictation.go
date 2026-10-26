@@ -137,7 +137,17 @@ func NoticeOf(d runtime.Dictation, permissions runtime.Permissions) Notice {
 			return Notice{copy.FailIMEProtocolTitle, copy.FailIMEProtocolHint}
 		}
 	case runtime.CodeModelMissing, runtime.CodeModelUnsupported:
+		if d.FailureDetail == runtime.DetailTranslationModel || d.Translating {
+			if d.Failure == runtime.CodeModelMissing {
+				return Notice{copy.FailTranslateModelTitle, copy.FailTranslateModelHint}
+			}
+			return Notice{copy.FailTranslateTitle, copy.FailTranslateHint}
+		}
 		return Notice{copy.FailModelTitle, copy.FailModelHint}
+	case runtime.CodeRewriteTimeout:
+		return Notice{copy.FailTranslateTimeoutTitle, copy.FailTranslateHint}
+	case runtime.CodeRewriteRejected:
+		return Notice{copy.FailTranslateTitle, copy.FailTranslateHint}
 	case runtime.CodeAudioDiscontinuity:
 		return Notice{copy.FailDiscontinuityTitle, copy.FailDiscontinuityHint}
 	case runtime.CodeDeviceUnavailable:

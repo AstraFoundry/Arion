@@ -45,6 +45,8 @@ type Request struct {
 	Chat         *prompt.ChatRequest    `json:"chat,omitempty"`
 	// Punctuation is the cleanup mode. Empty is smart.
 	Punctuation string `json:"punctuation,omitempty"`
+	// TargetLanguage is the translation target language. Empty keeps the source language.
+	TargetLanguage string `json:"targetLanguage,omitempty"`
 	// Cancel.
 	Target uint64 `json:"target,omitempty"`
 }

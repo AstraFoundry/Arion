@@ -37,27 +37,35 @@ func (p Permissions) RequestInputMonitoring() {
 var hold struct {
 	sync.Mutex
 	interpreter *holdkey.Mac
-	sink        func(holdkey.Event)
+	sink        func(application.HoldKey, holdkey.Event)
 }
 
 //export arionHoldRaw
 func arionHoldRaw(eventType C.int, keycode C.longlong, flags C.ulonglong, autorepeat C.int) {
 	hold.Lock()
 	interpreter, sink := hold.interpreter, hold.sink
+	var key application.HoldKey
 	var event holdkey.Event
 	ok := false
 	if interpreter != nil {
-		event, ok = interpreter.Interpret(int(eventType), int64(keycode), uint64(flags), autorepeat != 0)
+		key, event, ok = interpreter.InterpretKey(int(eventType), int64(keycode), uint64(flags), autorepeat != 0)
 	}
 	hold.Unlock()
 	if ok {
-		sink(event)
+		sink(key, event)
 	}
 }
 
 // StartHold observes key. sink runs on the tap's thread and must not block.
 func StartHold(key application.HoldKey, sink func(holdkey.Event)) error {
-	interpreter, ok := holdkey.NewMac(key)
+	return StartHoldKeys([]application.HoldKey{key}, func(_ application.HoldKey, e holdkey.Event) {
+		sink(e)
+	})
+}
+
+// StartHoldKeys observes keys. sink runs on the tap's thread and must not block.
+func StartHoldKeys(keys []application.HoldKey, sink func(application.HoldKey, holdkey.Event)) error {
+	interpreter, ok := holdkey.NewMac(keys...)
 	if !ok {
 		return domain.Fail(domain.CodeTargetUnsupported, "hold key not available on macOS")
 	}

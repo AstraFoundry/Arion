@@ -87,7 +87,23 @@ func (r *recorder) OpenUpdate() {
 }
 func (r *recorder) SetHoldKey(key runtime.HoldKey) {
 	r.call("hold:" + string(key))
+	if r.state.Preferences.TranslateKey == key {
+		r.state.Preferences.TranslateKey = runtime.HoldOff
+	}
 	r.state.Preferences.HoldKey = key
+}
+func (r *recorder) SetTranslateKey(key runtime.HoldKey) {
+	r.call("translate-hold:" + string(key))
+	if key != runtime.HoldOff && key == r.state.Preferences.HoldKey {
+		if prev := r.state.Preferences.TranslateKey; prev != "" && prev != runtime.HoldOff && prev != key {
+			r.state.Preferences.HoldKey = prev
+		} else if alt := runtime.DefaultHoldKey(platform.GOOS); alt != key {
+			r.state.Preferences.HoldKey = alt
+		} else {
+			r.state.Preferences.HoldKey = runtime.DefaultTranslateKey(platform.GOOS)
+		}
+	}
+	r.state.Preferences.TranslateKey = key
 }
 func (r *recorder) InstallInputMethod() error {
 	r.call("install-ime")
@@ -1082,6 +1098,62 @@ func TestHoldKeySettingsAndPill(t *testing.T) {
 	settle(pill)
 	if !hasText(pill, en.Text(copy.PillFinishHint)) || !hasText(pill, holdname.Legend(choice)) {
 		t.Fatalf("toggle hint missing after tap: %q", pill.Texts())
+	}
+}
+
+func TestTranslationSettingsAndPill(t *testing.T) {
+	state, actions, store := fixture()
+	state.Preferences.TranslateKey = runtime.HoldOff
+	state.Preferences.TranslateLanguage = runtime.TargetEnglish
+	en := copy.For(copy.English)
+	page := settings.NewPage()
+	page.Section = settings.Dictation
+	tt := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, SettingsWidth, SettingsHeight)
+	settle(tt)
+	for _, key := range []copy.Key{copy.TranslateGroup, copy.TranslateKeyLabel, copy.TranslateLanguageLabel, copy.TranslateEnglish} {
+		if !hasText(tt, en.Text(key)) {
+			t.Fatalf("missing translation control %s: %q", key, tt.Texts())
+		}
+	}
+	// Select a translation key.
+	tKey := runtime.DefaultTranslateKey(platform.GOOS)
+	if err := tt.Click(en.Text(copy.HoldKeyOff)); err != nil {
+		t.Fatal(err)
+	}
+	settle(tt)
+	if err := tt.Click(holdname.Name(en, tKey)); err != nil {
+		t.Fatal(err)
+	}
+	settle(tt)
+	if !actions.called("translate-hold:"+string(tKey)) || state.Preferences.TranslateKey != tKey {
+		t.Fatalf("translation key not chosen: %v (got %q)", actions.calls, state.Preferences.TranslateKey)
+	}
+	// Select Simplified Chinese as the translation target language.
+	if err := tt.Click(en.Text(copy.TranslateEnglish)); err != nil {
+		t.Fatal(err)
+	}
+	settle(tt)
+	if err := tt.Click(en.Text(copy.TranslateChinese)); err != nil {
+		t.Fatal(err)
+	}
+	settle(tt)
+	if state.Preferences.TranslateLanguage != runtime.TargetChinese {
+		t.Fatalf("translation language not saved: %q", state.Preferences.TranslateLanguage)
+	}
+
+	// Verify the pill shows the translation key legend during a translation session and explains translation failures.
+	overlayPage := overlay.NewPage()
+	pill := ui.NewTester(func(c *ui.Context) { overlayPage.Render(c, store) }, OverlayWidth, OverlayHeight)
+	state.Dictation = runtime.Dictation{SessionID: "tr1", State: runtime.StateCapturing, Translating: true, Levels: levels(40), Changed: time.Now()}
+	state.Hold.Holding = true
+	settle(pill)
+	if !hasText(pill, holdname.Legend(tKey)) || !hasText(pill, en.Text(copy.PillReleaseHint)) {
+		t.Fatalf("translation release hint missing: %q", pill.Texts())
+	}
+	state.Dictation = runtime.Dictation{SessionID: "tr2", State: runtime.StateFailed, Translating: true, Failure: runtime.CodeRewriteTimeout, Changed: time.Now()}
+	settle(pill)
+	if !hasText(pill, en.Text(copy.FailTranslateTimeoutTitle)) || !hasText(pill, en.Text(copy.FailTranslateHint)) {
+		t.Fatalf("translation timeout notice missing: %q", pill.Texts())
 	}
 }
 

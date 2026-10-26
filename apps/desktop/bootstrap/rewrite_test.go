@@ -95,3 +95,18 @@ func TestOriginalRemainsCopyableAfterCleanup(t *testing.T) {
 		}
 	}
 }
+
+func TestRewritePolicyForcesTranslationWhenPolishIsOff(t *testing.T) {
+	a := &App{prefs: application.DefaultPreferences("darwin"), rewriter: &rewriting.Service{}}
+	a.prefs.Polish = false
+	a.prefs.TranslateLanguage = "zh-CN"
+	a.setTranslating(true)
+	policy := a.rewritePolicy()
+	if !policy.Enabled || policy.TargetLanguage != "zh-CN" || !policy.FinalOnly {
+		t.Fatalf("translation policy not forced while Polish is off: %+v", policy)
+	}
+	a.setTranslating(false)
+	if policy := a.rewritePolicy(); policy.Enabled || policy.TargetLanguage != "" {
+		t.Fatalf("normal policy stayed enabled after translation: %+v", policy)
+	}
+}

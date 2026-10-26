@@ -11,6 +11,28 @@ import (
 // proposal (009 step 5). Rejection keeps the source text.
 type RewriteVerdict string
 
+// TranslationLanguage names the target language of a voice translation session.
+// An empty value keeps ordinary dictation in its source language.
+type TranslationLanguage string
+
+const (
+	TargetEnglish TranslationLanguage = "en"
+	TargetChinese TranslationLanguage = "zh-CN"
+)
+
+// TranslationLanguages lists the supported translation target languages.
+var TranslationLanguages = []TranslationLanguage{TargetEnglish, TargetChinese}
+
+// Known reports whether l is a supported translation target language.
+func (l TranslationLanguage) Known() bool {
+	switch l {
+	case TargetEnglish, TargetChinese:
+		return true
+	default:
+		return false
+	}
+}
+
 const (
 	RewriteAccepted    RewriteVerdict = "accepted"
 	RewriteEmpty       RewriteVerdict = "empty"

@@ -155,3 +155,46 @@ func TestPunctuationPreference(t *testing.T) {
 		t.Fatalf("invalid punctuation not repaired: %q %v", normalized.Punctuation, repairs)
 	}
 }
+
+func TestTranslationPreferences(t *testing.T) {
+	if got := DefaultPreferences("darwin"); got.TranslateKey != HoldRightCommand || got.TranslateLanguage != domain.TargetEnglish {
+		t.Fatalf("darwin translation defaults: key=%q lang=%q", got.TranslateKey, got.TranslateLanguage)
+	}
+	if got := DefaultPreferences("windows"); got.TranslateKey != HoldRightCtrl || got.TranslateLanguage != domain.TargetEnglish {
+		t.Fatalf("windows translation defaults: key=%q lang=%q", got.TranslateKey, got.TranslateLanguage)
+	}
+	for _, platform := range []string{"darwin", "windows"} {
+		for _, key := range TranslateKeysFor(platform) {
+			prefs := DefaultPreferences(platform)
+			prefs.TranslateKey = key
+			normalized, repairs := prefs.Normalize(platform)
+			if len(repairs) != 0 {
+				t.Fatalf("%s key %q caused repairs: %v", platform, key, repairs)
+			}
+			wantKey := key
+			if key == prefs.HoldKey {
+				wantKey = HoldOff
+			}
+			if normalized.TranslateKey != wantKey {
+				t.Fatalf("%s key %q normalized to %q, want %q", platform, key, normalized.TranslateKey, wantKey)
+			}
+		}
+		for _, lang := range domain.TranslationLanguages {
+			prefs := DefaultPreferences(platform)
+			prefs.TranslateLanguage = lang
+			if normalized, repairs := prefs.Normalize(platform); normalized.TranslateLanguage != lang || len(repairs) != 0 {
+				t.Fatalf("%s language %q changed: %q %v", platform, lang, normalized.TranslateLanguage, repairs)
+			}
+		}
+		prefs := DefaultPreferences(platform)
+		prefs.TranslateKey = "caps_lock"
+		prefs.TranslateLanguage = "fr"
+		normalized, repairs := prefs.Normalize(platform)
+		if normalized.TranslateKey != DefaultTranslateKey(platform) || !slices.Contains(repairs, "translateKey") {
+			t.Fatalf("%s invalid translateKey not repaired: %q %v", platform, normalized.TranslateKey, repairs)
+		}
+		if normalized.TranslateLanguage != domain.TargetEnglish || !slices.Contains(repairs, "translateLanguage") {
+			t.Fatalf("%s invalid translateLanguage not repaired: %q %v", platform, normalized.TranslateLanguage, repairs)
+		}
+	}
+}

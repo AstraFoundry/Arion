@@ -15,6 +15,10 @@ import (
 // RewritePolicy configures the optional LLM stage of one session.
 type RewritePolicy struct {
 	Enabled bool
+	// TargetLanguage, when non-empty, translates the dictated speech into
+	// that language in the formatting stage and requires a validated rewrite
+	// before committing.
+	TargetLanguage domain.TranslationLanguage
 	// Scene is the formatting scene (a domain.Scene). With FollowApp it is
 	// the fallback until the session's target is captured.
 	Scene string
@@ -109,7 +113,8 @@ func snapshotRewriteRequest(request ports.RewriteRequest) ports.RewriteRequest {
 
 func sameRewriteRequest(a, b ports.RewriteRequest) bool {
 	return a.Identity == b.Identity && a.SourceRevision == b.SourceRevision &&
-		a.Text == b.Text && a.PreviousText == b.PreviousText && a.Scene == b.Scene && a.Punctuation == b.Punctuation && a.Prefill == b.Prefill &&
+		a.Text == b.Text && a.PreviousText == b.PreviousText && a.Scene == b.Scene &&
+		a.Punctuation == b.Punctuation && a.TargetLanguage == b.TargetLanguage && a.Prefill == b.Prefill &&
 		slices.Equal(a.Terms, b.Terms) && a.Context.Screen == b.Context.Screen &&
 		a.Context.Before == b.Context.Before && a.Context.After == b.Context.After &&
 		slices.Equal(a.Context.History, b.Context.History)
@@ -142,8 +147,14 @@ func (c *Coordinator) completedRewrite(r *run, request ports.RewriteRequest) (po
 	return completed.result, true
 }
 
-func (c *Coordinator) newLive(r *run) *liveState {
+func (c *Coordinator) newLive(r *run, target domain.TranslationLanguage) *liveState {
 	policy := c.opts.Rewrite()
+	if target != "" {
+		policy.Enabled = true
+		policy.TargetLanguage = target
+	} else if policy.TargetLanguage != "" {
+		policy.Enabled = true
+	}
 	if !policy.Enabled && !c.opts.SegmentFinalize {
 		return nil
 	}
@@ -311,7 +322,7 @@ func (c *Coordinator) preview(r *run, stable string) {
 	rc := r.contextFor(0)
 	started := time.Now()
 	request := snapshotRewriteRequest(ports.RewriteRequest{Identity: r.identity, Text: stable,
-		Scene: string(domain.ModelScene(domain.Scene(l.policy.Scene), stable)), Punctuation: string(l.policy.Punctuation), Terms: l.policy.terms(stable), Context: rc, Live: true})
+		Scene: string(domain.ModelScene(domain.Scene(l.policy.Scene), stable)), Punctuation: string(l.policy.Punctuation), TargetLanguage: string(l.policy.TargetLanguage), Terms: l.policy.terms(stable), Context: rc, Live: true})
 	completedRequest := snapshotRewriteRequest(request)
 	result, err := c.deps.Rewriter.Rewrite(ctx, request)
 	c.diagnostic(r, ports.DiagnosticPreview, started, err)
@@ -405,7 +416,7 @@ func (c *Coordinator) rewriteFinal(r *run, source string, policy RewritePolicy) 
 	rc := r.contextFor(contextWait)
 	previous := c.previousStableSource(r, source)
 	request := snapshotRewriteRequest(ports.RewriteRequest{Identity: r.identity, Text: source, PreviousText: previous,
-		Scene: string(domain.ModelScene(domain.Scene(policy.Scene), source)), Punctuation: string(policy.Punctuation), Terms: policy.termsForFinal(source, previous), Context: rc})
+		Scene: string(domain.ModelScene(domain.Scene(policy.Scene), source)), Punctuation: string(policy.Punctuation), TargetLanguage: string(policy.TargetLanguage), Terms: policy.termsForFinal(source, previous), Context: rc})
 	result, reused := c.completedRewrite(r, request)
 	var err error
 	if !reused {
@@ -414,6 +425,7 @@ func (c *Coordinator) rewriteFinal(r *run, source string, policy RewritePolicy) 
 		result, err = c.deps.Rewriter.Rewrite(ctx, request)
 		c.diagnostic(r, ports.DiagnosticRewrite, started, err)
 	}
+	r.rewriteErr = err
 	switch {
 	case r.ctx.Err() != nil:
 		return "", "", false

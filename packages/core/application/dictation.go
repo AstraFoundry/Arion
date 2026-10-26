@@ -123,9 +123,10 @@ type run struct {
 	lastText   string
 
 	// Guarded by Coordinator.mu.
-	draft string
-	raw   string
-	final string
+	draft      string
+	raw        string
+	final      string
+	rewriteErr error
 }
 
 // NewCoordinator validates its configuration.
@@ -222,6 +223,19 @@ func (c *Coordinator) Toggle() {
 // Start begins a new session in a new generation. Adapter calls that may
 // block run off the caller's thread; failures are delivered as events.
 func (c *Coordinator) Start() {
+	c.start("")
+}
+
+// StartTranslation begins a new session that translates the dictated speech
+// into target during the final rewrite stage, even when normal polishing is off.
+func (c *Coordinator) StartTranslation(target domain.TranslationLanguage) {
+	if target == "" {
+		target = domain.TargetEnglish
+	}
+	c.start(target)
+}
+
+func (c *Coordinator) start(target domain.TranslationLanguage) {
 	c.mu.Lock()
 	if c.maintenance {
 		c.mu.Unlock()
@@ -262,13 +276,18 @@ func (c *Coordinator) Start() {
 	ctx, cancel := context.WithCancel(context.Background())
 	r := &run{session: session, identity: contracts.Identity{SessionID: session.ID(), Generation: session.Generation()},
 		ctx: ctx, cancel: cancel, started: time.Now(), frames: make(chan contracts.Frame, c.opts.QueueFrames), pumpDone: make(chan struct{})}
-	r.live = c.newLive(r)
+	r.live = c.newLive(r, target)
 	_ = session.Advance(domain.Preparing)
 	c.current = r
 	c.workers.Add(1)
 	needTarget := c.opts.AutoCommit
 	c.mu.Unlock()
 	c.emitState(r, domain.Preparing)
+	if target != "" && !target.Known() {
+		c.workers.Add(-1)
+		c.failDetail(r, domain.CodeContractUnsupported, "unknown translation target")
+		return
+	}
 	go func() { defer c.workers.Add(-1); c.prepare(r, needTarget) }()
 }
 
@@ -584,6 +603,10 @@ func (c *Coordinator) deliver(r *run, raw string, policy RewritePolicy) {
 		if text, outcome, ok = c.rewriteFinal(r, source, policy); !ok {
 			return
 		}
+		if policy.TargetLanguage != "" && outcome != string(domain.RewriteAccepted) {
+			c.failTranslation(r, raw, source, outcome)
+			return
+		}
 		if policy.Enabled {
 			text = domain.FinishScene(domain.Scene(policy.Scene), text)
 		}
@@ -692,11 +715,54 @@ func (c *Coordinator) commit(r *run, revision uint64, text string) {
 	c.emit(r, event)
 }
 
+func (r *run) translating() bool {
+	return r.live != nil && r.live.policy.TargetLanguage != ""
+}
+
+// failTranslation aborts target commit when a translation session's rewrite
+// fails, surfacing an explicit failure event while retaining the recognized
+// source text so the user can still copy it.
+func (c *Coordinator) failTranslation(r *run, raw, source, outcome string) {
+	code := domain.CodeRewriteRejected
+	detail := outcome
+	switch outcome {
+	case RewriteTimeout:
+		code, detail = domain.CodeRewriteTimeout, ""
+	case RewriteUnavailable:
+		detail = "translation model"
+		if r.rewriteErr == nil {
+			code = domain.CodeModelMissing
+		} else {
+			code = codeOr(r.rewriteErr, domain.CodeModelUnsupported)
+		}
+	}
+	c.mu.Lock()
+	if c.current != r || r.ctx.Err() != nil || r.session.FailWith(code) != nil {
+		c.mu.Unlock()
+		return
+	}
+	r.raw, r.draft = raw, source
+	r.cancel()
+	c.mu.Unlock()
+	c.releaseComposition(r)
+	c.emit(r, contracts.Event{
+		Envelope: contracts.Envelope{Kind: contracts.ErrorOccurred},
+		State:    domain.Failed,
+		Error:    code,
+		Detail:   detail,
+		Raw:      raw,
+		Source:   source,
+		Rewrite:  outcome,
+		Text:     source,
+	})
+}
+
 // follower asks the commit adapter to keep the field readable after the
-// commit when learning is on. Secure fields and IME compositions are never
-// followed (DSK-08); the adapter refuses fields it cannot read safely.
+// commit when learning is on. Secure fields, IME compositions and
+// translations are never followed (DSK-08); the adapter refuses fields it
+// cannot read safely.
 func (c *Coordinator) follower(r *run, input ports.InputTarget) ports.FieldReader {
-	if c.deps.Edits == nil || c.opts.Learning == nil || !c.opts.Learning() || r.target.Sensitive || c.composing(r) {
+	if c.deps.Edits == nil || c.opts.Learning == nil || !c.opts.Learning() || r.target.Sensitive || c.composing(r) || r.translating() {
 		return nil
 	}
 	reader, ok := input.(ports.FieldReader)

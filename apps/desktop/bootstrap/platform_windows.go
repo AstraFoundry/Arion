@@ -47,6 +47,9 @@ func (windowsPlatform) SettingsWindow() SettingsWindow  { return SettingsWindow{
 func (windowsPlatform) StartHoldKey(key application.HoldKey, sink func(holdkey.Event)) error {
 	return windows.StartHold(key, sink)
 }
+func (windowsPlatform) StartHoldKeys(keys []application.HoldKey, sink func(application.HoldKey, holdkey.Event)) error {
+	return windows.StartHoldKeys(keys, sink)
+}
 func (windowsPlatform) StopHoldKey() { windows.StopHold() }
 
 // NewTargets: the Windows adapter reads no web site or cursor text; it

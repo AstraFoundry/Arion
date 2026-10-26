@@ -78,6 +78,9 @@ func (darwinPlatform) SettingsWindow() SettingsWindow {
 func (darwinPlatform) StartHoldKey(key application.HoldKey, sink func(holdkey.Event)) error {
 	return macos.StartHold(key, sink)
 }
+func (darwinPlatform) StartHoldKeys(keys []application.HoldKey, sink func(application.HoldKey, holdkey.Event)) error {
+	return macos.StartHoldKeys(keys, sink)
+}
 func (darwinPlatform) StopHoldKey() { macos.StopHold() }
 
 func (p darwinPlatform) NewTargets(_ func() application.Delivery, gates TargetGates) Targets {

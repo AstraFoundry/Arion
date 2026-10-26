@@ -132,11 +132,13 @@ type App struct {
 
 	// holdGeneration rejects queued events from a retired native listener.
 	holdGeneration uint64
+	holdKey        application.HoldKey
 
 	// Snapshot read by worker goroutines (correction policy, delivery).
-	snapshot sync.Mutex
-	prefs    application.Preferences
-	replaces []domain.Replacement
+	snapshot    sync.Mutex
+	prefs       application.Preferences
+	translating bool
+	replaces    []domain.Replacement
 	// vocabulary indexes replaces once per change; memory is vocab for
 	// worker goroutines (edit learning, recall counts).
 	vocabulary *domain.Vocabulary
@@ -206,9 +208,9 @@ func New(opts Options) (*App, error) {
 	a.cloud.SetModel(prefs.CloudModel)
 	// Both engines read the same consent-gated context sources.
 	a.targets = a.platform.NewTargets(func() application.Delivery { return a.preferences().Delivery }, TargetGates{
-		Site:   func() bool { p := a.preferences(); return p.Polish && p.MatchApp },
-		Cursor: func() bool { p := a.preferences(); return p.Polish && p.ContextCursor },
-		Screen: func() bool { p := a.preferences(); return p.Polish && p.ContextScreen },
+		Site:   func() bool { p := a.preferences(); return (p.Polish || a.isTranslating()) && p.MatchApp },
+		Cursor: func() bool { p := a.preferences(); return (p.Polish || a.isTranslating()) && p.ContextCursor },
+		Screen: func() bool { p := a.preferences(); return (p.Polish || a.isTranslating()) && p.ContextScreen },
 	})
 	a.vocabPath = filepath.Join(opts.DataDir, "vocabulary.bin")
 	a.usage = usage.Store{Path: filepath.Join(opts.DataDir, "usage.json")}
@@ -270,6 +272,18 @@ func (a *App) preferences() application.Preferences {
 	return a.prefs
 }
 
+func (a *App) setTranslating(translating bool) {
+	a.snapshot.Lock()
+	a.translating = translating
+	a.snapshot.Unlock()
+}
+
+func (a *App) isTranslating() bool {
+	a.snapshot.Lock()
+	defer a.snapshot.Unlock()
+	return a.translating
+}
+
 // policy is read by the session goroutine when a dictation finalizes.
 func (a *App) policy() domain.CorrectionPolicy {
 	a.snapshot.Lock()
@@ -285,12 +299,19 @@ func (a *App) policy() domain.CorrectionPolicy {
 func (a *App) rewritePolicy() application.RewritePolicy {
 	a.snapshot.Lock()
 	defer a.snapshot.Unlock()
-	if !a.prefs.Polish {
+	if !a.prefs.Polish && !a.translating {
 		return application.RewritePolicy{}
 	}
 	policy := application.RewritePolicy{Enabled: true, Scene: string(domain.SceneChat), FollowApp: a.prefs.MatchApp,
 		Punctuation: a.prefs.Punctuation, SceneOverrides: a.prefs.SceneOverrides, Vocabulary: a.vocabulary,
 		FinalOnly: true}
+	if a.translating {
+		target := a.prefs.TranslateLanguage
+		if !target.Known() {
+			target = domain.TargetEnglish
+		}
+		policy.TargetLanguage = target
+	}
 	policy.Context = application.ContextPolicy{Cursor: a.prefs.ContextCursor, Screen: a.prefs.ContextScreen, History: a.prefs.ContextHistory}
 	if a.prefs.PolishEngine == application.PolishCloud {
 		// The shared stages use one overall cloud deadline (ADR 024).
@@ -528,7 +549,7 @@ func (a *App) apply(e contracts.Event) {
 		if e.Kind != contracts.SessionStateChanged || e.State != domain.Preparing {
 			return
 		}
-		*d = arion.Dictation{SessionID: e.SessionID}
+		*d = arion.Dictation{SessionID: e.SessionID, Translating: a.isTranslating()}
 		a.dismissLearned()
 		a.closeUpdateReminder()
 		a.stopMonitor()
@@ -570,7 +591,7 @@ func (a *App) apply(e contracts.Event) {
 		}
 		d.Failure, d.FailureDetail = e.Error, e.Detail
 		if e.Text != "" {
-			a.state.LastText, a.state.LastOriginal = e.Text, ""
+			a.state.LastText, a.state.LastOriginal = e.Text, e.Source
 		}
 		setState(e.State)
 		a.clearUnavailableModelFailure()

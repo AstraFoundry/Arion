@@ -9,28 +9,47 @@ import (
 	arion "arion.local/desktop/ui/shared/runtime"
 )
 
-// startHoldKey (re)starts the listener for the preferred hold key, the only
-// global activation. A key that cannot listen stays chosen and reports why,
+// startHoldKey (re)starts the listener for the preferred hold key and optional
+// translation hold key. A key that cannot listen stays chosen and reports why,
 // so granting consent later starts it without the user choosing again.
 func (a *App) startHoldKey() {
 	a.holdGeneration++
 	generation := a.holdGeneration
 	a.platform.StopHoldKey()
 	a.hold.Reset()
+	a.holdKey = ""
 	a.state.Hold.Active, a.state.Hold.Failure, a.state.Hold.Holding = false, "", false
 	key := a.state.Preferences.HoldKey
 	if key == "" {
 		// This platform has no hold key adapter.
 		return
 	}
-	err := a.platform.StartHoldKey(key, func(e holdkey.Event) {
-		now := time.Now()
-		a.post(func() {
-			if generation == a.holdGeneration {
-				a.onHoldKey(e, now)
-			}
+	keys := []application.HoldKey{key}
+	if t := a.state.Preferences.TranslateKey; t != "" && t != application.HoldOff && t != key {
+		keys = append(keys, t)
+	}
+	var err error
+	if multi, ok := a.platform.(interface {
+		StartHoldKeys(keys []application.HoldKey, sink func(application.HoldKey, holdkey.Event)) error
+	}); ok {
+		err = multi.StartHoldKeys(keys, func(k application.HoldKey, e holdkey.Event) {
+			now := time.Now()
+			a.post(func() {
+				if generation == a.holdGeneration {
+					a.onHoldKeyEvent(k, e, now)
+				}
+			})
 		})
-	})
+	} else {
+		err = a.platform.StartHoldKey(key, func(e holdkey.Event) {
+			now := time.Now()
+			a.post(func() {
+				if generation == a.holdGeneration {
+					a.onHoldKeyEvent(key, e, now)
+				}
+			})
+		})
+	}
 	a.record("hold_register", err)
 	if err != nil {
 		a.state.Hold.Failure = domain.CodeOf(err)
@@ -57,27 +76,43 @@ func (a *App) holdSession() application.HoldSession {
 }
 
 func (a *App) onHoldKey(e holdkey.Event, at time.Time) {
+	a.onHoldKeyEvent(a.state.Preferences.HoldKey, e, at)
+}
+
+func (a *App) onHoldKeyEvent(key application.HoldKey, e holdkey.Event, at time.Time) {
 	if a.testingHold {
-		if e == holdkey.Down {
+		if e == holdkey.Down && (key == "" || key == a.state.Preferences.HoldKey) {
 			a.state.Hold.Pressed = at
 			a.invalidate()
 		}
+		return
+	}
+	if e == holdkey.Up && a.holdKey != "" && key != "" && key != a.holdKey {
 		return
 	}
 	var action application.HoldAction
 	switch e {
 	case holdkey.Down:
 		action = a.hold.Press(at, a.holdSession())
+		if action != application.HoldNone {
+			a.holdKey = key
+		}
 	case holdkey.Up:
 		action = a.hold.Release(at)
 	case holdkey.Other:
 		action = a.hold.Other()
 	}
+	translate := key != "" && key != application.HoldOff && key == a.state.Preferences.TranslateKey && key != a.state.Preferences.HoldKey
 	switch action {
 	case application.HoldStart:
 		a.record("hold_start", nil)
 		a.state.Hold.Holding = true
-		a.core.Start()
+		a.setTranslating(translate)
+		if translate {
+			a.core.StartTranslation(a.preferences().TranslateLanguage)
+		} else {
+			a.core.Start()
+		}
 	case application.HoldStop:
 		a.record("hold_stop", nil)
 		a.state.Hold.Holding = false

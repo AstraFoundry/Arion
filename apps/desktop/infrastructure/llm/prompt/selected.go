@@ -91,18 +91,26 @@ type sceneRecipe struct {
 	InstructionHan string          `json:"instructionHan"`
 	Examples       []formatExample `json:"examples"`
 }
+type translateTargetRecipe struct {
+	System          string                     `json:"system"`
+	Rules           string                     `json:"rules"`
+	Route           string                     `json:"route"`
+	EditingExamples []formatExample            `json:"editingExamples"`
+	Scenes          map[string][]formatExample `json:"scenes"`
+}
 type formatRecipe struct {
-	EditingExamples []formatExample        `json:"editingExamples"`
-	System          string                 `json:"formatSystem"`
-	SystemHan       string                 `json:"formatSystemHan"`
-	Rules           string                 `json:"formatRules"`
-	RulesHan        string                 `json:"formatRulesHan"`
-	ProsePolicy     string                 `json:"prosePolicy"`
-	ProsePolicyHan  string                 `json:"prosePolicyHan"`
-	Routes          map[string]string      `json:"routeInstructions"`
-	Punctuation     string                 `json:"punctuationRule"`
-	PunctuationHan  string                 `json:"punctuationRuleHan"`
-	Scenes          map[string]sceneRecipe `json:"format"`
+	EditingExamples []formatExample                  `json:"editingExamples"`
+	System          string                           `json:"formatSystem"`
+	SystemHan       string                           `json:"formatSystemHan"`
+	Rules           string                           `json:"formatRules"`
+	RulesHan        string                           `json:"formatRulesHan"`
+	ProsePolicy     string                           `json:"prosePolicy"`
+	ProsePolicyHan  string                           `json:"prosePolicyHan"`
+	Routes          map[string]string                `json:"routeInstructions"`
+	Punctuation     string                           `json:"punctuationRule"`
+	PunctuationHan  string                           `json:"punctuationRuleHan"`
+	Scenes          map[string]sceneRecipe           `json:"format"`
+	Translate       map[string]translateTargetRecipe `json:"translate"`
 }
 
 // SelectedTemplates holds immutable parsed templates and their fixed selector turns.
@@ -211,6 +219,12 @@ func formatTokens(source string) int {
 	return min(maxFormatTokens, max(minFormatTokens, utf8.RuneCountInString(source)+128))
 }
 
+// formatTranslationTokens allows 2x expansion per source rune so Chinese-to-English
+// translations do not exhaust the completion budget on longer utterances.
+func formatTranslationTokens(source string) int {
+	return min(maxFormatTokens, max(minFormatTokens, utf8.RuneCountInString(source)*2+128))
+}
+
 // systemPrompt is a preamble plus one rules list. Scene text is rule 7,
 // layout is rule 8 (omitted for list), and the script route is rule 9.
 // Full, omit, and spaces append one punctuation bullet; smart does not.
@@ -270,4 +284,62 @@ func (t *SelectedTemplates) Format(source, scene string, punctuation domain.Punc
 		return ChatRequest{}, fmt.Errorf("missing formatting examples for %s/%s", scene, kind)
 	}
 	return chat(append(messages, Message{Role: "user", Content: formatText(source)}), formatTokens(source)), nil
+}
+
+func (t *SelectedTemplates) translationSystemPrompt(scene string, punctuation domain.Punctuation, target domain.TranslationLanguage) string {
+	tr := t.format.Translate[string(target)]
+	recipe := t.format.Scenes[scene]
+	sceneRule, layout, punct := recipe.Instruction, t.format.ProsePolicy, t.format.Punctuation
+	if target == domain.TargetChinese {
+		sceneRule, layout, punct = recipe.InstructionHan, t.format.ProsePolicyHan, t.format.PunctuationHan
+	}
+	lines := strings.Split(tr.Rules, "\n")
+	lines = append(lines, sceneRule)
+	if scene != string(domain.SceneList) {
+		lines = append(lines, layout)
+	}
+	lines = append(lines, tr.Route)
+	switch punctuation {
+	case domain.PunctuationFull, domain.PunctuationOmit, domain.PunctuationSpaces:
+		lines = append(lines, punct)
+	}
+	return tr.System + "\n\n<rules>\n" + strings.Join(lines, "\n") + "\n</rules>"
+}
+
+// FormatTranslation builds the Stage 2 request that polishes and translates
+// the edited source into target while preserving scene layout, punctuation
+// rules, and code/identifier fidelity.
+func (t *SelectedTemplates) FormatTranslation(source, scene string, punctuation domain.Punctuation, target domain.TranslationLanguage) (ChatRequest, error) {
+	if !target.Known() {
+		return ChatRequest{}, fmt.Errorf("unsupported translation target %q", target)
+	}
+	if scene == string(domain.SceneSearch) {
+		scene = string(domain.SceneChat)
+	}
+	if _, ok := t.format.Scenes[scene]; !ok {
+		return ChatRequest{}, fmt.Errorf("unsupported formatting scene %q", scene)
+	}
+	tr, ok := t.format.Translate[string(target)]
+	if !ok {
+		return ChatRequest{}, fmt.Errorf("missing translation recipe for %q", target)
+	}
+	sceneExamples, ok := tr.Scenes[scene]
+	if !ok || len(sceneExamples) == 0 {
+		return ChatRequest{}, fmt.Errorf("missing translation examples for %s/%s", scene, target)
+	}
+	messages := []Message{{Role: "system", Content: t.translationSystemPrompt(scene, punctuation, target)}}
+	groups := [][]formatExample{sceneExamples, tr.EditingExamples}
+	if scene == string(domain.SceneList) {
+		groups[0], groups[1] = groups[1], groups[0]
+	}
+	for group, examples := range groups {
+		for _, e := range examples {
+			output := e.Output
+			if scene == string(domain.SceneList) && group == 0 {
+				output = "1. " + output
+			}
+			messages = append(messages, Message{Role: "user", Content: formatText(e.Source)}, Message{Role: "assistant", Content: output})
+		}
+	}
+	return chat(append(messages, Message{Role: "user", Content: formatText(source)}), formatTranslationTokens(source)), nil
 }

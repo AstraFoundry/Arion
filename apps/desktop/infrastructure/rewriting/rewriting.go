@@ -271,7 +271,16 @@ func (s *Service) Ready() bool {
 func (s *Service) Rewrite(ctx context.Context, req ports.RewriteRequest) (ports.RewriteResult, error) {
 	s.mu.Lock()
 	c := s.client
+	installed := s.status.Installed && s.store != nil
 	s.mu.Unlock()
+	if c == nil && req.TargetLanguage != "" && installed {
+		if err := s.Enable(ctx); err != nil {
+			return ports.RewriteResult{}, err
+		}
+		s.mu.Lock()
+		c = s.client
+		s.mu.Unlock()
+	}
 	if c == nil {
 		return ports.RewriteResult{}, domain.Fail(domain.CodeModelMissing, "rewrite model not running")
 	}

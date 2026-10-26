@@ -49,3 +49,43 @@ func TestIMEVerificationFailuresDoNotNameSpeechModels(t *testing.T) {
 		}
 	}
 }
+
+func TestTranslationFailureNotices(t *testing.T) {
+	for _, tc := range []struct {
+		name        string
+		d           runtime.Dictation
+		title, hint copy.Key
+	}{
+		{
+			name:  "missing translation model",
+			d:     runtime.Dictation{Failure: runtime.CodeModelMissing, FailureDetail: runtime.DetailTranslationModel, Translating: true},
+			title: copy.FailTranslateModelTitle,
+			hint:  copy.FailTranslateModelHint,
+		},
+		{
+			name:  "translation worker error",
+			d:     runtime.Dictation{Failure: runtime.CodeModelUnsupported, FailureDetail: runtime.DetailTranslationModel, Translating: true},
+			title: copy.FailTranslateTitle,
+			hint:  copy.FailTranslateHint,
+		},
+		{
+			name:  "translation timeout",
+			d:     runtime.Dictation{Failure: runtime.CodeRewriteTimeout, Translating: true},
+			title: copy.FailTranslateTimeoutTitle,
+			hint:  copy.FailTranslateHint,
+		},
+		{
+			name:  "translation rejected",
+			d:     runtime.Dictation{Failure: runtime.CodeRewriteRejected, Translating: true},
+			title: copy.FailTranslateTitle,
+			hint:  copy.FailTranslateHint,
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			got := NoticeOf(tc.d, runtime.Permissions{})
+			if got.Title != tc.title || got.Hint != tc.hint {
+				t.Fatalf("got %+v, want title=%s hint=%s", got, tc.title, tc.hint)
+			}
+		})
+	}
+}

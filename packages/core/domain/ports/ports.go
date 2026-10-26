@@ -109,7 +109,10 @@ type RewriteRequest struct {
 	// Punctuation is the cleanup punctuation mode (a domain.Punctuation).
 	// Empty is smart. It selects a prompt bullet and is not a sentence type.
 	Punctuation string
-	Terms       []string
+	// TargetLanguage is the translation target language (a domain.TranslationLanguage).
+	// Empty keeps the source language.
+	TargetLanguage string
+	Terms          []string
 	// Context supplies spelling evidence to the shared selection stage;
 	// the formatting stage receives only the edited source.
 	Context domain.RewriteContext

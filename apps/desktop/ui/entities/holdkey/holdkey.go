@@ -7,6 +7,7 @@ import (
 )
 
 var names = map[runtime.HoldKey]copy.Key{
+	runtime.HoldOff:          copy.HoldKeyOff,
 	runtime.HoldFn:           copy.HoldKeyFn,
 	runtime.HoldRightOption:  copy.HoldKeyRightOption,
 	runtime.HoldRightCommand: copy.HoldKeyRightCommand,
@@ -15,7 +16,12 @@ var names = map[runtime.HoldKey]copy.Key{
 }
 
 // Name is the key's display name.
-func Name(messages copy.Catalog, key runtime.HoldKey) string { return messages.Text(names[key]) }
+func Name(messages copy.Catalog, key runtime.HoldKey) string {
+	if key == "" {
+		key = runtime.HoldOff
+	}
+	return messages.Text(names[key])
+}
 
 // legends are what the physical keys print, drawn as keycaps rather than
 // spelled out; the side is in Name, shown where the key is chosen.

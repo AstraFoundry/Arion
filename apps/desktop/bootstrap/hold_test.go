@@ -1,11 +1,14 @@
 package bootstrap
 
 import (
+	"path/filepath"
+	"runtime"
 	"testing"
 
 	"arion.local/core/application"
 	"arion.local/core/domain"
 	"arion.local/desktop/infrastructure/holdkey"
+	"arion.local/desktop/infrastructure/settings"
 	arion "arion.local/desktop/ui/shared/runtime"
 )
 
@@ -71,5 +74,44 @@ func TestHoldKeyRestartRejectsQueuedEventsFromOldListener(t *testing.T) {
 	a.queue[0]()
 	if !a.state.Hold.Pressed.IsZero() {
 		t.Fatal("stale listener event reached the new key selection")
+	}
+}
+
+type multiHoldPlatform struct {
+	holdPlatform
+	keys      []application.HoldKey
+	multiSink func(application.HoldKey, holdkey.Event)
+}
+
+func (p *multiHoldPlatform) StartHoldKeys(keys []application.HoldKey, sink func(application.HoldKey, holdkey.Event)) error {
+	p.keys = append([]application.HoldKey(nil), keys...)
+	p.multiSink = sink
+	p.starts++
+	return p.failure
+}
+
+func TestTranslateKeyRegistersAlongsideHoldKeyAndResolvesConflicts(t *testing.T) {
+	p := &multiHoldPlatform{}
+	a := &App{platform: p, prefStore: settings.Store{Path: filepath.Join(t.TempDir(), "preferences.json")}}
+	a.prefs = application.DefaultPreferences(runtime.GOOS)
+	a.state.Preferences = a.prefs
+	a.startHoldKey()
+	wantHold := application.DefaultHoldKey(runtime.GOOS)
+	wantTranslate := application.DefaultTranslateKey(runtime.GOOS)
+	if len(p.keys) != 2 || p.keys[0] != wantHold || p.keys[1] != wantTranslate {
+		t.Fatalf("expected both HoldKey and TranslateKey registered, got %v", p.keys)
+	}
+	// Choosing the current HoldKey as TranslateKey swaps HoldKey to the previous TranslateKey.
+	(actions{a}).SetTranslateKey(wantHold)
+	if a.state.Preferences.TranslateKey != wantHold || a.state.Preferences.HoldKey != wantTranslate {
+		t.Fatalf("expected keys to swap, got hold=%q translate=%q", a.state.Preferences.HoldKey, a.state.Preferences.TranslateKey)
+	}
+	// Choosing the current TranslateKey as HoldKey turns TranslateKey off.
+	(actions{a}).SetHoldKey(wantHold)
+	if a.state.Preferences.HoldKey != wantHold || a.state.Preferences.TranslateKey != application.HoldOff {
+		t.Fatalf("expected TranslateKey off on HoldKey conflict, got hold=%q translate=%q", a.state.Preferences.HoldKey, a.state.Preferences.TranslateKey)
+	}
+	if len(p.keys) != 1 || p.keys[0] != wantHold {
+		t.Fatalf("expected only HoldKey registered when TranslateKey is off, got %v", p.keys)
 	}
 }

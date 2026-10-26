@@ -9,8 +9,11 @@ import (
 // toggleDictation keeps the same readiness rule for buttons, the tray and the
 // input menu. An existing session can still be stopped while a model changes.
 func (a *App) toggleDictation() {
-	if !a.core.Snapshot().Active && a.state.Model.State != arion.ModelReady {
-		return
+	if !a.core.Snapshot().Active {
+		if a.state.Model.State != arion.ModelReady {
+			return
+		}
+		a.setTranslating(false)
 	}
 	a.core.Toggle()
 }

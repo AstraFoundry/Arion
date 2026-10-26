@@ -109,7 +109,12 @@ func (p *Pipeline) Run(ctx context.Context, req engine.Request, generate Generat
 		result.Cancelled = true
 		return result, nil
 	}
-	request, err := p.recipe.Format(edited, req.Scene, req.Punctuation)
+	var request prompt.ChatRequest
+	if req.TargetLanguage != "" {
+		request, err = p.recipe.FormatTranslation(edited, req.Scene, req.Punctuation, req.TargetLanguage)
+	} else {
+		request, err = p.recipe.Format(edited, req.Scene, req.Punctuation)
+	}
 	if err != nil {
 		return result, err
 	}

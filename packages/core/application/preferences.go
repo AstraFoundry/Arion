@@ -18,14 +18,16 @@ const (
 // on purpose: the best evaluated bundle loads automatically; ModelOverride
 // only exists for an explicit choice among evaluated bundles.
 type Preferences struct {
-	Version             int        `json:"version"`
-	UILanguage          UILanguage `json:"uiLanguage"`
-	OnboardingCompleted bool       `json:"onboardingCompleted"`
-	HoldKey             HoldKey    `json:"holdKey"`
-	Delivery            Delivery   `json:"delivery"`
-	Sounds              bool       `json:"sounds"`
-	LaunchAtLogin       bool       `json:"launchAtLogin"`
-	Microphone          string     `json:"microphone"`
+	Version             int                        `json:"version"`
+	UILanguage          UILanguage                 `json:"uiLanguage"`
+	OnboardingCompleted bool                       `json:"onboardingCompleted"`
+	HoldKey             HoldKey                    `json:"holdKey"`
+	TranslateKey        HoldKey                    `json:"translateKey,omitempty"`
+	TranslateLanguage   domain.TranslationLanguage `json:"translateLanguage,omitempty"`
+	Delivery            Delivery                   `json:"delivery"`
+	Sounds              bool                       `json:"sounds"`
+	LaunchAtLogin       bool                       `json:"launchAtLogin"`
+	Microphone          string                     `json:"microphone"`
 	// MicrophoneGain is one of GainStops' decibels; profiles written before
 	// it existed load 0 dB, the device's own level.
 	MicrophoneGain int    `json:"microphoneGain"`
@@ -101,6 +103,7 @@ const (
 func DefaultPreferences(platform string) Preferences {
 	return Preferences{
 		Version: PreferencesVersion, UILanguage: English, HoldKey: DefaultHoldKey(platform),
+		TranslateKey: DefaultTranslateKey(platform), TranslateLanguage: domain.TargetEnglish,
 		Delivery: DeliveryAutomatic, PolishEngine: PolishLocal, Punctuation: domain.PunctuationSmart, Sounds: true, CheckUpdates: true, MatchApp: true,
 		ContextCursor: true, ContextScreen: true, ContextHistory: true, LearnEdits: true,
 		Keyboard: DefaultKeyboardPreferences(),
@@ -125,6 +128,17 @@ func (p Preferences) Normalize(platform string) (Preferences, []string) {
 	if !knownHoldKey(platform, p.HoldKey) {
 		p.HoldKey = defaults.HoldKey
 		repaired = append(repaired, "holdKey")
+	}
+	if !knownTranslateKey(platform, p.TranslateKey) {
+		p.TranslateKey = defaults.TranslateKey
+		repaired = append(repaired, "translateKey")
+	}
+	if p.TranslateKey != "" && p.TranslateKey != HoldOff && p.TranslateKey == p.HoldKey {
+		p.TranslateKey = HoldOff
+	}
+	if !p.TranslateLanguage.Known() {
+		p.TranslateLanguage = defaults.TranslateLanguage
+		repaired = append(repaired, "translateLanguage")
 	}
 	if p.PolishEngine != PolishLocal && p.PolishEngine != PolishCloud {
 		p.PolishEngine = defaults.PolishEngine

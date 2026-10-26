@@ -49,7 +49,7 @@ type msg struct {
 var hold struct {
 	sync.Mutex
 	interpreter *holdkey.Windows
-	sink        func(holdkey.Event)
+	sink        func(application.HoldKey, holdkey.Event)
 	thread      uintptr
 	done        chan struct{}
 }
@@ -61,14 +61,15 @@ var hookProc = syscall.NewCallback(func(code int, message, lparam uintptr) uintp
 		info := (*kbdllHookStruct)(memory(lparam))
 		hold.Lock()
 		interpreter, sink := hold.interpreter, hold.sink
+		var key application.HoldKey
 		var event holdkey.Event
 		ok := false
 		if interpreter != nil {
-			event, ok = interpreter.Interpret(message, info.VKCode, info.ScanCode)
+			key, event, ok = interpreter.InterpretKey(message, info.VKCode, info.ScanCode)
 		}
 		hold.Unlock()
 		if ok {
-			sink(event)
+			sink(key, event)
 		}
 	}
 	next, _, _ := procCallNextHookEx.Call(0, uintptr(code), message, lparam)
@@ -78,7 +79,15 @@ var hookProc = syscall.NewCallback(func(code int, message, lparam uintptr) uintp
 // StartHold observes key with a low-level keyboard hook on a dedicated
 // thread. sink runs on that thread and must not block.
 func StartHold(key application.HoldKey, sink func(holdkey.Event)) error {
-	interpreter, ok := holdkey.NewWindows(key)
+	return StartHoldKeys([]application.HoldKey{key}, func(_ application.HoldKey, e holdkey.Event) {
+		sink(e)
+	})
+}
+
+// StartHoldKeys observes keys with a low-level keyboard hook on a dedicated
+// thread. sink runs on that thread and must not block.
+func StartHoldKeys(keys []application.HoldKey, sink func(application.HoldKey, holdkey.Event)) error {
+	interpreter, ok := holdkey.NewWindows(keys...)
 	if !ok {
 		return domain.Fail(domain.CodeTargetUnsupported, "hold key not available on Windows")
 	}

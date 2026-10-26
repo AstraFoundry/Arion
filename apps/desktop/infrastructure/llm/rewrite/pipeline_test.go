@@ -145,3 +145,36 @@ func TestSharedPreparationGeneratesNoText(t *testing.T) {
 		t.Fatal(result, calls, err)
 	}
 }
+
+func TestSharedPipelineRunsSelectionBeforeTranslation(t *testing.T) {
+	pipeline, err := Load()
+	if err != nil {
+		t.Fatal(err)
+	}
+	request := engine.Request{
+		Scene:          "prompt",
+		TargetLanguage: domain.TargetEnglish,
+		Text:           "呃，检查 write value。",
+		Context:        domain.RewriteContext{Screen: "writeValue SCREEN_CANARY"},
+	}
+	calls := 0
+	result, err := pipeline.Run(context.Background(), request, func(_ context.Context, chat prompt.ChatRequest, _ bool) (engine.Result, error) {
+		calls++
+		if calls == 1 {
+			if chat.ResponseFormat == nil {
+				t.Fatal("expected Stage 1 selection schema")
+			}
+			return engine.Result{Text: `{"e0":"replace"}`, InputTokens: 12, OutputTokens: 4}, nil
+		}
+		if chat.ResponseFormat != nil || chat.Messages[len(chat.Messages)-1].Content != "<source>检查 writeValue。</source>" {
+			t.Fatalf("unexpected Stage 2 translation input: %+v", chat.Messages[len(chat.Messages)-1])
+		}
+		if !strings.Contains(chat.Messages[0].Content, "English") || strings.Contains(chat.Messages[0].Content, "SCREEN_CANARY") {
+			t.Fatalf("unexpected Stage 2 system prompt: %s", chat.Messages[0].Content)
+		}
+		return engine.Result{Text: "Check writeValue.", InputTokens: 24, OutputTokens: 5}, nil
+	})
+	if err != nil || calls != 2 || result.Text != "Check writeValue." || result.Cleanup.Text != "检查 write value。" {
+		t.Fatalf("unexpected translation pipeline result: %+v calls=%d err=%v", result, calls, err)
+	}
+}

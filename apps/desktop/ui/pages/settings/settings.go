@@ -231,6 +231,17 @@ func (p *Page) section(c *ui.Context, store runtime.Store, tokens theme.Tokens) 
 				ui.Column(c).Padding(0, 16, 12, 16).Children(func() { holdkey.Notes(c, store, tokens) })
 			}
 		})
+		kit.Group(c, tokens, messages.Text(copy.TranslateGroup), func() {
+			kit.Card(c, tokens).Children(func() {
+				kit.Row(c, tokens, messages.Text(copy.TranslateKeyLabel), messages.Text(copy.TranslateKeyDetail), func() {
+					holdkey.TranslatePicker(c, store)
+				})
+				kit.Divider(c, tokens)
+				kit.Row(c, tokens, messages.Text(copy.TranslateLanguageLabel), "", func() {
+					holdkey.TranslateLanguagePicker(c, store)
+				})
+			})
+		})
 	case Keyboard:
 		kit.Group(c, tokens, "", func() { keyboard.Source(c, store, tokens, &p.keyboard) })
 		kit.Group(c, tokens, messages.Text(copy.KbdCandidatesGroup), func() { keyboard.Candidates(c, store, tokens) })

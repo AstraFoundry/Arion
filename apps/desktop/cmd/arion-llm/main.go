@@ -118,7 +118,7 @@ func (w *worker) rewrite(req protocol.Request) protocol.Response {
 		return protocol.Response{OK: true, Cancelled: true}
 	}
 	defer w.finished(req.ID)
-	in := engine.Request{Session: req.Session, Scene: req.Scene, Terms: req.Terms, Text: req.Text, PreviousText: req.PreviousText, Punctuation: domain.Punctuation(req.Punctuation), Prefill: req.Op == protocol.OpPrefill, Live: req.Live}
+	in := engine.Request{Session: req.Session, Scene: req.Scene, Terms: req.Terms, Text: req.Text, PreviousText: req.PreviousText, Punctuation: domain.Punctuation(req.Punctuation), TargetLanguage: domain.TranslationLanguage(req.TargetLanguage), Prefill: req.Op == protocol.OpPrefill, Live: req.Live}
 	if req.Context != nil {
 		in.Context = *req.Context
 	}

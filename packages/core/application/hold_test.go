@@ -104,4 +104,7 @@ func TestHoldKeyNormalization(t *testing.T) {
 	if DefaultHoldKey("darwin") != HoldRightOption || DefaultHoldKey("windows") != HoldRightAlt {
 		t.Fatal("default hold keys changed")
 	}
+	if DefaultTranslateKey("darwin") != HoldRightCommand || DefaultTranslateKey("windows") != HoldRightCtrl {
+		t.Fatal("default translate keys changed")
+	}
 }
