@@ -37,6 +37,7 @@ Write an ADR when the decision:
 - [023: Final-only polishing](023-final-only-polishing.md) — local and cloud rewriting both run once after the dictation key is released; segmentation stays, and no polished preview is shown during speech.
 - [024: Shared polishing pipeline and context controls](024-shared-polishing-pipeline.md) — one staged recipe for local and cloud models, with the same context switches.
 - [025: Windows local polishing](025-windows-local-polishing.md) — the shared pinned GGUF pipeline on Windows x64, CPU backend dispatch, private AF_UNIX IPC and process ownership.
+- [026: Spoken self-repair collapses before polish](026-spoken-self-repair.md) — `speech-spans-v3` drops a clear revision to the final span; `cleanup-rules-v2` keeps the speaker's wording and names an ASR mishear fix a correction.
 - [026: Account-targeted product notifications](026-account-product-notifications.md) — signed-in OS-authorized running reception/catchup, native submission receipts and current-server action authorization.
 - [`adr-template.md`](adr-template.md) — template for new ADRs.
 
