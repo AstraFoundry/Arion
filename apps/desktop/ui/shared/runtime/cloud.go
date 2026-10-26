@@ -33,6 +33,9 @@ type Cloud struct {
 	Email   string
 	Models  []string
 	Listing bool
+	// Saved lists providers whose credentials are still stored. The active
+	// provider is Provider while Phase is connected.
+	Saved []string
 	// Failure is one of CloudCodes; empty when the last attempt worked.
 	Failure string
 }

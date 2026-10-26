@@ -5,12 +5,14 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
+	"sort"
 	"strings"
 	"sync"
 
 	"arion.local/core/contracts"
 	"arion.local/core/domain"
 	"arion.local/core/domain/ports"
+	"arion.local/desktop/infrastructure/keystore"
 	"arion.local/desktop/infrastructure/llm/engine"
 	"arion.local/desktop/infrastructure/llm/prompt"
 	"arion.local/desktop/infrastructure/llm/rewrite"
@@ -18,15 +20,18 @@ import (
 	"github.com/AstraFoundry/republic"
 )
 
-// Credential is the one connected provider, kept as JSON in a single OS
-// credential item. A ChatGPT sign-in keeps only its refresh token: access
-// tokens are fetched when first needed and live in memory.
+// Credential is one provider's cloud polishing secret, kept as JSON in its
+// own OS credential item (account cloud-polish/<provider>). A ChatGPT
+// sign-in keeps only its refresh token: access tokens are fetched when
+// first needed and live in memory. Model is the model last chosen for this
+// provider; it is not a secret.
 type Credential struct {
 	Provider     string `json:"provider"`
 	APIKey       string `json:"apiKey,omitempty"`
 	RefreshToken string `json:"refreshToken,omitempty"`
 	AccountID    string `json:"accountId,omitempty"`
 	Email        string `json:"email,omitempty"`
+	Model        string `json:"model,omitempty"`
 }
 
 func (c Credential) valid() bool {
@@ -36,13 +41,22 @@ func (c Credential) valid() bool {
 	return Known(c.Provider) && c.APIKey != ""
 }
 
-// Secrets is the OS credential item; Get returns account.ErrNotFound when
-// nothing is stored.
-type Secrets interface {
-	Put(string) error
-	Get() (string, error)
-	Delete() error
+// SecretStore is the OS credential catalog, one item per account name.
+// Get returns account.ErrNotFound when that account is empty.
+// credentialAccount holds only the active provider id. Each provider's
+// secret lives at credentialAccountFor(provider). A build that stored the
+// whole credential in credentialAccount is copied across on Load.
+type SecretStore interface {
+	Put(account, secret string) error
+	Get(account string) (string, error)
+	Delete(account string) error
 }
+
+func credentialAccountFor(provider string) string {
+	return keystore.CloudPolishProviderAccount(provider)
+}
+
+func activeAccount() string { return keystore.CloudPolishAccount }
 
 // Phase is the connection's lifecycle.
 type Phase string
@@ -66,13 +80,18 @@ type Status struct {
 	// Models are the connected provider's model IDs once listed.
 	Models  []string
 	Listing bool
+	// Model is the model last chosen for the active provider.
+	Model string
+	// Saved lists providers that still have a credential, including the
+	// active one. Switching the active provider does not remove these.
+	Saved []string
 	// Failure is the last failure; a new attempt clears it.
 	Failure Code
 }
 
 // Service is safe for concurrent use. It satisfies ports.Rewriter.
 type Service struct {
-	secrets Secrets
+	secrets SecretStore
 	browser func(string) error
 	page    func() []byte
 	client  *http.Client
@@ -84,6 +103,7 @@ type Service struct {
 	mu               sync.Mutex
 	status           Status
 	credential       Credential
+	saved            map[string]Credential
 	provider         *republic.Provider
 	auth             *republic.TokenAuth
 	model            string
@@ -95,7 +115,7 @@ type Service struct {
 }
 
 // New prepares the service; it reads and sends nothing.
-func New(secrets Secrets, browser func(string) error, page func() []byte) *Service {
+func New(secrets SecretStore, browser func(string) error, page func() []byte) *Service {
 	return &Service{secrets: secrets, browser: browser, page: page, client: &http.Client{Transport: http.DefaultTransport},
 		issuer: chatgptIssuer, status: Status{Phase: Disconnected}}
 }
@@ -116,6 +136,7 @@ func (s *Service) Status() Status {
 func (s *Service) set(update func(*Status)) {
 	s.mu.Lock()
 	update(&s.status)
+	s.status.Saved = s.savedIDs()
 	status := s.status
 	listeners := append([]func(Status){}, s.listeners...)
 	s.mu.Unlock()
@@ -124,31 +145,99 @@ func (s *Service) set(update func(*Status)) {
 	}
 }
 
-// Load reads the stored credential without touching the network.
+func (s *Service) savedIDs() []string {
+	if len(s.saved) == 0 {
+		return nil
+	}
+	ids := make([]string, 0, len(s.saved))
+	for id := range s.saved {
+		ids = append(ids, id)
+	}
+	sort.Strings(ids)
+	return ids
+}
+
+func (s *Service) remember(c Credential) {
+	if s.saved == nil {
+		s.saved = map[string]Credential{}
+	}
+	s.saved[c.Provider] = c
+}
+
+// Load reads stored credentials without touching the network. A legacy
+// single-item credential is copied to that provider's account, and the old
+// account becomes a pointer at the active provider.
 func (s *Service) Load() {
-	raw, err := s.secrets.Get()
-	if errors.Is(err, account.ErrNotFound) {
+	saved, active, err := s.readCatalog()
+	s.mu.Lock()
+	s.saved = saved
+	if active.valid() {
+		// A model already chosen for this process (the preference applied
+		// before Load) wins. Otherwise restore the model stored with the key.
+		if s.model != "" && active.Model != s.model {
+			active.Model = s.model
+			s.remember(active)
+			if raw, mErr := json.Marshal(active); mErr != nil {
+				err = mErr
+			} else if mErr = s.secrets.Put(credentialAccountFor(active.Provider), string(raw)); mErr != nil {
+				err = mErr
+			}
+		}
+		s.credential = active
+		if s.model == "" {
+			s.model = active.Model
+		}
+	} else {
+		s.credential = Credential{}
+	}
+	model := s.model
+	s.mu.Unlock()
+	if !active.valid() {
+		failure := Code("")
+		if err != nil {
+			failure = CodeStore
+		}
+		s.set(func(st *Status) { *st = Status{Phase: Disconnected, Failure: failure} })
 		return
 	}
-	var c Credential
-	if err == nil && (json.Unmarshal([]byte(raw), &c) != nil || !c.valid()) {
-		err = errors.New("stored credential unreadable")
-	}
+	failure := Code("")
 	if err != nil {
+		failure = CodeStore
+	}
+	s.set(func(st *Status) {
+		*st = Status{Phase: Connected, Provider: active.Provider, Email: active.Email, Model: model, Failure: failure}
+	})
+}
+
+// SetModel selects the model rewrites use and remembers it on the active
+// provider so a later switch can restore it.
+func (s *Service) SetModel(id string) {
+	s.mu.Lock()
+	s.model = id
+	var storeErr error
+	if s.secrets != nil && s.credential.valid() && s.credential.Model != id {
+		c := s.credential
+		c.Model = id
+		raw, err := json.Marshal(c)
+		if err == nil {
+			err = s.secrets.Put(credentialAccountFor(c.Provider), string(raw))
+		}
+		if err != nil {
+			storeErr = err
+		} else {
+			s.credential = c
+			s.remember(c)
+		}
+	}
+	connected := s.credential.valid()
+	s.mu.Unlock()
+	if storeErr != nil {
 		s.set(func(st *Status) { st.Failure = CodeStore })
 		return
 	}
-	s.mu.Lock()
-	s.credential = c
-	s.mu.Unlock()
-	s.set(func(st *Status) { *st = Status{Phase: Connected, Provider: c.Provider, Email: c.Email} })
-}
-
-// SetModel selects the model rewrites use.
-func (s *Service) SetModel(id string) {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-	s.model = id
+	if connected {
+		s.set(func(st *Status) { st.Model = id })
+	}
 }
 
 // begin starts a connection attempt, cancelling any other, and returns its
@@ -228,10 +317,9 @@ type connection struct {
 	models   []string
 }
 
-// connect stores c and makes it the connection; with conn nil the
-// provider opens on first use.
+// connect stores c and makes it the active provider. Other providers' items
+// stay. With conn nil the provider opens on first use.
 func (s *Service) connect(ctx context.Context, generation uint64, c Credential, conn *connection) error {
-	raw, err := json.Marshal(c)
 	// The item is written under mu so a newer attempt or a disconnect can
 	// never be overwritten by this one.
 	s.mu.Lock()
@@ -242,9 +330,14 @@ func (s *Service) connect(ctx context.Context, generation uint64, c Credential, 
 		}
 		return fail(CodeCancelled, ctx.Err())
 	}
-	if err == nil {
-		err = s.secrets.Put(string(raw))
+	if c.Model == "" {
+		if s.credential.Provider == "" || s.credential.Provider == c.Provider {
+			c.Model = s.model
+		} else if prev, ok := s.saved[c.Provider]; ok {
+			c.Model = prev.Model
+		}
 	}
+	err := s.writeActive(c)
 	if err != nil {
 		s.mu.Unlock()
 		if conn != nil {
@@ -255,16 +348,155 @@ func (s *Service) connect(ctx context.Context, generation uint64, c Credential, 
 	s.closeLocked()
 	s.cancel = nil
 	s.credential = c
+	s.model = c.Model
+	s.remember(c)
 	var models []string
 	if conn != nil {
 		s.provider, models = conn.provider, conn.models
 	}
 	s.mu.Unlock()
-	s.set(func(st *Status) { *st = Status{Phase: Connected, Provider: c.Provider, Email: c.Email, Models: models} })
+	s.set(func(st *Status) {
+		*st = Status{Phase: Connected, Provider: c.Provider, Email: c.Email, Models: models, Model: c.Model}
+	})
 	if conn == nil {
 		s.ListModels()
 	}
 	return nil
+}
+
+// Activate makes a saved provider the active connection. It does not ask
+// for the key again and does not delete any other provider's credential.
+func (s *Service) Activate(provider string) error {
+	s.mu.Lock()
+	c, ok := s.saved[provider]
+	if !ok || !c.valid() {
+		s.mu.Unlock()
+		return fail(CodeRejected, errors.New("no saved cloud credential"))
+	}
+	if s.credential.Provider == provider && s.credential.valid() && s.status.Phase == Connected && s.cancel == nil {
+		s.mu.Unlock()
+		return nil
+	}
+	if s.cancel != nil {
+		s.cancel()
+		s.cancel = nil
+	}
+	s.generation++
+	if err := s.writeActive(c); err != nil {
+		s.mu.Unlock()
+		s.set(func(st *Status) { st.Failure = CodeStore })
+		return fail(CodeStore, err)
+	}
+	s.closeLocked()
+	s.credential = c
+	s.model = c.Model
+	s.mu.Unlock()
+	s.set(func(st *Status) {
+		*st = Status{Phase: Connected, Provider: c.Provider, Email: c.Email, Model: c.Model}
+	})
+	s.ListModels()
+	return nil
+}
+
+// writeActive stores c under its provider account and points the legacy
+// account at that provider. Other saved credentials are written first so
+// replacing the legacy item cannot drop a key that still lives only there.
+// Callers hold mu.
+func (s *Service) writeActive(c Credential) error {
+	for id, item := range s.saved {
+		if id == c.Provider {
+			continue
+		}
+		raw, err := json.Marshal(item)
+		if err != nil {
+			return err
+		}
+		if err := s.secrets.Put(credentialAccountFor(id), string(raw)); err != nil {
+			return err
+		}
+	}
+	raw, err := json.Marshal(c)
+	if err != nil {
+		return err
+	}
+	if err := s.secrets.Put(credentialAccountFor(c.Provider), string(raw)); err != nil {
+		return err
+	}
+	pointer, err := json.Marshal(Credential{Provider: c.Provider})
+	if err != nil {
+		return err
+	}
+	return s.secrets.Put(activeAccount(), string(pointer))
+}
+
+// readCatalog loads every provider item and the legacy account. A valid
+// credential still stored in the legacy account is copied to its provider
+// item, then the legacy account is rewritten as a pointer.
+func (s *Service) readCatalog() (map[string]Credential, Credential, error) {
+	saved := map[string]Credential{}
+	var readErr error
+	for _, id := range knownProviders() {
+		c, err := s.readAccount(credentialAccountFor(id))
+		if errors.Is(err, account.ErrNotFound) {
+			continue
+		}
+		if err != nil {
+			readErr = err
+			continue
+		}
+		if c.Provider != id {
+			readErr = errors.New("stored credential unreadable")
+			continue
+		}
+		saved[id] = c
+	}
+	raw, err := s.secrets.Get(activeAccount())
+	if errors.Is(err, account.ErrNotFound) {
+		return saved, Credential{}, readErr
+	}
+	if err != nil {
+		return saved, Credential{}, err
+	}
+	var c Credential
+	if json.Unmarshal([]byte(raw), &c) != nil || !Known(c.Provider) {
+		return saved, Credential{}, errors.New("stored credential unreadable")
+	}
+	if !c.valid() {
+		if active, ok := saved[c.Provider]; ok {
+			return saved, active, readErr
+		}
+		return saved, Credential{}, readErr
+	}
+	if _, ok := saved[c.Provider]; !ok {
+		saved[c.Provider] = c
+		item, mErr := json.Marshal(c)
+		if mErr != nil {
+			return saved, c, mErr
+		}
+		if mErr = s.secrets.Put(credentialAccountFor(c.Provider), string(item)); mErr != nil {
+			return saved, c, mErr
+		}
+	}
+	pointer, mErr := json.Marshal(Credential{Provider: c.Provider})
+	if mErr != nil {
+		return saved, saved[c.Provider], mErr
+	}
+	if mErr = s.secrets.Put(activeAccount(), string(pointer)); mErr != nil {
+		return saved, saved[c.Provider], mErr
+	}
+	return saved, saved[c.Provider], readErr
+}
+
+func (s *Service) readAccount(accountName string) (Credential, error) {
+	raw, err := s.secrets.Get(accountName)
+	if err != nil {
+		return Credential{}, err
+	}
+	var c Credential
+	if json.Unmarshal([]byte(raw), &c) != nil || !c.valid() {
+		return Credential{}, errors.New("stored credential unreadable")
+	}
+	return c, nil
 }
 
 func (s *Service) closeLocked() {
@@ -283,7 +515,8 @@ func (s *Service) Cancel() {
 	}
 }
 
-// Disconnect forgets the connection and deletes its credential item.
+// Disconnect forgets the active provider and deletes only its credential.
+// Every other provider's key stays stored.
 func (s *Service) Disconnect() error {
 	s.mu.Lock()
 	if s.cancel != nil {
@@ -292,8 +525,20 @@ func (s *Service) Disconnect() error {
 	}
 	s.generation++
 	s.closeLocked()
+	provider := s.credential.Provider
 	s.credential = Credential{}
-	err := s.secrets.Delete()
+	s.model = ""
+	var err error
+	if provider != "" {
+		if delErr := s.secrets.Delete(credentialAccountFor(provider)); delErr != nil {
+			err = delErr
+		} else {
+			delete(s.saved, provider)
+		}
+	}
+	if delErr := s.secrets.Delete(activeAccount()); delErr != nil && err == nil {
+		err = delErr
+	}
 	s.mu.Unlock()
 	s.set(func(st *Status) {
 		*st = Status{Phase: Disconnected}
@@ -393,8 +638,9 @@ func (s *Service) persist() {
 	}
 	c := s.credential
 	c.RefreshToken = refresh
-	if raw, err := json.Marshal(c); err == nil && s.secrets.Put(string(raw)) == nil {
+	if raw, err := json.Marshal(c); err == nil && s.secrets.Put(credentialAccountFor(c.Provider), string(raw)) == nil {
 		s.credential = c
+		s.remember(c)
 	}
 }
 

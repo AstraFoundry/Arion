@@ -307,6 +307,7 @@
   "CloudTitle": "Cloud model",
   "CloudNotConnected": "Not connected",
   "CloudConnected": "Connected",
+  "CloudSaved": "Saved",
   "CloudChatGPTSignIn": "Sign in with ChatGPT",
   "MatchAppLabel": "Match the app",
   "MatchAppDetail": "Formats emails, work messages, coding prompts and searches for the app or website you type in, decided on this Mac",

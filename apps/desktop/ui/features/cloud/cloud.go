@@ -1,10 +1,13 @@
 // Package cloud connects a cloud model for polishing, one page at a time:
 // the providers, then the chosen provider's sign-in or API key, then its
-// model. Secrets never enter the UI state; a pasted key leaves the
-// navigation state as soon as it is submitted.
+// model. A provider that already has a stored key is restored without
+// asking for the key again. Secrets never enter the UI state; a pasted key
+// leaves the navigation state as soon as it is submitted.
 package cloud
 
 import (
+	"slices"
+
 	"arion.local/desktop/ui/shared/config"
 	"arion.local/desktop/ui/shared/copy"
 	"arion.local/desktop/ui/shared/icons"
@@ -20,6 +23,8 @@ type Nav struct {
 	Provider string
 	// Key is the API key being entered on a provider's page.
 	Key string
+	// activated is the saved provider this page already asked to restore.
+	activated string
 }
 
 // Back returns from a provider's page to the list; false at the list.
@@ -27,7 +32,7 @@ func (n *Nav) Back() bool {
 	if n.Provider == "" {
 		return false
 	}
-	n.Provider, n.Key = "", ""
+	n.Provider, n.Key, n.activated = "", "", ""
 	return true
 }
 
@@ -109,8 +114,11 @@ func list(c *ui.Context, store runtime.Store, tokens theme.Tokens, nav *Nav) {
 			}
 			// Only the connection is named; the provider's page says the rest.
 			value := ""
-			if cl.Phase == runtime.CloudConnected && cl.Provider == id {
+			switch {
+			case cl.Phase == runtime.CloudConnected && cl.Provider == id:
 				value = messages.Text(copy.CloudConnected)
+			case slices.Contains(cl.Saved, id):
+				value = messages.Text(copy.CloudSaved)
 			}
 			if kit.LinkRow(c.Key("provider-"+id), tokens, config.CloudProviders[id], value, func() { Mark(c, tokens, id, 18) }) {
 				nav.Provider = id
@@ -126,6 +134,16 @@ func page(c *ui.Context, store runtime.Store, tokens theme.Tokens, nav *Nav) {
 	if cl.Phase == runtime.CloudConnected && cl.Provider == nav.Provider {
 		connected(c, store, tokens)
 		model(c, store, tokens)
+		return
+	}
+	// A saved key is restored instead of asking for it again. A failed
+	// restore falls through to the key form, which is where the notice sits.
+	if slices.Contains(cl.Saved, nav.Provider) && !cl.Busy() && !(cl.Failure != "" && nav.activated == nav.Provider) {
+		if nav.activated != nav.Provider {
+			nav.activated = nav.Provider
+			store.Actions.ActivateCloud(nav.Provider)
+		}
+		restoring(c, tokens, nav.Provider)
 		return
 	}
 	if nav.Provider == runtime.CloudChatGPT {
@@ -153,6 +171,16 @@ func chatgpt(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 			if kit.Button(c.Key("chatgpt-sign-in"), tokens, kit.Primary, messages.Text(copy.CloudChatGPTSignIn), !cl.Busy()).Clicked() {
 				store.Actions.SignInChatGPT()
 			}
+		})
+	})
+}
+
+// restoring waits until a saved provider becomes the active connection.
+func restoring(c *ui.Context, tokens theme.Tokens, provider string) {
+	kit.Card(c, tokens).Children(func() {
+		ui.Row(c.Key("cloud-restore")).Padding(14, 16).Gap(8).AlignItems(ui.Center).Children(func() {
+			Mark(c, tokens, provider, 20)
+			ui.Spinner(c).Size(14, 14)
 		})
 	})
 }

@@ -1,6 +1,6 @@
 // Package cloudpolish is the optional cloud polishing capability (ADR 022):
-// the connected provider's credential in the OS credential store, its model
-// list, and a ports.Rewriter using the shared staged pipeline. Enabled context
+// one credential per provider in the OS credential store, the active
+// provider's model list, and a ports.Rewriter using the shared staged pipeline. Enabled context
 // sources reach spelling selection through Republic; the formatter receives
 // only the edited source. Cloud polishing requires an explicit engine choice.
 package cloudpolish
@@ -27,6 +27,11 @@ const (
 
 // KeyProviders accept an API key, in the order the picker lists them.
 var KeyProviders = []string{OpenAI, Anthropic, Google, DeepSeek, OpenRouter}
+
+// knownProviders is every provider that can hold a credential.
+func knownProviders() []string {
+	return append([]string{ChatGPT}, KeyProviders...)
+}
 
 // Known reports a provider this package can connect.
 func Known(id string) bool {

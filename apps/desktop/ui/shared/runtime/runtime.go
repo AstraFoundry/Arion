@@ -603,8 +603,11 @@ type Actions interface {
 	ConnectCloudKey(provider, key string)
 	// CancelCloud stops a sign-in or key check in flight.
 	CancelCloud()
-	// DisconnectCloud forgets the connection and deletes its credential.
+	// DisconnectCloud forgets the active provider and deletes only its credential.
 	DisconnectCloud()
+	// ActivateCloud makes a saved provider the active connection. It does not
+	// ask for that provider's key again.
+	ActivateCloud(provider string)
 	// ListCloudModels asks the connected provider for its models.
 	ListCloudModels()
 	Quit()

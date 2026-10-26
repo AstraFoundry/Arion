@@ -63,7 +63,10 @@ func (r *recorder) CheckStoredAccount()        { r.call("check-stored") }
 func (r *recorder) SignInChatGPT()             { r.call("cloud-sign-in") }
 func (r *recorder) CancelCloud()               { r.call("cloud-cancel") }
 func (r *recorder) DisconnectCloud()           { r.call("cloud-disconnect") }
-func (r *recorder) ListCloudModels()           { r.call("cloud-models") }
+func (r *recorder) ActivateCloud(provider string) {
+	r.call("cloud-activate:" + provider)
+}
+func (r *recorder) ListCloudModels() { r.call("cloud-models") }
 func (r *recorder) ConnectCloudKey(provider, key string) {
 	r.call("cloud-key:" + provider + ":" + key)
 }

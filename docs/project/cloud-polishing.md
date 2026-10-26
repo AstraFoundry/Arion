@@ -19,21 +19,25 @@ These return immediately; results arrive in `State.Cloud`.
 | Method | Effect |
 | --- | --- |
 | `SignInChatGPT()` | Opens `auth.openai.com` in the browser; one callback on `127.0.0.1:1455`. Phase `signing_in`, then `connected` or back to the previous connection. |
-| `ConnectCloudKey(provider, key)` | Lists the provider's models with the key (phase `verifying`); stores it only if that works. |
+| `ConnectCloudKey(provider, key)` | Lists the provider's models with the key (phase `verifying`); stores it for that provider only if that works, and makes that provider active. Other providers' keys stay. |
+| `ActivateCloud(provider)` | Makes a provider that already has a stored credential active, without asking for the key again. |
 | `CancelCloud()` | Stops a sign-in or key check. |
-| `DisconnectCloud()` | Deletes the credential item and forgets the connection. |
+| `DisconnectCloud()` | Deletes the active provider's credential and the active-provider pointer. Other providers' keys stay. |
 | `ListCloudModels()` | Lists the connected provider's models; views call it once when the rows show without a list. |
 
 The chosen model is a preference (`UpdatePreferences` with `CloudModel`), applied to the service with `SetModel`.
 
 ## What views read
 
-`State.Cloud`: `Phase` (`disconnected`, `signing_in`, `verifying`, `connected`), `Provider`, `Email` (ChatGPT only), `Models`, `Listing`, `Failure`. Failure codes (`runtime.CloudCodes`) equal `cloudpolish.Codes`; a test checks both lists. `CANCELLED` shows nothing; a failed model list offers **Retry**.
+`State.Cloud`: `Phase` (`disconnected`, `signing_in`, `verifying`, `connected`), `Provider`, `Email` (ChatGPT only), `Models`, `Listing`, `Saved` (provider ids that still have a credential), `Failure`. Failure codes (`runtime.CloudCodes`) equal `cloudpolish.Codes`; a test checks both lists. `CANCELLED` shows nothing; a failed model list offers **Retry**.
 
 ## Credential and startup
 
-- One item in the OS credential store: service `Arion`, account `cloud-polish` (`keystore.OpenItem`). JSON with the provider and either the API key or the ChatGPT refresh token, account ID and email.
-- At launch the service reads that item off the main thread, without network. The provider opens on first use: a ChatGPT connection trades its refresh token for an access token then and stores a rotated refresh token.
+- One OS credential item per provider: service `Arion`, account `cloud-polish/<provider>` (`keystore.CloudPolishProviderAccount`). JSON with the provider and either the API key or the ChatGPT refresh token, account ID and email, plus the model last chosen for that provider.
+- Account `cloud-polish` stores only which provider is active (`{"provider":"<id>"}`). It holds no key. A previous build stored the whole credential there. Load copies that secret to `cloud-polish/<provider>` when that provider has no item yet, then rewrites `cloud-polish` as the pointer.
+- Opening a provider that already has an item makes it active and restores its model. The key is not copied into the UI. The provider list marks those rows saved.
+- At launch the service reads the items off the main thread, without network. The active provider opens on first use: a ChatGPT connection trades its refresh token for an access token then and stores a rotated refresh token on the ChatGPT item only.
+- Disconnect deletes the active provider's item and the pointer. The other items remain, and choosing one of those providers makes it active again.
 - Republic signs every request; ChatGPT requests go to the Codex backend with `originator: arion`. Requests use the system proxy through the default transport.
 
 ## Requests

@@ -111,6 +111,56 @@ func TestCloudPages(t *testing.T) {
 // and the cloud model each open their own pages, and back leaves them one
 // page at a time. Context switches also show for the cloud, which works where
 // the local runtime is not shipped.
+// A provider with a stored key is marked on the list and opens without a
+// key field. The page asks once to make that provider active.
+func TestSavedCloudProviderRestoresWithoutKey(t *testing.T) {
+	state, actions, store := fixture()
+	nav := &cloud.Nav{}
+	tt := ui.NewTester(func(c *ui.Context) {
+		ui.Column(c).Gap(8).Padding(16).Children(func() { cloud.Pages(c, store, theme.Resolve(false), nav) })
+	}, 560, 420)
+	en := copy.For(copy.English)
+	zh := copy.For(copy.Locale("zh-CN"))
+	state.Cloud = runtime.Cloud{Phase: runtime.CloudConnected, Provider: runtime.CloudOpenRouter,
+		Models: []string{"router-model"}, Saved: []string{runtime.CloudDeepSeek, runtime.CloudOpenRouter}}
+	state.Preferences.UILanguage = runtime.UILanguage("zh-CN")
+	settle(tt)
+	if !hasText(tt, zh.Text(copy.CloudConnected)) || !hasText(tt, zh.Text(copy.CloudSaved)) {
+		t.Fatalf("chinese list: %q", tt.Texts())
+	}
+	snapshot(t, tt, "cloud-providers-saved-zh-CN")
+	state.Preferences.UILanguage = runtime.UILanguage(copy.English)
+	settle(tt)
+	if !hasText(tt, en.Text(copy.CloudConnected)) || !hasText(tt, en.Text(copy.CloudSaved)) {
+		t.Fatalf("list: %q", tt.Texts())
+	}
+	snapshot(t, tt, "cloud-providers-saved")
+	if err := tt.Click(config.CloudProviders[runtime.CloudDeepSeek]); err != nil {
+		t.Fatal(err)
+	}
+	settle(tt)
+	activations := 0
+	for _, call := range actions.calls {
+		if call == "cloud-activate:"+runtime.CloudDeepSeek {
+			activations++
+		}
+	}
+	if activations != 1 || hasText(tt, en.Text(copy.CloudConnect)) || hasText(tt, en.Text(copy.CloudKeyPlaceholder)) {
+		t.Fatalf("restore calls %d %v texts %q", activations, actions.calls, tt.Texts())
+	}
+	snapshot(t, tt, "cloud-provider-restoring")
+	state.Cloud = runtime.Cloud{Phase: runtime.CloudConnected, Provider: runtime.CloudDeepSeek,
+		Models: []string{"deepseek-chat"}, Saved: []string{runtime.CloudDeepSeek, runtime.CloudOpenRouter}}
+	state.Preferences.CloudModel = "deepseek-chat"
+	settle(tt)
+	// "Connect" is a substring of "Disconnect", so the key field's placeholder
+	// is the check that the saved provider did not ask for a key.
+	if !hasText(tt, en.Text(copy.CloudDisconnect)) || hasText(tt, en.Text(copy.CloudKeyPlaceholder)) || hasText(tt, en.Text(copy.CloudModelPlaceholder)) {
+		t.Fatalf("restored: %q", tt.Texts())
+	}
+	snapshot(t, tt, "cloud-provider-restored")
+}
+
 func TestSettingsCloudModel(t *testing.T) {
 	state, _, store := fixture()
 	state.Polish = runtime.Polish{State: runtime.PolishUnsupported}

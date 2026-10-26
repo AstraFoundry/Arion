@@ -84,6 +84,10 @@ type App struct {
 	manager             *modelruntime.Manager
 	rewriter            *rewriting.Service
 	cloud               *cloudpolish.Service
+	// cloudProvider is the last provider applied while connected. A sign-in
+	// or key check changes the visible provider before it succeeds, and that
+	// must not look like a completed switch.
+	cloudProvider string
 	// history keeps recent dictations per place for rewrite context, in
 	// memory only.
 	history   *application.History
@@ -203,7 +207,7 @@ func New(opts Options) (*App, error) {
 	a.mic = audio.NewMicrophone(a.platform)
 	a.mic.Select(prefs.Microphone)
 	a.mic.SetGain(prefs.MicrophoneGain)
-	a.cloud = cloudpolish.New(keystore.OpenItem(keystore.CloudPolishAccount), browser.Open,
+	a.cloud = cloudpolish.New(keystore.Catalog{}, browser.Open,
 		func() []byte { return callbackPage(copy.Locale(a.preferences().UILanguage)) })
 	a.cloud.SetModel(prefs.CloudModel)
 	// Both engines read the same consent-gated context sources.

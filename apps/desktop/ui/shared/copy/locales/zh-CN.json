@@ -307,6 +307,7 @@
   "CloudTitle": "云端模型",
   "CloudNotConnected": "未连接",
   "CloudConnected": "已连接",
+  "CloudSaved": "已保存",
   "CloudChatGPTSignIn": "使用 ChatGPT 登录",
   "MatchAppLabel": "按应用调整格式",
   "MatchAppDetail": "根据正在输入的应用和网站，整理成邮件、工作消息、编程指令或搜索词，在本机判断",
