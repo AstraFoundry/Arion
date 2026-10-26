@@ -70,14 +70,15 @@ type pose struct {
 	focus                        iso.Vec
 }
 
-// Render fills its box with the figure. Changed is when another key was
-// chosen, and pressed when the key last went down, each zero until then.
-func Render(c *ui.Context, tokens theme.Tokens, messages copy.Catalog, chosen runtime.HoldKey, changed, pressed time.Time) {
+// Render fills its box with the figure, described by label. Changed is
+// when another key was chosen, and pressed when the key last went down,
+// each zero until then.
+func Render(c *ui.Context, tokens theme.Tokens, messages copy.Catalog, label copy.Key, chosen runtime.HoldKey, changed, pressed time.Time) {
 	platform := keyboardOf(chosen)
 	keys := layouts[platform]
 	i := slices.IndexFunc(keys, func(k key) bool { return k.id == string(chosen) })
 	target := keys[i].center(0)
-	box := ui.Box(c).Fill().Clip().Background(tokens.Card).Role(ui.RoleImage).Label(messages.Text(copy.HoldKeyFigureLabel))
+	box := ui.Box(c).Fill().Clip().Background(tokens.Card).Role(ui.RoleImage).Label(messages.Text(label))
 	at := pose{
 		turn: box.Keyframes("turn", turnFrames),
 		open: box.Keyframes("open", openFrames),

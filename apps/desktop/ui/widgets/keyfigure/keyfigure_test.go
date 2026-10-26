@@ -25,7 +25,7 @@ type figure struct {
 
 func render(dark bool, f *figure) *ui.Tester {
 	tt := ui.NewTester(func(c *ui.Context) {
-		Render(c, theme.Resolve(dark), copy.For(copy.English), f.key, f.changed, f.pressed)
+		Render(c, theme.Resolve(dark), copy.For(copy.English), copy.HoldKeyFigureLabel, f.key, f.changed, f.pressed)
 	}, width, height)
 	tt.SetDark(dark)
 	return tt
@@ -138,7 +138,7 @@ func TestTextBesideStaysWhileMoving(t *testing.T) {
 	tt := ui.NewTester(func(c *ui.Context) {
 		ui.Row(c).Fill().Children(func() {
 			ui.Column(c).Width(width).Children(func() {
-				Render(c, theme.Resolve(false), messages, f.key, f.changed, f.pressed)
+				Render(c, theme.Resolve(false), messages, copy.HoldKeyFigureLabel, f.key, f.changed, f.pressed)
 			})
 			ui.Column(c).Grow(1).Padding(40).Gap(12).Children(func() {
 				ui.Text(c, messages.Text(copy.OnbHoldKeyTitle)).FontSize(theme.Title)

@@ -345,8 +345,10 @@ const (
 
 // Hold is the hold key's listener, the only global dictation activation.
 type Hold struct {
-	// Pressed is when the key last went down, for the onboarding test.
-	Pressed time.Time
+	// Pressed is when a listened key last went down, and PressedKey which
+	// one, for the onboarding test.
+	Pressed    time.Time
+	PressedKey HoldKey
 	// Active reports the listener is running.
 	Active bool
 	// Failure explains why the key is not listening: PERMISSION_DENIED
