@@ -152,8 +152,6 @@ func (c *Coordinator) newLive(r *run, target domain.TranslationLanguage) *liveSt
 	if target != "" {
 		policy.Enabled = true
 		policy.TargetLanguage = target
-	} else if policy.TargetLanguage != "" {
-		policy.Enabled = true
 	}
 	if !policy.Enabled && !c.opts.SegmentFinalize {
 		return nil
@@ -400,16 +398,17 @@ func (c *Coordinator) finalizeLive(r *run) {
 }
 
 // rewriteFinal runs the final rewrite of the corrected source and returns
-// the text to review and its outcome. ok is false when the session ended
+// the text to review and its outcome. rewriteErr is the rewriter failure
+// when the outcome is unavailable. ok is false when the session ended
 // meanwhile. Organization failures retain completed local cleanup and
 // their explicit failure outcome; the recognized source stays separate.
-func (c *Coordinator) rewriteFinal(r *run, source string, policy RewritePolicy) (text, outcome string, ok bool) {
+func (c *Coordinator) rewriteFinal(r *run, source string, policy RewritePolicy) (text, outcome string, rewriteErr error, ok bool) {
 	if !policy.Enabled {
-		return source, "", true
+		return source, "", nil, true
 	}
 	cleaned := domain.CleanSpeech(source).Text
 	if c.deps.Rewriter == nil {
-		return cleaned, RewriteUnavailable, true
+		return cleaned, RewriteUnavailable, nil, true
 	}
 	ctx, cancel := context.WithTimeout(r.ctx, policy.Timeout)
 	defer cancel()
@@ -425,21 +424,20 @@ func (c *Coordinator) rewriteFinal(r *run, source string, policy RewritePolicy) 
 		result, err = c.deps.Rewriter.Rewrite(ctx, request)
 		c.diagnostic(r, ports.DiagnosticRewrite, started, err)
 	}
-	r.rewriteErr = err
 	switch {
 	case r.ctx.Err() != nil:
-		return "", "", false
+		return "", "", err, false
 	case err != nil && errors.Is(ctx.Err(), context.DeadlineExceeded):
-		return cleaned, RewriteTimeout, true
+		return cleaned, RewriteTimeout, err, true
 	case err != nil:
-		return cleaned, RewriteUnavailable, true
+		return cleaned, RewriteUnavailable, err, true
 	}
 	var verdict domain.RewriteVerdict
 	text, verdict = deliverableRewrite(policy.Punctuation, source, result, false, request.Terms, request.Context)
 	if verdict != domain.RewriteAccepted {
-		return cleaned, string(verdict), true
+		return cleaned, string(verdict), nil, true
 	}
-	return text, string(verdict), true
+	return text, string(verdict), nil, true
 }
 
 // deliverableRewrite checks the raw proposal before punctuation can hide a

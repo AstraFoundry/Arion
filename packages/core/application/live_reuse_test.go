@@ -59,7 +59,7 @@ func TestCompletedPreviewReusedWithRawFinalEnding(t *testing.T) {
 	}
 	// Stopping preview scheduling does not invalidate an already completed result.
 	r.live.stopPreview()
-	text, outcome, ok := c.rewriteFinal(r, r.live.stable, r.live.policy)
+	text, outcome, _, ok := c.rewriteFinal(r, r.live.stable, r.live.policy)
 	if !ok || outcome != string(domain.RewriteAccepted) || text != "Check Chatterfly." {
 		t.Fatalf("raw final proposal lost: %q %q %v", text, outcome, ok)
 	}
@@ -97,7 +97,7 @@ func TestFinalRewriteRerunsWhenEffectiveInputsChange(t *testing.T) {
 			}
 			source, policy := r.live.stable, r.live.policy
 			tc.change(r, &policy, &source)
-			text, outcome, ok := c.rewriteFinal(r, source, policy)
+			text, outcome, _, ok := c.rewriteFinal(r, source, policy)
 			if !ok || outcome != string(domain.RewriteAccepted) || text != source+"." {
 				t.Fatalf("unexpected final: %q %q %v", text, outcome, ok)
 			}
@@ -154,7 +154,7 @@ func TestFailedLatestPreviewDoesNotResurrectEarlierResult(t *testing.T) {
 		return ports.RewriteResult{Text: "Fresh final."}, nil
 	}
 	c.preview(r, r.live.stable)
-	text, _, ok := c.rewriteFinal(r, r.live.stable, r.live.policy)
+	text, _, _, ok := c.rewriteFinal(r, r.live.stable, r.live.policy)
 	if !ok || text != "Fresh final." || len(w.requests) != 3 {
 		t.Fatalf("earlier result resurrected: %q, calls=%d", text, len(w.requests))
 	}
@@ -164,7 +164,7 @@ func TestCancelledSessionCannotDeliverCompletedPreview(t *testing.T) {
 	c, r, _ := completedPreviewFixture(t)
 	c.preview(r, r.live.stable)
 	c.Cancel()
-	if _, _, ok := c.rewriteFinal(r, r.live.stable, r.live.policy); ok {
+	if _, _, _, ok := c.rewriteFinal(r, r.live.stable, r.live.policy); ok {
 		t.Fatal("cancelled session delivered cached result")
 	}
 }
@@ -206,7 +206,7 @@ func TestFinalRewriteCarriesRecognizedPreviousSource(t *testing.T) {
 	}
 	c.preview(r, r.live.stable)
 	source := "Check chatter fly"
-	text, _, ok := c.rewriteFinal(r, source, r.live.policy)
+	text, _, _, ok := c.rewriteFinal(r, source, r.live.policy)
 	if !ok || text != source || len(w.requests) != 2 {
 		t.Fatalf("unexpected final: %q, calls=%d", text, len(w.requests))
 	}
@@ -253,7 +253,7 @@ func TestFinalRetainsApprovedMemoryFromRecognizedEarlierSource(t *testing.T) {
 	}
 	c.preview(r, r.live.stable)
 	source := "Check chad fly"
-	if _, _, ok := c.rewriteFinal(r, source, r.live.policy); !ok {
+	if _, _, _, ok := c.rewriteFinal(r, source, r.live.policy); !ok {
 		t.Fatal("final request cancelled")
 	}
 	final := w.requests[len(w.requests)-1]

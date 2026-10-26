@@ -28,28 +28,14 @@ func (a *App) startHoldKey() {
 	if t := a.state.Preferences.TranslateKey; t != "" && t != application.HoldOff && t != key {
 		keys = append(keys, t)
 	}
-	var err error
-	if multi, ok := a.platform.(interface {
-		StartHoldKeys(keys []application.HoldKey, sink func(application.HoldKey, holdkey.Event)) error
-	}); ok {
-		err = multi.StartHoldKeys(keys, func(k application.HoldKey, e holdkey.Event) {
-			now := time.Now()
-			a.post(func() {
-				if generation == a.holdGeneration {
-					a.onHoldKeyEvent(k, e, now)
-				}
-			})
+	err := a.platform.StartHoldKeys(keys, func(k application.HoldKey, e holdkey.Event) {
+		now := time.Now()
+		a.post(func() {
+			if generation == a.holdGeneration {
+				a.onHoldKeyEvent(k, e, now)
+			}
 		})
-	} else {
-		err = a.platform.StartHoldKey(key, func(e holdkey.Event) {
-			now := time.Now()
-			a.post(func() {
-				if generation == a.holdGeneration {
-					a.onHoldKeyEvent(key, e, now)
-				}
-			})
-		})
-	}
+	})
 	a.record("hold_register", err)
 	if err != nil {
 		a.state.Hold.Failure = domain.CodeOf(err)

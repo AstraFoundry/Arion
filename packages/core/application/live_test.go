@@ -496,7 +496,7 @@ func TestSpacesModeValidatesBeforePunctuation(t *testing.T) {
 			if r.live.completed != nil || r.live.previews != 0 || r.live.polished != "" {
 				t.Fatalf("marker entered preview or cache: polished=%q completed=%v", r.live.polished, r.live.completed != nil)
 			}
-			text, outcome, ok := c.rewriteFinal(r, r.live.stable, r.live.policy)
+			text, outcome, _, ok := c.rewriteFinal(r, r.live.stable, r.live.policy)
 			cleaned := domain.CleanSpeech(r.live.stable).Text
 			if !ok || outcome != string(domain.RewriteMarkup) || text != cleaned {
 				t.Fatalf("final kept hidden markup: text=%q outcome=%q ok=%v", text, outcome, ok)
@@ -538,7 +538,7 @@ func TestSpacesModeValidatesBeforePunctuation(t *testing.T) {
 	if r.live.completed == nil || r.live.completed.result.Text != ordinary || r.live.polished != want {
 		t.Fatalf("ordinary spaces conversion lost: polished=%q cached=%v", r.live.polished, r.live.completed)
 	}
-	text, outcome, ok := c.rewriteFinal(r, r.live.stable, r.live.policy)
+	text, outcome, _, ok := c.rewriteFinal(r, r.live.stable, r.live.policy)
 	if !ok || outcome != string(domain.RewriteAccepted) || text != want || len(w.requests) != 1 {
 		t.Fatalf("ordinary final: text=%q outcome=%q calls=%d", text, outcome, len(w.requests))
 	}
@@ -560,7 +560,7 @@ func TestSpacesModeValidatesBeforePunctuation(t *testing.T) {
 			if r.live.completed != nil || r.live.polished != "" {
 				t.Fatal("empty conversion was previewed")
 			}
-			text, outcome, ok := c.rewriteFinal(r, r.live.stable, r.live.policy)
+			text, outcome, _, ok := c.rewriteFinal(r, r.live.stable, r.live.policy)
 			if !ok || outcome != string(domain.RewriteEmpty) || text != domain.CleanSpeech(r.live.stable).Text || len(w.requests) != 2 {
 				t.Fatalf("empty conversion delivered: text=%q outcome=%q calls=%d ok=%v", text, outcome, len(w.requests), ok)
 			}

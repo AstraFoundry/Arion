@@ -76,6 +76,31 @@ func knownTranslateKey(platform string, key HoldKey) bool {
 	return key == HoldOff || slices.Contains(HoldKeysFor(platform), key)
 }
 
+// ChooseHoldKey records the dictation key. The translation shortcut turns
+// off when it would be the same key.
+func (p *Preferences) ChooseHoldKey(key HoldKey) {
+	if p.TranslateKey == key {
+		p.TranslateKey = HoldOff
+	}
+	p.HoldKey = key
+}
+
+// ChooseTranslateKey records the translation key. A collision moves the
+// dictation key to the previous translation key, otherwise the platform
+// default, otherwise the default translation key.
+func (p *Preferences) ChooseTranslateKey(platform string, key HoldKey) {
+	if key != HoldOff && key == p.HoldKey {
+		if prev := p.TranslateKey; prev != "" && prev != HoldOff && prev != key {
+			p.HoldKey = prev
+		} else if alt := DefaultHoldKey(platform); alt != key {
+			p.HoldKey = alt
+		} else {
+			p.HoldKey = DefaultTranslateKey(platform)
+		}
+	}
+	p.TranslateKey = key
+}
+
 // DefaultHoldThreshold separates a hold from a tap.
 const DefaultHoldThreshold = 300 * time.Millisecond
 
