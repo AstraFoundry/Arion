@@ -3,6 +3,7 @@ package app
 import (
 	"strings"
 	"testing"
+	"time"
 
 	"arion.local/desktop/ui/features/cloud"
 	"arion.local/desktop/ui/pages/onboarding"
@@ -14,20 +15,33 @@ import (
 	"github.com/egoist/mygo/ui"
 )
 
-// The cloud pages: the provider list, a provider's sign-in or masked key,
-// then, connected, Disconnect and the model; failures in words.
+// The cloud pages: subscriptions apart from API keys; a provider's sign-in
+// or masked key; once connected, the page returns to the list, where the
+// provider in use has Disconnect and the model; failures in words.
 func TestCloudPages(t *testing.T) {
 	state, actions, store := fixture()
 	nav := &cloud.Nav{}
 	tt := ui.NewTester(func(c *ui.Context) {
 		ui.Column(c).Gap(8).Padding(16).Children(func() { cloud.Pages(c, store, theme.Resolve(false), nav) })
-	}, 560, 420)
+	}, 560, 520)
 	en := copy.For(copy.English)
 	state.Cloud = runtime.Cloud{Phase: runtime.CloudDisconnected}
 	settle(tt)
 	for _, id := range append([]string{runtime.CloudChatGPT}, runtime.CloudKeyProviders...) {
 		if !hasText(tt, config.CloudProviders[id]) {
 			t.Fatalf("missing %s: %q", id, tt.Texts())
+		}
+	}
+	// ChatGPT is under Subscriptions; every key provider under API keys.
+	texts := tt.Texts()
+	subs, keys := firstExact(texts, en.Text(copy.CloudSubscriptions)), firstExact(texts, en.Text(copy.CloudAPIKeys))
+	chatgpt := firstExact(texts, config.CloudProviders[runtime.CloudChatGPT])
+	if subs < 0 || keys < 0 || !(subs < chatgpt && chatgpt < keys) || hasText(tt, en.Text(copy.CloudInUse)) {
+		t.Fatalf("groups: %q", texts)
+	}
+	for _, id := range runtime.CloudKeyProviders {
+		if firstExact(texts, config.CloudProviders[id]) < keys {
+			t.Fatalf("%s outside API keys: %q", id, texts)
 		}
 	}
 	if hasText(tt, en.Text(copy.CloudConnect)) || hasText(tt, en.Text(copy.CloudChatGPTSignIn)) {
@@ -76,15 +90,20 @@ func TestCloudPages(t *testing.T) {
 		t.Fatalf("connect: %v %v", err, actions.calls)
 	}
 
-	state.Cloud = runtime.Cloud{Phase: runtime.CloudConnected, Provider: runtime.CloudAnthropic}
+	// Connected, the page returns to the list with the provider in use on
+	// top: its default model, Disconnect, and a check on its row.
+	state.Cloud = runtime.Cloud{Phase: runtime.CloudConnected, Provider: runtime.CloudAnthropic, Saved: []string{runtime.CloudAnthropic}}
+	state.Preferences.CloudModel = "claude-haiku-4-5"
 	settle(tt)
-	if !actions.called("cloud-models") {
-		t.Fatal("models not listed")
+	if nav.Provider != "" || !actions.called("cloud-models") {
+		t.Fatalf("connected: nav %+v calls %v", nav, actions.calls)
 	}
-	state.Cloud.Models = []string{"model-a", "model-b"}
+	state.Cloud.Models = []string{"claude-haiku-4-5", "claude-sonnet-5-5"}
 	settle(tt)
-	if !hasText(tt, en.Text(copy.CloudConnected)) || !hasText(tt, en.Text(copy.CloudModelPlaceholder)) {
-		t.Fatalf("connected: %q", tt.Texts())
+	texts = tt.Texts()
+	if inUse := firstExact(texts, en.Text(copy.CloudInUse)); inUse < 0 || inUse > firstExact(texts, en.Text(copy.CloudSubscriptions)) ||
+		!hasText(tt, en.Text(copy.CloudDisconnect)) || hasText(tt, en.Text(copy.CloudModelPlaceholder)) {
+		t.Fatalf("in use: %q", texts)
 	}
 	snapshot(t, tt, "cloud-connected")
 	if err := tt.Click(en.Text(copy.CloudDisconnect)); err != nil || !actions.called("cloud-disconnect") {
@@ -107,66 +126,62 @@ func TestCloudPages(t *testing.T) {
 	}
 }
 
-// Settings › Model keeps its settings on one page; the recognition model
-// and the cloud model each open their own pages, and back leaves them one
-// page at a time. Context switches also show for the cloud, which works where
-// the local runtime is not shipped.
-// A provider with a stored key is marked on the list and opens without a
-// key field. The page asks once to make that provider active.
-func TestSavedCloudProviderRestoresWithoutKey(t *testing.T) {
+// Opening a saved provider's page never switches to it: only its Use
+// button does, on the list or on its page.
+func TestSavedCloudProviderNeedsUse(t *testing.T) {
 	state, actions, store := fixture()
 	nav := &cloud.Nav{}
 	tt := ui.NewTester(func(c *ui.Context) {
 		ui.Column(c).Gap(8).Padding(16).Children(func() { cloud.Pages(c, store, theme.Resolve(false), nav) })
-	}, 560, 420)
+	}, 560, 560)
 	en := copy.For(copy.English)
-	zh := copy.For(copy.Locale("zh-CN"))
+	zh := copy.For(copy.SimplifiedChinese)
 	state.Cloud = runtime.Cloud{Phase: runtime.CloudConnected, Provider: runtime.CloudOpenRouter,
-		Models: []string{"router-model"}, Saved: []string{runtime.CloudDeepSeek, runtime.CloudOpenRouter}}
-	state.Preferences.UILanguage = runtime.UILanguage("zh-CN")
+		Models: []string{"openai/gpt-6-luna"}, Saved: []string{runtime.CloudDeepSeek, runtime.CloudOpenRouter}}
+	state.Preferences.CloudModel = "openai/gpt-6-luna"
+	state.Preferences.UILanguage = runtime.LanguageChinese
 	settle(tt)
-	if !hasText(tt, zh.Text(copy.CloudConnected)) || !hasText(tt, zh.Text(copy.CloudSaved)) {
+	if !hasText(tt, zh.Text(copy.CloudInUse)) || !hasText(tt, zh.Text(copy.CloudUse)) || !hasText(tt, zh.Text(copy.CloudSubscriptions)) {
 		t.Fatalf("chinese list: %q", tt.Texts())
 	}
 	snapshot(t, tt, "cloud-providers-saved-zh-CN")
-	state.Preferences.UILanguage = runtime.UILanguage(copy.English)
+	state.Preferences.UILanguage = runtime.LanguageEnglish
 	settle(tt)
-	if !hasText(tt, en.Text(copy.CloudConnected)) || !hasText(tt, en.Text(copy.CloudSaved)) {
-		t.Fatalf("list: %q", tt.Texts())
-	}
 	snapshot(t, tt, "cloud-providers-saved")
+	activated := func() bool {
+		return actions.called("cloud-activate:" + runtime.CloudDeepSeek)
+	}
 	if err := tt.Click(config.CloudProviders[runtime.CloudDeepSeek]); err != nil {
 		t.Fatal(err)
 	}
 	settle(tt)
-	activations := 0
-	for _, call := range actions.calls {
-		if call == "cloud-activate:"+runtime.CloudDeepSeek {
-			activations++
-		}
+	if activated() || nav.Provider != runtime.CloudDeepSeek || !hasText(tt, en.Text(copy.CloudSaved)) || hasText(tt, en.Text(copy.CloudKeyPlaceholder)) {
+		t.Fatalf("opening switched or asked for a key: %v %q", actions.calls, tt.Texts())
 	}
-	if activations != 1 || hasText(tt, en.Text(copy.CloudConnect)) || hasText(tt, en.Text(copy.CloudKeyPlaceholder)) {
-		t.Fatalf("restore calls %d %v texts %q", activations, actions.calls, tt.Texts())
+	snapshot(t, tt, "cloud-provider-saved")
+	if err := tt.Click(en.Text(copy.CloudUse)); err != nil || !activated() {
+		t.Fatalf("use on the page: %v %v", err, actions.calls)
 	}
-	snapshot(t, tt, "cloud-provider-restoring")
-	state.Cloud = runtime.Cloud{Phase: runtime.CloudConnected, Provider: runtime.CloudDeepSeek,
-		Models: []string{"deepseek-chat"}, Saved: []string{runtime.CloudDeepSeek, runtime.CloudOpenRouter}}
-	state.Preferences.CloudModel = "deepseek-chat"
+	nav.Back()
+	actions.calls = nil
 	settle(tt)
-	// "Connect" is a substring of "Disconnect", so the key field's placeholder
-	// is the check that the saved provider did not ask for a key.
-	if !hasText(tt, en.Text(copy.CloudDisconnect)) || hasText(tt, en.Text(copy.CloudKeyPlaceholder)) || hasText(tt, en.Text(copy.CloudModelPlaceholder)) {
-		t.Fatalf("restored: %q", tt.Texts())
+	// The Use button on the list switches without opening the page.
+	if err := tt.Click(en.Text(copy.CloudUse)); err != nil || !activated() || nav.Provider != "" {
+		t.Fatalf("use on the list: %v %v %+v", err, actions.calls, nav)
 	}
-	snapshot(t, tt, "cloud-provider-restored")
 }
 
+// Settings › Speech & Polish follows the text: recognition, polishing
+// and where it runs, formatting, then context, the last two only while
+// polishing runs. The recognition model and the cloud model each open a
+// page, and back leaves them one page at a time.
 func TestSettingsCloudModel(t *testing.T) {
 	state, _, store := fixture()
 	state.Polish = runtime.Polish{State: runtime.PolishUnsupported}
 	state.Preferences.Polish, state.Preferences.PolishEngine = true, runtime.PolishCloud
-	state.Cloud = runtime.Cloud{Phase: runtime.CloudConnected, Provider: runtime.CloudDeepSeek, Models: []string{"deepseek-chat"}}
-	state.Preferences.CloudModel = "deepseek-chat"
+	state.Cloud = runtime.Cloud{Phase: runtime.CloudConnected, Provider: runtime.CloudDeepSeek, Models: []string{"deepseek-flash"}, Saved: []string{runtime.CloudDeepSeek}}
+	state.Preferences.CloudModel = "deepseek-flash"
+	state.Preferences.Punctuation = runtime.PunctuationSmart
 	page := settings.NewPage()
 	page.Section = settings.Model
 	tt := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, SettingsWidth, SettingsHeight)
@@ -179,33 +194,49 @@ func TestSettingsCloudModel(t *testing.T) {
 		}
 		settle(tt)
 	}
-	if !hasText(tt, en.Text(copy.ModelRecognitionPage)) || !hasText(tt, en.Text(copy.MatchAppLabel)) || !hasText(tt, en.Text(copy.ContextScreenLabel)) ||
-		hasText(tt, en.Text(copy.PolishUnsupported)) || !hasText(tt, "deepseek-chat") || hasText(tt, en.Text(copy.CloudDisconnect)) ||
+	if !hasText(tt, en.Text(copy.NavModel)) || !hasText(tt, en.Text(copy.ModelRecognitionPage)) || !hasText(tt, en.Text(copy.MatchAppLabel)) ||
+		hasText(tt, en.Text(copy.PolishUnsupported)) || !hasText(tt, "deepseek-flash") || hasText(tt, en.Text(copy.CloudDisconnect)) ||
 		hasText(tt, en.Text(copy.PolishCloudDetail)) || hasText(tt, en.Text(copy.ModelReason)) {
-		t.Fatalf("model section: %q", tt.Texts())
+		t.Fatalf("section: %q", tt.Texts())
+	}
+	texts := tt.Texts()
+	order := []string{en.Text(copy.ModelRecognitionGroup), en.Text(copy.ModelPolishGroup), en.Text(copy.PolishEngineLabel), en.Text(copy.CloudTitle),
+		en.Text(copy.ModelFormatGroup), en.Text(copy.PunctuationLabel), en.Text(copy.MatchAppLabel), en.Text(copy.ContextGroup)}
+	for i := 1; i < len(order); i++ {
+		if a, b := firstExact(texts, order[i-1]), firstExact(texts, order[i]); a < 0 || b < 0 || a > b {
+			t.Fatalf("%q not before %q: %q", order[i-1], order[i], texts)
+		}
 	}
 	snapshot(t, tt, "settings-model-cloud")
 	click(en.Text(copy.CloudTitle))
-	if !hasText(tt, config.CloudProviders[runtime.CloudChatGPT]) || hasText(tt, en.Text(copy.MatchAppLabel)) {
+	if !hasText(tt, config.CloudProviders[runtime.CloudChatGPT]) || hasText(tt, en.Text(copy.MatchAppLabel)) ||
+		!hasText(tt, en.Text(copy.CloudInUse)) || !hasText(tt, en.Text(copy.CloudDisconnect)) || hasText(tt, en.Text(copy.CloudModelPlaceholder)) {
 		t.Fatalf("cloud list: %q", tt.Texts())
 	}
 	snapshot(t, tt, "settings-cloud-providers")
-	click(config.CloudProviders[runtime.CloudDeepSeek])
-	if !hasText(tt, en.Text(copy.CloudDisconnect)) {
+	click(config.CloudProviders[runtime.CloudOpenAI])
+	if !hasText(tt, en.Text(copy.CloudConnect)) {
 		t.Fatalf("provider page: %q", tt.Texts())
 	}
-	snapshot(t, tt, "settings-cloud-deepseek")
+	snapshot(t, tt, "settings-cloud-openai")
 	click(en.Text(copy.Back))
 	click(en.Text(copy.Back))
 	if !hasText(tt, en.Text(copy.MatchAppLabel)) {
-		t.Fatalf("back to Model: %q", tt.Texts())
+		t.Fatalf("back to the section: %q", tt.Texts())
 	}
 	click(en.Text(copy.ModelRecognitionPage))
 	if !hasText(tt, en.Text(copy.ModelReason)) {
 		t.Fatalf("recognition page: %q", tt.Texts())
 	}
 	click(en.Text(copy.Back))
-	state.Preferences.PolishEngine = runtime.PolishLocal
+	// Polishing off hides formatting and context.
+	state.Preferences.Polish = false
+	settle(tt)
+	if hasText(tt, en.Text(copy.PunctuationLabel)) || hasText(tt, en.Text(copy.MatchAppLabel)) || hasText(tt, en.Text(copy.ContextGroup)) {
+		t.Fatalf("polishing off: %q", tt.Texts())
+	}
+	snapshot(t, tt, "settings-model-off")
+	state.Preferences.Polish, state.Preferences.PolishEngine = true, runtime.PolishLocal
 	settle(tt)
 	if hasText(tt, en.Text(copy.MatchAppLabel)) || !hasText(tt, en.Text(copy.PolishUnsupported)) || hasText(tt, en.Text(copy.CloudTitle)) {
 		t.Fatalf("local on an unsupported platform: %q", tt.Texts())
@@ -258,6 +289,31 @@ func TestOnboardingCloudPolish(t *testing.T) {
 	if !hasText(tt, en.Text(copy.CloudTitle)) {
 		t.Fatalf("back to the list: %q", tt.Texts())
 	}
+	// Once a provider is in use, the step folds the lists behind Change and
+	// continues on the provider's default model.
+	state.Cloud = runtime.Cloud{Phase: runtime.CloudConnected, Provider: runtime.CloudChatGPT, Email: "me@example.com",
+		Models: []string{"gpt-6-luna", "gpt-6-sol"}, Saved: []string{runtime.CloudChatGPT}}
+	state.Preferences.CloudModel = "gpt-6-luna"
+	settle(tt)
+	rest(tt, time.Second)
+	if !hasText(tt, en.Text(copy.CloudInUse)) || hasText(tt, en.Text(copy.CloudAPIKeys)) || !hasText(tt, en.Text(copy.Continue)) || hasText(tt, en.Text(copy.Skip)) {
+		t.Fatalf("connected step: %q", tt.Texts())
+	}
+	snapshot(t, tt, "onboarding-7-cloud-connected")
+	click(en.Text(copy.CloudChange))
+	if !hasText(tt, en.Text(copy.CloudAPIKeys)) || hasText(tt, en.Text(copy.CloudDisconnect)) {
+		t.Fatalf("change: %q", tt.Texts())
+	}
+	rest(tt, time.Second)
+	snapshot(t, tt, "onboarding-7-cloud-change")
+	// Back leaves Change before the step.
+	click(en.Text(copy.Back))
+	if !hasText(tt, en.Text(copy.CloudDisconnect)) || hasText(tt, en.Text(copy.CloudAPIKeys)) {
+		t.Fatalf("back from change: %q", tt.Texts())
+	}
+	state.Cloud = runtime.Cloud{Phase: runtime.CloudDisconnected}
+	state.Preferences.CloudModel = ""
+	settle(tt)
 	click(en.Text(copy.Back))
 	click(en.Text(copy.PolishOff))
 	if state.Preferences.Polish {

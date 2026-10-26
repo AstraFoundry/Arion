@@ -1,8 +1,10 @@
-// Package cloud connects a cloud model for polishing, one page at a time:
-// the providers, then the chosen provider's sign-in or API key, then its
-// model. A provider that already has a stored key is restored without
-// asking for the key again. Secrets never enter the UI state; a pasted key
-// leaves the navigation state as soon as it is submitted.
+// Package cloud connects a cloud model for polishing in two pages: the
+// list, with the provider in use, its model and Disconnect on top, then
+// the subscription and the API key providers; and a provider's page with
+// its sign-in or API key. Opening a page never changes the provider in
+// use: a saved provider becomes it through its Use button, and a new one
+// by connecting it. Secrets never enter the UI state; a pasted key leaves
+// the navigation state as soon as it is submitted.
 package cloud
 
 import (
@@ -17,22 +19,34 @@ import (
 	"github.com/egoist/mygo/ui"
 )
 
-// Nav is where the pages are: the provider list while Provider is empty,
-// else that provider's page. The page that shows them keeps it.
+// Nav is where the pages are: the list while Provider is empty, else that
+// provider's page. The page that shows them keeps it.
 type Nav struct {
 	Provider string
 	// Key is the API key being entered on a provider's page.
 	Key string
-	// activated is the saved provider this page already asked to restore.
-	activated string
+	// Compact shows either the provider in use or, after Change, the
+	// providers, so onboarding's step fits its window.
+	Compact bool
+	// connecting is the provider this page signed in to or sent a key for:
+	// once it is in use, the page returns to the list, where its model is.
+	connecting string
+	// changing is the provider in use when Change was chosen; another one
+	// in use ends the change.
+	changing string
 }
 
-// Back returns from a provider's page to the list; false at the list.
+// Back returns from a provider's page to the list, or from Change to the
+// provider in use; false when there is nothing to leave.
 func (n *Nav) Back() bool {
-	if n.Provider == "" {
+	switch {
+	case n.Provider != "":
+		n.Provider, n.Key, n.connecting = "", "", ""
+	case n.changing != "":
+		n.changing = ""
+	default:
 		return false
 	}
-	n.Provider, n.Key, n.activated = "", "", ""
 	return true
 }
 
@@ -42,11 +56,6 @@ func Title(store runtime.Store, nav *Nav) string {
 		return config.CloudProviders[nav.Provider]
 	}
 	return store.Copy().Text(copy.CloudTitle)
-}
-
-// providers is the list order: the subscription first, then API keys.
-func providers() []string {
-	return append([]string{runtime.CloudChatGPT}, runtime.CloudKeyProviders...)
 }
 
 // Mark draws a provider's LobeHub mark at size DIPs: monochrome marks in
@@ -93,9 +102,17 @@ func Summary(c *ui.Context, store runtime.Store, tokens theme.Tokens) bool {
 	})
 }
 
-// Pages draws the provider list or the chosen provider's page.
+// Pages draws the list or the chosen provider's page.
 func Pages(c *ui.Context, store runtime.Store, tokens theme.Tokens, nav *Nav) {
 	Check(store)
+	cl := store.State.Cloud
+	if nav.Provider != "" && nav.connecting == nav.Provider && cl.Phase == runtime.CloudConnected && cl.Provider == nav.Provider {
+		nav.Back()
+		nav.changing = ""
+	}
+	if nav.changing != "" && (cl.Phase != runtime.CloudConnected || cl.Provider != nav.changing) {
+		nav.changing = ""
+	}
 	if nav.Provider == "" {
 		list(c, store, tokens, nav)
 	} else {
@@ -104,56 +121,92 @@ func Pages(c *ui.Context, store runtime.Store, tokens theme.Tokens, nav *Nav) {
 	notice(c, store, tokens)
 }
 
+// list shows the provider in use, then the providers by how they connect:
+// signing in to a subscription, or an API key.
 func list(c *ui.Context, store runtime.Store, tokens theme.Tokens, nav *Nav) {
 	messages := store.Copy()
 	cl := store.State.Cloud
+	if cl.Phase == runtime.CloudConnected && (!nav.Compact || nav.changing == "") {
+		kit.Group(c, tokens, messages.Text(copy.CloudInUse), func() { inUse(c, store, tokens) })
+		if nav.Compact {
+			if kit.Button(c.Key("cloud-change"), tokens, kit.Ghost, messages.Text(copy.CloudChange), true).Clicked() {
+				nav.changing = cl.Provider
+			}
+			return
+		}
+	}
+	kit.Group(c, tokens, messages.Text(copy.CloudSubscriptions), func() {
+		providers(c, store, tokens, nav, []string{runtime.CloudChatGPT})
+	})
+	kit.Group(c, tokens, messages.Text(copy.CloudAPIKeys), func() {
+		providers(c, store, tokens, nav, runtime.CloudKeyProviders)
+	})
+}
+
+// providers lists ids, each opening its page. The provider in use is
+// checked; a saved one offers Use, the only way to switch to it.
+func providers(c *ui.Context, store runtime.Store, tokens theme.Tokens, nav *Nav, ids []string) {
+	messages := store.Copy()
+	cl := store.State.Cloud
 	kit.Card(c, tokens).Children(func() {
-		for i, id := range providers() {
+		for i, id := range ids {
 			if i > 0 {
 				kit.Divider(c, tokens)
 			}
-			// Only the connection is named; the provider's page says the rest.
-			value := ""
-			switch {
-			case cl.Phase == runtime.CloudConnected && cl.Provider == id:
-				value = messages.Text(copy.CloudConnected)
-			case slices.Contains(cl.Saved, id):
-				value = messages.Text(copy.CloudSaved)
+			trailing := func() {
+				switch {
+				case cl.Phase == runtime.CloudConnected && cl.Provider == id:
+					ui.Icon(c, icons.Check).FontSize(16).TextColor(tokens.AccentInk).Label(messages.Text(copy.CloudInUse))
+				case slices.Contains(cl.Saved, id):
+					use(c, store, tokens, id, kit.Outline)
+				}
 			}
-			if kit.LinkRow(c.Key("provider-"+id), tokens, config.CloudProviders[id], value, func() { Mark(c, tokens, id, 18) }) {
+			if kit.LinkRowWith(c.Key("provider-"+id), tokens, config.CloudProviders[id], func() { Mark(c, tokens, id, 18) }, trailing) {
 				nav.Provider = id
 			}
 		}
 	})
 }
 
-// page connects the provider, or, once it is the connection, shows it with
-// Disconnect and the model choice.
+// use makes a saved provider the one in use.
+func use(c *ui.Context, store runtime.Store, tokens theme.Tokens, id string, variant kit.Variant) {
+	if kit.Button(c.Key("cloud-use-"+id), tokens, variant, store.Copy().Text(copy.CloudUse), !store.State.Cloud.Busy()).Clicked() {
+		store.Actions.ActivateCloud(id)
+	}
+}
+
+// page is the provider in use with its model; a saved provider, with Use;
+// or the sign-in or API key that connects a new one.
 func page(c *ui.Context, store runtime.Store, tokens theme.Tokens, nav *Nav) {
 	cl := store.State.Cloud
-	if cl.Phase == runtime.CloudConnected && cl.Provider == nav.Provider {
-		connected(c, store, tokens)
-		model(c, store, tokens)
-		return
-	}
-	// A saved key is restored instead of asking for it again. A failed
-	// restore falls through to the key form, which is where the notice sits.
-	if slices.Contains(cl.Saved, nav.Provider) && !cl.Busy() && !(cl.Failure != "" && nav.activated == nav.Provider) {
-		if nav.activated != nav.Provider {
-			nav.activated = nav.Provider
-			store.Actions.ActivateCloud(nav.Provider)
-		}
-		restoring(c, tokens, nav.Provider)
-		return
-	}
-	if nav.Provider == runtime.CloudChatGPT {
-		chatgpt(c, store, tokens)
-	} else {
+	switch {
+	case cl.Phase == runtime.CloudConnected && cl.Provider == nav.Provider:
+		inUse(c, store, tokens)
+	case slices.Contains(cl.Saved, nav.Provider) && !cl.Busy():
+		saved(c, store, tokens, nav.Provider)
+	case nav.Provider == runtime.CloudChatGPT:
+		chatgpt(c, store, tokens, nav)
+	default:
 		key(c, store, tokens, nav)
 	}
 }
 
-func chatgpt(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
+// saved is a provider whose credential is stored but not in use.
+func saved(c *ui.Context, store runtime.Store, tokens theme.Tokens, id string) {
+	messages := store.Copy()
+	kit.Card(c, tokens).Children(func() {
+		ui.Row(c).Gap(12).Padding(12, 16).AlignItems(ui.Center).Children(func() {
+			Mark(c, tokens, id, 20)
+			ui.Column(c).Grow(1).Shrink(1).Gap(2).Children(func() {
+				ui.Text(c, config.CloudProviders[id]).FontSize(theme.Body).FontWeight(500)
+				ui.Text(c, messages.Text(copy.CloudSaved)).FontSize(theme.Caption).TextColor(tokens.Muted)
+			})
+			use(c, store, tokens, id, kit.Primary)
+		})
+	})
+}
+
+func chatgpt(c *ui.Context, store runtime.Store, tokens theme.Tokens, nav *Nav) {
 	messages := store.Copy()
 	cl := store.State.Cloud
 	kit.Card(c, tokens).Children(func() {
@@ -169,18 +222,9 @@ func chatgpt(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 			}
 			ui.Text(c, messages.Text(copy.CloudChatGPTDetail)).FontSize(theme.Body).TextColor(tokens.Muted)
 			if kit.Button(c.Key("chatgpt-sign-in"), tokens, kit.Primary, messages.Text(copy.CloudChatGPTSignIn), !cl.Busy()).Clicked() {
+				nav.connecting = runtime.CloudChatGPT
 				store.Actions.SignInChatGPT()
 			}
-		})
-	})
-}
-
-// restoring waits until a saved provider becomes the active connection.
-func restoring(c *ui.Context, tokens theme.Tokens, provider string) {
-	kit.Card(c, tokens).Children(func() {
-		ui.Row(c.Key("cloud-restore")).Padding(14, 16).Gap(8).AlignItems(ui.Center).Children(func() {
-			Mark(c, tokens, provider, 20)
-			ui.Spinner(c).Size(14, 14)
 		})
 	})
 }
@@ -200,6 +244,7 @@ func key(c *ui.Context, store runtime.Store, tokens theme.Tokens, nav *Nav) {
 				return
 			}
 			if kit.Button(c.Key("cloud-connect"), tokens, kit.Primary, messages.Text(copy.CloudConnect), nav.Key != "" && !cl.Busy()).Clicked() {
+				nav.connecting = nav.Provider
 				store.Actions.ConnectCloudKey(nav.Provider, nav.Key)
 				nav.Key = ""
 			}
@@ -213,44 +258,38 @@ func cancel(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 	}
 }
 
-// connected names the provider and the ChatGPT account, with Disconnect.
-func connected(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
+// inUse is the provider in use: its name and ChatGPT account, Disconnect,
+// and the model, which a new connection starts on its fast tier.
+func inUse(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 	messages := store.Copy()
 	cl := store.State.Cloud
 	detail := cl.Email
 	if cl.Provider != runtime.CloudChatGPT {
 		detail = messages.Text(copy.CloudKeyLabel)
 	}
+	chosen := store.State.Preferences.CloudModel
 	kit.Card(c, tokens).Children(func() {
 		ui.Row(c).Gap(12).Padding(12, 16).AlignItems(ui.Center).Children(func() {
 			Mark(c, tokens, cl.Provider, 20)
 			ui.Column(c).Grow(1).Shrink(1).Gap(2).Children(func() {
-				ui.Text(c, messages.Text(copy.CloudConnected)).FontSize(theme.Body).FontWeight(500)
+				ui.Text(c, config.CloudProviders[cl.Provider]).FontSize(theme.Body).FontWeight(500)
 				ui.Text(c, detail).FontSize(theme.Caption).TextColor(tokens.Muted).Selectable()
 			})
 			if kit.Button(c.Key("cloud-disconnect"), tokens, kit.Outline, messages.Text(copy.CloudDisconnect), true).Clicked() {
 				store.Actions.DisconnectCloud()
 			}
 		})
-	})
-}
-
-// model chooses among the listed models; typing filters a long list.
-func model(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
-	messages := store.Copy()
-	cl := store.State.Cloud
-	chosen := store.State.Preferences.CloudModel
-	// Polishing waits on a model; the row says so until one is chosen.
-	detail := ""
-	if chosen == "" {
-		detail = messages.Text(copy.CloudModelPlaceholder)
-	}
-	kit.Card(c, tokens).Children(func() {
+		kit.Divider(c, tokens)
+		// Polishing waits on a model; the row says so until one is chosen.
+		detail := ""
+		if chosen == "" {
+			detail = messages.Text(copy.CloudModelPlaceholder)
+		}
 		kit.Row(c, tokens, messages.Text(copy.CloudModelLabel), detail, func() {
 			if cl.Listing {
 				ui.Spinner(c).Size(14, 14)
 			}
-			if ui.Combobox(c.Key("cloud-model"), &chosen, cl.Models).Label(messages.Text(copy.CloudModelLabel)).Width(220).Changed() {
+			if ui.Combobox(c.Key("cloud-model"), &chosen, cl.Models).Label(messages.Text(copy.CloudModelLabel)).Width(200).Changed() {
 				store.Actions.UpdatePreferences(func(p *runtime.Preferences) { p.CloudModel = chosen })
 			}
 		})

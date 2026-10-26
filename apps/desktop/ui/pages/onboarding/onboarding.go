@@ -57,7 +57,9 @@ type Page struct {
 	cloud            cloud.Nav
 }
 
-func NewPage() *Page { return &Page{} }
+// NewPage starts the flow; its cloud step folds the provider lists behind
+// Change once one is in use, so the step fits the window.
+func NewPage() *Page { return &Page{cloud: cloud.Nav{Compact: true}} }
 
 // Render draws the current step beside its illustration.
 func (p *Page) Render(c *ui.Context, store runtime.Store) {
@@ -367,7 +369,7 @@ func (p *Page) step(c *ui.Context, store runtime.Store, tokens theme.Tokens, ste
 		ui.Column(c).Width(Content).Children(func() { polish.Choice(c, store, tokens) })
 	case onboarding.Cloud:
 		ui.Text(c.Key("cloud-title"), cloud.Title(store, &p.cloud)).FontSize(theme.Title + 4).FontWeight(650).ContentTransition(ui.ContentTransition{})
-		ui.Column(c.Key("cloud-" + p.cloud.Provider)).Width(Content).Gap(theme.GapRelated).Transition(ui.ElementTransition{Animation: &theme.Page, Enter: &ui.Motion{Y: 8}}).
+		ui.Column(c.Key("cloud-" + p.cloud.Provider)).Width(Content).Gap(2 * theme.GapRelated).Transition(ui.ElementTransition{Animation: &theme.Page, Enter: &ui.Motion{Y: 8}}).
 			Children(func() { cloud.Pages(c, store, tokens, &p.cloud) })
 	case onboarding.HoldKey:
 		heading(c, tokens, messages.Text(copy.OnbHoldKeyTitle), messages.Text(copy.OnbHoldKeyBody))

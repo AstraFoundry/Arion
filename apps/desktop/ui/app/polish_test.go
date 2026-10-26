@@ -225,42 +225,28 @@ func TestMatchAppRow(t *testing.T) {
 	}
 }
 
-// Punctuation is a row in the Polish card. It follows Runs on, and follows
-// Cloud model when that row is shown. It accepts a choice only while the
-// polish switch is on.
+// Punctuation opens the Formatting card, after the Polish card (and its
+// Cloud model row when shown), and shows only while polishing runs.
 func TestPunctuationControl(t *testing.T) {
 	state, actions, store := fixture()
 	page := settings.NewPage()
 	page.Section = settings.Model
 	tt := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, SettingsWidth, SettingsHeight)
 	en := copy.For(copy.English)
+	zh := copy.For(copy.SimplifiedChinese)
 	state.Preferences.Punctuation = runtime.PunctuationSmart
 	state.Preferences.Polish = false
 	settle(tt)
-	if !hasText(tt, en.Text(copy.PunctuationLabel)) || !hasText(tt, en.Text(copy.PunctuationSmart)) {
-		t.Fatalf("control missing: %q", tt.Texts())
+	if hasText(tt, en.Text(copy.PunctuationLabel)) || hasText(tt, en.Text(copy.ModelFormatGroup)) {
+		t.Fatalf("formatting shown while polish is off: %q", tt.Texts())
 	}
-	if punct, runs, cloud := firstExact(tt.Texts(), en.Text(copy.PunctuationLabel)), firstExact(tt.Texts(), en.Text(copy.PolishEngineLabel)), firstExact(tt.Texts(), en.Text(copy.CloudTitle)); punct < 0 || runs < 0 || punct < runs || cloud >= 0 {
-		t.Fatalf("punctuation row is not after Runs on: punct %d runs %d cloud %d texts %q", punct, runs, cloud, tt.Texts())
-	}
-	snapshot(t, tt, "settings-punctuation-disabled")
+	snapshot(t, tt, "settings-punctuation-hidden")
 	state.Preferences.UILanguage = runtime.LanguageChinese
 	settle(tt)
-	zh := copy.For(copy.SimplifiedChinese)
-	if punct, runs := firstExact(tt.Texts(), zh.Text(copy.PunctuationLabel)), firstExact(tt.Texts(), zh.Text(copy.PolishEngineLabel)); punct < 0 || runs < 0 || punct < runs || !hasText(tt, zh.Text(copy.PunctuationSmart)) {
-		t.Fatalf("chinese punctuation row while polish is off: %q", tt.Texts())
+	if hasText(tt, zh.Text(copy.PunctuationLabel)) {
+		t.Fatalf("chinese formatting shown while polish is off: %q", tt.Texts())
 	}
-	snapshot(t, tt, "settings-punctuation-disabled-zh-CN")
 	state.Preferences.UILanguage = runtime.LanguageEnglish
-	settle(tt)
-	reveal(t, tt, en.Text(copy.PunctuationSmart))
-	if err := tt.Click(en.Text(copy.PunctuationSmart)); err != nil {
-		t.Fatal(err)
-	}
-	settle(tt)
-	if hasText(tt, en.Text(copy.PunctuationFull)) || state.Preferences.Punctuation != runtime.PunctuationSmart {
-		t.Fatal("punctuation changed while polish is off")
-	}
 	state.Preferences.Polish = true
 	state.Polish = runtime.Polish{State: runtime.PolishReady, Installed: true}
 	settle(tt)
@@ -296,7 +282,6 @@ func TestPunctuationControl(t *testing.T) {
 	if !hasText(tt, copy.For(copy.SimplifiedChinese).Text(copy.PunctuationOmit)) || hasText(tt, en.Text(copy.PunctuationOmit)) {
 		t.Fatalf("chinese label: %q", tt.Texts())
 	}
-	zh = copy.For(copy.SimplifiedChinese)
 	texts = tt.Texts()
 	punct, runs, match, context = firstExact(texts, zh.Text(copy.PunctuationLabel)), firstExact(texts, zh.Text(copy.PolishEngineLabel)), firstExact(texts, zh.Text(copy.MatchAppLabel)), firstExact(texts, zh.Text(copy.ContextGroup))
 	if punct < 0 || runs < 0 || match < 0 || context < 0 || !(runs < punct && punct < match && match < context) || lastExact(texts, zh.Text(copy.PunctuationLabel)) > match || firstExact(texts, zh.Text(copy.CloudTitle)) >= 0 {
@@ -424,7 +409,8 @@ func TestNoTechnicalModelNames(t *testing.T) {
 			t.Fatal(err)
 		}
 		settle(tt)
-		if !hasText(tt, messages.Text(copy.ModelNameGeneric)) || hasText(tt, messages.Text(copy.PolishLabel)) {
+		// Exact: the section's own name contains the switch's label.
+		if !hasText(tt, messages.Text(copy.ModelNameGeneric)) || firstExact(tt.Texts(), messages.Text(copy.PolishLabel)) >= 0 {
 			t.Fatalf("recognition page: %q", tt.Texts())
 		}
 		check("settings", tt.Texts())

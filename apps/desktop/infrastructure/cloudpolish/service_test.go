@@ -655,3 +655,57 @@ func thinkingConfig(t *testing.T, body map[string]any) map[string]any {
 	}
 	return thinking
 }
+
+// A provider starts on its fast tier when no model was chosen: the newest
+// undated model of the first tier with one; nothing when no tier matches.
+func TestDefaultModel(t *testing.T) {
+	for _, c := range []struct {
+		provider string
+		models   []string
+		want     string
+	}{
+		{OpenAI, []string{"gpt-6-sol", "gpt-5.6-luna", "gpt-6-luna-2026-07-01", "gpt-6-luna", "gpt-6-mini"}, "gpt-6-luna"},
+		{ChatGPT, []string{"gpt-6-sol", "gpt-6-luna"}, "gpt-6-luna"},
+		{OpenAI, []string{"gpt-6-sol", "gpt-5-mini", "gpt-5-mini-realtime-preview"}, "gpt-5-mini"},
+		{Anthropic, []string{"claude-opus-5-5", "claude-haiku-4-5-20251001", "claude-haiku-4-5", "claude-sonnet-5-5"}, "claude-haiku-4-5"},
+		{DeepSeek, []string{"deepseek-v4-pro", "deepseek-flash"}, "deepseek-flash"},
+		{DeepSeek, []string{"deepseek-reasoner", "deepseek-chat"}, "deepseek-chat"},
+		{Google, []string{"gemini-3.6-flash", "gemini-3.5-flash-lite", "gemini-3.1-flash-lite-preview"}, "gemini-3.5-flash-lite"},
+		{OpenRouter, []string{"anthropic/claude-haiku-4.5", "openai/gpt-6-luna", "meta/llama"}, "openai/gpt-6-luna"},
+		{OpenAI, []string{"model-a", "model-b"}, ""},
+	} {
+		if got := DefaultModel(c.provider, c.models); got != c.want {
+			t.Errorf("%s %v: %q, want %q", c.provider, c.models, got, c.want)
+		}
+	}
+	for _, p := range knownProviders() {
+		if len(tiers[p]) == 0 {
+			t.Errorf("%s has no default tier", p)
+		}
+	}
+}
+
+// Connecting a provider whose list has a default-tier model makes it the
+// model, remembered with the key; a chosen model is kept.
+func TestConnectAdoptsDefaultModel(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		_, _ = io.WriteString(w, `{"data":[{"id":"gpt-6-sol"},{"id":"gpt-6-luna"}]}`)
+	}))
+	defer srv.Close()
+	secrets := &memorySecrets{}
+	s := newTestService(secrets, srv.URL)
+	if err := s.ConnectKey(OpenAI, "sk"); err != nil {
+		t.Fatal(err)
+	}
+	if st := s.Status(); st.Model != "gpt-6-luna" || !s.Ready() {
+		t.Fatalf("status %+v", st)
+	}
+	if c := secrets.credential(t); c.Model != "gpt-6-luna" {
+		t.Fatalf("stored %+v", c)
+	}
+	s.SetModel("gpt-6-sol")
+	s.ListModels()
+	if st := s.Status(); st.Model != "gpt-6-sol" {
+		t.Fatalf("chosen model replaced: %+v", st)
+	}
+}

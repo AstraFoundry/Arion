@@ -360,8 +360,21 @@ func (s *Service) connect(ctx context.Context, generation uint64, c Credential, 
 	})
 	if conn == nil {
 		s.ListModels()
+	} else {
+		s.adoptDefault(c.Provider, models)
 	}
 	return nil
+}
+
+// adoptDefault starts a provider with no chosen model on its default tier
+// (DefaultModel), so a new connection polishes without another step.
+func (s *Service) adoptDefault(provider string, models []string) {
+	s.mu.Lock()
+	chosen := s.model != "" || s.credential.Provider != provider
+	s.mu.Unlock()
+	if id := DefaultModel(provider, models); !chosen && id != "" {
+		s.SetModel(id)
+	}
 }
 
 // Activate makes a saved provider the active connection. It does not ask
@@ -579,6 +592,12 @@ func (s *Service) ListModels() {
 		}
 		st.Models = models
 	})
+	if err == nil {
+		s.mu.Lock()
+		provider := s.credential.Provider
+		s.mu.Unlock()
+		s.adoptDefault(provider, models)
+	}
 }
 
 // ready opens the provider on first use. A ChatGPT connection trades its

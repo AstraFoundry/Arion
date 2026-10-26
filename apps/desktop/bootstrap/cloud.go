@@ -42,8 +42,12 @@ func (a *App) applyCloud(s cloudpolish.Status) {
 	a.state.Cloud = arion.Cloud{Phase: arion.CloudPhase(s.Phase), Provider: s.Provider, Email: s.Email, Models: s.Models,
 		Listing: s.Listing, Failure: string(s.Failure), Saved: s.Saved}
 	if s.Phase == cloudpolish.Connected {
-		if s.Provider != a.cloudProvider {
+		switch {
+		case s.Provider != a.cloudProvider:
 			a.cloudProvider = s.Provider
+			a.rememberCloudModel(s.Model)
+		case s.Model != "" && a.preferences().CloudModel == "":
+			// The service started the provider on its default model.
 			a.rememberCloudModel(s.Model)
 		}
 		return
