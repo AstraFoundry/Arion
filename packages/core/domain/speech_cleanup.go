@@ -11,7 +11,7 @@ import (
 
 // SpeechCleanupVersion identifies the local span producer, independently
 // of rule correction and the organization prompt.
-const SpeechCleanupVersion = "speech-spans-v2"
+const SpeechCleanupVersion = "speech-spans-v3"
 
 type SpeechSpanKind string
 
@@ -73,7 +73,7 @@ var cleanupQuestion = regexp.MustCompile(`那个[，,]\s*(?:我想问|我想确�
 var cleanupParenthetical = regexp.MustCompile(`(?i),\s*like\s*,`)
 var cleanupForeign = regexp.MustCompile(`(?i)(?:(?:euh|eh)[,，]\s*|(?:えーと|えっと|あの)、)`)
 var cleanupWords = regexp.MustCompile(`[A-Za-z]+`)
-var cleanupRepairCue = regexp.MustCompile(`(?i)[，,、]\s*(?:啊?不对|哦不|说错了|no wait|i mean|sorry|perdón|non pardon|pardon|いや)[，,、\s]+`)
+var cleanupRepairCue = regexp.MustCompile(`(?i)[，,、]\s*(?:啊?不对|哦不|说错了|no wait|i mean|sorry|perdón|non pardon|pardon|いや|no)[，,、\s]+`)
 var cleanupQuantity = regexp.MustCompile(`[0-9零〇一二两三四五六七八九十百千万]+(?:点|时|時|个|元|块|天|号|人|张|台|件|分|秒)`)
 var cleanupDay = regexp.MustCompile(`(?i)(?:el )?(?:lunes|martes|miércoles|jueves|viernes|sábado|domingo)|(?:lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche)`)
 
@@ -180,6 +180,7 @@ func CleanSpeech(source string) SpeechCleanup {
 	}
 	// Repairs are scoped to one preceding clause and require a repeated
 	// frame or a matching typed value. A cue alone never licenses deletion.
+	// speech-spans-v3 also collapses a clear same-type revision below.
 	for _, cue := range cleanupRepairCue.FindAllStringIndex(source, -1) {
 		start := strings.LastIndexAny(source[:cue[0]], "，,、。.!！?？;；\n")
 		if start < 0 {
@@ -200,16 +201,19 @@ func CleanSpeech(source string) SpeechCleanup {
 		repairStart := -1
 		repairEnd := cue[1]
 		cueText := strings.ToLower(source[cue[0]:cue[1]])
-		englishRepair := strings.Contains(cueText, "no wait") || strings.Contains(cueText, "i mean")
+		englishRepair := strings.Contains(cueText, "no wait") || strings.Contains(cueText, "i mean") || strings.Contains(cueText, "no,") || strings.Contains(cueText, "no ") || strings.HasSuffix(strings.TrimSpace(cueText), "no")
 		chineseRepair := strings.Contains(cueText, "不对") || strings.Contains(cueText, "说错") || strings.Contains(cueText, "哦不")
 		lw, rw := strings.Fields(strings.ToLower(left)), strings.Fields(strings.ToLower(right))
-		if englishRepair && len(lw) >= 3 && len(lw) == len(rw) && lw[0] == rw[0] && lw[1] == rw[1] {
+		if englishRepair && len(lw) >= 2 && len(lw) == len(rw) {
 			differences := 0
 			for i := range lw {
 				if lw[i] != rw[i] {
 					differences++
 				}
 			}
+			// One changed token in an otherwise repeated frame is the
+			// correction. The first words need not match: "three people,
+			// no, five people".
 			if differences == 1 {
 				repairStart = start
 			}
@@ -277,6 +281,7 @@ func CleanSpeech(source string) SpeechCleanup {
 			}
 		}
 	}
+	markSpokenRepairs(source, mark)
 	// Keep annotations in source order; overlapping detections were ignored
 	// by mark. Adjacent annotations retain their separate kinds.
 	sort.Slice(out.Spans, func(i, j int) bool { return out.Spans[i].Start < out.Spans[j].Start })

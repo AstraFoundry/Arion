@@ -18,7 +18,7 @@ const (
 )
 
 // SelectedVersion identifies both independently evaluated stages.
-const SelectedVersion = "selector-contextual-v5+cleanup-rules-v1"
+const SelectedVersion = "selector-contextual-v5+cleanup-rules-v2"
 
 //go:embed selection.json
 var selectedSelection []byte
@@ -170,8 +170,10 @@ func selectionText(p domain.SpellingPreparation) string {
 	}{p.Source, p.Context, p.Scene, p.Unknown, hypotheses})
 }
 
-// Selection builds the bounded keep/replace protocol. Ambiguous hypotheses
-// can only keep; this is protocol coverage, not a semantic output validator.
+// Selection builds the bounded keep/replace protocol. The wire token
+// "replace" is an ASR correction of a nominated mishearing, not a synonym
+// swap. Ambiguous hypotheses can only keep; this is protocol coverage, not
+// a semantic output validator.
 func (t *SelectedTemplates) Selection(p domain.SpellingPreparation) ChatRequest {
 	properties := map[string]any{}
 	required := []string{}
@@ -225,8 +227,9 @@ func formatTranslationTokens(source string) int {
 	return min(maxFormatTokens, max(minFormatTokens, utf8.RuneCountInString(source)*2+128))
 }
 
-// systemPrompt is a preamble plus one rules list. Scene text is rule 7,
-// layout is rule 8 (omitted for list), and the script route is rule 9.
+// systemPrompt is a preamble plus one rules list. Scene text is rule 8,
+// layout is rule 9 (omitted for list), and the script route is rule 10.
+// Rule 2 is the wording constraint: no synonym paraphrase; ASR fixes are corrections.
 // Full, omit, and spaces append one punctuation bullet; smart does not.
 func (t *SelectedTemplates) systemPrompt(kind, scene string, punctuation domain.Punctuation) string {
 	preamble, rules, sceneRule, layout, routeLine, punct := t.format.System, t.format.Rules, "", t.format.ProsePolicy, t.format.Routes[kind], t.format.Punctuation

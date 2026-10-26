@@ -7,7 +7,7 @@ import (
 )
 
 // RulesVersion identifies the conservative rule set used for a correction.
-// arion-rules-v4 leaves standalone hesitation to speech-spans-v2.
+// arion-rules-v4 leaves standalone hesitation to speech-spans-v3.
 const RulesVersion = "arion-rules-v4"
 
 // LatinCase declares how a recognizer emits Latin letters.
