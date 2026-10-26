@@ -1,0 +1,97 @@
+{
+  "steps": [
+    {
+      "requests": [
+        {
+          "request": "{\"max_tokens\":20,\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"messages\":[{\"content\":\"你是输入法候选词排序助手。根据对话历史和当前输入，从候选词列表中选出最符合语境的词。按优先级从高到低列出最多5个候选词，用顿号分隔，不要拼音、数字序号或任何解释。\",\"role\":\"system\"},{\"content\":\"输入拼音：「ta」\\n候选词：他、她、它、塔、踏\\n按最可能的顺序列出前5个候选词（顿号分隔）：\",\"role\":\"user\"}],\"temperature\":0,\"stream\":false}",
+          "response": "{\"id\":\"chatcmpl-7b99516f\",\"object\":\"chat.completion\",\"created\":1792647112,\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"他、她、它、塔、踏\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":102,\"completion_tokens\":9,\"total_tokens\":111,\"input_tokens\":102,\"output_tokens\":9,\"prompt_tokens_details\":{\"cached_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"time_to_first_token\":0.1,\"total_time\":0.3,\"prompt_eval_duration\":0.1,\"generation_duration\":0.2,\"prompt_tokens_per_second\":998.74,\"generation_tokens_per_second\":46.15}}",
+          "status": "HTTP/1.1 200 OK",
+          "code": 200,
+          "networkWallMs": 300.95399951935
+        }
+      ],
+      "preedit": "ta",
+      "status": "completed",
+      "processCpuMs": 0.83,
+      "id": "key-1",
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "source": [
+        "他",
+        "她",
+        "它",
+        "塔",
+        "踏",
+        "塌",
+        "祂",
+        "沓",
+        "牠"
+      ],
+      "wallMs": 301.92799949646,
+      "ranked": [
+        "他",
+        "她",
+        "它",
+        "塔",
+        "踏",
+        "塌",
+        "祂",
+        "沓",
+        "牠"
+      ]
+    },
+    {
+      "requests": [],
+      "preedit": "ta",
+      "status": "completed",
+      "processCpuMs": 0.13,
+      "id": "identical-repeat",
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "source": [
+        "他",
+        "她",
+        "它",
+        "塔",
+        "踏",
+        "塌",
+        "祂",
+        "沓",
+        "牠"
+      ],
+      "wallMs": 0.23000049591064,
+      "ranked": [
+        "他",
+        "她",
+        "它",
+        "塔",
+        "踏",
+        "塌",
+        "祂",
+        "沓",
+        "牠"
+      ]
+    }
+  ],
+  "id": "ambiguous-001",
+  "subprocessWallMs": 318.67670780047774,
+  "stderr": ""
+}

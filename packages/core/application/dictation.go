@@ -81,9 +81,11 @@ type Coordinator struct {
 	deps Dependencies
 	opts Options
 
-	mu         sync.Mutex
-	generation uint64
-	current    *run
+	mu          sync.Mutex
+	generation  uint64
+	current     *run
+	maintenance bool
+	workers     atomic.Int64
 
 	emitMu    sync.Mutex
 	listeners []Listener
@@ -220,6 +222,14 @@ func (c *Coordinator) Toggle() {
 // Start begins a new session in a new generation. Adapter calls that may
 // block run off the caller's thread; failures are delivered as events.
 func (c *Coordinator) Start() {
+	c.mu.Lock()
+	if c.maintenance {
+		c.mu.Unlock()
+		return
+	}
+	c.workers.Add(1)
+	c.mu.Unlock()
+	defer c.workers.Add(-1)
 	if c.deps.Edits != nil {
 		// The next insertion changes the field: judge the last one now.
 		c.deps.Edits.Settle()
@@ -229,6 +239,10 @@ func (c *Coordinator) Start() {
 		selectedMode = c.deps.SelectMode()
 	}
 	c.mu.Lock()
+	if c.maintenance {
+		c.mu.Unlock()
+		return
+	}
 	if c.current != nil && !c.current.session.Terminal() {
 		r := c.current
 		c.mu.Unlock()
@@ -251,10 +265,11 @@ func (c *Coordinator) Start() {
 	r.live = c.newLive(r)
 	_ = session.Advance(domain.Preparing)
 	c.current = r
+	c.workers.Add(1)
 	needTarget := c.opts.AutoCommit
 	c.mu.Unlock()
 	c.emitState(r, domain.Preparing)
-	go c.prepare(r, needTarget)
+	go func() { defer c.workers.Add(-1); c.prepare(r, needTarget) }()
 }
 
 // targets returns the capture and commit adapters for the session's mode.
@@ -317,7 +332,7 @@ func (c *Coordinator) prepare(r *run, needTarget bool) {
 		default:
 			// SPH-02: never conceal dropped audio.
 			if !r.overflow.Swap(true) {
-				go c.fail(r, domain.CodeAudioDiscontinuity)
+				c.spawn(func() { c.fail(r, domain.CodeAudioDiscontinuity) })
 			}
 		}
 	})
@@ -339,9 +354,9 @@ func (c *Coordinator) prepare(r *run, needTarget bool) {
 	c.mu.Unlock()
 	c.emitState(r, domain.Capturing)
 	if r.live != nil {
-		go c.liveWorker(r)
+		c.spawn(func() { c.liveWorker(r) })
 	}
-	go c.pump(r)
+	c.spawn(func() { c.pump(r) })
 }
 
 func (r *run) stopAudio() {
@@ -393,7 +408,7 @@ func (c *Coordinator) pump(r *run) {
 			c.acceptDraft(r, draft.Text)
 		}
 		if len(r.samples) >= maxSamples {
-			go c.Stop()
+			c.spawn(c.Stop)
 		}
 	}
 	if r.overflow.Load() {
@@ -460,7 +475,7 @@ func (c *Coordinator) Stop() {
 	r.stopAsked = true
 	c.mu.Unlock()
 	c.emitState(r, domain.Finalizing)
-	go r.stopAudio()
+	c.spawn(r.stopAudio)
 }
 
 // Cancel invalidates the active generation. Late results cannot update the
@@ -478,6 +493,8 @@ func (c *Coordinator) cancelMode(mode domain.InputMode) {
 		c.mu.Unlock()
 		return
 	}
+	c.workers.Add(1)
+	defer c.workers.Add(-1)
 	c.generation++
 	_ = r.session.Advance(domain.Cancelled)
 	r.cancel()
@@ -486,7 +503,7 @@ func (c *Coordinator) cancelMode(mode domain.InputMode) {
 	c.releaseComposition(r)
 	c.emitState(r, domain.Cancelled)
 	if started {
-		go r.stopAudio()
+		c.spawn(r.stopAudio)
 	}
 }
 
@@ -518,7 +535,7 @@ func (c *Coordinator) failDetail(r *run, code domain.ErrorCode, detail string) {
 	c.releaseComposition(r)
 	c.emit(r, contracts.Event{Envelope: contracts.Envelope{Kind: contracts.ErrorOccurred}, State: domain.Failed, Error: code, Detail: detail, Text: text})
 	if started {
-		go r.stopAudio()
+		c.spawn(r.stopAudio)
 	}
 }
 
@@ -558,7 +575,7 @@ func (c *Coordinator) deliver(r *run, raw string, policy RewritePolicy) {
 		corrected := domain.Correct(raw, c.opts.Policy())
 		source = corrected.Text
 		if len(corrected.Recalled) > 0 && c.opts.Recalled != nil {
-			go c.opts.Recalled(corrected.Recalled)
+			c.spawn(func() { c.opts.Recalled(corrected.Recalled) })
 		}
 	}
 	text, outcome := source, ""
@@ -619,10 +636,12 @@ func (c *Coordinator) CommitReviewed() {
 
 func (c *Coordinator) commit(r *run, revision uint64, text string) {
 	c.mu.Lock()
-	if c.current != r || r.session.ClaimCommit(revision) != nil {
+	if c.maintenance || c.current != r || r.session.ClaimCommit(revision) != nil {
 		c.mu.Unlock()
 		return
 	}
+	c.workers.Add(1)
+	defer c.workers.Add(-1)
 	c.mu.Unlock()
 	c.emitCurrentState(r, domain.Committing)
 	_, input := c.targets(r)

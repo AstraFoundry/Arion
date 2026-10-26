@@ -203,6 +203,8 @@ export interface NotarizeConfig {
 
 /** Windows packaging. */
 export interface WindowsConfig {
+  /** Register native WinRT toast activation. Call mygo.HandleNotificationRegistration first in main. */
+  notifications?: boolean;
   /** A code signing certificate (.pfx); its password comes from `MYGO_WINDOWS_CERTIFICATE_PASSWORD`. */
   certificate?: string;
   /** Instead of `certificate`, a command that signs a file, with `%1` for its path. */

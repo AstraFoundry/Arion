@@ -1,0 +1,126 @@
+
+> arion-monorepo@0.0.0 ime:rerank /Users/steven/code/Arion
+> node scripts/rime-rerank-command.mjs controls --workspace .workspace/rime-llm-reranker-v1 --candidates .workspace/rime-llm-reranker-v1/candidates --out .workspace/rime-llm-reranker-v1/cache-controls
+
+[
+  {
+    "id": "context-023",
+    "originalSource": [
+      "生命",
+      "声明",
+      "盛名",
+      "声名",
+      "生",
+      "省",
+      "声",
+      "升",
+      "胜"
+    ],
+    "rotatedSource": [
+      "声明",
+      "盛名",
+      "声名",
+      "生",
+      "生命",
+      "省",
+      "声",
+      "升",
+      "胜"
+    ],
+    "originalFirst": "声明",
+    "afterRotationFirst": "盛名",
+    "firstRequests": 1,
+    "secondRequests": 0,
+    "stalePositionChangesChosenText": true
+  },
+  {
+    "id": "context-034",
+    "originalSource": [
+      "节点",
+      "结点",
+      "节电",
+      "接地",
+      "姐弟",
+      "接",
+      "借",
+      "解",
+      "节"
+    ],
+    "rotatedSource": [
+      "结点",
+      "节电",
+      "接地",
+      "姐弟",
+      "节点",
+      "接",
+      "借",
+      "解",
+      "节"
+    ],
+    "originalFirst": "节电",
+    "afterRotationFirst": "接地",
+    "firstRequests": 1,
+    "secondRequests": 0,
+    "stalePositionChangesChosenText": true
+  },
+  {
+    "id": "context-048",
+    "originalSource": [
+      "资源",
+      "自愿",
+      "子",
+      "字",
+      "自",
+      "紫",
+      "资",
+      "仔",
+      "兹"
+    ],
+    "rotatedSource": [
+      "自愿",
+      "子",
+      "字",
+      "自",
+      "资源",
+      "紫",
+      "资",
+      "仔",
+      "兹"
+    ],
+    "originalFirst": "自愿",
+    "afterRotationFirst": "子",
+    "firstRequests": 1,
+    "secondRequests": 0,
+    "stalePositionChangesChosenText": true
+  },
+  {
+    "id": "common-007",
+    "originalSource": [
+      "电脑",
+      "点",
+      "店",
+      "电",
+      "殿",
+      "垫",
+      "典",
+      "颠",
+      "掂"
+    ],
+    "rotatedSource": [
+      "点",
+      "店",
+      "电",
+      "殿",
+      "电脑",
+      "垫",
+      "典",
+      "颠",
+      "掂"
+    ],
+    "originalFirst": "点",
+    "afterRotationFirst": "店",
+    "firstRequests": 1,
+    "secondRequests": 0,
+    "stalePositionChangesChosenText": true
+  }
+]

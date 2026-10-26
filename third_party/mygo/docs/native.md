@@ -49,66 +49,91 @@ button labeled Cancel or No.
 
 ## Notifications
 
+`NotificationPermission()` queries current OS authorization without prompting:
+`unknown`, `denied`, `allowed`, or `unsupported`, plus an API error separately.
+It re-queries settings rather than caching consent. From an explicit enable
+interaction, call `RequestNotificationPermission()`. macOS requests alert
+presentation only; Windows reads the sender's current notification setting and
+never rewrites the user's OS preferences. `Show` never requests authorization.
+A successful submission says the OS accepted the request, not that a banner was
+visible: Focus, sharing and presentation settings remain authoritative.
+
 ```go
+status, err := mygo.RequestNotificationPermission() // explicit enable action
+if err != nil || status != mygo.NotificationAuthorizationAllowed {
+    return
+}
 n := mygo.NewNotification(mygo.NotificationOptions{
-	Title: "Export finished",
-	Body:  "notes.json was saved to Documents.",
+    ID: "stable/1.2.3/available",
+    Title: notificationTitle, Body: notificationBody, Silent: true,
+    Actions: []mygo.NotificationAction{
+        {ID: "view", Title: viewLabel, Foreground: true},
+        {ID: "later", Title: laterLabel},
+    },
 })
-n.OnClick(func() { mainWindow().Focus() })
 if err := n.Show(); err != nil {
-	log.Println(err)
+    log.Println(err)
 }
 ```
 
-`Close` removes a notification. macOS shows notifications of packaged apps
-only, which `mygo dev` and `mygo build` make; `mygo.NotificationsSupported()`
-reports whether the app can show them. Linux shows them through the
-desktop's notification service, Windows as notification-area balloons.
-`Show` returns once the system has the notification. On macOS the first
-one asks the user whether to allow notifications, and `Show` waits for the
-answer; it returns `mygo.ErrNotificationsDenied` when they are not allowed,
-by that answer or later in System Settings.
+macOS requires a packaged app with a stable bundle identifier. Its delegate is
+attached before launch completes and receives the response's notification ID
+and action ID. `Foreground` asks macOS to activate the app for that action;
+background actions can update application policy without opening a window.
+Linux uses the desktop's D-Bus notification service and forwards action IDs.
 
-macOS keeps a notification in Notification Center after it is clicked,
-until the app removes it: `Close` it in `OnClick` to take it away, or call
-`mygo.ClearNotifications()`, which removes all of the app's notifications,
-those of earlier runs too, as the app comes to the front:
+On Windows, native WinRT toast requires installed per-user registration. Set
+`windows.notifications: true` in `mygo.json`, and call the installer's entry
+point first in `main`, before bootstrap or the single-instance lock:
 
 ```go
-n.OnClick(func() {
-	mainWindow().Focus()
-	n.Close()
-})
-
-// What the user has seen in the app does not wait in Notification Center.
-mygo.App.OnDidBecomeActive(func() { mygo.ClearNotifications() })
+if handled, err := mygo.HandleNotificationRegistration(); handled {
+    if err != nil { log.Fatal(err) }
+    return
+}
 ```
 
-Linux asks the desktop's notification service to close them, which may
-have closed them already, and Windows hides its balloon.
+The NSIS installer invokes this entry point to create a Start menu shortcut
+with `System.AppUserModel.ID` and `System.AppUserModel.ToastActivatorCLSID` and
+an HKCU `LocalServer32` command quoting the executable path. A stable activator
+CLSID derives from the app identifier. Startup registers the COM class factory
+and uses the same AUMID for `Windows.UI.Notifications`. Activation accepts only
+a bounded versioned ID/action envelope, never commands or URLs. An existing
+registered process receives warm activation; a cold process queues activation
+until application listeners can handle it. A bounded singleton relay handles
+the startup race where another process owns the lock before registering COM.
+Uninstall clears the owned sender's history before removing its shortcut and
+COM registration. Registration/removal failures abort setup visibly. Portable
+executables without registration return an explicit capability error. There is
+no balloon fallback and no Windows App SDK runtime deployment dependency.
 
-A notification can outlive the run that showed it, in Notification Center
-on macOS, where a click launches the app again. Give it an `ID` of the
-app's own, which `App.OnNotificationClick` receives for every click, that
-one included when it is registered before `Run`; showing a notification
-with the `ID` of one still shown replaces it. `Group` gathers notifications
-in one stack of Notification Center, such as the messages of a
-conversation (macOS):
+Register `App.OnNotificationAction` before `Run` to receive both body activation
+(action `""`) and custom IDs, including notifications from an earlier process.
+Use either this application handler or `OnNotificationClick` for navigation;
+body activation also emits `OnNotificationClick`, while custom actions do not.
+Validate application-specific channel/version/action values in the handler.
+Notification IDs are nonempty UTF-8 of at most 256 bytes without control
+characters. Up to four actions use unique lowercase ASCII token IDs of at most
+64 bytes, with localized labels. No text is interpreted as an install command.
 
-```go
-// IDs are "<conversation>/<message>".
-mygo.App.OnNotificationClick(func(id string) {
-	conversation, _, _ := strings.Cut(id, "/")
-	openConversation(conversation)
-})
+`n.Close()` or `RemoveNotification(id)` removes a stable ID, including macOS and
+Windows notifications from earlier runs. `ClearNotifications()` removes this
+sender's history. macOS also removes pending requests; generations invalidate a
+submission removed while its asynchronous permission query was in flight.
+Windows uses a deterministic 16-character tag and a framework group so removal
+does not depend on an in-memory object. `Group` additionally controls macOS's
+thread grouping. Windows history-removal failures are logged; the installer
+checks cleanup errors directly before unregistering the sender.
 
-mygo.NewNotification(mygo.NotificationOptions{
-	ID:    "ada/" + msg.ID,
-	Group: "ada",
-	Title: "Ada",
-	Body:  msg.Text,
-}).Show()
-```
+The isolated [notification probe](../examples/notification-probe/) has its own
+sender identity. Arion's `node scripts/check-notifications.mjs` runs portable
+wire/API/installer regressions and Windows cross-builds. `--native` builds and
+runs the actual packaged permission/query/cleanup lifecycle on the host;
+`--interactive` additionally requests the probe's consent when needed and waits
+for actual warm view/later and cold body/later actions from an OS UI driver.
+`--prepare` leaves a test-owned JSONL-controlled probe for a separate driver.
+Never reset a user's permission database to manufacture fresh-consent cases.
+Cross-builds and API submissions are not banner/cold-activation acceptance.
 
 ## Clipboard
 

@@ -2,6 +2,8 @@
 
 Research separates **observed shipped artifacts**, **static inferences**, **vendor statements**, **Arion design choices**, and **unknowns**. Static symbols do not prove runtime execution or server behavior.
 
+- [Update notifications and automatic installation](update-notifications.md) — open issues #12/#13, macOS/Windows registration, pinned Magpie update behavior, and staged installation/lifecycle safety proposal.
+
 - [Typeless](typeless.md) — installed Electron artifact and audio/context/delivery surfaces.
 - [Doubao](doubao.md) — installed native IMK artifact, online/offline ASR and composition surfaces.
 - [Doubao iOS](doubao-ios.md) — App Store IPA voice/keyboard split, permission and account synchronization declarations, native typing engine and FairPlay evidence limits.
@@ -10,7 +12,9 @@ Research separates **observed shipped artifacts**, **static inferences**, **vend
 - [Keyboard input methods](keyboard-ime.md) — Doubao/Chatterfly native Pinyin decoding, local candidate ranking, conditional model/cloud enhancement and composition/commit evidence.
 - [Installed Chatterfly keyboard](chatterfly-installed-keyboard.md) — matching installed bytes, XNet loaders, model enablement, bounded provisioning search, stored cloud preference and real keyboard probes.
 - [Chatterfly candidate UI](chatterfly-candidate-ui.md) — shipped candidate-bar size presets, light/dark themes and input-menu icon format behind Arion's candidate bar.
-- [Typing-time candidate re-ranking](context-ranking.md) — Doubao's feature/MLP candidate sort and user-bigram context, Chatterfly's 上下文调频 option and Arion's local context ranker.
+- [Typing-time candidate re-ranking](context-ranking.md) — current Doubao MLP/LLM fusion and Chatterfly LM/LTR/conditional generation call paths, evidence limits and Arion's local context ranker.
+- [General LLM keyboard alignment](llm-ime-alignment.md) — implemented ID-only local/provider adapter, latest-revision scheduler, measured 2B pilot, native integration design and evaluation/adoption gates.
+- [Original Rime LLM reranker reproduction](../../benchmarks/results/rime-llm-reranker-v1/README.md) — 100 authored real-candidate fixtures, actual local inference, typing latency, parser/cache defects and model-free report replay.
 - [Voice typewriter](voice-typewriter.md) — Doubao's spring-paced ASR typewriter and replace decisions, Chatterfly's speech-bar animations and Arion's paced, fading dictation text.
 - [Input-source onboarding](input-source-onboarding.md) — bounded Doubao/Chatterfly register, enable, selection, notification, manual guide and refresh evidence with version limits.
 - [Windows IME installation](windows-ime-installation.md) — supplied Doubao/Chatterfly installer extraction, REA evidence, native TSF registration and deployment comparison with explicit runtime limits.
@@ -18,7 +22,6 @@ Research separates **observed shipped artifacts**, **static inferences**, **vend
 - [Input-source cache prevention](input-source-cache-prevention.md) — cross-application exposure, matched cache/control reproduction, supported API limits and prioritized lifecycle prevention with native acceptance gates.
 - [Competitor input-source refresh](competitor-input-source-refresh.md) — Doubao and Chatterfly registration/selection service restarts, exact caller guards and retry reachability, with cache-remediation limits.
 - [IME lifecycle repair proposal](ime-lifecycle-repair-plan.md) — concrete pending-removal and atomic-update transactions, rollback/recovery gates and owned macOS directory-exchange validation.
-- [IME lifecycle acceptance](ime-lifecycle-acceptance.md) — implemented repair, automatic update policy and actual verification limits.
 - [Input menu items](input-menu.md) — Chatterfly/Doubao input-menu items compared with Arion, the implemented alignment and the deferred toggles.
 - [Shift language switching](shift-language-switch.md) — Doubao/Chatterfly short-press release gates, chord suppression and composition commit paths, with static evidence limits.
 - [IMK typing alignment](imk-typing-alignment.md) — focused competitor paging/editing/mode-switch evidence, Arion composition ownership fixes, full-keyboard implementation gates and restored post-profile diagnostics with system acceptance deferred.
@@ -105,3 +108,5 @@ Competitors provide workflow evidence, not reusable implementations or approved 
 - [Rime installation and input-method updates](rime-input-method-updates.md) — pinned official Weasel/Squirrel installer comparison and Arion's shared automatic maintenance with platform-specific protected publication.
 
 - [Native Qwen3-ASR 1.7B and accessibility context](../../benchmarks/reproduction/qwen17-accessibility-v1/README.md) — paired production ASR development comparison, owned-window Accessibility versus OCR collection and downstream rewrite controls.
+
+- [IME lifecycle acceptance](ime-lifecycle-acceptance.md) — implemented repair, automatic update policy and actual verification limits.

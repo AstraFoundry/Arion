@@ -17,6 +17,10 @@ import (
 
 // Windows configures Windows packaging.
 type Windows struct {
+	// Notifications registers native WinRT toast activation during installation.
+	// The app must call mygo.HandleNotificationRegistration before bootstrap.
+	Notifications bool `json:"notifications"`
+
 	// Certificate is a code signing certificate (.pfx) to sign the
 	// executable, the installer and its uninstaller with, which keeps
 	// SmartScreen from warning users; signing the uninstaller needs NSIS

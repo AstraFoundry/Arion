@@ -1,5 +1,5 @@
 // Package update shows the newest release and installs it: a check on
-// request, the download with its verification, and the restart into it.
+// request, verified staging, reminders, and a protected restart.
 package update
 
 import (
@@ -11,26 +11,36 @@ import (
 	"github.com/egoist/mygo/ui"
 )
 
-// Card is the update status with its one action, and the automatic check
-// preference.
+// Card shows update progress and independent check, download and channel choices.
 func Card(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 	messages := store.Copy()
 	u := store.State.Update
 	kit.Card(c, tokens).Children(func() {
 		status(c, store, tokens)
-		if u.Phase == runtime.UpdateUnsupported {
+		if u.StateError {
+			ui.Text(c, messages.Text(copy.UpdateStateFailed)).FontSize(theme.Caption).TextColor(tokens.Warning).Padding(0, 16, 10, 16)
+		}
+		if u.Phase == runtime.UpdateUnsupported || (u.Phase == runtime.UpdateFailed && u.Failed == runtime.UpdateStepRecovery) {
 			return
 		}
 		kit.Divider(c, tokens)
+		preferencesLocked := u.Phase == runtime.UpdateApplying || u.Phase == runtime.UpdateReady || (u.Phase == runtime.UpdateFailed && u.Failed == runtime.UpdateStepRestart)
 		auto := store.State.Preferences.CheckUpdates
-		kit.Row(c, tokens, messages.Text(copy.UpdateAuto), messages.Text(copy.UpdateAutoDetail), func() {
-			if ui.Switch(c.Key("auto-update"), &auto).Label(messages.Text(copy.UpdateAuto)).Changed() {
+		kit.TipRow(c, tokens, messages.Text(copy.UpdateAuto), messages.Text(copy.UpdateAutoDetail), func() {
+			if ui.Switch(c.Key("auto-update"), &auto).Label(messages.Text(copy.UpdateAuto)).Disabled(preferencesLocked).Changed() {
 				store.Actions.UpdatePreferences(func(p *runtime.Preferences) { p.CheckUpdates = auto })
 			}
 		})
 		kit.Divider(c, tokens)
+		autoInstall := store.State.Preferences.AutoInstallUpdates
+		kit.TipRow(c, tokens, messages.Text(copy.UpdateAutoInstall), messages.Text(copy.UpdateAutoInstallDetail), func() {
+			if ui.Switch(c.Key("auto-install-update"), &autoInstall).Label(messages.Text(copy.UpdateAutoInstall)).Disabled(preferencesLocked).Changed() {
+				store.Actions.UpdatePreferences(func(p *runtime.Preferences) { p.AutoInstallUpdates = autoInstall })
+			}
+		})
+		kit.Divider(c, tokens)
 		preview := store.State.Preferences.AllowPrereleaseUpdates
-		locked := u.Phase == runtime.UpdateChecking || u.Phase == runtime.UpdateDownloading || u.Phase == runtime.UpdateReady
+		locked := preferencesLocked || u.Phase == runtime.UpdateChecking || u.Phase == runtime.UpdateDownloading || u.Phase == runtime.UpdateApplying || u.Phase == runtime.UpdateReady || u.RestartQueued
 		kit.Row(c, tokens, messages.Text(copy.UpdatePrerelease), "", func() {
 			if ui.Switch(c.Key("prerelease-updates"), &preview).Label(messages.Text(copy.UpdatePrerelease)).Disabled(locked).Changed() {
 				store.Actions.UpdatePreferences(func(p *runtime.Preferences) { p.AllowPrereleaseUpdates = preview })
@@ -84,18 +94,56 @@ func status(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 				}
 			})
 		})
+	case runtime.UpdateStaged:
+		if u.RestartQueued {
+			restartQueued(c, store, tokens)
+			return
+		}
+		kit.Row(c, tokens, messages.Text(copy.UpdateStaged), messages.UpdateAvailable(u.Version), func() {
+			button(kit.Primary, messages.Text(copy.UpdateRestart), true, actions.RestartToUpdate)
+		})
+	case runtime.UpdateApplying:
+		kit.Row(c, tokens, messages.Text(copy.UpdateApplying), messages.Text(copy.UpdateApplyingDetail), nil)
 	case runtime.UpdateReady:
+		if u.RestartQueued {
+			restartQueued(c, store, tokens)
+			return
+		}
 		kit.Row(c, tokens, messages.Text(copy.UpdateReady), messages.UpdateAvailable(u.Version), func() {
 			button(kit.Primary, messages.Text(copy.UpdateRestart), true, actions.RestartToUpdate)
 		})
 	case runtime.UpdateFailed:
-		if u.Failed == runtime.UpdateStepInstall {
-			kit.Row(c, tokens, messages.Text(copy.UpdateInstallFailed), messages.UpdateAvailable(u.Version), func() {
-				button(kit.Outline, messages.Text(copy.Retry), true, actions.InstallUpdate)
+		if u.Failed == runtime.UpdateStepRecovery {
+			kit.Row(c, tokens, messages.Text(copy.UpdateRecoveryRequired), messages.Text(copy.UpdateRecoveryDetail), func() {
+				button(kit.Outline, messages.Text(copy.Quit), true, actions.Quit)
 			})
 			return
 		}
-		kit.Row(c, tokens, messages.Text(copy.UpdateCheckFailed), "", check)
+		label, action := copy.UpdateCheckFailed, actions.CheckForUpdates
+		switch u.Failed {
+		case runtime.UpdateStepInstall:
+			label, action = copy.UpdateInstallFailed, actions.InstallUpdate
+		case runtime.UpdateStepPrepare:
+			label, action = copy.UpdatePrepareFailed, actions.InstallUpdate
+		case runtime.UpdateStepApply:
+			label, action = copy.UpdateApplyFailed, actions.RestartToUpdate
+		case runtime.UpdateStepRestart:
+			label, action = copy.UpdateRestartFailed, actions.RestartToUpdate
+		}
+		detail := ""
+		if u.Version != "" {
+			detail = messages.UpdateAvailable(u.Version)
+		}
+		if u.Failed == runtime.UpdateStepRestart {
+			detail = messages.Text(copy.UpdateRestartFailedDetail)
+		}
+		kit.Row(c, tokens, messages.Text(label), detail, func() {
+			if u.Failed == runtime.UpdateStepCheck || u.Failed == "" {
+				check()
+			} else {
+				button(kit.Outline, messages.Text(copy.Retry), true, action)
+			}
+		})
 	default:
 		kit.Row(c, tokens, messages.Text(copy.AboutUpdates), "", check)
 	}
@@ -109,4 +157,13 @@ func Notice(store runtime.Store) (label string, ok bool) {
 		return "", false
 	}
 	return store.Copy().UpdateTo(u.Version), true
+}
+
+func restartQueued(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
+	messages := store.Copy()
+	kit.Row(c, tokens, messages.Text(copy.UpdateRestartQueued), messages.Text(copy.UpdateRestartQueuedDetail), func() {
+		if kit.Button(c.Key("cancel-restart"), tokens, kit.Outline, messages.Text(copy.UpdateCancelRestart), true).Clicked() {
+			store.Actions.CancelUpdateRestart()
+		}
+	})
 }

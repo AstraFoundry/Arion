@@ -14,6 +14,7 @@ import (
 	"runtime"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	"arion.local/core/application"
@@ -37,6 +38,7 @@ import (
 	"arion.local/desktop/infrastructure/wordseg"
 	"arion.local/desktop/internal/account"
 	"arion.local/desktop/internal/center"
+	productnotifications "arion.local/desktop/internal/productnotifications"
 	uiapp "arion.local/desktop/ui/app"
 	"arion.local/desktop/ui/shared/copy"
 	arion "arion.local/desktop/ui/shared/runtime"
@@ -101,22 +103,28 @@ type App struct {
 	overlay *mygo.Window
 	panel   *mygo.Window
 	// sceneSeq drops a scene peek answered after a newer panel opened.
-	sceneSeq     int
-	settingsWin  *mygo.Window
-	onboarding   *mygo.Window
-	guide        *guideSession
-	trayHint     *mygo.Window
-	views        map[*mygo.Window]uiapp.View
-	testingHold  bool
-	escapeActive bool
-	hold         application.HoldGesture
-	harness      *harness
-	monitor      ports.AudioStream
-	vocab        *vocabulary.Store
-	startCue     *mygoaudio.Sound
-	stopCue      *mygoaudio.Sound
-	recommended  string
-	updates      *updates
+	sceneSeq                        int
+	settingsWin                     *mygo.Window
+	onboarding                      *mygo.Window
+	guide                           *guideSession
+	trayHint                        *mygo.Window
+	views                           map[*mygo.Window]uiapp.View
+	testingHold                     bool
+	escapeActive                    bool
+	hold                            application.HoldGesture
+	harness                         *harness
+	monitor                         ports.AudioStream
+	vocab                           *vocabulary.Store
+	startCue                        *mygoaudio.Sound
+	stopCue                         *mygoaudio.Sound
+	recommended                     string
+	updates                         *updates
+	updatePolicy                    *updatePolicy
+	pendingUpdateAction             [2]string
+	productNotifications            *productnotifications.Service
+	pendingProductActions           [][2]string
+	notificationPermissionAttempted bool
+	resourceJobs                    atomic.Int64
 	// Local model operations are scheduled on the main thread. New choices
 	// cancel older work immediately and wait for it before replacing the worker.
 	polishCancel context.CancelFunc
@@ -308,6 +316,7 @@ func (a *App) Run() error {
 func (a *App) Start() {
 	mygo.App.SetActivationPolicy(mygo.ActivationPolicyAccessory)
 	mygo.App.OnWindowAllClosed(func() {})
+	mygo.App.OnNotificationAction(a.notificationAction)
 	mygo.App.OnQuit(a.closeDiagnostics)
 	mygo.App.OnWillQuit(func(*mygo.QuitEvent) { actions{a}.CancelInputMethodSetup() })
 	mygo.App.OnSecondInstance(func(args []string, _ string) {
@@ -335,7 +344,12 @@ func (a *App) OpenOnboarding() { mygo.RunOnMain(a.openOnboarding) }
 func (a *App) Windows() map[string]*mygo.Window {
 	windows := map[string]*mygo.Window{}
 	mygo.RunOnMain(func() {
-		for role, window := range map[string]*mygo.Window{"overlay": a.overlay, "panel": a.panel, "settings": a.settingsWin, "onboarding": a.onboarding} {
+		for role, window := range map[string]*mygo.Window{"overlay": a.overlay, "panel": a.panel, "settings": a.settingsWin, "onboarding": a.onboarding, "update-reminder": func() *mygo.Window {
+			if a.updatePolicy != nil {
+				return a.updatePolicy.reminder
+			}
+			return nil
+		}()} {
 			if window != nil {
 				windows[role] = window
 			}
@@ -434,13 +448,18 @@ func (a *App) ready() {
 	a.updates = newUpdates(source, &a.state.Update, a.post)
 	a.updates.setPrereleases(a.state.Preferences.AllowPrereleaseUpdates)
 	a.scheduleUpdates()
+	if a.pendingUpdateAction[0] != "" {
+		a.notificationAction(a.pendingUpdateAction[0], a.pendingUpdateAction[1])
+		a.pendingUpdateAction = [2]string{}
+	}
+	a.startProductNotifications()
 	a.startAccountMaintenance()
 	a.startHoldKey()
 	mygo.App.OnQuit(a.platform.StopHoldKey)
 	a.createTray()
 	a.createOverlay()
 	a.state.Model.Bundles = a.bundles()
-	go a.activate(a.state.Preferences.ModelOverride)
+	a.runResource(func() { a.activate(a.state.Preferences.ModelOverride) })
 	go a.pollPermissions()
 	go a.refreshDevicesAsync()
 	mygo.Power.OnSuspend(func() { a.record("power_suspend", nil); a.core.Cancel() })
@@ -511,6 +530,7 @@ func (a *App) apply(e contracts.Event) {
 		}
 		*d = arion.Dictation{SessionID: e.SessionID}
 		a.dismissLearned()
+		a.closeUpdateReminder()
 		a.stopMonitor()
 		a.positionOverlay()
 	}
@@ -739,6 +759,9 @@ func (a *App) applyModel(s modelruntime.Status) {
 // startPolish schedules the latest selection without blocking the main thread.
 // Only an explicit download or retry authorizes provisioning missing files.
 func (a *App) startPolish(download bool) {
+	if a.updateApplying() {
+		return
+	}
 	if a.polishCancel != nil {
 		a.polishCancel()
 	}
@@ -746,7 +769,9 @@ func (a *App) startPolish(download bool) {
 	previous := a.polishDone
 	done := make(chan struct{})
 	a.polishCancel, a.polishDone = cancel, done
+	a.resourceJobs.Add(1)
 	go func() {
+		defer a.resourceJobs.Add(-1)
 		defer close(done)
 		defer cancel()
 		if previous != nil {
@@ -820,17 +845,22 @@ func (a *App) loadVocabulary(create bool) {
 	a.snapshot.Unlock()
 }
 
-func (a *App) savePreferences(prefs application.Preferences) {
+func (a *App) savePreferences(prefs application.Preferences) bool {
 	if err := a.prefStore.Save(prefs); err != nil {
 		a.record("preferences_save", err)
+		return false
 	}
 	a.snapshot.Lock()
 	a.prefs = prefs
 	a.snapshot.Unlock()
 	a.state.Preferences = prefs
+	return true
 }
 
 func (a *App) startMonitor() {
+	if a.updateApplying() {
+		return
+	}
 	if a.monitor != nil || a.state.Permissions.Microphone != arion.ConsentGranted {
 		return
 	}
@@ -852,7 +882,8 @@ func (a *App) stopMonitor() {
 	if a.monitor != nil {
 		stream := a.monitor
 		a.monitor = nil
-		go stream.Stop()
+		a.resourceJobs.Add(1)
+		go func() { defer a.resourceJobs.Add(-1); _ = stream.Stop() }()
 	}
 	a.state.MonitorLevels = nil
 }

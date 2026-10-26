@@ -1,0 +1,97 @@
+{
+  "steps": [
+    {
+      "identities": [
+        4,
+        1,
+        2,
+        3,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "source": [
+        "意义",
+        "一一",
+        "异议",
+        "依依",
+        "一亿",
+        "疑议",
+        "一",
+        "以",
+        "已"
+      ],
+      "id": "key-1",
+      "processCpuMs": 0.621,
+      "requests": [
+        {
+          "request": "{\"temperature\":0,\"max_tokens\":20,\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"messages\":[{\"role\":\"system\",\"content\":\"你是输入法候选词排序助手。根据对话历史和当前输入，从候选词列表中选出最符合语境的词。按优先级从高到低列出最多5个候选词，用顿号分隔，不要拼音、数字序号或任何解释。\"},{\"role\":\"user\",\"content\":\"对话历史：「如果不同意可以提出」\\n当前输入拼音：「yi yi」\\n候选词：意义、一一、异议、依依、一亿\\n按最符合对话语境的顺序列出前5个候选词（顿号分隔）：\"}],\"stream\":false}",
+          "networkWallMs": 303.6920003891,
+          "code": 200,
+          "status": "HTTP/1.1 200 OK",
+          "response": "{\"id\":\"chatcmpl-79411a88\",\"object\":\"chat.completion\",\"created\":1792647116,\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"依依、一亿、异议、意义、一一\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":118,\"completion_tokens\":10,\"total_tokens\":128,\"input_tokens\":118,\"output_tokens\":10,\"prompt_tokens_details\":{\"cached_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"time_to_first_token\":0.1,\"total_time\":0.3,\"prompt_eval_duration\":0.1,\"generation_duration\":0.2,\"prompt_tokens_per_second\":1159.0,\"generation_tokens_per_second\":50.37}}"
+        }
+      ],
+      "preedit": "yi yi",
+      "status": "completed",
+      "ranked": [
+        "依依",
+        "意义",
+        "一一",
+        "异议",
+        "一亿",
+        "疑议",
+        "一",
+        "以",
+        "已"
+      ],
+      "wallMs": 304.23400020599
+    },
+    {
+      "identities": [
+        4,
+        1,
+        2,
+        3,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "source": [
+        "意义",
+        "一一",
+        "异议",
+        "依依",
+        "一亿",
+        "疑议",
+        "一",
+        "以",
+        "已"
+      ],
+      "id": "identical-repeat",
+      "processCpuMs": 0.069,
+      "requests": [],
+      "preedit": "yi yi",
+      "status": "completed",
+      "ranked": [
+        "依依",
+        "意义",
+        "一一",
+        "异议",
+        "一亿",
+        "疑议",
+        "一",
+        "以",
+        "已"
+      ],
+      "wallMs": 0.081000328063965
+    }
+  ],
+  "id": "context-014",
+  "subprocessWallMs": 317.9402919486165,
+  "stderr": ""
+}

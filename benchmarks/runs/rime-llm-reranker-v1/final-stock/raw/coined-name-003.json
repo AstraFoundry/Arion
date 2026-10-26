@@ -1,0 +1,89 @@
+{
+  "id": "coined-name-003",
+  "steps": [
+    {
+      "requests": [],
+      "preedit": "xing he xie yi",
+      "wallMs": 0.56500053405762,
+      "source": [
+        "星河协议",
+        "星河",
+        "行",
+        "性",
+        "型",
+        "星",
+        "姓",
+        "醒",
+        "兴"
+      ],
+      "id": "key-1",
+      "status": "completed",
+      "ranked": [
+        "星河协议",
+        "星河",
+        "行",
+        "性",
+        "型",
+        "星",
+        "姓",
+        "醒",
+        "兴"
+      ],
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "processCpuMs": 0.21
+    },
+    {
+      "requests": [],
+      "preedit": "xing he xie yi",
+      "wallMs": 0.15799999237061,
+      "source": [
+        "星河协议",
+        "星河",
+        "行",
+        "性",
+        "型",
+        "星",
+        "姓",
+        "醒",
+        "兴"
+      ],
+      "id": "identical-repeat",
+      "status": "completed",
+      "ranked": [
+        "星河协议",
+        "星河",
+        "行",
+        "性",
+        "型",
+        "星",
+        "姓",
+        "醒",
+        "兴"
+      ],
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "processCpuMs": 0.077000000000001
+    }
+  ],
+  "subprocessWallMs": 16.919333022087812,
+  "stderr": ""
+}

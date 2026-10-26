@@ -1,0 +1,202 @@
+{
+  "platform": "macOS-26.6.2-x86_64-i386-64bit",
+  "machine": "x86_64",
+  "timer": "CLOCK_MONOTONIC; Python perf_counter",
+  "hardware": {
+    "args": [
+      "sysctl",
+      "-n",
+      "machdep.cpu.brand_string",
+      "hw.memsize",
+      "hw.ncpu"
+    ],
+    "exitCode": 0,
+    "stdout": "Apple M4\n34359738368\n10\n",
+    "stderr": ""
+  },
+  "power": {
+    "args": [
+      "pmset",
+      "-g",
+      "batt"
+    ],
+    "exitCode": 0,
+    "stdout": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=34668643)\t100%; charged; 0:00 remaining present: true\n",
+    "stderr": ""
+  },
+  "powerSettings": {
+    "args": [
+      "pmset",
+      "-g",
+      "custom"
+    ],
+    "exitCode": 0,
+    "stdout": "Battery Power:\n Sleep On Power Button 1\n lowpowermode         0\n ttyskeepawake        1\n hibernatemode        3\n hibernatefile        /var/vm/sleepimage\n displaysleep         2\n womp                 0\n networkoversleep     0\n sleep                1\n lessbright           1\n disksleep            10\nAC Power:\n Sleep On Power Button 1\n lowpowermode         0\n ttyskeepawake        1\n hibernatemode        3\n hibernatefile        /var/vm/sleepimage\n displaysleep         0\n womp                 1\n networkoversleep     0\n sleep                0\n disksleep            10\n",
+    "stderr": ""
+  },
+  "thermal": {
+    "args": [
+      "pmset",
+      "-g",
+      "therm"
+    ],
+    "exitCode": 0,
+    "stdout": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded\n",
+    "stderr": ""
+  },
+  "git": {
+    "args": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "exitCode": 0,
+    "stdout": "4437d0a89293c3c08f1896fd94ddf37da5a0d476\n",
+    "stderr": ""
+  },
+  "dirty": {
+    "args": [
+      "git",
+      "status",
+      "--short"
+    ],
+    "exitCode": 0,
+    "stdout": " M Makefile\n M package.json\n?? benchmarks/corpora/rime-llm-reranker-v1/\n?? benchmarks/reproduction/rime-llm-reranker-v1/\n?? scripts/rime-rerank-command.mjs\n",
+    "stderr": ""
+  },
+  "loadAverage": [
+    4.33740234375,
+    3.48779296875,
+    3.32763671875
+  ],
+  "model": {
+    "repository": "mlx-community/Qwen3.5-0.8B-bf16",
+    "revision": "3067585164dbcc505eec73d554349de6a27571a4",
+    "license": "Apache-2.0",
+    "directory": "/Users/steven/code/Arion/.workspace/rime-llm-reranker-v1/models/Qwen3.5-0.8B-MLX-bf16",
+    "files": [
+      {
+        "path": "README.md",
+        "sha256": "c3dc1100fb0631f3553fb42d4ed6e22f5893db007e7d7082cfea48c8b62724cd",
+        "bytes": 678,
+        "url": "https://huggingface.co/mlx-community/Qwen3.5-0.8B-bf16/resolve/3067585164dbcc505eec73d554349de6a27571a4/README.md"
+      },
+      {
+        "path": "chat_template.jinja",
+        "sha256": "273d8e0e683b885071fb17e08d71e5f2a5ddfb5309756181681de4f5a1822d80",
+        "bytes": 7755,
+        "url": "https://huggingface.co/mlx-community/Qwen3.5-0.8B-bf16/resolve/3067585164dbcc505eec73d554349de6a27571a4/chat_template.jinja"
+      },
+      {
+        "path": "config.json",
+        "sha256": "b90b86f35c8e6925ef74ee04d0e758f0a845c83a42089ad82bbaa948de9b4204",
+        "bytes": 2907,
+        "url": "https://huggingface.co/mlx-community/Qwen3.5-0.8B-bf16/resolve/3067585164dbcc505eec73d554349de6a27571a4/config.json"
+      },
+      {
+        "path": "model.safetensors",
+        "sha256": "46179bc9809bd667b67a0847af7a3d410fe163f1371eb8f4cc2dedc167072666",
+        "bytes": 1706030684,
+        "url": "https://huggingface.co/mlx-community/Qwen3.5-0.8B-bf16/resolve/3067585164dbcc505eec73d554349de6a27571a4/model.safetensors"
+      },
+      {
+        "path": "model.safetensors.index.json",
+        "sha256": "6206ca8d8ed473d20606f71f171d65abb56e4c7826051c07a75af5bf050b2724",
+        "bytes": 38712,
+        "url": "https://huggingface.co/mlx-community/Qwen3.5-0.8B-bf16/resolve/3067585164dbcc505eec73d554349de6a27571a4/model.safetensors.index.json"
+      },
+      {
+        "path": "preprocessor_config.json",
+        "sha256": "27225450ac9c6529872ee1924fcb0962ff5634834f817040f444118116f4e516",
+        "bytes": 390,
+        "url": "https://huggingface.co/mlx-community/Qwen3.5-0.8B-bf16/resolve/3067585164dbcc505eec73d554349de6a27571a4/preprocessor_config.json"
+      },
+      {
+        "path": "processor_config.json",
+        "sha256": "14932921ca485d458a04dafd8069fbb0a4505622a48208d19ed247115801385b",
+        "bytes": 1300,
+        "url": "https://huggingface.co/mlx-community/Qwen3.5-0.8B-bf16/resolve/3067585164dbcc505eec73d554349de6a27571a4/processor_config.json"
+      },
+      {
+        "path": "tokenizer.json",
+        "sha256": "87a7830d63fcf43bf241c3c5242e96e62dd3fdc29224ca26fed8ea333db72de4",
+        "bytes": 19989343,
+        "url": "https://huggingface.co/mlx-community/Qwen3.5-0.8B-bf16/resolve/3067585164dbcc505eec73d554349de6a27571a4/tokenizer.json"
+      },
+      {
+        "path": "tokenizer_config.json",
+        "sha256": "e98f1901ac6f0adff67b1d540bfa0c36ac1a0cf59eb72ed78146ef89aafa1182",
+        "bytes": 1139,
+        "url": "https://huggingface.co/mlx-community/Qwen3.5-0.8B-bf16/resolve/3067585164dbcc505eec73d554349de6a27571a4/tokenizer_config.json"
+      },
+      {
+        "path": "video_preprocessor_config.json",
+        "sha256": "7768af27c1fafa9cc9011c1dc20067e03f8915e03b63504550e11d5066986d13",
+        "bytes": 385,
+        "url": "https://huggingface.co/mlx-community/Qwen3.5-0.8B-bf16/resolve/3067585164dbcc505eec73d554349de6a27571a4/video_preprocessor_config.json"
+      },
+      {
+        "path": "vocab.json",
+        "sha256": "ce99b4cb2983d118806ce0a8b777a35b093e2000a503ebde25853284c9dfa003",
+        "bytes": 6722759,
+        "url": "https://huggingface.co/mlx-community/Qwen3.5-0.8B-bf16/resolve/3067585164dbcc505eec73d554349de6a27571a4/vocab.json"
+      }
+    ]
+  },
+  "omlxRevision": {
+    "args": [
+      "git",
+      "-C",
+      "/Users/steven/code/Arion/.workspace/rime-llm-reranker-v1/omlx",
+      "rev-parse",
+      "HEAD"
+    ],
+    "exitCode": 0,
+    "stdout": "6aba0dd3f28c690230a572a0c96cb43ee4f3d738\n",
+    "stderr": ""
+  },
+  "packages": {
+    "args": [
+      "uv",
+      "pip",
+      "freeze",
+      "--python",
+      "/Users/steven/code/Arion/.workspace/rime-llm-reranker-v1/venv/bin/python"
+    ],
+    "exitCode": 0,
+    "stdout": "aiohappyeyeballs==2.7.1\naiohttp==3.14.5\naiosignal==1.4.0\nannotated-doc==0.0.5\nannotated-types==0.8.0\nanyio==4.15.1\nattrs==26.1.0\nbeautifulsoup4==4.15.0\ncertifi==2026.10.19\ncffi==2.1.1\ncharset-normalizer==3.5.2\nclick==8.5.0\ncobble==0.1.4\ncohere-melody==0.15.3\ncryptography==50.0.2\ndatasets==5.1.0\nddgs==9.16.0\ndefusedxml==0.7.1\ndill==0.4.1\nfastapi==0.159.1\nfilelock==4.2.4\nflatbuffers==25.12.19\nfrozenlist==1.8.0\nfsspec==2026.7.0\nh11==0.16.0\nhf-xet==1.7.0\nhttpcore==1.0.9\nhttpx==0.28.1\nhuggingface-hub==1.33.0\nidna==3.20\nitsdangerous==2.2.0\njinja2==3.1.6\njsonschema==4.26.0\njsonschema-specifications==2025.9.1\nllguidance==1.9.1\nlxml==6.1.3\nmagika==0.6.3\nmammoth==1.11.0\nmarkdown-it-py==4.2.0\nmarkdownify==1.2.3\nmarkitdown==0.1.8\nmarkupsafe==3.0.4\nmdurl==0.1.2\nminiaudio==1.71\nmistral-common==1.12.0\nmlx==0.32.4\nmlx-audio @ git+https://github.com/Blaizzy/mlx-audio@94c7716212b2228f178d2f9c7619a591fd1b0b78\nmlx-embeddings @ git+https://github.com/Blaizzy/mlx-embeddings@32981fa4e8064ed664b52071789dd18271fe4206\nmlx-lm @ git+https://github.com/ml-explore/mlx-lm@94cdcae13b266c337bcaca09b97b9c5a9c0e2cde\nmlx-metal==0.32.4\nmlx-vlm @ git+https://github.com/Blaizzy/mlx-vlm@9790231827a890eade1a626643a6bc94a1317c72\nmultidict==7.1.0\nmultiprocess==0.70.19\nnumpy==2.3.5\nomlx @ file:///Users/steven/code/Arion/.workspace/rime-llm-reranker-v1/omlx\nonnxruntime==1.31.0\nopenai-harmony==0.0.8\nopencv-python==5.0.0.93\nopentelemetry-api==1.45.1\npackaging==26.3\npandas==3.0.6\npdfminer-six==20260107\npdfplumber==0.11.10\npillow==13.0.0\nprimp==2.0.1\npropcache==0.5.4\nprotobuf==7.36.2\npsutil==7.2.2\npyarrow==26.0.0\npycountry==26.2.16\npycparser==3.11\npydantic==2.14.1\npydantic-core==2.50.1\npydantic-extra-types==2.11.1\npygments==2.21.0\npypdfium2==5.14.0\npython-dateutil==3.0.0\npython-dotenv==1.2.4\npython-multipart==0.0.32\npython-pptx==1.0.2\npyyaml==6.0.3\nreferencing==0.37.0\nregex==2026.9.29\nrequests==2.34.2\nrich==15.0.0\nrpds-py==2026.9.1\nsafetensors==0.8.0\nscipy==1.18.1\nsentencepiece==0.2.2\nsetproctitle==1.3.8\nshellingham==1.5.4\nsix==1.17.0\nsocksio==1.0.0\nsounddevice==0.5.6\nsoupsieve==3.0.4\nstarlette==1.9.0\ntabulate==0.10.0\ntiktoken==0.14.0\ntokenizers==0.23.3\ntqdm==4.70.1\ntransformers==5.17.0\ntyper==0.27.3\ntyping-extensions==4.16.0\ntyping-inspection==0.4.4\ntzdata==2026.5\nurllib3==2.8.0\nuvicorn==0.54.0\nwebsockets==17.3\nxlsxwriter==3.3.0\nxxhash==4.0.2\nyarl==1.25.1\n",
+    "stderr": "Using Python 3.12.9 environment at: .workspace/rime-llm-reranker-v1/venv\n"
+  },
+  "cpuIsolated": false,
+  "concurrentASR": false,
+  "corpusSha256": "8a282a942a61866544cb254467ac3e050e7c951cfe7f5e5432937cc90ad3389f",
+  "candidateMetadataSha256": "0c64e59b94a5890c2e94bc47b84b88fad81eeb23d704b4b6911981af0d15370c",
+  "upstreamSha256": "c12e2c4750f4c28fd93daa73042762dfe2171a4f640217c14ee16db2700a14e6",
+  "driverSha256": "55ba651b65321834db38691b1ad3507876b8aaebf033bba098964b62f7f1dedf",
+  "config": {
+    "enabled": true,
+    "endpoint": "http://127.0.0.1:18782/v1/chat/completions",
+    "model": "Qwen3.5-0.8B-MLX-bf16",
+    "max_candidates": 5,
+    "timeout": 0.5,
+    "min_syllables": 1,
+    "max_rerank_pos": 5,
+    "max_tokens": 20,
+    "min_context_len": 0,
+    "max_preedit_len": 10,
+    "debug_log": true,
+    "fallback_on_error": true,
+    "collect_training_data": true,
+    "collect_user_pairs": true,
+    "collect_llm_pairs": false,
+    "system_prompt": "你是输入法候选词排序助手。根据对话历史和当前输入，从候选词列表中选出最符合语境的词。按优先级从高到低列出最多5个候选词，用顿号分隔，不要拼音、数字序号或任何解释。"
+  },
+  "mode": "final",
+  "args": [
+    "/Users/steven/code/Arion/.workspace/rime-llm-reranker-v1/sources/lua-5.4.8/src/lua",
+    "/Users/steven/code/Arion/benchmarks/reproduction/rime-llm-reranker-v1/filter-driver.lua",
+    "/Users/steven/code/Arion/benchmarks/reproduction/rime-llm-reranker-v1/upstream/rime.lua"
+  ],
+  "warmPolicy": "Server resident after separately retained warmup; Lua state resets per fixture, repeated snapshot measures Lua cache",
+  "boundary": "Original Lua filter + real local HTTP/model; recorded native candidate snapshots, not installed Rime/IMK dispatch"
+}

@@ -1,0 +1,97 @@
+{
+  "id": "context-030",
+  "steps": [
+    {
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "id": "key-1",
+      "processCpuMs": 0.752,
+      "source": [
+        "链接",
+        "连接",
+        "廉洁",
+        "联接",
+        "连结",
+        "联结",
+        "练级",
+        "联机",
+        "连击"
+      ],
+      "status": "completed",
+      "preedit": "lian jie",
+      "ranked": [
+        "链接",
+        "连接",
+        "廉洁",
+        "联接",
+        "连结",
+        "联结",
+        "练级",
+        "联机",
+        "连击"
+      ],
+      "requests": [
+        {
+          "status": "HTTP/1.1 200 OK",
+          "request": "{\"stream\":false,\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"temperature\":0,\"max_tokens\":20,\"messages\":[{\"role\":\"system\",\"content\":\"你是输入法候选词排序助手。根据对话历史和当前输入，从候选词列表中选出最符合语境的词。按优先级从高到低列出最多5个候选词，用顿号分隔，不要拼音、数字序号或任何解释。\"},{\"role\":\"user\",\"content\":\"对话历史：「请把两根电线」\\n当前输入拼音：「lian jie」\\n候选词：链接、连接、廉洁、联接、连结\\n按最符合对话语境的顺序列出前5个候选词（顿号分隔）：\"}]}",
+          "code": 200,
+          "response": "{\"id\":\"chatcmpl-40a2542b\",\"object\":\"chat.completion\",\"created\":1792647108,\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"链接、连接、联接、连结、廉洁\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":116,\"completion_tokens\":9,\"total_tokens\":125,\"input_tokens\":116,\"output_tokens\":9,\"prompt_tokens_details\":{\"cached_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"time_to_first_token\":0.1,\"total_time\":0.28,\"prompt_eval_duration\":0.1,\"generation_duration\":0.18,\"prompt_tokens_per_second\":1156.17,\"generation_tokens_per_second\":50.57}}",
+          "networkWallMs": 282.04299926758
+        }
+      ],
+      "wallMs": 282.87400054932
+    },
+    {
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "id": "identical-repeat",
+      "processCpuMs": 0.139,
+      "source": [
+        "链接",
+        "连接",
+        "廉洁",
+        "联接",
+        "连结",
+        "联结",
+        "练级",
+        "联机",
+        "连击"
+      ],
+      "status": "completed",
+      "preedit": "lian jie",
+      "ranked": [
+        "链接",
+        "连接",
+        "廉洁",
+        "联接",
+        "连结",
+        "联结",
+        "练级",
+        "联机",
+        "连击"
+      ],
+      "requests": [],
+      "wallMs": 0.1919994354248
+    }
+  ],
+  "subprocessWallMs": 300.4387919791043,
+  "stderr": ""
+}

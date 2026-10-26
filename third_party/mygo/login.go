@@ -72,13 +72,26 @@ var startDir, _ = os.Getwd()
 // happens when OnBeforeQuit, OnWillQuit or a window cancels the quit.
 // Under `mygo dev` the build exits once it has quit and mygo dev starts it
 // again.
-func (a *Application) Relaunch() {
+func (a *Application) Relaunch() { a.RelaunchWithResult(nil) }
+
+// RelaunchWithResult requests a relaunch and reports whether the quit sequence
+// accepted it. done runs once on the main thread, before the native loop quits.
+// A false result means a quit listener or window vetoed the request; callers
+// that already replaced resources must retain their maintenance gate and may
+// retry. A true result confirms quit acceptance, not that the new process has
+// successfully started. Like Relaunch, requests after shutdown are dropped.
+func (a *Application) RelaunchWithResult(done func(accepted bool)) {
 	postMain(func() {
 		a.relaunch = true
-		if a.prepareQuit() {
-			backend().Quit()
-		} else {
+		accepted := a.prepareQuit()
+		if !accepted {
 			a.relaunch = false
+		}
+		if done != nil {
+			done(accepted)
+		}
+		if accepted {
+			backend().Quit()
 		}
 	})
 }

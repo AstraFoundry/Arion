@@ -1,0 +1,8 @@
+{
+  "name": "Arion Notification Probe",
+  "identifier": "si.astrafoundry.arion.notification-probe",
+  "version": "0.0.1",
+  "out": "build",
+  "windows": { "notifications": true },
+  "macos": { "infoPlist": { "LSUIElement": true } }
+}

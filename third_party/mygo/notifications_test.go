@@ -3,6 +3,7 @@
 package mygo
 
 import (
+	"errors"
 	"slices"
 	"strings"
 	"testing"
@@ -156,5 +157,74 @@ func TestAppNotificationClick(t *testing.T) {
 	onMain(func() { fb.ClickNotification("chat:grace") })
 	if want := []string{"notification", "app chat:ada", "app chat:grace"}; !slices.Equal(got, want) {
 		t.Errorf("got %q, want %q", got, want)
+	}
+}
+
+func TestNotificationActionsRouteColdAndDoNotClick(t *testing.T) {
+	var actions, clicks []string
+	offAction := App.OnNotificationAction(func(id, action string) { actions = append(actions, id+":"+action) })
+	defer offAction()
+	offClick := App.OnNotificationClick(func(id string) { clicks = append(clicks, id) })
+	defer offClick()
+	n := showNotification(t, NotificationOptions{ID: "stable/1.2.3/available", Actions: []NotificationAction{{ID: "view", Title: "View update", Foreground: true}, {ID: "later", Title: "Later"}}})
+	if got := fb.Notification(n.ID()); len(got.Actions) != 2 || got.Actions[0].ID != "view" || !got.Actions[0].Foreground {
+		t.Fatalf("actions not forwarded: %+v", got)
+	}
+	onMain(func() {
+		fb.ActivateNotification(n.ID(), "later")
+		fb.ActivateNotification("earlier-run", "view")
+		fb.ClickNotification(n.ID())
+		fb.ActivateNotification("bad\x00id", "view")
+		fb.ActivateNotification(n.ID(), "../run")
+	})
+	if !slices.Equal(actions, []string{n.ID() + ":later", "earlier-run:view", n.ID() + ":"}) {
+		t.Fatalf("actions=%q", actions)
+	}
+	if !slices.Equal(clicks, []string{n.ID()}) {
+		t.Fatalf("custom actions also clicked: %q", clicks)
+	}
+	RemoveNotification(n.ID())
+	if fb.Notification(n.ID()) != nil {
+		t.Fatal("stable removal failed")
+	}
+}
+
+func TestNotificationRejectsUnboundedActions(t *testing.T) {
+	for _, opts := range []NotificationOptions{{ID: strings.Repeat("x", 257)}, {ID: "x", Actions: []NotificationAction{{ID: "view", Title: "View"}, {ID: "view", Title: "Duplicate"}}}, {ID: "x", Actions: []NotificationAction{{ID: "../run", Title: "Invalid"}}}} {
+		if err := NewNotification(opts).Show(); err == nil {
+			t.Fatalf("accepted %+v", opts)
+		}
+	}
+}
+
+func TestNotificationPermissionIsIndependentOfSubmission(t *testing.T) {
+	status, err := NotificationPermission()
+	if err != nil || status != NotificationAuthorizationAllowed {
+		t.Fatalf("query=%q %v", status, err)
+	}
+	status, err = RequestNotificationPermission()
+	if err != nil || status != NotificationAuthorizationAllowed {
+		t.Fatalf("request=%q %v", status, err)
+	}
+}
+
+func TestNotificationPermissionRequeriesAndReturnsAPIFailure(t *testing.T) {
+	before := fb.NotificationPermissionRequests
+	t.Cleanup(func() { onMain(func() { fb.NotificationAuthorization = ""; fb.NotificationPermissionError = nil }) })
+	onMain(func() { fb.NotificationAuthorization = platform.NotificationAuthorizationDenied })
+	if status, err := NotificationPermission(); err != nil || status != NotificationAuthorizationDenied {
+		t.Fatalf("denied=%q %v", status, err)
+	}
+	onMain(func() { fb.NotificationAuthorization = platform.NotificationAuthorizationUnknown })
+	if status, err := NotificationPermission(); err != nil || status != NotificationAuthorizationUnknown {
+		t.Fatalf("unknown=%q %v", status, err)
+	}
+	failure := errors.New("permission API failed")
+	onMain(func() { fb.NotificationPermissionError = failure })
+	if _, err := NotificationPermission(); !errors.Is(err, failure) {
+		t.Fatalf("API error=%v", err)
+	}
+	if fb.NotificationPermissionRequests != before {
+		t.Fatal("query unexpectedly requested permission")
 	}
 }

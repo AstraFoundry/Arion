@@ -1,0 +1,4 @@
+=== RUN   TestNativeKeyboardSchedule
+--- PASS: TestNativeKeyboardSchedule (37.90s)
+PASS
+ok  	arion.local/desktop/infrastructure/llm/ranking	38.348s

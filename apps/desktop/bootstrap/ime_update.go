@@ -18,7 +18,7 @@ func (a *App) updateInputMethodAutomatically() {
 	if updater, ok := a.ime.(selectedInputMethodUpdater); ok && a.state.InputMethod == arion.InputMethodSelected {
 		available = updater.CanUpdateWhileSelected()
 	}
-	if !a.state.InputMethodUpdate || a.state.InputMethodUpdateFailed || !available ||
+	if a.updateApplying() || !a.state.InputMethodUpdate || a.state.InputMethodUpdateFailed || !available ||
 		a.state.InputMethodInstalling || a.state.InputMethodRemoving || a.state.InputMethodActivating ||
 		a.state.Hold.Holding {
 		return

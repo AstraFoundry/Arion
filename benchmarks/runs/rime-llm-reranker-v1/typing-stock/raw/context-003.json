@@ -1,0 +1,342 @@
+{
+  "steps": [
+    {
+      "id": "key-1",
+      "source": [
+        "是",
+        "说",
+        "上",
+        "时",
+        "所",
+        "谁",
+        "啥",
+        "事",
+        "死"
+      ],
+      "status": "completed",
+      "requests": [
+        {
+          "response": "{\"id\":\"chatcmpl-2cff1afc\",\"object\":\"chat.completion\",\"created\":1792647165,\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"是、说、上、时、所\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":115,\"completion_tokens\":9,\"total_tokens\":124,\"input_tokens\":115,\"output_tokens\":9,\"prompt_tokens_details\":{\"cached_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"time_to_first_token\":0.1,\"total_time\":0.28,\"prompt_eval_duration\":0.1,\"generation_duration\":0.18,\"prompt_tokens_per_second\":1144.75,\"generation_tokens_per_second\":50.82}}",
+          "code": 200,
+          "request": "{\"temperature\":0,\"stream\":false,\"messages\":[{\"content\":\"你是输入法候选词排序助手。根据对话历史和当前输入，从候选词列表中选出最符合语境的词。按优先级从高到低列出最多5个候选词，用顿号分隔，不要拼音、数字序号或任何解释。\",\"role\":\"system\"},{\"content\":\"对话历史：「化学课上做」\\n当前输入拼音：「s」\\n候选词：是、说、上、时、所\\n按最符合对话语境的顺序列出前5个候选词（顿号分隔）：\",\"role\":\"user\"}],\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"max_tokens\":20}",
+          "status": "HTTP/1.1 200 OK",
+          "networkWallMs": 281.35900020599
+        }
+      ],
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "processCpuMs": 0.817,
+      "preedit": "s",
+      "wallMs": 282.27199935913,
+      "ranked": [
+        "是",
+        "说",
+        "上",
+        "时",
+        "所",
+        "谁",
+        "啥",
+        "事",
+        "死"
+      ]
+    },
+    {
+      "id": "key-2",
+      "source": [
+        "是",
+        "说",
+        "上",
+        "时",
+        "时候",
+        "谁",
+        "啥",
+        "事",
+        "使"
+      ],
+      "status": "completed",
+      "requests": [
+        {
+          "response": "{\"id\":\"chatcmpl-c543a339\",\"object\":\"chat.completion\",\"created\":1792647165,\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"是、说、上、时候、时\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":115,\"completion_tokens\":9,\"total_tokens\":124,\"input_tokens\":115,\"output_tokens\":9,\"prompt_tokens_details\":{\"cached_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"time_to_first_token\":0.11,\"total_time\":0.28,\"prompt_eval_duration\":0.11,\"generation_duration\":0.17,\"prompt_tokens_per_second\":1065.9,\"generation_tokens_per_second\":51.91}}",
+          "code": 200,
+          "request": "{\"temperature\":0,\"stream\":false,\"messages\":[{\"content\":\"你是输入法候选词排序助手。根据对话历史和当前输入，从候选词列表中选出最符合语境的词。按优先级从高到低列出最多5个候选词，用顿号分隔，不要拼音、数字序号或任何解释。\",\"role\":\"system\"},{\"content\":\"对话历史：「化学课上做」\\n当前输入拼音：「sh」\\n候选词：是、说、上、时、时候\\n按最符合对话语境的顺序列出前5个候选词（顿号分隔）：\",\"role\":\"user\"}],\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"max_tokens\":20}",
+          "status": "HTTP/1.1 200 OK",
+          "networkWallMs": 285.43400001526
+        }
+      ],
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "processCpuMs": 0.663,
+      "preedit": "sh",
+      "wallMs": 286.15100002289,
+      "ranked": [
+        "是",
+        "说",
+        "上",
+        "时",
+        "时候",
+        "谁",
+        "啥",
+        "事",
+        "使"
+      ]
+    },
+    {
+      "id": "key-3",
+      "source": [
+        "是",
+        "时",
+        "事",
+        "使",
+        "市",
+        "式",
+        "试",
+        "石",
+        "十"
+      ],
+      "status": "completed",
+      "requests": [
+        {
+          "response": "{\"id\":\"chatcmpl-27bb53e2\",\"object\":\"chat.completion\",\"created\":1792647165,\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"时、事、是、市、使\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":115,\"completion_tokens\":9,\"total_tokens\":124,\"input_tokens\":115,\"output_tokens\":9,\"prompt_tokens_details\":{\"cached_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"time_to_first_token\":0.11,\"total_time\":0.29,\"prompt_eval_duration\":0.11,\"generation_duration\":0.18,\"prompt_tokens_per_second\":1068.4,\"generation_tokens_per_second\":49.87}}",
+          "code": 200,
+          "request": "{\"temperature\":0,\"stream\":false,\"messages\":[{\"content\":\"你是输入法候选词排序助手。根据对话历史和当前输入，从候选词列表中选出最符合语境的词。按优先级从高到低列出最多5个候选词，用顿号分隔，不要拼音、数字序号或任何解释。\",\"role\":\"system\"},{\"content\":\"对话历史：「化学课上做」\\n当前输入拼音：「shi」\\n候选词：是、时、事、使、市\\n按最符合对话语境的顺序列出前5个候选词（顿号分隔）：\",\"role\":\"user\"}],\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"max_tokens\":20}",
+          "status": "HTTP/1.1 200 OK",
+          "networkWallMs": 291.69700050354
+        }
+      ],
+      "identities": [
+        2,
+        1,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "processCpuMs": 0.633,
+      "preedit": "shi",
+      "wallMs": 292.45699977875,
+      "ranked": [
+        "时",
+        "是",
+        "事",
+        "使",
+        "市",
+        "式",
+        "试",
+        "石",
+        "十"
+      ]
+    },
+    {
+      "id": "key-4",
+      "source": [
+        "使用",
+        "事业",
+        "适应",
+        "实验",
+        "试验",
+        "适用",
+        "石油",
+        "是要",
+        "是由"
+      ],
+      "status": "completed",
+      "requests": [
+        {
+          "response": "{\"id\":\"chatcmpl-3317bfab\",\"object\":\"chat.completion\",\"created\":1792647165,\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"使用、适应、实验、事业、试验\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":116,\"completion_tokens\":9,\"total_tokens\":125,\"input_tokens\":116,\"output_tokens\":9,\"prompt_tokens_details\":{\"cached_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"time_to_first_token\":0.11,\"total_time\":0.29,\"prompt_eval_duration\":0.11,\"generation_duration\":0.18,\"prompt_tokens_per_second\":1072.36,\"generation_tokens_per_second\":50.3}}",
+          "code": 200,
+          "request": "{\"temperature\":0,\"stream\":false,\"messages\":[{\"content\":\"你是输入法候选词排序助手。根据对话历史和当前输入，从候选词列表中选出最符合语境的词。按优先级从高到低列出最多5个候选词，用顿号分隔，不要拼音、数字序号或任何解释。\",\"role\":\"system\"},{\"content\":\"对话历史：「化学课上做」\\n当前输入拼音：「shi y」\\n候选词：使用、事业、适应、实验、试验\\n按最符合对话语境的顺序列出前5个候选词（顿号分隔）：\",\"role\":\"user\"}],\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"max_tokens\":20}",
+          "status": "HTTP/1.1 200 OK",
+          "networkWallMs": 291.04899978638
+        }
+      ],
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "processCpuMs": 0.871,
+      "preedit": "shi y",
+      "wallMs": 292.06599998474,
+      "ranked": [
+        "使用",
+        "事业",
+        "适应",
+        "实验",
+        "试验",
+        "适用",
+        "石油",
+        "是要",
+        "是由"
+      ]
+    },
+    {
+      "id": "key-5",
+      "source": [
+        "是呀",
+        "施压",
+        "是",
+        "时",
+        "事",
+        "使",
+        "市",
+        "式",
+        "试"
+      ],
+      "status": "completed",
+      "requests": [
+        {
+          "response": "{\"id\":\"chatcmpl-d81ccba5\",\"object\":\"chat.completion\",\"created\":1792647166,\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"是呀、施压、是、时、事\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":118,\"completion_tokens\":11,\"total_tokens\":129,\"input_tokens\":118,\"output_tokens\":11,\"prompt_tokens_details\":{\"cached_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"time_to_first_token\":0.11,\"total_time\":0.33,\"prompt_eval_duration\":0.11,\"generation_duration\":0.22,\"prompt_tokens_per_second\":1104.35,\"generation_tokens_per_second\":49.86}}",
+          "code": 200,
+          "request": "{\"temperature\":0,\"stream\":false,\"messages\":[{\"content\":\"你是输入法候选词排序助手。根据对话历史和当前输入，从候选词列表中选出最符合语境的词。按优先级从高到低列出最多5个候选词，用顿号分隔，不要拼音、数字序号或任何解释。\",\"role\":\"system\"},{\"content\":\"对话历史：「化学课上做」\\n当前输入拼音：「shi ya」\\n候选词：是呀、施压、是、时、事\\n按最符合对话语境的顺序列出前5个候选词（顿号分隔）：\",\"role\":\"user\"}],\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"max_tokens\":20}",
+          "status": "HTTP/1.1 200 OK",
+          "networkWallMs": 331.9420003891
+        }
+      ],
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "processCpuMs": 0.645,
+      "preedit": "shi ya",
+      "wallMs": 332.42199993134,
+      "ranked": [
+        "是呀",
+        "施压",
+        "是",
+        "时",
+        "事",
+        "使",
+        "市",
+        "式",
+        "试"
+      ]
+    },
+    {
+      "id": "key-6",
+      "source": [
+        "实验",
+        "试验",
+        "饰演",
+        "誓言",
+        "食盐",
+        "十堰",
+        "时延",
+        "是",
+        "时"
+      ],
+      "status": "completed",
+      "requests": [
+        {
+          "response": "{\"id\":\"chatcmpl-83db4012\",\"object\":\"chat.completion\",\"created\":1792647166,\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"实验、誓言、食盐、试验、饰演\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":116,\"completion_tokens\":9,\"total_tokens\":125,\"input_tokens\":116,\"output_tokens\":9,\"prompt_tokens_details\":{\"cached_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"time_to_first_token\":0.11,\"total_time\":0.29,\"prompt_eval_duration\":0.11,\"generation_duration\":0.18,\"prompt_tokens_per_second\":1071.14,\"generation_tokens_per_second\":49.02}}",
+          "code": 200,
+          "request": "{\"temperature\":0,\"stream\":false,\"messages\":[{\"content\":\"你是输入法候选词排序助手。根据对话历史和当前输入，从候选词列表中选出最符合语境的词。按优先级从高到低列出最多5个候选词，用顿号分隔，不要拼音、数字序号或任何解释。\",\"role\":\"system\"},{\"content\":\"对话历史：「化学课上做」\\n当前输入拼音：「shi yan」\\n候选词：实验、试验、饰演、誓言、食盐\\n按最符合对话语境的顺序列出前5个候选词（顿号分隔）：\",\"role\":\"user\"}],\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"max_tokens\":20}",
+          "status": "HTTP/1.1 200 OK",
+          "networkWallMs": 295.36800003052
+        }
+      ],
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "processCpuMs": 0.757,
+      "preedit": "shi yan",
+      "wallMs": 296.67799949646,
+      "ranked": [
+        "实验",
+        "试验",
+        "饰演",
+        "誓言",
+        "食盐",
+        "十堰",
+        "时延",
+        "是",
+        "时"
+      ]
+    },
+    {
+      "id": "identical-repeat",
+      "source": [
+        "实验",
+        "试验",
+        "饰演",
+        "誓言",
+        "食盐",
+        "十堰",
+        "时延",
+        "是",
+        "时"
+      ],
+      "status": "completed",
+      "requests": [],
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "processCpuMs": 0.098000000000001,
+      "preedit": "shi yan",
+      "wallMs": 0.2470006942749,
+      "ranked": [
+        "实验",
+        "试验",
+        "饰演",
+        "誓言",
+        "食盐",
+        "十堰",
+        "时延",
+        "是",
+        "时"
+      ]
+    }
+  ],
+  "id": "context-003",
+  "subprocessWallMs": 1801.0233752429485,
+  "stderr": ""
+}

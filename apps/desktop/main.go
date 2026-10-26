@@ -8,9 +8,16 @@ import (
 
 	"arion.local/desktop/bootstrap"
 	"arion.local/desktop/infrastructure/diagnostics"
+	"github.com/egoist/mygo"
 )
 
 func main() {
+	if handled, err := mygo.HandleNotificationRegistration(); handled || err != nil {
+		if err != nil {
+			log.Fatalf("notification registration failed code=%s", diagnostics.Failure(err))
+		}
+		return
+	}
 	if len(os.Args) == 2 && os.Args[1] == "--print-center-profile" {
 		profile, err := center.Load()
 		if err != nil {

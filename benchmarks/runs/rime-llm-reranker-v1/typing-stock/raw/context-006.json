@@ -1,0 +1,342 @@
+{
+  "id": "context-006",
+  "steps": [
+    {
+      "source": [
+        "去",
+        "其",
+        "请",
+        "钱",
+        "前",
+        "却",
+        "起",
+        "全",
+        "区"
+      ],
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "requests": [
+        {
+          "response": "{\"id\":\"chatcmpl-7c2c1c30\",\"object\":\"chat.completion\",\"created\":1792647140,\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"去、其、请、前、钱\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":118,\"completion_tokens\":9,\"total_tokens\":127,\"input_tokens\":118,\"output_tokens\":9,\"prompt_tokens_details\":{\"cached_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"time_to_first_token\":0.1,\"total_time\":0.28,\"prompt_eval_duration\":0.1,\"generation_duration\":0.18,\"prompt_tokens_per_second\":1204.77,\"generation_tokens_per_second\":50.67}}",
+          "status": "HTTP/1.1 200 OK",
+          "networkWallMs": 278.36199951172,
+          "request": "{\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"temperature\":0,\"messages\":[{\"role\":\"system\",\"content\":\"你是输入法候选词排序助手。根据对话历史和当前输入，从候选词列表中选出最符合语境的词。按优先级从高到低列出最多5个候选词，用顿号分隔，不要拼音、数字序号或任何解释。\"},{\"role\":\"user\",\"content\":\"对话历史：「为了赢下比赛拼尽」\\n当前输入拼音：「q」\\n候选词：去、其、请、钱、前\\n按最符合对话语境的顺序列出前5个候选词（顿号分隔）：\"}],\"stream\":false,\"max_tokens\":20}",
+          "code": 200
+        }
+      ],
+      "id": "key-1",
+      "preedit": "q",
+      "status": "completed",
+      "ranked": [
+        "去",
+        "其",
+        "请",
+        "钱",
+        "前",
+        "却",
+        "起",
+        "全",
+        "区"
+      ],
+      "wallMs": 279.32499980927,
+      "processCpuMs": 0.654
+    },
+    {
+      "source": [
+        "去",
+        "区",
+        "取",
+        "曲",
+        "佢",
+        "娶",
+        "屈",
+        "渠",
+        "趋"
+      ],
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "requests": [
+        {
+          "response": "{\"id\":\"chatcmpl-ac13562e\",\"object\":\"chat.completion\",\"created\":1792647140,\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"去、区、取、曲、佢\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":119,\"completion_tokens\":10,\"total_tokens\":129,\"input_tokens\":119,\"output_tokens\":10,\"prompt_tokens_details\":{\"cached_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"time_to_first_token\":0.1,\"total_time\":0.33,\"prompt_eval_duration\":0.1,\"generation_duration\":0.23,\"prompt_tokens_per_second\":1150.4,\"generation_tokens_per_second\":44.26}}",
+          "status": "HTTP/1.1 200 OK",
+          "networkWallMs": 332.44499969482,
+          "request": "{\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"temperature\":0,\"messages\":[{\"role\":\"system\",\"content\":\"你是输入法候选词排序助手。根据对话历史和当前输入，从候选词列表中选出最符合语境的词。按优先级从高到低列出最多5个候选词，用顿号分隔，不要拼音、数字序号或任何解释。\"},{\"role\":\"user\",\"content\":\"对话历史：「为了赢下比赛拼尽」\\n当前输入拼音：「qu」\\n候选词：去、区、取、曲、佢\\n按最符合对话语境的顺序列出前5个候选词（顿号分隔）：\"}],\"stream\":false,\"max_tokens\":20}",
+          "code": 200
+        }
+      ],
+      "id": "key-2",
+      "preedit": "qu",
+      "status": "completed",
+      "ranked": [
+        "去",
+        "区",
+        "取",
+        "曲",
+        "佢",
+        "娶",
+        "屈",
+        "渠",
+        "趋"
+      ],
+      "wallMs": 332.90799999237,
+      "processCpuMs": 0.541
+    },
+    {
+      "source": [
+        "去啊",
+        "去",
+        "区",
+        "取",
+        "曲",
+        "佢",
+        "娶",
+        "屈",
+        "渠"
+      ],
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "requests": [
+        {
+          "response": "{\"id\":\"chatcmpl-577b0406\",\"object\":\"chat.completion\",\"created\":1792647141,\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"去啊、去、区、取、曲\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":120,\"completion_tokens\":10,\"total_tokens\":130,\"input_tokens\":120,\"output_tokens\":10,\"prompt_tokens_details\":{\"cached_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"time_to_first_token\":0.11,\"total_time\":0.34,\"prompt_eval_duration\":0.11,\"generation_duration\":0.23,\"prompt_tokens_per_second\":1063.39,\"generation_tokens_per_second\":44.24}}",
+          "status": "HTTP/1.1 200 OK",
+          "networkWallMs": 341.40500068665,
+          "request": "{\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"temperature\":0,\"messages\":[{\"role\":\"system\",\"content\":\"你是输入法候选词排序助手。根据对话历史和当前输入，从候选词列表中选出最符合语境的词。按优先级从高到低列出最多5个候选词，用顿号分隔，不要拼音、数字序号或任何解释。\"},{\"role\":\"user\",\"content\":\"对话历史：「为了赢下比赛拼尽」\\n当前输入拼音：「qu a」\\n候选词：去啊、去、区、取、曲\\n按最符合对话语境的顺序列出前5个候选词（顿号分隔）：\"}],\"stream\":false,\"max_tokens\":20}",
+          "code": 200
+        }
+      ],
+      "id": "key-3",
+      "preedit": "qu a",
+      "status": "completed",
+      "ranked": [
+        "去啊",
+        "去",
+        "区",
+        "取",
+        "曲",
+        "佢",
+        "娶",
+        "屈",
+        "渠"
+      ],
+      "wallMs": 341.95300006866,
+      "processCpuMs": 0.459
+    },
+    {
+      "source": [
+        "全",
+        "权",
+        "圈",
+        "劝",
+        "泉",
+        "犬",
+        "拳",
+        "券",
+        "荃"
+      ],
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "requests": [
+        {
+          "response": "{\"id\":\"chatcmpl-921c5001\",\"object\":\"chat.completion\",\"created\":1792647141,\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"quan, 全, 圈, 劝, 泉\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":118,\"completion_tokens\":13,\"total_tokens\":131,\"input_tokens\":118,\"output_tokens\":13,\"prompt_tokens_details\":{\"cached_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"time_to_first_token\":0.11,\"total_time\":0.37,\"prompt_eval_duration\":0.11,\"generation_duration\":0.27,\"prompt_tokens_per_second\":1086.23,\"generation_tokens_per_second\":49.01}}",
+          "status": "HTTP/1.1 200 OK",
+          "networkWallMs": 376.68300056458,
+          "request": "{\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"temperature\":0,\"messages\":[{\"role\":\"system\",\"content\":\"你是输入法候选词排序助手。根据对话历史和当前输入，从候选词列表中选出最符合语境的词。按优先级从高到低列出最多5个候选词，用顿号分隔，不要拼音、数字序号或任何解释。\"},{\"role\":\"user\",\"content\":\"对话历史：「为了赢下比赛拼尽」\\n当前输入拼音：「quan」\\n候选词：全、权、圈、劝、泉\\n按最符合对话语境的顺序列出前5个候选词（顿号分隔）：\"}],\"stream\":false,\"max_tokens\":20}",
+          "code": 200
+        }
+      ],
+      "id": "key-4",
+      "preedit": "quan",
+      "status": "completed",
+      "ranked": [
+        "全",
+        "权",
+        "圈",
+        "劝",
+        "泉",
+        "犬",
+        "拳",
+        "券",
+        "荃"
+      ],
+      "wallMs": 377.22900009155,
+      "processCpuMs": 0.565
+    },
+    {
+      "source": [
+        "权利",
+        "权力",
+        "全力",
+        "全裸",
+        "圈里",
+        "全",
+        "权",
+        "圈",
+        "劝"
+      ],
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "requests": [
+        {
+          "response": "{\"id\":\"chatcmpl-bb251a22\",\"object\":\"chat.completion\",\"created\":1792647141,\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"全力、圈里、全裸、权利、权力\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":121,\"completion_tokens\":11,\"total_tokens\":132,\"input_tokens\":121,\"output_tokens\":11,\"prompt_tokens_details\":{\"cached_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"time_to_first_token\":0.12,\"total_time\":0.35,\"prompt_eval_duration\":0.12,\"generation_duration\":0.23,\"prompt_tokens_per_second\":1041.16,\"generation_tokens_per_second\":47.01}}",
+          "status": "HTTP/1.1 200 OK",
+          "networkWallMs": 353.81599998474,
+          "request": "{\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"temperature\":0,\"messages\":[{\"role\":\"system\",\"content\":\"你是输入法候选词排序助手。根据对话历史和当前输入，从候选词列表中选出最符合语境的词。按优先级从高到低列出最多5个候选词，用顿号分隔，不要拼音、数字序号或任何解释。\"},{\"role\":\"user\",\"content\":\"对话历史：「为了赢下比赛拼尽」\\n当前输入拼音：「quan l」\\n候选词：权利、权力、全力、全裸、圈里\\n按最符合对话语境的顺序列出前5个候选词（顿号分隔）：\"}],\"stream\":false,\"max_tokens\":20}",
+          "code": 200
+        }
+      ],
+      "id": "key-5",
+      "preedit": "quan l",
+      "status": "completed",
+      "ranked": [
+        "权利",
+        "权力",
+        "全力",
+        "全裸",
+        "圈里",
+        "全",
+        "权",
+        "圈",
+        "劝"
+      ],
+      "wallMs": 354.33699989319,
+      "processCpuMs": 0.526
+    },
+    {
+      "source": [
+        "权利",
+        "权力",
+        "全力",
+        "圈里",
+        "全",
+        "权",
+        "圈",
+        "劝",
+        "泉"
+      ],
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "requests": [
+        {
+          "response": "{\"id\":\"chatcmpl-8ab8ec78\",\"object\":\"chat.completion\",\"created\":1792647142,\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"全力、圈里、全力、圈里、全力\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":120,\"completion_tokens\":11,\"total_tokens\":131,\"input_tokens\":120,\"output_tokens\":11,\"prompt_tokens_details\":{\"cached_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"time_to_first_token\":0.11,\"total_time\":0.35,\"prompt_eval_duration\":0.11,\"generation_duration\":0.24,\"prompt_tokens_per_second\":1087.6,\"generation_tokens_per_second\":46.74}}",
+          "status": "HTTP/1.1 200 OK",
+          "networkWallMs": 348.38399982452,
+          "request": "{\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"temperature\":0,\"messages\":[{\"role\":\"system\",\"content\":\"你是输入法候选词排序助手。根据对话历史和当前输入，从候选词列表中选出最符合语境的词。按优先级从高到低列出最多5个候选词，用顿号分隔，不要拼音、数字序号或任何解释。\"},{\"role\":\"user\",\"content\":\"对话历史：「为了赢下比赛拼尽」\\n当前输入拼音：「quan li」\\n候选词：权利、权力、全力、圈里、全\\n按最符合对话语境的顺序列出前5个候选词（顿号分隔）：\"}],\"stream\":false,\"max_tokens\":20}",
+          "code": 200
+        }
+      ],
+      "id": "key-6",
+      "preedit": "quan li",
+      "status": "completed",
+      "ranked": [
+        "权利",
+        "权力",
+        "全力",
+        "圈里",
+        "全",
+        "权",
+        "圈",
+        "劝",
+        "泉"
+      ],
+      "wallMs": 348.89799976349,
+      "processCpuMs": 0.508
+    },
+    {
+      "source": [
+        "权利",
+        "权力",
+        "全力",
+        "圈里",
+        "全",
+        "权",
+        "圈",
+        "劝",
+        "泉"
+      ],
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "requests": [],
+      "id": "identical-repeat",
+      "preedit": "quan li",
+      "status": "completed",
+      "ranked": [
+        "权利",
+        "权力",
+        "全力",
+        "圈里",
+        "全",
+        "权",
+        "圈",
+        "劝",
+        "泉"
+      ],
+      "wallMs": 0.12899971008301,
+      "processCpuMs": 0.075
+    }
+  ],
+  "subprocessWallMs": 2046.9705420546234,
+  "stderr": ""
+}

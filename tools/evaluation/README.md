@@ -1,5 +1,9 @@
 # Evaluation tooling
 
+The [general LLM keyboard alignment](../../benchmarks/reproduction/llm-ime-alignment-v1/README.md) provides `pnpm ime:align` / `make ime-align ARGS='...'` for reference-free Go model execution, frozen producer comparisons, paced scheduler/model observations and exact archive replay. See the [architecture and full evaluation plan](../../docs/research/llm-ime-alignment.md); this is an experimental adapter, not native IMK acceptance.
+
+The isolated [Rime LLM reranker study](../../benchmarks/reproduction/rime-llm-reranker-v1/README.md) provides `pnpm ime:rerank` / `make ime-rerank ARGS='...'` for native candidate collection, original-filter local inference, report replay and archive verification. Its 100 authored exploratory fixtures and actual wall-time measurements do not change production model selection or establish native IMK/UI acceptance.
+
 Dependency-free Node workspace managed by pnpm. Tests exercise metric oracles, isolation guards and driver transport; they do not execute speech models. Start with [008 Evaluation](../../specs/008-evaluation.md), [methodology](../../docs/research/benchmark-methodology.md), [streaming datasets](../../docs/research/streaming-datasets.md) and [E2E](../../docs/quality/e2e.md).
 
 ## Commands

@@ -34,9 +34,10 @@ Write an ADR when the decision:
 - [020: Native Qwen3-ASR workers](020-native-qwen-asr.md) — native Swift MLX on Apple silicon and native Q8_0 on Intel/Windows, with explicit adoption and separate acceptance.
 - [021: Support macOS on Apple silicon only](021-apple-silicon-only-macos.md) — retires Intel macOS product support, CI and future release artifacts; Windows x64 remains in scope.
 - [022: Optional cloud polishing through Republic](022-cloud-polishing.md) — ChatGPT sign-in or one API key, explicit cloud choice; amended by ADR 024 for shared context.
-- [024: Shared polishing pipeline and context controls](024-shared-polishing-pipeline.md) — one staged recipe for local and cloud models, with the same context switches.
 - [023: Final-only polishing](023-final-only-polishing.md) — local and cloud rewriting both run once after the dictation key is released; segmentation stays, and no polished preview is shown during speech.
+- [024: Shared polishing pipeline and context controls](024-shared-polishing-pipeline.md) — one staged recipe for local and cloud models, with the same context switches.
 - [025: Windows local polishing](025-windows-local-polishing.md) — the shared pinned GGUF pipeline on Windows x64, CPU backend dispatch, private AF_UNIX IPC and process ownership.
+- [026: Account-targeted product notifications](026-account-product-notifications.md) — signed-in OS-authorized running reception/catchup, native submission receipts and current-server action authorization.
 - [`adr-template.md`](adr-template.md) — template for new ADRs.
 
 ## Naming

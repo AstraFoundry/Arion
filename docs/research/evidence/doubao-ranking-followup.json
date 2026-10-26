@@ -1,0 +1,5529 @@
+{
+  "scope": "Installed macOS DoubaoIme 1.0.2 build 1 typing candidate ranking and fusion; no target execution or private storage access.",
+  "reaMetadata": {
+    "evidence_id": "ev_c97d8d9800d3ba5fab17bbaf881ffef6b49bb167925284e9475eda82ded512d0",
+    "subject": {
+      "name": "OimeEngine",
+      "digest": {
+        "sha256": "d1cebd7c9a9d888acc2a6d2f4aad372cb3b31570ff68a7e631cba930517f5db8"
+      },
+      "format": "mach-o",
+      "architecture": "arm64",
+      "local_path": "/Library/Input Methods/DoubaoIme.app/Contents/Frameworks/OimeEngine.framework/Versions/A/OimeEngine"
+    },
+    "operation": "inspect_macho",
+    "authority": "shipped-artifact"
+  },
+  "method": "Existing LLVM assembly revalidated instruction-by-instruction against current shipped arm64 bytes; function windows use next text symbol boundaries. Not a runtime trace or new decompilation.",
+  "instructionCount": 11383,
+  "addressWindows": [
+    {
+      "start": "0x1bc04c",
+      "endExclusive": "0x1bc984",
+      "name": "oime_engine::pinyin::Engine::UpdateResult(oime_engine::UpdateResultType)",
+      "verifiedInstructions": 589,
+      "assemblySha256": "6fc3afd65ad9b231c82af3aabfdeff693aab751d170cabb5ae4b48b579e946e2",
+      "calls": [
+        {
+          "at": "0x1bc0ac",
+          "target": "0x3ac748",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1bc100",
+          "target": "0x256fa8",
+          "name": "oime_engine::pinyin::PyState::Instance()"
+        },
+        {
+          "at": "0x1bc108",
+          "target": "0x256fa8",
+          "name": "oime_engine::pinyin::PyState::Instance()"
+        },
+        {
+          "at": "0x1bc114",
+          "target": "0x256fa8",
+          "name": "oime_engine::pinyin::PyState::Instance()"
+        },
+        {
+          "at": "0x1bc120",
+          "target": "0x21b0a4",
+          "name": "oime_engine::pinyin::Result::Clear()"
+        },
+        {
+          "at": "0x1bc128",
+          "target": "0x21b0a4",
+          "name": "oime_engine::pinyin::Result::Clear()"
+        },
+        {
+          "at": "0x1bc164",
+          "target": "0xf63d0",
+          "name": "oime_engine::EngineState::Instance()"
+        },
+        {
+          "at": "0x1bc1c4",
+          "target": "0x1e755c",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1bc200",
+          "target": "0x1e8460",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1bc284",
+          "target": "0x1c34d0",
+          "name": "oime_engine::pinyin::Engine::AdjustCorrectAndSentence()"
+        },
+        {
+          "at": "0x1bc290",
+          "target": "0x1c37e4",
+          "name": "oime_engine::pinyin::Engine::AdjustCorrectOrder(unsigned int)"
+        },
+        {
+          "at": "0x1bc2a0",
+          "target": "0x118bc4",
+          "name": "oime_engine::pinyin::CloudPrefetchCtxRegulatorResult::Empty() const"
+        },
+        {
+          "at": "0x1bc2c8",
+          "target": "0x1f72c0",
+          "name": "oime_engine::pinyin::ExtractFeature::UpdateParams(std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>> const&, oime_engine::KeyboardType, phmap::flat_hash_map<oime_engine::KHashKey, oime_engine::pinyin::UsrBigramDict::ItemReader, oime_engine::KHashFunc, oime_engine::KHashRqual, std::__1::allocator<std::__1::pair<oime_engine::KHashKey const, oime_engine::pinyin::UsrBigramDict::ItemReader>>> const&, std::__1::shared_ptr<oime_engine::pinyin::UsrSideDict const> const&)"
+        },
+        {
+          "at": "0x1bc2e8",
+          "target": "0x1fbcf4",
+          "name": "oime_engine::pinyin::History::GetHisWord(oime_engine::pinyin::History::Position) const"
+        },
+        {
+          "at": "0x1bc328",
+          "target": "0x1f76fc",
+          "name": "oime_engine::pinyin::ExtractFeature::ExtractCandFeature(std::__1::vector<oime_engine::pinyin::CandidateInner*, std::__1::allocator<oime_engine::pinyin::CandidateInner*>>&, int)"
+        },
+        {
+          "at": "0x1bc334",
+          "target": "0x1c3af8",
+          "name": "oime_engine::pinyin::Engine::CanditateSortByFeature(bool)"
+        },
+        {
+          "at": "0x1bc33c",
+          "target": "0x1c4260",
+          "name": "oime_engine::pinyin::Engine::AdjustPersonName()"
+        },
+        {
+          "at": "0x1bc3b4",
+          "target": "0x21b04c",
+          "name": "oime_engine::pinyin::Result::Size() const"
+        },
+        {
+          "at": "0x1bc3f8",
+          "target": "0x1c4470",
+          "name": "oime_engine::pinyin::Engine::AppendToResultSorted(oime_engine::pinyin::CandidateInner*)"
+        },
+        {
+          "at": "0x1bc400",
+          "target": "0x21b04c",
+          "name": "oime_engine::pinyin::Result::Size() const"
+        },
+        {
+          "at": "0x1bc414",
+          "target": "0x21b664",
+          "name": "oime_engine::pinyin::Result::RemoveDuplicates(unsigned int)"
+        },
+        {
+          "at": "0x1bc448",
+          "target": "0x21d9b8",
+          "name": "oime_engine::pinyin::Result::AdjustSysBigAndSentence()"
+        },
+        {
+          "at": "0x1bc458",
+          "target": "0x2212ac",
+          "name": "oime_engine::pinyin::Result::ReduceLongAndShortChange(oime_engine::pinyin::CandidateItem const&)"
+        },
+        {
+          "at": "0x1bc464",
+          "target": "0x1c47f4",
+          "name": "oime_engine::pinyin::Engine::MergeCloud(oime_engine::UpdateResultType)"
+        },
+        {
+          "at": "0x1bc46c",
+          "target": "0x21c108",
+          "name": "oime_engine::pinyin::Result::AdjustCorrectUsrDictPos()"
+        },
+        {
+          "at": "0x1bc474",
+          "target": "0x21bd9c",
+          "name": "oime_engine::pinyin::Result::AdjustEnhanceDictPos()"
+        },
+        {
+          "at": "0x1bc480",
+          "target": "0x220a94",
+          "name": "oime_engine::pinyin::Result::AdjustFuzzyCandOrder(oime_engine::KeyboardType)"
+        },
+        {
+          "at": "0x1bc4a8",
+          "target": "0x1fbcf4",
+          "name": "oime_engine::pinyin::History::GetHisWord(oime_engine::pinyin::History::Position) const"
+        },
+        {
+          "at": "0x1bc4ec",
+          "target": "0x21edbc",
+          "name": "oime_engine::pinyin::Result::AdjustUsrCand(bool, unsigned int)"
+        },
+        {
+          "at": "0x1bc500",
+          "target": "0x1aabe4",
+          "name": "oime_engine::pinyin::OtherPlatformSideUsrCandContext::GetProcessedCandidates(std::__1::shared_ptr<oime_engine::pinyin::Regulator> const&, oime_engine::KeyboardType)"
+        },
+        {
+          "at": "0x1bc50c",
+          "target": "0x222218",
+          "name": "oime_engine::pinyin::Result::InsertOtherPlatformSideUsrCand(std::__1::vector<oime_engine::pinyin::CandidateInner*, std::__1::allocator<oime_engine::pinyin::CandidateInner*>> const&)"
+        },
+        {
+          "at": "0x1bc538",
+          "target": "0x1b8ec0",
+          "name": "oime_engine::pinyin::Engine::MergeCloudAsso()"
+        },
+        {
+          "at": "0x1bc54c",
+          "target": "0x21bd8c",
+          "name": "oime_engine::pinyin::Result::Empty() const"
+        },
+        {
+          "at": "0x1bc560",
+          "target": "0x126ac0",
+          "name": "oime_engine::pinyin::old_900M::MakeCloudResultsCandidates(std::__1::vector<oime_engine::pinyin::CloudItem, std::__1::allocator<oime_engine::pinyin::CloudItem>> const&, bool)"
+        },
+        {
+          "at": "0x1bc570",
+          "target": "0x1c4a64",
+          "name": "oime_engine::pinyin::Engine::AdjustFieldCand(std::__1::vector<oime_engine::pinyin::CandidateInner*, std::__1::allocator<oime_engine::pinyin::CandidateInner*>> const&, std::__1::vector<oime_engine::pinyin::CandidateInner*, std::__1::allocator<oime_engine::pinyin::CandidateInner*>> const&)"
+        },
+        {
+          "at": "0x1bc580",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1bc590",
+          "target": "0x126ac0",
+          "name": "oime_engine::pinyin::old_900M::MakeCloudResultsCandidates(std::__1::vector<oime_engine::pinyin::CloudItem, std::__1::allocator<oime_engine::pinyin::CloudItem>> const&, bool)"
+        },
+        {
+          "at": "0x1bc5ac",
+          "target": "0x19a7ac",
+          "name": "oime_engine::pinyin::UsrDict::GetMaxPtime() const"
+        },
+        {
+          "at": "0x1bc5bc",
+          "target": "0x221b18",
+          "name": "oime_engine::pinyin::Result::AdjustOOVCand(std::__1::vector<oime_engine::pinyin::CandidateInner*, std::__1::allocator<oime_engine::pinyin::CandidateInner*>> const&, int)"
+        },
+        {
+          "at": "0x1bc5cc",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1bc5d4",
+          "target": "0x21c1f4",
+          "name": "oime_engine::pinyin::Result::AdjustEnglishDictPos()"
+        },
+        {
+          "at": "0x1bc5e0",
+          "target": "0x21c3b4",
+          "name": "oime_engine::pinyin::Result::AdjustIncorrectDictPos(oime_engine::KeyboardType)"
+        },
+        {
+          "at": "0x1bc5ec",
+          "target": "0x21c988",
+          "name": "oime_engine::pinyin::Result::AdjustSyllableSuperJpPos(oime_engine::KeyboardType)"
+        },
+        {
+          "at": "0x1bc620",
+          "target": "0x21d10c",
+          "name": "oime_engine::pinyin::Result::AdjustFirstShortAndNormal(bool, oime_engine::pinyin::CandidateItem const&)"
+        },
+        {
+          "at": "0x1bc64c",
+          "target": "0x12ae0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1bc6b8",
+          "target": "0x12ae0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1bc6c4",
+          "target": "0x96754",
+          "name": "oime_engine::StartsWith(std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>> const&, std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>>)"
+        },
+        {
+          "at": "0x1bc6e4",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1bc6f8",
+          "target": "0x21dd38",
+          "name": "oime_engine::pinyin::Result::AdjustByPrevFirstCandidate(oime_engine::pinyin::CandidateItem const&, oime_engine::pinyin::CloudResult const&)"
+        },
+        {
+          "at": "0x1bc708",
+          "target": "0x1c5370",
+          "name": "oime_engine::pinyin::Engine::MakeCurResultCache()"
+        },
+        {
+          "at": "0x1bc728",
+          "target": "0x1c2088",
+          "name": "oime_engine::pinyin::Engine::UpdateFixedPositionResult()"
+        },
+        {
+          "at": "0x1bc734",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1bc748",
+          "target": "0x21b04c",
+          "name": "oime_engine::pinyin::Result::Size() const"
+        },
+        {
+          "at": "0x1bc754",
+          "target": "0x21d8fc",
+          "name": "oime_engine::pinyin::Result::AdjustHalfSelectShowNum()"
+        },
+        {
+          "at": "0x1bc75c",
+          "target": "0x21b04c",
+          "name": "oime_engine::pinyin::Result::Size() const"
+        },
+        {
+          "at": "0x1bc770",
+          "target": "0x1c549c",
+          "name": "oime_engine::pinyin::Engine::AppendHalfSelectToResultSorted(unsigned int)"
+        },
+        {
+          "at": "0x1bc77c",
+          "target": "0x21b664",
+          "name": "oime_engine::pinyin::Result::RemoveDuplicates(unsigned int)"
+        },
+        {
+          "at": "0x1bc788",
+          "target": "0x21b04c",
+          "name": "oime_engine::pinyin::Result::Size() const"
+        },
+        {
+          "at": "0x1bc798",
+          "target": "0x21b04c",
+          "name": "oime_engine::pinyin::Result::Size() const"
+        },
+        {
+          "at": "0x1bc7a8",
+          "target": "0x21b1a4",
+          "name": "oime_engine::pinyin::Result::Erase(unsigned int, unsigned int)"
+        },
+        {
+          "at": "0x1bc7b0",
+          "target": "0x21b220",
+          "name": "oime_engine::pinyin::Result::FilterBySensitiveWord()"
+        },
+        {
+          "at": "0x1bc7b4",
+          "target": "0xf63d0",
+          "name": "oime_engine::EngineState::Instance()"
+        },
+        {
+          "at": "0x1bc7c4",
+          "target": "0x21b4e0",
+          "name": "oime_engine::pinyin::Result::FilterEmojiCandidate()"
+        },
+        {
+          "at": "0x1bc7d4",
+          "target": "0x221cbc",
+          "name": "oime_engine::pinyin::Result::AdjustWhiteListCand(std::__1::vector<oime_engine::pinyin::CloudItem, std::__1::allocator<oime_engine::pinyin::CloudItem>>&)"
+        },
+        {
+          "at": "0x1bc7e8",
+          "target": "0x21b04c",
+          "name": "oime_engine::pinyin::Result::Size() const"
+        },
+        {
+          "at": "0x1bc7fc",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x1bc808",
+          "target": "0x21b0b4",
+          "name": "oime_engine::pinyin::Result::PushBack(oime_engine::pinyin::CandidateInner*)"
+        },
+        {
+          "at": "0x1bc874",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1bc8b0",
+          "target": "0x3ac9c4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1bc8b4",
+          "target": "0x39e5a4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1bc8c4",
+          "target": "0x3ac19c",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1bc8e4",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1bc904",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1bc91c",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1bc934",
+          "target": "0x11878",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1bc968",
+          "target": "0xb17fc",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1bc978",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1bc980",
+          "target": "0x3ac19c",
+          "name": "external-or-unresolved"
+        }
+      ]
+    },
+    {
+      "start": "0x1c3af8",
+      "endExclusive": "0x1c4260",
+      "name": "oime_engine::pinyin::Engine::CanditateSortByFeature(bool)",
+      "verifiedInstructions": 473,
+      "assemblySha256": "e2a8fc0c7deb88333ff835cbcf93036af3dcd4b1833bfcceed6bfc469124cec0",
+      "calls": [
+        {
+          "at": "0x1c3b4c",
+          "target": "0x3ac748",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1c3c88",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1c3cb0",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1c3cbc",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1c3d38",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1c3d60",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1c3d74",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1c3dec",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1c3e14",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1c3e28",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1c3e74",
+          "target": "0x2054e4",
+          "name": "oime_engine::pinyin::MLPModel::CalcScoreByFeature(std::__1::vector<oime_engine::pinyin::CandidateFeature*, std::__1::allocator<oime_engine::pinyin::CandidateFeature*>>&, std::__1::vector<oime_engine::pinyin::CorrectFeature*, std::__1::allocator<oime_engine::pinyin::CorrectFeature*>>&)"
+        },
+        {
+          "at": "0x1c3f28",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1c3f58",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1c3f64",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1c3f90",
+          "target": "0x3acca0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1c3fc8",
+          "target": "0x1ed158",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1c4008",
+          "target": "0x1ed158",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1c4038",
+          "target": "0x1df180",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1c4048",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1c4054",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1c4064",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1c4074",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1c40c4",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1c4104",
+          "target": "0x11ba4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1c4110",
+          "target": "0x11c70",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1c4118",
+          "target": "0x3ac9c4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1c411c",
+          "target": "0x11ba4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1c4124",
+          "target": "0x11c70",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1c412c",
+          "target": "0x11ba4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1c4134",
+          "target": "0x11ba4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1c413c",
+          "target": "0x11c70",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1c4144",
+          "target": "0x11c70",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1c4154",
+          "target": "0x3ac970",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1c4164",
+          "target": "0x135fc0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1c4180",
+          "target": "0x3ac934",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1c418c",
+          "target": "0x3ac97c",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1c41a4",
+          "target": "0x3ac964",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1c41c8",
+          "target": "0x11878",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1c41f0",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1c4218",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1c4220",
+          "target": "0xb17fc",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1c4230",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1c4238",
+          "target": "0x3ac19c",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1c4240",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1c4250",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        }
+      ]
+    },
+    {
+      "start": "0x2054e4",
+      "endExclusive": "0x205858",
+      "name": "oime_engine::pinyin::MLPModel::CalcScoreByFeature(std::__1::vector<oime_engine::pinyin::CandidateFeature*, std::__1::allocator<oime_engine::pinyin::CandidateFeature*>>&, std::__1::vector<oime_engine::pinyin::CorrectFeature*, std::__1::allocator<oime_engine::pinyin::CorrectFeature*>>&)",
+      "verifiedInstructions": 221,
+      "assemblySha256": "5e5297e4e079e91a43b3cbe66ce0cb4c304f8c10de8d54a056b1da6c8bd79b24",
+      "calls": [
+        {
+          "at": "0x205554",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2055b0",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2055f4",
+          "target": "0xeb0f4",
+          "name": "oime_engine::pinyin::CombinedFeature::CombinedFeature(oime_engine::pinyin::CandidateFeature*, oime_engine::pinyin::CorrectFeature*, oime_engine::pinyin::SentenceFeature*, oime_engine::pinyin::CloudFeature*, float)"
+        },
+        {
+          "at": "0x205668",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x20568c",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2056a4",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2056bc",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2056dc",
+          "target": "0x205858",
+          "name": "oime_engine::pinyin::MLPModel::CalcScoreByFeatureCombined(std::__1::vector<oime_engine::pinyin::CombinedFeature, std::__1::allocator<oime_engine::pinyin::CombinedFeature>>&)"
+        },
+        {
+          "at": "0x205750",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x205814",
+          "target": "0x11ba4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x20581c",
+          "target": "0x11c70",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x205824",
+          "target": "0x11ba4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x20584c",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x205854",
+          "target": "0x3ac19c",
+          "name": "external-or-unresolved"
+        }
+      ]
+    },
+    {
+      "start": "0x205858",
+      "endExclusive": "0x20a120",
+      "name": "oime_engine::pinyin::MLPModel::CalcScoreByFeatureCombined(std::__1::vector<oime_engine::pinyin::CombinedFeature, std::__1::allocator<oime_engine::pinyin::CombinedFeature>>&)",
+      "verifiedInstructions": 4658,
+      "assemblySha256": "72813f2e52518000adfd7a662f9e35588b2c7c700a1eac3f2876eefda1de51c0",
+      "calls": [
+        {
+          "at": "0x2058c0",
+          "target": "0x2046a0",
+          "name": "oime_engine::pinyin::MLPModel::FeatureBucket(oime_engine::pinyin::CombinedFeature&)"
+        },
+        {
+          "at": "0x205904",
+          "target": "0x3aca48",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x205958",
+          "target": "0x204cc8",
+          "name": "oime_engine::pinyin::MLPModel::FeatureStandard(float*, int const*, float)"
+        },
+        {
+          "at": "0x2059a8",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2059e0",
+          "target": "0x369568",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x205a40",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x205a50",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x205a94",
+          "target": "0x3ac9c4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x205aa8",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x205ab0",
+          "target": "0x3ac19c",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x205abc",
+          "target": "0x3ac19c",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x205b00",
+          "target": "0x18b70",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x205b30",
+          "target": "0x1e5798",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x205b44",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x205ba4",
+          "target": "0x750fc",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x205bac",
+          "target": "0x3ac19c",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x205bf0",
+          "target": "0x18b70",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x205c20",
+          "target": "0x205ca0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x205c3c",
+          "target": "0x205e48",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x205c94",
+          "target": "0x1698bc",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x205c9c",
+          "target": "0x3ac19c",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x205e6c",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x205ea4",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x205ebc",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x205ee0",
+          "target": "0x11ba4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x205ef8",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x205f00",
+          "target": "0x16985c",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x205f08",
+          "target": "0x3ac19c",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x205f4c",
+          "target": "0x18b70",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x205f7c",
+          "target": "0x205ca0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x205f98",
+          "target": "0x205e48",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x205ff0",
+          "target": "0x1698bc",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x205ff8",
+          "target": "0x3ac19c",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x20603c",
+          "target": "0x18b70",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x20606c",
+          "target": "0x1e5798",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206080",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2060e0",
+          "target": "0x750fc",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2060e8",
+          "target": "0x3ac19c",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x20612c",
+          "target": "0x18b70",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x20615c",
+          "target": "0xec8ac",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206170",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2061d0",
+          "target": "0x750fc",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2061d8",
+          "target": "0x3ac19c",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2061fc",
+          "target": "0x3ac160",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x20627c",
+          "target": "0x9ea6c",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206298",
+          "target": "0x3ac934",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2062b8",
+          "target": "0x9ed04",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2062d4",
+          "target": "0x3ac934",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2062fc",
+          "target": "0x9ea6c",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206318",
+          "target": "0x3ac934",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206338",
+          "target": "0x9ed04",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206354",
+          "target": "0x3ac934",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206388",
+          "target": "0x9edf4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2063a4",
+          "target": "0x3ac934",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2063c0",
+          "target": "0x4fe28",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2063e0",
+          "target": "0x4fe28",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206404",
+          "target": "0x4fe28",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206424",
+          "target": "0x4fe28",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206448",
+          "target": "0x4fe28",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206468",
+          "target": "0x4fe28",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x20648c",
+          "target": "0x4fe28",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2064ac",
+          "target": "0x4fe28",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2064d0",
+          "target": "0x4fe28",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2064f0",
+          "target": "0x4fe28",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206514",
+          "target": "0x4fe28",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206534",
+          "target": "0x4fe28",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206558",
+          "target": "0x4fe28",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206578",
+          "target": "0x4fe28",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x20659c",
+          "target": "0x4fe28",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2065bc",
+          "target": "0x4fe28",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2065e0",
+          "target": "0x4fe28",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206600",
+          "target": "0x4fe28",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206624",
+          "target": "0x4fe28",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206644",
+          "target": "0x4fe28",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206668",
+          "target": "0x4fe28",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206688",
+          "target": "0x4fe28",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2066ac",
+          "target": "0x4fe28",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2066cc",
+          "target": "0x4fe28",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2066f0",
+          "target": "0x4fe28",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206710",
+          "target": "0x4fe28",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206734",
+          "target": "0x4fe28",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206754",
+          "target": "0x4fe28",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206778",
+          "target": "0x4fe28",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206798",
+          "target": "0x4fe28",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2067bc",
+          "target": "0x4fe28",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2067dc",
+          "target": "0x4fe28",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206800",
+          "target": "0x4fe28",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x20681c",
+          "target": "0x4fe28",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206850",
+          "target": "0x9e5d8",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206890",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2068a0",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2068c0",
+          "target": "0x3ac934",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2068d8",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2068f4",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206910",
+          "target": "0x3ac934",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206928",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x20698c",
+          "target": "0x3ac934",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2069a4",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2069c0",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2069dc",
+          "target": "0x3ac934",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2069f4",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206a5c",
+          "target": "0x3ac934",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206a74",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206adc",
+          "target": "0x3ac934",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206af4",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206b18",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206b34",
+          "target": "0x3ac934",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206b4c",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206b68",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206b84",
+          "target": "0x3ac934",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206b9c",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206bb8",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206bd4",
+          "target": "0x3ac934",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206bec",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206c20",
+          "target": "0x3ac934",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206c38",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206c6c",
+          "target": "0x3ac934",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206c84",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206cb8",
+          "target": "0x3ac934",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206cd0",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206cec",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206d08",
+          "target": "0x3ac934",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206d20",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206d3c",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206d58",
+          "target": "0x3ac934",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206d70",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206d8c",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206da8",
+          "target": "0x3ac934",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206dc0",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206ddc",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206df8",
+          "target": "0x3ac934",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206e10",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206e34",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206e50",
+          "target": "0x3ac934",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206e68",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206e8c",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206ea8",
+          "target": "0x3ac934",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206ec0",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206ee4",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206f00",
+          "target": "0x3ac934",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206f18",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206f3c",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206f58",
+          "target": "0x3ac934",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206f70",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206f94",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206fb0",
+          "target": "0x3ac934",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206fc8",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x206fec",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207008",
+          "target": "0x3ac934",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207020",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207088",
+          "target": "0x3ac934",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2070a0",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x20710c",
+          "target": "0x3ac934",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207124",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x20717c",
+          "target": "0x3ac934",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207194",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2071f0",
+          "target": "0x3ac934",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207208",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x20722c",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207248",
+          "target": "0x3ac934",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207260",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207284",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2072a0",
+          "target": "0x3ac934",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2072b8",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2072dc",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2072f8",
+          "target": "0x3ac934",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207310",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207334",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207350",
+          "target": "0x3ac934",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207368",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x20738c",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2073a8",
+          "target": "0x3ac934",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2073c0",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2073dc",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2073f8",
+          "target": "0x3ac934",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207410",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207434",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207450",
+          "target": "0x3ac934",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207468",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x20748c",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2074a8",
+          "target": "0x3ac934",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2074c0",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2074e4",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207500",
+          "target": "0x3ac934",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207518",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x20753c",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207558",
+          "target": "0x3ac934",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207570",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207594",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2075b0",
+          "target": "0x3ac934",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2075c8",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2075ec",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207608",
+          "target": "0x3ac934",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207620",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207644",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207660",
+          "target": "0x3ac934",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207678",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x20769c",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2076b8",
+          "target": "0x3ac934",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2076d0",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2076f4",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207710",
+          "target": "0x3ac934",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207728",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x20774c",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207768",
+          "target": "0x3ac934",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207780",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2077a4",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2077c0",
+          "target": "0x3ac934",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2077d8",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2077fc",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207818",
+          "target": "0x3ac934",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207830",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207854",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207870",
+          "target": "0x3ac934",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207888",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2078ac",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2078c8",
+          "target": "0x3ac934",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2078e0",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207904",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207920",
+          "target": "0x3ac934",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207938",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207998",
+          "target": "0x3ac934",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2079b0",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2079d4",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2079f0",
+          "target": "0x3ac934",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207a08",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207a2c",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207a48",
+          "target": "0x3ac934",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207a60",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207a84",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207aa0",
+          "target": "0x3ac934",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207ab8",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207adc",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207af8",
+          "target": "0x3ac934",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207b10",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207b2c",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207b48",
+          "target": "0x3ac934",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207b60",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207b7c",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207b98",
+          "target": "0x3ac934",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207bcc",
+          "target": "0x205ac0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207bf8",
+          "target": "0x3ac934",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207c20",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207c38",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207c6c",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207c84",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207cb4",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207ccc",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207d08",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207d20",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207d50",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207d68",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207d9c",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207db4",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207dec",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207e04",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207e40",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207e58",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207e90",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207ea8",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207ee4",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207efc",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207f34",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207f4c",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207f88",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207fa0",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207fd8",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x207ff0",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x20802c",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x208044",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x20807c",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x208094",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2080c8",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2080e0",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x20811c",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x208134",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x208174",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x20818c",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2081c8",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2081e0",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x208220",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x208238",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x208274",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x20828c",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2082cc",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2082e4",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x208320",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x208338",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x208378",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x208390",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2083cc",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2083e4",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x208424",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x20843c",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x208478",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x208490",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2084d0",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2084e8",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x208524",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x20853c",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x20857c",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x208594",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2085d0",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2085e8",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x208628",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x208640",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x20867c",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x208694",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2086d4",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2086ec",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x208728",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x208740",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x208780",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x208798",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2087d4",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2087ec",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x20882c",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x208844",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x208880",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x208898",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2088d8",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2088f0",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x20892c",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x208944",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x208984",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x20899c",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2089d8",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2089f0",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x208a30",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x208a48",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x208a84",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x208a9c",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x208adc",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x208af4",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x208b30",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x208b48",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x208b88",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x208ba0",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x208bdc",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x208bf4",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x208c34",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x208c4c",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x208c88",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x208ca0",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x208cd4",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x208cec",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x208d0c",
+          "target": "0x205bb0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x208d30",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x208d50",
+          "target": "0x3ac934",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x208d60",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x208d98",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x208dcc",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x208df8",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x208e28",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x208e54",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x208e88",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x208eb4",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x208ee0",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x208f0c",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x208f38",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x208f74",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x208f9c",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x208fc8",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x208ff4",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209020",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x20905c",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x20909c",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2090e0",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209120",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x20915c",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x20919c",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2091e0",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209224",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209268",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2092b4",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209304",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209348",
+          "target": "0x205f0c",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209358",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209368",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209378",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209388",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209398",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2093a8",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2093b8",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2093c8",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2093d8",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2093e8",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2093f8",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209408",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209418",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209428",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209438",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209448",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209458",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209468",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209478",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209488",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209490",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209498",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2094a0",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2094a8",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2094b0",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2094b8",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2094c0",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2094dc",
+          "target": "0x3ac934",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2095c8",
+          "target": "0x205ffc",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2095e4",
+          "target": "0x3ac934",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2095fc",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209628",
+          "target": "0x3ac934",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209640",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x20966c",
+          "target": "0x3ac934",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2096ac",
+          "target": "0x3ac9c4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2096b0",
+          "target": "0x11ba4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2096b8",
+          "target": "0x11ba4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2096c0",
+          "target": "0x11ba4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2096c8",
+          "target": "0x11ba4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2096d0",
+          "target": "0x11ba4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2096d8",
+          "target": "0x11ba4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2096e0",
+          "target": "0x11ba4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2096e8",
+          "target": "0x11ba4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2096f0",
+          "target": "0x11ba4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2096f8",
+          "target": "0x11ba4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209700",
+          "target": "0x11ba4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209708",
+          "target": "0x11ba4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209710",
+          "target": "0x11ba4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209718",
+          "target": "0x11ba4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209720",
+          "target": "0x11ba4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209728",
+          "target": "0x11ba4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209730",
+          "target": "0x11ba4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209738",
+          "target": "0x11ba4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209740",
+          "target": "0x11ba4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209748",
+          "target": "0x11ba4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209750",
+          "target": "0x11ba4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209758",
+          "target": "0x11ba4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209760",
+          "target": "0x11ba4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209768",
+          "target": "0x11ba4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209770",
+          "target": "0x11ba4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209778",
+          "target": "0x11ba4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209780",
+          "target": "0x11ba4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209788",
+          "target": "0x11ba4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209790",
+          "target": "0x11ba4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209798",
+          "target": "0x11ba4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2097a0",
+          "target": "0x11ba4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2097a8",
+          "target": "0x11ba4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2097b0",
+          "target": "0x11ba4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2097b8",
+          "target": "0x11ba4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2097c0",
+          "target": "0x11ba4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2097c8",
+          "target": "0x11ba4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2097d0",
+          "target": "0x11ba4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2097d8",
+          "target": "0x11ba4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2097e0",
+          "target": "0x11ba4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2097e8",
+          "target": "0x11ba4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2097f0",
+          "target": "0x11ba4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2097f8",
+          "target": "0x11ba4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209800",
+          "target": "0x11ba4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209808",
+          "target": "0x11ba4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209810",
+          "target": "0x11ba4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209818",
+          "target": "0x11ba4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209820",
+          "target": "0x11ba4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209828",
+          "target": "0x11ba4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209830",
+          "target": "0x11ba4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209838",
+          "target": "0x11ba4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209840",
+          "target": "0x11ba4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209848",
+          "target": "0x11ba4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2098f8",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209908",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209918",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209928",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209938",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209948",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209958",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209968",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209978",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209988",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209998",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2099a8",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2099b8",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2099c8",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2099d8",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2099e8",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2099f8",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209a08",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209a18",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209a28",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209a70",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209a78",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209a80",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209a88",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209a90",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209a98",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209aa0",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209ad8",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209ae4",
+          "target": "0x3ac19c",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209b58",
+          "target": "0x3ac19c",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209b84",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209f84",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209fa8",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209fc0",
+          "target": "0x3ac19c",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209fc4",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209fcc",
+          "target": "0x3ac19c",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209fdc",
+          "target": "0x9e554",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209fe4",
+          "target": "0x48188",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209fec",
+          "target": "0x48188",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209ff4",
+          "target": "0x48188",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x209ffc",
+          "target": "0x48188",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x20a004",
+          "target": "0x48188",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x20a00c",
+          "target": "0x48188",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x20a014",
+          "target": "0x48188",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x20a01c",
+          "target": "0x48188",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x20a024",
+          "target": "0x48188",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x20a02c",
+          "target": "0x48188",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x20a034",
+          "target": "0x48188",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x20a03c",
+          "target": "0x48188",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x20a044",
+          "target": "0x48188",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x20a04c",
+          "target": "0x48188",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x20a054",
+          "target": "0x48188",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x20a05c",
+          "target": "0x48188",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x20a064",
+          "target": "0x48188",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x20a06c",
+          "target": "0x48188",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x20a074",
+          "target": "0x48188",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x20a07c",
+          "target": "0x48188",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x20a084",
+          "target": "0x48188",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x20a08c",
+          "target": "0x48188",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x20a094",
+          "target": "0x48188",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x20a09c",
+          "target": "0x48188",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x20a0a4",
+          "target": "0x48188",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x20a0ac",
+          "target": "0x48188",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x20a0b4",
+          "target": "0x48188",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x20a0bc",
+          "target": "0x48188",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x20a0c4",
+          "target": "0x48188",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x20a0cc",
+          "target": "0x48188",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x20a0d4",
+          "target": "0x48188",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x20a0dc",
+          "target": "0x48188",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x20a0e4",
+          "target": "0x48188",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x20a0ec",
+          "target": "0x48188",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x20a0f4",
+          "target": "0x3ac19c",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x20a108",
+          "target": "0x48188",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x20a118",
+          "target": "0x3ac19c",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x20a11c",
+          "target": "0x3ac19c",
+          "name": "external-or-unresolved"
+        }
+      ]
+    },
+    {
+      "start": "0x203e98",
+      "endExclusive": "0x2045b4",
+      "name": "oime_engine::pinyin::MLPModel::LoadModel(std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>> const&, oime_engine::pinyin::MLPModelType, std::__1::vector<oime_engine::FdErrMsg, std::__1::allocator<oime_engine::FdErrMsg>>*)",
+      "verifiedInstructions": 455,
+      "assemblySha256": "fbed5193606518cc809433234c5467031a4a1d133686794f93bfeddd85d222c1",
+      "calls": [
+        {
+          "at": "0x203f44",
+          "target": "0xc2e40",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x203f88",
+          "target": "0xc2e40",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x203fac",
+          "target": "0x3ac454",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x203fd0",
+          "target": "0x12ae0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x204008",
+          "target": "0x12ae0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x204018",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x204040",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x204050",
+          "target": "0x96b5c",
+          "name": "oime_engine::MakePath(std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>> const&, std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>> const&)"
+        },
+        {
+          "at": "0x204060",
+          "target": "0x3690f4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x204088",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2040dc",
+          "target": "0xb1bb4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x204128",
+          "target": "0xb1bb4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x204174",
+          "target": "0xb1bb4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2041e0",
+          "target": "0xb1bb4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2041f4",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x204228",
+          "target": "0x2042f0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x20425c",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x20426c",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x204290",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2042b0",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2042cc",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2042e4",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2042ec",
+          "target": "0x3ac19c",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x204360",
+          "target": "0x928b0",
+          "name": "oime_engine::KLogger::GetExtraInformation(char const*, int, char const*, oime_engine::LogLevel)"
+        },
+        {
+          "at": "0x2044a8",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2044e8",
+          "target": "0x537e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x204524",
+          "target": "0x92a54",
+          "name": "oime_engine::KLogger::LogInner(oime_engine::LogLevel, char const*)"
+        },
+        {
+          "at": "0x204534",
+          "target": "0x3acb74",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x204570",
+          "target": "0x3ac9c4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x204598",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2045a8",
+          "target": "0x3acb74",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x2045b0",
+          "target": "0x3ac19c",
+          "name": "external-or-unresolved"
+        }
+      ]
+    },
+    {
+      "start": "0x1380e8",
+      "endExclusive": "0x138170",
+      "name": "oime_engine::pinyin::new_session::MergeStrategySession::Merge(oime_engine::pinyin::Result&, int, oime_engine::UpdateResultType)",
+      "verifiedInstructions": 34,
+      "assemblySha256": "c0cad011723a7c21181fdcebe6196cceafcb7685f89ea824da801012204f7abc",
+      "calls": [
+        {
+          "at": "0x138130",
+          "target": "0x138170",
+          "name": "oime_engine::pinyin::new_session::MakeCloudResultsCandidates(std::__1::vector<oime_engine::pinyin::CloudItem, std::__1::allocator<oime_engine::pinyin::CloudItem>> const&, bool)"
+        },
+        {
+          "at": "0x138140",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x13815c",
+          "target": "0x138520",
+          "name": "oime_engine::pinyin::new_session::MergeStrategySession::MergeInner(oime_engine::pinyin::Result&)"
+        }
+      ]
+    },
+    {
+      "start": "0x138520",
+      "endExclusive": "0x138804",
+      "name": "oime_engine::pinyin::new_session::MergeStrategySession::MergeInner(oime_engine::pinyin::Result&)",
+      "verifiedInstructions": 185,
+      "assemblySha256": "4092dc45f1af8aba9dbf24b6c34dfb91fa5b30a82396f4edcc869579aad2832a",
+      "calls": [
+        {
+          "at": "0x13854c",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x13855c",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x13856c",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x138588",
+          "target": "0x21b04c",
+          "name": "oime_engine::pinyin::Result::Size() const"
+        },
+        {
+          "at": "0x1385a0",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x1385ac",
+          "target": "0x9c500",
+          "name": "oime_engine::KWordCodeToWordCode(oime_engine::KFixArray<char16_t, 64ul> const&)"
+        },
+        {
+          "at": "0x1385b8",
+          "target": "0xdd9e8",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1385d4",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1385e8",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x1385fc",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x138618",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x13862c",
+          "target": "0x21b04c",
+          "name": "oime_engine::pinyin::Result::Size() const"
+        },
+        {
+          "at": "0x1386bc",
+          "target": "0x138804",
+          "name": "oime_engine::pinyin::new_session::MergeStrategySession::MergeCloudConvert(oime_engine::pinyin::Result&)"
+        },
+        {
+          "at": "0x1386c8",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x138708",
+          "target": "0x138804",
+          "name": "oime_engine::pinyin::new_session::MergeStrategySession::MergeCloudConvert(oime_engine::pinyin::Result&)"
+        },
+        {
+          "at": "0x138710",
+          "target": "0x21c108",
+          "name": "oime_engine::pinyin::Result::AdjustCorrectUsrDictPos()"
+        },
+        {
+          "at": "0x13872c",
+          "target": "0x21edbc",
+          "name": "oime_engine::pinyin::Result::AdjustUsrCand(bool, unsigned int)"
+        },
+        {
+          "at": "0x138738",
+          "target": "0x2212ac",
+          "name": "oime_engine::pinyin::Result::ReduceLongAndShortChange(oime_engine::pinyin::CandidateItem const&)"
+        },
+        {
+          "at": "0x138754",
+          "target": "0x221550",
+          "name": "oime_engine::pinyin::Result::LLMOffsetPos(bool) const"
+        },
+        {
+          "at": "0x138758",
+          "target": "0x256fa8",
+          "name": "oime_engine::pinyin::PyState::Instance()"
+        },
+        {
+          "at": "0x138774",
+          "target": "0x138f9c",
+          "name": "oime_engine::pinyin::new_session::MergeStrategySession::MergeCloudLLM_SP(oime_engine::pinyin::Result&, oime_engine::KFixArray<char16_t, 64ul> const&)"
+        },
+        {
+          "at": "0x138788",
+          "target": "0x13a0f4",
+          "name": "oime_engine::pinyin::new_session::MergeStrategySession::MergeCloudLLM(oime_engine::pinyin::Result&, oime_engine::KFixArray<char16_t, 64ul> const&, unsigned short const&)"
+        },
+        {
+          "at": "0x138794",
+          "target": "0x221550",
+          "name": "oime_engine::pinyin::Result::LLMOffsetPos(bool) const"
+        },
+        {
+          "at": "0x1387c4",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x1387e0",
+          "target": "0x21d7e4",
+          "name": "oime_engine::pinyin::Result::AdjustWordToIndex(oime_engine::KFixArray<char16_t, 64ul> const&, unsigned int)"
+        },
+        {
+          "at": "0x1387f8",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x138800",
+          "target": "0x3ac19c",
+          "name": "external-or-unresolved"
+        }
+      ]
+    },
+    {
+      "start": "0x138f9c",
+      "endExclusive": "0x13a0f4",
+      "name": "oime_engine::pinyin::new_session::MergeStrategySession::MergeCloudLLM_SP(oime_engine::pinyin::Result&, oime_engine::KFixArray<char16_t, 64ul> const&)",
+      "verifiedInstructions": 1110,
+      "assemblySha256": "70ca100de345972df7e02965ad12ede03aa580dce7c46ca745f131efd0d549da",
+      "calls": [
+        {
+          "at": "0x138ffc",
+          "target": "0x21b04c",
+          "name": "oime_engine::pinyin::Result::Size() const"
+        },
+        {
+          "at": "0x13904c",
+          "target": "0x13dfe8",
+          "name": "oime_engine::pinyin::new_session::MakeLLMCandidate_SP(std::__1::vector<oime_engine::pinyin::LLMItem, std::__1::allocator<oime_engine::pinyin::LLMItem>> const&, oime_engine::pinyin::Result const&, oime_engine::pinyin::CloudResult const&, std::__1::vector<oime_engine::pinyin::CandidateInner*, std::__1::allocator<oime_engine::pinyin::CandidateInner*>> const&, bool, oime_engine::UpdateResultType, oime_engine::pinyin::new_session::LLMCacheAddParam const*, std::__1::vector<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>>, std::__1::allocator<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>>>> const&, unsigned int&)"
+        },
+        {
+          "at": "0x139084",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x139094",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1390e4",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x1390f8",
+          "target": "0x114654",
+          "name": "oime_engine::pinyin::CandidateInner::GetWord() const"
+        },
+        {
+          "at": "0x139104",
+          "target": "0x97688",
+          "name": "oime_engine::Utf8ToUtf16(std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>> const&)"
+        },
+        {
+          "at": "0x139114",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x139138",
+          "target": "0x986e0",
+          "name": "oime_engine::IsAllAlpha(char16_t const*, unsigned int)"
+        },
+        {
+          "at": "0x13916c",
+          "target": "0x21b04c",
+          "name": "oime_engine::pinyin::Result::Size() const"
+        },
+        {
+          "at": "0x139188",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x13919c",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x1392b0",
+          "target": "0x9cb60",
+          "name": "oime_engine::ProbToLog(double)"
+        },
+        {
+          "at": "0x139450",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x139488",
+          "target": "0x3acca0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1394a4",
+          "target": "0x21b04c",
+          "name": "oime_engine::pinyin::Result::Size() const"
+        },
+        {
+          "at": "0x1394bc",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x1394d8",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x1394ec",
+          "target": "0x21b04c",
+          "name": "oime_engine::pinyin::Result::Size() const"
+        },
+        {
+          "at": "0x1394fc",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x139540",
+          "target": "0x21b04c",
+          "name": "oime_engine::pinyin::Result::Size() const"
+        },
+        {
+          "at": "0x139554",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x13959c",
+          "target": "0x21b04c",
+          "name": "oime_engine::pinyin::Result::Size() const"
+        },
+        {
+          "at": "0x1395b0",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x1395f8",
+          "target": "0x21b04c",
+          "name": "oime_engine::pinyin::Result::Size() const"
+        },
+        {
+          "at": "0x13960c",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x139654",
+          "target": "0x21b04c",
+          "name": "oime_engine::pinyin::Result::Size() const"
+        },
+        {
+          "at": "0x139668",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x1396b8",
+          "target": "0x21b04c",
+          "name": "oime_engine::pinyin::Result::Size() const"
+        },
+        {
+          "at": "0x139790",
+          "target": "0x21b04c",
+          "name": "oime_engine::pinyin::Result::Size() const"
+        },
+        {
+          "at": "0x1397a4",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x1397c0",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x139814",
+          "target": "0x21b0dc",
+          "name": "oime_engine::pinyin::Result::Insert(unsigned int, oime_engine::pinyin::CandidateInner*)"
+        },
+        {
+          "at": "0x1398b0",
+          "target": "0x21b04c",
+          "name": "oime_engine::pinyin::Result::Size() const"
+        },
+        {
+          "at": "0x1398c4",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x1398e0",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x139934",
+          "target": "0x21b0dc",
+          "name": "oime_engine::pinyin::Result::Insert(unsigned int, oime_engine::pinyin::CandidateInner*)"
+        },
+        {
+          "at": "0x139958",
+          "target": "0x21b0dc",
+          "name": "oime_engine::pinyin::Result::Insert(unsigned int, oime_engine::pinyin::CandidateInner*)"
+        },
+        {
+          "at": "0x1399ac",
+          "target": "0x21b0dc",
+          "name": "oime_engine::pinyin::Result::Insert(unsigned int, oime_engine::pinyin::CandidateInner*)"
+        },
+        {
+          "at": "0x1399dc",
+          "target": "0x21b0dc",
+          "name": "oime_engine::pinyin::Result::Insert(unsigned int, oime_engine::pinyin::CandidateInner*)"
+        },
+        {
+          "at": "0x139a0c",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x139a30",
+          "target": "0x3acca0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x139ac8",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x139ae0",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x139b24",
+          "target": "0x21b0dc",
+          "name": "oime_engine::pinyin::Result::Insert(unsigned int, oime_engine::pinyin::CandidateInner*)"
+        },
+        {
+          "at": "0x139b84",
+          "target": "0x21b0dc",
+          "name": "oime_engine::pinyin::Result::Insert(unsigned int, oime_engine::pinyin::CandidateInner*)"
+        },
+        {
+          "at": "0x139bb0",
+          "target": "0x21b0dc",
+          "name": "oime_engine::pinyin::Result::Insert(unsigned int, oime_engine::pinyin::CandidateInner*)"
+        },
+        {
+          "at": "0x139bcc",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x139c00",
+          "target": "0x21b0dc",
+          "name": "oime_engine::pinyin::Result::Insert(unsigned int, oime_engine::pinyin::CandidateInner*)"
+        },
+        {
+          "at": "0x139c28",
+          "target": "0x21b04c",
+          "name": "oime_engine::pinyin::Result::Size() const"
+        },
+        {
+          "at": "0x139c40",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x139c68",
+          "target": "0x21b0dc",
+          "name": "oime_engine::pinyin::Result::Insert(unsigned int, oime_engine::pinyin::CandidateInner*)"
+        },
+        {
+          "at": "0x139c7c",
+          "target": "0x21b04c",
+          "name": "oime_engine::pinyin::Result::Size() const"
+        },
+        {
+          "at": "0x139c94",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x139cbc",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x139d08",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x139d7c",
+          "target": "0x21b0dc",
+          "name": "oime_engine::pinyin::Result::Insert(unsigned int, oime_engine::pinyin::CandidateInner*)"
+        },
+        {
+          "at": "0x139dd8",
+          "target": "0x21b0dc",
+          "name": "oime_engine::pinyin::Result::Insert(unsigned int, oime_engine::pinyin::CandidateInner*)"
+        },
+        {
+          "at": "0x139df8",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x139ebc",
+          "target": "0x13007c",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x139ed4",
+          "target": "0x13007c",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x139eec",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x139f04",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x139f14",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x139f48",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x139f9c",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x139fe8",
+          "target": "0x3ac9c4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x139fec",
+          "target": "0x12960",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x139ff4",
+          "target": "0x11c70",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x139ffc",
+          "target": "0x12960",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x13a004",
+          "target": "0x11c70",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x13a050",
+          "target": "0x11878",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x13a098",
+          "target": "0x41708",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x13a0a0",
+          "target": "0x3ac19c",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x13a0b8",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x13a0d0",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x13a0d8",
+          "target": "0xb17fc",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x13a0e8",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x13a0f0",
+          "target": "0x3ac19c",
+          "name": "external-or-unresolved"
+        }
+      ]
+    },
+    {
+      "start": "0x13a0f4",
+      "endExclusive": "0x13b97c",
+      "name": "oime_engine::pinyin::new_session::MergeStrategySession::MergeCloudLLM(oime_engine::pinyin::Result&, oime_engine::KFixArray<char16_t, 64ul> const&, unsigned short const&)",
+      "verifiedInstructions": 1570,
+      "assemblySha256": "789a5ec4d82103c1d7dfd992c28aa8b2de57bd68ac9f07b3f12ccc96737d98ce",
+      "calls": [
+        {
+          "at": "0x13a158",
+          "target": "0x21b04c",
+          "name": "oime_engine::pinyin::Result::Size() const"
+        },
+        {
+          "at": "0x13a19c",
+          "target": "0x13ffbc",
+          "name": "oime_engine::pinyin::new_session::MakeLLMCandidate(std::__1::vector<oime_engine::pinyin::LLMItem, std::__1::allocator<oime_engine::pinyin::LLMItem>> const&, oime_engine::pinyin::Result const&, oime_engine::pinyin::CloudResult const&, std::__1::vector<oime_engine::pinyin::CandidateInner*, std::__1::allocator<oime_engine::pinyin::CandidateInner*>> const&, bool, oime_engine::UpdateResultType, oime_engine::pinyin::new_session::LLMCacheAddParam const*, std::__1::vector<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>>, std::__1::allocator<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>>>> const&, unsigned int&)"
+        },
+        {
+          "at": "0x13a1b8",
+          "target": "0x140430",
+          "name": "oime_engine::pinyin::new_session::CollectTopWords(oime_engine::pinyin::Result const&, unsigned int)"
+        },
+        {
+          "at": "0x13a1f0",
+          "target": "0x1404e4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x13a248",
+          "target": "0x1404e4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x13a278",
+          "target": "0x13c6dc",
+          "name": "oime_engine::pinyin::new_session::TransRMScoreToProb(std::__1::vector<oime_engine::pinyin::CandidateInner*, std::__1::allocator<oime_engine::pinyin::CandidateInner*>> const&, std::__1::vector<oime_engine::pinyin::CandidateInner*, std::__1::allocator<oime_engine::pinyin::CandidateInner*>> const&, std::__1::vector<oime_engine::pinyin::CandidateInner*, std::__1::allocator<oime_engine::pinyin::CandidateInner*>> const&)"
+        },
+        {
+          "at": "0x13a2c8",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x13a2dc",
+          "target": "0x114654",
+          "name": "oime_engine::pinyin::CandidateInner::GetWord() const"
+        },
+        {
+          "at": "0x13a2e8",
+          "target": "0x97688",
+          "name": "oime_engine::Utf8ToUtf16(std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>> const&)"
+        },
+        {
+          "at": "0x13a2f8",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x13a320",
+          "target": "0x986e0",
+          "name": "oime_engine::IsAllAlpha(char16_t const*, unsigned int)"
+        },
+        {
+          "at": "0x13a344",
+          "target": "0x140118",
+          "name": "oime_engine::pinyin::new_session::PromoteRawLLMFirst(oime_engine::pinyin::Result&, std::__1::vector<oime_engine::pinyin::CandidateInner*, std::__1::allocator<oime_engine::pinyin::CandidateInner*>> const&, std::__1::vector<oime_engine::pinyin::LLMItem, std::__1::allocator<oime_engine::pinyin::LLMItem>> const&, double)"
+        },
+        {
+          "at": "0x13a388",
+          "target": "0x21b04c",
+          "name": "oime_engine::pinyin::Result::Size() const"
+        },
+        {
+          "at": "0x13a3a4",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x13a3c4",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x13a3d4",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x13a658",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x13a678",
+          "target": "0x3acca0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x13a6e4",
+          "target": "0x256fa8",
+          "name": "oime_engine::pinyin::PyState::Instance()"
+        },
+        {
+          "at": "0x13a714",
+          "target": "0x21b04c",
+          "name": "oime_engine::pinyin::Result::Size() const"
+        },
+        {
+          "at": "0x13a72c",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x13a748",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x13a75c",
+          "target": "0x21b04c",
+          "name": "oime_engine::pinyin::Result::Size() const"
+        },
+        {
+          "at": "0x13a76c",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x13a7b0",
+          "target": "0x21b04c",
+          "name": "oime_engine::pinyin::Result::Size() const"
+        },
+        {
+          "at": "0x13a7c4",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x13a808",
+          "target": "0x21b04c",
+          "name": "oime_engine::pinyin::Result::Size() const"
+        },
+        {
+          "at": "0x13a81c",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x13a868",
+          "target": "0x21b04c",
+          "name": "oime_engine::pinyin::Result::Size() const"
+        },
+        {
+          "at": "0x13a87c",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x13a8c0",
+          "target": "0x21b04c",
+          "name": "oime_engine::pinyin::Result::Size() const"
+        },
+        {
+          "at": "0x13a8d4",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x13a918",
+          "target": "0x21b04c",
+          "name": "oime_engine::pinyin::Result::Size() const"
+        },
+        {
+          "at": "0x13a96c",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x13a9cc",
+          "target": "0x21b04c",
+          "name": "oime_engine::pinyin::Result::Size() const"
+        },
+        {
+          "at": "0x13a9e0",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x13a9e4",
+          "target": "0x13babc",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x13a9f4",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x13a9f8",
+          "target": "0x13bb40",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x13aa48",
+          "target": "0x21b04c",
+          "name": "oime_engine::pinyin::Result::Size() const"
+        },
+        {
+          "at": "0x13aa68",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x13aab4",
+          "target": "0x135a28",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x13aac0",
+          "target": "0x12d8d4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x13aad4",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x13ab00",
+          "target": "0x21b0dc",
+          "name": "oime_engine::pinyin::Result::Insert(unsigned int, oime_engine::pinyin::CandidateInner*)"
+        },
+        {
+          "at": "0x13ab40",
+          "target": "0x21b04c",
+          "name": "oime_engine::pinyin::Result::Size() const"
+        },
+        {
+          "at": "0x13ab60",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x13abf0",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x13ac20",
+          "target": "0x12fb24",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x13ac2c",
+          "target": "0x21b04c",
+          "name": "oime_engine::pinyin::Result::Size() const"
+        },
+        {
+          "at": "0x13ac40",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x13ac68",
+          "target": "0x21b0dc",
+          "name": "oime_engine::pinyin::Result::Insert(unsigned int, oime_engine::pinyin::CandidateInner*)"
+        },
+        {
+          "at": "0x13acbc",
+          "target": "0x21b0dc",
+          "name": "oime_engine::pinyin::Result::Insert(unsigned int, oime_engine::pinyin::CandidateInner*)"
+        },
+        {
+          "at": "0x13ace0",
+          "target": "0x1422c0",
+          "name": "oime_engine::pinyin::new_session::MergeStrategySession::ReduceLongAndShortChange(oime_engine::pinyin::CandidateInner const*, oime_engine::pinyin::CandidateInner const*, unsigned short const&) const"
+        },
+        {
+          "at": "0x13ad04",
+          "target": "0x21b0dc",
+          "name": "oime_engine::pinyin::Result::Insert(unsigned int, oime_engine::pinyin::CandidateInner*)"
+        },
+        {
+          "at": "0x13ad1c",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x13ad34",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x13ad4c",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x13ada4",
+          "target": "0x21b0dc",
+          "name": "oime_engine::pinyin::Result::Insert(unsigned int, oime_engine::pinyin::CandidateInner*)"
+        },
+        {
+          "at": "0x13add0",
+          "target": "0x21b0dc",
+          "name": "oime_engine::pinyin::Result::Insert(unsigned int, oime_engine::pinyin::CandidateInner*)"
+        },
+        {
+          "at": "0x13adf4",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x13ae0c",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x13ae24",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x13aea0",
+          "target": "0x1422c0",
+          "name": "oime_engine::pinyin::new_session::MergeStrategySession::ReduceLongAndShortChange(oime_engine::pinyin::CandidateInner const*, oime_engine::pinyin::CandidateInner const*, unsigned short const&) const"
+        },
+        {
+          "at": "0x13aec0",
+          "target": "0x21b0dc",
+          "name": "oime_engine::pinyin::Result::Insert(unsigned int, oime_engine::pinyin::CandidateInner*)"
+        },
+        {
+          "at": "0x13aed0",
+          "target": "0x13babc",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x13af14",
+          "target": "0x13babc",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x13af60",
+          "target": "0x21b04c",
+          "name": "oime_engine::pinyin::Result::Size() const"
+        },
+        {
+          "at": "0x13af78",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x13afa0",
+          "target": "0x21b0dc",
+          "name": "oime_engine::pinyin::Result::Insert(unsigned int, oime_engine::pinyin::CandidateInner*)"
+        },
+        {
+          "at": "0x13afb8",
+          "target": "0x21b04c",
+          "name": "oime_engine::pinyin::Result::Size() const"
+        },
+        {
+          "at": "0x13afd4",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x13affc",
+          "target": "0x1422c0",
+          "name": "oime_engine::pinyin::new_session::MergeStrategySession::ReduceLongAndShortChange(oime_engine::pinyin::CandidateInner const*, oime_engine::pinyin::CandidateInner const*, unsigned short const&) const"
+        },
+        {
+          "at": "0x13b01c",
+          "target": "0x21b0dc",
+          "name": "oime_engine::pinyin::Result::Insert(unsigned int, oime_engine::pinyin::CandidateInner*)"
+        },
+        {
+          "at": "0x13b05c",
+          "target": "0x21b0dc",
+          "name": "oime_engine::pinyin::Result::Insert(unsigned int, oime_engine::pinyin::CandidateInner*)"
+        },
+        {
+          "at": "0x13b07c",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x13b0cc",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x13b100",
+          "target": "0x21b0dc",
+          "name": "oime_engine::pinyin::Result::Insert(unsigned int, oime_engine::pinyin::CandidateInner*)"
+        },
+        {
+          "at": "0x13b128",
+          "target": "0x12ae0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x13b12c",
+          "target": "0x256fa8",
+          "name": "oime_engine::pinyin::PyState::Instance()"
+        },
+        {
+          "at": "0x13b190",
+          "target": "0x12ae0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x13b1a0",
+          "target": "0x96754",
+          "name": "oime_engine::StartsWith(std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>> const&, std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>>)"
+        },
+        {
+          "at": "0x13b1e4",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x13b21c",
+          "target": "0x1422c0",
+          "name": "oime_engine::pinyin::new_session::MergeStrategySession::ReduceLongAndShortChange(oime_engine::pinyin::CandidateInner const*, oime_engine::pinyin::CandidateInner const*, unsigned short const&) const"
+        },
+        {
+          "at": "0x13b254",
+          "target": "0x21b0dc",
+          "name": "oime_engine::pinyin::Result::Insert(unsigned int, oime_engine::pinyin::CandidateInner*)"
+        },
+        {
+          "at": "0x13b274",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x13b37c",
+          "target": "0x13bb40",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x13b3e0",
+          "target": "0x21b04c",
+          "name": "oime_engine::pinyin::Result::Size() const"
+        },
+        {
+          "at": "0x13b3f4",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x13b40c",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x13b440",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x13b484",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x13b4d4",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x13b504",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x13b540",
+          "target": "0x21b144",
+          "name": "oime_engine::pinyin::Result::Erase(unsigned int)"
+        },
+        {
+          "at": "0x13b55c",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x13b56c",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x13b59c",
+          "target": "0x21b144",
+          "name": "oime_engine::pinyin::Result::Erase(unsigned int)"
+        },
+        {
+          "at": "0x13b5c4",
+          "target": "0x21b04c",
+          "name": "oime_engine::pinyin::Result::Size() const"
+        },
+        {
+          "at": "0x13b5d4",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x13b620",
+          "target": "0x21b0dc",
+          "name": "oime_engine::pinyin::Result::Insert(unsigned int, oime_engine::pinyin::CandidateInner*)"
+        },
+        {
+          "at": "0x13b640",
+          "target": "0x140118",
+          "name": "oime_engine::pinyin::new_session::PromoteRawLLMFirst(oime_engine::pinyin::Result&, std::__1::vector<oime_engine::pinyin::CandidateInner*, std::__1::allocator<oime_engine::pinyin::CandidateInner*>> const&, std::__1::vector<oime_engine::pinyin::LLMItem, std::__1::allocator<oime_engine::pinyin::LLMItem>> const&, double)"
+        },
+        {
+          "at": "0x13b64c",
+          "target": "0x14201c",
+          "name": "oime_engine::pinyin::new_session::PromoteLLMSecondLongPhrase(oime_engine::pinyin::Result&, std::__1::vector<oime_engine::pinyin::CandidateInner*, std::__1::allocator<oime_engine::pinyin::CandidateInner*>> const&)"
+        },
+        {
+          "at": "0x13b654",
+          "target": "0x256fa8",
+          "name": "oime_engine::pinyin::PyState::Instance()"
+        },
+        {
+          "at": "0x13b674",
+          "target": "0x97abc",
+          "name": "oime_engine::Utf16ToUtf8(std::__1::basic_string<char16_t, std::__1::char_traits<char16_t>, std::__1::allocator<char16_t>> const&)"
+        },
+        {
+          "at": "0x13b678",
+          "target": "0xe8930",
+          "name": "oime_engine::ABTest::GetSessionModelFullRequestABTestGroup()"
+        },
+        {
+          "at": "0x13b6b4",
+          "target": "0x141aa4",
+          "name": "oime_engine::pinyin::new_session::PromoteByDecisionTree(oime_engine::pinyin::Result&, std::__1::vector<oime_engine::KFixArray<char16_t, 64ul>, std::__1::allocator<oime_engine::KFixArray<char16_t, 64ul>>> const&, std::__1::vector<oime_engine::KFixArray<char16_t, 64ul>, std::__1::allocator<oime_engine::KFixArray<char16_t, 64ul>>> const&, std::__1::vector<oime_engine::KFixArray<char16_t, 64ul>, std::__1::allocator<oime_engine::KFixArray<char16_t, 64ul>>> const&, std::__1::vector<oime_engine::pinyin::CandidateInner*, std::__1::allocator<oime_engine::pinyin::CandidateInner*>> const&, std::__1::vector<oime_engine::pinyin::LLMItem, std::__1::allocator<oime_engine::pinyin::LLMItem>> const&, std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>> const&, unsigned int, std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>> const&, bool)"
+        },
+        {
+          "at": "0x13b6c4",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x13b6d4",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x13b724",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x13b734",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x13b744",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x13b754",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x13b7a0",
+          "target": "0x3ac9c4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x13b7a4",
+          "target": "0x12960",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x13b7ac",
+          "target": "0x11c70",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x13b7c8",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x13b7e4",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x13b820",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x13b85c",
+          "target": "0x11878",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x13b8b4",
+          "target": "0x3ac19c",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x13b908",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x13b910",
+          "target": "0xb17fc",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x13b938",
+          "target": "0x3ac19c",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x13b940",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x13b950",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x13b960",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x13b970",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x13b978",
+          "target": "0x3ac19c",
+          "name": "external-or-unresolved"
+        }
+      ]
+    },
+    {
+      "start": "0x13d700",
+      "endExclusive": "0x13dfe8",
+      "name": "oime_engine::pinyin::new_session::MergeStrategySession::MergeCloudAndLocalFeature(oime_engine::pinyin::Result&)",
+      "verifiedInstructions": 570,
+      "assemblySha256": "e45d96cb88581f58fccbbe7829b1acde329c7de7d9f98125d4b737d00c4dbd90",
+      "calls": [
+        {
+          "at": "0x13d760",
+          "target": "0x9c500",
+          "name": "oime_engine::KWordCodeToWordCode(oime_engine::KFixArray<char16_t, 64ul> const&)"
+        },
+        {
+          "at": "0x13d76c",
+          "target": "0xdd9e8",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x13d78c",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x13d7b8",
+          "target": "0x92b78",
+          "name": "oime_engine::KAllocator::Instance()"
+        },
+        {
+          "at": "0x13d7c0",
+          "target": "0x92d54",
+          "name": "oime_engine::KAllocator::Malloc(unsigned int)"
+        },
+        {
+          "at": "0x13d9ac",
+          "target": "0x9c500",
+          "name": "oime_engine::KWordCodeToWordCode(oime_engine::KFixArray<char16_t, 64ul> const&)"
+        },
+        {
+          "at": "0x13d9c0",
+          "target": "0x9c500",
+          "name": "oime_engine::KWordCodeToWordCode(oime_engine::KFixArray<char16_t, 64ul> const&)"
+        },
+        {
+          "at": "0x13da5c",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x13da6c",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x13dc20",
+          "target": "0x9c500",
+          "name": "oime_engine::KWordCodeToWordCode(oime_engine::KFixArray<char16_t, 64ul> const&)"
+        },
+        {
+          "at": "0x13dc34",
+          "target": "0x9c500",
+          "name": "oime_engine::KWordCodeToWordCode(oime_engine::KFixArray<char16_t, 64ul> const&)"
+        },
+        {
+          "at": "0x13dcd0",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x13dce0",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x13dcf4",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x13dd10",
+          "target": "0x1f76fc",
+          "name": "oime_engine::pinyin::ExtractFeature::ExtractCandFeature(std::__1::vector<oime_engine::pinyin::CandidateInner*, std::__1::allocator<oime_engine::pinyin::CandidateInner*>>&, int)"
+        },
+        {
+          "at": "0x13dd4c",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x13dd84",
+          "target": "0x1f91dc",
+          "name": "oime_engine::pinyin::ExtractFeature::ExtractCloudCandLocalFeature(std::__1::vector<oime_engine::pinyin::CandidateInner*, std::__1::allocator<oime_engine::pinyin::CandidateInner*>>&, int)"
+        },
+        {
+          "at": "0x13dd88",
+          "target": "0x256fa8",
+          "name": "oime_engine::pinyin::PyState::Instance()"
+        },
+        {
+          "at": "0x13ddac",
+          "target": "0x15cf0c",
+          "name": "oime_engine::pinyin::Correct9Key::ExtractCloudLocalCorrectFeature(oime_engine::pinyin::CandidateInner*) const"
+        },
+        {
+          "at": "0x13ddf4",
+          "target": "0x14fc04",
+          "name": "oime_engine::pinyin::Correct::ExtractCloudLocalCorrectFeature(oime_engine::pinyin::CandidateInner*) const"
+        },
+        {
+          "at": "0x13de88",
+          "target": "0x9c500",
+          "name": "oime_engine::KWordCodeToWordCode(oime_engine::KFixArray<char16_t, 64ul> const&)"
+        },
+        {
+          "at": "0x13df60",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x13df8c",
+          "target": "0x13c6dc",
+          "name": "oime_engine::pinyin::new_session::TransRMScoreToProb(std::__1::vector<oime_engine::pinyin::CandidateInner*, std::__1::allocator<oime_engine::pinyin::CandidateInner*>> const&, std::__1::vector<oime_engine::pinyin::CandidateInner*, std::__1::allocator<oime_engine::pinyin::CandidateInner*>> const&, std::__1::vector<oime_engine::pinyin::CandidateInner*, std::__1::allocator<oime_engine::pinyin::CandidateInner*>> const&)"
+        },
+        {
+          "at": "0x13dfdc",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x13dfe4",
+          "target": "0x3ac19c",
+          "name": "external-or-unresolved"
+        }
+      ]
+    },
+    {
+      "start": "0x140b2c",
+      "endExclusive": "0x141aa4",
+      "name": "oime_engine::pinyin::new_session::MakeMergeTreeFeature(oime_engine::pinyin::CandidateInner const*, std::__1::vector<oime_engine::KFixArray<char16_t, 64ul>, std::__1::allocator<oime_engine::KFixArray<char16_t, 64ul>>> const&, std::__1::vector<oime_engine::KFixArray<char16_t, 64ul>, std::__1::allocator<oime_engine::KFixArray<char16_t, 64ul>>> const&, std::__1::vector<oime_engine::KFixArray<char16_t, 64ul>, std::__1::allocator<oime_engine::KFixArray<char16_t, 64ul>>> const&, std::__1::vector<oime_engine::KFixArray<char16_t, 64ul>, std::__1::allocator<oime_engine::KFixArray<char16_t, 64ul>>> const&, std::__1::vector<oime_engine::pinyin::LLMItem, std::__1::allocator<oime_engine::pinyin::LLMItem>> const&, std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>> const&, unsigned int, std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>> const&, unsigned int, oime_engine::pinyin::new_session::MergeDecisionTree const&)",
+      "verifiedInstructions": 990,
+      "assemblySha256": "fb6d678890694564456b38ad47a65f88182d50bd5d9c3ea2c937bd3be799ad26",
+      "calls": [
+        {
+          "at": "0x140bb4",
+          "target": "0x140764",
+          "name": "oime_engine::pinyin::new_session::FindMergeLLMFeature(std::__1::vector<oime_engine::pinyin::LLMItem, std::__1::allocator<oime_engine::pinyin::LLMItem>> const&, oime_engine::KFixArray<char16_t, 64ul> const&)"
+        },
+        {
+          "at": "0x140c20",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x140c34",
+          "target": "0x140764",
+          "name": "oime_engine::pinyin::new_session::FindMergeLLMFeature(std::__1::vector<oime_engine::pinyin::LLMItem, std::__1::allocator<oime_engine::pinyin::LLMItem>> const&, oime_engine::KFixArray<char16_t, 64ul> const&)"
+        },
+        {
+          "at": "0x140e8c",
+          "target": "0x1173c4",
+          "name": "oime_engine::pinyin::CandidateInner::GetFeatureInfo(bool) const"
+        },
+        {
+          "at": "0x140e98",
+          "target": "0x114654",
+          "name": "oime_engine::pinyin::CandidateInner::GetWord() const"
+        },
+        {
+          "at": "0x140eac",
+          "target": "0x97688",
+          "name": "oime_engine::Utf8ToUtf16(std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>> const&)"
+        },
+        {
+          "at": "0x140fe8",
+          "target": "0x986e0",
+          "name": "oime_engine::IsAllAlpha(char16_t const*, unsigned int)"
+        },
+        {
+          "at": "0x141104",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x141114",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x141180",
+          "target": "0x98684",
+          "name": "oime_engine::IsAllAlpha(char const*, unsigned int)"
+        },
+        {
+          "at": "0x141260",
+          "target": "0x3acfe8",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x141294",
+          "target": "0x3acfdc",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1412d8",
+          "target": "0x114654",
+          "name": "oime_engine::pinyin::CandidateInner::GetWord() const"
+        },
+        {
+          "at": "0x1413cc",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x141418",
+          "target": "0x3acca0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x141430",
+          "target": "0x3ac430",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x141554",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x14159c",
+          "target": "0x3acca0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1415b0",
+          "target": "0x3ac430",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x14166c",
+          "target": "0x3ac910",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1416b0",
+          "target": "0x3acca0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1416dc",
+          "target": "0x3ac430",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x141704",
+          "target": "0x3ac424",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x141740",
+          "target": "0x3ac430",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1417f4",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x141828",
+          "target": "0x3acc94",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x141838",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x141848",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1418a0",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1418b0",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1418c0",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1418d0",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1418e0",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1418f0",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x141900",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x141908",
+          "target": "0x3ac9c4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x14190c",
+          "target": "0x12960",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x141914",
+          "target": "0x12960",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x14191c",
+          "target": "0x12960",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x141924",
+          "target": "0x3aca24",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x141948",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x141964",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x14198c",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1419b4",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1419cc",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x141a28",
+          "target": "0x3ac19c",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x141a48",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x141a60",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x141a70",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x141a98",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x141aa0",
+          "target": "0x3ac19c",
+          "name": "external-or-unresolved"
+        }
+      ]
+    },
+    {
+      "start": "0x1403d8",
+      "endExclusive": "0x140430",
+      "name": "oime_engine::pinyin::new_session::ScoreMergeDecisionTree(std::__1::array<float, 46ul> const&, oime_engine::pinyin::new_session::MergeDecisionTree const&)",
+      "verifiedInstructions": 22,
+      "assemblySha256": "89f8aca99d50f6afad71114583c2189809b82384c0c1454c61ddc98ae7bcaf13",
+      "calls": []
+    },
+    {
+      "start": "0x1c47f4",
+      "endExclusive": "0x1c4a64",
+      "name": "oime_engine::pinyin::Engine::MergeCloud(oime_engine::UpdateResultType)",
+      "verifiedInstructions": 156,
+      "assemblySha256": "432568a406d72620263b27358e10d254dbefff93dce06007ec452fecf62cdb92",
+      "calls": [
+        {
+          "at": "0x1c4814",
+          "target": "0x21bd8c",
+          "name": "oime_engine::pinyin::Result::Empty() const"
+        },
+        {
+          "at": "0x1c484c",
+          "target": "0x256fa8",
+          "name": "oime_engine::pinyin::PyState::Instance()"
+        },
+        {
+          "at": "0x1c4880",
+          "target": "0x1df378",
+          "name": "oime_engine::pinyin::Engine::TryToGetCacheData(std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>> const&, oime_engine::UpdateResultType)"
+        },
+        {
+          "at": "0x1c48d0",
+          "target": "0x3acc88",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1c4944",
+          "target": "0x1fbcf4",
+          "name": "oime_engine::pinyin::History::GetHisWord(oime_engine::pinyin::History::Position) const"
+        },
+        {
+          "at": "0x1c49b4",
+          "target": "0x1fbcf4",
+          "name": "oime_engine::pinyin::History::GetHisWord(oime_engine::pinyin::History::Position) const"
+        },
+        {
+          "at": "0x1c49f8",
+          "target": "0x1380e8",
+          "name": "oime_engine::pinyin::new_session::MergeStrategySession::Merge(oime_engine::pinyin::Result&, int, oime_engine::UpdateResultType)"
+        },
+        {
+          "at": "0x1c4a14",
+          "target": "0x126a38",
+          "name": "oime_engine::pinyin::old_900M::MergeStrategy::Merge(oime_engine::pinyin::Result&, int, oime_engine::UpdateResultType)"
+        },
+        {
+          "at": "0x1c4a24",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1c4a50",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1c4a58",
+          "target": "0x3ac19c",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1c4a5c",
+          "target": "0x3ac19c",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x1c4a60",
+          "target": "0x3ac19c",
+          "name": "external-or-unresolved"
+        }
+      ]
+    },
+    {
+      "start": "0x141aa4",
+      "endExclusive": "0x14201c",
+      "name": "oime_engine::pinyin::new_session::PromoteByDecisionTree(oime_engine::pinyin::Result&, std::__1::vector<oime_engine::KFixArray<char16_t, 64ul>, std::__1::allocator<oime_engine::KFixArray<char16_t, 64ul>>> const&, std::__1::vector<oime_engine::KFixArray<char16_t, 64ul>, std::__1::allocator<oime_engine::KFixArray<char16_t, 64ul>>> const&, std::__1::vector<oime_engine::KFixArray<char16_t, 64ul>, std::__1::allocator<oime_engine::KFixArray<char16_t, 64ul>>> const&, std::__1::vector<oime_engine::pinyin::CandidateInner*, std::__1::allocator<oime_engine::pinyin::CandidateInner*>> const&, std::__1::vector<oime_engine::pinyin::LLMItem, std::__1::allocator<oime_engine::pinyin::LLMItem>> const&, std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>> const&, unsigned int, std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>> const&, bool)",
+      "verifiedInstructions": 350,
+      "assemblySha256": "8e2aaa12b09fa949e4de996883263e1fe7e4c98c934e4753814b8210a1c60ad1",
+      "calls": [
+        {
+          "at": "0x141ae4",
+          "target": "0x21b04c",
+          "name": "oime_engine::pinyin::Result::Size() const"
+        },
+        {
+          "at": "0x141af8",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x141b08",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x141b68",
+          "target": "0x140430",
+          "name": "oime_engine::pinyin::new_session::CollectTopWords(oime_engine::pinyin::Result const&, unsigned int)"
+        },
+        {
+          "at": "0x141b74",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x141ba4",
+          "target": "0x140b2c",
+          "name": "oime_engine::pinyin::new_session::MakeMergeTreeFeature(oime_engine::pinyin::CandidateInner const*, std::__1::vector<oime_engine::KFixArray<char16_t, 64ul>, std::__1::allocator<oime_engine::KFixArray<char16_t, 64ul>>> const&, std::__1::vector<oime_engine::KFixArray<char16_t, 64ul>, std::__1::allocator<oime_engine::KFixArray<char16_t, 64ul>>> const&, std::__1::vector<oime_engine::KFixArray<char16_t, 64ul>, std::__1::allocator<oime_engine::KFixArray<char16_t, 64ul>>> const&, std::__1::vector<oime_engine::KFixArray<char16_t, 64ul>, std::__1::allocator<oime_engine::KFixArray<char16_t, 64ul>>> const&, std::__1::vector<oime_engine::pinyin::LLMItem, std::__1::allocator<oime_engine::pinyin::LLMItem>> const&, std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>> const&, unsigned int, std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>> const&, unsigned int, oime_engine::pinyin::new_session::MergeDecisionTree const&)"
+        },
+        {
+          "at": "0x141c64",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x141c7c",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x141c8c",
+          "target": "0x1404e4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x141cb8",
+          "target": "0x21b04c",
+          "name": "oime_engine::pinyin::Result::Size() const"
+        },
+        {
+          "at": "0x141cd4",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x141ce4",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x141cf8",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x141d08",
+          "target": "0x1404e4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x141d14",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x141d3c",
+          "target": "0x140b2c",
+          "name": "oime_engine::pinyin::new_session::MakeMergeTreeFeature(oime_engine::pinyin::CandidateInner const*, std::__1::vector<oime_engine::KFixArray<char16_t, 64ul>, std::__1::allocator<oime_engine::KFixArray<char16_t, 64ul>>> const&, std::__1::vector<oime_engine::KFixArray<char16_t, 64ul>, std::__1::allocator<oime_engine::KFixArray<char16_t, 64ul>>> const&, std::__1::vector<oime_engine::KFixArray<char16_t, 64ul>, std::__1::allocator<oime_engine::KFixArray<char16_t, 64ul>>> const&, std::__1::vector<oime_engine::KFixArray<char16_t, 64ul>, std::__1::allocator<oime_engine::KFixArray<char16_t, 64ul>>> const&, std::__1::vector<oime_engine::pinyin::LLMItem, std::__1::allocator<oime_engine::pinyin::LLMItem>> const&, std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>> const&, unsigned int, std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>> const&, unsigned int, oime_engine::pinyin::new_session::MergeDecisionTree const&)"
+        },
+        {
+          "at": "0x141d98",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x141e5c",
+          "target": "0x1404e4",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x141e90",
+          "target": "0x140b2c",
+          "name": "oime_engine::pinyin::new_session::MakeMergeTreeFeature(oime_engine::pinyin::CandidateInner const*, std::__1::vector<oime_engine::KFixArray<char16_t, 64ul>, std::__1::allocator<oime_engine::KFixArray<char16_t, 64ul>>> const&, std::__1::vector<oime_engine::KFixArray<char16_t, 64ul>, std::__1::allocator<oime_engine::KFixArray<char16_t, 64ul>>> const&, std::__1::vector<oime_engine::KFixArray<char16_t, 64ul>, std::__1::allocator<oime_engine::KFixArray<char16_t, 64ul>>> const&, std::__1::vector<oime_engine::KFixArray<char16_t, 64ul>, std::__1::allocator<oime_engine::KFixArray<char16_t, 64ul>>> const&, std::__1::vector<oime_engine::pinyin::LLMItem, std::__1::allocator<oime_engine::pinyin::LLMItem>> const&, std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>> const&, unsigned int, std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>> const&, unsigned int, oime_engine::pinyin::new_session::MergeDecisionTree const&)"
+        },
+        {
+          "at": "0x141f1c",
+          "target": "0x21b080",
+          "name": "oime_engine::pinyin::Result::operator[](unsigned int) const"
+        },
+        {
+          "at": "0x141f64",
+          "target": "0x21b0dc",
+          "name": "oime_engine::pinyin::Result::Insert(unsigned int, oime_engine::pinyin::CandidateInner*)"
+        },
+        {
+          "at": "0x141f78",
+          "target": "0x1402d0",
+          "name": "oime_engine::pinyin::new_session::EraseWordAfterIndex(oime_engine::pinyin::Result&, oime_engine::KFixArray<char16_t, 64ul> const&, unsigned int, unsigned int)"
+        },
+        {
+          "at": "0x141f90",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x141fa8",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x141ff8",
+          "target": "0x3ac19c",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x142000",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x142010",
+          "target": "0x3ac8e0",
+          "name": "external-or-unresolved"
+        },
+        {
+          "at": "0x142018",
+          "target": "0x3ac19c",
+          "name": "external-or-unresolved"
+        }
+      ]
+    }
+  ],
+  "reusedEvidence": "keyboard-ime.json: matching engine digest; local lattice/dictionaries, ONNX loader and cloud request arguments.",
+  "findings": [
+    {
+      "id": "DBR-local-rank",
+      "claim": "UpdateResult extracts candidate features then calls CanditateSortByFeature (0x1bc334). Candidate sort calls MLPModel::CalcScoreByFeature (0x1c3e74), which constructs CombinedFeature and calls CalcScoreByFeatureCombined (0x2056dc). The latter calls FeatureBucket and FeatureStandard.",
+      "kind": "byte-verified-static-calls"
+    },
+    {
+      "id": "DBR-fusion",
+      "claim": "UpdateResult calls MergeCloud at 0x1bc464. MergeCloud has calls to new_session Merge (0x1c49f8) and old_900M Merge (0x1c4a14). New-session MergeInner conditionally calls cloud conversion and LLM merge variants. MergeCloudLLM constructs LLM candidates at 0x13a19c and calls PromoteByDecisionTree at 0x13b6b4. The promotion window calls MakeMergeTreeFeature, whose window calls FindMergeLLMFeature and CandidateInner::GetFeatureInfo.",
+      "kind": "byte-verified-static-calls"
+    },
+    {
+      "id": "DBR-boundary",
+      "claim": "Client symbols and calls support local feature ranking plus conditional LLM candidate fusion. They do not identify the server checkpoint, active merge strategy or request frequency. old_900M and gpt2 names do not establish deployed parameter count or model architecture.",
+      "kind": "inference-and-limitation"
+    }
+  ],
+  "limitations": [
+    "REA CLI 6.4.0 inspect-macho produced fresh artifact metadata. No new REA function decompilation: native decompiler provider was unavailable in the current environment.",
+    "LLVM instruction windows are bounded by next exported/local text symbol and may include unnamed helpers; counts describe verified windows, not exact recovered function extents.",
+    "No competitor inference, latency/accuracy benchmark, current settings, user text, private data, or live traffic inspected.",
+    "Raw instruction listings, complete REA records and inspection scripts remain ignored under .workspace/research/typing-rank-rea-v1/. No proprietary code or model weights committed."
+  ],
+  "boundedGpt2ResourceFollowup": {
+    "method": "Recursive installed bundle filename search and byte-offset ASCII extraction from current engine/resources; no ONNX graph parser or inference executed.",
+    "engineReferenceLiterals": [
+      "mlp_gpt2.onnx",
+      "mlp_no_gpt2.onnx",
+      "Engine::Set::EnableGpt2 {}"
+    ],
+    "exactGpt2NamedFilesFound": false,
+    "readableOnnxLikeResources": [
+      {
+        "resource": "d9cce8a55257",
+        "bytes": 167497,
+        "sha256": "5f4545bc291fbd79981bac686fecf467c354025049fe6189efc681f213d914eb",
+        "prefixHex": "0806120d6f6e6e782e7175616e74697a",
+        "producerLiteral": "onnx.quantize",
+        "operatorLiterals": [
+          "DynamicQuantizeLinear",
+          "MatMulInteger"
+        ],
+        "exportScriptNames": [
+          "convert_no_gpt2.py"
+        ]
+      },
+      {
+        "resource": "3aa2ea70d0b2",
+        "bytes": 176585,
+        "sha256": "4bbeb705b040bc67571e4b04707c6fd1d8da87288cb0d8d370377aff1bccd887",
+        "prefixHex": "0806120d6f6e6e782e7175616e74697a",
+        "producerLiteral": "onnx.quantize",
+        "operatorLiterals": [
+          "DynamicQuantizeLinear",
+          "MatMulInteger"
+        ],
+        "exportScriptNames": [
+          "convert_for_merge_local_and_cloud.py"
+        ]
+      }
+    ],
+    "limitations": [
+      "Readable protobuf-style metadata and operator names support ONNX-format resources; no graph validation performed.",
+      "No file mapping establishes either resource as mlp_gpt2.onnx; filenames or EnableGpt2 switches do not prove a complete GPT-2 checkpoint or active use.",
+      "These two resources are not wholly encrypted opaque payloads. This does not establish encryption status of every packaged resource."
+    ]
+  }
+}

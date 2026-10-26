@@ -17,7 +17,7 @@ func (x actions) ActivateInputMethod() error {
 	if a.ime == nil {
 		return errInputMethodUnsupported
 	}
-	if a.state.InputMethodInstalling || a.state.InputMethodActivating || a.state.InputMethodRemoving {
+	if a.updateApplying() || a.state.InputMethodInstalling || a.state.InputMethodActivating || a.state.InputMethodRemoving {
 		return nil
 	}
 	if a.core != nil {

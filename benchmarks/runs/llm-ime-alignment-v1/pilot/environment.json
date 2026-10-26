@@ -1,0 +1,24 @@
+{
+  "platform": "macOS-26.6.2-x86_64-i386-64bit",
+  "machine": "x86_64",
+  "gitRevision": "84a178fe032f111daa2aa347fef1e5b8472657eb",
+  "gitStatus": " M Makefile\n M apps/desktop/cmd/arion-llm/main.go\n M apps/desktop/infrastructure/llm/client/client.go\n M apps/desktop/infrastructure/llm/gguf/engine.go\n M apps/desktop/infrastructure/llm/protocol/protocol.go\n M benchmarks/README.md\n M benchmarks/corpora/README.md\n M benchmarks/reproduction/README.md\n M benchmarks/runs/README.md\n M docs/research/README.md\n M docs/research/context-ranking.md\n M docs/research/evidence/README.md\n M package.json\n M tools/evaluation/README.md\n?? apps/desktop/cmd/arion-ime-rank-eval/\n?? apps/desktop/infrastructure/cloudpolish/completion.go\n?? apps/desktop/infrastructure/llm/gguf/completion.go\n?? apps/desktop/infrastructure/llm/ranking/\n?? benchmarks/corpora/rime-llm-reranker-v1/\n?? benchmarks/reproduction/llm-ime-alignment-v1/\n?? benchmarks/reproduction/rime-llm-reranker-v1/\n?? benchmarks/results/rime-llm-reranker-v1/\n?? benchmarks/runs/rime-llm-reranker-v1/\n?? docs/research/evidence/chatterfly-ranking-followup.json\n?? docs/research/evidence/doubao-ranking-followup.json\n?? packages/core/application/keyboard_ranking.go\n?? packages/core/contracts/keyboard_ranking.go\n?? packages/core/domain/keyboard_ranking.go\n?? packages/core/domain/ports/keyboard_ranking.go\n?? scripts/rime-rerank-command.mjs\n",
+  "timer": "Go time.Now/time.Since monotonic wall clock",
+  "concurrency": 1,
+  "nativeUI": false,
+  "ASRContention": false,
+  "configuration": {
+    "timeout": "1500ms",
+    "threads": 4,
+    "maxLength": 4096,
+    "maxNewTokens": 256,
+    "rankMaxTokens": 48,
+    "slotErasedBetweenRequests": true
+  },
+  "sources": {
+    "packages/core/domain/keyboard_ranking.go": "77715e2adf2758d2c323e7342617834e96b806c5fb3a470f680f80563086d660",
+    "apps/desktop/infrastructure/llm/ranking/ranking.go": "643a95cafa105ff32c4a269aa1da2be3e368396b88acf61dd421b6976f903f33",
+    "apps/desktop/infrastructure/llm/gguf/completion.go": "656b0e8a5968504ee5da114978d8a4579acc1281ff779c5ecf65599d294b9d1d",
+    "apps/desktop/cmd/arion-ime-rank-eval/main.go": "e4eb420edef086d9cb6ce2482f0652c06f1ddf214d78d59c8d15c1f403ec80f3"
+  }
+}

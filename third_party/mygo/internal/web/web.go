@@ -423,3 +423,10 @@ func (power) Watch()                        {}
 func (power) KeepAwake(bool, string) func() { return func() {} }
 func (power) OnBattery() bool               { return false }
 func (power) IdleTime() time.Duration       { return 0 }
+
+func (b *Backend) NotificationPermission(done func(platform.NotificationAuthorization, error)) {
+	done(platform.NotificationAuthorizationUnsupported, nil)
+}
+func (b *Backend) RequestNotificationPermission(done func(platform.NotificationAuthorization, error)) {
+	b.NotificationPermission(done)
+}

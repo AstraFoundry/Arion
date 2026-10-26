@@ -1,0 +1,244 @@
+{
+  "steps": [
+    {
+      "wallMs": 291.38499927521,
+      "id": "key-1",
+      "source": [
+        "有",
+        "也",
+        "要",
+        "与",
+        "用",
+        "一",
+        "又",
+        "以",
+        "呀"
+      ],
+      "ranked": [
+        "有",
+        "也",
+        "要",
+        "与",
+        "用",
+        "一",
+        "又",
+        "以",
+        "呀"
+      ],
+      "processCpuMs": 0.892,
+      "preedit": "y",
+      "status": "completed",
+      "requests": [
+        {
+          "status": "HTTP/1.1 200 OK",
+          "response": "{\"id\":\"chatcmpl-390ca4b2\",\"object\":\"chat.completion\",\"created\":1792647138,\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"有、也、要、用、与\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":115,\"completion_tokens\":9,\"total_tokens\":124,\"input_tokens\":115,\"output_tokens\":9,\"prompt_tokens_details\":{\"cached_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"time_to_first_token\":0.1,\"total_time\":0.29,\"prompt_eval_duration\":0.1,\"generation_duration\":0.18,\"prompt_tokens_per_second\":1133.4,\"generation_tokens_per_second\":48.68}}",
+          "code": 200,
+          "networkWallMs": 290.42399978638,
+          "request": "{\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"max_tokens\":20,\"stream\":false,\"temperature\":0,\"messages\":[{\"content\":\"你是输入法候选词排序助手。根据对话历史和当前输入，从候选词列表中选出最符合语境的词。按优先级从高到低列出最多5个候选词，用顿号分隔，不要拼音、数字序号或任何解释。\",\"role\":\"system\"},{\"content\":\"对话历史：「这件事很有教育」\\n当前输入拼音：「y」\\n候选词：有、也、要、与、用\\n按最符合对话语境的顺序列出前5个候选词（顿号分隔）：\",\"role\":\"user\"}]}"
+        }
+      ],
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "wallMs": 297.79699993134,
+      "id": "key-2",
+      "source": [
+        "一",
+        "以",
+        "已",
+        "亿",
+        "易",
+        "亦",
+        "伊",
+        "意",
+        "依"
+      ],
+      "ranked": [
+        "一",
+        "以",
+        "已",
+        "亿",
+        "易",
+        "亦",
+        "伊",
+        "意",
+        "依"
+      ],
+      "processCpuMs": 0.614,
+      "preedit": "yi",
+      "status": "completed",
+      "requests": [
+        {
+          "status": "HTTP/1.1 200 OK",
+          "response": "{\"id\":\"chatcmpl-319c9c9e\",\"object\":\"chat.completion\",\"created\":1792647138,\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"一、以、已、亿、易\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":115,\"completion_tokens\":9,\"total_tokens\":124,\"input_tokens\":115,\"output_tokens\":9,\"prompt_tokens_details\":{\"cached_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"time_to_first_token\":0.11,\"total_time\":0.29,\"prompt_eval_duration\":0.11,\"generation_duration\":0.18,\"prompt_tokens_per_second\":1053.2,\"generation_tokens_per_second\":49.01}}",
+          "code": 200,
+          "networkWallMs": 296.66300010681,
+          "request": "{\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"max_tokens\":20,\"stream\":false,\"temperature\":0,\"messages\":[{\"content\":\"你是输入法候选词排序助手。根据对话历史和当前输入，从候选词列表中选出最符合语境的词。按优先级从高到低列出最多5个候选词，用顿号分隔，不要拼音、数字序号或任何解释。\",\"role\":\"system\"},{\"content\":\"对话历史：「这件事很有教育」\\n当前输入拼音：「yi」\\n候选词：一、以、已、亿、易\\n按最符合对话语境的顺序列出前5个候选词（顿号分隔）：\",\"role\":\"user\"}]}"
+        }
+      ],
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "wallMs": 295.68100070953,
+      "id": "key-3",
+      "source": [
+        "一样",
+        "医院",
+        "意义",
+        "已有",
+        "亿元",
+        "一眼",
+        "一一",
+        "一夜",
+        "医药"
+      ],
+      "ranked": [
+        "一样",
+        "医院",
+        "意义",
+        "已有",
+        "亿元",
+        "一眼",
+        "一一",
+        "一夜",
+        "医药"
+      ],
+      "processCpuMs": 0.571,
+      "preedit": "yi y",
+      "status": "completed",
+      "requests": [
+        {
+          "status": "HTTP/1.1 200 OK",
+          "response": "{\"id\":\"chatcmpl-4fb03573\",\"object\":\"chat.completion\",\"created\":1792647138,\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"一样、意义、已有、亿元、医院\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":116,\"completion_tokens\":9,\"total_tokens\":125,\"input_tokens\":116,\"output_tokens\":9,\"prompt_tokens_details\":{\"cached_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"time_to_first_token\":0.11,\"total_time\":0.29,\"prompt_eval_duration\":0.11,\"generation_duration\":0.18,\"prompt_tokens_per_second\":1072.37,\"generation_tokens_per_second\":49.18}}",
+          "code": 200,
+          "networkWallMs": 295.01200008392,
+          "request": "{\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"max_tokens\":20,\"stream\":false,\"temperature\":0,\"messages\":[{\"content\":\"你是输入法候选词排序助手。根据对话历史和当前输入，从候选词列表中选出最符合语境的词。按优先级从高到低列出最多5个候选词，用顿号分隔，不要拼音、数字序号或任何解释。\",\"role\":\"system\"},{\"content\":\"对话历史：「这件事很有教育」\\n当前输入拼音：「yi y」\\n候选词：一样、医院、意义、已有、亿元\\n按最符合对话语境的顺序列出前5个候选词（顿号分隔）：\",\"role\":\"user\"}]}"
+        }
+      ],
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "wallMs": 306.42399978638,
+      "id": "key-4",
+      "source": [
+        "意义",
+        "一一",
+        "异议",
+        "依依",
+        "一亿",
+        "疑议",
+        "一",
+        "以",
+        "已"
+      ],
+      "ranked": [
+        "依依",
+        "意义",
+        "一一",
+        "异议",
+        "一亿",
+        "疑议",
+        "一",
+        "以",
+        "已"
+      ],
+      "processCpuMs": 0.524,
+      "preedit": "yi yi",
+      "status": "completed",
+      "requests": [
+        {
+          "status": "HTTP/1.1 200 OK",
+          "response": "{\"id\":\"chatcmpl-9cef1836\",\"object\":\"chat.completion\",\"created\":1792647139,\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"依依、意义、一一、异议、一亿\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":117,\"completion_tokens\":10,\"total_tokens\":127,\"input_tokens\":117,\"output_tokens\":10,\"prompt_tokens_details\":{\"cached_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"time_to_first_token\":0.11,\"total_time\":0.3,\"prompt_eval_duration\":0.11,\"generation_duration\":0.2,\"prompt_tokens_per_second\":1091.04,\"generation_tokens_per_second\":51.19}}",
+          "code": 200,
+          "networkWallMs": 305.83199977875,
+          "request": "{\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"max_tokens\":20,\"stream\":false,\"temperature\":0,\"messages\":[{\"content\":\"你是输入法候选词排序助手。根据对话历史和当前输入，从候选词列表中选出最符合语境的词。按优先级从高到低列出最多5个候选词，用顿号分隔，不要拼音、数字序号或任何解释。\",\"role\":\"system\"},{\"content\":\"对话历史：「这件事很有教育」\\n当前输入拼音：「yi yi」\\n候选词：意义、一一、异议、依依、一亿\\n按最符合对话语境的顺序列出前5个候选词（顿号分隔）：\",\"role\":\"user\"}]}"
+        }
+      ],
+      "identities": [
+        4,
+        1,
+        2,
+        3,
+        5,
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "wallMs": 0.14699935913086,
+      "id": "identical-repeat",
+      "source": [
+        "意义",
+        "一一",
+        "异议",
+        "依依",
+        "一亿",
+        "疑议",
+        "一",
+        "以",
+        "已"
+      ],
+      "ranked": [
+        "依依",
+        "意义",
+        "一一",
+        "异议",
+        "一亿",
+        "疑议",
+        "一",
+        "以",
+        "已"
+      ],
+      "processCpuMs": 0.079000000000001,
+      "preedit": "yi yi",
+      "status": "completed",
+      "requests": [],
+      "identities": [
+        4,
+        1,
+        2,
+        3,
+        5,
+        6,
+        7,
+        8,
+        9
+      ]
+    }
+  ],
+  "id": "context-013",
+  "subprocessWallMs": 1207.063542213291,
+  "stderr": ""
+}

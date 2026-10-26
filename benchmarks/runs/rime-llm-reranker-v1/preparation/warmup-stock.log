@@ -1,0 +1,4 @@
+
+> arion-monorepo@0.0.0 ime:rerank /Users/steven/code/Arion
+> node scripts/rime-rerank-command.mjs warmup --workspace .workspace/rime-llm-reranker-v1 --candidates .workspace/rime-llm-reranker-v1/candidates --out .workspace/rime-llm-reranker-v1/warmup-stock
+

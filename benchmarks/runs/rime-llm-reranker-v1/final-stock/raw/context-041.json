@@ -1,0 +1,97 @@
+{
+  "steps": [
+    {
+      "requests": [
+        {
+          "request": "{\"stream\":false,\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"max_tokens\":20,\"temperature\":0,\"messages\":[{\"role\":\"system\",\"content\":\"你是输入法候选词排序助手。根据对话历史和当前输入，从候选词列表中选出最符合语境的词。按优先级从高到低列出最多5个候选词，用顿号分隔，不要拼音、数字序号或任何解释。\"},{\"role\":\"user\",\"content\":\"对话历史：「一共有五人参加」\\n当前输入拼音：「qi zhong」\\n候选词：其中、期中、七种、器重、其\\n按最符合对话语境的顺序列出前5个候选词（顿号分隔）：\"}]}",
+          "status": "HTTP/1.1 200 OK",
+          "response": "{\"id\":\"chatcmpl-127c7f3c\",\"object\":\"chat.completion\",\"created\":1792647111,\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"其中、七种、器重、其、期中\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":119,\"completion_tokens\":11,\"total_tokens\":130,\"input_tokens\":119,\"output_tokens\":11,\"prompt_tokens_details\":{\"cached_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"time_to_first_token\":0.1,\"total_time\":0.32,\"prompt_eval_duration\":0.1,\"generation_duration\":0.22,\"prompt_tokens_per_second\":1167.48,\"generation_tokens_per_second\":51.02}}",
+          "code": 200,
+          "networkWallMs": 321.27200031281
+        }
+      ],
+      "source": [
+        "其中",
+        "期中",
+        "七种",
+        "器重",
+        "其",
+        "起",
+        "期",
+        "气",
+        "器"
+      ],
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "wallMs": 322.21700000763,
+      "status": "completed",
+      "id": "key-1",
+      "preedit": "qi zhong",
+      "processCpuMs": 0.807,
+      "ranked": [
+        "其中",
+        "期中",
+        "七种",
+        "器重",
+        "其",
+        "起",
+        "期",
+        "气",
+        "器"
+      ]
+    },
+    {
+      "requests": [],
+      "source": [
+        "其中",
+        "期中",
+        "七种",
+        "器重",
+        "其",
+        "起",
+        "期",
+        "气",
+        "器"
+      ],
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "wallMs": 0.18400001525879,
+      "status": "completed",
+      "id": "identical-repeat",
+      "preedit": "qi zhong",
+      "processCpuMs": 0.119,
+      "ranked": [
+        "其中",
+        "期中",
+        "七种",
+        "器重",
+        "其",
+        "起",
+        "期",
+        "气",
+        "器"
+      ]
+    }
+  ],
+  "id": "context-041",
+  "subprocessWallMs": 338.8612917624414,
+  "stderr": ""
+}

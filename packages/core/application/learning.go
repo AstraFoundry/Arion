@@ -67,6 +67,7 @@ type EditTracker struct {
 
 	mu      sync.Mutex
 	current *tracking
+	workers sync.WaitGroup
 }
 
 type tracking struct {
@@ -106,6 +107,7 @@ func (t *EditTracker) Track(reader ports.FieldReader, token contracts.TargetToke
 	tr := &tracking{reader: reader, token: token, identity: id, inserted: inserted,
 		settle: make(chan EditSettlement, 1), done: make(chan struct{})}
 	t.mu.Lock()
+	t.workers.Add(1)
 	t.current = tr
 	t.mu.Unlock()
 	go t.run(tr)
@@ -128,15 +130,11 @@ func (t *EditTracker) Settle() {
 
 // Wait blocks until no tracking is running, for tests and shutdown.
 func (t *EditTracker) Wait() {
-	t.mu.Lock()
-	tr := t.current
-	t.mu.Unlock()
-	if tr != nil {
-		<-tr.done
-	}
+	t.workers.Wait()
 }
 
 func (t *EditTracker) run(tr *tracking) {
+	defer t.workers.Done()
 	defer close(tr.done)
 	defer tr.reader.Release(tr.token)
 	report := EditReport{Identity: tr.identity}

@@ -38,14 +38,17 @@ func (a *App) learnEdit(report application.EditReport) {
 		return
 	}
 	pairs := report.Outcome.Pairs
+	a.resourceJobs.Add(1)
 	a.post(func() {
 		// The first learned entry creates the encrypted store.
 		a.loadVocabulary(true)
 		store := a.memoryStore()
 		if store == nil {
+			a.resourceJobs.Add(-1)
 			return
 		}
 		go func() {
+			defer a.resourceJobs.Add(-1)
 			results, err := store.Learn(pairs, time.Now())
 			if err != nil {
 				a.record("vocabulary_save", err)

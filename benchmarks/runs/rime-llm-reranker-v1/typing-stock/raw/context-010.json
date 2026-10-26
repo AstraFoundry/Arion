@@ -1,0 +1,293 @@
+{
+  "id": "context-010",
+  "steps": [
+    {
+      "source": [
+        "是",
+        "说",
+        "上",
+        "时",
+        "所",
+        "谁",
+        "啥",
+        "事",
+        "死"
+      ],
+      "ranked": [
+        "是",
+        "说",
+        "上",
+        "时",
+        "所",
+        "谁",
+        "啥",
+        "事",
+        "死"
+      ],
+      "id": "key-1",
+      "processCpuMs": 0.756,
+      "wallMs": 275.54100036621,
+      "preedit": "s",
+      "status": "completed",
+      "requests": [
+        {
+          "request": "{\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"stream\":false,\"messages\":[{\"content\":\"你是输入法候选词排序助手。根据对话历史和当前输入，从候选词列表中选出最符合语境的词。按优先级从高到低列出最多5个候选词，用顿号分隔，不要拼音、数字序号或任何解释。\",\"role\":\"system\"},{\"content\":\"对话历史：「这起案件还会」\\n当前输入拼音：「s」\\n候选词：是、说、上、时、所\\n按最符合对话语境的顺序列出前5个候选词（顿号分隔）：\",\"role\":\"user\"}],\"temperature\":0,\"max_tokens\":20}",
+          "response": "{\"id\":\"chatcmpl-f0cf9ce4\",\"object\":\"chat.completion\",\"created\":1792647172,\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"是、说、上、时、所\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":115,\"completion_tokens\":9,\"total_tokens\":124,\"input_tokens\":115,\"output_tokens\":9,\"prompt_tokens_details\":{\"cached_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"time_to_first_token\":0.1,\"total_time\":0.27,\"prompt_eval_duration\":0.1,\"generation_duration\":0.17,\"prompt_tokens_per_second\":1165.17,\"generation_tokens_per_second\":52.36}}",
+          "networkWallMs": 274.37899971008,
+          "code": 200,
+          "status": "HTTP/1.1 200 OK"
+        }
+      ],
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "source": [
+        "是",
+        "说",
+        "上",
+        "时",
+        "时候",
+        "谁",
+        "啥",
+        "事",
+        "使"
+      ],
+      "ranked": [
+        "是",
+        "说",
+        "上",
+        "时",
+        "时候",
+        "谁",
+        "啥",
+        "事",
+        "使"
+      ],
+      "id": "key-2",
+      "processCpuMs": 0.55,
+      "wallMs": 289.81200027466,
+      "preedit": "sh",
+      "status": "completed",
+      "requests": [
+        {
+          "request": "{\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"stream\":false,\"messages\":[{\"content\":\"你是输入法候选词排序助手。根据对话历史和当前输入，从候选词列表中选出最符合语境的词。按优先级从高到低列出最多5个候选词，用顿号分隔，不要拼音、数字序号或任何解释。\",\"role\":\"system\"},{\"content\":\"对话历史：「这起案件还会」\\n当前输入拼音：「sh」\\n候选词：是、说、上、时、时候\\n按最符合对话语境的顺序列出前5个候选词（顿号分隔）：\",\"role\":\"user\"}],\"temperature\":0,\"max_tokens\":20}",
+          "response": "{\"id\":\"chatcmpl-3ee4f492\",\"object\":\"chat.completion\",\"created\":1792647172,\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"是、说、上、时候、时\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":115,\"completion_tokens\":9,\"total_tokens\":124,\"input_tokens\":115,\"output_tokens\":9,\"prompt_tokens_details\":{\"cached_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"time_to_first_token\":0.11,\"total_time\":0.29,\"prompt_eval_duration\":0.11,\"generation_duration\":0.18,\"prompt_tokens_per_second\":1050.51,\"generation_tokens_per_second\":51.14}}",
+          "networkWallMs": 289.03100013733,
+          "code": 200,
+          "status": "HTTP/1.1 200 OK"
+        }
+      ],
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "source": [
+        "设",
+        "社",
+        "射",
+        "蛇",
+        "舍",
+        "摄",
+        "舌",
+        "涉",
+        "佘"
+      ],
+      "ranked": [
+        "设",
+        "社",
+        "射",
+        "蛇",
+        "舍",
+        "摄",
+        "舌",
+        "涉",
+        "佘"
+      ],
+      "id": "key-3",
+      "processCpuMs": 0.572,
+      "wallMs": 295.65400028229,
+      "preedit": "she",
+      "status": "completed",
+      "requests": [
+        {
+          "request": "{\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"stream\":false,\"messages\":[{\"content\":\"你是输入法候选词排序助手。根据对话历史和当前输入，从候选词列表中选出最符合语境的词。按优先级从高到低列出最多5个候选词，用顿号分隔，不要拼音、数字序号或任何解释。\",\"role\":\"system\"},{\"content\":\"对话历史：「这起案件还会」\\n当前输入拼音：「she」\\n候选词：设、社、射、蛇、舍\\n按最符合对话语境的顺序列出前5个候选词（顿号分隔）：\",\"role\":\"user\"}],\"temperature\":0,\"max_tokens\":20}",
+          "response": "{\"id\":\"chatcmpl-c9839886\",\"object\":\"chat.completion\",\"created\":1792647172,\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"设、社、射、蛇、舍\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":115,\"completion_tokens\":9,\"total_tokens\":124,\"input_tokens\":115,\"output_tokens\":9,\"prompt_tokens_details\":{\"cached_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"time_to_first_token\":0.11,\"total_time\":0.29,\"prompt_eval_duration\":0.11,\"generation_duration\":0.18,\"prompt_tokens_per_second\":1074.24,\"generation_tokens_per_second\":48.8}}",
+          "networkWallMs": 295.10300064087,
+          "code": 200,
+          "status": "HTTP/1.1 200 OK"
+        }
+      ],
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "source": [
+        "设计",
+        "涉及",
+        "射击",
+        "社交",
+        "射精",
+        "舌尖",
+        "射箭",
+        "适合",
+        "设"
+      ],
+      "ranked": [
+        "设计",
+        "涉及",
+        "射击",
+        "社交",
+        "射精",
+        "舌尖",
+        "射箭",
+        "适合",
+        "设"
+      ],
+      "id": "key-4",
+      "processCpuMs": 0.553,
+      "wallMs": 288.45600032806,
+      "preedit": "she j",
+      "status": "completed",
+      "requests": [
+        {
+          "request": "{\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"stream\":false,\"messages\":[{\"content\":\"你是输入法候选词排序助手。根据对话历史和当前输入，从候选词列表中选出最符合语境的词。按优先级从高到低列出最多5个候选词，用顿号分隔，不要拼音、数字序号或任何解释。\",\"role\":\"system\"},{\"content\":\"对话历史：「这起案件还会」\\n当前输入拼音：「she j」\\n候选词：设计、涉及、射击、社交、射精\\n按最符合对话语境的顺序列出前5个候选词（顿号分隔）：\",\"role\":\"user\"}],\"temperature\":0,\"max_tokens\":20}",
+          "response": "{\"id\":\"chatcmpl-20b74e8c\",\"object\":\"chat.completion\",\"created\":1792647172,\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"设计、涉及、射击、社交、射精\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":116,\"completion_tokens\":9,\"total_tokens\":125,\"input_tokens\":116,\"output_tokens\":9,\"prompt_tokens_details\":{\"cached_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"time_to_first_token\":0.11,\"total_time\":0.28,\"prompt_eval_duration\":0.11,\"generation_duration\":0.18,\"prompt_tokens_per_second\":1081.62,\"generation_tokens_per_second\":50.83}}",
+          "networkWallMs": 287.92400074005,
+          "code": 200,
+          "status": "HTTP/1.1 200 OK"
+        }
+      ],
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "source": [
+        "设计",
+        "涉及",
+        "射击",
+        "设",
+        "社",
+        "射",
+        "蛇",
+        "舍",
+        "摄"
+      ],
+      "ranked": [
+        "设",
+        "设计",
+        "涉及",
+        "射击",
+        "社",
+        "射",
+        "蛇",
+        "舍",
+        "摄"
+      ],
+      "id": "key-5",
+      "processCpuMs": 0.861,
+      "wallMs": 290.99200057983,
+      "preedit": "she ji",
+      "status": "completed",
+      "requests": [
+        {
+          "request": "{\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"stream\":false,\"messages\":[{\"content\":\"你是输入法候选词排序助手。根据对话历史和当前输入，从候选词列表中选出最符合语境的词。按优先级从高到低列出最多5个候选词，用顿号分隔，不要拼音、数字序号或任何解释。\",\"role\":\"system\"},{\"content\":\"对话历史：「这起案件还会」\\n当前输入拼音：「she ji」\\n候选词：设计、涉及、射击、设、社\\n按最符合对话语境的顺序列出前5个候选词（顿号分隔）：\",\"role\":\"user\"}],\"temperature\":0,\"max_tokens\":20}",
+          "response": "{\"id\":\"chatcmpl-a3807333\",\"object\":\"chat.completion\",\"created\":1792647173,\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"设、涉及、设计、射击、社\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":116,\"completion_tokens\":9,\"total_tokens\":125,\"input_tokens\":116,\"output_tokens\":9,\"prompt_tokens_details\":{\"cached_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"time_to_first_token\":0.11,\"total_time\":0.29,\"prompt_eval_duration\":0.11,\"generation_duration\":0.18,\"prompt_tokens_per_second\":1075.01,\"generation_tokens_per_second\":50.43}}",
+          "networkWallMs": 290.02400016785,
+          "code": 200,
+          "status": "HTTP/1.1 200 OK"
+        }
+      ],
+      "identities": [
+        4,
+        1,
+        2,
+        3,
+        5,
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "source": [
+        "设计",
+        "涉及",
+        "射击",
+        "设",
+        "社",
+        "射",
+        "蛇",
+        "舍",
+        "摄"
+      ],
+      "ranked": [
+        "设",
+        "设计",
+        "涉及",
+        "射击",
+        "社",
+        "射",
+        "蛇",
+        "舍",
+        "摄"
+      ],
+      "id": "identical-repeat",
+      "processCpuMs": 0.128,
+      "wallMs": 0.22999954223633,
+      "preedit": "she ji",
+      "status": "completed",
+      "requests": [],
+      "identities": [
+        4,
+        1,
+        2,
+        3,
+        5,
+        6,
+        7,
+        8,
+        9
+      ]
+    }
+  ],
+  "subprocessWallMs": 1460.9089996665716,
+  "stderr": ""
+}

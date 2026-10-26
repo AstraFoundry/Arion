@@ -5,6 +5,7 @@
   "license": "AGPL-3.0-only",
   "description": "Native desktop voice input foundation and specifications.",
   "scripts": {
+    "ime:rerank": "node scripts/rime-rerank-command.mjs",
     "qwen17:context:report": "node scripts/qwen17-context-command.mjs report",
     "qwen17:verify": "node scripts/qwen17-context-command.mjs verify",
     "qwen17:context:test": "node scripts/qwen17-context-command.mjs test",
@@ -12,6 +13,9 @@
     "i18n:check": "node scripts/check-i18n.mjs",
     "docs:check": "node scripts/check-repository.mjs",
     "updater:check": "node scripts/check-updater.mjs",
+    "updater:e2e": "node scripts/check-updater.mjs --native",
+    "notifications:check": "node scripts/check-notifications.mjs",
+    "notifications:prepare": "node scripts/check-notifications.mjs --prepare",
     "workflows:check": "node scripts/check-workflows.mjs",
     "lint": "node scripts/check-repository.mjs",
     "test": "node scripts/test.mjs",
@@ -343,6 +347,7 @@
     "rewrite:selector-d1-compact-v1:payload-test": "node scripts/rewrite-evidence-command.mjs rewrite-selector-d1-compact-v1 test_payload",
     "rewrite:selector-d1-policy-v1:payload-test": "node scripts/rewrite-evidence-command.mjs rewrite-selector-d1-policy-v1 test_payload",
     "asr:native:verify": "node benchmarks/reproduction/native-asr-v1/verify.mjs",
+    "ime:align": "node scripts/llm-ime-alignment-command.mjs",
     "keyboard:shared:check": "node scripts/check-shared-keyboard.mjs",
     "keyboard:windows:check": "node scripts/check-windows-keyboard.mjs"
   },

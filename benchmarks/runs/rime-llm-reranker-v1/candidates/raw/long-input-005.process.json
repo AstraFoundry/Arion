@@ -1,0 +1,12 @@
+{
+  "args": [
+    "/Users/steven/code/Arion/.workspace/rime-llm-reranker-v1/native-build/driver",
+    "/Users/steven/code/Arion/apps/desktop/resources/darwin/keyboard/data",
+    "/Users/steven/code/Arion/.workspace/rime-llm-reranker-v1/candidates/profiles/long-input-005",
+    "/Users/steven/code/Arion/.workspace/rime-llm-reranker-v1/candidates/requests/long-input-005.json",
+    "/Users/steven/code/Arion/.workspace/rime-llm-reranker-v1/candidates/raw/long-input-005.json"
+  ],
+  "exitCode": 0,
+  "stdout": "",
+  "stderr": "WARNING: Logging before InitGoogleLogging() is written to STDERR\nI20261022 13:27:13.770457 0x1f8b7e180 registry.cc:14] registering component: arion_encrypted_userdb\n"
+}

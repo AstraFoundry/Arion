@@ -47,7 +47,13 @@ func initSystemCallbacks() {
 		dbusID := gVariantGetUint32(child)
 		gVariantUnref(child)
 		if id, ok := notifications[dbusID]; ok {
-			theBackend.h.NotificationClicked(id)
+			child = gVariantGetChildValue(params, 1)
+			action := goStr(gVariantGetString(child, nil))
+			gVariantUnref(child)
+			if action == "default" {
+				action = ""
+			}
+			theBackend.h.NotificationAction(id, action)
 		}
 	})
 
@@ -527,6 +533,9 @@ func (b *Backend) showNotification(n *platform.Notification) error {
 			cs("ActionInvoked"), cs("/org/freedesktop/Notifications"), nil, 0, cbNotification, 0, 0)
 	}
 	actions := []ptr{gVariantNewString(cs("default")), gVariantNewString(cs("Open"))}
+	for _, a := range n.Actions {
+		actions = append(actions, gVariantNewString(cs(a.ID)), gVariantNewString(cs(a.Title)))
+	}
 	var hints []ptr
 	if n.Silent {
 		hints = append(hints, gVariantNewDictEntry(gVariantNewString(cs("suppress-sound")), gVariantNewVariant(gVariantNewBoolean(true))))
@@ -585,4 +594,15 @@ func appName() string {
 		return theBackend.name
 	}
 	return "MyGo"
+}
+
+func (b *Backend) NotificationPermission(done func(platform.NotificationAuthorization, error)) {
+	if !b.NotificationsSupported() {
+		done(platform.NotificationAuthorizationUnsupported, platform.ErrUnsupported)
+		return
+	}
+	done(platform.NotificationAuthorizationAllowed, nil)
+}
+func (b *Backend) RequestNotificationPermission(done func(platform.NotificationAuthorization, error)) {
+	b.NotificationPermission(done)
 }

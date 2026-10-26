@@ -1,0 +1,653 @@
+{
+  "id" : "context-007",
+  "boundary" : "production engine key-processing plus synchronous snapshot copying; no OS events or rendered preedit",
+  "teardownMs" : 0.48325000000000001,
+  "timer" : "mach_absolute_time",
+  "beforeConfirmation" : {
+    "commit" : "",
+    "selection" : [
+      8,
+      0
+    ],
+    "lastPage" : false,
+    "highlighted" : 0,
+    "candidates" : [
+      "公式",
+      "共识",
+      "公示",
+      "攻势",
+      "工时",
+      "工事",
+      "共事",
+      "公事",
+      "共"
+    ],
+    "preedit" : "gong shi",
+    "page" : 0,
+    "ascii" : false
+  },
+  "terminal" : "empty-preedit",
+  "warmupMs" : 0.41029166666666667,
+  "peakRSSBytes" : 19644416,
+  "confirmations" : [
+    {
+      "keyToSnapshotMs" : 0.011875,
+      "handled" : true,
+      "key" : 32,
+      "snapshot" : {
+        "commit" : "公式",
+        "selection" : [
+          0,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+
+        ],
+        "preedit" : "",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ],
+  "input" : "gongshi",
+  "startupToSessionMs" : 10.998416666666666,
+  "committed" : "公式",
+  "warmups" : [
+    {
+      "input" : "xuetang",
+      "steps" : [
+        {
+          "keyToSnapshotMs" : 0.059333333333333335,
+          "handled" : true,
+          "key" : 120,
+          "snapshot" : {
+            "commit" : "",
+            "selection" : [
+              1,
+              0
+            ],
+            "lastPage" : false,
+            "highlighted" : 0,
+            "candidates" : [
+              "下",
+              "想",
+              "小",
+              "先",
+              "新",
+              "向",
+              "写",
+              "行",
+              "像"
+            ],
+            "preedit" : "x",
+            "page" : 0,
+            "ascii" : false
+          }
+        },
+        {
+          "keyToSnapshotMs" : 0.021333333333333333,
+          "handled" : true,
+          "key" : 117,
+          "snapshot" : {
+            "commit" : "",
+            "selection" : [
+              2,
+              0
+            ],
+            "lastPage" : false,
+            "highlighted" : 0,
+            "candidates" : [
+              "需",
+              "须",
+              "徐",
+              "许",
+              "虚",
+              "续",
+              "旭",
+              "序",
+              "恤"
+            ],
+            "preedit" : "xu",
+            "page" : 0,
+            "ascii" : false
+          }
+        },
+        {
+          "keyToSnapshotMs" : 0.017833333333333333,
+          "handled" : true,
+          "key" : 101,
+          "snapshot" : {
+            "commit" : "",
+            "selection" : [
+              3,
+              0
+            ],
+            "lastPage" : false,
+            "highlighted" : 0,
+            "candidates" : [
+              "学",
+              "血",
+              "雪",
+              "薛",
+              "穴",
+              "靴",
+              "削",
+              "彐",
+              "學"
+            ],
+            "preedit" : "xue",
+            "page" : 0,
+            "ascii" : false
+          }
+        },
+        {
+          "keyToSnapshotMs" : 0.025916666666666668,
+          "handled" : true,
+          "key" : 116,
+          "snapshot" : {
+            "commit" : "",
+            "selection" : [
+              5,
+              0
+            ],
+            "lastPage" : false,
+            "highlighted" : 0,
+            "candidates" : [
+              "血统",
+              "血糖",
+              "学堂",
+              "噱头",
+              "学徒",
+              "学",
+              "血",
+              "雪",
+              "薛"
+            ],
+            "preedit" : "xue t",
+            "page" : 0,
+            "ascii" : false
+          }
+        },
+        {
+          "keyToSnapshotMs" : 0.033750000000000002,
+          "handled" : true,
+          "key" : 97,
+          "snapshot" : {
+            "commit" : "",
+            "selection" : [
+              6,
+              0
+            ],
+            "lastPage" : false,
+            "highlighted" : 0,
+            "candidates" : [
+              "学他",
+              "学",
+              "血",
+              "雪",
+              "薛",
+              "穴",
+              "靴",
+              "削",
+              "彐"
+            ],
+            "preedit" : "xue ta",
+            "page" : 0,
+            "ascii" : false
+          }
+        },
+        {
+          "keyToSnapshotMs" : 0.026749999999999999,
+          "handled" : true,
+          "key" : 110,
+          "snapshot" : {
+            "commit" : "",
+            "selection" : [
+              7,
+              0
+            ],
+            "lastPage" : false,
+            "highlighted" : 0,
+            "candidates" : [
+              "学谈",
+              "学",
+              "血",
+              "雪",
+              "薛",
+              "穴",
+              "靴",
+              "削",
+              "彐"
+            ],
+            "preedit" : "xue tan",
+            "page" : 0,
+            "ascii" : false
+          }
+        },
+        {
+          "keyToSnapshotMs" : 0.022291666666666668,
+          "handled" : true,
+          "key" : 103,
+          "snapshot" : {
+            "commit" : "",
+            "selection" : [
+              8,
+              0
+            ],
+            "lastPage" : false,
+            "highlighted" : 0,
+            "candidates" : [
+              "血糖",
+              "学堂",
+              "学",
+              "血",
+              "雪",
+              "薛",
+              "穴",
+              "靴",
+              "削"
+            ],
+            "preedit" : "xue tang",
+            "page" : 0,
+            "ascii" : false
+          }
+        }
+      ],
+      "completion" : "cancelled-without-commit"
+    },
+    {
+      "input" : "heishan",
+      "steps" : [
+        {
+          "keyToSnapshotMs" : 0.029208333333333333,
+          "handled" : true,
+          "key" : 104,
+          "snapshot" : {
+            "commit" : "",
+            "selection" : [
+              1,
+              0
+            ],
+            "lastPage" : false,
+            "highlighted" : 0,
+            "candidates" : [
+              "和",
+              "好",
+              "还",
+              "会",
+              "很",
+              "后",
+              "或",
+              "号",
+              "话"
+            ],
+            "preedit" : "h",
+            "page" : 0,
+            "ascii" : false
+          }
+        },
+        {
+          "keyToSnapshotMs" : 0.015625,
+          "handled" : true,
+          "key" : 101,
+          "snapshot" : {
+            "commit" : "",
+            "selection" : [
+              2,
+              0
+            ],
+            "lastPage" : false,
+            "highlighted" : 0,
+            "candidates" : [
+              "和",
+              "喝",
+              "何",
+              "合",
+              "河",
+              "呵",
+              "核",
+              "盒",
+              "贺"
+            ],
+            "preedit" : "he",
+            "page" : 0,
+            "ascii" : false
+          }
+        },
+        {
+          "keyToSnapshotMs" : 0.01325,
+          "handled" : true,
+          "key" : 105,
+          "snapshot" : {
+            "commit" : "",
+            "selection" : [
+              3,
+              0
+            ],
+            "lastPage" : true,
+            "highlighted" : 0,
+            "candidates" : [
+              "黑",
+              "嘿",
+              "嗨",
+              "黒",
+              "潶"
+            ],
+            "preedit" : "hei",
+            "page" : 0,
+            "ascii" : false
+          }
+        },
+        {
+          "keyToSnapshotMs" : 0.034625000000000003,
+          "handled" : true,
+          "key" : 115,
+          "snapshot" : {
+            "commit" : "",
+            "selection" : [
+              5,
+              0
+            ],
+            "lastPage" : false,
+            "highlighted" : 0,
+            "candidates" : [
+              "黑色",
+              "黑手",
+              "黑石",
+              "黑山",
+              "黑市",
+              "黑",
+              "嘿",
+              "嗨",
+              "黒"
+            ],
+            "preedit" : "hei s",
+            "page" : 0,
+            "ascii" : false
+          }
+        },
+        {
+          "keyToSnapshotMs" : 0.042750000000000003,
+          "handled" : true,
+          "key" : 104,
+          "snapshot" : {
+            "commit" : "",
+            "selection" : [
+              7,
+              0
+            ],
+            "lastPage" : false,
+            "highlighted" : 0,
+            "candidates" : [
+              "黑社会",
+              "黑手",
+              "黑石",
+              "黑山",
+              "黑市",
+              "黑色",
+              "黑",
+              "嘿",
+              "嗨"
+            ],
+            "preedit" : "hei s h",
+            "page" : 0,
+            "ascii" : false
+          }
+        },
+        {
+          "keyToSnapshotMs" : 0.02670833333333333,
+          "handled" : true,
+          "key" : 97,
+          "snapshot" : {
+            "commit" : "",
+            "selection" : [
+              7,
+              0
+            ],
+            "lastPage" : true,
+            "highlighted" : 0,
+            "candidates" : [
+              "黑啥",
+              "黑",
+              "嘿",
+              "嗨",
+              "黒",
+              "潶"
+            ],
+            "preedit" : "hei sha",
+            "page" : 0,
+            "ascii" : false
+          }
+        },
+        {
+          "keyToSnapshotMs" : 0.019166666666666669,
+          "handled" : true,
+          "key" : 110,
+          "snapshot" : {
+            "commit" : "",
+            "selection" : [
+              8,
+              0
+            ],
+            "lastPage" : true,
+            "highlighted" : 0,
+            "candidates" : [
+              "黑山",
+              "黑",
+              "嘿",
+              "嗨",
+              "黒",
+              "潶"
+            ],
+            "preedit" : "hei shan",
+            "page" : 0,
+            "ascii" : false
+          }
+        }
+      ],
+      "completion" : "cancelled-without-commit"
+    }
+  ],
+  "inputKeysToFinalSnapshotMs" : 0.20779166666666665,
+  "status" : "completed",
+  "steps" : [
+    {
+      "keyToSnapshotMs" : 0.023166666666666669,
+      "handled" : true,
+      "key" : 103,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          1,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "个",
+          "给",
+          "过",
+          "跟",
+          "更",
+          "该",
+          "高",
+          "搞",
+          "刚"
+        ],
+        "preedit" : "g",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.014874999999999999,
+      "handled" : true,
+      "key" : 111,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          2,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "够",
+          "狗",
+          "共",
+          "工",
+          "公",
+          "供",
+          "宫",
+          "功",
+          "购"
+        ],
+        "preedit" : "go",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.015541666666666665,
+      "handled" : true,
+      "key" : 110,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          3,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "共",
+          "工",
+          "公",
+          "供",
+          "宫",
+          "功",
+          "攻",
+          "弓",
+          "龚"
+        ],
+        "preedit" : "gon",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.016625000000000001,
+      "handled" : true,
+      "key" : 103,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          4,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "共",
+          "工",
+          "公",
+          "供",
+          "宫",
+          "功",
+          "攻",
+          "弓",
+          "龚"
+        ],
+        "preedit" : "gong",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.055791666666666663,
+      "handled" : true,
+      "key" : 115,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          6,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "公司",
+          "工商",
+          "公式",
+          "共识",
+          "公示",
+          "供水",
+          "攻势",
+          "公社",
+          "工伤"
+        ],
+        "preedit" : "gong s",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.051583333333333335,
+      "handled" : true,
+      "key" : 104,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          7,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "工商",
+          "公式",
+          "共识",
+          "公示",
+          "供水",
+          "攻势",
+          "公社",
+          "工伤",
+          "工时"
+        ],
+        "preedit" : "gong sh",
+        "page" : 0,
+        "ascii" : false
+      }
+    },
+    {
+      "keyToSnapshotMs" : 0.025375000000000002,
+      "handled" : true,
+      "key" : 105,
+      "snapshot" : {
+        "commit" : "",
+        "selection" : [
+          8,
+          0
+        ],
+        "lastPage" : false,
+        "highlighted" : 0,
+        "candidates" : [
+          "公式",
+          "共识",
+          "公示",
+          "攻势",
+          "工时",
+          "工事",
+          "共事",
+          "公事",
+          "共"
+        ],
+        "preedit" : "gong shi",
+        "page" : 0,
+        "ascii" : false
+      }
+    }
+  ]
+}
