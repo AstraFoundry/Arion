@@ -64,8 +64,18 @@ const (
 	LanguageEnglish   = application.English
 	LanguageChinese   = application.SimplifiedChinese
 
-	TargetEnglish = domain.TargetEnglish
-	TargetChinese = domain.TargetChinese
+	TargetEnglish            = domain.TargetEnglish
+	TargetChinese            = domain.TargetChinese
+	TargetChineseTraditional = domain.TargetChineseTraditional
+	TargetJapanese           = domain.TargetJapanese
+	TargetKorean             = domain.TargetKorean
+	TargetSpanish            = domain.TargetSpanish
+	TargetFrench             = domain.TargetFrench
+	TargetGerman             = domain.TargetGerman
+	TargetPortuguese         = domain.TargetPortuguese
+	TargetItalian            = domain.TargetItalian
+	TargetRussian            = domain.TargetRussian
+	TargetArabic             = domain.TargetArabic
 
 	HoldOff          = application.HoldOff
 	HoldFn           = application.HoldFn
@@ -345,8 +355,10 @@ const (
 
 // Hold is the hold key's listener, the only global dictation activation.
 type Hold struct {
-	// Pressed is when the key last went down, for the onboarding test.
-	Pressed time.Time
+	// Pressed is when a listened key last went down, and PressedKey which
+	// one, for the onboarding test.
+	Pressed    time.Time
+	PressedKey HoldKey
 	// Active reports the listener is running.
 	Active bool
 	// Failure explains why the key is not listening: PERMISSION_DENIED

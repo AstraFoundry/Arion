@@ -845,13 +845,17 @@ func TestOnboardingFlow(t *testing.T) {
 	state.Hold = runtime.Hold{Active: true}
 	settle(tt)
 	snapshot(t, tt, "onboarding-6-hold-key")
-	state.Hold.Pressed = time.Now().Add(time.Second)
+	state.Hold.Pressed, state.Hold.PressedKey = time.Now().Add(time.Second), state.Preferences.HoldKey
 	settle(tt)
 	if !hasText(tt, copy.For(copy.English).Text(copy.OnbHoldKeyHeard)) {
 		t.Fatalf("hold key press not acknowledged: %q", tt.Texts())
 	}
 	snapshot(t, tt, "onboarding-6-hold-key-heard")
 	click(copy.For(copy.English).Text(copy.Continue))
+	// Polishing stayed off, so voice translation is skipped.
+	if !hasText(tt, copy.For(copy.English).Text(copy.OnbTryTitle)) {
+		t.Fatalf("try step missing: %q", tt.Texts())
+	}
 	snapshot(t, tt, "onboarding-7-try")
 	click(copy.For(copy.English).Text(copy.Continue))
 	snapshot(t, tt, "onboarding-8-done")

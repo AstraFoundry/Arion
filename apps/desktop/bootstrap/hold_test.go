@@ -77,6 +77,24 @@ func TestHoldKeyRestartRejectsQueuedEventsFromOldListener(t *testing.T) {
 	}
 }
 
+// The onboarding test hears both keys and says which went down, so each
+// key step acknowledges only its own.
+func TestHoldKeyTestRecordsWhichKeyWentDown(t *testing.T) {
+	p := &multiHoldPlatform{}
+	a := &App{platform: p, testingHold: true}
+	a.state.Preferences.HoldKey = application.HoldRightOption
+	a.state.Preferences.TranslateKey = application.HoldRightCommand
+	a.startHoldKey()
+	p.multiSink(application.HoldRightCommand, holdkey.Down)
+	a.queue[0]()
+	if a.state.Hold.Pressed.IsZero() || a.state.Hold.PressedKey != application.HoldRightCommand {
+		t.Fatalf("translation key press not recorded: %+v", a.state.Hold)
+	}
+	if a.state.Hold.Holding {
+		t.Fatal("test press started dictation")
+	}
+}
+
 type multiHoldPlatform struct {
 	holdPlatform
 	keys      []application.HoldKey

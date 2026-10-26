@@ -1,7 +1,7 @@
 // Package showcase illustrates Arion at work: a mock editor window and the
 // dictation pill floating over the soft photograph. It is an illustration,
 // drawn from fixed copy rather than live state, except for the microphone
-// levels a caller may pass in.
+// levels a caller may pass in and the language a translation lands in.
 package showcase
 
 import (
@@ -13,6 +13,7 @@ import (
 	"arion.local/desktop/ui/shared/copy"
 	"arion.local/desktop/ui/shared/icons"
 	"arion.local/desktop/ui/shared/kit"
+	"arion.local/desktop/ui/shared/runtime"
 	"arion.local/desktop/ui/shared/theme"
 	"github.com/egoist/mygo/ui"
 )
@@ -47,6 +48,33 @@ const Window = 248
 // carries the corners itself, because the GPU renderers leave bitmaps and
 // gradients square under a parent's rounded clip.
 func Render(c *ui.Context, tokens theme.Tokens, messages copy.Catalog, scene Scene, key string, levels []float32, radius ...float32) {
+	sentence := messages.Text(copy.ShowcaseSentence)
+	render(c, tokens, messages, scene, key, levels, sentence, sentence, radius)
+}
+
+// sentences are the mock sentence in each translation target language.
+var sentences = map[runtime.TranslationLanguage]copy.Key{
+	runtime.TargetEnglish: copy.ShowcaseSentenceEnglish, runtime.TargetChinese: copy.ShowcaseSentence,
+	runtime.TargetChineseTraditional: copy.ShowcaseSentenceChineseTraditional, runtime.TargetJapanese: copy.ShowcaseSentenceJapanese,
+	runtime.TargetKorean: copy.ShowcaseSentenceKorean, runtime.TargetSpanish: copy.ShowcaseSentenceSpanish,
+	runtime.TargetFrench: copy.ShowcaseSentenceFrench, runtime.TargetGerman: copy.ShowcaseSentenceGerman,
+	runtime.TargetPortuguese: copy.ShowcaseSentencePortuguese, runtime.TargetItalian: copy.ShowcaseSentenceItalian,
+	runtime.TargetRussian: copy.ShowcaseSentenceRussian, runtime.TargetArabic: copy.ShowcaseSentenceArabic,
+}
+
+// Translate loops through a voice translation into target: the sentence
+// streams in the pill in Chinese, or English for a Chinese target, and
+// lands in the editor in target's language.
+func Translate(c *ui.Context, tokens theme.Tokens, messages copy.Catalog, target runtime.TranslationLanguage, key string, radius ...float32) {
+	said := messages.Text(copy.ShowcaseSentence)
+	if target == runtime.TargetChinese || target == runtime.TargetChineseTraditional {
+		said = messages.Text(copy.ShowcaseSentenceEnglish)
+	}
+	render(c, tokens, messages, Dictating, key, nil, said, messages.Text(sentences[target]), radius)
+}
+
+// render draws scene hearing said and inserting written.
+func render(c *ui.Context, tokens theme.Tokens, messages copy.Catalog, scene Scene, key string, levels []float32, said, written string, radius []float32) {
 	now := c.Now()
 	// The dictation loop is decoration: with reduced motion it holds its
 	// final frame.
@@ -77,8 +105,8 @@ func Render(c *ui.Context, tokens theme.Tokens, messages copy.Catalog, scene Sce
 		ui.Box(c).Absolute().Left(0).Right(0).Bottom(0).Height(240).PassThrough().Radius(0, 0, corners[2], corners[3]).
 			LinearGradient(ui.LinearGradient{From: tokens.Scrim.Alpha(0), To: tokens.Scrim.Alpha(0.45), Angle: 180})
 		ui.Column(c).Absolute().Top(0).Left(0).Right(0).Bottom(0).Justify(ui.Center).AlignItems(ui.Center).Children(func() {
-			editor(c, tokens, messages, inserted)
-			pill(c, tokens, messages, scene, key, levels, spoken, inserted)
+			editor(c, tokens, written, inserted)
+			pill(c, tokens, messages, scene, key, levels, said, spoken, inserted)
 		})
 	})
 }
@@ -101,7 +129,7 @@ func progress(scene Scene, now time.Time) (float32, bool) {
 
 // editor draws a document window of another app: a quiet title bar, two
 // lines of existing text as rules, and the dictated sentence at the caret.
-func editor(c *ui.Context, tokens theme.Tokens, messages copy.Catalog, inserted bool) {
+func editor(c *ui.Context, tokens theme.Tokens, sentence string, inserted bool) {
 	window := ui.Column(c).Width(Window).Radius(theme.RadiusLG+2).Background(tokens.Card).Border(1, tokens.CardBorder).Clip()
 	kit.Raise(window, tokens, kit.Floating).Children(func() {
 		ui.Row(c).Height(26).Padding(0, 10).Gap(6).AlignItems(ui.Center).Children(func() {
@@ -115,7 +143,7 @@ func editor(c *ui.Context, tokens theme.Tokens, messages copy.Catalog, inserted 
 			ui.Box(c).Height(6).Width(124).Radius(3).Background(tokens.Hairline)
 			ui.Row(c).MinHeight(36).AlignItems(ui.Start).Children(func() {
 				if inserted {
-					ui.Text(c.Key("sentence"), messages.Text(copy.ShowcaseSentence)).FontSize(theme.Body).MaxLines(2).Shrink(1).
+					ui.Text(c.Key("sentence"), sentence).FontSize(theme.Body).MaxLines(2).Shrink(1).
 						Transition(ui.ElementTransition{Animation: &theme.Settle, Enter: &ui.Motion{Y: 4}})
 					return
 				}
@@ -129,7 +157,7 @@ func editor(c *ui.Context, tokens theme.Tokens, messages copy.Catalog, inserted 
 
 // pill mirrors the live pill: an open microphone with its meter and the
 // streaming draft, or the outcome once the text landed.
-func pill(c *ui.Context, tokens theme.Tokens, messages copy.Catalog, scene Scene, key string, levels []float32, spoken float32, inserted bool) {
+func pill(c *ui.Context, tokens theme.Tokens, messages copy.Catalog, scene Scene, key string, levels []float32, sentence string, spoken float32, inserted bool) {
 	phase := "listening"
 	if inserted {
 		phase = "inserted"
@@ -147,9 +175,9 @@ func pill(c *ui.Context, tokens theme.Tokens, messages copy.Catalog, scene Scene
 				kit.VoiceMark(c, levels, 18, kit.MarkListening, tokens.PillText, tokens.Live)
 				// The streaming draft, or the key that finishes: the
 				// illustration is too narrow for the live pill's full row.
-				if draft := head(messages.Text(copy.ShowcaseSentence), spoken); draft != "" && scene == Dictating {
+				if draft := head(sentence, spoken); draft != "" && scene == Dictating {
 					ui.Text(c, tail(draft, 8)).FontSize(theme.Body).SingleLine().MaxWidth(150)
-				} else {
+				} else if key != "" {
 					kit.Kbd(c, tokens, key, true)
 				}
 			})

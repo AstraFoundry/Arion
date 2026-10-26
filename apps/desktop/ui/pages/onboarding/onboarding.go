@@ -1,7 +1,7 @@
 // Package onboarding is the first-run flow: the choice between signing in
 // to AstraFoundry and staying local, permissions, the automatically chosen
-// model, the dictation key and a first dictation, each step beside an
-// illustration of what it enables.
+// model, the dictation key, voice translation and its key, and a first
+// dictation, each step beside an illustration of what it enables.
 package onboarding
 
 import (
@@ -51,7 +51,7 @@ type Page struct {
 	keyboardPractice string
 	axRequested      bool
 	axGranted        time.Time
-	holdKey          runtime.HoldKey
+	tested           runtime.HoldKey
 	switched         time.Time
 	keyboard         keyboard.State
 	cloud            cloud.Nav
@@ -79,9 +79,16 @@ func (p *Page) Render(c *ui.Context, store runtime.Store) {
 	}
 	ui.Row(c).Fill().AlignItems(ui.Stretch).Background(tokens.Canvas).Children(func() {
 		ui.Column(c).Width(Pane).Children(func() {
-			if step == onboarding.HoldKey && keyfigure.Shows(state.Preferences.HoldKey) {
-				keyfigure.Render(c, tokens, messages, state.Preferences.HoldKey, p.switched, p.heard(state))
-			} else {
+			switch key := testedKey(step, state); {
+			case key != "" && keyfigure.Shows(key):
+				label := copy.HoldKeyFigureLabel
+				if step == onboarding.TranslateKey {
+					label = copy.TranslateKeyFigureLabel
+				}
+				keyfigure.Render(c, tokens, messages, label, key, p.switched, p.heard(step, state))
+			case step == onboarding.Translate || step == onboarding.TranslateKey:
+				showcase.Translate(c, tokens, messages, state.Preferences.TranslateLanguage, holdname.Legend(state.Preferences.TranslateKey))
+			default:
 				scene, levels := illustration(step, state)
 				showcase.Render(c, tokens, messages, scene, holdname.Legend(state.Preferences.HoldKey), levels)
 			}
@@ -209,13 +216,18 @@ func (p *Page) sync(c *ui.Context, store runtime.Store, step onboarding.Step) {
 	if step == onboarding.Account {
 		signin.Check(store)
 	}
-	testing := step == onboarding.HoldKey
+	key := testedKey(step, store.State)
+	testing := step == onboarding.HoldKey || step == onboarding.TranslateKey
 	// Another key starts the test over.
-	if testing && store.State.Preferences.HoldKey != p.holdKey {
-		if p.holdKey != "" {
+	if testing && key != p.tested {
+		if p.tested != "" {
 			p.entered, p.switched = c.Now(), c.Now()
 		}
-		p.holdKey = store.State.Preferences.HoldKey
+		p.tested = key
+	}
+	if !testing {
+		// Each key step arrives without the figure's switch dip.
+		p.tested = ""
 	}
 	if testing != p.testing {
 		p.testing = testing
@@ -223,10 +235,26 @@ func (p *Page) sync(c *ui.Context, store runtime.Store, step onboarding.Step) {
 	}
 }
 
-// heard is when the hold key test last heard the chosen key, or zero: a
-// press before the step, or before another key was chosen, does not count.
-func (p *Page) heard(state *runtime.State) time.Time {
-	if state.Hold.Pressed.After(p.entered) {
+// testedKey is the key a step lets the user try: the dictation key, or the
+// translation key unless it is off.
+func testedKey(step onboarding.Step, state *runtime.State) runtime.HoldKey {
+	switch step {
+	case onboarding.HoldKey:
+		return state.Preferences.HoldKey
+	case onboarding.TranslateKey:
+		if key := state.Preferences.TranslateKey; key != runtime.HoldOff {
+			return key
+		}
+	}
+	return ""
+}
+
+// heard is when the key test last heard the step's key, or zero: a press
+// before the step, before another key was chosen, or of the other key does
+// not count.
+func (p *Page) heard(step onboarding.Step, state *runtime.State) time.Time {
+	key := testedKey(step, state)
+	if state.Hold.PressedKey == key && state.Hold.Pressed.After(p.entered) {
 		return state.Hold.Pressed
 	}
 	return time.Time{}
@@ -252,6 +280,18 @@ func heading(c *ui.Context, tokens theme.Tokens, title, body string) {
 		ui.Text(c, title).FontSize(theme.Title + 4).FontWeight(650)
 		ui.Text(c, body).FontSize(theme.Body).TextColor(tokens.Muted).MaxWidth(380)
 	})
+}
+
+// tryKey asks for a press of the step's key, and confirms one once heard.
+func (p *Page) tryKey(c *ui.Context, store runtime.Store, tokens theme.Tokens, step onboarding.Step) {
+	messages := store.Copy()
+	switch {
+	case !store.State.Hold.Active:
+	case !p.heard(step, store.State).IsZero():
+		kit.Status(c.Key("heard"), tokens, icons.CircleCheck, tokens.Success, messages.Text(copy.OnbHoldKeyHeard))
+	default:
+		ui.Text(c.Key("press"), messages.Text(copy.OnbHoldKeyPress)).FontSize(theme.Caption).FontWeight(500).TextColor(tokens.Muted)
+	}
 }
 
 func (p *Page) step(c *ui.Context, store runtime.Store, tokens theme.Tokens, step onboarding.Step) {
@@ -331,19 +371,24 @@ func (p *Page) step(c *ui.Context, store runtime.Store, tokens theme.Tokens, ste
 			Children(func() { cloud.Pages(c, store, tokens, &p.cloud) })
 	case onboarding.HoldKey:
 		heading(c, tokens, messages.Text(copy.OnbHoldKeyTitle), messages.Text(copy.OnbHoldKeyBody))
-		heard := !p.heard(state).IsZero()
 		ui.Column(c).Gap(12).Children(func() {
 			// The figure beside the step shows the chosen key and each press.
 			ui.Row(c).Width(240).Children(func() { holdkey.Picker(c, store) })
 			if holdkey.HasNotes(store) {
 				holdkey.Notes(c, store, tokens)
 			}
-			switch {
-			case !state.Hold.Active:
-			case heard:
-				kit.Status(c.Key("heard"), tokens, icons.CircleCheck, tokens.Success, messages.Text(copy.OnbHoldKeyHeard))
-			default:
-				ui.Text(c.Key("press"), messages.Text(copy.OnbHoldKeyPress)).FontSize(theme.Caption).FontWeight(500).TextColor(tokens.Muted)
+			p.tryKey(c, store, tokens, step)
+		})
+	case onboarding.Translate:
+		heading(c, tokens, messages.Text(copy.OnbTranslateTitle), messages.Text(copy.OnbTranslateBody))
+		ui.Row(c).Width(240).Children(func() { holdkey.TranslateLanguagePicker(c, store) })
+	case onboarding.TranslateKey:
+		heading(c, tokens, messages.Text(copy.OnbTranslateKeyTitle), messages.Text(copy.OnbTranslateKeyBody))
+		ui.Column(c).Gap(12).Children(func() {
+			// The dictation key is not offered, so the two never collide.
+			ui.Row(c).Width(240).Children(func() { holdkey.FreeTranslatePicker(c, store) })
+			if testedKey(step, state) != "" {
+				p.tryKey(c, store, tokens, step)
 			}
 		})
 	case onboarding.Try:

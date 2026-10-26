@@ -4,6 +4,7 @@ package holdkey
 
 import (
 	platform "runtime"
+	"slices"
 
 	holdname "arion.local/desktop/ui/entities/holdkey"
 	"arion.local/desktop/ui/shared/copy"
@@ -32,9 +33,21 @@ func Picker(c *ui.Context, store runtime.Store) {
 }
 
 // TranslatePicker selects the translation hold key, or HoldOff to disable it.
+// Choosing the dictation key swaps the two.
 func TranslatePicker(c *ui.Context, store runtime.Store) {
+	translatePicker(c, store, runtime.TranslateKeysFor(platform.GOOS))
+}
+
+// FreeTranslatePicker is TranslatePicker without the dictation key, so the
+// two cannot collide.
+func FreeTranslatePicker(c *ui.Context, store runtime.Store) {
+	hold := store.State.Preferences.HoldKey
+	choices := slices.DeleteFunc(runtime.TranslateKeysFor(platform.GOOS), func(k runtime.HoldKey) bool { return k == hold })
+	translatePicker(c, store, choices)
+}
+
+func translatePicker(c *ui.Context, store runtime.Store, choices []runtime.HoldKey) {
 	messages := store.Copy()
-	choices := runtime.TranslateKeysFor(platform.GOOS)
 	labels := make([]string, len(choices))
 	selected := holdname.Name(messages, store.State.Preferences.TranslateKey)
 	for i, key := range choices {
@@ -49,27 +62,35 @@ func TranslatePicker(c *ui.Context, store runtime.Store) {
 	}
 }
 
-// TranslateLanguagePicker selects the target language for voice translation.
+// languages name the translation target languages.
+var languages = map[runtime.TranslationLanguage]copy.Key{
+	runtime.TargetEnglish: copy.TranslateEnglish, runtime.TargetChinese: copy.TranslateChinese,
+	runtime.TargetChineseTraditional: copy.TranslateChineseTraditional, runtime.TargetJapanese: copy.TranslateJapanese,
+	runtime.TargetKorean: copy.TranslateKorean, runtime.TargetSpanish: copy.TranslateSpanish,
+	runtime.TargetFrench: copy.TranslateFrench, runtime.TargetGerman: copy.TranslateGerman,
+	runtime.TargetPortuguese: copy.TranslatePortuguese, runtime.TargetItalian: copy.TranslateItalian,
+	runtime.TargetRussian: copy.TranslateRussian, runtime.TargetArabic: copy.TranslateArabic,
+}
+
+// LanguageName is a translation target language's display name.
+func LanguageName(messages copy.Catalog, language runtime.TranslationLanguage) string {
+	return messages.Text(languages[language])
+}
+
+// TranslateLanguagePicker selects the target language for voice
+// translation; its list scrolls, so it fits the onboarding window.
 func TranslateLanguagePicker(c *ui.Context, store runtime.Store) {
 	messages := store.Copy()
-	targets := []runtime.TranslationLanguage{runtime.TargetEnglish, runtime.TargetChinese}
-	keys := []copy.Key{copy.TranslateEnglish, copy.TranslateChinese}
-	labels := make([]string, len(targets))
-	selected := messages.Text(copy.TranslateEnglish)
-	for i, target := range targets {
-		labels[i] = messages.Text(keys[i])
-		if store.State.Preferences.TranslateLanguage == target {
-			selected = labels[i]
-		}
+	selected := store.State.Preferences.TranslateLanguage
+	name := func(l runtime.TranslationLanguage) string { return LanguageName(messages, l) }
+	if kit.Select(c.Key("translate-language"), &selected, runtime.TranslationLanguages, name, nil).
+		Label(messages.Text(copy.TranslateLanguageLabel)).Changed() {
+		setLanguage(store, selected)
 	}
-	if ui.Select(c.Key("translate-language"), &selected, labels).Label(messages.Text(copy.TranslateLanguageLabel)).Changed() {
-		for i, label := range labels {
-			if label == selected {
-				lang := targets[i]
-				store.Actions.UpdatePreferences(func(p *runtime.Preferences) { p.TranslateLanguage = lang })
-			}
-		}
-	}
+}
+
+func setLanguage(store runtime.Store, language runtime.TranslationLanguage) {
+	store.Actions.UpdatePreferences(func(p *runtime.Preferences) { p.TranslateLanguage = language })
 }
 
 // Unavailable reports a dictation key that is not listening.

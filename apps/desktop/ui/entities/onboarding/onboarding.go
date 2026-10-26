@@ -24,12 +24,18 @@ const (
 	// HoldKey confirms the dictation key listens, which on macOS needs
 	// Input Monitoring, and lets the user try it.
 	HoldKey
+	// Translate introduces voice translation and chooses its target
+	// language.
+	Translate
+	// TranslateKey chooses the translation key, which never collides with
+	// the dictation key, and lets the user try it.
+	TranslateKey
 	Try
 	Finished
 )
 
 // Steps is the page order.
-var Steps = []Step{Welcome, Account, Microphone, Accessibility, InputMethod, Model, Polish, Cloud, HoldKey, Try, Finished}
+var Steps = []Step{Welcome, Account, Microphone, Accessibility, InputMethod, Model, Polish, Cloud, HoldKey, Translate, TranslateKey, Try, Finished}
 
 // Flow is the user's position; Direction drives the page slide.
 type Flow struct {
@@ -94,6 +100,10 @@ func Skipped(step Step, s *runtime.State) bool {
 		return s.InputMethod == runtime.InputMethodUnsupported
 	case Cloud:
 		return !s.Preferences.Polish || s.Preferences.PolishEngine != runtime.PolishCloud
+	case Translate, TranslateKey:
+		// Translation needs the polishing model, and a platform without a
+		// hold key adapter has no translation key.
+		return !runtime.PolishOn(s) || s.Preferences.HoldKey == ""
 	}
 	return false
 }
