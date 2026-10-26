@@ -6,7 +6,7 @@ Accepted (product decision), amended by [ADR 024](024-shared-polishing-pipeline.
 
 ## Context
 
-Local polishing needs the bundled GGUF runtime, which ships only on macOS on Apple silicon ([ADR 018](018-staged-gguf-rewriting.md)); Windows has no approved rewrite runtime. People who already pay for ChatGPT or hold a provider API key asked to polish with that model instead, during onboarding or in Settings, while keeping the local model as a choice.
+Local polishing needs the bundled GGUF runtime, which at the time of this decision shipped only on macOS on Apple silicon ([ADR 018](018-staged-gguf-rewriting.md)); Windows x64 local GGUF rewriting was subsequently adopted in [ADR 025](025-windows-local-polishing.md). People who already pay for ChatGPT or hold a provider API key asked to polish with that model instead, during onboarding or in Settings, while keeping the local model as a choice.
 
 [Republic](https://github.com/AstraFoundry/republic) is AstraFoundry's Go provider library: one chat interface over OpenAI, Anthropic, Google, DeepSeek, OpenRouter and the ChatGPT Codex backend, with Codex OAuth token refresh. It stops at providers and starts nothing on its own.
 

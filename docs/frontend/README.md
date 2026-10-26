@@ -11,12 +11,12 @@ This section defines how the frontend is organized using **Feature-Sliced Design
 
 | Layer | Slices |
 | --- | --- |
-| `app` | One view per window: overlay, menu bar panel, settings, onboarding, macOS settings guide, update reminder |
-| `pages` | `overlay`, `menubar`, `settings`, `onboarding`, `updatereminder` |
-| `widgets` | `capsule` (dictation pill), `statusheader`, `modelcard`, `stepper`, `showcase` (illustrations: mock UI over a photograph), `keyfigure` (the dictation key figure, drawn live with `shared/iso`) |
-| `features` | `dictate`, `permissions`, `provision`, `holdkey` (dictation key picker and consent notes), `keyboard` (input-source setup and settings guide), `microphone`, `vocabulary`, `transcript`, `modelchoice`, `uilanguage`, `update` (check, verified download, reminder presentation and protected restart), `diagnostics` (About log export), `signin` (AstraFoundry account and hosted-sync waitlist) |
-| `entities` | `dictation` (phase/notice projection), `model`, `onboarding` (step rules), `holdkey` (dictation key names), `account` (account stage and copy for errors and waitlist phases) |
-| `shared` | `runtime` (state and actions boundary), `copy`, `theme` (Sunbeam tokens, motion presets), `kit` (coss-anatomy primitives), `icons` (Lucide, ISC; cloud provider marks from [LobeHub Icons](https://icons.lobehub.com), MIT), `assets` (app mark, photographs), `iso` (isometric solids rasterized on the CPU, after the `anatomy` skill's kit) |
+| `app` | One view per window: overlay, menu bar panel, settings, onboarding, macOS settings guide, tray hint, update reminder |
+| `pages` | `overlay`, `menubar`, `settings`, `onboarding`, `guide` (floating macOS System Settings guide), `trayhint` (post-onboarding tray callout), `updatereminder` |
+| `widgets` | `capsule` (dictation pill), `statusheader`, `modelcard`, `stepper`, `showcase` (illustrations: mock UI over a photograph), `keyfigure` (the dictation key figure, drawn live with `shared/iso`), `usage` (dictation totals, daily activity heatmap, scene breakdown, and recent vocabulary overview) |
+| `features` | `dictate`, `permissions`, `provision`, `holdkey` (dictation key picker and consent notes), `keyboard` (input-source setup and settings guide), `microphone`, `vocabulary`, `transcript`, `modelchoice`, `uilanguage`, `diagnostics` (About log export), `signin` (AstraFoundry account and hosted-sync waitlist), `polish` (polishing toggle, local/cloud engine choice, punctuation mode, app matching, context switches, and local model status), `cloud` (cloud provider connection, ChatGPT OAuth or API key setup, and model picker), `scene` (per-app/site polishing scene card and override picker), `update` (check, verified download, reminder presentation and protected restart), `contributors` (About avatar stack and contributors page) |
+| `entities` | `dictation` (phase/notice projection and typewriter state), `model`, `onboarding` (step rules), `holdkey` (dictation key names), `account` (account stage and copy for errors and waitlist phases) |
+| `shared` | `runtime` (state and actions boundary), `copy`, `theme` (Sunbeam tokens, motion presets), `kit` (coss-anatomy primitives), `icons` (Lucide, ISC; cloud provider marks from [LobeHub Icons](https://icons.lobehub.com), MIT), `assets` (app mark, photographs, contributor avatars), `iso` (isometric solids rasterized on the CPU, after the `anatomy` skill's kit), `config` (project metadata, URLs, and cloud provider labels) |
 
 Views read `runtime.State` and request `runtime.Actions`; the composition root mutates state on the main thread. Headless view tests in `ui/app` render every surface with MyGo's `ui.Tester`.
 

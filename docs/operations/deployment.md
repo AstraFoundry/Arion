@@ -2,7 +2,7 @@
 
 ## Current capability
 
-`make build desktop` packages `Arion.app` (menu bar app, `LSUIElement`), localized microphone descriptions, the audio-input entitlement, native Qwen3-ASR workers and their resource closure, the IMK host, and its disk image. Apple silicon also ships the pinned local-polishing worker and GGUF runtime. The macOS package minimum is 14.0, matching the highest minimum in the bundled native libraries.
+`make build desktop` packages `Arion.app` (menu bar app, `LSUIElement`), localized microphone descriptions, the audio-input entitlement, native Qwen3-ASR workers and their resource closure, the IMK host, and its disk image. Both Apple silicon and Windows x64 also ship the pinned local-polishing worker (`arion-llm`) and GGUF runtime ([ADR 018](../decisions/018-staged-gguf-rewriting.md), [ADR 025](../decisions/025-windows-local-polishing.md)). The macOS package minimum is 14.0, matching the highest minimum in the bundled native libraries.
 
 `scripts/desktop-command.mjs` is the shared local/CI build entry point and sets the configured minimum OS in cgo compiler/linker flags. Its `scripts/stage-desktop-resources.mjs` preparation step includes Go module licenses, native runtime licenses/notices and model provenance. `scripts/cc-relocatable.sh` drops build-machine rpaths at link time. The read-only `scripts/verify-desktop-package.mjs` checks required resources, architectures, package identities/versions, native minimum OS versions and macOS signatures/rpaths. Models are downloaded separately from pinned URLs with verified digests.
 

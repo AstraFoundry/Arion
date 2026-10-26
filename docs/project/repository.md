@@ -18,7 +18,7 @@
 | `apps/desktop/infrastructure/browser` | System browser for http(s) authorization URLs |
 | `apps/desktop/cmd` | Evaluation and E2E drivers, the `arion-llm` rewrite worker (no cgo), live rewrite benchmarks, model catalog tool, icon renderer |
 | `apps/desktop/infrastructure/llm/rewrite` | Shared staged polishing: cleanup, context-backed bounded spelling choices and scene formatting; model adapters supply stage generation ([ADR 024](../decisions/024-shared-polishing-pipeline.md)) |
-| `apps/desktop/infrastructure/llm` | Pinned GGUF adapter, selected staged templates and pronunciation resources, pipe worker protocol and process client, experimental ID-only keyboard ranking over generic completion; legacy GenAI code retained for historical replay |
+| `apps/desktop/infrastructure/llm` | Pinned GGUF adapter (`gguf`), selected staged templates (`prompt`, with `prompt.go`/`live.json`/`context.json` retained for historical replay), pronunciation lexicon (`spelling`), pipe worker protocol (`protocol`), worker engine (`engine`), process client (`client`, `internal/subprocess`), and experimental ID-only keyboard ranking over generic completion (`ranking`) |
 | `apps/desktop/infrastructure/rewriting` | Rewrite capability service: bundled runtime location, model provisioning, worker lifecycle, `Rewriter` port |
 | `packages/core/domain` | Session and candidate invariants; standard-library only |
 | `packages/core/contracts` | Versioned transport-neutral DTOs; no SDK or platform handles |
