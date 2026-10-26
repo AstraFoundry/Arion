@@ -86,7 +86,7 @@
     },
     "polish": {
       "title": "Optional polishing",
-      "body": "A small language model on your Mac can tidy the wording and apply spoken self-corrections before the text lands. Off by default; Apple silicon only.",
+      "body": "A local language model (or a cloud model you connect) can tidy wording and apply spoken self-corrections before the text lands. Off by default.",
       "mockLabel": "Illustration: the words as spoken, with fillers and a correction mid-sentence, above the tidy sentence Arion typed.",
       "heard": "Heard",
       "typed": "Typed",
@@ -95,7 +95,7 @@
     },
     "keyboard": {
       "title": "A Pinyin keyboard in the same input method",
-      "body": "On macOS, Arion's input method also types full Pinyin offline, with candidates that learn from the words you pick. Tap Shift to switch between Chinese and English; the badge by the cursor flips over to show which one is on.",
+      "body": "Arion's input method also types full Pinyin offline, with candidates that learn from the words you pick. Tap Shift to switch between Chinese and English; the badge by the cursor flips over to show which one is on.",
       "mockLabel": "Illustration: typing “nihao” opens the candidate bar, the first candidate types 你好, then tapping Shift flips the badge by the cursor from 中 to A.",
       "document": "Notes",
       "pinyinStart": "ni",
@@ -161,7 +161,7 @@
         "title": "What stays on your device",
         "body": [
           "Microphone audio is held in memory for the dictation in progress and dropped when it ends. Drafts and corrections are kept the same way.",
-          "When you turn on context for polishing, Arion reads a bounded excerpt around the cursor in the focused field and the text of the focused window. It never stores the image and skips password and unknown fields.",
+          "When you turn on context for polishing, Arion reads a bounded excerpt around the cursor in the focused field and visible text in the focused window through Accessibility. Nothing is stored, and password and unknown fields are skipped.",
           "Usage statistics are daily totals of sessions, speaking time and words. They hold no text, app names or times of day."
         ]
       },
@@ -169,8 +169,8 @@
         "title": "What uses the network",
         "body": [
           "Model downloads: public files, each checked against a pinned SHA-256 digest before use.",
-          "Update checks: the public release manifest of the Arion repository on GitHub, carrying no content or device identifier. You can turn them off.",
-          "Nothing else. Arion has no cloud recognition and no telemetry."
+          "Update checks: the release manifest from the Arion update center, carrying no content or device identifier. Updates verify a trusted signature before installing, and automatic checks can be turned off.",
+          "Optional sign-in and cloud polishing: the account service is contacted only when you sign in or manage your account; if you connect a cloud polishing provider, only the recognized text and enabled context are sent, never audio. Arion has no cloud speech recognition and no telemetry."
         ]
       },
       {

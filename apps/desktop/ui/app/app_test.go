@@ -411,14 +411,14 @@ func TestMicrophoneGain(t *testing.T) {
 		page.Section = settings.Microphone
 		tt := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, SettingsWidth, SettingsHeight)
 		settle(tt)
-		if !hasText(tt, messages.Text(copy.MicGainDetail)) || !hasText(tt, messages.Decibels(0)) {
+		if !hasText(tt, messages.Text(copy.MicGain)) || !hasText(tt, messages.Decibels(0)) {
 			t.Fatalf("%s: gain row missing: %q", locale, tt.Texts())
 		}
 		snapshot(t, tt, "settings-microphone-gain-"+string(locale))
 		// The slider spans the card under its row; its far end is the loudest stop.
-		detail, _ := tt.Find(messages.Text(copy.MicGainDetail))
+		title, _ := tt.Find(messages.Text(copy.MicGain))
 		readout, _ := tt.Find(messages.Decibels(0))
-		tt.ClickAt(readout.X+readout.W-14, detail.Y+detail.H+12+14)
+		tt.ClickAt(readout.X+readout.W-14, title.Y+title.H+12+14)
 		settle(tt)
 		loudest := runtime.GainStops[len(runtime.GainStops)-1]
 		if state.Preferences.MicrophoneGain != loudest.DB || !actions.called("prefs") || !hasText(tt, messages.Decibels(loudest.DB)) {
@@ -1331,6 +1331,25 @@ func TestAboutDiagnosticExport(t *testing.T) {
 			t.Fatalf("export click %v %v", err, actions.calls)
 		}
 		snapshot(t, tt, "settings-about-diagnostics-"+string(locale))
+		tt.Scroll(SettingsWidth/2, SettingsHeight/2, 0, 220)
+		settle(tt)
+		netTitle, ok := tt.Find(messages.Text(copy.PrivacyNetwork))
+		if !ok || hasText(tt, messages.Text(copy.PrivacyNetTxt)) {
+			t.Fatalf("privacy row missing or its detail inline: %v", tt.Texts())
+		}
+		snapshot(t, tt, "settings-about-privacy-"+string(locale))
+		tt.Move(netTitle.X+netTitle.W+14, netTitle.Y+netTitle.H/2)
+		for range 40 {
+			tt.Frame()
+			if hasText(tt, messages.Text(copy.PrivacyNetTxt)) {
+				break
+			}
+			time.Sleep(25 * time.Millisecond)
+		}
+		if !hasText(tt, messages.Text(copy.PrivacyNetTxt)) {
+			t.Fatalf("privacy tooltip not shown: %v", tt.Texts())
+		}
+		snapshot(t, tt, "settings-about-privacy-tooltip-"+string(locale))
 		// Exercise progress, result and error states at the actual content width.
 		card := ui.NewTester(func(c *ui.Context) { diagnosticui.Card(c, store, theme.Apply(c)) }, 500, 180)
 		for _, phase := range []runtime.DiagnosticsPhase{runtime.DiagnosticsIdle, runtime.DiagnosticsExporting, runtime.DiagnosticsSaved, runtime.DiagnosticsFailed} {

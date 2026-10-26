@@ -26,7 +26,7 @@ func Learning(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 	messages := store.Copy()
 	on := store.State.Preferences.LearnEdits
 	kit.Card(c, tokens).Children(func() {
-		kit.Row(c, tokens, messages.Text(copy.LearnEditsLabel), messages.Text(copy.LearnEditsDetail), func() {
+		kit.TipRow(c, tokens, messages.Text(copy.LearnEditsLabel), messages.Text(copy.LearnEditsDetail), func() {
 			if ui.Switch(c.Key("learn-edits"), &on).Label(messages.Text(copy.LearnEditsLabel)).Changed() {
 				store.Actions.UpdatePreferences(func(p *runtime.Preferences) { p.LearnEdits = on })
 			}
