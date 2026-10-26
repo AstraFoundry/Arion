@@ -1,0 +1,16 @@
+{
+  "luaExecutableSha256": "af11f0ba03aecd4df0d1269d0fb918deae6e3c834f858fc982b0ba54bc294058",
+  "luaSourceArchiveSha256": "4f18ddae154e793e46eeab727c59ef1c0c0c2b744e7b94219710d76f530629ae",
+  "luaSocketSha256": "995e233a9c6b90c15f21a05e6ebabe72f0b9eee354a294763f2526da25f9e417",
+  "monotonicClockSha256": "b67dee771fb50babbc6daea50d451232b02436dd4659979b61189ba132804ed0",
+  "nativeExecutableSha256": "df7300d6d225adc4a23ccef0d11345c9007db526912480e1d4695053a395181d",
+  "nativeLinkRepair": "Initial historical quality runner omitted ranking.m. Current production ranking.m was compiled with the same -O2/-fobjc-arc/arm64-apple-macos14.0 flags and linked alongside its existing objects. No production source was edited.",
+  "runtimeSources": {
+    "lua": "https://www.lua.org/ftp/lua-5.4.8.tar.gz",
+    "luasocket": "95b7efa9da506ef968c1347edf3fc56370f0deed",
+    "dkjson": "e72ba0c9f5d8b8746fc306f6189a819dbb5cd0be",
+    "omlx": "6aba0dd3f28c690230a572a0c96cb43ee4f3d738"
+  },
+  "nativeDriverSource": "benchmarks/reproduction/imk-quality-v1/driver.mm",
+  "scope": "Binary identities only; compiled executables, model weights, environments, GPU caches and synthetic encrypted profiles excluded"
+}

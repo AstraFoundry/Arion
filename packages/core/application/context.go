@@ -102,7 +102,7 @@ func (c *Coordinator) startContext(r *run) {
 	r.place = domain.SceneKey(r.target.SceneHints())
 	r.contextReady = make(chan struct{})
 	policy := l.policy.Context
-	go func() {
+	c.spawn(func() {
 		defer close(r.contextReady)
 		var rc domain.RewriteContext
 		if policy.History {
@@ -122,7 +122,7 @@ func (c *Coordinator) startContext(r *run) {
 			}
 		}
 		r.rewriteContext = rc.Bounded()
-	}()
+	})
 }
 
 // contextFor returns the session's context once read, waiting at most wait.

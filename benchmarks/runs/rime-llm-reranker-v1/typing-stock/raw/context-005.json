@@ -1,0 +1,342 @@
+{
+  "id": "context-005",
+  "steps": [
+    {
+      "preedit": "q",
+      "wallMs": 280.28699970245,
+      "ranked": [
+        "去",
+        "其",
+        "请",
+        "钱",
+        "前",
+        "却",
+        "起",
+        "全",
+        "区"
+      ],
+      "processCpuMs": 0.803,
+      "source": [
+        "去",
+        "其",
+        "请",
+        "钱",
+        "前",
+        "却",
+        "起",
+        "全",
+        "区"
+      ],
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "requests": [
+        {
+          "request": "{\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"temperature\":0,\"messages\":[{\"role\":\"system\",\"content\":\"你是输入法候选词排序助手。根据对话历史和当前输入，从候选词列表中选出最符合语境的词。按优先级从高到低列出最多5个候选词，用顿号分隔，不要拼音、数字序号或任何解释。\"},{\"role\":\"user\",\"content\":\"对话历史：「法律保障公民的」\\n当前输入拼音：「q」\\n候选词：去、其、请、钱、前\\n按最符合对话语境的顺序列出前5个候选词（顿号分隔）：\"}],\"max_tokens\":20,\"stream\":false}",
+          "status": "HTTP/1.1 200 OK",
+          "response": "{\"id\":\"chatcmpl-b9d8ba69\",\"object\":\"chat.completion\",\"created\":1792647147,\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"去、其、请、钱、前\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":116,\"completion_tokens\":9,\"total_tokens\":125,\"input_tokens\":116,\"output_tokens\":9,\"prompt_tokens_details\":{\"cached_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"time_to_first_token\":0.1,\"total_time\":0.28,\"prompt_eval_duration\":0.1,\"generation_duration\":0.17,\"prompt_tokens_per_second\":1150.44,\"generation_tokens_per_second\":51.47}}",
+          "networkWallMs": 279.30100059509,
+          "code": 200
+        }
+      ],
+      "status": "completed",
+      "id": "key-1"
+    },
+    {
+      "preedit": "qu",
+      "wallMs": 315.27499961853,
+      "ranked": [
+        "去",
+        "区",
+        "取",
+        "曲",
+        "佢",
+        "娶",
+        "屈",
+        "渠",
+        "趋"
+      ],
+      "processCpuMs": 0.686,
+      "source": [
+        "去",
+        "区",
+        "取",
+        "曲",
+        "佢",
+        "娶",
+        "屈",
+        "渠",
+        "趋"
+      ],
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "requests": [
+        {
+          "request": "{\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"temperature\":0,\"messages\":[{\"role\":\"system\",\"content\":\"你是输入法候选词排序助手。根据对话历史和当前输入，从候选词列表中选出最符合语境的词。按优先级从高到低列出最多5个候选词，用顿号分隔，不要拼音、数字序号或任何解释。\"},{\"role\":\"user\",\"content\":\"对话历史：「法律保障公民的」\\n当前输入拼音：「qu」\\n候选词：去、区、取、曲、佢\\n按最符合对话语境的顺序列出前5个候选词（顿号分隔）：\"}],\"max_tokens\":20,\"stream\":false}",
+          "status": "HTTP/1.1 200 OK",
+          "response": "{\"id\":\"chatcmpl-b858180c\",\"object\":\"chat.completion\",\"created\":1792647148,\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"去、区、取、曲、佢\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":117,\"completion_tokens\":10,\"total_tokens\":127,\"input_tokens\":117,\"output_tokens\":10,\"prompt_tokens_details\":{\"cached_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"time_to_first_token\":0.11,\"total_time\":0.31,\"prompt_eval_duration\":0.11,\"generation_duration\":0.2,\"prompt_tokens_per_second\":1089.86,\"generation_tokens_per_second\":49.03}}",
+          "networkWallMs": 314.54100036621,
+          "code": 200
+        }
+      ],
+      "status": "completed",
+      "id": "key-2"
+    },
+    {
+      "preedit": "qu a",
+      "wallMs": 312.75099945068,
+      "ranked": [
+        "去啊",
+        "去",
+        "区",
+        "取",
+        "曲",
+        "佢",
+        "娶",
+        "屈",
+        "渠"
+      ],
+      "processCpuMs": 0.683,
+      "source": [
+        "去啊",
+        "去",
+        "区",
+        "取",
+        "曲",
+        "佢",
+        "娶",
+        "屈",
+        "渠"
+      ],
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "requests": [
+        {
+          "request": "{\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"temperature\":0,\"messages\":[{\"role\":\"system\",\"content\":\"你是输入法候选词排序助手。根据对话历史和当前输入，从候选词列表中选出最符合语境的词。按优先级从高到低列出最多5个候选词，用顿号分隔，不要拼音、数字序号或任何解释。\"},{\"role\":\"user\",\"content\":\"对话历史：「法律保障公民的」\\n当前输入拼音：「qu a」\\n候选词：去啊、去、区、取、曲\\n按最符合对话语境的顺序列出前5个候选词（顿号分隔）：\"}],\"max_tokens\":20,\"stream\":false}",
+          "status": "HTTP/1.1 200 OK",
+          "response": "{\"id\":\"chatcmpl-0db8be40\",\"object\":\"chat.completion\",\"created\":1792647148,\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"去啊、去、区、取、曲\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":118,\"completion_tokens\":10,\"total_tokens\":128,\"input_tokens\":118,\"output_tokens\":10,\"prompt_tokens_details\":{\"cached_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"time_to_first_token\":0.11,\"total_time\":0.31,\"prompt_eval_duration\":0.11,\"generation_duration\":0.2,\"prompt_tokens_per_second\":1095.54,\"generation_tokens_per_second\":49.58}}",
+          "networkWallMs": 312.17399978638,
+          "code": 200
+        }
+      ],
+      "status": "completed",
+      "id": "key-3"
+    },
+    {
+      "preedit": "quan",
+      "wallMs": 286.72299957275,
+      "ranked": [
+        "全",
+        "权",
+        "圈",
+        "劝",
+        "泉",
+        "犬",
+        "拳",
+        "券",
+        "荃"
+      ],
+      "processCpuMs": 0.506,
+      "source": [
+        "全",
+        "权",
+        "圈",
+        "劝",
+        "泉",
+        "犬",
+        "拳",
+        "券",
+        "荃"
+      ],
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "requests": [
+        {
+          "request": "{\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"temperature\":0,\"messages\":[{\"role\":\"system\",\"content\":\"你是输入法候选词排序助手。根据对话历史和当前输入，从候选词列表中选出最符合语境的词。按优先级从高到低列出最多5个候选词，用顿号分隔，不要拼音、数字序号或任何解释。\"},{\"role\":\"user\",\"content\":\"对话历史：「法律保障公民的」\\n当前输入拼音：「quan」\\n候选词：全、权、圈、劝、泉\\n按最符合对话语境的顺序列出前5个候选词（顿号分隔）：\"}],\"max_tokens\":20,\"stream\":false}",
+          "status": "HTTP/1.1 200 OK",
+          "response": "{\"id\":\"chatcmpl-df1aa966\",\"object\":\"chat.completion\",\"created\":1792647148,\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"quan,quan,quan,quan,quan\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":116,\"completion_tokens\":9,\"total_tokens\":125,\"input_tokens\":116,\"output_tokens\":9,\"prompt_tokens_details\":{\"cached_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"time_to_first_token\":0.1,\"total_time\":0.28,\"prompt_eval_duration\":0.1,\"generation_duration\":0.18,\"prompt_tokens_per_second\":1112.68,\"generation_tokens_per_second\":50.3}}",
+          "networkWallMs": 286.18200016022,
+          "code": 200
+        }
+      ],
+      "status": "completed",
+      "id": "key-4"
+    },
+    {
+      "preedit": "quan l",
+      "wallMs": 303.07200050354,
+      "ranked": [
+        "权利",
+        "权力",
+        "全力",
+        "全裸",
+        "圈里",
+        "全",
+        "权",
+        "圈",
+        "劝"
+      ],
+      "processCpuMs": 0.502,
+      "source": [
+        "权利",
+        "权力",
+        "全力",
+        "全裸",
+        "圈里",
+        "全",
+        "权",
+        "圈",
+        "劝"
+      ],
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "requests": [
+        {
+          "request": "{\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"temperature\":0,\"messages\":[{\"role\":\"system\",\"content\":\"你是输入法候选词排序助手。根据对话历史和当前输入，从候选词列表中选出最符合语境的词。按优先级从高到低列出最多5个候选词，用顿号分隔，不要拼音、数字序号或任何解释。\"},{\"role\":\"user\",\"content\":\"对话历史：「法律保障公民的」\\n当前输入拼音：「quan l」\\n候选词：权利、权力、全力、全裸、圈里\\n按最符合对话语境的顺序列出前5个候选词（顿号分隔）：\"}],\"max_tokens\":20,\"stream\":false}",
+          "status": "HTTP/1.1 200 OK",
+          "response": "{\"id\":\"chatcmpl-d7753910\",\"object\":\"chat.completion\",\"created\":1792647148,\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"权、力、全、圈、全力\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":119,\"completion_tokens\":9,\"total_tokens\":128,\"input_tokens\":119,\"output_tokens\":9,\"prompt_tokens_details\":{\"cached_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"time_to_first_token\":0.11,\"total_time\":0.3,\"prompt_eval_duration\":0.11,\"generation_duration\":0.19,\"prompt_tokens_per_second\":1063.74,\"generation_tokens_per_second\":47.96}}",
+          "networkWallMs": 302.47399997711,
+          "code": 200
+        }
+      ],
+      "status": "completed",
+      "id": "key-5"
+    },
+    {
+      "preedit": "quan li",
+      "wallMs": 291.9969997406,
+      "ranked": [
+        "权利",
+        "权力",
+        "全力",
+        "圈里",
+        "全",
+        "权",
+        "圈",
+        "劝",
+        "泉"
+      ],
+      "processCpuMs": 0.59,
+      "source": [
+        "权利",
+        "权力",
+        "全力",
+        "圈里",
+        "全",
+        "权",
+        "圈",
+        "劝",
+        "泉"
+      ],
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "requests": [
+        {
+          "request": "{\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"temperature\":0,\"messages\":[{\"role\":\"system\",\"content\":\"你是输入法候选词排序助手。根据对话历史和当前输入，从候选词列表中选出最符合语境的词。按优先级从高到低列出最多5个候选词，用顿号分隔，不要拼音、数字序号或任何解释。\"},{\"role\":\"user\",\"content\":\"对话历史：「法律保障公民的」\\n当前输入拼音：「quan li」\\n候选词：权利、权力、全力、圈里、全\\n按最符合对话语境的顺序列出前5个候选词（顿号分隔）：\"}],\"max_tokens\":20,\"stream\":false}",
+          "status": "HTTP/1.1 200 OK",
+          "response": "{\"id\":\"chatcmpl-97bcb5d0\",\"object\":\"chat.completion\",\"created\":1792647149,\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"全力、圈里、权利、权力、全\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":118,\"completion_tokens\":10,\"total_tokens\":128,\"input_tokens\":118,\"output_tokens\":10,\"prompt_tokens_details\":{\"cached_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"time_to_first_token\":0.1,\"total_time\":0.29,\"prompt_eval_duration\":0.1,\"generation_duration\":0.19,\"prompt_tokens_per_second\":1209.83,\"generation_tokens_per_second\":52.34}}",
+          "networkWallMs": 291.24899959564,
+          "code": 200
+        }
+      ],
+      "status": "completed",
+      "id": "key-6"
+    },
+    {
+      "preedit": "quan li",
+      "wallMs": 0.17600059509277,
+      "ranked": [
+        "权利",
+        "权力",
+        "全力",
+        "圈里",
+        "全",
+        "权",
+        "圈",
+        "劝",
+        "泉"
+      ],
+      "processCpuMs": 0.086000000000001,
+      "source": [
+        "权利",
+        "权力",
+        "全力",
+        "圈里",
+        "全",
+        "权",
+        "圈",
+        "劝",
+        "泉"
+      ],
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "requests": [],
+      "status": "completed",
+      "id": "identical-repeat"
+    }
+  ],
+  "subprocessWallMs": 1809.9719998426735,
+  "stderr": ""
+}

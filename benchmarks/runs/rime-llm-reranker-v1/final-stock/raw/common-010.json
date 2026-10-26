@@ -1,0 +1,97 @@
+{
+  "id": "common-010",
+  "steps": [
+    {
+      "id": "key-1",
+      "processCpuMs": 0.827,
+      "identities": [
+        2,
+        1,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "wallMs": 303.96600055695,
+      "requests": [
+        {
+          "code": 200,
+          "status": "HTTP/1.1 200 OK",
+          "request": "{\"messages\":[{\"role\":\"system\",\"content\":\"你是输入法候选词排序助手。根据对话历史和当前输入，从候选词列表中选出最符合语境的词。按优先级从高到低列出最多5个候选词，用顿号分隔，不要拼音、数字序号或任何解释。\"},{\"role\":\"user\",\"content\":\"输入拼音：「yin yue」\\n候选词：音乐、隐约、银月、阴雨、隐喻\\n按最可能的顺序列出前5个候选词（顿号分隔）：\"}],\"temperature\":0,\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"stream\":false,\"max_tokens\":20}",
+          "response": "{\"id\":\"chatcmpl-30bf0dac\",\"object\":\"chat.completion\",\"created\":1792647101,\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"隐约、隐喻、银月、音乐、阴雨\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":105,\"completion_tokens\":10,\"total_tokens\":115,\"input_tokens\":105,\"output_tokens\":10,\"prompt_tokens_details\":{\"cached_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"time_to_first_token\":0.1,\"total_time\":0.3,\"prompt_eval_duration\":0.1,\"generation_duration\":0.2,\"prompt_tokens_per_second\":1076.23,\"generation_tokens_per_second\":49.53}}",
+          "networkWallMs": 303.09799957275
+        }
+      ],
+      "preedit": "yin yue",
+      "status": "completed",
+      "source": [
+        "音乐",
+        "隐约",
+        "银月",
+        "阴雨",
+        "隐喻",
+        "阴郁",
+        "音域",
+        "因",
+        "引"
+      ],
+      "ranked": [
+        "隐约",
+        "音乐",
+        "银月",
+        "阴雨",
+        "隐喻",
+        "阴郁",
+        "音域",
+        "因",
+        "引"
+      ]
+    },
+    {
+      "id": "identical-repeat",
+      "processCpuMs": 0.123,
+      "identities": [
+        2,
+        1,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "wallMs": 0.25500011444092,
+      "requests": [],
+      "preedit": "yin yue",
+      "status": "completed",
+      "source": [
+        "音乐",
+        "隐约",
+        "银月",
+        "阴雨",
+        "隐喻",
+        "阴郁",
+        "音域",
+        "因",
+        "引"
+      ],
+      "ranked": [
+        "隐约",
+        "音乐",
+        "银月",
+        "阴雨",
+        "隐喻",
+        "阴郁",
+        "音域",
+        "因",
+        "引"
+      ]
+    }
+  ],
+  "subprocessWallMs": 319.2756250500679,
+  "stderr": ""
+}

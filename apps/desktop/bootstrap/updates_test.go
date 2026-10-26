@@ -30,10 +30,13 @@ func (f *fakeFeed) Check(_ context.Context, include bool) (*release, error) {
 }
 
 func (f *fakeFeed) release(version string) *release {
-	return &release{Version: version, Notes: "notes", Install: func(_ context.Context, progress func(int64, int64)) error {
+	return &release{Version: version, Notes: "notes", Prepare: func(_ context.Context, progress func(int64, int64)) (preparedRelease, error) {
 		progress(5, 10)
 		progress(10, 10)
-		return f.installErr
+		if f.installErr != nil {
+			return nil, f.installErr
+		}
+		return &fakePrepared{version: version}, nil
 	}}
 }
 
@@ -73,7 +76,7 @@ func TestUpdateCheckAndInstall(t *testing.T) {
 	}
 	u.install()
 	drain()
-	if state.Phase != arion.UpdateReady || state.Downloaded != 10 || state.Total != 10 {
+	if state.Phase != arion.UpdateStaged || state.Downloaded != 10 || state.Total != 10 {
 		t.Fatalf("installed: %+v", state)
 	}
 	// A version waiting for a restart is not checked again.
@@ -103,14 +106,14 @@ func TestUpdateFailures(t *testing.T) {
 	drain()
 	u.install()
 	drain()
-	if state.Phase != arion.UpdateFailed || state.Failed != arion.UpdateStepInstall || state.Version != "0.2.0" {
+	if state.Phase != arion.UpdateFailed || state.Failed != arion.UpdateStepPrepare || state.Version != "0.2.0" {
 		t.Fatalf("install failure: %+v", state)
 	}
 	// Retrying the install starts over.
 	feed.installErr = nil
 	u.install()
 	drain()
-	if state.Phase != arion.UpdateReady {
+	if state.Phase != arion.UpdateStaged {
 		t.Fatalf("retry: %+v", state)
 	}
 }
@@ -207,3 +210,17 @@ func TestUpdateChannelChangeDiscardsInFlightResult(t *testing.T) {
 		t.Fatalf("stale result applied: %+v", state)
 	}
 }
+
+type fakePrepared struct {
+	version            string
+	applied, discarded int
+	err                error
+}
+
+func (p *fakePrepared) Version() string { return p.version }
+func (p *fakePrepared) Path() string    { return "/owned/stage/record.json" }
+func (p *fakePrepared) Apply() error    { p.applied++; return p.err }
+func (p *fakePrepared) Discard() error  { p.discarded++; return nil }
+
+func (p *fakePrepared) Applied() bool      { return p.applied > 0 && p.err == nil }
+func (p *fakePrepared) Acknowledge() error { return nil }

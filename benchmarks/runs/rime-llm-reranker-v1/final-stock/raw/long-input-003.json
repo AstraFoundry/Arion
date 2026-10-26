@@ -1,0 +1,89 @@
+{
+  "id": "long-input-003",
+  "steps": [
+    {
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "ranked": [
+        "今天天气很好",
+        "今天",
+        "进",
+        "金",
+        "近",
+        "仅",
+        "尽",
+        "紧",
+        "今"
+      ],
+      "preedit": "jin tian tian qi hen hao",
+      "requests": [],
+      "status": "completed",
+      "source": [
+        "今天天气很好",
+        "今天",
+        "进",
+        "金",
+        "近",
+        "仅",
+        "尽",
+        "紧",
+        "今"
+      ],
+      "wallMs": 0.35999965667725,
+      "id": "key-1",
+      "processCpuMs": 0.14
+    },
+    {
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "ranked": [
+        "今天天气很好",
+        "今天",
+        "进",
+        "金",
+        "近",
+        "仅",
+        "尽",
+        "紧",
+        "今"
+      ],
+      "preedit": "jin tian tian qi hen hao",
+      "requests": [],
+      "status": "completed",
+      "source": [
+        "今天天气很好",
+        "今天",
+        "进",
+        "金",
+        "近",
+        "仅",
+        "尽",
+        "紧",
+        "今"
+      ],
+      "wallMs": 0.17300033569336,
+      "id": "identical-repeat",
+      "processCpuMs": 0.071
+    }
+  ],
+  "subprocessWallMs": 14.716541860252619,
+  "stderr": ""
+}

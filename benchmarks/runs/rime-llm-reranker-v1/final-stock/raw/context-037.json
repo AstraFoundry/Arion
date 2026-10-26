@@ -1,0 +1,97 @@
+{
+  "steps": [
+    {
+      "preedit": "gong cheng",
+      "status": "completed",
+      "source": [
+        "工程",
+        "攻城",
+        "共",
+        "工",
+        "公",
+        "供",
+        "宫",
+        "功",
+        "攻"
+      ],
+      "ranked": [
+        "共",
+        "工程",
+        "攻城",
+        "工",
+        "公",
+        "供",
+        "宫",
+        "功",
+        "攻"
+      ],
+      "id": "key-1",
+      "identities": [
+        3,
+        1,
+        2,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "requests": [
+        {
+          "status": "HTTP/1.1 200 OK",
+          "response": "{\"id\":\"chatcmpl-6c165e39\",\"object\":\"chat.completion\",\"created\":1792647107,\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"共、工、公、工程、攻城\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":119,\"completion_tokens\":9,\"total_tokens\":128,\"input_tokens\":119,\"output_tokens\":9,\"prompt_tokens_details\":{\"cached_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"time_to_first_token\":0.1,\"total_time\":0.27,\"prompt_eval_duration\":0.1,\"generation_duration\":0.17,\"prompt_tokens_per_second\":1217.92,\"generation_tokens_per_second\":51.46}}",
+          "request": "{\"max_tokens\":20,\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"messages\":[{\"content\":\"你是输入法候选词排序助手。根据对话历史和当前输入，从候选词列表中选出最符合语境的词。按优先级从高到低列出最多5个候选词，用顿号分隔，不要拼音、数字序号或任何解释。\",\"role\":\"system\"},{\"content\":\"对话历史：「桥梁正在施工这项」\\n当前输入拼音：「gong cheng」\\n候选词：工程、攻城、共、工、公\\n按最符合对话语境的顺序列出前5个候选词（顿号分隔）：\",\"role\":\"user\"}],\"temperature\":0,\"stream\":false}",
+          "code": 200,
+          "networkWallMs": 276.40499973297
+        }
+      ],
+      "processCpuMs": 0.785,
+      "wallMs": 277.41400051117
+    },
+    {
+      "preedit": "gong cheng",
+      "status": "completed",
+      "source": [
+        "工程",
+        "攻城",
+        "共",
+        "工",
+        "公",
+        "供",
+        "宫",
+        "功",
+        "攻"
+      ],
+      "ranked": [
+        "共",
+        "工程",
+        "攻城",
+        "工",
+        "公",
+        "供",
+        "宫",
+        "功",
+        "攻"
+      ],
+      "id": "identical-repeat",
+      "identities": [
+        3,
+        1,
+        2,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "requests": [],
+      "processCpuMs": 0.111,
+      "wallMs": 0.20900058746338
+    }
+  ],
+  "id": "context-037",
+  "subprocessWallMs": 292.1604160219431,
+  "stderr": ""
+}

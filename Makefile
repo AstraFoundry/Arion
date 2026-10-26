@@ -1273,3 +1273,21 @@ qwen17-verify:
 .PHONY: native-asr-verify
 native-asr-verify: ## Verify the native ASR acceptance archive without models
 	pnpm asr:native:verify
+
+.PHONY: ime-rerank
+ime-rerank: ## Reproduce or replay the isolated Rime LLM reranker study
+	@pnpm ime:rerank $(ARGS)
+
+.PHONY: ime-align
+ime-align: ## Run or replay general LLM keyboard-ranking alignment
+	pnpm ime:align $(ARGS)
+
+.PHONY: updater-e2e notifications-check notifications-prepare
+updater-e2e: ## Run the isolated native packaged updater lifecycle
+	pnpm updater:e2e
+
+notifications-check: ## Check notification APIs, registration and platform builds
+	pnpm notifications:check
+
+notifications-prepare: ## Build an isolated native notification consent probe
+	pnpm notifications:prepare

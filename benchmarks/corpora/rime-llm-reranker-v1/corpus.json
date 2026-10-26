@@ -1,0 +1,1036 @@
+{
+  "version": 1,
+  "id": "rime-llm-reranker-v1",
+  "split": "authored-exploratory",
+  "license": "AGPL-3.0-only (repository-authored fixtures)",
+  "annotation": "Single assistant-authored targets, frozen before inference; no independent human review or unseen-population claim",
+  "cases": [
+    {
+      "id": "context-001",
+      "group": "context",
+      "context": "这幅图的",
+      "input": "beijing",
+      "acceptable": [
+        "背景"
+      ],
+      "purpose": "Opposing-context homophone selection"
+    },
+    {
+      "id": "context-002",
+      "group": "context",
+      "context": "下周乘飞机去",
+      "input": "beijing",
+      "acceptable": [
+        "北京"
+      ],
+      "purpose": "Opposing-context homophone selection"
+    },
+    {
+      "id": "context-003",
+      "group": "context",
+      "context": "化学课上做",
+      "input": "shiyan",
+      "acceptable": [
+        "实验"
+      ],
+      "purpose": "Opposing-context homophone selection"
+    },
+    {
+      "id": "context-004",
+      "group": "context",
+      "context": "婚礼上许下",
+      "input": "shiyan",
+      "acceptable": [
+        "誓言"
+      ],
+      "purpose": "Opposing-context homophone selection"
+    },
+    {
+      "id": "context-005",
+      "group": "context",
+      "context": "法律保障公民的",
+      "input": "quanli",
+      "acceptable": [
+        "权利"
+      ],
+      "purpose": "Opposing-context homophone selection"
+    },
+    {
+      "id": "context-006",
+      "group": "context",
+      "context": "为了赢下比赛拼尽",
+      "input": "quanli",
+      "acceptable": [
+        "全力"
+      ],
+      "purpose": "Opposing-context homophone selection"
+    },
+    {
+      "id": "context-007",
+      "group": "context",
+      "context": "求解方程先写出",
+      "input": "gongshi",
+      "acceptable": [
+        "公式"
+      ],
+      "purpose": "Opposing-context homophone selection"
+    },
+    {
+      "id": "context-008",
+      "group": "context",
+      "context": "录用名单需要公开",
+      "input": "gongshi",
+      "acceptable": [
+        "公示"
+      ],
+      "purpose": "Opposing-context homophone selection"
+    },
+    {
+      "id": "context-009",
+      "group": "context",
+      "context": "请帮这款产品做视觉",
+      "input": "sheji",
+      "acceptable": [
+        "设计"
+      ],
+      "purpose": "Opposing-context homophone selection"
+    },
+    {
+      "id": "context-010",
+      "group": "context",
+      "context": "这起案件还会",
+      "input": "sheji",
+      "acceptable": [
+        "涉及"
+      ],
+      "purpose": "Opposing-context homophone selection"
+    },
+    {
+      "id": "context-011",
+      "group": "context",
+      "context": "下一步组织人员",
+      "input": "shishi",
+      "acceptable": [
+        "实施"
+      ],
+      "purpose": "Opposing-context homophone selection"
+    },
+    {
+      "id": "context-012",
+      "group": "context",
+      "context": "判断必须依据客观",
+      "input": "shishi",
+      "acceptable": [
+        "事实"
+      ],
+      "purpose": "Opposing-context homophone selection"
+    },
+    {
+      "id": "context-013",
+      "group": "context",
+      "context": "这件事很有教育",
+      "input": "yiyi",
+      "acceptable": [
+        "意义"
+      ],
+      "purpose": "Opposing-context homophone selection"
+    },
+    {
+      "id": "context-014",
+      "group": "context",
+      "context": "如果不同意可以提出",
+      "input": "yiyi",
+      "acceptable": [
+        "异议"
+      ],
+      "purpose": "Opposing-context homophone selection"
+    },
+    {
+      "id": "context-015",
+      "group": "context",
+      "context": "讨论后共同",
+      "input": "zhiding",
+      "acceptable": [
+        "制定"
+      ],
+      "purpose": "Opposing-context homophone selection"
+    },
+    {
+      "id": "context-016",
+      "group": "context",
+      "context": "把文件放进",
+      "input": "zhiding",
+      "acceptable": [
+        "指定"
+      ],
+      "purpose": "Opposing-context homophone selection"
+    },
+    {
+      "id": "context-017",
+      "group": "context",
+      "context": "我们对方案的意见完全",
+      "input": "yizhi",
+      "acceptable": [
+        "一致"
+      ],
+      "purpose": "Opposing-context homophone selection"
+    },
+    {
+      "id": "context-018",
+      "group": "context",
+      "context": "雨从昨天到现在",
+      "input": "yizhi",
+      "acceptable": [
+        "一直"
+      ],
+      "purpose": "Opposing-context homophone selection"
+    },
+    {
+      "id": "context-019",
+      "group": "context",
+      "context": "祝愿各国人民生活在和平的",
+      "input": "shijie",
+      "acceptable": [
+        "世界"
+      ],
+      "purpose": "Opposing-context homophone selection"
+    },
+    {
+      "id": "context-020",
+      "group": "context",
+      "context": "又到了春暖花开的",
+      "input": "shijie",
+      "acceptable": [
+        "时节"
+      ],
+      "purpose": "Opposing-context homophone selection"
+    },
+    {
+      "id": "context-021",
+      "group": "context",
+      "context": "子女依法可以",
+      "input": "jicheng",
+      "acceptable": [
+        "继承"
+      ],
+      "purpose": "Opposing-context homophone selection"
+    },
+    {
+      "id": "context-022",
+      "group": "context",
+      "context": "这块芯片采用高度",
+      "input": "jicheng",
+      "acceptable": [
+        "集成"
+      ],
+      "purpose": "Opposing-context homophone selection"
+    },
+    {
+      "id": "context-023",
+      "group": "context",
+      "context": "律师代表公司发表",
+      "input": "shengming",
+      "acceptable": [
+        "声明"
+      ],
+      "purpose": "Opposing-context homophone selection"
+    },
+    {
+      "id": "context-024",
+      "group": "context",
+      "context": "急救人员正在抢救伤员的",
+      "input": "shengming",
+      "acceptable": [
+        "生命"
+      ],
+      "purpose": "Opposing-context homophone selection"
+    },
+    {
+      "id": "context-025",
+      "group": "context",
+      "context": "请提前提交书面",
+      "input": "shenqing",
+      "acceptable": [
+        "申请"
+      ],
+      "purpose": "Opposing-context homophone selection"
+    },
+    {
+      "id": "context-026",
+      "group": "context",
+      "context": "她望着故乡时眼含",
+      "input": "shenqing",
+      "acceptable": [
+        "深情"
+      ],
+      "purpose": "Opposing-context homophone selection"
+    },
+    {
+      "id": "context-027",
+      "group": "context",
+      "context": "台风来临前发布",
+      "input": "yujing",
+      "acceptable": [
+        "预警"
+      ],
+      "purpose": "Opposing-context homophone selection"
+    },
+    {
+      "id": "context-028",
+      "group": "context",
+      "context": "这个词要结合上下",
+      "input": "yujing",
+      "acceptable": [
+        "语境"
+      ],
+      "purpose": "Opposing-context homophone selection"
+    },
+    {
+      "id": "context-029",
+      "group": "context",
+      "context": "点击网页上的蓝色",
+      "input": "lianjie",
+      "acceptable": [
+        "链接"
+      ],
+      "purpose": "Opposing-context homophone selection"
+    },
+    {
+      "id": "context-030",
+      "group": "context",
+      "context": "请把两根电线",
+      "input": "lianjie",
+      "acceptable": [
+        "连接"
+      ],
+      "purpose": "Opposing-context homophone selection"
+    },
+    {
+      "id": "context-031",
+      "group": "context",
+      "context": "初学者需要一份入门",
+      "input": "jiaocheng",
+      "acceptable": [
+        "教程"
+      ],
+      "purpose": "Opposing-context homophone selection"
+    },
+    {
+      "id": "context-032",
+      "group": "context",
+      "context": "山路很远非常考验",
+      "input": "jiaocheng",
+      "acceptable": [
+        "脚程"
+      ],
+      "purpose": "Opposing-context homophone selection"
+    },
+    {
+      "id": "context-033",
+      "group": "context",
+      "context": "图中的圆点表示网络",
+      "input": "jiedian",
+      "acceptable": [
+        "节点"
+      ],
+      "purpose": "Opposing-context homophone selection"
+    },
+    {
+      "id": "context-034",
+      "group": "context",
+      "context": "离开房间随手关灯可以",
+      "input": "jiedian",
+      "acceptable": [
+        "节电"
+      ],
+      "purpose": "Opposing-context homophone selection"
+    },
+    {
+      "id": "context-035",
+      "group": "context",
+      "context": "这个软件的操作",
+      "input": "jiemian",
+      "acceptable": [
+        "界面"
+      ],
+      "purpose": "Opposing-context homophone selection"
+    },
+    {
+      "id": "context-036",
+      "group": "context",
+      "context": "沿垂直方向切开观察",
+      "input": "jiemian",
+      "acceptable": [
+        "截面"
+      ],
+      "purpose": "Opposing-context homophone selection"
+    },
+    {
+      "id": "context-037",
+      "group": "context",
+      "context": "桥梁正在施工这项",
+      "input": "gongcheng",
+      "acceptable": [
+        "工程"
+      ],
+      "purpose": "Opposing-context homophone selection"
+    },
+    {
+      "id": "context-038",
+      "group": "context",
+      "context": "多年努力终于",
+      "input": "gongcheng",
+      "acceptable": [
+        "功成"
+      ],
+      "purpose": "Opposing-context homophone selection"
+    },
+    {
+      "id": "context-039",
+      "group": "context",
+      "context": "学校下学期新增一门",
+      "input": "kecheng",
+      "acceptable": [
+        "课程"
+      ],
+      "purpose": "Opposing-context homophone selection"
+    },
+    {
+      "id": "context-040",
+      "group": "context",
+      "context": "守卫严密让敌人无机",
+      "input": "kecheng",
+      "acceptable": [
+        "可乘"
+      ],
+      "purpose": "Opposing-context homophone selection"
+    },
+    {
+      "id": "context-041",
+      "group": "context",
+      "context": "一共有五人参加",
+      "input": "qizhong",
+      "acceptable": [
+        "其中"
+      ],
+      "purpose": "Opposing-context homophone selection"
+    },
+    {
+      "id": "context-042",
+      "group": "context",
+      "context": "学期过半即将举行",
+      "input": "qizhong",
+      "acceptable": [
+        "期中"
+      ],
+      "purpose": "Opposing-context homophone selection"
+    },
+    {
+      "id": "context-043",
+      "group": "context",
+      "context": "城市污染需要共同",
+      "input": "zhili",
+      "acceptable": [
+        "治理"
+      ],
+      "purpose": "Opposing-context homophone selection"
+    },
+    {
+      "id": "context-044",
+      "group": "context",
+      "context": "这道题考验逻辑与",
+      "input": "zhili",
+      "acceptable": [
+        "智力"
+      ],
+      "purpose": "Opposing-context homophone selection"
+    },
+    {
+      "id": "context-045",
+      "group": "context",
+      "context": "这笔投资产生稳定",
+      "input": "shouyi",
+      "acceptable": [
+        "收益"
+      ],
+      "purpose": "Opposing-context homophone selection"
+    },
+    {
+      "id": "context-046",
+      "group": "context",
+      "context": "木匠靠祖传的",
+      "input": "shouyi",
+      "acceptable": [
+        "手艺"
+      ],
+      "purpose": "Opposing-context homophone selection"
+    },
+    {
+      "id": "context-047",
+      "group": "context",
+      "context": "请节约宝贵的自然",
+      "input": "ziyuan",
+      "acceptable": [
+        "资源"
+      ],
+      "purpose": "Opposing-context homophone selection"
+    },
+    {
+      "id": "context-048",
+      "group": "context",
+      "context": "这次报名完全出于",
+      "input": "ziyuan",
+      "acceptable": [
+        "自愿"
+      ],
+      "purpose": "Opposing-context homophone selection"
+    },
+    {
+      "id": "common-001",
+      "group": "common",
+      "context": "",
+      "input": "nihao",
+      "acceptable": [
+        "你好"
+      ],
+      "purpose": "No-context familiar-word preservation"
+    },
+    {
+      "id": "common-002",
+      "group": "common",
+      "context": "",
+      "input": "xiexie",
+      "acceptable": [
+        "谢谢"
+      ],
+      "purpose": "No-context familiar-word preservation"
+    },
+    {
+      "id": "common-003",
+      "group": "common",
+      "context": "",
+      "input": "mingtian",
+      "acceptable": [
+        "明天"
+      ],
+      "purpose": "No-context familiar-word preservation"
+    },
+    {
+      "id": "common-004",
+      "group": "common",
+      "context": "",
+      "input": "pengyou",
+      "acceptable": [
+        "朋友"
+      ],
+      "purpose": "No-context familiar-word preservation"
+    },
+    {
+      "id": "common-005",
+      "group": "common",
+      "context": "",
+      "input": "xuexi",
+      "acceptable": [
+        "学习"
+      ],
+      "purpose": "No-context familiar-word preservation"
+    },
+    {
+      "id": "common-006",
+      "group": "common",
+      "context": "",
+      "input": "gongzuo",
+      "acceptable": [
+        "工作"
+      ],
+      "purpose": "No-context familiar-word preservation"
+    },
+    {
+      "id": "common-007",
+      "group": "common",
+      "context": "",
+      "input": "diannao",
+      "acceptable": [
+        "电脑"
+      ],
+      "purpose": "No-context familiar-word preservation"
+    },
+    {
+      "id": "common-008",
+      "group": "common",
+      "context": "",
+      "input": "tianqi",
+      "acceptable": [
+        "天气"
+      ],
+      "purpose": "No-context familiar-word preservation"
+    },
+    {
+      "id": "common-009",
+      "group": "common",
+      "context": "",
+      "input": "kuaile",
+      "acceptable": [
+        "快乐"
+      ],
+      "purpose": "No-context familiar-word preservation"
+    },
+    {
+      "id": "common-010",
+      "group": "common",
+      "context": "",
+      "input": "yinyue",
+      "acceptable": [
+        "音乐"
+      ],
+      "purpose": "No-context familiar-word preservation"
+    },
+    {
+      "id": "common-011",
+      "group": "common",
+      "context": "",
+      "input": "lvxing",
+      "acceptable": [
+        "旅行"
+      ],
+      "purpose": "No-context familiar-word preservation"
+    },
+    {
+      "id": "common-012",
+      "group": "common",
+      "context": "",
+      "input": "nvhai",
+      "acceptable": [
+        "女孩"
+      ],
+      "purpose": "No-context familiar-word preservation"
+    },
+    {
+      "id": "abbreviation-001",
+      "group": "abbreviation",
+      "context": "这张图片需要换个",
+      "input": "bj",
+      "acceptable": [
+        "背景"
+      ],
+      "purpose": "Initial-only Pinyin"
+    },
+    {
+      "id": "abbreviation-002",
+      "group": "abbreviation",
+      "context": "出差第一站去",
+      "input": "bj",
+      "acceptable": [
+        "北京"
+      ],
+      "purpose": "Initial-only Pinyin"
+    },
+    {
+      "id": "abbreviation-003",
+      "group": "abbreviation",
+      "context": "点击网页",
+      "input": "lj",
+      "acceptable": [
+        "链接"
+      ],
+      "purpose": "Initial-only Pinyin"
+    },
+    {
+      "id": "abbreviation-004",
+      "group": "abbreviation",
+      "context": "学校开设新",
+      "input": "kc",
+      "acceptable": [
+        "课程"
+      ],
+      "purpose": "Initial-only Pinyin"
+    },
+    {
+      "id": "abbreviation-005",
+      "group": "abbreviation",
+      "context": "今天做化学",
+      "input": "sy",
+      "acceptable": [
+        "实验"
+      ],
+      "purpose": "Initial-only Pinyin"
+    },
+    {
+      "id": "abbreviation-006",
+      "group": "abbreviation",
+      "context": "法律保护公民",
+      "input": "ql",
+      "acceptable": [
+        "权利"
+      ],
+      "purpose": "Initial-only Pinyin"
+    },
+    {
+      "id": "abbreviation-007",
+      "group": "abbreviation",
+      "context": "这是一个网络",
+      "input": "jd",
+      "acceptable": [
+        "节点"
+      ],
+      "purpose": "Initial-only Pinyin"
+    },
+    {
+      "id": "abbreviation-008",
+      "group": "abbreviation",
+      "context": "请填写入学",
+      "input": "sq",
+      "acceptable": [
+        "申请"
+      ],
+      "purpose": "Initial-only Pinyin"
+    },
+    {
+      "id": "long-input-001",
+      "group": "long-input",
+      "context": "",
+      "input": "womenmingtianjian",
+      "acceptable": [
+        "我们明天见"
+      ],
+      "purpose": "Original preedit-length gate; do not relax it"
+    },
+    {
+      "id": "long-input-002",
+      "group": "long-input",
+      "context": "",
+      "input": "qingguanshangchuanghu",
+      "acceptable": [
+        "请关上窗户"
+      ],
+      "purpose": "Original preedit-length gate; do not relax it"
+    },
+    {
+      "id": "long-input-003",
+      "group": "long-input",
+      "context": "",
+      "input": "jintiantianqihenhao",
+      "acceptable": [
+        "今天天气很好"
+      ],
+      "purpose": "Original preedit-length gate; do not relax it"
+    },
+    {
+      "id": "long-input-004",
+      "group": "long-input",
+      "context": "",
+      "input": "wozhengzaixuexi",
+      "acceptable": [
+        "我正在学习"
+      ],
+      "purpose": "Original preedit-length gate; do not relax it"
+    },
+    {
+      "id": "long-input-005",
+      "group": "long-input",
+      "context": "",
+      "input": "qingfasongwenjian",
+      "acceptable": [
+        "请发送文件"
+      ],
+      "purpose": "Original preedit-length gate; do not relax it"
+    },
+    {
+      "id": "long-input-006",
+      "group": "long-input",
+      "context": "",
+      "input": "huanyinglaidaozheli",
+      "acceptable": [
+        "欢迎来到这里"
+      ],
+      "purpose": "Original preedit-length gate; do not relax it"
+    },
+    {
+      "id": "long-input-007",
+      "group": "long-input",
+      "context": "",
+      "input": "zhegefangfahenhao",
+      "acceptable": [
+        "这个方法很好"
+      ],
+      "purpose": "Original preedit-length gate; do not relax it"
+    },
+    {
+      "id": "long-input-008",
+      "group": "long-input",
+      "context": "",
+      "input": "qingbaocunwenjian",
+      "acceptable": [
+        "请保存文件"
+      ],
+      "purpose": "Original preedit-length gate; do not relax it"
+    },
+    {
+      "id": "partial-001",
+      "group": "partial",
+      "context": "下周乘飞机去",
+      "input": "beij",
+      "acceptable": [
+        "北京"
+      ],
+      "purpose": "Incomplete final syllable; predictive target may be absent"
+    },
+    {
+      "id": "partial-002",
+      "group": "partial",
+      "context": "这幅图的",
+      "input": "beij",
+      "acceptable": [
+        "背景"
+      ],
+      "purpose": "Incomplete final syllable; predictive target may be absent"
+    },
+    {
+      "id": "partial-003",
+      "group": "partial",
+      "context": "化学课上做",
+      "input": "shiy",
+      "acceptable": [
+        "实验"
+      ],
+      "purpose": "Incomplete final syllable; predictive target may be absent"
+    },
+    {
+      "id": "partial-004",
+      "group": "partial",
+      "context": "点击网页上的",
+      "input": "lianj",
+      "acceptable": [
+        "链接"
+      ],
+      "purpose": "Incomplete final syllable; predictive target may be absent"
+    },
+    {
+      "id": "partial-005",
+      "group": "partial",
+      "context": "这款软件的",
+      "input": "jiem",
+      "acceptable": [
+        "界面"
+      ],
+      "purpose": "Incomplete final syllable; predictive target may be absent"
+    },
+    {
+      "id": "partial-006",
+      "group": "partial",
+      "context": "法律保障公民的",
+      "input": "quanl",
+      "acceptable": [
+        "权利"
+      ],
+      "purpose": "Incomplete final syllable; predictive target may be absent"
+    },
+    {
+      "id": "partial-007",
+      "group": "partial",
+      "context": "提交书面",
+      "input": "shenq",
+      "acceptable": [
+        "申请"
+      ],
+      "purpose": "Incomplete final syllable; predictive target may be absent"
+    },
+    {
+      "id": "partial-008",
+      "group": "partial",
+      "context": "新的网络",
+      "input": "jied",
+      "acceptable": [
+        "节点"
+      ],
+      "purpose": "Incomplete final syllable; predictive target may be absent"
+    },
+    {
+      "id": "ambiguous-001",
+      "group": "ambiguous",
+      "context": "",
+      "input": "ta",
+      "acceptable": [
+        "他",
+        "她",
+        "它"
+      ],
+      "purpose": "Explicit multiple acceptable readings; no uniquely intended answer"
+    },
+    {
+      "id": "ambiguous-002",
+      "group": "ambiguous",
+      "context": "",
+      "input": "shi",
+      "acceptable": [
+        "是",
+        "时",
+        "事",
+        "十",
+        "市",
+        "使",
+        "式",
+        "世",
+        "试",
+        "石",
+        "师",
+        "诗",
+        "食",
+        "史"
+      ],
+      "purpose": "Explicit multiple acceptable readings; no uniquely intended answer"
+    },
+    {
+      "id": "ambiguous-003",
+      "group": "ambiguous",
+      "context": "",
+      "input": "de",
+      "acceptable": [
+        "的",
+        "得",
+        "地"
+      ],
+      "purpose": "Explicit multiple acceptable readings; no uniquely intended answer"
+    },
+    {
+      "id": "ambiguous-004",
+      "group": "ambiguous",
+      "context": "",
+      "input": "yi",
+      "acceptable": [
+        "一",
+        "以",
+        "已",
+        "意",
+        "义",
+        "亿",
+        "易",
+        "衣",
+        "医",
+        "依",
+        "艺"
+      ],
+      "purpose": "Explicit multiple acceptable readings; no uniquely intended answer"
+    },
+    {
+      "id": "coined-name-001",
+      "group": "coined-name",
+      "context": "启动项目的",
+      "input": "oulayinqing",
+      "acceptable": [
+        "欧拉引擎"
+      ],
+      "purpose": "Authored names; preserve oracle misses"
+    },
+    {
+      "id": "coined-name-002",
+      "group": "coined-name",
+      "context": "刚创建的分支叫",
+      "input": "lanhaixing",
+      "acceptable": [
+        "蓝海星"
+      ],
+      "purpose": "Authored names; preserve oracle misses"
+    },
+    {
+      "id": "coined-name-003",
+      "group": "coined-name",
+      "context": "这次测试使用",
+      "input": "xinghexieyi",
+      "acceptable": [
+        "星河协议"
+      ],
+      "purpose": "Authored names; preserve oracle misses"
+    },
+    {
+      "id": "coined-name-004",
+      "group": "coined-name",
+      "context": "我们的产品叫",
+      "input": "alian",
+      "acceptable": [
+        "阿里安"
+      ],
+      "purpose": "Authored names; preserve oracle misses"
+    },
+    {
+      "id": "truncated-context-001",
+      "group": "truncated-context",
+      "context": "这幅图的（前面的事情已经说完，现在继续输入）（前面的事情已经说完，现在继续输入）（前面的事情已经说完，现在继续输入）",
+      "input": "beijing",
+      "acceptable": [
+        "背景"
+      ],
+      "purpose": "Relevant clue intentionally outside the upstream 60-byte context tail; diagnostic only"
+    },
+    {
+      "id": "truncated-context-002",
+      "group": "truncated-context",
+      "context": "下周乘飞机去（前面的事情已经说完，现在继续输入）（前面的事情已经说完，现在继续输入）（前面的事情已经说完，现在继续输入）",
+      "input": "beijing",
+      "acceptable": [
+        "北京"
+      ],
+      "purpose": "Relevant clue intentionally outside the upstream 60-byte context tail; diagnostic only"
+    },
+    {
+      "id": "truncated-context-003",
+      "group": "truncated-context",
+      "context": "化学课上做（前面的事情已经说完，现在继续输入）（前面的事情已经说完，现在继续输入）（前面的事情已经说完，现在继续输入）",
+      "input": "shiyan",
+      "acceptable": [
+        "实验"
+      ],
+      "purpose": "Relevant clue intentionally outside the upstream 60-byte context tail; diagnostic only"
+    },
+    {
+      "id": "truncated-context-004",
+      "group": "truncated-context",
+      "context": "婚礼上许下（前面的事情已经说完，现在继续输入）（前面的事情已经说完，现在继续输入）（前面的事情已经说完，现在继续输入）",
+      "input": "shiyan",
+      "acceptable": [
+        "誓言"
+      ],
+      "purpose": "Relevant clue intentionally outside the upstream 60-byte context tail; diagnostic only"
+    },
+    {
+      "id": "truncated-context-005",
+      "group": "truncated-context",
+      "context": "法律保障公民的（前面的事情已经说完，现在继续输入）（前面的事情已经说完，现在继续输入）（前面的事情已经说完，现在继续输入）",
+      "input": "quanli",
+      "acceptable": [
+        "权利"
+      ],
+      "purpose": "Relevant clue intentionally outside the upstream 60-byte context tail; diagnostic only"
+    },
+    {
+      "id": "truncated-context-006",
+      "group": "truncated-context",
+      "context": "为了赢下比赛拼尽（前面的事情已经说完，现在继续输入）（前面的事情已经说完，现在继续输入）（前面的事情已经说完，现在继续输入）",
+      "input": "quanli",
+      "acceptable": [
+        "全力"
+      ],
+      "purpose": "Relevant clue intentionally outside the upstream 60-byte context tail; diagnostic only"
+    },
+    {
+      "id": "truncated-context-007",
+      "group": "truncated-context",
+      "context": "求解方程先写出（前面的事情已经说完，现在继续输入）（前面的事情已经说完，现在继续输入）（前面的事情已经说完，现在继续输入）",
+      "input": "gongshi",
+      "acceptable": [
+        "公式"
+      ],
+      "purpose": "Relevant clue intentionally outside the upstream 60-byte context tail; diagnostic only"
+    },
+    {
+      "id": "truncated-context-008",
+      "group": "truncated-context",
+      "context": "录用名单需要公开（前面的事情已经说完，现在继续输入）（前面的事情已经说完，现在继续输入）（前面的事情已经说完，现在继续输入）",
+      "input": "gongshi",
+      "acceptable": [
+        "公示"
+      ],
+      "purpose": "Relevant clue intentionally outside the upstream 60-byte context tail; diagnostic only"
+    }
+  ]
+}

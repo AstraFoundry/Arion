@@ -1,0 +1,97 @@
+{
+  "steps": [
+    {
+      "id": "key-1",
+      "source": [
+        "实验",
+        "试验",
+        "饰演",
+        "誓言",
+        "食盐",
+        "十堰",
+        "时延",
+        "是",
+        "时"
+      ],
+      "ranked": [
+        "实验",
+        "试验",
+        "饰演",
+        "誓言",
+        "食盐",
+        "十堰",
+        "时延",
+        "是",
+        "时"
+      ],
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "status": "completed",
+      "requests": [
+        {
+          "status": "HTTP/1.1 200 OK",
+          "response": "{\"id\":\"chatcmpl-f726397e\",\"object\":\"chat.completion\",\"created\":1792647106,\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"实验、誓言、食盐、试验、饰演\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":124,\"completion_tokens\":9,\"total_tokens\":133,\"input_tokens\":124,\"output_tokens\":9,\"prompt_tokens_details\":{\"cached_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"time_to_first_token\":0.1,\"total_time\":0.28,\"prompt_eval_duration\":0.1,\"generation_duration\":0.18,\"prompt_tokens_per_second\":1267.02,\"generation_tokens_per_second\":50.81}}",
+          "networkWallMs": 278.42899990082,
+          "code": 200,
+          "request": "{\"temperature\":0,\"stream\":false,\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"messages\":[{\"role\":\"system\",\"content\":\"你是输入法候选词排序助手。根据对话历史和当前输入，从候选词列表中选出最符合语境的词。按优先级从高到低列出最多5个候选词，用顿号分隔，不要拼音、数字序号或任何解释。\"},{\"role\":\"user\",\"content\":\"对话历史：「入）（前面的事情已经说完，现在继续输入）」\\n当前输入拼音：「shi yan」\\n候选词：实验、试验、饰演、誓言、食盐\\n按最符合对话语境的顺序列出前5个候选词（顿号分隔）：\"}],\"max_tokens\":20}"
+        }
+      ],
+      "processCpuMs": 0.88,
+      "wallMs": 279.71500015259,
+      "preedit": "shi yan"
+    },
+    {
+      "id": "identical-repeat",
+      "source": [
+        "实验",
+        "试验",
+        "饰演",
+        "誓言",
+        "食盐",
+        "十堰",
+        "时延",
+        "是",
+        "时"
+      ],
+      "ranked": [
+        "实验",
+        "试验",
+        "饰演",
+        "誓言",
+        "食盐",
+        "十堰",
+        "时延",
+        "是",
+        "时"
+      ],
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "status": "completed",
+      "requests": [],
+      "processCpuMs": 0.117,
+      "wallMs": 0.26800060272217,
+      "preedit": "shi yan"
+    }
+  ],
+  "id": "truncated-context-004",
+  "subprocessWallMs": 292.8481660783291,
+  "stderr": ""
+}

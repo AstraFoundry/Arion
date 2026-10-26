@@ -15,6 +15,9 @@
     "product": "arion",
     "repository": "AstraFoundry/Arion"
   },
+  "windows": {
+    "notifications": true
+  },
   "macos": {
     "minimumSystemVersion": "14.0",
     "entitlements": "entitlements.plist",

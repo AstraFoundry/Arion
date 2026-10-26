@@ -2,14 +2,22 @@ package mygo
 
 import (
 	"bufio"
+	"bytes"
 	"context"
+	"crypto/ed25519"
+	"crypto/sha256"
+	"encoding/base64"
 	"fmt"
 	"io"
+	"net/http"
+	"net/http/httptest"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"testing"
 	"time"
+
+	"github.com/egoist/mygo/internal/update"
 )
 
 func TestUpdateExecutableHelper(t *testing.T) {
@@ -30,7 +38,7 @@ func TestUpdateExecutableHelper(t *testing.T) {
 	_, _ = os.Stdin.Read(make([]byte, 1))
 }
 
-func TestSwapFilesReplacesRunningExecutableAndCleansAtRelaunch(t *testing.T) {
+func TestPreparedUpdateReplacesRunningExecutableAndCleansAtRelaunch(t *testing.T) {
 	executable, err := os.Executable()
 	if err != nil {
 		t.Fatal(err)
@@ -81,22 +89,25 @@ func TestSwapFilesReplacesRunningExecutableAndCleansAtRelaunch(t *testing.T) {
 		}
 	}
 	stopOld := start("old")
-	if err := swapFiles(staged, target); err != nil {
+	prepared := prepareWindowsUpdate(t, staged, target)
+	if err := prepared.Apply(); err != nil {
 		t.Fatal(err)
 	}
-	leftovers, err := filepath.Glob(filepath.Join(target, ".*.old-*"))
-	if err != nil || len(leftovers) != 1 {
-		t.Fatalf("running old executable = %v, %v", leftovers, err)
+	if err := prepared.Acknowledge(); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := os.Stat(filepath.Join(prepared.work, "backup", name)); err != nil {
+		t.Fatalf("running old executable not preserved: %v", err)
 	}
 	stopOld()
 	stopNew := start("new")
 	stopNew()
-	if leftovers, err := filepath.Glob(filepath.Join(target, ".*.old-*")); err != nil || len(leftovers) != 0 {
-		t.Fatalf("relaunch left old executable = %v, %v", leftovers, err)
+	if _, err := os.Stat(prepared.work); !os.IsNotExist(err) {
+		t.Fatalf("relaunch left acknowledged update stage: %v", err)
 	}
 }
 
-func TestSwapFilesRollsBackAddedEntriesWhenReplacementIsLocked(t *testing.T) {
+func TestPreparedUpdateRollsBackAddedEntriesWhenReplacementIsLocked(t *testing.T) {
 	target, staged := t.TempDir(), t.TempDir()
 	write := func(root, name, contents string) {
 		t.Helper()
@@ -115,13 +126,17 @@ func TestSwapFilesRollsBackAddedEntriesWhenReplacementIsLocked(t *testing.T) {
 	write(staged, "b-existing", "new")
 	write(staged, "c-added", "new file")
 	write(staged, "z-locked", "locked new")
+	prepared := prepareWindowsUpdate(t, staged, target)
 	locked, err := os.Open(filepath.Join(target, "z-locked"))
 	if err != nil {
 		t.Fatal(err)
 	}
 	defer locked.Close()
-	if err := swapFiles(staged, target); err == nil {
+	if err := prepared.Apply(); err == nil {
 		t.Fatal("replacement of a locked file succeeded")
+	}
+	if err := prepared.Discard(); err != nil {
+		t.Fatal(err)
 	}
 	for _, name := range []string{"a-added", "c-added"} {
 		if _, err := os.Stat(filepath.Join(target, name)); !os.IsNotExist(err) {
@@ -134,4 +149,34 @@ func TestSwapFilesRollsBackAddedEntriesWhenReplacementIsLocked(t *testing.T) {
 			t.Errorf("rollback %s = %q, %v; want %q", name, got, err, want)
 		}
 	}
+}
+
+// prepareWindowsUpdate stages a signed archive for the native Windows lock regressions.
+func prepareWindowsUpdate(t *testing.T, source, target string) *PreparedUpdate {
+	t.Helper()
+	entries, err := os.ReadDir(source)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var names []string
+	for _, entry := range entries {
+		names = append(names, entry.Name())
+	}
+	var archive bytes.Buffer
+	if err := update.WriteArchive(&archive, source, names); err != nil {
+		t.Fatal(err)
+	}
+	pub, priv, err := ed25519.GenerateKey(nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	sum := sha256.Sum256(archive.Bytes())
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { _, _ = w.Write(archive.Bytes()) }))
+	t.Cleanup(server.Close)
+	manifest := update.Manifest{Version: "2.0.0", URL: server.URL + "/app.tar.gz", Size: int64(archive.Len()), Signature: update.Sign(priv, sum[:])}
+	prepared, err := prepareUpdate(context.Background(), manifest, base64.StdEncoding.EncodeToString(pub), "1.0.0", target, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return prepared
 }

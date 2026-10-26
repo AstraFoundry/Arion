@@ -1,0 +1,97 @@
+{
+  "steps": [
+    {
+      "processCpuMs": 0.844,
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "source": [
+        "谢谢",
+        "写写",
+        "歇歇",
+        "写些",
+        "歇息",
+        "写",
+        "些",
+        "谢",
+        "鞋"
+      ],
+      "ranked": [
+        "谢谢",
+        "写写",
+        "歇歇",
+        "写些",
+        "歇息",
+        "写",
+        "些",
+        "谢",
+        "鞋"
+      ],
+      "preedit": "xie xie",
+      "id": "key-1",
+      "wallMs": 466.89200019836,
+      "status": "completed",
+      "requests": [
+        {
+          "response": "{\"id\":\"chatcmpl-68e13802\",\"object\":\"chat.completion\",\"created\":1792647107,\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"xie 歇歇，xie 写些，xie 写写，xie 谢谢，xie\"},\"finish_reason\":\"length\"}],\"usage\":{\"prompt_tokens\":108,\"completion_tokens\":20,\"total_tokens\":128,\"input_tokens\":108,\"output_tokens\":20,\"prompt_tokens_details\":{\"cached_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"time_to_first_token\":0.1,\"total_time\":0.46,\"prompt_eval_duration\":0.1,\"generation_duration\":0.36,\"prompt_tokens_per_second\":1077.45,\"generation_tokens_per_second\":55.4}}",
+          "request": "{\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"max_tokens\":20,\"messages\":[{\"content\":\"你是输入法候选词排序助手。根据对话历史和当前输入，从候选词列表中选出最符合语境的词。按优先级从高到低列出最多5个候选词，用顿号分隔，不要拼音、数字序号或任何解释。\",\"role\":\"system\"},{\"content\":\"输入拼音：「xie xie」\\n候选词：谢谢、写写、歇歇、写些、歇息\\n按最可能的顺序列出前5个候选词（顿号分隔）：\",\"role\":\"user\"}],\"temperature\":0,\"stream\":false}",
+          "status": "HTTP/1.1 200 OK",
+          "code": 200,
+          "networkWallMs": 465.99000072479
+        }
+      ]
+    },
+    {
+      "processCpuMs": 0.141,
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "source": [
+        "谢谢",
+        "写写",
+        "歇歇",
+        "写些",
+        "歇息",
+        "写",
+        "些",
+        "谢",
+        "鞋"
+      ],
+      "ranked": [
+        "谢谢",
+        "写写",
+        "歇歇",
+        "写些",
+        "歇息",
+        "写",
+        "些",
+        "谢",
+        "鞋"
+      ],
+      "preedit": "xie xie",
+      "id": "identical-repeat",
+      "wallMs": 0.20799922943115,
+      "status": "completed",
+      "requests": []
+    }
+  ],
+  "id": "common-002",
+  "subprocessWallMs": 483.388792257756,
+  "stderr": ""
+}

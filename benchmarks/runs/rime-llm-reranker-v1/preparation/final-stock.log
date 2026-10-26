@@ -1,0 +1,14 @@
+
+> arion-monorepo@0.0.0 ime:rerank /Users/steven/code/Arion
+> node scripts/rime-rerank-command.mjs run --workspace .workspace/rime-llm-reranker-v1 --candidates .workspace/rime-llm-reranker-v1/candidates --out .workspace/rime-llm-reranker-v1/final-stock
+
+Completed 10/100 final fixtures
+Completed 20/100 final fixtures
+Completed 30/100 final fixtures
+Completed 40/100 final fixtures
+Completed 50/100 final fixtures
+Completed 60/100 final fixtures
+Completed 70/100 final fixtures
+Completed 80/100 final fixtures
+Completed 90/100 final fixtures
+Completed 100/100 final fixtures

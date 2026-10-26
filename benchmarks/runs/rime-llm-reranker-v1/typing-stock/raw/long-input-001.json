@@ -1,0 +1,809 @@
+{
+  "steps": [
+    {
+      "preedit": "w",
+      "source": [
+        "我",
+        "为",
+        "玩",
+        "问",
+        "无",
+        "万",
+        "完",
+        "网",
+        "王"
+      ],
+      "requests": [
+        {
+          "networkWallMs": 292.70799922943,
+          "status": "HTTP/1.1 200 OK",
+          "code": 200,
+          "request": "{\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"temperature\":0,\"max_tokens\":20,\"messages\":[{\"role\":\"system\",\"content\":\"你是输入法候选词排序助手。根据对话历史和当前输入，从候选词列表中选出最符合语境的词。按优先级从高到低列出最多5个候选词，用顿号分隔，不要拼音、数字序号或任何解释。\"},{\"role\":\"user\",\"content\":\"输入拼音：「w」\\n候选词：我、为、玩、问、无\\n按最可能的顺序列出前5个候选词（顿号分隔）：\"}],\"stream\":false}",
+          "response": "{\"id\":\"chatcmpl-59ad54dd\",\"object\":\"chat.completion\",\"created\":1792647150,\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"为、玩、问、无、我\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":102,\"completion_tokens\":9,\"total_tokens\":111,\"input_tokens\":102,\"output_tokens\":9,\"prompt_tokens_details\":{\"cached_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"time_to_first_token\":0.1,\"total_time\":0.29,\"prompt_eval_duration\":0.1,\"generation_duration\":0.19,\"prompt_tokens_per_second\":996.35,\"generation_tokens_per_second\":48.48}}"
+        }
+      ],
+      "wallMs": 293.57999992371,
+      "identities": [
+        2,
+        1,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "status": "completed",
+      "id": "key-1",
+      "processCpuMs": 0.836,
+      "ranked": [
+        "为",
+        "我",
+        "玩",
+        "问",
+        "无",
+        "万",
+        "完",
+        "网",
+        "王"
+      ]
+    },
+    {
+      "preedit": "wo",
+      "source": [
+        "我",
+        "喔",
+        "窝",
+        "握",
+        "卧",
+        "沃",
+        "硪",
+        "涡",
+        "倭"
+      ],
+      "requests": [
+        {
+          "networkWallMs": 294.35700035095,
+          "status": "HTTP/1.1 200 OK",
+          "code": 200,
+          "request": "{\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"temperature\":0,\"max_tokens\":20,\"messages\":[{\"role\":\"system\",\"content\":\"你是输入法候选词排序助手。根据对话历史和当前输入，从候选词列表中选出最符合语境的词。按优先级从高到低列出最多5个候选词，用顿号分隔，不要拼音、数字序号或任何解释。\"},{\"role\":\"user\",\"content\":\"输入拼音：「wo」\\n候选词：我、喔、窝、握、卧\\n按最可能的顺序列出前5个候选词（顿号分隔）：\"}],\"stream\":false}",
+          "response": "{\"id\":\"chatcmpl-9595069e\",\"object\":\"chat.completion\",\"created\":1792647151,\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"卧、握、喔、窝、我\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":102,\"completion_tokens\":9,\"total_tokens\":111,\"input_tokens\":102,\"output_tokens\":9,\"prompt_tokens_details\":{\"cached_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"time_to_first_token\":0.11,\"total_time\":0.29,\"prompt_eval_duration\":0.11,\"generation_duration\":0.18,\"prompt_tokens_per_second\":962.37,\"generation_tokens_per_second\":48.82}}"
+        }
+      ],
+      "wallMs": 295.08599948883,
+      "identities": [
+        5,
+        1,
+        2,
+        3,
+        4,
+        6,
+        7,
+        8,
+        9
+      ],
+      "status": "completed",
+      "id": "key-2",
+      "processCpuMs": 0.68,
+      "ranked": [
+        "卧",
+        "我",
+        "喔",
+        "窝",
+        "握",
+        "沃",
+        "硪",
+        "涡",
+        "倭"
+      ]
+    },
+    {
+      "preedit": "wo m",
+      "source": [
+        "我们",
+        "我没",
+        "我妈",
+        "我吗",
+        "我",
+        "喔",
+        "窝",
+        "握",
+        "卧"
+      ],
+      "requests": [
+        {
+          "networkWallMs": 292.0609998703,
+          "status": "HTTP/1.1 200 OK",
+          "code": 200,
+          "request": "{\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"temperature\":0,\"max_tokens\":20,\"messages\":[{\"role\":\"system\",\"content\":\"你是输入法候选词排序助手。根据对话历史和当前输入，从候选词列表中选出最符合语境的词。按优先级从高到低列出最多5个候选词，用顿号分隔，不要拼音、数字序号或任何解释。\"},{\"role\":\"user\",\"content\":\"输入拼音：「wo m」\\n候选词：我们、我没、我妈、我吗、我\\n按最可能的顺序列出前5个候选词（顿号分隔）：\"}],\"stream\":false}",
+          "response": "{\"id\":\"chatcmpl-af763a36\",\"object\":\"chat.completion\",\"created\":1792647151,\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"我们、我妈、我、我、我\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":103,\"completion_tokens\":9,\"total_tokens\":112,\"input_tokens\":103,\"output_tokens\":9,\"prompt_tokens_details\":{\"cached_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"time_to_first_token\":0.11,\"total_time\":0.29,\"prompt_eval_duration\":0.11,\"generation_duration\":0.18,\"prompt_tokens_per_second\":979.61,\"generation_tokens_per_second\":49.22}}"
+        }
+      ],
+      "wallMs": 292.78700065613,
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "status": "completed",
+      "id": "key-3",
+      "processCpuMs": 0.679,
+      "ranked": [
+        "我们",
+        "我没",
+        "我妈",
+        "我吗",
+        "我",
+        "喔",
+        "窝",
+        "握",
+        "卧"
+      ]
+    },
+    {
+      "preedit": "wo me",
+      "source": [
+        "我么",
+        "我",
+        "喔",
+        "窝",
+        "握",
+        "卧",
+        "沃",
+        "硪",
+        "涡"
+      ],
+      "requests": [
+        {
+          "networkWallMs": 293.10299968719,
+          "status": "HTTP/1.1 200 OK",
+          "code": 200,
+          "request": "{\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"temperature\":0,\"max_tokens\":20,\"messages\":[{\"role\":\"system\",\"content\":\"你是输入法候选词排序助手。根据对话历史和当前输入，从候选词列表中选出最符合语境的词。按优先级从高到低列出最多5个候选词，用顿号分隔，不要拼音、数字序号或任何解释。\"},{\"role\":\"user\",\"content\":\"输入拼音：「wo me」\\n候选词：我么、我、喔、窝、握\\n按最可能的顺序列出前5个候选词（顿号分隔）：\"}],\"stream\":false}",
+          "response": "{\"id\":\"chatcmpl-ce71de38\",\"object\":\"chat.completion\",\"created\":1792647151,\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"我、我、喔、握、窝\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":104,\"completion_tokens\":9,\"total_tokens\":113,\"input_tokens\":104,\"output_tokens\":9,\"prompt_tokens_details\":{\"cached_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"time_to_first_token\":0.11,\"total_time\":0.29,\"prompt_eval_duration\":0.11,\"generation_duration\":0.18,\"prompt_tokens_per_second\":972.43,\"generation_tokens_per_second\":49.28}}"
+        }
+      ],
+      "wallMs": 293.78999996185,
+      "identities": [
+        2,
+        1,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "status": "completed",
+      "id": "key-4",
+      "processCpuMs": 0.6,
+      "ranked": [
+        "我",
+        "我么",
+        "喔",
+        "窝",
+        "握",
+        "卧",
+        "沃",
+        "硪",
+        "涡"
+      ]
+    },
+    {
+      "preedit": "wo men",
+      "source": [
+        "我们",
+        "我",
+        "喔",
+        "窝",
+        "握",
+        "卧",
+        "沃",
+        "硪",
+        "涡"
+      ],
+      "requests": [
+        {
+          "networkWallMs": 286.93700027466,
+          "status": "HTTP/1.1 200 OK",
+          "code": 200,
+          "request": "{\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"temperature\":0,\"max_tokens\":20,\"messages\":[{\"role\":\"system\",\"content\":\"你是输入法候选词排序助手。根据对话历史和当前输入，从候选词列表中选出最符合语境的词。按优先级从高到低列出最多5个候选词，用顿号分隔，不要拼音、数字序号或任何解释。\"},{\"role\":\"user\",\"content\":\"输入拼音：「wo men」\\n候选词：我们、我、喔、窝、握\\n按最可能的顺序列出前5个候选词（顿号分隔）：\"}],\"stream\":false}",
+          "response": "{\"id\":\"chatcmpl-6772b716\",\"object\":\"chat.completion\",\"created\":1792647151,\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"我们、我、喔、握、窝\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":103,\"completion_tokens\":9,\"total_tokens\":112,\"input_tokens\":103,\"output_tokens\":9,\"prompt_tokens_details\":{\"cached_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"time_to_first_token\":0.1,\"total_time\":0.28,\"prompt_eval_duration\":0.1,\"generation_duration\":0.18,\"prompt_tokens_per_second\":1001.19,\"generation_tokens_per_second\":49.91}}"
+        }
+      ],
+      "wallMs": 287.51600074768,
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "status": "completed",
+      "id": "key-5",
+      "processCpuMs": 0.599,
+      "ranked": [
+        "我们",
+        "我",
+        "喔",
+        "窝",
+        "握",
+        "卧",
+        "沃",
+        "硪",
+        "涡"
+      ]
+    },
+    {
+      "preedit": "wo men m",
+      "source": [
+        "我们没",
+        "我们",
+        "我没",
+        "我妈",
+        "我吗",
+        "我",
+        "喔",
+        "窝",
+        "握"
+      ],
+      "requests": [
+        {
+          "networkWallMs": 305.57199954987,
+          "status": "HTTP/1.1 200 OK",
+          "code": 200,
+          "request": "{\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"temperature\":0,\"max_tokens\":20,\"messages\":[{\"role\":\"system\",\"content\":\"你是输入法候选词排序助手。根据对话历史和当前输入，从候选词列表中选出最符合语境的词。按优先级从高到低列出最多5个候选词，用顿号分隔，不要拼音、数字序号或任何解释。\"},{\"role\":\"user\",\"content\":\"输入拼音：「wo men m」\\n候选词：我们没、我们、我没、我妈、我吗\\n按最可能的顺序列出前5个候选词（顿号分隔）：\"}],\"stream\":false}",
+          "response": "{\"id\":\"chatcmpl-b1d58a75\",\"object\":\"chat.completion\",\"created\":1792647152,\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"我们没、我们、我妈、我吗、我们\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":105,\"completion_tokens\":10,\"total_tokens\":115,\"input_tokens\":105,\"output_tokens\":10,\"prompt_tokens_details\":{\"cached_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"time_to_first_token\":0.11,\"total_time\":0.3,\"prompt_eval_duration\":0.11,\"generation_duration\":0.19,\"prompt_tokens_per_second\":976.89,\"generation_tokens_per_second\":51.46}}"
+        }
+      ],
+      "wallMs": 306.42800045013,
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "status": "completed",
+      "id": "key-6",
+      "processCpuMs": 0.83,
+      "ranked": [
+        "我们没",
+        "我们",
+        "我没",
+        "我妈",
+        "我吗",
+        "我",
+        "喔",
+        "窝",
+        "握"
+      ]
+    },
+    {
+      "preedit": "wo men mi",
+      "source": [
+        "我们米",
+        "我们",
+        "我",
+        "喔",
+        "窝",
+        "握",
+        "卧",
+        "沃",
+        "硪"
+      ],
+      "requests": [
+        {
+          "networkWallMs": 289.57499980927,
+          "status": "HTTP/1.1 200 OK",
+          "code": 200,
+          "request": "{\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"temperature\":0,\"max_tokens\":20,\"messages\":[{\"role\":\"system\",\"content\":\"你是输入法候选词排序助手。根据对话历史和当前输入，从候选词列表中选出最符合语境的词。按优先级从高到低列出最多5个候选词，用顿号分隔，不要拼音、数字序号或任何解释。\"},{\"role\":\"user\",\"content\":\"输入拼音：「wo men mi」\\n候选词：我们米、我们、我、喔、窝\\n按最可能的顺序列出前5个候选词（顿号分隔）：\"}],\"stream\":false}",
+          "response": "{\"id\":\"chatcmpl-87dd1e2d\",\"object\":\"chat.completion\",\"created\":1792647152,\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"我们、我们、我、喔、窝\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":105,\"completion_tokens\":9,\"total_tokens\":114,\"input_tokens\":105,\"output_tokens\":9,\"prompt_tokens_details\":{\"cached_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"time_to_first_token\":0.11,\"total_time\":0.29,\"prompt_eval_duration\":0.11,\"generation_duration\":0.18,\"prompt_tokens_per_second\":984.69,\"generation_tokens_per_second\":50.18}}"
+        }
+      ],
+      "wallMs": 290.16400051117,
+      "identities": [
+        2,
+        1,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "status": "completed",
+      "id": "key-7",
+      "processCpuMs": 0.559,
+      "ranked": [
+        "我们",
+        "我们米",
+        "我",
+        "喔",
+        "窝",
+        "握",
+        "卧",
+        "沃",
+        "硪"
+      ]
+    },
+    {
+      "preedit": "wo men min",
+      "source": [
+        "我们民",
+        "我们",
+        "我",
+        "喔",
+        "窝",
+        "握",
+        "卧",
+        "沃",
+        "硪"
+      ],
+      "requests": [
+        {
+          "networkWallMs": 312.25199985504,
+          "status": "HTTP/1.1 200 OK",
+          "code": 200,
+          "request": "{\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"temperature\":0,\"max_tokens\":20,\"messages\":[{\"role\":\"system\",\"content\":\"你是输入法候选词排序助手。根据对话历史和当前输入，从候选词列表中选出最符合语境的词。按优先级从高到低列出最多5个候选词，用顿号分隔，不要拼音、数字序号或任何解释。\"},{\"role\":\"user\",\"content\":\"输入拼音：「wo men min」\\n候选词：我们民、我们、我、喔、窝\\n按最可能的顺序列出前5个候选词（顿号分隔）：\"}],\"stream\":false}",
+          "response": "{\"id\":\"chatcmpl-d3756141\",\"object\":\"chat.completion\",\"created\":1792647152,\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"我们民、我们、我、喔、窝\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":105,\"completion_tokens\":10,\"total_tokens\":115,\"input_tokens\":105,\"output_tokens\":10,\"prompt_tokens_details\":{\"cached_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"time_to_first_token\":0.1,\"total_time\":0.31,\"prompt_eval_duration\":0.1,\"generation_duration\":0.21,\"prompt_tokens_per_second\":1013.05,\"generation_tokens_per_second\":48.76}}"
+        }
+      ],
+      "wallMs": 312.89100074768,
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "status": "completed",
+      "id": "key-8",
+      "processCpuMs": 0.59,
+      "ranked": [
+        "我们民",
+        "我们",
+        "我",
+        "喔",
+        "窝",
+        "握",
+        "卧",
+        "沃",
+        "硪"
+      ]
+    },
+    {
+      "preedit": "wo men ming",
+      "source": [
+        "我们名",
+        "我们",
+        "我",
+        "喔",
+        "窝",
+        "握",
+        "卧",
+        "沃",
+        "硪"
+      ],
+      "requests": [],
+      "wallMs": 0.19099998474121,
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "status": "completed",
+      "id": "key-9",
+      "processCpuMs": 0.090000000000002,
+      "ranked": [
+        "我们名",
+        "我们",
+        "我",
+        "喔",
+        "窝",
+        "握",
+        "卧",
+        "沃",
+        "硪"
+      ]
+    },
+    {
+      "preedit": "wo men ming t",
+      "source": [
+        "我们明天",
+        "我们",
+        "我没",
+        "我妈",
+        "我吗",
+        "我",
+        "喔",
+        "窝",
+        "握"
+      ],
+      "requests": [],
+      "wallMs": 0.14599990844727,
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "status": "completed",
+      "id": "key-10",
+      "processCpuMs": 0.101,
+      "ranked": [
+        "我们明天",
+        "我们",
+        "我没",
+        "我妈",
+        "我吗",
+        "我",
+        "喔",
+        "窝",
+        "握"
+      ]
+    },
+    {
+      "preedit": "wo men ming ti",
+      "source": [
+        "我们命题",
+        "我们",
+        "我",
+        "喔",
+        "窝",
+        "握",
+        "卧",
+        "沃",
+        "硪"
+      ],
+      "requests": [],
+      "wallMs": 0.14899921417236,
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "status": "completed",
+      "id": "key-11",
+      "processCpuMs": 0.104,
+      "ranked": [
+        "我们命题",
+        "我们",
+        "我",
+        "喔",
+        "窝",
+        "握",
+        "卧",
+        "沃",
+        "硪"
+      ]
+    },
+    {
+      "preedit": "wo men ming ti a",
+      "source": [
+        "我们命题啊",
+        "我们",
+        "我",
+        "喔",
+        "窝",
+        "握",
+        "卧",
+        "沃",
+        "硪"
+      ],
+      "requests": [],
+      "wallMs": 0.1560001373291,
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "status": "completed",
+      "id": "key-12",
+      "processCpuMs": 0.108,
+      "ranked": [
+        "我们命题啊",
+        "我们",
+        "我",
+        "喔",
+        "窝",
+        "握",
+        "卧",
+        "沃",
+        "硪"
+      ]
+    },
+    {
+      "preedit": "wo men ming tian",
+      "source": [
+        "我们明天",
+        "我们",
+        "我",
+        "喔",
+        "窝",
+        "握",
+        "卧",
+        "沃",
+        "硪"
+      ],
+      "requests": [],
+      "wallMs": 0.14200019836426,
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "status": "completed",
+      "id": "key-13",
+      "processCpuMs": 0.097,
+      "ranked": [
+        "我们明天",
+        "我们",
+        "我",
+        "喔",
+        "窝",
+        "握",
+        "卧",
+        "沃",
+        "硪"
+      ]
+    },
+    {
+      "preedit": "wo men ming tian j",
+      "source": [
+        "我们明天就",
+        "我们",
+        "我没",
+        "我妈",
+        "我吗",
+        "我",
+        "喔",
+        "窝",
+        "握"
+      ],
+      "requests": [],
+      "wallMs": 0.125,
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "status": "completed",
+      "id": "key-14",
+      "processCpuMs": 0.085,
+      "ranked": [
+        "我们明天就",
+        "我们",
+        "我没",
+        "我妈",
+        "我吗",
+        "我",
+        "喔",
+        "窝",
+        "握"
+      ]
+    },
+    {
+      "preedit": "wo men ming tian ji",
+      "source": [
+        "我们明天及",
+        "我们",
+        "我",
+        "喔",
+        "窝",
+        "握",
+        "卧",
+        "沃",
+        "硪"
+      ],
+      "requests": [],
+      "wallMs": 0.16800022125244,
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "status": "completed",
+      "id": "key-15",
+      "processCpuMs": 0.077000000000001,
+      "ranked": [
+        "我们明天及",
+        "我们",
+        "我",
+        "喔",
+        "窝",
+        "握",
+        "卧",
+        "沃",
+        "硪"
+      ]
+    },
+    {
+      "preedit": "wo men ming tian jia",
+      "source": [
+        "我们明天家",
+        "我们",
+        "我",
+        "喔",
+        "窝",
+        "握",
+        "卧",
+        "沃",
+        "硪"
+      ],
+      "requests": [],
+      "wallMs": 0.11499977111816,
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "status": "completed",
+      "id": "key-16",
+      "processCpuMs": 0.073,
+      "ranked": [
+        "我们明天家",
+        "我们",
+        "我",
+        "喔",
+        "窝",
+        "握",
+        "卧",
+        "沃",
+        "硪"
+      ]
+    },
+    {
+      "preedit": "wo men ming tian jian",
+      "source": [
+        "我们明天见",
+        "我们",
+        "我",
+        "喔",
+        "窝",
+        "握",
+        "卧",
+        "沃",
+        "硪"
+      ],
+      "requests": [],
+      "wallMs": 0.11199951171875,
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "status": "completed",
+      "id": "key-17",
+      "processCpuMs": 0.072999999999998,
+      "ranked": [
+        "我们明天见",
+        "我们",
+        "我",
+        "喔",
+        "窝",
+        "握",
+        "卧",
+        "沃",
+        "硪"
+      ]
+    },
+    {
+      "preedit": "wo men ming tian jian",
+      "source": [
+        "我们明天见",
+        "我们",
+        "我",
+        "喔",
+        "窝",
+        "握",
+        "卧",
+        "沃",
+        "硪"
+      ],
+      "requests": [],
+      "wallMs": 0.13700008392334,
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "status": "completed",
+      "id": "identical-repeat",
+      "processCpuMs": 0.082,
+      "ranked": [
+        "我们明天见",
+        "我们",
+        "我",
+        "喔",
+        "窝",
+        "握",
+        "卧",
+        "沃",
+        "硪"
+      ]
+    }
+  ],
+  "id": "long-input-001",
+  "subprocessWallMs": 2395.085083320737,
+  "stderr": ""
+}

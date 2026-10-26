@@ -1,0 +1,153 @@
+{
+  "name": "librime",
+  "version": "1.17.0",
+  "commit": "33e78140250125871856cdc5b42ddc6a5fcd3cd4",
+  "license": "BSD-3-Clause",
+  "schema": "arion_pinyin",
+  "architectures": [
+    "arm64",
+    "x86_64"
+  ],
+  "files": {
+    "data/arion_pinyin.schema.yaml": {
+      "sizeBytes": 1985,
+      "sha256": "50f1c28700235445a5e240ad17fd67645e58011a16ba619884821ce0f03a1cff"
+    },
+    "data/build/arion_pinyin.schema.yaml": {
+      "sizeBytes": 4259,
+      "sha256": "e6070524b38f5f45ad793b083d128490999d2ed8cfaf16249df5ecd72f89620e"
+    },
+    "data/build/default.yaml": {
+      "sizeBytes": 4933,
+      "sha256": "9fb0c3e8ff78f170780a1be13c7eb167153a5e5c728e1a54e93b8611e9fc0df1"
+    },
+    "data/build/pinyin_simp.prism.bin": {
+      "sizeBytes": 30016,
+      "sha256": "cecd76cb3aa2179984e00d33965c2ae73c8e0759bf4722fd0ce053de92dfe270"
+    },
+    "data/build/pinyin_simp.reverse.bin": {
+      "sizeBytes": 103592,
+      "sha256": "3865501c37f899c478f229081e3b8fbdf93f397026c8ae5bd958f9dfb695fb1c"
+    },
+    "data/build/pinyin_simp.table.bin": {
+      "sizeBytes": 1475920,
+      "sha256": "92ebf5bdee3a42302e3813183b6dcf07fff172b4f9b0709884227b96b0352b6a"
+    },
+    "data/default.custom.yaml": {
+      "sizeBytes": 172,
+      "sha256": "bddfaf030cc97337069c95c9f30cc0bc2c3498bebf4bfd7424a51c81cc475439"
+    },
+    "data/default.yaml": {
+      "sizeBytes": 1593,
+      "sha256": "0628ada16651d56c4cdfcb8e45ddba23d4d585cc8be0580a62c4e077c0bcc141"
+    },
+    "data/key_bindings.yaml": {
+      "sizeBytes": 3117,
+      "sha256": "ee2476598b4cae89068b823868196eb07b5f72007a600814fe5804b39008b3ed"
+    },
+    "data/pinyin_simp.dict.yaml": {
+      "sizeBytes": 1266216,
+      "sha256": "e341598343a0f0f2035bb1aafc34a7f3bb7887deeecb3f60796262aaa2983e6b"
+    },
+    "data/pinyin_simp.schema.yaml": {
+      "sizeBytes": 1917,
+      "sha256": "726772190a325ae4bf236915e7d62a23fedd8cf1da8a74370a20f87196c67775"
+    },
+    "data/punctuation.yaml": {
+      "sizeBytes": 2107,
+      "sha256": "d6f89592149098f0a2d0ed3e5c83f49adb6226cdf1d967b0bc0d293f4e5c496a"
+    },
+    "data/symbols.yaml": {
+      "sizeBytes": 28473,
+      "sha256": "6d08969525bd66c67abf1791c99928079356bd0e673386c49c1959d2a52fdbba"
+    },
+    "include/rime_api.h": {
+      "sizeBytes": 20038,
+      "sha256": "6eb5629162c44761e7b878f1b122f464de5c8685bd3cd5ac1e8519badc6d6424"
+    },
+    "include/rime_api_deprecated.h": {
+      "sizeBytes": 9538,
+      "sha256": "21625c4e16480a4540939299a002f21b11150bb10b69f5331e1580875ac63341"
+    },
+    "include/rime_api_stdbool.h": {
+      "sizeBytes": 381,
+      "sha256": "f5a64254e98c1c12ce6628f5d540bcd4e4b542ec287b4873c0b0ce4ed1bece99"
+    },
+    "include/rime_levers_api.h": {
+      "sizeBytes": 3328,
+      "sha256": "b2ec30a89125f0fe5e91ea6cb209e8ae71e5f67fa87bc3d4a1dd3be3b5753b5a"
+    },
+    "lib/librime.1.dylib": {
+      "sizeBytes": 7083112,
+      "sha256": "1adb725a081b0accc1451034f6f1bb78cbfe8252a65245f1511f4b3f2038c487"
+    },
+    "licenses/Arion-profile-README.md": {
+      "sizeBytes": 1348,
+      "sha256": "66e11c5c594af9c613f7a1bba0dfd2bd0b7c684483bc363aeca6e8044f7db943"
+    },
+    "licenses/GPL-3.0.txt": {
+      "sizeBytes": 35149,
+      "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986"
+    },
+    "licenses/boost-LICENSE": {
+      "sizeBytes": 1338,
+      "sha256": "c9bff75738922193e67fa726fa225535870d2aa1059f91452c411736284ad566"
+    },
+    "licenses/darts-clone-COPYING": {
+      "sizeBytes": 1481,
+      "sha256": "11bf6ca180d01e60656cd3cbe65cff95b738afe4ca5a8a66b9dd1ec594a41d2f"
+    },
+    "licenses/glog-COPYING": {
+      "sizeBytes": 1479,
+      "sha256": "136d48dea7a681413691f3db3098f6cf5ffaa3119d96d97bb83b8cff3ce38c4a"
+    },
+    "licenses/keyboard-runtime.json": {
+      "sizeBytes": 8729,
+      "sha256": "58b95bd269eeb9a2a94c3f3f0d1d559e9b2d2c385854f2aa922207d8b92c5366"
+    },
+    "licenses/leveldb-LICENSE": {
+      "sizeBytes": 1484,
+      "sha256": "ccc19f1da0798ed666609b65a5b44dd8b3abe6fc08b9c0592eb76e82e174db19"
+    },
+    "licenses/librime-LICENSE": {
+      "sizeBytes": 1513,
+      "sha256": "f67d27a6d2d586fcfed4b4c886a83747095396a39b6641e18e855086be2ec400"
+    },
+    "licenses/librime-macos-build.yml": {
+      "sizeBytes": 2853,
+      "sha256": "d02d927e55013b267485e6e4a0bdb05f952721fb7868881bc2993901f4bce7e5"
+    },
+    "licenses/marisa-trie-COPYING.md": {
+      "sizeBytes": 2275,
+      "sha256": "edf58dab34c3dc239ba4ba2d5d3d844d8c5b442aa4dd1149fac81b2d8c6cb8d1"
+    },
+    "licenses/opencc-LICENSE": {
+      "sizeBytes": 9165,
+      "sha256": "b534e465949558eec2597b04f5092b5e161236a68dfbfd04d547592ac3964308"
+    },
+    "licenses/rime-pinyin-simp-LICENSE": {
+      "sizeBytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    "licenses/rime-pinyin-simp-README.md": {
+      "sizeBytes": 255,
+      "sha256": "bc51038baf2408cc5ec9eba680634cfd4ec07f905a636644839daff1a94055c9"
+    },
+    "licenses/rime-prelude-AUTHORS": {
+      "sizeBytes": 142,
+      "sha256": "9296a3509f1bcaee9e316ff70fccf76bf3a1f19c089b795710808ea5b6a0e6e7"
+    },
+    "licenses/rime-prelude-LICENSE": {
+      "sizeBytes": 7651,
+      "sha256": "da7eabb7bafdf7d3ae5e9f223aa5bdc1eece45ac569dc21b3b037520b4464768"
+    },
+    "licenses/utf8cpp-notice.h": {
+      "sizeBytes": 1521,
+      "sha256": "90643c1044a58020af389dc8eb73099fc8327a12d0731a1101acb277e03e6a3b"
+    },
+    "licenses/yaml-cpp-LICENSE": {
+      "sizeBytes": 1061,
+      "sha256": "aa6fcc27be034e41e21dd832f9175bfe694a48491d9e14ff0fa278e19ad14f1b"
+    }
+  }
+}

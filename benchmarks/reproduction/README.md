@@ -1,5 +1,7 @@
 # Experiment reproduction sources
 
+- [Original Rime LLM reranker](rime-llm-reranker-v1/README.md): pinned original Lua, isolated native candidate collection, real local oMLX inference and independently replayed quality/latency reports.
+
 These are byte-preserving snapshots of scripts, prompt definitions, baseline Go files, generated worker configurations and evaluators used in the archived experiments. Original report configurations are under `report-configs/`; current report configurations under `../configs/` resolve archived inputs.
 
 The exact evaluator source before adding archive support is in `evaluation-source/`. Selected product/driver source is in `selected-source/`. SHA-256 identities and original locations are in the [archive map](../migration/archive.json). A snapshot may contain old relative imports or absolute machine paths; it is retained to explain an experiment, not presented as an automatically runnable entry point.
@@ -135,5 +137,7 @@ The [technical spelling follow-up](rewrite-technical-spelling-v1/README.md) chec
 - [Qwen ASR size and quantization diagnostic](qwen-asr-speed-v1/README.md) — same-development-corpus native 0.6B/1.7B INT8 and separate MLX 8-bit/4-bit compute/accuracy evidence.
 
 - [Native Qwen3-ASR migration acceptance](../results/native-asr-v1/README.md) — native Swift model loading, offline signed-package inference, live coordinator replay and explicit remaining platform/performance gates.
+
+- [General LLM keyboard alignment](llm-ime-alignment-v1/README.md) — ID-only general completion adapter, actual 2B quality and paced scheduling observations, with explicit development and native acceptance limits.
 
 - [IME bundle-directory exchange](ime-bundle-swap-v1/README.md): owned macOS swap/reverse/error fixtures and source-bound raw observations.

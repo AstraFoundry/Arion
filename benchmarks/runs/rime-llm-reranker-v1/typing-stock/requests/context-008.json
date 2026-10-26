@@ -1,0 +1,144 @@
+{
+  "id": "context-008",
+  "config": {
+    "enabled": true,
+    "endpoint": "http://127.0.0.1:18782/v1/chat/completions",
+    "model": "Qwen3.5-0.8B-MLX-bf16",
+    "max_candidates": 5,
+    "timeout": 0.5,
+    "min_syllables": 1,
+    "max_rerank_pos": 5,
+    "max_tokens": 20,
+    "min_context_len": 0,
+    "max_preedit_len": 10,
+    "debug_log": true,
+    "fallback_on_error": true,
+    "collect_training_data": true,
+    "collect_user_pairs": true,
+    "collect_llm_pairs": false,
+    "system_prompt": "你是输入法候选词排序助手。根据对话历史和当前输入，从候选词列表中选出最符合语境的词。按优先级从高到低列出最多5个候选词，用顿号分隔，不要拼音、数字序号或任何解释。"
+  },
+  "history": "录用名单需要公开",
+  "steps": [
+    {
+      "id": "key-1",
+      "preedit": "g",
+      "candidates": [
+        "个",
+        "给",
+        "过",
+        "跟",
+        "更",
+        "该",
+        "高",
+        "搞",
+        "刚"
+      ]
+    },
+    {
+      "id": "key-2",
+      "preedit": "go",
+      "candidates": [
+        "够",
+        "狗",
+        "共",
+        "工",
+        "公",
+        "供",
+        "宫",
+        "功",
+        "购"
+      ]
+    },
+    {
+      "id": "key-3",
+      "preedit": "gon",
+      "candidates": [
+        "共",
+        "工",
+        "公",
+        "供",
+        "宫",
+        "功",
+        "攻",
+        "弓",
+        "龚"
+      ]
+    },
+    {
+      "id": "key-4",
+      "preedit": "gong",
+      "candidates": [
+        "共",
+        "工",
+        "公",
+        "供",
+        "宫",
+        "功",
+        "攻",
+        "弓",
+        "龚"
+      ]
+    },
+    {
+      "id": "key-5",
+      "preedit": "gong s",
+      "candidates": [
+        "公司",
+        "工商",
+        "公式",
+        "共识",
+        "公示",
+        "供水",
+        "攻势",
+        "公社",
+        "工伤"
+      ]
+    },
+    {
+      "id": "key-6",
+      "preedit": "gong sh",
+      "candidates": [
+        "工商",
+        "公式",
+        "共识",
+        "公示",
+        "供水",
+        "攻势",
+        "公社",
+        "工伤",
+        "工时"
+      ]
+    },
+    {
+      "id": "key-7",
+      "preedit": "gong shi",
+      "candidates": [
+        "公式",
+        "共识",
+        "公示",
+        "攻势",
+        "工时",
+        "工事",
+        "共事",
+        "公事",
+        "共"
+      ]
+    },
+    {
+      "id": "identical-repeat",
+      "preedit": "gong shi",
+      "candidates": [
+        "公式",
+        "共识",
+        "公示",
+        "攻势",
+        "工时",
+        "工事",
+        "共事",
+        "公事",
+        "共"
+      ]
+    }
+  ]
+}

@@ -17,7 +17,9 @@ import (
 	"arion.local/core/contracts"
 	"arion.local/core/domain"
 	"arion.local/core/domain/ports"
+	"arion.local/desktop/infrastructure/llm/engine"
 	"arion.local/desktop/infrastructure/llm/internal/subprocess"
+	"arion.local/desktop/infrastructure/llm/prompt"
 	"arion.local/desktop/infrastructure/llm/protocol"
 )
 
@@ -175,6 +177,15 @@ func (c *Client) Rewrite(ctx context.Context, req ports.RewriteRequest) (ports.R
 	}
 	return ports.RewriteResult{Cleanup: cleanup, Text: response.Text, Truncated: response.Truncated, Template: response.Template, PrefillMs: response.PrefillMs, DecodeMs: response.DecodeMs,
 		InputTokens: response.InputTokens, ReusedTokens: response.ReusedTokens, OutputTokens: response.OutputTokens}, nil
+}
+
+// Complete uses the same loaded worker with an independent task prompt.
+func (c *Client) Complete(ctx context.Context, request prompt.ChatRequest) (engine.Result, error) {
+	response, err := c.call(ctx, protocol.Request{Op: protocol.OpComplete, Chat: &request})
+	if err != nil {
+		return engine.Result{}, err
+	}
+	return engine.Result{Text: response.Text, Cancelled: response.Cancelled, Truncated: response.Truncated, InputTokens: response.InputTokens, OutputTokens: response.OutputTokens, PrefillMs: response.PrefillMs, DecodeMs: response.DecodeMs}, nil
 }
 
 // End releases the session's KV state in the worker.

@@ -1,0 +1,97 @@
+{
+  "steps": [
+    {
+      "ranked": [
+        "权利",
+        "权力",
+        "全力",
+        "圈里",
+        "全",
+        "权",
+        "圈",
+        "劝",
+        "泉"
+      ],
+      "preedit": "quan li",
+      "status": "completed",
+      "requests": [
+        {
+          "status": "HTTP/1.1 200 OK",
+          "networkWallMs": 300.97600078583,
+          "response": "{\"id\":\"chatcmpl-5c45df2d\",\"object\":\"chat.completion\",\"created\":1792647124,\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"全力、圈里、权利、权力、全\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":125,\"completion_tokens\":10,\"total_tokens\":135,\"input_tokens\":125,\"output_tokens\":10,\"prompt_tokens_details\":{\"cached_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"time_to_first_token\":0.1,\"total_time\":0.3,\"prompt_eval_duration\":0.1,\"generation_duration\":0.2,\"prompt_tokens_per_second\":1241.1,\"generation_tokens_per_second\":50.91}}",
+          "code": 200,
+          "request": "{\"stream\":false,\"messages\":[{\"content\":\"你是输入法候选词排序助手。根据对话历史和当前输入，从候选词列表中选出最符合语境的词。按优先级从高到低列出最多5个候选词，用顿号分隔，不要拼音、数字序号或任何解释。\",\"role\":\"system\"},{\"content\":\"对话历史：「入）（前面的事情已经说完，现在继续输入）」\\n当前输入拼音：「quan li」\\n候选词：权利、权力、全力、圈里、全\\n按最符合对话语境的顺序列出前5个候选词（顿号分隔）：\",\"role\":\"user\"}],\"max_tokens\":20,\"temperature\":0,\"model\":\"Qwen3.5-0.8B-MLX-bf16\"}"
+        }
+      ],
+      "id": "key-1",
+      "processCpuMs": 1.022,
+      "wallMs": 302.43500041962,
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "source": [
+        "权利",
+        "权力",
+        "全力",
+        "圈里",
+        "全",
+        "权",
+        "圈",
+        "劝",
+        "泉"
+      ]
+    },
+    {
+      "ranked": [
+        "权利",
+        "权力",
+        "全力",
+        "圈里",
+        "全",
+        "权",
+        "圈",
+        "劝",
+        "泉"
+      ],
+      "preedit": "quan li",
+      "status": "completed",
+      "requests": [],
+      "id": "identical-repeat",
+      "processCpuMs": 0.141,
+      "wallMs": 0.45700073242188,
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "source": [
+        "权利",
+        "权力",
+        "全力",
+        "圈里",
+        "全",
+        "权",
+        "圈",
+        "劝",
+        "泉"
+      ]
+    }
+  ],
+  "id": "truncated-context-006",
+  "subprocessWallMs": 318.2735829614103,
+  "stderr": ""
+}

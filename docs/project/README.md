@@ -42,3 +42,7 @@ Jev is TypeSafe’s System One typed decision model. Laya Multilingual is the pr
 See [specs](../../specs/README.md), [research](../research/README.md), [repository](repository.md), [account sign-in](account-signin.md), [cloud polishing](cloud-polishing.md), and [agent handoff](agent-handoff.md).
 
 [Central sync design proposal](central-sync-design.md) compares the recommended data allowlist with competitor evidence and specifies hosted deployment, client delivery, key lifecycle and release gaps. P1/P2 extensions remain proposals.
+
+[Update lifecycle](update-lifecycle.md) describes idle reminders, native notification registration and protected staged installation.
+
+[Product notifications](product-notifications.md) describes signed-in, OS-authorized account notices, bounded authenticated catchup and current-server action authorization.

@@ -9,6 +9,7 @@ import (
 
 	"arion.local/core/application"
 	"arion.local/core/domain"
+	"arion.local/desktop/infrastructure/updatestate"
 	"arion.local/desktop/ui/pages/settings"
 	"arion.local/desktop/ui/shared/copy"
 	arion "arion.local/desktop/ui/shared/runtime"
@@ -27,9 +28,13 @@ func (x actions) OpenMicrophoneSettings() {
 		x.a.platform.OpenMicrophoneSettings()
 	}
 }
-func (x actions) CloseGuide()          { x.a.closeGuide(true) }
-func (x actions) CloseTrayHint()       { x.a.closeTrayHint() }
-func (x actions) RetryModel()          { go x.a.activate(x.a.state.Preferences.ModelOverride) }
+func (x actions) CloseGuide()    { x.a.closeGuide(true) }
+func (x actions) CloseTrayHint() { x.a.closeTrayHint() }
+func (x actions) RetryModel() {
+	if !x.a.updateApplying() {
+		x.a.runResource(func() { x.a.activate(x.a.state.Preferences.ModelOverride) })
+	}
+}
 func (x actions) DownloadPolish()      { x.a.startPolish(true) }
 func (x actions) RetryPolish()         { x.DownloadPolish() }
 func (x actions) StartLevelMonitor()   { x.a.startMonitor() }
@@ -39,10 +44,15 @@ func (x actions) CopyText(text string) { mygo.Clipboard.WriteText(text) }
 func (x actions) OpenSettings()        { x.a.openSettings() }
 func (x actions) CheckForUpdates()     { x.a.updates.check(time.Now(), true) }
 func (x actions) InstallUpdate()       { x.a.updates.install() }
-func (x actions) RestartToUpdate()     { mygo.App.Relaunch() }
+func (x actions) RestartToUpdate()     { x.a.restartUpdate() }
 
 // OpenUpdate shows Settings › About, where the update is installed.
 func (x actions) OpenUpdate() {
+	x.a.closeUpdateReminder()
+	x.a.clearUpdateNotification()
+	if x.a.updatePolicy != nil && x.a.state.Update.Version != "" {
+		_ = x.a.saveReminder(x.a.reminderKey(), func(r *updatestate.Reminder) { r.Dismissed = false })
+	}
 	x.a.state.Focus = arion.SettingsFocus{Section: settings.About, Seq: x.a.state.Focus.Seq + 1}
 	x.a.openSettings()
 }
@@ -59,23 +69,40 @@ func (x actions) ChooseScene(scene domain.Scene) {
 func (x actions) TestHoldKey(testing bool) { x.a.testingHold = testing }
 
 func (x actions) UseBundle(id string) {
+	if x.a.updateApplying() {
+		return
+	}
 	x.UpdatePreferences(func(p *application.Preferences) { p.ModelOverride = id })
-	go x.a.activate(id)
+	x.a.runResource(func() { x.a.activate(id) })
 }
 
 func (x actions) UseRecommendedBundle() {
+	if x.a.updateApplying() {
+		return
+	}
 	x.UpdatePreferences(func(p *application.Preferences) { p.ModelOverride = "" })
-	go x.a.activate("")
+	x.a.runResource(func() { x.a.activate("") })
 }
 
 // UpdatePreferences persists a change and applies its side effects.
 func (x actions) UpdatePreferences(change func(*application.Preferences)) {
 	a := x.a
+	if a.updatePolicy != nil && a.updatePolicy.applying {
+		return
+	}
 	before := a.state.Preferences
 	next := before
 	change(&next)
 	next, _ = next.Normalize(runtime.GOOS)
-	a.savePreferences(next)
+	if !a.savePreferences(next) {
+		if next.CheckUpdates != before.CheckUpdates || next.AutoInstallUpdates != before.AutoInstallUpdates || next.AllowPrereleaseUpdates != before.AllowPrereleaseUpdates {
+			a.state.Update.StateError = true
+			if a.updatePolicy != nil {
+				a.updatePolicy.failed = true
+			}
+		}
+		return
+	}
 	if next.UILanguage != before.UILanguage {
 		a.updateLanguage()
 	}
@@ -107,7 +134,12 @@ func (x actions) UpdatePreferences(change func(*application.Preferences)) {
 		a.history.Clear()
 	}
 	if next.AllowPrereleaseUpdates != before.AllowPrereleaseUpdates {
+		a.closeUpdateReminder()
+		a.clearUpdateNotification()
 		a.updates.setPrereleases(next.AllowPrereleaseUpdates)
+	}
+	if a.updates != nil {
+		a.updates.preferences(next.CheckUpdates, next.AutoInstallUpdates)
 	}
 	if next.CheckUpdates && !before.CheckUpdates && a.updates.due(time.Now()) {
 		a.updates.check(time.Now(), false)
@@ -159,7 +191,7 @@ func (x actions) installInputMethod(automatic bool) error {
 		return errInputMethodUnsupported
 	}
 	a := x.a
-	if a.state.InputMethodInstalling || a.state.InputMethodActivating || a.state.InputMethodRemoving {
+	if a.updateApplying() || a.state.InputMethodInstalling || a.state.InputMethodActivating || a.state.InputMethodRemoving {
 		return nil
 	}
 	if a.core != nil && !automatic {
@@ -231,7 +263,7 @@ func (x actions) RemoveInputMethod() error {
 	if a.ime == nil {
 		return errInputMethodUnsupported
 	}
-	if a.state.InputMethodInstalling || a.state.InputMethodActivating || a.state.InputMethodRemoving {
+	if a.updateApplying() || a.state.InputMethodInstalling || a.state.InputMethodActivating || a.state.InputMethodRemoving {
 		return nil
 	}
 	if a.core != nil {

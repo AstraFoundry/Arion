@@ -40,6 +40,8 @@ Cloud dictation tools require sending raw microphone audio and window context to
 - **Native Go Desktop Shell** — Built with [MyGo](https://github.com/egoist/mygo) (`v0.4.6`) using Feature-Sliced Design in Go without Electron or a webview ([ADR 001](docs/decisions/001-desktop-native-boundaries.md), [ADR 007](docs/decisions/007-sunbeam-design-system.md)). Runs in the menu bar / system tray with a click-through floating pill that joins fullscreen Spaces without stealing focus, plus live-switched English and Simplified Chinese UI ([i18n](docs/frontend/i18n.md)).
 - **Zero-Knowledge Sync & Signed Updates** — Personal vocabulary is encrypted locally with AES-256-GCM using keys stored in macOS Keychain or Windows DPAPI ([ADR 005](docs/decisions/005-local-encryption.md)). The repository includes `services/sync` (a Docker self-hostable Go ciphertext relay that never holds decryption keys, [ADR 015](docs/decisions/015-hosted-relay-account-authorization.md)) and `services/updates` (Ed25519-signed `stable` and `beta` update channels, [ADR 019](docs/decisions/019-center-update-channels.md)).
 
+- **Controlled Updates and Product Notices** — Automatic checks and verified downloads have separate controls. Downloaded updates wait for an explicit safe restart. OS notification settings control reminders and automatic signed-in account notices, with running-app reception and next-launch catchup. See [update lifecycle](docs/project/update-lifecycle.md) and [product notifications](docs/project/product-notifications.md).
+
 ## Platform Support
 
 | Platform | Architecture | Status |

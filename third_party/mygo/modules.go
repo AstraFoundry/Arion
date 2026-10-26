@@ -7,8 +7,10 @@ import (
 	"math"
 	"runtime"
 	"sync"
+	"unicode/utf8"
 
 	"github.com/egoist/mygo/internal/accelerator"
+	"github.com/egoist/mygo/internal/notification"
 	"github.com/egoist/mygo/internal/platform"
 	"github.com/egoist/mygo/transfer"
 )
@@ -521,6 +523,51 @@ func (t *Tray) OnClick(fn func()) (off func()) { return t.onClick.add(fn, false)
 // OnRightClick is called when the icon is right-clicked.
 func (t *Tray) OnRightClick(fn func()) (off func()) { return t.onRight.add(fn, false) }
 
+// NotificationAuthorization is the current OS authorization for alerts.
+type NotificationAuthorization = platform.NotificationAuthorization
+
+const (
+	NotificationAuthorizationUnknown     = platform.NotificationAuthorizationUnknown
+	NotificationAuthorizationDenied      = platform.NotificationAuthorizationDenied
+	NotificationAuthorizationAllowed     = platform.NotificationAuthorizationAllowed
+	NotificationAuthorizationUnsupported = platform.NotificationAuthorizationUnsupported
+)
+
+// NotificationAction is an action button. IDs must be ASCII tokens of at most
+// 64 bytes. Foreground requests application activation when selected.
+type NotificationAction = platform.NotificationAction
+
+// NotificationPermission reads current settings without prompting. It does not
+// promise that a banner will appear: Focus and OS presentation settings apply.
+func NotificationPermission() (NotificationAuthorization, error) {
+	return notificationPermission(false)
+}
+
+// RequestNotificationPermission requests alert authorization. Call this only
+// from an explicit user interaction; Notification.Show never asks permission.
+func RequestNotificationPermission() (NotificationAuthorization, error) {
+	return notificationPermission(true)
+}
+
+func notificationPermission(request bool) (NotificationAuthorization, error) {
+	needsApp("NotificationPermission")
+	type result struct {
+		status NotificationAuthorization
+		err    error
+	}
+	ch := make(chan result, 1)
+	onMain(func() {
+		done := func(s NotificationAuthorization, err error) { deliver(ch, result{s, err}) }
+		if request {
+			backend().RequestNotificationPermission(done)
+		} else {
+			backend().NotificationPermission(done)
+		}
+	})
+	r := await(ch)
+	return r.status, r.err
+}
+
 // NotificationOptions configures a desktop notification.
 type NotificationOptions struct {
 	// ID identifies the notification: App.OnNotificationClick receives
@@ -536,7 +583,8 @@ type NotificationOptions struct {
 	// Group gathers the notifications that share it in one stack of
 	// Notification Center (macOS), such as the messages of a conversation.
 	// Empty leaves them in the app's.
-	Group string
+	Group   string
+	Actions []NotificationAction
 }
 
 // Notification is a desktop notification.
@@ -566,6 +614,7 @@ func NewNotification(opts NotificationOptions) *Notification {
 		// Unique across runs too, as notifications outlive them.
 		id = "mygo-" + randomText()
 	}
+	opts.Actions = append([]NotificationAction(nil), opts.Actions...)
 	return &Notification{id: id, opts: opts}
 }
 
@@ -574,15 +623,17 @@ func NewNotification(opts NotificationOptions) *Notification {
 func (n *Notification) ID() string { return n.id }
 
 // ErrNotificationsDenied is returned by Notification.Show when the user has
-// not allowed the app to show notifications (macOS).
+// not allowed the app to show notifications (macOS and Windows).
 var ErrNotificationsDenied = platform.ErrNotificationsDenied
 
 // Show displays the notification, and returns once the system has it. On
-// macOS the first notification asks the user whether to allow them, and
-// Show waits for the answer; it returns ErrNotificationsDenied when they
-// are not allowed.
+// macOS alert authorization must first be requested explicitly through
+// RequestNotificationPermission. Submission does not prove banner visibility.
 func (n *Notification) Show() error {
 	needsApp("Notification.Show")
+	if err := validateNotification(n.id, n.opts.Actions); err != nil {
+		return err
+	}
 	notifications.Lock()
 	if notifications.byID == nil {
 		notifications.byID = map[string]*Notification{}
@@ -599,6 +650,7 @@ func (n *Notification) Show() error {
 			Body:     n.opts.Body,
 			Silent:   n.opts.Silent,
 			Group:    n.opts.Group,
+			Actions:  append([]platform.NotificationAction(nil), n.opts.Actions...),
 		}, func(err error) { deliver(ch, err) })
 	})
 	err := await(ch)
@@ -616,7 +668,11 @@ func (n *Notification) Close() {
 	notifications.Lock()
 	delete(notifications.byID, n.id)
 	notifications.Unlock()
-	onMain(func() { backend().RemoveNotification(n.id) })
+	onMain(func() {
+		if App.initialized {
+			backend().RemoveNotification(n.id)
+		}
+	})
 }
 
 // ClearNotifications removes the app's notifications, on macOS those of
@@ -643,4 +699,42 @@ func notificationClicked(id string) {
 		fire(&n.onClick)
 	}
 	fire1(&App.onNotificationClick, id)
+}
+
+// RemoveNotification removes a stable ID, including one from an earlier run.
+func RemoveNotification(id string) {
+	needsApp("RemoveNotification")
+	notifications.Lock()
+	delete(notifications.byID, id)
+	notifications.Unlock()
+	onMain(func() { backend().RemoveNotification(id) })
+}
+
+func validateNotification(id string, actions []NotificationAction) error {
+	if !notification.ValidID(id) {
+		return errors.New("mygo: notification ID must be nonempty UTF-8, at most 256 bytes, without control characters")
+	}
+	if len(actions) > 4 {
+		return errors.New("mygo: at most four notification actions are supported")
+	}
+	seen := map[string]bool{}
+	for _, a := range actions {
+		if !notification.ValidAction(a.ID) || a.Title == "" || len(a.Title) > 256 || !utf8.ValidString(a.Title) || seen[a.ID] {
+			return errors.New("mygo: invalid or duplicate notification action")
+		}
+		seen[a.ID] = true
+	}
+	return nil
+}
+
+func notificationAction(id, action string) {
+	if !notification.ValidID(id) || action != "" && !notification.ValidAction(action) {
+		return
+	}
+	if action == "" {
+		notificationClicked(id)
+	}
+	for _, fn := range App.onNotificationAction.snapshot() {
+		fn(id, action)
+	}
 }

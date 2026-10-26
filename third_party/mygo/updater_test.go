@@ -163,7 +163,7 @@ func TestUpdater(t *testing.T) {
 	if progress != [2]int64{m.Size, m.Size} {
 		t.Errorf("progress = %v, want %d", progress, m.Size)
 	}
-	if leftovers, _ := filepath.Glob(filepath.Join(filepath.Dir(target), ".*")); runtime.GOOS == "darwin" && len(leftovers) > 0 {
+	if leftovers, _ := filepath.Glob(filepath.Join(filepath.Dir(target), ".*")); runtime.GOOS == "darwin" && (len(leftovers) != 1 || leftovers[0] != filepath.Join(filepath.Dir(target), "."+filepath.Base(target)+".update-lock")) {
 		t.Errorf("left behind: %q", leftovers)
 	}
 
@@ -215,7 +215,7 @@ func TestUpdaterDelta(t *testing.T) {
 		if b, _ := os.ReadFile(filepath.Join(target, "code")); !bytes.Equal(b, newCode) {
 			t.Error("after the update code is not the new one")
 		}
-		if leftovers, _ := filepath.Glob(filepath.Join(filepath.Dir(target), ".*")); runtime.GOOS == "darwin" && len(leftovers) > 0 {
+		if leftovers, _ := filepath.Glob(filepath.Join(filepath.Dir(target), ".*")); runtime.GOOS == "darwin" && (len(leftovers) != 1 || leftovers[0] != filepath.Join(filepath.Dir(target), "."+filepath.Base(target)+".update-lock")) {
 			t.Errorf("left behind: %q", leftovers)
 		}
 		return progress

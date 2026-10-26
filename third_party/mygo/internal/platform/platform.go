@@ -91,6 +91,8 @@ type Backend interface {
 	UnregisterHotkey(id int)
 
 	NotificationsSupported() bool
+	NotificationPermission(done func(NotificationAuthorization, error))
+	RequestNotificationPermission(done func(NotificationAuthorization, error))
 	// ShowNotification shows n; done runs on the main thread once the
 	// system has it, or with why it could not.
 	ShowNotification(n *Notification, done func(error))
@@ -134,6 +136,7 @@ type AppHandler interface {
 	PowerEvent(event string)
 	HotkeyPressed(id int)
 	NotificationClicked(id string)
+	NotificationAction(id, action string)
 }
 
 // AppController exposes application level native features.
@@ -788,6 +791,22 @@ type Tray interface {
 	Destroy()
 }
 
+// NotificationAuthorization is the OS authorization for alert presentation.
+type NotificationAuthorization string
+
+const (
+	NotificationAuthorizationUnknown     NotificationAuthorization = "unknown"
+	NotificationAuthorizationDenied      NotificationAuthorization = "denied"
+	NotificationAuthorizationAllowed     NotificationAuthorization = "allowed"
+	NotificationAuthorizationUnsupported NotificationAuthorization = "unsupported"
+)
+
+type NotificationAction struct {
+	ID         string
+	Title      string
+	Foreground bool
+}
+
 // Notification is a desktop notification.
 type Notification struct {
 	ID       string
@@ -797,5 +816,6 @@ type Notification struct {
 	Silent   bool
 	// Group gathers the notifications that share it (threadIdentifier on
 	// macOS).
-	Group string
+	Group   string
+	Actions []NotificationAction
 }

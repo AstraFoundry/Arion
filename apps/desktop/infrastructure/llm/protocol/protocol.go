@@ -3,19 +3,23 @@
 // handled out of band and stops a running or queued request.
 package protocol
 
-import "arion.local/core/domain"
+import (
+	"arion.local/core/domain"
+	"arion.local/desktop/infrastructure/llm/prompt"
+)
 
 // Version is bumped on any incompatible message change.
 const Version = 2
 
 // Ops.
 const (
-	OpLoad    = "load"
-	OpRewrite = "rewrite"
-	OpPrefill = "prefill"
-	OpCancel  = "cancel"
-	OpEnd     = "end"
-	OpClose   = "close"
+	OpLoad     = "load"
+	OpRewrite  = "rewrite"
+	OpComplete = "complete"
+	OpPrefill  = "prefill"
+	OpCancel   = "cancel"
+	OpEnd      = "end"
+	OpClose    = "close"
 )
 
 // Request is one line on the worker's stdin.
@@ -37,9 +41,10 @@ type Request struct {
 	Context      *domain.RewriteContext `json:"context,omitempty"`
 	Text         string                 `json:"text,omitempty"`
 	PreviousText string                 `json:"previousText,omitempty"`
+	Live         bool                   `json:"live,omitempty"`
+	Chat         *prompt.ChatRequest    `json:"chat,omitempty"`
 	// Punctuation is the cleanup mode. Empty is smart.
 	Punctuation string `json:"punctuation,omitempty"`
-	Live        bool   `json:"live,omitempty"`
 	// Cancel.
 	Target uint64 `json:"target,omitempty"`
 }

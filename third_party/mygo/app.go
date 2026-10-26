@@ -64,7 +64,8 @@ type Application struct {
 	onOpenFile        listeners[func(string)]
 	onWindowCreated   listeners[func(*Window)]
 
-	onNotificationClick listeners[func(string)]
+	onNotificationClick  listeners[func(string)]
+	onNotificationAction listeners[func(string, string)]
 }
 
 // App is the application singleton.
@@ -480,13 +481,21 @@ func (a *Application) OnOpenFile(fn func(path string)) (off func()) {
 }
 
 // OnNotificationClick is called with the ID of every notification of the
-// app that the user clicks, after its OnClick listeners: also one of an
+// app whose body the user clicks, after its OnClick listeners: also one of an
 // earlier run, which no Notification of this run holds, such as the one
 // whose click launched the app (macOS). Register it before Run to receive
 // that one. Give notifications IDs of the app's own, such as the
 // conversation they are about, to know what to open.
 func (a *Application) OnNotificationClick(fn func(id string)) (off func()) {
 	return a.onNotificationClick.add(fn, false)
+}
+
+// OnNotificationAction receives notification body activation (action "") or a
+// custom action ID, including cold launch responses. Register before Run. Body
+// activation also emits OnNotificationClick; use one of these application-level
+// handlers for navigation to avoid handling the same activation twice.
+func (a *Application) OnNotificationAction(fn func(id, action string)) (off func()) {
+	return a.onNotificationAction.add(fn, false)
 }
 
 // OnWindowCreated is called for every new window.
@@ -593,9 +602,10 @@ func (appHandler) OpenFiles(paths []string) {
 		fire1(&App.onOpenFile, p)
 	}
 }
-func (appHandler) MenuItemClicked(id int)        { menuItemClicked(id, FocusedWindow()) }
-func (appHandler) ThemeChanged()                 { updateBackgrounds(); contentThemeChanged(); Theme.changed() }
-func (appHandler) DisplaysChanged()              { Screen.changed() }
-func (appHandler) PowerEvent(event string)       { Power.event(event) }
-func (appHandler) HotkeyPressed(id int)          { GlobalShortcut.pressed(id) }
-func (appHandler) NotificationClicked(id string) { notificationClicked(id) }
+func (appHandler) MenuItemClicked(id int)               { menuItemClicked(id, FocusedWindow()) }
+func (appHandler) ThemeChanged()                        { updateBackgrounds(); contentThemeChanged(); Theme.changed() }
+func (appHandler) DisplaysChanged()                     { Screen.changed() }
+func (appHandler) PowerEvent(event string)              { Power.event(event) }
+func (appHandler) HotkeyPressed(id int)                 { GlobalShortcut.pressed(id) }
+func (appHandler) NotificationClicked(id string)        { notificationAction(id, "") }
+func (appHandler) NotificationAction(id, action string) { notificationAction(id, action) }

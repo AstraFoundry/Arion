@@ -1,5 +1,7 @@
 # Benchmarks
 
+- [Original Rime LLM reranker reproduction](results/rime-llm-reranker-v1/README.md): 100 real-candidate exploratory fixtures, 219 local model requests including warmups/controls, wall-time measurements, original parser/cache defects and model-free replay.
+
 - [Research archive migration](migration/README.md): copied corpora, per-case results, exact audio, failed/cancelled attempts and frozen source snapshots, with byte identities and model-free report replay.
 - [Corpora](corpora/README.md), [raw runs](runs/README.md), [reproduction sources](reproduction/README.md) and [separately provisioned artifacts](artifacts/README.md).
 
@@ -31,3 +33,5 @@
 - [Qwen ASR size and quantization diagnostic](results/qwen-asr-speed-v1/README.md) — same-development-corpus native 0.6B/1.7B INT8 and separate MLX 8-bit/4-bit compute/accuracy evidence.
 
 - [Native Qwen3-ASR migration acceptance](results/native-asr-v1/README.md) — native Swift model loading, offline signed-package inference, live coordinator replay and explicit remaining platform/performance gates.
+
+- [General LLM keyboard alignment](results/llm-ime-alignment-v1/README.md) — actual local completion over frozen Rime candidates, no-context abstention, model latency, cancellation and full alignment/evaluation plan.

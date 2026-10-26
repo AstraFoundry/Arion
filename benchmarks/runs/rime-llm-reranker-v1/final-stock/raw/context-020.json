@@ -1,0 +1,97 @@
+{
+  "id": "context-020",
+  "steps": [
+    {
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "processCpuMs": 0.872,
+      "requests": [
+        {
+          "response": "{\"id\":\"chatcmpl-461c0331\",\"object\":\"chat.completion\",\"created\":1792647106,\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"十届、世界、时节、师姐、视界\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":117,\"completion_tokens\":10,\"total_tokens\":127,\"input_tokens\":117,\"output_tokens\":10,\"prompt_tokens_details\":{\"cached_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"time_to_first_token\":0.1,\"total_time\":0.3,\"prompt_eval_duration\":0.1,\"generation_duration\":0.2,\"prompt_tokens_per_second\":1179.33,\"generation_tokens_per_second\":50.42}}",
+          "status": "HTTP/1.1 200 OK",
+          "request": "{\"max_tokens\":20,\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"stream\":false,\"messages\":[{\"role\":\"system\",\"content\":\"你是输入法候选词排序助手。根据对话历史和当前输入，从候选词列表中选出最符合语境的词。按优先级从高到低列出最多5个候选词，用顿号分隔，不要拼音、数字序号或任何解释。\"},{\"role\":\"user\",\"content\":\"对话历史：「又到了春暖花开的」\\n当前输入拼音：「shi jie」\\n候选词：世界、师姐、时节、十届、视界\\n按最符合对话语境的顺序列出前5个候选词（顿号分隔）：\"}],\"temperature\":0}",
+          "networkWallMs": 301.42800045013,
+          "code": 200
+        }
+      ],
+      "id": "key-1",
+      "status": "completed",
+      "wallMs": 302.53900051117,
+      "source": [
+        "世界",
+        "师姐",
+        "时节",
+        "十届",
+        "视界",
+        "实际",
+        "世纪",
+        "十几",
+        "时机"
+      ],
+      "preedit": "shi jie",
+      "ranked": [
+        "世界",
+        "师姐",
+        "时节",
+        "十届",
+        "视界",
+        "实际",
+        "世纪",
+        "十几",
+        "时机"
+      ]
+    },
+    {
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "processCpuMs": 0.124,
+      "requests": [],
+      "id": "identical-repeat",
+      "status": "completed",
+      "wallMs": 0.27200031280518,
+      "source": [
+        "世界",
+        "师姐",
+        "时节",
+        "十届",
+        "视界",
+        "实际",
+        "世纪",
+        "十几",
+        "时机"
+      ],
+      "preedit": "shi jie",
+      "ranked": [
+        "世界",
+        "师姐",
+        "时节",
+        "十届",
+        "视界",
+        "实际",
+        "世纪",
+        "十几",
+        "时机"
+      ]
+    }
+  ],
+  "subprocessWallMs": 322.40874972194433,
+  "stderr": ""
+}

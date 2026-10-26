@@ -33,6 +33,9 @@ type Preferences struct {
 	// CheckUpdates asks the release feed for a newer version at launch and
 	// periodically. Profiles written before it existed load the default.
 	CheckUpdates bool `json:"checkUpdates"`
+	// AutoInstallUpdates downloads and verifies updates when automatic checks are
+	// enabled. Installation waits for an explicit protected restart.
+	AutoInstallUpdates bool `json:"autoInstallUpdates"`
 	// AllowPrereleaseUpdates includes published preview releases when checking.
 	AllowPrereleaseUpdates bool `json:"allowPrereleaseUpdates"`
 	// Polish enables the shared rewrite after the dictation key is released.

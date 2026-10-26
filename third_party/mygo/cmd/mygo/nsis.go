@@ -311,6 +311,11 @@ func writeInstaller(c *Config, stage, work, exe, goarch string, installed []stri
 	uninstallKey := `Software\Microsoft\Windows\CurrentVersion\Uninstall\` + c.Identifier
 	shortcut := nsisEscape(fsName(c.Name)) + ".lnk"
 	register, unregister := nsisAssociations(c, exe)
+	notificationInstall, notificationUninstall := nsisNotifications(c, exe)
+	shortcutInstall := `  CreateShortCut "$SMPROGRAMS\` + shortcut + `" "$INSTDIR\` + nsisEscape(exe) + `"` + "\n"
+	if c.Windows.Notifications {
+		shortcutInstall = ""
+	}
 	prepare, commit := nsisPayloadTransaction(exe, installed)
 	removePayload, err := nsisRemovePayload(stage, installed)
 	if err != nil {
@@ -358,9 +363,7 @@ Section
 ` + prepare + files.String() + `  IfErrors payload_extract_failed
   WriteUninstaller "$PayloadStage\payload\Uninstall.exe"
   IfErrors payload_extract_failed
-` + commit + `
-  CreateShortCut "$SMPROGRAMS\` + shortcut + `" "$INSTDIR\` + nsisEscape(exe) + `"
-  WriteRegStr HKCU ` + nsisString(uninstallKey) + ` "DisplayName" ` + nsisString(c.Name) + `
+` + commit + shortcutInstall + notificationInstall + `  WriteRegStr HKCU ` + nsisString(uninstallKey) + ` "DisplayName" ` + nsisString(c.Name) + `
   WriteRegStr HKCU ` + nsisString(uninstallKey) + ` "DisplayVersion" ` + nsisString(c.Version) + `
   WriteRegStr HKCU ` + nsisString(uninstallKey) + ` "DisplayIcon" "$INSTDIR\` + nsisEscape(exe) + `"
   WriteRegStr HKCU ` + nsisString(uninstallKey) + ` "InstallLocation" "$INSTDIR"
@@ -398,7 +401,7 @@ Function un.DeleteShortcut
 FunctionEnd
 
 Section "Uninstall"
-  Push "$SMPROGRAMS\` + shortcut + `"
+` + notificationUninstall + `  Push "$SMPROGRAMS\` + shortcut + `"
   Call un.DeleteShortcut
   Push "$DESKTOP\` + shortcut + `"
   Call un.DeleteShortcut
@@ -661,4 +664,24 @@ func (p *downloadProgress) Write(b []byte) (int, error) {
 		p.t.set(formatSize(p.n))
 	}
 	return len(b), nil
+}
+
+// nsisNotifications makes registration failure visible and preserves installed
+// files when cleanup fails, so uninstall can be retried with the owned sender.
+func nsisNotifications(c *Config, exe string) (install, uninstall string) {
+	if !c.Windows.Notifications {
+		return "", ""
+	}
+	command := func(flag, label string) string {
+		return `  ClearErrors
+  ExecWait '"$INSTDIR\` + nsisEscape(exe) + `" ` + flag + `' $0
+  IfErrors ` + label + `_failed
+  IntCmp $0 0 ` + label + `_done
+  ` + label + `_failed:
+    SetErrorLevel 1
+    Abort "Native notification registration failed. Close the application and retry setup."
+  ` + label + `_done:
+`
+	}
+	return command("--mygo-register-notifications", "notify_install"), command("--mygo-unregister-notifications", "notify_uninstall")
 }
