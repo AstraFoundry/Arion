@@ -149,10 +149,7 @@ func (x actions) UpdatePreferences(change func(*application.Preferences)) {
 // SetHoldKey persists the hold-to-talk key and restarts its listener.
 func (x actions) SetHoldKey(key application.HoldKey) {
 	x.UpdatePreferences(func(p *application.Preferences) {
-		if p.TranslateKey == key {
-			p.TranslateKey = application.HoldOff
-		}
-		p.HoldKey = key
+		p.ChooseHoldKey(key)
 	})
 	x.a.startHoldKey()
 }
@@ -160,16 +157,7 @@ func (x actions) SetHoldKey(key application.HoldKey) {
 // SetTranslateKey persists the translation hold-to-talk key and restarts the listener.
 func (x actions) SetTranslateKey(key application.HoldKey) {
 	x.UpdatePreferences(func(p *application.Preferences) {
-		if key != application.HoldOff && key == p.HoldKey {
-			if prev := p.TranslateKey; prev != "" && prev != application.HoldOff && prev != key {
-				p.HoldKey = prev
-			} else if alt := application.DefaultHoldKey(runtime.GOOS); alt != key {
-				p.HoldKey = alt
-			} else {
-				p.HoldKey = application.DefaultTranslateKey(runtime.GOOS)
-			}
-		}
-		p.TranslateKey = key
+		p.ChooseTranslateKey(runtime.GOOS, key)
 	})
 	x.a.startHoldKey()
 }

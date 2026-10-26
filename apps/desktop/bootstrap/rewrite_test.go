@@ -102,7 +102,7 @@ func TestRewritePolicyForcesTranslationWhenPolishIsOff(t *testing.T) {
 	a.prefs.TranslateLanguage = "zh-CN"
 	a.setTranslating(true)
 	policy := a.rewritePolicy()
-	if !policy.Enabled || policy.TargetLanguage != "zh-CN" || !policy.FinalOnly {
+	if !policy.Enabled || policy.TargetLanguage != "zh-CN" {
 		t.Fatalf("translation policy not forced while Polish is off: %+v", policy)
 	}
 	a.setTranslating(false)

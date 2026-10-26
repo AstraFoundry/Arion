@@ -44,9 +44,9 @@ func Live() Template {
 }
 
 // Context extends Live for requests that carry context sections: its system
-// prompt adds the context rules and its demonstrations follow Live's. The
-// product uses this template for both previews and final rewrites whenever
-// session context is available (ADR 013).
+// prompt adds the context rules and its demonstrations follow Live's.
+// arion-context-probe uses this template. Product rewrites use
+// SelectedTemplates.
 func Context() Template {
 	var extra struct {
 		Version  string    `json:"version"`

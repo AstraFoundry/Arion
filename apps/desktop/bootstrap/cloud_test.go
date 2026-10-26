@@ -30,12 +30,12 @@ func TestCloudPolicyUsesSharedContext(t *testing.T) {
 	a := &App{prefs: application.DefaultPreferences("darwin"), rewriter: &rewriting.Service{}}
 	a.prefs.Polish = true
 	local := a.rewritePolicy()
-	if !local.Enabled || !local.FinalOnly || !local.Context.Screen || !local.Context.Cursor || !local.Context.History {
+	if !local.Enabled || !local.Context.Screen || !local.Context.Cursor || !local.Context.History {
 		t.Fatalf("local policy %+v", local)
 	}
 	a.prefs.PolishEngine = application.PolishCloud
 	cloud := a.rewritePolicy()
-	if !cloud.Enabled || !cloud.FinalOnly || cloud.Context != local.Context || cloud.Timeout != cloudRewriteTimeout {
+	if !cloud.Enabled || cloud.Context != local.Context || cloud.Timeout != cloudRewriteTimeout {
 		t.Fatalf("cloud policy %+v", cloud)
 	}
 }

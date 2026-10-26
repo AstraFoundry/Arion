@@ -23,7 +23,7 @@ type ContextPolicy struct {
 func (p ContextPolicy) Any() bool { return p.Cursor || p.Screen || p.History }
 
 // contextWait bounds how long the final rewrite waits for context that is
-// still being read; previews never wait.
+// still being read.
 const contextWait = 1500 * time.Millisecond
 
 // History keeps the user's recent dictations per place (domain.SceneKey) in

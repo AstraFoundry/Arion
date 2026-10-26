@@ -2,7 +2,7 @@
 
 ## Pipeline contract
 
-Capture → bounded frames → explicit resampling → VAD/streaming recognizer → revisioned draft/real alternatives → local ranker → conservative correction candidate → preview/composition → final commit.
+Capture → bounded frames → explicit resampling → VAD/streaming recognizer → revisioned draft → conservative correction → recognized preview or owned IME composition → final commit. Keyboard candidate ranking is a separate reorder of producer candidates (SPH-07).
 
 - SPH-01: PCM frames carry session/generation, increasing sequence, monotonic sample offset, rate/channels and discontinuity status. The chosen adapter declares supported audio format; model metadata declares its sample rate. Do not assume every model wants the same format.
 - SPH-02: Capture callbacks MUST only enqueue frames. On overload, emit a discontinuity and terminate or restart explicitly; do not conceal dropped audio.

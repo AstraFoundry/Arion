@@ -30,8 +30,6 @@ type Request struct {
 	TargetLanguage domain.TranslationLanguage
 	// Prefill computes the source tokens only and generates nothing.
 	Prefill bool
-	// Live marks a preview of still-open speech; its output budget is tighter.
-	Live bool
 }
 
 // Result reports the candidate and where its time went.

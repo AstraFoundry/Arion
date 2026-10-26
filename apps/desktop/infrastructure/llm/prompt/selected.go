@@ -215,29 +215,17 @@ func formatText(source string) string {
 	return "<source>" + source + "</source>"
 }
 
-// formatTokens scales the formatter output budget with the source length,
-// keeping a 256-token floor for short utterances and a 2048-token ceiling.
-func formatTokens(source string) int {
-	return min(maxFormatTokens, max(minFormatTokens, utf8.RuneCountInString(source)+128))
+// formatBudget scales the completion ceiling with the source length.
+// perRune is 1 for a polish and 2 for a translation, which can expand.
+// Short utterances stay on a 256-token floor. The ceiling is 2048.
+func formatBudget(source string, perRune int) int {
+	return min(maxFormatTokens, max(minFormatTokens, utf8.RuneCountInString(source)*perRune+128))
 }
 
-// formatTranslationTokens allows 2x expansion per source rune so Chinese-to-English
-// translations do not exhaust the completion budget on longer utterances.
-func formatTranslationTokens(source string) int {
-	return min(maxFormatTokens, max(minFormatTokens, utf8.RuneCountInString(source)*2+128))
-}
-
-// systemPrompt is a preamble plus one rules list. Scene text is rule 8,
-// layout is rule 9 (omitted for list), and the script route is rule 10.
-// Rule 2 is the wording constraint: no synonym paraphrase; ASR fixes are corrections.
+// rulesBlock is a preamble plus one rules list. The scene line follows the
+// recipe rules, layout is omitted for list, and the route line is last.
 // Full, omit, and spaces append one punctuation bullet; smart does not.
-func (t *SelectedTemplates) systemPrompt(kind, scene string, punctuation domain.Punctuation) string {
-	preamble, rules, sceneRule, layout, routeLine, punct := t.format.System, t.format.Rules, "", t.format.ProsePolicy, t.format.Routes[kind], t.format.Punctuation
-	recipe := t.format.Scenes[scene]
-	sceneRule = recipe.Instruction
-	if kind == "han" {
-		preamble, rules, sceneRule, layout, punct = t.format.SystemHan, t.format.RulesHan, recipe.InstructionHan, t.format.ProsePolicyHan, t.format.PunctuationHan
-	}
+func rulesBlock(preamble, rules, sceneRule, layout, routeLine, scene string, punctuation domain.Punctuation, punct string) string {
 	lines := strings.Split(rules, "\n")
 	lines = append(lines, sceneRule)
 	if scene != string(domain.SceneList) {
@@ -249,6 +237,55 @@ func (t *SelectedTemplates) systemPrompt(kind, scene string, punctuation domain.
 		lines = append(lines, punct)
 	}
 	return preamble + "\n\n<rules>\n" + strings.Join(lines, "\n") + "\n</rules>"
+}
+
+// exampleGroups puts editing examples first for an explicit list, so prose
+// demonstrations do not override the selected layout.
+func exampleGroups(scene string, primary, editing []formatExample) [][]formatExample {
+	groups := [][]formatExample{primary, editing}
+	if scene == string(domain.SceneList) {
+		groups[0], groups[1] = groups[1], groups[0]
+	}
+	return groups
+}
+
+func scriptExamples(examples []formatExample, kind string) []formatExample {
+	if kind == "mixed" {
+		return examples
+	}
+	matched := make([]formatExample, 0, len(examples))
+	for _, e := range examples {
+		if route(e.Source) == kind {
+			matched = append(matched, e)
+		}
+	}
+	return matched
+}
+
+func appendExampleTurns(messages []Message, groups [][]formatExample, scene string) []Message {
+	for group, examples := range groups {
+		for _, e := range examples {
+			output := e.Output
+			if scene == string(domain.SceneList) && group == 0 {
+				output = "1. " + output
+			}
+			messages = append(messages, Message{Role: "user", Content: formatText(e.Source)}, Message{Role: "assistant", Content: output})
+		}
+	}
+	return messages
+}
+
+// systemPrompt is the polish rules list. Scene text is rule 8, layout is
+// rule 9 (omitted for list), and the script route is rule 10. Rule 2 is the
+// wording constraint: no synonym paraphrase; ASR fixes are corrections.
+func (t *SelectedTemplates) systemPrompt(kind, scene string, punctuation domain.Punctuation) string {
+	preamble, rules, layout, routeLine, punct := t.format.System, t.format.Rules, t.format.ProsePolicy, t.format.Routes[kind], t.format.Punctuation
+	recipe := t.format.Scenes[scene]
+	sceneRule := recipe.Instruction
+	if kind == "han" {
+		preamble, rules, sceneRule, layout, punct = t.format.SystemHan, t.format.RulesHan, recipe.InstructionHan, t.format.ProsePolicyHan, t.format.PunctuationHan
+	}
+	return rulesBlock(preamble, rules, sceneRule, layout, routeLine, scene, punctuation, punct)
 }
 
 // Format receives only the explicitly edited source, never OCR or surrounding
@@ -265,28 +302,11 @@ func (t *SelectedTemplates) Format(source, scene string, punctuation domain.Punc
 	}
 	kind := route(source)
 	messages := []Message{{Role: "system", Content: t.systemPrompt(kind, scene, punctuation)}}
-	groups := [][]formatExample{recipe.Examples, t.format.EditingExamples}
-	// Keep explicit-list demonstrations last so prose editing examples do not
-	// override the user-selected layout.
-	if scene == string(domain.SceneList) {
-		groups[0], groups[1] = groups[1], groups[0]
-	}
-	for group, examples := range groups {
-		for _, e := range examples {
-			if kind != "mixed" && route(e.Source) != kind {
-				continue
-			}
-			output := e.Output
-			if scene == string(domain.SceneList) && group == 0 {
-				output = "1. " + output
-			}
-			messages = append(messages, Message{Role: "user", Content: formatText(e.Source)}, Message{Role: "assistant", Content: output})
-		}
-	}
+	messages = appendExampleTurns(messages, exampleGroups(scene, scriptExamples(recipe.Examples, kind), scriptExamples(t.format.EditingExamples, kind)), scene)
 	if len(messages) == 1 {
 		return ChatRequest{}, fmt.Errorf("missing formatting examples for %s/%s", scene, kind)
 	}
-	return chat(append(messages, Message{Role: "user", Content: formatText(source)}), formatTokens(source)), nil
+	return chat(append(messages, Message{Role: "user", Content: formatText(source)}), formatBudget(source, 1)), nil
 }
 
 func (t *SelectedTemplates) translationSystemPrompt(scene string, punctuation domain.Punctuation, target domain.TranslationLanguage) string {
@@ -296,17 +316,7 @@ func (t *SelectedTemplates) translationSystemPrompt(scene string, punctuation do
 	if target == domain.TargetChinese {
 		sceneRule, layout, punct = recipe.InstructionHan, t.format.ProsePolicyHan, t.format.PunctuationHan
 	}
-	lines := strings.Split(tr.Rules, "\n")
-	lines = append(lines, sceneRule)
-	if scene != string(domain.SceneList) {
-		lines = append(lines, layout)
-	}
-	lines = append(lines, tr.Route)
-	switch punctuation {
-	case domain.PunctuationFull, domain.PunctuationOmit, domain.PunctuationSpaces:
-		lines = append(lines, punct)
-	}
-	return tr.System + "\n\n<rules>\n" + strings.Join(lines, "\n") + "\n</rules>"
+	return rulesBlock(tr.System, tr.Rules, sceneRule, layout, tr.Route, scene, punctuation, punct)
 }
 
 // FormatTranslation builds the Stage 2 request that polishes and translates
@@ -331,18 +341,6 @@ func (t *SelectedTemplates) FormatTranslation(source, scene string, punctuation 
 		return ChatRequest{}, fmt.Errorf("missing translation examples for %s/%s", scene, target)
 	}
 	messages := []Message{{Role: "system", Content: t.translationSystemPrompt(scene, punctuation, target)}}
-	groups := [][]formatExample{sceneExamples, tr.EditingExamples}
-	if scene == string(domain.SceneList) {
-		groups[0], groups[1] = groups[1], groups[0]
-	}
-	for group, examples := range groups {
-		for _, e := range examples {
-			output := e.Output
-			if scene == string(domain.SceneList) && group == 0 {
-				output = "1. " + output
-			}
-			messages = append(messages, Message{Role: "user", Content: formatText(e.Source)}, Message{Role: "assistant", Content: output})
-		}
-	}
-	return chat(append(messages, Message{Role: "user", Content: formatText(source)}), formatTranslationTokens(source)), nil
+	messages = appendExampleTurns(messages, exampleGroups(scene, sceneExamples, tr.EditingExamples), scene)
+	return chat(append(messages, Message{Role: "user", Content: formatText(source)}), formatBudget(source, 2)), nil
 }

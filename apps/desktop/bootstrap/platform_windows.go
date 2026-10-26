@@ -44,9 +44,6 @@ func (windowsPlatform) RequestInputMonitoring()          {}
 func (windowsPlatform) AppBundle() string               { return "" }
 func (windowsPlatform) OpenGuidePane(runtime.GuidePane) {}
 func (windowsPlatform) SettingsWindow() SettingsWindow  { return SettingsWindow{} }
-func (windowsPlatform) StartHoldKey(key application.HoldKey, sink func(holdkey.Event)) error {
-	return windows.StartHold(key, sink)
-}
 func (windowsPlatform) StartHoldKeys(keys []application.HoldKey, sink func(application.HoldKey, holdkey.Event)) error {
 	return windows.StartHoldKeys(keys, sink)
 }

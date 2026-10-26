@@ -44,17 +44,17 @@ func TestHoldWaitsForModelWithoutArmingDelayedCapture(t *testing.T) {
 			a := readinessApp(t)
 			a.state.Model.State = state
 			at := time.Now()
-			a.onHoldKey(holdkey.Down, at)
+			a.onHoldKeyEvent(a.state.Preferences.HoldKey, holdkey.Down, at)
 			if snapshot := a.core.Snapshot(); snapshot.State != domain.Idle || a.state.Hold.Holding {
 				t.Fatalf("model %s started an unavailable session: %+v", state, snapshot)
 			}
 			a.state.Model.State = arion.ModelReady
-			a.onHoldKey(holdkey.Down, at.Add(time.Second)) // Held-key repeat must not start later.
-			a.onHoldKey(holdkey.Up, at.Add(2*time.Second))
+			a.onHoldKeyEvent(a.state.Preferences.HoldKey, holdkey.Down, at.Add(time.Second)) // Held-key repeat must not start later.
+			a.onHoldKeyEvent(a.state.Preferences.HoldKey, holdkey.Up, at.Add(2*time.Second))
 			if a.core.Snapshot().State != domain.Idle {
 				t.Fatal("a rejected gesture armed a delayed capture")
 			}
-			a.onHoldKey(holdkey.Down, at.Add(3*time.Second))
+			a.onHoldKeyEvent(a.state.Preferences.HoldKey, holdkey.Down, at.Add(3*time.Second))
 			if a.core.Snapshot().State != domain.Preparing || !a.state.Hold.Holding {
 				t.Fatal("a fresh gesture did not start after readiness")
 			}

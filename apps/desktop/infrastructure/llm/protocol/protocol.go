@@ -41,7 +41,6 @@ type Request struct {
 	Context      *domain.RewriteContext `json:"context,omitempty"`
 	Text         string                 `json:"text,omitempty"`
 	PreviousText string                 `json:"previousText,omitempty"`
-	Live         bool                   `json:"live,omitempty"`
 	Chat         *prompt.ChatRequest    `json:"chat,omitempty"`
 	// Punctuation is the cleanup mode. Empty is smart.
 	Punctuation string `json:"punctuation,omitempty"`

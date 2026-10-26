@@ -17,6 +17,10 @@ const (
 	DetailInputMethodProtocolUnsupported = "input method protocol unsupported"
 )
 
+// DetailTranslationModel identifies a voice-translation session whose model
+// is missing or failed to run.
+const DetailTranslationModel = "translation model"
+
 const (
 	CodePermissionDenied       ErrorCode = "PERMISSION_DENIED"
 	CodeModelMissing           ErrorCode = "MODEL_MISSING"

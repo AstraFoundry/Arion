@@ -4,7 +4,33 @@
 // fields.
 package holdkey
 
-import "arion.local/core/application"
+import (
+	"slices"
+
+	"arion.local/core/application"
+)
+
+// distinctKeys drops empty and off entries, rejects an unknown key, and
+// drops duplicates. ok is false when nothing remains or a key is unknown.
+func distinctKeys(keys []application.HoldKey, known func(application.HoldKey) bool) ([]application.HoldKey, bool) {
+	var accepted []application.HoldKey
+	for _, key := range keys {
+		if key == "" || key == application.HoldOff {
+			continue
+		}
+		if !known(key) {
+			return nil, false
+		}
+		if slices.Contains(accepted, key) {
+			continue
+		}
+		accepted = append(accepted, key)
+	}
+	if len(accepted) == 0 {
+		return nil, false
+	}
+	return accepted, true
+}
 
 // Event is a hold-key transition.
 type Event int
@@ -50,28 +76,16 @@ type Mac struct {
 // unavailable on macOS. HoldOff and empty entries are ignored when paired
 // with a primary key.
 func NewMac(keys ...application.HoldKey) (*Mac, bool) {
-	var targets []macTarget
-	for _, key := range keys {
-		if key == "" || key == application.HoldOff {
-			continue
-		}
-		spec, ok := macSpecs[key]
-		if !ok {
-			return nil, false
-		}
-		duplicate := false
-		for _, existing := range targets {
-			if existing.key == key {
-				duplicate = true
-				break
-			}
-		}
-		if !duplicate {
-			targets = append(targets, macTarget{key: key, spec: spec})
-		}
-	}
-	if len(targets) == 0 {
+	accepted, ok := distinctKeys(keys, func(key application.HoldKey) bool {
+		_, found := macSpecs[key]
+		return found
+	})
+	if !ok {
 		return nil, false
+	}
+	targets := make([]macTarget, len(accepted))
+	for i, key := range accepted {
+		targets[i] = macTarget{key: key, spec: macSpecs[key]}
 	}
 	return &Mac{targets: targets}, true
 }
@@ -134,12 +148,6 @@ func (m *Mac) InterpretKey(eventType int, keycode int64, flags uint64, autorepea
 	return "", 0, false
 }
 
-// Interpret maps one event; ok is false when it is not a transition.
-func (m *Mac) Interpret(eventType int, keycode int64, flags uint64, autorepeat bool) (Event, bool) {
-	_, event, ok := m.InterpretKey(eventType, keycode, flags, autorepeat)
-	return event, ok
-}
-
 // Windows low-level keyboard hook messages and virtual keys.
 const (
 	WinKeyDown    = 0x0100
@@ -173,28 +181,16 @@ type Windows struct {
 // unavailable on Windows. HoldOff and empty entries are ignored when paired
 // with a primary key.
 func NewWindows(keys ...application.HoldKey) (*Windows, bool) {
-	var targets []winTarget
-	for _, key := range keys {
-		if key == "" || key == application.HoldOff {
-			continue
-		}
-		vk, ok := winKeys[key]
-		if !ok {
-			return nil, false
-		}
-		duplicate := false
-		for _, existing := range targets {
-			if existing.key == key {
-				duplicate = true
-				break
-			}
-		}
-		if !duplicate {
-			targets = append(targets, winTarget{key: key, vk: vk})
-		}
-	}
-	if len(targets) == 0 {
+	accepted, ok := distinctKeys(keys, func(key application.HoldKey) bool {
+		_, found := winKeys[key]
+		return found
+	})
+	if !ok {
 		return nil, false
+	}
+	targets := make([]winTarget, len(accepted))
+	for i, key := range accepted {
+		targets[i] = winTarget{key: key, vk: winKeys[key]}
 	}
 	return &Windows{targets: targets}, true
 }
@@ -248,10 +244,4 @@ func (w *Windows) InterpretKey(message uintptr, vk, scan uint32) (application.Ho
 		return target.key, Up, true
 	}
 	return "", 0, false
-}
-
-// Interpret maps one event; ok is false when it is not a transition.
-func (w *Windows) Interpret(message uintptr, vk, scan uint32) (Event, bool) {
-	_, event, ok := w.InterpretKey(message, vk, scan)
-	return event, ok
 }

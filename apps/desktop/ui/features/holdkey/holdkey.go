@@ -14,22 +14,31 @@ import (
 	"github.com/egoist/mygo/ui"
 )
 
-// Picker selects the hold key among this platform's keys.
-func Picker(c *ui.Context, store runtime.Store) {
-	messages := store.Copy()
-	choices := runtime.HoldKeysFor(platform.GOOS)
+func holdSelect(c *ui.Context, id string, choices []runtime.HoldKey, current runtime.HoldKey, messages copy.Catalog, label copy.Key, set func(runtime.HoldKey)) {
 	labels := make([]string, len(choices))
-	selected := holdname.Name(messages, store.State.Preferences.HoldKey)
+	selected := holdname.Name(messages, current)
 	for i, key := range choices {
 		labels[i] = holdname.Name(messages, key)
 	}
-	if ui.Select(c.Key("hold"), &selected, labels).Changed() {
-		for i, label := range labels {
-			if label == selected {
-				store.Actions.SetHoldKey(choices[i])
-			}
+	sel := ui.Select(c.Key(id), &selected, labels)
+	if label != "" {
+		sel = sel.Label(messages.Text(label))
+	}
+	if !sel.Changed() {
+		return
+	}
+	for i, item := range labels {
+		if item == selected {
+			set(choices[i])
 		}
 	}
+}
+
+// Picker selects the hold key among this platform's keys.
+func Picker(c *ui.Context, store runtime.Store) {
+	holdSelect(c, "hold", runtime.HoldKeysFor(platform.GOOS), store.State.Preferences.HoldKey, store.Copy(), "", func(key runtime.HoldKey) {
+		store.Actions.SetHoldKey(key)
+	})
 }
 
 // TranslatePicker selects the translation hold key, or HoldOff to disable it.
@@ -47,19 +56,9 @@ func FreeTranslatePicker(c *ui.Context, store runtime.Store) {
 }
 
 func translatePicker(c *ui.Context, store runtime.Store, choices []runtime.HoldKey) {
-	messages := store.Copy()
-	labels := make([]string, len(choices))
-	selected := holdname.Name(messages, store.State.Preferences.TranslateKey)
-	for i, key := range choices {
-		labels[i] = holdname.Name(messages, key)
-	}
-	if ui.Select(c.Key("translate-hold"), &selected, labels).Label(messages.Text(copy.TranslateKeyLabel)).Changed() {
-		for i, label := range labels {
-			if label == selected {
-				store.Actions.SetTranslateKey(choices[i])
-			}
-		}
-	}
+	holdSelect(c, "translate-hold", choices, store.State.Preferences.TranslateKey, store.Copy(), copy.TranslateKeyLabel, func(key runtime.HoldKey) {
+		store.Actions.SetTranslateKey(key)
+	})
 }
 
 // languages name the translation target languages.

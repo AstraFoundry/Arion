@@ -76,14 +76,6 @@ var hookProc = syscall.NewCallback(func(code int, message, lparam uintptr) uintp
 	return next
 })
 
-// StartHold observes key with a low-level keyboard hook on a dedicated
-// thread. sink runs on that thread and must not block.
-func StartHold(key application.HoldKey, sink func(holdkey.Event)) error {
-	return StartHoldKeys([]application.HoldKey{key}, func(_ application.HoldKey, e holdkey.Event) {
-		sink(e)
-	})
-}
-
 // StartHoldKeys observes keys with a low-level keyboard hook on a dedicated
 // thread. sink runs on that thread and must not block.
 func StartHoldKeys(keys []application.HoldKey, sink func(application.HoldKey, holdkey.Event)) error {
