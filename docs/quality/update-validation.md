@@ -16,9 +16,13 @@ go -C apps/desktop test ./ui/app ./ui/shared/copy -run 'Test(NotificationControl
 `node scripts/check-i18n.mjs` and `node scripts/check-repository.mjs` also pass
 (543 Markdown documents). Refreshed English/Chinese General/About, delivery and
 reminder snapshots are under `.workspace/notification-os-permission-snapshots/`.
-The full desktop/native rerun for this revision is pending. Earlier results below
-remain historical evidence and do not establish a rerun of the revised permission
-scheduling or settings surfaces.
+The full `go -C apps/desktop test ./ui/app -count=1` rerun passes (166 seconds).
+Bootstrap, account-notice policy/client/store and update-state race tests pass,
+including single in-flight authorization, one request per process, idle/profile
+guards and deferred reminder persistence. `pnpm test` passes with the removed
+notification preferences, including legacy JSON migration. Actual OS permission
+presentation under the revised automatic scheduling and native Windows behavior
+remain unverified. Earlier native observations below are historical evidence.
 
 ## Earlier verified implementation
 
