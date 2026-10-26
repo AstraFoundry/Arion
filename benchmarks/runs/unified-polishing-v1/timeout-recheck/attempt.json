@@ -1,0 +1,12 @@
+{
+  "status": "started",
+  "started": "2026-10-23T10:10:58.099Z",
+  "operation": "run",
+  "config": {
+    "arm": "candidate",
+    "cases": "/Users/steven/code/Arion/.workspace/unified-polish-timeout-case.json",
+    "out": "/Users/steven/code/Arion/.workspace/unified-polish-native-recheck-v1",
+    "runtime": "/Users/steven/code/Arion/apps/desktop/resources/darwin-arm64/llm",
+    "model": "/Users/steven/code/Arion/.workspace/rewrite-small-models-v1"
+  }
+}

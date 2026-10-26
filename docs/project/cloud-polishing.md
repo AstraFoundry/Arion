@@ -9,7 +9,7 @@ One decision per page:
 - **Onboarding.** The model step sets up recognition only. The **Polish** step offers Off, This device (with its download size) and Cloud. Only with Cloud, a **Cloud model** step follows: the provider list, then the chosen provider's page (Sign in with ChatGPT, or the masked API key and Connect), then, once connected, Disconnect and the model. Back leaves a provider page before the step; the footer says Skip until a model is chosen.
 - **Settings › Model** keeps the settings on the section: a **Recognition model** row (opening the recognition model's page), then the Polish card with the polish switch, **Runs on** (This device / Cloud), with Cloud one **Cloud model** row (the provider's mark and the model, opening the cloud pages), and Match the app; Context is its own group. Every explanation is a tooltip on the row's info hint. The title's back button steps out one page at a time.
 - Providers are shown by their [LobeHub](https://icons.lobehub.com) marks.
-- The context switches (cursor, screen, history) hide while Cloud is chosen; the cloud never receives them. Match the app still chooses the scene locally.
+- The context switches (cursor, screen, history) are shared by both engines. Enabled sources reach the selected cloud provider for spelling selection ([ADR 023](../decisions/023-shared-polishing-pipeline.md)); the tooltip discloses that transmission. Match the app chooses the scene locally.
 
 ## What views call
 
@@ -37,10 +37,23 @@ The chosen model is a preference (`UpdatePreferences` with `CloudModel`), applie
 
 ## Requests
 
-- Final text only (`RewritePolicy.FinalOnly`), 15 s timeout, no context (`ContextPolicy` empty). The prompt is the shipped `live` template as chat turns (`prompt.Template.Turns`), versioned `cloud+<template>`.
+- Final-only scheduling (`RewritePolicy.FinalOnly`) with a 15 s deadline for all stages. `infrastructure/llm/rewrite` is shared with the local worker: speech cleanup, optional context-backed spelling selection, then scene formatting. The recipe is versioned `cloud+<SelectedVersion>`. Cursor, screen and history follow the same `ContextPolicy` switches as the local engine; recalled terms and prior recognized source also inform selection.
+- A rewrite binds its provider/model once. The provider adapter converts chat messages and enforces completion/refusal checks. API models receive the stage output cap; the ChatGPT Codex transport rejects token caps and uses the overall deadline. Native grammar/cache fields stay in the local adapter; cloud choices pass the same domain validator.
+- Only the selector receives enabled context; the formatter sees the edited source and scene/script profile. A rewrite makes up to two provider calls, with no live cloud previews.
 - The proposal is validated like a local one; failures deliver the local cleanup and record `unavailable` or `timeout`.
 - Provider IDs are in `cloudpolish.KeyProviders` and `runtime.CloudKeyProviders`; display names are in `ui/shared/config`.
 
 ## Verification
 
 `go test ./infrastructure/cloudpolish ./ui/app` runs against local fakes, including the ChatGPT flow on port 1455. `bootstrap` tests need macOS or Windows. Sign-in against the real services remains open (CLD-A05).
+
+[Shared-pipeline verification](../../benchmarks/runs/unified-polishing-v1/README.md) records complete desktop/core checks and actual local model/worker runs. One context fixture repeatedly times out, and its isolated recheck fails session erasure. Real cloud service and microphone-to-editor acceptance remain open. The staged runner snapshots the shared `llm/rewrite` package along with its adapters.
+
+
+The [OpenAI gateway integration run](../../benchmarks/runs/cloud-polishing-gateway-v1/README.md) exercises both `/v1/responses` and `/v1/chat/completions` over loopback HTTP through the production Republic transport and shared pipeline. Its 60 cases cover all context-switch combinations through coordinator delivery, stage isolation, final-only scheduling, single commit, rejected/truncated responses, transient HTTP retries, cancellation and deadline recovery. Run from the repository root:
+
+```sh
+go test -race ./apps/desktop/infrastructure/cloudpolish -run '^TestOpenAIGateway' -count=1 -timeout=120s
+```
+
+Only the remote gateway replies and the coordinator's audio/recognition/editor ports are synthetic. These tests establish protocol and orchestration behavior; they do not establish real cloud inference quality, service latency, OS context capture or microphone-to-editor acceptance.

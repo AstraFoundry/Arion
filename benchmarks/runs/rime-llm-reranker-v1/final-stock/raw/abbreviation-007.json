@@ -1,0 +1,97 @@
+{
+  "steps": [
+    {
+      "processCpuMs": 0.988,
+      "preedit": "j d",
+      "ranked": [
+        "觉得",
+        "决定",
+        "简单",
+        "记得",
+        "绝对",
+        "阶段",
+        "巨大",
+        "降低",
+        "见到"
+      ],
+      "source": [
+        "觉得",
+        "决定",
+        "简单",
+        "记得",
+        "绝对",
+        "阶段",
+        "巨大",
+        "降低",
+        "见到"
+      ],
+      "wallMs": 283.19799995422,
+      "status": "completed",
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "requests": [
+        {
+          "code": 200,
+          "response": "{\"id\":\"chatcmpl-2ea0b09e\",\"object\":\"chat.completion\",\"created\":1792647111,\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"觉得、决定、简单、记得、绝对\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":115,\"completion_tokens\":9,\"total_tokens\":124,\"input_tokens\":115,\"output_tokens\":9,\"prompt_tokens_details\":{\"cached_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"time_to_first_token\":0.1,\"total_time\":0.28,\"prompt_eval_duration\":0.1,\"generation_duration\":0.18,\"prompt_tokens_per_second\":1141.15,\"generation_tokens_per_second\":50.94}}",
+          "status": "HTTP/1.1 200 OK",
+          "networkWallMs": 282.06300067902,
+          "request": "{\"stream\":false,\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"messages\":[{\"content\":\"你是输入法候选词排序助手。根据对话历史和当前输入，从候选词列表中选出最符合语境的词。按优先级从高到低列出最多5个候选词，用顿号分隔，不要拼音、数字序号或任何解释。\",\"role\":\"system\"},{\"content\":\"对话历史：「这是一个网络」\\n当前输入拼音：「j d」\\n候选词：觉得、决定、简单、记得、绝对\\n按最符合对话语境的顺序列出前5个候选词（顿号分隔）：\",\"role\":\"user\"}],\"temperature\":0,\"max_tokens\":20}"
+        }
+      ],
+      "id": "key-1"
+    },
+    {
+      "processCpuMs": 0.119,
+      "preedit": "j d",
+      "ranked": [
+        "觉得",
+        "决定",
+        "简单",
+        "记得",
+        "绝对",
+        "阶段",
+        "巨大",
+        "降低",
+        "见到"
+      ],
+      "source": [
+        "觉得",
+        "决定",
+        "简单",
+        "记得",
+        "绝对",
+        "阶段",
+        "巨大",
+        "降低",
+        "见到"
+      ],
+      "wallMs": 0.24199962615967,
+      "status": "completed",
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "requests": [],
+      "id": "identical-repeat"
+    }
+  ],
+  "id": "abbreviation-007",
+  "subprocessWallMs": 301.2013747356832,
+  "stderr": ""
+}

@@ -1,0 +1,129 @@
+{
+  "id": "context-006",
+  "config": {
+    "enabled": true,
+    "endpoint": "http://127.0.0.1:18782/v1/chat/completions",
+    "model": "Qwen3.5-0.8B-MLX-bf16",
+    "max_candidates": 5,
+    "timeout": 0.5,
+    "min_syllables": 1,
+    "max_rerank_pos": 5,
+    "max_tokens": 20,
+    "min_context_len": 0,
+    "max_preedit_len": 10,
+    "debug_log": true,
+    "fallback_on_error": true,
+    "collect_training_data": true,
+    "collect_user_pairs": true,
+    "collect_llm_pairs": false,
+    "system_prompt": "你是输入法候选词排序助手。根据对话历史和当前输入，从候选词列表中选出最符合语境的词。按优先级从高到低列出最多5个候选词，用顿号分隔，不要拼音、数字序号或任何解释。"
+  },
+  "history": "为了赢下比赛拼尽",
+  "steps": [
+    {
+      "id": "key-1",
+      "preedit": "q",
+      "candidates": [
+        "去",
+        "其",
+        "请",
+        "钱",
+        "前",
+        "却",
+        "起",
+        "全",
+        "区"
+      ]
+    },
+    {
+      "id": "key-2",
+      "preedit": "qu",
+      "candidates": [
+        "去",
+        "区",
+        "取",
+        "曲",
+        "佢",
+        "娶",
+        "屈",
+        "渠",
+        "趋"
+      ]
+    },
+    {
+      "id": "key-3",
+      "preedit": "qu a",
+      "candidates": [
+        "去啊",
+        "去",
+        "区",
+        "取",
+        "曲",
+        "佢",
+        "娶",
+        "屈",
+        "渠"
+      ]
+    },
+    {
+      "id": "key-4",
+      "preedit": "quan",
+      "candidates": [
+        "全",
+        "权",
+        "圈",
+        "劝",
+        "泉",
+        "犬",
+        "拳",
+        "券",
+        "荃"
+      ]
+    },
+    {
+      "id": "key-5",
+      "preedit": "quan l",
+      "candidates": [
+        "权利",
+        "权力",
+        "全力",
+        "全裸",
+        "圈里",
+        "全",
+        "权",
+        "圈",
+        "劝"
+      ]
+    },
+    {
+      "id": "key-6",
+      "preedit": "quan li",
+      "candidates": [
+        "权利",
+        "权力",
+        "全力",
+        "圈里",
+        "全",
+        "权",
+        "圈",
+        "劝",
+        "泉"
+      ]
+    },
+    {
+      "id": "identical-repeat",
+      "preedit": "quan li",
+      "candidates": [
+        "权利",
+        "权力",
+        "全力",
+        "圈里",
+        "全",
+        "权",
+        "圈",
+        "劝",
+        "泉"
+      ]
+    }
+  ]
+}

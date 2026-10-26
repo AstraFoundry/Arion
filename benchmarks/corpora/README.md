@@ -1,5 +1,7 @@
 # Benchmark corpora
 
+- [Rime LLM reranker](rime-llm-reranker-v1/README.md): 100 original authored exploratory fixtures covering contextual homophones, common-word preservation, abbreviations, incomplete/long input, ambiguous readings and names.
+
 Recorded inputs are retained byte-for-byte with references, constraints, speaker/session identities and split annotations. The [archive map](../migration/archive.json) pins every original file and its destination. Historical test cases disclosed here are regression material for future development; exposure does not invalidate the recorded comparison, but they cannot serve as an unseen future test set.
 
 | Corpus | JSON case definitions | Retained files |

@@ -11,7 +11,9 @@ import (
 	"arion.local/core/contracts"
 	"arion.local/core/domain"
 	"arion.local/core/domain/ports"
+	"arion.local/desktop/infrastructure/llm/engine"
 	"arion.local/desktop/infrastructure/llm/prompt"
+	"arion.local/desktop/infrastructure/llm/rewrite"
 	"arion.local/desktop/internal/account"
 	"github.com/AstraFoundry/republic"
 )
@@ -70,23 +72,23 @@ type Status struct {
 
 // Service is safe for concurrent use. It satisfies ports.Rewriter.
 type Service struct {
-	secrets  Secrets
-	browser  func(string) error
-	page     func() []byte
-	client   *http.Client
-	template prompt.Template
+	secrets Secrets
+	browser func(string) error
+	page    func() []byte
+	client  *http.Client
 	// issuer and base replace the production endpoints in tests.
 	issuer string
 	base   string
 
-	opening    sync.Mutex
-	mu         sync.Mutex
-	status     Status
-	credential Credential
-	provider   *republic.Provider
-	auth       *republic.TokenAuth
-	model      string
-	cancel     context.CancelFunc
+	opening          sync.Mutex
+	mu               sync.Mutex
+	status           Status
+	credential       Credential
+	provider         *republic.Provider
+	auth             *republic.TokenAuth
+	model            string
+	completionFormat string
+	cancel           context.CancelFunc
 	// generation invalidates work started before a connect or disconnect.
 	generation uint64
 	listeners  []func(Status)
@@ -95,7 +97,7 @@ type Service struct {
 // New prepares the service; it reads and sends nothing.
 func New(secrets Secrets, browser func(string) error, page func() []byte) *Service {
 	return &Service{secrets: secrets, browser: browser, page: page, client: &http.Client{Transport: http.DefaultTransport},
-		template: prompt.Live(), issuer: chatgptIssuer, status: Status{Phase: Disconnected}}
+		issuer: chatgptIssuer, status: Status{Phase: Disconnected}}
 }
 
 // OnStatus registers a listener called on every status change.
@@ -434,39 +436,32 @@ func (s *Service) Ready() bool {
 	return s.credential.valid() && s.model != ""
 }
 
-// Rewrite satisfies ports.Rewriter. Only the text, the scene and the
-// recalled terms are sent; context in req is never read.
+// Rewrite uses the same staged pipeline as the local worker. The coordinator
+// supplies only the context sources enabled by the user's preferences.
 func (s *Service) Rewrite(ctx context.Context, req ports.RewriteRequest) (ports.RewriteResult, error) {
-	s.mu.Lock()
-	model := s.model
-	s.mu.Unlock()
-	if model == "" {
-		return ports.RewriteResult{}, domain.Fail(domain.CodeModelMissing, "no cloud model chosen")
+	if req.Prefill {
+		return ports.RewriteResult{}, errors.New("cloud prefill is unsupported")
 	}
-	p, err := s.ready(ctx)
+	chat, err := s.completionModel(ctx)
 	if err != nil {
-		return ports.RewriteResult{}, s.settle(err, CodeNetwork)
-	}
-	chat, err := p.GetModel(model)
-	if err != nil {
-		return ports.RewriteResult{}, fail(CodeModels, err)
-	}
-	var messages []republic.Message
-	for _, t := range s.template.Turns(prompt.Input{Scene: req.Scene, Terms: req.Terms, Text: req.Text}) {
-		switch t.Role {
-		case "system":
-			messages = append(messages, republic.System(t.Content))
-		case "assistant":
-			messages = append(messages, republic.Assistant(republic.Text(t.Content)))
-		default:
-			messages = append(messages, republic.User(republic.Text(t.Content)))
-		}
-	}
-	response, err := chat.Chat(ctx, messages, nil)
-	if err = s.settle(err, CodeNetwork); err != nil {
 		return ports.RewriteResult{}, err
 	}
-	return ports.RewriteResult{Text: strings.TrimSpace(response.Text()), Template: "cloud+" + s.template.Version}, nil
+	pipeline, err := rewrite.Load()
+	if err != nil {
+		return ports.RewriteResult{}, err
+	}
+	result, err := pipeline.Run(ctx, engine.Request{Text: req.Text, Scene: req.Scene, Terms: req.Terms,
+		Context: req.Context, PreviousText: req.PreviousText, Live: req.Live},
+		func(ctx context.Context, request prompt.ChatRequest, _ bool) (engine.Result, error) {
+			return s.completeChat(ctx, chat, request)
+		})
+	out := ports.RewriteResult{Text: result.Text, Cleanup: result.Cleanup, Template: "cloud+" + result.Template,
+		Truncated: result.Truncated, InputTokens: result.InputTokens, OutputTokens: result.OutputTokens,
+		ReusedTokens: result.ReusedTokens, PrefillMs: result.PrefillMs, DecodeMs: result.DecodeMs}
+	if result.Cancelled {
+		return out, domain.Fail(domain.CodeCancelled, "rewrite cancelled")
+	}
+	return out, err
 }
 
 // End satisfies ports.Rewriter; requests keep no session state.

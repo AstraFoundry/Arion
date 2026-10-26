@@ -1,0 +1,97 @@
+{
+  "id": "common-003",
+  "steps": [
+    {
+      "source": [
+        "明天",
+        "命题",
+        "名",
+        "明",
+        "命",
+        "鸣",
+        "铭",
+        "冥",
+        "茗"
+      ],
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "status": "completed",
+      "id": "key-1",
+      "requests": [
+        {
+          "response": "{\"id\":\"chatcmpl-24fec289\",\"object\":\"chat.completion\",\"created\":1792647116,\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"明天、命题、名、明、命\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":104,\"completion_tokens\":9,\"total_tokens\":113,\"input_tokens\":104,\"output_tokens\":9,\"prompt_tokens_details\":{\"cached_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"time_to_first_token\":0.1,\"total_time\":0.27,\"prompt_eval_duration\":0.1,\"generation_duration\":0.17,\"prompt_tokens_per_second\":1060.53,\"generation_tokens_per_second\":51.55}}",
+          "code": 200,
+          "status": "HTTP/1.1 200 OK",
+          "request": "{\"max_tokens\":20,\"messages\":[{\"content\":\"你是输入法候选词排序助手。根据对话历史和当前输入，从候选词列表中选出最符合语境的词。按优先级从高到低列出最多5个候选词，用顿号分隔，不要拼音、数字序号或任何解释。\",\"role\":\"system\"},{\"content\":\"输入拼音：「ming tian」\\n候选词：明天、命题、名、明、命\\n按最可能的顺序列出前5个候选词（顿号分隔）：\",\"role\":\"user\"}],\"stream\":false,\"temperature\":0,\"model\":\"Qwen3.5-0.8B-MLX-bf16\"}",
+          "networkWallMs": 276.05500030518
+        }
+      ],
+      "preedit": "ming tian",
+      "processCpuMs": 0.75,
+      "ranked": [
+        "明天",
+        "命题",
+        "名",
+        "明",
+        "命",
+        "鸣",
+        "铭",
+        "冥",
+        "茗"
+      ],
+      "wallMs": 276.87100028992
+    },
+    {
+      "source": [
+        "明天",
+        "命题",
+        "名",
+        "明",
+        "命",
+        "鸣",
+        "铭",
+        "冥",
+        "茗"
+      ],
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "status": "completed",
+      "id": "identical-repeat",
+      "requests": [],
+      "preedit": "ming tian",
+      "processCpuMs": 0.105,
+      "ranked": [
+        "明天",
+        "命题",
+        "名",
+        "明",
+        "命",
+        "鸣",
+        "铭",
+        "冥",
+        "茗"
+      ],
+      "wallMs": 0.21300029754639
+    }
+  ],
+  "subprocessWallMs": 289.50275015085936,
+  "stderr": ""
+}

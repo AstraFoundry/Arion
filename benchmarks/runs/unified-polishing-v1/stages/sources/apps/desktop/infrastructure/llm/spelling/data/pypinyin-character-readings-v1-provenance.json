@@ -1,0 +1,32 @@
+{
+  "kind": "fixed-character-pronunciation-resource",
+  "version": "pypinyin0.55.0",
+  "source": "https://github.com/mozillazg/python-pinyin",
+  "python": "3.12.9 (main, Feb 12 2025, 15:09:19) [Clang 19.1.6 ]",
+  "characters": 41923,
+  "unsupportedCharacters": [],
+  "readingsSha256": "be7efc407cd64897abd2259ed98a18022e50ded1a144d6df8420f8f3b3ccdac7",
+  "sources": [
+    {
+      "originalPath": ".workspace/phonetic-venv/lib/python3.12/site-packages/pypinyin/pinyin_dict.json",
+      "archivedPath": "benchmarks/artifacts/pypinyin-character-readings-v1/source-pinyin-dict.json",
+      "sha256": "5f294c01e6c6c0a1c8e329c79335a3f8e0b27d06bf1de7a99244b765892d1e5b"
+    },
+    {
+      "originalPath": ".workspace/phonetic-venv/lib/python3.12/site-packages/pypinyin/core.py",
+      "archivedPath": "benchmarks/artifacts/pypinyin-character-readings-v1/source-core.py",
+      "sha256": "1575e91eaabf14421447916c0a892acaa64fb86949d4e6494ea9cd3b4661a0e4"
+    },
+    {
+      "originalPath": ".workspace/phonetic-venv/lib/python3.12/site-packages/pypinyin-0.55.0.dist-info/METADATA",
+      "archivedPath": "benchmarks/artifacts/pypinyin-character-readings-v1/METADATA",
+      "sha256": "82ac94eb74fa0eb500355219bc585228716759ed255c385c5e32dd28ddbaf03f"
+    },
+    {
+      "originalPath": ".workspace/phonetic-venv/lib/python3.12/site-packages/pypinyin-0.55.0.dist-info/licenses/LICENSE.txt",
+      "archivedPath": "benchmarks/artifacts/pypinyin-character-readings-v1/LICENSE.txt",
+      "sha256": "1e6c90014b4912815c296ee64bb6f6280af47e6d4c5d80e86232dfc5defe764c"
+    }
+  ],
+  "scope": "All builtin character entries exported using TONE3/heteronym/neutral-tone5. No corpus-derived/custom readings. This is character-level text evidence, not independent acoustic evidence or phrase disambiguation. Missing/unsupported characters remain unknown, never guessed."
+}

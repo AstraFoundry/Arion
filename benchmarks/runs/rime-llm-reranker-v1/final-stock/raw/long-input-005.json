@@ -1,0 +1,89 @@
+{
+  "steps": [
+    {
+      "source": [
+        "请发送文件",
+        "请发",
+        "请",
+        "清",
+        "情",
+        "轻",
+        "青",
+        "庆",
+        "晴"
+      ],
+      "preedit": "qing fa song wen jian",
+      "requests": [],
+      "processCpuMs": 0.117,
+      "wallMs": 0.32600021362305,
+      "ranked": [
+        "请发送文件",
+        "请发",
+        "请",
+        "清",
+        "情",
+        "轻",
+        "青",
+        "庆",
+        "晴"
+      ],
+      "id": "key-1",
+      "status": "completed",
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "source": [
+        "请发送文件",
+        "请发",
+        "请",
+        "清",
+        "情",
+        "轻",
+        "青",
+        "庆",
+        "晴"
+      ],
+      "preedit": "qing fa song wen jian",
+      "requests": [],
+      "processCpuMs": 0.066,
+      "wallMs": 0.14900016784668,
+      "ranked": [
+        "请发送文件",
+        "请发",
+        "请",
+        "清",
+        "情",
+        "轻",
+        "青",
+        "庆",
+        "晴"
+      ],
+      "id": "identical-repeat",
+      "status": "completed",
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ]
+    }
+  ],
+  "id": "long-input-005",
+  "subprocessWallMs": 14.918708242475986,
+  "stderr": ""
+}

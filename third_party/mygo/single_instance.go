@@ -28,8 +28,14 @@ var singleInstance struct {
 }
 
 type secondInstanceMessage struct {
-	Args       []string `json:"args"`
-	WorkingDir string   `json:"workingDir"`
+	Args         []string                       `json:"args"`
+	WorkingDir   string                         `json:"workingDir"`
+	Notification *notificationActivationMessage `json:"notification,omitempty"`
+}
+
+type notificationActivationMessage struct {
+	ID     string `json:"id"`
+	Action string `json:"action"`
 }
 
 // RequestSingleInstanceLock makes sure a single instance of the app runs.
@@ -57,6 +63,37 @@ func (a *Application) RequestSingleInstanceLock() bool {
 	msg, _ := json.Marshal(secondInstanceMessage{Args: os.Args[1:], WorkingDir: wd})
 	for attempt := 0; attempt < 5; attempt++ {
 		if conn, err := net.DialTimeout("unix", path, time.Second); err == nil {
+			if notificationRelayRequested() {
+				conn.Close()
+				err := relayNotificationActivation(func(id, action string) error {
+					relay, err := net.DialTimeout("unix", path, time.Second)
+					if err != nil {
+						return err
+					}
+					defer relay.Close()
+					if err := relay.SetDeadline(time.Now().Add(2 * time.Second)); err != nil {
+						return err
+					}
+					data, err := json.Marshal(secondInstanceMessage{Notification: &notificationActivationMessage{ID: id, Action: action}})
+					if err != nil {
+						return err
+					}
+					if _, err = relay.Write(data); err != nil {
+						return err
+					}
+					if uc, ok := relay.(*net.UnixConn); ok {
+						if err := uc.CloseWrite(); err != nil {
+							return err
+						}
+					}
+					_, err = io.Copy(io.Discard, relay)
+					return err
+				})
+				if err != nil {
+					log.Print(err)
+				}
+				return false
+			}
 			// Another instance owns the lock: hand over our arguments.
 			_ = conn.SetDeadline(time.Now().Add(2 * time.Second))
 			_, _ = conn.Write(msg)
@@ -123,6 +160,10 @@ func acceptSecondInstances(ln net.Listener) {
 				return
 			}
 			postMain(func() {
+				if msg.Notification != nil {
+					notificationAction(msg.Notification.ID, msg.Notification.Action)
+					return
+				}
 				for _, fn := range singleInstance.handlers.snapshot() {
 					fn(msg.Args, msg.WorkingDir)
 				}

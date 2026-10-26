@@ -1,4 +1,4 @@
-// Package engine defines the native rewrite worker contract.
+// Package engine defines the model-neutral rewrite stage and worker contracts.
 package engine
 
 import (
@@ -19,7 +19,7 @@ type Request struct {
 	Session string
 	Scene   string
 	Terms   []string
-	// Context, when present, selects the context template.
+	// Context supplies bounded evidence to the shared spelling stage.
 	Context domain.RewriteContext
 	Text    string
 	// PreviousText is earlier recognized source for spelling evidence only.

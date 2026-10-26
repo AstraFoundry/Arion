@@ -3,6 +3,10 @@
 package darwin
 
 import (
+	"context"
+	"crypto/sha256"
+	"encoding/json"
+	"fmt"
 	"sync"
 
 	"github.com/ebitengine/purego/objc"
@@ -54,12 +58,26 @@ func registerNotificationDelegate() {
 	classDef("MyGoNotificationDelegate", "NSObject", []string{"UNUserNotificationCenterDelegate"}, []objc.MethodDef{
 		method("userNotificationCenter:willPresentNotification:withCompletionHandler:", func(self id, _ objc.SEL, center, n id, handler uintptr) {
 			// Show banners even while the app is in the foreground.
-			callBlock(handler, 1<<1|1<<3|1<<4) // sound | list | banner
+			callBlock(handler, 1<<3|1<<4) // list | banner; content owns the sound
 		}),
 		method("userNotificationCenter:didReceiveNotificationResponse:withCompletionHandler:", func(self id, _ objc.SEL, center, resp id, handler uintptr) {
 			ident := goString(send(send(send(send(resp, "notification"), "request"), "identifier"), "self"))
-			theBackend.runOnMain(func() { theBackend.h.NotificationClicked(ident) })
-			callBlock(handler)
+			action := goString(send(resp, "actionIdentifier"))
+			if action == "com.apple.UNNotificationDefaultActionIdentifier" {
+				action = ""
+			}
+			if action == "com.apple.UNNotificationDismissActionIdentifier" {
+				callBlock(handler)
+				return
+			}
+			// The OS may end a background activation after completion. Retain its
+			// block until the response has reached application listeners on main.
+			completion := blockCopy(handler)
+			theBackend.runOnMain(func() {
+				defer blockRelease(completion)
+				defer callBlock(completion)
+				theBackend.h.NotificationAction(ident, action)
+			})
 		}),
 	})
 }
@@ -90,48 +108,98 @@ func (b *Backend) attachNotificationDelegate() {
 	})
 }
 
-// waitingNotification is a notification shown before the user has answered
-// whether the app may show notifications.
-type waitingNotification struct {
-	n    *platform.Notification
-	done func(error)
-}
-
-// notifyOptions are the permissions asked for: badge, sound and alert.
-const notifyOptions = 1<<0 | 1<<1 | 1<<2
-
-func (b *Backend) ShowNotification(n *platform.Notification, done func(error)) {
+// NotificationPermission always reads the OS state, including changes made in
+// System Settings while the application was running.
+func (b *Backend) NotificationPermission(done func(platform.NotificationAuthorization, error)) {
 	if !b.NotificationsSupported() {
-		done(platform.ErrUnsupported)
-		return
-	}
-	if b.notifyAnswered {
-		b.addNotification(n, done)
-		return
-	}
-	// The system drops what it is given before the user has answered
-	// whether the app may show notifications, so the first notification
-	// asks and the ones shown meanwhile wait for the answer. The system
-	// only prompts the first time; afterwards it answers at once, and
-	// adding a notification fails when System Settings does not allow it.
-	b.notifyWaiting = append(b.notifyWaiting, waitingNotification{n, done})
-	if len(b.notifyWaiting) > 1 {
+		done(platform.NotificationAuthorizationUnsupported, platform.ErrUnsupported)
 		return
 	}
 	withPool(func() {
-		blk := newBlock(func(_ objc.Block, granted bool, err id) {
-			b.runOnMain(func() {
-				b.notifyAnswered = true
-				waiting := b.notifyWaiting
-				b.notifyWaiting = nil
-				for _, w := range waiting {
-					b.addNotification(w.n, w.done)
+		blk := newBlock(func(_ objc.Block, settings id) {
+			status := platform.NotificationAuthorizationUnknown
+			var err error
+			if settings == 0 {
+				err = fmt.Errorf("mygo: notification settings unavailable")
+			} else {
+				switch sendInt(settings, "authorizationStatus") {
+				case 0:
+					status = platform.NotificationAuthorizationUnknown
+				case 1:
+					status = platform.NotificationAuthorizationDenied
+				case 2, 3, 4:
+					status = platform.NotificationAuthorizationAllowed
+				default:
+					err = fmt.Errorf("mygo: unknown notification authorization status")
 				}
+			}
+			b.runOnMain(func() { done(status, err) })
+		})
+		send(notificationCenter(), "getNotificationSettingsWithCompletionHandler:", uintptr(blk))
+		blk.Release()
+	})
+}
+
+func (b *Backend) RequestNotificationPermission(done func(platform.NotificationAuthorization, error)) {
+	if !b.NotificationsSupported() {
+		done(platform.NotificationAuthorizationUnsupported, platform.ErrUnsupported)
+		return
+	}
+	withPool(func() {
+		blk := newBlock(func(_ objc.Block, granted bool, nsErr id) {
+			var err error
+			withPool(func() { err = notificationError(nsErr) })
+			b.runOnMain(func() {
+				if err != nil {
+					done(platform.NotificationAuthorizationUnknown, err)
+					return
+				}
+				if !granted {
+					done(platform.NotificationAuthorizationDenied, nil)
+					return
+				}
+				b.NotificationPermission(done)
 			})
 		})
-		send(notificationCenter(), "requestAuthorizationWithOptions:completionHandler:",
-			notifyOptions, uintptr(blk))
+		// Update reminders need alert presentation only, without badges or sound.
+		send(notificationCenter(), "requestAuthorizationWithOptions:completionHandler:", 1<<2, uintptr(blk))
 		blk.Release()
+	})
+}
+
+func (b *Backend) ShowNotification(n *platform.Notification, done func(error)) {
+	if b.notifyPending == nil {
+		b.notifyPending = map[string]uint64{}
+	}
+	b.notifyGeneration++
+	generation := b.notifyGeneration
+	b.notifyPending[n.ID] = generation
+	b.NotificationPermission(func(status platform.NotificationAuthorization, err error) {
+		if b.notifyPending[n.ID] != generation {
+			done(context.Canceled)
+			return
+		}
+		if err != nil {
+			done(err)
+			return
+		}
+		if status != platform.NotificationAuthorizationAllowed {
+			done(platform.ErrNotificationsDenied)
+			return
+		}
+		b.addNotification(n, func(err error) {
+			current, exists := b.notifyPending[n.ID]
+			if !exists {
+				b.removeNativeNotification(n.ID)
+				done(context.Canceled)
+				return
+			}
+			if current != generation {
+				done(context.Canceled)
+				return
+			}
+			done(err)
+		})
 	})
 }
 
@@ -145,6 +213,25 @@ func (b *Backend) addNotification(n *platform.Notification, done func(error)) {
 			send(content, "setSubtitle:", uintptr(nsString(n.Subtitle)))
 		}
 		send(content, "setBody:", uintptr(nsString(n.Body)))
+		if len(n.Actions) > 0 {
+			encoded, _ := json.Marshal(n.Actions)
+			categoryID := fmt.Sprintf("mygo-%x", sha256.Sum256(encoded))
+			actions := make([]id, 0, len(n.Actions))
+			for _, a := range n.Actions {
+				var options uintptr
+				if a.Foreground {
+					options = 1 << 2
+				}
+				actions = append(actions, send(class("UNNotificationAction"), "actionWithIdentifier:title:options:", uintptr(nsString(a.ID)), uintptr(nsString(a.Title)), options))
+			}
+			category := send(class("UNNotificationCategory"), "categoryWithIdentifier:actions:intentIdentifiers:options:", uintptr(nsString(categoryID)), uintptr(nsArray(actions...)), uintptr(nsArray()), 0)
+			if b.notifyCategories == 0 {
+				b.notifyCategories = alloc("NSMutableSet")
+			}
+			send(b.notifyCategories, "addObject:", uintptr(category))
+			send(notificationCenter(), "setNotificationCategories:", uintptr(b.notifyCategories))
+			send(content, "setCategoryIdentifier:", uintptr(nsString(categoryID)))
+		}
 		if !n.Silent {
 			send(content, "setSound:", uintptr(send(class("UNNotificationSound"), "defaultSound")))
 		}
@@ -179,19 +266,14 @@ func notificationError(err id) error {
 }
 
 func (b *Backend) RemoveNotification(ident string) {
+	delete(b.notifyPending, ident)
+	b.removeNativeNotification(ident)
+}
+
+func (b *Backend) removeNativeNotification(ident string) {
 	if !b.NotificationsSupported() {
 		return
 	}
-	// One still waiting for the user's answer is not shown.
-	waiting := b.notifyWaiting[:0]
-	for _, w := range b.notifyWaiting {
-		if w.n.ID == ident {
-			w.done(nil)
-		} else {
-			waiting = append(waiting, w)
-		}
-	}
-	b.notifyWaiting = waiting
 	withPool(func() {
 		center := notificationCenter()
 		ids := nsArray(nsString(ident))
@@ -201,13 +283,9 @@ func (b *Backend) RemoveNotification(ident string) {
 }
 
 func (b *Backend) RemoveAllNotifications() {
+	clear(b.notifyPending)
 	if !b.NotificationsSupported() {
 		return
-	}
-	waiting := b.notifyWaiting
-	b.notifyWaiting = nil
-	for _, w := range waiting {
-		w.done(nil)
 	}
 	withPool(func() {
 		center := notificationCenter()

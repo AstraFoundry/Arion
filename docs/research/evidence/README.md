@@ -11,6 +11,8 @@
 - [Competitor text-insertion ledger](competitor-text-insertion.json) — current Chatterfly identity and byte-verified route/clipboard/readback methods, plus matching Doubao REA transaction evidence; static observations remain separate from runtime acceptance.
 - [Chatterfly ledger](chatterfly-rewrite.json) — installer/archive identities and focused native post-processing evidence with explicit limitations.
 - [Keyboard IME ledger](keyboard-ime.json) — matched REA identities and registration, byte-verified Doubao/Chatterfly Pinyin decoding/ranking, model/cloud branches and candidate/commit paths; local static IDs are distinct from REA Evidence IDs.
+- [Doubao ranking follow-up](doubao-ranking-followup.json) — fresh REA artifact metadata and byte-verified local MLP sorting, cloud/LLM candidate fusion and decision-tree promotion paths.
+- [Chatterfly ranking follow-up](chatterfly-ranking-followup.json) — current 1.0.8 identity, local XNet LM scoring, separate feature ranker, conditional async generation, mode gates and bounded asset inventory.
 - [Shift language switching ledger](shift-language-switch.json) — installed Doubao/Chatterfly identities, short-press timing, release dispatch, chord suppression and composition commit anchors; static observations only.
 - [Installed Chatterfly keyboard ledger](chatterfly-installed-keyboard.json) — installed identity/signature, model/load gates, bounded asset search, allowlisted cloud preference and ordinary runtime UI observations; failed REA UI capture is preserved as a limitation.
 - [Doubao disfluency ledger](doubao-disfluency.json) — byte-verified decoder annotation cleanup and bounded organization builder/result observations; a timed-out REA query produced no pseudocode.

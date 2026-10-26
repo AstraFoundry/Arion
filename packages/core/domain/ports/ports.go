@@ -107,8 +107,8 @@ type RewriteRequest struct {
 	PreviousText string
 	Scene        string
 	Terms        []string
-	// Context is consulted for spelling and continuation; empty uses the
-	// plain prompt.
+	// Context supplies spelling evidence to the shared selection stage;
+	// the formatting stage receives only the edited source.
 	Context domain.RewriteContext
 	Prefill bool
 	// Live marks a preview of speech that is still being captured.
@@ -131,7 +131,7 @@ type RewriteResult struct {
 	OutputTokens int
 }
 
-// Rewriter is the optional local LLM stage (009). Cancelling ctx abandons a
+// Rewriter is the optional local or cloud LLM stage (009). Cancelling ctx abandons a
 // request; End releases the session's private state. It returns
 // MODEL_MISSING while no verified model is running.
 type Rewriter interface {

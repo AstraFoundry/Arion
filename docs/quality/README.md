@@ -7,6 +7,7 @@ This section defines testing strategy, code-review expectations, and quality gat
 - [`testing.md`](testing.md) — testing strategy and test types.
 - [Native and product E2E](e2e.md) — real window lifecycle and future OS scenario driver.
 - [Evaluation tooling](../../tools/evaluation/README.md) — executable benchmarks and driver contracts.
+- [Update validation](update-validation.md) — staged update, reminder and notification checks with native platform limits.
 - [Foundation validation](validation.md) — actual local results and remaining coverage.
 - [macOS keyboard shortcut incident](keyboard-shortcut-incident.md) — Shift and Right Option root causes, repairs and acceptance evidence.
 - [`code-review.md`](code-review.md) — code-review checklist.

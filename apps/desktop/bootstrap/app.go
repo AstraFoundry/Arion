@@ -14,6 +14,7 @@ import (
 	"runtime"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	"arion.local/core/application"
@@ -37,6 +38,7 @@ import (
 	"arion.local/desktop/infrastructure/wordseg"
 	"arion.local/desktop/internal/account"
 	"arion.local/desktop/internal/center"
+	productnotifications "arion.local/desktop/internal/productnotifications"
 	uiapp "arion.local/desktop/ui/app"
 	"arion.local/desktop/ui/shared/copy"
 	arion "arion.local/desktop/ui/shared/runtime"
@@ -101,22 +103,28 @@ type App struct {
 	overlay *mygo.Window
 	panel   *mygo.Window
 	// sceneSeq drops a scene peek answered after a newer panel opened.
-	sceneSeq     int
-	settingsWin  *mygo.Window
-	onboarding   *mygo.Window
-	guide        *guideSession
-	trayHint     *mygo.Window
-	views        map[*mygo.Window]uiapp.View
-	testingHold  bool
-	escapeActive bool
-	hold         application.HoldGesture
-	harness      *harness
-	monitor      ports.AudioStream
-	vocab        *vocabulary.Store
-	startCue     *mygoaudio.Sound
-	stopCue      *mygoaudio.Sound
-	recommended  string
-	updates      *updates
+	sceneSeq                 int
+	settingsWin              *mygo.Window
+	onboarding               *mygo.Window
+	guide                    *guideSession
+	trayHint                 *mygo.Window
+	views                    map[*mygo.Window]uiapp.View
+	testingHold              bool
+	escapeActive             bool
+	hold                     application.HoldGesture
+	harness                  *harness
+	monitor                  ports.AudioStream
+	vocab                    *vocabulary.Store
+	startCue                 *mygoaudio.Sound
+	stopCue                  *mygoaudio.Sound
+	recommended              string
+	updates                  *updates
+	updatePolicy             *updatePolicy
+	pendingUpdateAction      [2]string
+	productNotifications     *productnotifications.Service
+	pendingProductActions    [][2]string
+	productPermissionPending bool
+	resourceJobs             atomic.Int64
 
 	// holdGeneration rejects queued events from a retired native listener.
 	holdGeneration uint64
@@ -192,13 +200,11 @@ func New(opts Options) (*App, error) {
 	a.cloud = cloudpolish.New(keystore.OpenItem(keystore.CloudPolishAccount), browser.Open,
 		func() []byte { return callbackPage(copy.Locale(a.preferences().UILanguage)) })
 	a.cloud.SetModel(prefs.CloudModel)
-	// Hosts, field text and window text are read only when a rewrite will
-	// use them; cloud polishing never uses field or window text.
-	local := func(p application.Preferences) bool { return p.Polish && p.PolishEngine == application.PolishLocal }
+	// Both engines read the same consent-gated context sources.
 	a.targets = a.platform.NewTargets(func() application.Delivery { return a.preferences().Delivery }, TargetGates{
 		Site:   func() bool { p := a.preferences(); return p.Polish && p.MatchApp },
-		Cursor: func() bool { p := a.preferences(); return local(p) && p.ContextCursor },
-		Screen: func() bool { p := a.preferences(); return local(p) && p.ContextScreen },
+		Cursor: func() bool { p := a.preferences(); return p.Polish && p.ContextCursor },
+		Screen: func() bool { p := a.preferences(); return p.Polish && p.ContextScreen },
 	})
 	a.vocabPath = filepath.Join(opts.DataDir, "vocabulary.bin")
 	a.usage = usage.Store{Path: filepath.Join(opts.DataDir, "usage.json")}
@@ -280,12 +286,11 @@ func (a *App) rewritePolicy() application.RewritePolicy {
 	}
 	policy := application.RewritePolicy{Enabled: true, Scene: string(domain.SceneChat), FollowApp: a.prefs.MatchApp,
 		SceneOverrides: a.prefs.SceneOverrides, Vocabulary: a.vocabulary}
-	if a.prefs.PolishEngine == application.PolishCloud {
-		// One request per dictation, with no context sources (ADR 022).
-		policy.FinalOnly, policy.Timeout = true, cloudRewriteTimeout
-		return policy
-	}
 	policy.Context = application.ContextPolicy{Cursor: a.prefs.ContextCursor, Screen: a.prefs.ContextScreen, History: a.prefs.ContextHistory}
+	if a.prefs.PolishEngine == application.PolishCloud {
+		// Cloud execution runs the shared stages after stop (ADR 023).
+		policy.FinalOnly, policy.Timeout = true, cloudRewriteTimeout
+	}
 	return policy
 }
 
@@ -304,6 +309,7 @@ func (a *App) Run() error {
 func (a *App) Start() {
 	mygo.App.SetActivationPolicy(mygo.ActivationPolicyAccessory)
 	mygo.App.OnWindowAllClosed(func() {})
+	mygo.App.OnNotificationAction(a.notificationAction)
 	mygo.App.OnQuit(a.closeDiagnostics)
 	mygo.App.OnWillQuit(func(*mygo.QuitEvent) { actions{a}.CancelInputMethodSetup() })
 	mygo.App.OnSecondInstance(func(args []string, _ string) {
@@ -331,7 +337,12 @@ func (a *App) OpenOnboarding() { mygo.RunOnMain(a.openOnboarding) }
 func (a *App) Windows() map[string]*mygo.Window {
 	windows := map[string]*mygo.Window{}
 	mygo.RunOnMain(func() {
-		for role, window := range map[string]*mygo.Window{"overlay": a.overlay, "panel": a.panel, "settings": a.settingsWin, "onboarding": a.onboarding} {
+		for role, window := range map[string]*mygo.Window{"overlay": a.overlay, "panel": a.panel, "settings": a.settingsWin, "onboarding": a.onboarding, "update-reminder": func() *mygo.Window {
+			if a.updatePolicy != nil {
+				return a.updatePolicy.reminder
+			}
+			return nil
+		}()} {
 			if window != nil {
 				windows[role] = window
 			}
@@ -389,7 +400,7 @@ func (a *App) ready() {
 	a.manager.OnStatus(func(s modelruntime.Status) { a.post(func() { a.applyModel(s) }) })
 	a.rewriter.OnStatus(func(s rewriting.Status) { a.post(func() { a.applyPolish(s) }) })
 	a.applyPolish(a.rewriter.Status())
-	go a.startPolish()
+	a.runResource(a.startPolish)
 	a.cloud.OnStatus(func(s cloudpolish.Status) { a.post(func() { a.applyCloud(s) }) })
 	go a.cloud.Load()
 	mygo.App.OnQuit(a.rewriter.Disable)
@@ -425,13 +436,18 @@ func (a *App) ready() {
 	a.updates = newUpdates(source, &a.state.Update, a.post)
 	a.updates.setPrereleases(a.state.Preferences.AllowPrereleaseUpdates)
 	a.scheduleUpdates()
+	if a.pendingUpdateAction[0] != "" {
+		a.notificationAction(a.pendingUpdateAction[0], a.pendingUpdateAction[1])
+		a.pendingUpdateAction = [2]string{}
+	}
+	a.startProductNotifications()
 	a.startAccountMaintenance()
 	a.startHoldKey()
 	mygo.App.OnQuit(a.platform.StopHoldKey)
 	a.createTray()
 	a.createOverlay()
 	a.state.Model.Bundles = a.bundles()
-	go a.activate(a.state.Preferences.ModelOverride)
+	a.runResource(func() { a.activate(a.state.Preferences.ModelOverride) })
 	go a.pollPermissions()
 	go a.refreshDevicesAsync()
 	mygo.Power.OnSuspend(func() { a.record("power_suspend", nil); a.core.Cancel() })
@@ -502,6 +518,7 @@ func (a *App) apply(e contracts.Event) {
 		}
 		*d = arion.Dictation{SessionID: e.SessionID}
 		a.dismissLearned()
+		a.closeUpdateReminder()
 		a.stopMonitor()
 		a.positionOverlay()
 	}
@@ -780,17 +797,22 @@ func (a *App) loadVocabulary(create bool) {
 	a.snapshot.Unlock()
 }
 
-func (a *App) savePreferences(prefs application.Preferences) {
+func (a *App) savePreferences(prefs application.Preferences) bool {
 	if err := a.prefStore.Save(prefs); err != nil {
 		a.record("preferences_save", err)
+		return false
 	}
 	a.snapshot.Lock()
 	a.prefs = prefs
 	a.snapshot.Unlock()
 	a.state.Preferences = prefs
+	return true
 }
 
 func (a *App) startMonitor() {
+	if a.updateApplying() {
+		return
+	}
 	if a.monitor != nil || a.state.Permissions.Microphone != arion.ConsentGranted {
 		return
 	}
@@ -812,7 +834,8 @@ func (a *App) stopMonitor() {
 	if a.monitor != nil {
 		stream := a.monitor
 		a.monitor = nil
-		go stream.Stop()
+		a.resourceJobs.Add(1)
+		go func() { defer a.resourceJobs.Add(-1); _ = stream.Stop() }()
 	}
 	a.state.MonitorLevels = nil
 }

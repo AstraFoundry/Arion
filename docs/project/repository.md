@@ -10,12 +10,15 @@
 | `apps/desktop/infrastructure` | OS input/capture/context and model/storage adapters; implements domain-owned ports |
 | `apps/desktop/internal/center` | Compiled public center profile, validation and fingerprint; no runtime ENV or credential access |
 | `apps/desktop/internal/account` | OIDC public client for hosted sync: loopback PKCE, in-memory access token, refresh rotation, waitlist join ([account sign-in](account-signin.md)) |
+| `apps/desktop/internal/productnotifications` | Account-scoped inbox validation, native submission dedupe and authorized action policy ([product notifications](product-notifications.md)) |
+| `apps/desktop/infrastructure/productnotifications` | Bounded authenticated HTTPS client and private atomic notification ledger |
 | `apps/desktop/internal/oauthloopback` | Native-app OAuth helpers shared by both sign-ins: PKCE S256, state, one-shot loopback callback listener |
 | `apps/desktop/infrastructure/keystore` | Credential items in the macOS Keychain or Windows Credential Manager: the refresh token and the cloud polishing credential |
 | `apps/desktop/infrastructure/cloudpolish` | Optional cloud polishing ([ADR 022](../decisions/022-cloud-polishing.md)): ChatGPT sign-in, API key check, model list and a `Rewriter` over Republic ([cloud polishing](cloud-polishing.md)) |
 | `apps/desktop/infrastructure/browser` | System browser for http(s) authorization URLs |
 | `apps/desktop/cmd` | Evaluation and E2E drivers, the `arion-llm` rewrite worker (no cgo), live rewrite benchmarks, model catalog tool, icon renderer |
-| `apps/desktop/infrastructure/llm` | Pinned GGUF adapter, selected staged templates and pronunciation resources, pipe worker protocol and process client; legacy GenAI code retained for historical replay |
+| `apps/desktop/infrastructure/llm/rewrite` | Shared staged polishing: cleanup, context-backed bounded spelling choices and scene formatting; model adapters supply stage generation ([ADR 023](../decisions/023-shared-polishing-pipeline.md)) |
+| `apps/desktop/infrastructure/llm` | Pinned GGUF adapter, selected staged templates and pronunciation resources, pipe worker protocol and process client, experimental ID-only keyboard ranking over generic completion; legacy GenAI code retained for historical replay |
 | `apps/desktop/infrastructure/rewriting` | Rewrite capability service: bundled runtime location, model provisioning, worker lifecycle, `Rewriter` port |
 | `packages/core/domain` | Session and candidate invariants; standard-library only |
 | `packages/core/contracts` | Versioned transport-neutral DTOs; no SDK or platform handles |

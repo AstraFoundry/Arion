@@ -76,10 +76,9 @@ func MatchApp(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 	})
 }
 
-// Shown reports whether polishing reads context: it is on, on this device.
-// The cloud never receives context (ADR 022).
+// ContextShown reports whether the selected polishing engine is on.
 func ContextShown(store runtime.Store) bool {
-	return runtime.PolishOn(store.State) && store.State.Preferences.PolishEngine != runtime.PolishCloud
+	return runtime.PolishOn(store.State)
 }
 
 // Context is the card of switches for the context polishing may read,

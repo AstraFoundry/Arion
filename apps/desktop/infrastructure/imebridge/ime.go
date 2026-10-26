@@ -404,3 +404,24 @@ func (m *IME) EnsureListening() error {
 	}
 	return m.Listen()
 }
+
+// UpdateBusy is conservative for hosts without a keyboard activity protocol:
+// an activated editor may own preedit even with no voice session.
+func (m *IME) UpdateBusy() bool {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	return m.updating || m.activation != "" || m.token != "" || m.committing
+}
+
+// TryMaintenance excludes new app-owned sessions while the main app replaces
+// itself. The independently installed keyboard host stays alive throughout.
+func (m *IME) TryMaintenance() (func(), bool) {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	if m.updating || m.activation != "" || m.token != "" || m.committing {
+		return nil, false
+	}
+	m.updating = true
+	var once sync.Once
+	return func() { once.Do(m.EndUpdate) }, true
+}

@@ -65,9 +65,6 @@ type tray struct {
 	tip   string
 	menu  *platform.Menu
 	added bool
-	// notification is the id of the notification the icon shows, if any.
-	notification string
-	temporary    bool // added only to show a notification
 }
 
 func (b *Backend) NewTray(h platform.TrayHandler) (platform.Tray, error) {
@@ -177,7 +174,7 @@ func (t *tray) Destroy() {
 		procShellNotifyIconW.Call(nimDelete, uintptr(unsafe.Pointer(&d)))
 		t.added = false
 	}
-	if t.icon != 0 && !t.temporary {
+	if t.icon != 0 {
 		procDestroyIcon.Call(t.icon)
 		t.icon = 0
 	}
@@ -202,13 +199,7 @@ func (b *Backend) trayMessage(id uint32, event uint32) {
 		if t.menu != nil {
 			t.PopUpMenu(t.menu)
 		}
-	case ninBalloonUserClick:
-		if n := t.notification; n != "" {
-			b.finishNotification(t)
-			b.h.NotificationClicked(n)
-		}
-	case ninBalloonTimeout:
-		b.finishNotification(t)
+
 	}
 }
 
@@ -226,80 +217,6 @@ func iconFromPNG(data []byte, size int) (uintptr, error) {
 		return 0, errors.New("mygo: cannot create an icon from the image")
 	}
 	return icon, nil
-}
-
-// Notifications are notification area balloons, which Windows 10 and later
-// show as toasts. They need an icon: the first tray icon, else a temporary
-// one with the application's icon.
-
-type notification struct{ tray *tray }
-
-func (b *Backend) NotificationsSupported() bool { return true }
-
-func (b *Backend) ShowNotification(n *platform.Notification, done func(error)) {
-	done(b.showNotification(n))
-}
-
-func (b *Backend) showNotification(n *platform.Notification) error {
-	var t *tray
-	for _, x := range b.trays {
-		if !x.temporary && x.notification == "" {
-			t = x
-			break
-		}
-	}
-	if t == nil {
-		b.nextTray++
-		t = &tray{b: b, id: b.nextTray, temporary: true}
-		t.icon, _, _ = procLoadIconW.Call(instance(), 1)
-		if t.icon == 0 {
-			t.icon, _, _ = procLoadIconW.Call(0, 32512) // IDI_APPLICATION
-		}
-		b.trays[t.id] = t
-		t.add()
-	}
-	t.notification = n.ID
-	b.notifications[n.ID] = &notification{tray: t}
-	d := t.data(nifInfo)
-	title := n.Title
-	body := n.Body
-	if n.Subtitle != "" {
-		body = n.Subtitle + "\n" + body
-	}
-	copyUTF16(d.InfoTitle[:], title)
-	copyUTF16(d.Info[:], body)
-	d.InfoFlags = niifUser
-	if n.Silent {
-		d.InfoFlags |= niifNoSound
-	}
-	if r, _, _ := procShellNotifyIconW.Call(nimModify, uintptr(unsafe.Pointer(&d))); r == 0 {
-		b.finishNotification(t)
-		return fmt.Errorf("mygo: cannot show the notification")
-	}
-	return nil
-}
-
-func (b *Backend) RemoveNotification(id string) {
-	if n := b.notifications[id]; n != nil {
-		b.finishNotification(n.tray)
-	}
-}
-
-func (b *Backend) RemoveAllNotifications() {
-	for _, n := range b.notifications {
-		b.finishNotification(n.tray)
-	}
-}
-
-func (b *Backend) finishNotification(t *tray) {
-	delete(b.notifications, t.notification)
-	t.notification = ""
-	if t.temporary {
-		t.Destroy()
-		return
-	}
-	d := t.data(nifInfo) // an empty balloon hides the current one
-	procShellNotifyIconW.Call(nimModify, uintptr(unsafe.Pointer(&d)))
 }
 
 // Global shortcuts.

@@ -49,7 +49,7 @@ type Backend struct {
 	taskbarButtonCreated uint32
 
 	watchingPower bool
-	notifications map[string]*notification
+	toast         *toastState
 
 	themeSource string
 	badge       string
@@ -80,14 +80,13 @@ var (
 // New creates the Windows backend.
 func New() *Backend {
 	return &Backend{
-		windows:       map[uintptr]*window{},
-		trays:         map[uint32]*tray{},
-		notifications: map[string]*notification{},
-		menus:         newMenuTable(),
-		themeSource:   "system",
-		captions:      map[uintptr]*captionBar{},
-		captionFonts:  map[int]captionFont{},
-		surfaces:      map[uintptr]*surface{},
+		windows:      map[uintptr]*window{},
+		trays:        map[uint32]*tray{},
+		menus:        newMenuTable(),
+		themeSource:  "system",
+		captions:     map[uintptr]*captionBar{},
+		captionFonts: map[int]captionFont{},
+		surfaces:     map[uintptr]*surface{},
 	}
 }
 
@@ -115,6 +114,7 @@ func (b *Backend) Init(h platform.AppHandler, opts platform.AppOptions) error {
 	b.taskbarButtonCreated = registerWindowMessage("TaskbarButtonCreated")
 	// Clipboard and drag/drop share startup-created OLE callback tables.
 	dropOnce.Do(initDropTarget)
+	b.initNotifications()
 	return nil
 }
 
@@ -173,6 +173,7 @@ func sanitize(name string) string {
 }
 
 func (b *Backend) Run() error {
+	defer b.closeNotifications()
 	b.running = true
 	postMessage(b.appHwnd, wmAppReady, 0, 0)
 	var m msg
@@ -314,6 +315,7 @@ func (b *Backend) appMessage(m uint32, wp, lp uintptr) (uintptr, bool) {
 		return 0, true
 	case wmAppDispatch:
 		b.signaled.Store(false)
+		b.dispatchNotificationActions()
 		b.h.Dispatch()
 		return 0, true
 	case wmAppWake:

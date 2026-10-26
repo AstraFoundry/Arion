@@ -10,7 +10,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"log"
 	"net"
 	"net/http"
 	"net/url"
@@ -18,7 +17,6 @@ import (
 	"os/exec"
 	"path/filepath"
 	"runtime"
-	"strconv"
 	"strings"
 	"syscall"
 	"time"
@@ -184,32 +182,22 @@ func checkUpdateWithOptions(ctx context.Context, feed, key, current string, opti
 	return up, nil
 }
 
-// Install downloads the update, checks that it is signed with the app's
-// key and replaces the app with it; progress, when not nil, is called with
-// the bytes downloaded so far. When the update has a delta for the running
-// version, only the delta is downloaded, unless it fails to make the new
-// version: the whole update is downloaded then, and the progress starts
-// over. The running app is not affected: the new version runs after
-// App.Relaunch, or at the next launch.
-//
-// The app must be able to write where it is installed: a bundle in
-// /Applications of an administrator, or an app directory the user owns on
-// Linux and Windows. Apps installed by a package manager are updated by it.
+// Install prepares and applies the update. Applications that need an idle or
+// restart transaction should call Prepare first and Apply only inside that gate.
+// Applying replaces resources on disk; the host must not load old-version
+// resources or launch workers until it has restarted.
 func (up *Update) Install(ctx context.Context, progress func(downloaded, total int64)) error {
-	target, err := installTarget()
+	prepared, err := up.Prepare(ctx, progress)
 	if err != nil {
 		return err
 	}
-	if err := installUpdate(ctx, up.manifest, up.key, up.current, target, progress); err != nil {
-		return fmt.Errorf("mygo: installing the update: %w", err)
+	if err := ctx.Err(); err != nil {
+		return errors.Join(err, prepared.Discard())
 	}
-	if runtime.GOOS == "linux" {
-		// install.sh registered the desktop entry of the version it installed.
-		if err := update.RefreshDesktopEntry(target, filepath.Base(startExe)); err != nil {
-			log.Printf("mygo: registering the desktop entry of the update: %v", err)
-		}
+	if err := prepared.Apply(); err != nil {
+		return errors.Join(err, prepared.Discard())
 	}
-	return nil
+	return prepared.Acknowledge()
 }
 
 // installTarget returns what an update replaces: the app bundle on macOS,
@@ -236,53 +224,17 @@ func installTarget() (string, error) {
 // version current: from its delta for current when there is one, else, or
 // when the delta fails, from its archive.
 func installUpdate(ctx context.Context, m update.Manifest, key, current, target string, progress func(downloaded, total int64)) error {
-	pub, err := update.ParsePublicKey(key)
+	prepared, err := prepareUpdate(ctx, m, key, current, target, progress)
 	if err != nil {
 		return err
 	}
-	// Next to the app, so that it can be renamed into place.
-	work, err := os.MkdirTemp(filepath.Dir(target), "."+filepath.Base(target)+".update-")
-	if err != nil {
-		return fmt.Errorf("cannot write next to the app: %w", err)
+	if err := ctx.Err(); err != nil {
+		return errors.Join(err, prepared.Discard())
 	}
-	defer os.RemoveAll(work)
-	unpacked := filepath.Join(work, "app")
-	swap := swapFiles
-	if runtime.GOOS == "darwin" {
-		swap = swapBundle
+	if err := prepared.Apply(); err != nil {
+		return errors.Join(err, prepared.Discard())
 	}
-
-	if d := m.Delta(current); d != nil {
-		err := applyDelta(ctx, *d, pub, m.Version, target, work, unpacked, progress)
-		if err == nil {
-			return swap(unpacked, target)
-		}
-		if ctx.Err() != nil {
-			return err
-		}
-		log.Printf("mygo: downloading the whole update, as its delta update failed: %v", err)
-		if err := os.RemoveAll(unpacked); err != nil {
-			return err
-		}
-	}
-
-	if m.Size <= 0 || m.Size > update.MaxArchiveSize {
-		return fmt.Errorf("invalid size %d", m.Size)
-	}
-	archive := filepath.Join(work, "update.tar.gz")
-	if err := download(ctx, m.URL, m.Size, m.Signature, pub, archive, progress); err != nil {
-		return err
-	}
-	f, err := os.Open(archive)
-	if err != nil {
-		return err
-	}
-	err = update.ExtractArchive(f, unpacked)
-	f.Close()
-	if err != nil {
-		return err
-	}
-	return swap(unpacked, target)
+	return prepared.Acknowledge()
 }
 
 // applyDelta downloads the delta d into work and makes the new version of
@@ -336,68 +288,6 @@ func download(ctx context.Context, url string, size int64, signature string, pub
 	return update.Verify(pub, sum.Sum(nil), signature)
 }
 
-// swapBundle replaces the bundle at target with the one in dir.
-func swapBundle(dir, target string) error {
-	entries, err := os.ReadDir(dir)
-	if err != nil {
-		return err
-	}
-	if len(entries) != 1 || !strings.HasSuffix(entries[0].Name(), ".app") {
-		return errors.New("the update holds no app bundle")
-	}
-	old := filepath.Join(filepath.Dir(target), "."+filepath.Base(target)+".old-"+strconv.Itoa(os.Getpid()))
-	if err := os.Rename(target, old); err != nil {
-		return err
-	}
-	if err := os.Rename(filepath.Join(dir, entries[0].Name()), target); err != nil {
-		_ = os.Rename(old, target)
-		return err
-	}
-	// The running app keeps its open files.
-	_ = os.RemoveAll(old)
-	return nil
-}
-
-// swapFiles replaces the entries of the app directory target with those in
-// dir. The running executable is renamed away, which Windows allows, and
-// removed at the next launch (cleanUpdateLeftovers).
-func swapFiles(dir, target string) error {
-	entries, err := os.ReadDir(dir)
-	if err != nil {
-		return err
-	}
-	if len(entries) == 0 {
-		return errors.New("the update is empty")
-	}
-	suffix := ".old-" + strconv.Itoa(os.Getpid())
-	var moved [][2]string // renamed away: old name, new name
-	undo := func() {
-		for i := len(moved) - 1; i >= 0; i-- {
-			_ = os.RemoveAll(moved[i][0])
-			_ = rename(moved[i][1], moved[i][0])
-		}
-	}
-	for _, e := range entries {
-		dst := filepath.Join(target, e.Name())
-		if _, err := os.Lstat(dst); err == nil {
-			aside := filepath.Join(target, "."+e.Name()+suffix)
-			if err := rename(dst, aside); err != nil {
-				undo()
-				return err
-			}
-			moved = append(moved, [2]string{dst, aside})
-		}
-		if err := rename(filepath.Join(dir, e.Name()), dst); err != nil {
-			undo()
-			return err
-		}
-	}
-	for _, m := range moved {
-		_ = os.RemoveAll(m[1])
-	}
-	return nil
-}
-
 // rename renames a file of the app, retrying for a few seconds while
 // Windows reports it in use: antivirus software opens new executables, such
 // as the app that just started and the one of the update, to scan them.
@@ -435,6 +325,9 @@ func relaunchNow() {
 // cleanUpdateLeftovers removes what an update could not remove while the
 // previous version ran (Windows keeps running executables).
 func cleanUpdateLeftovers() {
+	if startExe != "" {
+		cleanPreparedUpdateLeftovers()
+	}
 	if runtime.GOOS == "darwin" || startExe == "" {
 		return
 	}

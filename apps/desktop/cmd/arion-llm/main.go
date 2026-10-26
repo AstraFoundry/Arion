@@ -76,6 +76,8 @@ func (w *worker) serve(req protocol.Request) protocol.Response {
 		return w.load(req)
 	case protocol.OpRewrite, protocol.OpPrefill:
 		return w.rewrite(req)
+	case protocol.OpComplete:
+		return w.complete(req)
 	case protocol.OpEnd:
 		if w.engine == nil {
 			return fail(errors.New("model not loaded"))
@@ -110,30 +112,60 @@ func (w *worker) rewrite(req protocol.Request) protocol.Response {
 	if w.engine == nil {
 		return fail(errors.New("model not loaded"))
 	}
-	w.mu.Lock()
-	if w.cancelled[req.ID] {
-		delete(w.cancelled, req.ID)
-		w.mu.Unlock()
+	if !w.begin(req.ID) {
 		return protocol.Response{OK: true, Cancelled: true}
 	}
-	w.running = req.ID
-	w.stop.Store(false)
-	w.mu.Unlock()
+	defer w.finished(req.ID)
 	in := engine.Request{Session: req.Session, Scene: req.Scene, Terms: req.Terms, Text: req.Text, PreviousText: req.PreviousText, Prefill: req.Op == protocol.OpPrefill, Live: req.Live}
 	if req.Context != nil {
 		in.Context = *req.Context
 	}
 	result, err := w.engine.Run(in, &w.stop)
-	w.mu.Lock()
-	w.running = 0
-	delete(w.cancelled, req.ID)
-	w.mu.Unlock()
 	if err != nil {
 		return fail(err)
 	}
 	return protocol.Response{OK: true, Text: result.Text, Cleanup: &result.Cleanup, Template: result.Template, InputTokens: result.InputTokens, ReusedTokens: result.ReusedTokens,
 		OutputTokens: result.OutputTokens, PrefillMs: result.PrefillMs, DecodeMs: result.DecodeMs, FirstTokenMs: result.FirstTokenMs,
 		Truncated: result.Truncated, Cancelled: result.Cancelled, PeakRSS: peakRSS()}
+}
+
+func (w *worker) begin(id uint64) bool {
+	w.mu.Lock()
+	defer w.mu.Unlock()
+	if w.cancelled[id] {
+		delete(w.cancelled, id)
+		return false
+	}
+	w.running = id
+	w.stop.Store(false)
+	return true
+}
+
+func (w *worker) finished(id uint64) {
+	w.mu.Lock()
+	defer w.mu.Unlock()
+	w.running = 0
+	delete(w.cancelled, id)
+}
+
+func (w *worker) complete(req protocol.Request) protocol.Response {
+	if w.engine == nil || req.Chat == nil {
+		return fail(errors.New("completion model or request unavailable"))
+	}
+	if !w.begin(req.ID) {
+		return protocol.Response{OK: true, Cancelled: true}
+	}
+	defer w.finished(req.ID)
+	ctx, cancel := gguf.StopContext(&w.stop)
+	defer cancel()
+	out, err := w.engine.Complete(ctx, *req.Chat)
+	if ctx.Err() != nil {
+		return protocol.Response{OK: true, Cancelled: true}
+	}
+	if err != nil {
+		return fail(err)
+	}
+	return protocol.Response{OK: true, Text: out.Text, InputTokens: out.InputTokens, OutputTokens: out.OutputTokens, PrefillMs: out.PrefillMs, DecodeMs: out.DecodeMs, PeakRSS: peakRSS()}
 }
 
 func (w *worker) close() {

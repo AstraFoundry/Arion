@@ -11,10 +11,10 @@ This section defines how the frontend is organized using **Feature-Sliced Design
 
 | Layer | Slices |
 | --- | --- |
-| `app` | One view per window: overlay, menu bar panel, settings, onboarding, macOS settings guide |
-| `pages` | `overlay`, `menubar`, `settings`, `onboarding` |
+| `app` | One view per window: overlay, menu bar panel, settings, onboarding, macOS settings guide, update reminder |
+| `pages` | `overlay`, `menubar`, `settings`, `onboarding`, `updatereminder` |
 | `widgets` | `capsule` (dictation pill), `statusheader`, `modelcard`, `stepper`, `showcase` (illustrations: mock UI over a photograph) |
-| `features` | `dictate`, `permissions`, `provision`, `holdkey` (dictation key picker and consent notes), `keyboard` (input-source setup and settings guide), `microphone`, `vocabulary`, `transcript`, `modelchoice`, `uilanguage`, `diagnostics` (About log export), `signin` (AstraFoundry account and hosted-sync waitlist) |
+| `features` | `dictate`, `permissions`, `provision`, `holdkey` (dictation key picker and consent notes), `keyboard` (input-source setup and settings guide), `microphone`, `vocabulary`, `transcript`, `modelchoice`, `uilanguage`, `update` (check, verified download, reminder consent and protected restart), `productnotifications` (account-targeted opt-in and permission/failure states), `diagnostics` (About log export), `signin` (AstraFoundry account and hosted-sync waitlist) |
 | `entities` | `dictation` (phase/notice projection), `model`, `onboarding` (step rules), `holdkey` (dictation key names), `account` (account stage and copy for errors and waitlist phases) |
 | `shared` | `runtime` (state and actions boundary), `copy`, `theme` (Sunbeam tokens, motion presets), `kit` (coss-anatomy primitives), `icons` (Lucide, ISC; cloud provider marks from [LobeHub Icons](https://icons.lobehub.com), MIT), `assets` (app mark, photographs) |
 
@@ -45,3 +45,15 @@ Views read `runtime.State` and request `runtime.Actions`; the composition root m
 ## Core principle
 
 Code is organized by **scope of change**, not by technical type. A feature contains everything it needs — UI, state, API, and utilities — so that changes to one feature do not leak into unrelated files.
+
+## Update surfaces
+
+Settings → About keeps automatic checking, automatic verified downloading, and system reminders as separate preferences. Automatic downloads require checks to be enabled; enabling them never authorizes an automatic restart. The download choice is retained when checks are turned off. System reminders are off on new and migrated profiles, and enabling them dispatches an explicit permission action. Denied and failed permission queries remain visible; unsupported builds disable that control.
+
+Update progress distinguishes downloading, verified staging (installation pending restart), protected applying, and installed/ready to relaunch. A queued manual restart can be canceled before applying begins. Failures identify the check, preparation, apply or restart step and retry its action. An unrecoverable installation instead offers Quit and reinstall instructions; it never offers another swap. Failed reminder-state persistence is visible and pauses automatic reminders.
+
+The separate `updatereminder` page composes `features/update.Reminder` in a bootstrap-owned nonactivating window after input ends. Policy owns its visibility. It exposes View update, Later and Dismiss; it never downloads, installs or restarts directly. The tray/menu entry stays available independently of notification permission and transient reminder suppression.
+
+## Product notification control
+
+General settings has an independent Product notifications switch, off by default. Enabling invokes explicit OS authorization; sign-in and the standard center are required. Denial, unsupported profiles, network/storage failure and interrupted submission have localized states. The control does not change update-reminder consent or require hosted-sync entitlement. See [product notifications](../project/product-notifications.md).

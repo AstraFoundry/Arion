@@ -1,0 +1,89 @@
+{
+  "steps": [
+    {
+      "status": "completed",
+      "wallMs": 0.33599948883057,
+      "id": "key-1",
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "ranked": [
+        "请保存文件",
+        "情报",
+        "请把",
+        "请",
+        "清",
+        "情",
+        "轻",
+        "青",
+        "庆"
+      ],
+      "processCpuMs": 0.186,
+      "preedit": "qing bao cun wen jian",
+      "source": [
+        "请保存文件",
+        "情报",
+        "请把",
+        "请",
+        "清",
+        "情",
+        "轻",
+        "青",
+        "庆"
+      ],
+      "requests": []
+    },
+    {
+      "status": "completed",
+      "wallMs": 0.19499969482422,
+      "id": "identical-repeat",
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "ranked": [
+        "请保存文件",
+        "情报",
+        "请把",
+        "请",
+        "清",
+        "情",
+        "轻",
+        "青",
+        "庆"
+      ],
+      "processCpuMs": 0.075,
+      "preedit": "qing bao cun wen jian",
+      "source": [
+        "请保存文件",
+        "情报",
+        "请把",
+        "请",
+        "清",
+        "情",
+        "轻",
+        "青",
+        "庆"
+      ],
+      "requests": []
+    }
+  ],
+  "id": "long-input-008",
+  "subprocessWallMs": 18.39695917442441,
+  "stderr": ""
+}

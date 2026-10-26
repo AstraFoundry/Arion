@@ -60,7 +60,10 @@ type Backend struct {
 	MessageResult platform.MessageBoxResult
 	// NotificationError, when set, is what showing a notification fails
 	// with.
-	NotificationError error
+	NotificationError              error
+	NotificationAuthorization      platform.NotificationAuthorization
+	NotificationPermissionError    error
+	NotificationPermissionRequests int
 	// notifications are the notifications shown and not yet removed, by
 	// id.
 	notifications map[string]*platform.Notification
@@ -331,7 +334,8 @@ func (b *Backend) Notification(id string) *platform.Notification {
 
 // ClickNotification reports a click on a notification, as the platform
 // does. It runs on the main thread, like the backends report it.
-func (b *Backend) ClickNotification(id string) { b.h.NotificationClicked(id) }
+func (b *Backend) ClickNotification(id string)            { b.h.NotificationClicked(id) }
+func (b *Backend) ActivateNotification(id, action string) { b.h.NotificationAction(id, action) }
 
 // Window is a fake native window. Scripts evaluated in it are recorded.
 type Window struct {
@@ -989,4 +993,20 @@ func (s *Surface) Accessibility() (*platform.AccessTree, int) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	return s.access, s.accessN
+}
+
+func (b *Backend) NotificationPermission(done func(platform.NotificationAuthorization, error)) {
+	b.mu.Lock()
+	status, err := b.NotificationAuthorization, b.NotificationPermissionError
+	b.mu.Unlock()
+	if status == "" {
+		status = platform.NotificationAuthorizationAllowed
+	}
+	done(status, err)
+}
+func (b *Backend) RequestNotificationPermission(done func(platform.NotificationAuthorization, error)) {
+	b.mu.Lock()
+	b.NotificationPermissionRequests++
+	b.mu.Unlock()
+	b.NotificationPermission(done)
 }

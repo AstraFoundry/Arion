@@ -76,6 +76,12 @@ func (r *recorder) CloseTrayHint()              { r.call("close-tray-hint") }
 func (r *recorder) CheckForUpdates()            { r.call("check-update") }
 func (r *recorder) InstallUpdate()              { r.call("install-update") }
 func (r *recorder) RestartToUpdate()            { r.call("restart-update") }
+func (r *recorder) CancelUpdateRestart()        { r.call("cancel-update-restart") }
+func (r *recorder) LaterUpdate()                { r.call("later-update") }
+func (r *recorder) DismissUpdateReminder()      { r.call("dismiss-update-reminder") }
+func (r *recorder) EnableProductNotifications() { r.call("enable-product-notifications") }
+func (r *recorder) EnableUpdateReminders()      { r.call("enable-update-reminders") }
+
 func (r *recorder) OpenUpdate() {
 	r.call("open-update")
 	r.state.Focus = runtime.SettingsFocus{Section: settings.About, Seq: r.state.Focus.Seq + 1}
@@ -481,6 +487,7 @@ func TestUpdateStates(t *testing.T) {
 	}
 	state.Update = runtime.Update{Phase: runtime.UpdateCurrent}
 	settle(tt)
+	reveal(t, tt, en.Text(copy.UpdatePrerelease))
 	label, ok := tt.Find(en.Text(copy.UpdatePrerelease))
 	if !ok {
 		t.Fatal("missing prerelease label")

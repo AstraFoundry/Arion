@@ -1,0 +1,97 @@
+{
+  "id": "truncated-context-008",
+  "steps": [
+    {
+      "source": [
+        "公式",
+        "共识",
+        "公示",
+        "攻势",
+        "工时",
+        "工事",
+        "共事",
+        "公事",
+        "共"
+      ],
+      "wallMs": 278.95800018311,
+      "ranked": [
+        "公式",
+        "共识",
+        "公示",
+        "攻势",
+        "工时",
+        "工事",
+        "共事",
+        "公事",
+        "共"
+      ],
+      "preedit": "gong shi",
+      "processCpuMs": 0.901,
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "status": "completed",
+      "id": "key-1",
+      "requests": [
+        {
+          "networkWallMs": 277.87700080872,
+          "response": "{\"id\":\"chatcmpl-86687511\",\"object\":\"chat.completion\",\"created\":1792647105,\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"公式、共识、公示、攻势、工时\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":126,\"completion_tokens\":9,\"total_tokens\":135,\"input_tokens\":126,\"output_tokens\":9,\"prompt_tokens_details\":{\"cached_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"time_to_first_token\":0.1,\"total_time\":0.27,\"prompt_eval_duration\":0.1,\"generation_duration\":0.18,\"prompt_tokens_per_second\":1278.33,\"generation_tokens_per_second\":51.21}}",
+          "code": 200,
+          "status": "HTTP/1.1 200 OK",
+          "request": "{\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"max_tokens\":20,\"messages\":[{\"role\":\"system\",\"content\":\"你是输入法候选词排序助手。根据对话历史和当前输入，从候选词列表中选出最符合语境的词。按优先级从高到低列出最多5个候选词，用顿号分隔，不要拼音、数字序号或任何解释。\"},{\"role\":\"user\",\"content\":\"对话历史：「入）（前面的事情已经说完，现在继续输入）」\\n当前输入拼音：「gong shi」\\n候选词：公式、共识、公示、攻势、工时\\n按最符合对话语境的顺序列出前5个候选词（顿号分隔）：\"}],\"stream\":false,\"temperature\":0}"
+        }
+      ]
+    },
+    {
+      "source": [
+        "公式",
+        "共识",
+        "公示",
+        "攻势",
+        "工时",
+        "工事",
+        "共事",
+        "公事",
+        "共"
+      ],
+      "wallMs": 0.21399974822998,
+      "ranked": [
+        "公式",
+        "共识",
+        "公示",
+        "攻势",
+        "工时",
+        "工事",
+        "共事",
+        "公事",
+        "共"
+      ],
+      "preedit": "gong shi",
+      "processCpuMs": 0.117,
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "status": "completed",
+      "id": "identical-repeat",
+      "requests": []
+    }
+  ],
+  "subprocessWallMs": 292.4631666392088,
+  "stderr": ""
+}

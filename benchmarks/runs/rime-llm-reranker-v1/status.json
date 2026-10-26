@@ -1,0 +1,10 @@
+{
+  "status": "completed",
+  "nativeFixtures": 100,
+  "finalFixtures": 100,
+  "typingFixtures": 22,
+  "typingSnapshots": 142,
+  "realModelRequests": 219,
+  "upstreamSourceUnchanged": true,
+  "productionIntegration": false
+}

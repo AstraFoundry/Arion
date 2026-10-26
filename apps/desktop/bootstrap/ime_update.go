@@ -13,7 +13,7 @@ func (a *App) updateInputMethodAutomatically() {
 	if _, ok := a.ime.(automaticInputMethod); !ok {
 		return
 	}
-	if !a.state.InputMethodUpdate || a.state.InputMethodUpdateFailed ||
+	if a.updateApplying() || !a.state.InputMethodUpdate || a.state.InputMethodUpdateFailed ||
 		a.state.InputMethod != arion.InputMethodInstalled ||
 		a.state.InputMethodInstalling || a.state.InputMethodRemoving || a.state.InputMethodActivating ||
 		a.state.Hold.Holding {

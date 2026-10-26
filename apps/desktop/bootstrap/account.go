@@ -20,6 +20,7 @@ func (x actions) SignIn() {
 	if a.state.Account.Busy() {
 		return
 	}
+	a.suspendProductNotifications()
 	ctx, seq := a.beginAccount()
 	a.state.Account.Phase = arion.AccountSigningIn
 	a.state.Account.Credential = arion.CredentialUnknown
@@ -91,6 +92,7 @@ func (a *App) refreshAccount(background bool) {
 
 func (x actions) SignOut() {
 	a := x.a
+	a.suspendProductNotifications()
 	a.accountMaintenance.next = time.Time{}
 	a.state.Account.Phase = arion.AccountSigningOut
 	a.state.Account.Credential = arion.CredentialUnknown
@@ -248,9 +250,12 @@ func (a *App) applySession(session account.Session, phase arion.AccountPhase) {
 	}
 	a.state.Account.Locale = session.Profile.Locale
 	a.state.Account.HostedSync = session.HasHostedSync()
+	a.configureProductNotifications()
+	a.pollProductNotifications()
 }
 
 func (a *App) clearAccountProfile() {
+	a.suspendProductNotifications()
 	a.state.Account.Subject = ""
 	a.state.Account.Name = ""
 	a.state.Account.Email = ""

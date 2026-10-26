@@ -1,5 +1,7 @@
 # Local rewrite product configuration
 
+The selected stage orchestration lives in `infrastructure/llm/rewrite` and is also used by cloud polishing ([ADR 023](../decisions/023-shared-polishing-pipeline.md)). GGUF owns its native runtime, token budgets and session state; the cloud adapter supplies provider calls. The local recipes and artifact remain unchanged.
+
 The macOS Apple Silicon product selects `qwen3.5-2b-q4-k-m-metal` from [the model catalog](../../models/catalog.json). The user authorized adoption of the current baseline, accepting its known three harmful choices and six missed corrections in the exposed 101-case selector development set. These are local spelling-choice observations, including 12 mechanically forced-original cases, not a complete-product semantic success rate or a 16GB host qualification.
 
 ## Model and runtime

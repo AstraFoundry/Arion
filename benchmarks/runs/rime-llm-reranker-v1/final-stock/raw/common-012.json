@@ -1,0 +1,97 @@
+{
+  "id": "common-012",
+  "steps": [
+    {
+      "source": [
+        "女孩",
+        "女",
+        "钕",
+        "籹",
+        "釹",
+        "衄",
+        "恧",
+        "聏",
+        "衂"
+      ],
+      "wallMs": 347.02899932861,
+      "id": "key-1",
+      "ranked": [
+        "女",
+        "女孩",
+        "钕",
+        "籹",
+        "釹",
+        "衄",
+        "恧",
+        "聏",
+        "衂"
+      ],
+      "preedit": "nü hai",
+      "identities": [
+        2,
+        1,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "status": "completed",
+      "requests": [
+        {
+          "request": "{\"max_tokens\":20,\"stream\":false,\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"temperature\":0,\"messages\":[{\"content\":\"你是输入法候选词排序助手。根据对话历史和当前输入，从候选词列表中选出最符合语境的词。按优先级从高到低列出最多5个候选词，用顿号分隔，不要拼音、数字序号或任何解释。\",\"role\":\"system\"},{\"content\":\"对话历史：「nü」\\n当前输入拼音：「 hai」\\n候选词：女孩、女、钕、籹、釹\\n按最符合对话语境的顺序列出前5个候选词（顿号分隔）：\",\"role\":\"user\"}]}",
+          "status": "HTTP/1.1 200 OK",
+          "response": "{\"id\":\"chatcmpl-b14a65a7\",\"object\":\"chat.completion\",\"created\":1792647108,\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"女、钕、籹、釹、女孩\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":116,\"completion_tokens\":12,\"total_tokens\":128,\"input_tokens\":116,\"output_tokens\":12,\"prompt_tokens_details\":{\"cached_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"time_to_first_token\":0.1,\"total_time\":0.34,\"prompt_eval_duration\":0.1,\"generation_duration\":0.24,\"prompt_tokens_per_second\":1160.97,\"generation_tokens_per_second\":49.54}}",
+          "code": 200,
+          "networkWallMs": 346.40799999237
+        }
+      ],
+      "processCpuMs": 0.721
+    },
+    {
+      "source": [
+        "女孩",
+        "女",
+        "钕",
+        "籹",
+        "釹",
+        "衄",
+        "恧",
+        "聏",
+        "衂"
+      ],
+      "wallMs": 0.16200065612793,
+      "id": "identical-repeat",
+      "ranked": [
+        "女",
+        "女孩",
+        "钕",
+        "籹",
+        "釹",
+        "衄",
+        "恧",
+        "聏",
+        "衂"
+      ],
+      "preedit": "nü hai",
+      "identities": [
+        2,
+        1,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "status": "completed",
+      "requests": [],
+      "processCpuMs": 0.116
+    }
+  ],
+  "subprocessWallMs": 362.76475014165044,
+  "stderr": ""
+}

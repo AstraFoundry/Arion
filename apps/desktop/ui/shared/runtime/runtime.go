@@ -340,6 +340,10 @@ const (
 	UpdateNoRelease   UpdatePhase = "no-release"
 	UpdateAvailable   UpdatePhase = "available"
 	UpdateDownloading UpdatePhase = "downloading"
+	// UpdateStaged is verified on disk; installation waits for restart.
+	UpdateStaged UpdatePhase = "staged"
+	// UpdateApplying is the protected, noncancelable installation transaction.
+	UpdateApplying UpdatePhase = "applying"
 	// UpdateReady: the new version replaced the app on disk and runs after
 	// a restart.
 	UpdateReady  UpdatePhase = "ready"
@@ -358,19 +362,60 @@ type Update struct {
 	Checked time.Time
 	// Failed is the step that failed while Phase is UpdateFailed.
 	Failed UpdateStep
+	// RestartQueued waits for input and managed writes to finish safely.
+	RestartQueued bool
+	// ReminderVisible is owned by the reminder policy, independent of progress.
+	ReminderVisible bool
+	// StateError means reminder or staging decisions could not be persisted.
+	StateError bool
 }
 
 // UpdateStep is a step of updating that can fail.
 type UpdateStep string
 
 const (
-	UpdateStepCheck   UpdateStep = "check"
-	UpdateStepInstall UpdateStep = "install"
+	UpdateStepCheck    UpdateStep = "check"
+	UpdateStepInstall  UpdateStep = "install"
+	UpdateStepPrepare  UpdateStep = "prepare"
+	UpdateStepApply    UpdateStep = "apply"
+	UpdateStepRestart  UpdateStep = "restart"
+	UpdateStepRecovery UpdateStep = "recovery"
 )
 
 // Pending reports a newer version the user has not restarted into yet.
 func (u Update) Pending() bool {
-	return u.Phase == UpdateAvailable || u.Phase == UpdateDownloading || u.Phase == UpdateReady
+	switch u.Phase {
+	case UpdateAvailable, UpdateDownloading, UpdateStaged, UpdateApplying, UpdateReady:
+		return true
+	case UpdateFailed:
+		return u.Failed != UpdateStepCheck && u.Version != ""
+	default:
+		return false
+	}
+}
+
+// UpdateNotificationPermission describes current OS authorization, independently
+// of the persisted choice to submit update reminders.
+type UpdateNotificationPermission string
+
+const (
+	UpdateNotificationsUnknown     UpdateNotificationPermission = "unknown"
+	UpdateNotificationsDenied      UpdateNotificationPermission = "denied"
+	UpdateNotificationsAllowed     UpdateNotificationPermission = "allowed"
+	UpdateNotificationsUnsupported UpdateNotificationPermission = "unsupported"
+	UpdateNotificationsFailed      UpdateNotificationPermission = "failed"
+)
+
+// UpdateNotifications is the notification adapter's current capability and
+// authorization. Failed queries are visible and never treated as permission.
+type ProductNotifications struct {
+	Supported bool
+	Failed    bool
+	Uncertain bool
+}
+
+type UpdateNotifications struct {
+	Permission UpdateNotificationPermission
 }
 
 // SceneTarget is the field the menu bar panel shows the scene of: the app
@@ -431,6 +476,8 @@ type State struct {
 	Guide                   Guide
 	TrayHint                TrayHint
 	Update                  Update
+	UpdateNotifications     UpdateNotifications
+	ProductNotifications    ProductNotifications
 	// Focus is the settings section last asked for from outside settings.
 	Focus SettingsFocus
 	// MonitorLevels feed the microphone test meter, newest last.
@@ -496,10 +543,20 @@ type Actions interface {
 	OpenUpdate()
 	// CheckForUpdates asks the release feed now.
 	CheckForUpdates()
-	// InstallUpdate downloads, verifies and installs the available version.
+	// InstallUpdate downloads and verifies the available version for restart.
 	InstallUpdate()
-	// RestartToUpdate relaunches into the installed version.
+	// RestartToUpdate queues a protected apply/relaunch when input is safe.
 	RestartToUpdate()
+	// CancelUpdateRestart cancels a queued restart before its transaction begins.
+	CancelUpdateRestart()
+	// LaterUpdate defers this channel/version/phase for the reminder period.
+	LaterUpdate()
+	// DismissUpdateReminder suppresses this reminder until the update view opens.
+	DismissUpdateReminder()
+	// EnableUpdateReminders requests permission in an explicit user interaction.
+	EnableUpdateReminders()
+	// EnableProductNotifications explicitly requests OS authorization for account notices.
+	EnableProductNotifications()
 	// ExportDiagnostics saves a local content-free ZIP through the system chooser.
 	ExportDiagnostics()
 	CompleteOnboarding()

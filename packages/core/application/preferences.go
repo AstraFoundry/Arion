@@ -34,10 +34,19 @@ type Preferences struct {
 	// CheckUpdates asks the release feed for a newer version at launch and
 	// periodically. Profiles written before it existed load the default.
 	CheckUpdates bool `json:"checkUpdates"`
+	// AutoInstallUpdates downloads and verifies updates when automatic checks are
+	// enabled. Installation waits for an explicit protected restart.
+	AutoInstallUpdates bool `json:"autoInstallUpdates"`
+	// SystemUpdateReminders allows silent system update notifications after
+	// the user explicitly enables them. New and migrated profiles leave it off.
+	SystemUpdateReminders bool `json:"systemUpdateReminders"`
+	// ProductNotifications opts into account-targeted product notices while running.
+	// New and migrated profiles leave it off. OS submission is not a read receipt.
+	ProductNotifications bool `json:"productNotifications"`
 	// AllowPrereleaseUpdates includes published preview releases when checking.
 	AllowPrereleaseUpdates bool `json:"allowPrereleaseUpdates"`
-	// Polish turns on the local LLM pipeline: live rewriting while speaking
-	// and a validated final rewrite. Off until the user downloads the model.
+	// Polish enables the shared rewrite pipeline for the selected engine.
+	// Local execution also provides previews while speaking.
 	Polish bool `json:"polish"`
 	// PolishEngine is where polishing runs: on this device, or with the
 	// cloud model the user connected (ADR 022). Profiles written before it
@@ -57,7 +66,7 @@ type Preferences struct {
 	// ContextCursor, ContextScreen and ContextHistory let polishing read the
 	// field's text around the cursor, the focused window's recognized text
 	// and the user's recent dictations in the same place (ADR 013). On by
-	// default; everything stays on this device. Profiles written before
+	// default; cloud polishing sends enabled sources (ADR 023). Profiles written before
 	// they existed load the defaults.
 	ContextCursor  bool `json:"contextCursor"`
 	ContextScreen  bool `json:"contextScreen"`
@@ -76,7 +85,7 @@ type PolishEngine string
 
 const (
 	PolishLocal PolishEngine = "local"
-	// PolishCloud sends only the dictated text and its recalled terms to
+	// PolishCloud sends text, recalled terms and enabled context to
 	// the connected provider; context sources stay on the device.
 	PolishCloud PolishEngine = "cloud"
 )

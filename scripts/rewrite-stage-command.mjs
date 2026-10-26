@@ -102,7 +102,7 @@ async function run() {
     });
 
     const sourceFiles = new Set(["go.work", "apps/desktop/go.mod", "apps/desktop/go.sum", "packages/core/go.mod", "models/go.mod", "models/catalog.json", "scripts/rewrite-stage-command.mjs"]);
-    for (const directory of ["apps/desktop/infrastructure/llm/gguf", "apps/desktop/infrastructure/llm/prompt", "apps/desktop/infrastructure/llm/spelling", "apps/desktop/infrastructure/llm/engine", "packages/core/domain", "packages/core/application"]) {
+    for (const directory of ["apps/desktop/infrastructure/llm/gguf", "apps/desktop/infrastructure/llm/rewrite", "apps/desktop/infrastructure/llm/prompt", "apps/desktop/infrastructure/llm/spelling", "apps/desktop/infrastructure/llm/engine", "packages/core/domain", "packages/core/application"]) {
       for (const file of await filesUnder(path.join(root, directory))) {
         if (/\.(go|json|dict)$/.test(file)) sourceFiles.add(path.relative(root, file));
       }

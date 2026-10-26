@@ -1,0 +1,762 @@
+{
+  "status": "completed",
+  "kind": "offline diagnostic over actual responses, not a new model treatment",
+  "counts": {
+    "responses": 89,
+    "firstChoiceIsCandidate": 86,
+    "firstChoiceOutsideCandidateSet": 3,
+    "originalParserNoMatch": 38,
+    "validFirstChoiceNotApplied": 12
+  },
+  "ignoredValidChoices": [
+    {
+      "id": "context-006",
+      "modelFirstChoice": "全力",
+      "actualFirstChoice": "权利",
+      "content": "全力、圈里、全力、圈里、全力"
+    },
+    {
+      "id": "abbreviation-002",
+      "modelFirstChoice": "北京",
+      "actualFirstChoice": "比较",
+      "content": "北京、比较、毕竟、不仅、背景"
+    },
+    {
+      "id": "partial-005",
+      "modelFirstChoice": "解码",
+      "actualFirstChoice": "节目",
+      "content": "解码、解密、节目、界面、姐妹"
+    },
+    {
+      "id": "context-017",
+      "modelFirstChoice": "一致",
+      "actualFirstChoice": "一直",
+      "content": "一致、一直、一支、抑制、一只"
+    },
+    {
+      "id": "context-020",
+      "modelFirstChoice": "十届",
+      "actualFirstChoice": "世界",
+      "content": "十届、世界、时节、师姐、视界"
+    },
+    {
+      "id": "context-004",
+      "modelFirstChoice": "誓言",
+      "actualFirstChoice": "实验",
+      "content": "誓言、实验、试验、饰演、食盐"
+    },
+    {
+      "id": "abbreviation-004",
+      "modelFirstChoice": "考察",
+      "actualFirstChoice": "课程",
+      "content": "考察、课程、开车、库存、看出"
+    },
+    {
+      "id": "context-005",
+      "modelFirstChoice": "全力",
+      "actualFirstChoice": "权利",
+      "content": "全力、圈里、权利、权力、全"
+    },
+    {
+      "id": "truncated-context-005",
+      "modelFirstChoice": "全力",
+      "actualFirstChoice": "权利",
+      "content": "全力、圈里、权利、权力、全"
+    },
+    {
+      "id": "abbreviation-001",
+      "modelFirstChoice": "北京",
+      "actualFirstChoice": "比较",
+      "content": "北京、毕竟、比较、背景、不仅"
+    },
+    {
+      "id": "abbreviation-005",
+      "modelFirstChoice": "所有",
+      "actualFirstChoice": "所以",
+      "content": "所有、使用、所以、声音、属于"
+    },
+    {
+      "id": "truncated-context-006",
+      "modelFirstChoice": "全力",
+      "actualFirstChoice": "权利",
+      "content": "全力、圈里、权利、权力、全"
+    }
+  ],
+  "originalParserReplay": [
+    {
+      "ranked": [],
+      "best": false,
+      "id": "context-035"
+    },
+    {
+      "ranked": [
+        "预警",
+        "语境",
+        "于"
+      ],
+      "best": 1,
+      "id": "context-028"
+    },
+    {
+      "ranked": [
+        "了解",
+        "链接",
+        "连接",
+        "理解",
+        "垃圾"
+      ],
+      "best": 1,
+      "id": "abbreviation-003"
+    },
+    {
+      "ranked": [],
+      "best": false,
+      "id": "truncated-context-007"
+    },
+    {
+      "ranked": [
+        "自愿",
+        "子",
+        "字",
+        "资源",
+        "自"
+      ],
+      "best": 2,
+      "id": "context-048"
+    },
+    {
+      "ranked": [],
+      "best": false,
+      "id": "context-019"
+    },
+    {
+      "ranked": [
+        "链接",
+        "连接",
+        "练级",
+        "廉价",
+        "脸颊"
+      ],
+      "best": 1,
+      "id": "partial-004"
+    },
+    {
+      "ranked": [],
+      "best": false,
+      "id": "context-006"
+    },
+    {
+      "ranked": [],
+      "best": false,
+      "id": "truncated-context-003"
+    },
+    {
+      "ranked": [
+        "点",
+        "电",
+        "店",
+        "电脑",
+        "殿"
+      ],
+      "best": 2,
+      "id": "common-007"
+    },
+    {
+      "ranked": [],
+      "best": false,
+      "id": "context-008"
+    },
+    {
+      "ranked": [
+        "起来",
+        "权利"
+      ],
+      "best": 1,
+      "id": "abbreviation-006"
+    },
+    {
+      "ranked": [
+        "隐约",
+        "隐喻",
+        "银月",
+        "音乐"
+      ],
+      "best": 2,
+      "id": "common-010"
+    },
+    {
+      "ranked": [
+        "神情",
+        "深情",
+        "神",
+        "申请",
+        "深"
+      ],
+      "best": 2,
+      "id": "context-026"
+    },
+    {
+      "ranked": [
+        "试试",
+        "事实",
+        "实施"
+      ],
+      "best": 3,
+      "id": "context-012"
+    },
+    {
+      "ranked": [],
+      "best": false,
+      "id": "context-001"
+    },
+    {
+      "ranked": [],
+      "best": false,
+      "id": "context-045"
+    },
+    {
+      "ranked": [
+        "你好",
+        "你",
+        "拟"
+      ],
+      "best": 1,
+      "id": "common-001"
+    },
+    {
+      "ranked": [],
+      "best": false,
+      "id": "abbreviation-002"
+    },
+    {
+      "ranked": [],
+      "best": false,
+      "id": "partial-005"
+    },
+    {
+      "ranked": [
+        "使用"
+      ],
+      "best": 1,
+      "id": "partial-003"
+    },
+    {
+      "ranked": [
+        "其中",
+        "期中",
+        "七种"
+      ],
+      "best": 1,
+      "id": "context-042"
+    },
+    {
+      "ranked": [
+        "申请",
+        "神情",
+        "深情",
+        "神",
+        "深"
+      ],
+      "best": 1,
+      "id": "context-025"
+    },
+    {
+      "ranked": [
+        "地",
+        "得",
+        "的",
+        "锝",
+        "德"
+      ],
+      "best": 3,
+      "id": "ambiguous-003"
+    },
+    {
+      "ranked": [],
+      "best": false,
+      "id": "context-018"
+    },
+    {
+      "ranked": [],
+      "best": false,
+      "id": "truncated-context-008"
+    },
+    {
+      "ranked": [
+        "教程",
+        "叫",
+        "交",
+        "教",
+        "较"
+      ],
+      "best": 1,
+      "id": "context-032"
+    },
+    {
+      "ranked": [],
+      "best": false,
+      "id": "context-017"
+    },
+    {
+      "ranked": [],
+      "best": false,
+      "id": "truncated-context-004"
+    },
+    {
+      "ranked": [],
+      "best": false,
+      "id": "context-020"
+    },
+    {
+      "ranked": [],
+      "best": false,
+      "id": "common-002"
+    },
+    {
+      "ranked": [
+        "子",
+        "自愿",
+        "资源",
+        "字",
+        "自"
+      ],
+      "best": 3,
+      "id": "context-047"
+    },
+    {
+      "ranked": [
+        "共",
+        "工",
+        "公",
+        "工程",
+        "攻城"
+      ],
+      "best": 3,
+      "id": "context-037"
+    },
+    {
+      "ranked": [
+        "女",
+        "钕",
+        "籹",
+        "釹",
+        "女孩"
+      ],
+      "best": 2,
+      "id": "common-012"
+    },
+    {
+      "ranked": [],
+      "best": false,
+      "id": "context-046"
+    },
+    {
+      "ranked": [
+        "链接",
+        "连接"
+      ],
+      "best": 1,
+      "id": "context-030"
+    },
+    {
+      "ranked": [
+        "彭",
+        "碰",
+        "朋友",
+        "捧",
+        "鹏"
+      ],
+      "best": 3,
+      "id": "common-004"
+    },
+    {
+      "ranked": [],
+      "best": false,
+      "id": "partial-001"
+    },
+    {
+      "ranked": [],
+      "best": false,
+      "id": "context-002"
+    },
+    {
+      "ranked": [
+        "治理"
+      ],
+      "best": 1,
+      "id": "context-043"
+    },
+    {
+      "ranked": [
+        "教程",
+        "教",
+        "较",
+        "叫",
+        "交"
+      ],
+      "best": 1,
+      "id": "context-031"
+    },
+    {
+      "ranked": [
+        "节点",
+        "结点",
+        "节电",
+        "接地"
+      ],
+      "best": 1,
+      "id": "context-033"
+    },
+    {
+      "ranked": [
+        "觉得",
+        "决定"
+      ],
+      "best": 1,
+      "id": "abbreviation-007"
+    },
+    {
+      "ranked": [],
+      "best": false,
+      "id": "truncated-context-001"
+    },
+    {
+      "ranked": [
+        "其中",
+        "七种",
+        "器重",
+        "其",
+        "期中"
+      ],
+      "best": 1,
+      "id": "context-041"
+    },
+    {
+      "ranked": [],
+      "best": false,
+      "id": "context-036"
+    },
+    {
+      "ranked": [
+        "他",
+        "她",
+        "它",
+        "塔",
+        "踏"
+      ],
+      "best": 1,
+      "id": "ambiguous-001"
+    },
+    {
+      "ranked": [],
+      "best": false,
+      "id": "context-004"
+    },
+    {
+      "ranked": [
+        "快",
+        "快乐",
+        "块",
+        "筷",
+        "酷爱"
+      ],
+      "best": 2,
+      "id": "common-009"
+    },
+    {
+      "ranked": [
+        "啊",
+        "阿"
+      ],
+      "best": 3,
+      "id": "coined-name-004"
+    },
+    {
+      "ranked": [],
+      "best": false,
+      "id": "partial-008"
+    },
+    {
+      "ranked": [
+        "学"
+      ],
+      "best": 2,
+      "id": "common-005"
+    },
+    {
+      "ranked": [],
+      "best": false,
+      "id": "context-021"
+    },
+    {
+      "ranked": [
+        "工",
+        "公"
+      ],
+      "best": 3,
+      "id": "common-006"
+    },
+    {
+      "ranked": [
+        "是",
+        "时",
+        "事",
+        "市",
+        "使"
+      ],
+      "best": 1,
+      "id": "ambiguous-002"
+    },
+    {
+      "ranked": [],
+      "best": false,
+      "id": "common-011"
+    },
+    {
+      "ranked": [
+        "治理"
+      ],
+      "best": 1,
+      "id": "context-044"
+    },
+    {
+      "ranked": [
+        "节电",
+        "节点",
+        "结点",
+        "接地"
+      ],
+      "best": 3,
+      "id": "context-034"
+    },
+    {
+      "ranked": [
+        "明天",
+        "命题",
+        "名",
+        "明",
+        "命"
+      ],
+      "best": 1,
+      "id": "common-003"
+    },
+    {
+      "ranked": [
+        "事情",
+        "申请"
+      ],
+      "best": 1,
+      "id": "abbreviation-008"
+    },
+    {
+      "ranked": [
+        "依依"
+      ],
+      "best": 4,
+      "id": "context-014"
+    },
+    {
+      "ranked": [
+        "声明"
+      ],
+      "best": 2,
+      "id": "context-023"
+    },
+    {
+      "ranked": [],
+      "best": false,
+      "id": "abbreviation-004"
+    },
+    {
+      "ranked": [],
+      "best": false,
+      "id": "ambiguous-004"
+    },
+    {
+      "ranked": [],
+      "best": false,
+      "id": "context-005"
+    },
+    {
+      "ranked": [],
+      "best": false,
+      "id": "context-003"
+    },
+    {
+      "ranked": [
+        "设",
+        "涉及",
+        "设计",
+        "射击",
+        "社"
+      ],
+      "best": 4,
+      "id": "context-010"
+    },
+    {
+      "ranked": [
+        "共",
+        "工",
+        "公",
+        "攻城",
+        "工程"
+      ],
+      "best": 3,
+      "id": "context-038"
+    },
+    {
+      "ranked": [
+        "生"
+      ],
+      "best": 5,
+      "id": "context-024"
+    },
+    {
+      "ranked": [],
+      "best": false,
+      "id": "truncated-context-005"
+    },
+    {
+      "ranked": [
+        "依依",
+        "意义"
+      ],
+      "best": 4,
+      "id": "context-013"
+    },
+    {
+      "ranked": [
+        "天",
+        "田"
+      ],
+      "best": 2,
+      "id": "common-008"
+    },
+    {
+      "ranked": [
+        "设",
+        "涉及",
+        "设计",
+        "射击",
+        "社"
+      ],
+      "best": 4,
+      "id": "context-009"
+    },
+    {
+      "ranked": [
+        "预警",
+        "语境",
+        "与",
+        "于"
+      ],
+      "best": 1,
+      "id": "context-027"
+    },
+    {
+      "ranked": [
+        "可",
+        "课程",
+        "克",
+        "科",
+        "课"
+      ],
+      "best": 2,
+      "id": "context-040"
+    },
+    {
+      "ranked": [],
+      "best": false,
+      "id": "abbreviation-001"
+    },
+    {
+      "ranked": [],
+      "best": false,
+      "id": "context-022"
+    },
+    {
+      "ranked": [],
+      "best": false,
+      "id": "truncated-context-002"
+    },
+    {
+      "ranked": [
+        "制定"
+      ],
+      "best": 1,
+      "id": "context-015"
+    },
+    {
+      "ranked": [
+        "申请",
+        "神情",
+        "深情",
+        "神奇",
+        "身躯"
+      ],
+      "best": 1,
+      "id": "partial-007"
+    },
+    {
+      "ranked": [],
+      "best": false,
+      "id": "context-007"
+    },
+    {
+      "ranked": [],
+      "best": false,
+      "id": "partial-006"
+    },
+    {
+      "ranked": [
+        "制定"
+      ],
+      "best": 1,
+      "id": "context-016"
+    },
+    {
+      "ranked": [],
+      "best": false,
+      "id": "abbreviation-005"
+    },
+    {
+      "ranked": [
+        "试试",
+        "实施"
+      ],
+      "best": 3,
+      "id": "context-011"
+    },
+    {
+      "ranked": [],
+      "best": false,
+      "id": "partial-002"
+    },
+    {
+      "ranked": [],
+      "best": false,
+      "id": "truncated-context-006"
+    },
+    {
+      "ranked": [
+        "链接",
+        "连接"
+      ],
+      "best": 1,
+      "id": "context-029"
+    },
+    {
+      "ranked": [
+        "课程",
+        "可",
+        "课",
+        "克",
+        "科"
+      ],
+      "best": 1,
+      "id": "context-039"
+    }
+  ],
+  "cause": "Lua patterns operate on UTF-8 bytes: multibyte punctuation inside bracket character classes also splits/strips bytes belonging to Chinese characters",
+  "sourceSha256": "c12e2c4750f4c28fd93daa73042762dfe2171a4f640217c14ee16db2700a14e6"
+}

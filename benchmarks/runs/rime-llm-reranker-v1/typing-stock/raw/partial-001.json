@@ -1,0 +1,244 @@
+{
+  "id": "partial-001",
+  "steps": [
+    {
+      "wallMs": 278.06499958038,
+      "preedit": "b",
+      "ranked": [
+        "把",
+        "不",
+        "吧",
+        "被",
+        "并",
+        "比",
+        "别",
+        "帮",
+        "本"
+      ],
+      "processCpuMs": 0.76,
+      "id": "key-1",
+      "requests": [
+        {
+          "networkWallMs": 277.1639995575,
+          "request": "{\"stream\":false,\"temperature\":0,\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"messages\":[{\"content\":\"你是输入法候选词排序助手。根据对话历史和当前输入，从候选词列表中选出最符合语境的词。按优先级从高到低列出最多5个候选词，用顿号分隔，不要拼音、数字序号或任何解释。\",\"role\":\"system\"},{\"content\":\"对话历史：「下周乘飞机去」\\n当前输入拼音：「b」\\n候选词：不、吧、把、被、并\\n按最符合对话语境的顺序列出前5个候选词（顿号分隔）：\",\"role\":\"user\"}],\"max_tokens\":20}",
+          "status": "HTTP/1.1 200 OK",
+          "code": 200,
+          "response": "{\"id\":\"chatcmpl-21f19b19\",\"object\":\"chat.completion\",\"created\":1792647149,\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"把、被、并、不、吧\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":116,\"completion_tokens\":9,\"total_tokens\":125,\"input_tokens\":116,\"output_tokens\":9,\"prompt_tokens_details\":{\"cached_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"time_to_first_token\":0.1,\"total_time\":0.27,\"prompt_eval_duration\":0.1,\"generation_duration\":0.18,\"prompt_tokens_per_second\":1181.11,\"generation_tokens_per_second\":51.33}}"
+        }
+      ],
+      "status": "completed",
+      "identities": [
+        3,
+        1,
+        2,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "source": [
+        "不",
+        "吧",
+        "把",
+        "被",
+        "并",
+        "比",
+        "别",
+        "帮",
+        "本"
+      ]
+    },
+    {
+      "wallMs": 326.23999977112,
+      "preedit": "b e",
+      "ranked": [
+        "贝尔",
+        "保额",
+        "不饿",
+        "比尔",
+        "宝儿",
+        "不二",
+        "巴尔",
+        "布尔",
+        "波尔"
+      ],
+      "processCpuMs": 0.689,
+      "id": "key-2",
+      "requests": [
+        {
+          "networkWallMs": 325.56300067902,
+          "request": "{\"stream\":false,\"temperature\":0,\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"messages\":[{\"content\":\"你是输入法候选词排序助手。根据对话历史和当前输入，从候选词列表中选出最符合语境的词。按优先级从高到低列出最多5个候选词，用顿号分隔，不要拼音、数字序号或任何解释。\",\"role\":\"system\"},{\"content\":\"对话历史：「下周乘飞机去」\\n当前输入拼音：「b e」\\n候选词：保额、不饿、贝尔、比尔、宝儿\\n按最符合对话语境的顺序列出前5个候选词（顿号分隔）：\",\"role\":\"user\"}],\"max_tokens\":20}",
+          "status": "HTTP/1.1 200 OK",
+          "code": 200,
+          "response": "{\"id\":\"chatcmpl-7be95d95\",\"object\":\"chat.completion\",\"created\":1792647149,\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"贝尔、比尔、保额、不饿、宝儿\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":119,\"completion_tokens\":11,\"total_tokens\":130,\"input_tokens\":119,\"output_tokens\":11,\"prompt_tokens_details\":{\"cached_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"time_to_first_token\":0.11,\"total_time\":0.32,\"prompt_eval_duration\":0.11,\"generation_duration\":0.21,\"prompt_tokens_per_second\":1116.74,\"generation_tokens_per_second\":51.18}}"
+        }
+      ],
+      "status": "completed",
+      "identities": [
+        3,
+        1,
+        2,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "source": [
+        "保额",
+        "不饿",
+        "贝尔",
+        "比尔",
+        "宝儿",
+        "不二",
+        "巴尔",
+        "布尔",
+        "波尔"
+      ]
+    },
+    {
+      "wallMs": 290.08699989319,
+      "preedit": "bei",
+      "ranked": [
+        "被",
+        "呗",
+        "北",
+        "背",
+        "倍",
+        "杯",
+        "贝",
+        "备",
+        "悲"
+      ],
+      "processCpuMs": 0.618,
+      "id": "key-3",
+      "requests": [
+        {
+          "networkWallMs": 289.42299938202,
+          "request": "{\"stream\":false,\"temperature\":0,\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"messages\":[{\"content\":\"你是输入法候选词排序助手。根据对话历史和当前输入，从候选词列表中选出最符合语境的词。按优先级从高到低列出最多5个候选词，用顿号分隔，不要拼音、数字序号或任何解释。\",\"role\":\"system\"},{\"content\":\"对话历史：「下周乘飞机去」\\n当前输入拼音：「bei」\\n候选词：被、呗、北、背、倍\\n按最符合对话语境的顺序列出前5个候选词（顿号分隔）：\",\"role\":\"user\"}],\"max_tokens\":20}",
+          "status": "HTTP/1.1 200 OK",
+          "code": 200,
+          "response": "{\"id\":\"chatcmpl-391d7e8c\",\"object\":\"chat.completion\",\"created\":1792647150,\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"被、北、背、倍、呗\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":116,\"completion_tokens\":9,\"total_tokens\":125,\"input_tokens\":116,\"output_tokens\":9,\"prompt_tokens_details\":{\"cached_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"time_to_first_token\":0.11,\"total_time\":0.29,\"prompt_eval_duration\":0.11,\"generation_duration\":0.18,\"prompt_tokens_per_second\":1077.65,\"generation_tokens_per_second\":50.68}}"
+        }
+      ],
+      "status": "completed",
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "source": [
+        "被",
+        "呗",
+        "北",
+        "背",
+        "倍",
+        "杯",
+        "贝",
+        "备",
+        "悲"
+      ]
+    },
+    {
+      "wallMs": 288.49300003052,
+      "preedit": "bei j",
+      "ranked": [
+        "北京",
+        "背景",
+        "悲剧",
+        "北极",
+        "备件",
+        "被叫",
+        "被禁",
+        "被拒",
+        "杯酒"
+      ],
+      "processCpuMs": 0.73,
+      "id": "key-4",
+      "requests": [
+        {
+          "networkWallMs": 287.60999965668,
+          "request": "{\"stream\":false,\"temperature\":0,\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"messages\":[{\"content\":\"你是输入法候选词排序助手。根据对话历史和当前输入，从候选词列表中选出最符合语境的词。按优先级从高到低列出最多5个候选词，用顿号分隔，不要拼音、数字序号或任何解释。\",\"role\":\"system\"},{\"content\":\"对话历史：「下周乘飞机去」\\n当前输入拼音：「bei j」\\n候选词：北京、背景、悲剧、北极、备件\\n按最符合对话语境的顺序列出前5个候选词（顿号分隔）：\",\"role\":\"user\"}],\"max_tokens\":20}",
+          "status": "HTTP/1.1 200 OK",
+          "code": 200,
+          "response": "{\"id\":\"chatcmpl-084d284a\",\"object\":\"chat.completion\",\"created\":1792647150,\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"北京、背景、悲剧、北极、备件\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":117,\"completion_tokens\":9,\"total_tokens\":126,\"input_tokens\":117,\"output_tokens\":9,\"prompt_tokens_details\":{\"cached_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"time_to_first_token\":0.11,\"total_time\":0.28,\"prompt_eval_duration\":0.11,\"generation_duration\":0.18,\"prompt_tokens_per_second\":1085.86,\"generation_tokens_per_second\":51.14}}"
+        }
+      ],
+      "status": "completed",
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "source": [
+        "北京",
+        "背景",
+        "悲剧",
+        "北极",
+        "备件",
+        "被叫",
+        "被禁",
+        "被拒",
+        "杯酒"
+      ]
+    },
+    {
+      "wallMs": 0.35299968719482,
+      "preedit": "bei j",
+      "ranked": [
+        "北京",
+        "背景",
+        "悲剧",
+        "北极",
+        "备件",
+        "被叫",
+        "被禁",
+        "被拒",
+        "杯酒"
+      ],
+      "processCpuMs": 0.112,
+      "id": "identical-repeat",
+      "requests": [],
+      "status": "completed",
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "source": [
+        "北京",
+        "背景",
+        "悲剧",
+        "北极",
+        "备件",
+        "被叫",
+        "被禁",
+        "被拒",
+        "杯酒"
+      ]
+    }
+  ],
+  "subprocessWallMs": 1199.5361670851707,
+  "stderr": ""
+}

@@ -8,23 +8,26 @@ import (
 	"arion.local/desktop/ui/pages/overlay"
 	"arion.local/desktop/ui/pages/settings"
 	"arion.local/desktop/ui/pages/trayhint"
+	"arion.local/desktop/ui/pages/updatereminder"
 	"arion.local/desktop/ui/shared/runtime"
 	"github.com/egoist/mygo/ui"
 )
 
 // Window sizes in DIPs, owned by the pages that lay them out.
 const (
-	PanelWidth       = menubar.Width
-	PanelHeight      = menubar.Height
-	OnboardingWidth  = onboarding.Width
-	OnboardingHeight = onboarding.Height
-	SettingsWidth    = 760
-	SettingsHeight   = 560
-	OverlayWidth     = 720
-	OverlayHeight    = 180
-	GuideHeight      = guide.Height
-	TrayHintWidth    = trayhint.Width
-	TrayHintHeight   = trayhint.Height
+	PanelWidth           = menubar.Width
+	PanelHeight          = menubar.Height
+	OnboardingWidth      = onboarding.Width
+	OnboardingHeight     = onboarding.Height
+	SettingsWidth        = 760
+	SettingsHeight       = 560
+	OverlayWidth         = 720
+	OverlayHeight        = 180
+	GuideHeight          = guide.Height
+	TrayHintWidth        = trayhint.Width
+	TrayHintHeight       = trayhint.Height
+	UpdateReminderWidth  = updatereminder.Width
+	UpdateReminderHeight = updatereminder.Height
 )
 
 // View is a window's content and the hook releasing what it holds.
@@ -63,3 +66,8 @@ func Onboarding(store runtime.Store) View {
 
 // GuideHeightFor sizes each System Settings guide for its content.
 func GuideHeightFor(pane runtime.GuidePane) int { return guide.HeightFor(pane) }
+
+// UpdateReminder is the separate passive reminder; bootstrap owns its window.
+func UpdateReminder(store runtime.Store) View {
+	return View{Content: ui.View(func(c *ui.Context) { updatereminder.Render(c, store) }), Close: func() {}}
+}

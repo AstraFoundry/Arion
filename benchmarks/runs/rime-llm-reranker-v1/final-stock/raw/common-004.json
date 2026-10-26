@@ -1,0 +1,97 @@
+{
+  "id": "common-004",
+  "steps": [
+    {
+      "status": "completed",
+      "identities": [
+        3,
+        1,
+        2,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "id": "key-1",
+      "processCpuMs": 0.794,
+      "wallMs": 276.83800029755,
+      "ranked": [
+        "彭",
+        "朋友",
+        "碰",
+        "鹏",
+        "捧",
+        "朋",
+        "棚",
+        "蓬",
+        "烹"
+      ],
+      "requests": [
+        {
+          "networkWallMs": 275.94799995422,
+          "request": "{\"stream\":false,\"messages\":[{\"content\":\"你是输入法候选词排序助手。根据对话历史和当前输入，从候选词列表中选出最符合语境的词。按优先级从高到低列出最多5个候选词，用顿号分隔，不要拼音、数字序号或任何解释。\",\"role\":\"system\"},{\"content\":\"输入拼音：「peng you」\\n候选词：朋友、碰、彭、鹏、捧\\n按最可能的顺序列出前5个候选词（顿号分隔）：\",\"role\":\"user\"}],\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"max_tokens\":20,\"temperature\":0}",
+          "code": 200,
+          "response": "{\"id\":\"chatcmpl-56717a09\",\"object\":\"chat.completion\",\"created\":1792647109,\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"彭、碰、朋友、捧、鹏\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":103,\"completion_tokens\":9,\"total_tokens\":112,\"input_tokens\":103,\"output_tokens\":9,\"prompt_tokens_details\":{\"cached_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"time_to_first_token\":0.09,\"total_time\":0.27,\"prompt_eval_duration\":0.09,\"generation_duration\":0.18,\"prompt_tokens_per_second\":1107.75,\"generation_tokens_per_second\":50.21}}",
+          "status": "HTTP/1.1 200 OK"
+        }
+      ],
+      "source": [
+        "朋友",
+        "碰",
+        "彭",
+        "鹏",
+        "捧",
+        "朋",
+        "棚",
+        "蓬",
+        "烹"
+      ],
+      "preedit": "peng you"
+    },
+    {
+      "status": "completed",
+      "identities": [
+        3,
+        1,
+        2,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "id": "identical-repeat",
+      "processCpuMs": 0.11,
+      "wallMs": 0.2140007019043,
+      "ranked": [
+        "彭",
+        "朋友",
+        "碰",
+        "鹏",
+        "捧",
+        "朋",
+        "棚",
+        "蓬",
+        "烹"
+      ],
+      "requests": [],
+      "source": [
+        "朋友",
+        "碰",
+        "彭",
+        "鹏",
+        "捧",
+        "朋",
+        "棚",
+        "蓬",
+        "烹"
+      ],
+      "preedit": "peng you"
+    }
+  ],
+  "subprocessWallMs": 290.7112496905029,
+  "stderr": ""
+}

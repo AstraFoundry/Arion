@@ -109,7 +109,7 @@ func TestCloudPages(t *testing.T) {
 
 // Settings › Model keeps its settings on one page; the recognition model
 // and the cloud model each open their own pages, and back leaves them one
-// page at a time. Context switches hide for the cloud, which works where
+// page at a time. Context switches also show for the cloud, which works where
 // the local runtime is not shipped.
 func TestSettingsCloudModel(t *testing.T) {
 	state, _, store := fixture()
@@ -129,7 +129,7 @@ func TestSettingsCloudModel(t *testing.T) {
 		}
 		settle(tt)
 	}
-	if !hasText(tt, en.Text(copy.ModelRecognitionPage)) || !hasText(tt, en.Text(copy.MatchAppLabel)) || hasText(tt, en.Text(copy.ContextScreenLabel)) ||
+	if !hasText(tt, en.Text(copy.ModelRecognitionPage)) || !hasText(tt, en.Text(copy.MatchAppLabel)) || !hasText(tt, en.Text(copy.ContextScreenLabel)) ||
 		hasText(tt, en.Text(copy.PolishUnsupported)) || !hasText(tt, "deepseek-chat") || hasText(tt, en.Text(copy.CloudDisconnect)) ||
 		hasText(tt, en.Text(copy.PolishCloudDetail)) || hasText(tt, en.Text(copy.ModelReason)) {
 		t.Fatalf("model section: %q", tt.Texts())
@@ -216,5 +216,49 @@ func TestOnboardingCloudPolish(t *testing.T) {
 	click(en.Text(copy.Continue))
 	if !hasText(tt, en.Text(copy.OnbHoldKeyTitle)) {
 		t.Fatalf("cloud step not skipped: %q", tt.Texts())
+	}
+}
+
+func TestContextSettingsSharedAcrossEngines(t *testing.T) {
+	for _, locale := range []copy.Locale{copy.English, copy.Locale("zh-CN")} {
+		t.Run(string(locale), func(t *testing.T) {
+			state, _, store := fixture()
+			state.Preferences.UILanguage = runtime.UILanguage(locale)
+			state.Preferences.Polish = true
+			state.Polish = runtime.Polish{State: runtime.PolishReady, Installed: true}
+			state.Cloud = runtime.Cloud{Phase: runtime.CloudConnected, Provider: runtime.CloudDeepSeek}
+			state.Preferences.CloudModel = "deepseek-chat"
+			state.Permissions.Accessibility = runtime.ConsentGranted
+			state.Preferences.ContextCursor, state.Preferences.ContextScreen, state.Preferences.ContextHistory = true, true, true
+			page := settings.NewPage()
+			page.Section = settings.Model
+			tt := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, SettingsWidth, SettingsHeight)
+			messages := copy.For(locale)
+			for _, engine := range []runtime.PolishEngine{runtime.PolishLocal, runtime.PolishCloud} {
+				state.Preferences.PolishEngine = engine
+				settle(tt)
+				for _, key := range []copy.Key{copy.ContextCursorLabel, copy.ContextScreenLabel, copy.ContextHistoryLabel} {
+					if !hasText(tt, messages.Text(key)) {
+						t.Fatalf("%s missing %s", engine, key)
+					}
+				}
+				snapshot(t, tt, "settings-context-"+string(engine)+"-"+string(locale))
+			}
+			// Changing a source in cloud mode changes the same preference seen locally.
+			title, ok := tt.Find(messages.Text(copy.ContextHistoryLabel))
+			if !ok {
+				t.Fatal("history row missing")
+			}
+			tt.ClickAt(SettingsWidth-54, title.Y+title.H/2)
+			settle(tt)
+			if state.Preferences.ContextHistory {
+				t.Fatal("cloud history switch did not turn off")
+			}
+			state.Preferences.PolishEngine = runtime.PolishLocal
+			settle(tt)
+			if state.Preferences.ContextHistory {
+				t.Fatal("engine change reset context preference")
+			}
+		})
 	}
 }

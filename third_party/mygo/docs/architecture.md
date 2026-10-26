@@ -481,8 +481,9 @@ purego gives three primitives, used everywhere:
   (`platform.MaterialSurface`).
 - Message boxes are task dialogs (comctl32 v6, activated from shell32's
   manifest for executables without one); their structs are packed and laid
-  out by hand. Notifications are notification-area balloons, which Windows
-  10+ shows as toasts.
+  out by hand. Notifications use native WinRT toast with per-user installed
+  AUMID/shortcut and COM activation registration. Permission queries and explicit
+  requests are separate from delivery; setup failures never select balloons.
 
 ### Browsers (`internal/web`)
 
@@ -3030,8 +3031,8 @@ which npm allows only for packages that exist: the first release uses an
 | auto-hide menu bar | ignored | the bar widget hides; `can-activate-accel` keeps its shortcuts; Alt alone or F10 show it and open its first menu until it deactivates | the menu is attached only for the `SC_KEYMENU` menu loop that Alt alone or F10 start; shortcuts come from the webview |
 | tray | NSStatusItem, click events | AppIndicator (menu only, no click events) | notification area icon, click events |
 | global shortcuts | Carbon hot keys | X11: `XGrabKey` on the root window (with Caps/Num Lock variants), key presses from a GDK filter. Wayland: the XDG `GlobalShortcuts` portal (see [Linux](#linux-internallinux)) | `RegisterHotKey` |
-| notifications | UserNotifications, packaged apps only; `Group` is the `threadIdentifier`; the delegate is attached at launch, for the click that launched the app | org.freedesktop.Notifications over D-Bus; no `Group` | notification-area balloons (toasts); no `Group` |
-| notification removal | `removeDeliveredNotificationsWithIdentifiers:`; `ClearNotifications` removes all, earlier runs' too | `CloseNotification` on the bus, for those of this run | hides the balloon, which goes away by itself anyway |
+| notifications | UserNotifications, packaged apps only; explicit alert authorization; body/action delegate attached at launch; `Group` is `threadIdentifier` | org.freedesktop.Notifications over D-Bus, including action IDs; no `Group` | registered WinRT toast, stable AUMID/CLSID, COM warm/cold activation; no balloon fallback |
+| notification removal | delivered and pending requests; removed submissions are invalidated by generation | `CloseNotification` on the bus, for those of this run | deterministic tags plus sender history removal, including earlier runs; uninstall checks cleanup before unregistering |
 | vibrancy | all materials, behind pages and native UI | ignored | Windows 11 22H2 Mica, Acrylic, Tabbed, behind pages and native UI, in windows created with a material, which have no menu bar |
 | traffic lights, Dock | yes | ignored | ignored |
 | hidden title bar | AppKit's traffic lights over a full-size content view | GTK's title buttons in header bars over the page, per `gtk-decoration-layout`; none where the Wayland compositor decorates windows | caption buttons drawn in a layered child window, through DirectComposition over a material; snap layouts; a top edge that resizes |

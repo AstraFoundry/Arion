@@ -1,6 +1,6 @@
 # Account sign-in
 
-Desktop hosted-sync sign-in. The UI calls `runtime.Actions` and reads `runtime.State.Account`. It does not import `arion.local/desktop/internal/account`. The composition root (`bootstrap`) owns the service; a future sync client reads the access token from `App.Account().Session()`.
+Desktop hosted-sync sign-in. The UI calls `runtime.Actions` and reads `runtime.State.Account`. It does not import `arion.local/desktop/internal/account`. The composition root (`bootstrap`) owns the service; product notifications and a future sync client read the access token from `App.Account().Session()`.
 
 Behavior is specified in [ADR 015](../decisions/015-hosted-relay-account-authorization.md), SYNC-10, and MEM-A17. This page is the call surface.
 
@@ -154,3 +154,5 @@ Native Keychain and Credential Manager behavior is verified by compiling the pla
 ## Packaged center profiles
 
 The composition root supplies the immutable [compiled center profile](central-sync-design.md#implemented-profile-boundaries), including custom issuer, client, resource, scopes and entitlement. Refresh-token storage is keyed by its fingerprint. Legacy unscoped tokens are retained without migration; sign in again. Device mode disables all account operations and removes the account setup path. Custom OIDC disables the AstraFoundry catalog/waitlist flow. Neither profile selection nor credential-store construction contacts a server or enables sync.
+
+Opt-in [product notifications](product-notifications.md) uses the current session without requiring hosted-sync entitlement. Sign-out invalidates its network/action generation before revocation; restoring a session resumes authenticated catchup when enabled. This does not enable encrypted memory sync.

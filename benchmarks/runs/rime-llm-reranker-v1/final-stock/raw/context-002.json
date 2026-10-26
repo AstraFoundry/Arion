@@ -1,0 +1,138 @@
+{
+  "id": "context-002",
+  "steps": [
+    {
+      "processCpuMs": 0.814,
+      "preedit": "bei jing",
+      "source": [
+        "北京",
+        "背景",
+        "被",
+        "呗",
+        "北",
+        "背",
+        "倍",
+        "杯",
+        "贝"
+      ],
+      "wallMs": 281.82299995422,
+      "id": "key-1",
+      "requests": [
+        {
+          "status": "HTTP/1.1 200 OK",
+          "response": "{\"id\":\"chatcmpl-081fddb6\",\"object\":\"chat.completion\",\"created\":1792647109,\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"北京、背景、被、呗、北\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":118,\"completion_tokens\":9,\"total_tokens\":127,\"input_tokens\":118,\"output_tokens\":9,\"prompt_tokens_details\":{\"cached_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"time_to_first_token\":0.1,\"total_time\":0.28,\"prompt_eval_duration\":0.1,\"generation_duration\":0.18,\"prompt_tokens_per_second\":1192.64,\"generation_tokens_per_second\":50.57}}",
+          "networkWallMs": 280.81299972534,
+          "request": "{\"max_tokens\":20,\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"stream\":false,\"temperature\":0,\"messages\":[{\"role\":\"system\",\"content\":\"你是输入法候选词排序助手。根据对话历史和当前输入，从候选词列表中选出最符合语境的词。按优先级从高到低列出最多5个候选词，用顿号分隔，不要拼音、数字序号或任何解释。\"},{\"role\":\"user\",\"content\":\"对话历史：「下周乘飞机去」\\n当前输入拼音：「bei jing」\\n候选词：北京、背景、被、呗、北\\n按最符合对话语境的顺序列出前5个候选词（顿号分隔）：\"}]}",
+          "code": 200
+        }
+      ],
+      "ranked": [
+        "北京",
+        "背景",
+        "被",
+        "呗",
+        "北",
+        "背",
+        "倍",
+        "杯",
+        "贝"
+      ],
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "status": "completed"
+    },
+    {
+      "processCpuMs": 0.132,
+      "preedit": "bei jing",
+      "source": [
+        "北京",
+        "背景",
+        "被",
+        "呗",
+        "北",
+        "背",
+        "倍",
+        "杯",
+        "贝"
+      ],
+      "wallMs": 0.25399971008301,
+      "id": "identical-repeat",
+      "requests": [],
+      "ranked": [
+        "北京",
+        "背景",
+        "被",
+        "呗",
+        "北",
+        "背",
+        "倍",
+        "杯",
+        "贝"
+      ],
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "status": "completed"
+    },
+    {
+      "processCpuMs": 0.104,
+      "preedit": "bei jing",
+      "source": [
+        "贝",
+        "杯",
+        "倍",
+        "背",
+        "北",
+        "呗",
+        "被",
+        "背景",
+        "北京"
+      ],
+      "wallMs": 0.21300029754639,
+      "id": "changed-candidate-order",
+      "requests": [],
+      "ranked": [
+        "贝",
+        "杯",
+        "倍",
+        "背",
+        "北",
+        "呗",
+        "被",
+        "背景",
+        "北京"
+      ],
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "status": "completed"
+    }
+  ],
+  "subprocessWallMs": 299.61974965408444,
+  "stderr": ""
+}

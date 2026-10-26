@@ -1,0 +1,294 @@
+{
+  "id": "long-input-005",
+  "config": {
+    "enabled": true,
+    "endpoint": "http://127.0.0.1:18782/v1/chat/completions",
+    "model": "Qwen3.5-0.8B-MLX-bf16",
+    "max_candidates": 5,
+    "timeout": 0.5,
+    "min_syllables": 1,
+    "max_rerank_pos": 5,
+    "max_tokens": 20,
+    "min_context_len": 0,
+    "max_preedit_len": 10,
+    "debug_log": true,
+    "fallback_on_error": true,
+    "collect_training_data": true,
+    "collect_user_pairs": true,
+    "collect_llm_pairs": false,
+    "system_prompt": "你是输入法候选词排序助手。根据对话历史和当前输入，从候选词列表中选出最符合语境的词。按优先级从高到低列出最多5个候选词，用顿号分隔，不要拼音、数字序号或任何解释。"
+  },
+  "history": "",
+  "steps": [
+    {
+      "id": "key-1",
+      "preedit": "q",
+      "candidates": [
+        "去",
+        "其",
+        "请",
+        "钱",
+        "前",
+        "却",
+        "起",
+        "全",
+        "区"
+      ]
+    },
+    {
+      "id": "key-2",
+      "preedit": "qi",
+      "candidates": [
+        "其",
+        "起",
+        "期",
+        "气",
+        "器",
+        "七",
+        "齐",
+        "奇",
+        "骑"
+      ]
+    },
+    {
+      "id": "key-3",
+      "preedit": "qin",
+      "candidates": [
+        "亲",
+        "秦",
+        "琴",
+        "勤",
+        "钦",
+        "沁",
+        "侵",
+        "寝",
+        "禽"
+      ]
+    },
+    {
+      "id": "key-4",
+      "preedit": "qing",
+      "candidates": [
+        "请",
+        "清",
+        "情",
+        "轻",
+        "青",
+        "庆",
+        "晴",
+        "倾",
+        "卿"
+      ]
+    },
+    {
+      "id": "key-5",
+      "preedit": "qing f",
+      "candidates": [
+        "清风",
+        "情妇",
+        "轻浮",
+        "请发",
+        "轻抚",
+        "轻风",
+        "请",
+        "清",
+        "情"
+      ]
+    },
+    {
+      "id": "key-6",
+      "preedit": "qing fa",
+      "candidates": [
+        "请发",
+        "请",
+        "清",
+        "情",
+        "轻",
+        "青",
+        "庆",
+        "晴",
+        "倾"
+      ]
+    },
+    {
+      "id": "key-7",
+      "preedit": "qing fa s",
+      "candidates": [
+        "请发生",
+        "请发",
+        "清风",
+        "情妇",
+        "轻浮",
+        "轻抚",
+        "轻风",
+        "请",
+        "清"
+      ]
+    },
+    {
+      "id": "key-8",
+      "preedit": "qing fa so",
+      "candidates": [
+        "请发送",
+        "请发",
+        "请",
+        "清",
+        "情",
+        "轻",
+        "青",
+        "庆",
+        "晴"
+      ]
+    },
+    {
+      "id": "key-9",
+      "preedit": "qing fa son",
+      "candidates": [
+        "请发送",
+        "请发",
+        "请",
+        "清",
+        "情",
+        "轻",
+        "青",
+        "庆",
+        "晴"
+      ]
+    },
+    {
+      "id": "key-10",
+      "preedit": "qing fa song",
+      "candidates": [
+        "请发送",
+        "请发",
+        "请",
+        "清",
+        "情",
+        "轻",
+        "青",
+        "庆",
+        "晴"
+      ]
+    },
+    {
+      "id": "key-11",
+      "preedit": "qing fa song w",
+      "candidates": [
+        "请发送我",
+        "请发",
+        "清风",
+        "情妇",
+        "轻浮",
+        "轻抚",
+        "轻风",
+        "请",
+        "清"
+      ]
+    },
+    {
+      "id": "key-12",
+      "preedit": "qing fa song w e",
+      "candidates": [
+        "请发送巍峨",
+        "请发",
+        "清风",
+        "情妇",
+        "轻浮",
+        "轻抚",
+        "轻风",
+        "请",
+        "清"
+      ]
+    },
+    {
+      "id": "key-13",
+      "preedit": "qing fa song wen",
+      "candidates": [
+        "请发送问",
+        "请发",
+        "请",
+        "清",
+        "情",
+        "轻",
+        "青",
+        "庆",
+        "晴"
+      ]
+    },
+    {
+      "id": "key-14",
+      "preedit": "qing fa song wen j",
+      "candidates": [
+        "请发送文件",
+        "请发",
+        "清风",
+        "情妇",
+        "轻浮",
+        "轻抚",
+        "轻风",
+        "请",
+        "清"
+      ]
+    },
+    {
+      "id": "key-15",
+      "preedit": "qing fa song wen ji",
+      "candidates": [
+        "请发送文集",
+        "请发",
+        "请",
+        "清",
+        "情",
+        "轻",
+        "青",
+        "庆",
+        "晴"
+      ]
+    },
+    {
+      "id": "key-16",
+      "preedit": "qing fa song wen jia",
+      "candidates": [
+        "请发送问家",
+        "请发",
+        "请",
+        "清",
+        "情",
+        "轻",
+        "青",
+        "庆",
+        "晴"
+      ]
+    },
+    {
+      "id": "key-17",
+      "preedit": "qing fa song wen jian",
+      "candidates": [
+        "请发送文件",
+        "请发",
+        "请",
+        "清",
+        "情",
+        "轻",
+        "青",
+        "庆",
+        "晴"
+      ]
+    },
+    {
+      "id": "identical-repeat",
+      "preedit": "qing fa song wen jian",
+      "candidates": [
+        "请发送文件",
+        "请发",
+        "请",
+        "清",
+        "情",
+        "轻",
+        "青",
+        "庆",
+        "晴"
+      ]
+    }
+  ]
+}

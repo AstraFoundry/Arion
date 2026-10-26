@@ -276,3 +276,13 @@ func (c Catalog) Month(month time.Month) string {
 func (c Catalog) DayWords(t time.Time, words int) string {
 	return c.format(FormatDayWords, "date", c.MonthDay(t), "words", c.Count(words))
 }
+
+// UpdateDownloaded distinguishes verified staging from installed resources.
+func (c Catalog) UpdateDownloaded(version string) string {
+	return c.format(FormatUpdateDownloaded, "version", version)
+}
+
+// UpdateReadyVersion describes a completed installation awaiting relaunch.
+func (c Catalog) UpdateReadyVersion(version string) string {
+	return c.format(FormatUpdateReady, "version", version)
+}

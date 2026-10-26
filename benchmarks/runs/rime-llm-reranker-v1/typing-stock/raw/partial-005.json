@@ -1,0 +1,244 @@
+{
+  "id": "partial-005",
+  "steps": [
+    {
+      "processCpuMs": 0.703,
+      "id": "key-1",
+      "requests": [
+        {
+          "networkWallMs": 277.05599975586,
+          "response": "{\"id\":\"chatcmpl-87200672\",\"object\":\"chat.completion\",\"created\":1792647139,\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"将、就、及、叫、家\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":114,\"completion_tokens\":9,\"total_tokens\":123,\"input_tokens\":114,\"output_tokens\":9,\"prompt_tokens_details\":{\"cached_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"time_to_first_token\":0.1,\"total_time\":0.27,\"prompt_eval_duration\":0.1,\"generation_duration\":0.17,\"prompt_tokens_per_second\":1141.7,\"generation_tokens_per_second\":51.77}}",
+          "code": 200,
+          "status": "HTTP/1.1 200 OK",
+          "request": "{\"stream\":false,\"temperature\":0,\"messages\":[{\"content\":\"你是输入法候选词排序助手。根据对话历史和当前输入，从候选词列表中选出最符合语境的词。按优先级从高到低列出最多5个候选词，用顿号分隔，不要拼音、数字序号或任何解释。\",\"role\":\"system\"},{\"content\":\"对话历史：「这款软件的」\\n当前输入拼音：「j」\\n候选词：就、将、及、叫、家\\n按最符合对话语境的顺序列出前5个候选词（顿号分隔）：\",\"role\":\"user\"}],\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"max_tokens\":20}"
+        }
+      ],
+      "status": "completed",
+      "source": [
+        "就",
+        "将",
+        "及",
+        "叫",
+        "家",
+        "加",
+        "见",
+        "进",
+        "讲"
+      ],
+      "ranked": [
+        "将",
+        "就",
+        "及",
+        "叫",
+        "家",
+        "加",
+        "见",
+        "进",
+        "讲"
+      ],
+      "wallMs": 277.93700027466,
+      "preedit": "j",
+      "identities": [
+        2,
+        1,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "processCpuMs": 0.631,
+      "id": "key-2",
+      "requests": [
+        {
+          "networkWallMs": 294.52099990845,
+          "response": "{\"id\":\"chatcmpl-70cad02f\",\"object\":\"chat.completion\",\"created\":1792647139,\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"及、级、即、几、机\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":114,\"completion_tokens\":9,\"total_tokens\":123,\"input_tokens\":114,\"output_tokens\":9,\"prompt_tokens_details\":{\"cached_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"time_to_first_token\":0.11,\"total_time\":0.29,\"prompt_eval_duration\":0.11,\"generation_duration\":0.18,\"prompt_tokens_per_second\":1055.44,\"generation_tokens_per_second\":49.22}}",
+          "code": 200,
+          "status": "HTTP/1.1 200 OK",
+          "request": "{\"stream\":false,\"temperature\":0,\"messages\":[{\"content\":\"你是输入法候选词排序助手。根据对话历史和当前输入，从候选词列表中选出最符合语境的词。按优先级从高到低列出最多5个候选词，用顿号分隔，不要拼音、数字序号或任何解释。\",\"role\":\"system\"},{\"content\":\"对话历史：「这款软件的」\\n当前输入拼音：「ji」\\n候选词：及、级、即、几、机\\n按最符合对话语境的顺序列出前5个候选词（顿号分隔）：\",\"role\":\"user\"}],\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"max_tokens\":20}"
+        }
+      ],
+      "status": "completed",
+      "source": [
+        "及",
+        "级",
+        "即",
+        "几",
+        "机",
+        "既",
+        "急",
+        "集",
+        "记"
+      ],
+      "ranked": [
+        "及",
+        "级",
+        "即",
+        "几",
+        "机",
+        "既",
+        "急",
+        "集",
+        "记"
+      ],
+      "wallMs": 295.40799999237,
+      "preedit": "ji",
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "processCpuMs": 0.593,
+      "id": "key-3",
+      "requests": [
+        {
+          "networkWallMs": 290.31199932098,
+          "response": "{\"id\":\"chatcmpl-c0667fb5\",\"object\":\"chat.completion\",\"created\":1792647139,\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"接、解、节、姐、借\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":114,\"completion_tokens\":9,\"total_tokens\":123,\"input_tokens\":114,\"output_tokens\":9,\"prompt_tokens_details\":{\"cached_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"time_to_first_token\":0.11,\"total_time\":0.29,\"prompt_eval_duration\":0.11,\"generation_duration\":0.18,\"prompt_tokens_per_second\":1061.07,\"generation_tokens_per_second\":50.19}}",
+          "code": 200,
+          "status": "HTTP/1.1 200 OK",
+          "request": "{\"stream\":false,\"temperature\":0,\"messages\":[{\"content\":\"你是输入法候选词排序助手。根据对话历史和当前输入，从候选词列表中选出最符合语境的词。按优先级从高到低列出最多5个候选词，用顿号分隔，不要拼音、数字序号或任何解释。\",\"role\":\"system\"},{\"content\":\"对话历史：「这款软件的」\\n当前输入拼音：「jie」\\n候选词：接、借、解、节、姐\\n按最符合对话语境的顺序列出前5个候选词（顿号分隔）：\",\"role\":\"user\"}],\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"max_tokens\":20}"
+        }
+      ],
+      "status": "completed",
+      "source": [
+        "接",
+        "借",
+        "解",
+        "节",
+        "姐",
+        "街",
+        "界",
+        "结",
+        "杰"
+      ],
+      "ranked": [
+        "接",
+        "借",
+        "解",
+        "节",
+        "姐",
+        "街",
+        "界",
+        "结",
+        "杰"
+      ],
+      "wallMs": 290.97900009155,
+      "preedit": "jie",
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "processCpuMs": 0.488,
+      "id": "key-4",
+      "requests": [
+        {
+          "networkWallMs": 335.78400039673,
+          "response": "{\"id\":\"chatcmpl-403ddc4d\",\"object\":\"chat.completion\",\"created\":1792647140,\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"解码、解密、节目、界面、姐妹\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":115,\"completion_tokens\":9,\"total_tokens\":124,\"input_tokens\":115,\"output_tokens\":9,\"prompt_tokens_details\":{\"cached_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":0},\"time_to_first_token\":0.11,\"total_time\":0.33,\"prompt_eval_duration\":0.11,\"generation_duration\":0.22,\"prompt_tokens_per_second\":1061.93,\"generation_tokens_per_second\":40.13}}",
+          "code": 200,
+          "status": "HTTP/1.1 200 OK",
+          "request": "{\"stream\":false,\"temperature\":0,\"messages\":[{\"content\":\"你是输入法候选词排序助手。根据对话历史和当前输入，从候选词列表中选出最符合语境的词。按优先级从高到低列出最多5个候选词，用顿号分隔，不要拼音、数字序号或任何解释。\",\"role\":\"system\"},{\"content\":\"对话历史：「这款软件的」\\n当前输入拼音：「jie m」\\n候选词：节目、界面、姐妹、解码、解密\\n按最符合对话语境的顺序列出前5个候选词（顿号分隔）：\",\"role\":\"user\"}],\"model\":\"Qwen3.5-0.8B-MLX-bf16\",\"max_tokens\":20}"
+        }
+      ],
+      "status": "completed",
+      "source": [
+        "节目",
+        "界面",
+        "姐妹",
+        "解码",
+        "解密",
+        "睫毛",
+        "揭秘",
+        "结盟",
+        "截面"
+      ],
+      "ranked": [
+        "节目",
+        "界面",
+        "姐妹",
+        "解码",
+        "解密",
+        "睫毛",
+        "揭秘",
+        "结盟",
+        "截面"
+      ],
+      "wallMs": 336.31599998474,
+      "preedit": "jie m",
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "processCpuMs": 0.063000000000001,
+      "id": "identical-repeat",
+      "requests": [],
+      "status": "completed",
+      "source": [
+        "节目",
+        "界面",
+        "姐妹",
+        "解码",
+        "解密",
+        "睫毛",
+        "揭秘",
+        "结盟",
+        "截面"
+      ],
+      "ranked": [
+        "节目",
+        "界面",
+        "姐妹",
+        "解码",
+        "解密",
+        "睫毛",
+        "揭秘",
+        "结盟",
+        "截面"
+      ],
+      "wallMs": 0.16899967193604,
+      "preedit": "jie m",
+      "identities": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ]
+    }
+  ],
+  "subprocessWallMs": 1214.3295002169907,
+  "stderr": ""
+}

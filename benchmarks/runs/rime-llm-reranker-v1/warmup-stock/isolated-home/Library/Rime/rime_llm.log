@@ -1,0 +1,6 @@
+13:31:22 INIT done (v6)
+13:31:22 v6 started, backend: luasocket
+13:31:27 OK 0ms → [血、雪、学堂、血糖、学] preedit=「xue tang」 ctx=「」
+13:31:27 NO_CHANGE: kept 血糖
+13:31:28 OK 0ms → [嘿、黑、黑山、嗨、黒] preedit=「hei shan」 ctx=「」
+13:31:28 RERANKED: 黑山 → 嘿

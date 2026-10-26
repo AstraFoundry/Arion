@@ -328,3 +328,19 @@ func TestWindowsSigning(t *testing.T) {
 	}
 	uninstall(t, install)
 }
+
+func TestNotificationInstallerLifecycle(t *testing.T) {
+	c := &Config{Windows: Windows{Notifications: true}}
+	install, uninstall := nsisNotifications(c, "App With Spaces.exe")
+	for _, v := range []struct{ got, flag string }{{install, "--mygo-register-notifications"}, {uninstall, "--mygo-unregister-notifications"}} {
+		for _, want := range []string{`ExecWait '"$INSTDIR\App With Spaces.exe" ` + v.flag, `IfErrors`, `IntCmp $0 0`, `SetErrorLevel 1`, `Abort`} {
+			if !strings.Contains(v.got, want) {
+				t.Errorf("missing %q in %s", want, v.got)
+			}
+		}
+	}
+	c.Windows.Notifications = false
+	if a, b := nsisNotifications(c, "App.exe"); a != "" || b != "" {
+		t.Fatal("registered without opt in")
+	}
+}
