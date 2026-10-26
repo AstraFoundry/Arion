@@ -54,8 +54,10 @@ var hold struct {
 	done        chan struct{}
 }
 
-// hookProc observes only: it always passes the event on. Windows removes a
-// low-level hook whose callback is slow, so the sink must not block.
+// hookProc observes only: it always passes the event on, including
+// VK_VOLUME_* and VK_MEDIA_*. Those keys are not a dictation chord.
+// Windows removes a low-level hook whose callback is slow, so the sink
+// must not block.
 var hookProc = syscall.NewCallback(func(code int, message, lparam uintptr) uintptr {
 	if code >= 0 {
 		info := (*kbdllHookStruct)(memory(lparam))

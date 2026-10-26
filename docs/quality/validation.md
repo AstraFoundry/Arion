@@ -119,6 +119,7 @@ The current product runtime is [ADR 018](../decisions/018-staged-gguf-rewriting.
 - Microphone denial (DSK-A01 with a denied consent database) needs a test profile; it is covered by unit tests and the native E2E's untrusted-Accessibility path only.
 - Streaming latency claims with annotated speech onsets (STR-A01–A04) need reviewed timestamp labels; first-partial values above are measured from audio start, not speech onset.
 - The macOS hold-key event tap with real key presses (needs Input Monitoring granted to the app by a person).
+- The Bluetooth headphone volume HUD on macOS and the volume flyout on Windows (DSK-A23). Route selection and media-key chord tests run here; the OS overlay needs a person with headphones connected. Steps are in [local development](../operations/local-dev.md#troubleshooting).
 - The consent guide against real System Settings (DSK-A11), including on macOS 27, where the Accessibility pane is renamed but keeps its URL.
 - A canonical macOS arm64 build completed Developer ID signing/notarization and passed Gatekeeper, but clean-machine acceptance and a published old-to-new update have not run. The updater also has state/schedule tests and a locally signed archive; the retained build did not sign an update.
 

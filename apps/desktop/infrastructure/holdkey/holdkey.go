@@ -18,8 +18,9 @@ const (
 
 // Quartz event types and fields the macOS adapter forwards.
 const (
-	MacKeyDown      = 10 // kCGEventKeyDown
-	MacFlagsChanged = 12 // kCGEventFlagsChanged
+	MacKeyDown       = 10 // kCGEventKeyDown
+	MacFlagsChanged  = 12 // kCGEventFlagsChanged
+	MacSystemDefined = 14 // kCGEventSystemDefined: volume and media keys. The tap does not subscribe to this type.
 )
 
 type macSpec struct {
@@ -151,6 +152,15 @@ const (
 	// altGrScan is the scan code of the left Ctrl that AltGr layouts
 	// synthesize before right Alt; it is part of the hold key, not a chord.
 	altGrScan = 0x21D
+
+	vkVolumeMute        = 0xAD
+	vkVolumeDown        = 0xAE
+	vkVolumeUp          = 0xAF
+	vkMediaNextTrack    = 0xB0
+	vkMediaPrevTrack    = 0xB1
+	vkMediaStop         = 0xB2
+	vkMediaPlayPause    = 0xB3
+	vkLaunchMediaSelect = 0xB5
 )
 
 var winKeys = map[application.HoldKey]uint32{
@@ -217,9 +227,27 @@ func (w *Windows) targetFor(vk uint32) *winTarget {
 	return nil
 }
 
-// InterpretKey maps one event and identifies which hold key it applies to;
-// ok is false when it is not a transition.
+// windowsMediaKey reports a volume or media virtual key. Those keys are
+// not a dictation chord: the hook still forwards them, and the OS shows
+// its own volume flyout when the user pressed one.
+func windowsMediaKey(vk uint32) bool {
+	switch vk {
+	case vkVolumeMute, vkVolumeDown, vkVolumeUp,
+		vkMediaNextTrack, vkMediaPrevTrack, vkMediaStop, vkMediaPlayPause,
+		vkLaunchMediaSelect:
+		return true
+	default:
+		return false
+	}
+}
+
+// InterpretKey maps one event and identifies which hold key it applies to.
+// ok is false when the event is not a transition. Volume and media keys
+// are ignored here; the low-level hook still forwards them to Windows.
 func (w *Windows) InterpretKey(message uintptr, vk, scan uint32) (application.HoldKey, Event, bool) {
+	if windowsMediaKey(vk) {
+		return "", 0, false
+	}
 	pressed := message == WinKeyDown || message == WinSysKeyDown
 	released := message == WinKeyUp || message == WinSysKeyUp
 	if vk == vkLControl && scan == altGrScan {

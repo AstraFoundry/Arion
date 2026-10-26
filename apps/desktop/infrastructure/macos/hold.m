@@ -47,6 +47,7 @@ static void *hold_thread(void *arg) {
 int arion_hold_start(void) {
     if (!CGPreflightListenEventAccess()) return ARION_HOLD_PERMISSION_DENIED;
     if (hold_tap) return CGEventTapIsEnabled(hold_tap) ? 0 : ARION_HOLD_UNAVAILABLE;
+    // kCGEventSystemDefined (volume and media keys) stays out of the mask.
     CGEventMask mask = CGEventMaskBit(kCGEventKeyDown) | CGEventMaskBit(kCGEventFlagsChanged);
     hold_tap = CGEventTapCreate(kCGSessionEventTap, kCGHeadInsertEventTap, kCGEventTapOptionListenOnly, mask, hold_callback, NULL);
     if (!hold_tap) return CGPreflightListenEventAccess() ? ARION_HOLD_UNAVAILABLE : ARION_HOLD_PERMISSION_DENIED;

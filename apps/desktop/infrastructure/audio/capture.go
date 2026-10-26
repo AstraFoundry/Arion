@@ -60,7 +60,7 @@ func (m *Microphone) Select(id string) {
 }
 
 // SetGain sets the software gain in decibels. It scales Arion's capture
-// only; the OS input volume is unchanged.
+// only; the OS input volume and the OS output volume are unchanged.
 func (m *Microphone) SetGain(db int) {
 	m.gain.Store(math.Float32bits(application.GainFactor(db)))
 }
@@ -108,19 +108,25 @@ func (m *Microphone) Start(_ context.Context, id contracts.Identity, sink ports.
 	config.PeriodSizeInMilliseconds = periodMs
 	config.Resampling.Algorithm = malgo.ResampleAlgorithmLinear
 
+	infos, err := ctx.Devices(malgo.Capture)
+	if err != nil {
+		_ = ctx.Uninit()
+		ctx.Free()
+		return nil, domain.Fail(domain.CodeDeviceUnavailable, "device enumeration")
+	}
 	m.mu.Lock()
 	selected := m.deviceID
 	m.mu.Unlock()
-	if selected != "" {
-		infos, err := ctx.Devices(malgo.Capture)
+	// ResolveCaptureID keeps an explicit choice, including a headset mic.
+	// The system default is replaced only when that default is a headset
+	// and a local mic exists (DSK-A23). The OS default device is unchanged.
+	if chosen := ResolveCaptureID(selected, endpointsFrom(infos)); chosen != "" {
 		found := false
-		if err == nil {
-			for i := range infos {
-				if infos[i].ID.String() == selected {
-					config.Capture.DeviceID = infos[i].ID.Pointer()
-					found = true
-					break
-				}
+		for i := range infos {
+			if infos[i].ID.String() == chosen {
+				config.Capture.DeviceID = infos[i].ID.Pointer()
+				found = true
+				break
 			}
 		}
 		if !found {

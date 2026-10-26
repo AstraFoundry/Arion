@@ -97,6 +97,45 @@ func TestWindowsAltGrIsNotAChord(t *testing.T) {
 	}
 }
 
+// Volume and media keys are not a chord. The listeners forward them, so
+// the OS can still show its own HUD when the user presses a volume key.
+func TestMediaKeysDoNotCancelHold(t *testing.T) {
+	mac, _ := NewMac(application.HoldRightOption)
+	if _, ok := mac.Interpret(MacFlagsChanged, 0x3D, 0x40, false); !ok {
+		t.Fatal("right option down")
+	}
+	if _, ok := mac.Interpret(MacSystemDefined, 0, 0, false); ok {
+		t.Fatal("system-defined volume event reported while holding")
+	}
+	if got, ok := mac.Interpret(MacKeyDown, 0x00, 0x40, false); !ok || got != Other {
+		t.Fatalf("letter chord: %v %v", got, ok)
+	}
+
+	win, _ := NewWindows(application.HoldRightAlt)
+	if _, ok := win.Interpret(WinKeyDown, vkVolumeUp, 0); ok {
+		t.Fatal("volume key started a hold")
+	}
+	if _, ok := win.Interpret(WinSysKeyDown, 0xA5, 0x138); !ok {
+		t.Fatal("right alt down")
+	}
+	for _, vk := range []uint32{vkVolumeMute, vkVolumeDown, vkVolumeUp, vkMediaNextTrack, vkMediaPrevTrack, vkMediaStop, vkMediaPlayPause, vkLaunchMediaSelect} {
+		if _, ok := win.Interpret(WinKeyDown, vk, 0); ok {
+			t.Fatalf("media key %x reported while holding", vk)
+		}
+		if _, ok := win.Interpret(WinKeyUp, vk, 0); ok {
+			t.Fatalf("media key %x release reported", vk)
+		}
+	}
+	if got, ok := win.Interpret(WinKeyDown, 0x41, 0x1E); !ok || got != Other {
+		t.Fatalf("letter chord: %v %v", got, ok)
+	}
+	for _, vk := range winKeys {
+		if windowsMediaKey(vk) {
+			t.Fatalf("hold key %x is a media key", vk)
+		}
+	}
+}
+
 func TestUnsupportedKeys(t *testing.T) {
 	if _, ok := NewMac(application.HoldRightAlt); ok {
 		t.Fatal("macOS accepted a Windows key")
