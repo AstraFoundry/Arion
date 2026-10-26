@@ -1,3 +1,40 @@
+## 0.1.0-alpha.16
+
+### English
+
+Preview for macOS Apple silicon (macOS 14 or later) and Windows x64.
+
+- Add idle update reminders after dictation, with per-version suppression, Later/Dismiss actions and persistent tray/About entries. System reminders follow OS notification permission. Related: [#12](https://github.com/AstraFoundry/Arion/issues/12).
+- Add an opt-in automatic update download setting, separate from automatic checks. Updates download and verify in the background, then wait for a user-requested restart that respects active input and resource work. Related: [#13](https://github.com/AstraFoundry/Arion/issues/13).
+- Keep each cloud provider's API key separately when switching providers, and migrate the previously saved active credential. Keys already overwritten by an older version cannot be recovered. Related: [#15](https://github.com/AstraFoundry/Arion/issues/15).
+- Add voice translation through the shared local/cloud polishing pipeline, with a dedicated shortcut and English or Simplified Chinese target language. Translation failures retain the recognized original without inserting untranslated text.
+- Improve formatter handling of ASR punctuation and false starts, scale its output budget with source length, and apply one explicit thinking-off policy to local and cloud polishing.
+- Add account-notice notification transport and local polishing-evaluation tooling; refresh the bundled contributor list.
+- Correct native CI fixtures for constrained macOS displays and resolved Windows temporary installation paths, retaining exact window-size and acknowledged-update cleanup checks.
+
+macOS release packages require Developer ID signing and Apple notarization. Windows publisher signing remains unavailable for this preview. Model weights download separately. Native Windows notification delivery, clean-machine acceptance, production old-to-new update acceptance and real-service cloud/translation acceptance remain open. GitHub publication and release-storage staging do not publish the Arion center beta channel. See RELEASE-STATUS.md and SHA256SUMS for acceptance limits and verification.
+
+### 中文
+
+适用于 macOS Apple 芯片（macOS 14 或更高版本）和 Windows x64 的预览版本。
+
+- 新增听写结束后在空闲时展示的更新提醒，支持按版本去重、稍后处理和关闭，并保留菜单栏及“关于”入口；系统提醒遵循操作系统通知权限。关联：[#12](https://github.com/AstraFoundry/Arion/issues/12)。
+- 新增默认关闭的自动下载更新设置，与自动检查分开控制。更新在后台下载并校验，等待用户主动请求重启；重启会避开正在进行的输入及资源任务。关联：[#13](https://github.com/AstraFoundry/Arion/issues/13)。
+- 切换云端服务商时分别保留各自的 API Key，并迁移旧版当前保存的凭据。旧版已经覆盖丢失的 Key 无法恢复。关联：[#15](https://github.com/AstraFoundry/Arion/issues/15)。
+- 新增语音翻译，复用本地或云端润色流程，提供独立快捷键及英语、简体中文目标语言。翻译失败时保留识别原文，不将未翻译内容直接写入目标。
+- 改进润色对识别标点和说话中途重述的处理，按原文长度调整输出预算，统一本地和云端润色的关闭思考策略。
+- 新增账户消息通知传输及本地润色评估工具，刷新随包贡献者名单。
+- 修正原生 CI 测试对 macOS 屏幕可用高度及 Windows 临时安装目录解析路径的假设，保留窗口尺寸和更新收据清理断言。
+
+macOS 发布包要求 Developer ID 签名和 Apple 公证；Windows 预览版仍无发布者签名。模型权重单独下载。Windows 原生通知投递、全新机器、生产版本跨版本更新，以及云端服务和翻译的实际服务验收仍待完成。GitHub 发布及存储暂存不会自动发布 Arion 中心的 beta 渠道。验收范围及校验信息见 RELEASE-STATUS.md 与 SHA256SUMS。
+
+### Related pull requests / 相关合并
+
+- [#17 — Staged updates and system-controlled notifications](https://github.com/AstraFoundry/Arion/pull/17)
+- [#16 — Keep an API key for each cloud provider](https://github.com/AstraFoundry/Arion/pull/16)
+
+[Full changelog](https://github.com/AstraFoundry/Arion/compare/v0.1.0-alpha.15...v0.1.0-alpha.16)
+
 ## 0.1.0-alpha.15
 
 ### English

@@ -4,9 +4,9 @@
     {
       "login": "stvlynn",
       "profile": "https://github.com/stvlynn",
-      "contributions": 149,
+      "contributions": 151,
       "avatar": "stvlynn.jpg",
-      "avatarSHA256": "d28927d19055f97443380b446f0469981a243c705fd06bcc4eac60e094619482"
+      "avatarSHA256": "38a5190eef9618e3108215ad07bff02f4aa028f87eada8fc123c71059cc3c988"
     },
     {
       "login": "claude",
@@ -18,16 +18,23 @@
     {
       "login": "zacharyhaha",
       "profile": "https://github.com/zacharyhaha",
-      "contributions": 14,
+      "contributions": 18,
       "avatar": "zacharyhaha.png",
-      "avatarSHA256": "877508b76570c2e058db9da4fbb2357b20968f2d7fcb5a9a455fc072dd1759be"
+      "avatarSHA256": "f76313497cab548a6065303b57e87c0f730380ec9948541d6036994f573b2b85"
     },
     {
       "login": "gavi102803",
       "profile": "https://github.com/gavi102803",
       "contributions": 8,
-      "avatar": "gavi102803.png",
-      "avatarSHA256": "917eb3e81b6f0697e3a35bfda35f51d3b2fcf1d32627676735fd1e5537665c74"
+      "avatar": "gavi102803.jpg",
+      "avatarSHA256": "a5349bc6c0b955f0e69f02a6d0081ff325b5950c4947958eb470c2ca1fb68dca"
+    },
+    {
+      "login": "AllenWriter",
+      "profile": "https://github.com/AllenWriter",
+      "contributions": 1,
+      "avatar": "AllenWriter.png",
+      "avatarSHA256": "2b32473de6bbc115fface1f7238c1e85a9787a4188526cde5f7a35326805086c"
     }
   ]
 }

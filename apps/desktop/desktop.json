@@ -1,7 +1,7 @@
 {
   "name": "Arion",
   "identifier": "si.astrafoundry.arion",
-  "version": "0.1.0-alpha.15",
+  "version": "0.1.0-alpha.16",
   "copyright": "AstraFoundry",
   "urlSchemes": [
     "arion"
