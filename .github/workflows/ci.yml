@@ -6,6 +6,10 @@ on:
       release:
         type: boolean
         default: false
+      skip-e2e:
+        description: Skip previously completed native window and updater E2E checks
+        type: boolean
+        default: false
       native-matrix:
         type: string
         default: '{"include":[{"os":"macos-26","platform":"darwin-arm64"},{"os":"windows-2022","platform":"windows-amd64"}]}'
@@ -95,14 +99,16 @@ jobs:
         if: runner.os == 'Windows'
         run: pnpm updater:check
       - name: Native window tests (macOS)
-        if: runner.os == 'macOS'
+        if: runner.os == 'macOS' && !inputs.skip-e2e
         run: pnpm e2e:native
-      - name: Windows platform and native window tests
+      - name: Windows platform tests
         if: runner.os == 'Windows'
         run: |
           go test -v ./apps/desktop/infrastructure/windows
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          pnpm e2e:native
+      - name: Native window tests (Windows)
+        if: runner.os == 'Windows' && !inputs.skip-e2e
+        run: pnpm e2e:native
       - name: Windows desktop, shared Pinyin and native module checks
         if: runner.os == 'Windows'
         run: ./scripts/check-windows-keyboard-ci.ps1
@@ -120,7 +126,7 @@ jobs:
             ${{ runner.temp }}/keyboard-standard-user.stderr.log
           if-no-files-found: ignore
       - name: Isolated native updater lifecycle
-        if: runner.os == 'macOS'
+        if: runner.os == 'macOS' && !inputs.skip-e2e
         run: pnpm updater:e2e
       - uses: actions/upload-artifact@v4
         if: always()
