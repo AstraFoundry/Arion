@@ -101,8 +101,9 @@ func Skipped(step Step, s *runtime.State) bool {
 	case Cloud:
 		return !s.Preferences.Polish || s.Preferences.PolishEngine != runtime.PolishCloud
 	case Translate, TranslateKey:
-		// A platform without a hold key adapter has no translation key.
-		return s.Preferences.HoldKey == ""
+		// Translation needs the polishing model, and a platform without a
+		// hold key adapter has no translation key.
+		return !runtime.PolishOn(s) || s.Preferences.HoldKey == ""
 	}
 	return false
 }

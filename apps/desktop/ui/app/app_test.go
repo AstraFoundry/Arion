@@ -852,12 +852,7 @@ func TestOnboardingFlow(t *testing.T) {
 	}
 	snapshot(t, tt, "onboarding-6-hold-key-heard")
 	click(copy.For(copy.English).Text(copy.Continue))
-	// Voice translation's two steps, covered by TestOnboardingVoiceTranslation,
-	// follow wherever a hold key exists.
-	if state.Preferences.HoldKey != "" {
-		click(copy.For(copy.English).Text(copy.Continue))
-		click(copy.For(copy.English).Text(copy.Continue))
-	}
+	// Polishing stayed off, so voice translation is skipped.
 	if !hasText(tt, copy.For(copy.English).Text(copy.OnbTryTitle)) {
 		t.Fatalf("try step missing: %q", tt.Texts())
 	}

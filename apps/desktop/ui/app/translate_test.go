@@ -13,7 +13,8 @@ import (
 	"github.com/egoist/mygo/ui"
 )
 
-// Voice translation follows the dictation key in two steps: what it does
+// With polishing on, voice translation follows the dictation key in two
+// steps (TestOnboardingFlow covers it skipped with polishing off): what it does
 // beside a translating mock, with the target language, then its key beside
 // the keyboard figure, never the dictation key, with a press to try it.
 func TestOnboardingVoiceTranslation(t *testing.T) {
@@ -21,6 +22,9 @@ func TestOnboardingVoiceTranslation(t *testing.T) {
 		t.Run(string(locale), func(t *testing.T) {
 			state, actions, store := fixture()
 			state.Preferences.UILanguage = runtime.UILanguage(locale)
+			// Translation runs on the polishing model.
+			state.Preferences.Polish, state.Preferences.PolishEngine = true, runtime.PolishLocal
+			state.Polish = runtime.Polish{State: runtime.PolishReady, Installed: true}
 			// This platform's keys where it has them, so the picker has
 			// choices; the figure draws either platform's.
 			hold, translate := runtime.HoldRightOption, runtime.HoldRightCommand
