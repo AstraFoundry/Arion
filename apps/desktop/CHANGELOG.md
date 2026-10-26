@@ -1,3 +1,31 @@
+## 0.1.0-alpha.17
+
+### English
+
+Preview for macOS Apple silicon (macOS 14 or later) and Windows x64.
+
+- Add voice translation onboarding with target-language and shortcut setup, and offer more mainstream translation target languages.
+- Skip voice translation onboarding while polishing is turned off.
+- Streamline desktop copy and move setting descriptions into tooltips.
+- Collapse spoken self-repairs before polishing and record cleanup-rules-v2 in the model artifact provenance.
+
+macOS release packages require Developer ID signing and Apple notarization. Windows publisher signing remains unavailable for this preview. Model weights download separately. Native Windows notification delivery, clean-machine acceptance, production old-to-new update acceptance and real-service cloud/translation acceptance remain open. GitHub publication and release-storage staging do not publish the Arion center beta channel. See RELEASE-STATUS.md and SHA256SUMS for acceptance limits and verification.
+
+Native window and isolated updater E2E are not rerun for this tag at the user's request because those checks were already completed. Other CI checks, signing, notarization and release asset verification remain enabled.
+
+### 中文
+
+适用于 macOS Apple 芯片（macOS 14 或更高版本）和 Windows x64 的预览版本。
+
+- 新增语音翻译引导，支持设置目标语言和快捷键，并提供更多常用翻译目标语言。
+- 关闭润色时跳过语音翻译引导。
+- 精简桌面界面文案，将设置说明移至提示气泡。
+- 润色前合并说话中途的自我修正，并在模型产物溯源中记录 cleanup-rules-v2。
+
+macOS 发布包要求 Developer ID 签名和 Apple 公证；Windows 预览版仍无发布者签名。模型权重单独下载。全新机器、生产版本跨版本更新，以及云端服务和翻译的实际服务验收仍待完成。GitHub 发布及存储暂存不会自动发布 Arion 中心的 beta 渠道。验收范围及校验信息见 RELEASE-STATUS.md 与 SHA256SUMS。
+
+按用户要求，本标签不重复运行已完成的原生窗口及独立更新器 E2E；其余 CI 检查、签名、公证和发布产物校验保持启用。
+
 ## 0.1.0-alpha.16
 
 ### English
