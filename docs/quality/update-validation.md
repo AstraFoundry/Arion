@@ -42,6 +42,10 @@ Repository, workflow, i18n, core and full desktop checks also pass. Native notif
 
 Local visual evidence is under `.workspace/e2e/darwin/`; isolated permission/event evidence is under `.workspace/e2e/notifications/current/`. These generated artifacts are not committed.
 
+## Hosted CI fixture identities
+
+Updater fixtures resolve their temporary installation directory before staging, matching `installTarget` in a relaunched process. Windows hosted runners expose temporary paths through an 8.3 user-name alias; comparing that alias with the resolved installation path previously prevented acknowledged-receipt cleanup in the fixtures. The native About capture uses the current display work-area height so AppKit can honor the requested bounds on smaller hosted displays. These fixture corrections retain the receipt-cleanup and exact window-size assertions. `node scripts/check-updater.mjs` and the complete `node scripts/run-native-e2e.mjs` pass on the development macOS arm64 host after the correction; existing permission/driver-gated scenarios remain skipped. Windows results still require the native CI run.
+
 ## Platform limits
 
 Windows native notification delivery, cold activation, installer cleanup, locked-file/antivirus behavior and interactive application scenarios require a Windows host. Platform builds and API tests are not runtime acceptance. Interrupted swap refusal and preserved recovery data do not claim automatic repair. No production signed old-to-new Arion upgrade or clean-account OS permission matrix is claimed.

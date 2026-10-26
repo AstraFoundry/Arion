@@ -113,9 +113,11 @@ func TestUpdateSettingsNativeStates(t *testing.T) {
 		})
 		window.Close()
 	}()
-	// The taller owned window puts the full update card in each native capture.
-	window.SetSize(820, 900)
-	eventually(t, "update settings resized", func() bool { w, h := window.Size(); return w == 820 && h == 900 })
+	// Keep the capture within the display work area: AppKit constrains windows
+	// to that area on hosted runners with smaller screens.
+	height := min(900, mygo.Screen.PrimaryDisplay().WorkArea.Height)
+	window.SetSize(820, height)
+	eventually(t, "update settings resized", func() bool { w, h := window.Size(); return w == 820 && h == height })
 	for _, locale := range []arion.UILanguage{arion.LanguageEnglish, arion.LanguageChinese} {
 		for _, step := range []struct {
 			name  string
@@ -131,7 +133,7 @@ func TestUpdateSettingsNativeStates(t *testing.T) {
 				s.Focus = arion.SettingsFocus{Section: settings.About, Seq: s.Focus.Seq + 1}
 			})
 			time.Sleep(350 * time.Millisecond)
-			if !nonblank(capture(t, window, "settings-update-"+string(locale)+"-"+step.name, 760, 800)) {
+			if !nonblank(capture(t, window, "settings-update-"+string(locale)+"-"+step.name, 760, height-64)) {
 				t.Fatalf("%s %s: update settings blank", locale, step.name)
 			}
 			if step.state.RestartQueued {

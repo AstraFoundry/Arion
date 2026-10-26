@@ -95,7 +95,12 @@ func updateServer(t *testing.T, version, content, deltaFrom string) (srv *httpte
 // installedApp creates what an update replaces, holding main with "v1".
 func installedApp(t *testing.T) (target, main string) {
 	t.Helper()
-	dir := t.TempDir()
+	// Use the same resolved installation identity as installTarget, including
+	// Windows temporary directories reached through an 8.3 user-name alias.
+	dir, err := filepath.EvalSymlinks(t.TempDir())
+	if err != nil {
+		t.Fatal(err)
+	}
 	target = dir
 	if runtime.GOOS == "darwin" {
 		target = filepath.Join(dir, "My App.app")

@@ -47,7 +47,12 @@ func TestPreparedUpdateReplacesRunningExecutableAndCleansAtRelaunch(t *testing.T
 	if err != nil {
 		t.Fatal(err)
 	}
-	target, staged := t.TempDir(), t.TempDir()
+	// Match installTarget in the relaunched process, which resolves 8.3 paths.
+	target, err := filepath.EvalSymlinks(t.TempDir())
+	if err != nil {
+		t.Fatal(err)
+	}
+	staged := t.TempDir()
 	const name = "Update Test.exe"
 	for directory, version := range map[string]string{target: "old", staged: "new"} {
 		if err := os.WriteFile(filepath.Join(directory, name), append(contents[:len(contents):len(contents)], version...), 0o755); err != nil {
