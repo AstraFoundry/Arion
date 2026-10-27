@@ -45,6 +45,15 @@ static size_t capture(HWND window,const std::filesystem::path &file) {
 }
 int main(int count,char **arguments) {
     try {
+    CandidateFont missingFont;
+    require(FAILED(missingFont.initialize(GetModuleHandleW(L"kernel32.dll"))),"missing packaged font refuses silent system substitution");
+    CandidateFont bundledFont; IDWriteTextLayout *bundledLayout=nullptr;
+    require(SUCCEEDED(bundledFont.createLayout(GetModuleHandleW(nullptr),L"Arion \u4f60\u597d",16,500,&bundledLayout)),"shape bundled Source Han text");
+    IDWriteFontCollection *privateCollection=nullptr;
+    require(SUCCEEDED(bundledLayout->GetFontCollection(0,&privateCollection)) && privateCollection && privateCollection->GetFontFamilyCount()==1,"candidate text uses the private bundled family collection");
+    wchar_t actualFamily[LF_FACESIZE]{};
+    require(SUCCEEDED(bundledLayout->GetFontFamilyName(0,actualFamily,LF_FACESIZE)) && wcscmp(actualFamily,CandidateFontFamily)==0,"native layout selects Source Han Sans SC");
+    privateCollection->Release(); bundledLayout->Release();
     CandidateWindow panel(GetModuleHandleW(nullptr));
     RECT caret{10,10,11,30};
     require(!panel.show(nullptr,caret,{{L"\u4f60\u597d",L"",0}},0,false,false,1,CandidatePalette{}),"refuse missing owner");
@@ -92,7 +101,7 @@ int main(int count,char **arguments) {
         int numberWidth=0;
         for (wchar_t digit=L'1';digit<=L'9';++digit) {
             int width=0;
-            require(SUCCEEDED(measurement.measure(std::wstring(1,digit),CandidateNumberFontFamily,static_cast<FLOAT>(MulDiv(std::max(11,size-3),dpi,96)),width)),"measure displayed label width");
+            require(SUCCEEDED(measurement.measure(std::wstring(1,digit),static_cast<FLOAT>(MulDiv(std::max(11,size-3),dpi,96)),width)),"measure displayed label width");
             numberWidth=std::max(numberWidth,width);
         }
         int numberLeft=MulDiv(10,dpi,96),textLeft=numberLeft+numberWidth+MulDiv(3,dpi,96);

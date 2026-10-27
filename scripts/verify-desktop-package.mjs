@@ -105,7 +105,7 @@ if (goos === 'darwin') {
 if (goos === 'windows') {
   verifyWindowsPEDependencies([binaries[0]]);
   const ime = path.join(resources, 'ime');
-  verifyEmbeddedFonts(root, path.join(resources, 'Arion.exe'));
+  verifyEmbeddedFonts(root, path.join(resources, 'Arion.exe'), path.join(ime, 'ArionTSF.dll'));
   for (const file of ['SourceHanSans-OFL.txt', 'source-han-sans.json']) requireFile(path.join(resources, 'licenses', file));
   const imeManifest = JSON.parse(readFileSync(path.join(ime, 'runtime.json'), 'utf8'));
   const imeFiles = ['ArionTSFLoader.dll', 'ArionTSF.dll', 'arion-ime.exe'];

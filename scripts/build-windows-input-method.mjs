@@ -3,6 +3,7 @@ import { createHash } from 'node:crypto';
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { buildCandidateFonts } from './lib/windows-candidate-fonts.mjs';
 import { verifyWindowsPEDependencies } from './lib/windows-pe.mjs';
 import { recordWindowsKeyboardModule, verifyWindowsKeyboardRuntime } from './lib/windows-keyboard.mjs';
 
@@ -28,6 +29,7 @@ for (const name of ['pinyin','input','menu']) {
   run(cCompiler,['-std=c11','-O2','-Wall','-Wextra','-Werror','-I',path.join(sdk,'include'),'-c',path.join(common,`${name}.c`),'-o',object]);
   cObjects.push(object);
 }
+const fontResource=buildCandidateFonts(root,compiler,objects,run);
 const base=['-std=c++17','-DINITGUID','-O2','-Wall','-Wextra','-Werror','-static','-isystem',path.join(sdk,'include')];
 run(compiler,[...base,'-DRIME_IMPORTS','-shared',path.join(source,'keyboard_runtime.cpp'),...['learning','learning_rime','learning_windows','ranking','ranking_unicode','emoji'].map(name=>path.join(common,`${name}.cpp`)),cObjects[0],path.join(sdk,'lib/libArionRime.dll.a'),'-o',path.join(keyboard,'lib/ArionKeyboard.dll'),'-lcrypt32','-lole32','-luuid','-ladvapi32','-ldwrite','-ld2d1']);
 recordWindowsKeyboardModule(keyboard);
@@ -43,7 +45,7 @@ const loaderSHA256=createHash('sha256').update(readFileSync(loader)).digest('hex
 if (loaderSHA256 !== loaderPin.sha256) throw new Error('Stable TSF loader differs from the frozen binary. Use the pinned UCRT loader toolchain via ARION_TSF_LOADER_CXX; loader changes require controlled maintenance.');
 for (const [input, filename, shared] of [['service.cpp', 'ArionTSF.dll', true], ['control.cpp', 'arion-ime.exe', false]]) {
   const destination = path.join(output, filename);
-  const args = [...base,`-DARION_KEYBOARD_MANIFEST_SHA256="${keyboardManifestSHA256}"`,...(!shared?[`-DARION_TSF_LOADER_SHA256="${loaderSHA256}"`]:[]),...(shared ? ['-shared'] : ['-municode']),path.join(source,input),...(shared?cObjects:[]),'-o',destination,'-lole32','-loleaut32','-luuid','-ladvapi32','-lshell32','-lgdi32',...(shared?['-ldwrite','-ld2d1']:[])];
+  const args = [...base,`-DARION_KEYBOARD_MANIFEST_SHA256="${keyboardManifestSHA256}"`,...(!shared?[`-DARION_TSF_LOADER_SHA256="${loaderSHA256}"`]:[]),...(shared ? ['-shared'] : ['-municode']),path.join(source,input),...(shared?[...cObjects,fontResource]:[]),'-o',destination,'-lole32','-loleaut32','-luuid','-ladvapi32','-lshell32','-lgdi32',...(shared?['-ldwrite','-ld2d1']:[])];
   run(compiler,args);
 }
 verifyWindowsPEDependencies(['ArionTSFLoader.dll', 'ArionTSF.dll', 'arion-ime.exe'].map(name => path.join(output, name)));

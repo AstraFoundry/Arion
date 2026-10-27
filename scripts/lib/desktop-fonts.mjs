@@ -14,9 +14,9 @@ export function desktopFonts(root) {
   return { directory, manifest };
 }
 
-export function verifyEmbeddedFonts(root, application) {
+export function verifyEmbeddedFonts(root, application, service) {
   const { directory, manifest } = desktopFonts(root);
-  const app = readFileSync(application);
+  const app = readFileSync(application), core = readFileSync(service);
   const notices = path.join(path.dirname(application), 'licenses');
   if (!readFileSync(path.join(notices, 'SourceHanSans-OFL.txt')).equals(readFileSync(path.join(directory, manifest.license)))) {
     throw new Error('Packaged Source Han license mismatch');
@@ -27,5 +27,6 @@ export function verifyEmbeddedFonts(root, application) {
   for (const spec of manifest.files.filter(file => file.name.endsWith('.otf'))) {
     const data = readFileSync(path.join(directory, spec.name));
     if (!app.includes(data)) throw new Error('App is missing bundled font: ' + spec.name);
+    if (spec.name.endsWith('-Regular.otf') && !core.includes(data)) throw new Error('TSF core is missing bundled font');
   }
 }

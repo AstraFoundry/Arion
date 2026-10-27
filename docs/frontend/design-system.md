@@ -32,7 +32,7 @@ Rules:
 
 ## Type, radius, spacing
 
-- **Type:** the system face (SF / Segoe UI) for interface controls. Windows dictation previews and last-transcript text use privately bundled Source Han Sans SC 2.005R (regular and medium). Font assets, digests and OFL notice live in `ui/shared/typography/fonts`. The bootstrap registers the MyGo font before creating views; speech text measurement explicitly uses the same family as rendering. Other platforms retain their existing faces. Steps: `Display` 28, `Title` 20, `Heading` 15, `Body` 13, `Caption` 11.5. Use tabular figures (`FontFeatures("tnum")`) for measurements.
+- **Type:** the system face (SF / Segoe UI) for interface controls. Windows dictation previews and last-transcript text use privately bundled Source Han Sans SC 2.005R (regular and medium); the TSF candidate bar uses its regular face for both text and number labels. Font assets, digests and OFL notice live in `ui/shared/typography/fonts`. The bootstrap registers the MyGo font before creating views; speech text measurement explicitly uses the same family as rendering. Other platforms retain their existing faces. Steps: `Display` 28, `Title` 20, `Heading` 15, `Body` 13, `Caption` 11.5. Use tabular figures (`FontFeatures("tnum")`) for measurements.
 - **Radius:**
   - `RadiusXS`–`RadiusXL` = 2/4/6/10/14.
   - Controls use 10, cards 14, keycaps 6, and the pill is full.

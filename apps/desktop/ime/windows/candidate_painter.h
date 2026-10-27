@@ -1,10 +1,12 @@
 #pragma once
 #include "emoji_text.h"
+#include "candidate_font.h"
 
 // One premultiplied surface keeps rounded edges smooth against any host color.
 class CandidatePainter {
     ID2D1Factory *factory=nullptr;
-    IDWriteFactory *textFactory=nullptr;
+    HINSTANCE module;
+    CandidateFont font;
     ID2D1DCRenderTarget *target=nullptr;
     ID2D1SolidColorBrush *brush=nullptr;
     HDC dc=nullptr;
@@ -20,31 +22,20 @@ class CandidatePainter {
     static D2D1_COLOR_F color(COLORREF value) {
         return D2D1::ColorF(GetRValue(value)/255.0f,GetGValue(value)/255.0f,GetBValue(value)/255.0f);
     }
-    HRESULT createLayout(const std::wstring &value,const wchar_t *family,FLOAT fontSize,FLOAT width,IDWriteTextLayout **out) {
-        HRESULT hr=S_OK;
-        if (!textFactory) hr=DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED,__uuidof(IDWriteFactory),reinterpret_cast<IUnknown**>(&textFactory));
-        IDWriteTextFormat *format=nullptr;
-        if (SUCCEEDED(hr)) hr=textFactory->CreateTextFormat(family,nullptr,DWRITE_FONT_WEIGHT_NORMAL,DWRITE_FONT_STYLE_NORMAL,DWRITE_FONT_STRETCH_NORMAL,fontSize,L"",&format);
-        if (SUCCEEDED(hr)) hr=format->SetWordWrapping(DWRITE_WORD_WRAPPING_NO_WRAP);
-        if (SUCCEEDED(hr)) hr=textFactory->CreateTextLayout(value.data(),static_cast<UINT32>(value.size()),format,width,4096,out);
-        if (format) format->Release();
-        return hr;
-    }
 
 public:
     ~CandidatePainter() {
         releaseSurface();
         if (brush) brush->Release();
         if (target) target->Release();
-        if (textFactory) textFactory->Release();
         if (factory) factory->Release();
     }
-    CandidatePainter()=default;
+    explicit CandidatePainter(HINSTANCE instance=GetModuleHandleW(nullptr)):module(instance) {}
     CandidatePainter(const CandidatePainter&)=delete;
     CandidatePainter &operator=(const CandidatePainter&)=delete;
-    HRESULT measure(const std::wstring &value,const wchar_t *family,FLOAT fontSize,int &width) {
+    HRESULT measure(const std::wstring &value,FLOAT fontSize,int &width) {
         IDWriteTextLayout *shaped=nullptr;
-        HRESULT hr=createLayout(value,family,fontSize,4096,&shaped);
+        HRESULT hr=font.createLayout(module,value,fontSize,4096,&shaped);
         DWRITE_TEXT_METRICS metrics{};
         if (SUCCEEDED(hr)) hr=shaped->GetMetrics(&metrics);
         if (SUCCEEDED(hr)) width=static_cast<int>(std::ceil(metrics.widthIncludingTrailingWhitespace));
@@ -54,7 +45,6 @@ public:
     HRESULT begin(const RECT &area) {
         HRESULT hr=S_OK;
         if (!factory) hr=D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED,&factory);
-        if (SUCCEEDED(hr) && !textFactory) hr=DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED,__uuidof(IDWriteFactory),reinterpret_cast<IUnknown**>(&textFactory));
         if (SUCCEEDED(hr) && !target) {
             auto properties=D2D1::RenderTargetProperties(D2D1_RENDER_TARGET_TYPE_SOFTWARE,D2D1::PixelFormat(DXGI_FORMAT_B8G8R8A8_UNORM,D2D1_ALPHA_MODE_PREMULTIPLIED),96,96);
             hr=factory->CreateDCRenderTarget(&properties,&target);
@@ -105,11 +95,11 @@ public:
         target->PopAxisAlignedClip();
         return S_OK;
     }
-    HRESULT text(const std::wstring &value,const wchar_t *family,FLOAT fontSize,const RECT &cell,COLORREF foreground,DWRITE_TEXT_ALIGNMENT alignment=DWRITE_TEXT_ALIGNMENT_LEADING) {
+    HRESULT text(const std::wstring &value,FLOAT fontSize,const RECT &cell,COLORREF foreground,DWRITE_TEXT_ALIGNMENT alignment=DWRITE_TEXT_ALIGNMENT_LEADING) {
         IDWriteTextLayout *shaped=nullptr;
-        HRESULT hr=createLayout(value,family,fontSize,static_cast<FLOAT>(cell.right-cell.left),&shaped);
+        HRESULT hr=font.createLayout(module,value,fontSize,static_cast<FLOAT>(cell.right-cell.left),&shaped);
         IDWriteInlineObject *ellipsis=nullptr;
-        if (SUCCEEDED(hr)) hr=textFactory->CreateEllipsisTrimmingSign(shaped,&ellipsis);
+        if (SUCCEEDED(hr)) hr=font.ellipsis(shaped,&ellipsis);
         DWRITE_TRIMMING trimming{DWRITE_TRIMMING_GRANULARITY_CHARACTER,0,0};
         if (SUCCEEDED(hr)) hr=shaped->SetTrimming(&trimming,ellipsis);
         if (SUCCEEDED(hr)) hr=layout(shaped,cell,foreground,alignment);

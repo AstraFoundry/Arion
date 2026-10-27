@@ -1,3 +1,4 @@
+import { buildCandidateFonts } from './lib/windows-candidate-fonts.mjs';
 // Owned ACP keyboard checks in the current desktop token, including elevated hosts.
 import { spawn, spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
@@ -60,6 +61,7 @@ try {
     run(cc, ['-std=c11', '-O2', '-Wall', '-Wextra', '-Werror', '-I', path.join(keyboard, 'include'), '-c', path.join(common, name + '.c'), '-o', object]);
     return object;
   });
+  objects.push(buildCandidateFonts(root, cxx, directory, run));
   const dll = path.join(directory, 'ArionTSF.dll'), editor = path.join(directory, 'textstore-fixture.exe');
   const manifest = path.join(keyboard, 'runtime.json');
   run(cxx, [...base, '-DARION_TSF_TESTING', '-DARION_TSF_MANUAL_KEYS', '-DARION_KEYBOARD_MANIFEST_SHA256="' + hash(manifest) + '"', '-shared', path.join(source, 'service.cpp'), ...objects, '-o', dll, '-lole32', '-loleaut32', '-luuid', '-ladvapi32', '-lshell32', '-lgdi32', '-ldwrite', '-ld2d1']);

@@ -1,3 +1,4 @@
+import { buildCandidateFonts } from './lib/windows-candidate-fonts.mjs';
 // The production TSF key sink edits an owned ITextStoreACP document. No profile
 // registration, global selection, real editor typing or persistent user data.
 import {spawn,spawnSync} from 'node:child_process';
@@ -49,9 +50,10 @@ try{
     run(cc,['-std=c11','-O2','-Wall','-Wextra','-Werror','-I',path.join(sdk,'include'),'-c',path.join(common,`${name}.c`),'-o',object]);return object;
   });
   const base=['-std=c++17','-DINITGUID','-O2','-Wall','-Wextra','-Werror','-static','-isystem',path.join(sdk,'include')];
+  const fontResource=buildCandidateFonts(root,cxx,directory,run);
   for(const name of ['native_keys','candidate_window']){
     const binary=path.join(directory,`${name}-test.exe`);
-    run(cxx,[...base,path.join(source,`${name}_test.cpp`),...(name==='native_keys'?[objects[1]]:[]),'-o',binary,'-lgdi32','-ldwrite','-ld2d1','-lole32','-luuid']);
+    run(cxx,[...base,path.join(source,`${name}_test.cpp`),...(name==='native_keys'?[objects[1]]:[fontResource]),'-o',binary,'-lgdi32','-ldwrite','-ld2d1','-lole32','-luuid']);
     run(binary,name==='candidate_window'?[directory]:[]);
   }
   const module=path.join(keyboard,'lib/ArionKeyboard.dll');
@@ -60,7 +62,7 @@ try{
   manifest.files['lib/ArionKeyboard.dll']={sha256:hash(module),sizeBytes:readFileSync(module).length};
   writeFileSync(manifestPath,JSON.stringify(manifest,null,2)+'\n');
   const library=path.join(directory,'ArionTSF.dll');
-  run(cxx,[...base,'-DARION_TSF_TESTING','-DARION_TSF_MANUAL_KEYS',`-DARION_KEYBOARD_MANIFEST_SHA256="${hash(manifestPath)}"`,'-shared',path.join(source,'service.cpp'),...objects,'-o',library,'-lole32','-loleaut32','-luuid','-ladvapi32','-lshell32','-lgdi32','-ldwrite','-ld2d1']);
+  run(cxx,[...base,'-DARION_TSF_TESTING','-DARION_TSF_MANUAL_KEYS',`-DARION_KEYBOARD_MANIFEST_SHA256="${hash(manifestPath)}"`,'-shared',path.join(source,'service.cpp'),...objects,fontResource,'-o',library,'-lole32','-loleaut32','-luuid','-ladvapi32','-lshell32','-lgdi32','-ldwrite','-ld2d1']);
   const editor=path.join(directory,'textstore-fixture.exe');
   run(cxx,[...base,'-DARION_TSF_MANUAL_KEYS','-municode',path.join(source,'textstore_fixture.cpp'),'-o',editor,'-lole32','-loleaut32','-luuid','-lgdi32','-ladvapi32']);
   report.identities={service:hash(library),module:hash(module),engine:hash(path.join(keyboard,'lib/ArionRime.dll')),manifest:hash(manifestPath)}; save();

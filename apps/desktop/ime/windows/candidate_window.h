@@ -8,9 +8,6 @@
 #include <vector>
 #include "candidate_painter.h"
 
-inline constexpr wchar_t CandidateFontFamily[]=L"Microsoft YaHei UI";
-inline constexpr wchar_t CandidateNumberFontFamily[]=L"Segoe UI";
-
 struct NativeCandidate {
     std::wstring text;
     std::wstring comment;
@@ -93,21 +90,21 @@ class CandidateWindow {
             if (i==highlighted) painter.rounded(cell,static_cast<FLOAT>(scale(6)),palette.selected,palette.selected);
             if (numbered) {
                 RECT number=cell; number.left+=scale(6); number.right=number.left+numberWidth;
-                renderError=painter.text(std::to_wstring(i%columns+1),CandidateNumberFontFamily,static_cast<FLOAT>(scale(std::max(11,fontSize-3))),number,i==highlighted?palette.selectedText:palette.muted,DWRITE_TEXT_ALIGNMENT_TRAILING);
+                renderError=painter.text(std::to_wstring(i%columns+1),static_cast<FLOAT>(scale(std::max(11,fontSize-3))),number,i==highlighted?palette.selectedText:palette.muted,DWRITE_TEXT_ALIGNMENT_TRAILING);
             }
             if (SUCCEEDED(renderError)) {
                 RECT text=textBounds(cell);
-                renderError=emojiLayouts[i]?painter.layout(emojiLayouts[i],text,i==highlighted?palette.selectedText:palette.text):painter.text(items[i].text,CandidateFontFamily,static_cast<FLOAT>(scale(fontSize)),text,i==highlighted?palette.selectedText:palette.text);
+                renderError=emojiLayouts[i]?painter.layout(emojiLayouts[i],text,i==highlighted?palette.selectedText:palette.text):painter.text(items[i].text,static_cast<FLOAT>(scale(fontSize)),text,i==highlighted?palette.selectedText:palette.text);
             }
         }
-        if (SUCCEEDED(renderError) && hasPrevious) renderError=painter.text(L"\u2039",CandidateFontFamily,static_cast<FLOAT>(scale(fontSize)),previous,palette.muted,DWRITE_TEXT_ALIGNMENT_CENTER);
-        if (SUCCEEDED(renderError) && hasNext) renderError=painter.text(L"\u203a",CandidateFontFamily,static_cast<FLOAT>(scale(fontSize)),next,palette.muted,DWRITE_TEXT_ALIGNMENT_CENTER);
+        if (SUCCEEDED(renderError) && hasPrevious) renderError=painter.text(L"\u2039",static_cast<FLOAT>(scale(fontSize)),previous,palette.muted,DWRITE_TEXT_ALIGNMENT_CENTER);
+        if (SUCCEEDED(renderError) && hasNext) renderError=painter.text(L"\u203a",static_cast<FLOAT>(scale(fontSize)),next,palette.muted,DWRITE_TEXT_ALIGNMENT_CENTER);
         HRESULT finished=painter.finish(window,copy);
         if (SUCCEEDED(renderError)) renderError=finished;
         if (FAILED(renderError)) ShowWindow(window,SW_HIDE);
     }
 public:
-    explicit CandidateWindow(HINSTANCE instance):module(instance) {}
+    explicit CandidateWindow(HINSTANCE instance):module(instance),painter(instance) {}
     ~CandidateWindow() { clearLayouts(); if (window) DestroyWindow(window); UnregisterClassW(L"Arion.NativeCandidates",module); }
     CandidateWindow(const CandidateWindow&)=delete;
     CandidateWindow &operator=(const CandidateWindow&)=delete;
@@ -139,7 +136,7 @@ public:
         numberWidth=0;
         for (wchar_t digit=L'1';digit<=L'9';++digit) {
             int width=0;
-            renderError=painter.measure(std::wstring(1,digit),CandidateNumberFontFamily,static_cast<FLOAT>(scale(std::max(11,fontSize-3))),width);
+            renderError=painter.measure(std::wstring(1,digit),static_cast<FLOAT>(scale(std::max(11,fontSize-3))),width);
             if (FAILED(renderError)) { hide(); return false; }
             numberWidth=std::max(numberWidth,width);
         }
@@ -155,7 +152,7 @@ public:
                 if (FAILED(renderError)) break;
                 extent.cx=static_cast<LONG>(std::ceil(metrics.widthIncludingTrailingWhitespace));
             } else {
-                int width=0; renderError=painter.measure(items[i].text,CandidateFontFamily,static_cast<FLOAT>(scale(fontSize)),width);
+                int width=0; renderError=painter.measure(items[i].text,static_cast<FLOAT>(scale(fontSize)),width);
                 if (FAILED(renderError)) break;
                 extent.cx=width;
             }
