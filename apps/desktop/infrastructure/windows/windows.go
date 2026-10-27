@@ -263,6 +263,13 @@ func (t *Targets) Commit(ctx context.Context, request contracts.CommitRequest) (
 		result.Failure = domain.CodeCancelled
 		return result, nil
 	}
+	// A capture already marked secure never follows the caret or the
+	// clipboard. That decision uses the snapshot, so an invalid handle
+	// returns before any OS input.
+	if tgt.secure {
+		result.Failure = domain.CodeSecureFieldBlocked
+		return result, nil
+	}
 	foreground, _, _ := procGetForegroundWindow.Call()
 	focus := uintptr(0)
 	if foreground != 0 {

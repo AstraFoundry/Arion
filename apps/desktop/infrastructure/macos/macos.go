@@ -322,6 +322,13 @@ func (t *Targets) Commit(ctx context.Context, request contracts.CommitRequest) (
 			C.arion_release(tgt.element)
 		}
 	}()
+	// A capture already marked secure never follows the caret or the
+	// clipboard. The snapshot is enough, so this returns before Accessibility
+	// or pasteboard access.
+	if tgt.secure {
+		result.Failure = domain.CodeSecureFieldBlocked
+		return result, nil
+	}
 	paste, secure := adoptLiveCursor(tgt)
 	if secure {
 		result.Failure = domain.CodeSecureFieldBlocked
