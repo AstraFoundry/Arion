@@ -47,7 +47,7 @@ Sources are pinned in [`skills-lock.json`](../../skills-lock.json).
 
 | Skill | Use when |
 |-------|----------|
-| `anatomy` | Drawing isometric technical figures. `ui/shared/iso` ports its kit's camera and shading to MyGo for the onboarding dictation key figure. The examples' generated pages and PDFs are not committed; `node .agents/skills/anatomy/examples/<name>/build.mjs` rebuilds a page. |
+| `anatomy` | Drawing isometric technical figures. `ui/shared/iso` ports its kit's camera and shading to MyGo for the onboarding dictation key figure and the model step's typewriter figure. The examples' generated pages and PDFs are not committed; `node .agents/skills/anatomy/examples/<name>/build.mjs` rebuilds a page. |
 
 ### `yetone/kill-ai-slop`
 

@@ -18,7 +18,7 @@ The question was whether Arion should adopt coss ui as its component baseline.
   - the `Select` popup, with its check column, highlight wash and separators, built on MyGo's headless `SelectBase`.
 - **Sunbeam tokens** live only in `ui/shared/theme`. `theme.Apply` installs them as MyGo's theme too, so stock controls (switches, radios, fields, progress) match. The app icon is redrawn in Sunbeam yellow with ink bars (`cmd/arion-icon`).
 - **The accent is pinned**, not taken from the system: Arion's brand is yellow on every desktop. Yellow never carries light text, and it is not used as text or icon color on light surfaces (`AccentInk` exists for that). Navigation uses ink as its accent (`theme.Ink`) because MyGo tints every sidebar icon with the accent.
-- **Illustrations** are mock UI (an editor window and the dictation pill) floating on a soft, motion-blurred photograph, drawn by `widgets/showcase`. They appear only in onboarding and Settings › About. The onboarding dictation key step instead shows an isometric laptop drawn live (`widgets/keyfigure`, see the design system).
+- **Illustrations** are mock UI (an editor window and the dictation pill) floating on a soft, motion-blurred photograph, drawn by `widgets/showcase`. They appear only in onboarding and Settings › About. The onboarding dictation key step instead shows an isometric laptop drawn live (`widgets/keyfigure`, see the design system), and the model step a microphone wired to a typewriter (`widgets/typewriter`).
 
 ## Consequences
 

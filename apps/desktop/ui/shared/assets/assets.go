@@ -1,5 +1,6 @@
-// Package assets embeds the bitmaps the native UI draws: the app mark and
-// the photograph illustrations sit on. See README.md for sources.
+// Package assets embeds the bitmaps the native UI draws (the app mark and
+// the photograph illustrations sit on), and the text and typeface the
+// onboarding typewriter types. See README.md for sources.
 package assets
 
 import (
@@ -18,6 +19,19 @@ var (
 	//go:embed feishu.png
 	feishuPNG []byte
 )
+
+// Arion is Herodotus's account of Arion and the dolphin (Histories 1.23–24)
+// in the original Greek, one paragraph per line: the typewriter figure
+// types it.
+//
+//go:embed arion.txt
+var Arion string
+
+// Serif is Gentium Book Plus Regular, a serif with polytonic Greek, whose
+// outlines the typewriter figure draws.
+//
+//go:embed GentiumBookPlus-Regular.ttf
+var Serif []byte
 
 // Mark is the app icon, drawn wherever Arion names itself.
 var Mark = mustDecode(markPNG)

@@ -77,6 +77,10 @@ func (c Camera) Project(p Vec) (float32, float32) {
 	return c.Center[0] + (d[0]*c.sinA-d[1]*c.cosA)*k, c.Center[1] + ((d[0]*c.cosA+d[1]*c.sinA)*c.sinE-d[2]*c.cosE)*k
 }
 
+// Unit is how many DIPs one world unit spans, for strokes sized in the
+// world: a cable or a rod.
+func (c Camera) Unit() float32 { return c.Scale * unit }
+
 // Toward is the direction to the viewer: a face whose normal points along
 // it is seen, and a point further along it is nearer.
 func (c Camera) Toward() Vec { return Vec{c.cosA * c.cosE, c.sinA * c.cosE, c.sinE} }
@@ -158,6 +162,12 @@ func (c Camera) add(shape Shape, points []Vec, closed bool) Shape {
 func (c Camera) bounds() [4]float32 {
 	const margin = 4
 	return [4]float32{c.View.X - margin, c.View.Y - margin, c.View.X + c.View.W + margin, c.View.Y + c.View.H + margin}
+}
+
+// Clip cuts a polygon to the box x0, y0, x1, y1, as Poly does to the view:
+// a plan cut to the edge of the face it lies on.
+func Clip(points [][2]float32, x0, y0, x1, y1 float32) [][2]float32 {
+	return clipPolygon(points, [4]float32{x0, y0, x1, y1})
 }
 
 // clipPolygon cuts a polygon to the box b (x0, y0, x1, y1): Sutherland–Hodgman.

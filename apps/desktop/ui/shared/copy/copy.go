@@ -382,6 +382,7 @@ const (
 	ShowcaseSentenceEnglish   Key = "ShowcaseSentenceEnglish"
 	HoldKeyFigureLabel        Key = "HoldKeyFigureLabel"
 	TranslateKeyFigureLabel   Key = "TranslateKeyFigureLabel"
+	TypewriterFigureLabel     Key = "TypewriterFigureLabel"
 	OnbStepWelcome            Key = "OnbStepWelcome"
 	OnbStepMic                Key = "OnbStepMic"
 	OnbStepAX                 Key = "OnbStepAX"

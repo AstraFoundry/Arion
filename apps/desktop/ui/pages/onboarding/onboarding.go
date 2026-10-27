@@ -27,6 +27,7 @@ import (
 	"arion.local/desktop/ui/widgets/modelcard"
 	"arion.local/desktop/ui/widgets/showcase"
 	"arion.local/desktop/ui/widgets/stepper"
+	"arion.local/desktop/ui/widgets/typewriter"
 	"github.com/egoist/mygo/ui"
 )
 
@@ -88,6 +89,8 @@ func (p *Page) Render(c *ui.Context, store runtime.Store) {
 					label = copy.TranslateKeyFigureLabel
 				}
 				keyfigure.Render(c, tokens, messages, label, key, p.switched, p.heard(step, state))
+			case step == onboarding.Model:
+				typewriter.Render(c, tokens, messages, copy.TypewriterFigureLabel, p.entered)
 			case step == onboarding.Translate || step == onboarding.TranslateKey:
 				showcase.Translate(c, tokens, messages, state.Preferences.TranslateLanguage, holdname.Legend(state.Preferences.TranslateKey))
 			default:
