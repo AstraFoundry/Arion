@@ -1,7 +1,7 @@
 import type { Element, ElementContent, Root } from "hast";
 import { toString } from "hast-util-to-string";
 import { SKIP, visit } from "unist-util-visit";
-import type { ImageSize } from "@/shared/lib/server";
+import type { ImageSize, MediaRef } from "@/shared/lib/server";
 
 /**
  * Raw HTML in a post is trusted (posts are reviewed like code) but must stay
@@ -74,6 +74,7 @@ export function rehypeFigures() {
       const caption = image.properties.title;
       delete image.properties.title;
       node.tagName = "figure";
+      node.properties = { className: ["post-wide"] };
       node.children = [image];
       if (typeof caption === "string" && caption.trim() !== "") {
         node.children.push({
@@ -92,9 +93,6 @@ export function rehypeFigures() {
 const RATIO = /^\d+(\.\d+)?\/\d+(\.\d+)?$/;
 const PILL_STATES = ["listening", "inserted", "learned"];
 
-const isLocal = (src: unknown): src is string =>
-  typeof src === "string" && src.startsWith("/") && !src.startsWith("//");
-
 function requireSize(node: Element, what: string) {
   const { width, height } = node.properties;
   if (!Number(width) || !Number(height)) {
@@ -102,27 +100,84 @@ function requireSize(node: Element, what: string) {
   }
 }
 
+/** Element properties that name media files. */
+const MEDIA_PROPERTIES: Record<string, readonly string[]> = {
+  img: ["src"],
+  "video-clip": ["src", "poster"],
+};
+
+export interface MediaOptions {
+  /** Resolves a `src` as written in the post (see `resolveMedia`). */
+  resolve: (src: string) => MediaRef;
+  /** Every reference resolved, by URL; filled while the tree is processed. */
+  refs?: Map<string, MediaRef>;
+}
+
+/**
+ * Rewrites media sources to the URLs the page uses: remote URLs stay,
+ * `public/` paths stay, and project paths (relative to the post) become
+ * `/blog-assets/…`. Remote images are requested without a referrer.
+ */
+export function rehypeResolveMedia(options: MediaOptions) {
+  return (tree: Root) => {
+    visit(tree, "element", (node) => {
+      for (const name of MEDIA_PROPERTIES[node.tagName] ?? []) {
+        const src = node.properties[name];
+        if (src === undefined) continue;
+        if (typeof src !== "string" || src === "") {
+          throw new PostContentError(`<${node.tagName}> has an empty ${name}`);
+        }
+        let ref: MediaRef;
+        try {
+          ref = options.resolve(src);
+        } catch (error) {
+          throw new PostContentError(`<${node.tagName} ${name}>: ${(error as Error).message}`);
+        }
+        node.properties[name] = ref.url;
+        options.refs?.set(ref.url, ref);
+        if (node.tagName === "img" && !ref.file) node.properties.referrerPolicy = "no-referrer";
+      }
+    });
+  };
+}
+
 /**
  * Sets the intrinsic size on every image and video so lazy media reserve
- * their space. Local files are measured; remote ones must declare a size.
+ * their space: measured from the file, or from a remote image fetched at
+ * build time, unless the post states width and height itself.
  */
-export function rehypeMediaSize(options: { measure: (src: string) => ImageSize }) {
-  return (tree: Root) => {
+export function rehypeMediaSize(options: { measure: (url: string) => Promise<ImageSize> }) {
+  return async (tree: Root) => {
+    const pending: Promise<void>[] = [];
+    const sizeFrom = (node: Element, url: unknown) => {
+      const { width, height } = node.properties;
+      if (width && height) return;
+      if (width || height) {
+        throw new PostContentError(`<${node.tagName} src="${String(node.properties.src)}"> states only one of width and height`);
+      }
+      if (typeof url !== "string") return;
+      pending.push(
+        options.measure(url).then(
+          (size) => {
+            Object.assign(node.properties, size);
+          },
+          (error: Error) => {
+            throw new PostContentError(`Cannot size ${url}: ${error.message}`);
+          },
+        ),
+      );
+    };
+
     visit(tree, "element", (node) => {
       const { properties } = node;
       if (node.tagName === "img") {
-        if (isLocal(properties.src) && !properties.width) {
-          Object.assign(properties, options.measure(properties.src));
-        }
-        requireSize(node, `The image ${String(properties.src)}`);
         if (typeof properties.alt !== "string") {
           throw new PostContentError(`The image ${String(properties.src)} needs alt text`);
         }
+        sizeFrom(node, properties.src);
       } else if (node.tagName === "video-clip") {
-        if (isLocal(properties.poster) && !properties.width) {
-          Object.assign(properties, options.measure(properties.poster));
-        }
-        requireSize(node, `<video-clip src="${String(properties.src)}">`);
+        sizeFrom(node, properties.poster);
+        if (!properties.poster) requireSize(node, `<video-clip src="${String(properties.src)}">`);
       } else if (node.tagName === "embed-frame") {
         if (typeof properties.title !== "string" || properties.title.trim() === "") {
           throw new PostContentError(`<embed-frame src="${String(properties.src)}"> needs a title`);
@@ -148,6 +203,7 @@ export function rehypeMediaSize(options: { measure: (src: string) => ImageSize }
         }
       }
     });
+    await Promise.all(pending);
   };
 }
 

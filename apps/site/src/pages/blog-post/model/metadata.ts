@@ -16,12 +16,7 @@ export function blogPostMetadata(slug: string, locale: Locale): Metadata {
       ...(post.cover
         ? {
             images: [
-              {
-                url: post.cover.src,
-                width: post.cover.width,
-                height: post.cover.height,
-                alt: post.cover.alt,
-              },
+              { url: post.cover.src, alt: post.cover.alt },
             ],
           }
         : {}),

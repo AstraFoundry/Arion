@@ -4,16 +4,20 @@ import remarkGfm from "remark-gfm";
 import remarkParse from "remark-parse";
 import remarkRehype from "remark-rehype";
 import { unified } from "unified";
-import { describe, expect, it } from "vitest";
+import { readFileSync } from "node:fs";
+import path from "node:path";
+import { describe, expect, it, vi } from "vitest";
 import {
   parseFrontmatter,
   type PostMeta,
   sortNewestFirst,
   translationMismatch,
 } from "@/entities/post/model/post";
+import { mediaSize, PROJECT_ASSET_BASE, resolveMedia } from "@/shared/lib/server";
 import {
   rehypeFigures,
   rehypeMediaSize,
+  rehypeResolveMedia,
   rehypeStaticHtml,
 } from "@/widgets/post-article/lib/rehype-post";
 
@@ -80,7 +84,13 @@ async function hast(markdown: string): Promise<Root> {
     .use(rehypeRaw)
     .use(rehypeStaticHtml)
     .use(rehypeFigures)
-    .use(rehypeMediaSize, { measure: () => ({ width: 800, height: 600 }) });
+    .use(rehypeResolveMedia, {
+      resolve: (src) =>
+        src.startsWith("https://")
+          ? { url: src }
+          : { url: src.startsWith("/") ? src : `/resolved/${src}`, file: `/repo/${src}` },
+    })
+    .use(rehypeMediaSize, { measure: async () => ({ width: 800, height: 600 }) });
   return (await processor.run(processor.parse(markdown))) as Root;
 }
 
@@ -96,8 +106,27 @@ describe("post markdown", () => {
     expect(caption.tagName).toBe("figcaption");
   });
 
-  it("requires a size for remote images", async () => {
-    await expect(hast("![A chart](https://example.com/a.png)")).rejects.toThrow(/width and height/);
+  it("resolves project paths and measures remote images without a referrer", async () => {
+    const [local] = elements(await hast("![A chart](../shared/chart.png)"));
+    expect((local.children[0] as Element).properties).toMatchObject({ src: "/resolved/../shared/chart.png" });
+
+    const [remote] = elements(await hast("![A chart](https://img.example.com/a.png)"));
+    expect((remote.children[0] as Element).properties).toMatchObject({
+      src: "https://img.example.com/a.png",
+      referrerPolicy: "no-referrer",
+      width: 800,
+      height: 600,
+    });
+  });
+
+  it("keeps a stated size and rejects half of one", async () => {
+    const [stated] = elements(
+      await hast('<img src="https://img.example.com/a.png" alt="A" width="20" height="10">'),
+    );
+    expect(stated.properties).toMatchObject({ width: 20, height: 10 });
+    await expect(hast('<img src="https://img.example.com/a.png" alt="A" width="20">')).rejects.toThrow(
+      /only one of width and height/,
+    );
   });
 
   it("lifts a one-line embed out of its paragraph", async () => {
@@ -117,5 +146,48 @@ describe("post markdown", () => {
     await expect(hast("<script>alert(1)</script>")).rejects.toThrow(/<script>/);
     await expect(hast('<iframe src="https://example.com"></iframe>')).rejects.toThrow(/embed-frame/);
     await expect(hast('<button onclick="x()">Go</button>')).rejects.toThrow(/event handler/);
+  });
+});
+
+describe("media resolution", () => {
+  const post = path.resolve("content/blog/where-your-dictation-goes/en.md");
+
+  it("keeps remote and public URLs and publishes project files by content hash", () => {
+    expect(resolveMedia("https://img.example.com/a.png", post)).toEqual({ url: "https://img.example.com/a.png" });
+    expect(resolveMedia("/og.jpg", post)).toEqual({ url: "/og.jpg", file: path.resolve("public/og.jpg") });
+
+    const project = resolveMedia("../../../../desktop/resources/icon.png", post);
+    expect(project.file).toBe(path.resolve("../desktop/resources/icon.png"));
+    expect(project.url).toMatch(new RegExp(`^${PROJECT_ASSET_BASE}[0-9a-f]{12}/icon\\.png$`));
+  });
+
+  it("rejects missing files, paths outside the repository and other file types", () => {
+    expect(() => resolveMedia("./missing.png", post)).toThrow(/names no file/);
+    expect(() => resolveMedia("/missing.png", post)).toThrow(/names no file/);
+    expect(() => resolveMedia("../../../../../../outside.png", post)).toThrow(/outside the repository/);
+    expect(() => resolveMedia("./en.md", post)).toThrow(/project paths may name/);
+    expect(() => resolveMedia("data:image/png;base64,AA", post)).toThrow(/media URLs/);
+  });
+
+  it("measures local files and downloads remote images once", async () => {
+    expect(await mediaSize({ url: "/og.jpg", file: path.resolve("public/og.jpg") })).toEqual({
+      width: 1200,
+      height: 630,
+    });
+
+    const bytes = readFileSync(path.resolve("public/og.jpg"));
+    const fetchMock = vi.fn(async () => new Response(bytes));
+    vi.stubGlobal("fetch", fetchMock);
+    try {
+      const url = "https://img.example.com/og.jpg";
+      expect(await mediaSize({ url })).toEqual({ width: 1200, height: 630 });
+      expect(await mediaSize({ url })).toEqual({ width: 1200, height: 630 });
+      expect(fetchMock).toHaveBeenCalledTimes(1);
+
+      fetchMock.mockResolvedValueOnce(new Response("gone", { status: 404 }));
+      await expect(mediaSize({ url: "https://img.example.com/gone.png" })).rejects.toThrow(/HTTP 404/);
+    } finally {
+      vi.unstubAllGlobals();
+    }
   });
 });

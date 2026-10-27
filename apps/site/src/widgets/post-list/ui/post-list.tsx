@@ -15,13 +15,12 @@ export function FeaturedPost({ post }: { post: PostMeta }) {
       className="group grid items-center gap-8 rounded-3xl md:grid-cols-2 md:gap-12"
     >
       {post.cover ? (
-        // eslint-disable-next-line @next/next/no-img-element -- static export; the cover is sized at build time
+        // eslint-disable-next-line @next/next/no-img-element -- static export; a fixed 4:3 box reserves the space
         <img
           src={post.cover.src}
           alt=""
-          width={post.cover.width}
-          height={post.cover.height}
           fetchPriority="high"
+          referrerPolicy={post.cover.file ? undefined : "no-referrer"}
           className="aspect-[4/3] w-full rounded-2xl bg-muted object-cover outline-1 -outline-offset-1 outline-[var(--image-outline)]"
         />
       ) : null}

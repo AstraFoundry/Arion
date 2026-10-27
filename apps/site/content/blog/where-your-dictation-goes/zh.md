@@ -3,7 +3,7 @@ title: 你的听写去了哪里
 summary: Arion 在你的电脑上识别语音。这篇文章说明哪些内容留在设备上，哪几件事会用到网络，以及你如何自己验证。
 date: 2026-10-27
 category: product
-cover: /backdrops/flowers-wide-1600.webp
+cover: ../../../public/backdrops/flowers-wide-1600.webp
 coverAlt: 一张柔和、带运动模糊的花瓣飘落照片
 ---
 

@@ -8,10 +8,11 @@ export type PostCategory = (typeof POST_CATEGORIES)[number];
 export const POST_SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 export interface PostCover {
+  /** The URL pages use: remote, a `public/` path, or a published project file. */
   src: string;
   alt: string;
-  width: number;
-  height: number;
+  /** The local file behind `src`; absent for a remote image. */
+  file?: string;
 }
 
 export interface PostMeta {
@@ -28,9 +29,11 @@ export interface PostMeta {
 export interface Post extends PostMeta {
   /** The Markdown body after the front matter. */
   body: string;
+  /** Absolute path of the Markdown file; relative media paths start here. */
+  file: string;
 }
 
-/** The front matter fields as written, before the cover is measured. */
+/** The front matter fields as written, before the cover is resolved. */
 export interface PostFrontmatter {
   title: string;
   summary: string;

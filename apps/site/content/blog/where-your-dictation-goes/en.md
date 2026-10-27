@@ -3,7 +3,7 @@ title: Where your dictation goes
 summary: Arion recognizes speech on your computer. Here is what stays on the device, the few things that use the network, and how to check it yourself.
 date: 2026-10-27
 category: product
-cover: /backdrops/flowers-wide-1600.webp
+cover: ../../../public/backdrops/flowers-wide-1600.webp
 coverAlt: A soft, motion-blurred photograph of falling flowers
 ---
 

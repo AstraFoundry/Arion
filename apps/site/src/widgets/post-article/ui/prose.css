@@ -263,10 +263,35 @@ html:is(:lang(zh-CN), :lang(ja)) .post-prose > blockquote {
   margin-top: 2.25em;
 }
 
+/*
+ * A Markdown figure takes the wide column but never upscales its image: a
+ * small image keeps its size, a tall one is capped by the viewport, and the
+ * caption (zero width, then stretched) is as wide as the image.
+ */
+.post-prose > figure {
+  width: fit-content;
+  max-width: 100%;
+  justify-self: center;
+}
+
+.post-prose > figure > img {
+  width: auto;
+  max-width: 100%;
+  max-height: min(80vh, 56rem);
+}
+
+.post-prose > figure > figcaption {
+  width: 0;
+  min-width: 100%;
+}
+
+.post-media video {
+  width: 100%;
+}
+
 .post-prose figure > img,
 .post-media video {
   display: block;
-  width: 100%;
   height: auto;
   border-radius: var(--radius-xl);
   outline: 1px solid var(--image-outline);

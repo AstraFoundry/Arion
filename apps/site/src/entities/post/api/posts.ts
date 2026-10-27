@@ -3,10 +3,11 @@ import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import matter from "gray-matter";
 import { type Locale, LOCALES } from "@/shared/i18n";
-import { publicImageSize } from "@/shared/lib/server";
+import { resolveMedia } from "@/shared/lib/server";
 import {
   parseFrontmatter,
   type Post,
+  type PostCover,
   POST_SLUG,
   PostError,
   type PostMeta,
@@ -14,8 +15,20 @@ import {
   translationMismatch,
 } from "../model/post";
 
-/** `content/blog/<slug>/<locale>.md`; images live in `public/blog/<slug>/`. */
+/**
+ * `content/blog/<slug>/<locale>.md`. Media may sit next to the Markdown, in
+ * `public/`, anywhere else in the repository, or on another site.
+ */
 const CONTENT_DIR = path.join(process.cwd(), "content", "blog");
+
+function coverOf(cover: { src: string; alt: string }, file: string, source: string): PostCover {
+  try {
+    const { url, file: local } = resolveMedia(cover.src, file);
+    return { src: url, alt: cover.alt, file: local };
+  } catch (error) {
+    throw new PostError(source, `cover: ${(error as Error).message}`);
+  }
+}
 
 function readPost(slug: string, locale: Locale): Post {
   const file = path.join(CONTENT_DIR, slug, `${locale}.md`);
@@ -26,8 +39,9 @@ function readPost(slug: string, locale: Locale): Post {
     ...fields,
     slug,
     locale,
-    cover: cover ? { ...cover, ...publicImageSize(cover.src) } : undefined,
+    cover: cover ? coverOf(cover, file, source) : undefined,
     body: content,
+    file,
   };
 }
 
@@ -44,12 +58,12 @@ function readAll(): Map<string, Record<Locale, Post>> {
     if (!POST_SLUG.test(slug)) throw new PostError(where, "slugs are lowercase-hyphenated");
 
     const expected = LOCALES.map((locale) => `${locale}.md`);
-    const files = readdirSync(path.join(CONTENT_DIR, slug));
-    const missing = expected.filter((name) => !files.includes(name));
-    const extra = files.filter((name) => !expected.includes(name));
+    const markdown = readdirSync(path.join(CONTENT_DIR, slug)).filter((name) => name.endsWith(".md"));
+    const missing = expected.filter((name) => !markdown.includes(name));
+    const extra = markdown.filter((name) => !expected.includes(name));
     if (missing.length) throw new PostError(where, `missing ${missing.join(", ")}`);
     if (extra.length) {
-      throw new PostError(where, `unexpected ${extra.join(", ")} (images go in public/blog/${slug}/)`);
+      throw new PostError(where, `unexpected ${extra.join(", ")}; posts are ${expected.join(", ")}`);
     }
 
     const translations = Object.fromEntries(

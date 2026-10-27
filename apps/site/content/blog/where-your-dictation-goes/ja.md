@@ -3,7 +3,7 @@ title: あなたの音声入力はどこへ行くのか
 summary: Arion は音声をあなたのコンピューター上で認識します。デバイスに残るもの、ネットワークを使うわずかな場面、そして自分で確かめる方法を説明します。
 date: 2026-10-27
 category: product
-cover: /backdrops/flowers-wide-1600.webp
+cover: ../../../public/backdrops/flowers-wide-1600.webp
 coverAlt: 舞い落ちる花を写した、やわらかなモーションブラーの写真
 ---
 

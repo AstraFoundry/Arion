@@ -5,6 +5,7 @@ import type { Post } from "@/entities/post";
 import { routes } from "@/shared/config";
 import { format } from "@/shared/i18n";
 import { loadMessages } from "@/shared/i18n/server";
+import { mediaSize } from "@/shared/lib/server";
 import { AppLink, Dateline } from "@/shared/ui";
 import { postComponents } from "../lib/components";
 import { renderMarkdown } from "../lib/markdown";
@@ -20,10 +21,14 @@ const MIN_TOC_HEADINGS = 3;
  */
 export async function PostArticle({ post }: { post: Post }) {
   const { blog } = loadMessages(post.locale);
-  const { tree, headings } = await renderMarkdown(post.body, {
+  const { tree, headings } = await renderMarkdown(post.body, post.file, {
     footnotes: blog.footnotes,
     footnoteBack: (index) => format(blog.footnoteBack, { index }),
   });
+  const cover = post.cover && {
+    ...post.cover,
+    ...(await mediaSize({ url: post.cover.src, file: post.cover.file })),
+  };
   const body = toJsxRuntime(tree, { Fragment, jsx, jsxs, components: postComponents });
 
   return (
@@ -47,14 +52,15 @@ export async function PostArticle({ post }: { post: Post }) {
         <p className="post-summary mt-6">{post.summary}</p>
       </header>
 
-      {post.cover ? (
+      {cover ? (
         // eslint-disable-next-line @next/next/no-img-element -- static export; the cover is sized at build time
         <img
-          src={post.cover.src}
-          alt={post.cover.alt}
-          width={post.cover.width}
-          height={post.cover.height}
+          src={cover.src}
+          alt={cover.alt}
+          width={cover.width}
+          height={cover.height}
           fetchPriority="high"
+          referrerPolicy={cover.file ? undefined : "no-referrer"}
           className="post-wide post-cover"
         />
       ) : null}
