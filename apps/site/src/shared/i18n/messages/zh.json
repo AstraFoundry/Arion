@@ -22,6 +22,7 @@
   },
   "nav": {
     "label": "主导航",
+    "blog": "博客",
     "privacy": "隐私",
     "selfHosting": "自托管",
     "openSource": "开源",
@@ -152,6 +153,26 @@
     "unavailable": "暂未提供",
     "checksum": "SHA-256 {sum}",
     "failed": "无法加载版本信息，下载按钮仍可使用。"
+  },
+  "blog": {
+    "title": "博客",
+    "lead": "来自 Arion 开发者的笔记：改了什么、怎么做到的，以及为什么一切都留在你的设备上。",
+    "allPosts": "全部文章",
+    "morePosts": "更多文章",
+    "contents": "目录",
+    "byline": "作者：{authors}",
+    "updated": "更新于 {date}",
+    "categories": {
+      "announcement": "公告",
+      "product": "产品",
+      "engineering": "工程"
+    },
+    "headingLink": "链接到本节",
+    "copyCode": "复制代码",
+    "copied": "已复制",
+    "footnotes": "脚注",
+    "footnoteBack": "返回引用 {index}",
+    "embedLoad": "加载来自 {host} 的内容"
   },
   "privacyPage": {
     "title": "隐私与加密",

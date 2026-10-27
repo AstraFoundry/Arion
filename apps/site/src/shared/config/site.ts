@@ -26,13 +26,20 @@ export const siteConfig = {
   minimumMacOS: "14",
 } as const;
 
+/** The site-wide social preview (`public/og.jpg`); its alt text is `meta.ogAlt`. */
+export const socialImage = { url: "/og.jpg", width: 1200, height: 630 } as const;
+
 /** Internal routes. Trailing slashes match the static export layout. */
 export const routes = {
   home: "/",
   privacy: "/privacy/",
   selfHosting: "/self-hosting/",
   credits: "/credits/",
+  blog: "/blog/",
 } as const;
+
+/** A blog post's route; `slug` is its directory under `content/blog`. */
+export const blogPostRoute = (slug: string) => `${routes.blog}${slug}/`;
 
 /** In-page anchors on the home page. */
 export const sections = {
