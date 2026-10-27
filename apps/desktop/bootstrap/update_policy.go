@@ -361,6 +361,7 @@ func (a *App) showUpdateNotification(key string) {
 }
 
 func (a *App) notificationAction(id, action string) {
+	a.notificationLaunch = true
 	if strings.HasPrefix(id, "arion.product.") {
 		a.productNotificationAction(id, action)
 		return

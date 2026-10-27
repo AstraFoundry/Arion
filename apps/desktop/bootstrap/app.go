@@ -159,6 +159,10 @@ type App struct {
 	accountCancel      context.CancelFunc
 	imeSetupCancel     context.CancelFunc
 	imeSetupGeneration uint64
+	// notificationLaunch is set on the main thread when a notification
+	// action owns this process, including one that cold-started it. That
+	// action chooses the window; the launch presenter must not add another.
+	notificationLaunch bool
 }
 
 // New builds the application without starting the event loop.
@@ -345,9 +349,13 @@ func (a *App) Start() {
 	mygo.App.OnWillQuit(func(*mygo.QuitEvent) { actions{a}.CancelInputMethodSetup() })
 	mygo.App.OnSecondInstance(func(args []string, _ string) {
 		if !hasAppURL(args) {
-			a.openSettings()
+			a.revealUserWindow()
 		}
 	})
+	// macOS sends this when Spotlight, Launchpad, Finder or the Dock opens
+	// an app that is already running. The overlay is not the window the
+	// user asked for, so visibility does not suppress Settings.
+	mygo.App.OnActivate(func(bool) { a.revealUserWindow() })
 	// The sign-in callback page links here (Windows forwards it as a second
 	// instance's argument, which reaches OnOpenURL too).
 	mygo.App.OnOpenURL(func(url string) {
@@ -490,7 +498,35 @@ func (a *App) ready() {
 	mygo.Power.OnLockScreen(func() { a.record("screen_locked", nil); a.core.Cancel() })
 	if !a.state.Preferences.OnboardingCompleted && !a.opts.SkipOnboarding {
 		a.openOnboarding()
+	} else if !a.scripted() {
+		// One turn later, so a notification that launched this process can
+		// claim the window before Settings opens on its own.
+		a.presentSettingsAfterLaunch()
 	}
+}
+
+// scripted reports a host that owns its own windows: the packaged E2E
+// harness, or a native test that skips onboarding.
+func (a *App) scripted() bool {
+	return a.harness != nil || a.opts.SkipOnboarding
+}
+
+// presentSettingsAfterLaunch opens Settings for a user-visible start. It
+// waits until queued notification actions have run: on macOS those drain
+// before the main-loop dispatch, and on Windows they dispatch in the same
+// message, ahead of it.
+func (a *App) presentSettingsAfterLaunch() {
+	go mygo.RunOnMain(func() {
+		if !showSettingsOnLaunch(settingsLaunch{
+			OnboardingCompleted: a.state.Preferences.OnboardingCompleted,
+			OpenedAtLogin:       mygo.App.WasOpenedAtLogin(),
+			Scripted:            a.scripted(),
+			Notification:        a.notificationLaunch,
+		}) {
+			return
+		}
+		a.openSettings()
+	})
 }
 
 // post queues fn for the main thread without blocking the caller, so a
