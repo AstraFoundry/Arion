@@ -685,7 +685,7 @@ func (c *Coordinator) commit(r *run, revision uint64, text string) {
 		return
 	}
 	if follower != nil {
-		if result.Outcome == contracts.NotApplied {
+		if result.Outcome == contracts.NotApplied || result.Outcome == contracts.Copied {
 			follower.Release(r.target.Target)
 		} else {
 			c.deps.Edits.Track(follower, r.target.Target, r.identity, text)
@@ -693,7 +693,7 @@ func (c *Coordinator) commit(r *run, revision uint64, text string) {
 	}
 	var event contracts.Event
 	switch result.Outcome {
-	case contracts.Applied, contracts.Unknown:
+	case contracts.Applied, contracts.Unknown, contracts.Copied:
 		// CTR-A06: an unknown outcome is final; it is never retried.
 		_ = r.session.Advance(domain.Completed)
 		if result.Outcome == contracts.Applied {

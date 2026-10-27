@@ -466,6 +466,20 @@ func TestCancelDuringCommitDropsLateOutcome(t *testing.T) {
 	}
 }
 
+func TestCopiedCommitCompletesOnce(t *testing.T) {
+	target := &fakeTarget{snapshot: contracts.TargetSnapshot{Target: "owned"}, outcome: contracts.Copied}
+	c, audio, events := setup(t, &fakeRecognizer{words: []string{"text"}}, target, Options{AutoCommit: true})
+	c.Start()
+	events.wait(t, stateIs(domain.Capturing))
+	audio.push(1, 0.2)
+	c.Stop()
+	e := events.wait(t, kindIs(contracts.CommitResultReady))
+	c.CommitReviewed()
+	if e.State != domain.Completed || e.Outcome != contracts.Copied || target.commits.Load() != 1 {
+		t.Fatalf("copied result: %+v commits=%d", e, target.commits.Load())
+	}
+}
+
 func TestCommitPreservesUncertainCleanupWarning(t *testing.T) {
 	target := &fakeTarget{snapshot: contracts.TargetSnapshot{Target: "owned"}}
 	target.commitHook = func(ctx context.Context, r contracts.CommitRequest) (contracts.CommitResult, error) {

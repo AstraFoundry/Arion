@@ -50,6 +50,7 @@ const (
 	OutcomeApplied    = contracts.Applied
 	OutcomeNotApplied = contracts.NotApplied
 	OutcomeUnknown    = contracts.Unknown
+	OutcomeCopied     = contracts.Copied
 
 	PolishLocal = application.PolishLocal
 	PolishCloud = application.PolishCloud

@@ -621,7 +621,7 @@ func (a *App) apply(e contracts.Event) {
 		setState(domain.Reviewing)
 	case contracts.CommitResultReady:
 		d.Outcome, d.Failure = e.Outcome, e.Error
-		d.Pasted = a.core.Snapshot().Mode == domain.ShortcutMode && (runtime.GOOS == "darwin" || a.state.Preferences.Delivery == application.DeliveryClipboard) && e.Outcome != contracts.NotApplied
+		d.Pasted = a.core.Snapshot().Mode == domain.ShortcutMode && (runtime.GOOS == "darwin" || a.state.Preferences.Delivery == application.DeliveryClipboard) && e.Outcome != contracts.NotApplied && e.Outcome != contracts.Copied
 		a.state.LastText, a.state.LastOriginal = e.Text, d.Original
 		setState(e.State)
 	case contracts.ErrorOccurred:

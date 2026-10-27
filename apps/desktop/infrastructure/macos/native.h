@@ -55,6 +55,8 @@ int arion_paste_stage(void *transaction);
 int arion_paste_post(void *transaction, void *element, void *selection, int pid);
 int arion_paste_finish(void *transaction);
 int arion_selection_matches(void *element, void *selection);
+void *arion_copy_selection(void *element);
+int arion_clipboard_publish(const char *utf8);
 int arion_ime_register(const char *bundle_path);
 int arion_ime_validate_payload(const char *bundle_path, const char *bundle_id);
 int arion_ime_bundle_matches(const char *bundle_path, const char *source_id);

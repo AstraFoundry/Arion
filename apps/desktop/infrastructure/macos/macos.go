@@ -16,6 +16,7 @@ import (
 	"context"
 	"crypto/rand"
 	"encoding/hex"
+	"os"
 	"sync"
 	"time"
 	"unicode/utf16"
@@ -295,7 +296,10 @@ func (t *Targets) ReadContext(ctx context.Context, id contracts.Identity, token 
 	return snap, nil
 }
 
-// Commit revalidates focus and inserts once through the captured route.
+// Commit inserts once at the caret focused now. A caret move, a switch to
+// another editable field, or an edit in the captured field still inserts
+// there. A secure field is refused. With no editable focus, the text is left
+// on the system clipboard (DSK-06).
 func (t *Targets) Commit(ctx context.Context, request contracts.CommitRequest) (contracts.CommitResult, error) {
 	result := contracts.CommitResult{Identity: request.Identity, Outcome: contracts.NotApplied}
 	t.mu.Lock()
@@ -311,17 +315,75 @@ func (t *Targets) Commit(ctx context.Context, request contracts.CommitRequest) (
 		result.Failure = domain.CodeTargetChanged
 		return result, nil
 	}
-	defer C.arion_release(tgt.selection)
-	if tgt.follow {
-		t.keepFollowed(request.Target, tgt)
-	} else {
-		defer C.arion_release(tgt.element)
-	}
+	releaseElement := true
+	defer func() {
+		C.arion_release(tgt.selection)
+		if releaseElement {
+			C.arion_release(tgt.element)
+		}
+	}()
+	// A capture already marked secure never follows the caret or the
+	// clipboard. The snapshot is enough, so this returns before Accessibility
+	// or pasteboard access.
 	if tgt.secure {
 		result.Failure = domain.CodeSecureFieldBlocked
 		return result, nil
 	}
-	return commitPaste(ctx, request.Identity, request.Text, t.ClipboardRestoreDelay, nativePasteTarget{tgt})
+	paste, secure := adoptLiveCursor(tgt)
+	if secure {
+		result.Failure = domain.CodeSecureFieldBlocked
+		return result, nil
+	}
+	if !paste {
+		return publishClipboard(ctx, request.Identity, request.Text)
+	}
+	if tgt.follow {
+		t.keepFollowed(request.Target, tgt)
+		releaseElement = false
+	}
+	pasted, err := commitPaste(ctx, request.Identity, request.Text, t.ClipboardRestoreDelay, nativePasteTarget{tgt})
+	if pasted.Outcome == contracts.NotApplied && pasted.Failure == domain.CodeTargetChanged {
+		return publishClipboard(ctx, request.Identity, request.Text)
+	}
+	return pasted, err
+}
+
+// adoptLiveCursor points tgt at the editable field focused now.
+// paste is false when nothing editable is focused. secure is set when the
+// focused field must not receive text.
+func adoptLiveCursor(tgt *target) (paste bool, secure bool) {
+	if tgt.element != nil && C.arion_focus_matches(tgt.element, C.int(tgt.pid)) == 1 {
+		if C.arion_selection_matches(tgt.element, tgt.selection) != 1 {
+			C.arion_release(tgt.selection)
+			tgt.selection = C.arion_copy_selection(tgt.element)
+		}
+		if tgt.secure || C.arion_secure_input() == 1 {
+			return false, true
+		}
+		return true, false
+	}
+	var native C.arion_target
+	if C.arion_capture_target(&native, 0) != C.ARION_TARGET_OK {
+		return false, false
+	}
+	role, subrole := C.GoString(&native.role[0]), C.GoString(&native.subrole[0])
+	liveSecure := native.secure_input == 1 || subrole == "AXSecureTextField"
+	ownProcess := int(native.pid) == os.Getpid()
+	editable := native.element != nil && !ownProcess && (native.selection != nil || fieldKind(role, subrole) != domain.FieldUnknown)
+	if !editable || liveSecure {
+		C.arion_release(native.element)
+		C.arion_release(native.selection)
+		return false, liveSecure && native.element != nil && !ownProcess
+	}
+	tgt.follow = false
+	C.arion_release(tgt.element)
+	C.arion_release(tgt.selection)
+	tgt.element = native.element
+	tgt.selection = native.selection
+	tgt.pid = int(native.pid)
+	tgt.secure = false
+	tgt.readable = native.value_readable == 1
+	return true, false
 }
 
 // Follow marks a captured target to stay readable after Commit. Secure,

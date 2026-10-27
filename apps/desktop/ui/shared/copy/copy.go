@@ -50,6 +50,7 @@ const (
 	PillInserted              Key = "PillInserted"
 	PillTyped                 Key = "PillTyped"
 	PillPasted                Key = "PillPasted"
+	PillCopied                Key = "PillCopied"
 	PillCancelled             Key = "PillCancelled"
 	PillFinishHint            Key = "PillFinishHint"
 	PillEscHint               Key = "PillEscHint"

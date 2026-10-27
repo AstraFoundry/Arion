@@ -51,8 +51,9 @@ func TestWindowsInsertsIntoOwnedEditor(t *testing.T) {
 	}
 }
 
-// DSK-05/DSK-A04: stale sessions, cancelled commits and changed selections
+// DSK-05/DSK-A04: stale sessions, cancelled commits and secure fields
 // must not deliver text, and a rejected stale caller cannot consume ownership.
+// A caret move still inserts at the new caret (DSK-A03).
 func TestWindowsCommitOwnership(t *testing.T) {
 	for _, fault := range []string{"stale-generation", "cancel", "selection-change", "secure-field"} {
 		t.Run(fault, func(t *testing.T) {
@@ -82,6 +83,14 @@ func TestWindowsCommitOwnership(t *testing.T) {
 				want = domain.CodeCancelled
 			case "selection-change":
 				editor.selectRange(0, 0)
+				result, err := targets.Commit(ctx, request)
+				if err != nil || result.Outcome != contracts.Unknown || result.Failure != "" {
+					t.Fatalf("caret move: %+v %v", result, err)
+				}
+				if !within(5*time.Second, func() bool { return editor.text() == "replacementprefix replace suffix" }) {
+					t.Fatalf("text %q", editor.text())
+				}
+				return
 			case "secure-field":
 				want = domain.CodeSecureFieldBlocked
 				if !snapshot.Sensitive {
@@ -199,8 +208,8 @@ func TestWindowsContextFromOwnedWindow(t *testing.T) {
 	}
 }
 
-// DSK-A03 on Windows: a focus change before commit inserts nothing.
-func TestWindowsFocusChangeBlocksCommit(t *testing.T) {
+// DSK-A03 on Windows: a focus change before commit inserts into the focused editor.
+func TestWindowsFocusChangeInsertsIntoFocusedEditor(t *testing.T) {
 	first := startWindowsEditor(t)
 	second := startWindowsEditor(t)
 	first.focus(t)
@@ -210,12 +219,12 @@ func TestWindowsFocusChangeBlocksCommit(t *testing.T) {
 		t.Fatal(err)
 	}
 	second.focus(t)
-	result, err := targets.Commit(context.Background(), contracts.CommitRequest{Identity: identity(), Target: snapshot.Target, SourceRevision: 1, Text: "should not appear"})
-	if err != nil || result.Outcome != contracts.NotApplied || result.Failure != domain.CodeTargetChanged {
+	const text = "into the focused editor"
+	result, err := targets.Commit(context.Background(), contracts.CommitRequest{Identity: identity(), Target: snapshot.Target, SourceRevision: 1, Text: text})
+	if err != nil || result.Outcome != contracts.Unknown || result.Failure != "" {
 		t.Fatalf("commit after focus change: %+v %v", result, err)
 	}
-	time.Sleep(300 * time.Millisecond)
-	if first.text() != "" || second.text() != "" {
-		t.Fatalf("text inserted after focus change: %q %q", first.text(), second.text())
+	if !within(5*time.Second, func() bool { return first.text() == "" && second.text() == text }) {
+		t.Fatalf("text after focus change: %q %q", first.text(), second.text())
 	}
 }

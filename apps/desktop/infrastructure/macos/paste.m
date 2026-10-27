@@ -103,6 +103,17 @@ int arion_paste_post(void *transaction, void *element, void *selection, int pid)
     }
 }
 
+int arion_clipboard_publish(const char *utf8) {
+    @autoreleasepool {
+        if (!utf8) return 0;
+        NSString *text = [NSString stringWithUTF8String:utf8];
+        if (!text.length) return 0;
+        NSPasteboard *board = NSPasteboard.generalPasteboard;
+        [board clearContents];
+        return [board setString:text forType:NSPasteboardTypeString] ? 1 : 0;
+    }
+}
+
 int arion_paste_finish(void *transaction) {
     @autoreleasepool {
         ArionPasteTransaction *tx = (__bridge_transfer ArionPasteTransaction *)transaction;

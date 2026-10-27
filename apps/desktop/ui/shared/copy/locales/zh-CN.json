@@ -32,6 +32,7 @@
   "PillInserted": "已插入",
   "PillTyped": "已键入",
   "PillPasted": "已粘贴",
+  "PillCopied": "已复制",
   "PillCancelled": "已取消",
   "PillFinishHint": "结束听写",
   "PillEscHint": "esc",

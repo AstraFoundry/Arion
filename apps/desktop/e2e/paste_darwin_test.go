@@ -84,7 +84,43 @@ func TestGuardedSystemPaste(t *testing.T) {
 		}
 		checkClipboard()
 	})
-	for _, boundary := range []string{"focus-change", "selection-change", "cancel", "stale-identity"} {
+	t.Run("focus-change", func(t *testing.T) {
+		request("set", map[string]any{"text": "unchanged", "location": 9})
+		focus("A")
+		snap := capture()
+		focus("B")
+		const text = "into B"
+		result := commit(context.Background(), snap, text)
+		if result.Outcome != contracts.Unknown || result.Failure != "" {
+			t.Fatalf("focus change: %+v", result)
+		}
+		if !within(5*time.Second, func() bool {
+			s := request("state", nil)
+			return s.A.Text == "unchanged" && s.A.Edits == 0 && s.B.Text == text && s.B.Edits == 1
+		}) {
+			t.Fatalf("focus change observation: %+v", request("state", nil))
+		}
+		checkClipboard()
+	})
+	t.Run("selection-change", func(t *testing.T) {
+		request("set", map[string]any{"text": "unchanged", "location": 9})
+		focus("A")
+		snap := capture()
+		request("set", map[string]any{"text": "unchanged", "location": 0})
+		const text = "at caret "
+		result := commit(context.Background(), snap, text)
+		if result.Outcome != contracts.Unknown || result.Failure != "" {
+			t.Fatalf("caret move: %+v", result)
+		}
+		if !within(5*time.Second, func() bool {
+			s := request("state", nil)
+			return s.A.Text == text+"unchanged" && s.A.Edits == 1
+		}) {
+			t.Fatalf("caret move observation: %+v", request("state", nil))
+		}
+		checkClipboard()
+	})
+	for _, boundary := range []string{"cancel", "stale-identity"} {
 		t.Run(boundary, func(t *testing.T) {
 			request("set", map[string]any{"text": "unchanged", "location": 9})
 			focus("A")
@@ -92,10 +128,6 @@ func TestGuardedSystemPaste(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 			switch boundary {
-			case "focus-change":
-				focus("B")
-			case "selection-change":
-				request("set", map[string]any{"text": "unchanged", "location": 0})
 			case "cancel":
 				cancel()
 			case "stale-identity":
