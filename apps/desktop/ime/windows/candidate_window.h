@@ -97,16 +97,10 @@ class CandidateWindow {
         SetTextColor(dc,palette.muted);
         if (hasPrevious) DrawTextW(dc,L"\u2039",1,&previous,DT_SINGLELINE|DT_CENTER|DT_VCENTER);
         if (hasNext) DrawTextW(dc,L"\u203a",1,&next,DT_SINGLELINE|DT_CENTER|DT_VCENTER);
-        bool hasEmoji=std::any_of(items.begin(),items.end(),[](const NativeCandidate &item){return item.emoji;});
-        if (hasEmoji) {
-            renderError=emojiPainter.begin(dc,area);
-            if (SUCCEEDED(renderError)) {
-                for (size_t i=0;i<items.size();++i) if (emojiLayouts[i]) {
-                    const auto &cell=rectangles[i];
-                    emojiPainter.draw(emojiLayouts[i],static_cast<FLOAT>(cell.left+scale(numbered?24:8)),static_cast<FLOAT>(cell.top),i==highlighted?palette.selectedText:palette.text);
-                }
-                renderError=emojiPainter.end();
-            }
+        for (size_t i=0;i<items.size();++i) if (emojiLayouts[i]) {
+            RECT text=rectangles[i]; text.left+=scale(numbered?24:8); text.right-=scale(6);
+            renderError=emojiPainter.draw(dc,text,emojiLayouts[i],i==highlighted?palette.selectedText:palette.text,i==highlighted?palette.selected:palette.surface);
+            if (FAILED(renderError)) break;
         }
         if (SUCCEEDED(renderError)) BitBlt(destination,0,0,area.right,area.bottom,dc,0,0,SRCCOPY);
         else ShowWindow(window,SW_HIDE);

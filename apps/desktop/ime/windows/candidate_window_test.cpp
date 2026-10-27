@@ -61,6 +61,9 @@ int main(int count,char **arguments) {
         auto file=output.empty()?output:output/((dark?"emoji-dark-":"emoji-light-")+std::to_string(size)+".bmp");
         capture(panel.handle(),file); require(SUCCEEDED(panel.error()),"render each theme and text size");
         RECT bounds{}; GetClientRect(panel.handle(),&bounds); clicked=false;
+        HDC pixels=GetDC(panel.handle());
+        COLORREF surrounding=GetPixel(pixels,2,bounds.bottom/2); ReleaseDC(panel.handle(),pixels);
+        require(surrounding==colors.surface,"color-font drawing preserves the surrounding GDI surface");
         SendMessageW(panel.handle(),WM_LBUTTONUP,0,MAKELPARAM(bounds.right-MulDiv(40,static_cast<int>(GetDpiForWindow(owner)),96),bounds.bottom/2));
         require(clicked && chosen.kind==CandidateAction::Select && chosen.index==3 && chosen.revision==3,"Emoji mouse hit carries exact engine identity and revision");
         require(GetFocus()==focused,"candidate paint never steals editor focus");

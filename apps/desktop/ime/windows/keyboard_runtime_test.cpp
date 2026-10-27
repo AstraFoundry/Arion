@@ -120,6 +120,17 @@ int wmain(int count,wchar_t **arguments) {
         for (char key:std::string("xiaolian")) arion_pinyin_process_key(api,emojiSession,key,0);
         require(emojiIndex()==static_cast<size_t>(-1),"disabled session emits no Emoji");
         arion_pinyin_destroy_session(api,emojiSession);
+        WindowsEmojiFont systemFont; bool flagSupported=false;
+        require(SUCCEEDED(systemFont.supports(L"\U0001f1e8\U0001f1f3",flagSupported)),"query current Windows flag coverage");
+        emojiSession=arion_pinyin_create_session(api); require(emojiSession!=0,"create native coverage session");
+        api->set_option(emojiSession,"arion_emoji",1);
+        for (char key:std::string("zhongguo")) arion_pinyin_process_key(api,emojiSession,key,0);
+        char **flagTexts=nullptr; size_t flagCount=0; bool flagPresent=false;
+        require(arion_pinyin_candidates(api,emojiSession,0,54,&flagTexts,&flagCount)!=0,"read font-filtered menu");
+        for (size_t i=0;i<flagCount;++i) if (std::strcmp(flagTexts[i],u8"🇨🇳")==0) flagPresent=true;
+        arion_pinyin_candidates_dispose(flagTexts,flagCount);
+        require(flagPresent==flagSupported,"shared filter emits a flag only when the installed Windows font can compose it");
+        arion_pinyin_destroy_session(api,emojiSession);
         leave();
         auto convert=[&] {
             enter();

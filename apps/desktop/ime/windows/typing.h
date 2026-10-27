@@ -82,7 +82,7 @@ class Typing {
     }
 
     bool sessionReady() {
-        if (!healthy || !runtime.ready()) return false;
+        if (!healthy || FAILED(panel.error()) || !runtime.ready()) return false;
         if (!session) {
             session=arion_pinyin_create_session(runtime.api());
             generation=runtime.generation();

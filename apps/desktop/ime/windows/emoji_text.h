@@ -9,6 +9,7 @@
 // Shape and draw the installed Windows Emoji font. No font or artwork is
 // redistributed. Unsupported/newer sequences never become selectable rows.
 class WindowsEmojiFont {
+    static constexpr const wchar_t *family=L"Segoe UI Emoji";
     IDWriteFactory4 *factory=nullptr;
     std::unordered_map<std::wstring,bool> support;
 
@@ -62,7 +63,7 @@ public:
         IDWriteFontCollection *collection=nullptr;
         hr=static_cast<IDWriteFactory*>(created)->GetSystemFontCollection(&collection,FALSE);
         UINT32 index=0; BOOL found=FALSE;
-        if (SUCCEEDED(hr)) hr=collection->FindFamilyName(L"Segoe UI Emoji",&index,&found);
+        if (SUCCEEDED(hr)) hr=collection->FindFamilyName(family,&index,&found);
         if (collection) collection->Release();
         if (SUCCEEDED(hr) && !found) hr=DWRITE_E_NOFONT;
         if (FAILED(hr)) { created->Release(); return hr; }
@@ -75,7 +76,7 @@ public:
         HRESULT hr=initialize();
         if (FAILED(hr)) return hr;
         IDWriteTextFormat *format=nullptr;
-        hr=factory->CreateTextFormat(L"Segoe UI Emoji",nullptr,DWRITE_FONT_WEIGHT_NORMAL,DWRITE_FONT_STYLE_NORMAL,DWRITE_FONT_STRETCH_NORMAL,size,L"",&format);
+        hr=factory->CreateTextFormat(family,nullptr,DWRITE_FONT_WEIGHT_NORMAL,DWRITE_FONT_STYLE_NORMAL,DWRITE_FONT_STRETCH_NORMAL,size,L"",&format);
         if (SUCCEEDED(hr)) hr=format->SetWordWrapping(DWRITE_WORD_WRAPPING_NO_WRAP);
         if (SUCCEEDED(hr)) hr=factory->CreateTextLayout(text.data(),static_cast<UINT32>(text.size()),format,4096,4096,out);
         if (format) format->Release();
@@ -136,19 +137,18 @@ public:
         if (SUCCEEDED(hr) && !brush) hr=target->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Black),&brush);
         return hr;
     }
-    HRESULT begin(HDC dc,const RECT &area) {
+    HRESULT draw(HDC dc,const RECT &area,IDWriteTextLayout *layout,COLORREF foreground,COLORREF background) {
         HRESULT hr=initialize();
         if (SUCCEEDED(hr)) hr=target->BindDC(dc,&area);
-        if (SUCCEEDED(hr)) target->BeginDraw();
-        return hr;
-    }
-    void draw(IDWriteTextLayout *layout,FLOAT x,FLOAT y,COLORREF foreground) {
+        if (FAILED(hr)) return hr;
+        target->BeginDraw();
+        // A DC target owns an internal bitmap. Bind only the Emoji text cell,
+        // explicitly fill its background and leave the surrounding GDI intact.
+        target->Clear(D2D1::ColorF(GetRValue(background)/255.0f,GetGValue(background)/255.0f,GetBValue(background)/255.0f));
         brush->SetColor(D2D1::ColorF(GetRValue(foreground)/255.0f,GetGValue(foreground)/255.0f,GetBValue(foreground)/255.0f));
-        target->DrawTextLayout(D2D1::Point2F(x,y),layout,brush,static_cast<D2D1_DRAW_TEXT_OPTIONS>(D2D1_DRAW_TEXT_OPTIONS_CLIP|D2D1_DRAW_TEXT_OPTIONS_ENABLE_COLOR_FONT));
-    }
-    HRESULT end() {
-        HRESULT hr=target->EndDraw();
-        if (hr==D2DERR_RECREATE_TARGET) { brush->Release(); brush=nullptr; target->Release(); target=nullptr; }
+        target->DrawTextLayout(D2D1::Point2F(0,0),layout,brush,static_cast<D2D1_DRAW_TEXT_OPTIONS>(D2D1_DRAW_TEXT_OPTIONS_CLIP|D2D1_DRAW_TEXT_OPTIONS_ENABLE_COLOR_FONT));
+        hr=target->EndDraw();
+        if (hr==static_cast<HRESULT>(D2DERR_RECREATE_TARGET)) { brush->Release(); brush=nullptr; target->Release(); target=nullptr; }
         return hr;
     }
 };
