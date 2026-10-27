@@ -226,6 +226,7 @@ int main(int argc, const char *argv[]) {
         });
         run(@"reviewed and CLDR Emoji triggers reach actual Pinyin candidates", @"KBD-A10", ^{
             const struct { const char *pinyin; const char *emoji; const char *source; } cases[] = {
+                {"yinggelan", "\U0001f3f4\U000e0067\U000e0062\U000e0065\U000e006e\U000e0067\U000e007f", "英格兰"},
                 {"xiaolian","😊","笑脸"}, {"kaixin","😄","开心"}, {"daxiao","😂","大笑"},
                 {"ku","😭","哭"}, {"aixin","❤️","爱心"}, {"xihuan","❤️","喜欢"},
                 {"guzhang","👏","鼓掌"}, {"xiexie","🙏","谢谢"},
@@ -262,6 +263,30 @@ int main(int argc, const char *argv[]) {
                 if (!found) [unreachable addObject:@(item.pinyin)];
             }
             require(unreachable.count == 0, [@"unreachable reviewed triggers: " stringByAppendingString:[unreachable componentsJoinedByString:@", "]]);
+        });
+        run(@"system Emoji candidate panel rendering evidence", @"KBD-A10", ^{
+            type(typing, @"xiaolian");
+            NSUInteger index = [typing.snapshot.candidates indexOfObject:@"😊"];
+            require(index != NSNotFound, @"real engine offers Emoji for native drawing");
+            ArionCandidatePanel *panel = [ArionCandidatePanel new];
+            @try {
+                for (NSUInteger dark=0; dark<2; dark++) for (NSUInteger size=0; size<3; size++) {
+                    panel.appearance = dark ? ArionCandidateAppearanceDark : ArionCandidateAppearanceLight;
+                    panel.size = (ArionCandidateSize)size;
+                    [panel showCandidates:typing.snapshot.candidates highlighted:index lastPage:typing.snapshot.lastPage
+                        revision:typing.revision caretRect:NSMakeRect(80, 300, 1, 20)];
+                    [NSRunLoop.currentRunLoop runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.4]];
+                    NSWindow *window = [panel valueForKey:@"window"];
+                    NSView *view = window.contentView;
+                    NSBitmapImageRep *bitmap = [view bitmapImageRepForCachingDisplayInRect:view.bounds];
+                    require(window.visible && bitmap != nil, @"native candidate panel is visible and drawable");
+                    [view cacheDisplayInRect:view.bounds toBitmapImageRep:bitmap];
+                    NSData *png = [bitmap representationUsingType:NSBitmapImageFileTypePNG properties:@{}];
+                    NSString *name = [NSString stringWithFormat:@"emoji-macos-%@-%lu.png", dark ? @"dark" : @"light", (unsigned long)size];
+                    require([png writeToFile:[report.stringByDeletingLastPathComponent stringByAppendingPathComponent:name]
+                        options:NSDataWritingAtomic error:nil], @"save actual AppKit candidate rendering");
+                }
+            } @finally { [panel hide]; }
         });
         run(@"cancel preserves emoji neighbors", @"KBD-A05 KBD-A06", ^{
             editor.view.string = @"甲😀乙";

@@ -31,11 +31,22 @@ const reviewed = new Map(JSON.parse(readFileSync(aliasPath, 'utf8')).map(item =>
 if (reviewed.size !== manifest.aliases.count) throw new Error('Reviewed Emoji alias count changed');
 
 const mappings = new Map();
+const metadataHeader = readFileSync(path.join(source, 'emoji.h'), 'utf8');
+const capacity = name => {
+  const match = metadataHeader.match(new RegExp(`\\b${name} = ([0-9]+)`));
+  if (!match) throw new Error(`Missing Emoji metadata capacity: ${name}`);
+  return Number(match[1]);
+};
+const sourceCapacity = capacity('ARION_EMOJI_SOURCE_CAPACITY');
+const sequenceCapacity = capacity('ARION_EMOJI_SEQUENCE_ID_CAPACITY');
 let previous = null;
 for (const line of readFileSync(generatedPath, 'utf8').split('\n')) {
   if (!line.startsWith('    {')) continue;
   if (!line.endsWith('},')) throw new Error('Malformed generated Emoji row');
   const [trigger, emoji, id] = JSON.parse(`[${line.slice(5, -2)}]`);
+  if (Buffer.byteLength(trigger) >= sourceCapacity || Buffer.byteLength(id) >= sequenceCapacity) {
+    throw new Error(`Emoji metadata exceeds the native ABI capacity: ${trigger}`);
+  }
   if (previous !== null && Buffer.compare(Buffer.from(previous), Buffer.from(trigger)) >= 0) {
     throw new Error('Generated Emoji triggers are not unique and sorted');
   }

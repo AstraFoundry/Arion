@@ -8,12 +8,17 @@
 extern "C" {
 #endif
 
+enum {
+    ARION_EMOJI_SOURCE_CAPACITY = 64,
+    ARION_EMOJI_SEQUENCE_ID_CAPACITY = 64
+};
+
 typedef struct ArionEmojiCandidateMetadata {
     size_t start;
     size_t end;
     int emoji;
-    char source[64];
-    char sequence_id[32];
+    char source[ARION_EMOJI_SOURCE_CAPACITY];
+    char sequence_id[ARION_EMOJI_SEQUENCE_ID_CAPACITY];
 } ArionEmojiCandidateMetadata;
 
 void arion_emoji_register(void);

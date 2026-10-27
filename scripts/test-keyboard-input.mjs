@@ -1,6 +1,6 @@
 // Actual librime conversion and the production typing state against AppKit's text store.
 import { execFileSync, spawnSync } from 'node:child_process';
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { copyFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -83,6 +83,9 @@ try {
   if (result.error) throw result.error;
   if (result.signal) throw new Error(`Keyboard test terminated by ${result.signal}`);
   status = result.status ?? 2;
+  for (const file of readdirSync(temporary).filter(name => /^emoji-macos-(light|dark)-[0-2]\.png$/.test(name))) {
+    copyFileSync(path.join(temporary, file), path.join(path.dirname(report), file));
+  }
   if (existsSync(nativeReport)) {
     const resultReport = JSON.parse(readFileSync(nativeReport, 'utf8'));
     writeFileSync(report, `${JSON.stringify({ ...resultReport, execution }, null, 2)}\n`);
