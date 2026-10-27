@@ -36,8 +36,11 @@ const keyboardManifestSHA256=createHash('sha256').update(readFileSync(path.join(
 // The COM entry point must remain byte-identical across core-only updates.
 // In particular, do not bind it to the changing keyboard manifest or PE time.
 const loader = path.join(output, 'ArionTSFLoader.dll');
-run(compiler,[...base,'-Wl,--no-insert-timestamp','-Wl,--image-base,0x180000000','-shared',path.join(source,'loader.cpp'),'-o',loader,'-lole32','-luuid','-ladvapi32','-lshell32']);
+const loaderPin = JSON.parse(readFileSync(path.join(root, 'scripts/windows-tsf-loader.json'), 'utf8'));
+const loaderCompiler = process.env.ARION_TSF_LOADER_CXX ?? compiler;
+run(loaderCompiler,[...base,'-Wl,--no-insert-timestamp','-Wl,--image-base,0x180000000','-shared',path.join(source,'loader.cpp'),'-o',loader,'-lole32','-luuid','-ladvapi32','-lshell32']);
 const loaderSHA256=createHash('sha256').update(readFileSync(loader)).digest('hex');
+if (loaderSHA256 !== loaderPin.sha256) throw new Error('Stable TSF loader differs from the frozen binary. Use the pinned UCRT loader toolchain via ARION_TSF_LOADER_CXX; loader changes require controlled maintenance.');
 for (const [input, filename, shared] of [['service.cpp', 'ArionTSF.dll', true], ['control.cpp', 'arion-ime.exe', false]]) {
   const destination = path.join(output, filename);
   const args = [...base,`-DARION_KEYBOARD_MANIFEST_SHA256="${keyboardManifestSHA256}"`,...(!shared?[`-DARION_TSF_LOADER_SHA256="${loaderSHA256}"`]:[]),...(shared ? ['-shared'] : ['-municode']),path.join(source,input),...(shared?cObjects:[]),'-o',destination,'-lole32','-loleaut32','-luuid','-ladvapi32','-lshell32','-lgdi32',...(shared?['-ldwrite','-ld2d1']:[])];

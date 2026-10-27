@@ -7,7 +7,11 @@
 #include <stdexcept>
 static void require(bool ok,const char *message) {if (!ok) throw std::runtime_error(message);}
 static std::string bytes(const std::wstring &path) {std::ifstream file(std::filesystem::path(path),std::ios::binary);return std::string(std::istreambuf_iterator<char>(file),{});}
-static void write(const std::wstring &path,const std::string &value) {std::ofstream file(std::filesystem::path(path),std::ios::binary);file<<value;require(file.good(),"write owned fixture");}
+static void write(const std::wstring &path,const std::string &value) {
+    keyboardOptionsDetail::Handle file(CreateFileW(path.c_str(),GENERIC_WRITE,0,&keyboardOptionsDetail::security().attributes,CREATE_ALWAYS,FILE_ATTRIBUTE_NORMAL,nullptr));
+    DWORD count=0;
+    require(file.value!=INVALID_HANDLE_VALUE && WriteFile(file.value,value.data(),static_cast<DWORD>(value.size()),&count,nullptr) && count==value.size(),"write current-user-owned fixture");
+}
 class Processes {
     HANDLE job_=nullptr;
     std::vector<PROCESS_INFORMATION> children_;
@@ -44,7 +48,7 @@ int wmain(int argc,wchar_t **argv) {
         if (argc==4 && std::wstring(argv[1])==L"--worker") {KeyboardOptions result;KeyboardOption field=std::wstring(argv[3])==L"width"?KeyboardOption::FullWidth:KeyboardOption::EnglishPunctuation;for (int i=0;i<31;++i) require(toggleKeyboardOption(argv[2],field,result),"atomic worker toggle");return 0;}
         require(argc==2,"fresh owned options directory required");std::filesystem::path root(argv[1]);
         wchar_t *owner=nullptr;require(ConvertSidToStringSidW(keyboardOptionsDetail::security().user(),&owner)!=FALSE,"private fixture owner");
-        std::wstring directoryPolicy=L"D:P(A;OICI;FA;;;SY)(A;OICI;FA;;;"+std::wstring(owner)+L")";LocalFree(owner);PSECURITY_DESCRIPTOR directoryDescriptor=nullptr;
+        std::wstring directoryPolicy=L"O:"+std::wstring(owner)+L"D:P(A;OICI;FA;;;SY)(A;OICI;FA;;;"+std::wstring(owner)+L")";LocalFree(owner);PSECURITY_DESCRIPTOR directoryDescriptor=nullptr;
         require(ConvertStringSecurityDescriptorToSecurityDescriptorW(directoryPolicy.c_str(),SDDL_REVISION_1,&directoryDescriptor,nullptr)!=FALSE,"private fixture policy");
         SECURITY_ATTRIBUTES directoryAttributes{sizeof(directoryAttributes),directoryDescriptor,FALSE};bool created=CreateDirectoryW(root.c_str(),&directoryAttributes)!=FALSE;LocalFree(directoryDescriptor);require(created,"fresh owned private fixture directory");auto path=(root/L"options.json").wstring();
         KeyboardOptions options{true,true};require(readKeyboardOptions(path,options) && !options.fullWidth && !options.englishPunctuation,"absent file defaults");

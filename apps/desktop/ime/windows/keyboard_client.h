@@ -1,6 +1,7 @@
 #pragma once
 #include "keyboard_payload.h"
 #include "keyboard_runtime.h"
+#include "keyboard_options.h"
 
 // No Rime imports enter the COM service. The optional module and its unique
 // engine dependency load only after immutable manifest validation succeeds.
@@ -46,6 +47,7 @@ public:
         if (!module || !symbol(start,"arion_keyboard_start") || !symbol(enter,"arion_keyboard_enter") || !symbol(leave,"arion_keyboard_leave") || !symbol(stop,"arion_keyboard_stop") || !symbol(error,"arion_keyboard_error") || !symbol(reset,"arion_keyboard_reset_learning") || !symbol(currentGeneration,"arion_keyboard_generation")) { failure="keyboard runtime entry points"; close(); return false; }
         if (!symbol(orderCandidates,"arion_keyboard_order") || !symbol(learnCommit,"arion_keyboard_learn") || !symbol(commitContext,"arion_keyboard_context")) { failure="keyboard ranking entry points"; close(); return false; }
         if (!symbol(candidateMetadata,"arion_keyboard_candidate_metadata") || !symbol(refreshEmoji,"arion_keyboard_refresh_emoji")) { failure="keyboard Emoji entry points"; close(); return false; }
+        if (!prepareKeyboardDirectory(userDirectory)) { failure="keyboard profile unverified"; close(); return false; }
         char message[256]{}; auto data=utf8(directory+L"\\data"),user=utf8(userDirectory);
         runtime=start(data.c_str(),user.c_str(),message,sizeof(message));
         if (!runtime) { failure=message[0]?message:"keyboard runtime unavailable"; close(); return false; }

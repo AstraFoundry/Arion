@@ -8,6 +8,8 @@
 #include <vector>
 #include "emoji_text.h"
 
+inline constexpr wchar_t CandidateFontFamily[]=L"Microsoft YaHei UI";
+
 struct NativeCandidate {
     std::wstring text;
     std::wstring comment;
@@ -59,6 +61,7 @@ class CandidateWindow {
         if (!self) return DefWindowProcW(handle,message,wp,lp);
         if (message==WM_MOUSEACTIVATE) return MA_NOACTIVATE;
         if (message==WM_ERASEBKGND) return 1;
+        if (message==WM_GETFONT) return reinterpret_cast<LRESULT>(self->font);
         if (message==WM_PAINT) { self->paint(); return 0; }
         if (message==WM_LBUTTONUP) {
             if (!self->numbered) return 0;
@@ -127,9 +130,15 @@ public:
         UINT updated=GetDpiForWindow(owner); if (!updated) updated=96;
         if (!font || updated!=dpi || textSize!=fontSize) {
             fontSize=textSize;
-            dpi=updated; if (font) DeleteObject(font);
-            NONCLIENTMETRICSW metrics{}; metrics.cbSize=sizeof(metrics); SystemParametersInfoW(SPI_GETNONCLIENTMETRICS,sizeof(metrics),&metrics,0);
-            metrics.lfMessageFont.lfHeight=-scale(fontSize); font=CreateFontIndirectW(&metrics.lfMessageFont);
+            dpi=updated;
+            LOGFONTW descriptor{}; descriptor.lfHeight=-scale(fontSize); descriptor.lfWeight=FW_NORMAL;
+            descriptor.lfCharSet=DEFAULT_CHARSET; descriptor.lfQuality=CLEARTYPE_QUALITY;
+            descriptor.lfPitchAndFamily=DEFAULT_PITCH|FF_SWISS;
+            wcscpy(descriptor.lfFaceName,CandidateFontFamily);
+            HFONT updatedFont=CreateFontIndirectW(&descriptor);
+            if (!updatedFont) { renderError=E_FAIL; hide(); return false; }
+            if (font) DeleteObject(font);
+            font=updatedFont;
         }
         items=candidates; highlighted=std::min(selected,items.size()-1); hasPrevious=before; hasNext=after; revision=generation; palette=colors; rectangles.clear();
         clearLayouts(); emojiLayouts.resize(items.size(),nullptr);
@@ -176,7 +185,8 @@ public:
         int width=left+scale(4),x=std::max(static_cast<int>(monitor.rcWork.left),std::min(static_cast<int>(caret.left),static_cast<int>(monitor.rcWork.right)-width)),y=caret.bottom+scale(4);
         if (y+height>monitor.rcWork.bottom) y=caret.top-height-scale(4);
         y=std::max(static_cast<int>(monitor.rcWork.top),y);
-        SetWindowPos(window,HWND_TOPMOST,x,y,width,height,SWP_NOACTIVATE|SWP_SHOWWINDOW); InvalidateRect(window,nullptr,FALSE);
+        SetWindowPos(window,HWND_TOPMOST,x,y,width,height,SWP_NOACTIVATE|SWP_SHOWWINDOW|SWP_NOREDRAW);
+        RedrawWindow(window,nullptr,nullptr,RDW_INVALIDATE|RDW_UPDATENOW|RDW_NOERASE);
         return true;
     }
 };

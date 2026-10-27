@@ -60,6 +60,13 @@ int main(int count,char **arguments) {
         require(panel.show(owner,caret,{{L"\u7b11\u8138",L"",0},{L"\u5fae\u7b11",L"",1},{L"\u5f00\u5fc3",L"",2},{L"\U0001f60a",L"",3,true}},3,false,true,3,colors,9,false,size),"show typed Emoji among Chinese candidates");
         auto file=output.empty()?output:output/((dark?"emoji-dark-":"emoji-light-")+std::to_string(size)+".bmp");
         capture(panel.handle(),file); require(SUCCEEDED(panel.error()),"render each theme and text size");
+        HFONT selectedFont=reinterpret_cast<HFONT>(SendMessageW(panel.handle(),WM_GETFONT,0,0));
+        require(selectedFont!=nullptr,"candidate window exposes its selected native font");
+        LOGFONTW descriptor{}; require(GetObjectW(selectedFont,sizeof(descriptor),&descriptor)!=0,"read candidate font descriptor");
+        require(descriptor.lfQuality==CLEARTYPE_QUALITY && descriptor.lfWeight==FW_NORMAL,"regular ClearType candidate typography");
+        HDC fontDC=GetDC(panel.handle()); auto oldFont=SelectObject(fontDC,selectedFont); wchar_t realized[LF_FACESIZE]{};
+        GetTextFaceW(fontDC,LF_FACESIZE,realized); SelectObject(fontDC,oldFont); ReleaseDC(panel.handle(),fontDC);
+        require(wcscmp(realized,CandidateFontFamily)==0,"Chinese candidates realize the installed UI font rather than dialog-font substitution");
         RECT bounds{}; GetClientRect(panel.handle(),&bounds); clicked=false;
         HDC pixels=GetDC(panel.handle());
         COLORREF surrounding=GetPixel(pixels,2,bounds.bottom/2); ReleaseDC(panel.handle(),pixels);

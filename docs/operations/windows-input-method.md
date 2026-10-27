@@ -14,11 +14,21 @@ The current worktree builds a native x64 TSF keyboard and voice core, `ArionTSF.
 
 ## Supported boundary
 
+Local keyboard typing supports medium- and high-integrity x64 desktop editors,
+including administrator applications and UAC-disabled desktops. Low-integrity,
+AppContainer, system-integrity and secure-mode hosts remain unsupported. Voice
+input in an elevated editor stays unavailable; its menu action is disabled and
+the host does not connect to the voice pipe ([ADR 028](../decisions/028-windows-keyboard-host-admission.md)).
+Keyboard profile directories and mode files explicitly use the current user
+as owner, including when created elevated; existing unsafe paths are refused.
+
 Voice composition supports ordinary, medium-integrity x64 desktop editors with real TSF text stores. Elevated/high-integrity processes, low-integrity/AppContainer processes, 32-bit editors, password fields and read-only fields are unsupported. A selected source that refuses composition fails before capture; it never silently switches to clipboard or keystrokes. Stock `RICHEDIT50W` uses its native password/read-only styles as a verified safety adapter; custom stores must expose usable input-scope properties. Chromium marks its ordinary editable TSF stores `TS_SS_TRANSITORY | TS_SS_NOHIDDENTEXT`; transitory stores are accepted only with an explicit non-password input scope, writable status and successful composition acquisition. Unknown-scope compatibility contexts remain refused. See [Chromium's TSF text-store implementation](https://chromium.googlesource.com/chromium/src/+/main/ui/base/ime/win/tsf_text_store.cc).
 
 The host observes TSF thread focus through `IsThreadFocus`, thread-focus notifications and keyboard-focus receipt. It must not infer the editing thread from the foreground top-level window: WebView2 can place its focused text store in another process. Keyboard-focus receipt refreshes the current TSF document even when no subsequent thread-focus transition occurs. Keyboard-focus loss and thread-focus loss share idempotent draft cleanup and voice revocation; neither requires the other callback. The owned installed-browser regression distinguishes first-key behavior immediately after source selection from input that starts working only after focus leaves and returns.
 
-Candidate layout is observed separately from composition writes. The host subscribes to `ITfTextLayoutSink` and requests a coalesced asynchronous read edit session after layout changes. A browser can temporarily return `TS_E_NOLAYOUT` for the newly written caret; the panel remains hidden until a fresh, unclipped current rectangle is available, without reusing its old coordinates. Layout reads recheck safety, exact owned text/caret and composition revision and do not process engine keys or alter the document. The native ACP gate tests delayed geometry and read-lock-only recovery; installed-browser acceptance additionally checks candidate visibility after every letter, rather than treating a successful final commit as proof of visibility.
+Chinese candidate text uses the installed Microsoft YaHei UI family with regular ClearType rendering; Emoji retains its separate Segoe UI Emoji color-font path. Each conversion retains a backward-gravity TSF range at its start for panel placement, including caret edits, paging and partial selection. Completion, cancellation and ownership loss release that anchor.
+
+Candidate layout is observed separately from composition writes. Candidate publication does not query geometry inside the write session; the service coalesces a subsequent read refresh, avoiding a hide/show transition from the layout just invalidated by its own SetText. Surface move/resize and the buffered paint complete together before returning to the message loop. The host subscribes to `ITfTextLayoutSink` and requests a coalesced asynchronous read edit session after layout changes. A browser can temporarily return `TS_E_NOLAYOUT` for the newly written caret; the panel remains hidden until a fresh, unclipped current anchor rectangle is available, without reusing its old coordinates. Layout reads recheck safety, exact owned text/caret and composition revision and do not process engine keys or alter the document. The native ACP gate tests delayed geometry and read-lock-only recovery; installed-browser acceptance additionally checks candidate visibility after every letter, rather than treating a successful final commit as proof of visibility.
 
 Chromium exposes password inputs as `IS_PRIVATE`, not only `IS_PASSWORD`.
 Both scopes are refused before Pinyin or voice composition acquisition. Chromium
@@ -67,7 +77,7 @@ $arionIMEManifest = Get-Content "$arionIMERoot/runtime.json" -Raw | ConvertFrom-
 
 The fixed COM entry point is `%ProgramFiles%\Arion\InputMethod\ArionTSFLoader.dll`; the registry's `InprocServer32` default names it and its `CorePath` value names the protected `<sha256>\ArionTSF.dll`. The helper verifies the loader's compiled hash and the core/keyboard closure. Core-only upgrades atomically change `CorePath`, preserving the profile, categories, user enablement and current composition. A stable `ITfTextInputProcessorEx` facade releases its core delegate on deactivation and resolves the current core on the next activation, even when Windows caches the facade or factory. Outstanding core objects, server locks and in-flight calls prevent unloading; an active compatible core continues until safe release. Layout and transport callbacks hold core lifetime leases through their member cleanup.
 
-The loader is deliberately independent of keyboard manifests and built with fixed PE image base and no timestamp, with an identical-source/different-output-directory hash gate. Its ABI and bytes are frozen for ordinary core updates. Changing the loader itself requires separate controlled maintenance; replacing a loaded bootstrap or accepting an arbitrary older loader is not implemented.
+The loader is deliberately independent of keyboard manifests and built with fixed PE image base and no timestamp, with an identical-source/different-output-directory hash gate. Its ABI and bytes are frozen for ordinary core updates. `scripts/windows-tsf-loader.json` pins the canonical loader hash and the GCC 14.2.0 UCRT toolchain archive. `ARION_TSF_LOADER_CXX` selects that compiler independently of the Rime/module compiler; production builds reject any different loader bytes before emitting a maintenance helper. The loader exposes COM interfaces and does not share the engine's C++ ABI. Changing the loader itself requires separate controlled maintenance; replacing a loaded bootstrap or accepting an arbitrary older loader is not implemented.
 
 This architecture cannot alter a direct legacy DLL already loaded before the loader existed. That one-time migration needs Windows to release the old component; changing registration alone cannot add Pinyin or private-scope safety to its existing objects. New loader activations use the repaired core. Voice admission accepts only protocol 2 and validates the uniquely claimed loaded core even if COM retains another legacy module mapping in the process. Explicit removal reserves the loader and validated current closure before unregistering; a loaded file refuses removal without disturbing registration. The updater never kills editors, removes other input methods or recursively deletes Program Files.
 
@@ -84,6 +94,14 @@ can create windows and ACP contexts but cannot reliably acquire foreground/input
 ownership over the administrator desktop. These two test scopes remain distinct.
 
 `node scripts/build-windows-input-method.mjs` stages the pinned Rime sources, shared schema/data, native keyboard module and TSF binaries. It requires x64 MinGW-w64 GCC; `CC`/`CXX` select that toolchain, and the engine and private encrypted-database adapter must use the same C++ ABI. First provisioning can download hash-pinned public dependencies; installed typing requires no network or external Rime installation. Package verification checks x64 imports, exact runtime closure and hashes, then invokes the packaged helper's read-only `verify <sourceDLL> <expectedSHA>` operation to check its compiled keyboard-manifest binding. This operation does not register a profile or request elevation.
+
+`node scripts/test-windows-keyboard-host.mjs` validates real token admission and
+manually dispatched production TSF typing in an owned ACP editor under the
+current desktop token. Run it under both ordinary and elevated accounts for
+KBD-A11; `--runtime KEYBOARD_DIRECTORY` can use an existing hash-validated
+keyboard closure without rebuilding the engine. Reports retain source and binary
+hashes under `.workspace/tests/windows-keyboard-host/`. This does not install or
+replace a registered input method.
 
 `pnpm keyboard:windows:check` builds the runtime and runs shared core/storage, real conversion, dynamic module/filesystem and owned ACP editor tests. The ACP fixture manually calls key/focus callbacks into real TSF text stores; it does not prove registered system event dispatch. Native menu/mode/voice acceptance, real installed editors and a fresh macOS regression remain required before claiming the shared implementation complete.
 

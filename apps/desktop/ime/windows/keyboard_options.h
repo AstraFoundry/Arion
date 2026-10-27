@@ -29,7 +29,7 @@ public:
         count=sizeof(system_);if (!CreateWellKnownSid(WinLocalSystemSid,nullptr,system_,&count)) return;
         count=sizeof(administrators_);if (!CreateWellKnownSid(WinBuiltinAdministratorsSid,nullptr,administrators_,&count)) return;
         wchar_t *sid=nullptr;if (!ConvertSidToStringSidW(user(),&sid)) return;
-        std::wstring policy=L"D:P(A;;FA;;;SY)(A;;FA;;;"+std::wstring(sid)+L")";LocalFree(sid);
+        std::wstring policy=L"O:"+std::wstring(sid)+L"D:P(A;;FA;;;SY)(A;;FA;;;"+std::wstring(sid)+L")";LocalFree(sid);
         if (!ConvertStringSecurityDescriptorToSecurityDescriptorW(policy.c_str(),SDDL_REVISION_1,&descriptor_,nullptr)) return;
         attributes={sizeof(attributes),descriptor_,FALSE};ready=true;
     }
@@ -88,6 +88,15 @@ inline bool save(const std::wstring &path,const KeyboardOptions &options) {
     if (!ok) DeleteFileW(temporary.c_str());
     return ok;
 }
+}
+inline bool prepareKeyboardDirectory(const std::wstring &path) {
+    using namespace keyboardOptionsDetail;
+    if (!security().ready) return false;
+    std::error_code error;
+    std::filesystem::create_directories(std::filesystem::path(path).parent_path(),error);
+    if (error || (!CreateDirectoryW(path.c_str(),&security().attributes) && GetLastError()!=ERROR_ALREADY_EXISTS)) return false;
+    Handle directory(CreateFileW(path.c_str(),FILE_READ_ATTRIBUTES|READ_CONTROL,FILE_SHARE_READ|FILE_SHARE_WRITE,nullptr,OPEN_EXISTING,FILE_FLAG_BACKUP_SEMANTICS|FILE_FLAG_OPEN_REPARSE_POINT,nullptr));
+    return directory.value!=INVALID_HANDLE_VALUE && security().valid(directory.value,true);
 }
 inline bool readKeyboardOptions(const std::wstring &path,KeyboardOptions &result) {
     keyboardOptionsDetail::Handle directory(keyboardOptionsDetail::parent(path));

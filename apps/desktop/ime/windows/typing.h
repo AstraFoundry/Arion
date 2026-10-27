@@ -24,6 +24,8 @@ class Typing {
     ITfCompositionSink *sink;
     ITfContext *context=nullptr;
     ITfComposition *composition=nullptr;
+    ITfRange *candidateAnchor=nullptr;
+    void clearAnchor() { if (candidateAnchor) { candidateAnchor->Release(); candidateAnchor=nullptr; } }
     uintptr_t session=0;
     uint64_t generation=0;
     std::wstring original,lastText;
@@ -119,6 +121,11 @@ class Typing {
         ITfContextComposition *owner=nullptr;
         if (SUCCEEDED(hr)) hr=context->QueryInterface(IID_ITfContextComposition,reinterpret_cast<void**>(&owner));
         if (SUCCEEDED(hr)) { hr=owner->StartComposition(cookie,selected.range,sink,&composition); owner->Release(); if (SUCCEEDED(hr) && !composition) hr=E_ACCESSDENIED; }
+        if (SUCCEEDED(hr) && !candidateAnchor) {
+            hr=selected.range->Clone(&candidateAnchor);
+            if (SUCCEEDED(hr)) hr=candidateAnchor->Collapse(cookie,TF_ANCHOR_START);
+            if (SUCCEEDED(hr)) hr=candidateAnchor->SetGravity(cookie,TF_GRAVITY_BACKWARD,TF_GRAVITY_BACKWARD);
+        }
         selected.range->Release();
         if (SUCCEEDED(hr)) { lastText=original; caret=original.size(); }
         return hr;
@@ -153,13 +160,14 @@ class Typing {
         if (menu.expanded && (key.symbol==0xff51 || key.symbol==0xff53)) { arion_menu_move(&menu,key.symbol==0xff51?-1:1); return 1; }
         return 0;
     }
-    void show(TfEditCookie cookie) {
+    void show() {
         if (!composition || !menu.count || !arion_menu_prepare(&menu,runtime.api(),session)) { panel.hide(); accessible->hide(); return; }
         std::vector<std::wstring> strings;
         strings.reserve(menu.count);
         for (size_t i=0;i<menu.count;++i) strings.push_back(wide(menu.texts[i]));
         accessible->update(context,strings,menu.highlight,menu.page_size,menu.page);
-        refreshLayout(cookie,revision);
+        // Service queues one read edit after this write session completes.
+        // Do not hide the panel by querying layout invalidated by SetText.
     }
 public:
     // Geometry can lag SetText in browser text stores. This path runs under a
@@ -173,7 +181,7 @@ public:
         if (SUCCEEDED(hr) && (!safe(cookie,range) || !same(cookie))) {
             range->Release(); invalidate(); return E_ACCESSDENIED;
         }
-        if (SUCCEEDED(hr) && !position(cookie,range,caret,&point)) hr=E_FAIL;
+        if (SUCCEEDED(hr)) hr=candidateAnchor?candidateAnchor->Clone(&point):E_FAIL;
         if (SUCCEEDED(hr)) hr=context->GetActiveView(&view);
         if (SUCCEEDED(hr)) hr=view->GetTextExt(cookie,point,&area,&clipped);
         if (SUCCEEDED(hr)) hr=view->GetWnd(&owner);
@@ -231,7 +239,7 @@ private:
             if (SUCCEEDED(hr)) { lastText=preedit; caret=std::min(nextCaret,preedit.size()); hr=selection(cookie,range,caret); }
             if (range) range->Release();
             if (SUCCEEDED(hr) && !buildMenu()) hr=E_FAIL;
-            if (SUCCEEDED(hr)) show(cookie);
+            if (SUCCEEDED(hr)) show();
         } else if (SUCCEEDED(hr)) cancel(cookie);
         if (FAILED(hr)) recoveryText=(delivered?std::wstring{}:committed)+preedit;
         return hr;
@@ -280,14 +288,14 @@ public:
             composition->EndComposition(cookie); composition->Release(); composition=nullptr;
         }
         if (session && runtime.api() && generation==runtime.generation()) arion_pinyin_clear(runtime.api(),session);
-        arion_menu_dispose(&menu); panel.hide(); accessible->hide(); original.clear(); lastText.clear(); caret=0; ++revision;
+        arion_menu_dispose(&menu); panel.hide(); accessible->hide(); clearAnchor(); original.clear(); lastText.clear(); caret=0; ++revision;
         emojiInComposition=false;
     }
     void invalidate() {
         KeyboardLease lease(runtime);
         if (composition) { revoke(composition,lastText,original); composition->Release(); composition=nullptr; }
         if (session && runtime.api() && generation==runtime.generation()) arion_pinyin_destroy_session(runtime.api(),session);
-        session=0; arion_menu_dispose(&menu); panel.hide(); accessible->hide(); original.clear(); lastText.clear(); ++revision;
+        session=0; arion_menu_dispose(&menu); panel.hide(); accessible->hide(); clearAnchor(); original.clear(); lastText.clear(); ++revision;
         emojiInComposition=false;
     }
     bool terminated(TfEditCookie cookie,ITfComposition *value) {
@@ -308,7 +316,7 @@ public:
         }
         composition->Release(); composition=nullptr;
         if (session && runtime.api() && generation==runtime.generation()) arion_pinyin_clear(runtime.api(),session);
-        arion_menu_dispose(&menu); panel.hide(); accessible->hide(); original.clear(); lastText.clear(); ++revision;
+        arion_menu_dispose(&menu); panel.hide(); accessible->hide(); clearAnchor(); original.clear(); lastText.clear(); ++revision;
         emojiInComposition=false;
         return true;
     }
@@ -324,7 +332,7 @@ public:
             if (composition && !same(cookie)) invalidate();
             else if (settingsChanged) {
                 applyEmojiPreference();
-                if (composition) { ++revision; if (buildMenu()) show(cookie); else { healthy=false; cancel(cookie); return E_FAIL; } }
+                if (composition) { ++revision; if (buildMenu()) show(); else { healthy=false; cancel(cookie); return E_FAIL; } }
             }
             settingsChanged=false; return S_OK;
         }
@@ -335,7 +343,7 @@ public:
             if (composition) {
                 ++revision;
                 if (!buildMenu()) { healthy=false; cancel(cookie); return E_FAIL; }
-                show(cookie);
+                show();
                 if (command.kind==TypingCommand::Choose || command.kind==TypingCommand::Previous || command.kind==TypingCommand::Next) return S_FALSE;
             }
         }
@@ -365,13 +373,13 @@ public:
             if (index==menu.count) return S_FALSE;
             handled=select(index);
         }
-        else if (command.kind==TypingCommand::Previous || command.kind==TypingCommand::Next) { handled=arion_menu_turn(&menu,runtime.api(),session,command.kind==TypingCommand::Previous?-1:1)!=0; if (handled) { ++revision; show(cookie); } return S_OK; }
+        else if (command.kind==TypingCommand::Previous || command.kind==TypingCommand::Next) { handled=arion_menu_turn(&menu,runtime.api(),session,command.kind==TypingCommand::Previous?-1:1)!=0; if (handled) { ++revision; show(); } return S_OK; }
         else {
             int menuAction=menuKey(command.key);
             if (menuAction<0) { recoveryText=lastText; healthy=false; cancel(cookie); runtime.failure="keyboard candidate selection failed"; return E_FAIL; }
             if (menuAction) {
                 handled=true;
-                if (menuAction==1) { ++revision; show(cookie); return S_OK; }
+                if (menuAction==1) { ++revision; show(); return S_OK; }
             } else {
                 int key=arion_key_normalize(command.key.symbol,command.key.modifiers,ascii);
                 if (composition && menu.highlight<menu.count && menu.emoji[menu.highlight] && key>=0 && key<128 && std::ispunct(static_cast<unsigned char>(key))) emojiInComposition=true;
