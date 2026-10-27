@@ -28,7 +28,8 @@ typedef NS_ENUM(NSInteger, ArionTypingSwitch) {
 @property(copy) void (^modeChanged)(ArionTypingSwitch change);
 // Candidates per page, 1–9. Applies from the next composition update.
 @property(nonatomic) NSUInteger pageSize;
-// Context ranking and its learning (上下文调频).
+// Context ranking and its learning (上下文调频). Always on in the input
+// method; tests turn it off to read the engine's own order.
 @property BOOL contextRanking;
 @property BOOL emojiSuggestions;
 - (instancetype)initWithEngine:(ArionKeyboardEngine *)engine;

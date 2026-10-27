@@ -69,7 +69,6 @@ static NSString *applyKeyboardSettings(ArionTyping *typing, ArionCandidatePanel 
     ArionCandidateSize size = ArionCandidateSizeMedium;
     ArionCandidateAppearance appearance = ArionCandidateAppearanceSystem;
     NSColor *lightFill = nil, *lightText = nil, *darkFill = nil, *darkText = nil;
-    BOOL contextRanking = YES;
     BOOL emojiSuggestions = YES;
     NSString *dictationKey = nil;
     NSData *data = [NSData dataWithContentsOfFile:[applicationSupport() stringByAppendingPathComponent:@"keyboard.json"]];
@@ -91,15 +90,12 @@ static NSString *applyKeyboardSettings(ArionTyping *typing, ArionCandidatePanel 
             darkFill = highlightColor(value, @"dark", @"fill");
             darkText = highlightColor(value, @"dark", @"text");
         }
-        value = settings[@"contextRanking"];
-        if ([value isKindOfClass:NSNumber.class]) contextRanking = [value boolValue];
         value = settings[@"emojiSuggestions"];
         if ([value isKindOfClass:NSNumber.class]) emojiSuggestions = [value boolValue];
         value = settings[@"dictationKey"];
         if ([value isKindOfClass:NSString.class]) dictationKey = value;
     }
     typing.pageSize = pageSize;
-    typing.contextRanking = contextRanking;
     typing.emojiSuggestions = emojiSuggestions;
     panel.size = size;
     panel.appearance = appearance;

@@ -5,7 +5,6 @@
 struct KeyboardSettings {
     size_t pageSize=9;
     int textSize=16;
-    bool contextRanking=true;
     bool emojiSuggestions=true;
     CandidatePalette palette;
     std::wstring dictationKey;
@@ -26,7 +25,6 @@ inline KeyboardSettings readKeyboardSettings(const std::wstring &path) {
         const Json *field=value.get(L"pageSize"); if (field && field->type==Json::Number && field->number>=1 && field->number<=9) settings.pageSize=static_cast<size_t>(field->number);
         field=value.get(L"candidateSize");
         if (field && field->type==Json::String) { if (field->string==L"small") settings.textSize=14; else if (field->string==L"large") settings.textSize=20; }
-        field=value.get(L"contextRanking"); if (field && field->type==Json::Boolean) settings.contextRanking=field->boolean;
         field=value.get(L"emojiSuggestions"); if (field && field->type==Json::Boolean) settings.emojiSuggestions=field->boolean;
         field=value.get(L"dictationKey"); if (field && field->type==Json::String) settings.dictationKey=field->string;
         field=value.get(L"appearance"); if (field && field->type==Json::String) { if (field->string==L"dark") dark=true; else if (field->string==L"light") dark=false; }

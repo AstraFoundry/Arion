@@ -413,7 +413,7 @@ func TestWriteKeyboardSettings(t *testing.T) {
 	// The input method reads exactly these keys.
 	var raw map[string]any
 	if err := json.Unmarshal(data, &raw); err != nil || raw["pageSize"] != 6.0 || raw["candidateSize"] != "large" ||
-		raw["appearance"] != "dark" || raw["accent"] != "blue" || raw["contextRanking"] != false ||
+		raw["appearance"] != "dark" || raw["accent"] != "blue" ||
 		raw["emojiSuggestions"] != false ||
 		raw["dictationKey"] != "right_command" {
 		t.Fatalf("unexpected settings file %s (%v)", data, err)
