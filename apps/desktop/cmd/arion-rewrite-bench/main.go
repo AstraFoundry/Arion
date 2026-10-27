@@ -195,21 +195,21 @@ func main() {
 			check(encoder.Encode(r))
 			continue
 		}
-		request := func(text string, live bool) (ports.RewriteResult, float64) {
+		request := func(text string) (ports.RewriteResult, float64) {
 			start := time.Now()
-			result, err := c.Rewrite(ctx, ports.RewriteRequest{Identity: id, Text: text, Scene: string(domain.ModelScene(scene, text)), Terms: terms, Context: rc, Live: live})
+			result, err := c.Rewrite(ctx, ports.RewriteRequest{Identity: id, Text: text, Scene: string(domain.ModelScene(scene, text)), Terms: terms, Context: rc})
 			check(err)
 			return result, float64(time.Since(start).Microseconds()) / 1000
 		}
 		if *liveEdits {
 			for _, prefix := range stablePrefixes(s, source) {
-				result, ms := request(prefix, true)
+				result, ms := request(prefix)
 				text := domain.AlignLiveEnding(prefix, result.Text)
 				verdict := domain.ValidateRewrite(domain.RewriteCheck{Source: prefix, Candidate: text, Truncated: result.Truncated, Terms: terms, Context: evidence})
 				r.Live = append(r.Live, live{Source: prefix, Text: text, Verdict: string(verdict), TotalMs: ms})
 			}
 		}
-		result, ms := request(source, false)
+		result, ms := request(source)
 		verdict := domain.ValidateRewrite(domain.RewriteCheck{Source: source, Candidate: result.Text, Truncated: result.Truncated, Terms: terms, Context: evidence})
 		r.Template = result.Template
 		r.Cleanup = result.Cleanup

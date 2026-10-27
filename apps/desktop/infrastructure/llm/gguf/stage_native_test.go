@@ -133,7 +133,7 @@ func TestNativeStagePreservation(t *testing.T) {
 				source = c.Final
 			}
 			recorder.calls = nil
-			req := engine.Request{Session: c.ID, Scene: c.Scene, Text: source, Terms: c.Terms, Live: phase == "preview", Context: domain.RewriteContext{Screen: c.Screen}}
+			req := engine.Request{Session: c.ID, Scene: c.Scene, Text: source, Terms: c.Terms, Context: domain.RewriteContext{Screen: c.Screen}}
 			if phase == "final" && source != c.Preview {
 				req.PreviousText = c.Preview
 			}

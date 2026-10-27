@@ -29,7 +29,6 @@ const (
 	DiagnosticCapture      DiagnosticStage = "audio_start"
 	DiagnosticFinalize     DiagnosticStage = "acoustic_finalize"
 	DiagnosticContext      DiagnosticStage = "context_read"
-	DiagnosticPreview      DiagnosticStage = "rewrite_preview"
 	DiagnosticRewrite      DiagnosticStage = "rewrite_final"
 	DiagnosticCommit       DiagnosticStage = "target_commit"
 )

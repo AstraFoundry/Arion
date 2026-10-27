@@ -59,7 +59,7 @@ func TestReadContextFromWindow(t *testing.T) {
 	if !strings.Contains(snap.Before, "Siobhan") || !strings.Contains(snap.Screen, "Kubernetes") {
 		t.Fatalf("context not read: before=%q screen has %d chars", snap.Before, len(snap.Screen))
 	}
-	t.Logf("capture %.0f ms, recognition %.0f ms", snap.ScreenCaptureMs, snap.ScreenOCRMs)
+	t.Logf("capture %.0f ms", snap.ScreenCaptureMs)
 	open = false
 	target, err := targets.Capture(context.Background(), contracts.Identity{SessionID: "ctx", Generation: 2})
 	if err != nil {

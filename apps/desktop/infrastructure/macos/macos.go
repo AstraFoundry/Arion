@@ -175,11 +175,6 @@ func (t *Targets) Capture(_ context.Context, id contracts.Identity) (contracts.T
 	return contracts.TargetSnapshot{
 		Identity: id, Target: token, Sensitive: secure, Application: bundle,
 		Field: fieldKind(role, subrole), Site: C.GoString(&native.site[0]), ApplicationName: C.GoString(&native.app_name[0]),
-		Capabilities: contracts.Capabilities{
-			// DSK-08: context is readable only from a known, non-secure field.
-			ContextRead:     tgt.contextReadable,
-			SingleInsertion: true,
-		},
 	}, nil
 }
 
@@ -245,15 +240,6 @@ func (t *Targets) RouteOf(token contracts.TargetToken) Route {
 		return tgt.route
 	}
 	return ""
-}
-
-func (t *Targets) Capabilities(_ context.Context, token contracts.TargetToken) (contracts.Capabilities, error) {
-	t.mu.Lock()
-	defer t.mu.Unlock()
-	if t.targets[token] == nil {
-		return contracts.Capabilities{}, domain.Fail(domain.CodeTargetChanged, "unknown target")
-	}
-	return contracts.Capabilities{SingleInsertion: true}, nil
 }
 
 // ReadContext reads the context the user allows for a captured target:

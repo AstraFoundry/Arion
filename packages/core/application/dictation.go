@@ -123,10 +123,9 @@ type run struct {
 	lastText   string
 
 	// Guarded by Coordinator.mu.
-	draft      string
-	raw        string
-	final      string
-	rewriteErr error
+	draft string
+	raw   string
+	final string
 }
 
 // NewCoordinator validates its configuration.
@@ -276,7 +275,7 @@ func (c *Coordinator) start(target domain.TranslationLanguage) {
 	ctx, cancel := context.WithCancel(context.Background())
 	r := &run{session: session, identity: contracts.Identity{SessionID: session.ID(), Generation: session.Generation()},
 		ctx: ctx, cancel: cancel, started: time.Now(), frames: make(chan contracts.Frame, c.opts.QueueFrames), pumpDone: make(chan struct{})}
-	r.live = c.newLive(r, target)
+	r.live = c.newLive(target)
 	_ = session.Advance(domain.Preparing)
 	c.current = r
 	c.workers.Add(1)
@@ -600,11 +599,12 @@ func (c *Coordinator) deliver(r *run, raw string, policy RewritePolicy) {
 	text, outcome := source, ""
 	if strings.TrimSpace(source) != "" {
 		var ok bool
-		if text, outcome, ok = c.rewriteFinal(r, source, policy); !ok {
+		var rewriteErr error
+		if text, outcome, rewriteErr, ok = c.rewriteFinal(r, source, policy); !ok {
 			return
 		}
 		if policy.TargetLanguage != "" && outcome != string(domain.RewriteAccepted) {
-			c.failTranslation(r, raw, source, outcome)
+			c.failTranslation(r, raw, source, outcome, rewriteErr)
 			return
 		}
 		if policy.Enabled {
@@ -722,18 +722,18 @@ func (r *run) translating() bool {
 // failTranslation aborts target commit when a translation session's rewrite
 // fails, surfacing an explicit failure event while retaining the recognized
 // source text so the user can still copy it.
-func (c *Coordinator) failTranslation(r *run, raw, source, outcome string) {
+func (c *Coordinator) failTranslation(r *run, raw, source, outcome string, rewriteErr error) {
 	code := domain.CodeRewriteRejected
 	detail := outcome
 	switch outcome {
 	case RewriteTimeout:
 		code, detail = domain.CodeRewriteTimeout, ""
 	case RewriteUnavailable:
-		detail = "translation model"
-		if r.rewriteErr == nil {
+		detail = domain.DetailTranslationModel
+		if rewriteErr == nil {
 			code = domain.CodeModelMissing
 		} else {
-			code = codeOr(r.rewriteErr, domain.CodeModelUnsupported)
+			code = codeOr(rewriteErr, domain.CodeModelUnsupported)
 		}
 	}
 	c.mu.Lock()

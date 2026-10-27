@@ -307,8 +307,7 @@ func (a *App) rewritePolicy() application.RewritePolicy {
 		return application.RewritePolicy{}
 	}
 	policy := application.RewritePolicy{Enabled: true, Scene: string(domain.SceneChat), FollowApp: a.prefs.MatchApp,
-		Punctuation: a.prefs.Punctuation, SceneOverrides: a.prefs.SceneOverrides, Vocabulary: a.vocabulary,
-		FinalOnly: true}
+		Punctuation: a.prefs.Punctuation, SceneOverrides: a.prefs.SceneOverrides, Vocabulary: a.vocabulary}
 	if a.translating {
 		target := a.prefs.TranslateLanguage
 		if !target.Known() {

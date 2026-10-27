@@ -160,7 +160,7 @@ const (
 const (
 	DetailMicrophone             = "microphone"
 	DetailAccessibility          = "accessibility"
-	DetailTranslationModel       = "translation model"
+	DetailTranslationModel       = domain.DetailTranslationModel
 	DetailInputMethod            = "input method connection unavailable"
 	DetailIMEClient              = "input method client unavailable"
 	DetailIMEUpdating            = "input method update in progress"

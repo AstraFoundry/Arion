@@ -96,7 +96,7 @@ func TestSocketProbeDoesNotRevokeActiveComposition(t *testing.T) {
 	}
 	// The probe's EOF must be processed without replacing the active connection.
 	time.Sleep(20 * time.Millisecond)
-	if _, err := m.Capabilities(context.Background(), s.Target); err != nil {
-		t.Fatal("probe revoked ownership", err)
+	if !owns(m, s.Target) {
+		t.Fatal("probe revoked ownership")
 	}
 }

@@ -716,7 +716,7 @@ func (s *Service) Rewrite(ctx context.Context, req ports.RewriteRequest) (ports.
 		return ports.RewriteResult{}, err
 	}
 	result, err := pipeline.Run(ctx, engine.Request{Text: req.Text, Scene: req.Scene, Punctuation: domain.Punctuation(req.Punctuation), TargetLanguage: domain.TranslationLanguage(req.TargetLanguage), Terms: req.Terms,
-		Context: req.Context, PreviousText: req.PreviousText, Live: req.Live},
+		Context: req.Context, PreviousText: req.PreviousText},
 		func(ctx context.Context, request prompt.ChatRequest, _ bool) (engine.Result, error) {
 			return s.completeChat(ctx, chat, request)
 		})

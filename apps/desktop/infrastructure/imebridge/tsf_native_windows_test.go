@@ -323,7 +323,7 @@ func TestWindowsNativeTSFVoice(t *testing.T) {
 			}
 			control("unblock")
 			waitText("A🙂中Z")
-			if _, err := m.Capabilities(ctx, result.target.Target); err == nil {
+			if owns(m, result.target.Target) {
 				t.Fatal("cancelled acquisition retained a usable target")
 			}
 		})

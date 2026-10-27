@@ -17,7 +17,7 @@ func TestFinalOnlyContextSourcesFollowSwitches(t *testing.T) {
 			history := NewHistory(time.Hour)
 			history.Add("com.apple.mail", "HISTORY_CANARY")
 			rewriter := &scriptedRewriter{answer: func(req ports.RewriteRequest) (string, error) { return req.Text, nil }}
-			c, audio, events, target, _ := liveSetup(t, []string{"hello"}, rewriter, RewritePolicy{Enabled: true, Scene: "email", FinalOnly: true, Context: sources}, history)
+			c, audio, events, target, _ := liveSetup(t, []string{"hello"}, rewriter, RewritePolicy{Enabled: true, Scene: "email", Context: sources}, history)
 			target.snapshot.Application = "com.apple.mail"
 			target.context = contracts.ContextSnapshot{SafeToRead: true, Before: "BEFORE_CANARY", After: "AFTER_CANARY", Screen: "SCREEN_CANARY"}
 			c.Start()

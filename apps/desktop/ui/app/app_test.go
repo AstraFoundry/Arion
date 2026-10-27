@@ -90,23 +90,11 @@ func (r *recorder) OpenUpdate() {
 }
 func (r *recorder) SetHoldKey(key runtime.HoldKey) {
 	r.call("hold:" + string(key))
-	if r.state.Preferences.TranslateKey == key {
-		r.state.Preferences.TranslateKey = runtime.HoldOff
-	}
-	r.state.Preferences.HoldKey = key
+	r.state.Preferences.ChooseHoldKey(key)
 }
 func (r *recorder) SetTranslateKey(key runtime.HoldKey) {
 	r.call("translate-hold:" + string(key))
-	if key != runtime.HoldOff && key == r.state.Preferences.HoldKey {
-		if prev := r.state.Preferences.TranslateKey; prev != "" && prev != runtime.HoldOff && prev != key {
-			r.state.Preferences.HoldKey = prev
-		} else if alt := runtime.DefaultHoldKey(platform.GOOS); alt != key {
-			r.state.Preferences.HoldKey = alt
-		} else {
-			r.state.Preferences.HoldKey = runtime.DefaultTranslateKey(platform.GOOS)
-		}
-	}
-	r.state.Preferences.TranslateKey = key
+	r.state.Preferences.ChooseTranslateKey(platform.GOOS, key)
 }
 func (r *recorder) InstallInputMethod() error {
 	r.call("install-ime")

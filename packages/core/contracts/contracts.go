@@ -16,7 +16,6 @@ const (
 	SessionStateChanged EventKind = "session_state"
 	AudioDiscontinuity  EventKind = "audio_discontinuity"
 	DraftReplaced       EventKind = "draft_replaced"
-	CandidatesRanked    EventKind = "candidates_ranked"
 	CorrectionReady     EventKind = "correction_ready"
 	CommitResultReady   EventKind = "commit_result"
 	ErrorOccurred       EventKind = "error"
@@ -60,54 +59,19 @@ type Draft struct {
 
 type TargetToken string
 
-type Capabilities struct {
-	ContextRead        bool
-	SingleInsertion    bool
-	OwnedComposition   bool
-	CandidateSelection bool
-}
-
-// ContextSnapshot offsets count Unicode scalar values in Text.
+// ContextSnapshot is the bounded field and window text of one captured target.
+// Before and After are the field's text around the selection. Screen is
+// visible text read from the captured window. All stay in session RAM.
 type ContextSnapshot struct {
 	Identity
-	Target         TargetToken
-	Text           string
-	SelectionStart uint32
-	SelectionEnd   uint32
-	SafeToRead     bool
-	// Before and After are the field's text around the selection; Screen
-	// is visible text read from the captured window. All stay in session RAM.
-	Before string
-	After  string
-	Screen string
-	// ScreenCaptureMs measures context acquisition (including Accessibility);
-	// ScreenOCRMs is zero for direct text reads. Both are content-free timings.
+	Target     TargetToken
+	SafeToRead bool
+	Before     string
+	After      string
+	Screen     string
+	// ScreenCaptureMs measures context acquisition, including Accessibility.
+	// It carries no text.
 	ScreenCaptureMs float64
-	ScreenOCRMs     float64
-}
-
-type RankRequest struct {
-	Draft        Draft
-	Context      ContextSnapshot
-	LanguageHint string
-}
-
-type RankResult struct {
-	Identity
-	Revision   uint64
-	Candidates []domain.RankedCandidate
-}
-
-type CorrectionRequest struct {
-	Draft   Draft
-	Context ContextSnapshot
-}
-
-type CorrectionResult struct {
-	Identity
-	SourceRevision uint64
-	Text           string
-	RequiresReview bool
 }
 
 type CommitRequest struct {
@@ -136,8 +100,7 @@ type CommitResult struct {
 // native handles stay inside the OS adapter (DSK-05).
 type TargetSnapshot struct {
 	Identity
-	Target       TargetToken
-	Capabilities Capabilities
+	Target TargetToken
 	// Sensitive is true for secure fields and fields whose safety the
 	// adapter cannot establish (DSK-08).
 	Sensitive bool
