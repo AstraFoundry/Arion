@@ -1,0 +1,23 @@
+{
+  "family": "Source Han Sans SC",
+  "version": "2.005R",
+  "source": "https://github.com/adobe-fonts/source-han-sans/releases/tag/2.005R",
+  "license": "OFL.txt",
+  "files": [
+    {
+      "name": "SourceHanSansSC-Regular.otf",
+      "sizeBytes": 16529832,
+      "sha256": "f1d8611151880c6c336aabeac4640ef434fa13cbfbf1ffe82d0a71b2a5637256"
+    },
+    {
+      "name": "SourceHanSansSC-Medium.otf",
+      "sizeBytes": 16546328,
+      "sha256": "1df61d31687d04fd2f928a3bb6ca6cd61f0e988cc267cf317f32406edbb49f70"
+    },
+    {
+      "name": "OFL.txt",
+      "sizeBytes": 4463,
+      "sha256": "fcac737e761ec63dbfbdce11030a1780161920d80315edba9c8beff1c2bac5a2"
+    }
+  ]
+}

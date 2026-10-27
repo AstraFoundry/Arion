@@ -132,3 +132,7 @@ make site-deploy  # build apps/site/out, then wrangler deploy
 ## Native ASR migration
 
 [ADR 020](../decisions/020-native-qwen-asr.md) defines the platform packages and open native-host gates. Apple silicon includes the Swift compatibility library closure collected by `swift-stdlib-tool`, colocated Metal shaders and SwiftPM resource bundles. The verifier rejects ONNX/sherpa/X-ASR runtime files in the final package. Runtime source and model provenance are pinned separately; model downloads remain outside the signed application.
+
+### Windows speech typography
+
+Source Han Sans SC 2.005R is bundled unchanged under SIL OFL 1.1. The original regular and medium OTF files, copyright/license and hash manifest are in apps/desktop/ui/shared/typography/fonts. Windows speech views embed both weights in Arion.exe. The package verifier checks font bytes in the application and exact license/provenance copies under licenses. The app registers fonts privately and never changes the system font registry. macOS retains its existing typography.

@@ -1,3 +1,4 @@
+import { verifyEmbeddedFonts } from './lib/desktop-fonts.mjs';
 // Verify required resources in the packaged app, never mutate signed output.
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
@@ -104,6 +105,8 @@ if (goos === 'darwin') {
 if (goos === 'windows') {
   verifyWindowsPEDependencies([binaries[0]]);
   const ime = path.join(resources, 'ime');
+  verifyEmbeddedFonts(root, path.join(resources, 'Arion.exe'));
+  for (const file of ['SourceHanSans-OFL.txt', 'source-han-sans.json']) requireFile(path.join(resources, 'licenses', file));
   const imeManifest = JSON.parse(readFileSync(path.join(ime, 'runtime.json'), 'utf8'));
   const imeFiles = ['ArionTSFLoader.dll', 'ArionTSF.dll', 'arion-ime.exe'];
   if (imeManifest.schema !== 2 || imeManifest.architecture !== 'amd64' || Object.keys(imeManifest.files ?? {}).sort().join(',') !== [...imeFiles].sort().join(',')) throw new Error('Invalid packaged Windows input-method manifest');
