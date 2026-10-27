@@ -26,6 +26,9 @@ export const siteConfig = {
   minimumMacOS: "14",
 } as const;
 
+/** The site-wide social preview (`public/og.jpg`); its alt text is `meta.ogAlt`. */
+export const socialImage = { url: "/og.jpg", width: 1200, height: 630 } as const;
+
 /** Internal routes. Trailing slashes match the static export layout. */
 export const routes = {
   home: "/",

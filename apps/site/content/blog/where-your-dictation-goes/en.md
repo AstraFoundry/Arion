@@ -1,10 +1,11 @@
 ---
 title: Where your dictation goes
-summary: Arion recognizes speech on your computer. Here is what stays on the device, the few things that use the network, and how to check it yourself.
+description: Arion recognizes speech on your computer. Here is what stays on the device, the few things that use the network, and how to check it yourself.
 date: 2026-10-27
 category: product
-cover: ../../../public/backdrops/flowers-wide-1600.webp
-coverAlt: A soft, motion-blurred photograph of falling flowers
+tags: [privacy, offline, encryption]
+image: ../../../public/backdrops/flowers-wide-1600.webp
+imageAlt: A soft, motion-blurred photograph of falling flowers
 ---
 
 Voice input hears everything you say while it is on. That makes one question matter more than any feature: where does the audio go? For Arion the answer is short. It stays on your computer, and so does the text it becomes.

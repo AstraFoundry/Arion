@@ -4,8 +4,8 @@ import { formatDate, useCopy, useLocale } from "@/shared/i18n";
 import { AppLink, Dateline } from "@/shared/ui";
 
 /**
- * The newest post, given the room of a magazine lead: its cover (when it
- * has one) beside the title and summary. The whole block is one link.
+ * The newest post, given the room of a magazine lead: its image (when it
+ * has one) beside the title and description. The whole block is one link.
  */
 export function FeaturedPost({ post }: { post: PostMeta }) {
   const { blog } = useCopy();
@@ -14,13 +14,13 @@ export function FeaturedPost({ post }: { post: PostMeta }) {
       href={blogPostRoute(post.slug)}
       className="group grid items-center gap-8 rounded-3xl md:grid-cols-2 md:gap-12"
     >
-      {post.cover ? (
+      {post.image ? (
         // eslint-disable-next-line @next/next/no-img-element -- static export; a fixed 4:3 box reserves the space
         <img
-          src={post.cover.src}
+          src={post.image.src}
           alt=""
           fetchPriority="high"
-          referrerPolicy={post.cover.file ? undefined : "no-referrer"}
+          referrerPolicy={post.image.file ? undefined : "no-referrer"}
           className="aspect-[4/3] w-full rounded-2xl bg-muted object-cover outline-1 -outline-offset-1 outline-[var(--image-outline)]"
         />
       ) : null}
@@ -30,14 +30,14 @@ export function FeaturedPost({ post }: { post: PostMeta }) {
           {post.title}
         </h2>
         <p className="max-w-xl text-pretty text-lg leading-relaxed text-muted-foreground">
-          {post.summary}
+          {post.description}
         </p>
       </div>
     </AppLink>
   );
 }
 
-/** Posts as rows: date and category, then title and summary; newest first. */
+/** Posts as rows: date and category, then title and description; newest first. */
 export function PostList({ posts }: { posts: readonly PostMeta[] }) {
   const { blog } = useCopy();
   const locale = useLocale();
@@ -65,7 +65,7 @@ export function PostList({ posts }: { posts: readonly PostMeta[] }) {
                 {post.title}
               </span>
               <span className="line-clamp-2 max-w-2xl text-pretty text-muted-foreground">
-                {post.summary}
+                {post.description}
               </span>
             </span>
           </AppLink>

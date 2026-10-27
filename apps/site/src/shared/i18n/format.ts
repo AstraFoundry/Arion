@@ -22,3 +22,8 @@ export function formatDate(isoDate: string, locale: Locale): string {
     timeZone: "UTC",
   }).format(new Date(`${isoDate}T00:00:00Z`));
 }
+
+/** Names joined the locale's way: "Ada, Lena and Kai", "Ada、Lena和Kai". */
+export function formatList(items: readonly string[], locale: Locale): string {
+  return new Intl.ListFormat(LOCALE_TAGS[locale], { type: "conjunction" }).format(items);
+}

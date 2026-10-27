@@ -1,10 +1,12 @@
 export { getPost, listPosts, postSlugs } from "./api/posts";
 export {
+  FRONTMATTER_KEYS,
+  lastModified,
   parseFrontmatter,
   type Post,
   POST_CATEGORIES,
   type PostCategory,
-  type PostCover,
+  type PostImage,
   PostError,
   type PostMeta,
   sortNewestFirst,

@@ -3,7 +3,7 @@ import { Fragment, jsx, jsxs } from "react/jsx-runtime";
 import { toJsxRuntime } from "hast-util-to-jsx-runtime";
 import type { Post } from "@/entities/post";
 import { routes } from "@/shared/config";
-import { format } from "@/shared/i18n";
+import { format, formatDate, formatList } from "@/shared/i18n";
 import { loadMessages } from "@/shared/i18n/server";
 import { mediaSize } from "@/shared/lib/server";
 import { AppLink, Dateline } from "@/shared/ui";
@@ -15,6 +15,26 @@ import "./prose.css";
 /** Posts with fewer sections read fine without a contents list. */
 const MIN_TOC_HEADINGS = 3;
 
+/** Authors and the revision date, when the post has them. */
+function Byline({ post }: { post: Post }) {
+  const { blog } = loadMessages(post.locale);
+  const { locale } = post;
+  if (post.authors.length === 0 && !post.updated) return null;
+  return (
+    <p className="mt-6 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-muted-foreground">
+      {post.authors.length > 0 ? (
+        <span>{format(blog.byline, { authors: formatList(post.authors, locale) })}</span>
+      ) : null}
+      {post.authors.length > 0 && post.updated ? <span aria-hidden="true">·</span> : null}
+      {post.updated ? (
+        <time dateTime={post.updated} className="tabular-nums">
+          {format(blog.updated, { date: formatDate(post.updated, locale) })}
+        </time>
+      ) : null}
+    </p>
+  );
+}
+
 /**
  * One post: header, cover and body on a reading grid. Text keeps a ~65
  * character measure; figures, video and embeds break out wider.
@@ -25,9 +45,9 @@ export async function PostArticle({ post }: { post: Post }) {
     footnotes: blog.footnotes,
     footnoteBack: (index) => format(blog.footnoteBack, { index }),
   });
-  const cover = post.cover && {
-    ...post.cover,
-    ...(await mediaSize({ url: post.cover.src, file: post.cover.file })),
+  const cover = post.image && {
+    ...post.image,
+    ...(await mediaSize({ url: post.image.src, file: post.image.file })),
   };
   const body = toJsxRuntime(tree, { Fragment, jsx, jsxs, components: postComponents });
 
@@ -49,7 +69,8 @@ export async function PostArticle({ post }: { post: Post }) {
         <h1 className="mt-4 text-balance font-display text-4xl leading-[1.08] font-normal tracking-[-0.02em] sm:text-[3.25rem]">
           {post.title}
         </h1>
-        <p className="post-summary mt-6">{post.summary}</p>
+        <p className="post-summary mt-6">{post.description}</p>
+        <Byline post={post} />
       </header>
 
       {cover ? (

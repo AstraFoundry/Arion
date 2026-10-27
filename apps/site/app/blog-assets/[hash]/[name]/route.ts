@@ -22,7 +22,7 @@ async function projectAssets(): Promise<Map<string, string>> {
     for (const locale of LOCALES) {
       const post = getPost(slug, locale);
       const refs = await postMediaRefs(post.body, post.file);
-      if (post.cover) refs.push({ url: post.cover.src, file: post.cover.file });
+      if (post.image) refs.push({ url: post.image.src, file: post.image.file });
       for (const ref of refs) {
         if (ref.file && ref.url.startsWith(PROJECT_ASSET_BASE)) assets.set(ref.url, ref.file);
       }

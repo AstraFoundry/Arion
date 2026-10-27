@@ -160,6 +160,8 @@
     "allPosts": "全部文章",
     "morePosts": "更多文章",
     "contents": "目录",
+    "byline": "作者：{authors}",
+    "updated": "更新于 {date}",
     "categories": {
       "announcement": "公告",
       "product": "产品",

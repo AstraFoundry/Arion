@@ -12,5 +12,5 @@ export {
   PREFIXED_LOCALES,
 } from "./config";
 export { useCopy, useLocale } from "./copy";
-export { format, formatDate } from "./format";
+export { format, formatDate, formatList } from "./format";
 export type { Messages } from "./messages";

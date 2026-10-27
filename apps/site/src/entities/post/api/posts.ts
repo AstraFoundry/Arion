@@ -7,7 +7,7 @@ import { resolveMedia } from "@/shared/lib/server";
 import {
   parseFrontmatter,
   type Post,
-  type PostCover,
+  type PostImage,
   POST_SLUG,
   PostError,
   type PostMeta,
@@ -21,25 +21,28 @@ import {
  */
 const CONTENT_DIR = path.join(process.cwd(), "content", "blog");
 
-function coverOf(cover: { src: string; alt: string }, file: string, source: string): PostCover {
+function imageOf(image: { src: string; alt: string }, file: string, source: string): PostImage {
   try {
-    const { url, file: local } = resolveMedia(cover.src, file);
-    return { src: url, alt: cover.alt, file: local };
+    const { url, file: local } = resolveMedia(image.src, file);
+    return { src: url, alt: image.alt, file: local };
   } catch (error) {
-    throw new PostError(source, `cover: ${(error as Error).message}`);
+    throw new PostError(source, `image: ${(error as Error).message}`);
   }
 }
+
+/** Drafts render while writing (`next dev`) and are left out of production builds. */
+const SHOW_DRAFTS = process.env.NODE_ENV !== "production";
 
 function readPost(slug: string, locale: Locale): Post {
   const file = path.join(CONTENT_DIR, slug, `${locale}.md`);
   const source = path.relative(process.cwd(), file);
   const { data, content } = matter(readFileSync(file, "utf8"));
-  const { cover, ...fields } = parseFrontmatter(data, source);
+  const { image, ...fields } = parseFrontmatter(data, source);
   return {
     ...fields,
     slug,
     locale,
-    cover: cover ? coverOf(cover, file, source) : undefined,
+    image: image ? imageOf(image, file, source) : undefined,
     body: content,
     file,
   };
@@ -71,6 +74,7 @@ function readAll(): Map<string, Record<Locale, Post>> {
     ) as Record<Locale, Post>;
     const mismatch = translationMismatch(Object.values(translations));
     if (mismatch) throw new PostError(where, `translations disagree on "${mismatch}"`);
+    if (translations[LOCALES[0]].draft && !SHOW_DRAFTS) continue;
     posts.set(slug, translations);
   }
   return posts;
@@ -97,10 +101,14 @@ export function listPosts(locale: Locale): PostMeta[] {
       slug: post.slug,
       locale: post.locale,
       title: post.title,
-      summary: post.summary,
+      description: post.description,
       date: post.date,
+      updated: post.updated,
+      authors: post.authors,
+      tags: post.tags,
       category: post.category,
-      cover: post.cover,
+      image: post.image,
+      draft: post.draft,
     })),
   );
 }

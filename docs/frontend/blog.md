@@ -12,20 +12,43 @@ apps/site/content/blog/<slug>/…         # optional: images and videos next to 
 apps/site/public/blog/<slug>/…          # embedded HTML, and media you prefer to serve from public/
 ```
 
-The slug is lowercase words joined by hyphens and becomes the URL. Each file starts with front matter:
+The slug is lowercase words joined by hyphens and becomes the URL. Each file starts with YAML front matter:
 
 ```yaml
 ---
 title: Where your dictation goes
-summary: One or two sentences; the lead under the title, the index summary and the meta description.
-date: 2026-10-27            # YYYY-MM-DD, UTC
-category: product           # announcement | product | engineering (labels in blog.categories)
-cover: ./cover.webp         # optional; with coverAlt. Any media source (see Media sources)
-coverAlt: What the cover shows
+description: One or two sentences; the lead under the title, the index summary and the meta description.
+date: 2026-10-27                  # published, YYYY-MM-DD (UTC)
+updated: 2026-11-02               # optional: last substantive revision, never before date
+authors: [Ada Lovelace]           # optional list
+tags: [privacy, offline]          # optional list
+category: product                 # announcement | product | engineering (labels in blog.categories)
+image: ./cover.webp               # optional, with imageAlt; any media source (see Media sources)
+imageAlt: What the image shows
+draft: true                       # optional: built by `next dev`, left out of production builds
 ---
 ```
 
-Every post exists in every locale, like every other page, so the language switch and hreflang links never point at a missing translation. Translations must agree on `date`, `category` and `cover`. The build fails on a missing translation, an unknown front matter key, a bad date or category, or a cover that does not resolve ([`entities/post`](../../apps/site/src/entities/post)).
+### Metadata
+
+The field names are the ones static-site generators commonly use, and each maps onto the web's metadata standards:
+
+| Front matter | HTML head (Open Graph, Twitter) | schema.org `BlogPosting` (JSON-LD) | Elsewhere |
+| --- | --- | --- | --- |
+| `title` | `<title>`, `og:title`, `twitter:title` | `headline` | Page heading |
+| `description` | `meta description`, `og:description`, `twitter:description` | `description` | Lead and index summary |
+| `date` | `article:published_time` | `datePublished` | Dateline, sort order |
+| `updated` | `article:modified_time` | `dateModified` (else `date`) | Byline, sitemap `lastmod` |
+| `authors` | `meta author`, `article:author` | `author` (`Person`) | Byline |
+| `tags` | `meta keywords`, `article:tag` | `keywords` | Not shown |
+| `category` | `article:section` | `articleSection` | Dateline |
+| `image`, `imageAlt` | `og:image`, `twitter:image` (`summary_large_image`) | `image` | Cover and index lead |
+
+Without an `image`, the social preview is the site's `og.jpg`. Every post page also gets `og:type=article`, `og:locale` with its alternates, the canonical URL, hreflang links and the `AstraFoundry` publisher. Metadata is built in `pages/blog-post/model` (`metadata.ts`, `structured-data.ts`).
+
+### Rules
+
+Every post exists in every locale, like every other page, so the language switch and hreflang links never point at a missing translation. Translations must agree on `date`, `category`, `image` and `draft`; their words, tags, author spelling and `updated` may differ. The build fails on a missing translation, an unknown front matter key (the error lists the accepted ones), a bad date, list, category or `draft` value, `updated` before `date`, an `image` without `imageAlt`, or an image that does not resolve ([`entities/post`](../../apps/site/src/entities/post)).
 
 Links inside a post use site URLs (`/privacy/`, `/blog/<slug>/…`); they keep the reader's locale, and the repository check (`pnpm check`) fails when one names no English route, post or file in `public/`.
 
@@ -37,7 +60,7 @@ Markdown is GitHub-flavored: tables, footnotes (`[^note]`), task lists, striketh
 
 ### Media sources
 
-Every image, `cover`, and `<video-clip>` `src` or `poster` may be written three ways:
+Every image, the front matter `image`, and `<video-clip>` `src` or `poster` may be written three ways:
 
 | Written as | Example | Resolves to |
 | --- | --- | --- |
@@ -78,7 +101,7 @@ Embedded HTML files are post content, not site code: keep them self-contained, l
 | `src/entities/post` | Front matter validation, translation checks, sorting (`model`); reading `content/blog` at build time (`api`, server-only) |
 | `src/widgets/post-article` | The Markdown pipeline (unified: remark-gfm → rehype-raw → validation → figures → media resolution → media sizes → slugs → Shiki), the element-to-component map, embeds, and `prose.css` |
 | `src/widgets/post-list` | The index lead and post rows |
-| `src/pages/blog`, `src/pages/blog-post` | Page composition and metadata (Open Graph `article` with the cover) |
+| `src/pages/blog`, `src/pages/blog-post` | Page composition, head metadata (Open Graph `article`, Twitter card) and `BlogPosting` JSON-LD |
 | `src/shared/ui/dateline.tsx` | Date and label line |
 | `src/shared/lib/server.ts` | `resolveMedia` (remote, site and project paths), `mediaSize` (local read or one build-time download) |
 | `app/blog-assets/[hash]/[name]/route.ts` | Static route that writes each project-path file into the export |

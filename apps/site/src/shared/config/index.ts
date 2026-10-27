@@ -14,4 +14,5 @@ export {
   routes,
   sections,
   siteConfig,
+  socialImage,
 } from "./site";

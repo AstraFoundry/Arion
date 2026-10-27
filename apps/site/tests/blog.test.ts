@@ -23,23 +23,48 @@ import {
 
 const valid = {
   title: "A post",
-  summary: "What it says.",
+  description: "What it says.",
   date: "2026-10-27",
   category: "product",
 };
 
+const defaults = { authors: [], tags: [], draft: false };
+
 describe("post front matter", () => {
   it("accepts a complete post and a YAML date", () => {
-    expect(parseFrontmatter(valid, "en.md")).toEqual(valid);
+    expect(parseFrontmatter(valid, "en.md")).toEqual({ ...valid, ...defaults });
     expect(parseFrontmatter({ ...valid, date: new Date("2026-10-27T00:00:00Z") }, "en.md").date).toBe(
       "2026-10-27",
     );
   });
 
-  it("pairs the cover with its alt text", () => {
-    const cover = { ...valid, cover: "/blog/a/cover.webp", coverAlt: "A cover" };
-    expect(parseFrontmatter(cover, "en.md").cover).toEqual({ src: "/blog/a/cover.webp", alt: "A cover" });
-    expect(() => parseFrontmatter({ ...valid, cover: "/blog/a/cover.webp" }, "en.md")).toThrow(/coverAlt/);
+  it("reads the optional standard fields", () => {
+    const full = {
+      ...valid,
+      updated: "2026-11-02",
+      authors: ["Ada", "Lena"],
+      tags: ["privacy", "offline"],
+      image: "./cover.webp",
+      imageAlt: "A cover",
+      draft: true,
+    };
+    expect(parseFrontmatter(full, "en.md")).toEqual({
+      ...valid,
+      updated: "2026-11-02",
+      authors: ["Ada", "Lena"],
+      tags: ["privacy", "offline"],
+      image: { src: "./cover.webp", alt: "A cover" },
+      draft: true,
+    });
+  });
+
+  it("rejects malformed standard fields", () => {
+    expect(() => parseFrontmatter({ ...valid, image: "./cover.webp" }, "en.md")).toThrow(/imageAlt/);
+    expect(() => parseFrontmatter({ ...valid, updated: "2026-01-01" }, "en.md")).toThrow(/before "date"/);
+    expect(() => parseFrontmatter({ ...valid, authors: "Ada" }, "en.md")).toThrow(/list/);
+    expect(() => parseFrontmatter({ ...valid, tags: ["a", "a"] }, "en.md")).toThrow(/twice/);
+    expect(() => parseFrontmatter({ ...valid, draft: "yes" }, "en.md")).toThrow(/draft/);
+    expect(() => parseFrontmatter({ ...valid, summary: "x" }, "en.md")).toThrow(/unknown front matter "summary"/);
   });
 
   it("rejects missing, unknown and malformed fields", () => {
@@ -55,9 +80,12 @@ const meta = (slug: string, date: string, extra: Partial<PostMeta> = {}): PostMe
   slug,
   locale: "en",
   title: slug,
-  summary: slug,
+  description: slug,
   date,
+  authors: [],
+  tags: [],
   category: "product",
+  draft: false,
   ...extra,
 });
 
@@ -73,6 +101,9 @@ describe("post lists", () => {
     expect(
       translationMismatch([meta("a", "2026-01-01"), meta("a", "2026-01-01", { category: "engineering" })]),
     ).toBe("category");
+    expect(translationMismatch([meta("a", "2026-01-01"), meta("a", "2026-01-01", { draft: true })])).toBe(
+      "draft",
+    );
   });
 });
 

@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { listPosts } from "@/entities/post";
+import { lastModified, listPosts } from "@/entities/post";
 import { blogPostRoute, routes, siteConfig } from "@/shared/config";
 import { LOCALE_TAGS, LOCALES, localizePath } from "@/shared/i18n";
 
@@ -25,7 +25,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...localized(routes.home, { changeFrequency: "weekly", priority: 1 }),
     ...localized(routes.blog, { changeFrequency: "weekly", priority: 0.8 }),
     ...listPosts("en").flatMap((post) =>
-      localized(blogPostRoute(post.slug), { lastModified: post.date, priority: 0.6 }),
+      localized(blogPostRoute(post.slug), { lastModified: lastModified(post), priority: 0.6 }),
     ),
     ...localized(routes.privacy, { changeFrequency: "monthly", priority: 0.8 }),
     ...localized(routes.selfHosting, { changeFrequency: "monthly", priority: 0.7 }),
