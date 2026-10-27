@@ -195,12 +195,25 @@ func (a *App) openSettings() {
 	a.settingsWin.Focus()
 }
 
-// revealWindow brings onboarding to the front while it is open, and settings
-// otherwise.
+// revealUserWindow opens the window a person asked for by launching Arion.
+// Scripted sessions keep the focus they already own.
+func (a *App) revealUserWindow() {
+	if a.scripted() {
+		return
+	}
+	a.revealWindow()
+}
+
+// revealWindow brings onboarding to the front while setup is unfinished,
+// and Settings otherwise.
 func (a *App) revealWindow() {
-	if a.onboarding != nil {
-		mygo.App.Focus()
-		a.onboarding.Focus()
+	if a.onboarding != nil || (!a.state.Preferences.OnboardingCompleted && !a.opts.SkipOnboarding) {
+		if a.onboarding != nil {
+			mygo.App.Focus()
+			a.onboarding.Focus()
+			return
+		}
+		a.openOnboarding()
 		return
 	}
 	a.openSettings()
