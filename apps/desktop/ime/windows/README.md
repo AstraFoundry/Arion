@@ -389,6 +389,12 @@ UAC acceptance or compatibility with arbitrary third-party editors.
 
 ## Emoji candidates
 
+The pinned Windows engine build exports `Session::context`,
+`Menu::GetCandidateAt` and `PrefetchTranslation` for the typed filter/metadata
+bridge. The engine and private SDK receive identical visibility-only source
+patches; `emojiVisibilityPatch: 1` is required by runtime manifest verification.
+Native hosted checks run before the longer Go suite to fail early on this ABI.
+
 The default-on `emojiSuggestions` preference enables the shared exact-word filter. Typed candidate metadata and caret refresh cross the validated keyboard DLL ABI; TSF selection commits the actual engine identity. Emoji-bearing commits, including a selected Chinese prefix plus an Emoji suffix, never enter Chinese context learning. Preference refresh rebuilds the active typed menu under the editor write lock and advances its revision.
 
 `emoji_text.h` uses the installed Segoe UI Emoji font with DirectWrite shaping and Direct2D color drawing; no font/image resources are shipped. The filter's cached native check requires one complete cluster and one nonmissing color glyph. Unsupported flags, missing/newer glyphs and decomposed ZWJ sequences are omitted, preserving text candidate order. The candidate window uses Direct2D DC interop for typed Emoji rows while retaining GDI text and existing geometry/hit testing.

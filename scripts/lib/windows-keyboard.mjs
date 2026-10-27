@@ -38,7 +38,7 @@ export function verifyWindowsKeyboardRuntime(directory, { requireModule = true }
   for (const [key, value] of Object.entries({ ...pins.engine, architectures: pins.windows.architectures, library: 'lib/ArionRime.dll' })) {
     if (!isDeepStrictEqual(runtime[key], value)) throw new Error(`Windows keyboard identity mismatch: ${key}`);
   }
-  if (runtime.build?.compilerTarget !== 'x86_64-w64-mingw32' || runtime.build?.logging !== false || runtime.build?.dbVisibilityPatch !== 3 || runtime.build?.openccCxx17Patch !== 1) throw new Error('Windows keyboard private SDK ABI provenance is missing.');
+  if (runtime.build?.compilerTarget !== 'x86_64-w64-mingw32' || runtime.build?.logging !== false || runtime.build?.dbVisibilityPatch !== 3 || runtime.build?.emojiVisibilityPatch !== 1 || runtime.build?.openccCxx17Patch !== 1) throw new Error('Windows keyboard private SDK ABI provenance is missing.');
   const sources = { rime: pins.archives.source, boost: pins.archives.boost, ...pins.windows.dependencies };
   if (!isDeepStrictEqual(runtime.build.sources, sources)) throw new Error('Windows keyboard source pins differ from reviewed dependencies.');
   if (!runtime.files || typeof runtime.files !== 'object' || Array.isArray(runtime.files)) throw new Error('Windows keyboard file manifest is missing.');

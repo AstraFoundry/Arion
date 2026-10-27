@@ -104,6 +104,12 @@ try {
   // Give the imported class an out-of-line key function so MinGW owns and
   // exports its vtable/typeinfo in the engine instead of client COMDATs.
   replacePinned(path.join(rime, 'src/rime/dict/db.cc'), '// Db members', '// Db members\n\nDb::~Db() = default;');
+  // The native Emoji filter reads the same session/menu as C API selection and
+  // derives its lazy translation from PrefetchTranslation. Export exactly that
+  // additional private ABI; engine and SDK use the same patched declarations.
+  replacePinned(path.join(rime, 'src/rime/service.h'), '  Context* context() const;', '  RIME_DLL Context* context() const;');
+  replacePinned(path.join(rime, 'src/rime/menu.h'), '  an<Candidate> GetCandidateAt(size_t index);', '  RIME_DLL an<Candidate> GetCandidateAt(size_t index);');
+  replacePinned(path.join(rime, 'src/rime/translation.h'), 'class PrefetchTranslation : public Translation {', 'class RIME_DLL PrefetchTranslation : public Translation {');
   // Upstream adds the dependency include directory before its own source.
   // Remove previous SDK output here so an incremental engine build cannot
   // accidentally compile against stale exported Rime headers in that prefix.
@@ -150,7 +156,7 @@ try {
     }
   }
   inventory(staging);
-  const buildIdentity = { compiler: compilerVersion, compilerTarget: triple, logging: false, dbVisibilityPatch: 3, openccCxx17Patch: 1,
+  const buildIdentity = { compiler: compilerVersion, compilerTarget: triple, logging: false, dbVisibilityPatch: 3, emojiVisibilityPatch: 1, openccCxx17Patch: 1,
     sources: { rime: manifest.archives.source, boost: manifest.archives.boost, ...manifest.windows.dependencies } };
   writeFileSync(path.join(staging, 'runtime.json'), `${JSON.stringify({ ...manifest.engine, architectures: manifest.windows.architectures, library: 'lib/ArionRime.dll', build: buildIdentity, files }, null, 2)}\n`);
   writeFileSync(path.join(sdk, 'build.json'), `${JSON.stringify(buildIdentity, null, 2)}\n`);
