@@ -38,6 +38,11 @@ type Cloud struct {
 	Saved []string
 	// Failure is one of CloudCodes; empty when the last attempt worked.
 	Failure string
+	// FailureProvider is the provider Failure belongs to. A key or sign-in
+	// failure names the provider that was tried, which may differ from
+	// Provider when a previous connection was restored. Empty when the
+	// failure names no provider.
+	FailureProvider string
 }
 
 // Busy reports a sign-in or key check in flight.

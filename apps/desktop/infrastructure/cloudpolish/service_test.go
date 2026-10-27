@@ -182,11 +182,31 @@ func TestRejectedKeyIsNotStored(t *testing.T) {
 	if err := s.ConnectKey(Anthropic, ""); CodeOf(err) != CodeRejected {
 		t.Fatalf("empty key: %v", err)
 	}
+	if st := s.Status(); st.Failure != CodeRejected || st.FailureProvider != Anthropic {
+		t.Fatalf("empty key status %+v", st)
+	}
 	if err := s.ConnectKey(OpenAI, "sk-bad"); CodeOf(err) != CodeRejected {
 		t.Fatalf("bad key: %v", err)
 	}
-	if st := s.Status(); st.Phase != Disconnected || st.Failure != CodeRejected || secrets.puts != 0 {
+	if st := s.Status(); st.Phase != Disconnected || st.Failure != CodeRejected || st.FailureProvider != OpenAI || secrets.puts != 0 {
 		t.Fatalf("status %+v puts %d", st, secrets.puts)
+	}
+}
+
+func TestFailedKeyNamesTheProviderItTried(t *testing.T) {
+	var bodies []map[string]any
+	srv := keyServer(t, "sk-good", &bodies)
+	defer srv.Close()
+	s := newTestService(&memorySecrets{}, srv.URL)
+	if err := s.ConnectKey(OpenAI, "sk-good"); err != nil {
+		t.Fatal(err)
+	}
+	if err := s.ConnectKey(Anthropic, "sk-bad"); CodeOf(err) != CodeRejected {
+		t.Fatalf("anthropic: %v", err)
+	}
+	st := s.Status()
+	if st.Phase != Connected || st.Provider != OpenAI || st.Failure != CodeRejected || st.FailureProvider != Anthropic || len(st.Models) != 2 {
+		t.Fatalf("status %+v", st)
 	}
 }
 
@@ -200,7 +220,7 @@ func TestFailedKeyKeepsExistingConnection(t *testing.T) {
 		t.Fatal(err)
 	}
 	_ = s.ConnectKey(OpenAI, "sk-bad")
-	if st := s.Status(); st.Phase != Connected || st.Provider != OpenAI || st.Failure != CodeRejected || len(st.Models) != 2 {
+	if st := s.Status(); st.Phase != Connected || st.Provider != OpenAI || st.Failure != CodeRejected || st.FailureProvider != OpenAI || len(st.Models) != 2 {
 		t.Fatalf("status %+v", st)
 	}
 	if c := secrets.credential(t); c.APIKey != "sk-good" {

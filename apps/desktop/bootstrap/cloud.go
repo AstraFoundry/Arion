@@ -40,7 +40,7 @@ func (r polishRouter) End(id contracts.Identity) {
 // active provider restores that provider's model; disconnecting clears it.
 func (a *App) applyCloud(s cloudpolish.Status) {
 	a.state.Cloud = arion.Cloud{Phase: arion.CloudPhase(s.Phase), Provider: s.Provider, Email: s.Email, Models: s.Models,
-		Listing: s.Listing, Failure: string(s.Failure), Saved: s.Saved}
+		Listing: s.Listing, Failure: string(s.Failure), FailureProvider: s.FailureProvider, Saved: s.Saved}
 	if s.Phase == cloudpolish.Connected {
 		switch {
 		case s.Provider != a.cloudProvider:

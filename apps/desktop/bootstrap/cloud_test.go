@@ -116,4 +116,8 @@ func TestApplyCloudRestoresProviderModel(t *testing.T) {
 	if a.preferences().CloudModel != "" || a.cloudProvider != "" || a.state.Cloud.Phase != arion.CloudDisconnected {
 		t.Fatalf("disconnect model %q provider %q phase %q", a.preferences().CloudModel, a.cloudProvider, a.state.Cloud.Phase)
 	}
+	a.applyCloud(cloudpolish.Status{Phase: cloudpolish.Disconnected, Failure: cloudpolish.CodeRejected, FailureProvider: cloudpolish.Anthropic})
+	if a.state.Cloud.Failure != arion.CloudCodeRejected || a.state.Cloud.FailureProvider != cloudpolish.Anthropic {
+		t.Fatalf("failure %+v", a.state.Cloud)
+	}
 }

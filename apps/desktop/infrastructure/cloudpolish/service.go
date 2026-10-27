@@ -87,6 +87,10 @@ type Status struct {
 	Saved []string
 	// Failure is the last failure; a new attempt clears it.
 	Failure Code
+	// FailureProvider is the provider Failure belongs to: the one a key or
+	// sign-in tried, or the connected provider when its model list or a
+	// later request failed. Empty when the failure names no provider.
+	FailureProvider string
 }
 
 // Service is safe for concurrent use. It satisfies ports.Rewriter.
@@ -111,7 +115,10 @@ type Service struct {
 	cancel           context.CancelFunc
 	// generation invalidates work started before a connect or disconnect.
 	generation uint64
-	listeners  []func(Status)
+	// attempt is the provider begin started. end attributes a failure to it
+	// even after the previous connection is restored.
+	attempt   string
+	listeners []func(Status)
 }
 
 // New prepares the service; it reads and sends nothing.
@@ -230,9 +237,10 @@ func (s *Service) SetModel(id string) {
 		}
 	}
 	connected := s.credential.valid()
+	provider := s.credential.Provider
 	s.mu.Unlock()
 	if storeErr != nil {
-		s.set(func(st *Status) { st.Failure = CodeStore })
+		s.set(func(st *Status) { st.Failure, st.FailureProvider = CodeStore, provider })
 		return
 	}
 	if connected {
@@ -250,9 +258,10 @@ func (s *Service) begin(phase Phase, provider string) (context.Context, uint64) 
 	}
 	s.cancel = cancel
 	s.generation++
+	s.attempt = provider
 	generation := s.generation
 	s.mu.Unlock()
-	s.set(func(st *Status) { st.Phase, st.Provider, st.Failure = phase, provider, "" })
+	s.set(func(st *Status) { st.Phase, st.Provider, st.Failure, st.FailureProvider = phase, provider, "", "" })
 	return ctx, generation
 }
 
@@ -265,6 +274,7 @@ func (s *Service) end(generation uint64, err error) error {
 	}
 	s.cancel = nil
 	c := s.credential
+	attempt := s.attempt
 	s.mu.Unlock()
 	s.set(func(st *Status) {
 		*st = Status{Phase: Disconnected, Models: st.Models}
@@ -275,6 +285,7 @@ func (s *Service) end(generation uint64, err error) error {
 		}
 		if code := CodeOf(err); code != CodeCancelled {
 			st.Failure = code
+			st.FailureProvider = attempt
 		}
 	})
 	return err
@@ -397,7 +408,7 @@ func (s *Service) Activate(provider string) error {
 	s.generation++
 	if err := s.writeActive(c); err != nil {
 		s.mu.Unlock()
-		s.set(func(st *Status) { st.Failure = CodeStore })
+		s.set(func(st *Status) { st.Failure, st.FailureProvider = CodeStore, provider })
 		return fail(CodeStore, err)
 	}
 	s.closeLocked()
@@ -571,7 +582,7 @@ func (s *Service) ListModels() {
 	if !connected {
 		return
 	}
-	s.set(func(st *Status) { st.Listing, st.Failure = true, "" })
+	s.set(func(st *Status) { st.Listing, st.Failure, st.FailureProvider = true, "", "" })
 	p, err := s.ready(context.Background())
 	var models []string
 	if err == nil {
@@ -588,6 +599,7 @@ func (s *Service) ListModels() {
 		st.Listing = false
 		if err != nil {
 			st.Failure = CodeOf(err)
+			st.FailureProvider = st.Provider
 			return
 		}
 		st.Models = models
@@ -672,7 +684,12 @@ func (s *Service) settle(err error, otherwise Code) error {
 	}
 	err = classify(err, otherwise)
 	if CodeOf(err) == CodeRejected {
-		s.set(func(st *Status) { st.Failure = CodeRejected })
+		s.set(func(st *Status) {
+			st.Failure = CodeRejected
+			if st.FailureProvider == "" {
+				st.FailureProvider = st.Provider
+			}
+		})
 	}
 	return err
 }

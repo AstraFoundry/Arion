@@ -28,8 +28,10 @@ type Nav struct {
 	// Compact shows either the provider in use or, after Change, the
 	// providers, so onboarding's step fits its window.
 	Compact bool
-	// connecting is the provider this page signed in to or sent a key for:
-	// once it is in use, the page returns to the list, where its model is.
+	// connecting is the provider this page signed in to or sent a key for.
+	// Once that provider is in use, the page returns to the list. Its
+	// failure stays here until the user leaves or edits the key; either
+	// clears connecting, so the sentence does not follow to another page.
 	connecting string
 	// changing is the provider in use when Change was chosen; another one
 	// in use ends the change.
@@ -118,7 +120,11 @@ func Pages(c *ui.Context, store runtime.Store, tokens theme.Tokens, nav *Nav) {
 	} else {
 		page(c, store, tokens, nav)
 	}
-	notice(c, store, tokens)
+	// A new draft is not the key that was refused.
+	if nav.Key != "" {
+		nav.connecting = ""
+	}
+	notice(c, store, tokens, nav)
 }
 
 // list shows the provider in use, then the providers by how they connect:
@@ -307,18 +313,50 @@ var failures = map[string]copy.Key{
 // FailureKey is the copy for a Failure, or "" when none is shown.
 func FailureKey(code string) copy.Key { return failures[code] }
 
-// notice states the last failure; a failed model list offers a retry.
-func notice(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
+// showFailure reports whether cl.Failure belongs on the page nav is
+// showing. A key or sign-in attempt names its provider and stays only
+// while that page's submit is still current. A failure of the connection
+// in use stays with that connection, on the list and on its own page. A
+// keychain failure with no provider still shows, so a failed save is not
+// silent.
+func showFailure(cl runtime.Cloud, nav *Nav) bool {
+	if FailureKey(cl.Failure) == "" {
+		return false
+	}
+	owner := cl.FailureProvider
+	if owner == "" {
+		owner = cl.Provider
+	}
+	if cl.Failure == runtime.CloudCodeStore && (owner == "" || nav.Provider == "" || nav.Provider == owner) {
+		return true
+	}
+	if nav.Provider != "" && nav.connecting == nav.Provider && nav.Provider == owner {
+		return true
+	}
+	return cl.Phase == runtime.CloudConnected && cl.Provider != "" && owner == cl.Provider &&
+		(nav.Provider == "" || nav.Provider == cl.Provider)
+}
+
+// notice states the failure that belongs on this page; a failed model list
+// offers a retry.
+func notice(c *ui.Context, store runtime.Store, tokens theme.Tokens, nav *Nav) {
 	cl := store.State.Cloud
-	key := FailureKey(cl.Failure)
-	if key == "" {
+	if !showFailure(cl, nav) {
 		return
 	}
+	key := FailureKey(cl.Failure)
 	messages := store.Copy()
 	ui.Row(c.Key("cloud-notice")).Gap(8).Padding(0, 4).AlignItems(ui.Center).Transition(ui.ElementTransition{Enter: &ui.Motion{Y: 4}}).Children(func() {
 		ui.Icon(c, icons.TriangleAlert).FontSize(13).TextColor(tokens.Danger)
 		ui.Text(c, messages.Text(key)).FontSize(theme.Caption).Grow(1).Shrink(1)
-		if cl.Phase == runtime.CloudConnected && (cl.Failure == runtime.CloudCodeModels || cl.Failure == runtime.CloudCodeNetwork) {
+		// Retry lists the connection in use. A key attempt's own failure
+		// stays on its page without offering that list.
+		owner := cl.FailureProvider
+		if owner == "" {
+			owner = cl.Provider
+		}
+		if cl.Phase == runtime.CloudConnected && owner == cl.Provider && nav.connecting == "" &&
+			(cl.Failure == runtime.CloudCodeModels || cl.Failure == runtime.CloudCodeNetwork) {
 			if kit.Button(c.Key("cloud-retry"), tokens, kit.Outline, messages.Text(copy.Retry), !cl.Listing).Clicked() {
 				store.Actions.ListCloudModels()
 			}

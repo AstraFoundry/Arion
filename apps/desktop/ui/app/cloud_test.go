@@ -126,6 +126,133 @@ func TestCloudPages(t *testing.T) {
 	}
 }
 
+// A refused key or sign-in stays on the page that submitted it. Leaving
+// that page, opening another provider, or editing the key drops it. The
+// connection in use keeps its own model-list failure.
+func TestCloudFailureStaysOnItsProvider(t *testing.T) {
+	state, _, store := fixture()
+	nav := &cloud.Nav{}
+	tt := ui.NewTester(func(c *ui.Context) {
+		ui.Column(c).Gap(8).Padding(16).Children(func() { cloud.Pages(c, store, theme.Resolve(false), nav) })
+	}, 560, 520)
+	en := copy.For(copy.English)
+	refused := en.Text(copy.CloudFailRejected)
+	state.Cloud = runtime.Cloud{Phase: runtime.CloudDisconnected}
+	settle(tt)
+	open := func(id string) {
+		t.Helper()
+		if err := tt.Click(config.CloudProviders[id]); err != nil {
+			t.Fatalf("%s: %v (%q)", id, err, tt.Texts())
+		}
+		settle(tt)
+	}
+	leave := func() {
+		t.Helper()
+		if !nav.Back() {
+			t.Fatal("nothing to leave")
+		}
+		settle(tt)
+	}
+	typeKey := func(value string) {
+		t.Helper()
+		connect, ok := tt.Find(en.Text(copy.CloudConnect))
+		if !ok {
+			t.Fatalf("no connect: %q", tt.Texts())
+		}
+		tt.ClickAt(connect.X-80, connect.Y+connect.H/2)
+		tt.Type(value)
+		settle(tt)
+	}
+	absent := func(where string, text string) {
+		t.Helper()
+		if hasText(tt, text) {
+			t.Fatalf("%s shows %q in %q", where, text, tt.Texts())
+		}
+	}
+	open(runtime.CloudAnthropic)
+	typeKey("sk-secret")
+	if err := tt.Click(en.Text(copy.CloudConnect)); err != nil {
+		t.Fatal(err)
+	}
+	state.Cloud = runtime.Cloud{Phase: runtime.CloudDisconnected, Failure: runtime.CloudCodeRejected, FailureProvider: runtime.CloudAnthropic}
+	settle(tt)
+	if !hasText(tt, refused) {
+		t.Fatalf("attempt: %q", tt.Texts())
+	}
+	snapshot(t, tt, "cloud-key-rejected")
+	state.Preferences.UILanguage = runtime.LanguageChinese
+	settle(tt)
+	if !hasText(tt, copy.For(copy.SimplifiedChinese).Text(copy.CloudFailRejected)) {
+		t.Fatalf("zh attempt: %q", tt.Texts())
+	}
+	snapshot(t, tt, "cloud-key-rejected-zh-CN")
+	state.Preferences.UILanguage = runtime.LanguageEnglish
+	settle(tt)
+	typeKey("sk-next")
+	absent("draft", refused)
+	nav.Key = ""
+	settle(tt)
+	absent("cleared draft", refused)
+
+	leave()
+	absent("list", refused)
+	open(runtime.CloudGoogle)
+	absent("google", refused)
+	snapshot(t, tt, "cloud-other-provider-clear")
+	state.Preferences.UILanguage = runtime.LanguageChinese
+	settle(tt)
+	absent("google zh", copy.For(copy.SimplifiedChinese).Text(copy.CloudFailRejected))
+	snapshot(t, tt, "cloud-other-provider-clear-zh-CN")
+	state.Preferences.UILanguage = runtime.LanguageEnglish
+	settle(tt)
+	leave()
+	open(runtime.CloudAnthropic)
+	absent("reopened", refused)
+
+	leave()
+	open(runtime.CloudChatGPT)
+	if err := tt.Click(en.Text(copy.CloudChatGPTSignIn)); err != nil {
+		t.Fatal(err)
+	}
+	state.Cloud = runtime.Cloud{Phase: runtime.CloudDisconnected, Failure: runtime.CloudCodeSignIn, FailureProvider: runtime.CloudChatGPT}
+	settle(tt)
+	if !hasText(tt, en.Text(copy.CloudFailSignIn)) {
+		t.Fatalf("sign-in: %q", tt.Texts())
+	}
+	leave()
+	open(runtime.CloudAnthropic)
+	absent("after sign-in", en.Text(copy.CloudFailSignIn))
+
+	leave()
+	state.Cloud = runtime.Cloud{Phase: runtime.CloudConnected, Provider: runtime.CloudOpenRouter, Models: []string{"m"},
+		Failure: runtime.CloudCodeRejected, FailureProvider: runtime.CloudAnthropic}
+	settle(tt)
+	absent("connection in use", refused)
+	state.Cloud = runtime.Cloud{Phase: runtime.CloudConnected, Provider: runtime.CloudOpenRouter,
+		Failure: runtime.CloudCodeModels, FailureProvider: runtime.CloudOpenRouter}
+	settle(tt)
+	if !hasText(tt, en.Text(copy.CloudFailModels)) {
+		t.Fatalf("model list: %q", tt.Texts())
+	}
+	state.Cloud = runtime.Cloud{Phase: runtime.CloudConnected, Provider: runtime.CloudOpenRouter, Models: []string{"m"},
+		Failure: runtime.CloudCodeNetwork, FailureProvider: runtime.CloudAnthropic}
+	settle(tt)
+	absent("attempt network", en.Text(copy.CloudFailNetwork))
+	if hasText(tt, en.Text(copy.Retry)) {
+		t.Fatalf("attempt network offers retry: %q", tt.Texts())
+	}
+	state.Cloud.FailureProvider = runtime.CloudOpenRouter
+	settle(tt)
+	if !hasText(tt, en.Text(copy.CloudFailNetwork)) || !hasText(tt, en.Text(copy.Retry)) {
+		t.Fatalf("connection network: %q", tt.Texts())
+	}
+	state.Cloud = runtime.Cloud{Phase: runtime.CloudDisconnected, Failure: runtime.CloudCodeStore}
+	settle(tt)
+	if !hasText(tt, en.Text(copy.CloudFailStore)) {
+		t.Fatalf("store: %q", tt.Texts())
+	}
+}
+
 // Opening a saved provider's page never switches to it: only its Use
 // button does, on the list or on its page.
 func TestSavedCloudProviderNeedsUse(t *testing.T) {
