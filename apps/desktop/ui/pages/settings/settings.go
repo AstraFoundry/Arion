@@ -432,8 +432,10 @@ func (p *Page) modelBack() {
 	}
 }
 
-// modelSection is Model's recognition and polish settings, or the page of
-// the recognition model or the cloud model.
+// modelSection is Speech & Polish in the order the text goes:
+// recognition, polishing and where it runs, its formatting, then the
+// context it reads, the last two only while polishing runs. The
+// recognition model and the cloud model each take a page.
 func (p *Page) modelSection(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 	messages := store.Copy()
 	switch p.model {
@@ -459,14 +461,18 @@ func (p *Page) modelSection(c *ui.Context, store runtime.Store, tokens theme.Tok
 				if store.State.Preferences.PolishEngine == runtime.PolishCloud && cloud.Summary(c, store, tokens) {
 					p.model = modelCloud
 				}
-				polish.Punctuation(c, store, tokens)
-				if runtime.PolishOn(store.State) {
-					kit.Divider(c, tokens)
-					polish.MatchApp(c, store, tokens)
-				}
 			})
 		})
-		if polish.ContextShown(store) {
+		// What polishing does with the text, then what it may read: both
+		// only while it runs.
+		if runtime.PolishOn(store.State) {
+			kit.Group(c, tokens, messages.Text(copy.ModelFormatGroup), func() {
+				kit.Card(c, tokens).Children(func() {
+					polish.Punctuation(c, store, tokens)
+					kit.Divider(c, tokens)
+					polish.MatchApp(c, store, tokens)
+				})
+			})
 			kit.Group(c, tokens, messages.Text(copy.ContextGroup), func() { polish.Context(c, store, tokens) })
 		}
 	case modelRecognition:
@@ -475,6 +481,6 @@ func (p *Page) modelSection(c *ui.Context, store runtime.Store, tokens theme.Tok
 			kit.Group(c, tokens, messages.Text(copy.ModelOthers), func() { modelchoice.Others(c, store, tokens) })
 		}
 	case modelCloud:
-		ui.Column(c).Gap(theme.GapRelated).Children(func() { cloud.Pages(c, store, tokens, &p.cloud) })
+		ui.Column(c).Gap(theme.GapGroup).Children(func() { cloud.Pages(c, store, tokens, &p.cloud) })
 	}
 }

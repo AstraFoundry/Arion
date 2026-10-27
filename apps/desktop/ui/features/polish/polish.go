@@ -61,13 +61,12 @@ func Engine(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 	})
 }
 
-// Punctuation chooses how polished text is punctuated. It is a row in the
-// Polish card after Runs on, and after Cloud model when that row is shown.
-// The label stays on the left and the mode menu on the right. The menu
-// uses the select's natural width. The control stays visible while polish is
-// off and does not change the preference then. English lists three modes.
-// Spaces remains a saved preference and a Simplified Chinese option; the
-// English menu does not show it and does not replace a saved spaces value.
+// Punctuation chooses how polished text is punctuated, the first row of
+// the Formatting card, which shows only while polishing runs. The label
+// stays on the left and the mode menu on the right, at the select's natural
+// width. English lists three modes. Spaces remains a saved preference and a
+// Simplified Chinese option; the English menu does not show it and does not
+// replace a saved spaces value.
 func Punctuation(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 	messages := store.Copy()
 	modes := []runtime.Punctuation{runtime.PunctuationSmart, runtime.PunctuationFull, runtime.PunctuationOmit}
@@ -84,13 +83,8 @@ func Punctuation(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 			selected = labels[i]
 		}
 	}
-	kit.Divider(c, tokens)
 	kit.TipRow(c, tokens, messages.Text(copy.PunctuationLabel), "", func() {
-		menu := ui.Select(c.Key("punctuation"), &selected, labels).Label(messages.Text(copy.PunctuationLabel))
-		if !store.State.Preferences.Polish {
-			menu.Disabled(true)
-		}
-		if menu.Changed() && store.State.Preferences.Polish && selected != "" {
+		if ui.Select(c.Key("punctuation"), &selected, labels).Label(messages.Text(copy.PunctuationLabel)).Changed() && selected != "" {
 			for i, label := range labels {
 				if label == selected {
 					mode := modes[i]
