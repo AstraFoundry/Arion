@@ -1,5 +1,5 @@
 import { createHash, createPrivateKey, createPublicKey, verify } from 'node:crypto';
-import { readFileSync, readdirSync, statSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync, renameSync, statSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 
 export const releasePlatforms = ['darwin-arm64', 'windows-amd64'];
@@ -44,6 +44,28 @@ export function installerName(config, platform) {
   return platform.startsWith('darwin-') ? `${config.name} ${config.version} ${arch}.dmg` : `${config.name}-${config.version}-windows-x64-setup.exe`;
 }
 
+export function archiveName(config, platform) {
+  if (!releasePlatforms.includes(platform)) throw new Error(`Unsupported release platform: ${platform}`);
+  const label = platform === 'windows-amd64' ? 'windows-x64' : platform;
+  return `${config.name.toLowerCase()}-${config.version}-${label}.tar.gz`;
+}
+
+// MyGo signs archive bytes, so renaming and updating its URL preserve the signature.
+export function renameWindowsUpdateArchive(directory, config) {
+  const platform = 'windows-amd64';
+  const original = `${config.name.toLowerCase()}-${config.version}-${platform}.tar.gz`;
+  const source = path.join(directory, original);
+  // Unsigned preview builds do not produce update archives.
+  if (!existsSync(source)) return;
+  const manifestPath = path.join(directory, `update-${platform}.json`);
+  const manifest = JSON.parse(readFileSync(manifestPath, 'utf8'));
+  if (manifest.version !== config.version || manifest.url !== `${config.updates.url}/${original}`) throw new Error('Unexpected Windows update manifest before archive rename');
+  const name = archiveName(config, platform);
+  renameSync(source, path.join(directory, name));
+  manifest.url = `${config.updates.url}/${name}`;
+  writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
+}
+
 function requireFile(directory, name) {
   const file = path.join(directory, name);
   const info = statSync(file);
@@ -62,8 +84,7 @@ export function platformAssets(directory, config, platform, signed = true) {
   if (manifest.version !== config.version) throw new Error(`Wrong update version for ${platform}`);
   const key = publicKey(config.updates.publicKey);
   const prefix = `${config.updates.url}/`;
-  const archiveName = `${config.name.toLowerCase()}-${config.version}-${platform}.tar.gz`;
-  if (manifest.url !== `${prefix}${archiveName}`) throw new Error(`Wrong update archive URL for ${platform}`);
+  if (manifest.url !== `${prefix}${archiveName(config, platform)}`) throw new Error(`Wrong update archive URL for ${platform}`);
   for (const asset of [manifest, ...(manifest.deltas ?? [])]) {
     if (!asset.url.startsWith(prefix)) throw new Error(`Wrong update origin for ${platform}`);
     const fileName = asset.url.slice(prefix.length);

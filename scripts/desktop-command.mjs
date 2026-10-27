@@ -7,7 +7,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { inspectIMEProvisioning } from './lib/ime-provisioning.mjs';
 import { prepareCenterBuild } from './lib/center-profile.mjs';
-import { installerName } from './lib/release.mjs';
+import { installerName, renameWindowsUpdateArchive } from './lib/release.mjs';
 import { macosSigningSettings, requireIMEProvisioningSettings, prepareMacOSSigning, stripAppleCredentials } from './lib/desktop-signing.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -61,6 +61,7 @@ try {
     const output = path.join(desktop, config.out, platform);
     // MyGo uses Go architecture names; expose the familiar Windows x64 label.
     renameSync(path.join(output, `${config.name} Setup ${config.version} amd64.exe`), path.join(output, installerName(config, platform)));
+    renameWindowsUpdateArchive(output, config);
   }
   if (operation === 'build') execFileSync(process.execPath, [path.join(root, 'scripts/verify-desktop-package.mjs')], { cwd: root, env, stdio: 'inherit' });
 } finally {

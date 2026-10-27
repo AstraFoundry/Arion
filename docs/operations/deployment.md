@@ -86,7 +86,7 @@ The current profile-bearing macOS arm64 canonical build completes Developer ID s
 
 ## Releases and updates
 
-Windows installers use `Arion-<version>-windows-x64-setup.exe`. The shared build entry point renames MyGo's generated installer before verification and release collection; staging, checksums and GitHub downloads use the same name. The x64 label covers both Intel and AMD processors. Internal platform keys, signed update archives and manifests retain `windows-amd64` for updater compatibility. Existing published assets keep their original names.
+Windows installers use `Arion-<version>-windows-x64-setup.exe`, and update archives use `arion-<version>-windows-x64.tar.gz`. The shared build entry point renames MyGo's generated files and updates the archive URL in its manifest before verification and release collection; staging, checksums and GitHub downloads use the same names. Archive bytes and their Ed25519 signatures remain unchanged. The x64 label covers both Intel and AMD processors. Internal platform keys, manifest names (`update-windows-amd64.json`) and delta names retain `windows-amd64`; previous-version URLs remain intact. Existing published assets keep their original names. The update client follows the manifest URL, and the center redirects the requested filename to the corresponding bucket object.
 
 The app checks the Arion center's `stable` channel, or `beta` with **Allow beta updates** on, at `https://api.arion.astrafoundry.si/v1/updates` (`desktop.json` `updates.url`, [ADR 019](../decisions/019-center-update-channels.md)); no client request reaches the GitHub API. With `MYGO_UPDATER_PRIVATE_KEY` set, `mygo build` also writes the signed update archive and `update-<os>-<arch>.json`, whose URLs point at the center.
 
