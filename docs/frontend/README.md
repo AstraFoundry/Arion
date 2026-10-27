@@ -32,6 +32,7 @@ Views read `runtime.State` and request `runtime.Actions`; the composition root m
 - [`ui-patterns.md`](ui-patterns.md) — semantic styling, no hardcoded copy, no redundant copy.
 - [`design-system.md`](design-system.md) — Sunbeam tokens, coss-anatomy primitives, elevation and illustration rules.
 - [`site.md`](site.md) — the `apps/site` marketing site: routing, copy catalogs, links, static-only rules.
+- [`blog.md`](blog.md) — the site blog: writing posts, Markdown, embeds and lazy media.
 - [`../quality/agent-skills.md`](../quality/agent-skills.md) — Agent Skills for UI craft, motion, and anti-slop.
 
 ## Quick start

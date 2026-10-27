@@ -22,6 +22,7 @@
   },
   "nav": {
     "label": "Main",
+    "blog": "Blog",
     "privacy": "Privacy",
     "selfHosting": "Self-hosting",
     "openSource": "Open source",
@@ -152,6 +153,24 @@
     "unavailable": "Not available yet",
     "checksum": "SHA-256 {sum}",
     "failed": "Release details could not be loaded. The download buttons still work."
+  },
+  "blog": {
+    "title": "Blog",
+    "lead": "Notes from the people building Arion: what changed, how it works, and why it stays on your device.",
+    "allPosts": "All posts",
+    "morePosts": "More from the blog",
+    "contents": "Contents",
+    "categories": {
+      "announcement": "Announcement",
+      "product": "Product",
+      "engineering": "Engineering"
+    },
+    "headingLink": "Link to this section",
+    "copyCode": "Copy code",
+    "copied": "Copied",
+    "footnotes": "Footnotes",
+    "footnoteBack": "Back to reference {index}",
+    "embedLoad": "Load content from {host}"
   },
   "privacyPage": {
     "title": "Privacy and encryption",

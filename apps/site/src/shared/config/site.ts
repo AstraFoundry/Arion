@@ -32,7 +32,11 @@ export const routes = {
   privacy: "/privacy/",
   selfHosting: "/self-hosting/",
   credits: "/credits/",
+  blog: "/blog/",
 } as const;
+
+/** A blog post's route; `slug` is its directory under `content/blog`. */
+export const blogPostRoute = (slug: string) => `${routes.blog}${slug}/`;
 
 /** In-page anchors on the home page. */
 export const sections = {

@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="und">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!--
+      Blog embed for "Where your dictation goes": press ⌥ Space (or click) to
+      toggle a pretend dictation. Language-neutral (keys and shapes only), so
+      every translation of the post embeds the same file. Nothing is recorded.
+      Loaded in a sandboxed frame; it follows the system color scheme.
+    -->
+    <style>
+      :root {
+        color-scheme: light dark;
+        --stage: #efebe5;
+        --pill: #1a1815;
+        --pill-edge: #34302a;
+        --ink: #f3efe8;
+        --muted: #a39d93;
+        --key: #2a2723;
+        --red: #e5484d;
+        --green: #46a758;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --stage: #15130f;
+        }
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+      }
+      body {
+        display: grid;
+        place-items: center;
+        background: var(--stage);
+        font: 14px/1 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+        cursor: pointer;
+        user-select: none;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .pill {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        height: 44px;
+        padding: 0 16px;
+        border: 1px solid var(--pill-edge);
+        border-radius: 999px;
+        background: var(--pill);
+        color: var(--ink);
+        box-shadow: 0 4px 0 rgb(0 0 0 / 0.04), 0 20px 48px -8px rgb(0 0 0 / 0.3);
+        transition: width 280ms cubic-bezier(0.22, 1, 0.36, 1);
+        width: 132px;
+        overflow: hidden;
+      }
+      body[data-state="listening"] .pill {
+        width: 220px;
+      }
+      .dot {
+        flex: none;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--muted);
+        transition: background-color 200ms;
+      }
+      body[data-state="listening"] .dot {
+        background: var(--red);
+        animation: pulse 1.2s ease-in-out infinite;
+      }
+      body[data-state="done"] .dot {
+        background: var(--green);
+      }
+      .bars {
+        display: flex;
+        align-items: center;
+        gap: 3px;
+        height: 20px;
+        flex: 1;
+      }
+      .bars span {
+        width: 3px;
+        height: 3px;
+        border-radius: 3px;
+        background: var(--ink);
+        opacity: 0.35;
+      }
+      body[data-state="listening"] .bars span {
+        opacity: 1;
+        animation: level 1.1s ease-in-out infinite;
+      }
+      kbd {
+        flex: none;
+        padding: 3px 6px;
+        border: 1px solid var(--pill-edge);
+        border-radius: 6px;
+        background: var(--key);
+        color: var(--muted);
+        font: inherit;
+        font-size: 12px;
+        transition: color 150ms, transform 150ms;
+      }
+      body.pressed kbd {
+        color: var(--ink);
+        transform: translateY(1px);
+      }
+      @keyframes level {
+        0%, 100% { height: 3px; }
+        30% { height: var(--h); }
+        60% { height: 5px; }
+        80% { height: calc(var(--h) * 0.7); }
+      }
+      @keyframes pulse {
+        50% { opacity: 0.45; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .pill { transition: none; }
+        body[data-state="listening"] .bars span { animation: none; height: var(--h); }
+        body[data-state="listening"] .dot { animation: none; }
+      }
+    </style>
+  </head>
+  <body data-state="idle" role="button" tabindex="0" aria-pressed="false">
+    <div class="pill">
+      <span class="dot"></span>
+      <span class="bars"></span>
+      <kbd>⌥</kbd><kbd>Space</kbd>
+    </div>
+    <script>
+      const heights = [6, 10, 16, 12, 20, 14, 9, 17, 11, 7, 5];
+      const bars = document.querySelector(".bars");
+      heights.forEach((height, index) => {
+        const bar = document.createElement("span");
+        bar.style.setProperty("--h", `${height}px`);
+        bar.style.animationDelay = `${index * 60}ms`;
+        bars.append(bar);
+      });
+
+      let doneTimer;
+      function toggle() {
+        const listening = document.body.dataset.state === "listening";
+        document.body.dataset.state = listening ? "done" : "listening";
+        document.body.setAttribute("aria-pressed", String(!listening));
+        document.body.classList.add("pressed");
+        setTimeout(() => document.body.classList.remove("pressed"), 160);
+        clearTimeout(doneTimer);
+        if (listening) doneTimer = setTimeout(() => (document.body.dataset.state = "idle"), 1400);
+      }
+
+      document.addEventListener("click", toggle);
+      document.addEventListener("keydown", (event) => {
+        const shortcut = event.altKey && event.code === "Space";
+        const activate = event.target === document.body && (event.key === "Enter" || event.key === " ");
+        if (shortcut || activate) {
+          event.preventDefault();
+          toggle();
+        }
+      });
+    </script>
+  </body>
+</html>

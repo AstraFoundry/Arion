@@ -1,0 +1,524 @@
+/*
+ * Blog post typography. A post is one grid: running text sits in a ~65
+ * character column, `.post-wide` children (figures, video, embeds, the cover)
+ * break out to a wider column, and the side tracks keep the page gutter.
+ * Tokens come from sunbeam.css, so light and dark need no rules here except
+ * for Shiki's per-token colors.
+ */
+
+.post-grid {
+  --post-measure: 40rem;
+  --post-breakout: 8rem;
+  --post-gutter: 1.25rem;
+  --post-font: var(--font-display);
+
+  display: grid;
+  grid-template-columns:
+    [full-start] minmax(var(--post-gutter), 1fr)
+    [wide-start] minmax(0, var(--post-breakout))
+    [content-start] min(var(--post-measure), 100% - 2 * var(--post-gutter))
+    [content-end] minmax(0, var(--post-breakout))
+    [wide-end] minmax(var(--post-gutter), 1fr)
+    [full-end];
+}
+
+@media (min-width: 640px) {
+  .post-grid {
+    --post-gutter: 2rem;
+  }
+}
+
+/* Chinese and Japanese read better in their sans faces at body size. */
+html:is(:lang(zh-CN), :lang(ja)) .post-grid {
+  --post-font: var(--font-sans);
+}
+
+.post-grid > *,
+.post-prose > * {
+  grid-column: content;
+  min-width: 0;
+}
+
+.post-grid > .post-wide,
+.post-prose > .post-wide {
+  grid-column: wide;
+}
+
+/* The body's children join the article grid, so they can break out too. */
+.post-prose {
+  display: contents;
+}
+
+/* Header ------------------------------------------------------------------ */
+
+.post-summary {
+  font-family: var(--post-font);
+  font-size: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem);
+  line-height: 1.45;
+  color: var(--muted-foreground);
+  text-wrap: pretty;
+}
+
+.post-cover {
+  margin-top: 3.5rem;
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-2xl);
+  outline: 1px solid var(--image-outline);
+  outline-offset: -1px;
+  background-color: var(--muted);
+}
+
+/* Contents ---------------------------------------------------------------- */
+
+.post-toc {
+  margin-top: 3.5rem;
+  padding-block: 1.25rem;
+  border-block: 1px solid var(--border);
+  font-size: 0.9375rem;
+}
+
+.post-toc h2 {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--muted-foreground);
+}
+
+.post-toc ol {
+  margin-top: 0.75rem;
+  display: grid;
+  gap: 0.375rem;
+  list-style: decimal-leading-zero inside;
+}
+
+.post-toc li::marker {
+  color: var(--faint);
+  font-variant-numeric: tabular-nums;
+}
+
+.post-toc a {
+  color: var(--foreground);
+  text-decoration: none;
+  transition: color 150ms var(--ease-out);
+}
+
+.post-toc a:hover {
+  color: var(--muted-foreground);
+}
+
+/* Running text ------------------------------------------------------------ */
+
+.post-prose > :first-child {
+  margin-top: 3.5rem;
+}
+
+.post-prose > * {
+  font-family: var(--post-font);
+  font-size: clamp(1.0625rem, 1rem + 0.3vw, 1.1875rem);
+  line-height: 1.7;
+  font-weight: 400;
+  margin-top: 1.4em;
+  text-wrap: pretty;
+  font-variant-numeric: proportional-nums oldstyle-nums;
+}
+
+html:is(:lang(zh-CN), :lang(ja)) .post-prose > * {
+  line-height: 1.85;
+  font-variant-numeric: normal;
+}
+
+.post-prose strong {
+  font-weight: 600;
+}
+
+.post-prose a {
+  text-decoration: underline;
+  text-decoration-color: color-mix(in oklab, var(--foreground) 30%, transparent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  transition: text-decoration-color 150ms var(--ease-out);
+}
+
+.post-prose a:hover {
+  text-decoration-color: var(--foreground);
+}
+
+.post-prose > :is(h2, h3) {
+  font-family: var(--font-display);
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+  scroll-margin-top: 6rem;
+}
+
+.post-prose > h2 {
+  margin-top: 2.6em;
+  font-size: clamp(1.5rem, 1.3rem + 0.8vw, 1.875rem);
+}
+
+.post-prose > h3 {
+  margin-top: 2.2em;
+  font-size: clamp(1.1875rem, 1.1rem + 0.4vw, 1.375rem);
+}
+
+.post-prose > :is(h2, h3) + * {
+  margin-top: 0.75em;
+}
+
+.post-anchor {
+  margin-left: 0.35em;
+  color: var(--faint);
+  opacity: 0;
+  text-decoration: none !important;
+  transition: opacity 150ms var(--ease-out), color 150ms var(--ease-out);
+}
+
+:is(h2, h3):hover > .post-anchor,
+.post-anchor:focus-visible {
+  opacity: 1;
+}
+
+.post-anchor:hover {
+  color: var(--foreground);
+}
+
+.post-prose > :is(ul, ol) {
+  padding-left: 1.4em;
+}
+
+.post-prose ul {
+  list-style: disc;
+}
+
+.post-prose ol {
+  list-style: decimal;
+}
+
+.post-prose li + li,
+.post-prose li > :is(ul, ol) {
+  margin-top: 0.5em;
+}
+
+.post-prose li::marker {
+  color: var(--muted-foreground);
+}
+
+/* GFM task lists */
+.post-prose li:has(> input[type="checkbox"]) {
+  list-style: none;
+  margin-left: -1.4em;
+}
+
+.post-prose input[type="checkbox"] {
+  margin-right: 0.5em;
+  accent-color: var(--primary);
+  translate: 0 0.1em;
+}
+
+.post-prose > blockquote {
+  padding-left: 1.25em;
+  border-left: 2px solid var(--border);
+  color: var(--muted-foreground);
+  font-style: italic;
+}
+
+html:is(:lang(zh-CN), :lang(ja)) .post-prose > blockquote {
+  font-style: normal;
+}
+
+.post-prose > hr {
+  margin-block: 3em;
+  border: 0;
+  border-top: 1px solid var(--border);
+}
+
+.post-prose :not(pre) > code {
+  padding: 0.1em 0.35em;
+  border-radius: var(--radius-sm);
+  background-color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+}
+
+.post-prose kbd {
+  padding: 0.05em 0.4em;
+  border: 1px solid var(--border);
+  border-bottom-width: 2px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-sans);
+  font-size: 0.85em;
+}
+
+/* Media ------------------------------------------------------------------- */
+
+.post-prose > figure,
+.post-media {
+  margin-top: 2.75em;
+  margin-bottom: 0.5em;
+}
+
+.post-prose > figure + *,
+.post-media + * {
+  margin-top: 2.25em;
+}
+
+.post-prose figure > img,
+.post-media video {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-xl);
+  outline: 1px solid var(--image-outline);
+  outline-offset: -1px;
+  background-color: var(--muted);
+}
+
+.post-prose figcaption {
+  margin-top: 0.875rem;
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--muted-foreground);
+  text-wrap: pretty;
+}
+
+/* A lone image keeps the text column; a figure of it may stay narrow too. */
+.post-prose > p img {
+  display: inline-block;
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius-md);
+}
+
+.post-image {
+  transition: opacity 500ms var(--ease-out);
+}
+
+.post-image:not([data-loaded]) {
+  opacity: 0;
+}
+
+.post-embed {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-xl);
+  outline: 1px solid var(--border);
+  outline-offset: -1px;
+  background-color: var(--card);
+}
+
+.post-embed iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.post-embed-load {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 1.5rem;
+  background-color: var(--muted);
+  font-family: var(--font-sans);
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 150ms var(--ease-out);
+}
+
+.post-embed-load:hover {
+  background-color: color-mix(in oklab, var(--muted) 85%, var(--foreground));
+}
+
+.post-embed-title {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  text-wrap: balance;
+}
+
+.post-embed-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: 2.25rem;
+  padding-inline: 1rem;
+  border-radius: 999px;
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: scale 150ms var(--ease-out);
+}
+
+.post-embed-load:active .post-embed-action {
+  scale: 0.97;
+}
+
+.post-embed-action svg {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+.post-pill-stage {
+  display: grid;
+  place-items: center;
+  min-height: 12rem;
+  padding: 2rem 1.25rem;
+  border-radius: var(--radius-xl);
+  background-color: var(--muted);
+}
+
+.post-note {
+  padding: 1.125rem 1.375rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  background-color: var(--card);
+  font-family: var(--font-sans);
+  font-size: 0.9375rem !important;
+  line-height: 1.6 !important;
+}
+
+.post-note > * + * {
+  margin-top: 0.75em;
+}
+
+/* Code -------------------------------------------------------------------- */
+
+.post-code {
+  position: relative;
+}
+
+.post-code pre {
+  overflow-x: auto;
+  padding: 1.125rem 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  background-color: var(--card);
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  line-height: 1.7;
+  font-variant-numeric: normal;
+  tab-size: 2;
+}
+
+.post-code pre span {
+  color: var(--shiki-light, inherit);
+}
+
+.dark .post-code pre span {
+  color: var(--shiki-dark, inherit);
+}
+
+.post-code-copy {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: var(--radius-md);
+  background-color: var(--card);
+  color: var(--muted-foreground);
+  opacity: 0;
+  transition:
+    opacity 150ms var(--ease-out),
+    color 150ms var(--ease-out),
+    background-color 150ms var(--ease-out);
+}
+
+.post-code:hover .post-code-copy,
+.post-code-copy:focus-visible {
+  opacity: 1;
+}
+
+@media (hover: none) {
+  .post-code-copy {
+    opacity: 1;
+  }
+}
+
+.post-code-copy:hover {
+  background-color: var(--muted);
+  color: var(--foreground);
+}
+
+.post-code-copy svg {
+  width: 0.9375rem;
+  height: 0.9375rem;
+}
+
+/* Tables ------------------------------------------------------------------ */
+
+.post-table {
+  overflow-x: auto;
+  font-family: var(--font-sans) !important;
+  font-size: 0.9375rem !important;
+  line-height: 1.55 !important;
+}
+
+.post-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.post-table th {
+  font-weight: 500;
+  text-align: left;
+  color: var(--muted-foreground);
+  font-size: 0.8125rem;
+}
+
+.post-table :is(th, td) {
+  padding: 0.7rem 1rem 0.7rem 0;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+
+.post-table :is(th, td):last-child {
+  padding-right: 0;
+}
+
+/* Footnotes --------------------------------------------------------------- */
+
+.post-prose > section[data-footnotes] {
+  margin-top: 4rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--muted-foreground);
+}
+
+.post-footnotes-label {
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+
+.post-prose section[data-footnotes] ol {
+  margin-top: 0.75rem;
+  padding-left: 1.25em;
+}
+
+.post-prose sup {
+  font-family: var(--font-sans);
+  font-size: 0.7em;
+  line-height: 0;
+}
+
+.post-prose sup a,
+.post-prose [data-footnote-backref] {
+  text-decoration: none;
+  color: var(--muted-foreground);
+}
+
+.post-prose :is(h2, h3, li, sup) {
+  scroll-margin-top: 6rem;
+}

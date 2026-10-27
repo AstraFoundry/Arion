@@ -15,6 +15,10 @@ Run from the repository root with the pinned pnpm (`make install` first):
 
 `pnpm --filter @arion/site dev` starts the development server on `127.0.0.1`.
 
+## Blog
+
+Posts are Markdown in `content/blog/<slug>/{en,zh,ja}.md`, with their media in `public/blog/<slug>/`. Front matter, embeds and lazy media are described in the [blog guide](../../docs/frontend/blog.md).
+
 ## Configuration
 
 Three build-time variables, inlined into the bundle (`src/shared/config/env.ts`). The build fails if any is missing or is not a bare http(s) origin.

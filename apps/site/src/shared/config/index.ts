@@ -3,6 +3,7 @@ export { publicEnv } from "./env";
 export { parsePublicEnv, type PublicEnv, PublicEnvError } from "./env-schema";
 export {
   anchor,
+  blogPostRoute,
   buildCommands,
   centerDownloadUrl,
   centerReleaseUrl,
