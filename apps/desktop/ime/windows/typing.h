@@ -36,7 +36,7 @@ class Typing {
     size_t pageSize=9;
     int textSize=16;
     CandidatePalette palette;
-    bool contextRanking=true,settingsChanged=false;
+    bool settingsChanged=false;
     bool emojiSuggestions=true,emojiInComposition=false;
     std::wstring optionsPath;
     std::function<bool(TfEditCookie,ITfRange*)> safe;
@@ -61,7 +61,7 @@ class Typing {
         *emoji=metadata.emoji!=0; return 1;
     }
     bool buildMenu() {
-        return arion_menu_build_typed(&menu,runtime.api(),session,pageSize,contextRanking?rank:nullptr,this,candidateKind,this)!=0 && runtime.ready();
+        return arion_menu_build_typed(&menu,runtime.api(),session,pageSize,rank,this,candidateKind,this)!=0 && runtime.ready();
     }
     bool select(size_t index) {
         if (index>=menu.count || !arion_pinyin_select(runtime.api(),session,menu.indices[index],0)) return false;
@@ -216,7 +216,7 @@ private:
                 if (SUCCEEDED(hr)) hr=composition->EndComposition(cookie);
                 if (SUCCEEDED(hr)) {
                     delivered=true;
-                    if (contextRanking && !emojiInComposition) learn(utf8(committed),previousContext(),runtime.generation());
+                    if (!emojiInComposition) learn(utf8(committed),previousContext(),runtime.generation());
                     previousCommit=emojiInComposition?std::string{}:utf8(committed); previousTime=GetTickCount64();
                     emojiInComposition=false;
                     composition->Release(); composition=nullptr; original.clear(); lastText.clear();
@@ -255,8 +255,8 @@ public:
     bool isEnglishPunctuation() const { return englishPunctuation; }
     void options(const std::wstring &path) { optionsPath=path; KeyboardOptions value; if (readKeyboardOptions(path,value)) { fullWidth=value.fullWidth; englishPunctuation=value.englishPunctuation; } else modeFailure=nativeCopy(NativeCopy::OptionsFailed); }
     void configure(const KeyboardSettings &settings) {
-        settingsChanged=settingsChanged || pageSize!=settings.pageSize || textSize!=settings.textSize || contextRanking!=settings.contextRanking || emojiSuggestions!=settings.emojiSuggestions || memcmp(&palette,&settings.palette,sizeof(palette))!=0;
-        pageSize=settings.pageSize; textSize=settings.textSize; palette=settings.palette; contextRanking=settings.contextRanking;
+        settingsChanged=settingsChanged || pageSize!=settings.pageSize || textSize!=settings.textSize || emojiSuggestions!=settings.emojiSuggestions || memcmp(&palette,&settings.palette,sizeof(palette))!=0;
+        pageSize=settings.pageSize; textSize=settings.textSize; palette=settings.palette;
         emojiSuggestions=settings.emojiSuggestions;
     }
     void attach(ITfContext *value) { if (value==context) return; invalidate(); healthy=true; previousCommit.clear(); if (context) context->Release(); context=value; if (context) context->AddRef(); }
