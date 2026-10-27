@@ -40,6 +40,7 @@ Write an ADR when the decision:
 - [026: Spoken self-repair collapses before polish](026-spoken-self-repair.md) — `speech-spans-v3` drops a clear revision to the final span; `cleanup-rules-v2` keeps the speaker's wording and names an ASR mishear fix a correction.
 - [026: Account-targeted product notifications](026-account-product-notifications.md) — signed-in OS-authorized running reception/catchup, native submission receipts and current-server action authorization.
 - [027: Speech & Polish settings and explicit cloud provider use](027-speech-polish-settings.md) — the section follows speech to text; cloud setup has two levels, subscriptions apart from API keys, an explicit Use, and a fast-tier default model.
+- [028: Separate Windows keyboard and voice host admission](028-windows-keyboard-host-admission.md) — elevated local typing with unchanged ordinary voice IPC.
 - [`adr-template.md`](adr-template.md) — template for new ADRs.
 
 ## Naming

@@ -33,6 +33,12 @@ they do not authenticate arbitrary processes running as the same user.
 
 ## Shared keyboard adapter
 
+`host_security.h` separates elevated-capable local keyboard admission from
+unelevated voice transport. See [ADR 028](../../../../docs/decisions/028-windows-keyboard-host-admission.md).
+`node scripts/test-windows-keyboard-host.mjs` checks actual tokens, owned ACP
+conversion/mode switching, private options and elevated voice refusal without
+changing system registration.
+
 `KeyboardClient` verifies the complete sibling `keyboard/runtime.json` closure
 against the hash compiled into the service before loading `ArionKeyboard.dll`
 with an absolute path and restricted dependency search. The uniquely named
@@ -49,11 +55,18 @@ rollback stay in the shared engine. The native surface consumes its ranked
 engine indices, including the six-row expanded menu, and publishes a TSF
 candidate UI element with that exact ordering.
 
+Chinese text uses Microsoft YaHei UI with regular ClearType, while Emoji keeps
+its separate system color-font renderer. The candidate panel anchors to a
+backward-gravity range at the conversion start through typing, caret edits,
+paging and partial selection. Completion, cancellation and invalidation
+release the anchor for the next conversion.
+
 Candidate data preparation runs only in the write edit session. Geometry is
-also refreshed after `ITfTextLayoutSink::OnLayoutChange` through an asynchronous
+queried only in the queued read refresh after a write, and is refreshed after `ITfTextLayoutSink::OnLayoutChange` through an asynchronous
 `TF_ES_READ` session. Browser layout may return `TS_E_NOLAYOUT` immediately
-after `SetText`; the native surface stays hidden until the current caret has
-a fresh, unclipped rectangle. No previous rectangle is reused. Queued reads
+after `SetText`; deferring the read avoids an intermediate hide/show caused
+by querying inside that write. A failed read still hides the surface until the
+current anchor has a fresh, unclipped rectangle. No previous rectangle is reused. Queued reads
 are coalesced and bound to the current context, activation and composition
 revision; cancellation, focus loss and user edits cannot revive old candidates.
 The read path never processes an engine key, changes engine selection, writes

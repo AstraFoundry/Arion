@@ -42,6 +42,7 @@ import (
 	uiapp "arion.local/desktop/ui/app"
 	"arion.local/desktop/ui/shared/copy"
 	arion "arion.local/desktop/ui/shared/runtime"
+	"arion.local/desktop/ui/shared/typography"
 	"arion.local/models"
 	"github.com/egoist/mygo"
 	mygoaudio "github.com/egoist/mygo/audio"
@@ -167,6 +168,9 @@ type App struct {
 
 // New builds the application without starting the event loop.
 func New(opts Options) (*App, error) {
+	if err := typography.Register(); err != nil {
+		return nil, err
+	}
 	profile, err := center.Load()
 	if err != nil {
 		return nil, err

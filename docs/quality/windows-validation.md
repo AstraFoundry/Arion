@@ -219,3 +219,51 @@ The clean installed-browser run passes all 20 candidate samples from `n` through
 Local evidence: `.workspace/tests/windows-tsf-keyboard/run-wEUq75/report.json`, `.workspace/tests/windows-tsf-loader/run-yJmsSp/report.json`, `.workspace/tests/windows-ime-registration/run-XNmcfj/report.json`, `.workspace/tests/windows-ime-client/run-CMfrsl/report.json`, and `.workspace/windows-tsf/current-defects/webview-candidate-layout-installed-final.json`. Go TSF/bridge/bootstrap tests and client race checks pass; Darwin bridge compile passes, with no fresh macOS native run.
 
 After migration the existing ChatGPT PID4748 still mapped the pre-loader `26213df3...` voice-only DLL. Its already instantiated objects cannot obtain loader behavior through registry updates; that process was preserved. The installed-browser result does not establish repaired interaction in that already-open application. Ordinary future core handover, the one-time direct-DLL migration boundary, and bootstrap-byte maintenance are separate claims. See [the runbook](../operations/windows-input-method.md).
+
+## Elevated keyboard host regression
+
+[ADR 028](../decisions/028-windows-keyboard-host-admission.md) separates local
+keyboard activation from ordinary voice IPC. On the UAC-disabled development
+host, the current token is elevated with high integrity. The targeted command
+`node scripts/test-windows-keyboard-host.mjs --runtime <installed-keyboard-directory>`
+passes with the installed, hash-validated Rime/keyboard closure and MinGW GCC
+14.2.0. It compiles both the production service and the isolated manual-dispatch
+service. The final local report is
+`.workspace/tests/windows-keyboard-host/run-C4jytf/report.json`.
+
+The check passes real token refusal/acceptance; actual Pinyin candidates and
+`你好` commit in an owned ACP text store; Shift, Shift+Space and menu switching;
+private mode persistence; concurrent option updates and failed-write, unsafe-ACL,
+hardlink and reparse refusal; password/read-only refusal; and zero voice pipe
+connections with the elevated voice menu disabled (KBD-A11). Earlier failed
+attempts are retained beside the report. New profile and mode-file ownership is
+explicitly the current user, rather than the elevated token's default group.
+
+This is manual COM key dispatch using synthetic owned text and a private test
+profile. It does not install the changed source, verify real system Shift
+handling in Codex/other editors, or exercise microphone recognition. The complete
+`pnpm keyboard:windows:check` suite, ordinary-account runtime checks and installed
+third-party editor acceptance remain separate. No UAC setting or installed
+input-method registration was changed.
+
+### Frozen loader package compatibility
+
+The production build pins the stable loader bytes and its GCC 14.2.0 UCRT toolchain separately from the keyboard C++ ABI. The local loader reproduced the existing protected installation hash `ef8c8eba...` exactly; the MSVCRT build had produced different bytes and caused the maintenance helper to reject the old registration with `0x80096010`. The corrected packaged helper successfully queried the existing enabled registration without changing it. Loader lifecycle, callback upgrade/rollback and payload removal tests passed in `.workspace/tests/windows-tsf-loader/run-yFjfEq/report.json`; the rebuilt Windows x64 installer passed package verification. Installing this corrected package and observing the actual core update remain user acceptance steps.
+
+### Windows candidate typography and stable conversion anchor
+
+An owned ACP regression reproduced four extra candidate hide/show cycles during the four continuation keys in `nihao` before the deferred-read change (`.workspace/tests/windows-keyboard-host/run-4yKIbk/report.json`, failed). After the change, `.workspace/tests/windows-keyboard-host/run-PFiiTC/report.json` passed: no extra hide transitions or write-session geometry reads, stable start coordinates through typing, Backspace, caret navigation, paging and partial selection, a fresh anchor for a new conversion, and safe hiding/recovery for clipped or missing layout. Tests ran on a separately created local desktop without switching the user's input desktop; the fixture selects/restores a plain keyboard only on its own thread to avoid an installed same-CLSID TIP interfering with manual dispatch. The disposable launcher source, binary and logs are under `.workspace/packaging/windows-elevated-keyboard/`. This does not establish real installed Codex event dispatch or visual acceptance.
+
+The native candidate-window rendering check realized Microsoft YaHei UI through GDI, verified regular ClearType, native color Emoji, all three sizes in light/dark palettes, hit identity and retained focus. Actual captures and source/binary hashes are recorded in `.workspace/packaging/windows-elevated-keyboard/candidate-rendering/report.json`.
+
+### Compact rounded Windows candidate surface
+
+The native candidate-window check passed with a rounded OS window region excluding all four corners, matching border/selection radii, measured compact cells, smaller number labels on the text baseline, exact selection identity for all nine candidates, retained keyboard focus, expanded grid, system Emoji and light/dark rendering at all three text sizes. Actual captures and source/binary hashes are in `.workspace/packaging/windows-elevated-keyboard/candidate-chrome/report.json`. The owned ACP regression `.workspace/tests/windows-keyboard-host/run-YUpkcV/report.json` passed the prior continuous-input hide/show and stable-anchor cases with the new surface. These checks do not establish installed Codex visual acceptance.
+
+### Antialiased candidate edges and vertical glyph alignment
+
+The native renderer now uses a premultiplied-alpha Direct2D surface presented through UpdateLayeredWindow; it no longer uses GDI rounded rectangles or binary window-region clipping. DirectWrite measures and renders both label and candidate text. The actual visible glyph centers for the number 1 and Chinese 的 differed by 0, 0.5 and 0 pixels at the three supported text sizes. Native pixel checks passed transparent outer corners, fractional-alpha outer edges, blended highlight edges, light/dark palettes, expanded grid, native color Emoji, exact selection identity and retained focus. Captures copy the production painter through WM_PRINTCLIENT; source/binary/capture hashes and output are recorded in .workspace/packaging/windows-elevated-keyboard/candidate-antialias/report.json. The isolated owned ACP regression passed in .workspace/tests/windows-keyboard-host/run-fmtsXU/report.json, including stable anchors and continuous-input visibility. Installed third-party editor visual acceptance remains separate.
+
+### Bundled Source Han Sans speech and candidates
+
+Windows candidate text and labels now load the original Source Han Sans SC 2.005R regular font from an immutable PE resource in the TSF core. Native checks passed its private one-family collection and refusal of missing font resources; three text sizes retained vertical glyph centers within half a pixel, antialiased edges, native color Emoji, selection identity and focus. The real MyGo speech previews and transcript render the privately registered regular/medium files. Native shaping advances matched the bundled font metrics for Latin, digits and Chinese. The UI/bootstrap suite passed (go test ./ui/... ./bootstrap), as did the focused speech/interface-language visual captures and the typography glyph check. Owned ACP behavior passed in .workspace/tests/windows-keyboard-host/run-5y6Vie/report.json. Source/binary/capture hashes and the font manifest are recorded in .workspace/packaging/windows-elevated-keyboard/source-han/report.json. These checks do not establish installed-editor acceptance or microphone inference. macOS typography was not changed.

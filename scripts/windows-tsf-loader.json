@@ -1,0 +1,9 @@
+{
+  "schema": 1,
+  "sha256": "ef8c8ebab05b394bee47218ba63fb570971a12e75d43444f75002b4b3813705f",
+  "toolchain": {
+    "name": "MinGW-w64 GCC 14.2.0 posix-seh UCRT rt_v12 rev2",
+    "url": "https://github.com/niXman/mingw-builds-binaries/releases/download/14.2.0-rt_v12-rev2/x86_64-14.2.0-release-posix-seh-ucrt-rt_v12-rev2.7z",
+    "sha256": "918732a84fc8006586be0f5909b75896ab85d5e0e9df521b4d4f9202e7debc12"
+  }
+}

@@ -6,7 +6,7 @@
 #include <functional>
 #include <string>
 #include <vector>
-#include "emoji_text.h"
+#include "candidate_painter.h"
 
 struct NativeCandidate {
     std::wstring text;
@@ -33,7 +33,7 @@ struct CandidatePalette {
 class CandidateWindow {
     HWND window=nullptr;
     HINSTANCE module;
-    HFONT font=nullptr;
+    int numberWidth=0;
     UINT dpi=96;
     std::vector<NativeCandidate> items;
     std::vector<RECT> rectangles;
@@ -46,12 +46,18 @@ class CandidateWindow {
     int fontSize=16;
     CandidatePalette palette;
     WindowsEmojiFont emojiFont;
-    WindowsEmojiPainter emojiPainter;
+    CandidatePainter painter;
     std::vector<IDWriteTextLayout*> emojiLayouts;
     HRESULT renderError=S_OK;
     std::function<void(const CandidateAction&)> action;
 
     int scale(int value) const { return MulDiv(value,static_cast<int>(dpi),96); }
+    RECT textBounds(const RECT &cell) const {
+        RECT text=cell;
+        text.left+=scale(6)+(numbered?numberWidth+scale(3):0);
+        text.right-=scale(6);
+        return text;
+    }
     void clearLayouts() { for (auto *layout:emojiLayouts) if (layout) layout->Release(); emojiLayouts.clear(); }
     static LRESULT CALLBACK dispatch(HWND handle,UINT message,WPARAM wp,LPARAM lp) {
         auto self=reinterpret_cast<CandidateWindow*>(GetWindowLongPtrW(handle,GWLP_USERDATA));
@@ -59,7 +65,8 @@ class CandidateWindow {
         if (!self) return DefWindowProcW(handle,message,wp,lp);
         if (message==WM_MOUSEACTIVATE) return MA_NOACTIVATE;
         if (message==WM_ERASEBKGND) return 1;
-        if (message==WM_PAINT) { self->paint(); return 0; }
+        if (message==WM_PAINT) { PAINTSTRUCT paint{}; BeginPaint(handle,&paint); self->paint(); EndPaint(handle,&paint); return 0; }
+        if (message==WM_PRINTCLIENT) { self->paint(reinterpret_cast<HDC>(wp)); return 0; }
         if (message==WM_LBUTTONUP) {
             if (!self->numbered) return 0;
             POINT point{GET_X_LPARAM(lp),GET_Y_LPARAM(lp)};
@@ -73,43 +80,32 @@ class CandidateWindow {
         }
         return DefWindowProcW(handle,message,wp,lp);
     }
-    void paint() {
-        PAINTSTRUCT paint{}; HDC destination=BeginPaint(window,&paint);
+    void paint(HDC copy=nullptr) {
         RECT area{}; GetClientRect(window,&area);
-        HDC dc=CreateCompatibleDC(destination); HBITMAP bitmap=CreateCompatibleBitmap(destination,std::max(1L,area.right),std::max(1L,area.bottom));
-        auto priorBitmap=SelectObject(dc,bitmap); auto priorFont=SelectObject(dc,font);
-        SetBkMode(dc,TRANSPARENT);
-        HBRUSH surface=CreateSolidBrush(palette.surface),selection=CreateSolidBrush(palette.selected),border=CreateSolidBrush(palette.border);
-        FillRect(dc,&area,surface); FrameRect(dc,&area,border);
-        for (size_t i=0;i<items.size();++i) {
-            RECT cell=rectangles[i];
-            if (i==highlighted) {
-                HGDIOBJ oldBrush=SelectObject(dc,selection),oldPen=SelectObject(dc,GetStockObject(NULL_PEN));
-                RoundRect(dc,cell.left,cell.top,cell.right,cell.bottom,scale(12),scale(12)); SelectObject(dc,oldPen); SelectObject(dc,oldBrush);
+        renderError=painter.begin(area);
+        if (FAILED(renderError)) { ShowWindow(window,SW_HIDE); return; }
+        painter.rounded(area,static_cast<FLOAT>(scale(10)),palette.surface,palette.border,static_cast<FLOAT>(dpi)/96);
+        for (size_t i=0;i<items.size() && SUCCEEDED(renderError);++i) {
+            const RECT &cell=rectangles[i];
+            if (i==highlighted) painter.rounded(cell,static_cast<FLOAT>(scale(6)),palette.selected,palette.selected);
+            if (numbered) {
+                RECT number=cell; number.left+=scale(6); number.right=number.left+numberWidth;
+                renderError=painter.text(std::to_wstring(i%columns+1),static_cast<FLOAT>(scale(std::max(11,fontSize-3))),number,i==highlighted?palette.selectedText:palette.muted,DWRITE_TEXT_ALIGNMENT_TRAILING);
             }
-            SetTextColor(dc,i==highlighted ? palette.selectedText : palette.muted);
-            RECT number=cell; number.left+=scale(5); number.right=number.left+(numbered?scale(16):0);
-            std::wstring label=std::to_wstring(i%columns+1); if (numbered) DrawTextW(dc,label.c_str(),static_cast<int>(label.size()),&number,DT_SINGLELINE|DT_VCENTER|DT_NOPREFIX);
-            SetTextColor(dc,i==highlighted ? palette.selectedText : palette.text);
-            RECT text=cell; text.left=number.right+scale(3); text.right-=scale(6);
-            if (!items[i].emoji) DrawTextW(dc,items[i].text.c_str(),static_cast<int>(items[i].text.size()),&text,DT_SINGLELINE|DT_VCENTER|DT_END_ELLIPSIS|DT_NOPREFIX);
+            if (SUCCEEDED(renderError)) {
+                RECT text=textBounds(cell);
+                renderError=emojiLayouts[i]?painter.layout(emojiLayouts[i],text,i==highlighted?palette.selectedText:palette.text):painter.text(items[i].text,static_cast<FLOAT>(scale(fontSize)),text,i==highlighted?palette.selectedText:palette.text);
+            }
         }
-        SetTextColor(dc,palette.muted);
-        if (hasPrevious) DrawTextW(dc,L"\u2039",1,&previous,DT_SINGLELINE|DT_CENTER|DT_VCENTER);
-        if (hasNext) DrawTextW(dc,L"\u203a",1,&next,DT_SINGLELINE|DT_CENTER|DT_VCENTER);
-        for (size_t i=0;i<items.size();++i) if (emojiLayouts[i]) {
-            RECT text=rectangles[i]; text.left+=scale(numbered?24:8); text.right-=scale(6);
-            renderError=emojiPainter.draw(dc,text,emojiLayouts[i],i==highlighted?palette.selectedText:palette.text,i==highlighted?palette.selected:palette.surface);
-            if (FAILED(renderError)) break;
-        }
-        if (SUCCEEDED(renderError)) BitBlt(destination,0,0,area.right,area.bottom,dc,0,0,SRCCOPY);
-        else ShowWindow(window,SW_HIDE);
-        DeleteObject(border); DeleteObject(selection); DeleteObject(surface);
-        SelectObject(dc,priorFont); SelectObject(dc,priorBitmap); DeleteObject(bitmap); DeleteDC(dc); EndPaint(window,&paint);
+        if (SUCCEEDED(renderError) && hasPrevious) renderError=painter.text(L"\u2039",static_cast<FLOAT>(scale(fontSize)),previous,palette.muted,DWRITE_TEXT_ALIGNMENT_CENTER);
+        if (SUCCEEDED(renderError) && hasNext) renderError=painter.text(L"\u203a",static_cast<FLOAT>(scale(fontSize)),next,palette.muted,DWRITE_TEXT_ALIGNMENT_CENTER);
+        HRESULT finished=painter.finish(window,copy);
+        if (SUCCEEDED(renderError)) renderError=finished;
+        if (FAILED(renderError)) ShowWindow(window,SW_HIDE);
     }
 public:
-    explicit CandidateWindow(HINSTANCE instance):module(instance) {}
-    ~CandidateWindow() { clearLayouts(); if (window) DestroyWindow(window); if (font) DeleteObject(font); UnregisterClassW(L"Arion.NativeCandidates",module); }
+    explicit CandidateWindow(HINSTANCE instance):module(instance),painter(instance) {}
+    ~CandidateWindow() { clearLayouts(); if (window) DestroyWindow(window); UnregisterClassW(L"Arion.NativeCandidates",module); }
     CandidateWindow(const CandidateWindow&)=delete;
     CandidateWindow &operator=(const CandidateWindow&)=delete;
     void onAction(std::function<void(const CandidateAction&)> callback) { action=std::move(callback); }
@@ -121,51 +117,53 @@ public:
         if (!owner || !IsWindow(owner) || candidates.empty() || !pageSize || pageSize>9 || candidates.size()>(grid?pageSize*6:pageSize) || caret.bottom<=caret.top || caret.right<caret.left) { hide(); return false; }
         WNDCLASSW definition{}; definition.lpfnWndProc=dispatch; definition.hInstance=module; definition.lpszClassName=L"Arion.NativeCandidates"; definition.hCursor=LoadCursorW(nullptr,MAKEINTRESOURCEW(32512));
         if (!RegisterClassW(&definition) && GetLastError()!=ERROR_CLASS_ALREADY_EXISTS) return false;
-        if (!window) window=CreateWindowExW(WS_EX_NOACTIVATE|WS_EX_TOOLWINDOW,definition.lpszClassName,L"Arion",WS_POPUP,0,0,0,0,owner,nullptr,module,this);
+        if (!window) window=CreateWindowExW(WS_EX_NOACTIVATE|WS_EX_TOOLWINDOW|WS_EX_LAYERED,definition.lpszClassName,L"Arion",WS_POPUP,0,0,0,0,owner,nullptr,module,this);
         if (!window) return false;
         SetWindowLongPtrW(window,GWLP_HWNDPARENT,reinterpret_cast<LONG_PTR>(owner));
         UINT updated=GetDpiForWindow(owner); if (!updated) updated=96;
-        if (!font || updated!=dpi || textSize!=fontSize) {
-            fontSize=textSize;
-            dpi=updated; if (font) DeleteObject(font);
-            NONCLIENTMETRICSW metrics{}; metrics.cbSize=sizeof(metrics); SystemParametersInfoW(SPI_GETNONCLIENTMETRICS,sizeof(metrics),&metrics,0);
-            metrics.lfMessageFont.lfHeight=-scale(fontSize); font=CreateFontIndirectW(&metrics.lfMessageFont);
-        }
+        fontSize=textSize; dpi=updated;
         items=candidates; highlighted=std::min(selected,items.size()-1); hasPrevious=before; hasNext=after; revision=generation; palette=colors; rectangles.clear();
         clearLayouts(); emojiLayouts.resize(items.size(),nullptr);
         renderError=S_OK;
         for (size_t i=0;i<items.size();++i) if (items[i].emoji) {
             renderError=emojiFont.layout(items[i].text,static_cast<FLOAT>(scale(fontSize)),&emojiLayouts[i]);
-            if (SUCCEEDED(renderError)) renderError=emojiPainter.initialize();
             if (FAILED(renderError)) { hide(); return false; }
         }
         numbered=numbers;
         SetPropW(window,L"Arion.CandidateSurface",reinterpret_cast<HANDLE>(numbers?1:2));
         columns=grid?pageSize:items.size();
         MONITORINFO monitor{}; monitor.cbSize=sizeof(monitor); if (!GetMonitorInfoW(MonitorFromRect(&caret,MONITOR_DEFAULTTONEAREST),&monitor)) return false;
-        HDC dc=GetDC(window); HGDIOBJ old=SelectObject(dc,font);
+        numberWidth=0;
+        for (wchar_t digit=L'1';digit<=L'9';++digit) {
+            int width=0;
+            renderError=painter.measure(std::wstring(1,digit),static_cast<FLOAT>(scale(std::max(11,fontSize-3))),width);
+            if (FAILED(renderError)) { hide(); return false; }
+            numberWidth=std::max(numberWidth,width);
+        }
         int rowHeight=scale(fontSize+16),left=scale(4),arrows=scale((before?20:0)+(after?20:0));
         size_t rows=(items.size()+columns-1)/columns;
         int height=rowHeight*static_cast<int>(rows)+(grid&&arrows?scale(24):0);
         int maximum=std::max(1,static_cast<int>((monitor.rcWork.right-monitor.rcWork.left-scale(8)-scale(5)*static_cast<int>(columns)-(grid?0:arrows))/static_cast<LONG>(columns)));
-        std::vector<int> widths(columns,scale(48)),starts(columns,0);
+        std::vector<int> widths(columns,0),starts(columns,0);
         for (size_t i=0;i<items.size();++i) {
             SIZE extent{};
             if (emojiLayouts[i]) {
                 DWRITE_TEXT_METRICS metrics{}; renderError=emojiLayouts[i]->GetMetrics(&metrics);
                 if (FAILED(renderError)) break;
                 extent.cx=static_cast<LONG>(std::ceil(metrics.widthIncludingTrailingWhitespace));
-            } else GetTextExtentPoint32W(dc,items[i].text.c_str(),static_cast<int>(items[i].text.size()),&extent);
-            widths[i%columns]=std::min(maximum,std::max(widths[i%columns],static_cast<int>(extent.cx)+scale(numbered?36:16)));
+            } else {
+                int width=0; renderError=painter.measure(items[i].text,static_cast<FLOAT>(scale(fontSize)),width);
+                if (FAILED(renderError)) break;
+                extent.cx=width;
+            }
+            widths[i%columns]=std::min(maximum,std::max(widths[i%columns],std::max(scale(fontSize),static_cast<int>(extent.cx))+scale(12)+(numbered?numberWidth+scale(3):0)));
         }
         for (size_t i=0;i<columns;++i) { starts[i]=left; left+=widths[i]+scale(5); }
         for (size_t i=0;i<items.size();++i) { int top=static_cast<int>(i/columns)*rowHeight; rectangles.push_back({starts[i%columns],top+scale(4),starts[i%columns]+widths[i%columns],top+rowHeight-scale(4)}); }
-        SelectObject(dc,old); ReleaseDC(window,dc);
         if (FAILED(renderError)) { hide(); return false; }
         for (size_t i=0;i<items.size();++i) if (emojiLayouts[i]) {
-            renderError=emojiLayouts[i]->SetMaxWidth(static_cast<FLOAT>(std::max(1L,rectangles[i].right-rectangles[i].left-scale(numbered?30:14))));
+            renderError=emojiLayouts[i]->SetMaxWidth(static_cast<FLOAT>(std::max(1L,textBounds(rectangles[i]).right-textBounds(rectangles[i]).left)));
             if (SUCCEEDED(renderError)) renderError=emojiLayouts[i]->SetMaxHeight(static_cast<FLOAT>(rectangles[i].bottom-rectangles[i].top));
-            if (SUCCEEDED(renderError)) renderError=emojiLayouts[i]->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
             if (FAILED(renderError)) { hide(); return false; }
         }
         int arrowTop=grid?rowHeight*static_cast<int>(rows):0,arrowBottom=grid?height:rowHeight;
@@ -176,7 +174,8 @@ public:
         int width=left+scale(4),x=std::max(static_cast<int>(monitor.rcWork.left),std::min(static_cast<int>(caret.left),static_cast<int>(monitor.rcWork.right)-width)),y=caret.bottom+scale(4);
         if (y+height>monitor.rcWork.bottom) y=caret.top-height-scale(4);
         y=std::max(static_cast<int>(monitor.rcWork.top),y);
-        SetWindowPos(window,HWND_TOPMOST,x,y,width,height,SWP_NOACTIVATE|SWP_SHOWWINDOW); InvalidateRect(window,nullptr,FALSE);
-        return true;
+        SetWindowPos(window,HWND_TOPMOST,x,y,width,height,SWP_NOACTIVATE|SWP_SHOWWINDOW|SWP_NOREDRAW);
+        RedrawWindow(window,nullptr,nullptr,RDW_INVALIDATE|RDW_UPDATENOW|RDW_NOERASE);
+        return SUCCEEDED(renderError);
     }
 };

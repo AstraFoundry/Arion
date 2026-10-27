@@ -3,6 +3,7 @@ import { execFileSync } from 'node:child_process';
 import { copyFileSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { desktopFonts } from './lib/desktop-fonts.mjs';
 import { pinnedFile } from './lib/pinned-file.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -30,4 +31,9 @@ writeFileSync(path.join(destination, 'go-modules.json'), `${JSON.stringify(recor
 const native = JSON.parse(readFileSync(path.join(root, 'scripts/native-notices.json'), 'utf8'));
 for (const spec of native.files) copyFileSync(pinnedFile(spec), path.join(destination, spec.name));
 copyFileSync(path.join(root, 'scripts/native-notices.json'), path.join(destination, 'native-notices.json'));
+if (process.platform === 'win32') {
+  const { directory, manifest } = desktopFonts(root);
+  copyFileSync(path.join(directory, manifest.license), path.join(destination, 'SourceHanSans-OFL.txt'));
+  copyFileSync(path.join(directory, 'manifest.json'), path.join(destination, 'source-han-sans.json'));
+}
 console.log(`Staged Arion, model provenance and ${records.length} module license records.`);

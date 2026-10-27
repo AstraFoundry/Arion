@@ -54,7 +54,7 @@ class Store final : public ITextStoreACP, public ITfContextOwnerCompositionSink 
 public:
     HWND window = nullptr;
     bool password = false, readonly = false, refuseComposition = false, deferLocks = false,zeroCaret=false,noCaret=false,transitory=false,scopeAvailable=true;
-    bool layoutMissing=false,layoutClipped=false,delayLayout=false,readLocksOnly=false;
+    bool layoutMissing=false,layoutClipped=false,delayLayout=false,readLocksOnly=false,writeLayoutMissing=false;
     LONG layoutOffset=0;
     unsigned extentFailures=0,readExtents=0,writeExtents=0;
     InputScope inputScope=IS_DEFAULT;
@@ -182,7 +182,7 @@ public:
     HRESULT STDMETHODCALLTYPE GetACPFromPoint(TsViewCookie, const POINT*, DWORD, LONG *position) override { if (!position) return E_POINTER; *position = start; return S_OK; }
     HRESULT STDMETHODCALLTYPE GetTextExt(TsViewCookie, LONG first, LONG last, RECT *area, BOOL *clipped) override {
         if (writable()) ++writeExtents; else if (readable()) ++readExtents;
-        if (layoutMissing) { ++extentFailures; return TS_E_NOLAYOUT; }
+        if (layoutMissing || (writeLayoutMissing && writable())) { ++extentFailures; return TS_E_NOLAYOUT; }
         if (noCaret) return E_FAIL;
         if (!area || !clipped) return E_POINTER;
         if (!valid(first,last)) return TS_E_INVALIDPOS;
@@ -201,6 +201,19 @@ static ITfKeyEventSink *keySink = nullptr;
 static ITfThreadMgrEventSink *manualEvents = nullptr;
 static IUnknown *manualService=nullptr;
 static HWND oldCandidates=nullptr;
+static unsigned candidateShows=0,candidateHides=0;
+static LRESULT CALLBACK surfaceMessages(int code,WPARAM wp,LPARAM lp) {
+    if (code>=0) {
+        const auto &event=*reinterpret_cast<CWPSTRUCT*>(lp);
+        wchar_t name[64]{};
+        if (event.message==WM_WINDOWPOSCHANGING && GetClassNameW(event.hwnd,name,64) && wcscmp(name,L"Arion.NativeCandidates")==0) {
+            const auto &position=*reinterpret_cast<WINDOWPOS*>(event.lParam);
+            if ((position.flags&SWP_SHOWWINDOW) && !IsWindowVisible(event.hwnd)) ++candidateShows;
+            if ((position.flags&SWP_HIDEWINDOW) && IsWindowVisible(event.hwnd)) ++candidateHides;
+        }
+    }
+    return CallNextHookEx(nullptr,code,wp,lp);
+}
 static HANDLE optionsBlock=INVALID_HANDLE_VALUE;
 static HWND candidateWindow() {
     HWND found=nullptr;
@@ -289,6 +302,7 @@ static LRESULT CALLBACK dispatch(HWND window, UINT message, WPARAM wp, LPARAM lp
         else if (*command=="cacheclick") { oldCandidates=candidateWindow(); std::cout << "{\"done\":true}" << std::endl; }
         else if (command->rfind("click:",0)==0 || *command=="staleclick") { HWND target=*command=="staleclick"?oldCandidates:candidateWindow(); int row=*command=="staleclick"?0:std::stoi(command->substr(6)); if (target) SendMessageW(target,WM_LBUTTONUP,0,MAKELPARAM(12,row*32+16)); std::cout << "{\"done\":true}" << std::endl; }
         else if (*command == "text") std::cout << "{\"text\":" << ::quoted(editor->value) << "}" << std::endl;
+        else if (*command == "surfaceevents") std::cout << "{\"shows\":" << candidateShows << ",\"hides\":" << candidateHides << "}" << std::endl;
         else if (*command == "layoutstate") std::cout << "{\"missing\":" << (editor->layoutMissing?"true":"false") << ",\"failures\":" << editor->extentFailures << ",\"reads\":" << editor->readExtents << ",\"writeExtents\":" << editor->writeExtents << ",\"writes\":" << editor->writes << "}" << std::endl;
         else if (*command == "state") std::cout << "{\"text\":" << ::quoted(editor->value) << ",\"start\":" << editor->start << ",\"end\":" << editor->end << ",\"writes\":" << editor->writes << ",\"starts\":" << editor->starts << ",\"ends\":" << editor->ends << ",\"locks\":" << editor->locks << ",\"refused\":" << editor->refused << ",\"deferred\":" << editor->deferred << "}" << std::endl;
         else if (*command == "quit") DestroyWindow(window);
@@ -307,6 +321,8 @@ static LRESULT CALLBACK dispatch(HWND window, UINT message, WPARAM wp, LPARAM lp
             else if (*command == "accept") editor->refuseComposition = false;
             else if (*command == "zerocaret") editor->zeroCaret = true;
             else if (*command == "nocaret") editor->noCaret = true;
+            else if (*command == "writelayout") editor->writeLayoutMissing=true;
+            else if (*command == "anylayout") editor->writeLayoutMissing=false;
             else if (*command == "delaylayout") editor->delayLayout=true;
             else if (*command == "instantlayout") { editor->delayLayout=false; editor->layoutReady(); }
             else if (*command == "layout") editor->layoutReady();
@@ -340,11 +356,14 @@ static LRESULT CALLBACK dispatch(HWND window, UINT message, WPARAM wp, LPARAM lp
 int wmain(int count, wchar_t **args) {
     HWND previousForeground=GetForegroundWindow();
 #ifdef ARION_TSF_MANUAL_KEYS
+    // Isolate this fixture thread from any installed TIP using the same CLSID.
+    HKL previousLayout=GetKeyboardLayout(0);
+    HKL fixtureLayout=LoadKeyboardLayoutW(L"00000409",KLF_NOTELLSHELL);
+    if (!fixtureLayout || !ActivateKeyboardLayout(fixtureLayout,0)) return 14;
+#endif
+#ifdef ARION_TSF_MANUAL_KEYS
     wchar_t profile[32768]{}; DWORD profileLength=GetEnvironmentVariableW(L"ARION_TSF_TEST_USER_DIRECTORY",profile,32768);
-    if (!profileLength || profileLength>=32768 || !keyboardOptionsDetail::security().ready) return 12;
-    if (!CreateDirectoryW(profile,&keyboardOptionsDetail::security().attributes) && GetLastError()!=ERROR_ALREADY_EXISTS) return 12;
-    keyboardOptionsDetail::Handle profileHandle(CreateFileW(profile,FILE_READ_ATTRIBUTES|READ_CONTROL,FILE_SHARE_READ|FILE_SHARE_WRITE,nullptr,OPEN_EXISTING,FILE_FLAG_BACKUP_SEMANTICS|FILE_FLAG_OPEN_REPARSE_POINT,nullptr));
-    if (profileHandle.value==INVALID_HANDLE_VALUE || !keyboardOptionsDetail::security().valid(profileHandle.value,true)) return 12;
+    if (!profileLength || profileLength>=32768 || !prepareKeyboardDirectory(profile)) return 12;
 #endif
     if (count != 2 || FAILED(CoInitializeEx(nullptr,COINIT_APARTMENTTHREADED))) return 2;
     HMODULE dll = LoadLibraryW(args[1]); if (!dll) return 3;
@@ -381,6 +400,8 @@ int wmain(int count, wchar_t **args) {
     if (FAILED(service->QueryInterface(IID_ITfThreadMgrEventSink,reinterpret_cast<void**>(&manualEvents)))) return 11;
     manualService=service;
 #endif
+    HHOOK surfaceHook=SetWindowsHookExW(WH_CALLWNDPROC,surfaceMessages,nullptr,GetCurrentThreadId());
+    if (!surfaceHook) return 13;
     std::cout << "{\"ready\":true}" << std::endl;
     std::thread input([window] { std::string line; while (std::getline(std::cin,line)) { auto command = new std::string(line); if (!PostMessageW(window,Command,0,reinterpret_cast<LPARAM>(command))) delete command; if (line == "quit") return; } PostMessageW(window,WM_CLOSE,0,0); });
     MSG message; while (GetMessageW(&message,nullptr,0,0)>0) { TranslateMessage(&message); DispatchMessageW(&message); }
@@ -389,7 +410,11 @@ int wmain(int count, wchar_t **args) {
     if (optionsBlock!=INVALID_HANDLE_VALUE) CloseHandle(optionsBlock);
     keySink->Release(); keySink=nullptr; service->Deactivate(); service->Release(); manager->SetFocus(nullptr); editor->shutdown(); password->shutdown(); editor->Release(); password->Release(); manager->Deactivate(); manager->Release(); manager = nullptr;
     if (input.joinable()) input.join();
+    UnhookWindowsHookEx(surfaceHook);
     FreeLibrary(dll); CoUninitialize();
+    #ifdef ARION_TSF_MANUAL_KEYS
+    ActivateKeyboardLayout(previousLayout,0);
+#endif
     if (previousForeground && IsWindow(previousForeground)) SetForegroundWindow(previousForeground);
     return 0;
 }
