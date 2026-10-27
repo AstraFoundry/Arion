@@ -182,6 +182,8 @@ func NoticeOf(d runtime.Dictation, permissions runtime.Permissions) Notice {
 // insertion is "Inserted".
 func OutcomeLabel(d runtime.Dictation, pasted bool) copy.Key {
 	switch {
+	case d.Outcome == runtime.OutcomeCopied:
+		return copy.PillCopied
 	case d.Outcome == runtime.OutcomeApplied:
 		return copy.PillInserted
 	case pasted:

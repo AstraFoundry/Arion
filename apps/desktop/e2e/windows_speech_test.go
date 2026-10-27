@@ -278,17 +278,19 @@ func TestWindowsPackagedSpeech(t *testing.T) {
 		call("release-final", nil)
 		wanted := "cancelled"
 		if fault == "focus-change" {
-			wanted = "failed"
+			wanted = "completed"
 		}
 		observed = wait("session", "state", wanted)
 		// A late native result may still be running after cancellation.
 		time.Sleep(1500 * time.Millisecond)
-		assertEmpty()
-		if fault == "cancel" && observed["commitCount"] != float64(0) {
-			t.Fatal("cancelled speech attempted insertion")
+		if fault == "cancel" {
+			assertEmpty()
+			if observed["commitCount"] != float64(0) {
+				t.Fatal("cancelled speech attempted insertion")
+			}
 		}
-		if fault == "focus-change" && (state(observed, "error", "code") != "TARGET_CHANGED" || state(observed, "commit", "status") != "not_applied") {
-			t.Fatalf("focus change did not block the captured target: %+v", observed)
+		if fault == "focus-change" && (state(observed, "commit", "status") == "not_applied" || state(observed, "error", "code") == "TARGET_CHANGED" || first.text() != "" || second.text() == "") {
+			t.Fatalf("focus change did not insert into the focused editor: %+v %q %q", observed, first.text(), second.text())
 		}
 		record(map[string]any{"event": "scenario", "id": fault, "observations": observed, "editorA": first.text(), "editorB": second.text()})
 	}

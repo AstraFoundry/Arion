@@ -15,7 +15,7 @@ What was actually run, on which host, and what remains unverified. Host: Apple M
 
 ## Guarded shortcut delivery (macOS arm64)
 
-`pnpm e2e:paste` passed against the production capture/commit adapter and real Command-V dispatch: AppKit selection replacement with CJK, emoji, combining marks and multiline text (one edit), WebKit textarea, and Chrome 155.0.8059.80 textarea/contenteditable (one input event each, isolated temporary browser profile). Focus/selection changes, pre-post cancellation, stale identity, duplicate target and secure-field cases rejected insertion. Clipboard restoration was checked after successful delivery. The adapter correctly keeps all posted results `unknown`; assertions use the independently observed editor text/input events.
+`pnpm e2e:paste` passed against the production capture/commit adapter and real Command-V dispatch: AppKit selection replacement with CJK, emoji, combining marks and multiline text (one edit), WebKit textarea, and Chrome 155.0.8059.80 textarea/contenteditable (one input event each, isolated temporary browser profile). That run rejected insertion after a focus or selection change, and also for pre-post cancellation, stale identity, a duplicate target and a secure field. Clipboard restoration was checked after successful delivery. The adapter correctly keeps all posted results `unknown`; assertions use the independently observed editor text/input events. Current DSK-A03 is different: a caret move or a switch to another editable field inserts at the caret focused at commit, and no editable focus leaves the text on the system clipboard.
 
 Race-enabled core application, macOS adapter, IME bridge, bootstrap and diagnostic tests passed. Injected transaction tests cover serialized concurrent owners, cancellable waiters, cancellation before prepare/after prepare/after stage/after post, unavailable clipboard, restoration failure and unknown-result non-retry. Native named-pasteboard tests passed for complete multi-item/binary snapshots, empty originals, another owner before stage/before post/after post and final native focus/selection/secure rejection; delivery is intercepted in those isolated tests. The actual AppKit/IMK composition regression also passed. These layers are distinguished from host E2E.
 
@@ -46,7 +46,7 @@ CI run [38343240111](https://github.com/stvlynn/Arion/actions/runs/38343240111) 
 | Overlay explicit failure without taking focus | Pass |
 | Settings and onboarding window lifecycle (open, draw nonblank, resize, close once, release) | Pass |
 | Production `SendInput` route types "Arion 中文 test" into an owned Notepad exactly once | Pass |
-| Focus moved to a second Notepad before commit: `not_applied/TARGET_CHANGED`, no text in either | Pass |
+| Focus moved to a second Notepad before commit: `not_applied/TARGET_CHANGED`, no text in either. This run predates current DSK-A03, which inserts into the focused editor | Pass for that build |
 
 ## Model selection run (`models-dev-2`)
 
@@ -72,7 +72,7 @@ All eight scenarios in [`macos-shortcut-scenarios.json`](../../tests/e2e/macos-s
 | shortcut-offline-once | Editor A = "Hello world.", one commit, `applied`, 0 sockets |
 | mixed-language-dictation | Editor B = "请把这个 PR merge 到 main 分支。", one commit |
 | cancel-stale-callback | Late final result after cancel: no text, no commit |
-| focus-change-blocks-commit | Focus moved A→B before commit: no text anywhere, `not_applied/TARGET_CHANGED` |
+| focus-change-blocks-commit | That run: focus moved A→B before commit and neither editor changed (`not_applied/TARGET_CHANGED`). The scenario is now `focus-change-inserts-at-caret`: B receives the text once |
 | secure-field-blocked | `SECURE_FIELD_BLOCKED`, microphone never started |
 | uncertain-commit-no-retry | Lost acknowledgement: outcome `unknown`, one insertion attempt, text once |
 | input-mode-switch-cancels | Switch to `system_ime` during finalization cancels; capture inactive, no commit |
