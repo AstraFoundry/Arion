@@ -517,7 +517,7 @@
   "KbdContextRanking": "Context ranking",
   "KbdContextRankingDetail": "Prioritizes candidates you've previously chosen after the same word. Learned data stays encrypted on this device.",
   "KbdEmojiSuggestions": "Emoji suggestions",
-  "KbdEmojiSuggestionsDetail": "Shows a few matching macOS Emoji among Chinese Pinyin candidates.",
+  "KbdEmojiSuggestionsDetail": "Shows a few matching system Emoji among Chinese Pinyin candidates.",
   "KbdKeysGroup": "Keys",
   "KbdSwitchLanguage": "Chinese / English",
   "KbdSwitchLanguageKeys": "Shift",

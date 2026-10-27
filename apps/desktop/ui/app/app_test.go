@@ -1474,18 +1474,30 @@ func TestWindowsKeyboardSettings(t *testing.T) {
 					t.Fatalf("Windows setup missing %s: %q", key, tt.Texts())
 				}
 			}
-			for _, key := range []copy.Key{copy.KbdPageSize, copy.KbdCandidateSize, copy.KbdAppearance, copy.KbdAccent, copy.KbdContextRanking, copy.KbdSwitchLanguage} {
+			for _, key := range []copy.Key{copy.KbdPageSize, copy.KbdCandidateSize, copy.KbdAppearance, copy.KbdAccent, copy.KbdContextRanking, copy.KbdEmojiSuggestions, copy.KbdSwitchLanguage} {
 				if !hasText(tt, messages.Text(key)) {
 					t.Fatalf("Windows keyboard setting missing %s", key)
 				}
-			}
-			if hasText(tt, messages.Text(copy.KbdEmojiSuggestions)) {
-				t.Fatal("macOS-only Emoji setting appears on Windows")
 			}
 			if hasText(tt, messages.Text(copy.IMESetupHint)) {
 				t.Fatal("Windows setup exposes macOS instructions")
 			}
 			snapshot(t, tt, "settings-windows-keyboard-"+string(language))
+			emojiRow, ok := tt.Find(messages.Text(copy.KbdEmojiSuggestions))
+			if !ok || !state.Preferences.Keyboard.EmojiSuggestions {
+				t.Fatal("Windows Emoji suggestions should start enabled")
+			}
+			tt.ClickAt(SettingsWidth-60, emojiRow.Y+emojiRow.H)
+			settle(tt)
+			if state.Preferences.Keyboard.EmojiSuggestions {
+				t.Fatal("Windows Emoji preference did not switch off")
+			}
+			snapshot(t, tt, "settings-windows-keyboard-emoji-off-"+string(language))
+			tt.ClickAt(SettingsWidth-60, emojiRow.Y+emojiRow.H)
+			settle(tt)
+			if !state.Preferences.Keyboard.EmojiSuggestions {
+				t.Fatal("Windows Emoji preference did not switch on")
+			}
 			if err := tt.Click("9"); err != nil {
 				t.Fatal(err)
 			}

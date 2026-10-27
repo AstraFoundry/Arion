@@ -28,8 +28,8 @@ for (const name of ['pinyin','input','menu']) {
   run(cCompiler,['-std=c11','-O2','-Wall','-Wextra','-Werror','-I',path.join(sdk,'include'),'-c',path.join(common,`${name}.c`),'-o',object]);
   cObjects.push(object);
 }
-const base=['-std=c++17','-DINITGUID','-O2','-Wall','-Wextra','-Werror','-static','-I',path.join(sdk,'include')];
-run(compiler,[...base,'-DRIME_IMPORTS','-shared',path.join(source,'keyboard_runtime.cpp'),...['learning','learning_rime','learning_windows','ranking','ranking_unicode','emoji'].map(name=>path.join(common,`${name}.cpp`)),cObjects[0],path.join(sdk,'lib/libArionRime.dll.a'),'-o',path.join(keyboard,'lib/ArionKeyboard.dll'),'-lcrypt32','-lole32','-luuid','-ladvapi32']);
+const base=['-std=c++17','-DINITGUID','-O2','-Wall','-Wextra','-Werror','-static','-isystem',path.join(sdk,'include')];
+run(compiler,[...base,'-DRIME_IMPORTS','-shared',path.join(source,'keyboard_runtime.cpp'),...['learning','learning_rime','learning_windows','ranking','ranking_unicode','emoji'].map(name=>path.join(common,`${name}.cpp`)),cObjects[0],path.join(sdk,'lib/libArionRime.dll.a'),'-o',path.join(keyboard,'lib/ArionKeyboard.dll'),'-lcrypt32','-lole32','-luuid','-ladvapi32','-ldwrite','-ld2d1']);
 recordWindowsKeyboardModule(keyboard);
 verifyWindowsKeyboardRuntime(keyboard);
 const keyboardManifestSHA256=createHash('sha256').update(readFileSync(path.join(keyboard,'runtime.json'))).digest('hex');
@@ -40,7 +40,7 @@ run(compiler,[...base,'-Wl,--no-insert-timestamp','-Wl,--image-base,0x180000000'
 const loaderSHA256=createHash('sha256').update(readFileSync(loader)).digest('hex');
 for (const [input, filename, shared] of [['service.cpp', 'ArionTSF.dll', true], ['control.cpp', 'arion-ime.exe', false]]) {
   const destination = path.join(output, filename);
-  const args = [...base,`-DARION_KEYBOARD_MANIFEST_SHA256="${keyboardManifestSHA256}"`,...(!shared?[`-DARION_TSF_LOADER_SHA256="${loaderSHA256}"`]:[]),...(shared ? ['-shared'] : ['-municode']),path.join(source,input),...(shared?cObjects:[]),'-o',destination,'-lole32','-loleaut32','-luuid','-ladvapi32','-lshell32','-lgdi32'];
+  const args = [...base,`-DARION_KEYBOARD_MANIFEST_SHA256="${keyboardManifestSHA256}"`,...(!shared?[`-DARION_TSF_LOADER_SHA256="${loaderSHA256}"`]:[]),...(shared ? ['-shared'] : ['-municode']),path.join(source,input),...(shared?cObjects:[]),'-o',destination,'-lole32','-loleaut32','-luuid','-ladvapi32','-lshell32','-lgdi32',...(shared?['-ldwrite','-ld2d1']:[])];
   run(compiler,args);
 }
 verifyWindowsPEDependencies(['ArionTSFLoader.dll', 'ArionTSF.dll', 'arion-ime.exe'].map(name => path.join(output, name)));

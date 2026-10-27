@@ -16,6 +16,8 @@
 #include <unordered_set>
 
 namespace {
+ArionEmojiSupported supported = nullptr;
+void *support_context = nullptr;
 struct Mapping {
     const char *trigger;
     const char *text;
@@ -61,6 +63,7 @@ class EmojiTranslation final : public rime::PrefetchTranslation {
           return std::strcmp(mapping.trigger, trigger.c_str()) < 0;
         });
     if (match != std::end(mappings) && source->text() == match->trigger &&
+        (!supported || supported(support_context, match->text)) &&
         emitted_.insert(match->text).second) {
       cache_.push_back(rime::New<EmojiCandidate>(*source, *match));
     }
@@ -104,6 +107,11 @@ bool copy(const std::string& value, char (&out)[N]) {
 
 extern "C" void arion_emoji_register(void) {
   rime::Registry::instance().Register("arion_emoji", new rime::Component<EmojiFilter>());
+}
+
+extern "C" void arion_emoji_set_support(ArionEmojiSupported check, void *context) {
+  supported = check;
+  support_context = context;
 }
 
 extern "C" int arion_emoji_candidate_metadata(uintptr_t session, size_t index,

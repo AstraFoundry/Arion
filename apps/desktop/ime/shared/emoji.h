@@ -17,6 +17,10 @@ typedef struct ArionEmojiCandidateMetadata {
 } ArionEmojiCandidateMetadata;
 
 void arion_emoji_register(void);
+/* Configure once before creating sessions. The host may reject sequences its
+ * system font cannot shape as one Emoji; NULL accepts the pinned Unicode set. */
+typedef int (*ArionEmojiSupported)(void *context, const char *text);
+void arion_emoji_set_support(ArionEmojiSupported supported, void *context);
 int arion_emoji_candidate_metadata(uintptr_t session, size_t index, ArionEmojiCandidateMetadata *out);
 int arion_emoji_refresh_after_caret_move(uintptr_t session);
 

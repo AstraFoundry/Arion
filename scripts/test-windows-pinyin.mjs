@@ -19,7 +19,7 @@ const runDirectory = mkdtempSync(path.join(output, 'run-'));
 const hash = file => createHash('sha256').update(readFileSync(file)).digest('hex');
 const sourceNames = ['pinyin.c', 'pinyin.h', 'menu.c', 'menu.h', 'input.c', 'input.h', 'learning.cpp', 'learning.h', 'learning_windows.cpp',
   'learning_rime.cpp', 'learning_rime.h', 'ranking.cpp', 'ranking.h', 'ranking_unicode.cpp', 'ranking_unicode.h',
-  'ranking_unicode_data.h', 'emoji.cpp', 'emoji.h', 'pinyin_native_test.cpp'];
+  'ranking_unicode_data.h', 'emoji.cpp', 'emoji.h', 'emoji_data.h', 'pinyin_native_test.cpp'];
 const sourceIdentities = Object.fromEntries(sourceNames.map(name => [name, hash(path.join(source, name))]));
 const runtimeSha256 = hash(library);
 const run = (command, args) => execFileSync(command, args, { cwd: root, stdio: 'inherit', windowsHide: true });

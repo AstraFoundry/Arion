@@ -9,6 +9,7 @@
 #include <thread>
 #include <atomic>
 #include "keyboard_runtime.h"
+#include "emoji_text.h"
 #include "../shared/pinyin.h"
 static void require(bool condition,const char *message) { if (!condition) throw std::runtime_error(message); }
 template<typename Function> static Function symbol(HMODULE module,const char *name) {
@@ -78,6 +79,8 @@ int wmain(int count,wchar_t **arguments) {
         auto order=symbol<decltype(&arion_keyboard_order)>(module,"arion_keyboard_order");
         auto learn=symbol<decltype(&arion_keyboard_learn)>(module,"arion_keyboard_learn");
         auto context=symbol<decltype(&arion_keyboard_context)>(module,"arion_keyboard_context");
+        auto metadata=symbol<decltype(&arion_keyboard_candidate_metadata)>(module,"arion_keyboard_candidate_metadata");
+        auto refresh=symbol<decltype(&arion_keyboard_refresh_emoji)>(module,"arion_keyboard_refresh_emoji");
         const auto data=std::filesystem::path(arguments[2]).u8string(),user=std::filesystem::path(arguments[3]).u8string();
         char failure[512]{};
         RimeApi *api=start(data.c_str(),user.c_str(),failure,sizeof(failure));
@@ -86,6 +89,38 @@ int wmain(int count,wchar_t **arguments) {
         require(start(data.c_str(),user.c_str(),failure,sizeof(failure))==api,"second client shares runtime");
         require(start(data.c_str(),(user+"-different").c_str(),failure,sizeof(failure))==nullptr,"different profile refuses reuse");
         stop();
+        enter();
+        auto emojiSession=arion_pinyin_create_session(api);
+        require(emojiSession!=0,"create Emoji metadata session");
+        api->set_option(emojiSession,"arion_emoji",1);
+        for (char key:std::string("xiaolian")) require(arion_pinyin_process_key(api,emojiSession,key,0),"type exact Emoji trigger");
+        auto emojiIndex=[&]() {
+            char **texts=nullptr; size_t count=0,index=static_cast<size_t>(-1);
+            require(arion_pinyin_candidates(api,emojiSession,0,54,&texts,&count)!=0,"read actual typed engine menu");
+            for (size_t i=0;i<count;++i) {
+                ArionEmojiCandidateMetadata value{};
+                require(metadata(emojiSession,i,&value)!=0,"read metadata across validated module ABI");
+                if (value.emoji && std::strcmp(texts[i],u8"😊")==0) {
+                    require(value.start==0 && value.end==8 && std::strcmp(value.source,u8"笑脸")==0 && std::strcmp(value.sequence_id,"1F60A")==0,"exact Emoji identity and input range");
+                    index=i;
+                }
+            }
+            arion_pinyin_candidates_dispose(texts,count); return index;
+        };
+        require(emojiIndex()!=static_cast<size_t>(-1),"native font permits smile candidate");
+        arion_pinyin_process_key(api,emojiSession,0xff50,0); require(refresh(emojiSession)!=0,"refresh at Home");
+        require(emojiIndex()==static_cast<size_t>(-1),"middle caret removes Emoji");
+        arion_pinyin_process_key(api,emojiSession,0xff57,0); require(refresh(emojiSession)!=0,"refresh at End");
+        auto index=emojiIndex(); require(index!=static_cast<size_t>(-1),"end caret restores Emoji");
+        require(arion_pinyin_select(api,emojiSession,index,0)!=0,"select actual Emoji engine candidate");
+        ArionPinyinSnapshot emojiCommit{};
+        require(arion_pinyin_snapshot(api,emojiSession,&emojiCommit)==0 && emojiCommit.commit && std::strcmp(emojiCommit.commit,u8"😊")==0,"module commits exact Unicode Emoji");
+        arion_pinyin_snapshot_dispose(&emojiCommit);
+        api->set_option(emojiSession,"arion_emoji",0);
+        for (char key:std::string("xiaolian")) arion_pinyin_process_key(api,emojiSession,key,0);
+        require(emojiIndex()==static_cast<size_t>(-1),"disabled session emits no Emoji");
+        arion_pinyin_destroy_session(api,emojiSession);
+        leave();
         auto convert=[&] {
             enter();
             bool ok=true;

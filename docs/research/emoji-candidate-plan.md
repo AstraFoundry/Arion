@@ -1,6 +1,6 @@
 # Emoji candidate implementation proposal
 
-Status: The native filter, typed menu integration and macOS preference described below are implemented. The index is generated offline from checked-in, digest-pinned CLDR 48.2 Chinese annotations and Unicode Emoji 15.0 fully-qualified sequences, with 30 reviewed overrides; it has 1,740 exact triggers, 719 of which have exact entries in the pinned Pinyin dictionary. Dictionary presence alone does not prove reachability in the filter's bounded candidate window. Isolated real-Rime/AppKit tests passed exact `xiaolian` → `😊` commit, representative CLDR/flag/alias reachability, number/Space/punctuation selection, caret suppression/restoration, text-order preservation when disabled, and no `笑脸`/Emoji entry in encrypted Chinese learning records. Full OS rendering/installed-source acceptance and insertion-policy comparison remain open; the three-text/two-Emoji policy is provisional rather than measured optimal.
+Status: The native filter, typed menu integration and shared macOS/Windows preference described below are implemented; Windows native validation is pending for this change set. The index is generated offline from checked-in, digest-pinned CLDR 48.2 Chinese annotations and Unicode Emoji 15.0 fully-qualified sequences, with 30 reviewed overrides; it has 1,740 exact triggers, 719 of which have exact entries in the pinned Pinyin dictionary. Dictionary presence alone does not prove reachability in the filter's bounded candidate window. Isolated real-Rime/AppKit tests passed exact `xiaolian` → `😊` commit, representative CLDR/flag/alias reachability, number/Space/punctuation selection, caret suppression/restoration, text-order preservation when disabled, and no `笑脸`/Emoji entry in encrypted Chinese learning records. Full OS rendering/installed-source acceptance and insertion-policy comparison remain open; the three-text/two-Emoji policy is provisional rather than measured optimal.
 
 ## Recommendation
 
@@ -8,7 +8,7 @@ Use a small Arion-owned native Rime filter, a typed candidate bridge and a deter
 
 This adds explicit Emoji semantics where the current string-only menu cannot express them. It does not require a new Pinyin engine, generative model, Lua runtime, network service or a fork of librime. The native extension uses the same pinned Rime C++ ABI boundary already required by encrypted learning; its actual exports and packaging must pass the first integration gate below.
 
-The first release targets macOS Simplified Chinese Pinyin. Put the implementation in the shared keyboard core and maintain Windows build compatibility, but do not claim Windows feature support before native TSF acceptance. English names remain available as metadata for accessibility; English-mode keyword completion, shortcode search, a separate picker and voice-to-Emoji substitution are subsequent scope proposals.
+The feature targets Simplified Chinese Pinyin on macOS and Windows. Candidate production, typed menus and mappings are shared; each platform owns native font rendering and composition delivery. Do not claim installed-editor support from isolated engine or owned-TSF tests alone. English names remain available as metadata for accessibility; English-mode keyword completion, shortcode search, a separate picker and voice-to-Emoji substitution are subsequent scope proposals.
 
 ## Evidence and alternatives
 
@@ -33,7 +33,7 @@ These are source observations. No comparative runtime or license-compatibility c
 
 ## Proposed product behavior
 
-Emoji suggestions are available offline in Chinese Pinyin mode, with a proposed default-on switch in Settings > Keyboard. The input method reads the app-owned preference on activation, consistent with existing keyboard preferences; an absent field has the documented default. Do not duplicate persistence in the host-owned punctuation options file.
+Emoji suggestions are available offline in Chinese Pinyin mode, with a proposed default-on switch in Settings > Keyboard. The input method reads the app-owned preference on activation; Windows also refreshes it during active composition, consistent with existing keyboard preferences; an absent field has the documented default. Do not duplicate persistence in the host-owned punctuation options file.
 
 Only exact matches of an eligible candidate word trigger suggestions. The word must consume the entire currently unselected Pinyin suffix, and the input caret must be at its end. Previously selected text is retained. Completion-only candidates, substring replacements inside generated sentences, punctuation, reverse lookup, English mode and voice composition do not trigger this release's suggestions. A reviewed exact multiword alias may trigger; arbitrary sentences do not.
 
@@ -100,7 +100,7 @@ Disabled is an ordinary feature state. Missing/incompatible optional capability 
 | P1 | Windows TSF release acceptance | Shared integration, Windows render matrix | Native candidate visibility, edit-session ownership, selection, cancellation and encrypted-learning checks on Windows |
 | P2 | Emoji preference learning or explicit English/shortcode search | Measured user need | Separate product contract, encrypted data/reset and evidence gates |
 
-Implementation entry points are `ime/shared` for the producer/metadata/menu; `ime/shared/keyboard-data` and `scripts/keyboard-runtime.json` for immutable data; `scripts/stage-keyboard-runtime.mjs` and platform build scripts for packaging; `ime/macos/keyboard.m`, `typing.m` and `candidate_panel.m` for native integration; `ui/features/keyboard`, the existing application-owned preferences and `ui/shared/copy/locales` for controls/copy. The desktop shell remains MyGo and the portable Go voice core gains no Rime dependency.
+Implementation entry points are `ime/windows/emoji_text.h`, `keyboard_runtime.cpp`, `typing.h` and `candidate_window.h` for Windows font coverage, typed ABI and native delivery; `ime/shared` for the producer/metadata/menu; `ime/shared/keyboard-data` and `scripts/keyboard-runtime.json` for immutable data; `scripts/stage-keyboard-runtime.mjs` and platform build scripts for packaging; `ime/macos/keyboard.m`, `typing.m` and `candidate_panel.m` for native integration; `ui/features/keyboard`, the existing application-owned preferences and `ui/shared/copy/locales` for controls/copy. The desktop shell remains MyGo and the portable Go voice core gains no Rime dependency.
 
 ## Acceptance and evidence
 
@@ -118,3 +118,11 @@ Report Emoji recall@page, rank/MRR, text displacement and simulated selection co
 Measure added lookup/menu time and total key-to-visible-candidate p50/p95/p99, cold activation, enumeration bounds and RSS on the real minimum supported macOS baseline and a current supported release. A provisional engineering objective is warm added processing p95 below 1 ms and p99 below 2 ms on the declared reference machine; establish the baseline and freeze a justified gate before held-out runs. These figures are targets, not results. Engine tests cannot establish visible native latency or installed-source acceptance.
 
 Run `pnpm check`, `pnpm keyboard:check` and `node scripts/test-shared-pinyin.mjs` as applicable after implementation; extend the existing native engine/typing/learning gates with production Emoji cases. Windows additionally runs its actual native Pinyin/TSF checks on Windows. Installed-source editor scenarios need separate owned AppKit, browser textarea/contenteditable and rich-text observations on macOS. Record screenshots for settings and every materially different candidate layout/locale. Missing OS capabilities remain not run, never passing substitutes.
+
+## Windows system Emoji integration
+
+Windows 10/11 supply [Segoe UI Emoji](https://learn.microsoft.com/en-us/typography/font-list/segoe-ui-emoji). Arion references the installed font and commits Unicode, without redistributing Microsoft font files or third-party Emoji artwork. The existing CLDR/Unicode index supplies word associations; the system font supplies glyphs. The Windows picker search index is not an input to Arion.
+
+[DirectWrite/Direct2D color-font support](https://learn.microsoft.com/en-us/windows/win32/directwrite/color-fonts) provides shaping and drawing. A cached native probe checks a complete cluster, one nonzero base glyph and color layers before the shared filter emits a candidate. This deliberately omits sequences that the current system would show as missing or multiple glyphs, including unsupported flags and newer ZWJ sequences. The Unicode sequence is never stripped or substituted. Native drawing opts into `D2D1_DRAW_TEXT_OPTIONS_ENABLE_COLOR_FONT` through a DC render target, preserving the existing GDI Chinese text, geometry and hit testing.
+
+`pnpm keyboard:windows:check` includes real module metadata/caret tests, owned ACP selection and context-learning isolation, and actual system-font color-pixel captures in both themes at all three sizes. These are native tests, not installed system-key dispatch acceptance. The previous PR failed Windows compilation because Rime C++ headers were passed with `-I` under `-Werror`; production and fixture builds now mark the SDK with `-isystem` while retaining strict warnings for Arion sources.
