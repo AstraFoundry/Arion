@@ -2,6 +2,7 @@
 #import "learning.h"
 #import <rime_api.h>
 #include "../shared/pinyin.h"
+#include "../shared/emoji.h"
 #include <limits.h>
 
 extern int32_t arion_keyboard_sha256(const void *, size_t, unsigned char *);
@@ -105,6 +106,7 @@ static BOOL verifyData(NSString *directory) {
     traits.min_log_level = 3;
     traits.log_dir = "";
     self.api->setup(&traits);
+    arion_emoji_register();
 #ifndef ARION_LEARNING_TESTING
     if (!ArionRegisterEncryptedLearning([user stringByAppendingPathComponent:@"learning"], error)) return NO;
 #endif
@@ -201,6 +203,10 @@ static BOOL verifyData(NSString *directory) {
 - (void)setASCII:(BOOL)ascii session:(uintptr_t)session {
     self.ascii = ascii;
     [self applyOptions:session];
+}
+
+- (void)setEmojiSuggestions:(BOOL)enabled session:(uintptr_t)session {
+    if (session) self.api->set_option(session, "arion_emoji", enabled);
 }
 
 - (BOOL)setFullWidth:(BOOL)fullWidth session:(uintptr_t)session {

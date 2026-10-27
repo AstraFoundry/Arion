@@ -414,6 +414,7 @@ func TestWriteKeyboardSettings(t *testing.T) {
 	var raw map[string]any
 	if err := json.Unmarshal(data, &raw); err != nil || raw["pageSize"] != 6.0 || raw["candidateSize"] != "large" ||
 		raw["appearance"] != "dark" || raw["accent"] != "blue" || raw["contextRanking"] != false ||
+		raw["emojiSuggestions"] != false ||
 		raw["dictationKey"] != "right_command" {
 		t.Fatalf("unexpected settings file %s (%v)", data, err)
 	}

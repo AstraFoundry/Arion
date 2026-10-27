@@ -203,12 +203,21 @@ func Candidates(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 func Smart(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 	messages := store.Copy()
 	ranking := store.State.Preferences.Keyboard.ContextRanking
+	emoji := store.State.Preferences.Keyboard.EmojiSuggestions
 	kit.Card(c, tokens).Children(func() {
 		kit.TipRow(c, tokens, messages.Text(copy.KbdContextRanking), messages.Text(copy.KbdContextRankingDetail), func() {
 			if ui.Switch(c.Key("context-ranking"), &ranking).Label(messages.Text(copy.KbdContextRanking)).Changed() {
 				store.Actions.UpdatePreferences(func(p *runtime.Preferences) { p.Keyboard.ContextRanking = ranking })
 			}
 		})
+		if !windows(store) {
+			kit.Divider(c, tokens)
+			kit.Row(c, tokens, messages.Text(copy.KbdEmojiSuggestions), messages.Text(copy.KbdEmojiSuggestionsDetail), func() {
+				if ui.Switch(c.Key("emoji-suggestions"), &emoji).Label(messages.Text(copy.KbdEmojiSuggestions)).Changed() {
+					store.Actions.UpdatePreferences(func(p *runtime.Preferences) { p.Keyboard.EmojiSuggestions = emoji })
+				}
+			})
+		}
 	})
 }
 

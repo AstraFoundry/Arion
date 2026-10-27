@@ -27,7 +27,7 @@ function includeSource(file){
   }
 }
 for(const name of ['service.cpp','textstore_fixture.cpp','native_keys_test.cpp','candidate_window_test.cpp','keyboard_runtime.cpp'])includeSource(path.join(source,name));
-for(const name of ['pinyin.c','input.c','menu.c','learning.cpp','learning_rime.cpp','learning_windows.cpp','ranking.cpp','ranking_unicode.cpp'])includeSource(path.join(common,name));
+for(const name of ['pinyin.c','input.c','menu.c','learning.cpp','learning_rime.cpp','learning_windows.cpp','ranking.cpp','ranking_unicode.cpp','emoji.cpp'])includeSource(path.join(common,name));
 const sources=[...sourceSet];
 report.sources=Object.fromEntries(sources.map(file=>[path.relative(root,file),hash(file)]));
 const runtimeSources=[path.join(root,'apps/desktop/resources/windows-amd64/keyboard/runtime.json'),path.join(root,'apps/desktop/resources/windows-amd64/keyboard/lib/ArionRime.dll'),path.join(sdk,'lib/libArionRime.dll.a')];
@@ -55,7 +55,7 @@ try{
     run(binary,[]);
   }
   const module=path.join(keyboard,'lib/ArionKeyboard.dll');
-  run(cxx,[...base,'-DRIME_IMPORTS','-shared',path.join(source,'keyboard_runtime.cpp'),...['learning','learning_rime','learning_windows','ranking','ranking_unicode'].map(name=>path.join(common,`${name}.cpp`)),objects[0],path.join(sdk,'lib/libArionRime.dll.a'),'-o',module,'-lcrypt32','-lole32','-luuid','-ladvapi32']);
+  run(cxx,[...base,'-DRIME_IMPORTS','-shared',path.join(source,'keyboard_runtime.cpp'),...['learning','learning_rime','learning_windows','ranking','ranking_unicode','emoji'].map(name=>path.join(common,`${name}.cpp`)),objects[0],path.join(sdk,'lib/libArionRime.dll.a'),'-o',module,'-lcrypt32','-lole32','-luuid','-ladvapi32']);
   const manifestPath=path.join(keyboard,'runtime.json'),manifest=JSON.parse(readFileSync(manifestPath,'utf8'));
   manifest.files['lib/ArionKeyboard.dll']={sha256:hash(module),sizeBytes:readFileSync(module).length};
   writeFileSync(manifestPath,JSON.stringify(manifest,null,2)+'\n');

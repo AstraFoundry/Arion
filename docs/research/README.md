@@ -10,6 +10,7 @@ Research separates **observed shipped artifacts**, **static inferences**, **vend
 - [Chatterfly](chatterfly.md) — installer payload and native scenario-aware post-processing paths.
 - [Rewrite stage preservation](rewrite-stage-preservation.md) — revalidated competitor stage boundaries, a real preview-to-final regression, and paired native pipeline diagnostics.
 - [Keyboard input methods](keyboard-ime.md) — Doubao/Chatterfly native Pinyin decoding, local candidate ranking, conditional model/cloud enhancement and composition/commit evidence.
+- [Emoji candidate proposal](emoji-candidate-plan.md) — open-source references, typed Rime candidates, Unicode data, text-ranking and learning isolation, proposed rollout and native acceptance gates.
 - [Installed Chatterfly keyboard](chatterfly-installed-keyboard.md) — matching installed bytes, XNet loaders, model enablement, bounded provisioning search, stored cloud preference and real keyboard probes.
 - [Chatterfly candidate UI](chatterfly-candidate-ui.md) — shipped candidate-bar size presets, light/dark themes and input-menu icon format behind Arion's candidate bar.
 - [Typing-time candidate re-ranking](context-ranking.md) — current Doubao MLP/LLM fusion and Chatterfly LM/LTR/conditional generation call paths, evidence limits and Arion's local context ranker.

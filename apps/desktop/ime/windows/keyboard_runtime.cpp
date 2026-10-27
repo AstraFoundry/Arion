@@ -7,6 +7,7 @@
 #include <string>
 #include "keyboard_runtime.h"
 #include "../shared/pinyin.h"
+#include "../shared/emoji.h"
 #include "../shared/learning_rime.h"
 #include "../shared/ranking.h"
 #include "../shared/ranking_unicode.h"
@@ -68,6 +69,7 @@ extern "C" RimeApi *arion_keyboard_start(const char *data,const char *user,char 
         if (!arion_pinyin_api_supported(api)) { failure="keyboard runtime API unsupported"; output(failure,error,capacity); return nullptr; }
         RimeTraits configuration=traits();
         api->setup(&configuration);
+        arion_emoji_register();
         if (!arion_learning_windows_register(learningDirectory.c_str(),error,capacity)) { failure="encrypted keyboard learning unavailable"; return nullptr; }
         api->initialize(&configuration);
         if (arion_learning_error(error,capacity)) { api->finalize(); failure="encrypted keyboard learning unavailable"; return nullptr; }

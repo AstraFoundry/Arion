@@ -12,6 +12,8 @@ __patch:
   engine/translators:
     - punct_translator
     - script_translator
+  engine/filters:
+    - arion_emoji
   menu/page_size: 9
   translator/user_dict: arion_pinyin
   translator/db_class: arion_encrypted_userdb

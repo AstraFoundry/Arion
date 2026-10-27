@@ -30,6 +30,7 @@ typedef NS_ENUM(NSInteger, ArionTypingSwitch) {
 @property(nonatomic) NSUInteger pageSize;
 // Context ranking and its learning (上下文调频).
 @property BOOL contextRanking;
+@property BOOL emojiSuggestions;
 - (instancetype)initWithEngine:(ArionKeyboardEngine *)engine;
 - (BOOL)activate:(id)client error:(NSError **)error;
 - (void)deactivate;

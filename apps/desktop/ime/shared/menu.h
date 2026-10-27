@@ -8,8 +8,11 @@ extern "C" {
 typedef struct ArionPinyinMenu {
     char **texts;
     size_t *indices;
+    unsigned char *emoji;
     size_t count, fetched, page_size, page, highlight, top_row;
     int exhausted, expanded;
+    int (*kind)(void *context, uintptr_t session, size_t index, unsigned char *emoji);
+    void *kind_context;
 } ArionPinyinMenu;
 typedef int (*ArionMenuRank)(void *context, const char *const *texts, size_t count, size_t *order);
 
@@ -18,6 +21,9 @@ void arion_menu_dispose(ArionPinyinMenu *menu);
 // collapsed or disposed at the end of the composition.
 int arion_menu_build(ArionPinyinMenu *menu, RimeApi *api, uintptr_t session,
     size_t page_size, ArionMenuRank rank, void *context);
+int arion_menu_build_typed(ArionPinyinMenu *menu, RimeApi *api, uintptr_t session,
+    size_t page_size, ArionMenuRank rank, void *context,
+    int (*kind)(void *, uintptr_t, size_t, unsigned char *), void *kind_context);
 int arion_menu_load(ArionPinyinMenu *menu, RimeApi *api, uintptr_t session, size_t index);
 int arion_menu_turn(ArionPinyinMenu *menu, RimeApi *api, uintptr_t session, int delta);
 int arion_menu_move(ArionPinyinMenu *menu, int delta);

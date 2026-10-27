@@ -29,7 +29,7 @@ for (const name of ['pinyin','input','menu']) {
   cObjects.push(object);
 }
 const base=['-std=c++17','-DINITGUID','-O2','-Wall','-Wextra','-Werror','-static','-I',path.join(sdk,'include')];
-run(compiler,[...base,'-DRIME_IMPORTS','-shared',path.join(source,'keyboard_runtime.cpp'),...['learning','learning_rime','learning_windows','ranking','ranking_unicode'].map(name=>path.join(common,`${name}.cpp`)),cObjects[0],path.join(sdk,'lib/libArionRime.dll.a'),'-o',path.join(keyboard,'lib/ArionKeyboard.dll'),'-lcrypt32','-lole32','-luuid','-ladvapi32']);
+run(compiler,[...base,'-DRIME_IMPORTS','-shared',path.join(source,'keyboard_runtime.cpp'),...['learning','learning_rime','learning_windows','ranking','ranking_unicode','emoji'].map(name=>path.join(common,`${name}.cpp`)),cObjects[0],path.join(sdk,'lib/libArionRime.dll.a'),'-o',path.join(keyboard,'lib/ArionKeyboard.dll'),'-lcrypt32','-lole32','-luuid','-ladvapi32']);
 recordWindowsKeyboardModule(keyboard);
 verifyWindowsKeyboardRuntime(keyboard);
 const keyboardManifestSHA256=createHash('sha256').update(readFileSync(path.join(keyboard,'runtime.json'))).digest('hex');

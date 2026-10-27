@@ -146,7 +146,7 @@ func fixture() (*runtime.State, *recorder, runtime.Store) {
 		Version:     "0.1.0",
 		Permissions: runtime.Permissions{Microphone: runtime.ConsentGranted, Accessibility: runtime.ConsentGranted},
 		Preferences: runtime.Preferences{HoldKey: runtime.DefaultHoldKey(platform.GOOS), Delivery: runtime.DeliveryAutomatic, Sounds: true, CheckUpdates: true,
-			Keyboard: runtime.KeyboardPreferences{PageSize: 9, CandidateSize: runtime.CandidateMedium, Appearance: runtime.AppearanceSystem, Accent: runtime.AccentYellow, ContextRanking: true}},
+			Keyboard: runtime.KeyboardPreferences{PageSize: 9, CandidateSize: runtime.CandidateMedium, Appearance: runtime.AppearanceSystem, Accent: runtime.AccentYellow, ContextRanking: true, EmojiSuggestions: true}},
 		InputMethod: runtime.InputMethodAbsent,
 		Account:     runtime.Account{Phase: runtime.AccountSignedOut, Issuer: "https://astrafoundry.si", Portal: "https://astrafoundry.si/account"},
 		Hold:        runtime.Hold{Active: true},
@@ -1479,6 +1479,9 @@ func TestWindowsKeyboardSettings(t *testing.T) {
 					t.Fatalf("Windows keyboard setting missing %s", key)
 				}
 			}
+			if hasText(tt, messages.Text(copy.KbdEmojiSuggestions)) {
+				t.Fatal("macOS-only Emoji setting appears on Windows")
+			}
 			if hasText(tt, messages.Text(copy.IMESetupHint)) {
 				t.Fatal("Windows setup exposes macOS instructions")
 			}
@@ -1563,12 +1566,30 @@ func TestKeyboardSettings(t *testing.T) {
 			tt := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, SettingsWidth, SettingsHeight)
 			settle(tt)
 			for _, key := range []copy.Key{copy.IMESelected, copy.KbdPageSize, copy.KbdCandidateSize, copy.KbdAppearance, copy.KbdAccent,
-				copy.KbdContextRanking, copy.KbdSwitchLanguage} {
+				copy.KbdContextRanking, copy.KbdEmojiSuggestions, copy.KbdSwitchLanguage} {
 				if !hasText(tt, messages.Text(key)) {
 					t.Fatalf("keyboard section missing %s: %q", key, tt.Texts())
 				}
 			}
+			if !state.Preferences.Keyboard.EmojiSuggestions {
+				t.Fatal("Emoji suggestions should start enabled on macOS")
+			}
 			snapshot(t, tt, "settings-keyboard-"+string(language))
+			emojiRow, ok := tt.Find(messages.Text(copy.KbdEmojiSuggestions))
+			if !ok {
+				t.Fatal("Emoji row not found")
+			}
+			tt.ClickAt(SettingsWidth-60, emojiRow.Y+emojiRow.H)
+			settle(tt)
+			if state.Preferences.Keyboard.EmojiSuggestions {
+				t.Fatal("Emoji preference did not switch off")
+			}
+			snapshot(t, tt, "settings-keyboard-emoji-off-"+string(language))
+			tt.ClickAt(SettingsWidth-60, emojiRow.Y+emojiRow.H)
+			settle(tt)
+			if !state.Preferences.Keyboard.EmojiSuggestions {
+				t.Fatal("Emoji preference did not switch on")
+			}
 			if err := tt.Click("9"); err != nil {
 				t.Fatal(err)
 			}

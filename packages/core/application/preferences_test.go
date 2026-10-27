@@ -99,15 +99,19 @@ func TestKeyboardPreferences(t *testing.T) {
 	if err := json.Unmarshal([]byte(`{"keyboard":{"pageSize":6,"candidateSize":"large","appearance":"dark","contextRanking":false}}`), &prefs); err != nil {
 		t.Fatal(err)
 	}
-	if normalized, repairs := prefs.Normalize("darwin"); normalized.Keyboard.Accent != AccentYellow || normalized.Keyboard.PageSize != 6 || len(repairs) != 0 {
+	if normalized, repairs := prefs.Normalize("darwin"); normalized.Keyboard.Accent != AccentYellow || normalized.Keyboard.PageSize != 6 || !normalized.Keyboard.EmojiSuggestions || len(repairs) != 0 {
 		t.Fatalf("keyboard preferences without an accent: %+v %v", normalized.Keyboard, repairs)
+	}
+	prefs = DefaultPreferences("darwin")
+	if err := json.Unmarshal([]byte(`{"keyboard":{"emojiSuggestions":false}}`), &prefs); err != nil || prefs.Keyboard.EmojiSuggestions {
+		t.Fatalf("explicit Emoji preference was not retained: %+v %v", prefs.Keyboard, err)
 	}
 	old = DefaultPreferences("darwin")
 	old.Keyboard = KeyboardPreferences{PageSize: 6, CandidateSize: CandidateLarge, Appearance: AppearanceDark, Accent: AccentBlue}
 	if normalized, repairs := old.Normalize("darwin"); normalized.Keyboard != old.Keyboard || len(repairs) != 0 {
 		t.Fatalf("valid keyboard choice changed: %+v %v", normalized.Keyboard, repairs)
 	}
-	old.Keyboard = KeyboardPreferences{PageSize: 12, CandidateSize: "huge", Appearance: "sepia", Accent: "teal", ContextRanking: true}
+	old.Keyboard = KeyboardPreferences{PageSize: 12, CandidateSize: "huge", Appearance: "sepia", Accent: "teal", ContextRanking: true, EmojiSuggestions: true}
 	normalized, repairs := old.Normalize("darwin")
 	if normalized.Keyboard != DefaultKeyboardPreferences() || !slices.Contains(repairs, "keyboard") {
 		t.Fatalf("invalid keyboard choice not explicitly repaired: %+v %v", normalized.Keyboard, repairs)

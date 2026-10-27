@@ -148,12 +148,15 @@ type KeyboardPreferences struct {
 	// ContextRanking moves the word the user chose after the same previous
 	// word to the front while typing, and learns those choices (上下文调频).
 	ContextRanking bool `json:"contextRanking"`
+	// EmojiSuggestions adds a small reviewed set of Unicode Emoji alternatives
+	// to Chinese Pinyin candidates. The OS renders the characters.
+	EmojiSuggestions bool `json:"emojiSuggestions"`
 }
 
 // DefaultKeyboardPreferences keep the engine's nine-candidate page and the
 // app's yellow accent.
 func DefaultKeyboardPreferences() KeyboardPreferences {
-	return KeyboardPreferences{PageSize: 9, CandidateSize: CandidateMedium, Appearance: AppearanceSystem, Accent: AccentYellow, ContextRanking: true}
+	return KeyboardPreferences{PageSize: 9, CandidateSize: CandidateMedium, Appearance: AppearanceSystem, Accent: AccentYellow, ContextRanking: true, EmojiSuggestions: true}
 }
 
 // normalize repairs fields that cannot be valid.

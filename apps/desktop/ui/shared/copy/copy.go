@@ -197,6 +197,8 @@ const (
 	KbdSmartGroup             Key = "KbdSmartGroup"
 	KbdContextRanking         Key = "KbdContextRanking"
 	KbdContextRankingDetail   Key = "KbdContextRankingDetail"
+	KbdEmojiSuggestions       Key = "KbdEmojiSuggestions"
+	KbdEmojiSuggestionsDetail Key = "KbdEmojiSuggestionsDetail"
 	KbdKeysGroup              Key = "KbdKeysGroup"
 	KbdSwitchLanguage         Key = "KbdSwitchLanguage"
 	KbdSwitchLanguageKeys     Key = "KbdSwitchLanguageKeys"

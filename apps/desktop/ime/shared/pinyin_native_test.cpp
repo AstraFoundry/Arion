@@ -4,6 +4,7 @@
 #include "menu.h"
 #include "input.h"
 #include "learning_rime.h"
+#include "emoji.h"
 #include <filesystem>
 #include <iostream>
 #include <stdexcept>
@@ -70,6 +71,7 @@ int main(int argc,char **argv) {
         char error[512]{};
         std::string learning=(profile/"learning").u8string();
         require(arion_learning_windows_register(learning.c_str(),error,sizeof(error)),error);
+        arion_emoji_register();
         api->initialize(&traits); initialized=true;
         require(!arion_learning_error(error,sizeof(error)),error);
         auto first=arion_pinyin_create_session(api),second=arion_pinyin_create_session(api);

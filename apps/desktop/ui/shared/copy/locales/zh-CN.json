@@ -516,6 +516,8 @@
   "KbdSmartGroup": "智能输入",
   "KbdContextRanking": "上下文调频",
   "KbdContextRankingDetail": "结合前一个词，优先展示你常选的候选词。学习记录仅在本机加密保存。",
+  "KbdEmojiSuggestions": "表情符号候选",
+  "KbdEmojiSuggestionsDetail": "在中文拼音候选中显示少量匹配的 macOS 表情符号。",
   "KbdKeysGroup": "按键",
   "KbdSwitchLanguage": "中英文切换",
   "KbdSwitchLanguageKeys": "Shift",
