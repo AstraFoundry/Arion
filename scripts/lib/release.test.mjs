@@ -74,7 +74,10 @@ test('Windows release assets require a matching signed archive and manifest', ()
   const { config, directory, manifest } = signedRelease(platform);
   const manifestPath = path.join(directory, `update-${platform}.json`);
   try {
-    assert.deepEqual(platformAssets(directory, config, platform), ['Arion Setup 0.1.0-alpha.6 amd64.exe', 'arion-0.1.0-alpha.6-windows-amd64.tar.gz', 'update-windows-amd64.json']);
+    assert.deepEqual(platformAssets(directory, config, platform), ['Arion-0.1.0-alpha.6-windows-x64-setup.exe', 'arion-0.1.0-alpha.6-windows-amd64.tar.gz', 'update-windows-amd64.json']);
+    const record = stagedRecord(directory, config, [platform], { commit: 'abc', createdAt: '2026-10-20T07:00:00.000Z' });
+    assert.equal(record.targets[platform].installer.name, 'Arion-0.1.0-alpha.6-windows-x64-setup.exe');
+    assert.equal(stagingUploads(directory, record)[0].key, 'files/Arion-0.1.0-alpha.6-windows-x64-setup.exe');
     for (const changed of [{ size: manifest.size + 1 }, { signature: Buffer.alloc(64).toString('base64') }]) {
       writeFileSync(manifestPath, JSON.stringify({ ...manifest, ...changed }));
       assert.throws(() => platformAssets(directory, config, platform), /size or signature verification failed/);

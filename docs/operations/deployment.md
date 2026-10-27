@@ -86,6 +86,8 @@ The current profile-bearing macOS arm64 canonical build completes Developer ID s
 
 ## Releases and updates
 
+Windows installers use `Arion-<version>-windows-x64-setup.exe`. The shared build entry point renames MyGo's generated installer before verification and release collection; staging, checksums and GitHub downloads use the same name. The x64 label covers both Intel and AMD processors. Internal platform keys, signed update archives and manifests retain `windows-amd64` for updater compatibility. Existing published assets keep their original names.
+
 The app checks the Arion center's `stable` channel, or `beta` with **Allow beta updates** on, at `https://api.arion.astrafoundry.si/v1/updates` (`desktop.json` `updates.url`, [ADR 019](../decisions/019-center-update-channels.md)); no client request reaches the GitHub API. With `MYGO_UPDATER_PRIVATE_KEY` set, `mygo build` also writes the signed update archive and `update-<os>-<arch>.json`, whose URLs point at the center.
 
 1. Once: configure the repository secrets above, including the matching Ed25519 secret key as `MYGO_UPDATER_PRIVATE_KEY`, and keep a backup in the password manager. It is independent of Apple Developer certificates. If the original update private key is lost before the first release, deliberately replace the key pair and the configured public key before shipping; after shipping, rotation needs the old signing key. Do not commit keys. Also configure release staging: `ARION_RELEASES_S3_ENDPOINT`, `ARION_RELEASES_S3_REGION`, `ARION_RELEASES_S3_BUCKET`, `ARION_RELEASES_S3_PREFIX` (`arion`), `ARION_RELEASES_S3_ACCESS_KEY_ID` and `ARION_RELEASES_S3_SECRET_ACCESS_KEY`, a token that can write only `files/` and `releases/` under the prefix.

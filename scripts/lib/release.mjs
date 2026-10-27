@@ -41,7 +41,7 @@ export function checkRelease(config, tag, secret) {
 export function installerName(config, platform) {
   if (!releasePlatforms.includes(platform)) throw new Error(`Unsupported release platform: ${platform}`);
   const arch = platform.split('-')[1];
-  return platform.startsWith('darwin-') ? `${config.name} ${config.version} ${arch}.dmg` : `${config.name} Setup ${config.version} ${arch}.exe`;
+  return platform.startsWith('darwin-') ? `${config.name} ${config.version} ${arch}.dmg` : `${config.name}-${config.version}-windows-x64-setup.exe`;
 }
 
 function requireFile(directory, name) {
