@@ -4,6 +4,7 @@
 #include "menu.h"
 #include "input.h"
 #include "learning_rime.h"
+#include "emoji.h"
 #include <filesystem>
 #include <iostream>
 #include <stdexcept>
@@ -70,6 +71,7 @@ int main(int argc,char **argv) {
         char error[512]{};
         std::string learning=(profile/"learning").u8string();
         require(arion_learning_windows_register(learning.c_str(),error,sizeof(error)),error);
+        arion_emoji_register();
         api->initialize(&traits); initialized=true;
         require(!arion_learning_error(error,sizeof(error)),error);
         auto first=arion_pinyin_create_session(api),second=arion_pinyin_create_session(api);
@@ -132,6 +134,18 @@ int main(int argc,char **argv) {
         require(arion_pinyin_process_key(api,first,',',0),"Chinese punctuation not handled");
         { Snapshot punctuation(api,first); require(std::string(punctuation.value.commit)=="\xef\xbc\x8c","Chinese comma differs"); }
         printCase("direct-chinese-punctuation");
+        api->set_option(first,"arion_emoji",True);
+        type(api,first,"yinggelan");
+        const std::string tagFlag=u8"\U0001f3f4\U000e0067\U000e0062\U000e0065\U000e006e\U000e0067\U000e007f";
+        size_t tagIndex=candidateIndex(api,first,tagFlag);
+        ArionEmojiCandidateMetadata tagMetadata{};
+        require(arion_emoji_candidate_metadata(first,tagIndex,&tagMetadata) && tagMetadata.emoji,
+                "subdivision flag metadata unavailable");
+        require(std::string(tagMetadata.sequence_id)=="1F3F4-E0067-E0062-E0065-E006E-E0067-E007F",
+                "subdivision flag sequence ID truncated");
+        require(arion_pinyin_select(api,first,tagIndex,0),"subdivision flag selection failed");
+        { Snapshot flag(api,first); require(std::string(flag.value.commit)==tagFlag,"subdivision flag commit changed Unicode"); }
+        printCase("emoji-subdivision-flag-metadata-and-exact-commit");
         arion_pinyin_destroy_session(api,first); arion_pinyin_destroy_session(api,second);
         api->finalize(); initialized=false;
         require(!arion_learning_error(error,sizeof(error)),error);

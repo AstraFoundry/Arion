@@ -25,8 +25,8 @@ function run(command,args,env=process.env) {
   if(result.status!==0) throw new Error(`${command} failed (${result.status})`);
 }
 try {
-  const cpp=['learning','learning_rime','learning_windows','ranking','ranking_unicode'].map(name=>path.join(common,`${name}.cpp`));
-  const files=[fileURLToPath(import.meta.url),...cpp,...['keyboard_runtime.cpp','keyboard_runtime.h','keyboard_runtime_test.cpp','control.cpp','payload_install_test.cpp','keyboard_payload.h','payload.h','json.h','identity.h','wire.h'].map(name=>path.join(source,name)),...['pinyin.c','pinyin.h','learning.h','learning_rime.h','ranking.h','ranking_bridge.h','ranking_unicode.h','ranking_unicode_data.h','ranking_unicode_sources.json'].map(name=>path.join(common,name))];
+  const cpp=['learning','learning_rime','learning_windows','ranking','ranking_unicode','emoji'].map(name=>path.join(common,`${name}.cpp`));
+  const files=[fileURLToPath(import.meta.url),...cpp,...['keyboard_runtime.cpp','keyboard_runtime.h','emoji_text.h','keyboard_runtime_test.cpp','control.cpp','payload_install_test.cpp','keyboard_payload.h','payload.h','json.h','identity.h','wire.h'].map(name=>path.join(source,name)),...['pinyin.c','pinyin.h','emoji.h','emoji_data.h','learning.h','learning_rime.h','ranking.h','ranking_bridge.h','ranking_unicode.h','ranking_unicode_data.h','ranking_unicode_sources.json'].map(name=>path.join(common,name))];
   for(const file of files) report.sourceIdentities[path.relative(root,file)]=hash(file);
   const library=path.join(runtime,'lib/ArionRime.dll');
   report.runtimeIdentities.library=hash(library);
@@ -34,12 +34,12 @@ try {
   const cc=process.env.CC??'gcc',cxx=process.env.CXX??'g++';
   const object=path.join(directory,'pinyin.o');
   run(cc,['-std=c11','-O2','-Wall','-Wextra','-Werror','-I',path.join(sdk,'include'),'-c',path.join(common,'pinyin.c'),'-o',object]);
-  const base=['-std=c++17','-DINITGUID','-O2','-Wall','-Wextra','-Werror','-static','-I',path.join(sdk,'include')];
+  const base=['-std=c++17','-DINITGUID','-O2','-Wall','-Wextra','-Werror','-static','-isystem',path.join(sdk,'include')];
   const module=path.join(directory,'ArionKeyboard.dll');
-  run(cxx,[...base,'-DRIME_IMPORTS','-shared',path.join(source,'keyboard_runtime.cpp'),...cpp,object,path.join(sdk,'lib/libArionRime.dll.a'),'-o',module,'-lcrypt32','-lole32','-luuid','-ladvapi32']);
+  run(cxx,[...base,'-DRIME_IMPORTS','-shared',path.join(source,'keyboard_runtime.cpp'),...cpp,object,path.join(sdk,'lib/libArionRime.dll.a'),'-o',module,'-lcrypt32','-lole32','-luuid','-ladvapi32','-ldwrite','-ld2d1']);
   copyFileSync(library,path.join(directory,'ArionRime.dll'));
   const fixture=path.join(directory,'keyboard-runtime-test.exe');
-  run(cxx,[...base,'-municode',path.join(source,'keyboard_runtime_test.cpp'),object,'-o',fixture]);
+  run(cxx,[...base,'-municode',path.join(source,'keyboard_runtime_test.cpp'),object,'-o',fixture,'-ldwrite','-ld2d1','-lole32','-luuid']);
   const installer=path.join(directory,'payload-install-test.exe');
   run(cxx,[...base,'-municode',path.join(source,'payload_install_test.cpp'),'-o',installer,'-lole32','-loleaut32','-luuid','-ladvapi32','-lshell32','-lgdi32']);
   const env={SystemRoot:process.env.SystemRoot,WINDIR:process.env.SystemRoot,PATH:path.join(process.env.SystemRoot,'System32'),TEMP:process.env.TEMP,TMP:process.env.TMP,APPDATA:process.env.APPDATA};

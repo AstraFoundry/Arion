@@ -35,7 +35,7 @@ export function buildIMELearning({
     '-DGLOG_USE_GLOG_EXPORT', ...(testing ? ['-DARION_LEARNING_TESTING'] : []),
     '-I', sdkInclude,
     '-c', path.join(source, 'learning.mm'), '-o', adapter]);
-  const shared = ['learning', 'learning_rime', 'ranking', 'ranking_unicode'].map(name => {
+  const shared = ['learning', 'learning_rime', 'ranking', 'ranking_unicode', 'emoji'].map(name => {
     const object = path.join(outputDir, `shared-${name}-${arch}.o`);
     run(['clang++', '-std=c++17', '-O2', '-target', target, '-DGLOG_USE_GLOG_EXPORT',
       '-I', sdkInclude, '-c', path.join(source, '../shared', `${name}.cpp`), '-o', object]);

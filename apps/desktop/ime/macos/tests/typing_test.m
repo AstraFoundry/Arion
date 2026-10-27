@@ -6,6 +6,7 @@
 #include <rime/dict/db.h>
 #include <rime_api.h>
 #include "../../shared/input.h"
+#include "../../shared/emoji.h"
 #include <map>
 #include <memory>
 
@@ -154,6 +155,138 @@ int main(int argc, const char *argv[]) {
             press(typing, @" ", 49);
             require([editor.view.string isEqual:@"你好"] && editor.insertions == 1, @"Space inserts exact engine commit once");
             require(!typing.composing && !editor.view.hasMarkedText, @"commit clears provisional range");
+        });
+        __block NSArray<NSString *> *emojiOnTextOrder = nil;
+        run(@"Emoji candidate native probe", @"KBD-A10", ^{
+            type(typing, @"xiaolian");
+            record(@"xiaolian candidates", typing, editor);
+            require([typing.snapshot.candidates containsObject:@"😊"], @"native Rime filter offers system-rendered Unicode Emoji");
+            NSMutableArray<NSString *> *textOrder = typing.snapshot.candidates.mutableCopy;
+            [textOrder removeObject:@"😊"];
+            emojiOnTextOrder = textOrder.copy;
+            NSUInteger index = [typing.snapshot.candidates indexOfObject:@"😊"];
+            require(index >= 3 && index <= 4, @"first three Chinese candidates remain protected");
+            require([typing select:index revision:typing.revision], @"select actual Emoji engine candidate");
+            require([editor.view.string isEqual:@"😊"] && editor.insertions == 1, @"Emoji commits exactly once through engine");
+            [typing deactivate]; [engine stop];
+            NSString *vault = [user stringByAppendingPathComponent:@"encrypted"];
+            NSString *file = [vault stringByAppendingPathComponent:@"arion_pinyin.arion-userdb"];
+            const auto records = learningRecords(file, testKey);
+            for (const auto &[code, value] : records) {
+                (void)value;
+                require(code.find("笑脸") == std::string::npos && code.find("😊") == std::string::npos,
+                        @"Emoji selection does not enter Rime Chinese learning records");
+            }
+            NSError *restartError = nil;
+            require(ArionRegisterTestEncryptedLearning(vault, testKey, &restartError) &&
+                    [engine startWithData:data userDirectory:user error:&restartError], @"restart engine after learning inspection");
+        });
+        run(@"Emoji preference off preserves Chinese candidates", @"KBD-A10", ^{
+            [typing deactivate];
+            typing.emojiSuggestions = NO;
+            require([typing activate:editor error:nil], @"activate with Emoji suggestions off");
+            type(typing, @"xiaolian");
+            require(![typing.snapshot.candidates containsObject:@"😊"], @"disabled preference hides Emoji alternatives");
+            require([typing.snapshot.candidates containsObject:@"笑脸"], @"Chinese candidate remains available");
+            require(typing.snapshot.candidates.count >= emojiOnTextOrder.count &&
+                    [[typing.snapshot.candidates subarrayWithRange:NSMakeRange(0, emojiOnTextOrder.count)] isEqual:emojiOnTextOrder],
+                    @"Emoji insertion preserves relative text order");
+        });
+        run(@"Emoji keyboard selection keeps engine ownership", @"KBD-A10", ^{
+            type(typing, @"xiaolian");
+            NSUInteger index = [typing.snapshot.candidates indexOfObject:@"😊"];
+            require(index != NSNotFound && index < 9, @"Emoji is on the first candidate page");
+            require(press(typing, [NSString stringWithFormat:@"%lu", (unsigned long)index+1], 0), @"number key selects Emoji");
+            require([editor.view.string isEqual:@"😊"] && editor.insertions == 1, @"number key commits one engine Emoji");
+            type(typing, @"xiaolian");
+            index = [typing.snapshot.candidates indexOfObject:@"😊"];
+            require([typing highlight:index revision:typing.revision], @"highlight typed Emoji candidate");
+            require(press(typing, @" ", 49), @"Space selects highlighted Emoji");
+            require([editor.view.string isEqual:@"😊😊"] && editor.insertions == 2, @"Space commits the same engine Emoji");
+        });
+        run(@"Emoji punctuation commit stays out of context learning", @"KBD-A10", ^{
+            type(typing, @"xiaolian");
+            NSUInteger index = [typing.snapshot.candidates indexOfObject:@"😊"];
+            require(index != NSNotFound && [typing highlight:index revision:typing.revision], @"highlight Emoji before punctuation");
+            require(press(typing, @",", 43), @"punctuation selects the engine highlight");
+            require([editor.view.string isEqual:@"😊，"], @"punctuation preserves Emoji candidate and Chinese comma");
+        });
+        run(@"Emoji eligibility follows the composing caret", @"KBD-A10", ^{
+            type(typing, @"xiaolian");
+            require([typing.snapshot.candidates containsObject:@"😊"], @"exact complete word offers Emoji");
+            require(press(typing, @"", 115), @"Home moves the composing caret");
+            record(@"Emoji after Home", typing, editor);
+            require(![typing.snapshot.candidates containsObject:@"😊"], @"mid-input caret suppresses Emoji candidates");
+            require(press(typing, @"", 119), @"End returns to the suffix end");
+            record(@"Emoji after End", typing, editor);
+            require([typing.snapshot.candidates containsObject:@"😊"], @"Emoji returns when the caret reaches the suffix end");
+            [typing cancel];
+            type(typing, @"gongsi");
+            require(![typing.snapshot.candidates containsObject:@"😊"], @"unrelated phrase cannot reuse the prior Emoji candidate");
+        });
+        run(@"reviewed and CLDR Emoji triggers reach actual Pinyin candidates", @"KBD-A10", ^{
+            const struct { const char *pinyin; const char *emoji; const char *source; } cases[] = {
+                {"yinggelan", "\U0001f3f4\U000e0067\U000e0062\U000e0065\U000e006e\U000e0067\U000e007f", "英格兰"},
+                {"xiaolian","😊","笑脸"}, {"kaixin","😄","开心"}, {"daxiao","😂","大笑"},
+                {"ku","😭","哭"}, {"aixin","❤️","爱心"}, {"xihuan","❤️","喜欢"},
+                {"guzhang","👏","鼓掌"}, {"xiexie","🙏","谢谢"},
+                {"jiayou","💪","加油"}, {"shengri","🎂","生日"}, {"dangao","🎂","蛋糕"},
+                {"liwu","🎁","礼物"}, {"kafei","☕","咖啡"}, {"taiyang","☀️","太阳"},
+                {"yueliang","🌙","月亮"}, {"xingxing","⭐","星星"}, {"xiayu","🌧️","下雨"},
+                {"xuehua","❄️","雪花"}, {"hua","🌸","花"}, {"mao","🐱","猫"},
+                {"gou","🐶","狗"}, {"pingguo","🍎","苹果"}, {"huo","🔥","火"},
+                {"yinyue","🎵","音乐"}, {"diannao","💻","电脑"},
+                {"xiongmao","🐼","熊猫"}, {"shouji","📱","手机"},
+                {"xigua","🍉","西瓜"}, {"feiji","✈️","飞机"},
+                {"laoshi","🧑‍🏫","老师"}, {"zhongguo","🇨🇳","中国"},
+                {"nihao","👋","你好"}, {"zaijian","👋","再见"},
+                {"paizhao","📸","拍照"}, {"baobao","👶","宝宝"},
+            };
+            NSMutableArray<NSString *> *unreachable = [NSMutableArray array];
+            for (const auto &item : cases) {
+                uintptr_t session = [engine createSession];
+                require(session != 0, @"create independent reachability session");
+                [engine setEmojiSuggestions:YES session:session];
+                for (const char *letter=item.pinyin; *letter; letter++)
+                    require([engine processKey:*letter modifiers:0 session:session], @"compose reviewed trigger");
+                char **texts = nullptr; size_t count = 0;
+                require(arion_pinyin_candidates(engine.api, session, 0, 81, &texts, &count), @"read bounded engine window");
+                BOOL found = NO;
+                for (size_t index=0; index<count; index++) if (strcmp(texts[index],item.emoji)==0) {
+                    ArionEmojiCandidateMetadata metadata;
+                    found = arion_emoji_candidate_metadata(session,index,&metadata) && metadata.emoji &&
+                        strcmp(metadata.source,item.source)==0 && metadata.end==strlen(item.pinyin);
+                    break;
+                }
+                arion_pinyin_candidates_dispose(texts,count);
+                [engine destroySession:session];
+                if (!found) [unreachable addObject:@(item.pinyin)];
+            }
+            require(unreachable.count == 0, [@"unreachable reviewed triggers: " stringByAppendingString:[unreachable componentsJoinedByString:@", "]]);
+        });
+        run(@"system Emoji candidate panel rendering evidence", @"KBD-A10", ^{
+            type(typing, @"xiaolian");
+            NSUInteger index = [typing.snapshot.candidates indexOfObject:@"😊"];
+            require(index != NSNotFound, @"real engine offers Emoji for native drawing");
+            ArionCandidatePanel *panel = [ArionCandidatePanel new];
+            @try {
+                for (NSUInteger dark=0; dark<2; dark++) for (NSUInteger size=0; size<3; size++) {
+                    panel.appearance = dark ? ArionCandidateAppearanceDark : ArionCandidateAppearanceLight;
+                    panel.size = (ArionCandidateSize)size;
+                    [panel showCandidates:typing.snapshot.candidates highlighted:index lastPage:typing.snapshot.lastPage
+                        revision:typing.revision caretRect:NSMakeRect(80, 300, 1, 20)];
+                    [NSRunLoop.currentRunLoop runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.4]];
+                    NSWindow *window = [panel valueForKey:@"window"];
+                    NSView *view = window.contentView;
+                    NSBitmapImageRep *bitmap = [view bitmapImageRepForCachingDisplayInRect:view.bounds];
+                    require(window.visible && bitmap != nil, @"native candidate panel is visible and drawable");
+                    [view cacheDisplayInRect:view.bounds toBitmapImageRep:bitmap];
+                    NSData *png = [bitmap representationUsingType:NSBitmapImageFileTypePNG properties:@{}];
+                    NSString *name = [NSString stringWithFormat:@"emoji-macos-%@-%lu.png", dark ? @"dark" : @"light", (unsigned long)size];
+                    require([png writeToFile:[report.stringByDeletingLastPathComponent stringByAppendingPathComponent:name]
+                        options:NSDataWritingAtomic error:nil], @"save actual AppKit candidate rendering");
+                }
+            } @finally { [panel hide]; }
         });
         run(@"cancel preserves emoji neighbors", @"KBD-A05 KBD-A06", ^{
             editor.view.string = @"甲😀乙";

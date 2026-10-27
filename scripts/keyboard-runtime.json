@@ -194,6 +194,14 @@
       "to": "licenses/ranking-unicode-sources.json",
       "license": "Unicode-3.0",
       "source": "https://www.unicode.org/Public/17.0.0/ucd/"
+    },
+    {
+      "path": "apps/desktop/ime/shared/emoji_sources.json",
+      "sha256": "3ff27758cde6e488854100ef446415dec1818982c41ad49ed40c94c4044fae64",
+      "sizeBytes": 1097,
+      "to": "licenses/emoji-sources.json",
+      "license": "Unicode-3.0",
+      "source": "https://github.com/unicode-org/cldr/tree/release-48-2/common/annotations"
     }
   ],
   "windows": {

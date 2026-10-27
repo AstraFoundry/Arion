@@ -8,6 +8,7 @@
 #include "keyboard_options.h"
 #include "native_copy.h"
 #include <climits>
+#include <cctype>
 
 struct TypingCommand {
     enum Kind { Key,Choose,Previous,Next,Inspect,ToggleASCII,TogglePunctuation,ToggleWidth } kind=Key;
@@ -36,6 +37,7 @@ class Typing {
     int textSize=16;
     CandidatePalette palette;
     bool contextRanking=true,settingsChanged=false;
+    bool emojiSuggestions=true,emojiInComposition=false;
     std::wstring optionsPath;
     std::function<bool(TfEditCookie,ITfRange*)> safe;
     std::function<bool(TfEditCookie,ITfRange*,std::wstring&)> read;
@@ -53,7 +55,22 @@ class Typing {
         for (size_t i=0;i<count;++i) indices[i]=i;
         return 1;
     }
-    bool buildMenu() { return arion_menu_build(&menu,runtime.api(),session,pageSize,contextRanking?rank:nullptr,this)!=0; }
+    static int candidateKind(void *target,uintptr_t current,size_t index,unsigned char *emoji) {
+        ArionEmojiCandidateMetadata metadata{};
+        if (!static_cast<Typing*>(target)->runtime.candidate(current,index,metadata)) return 0;
+        *emoji=metadata.emoji!=0; return 1;
+    }
+    bool buildMenu() {
+        return arion_menu_build_typed(&menu,runtime.api(),session,pageSize,contextRanking?rank:nullptr,this,candidateKind,this)!=0 && runtime.ready();
+    }
+    bool select(size_t index) {
+        if (index>=menu.count || !arion_pinyin_select(runtime.api(),session,menu.indices[index],0)) return false;
+        emojiInComposition=emojiInComposition || menu.emoji[index]; return true;
+    }
+    void applyEmojiPreference() {
+        if (session && (runtime.api()->get_option(session,"arion_emoji")!=0)!=emojiSuggestions)
+            runtime.api()->set_option(session,"arion_emoji",emojiSuggestions);
+    }
     void loadOptions() {
         KeyboardOptions options;
         if (!readKeyboardOptions(optionsPath,options)) { modeFailure=nativeCopy(NativeCopy::OptionsFailed); return; }
@@ -65,11 +82,11 @@ class Typing {
     }
 
     bool sessionReady() {
-        if (!healthy || !runtime.ready()) return false;
+        if (!healthy || FAILED(panel.error()) || !runtime.ready()) return false;
         if (!session) {
             session=arion_pinyin_create_session(runtime.api());
             generation=runtime.generation();
-            if (session) arion_pinyin_set_options(runtime.api(),session,ascii,fullWidth,englishPunctuation);
+            if (session) { arion_pinyin_set_options(runtime.api(),session,ascii,fullWidth,englishPunctuation); applyEmojiPreference(); }
         }
         return session!=0;
     }
@@ -118,10 +135,10 @@ class Typing {
         if (!menu.count || ascii) return 0;
         if (key.symbol>='1' && key.symbol<='9') {
             size_t index=menu.page*menu.page_size+static_cast<size_t>(key.symbol-'1');
-            if (index<menu.count && static_cast<size_t>(key.symbol-'1')<menu.page_size) return arion_pinyin_select(runtime.api(),session,menu.indices[index],0)?2:-1;
+            if (index<menu.count && static_cast<size_t>(key.symbol-'1')<menu.page_size) return select(index)?2:-1;
             return 1;
         }
-        if (key.symbol==' ') return arion_pinyin_select(runtime.api(),session,menu.indices[menu.highlight],0)?2:-1;
+        if (key.symbol==' ') return select(menu.highlight)?2:-1;
         bool before=key.symbol=='-' || key.symbol=='[' || key.symbol==0xff55 || key.symbol==0xff52;
         bool after=key.symbol=='=' || key.symbol==']' || key.symbol==0xff56 || key.symbol==0xff54;
         if (before) { if (menu.expanded && menu.page==0) arion_menu_grid(&menu,runtime.api(),session,0); else arion_menu_turn(&menu,runtime.api(),session,-1); return 1; }
@@ -172,8 +189,13 @@ public:
         bool native=accessible->nativeAllowed();
         size_t first=(menu.expanded?menu.top_row:menu.page)*menu.page_size;
         size_t count=menu.expanded?std::min(menu.count-first,arion_menu_row_count(&menu)*menu.page_size):arion_menu_visible_count(&menu);
-        for (size_t i=0;i<count;++i) candidates.push_back({wide(menu.texts[first+i]),L"",menu.indices[first+i]});
-        if (native) { panel.show(owner,area,candidates,menu.highlight-first,menu.page>0,!menu.exhausted || first+count<menu.count,revision,palette,menu.page_size,menu.expanded!=0,textSize); accessible->bind(panel.handle()); }
+        for (size_t i=0;i<count;++i) candidates.push_back({wide(menu.texts[first+i]),L"",menu.indices[first+i],menu.emoji[first+i]!=0});
+        if (native) {
+            if (!panel.show(owner,area,candidates,menu.highlight-first,menu.page>0,!menu.exhausted || first+count<menu.count,revision,palette,menu.page_size,menu.expanded!=0,textSize)) {
+                accessible->bind(nullptr); runtime.failure="keyboard candidate rendering unavailable"; return E_FAIL;
+            }
+            accessible->bind(panel.handle());
+        }
         else panel.hide();
         return S_OK;
     }
@@ -194,8 +216,9 @@ private:
                 if (SUCCEEDED(hr)) hr=composition->EndComposition(cookie);
                 if (SUCCEEDED(hr)) {
                     delivered=true;
-                    if (contextRanking) learn(utf8(committed),previousContext(),runtime.generation());
-                    previousCommit=utf8(committed); previousTime=GetTickCount64();
+                    if (contextRanking && !emojiInComposition) learn(utf8(committed),previousContext(),runtime.generation());
+                    previousCommit=emojiInComposition?std::string{}:utf8(committed); previousTime=GetTickCount64();
+                    emojiInComposition=false;
                     composition->Release(); composition=nullptr; original.clear(); lastText.clear();
                 }
             }
@@ -226,14 +249,15 @@ public:
     ~Typing() { invalidate(); if (context) context->Release(); accessible->Release(); }
     void manager(ITfThreadMgr *value) { accessible->attach(value); }
     bool composing() const { return composition!=nullptr; }
-    bool available() { return healthy && runtime.ready(); }
+    bool available() { if (FAILED(panel.error())) { runtime.failure="keyboard Emoji rendering unavailable"; return false; } return healthy && runtime.ready(); }
     bool isASCII() const { return ascii; }
     bool isFullWidth() const { return fullWidth; }
     bool isEnglishPunctuation() const { return englishPunctuation; }
     void options(const std::wstring &path) { optionsPath=path; KeyboardOptions value; if (readKeyboardOptions(path,value)) { fullWidth=value.fullWidth; englishPunctuation=value.englishPunctuation; } else modeFailure=nativeCopy(NativeCopy::OptionsFailed); }
     void configure(const KeyboardSettings &settings) {
-        settingsChanged=settingsChanged || pageSize!=settings.pageSize || textSize!=settings.textSize || contextRanking!=settings.contextRanking || memcmp(&palette,&settings.palette,sizeof(palette))!=0;
+        settingsChanged=settingsChanged || pageSize!=settings.pageSize || textSize!=settings.textSize || contextRanking!=settings.contextRanking || emojiSuggestions!=settings.emojiSuggestions || memcmp(&palette,&settings.palette,sizeof(palette))!=0;
         pageSize=settings.pageSize; textSize=settings.textSize; palette=settings.palette; contextRanking=settings.contextRanking;
+        emojiSuggestions=settings.emojiSuggestions;
     }
     void attach(ITfContext *value) { if (value==context) return; invalidate(); healthy=true; previousCommit.clear(); if (context) context->Release(); context=value; if (context) context->AddRef(); }
     bool same(TfEditCookie cookie) {
@@ -257,12 +281,14 @@ public:
         }
         if (session && runtime.api() && generation==runtime.generation()) arion_pinyin_clear(runtime.api(),session);
         arion_menu_dispose(&menu); panel.hide(); accessible->hide(); original.clear(); lastText.clear(); caret=0; ++revision;
+        emojiInComposition=false;
     }
     void invalidate() {
         KeyboardLease lease(runtime);
         if (composition) { revoke(composition,lastText,original); composition->Release(); composition=nullptr; }
         if (session && runtime.api() && generation==runtime.generation()) arion_pinyin_destroy_session(runtime.api(),session);
         session=0; arion_menu_dispose(&menu); panel.hide(); accessible->hide(); original.clear(); lastText.clear(); ++revision;
+        emojiInComposition=false;
     }
     bool terminated(TfEditCookie cookie,ITfComposition *value) {
         if (value!=composition) return false;
@@ -283,6 +309,7 @@ public:
         composition->Release(); composition=nullptr;
         if (session && runtime.api() && generation==runtime.generation()) arion_pinyin_clear(runtime.api(),session);
         arion_menu_dispose(&menu); panel.hide(); accessible->hide(); original.clear(); lastText.clear(); ++revision;
+        emojiInComposition=false;
         return true;
     }
     HRESULT process(TfEditCookie cookie,const TypingCommand &command,bool &handled) {
@@ -295,11 +322,23 @@ public:
         loadOptions();
         if (command.kind==TypingCommand::Inspect) {
             if (composition && !same(cookie)) invalidate();
-            else if (composition && settingsChanged) { ++revision; if (buildMenu()) show(cookie); }
+            else if (settingsChanged) {
+                applyEmojiPreference();
+                if (composition) { ++revision; if (buildMenu()) show(cookie); else { healthy=false; cancel(cookie); return E_FAIL; } }
+            }
             settingsChanged=false; return S_OK;
         }
         if (command.kind!=TypingCommand::Key && command.kind!=TypingCommand::ToggleASCII && command.kind!=TypingCommand::TogglePunctuation && command.kind!=TypingCommand::ToggleWidth && command.revision!=revision) return S_FALSE;
         if (composition && !same(cookie)) { invalidate(); return S_FALSE; }
+        if (settingsChanged) {
+            applyEmojiPreference(); settingsChanged=false;
+            if (composition) {
+                ++revision;
+                if (!buildMenu()) { healthy=false; cancel(cookie); return E_FAIL; }
+                show(cookie);
+                if (command.kind==TypingCommand::Choose || command.kind==TypingCommand::Previous || command.kind==TypingCommand::Next) return S_FALSE;
+            }
+        }
         ArionKeyAction action=arion_key_action(command.key.symbol,command.key.modifiers,ascii);
         if (command.kind==TypingCommand::Key && action==ARION_KEY_PASS) { cancel(cookie); return S_OK; }
         if (command.kind==TypingCommand::ToggleASCII || action==ARION_KEY_TOGGLE_ASCII) {
@@ -321,10 +360,10 @@ public:
         HRESULT hr=acquire(cookie); if (FAILED(hr)) return hr;
         if (!sessionReady()) { recoveryText=lastText; healthy=false; cancel(cookie); return E_FAIL; }
         if (command.kind==TypingCommand::Choose) {
-            bool exists=false;
-            for (size_t i=0;i<menu.count;++i) if (menu.indices[i]==command.engineIndex) { exists=true; break; }
-            if (!exists) return S_FALSE;
-            handled=arion_pinyin_select(runtime.api(),session,command.engineIndex,0)!=0;
+            size_t index=0;
+            while (index<menu.count && menu.indices[index]!=command.engineIndex) ++index;
+            if (index==menu.count) return S_FALSE;
+            handled=select(index);
         }
         else if (command.kind==TypingCommand::Previous || command.kind==TypingCommand::Next) { handled=arion_menu_turn(&menu,runtime.api(),session,command.kind==TypingCommand::Previous?-1:1)!=0; if (handled) { ++revision; show(cookie); } return S_OK; }
         else {
@@ -335,7 +374,11 @@ public:
                 if (menuAction==1) { ++revision; show(cookie); return S_OK; }
             } else {
                 int key=arion_key_normalize(command.key.symbol,command.key.modifiers,ascii);
+                if (composition && menu.highlight<menu.count && menu.emoji[menu.highlight] && key>=0 && key<128 && std::ispunct(static_cast<unsigned char>(key))) emojiInComposition=true;
                 handled=arion_pinyin_process_key(runtime.api(),session,key,command.key.modifiers)!=0;
+                if (emojiSuggestions && (key==0xff50 || key==0xff57 || key==0xff51 || key==0xff53) && !runtime.refreshEmojiCandidates(session)) {
+                    recoveryText=lastText; healthy=false; cancel(cookie); runtime.failure="keyboard Emoji caret refresh failed"; return E_FAIL;
+                }
             }
         }
         hr=publish(cookie); if (FAILED(hr)) { if (recoveryText.empty()) recoveryText=lastText; healthy=false; cancel(cookie); runtime.failure="keyboard composition unavailable"; }

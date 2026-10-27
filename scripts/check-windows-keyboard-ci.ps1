@@ -41,9 +41,10 @@ if ($Child) {
         $preflight | Tee-Object -FilePath (Join-Path $preflightDirectory 'preflight.json')
         # Pipe identity, private ACL and canonical-path checks require this
         # ordinary token and its real profile temp directory, too.
-        & $Node (Join-Path $Repository 'scripts/check-go.mjs') desktop
-        if ($LASTEXITCODE -ne 0) { throw 'Standard-user desktop checks failed.' }
+        # Validate the private native ABI before the longer Go desktop suite.
         & $Node (Join-Path $Repository 'scripts/check-windows-keyboard.mjs')
+        if ($LASTEXITCODE -ne 0) { throw 'Standard-user native keyboard checks failed.' }
+        & $Node (Join-Path $Repository 'scripts/check-go.mjs') desktop
         $testExitCode = $LASTEXITCODE
     } finally {
         # Private DPAPI/options fixtures deny the parent runner access. Archive

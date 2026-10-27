@@ -1,7 +1,9 @@
 #import "typing.h"
 #include "../shared/input.h"
 #include "../shared/ranking_bridge.h"
+#include "../shared/emoji.h"
 #import <InputMethodKit/InputMethodKit.h>
+#include <ctype.h>
 
 // A previous commit older than this no longer predicts the next word.
 static const NSTimeInterval kContextLifetime = 120;
@@ -28,7 +30,16 @@ static BOOL containsHan(NSString *text) {
 @property NSTimeInterval previousCommitTime;
 @property NSEventModifierFlags lastModifierFlags;
 @property ArionShiftTap shiftTap;
+@property BOOL emojiInComposition;
 @end
+
+static int emojiSharedMenuKind(void *context, uintptr_t session, size_t index, unsigned char *emoji) {
+    (void)context;
+    ArionEmojiCandidateMetadata metadata;
+    if (!arion_emoji_candidate_metadata(session,index,&metadata)) return 0;
+    *emoji = metadata.emoji != 0;
+    return 1;
+}
 
 static int rankSharedMenu(void *context, const char *const *texts, size_t count, size_t *order) {
     NSDictionary *ranking = (__bridge NSDictionary *)context;
@@ -56,6 +67,7 @@ static NSArray<NSString *> *sharedMenuTexts(const ArionPinyinMenu *menu, NSUInte
         self.engine = engine;
         self.pageSize = 9;
         self.contextRanking = YES;
+        self.emojiSuggestions = YES;
     }
     return self;
 }
@@ -81,6 +93,7 @@ static NSArray<NSString *> *sharedMenuTexts(const ArionPinyinMenu *menu, NSUInte
         if (error) *error = [NSError errorWithDomain:@"ArionKeyboard" code:7 userInfo:nil];
         return NO;
     }
+    [self.engine setEmojiSuggestions:self.emojiSuggestions session:self.session];
     self.available = [self refresh:error];
     return self.available;
 }
@@ -101,6 +114,7 @@ static NSArray<NSString *> *sharedMenuTexts(const ArionPinyinMenu *menu, NSUInte
     _menu.top_row = 0;
     self.snapshot = nil;
     self.engineSnapshot = nil;
+    self.emojiInComposition = NO;
     arion_menu_dispose(&_menu);
 
     self.revision++;
@@ -184,8 +198,17 @@ static NSArray<NSString *> *sharedMenuTexts(const ArionPinyinMenu *menu, NSUInte
     }
     int key = arion_key_normalize(ArionKeyboardKey(event), ArionKeyboardModifiers(event), self.ascii);
     if (key < 0) { [self cancel]; self.previousCommit = nil; return NO; }
+    if (self.composing && _menu.highlight < _menu.count && _menu.emoji[_menu.highlight] &&
+        key < 128 && ispunct(key)) self.emojiInComposition = YES;
     BOOL wasComposing = self.composing;
     BOOL handled = [self.engine processKey:key modifiers:ArionKeyboardModifiers(event) session:self.session];
+    if (wasComposing && self.emojiSuggestions &&
+        (event.keyCode == 115 || event.keyCode == 119 || event.keyCode == 123 || event.keyCode == 124) &&
+        !arion_emoji_refresh_after_caret_move(self.session)) {
+        self.available = NO;
+        [self cancel];
+        return YES;
+    }
     if (![self refresh:nil]) {
         NSBeep();
         return YES;
@@ -231,7 +254,9 @@ static NSArray<NSString *> *sharedMenuTexts(const ArionPinyinMenu *menu, NSUInte
 }
 - (BOOL)choose:(NSUInteger)index {
     if (index >= _menu.count) return NO;
+    BOOL emoji = _menu.emoji[index] != 0;
     if (![self.engine selectCandidate:_menu.indices[index] session:self.session]) return NO;
+    self.emojiInComposition |= emoji;
     return [self refresh:nil];
 }
 - (BOOL)select:(NSUInteger)index revision:(NSUInteger)revision {
@@ -292,8 +317,8 @@ static NSArray<NSString *> *sharedMenuTexts(const ArionPinyinMenu *menu, NSUInte
 - (BOOL)buildMenu {
     ArionContextRanker *ranker = self.contextRanking ? self.engine.ranker : nil;
     NSDictionary *ranking = ranker ? @{ @"ranker": ranker, @"previous": self.context ?: @"" } : nil;
-    return arion_menu_build(&_menu, self.engine.api, self.session, self.pageSize,
-        ranking ? rankSharedMenu : NULL, (__bridge void *)ranking);
+    return arion_menu_build_typed(&_menu, self.engine.api, self.session, self.pageSize,
+        ranking ? rankSharedMenu : NULL, (__bridge void *)ranking, emojiSharedMenuKind, NULL);
 }
 // Shows the current page and makes the engine's highlight match Arion's, so
 // a key the engine resolves itself (punctuation) commits the same candidate.
@@ -353,9 +378,11 @@ static NSArray<NSString *> *sharedMenuTexts(const ArionPinyinMenu *menu, NSUInte
         [self.client insertText:snapshot.commit replacementRange:NSMakeRange(NSNotFound, NSNotFound)];
         if (self.session != session || self.engineGeneration != self.engine.generation) return YES;
         // Raw Return commits Latin input; only converted Chinese is learned.
-        if (self.contextRanking && containsHan(snapshot.commit)) [self.engine.ranker learn:snapshot.commit after:context];
-        self.previousCommit = snapshot.commit;
+        if (self.contextRanking && !self.emojiInComposition && containsHan(snapshot.commit))
+            [self.engine.ranker learn:snapshot.commit after:context];
+        self.previousCommit = self.emojiInComposition ? nil : snapshot.commit;
         self.previousCommitTime = NSDate.timeIntervalSinceReferenceDate;
+        self.emojiInComposition = NO;
     }
     if (snapshot.failure) {
         self.recoveryText = snapshot.preedit;

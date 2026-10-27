@@ -27,7 +27,7 @@ function includeSource(file){
   }
 }
 for(const name of ['service.cpp','textstore_fixture.cpp','native_keys_test.cpp','candidate_window_test.cpp','keyboard_runtime.cpp'])includeSource(path.join(source,name));
-for(const name of ['pinyin.c','input.c','menu.c','learning.cpp','learning_rime.cpp','learning_windows.cpp','ranking.cpp','ranking_unicode.cpp'])includeSource(path.join(common,name));
+for(const name of ['pinyin.c','input.c','menu.c','learning.cpp','learning_rime.cpp','learning_windows.cpp','ranking.cpp','ranking_unicode.cpp','emoji.cpp'])includeSource(path.join(common,name));
 const sources=[...sourceSet];
 report.sources=Object.fromEntries(sources.map(file=>[path.relative(root,file),hash(file)]));
 const runtimeSources=[path.join(root,'apps/desktop/resources/windows-amd64/keyboard/runtime.json'),path.join(root,'apps/desktop/resources/windows-amd64/keyboard/lib/ArionRime.dll'),path.join(sdk,'lib/libArionRime.dll.a')];
@@ -48,19 +48,19 @@ try{
     const object=path.join(directory,`${name}.o`);
     run(cc,['-std=c11','-O2','-Wall','-Wextra','-Werror','-I',path.join(sdk,'include'),'-c',path.join(common,`${name}.c`),'-o',object]);return object;
   });
-  const base=['-std=c++17','-DINITGUID','-O2','-Wall','-Wextra','-Werror','-static','-I',path.join(sdk,'include')];
+  const base=['-std=c++17','-DINITGUID','-O2','-Wall','-Wextra','-Werror','-static','-isystem',path.join(sdk,'include')];
   for(const name of ['native_keys','candidate_window']){
     const binary=path.join(directory,`${name}-test.exe`);
-    run(cxx,[...base,path.join(source,`${name}_test.cpp`),...(name==='native_keys'?[objects[1]]:[]),'-o',binary,'-lgdi32']);
-    run(binary,[]);
+    run(cxx,[...base,path.join(source,`${name}_test.cpp`),...(name==='native_keys'?[objects[1]]:[]),'-o',binary,'-lgdi32','-ldwrite','-ld2d1','-lole32','-luuid']);
+    run(binary,name==='candidate_window'?[directory]:[]);
   }
   const module=path.join(keyboard,'lib/ArionKeyboard.dll');
-  run(cxx,[...base,'-DRIME_IMPORTS','-shared',path.join(source,'keyboard_runtime.cpp'),...['learning','learning_rime','learning_windows','ranking','ranking_unicode'].map(name=>path.join(common,`${name}.cpp`)),objects[0],path.join(sdk,'lib/libArionRime.dll.a'),'-o',module,'-lcrypt32','-lole32','-luuid','-ladvapi32']);
+  run(cxx,[...base,'-DRIME_IMPORTS','-shared',path.join(source,'keyboard_runtime.cpp'),...['learning','learning_rime','learning_windows','ranking','ranking_unicode','emoji'].map(name=>path.join(common,`${name}.cpp`)),objects[0],path.join(sdk,'lib/libArionRime.dll.a'),'-o',module,'-lcrypt32','-lole32','-luuid','-ladvapi32','-ldwrite','-ld2d1']);
   const manifestPath=path.join(keyboard,'runtime.json'),manifest=JSON.parse(readFileSync(manifestPath,'utf8'));
   manifest.files['lib/ArionKeyboard.dll']={sha256:hash(module),sizeBytes:readFileSync(module).length};
   writeFileSync(manifestPath,JSON.stringify(manifest,null,2)+'\n');
   const library=path.join(directory,'ArionTSF.dll');
-  run(cxx,[...base,'-DARION_TSF_TESTING','-DARION_TSF_MANUAL_KEYS',`-DARION_KEYBOARD_MANIFEST_SHA256="${hash(manifestPath)}"`,'-shared',path.join(source,'service.cpp'),...objects,'-o',library,'-lole32','-loleaut32','-luuid','-ladvapi32','-lshell32','-lgdi32']);
+  run(cxx,[...base,'-DARION_TSF_TESTING','-DARION_TSF_MANUAL_KEYS',`-DARION_KEYBOARD_MANIFEST_SHA256="${hash(manifestPath)}"`,'-shared',path.join(source,'service.cpp'),...objects,'-o',library,'-lole32','-loleaut32','-luuid','-ladvapi32','-lshell32','-lgdi32','-ldwrite','-ld2d1']);
   const editor=path.join(directory,'textstore-fixture.exe');
   run(cxx,[...base,'-DARION_TSF_MANUAL_KEYS','-municode',path.join(source,'textstore_fixture.cpp'),'-o',editor,'-lole32','-loleaut32','-luuid','-lgdi32','-ladvapi32']);
   report.identities={service:hash(library),module:hash(module),engine:hash(path.join(keyboard,'lib/ArionRime.dll')),manifest:hash(manifestPath)}; save();
@@ -104,6 +104,42 @@ try{
   const voice=(session,op,text='',revision=0)=>peer.write(JSON.stringify({op,activation:currentActivation,session,text,revision})+'\n');
   async function test(name,action){await action();report.cases.push({name,status:'passed'});save();console.log(`PASS ${name}`);}
   await test('Native hello announces private-password-safe protocol 2',async()=>{const hello=await waitMessage(message=>message.op==='hello');assert.equal(hello.protocol,2);});
+  const settingsFile=path.join(directory,'profile/keyboard.json');
+  const contextFile=path.join(directory,'profile/learning/arion_context.arion-userdb');
+  const contextBytes=()=>existsSync(contextFile)?readFileSync(contextFile):null;
+  await test('Typed native Emoji has protected text slots and commits exactly once without Chinese context learning',async()=>{
+    await command('reset');await type('xiaolian');const menu=await command('menu');
+    assert.equal(menu.visible,true);const index=menu.strings.indexOf('😊');assert.ok(index>=3 && index<9,JSON.stringify(menu));
+    const before=contextBytes();await key(49+index);assert.equal(await document(),'A🙂😊Z');await pause(350);assert.equal(await document(),'A🙂😊Z');
+    assert.deepEqual(contextBytes(),before,'Emoji commit must not rewrite the Chinese context store');
+  });
+  await test('A selected Chinese prefix and Emoji suffix commit together without Chinese context learning',async()=>{
+    await command('reset');await type('nixiaolian');await choose('你');const menu=await command('menu');assert.ok(menu.strings.includes('😊'),JSON.stringify(menu));
+    const before=contextBytes();await choose('😊');assert.equal(await document(),'A🙂你😊Z');await pause(350);assert.deepEqual(contextBytes(),before);
+  });
+  const highlightEmoji=async()=>{
+    let menu=await command('menu');const index=menu.strings.indexOf('😊');assert.ok(index>=3 && index<9);
+    await key(34);await key(33);menu=await command('menu');assert.equal(menu.page,0);
+    for(let i=0;i<index;i++)await key(39);
+    assert.equal((await command('menu')).selection,index);
+  };
+  await test('Space and engine punctuation commit the displayed Emoji identity',async()=>{
+    await command('reset');await type('xiaolian');await highlightEmoji();await key(32);assert.equal(await document(),'A🙂😊Z');
+    await command('reset');await type('xiaolian');await highlightEmoji();await key(190);assert.equal(await document(),'A🙂😊。Z');
+  });
+  await test('Middle caret suppresses Emoji and End restores it without changing the owned draft',async()=>{
+    await command('reset');await type('xiaolian');assert.ok((await command('menu')).strings.includes('😊'));
+    await key(36);assert.equal((await command('menu')).strings.includes('😊'),false);
+    await key(35);assert.ok((await command('menu')).strings.includes('😊'));await key(27);assert.equal(await document(),'A🙂中Z');
+  });
+  await test('Emoji preference refresh preserves text order and revokes canceled candidates',async()=>{
+    await command('reset');await type('xiaolian');const enabled=(await command('menu')).strings.filter(text=>text!=='😊').slice(0,27);
+    writeFileSync(settingsFile,JSON.stringify({emojiSuggestions:false}));await pause(350);
+    const disabled=await command('menu');assert.equal(disabled.strings.includes('😊'),false);assert.deepEqual(disabled.strings.slice(0,27),enabled);
+    await key(27);writeFileSync(settingsFile,JSON.stringify({emojiSuggestions:true}));await pause(350);await type('xiaolian');assert.ok((await command('menu')).strings.includes('😊'));
+    await command('cacheclick');await key(27);await command('staleclick');assert.equal(await document(),'A🙂中Z');
+    await type('nihao');assert.equal((await command('menu')).strings.includes('😊'),false);await key(27);
+  });
   await test('Real Pinyin nihao commits Chinese exactly once',async()=>{await command('reset');await type('nihao');assert.match(await document(),/^A🙂ni.?haoZ$/u);assert.equal((await key(32)).eaten,true);assert.equal(await document(),'A🙂你好Z');await new Promise(resolve=>setTimeout(resolve,350));assert.equal(await document(),'A🙂你好Z');});
   await test('Keyboard-focus receipt rebinds document without a new thread-focus callback',async()=>{await command('reset');await command('threadblur');assert.equal((await key(78)).eaten,false);await command('keyboardfocus');await type('nihao');await key(32);assert.equal(await document(),'A🙂你好Z');});
   await test('Chromium transitory editable store accepts Pinyin while protected fields remain refused',async()=>{await command('reset');await command('chromium');await type('nihao');await key(32);assert.equal(await document(),'A🙂你好Z');await command('reset');await command('password');assert.equal((await key(78)).eaten,false);await command('edit');await command('readonly');assert.equal((await key(78)).eaten,false);await command('writable');await command('regularstore');});

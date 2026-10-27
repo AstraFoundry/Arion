@@ -39,6 +39,7 @@
 - (void)stop;
 - (BOOL)resetLearning:(NSError **)error;
 - (void)setASCII:(BOOL)ascii session:(uintptr_t)session;
+- (void)setEmojiSuggestions:(BOOL)enabled session:(uintptr_t)session;
 // NO when the choice could not be persisted; the option is then unchanged.
 - (BOOL)setFullWidth:(BOOL)fullWidth session:(uintptr_t)session;
 - (BOOL)setEnglishPunctuation:(BOOL)englishPunctuation session:(uintptr_t)session;

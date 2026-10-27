@@ -1,0 +1,30 @@
+{
+  "cldrVersion": "48.2",
+  "emojiVersion": "15.0",
+  "license": "Unicode-3.0",
+  "sources": {
+    "annotations-zh.xml": {
+      "url": "https://raw.githubusercontent.com/unicode-org/cldr/release-48-2/common/annotations/zh.xml",
+      "sha256": "92389f71659998736530c72d4dcc86e453fe0be170cde5c5ad27094cab2a2de8"
+    },
+    "annotations-derived-zh.xml": {
+      "url": "https://raw.githubusercontent.com/unicode-org/cldr/release-48-2/common/annotationsDerived/zh.xml",
+      "sha256": "777acebb7c4ed103c34f5605881a2537656e0a17d9d1127518da7cd54f612bcc"
+    },
+    "emoji-test-15.0.txt": {
+      "url": "https://www.unicode.org/Public/emoji/15.0/emoji-test.txt",
+      "sha256": "8445f23ac8388e096be19d0262e14fceff856ff52093f2356dc89485f1a853db"
+    }
+  },
+  "aliases": {
+    "file": "emoji_aliases.json",
+    "sha256": "426fbda2bc9a8553f64076d8f64438ff5bf8ba7cc18b7eb3e78bc5234a99a30e",
+    "count": 30
+  },
+  "generator": "emoji_generate.py",
+  "generated": {
+    "file": "emoji_data.h",
+    "sha256": "14c6e46817590f2116d42a74896ca6e76f7ab6fb9d9693f6e2658fdc79a16040",
+    "mappings": 1740
+  }
+}

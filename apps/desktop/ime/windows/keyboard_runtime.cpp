@@ -6,7 +6,9 @@
 #include <mutex>
 #include <string>
 #include "keyboard_runtime.h"
+#include "emoji_text.h"
 #include "../shared/pinyin.h"
+#include "../shared/emoji.h"
 #include "../shared/learning_rime.h"
 #include "../shared/ranking.h"
 #include "../shared/ranking_unicode.h"
@@ -19,6 +21,12 @@ uint64_t generation=1;
 std::string dataDirectory,userDirectory,prebuiltDirectory,learningDirectory;
 std::string failure;
 std::unique_ptr<arion::ime::LearningDatabase> contextDatabase;
+WindowsEmojiFont emojiFont;
+int emojiSupported(void*,const char *text) {
+    bool supported=false;
+    if (FAILED(emojiFont.supportsUTF8(text,supported))) failure="Windows Emoji font shaping failed";
+    return supported?1:0;
+}
 void output(const std::string &message,char *error,size_t capacity) {
     if (!error || !capacity) return;
     size_t count=std::min(message.size(),capacity-1); std::memcpy(error,message.data(),count); error[count]='\0';
@@ -68,6 +76,9 @@ extern "C" RimeApi *arion_keyboard_start(const char *data,const char *user,char 
         if (!arion_pinyin_api_supported(api)) { failure="keyboard runtime API unsupported"; output(failure,error,capacity); return nullptr; }
         RimeTraits configuration=traits();
         api->setup(&configuration);
+        if (FAILED(emojiFont.initialize())) { failure="Windows Emoji font unavailable"; output(failure,error,capacity); return nullptr; }
+        arion_emoji_set_support(emojiSupported,nullptr);
+        arion_emoji_register();
         if (!arion_learning_windows_register(learningDirectory.c_str(),error,capacity)) { failure="encrypted keyboard learning unavailable"; return nullptr; }
         api->initialize(&configuration);
         if (arion_learning_error(error,capacity)) { api->finalize(); failure="encrypted keyboard learning unavailable"; return nullptr; }
@@ -76,6 +87,14 @@ extern "C" RimeApi *arion_keyboard_start(const char *data,const char *user,char 
 }
 extern "C" void arion_keyboard_enter(void) { mutex.lock(); }
 extern "C" void arion_keyboard_leave(void) { mutex.unlock(); }
+extern "C" int arion_keyboard_candidate_metadata(uintptr_t session,size_t index,ArionEmojiCandidateMetadata *metadata) {
+    std::lock_guard<std::recursive_mutex> lock(mutex);
+    return runtime && failure.empty() && arion_emoji_candidate_metadata(session,index,metadata);
+}
+extern "C" int arion_keyboard_refresh_emoji(uintptr_t session) {
+    std::lock_guard<std::recursive_mutex> lock(mutex);
+    return runtime && failure.empty() && arion_emoji_refresh_after_caret_move(session);
+}
 extern "C" int arion_keyboard_error(char *error,size_t capacity) {
     std::lock_guard<std::recursive_mutex> lock(mutex);
     if (!runtime || !failure.empty()) { output(failure.empty()?"keyboard runtime unavailable":failure,error,capacity); return 1; }
