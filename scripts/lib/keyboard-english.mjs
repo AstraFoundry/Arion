@@ -3,6 +3,7 @@ import path from 'node:path';
 
 const lexical = (a, b) => a < b ? -1 : a > b ? 1 : 0;
 const eligible = /^[A-Za-z]{2,128}$/;
+export const englishLexiconHeader = 'ARION_ENGLISH\t2\t';
 
 export function writeEnglishLexicon(staging, manifest) {
   const frequencies = new Map();
@@ -44,7 +45,7 @@ export function writeEnglishLexicon(staging, manifest) {
   }
   rows.sort((a, b) => lexical(a.key, b.key));
   writeFileSync(path.join(staging, 'data/arion_english.lexicon'), [
-    `ARION_ENGLISH\t2\t${rows.length}`,
+    `${englishLexiconHeader}${rows.length}`,
     ...rows.map(({ key, displays, rank, count }) => `${key}\t${rank}\t${count}\t${displays.join(',')}`), '',
   ].join('\n'));
   return { words: words.size, displays: displayCount };

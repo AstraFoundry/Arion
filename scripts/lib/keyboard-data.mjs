@@ -2,7 +2,7 @@
 import { copyFileSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync, statSync, utimesSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { pinnedFile } from './pinned-file.mjs';
-import { writeEnglishLexicon } from './keyboard-english.mjs';
+import { writeEnglishLexicon, englishLexiconHeader } from './keyboard-english.mjs';
 
 export const keyboardProfileFiles = ['arion_pinyin.schema.yaml', 'default.custom.yaml'];
 export const englishLexiconFile = 'arion_english.lexicon';
@@ -10,7 +10,8 @@ export const englishLexiconFile = 'arion_english.lexicon';
 export function verifyEnglishProfile(data) {
   const schema = readFileSync(path.join(data, 'build/arion_pinyin.schema.yaml'), 'utf8');
   if (!schema.includes('- arion_bilingual') || schema.includes('table_translator@english') ||
-      schema.includes('- arion_english') || !existsSync(path.join(data, englishLexiconFile))) {
+      schema.includes('- arion_english') || !existsSync(path.join(data, englishLexiconFile)) ||
+      !readFileSync(path.join(data, englishLexiconFile), 'utf8').startsWith(englishLexiconHeader)) {
     throw new Error('Compiled keyboard lost its bilingual translator or complete English lexicon.');
   }
 }
