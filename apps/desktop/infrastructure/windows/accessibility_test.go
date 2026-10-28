@@ -4,6 +4,7 @@ package windows
 
 import (
 	"bufio"
+	"bytes"
 	"context"
 	"errors"
 	"fmt"
@@ -91,11 +92,31 @@ func TestContextReaderInitializesBeforeAuthorization(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), contextStartupTimeout+time.Second)
 	defer cancel()
 	denied := errors.New("synthetic target ownership refusal")
+	// Record only static phase names and elapsed milliseconds. The invalid
+	// fixture HWND is never authorized, so no foreign UI text is collected.
+	mark := func(phase string) string {
+		return "\n[Console]::Error.WriteLine('ARION_INIT " + phase + " ' + $arionInitClock.ElapsedMilliseconds)\n"
+	}
+	source := "$arionInitClock = [System.Diagnostics.Stopwatch]::StartNew()" + mark("started") + accessibilityScript
+	for _, assembly := range []string{"UIAutomationClient", "UIAutomationTypes", "WindowsBase", "UIAutomationClientsideProviders"} {
+		load := "Add-Type -AssemblyName " + assembly + "\n"
+		source = strings.Replace(source, load, load+mark(assembly), 1)
+	}
+	register := "$register.Invoke($null, @($providers))"
+	source = strings.Replace(source, register, register+mark("providers-registered"), 1)
+	source = strings.Replace(source, "'@\n", "'@\n"+mark("reader-compiled"), 1)
+	cmd := windowTextCommand(ctx, 0, source)
+	var diagnostics bytes.Buffer
+	cmd.Stderr = &diagnostics
 	started := time.Now()
-	text, err := readWindowText(ctx, 0, func() error { return denied })
+	text, err := runContextProcess(ctx, cmd, func() error { return denied }, contextStartupTimeout, screenTimeout)
 	t.Logf("managed reader initialization: %s", time.Since(started))
+	t.Logf("managed reader initialization phases:\n%s", diagnostics.String())
 	if !errors.Is(err, denied) || text != "" {
 		t.Fatalf("reader initialization/authorization: text=%q error=%v", text, err)
+	}
+	if !strings.Contains(diagnostics.String(), "ARION_INIT reader-compiled ") {
+		t.Fatal("initialization completed without its compilation diagnostic")
 	}
 }
 

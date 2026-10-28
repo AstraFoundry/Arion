@@ -82,7 +82,11 @@ if ([Console]::In.ReadLine() -ne 'GO') { throw 'Traversal not authorized' }
 [Console]::Write([ArionContextReader]::Read([long]$env:ARION_CONTEXT_HWND))`
 
 func readWindowText(ctx context.Context, hwnd uintptr, authorize func() error) (string, error) {
-	encoded := utf16.Encode([]rune(accessibilityScript))
+	return runContextProcess(ctx, windowTextCommand(ctx, hwnd, accessibilityScript), authorize, contextStartupTimeout, screenTimeout)
+}
+
+func windowTextCommand(ctx context.Context, hwnd uintptr, source string) *exec.Cmd {
+	encoded := utf16.Encode([]rune(source))
 	script := make([]byte, len(encoded)*2)
 	for i, u := range encoded {
 		script[2*i], script[2*i+1] = byte(u), byte(u>>8)
@@ -90,7 +94,7 @@ func readWindowText(ctx context.Context, hwnd uintptr, authorize func() error) (
 	cmd := exec.CommandContext(ctx, "powershell.exe", "-NoProfile", "-NonInteractive", "-EncodedCommand", base64.StdEncoding.EncodeToString(script))
 	cmd.Env = append(cmd.Environ(), "ARION_CONTEXT_HWND="+strconv.FormatUint(uint64(hwnd), 10))
 	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true, CreationFlags: 0x08000000}
-	return runContextProcess(ctx, cmd, authorize, contextStartupTimeout, screenTimeout)
+	return cmd
 }
 
 const (
@@ -125,7 +129,9 @@ func runContextProcess(ctx context.Context, cmd *exec.Cmd, authorize func() erro
 		return "", domain.Fail(domain.CodeTargetUnsupported, "UI Automation output unavailable")
 	}
 	defer stdout.Close()
-	cmd.Stderr = io.Discard
+	if cmd.Stderr == nil {
+		cmd.Stderr = io.Discard
+	}
 	cmd.WaitDelay = 100 * time.Millisecond
 	if err := cmd.Start(); err != nil {
 		if ctx.Err() != nil {
