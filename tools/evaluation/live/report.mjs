@@ -3,11 +3,10 @@
 // the published report can be traced to archived rows without containing
 // any dictated text.
 import fs from "node:fs/promises";
-import crypto from "node:crypto";
 import { scoreText } from "./score-text.mjs";
 import { scoreAudio } from "./score-audio.mjs";
+import { sha256 as hash } from "../src/manifest.mjs";
 
-const hash = (b) => crypto.createHash("sha256").update(b).digest("hex");
 const readJSON = async (p) => JSON.parse(await fs.readFile(p, "utf8"));
 const readRows = async (p) => {
   const bytes = await fs.readFile(p);

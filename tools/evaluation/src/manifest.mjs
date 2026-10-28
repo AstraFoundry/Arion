@@ -5,7 +5,8 @@ import path from 'node:path';
 import { requireValue } from './protocol.mjs';
 import { normalize, tokens } from './metrics.mjs';
 
-export const digest = value => createHash('sha256').update(JSON.stringify(value)).digest('hex');
+export const sha256 = bytes => createHash('sha256').update(bytes).digest('hex');
+export const digest = value => sha256(JSON.stringify(value));
 export const readJson = async filename => JSON.parse(await readFile(filename, 'utf8'));
 export async function hashFile(filename) {
   const hash = createHash('sha256');

@@ -1,24 +1,17 @@
 import fs from "node:fs/promises";
 import path from "node:path";
-import crypto from "node:crypto";
 import { Driver, validateResponse } from "../src/protocol.mjs";
 import { verifyDriverArtifacts } from "../src/runner.mjs";
-import { loadCorpus } from "../src/manifest.mjs";
+import { loadCorpus, sha256 as hash } from "../src/manifest.mjs";
+import { parseFlags, requireFlags } from "./flags.mjs";
 
 if (process.platform !== "darwin")
   throw new Error(
     "This diagnostic adapter requires macOS; other target OS measurements remain pending",
   );
 
-const hash = (bytes) => crypto.createHash("sha256").update(bytes).digest("hex");
-const flags = Object.fromEntries(
-  Array.from({ length: (process.argv.length - 2) / 2 }, (_, i) => [
-    process.argv[2 + i * 2].replace(/^--/, ""),
-    process.argv[3 + i * 2],
-  ]),
-);
-for (const key of ["corpus", "driver", "out"])
-  if (!flags[key]) throw new Error(`--${key} required`);
+const flags = parseFlags(process.argv.slice(2));
+requireFlags(flags, ["corpus", "driver", "out"]);
 const corpusFile = path.resolve(flags.corpus),
   driverFile = path.resolve(flags.driver),
   out = path.resolve(flags.out);

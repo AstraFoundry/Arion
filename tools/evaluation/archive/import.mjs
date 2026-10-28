@@ -1,13 +1,12 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import crypto from 'node:crypto';
+import { sha256 } from './manifest.mjs';
 
 // One-time, explicit import. The archive manifest is immutable and never overwritten.
 const [planFile, manifestFile] = process.argv.slice(2);
 if (!planFile || !manifestFile) throw new Error('Usage: import.mjs <plan.json> <manifest.json>');
 const root = process.cwd();
 const plan = JSON.parse(await fs.readFile(planFile, 'utf8'));
-const sha256 = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
 const allowed = new Set(['.json', '.jsonl', '.md', '.py', '.mjs', '.go', '.sh', '.sha256', '.txt', '.log', '.out', '.error', '.wav', '.aiff', '.pcm', '.png', '.html', '.lock']);
 const sources = new Map();
 for (const mapping of plan.mappings) {

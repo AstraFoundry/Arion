@@ -1,16 +1,16 @@
 import fs from "node:fs/promises";
 import path from "node:path";
-import crypto from "node:crypto";
 import { spawn } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { Driver, validateResponse } from "../src/protocol.mjs";
 import { verifyDriverArtifacts, inferenceRequest } from "../src/runner.mjs";
-import { loadCorpus, digest, hashFile } from "../src/manifest.mjs";
+import { loadCorpus, digest, hashFile, readJson as read, sha256 as hash } from "../src/manifest.mjs";
 import { distribution, errorCounts } from "../src/metrics.mjs";
 import { shuffle } from "../src/statistics.mjs";
 import { Worker } from "./worker.mjs";
 import { buildPrompt, systemPrefix } from "./prompt.mjs";
 import { diagnosticMetrics } from "./metrics.mjs";
+import { parseFlags, requireFlags } from "./flags.mjs";
 
 if (process.platform !== "darwin")
   throw new Error(
@@ -21,15 +21,8 @@ const root = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
   "../../..",
 );
-const hash = (b) => crypto.createHash("sha256").update(b).digest("hex");
-const read = async (p) => JSON.parse(await fs.readFile(p, "utf8"));
-const flags = Object.fromEntries(
-  Array.from({ length: (process.argv.length - 2) / 2 }, (_, i) => [
-    process.argv[2 + i * 2].replace(/^--/, ""),
-    process.argv[3 + i * 2],
-  ]),
-);
-for (const k of [
+const flags = parseFlags(process.argv.slice(2));
+requireFlags(flags, [
   "config",
   "corpus",
   "audio-corpus",
@@ -38,8 +31,7 @@ for (const k of [
   "python",
   "prompts",
   "out",
-])
-  if (!flags[k]) throw new Error(`--${k} required`);
+]);
 const config = await read(flags.config),
   corpus = await read(flags.corpus),
   audio = await loadCorpus(path.resolve(flags["audio-corpus"])),
