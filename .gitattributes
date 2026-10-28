@@ -17,4 +17,4 @@ third_party/mygo/** -text !eol -whitespace
 scripts/licenses/GPL-3.0.txt -text !eol
 
 # Pinned English word lists and notices retain their original upstream bytes.
-scripts/data/english/scowl/** -text !eol -whitespace
+scripts/data/english/** -text !eol -whitespace
