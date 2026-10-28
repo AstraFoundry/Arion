@@ -1,5 +1,7 @@
 # Benchmarks
 
+- [English candidate admission validation](runs/ime-english-admission-v1/README.md): vendor-grounded local admission, 49 authored inputs on five/nine-slot native menus, source-frozen traces, retained failures and portable evidence replay.
+
 - [Original Rime LLM reranker reproduction](results/rime-llm-reranker-v1/README.md): 100 real-candidate exploratory fixtures, 219 local model requests including warmups/controls, wall-time measurements, original parser/cache defects and model-free replay.
 
 - [Research archive migration](migration/README.md): copied corpora, per-case results, exact audio, failed/cancelled attempts and frozen source snapshots, with byte identities and model-free report replay.
