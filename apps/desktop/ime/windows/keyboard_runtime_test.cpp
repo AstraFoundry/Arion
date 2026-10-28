@@ -149,6 +149,23 @@ int wmain(int count,wchar_t **arguments) {
             }
             leave(); return ok;
         };
+        auto englishConverts=[&]() {
+            enter(); auto session=arion_pinyin_create_session(api); bool ok=session!=0;
+            if (ok) {
+                for (char key:std::string("github")) ok=arion_pinyin_process_key(api,session,key,0)&&ok;
+                char **texts=nullptr; size_t count=0,index=SIZE_MAX;
+                ok=arion_pinyin_candidates(api,session,0,27,&texts,&count)&&ok;
+                for (size_t i=0;i<count;++i) if (std::string(texts[i])=="GitHub") index=i;
+                arion_pinyin_candidates_dispose(texts,count);
+                ok=index!=SIZE_MAX && arion_pinyin_select(api,session,index,0) && ok;
+                ArionPinyinSnapshot snapshot{};
+                ok=arion_pinyin_snapshot(api,session,&snapshot)==0&&ok;
+                ok=snapshot.commit && std::string(snapshot.commit)=="GitHub" && ok;
+                arion_pinyin_snapshot_dispose(&snapshot); arion_pinyin_destroy_session(api,session);
+            }
+            leave(); return ok;
+        };
+        require(englishConverts(),"bilingual module preserves canonical English case");
         require(convert(),"remaining client converts after balanced release");
         std::atomic<bool> parallelOK{true};
         auto worker=[&] { for (int i=0;i<4;++i) if (!convert()) parallelOK=false; };
@@ -194,7 +211,7 @@ int wmain(int count,wchar_t **arguments) {
             const auto beforeRefusal=generation();
             require(reset(failure,sizeof(failure))==0 && failure[0],"peer-active reset is explicitly refused");
             require(generation()!=beforeRefusal,"refused reset invalidates finalized sessions");
-            require(error(failure,sizeof(failure))==0 && convert(),"refused reset restores usable real conversion");
+            require(error(failure,sizeof(failure))==0 && convert() && englishConverts(),"refused reset restores both word producers");
             require(rankedFirst()==3,"refused reset preserves confirmed context learning");
         }
         enter();
@@ -208,7 +225,7 @@ int wmain(int count,wchar_t **arguments) {
         enter();
         const bool invalidated=api->find_session(stale)==0;
         leave();
-        require(invalidated && convert(),"expired session is gone and replacement converts");
+        require(invalidated && convert() && englishConverts(),"reset restores Chinese and English producers");
         require(rankedFirst()==0,"reset closes active context database and clears learned ranking");
         teach();
         const auto beforeStop=generation();

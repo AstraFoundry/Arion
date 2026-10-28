@@ -212,7 +212,11 @@ int main(int argc, const char *argv[]) {
                 type(typing, sample[0]);
                 record(sample[0], typing, editor);
                 NSUInteger index = [typing.snapshot.candidates indexOfObject:sample[1]];
-                require(index < 5, @"prefix offers the intended complete word on the smallest page");
+                for (NSUInteger page = 0; index == NSNotFound && page < 8; ++page) {
+                    press(typing, @"=", 24);
+                    index = [typing.snapshot.candidates indexOfObject:sample[1]];
+                }
+                require(index != NSNotFound, @"prefix offers the intended word through actual candidate paging");
                 require([typing select:index revision:typing.revision], @"select actual completion by displayed index");
                 require([editor.view.string hasSuffix:sample[1]] && !typing.composing && !typing.ascii,
                         @"completion consumes only typed input and keeps Chinese mode");
@@ -228,6 +232,26 @@ int main(int argc, const char *argv[]) {
                 require([typing.snapshot.candidates[0] characterAtIndex:0] > 127, @"whole-input Chinese stays first");
                 [typing cancel];
             }
+        });
+        run(@"Expanded English vocabulary, canonical case and lower-ranked completions", @"KBD-A13", ^{
+            typing.pageSize = 5;
+            for (NSArray<NSString *> *sample in @[@[@"github", @"GitHub"], @[@"javascript", @"JavaScript"],
+                    @[@"api", @"API"], @[@"frontend", @"frontend"], @[@"backend", @"backend"], @[@"workflow", @"workflow"]]) {
+                type(typing, sample[0]);
+                NSUInteger index = [typing.snapshot.candidates indexOfObject:sample[1]];
+                require(index < 5, @"expanded source word and its canonical case appear on the first page");
+                require([typing select:index revision:typing.revision], @"expanded English word uses actual engine selection");
+                require([editor.view.string hasSuffix:sample[1]], @"canonical source spelling survives commit");
+            }
+            type(typing, @"artifi");
+            NSMutableSet<NSString *> *words = [NSMutableSet set];
+            for (NSUInteger page = 0; page < 10; ++page) {
+                for (NSString *candidate in typing.snapshot.candidates)
+                    if ([candidate.lowercaseString hasPrefix:@"artifi"]) [words addObject:candidate.lowercaseString];
+                press(typing, @"=", 24);
+            }
+            require(words.count > 3 && [words containsObject:@"artifice"], @"lower-ranked words survive beyond the old three-word cutoff");
+            [typing cancel];
         });
         run(@"English commits do not enter Chinese word learning", @"KBD-A07 KBD-A13", ^{
             [typing deactivate]; [engine stop];
@@ -247,7 +271,7 @@ int main(int argc, const char *argv[]) {
         run(@"English candidate panel rendering", @"KBD-A13", ^{
             ArionCandidatePanel *panel = [ArionCandidatePanel new];
             @try {
-                for (NSString *word in @[@"artificial", @"can", @"artifi", @"hel"]) {
+                for (NSString *word in @[@"artificial", @"can", @"artifi", @"hel", @"github", @"frontend"]) {
                     type(typing, word);
                     record(word, typing, editor);
                     [panel showCandidates:typing.snapshot.candidates highlighted:typing.snapshot.highlighted lastPage:typing.snapshot.lastPage

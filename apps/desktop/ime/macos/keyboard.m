@@ -108,13 +108,17 @@ static BOOL verifyData(NSString *directory) {
     traits.log_dir = "";
     self.api->setup(&traits);
     arion_emoji_register();
-    arion_english_register();
 #ifndef ARION_LEARNING_TESTING
     if (!ArionRegisterEncryptedLearning([user stringByAppendingPathComponent:@"learning"], error)) return NO;
 #endif
     // Tests register the same backend with an injected key before this call.
     // Production uses the separate Keychain-backed registration above.
     self.api->initialize(&traits);
+    char englishError[256] = {0};
+    if (!arion_english_register(self.dataDirectory.fileSystemRepresentation, englishError, sizeof(englishError))) {
+        self.api->finalize();
+        return keyboardFailure(error, 2);
+    }
     if (ArionEncryptedLearningError()) {
         if (error) *error = ArionEncryptedLearningError();
         self.api->finalize();

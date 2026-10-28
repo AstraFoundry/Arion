@@ -5,7 +5,7 @@ import { isDeepStrictEqual } from 'node:util';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { verifyWindowsPEDependencies, windowsPEImports } from './windows-pe.mjs';
-import { keyboardProfileFiles, englishBuildFiles, verifyEnglishProfile } from './keyboard-data.mjs';
+import { keyboardProfileFiles, englishLexiconFile, verifyEnglishProfile } from './keyboard-data.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
@@ -48,8 +48,7 @@ export function verifyWindowsKeyboardRuntime(directory, { requireModule = true }
     'data/build/arion_pinyin.schema.yaml', 'data/build/pinyin_simp.table.bin', 'data/build/pinyin_simp.prism.bin', 'data/build/pinyin_simp.reverse.bin',
     'licenses/keyboard-runtime.json', 'licenses/boost-LICENSE', 'licenses/darts-clone-COPYING', 'licenses/utf8cpp-notice.h', 'licenses/Arion-profile-README.md',
     ...pins.files.map(spec => spec.to), ...pins.windows.files.map(spec => spec.to),
-    'data/arion_english.dict.yaml', ...keyboardProfileFiles.map(name => `data/${name}`),
-    ...englishBuildFiles.map(name => `data/build/${name}`)];
+    `data/${englishLexiconFile}`, ...keyboardProfileFiles.map(name => `data/${name}`)];
   if (requireModule) required.push('lib/ArionKeyboard.dll');
   for (const member of required) if (!Object.hasOwn(runtime.files, member)) throw new Error(`Windows keyboard manifest lacks required member: ${member}`);
   const seen = new Set();

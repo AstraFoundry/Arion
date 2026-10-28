@@ -5,7 +5,7 @@ import { existsSync, lstatSync, readFileSync, readdirSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { isDeepStrictEqual } from 'node:util';
-import { keyboardProfileFiles, englishBuildFiles, verifyEnglishProfile } from './lib/keyboard-data.mjs';
+import { keyboardProfileFiles, englishLexiconFile, verifyEnglishProfile } from './lib/keyboard-data.mjs';
 
 const repository = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const digest = file => createHash('sha256').update(readFileSync(file)).digest('hex');
@@ -94,8 +94,7 @@ export function verifyKeyboardBundle({ root = repository, bundle = path.join(roo
     'data/build/default.yaml', 'data/build/arion_pinyin.schema.yaml', 'data/build/pinyin_simp.table.bin',
     'data/build/pinyin_simp.prism.bin', 'data/build/pinyin_simp.reverse.bin', 'licenses/keyboard-runtime.json',
     'licenses/boost-LICENSE', 'licenses/darts-clone-COPYING', 'licenses/utf8cpp-notice.h', 'licenses/Arion-profile-README.md',
-    'data/arion_english.dict.yaml', ...keyboardProfileFiles.map(name => `data/${name}`),
-    ...englishBuildFiles.map(name => `data/build/${name}`)];
+    `data/${englishLexiconFile}`, ...keyboardProfileFiles.map(name => `data/${name}`)];
   for (const name of required) if (!Object.hasOwn(runtime.files, name)) throw new Error(`Keyboard runtime manifest lacks required member: ${name}`);
   for (const [name, expectedFile] of Object.entries(runtime.files)) {
     safeMember(name);

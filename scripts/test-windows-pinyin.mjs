@@ -19,7 +19,7 @@ const runDirectory = mkdtempSync(path.join(output, 'run-'));
 const hash = file => createHash('sha256').update(readFileSync(file)).digest('hex');
 const sourceNames = ['pinyin.c', 'pinyin.h', 'menu.c', 'menu.h', 'input.c', 'input.h', 'learning.cpp', 'learning.h', 'learning_windows.cpp',
   'learning_rime.cpp', 'learning_rime.h', 'ranking.cpp', 'ranking.h', 'ranking_unicode.cpp', 'ranking_unicode.h',
-  'ranking_unicode_data.h', 'emoji.cpp', 'english.cpp', 'emoji.h', 'english.h', 'emoji_data.h', 'pinyin_native_test.cpp'];
+  'ranking_unicode_data.h', 'emoji.cpp', 'english.cpp', 'english_lexicon.cpp', 'emoji.h', 'english.h', 'english_lexicon.h', 'emoji_data.h', 'pinyin_native_test.cpp'];
 const sourceIdentities = Object.fromEntries(sourceNames.map(name => [name, hash(path.join(source, name))]));
 const runtimeSha256 = hash(library);
 const run = (command, args) => execFileSync(command, args, { cwd: root, stdio: 'inherit', windowsHide: true });
@@ -35,7 +35,7 @@ run(c, ['-std=c11', '-O2', '-Wall', '-Wextra', '-Werror',
   '-c', path.join(source, 'input.c'), '-o', input]);
 const binary = path.join(runDirectory, 'pinyin-native-test.exe');
 run(cxx, ['-std=c++17', '-DRIME_IMPORTS', '-O2', '-Wall', '-Wextra', '-Werror', '-Wno-missing-field-initializers', '-static',
-  '-isystem', path.join(sdk, 'include'), ...['learning.cpp', 'learning_windows.cpp', 'learning_rime.cpp', 'ranking.cpp', 'ranking_unicode.cpp', 'emoji.cpp', 'english.cpp', 'pinyin_native_test.cpp'].map(name => path.join(source, name)),
+  '-isystem', path.join(sdk, 'include'), ...['learning.cpp', 'learning_windows.cpp', 'learning_rime.cpp', 'ranking.cpp', 'ranking_unicode.cpp', 'emoji.cpp', 'english.cpp', 'english_lexicon.cpp', 'pinyin_native_test.cpp'].map(name => path.join(source, name)),
   pinyin, menu, input, path.join(sdk, 'lib/libArionRime.dll.a'), '-lcrypt32', '-ladvapi32', '-lole32', '-o', binary]);
 copyFileSync(library, path.join(runDirectory, 'ArionRime.dll'));
 const profile = path.join(runDirectory, 'profile');

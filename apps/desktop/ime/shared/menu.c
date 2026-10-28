@@ -97,7 +97,7 @@ int arion_menu_build_typed(ArionPinyinMenu *menu,RimeApi *api,uintptr_t session,
         size_t out=0;
         if (valid) {
             size_t protected=minimum(3,text_count);
-            // Exact English case variants keep their first-page slots ahead of Emoji.
+            // English preview candidates keep their first-page slots ahead of Emoji.
             for (size_t i=protected;i<minimum(5,text_count);i++)
                 if (english_word(ranked[order[i]])) protected=i+1;
             for (size_t i=0;i<protected;i++) append_candidate(menu,texts,indices,types,&out,text_positions[order[i]]);

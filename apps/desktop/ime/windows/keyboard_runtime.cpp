@@ -80,9 +80,11 @@ extern "C" RimeApi *arion_keyboard_start(const char *data,const char *user,char 
         if (FAILED(emojiFont.initialize())) { failure="Windows Emoji font unavailable"; output(failure,error,capacity); return nullptr; }
         arion_emoji_set_support(emojiSupported,nullptr);
         arion_emoji_register();
-        arion_english_register();
         if (!arion_learning_windows_register(learningDirectory.c_str(),error,capacity)) { failure="encrypted keyboard learning unavailable"; return nullptr; }
         api->initialize(&configuration);
+        if (!arion_english_register(dataDirectory.c_str(),error,capacity)) {
+            api->finalize(); failure="English lexicon initialization failed"; return nullptr;
+        }
         if (arion_learning_error(error,capacity)) { api->finalize(); failure="encrypted keyboard learning unavailable"; return nullptr; }
         runtime=api; clients=1; failure.clear(); output("",error,capacity); return runtime;
     } catch (const std::exception &) { failure="keyboard runtime initialization failed"; output(failure,error,capacity); return nullptr; }
@@ -121,7 +123,14 @@ extern "C" int arion_keyboard_reset_learning(char *error,size_t capacity) {
             output(failure,error,capacity); return 0;
         }
     } else arion::ime::clearEncryptedLearningError();
+    if (!arion_learning_windows_register(learningDirectory.c_str(),error,capacity)) {
+        failure="encrypted keyboard learning unavailable"; return 0;
+    }
+    arion_emoji_register();
     RimeTraits configuration=traits(); runtime->initialize(&configuration);
+    if (!arion_english_register(dataDirectory.c_str(),error,capacity)) {
+        failure="English lexicon initialization failed"; return 0;
+    }
     if (arion_learning_error(error,capacity)) { failure="encrypted keyboard learning unavailable"; return 0; }
     failure.clear();
     output(reset?"":"encrypted keyboard learning reset refused: vault in use",error,capacity);

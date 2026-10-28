@@ -204,38 +204,6 @@
       "source": "https://github.com/unicode-org/cldr/tree/release-48-2/common/annotations"
     },
     {
-      "path": "scripts/data/english/scowl/english-words.10",
-      "sha256": "f19988ecdb0280ab63340e5c5e155a814ab3d0f225ae60f5cb9e000252283b0b",
-      "sizeBytes": 34496,
-      "to": "licenses/scowl/english-words.10",
-      "license": "LicenseRef-SCOWL",
-      "source": "https://downloads.sourceforge.net/wordlist/scowl-2020.12.07.tar.gz#final/english-words.10"
-    },
-    {
-      "path": "scripts/data/english/scowl/english-words.20",
-      "sha256": "618998fff18fb9e143a5bab49e669ec48c023758f0db476d6b64ec06994ba71e",
-      "sizeBytes": 69514,
-      "to": "licenses/scowl/english-words.20",
-      "license": "LicenseRef-SCOWL",
-      "source": "https://downloads.sourceforge.net/wordlist/scowl-2020.12.07.tar.gz#final/english-words.20"
-    },
-    {
-      "path": "scripts/data/english/scowl/english-words.35",
-      "sha256": "f36ace33ff09bd5eda5f3ccbcc9971c1b6a8887fa62f5ad7f93e3c220d871388",
-      "sizeBytes": 338445,
-      "to": "licenses/scowl/english-words.35",
-      "license": "LicenseRef-SCOWL",
-      "source": "https://downloads.sourceforge.net/wordlist/scowl-2020.12.07.tar.gz#final/english-words.35"
-    },
-    {
-      "path": "scripts/data/english/scowl/Copyright",
-      "sha256": "283326a422e29c510e2ba6805518c418ce3c35ed1fadc3eec83d2da4f6c5a055",
-      "sizeBytes": 11758,
-      "to": "licenses/scowl/Copyright",
-      "license": "LicenseRef-SCOWL",
-      "source": "https://downloads.sourceforge.net/wordlist/scowl-2020.12.07.tar.gz#Copyright"
-    },
-    {
       "path": "scripts/data/english/frequencywords/en_50k.txt",
       "url": "https://raw.githubusercontent.com/hermitdave/FrequencyWords/525f9b560de45753a5ea01069454e72e9aa541c6/content/2018/en/en_50k.txt",
       "sha256": "5351ff405b1126ef555791dd4d9798a48e3e9a501a9fc481a9da957752cfb458",
@@ -261,6 +229,170 @@
       "to": "licenses/frequencywords/CC-BY-SA-4.0.txt",
       "license": "CC-BY-SA-4.0",
       "source": "https://creativecommons.org/licenses/by-sa/4.0/"
+    },
+    {
+      "path": "scripts/data/english/esdb/Copyright",
+      "sha256": "71bffd4b74ad47fff01c8b3c666e77da92737854e568850d8728024e0a53f304",
+      "sizeBytes": 4903,
+      "to": "licenses/esdb/Copyright",
+      "license": "ESDB-notice",
+      "source": "https://github.com/en-wl/wordlist/tree/1e5b7d3a72f47a71da5d28686c1dd4b397178485"
+    },
+    {
+      "path": "scripts/data/english/esdb/README.md",
+      "sha256": "a1438f294f6fd8801690e35ae2145b84916a4b12a59d1b132a3beaad4d274a76",
+      "sizeBytes": 37896,
+      "to": "licenses/esdb/README.md",
+      "license": "ESDB-notice",
+      "source": "https://github.com/en-wl/wordlist/tree/1e5b7d3a72f47a71da5d28686c1dd4b397178485"
+    },
+    {
+      "path": "scripts/data/english/esdb/words-70.txt",
+      "sha256": "9ec9a8b309e6210fee6dcbeded3e81975cb1eb69f9a27160e263c3d9b5230cc1",
+      "sizeBytes": 1681055,
+      "to": "licenses/esdb/words-70.txt",
+      "license": "ESDB-notice",
+      "source": "https://github.com/en-wl/wordlist/tree/1e5b7d3a72f47a71da5d28686c1dd4b397178485",
+      "english": "esdb"
+    },
+    {
+      "path": "scripts/data/english/cspell/companies/LICENSE",
+      "sha256": "6245ecd81789d113a600fa0e4f5f503e6d1b4f425860f6047dc945560dfcf13c",
+      "sizeBytes": 1124,
+      "to": "licenses/cspell/companies/LICENSE",
+      "license": "MIT",
+      "source": "https://github.com/streetsidesoftware/cspell-dicts/tree/ae9c8d4dc15024377cc64b21d77ce863a35e0c9d/dictionaries/companies/LICENSE"
+    },
+    {
+      "path": "scripts/data/english/cspell/companies/src/README.md",
+      "sha256": "2a9d29e75bf5123cd7483e44a4323193c14db4b3de7208f36b18170ce533d5f8",
+      "sizeBytes": 105,
+      "to": "licenses/cspell/companies/src/README.md",
+      "license": "MIT",
+      "source": "https://github.com/streetsidesoftware/cspell-dicts/tree/ae9c8d4dc15024377cc64b21d77ce863a35e0c9d/dictionaries/companies/src/README.md"
+    },
+    {
+      "path": "scripts/data/english/cspell/companies/src/companies.txt",
+      "sha256": "44ac45eee5b9478536cb08e29c2c1008cc0fb10095ef4ad9f6ec7a8de65a545d",
+      "sizeBytes": 39740,
+      "to": "licenses/cspell/companies/src/companies.txt",
+      "license": "MIT",
+      "source": "https://github.com/streetsidesoftware/cspell-dicts/tree/ae9c8d4dc15024377cc64b21d77ce863a35e0c9d/dictionaries/companies/src/companies.txt",
+      "english": "cspell"
+    },
+    {
+      "path": "scripts/data/english/cspell/software-terms/LICENSE",
+      "sha256": "6245ecd81789d113a600fa0e4f5f503e6d1b4f425860f6047dc945560dfcf13c",
+      "sizeBytes": 1124,
+      "to": "licenses/cspell/software-terms/LICENSE",
+      "license": "MIT",
+      "source": "https://github.com/streetsidesoftware/cspell-dicts/tree/ae9c8d4dc15024377cc64b21d77ce863a35e0c9d/dictionaries/software-terms/LICENSE"
+    },
+    {
+      "path": "scripts/data/english/cspell/software-terms/src/README.md",
+      "sha256": "a267b40f9fc8db030ebae069722b799f2c7e94af1a17e41989f8621363eb5fd0",
+      "sizeBytes": 2097,
+      "to": "licenses/cspell/software-terms/src/README.md",
+      "license": "MIT",
+      "source": "https://github.com/streetsidesoftware/cspell-dicts/tree/ae9c8d4dc15024377cc64b21d77ce863a35e0c9d/dictionaries/software-terms/src/README.md"
+    },
+    {
+      "path": "scripts/data/english/cspell/software-terms/src/coding-terms.txt",
+      "sha256": "5f9f1a401e83006543d7ea4470591f1bb003d41ed8e43155115f3dc0c3b71598",
+      "sizeBytes": 13932,
+      "to": "licenses/cspell/software-terms/src/coding-terms.txt",
+      "license": "MIT",
+      "source": "https://github.com/streetsidesoftware/cspell-dicts/tree/ae9c8d4dc15024377cc64b21d77ce863a35e0c9d/dictionaries/software-terms/src/coding-terms.txt",
+      "english": "cspell"
+    },
+    {
+      "path": "scripts/data/english/cspell/software-terms/src/computing-acronyms.txt",
+      "sha256": "5ad1c671d8f9212b6f5c1c169f19f21e480c98b34a763f9f6ed0995ad6d63ff3",
+      "sizeBytes": 1380,
+      "to": "licenses/cspell/software-terms/src/computing-acronyms.txt",
+      "license": "MIT",
+      "source": "https://github.com/streetsidesoftware/cspell-dicts/tree/ae9c8d4dc15024377cc64b21d77ce863a35e0c9d/dictionaries/software-terms/src/computing-acronyms.txt",
+      "english": "cspell"
+    },
+    {
+      "path": "scripts/data/english/cspell/software-terms/src/cybersecurity-terms.txt",
+      "sha256": "1c00c6015c5d7970e763756ecc7cfafc1a50eb98f44f544309bdd3c234cb0b45",
+      "sizeBytes": 329,
+      "to": "licenses/cspell/software-terms/src/cybersecurity-terms.txt",
+      "license": "MIT",
+      "source": "https://github.com/streetsidesoftware/cspell-dicts/tree/ae9c8d4dc15024377cc64b21d77ce863a35e0c9d/dictionaries/software-terms/src/cybersecurity-terms.txt",
+      "english": "cspell"
+    },
+    {
+      "path": "scripts/data/english/cspell/software-terms/src/network-os.txt",
+      "sha256": "75749b9e90aea3ffaaa51535ad4f3d9b96610f68577cc5ef612a388687ceb9c9",
+      "sizeBytes": 122,
+      "to": "licenses/cspell/software-terms/src/network-os.txt",
+      "license": "MIT",
+      "source": "https://github.com/streetsidesoftware/cspell-dicts/tree/ae9c8d4dc15024377cc64b21d77ce863a35e0c9d/dictionaries/software-terms/src/network-os.txt",
+      "english": "cspell"
+    },
+    {
+      "path": "scripts/data/english/cspell/software-terms/src/network-protocols.txt",
+      "sha256": "b2b8f0f0cb21dce4b6c26ed8b044dc99b1ebae5e95e85bfff520265e8874f0eb",
+      "sizeBytes": 356,
+      "to": "licenses/cspell/software-terms/src/network-protocols.txt",
+      "license": "MIT",
+      "source": "https://github.com/streetsidesoftware/cspell-dicts/tree/ae9c8d4dc15024377cc64b21d77ce863a35e0c9d/dictionaries/software-terms/src/network-protocols.txt",
+      "english": "cspell"
+    },
+    {
+      "path": "scripts/data/english/cspell/software-terms/src/software-services.txt",
+      "sha256": "4125c5bd54e9435111dcb3d9c4f00b2998f391ea6421aac057287e5d23c6ff1f",
+      "sizeBytes": 363,
+      "to": "licenses/cspell/software-terms/src/software-services.txt",
+      "license": "MIT",
+      "source": "https://github.com/streetsidesoftware/cspell-dicts/tree/ae9c8d4dc15024377cc64b21d77ce863a35e0c9d/dictionaries/software-terms/src/software-services.txt",
+      "english": "cspell"
+    },
+    {
+      "path": "scripts/data/english/cspell/software-terms/src/software-terms.txt",
+      "sha256": "b48e669314a91f6ef4ad3f8797bc51aa0292dd41300bc2082a49316c8cdfa251",
+      "sizeBytes": 22603,
+      "to": "licenses/cspell/software-terms/src/software-terms.txt",
+      "license": "MIT",
+      "source": "https://github.com/streetsidesoftware/cspell-dicts/tree/ae9c8d4dc15024377cc64b21d77ce863a35e0c9d/dictionaries/software-terms/src/software-terms.txt",
+      "english": "cspell"
+    },
+    {
+      "path": "scripts/data/english/cspell/software-terms/src/software-tools.txt",
+      "sha256": "dc9036b00cf72b0881274207e3a9802c4b840c4560c14d43994b919cfaf47aa3",
+      "sizeBytes": 6241,
+      "to": "licenses/cspell/software-terms/src/software-tools.txt",
+      "license": "MIT",
+      "source": "https://github.com/streetsidesoftware/cspell-dicts/tree/ae9c8d4dc15024377cc64b21d77ce863a35e0c9d/dictionaries/software-terms/src/software-tools.txt",
+      "english": "cspell"
+    },
+    {
+      "path": "scripts/data/english/esdb/docs/sources.md",
+      "sha256": "f6469057a011888e4eaefc3f7886a3da21c57c0c3383a076a5eb04a05f044387",
+      "sizeBytes": 14627,
+      "to": "licenses/esdb/docs/sources.md",
+      "license": "ESDB-notice",
+      "source": "https://github.com/en-wl/wordlist/blob/1e5b7d3a72f47a71da5d28686c1dd4b397178485/docs/sources.md"
+    },
+    {
+      "path": "scripts/data/english/esdb/docs/comp-60.txt",
+      "sha256": "188760a8c926c1c748a95ab1344d8dbfa876d631089c582ef0c0cc253877c74f",
+      "sizeBytes": 35501,
+      "to": "licenses/esdb/docs/comp-60.txt",
+      "license": "ESDB-notice",
+      "source": "https://github.com/en-wl/wordlist/blob/1e5b7d3a72f47a71da5d28686c1dd4b397178485/docs/comp-60.txt"
+    },
+    {
+      "path": "scripts/data/english/cspell/software-terms/src/software-terms-legacy.txt",
+      "url": "https://raw.githubusercontent.com/streetsidesoftware/cspell-dicts/ae9c8d4dc15024377cc64b21d77ce863a35e0c9d/dictionaries/software-terms/src/software-terms-legacy.txt",
+      "sha256": "ecae9afb634c0b1466fb01f1ec8025981c3c37c4e0eca9f1b434fc0a759846a0",
+      "sizeBytes": 497,
+      "to": "licenses/cspell/software-terms/src/software-terms-legacy.txt",
+      "license": "MIT",
+      "source": "https://raw.githubusercontent.com/streetsidesoftware/cspell-dicts/ae9c8d4dc15024377cc64b21d77ce863a35e0c9d/dictionaries/software-terms/src/software-terms-legacy.txt",
+      "english": "cspell"
     }
   ],
   "windows": {
@@ -311,16 +443,25 @@
     ]
   },
   "english": {
-    "name": "SCOWL",
-    "version": "2020.12.07",
-    "source": "https://downloads.sourceforge.net/wordlist/scowl-2020.12.07.tar.gz",
-    "sha256": "5587667caa20c4891390c2d42dbb4d5c4c3f41bee77af1457ece3ba23fb859cc",
-    "sizeBytes": 2569810,
-    "levels": [
-      10,
-      20,
-      35
-    ],
-    "frequencies": "licenses/frequencywords/en_50k.txt"
+    "name": "ESDB 70 and CSpell",
+    "version": 3,
+    "frequencies": "licenses/frequencywords/en_50k.txt",
+    "export": {
+      "commit": "1e5b7d3a72f47a71da5d28686c1dd4b397178485",
+      "archive": {
+        "url": "https://codeload.github.com/en-wl/wordlist/tar.gz/1e5b7d3a72f47a71da5d28686c1dd4b397178485",
+        "sha256": "aaecc7a54af576057e30b22a19b78bad011f2181f7e368ff3b736fbecbdfd4d0",
+        "sizeBytes": 2314429
+      },
+      "root": "wordlist-1e5b7d3a72f47a71da5d28686c1dd4b397178485",
+      "arguments": [
+        "word-list",
+        "70",
+        "A,B,Z",
+        "1"
+      ],
+      "output": "scripts/data/english/esdb/words-70.txt"
+    },
+    "cspellCommit": "ae9c8d4dc15024377cc64b21d77ce863a35e0c9d"
   }
 }

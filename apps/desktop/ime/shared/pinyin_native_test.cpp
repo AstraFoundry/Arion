@@ -73,8 +73,8 @@ int main(int argc,char **argv) {
         std::string learning=(profile/"learning").u8string();
         require(arion_learning_windows_register(learning.c_str(),error,sizeof(error)),error);
         arion_emoji_register();
-        arion_english_register();
         api->initialize(&traits); initialized=true;
+        require(arion_english_register(data.c_str(),error,sizeof(error)),error);
         require(!arion_learning_error(error,sizeof(error)),error);
         auto first=arion_pinyin_create_session(api),second=arion_pinyin_create_session(api);
         require(first && second && first!=second,"independent sessions unavailable");
@@ -100,13 +100,24 @@ int main(int argc,char **argv) {
                             {"compu","computer"},{"softw","software"},{"hel","hello"}}) {
             arion_pinyin_clear(api,first); type(api,first,sample.first);
             auto index=candidateIndex(api,first,sample.second);
-            require(index<5,"English prefix completion missing from smallest page");
+            require(index<60,"English prefix completion missing from paginated candidates");
             require(arion_pinyin_select(api,first,index,0),"English completion engine selection failed");
             Snapshot result(api,first);
             require(std::string(result.value.commit)==sample.second && !result.value.ascii,
                     "English completion changed word or language mode");
         }
         printCase("english-prefix-completion-in-chinese-mode");
+        for (auto sample : {std::pair<const char *,const char *>{"github","GitHub"},
+                            {"javascript","JavaScript"},{"api","API"},{"frontend","frontend"},{"backend","backend"}})
+            selectPhrase(api,first,sample.first,sample.second,"expanded-english-canonical-case");
+        arion_pinyin_clear(api,first); type(api,first,"artifi");
+        char **expanded=nullptr; size_t expandedCount=0;
+        require(arion_pinyin_candidates(api,first,0,90,&expanded,&expandedCount),"expanded English menu unavailable");
+        size_t distinctEnglish=0;
+        for (size_t i=0;i<expandedCount;++i) if (std::string(expanded[i]).rfind("artifi",0)==0) ++distinctEnglish;
+        arion_pinyin_candidates_dispose(expanded,expandedCount);
+        require(distinctEnglish>3,"lower-ranked English words were truncated");
+        arion_pinyin_clear(api,first);
         selectPhrase(api,first,"ni'hao","\xe4\xbd\xa0\xe5\xa5\xbd","apostrophe-syllable-boundary");
         selectPhrase(api,first,"nh","\xe4\xbd\xa0\xe5\xa5\xbd","abbreviated-pinyin");
         selectPhrase(api,first,"lvse","\xe7\xbb\xbf\xe8\x89\xb2","umlaut-v-spelling");

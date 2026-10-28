@@ -1,9 +1,10 @@
-#ifndef ARION_SHARED_ENGLISH_H
-#define ARION_SHARED_ENGLISH_H
+#ifndef ARION_ENGLISH_H
+#define ARION_ENGLISH_H
+#include <stddef.h>
 #ifdef __cplusplus
 extern "C" {
 #endif
-void arion_english_register(void);
+int arion_english_register(const char *data_directory, char *error, size_t capacity);
 #ifdef __cplusplus
 }
 #endif

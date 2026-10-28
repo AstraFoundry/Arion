@@ -1,59 +1,63 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { appendFileSync, copyFileSync, mkdirSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
+import { appendFileSync, copyFileSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { pinnedFile } from './pinned-file.mjs';
-import { writeEnglishDictionary } from './keyboard-english.mjs';
-
+import { writeEnglishLexicon } from './keyboard-english.mjs';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const manifest = JSON.parse(readFileSync(path.join(root, 'scripts/keyboard-runtime.json'), 'utf8'));
+const entries = directory => readFileSync(path.join(directory, 'data/arion_english.lexicon'), 'utf8')
+  .trimEnd().split('\n').slice(1).map(line => { const [key, display, rank] = line.split('\t'); return { key, display, rank: Number(rank) }; });
 
-test('pinned English sources generate bounded frequency-ranked prefixes and preserve exact words offline', () => {
+test('complete pinned ESDB 70 and CSpell vocabulary retains case, frequency-independent membership and all prefix matches', () => {
   const staging = mkdtempSync(path.join(os.tmpdir(), 'arion-english-'));
   try {
     mkdirSync(path.join(staging, 'data'));
-    mkdirSync(path.join(staging, 'licenses/scowl'), { recursive: true });
-    mkdirSync(path.join(staging, 'licenses/frequencywords'), { recursive: true });
-    for (const spec of manifest.files.filter(spec => /^licenses\/(scowl|frequencywords)\//.test(spec.to))) {
-      copyFileSync(pinnedFile(spec), path.join(staging, spec.to));
+    for (const spec of manifest.files.filter(file => /^licenses\/(esdb|cspell|frequencywords)\//.test(file.to))) {
+      const destination = path.join(staging, spec.to);
+      mkdirSync(path.dirname(destination), { recursive: true });
+      copyFileSync(pinnedFile(spec), destination);
     }
-    const output = path.join(staging, 'data/arion_english.dict.yaml');
-    writeEnglishDictionary(staging, manifest.english);
-    const dictionary = readFileSync(output, 'utf8');
-    for (const word of ['artificial', 'hello', 'computer', 'software', 'can', 'an', 'you', 'hi', 'bailing', 'jingling']) {
-      assert.match(dictionary, new RegExp(`^${word}\\t${word}\\t[0-9]+$`, 'm'));
-    }
-    const byCode = new Map();
-    for (const row of dictionary.split('...\n')[1].trimEnd().split('\n')) {
-      const [word, code] = row.split('\t');
-      assert.match(code, /^[a-z]{2,}$/);
-      const words = byCode.get(code) ?? [];
-      words.push(word);
-      byCode.set(code, words);
-    }
-    assert.ok(byCode.size > 20000, 'Common tiers retain normal inflected vocabulary.');
-    for (const [code, words] of byCode) {
-      assert.ok(words.length <= 4, 'The native filter has a fixed upper bound.');
-      assert.equal(new Set(words).size, words.length);
-      assert.ok(words.every(word => word.toLowerCase().startsWith(code)));
-      if (code.length === 2) assert.deepEqual(words, [code, code[0].toUpperCase() + code.slice(1)]);
-    }
-    assert.equal(byCode.get('artifi')[0], 'artificial');
-    assert.equal(byCode.get('hel')[0], 'help', 'Common words lead rare words, rather than alphabetical order.');
-    assert.ok(byCode.get('hel').includes('hello'));
-    assert.deepEqual(byCode.get('can').slice(0, 2), ['can', 'Can'], 'Exact word and case choice remain first.');
-    assert.equal(byCode.has('he'), true);
-    assert.equal(byCode.has('ar'), false, 'Two-letter prefixes do not trigger completion.');
-    assert.equal(byCode.has('qqzzxx'), false);
-    writeEnglishDictionary(staging, manifest.english);
-    assert.equal(readFileSync(output, 'utf8'), dictionary, 'Generation is deterministic.');
-    const spec = manifest.files.find(spec => spec.to.endsWith('english-words.10'));
-    const changed = path.join(staging, spec.to);
+    const count = writeEnglishLexicon(staging, manifest);
+    assert.ok(count.words > 145000);
+    const rows = entries(staging);
+    const words = new Set(rows.map(row => row.display));
+    for (const word of ['artificial', 'computer', 'app', 'API', 'GitHub', 'JavaScript', 'TypeScript',
+      'chatgpt', 'frontend', 'backend', 'workflow', 'plugin', 'config', 'asynchronous']) assert.ok(words.has(word), word);
+    assert.ok(rows.filter(row => row.key.startsWith('con')).length > 1700, 'Later completions remain indexed.');
+    assert.equal(rows.length, count.displays);
+    assert.equal(new Set(rows.map(row => row.rank)).size, rows.length);
+    assert.equal(new Set(rows.map(row => row.key + '\t' + row.display)).size, rows.length);
+    const github = rows.filter(row => row.key === 'github').sort((a, b) => a.rank - b.rank);
+    assert.equal(github[0].display, 'GitHub');
+    const original = readFileSync(path.join(staging, 'data/arion_english.lexicon'));
+    writeEnglishLexicon(staging, manifest);
+    assert.deepEqual(readFileSync(path.join(staging, 'data/arion_english.lexicon')), original);
+    const pin = manifest.files.find(file => file.english === 'cspell');
+    const changed = path.join(staging, pin.to);
     appendFileSync(changed, '\nchanged\n');
-    assert.throws(() => pinnedFile({ ...spec, path: changed }), /size or SHA-256 mismatch/);
-  } finally {
-    rmSync(staging, { recursive: true, force: true });
-  }
+    assert.throws(() => pinnedFile({ ...pin, path: changed }), /size or SHA-256 mismatch/);
+  } finally { rmSync(staging, { recursive: true, force: true }); }
+});
+
+test('canonical technical case, exact dedup and unseen words survive normalization', () => {
+  const staging = mkdtempSync(path.join(os.tmpdir(), 'arion-english-policy-'));
+  try {
+    mkdirSync(path.join(staging, 'data'));
+    writeFileSync(path.join(staging, 'esdb'), 'react\nReact\nhello\nhelp\nartifice\n');
+    writeFileSync(path.join(staging, 'technical'), 'React\nGitHub\nJavaScript # product\n# comment\nfoo+bar\ntwo words\n');
+    writeFileSync(path.join(staging, 'frequency'), 'help 20\nhello 10\n');
+    writeEnglishLexicon(staging, { english: { frequencies: 'frequency' }, files: [
+      { to: 'esdb', english: 'esdb' }, { to: 'technical', english: 'cspell' },
+    ] });
+    const rows = entries(staging), words = rows.map(row => row.display);
+    assert.equal(rows.filter(row => row.key === 'react').sort((a, b) => a.rank - b.rank)[0].display, 'React');
+    assert.equal(words.filter(word => word === 'React').length, 1);
+    assert.ok(words.includes('react') && words.includes('artifice') && words.includes('Hello'));
+    assert.ok(words.includes('GitHub') && !words.includes('Github'));
+    assert.ok(words.includes('JavaScript') && !words.includes('foo+bar') && !words.includes('two words'));
+    assert.ok(rows.find(row => row.display === 'help').rank < rows.find(row => row.display === 'hello').rank);
+  } finally { rmSync(staging, { recursive: true, force: true }); }
 });

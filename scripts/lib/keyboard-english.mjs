@@ -1,53 +1,49 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 
-// Build bounded prefix aliases once, never enumerate completions on the key path.
-export function writeEnglishDictionary(staging, english) {
+const lexical = (a, b) => a < b ? -1 : a > b ? 1 : 0;
+const eligible = /^[A-Za-z]{2,128}$/;
+
+export function writeEnglishLexicon(staging, manifest) {
   const frequencies = new Map();
-  for (const row of readFileSync(path.join(staging, english.frequencies), 'utf8').trimEnd().split('\n')) {
+  for (const row of readFileSync(path.join(staging, manifest.english.frequencies), 'utf8').trimEnd().split('\n')) {
     const [word, count] = row.split(' ');
     if (!word || !/^\d+$/.test(count)) throw new Error('Invalid pinned English frequency row.');
     frequencies.set(word, Number(count));
   }
   const words = new Map();
-  for (const level of english.levels) {
-    const source = readFileSync(path.join(staging, 'licenses/scowl', `english-words.${level}`), 'latin1');
-    for (const word of source.trimEnd().split('\n')) {
-      // Apostrophes remain Pinyin separators; single letters remain abbreviations.
-      if (!/^[a-z]{2,}$/.test(word)) continue;
-      if (!words.has(word)) words.set(word, 100 - level);
+  for (const source of manifest.files.filter(file => file.english)) {
+    if (!['esdb', 'cspell'].includes(source.english)) throw new Error('Unknown English word-source format.');
+    for (const row of readFileSync(path.join(staging, source.to), 'utf8').split('\n')) {
+      const display = (source.english === 'cspell' ? row.replace(/\s+#.*$/, '') : row).trim();
+      if (!eligible.test(display)) continue;
+      const key = display.toLowerCase();
+      const entry = words.get(key) ?? { key, displays: new Map(), technical: false };
+      const technical = source.english === 'cspell';
+      entry.technical ||= technical;
+      entry.displays.set(display, technical || entry.displays.get(display) === true);
+      words.set(key, entry);
     }
   }
-  if (!words.size) throw new Error('The pinned English word lists are empty.');
-  const lexical = (a, b) => a < b ? -1 : a > b ? 1 : 0;
-  const ranked = [...words.keys()].sort((a, b) =>
-    (frequencies.get(b) ?? 0) - (frequencies.get(a) ?? 0) || words.get(b) - words.get(a) ||
-    a.length - b.length || lexical(a, b));
-  const prefixes = new Map();
-  for (const word of ranked) {
-    for (let length = 3; length <= word.length; length++) {
-      const code = word.slice(0, length);
-      const matches = prefixes.get(code) ?? [];
-      if (matches.length < 3) matches.push(word);
-      prefixes.set(code, matches);
+  if (!words.size) throw new Error('The pinned English lexicon is empty.');
+  const ordered = [...words.values()].sort((a, b) =>
+    (frequencies.get(b.key) ?? 0) - (frequencies.get(a.key) ?? 0) ||
+    Number(b.technical) - Number(a.technical) || a.key.length - b.key.length || lexical(a.key, b.key));
+  const rows = [];
+  for (const entry of ordered) {
+    // Source-native case always survives; derive sentence case only for ordinary lowercase words.
+    if (entry.displays.has(entry.key) && ![...entry.displays].some(([text, technical]) => technical && text !== entry.key)) {
+      const title = entry.key[0].toUpperCase() + entry.key.slice(1);
+      if (!entry.displays.has(title)) entry.displays.set(title, false);
     }
+    const displays = [...entry.displays].sort(([a, at], [b, bt]) =>
+      Number(bt) - Number(at) || Number(b === entry.key) - Number(a === entry.key) || lexical(a, b));
+    for (const [display] of displays) rows.push({ key: entry.key, display, rank: rows.length });
   }
-  // Every complete word remains available, even outside its prefix's top three.
-  for (const word of words.keys()) {
-    const matches = prefixes.get(word) ?? [];
-    prefixes.set(word, [word, ...matches.filter(match => match !== word)].slice(0, 3));
-  }
-  const rows = [...prefixes].sort(([a], [b]) => lexical(a, b)).flatMap(([code, matches]) => {
-    const title = matches[0][0].toUpperCase() + matches[0].slice(1);
-    const candidates = code === matches[0] ? [matches[0], title, ...matches.slice(1)] : [...matches, title];
-    return candidates.map((word, index) => `${word}\t${code}\t${100 - index}`);
-  });
-  writeFileSync(path.join(staging, 'data/arion_english.dict.yaml'), [
-    `# Derived from pinned SCOWL ${english.version}; see licenses/scowl/Copyright.`,
-    '# Prefix ranking uses Hermit Dave FrequencyWords / OpenSubtitles 2018 counts (CC BY-SA 4.0).',
-    '# Modified bounded prefix index, CC BY-SA 4.0; see licenses/frequencywords for source and license.',
-    '# Two-letter exact words; prefixes from three letters; up to three words plus one case variant.',
-    '---', 'name: arion_english', "version: '2'", 'sort: by_weight',
-    'use_preset_vocabulary: false', '...', ...rows, '',
+  rows.sort((a, b) => lexical(a.key, b.key) || lexical(a.display, b.display));
+  writeFileSync(path.join(staging, 'data/arion_english.lexicon'), [
+    `ARION_ENGLISH\t1\t${rows.length}`,
+    ...rows.map(({ key, display, rank }) => `${key}\t${display}\t${rank}`), '',
   ].join('\n'));
+  return { words: words.size, displays: rows.length };
 }

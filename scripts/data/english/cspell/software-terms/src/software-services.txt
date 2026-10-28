@@ -1,0 +1,23 @@
+# Add Web Services to this list
+allcontributors
+Apigee # https://cloud.google.com/apigee
+Appointedd
+bunnycdn
+calendly
+caniuse
+cdnjs
+Codespace
+Codespaces
+dependabot
+gcr.io
+imessage
+jsdelivr
+keycloak # https://www.keycloak.org/
+Mailgun # Email delivery service https://www.mailgun.com/
+musixmatch
+netlify
+OpenFGA # https://openfga.dev/
+probot
+soapenv
+todoist
+unpkg
