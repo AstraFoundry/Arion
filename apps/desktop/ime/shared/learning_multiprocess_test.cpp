@@ -4,6 +4,8 @@
 #include "learning_rime.h"
 #include "ranking.h"
 #include "pinyin.h"
+#include "english.h"
+#include "emoji.h"
 #include <rime/dict/db.h>
 #include <rime/algo/dynamics.h>
 #include <filesystem>
@@ -48,7 +50,11 @@ static int worker(const std::string &mode,const std::string &vault,const std::st
         std::filesystem::create_directories(std::filesystem::u8path(user));api=rime_get_api();
         std::string build=learningPath(data,"build");RimeTraits traits{};RIME_STRUCT_INIT(RimeTraits,traits);
         traits.shared_data_dir=data.c_str();traits.prebuilt_data_dir=build.c_str();traits.staging_dir=build.c_str();traits.user_data_dir=user.c_str();traits.app_name="rime.arion";traits.min_log_level=3;traits.log_dir="";
-        api->setup(&traits);api->initialize(&traits);session=arion_pinyin_create_session(api);alternateSession=arion_pinyin_create_session(api);require(session && alternateSession,"native worker sessions");
+        api->setup(&traits);arion_emoji_register();api->initialize(&traits);
+        char registrationError[512]={};
+        if (!arion_english_register(data.c_str(),registrationError,sizeof(registrationError)))
+            throw std::runtime_error(std::string("worker bilingual registration: ")+registrationError);
+        session=arion_pinyin_create_session(api);alternateSession=arion_pinyin_create_session(api);require(session && alternateSession,"native worker sessions");
     } else if (mode=="context") {
         context=openContextLearning(error);require(context!=nullptr,"worker context");ranker=std::make_unique<ContextRanker>(context->records());
     } else {
