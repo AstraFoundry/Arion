@@ -1,13 +1,12 @@
 // Build and development use identical resource and native compiler settings.
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { existsSync, readFileSync, renameSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { inspectIMEProvisioning } from './lib/ime-provisioning.mjs';
 import { prepareCenterBuild } from './lib/center-profile.mjs';
-import { installerName, renameWindowsUpdateArchive } from './lib/release.mjs';
 import { macosSigningSettings, requireIMEProvisioningSettings, prepareMacOSSigning, stripAppleCredentials } from './lib/desktop-signing.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -56,13 +55,6 @@ try {
     console.log(`Development output: ${output}`);
   }
   execFileSync('go', args, { cwd: desktop, env, stdio: 'inherit' });
-  if (operation === 'build' && process.platform === 'win32') {
-    const platform = 'windows-amd64';
-    const output = path.join(desktop, config.out, platform);
-    // MyGo uses Go architecture names; expose the familiar Windows x64 label.
-    renameSync(path.join(output, `${config.name} Setup ${config.version} amd64.exe`), path.join(output, installerName(config, platform)));
-    renameWindowsUpdateArchive(output, config);
-  }
   if (operation === 'build') execFileSync(process.execPath, [path.join(root, 'scripts/verify-desktop-package.mjs')], { cwd: root, env, stdio: 'inherit' });
 } finally {
   process.removeListener('exit', cleanup);

@@ -1,10 +1,10 @@
 import assert from 'node:assert/strict';
 import { generateKeyPairSync, sign } from 'node:crypto';
-import { mkdtempSync, readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
-import { archiveName, checkReleaseChangelog, digest, installerName, platformAssets, platformsForRelease, releaseMatrix, renameWindowsUpdateArchive, stagedRecord, stagingSettings, stagingUploads } from './release.mjs';
+import { archiveName, checkReleaseChangelog, digest, installerName, platformAssets, platformsForRelease, releaseMatrix, stagedRecord, stagingSettings, stagingUploads } from './release.mjs';
 
 const fixture = JSON.parse(readFileSync(new URL('../../packages/contracts/releases/staged-release-v1.json', import.meta.url), 'utf8'));
 
@@ -74,53 +74,35 @@ test('Windows release assets require a matching signed archive and manifest', ()
   const { config, directory, manifest } = signedRelease(platform);
   const manifestPath = path.join(directory, `update-${platform}.json`);
   try {
-    assert.deepEqual(platformAssets(directory, config, platform), ['Arion-0.1.0-alpha.6-windows-x64-setup.exe', 'arion-0.1.0-alpha.6-windows-x64.tar.gz', 'update-windows-amd64.json']);
+    assert.deepEqual(platformAssets(directory, config, platform), ['Arion Setup 0.1.0-alpha.6 amd64.exe', 'arion-0.1.0-alpha.6-windows-amd64.tar.gz', 'update-windows-amd64.json']);
     const record = stagedRecord(directory, config, [platform], { commit: 'abc', createdAt: '2026-10-20T07:00:00.000Z' });
-    assert.equal(record.targets[platform].installer.name, 'Arion-0.1.0-alpha.6-windows-x64-setup.exe');
-    assert.equal(stagingUploads(directory, record)[0].key, 'files/Arion-0.1.0-alpha.6-windows-x64-setup.exe');
+    assert.equal(record.targets[platform].installer.name, 'Arion.Setup.0.1.0-alpha.6.amd64.exe');
+    assert.equal(stagingUploads(directory, record)[0].key, 'files/Arion.Setup.0.1.0-alpha.6.amd64.exe');
+    assert.equal(record.targets[platform].update.name, 'arion-0.1.0-alpha.6-windows-amd64.tar.gz');
+    assert.deepEqual(record.targets[platform].manifest, manifest);
+    assert.equal(stagingUploads(directory, record)[1].key, 'files/arion-0.1.0-alpha.6-windows-amd64.tar.gz');
+    writeFileSync(manifestPath, JSON.stringify({ ...manifest, url: manifest.url.replace('windows-amd64', 'windows-x64') }));
+    assert.throws(() => platformAssets(directory, config, platform), /Wrong update archive URL/);
     for (const changed of [{ size: manifest.size + 1 }, { signature: Buffer.alloc(64).toString('base64') }]) {
       writeFileSync(manifestPath, JSON.stringify({ ...manifest, ...changed }));
       assert.throws(() => platformAssets(directory, config, platform), /size or signature verification failed/);
     }
     writeFileSync(manifestPath, JSON.stringify({ ...manifest, version: '0.1.0-alpha.5' }));
     assert.throws(() => platformAssets(directory, config, platform), /Wrong update version/);
-    writeFileSync(manifestPath, JSON.stringify({ ...manifest, url: manifest.url.replace('windows-x64', 'darwin-arm64') }));
+    writeFileSync(manifestPath, JSON.stringify({ ...manifest, url: manifest.url.replace('windows-amd64', 'darwin-arm64') }));
     assert.throws(() => platformAssets(directory, config, platform), /Wrong update archive URL/);
   } finally {
     rmSync(directory, { recursive: true, force: true });
   }
 });
 
-test('renaming a Windows archive preserves its signed bytes and historical URLs', () => {
-  const platform = 'windows-amd64';
-  const { config, directory, manifest } = signedRelease(platform);
-  try {
-    const name = archiveName(config, platform);
-    const original = `arion-${config.version}-${platform}.tar.gz`;
-    const bytes = readFileSync(path.join(directory, name));
-    renameSync(path.join(directory, name), path.join(directory, original));
-    const previous = [{ version: '0.1.0-alpha.5', url: `${config.updates.url}/arion-0.1.0-alpha.5-windows-amd64.tar.gz` }];
-    const manifestPath = path.join(directory, `update-${platform}.json`);
-    writeFileSync(manifestPath, JSON.stringify({ ...manifest, url: `${config.updates.url}/${original}`, previous }));
-    renameWindowsUpdateArchive(directory, config);
-    const renamed = JSON.parse(readFileSync(manifestPath, 'utf8'));
-    assert.equal(renamed.url, manifest.url);
-    assert.equal(renamed.signature, manifest.signature);
-    assert.deepEqual(renamed.previous, previous);
-    assert.deepEqual(readFileSync(path.join(directory, name)), bytes);
-    assert.ok(platformAssets(directory, config, platform).includes(name));
-    const record = stagedRecord(directory, config, [platform], { commit: 'abc', createdAt: '2026-10-20T07:00:00.000Z' });
-    assert.equal(record.targets[platform].update.name, name);
-    assert.equal(stagingUploads(directory, record)[1].key, `files/${name}`);
-  } finally {
-    rmSync(directory, { recursive: true, force: true });
-  }
-});
-
-test('unsigned Windows previews need no update archive', () => {
+test('unsigned Windows previews collect the native installer without update assets', () => {
   const directory = mkdtempSync(path.join(tmpdir(), 'arion-preview-'));
+  const config = { name: 'Arion', version: '0.1.0-alpha.18' };
+  const installer = 'Arion Setup 0.1.0-alpha.18 amd64.exe';
   try {
-    assert.doesNotThrow(() => renameWindowsUpdateArchive(directory, { name: 'Arion', version: '1.0.0' }));
+    writeFileSync(path.join(directory, installer), 'installer bytes');
+    assert.deepEqual(platformAssets(directory, config, 'windows-amd64', false), [installer]);
   } finally {
     rmSync(directory, { recursive: true, force: true });
   }
