@@ -30,6 +30,9 @@ uintptr_t arion_pinyin_create_session(RimeApi *api);
 void arion_pinyin_destroy_session(RimeApi *api, uintptr_t session);
 void arion_pinyin_set_options(RimeApi *api, uintptr_t session, int ascii, int full_width, int english_punctuation);
 int arion_pinyin_process_key(RimeApi *api, uintptr_t session, int key, int modifiers);
+/* Commit through the schema's raw Return action without full-width conversion.
+ * The caller must own a pending composition and consume the engine commit. */
+int arion_pinyin_commit_raw(RimeApi *api, uintptr_t session);
 int arion_pinyin_select(RimeApi *api, uintptr_t session, size_t index, int current_page);
 int arion_pinyin_highlight(RimeApi *api, uintptr_t session, size_t index, int current_page);
 void arion_pinyin_clear(RimeApi *api, uintptr_t session);
