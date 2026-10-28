@@ -66,12 +66,14 @@ func TestShortcutFeedbackBelongsToTheEditedSetting(t *testing.T) {
 					t.Fatal("saving did not clear local feedback")
 				}
 				click(copy.HoldKeyEdit)
+				snapshot(t, tt, "shortcut-feedback-dictation-recording-"+name)
 				state.Hold.RecordedKey = state.Preferences.TranslateKey
 				state.Hold.RecordedSeq++
 				tt.Frame()
 				if !hasText(tt, messages.Text(copy.HoldKeyConflict)) || hasText(tt, messages.Text(copy.TranslateKeyConflict)) || state.Preferences.HoldKey != "ctrl+f8" {
 					t.Fatal("dictation duplicate did not identify translation")
 				}
+				snapshot(t, tt, "shortcut-feedback-dictation-duplicate-"+name)
 				click(copy.HoldKeyCancel)
 				if hasText(tt, messages.Text(copy.HoldKeySystemHint)) || hasText(tt, messages.Text(copy.HoldKeyConflict)) {
 					t.Fatal("cancel retained local feedback")
@@ -114,6 +116,7 @@ func TestShortcutListenerFailureIsSharedAndRepairable(t *testing.T) {
 	if !hasText(tt, messages.Text(copy.HoldKeyUnavailable)) {
 		t.Fatal("listener failure is not explained")
 	}
+	snapshot(t, tt, "shortcut-feedback-unavailable")
 	if err := tt.Click(messages.Text(copy.Retry)); err != nil || !actions.called("retry-shortcuts") {
 		t.Fatalf("missing listener retry action: %v", err)
 	}
