@@ -34,6 +34,39 @@ type pasteAttempt interface {
 	finish() bool
 }
 
+// publishClipboard leaves text on the general pasteboard. It does not paste
+// and does not restore the previous contents.
+func publishClipboard(ctx context.Context, id contracts.Identity, text string) (contracts.CommitResult, error) {
+	result := contracts.CommitResult{Identity: id, Outcome: contracts.NotApplied}
+	if text == "" {
+		result.Failure = domain.CodeNoSpeech
+		return result, nil
+	}
+	if strings.IndexByte(text, 0) >= 0 || !utf8.ValidString(text) {
+		result.Failure = domain.CodeTargetUnsupported
+		return result, nil
+	}
+	select {
+	case pasteGate <- struct{}{}:
+		defer func() { <-pasteGate }()
+	case <-ctx.Done():
+		result.Failure = domain.CodeCancelled
+		return result, nil
+	}
+	if ctx.Err() != nil {
+		result.Failure = domain.CodeCancelled
+		return result, nil
+	}
+	value := C.CString(text)
+	defer C.free(unsafe.Pointer(value))
+	if C.arion_clipboard_publish(value) != 1 {
+		result.Failure = domain.CodeClipboardUnavailable
+		return result, nil
+	}
+	result.Outcome = contracts.Copied
+	return result, nil
+}
+
 func commitPaste(ctx context.Context, id contracts.Identity, text string, hold time.Duration, target pasteTarget) (result contracts.CommitResult, err error) {
 	result = contracts.CommitResult{Identity: id, Outcome: contracts.NotApplied}
 	if text == "" {

@@ -20,4 +20,8 @@ func TestUncertainPasteCleanupWarningRemainsVisible(t *testing.T) {
 	if OutcomeLabel(d, true) != copy.PillPasted {
 		t.Fatal("uncertain paste claimed verified insertion")
 	}
+	copied := runtime.Dictation{State: runtime.StateCompleted, Outcome: runtime.OutcomeCopied, Changed: now}
+	if OutcomeLabel(copied, true) != copy.PillCopied {
+		t.Fatal("clipboard copy claimed a paste")
+	}
 }

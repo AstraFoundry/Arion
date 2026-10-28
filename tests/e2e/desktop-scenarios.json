@@ -92,7 +92,7 @@
       }
     },
     {
-      "id": "focus-change-blocks-commit",
+      "id": "focus-change-inserts-at-caret",
       "acceptance": [
         "DSK-A03"
       ],
@@ -123,9 +123,10 @@
       ],
       "assertions": {
         "editors.A.text": "",
-        "editors.B.text": "",
-        "commitCount": 0,
-        "commit.status": "not_applied"
+        "editors.B.text": "Hello world.",
+        "commitCount": 1,
+        "commit.status": "unknown",
+        "session.state": "completed"
       }
     },
     {

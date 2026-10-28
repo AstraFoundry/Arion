@@ -1,0 +1,2 @@
+#include "candidate_font_resource.h"
+ARION_SOURCE_HAN_REGULAR RCDATA "SourceHanSansSC-Regular.otf"

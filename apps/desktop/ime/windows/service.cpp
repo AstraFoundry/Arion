@@ -202,7 +202,7 @@ class Service final : public ITfTextInputProcessorEx, public ITfThreadMgrEventSi
         if (languageBar) languageBar->changed();
     }
     void connect() {
-        if (!focused || !context || activation.empty() || transport.connected()) return;
+        if (!focused || !context || activation.empty() || transport.connected() || !ordinaryHost()) return;
         auto path = userPipe(); if (path.empty()) return;
 #ifdef ARION_TSF_TESTING
         wchar_t isolated[256]{}; DWORD count=GetEnvironmentVariableW(L"ARION_TSF_TEST_PIPE",isolated,256);
@@ -468,7 +468,7 @@ public:
     ULONG STDMETHODCALLTYPE Release() override { auto count = --references; if (!count) delete this; return count; }
     HRESULT STDMETHODCALLTYPE Activate(ITfThreadMgr *value, TfClientId id) override { return ActivateEx(value, id, 0); }
     HRESULT STDMETHODCALLTYPE ActivateEx(ITfThreadMgr *value, TfClientId id, DWORD flags) override {
-        if (manager || !value || flags & TF_TMAE_SECUREMODE || !ordinaryHost()) return E_ACCESSDENIED;
+        if (manager || !value || flags & TF_TMAE_SECUREMODE || !keyboardHost()) return E_ACCESSDENIED;
         manager = value; manager->AddRef(); client = id; build = buildIdentity();
         // Embedded editors can own keyboard focus on a different thread or
         // process from their foreground top-level HWND. TSF owns this signal.

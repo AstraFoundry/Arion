@@ -4,7 +4,7 @@ import { generateKeyPairSync, sign } from 'node:crypto';
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { checkRelease, digest, githubAssetName, installerName, platformAssets, platformsForRelease, releaseMatrix, releasePlatforms } from '../../../scripts/lib/release.mjs';
+import { archiveName, checkRelease, digest, githubAssetName, installerName, platformAssets, platformsForRelease, releaseMatrix, releasePlatforms } from '../../../scripts/lib/release.mjs';
 
 function fixture(t) {
   const directory = mkdtempSync(path.join(os.tmpdir(), 'arion-release-'));
@@ -16,7 +16,7 @@ function fixture(t) {
   const manifests = {};
   for (const platform of releasePlatforms) {
     writeFileSync(path.join(directory, installerName(config, platform)), 'installer fixture');
-    const name = `arion-${config.version}-${platform}.tar.gz`;
+    const name = archiveName(config, platform);
     const bytes = Buffer.from(`archive fixture for ${platform}`);
     writeFileSync(path.join(directory, name), bytes);
     const manifest = { version: config.version, url: `https://updates.example/v1/updates/${name}`, size: bytes.length, signature: sign(null, digest(bytes), privateKey).toString('base64') };

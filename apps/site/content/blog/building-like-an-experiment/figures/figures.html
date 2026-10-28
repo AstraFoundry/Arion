@@ -1,0 +1,457 @@
+<!doctype html>
+<!--
+  Source of the post's figures. Open figures.html?fig=<id>&lang=<en|zh|ja>,
+  screenshot the .frame element at device scale 2 and save it as
+  <id>.<lang>.webp next to this file. Every number comes from a benchmark
+  report linked in the post's footnotes.
+-->
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=block">
+<style>
+  :root {
+    --frame: hsl(38 22% 92%);
+    --card: hsl(40 30% 98.5%);
+    --line: hsl(36 16% 85%);
+    --track: hsl(36 18% 88%);
+    --ink: hsl(22 14% 9%);
+    --ink-2: hsl(26 10% 24%);
+    --muted: hsl(30 6% 44%);
+    --faint: hsl(32 8% 60%);
+    --base: hsl(32 8% 62%);
+    --good: hsl(150 62% 32%);
+    --bad: hsl(10 72% 50%);
+    --you: hsl(214 58% 44%);
+    --mark: hsl(48 100% 80%);
+    --mark-bad: hsl(10 85% 90%);
+  }
+  * { box-sizing: border-box; margin: 0; }
+  html { background: #fff; }
+  body {
+    width: 896px;
+    padding: 0;
+    font-family: "IBM Plex Sans", "PingFang SC", "Hiragino Sans", sans-serif;
+    color: var(--ink-2);
+    font-size: 15px;
+    line-height: 1.4;
+    -webkit-font-smoothing: antialiased;
+  }
+  html:lang(ja) body { font-family: "IBM Plex Sans", "Hiragino Sans", "PingFang SC", sans-serif; }
+  .frame { background: var(--frame); padding: 16px; border-radius: 18px; }
+  .card { background: var(--card); border-radius: 12px; padding: 28px 32px; }
+  .card + .card { margin-top: 12px; }
+  .mono { font-family: "IBM Plex Mono", ui-monospace, monospace; }
+  .muted { color: var(--muted); }
+  .num { font-variant-numeric: tabular-nums; }
+  .zh { font-family: "PingFang SC", sans-serif; }
+  mark { background: var(--mark); color: inherit; border-radius: 3px; padding: 0 2px; }
+  mark.bad { background: var(--mark-bad); }
+
+  /* Legend */
+  .legend { display: flex; gap: 20px; align-items: center; font-size: 14px; font-weight: 500; color: var(--muted); }
+  .legend .key { display: inline-flex; align-items: center; gap: 8px; }
+  .dot { width: 14px; height: 14px; border-radius: 50%; display: inline-block; }
+
+  /* Dumbbell chart */
+  .db { display: grid; grid-template-columns: 210px 1fr 64px; column-gap: 20px; }
+  .db .head { display: contents; }
+  .db .group { grid-column: 1 / -1; font-size: 13px; font-weight: 600; color: var(--muted); letter-spacing: 0.02em; padding: 14px 0 2px; }
+  .db .label { text-align: right; font-weight: 500; color: var(--ink-2); align-self: center; padding: 9px 0; }
+  .db .plot { position: relative; height: 40px; }
+  .db .diff { align-self: center; text-align: right; font-weight: 600; color: var(--ink); }
+  .grid-line { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--line); }
+  .bar { position: absolute; top: 50%; height: 6px; margin-top: -3px; background: var(--track); border-radius: 3px; }
+  .pt { position: absolute; top: 50%; width: 18px; height: 18px; margin: -9px 0 0 -9px; border-radius: 50%; }
+  .pt-label { position: absolute; top: 50%; transform: translateY(-50%); font-size: 13px; font-weight: 600; white-space: nowrap; }
+  .axis { position: relative; height: 22px; font-size: 13px; color: var(--muted); }
+  .axis span { position: absolute; transform: translateX(-50%); }
+  .axis-title { text-align: center; font-size: 13px; font-weight: 500; color: var(--muted); margin-top: 6px; }
+
+  /* Quote rows */
+  .quote { border-left: 3px solid var(--line); padding: 2px 0 2px 16px; }
+  .quote + .quote { margin-top: 18px; }
+  .quote .who { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+  .quote .text { font-size: 19px; color: var(--ink); }
+  .quote .gloss { font-size: 13px; color: var(--muted); margin-top: 3px; }
+  .screen { border: 1px solid var(--line); border-radius: 10px; background: #fff; overflow: hidden; }
+  .screen .bar-top { display: flex; align-items: center; gap: 6px; padding: 8px 12px; border-bottom: 1px solid var(--line); font-size: 12px; color: var(--muted); }
+  .screen .bar-top i { width: 9px; height: 9px; border-radius: 50%; background: var(--track); display: inline-block; }
+  .screen .body { padding: 14px; }
+  .bubble { display: inline-block; background: var(--frame); border-radius: 10px; padding: 8px 12px; font-size: 16px; color: var(--ink); }
+  .sender { font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+  .kicker { font-size: 13px; font-weight: 600; color: var(--muted); margin-bottom: 12px; }
+
+  /* Diverging bars */
+  .dv { display: grid; grid-template-columns: 250px 1.5fr 1fr 120px; column-gap: 0; align-items: center; }
+  .dv .label { white-space: nowrap; text-align: right; padding-right: 18px; font-weight: 500; color: var(--ink-2); }
+  .dv .cell { position: relative; height: 34px; }
+  .dv .neg { border-right: 1px solid var(--ink-2); }
+  .dv .neg .b { position: absolute; right: 0; top: 9px; height: 16px; background: var(--bad); border-radius: 3px 0 0 3px; }
+  .dv .pos .b { position: absolute; left: 0; top: 9px; height: 16px; background: var(--good); border-radius: 0 3px 3px 0; }
+  .dv .v { position: absolute; top: 50%; transform: translateY(-50%); font-size: 13px; font-weight: 600; }
+  .dv .broken { text-align: right; font-weight: 600; color: var(--ink); }
+  .dv .group { grid-column: 1 / -1; font-size: 13px; font-weight: 600; color: var(--muted); padding: 12px 0 2px 0; }
+  .dv .colhead { font-size: 13px; font-weight: 500; color: var(--muted); padding-bottom: 6px; }
+
+  /* Timeline */
+  .tl { display: grid; grid-template-columns: 150px 1fr; column-gap: 16px; row-gap: 10px; align-items: center; }
+  .tl .label { text-align: right; font-weight: 500; }
+  .track { position: relative; height: 36px; border-radius: 6px; background: var(--track); overflow: hidden; }
+  .seg { position: absolute; top: 0; bottom: 0; display: flex; align-items: center; padding-left: 12px; font-size: 13px; font-weight: 500; white-space: nowrap; }
+  .sleep { background: repeating-linear-gradient(135deg, transparent 0 7px, hsl(36 14% 82%) 7px 8px); color: var(--muted); }
+  .cpu { background: var(--bad); padding: 0; }
+  .gen { background: hsl(214 45% 86%); color: hsl(214 45% 30%); }
+  .measure { position: relative; height: 44px; }
+  .bracket { position: absolute; top: 6px; height: 12px; border: 2px solid; border-top: none; border-radius: 0 0 4px 4px; }
+  .measure .cap { position: absolute; top: 24px; font-size: 14px; white-space: nowrap; }
+  .measure .cap b { font-size: 17px; }
+
+  /* Bytes */
+  .reply { font-size: 22px; color: var(--ink); letter-spacing: 0.04em; }
+  .bytes { display: flex; gap: 12px; flex-wrap: wrap; }
+  .ch { border: 1px solid var(--line); border-radius: 8px; background: #fff; padding: 8px 10px 10px; text-align: center; }
+  .ch .g { font-size: 22px; color: var(--ink); }
+  .ch .bs { display: flex; gap: 4px; margin-top: 6px; }
+  .ch .bs span { font-family: "IBM Plex Mono", monospace; font-size: 14px; padding: 2px 5px; border-radius: 4px; background: var(--frame); }
+  .ch .bs span.hit { background: var(--bad); color: #fff; }
+  .ch.sep { border-style: dashed; }
+  .arrow { align-self: center; color: var(--faint); font-size: 20px; }
+  .steps { display: grid; grid-template-columns: 22px 1fr; row-gap: 10px; column-gap: 10px; font-size: 15px; }
+  .steps .n { width: 22px; height: 22px; border-radius: 50%; background: var(--ink-2); color: #fff; font-size: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center; margin-top: 1px; }
+  .outcome { display: flex; gap: 28px; margin-top: 4px; }
+  .outcome .o { font-size: 13px; color: var(--muted); font-weight: 500; }
+  .outcome .o div { font-size: 22px; color: var(--ink); font-weight: 400; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+const params = new URLSearchParams(location.search);
+const LANG = params.get("lang") || "en";
+const FIG = params.get("fig") || "context-ablation";
+document.documentElement.lang = LANG === "zh" ? "zh-CN" : LANG;
+
+const COPY = {
+  en: {
+    ctx: {
+      none: "No context", with: "With context", diff: "Difference",
+      g4b: "QWEN3 4B", g17: "QWEN3 1.7B (SHIPPED DEFAULT)",
+      cursor: "Cursor text", history: "Dictation history", fast: "Screen, fast OCR",
+      accurate: "Screen, accurate OCR", all: "All sources",
+      axis: "Held-out cases passed (out of 30)",
+    },
+    name: {
+      screen: "On screen · team chat",
+      sender: "张巍 (Zhāng Wēi)",
+      bubble: "周报我发群里了", bubbleGloss: "I posted the weekly report in the group.",
+      you: "What you dictated",
+      youGloss: "Zhāng Wěi was on leave last week; he’s back next week.",
+      bad: "Qwen3 4B with screen context · accepted by the validator",
+      badGloss: "Zhāng Wēi: I posted the weekly report in the group.",
+      fixed: "After capping context credit · proposal rejected, your words kept",
+    },
+    ph: {
+      worse: "Worsened", better: "Improved", broken: "Correct ones broken",
+      of: "of 60", control: "NO LLM (CONTROL)", llm: "QWEN3 1.7B CORRECTION",
+      acoustic: "Offline acoustic pass", text: "Text only", pinyin: "Text + Pinyin",
+      scores: "Text + token scores", pscores: "Text + Pinyin + scores",
+      ipa: "Text + audio IPA", ipaOnly: "Audio IPA only",
+    },
+    clock: {
+      rime: "Rime process", server: "Model server",
+      build: "", sleep: "asleep, blocked on the socket",
+      gen: "Qwen3.5-0.8B ranks the candidates",
+      cpu: "os.clock() counts only these slivers of CPU time",
+      cpuVal: "0.787 ms", wall: "What the typist waits", wallVal: "288.85 ms",
+      p50: "median",
+    },
+    bytes: {
+      reply: "1  The model replies with the right answer first",
+      split: "2  The Lua pattern [^、,，;；\\n]+ splits on bytes, not characters",
+      sepNote: "excluded bytes: e3 80 81 · ef bc 8c · ef bc 9b · , ; \\n",
+      hit: "80 is also a byte of 、 so 言 is cut in half",
+      word: "3  The first “word” is 誓 plus two orphaned bytes",
+      wordNote: "It matches no candidate, the parser stops, and nothing is reordered.",
+      intended: "Model chose", shown: "Rime shows",
+      vow: "vow", experiment: "experiment",
+    },
+  },
+  zh: {
+    ctx: {
+      none: "不给上下文", with: "给上下文", diff: "差值",
+      g4b: "QWEN3 4B", g17: "QWEN3 1.7B（默认上线）",
+      cursor: "光标周围文字", history: "历史听写", fast: "屏幕文字 · 快速 OCR",
+      accurate: "屏幕文字 · 高精度 OCR", all: "全部来源",
+      axis: "留出集通过条数（共 30 条）",
+    },
+    name: {
+      screen: "屏幕上 · 团队群聊",
+      sender: "张巍",
+      bubble: "周报我发群里了", bubbleGloss: "",
+      you: "你口述的内容", youGloss: "",
+      bad: "Qwen3 4B + 屏幕上下文 · 校验器放行",
+      badGloss: "",
+      fixed: "给上下文抵扣额度加上限之后 · 改写被拒，保留原话",
+    },
+    ph: {
+      worse: "变差", better: "变好", broken: "原本正确被改坏",
+      of: "/ 60", control: "不用大模型（对照组）", llm: "QWEN3 1.7B 纠错",
+      acoustic: "离线声学二次解码", text: "仅文本", pinyin: "文本 + 拼音",
+      scores: "文本 + token 分数", pscores: "文本 + 拼音 + 分数",
+      ipa: "文本 + 音频 IPA", ipaOnly: "仅音频 IPA",
+    },
+    clock: {
+      rime: "Rime 进程", server: "模型服务",
+      build: "", sleep: "休眠，阻塞在 socket 上等待",
+      gen: "Qwen3.5-0.8B 给候选词排序",
+      cpu: "os.clock() 只统计这两小段 CPU 时间",
+      cpuVal: "0.787 ms", wall: "打字的人实际等待", wallVal: "288.85 ms",
+      p50: "中位数",
+    },
+    bytes: {
+      reply: "1  模型把正确答案排在了第一位",
+      split: "2  Lua 模式 [^、,，;；\\n]+ 按字节切分，而不是按字符",
+      sepNote: "被排除的字节：e3 80 81 · ef bc 8c · ef bc 9b · , ; \\n",
+      hit: "80 同时也是「、」的一个字节，于是「言」被拦腰截断",
+      word: "3  解析出的第一个“词”是「誓」加两个残缺字节",
+      wordNote: "它匹配不到任何候选，解析器就此停止，候选顺序原样不动。",
+      intended: "模型选择", shown: "Rime 显示",
+      vow: "", experiment: "",
+    },
+  },
+  ja: {
+    ctx: {
+      none: "コンテキストなし", with: "コンテキストあり", diff: "差",
+      g4b: "QWEN3 4B", g17: "QWEN3 1.7B（出荷時の既定）",
+      cursor: "カーソル周辺テキスト", history: "音声入力履歴", fast: "画面テキスト・高速 OCR",
+      accurate: "画面テキスト・高精度 OCR", all: "すべてのソース",
+      axis: "ホールドアウトの通過数（30件中）",
+    },
+    name: {
+      screen: "画面上・チームチャット",
+      sender: "张巍（チャン・ウェイ）",
+      bubble: "周报我发群里了", bubbleGloss: "週報をグループに送りました。",
+      you: "あなたが話した内容",
+      youGloss: "张伟（チャン・ウェイ）は先週休みで、来週戻ります。",
+      bad: "Qwen3 4B＋画面コンテキスト・バリデーターが通過",
+      badGloss: "张巍：週報をグループに送りました。",
+      fixed: "コンテキストの加点に上限を設けた後・提案は却下され、元の言葉を保持",
+    },
+    ph: {
+      worse: "悪化", better: "改善", broken: "正解を壊した数",
+      of: "/ 60", control: "LLM なし（対照）", llm: "QWEN3 1.7B による訂正",
+      acoustic: "オフライン音響2回目デコード", text: "テキストのみ", pinyin: "テキスト＋ピンイン",
+      scores: "テキスト＋トークンスコア", pscores: "テキスト＋ピンイン＋スコア",
+      ipa: "テキスト＋音声 IPA", ipaOnly: "音声 IPA のみ",
+    },
+    clock: {
+      rime: "Rime プロセス", server: "モデルサーバー",
+      build: "", sleep: "スリープ中、ソケットで待機",
+      gen: "Qwen3.5-0.8B が候補を並べ替え",
+      cpu: "os.clock() が数えるのはこの細い CPU 時間だけ",
+      cpuVal: "0.787 ms", wall: "入力する人が実際に待つ時間", wallVal: "288.85 ms",
+      p50: "中央値",
+    },
+    bytes: {
+      reply: "1  モデルは正解を先頭に返す",
+      split: "2  Lua パターン [^、,，;；\\n]+ は文字ではなくバイトで区切る",
+      sepNote: "除外されるバイト：e3 80 81 · ef bc 8c · ef bc 9b · , ; \\n",
+      hit: "80 は「、」のバイトでもあるため、「言」が途中で切れる",
+      word: "3  最初の「語」は「誓」と2つの壊れたバイト",
+      wordNote: "どの候補にも一致せず、パーサーはそこで止まり、並べ替えは起きない。",
+      intended: "モデルの選択", shown: "Rime の表示",
+      vow: "誓い", experiment: "実験",
+    },
+  },
+}[LANG];
+
+const h = (html) => { document.getElementById("root").innerHTML = html; };
+const pct = (v, max) => `${(v / max) * 100}%`;
+
+function contextAblation() {
+  const c = COPY.ctx;
+  const BASE = "var(--base)", WITH = "var(--good)", MAX = 30;
+  const rows = [
+    { group: c.g4b },
+    { label: c.cursor, a: 9, b: 9 },
+    { label: c.history, a: 9, b: 10 },
+    { label: c.fast, a: 9, b: 13 },
+    { label: c.accurate, a: 9, b: 14 },
+    { label: c.all, a: 9, b: 16 },
+    { group: c.g17 },
+    { label: c.all, a: 8, b: 9 },
+  ];
+  const grid = [0, 10, 20, 30].map((v) => `<div class="grid-line" style="left:${pct(v, MAX)}"></div>`).join("");
+  const body = rows.map((r) => {
+    if (r.group) return `<div class="group">${r.group}</div>`;
+    const lo = Math.min(r.a, r.b), hi = Math.max(r.a, r.b);
+    const same = r.a === r.b;
+    return `<div class="label">${r.label}</div>
+      <div class="plot">${grid}
+        <div class="bar" style="left:${pct(lo, MAX)};width:calc(${pct(hi - lo, MAX)})"></div>
+        <span class="pt-label num" style="right:calc(${pct(MAX - r.a, MAX)} + 16px);color:var(--muted)">${same ? "" : r.a}</span>
+        <div class="pt" style="left:${pct(r.a, MAX)};background:${BASE}"></div>
+        <div class="pt" style="left:${pct(r.b, MAX)};background:${WITH};${same ? "box-shadow:0 0 0 3px var(--card), 0 0 0 5px " + "var(--base)" : ""}"></div>
+        <span class="pt-label num" style="left:calc(${pct(r.b, MAX)} + 16px);color:var(--good)">${r.b}</span>
+      </div>
+      <div class="diff num">${r.b - r.a > 0 ? "+" : "±"}${r.b - r.a}</div>`;
+  }).join("");
+  h(`<div class="frame"><div class="card">
+    <div class="db">
+      <div></div>
+      <div class="legend" style="justify-content:center">
+        <span class="key"><span class="dot" style="background:var(--base)"></span>${c.none}</span>
+        <span class="key"><span class="dot" style="background:var(--good)"></span>${c.with}</span>
+      </div>
+      <div class="legend" style="justify-content:flex-end">${c.diff}</div>
+      ${body}
+      <div></div>
+      <div class="axis num">${[0, 10, 20, 30].map((v) => `<span style="left:${pct(v, MAX)}">${v}</span>`).join("")}</div>
+      <div></div>
+      <div></div><div class="axis-title">${c.axis}</div><div></div>
+    </div>
+  </div></div>`);
+}
+
+function nameSwap() {
+  const c = COPY.name;
+  const gloss = (t) => (t ? `<div class="gloss">${t}</div>` : "");
+  h(`<div class="frame">
+    <div class="card" style="display:grid;grid-template-columns:250px 1fr;gap:32px;align-items:start">
+      <div>
+        <div class="kicker">${c.screen}</div>
+        <div class="screen">
+          <div class="bar-top"><i></i><i></i><i></i></div>
+          <div class="body">
+            <div class="sender">${c.sender}</div>
+            <div class="bubble zh"><mark>周报我发群里了</mark></div>
+            ${c.bubbleGloss ? `<div class="gloss muted" style="font-size:12px;margin-top:6px">${c.bubbleGloss}</div>` : ""}
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="quote" style="border-color:var(--you)">
+          <div class="who" style="color:var(--you)">${c.you}</div>
+          <div class="text zh">张伟上周请假了，下周回来。</div>${gloss(c.youGloss)}
+        </div>
+        <div class="quote" style="border-color:var(--bad)">
+          <div class="who" style="color:var(--bad)">${c.bad}</div>
+          <div class="text zh"><mark class="bad">张巍</mark><mark>周报我发群里了</mark>。</div>${gloss(c.badGloss)}
+        </div>
+        <div class="quote" style="border-color:var(--good)">
+          <div class="who" style="color:var(--good)">${c.fixed}</div>
+          <div class="text zh">张伟上周请假了，下周回来。</div>
+        </div>
+      </div>
+    </div>
+  </div>`);
+}
+
+function phonetic() {
+  const c = COPY.ph;
+  const MAX = 185;
+  const rows = [
+    { group: c.control },
+    { label: c.acoustic, w: 7, i: 60, br: 0 },
+    { group: c.llm },
+    { label: c.text, w: 2, i: 1, br: 1 },
+    { label: c.pinyin, w: 2, i: 0, br: 1 },
+    { label: c.scores, w: 46, i: 1, br: 26 },
+    { label: c.pscores, w: 48, i: 0, br: 23 },
+    { label: c.ipa, w: 14, i: 1, br: 5 },
+    { label: c.ipaOnly, w: 153, i: 0, br: 59 },
+  ];
+  const body = rows.map((r) => {
+    if (r.group) return `<div class="group">${r.group}</div>`;
+    return `<div class="label">${r.label}</div>
+      <div class="cell neg">
+        <div class="b" style="width:${pct(r.w, MAX)}"></div>
+        <span class="v num" style="right:calc(${pct(r.w, MAX)} + 8px);color:var(--bad)">${r.w}</span>
+      </div>
+      <div class="cell pos">
+        <div class="b" style="width:${pct(r.i, MAX)}"></div>
+        <span class="v num" style="left:calc(${pct(r.i, MAX)} + 8px);color:var(--good)">${r.i}</span>
+      </div>
+      <div class="broken num" style="color:${r.br ? "var(--bad)" : "var(--ink)"}">${r.br} <span class="muted" style="font-weight:400;font-size:13px">${c.of}</span></div>`;
+  }).join("");
+  h(`<div class="frame"><div class="card">
+    <div class="dv">
+      <div></div>
+      <div class="colhead" style="text-align:right;padding-right:10px;color:var(--bad)">← ${c.worse}</div>
+      <div class="colhead" style="padding-left:10px;color:var(--good)">${c.better} →</div>
+      <div class="colhead" style="text-align:right">${c.broken}</div>
+      ${body}
+    </div>
+  </div></div>`);
+}
+
+function clock() {
+  const c = COPY.clock;
+  h(`<div class="frame"><div class="card">
+    <div class="tl">
+      <div class="label">${c.rime}</div>
+      <div class="track">
+        <div class="seg cpu" style="left:0;width:4px"></div>
+        <div class="seg sleep" style="left:4px;right:4px;padding-left:18px">${c.sleep}</div>
+        <div class="seg cpu" style="right:0;width:4px"></div>
+      </div>
+      <div class="label">${c.server}</div>
+      <div class="track" style="background:transparent">
+        <div class="seg gen" style="left:10px;right:10px;border-radius:6px">${c.gen}</div>
+      </div>
+      <div></div>
+      <div>
+        <div class="measure">
+          <div class="cap" style="left:0;top:6px;color:var(--bad)"><b class="num">${c.cpuVal}</b>&nbsp; ${c.cpu} · ${c.p50}</div>
+        </div>
+        <div class="measure" style="height:48px">
+          <div class="bracket" style="left:0;right:0;border-color:var(--ink-2)"></div>
+          <div class="cap" style="left:0;color:var(--ink)"><b class="num">${c.wallVal}</b>&nbsp; ${c.wall} · ${c.p50}</div>
+        </div>
+      </div>
+    </div>
+  </div></div>`);
+}
+
+function bytes() {
+  const c = COPY.bytes;
+  const ch = (g, bs, cls = "") => `<div class="ch ${cls}"><div class="g">${g}</div><div class="bs">${bs.map(([b, hit]) => `<span class="${hit ? "hit" : ""}">${b}</span>`).join("")}</div></div>`;
+  const meaning = (t) => (t ? `<span class="muted" style="font-size:14px"> ${t}</span>` : "");
+  h(`<div class="frame">
+    <div class="card">
+      <div class="kicker">${c.reply}</div>
+      <div class="reply zh"><mark>誓言</mark>、实验、试验、饰演、食盐</div>
+    </div>
+    <div class="card">
+      <div class="kicker"><span>${c.split.replace(/(\[\^.*?\]\+)/, '<span class="mono" style="color:var(--ink)">$1</span>')}</span></div>
+      <div class="bytes" style="align-items:flex-start">
+        ${ch("誓", [["e8"], ["aa"], ["93"]])}
+        ${ch("言", [["e8"], ["a8"], ["80", true]])}
+        ${ch("、", [["e3"], ["80", true], ["81"]], "sep")}
+        <div class="arrow">…</div>
+        <div style="align-self:center;max-width:300px;font-size:14px;color:var(--bad);font-weight:500">${c.hit}</div>
+      </div>
+      <div class="mono muted" style="font-size:13px;margin-top:14px">${c.sepNote}</div>
+    </div>
+    <div class="card">
+      <div class="kicker">${c.word}</div>
+      <div style="display:flex;gap:10px;align-items:center;margin-bottom:8px">
+        ${ch("誓", [["e8"], ["aa"], ["93"]])}
+        <div class="arrow">+</div>
+        <div class="ch" style="border-color:var(--bad)"><div class="g" style="color:var(--bad)">�</div><div class="bs"><span>e8</span><span>a8</span></div></div>
+      </div>
+      <div style="font-size:15px;margin-bottom:16px">${c.wordNote}</div>
+      <div class="outcome">
+        <div class="o">${c.intended}<div class="zh">誓言${meaning(c.vow)}</div></div>
+        <div class="o" style="color:var(--bad)">${c.shown}<div class="zh">实验${meaning(c.experiment)}</div></div>
+      </div>
+    </div>
+  </div>`);
+}
+
+({ "context-ablation": contextAblation, "name-swap": nameSwap, phonetic, clock, bytes })[FIG]();
+document.fonts.ready.then(() => { document.body.dataset.ready = "1"; });
+</script>
+</body>
+</html>

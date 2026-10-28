@@ -22,6 +22,26 @@ async function walk(relative) {
 await Promise.all(trees.map(walk));
 files.push('README.md', 'CLAUDE.md', 'package.json');
 
+// Blog posts link with site URLs (`/privacy/`, `/blog/<slug>/chart.webp`):
+// each must be a static file in the site's public/ or an English route.
+const siteContent = path.join('apps', 'site', 'content') + path.sep;
+async function siteTargetExists(url) {
+  const site = path.join(root, 'apps', 'site');
+  const decoded = decodeURIComponent(url);
+  const candidates = [
+    path.join(site, 'public', decoded),
+    path.join(site, 'app', '(en)', decoded, 'page.tsx'),
+  ];
+  const post = decoded.match(/^\/blog\/([^/]+)\/$/);
+  if (post) candidates.push(path.join(site, 'content', 'blog', post[1], 'en.md'));
+  for (const candidate of candidates) {
+    try {
+      if ((await stat(candidate)).isFile()) return true;
+    } catch {}
+  }
+  return false;
+}
+
 const markdown = new Map();
 for (const name of files.filter(name => name.endsWith('.md'))) {
   const source = await readFile(path.join(root, name), 'utf8');
@@ -34,6 +54,10 @@ for (const [name, source] of markdown) {
     const target = match[1].replace(/^<|>$/g, '');
     if (/^[a-z][a-z\d+.-]*:/i.test(target) || target.startsWith('//')) continue;
     const [file, fragment] = target.split('#', 2);
+    if (name.startsWith(siteContent) && file.startsWith('/')) {
+      if (!(await siteTargetExists(file))) errors.push(`${name}: missing site page or file ${target}`);
+      continue;
+    }
     const resolved = file ? path.resolve(root, path.dirname(name), decodeURIComponent(file)) : path.join(root, name);
     try {
       const info = await stat(resolved);

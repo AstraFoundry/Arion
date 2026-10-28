@@ -44,6 +44,11 @@ export function installerName(config, platform) {
   return platform.startsWith('darwin-') ? `${config.name} ${config.version} ${arch}.dmg` : `${config.name} Setup ${config.version} ${arch}.exe`;
 }
 
+export function archiveName(config, platform) {
+  if (!releasePlatforms.includes(platform)) throw new Error(`Unsupported release platform: ${platform}`);
+  return `${config.name.toLowerCase()}-${config.version}-${platform}.tar.gz`;
+}
+
 function requireFile(directory, name) {
   const file = path.join(directory, name);
   const info = statSync(file);
@@ -62,8 +67,7 @@ export function platformAssets(directory, config, platform, signed = true) {
   if (manifest.version !== config.version) throw new Error(`Wrong update version for ${platform}`);
   const key = publicKey(config.updates.publicKey);
   const prefix = `${config.updates.url}/`;
-  const archiveName = `${config.name.toLowerCase()}-${config.version}-${platform}.tar.gz`;
-  if (manifest.url !== `${prefix}${archiveName}`) throw new Error(`Wrong update archive URL for ${platform}`);
+  if (manifest.url !== `${prefix}${archiveName(config, platform)}`) throw new Error(`Wrong update archive URL for ${platform}`);
   for (const asset of [manifest, ...(manifest.deltas ?? [])]) {
     if (!asset.url.startsWith(prefix)) throw new Error(`Wrong update origin for ${platform}`);
     const fileName = asset.url.slice(prefix.length);

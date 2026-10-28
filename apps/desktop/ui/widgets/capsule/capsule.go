@@ -15,6 +15,7 @@ import (
 	"arion.local/desktop/ui/shared/kit"
 	"arion.local/desktop/ui/shared/runtime"
 	"arion.local/desktop/ui/shared/theme"
+	"arion.local/desktop/ui/shared/typography"
 	"github.com/egoist/mygo/ui"
 )
 
@@ -96,7 +97,7 @@ func Render(c *ui.Context, store runtime.Store, tokens theme.Tokens, s *State) {
 	if learned {
 		c.After(dictation.LearnedVisible - now.Sub(state.Learned.At) + 10*time.Millisecond)
 	}
-	ui.Column(c).Fill().Justify(ui.End).AlignItems(ui.Center).Padding(0, 0, 22, 0).Children(func() {
+	ui.Column(c).Font(typography.Family).Fill().Justify(ui.End).AlignItems(ui.Center).Padding(0, 0, 22, 0).Children(func() {
 		if learned {
 			kit.Pill(c.Key("learned"), tokens).MaxWidth(600).Transition(pillMotion).Children(func() {
 				learnedNotice(c, store, tokens)
@@ -208,7 +209,7 @@ func draft(c *ui.Context, tokens theme.Tokens, s *State, session string, frame d
 	}
 	// Shaped as runs, the line can come out wider than its characters
 	// measured singly; keep the wider so the end stays inside.
-	shaped, _ := c.MeasureText(0, ui.Span{Text: string(runes), Size: theme.Body})
+	shaped, _ := c.MeasureText(0, ui.Span{Text: string(runes), Font: typography.Family, Size: theme.Body})
 	full := max(starts[len(runes)], shaped) + 1
 	room := s.widen(session, slotStep*float32(math.Ceil(float64((full+slotHeadroom)/slotStep))))
 	hidden := max(0, full-room)
@@ -244,7 +245,7 @@ func draft(c *ui.Context, tokens theme.Tokens, s *State, session string, frame d
 	}
 	// Absolute text no longer follows the row's centering; center its line
 	// box in the line as the row did.
-	_, textHeight := c.MeasureText(0, ui.Span{Text: "中", Size: theme.Body})
+	_, textHeight := c.MeasureText(0, ui.Span{Text: "中", Font: typography.Family, Size: theme.Body})
 	line.Height(lineHeight).Children(func() {
 		// Out of the row's layout and unwrapped, the text keeps its full
 		// width instead of truncating to the line; the row clips it.
@@ -269,7 +270,7 @@ func advance(c *ui.Context, r rune) float32 {
 	if w, ok := advances[r]; ok {
 		return w
 	}
-	w, _ := c.MeasureText(0, ui.Span{Text: string(r), Size: theme.Body})
+	w, _ := c.MeasureText(0, ui.Span{Text: string(r), Font: typography.Family, Size: theme.Body})
 	advances[r] = w
 	return w
 }

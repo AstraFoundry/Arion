@@ -9,34 +9,7 @@
 #include <vector>
 #include "wire.h"
 
-inline bool tokenValue(HANDLE token, TOKEN_INFORMATION_CLASS kind, std::vector<BYTE> &value) {
-    DWORD size = 0;
-    GetTokenInformation(token, kind, nullptr, 0, &size);
-    if (!size) return false;
-    value.resize(size);
-    return GetTokenInformation(token, kind, value.data(), size, &size) != FALSE;
-}
-
-// Voice composition is supported only between ordinary desktop processes.
-// A per-user pipe must never turn a lower-integrity process into an input
-// source for an elevated editor, or cross a Windows logon session.
-inline bool ordinaryToken(HANDLE token, DWORD &integrity) {
-    TOKEN_ELEVATION elevation{}; DWORD size = 0;
-    if (!GetTokenInformation(token, TokenElevation, &elevation, sizeof(elevation), &size) || elevation.TokenIsElevated) return false;
-    std::vector<BYTE> label;
-    if (!tokenValue(token, TokenIntegrityLevel, label)) return false;
-    PSID sid = reinterpret_cast<TOKEN_MANDATORY_LABEL*>(label.data())->Label.Sid;
-    if (!IsValidSid(sid) || !*GetSidSubAuthorityCount(sid)) return false;
-    integrity = *GetSidSubAuthority(sid, *GetSidSubAuthorityCount(sid) - 1);
-    return integrity >= SECURITY_MANDATORY_MEDIUM_RID && integrity < SECURITY_MANDATORY_HIGH_RID;
-}
-
-inline bool ordinaryHost() {
-    HANDLE token = nullptr; DWORD integrity = 0;
-    if (!OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &token)) return false;
-    bool allowed = ordinaryToken(token, integrity);
-    CloseHandle(token); return allowed;
-}
+#include "host_security.h"
 
 inline bool trustedPipeServer(HANDLE pipe) {
     ULONG pid = 0; DWORD ownSession = 0, serverSession = 0;

@@ -6,7 +6,7 @@
 #include <string>
 #include <unordered_map>
 
-// Shape and draw the installed Windows Emoji font. No font or artwork is
+// Shape and validate the installed Windows Emoji font. No font or artwork is
 // redistributed. Unsupported/newer sequences never become selectable rows.
 class WindowsEmojiFont {
     static constexpr const wchar_t *family=L"Segoe UI Emoji";
@@ -112,43 +112,5 @@ public:
         std::wstring value(static_cast<size_t>(count),L'\0');
         if (!MultiByteToWideChar(CP_UTF8,MB_ERR_INVALID_CHARS,text,-1,value.data(),count)) return HRESULT_FROM_WIN32(GetLastError());
         value.pop_back(); return supports(value,out);
-    }
-};
-
-// Direct2D's DC target is the supported interop boundary for the existing GDI
-// candidate surface. Only typed Emoji rows use color-font drawing.
-class WindowsEmojiPainter {
-    ID2D1Factory *factory=nullptr;
-    ID2D1DCRenderTarget *target=nullptr;
-    ID2D1SolidColorBrush *brush=nullptr;
-public:
-    ~WindowsEmojiPainter() { if (brush) brush->Release(); if (target) target->Release(); if (factory) factory->Release(); }
-    WindowsEmojiPainter()=default;
-    WindowsEmojiPainter(const WindowsEmojiPainter&)=delete;
-    WindowsEmojiPainter &operator=(const WindowsEmojiPainter&)=delete;
-    HRESULT initialize() {
-        HRESULT hr=S_OK;
-        if (!factory) hr=D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED,&factory);
-        if (FAILED(hr)) return hr;
-        if (!target) {
-            auto properties=D2D1::RenderTargetProperties(D2D1_RENDER_TARGET_TYPE_SOFTWARE,D2D1::PixelFormat(DXGI_FORMAT_B8G8R8A8_UNORM,D2D1_ALPHA_MODE_IGNORE),96,96);
-            hr=factory->CreateDCRenderTarget(&properties,&target);
-        }
-        if (SUCCEEDED(hr) && !brush) hr=target->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Black),&brush);
-        return hr;
-    }
-    HRESULT draw(HDC dc,const RECT &area,IDWriteTextLayout *layout,COLORREF foreground,COLORREF background) {
-        HRESULT hr=initialize();
-        if (SUCCEEDED(hr)) hr=target->BindDC(dc,&area);
-        if (FAILED(hr)) return hr;
-        target->BeginDraw();
-        // A DC target owns an internal bitmap. Bind only the Emoji text cell,
-        // explicitly fill its background and leave the surrounding GDI intact.
-        target->Clear(D2D1::ColorF(GetRValue(background)/255.0f,GetGValue(background)/255.0f,GetBValue(background)/255.0f));
-        brush->SetColor(D2D1::ColorF(GetRValue(foreground)/255.0f,GetGValue(foreground)/255.0f,GetBValue(foreground)/255.0f));
-        target->DrawTextLayout(D2D1::Point2F(0,0),layout,brush,static_cast<D2D1_DRAW_TEXT_OPTIONS>(D2D1_DRAW_TEXT_OPTIONS_CLIP|D2D1_DRAW_TEXT_OPTIONS_ENABLE_COLOR_FONT));
-        hr=target->EndDraw();
-        if (hr==static_cast<HRESULT>(D2DERR_RECREATE_TARGET)) { brush->Release(); brush=nullptr; target->Release(); target=nullptr; }
-        return hr;
     }
 };

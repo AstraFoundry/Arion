@@ -1,3 +1,4 @@
+import { buildCandidateFonts } from './lib/windows-candidate-fonts.mjs';
 // The production TSF key sink edits an owned ITextStoreACP document. No profile
 // registration, global selection, real editor typing or persistent user data.
 import {spawn,spawnSync} from 'node:child_process';
@@ -49,9 +50,10 @@ try{
     run(cc,['-std=c11','-O2','-Wall','-Wextra','-Werror','-I',path.join(sdk,'include'),'-c',path.join(common,`${name}.c`),'-o',object]);return object;
   });
   const base=['-std=c++17','-DINITGUID','-O2','-Wall','-Wextra','-Werror','-static','-isystem',path.join(sdk,'include')];
+  const fontResource=buildCandidateFonts(root,cxx,directory,run);
   for(const name of ['native_keys','candidate_window']){
     const binary=path.join(directory,`${name}-test.exe`);
-    run(cxx,[...base,path.join(source,`${name}_test.cpp`),...(name==='native_keys'?[objects[1]]:[]),'-o',binary,'-lgdi32','-ldwrite','-ld2d1','-lole32','-luuid']);
+    run(cxx,[...base,path.join(source,`${name}_test.cpp`),...(name==='native_keys'?[objects[1]]:[fontResource]),'-o',binary,'-lgdi32','-ldwrite','-ld2d1','-lole32','-luuid']);
     run(binary,name==='candidate_window'?[directory]:[]);
   }
   const module=path.join(keyboard,'lib/ArionKeyboard.dll');
@@ -60,7 +62,7 @@ try{
   manifest.files['lib/ArionKeyboard.dll']={sha256:hash(module),sizeBytes:readFileSync(module).length};
   writeFileSync(manifestPath,JSON.stringify(manifest,null,2)+'\n');
   const library=path.join(directory,'ArionTSF.dll');
-  run(cxx,[...base,'-DARION_TSF_TESTING','-DARION_TSF_MANUAL_KEYS',`-DARION_KEYBOARD_MANIFEST_SHA256="${hash(manifestPath)}"`,'-shared',path.join(source,'service.cpp'),...objects,'-o',library,'-lole32','-loleaut32','-luuid','-ladvapi32','-lshell32','-lgdi32','-ldwrite','-ld2d1']);
+  run(cxx,[...base,'-DARION_TSF_TESTING','-DARION_TSF_MANUAL_KEYS',`-DARION_KEYBOARD_MANIFEST_SHA256="${hash(manifestPath)}"`,'-shared',path.join(source,'service.cpp'),...objects,fontResource,'-o',library,'-lole32','-loleaut32','-luuid','-ladvapi32','-lshell32','-lgdi32','-ldwrite','-ld2d1']);
   const editor=path.join(directory,'textstore-fixture.exe');
   run(cxx,[...base,'-DARION_TSF_MANUAL_KEYS','-municode',path.join(source,'textstore_fixture.cpp'),'-o',editor,'-lole32','-loleaut32','-luuid','-lgdi32','-ladvapi32']);
   report.identities={service:hash(library),module:hash(module),engine:hash(path.join(keyboard,'lib/ArionRime.dll')),manifest:hash(manifestPath)}; save();
@@ -209,7 +211,7 @@ try{
     await command('reset');await type('ni');await command('keyboardblur');await command('keyboardblur');await pause(80);assert.equal(await document(),'A🙂中Z');assert.equal((await key(78)).eaten,false);await command('keyboardfocus');await begin('keyboard-blur-voice');voice('keyboard-blur-voice','mark','voice draft',1);await pause(80);assert.equal(await document(),'A🙂中voice draftZ');const after=messages.length;await command('keyboardblur');await pause(100);assert.equal(await document(),'A🙂中Z');assert.equal([...connections].some(socket=>!socket.destroyed),false);voice('keyboard-blur-voice','commit','LATE',2);peer.write(JSON.stringify({op:'begin',activation:currentActivation,session:'blurred-begin'})+'\n');await pause(80);assert.equal(messages.slice(after).some(message=>message.op==='begun'&&message.session==='blurred-begin'),false);assert.equal(await document(),'A🙂中Z');await command('keyboardfocus');await type('ni');await key(27);
   });
   await test('App bridge disconnect cannot erase a keyboard composition',async()=>{await command('reset');await type('ni');const pending=await document();for(const socket of connections)socket.destroy();await new Promise(resolve=>server.close(resolve));server=null;await pause(350);assert.equal(await document(),pending);await key(32);assert.equal(await document(),'A🙂你Z');});
-  await test('Saved candidate preferences refresh without the desktop app',async()=>{await command('reset');writeFileSync(path.join(directory,'profile/keyboard.json'),JSON.stringify({pageSize:5,candidateSize:'large',appearance:'dark',contextRanking:false,highlight:{dark:{fill:'#123456',text:'#ffffff'},light:{fill:'#abcdef',text:'#14110f'}}}));await pause(350);await type('ni');const menu=await command('menu');await key(34);const expanded=await command('menu');report.lastSettingsMenus={before:menu,expanded};save();assert.equal(expanded.page,1);assert.ok(expanded.height>36*2);await key(49);assert.equal(await document(),`A🙂${menu.strings[5]}Z`);});
+  await test('Saved candidate preferences refresh without the desktop app',async()=>{await command('reset');writeFileSync(path.join(directory,'profile/keyboard.json'),JSON.stringify({pageSize:5,candidateSize:'large',appearance:'dark',highlight:{dark:{fill:'#123456',text:'#ffffff'},light:{fill:'#abcdef',text:'#14110f'}}}));await pause(350);await type('ni');const menu=await command('menu');await key(34);const expanded=await command('menu');report.lastSettingsMenus={before:menu,expanded};save();assert.equal(expanded.page,1);assert.ok(expanded.height>36*2);await key(49);assert.equal(await document(),`A🙂${menu.strings[5]}Z`);});
   fixture.stdin.write('quit\n');
   const exit=await Promise.race([exited,new Promise((_,reject)=>{const timer=setTimeout(()=>reject(new Error('Fixture shutdown timed out')),5000);timer.unref();})]);
   assert.equal(exit.code,0);fixture=null;

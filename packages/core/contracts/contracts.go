@@ -87,6 +87,9 @@ const (
 	Applied    CommitOutcome = "applied"
 	NotApplied CommitOutcome = "not_applied"
 	Unknown    CommitOutcome = "unknown"
+	// Copied means the text was left on the system clipboard because no
+	// editable field was focused. It is not an insertion and is not retried.
+	Copied CommitOutcome = "copied"
 )
 
 type CommitResult struct {

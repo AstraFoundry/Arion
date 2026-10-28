@@ -105,7 +105,7 @@
       }
     },
     {
-      "id": "rewrite-focus-change-blocks-confirm",
+      "id": "rewrite-focus-change-inserts-at-caret",
       "acceptance": [
         "RWT-A03"
       ],
@@ -140,9 +140,8 @@
       ],
       "assertions": {
         "editors.A.text": "",
-        "editors.B.text": "",
-        "commitCount": 0,
-        "commit.status": "not_applied"
+        "commitCount": 1,
+        "commit.status": "unknown"
       }
     },
     {

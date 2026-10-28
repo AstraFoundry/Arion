@@ -22,6 +22,7 @@
   },
   "nav": {
     "label": "メイン",
+    "blog": "ブログ",
     "privacy": "プライバシー",
     "selfHosting": "セルフホスト",
     "openSource": "オープンソース",
@@ -152,6 +153,26 @@
     "unavailable": "まだ提供していません",
     "checksum": "SHA-256 {sum}",
     "failed": "リリース情報を読み込めませんでした。ダウンロードボタンは引き続き使えます。"
+  },
+  "blog": {
+    "title": "ブログ",
+    "lead": "Arion をつくる人たちのノート。何が変わったか、どう動くか、そしてなぜすべてがデバイスに残るのか。",
+    "allPosts": "すべての記事",
+    "morePosts": "ほかの記事",
+    "contents": "目次",
+    "byline": "著者：{authors}",
+    "updated": "{date} 更新",
+    "categories": {
+      "announcement": "お知らせ",
+      "product": "プロダクト",
+      "engineering": "エンジニアリング"
+    },
+    "headingLink": "このセクションへのリンク",
+    "copyCode": "コードをコピー",
+    "copied": "コピーしました",
+    "footnotes": "脚注",
+    "footnoteBack": "参照 {index} に戻る",
+    "embedLoad": "{host} のコンテンツを読み込む"
   },
   "privacyPage": {
     "title": "プライバシーと暗号化",

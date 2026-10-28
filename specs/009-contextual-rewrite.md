@@ -14,7 +14,7 @@ Rewriting is separate from acoustic recognition, conservative correction and Lay
 4. Run bounded non-thinking generation locally, once, after the user releases the dictation key. Keep token streams separate from recognized drafts and owned IME composition. The session does not send a rewrite while capture continues, and a model result cannot replace recognized text before release.
 5. In polishing mode, run source-relative spelling selection followed by scene formatting, using the adopted [product configuration](../docs/operations/local-rewrite.md). Only protocol completeness, UTF-8, output budget and control markup gate delivery; semantic overlap proxies do not reject output. Preserving facts, negation, modality and intent remains the model instruction and review objective, not a string-based guarantee. Verbatim mode bypasses rewriting.
 6. Deliver the validated proposal automatically ([ADR 011](../docs/decisions/011-live-local-rewriting.md)) and keep the recognized original available to copy. A generated instruction, reasoning block, skill invocation or model refusal is never inserted as ordinary dictated text. Rejection, timeout, missing model and unsupported runtime are explicit organization outcomes recorded with the result. They retain the completed local speech-cleanup result; raw recognition and rule-corrected source remain separate.
-7. Commit only through the existing once-only target capability after source identity, focus and mode checks. Source revision, cancellation, focus change or mode switch invalidates the proposal and owned composition. A late token, preview or callback cannot write to a target.
+7. Commit only through the existing once-only target capability after source identity and mode checks. Source revision, cancellation or mode switch invalidates the proposal and owned composition. External-editor commit inserts at the caret focused at commit time, or copies to the clipboard when nothing editable is focused (DSK-06). Owned IME composition still drops on focus change. A late token, preview or callback cannot write to a target.
 
 ## Live rewriting pipeline
 
@@ -103,7 +103,7 @@ Automated checks cover protected exact occurrences, declared constraints, unsupp
 | --- | --- |
 | RWT-A01 | Provisioned local rewriting works offline; neither audio nor context goes to an inference service |
 | RWT-A02 | Session/generation/source revision matches; cancellation and revision invalidation discard tokens/proposals and prevent stale preview/write |
-| RWT-A03 | Focus/mode changes invalidate shortcut and owned IME composition; final commit rechecks ownership exactly once |
+| RWT-A03 | A caret move, field switch, or edit in the original field inserts the finished text once at the live caret. No focused editable field copies it to the clipboard. Owned IME composition still drops on focus or mode change. Final commit checks the live target once and does not retry an unknown result |
 | RWT-A04 | Secure/unknown target context is denied before reads; clipboard/screen/history use explicit bounded capabilities; prompt data cannot authorize commands |
 | RWT-A05 | Verbatim/code and protected meaning constraints hold; original and rewrite remain distinct, and the original stays available after automatic insertion (ADR 011) |
 | RWT-A06 | Missing artifact, unsupported provider, rejection and timeout are explicit; no fabricated live result or silent cloud routing (cloud only by CLD-01) |

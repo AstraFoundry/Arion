@@ -255,31 +255,42 @@ func (t *Targets) Commit(ctx context.Context, request contracts.CommitRequest) (
 	}
 	delete(t.targets, request.Target)
 	t.mu.Unlock()
+	if tgt == nil {
+		result.Failure = domain.CodeTargetChanged
+		return result, nil
+	}
 	if ctx.Err() != nil {
 		result.Failure = domain.CodeCancelled
 		return result, nil
 	}
-	if tgt != nil && tgt.secure {
+	// A capture already marked secure never follows the caret or the
+	// clipboard. That decision uses the snapshot, so an invalid handle
+	// returns before any OS input.
+	if tgt.secure {
 		result.Failure = domain.CodeSecureFieldBlocked
 		return result, nil
 	}
 	foreground, _, _ := procGetForegroundWindow.Call()
-	if tgt == nil || foreground != tgt.foreground || (tgt.focus != 0 && focusOf(foreground) != tgt.focus) {
-		result.Failure = domain.CodeTargetChanged
+	focus := uintptr(0)
+	if foreground != 0 {
+		focus = focusOf(foreground)
+	}
+	if foreground == 0 || focus == 0 {
+		if !publishClipboard(request.Text) {
+			result.Failure = domain.CodeClipboardUnavailable
+			return result, nil
+		}
+		result.Outcome = contracts.Copied
 		return result, nil
 	}
-	if tgt.focus != 0 && strings.EqualFold(className(tgt.focus), "Edit") {
-		style, _, _ := procGetWindowLongW.Call(tgt.focus, gwlStyle)
+	if strings.EqualFold(className(focus), "Edit") {
+		style, _, _ := procGetWindowLongW.Call(focus, gwlStyle)
 		if style&esPassword != 0 {
 			result.Failure = domain.CodeSecureFieldBlocked
 			return result, nil
 		}
-		start, end, ok := editSelection(tgt.focus)
-		if !tgt.selection || !ok || start != tgt.start || end != tgt.end {
-			result.Failure = domain.CodeTargetChanged
-			return result, nil
-		}
 	}
+	tgt.foreground, tgt.focus = foreground, focus
 	if ctx.Err() != nil {
 		result.Failure = domain.CodeCancelled
 		return result, nil
@@ -292,8 +303,16 @@ func (t *Targets) Commit(ctx context.Context, request contracts.CommitRequest) (
 	} else {
 		posted, failure := typeText(ctx, singleLine(request.Text), func() bool {
 			foreground, _, _ := procGetForegroundWindow.Call()
-			return foreground == tgt.foreground && (tgt.focus == 0 || focusOf(foreground) == tgt.focus)
+			return foreground == tgt.foreground && focusOf(foreground) == tgt.focus
 		})
+		if !posted && failure == domain.CodeTargetChanged {
+			if !publishClipboard(request.Text) {
+				result.Failure = domain.CodeClipboardUnavailable
+				return result, nil
+			}
+			result.Outcome = contracts.Copied
+			return result, nil
+		}
 		if posted {
 			result.Outcome = contracts.Unknown
 		}
@@ -393,6 +412,19 @@ func writeClipboardText(text string) bool {
 	procEmptyClipboard.Call()
 	ok, _, _ := procSetClipboardData.Call(cfUnicodeText, handle)
 	return ok != 0
+}
+
+// publishClipboard leaves text on the clipboard and does not paste it.
+func publishClipboard(text string) bool {
+	if text == "" {
+		return false
+	}
+	if ok, _, _ := procOpenClipboard.Call(0); ok == 0 {
+		return false
+	}
+	written := writeClipboardText(text)
+	procCloseClipboard.Call()
+	return written
 }
 
 // paste writes the text, sends Ctrl+V and restores the previous text only

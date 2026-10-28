@@ -27,6 +27,10 @@ type editorState struct {
 		Text  string `json:"text"`
 		Edits int    `json:"edits"`
 	} `json:"A"`
+	B struct {
+		Text  string `json:"text"`
+		Edits int    `json:"edits"`
+	} `json:"B"`
 	Active        bool   `json:"active"`
 	Fullscreen    bool   `json:"fullscreen"`
 	Transitioning bool   `json:"transitioning"`

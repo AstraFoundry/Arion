@@ -100,6 +100,10 @@ int arion_selection_matches(void *element, void *selection) {
     return same;
 }
 
+void *arion_copy_selection(void *element) {
+    return (void *)selected_range((AXUIElementRef)element);
+}
+
 int arion_capture_target(arion_target *out, int read_site) {
     memset(out, 0, sizeof(*out));
     if (!AXIsProcessTrusted()) return ARION_TARGET_UNTRUSTED;

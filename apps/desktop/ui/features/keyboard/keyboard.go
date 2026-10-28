@@ -159,7 +159,7 @@ func errorKey(store runtime.Store, key copy.Key) copy.Key {
 }
 
 // Candidates chooses the page size, text size, theme and highlight color of
-// the candidate bar.
+// the candidate bar, and whether native Emoji appear among Pinyin candidates.
 func Candidates(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 	messages := store.Copy()
 	prefs := store.State.Preferences.Keyboard
@@ -196,24 +196,11 @@ func Candidates(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 		})
 		kit.Divider(c, tokens)
 		kit.Row(c, tokens, messages.Text(copy.KbdAccent), "", func() { accent(c, messages, tokens, prefs, update) })
-	})
-}
-
-// Smart controls context ranking and native Emoji suggestions.
-func Smart(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
-	messages := store.Copy()
-	ranking := store.State.Preferences.Keyboard.ContextRanking
-	emoji := store.State.Preferences.Keyboard.EmojiSuggestions
-	kit.Card(c, tokens).Children(func() {
-		kit.TipRow(c, tokens, messages.Text(copy.KbdContextRanking), messages.Text(copy.KbdContextRankingDetail), func() {
-			if ui.Switch(c.Key("context-ranking"), &ranking).Label(messages.Text(copy.KbdContextRanking)).Changed() {
-				store.Actions.UpdatePreferences(func(p *runtime.Preferences) { p.Keyboard.ContextRanking = ranking })
-			}
-		})
 		kit.Divider(c, tokens)
 		kit.Row(c, tokens, messages.Text(copy.KbdEmojiSuggestions), messages.Text(copy.KbdEmojiSuggestionsDetail), func() {
+			emoji := prefs.EmojiSuggestions
 			if ui.Switch(c.Key("emoji-suggestions"), &emoji).Label(messages.Text(copy.KbdEmojiSuggestions)).Changed() {
-				store.Actions.UpdatePreferences(func(p *runtime.Preferences) { p.Keyboard.EmojiSuggestions = emoji })
+				update(func(k *runtime.KeyboardPreferences) { k.EmojiSuggestions = emoji })
 			}
 		})
 	})

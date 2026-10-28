@@ -10,6 +10,7 @@ import (
 	"arion.local/desktop/ui/shared/kit"
 	"arion.local/desktop/ui/shared/runtime"
 	"arion.local/desktop/ui/shared/theme"
+	"arion.local/desktop/ui/shared/typography"
 	"github.com/egoist/mygo/ui"
 )
 
@@ -23,7 +24,7 @@ type Copied struct {
 func Last(c *ui.Context, store runtime.Store, tokens theme.Tokens, copied *Copied) {
 	messages := store.Copy()
 	text := store.State.LastText
-	ui.Column(c).Gap(6).Children(func() {
+	ui.Column(c).Font(typography.Family).Gap(6).Children(func() {
 		ui.Row(c).AlignItems(ui.Center).Children(func() {
 			ui.Text(c, messages.Text(copy.PanelLastDictation)).FontSize(theme.Caption).FontWeight(600).TextColor(tokens.Muted)
 			ui.Spacer(c)

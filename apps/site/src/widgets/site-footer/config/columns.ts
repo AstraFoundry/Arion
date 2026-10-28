@@ -12,6 +12,7 @@ export function footerColumns(copy: Messages): FooterColumn[] {
       title: copy.footer.product,
       links: [
         { label: copy.common.download, href: downloadHref },
+        { label: copy.nav.blog, href: routes.blog },
         { label: copy.nav.privacy, href: routes.privacy },
         { label: copy.nav.selfHosting, href: routes.selfHosting },
         { label: copy.nav.openSource, href: anchor(sections.openSource) },

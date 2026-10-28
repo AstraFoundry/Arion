@@ -1,3 +1,31 @@
+## 0.1.0-alpha.18
+
+### English
+
+Preview for macOS Apple silicon (macOS 14 or later) and Windows x64.
+
+- Add Emoji candidates for eligible full-word Pinyin input on macOS and Windows, with Unicode sequence metadata preserved and Windows font-coverage checks.
+- Reorganize Settings into Speech & Polish, following recognition, polishing, formatting and context. Formatting and context controls appear while polishing is enabled.
+- Separate cloud provider setup from activation: opening a provider page no longer switches the active provider. New connections start with a supported fast model.
+- Keep failed API-key connection messages on the provider that failed.
+- Share translation prompt and hold-key setup across onboarding and settings.
+- Open Settings when Arion is explicitly launched or reopened after onboarding; login-item starts stay in the menu bar or system tray.
+
+macOS release packages require Developer ID signing and Apple notarization. Windows publisher signing remains unavailable for this preview. Model weights download separately. Native Windows notification delivery, clean-machine acceptance, production old-to-new update acceptance and real-service cloud/translation acceptance remain open. GitHub publication and release-storage staging do not publish the Arion center beta channel. See RELEASE-STATUS.md and SHA256SUMS for acceptance limits and verification.
+
+### 中文
+
+适用于 macOS Apple 芯片（macOS 14 或更高版本）和 Windows x64 的预览版本。
+
+- macOS 和 Windows 新增完整拼音词候选的 Emoji 联想，保留 Unicode 序列元数据，并在 Windows 上检查系统字体覆盖范围。
+- 将设置重组为“识别与润色”，依次呈现识别、润色、排版和上下文；启用润色时显示排版和上下文选项。
+- 分离云端服务配置与启用操作：打开服务商页面不再切换当前服务，新连接默认选择受支持的快速模型。
+- API Key 连接失败提示仅保留在对应服务商页面。
+- 引导和设置共用翻译提示词及按住快捷键配置流程。
+- 完成引导后，主动启动或重新打开 Arion 时显示设置；登录启动仍驻留菜单栏或系统托盘。
+
+macOS 发布包要求 Developer ID 签名和 Apple 公证；Windows 预览版仍无发布者签名。模型权重单独下载。Windows 原生通知投递、全新机器、生产版本跨版本更新，以及云端服务和翻译的实际服务验收仍待完成。GitHub 发布及存储暂存不会自动发布 Arion 中心的 beta 渠道。验收范围及校验信息见 RELEASE-STATUS.md 与 SHA256SUMS。
+
 ## 0.1.0-alpha.17
 
 ### English
