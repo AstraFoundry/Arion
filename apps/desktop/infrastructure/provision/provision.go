@@ -143,7 +143,7 @@ func (s *Store) Installed(a models.Artifact) (string, error) {
 		if err != nil || info.Size() != file.SizeBytes {
 			return "", domain.Fail(domain.CodeArtifactUnverified, a.ID+" "+role)
 		}
-		digest, err := hashFile(filepath.Join(dir, FileName(file)))
+		digest, err := HashFile(filepath.Join(dir, FileName(file)))
 		if err != nil || digest != file.SHA256 {
 			return "", domain.Fail(domain.CodeArtifactUnverified, a.ID+" "+role)
 		}
@@ -169,7 +169,7 @@ func (s *Store) Ensure(ctx context.Context, a models.Artifact, progress Progress
 		return "", err
 	}
 	progress(a.ID, PhaseVerifying, 0, a.Source.SizeBytes)
-	digest, err := hashFile(archive)
+	digest, err := HashFile(archive)
 	if err != nil || digest != a.Source.SHA256 {
 		_ = os.Remove(archive)
 		return "", domain.Fail(domain.CodeArtifactUnverified, a.ID+" archive digest")
@@ -388,7 +388,9 @@ func (c *countingReader) Read(p []byte) (int, error) {
 	return n, err
 }
 
-func hashFile(name string) (string, error) {
+// HashFile returns the lowercase hex SHA-256 of a file's bytes, the digest
+// form the catalog and evaluation attestations use.
+func HashFile(name string) (string, error) {
 	file, err := os.Open(name)
 	if err != nil {
 		return "", err

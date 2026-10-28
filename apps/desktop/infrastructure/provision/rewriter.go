@@ -34,7 +34,7 @@ func (s *Store) InstalledRewriter(r models.Rewriter) (string, error) {
 		if err != nil || info.Size() != file.SizeBytes || m.Files[name] != file.SHA256 {
 			return "", domain.Fail(domain.CodeArtifactUnverified, r.ID+" "+name)
 		}
-		if digest, err := hashFile(path); err != nil || digest != file.SHA256 {
+		if digest, err := HashFile(path); err != nil || digest != file.SHA256 {
 			return "", domain.Fail(domain.CodeArtifactUnverified, r.ID+" "+name)
 		}
 	}
@@ -72,7 +72,7 @@ func (s *Store) EnsureRewriter(ctx context.Context, r models.Rewriter, progress 
 			return "", err
 		}
 		progress(r.ID, PhaseVerifying, done, total)
-		if digest, err := hashFile(cached); err != nil || digest != file.SHA256 {
+		if digest, err := HashFile(cached); err != nil || digest != file.SHA256 {
 			_ = os.Remove(cached)
 			return "", domain.Fail(domain.CodeArtifactUnverified, r.ID+" "+name)
 		}

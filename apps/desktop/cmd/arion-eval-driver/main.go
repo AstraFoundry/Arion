@@ -8,13 +8,10 @@ package main
 import (
 	"bufio"
 	"context"
-	"crypto/sha256"
-	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"flag"
 	"fmt"
-	"io"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -156,19 +153,6 @@ func (d *driver) handle(req request) (map[string]any, error) {
 	}
 }
 
-func hashFile(path string) (string, error) {
-	file, err := os.Open(path)
-	if err != nil {
-		return "", err
-	}
-	defer file.Close()
-	h := sha256.New()
-	if _, err := io.Copy(h, file); err != nil {
-		return "", err
-	}
-	return hex.EncodeToString(h.Sum(nil)), nil
-}
-
 // hello re-hashes every configured artifact itself: the attestation is the
 // driver's own observation, not an echo of the runner's request.
 func (d *driver) hello(req request) (map[string]any, error) {
@@ -186,7 +170,7 @@ func (d *driver) hello(req request) (map[string]any, error) {
 		if !filepath.IsAbs(filename) {
 			filename = filepath.Join(filepath.Dir(d.configPath), filename)
 		}
-		digest, err := hashFile(filename)
+		digest, err := provision.HashFile(filename)
 		if err != nil {
 			return nil, err
 		}
@@ -366,7 +350,7 @@ func (d *driver) infer(req request) (map[string]any, error) {
 	if int(endpoint) != bundle.EndpointMs {
 		bundle.EndpointMs = int(endpoint)
 	}
-	digest, err := hashFile(req.Input.Audio.Path)
+	digest, err := provision.HashFile(req.Input.Audio.Path)
 	if err != nil || digest != req.Input.Audio.SHA256 {
 		return nil, errors.New("audio fixture digest mismatch")
 	}
