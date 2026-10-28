@@ -226,6 +226,7 @@ func (a *App) finishAccount(session account.Session, err error) {
 		a.state.Account.Phase = arion.AccountSignedOut
 		if account.DetailOf(err) == "invalid_grant" || account.DetailOf(err) == "not_found" {
 			a.state.Account.Credential = arion.CredentialAbsent
+			a.persistAccountDisplay("", "", "")
 		}
 		a.clearAccountProfile()
 		return
@@ -241,8 +242,17 @@ func (a *App) finishAccount(session account.Session, err error) {
 func (a *App) applySession(session account.Session, phase arion.AccountPhase) {
 	a.state.Account.Phase = phase
 	a.state.Account.Subject = session.Subject
-	a.state.Account.Name = session.Profile.Name
-	a.state.Account.Email = session.Profile.Email
+	name, email := session.Profile.Name, session.Profile.Email
+	if cachedName, cachedEmail, ok := a.state.Preferences.DisplayForAccount(session.Subject); ok {
+		if name == "" {
+			name = cachedName
+		}
+		if email == "" {
+			email = cachedEmail
+		}
+	}
+	a.state.Account.Name = name
+	a.state.Account.Email = email
 	if a.state.Account.Picture != session.Profile.Picture {
 		a.state.Account.Picture = session.Profile.Picture
 		a.state.Account.PictureData = nil
@@ -250,8 +260,17 @@ func (a *App) applySession(session account.Session, phase arion.AccountPhase) {
 	}
 	a.state.Account.Locale = session.Profile.Locale
 	a.state.Account.HostedSync = session.HasHostedSync()
+	a.persistAccountDisplay(session.Subject, name, email)
 	a.configureProductNotifications()
 	a.pollProductNotifications()
+}
+
+func (a *App) persistAccountDisplay(subject, name, email string) {
+	next := a.state.Preferences.WithAccountDisplay(subject, name, email)
+	if next.AccountSubject == a.state.Preferences.AccountSubject && next.AccountName == a.state.Preferences.AccountName && next.AccountEmail == a.state.Preferences.AccountEmail {
+		return
+	}
+	a.savePreferences(next)
 }
 
 func (a *App) clearAccountProfile() {
@@ -285,6 +304,7 @@ func (a *App) finishSignOut(result account.SignOutResult, err error) {
 		a.state.Account.ErrorDetail = account.DetailOf(err)
 		return
 	}
+	a.persistAccountDisplay("", "", "")
 	a.state.Account = arion.Account{Phase: arion.AccountSignedOut, Issuer: a.state.Account.Issuer, Portal: a.state.Account.Portal, SignOut: signOut, Disabled: a.state.Account.Disabled, WaitlistDisabled: a.state.Account.WaitlistDisabled}
 	if err != nil {
 		a.state.Account.ErrorCode = string(account.CodeOf(err))

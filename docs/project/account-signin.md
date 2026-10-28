@@ -8,7 +8,7 @@ Behavior is specified in [ADR 015](../decisions/015-hosted-relay-account-authori
 
 `account.New` and `bootstrap.New` remain idle. After native readiness, the composition root reads the OS credential store off the main thread and automatically restores an existing account with its refresh token. Dictation and window startup never wait for account networking. Device-only, offline and scripted E2E profiles do not start background maintenance.
 
-Maintenance checks wall-clock deadlines every five seconds, including after sleep. Tokens renew before expiry (10% of the remaining lifetime, capped at one minute). Missing expiry schedules no proactive refresh. Transient transport failures, HTTP 408/429/5xx, OAuth `server_error`/`temporarily_unavailable`, and credential read/write errors retry with exponential backoff and jitter, starting at five seconds and capped at five minutes. Existing account identity stays visible; transient refresh failures show no prompt or toast. A restart while offline shows automatic restoration until connectivity returns; profile data is not persisted.
+Maintenance checks wall-clock deadlines every five seconds, including after sleep. Tokens renew before expiry (10% of the remaining lifetime, capped at one minute). Missing expiry schedules no proactive refresh. Transient transport failures, HTTP 408/429/5xx, OAuth `server_error`/`temporarily_unavailable`, and credential read/write errors retry with exponential backoff and jitter, starting at five seconds and capped at five minutes. Existing account identity stays visible; transient refresh failures show no prompt or toast. A restart while offline shows automatic restoration until connectivity returns. Display name and email for the restored subject are read from preferences; picture bytes are not persisted.
 
 Missing credentials or `invalid_grant` stop recovery and allow sign-in. Other permanent failures stop automatic retries and show the existing localized error. Refresh, sign-in and sign-out are serialized by account phase and service locks; generation checks discard stale results. Sign-out invalidates queued recovery before revocation, and app quit stops the maintenance timer. No background operation opens a browser.
 
@@ -29,12 +29,12 @@ One sign-in or refresh runs at a time. A second request fails with `SIGN_IN_IN_P
 
 ## What views read
 
-`State.Account` has no access token and no refresh token.
+`State.Account` has no access token and no refresh token. The last signed-in `Subject`, `Name` and `Email` are also stored in preference schema v1 as additive `accountSubject` / `accountName` / `accountEmail` so Settings can show the profile line after a restart. They are display cache, not credentials. A matching `Subject` fills empty session fields; a different account or sign-out clears them. Picture bytes stay in memory only.
 
 | Field | Values |
 | --- | --- |
 | `Phase` | `signed_out`, `signing_in`, `signed_in`, `refreshing`, `signing_out` |
-| `Subject`, `Name`, `Email`, `Picture`, `Locale` | Profile from the ID token, for display |
+| `Subject`, `Name`, `Email`, `Picture`, `Locale` | Profile from the ID token or UserInfo, for display. Empty name and email for the same subject are filled from preferences |
 | `HostedSync` | `ent` contains `arion.sync.hosted`. The sync server remains the authority |
 | `ErrorCode`, `ErrorDetail` | Content-free failure. Map them through the copy catalog |
 | `Waitlist.Phase` | empty, `joining`, `joined_pending`, `already_entitled`, `closed`, `error` |
@@ -69,7 +69,6 @@ Not built yet:
 
 - **Device enrollment (SYNC-02) after the entitlement.** No desktop sync client exists. The entitled row in `features/signin` is where enrollment starts.
 - **Turn off sync and Delete server data (SYNC-07).** No actions back them, so Settings shows neither. They stay two separate operations.
-- **Profile after restart.** Name and email are not kept on disk. While initial background restoration is pending, the stored state shows no profile. Keeping it would add fields to the versioned preferences schema.
 
 ## Service API
 

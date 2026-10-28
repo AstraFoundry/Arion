@@ -1,6 +1,10 @@
 package application
 
-import "arion.local/core/domain"
+import (
+	"strings"
+
+	"arion.local/core/domain"
+)
 
 // Delivery selects how shortcut-mode commits reach other applications.
 type Delivery string
@@ -76,6 +80,12 @@ type Preferences struct {
 	// Keyboard configures Arion's input method. Profiles written before it
 	// existed load the defaults.
 	Keyboard KeyboardPreferences `json:"keyboard"`
+	// AccountSubject, AccountName and AccountEmail remember the last signed-in
+	// profile line for Settings. They are not credentials; tokens stay in the
+	// OS store. Profiles written before they existed load empty.
+	AccountSubject string `json:"accountSubject,omitempty"`
+	AccountName    string `json:"accountName,omitempty"`
+	AccountEmail   string `json:"accountEmail,omitempty"`
 }
 
 // PolishEngine selects where polishing runs.
@@ -166,5 +176,33 @@ func (p Preferences) Normalize(platform string) (Preferences, []string) {
 		p.MicrophoneGain = defaults.MicrophoneGain
 		repaired = append(repaired, "microphoneGain")
 	}
+	if next := p.WithAccountDisplay(p.AccountSubject, p.AccountName, p.AccountEmail); next.AccountSubject != p.AccountSubject || next.AccountName != p.AccountName || next.AccountEmail != p.AccountEmail {
+		p = next
+		repaired = append(repaired, "accountDisplay")
+	}
 	return p, repaired
+}
+
+// WithAccountDisplay stores the signed-in profile line, or clears it when
+// subject is empty. Tokens are never written here.
+func (p Preferences) WithAccountDisplay(subject, name, email string) Preferences {
+	p.AccountSubject = strings.TrimSpace(subject)
+	p.AccountName = strings.TrimSpace(name)
+	p.AccountEmail = strings.TrimSpace(email)
+	if p.AccountSubject == "" {
+		p.AccountName = ""
+		p.AccountEmail = ""
+	}
+	return p
+}
+
+// DisplayForAccount returns the remembered name and email when they belong
+// to subject. A different or empty subject is not a match.
+func (p Preferences) DisplayForAccount(subject string) (name, email string, ok bool) {
+	subject = strings.TrimSpace(subject)
+	if subject == "" || p.AccountSubject != subject {
+		return "", "", false
+	}
+	name, email = strings.TrimSpace(p.AccountName), strings.TrimSpace(p.AccountEmail)
+	return name, email, name != "" || email != ""
 }
