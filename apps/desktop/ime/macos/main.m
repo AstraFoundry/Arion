@@ -120,7 +120,7 @@ static NSString *voiceInputTitle(NSString *dictationKey) {
         @"left": @"HoldKeyLeft", @"right": @"HoldKeyRight", @"up": @"HoldKeyUp", @"down": @"HoldKeyDown"
     };
     NSDictionary *legends = @{
-        @"ctrl": @"Ctrl", @"alt": @"Alt", @"shift": @"Shift", @"super": @"Command",
+        @"ctrl": @"Ctrl", @"alt": @"Option", @"shift": @"Shift", @"super": @"Command",
         @"minus": @"-", @"equal": @"=", @"comma": @",", @"period": @".", @"slash": @"/", @"semicolon": @";",
         @"quote": @"'", @"bracket_left": @"[", @"bracket_right": @"]", @"backslash": @"\\", @"grave": @"`"
     };
