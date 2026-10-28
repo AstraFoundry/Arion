@@ -22,7 +22,7 @@ func TestReportUsesOnlyAggregateFieldsAndNeverFollowsRedirects(t *testing.T) {
 			t.Error(err)
 		}
 		w.Header().Set("Content-Type", "application/json")
-		_, _ = w.Write([]byte(`{"success":true,"data":{"date":"2026-10-28","visited":true,"sessions":1,"speechMs":60000,"words":120},"error":null}`))
+		_, _ = w.Write([]byte(`{"success":true,"data":{"productSlug":"arion","date":"2026-10-28","visited":true,"sessions":1,"speechMs":60000,"words":120},"error":null}`))
 	}))
 	defer server.Close()
 	client, err := NewClient(server.URL, nil)
@@ -53,7 +53,7 @@ func TestReportUsesOnlyAggregateFieldsAndNeverFollowsRedirects(t *testing.T) {
 
 func TestReportRefusesCrossIssuerAndMismatchedAcknowledgement(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		_, _ = w.Write([]byte(`{"success":true,"data":{"date":"2026-10-27","visited":true},"error":null}`))
+		_, _ = w.Write([]byte(`{"success":true,"data":{"productSlug":"arion","date":"2026-10-27","visited":true},"error":null}`))
 	}))
 	defer server.Close()
 	client, _ := NewClient(server.URL, nil)
@@ -87,5 +87,56 @@ func TestLedgerSurvivesRestartWithStableSource(t *testing.T) {
 	}
 	if restored.Source != ledger.Source || len(restored.Source) != 32 || restored.Account != "account-1" {
 		t.Fatalf("unstable ledger: %+v", restored)
+	}
+}
+
+func TestReportRequiresProductAndMonotonicAcknowledgement(t *testing.T) {
+	for _, test := range []struct {
+		name      string
+		product   string
+		sessions  int
+		speech    int64
+		words     int
+		wantError bool
+	}{
+		{"exact", "arion", 1, 60000, 120, false},
+		{"newer server snapshot", "arion", 2, 90000, 180, false},
+		{"wrong product", "other", 1, 60000, 120, true},
+		{"missing product", "", 1, 60000, 120, true},
+		{"fewer sessions", "arion", 0, 60000, 120, true},
+		{"less microphone time", "arion", 1, 0, 120, true},
+		{"fewer words", "arion", 1, 60000, 0, true},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				_ = json.NewEncoder(w).Encode(map[string]any{"success": true, "error": nil, "data": map[string]any{
+					"productSlug": test.product, "date": "2026-10-28", "visited": true, "sessions": test.sessions, "speechMs": test.speech, "words": test.words,
+				}})
+			}))
+			defer server.Close()
+			client, err := NewClient(server.URL, nil)
+			if err != nil {
+				t.Fatal(err)
+			}
+			_, err = client.Report(context.Background(), policy.Session{Issuer: server.URL, Subject: "user", Token: "token"}, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", policy.Day{Date: "2026-10-28", Visited: true, Sessions: 1, SpeechMs: 60000, Words: 120})
+			if test.wantError && !errors.Is(err, policy.ErrPayload) {
+				t.Fatalf("expected payload error, got %v", err)
+			}
+			if !test.wantError && err != nil {
+				t.Fatal(err)
+			}
+		})
+	}
+}
+
+func TestReportRequiresVisitAcknowledgement(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		_, _ = w.Write([]byte(`{"success":true,"data":{"productSlug":"arion","date":"2026-10-28","visited":false,"sessions":0,"speechMs":0,"words":0},"error":null}`))
+	}))
+	defer server.Close()
+	client, _ := NewClient(server.URL, nil)
+	_, err := client.Report(context.Background(), policy.Session{Issuer: server.URL, Subject: "user", Token: "token"}, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", policy.Day{Date: "2026-10-28", Visited: true})
+	if !errors.Is(err, policy.ErrPayload) {
+		t.Fatalf("missing visit accepted: %v", err)
 	}
 }

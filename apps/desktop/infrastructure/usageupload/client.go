@@ -89,7 +89,19 @@ func (c *Client) Report(ctx context.Context, s policy.Session, sourceID string, 
 	if json.Unmarshal(raw, &envelope) != nil || !envelope.Success || len(envelope.Data) == 0 || string(envelope.Data) == "null" || len(envelope.Error) > 0 && string(envelope.Error) != "null" {
 		return out, policy.ErrPayload
 	}
-	if json.Unmarshal(envelope.Data, &out) != nil || !out.Valid() || out.Date != day.Date {
+	var response struct {
+		policy.Day
+		ProductSlug string `json:"productSlug"`
+	}
+	if json.Unmarshal(envelope.Data, &response) != nil {
+		return policy.Day{}, policy.ErrPayload
+	}
+	out = response.Day
+	// A success envelope must confirm that this product persisted at least the
+	// sent snapshot. Otherwise keep the local counters pending for retry.
+	if response.ProductSlug != policy.Product || !out.Valid() || out.Date != day.Date ||
+		(day.Visited && !out.Visited) || out.Sessions < day.Sessions ||
+		out.SpeechMs < day.SpeechMs || out.Words < day.Words {
 		return policy.Day{}, policy.ErrPayload
 	}
 	return out, nil

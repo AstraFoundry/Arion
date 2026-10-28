@@ -65,3 +65,16 @@ func TestAuthorizationFailureStopsCollectionUntilNewConsentToken(t *testing.T) {
 		t.Fatal("collection continued after authorization refusal")
 	}
 }
+
+func TestUsagePayloadFailureKeepsSnapshotPending(t *testing.T) {
+	a := &App{}
+	a.usageUpload.store = infra.Store{Path: filepath.Join(t.TempDir(), "usage.json")}
+	a.usageUpload.session = account.Session{UsageConsent: true, AccessToken: "token"}
+	day := policy.Day{Date: "2026-10-28", Visited: true, Sessions: 1, SpeechMs: 60000, Words: 120}
+	a.usageUpload.ledger = policy.Ledger{Source: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", Days: map[string]policy.Day{day.Date: day}, Acked: map[string]policy.Day{}}
+	now := time.Now()
+	a.finishUsageUpload(0, nil, policy.ErrPayload, now)
+	if len(a.usageUpload.ledger.Pending()) != 1 || !a.usageUpload.session.UsageConsent || !a.usageUpload.next.After(now) {
+		t.Fatal("invalid success response discarded usage or disabled collection")
+	}
+}

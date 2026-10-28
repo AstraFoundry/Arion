@@ -180,6 +180,10 @@ snapshots are bounded to 31 local calendar days. Local ledger paths are keyed by
 issuer and subject, and contain no credentials. Account switches and sign-out
 cancel requests and invalidate queued acknowledgements. Only the exact sent
 snapshot is acknowledged, preserving commits made while a request is in flight.
+A successful response must name Arion, match the sent calendar day, retain its
+visit flag and confirm each counter at or above the sent value. Missing/wrong
+products or lower counters are payload errors; they leave the snapshot pending
+and use the normal retry backoff instead of acknowledging unconfirmed usage.
 Transient failures retry after 15 seconds with exponential delay capped at five
 minutes. Authorization refusals stop collection and sending until a fresh token
 allows them; token expiry waits for the existing account maintenance flow.
