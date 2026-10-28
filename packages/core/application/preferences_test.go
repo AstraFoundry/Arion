@@ -205,21 +205,21 @@ func TestTranslationPreferences(t *testing.T) {
 
 func TestAccountDisplayPreference(t *testing.T) {
 	prefs := DefaultPreferences("darwin")
-	if name, email, ok := prefs.DisplayForAccount("user-1"); ok || name != "" || email != "" {
+	if name, email, ok := prefs.DisplayForAccount("https://issuer.example", "user-1"); ok || name != "" || email != "" {
 		t.Fatalf("empty profile matched: %q %q %v", name, email, ok)
 	}
-	prefs = prefs.WithAccountDisplay(" user-1 ", " Ada ", " ada@example.com ")
+	prefs = prefs.WithAccountDisplay("https://issuer.example", " user-1 ", " Ada ", " ada@example.com ")
 	if prefs.AccountSubject != "user-1" || prefs.AccountName != "Ada" || prefs.AccountEmail != "ada@example.com" {
 		t.Fatalf("display not trimmed: %+v", prefs)
 	}
-	name, email, ok := prefs.DisplayForAccount("user-1")
+	name, email, ok := prefs.DisplayForAccount("https://issuer.example", "user-1")
 	if !ok || name != "Ada" || email != "ada@example.com" {
 		t.Fatalf("same subject: %q %q %v", name, email, ok)
 	}
-	if _, _, ok := prefs.DisplayForAccount("user-2"); ok {
+	if _, _, ok := prefs.DisplayForAccount("https://issuer.example", "user-2"); ok {
 		t.Fatal("other subject matched")
 	}
-	cleared := prefs.WithAccountDisplay("", "Ada", "ada@example.com")
+	cleared := prefs.WithAccountDisplay("https://issuer.example", "", "Ada", "ada@example.com")
 	if cleared.AccountSubject != "" || cleared.AccountName != "" || cleared.AccountEmail != "" {
 		t.Fatalf("empty subject kept a name: %+v", cleared)
 	}
@@ -228,5 +228,19 @@ func TestAccountDisplayPreference(t *testing.T) {
 	normalized, repairs := orphan.Normalize("darwin")
 	if normalized.AccountName != "" || !slices.Contains(repairs, "accountDisplay") {
 		t.Fatalf("name without subject not repaired: %+v %v", normalized, repairs)
+	}
+}
+
+func TestAccountDisplayIsIssuerScoped(t *testing.T) {
+	prefs := DefaultPreferences("darwin").WithAccountDisplay("https://one.example", "same-subject", "Alice", "alice@example.com")
+	if _, _, ok := prefs.DisplayForAccount("https://two.example", "same-subject"); ok {
+		t.Fatal("profile crossed issuer boundary")
+	}
+	legacy := DefaultPreferences("darwin")
+	legacy.AccountSubject = "same-subject"
+	legacy.AccountName = "Legacy"
+	repaired, _ := legacy.Normalize("darwin")
+	if repaired.AccountName != "" {
+		t.Fatal("unscoped legacy profile retained")
 	}
 }

@@ -83,6 +83,7 @@ type Preferences struct {
 	// AccountSubject, AccountName and AccountEmail remember the last signed-in
 	// profile line for Settings. They are not credentials; tokens stay in the
 	// OS store. Profiles written before they existed load empty.
+	AccountIssuer  string `json:"accountIssuer,omitempty"`
 	AccountSubject string `json:"accountSubject,omitempty"`
 	AccountName    string `json:"accountName,omitempty"`
 	AccountEmail   string `json:"accountEmail,omitempty"`
@@ -176,7 +177,7 @@ func (p Preferences) Normalize(platform string) (Preferences, []string) {
 		p.MicrophoneGain = defaults.MicrophoneGain
 		repaired = append(repaired, "microphoneGain")
 	}
-	if next := p.WithAccountDisplay(p.AccountSubject, p.AccountName, p.AccountEmail); next.AccountSubject != p.AccountSubject || next.AccountName != p.AccountName || next.AccountEmail != p.AccountEmail {
+	if next := p.WithAccountDisplay(p.AccountIssuer, p.AccountSubject, p.AccountName, p.AccountEmail); next.AccountIssuer != p.AccountIssuer || next.AccountSubject != p.AccountSubject || next.AccountName != p.AccountName || next.AccountEmail != p.AccountEmail {
 		p = next
 		repaired = append(repaired, "accountDisplay")
 	}
@@ -185,11 +186,14 @@ func (p Preferences) Normalize(platform string) (Preferences, []string) {
 
 // WithAccountDisplay stores the signed-in profile line, or clears it when
 // subject is empty. Tokens are never written here.
-func (p Preferences) WithAccountDisplay(subject, name, email string) Preferences {
+func (p Preferences) WithAccountDisplay(issuer, subject, name, email string) Preferences {
+	p.AccountIssuer = strings.TrimSpace(issuer)
 	p.AccountSubject = strings.TrimSpace(subject)
 	p.AccountName = strings.TrimSpace(name)
 	p.AccountEmail = strings.TrimSpace(email)
-	if p.AccountSubject == "" {
+	if p.AccountIssuer == "" || p.AccountSubject == "" {
+		p.AccountIssuer = ""
+		p.AccountSubject = ""
 		p.AccountName = ""
 		p.AccountEmail = ""
 	}
@@ -198,9 +202,9 @@ func (p Preferences) WithAccountDisplay(subject, name, email string) Preferences
 
 // DisplayForAccount returns the remembered name and email when they belong
 // to subject. A different or empty subject is not a match.
-func (p Preferences) DisplayForAccount(subject string) (name, email string, ok bool) {
+func (p Preferences) DisplayForAccount(issuer, subject string) (name, email string, ok bool) {
 	subject = strings.TrimSpace(subject)
-	if subject == "" || p.AccountSubject != subject {
+	if issuer == "" || p.AccountIssuer != issuer || subject == "" || p.AccountSubject != subject {
 		return "", "", false
 	}
 	name, email = strings.TrimSpace(p.AccountName), strings.TrimSpace(p.AccountEmail)

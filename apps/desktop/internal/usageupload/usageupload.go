@@ -46,6 +46,9 @@ type Day struct {
 }
 
 func (d Day) Valid() bool {
+	if _, err := time.Parse(time.DateOnly, d.Date); err != nil {
+		return false
+	}
 	if !dayPattern.MatchString(d.Date) || d.Sessions < 0 || d.Sessions > 10000 || d.SpeechMs < 0 || d.SpeechMs > 86_400_000 || d.Words < 0 || d.Words > 1_000_000 {
 		return false
 	}

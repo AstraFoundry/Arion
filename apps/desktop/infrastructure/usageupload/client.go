@@ -24,7 +24,7 @@ type Client struct {
 
 func NewClient(origin string, httpClient *http.Client) (*Client, error) {
 	u, err := url.Parse(origin)
-	if err != nil || u.Scheme != "https" || u.Hostname() == "" || u.User != nil || u.RawQuery != "" || u.Fragment != "" || u.Opaque != "" || u.Path != "" && u.Path != "/" {
+	if err != nil || (u.Scheme != "https" && !(u.Scheme == "http" && (u.Hostname() == "localhost" || u.Hostname() == "127.0.0.1"))) || u.Hostname() == "" || u.User != nil || u.RawQuery != "" || u.Fragment != "" || u.Opaque != "" || u.Path != "" && u.Path != "/" {
 		return nil, policy.ErrPayload
 	}
 	c := http.Client{Timeout: 20 * time.Second}
@@ -35,19 +35,23 @@ func NewClient(origin string, httpClient *http.Client) (*Client, error) {
 	return &Client{origin: strings.TrimRight(origin, "/"), http: &c}, nil
 }
 
-func (c *Client) Report(ctx context.Context, s policy.Session, day policy.Day) (policy.Day, error) {
+func (c *Client) Report(ctx context.Context, s policy.Session, sourceID string, day policy.Day) (policy.Day, error) {
 	var out policy.Day
+	if len(sourceID) != 32 {
+		return out, policy.ErrPayload
+	}
 	if !s.Valid() || s.Issuer != c.origin || !day.Valid() {
 		return out, policy.ErrAuthorization
 	}
 	body := struct {
+		SourceID    string `json:"sourceId"`
 		ProductSlug string `json:"productSlug"`
 		Date        string `json:"date"`
 		Visited     bool   `json:"visited"`
 		Sessions    int    `json:"sessions"`
 		SpeechMs    int64  `json:"speechMs"`
 		Words       int    `json:"words"`
-	}{policy.Product, day.Date, day.Visited, day.Sessions, day.SpeechMs, day.Words}
+	}{sourceID, policy.Product, day.Date, day.Visited, day.Sessions, day.SpeechMs, day.Words}
 	data, err := json.Marshal(body)
 	if err != nil {
 		return out, policy.ErrPayload
@@ -85,7 +89,7 @@ func (c *Client) Report(ctx context.Context, s policy.Session, day policy.Day) (
 	if json.Unmarshal(raw, &envelope) != nil || !envelope.Success || len(envelope.Data) == 0 || string(envelope.Data) == "null" || len(envelope.Error) > 0 && string(envelope.Error) != "null" {
 		return out, policy.ErrPayload
 	}
-	if json.Unmarshal(envelope.Data, &out) != nil || !out.Valid() {
+	if json.Unmarshal(envelope.Data, &out) != nil || !out.Valid() || out.Date != day.Date {
 		return policy.Day{}, policy.ErrPayload
 	}
 	return out, nil

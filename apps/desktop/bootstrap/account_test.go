@@ -46,17 +46,17 @@ func TestFinishCredential(t *testing.T) {
 func TestApplySessionRemembersAccountDisplay(t *testing.T) {
 	a := &App{prefStore: settings.Store{Path: filepath.Join(t.TempDir(), "preferences.json")}}
 	a.state.Preferences = application.DefaultPreferences("darwin")
-	a.applySession(account.Session{Subject: "user-1", Profile: account.Profile{Name: "Ada", Email: "ada@example.com"}}, arion.AccountSignedIn)
+	a.applySession(account.Session{Issuer: account.DefaultIssuer, Subject: "user-1", Profile: account.Profile{Name: "Ada", Email: "ada@example.com"}}, arion.AccountSignedIn)
 	if a.state.Account.Name != "Ada" || a.state.Preferences.AccountSubject != "user-1" || a.state.Preferences.AccountName != "Ada" {
 		t.Fatalf("session not remembered: %+v %+v", a.state.Account, a.state.Preferences)
 	}
 	a.state.Account.Name = ""
 	a.state.Account.Email = ""
-	a.applySession(account.Session{Subject: "user-1"}, arion.AccountSignedIn)
+	a.applySession(account.Session{Issuer: account.DefaultIssuer, Subject: "user-1"}, arion.AccountSignedIn)
 	if a.state.Account.Name != "Ada" || a.state.Account.Email != "ada@example.com" {
 		t.Fatalf("restart lost display: %+v", a.state.Account)
 	}
-	a.applySession(account.Session{Subject: "user-2"}, arion.AccountSignedIn)
+	a.applySession(account.Session{Issuer: account.DefaultIssuer, Subject: "user-2"}, arion.AccountSignedIn)
 	if a.state.Account.Name != "" || a.state.Preferences.AccountName != "" {
 		t.Fatalf("other subject kept Ada: %+v %+v", a.state.Account, a.state.Preferences)
 	}

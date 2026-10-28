@@ -29,7 +29,7 @@ One sign-in or refresh runs at a time. A second request fails with `SIGN_IN_IN_P
 
 ## What views read
 
-`State.Account` has no access token and no refresh token. The last signed-in `Subject`, `Name` and `Email` are also stored in preference schema v1 as additive `accountSubject` / `accountName` / `accountEmail` so Settings can show the profile line after a restart. They are display cache, not credentials. A matching `Subject` fills empty session fields; a different account or sign-out clears them. Picture bytes stay in memory only.
+`State.Account` has no access token and no refresh token. The last signed-in `Subject`, `Name` and `Email` are also stored in preference schema v1 as additive `accountIssuer` / `accountSubject` / `accountName` / `accountEmail` so Settings can show the profile line after a restart. They are display cache, not credentials. A matching issuer and `Subject` fills empty session fields; a different account or sign-out clears them. Picture bytes stay in memory only.
 
 | Field | Values |
 | --- | --- |
@@ -155,3 +155,35 @@ Native Keychain and Credential Manager behavior is verified by compiling the pla
 The composition root supplies the immutable [compiled center profile](central-sync-design.md#implemented-profile-boundaries), including custom issuer, client, resource, scopes and entitlement. Refresh-token storage is keyed by its fingerprint. Legacy unscoped tokens are retained without migration; sign in again. Device mode disables all account operations and removes the account setup path. Custom OIDC disables the AstraFoundry catalog/waitlist flow. Neither profile selection nor credential-store construction contacts a server or enables sync.
 
 OS-authorized [product notifications](product-notifications.md) use the current session without requiring hosted-sync entitlement or an application preference. Sign-out invalidates the network/action generation before revocation; restoring a session resumes authenticated catchup when OS permission allows. This does not enable encrypted memory sync.
+
+## Consented usage reporting
+
+The access token carries `usage_consent_version=usage-v1` and a valid
+`usage_consent_at` timestamp only after the platform records explicit agreement.
+Missing/older claims leave reporting disabled. The desktop never treats sign-in
+alone as permission. A newly accepted choice reaches an existing desktop session
+at its next token refresh; the server checks current consent on every report.
+
+The same committed usage event that updates Overview also updates a separate
+account-scoped ledger. Only events committed while signed in and consented are
+counted; earlier Overview history and signed-out dictation are not backfilled.
+Visits record active signed-in calendar days, including days without dictation.
+The payload contains date, visited, sessions, microphone milliseconds and word
+count, plus the fixed product slug and a random account/installation source ID.
+It contains no recording, text, scene, application identity, host or session time.
+
+At sign-in and every five minutes, a background worker sends changed daily
+snapshots to the issuer's `/api/v1/usage`. The persisted random source ID survives
+restarts; the server takes monotonic snapshots per source and sums distinct
+sources, so retries and multiple devices do not overwrite each other. Pending
+snapshots are bounded to 31 local calendar days. Local ledger paths are keyed by
+issuer and subject, and contain no credentials. Account switches and sign-out
+cancel requests and invalidate queued acknowledgements. Only the exact sent
+snapshot is acknowledged, preserving commits made while a request is in flight.
+Transient failures retry after 15 seconds with exponential delay capped at five
+minutes. Authorization refusals stop collection and sending until a fresh token
+allows them; token expiry waits for the existing account maintenance flow.
+Offline and scripted E2E profiles do not start reporting.
+
+Display caches are also keyed by issuer and subject. Legacy unscoped display
+caches are cleared rather than reused for a potentially different account.

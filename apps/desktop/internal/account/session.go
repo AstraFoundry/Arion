@@ -14,6 +14,7 @@ type Profile struct {
 // Session is the in-memory result of sign-in or refresh. The refresh token
 // is not here; it lives only in RefreshTokenStore.
 type Session struct {
+	UsageConsent bool
 	Entitlement  string
 	Issuer       string
 	Subject      string
@@ -76,6 +77,7 @@ func sessionFromTokens(issuer string, tok tokenSet, now time.Time) (Session, err
 		return Session{}, err
 	}
 	session := Session{
+		UsageConsent: validUsageConsent(claims),
 		Issuer:       issuer,
 		Subject:      subject,
 		AccessToken:  tok.AccessToken,
@@ -107,4 +109,12 @@ func stringsContainTokenBreak(token string) bool {
 		}
 	}
 	return false
+}
+
+func validUsageConsent(claims map[string]any) bool {
+	if claims["usage_consent_version"] != "usage-v1" {
+		return false
+	}
+	_, err := time.Parse(time.RFC3339, stringClaim(claims, "usage_consent_at"))
+	return err == nil
 }

@@ -155,6 +155,7 @@ type App struct {
 
 	accounts           *account.Service
 	accountMaintenance accountMaintenance
+	usageUpload        usageUploadState
 	accountMu          sync.Mutex
 	accountSeq         uint64
 	accountCancel      context.CancelFunc
@@ -489,6 +490,7 @@ func (a *App) ready() {
 		a.pendingUpdateAction = [2]string{}
 	}
 	a.startProductNotifications()
+	a.startUsageUpload()
 	a.startAccountMaintenance()
 	a.startHoldKey()
 	mygo.App.OnQuit(a.platform.StopHoldKey)
@@ -583,6 +585,7 @@ func appendLevel(levels []float32, level float32) []float32 {
 func (a *App) apply(e contracts.Event) {
 	if u, ok := a.meter.Observe(e); ok {
 		a.state.Usage = a.state.Usage.Add(time.Now(), u)
+		a.recordUsageUpload(time.Now(), &u)
 		if err := a.usage.Save(a.state.Usage); err != nil {
 			a.record("usage_save", err)
 		}

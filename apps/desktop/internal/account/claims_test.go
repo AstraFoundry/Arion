@@ -68,3 +68,20 @@ func TestMapWaitlist(t *testing.T) {
 		}
 	}
 }
+
+func TestUsageConsentIsExplicitAndVersioned(t *testing.T) {
+	for _, tc := range []struct {
+		claims map[string]any
+		want   bool
+	}{
+		{map[string]any{"sub": "u"}, false},
+		{map[string]any{"sub": "u", "usage_consent_version": "usage-v1", "usage_consent_at": "not-a-time"}, false},
+		{map[string]any{"sub": "u", "usage_consent_version": "old", "usage_consent_at": "2026-10-28T00:00:00Z"}, false},
+		{map[string]any{"sub": "u", "usage_consent_version": "usage-v1", "usage_consent_at": "2026-10-28T00:00:00Z"}, true},
+	} {
+		session, err := sessionFromTokens(DefaultIssuer, tokenSet{AccessToken: unsignedJWT(tc.claims)}, time.Now())
+		if err != nil || session.UsageConsent != tc.want {
+			t.Fatalf("consent=%v err=%v", session.UsageConsent, err)
+		}
+	}
+}
