@@ -1,0 +1,10 @@
+{
+  "schema": "vocabulary-native-report-v1",
+  "run": "benchmarks/runs/vocabulary-alignment-v1/native-03",
+  "runManifestSha256": "29f3758bfcf9f478aaaf8bb8cb7c7d20eb7f6abf4194c0512ab42226fb5528a0",
+  "files": {
+    "report.json": "db3e8c3d96835971ff0bbac4260e54aabbe3f1bc0ddf6f3cdf022a9366e13da0",
+    "native-expected.json": "fd00a0ce7aacaa38eb39ae3c1301b9b6a0acdc90601ba810f42268ce15440131",
+    "native-report.py": "fc32ea455df395c3cbd95dddd9b2d53b1a9407778af81609cf32dfaa9b9615c3"
+  }
+}

@@ -10,6 +10,7 @@ struct Request: Decodable, Sendable {
     var seq: Int?
     var pcm: String?
     var sample_rate: Int?
+    var prompt: String?
 }
 
 struct Response: Encodable {
@@ -19,6 +20,7 @@ struct Response: Encodable {
     var stop: String?
     var `protocol`: Int?
     var version: String?
+    var capabilities: [String]?
 }
 
 // The actor owns the resident model and serializes inference. Cancellation
@@ -69,9 +71,18 @@ actor Worker {
                     }
                 }
                 guard samples.allSatisfy(\.isFinite) else { throw WorkerError.invalidRequest }
+                let audio = MLXArray(samples)
+                let context = request.prompt ?? ""
+                // The tokenizer and loaded checkpoint determine the bound. Do
+                // not truncate vocabulary or silently discard supplied context.
+                let (_, _, audioTokens) = model.preprocessAudio(audio)
+                let promptTokens = model.buildPrompt(numAudioTokens: audioTokens, context: context).dim(1)
+                guard promptTokens <= model.config.textConfig.maxPositionEmbeddings - 128 else {
+                    throw WorkerError.contextLimit
+                }
                 MLXRandom.seed(11)
                 var output: String?
-                for try await event in model.generateStream(audio: MLXArray(samples), maxTokens: 128, temperature: 0) {
+                for try await event in model.generateStream(audio: audio, maxTokens: 128, temperature: 0, context: context) {
                     try Task.checkCancellation()
                     if case .result(let result) = event {
                         guard result.generationTokens < 128 else { throw WorkerError.tokenLimit }
@@ -101,7 +112,7 @@ actor Worker {
             try FileManager.default.createSymbolicLink(at: directory.appendingPathComponent(name), withDestinationURL: source.appendingPathComponent(name))
         }
         model = try await Qwen3ASRModel.fromModelDirectory(directory)
-        reply(Response(type: "ready", protocol: 3, version: "arion-mlx-1"))
+        reply(Response(type: "ready", protocol: 3, version: "arion-mlx-2", capabilities: ["prompt"]))
     }
 
     func shutdown() async {
@@ -111,7 +122,7 @@ actor Worker {
     }
 }
 
-enum WorkerError: Error { case invalidRequest, noResult, tokenLimit }
+enum WorkerError: Error { case invalidRequest, noResult, tokenLimit, contextLimit }
 
 // Preserve a dedicated protocol descriptor before silencing upstream print calls.
 let protocolOutput = FileHandle(fileDescriptor: dup(STDOUT_FILENO), closeOnDealloc: true)

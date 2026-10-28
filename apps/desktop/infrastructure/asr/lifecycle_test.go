@@ -208,7 +208,7 @@ func TestStreamingFinishReloadsRetiredPreview(t *testing.T) {
 	defer stream.Close()
 	stream.engine.cancelGrace = 20 * time.Millisecond
 	id := contracts.Identity{SessionID: "retired-preview", Generation: 7}
-	recognizer, err := stream.NewRecognizer(context.Background(), id)
+	recognizer, err := stream.NewRecognizer(context.Background(), ports.RecognitionRequest{Identity: id})
 	if err != nil {
 		t.Fatal(err)
 	}

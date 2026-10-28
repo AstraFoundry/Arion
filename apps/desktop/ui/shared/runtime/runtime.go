@@ -4,6 +4,7 @@
 package runtime
 
 import (
+	"errors"
 	"time"
 
 	"arion.local/core/application"
@@ -320,12 +321,19 @@ type Device struct {
 	Default bool
 }
 
-// Replacement is one approved vocabulary correction.
+// Replacement is an approved correction or a correct-only recognition hotword.
 type Replacement struct {
-	ID   string
-	From string
-	To   string
+	Hotword bool
+	ID      string
+	From    string
+	To      string
 }
+
+// Vocabulary errors distinguish actionable edits from storage failures.
+var (
+	ErrVocabularyInvalid  = errors.New("invalid vocabulary edit")
+	ErrVocabularyConflict = errors.New("vocabulary variant belongs to another term")
+)
 
 // Learned is a vocabulary entry just learned from the user's correction.
 type Learned struct {
@@ -569,6 +577,10 @@ type Actions interface {
 	OpenInputMethodSettings() error
 	RemoveInputMethod() error
 	AddReplacement(from, to string) error
+	// AddReplacementVariants saves all variants for one correct term atomically.
+	AddReplacementVariants(froms []string, to string) error
+	// AddHotword saves a canonical ASR term independently of correction pairs.
+	AddHotword(text string) error
 	RemoveReplacement(id string)
 	// UndoLearned forgets the entry just learned and dismisses its notice.
 	UndoLearned(id string)

@@ -224,7 +224,7 @@ func (c *Coordinator) refine(r *run, u unit) (string, error) {
 		return u.text, nil
 	}
 	started := time.Now()
-	text, err := c.deps.Finalizer.Finalize(r.ctx, ports.FinalizeRequest{Identity: r.identity, SampleRate: r.sampleRate, Samples: u.samples, Draft: u.text})
+	text, err := c.deps.Finalizer.Finalize(r.ctx, ports.FinalizeRequest{Identity: r.identity, SampleRate: r.sampleRate, Samples: u.samples, Draft: u.text, Hotwords: append([]string(nil), r.hotwords...)})
 	c.diagnostic(r, ports.DiagnosticFinalize, started, err)
 	return text, err
 }
@@ -268,7 +268,7 @@ func (c *Coordinator) finalizeLive(r *run) {
 		streamed := domain.JoinText(append(append([]string(nil), l.refined...), rest.text)...)
 		c.mu.Unlock()
 		started := time.Now()
-		raw, err = c.deps.Finalizer.Finalize(r.ctx, ports.FinalizeRequest{Identity: r.identity, SampleRate: r.sampleRate, Samples: r.samples, Draft: streamed})
+		raw, err = c.deps.Finalizer.Finalize(r.ctx, ports.FinalizeRequest{Identity: r.identity, SampleRate: r.sampleRate, Samples: r.samples, Draft: streamed, Hotwords: append([]string(nil), r.hotwords...)})
 		c.diagnostic(r, ports.DiagnosticFinalize, started, err)
 	} else {
 		var last string
@@ -396,17 +396,7 @@ func quietCut(samples []float32, from, to, rate int) int {
 // termsForFinal retains only approved vocabulary relevant to either recognized
 // source. Earlier model output and unapproved nouns never become memory terms.
 func (p RewritePolicy) termsForFinal(source, previous string) []string {
-	recalled := p.Vocabulary.Terms(source, domain.MaxRecallTerms)
-	if previous != "" {
-		for _, term := range p.Vocabulary.Terms(previous, domain.MaxRecallTerms) {
-			if len(recalled) == domain.MaxRecallTerms {
-				break
-			}
-			if !slices.Contains(recalled, term) {
-				recalled = append(recalled, term)
-			}
-		}
-	}
+	recalled := p.Vocabulary.TermsForSources(domain.MaxRecallTerms, source, previous)
 	if len(recalled) == 0 {
 		return p.Terms
 	}

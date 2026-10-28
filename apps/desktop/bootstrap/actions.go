@@ -4,12 +4,12 @@ import (
 	"context"
 	"errors"
 	"runtime"
-	"strings"
 	"time"
 
 	"arion.local/core/application"
 	"arion.local/core/domain"
 	"arion.local/desktop/infrastructure/updatestate"
+	vocabstore "arion.local/desktop/infrastructure/vocabulary"
 	"arion.local/desktop/ui/pages/settings"
 	"arion.local/desktop/ui/shared/copy"
 	arion "arion.local/desktop/ui/shared/runtime"
@@ -311,15 +311,45 @@ func (x actions) RemoveInputMethod() error {
 }
 
 func (x actions) AddReplacement(from, to string) error {
-	a := x.a
-	if strings.TrimSpace(from) == "" || strings.TrimSpace(to) == "" {
-		return errInvalidReplacement
+	return x.AddReplacementVariants([]string{from}, to)
+}
+
+func (x actions) AddReplacementVariants(froms []string, to string) error {
+	if _, err := domain.NormalizeVocabularyEdit(froms, to); err != nil {
+		return arion.ErrVocabularyInvalid
 	}
+	a := x.a
 	a.loadVocabulary(true)
 	if a.vocab == nil {
 		return errVocabularyUnavailable
 	}
-	if _, err := a.vocab.Add(from, to); err != nil {
+	if _, err := a.vocab.AddVariants(froms, to); err != nil {
+		if errors.Is(err, vocabstore.ErrInvalid) {
+			return arion.ErrVocabularyInvalid
+		}
+		if errors.Is(err, vocabstore.ErrConflict) {
+			return arion.ErrVocabularyConflict
+		}
+		return err
+	}
+	a.loadVocabulary(false)
+	return nil
+}
+
+// AddHotword saves a standalone ASR spelling without a correction alias.
+func (x actions) AddHotword(text string) error {
+	if _, err := domain.NormalizeHotword(text); err != nil {
+		return arion.ErrVocabularyInvalid
+	}
+	a := x.a
+	a.loadVocabulary(true)
+	if a.vocab == nil {
+		return errVocabularyUnavailable
+	}
+	if _, err := a.vocab.AddHotword(text); err != nil {
+		if errors.Is(err, vocabstore.ErrInvalid) {
+			return arion.ErrVocabularyInvalid
+		}
 		return err
 	}
 	a.loadVocabulary(false)

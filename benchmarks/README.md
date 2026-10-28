@@ -35,3 +35,7 @@
 - [Native Qwen3-ASR migration acceptance](results/native-asr-v1/README.md) — native Swift model loading, offline signed-package inference, live coordinator replay and explicit remaining platform/performance gates.
 
 - [General LLM keyboard alignment](results/llm-ime-alignment-v1/README.md) — actual local completion over frozen Rime candidates, no-context abstention, model latency, cancellation and full alignment/evaluation plan.
+
+- [Vocabulary grouping and canonical recall](results/vocabulary-alignment-v1/README.md): production correction/recall comparison, actual local GGUF stage acceptance, immutable failed attempts and report replay.
+
+- [Production ASR hotwords](results/asr-hotwords-v1/README.md): 16 paired development fixtures through the actual native finalizer, canonical spelling and negative controls, sensitive context reset, retained failures and model-free replay.

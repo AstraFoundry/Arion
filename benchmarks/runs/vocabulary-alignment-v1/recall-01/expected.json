@@ -1,0 +1,112 @@
+[
+  {
+    "id": "alias-latin",
+    "corrected": "Open Claude Code.",
+    "terms": [
+      "Claude Code"
+    ]
+  },
+  {
+    "id": "alias-second",
+    "corrected": "Open Claude Code.",
+    "terms": [
+      "Claude Code"
+    ]
+  },
+  {
+    "id": "alias-cjk",
+    "corrected": "打开Claude Code。",
+    "terms": [
+      "Claude Code"
+    ]
+  },
+  {
+    "id": "aliases-one-budget",
+    "corrected": "Claude Code Claude Code Claude Code Arion",
+    "terms": [
+      "Claude Code",
+      "Arion"
+    ]
+  },
+  {
+    "id": "canonical-already-correct",
+    "corrected": "Open Claude Code.",
+    "terms": [
+      "Claude Code"
+    ]
+  },
+  {
+    "id": "case-insensitive",
+    "corrected": "Open Claude Code.",
+    "terms": [
+      "Claude Code"
+    ]
+  },
+  {
+    "id": "latin-word-boundary",
+    "corrected": "cloud coder clod codes",
+    "terms": []
+  },
+  {
+    "id": "unrelated",
+    "corrected": "Keep the original wording.",
+    "terms": []
+  },
+  {
+    "id": "previous-alias",
+    "corrected": "Check the result.",
+    "terms": [
+      "Claude Code"
+    ]
+  },
+  {
+    "id": "cross-source-dedup",
+    "corrected": "Open Claude Code.",
+    "terms": [
+      "Claude Code",
+      "Arion"
+    ]
+  },
+  {
+    "id": "longest-match",
+    "corrected": "Claude Code Cloud",
+    "terms": [
+      "Claude Code",
+      "Cloud"
+    ]
+  },
+  {
+    "id": "no-chain",
+    "corrected": "Beta",
+    "terms": [
+      "Beta"
+    ]
+  },
+  {
+    "id": "unseen-alias",
+    "corrected": "Open claud cod.",
+    "terms": []
+  },
+  {
+    "id": "bounded-current-first",
+    "corrected": "Brand0 Brand1 Brand2 Brand3 Brand4",
+    "terms": [
+      "Brand0",
+      "Brand1",
+      "Brand2",
+      "Brand3",
+      "Brand4",
+      "Brand5",
+      "Brand6",
+      "Brand7"
+    ]
+  },
+  {
+    "id": "large-2000",
+    "corrected": "打开Claude Code，测试Arion。",
+    "terms": [
+      "Claude Code",
+      "Arion"
+    ]
+  }
+]

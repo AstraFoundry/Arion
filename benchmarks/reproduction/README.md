@@ -141,3 +141,7 @@ The [technical spelling follow-up](rewrite-technical-spelling-v1/README.md) chec
 - [General LLM keyboard alignment](llm-ime-alignment-v1/README.md) — ID-only general completion adapter, actual 2B quality and paced scheduling observations, with explicit development and native acceptance limits.
 
 - [IME bundle-directory exchange](ime-bundle-swap-v1/README.md): owned macOS swap/reverse/error fixtures and source-bound raw observations.
+
+- [Vocabulary grouping and canonical recall](vocabulary-alignment-v1/README.md): production correction/recall comparison, actual local GGUF stage acceptance, immutable failed attempts and report replay.
+
+- [Production ASR hotword probe](asr-hotwords-v1/README.md) — reference-free production-port driver, paired controlled development inputs, native worker context checks and replay.

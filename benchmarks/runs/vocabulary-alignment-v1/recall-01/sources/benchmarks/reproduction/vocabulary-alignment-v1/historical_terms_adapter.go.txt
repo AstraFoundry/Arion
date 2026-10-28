@@ -1,0 +1,25 @@
+// This evaluation-only method adapts historical application.termsForFinal
+// (with no static policy Terms) to the candidate driver's method signature.
+// The original body is archived separately from git HEAD:application/live.go.
+package domain
+
+import "slices"
+
+func (v *Vocabulary) TermsForSources(limit int, sources ...string) []string {
+	if limit != MaxRecallTerms || len(sources) != 2 {
+		panic("historical adapter requires two sources and the production term cap")
+	}
+	source, previous := sources[0], sources[1]
+	recalled := v.Terms(source, MaxRecallTerms)
+	if previous != "" {
+		for _, term := range v.Terms(previous, MaxRecallTerms) {
+			if len(recalled) == MaxRecallTerms {
+				break
+			}
+			if !slices.Contains(recalled, term) {
+				recalled = append(recalled, term)
+			}
+		}
+	}
+	return recalled
+}

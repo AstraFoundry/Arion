@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted (product decision). Amends MEM-02 of [003](../../specs/003-memory-sync.md), which had learning only propose records, and adds MEM-04/05. Extends PRV-02 of [005](../../specs/005-privacy.md) and CTX-06 of [009](../../specs/009-contextual-rewrite.md).
+Accepted (product decision). Amends MEM-02 of [003](../../specs/003-memory-sync.md), which had learning only propose records, and adds MEM-04/05/07. Extends PRV-02 of [005](../../specs/005-privacy.md) and CTX-06 of [009](../../specs/009-contextual-rewrite.md).
 
 ## Context
 
@@ -53,14 +53,23 @@ Arion had approved vocabulary that a user could type in Settings, and every entr
 **Recall.**
 
 - `domain.Vocabulary` indexes the approved entries once per change and replaces them in one left-to-right pass: whole words, longest match first, no chaining. This applies with or without polishing. Each entry that fires counts a recall.
-- With polishing on, only the entries whose heard or written form occurs in the text reach the prompt's terms, at most eight.
+- With polishing on, only correct canonical spellings whose heard or written form occurs in current or earlier recognized text reach spelling-selection context, current-source first and at most eight distinct correct terms. Multiple aliases share a slot; incorrect forms never become spelling-candidate context. The formatter receives only the corrected source.
+- Settings groups pairs by correct spelling and accepts multiple aliases atomically. Duplicate approval preserves identity and counters; conflicts reject the entire batch. Per-pair provenance, learning undo and expiry remain unchanged. See the [Type4Me comparison](../research/type4me-vocabulary.md).
+
+**Recognition hotwords** ([MEM-07](../../specs/003-memory-sync.md)). As in Type4Me's correction-learning flow, a learned pair also supplies its correct canonical term to local ASR context. This extends recognition input; ordinary manual correction pairs still perform only replacement and relevant rewrite recall unless a correct-only hotword is saved explicitly.
+
+- A standalone hotword is a separate approved record with an empty `From`, a canonical `To` and additive `Hotword` metadata in the existing encrypted file. It is excluded from replacement indexes. Existing learned records qualify by provenance; promoting one to user approval persists its hotword eligibility without changing its ID or counters. Existing manual pair records are not silently opted in.
+- Derived hotwords share the learned pair's lifecycle: re-pointing changes the canonical term; undo, reversal, removal, expiry and eviction remove that contribution. A separate explicit hotword survives those operations. Disabling future learning does not delete approved memory.
+- `domain.ASRHotwords` deduplicates exact canonical spellings, preserving case distinctions. Explicit user hotwords rank first, then descending use-plus-recall count, descending last-use time, canonical spelling and ID. A memory refresh publishes one immutable selection; recall updates refresh the ordering. Invalid legacy terms are ineligible.
+- Select at most 64 complete terms and 2,048 Unicode code points after joining with single spaces, with 64 code points per term and the existing 16-code-point extraction ceiling for learned terms. Skip an entire term that exceeds the remaining context budget. Never truncate it, serialize an incorrect alias, include a vocabulary label or send a sentence excerpt as recognition context. Reject controls, Unicode format controls, line/paragraph separators, invalid UTF-8 and `<|`/`|>` model-token delimiters. `domain.ASRContext` validates the selected request again before transport and fails explicitly on invalid input or excessive context.
+- These recognition bounds are separate from the eight relevant canonical terms sent to rewrite spelling selection. They bound exposure and request size; real audio must establish benefit, false bias and latency for each native backend before claiming accuracy improvements. Acceptance: MEM-A24–26.
 
 **Logs** carry only the settlement, the verdict and counts (PRV-05).
 
 ## Consequences
 
 - Unlike all three competitors, the diff, the memory and the recall stay on the device, and nothing is uploaded.
-- The prompt no longer grows with the vocabulary.
+- Rewrite context no longer grows with the vocabulary; recognition context has its own fixed selection budget.
 - Replacement no longer slows with the number of entries.
 - Field text read for learning is held only in the tracker's memory and dropped when it settles.
 - Word boundaries are linguistic evidence, not a guarantee for unknown names or compounds. Ambiguous edits may teach nothing (for example 全免 → 全棉 when the OS returns single characters); users can still add explicit pairs. Existing stored fragments are not rewritten automatically because their original sentence context was not retained.

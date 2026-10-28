@@ -83,7 +83,7 @@ func (r *fakeRecognizer) Close() error { r.closed.Store(true); return nil }
 
 type fakeFactory struct{ r *fakeRecognizer }
 
-func (f fakeFactory) NewRecognizer(context.Context, contracts.Identity) (ports.Recognizer, error) {
+func (f fakeFactory) NewRecognizer(context.Context, ports.RecognitionRequest) (ports.Recognizer, error) {
 	if f.r == nil {
 		return nil, domain.Fail(domain.CodeModelMissing, "not provisioned")
 	}
