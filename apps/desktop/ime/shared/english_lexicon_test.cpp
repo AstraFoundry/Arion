@@ -59,7 +59,7 @@ int main(int argc,char **argv) {
         auto variants=cases->Query("github");
         require(variants.Peek()->display=="GitHub" && variants.Next() && variants.Peek()->display=="Github" && !variants.Next(),
                 "exact input did not expose its complete case family");
-        for (const std::string &invalid:{"ARION_ENGLISH\t2\t1\nab\tab\t0\n", "ARION_ENGLISH\t1\t2\nab\tab\t0\n",
+        for (const char *invalid:{"ARION_ENGLISH\t2\t1\nab\tab\t0\n", "ARION_ENGLISH\t1\t2\nab\tab\t0\n",
                 "ARION_ENGLISH\t1\t2\nab\tab\t0\nac\tac\t0\n", "ARION_ENGLISH\t1\t1\nab\tAC\t0\n",
                 "ARION_ENGLISH\t1\t1\nab\tab\t2\n", "ARION_ENGLISH\t1\t2\nac\tac\t0\nab\tab\t1\n"}) {
             write(file,invalid); bool rejected=false;
