@@ -27,10 +27,14 @@ func TestUsageUploadRequiresConsentAndStopsAtSignOut(t *testing.T) {
 	if a.usageUpload.ledger.Days["2026-10-28"].Words != 10 {
 		t.Fatal("consented usage missing")
 	}
+	a.state.Account.UsageReporting = true
 	a.suspendUsageUpload()
 	a.recordUsageUpload(now, &usage)
 	if a.usageUpload.ledger.Days["2026-10-28"].Words != 10 {
 		t.Fatal("signed-out usage recorded")
+	}
+	if a.state.Account.UsageReporting {
+		t.Fatal("Settings still shows reporting after sign-out")
 	}
 }
 
@@ -59,10 +63,14 @@ func TestAuthorizationFailureStopsCollectionUntilNewConsentToken(t *testing.T) {
 	a.usageUpload.store = infra.Store{Path: filepath.Join(t.TempDir(), "usage.json")}
 	a.usageUpload.session = account.Session{UsageConsent: true, AccessToken: "old-token"}
 	a.usageUpload.ledger = policy.Ledger{Source: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", Days: map[string]policy.Day{}, Acked: map[string]policy.Day{}}
+	a.state.Account.UsageReporting = true
 	a.finishUsageUpload(0, nil, policy.ErrAuthorization, time.Now())
 	a.recordUsageUpload(time.Now(), &domain.Usage{Words: 10, SpeechMs: 1000})
 	if a.usageUpload.session.UsageConsent || len(a.usageUpload.ledger.Days) != 0 {
 		t.Fatal("collection continued after authorization refusal")
+	}
+	if a.state.Account.UsageReporting {
+		t.Fatal("Settings still shows reporting after the platform refused it")
 	}
 }
 

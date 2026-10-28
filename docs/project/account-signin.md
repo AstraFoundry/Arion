@@ -189,5 +189,12 @@ minutes. Authorization refusals stop collection and sending until a fresh token
 allows them; token expiry waits for the existing account maintenance flow.
 Offline and scripted E2E profiles do not start reporting.
 
+Settings › Account shows a Usage data row while signed in: reporting is on only
+while the current token carries consent and the platform has not refused it.
+Manage opens the portal's `/account/data` page (standard issuer only). When off,
+Check again refreshes the session so a choice made on the web takes effect.
+The platform caps sources per account day and accepts dates within 32 days back
+and one day ahead of its UTC day; the 31-day ledger stays inside that window.
+
 Display caches are also keyed by issuer and subject. Legacy unscoped display
 caches are cleared rather than reused for a potentially different account.

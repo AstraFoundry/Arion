@@ -58,6 +58,7 @@ func (a *App) suspendUsageUpload() {
 	u.epoch++
 	u.session = account.Session{}
 	u.busy = false
+	a.state.Account.UsageReporting = false
 }
 
 func (a *App) configureUsageUpload(session account.Session) {
@@ -85,6 +86,7 @@ func (a *App) configureUsageUpload(session account.Session) {
 	ledger.Account = key
 	u.session, u.client, u.store, u.ledger = session, client, store, ledger
 	u.next, u.retry = time.Now(), 0
+	a.state.Account.UsageReporting = true
 	a.recordUsageUpload(time.Now(), nil)
 	a.flushUsageUpload(time.Now())
 }
@@ -173,6 +175,7 @@ func (a *App) finishUsageUpload(epoch uint64, acknowledged []policy.Day, err err
 	if errors.Is(err, policy.ErrAuthorization) {
 		u.deniedToken = u.session.AccessToken
 		u.session.UsageConsent = false
+		a.state.Account.UsageReporting = false
 		u.next = now.Add(usageUploadInterval)
 		return
 	}
