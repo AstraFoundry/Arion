@@ -17,6 +17,8 @@ var (
 	procSetWindowsHookExW   = user32.NewProc("SetWindowsHookExW")
 	procUnhookWindowsHookEx = user32.NewProc("UnhookWindowsHookEx")
 	procCallNextHookEx      = user32.NewProc("CallNextHookEx")
+	procPeekMessageW        = user32.NewProc("PeekMessageW")
+	procGetAsyncKeyState    = user32.NewProc("GetAsyncKeyState")
 	procGetMessageW         = user32.NewProc("GetMessageW")
 	procPostThreadMessageW  = user32.NewProc("PostThreadMessageW")
 	procGetModuleHandleW    = kernel32.NewProc("GetModuleHandleW")
@@ -93,6 +95,16 @@ func StartHoldKeys(keys []application.HoldKey, sink func(application.HoldKey, ho
 		runtime.LockOSThread()
 		defer runtime.UnlockOSThread()
 		defer close(done)
+		// Create the message queue before publishing thread readiness, so an
+		// immediate StopHold cannot lose WM_QUIT.
+		var m msg
+		procPeekMessageW.Call(uintptr(unsafe.Pointer(&m)), 0, 0, 0, 0)
+		hold.Lock()
+		for _, vk := range interpreter.KeyCodes() {
+			state, _, _ := procGetAsyncKeyState.Call(uintptr(vk))
+			interpreter.SetKeyDown(vk, state&0x8000 != 0)
+		}
+		hold.Unlock()
 		module, _, _ := procGetModuleHandleW.Call(0)
 		hook, _, err := procSetWindowsHookExW.Call(whKeyboardLL, hookProc, module, 0)
 		if hook == 0 {
@@ -105,7 +117,6 @@ func StartHoldKeys(keys []application.HoldKey, sink func(application.HoldKey, ho
 		hold.thread, hold.done = thread, done
 		hold.Unlock()
 		started <- nil
-		var m msg
 		for {
 			if r, _, _ := procGetMessageW.Call(uintptr(unsafe.Pointer(&m)), 0, 0, 0); int32(r) <= 0 {
 				return

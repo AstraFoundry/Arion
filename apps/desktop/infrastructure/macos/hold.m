@@ -23,7 +23,7 @@ static CGEventRef hold_callback(CGEventTapProxy proxy, CGEventType type, CGEvent
         if (hold_tap && CGPreflightListenEventAccess()) CGEventTapEnable(hold_tap, true);
         return event;
     }
-    if (type == kCGEventKeyDown || type == kCGEventFlagsChanged) {
+    if (type == kCGEventKeyDown || type == kCGEventKeyUp || type == kCGEventFlagsChanged) {
         arionHoldRaw((int)type, (long long)CGEventGetIntegerValueField(event, kCGKeyboardEventKeycode),
                      (unsigned long long)CGEventGetFlags(event),
                      (int)CGEventGetIntegerValueField(event, kCGKeyboardEventAutorepeat));
@@ -47,7 +47,7 @@ static void *hold_thread(void *arg) {
 int arion_hold_start(void) {
     if (!CGPreflightListenEventAccess()) return ARION_HOLD_PERMISSION_DENIED;
     if (hold_tap) return CGEventTapIsEnabled(hold_tap) ? 0 : ARION_HOLD_UNAVAILABLE;
-    CGEventMask mask = CGEventMaskBit(kCGEventKeyDown) | CGEventMaskBit(kCGEventFlagsChanged);
+    CGEventMask mask = CGEventMaskBit(kCGEventKeyDown) | CGEventMaskBit(kCGEventKeyUp) | CGEventMaskBit(kCGEventFlagsChanged);
     hold_tap = CGEventTapCreate(kCGSessionEventTap, kCGHeadInsertEventTap, kCGEventTapOptionListenOnly, mask, hold_callback, NULL);
     if (!hold_tap) return CGPreflightListenEventAccess() ? ARION_HOLD_UNAVAILABLE : ARION_HOLD_PERMISSION_DENIED;
     if (!CGEventTapIsEnabled(hold_tap)) {

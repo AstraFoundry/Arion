@@ -18,16 +18,18 @@ const (
 // on purpose: the best evaluated bundle loads automatically; ModelOverride
 // only exists for an explicit choice among evaluated bundles.
 type Preferences struct {
-	Version             int                        `json:"version"`
-	UILanguage          UILanguage                 `json:"uiLanguage"`
-	OnboardingCompleted bool                       `json:"onboardingCompleted"`
-	HoldKey             HoldKey                    `json:"holdKey"`
-	TranslateKey        HoldKey                    `json:"translateKey,omitempty"`
-	TranslateLanguage   domain.TranslationLanguage `json:"translateLanguage,omitempty"`
-	Delivery            Delivery                   `json:"delivery"`
-	Sounds              bool                       `json:"sounds"`
-	LaunchAtLogin       bool                       `json:"launchAtLogin"`
-	Microphone          string                     `json:"microphone"`
+	Version             int        `json:"version"`
+	UILanguage          UILanguage `json:"uiLanguage"`
+	OnboardingCompleted bool       `json:"onboardingCompleted"`
+	HoldKey             HoldKey    `json:"holdKey"`
+	TranslateKey        HoldKey    `json:"translateKey,omitempty"`
+	// PreviousTranslateKey retains the last assignment while translation is off.
+	PreviousTranslateKey HoldKey                    `json:"previousTranslateKey,omitempty"`
+	TranslateLanguage    domain.TranslationLanguage `json:"translateLanguage,omitempty"`
+	Delivery             Delivery                   `json:"delivery"`
+	Sounds               bool                       `json:"sounds"`
+	LaunchAtLogin        bool                       `json:"launchAtLogin"`
+	Microphone           string                     `json:"microphone"`
 	// MicrophoneGain is one of GainStops' decibels; profiles written before
 	// it existed load 0 dB, the device's own level.
 	MicrophoneGain int    `json:"microphoneGain"`
@@ -129,11 +131,16 @@ func (p Preferences) Normalize(platform string) (Preferences, []string) {
 		p.HoldKey = defaults.HoldKey
 		repaired = append(repaired, "holdKey")
 	}
+	if p.PreviousTranslateKey != "" && (!knownHoldKey(platform, p.PreviousTranslateKey) || p.PreviousTranslateKey == HoldOff) {
+		p.PreviousTranslateKey = ""
+		repaired = append(repaired, "previousTranslateKey")
+	}
 	if !knownTranslateKey(platform, p.TranslateKey) {
 		p.TranslateKey = defaults.TranslateKey
 		repaired = append(repaired, "translateKey")
 	}
-	if p.TranslateKey != "" && p.TranslateKey != HoldOff && p.TranslateKey == p.HoldKey {
+	if HoldKeysConflict(p.TranslateKey, p.HoldKey) {
+		p.PreviousTranslateKey = p.TranslateKey
 		p.TranslateKey = HoldOff
 	}
 	if !p.TranslateLanguage.Known() {

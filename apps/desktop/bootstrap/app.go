@@ -138,6 +138,7 @@ type App struct {
 	// holdGeneration rejects queued events from a retired native listener.
 	holdGeneration uint64
 	holdKey        application.HoldKey
+	holdPending    *deferredHold
 
 	// Snapshot read by worker goroutines (correction policy, delivery).
 	snapshot    sync.Mutex
@@ -506,8 +507,8 @@ func (a *App) ready() {
 	a.runResource(func() { a.activate(a.state.Preferences.ModelOverride) })
 	go a.pollPermissions()
 	go a.refreshDevicesAsync()
-	mygo.Power.OnSuspend(func() { a.record("power_suspend", nil); a.core.Cancel() })
-	mygo.Power.OnLockScreen(func() { a.record("screen_locked", nil); a.core.Cancel() })
+	mygo.Power.OnSuspend(func() { a.record("power_suspend", nil); a.resetHoldGesture(); a.core.Cancel() })
+	mygo.Power.OnLockScreen(func() { a.record("screen_locked", nil); a.resetHoldGesture(); a.core.Cancel() })
 	if !a.state.Preferences.OnboardingCompleted && !a.opts.SkipOnboarding {
 		a.openOnboarding()
 	} else if !a.scripted() {

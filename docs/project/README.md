@@ -46,3 +46,5 @@ See [specs](../../specs/README.md), [research](../research/README.md), [reposito
 [Update lifecycle](update-lifecycle.md) describes idle reminders, native notification registration and protected staged installation.
 
 [Product notifications](product-notifications.md) describes signed-in, OS-authorized account notices, bounded authenticated catchup and current-server action authorization.
+
+[Dictation shortcuts](dictation-shortcuts.md) describes custom combinations, platform keys, conflicts and their implementation history.

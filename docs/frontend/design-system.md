@@ -13,7 +13,8 @@ One accent, warm neutrals, and semantic colors only where state differs.
 | `CardBorder` / `Hairline` | ink 200 / ink 100 | `#322d29` / `#2a2622` | Card and control edges / dividers inside a card |
 | `Text` / `Muted` / `Faint` | ink 900 / 500 / 400 | ink 50 / 300 / 400 | Hierarchy, alongside size and weight |
 | `Accent` + `AccentText` | yellow 500 + ink 900 | same | Primary action fill, selection, the mark. Never light text on yellow |
-| `AccentSoft` | yellow 100 | yellow at 14% | Hover wash, recording-field highlight |
+| `AccentSoft` | yellow 100 | yellow at 14% | Hover wash, selected-state highlight |
+| `RecordingInk` / `RecordingSoft` | blue `#0866ff` / `#f1f5ff` | blue `#8bb5ff` / `#142441` | Focused shortcut recording text and pill surface |
 | `AccentInk` | yellow 700 | yellow 400 | The accent as a line or text on a surface |
 | `Live` / `Success` / `Warning` / `Danger` | Sunbeam 500 steps | 400 steps | Microphone open, outcomes, failures |
 | `OnFill` | white | white | Marks on a saturated semantic fill |
@@ -133,3 +134,7 @@ The onboarding dictation key and translation key steps show `widgets/keyfigure` 
 ## Review
 
 Render every surface with `ARION_UI_SNAPSHOTS=<dir> go test ./ui/app` (light, plus `TestDarkAppearance` for dark) and look at the frames. The `kill-ai-slop` skill's taxonomy applies: one accent, hierarchy from scale and space, no decorative tiles, pulses or one-hue status boxes.
+
+Shortcut fields and Select triggers share `kit.ControlFrame`: theme surface, a one-DIP border, control radius, padding and minimum width. Shortcut fields show the current value and a Lucide pencil icon. Recording retains this geometry and uses the dedicated blue semantic tokens, a localized prompt and an X cancel icon. It saves on complete key release and adds no enter/exit animation. Translation details use `kit.Disclosure`, shared with local polishing status: measured height and opacity, 200 ms `theme.Disclosure`, reversible from the current value. Closing keeps the content mounted with input disabled until it disappears. Reduce Motion applies the final layout immediately. Only the shortcut and target-language settings reveal or collapse; the dictation card and enable switch remain stationary. The settings section entrance animates position only, so changing content height never animates the entire page.
+
+Shortcut feedback is scoped to its setting: recording guidance uses `Muted`, exact Arion duplicates use `Danger` and name the other action, and Fn setup notes remain with the selected Fn assignment. Feedback sits below the complete setting row, preserving label/control alignment; translation feedback belongs inside its disclosure. Idle custom assignments show no inferred warning. Their information icons expose only behavior on hover or keyboard focus; recording guidance stays below the edited setting. Shared listener failures sit outside both cards with Allow or Retry, without changing preferences.

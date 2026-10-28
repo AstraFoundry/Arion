@@ -66,6 +66,27 @@ func (x actions) ChooseScene(scene domain.Scene) {
 	}
 	x.UpdatePreferences(func(p *application.Preferences) { p.SceneOverrides = p.SceneOverrides.WithScene(key, scene) })
 }
+
+// RecordShortcut replaces activation with a temporary native recorder.
+func (x actions) RecordShortcut(owner string) {
+	a := x.a
+	if a.state.Hold.Recording == owner {
+		return
+	}
+	a.core.Cancel()
+	a.state.Hold.Recording = owner
+	a.state.Hold.RecordedKey = ""
+	a.state.Hold.RecordInvalid, a.state.Hold.RecordCancelled = false, false
+	a.startHoldKey()
+	a.invalidate()
+}
+
+// RetryShortcutListener retries listening without changing either assignment.
+func (x actions) RetryShortcutListener() {
+	x.a.core.Cancel()
+	x.a.startHoldKey()
+}
+
 func (x actions) TestHoldKey(testing bool) { x.a.testingHold = testing }
 
 func (x actions) UseBundle(id string) {
@@ -148,6 +169,10 @@ func (x actions) UpdatePreferences(change func(*application.Preferences)) {
 
 // SetHoldKey persists the hold-to-talk key and restarts its listener.
 func (x actions) SetHoldKey(key application.HoldKey) {
+	if application.HoldKeysConflict(key, x.a.prefs.TranslateKey) {
+		return
+	}
+	x.a.core.Cancel()
 	x.UpdatePreferences(func(p *application.Preferences) {
 		p.ChooseHoldKey(key)
 	})
@@ -156,6 +181,10 @@ func (x actions) SetHoldKey(key application.HoldKey) {
 
 // SetTranslateKey persists the translation hold-to-talk key and restarts the listener.
 func (x actions) SetTranslateKey(key application.HoldKey) {
+	if application.HoldKeysConflict(key, x.a.prefs.HoldKey) {
+		return
+	}
+	x.a.core.Cancel()
 	x.UpdatePreferences(func(p *application.Preferences) {
 		p.ChooseTranslateKey(runtime.GOOS, key)
 	})

@@ -81,7 +81,12 @@ func snapshot(t *testing.T, tt *ui.Tester, name string) {
 // another key moves there, pulling back on the way; a press shows and goes.
 func TestFigureFollowsTheKey(t *testing.T) {
 	for _, platform := range platforms {
-		keys := runtime.HoldKeysFor(platform)
+		keys := []runtime.HoldKey{}
+		for _, key := range runtime.HoldKeysFor(platform) {
+			if Shows(key) {
+				keys = append(keys, key)
+			}
+		}
 		for _, dark := range []bool{false, true} {
 			appearance := map[bool]string{false: "light", true: "dark"}[dark]
 			name := func(stage string) string { return "keyfigure-" + platform + "-" + appearance + "-" + stage }
@@ -171,9 +176,14 @@ func TestTextBesideStaysWhileMoving(t *testing.T) {
 }
 
 func TestShows(t *testing.T) {
-	for _, key := range append(runtime.HoldKeysFor("darwin"), runtime.HoldKeysFor("windows")...) {
-		if !Shows(key) {
-			t.Errorf("no figure for %s", key)
+	for _, chosen := range []runtime.HoldKey{runtime.HoldFn, runtime.HoldRightOption, runtime.HoldRightCommand, runtime.HoldRightAlt, runtime.HoldRightCtrl} {
+		if !Shows(chosen) {
+			t.Errorf("missing physical figure for %s", chosen)
+		}
+	}
+	for _, chosen := range []runtime.HoldKey{"ctrl+space", "f24", runtime.HoldLeftShift} {
+		if Shows(chosen) {
+			t.Errorf("figure claims a cap absent from the laptop: %s", chosen)
 		}
 	}
 	if Shows("") {
