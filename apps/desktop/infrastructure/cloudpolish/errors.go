@@ -18,9 +18,6 @@ const (
 	CodeModels   Code = "MODELS"
 )
 
-// Codes lists every Code the service reports.
-var Codes = []Code{CodeSignIn, CodeCancelled, CodeTimeout, CodePortInUse, CodeNoSubscription, CodeRejected, CodeNetwork, CodeStore, CodeModels}
-
 // Error carries a Code and its cause, which may hold provider text and is
 // never shown or logged.
 type Error struct {

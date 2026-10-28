@@ -59,16 +59,6 @@ type Store struct {
 // DefaultMirrors serve Hugging Face files where huggingface.co is blocked.
 var DefaultMirrors = map[string][]string{"huggingface.co": {"hf-mirror.com"}}
 
-// DefaultRoot is ~/Library/Application Support/Arion/models on macOS and
-// %AppData%\Arion\models on Windows.
-func DefaultRoot() (string, error) {
-	base, err := os.UserConfigDir()
-	if err != nil {
-		return "", err
-	}
-	return filepath.Join(base, "Arion", "models"), nil
-}
-
 func NewStore(root string) *Store {
 	// Bounded dial and handshake times let an unreachable host fail over
 	// to a mirror quickly instead of hanging.
