@@ -9,6 +9,7 @@ static char text[] = "\xe4\xbd\xa0\xf0\x9f\x98\x80";
 static RimeCandidate candidate;
 static int invalid_cursor, invalid_candidate, commit_pending, contexts_freed, statuses_freed, commits_freed;
 static int candidate_count = 40;
+static const char *const *menu_fixture;
 static Bool context_read(RimeSessionId session, RimeContext *context) {
     assert(session == 42);
     context->composition.preedit = text;
@@ -38,7 +39,8 @@ static Bool list_from(RimeSessionId session,RimeCandidateListIterator *iterator,
 }
 static Bool list_next(RimeCandidateListIterator *iterator) {
     if (++iterator->index>=candidate_count) return False;
-    iterator->candidate.text=text; iterator->candidate.comment=""; return True;
+    iterator->candidate.text=menu_fixture ? (char *)menu_fixture[iterator->index] : text;
+    iterator->candidate.comment=""; return True;
 }
 static void list_end(RimeCandidateListIterator *iterator) { (void)iterator; }
 static Bool highlight_candidate(RimeSessionId session, size_t index) {
@@ -53,6 +55,9 @@ static int invalid_order(void *context,const char *const *texts,size_t count,siz
     (void)context; (void)texts;
     for (size_t i=0;i<count;i++) order[i]=0;
     return 1;
+}
+static int fixture_kind(void *context,uintptr_t session,size_t index,unsigned char *emoji) {
+    (void)context; (void)session; *emoji=index==1; return 1;
 }
 
 int main(void) {
@@ -142,6 +147,13 @@ int main(void) {
     arion_menu_dispose(&menu);
     assert(arion_menu_build(&menu,&api,42,5,NULL,NULL) && !menu.expanded);
     assert(!arion_menu_build(&menu,&api,42,5,invalid_order,NULL));
+    arion_menu_dispose(&menu);
+    const char *const bilingual[]={"白领","🧑‍💼","百灵","白令","bailing","Bailing"};
+    menu_fixture=bilingual; candidate_count=6;
+    assert(arion_menu_build_typed(&menu,&api,42,5,NULL,NULL,fixture_kind,NULL));
+    assert(strcmp(menu.texts[3],"bailing")==0 && strcmp(menu.texts[4],"Bailing")==0);
+    assert(arion_menu_engine_index(&menu,3,0,0,&engine_index) && engine_index==4);
+    assert(menu.emoji[5] && strcmp(menu.texts[5],"🧑‍💼")==0);
     arion_menu_dispose(&menu);
     puts("Shared Pinyin ownership, UTF boundaries, commit consumption and key policy tests passed.");
     return 0;

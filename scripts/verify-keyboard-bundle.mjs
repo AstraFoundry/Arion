@@ -5,6 +5,7 @@ import { existsSync, lstatSync, readFileSync, readdirSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { isDeepStrictEqual } from 'node:util';
+import { keyboardProfileFiles, englishBuildFiles, verifyEnglishProfile } from './lib/keyboard-data.mjs';
 
 const repository = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const digest = file => createHash('sha256').update(readFileSync(file)).digest('hex');
@@ -92,7 +93,9 @@ export function verifyKeyboardBundle({ root = repository, bundle = path.join(roo
     'data/pinyin_simp.schema.yaml', 'data/pinyin_simp.dict.yaml', 'data/arion_pinyin.schema.yaml',
     'data/build/default.yaml', 'data/build/arion_pinyin.schema.yaml', 'data/build/pinyin_simp.table.bin',
     'data/build/pinyin_simp.prism.bin', 'data/build/pinyin_simp.reverse.bin', 'licenses/keyboard-runtime.json',
-    'licenses/boost-LICENSE', 'licenses/darts-clone-COPYING', 'licenses/utf8cpp-notice.h', 'licenses/Arion-profile-README.md'];
+    'licenses/boost-LICENSE', 'licenses/darts-clone-COPYING', 'licenses/utf8cpp-notice.h', 'licenses/Arion-profile-README.md',
+    'data/arion_english.dict.yaml', ...keyboardProfileFiles.map(name => `data/${name}`),
+    ...englishBuildFiles.map(name => `data/build/${name}`)];
   for (const name of required) if (!Object.hasOwn(runtime.files, name)) throw new Error(`Keyboard runtime manifest lacks required member: ${name}`);
   for (const [name, expectedFile] of Object.entries(runtime.files)) {
     safeMember(name);
@@ -102,9 +105,10 @@ export function verifyKeyboardBundle({ root = repository, bundle = path.join(roo
   for (const spec of pins.files) requireHash(path.join(keyboard, safeMember(spec.to)), spec);
   const shippedPins = JSON.parse(readFileSync(path.join(keyboard, 'licenses/keyboard-runtime.json'), 'utf8'));
   if (!isDeepStrictEqual(shippedPins, pins)) throw new Error('Keyboard source/download pins differ from the reviewed manifest.');
-  for (const name of ['arion_pinyin.schema.yaml', 'default.custom.yaml']) if (digest(path.join(keyboard, 'data', name)) !== digest(path.join(source, '../shared/keyboard-data', name))) throw new Error(`Keyboard profile differs from reviewed source: ${name}`);
+  for (const name of keyboardProfileFiles) if (digest(path.join(keyboard, 'data', name)) !== digest(path.join(source, '../shared/keyboard-data', name))) throw new Error(`Keyboard profile differs from reviewed source: ${name}`);
   const schema = readFileSync(path.join(keyboard, 'data/build/arion_pinyin.schema.yaml'), 'utf8');
   if (!schema.includes('schema_id: arion_pinyin') || !schema.includes('db_class: arion_encrypted_userdb') || !schema.includes('page_size: 9')) throw new Error('Keyboard compiled schema identity, encrypted learning or page size is invalid.');
+  verifyEnglishProfile(path.join(keyboard, 'data'));
   const walk = directory => {
     for (const entry of readdirSync(directory, { withFileTypes: true })) {
       const file = path.join(directory, entry.name);

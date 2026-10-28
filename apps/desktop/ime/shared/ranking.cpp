@@ -72,7 +72,13 @@ std::vector<size_t> ContextRanker::order(const std::vector<std::string> &candida
     const size_t full=length(candidates[0]);if (!full) return result;
     std::vector<double> scores;bool boosted=false;
     for (size_t i=0;i<candidates.size();++i) {double value=length(candidates[i])==full?boost(candidates[i],context):0;boosted=boosted||value>0;scores.push_back(value-std::log1p(static_cast<double>(i)));}
-    if (boosted) std::stable_sort(result.begin(),result.end(),[&](size_t a,size_t b){return scores[a]>scores[b];});
+    if (boosted) {
+        std::vector<size_t> chinese;
+        for (size_t i=0;i<candidates.size();++i) if (rankingContainsHan(candidates[i])==1) chinese.push_back(i);
+        auto ranked=chinese;
+        std::stable_sort(ranked.begin(),ranked.end(),[&](size_t a,size_t b){return scores[a]>scores[b];});
+        for (size_t i=0;i<chinese.size();++i) result[chinese[i]]=ranked[i];
+    }
     return result;
 }
 LearningChanges ContextRanker::learn(const std::string &commit,const std::string &previous) {

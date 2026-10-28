@@ -73,6 +73,12 @@ int main(int argc,char **argv) {
     require(ranker.order(candidates,u8"很好")[0]==3,"repeat confirmed full phrase promoted");
     for (int i=0;i<20;++i) ranker.learn(u8"你",u8"很好");
     require(ranker.order(candidates,u8"很好")[0]!=2,"prefix candidate never receives context boost");
+    ContextRanker mixed({});
+    std::vector<std::string> bilingual{u8"惨",u8"残",u8"餐","can","Can",u8"参",u8"灿",u8"蚕"};
+    for (int i=0;i<20;++i) for (const auto &word:{u8"参",u8"灿",u8"蚕"}) mixed.learn(word,u8"很好");
+    auto bilingualOrder=mixed.order(bilingual,u8"很好");
+    require(bilingualOrder[0]>=5,"Chinese context learning still promotes confirmed words");
+    require(bilingualOrder[3]==3 && bilingualOrder[4]==4,"English slots survive multiple Chinese context promotions");
     require(ranker.learn("abcdefghijklmn",u8"很好").empty(),"long sentences excluded");
     require(ranker.learn(u8"妮好","").empty(),"no previous context excluded");
     ContextRanker decayed({{"@tick","100000"},{u8"c\t很好\t妮好","1 1"}});

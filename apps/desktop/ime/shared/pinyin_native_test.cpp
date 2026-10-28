@@ -5,6 +5,7 @@
 #include "input.h"
 #include "learning_rime.h"
 #include "emoji.h"
+#include "english.h"
 #include <filesystem>
 #include <iostream>
 #include <stdexcept>
@@ -72,6 +73,7 @@ int main(int argc,char **argv) {
         std::string learning=(profile/"learning").u8string();
         require(arion_learning_windows_register(learning.c_str(),error,sizeof(error)),error);
         arion_emoji_register();
+        arion_english_register();
         api->initialize(&traits); initialized=true;
         require(!arion_learning_error(error,sizeof(error)),error);
         auto first=arion_pinyin_create_session(api),second=arion_pinyin_create_session(api);
@@ -79,6 +81,21 @@ int main(int argc,char **argv) {
         arion_pinyin_set_options(api,first,0,0,0); arion_pinyin_set_options(api,second,0,0,0);
         convert(api,first,"nihao","\xe4\xbd\xa0\xe5\xa5\xbd","full-pinyin-nihao");
         convert(api,first,"zhongguo","\xe4\xb8\xad\xe5\x9b\xbd","full-pinyin-zhongguo");
+        for (const char *word : {"artificial", "hello", "computer", "software", "can", "an", "you", "hi", "bailing", "jingling"}) {
+            arion_pinyin_clear(api,first); type(api,first,word);
+            auto index=candidateIndex(api,first,word);
+            require(index<5,"English exact match missing from smallest candidate page");
+            if (std::string(word)=="can" || std::string(word)=="an" || std::string(word)=="you") {
+                Snapshot chinese(api,first);
+                require(std::string(chinese.value.candidates[0])!=word,"ambiguous English displaced first Chinese word");
+            }
+            require(arion_pinyin_select(api,first,index,0),"English engine selection failed");
+            Snapshot english(api,first);
+            require(std::string(english.value.commit)==word && !english.value.ascii,"English commit changed mode or text");
+        }
+        convert(api,first,"artificial","artificial","english-space-engine-commit");
+        selectPhrase(api,first,"artificial","Artificial","english-sentence-case-engine-selection");
+        printCase("english-candidates-in-chinese-mode");
         selectPhrase(api,first,"ni'hao","\xe4\xbd\xa0\xe5\xa5\xbd","apostrophe-syllable-boundary");
         selectPhrase(api,first,"nh","\xe4\xbd\xa0\xe5\xa5\xbd","abbreviated-pinyin");
         selectPhrase(api,first,"lvse","\xe7\xbb\xbf\xe8\x89\xb2","umlaut-v-spelling");

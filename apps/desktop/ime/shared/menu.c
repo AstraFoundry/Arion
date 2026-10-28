@@ -4,6 +4,12 @@
 
 enum { rank_window = 27, expanded_rows = 6 };
 static size_t minimum(size_t a,size_t b) { return a < b ? a : b; }
+static int english_word(const char *text) {
+    if (!text || !text[0] || !text[1]) return 0;
+    for (const unsigned char *c=(const unsigned char *)text;*c;c++)
+        if (!((*c>='a' && *c<='z') || (*c>='A' && *c<='Z'))) return 0;
+    return 1;
+}
 static void append_candidate(const ArionPinyinMenu *menu,char **texts,size_t *indices,
                              unsigned char *types,size_t *count,size_t position) {
     size_t output=(*count)++;
@@ -91,8 +97,12 @@ int arion_menu_build_typed(ArionPinyinMenu *menu,RimeApi *api,uintptr_t session,
         size_t out=0;
         if (valid) {
             size_t protected=minimum(3,text_count);
+            // Exact English case variants keep their first-page slots ahead of Emoji.
+            for (size_t i=protected;i<minimum(5,text_count);i++)
+                if (english_word(ranked[order[i]])) protected=i+1;
             for (size_t i=0;i<protected;i++) append_candidate(menu,texts,indices,types,&out,text_positions[order[i]]);
-            size_t first_emoji=minimum(emoji_count,minimum(2,page_size>protected?page_size-protected:0));
+            size_t emoji_slots=page_size>protected?page_size-protected:(protected>3?2:0);
+            size_t first_emoji=minimum(emoji_count,minimum(2,emoji_slots));
             for (size_t i=0;i<first_emoji;i++) append_candidate(menu,texts,indices,types,&out,emoji_positions[i]);
             for (size_t i=protected;i<text_count;i++) append_candidate(menu,texts,indices,types,&out,text_positions[order[i]]);
             for (size_t i=first_emoji;i<emoji_count;i++) append_candidate(menu,texts,indices,types,&out,emoji_positions[i]);

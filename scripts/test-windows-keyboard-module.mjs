@@ -25,8 +25,8 @@ function run(command,args,env=process.env) {
   if(result.status!==0) throw new Error(`${command} failed (${result.status})`);
 }
 try {
-  const cpp=['learning','learning_rime','learning_windows','ranking','ranking_unicode','emoji'].map(name=>path.join(common,`${name}.cpp`));
-  const files=[fileURLToPath(import.meta.url),...cpp,...['keyboard_runtime.cpp','keyboard_runtime.h','emoji_text.h','keyboard_runtime_test.cpp','control.cpp','payload_install_test.cpp','keyboard_payload.h','payload.h','json.h','identity.h','wire.h'].map(name=>path.join(source,name)),...['pinyin.c','pinyin.h','emoji.h','emoji_data.h','learning.h','learning_rime.h','ranking.h','ranking_bridge.h','ranking_unicode.h','ranking_unicode_data.h','ranking_unicode_sources.json'].map(name=>path.join(common,name))];
+  const cpp=['learning','learning_rime','learning_windows','ranking','ranking_unicode','emoji','english'].map(name=>path.join(common,`${name}.cpp`));
+  const files=[fileURLToPath(import.meta.url),...cpp,...['keyboard_runtime.cpp','keyboard_runtime.h','emoji_text.h','keyboard_runtime_test.cpp','control.cpp','payload_install_test.cpp','keyboard_payload.h','payload.h','json.h','identity.h','wire.h'].map(name=>path.join(source,name)),...['pinyin.c','pinyin.h','emoji.h','english.h','emoji_data.h','learning.h','learning_rime.h','ranking.h','ranking_bridge.h','ranking_unicode.h','ranking_unicode_data.h','ranking_unicode_sources.json'].map(name=>path.join(common,name))];
   for(const file of files) report.sourceIdentities[path.relative(root,file)]=hash(file);
   const library=path.join(runtime,'lib/ArionRime.dll');
   report.runtimeIdentities.library=hash(library);

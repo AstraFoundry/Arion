@@ -69,6 +69,18 @@ static void record(NSString *step, ArionTyping *typing, TypingEditor *editor) {
     [trace addObject:@{@"step": step, @"state": capture(typing, editor)}];
 }
 
+static void savePanel(ArionCandidatePanel *panel, NSString *report, NSString *name) {
+    [NSRunLoop.currentRunLoop runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.4]];
+    NSWindow *window = [panel valueForKey:@"window"];
+    NSView *view = window.contentView;
+    NSBitmapImageRep *bitmap = [view bitmapImageRepForCachingDisplayInRect:view.bounds];
+    require(window.visible && bitmap != nil, @"native candidate panel is visible and drawable");
+    [view cacheDisplayInRect:view.bounds toBitmapImageRep:bitmap];
+    NSData *png = [bitmap representationUsingType:NSBitmapImageFileTypePNG properties:@{}];
+    require([png writeToFile:[report.stringByDeletingLastPathComponent stringByAppendingPathComponent:name]
+        options:NSDataWritingAtomic error:nil], @"save actual AppKit candidate rendering");
+}
+
 static std::map<std::string, std::string> learningRecords(NSString *file, NSData *keyBytes) {
     std::unique_ptr<rime::Db> database(ArionLearningTestDatabase(file, @"arion_pinyin", keyBytes));
     require(database != nullptr && database->OpenReadOnly(), @"read actual encrypted engine dictionary with synthetic key");
@@ -155,6 +167,71 @@ int main(int argc, const char *argv[]) {
             press(typing, @" ", 49);
             require([editor.view.string isEqual:@"你好"] && editor.insertions == 1, @"Space inserts exact engine commit once");
             require(!typing.composing && !editor.view.hasMarkedText, @"commit clears provisional range");
+        });
+        run(@"English candidates in Chinese mode", @"KBD-A13", ^{
+            typing.pageSize = 5;
+            NSMutableString *expected = [NSMutableString string];
+            for (NSString *word in @[@"artificial", @"hello", @"computer", @"software", @"can", @"an", @"you", @"hi", @"bailing", @"jingling"]) {
+                type(typing, word);
+                record(word, typing, editor);
+                require([typing.snapshot.candidates containsObject:word], @"exact English is visible even on a five-candidate page");
+                NSUInteger index = [typing.snapshot.candidates indexOfObject:word];
+                require([typing select:index revision:typing.revision], @"select actual English engine candidate");
+                [expected appendString:word];
+                require([editor.view.string isEqual:expected] && !typing.ascii && !typing.composing,
+                        @"English selection commits without changing language mode");
+            }
+        });
+        run(@"English case selection, punctuation, edits and stale cancellation", @"KBD-A13", ^{
+            type(typing, @"artificia");
+            require(![typing.snapshot.candidates containsObject:@"artificial"], @"English prefixes do not flood Pinyin with completions");
+            type(typing, @"l");
+            require([typing.snapshot.candidates[0] isEqual:@"artificial"], @"full English word leads generated Chinese sentences");
+            press(typing, @"\x7f", 51);
+            require(![typing.snapshot.candidates containsObject:@"artificial"], @"Backspace removes a stale exact match");
+            type(typing, @"l"); press(typing, @" ", 49);
+            require([editor.view.string isEqual:@"artificial"] && editor.insertions == 1, @"Space commits the English engine candidate once");
+            type(typing, @"nihao"); press(typing, @" ", 49);
+            type(typing, @"hello");
+            NSUInteger title = [typing.snapshot.candidates indexOfObject:@"Hello"];
+            require(title < 9, @"sentence-initial case variant is visible");
+            press(typing, [NSString stringWithFormat:@"%lu", (unsigned long)title+1], 0);
+            press(typing, @",", 43);
+            require([editor.view.string isEqual:@"artificial你好Hello，"] && editor.insertions == 4,
+                    @"number-selected English mixes with Chinese and Chinese punctuation");
+            type(typing, @"software");
+            NSUInteger stale = typing.revision;
+            press(typing, @"\x1b", 53);
+            require(![typing select:0 revision:stale] && [editor.view.string isEqual:@"artificial你好Hello，"] && editor.insertions == 4,
+                    @"canceled English cannot commit through an old callback");
+        });
+        run(@"English commits do not enter Chinese word learning", @"KBD-A07 KBD-A13", ^{
+            [typing deactivate]; [engine stop];
+            NSString *vault = [user stringByAppendingPathComponent:@"encrypted"];
+            const auto records = learningRecords([vault stringByAppendingPathComponent:@"arion_pinyin.arion-userdb"], testKey);
+            for (const auto &[code, value] : records) {
+                require(code.find("artificial") == std::string::npos && value.find("artificial") == std::string::npos &&
+                        code.find("Hello") == std::string::npos && value.find("Hello") == std::string::npos,
+                        @"English table phrases stay out of the Chinese encrypted dictionary");
+            }
+            for (NSString *member in [NSFileManager.defaultManager enumeratorAtPath:user])
+                require([member rangeOfString:@"arion_english"].location == NSNotFound, @"English selection creates no mutable or plaintext dictionary");
+            NSError *restartError = nil;
+            require(ArionRegisterTestEncryptedLearning(vault, testKey, &restartError) &&
+                    [engine startWithData:data userDirectory:user error:&restartError], @"restart real engine after English learning inspection");
+        });
+        run(@"English candidate panel rendering", @"KBD-A13", ^{
+            ArionCandidatePanel *panel = [ArionCandidatePanel new];
+            @try {
+                for (NSString *word in @[@"artificial", @"can"]) {
+                    type(typing, word);
+                    record(word, typing, editor);
+                    [panel showCandidates:typing.snapshot.candidates highlighted:typing.snapshot.highlighted lastPage:typing.snapshot.lastPage
+                        revision:typing.revision caretRect:NSMakeRect(80, 300, 1, 20)];
+                    savePanel(panel, report, [NSString stringWithFormat:@"english-macos-%@.png", word]);
+                    [typing cancel];
+                }
+            } @finally { [panel hide]; }
         });
         __block NSArray<NSString *> *emojiOnTextOrder = nil;
         run(@"Emoji candidate native probe", @"KBD-A10", ^{
@@ -275,16 +352,8 @@ int main(int argc, const char *argv[]) {
                     panel.size = (ArionCandidateSize)size;
                     [panel showCandidates:typing.snapshot.candidates highlighted:index lastPage:typing.snapshot.lastPage
                         revision:typing.revision caretRect:NSMakeRect(80, 300, 1, 20)];
-                    [NSRunLoop.currentRunLoop runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.4]];
-                    NSWindow *window = [panel valueForKey:@"window"];
-                    NSView *view = window.contentView;
-                    NSBitmapImageRep *bitmap = [view bitmapImageRepForCachingDisplayInRect:view.bounds];
-                    require(window.visible && bitmap != nil, @"native candidate panel is visible and drawable");
-                    [view cacheDisplayInRect:view.bounds toBitmapImageRep:bitmap];
-                    NSData *png = [bitmap representationUsingType:NSBitmapImageFileTypePNG properties:@{}];
                     NSString *name = [NSString stringWithFormat:@"emoji-macos-%@-%lu.png", dark ? @"dark" : @"light", (unsigned long)size];
-                    require([png writeToFile:[report.stringByDeletingLastPathComponent stringByAppendingPathComponent:name]
-                        options:NSDataWritingAtomic error:nil], @"save actual AppKit candidate rendering");
+                    savePanel(panel, report, name);
                 }
             } @finally { [panel hide]; }
         });

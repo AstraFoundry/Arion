@@ -9,6 +9,7 @@
 #include "emoji_text.h"
 #include "../shared/pinyin.h"
 #include "../shared/emoji.h"
+#include "../shared/english.h"
 #include "../shared/learning_rime.h"
 #include "../shared/ranking.h"
 #include "../shared/ranking_unicode.h"
@@ -79,6 +80,7 @@ extern "C" RimeApi *arion_keyboard_start(const char *data,const char *user,char 
         if (FAILED(emojiFont.initialize())) { failure="Windows Emoji font unavailable"; output(failure,error,capacity); return nullptr; }
         arion_emoji_set_support(emojiSupported,nullptr);
         arion_emoji_register();
+        arion_english_register();
         if (!arion_learning_windows_register(learningDirectory.c_str(),error,capacity)) { failure="encrypted keyboard learning unavailable"; return nullptr; }
         api->initialize(&configuration);
         if (arion_learning_error(error,capacity)) { api->finalize(); failure="encrypted keyboard learning unavailable"; return nullptr; }

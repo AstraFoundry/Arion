@@ -8,16 +8,25 @@ schema:
 
 __include: pinyin_simp.schema:/
 __patch:
-  schema/dependencies: []
+  schema/dependencies: [arion_english]
   engine/translators:
     - punct_translator
     - script_translator
+    - table_translator@english
   engine/filters:
+    - arion_english
     - arion_emoji
   menu/page_size: 9
   translator/user_dict: arion_pinyin
   translator/db_class: arion_encrypted_userdb
   translator/enable_user_dict: true
+  english:
+    dictionary: arion_english
+    enable_user_dict: false
+    enable_sentence: false
+    enable_completion: false
+    # The bounded English filter restores whole-input Chinese words before it.
+    initial_quality: 10
   reverse_lookup: null
   recognizer/patterns/reverse_lookup: null
   recognizer/patterns/punct: null

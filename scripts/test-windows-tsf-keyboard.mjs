@@ -28,7 +28,7 @@ function includeSource(file){
   }
 }
 for(const name of ['service.cpp','textstore_fixture.cpp','native_keys_test.cpp','candidate_window_test.cpp','keyboard_runtime.cpp'])includeSource(path.join(source,name));
-for(const name of ['pinyin.c','input.c','menu.c','learning.cpp','learning_rime.cpp','learning_windows.cpp','ranking.cpp','ranking_unicode.cpp','emoji.cpp'])includeSource(path.join(common,name));
+for(const name of ['pinyin.c','input.c','menu.c','learning.cpp','learning_rime.cpp','learning_windows.cpp','ranking.cpp','ranking_unicode.cpp','emoji.cpp', 'english.cpp'])includeSource(path.join(common,name));
 const sources=[...sourceSet];
 report.sources=Object.fromEntries(sources.map(file=>[path.relative(root,file),hash(file)]));
 const runtimeSources=[path.join(root,'apps/desktop/resources/windows-amd64/keyboard/runtime.json'),path.join(root,'apps/desktop/resources/windows-amd64/keyboard/lib/ArionRime.dll'),path.join(sdk,'lib/libArionRime.dll.a')];
@@ -57,7 +57,7 @@ try{
     run(binary,name==='candidate_window'?[directory]:[]);
   }
   const module=path.join(keyboard,'lib/ArionKeyboard.dll');
-  run(cxx,[...base,'-DRIME_IMPORTS','-shared',path.join(source,'keyboard_runtime.cpp'),...['learning','learning_rime','learning_windows','ranking','ranking_unicode','emoji'].map(name=>path.join(common,`${name}.cpp`)),objects[0],path.join(sdk,'lib/libArionRime.dll.a'),'-o',module,'-lcrypt32','-lole32','-luuid','-ladvapi32','-ldwrite','-ld2d1']);
+  run(cxx,[...base,'-DRIME_IMPORTS','-shared',path.join(source,'keyboard_runtime.cpp'),...['learning','learning_rime','learning_windows','ranking','ranking_unicode','emoji','english'].map(name=>path.join(common,`${name}.cpp`)),objects[0],path.join(sdk,'lib/libArionRime.dll.a'),'-o',module,'-lcrypt32','-lole32','-luuid','-ladvapi32','-ldwrite','-ld2d1']);
   const manifestPath=path.join(keyboard,'runtime.json'),manifest=JSON.parse(readFileSync(manifestPath,'utf8'));
   manifest.files['lib/ArionKeyboard.dll']={sha256:hash(module),sizeBytes:readFileSync(module).length};
   writeFileSync(manifestPath,JSON.stringify(manifest,null,2)+'\n');
@@ -109,6 +109,17 @@ try{
   const settingsFile=path.join(directory,'profile/keyboard.json');
   const contextFile=path.join(directory,'profile/learning/arion_context.arion-userdb');
   const contextBytes=()=>existsSync(contextFile)?readFileSync(contextFile):null;
+  await test('Chinese mode offers English words and commits their displayed identity through TSF',async()=>{
+    for(const word of ['artificial','hello','computer','software','can','an','you','hi','bailing','jingling']){
+      await command('reset');await type(word);const menu=await command('menu');
+      const index=menu.strings.indexOf(word);assert.ok(index>=0 && index<5,JSON.stringify(menu));
+      assert.equal(menu.visible,true);await key(49+index);assert.equal(await document(),`A🙂${word}Z`);
+      await pause(80);assert.equal(await document(),`A🙂${word}Z`);
+    }
+    await command('reset');await type('artificial');await key(32);assert.equal(await document(),'A🙂artificialZ');
+    await command('reset');await type('artificial');await choose('Artificial');assert.equal(await document(),'A🙂ArtificialZ');
+    await command('reset');await type('artificial');await command('cacheclick');await key(27);await command('staleclick');assert.equal(await document(),'A🙂中Z');
+  });
   await test('Typed native Emoji has protected text slots and commits exactly once without Chinese context learning',async()=>{
     await command('reset');await type('xiaolian');const menu=await command('menu');
     assert.equal(menu.visible,true);const index=menu.strings.indexOf('😊');assert.ok(index>=3 && index<9,JSON.stringify(menu));

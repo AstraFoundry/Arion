@@ -83,7 +83,7 @@ try {
   if (result.error) throw result.error;
   if (result.signal) throw new Error(`Keyboard test terminated by ${result.signal}`);
   status = result.status ?? 2;
-  for (const file of readdirSync(temporary).filter(name => /^emoji-macos-(light|dark)-[0-2]\.png$/.test(name))) {
+  for (const file of readdirSync(temporary).filter(name => /^(emoji-macos-(light|dark)-[0-2]|english-macos-(artificial|can))\.png$/.test(name))) {
     copyFileSync(path.join(temporary, file), path.join(path.dirname(report), file));
   }
   if (existsSync(nativeReport)) {

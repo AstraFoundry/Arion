@@ -202,6 +202,38 @@
       "to": "licenses/emoji-sources.json",
       "license": "Unicode-3.0",
       "source": "https://github.com/unicode-org/cldr/tree/release-48-2/common/annotations"
+    },
+    {
+      "path": "scripts/data/english/scowl/english-words.10",
+      "sha256": "f19988ecdb0280ab63340e5c5e155a814ab3d0f225ae60f5cb9e000252283b0b",
+      "sizeBytes": 34496,
+      "to": "licenses/scowl/english-words.10",
+      "license": "LicenseRef-SCOWL",
+      "source": "https://downloads.sourceforge.net/wordlist/scowl-2020.12.07.tar.gz#final/english-words.10"
+    },
+    {
+      "path": "scripts/data/english/scowl/english-words.20",
+      "sha256": "618998fff18fb9e143a5bab49e669ec48c023758f0db476d6b64ec06994ba71e",
+      "sizeBytes": 69514,
+      "to": "licenses/scowl/english-words.20",
+      "license": "LicenseRef-SCOWL",
+      "source": "https://downloads.sourceforge.net/wordlist/scowl-2020.12.07.tar.gz#final/english-words.20"
+    },
+    {
+      "path": "scripts/data/english/scowl/english-words.35",
+      "sha256": "f36ace33ff09bd5eda5f3ccbcc9971c1b6a8887fa62f5ad7f93e3c220d871388",
+      "sizeBytes": 338445,
+      "to": "licenses/scowl/english-words.35",
+      "license": "LicenseRef-SCOWL",
+      "source": "https://downloads.sourceforge.net/wordlist/scowl-2020.12.07.tar.gz#final/english-words.35"
+    },
+    {
+      "path": "scripts/data/english/scowl/Copyright",
+      "sha256": "283326a422e29c510e2ba6805518c418ce3c35ed1fadc3eec83d2da4f6c5a055",
+      "sizeBytes": 11758,
+      "to": "licenses/scowl/Copyright",
+      "license": "LicenseRef-SCOWL",
+      "source": "https://downloads.sourceforge.net/wordlist/scowl-2020.12.07.tar.gz#Copyright"
     }
   ],
   "windows": {
@@ -249,6 +281,18 @@
         "license": "MIT",
         "source": "https://github.com/Tencent/rapidjson/tree/v1.1.0"
       }
+    ]
+  },
+  "english": {
+    "name": "SCOWL",
+    "version": "2020.12.07",
+    "source": "https://downloads.sourceforge.net/wordlist/scowl-2020.12.07.tar.gz",
+    "sha256": "5587667caa20c4891390c2d42dbb4d5c4c3f41bee77af1457ece3ba23fb859cc",
+    "sizeBytes": 2569810,
+    "levels": [
+      10,
+      20,
+      35
     ]
   }
 }
