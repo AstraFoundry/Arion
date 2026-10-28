@@ -106,12 +106,12 @@ jobs:
         run: |
           go test -v ./apps/desktop/infrastructure/windows
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-      - name: Native window tests (Windows)
-        if: runner.os == 'Windows' && !inputs.skip-e2e
-        run: pnpm e2e:native
       - name: Windows desktop, shared Pinyin and native module checks
         if: runner.os == 'Windows'
         run: ./scripts/check-windows-keyboard-ci.ps1
+      - name: Native window tests (Windows)
+        if: runner.os == 'Windows' && !inputs.skip-e2e
+        run: pnpm e2e:native
       - name: macOS shared Pinyin and native adapter checks
         if: runner.os == 'macOS'
         run: pnpm keyboard:check
