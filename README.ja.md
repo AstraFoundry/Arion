@@ -33,10 +33,10 @@
 
 ## 主な機能
 
-- **ホールドして話す & ネイティブシステム IME** — どのアプリからでもディクテーションキー（デフォルトは macOS が右 `⌥`、Windows が右 `Alt`）を押したまま中国語（普通話）、英語、またはそれらが混在する技術用語（例：*「把这个 PR merge 到 main 之前，先跑一下 CI」*）を話し、離すと一度で挿入されます。短くタップすると次の押下まで聞き取りを継続します（`Esc` でキャンセル）。また、オフライン簡体字中国語フルピンイン入力と `Shift` 言語切り替えを備えたシステム IME ホスト（macOS `ArionInput.app` / Windows `ArionTSF.dll`）も含まれています。
+- **ホールドして話す & ネイティブシステム IME** — どのアプリからでもディクテーションのショートカット（デフォルトは macOS が右 `⌥`、Windows が右 `Alt`。設定で別のキーや修飾キーの組み合わせを記録でき、[ディクテーションのショートカット](docs/project/dictation-shortcuts.md)を参照）を押したまま中国語（普通話）、英語、またはそれらが混在する技術用語（例：*「把这个 PR merge 到 main 之前，先跑一下 CI」*）を話し、離すと一度で挿入されます。短くタップすると次の押下まで聞き取りを継続します（`Esc` でキャンセル）。また、オフライン簡体字中国語フルピンイン入力と `Shift` 言語切り替えを備えたシステム IME ホスト（macOS `ArionInput.app` / Windows `ArionTSF.dll`）も含まれています。
 - **オンデバイスのネイティブ音声認識** — Apple silicon 上ではネイティブ Swift MLX（8-bit）、Windows x64 上ではネイティブ `speech.cpp`（Q8_0、CPU/Vulkan）を介して Qwen3-ASR 1.7B をローカル実行します（[ADR 020](docs/decisions/020-native-qwen-asr.md)）。モデルのダウンロードと SHA-256 検証が完了した後は完全にオフラインで動作します。マイク音声はセッション中のみメモリに保持され、パスワード欄は自動的にスキップされ、小声入力向けの段階的ソフトウェア入力ゲイン（`−6 dB`〜`+12 dB`）も備えています。
 - **編集学習とドラフト分離** — 発話中のストリーミングドラフトはフローティングピル内に留まり、キーを離した時点で確定文のみが一度で挿入されます。決定論的ルールと承認済み語彙をローカルで適用し、macOS のネイティブエディタでは挿入後の手動修正を自動学習してワンクリックで元に戻すことができます（[ADR 014](docs/decisions/014-edit-learning.md)）。
-- **2段階の文脈推敲** — キーを離した後にオプションの2段階推敲を実行し（[ADR 023](docs/decisions/023-final-only-polishing.md)）、フィラーの除去、文中の言い直しの反映、アクティブウィンドウやカーソル周辺の用語を参照した固有名詞の曖昧性解消（[ADR 013](docs/decisions/013-rewrite-context-on-device.md)）、およびアプリケーションに応じた整形（**アプリに合わせる**、[ADR 012](docs/decisions/012-context-scene-selection.md)）を行います。macOS Apple silicon と Windows x64 上で `llama.cpp` により Qwen3.5-2B（`Q4_K_M` GGUF）をローカル実行できるほか（[ADR 018](docs/decisions/018-staged-gguf-rewriting.md)、[ADR 025](docs/decisions/025-windows-local-polishing.md)）、生の音声をデバイス内に保ったまま明示的オプトインのクラウドモデル（ChatGPT サインインまたは OpenAI、Anthropic、Gemini、DeepSeek、OpenRouter API キー）に接続することも可能です（[ADR 022](docs/decisions/022-cloud-polishing.md)）。
+- **2段階の文脈推敲** — キーを離した後にオプションの2段階推敲を実行し（[ADR 023](docs/decisions/023-final-only-polishing.md)）、フィラーの除去、文中の言い直しの反映、アクティブウィンドウやカーソル周辺の用語を参照した固有名詞の曖昧性解消（[ADR 013](docs/decisions/013-rewrite-context-on-device.md)）、およびアプリケーションに応じた整形（**アプリに合わせる**、[ADR 012](docs/decisions/012-context-scene-selection.md)）を行います。オプションの2つ目のショートカットで、話した内容を12の対象言語へ翻訳して挿入することもできます。macOS Apple silicon と Windows x64 上で `llama.cpp` により Qwen3.5-2B（`Q4_K_M` GGUF）をローカル実行できるほか（[ADR 018](docs/decisions/018-staged-gguf-rewriting.md)、[ADR 025](docs/decisions/025-windows-local-polishing.md)）、生の音声をデバイス内に保ったまま明示的オプトインのクラウドモデル（ChatGPT サインインまたは OpenAI、Anthropic、Gemini、DeepSeek、OpenRouter API キー）に接続することも可能です（[ADR 022](docs/decisions/022-cloud-polishing.md)）。
 - **ネイティブ Go デスクトップシェル** — Electron や WebView を使わず、[MyGo](https://github.com/egoist/mygo)（`v0.4.6`）と Go における Feature-Sliced Design で構築されています（[ADR 001](docs/decisions/001-desktop-native-boundaries.md)、[ADR 007](docs/decisions/007-sunbeam-design-system.md)）。メニューバー/システムトレイに常駐し、フルスクリーン Space に追従するクリックスルー可能なピルがエディタのフォーカスを奪わずに動作します。英語 / 簡体字中国語 UI のリアルタイム切り替えに対応しています（[i18n](docs/frontend/i18n.md)）。
 - **ゼロ知識同期と署名付きアップデート** — 個人語彙は macOS キーチェーンまたは Windows DPAPI に保存された鍵を用いて AES-256-GCM でローカル暗号化されます（[ADR 005](docs/decisions/005-local-encryption.md)）。Docker でセルフホスト可能かつ復号鍵を保持しない Go 暗号文リレー `services/sync`（[ADR 015](docs/decisions/015-hosted-relay-account-authorization.md)）と、Ed25519 署名付きの `stable`/`beta` チャネルを配信する `services/updates`（[ADR 019](docs/decisions/019-center-update-channels.md)）を提供します。
 
@@ -69,7 +69,7 @@
 
 ```sh
 make install        # 固定バージョンの pnpm ワークスペースをインストール (--frozen-lockfile)
-make check          # ドキュメント、JSON、Go レイヤー境界、core/sync および評価テスト
+make check          # ドキュメント、JSON、Go レイヤー境界、ワークフロー検査、および core/sync/updates/i18n/評価テスト
 make desktop-check  # デスクトップテスト、キーボードチェック、go vet (cgo)
 make desktop-dev    # ネイティブランタイムをステージングし、開発モードで Arion Dev を起動
 make build desktop  # apps/desktop/build/ 配下に Arion.app + DMG (macOS) または NSIS インストーラー (Windows) をパッケージング
