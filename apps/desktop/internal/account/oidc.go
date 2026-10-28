@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/url"
+	"slices"
 	"strconv"
 	"strings"
 	"time"
@@ -57,7 +58,7 @@ func (s *Service) discover(ctx context.Context) (provider, error) {
 			return provider{}, wrap(CodeDiscovery, "userinfo_endpoint", err)
 		}
 	}
-	if len(doc.CodeChallengeMethods) > 0 && !contains(doc.CodeChallengeMethods, "S256") {
+	if len(doc.CodeChallengeMethods) > 0 && !slices.Contains(doc.CodeChallengeMethods, "S256") {
 		return provider{}, &Error{Code: CodeDiscovery, Detail: "s256_required"}
 	}
 	return doc, nil
@@ -219,15 +220,6 @@ func (s *Service) do(req *http.Request) ([]byte, int, error) {
 		return nil, res.StatusCode, err
 	}
 	return body, res.StatusCode, nil
-}
-
-func contains(values []string, want string) bool {
-	for _, value := range values {
-		if value == want {
-			return true
-		}
-	}
-	return false
 }
 
 func (s *Service) clock() time.Time {

@@ -10,6 +10,7 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"slices"
 	"sync"
 	"time"
 
@@ -111,7 +112,7 @@ func New(catalog models.Catalog, store *provision.Store, bundled string, threads
 	model, ok := catalog.Rewriter(DefaultModel)
 	supported := ok && bundled != ""
 	if ok {
-		supported = supported && contains(model.Platforms, platform)
+		supported = supported && slices.Contains(model.Platforms, platform)
 		s.model = model
 	}
 	s.status = Status{State: Off, SizeBytes: model.SizeBytes(), Name: model.Name}
@@ -119,15 +120,6 @@ func New(catalog models.Catalog, store *provision.Store, bundled string, threads
 		s.status.State = Unsupported
 	}
 	return s
-}
-
-func contains(list []string, v string) bool {
-	for _, x := range list {
-		if x == v {
-			return true
-		}
-	}
-	return false
 }
 
 // OnStatus registers a listener called on every status change.

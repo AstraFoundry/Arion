@@ -2,6 +2,7 @@ package domain
 
 import (
 	"math"
+	"slices"
 	"sort"
 )
 
@@ -99,7 +100,7 @@ func SelectDefaultModel(options []ModelOption, policy SelectionPolicy) (Selectio
 	var adopted *ModelOption
 	for i := range options {
 		option := &options[i]
-		if !option.Adopted || !contains(option.Platforms, policy.Platform) || !containsAll(option.Languages, policy.RequiredLanguages) {
+		if !option.Adopted || !slices.Contains(option.Platforms, policy.Platform) || !containsAll(option.Languages, policy.RequiredLanguages) {
 			continue
 		}
 		if adopted != nil {
@@ -120,7 +121,7 @@ func SelectDefaultModel(options []ModelOption, policy SelectionPolicy) (Selectio
 
 	var local, elsewhere []Selection
 	for _, option := range options {
-		if !contains(option.Platforms, policy.Platform) || !containsAll(option.Languages, policy.RequiredLanguages) {
+		if !slices.Contains(option.Platforms, policy.Platform) || !containsAll(option.Languages, policy.RequiredLanguages) {
 			continue
 		}
 		for _, evaluation := range option.Evaluation {
@@ -175,18 +176,9 @@ func (p SelectionPolicy) measuredLocally(options []ModelOption) bool {
 	return false
 }
 
-func contains(values []string, want string) bool {
-	for _, value := range values {
-		if value == want {
-			return true
-		}
-	}
-	return false
-}
-
 func containsAll(values, wanted []string) bool {
 	for _, want := range wanted {
-		if !contains(values, want) {
+		if !slices.Contains(values, want) {
 			return false
 		}
 	}
