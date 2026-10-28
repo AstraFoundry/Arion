@@ -14,7 +14,7 @@ export function verifyEnglishProfile(data) {
       !english || !/^  dictionary: arion_english$/m.test(english) ||
       !/^  enable_user_dict: false$/m.test(english) || !/^  enable_sentence: false$/m.test(english) ||
       !/^  enable_completion: false$/m.test(english) || !/^  initial_quality: 10$/m.test(english)) {
-    throw new Error('Compiled English candidates lost their exact-match, ordering or read-only policy.');
+    throw new Error('Compiled English candidates lost their bounded-index, ordering or read-only policy.');
   }
 }
 

@@ -23,8 +23,8 @@ class EnglishTranslation final : public rime::PrefetchTranslation {
         if (initial_) {
             initial_ = false;
             rime::CandidateList words;
-            // The exact-match table leads translation and has two case variants.
-            while (!translation_->exhausted() && words.size() < 2 && english(translation_->Peek())) {
+            // The generated prefix index yields at most three words and one case variant.
+            while (!translation_->exhausted() && words.size() < 4 && english(translation_->Peek())) {
                 words.push_back(translation_->Peek());
                 translation_->Next();
             }

@@ -24,6 +24,7 @@ __patch:
     dictionary: arion_english
     enable_user_dict: false
     enable_sentence: false
+    # Prefix aliases are already bounded and ranked at build time.
     enable_completion: false
     # The bounded English filter restores whole-input Chinese words before it.
     initial_quality: 10

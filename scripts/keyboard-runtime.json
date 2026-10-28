@@ -234,6 +234,33 @@
       "to": "licenses/scowl/Copyright",
       "license": "LicenseRef-SCOWL",
       "source": "https://downloads.sourceforge.net/wordlist/scowl-2020.12.07.tar.gz#Copyright"
+    },
+    {
+      "path": "scripts/data/english/frequencywords/en_50k.txt",
+      "url": "https://raw.githubusercontent.com/hermitdave/FrequencyWords/525f9b560de45753a5ea01069454e72e9aa541c6/content/2018/en/en_50k.txt",
+      "sha256": "5351ff405b1126ef555791dd4d9798a48e3e9a501a9fc481a9da957752cfb458",
+      "sizeBytes": 622749,
+      "to": "licenses/frequencywords/en_50k.txt",
+      "license": "CC-BY-SA-4.0",
+      "source": "https://github.com/hermitdave/FrequencyWords/tree/525f9b560de45753a5ea01069454e72e9aa541c6"
+    },
+    {
+      "path": "scripts/data/english/frequencywords/README.md",
+      "url": "https://raw.githubusercontent.com/hermitdave/FrequencyWords/525f9b560de45753a5ea01069454e72e9aa541c6/README.md",
+      "sha256": "a92fcc50e27f7b2d5860ec1c1ce794dc4c892d945bfa4c8c3136cdfd213ee710",
+      "sizeBytes": 913,
+      "to": "licenses/frequencywords/README.md",
+      "license": "CC-BY-SA-4.0",
+      "source": "https://github.com/hermitdave/FrequencyWords/tree/525f9b560de45753a5ea01069454e72e9aa541c6"
+    },
+    {
+      "path": "scripts/data/english/frequencywords/CC-BY-SA-4.0.txt",
+      "url": "https://raw.githubusercontent.com/spdx/license-list-data/f715b3660bb164c3d0b81cba9ce94e3c558c4048/text/CC-BY-SA-4.0.txt",
+      "sha256": "cde7883b9050a1104f4ac19a1572aafd6e5d7323b68351aaf51fbf4beba54966",
+      "sizeBytes": 18375,
+      "to": "licenses/frequencywords/CC-BY-SA-4.0.txt",
+      "license": "CC-BY-SA-4.0",
+      "source": "https://creativecommons.org/licenses/by-sa/4.0/"
     }
   ],
   "windows": {
@@ -293,6 +320,7 @@
       10,
       20,
       35
-    ]
+    ],
+    "frequencies": "licenses/frequencywords/en_50k.txt"
   }
 }

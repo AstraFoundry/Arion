@@ -96,6 +96,17 @@ int main(int argc,char **argv) {
         convert(api,first,"artificial","artificial","english-space-engine-commit");
         selectPhrase(api,first,"artificial","Artificial","english-sentence-case-engine-selection");
         printCase("english-candidates-in-chinese-mode");
+        for (auto sample : {std::pair<const char *,const char *>{"artifi","artificial"},
+                            {"compu","computer"},{"softw","software"},{"hel","hello"}}) {
+            arion_pinyin_clear(api,first); type(api,first,sample.first);
+            auto index=candidateIndex(api,first,sample.second);
+            require(index<5,"English prefix completion missing from smallest page");
+            require(arion_pinyin_select(api,first,index,0),"English completion engine selection failed");
+            Snapshot result(api,first);
+            require(std::string(result.value.commit)==sample.second && !result.value.ascii,
+                    "English completion changed word or language mode");
+        }
+        printCase("english-prefix-completion-in-chinese-mode");
         selectPhrase(api,first,"ni'hao","\xe4\xbd\xa0\xe5\xa5\xbd","apostrophe-syllable-boundary");
         selectPhrase(api,first,"nh","\xe4\xbd\xa0\xe5\xa5\xbd","abbreviated-pinyin");
         selectPhrase(api,first,"lvse","\xe7\xbb\xbf\xe8\x89\xb2","umlaut-v-spelling");

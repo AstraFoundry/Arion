@@ -184,11 +184,11 @@ int main(int argc, const char *argv[]) {
         });
         run(@"English case selection, punctuation, edits and stale cancellation", @"KBD-A13", ^{
             type(typing, @"artificia");
-            require(![typing.snapshot.candidates containsObject:@"artificial"], @"English prefixes do not flood Pinyin with completions");
+            require([typing.snapshot.candidates containsObject:@"artificial"], @"incomplete English offers the full word");
             type(typing, @"l");
             require([typing.snapshot.candidates[0] isEqual:@"artificial"], @"full English word leads generated Chinese sentences");
             press(typing, @"\x7f", 51);
-            require(![typing.snapshot.candidates containsObject:@"artificial"], @"Backspace removes a stale exact match");
+            require([typing.snapshot.candidates containsObject:@"artificial"], @"Backspace refreshes matching completions");
             type(typing, @"l"); press(typing, @" ", 49);
             require([editor.view.string isEqual:@"artificial"] && editor.insertions == 1, @"Space commits the English engine candidate once");
             type(typing, @"nihao"); press(typing, @" ", 49);
@@ -204,6 +204,30 @@ int main(int argc, const char *argv[]) {
             press(typing, @"\x1b", 53);
             require(![typing select:0 revision:stale] && [editor.view.string isEqual:@"artificial你好Hello，"] && editor.insertions == 4,
                     @"canceled English cannot commit through an old callback");
+        });
+        run(@"English prefix completion uses bounded actual engine candidates", @"KBD-A13", ^{
+            typing.pageSize = 5;
+            for (NSArray<NSString *> *sample in @[@[@"artifi", @"artificial"], @[@"compu", @"computer"],
+                                                  @[@"softw", @"software"], @[@"hel", @"hello"]]) {
+                type(typing, sample[0]);
+                record(sample[0], typing, editor);
+                NSUInteger index = [typing.snapshot.candidates indexOfObject:sample[1]];
+                require(index < 5, @"prefix offers the intended complete word on the smallest page");
+                require([typing select:index revision:typing.revision], @"select actual completion by displayed index");
+                require([editor.view.string hasSuffix:sample[1]] && !typing.composing && !typing.ascii,
+                        @"completion consumes only typed input and keeps Chinese mode");
+            }
+            type(typing, @"artifi");
+            press(typing, @"\x7f", 51);
+            require([typing.snapshot.candidates containsObject:@"artificial"], @"shorter prefix refreshes completion");
+            type(typing, @"zz");
+            require(![typing.snapshot.candidates containsObject:@"artificial"], @"diverged prefix removes the old word");
+            [typing cancel];
+            for (NSString *code in @[@"shi", @"nihao"]) {
+                type(typing, code);
+                require([typing.snapshot.candidates[0] characterAtIndex:0] > 127, @"whole-input Chinese stays first");
+                [typing cancel];
+            }
         });
         run(@"English commits do not enter Chinese word learning", @"KBD-A07 KBD-A13", ^{
             [typing deactivate]; [engine stop];
@@ -223,7 +247,7 @@ int main(int argc, const char *argv[]) {
         run(@"English candidate panel rendering", @"KBD-A13", ^{
             ArionCandidatePanel *panel = [ArionCandidatePanel new];
             @try {
-                for (NSString *word in @[@"artificial", @"can"]) {
+                for (NSString *word in @[@"artificial", @"can", @"artifi", @"hel"]) {
                     type(typing, word);
                     record(word, typing, editor);
                     [panel showCandidates:typing.snapshot.candidates highlighted:typing.snapshot.highlighted lastPage:typing.snapshot.lastPage
