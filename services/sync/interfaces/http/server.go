@@ -302,6 +302,12 @@ func (h *handler) security(w http.ResponseWriter, r *http.Request) {
 
 func (h *handler) allow(w http.ResponseWriter, r *http.Request) bool {
 	id := r.Header.Get(headerDevice)
+	// The limiter runs before authentication, so only identifiers the relay
+	// could store become limiter keys: an arbitrary header must not grow it.
+	if id != "" && !domain.ValidID(id) {
+		writeError(w, h.log, domain.Fail(domain.CodeUnauthorized))
+		return false
+	}
 	if id == "" {
 		id = "-"
 	}
@@ -554,12 +560,23 @@ type limiter struct {
 	mu    sync.Mutex
 	hits  map[string][]time.Time
 	limit int
+	swept time.Time
 }
 
 func (l *limiter) allow(id string, now time.Time) bool {
 	l.mu.Lock()
 	defer l.mu.Unlock()
 	cut := now.Add(-time.Minute)
+	// Unauthenticated callers choose the key. Forget identities without a
+	// request in the last window, at most once per window.
+	if now.Sub(l.swept) >= time.Minute {
+		for key, times := range l.hits {
+			if len(times) == 0 || !times[len(times)-1].After(cut) {
+				delete(l.hits, key)
+			}
+		}
+		l.swept = now
+	}
 	kept := l.hits[id][:0]
 	for _, ts := range l.hits[id] {
 		if ts.After(cut) {
