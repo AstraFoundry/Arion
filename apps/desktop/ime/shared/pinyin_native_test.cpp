@@ -6,6 +6,8 @@
 #include "learning_rime.h"
 #include "emoji.h"
 #include "english.h"
+#include "english_admission_cases.h"
+#include <algorithm>
 #include <filesystem>
 #include <iostream>
 #include <stdexcept>
@@ -59,7 +61,7 @@ static void convert(RimeApi *api, uintptr_t session,const char *keys,const char 
     printCase(name);
 }
 int main(int argc,char **argv) {
-    if (argc!=3) return 2;
+    if (argc!=6) return 2;
     RimeApi *api=rime_get_api(); bool initialized=false;
     try {
         std::filesystem::path profile=std::filesystem::u8path(argv[2]);
@@ -118,6 +120,37 @@ int main(int argc,char **argv) {
         arion_pinyin_candidates_dispose(expanded,expandedCount);
         require(distinctEnglish>3,"lower-ranked English words were truncated");
         arion_pinyin_clear(api,first);
+        for(int fixture=3;fixture<argc;++fixture) for(size_t pageSize:{size_t(5),size_t(9)}) {
+            for(const auto &sample:EnglishAdmissionCases(std::filesystem::u8path(argv[fixture]))) {
+                arion_pinyin_clear(api,first); type(api,first,sample.input.c_str());
+                ArionPinyinMenu admitted{};
+                require(arion_menu_build(&admitted,api,first,pageSize,nullptr,nullptr),"admission native menu");
+                const size_t visible=arion_menu_visible_count(&admitted);
+                size_t englishCount=0,selected=SIZE_MAX;
+                std::cout<<"ADMISSION\t"<<sample.id<<'\t'<<pageSize;
+                for(size_t i=0;i<visible;++i) {
+                    englishCount+=EnglishAdmissionWord(admitted.texts[i]);
+                    if(admitted.texts[i]==sample.expected) selected=i;
+                    std::cout<<'\t'<<admitted.texts[i];
+                }
+                std::cout<<std::endl;
+                require(englishCount<=sample.maximumEnglish,(sample.id+" unexpected English suggestions").c_str());
+                require(!sample.chineseFirst || (visible && static_cast<unsigned char>(admitted.texts[0][0])>=128),"admission Chinese priority");
+                size_t engineIndex=0;
+                if(sample.expected!="-") require(selected!=SIZE_MAX &&
+                    arion_menu_engine_index(&admitted,selected,0,0,&engineIndex),(sample.id+" expected English on first page").c_str());
+                arion_menu_dispose(&admitted);
+                if(sample.expected!="-") {
+                    require(arion_pinyin_select(api,first,engineIndex,0),"admission actual candidate selection");
+                    Snapshot committed(api,first);
+                    require(sample.expected==committed.value.commit,"admission actual commit");
+                    Snapshot once(api,first);
+                    require(!once.value.commit[0],"admission duplicate commit");
+                }
+                arion_pinyin_clear(api,first);
+            }
+        }
+        printCase("english-admission-development-and-validation-five-nine-pages");
         selectPhrase(api,first,"ni'hao","\xe4\xbd\xa0\xe5\xa5\xbd","apostrophe-syllable-boundary");
         selectPhrase(api,first,"nh","\xe4\xbd\xa0\xe5\xa5\xbd","abbreviated-pinyin");
         selectPhrase(api,first,"lvse","\xe7\xbb\xbf\xe8\x89\xb2","umlaut-v-spelling");

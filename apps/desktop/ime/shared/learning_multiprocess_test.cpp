@@ -82,7 +82,7 @@ static int worker(const std::string &mode,const std::string &vault,const std::st
             bool committed=snapshot.commit==expected;arion_pinyin_snapshot_dispose(&snapshot);require(committed,"native target commit");
             require(!encryptedLearningError().code,"native engine learning failure");std::cout<<"COMMITTED"<<std::endl;
         } else if (mode=="context") {
-            require(command=="learn","context command");auto changes=ranker->learn("word","previous");require(context->begin(),"context begin");
+            require(command=="learn","context command");auto changes=ranker->learn(u8"热词","previous");require(context->begin(),"context begin");
             for (const auto &[key,value]:changes) require(value?context->update(key,*value):context->erase(key),"context stage");
             require(context->commit(),"context commit");std::cout<<"LEARNED"<<std::endl;
         } else if (command=="read") {
@@ -192,8 +192,8 @@ int main(int argc,char **argv) {
         {Child check("reader",paced,data,path("paced-check"));value(check,5,5);check.finish();}pass("real-pinned-Rime-unequal-editor-pace-and-pending-read-refresh");
         const auto contextVault=path("context");Child x("context",contextVault,data,path("context-a")),y("context",contextVault,data,path("context-b"));
         for (int i=0;i<12;++i) {x.send("learn");y.send("learn");x.expect("LEARNED");y.expect("LEARNED");}x.finish();y.finish();
-        LearningError error;auto provider=makeWindowsLearningProvider(contextVault,error);require(provider && registerEncryptedLearning(provider,error),"reopen context vault");auto context=openContextLearning(error);require(context!=nullptr,"fresh-process context view");auto records=context->records();require(records["@tick"]=="24" && records["c\tus\tword"]=="24 24","merged context count/tick");
-        ContextRanker ranked(records);require(ranked.order({"cold","word"},"previous")==std::vector<size_t>({1,0}),"peer learning changes ranking");
+        LearningError error;auto provider=makeWindowsLearningProvider(contextVault,error);require(provider && registerEncryptedLearning(provider,error),"reopen context vault");auto context=openContextLearning(error);require(context!=nullptr,"fresh-process context view");auto records=context->records();require(records["@tick"]=="24" && records[u8"c\tus\t热词"]=="24 24","merged context count/tick");
+        ContextRanker ranked(records);require(ranked.order({u8"冷词","plain",u8"热词"},"previous")==std::vector<size_t>({2,1,0}),"peer learning changes ranking");
         require(!resetLearningVault(provider,error) && error.code==8,"reset refuses active shared lease");context.reset();require(resetLearningVault(provider,error),"reset after every lease closes");pass("context-pair-clock-ranking-and-active-reset");
         std::cout<<"All owned multi-process encrypted learning checks passed.\n";return 0;
     } catch (const std::exception &error) {std::cerr<<"FAIL "<<error.what()<<'\n';return 1;}

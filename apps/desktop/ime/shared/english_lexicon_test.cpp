@@ -20,17 +20,17 @@ int main(int argc,char **argv) {
         std::vector<std::string> rows;
         for (size_t i=0;i<words.size();++i) {
             auto key=words[i]; for (auto &c:key) if(c>='A' && c<='Z') c+= 'a'-'A';
-            rows.push_back(key+'\t'+words[i]+'\t'+std::to_string(words.size()-i-1));
+            rows.push_back(key+'\t'+std::to_string(words.size()-i-1)+"\t0\t"+words[i]);
         }
         std::sort(rows.begin(),rows.end());
-        std::string text="ARION_ENGLISH\t1\t"+std::to_string(rows.size())+'\n';
+        std::string text="ARION_ENGLISH\t2\t"+std::to_string(rows.size())+'\n';
         for (const auto &row:rows) text+=row+'\n';
         write(file,text);
         auto lexicon=arion::EnglishLexicon::Load(file);
-        auto first=lexicon->Query("prefix"),second=lexicon->Query("prefix");
+        auto first=lexicon->Query("prefix").lookup,second=lexicon->Query("prefix").lookup;
         require(first.Peek() && second.Peek(),"dense prefix unavailable");
         require(first.NodeVisits()<40,"first candidate scanned the dense prefix");
-        auto retained=arion::EnglishLexicon::Load(file)->Query("prefix");
+        auto retained=arion::EnglishLexicon::Load(file)->Query("prefix").lookup;
         require(retained.Peek(),"cursor did not retain its immutable lexicon");
         const std::string leading=second.Peek()->display;
         std::set<std::string> seen;
@@ -42,26 +42,56 @@ int main(int argc,char **argv) {
         }
         require(seen.size()==1024,"later prefix matches were truncated");
         require(second.Peek()->display==leading,"independent query cursor changed");
-        auto exact=lexicon->Query("pre");
+        auto exact=lexicon->Query("pre").exact;
         require(exact.Peek() && exact.Peek()->display=="pre","exact match must lead despite low frequency");
-        require(exact.Next() && exact.Peek()->display==leading,"completion missing after exact match");
-        require(!lexicon->Query("pr").Peek(),"two-letter prefix expanded");
-        auto github=lexicon->Query("github");
+        require(!exact.Next() && lexicon->Query("pre").lookup.Peek()->display==leading,"exact and deferred completion are not disjoint");
+        require(lexicon->Query("pr").empty(),"two-letter prefix expanded");
+        auto github=lexicon->Query("github").exact;
         require(github.Peek() && github.Peek()->display=="GitHub","source case was lost");
-        require(!lexicon->Query("Git").Peek() && !lexicon->Query("pre'").Peek(),"unsupported spelling was normalized silently");
-        write(file,"ARION_ENGLISH\t1\t5\ngit\tgit\t4\ngithub\tGitHub\t0\ngithub\tGithub\t1\ngitlab\tGitLab\t2\ngitlab\tgitlab\t3\n");
+        require(lexicon->Query("Git").empty() && lexicon->Query("pre'").empty(),"unsupported spelling was normalized silently");
+        require(!lexicon->Query("prefix").suggestions.Peek(),"unobserved words acquired automatic slots");
+        std::string observed="ARION_ENGLISH\t2\t"+std::to_string(rows.size())+'\n';
+        for(auto row:rows) {
+            const auto field=row.rfind("\t0\t");
+            require(field!=std::string::npos,"synthetic observation field missing");
+            row.replace(field,3,"\t2000\t"); observed+=row+'\n';
+        }
+        write(file,observed);
+        auto dense=arion::EnglishLexicon::Load(file);
+        auto blocked=dense->Query("pre"),admitted=dense->Query("prefix");
+        require(!blocked.suggestions.Peek() && blocked.suggestions.NodeVisits()==0,"dense overlong prefix scanned rejected words");
+        require(admitted.suggestions.NodeVisits()<40 && !admitted.lookup.Peek(),"dense admission index scanned or duplicated lookup");
+        size_t admittedCount=0;
+        while(admitted.suggestions.Peek()) { ++admittedCount; admitted.suggestions.Next(); }
+        require(admittedCount==1024,"admitted dense prefix was truncated");
+        write(file,"ARION_ENGLISH\t2\t3\ngit\t2\t2000\tgit,Git\ngithub\t0\t0\tGitHub,Github\ngitlab\t1\t0\tGitLab,gitlab\n");
         auto cases=arion::EnglishLexicon::Load(file);
-        auto prefix=cases->Query("git");
-        require(prefix.Peek()->display=="git","exact word lost priority over preferred completions");
-        require(prefix.Next() && prefix.Peek()->display=="GitHub","preferred completion case changed");
+        auto prefix=cases->Query("git").lookup;
+        require(prefix.Peek()->display=="GitHub","preferred completion case changed");
         require(prefix.Next() && prefix.Peek()->display=="GitLab","case variant occupied another completion slot");
         require(!prefix.Next(),"completion repeated a case family");
-        auto variants=cases->Query("github");
+        auto variants=cases->Query("github").exact;
         require(variants.Peek()->display=="GitHub" && variants.Next() && variants.Peek()->display=="Github" && !variants.Next(),
                 "exact input did not expose its complete case family");
-        for (const char *invalid:{"ARION_ENGLISH\t2\t1\nab\tab\t0\n", "ARION_ENGLISH\t1\t2\nab\tab\t0\n",
-                "ARION_ENGLISH\t1\t2\nab\tab\t0\nac\tac\t0\n", "ARION_ENGLISH\t1\t1\nab\tAC\t0\n",
-                "ARION_ENGLISH\t1\t1\nab\tab\t2\n", "ARION_ENGLISH\t1\t2\nac\tac\t0\nab\tab\t1\n"}) {
+        require(cases->Query("git").familiar_exact && !cases->Query("github").familiar_exact,"native lowercase evidence was lost");
+        write(file,"ARION_ENGLISH\t2\t5\nartifice\t2\t0\tartifice,Artifice\nartificial\t0\t4523\tartificial,Artificial\nartificially\t1\t2200\tartificially\nxing\t3\t697\tXING\nxinput\t4\t0\txinput\n");
+        auto admission=arion::EnglishLexicon::Load(file);
+        auto eligible=admission->Query("artifi");
+        require(eligible.suggestions.Peek()->display=="artificial","observed useful completion missing");
+        require(eligible.suggestions.Next() && eligible.suggestions.Peek()->display=="artificially" && !eligible.suggestions.Next(),"automatic ranking or membership differs");
+        require(eligible.lookup.Peek()->display=="artifice" && !eligible.lookup.Next(),"deferred words were lost or duplicated");
+        auto shortPrefix=admission->Query("art");
+        require(!shortPrefix.suggestions.Peek() && shortPrefix.suggestions.NodeVisits()==0,"overlong completion required rejected-word scanning");
+        auto weak=admission->Query("xin");
+        require(!weak.suggestions.Peek() && weak.lookup.Peek(),"rare or unknown completions were promoted or deleted");
+        auto pinyin=admission->Query("artifi",arion::EnglishLexicon::Completion::Lookup);
+        size_t complete=0;
+        while(pinyin.lookup.Peek()) { ++complete; pinyin.lookup.Next(); }
+        require(!pinyin.suggestions.Peek() && complete==3,"competing Pinyin lost full lookup coverage");
+        for (const char *invalid:{"ARION_ENGLISH\t1\t1\nab\t0\t0\tab\n", "ARION_ENGLISH\t2\t2\nab\t0\t0\tab\n",
+                "ARION_ENGLISH\t2\t2\nab\t0\t0\tab\nac\t0\t0\tac\n", "ARION_ENGLISH\t2\t1\nab\t0\t0\tAC\n",
+                "ARION_ENGLISH\t2\t1\nab\t2\t0\tab\n", "ARION_ENGLISH\t2\t2\nac\t0\t0\tac\nab\t1\t0\tab\n",
+                "ARION_ENGLISH\t2\t1\nab\t0\t4294967296\tab\n", "ARION_ENGLISH\t2\t1\nab\t0\t0\tab,ab\n"}) {
             write(file,invalid); bool rejected=false;
             try { arion::EnglishLexicon::Load(file); } catch (const std::exception &) { rejected=true; }
             require(rejected,"malformed lexicon was accepted");

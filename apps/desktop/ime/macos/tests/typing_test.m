@@ -7,6 +7,7 @@
 #include <rime_api.h>
 #include "../../shared/input.h"
 #include "../../shared/emoji.h"
+#include "../../shared/english_admission_cases.h"
 #include <map>
 #include <memory>
 
@@ -95,7 +96,7 @@ static std::map<std::string, std::string> learningRecords(NSString *file, NSData
 
 int main(int argc, const char *argv[]) {
     @autoreleasepool {
-        if (argc != 4) { fprintf(stderr, "usage: typing-test DATA USER REPORT\n"); return 2; }
+        if (argc != 7) { fprintf(stderr, "usage: typing-test DATA USER REPORT DEVELOPMENT VALIDATION HOLDOUT\n"); return 2; }
         [NSApplication sharedApplication];
         NSString *data = @(argv[1]), *user = @(argv[2]), *report = @(argv[3]);
         NSMutableData *testKey = [NSMutableData dataWithLength:32];
@@ -253,6 +254,36 @@ int main(int argc, const char *argv[]) {
             require(words.count > 3 && [words containsObject:@"artifice"], @"lower-ranked words survive beyond the old three-word cutoff");
             [typing cancel];
         });
+        for (int fixture=4; fixture<argc; ++fixture) {
+            const auto samples=EnglishAdmissionCases(std::filesystem::u8path(argv[fixture]));
+            NSString *split=[@(argv[fixture]).lastPathComponent stringByDeletingPathExtension];
+            run([NSString stringWithFormat:@"English admission %@ on native menus",split], @"KBD-A13", ^{
+                for (NSNumber *size in @[@5,@9]) {
+                    NSUInteger pageSize=size.unsignedIntegerValue;
+                    typing.pageSize=pageSize;
+                    for (const auto &sample:samples) {
+                        NSString *code=@(sample.input.c_str());
+                        type(typing,code);
+                        NSString *step=[NSString stringWithFormat:@"%s page %lu",sample.id.c_str(),(unsigned long)pageSize];
+                        record(step,typing,editor);
+                        NSUInteger englishCount=0;
+                        for (NSString *candidate in typing.snapshot.candidates)
+                            englishCount+=EnglishAdmissionWord(candidate.UTF8String);
+                        require(englishCount<=sample.maximumEnglish,[step stringByAppendingString:@" unexpected English suggestions"]);
+                        if (sample.chineseFirst) require(typing.snapshot.candidates.count &&
+                            [typing.snapshot.candidates[0] characterAtIndex:0]>127,[step stringByAppendingString:@" Chinese priority"]);
+                        if (sample.expected!="-") {
+                            NSString *expected=@(sample.expected.c_str());
+                            NSUInteger index=[typing.snapshot.candidates indexOfObject:expected];
+                            require(index!=NSNotFound,[step stringByAppendingString:@" expected English on first page"]);
+                            NSUInteger insertions=editor.insertions;
+                            require([typing select:index revision:typing.revision] && editor.insertions==insertions+1 &&
+                                [editor.view.string hasSuffix:expected],[step stringByAppendingString:@" actual commit once"]);
+                        } else [typing cancel];
+                    }
+                }
+            });
+        }
         run(@"English commits do not enter Chinese word learning", @"KBD-A07 KBD-A13", ^{
             [typing deactivate]; [engine stop];
             NSString *vault = [user stringByAppendingPathComponent:@"encrypted"];
@@ -271,7 +302,7 @@ int main(int argc, const char *argv[]) {
         run(@"English candidate panel rendering", @"KBD-A13", ^{
             ArionCandidatePanel *panel = [ArionCandidatePanel new];
             @try {
-                for (NSString *word in @[@"artificial", @"can", @"artifi", @"hel", @"github", @"frontend"]) {
+                for (NSString *word in @[@"artificial", @"can", @"artifi", @"hel", @"github", @"frontend", @"xin", @"shi"]) {
                     type(typing, word);
                     record(word, typing, editor);
                     [panel showCandidates:typing.snapshot.candidates highlighted:typing.snapshot.highlighted lastPage:typing.snapshot.lastPage

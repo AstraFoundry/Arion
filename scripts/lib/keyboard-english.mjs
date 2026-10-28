@@ -18,9 +18,8 @@ export function writeEnglishLexicon(staging, manifest) {
       const display = (source.english === 'cspell' ? row.replace(/\s+#.*$/, '') : row).trim();
       if (!eligible.test(display)) continue;
       const key = display.toLowerCase();
-      const entry = words.get(key) ?? { key, displays: new Map(), technical: false };
+      const entry = words.get(key) ?? { key, displays: new Map() };
       const technical = source.english === 'cspell';
-      entry.technical ||= technical;
       entry.displays.set(display, technical || entry.displays.get(display) === true);
       words.set(key, entry);
     }
@@ -28,8 +27,9 @@ export function writeEnglishLexicon(staging, manifest) {
   if (!words.size) throw new Error('The pinned English lexicon is empty.');
   const ordered = [...words.values()].sort((a, b) =>
     (frequencies.get(b.key) ?? 0) - (frequencies.get(a.key) ?? 0) ||
-    Number(b.technical) - Number(a.technical) || a.key.length - b.key.length || lexical(a.key, b.key));
+    a.key.length - b.key.length || lexical(a.key, b.key));
   const rows = [];
+  let displayCount = 0;
   for (const entry of ordered) {
     // Source-native case always survives; derive sentence case only for ordinary lowercase words.
     if (entry.displays.has(entry.key) && ![...entry.displays].some(([text, technical]) => technical && text !== entry.key)) {
@@ -38,12 +38,14 @@ export function writeEnglishLexicon(staging, manifest) {
     }
     const displays = [...entry.displays].sort(([a, at], [b, bt]) =>
       Number(bt) - Number(at) || Number(b === entry.key) - Number(a === entry.key) || lexical(a, b));
-    for (const [display] of displays) rows.push({ key: entry.key, display, rank: rows.length });
+    displayCount += displays.length;
+    rows.push({ key: entry.key, displays: displays.map(([display]) => display), rank: rows.length,
+      count: frequencies.get(entry.key) ?? 0 });
   }
-  rows.sort((a, b) => lexical(a.key, b.key) || lexical(a.display, b.display));
+  rows.sort((a, b) => lexical(a.key, b.key));
   writeFileSync(path.join(staging, 'data/arion_english.lexicon'), [
-    `ARION_ENGLISH\t1\t${rows.length}`,
-    ...rows.map(({ key, display, rank }) => `${key}\t${display}\t${rank}`), '',
+    `ARION_ENGLISH\t2\t${rows.length}`,
+    ...rows.map(({ key, displays, rank, count }) => `${key}\t${rank}\t${count}\t${displays.join(',')}`), '',
   ].join('\n'));
-  return { words: words.size, displays: rows.length };
+  return { words: words.size, displays: displayCount };
 }

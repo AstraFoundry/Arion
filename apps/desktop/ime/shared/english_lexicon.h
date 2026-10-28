@@ -1,5 +1,6 @@
 #ifndef ARION_ENGLISH_LEXICON_H
 #define ARION_ENGLISH_LEXICON_H
+#include <array>
 #include <cstdint>
 #include <filesystem>
 #include <memory>
@@ -12,6 +13,7 @@ namespace arion {
 class EnglishLexicon final : public std::enable_shared_from_this<EnglishLexicon> {
  public:
     struct Entry { std::string key, display; uint32_t rank; };
+    enum class Completion { Suggest, Lookup };
     class Cursor {
      public:
         const Entry *Peek() const;
@@ -21,27 +23,36 @@ class EnglishLexicon final : public std::enable_shared_from_this<EnglishLexicon>
 #endif
      private:
         friend class EnglishLexicon;
+        struct Node { uint32_t bucket, position; };
         struct Later {
             const EnglishLexicon *lexicon;
-            bool operator()(uint32_t a, uint32_t b) const;
+            bool operator()(Node a, Node b) const;
         };
-        using Queue = std::priority_queue<uint32_t,std::vector<uint32_t>,Later>;
         explicit Cursor(std::shared_ptr<const EnglishLexicon> lexicon);
-        void Add(Queue &queue, size_t begin, size_t end);
+        void Add(uint32_t bucket, size_t begin, size_t end);
         std::shared_ptr<const EnglishLexicon> lexicon_;
-        Queue exact_, completion_;
-        std::string completion_key_;
-        uint32_t current_ = UINT32_MAX;
+        std::priority_queue<Node,std::vector<Node>,Later> queue_;
+        uint32_t current_ = UINT32_MAX, exact_ = UINT32_MAX;
+        size_t variant_ = 0;
 #ifdef ARION_ENGLISH_TESTING
         size_t node_visits_ = 0;
 #endif
     };
+    struct Matches {
+        Cursor exact, suggestions, lookup;
+        // Native lowercase and enough observed use; not a language probability.
+        bool familiar_exact = false;
+        bool empty() const { return !exact.Peek() && !suggestions.Peek() && !lookup.Peek(); }
+    };
     static std::shared_ptr<const EnglishLexicon> Load(const std::filesystem::path &path);
-    Cursor Query(std::string_view input) const;
+    Matches Query(std::string_view input, Completion completion = Completion::Suggest) const;
  private:
-    std::vector<Entry> entries_;
-    std::vector<uint32_t> winner_;
-    size_t base_ = 1;
+    struct Word { std::vector<Entry> displays; uint32_t count; bool lowercase; };
+    struct Index { std::vector<uint32_t> words, winners; size_t base = 1; };
+    static constexpr uint32_t kSuggestionMinimumCount = 1000;
+    std::vector<Word> words_;
+    // Each key occurs once: bucket zero is lookup-only, others name minimum prefix length.
+    std::array<Index,65> indexes_;
     uint32_t Better(uint32_t a, uint32_t b) const;
 };
 }

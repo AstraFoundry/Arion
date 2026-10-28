@@ -9,7 +9,7 @@ import { writeEnglishLexicon } from './keyboard-english.mjs';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const manifest = JSON.parse(readFileSync(path.join(root, 'scripts/keyboard-runtime.json'), 'utf8'));
 const entries = directory => readFileSync(path.join(directory, 'data/arion_english.lexicon'), 'utf8')
-  .trimEnd().split('\n').slice(1).map(line => { const [key, display, rank] = line.split('\t'); return { key, display, rank: Number(rank) }; });
+  .trimEnd().split('\n').slice(1).flatMap(line => { const [key, rank, frequency, displays] = line.split('\t'); return displays.split(',').map(display => ({ key, display, rank: Number(rank), frequency: Number(frequency) })); });
 
 test('complete pinned ESDB 70 and CSpell vocabulary retains case, frequency-independent membership and all prefix matches', () => {
   const staging = mkdtempSync(path.join(os.tmpdir(), 'arion-english-'));
@@ -28,10 +28,12 @@ test('complete pinned ESDB 70 and CSpell vocabulary retains case, frequency-inde
       'chatgpt', 'frontend', 'backend', 'workflow', 'plugin', 'config', 'asynchronous']) assert.ok(words.has(word), word);
     assert.ok(rows.filter(row => row.key.startsWith('con')).length > 1700, 'Later completions remain indexed.');
     assert.equal(rows.length, count.displays);
-    assert.equal(new Set(rows.map(row => row.rank)).size, rows.length);
+    assert.equal(new Set(rows.map(row => row.rank)).size, count.words);
     assert.equal(new Set(rows.map(row => row.key + '\t' + row.display)).size, rows.length);
     const github = rows.filter(row => row.key === 'github').sort((a, b) => a.rank - b.rank);
     assert.equal(github[0].display, 'GitHub');
+    assert.equal(github[0].frequency, 0);
+    assert.equal(rows.find(row => row.display === 'hello').frequency, 405534);
     const original = readFileSync(path.join(staging, 'data/arion_english.lexicon'));
     writeEnglishLexicon(staging, manifest);
     assert.deepEqual(readFileSync(path.join(staging, 'data/arion_english.lexicon')), original);

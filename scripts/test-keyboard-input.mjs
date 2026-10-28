@@ -1,13 +1,18 @@
 // Actual librime conversion and the production typing state against AppKit's text store.
+import {createHash} from 'node:crypto';
 import { execFileSync, spawnSync } from 'node:child_process';
 import { copyFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { englishAdmissionFixtures } from './lib/english-admission-fixtures.mjs';
 import { buildIMELearning } from './lib/build-ime-learning.mjs';
 
 if (process.platform !== 'darwin') throw new Error('Keyboard integration tests require macOS.');
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const digest=file=>createHash('sha256').update(readFileSync(file)).digest('hex');
+const sourceFiles=execFileSync('git',['ls-files','-co','--exclude-standard','-z','apps/desktop/ime'],{cwd:root,encoding:'utf8'}).split('\0').filter(Boolean);
+const sourceIdentities=Object.fromEntries(sourceFiles.map(file=>[file,digest(path.join(root,file))]));
 const options = new Map();
 for (let i = 2; i < process.argv.length; i += 2) {
   const name = process.argv[i], value = process.argv[i + 1];
@@ -73,20 +78,28 @@ try {
     launcher: `/usr/bin/arch -${arch}`,
     translation: executableTranslation.translated ? 'Rosetta 2' : 'none',
     translationProbe: { oid: 'sysctl.proc_translated', ...executableTranslation },
+    sourceIdentities,
+    gitRevision: execFileSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8'}).trim(),
+    dirty: execFileSync('git',['status','--porcelain'],{cwd:root,encoding:'utf8'}).length>0,
+    runtimeManifestSha256: digest(path.join(runtime,'runtime.json')),
     physicalIntelHost: hostArchitecture === 'x86_64',
     installedIMEHostDispatch: false,
   };
   process.stdout.write(`Keyboard test execution: ${JSON.stringify(execution)}\n`);
   const nativeReport = path.join(temporary, 'native-report.json');
-  const result = spawnSync('/usr/bin/arch', [`-${arch}`, binary, data, path.join(temporary, 'user'), nativeReport],
+  const result = spawnSync('/usr/bin/arch', [`-${arch}`, binary, data, path.join(temporary, 'user'), nativeReport, ...englishAdmissionFixtures(root)],
     { cwd: root, stdio: 'inherit' });
   if (result.error) throw result.error;
   if (result.signal) throw new Error(`Keyboard test terminated by ${result.signal}`);
   status = result.status ?? 2;
-  for (const file of readdirSync(temporary).filter(name => /^(emoji-macos-(light|dark)-[0-2]|english-macos-(artificial|can|artifi|hel|github|frontend))\.png$/.test(name))) {
+  for (const file of readdirSync(temporary).filter(name => /^(emoji-macos-(light|dark)-[0-2]|english-macos-(artificial|can|artifi|hel|github|frontend|xin|shi))\.png$/.test(name))) {
     copyFileSync(path.join(temporary, file), path.join(path.dirname(report), file));
   }
   if (existsSync(nativeReport)) {
+    const changed=sourceFiles.filter(file=>digest(path.join(root,file))!==sourceIdentities[file]);
+    if(changed.length) throw new Error('IME sources changed during native verification: '+changed.join(', '));
+    englishAdmissionFixtures(root);
+    execution.binarySha256=digest(binary);
     const resultReport = JSON.parse(readFileSync(nativeReport, 'utf8'));
     writeFileSync(report, `${JSON.stringify({ ...resultReport, execution }, null, 2)}\n`);
   } else if (status === 0) {

@@ -444,7 +444,7 @@
   },
   "english": {
     "name": "ESDB 70 and CSpell",
-    "version": 3,
+    "version": 4,
     "frequencies": "licenses/frequencywords/en_50k.txt",
     "export": {
       "commit": "1e5b7d3a72f47a71da5d28686c1dd4b397178485",
