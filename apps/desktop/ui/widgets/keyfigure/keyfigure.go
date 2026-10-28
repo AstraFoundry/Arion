@@ -32,9 +32,9 @@ var layouts = func() map[string][]key {
 }()
 
 // keyboardOf is the platform whose keyboard carries key.
-func keyboardOf(key runtime.HoldKey) string {
+func keyboardOf(chosen runtime.HoldKey) string {
 	for _, platform := range platforms {
-		if slices.Contains(runtime.HoldKeysFor(platform), key) {
+		if slices.ContainsFunc(layouts[platform], func(k key) bool { return k.id == string(chosen) }) {
 			return platform
 		}
 	}

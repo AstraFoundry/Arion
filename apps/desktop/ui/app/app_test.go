@@ -44,6 +44,7 @@ func (r *recorder) RequestAccessibility()      { r.call("request-ax") }
 func (r *recorder) OpenMicrophoneSettings()    { r.call("open-mic") }
 func (r *recorder) OpenAccessibilitySettings() { r.call("open-ax") }
 func (r *recorder) RetryModel()                { r.call("retry") }
+func (r *recorder) RetryShortcutListener()     { r.call("retry-shortcuts") }
 func (r *recorder) RetryPolish()               { r.call("retry-polish") }
 func (r *recorder) DownloadPolish()            { r.call("download-polish") }
 func (r *recorder) UseBundle(id string)        { r.call("use:" + id) }
@@ -91,6 +92,11 @@ func (r *recorder) OpenUpdate() {
 	r.call("open-update")
 	r.state.Focus = runtime.SettingsFocus{Section: settings.About, Seq: r.state.Focus.Seq + 1}
 }
+func (r *recorder) RecordShortcut(owner string) {
+	r.call("record:" + owner)
+	r.state.Hold.Recording = owner
+}
+
 func (r *recorder) SetHoldKey(key runtime.HoldKey) {
 	r.call("hold:" + string(key))
 	r.state.Preferences.ChooseHoldKey(key)
@@ -1069,14 +1075,13 @@ func TestHoldKeySettingsAndPill(t *testing.T) {
 		t.Fatalf("hold row missing: %q", tt.Texts())
 	}
 	keys := runtime.HoldKeysFor(platform.GOOS)
-	choice := keys[len(keys)-1]
-	if err := tt.Click(holdname.Name(en, state.Preferences.HoldKey)); err != nil {
+	choice := keys[0]
+	if err := tt.Click(en.Text(copy.HoldKeyEdit)); err != nil {
 		t.Fatal(err)
 	}
 	settle(tt)
-	if err := tt.Click(holdname.Name(en, choice)); err != nil {
-		t.Fatal(err)
-	}
+	state.Hold.RecordedKey = choice
+	state.Hold.RecordedSeq++
 	settle(tt)
 	if !actions.called("hold:"+string(choice)) || state.Preferences.HoldKey != choice {
 		t.Fatalf("hold key not chosen: %v", actions.calls)
@@ -1123,24 +1128,35 @@ func TestTranslationSettingsAndPill(t *testing.T) {
 	page.Section = settings.Dictation
 	tt := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, SettingsWidth, SettingsHeight)
 	settle(tt)
+	if hasText(tt, en.Text(copy.TranslateKeyLabel)) || hasText(tt, en.Text(copy.TranslateLanguageLabel)) {
+		t.Fatal("disabled translation retained settings")
+	}
+	if err := tt.Click(en.Text(copy.TranslateEnabled)); err != nil {
+		t.Fatal(err)
+	}
+	settle(tt)
 	for _, key := range []copy.Key{copy.TranslateGroup, copy.TranslateKeyLabel, copy.TranslateLanguageLabel, copy.TranslateEnglish} {
 		if !hasText(tt, en.Text(key)) {
-			t.Fatalf("missing translation control %s: %q", key, tt.Texts())
+			t.Fatalf("missing translation control %s", key)
 		}
 	}
-	// Select a translation key.
 	tKey := runtime.DefaultTranslateKey(platform.GOOS)
-	if err := tt.Click(en.Text(copy.HoldKeyOff)); err != nil {
-		t.Fatal(err)
-	}
-	settle(tt)
-	if err := tt.Click(holdname.Name(en, tKey)); err != nil {
-		t.Fatal(err)
-	}
-	settle(tt)
 	if !actions.called("translate-hold:"+string(tKey)) || state.Preferences.TranslateKey != tKey {
-		t.Fatalf("translation key not chosen: %v (got %q)", actions.calls, state.Preferences.TranslateKey)
+		t.Fatal("translation not enabled")
 	}
+	// Record a replacement using the same native capture projection as dictation.
+	if err := tt.Click(en.Text(copy.TranslateKeyEdit)); err != nil {
+		t.Fatal(err)
+	}
+	settle(tt)
+	tKey = "shift+f8"
+	state.Hold.RecordedKey = tKey
+	state.Hold.RecordedSeq++
+	settle(tt)
+	if state.Preferences.TranslateKey != tKey {
+		t.Fatal("translation key not recorded")
+	}
+
 	// Select Simplified Chinese as the translation target language.
 	if err := tt.Click(en.Text(copy.TranslateEnglish)); err != nil {
 		t.Fatal(err)

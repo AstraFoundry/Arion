@@ -5,7 +5,6 @@ import (
 	"testing"
 	"time"
 
-	holdname "arion.local/desktop/ui/entities/holdkey"
 	"arion.local/desktop/ui/features/holdkey"
 	"arion.local/desktop/ui/pages/onboarding"
 	"arion.local/desktop/ui/shared/copy"
@@ -99,26 +98,15 @@ func TestOnboardingVoiceTranslation(t *testing.T) {
 			}
 			rest(tt, 2500*time.Millisecond)
 			snapshot(t, tt, "onboarding-translate-key-"+string(locale))
-			if keys := runtime.TranslateKeysFor(platform.GOOS); len(keys) > 0 {
-				click(holdname.Name(messages, translate))
-				if hasText(tt, holdname.Name(messages, hold)) {
-					t.Fatalf("dictation key offered for translation: %q", tt.Texts())
-				}
-				for _, key := range keys {
-					if key != hold && !hasText(tt, holdname.Name(messages, key)) {
-						t.Fatalf("%s not offered: %q", key, tt.Texts())
-					}
-				}
-				snapshot(t, tt, "onboarding-translate-key-choices-"+string(locale))
-				click(holdname.Name(messages, runtime.HoldOff))
-				if state.Preferences.TranslateKey != runtime.HoldOff || state.Preferences.HoldKey != hold || !actions.called("translate-hold:off") {
-					t.Fatalf("off not chosen: %+v", state.Preferences)
-				}
-				if hasText(tt, messages.Text(copy.OnbHoldKeyPress)) || hasText(tt, messages.Text(copy.OnbHoldKeyHeard)) {
-					t.Fatalf("off still asks for a press: %q", tt.Texts())
-				}
-				snapshot(t, tt, "onboarding-translate-key-off-"+string(locale))
+
+			click(messages.Text(copy.TranslateEnabled))
+			if state.Preferences.TranslateKey != runtime.HoldOff || state.Preferences.HoldKey != hold || !actions.called("translate-hold:off") {
+				t.Fatal("translation not disabled")
 			}
+			if hasText(tt, messages.Text(copy.TranslateKeyEdit)) || hasText(tt, messages.Text(copy.OnbHoldKeyPress)) || hasText(tt, messages.Text(copy.OnbHoldKeyHeard)) {
+				t.Fatal("disabled translation retained key settings")
+			}
+			snapshot(t, tt, "onboarding-translate-key-off-"+string(locale))
 			click(messages.Text(copy.Continue))
 			if !hasText(tt, messages.Text(copy.OnbTryTitle)) {
 				t.Fatalf("try step does not follow translation: %q", tt.Texts())

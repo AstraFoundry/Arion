@@ -106,27 +106,17 @@ func Choice(c *ui.Context, store runtime.Store, tokens theme.Tokens) {
 // retargets from its current value on interruption and honors Reduce Motion.
 // Like MyGo's collapsible panel, its height follows measured content.
 func localStatus(c *ui.Context, store runtime.Store, tokens theme.Tokens, open bool) {
-	panel := ui.Column(c).Shrink(0).ClipY().Disabled(!open)
-	last := ui.Local(panel, "status", func() runtime.Polish { return store.State.Polish })
-	target := float32(0)
+	holder := ui.Column(c)
+	last := ui.Local(holder, "status", func() runtime.Polish { return store.State.Polish })
 	if open {
 		*last = store.State.Polish
-		target = 1
-	}
-	progress := panel.AnimateTo("reveal", target, theme.Disclosure)
-	if !open && progress == 0 {
-		panel.Height(0)
-		return
 	}
 	state := *store.State
 	state.Polish = *last
 	store.State = &state
-	var content ui.Element
-	panel.Opacity(progress).Children(func() {
-		content = ui.Column(c).Shrink(0).Padding(theme.GapRelated, 0, 0, 0).
-			Children(func() { status(c, store, tokens, false) })
+	holder.Children(func() {
+		kit.Disclosure(c, open, func() {
+			ui.Column(c).Padding(theme.GapRelated, 0, 0, 0).Children(func() { status(c, store, tokens, false) })
+		})
 	})
-	if progress < 1 {
-		panel.Height(progress * content.Bounds().H)
-	}
 }
