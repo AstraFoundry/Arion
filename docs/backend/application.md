@@ -1,4 +1,5 @@
 # Application Layer
+Arion native mapping: layers are Go packages, and the TypeScript examples below are illustrative. `packages/core` (`domain`, `contracts`, `application`) and `services/sync` / `services/updates` (`domain`, `application`, `infrastructure`, `interfaces`, `cmd`) follow this layering, and the desktop's `infrastructure/` adapters implement core ports from the `bootstrap` composition root. See [repository ownership](../project/repository.md); `pnpm check` enforces the import direction.
 
 The application layer orchestrates use cases. It depends on the domain layer and on domain-defined ports, but not on concrete infrastructure.
 
