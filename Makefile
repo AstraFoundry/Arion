@@ -1260,6 +1260,16 @@ rewrite-stages-test:
 rewrite-stages-verify:
 	@pnpm rewrite:stages:verify $(ARGS)
 
+.PHONY: vocabulary-bench-run vocabulary-bench-report vocabulary-bench-verify vocabulary-bench-test
+vocabulary-bench-run: ## Observe production vocabulary correction and recall on controlled fixtures
+	@pnpm vocabulary:bench:run $(ARGS)
+vocabulary-bench-report: ## Replay a completed vocabulary benchmark without inference
+	@pnpm vocabulary:bench:report $(ARGS)
+vocabulary-bench-verify: ## Verify vocabulary benchmark hashes and deterministic report replay
+	@pnpm vocabulary:bench:verify $(ARGS)
+vocabulary-bench-test:
+	@pnpm vocabulary:bench:test
+
 .PHONY: qwen17-context-report qwen17-context-test
 qwen17-context-report:
 	pnpm qwen17:context:report --run "$(RESULTS)" --out "$(OUT)"
@@ -1291,3 +1301,9 @@ notifications-check: ## Check notification APIs, registration and platform build
 
 notifications-prepare: ## Build an isolated native notification consent probe
 	pnpm notifications:prepare
+
+.PHONY: asr-hotwords-report asr-hotwords-verify
+asr-hotwords-report: ## Replay archived paired ASR hotword observations
+	@pnpm asr:hotwords:report $(ARGS)
+asr-hotwords-verify: ## Verify ASR hotword evidence and report replay
+	@pnpm asr:hotwords:verify $(ARGS)

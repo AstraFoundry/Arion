@@ -2,7 +2,6 @@ package app
 
 import (
 	"bytes"
-	"errors"
 	"fmt"
 	"image/png"
 	"os"
@@ -31,8 +30,9 @@ import (
 
 // recorder implements runtime.Actions for view tests.
 type recorder struct {
-	calls []string
-	state *runtime.State
+	calls      []string
+	state      *runtime.State
+	vocabError error
 }
 
 func (r *recorder) call(name string)           { r.calls = append(r.calls, name) }
@@ -70,19 +70,22 @@ func (r *recorder) ListCloudModels() { r.call("cloud-models") }
 func (r *recorder) ConnectCloudKey(provider, key string) {
 	r.call("cloud-key:" + provider + ":" + key)
 }
-func (r *recorder) Quit()                       { r.call("quit") }
-func (r *recorder) TestHoldKey(testing bool)    { r.call("test-hold") }
-func (r *recorder) RemoveReplacement(id string) { r.call("remove:" + id) }
-func (r *recorder) UndoLearned(id string)       { r.call("undo:" + id) }
-func (r *recorder) RequestInputMonitoring()     { r.call("request-monitoring") }
-func (r *recorder) CloseGuide()                 { r.call("close-guide") }
-func (r *recorder) CloseTrayHint()              { r.call("close-tray-hint") }
-func (r *recorder) CheckForUpdates()            { r.call("check-update") }
-func (r *recorder) InstallUpdate()              { r.call("install-update") }
-func (r *recorder) RestartToUpdate()            { r.call("restart-update") }
-func (r *recorder) CancelUpdateRestart()        { r.call("cancel-update-restart") }
-func (r *recorder) LaterUpdate()                { r.call("later-update") }
-func (r *recorder) DismissUpdateReminder()      { r.call("dismiss-update-reminder") }
+func (r *recorder) Quit()                    { r.call("quit") }
+func (r *recorder) TestHoldKey(testing bool) { r.call("test-hold") }
+func (r *recorder) RemoveReplacement(id string) {
+	r.call("remove:" + id)
+	r.state.Vocabulary = slices.DeleteFunc(r.state.Vocabulary, func(entry runtime.Replacement) bool { return entry.ID == id })
+}
+func (r *recorder) UndoLearned(id string)   { r.call("undo:" + id) }
+func (r *recorder) RequestInputMonitoring() { r.call("request-monitoring") }
+func (r *recorder) CloseGuide()             { r.call("close-guide") }
+func (r *recorder) CloseTrayHint()          { r.call("close-tray-hint") }
+func (r *recorder) CheckForUpdates()        { r.call("check-update") }
+func (r *recorder) InstallUpdate()          { r.call("install-update") }
+func (r *recorder) RestartToUpdate()        { r.call("restart-update") }
+func (r *recorder) CancelUpdateRestart()    { r.call("cancel-update-restart") }
+func (r *recorder) LaterUpdate()            { r.call("later-update") }
+func (r *recorder) DismissUpdateReminder()  { r.call("dismiss-update-reminder") }
 
 func (r *recorder) OpenUpdate() {
 	r.call("open-update")
@@ -120,11 +123,26 @@ func (r *recorder) UpdatePreferences(change func(*runtime.Preferences)) {
 	r.call("prefs")
 }
 func (r *recorder) AddReplacement(from, to string) error {
-	if from == "" || to == "" {
-		return errors.New("invalid")
+	return r.AddReplacementVariants([]string{from}, to)
+}
+
+func (r *recorder) AddReplacementVariants(froms []string, to string) error {
+	if r.vocabError != nil {
+		return r.vocabError
 	}
-	r.state.Vocabulary = append(r.state.Vocabulary, runtime.Replacement{ID: from, From: from, To: to})
+	for _, from := range froms {
+		r.state.Vocabulary = append(r.state.Vocabulary, runtime.Replacement{ID: from, From: from, To: to})
+	}
 	r.call("add")
+	return nil
+}
+
+func (r *recorder) AddHotword(text string) error {
+	if r.vocabError != nil {
+		return r.vocabError
+	}
+	r.state.Vocabulary = append(r.state.Vocabulary, runtime.Replacement{ID: text, To: text, Hotword: true})
+	r.call("add-hotword")
 	return nil
 }
 
@@ -972,21 +990,21 @@ func TestChineseSettingsAndTransientErrors(t *testing.T) {
 		t.Fatal(err)
 	}
 	settle(tt)
-	if !hasText(tt, "请填写两个输入框") {
+	if !hasText(tt, copy.For(copy.SimplifiedChinese).Text(copy.VocabInvalid)) {
 		t.Fatalf("missing localized validation: %q", tt.Texts())
 	}
 	state.Preferences.UILanguage = runtime.LanguageEnglish
 	settle(tt)
-	if !hasText(tt, "Both fields are needed") || hasText(tt, "请填写两个输入框") {
+	if !hasText(tt, copy.For(copy.English).Text(copy.VocabInvalid)) || hasText(tt, copy.For(copy.SimplifiedChinese).Text(copy.VocabInvalid)) {
 		t.Fatalf("stale validation after switch: %q", tt.Texts())
 	}
 
 	// A draft entered in English survives the language change and is saved verbatim.
-	if err := tt.Click("Heard as"); err != nil {
+	if err := tt.Click(copy.For(copy.English).Text(copy.VocabFromLabel)); err != nil {
 		t.Fatal(err)
 	}
 	tt.Type("阿里昂 {value}")
-	if err := tt.Click("Write as"); err != nil {
+	if err := tt.Click(copy.For(copy.English).Text(copy.VocabToLabel)); err != nil {
 		t.Fatal(err)
 	}
 	tt.Type("Arion {value}")

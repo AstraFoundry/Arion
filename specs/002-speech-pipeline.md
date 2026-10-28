@@ -16,6 +16,9 @@ Capture → bounded frames → explicit resampling → VAD/streaming recognizer 
 - SPH-09: Silence MUST not create committed hallucinated text. Session audio is discarded when processing ends by default.
 - SPH-10: Vendor recognition envelopes are transport metadata, never dictated text. Qwen3-ASR language headers and `<asr_text>` delimiters are parsed at the ASR adapter boundary, including leading whitespace. Plain text and literal markers within a transcription remain unchanged.
 
+- SPH-11: Each recording snapshots bounded, approved canonical ASR hotwords before recognizer creation. Preview, segment acoustic refinement and full-audio finalization use that same snapshot; memory changes affect the next recording. Wrong aliases and generated rewrite text never enter ASR context. Selection follows MEM-07. Context is a recognition hint, not a forced substitution or an accuracy guarantee.
+- SPH-12: Native ASR receives a per-request space-separated `prompt`, including an explicit empty string to clear context. Nonempty context requires an advertised prompt capability; unsupported workers fail explicitly. Product term/rune bounds and the native model's token context bound are independently enforced. No cloud inference is introduced.
+
 ## Acceptance
 
 | ID | Required evidence |
@@ -28,5 +31,8 @@ Capture → bounded frames → explicit resampling → VAD/streaming recognizer 
 | SPH-A06 | Network disabled after provisioning → local full pipeline still works |
 | SPH-A07 | Silence/noise-only fixture → no candidate auto-committed |
 | SPH-A08 | Missing correction model → explicit capability status; no network inference |
+| SPH-A09 | Mutate memory during capture → preview and all acoustic finalizers retain the initial snapshot; the next session receives updated terms |
+| SPH-A10 | Prompt-capable MLX/speech.cpp protocol fixtures receive exact canonical context; empty requests clear it; unsupported workers and invalid terms fail explicitly |
+| SPH-A11 | Real local Qwen3 paired audio evaluation retains raw outputs, fixture/model/runtime hashes, unrelated-word and silence controls, accuracy and latency; report regressions and platform limitations |
 
 The runtime and checkpoint evaluation shortlist is in [research](../docs/research/on-device-speech.md). No weights are chosen in this foundation.

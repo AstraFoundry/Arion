@@ -1,0 +1,12 @@
+{
+  "status": "started",
+  "started": "2026-10-27T16:59:13.639Z",
+  "operation": "run",
+  "config": {
+    "arm": "candidate",
+    "cases": "/Users/steven/code/Arion/benchmarks/runs/vocabulary-alignment-v1/recall-01/native-cases.json",
+    "out": "/Users/steven/code/Arion/benchmarks/runs/vocabulary-alignment-v1/native-01",
+    "runtime": "/Users/steven/code/Arion/.workspace/rewrite-small-models-v1/runtime/llama-b11734",
+    "model": "/Users/steven/code/Arion/.workspace/rewrite-small-models-v1"
+  }
+}

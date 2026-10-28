@@ -1,0 +1,33 @@
+// This evaluation-only method adapts historical application.termsForFinal
+// (with no static policy Terms) to the candidate driver's method signature.
+// The original body is archived separately from git HEAD:application/live.go.
+package domain
+
+import (
+	"slices"
+	"strings"
+)
+
+// Candidate memory/edit files reference this newly exported helper. Their
+// learning and edit paths are not executed by this driver. This definition
+// preserves the historical index's existing lowercase source equivalence.
+func SameVocabularySource(a, b string) bool { return strings.ToLower(a) == strings.ToLower(b) }
+
+func (v *Vocabulary) TermsForSources(limit int, sources ...string) []string {
+	if limit != MaxRecallTerms || len(sources) != 2 {
+		panic("historical adapter requires two sources and the production term cap")
+	}
+	source, previous := sources[0], sources[1]
+	recalled := v.Terms(source, MaxRecallTerms)
+	if previous != "" {
+		for _, term := range v.Terms(previous, MaxRecallTerms) {
+			if len(recalled) == MaxRecallTerms {
+				break
+			}
+			if !slices.Contains(recalled, term) {
+				recalled = append(recalled, term)
+			}
+		}
+	}
+	return recalled
+}

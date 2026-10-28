@@ -39,6 +39,7 @@ Research separates **observed shipped artifacts**, **static inferences**, **vend
 - [Keyboard and voice vocabulary sharing](keyboard-voice-lexicon.md) — Doubao user-word hotwords, Chatterfly input-history ASR context and personal voice terms in typing candidates, with exact version and static limits.
 - [Keyboard and voice vocabulary practice/evaluation plan](keyboard-voice-lexicon-plan.md) — proposed shared personal terms, encrypted native bridge, causal ablations, held-out enrollment, performance/load/endurance tests, native acceptance and adoption gates.
 - [Learning from corrections](edit-learning.md) — how Typeless, Doubao and Chatterfly detect a user's fix of dictated text, store it and recall it.
+- [Type4Me vocabulary comparison](type4me-vocabulary.md) — pinned source evidence for grouped correction aliases, separate ASR hotwords, pre-LLM replacement and Arion's atomic edits with canonical-only recall.
 - [Recognition-stage correction memory](user-modify-asr.md) — Qwen3-ASR-1.7B context interfaces, MLX/sherpa feasibility, known Doubao matching limits and a measured five-arm audio-stage diagnostic.
 - [Recognition memory optimization](user-modify-asr-optimization.md) — contextual-ASR papers, correction-pair failure hypotheses, compact term retrieval and measured original-audio re-decoding on a frozen new test.
 - [Closed-loop memory and contextual disambiguation](closed-loop-memory.md) — user feedback papers, empty-vault acquisition/reload/audio evaluation, ordinary-word ambiguity, OCR-to-prompt limits and retrieved pronunciation examples.

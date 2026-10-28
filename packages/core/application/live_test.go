@@ -45,7 +45,7 @@ func (r *segmentRecognizer) Close() error { r.closed.Store(true); return nil }
 
 type segmentFactory struct{ r *segmentRecognizer }
 
-func (f segmentFactory) NewRecognizer(context.Context, contracts.Identity) (ports.Recognizer, error) {
+func (f segmentFactory) NewRecognizer(context.Context, ports.RecognitionRequest) (ports.Recognizer, error) {
 	return f.r, nil
 }
 

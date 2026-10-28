@@ -1,0 +1,3 @@
+# arion.local/core/domain
+./benchmarks/runs/vocabulary-alignment-v1/recall-02/sources/packages/core/domain/memory.go:157:42: undefined: SameVocabularySource
+./benchmarks/runs/vocabulary-alignment-v1/recall-02/sources/packages/core/domain/vocabulary_edit.go:32:7: undefined: SameVocabularySource

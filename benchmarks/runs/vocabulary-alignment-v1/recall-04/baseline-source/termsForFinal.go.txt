@@ -1,0 +1,17 @@
+func (p RewritePolicy) termsForFinal(source, previous string) []string {
+	recalled := p.Vocabulary.Terms(source, domain.MaxRecallTerms)
+	if previous != "" {
+		for _, term := range p.Vocabulary.Terms(previous, domain.MaxRecallTerms) {
+			if len(recalled) == domain.MaxRecallTerms {
+				break
+			}
+			if !slices.Contains(recalled, term) {
+				recalled = append(recalled, term)
+			}
+		}
+	}
+	if len(recalled) == 0 {
+		return p.Terms
+	}
+	return append(slices.Clone(p.Terms), recalled...)
+}

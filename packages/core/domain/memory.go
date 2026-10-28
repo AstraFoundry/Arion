@@ -2,7 +2,6 @@ package domain
 
 import (
 	"sort"
-	"strings"
 	"time"
 )
 
@@ -33,6 +32,8 @@ type MemoryEntry struct {
 	From   string
 	To     string
 	Origin MemoryOrigin
+	// Hotword preserves canonical ASR eligibility when a learned pair is approved.
+	Hotword bool
 	// Uses counts the edits that taught this entry; Recalls counts the
 	// dictations it corrected.
 	Uses    int
@@ -85,7 +86,7 @@ func Learn(entries []MemoryEntry, pair Replacement, id string, now time.Time) ([
 			return out, LearnResult{Outcome: LearnReplaced, Entry: out[i]}
 		}
 	}
-	entry := MemoryEntry{ID: id, From: pair.From, To: pair.To, Origin: OriginEdit, Uses: 1, Created: now, Used: now}
+	entry := MemoryEntry{ID: id, From: pair.From, To: pair.To, Origin: OriginEdit, Hotword: true, Uses: 1, Created: now, Used: now}
 	return append(out, entry), LearnResult{Outcome: LearnAdded, Entry: entry}
 }
 
@@ -149,11 +150,12 @@ func PruneMemory(entries []MemoryEntry, now time.Time) []MemoryEntry {
 func Replacements(entries []MemoryEntry) []Replacement {
 	out := make([]Replacement, 0, len(entries))
 	for _, e := range entries {
-		out = append(out, Replacement{From: e.From, To: e.To})
+		if e.From != "" {
+			out = append(out, Replacement{From: e.From, To: e.To})
+		}
 	}
 	return out
 }
 
-// sameText compares Froms as the vocabulary matches them: Latin
-// case-insensitively, everything else exactly.
-func sameText(a, b string) bool { return strings.EqualFold(a, b) }
+// sameText uses the same source equivalence as replacement and recall.
+func sameText(a, b string) bool { return SameVocabularySource(a, b) }

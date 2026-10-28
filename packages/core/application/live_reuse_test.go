@@ -133,7 +133,7 @@ func TestFinalRetainsApprovedMemoryFromRecognizedEarlierSource(t *testing.T) {
 		t.Fatal("final request cancelled")
 	}
 	final := w.requests[0]
-	if final.PreviousText != "Check Chatterfly" || len(final.Terms) != 1 || final.Terms[0] != "Chapter fly → Chatterfly" || !final.Context.Empty() {
+	if final.PreviousText != "Check Chatterfly" || len(final.Terms) != 1 || final.Terms[0] != "Chatterfly" || !final.Context.Empty() {
 		t.Fatalf("approved memory was lost: %+v", final)
 	}
 }
@@ -148,7 +148,7 @@ func TestFinalVocabularyRecallDeduplicatesAndBoundsBothSources(t *testing.T) {
 	}
 	p := RewritePolicy{Terms: []string{"fixed approved term"}, Vocabulary: domain.NewVocabulary(replacements)}
 	terms := p.termsForFinal("AlphaBrand", "AlphaBrand BetaBrand GammaBrand DeltaBrand EpsilonBrand ZetaBrand EtaBrand ThetaBrand IotaBrand KappaBrand")
-	if len(terms) != domain.MaxRecallTerms+1 || terms[0] != p.Terms[0] || terms[1] != "alpha → AlphaBrand" {
+	if len(terms) != domain.MaxRecallTerms+1 || terms[0] != p.Terms[0] || terms[1] != "AlphaBrand" {
 		t.Fatalf("unexpected recall order or budget: %q", terms)
 	}
 	seen := map[string]bool{}
@@ -160,5 +160,16 @@ func TestFinalVocabularyRecallDeduplicatesAndBoundsBothSources(t *testing.T) {
 	}
 	if untouched := p.termsForFinal("unrelated", "invented model noun"); len(untouched) != 1 || untouched[0] != p.Terms[0] {
 		t.Fatalf("unapproved noun became memory: %q", untouched)
+	}
+}
+
+func TestFinalVocabularyAliasesShareBudgetAcrossRecognitionSources(t *testing.T) {
+	p := RewritePolicy{Vocabulary: domain.NewVocabulary([]domain.Replacement{
+		{From: "cloud code", To: "Claude Code"}, {From: "clod code", To: "Claude Code"},
+		{From: "阿里昂", To: "Arion"},
+	})}
+	got := p.termsForFinal("cloud code", "clod code 阿里昂")
+	if len(got) != 2 || got[0] != "Claude Code" || got[1] != "Arion" {
+		t.Fatalf("aliases consumed context budget: %q", got)
 	}
 }

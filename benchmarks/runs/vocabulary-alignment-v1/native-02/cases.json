@@ -1,0 +1,146 @@
+[
+  {
+    "id": "vocabulary-alias-latin",
+    "scene": "chat",
+    "preview": "Open Claude Code.",
+    "final": "Open Claude Code.",
+    "screen": "",
+    "terms": [
+      "Claude Code"
+    ],
+    "previousText": "",
+    "pairKind": "controlled-vocabulary-production-recall-observation",
+    "sourceEvidence": {
+      "inputID": "alias-latin",
+      "observationFile": "candidate.jsonl",
+      "observationSha256": "6f504dc53d969a49040b9ed97a8aaa55e8c17d48195d98dfdd6063433cc96fa1",
+      "limitations": "Synthetic text input; preview and final both use observed production correction, terms use actual recall, prior uses original input. No evaluator labels used. No ASR or natural-speech evidence."
+    }
+  },
+  {
+    "id": "vocabulary-alias-second",
+    "scene": "chat",
+    "preview": "Open Claude Code.",
+    "final": "Open Claude Code.",
+    "screen": "",
+    "terms": [
+      "Claude Code"
+    ],
+    "previousText": "",
+    "pairKind": "controlled-vocabulary-production-recall-observation",
+    "sourceEvidence": {
+      "inputID": "alias-second",
+      "observationFile": "candidate.jsonl",
+      "observationSha256": "00d71e902273f04a3ab9d153143b919c2262c381f6e45cfa7b414bf325bf966d",
+      "limitations": "Synthetic text input; preview and final both use observed production correction, terms use actual recall, prior uses original input. No evaluator labels used. No ASR or natural-speech evidence."
+    }
+  },
+  {
+    "id": "vocabulary-alias-cjk",
+    "scene": "chat",
+    "preview": "打开Claude Code。",
+    "final": "打开Claude Code。",
+    "screen": "",
+    "terms": [
+      "Claude Code"
+    ],
+    "previousText": "",
+    "pairKind": "controlled-vocabulary-production-recall-observation",
+    "sourceEvidence": {
+      "inputID": "alias-cjk",
+      "observationFile": "candidate.jsonl",
+      "observationSha256": "822f4dbbaeb49d2d5a06a0c808ae8343c690a1e4daa4abd11280ea30e05490a3",
+      "limitations": "Synthetic text input; preview and final both use observed production correction, terms use actual recall, prior uses original input. No evaluator labels used. No ASR or natural-speech evidence."
+    }
+  },
+  {
+    "id": "vocabulary-canonical-already-correct",
+    "scene": "chat",
+    "preview": "Open Claude Code.",
+    "final": "Open Claude Code.",
+    "screen": "",
+    "terms": [
+      "Claude Code"
+    ],
+    "previousText": "",
+    "pairKind": "controlled-vocabulary-production-recall-observation",
+    "sourceEvidence": {
+      "inputID": "canonical-already-correct",
+      "observationFile": "candidate.jsonl",
+      "observationSha256": "504ec3b97084ca5573fadc6a21e1c996612b49268ebfa57d30b0cf3933f976d9",
+      "limitations": "Synthetic text input; preview and final both use observed production correction, terms use actual recall, prior uses original input. No evaluator labels used. No ASR or natural-speech evidence."
+    }
+  },
+  {
+    "id": "vocabulary-unrelated",
+    "scene": "chat",
+    "preview": "Keep the original wording.",
+    "final": "Keep the original wording.",
+    "screen": "",
+    "terms": [],
+    "previousText": "",
+    "pairKind": "controlled-vocabulary-production-recall-observation",
+    "sourceEvidence": {
+      "inputID": "unrelated",
+      "observationFile": "candidate.jsonl",
+      "observationSha256": "83203a2c1b866ac4c31763a886ef78b21cc777ad43ea6d80d2f532f696ecf0b3",
+      "limitations": "Synthetic text input; preview and final both use observed production correction, terms use actual recall, prior uses original input. No evaluator labels used. No ASR or natural-speech evidence."
+    }
+  },
+  {
+    "id": "vocabulary-previous-alias",
+    "scene": "chat",
+    "preview": "Check the result.",
+    "final": "Check the result.",
+    "screen": "",
+    "terms": [
+      "Claude Code"
+    ],
+    "previousText": "clod code",
+    "pairKind": "controlled-vocabulary-production-recall-observation",
+    "sourceEvidence": {
+      "inputID": "previous-alias",
+      "observationFile": "candidate.jsonl",
+      "observationSha256": "2f0203e6c85088d8a5f5ef00602f4dadc5b586ef91914c8be3579c0b2c46f462",
+      "limitations": "Synthetic text input; preview and final both use observed production correction, terms use actual recall, prior uses original input. No evaluator labels used. No ASR or natural-speech evidence."
+    }
+  },
+  {
+    "id": "vocabulary-cross-source-dedup",
+    "scene": "chat",
+    "preview": "Open Claude Code.",
+    "final": "Open Claude Code.",
+    "screen": "",
+    "terms": [
+      "Claude Code",
+      "Arion"
+    ],
+    "previousText": "clod code 阿里昂",
+    "pairKind": "controlled-vocabulary-production-recall-observation",
+    "sourceEvidence": {
+      "inputID": "cross-source-dedup",
+      "observationFile": "candidate.jsonl",
+      "observationSha256": "8d426a750c135882a15d92beaf97c6f893dd53281536232b1269b89ffb2fdfa6",
+      "limitations": "Synthetic text input; preview and final both use observed production correction, terms use actual recall, prior uses original input. No evaluator labels used. No ASR or natural-speech evidence."
+    }
+  },
+  {
+    "id": "vocabulary-large-2000",
+    "scene": "chat",
+    "preview": "打开Claude Code，测试Arion。",
+    "final": "打开Claude Code，测试Arion。",
+    "screen": "",
+    "terms": [
+      "Claude Code",
+      "Arion"
+    ],
+    "previousText": "",
+    "pairKind": "controlled-vocabulary-production-recall-observation",
+    "sourceEvidence": {
+      "inputID": "large-2000",
+      "observationFile": "candidate.jsonl",
+      "observationSha256": "4559250518c6003ed7de8df3b669e0a489f8091c626e498e69dc727aa20c159e",
+      "limitations": "Synthetic text input; preview and final both use observed production correction, terms use actual recall, prior uses original input. No evaluator labels used. No ASR or natural-speech evidence."
+    }
+  }
+]

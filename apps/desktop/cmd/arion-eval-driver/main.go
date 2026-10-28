@@ -253,8 +253,8 @@ type timedFactory struct {
 	t     *timing
 }
 
-func (f timedFactory) NewRecognizer(ctx context.Context, id contracts.Identity) (ports.Recognizer, error) {
-	r, err := f.inner.NewRecognizer(ctx, id)
+func (f timedFactory) NewRecognizer(ctx context.Context, request ports.RecognitionRequest) (ports.Recognizer, error) {
+	r, err := f.inner.NewRecognizer(ctx, request)
 	if err != nil {
 		return nil, err
 	}

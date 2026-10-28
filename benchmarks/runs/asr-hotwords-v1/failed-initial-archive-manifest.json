@@ -1,0 +1,1797 @@
+{
+  "version": 1,
+  "kind": "arion-benchmark-archive",
+  "status": "complete",
+  "historicalRoot": "/Users/steven/code/Arion",
+  "entries": [
+    {
+      "source": "benchmarks/corpora/asr-hotwords-v1/evaluation.json",
+      "destination": "benchmarks/corpora/asr-hotwords-v1/evaluation.json",
+      "sha256": "58bbfb8dc4fd695f3b4fbbb929cbc17e6424eab9210844f6d275cb74097c876d",
+      "bytes": 19434
+    },
+    {
+      "source": "benchmarks/corpora/asr-hotwords-v1/requests.json",
+      "destination": "benchmarks/corpora/asr-hotwords-v1/requests.json",
+      "sha256": "c8b025354cf060fab96ff783982f6c46e6cbb5744f168385ae2f71d0fcb3cd3e",
+      "bytes": 12303
+    },
+    {
+      "source": "benchmarks/corpora/asr-hotwords-v1/sensitive-isolation-requests.json",
+      "destination": "benchmarks/corpora/asr-hotwords-v1/sensitive-isolation-requests.json",
+      "sha256": "67a80fa31bd0a579e59dfb4370cd83143aee9daffb96f7db443edd20de75e079",
+      "bytes": 1269
+    },
+    {
+      "source": "benchmarks/corpora/asr-v1/audio/aishell-BAC009S0766W0137.wav",
+      "destination": "benchmarks/corpora/asr-v1/audio/aishell-BAC009S0766W0137.wav",
+      "sha256": "8bc76e3746211962d65b47cfff79c6f18f6750b2cf1bfaf611330798495d11eb",
+      "bytes": 125708
+    },
+    {
+      "source": "benchmarks/corpora/asr-v1/audio/libri-3081-166546-0006.wav",
+      "destination": "benchmarks/corpora/asr-v1/audio/libri-3081-166546-0006.wav",
+      "sha256": "7fbd2304dafd34123c6d8ea16b3d79f681edda85dbc8560519729d277b079b5c",
+      "bytes": 120844
+    },
+    {
+      "source": "benchmarks/corpora/asr-v1/audio/nonspeech-dev-0.wav",
+      "destination": "benchmarks/corpora/asr-v1/audio/nonspeech-dev-0.wav",
+      "sha256": "20eaebffe1816e0ffa6f7f854f5ef4ea80d5349faaf0ce1fec1b713e7fde58fa",
+      "bytes": 64044
+    },
+    {
+      "source": "benchmarks/corpora/asr-v1/audio/tts-dev-04-flo.wav",
+      "destination": "benchmarks/corpora/asr-v1/audio/tts-dev-04-flo.wav",
+      "sha256": "dd80fe379c710751b6cab9705a13574de726091ef3465260422791e0497fd194",
+      "bytes": 109048
+    },
+    {
+      "source": "benchmarks/corpora/asr-v1/audio/tts-dev-12-eddy.wav",
+      "destination": "benchmarks/corpora/asr-v1/audio/tts-dev-12-eddy.wav",
+      "sha256": "0b9d404e574a0fb0022529ae64ed3f9fbeec6432beaa5fff88a555d9c324d402",
+      "bytes": 94200
+    },
+    {
+      "source": "benchmarks/corpora/asr-v1/audio/tts-dev-22-flo.wav",
+      "destination": "benchmarks/corpora/asr-v1/audio/tts-dev-22-flo.wav",
+      "sha256": "b7ba333c55e8e1b7b7c6a3adcb1de2e265ba3f27f55d51adae4cd3724a5f277c",
+      "bytes": 101696
+    },
+    {
+      "source": "benchmarks/corpora/asr-v1/audio/tts-train-00-grandpa.wav",
+      "destination": "benchmarks/corpora/asr-v1/audio/tts-train-00-grandpa.wav",
+      "sha256": "b5123c7bae57b825518a5037d056fb51cdf7bbb9d88e5f0a47a2f8682f6d2051",
+      "bytes": 131572
+    },
+    {
+      "source": "benchmarks/corpora/asr-v1/audio/tts-train-01-grandpa.wav",
+      "destination": "benchmarks/corpora/asr-v1/audio/tts-train-01-grandpa.wav",
+      "sha256": "5b09ad0149ccc0dde5b086f4268772e32ee45c4303dd529052860945741609f9",
+      "bytes": 95558
+    },
+    {
+      "source": "benchmarks/corpora/asr-v1/corpus.json",
+      "destination": "benchmarks/corpora/asr-v1/corpus.json",
+      "sha256": "a5d92468ac0c1ac740cf9685628d1d1c6540f70f4ace2d11c189bd7f78fee371",
+      "bytes": 142393
+    },
+    {
+      "source": "benchmarks/corpora/asr-window-v1/corpus.json",
+      "destination": "benchmarks/corpora/asr-window-v1/corpus.json",
+      "sha256": "277932f9d489a86bc4d6e814caaa0393b1db02bae4852bb8ecaf4b9930dfadfb",
+      "bytes": 7499
+    },
+    {
+      "source": "benchmarks/corpora/asr-window-v1/ocr-work-term.wav",
+      "destination": "benchmarks/corpora/asr-window-v1/ocr-work-term.wav",
+      "sha256": "2424fd6203bfed0fc6264371d6334314cee209e22ab9c8d4dca524c5f3b97158",
+      "bytes": 142300
+    },
+    {
+      "source": "benchmarks/corpora/user-modify-asr-v2/dev/arion-a.wav",
+      "destination": "benchmarks/corpora/user-modify-asr-v2/dev/arion-a.wav",
+      "sha256": "cba6cdecf5ece0eaa3918f8ce255ec28594d0c2f58ab588e4207d2fc7e5f81c1",
+      "bytes": 76034
+    },
+    {
+      "source": "benchmarks/corpora/user-modify-asr-v2/dev/codex-a.wav",
+      "destination": "benchmarks/corpora/user-modify-asr-v2/dev/codex-a.wav",
+      "sha256": "5423ffc57e83bd5e00a53137e64033b0e7c30889af2cf85ee28eb9528941891d",
+      "bytes": 83778
+    },
+    {
+      "source": "benchmarks/corpora/user-modify-asr-v2/dev/corpus.json",
+      "destination": "benchmarks/corpora/user-modify-asr-v2/dev/corpus.json",
+      "sha256": "fc19a31064627c97b5642f9acdbe96c0ccf2bad14786329a3cf12558a6137231",
+      "bytes": 18103
+    },
+    {
+      "source": "benchmarks/corpora/user-modify-asr-v2/dev/github-a.wav",
+      "destination": "benchmarks/corpora/user-modify-asr-v2/dev/github-a.wav",
+      "sha256": "720e169a90e7e85a78b4e3d75887da5e2f614765d75a3929062352e7db31626f",
+      "bytes": 72524
+    },
+    {
+      "source": "benchmarks/corpora/user-modify-asr-v2/dev/memory.json",
+      "destination": "benchmarks/corpora/user-modify-asr-v2/dev/memory.json",
+      "sha256": "919a3284bbe9dddb61026980c1c7f511ccfb1ef3894e72519028fe9bc90beab9",
+      "bytes": 3676
+    },
+    {
+      "source": "benchmarks/corpora/user-modify-asr-v2/dev/mygo-a.wav",
+      "destination": "benchmarks/corpora/user-modify-asr-v2/dev/mygo-a.wav",
+      "sha256": "537bbbfa56ab2ca2fc56072753aa4d5aa99907b91a32879300e82341f2bb955a",
+      "bytes": 76940
+    },
+    {
+      "source": "benchmarks/corpora/user-modify-asr-v2/dev/openai-a.wav",
+      "destination": "benchmarks/corpora/user-modify-asr-v2/dev/openai-a.wav",
+      "sha256": "a1fd05cb11d34fc38ba37e72e0f686795767e26d2bcc5745037b04addcb84197",
+      "bytes": 78174
+    },
+    {
+      "source": "benchmarks/corpora/user-modify-asr-v2/dev/ordinary-en.wav",
+      "destination": "benchmarks/corpora/user-modify-asr-v2/dev/ordinary-en.wav",
+      "sha256": "ebc47292714395bcdc4c832f211acc5149ddcc8c58e4f06e0c4d220efff1e395",
+      "bytes": 66518
+    },
+    {
+      "source": "benchmarks/corpora/user-modify-asr-v2/dev/ordinary-zh.wav",
+      "destination": "benchmarks/corpora/user-modify-asr-v2/dev/ordinary-zh.wav",
+      "sha256": "ff857d2028a9e9b8df9482f617e5af23f8dcec40d9cec8eb24c2ca8181a02a74",
+      "bytes": 93086
+    },
+    {
+      "source": "benchmarks/corpora/user-modify-asr-v2/dev/redis-a.wav",
+      "destination": "benchmarks/corpora/user-modify-asr-v2/dev/redis-a.wav",
+      "sha256": "66e5633cd432d88269579bb64bafba33f5918b60ecb9fc5061d2d6999ab51a9c",
+      "bytes": 66936
+    },
+    {
+      "source": "benchmarks/corpora/user-modify-asr-v2/dev/sequel-a.wav",
+      "destination": "benchmarks/corpora/user-modify-asr-v2/dev/sequel-a.wav",
+      "sha256": "254207e67f3746b6906591f8dbfa2e212ef287c191972bb37a9282ab8d570a05",
+      "bytes": 72168
+    },
+    {
+      "source": "benchmarks/corpora/user-modify-asr-v2/dev/sofa-a.wav",
+      "destination": "benchmarks/corpora/user-modify-asr-v2/dev/sofa-a.wav",
+      "sha256": "d9dd21e7b9c564261cd78d350d1e60fd05f72bab3a5fee0d7575b3bb65e32b9e",
+      "bytes": 64824
+    },
+    {
+      "source": "benchmarks/reproduction/asr-hotwords-v1/README.md",
+      "destination": "benchmarks/reproduction/asr-hotwords-v1/README.md",
+      "sha256": "344dc643bc904ec86c58fb3e4cc9331b33e3fe5046c391590d042402dbffd26c",
+      "bytes": 4786
+    },
+    {
+      "source": "benchmarks/reproduction/asr-hotwords-v1/driver.go",
+      "destination": "benchmarks/reproduction/asr-hotwords-v1/driver.go",
+      "sha256": "977af7b0334918e02701c86697dee7bc172940f2948559a654f68ad3bcf72cfb",
+      "bytes": 2368
+    },
+    {
+      "source": "benchmarks/reproduction/asr-hotwords-v1/freeze.py",
+      "destination": "benchmarks/reproduction/asr-hotwords-v1/freeze.py",
+      "sha256": "d70104d9528a8bf551243b3d4d388c0cbec480a8dc3ea5727eb5fac3ab1620a9",
+      "bytes": 2012
+    },
+    {
+      "source": "benchmarks/reproduction/asr-hotwords-v1/report.mjs",
+      "destination": "benchmarks/reproduction/asr-hotwords-v1/report.mjs",
+      "sha256": "9f7320ad4e04b45a0f369f73d591c803e776cae252e92903d710c023dbc4978f",
+      "bytes": 7676
+    },
+    {
+      "source": "benchmarks/reproduction/asr-hotwords-v1/report.test.mjs",
+      "destination": "benchmarks/reproduction/asr-hotwords-v1/report.test.mjs",
+      "sha256": "d9708edbd212d4176d279eb601f99b7c4e0fa04ae321a5e1f8d11c6347761d15",
+      "bytes": 2167
+    },
+    {
+      "source": "benchmarks/reproduction/asr-hotwords-v1/run.py",
+      "destination": "benchmarks/reproduction/asr-hotwords-v1/run.py",
+      "sha256": "4f53b9759c15dbf88f7cc11500ec065cba18a865927d4ddce0a99f998ce492e1",
+      "bytes": 5272
+    },
+    {
+      "source": "benchmarks/reproduction/asr-hotwords-v1/runtime-smoke/Package.resolved",
+      "destination": "benchmarks/reproduction/asr-hotwords-v1/runtime-smoke/Package.resolved",
+      "sha256": "d5f96c540c2494b60ec1564d35e854e6e665ced1f631692c873f14b638cbf1c5",
+      "bytes": 3094
+    },
+    {
+      "source": "benchmarks/reproduction/asr-hotwords-v1/runtime-smoke/Package.swift",
+      "destination": "benchmarks/reproduction/asr-hotwords-v1/runtime-smoke/Package.swift",
+      "sha256": "48be79def28cbd57e39d3d94a92623ed02e4a4f823f09c3c9eac0ebfd6d16b3b",
+      "bytes": 564
+    },
+    {
+      "source": "benchmarks/reproduction/asr-hotwords-v1/runtime-smoke/README.md",
+      "destination": "benchmarks/reproduction/asr-hotwords-v1/runtime-smoke/README.md",
+      "sha256": "eeb6ba9ab786ec7c868df2e1e49225b6f6a2a300613ed58e49a59cb1110994b8",
+      "bytes": 3297
+    },
+    {
+      "source": "benchmarks/reproduction/asr-hotwords-v1/runtime-smoke/Worker.swift",
+      "destination": "benchmarks/reproduction/asr-hotwords-v1/runtime-smoke/Worker.swift",
+      "sha256": "d6b330c63de40d84c373df98c136b8d9868d907e2fde8220c48ff1e6ec47b766",
+      "bytes": 6647
+    },
+    {
+      "source": "benchmarks/reproduction/asr-hotwords-v1/runtime-smoke/original-check.py",
+      "destination": "benchmarks/reproduction/asr-hotwords-v1/runtime-smoke/original-check.py",
+      "sha256": "1af9e7008636a89d04b94e815c6486d950ee0d13cea5733955d59b046bc9ea5a",
+      "bytes": 2020
+    },
+    {
+      "source": "benchmarks/reproduction/asr-hotwords-v1/runtime-smoke/replay.py",
+      "destination": "benchmarks/reproduction/asr-hotwords-v1/runtime-smoke/replay.py",
+      "sha256": "04db74977a1a3461b38eff58c82e98f3e52d31bd4f8515612c4727ed4f4ccc26",
+      "bytes": 6166
+    },
+    {
+      "source": "benchmarks/reproduction/asr-hotwords-v1/runtime-smoke/verify.py",
+      "destination": "benchmarks/reproduction/asr-hotwords-v1/runtime-smoke/verify.py",
+      "sha256": "0457c3c23fded5fa977870cb184268f3501a553e2a5105e59cee2fcba884ce8f",
+      "bytes": 2276
+    },
+    {
+      "source": "benchmarks/reproduction/asr-hotwords-v1/verify.mjs",
+      "destination": "benchmarks/reproduction/asr-hotwords-v1/verify.mjs",
+      "sha256": "a069ae4e3a54ebe640f813bb0669278adc85b1e87e88140e92688f27feab816b",
+      "bytes": 1711
+    },
+    {
+      "source": "benchmarks/results/asr-hotwords-v1/README.md",
+      "destination": "benchmarks/results/asr-hotwords-v1/README.md",
+      "sha256": "e98134d1b8864bc480e2ff5b856b6b84b5bf79aa5232243f23d71a7bcda49625",
+      "bytes": 4889
+    },
+    {
+      "source": "benchmarks/results/asr-hotwords-v1/implementation-acceptance.md",
+      "destination": "benchmarks/results/asr-hotwords-v1/implementation-acceptance.md",
+      "sha256": "54af21d2692e44b9ee0567220c8524028926d372dbe4cc5f4873adf029c4f4b1",
+      "bytes": 3326
+    },
+    {
+      "source": "benchmarks/results/asr-hotwords-v1/summary.json",
+      "destination": "benchmarks/results/asr-hotwords-v1/summary.json",
+      "sha256": "a6f7eda98831fbf7978156693d650fa5d7dc491685c06816ab4b16950676db0f",
+      "bytes": 27236
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/environment-supplement.json",
+      "destination": "benchmarks/runs/asr-hotwords-v1/environment-supplement.json",
+      "sha256": "929906f27bd7c651304ddc4bdc487c1fd1da2145cd5651864321d9faaec4360c",
+      "bytes": 746
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-build.json",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-build.json",
+      "sha256": "a7ba7103b594916dfa4506c52c1625831ef660138a10fc3252fc4eb585de0e74",
+      "bytes": 400
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/raw.jsonl",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/raw.jsonl",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/run.json",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/run.json",
+      "sha256": "1d253c4bb46a8c97bcdfe1c37b2fbebf5c844818b83ca51d4cbacc4401a73b30",
+      "bytes": 61344
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/apps/desktop/go.mod",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/apps/desktop/go.mod",
+      "sha256": "526257d8665af6ca0b5eb33cdf24956ff8b4960075cc666c8ed558e9c5a56768",
+      "bytes": 686
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/apps/desktop/go.sum",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/apps/desktop/go.sum",
+      "sha256": "1867938ba692869b6ff07c9dc8a730be8ce1b3514088009378e7603f43611881",
+      "bytes": 2848
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/apps/desktop/infrastructure/asr/device_unix.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/apps/desktop/infrastructure/asr/device_unix.go",
+      "sha256": "ddcf634aea2766bbe9d62fe2fe85204ac80fad2d79a41814b215de8fe19d3f46",
+      "bytes": 182
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/apps/desktop/infrastructure/asr/device_windows.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/apps/desktop/infrastructure/asr/device_windows.go",
+      "sha256": "5db5e7493399778723b2ac97684abe1f6c95ef69559f3bde519ac143d3091abf",
+      "bytes": 440
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/apps/desktop/infrastructure/asr/hotwords_test.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/apps/desktop/infrastructure/asr/hotwords_test.go",
+      "sha256": "6d471d4b2fbf7cbb1955707b8dbf8371ad2476371b69e57746ce77142fdac90e",
+      "bytes": 3706
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/apps/desktop/infrastructure/asr/lifecycle_test.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/apps/desktop/infrastructure/asr/lifecycle_test.go",
+      "sha256": "5cd5732821e895c1ec9c44cf302d148f7ad0d699f984f29abc46e55ecc3614d2",
+      "bytes": 14217
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/apps/desktop/infrastructure/asr/process_unix.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/apps/desktop/infrastructure/asr/process_unix.go",
+      "sha256": "c937ef2fd6a7b1d89bbd1df69fe2096f24db043d023561dd4a069250ad337ae9",
+      "bytes": 283
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/apps/desktop/infrastructure/asr/process_windows.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/apps/desktop/infrastructure/asr/process_windows.go",
+      "sha256": "bdf66f0afece840b27f72f0d9753ce2401989d69ff1d16c72eb826e3355b794c",
+      "bytes": 341
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/apps/desktop/infrastructure/asr/qwen.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/apps/desktop/infrastructure/asr/qwen.go",
+      "sha256": "ec5c44fb867f83e4762e6fe0a6c2360e713e6ff56cbe290a5b4e0db7b990039c",
+      "bytes": 721
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/apps/desktop/infrastructure/asr/qwen_test.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/apps/desktop/infrastructure/asr/qwen_test.go",
+      "sha256": "1b8e8810b0160107afe3d83011f843d21ff49f82b2c8701ba2b35ba139d8abd9",
+      "bytes": 1132
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/apps/desktop/infrastructure/asr/recognizer.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/apps/desktop/infrastructure/asr/recognizer.go",
+      "sha256": "f11c598ba02d8bf6cbefe165c5aebba91b4a0ea6c4be44bfee8ce4030e094b8c",
+      "bytes": 6784
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/apps/desktop/infrastructure/asr/segments.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/apps/desktop/infrastructure/asr/segments.go",
+      "sha256": "47c98a0f6009e6e9149c6d29fc3a576979356daedd5c05e012decea91bbcdf41",
+      "bytes": 871
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/apps/desktop/infrastructure/asr/worker.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/apps/desktop/infrastructure/asr/worker.go",
+      "sha256": "368225c524561028973dcfabd0aba98ab6e695dd92ab42ad69275f5eb0cc4c25",
+      "bytes": 11283
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/apps/desktop/infrastructure/asr/worker_test.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/apps/desktop/infrastructure/asr/worker_test.go",
+      "sha256": "db989f069ba3750c2a95bb9405b86de0c94937cbd18106dd1f28c910eb8438c5",
+      "bytes": 3915
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/apps/desktop/infrastructure/audio/capture.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/apps/desktop/infrastructure/audio/capture.go",
+      "sha256": "72e1c525e614a2662b5053124c373004ac933e1a5443f380bac35cd2a97584e1",
+      "bytes": 5330
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/apps/desktop/infrastructure/audio/replay.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/apps/desktop/infrastructure/audio/replay.go",
+      "sha256": "3af29ad68c0375fff8ea2b63d9ff045b7236a06cf50e0e4d521dcf1f1584fa8f",
+      "bytes": 4074
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/apps/desktop/infrastructure/audio/replay_test.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/apps/desktop/infrastructure/audio/replay_test.go",
+      "sha256": "326087dc2de0a14f531782da27b529a1941db574a50dc04ea9d72acce655ced4",
+      "bytes": 1293
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/apps/desktop/native/mlx-asr/Package.resolved",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/apps/desktop/native/mlx-asr/Package.resolved",
+      "sha256": "d5f96c540c2494b60ec1564d35e854e6e665ced1f631692c873f14b638cbf1c5",
+      "bytes": 3094
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/apps/desktop/native/mlx-asr/Package.swift",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/apps/desktop/native/mlx-asr/Package.swift",
+      "sha256": "48be79def28cbd57e39d3d94a92623ed02e4a4f823f09c3c9eac0ebfd6d16b3b",
+      "bytes": 564
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/apps/desktop/native/mlx-asr/Sources/ArionASR/Worker.swift",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/apps/desktop/native/mlx-asr/Sources/ArionASR/Worker.swift",
+      "sha256": "d6b330c63de40d84c373df98c136b8d9868d907e2fde8220c48ff1e6ec47b766",
+      "bytes": 6647
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/benchmarks/corpora/asr-hotwords-v1/evaluation.json",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/benchmarks/corpora/asr-hotwords-v1/evaluation.json",
+      "sha256": "58bbfb8dc4fd695f3b4fbbb929cbc17e6424eab9210844f6d275cb74097c876d",
+      "bytes": 19434
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/benchmarks/corpora/asr-hotwords-v1/requests.json",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/benchmarks/corpora/asr-hotwords-v1/requests.json",
+      "sha256": "c8b025354cf060fab96ff783982f6c46e6cbb5744f168385ae2f71d0fcb3cd3e",
+      "bytes": 12303
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/benchmarks/reproduction/asr-hotwords-v1/driver.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/benchmarks/reproduction/asr-hotwords-v1/driver.go",
+      "sha256": "977af7b0334918e02701c86697dee7bc172940f2948559a654f68ad3bcf72cfb",
+      "bytes": 2368
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/benchmarks/reproduction/asr-hotwords-v1/run.py",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/benchmarks/reproduction/asr-hotwords-v1/run.py",
+      "sha256": "a094308553c88ad1a63823dae370226f34a2f93f46a45c0f420dac33bdad31b0",
+      "bytes": 4862
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/go.work",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/go.work",
+      "sha256": "de039f4fc70f3fd7ec502fb95a252d42b983d3324123b7c2b56c6dddfd59f2d9",
+      "bytes": 99
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/models/catalog.json",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/models/catalog.json",
+      "sha256": "236d6bcab502c663bdb63f3489a99e69d0f44352a46d5d4ff2ddac0343e93ae5",
+      "bytes": 8691
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/contracts/contracts.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/contracts/contracts.go",
+      "sha256": "9883c9019ebe590844e0dbf5241c7774fbd03896aed3930068d5b6c436b6fa29",
+      "bytes": 4830
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/contracts/keyboard_ranking.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/contracts/keyboard_ranking.go",
+      "sha256": "8870a725eb5432bddb4eaffc398cbe0acf878854b378153d8e9b88f56d1903f8",
+      "bytes": 751
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/candidates.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/candidates.go",
+      "sha256": "73949da5f6e51de1c1e71a3d22cc4cdf6f04f56b9cd1bd5b0ceb3f7e7269208f",
+      "bytes": 1246
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/context.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/context.go",
+      "sha256": "d8c6b25b93135716a7f9c4181673519a95c2c610fb3c09bd3e72a8009036dec9",
+      "bytes": 5464
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/context_test.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/context_test.go",
+      "sha256": "6d23dbd9ed4cf9b4cf5a53da98f58694759d766f9fbf0a3646073fb914a773b3",
+      "bytes": 3691
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/correction.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/correction.go",
+      "sha256": "f71aa293b8a6ad401495612a8f765120a79faf973497e4dd6c769f8270455e36",
+      "bytes": 7743
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/correction_test.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/correction_test.go",
+      "sha256": "9b51f7d3a0d6befb3abcfcbefdb21a70212d4b96f50869a1105dc010dd80791d",
+      "bytes": 6044
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/dictation.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/dictation.go",
+      "sha256": "d6e84ba3423891d2d91125e0e7ac963ab0f62f343dcc0e8e5129101d6c9a5e96",
+      "bytes": 3445
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/dictation_test.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/dictation_test.go",
+      "sha256": "f403a06393d58c795815ea7f88c7c21c9a730b38c4452504f1835c35830cb4b1",
+      "bytes": 2771
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/errors.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/errors.go",
+      "sha256": "3771e7c29f7525d494ba3ef41e88ff58065b368c2dd6c668c6f652a5994479f6",
+      "bytes": 2996
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/errors_test.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/errors_test.go",
+      "sha256": "f437986e76f0a6ba9f9857b570a16fc0e4077a4d8d3ec3307346183142e9f43c",
+      "bytes": 952
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/hotwords.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/hotwords.go",
+      "sha256": "7f269a8ac6e813fa1a5bda5987cc6d57a510334860adc1db6596d65a50ce5e52",
+      "bytes": 3065
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/hotwords_test.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/hotwords_test.go",
+      "sha256": "00e859011a209d128c81e22baf718f209085279753414c793dcfbb629ca9d67c",
+      "bytes": 2534
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/invariants_test.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/invariants_test.go",
+      "sha256": "8244b5812a235a15564c4061dfaa818f08af375240332c8b6f91cf4500bafa2b",
+      "bytes": 1696
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/keyboard_ranking.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/keyboard_ranking.go",
+      "sha256": "77715e2adf2758d2c323e7342617834e96b806c5fb3a470f680f80563086d660",
+      "bytes": 1619
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/learning.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/learning.go",
+      "sha256": "684ae926095bef34f1f9bb3766d464aeff97c38fb80db347bdf5713a7f62da96",
+      "bytes": 12759
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/learning_test.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/learning_test.go",
+      "sha256": "e5f20ad37c5ed8d1d32fab6699d0fce26544732b3df418e6ba1fb75b1ded3d73",
+      "bytes": 10818
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/learning_words.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/learning_words.go",
+      "sha256": "743f7f7abf4b7b15198d049b59109c380ddd1efc3104bea5aaa6715ca68ae87e",
+      "bytes": 3900
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/memory.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/memory.go",
+      "sha256": "ecb1a367564e8e3be5780960630620fef29f1d5a65d017b79517a0aa62649843",
+      "bytes": 4992
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/modelselect.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/modelselect.go",
+      "sha256": "25266047f3e3891bdc46daf0a362e609315c9fc64595f661b0a2969e48540437",
+      "bytes": 6333
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/modelselect_test.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/modelselect_test.go",
+      "sha256": "01c42368999f6ff677f25b91172cea3b89535df19f791a92f7231f403b6707f3",
+      "bytes": 942
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/ports/diagnostics.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/ports/diagnostics.go",
+      "sha256": "ddd42781c9ecbc2dd33fad8bca4dd85a280c67f0b2c6f3cf057a9c7c1bed48e5",
+      "bytes": 1214
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/ports/keyboard_ranking.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/ports/keyboard_ranking.go",
+      "sha256": "ef595346e64a6a1c324ddc4a68f8b895b07bfd0404b67cdc20adc5dec9a3c42e",
+      "bytes": 277
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/ports/ports.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/ports/ports.go",
+      "sha256": "6a45c80d05552a6b17313b283fee57e3cdfe73396c7ed69c6854dc4d78d9c63d",
+      "bytes": 5108
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/punctuation.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/punctuation.go",
+      "sha256": "bbe5f24196641b0f62cd9fd533b16dfda292c75a3a95beeae3aab69b0cf0e28b",
+      "bytes": 2386
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/punctuation_test.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/punctuation_test.go",
+      "sha256": "d75614a50e8f9798e6d96a67901ed3e72b4088050b170ab4935438f0adf8dbdb",
+      "bytes": 2104
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/quotes.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/quotes.go",
+      "sha256": "fec70b2e226e7d5f3a306f32790b584bc8b48ba822cbab8341f8e3dbe05d6e11",
+      "bytes": 795
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/rewrite.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/rewrite.go",
+      "sha256": "7aa556587c8eb3a3992acc178cd7c9be93562b007c70dbe6ba8849faddc6711a",
+      "bytes": 11413
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/rewrite_delivery_test.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/rewrite_delivery_test.go",
+      "sha256": "b18cb53888bc1f67b5c68b6b0fd43e4d502b2fad9c84223c659fa963be6c6ebb",
+      "bytes": 1162
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/rewrite_fidelity.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/rewrite_fidelity.go",
+      "sha256": "bb08303a1043f74605f61b697e4f56047fe1950d1f080723ade469215bf1ea55",
+      "bytes": 1197
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/rewrite_test.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/rewrite_test.go",
+      "sha256": "af0fd70567101bbe18e0f481e995de37cf49fdddb368108cc23d64399cb8e0f0",
+      "bytes": 8885
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/scene.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/scene.go",
+      "sha256": "abe77a316d112d43752e9d345a74978341c12834024c667103d8992c1a027a7d",
+      "bytes": 11261
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/scene_test.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/scene_test.go",
+      "sha256": "14c817f528f1cc3aee0b2cd3d02c4ff57e2398d158e250a79f22af201b2020ba",
+      "bytes": 6594
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/session.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/session.go",
+      "sha256": "5320b7082d92da0c4f09b4d182dfe3e22ecd26c4cb8dbaaff56bc5e35245b167",
+      "bytes": 1366
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/speech_cleanup.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/speech_cleanup.go",
+      "sha256": "32d6aedd56f58c8e0fd363e9226d2eb868f24ddf794b34efcb89aa75f24b459e",
+      "bytes": 12222
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/speech_cleanup_test.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/speech_cleanup_test.go",
+      "sha256": "ffabf0830f06889db7621f05f5c7373b5a5e1ba0c2ebdc913edcfab666fd33b1",
+      "bytes": 9594
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/speech_repair.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/speech_repair.go",
+      "sha256": "ec5e1b11400f68a923b784aacfa268b443a96c17262c7285bafda6c6f9c6d14d",
+      "bytes": 10992
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/speech_repair_test.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/speech_repair_test.go",
+      "sha256": "a0089948ede61321cce184bde50882cf2361fd8abfe0bfcc286e47574e1f1dc1",
+      "bytes": 5483
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/spelling.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/spelling.go",
+      "sha256": "6c77fa728632440b9a4601da1577b5e9fe9a648aace8ed426379c10cc2d26a7d",
+      "bytes": 18644
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/spelling_compound_test.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/spelling_compound_test.go",
+      "sha256": "b8f3cee908139a20e623abf08579f7d7321a9b9a894c2976d1a95e88dddb3d81",
+      "bytes": 12455
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/terms.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/terms.go",
+      "sha256": "2799ef865d831728e8320a7c3c13c619165f56640a4f23034905cfb6dba1dd20",
+      "bytes": 3685
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/terms_test.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/terms_test.go",
+      "sha256": "3b271c64621e1804dfb3147f67c8d4d42f662fa014d8ac7f5ca8b8493a52384f",
+      "bytes": 927
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/usage.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/usage.go",
+      "sha256": "f2ebb6756acca1433cea17a630255015f0e15f316a432583b8d41469ac3243a4",
+      "bytes": 4110
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/usage_test.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/usage_test.go",
+      "sha256": "444dad4e35de7a0ee282e93f852d0752c81b41a663c01a374b7d152f66d5379b",
+      "bytes": 1938
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/vocabulary.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/vocabulary.go",
+      "sha256": "806923b57f241e178385a92fa7c3bca8cf38fa414019013c5badd12f6b92ba86",
+      "bytes": 5765
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/vocabulary_edit.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/vocabulary_edit.go",
+      "sha256": "c0faf2702617641bd4018b368ccb2e5792265d5c1b7ee883b114fd403eebf266",
+      "bytes": 1382
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/vocabulary_edit_test.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/vocabulary_edit_test.go",
+      "sha256": "8befa84bba2849e986bc3632d5bc48583e6d9eaf118d14391560f778060dc336",
+      "bytes": 2927
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/vocabulary_recall_test.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/domain/vocabulary_recall_test.go",
+      "sha256": "0609cbf68938ff3eae35756a01846b5c7fe0c9b1cbd64da3d9a0673bf7b5a5a8",
+      "bytes": 850
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/go.mod",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/source/packages/core/go.mod",
+      "sha256": "3e97a53127f313e259f8613754d512d2d7c970af0a118d435716ad3cdfc5a86f",
+      "bytes": 35
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/stderr.log",
+      "destination": "benchmarks/runs/asr-hotwords-v1/failed-sandbox-load/stderr.log",
+      "sha256": "54cf0fe95af94af7b3780fec6bf1300a551441e4de9866a84b50bf2c7d3f45bd",
+      "bytes": 42
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/raw.jsonl",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/raw.jsonl",
+      "sha256": "85772c2aa88a0ae8f8ba43f719d0bb041cbbf8000fa3fa443998715292efef86",
+      "bytes": 14298
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/run.json",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/run.json",
+      "sha256": "b9bdfcc7d8099a71151b66f3ff08c3cf2c7b9bab76eb2da9b7e2439f7d770de8",
+      "bytes": 61727
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/source/apps/desktop/go.mod",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/source/apps/desktop/go.mod",
+      "sha256": "526257d8665af6ca0b5eb33cdf24956ff8b4960075cc666c8ed558e9c5a56768",
+      "bytes": 686
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/source/apps/desktop/go.sum",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/source/apps/desktop/go.sum",
+      "sha256": "1867938ba692869b6ff07c9dc8a730be8ce1b3514088009378e7603f43611881",
+      "bytes": 2848
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/source/apps/desktop/infrastructure/asr/device_unix.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/source/apps/desktop/infrastructure/asr/device_unix.go",
+      "sha256": "ddcf634aea2766bbe9d62fe2fe85204ac80fad2d79a41814b215de8fe19d3f46",
+      "bytes": 182
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/source/apps/desktop/infrastructure/asr/device_windows.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/source/apps/desktop/infrastructure/asr/device_windows.go",
+      "sha256": "5db5e7493399778723b2ac97684abe1f6c95ef69559f3bde519ac143d3091abf",
+      "bytes": 440
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/source/apps/desktop/infrastructure/asr/hotwords_test.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/source/apps/desktop/infrastructure/asr/hotwords_test.go",
+      "sha256": "6d471d4b2fbf7cbb1955707b8dbf8371ad2476371b69e57746ce77142fdac90e",
+      "bytes": 3706
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/source/apps/desktop/infrastructure/asr/lifecycle_test.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/source/apps/desktop/infrastructure/asr/lifecycle_test.go",
+      "sha256": "5cd5732821e895c1ec9c44cf302d148f7ad0d699f984f29abc46e55ecc3614d2",
+      "bytes": 14217
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/source/apps/desktop/infrastructure/asr/process_unix.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/source/apps/desktop/infrastructure/asr/process_unix.go",
+      "sha256": "c937ef2fd6a7b1d89bbd1df69fe2096f24db043d023561dd4a069250ad337ae9",
+      "bytes": 283
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/source/apps/desktop/infrastructure/asr/process_windows.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/source/apps/desktop/infrastructure/asr/process_windows.go",
+      "sha256": "bdf66f0afece840b27f72f0d9753ce2401989d69ff1d16c72eb826e3355b794c",
+      "bytes": 341
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/source/apps/desktop/infrastructure/asr/qwen.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/source/apps/desktop/infrastructure/asr/qwen.go",
+      "sha256": "ec5c44fb867f83e4762e6fe0a6c2360e713e6ff56cbe290a5b4e0db7b990039c",
+      "bytes": 721
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/source/apps/desktop/infrastructure/asr/qwen_test.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/source/apps/desktop/infrastructure/asr/qwen_test.go",
+      "sha256": "1b8e8810b0160107afe3d83011f843d21ff49f82b2c8701ba2b35ba139d8abd9",
+      "bytes": 1132
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/source/apps/desktop/infrastructure/asr/recognizer.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/source/apps/desktop/infrastructure/asr/recognizer.go",
+      "sha256": "f11c598ba02d8bf6cbefe165c5aebba91b4a0ea6c4be44bfee8ce4030e094b8c",
+      "bytes": 6784
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/source/apps/desktop/infrastructure/asr/segments.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/source/apps/desktop/infrastructure/asr/segments.go",
+      "sha256": "47c98a0f6009e6e9149c6d29fc3a576979356daedd5c05e012decea91bbcdf41",
+      "bytes": 871
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/source/apps/desktop/infrastructure/asr/worker.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/source/apps/desktop/infrastructure/asr/worker.go",
+      "sha256": "368225c524561028973dcfabd0aba98ab6e695dd92ab42ad69275f5eb0cc4c25",
+      "bytes": 11283
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/source/apps/desktop/infrastructure/asr/worker_test.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/source/apps/desktop/infrastructure/asr/worker_test.go",
+      "sha256": "db989f069ba3750c2a95bb9405b86de0c94937cbd18106dd1f28c910eb8438c5",
+      "bytes": 3915
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/source/apps/desktop/infrastructure/audio/capture.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/source/apps/desktop/infrastructure/audio/capture.go",
+      "sha256": "72e1c525e614a2662b5053124c373004ac933e1a5443f380bac35cd2a97584e1",
+      "bytes": 5330
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/source/apps/desktop/infrastructure/audio/replay.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/source/apps/desktop/infrastructure/audio/replay.go",
+      "sha256": "3af29ad68c0375fff8ea2b63d9ff045b7236a06cf50e0e4d521dcf1f1584fa8f",
+      "bytes": 4074
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/source/apps/desktop/infrastructure/audio/replay_test.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/source/apps/desktop/infrastructure/audio/replay_test.go",
+      "sha256": "326087dc2de0a14f531782da27b529a1941db574a50dc04ea9d72acce655ced4",
+      "bytes": 1293
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/source/apps/desktop/native/mlx-asr/Package.resolved",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/source/apps/desktop/native/mlx-asr/Package.resolved",
+      "sha256": "d5f96c540c2494b60ec1564d35e854e6e665ced1f631692c873f14b638cbf1c5",
+      "bytes": 3094
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/source/apps/desktop/native/mlx-asr/Package.swift",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/source/apps/desktop/native/mlx-asr/Package.swift",
+      "sha256": "48be79def28cbd57e39d3d94a92623ed02e4a4f823f09c3c9eac0ebfd6d16b3b",
+      "bytes": 564
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/source/apps/desktop/native/mlx-asr/Sources/ArionASR/Worker.swift",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/source/apps/desktop/native/mlx-asr/Sources/ArionASR/Worker.swift",
+      "sha256": "d6b330c63de40d84c373df98c136b8d9868d907e2fde8220c48ff1e6ec47b766",
+      "bytes": 6647
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/source/benchmarks/corpora/asr-hotwords-v1/evaluation.json",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/source/benchmarks/corpora/asr-hotwords-v1/evaluation.json",
+      "sha256": "58bbfb8dc4fd695f3b4fbbb929cbc17e6424eab9210844f6d275cb74097c876d",
+      "bytes": 19434
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/source/benchmarks/corpora/asr-hotwords-v1/requests.json",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/source/benchmarks/corpora/asr-hotwords-v1/requests.json",
+      "sha256": "c8b025354cf060fab96ff783982f6c46e6cbb5744f168385ae2f71d0fcb3cd3e",
+      "bytes": 12303
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/source/benchmarks/reproduction/asr-hotwords-v1/driver.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/source/benchmarks/reproduction/asr-hotwords-v1/driver.go",
+      "sha256": "977af7b0334918e02701c86697dee7bc172940f2948559a654f68ad3bcf72cfb",
+      "bytes": 2368
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/source/benchmarks/reproduction/asr-hotwords-v1/run.py",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/source/benchmarks/reproduction/asr-hotwords-v1/run.py",
+      "sha256": "a094308553c88ad1a63823dae370226f34a2f93f46a45c0f420dac33bdad31b0",
+      "bytes": 4862
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/source/go.work",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/source/go.work",
+      "sha256": "de039f4fc70f3fd7ec502fb95a252d42b983d3324123b7c2b56c6dddfd59f2d9",
+      "bytes": 99
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/source/models/catalog.json",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/source/models/catalog.json",
+      "sha256": "236d6bcab502c663bdb63f3489a99e69d0f44352a46d5d4ff2ddac0343e93ae5",
+      "bytes": 8691
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/contracts/contracts.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/contracts/contracts.go",
+      "sha256": "9883c9019ebe590844e0dbf5241c7774fbd03896aed3930068d5b6c436b6fa29",
+      "bytes": 4830
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/contracts/keyboard_ranking.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/contracts/keyboard_ranking.go",
+      "sha256": "8870a725eb5432bddb4eaffc398cbe0acf878854b378153d8e9b88f56d1903f8",
+      "bytes": 751
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/candidates.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/candidates.go",
+      "sha256": "73949da5f6e51de1c1e71a3d22cc4cdf6f04f56b9cd1bd5b0ceb3f7e7269208f",
+      "bytes": 1246
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/context.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/context.go",
+      "sha256": "d8c6b25b93135716a7f9c4181673519a95c2c610fb3c09bd3e72a8009036dec9",
+      "bytes": 5464
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/context_test.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/context_test.go",
+      "sha256": "6d23dbd9ed4cf9b4cf5a53da98f58694759d766f9fbf0a3646073fb914a773b3",
+      "bytes": 3691
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/correction.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/correction.go",
+      "sha256": "f71aa293b8a6ad401495612a8f765120a79faf973497e4dd6c769f8270455e36",
+      "bytes": 7743
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/correction_test.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/correction_test.go",
+      "sha256": "9b51f7d3a0d6befb3abcfcbefdb21a70212d4b96f50869a1105dc010dd80791d",
+      "bytes": 6044
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/dictation.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/dictation.go",
+      "sha256": "d6e84ba3423891d2d91125e0e7ac963ab0f62f343dcc0e8e5129101d6c9a5e96",
+      "bytes": 3445
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/dictation_test.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/dictation_test.go",
+      "sha256": "f403a06393d58c795815ea7f88c7c21c9a730b38c4452504f1835c35830cb4b1",
+      "bytes": 2771
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/errors.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/errors.go",
+      "sha256": "3771e7c29f7525d494ba3ef41e88ff58065b368c2dd6c668c6f652a5994479f6",
+      "bytes": 2996
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/errors_test.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/errors_test.go",
+      "sha256": "f437986e76f0a6ba9f9857b570a16fc0e4077a4d8d3ec3307346183142e9f43c",
+      "bytes": 952
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/hotwords.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/hotwords.go",
+      "sha256": "7f269a8ac6e813fa1a5bda5987cc6d57a510334860adc1db6596d65a50ce5e52",
+      "bytes": 3065
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/hotwords_test.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/hotwords_test.go",
+      "sha256": "00e859011a209d128c81e22baf718f209085279753414c793dcfbb629ca9d67c",
+      "bytes": 2534
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/invariants_test.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/invariants_test.go",
+      "sha256": "8244b5812a235a15564c4061dfaa818f08af375240332c8b6f91cf4500bafa2b",
+      "bytes": 1696
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/keyboard_ranking.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/keyboard_ranking.go",
+      "sha256": "77715e2adf2758d2c323e7342617834e96b806c5fb3a470f680f80563086d660",
+      "bytes": 1619
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/learning.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/learning.go",
+      "sha256": "684ae926095bef34f1f9bb3766d464aeff97c38fb80db347bdf5713a7f62da96",
+      "bytes": 12759
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/learning_test.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/learning_test.go",
+      "sha256": "e5f20ad37c5ed8d1d32fab6699d0fce26544732b3df418e6ba1fb75b1ded3d73",
+      "bytes": 10818
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/learning_words.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/learning_words.go",
+      "sha256": "743f7f7abf4b7b15198d049b59109c380ddd1efc3104bea5aaa6715ca68ae87e",
+      "bytes": 3900
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/memory.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/memory.go",
+      "sha256": "ecb1a367564e8e3be5780960630620fef29f1d5a65d017b79517a0aa62649843",
+      "bytes": 4992
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/modelselect.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/modelselect.go",
+      "sha256": "25266047f3e3891bdc46daf0a362e609315c9fc64595f661b0a2969e48540437",
+      "bytes": 6333
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/modelselect_test.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/modelselect_test.go",
+      "sha256": "01c42368999f6ff677f25b91172cea3b89535df19f791a92f7231f403b6707f3",
+      "bytes": 942
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/ports/diagnostics.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/ports/diagnostics.go",
+      "sha256": "ddd42781c9ecbc2dd33fad8bca4dd85a280c67f0b2c6f3cf057a9c7c1bed48e5",
+      "bytes": 1214
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/ports/keyboard_ranking.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/ports/keyboard_ranking.go",
+      "sha256": "ef595346e64a6a1c324ddc4a68f8b895b07bfd0404b67cdc20adc5dec9a3c42e",
+      "bytes": 277
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/ports/ports.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/ports/ports.go",
+      "sha256": "6a45c80d05552a6b17313b283fee57e3cdfe73396c7ed69c6854dc4d78d9c63d",
+      "bytes": 5108
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/punctuation.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/punctuation.go",
+      "sha256": "bbe5f24196641b0f62cd9fd533b16dfda292c75a3a95beeae3aab69b0cf0e28b",
+      "bytes": 2386
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/punctuation_test.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/punctuation_test.go",
+      "sha256": "d75614a50e8f9798e6d96a67901ed3e72b4088050b170ab4935438f0adf8dbdb",
+      "bytes": 2104
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/quotes.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/quotes.go",
+      "sha256": "fec70b2e226e7d5f3a306f32790b584bc8b48ba822cbab8341f8e3dbe05d6e11",
+      "bytes": 795
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/rewrite.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/rewrite.go",
+      "sha256": "7aa556587c8eb3a3992acc178cd7c9be93562b007c70dbe6ba8849faddc6711a",
+      "bytes": 11413
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/rewrite_delivery_test.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/rewrite_delivery_test.go",
+      "sha256": "b18cb53888bc1f67b5c68b6b0fd43e4d502b2fad9c84223c659fa963be6c6ebb",
+      "bytes": 1162
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/rewrite_fidelity.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/rewrite_fidelity.go",
+      "sha256": "bb08303a1043f74605f61b697e4f56047fe1950d1f080723ade469215bf1ea55",
+      "bytes": 1197
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/rewrite_test.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/rewrite_test.go",
+      "sha256": "af0fd70567101bbe18e0f481e995de37cf49fdddb368108cc23d64399cb8e0f0",
+      "bytes": 8885
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/scene.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/scene.go",
+      "sha256": "abe77a316d112d43752e9d345a74978341c12834024c667103d8992c1a027a7d",
+      "bytes": 11261
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/scene_test.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/scene_test.go",
+      "sha256": "14c817f528f1cc3aee0b2cd3d02c4ff57e2398d158e250a79f22af201b2020ba",
+      "bytes": 6594
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/session.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/session.go",
+      "sha256": "5320b7082d92da0c4f09b4d182dfe3e22ecd26c4cb8dbaaff56bc5e35245b167",
+      "bytes": 1366
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/speech_cleanup.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/speech_cleanup.go",
+      "sha256": "32d6aedd56f58c8e0fd363e9226d2eb868f24ddf794b34efcb89aa75f24b459e",
+      "bytes": 12222
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/speech_cleanup_test.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/speech_cleanup_test.go",
+      "sha256": "ffabf0830f06889db7621f05f5c7373b5a5e1ba0c2ebdc913edcfab666fd33b1",
+      "bytes": 9594
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/speech_repair.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/speech_repair.go",
+      "sha256": "ec5e1b11400f68a923b784aacfa268b443a96c17262c7285bafda6c6f9c6d14d",
+      "bytes": 10992
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/speech_repair_test.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/speech_repair_test.go",
+      "sha256": "a0089948ede61321cce184bde50882cf2361fd8abfe0bfcc286e47574e1f1dc1",
+      "bytes": 5483
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/spelling.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/spelling.go",
+      "sha256": "6c77fa728632440b9a4601da1577b5e9fe9a648aace8ed426379c10cc2d26a7d",
+      "bytes": 18644
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/spelling_compound_test.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/spelling_compound_test.go",
+      "sha256": "b8f3cee908139a20e623abf08579f7d7321a9b9a894c2976d1a95e88dddb3d81",
+      "bytes": 12455
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/terms.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/terms.go",
+      "sha256": "2799ef865d831728e8320a7c3c13c619165f56640a4f23034905cfb6dba1dd20",
+      "bytes": 3685
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/terms_test.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/terms_test.go",
+      "sha256": "3b271c64621e1804dfb3147f67c8d4d42f662fa014d8ac7f5ca8b8493a52384f",
+      "bytes": 927
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/usage.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/usage.go",
+      "sha256": "f2ebb6756acca1433cea17a630255015f0e15f316a432583b8d41469ac3243a4",
+      "bytes": 4110
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/usage_test.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/usage_test.go",
+      "sha256": "444dad4e35de7a0ee282e93f852d0752c81b41a663c01a374b7d152f66d5379b",
+      "bytes": 1938
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/vocabulary.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/vocabulary.go",
+      "sha256": "806923b57f241e178385a92fa7c3bca8cf38fa414019013c5badd12f6b92ba86",
+      "bytes": 5765
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/vocabulary_edit.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/vocabulary_edit.go",
+      "sha256": "c0faf2702617641bd4018b368ccb2e5792265d5c1b7ee883b114fd403eebf266",
+      "bytes": 1382
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/vocabulary_edit_test.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/vocabulary_edit_test.go",
+      "sha256": "8befa84bba2849e986bc3632d5bc48583e6d9eaf118d14391560f778060dc336",
+      "bytes": 2927
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/vocabulary_recall_test.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/domain/vocabulary_recall_test.go",
+      "sha256": "0609cbf68938ff3eae35756a01846b5c7fe0c9b1cbd64da3d9a0673bf7b5a5a8",
+      "bytes": 850
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/go.mod",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/source/packages/core/go.mod",
+      "sha256": "3e97a53127f313e259f8613754d512d2d7c970af0a118d435716ad3cdfc5a86f",
+      "bytes": 35
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/paired-production/stderr.log",
+      "destination": "benchmarks/runs/asr-hotwords-v1/paired-production/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/runtime-smoke-initial-attempts/attempts.json",
+      "destination": "benchmarks/runs/asr-hotwords-v1/runtime-smoke-initial-attempts/attempts.json",
+      "sha256": "8fcd52e9449f6686eb2516542ef3bf9454d824df0658c9fced4c834364f5ed2e",
+      "bytes": 5067
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/runtime-smoke-initial-attempts/build-output.txt",
+      "destination": "benchmarks/runs/asr-hotwords-v1/runtime-smoke-initial-attempts/build-output.txt",
+      "sha256": "7ccf72e48d01388587e55e8bda139b12f418fcaacd8db57c82e90e5aac520a07",
+      "bytes": 596
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/runtime-smoke-initial-attempts/native-smoke-parsed-responses.json",
+      "destination": "benchmarks/runs/asr-hotwords-v1/runtime-smoke-initial-attempts/native-smoke-parsed-responses.json",
+      "sha256": "379c5a5b78e88bc969cc0f7d0032c3629ae36d3054b3b7c68f3ced1ce10effdd",
+      "bytes": 467
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/runtime-smoke-initial-attempts/sandbox-worker.stderr.log",
+      "destination": "benchmarks/runs/asr-hotwords-v1/runtime-smoke-initial-attempts/sandbox-worker.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/runtime-smoke-initial-attempts/sandbox-worker.stdout.log",
+      "destination": "benchmarks/runs/asr-hotwords-v1/runtime-smoke-initial-attempts/sandbox-worker.stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/runtime-smoke-initial-attempts/sha256.json",
+      "destination": "benchmarks/runs/asr-hotwords-v1/runtime-smoke-initial-attempts/sha256.json",
+      "sha256": "f181f6216cadece63989dc2a47aff02ff93090a7b6ab61b081507a9b0e0723cd",
+      "bytes": 673
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/runtime-smoke-v1/Package.resolved",
+      "destination": "benchmarks/runs/asr-hotwords-v1/runtime-smoke-v1/Package.resolved",
+      "sha256": "d5f96c540c2494b60ec1564d35e854e6e665ced1f631692c873f14b638cbf1c5",
+      "bytes": 3094
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/runtime-smoke-v1/Package.swift",
+      "destination": "benchmarks/runs/asr-hotwords-v1/runtime-smoke-v1/Package.swift",
+      "sha256": "48be79def28cbd57e39d3d94a92623ed02e4a4f823f09c3c9eac0ebfd6d16b3b",
+      "bytes": 564
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/runtime-smoke-v1/Worker.swift",
+      "destination": "benchmarks/runs/asr-hotwords-v1/runtime-smoke-v1/Worker.swift",
+      "sha256": "d6b330c63de40d84c373df98c136b8d9868d907e2fde8220c48ff1e6ec47b766",
+      "bytes": 6647
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/runtime-smoke-v1/provenance.json",
+      "destination": "benchmarks/runs/asr-hotwords-v1/runtime-smoke-v1/provenance.json",
+      "sha256": "f3d3813705ece2e9d32e17839005d261180896b7eb3db50cf35ad4f9b43dd2f7",
+      "bytes": 3666
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/runtime-smoke-v1/replay.py",
+      "destination": "benchmarks/runs/asr-hotwords-v1/runtime-smoke-v1/replay.py",
+      "sha256": "04db74977a1a3461b38eff58c82e98f3e52d31bd4f8515612c4727ed4f4ccc26",
+      "bytes": 6166
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/runtime-smoke-v1/requests.jsonl.gz",
+      "destination": "benchmarks/runs/asr-hotwords-v1/runtime-smoke-v1/requests.jsonl.gz",
+      "sha256": "3bc3e40f5e46a73bd93e0c3c1a33fccdbd22a9b7d43235fdaadd04a9c0904271",
+      "bytes": 392052
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/runtime-smoke-v1/sha256.json",
+      "destination": "benchmarks/runs/asr-hotwords-v1/runtime-smoke-v1/sha256.json",
+      "sha256": "f3e82187135f5c4968e2c1fc82ecf2ec15634babf226bb9830a2039ce7744242",
+      "bytes": 1022
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/runtime-smoke-v1/worker.stderr.log",
+      "destination": "benchmarks/runs/asr-hotwords-v1/runtime-smoke-v1/worker.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/runtime-smoke-v1/worker.stdout.jsonl",
+      "destination": "benchmarks/runs/asr-hotwords-v1/runtime-smoke-v1/worker.stdout.jsonl",
+      "sha256": "b3f3d3dbf685a3b7f5a372c903bc44c7c0ffaae313a38066e29260ad68464832",
+      "bytes": 344
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/raw.jsonl",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/raw.jsonl",
+      "sha256": "27e8087d9fa34815490d1c60f96db453258fad522be983292eb0483af9483936",
+      "bytes": 1514
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/run.json",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/run.json",
+      "sha256": "ecc128ea09f865d5416c14fa1ca40413bd1d5413247160e1b1e4c82a010df170",
+      "bytes": 61967
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/apps/desktop/go.mod",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/apps/desktop/go.mod",
+      "sha256": "526257d8665af6ca0b5eb33cdf24956ff8b4960075cc666c8ed558e9c5a56768",
+      "bytes": 686
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/apps/desktop/go.sum",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/apps/desktop/go.sum",
+      "sha256": "1867938ba692869b6ff07c9dc8a730be8ce1b3514088009378e7603f43611881",
+      "bytes": 2848
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/apps/desktop/infrastructure/asr/device_unix.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/apps/desktop/infrastructure/asr/device_unix.go",
+      "sha256": "ddcf634aea2766bbe9d62fe2fe85204ac80fad2d79a41814b215de8fe19d3f46",
+      "bytes": 182
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/apps/desktop/infrastructure/asr/device_windows.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/apps/desktop/infrastructure/asr/device_windows.go",
+      "sha256": "5db5e7493399778723b2ac97684abe1f6c95ef69559f3bde519ac143d3091abf",
+      "bytes": 440
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/apps/desktop/infrastructure/asr/hotwords_test.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/apps/desktop/infrastructure/asr/hotwords_test.go",
+      "sha256": "6d471d4b2fbf7cbb1955707b8dbf8371ad2476371b69e57746ce77142fdac90e",
+      "bytes": 3706
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/apps/desktop/infrastructure/asr/lifecycle_test.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/apps/desktop/infrastructure/asr/lifecycle_test.go",
+      "sha256": "5cd5732821e895c1ec9c44cf302d148f7ad0d699f984f29abc46e55ecc3614d2",
+      "bytes": 14217
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/apps/desktop/infrastructure/asr/process_unix.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/apps/desktop/infrastructure/asr/process_unix.go",
+      "sha256": "c937ef2fd6a7b1d89bbd1df69fe2096f24db043d023561dd4a069250ad337ae9",
+      "bytes": 283
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/apps/desktop/infrastructure/asr/process_windows.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/apps/desktop/infrastructure/asr/process_windows.go",
+      "sha256": "bdf66f0afece840b27f72f0d9753ce2401989d69ff1d16c72eb826e3355b794c",
+      "bytes": 341
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/apps/desktop/infrastructure/asr/qwen.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/apps/desktop/infrastructure/asr/qwen.go",
+      "sha256": "ec5c44fb867f83e4762e6fe0a6c2360e713e6ff56cbe290a5b4e0db7b990039c",
+      "bytes": 721
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/apps/desktop/infrastructure/asr/qwen_test.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/apps/desktop/infrastructure/asr/qwen_test.go",
+      "sha256": "1b8e8810b0160107afe3d83011f843d21ff49f82b2c8701ba2b35ba139d8abd9",
+      "bytes": 1132
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/apps/desktop/infrastructure/asr/recognizer.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/apps/desktop/infrastructure/asr/recognizer.go",
+      "sha256": "f11c598ba02d8bf6cbefe165c5aebba91b4a0ea6c4be44bfee8ce4030e094b8c",
+      "bytes": 6784
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/apps/desktop/infrastructure/asr/segments.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/apps/desktop/infrastructure/asr/segments.go",
+      "sha256": "47c98a0f6009e6e9149c6d29fc3a576979356daedd5c05e012decea91bbcdf41",
+      "bytes": 871
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/apps/desktop/infrastructure/asr/worker.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/apps/desktop/infrastructure/asr/worker.go",
+      "sha256": "368225c524561028973dcfabd0aba98ab6e695dd92ab42ad69275f5eb0cc4c25",
+      "bytes": 11283
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/apps/desktop/infrastructure/asr/worker_test.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/apps/desktop/infrastructure/asr/worker_test.go",
+      "sha256": "db989f069ba3750c2a95bb9405b86de0c94937cbd18106dd1f28c910eb8438c5",
+      "bytes": 3915
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/apps/desktop/infrastructure/audio/capture.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/apps/desktop/infrastructure/audio/capture.go",
+      "sha256": "72e1c525e614a2662b5053124c373004ac933e1a5443f380bac35cd2a97584e1",
+      "bytes": 5330
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/apps/desktop/infrastructure/audio/replay.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/apps/desktop/infrastructure/audio/replay.go",
+      "sha256": "3af29ad68c0375fff8ea2b63d9ff045b7236a06cf50e0e4d521dcf1f1584fa8f",
+      "bytes": 4074
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/apps/desktop/infrastructure/audio/replay_test.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/apps/desktop/infrastructure/audio/replay_test.go",
+      "sha256": "326087dc2de0a14f531782da27b529a1941db574a50dc04ea9d72acce655ced4",
+      "bytes": 1293
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/apps/desktop/native/mlx-asr/Package.resolved",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/apps/desktop/native/mlx-asr/Package.resolved",
+      "sha256": "d5f96c540c2494b60ec1564d35e854e6e665ced1f631692c873f14b638cbf1c5",
+      "bytes": 3094
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/apps/desktop/native/mlx-asr/Package.swift",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/apps/desktop/native/mlx-asr/Package.swift",
+      "sha256": "48be79def28cbd57e39d3d94a92623ed02e4a4f823f09c3c9eac0ebfd6d16b3b",
+      "bytes": 564
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/apps/desktop/native/mlx-asr/Sources/ArionASR/Worker.swift",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/apps/desktop/native/mlx-asr/Sources/ArionASR/Worker.swift",
+      "sha256": "d6b330c63de40d84c373df98c136b8d9868d907e2fde8220c48ff1e6ec47b766",
+      "bytes": 6647
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/benchmarks/corpora/asr-hotwords-v1/evaluation.json",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/benchmarks/corpora/asr-hotwords-v1/evaluation.json",
+      "sha256": "58bbfb8dc4fd695f3b4fbbb929cbc17e6424eab9210844f6d275cb74097c876d",
+      "bytes": 19434
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/benchmarks/corpora/asr-hotwords-v1/requests.json",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/benchmarks/corpora/asr-hotwords-v1/requests.json",
+      "sha256": "c8b025354cf060fab96ff783982f6c46e6cbb5744f168385ae2f71d0fcb3cd3e",
+      "bytes": 12303
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/benchmarks/corpora/asr-hotwords-v1/sensitive-isolation-requests.json",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/benchmarks/corpora/asr-hotwords-v1/sensitive-isolation-requests.json",
+      "sha256": "67a80fa31bd0a579e59dfb4370cd83143aee9daffb96f7db443edd20de75e079",
+      "bytes": 1269
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/benchmarks/reproduction/asr-hotwords-v1/driver.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/benchmarks/reproduction/asr-hotwords-v1/driver.go",
+      "sha256": "977af7b0334918e02701c86697dee7bc172940f2948559a654f68ad3bcf72cfb",
+      "bytes": 2368
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/benchmarks/reproduction/asr-hotwords-v1/run.py",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/benchmarks/reproduction/asr-hotwords-v1/run.py",
+      "sha256": "3d71c004ab387b44feac5ffbd6140142584d94fe77e1c90f1bf2e9706967f088",
+      "bytes": 5027
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/go.work",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/go.work",
+      "sha256": "de039f4fc70f3fd7ec502fb95a252d42b983d3324123b7c2b56c6dddfd59f2d9",
+      "bytes": 99
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/models/catalog.json",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/models/catalog.json",
+      "sha256": "236d6bcab502c663bdb63f3489a99e69d0f44352a46d5d4ff2ddac0343e93ae5",
+      "bytes": 8691
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/contracts/contracts.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/contracts/contracts.go",
+      "sha256": "9883c9019ebe590844e0dbf5241c7774fbd03896aed3930068d5b6c436b6fa29",
+      "bytes": 4830
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/contracts/keyboard_ranking.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/contracts/keyboard_ranking.go",
+      "sha256": "8870a725eb5432bddb4eaffc398cbe0acf878854b378153d8e9b88f56d1903f8",
+      "bytes": 751
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/candidates.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/candidates.go",
+      "sha256": "73949da5f6e51de1c1e71a3d22cc4cdf6f04f56b9cd1bd5b0ceb3f7e7269208f",
+      "bytes": 1246
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/context.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/context.go",
+      "sha256": "d8c6b25b93135716a7f9c4181673519a95c2c610fb3c09bd3e72a8009036dec9",
+      "bytes": 5464
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/context_test.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/context_test.go",
+      "sha256": "6d23dbd9ed4cf9b4cf5a53da98f58694759d766f9fbf0a3646073fb914a773b3",
+      "bytes": 3691
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/correction.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/correction.go",
+      "sha256": "f71aa293b8a6ad401495612a8f765120a79faf973497e4dd6c769f8270455e36",
+      "bytes": 7743
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/correction_test.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/correction_test.go",
+      "sha256": "9b51f7d3a0d6befb3abcfcbefdb21a70212d4b96f50869a1105dc010dd80791d",
+      "bytes": 6044
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/dictation.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/dictation.go",
+      "sha256": "d6e84ba3423891d2d91125e0e7ac963ab0f62f343dcc0e8e5129101d6c9a5e96",
+      "bytes": 3445
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/dictation_test.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/dictation_test.go",
+      "sha256": "f403a06393d58c795815ea7f88c7c21c9a730b38c4452504f1835c35830cb4b1",
+      "bytes": 2771
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/errors.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/errors.go",
+      "sha256": "3771e7c29f7525d494ba3ef41e88ff58065b368c2dd6c668c6f652a5994479f6",
+      "bytes": 2996
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/errors_test.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/errors_test.go",
+      "sha256": "f437986e76f0a6ba9f9857b570a16fc0e4077a4d8d3ec3307346183142e9f43c",
+      "bytes": 952
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/hotwords.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/hotwords.go",
+      "sha256": "7f269a8ac6e813fa1a5bda5987cc6d57a510334860adc1db6596d65a50ce5e52",
+      "bytes": 3065
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/hotwords_test.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/hotwords_test.go",
+      "sha256": "b3652f1f5890f4847f64d4d486cac881b05f86ebea5629b9c7b260d075f90f49",
+      "bytes": 3289
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/invariants_test.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/invariants_test.go",
+      "sha256": "8244b5812a235a15564c4061dfaa818f08af375240332c8b6f91cf4500bafa2b",
+      "bytes": 1696
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/keyboard_ranking.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/keyboard_ranking.go",
+      "sha256": "77715e2adf2758d2c323e7342617834e96b806c5fb3a470f680f80563086d660",
+      "bytes": 1619
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/learning.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/learning.go",
+      "sha256": "684ae926095bef34f1f9bb3766d464aeff97c38fb80db347bdf5713a7f62da96",
+      "bytes": 12759
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/learning_test.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/learning_test.go",
+      "sha256": "e5f20ad37c5ed8d1d32fab6699d0fce26544732b3df418e6ba1fb75b1ded3d73",
+      "bytes": 10818
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/learning_words.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/learning_words.go",
+      "sha256": "743f7f7abf4b7b15198d049b59109c380ddd1efc3104bea5aaa6715ca68ae87e",
+      "bytes": 3900
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/memory.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/memory.go",
+      "sha256": "ecb1a367564e8e3be5780960630620fef29f1d5a65d017b79517a0aa62649843",
+      "bytes": 4992
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/modelselect.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/modelselect.go",
+      "sha256": "25266047f3e3891bdc46daf0a362e609315c9fc64595f661b0a2969e48540437",
+      "bytes": 6333
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/modelselect_test.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/modelselect_test.go",
+      "sha256": "01c42368999f6ff677f25b91172cea3b89535df19f791a92f7231f403b6707f3",
+      "bytes": 942
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/ports/diagnostics.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/ports/diagnostics.go",
+      "sha256": "ddd42781c9ecbc2dd33fad8bca4dd85a280c67f0b2c6f3cf057a9c7c1bed48e5",
+      "bytes": 1214
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/ports/keyboard_ranking.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/ports/keyboard_ranking.go",
+      "sha256": "ef595346e64a6a1c324ddc4a68f8b895b07bfd0404b67cdc20adc5dec9a3c42e",
+      "bytes": 277
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/ports/ports.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/ports/ports.go",
+      "sha256": "6a45c80d05552a6b17313b283fee57e3cdfe73396c7ed69c6854dc4d78d9c63d",
+      "bytes": 5108
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/punctuation.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/punctuation.go",
+      "sha256": "bbe5f24196641b0f62cd9fd533b16dfda292c75a3a95beeae3aab69b0cf0e28b",
+      "bytes": 2386
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/punctuation_test.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/punctuation_test.go",
+      "sha256": "d75614a50e8f9798e6d96a67901ed3e72b4088050b170ab4935438f0adf8dbdb",
+      "bytes": 2104
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/quotes.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/quotes.go",
+      "sha256": "fec70b2e226e7d5f3a306f32790b584bc8b48ba822cbab8341f8e3dbe05d6e11",
+      "bytes": 795
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/rewrite.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/rewrite.go",
+      "sha256": "7aa556587c8eb3a3992acc178cd7c9be93562b007c70dbe6ba8849faddc6711a",
+      "bytes": 11413
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/rewrite_delivery_test.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/rewrite_delivery_test.go",
+      "sha256": "b18cb53888bc1f67b5c68b6b0fd43e4d502b2fad9c84223c659fa963be6c6ebb",
+      "bytes": 1162
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/rewrite_fidelity.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/rewrite_fidelity.go",
+      "sha256": "bb08303a1043f74605f61b697e4f56047fe1950d1f080723ade469215bf1ea55",
+      "bytes": 1197
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/rewrite_test.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/rewrite_test.go",
+      "sha256": "af0fd70567101bbe18e0f481e995de37cf49fdddb368108cc23d64399cb8e0f0",
+      "bytes": 8885
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/scene.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/scene.go",
+      "sha256": "abe77a316d112d43752e9d345a74978341c12834024c667103d8992c1a027a7d",
+      "bytes": 11261
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/scene_test.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/scene_test.go",
+      "sha256": "14c817f528f1cc3aee0b2cd3d02c4ff57e2398d158e250a79f22af201b2020ba",
+      "bytes": 6594
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/session.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/session.go",
+      "sha256": "5320b7082d92da0c4f09b4d182dfe3e22ecd26c4cb8dbaaff56bc5e35245b167",
+      "bytes": 1366
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/speech_cleanup.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/speech_cleanup.go",
+      "sha256": "32d6aedd56f58c8e0fd363e9226d2eb868f24ddf794b34efcb89aa75f24b459e",
+      "bytes": 12222
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/speech_cleanup_test.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/speech_cleanup_test.go",
+      "sha256": "ffabf0830f06889db7621f05f5c7373b5a5e1ba0c2ebdc913edcfab666fd33b1",
+      "bytes": 9594
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/speech_repair.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/speech_repair.go",
+      "sha256": "ec5e1b11400f68a923b784aacfa268b443a96c17262c7285bafda6c6f9c6d14d",
+      "bytes": 10992
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/speech_repair_test.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/speech_repair_test.go",
+      "sha256": "a0089948ede61321cce184bde50882cf2361fd8abfe0bfcc286e47574e1f1dc1",
+      "bytes": 5483
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/spelling.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/spelling.go",
+      "sha256": "6c77fa728632440b9a4601da1577b5e9fe9a648aace8ed426379c10cc2d26a7d",
+      "bytes": 18644
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/spelling_compound_test.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/spelling_compound_test.go",
+      "sha256": "b8f3cee908139a20e623abf08579f7d7321a9b9a894c2976d1a95e88dddb3d81",
+      "bytes": 12455
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/terms.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/terms.go",
+      "sha256": "2799ef865d831728e8320a7c3c13c619165f56640a4f23034905cfb6dba1dd20",
+      "bytes": 3685
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/terms_test.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/terms_test.go",
+      "sha256": "3b271c64621e1804dfb3147f67c8d4d42f662fa014d8ac7f5ca8b8493a52384f",
+      "bytes": 927
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/usage.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/usage.go",
+      "sha256": "f2ebb6756acca1433cea17a630255015f0e15f316a432583b8d41469ac3243a4",
+      "bytes": 4110
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/usage_test.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/usage_test.go",
+      "sha256": "444dad4e35de7a0ee282e93f852d0752c81b41a663c01a374b7d152f66d5379b",
+      "bytes": 1938
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/vocabulary.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/vocabulary.go",
+      "sha256": "806923b57f241e178385a92fa7c3bca8cf38fa414019013c5badd12f6b92ba86",
+      "bytes": 5765
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/vocabulary_edit.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/vocabulary_edit.go",
+      "sha256": "c0faf2702617641bd4018b368ccb2e5792265d5c1b7ee883b114fd403eebf266",
+      "bytes": 1382
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/vocabulary_edit_test.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/vocabulary_edit_test.go",
+      "sha256": "8befa84bba2849e986bc3632d5bc48583e6d9eaf118d14391560f778060dc336",
+      "bytes": 2927
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/vocabulary_recall_test.go",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/domain/vocabulary_recall_test.go",
+      "sha256": "0609cbf68938ff3eae35756a01846b5c7fe0c9b1cbd64da3d9a0673bf7b5a5a8",
+      "bytes": 850
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/go.mod",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/source/packages/core/go.mod",
+      "sha256": "3e97a53127f313e259f8613754d512d2d7c970af0a118d435716ad3cdfc5a86f",
+      "bytes": 35
+    },
+    {
+      "source": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/stderr.log",
+      "destination": "benchmarks/runs/asr-hotwords-v1/sensitive-isolation/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "source": "scripts/asr-hotword-bench-command.mjs",
+      "destination": "scripts/asr-hotword-bench-command.mjs",
+      "sha256": "1dbe7f9e8ae17c4a5b49347438c6cdfc079a661b717c780dc78eef55a6894a6e",
+      "bytes": 1002
+    },
+    {
+      "source": "tools/evaluation/archive/manifest.mjs",
+      "destination": "tools/evaluation/archive/manifest.mjs",
+      "sha256": "2cc4b3a7e1ad6393e34bd20181d2c1c49dd72b0d3d90a798206d34e8f33abfab",
+      "bytes": 3260
+    },
+    {
+      "source": "tools/evaluation/src/metrics.mjs",
+      "destination": "tools/evaluation/src/metrics.mjs",
+      "sha256": "01cbdf07a875555679304a8fe0df49ec72ce86c0cc21f92674f3788c1a80c867",
+      "bytes": 9470
+    }
+  ],
+  "scope": "Paired development production ASR hotwords, separately scoped native protocol smoke, exact source snapshots, failed attempts, shared original fixtures and replay tooling. Weights and executable runtimes are identified in metadata but excluded."
+}

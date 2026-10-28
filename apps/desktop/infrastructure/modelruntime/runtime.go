@@ -8,7 +8,6 @@ import (
 	"sync"
 	"time"
 
-	"arion.local/core/contracts"
 	"arion.local/core/domain"
 	"arion.local/core/domain/ports"
 	"arion.local/desktop/infrastructure/asr"
@@ -241,7 +240,7 @@ func (m *Manager) failed(bundle models.Bundle, err error) error {
 }
 
 // NewRecognizer satisfies ports.RecognizerFactory.
-func (m *Manager) NewRecognizer(ctx context.Context, id contracts.Identity) (ports.Recognizer, error) {
+func (m *Manager) NewRecognizer(ctx context.Context, request ports.RecognitionRequest) (ports.Recognizer, error) {
 	m.mu.Lock()
 	streaming := m.streaming
 	if streaming == nil {
@@ -250,7 +249,7 @@ func (m *Manager) NewRecognizer(ctx context.Context, id contracts.Identity) (por
 	}
 	m.active++
 	m.mu.Unlock()
-	recognizer, err := streaming.NewRecognizer(ctx, id)
+	recognizer, err := streaming.NewRecognizer(ctx, request)
 	if err != nil {
 		m.release()
 		return nil, err

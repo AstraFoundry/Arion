@@ -163,3 +163,7 @@ The actual production-cleanup source replay changes one36-case input; prior raw-
 - [General LLM keyboard alignment](llm-ime-alignment-v1/README.md) — ID-only general completion adapter, actual 2B quality and paced scheduling observations, with explicit development and native acceptance limits.
 
 - [IME bundle-directory exchange](ime-bundle-swap-v1/README.md): native arm64 and initial x86_64-process filesystem observations; no IME acceptance claim.
+
+- [Vocabulary grouping and canonical recall](../results/vocabulary-alignment-v1/README.md): production correction/recall comparison, actual local GGUF stage acceptance, immutable failed attempts and report replay.
+
+- [ASR hotword observations](asr-hotwords-v1/paired-production/run.json) — 32 paired calls plus warmups, initial and sensitive reset probes, native smoke, and retained failed sandbox/build attempts; see [results](../results/asr-hotwords-v1/README.md).

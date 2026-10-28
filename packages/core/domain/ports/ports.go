@@ -31,10 +31,17 @@ type Recognizer interface {
 	Close() error
 }
 
+// RecognitionRequest freezes approved hotwords for one recognition session.
+// Hotwords are canonical spellings, never correction aliases or window text.
+type RecognitionRequest struct {
+	contracts.Identity
+	Hotwords []string
+}
+
 // RecognizerFactory creates per-session recognizers from a resident engine.
 // It returns MODEL_MISSING while no verified model is loaded.
 type RecognizerFactory interface {
-	NewRecognizer(context.Context, contracts.Identity) (Recognizer, error)
+	NewRecognizer(context.Context, RecognitionRequest) (Recognizer, error)
 }
 
 // FinalizeRequest carries the bounded session audio retained in RAM for an
@@ -44,6 +51,7 @@ type FinalizeRequest struct {
 	SampleRate int
 	Samples    []float32
 	Draft      string
+	Hotwords   []string
 }
 
 // Finalizer re-decodes retained audio after the user stops. It must not

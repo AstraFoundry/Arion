@@ -109,9 +109,9 @@ func (v *Vocabulary) Apply(s string) (string, []Replacement) {
 	return b.String(), fired
 }
 
-// Terms returns, as "From → To", the entries whose From or To occurs in
-// text, in order of first occurrence and at most limit of them: only the
-// memory relevant to this dictation reaches the rewrite prompt.
+// Terms returns canonical spellings whose From or To occurs in text.
+// Multiple aliases share one recall slot. Incorrect forms remain replacement
+// evidence only; they must not become spelling candidates in model context.
 func (v *Vocabulary) Terms(text string, limit int) []string {
 	if v.Len() == 0 || text == "" || limit <= 0 {
 		return nil
@@ -119,19 +119,38 @@ func (v *Vocabulary) Terms(text string, limit int) []string {
 	runes := []rune(text)
 	lower := lowerRunesOf(runes)
 	var out []string
-	used := map[int]bool{}
+	used := map[string]bool{}
 	for k := 0; k < len(runes) && len(out) < limit; {
 		p, ok := v.match(v.both, runes, lower, k)
 		if !ok {
 			k++
 			continue
 		}
-		if !used[p.entry] {
-			used[p.entry] = true
-			r := v.entries[p.entry]
-			out = append(out, r.From+" → "+r.To)
+		canonical := v.entries[p.entry].To
+		if !used[canonical] {
+			used[canonical] = true
+			out = append(out, canonical)
 		}
 		k += len(p.runes)
+	}
+	return out
+}
+
+// TermsForSources shares a canonical recall budget across recognized sources in
+// priority order. Callers must never supply generated text as recall evidence.
+func (v *Vocabulary) TermsForSources(limit int, sources ...string) []string {
+	var out []string
+	seen := map[string]bool{}
+	for _, source := range sources {
+		for _, term := range v.Terms(source, limit) {
+			if len(out) >= limit {
+				return out
+			}
+			if !seen[term] {
+				seen[term] = true
+				out = append(out, term)
+			}
+		}
 	}
 	return out
 }
@@ -170,6 +189,11 @@ func equalRunes(a, b []rune) bool {
 	}
 	return true
 }
+
+// SameVocabularySource compares sources using the vocabulary index's lowercase
+// equivalence. Unicode simple-fold variants that lowercase differently remain
+// distinct, just as they do during replacement and recall.
+func SameVocabularySource(a, b string) bool { return strings.ToLower(a) == strings.ToLower(b) }
 
 func lowerRunes(s string) []rune { return lowerRunesOf([]rune(s)) }
 
