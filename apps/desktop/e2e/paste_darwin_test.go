@@ -58,7 +58,7 @@ func TestGuardedSystemPaste(t *testing.T) {
 		request("focus", map[string]any{"target": target})
 		eventually(t, "fixture focus", func() bool {
 			s := request("state", nil)
-			return s.Active && (target == "web" && s.Web.Focused || s.Focused == target)
+			return s.Active && (target == "web" && s.Web.Focused || s.Focused == target || target == "none" && s.Focused == "")
 		})
 	}
 	checkClipboard := func() {
@@ -117,6 +117,64 @@ func TestGuardedSystemPaste(t *testing.T) {
 			return s.A.Text == text+"unchanged" && s.A.Edits == 1
 		}) {
 			t.Fatalf("caret move observation: %+v", request("state", nil))
+		}
+		checkClipboard()
+	})
+	for _, initiallyFocused := range []bool{false, true} {
+		t.Run(fmt.Sprintf("missing-caret/initial-focus-%v", initiallyFocused), func(t *testing.T) {
+			request("set", map[string]any{"text": "", "location": 0})
+			request("set", map[string]any{"target": "B", "text": "", "location": 0})
+			focus("none")
+			if initiallyFocused {
+				focus("A")
+			}
+			snap := capture()
+			focus("none")
+			const text = "Processed 中文🙂\nsecond line"
+			result := commit(context.Background(), snap, text)
+			if result.Outcome != contracts.Copied || result.Failure != "" {
+				t.Fatalf("missing caret: %+v", result)
+			}
+			s := request("state", nil)
+			if s.A.Text != "" || s.A.Edits != 0 || s.B.Text != "" || s.B.Edits != 0 {
+				t.Fatalf("clipboard-only commit edited a field: %+v", s)
+			}
+			if !request("clipboardCheck", map[string]any{"text": text}).ClipboardOwned {
+				t.Fatal("processed text was not left on the clipboard")
+			}
+			if duplicate := commit(context.Background(), snap, text); duplicate.Outcome != contracts.NotApplied {
+				t.Fatal("clipboard-only target reused")
+			}
+			request("clipboardSet", map[string]any{"text": sentinel})
+		})
+	}
+	t.Run("readonly-selection", func(t *testing.T) {
+		request("set", map[string]any{"text": "Read only transcript", "location": 5, "length": 4})
+		focus("readonly")
+		snap := capture()
+		const text = "Processed result for clipboard"
+		if result := commit(context.Background(), snap, text); result.Outcome != contracts.Copied || result.Failure != "" {
+			t.Fatalf("readonly selection accepted paste: %+v", result)
+		}
+		if s := request("state", nil); s.A.Text != "Read only transcript" || s.A.Edits != 0 {
+			t.Fatalf("readonly transcript changed: %+v", s)
+		}
+		if !request("clipboardCheck", map[string]any{"text": text}).ClipboardOwned {
+			t.Fatal("readonly result not retained on clipboard")
+		}
+		focus("A")
+		request("clipboardSet", map[string]any{"text": sentinel})
+	})
+	t.Run("empty-editor", func(t *testing.T) {
+		request("set", map[string]any{"text": "", "location": 0})
+		focus("A")
+		snap := capture()
+		const text = "Empty editor receives text"
+		if result := commit(context.Background(), snap, text); result.Outcome != contracts.Unknown || result.Failure != "" {
+			t.Fatalf("empty editor: %+v", result)
+		}
+		if !within(5*time.Second, func() bool { s := request("state", nil); return s.A.Text == text && s.A.Edits == 1 }) {
+			t.Fatalf("empty editor observation: %+v", request("state", nil))
 		}
 		checkClipboard()
 	})

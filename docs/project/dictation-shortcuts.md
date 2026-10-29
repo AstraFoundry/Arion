@@ -6,6 +6,8 @@ Activation is replaced with native recording while the field owns focus. A recor
 
 Voice translation has an independent enable switch. Off shows only the switch. The shortcut and target-language controls reveal and collapse together below it using the shared 200 ms disclosure; the dictation card and translation switch stay fixed. Closing retains the visible shortcut until the animation finishes and disables its controls; rapid toggles reverse from the current height, and Reduce Motion applies the final layout immediately. Turning it on restores the previous shortcut if it is still available, otherwise chooses a nonconflicting supported key without changing dictation. The target language and previous assignment survive restart. Onboarding's translation-key step uses the same switch and recorder.
 
+Global dictation and translation keys use current-caret external delivery even when the Arion input method is selected. With no editable input target, the final processed result stays on the clipboard. See [DSK-01/06](../../specs/001-desktop-input.md) and [ADR 033](../decisions/033-voice-shortcut-delivery.md).
+
 ## Choices and gestures
 
 - macOS: Fn, left/right Option, Command, Ctrl and Shift, and F1–F20.

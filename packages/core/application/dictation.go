@@ -225,7 +225,13 @@ func (c *Coordinator) Toggle() {
 // Start begins a new session in a new generation. Adapter calls that may
 // block run off the caller's thread; failures are delivered as events.
 func (c *Coordinator) Start() {
-	c.start("")
+	c.start("", "")
+}
+
+// StartShortcut starts dictation at the current external caret, independently
+// of the selected input method. A nonempty target enables voice translation.
+func (c *Coordinator) StartShortcut(target domain.TranslationLanguage) {
+	c.start(target, domain.ShortcutMode)
 }
 
 // StartTranslation begins a new session that translates the dictated speech
@@ -234,10 +240,10 @@ func (c *Coordinator) StartTranslation(target domain.TranslationLanguage) {
 	if target == "" {
 		target = domain.TargetEnglish
 	}
-	c.start(target)
+	c.start(target, "")
 }
 
-func (c *Coordinator) start(target domain.TranslationLanguage) {
+func (c *Coordinator) start(target domain.TranslationLanguage, requestedMode domain.InputMode) {
 	c.mu.Lock()
 	if c.maintenance {
 		c.mu.Unlock()
@@ -250,8 +256,8 @@ func (c *Coordinator) start(target domain.TranslationLanguage) {
 		// The next insertion changes the field: judge the last one now.
 		c.deps.Edits.Settle()
 	}
-	var selectedMode domain.InputMode
-	if c.deps.SelectMode != nil {
+	selectedMode := requestedMode
+	if requestedMode == "" && c.deps.SelectMode != nil {
 		selectedMode = c.deps.SelectMode()
 	}
 	c.mu.Lock()
@@ -267,7 +273,7 @@ func (c *Coordinator) start(target domain.TranslationLanguage) {
 	}
 	c.generation++
 	mode := c.opts.Mode
-	if c.deps.SelectMode != nil {
+	if requestedMode != "" || c.deps.SelectMode != nil {
 		mode = selectedMode
 	}
 	session, err := domain.NewSession(c.deps.NewID(), c.generation, mode)

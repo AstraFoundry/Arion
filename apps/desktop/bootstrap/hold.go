@@ -126,9 +126,9 @@ func (a *App) onHoldKeyEvent(key application.HoldKey, e holdkey.Event, at time.T
 		a.state.Hold.Holding = true
 		a.setTranslating(translate)
 		if translate {
-			a.core.StartTranslation(a.preferences().TranslateLanguage)
+			a.core.StartShortcut(a.preferences().TranslateLanguage)
 		} else {
-			a.core.Start()
+			a.core.StartShortcut("")
 		}
 	case application.HoldStop:
 		a.record("hold_stop", nil)
