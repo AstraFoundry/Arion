@@ -1,0 +1,103 @@
+{
+  "status": "passed with explicit platform/signing limits",
+  "nativeMain": {
+    "status": "passed",
+    "observations": 1476,
+    "repeatedOutputsIdentical": true
+  },
+  "nativeDesktop": {
+    "command": "pnpm desktop:check",
+    "status": "passed",
+    "nativeCases": 83
+  },
+  "core": {
+    "command": "pnpm core:check",
+    "status": "passed"
+  },
+  "deliveryRace": {
+    "command": "go test -race ./infrastructure/imebridge -run TestVocabularyDelivery -count=1",
+    "status": "passed"
+  },
+  "archiveReplay": {
+    "status": "passed",
+    "originalFiles": 9351,
+    "nativeObservations": 1476,
+    "exactReportReplay": true,
+    "rejected": [
+      "incomplete run",
+      "changed raw bytes",
+      "duplicate observation",
+      "request reference leakage"
+    ]
+  },
+  "originalArchiveReplay": {
+    "status": "passed",
+    "files": 5022
+  },
+  "universalHost": {
+    "status": "passed",
+    "installed": false,
+    "signing": "ad hoc development"
+  },
+  "signedVocabulary": {
+    "command": "pnpm keyboard:vocabulary:check",
+    "status": "not executed past certificate preflight",
+    "validSigningIdentities": 0
+  },
+  "windowsNative": {
+    "status": "not run on macOS"
+  },
+  "repositoryPreparation": {
+    "status": "failed",
+    "reason": "New result README linked checks.json before it was generated; no product check failed."
+  },
+  "files": [
+    {
+      "path": "checks/repository-final.stdout",
+      "sha256": "ca116a6fe27369400d717b699cb615d74adb3c07a44f6cb6774348369696dcbf"
+    },
+    {
+      "path": "checks/repository-final.stderr",
+      "sha256": "c3459b5b998f1fd392d54d656f4eee3f4889db5418e4d9dd80b8aa8ef633c7e9"
+    },
+    {
+      "path": "checks/vocabulary-race-final.stdout",
+      "sha256": "abccc664d6351917f34bd97ba2b7f241958475a8f2f55b86394e5a2a5bc3c579"
+    },
+    {
+      "path": "checks/vocabulary-race-final.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "checks/old-replay-final.stdout",
+      "sha256": "7404607363beaef021c6a669453833b992e3370139da892af78e7c3c0884761d"
+    },
+    {
+      "path": "checks/old-replay-final.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "checks/repository-final-v2.stdout",
+      "sha256": "8a28b35a6c69b1d1f6774a37eb7c0ec31bf6adff5999236202ad9c84a4114a3d"
+    },
+    {
+      "path": "checks/repository-final-v2.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "repositoryCheck": {
+    "command": "pnpm check",
+    "status": "passed",
+    "documents": 577,
+    "pnpm": "10.33.0"
+  },
+  "whitespace": {
+    "command": "git diff --check",
+    "status": "passed"
+  },
+  "measuredSourcePreservation": {
+    "status": "passed",
+    "path": "preservation.json",
+    "sha256": "ce0772eec5433afd0c6ff25d08e2492c7f7c01636d05a80c42065cf6a6848363"
+  }
+}

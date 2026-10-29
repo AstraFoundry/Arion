@@ -1,4 +1,5 @@
 import { spawnSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import { readdir, readFile, stat } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -91,10 +92,20 @@ if (!/^pnpm@\d+\.\d+\.\d+$/.test(rootPackage.packageManager)) errors.push('Root 
 if (rootPackage.scripts && Object.values(rootPackage.scripts).some(command => /\b(npm|npx)\s/.test(command))) errors.push('Project scripts must use pnpm');
 
 // Documented commands must exist. Frozen research evidence under benchmarks/
-// keeps the commands of its time and is exempt.
+// and hash-pinned upstream notices retain their original command context.
 const targets = makeTargets(await readFile(path.join(root, 'Makefile'), 'utf8'));
+const keyboardManifest = JSON.parse(await readFile(path.join(root, 'scripts/keyboard-runtime.json'), 'utf8'));
+const upstreamDocuments = new Map(keyboardManifest.files
+  .filter(file => typeof file.path === 'string' && file.path.endsWith('.md') && file.source && file.sha256)
+  .map(file => [file.path, file.sha256]));
 for (const [name, source] of rawMarkdown) {
   if (name.startsWith('benchmarks' + path.sep)) continue;
+  const upstreamHash = upstreamDocuments.get(name.split(path.sep).join('/'));
+  if (upstreamHash) {
+    const actual = createHash('sha256').update(await readFile(path.join(root, name))).digest('hex');
+    if (actual !== upstreamHash) errors.push(`${name}: upstream documentation differs from its pinned bytes`);
+    continue;
+  }
   errors.push(...unknownCommands(name, source, rootPackage.scripts, targets));
 }
 

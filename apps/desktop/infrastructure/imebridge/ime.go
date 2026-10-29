@@ -19,17 +19,26 @@ import (
 )
 
 type message struct {
-	Build      string `json:"build,omitempty"`
-	Protocol   int    `json:"protocol,omitempty"`
-	Op         string `json:"op"`
-	Activation string `json:"activation"`
-	Session    string `json:"session,omitempty"`
-	Client     string `json:"client,omitempty"`
-	Text       string `json:"text"`
-	Revision   uint64 `json:"revision,omitempty"`
+	Capabilities       []string               `json:"capabilities,omitempty"`
+	Request            uint64                 `json:"request,omitempty"`
+	VocabularyRevision uint64                 `json:"vocabularyRevision,omitempty"`
+	Terms              *[]domain.KeyboardTerm `json:"terms,omitempty"`
+	Status             string                 `json:"status,omitempty"`
+	Build              string                 `json:"build,omitempty"`
+	Protocol           int                    `json:"protocol,omitempty"`
+	Op                 string                 `json:"op"`
+	Activation         string                 `json:"activation"`
+	Session            string                 `json:"session,omitempty"`
+	Client             string                 `json:"client,omitempty"`
+	Text               string                 `json:"text"`
+	Revision           uint64                 `json:"revision,omitempty"`
 }
 
 type IME struct {
+	vocabularyCapable  bool
+	vocabularyDelivery *vocabularyDelivery
+	vocabularyRequest  uint64
+	vocabulary         *vocabularyExchange
 	path               string
 	mu                 sync.Mutex
 	conn               net.Conn
@@ -118,9 +127,13 @@ func (m *IME) Listen() error {
 
 // invalidateLocked wakes any pending commit and revokes its capability.
 func (m *IME) invalidateLocked() bool {
+	m.invalidateVocabularyLocked()
 	had := m.token != ""
 	m.identity = contracts.Identity{}
 	m.token = ""
+	if had {
+		m.notifyLocked()
+	}
 	m.revision = 0
 	m.committing = false
 	if m.ack != nil {
@@ -141,6 +154,9 @@ func (m *IME) leave(had bool) {
 func (m *IME) Close() {
 	m.mu.Lock()
 	m.closed = true
+	if m.vocabularyDelivery != nil {
+		m.vocabularyDelivery.stop()
+	}
 	if m.listener != nil {
 		m.listener.Close()
 		m.listener = nil
@@ -221,6 +237,12 @@ func (m *IME) serve(conn net.Conn) {
 		m.activation, m.client = hello.Activation, hello.Client
 	}
 	m.conn = conn
+	m.vocabularyCapable = false
+	for _, capability := range hello.Capabilities {
+		if capability == vocabularyCapability {
+			m.vocabularyCapable = true
+		}
+	}
 	m.publishedAdmission = ticket
 	if verificationPending {
 		m.verifying--
@@ -243,6 +265,8 @@ func (m *IME) serve(conn net.Conn) {
 			break
 		}
 		switch msg.Op {
+		case "vocabulary_state", "vocabulary_published":
+			m.receiveVocabularyLocked(msg)
 		case "begun":
 			if msg.Activation == m.activation && msg.Session == m.identity.SessionID && m.begin != nil {
 				m.begin <- true
@@ -318,6 +342,9 @@ func (m *IME) sendLocked(ctx context.Context, msg message) error {
 			<-cancelled
 		}
 	}()
+	if (msg.Op == "vocabulary_publish" || msg.Op == "vocabulary_query") && len(data) >= (1<<20)-1 {
+		return domain.ErrInvalidKeyboardVocabulary
+	}
 	data = append(data, '\n')
 	for len(data) > 0 {
 		n, err := m.conn.Write(data)
@@ -371,6 +398,7 @@ func (m *IME) Capture(ctx context.Context, id contracts.Identity) (contracts.Tar
 		m.begin = nil
 		return contracts.TargetSnapshot{}, err
 	}
+	m.invalidateVocabularyLocked()
 	m.identity = id
 	m.token = contracts.TargetToken("ime:" + m.activation + ":" + id.SessionID)
 	if acknowledged != nil {
@@ -473,8 +501,13 @@ func (m *IME) Commit(ctx context.Context, request contracts.CommitRequest) (cont
 }
 
 // BeginUpdate prevents new owned sessions while the host is replaced.
-func (m *IME) BeginUpdate() { m.mu.Lock(); m.updating = true; m.mu.Unlock() }
-func (m *IME) EndUpdate()   { m.mu.Lock(); m.updating = false; m.mu.Unlock() }
+func (m *IME) BeginUpdate() {
+	m.mu.Lock()
+	m.updating = true
+	m.invalidateVocabularyLocked()
+	m.mu.Unlock()
+}
+func (m *IME) EndUpdate() { m.mu.Lock(); m.updating = false; m.notifyLocked(); m.mu.Unlock() }
 
 func (m *IME) notifyLocked() { close(m.changed); m.changed = make(chan struct{}) }
 

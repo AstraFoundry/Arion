@@ -4,6 +4,9 @@
 #include "learning_rime.h"
 #include "ranking.h"
 #include "pinyin.h"
+#include "emoji.h"
+#include "spelling.h"
+#include "english.h"
 #include <rime/dict/db.h>
 #include <rime/algo/dynamics.h>
 #include <filesystem>
@@ -48,12 +51,20 @@ static int worker(const std::string &mode,const std::string &vault,const std::st
         std::filesystem::create_directories(std::filesystem::u8path(user));api=rime_get_api();
         std::string build=learningPath(data,"build");RimeTraits traits{};RIME_STRUCT_INIT(RimeTraits,traits);
         traits.shared_data_dir=data.c_str();traits.prebuilt_data_dir=build.c_str();traits.staging_dir=build.c_str();traits.user_data_dir=user.c_str();traits.app_name="rime.arion";traits.min_log_level=3;traits.log_dir="";
-        api->setup(&traits);api->initialize(&traits);session=arion_pinyin_create_session(api);alternateSession=arion_pinyin_create_session(api);require(session && alternateSession,"native worker sessions");
+        api->setup(&traits);arion_emoji_register();api->initialize(&traits);
+        arion_spelling_register();
+        char registrationError[512]={};
+        if (!arion_english_register(data.c_str(),registrationError,sizeof(registrationError)))
+            throw std::runtime_error(std::string("worker bilingual registration: ")+registrationError);
+        session=arion_pinyin_create_session(api);alternateSession=arion_pinyin_create_session(api);require(session && alternateSession,"native worker sessions");
     } else if (mode=="context") {
         context=openContextLearning(error);require(context!=nullptr,"worker context");ranker=std::make_unique<ContextRanker>(context->records());
     } else {
         db.reset(makeEncryptedRimeDatabase(provider,learningPath(vault,"arion_pinyin.arion-userdb"),"arion_pinyin"));
-        require(mode=="reader"?db->OpenReadOnly():db->Open(),"worker Db open");
+        if (!(mode=="reader"?db->OpenReadOnly():db->Open())) {
+            const auto failure=encryptedLearningError();
+            throw std::runtime_error("worker Db open ("+mode+"): "+std::to_string(failure.code)+" "+failure.operation);
+        }
         std::string tick;if (db->MetaFetch("/tick",&tick)) localTick=std::stoull(tick);
     }
     std::cout<<"READY"<<std::endl;std::string command;
@@ -76,7 +87,7 @@ static int worker(const std::string &mode,const std::string &vault,const std::st
             bool committed=snapshot.commit==expected;arion_pinyin_snapshot_dispose(&snapshot);require(committed,"native target commit");
             require(!encryptedLearningError().code,"native engine learning failure");std::cout<<"COMMITTED"<<std::endl;
         } else if (mode=="context") {
-            require(command=="learn","context command");auto changes=ranker->learn("word","previous");require(context->begin(),"context begin");
+            require(command=="learn","context command");auto changes=ranker->learn(u8"热词","previous");require(context->begin(),"context begin");
             for (const auto &[key,value]:changes) require(value?context->update(key,*value):context->erase(key),"context stage");
             require(context->commit(),"context commit");std::cout<<"LEARNED"<<std::endl;
         } else if (command=="read") {
@@ -186,8 +197,8 @@ int main(int argc,char **argv) {
         {Child check("reader",paced,data,path("paced-check"));value(check,5,5);check.finish();}pass("real-pinned-Rime-unequal-editor-pace-and-pending-read-refresh");
         const auto contextVault=path("context");Child x("context",contextVault,data,path("context-a")),y("context",contextVault,data,path("context-b"));
         for (int i=0;i<12;++i) {x.send("learn");y.send("learn");x.expect("LEARNED");y.expect("LEARNED");}x.finish();y.finish();
-        LearningError error;auto provider=makeWindowsLearningProvider(contextVault,error);require(provider && registerEncryptedLearning(provider,error),"reopen context vault");auto context=openContextLearning(error);require(context!=nullptr,"fresh-process context view");auto records=context->records();require(records["@tick"]=="24" && records["c\tus\tword"]=="24 24","merged context count/tick");
-        ContextRanker ranked(records);require(ranked.order({"cold","word"},"previous")==std::vector<size_t>({1,0}),"peer learning changes ranking");
+        LearningError error;auto provider=makeWindowsLearningProvider(contextVault,error);require(provider && registerEncryptedLearning(provider,error),"reopen context vault");auto context=openContextLearning(error);require(context!=nullptr,"fresh-process context view");auto records=context->records();require(records["@tick"]=="24" && records[u8"c\tus\t热词"]=="24 24","merged context count/tick");
+        const unsigned char eligible[]={1,0,1};ContextRanker ranked(records);require(ranked.order({u8"冷词","plain",u8"热词"},eligible,"previous")==std::vector<size_t>({2,1,0}),"peer learning changes ranking");
         require(!resetLearningVault(provider,error) && error.code==8,"reset refuses active shared lease");context.reset();require(resetLearningVault(provider,error),"reset after every lease closes");pass("context-pair-clock-ranking-and-active-reset");
         std::cout<<"All owned multi-process encrypted learning checks passed.\n";return 0;
     } catch (const std::exception &error) {std::cerr<<"FAIL "<<error.what()<<'\n';return 1;}

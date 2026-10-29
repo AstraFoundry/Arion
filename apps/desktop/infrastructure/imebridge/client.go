@@ -4,8 +4,6 @@ import (
 	"context"
 	"net"
 	"time"
-
-	"arion.local/core/domain"
 )
 
 // ClientHello describes a wire contract, not authenticated process identity.
@@ -17,14 +15,28 @@ type ClientHello struct {
 // PeerIdentity is supplied by the OS transport. Its process lease remains held
 // for the connection lifetime; Alive also prevents accepting an exited peer.
 type PeerIdentity struct {
-	ProcessID uint32
-	SessionID uint32
-	SID       string
-	Integrity uint32
-	alive     func() bool
+	ProcessID              uint32
+	SessionID              uint32
+	SID                    string
+	Integrity              uint32
+	alive                  func() bool
+	matchesCodeRequirement func(string) bool
+	bindPublisher          func(string) bool
 }
 
 func (p PeerIdentity) Alive() bool { return p.alive != nil && p.alive() }
+
+// MatchesCodeRequirement verifies live macOS code against a trusted caller's
+// signing requirement. A hello field must never supply the requirement.
+func (p PeerIdentity) MatchesCodeRequirement(requirement string) bool {
+	return p.matchesCodeRequirement != nil && p.matchesCodeRequirement(requirement)
+}
+
+// BindPublisher requires the named peer to share this running application's
+// Developer ID publisher, then pins that requirement for subsequent Alive checks.
+func (p PeerIdentity) BindPublisher(identifier string) bool {
+	return p.bindPublisher != nil && p.bindPublisher(identifier)
+}
 
 type ClientVerifier func(PeerIdentity, ClientHello) error
 
@@ -36,7 +48,7 @@ func inspectPeer(conn net.Conn) (PeerIdentity, func(), error) {
 	if transport, ok := conn.(peerConnection); ok {
 		return transport.peerIdentity()
 	}
-	return PeerIdentity{}, func() {}, domain.Fail(domain.CodeArtifactUnverified, domain.DetailInputMethodArtifactUnverified)
+	return inspectPlatformPeer(conn)
 }
 
 // RequireClientVerification is configured before Listen. Unconfigured bridges

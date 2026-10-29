@@ -8,16 +8,18 @@ schema:
 
 __include: pinyin_simp.schema:/
 __patch:
-  schema/dependencies: []
   engine/translators:
     - punct_translator
-    - script_translator
+    - arion_bilingual
   engine/filters:
     - arion_emoji
   menu/page_size: 9
   translator/user_dict: arion_pinyin
   translator/db_class: arion_encrypted_userdb
   translator/enable_user_dict: true
+  translator/enable_correction: true
+  speller/alphabet: zyxwvutsrqponmlkjihgfedcbaZYXWVUTSRQPONMLKJIHGFEDCBA
+  recognizer/patterns/uppercase: ''
   reverse_lookup: null
   recognizer/patterns/reverse_lookup: null
   recognizer/patterns/punct: null

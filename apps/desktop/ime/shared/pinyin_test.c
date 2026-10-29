@@ -9,6 +9,7 @@ static char text[] = "\xe4\xbd\xa0\xf0\x9f\x98\x80";
 static RimeCandidate candidate;
 static int invalid_cursor, invalid_candidate, commit_pending, contexts_freed, statuses_freed, commits_freed;
 static int candidate_count = 40;
+static const char *const *menu_fixture;
 static Bool context_read(RimeSessionId session, RimeContext *context) {
     assert(session == 42);
     context->composition.preedit = text;
@@ -38,20 +39,43 @@ static Bool list_from(RimeSessionId session,RimeCandidateListIterator *iterator,
 }
 static Bool list_next(RimeCandidateListIterator *iterator) {
     if (++iterator->index>=candidate_count) return False;
-    iterator->candidate.text=text; iterator->candidate.comment=""; return True;
+    iterator->candidate.text=menu_fixture ? (char *)menu_fixture[iterator->index] : text;
+    iterator->candidate.comment=""; return True;
 }
 static void list_end(RimeCandidateListIterator *iterator) { (void)iterator; }
 static Bool highlight_candidate(RimeSessionId session, size_t index) {
     assert(session==42 && index<(size_t)candidate_count); return True;
 }
-static int reverse_order(void *context,const char *const *texts,size_t count,size_t *order) {
-    (void)context; (void)texts;
+static int reverse_order(void *context,const char *const *texts,size_t count,const unsigned char *eligible,size_t *order) {
+    (void)context; (void)texts; (void)eligible;
     for (size_t i=0;i<count;i++) order[i]=count-i-1;
     return 1;
 }
-static int invalid_order(void *context,const char *const *texts,size_t count,size_t *order) {
-    (void)context; (void)texts;
+static int invalid_order(void *context,const char *const *texts,size_t count,const unsigned char *eligible,size_t *order) {
+    (void)context; (void)texts; (void)eligible;
     for (size_t i=0;i<count;i++) order[i]=0;
+    return 1;
+}
+static int fixture_kind(void *context,uintptr_t session,size_t index,ArionCandidateMetadata *metadata) {
+    (void)context; (void)session; memset(metadata,0,sizeof(*metadata)); metadata->end=7; metadata->emoji=index==1; return 1;
+}
+
+static int candidate_metadata(void *context,uintptr_t session,size_t index,ArionCandidateMetadata *out) {
+    (void)context; (void)session; (void)index;
+    memset(out,0,sizeof(*out)); out->end=4; return 1;
+}
+
+static int mixed_metadata(void *context,uintptr_t session,size_t index,ArionCandidateMetadata *out) {
+    candidate_metadata(context,session,index,out);
+    if (index==1) out->emoji=1;
+    if (index==2) out->end=2;
+    if (index==3) out->start=2;
+    return 1;
+}
+static int check_ranges(void *context,const char *const *texts,size_t count,const unsigned char *eligible,size_t *order) {
+    (void)context; (void)texts;
+    assert(count==4 && eligible[0] && !eligible[1] && !eligible[2] && eligible[3]);
+    order[0]=3; order[1]=0; order[2]=1; order[3]=2;
     return 1;
 }
 
@@ -117,7 +141,7 @@ int main(void) {
     api.candidate_list_from_index=list_from; api.candidate_list_next=list_next; api.candidate_list_end=list_end;
     api.highlight_candidate=highlight_candidate;
     ArionPinyinMenu menu={0}; size_t engine_index=0;
-    assert(arion_menu_build(&menu,&api,42,5,reverse_order,NULL));
+    assert(arion_menu_build_typed(&menu,&api,42,5,reverse_order,NULL,candidate_metadata,NULL));
     assert(menu.count==27 && menu.indices[0]==26 && arion_menu_visible_count(&menu)==5);
     assert(arion_menu_engine_index(&menu,0,0,0,&engine_index) && engine_index==26);
     assert(arion_menu_turn(&menu,&api,42,1) && menu.page==1 && menu.highlight==5);
@@ -126,11 +150,11 @@ int main(void) {
     assert(arion_menu_row_count(&menu)==6);
     assert(arion_menu_engine_index(&menu,1,1,1,&engine_index) && engine_index==15);
     assert(!arion_menu_engine_index(&menu,5,0,0,&engine_index));
-    assert(arion_menu_build(&menu,&api,42,5,reverse_order,NULL));
+    assert(arion_menu_build_typed(&menu,&api,42,5,reverse_order,NULL,candidate_metadata,NULL));
     assert(menu.expanded && menu.page==0 && menu.top_row==0 && menu.highlight==0);
     assert(menu.indices[0]==26 && arion_menu_prepare(&menu,&api,42));
     candidate_count=3;
-    assert(arion_menu_build(&menu,&api,42,5,reverse_order,NULL));
+    assert(arion_menu_build_typed(&menu,&api,42,5,reverse_order,NULL,candidate_metadata,NULL));
     assert(menu.expanded && menu.count==3 && arion_menu_prepare(&menu,&api,42));
     assert(arion_menu_row_count(&menu)==1 && arion_menu_visible_count(&menu)==3);
     assert(arion_menu_engine_index(&menu,2,0,1,&engine_index) && engine_index==0);
@@ -141,7 +165,21 @@ int main(void) {
     assert(arion_menu_grid(&menu,&api,42,1) && menu.expanded);
     arion_menu_dispose(&menu);
     assert(arion_menu_build(&menu,&api,42,5,NULL,NULL) && !menu.expanded);
-    assert(!arion_menu_build(&menu,&api,42,5,invalid_order,NULL));
+    assert(!arion_menu_build_typed(&menu,&api,42,5,invalid_order,NULL,candidate_metadata,NULL));
+    arion_menu_dispose(&menu);
+    candidate_count=5;
+    assert(arion_menu_build_typed(&menu,&api,42,5,check_ranges,NULL,mixed_metadata,NULL));
+    assert(menu.indices[0]==4 && menu.metadata[0].start==0 && menu.metadata[0].end==4);
+    assert(menu.indices[3]==1 && menu.metadata[3].emoji);
+    arion_menu_dispose(&menu);
+    assert(!arion_menu_build(&menu,&api,42,5,reverse_order,NULL));
+    arion_menu_dispose(&menu);
+    const char *const bilingual[]={"白领","🧑‍💼","百灵","白令","bailing","Bailing"};
+    menu_fixture=bilingual; candidate_count=6;
+    assert(arion_menu_build_typed(&menu,&api,42,5,NULL,NULL,fixture_kind,NULL));
+    assert(strcmp(menu.texts[3],"bailing")==0 && strcmp(menu.texts[4],"Bailing")==0);
+    assert(arion_menu_engine_index(&menu,3,0,0,&engine_index) && engine_index==4);
+    assert(menu.metadata[5].emoji && strcmp(menu.texts[5],"🧑‍💼")==0);
     arion_menu_dispose(&menu);
     puts("Shared Pinyin ownership, UTF boundaries, commit consumption and key policy tests passed.");
     return 0;

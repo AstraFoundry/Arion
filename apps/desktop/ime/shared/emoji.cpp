@@ -114,8 +114,8 @@ extern "C" void arion_emoji_set_support(ArionEmojiSupported check, void *context
   support_context = context;
 }
 
-extern "C" int arion_emoji_candidate_metadata(uintptr_t session, size_t index,
-                                                 ArionEmojiCandidateMetadata *out) {
+extern "C" int arion_candidate_metadata(uintptr_t session, size_t index,
+                                                 ArionCandidateMetadata *out) {
   if (!out) return 0;
   std::memset(out, 0, sizeof(*out));
   auto current = rime::Service::instance().GetSession(session);
@@ -124,6 +124,8 @@ extern "C" int arion_emoji_candidate_metadata(uintptr_t session, size_t index,
   if (!segment.menu) return 0;
   auto candidate = segment.menu->GetCandidateAt(index);
   if (!candidate) return 0;
+  if (candidate->start() >= candidate->end() || candidate->end() > current->context()->input().size() ||
+      !copy(candidate->type(), out->type)) return 0;
   out->start = candidate->start();
   out->end = candidate->end();
   if (auto* emoji = dynamic_cast<EmojiCandidate*>(candidate.get())) {

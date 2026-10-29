@@ -1,5 +1,7 @@
 # Benchmark corpora
 
+- [English candidate admission](ime-english-admission-v1/README.md): 20 development, 17 regression-validation and 12 fresh holdout inputs for actual five/nine-slot native menus.
+
 - [Rime LLM reranker](rime-llm-reranker-v1/README.md): 100 original authored exploratory fixtures covering contextual homophones, common-word preservation, abbreviations, incomplete/long input, ambiguous readings and names.
 
 Recorded inputs are retained byte-for-byte with references, constraints, speaker/session identities and split annotations. The [archive map](../migration/archive.json) pins every original file and its destination. Historical test cases disclosed here are regression material for future development; exposure does not invalidate the recorded comparison, but they cannot serve as an unseen future test set.
@@ -51,3 +53,7 @@ it is independently verified and is not part of the historical migration manifes
 - [Selector-screen evaluator](rewrite-selector-screen-v1/README.md):101 preregistered source/reference-bound choice targets; same-letter canonicalization remains optional, evaluator never enters model data.
 
 - [asr-window-v1](asr-window-v1/README.md) — twelve authored Tingting utterances with original AIFF and hash-bound WAV for paired native ASR/window-context/final-rewrite integration.
+
+[ime-pr-comparison-v1](ime-pr-comparison-v1/README.md) freezes 113 shared English, Chinese-control, casing and mixed-input tasks; source-derived inputs remain exposed regression data.
+
+[ime-spelling-reference-v1](ime-spelling-reference-v1/README.md) retains the pinned upstream syllabifier bytes for production correction-patch verification.

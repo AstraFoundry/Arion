@@ -1,0 +1,21 @@
+# id	input	expected_on_page	maximum_english	chinese_first
+development-xin	xin	-	0	1
+development-shi	shi	-	0	1
+development-jian	jian	-	0	1
+development-ni	ni	-	0	1
+development-dian	dian	-	0	1
+development-xing	xing	-	0	1
+development-artifi	artifi	artificial	99	0
+development-compu	compu	computer	99	0
+development-softw	softw	software	99	0
+development-hel	hel	hello	99	0
+development-can	can	can	99	0
+development-an	an	an	99	0
+development-you	you	you	99	0
+development-github	github	GitHub	99	0
+development-api	api	API	99	0
+development-frontend	frontend	frontend	99	0
+development-backend	backend	backend	99	0
+development-workflow	workflow	workflow	99	0
+development-xinput	xinput	xinput	99	0
+development-javascript	javascript	JavaScript	99	0

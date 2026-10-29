@@ -148,7 +148,25 @@ type KeyboardPreferences struct {
 	// EmojiSuggestions adds a small reviewed set of Unicode Emoji alternatives
 	// to Chinese Pinyin candidates. The OS renders the characters.
 	EmojiSuggestions bool `json:"emojiSuggestions"`
+	TypoCorrection   bool `json:"typoCorrection"`
+	// FuzzyPinyin is a stable bit set shared with the native keyboard ABI.
+	FuzzyPinyin uint32 `json:"fuzzyPinyin"`
 }
+
+const (
+	FuzzyZZH uint32 = 1 << iota
+	FuzzyCCH
+	FuzzySSH
+	FuzzyNL
+	FuzzyFH
+	FuzzyRL
+	FuzzyANANG
+	FuzzyENENG
+	FuzzyINING
+	FuzzyIANIANG
+	FuzzyUANUANG
+	FuzzyPinyinMask = (1 << iota) - 1
+)
 
 // DefaultKeyboardPreferences keep the engine's nine-candidate page and the
 // app's yellow accent.
@@ -160,6 +178,10 @@ func DefaultKeyboardPreferences() KeyboardPreferences {
 func (k KeyboardPreferences) normalize() (KeyboardPreferences, bool) {
 	defaults := DefaultKeyboardPreferences()
 	repaired := false
+	if k.FuzzyPinyin & ^uint32(FuzzyPinyinMask) != 0 {
+		k.FuzzyPinyin &= FuzzyPinyinMask
+		repaired = true
+	}
 	known := false
 	for _, size := range CandidatePageSizes {
 		known = known || size == k.PageSize

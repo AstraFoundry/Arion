@@ -9,10 +9,10 @@ import (
 
 // Term preserves each variant's identity for independent removal and undo.
 type Term struct {
-	Text       string
-	Hotword    bool
-	HotwordIDs []string
-	Variants   []runtime.Replacement
+	Text     string
+	Hotword  bool
+	Hotwords []runtime.Replacement
+	Variants []runtime.Replacement
 }
 
 // Groups keeps the store's order. A matching canonical term or variant reveals
@@ -29,7 +29,7 @@ func Groups(entries []runtime.Replacement, query string) []Term {
 		}
 		terms[position].Hotword = terms[position].Hotword || entry.Hotword
 		if entry.From == "" && entry.Hotword {
-			terms[position].HotwordIDs = append(terms[position].HotwordIDs, entry.ID)
+			terms[position].Hotwords = append(terms[position].Hotwords, entry)
 		} else {
 			terms[position].Variants = append(terms[position].Variants, entry)
 		}

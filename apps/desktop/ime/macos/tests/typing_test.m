@@ -7,53 +7,17 @@
 #include <rime_api.h>
 #include "../../shared/input.h"
 #include "../../shared/emoji.h"
+#include "../../shared/english_admission_cases.h"
+#include "../../shared/personal_vocabulary_bridge.h"
+#include "../../shared/personal_vocabulary_store.h"
+#include "../../shared/learning_rime.h"
+#include <rime/dict/prism.h>
 #include <map>
 #include <memory>
+#include <dlfcn.h>
 
-// The client protocol adapter owns a real AppKit text store; conversion is real librime.
-@interface TypingEditor : NSObject
-@property(strong) NSTextView *view;
-@property NSUInteger insertions;
-@property NSUInteger markings;
-@end
-@implementation TypingEditor
-- (instancetype)init {
-    if ((self = [super init])) self.view = [[NSTextView alloc] initWithFrame:NSMakeRect(0, 0, 500, 200)];
-    return self;
-}
-- (void)setMarkedText:(id)text selectionRange:(NSRange)selection replacementRange:(NSRange)replacement {
-    self.markings++;
-    [self.view setMarkedText:text selectedRange:selection replacementRange:replacement];
-}
-- (void)insertText:(id)text replacementRange:(NSRange)replacement {
-    self.insertions++;
-    [self.view insertText:text replacementRange:replacement];
-}
-@end
+#include "typing_fixture.h"
 
-static void require(BOOL condition, NSString *description) {
-    if (!condition) @throw [NSException exceptionWithName:@"AssertionFailure" reason:description userInfo:nil];
-}
-static NSEvent *key(NSString *characters, unsigned short code, NSEventModifierFlags flags) {
-    return [NSEvent keyEventWithType:NSEventTypeKeyDown location:NSZeroPoint modifierFlags:flags
-        timestamp:0 windowNumber:0 context:nil characters:characters charactersIgnoringModifiers:characters
-        isARepeat:NO keyCode:code];
-}
-static BOOL modifier(ArionTyping *typing, unsigned short code, NSEventModifierFlags flags, NSTimeInterval timestamp) {
-    NSEvent *event = [NSEvent keyEventWithType:NSEventTypeFlagsChanged location:NSZeroPoint modifierFlags:flags
-        timestamp:timestamp windowNumber:0 context:nil characters:@"" charactersIgnoringModifiers:@""
-        isARepeat:NO keyCode:code];
-    return [typing handleEvent:event];
-}
-static BOOL press(ArionTyping *typing, NSString *characters, unsigned short code) {
-    return [typing handleEvent:key(characters, code, 0)];
-}
-static void type(ArionTyping *typing, NSString *input) {
-    for (NSUInteger i = 0; i < input.length; i++) {
-        NSString *character = [input substringWithRange:NSMakeRange(i, 1)];
-        require(press(typing, character, 0), [@"engine handles synthetic letter " stringByAppendingString:character]);
-    }
-}
 static NSMutableArray *trace;
 static NSDictionary *capture(ArionTyping *typing, TypingEditor *editor) {
     return @{@"text": editor.view.string.copy, @"marked": @(editor.view.hasMarkedText),
@@ -69,6 +33,18 @@ static void record(NSString *step, ArionTyping *typing, TypingEditor *editor) {
     [trace addObject:@{@"step": step, @"state": capture(typing, editor)}];
 }
 
+static void savePanel(ArionCandidatePanel *panel, NSString *report, NSString *name) {
+    [NSRunLoop.currentRunLoop runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.4]];
+    NSWindow *window = [panel valueForKey:@"window"];
+    NSView *view = window.contentView;
+    NSBitmapImageRep *bitmap = [view bitmapImageRepForCachingDisplayInRect:view.bounds];
+    require(window.visible && bitmap != nil, @"native candidate panel is visible and drawable");
+    [view cacheDisplayInRect:view.bounds toBitmapImageRep:bitmap];
+    NSData *png = [bitmap representationUsingType:NSBitmapImageFileTypePNG properties:@{}];
+    require([png writeToFile:[report.stringByDeletingLastPathComponent stringByAppendingPathComponent:name]
+        options:NSDataWritingAtomic error:nil], @"save actual AppKit candidate rendering");
+}
+
 static void saveEditor(TypingEditor *editor, NSString *report, NSString *name) {
     [editor.view layoutSubtreeIfNeeded];
     NSBitmapImageRep *bitmap = [editor.view bitmapImageRepForCachingDisplayInRect:editor.view.bounds];
@@ -77,6 +53,17 @@ static void saveEditor(TypingEditor *editor, NSString *report, NSString *name) {
     NSData *png = [bitmap representationUsingType:NSBitmapImageFileTypePNG properties:@{}];
     require([png writeToFile:[report.stringByDeletingLastPathComponent stringByAppendingPathComponent:name]
         options:NSDataWritingAtomic error:nil], @"save actual AppKit editor rendering");
+}
+
+// Resolve the current page each time; never reuse an index after navigation.
+static void selectText(ArionTyping *typing, NSString *text) {
+    NSUInteger index=[typing.snapshot.candidates indexOfObject:text];
+    for (NSUInteger page=0;index==NSNotFound && page<20 && !typing.snapshot.lastPage;page++) {
+        require(press(typing,@"",121),@"advance actual native candidate page");
+        index=[typing.snapshot.candidates indexOfObject:text];
+    }
+    require(index!=NSNotFound && [typing select:index revision:typing.revision],
+            [@"select actual candidate " stringByAppendingString:text]);
 }
 
 static std::map<std::string, std::string> learningRecords(NSString *file, NSData *keyBytes) {
@@ -93,7 +80,10 @@ static std::map<std::string, std::string> learningRecords(NSString *file, NSData
 
 int main(int argc, const char *argv[]) {
     @autoreleasepool {
-        if (argc != 4) { fprintf(stderr, "usage: typing-test DATA USER REPORT\n"); return 2; }
+        if (argc != 7) { fprintf(stderr, "usage: typing-test DATA USER REPORT DEVELOPMENT VALIDATION HOLDOUT\n"); return 2; }
+        Dl_info loadedLibrary{};
+        if (!dladdr((const void*)rime_get_api,&loadedLibrary) || !loadedLibrary.dli_fname) return 2;
+        NSString *nativeLibraryPath=[@(loadedLibrary.dli_fname) stringByResolvingSymlinksInPath];
         [NSApplication sharedApplication];
         NSString *data = @(argv[1]), *user = @(argv[2]), *report = @(argv[3]);
         NSMutableData *testKey = [NSMutableData dataWithLength:32];
@@ -165,6 +155,149 @@ int main(int argc, const char *argv[]) {
             press(typing, @" ", 49);
             require([editor.view.string isEqual:@"你好"] && editor.insertions == 1, @"Space inserts exact engine commit once");
             require(!typing.composing && !editor.view.hasMarkedText, @"commit clears provisional range");
+        });
+        run(@"English candidates in Chinese mode", @"KBD-A13", ^{
+            typing.pageSize = 5;
+            NSMutableString *expected = [NSMutableString string];
+            for (NSString *word in @[@"artificial", @"hello", @"computer", @"software", @"can", @"an", @"you", @"hi", @"bailing", @"jingling"]) {
+                type(typing, word);
+                record(word, typing, editor);
+                require([typing.snapshot.candidates containsObject:word], @"exact English is visible even on a five-candidate page");
+                NSUInteger index = [typing.snapshot.candidates indexOfObject:word];
+                require([typing select:index revision:typing.revision], @"select actual English engine candidate");
+                [expected appendString:word];
+                require([editor.view.string isEqual:expected] && !typing.ascii && !typing.composing,
+                        @"English selection commits without changing language mode");
+            }
+        });
+        run(@"English case selection, punctuation, edits and stale cancellation", @"KBD-A13", ^{
+            type(typing, @"artificia");
+            require([typing.snapshot.candidates containsObject:@"artificial"], @"incomplete English offers the full word");
+            type(typing, @"l");
+            require([typing.snapshot.candidates[0] isEqual:@"artificial"], @"full English word leads generated Chinese sentences");
+            press(typing, @"\x7f", 51);
+            require([typing.snapshot.candidates containsObject:@"artificial"], @"Backspace refreshes matching completions");
+            type(typing, @"l"); press(typing, @" ", 49);
+            require([editor.view.string isEqual:@"artificial"] && editor.insertions == 1, @"Space commits the English engine candidate once");
+            type(typing, @"nihao"); press(typing, @" ", 49);
+            type(typing, @"hello");
+            NSUInteger title = [typing.snapshot.candidates indexOfObject:@"Hello"];
+            require(title < 9, @"sentence-initial case variant is visible");
+            press(typing, [NSString stringWithFormat:@"%lu", (unsigned long)title+1], 0);
+            press(typing, @",", 43);
+            require([editor.view.string isEqual:@"artificial你好Hello，"] && editor.insertions == 4,
+                    @"number-selected English mixes with Chinese and Chinese punctuation");
+            type(typing, @"software");
+            NSUInteger stale = typing.revision;
+            press(typing, @"\x1b", 53);
+            require(![typing select:0 revision:stale] && [editor.view.string isEqual:@"artificial你好Hello，"] && editor.insertions == 4,
+                    @"canceled English cannot commit through an old callback");
+        });
+        run(@"English prefix completion uses bounded actual engine candidates", @"KBD-A13", ^{
+            typing.pageSize = 5;
+            for (NSArray<NSString *> *sample in @[@[@"artifi", @"artificial"], @[@"compu", @"computer"],
+                                                  @[@"softw", @"software"], @[@"hel", @"hello"]]) {
+                type(typing, sample[0]);
+                record(sample[0], typing, editor);
+                NSUInteger index = [typing.snapshot.candidates indexOfObject:sample[1]];
+                for (NSUInteger page = 0; index == NSNotFound && page < 8; ++page) {
+                    press(typing, @"=", 24);
+                    index = [typing.snapshot.candidates indexOfObject:sample[1]];
+                }
+                require(index != NSNotFound, @"prefix offers the intended word through actual candidate paging");
+                require([typing select:index revision:typing.revision], @"select actual completion by displayed index");
+                require([editor.view.string hasSuffix:sample[1]] && !typing.composing && !typing.ascii,
+                        @"completion consumes only typed input and keeps Chinese mode");
+            }
+            type(typing, @"artifi");
+            press(typing, @"\x7f", 51);
+            require([typing.snapshot.candidates containsObject:@"artificial"], @"shorter prefix refreshes completion");
+            type(typing, @"zz");
+            require(![typing.snapshot.candidates containsObject:@"artificial"], @"diverged prefix removes the old word");
+            [typing cancel];
+            for (NSString *code in @[@"shi", @"nihao"]) {
+                type(typing, code);
+                require([typing.snapshot.candidates[0] characterAtIndex:0] > 127, @"whole-input Chinese stays first");
+                [typing cancel];
+            }
+        });
+        run(@"Expanded English vocabulary, canonical case and lower-ranked completions", @"KBD-A13", ^{
+            typing.pageSize = 5;
+            for (NSArray<NSString *> *sample in @[@[@"github", @"GitHub"], @[@"javascript", @"JavaScript"],
+                    @[@"api", @"API"], @[@"frontend", @"frontend"], @[@"backend", @"backend"], @[@"workflow", @"workflow"]]) {
+                type(typing, sample[0]);
+                NSUInteger index = [typing.snapshot.candidates indexOfObject:sample[1]];
+                require(index < 5, @"expanded source word and its canonical case appear on the first page");
+                require([typing select:index revision:typing.revision], @"expanded English word uses actual engine selection");
+                require([editor.view.string hasSuffix:sample[1]], @"canonical source spelling survives commit");
+            }
+            type(typing, @"artifi");
+            NSMutableSet<NSString *> *words = [NSMutableSet set];
+            for (NSUInteger page = 0; page < 10; ++page) {
+                for (NSString *candidate in typing.snapshot.candidates)
+                    if ([candidate.lowercaseString hasPrefix:@"artifi"]) [words addObject:candidate.lowercaseString];
+                press(typing, @"=", 24);
+            }
+            require(words.count > 3 && [words containsObject:@"artifice"], @"lower-ranked words survive beyond the old three-word cutoff");
+            [typing cancel];
+        });
+        for (int fixture=4; fixture<argc; ++fixture) {
+            const auto samples=EnglishAdmissionCases(std::filesystem::u8path(argv[fixture]));
+            NSString *split=[@(argv[fixture]).lastPathComponent stringByDeletingPathExtension];
+            run([NSString stringWithFormat:@"English admission %@ on native menus",split], @"KBD-A13", ^{
+                for (NSNumber *size in @[@5,@9]) {
+                    NSUInteger pageSize=size.unsignedIntegerValue;
+                    typing.pageSize=pageSize;
+                    for (const auto &sample:samples) {
+                        NSString *code=@(sample.input.c_str());
+                        type(typing,code);
+                        NSString *step=[NSString stringWithFormat:@"%s page %lu",sample.id.c_str(),(unsigned long)pageSize];
+                        record(step,typing,editor);
+                        NSUInteger englishCount=0;
+                        for (NSString *candidate in typing.snapshot.candidates)
+                            englishCount+=EnglishAdmissionWord(candidate.UTF8String);
+                        require(englishCount<=sample.maximumEnglish,[step stringByAppendingString:@" unexpected English suggestions"]);
+                        if (sample.chineseFirst) require(typing.snapshot.candidates.count &&
+                            [typing.snapshot.candidates[0] characterAtIndex:0]>127,[step stringByAppendingString:@" Chinese priority"]);
+                        if (sample.expected!="-") {
+                            NSString *expected=@(sample.expected.c_str());
+                            NSUInteger index=[typing.snapshot.candidates indexOfObject:expected];
+                            require(index!=NSNotFound,[step stringByAppendingString:@" expected English on first page"]);
+                            NSUInteger insertions=editor.insertions;
+                            require([typing select:index revision:typing.revision] && editor.insertions==insertions+1 &&
+                                [editor.view.string hasSuffix:expected],[step stringByAppendingString:@" actual commit once"]);
+                        } else [typing cancel];
+                    }
+                }
+            });
+        }
+        run(@"English commits do not enter Chinese word learning", @"KBD-A07 KBD-A13", ^{
+            [typing deactivate]; [engine stop];
+            NSString *vault = [user stringByAppendingPathComponent:@"encrypted"];
+            const auto records = learningRecords([vault stringByAppendingPathComponent:@"arion_pinyin.arion-userdb"], testKey);
+            for (const auto &[code, value] : records) {
+                require(code.find("artificial") == std::string::npos && value.find("artificial") == std::string::npos &&
+                        code.find("Hello") == std::string::npos && value.find("Hello") == std::string::npos,
+                        @"English table phrases stay out of the Chinese encrypted dictionary");
+            }
+            for (NSString *member in [NSFileManager.defaultManager enumeratorAtPath:user])
+                require([member rangeOfString:@"arion_english"].location == NSNotFound, @"English selection creates no mutable or plaintext dictionary");
+            NSError *restartError = nil;
+            require(ArionRegisterTestEncryptedLearning(vault, testKey, &restartError) &&
+                    [engine startWithData:data userDirectory:user error:&restartError], @"restart real engine after English learning inspection");
+        });
+        run(@"English candidate panel rendering", @"KBD-A13", ^{
+            ArionCandidatePanel *panel = [ArionCandidatePanel new];
+            @try {
+                for (NSString *word in @[@"artificial", @"can", @"artifi", @"hel", @"github", @"frontend", @"xin", @"shi"]) {
+                    type(typing, word);
+                    record(word, typing, editor);
+                    [panel showCandidates:typing.snapshot.candidates highlighted:typing.snapshot.highlighted lastPage:typing.snapshot.lastPage
+                        revision:typing.revision caretRect:NSMakeRect(80, 300, 1, 20)];
+                    savePanel(panel, report, [NSString stringWithFormat:@"english-macos-%@.png", word]);
+                    [typing cancel];
+                }
+            } @finally { [panel hide]; }
         });
         __block NSArray<NSString *> *emojiOnTextOrder = nil;
         run(@"Emoji candidate native probe", @"KBD-A10", ^{
@@ -263,8 +396,8 @@ int main(int argc, const char *argv[]) {
                 require(arion_pinyin_candidates(engine.api, session, 0, 81, &texts, &count), @"read bounded engine window");
                 BOOL found = NO;
                 for (size_t index=0; index<count; index++) if (strcmp(texts[index],item.emoji)==0) {
-                    ArionEmojiCandidateMetadata metadata;
-                    found = arion_emoji_candidate_metadata(session,index,&metadata) && metadata.emoji &&
+                    ArionCandidateMetadata metadata;
+                    found = arion_candidate_metadata(session,index,&metadata) && metadata.emoji &&
                         strcmp(metadata.source,item.source)==0 && metadata.end==strlen(item.pinyin);
                     break;
                 }
@@ -273,6 +406,460 @@ int main(int argc, const char *argv[]) {
                 if (!found) [unreachable addObject:@(item.pinyin)];
             }
             require(unreachable.count == 0, [@"unreachable reviewed triggers: " stringByAppendingString:[unreachable componentsJoinedByString:@", "]]);
+        });
+        run(@"shifted English letters retain case through native editor commit", @"KBD-A15", ^{
+            require([typing handleEvent:key(@"H",4,NSEventModifierFlagShift)], @"shifted Latin letter enters composition");
+            type(typing,@"ello");
+            NSUInteger index=[typing.snapshot.candidates indexOfObject:@"Hello"];
+            require(index!=NSNotFound, @"native menu contains cased English candidate");
+            require([typing select:index revision:typing.revision], @"select English through native menu identity");
+            require([editor.view.string isEqual:@"Hello"] && editor.insertions==1, @"native editor receives exact cased commit once");
+        });
+        run(@"English dictionary and mixed partial conversions keep engine ownership", @"KBD-A15", ^{
+            const struct { const char *input; const char *first; const char *second; const char *expected; } cases[] = {
+                {"hello", "hello", "", "hello"},
+                {"Hello", "Hello", "", "Hello"},
+                {"HELLO", "HELLO", "", "HELLO"},
+                {"hElLo", "hElLo", "", "hElLo"},
+                {"hell", "hello", "", "hello"},
+                {"nihaohello", "你好", "hello", "你好hello"},
+                {"hellonihao", "hello", "你好", "hello你好"},
+                {"nihaoHELLO", "你好", "HELLO", "你好HELLO"},
+                {"HELLOnihao", "HELLO", "你好", "HELLO你好"},
+            };
+            for (const auto &item : cases) {
+                uintptr_t session=[engine createSession];
+                require(session!=0, @"create independent bilingual session");
+                for (const char *letter=item.input; *letter; ++letter)
+                    require([engine processKey:*letter modifiers:0 session:session], @"compose bilingual input");
+                for (const char *expected : {item.first,item.second}) {
+                    if (!*expected) continue;
+                    char **texts=nullptr; size_t count=0, chosen=SIZE_MAX;
+                    require(arion_pinyin_candidates(engine.api,session,0,189,&texts,&count), @"enumerate actual bilingual candidates");
+                    for (size_t i=0;i<count;++i) if (strcmp(texts[i],expected)==0) { chosen=i; break; }
+                    arion_pinyin_candidates_dispose(texts,count);
+                    require(chosen!=SIZE_MAX, [NSString stringWithFormat:@"missing bilingual candidate %s for %s",expected,item.input]);
+                    require(arion_pinyin_select(engine.api,session,chosen,0), @"select bilingual engine candidate");
+                }
+                ArionPinyinSnapshot snapshot{};
+                require(arion_pinyin_snapshot(engine.api,session,&snapshot)==0, @"read bilingual engine commit");
+                require(strcmp(snapshot.commit,item.expected)==0 && !snapshot.preedit[0], @"mixed partial selections commit exactly the chosen text");
+                arion_pinyin_snapshot_dispose(&snapshot);
+                [engine destroySession:session];
+            }
+        });
+        for (BOOL spellingEnabled : {NO, YES}) {
+            NSString *mode=spellingEnabled?@"all spelling options":@"spelling options off";
+            run([@"English mid-buffer edit with " stringByAppendingString:mode], @"KBD-A04 KBD-A15", ^{
+                typing.typoCorrection=spellingEnabled;
+                typing.fuzzyPinyin=spellingEnabled?2047:0;
+                type(typing,@"hElXLo");
+                press(typing,@"",123);
+                require(typing.snapshot.selection.location==5,@"Left moves one raw English character");
+                press(typing,@"",123);
+                require(typing.snapshot.selection.location==4,@"second Left reaches the inserted middle letter");
+                press(typing,@"\x7f",51);
+                record(@"delete inserted middle letter",typing,editor);
+                press(typing,@"",119);
+                NSUInteger index=[typing.snapshot.candidates indexOfObject:@"hElLo"];
+                require(index!=NSNotFound,@"edited English candidate preserves explicit mixed case");
+                require([typing select:index revision:typing.revision],@"select edited English identity");
+                require([editor.view.string isEqual:@"hElLo"] && editor.insertions==1 && !typing.composing,
+                        @"middle edit commits exact English once");
+            });
+            run([@"Mixed English prefix cancellation with " stringByAppendingString:mode], @"KBD-A03 KBD-A05 KBD-A15", ^{
+                typing.typoCorrection=spellingEnabled;
+                typing.fuzzyPinyin=spellingEnabled?2047:0;
+                type(typing,@"HELLOnihao");
+                selectText(typing,@"HELLO");
+                record(@"English prefix remains provisional",typing,editor);
+                require(typing.composing && editor.insertions==0,@"partial English choice does not prematurely commit");
+                NSUInteger stale=typing.revision;
+                press(typing,@"\x1b",53);
+                require(!typing.composing && !editor.view.hasMarkedText && editor.view.string.length==0,
+                        @"Escape discards selected English prefix and Chinese suffix");
+                require(![typing select:0 revision:stale] && editor.insertions==0,@"late mixed candidate cannot insert");
+                type(typing,@"Hello");
+                stale=typing.revision;
+                [typing toggleASCII];
+                require(!typing.composing && editor.view.string.length==0 && ![typing select:0 revision:stale],
+                        @"mode change discards English composition and stale callback");
+            });
+            for (BOOL englishFirst : {NO, YES}) {
+                NSString *input=englishFirst?@"HELLOnihaX":@"nihaohElLX";
+                NSString *prefix=englishFirst?@"HELLO":@"你好";
+                NSString *suffix=englishFirst?@"你好":@"hElLo";
+                NSString *expected=[prefix stringByAppendingString:suffix];
+                run([NSString stringWithFormat:@"Selected %@ prefix suffix editing and focus loss with %@",prefix,mode],
+                    @"KBD-A03 KBD-A04 KBD-A05 KBD-A15", ^{
+                    typing.typoCorrection=spellingEnabled;
+                    typing.fuzzyPinyin=spellingEnabled?2047:0;
+                    type(typing,input);
+                    selectText(typing,prefix);
+                    record(@"selected prefix before suffix edit",typing,editor);
+                    require(typing.composing && editor.insertions==0,@"prefix selection remains provisional");
+                    NSUInteger stale=typing.revision;
+                    require(press(typing,@"\x7f",51),@"roll back the previous segment selection");
+                    record(@"Backspace reopens selected prefix without deleting raw input",typing,editor);
+                    // Pinyin preedit inserts a syllable separator; it is not raw input.
+                    NSString *reopened=englishFirst?input:@"ni haohElLX";
+                    require([typing.snapshot.preedit isEqual:reopened] &&
+                            typing.composing && editor.insertions==0,
+                            @"first Backspace restores the complete marked spelling without committing");
+                    require(press(typing,@"\x7f",51),@"delete wrong trailing suffix letter after rollback");
+                    type(typing,@"o");
+                    record(@"corrected suffix after selected prefix",typing,editor);
+                    require(![typing select:0 revision:stale],@"suffix edit invalidates prior candidate callback");
+                    selectText(typing,prefix);
+                    selectText(typing,suffix);
+                    require([editor.view.string isEqual:expected] && editor.insertions==1 &&
+                            !typing.composing && !editor.view.hasMarkedText,@"mixed edited composition commits once with selected prefix");
+                    type(typing,input);
+                    selectText(typing,prefix);
+                    stale=typing.revision;
+                    [typing deactivate];
+                    record(@"focus lost with selected prefix",typing,editor);
+                    require([editor.view.string isEqual:expected] && editor.insertions==1 && !editor.view.hasMarkedText,
+                            @"focus loss removes only pending mixed composition");
+                    require(![typing select:0 revision:stale],@"old owner cannot commit selected prefix after focus loss");
+                    require([typing activate:editor error:nil],@"reactivate same editor with fresh composition");
+                    type(typing,@"Hello");selectText(typing,@"Hello");
+                    require([editor.view.string isEqual:[expected stringByAppendingString:@"Hello"]] && editor.insertions==2,
+                            @"new owner cannot resurrect the cancelled prefix or suffix");
+                });
+            }
+            run([@"Unknown technical spelling raw commit with " stringByAppendingString:mode], @"KBD-A02 KBD-A15", ^{
+                typing.typoCorrection=spellingEnabled;
+                typing.fuzzyPinyin=spellingEnabled?2047:0;
+                type(typing,@"ArionZqxBridge");
+                record(@"unknown technical spelling before Return",typing,editor);
+                require(press(typing,@"\r",36),@"Return commits unknown raw spelling");
+                require([editor.view.string isEqual:@"ArionZqxBridge"] && editor.insertions==1 && !typing.composing,
+                        @"raw Return preserves unknown technical case without completion or newline");
+                require(press(typing,@".",47),@"punctuation follows raw English commit");
+                require([editor.view.string isEqual:@"ArionZqxBridge。"] && editor.insertions==2,
+                        @"following punctuation does not reconvert committed English");
+            });
+        }
+        run(@"spelling preference changes revoke composition and survive reactivation", @"KBD-A14", ^{
+            type(typing, @"nihao");
+            NSUInteger revision=typing.revision;
+            typing.typoCorrection=YES;
+            require(!typing.composing && editor.insertions==0, @"changing spelling cancels unconfirmed text");
+            require(![typing select:0 revision:revision], @"old candidate callback cannot survive a spelling change");
+            type(typing, @"zhoongguo");
+            NSUInteger index=[typing.snapshot.candidates indexOfObject:@"中国"];
+            require(index!=NSNotFound, @"typing applies its correction preference to the active session");
+            [typing deactivate];
+            require([typing activate:editor error:nil], @"reactivate with retained spelling preferences");
+            type(typing, @"zhoongguo");
+            require([typing.snapshot.candidates containsObject:@"中国"], @"new session retains correction preference");
+            typing.fuzzyPinyin=1u;
+            require(!typing.composing, @"changing a fuzzy pair cancels unconfirmed text");
+            typing.typoCorrection=NO;
+            type(typing, @"zongguo");
+            require([typing.snapshot.candidates containsObject:@"中国"], @"fuzzy option works independently of typo correction");
+        });
+        run(@"bounded typo correction produces real complete candidates", @"KBD-A14", ^{
+            const struct { const char *input; const char *expected; const char *option; bool exact; } cases[] = {
+                {"zhngguo", "中国", "arion_typo", false},
+                {"zhoongguo", "中国", "arion_typo", false},
+                {"zhognguo", "中国", "arion_typo", false},
+                {"zhomgguo", "中国", "arion_typo", false},
+                {"zongguo", "中国", "arion_fuzzy_z_zh", false},
+                {"ban", "帮", "arion_fuzzy_an_ang", false},
+                {"bang", "班", "arion_fuzzy_an_ang", false},
+                {"ben", "崩", "arion_fuzzy_en_eng", false},
+                {"beng", "本", "arion_fuzzy_en_eng", false},
+                {"bin", "冰", "arion_fuzzy_in_ing", false},
+                {"bing", "宾", "arion_fuzzy_in_ing", false},
+                {"lian", "两", "arion_fuzzy_ian_iang", false},
+                {"liang", "连", "arion_fuzzy_ian_iang", false},
+                {"guan", "光", "arion_fuzzy_uan_uang", false},
+                {"guang", "关", "arion_fuzzy_uan_uang", false},
+                {"zhongguo", "中国", "arion_typo", true},
+                {"nihao", "你好", "arion_typo", true},
+                {"nj", "那就", "arion_typo", true},
+                {"womenzhoumqugongyuan", "我们周末去公园", "arion_typo", false},
+                {"qingbangwodkaidiandeng", "请帮我打开电灯", "arion_typo", false},
+            };
+            for (const auto &item : cases) {
+                uintptr_t session = [engine createSession];
+                require(session != 0, @"create independent spelling session");
+                NSString *originalFirst=nil;
+                if (item.exact) {
+                    for (const char *letter=item.input; *letter; ++letter) [engine processKey:*letter modifiers:0 session:session];
+                    originalFirst=[[engine candidates:session from:0 limit:1] firstObject];
+                    [engine clear:session];
+                }
+                engine.api->set_option(session,item.option,True);
+                for (const char *letter=item.input; *letter; ++letter)
+                    require([engine processKey:*letter modifiers:0 session:session], @"compose spelling fixture");
+                char **texts = nullptr; size_t count = 0; size_t chosen = SIZE_MAX;
+                require(arion_pinyin_candidates(engine.api, session, 0, 189, &texts, &count), @"enumerate corrected candidates");
+                for (size_t index=0; index<count; ++index) if (strcmp(texts[index],item.expected)==0) {
+                    ArionCandidateMetadata metadata{};
+                    require(arion_candidate_metadata(session,index,&metadata), @"corrected candidate has raw range");
+                    if (metadata.start==0 && metadata.end==strlen(item.input)) { chosen=index; break; }
+                }
+                arion_pinyin_candidates_dispose(texts,count);
+                require(chosen!=SIZE_MAX, [NSString stringWithFormat:@"full corrected candidate missing: %s",item.input]);
+                if (item.exact) require([[[engine candidates:session from:0 limit:1] firstObject] isEqual:originalFirst], @"typo expansion retains the original bilingual first choice");
+                require(arion_pinyin_select(engine.api,session,chosen,0), @"select actual corrected engine candidate");
+                ArionPinyinSnapshot snapshot{};
+                require(arion_pinyin_snapshot(engine.api,session,&snapshot)==0, @"read engine commit");
+                require(strcmp(snapshot.commit,item.expected)==0 && !snapshot.preedit[0], @"corrected selection commits exactly once without leftover input");
+                arion_pinyin_snapshot_dispose(&snapshot);
+                [engine destroySession:session];
+            }
+        });
+        run(@"case families are unique and technical English prefixes retain real spans", @"KBD-A13 KBD-A15", ^{
+            type(typing,@"API");
+            NSUInteger count=0;
+            for (NSString *candidate in typing.snapshot.candidates) if ([candidate isEqual:@"API"]) ++count;
+            require(count==1,@"explicit all-capital input does not repeat transformed source forms");
+            selectText(typing,@"API");
+            type(typing,@"GitHubnihao");
+            selectText(typing,@"GitHub");
+            require(typing.composing && editor.insertions==1,@"selected technical English prefix stays provisional");
+            selectText(typing,@"你好");
+            require([editor.view.string isEqual:@"APIGitHub你好"] && editor.insertions==2 && !typing.composing,
+                    @"technical English prefix and Chinese suffix commit once through the engine");
+        });
+        run(@"English prefixes retain typo and independent fuzzy suffix conversion", @"KBD-A14 KBD-A15", ^{
+            typing.typoCorrection=YES;
+            type(typing,@"hellozhngguo");
+            selectText(typing,@"hello");
+            require(typing.composing && editor.insertions==0,@"English prefix does not prematurely commit a typo suffix");
+            selectText(typing,@"中国");
+            require([editor.view.string isEqual:@"hello中国"] && editor.insertions==1,@"typo suffix commits its complete raw coverage");
+            typing.typoCorrection=NO;typing.fuzzyPinyin=1u;
+            type(typing,@"HELLOzongguo");
+            selectText(typing,@"HELLO");selectText(typing,@"中国");
+            require([editor.view.string isEqual:@"hello中国HELLO中国"] && editor.insertions==2 && !typing.composing,
+                    @"fuzzy suffix works with typo disabled and preserves English case");
+        });
+        run(@"English prefixes retain approved personal suffix candidates", @"KBD-11 KBD-A15", ^{
+            uintptr_t session=[engine createSession];
+            ArionPersonalTerm term{"mixed-personal","星槎工坊","xing cha gong fang"};
+            require(session && arion_personal_vocabulary_replace(session,1,&term,1),@"bind approved personal term to isolated engine session");
+            for (const char *letter="helloxcgf";*letter;++letter) [engine processKey:*letter modifiers:0 session:session];
+            NSArray *candidates=[engine candidates:session from:0 limit:189];
+            NSUInteger index=[candidates indexOfObject:@"hello"];
+            ArionCandidateMetadata metadata{};
+            require(index!=NSNotFound && arion_candidate_metadata(session,index,&metadata) && metadata.start==0 && metadata.end==5,
+                    @"English prefix consumes only its exact raw bytes");
+            require([engine selectCandidate:index session:session],@"select actual English prefix");
+            ArionKeyboardSnapshot *partial=[engine snapshot:session error:nil];
+            require(partial.commit.length==0 && partial.preedit.length>0,@"personal suffix remains provisional after English choice");
+            candidates=[engine candidates:session from:0 limit:189];index=[candidates indexOfObject:@"星槎工坊"];
+            require(index!=NSNotFound && arion_candidate_metadata(session,index,&metadata) && metadata.start==5 && metadata.end==9,
+                    @"personal suffix retains its original consumed range after English");
+            require([engine selectCandidate:index session:session],@"select actual personal suffix");
+            ArionKeyboardSnapshot *final=[engine snapshot:session error:nil];
+            require([final.commit isEqual:@"hello星槎工坊"] && final.preedit.length==0,@"mixed personal selection commits exact engine text once");
+            [engine destroySession:session];
+        });
+        run(@"personal projection persists encrypted and rejects stale updates", @"MEM-08", ^{
+            auto provider=arion::ime::registeredLearningProvider();
+            rime::Prism prism{rime::path([[data stringByAppendingPathComponent:@"build/pinyin_simp.prism.bin"] UTF8String])};
+            require(provider && prism.Load(),@"load actual cache provider and pronunciation prism");
+            std::vector<arion::ime::PersonalTerm> terms{{"evision","星槎工坊","xing cha gong fang"}};
+            {
+                arion::ime::PersonalVocabularyStore cache(provider);
+                require(cache.open() && cache.save(prism,1,terms),@"persist approved personal projection");
+                require(!cache.save(prism,1,{}),@"reject stale disk projection");
+            }
+            NSString* file=[NSString stringWithUTF8String:arion::ime::learningPath(provider->directory(),"arion_personal.arion-userdb").c_str()];
+            NSData* sealed=[NSData dataWithContentsOfFile:file];
+            require(sealed.length>32,@"personal projection ciphertext exists");
+            for (NSString* canary in @[@"星槎工坊",@"xing cha gong fang",@"evision"]) {
+                require([sealed rangeOfData:[canary dataUsingEncoding:NSUTF8StringEncoding] options:0 range:NSMakeRange(0,sealed.length)].location==NSNotFound,@"private projection fields absent from ciphertext");
+            }
+            {
+                arion::ime::PersonalVocabularyStore cache(provider);
+                uint64_t revision=0;std::vector<arion::ime::PersonalTerm> restored;
+                require(cache.open() && cache.load(prism,revision,restored),@"reopen encrypted projection offline");
+                require(revision==1 && restored.size()==1 && restored[0].id=="evision" && restored[0].text==terms[0].text && restored[0].reading==terms[0].reading,@"restore exact fields without metadata collisions");
+                require(!cache.save(prism,2,{{"invalid","星槎","zzzzzz"}}),@"invalid pronunciation cannot replace disk projection");
+                require(cache.load(prism,revision,restored) && revision==1 && restored.size()==1,@"failed update preserves previous snapshot");
+                require(cache.save(prism,2,{}),@"persist deletion as newer empty snapshot");
+            }
+            {
+                arion::ime::PersonalVocabularyStore cache(provider);
+                uint64_t revision=0;std::vector<arion::ime::PersonalTerm> restored;
+                require(cache.open() && cache.load(prism,revision,restored) && revision==2 && restored.empty(),@"deleted projection stays empty after restart");
+            }
+            {
+                arion::ime::PersonalVocabularyStore first(provider),second(provider);
+                require(first.open(),@"open cache writer");
+                require(!provider->cooperative() && !second.open(),@"macOS provider excludes simultaneous cache writers");
+                require(first.save(prism,3,terms),@"publish newer full projection");
+            }
+            {
+                arion::ime::PersonalVocabularyStore next(provider);
+                require(next.open() && !next.save(prism,3,{}),@"new writer cannot overwrite the same revision");
+                uint64_t revision=0;std::vector<arion::ime::PersonalTerm> restored;
+                require(next.load(prism,revision,restored) && revision==3 && restored.size()==1,@"new writer sees current complete projection");
+                require(next.save(prism,4,{}),@"new writer publishes newer deletion");
+            }
+            NSData* intact=[NSData dataWithContentsOfFile:file];
+            NSMutableData* corrupt=[intact mutableCopy];
+            ((unsigned char*)corrupt.mutableBytes)[corrupt.length-1]^=0x01;
+            require([corrupt writeToFile:file atomically:YES],@"tamper isolated synthetic cache");
+            {
+                arion::ime::PersonalVocabularyStore cache(provider);
+                require(!cache.open() && cache.error().code!=0,@"tampered projection fails authentication");
+                require([[NSData dataWithContentsOfFile:file] isEqual:corrupt],@"authentication failure does not rewrite original file");
+            }
+            require([intact writeToFile:file atomically:YES],@"restore synthetic cache fixture for remaining tests");
+            require([[NSFileManager defaultManager] removeItemAtPath:file error:nil],@"remove isolated cache fixture after its lifecycle checks");
+        });
+        run(@"personal terms use actual engine commits and revision boundaries", @"MEM-08", ^{
+            uintptr_t session=[engine createSession];
+            require(session!=0,@"create personal vocabulary session");
+            ArionPersonalTerm term{"personal-1","星槎工坊","xing cha gong fang"};
+            require(arion_personal_vocabulary_replace(session,1,&term,1),@"accept approved pronunciation projection");
+            require(!arion_personal_vocabulary_replace(session,1,nullptr,0),@"reject stale projection");
+            uintptr_t isolated=[engine createSession];
+            for (const char* letter="xingchagongfang";*letter;++letter) [engine processKey:*letter modifiers:0 session:isolated];
+            require([[engine candidates:isolated from:0 limit:189] indexOfObject:@"星槎工坊"]==NSNotFound,@"projection is scoped to its owning session");
+            [engine destroySession:isolated];
+            for (const char* input:{"xingchagongfang","xcgf","xingchagongfangnihao"}) {
+                for (const char* letter=input;*letter;++letter) require([engine processKey:*letter modifiers:0 session:session],@"type personal pronunciation");
+                require(!arion_personal_vocabulary_replace(session,2,nullptr,0),@"do not replace active composition");
+                NSArray<NSString*>* candidates=[engine candidates:session from:0 limit:189];
+                NSUInteger index=[candidates indexOfObject:@"星槎工坊"];
+                require(index!=NSNotFound,@"personal term is a real candidate");
+                ArionCandidateMetadata metadata{};
+                require(arion_candidate_metadata(session,index,&metadata),@"read personal range");
+                require(strcmp(metadata.type,"arion_personal")==0 && metadata.start==0,@"preserve personal provenance");
+                const bool partial=strstr(input,"nihao")!=nullptr;
+                require(metadata.end==(partial?strlen("xingchagongfang"):strlen(input)),@"personal raw input range");
+                require(arion_pinyin_select(engine.api,session,index,0),@"select personal candidate through engine");
+                ArionPinyinSnapshot snapshot{};
+                require(arion_pinyin_snapshot(engine.api,session,&snapshot)==0,@"snapshot personal selection");
+                if (partial) {
+                    require(snapshot.preedit[0]!=0 && snapshot.commit[0]==0,@"prefix selection keeps suffix provisional");
+                    arion_pinyin_snapshot_dispose(&snapshot);
+                    NSArray<NSString*>* suffix=[engine candidates:session from:0 limit:189];
+                    NSUInteger next=[suffix indexOfObject:@"你好"];
+                    require(next!=NSNotFound && arion_pinyin_select(engine.api,session,next,0),@"select remaining suffix");
+                    require(arion_pinyin_snapshot(engine.api,session,&snapshot)==0,@"snapshot final personal sentence");
+                }
+                require(strcmp(snapshot.commit,partial?"星槎工坊你好":"星槎工坊")==0 && !snapshot.preedit[0],@"engine commits personal text exactly once");
+                arion_pinyin_snapshot_dispose(&snapshot);
+            }
+            require(arion_personal_vocabulary_replace(session,2,nullptr,0),@"remove projection between compositions");
+            for (const char* letter="xingchagongfang";*letter;++letter) [engine processKey:*letter modifiers:0 session:session];
+            NSArray<NSString*>* removed=[engine candidates:session from:0 limit:189];
+            require([removed indexOfObject:@"星槎工坊"]==NSNotFound,@"personal selection does not leak into ordinary learning");
+            [engine clear:session];
+            ArionPersonalTerm multiple[]={{"one","星槎工坊","xing cha gong fang"},{"two","星槎工坊","xing cha gong fang"},{"three","星茶工坊","xing cha gong fang"}};
+            require(arion_personal_vocabulary_replace(session,3,multiple,3),@"accept distinct source records for matching spellings");
+            for (const char* letter="xingchagongfang";*letter;++letter) [engine processKey:*letter modifiers:0 session:session];
+            NSArray<NSString*>* merged=[engine candidates:session from:0 limit:189];
+            require([merged indexOfObject:@"星槎工坊"]==1 && [merged indexOfObject:@"星茶工坊"]==2,@"personal alternatives retain deterministic order after ordinary first");
+            NSUInteger occurrences=0;
+            for (NSString* text in merged) if ([text isEqual:@"星槎工坊"]) ++occurrences;
+            require(occurrences==1,@"same text and input range appear once across source records");
+            [engine destroySession:session];
+            require(!arion_personal_vocabulary_replace(session,4,nullptr,0),@"destroyed session cannot receive a projection");
+        });
+        run(@"new keyboard sessions restore personal terms without app connection", @"KBD-11", ^{
+            uintptr_t first=[engine createSession];
+            ArionPersonalTerm term{"offline-one","星槎工坊","xing cha gong fang"};
+            require(first && arion_personal_vocabulary_publish(first,1,&term,1),@"persist before applying personal projection");
+            [engine destroySession:first];
+            uintptr_t restored=[engine createSession];
+            require(restored!=0,@"create independent session with cached projection");
+            uint64_t revision=0;
+            require(arion_personal_vocabulary_restore(restored,&revision) && revision==1,@"report persisted revision for future connection handshake");
+            for (const char* letter="xcgf";*letter;++letter) [engine processKey:*letter modifiers:0 session:restored];
+            require([[engine candidates:restored from:0 limit:189] indexOfObject:@"星槎工坊"]!=NSNotFound,@"offline session offers cached personal candidate");
+            require(!arion_personal_vocabulary_publish(restored,2,nullptr,0),@"busy publish cannot alter persistent projection");
+            [engine clear:restored];
+            require(arion_personal_vocabulary_restore(restored,&revision) && revision==1,@"busy publish left disk revision unchanged");
+            require(arion_personal_vocabulary_publish(restored,2,nullptr,0),@"publish complete deletion after cancellation");
+            [engine destroySession:restored];
+            uintptr_t empty=[engine createSession];
+            require(empty && arion_personal_vocabulary_restore(empty,&revision) && revision==2,@"new session restores deletion revision");
+            for (const char* letter="xcgf";*letter;++letter) [engine processKey:*letter modifiers:0 session:empty];
+            require([[engine candidates:empty from:0 limit:189] indexOfObject:@"星槎工坊"]==NSNotFound,@"cached deletion does not resurrect personal term");
+            [engine destroySession:empty];
+            auto provider=arion::ime::registeredLearningProvider();
+            NSString* cache=[NSString stringWithUTF8String:arion::ime::learningPath(provider->directory(),"arion_personal.arion-userdb").c_str()];
+            require([[NSFileManager defaultManager] removeItemAtPath:cache error:nil],@"remove synthetic offline-cache fixture");
+        });
+        run(@"native vocabulary messages persist only valid idle snapshots", @"KBD-11", ^{
+            NSDictionary *query=@{@"op":@"vocabulary_query",@"activation":@"editor",@"request":@1};
+            NSDictionary *term=@{@"id":@"wire-one",@"text":@"星槎工坊",@"reading":@"xing cha gong fang"};
+            NSMutableDictionary *publish=[@{@"op":@"vocabulary_publish",@"activation":@"editor",@"request":@1,
+                @"vocabularyRevision":@1,@"terms":@[term]} mutableCopy];
+            NSDictionary *(^apply)(NSDictionary *)=^(NSDictionary *message) {
+                return [typing applyVocabularyMessage:message activation:@"editor" blocked:NO];
+            };
+            require([apply(query)[@"vocabularyRevision"] isEqual:@0],@"empty cache reports zero revision");
+            for (id malformed in @[@YES,@(-1),@1.5,@"1",NSNull.null]) {
+                NSMutableDictionary *bad=[publish mutableCopy]; bad[@"request"]=malformed;
+                require(apply(bad)==nil,@"reject non-integer request identity");
+            }
+            NSMutableDictionary *stale=[publish mutableCopy]; stale[@"activation"]=@"old-editor";
+            require(apply(stale)==nil,@"reject stale activation");
+            require([[typing applyVocabularyMessage:publish activation:@"editor" blocked:YES][@"status"] isEqual:@"busy"],@"voice ownership blocks publication");
+            for (id malformed in @[NSNull.null,@{},@[@"term"],@[@{@"id":@"wire-one",@"text":@"星槎工坊",@"reading":@"zzzzzz"}]]) {
+                NSMutableDictionary *bad=[publish mutableCopy]; bad[@"terms"]=malformed;
+                require([apply(bad)[@"status"] isEqual:@"rejected"],@"invalid snapshot rejected without partial write");
+            }
+            unichar nulText[]={0x661f,0,0x69ce};
+            NSMutableDictionary *nul=[term mutableCopy]; nul[@"text"]=[NSString stringWithCharacters:nulText length:3];
+            NSMutableDictionary *bad=[publish mutableCopy]; bad[@"terms"]=@[nul];
+            require([apply(bad)[@"status"] isEqual:@"rejected"],@"embedded null cannot truncate a canonical term");
+            require([apply(query)[@"vocabularyRevision"] isEqual:@0],@"invalid messages leave persisted revision unchanged");
+            require([apply(publish)[@"status"] isEqual:@"ok"],@"valid message persists and applies");
+            require([apply(publish)[@"status"] isEqual:@"rejected"],@"stale publication cannot replace current snapshot");
+            type(typing,@"xcgf");
+            require([typing.snapshot.candidates containsObject:@"星槎工坊"],@"published personal term enters native menu");
+            publish[@"vocabularyRevision"]=@2; publish[@"terms"]=@[];
+            require([apply(publish)[@"status"] isEqual:@"busy"],@"active composition rejects deletion");
+            [typing cancel];
+            require([apply(query)[@"vocabularyRevision"] isEqual:@1],@"busy update left disk unchanged");
+            require([apply(publish)[@"status"] isEqual:@"ok"],@"explicit empty snapshot deletes shared terms");
+            [typing deactivate]; require([typing activate:editor error:nil],@"new session restores persisted deletion");
+            require([apply(query)[@"vocabularyRevision"] isEqual:@2],@"native query reports reopened revision");
+            type(typing,@"xcgf");
+            require(![typing.snapshot.candidates containsObject:@"星槎工坊"],@"deleted term absent after restoration");
+            [typing cancel];
+            auto provider=arion::ime::registeredLearningProvider();
+            NSString *cache=[NSString stringWithUTF8String:arion::ime::learningPath(provider->directory(),"arion_personal.arion-userdb").c_str()];
+            require([[NSFileManager defaultManager] removeItemAtPath:cache error:nil],@"remove isolated wire fixture");
+        });
+        run(@"real candidate ranges distinguish full conversion and prefixes", @"RNK-A01", ^{
+            const struct { const char *input; const char *text; size_t start; size_t end; } cases[] = {
+                {"nihao", "你好", 0, 5}, {"nihao", "你", 0, 2},
+                {"xian", "现", 0, 4}, {"xian", "西安", 0, 4},
+                {"ni'hao", "你好", 0, 6}, {"nh", "你好", 0, 2},
+            };
+            for (const auto &item : cases) {
+                uintptr_t session = [engine createSession];
+                require(session != 0, @"create independent range session");
+                for (const char *letter=item.input; *letter; ++letter)
+                    require([engine processKey:*letter modifiers:0 session:session], @"compose range fixture");
+                char **texts = nullptr; size_t count = 0;
+                require(arion_pinyin_candidates(engine.api, session, 0, 189, &texts, &count), @"enumerate real range fixtures");
+                BOOL found = NO;
+                for (size_t index=0; index<count; ++index) if (strcmp(texts[index],item.text)==0) {
+                    ArionCandidateMetadata metadata{};
+                    require(arion_candidate_metadata(session,index,&metadata), @"actual candidate has metadata");
+                    require(metadata.start==item.start && metadata.end==item.end && metadata.type[0] && !metadata.emoji,
+                            @"producer range and type match raw input, independently of text length");
+                    found = YES;
+                    break;
+                }
+                arion_pinyin_candidates_dispose(texts,count);
+                [engine destroySession:session];
+                require(found, [NSString stringWithFormat:@"real range fixture missing: %s / %s", item.input, item.text]);
+            }
         });
         run(@"system Emoji candidate panel rendering evidence", @"KBD-A10", ^{
             type(typing, @"xiaolian");
@@ -285,16 +872,8 @@ int main(int argc, const char *argv[]) {
                     panel.size = (ArionCandidateSize)size;
                     [panel showCandidates:typing.snapshot.candidates highlighted:index lastPage:typing.snapshot.lastPage
                         revision:typing.revision caretRect:NSMakeRect(80, 300, 1, 20)];
-                    [NSRunLoop.currentRunLoop runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.4]];
-                    NSWindow *window = [panel valueForKey:@"window"];
-                    NSView *view = window.contentView;
-                    NSBitmapImageRep *bitmap = [view bitmapImageRepForCachingDisplayInRect:view.bounds];
-                    require(window.visible && bitmap != nil, @"native candidate panel is visible and drawable");
-                    [view cacheDisplayInRect:view.bounds toBitmapImageRep:bitmap];
-                    NSData *png = [bitmap representationUsingType:NSBitmapImageFileTypePNG properties:@{}];
                     NSString *name = [NSString stringWithFormat:@"emoji-macos-%@-%lu.png", dark ? @"dark" : @"light", (unsigned long)size];
-                    require([png writeToFile:[report.stringByDeletingLastPathComponent stringByAppendingPathComponent:name]
-                        options:NSDataWritingAtomic error:nil], @"save actual AppKit candidate rendering");
+                    savePanel(panel, report, name);
                 }
             } @finally { [panel hide]; }
         });
@@ -339,17 +918,18 @@ int main(int argc, const char *argv[]) {
             NSMutableArray *writes = [NSMutableArray array];
             ArionContextRanker *ranker = [[ArionContextRanker alloc] initWithRecords:@{} persist:^(NSDictionary *changes) { [writes addObject:changes]; }];
             NSArray *candidates = @[@"你好", @"拟好", @"你", @"妮好"];
-            require([[ranker order:candidates after:@"我们"] isEqual:@[@0, @1, @2, @3]], @"no learned pair keeps engine order");
+            const unsigned char eligible[]={1,1,0,1};
+            require([[ranker order:candidates eligible:eligible after:@"我们"] isEqual:@[@0, @1, @2, @3]], @"no learned pair keeps engine order");
             [ranker learn:@"妮好，" after:@"我们"];
             require(writes.count == 1 && [writes[0][@"c\t我们\t妮好"] hasPrefix:@"1 "], @"trailing punctuation is not part of the learned word");
-            require([[ranker order:candidates after:@"我们"] isEqual:@[@0, @3, @1, @2]], @"one confirmation lifts a word two places, not three");
+            require([[ranker order:candidates eligible:eligible after:@"我们"] isEqual:@[@0, @3, @1, @2]], @"one confirmation lifts a word two places, not three");
             [ranker learn:@"妮好" after:@"我们"];
             [ranker learn:@"你" after:@"我们"]; [ranker learn:@"你" after:@"我们"]; [ranker learn:@"你" after:@"我们"];
-            NSArray *order = [ranker order:candidates after:@"我们"];
+            NSArray *order = [ranker order:candidates eligible:eligible after:@"我们"];
             require([[order sortedArrayUsingSelector:@selector(compare:)] isEqual:@[@0, @1, @2, @3]], @"order is a permutation");
             require([order[0] isEqual:@3] && ![order[0] isEqual:@2], @"same-length word promoted; shorter prefix stays behind");
-            require([[ranker order:candidates after:@"他们"] isEqual:@[@0, @1, @2, @3]], @"another context keeps engine order");
-            require([[ranker order:candidates after:nil] isEqual:@[@0, @1, @2, @3]], @"no context keeps engine order");
+            require([[ranker order:candidates eligible:eligible after:@"他们"] isEqual:@[@0, @1, @2, @3]], @"another context keeps engine order");
+            require([[ranker order:candidates eligible:eligible after:nil] isEqual:@[@0, @1, @2, @3]], @"no context keeps engine order");
             require([[ArionContextRanker contextOf:@"今天天气很好。 "] isEqual:@"很好"] && [ArionContextRanker contextOf:@"，。"] == nil,
                     @"context is the last two characters before punctuation");
         });
@@ -887,11 +1467,23 @@ int main(int argc, const char *argv[]) {
             require(editor.view.string.length == 0 && !editor.view.hasMarkedText, @"deactivation clears only own draft");
             require(![typing select:0 revision:revision], @"old activation cannot select");
         });
-        run(@"apostrophe syllable boundary converts real phrase", @"KBD-A02", ^{
+        run(@"apostrophe syllable boundary converts real phrase", @"KBD-A02 KBD-A13", ^{
             type(typing, @"ni'hao");
+            for (NSString *candidate in typing.snapshot.candidates) {
+                require([candidate rangeOfCharacterFromSet:[NSCharacterSet characterSetWithCharactersInString:@"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"]].location == NSNotFound,
+                        @"normal apostrophe Pinyin retains Chinese and Emoji lanes without English prefixes");
+            }
             require([typing.snapshot.candidates containsObject:@"你好"], @"declared apostrophe boundary resolves actual 你好");
             NSUInteger index = [typing.snapshot.candidates indexOfObject:@"你好"];
             require([typing select:index revision:typing.revision] && [editor.view.string isEqual:@"你好"], @"apostrophe selection commits actual phrase");
+        });
+        run(@"apostrophe normal Pinyin excludes English prefixes", @"KBD-A02 KBD-A13", ^{
+            type(typing, @"xi'an");
+            require([typing.snapshot.candidates.firstObject isEqual:@"西安"], @"original full Chinese answer remains first");
+            for (NSString *candidate in typing.snapshot.candidates) {
+                require([candidate rangeOfCharacterFromSet:[NSCharacterSet characterSetWithCharactersInString:@"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"]].location == NSNotFound,
+                        @"explicit syllable boundary does not introduce xi or Xi prefixes");
+            }
         });
         run(@"abbreviated Pinyin retains real candidate identity", @"KBD-A02", ^{
             type(typing, @"nh");
@@ -980,6 +1572,11 @@ int main(int argc, const char *argv[]) {
             NSError *restartError = nil;
             require(ArionRegisterTestEncryptedLearning(vault, testKey, &restartError) &&
                     [engine startWithData:data userDirectory:user error:&restartError], @"restart real engine with same ciphertext and test key");
+            uintptr_t shared=[engine createSession];
+            ArionPersonalTerm sameWord{"independent-shared",chosen.UTF8String,"shi shi"};
+            require(arion_personal_vocabulary_replace(shared,1,&sameWord,1),@"project independently learned identical spelling");
+            require(arion_personal_vocabulary_replace(shared,2,nullptr,0),@"remove shared contribution without unlearning independent phrase");
+            [engine destroySession:shared];
             editor.view.string = @""; editor.insertions = 0;
             require([typing activate:editor error:&restartError], @"activate fresh generation after restart");
             type(typing, @"shishi");
@@ -1099,7 +1696,7 @@ int main(int argc, const char *argv[]) {
         [engine stop];
         BOOL passed = YES;
         for (NSDictionary *result in results) if (![result[@"passed"] boolValue]) passed = NO;
-        NSDictionary *output = @{@"passed": @(passed), @"engine": @"librime 1.17.0", @"schema": @"arion_pinyin",
+        NSDictionary *output = @{@"passed": @(passed), @"engine": @"librime 1.17.0", @"schema": @"arion_pinyin", @"nativeLibraryPath": nativeLibraryPath,
             @"learning": @"production encrypted backend with isolated synthetic test key; no Keychain access",
             @"boundary": @"real engine and AppKit text store protocol adapter; no installed IMK event dispatch or input-source changes",
             @"cases": results};

@@ -1,5 +1,6 @@
 // Actual conversion through the same shared core and encrypted Rime backend
 // used by the Windows input method. This is not installed-editor acceptance.
+import {englishAdmissionFixtures} from './lib/english-admission-fixtures.mjs';
 import { execFileSync, spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { copyFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
@@ -19,7 +20,7 @@ const runDirectory = mkdtempSync(path.join(output, 'run-'));
 const hash = file => createHash('sha256').update(readFileSync(file)).digest('hex');
 const sourceNames = ['pinyin.c', 'pinyin.h', 'menu.c', 'menu.h', 'input.c', 'input.h', 'learning.cpp', 'learning.h', 'learning_windows.cpp',
   'learning_rime.cpp', 'learning_rime.h', 'ranking.cpp', 'ranking.h', 'ranking_unicode.cpp', 'ranking_unicode.h',
-  'ranking_unicode_data.h', 'emoji.cpp', 'emoji.h', 'emoji_data.h', 'pinyin_native_test.cpp'];
+  'ranking_unicode_data.h', 'emoji.cpp', 'spelling.cpp', 'personal_vocabulary.cpp', 'personal_vocabulary_store.cpp', 'english.cpp', 'english_lexicon.cpp', 'emoji.h', 'spelling.h', 'personal_vocabulary.h', 'personal_vocabulary_store.h', 'personal_vocabulary_bridge.h', 'english.h', 'english_lexicon.h', 'spelling_options.h', 'emoji_data.h', 'pinyin_native_test.cpp', 'english_admission_cases.h'];
 const sourceIdentities = Object.fromEntries(sourceNames.map(name => [name, hash(path.join(source, name))]));
 const runtimeSha256 = hash(library);
 const run = (command, args) => execFileSync(command, args, { cwd: root, stdio: 'inherit', windowsHide: true });
@@ -35,20 +36,21 @@ run(c, ['-std=c11', '-O2', '-Wall', '-Wextra', '-Werror',
   '-c', path.join(source, 'input.c'), '-o', input]);
 const binary = path.join(runDirectory, 'pinyin-native-test.exe');
 run(cxx, ['-std=c++17', '-DRIME_IMPORTS', '-O2', '-Wall', '-Wextra', '-Werror', '-Wno-missing-field-initializers', '-static',
-  '-isystem', path.join(sdk, 'include'), ...['learning.cpp', 'learning_windows.cpp', 'learning_rime.cpp', 'ranking.cpp', 'ranking_unicode.cpp', 'emoji.cpp', 'pinyin_native_test.cpp'].map(name => path.join(source, name)),
+  '-isystem', path.join(sdk, 'include'), ...['learning.cpp', 'learning_windows.cpp', 'learning_rime.cpp', 'ranking.cpp', 'ranking_unicode.cpp', 'emoji.cpp', 'spelling.cpp', 'personal_vocabulary.cpp', 'personal_vocabulary_store.cpp', 'english.cpp', 'english_lexicon.cpp', 'pinyin_native_test.cpp'].map(name => path.join(source, name)),
   pinyin, menu, input, path.join(sdk, 'lib/libArionRime.dll.a'), '-lcrypt32', '-ladvapi32', '-lole32', '-o', binary]);
 copyFileSync(library, path.join(runDirectory, 'ArionRime.dll'));
 const profile = path.join(runDirectory, 'profile');
 mkdirSync(profile);
 const systemRoot = process.env.SystemRoot;
 if (!systemRoot) throw new Error('SystemRoot is required for an isolated Windows test environment.');
-const execution = spawnSync(binary, [path.join(runtime, 'data'), profile], { cwd: runDirectory, windowsHide: true,
+const fixtures=englishAdmissionFixtures(root);
+const execution = spawnSync(binary, [path.join(runtime, 'data'), profile, ...fixtures], { cwd: runDirectory, windowsHide: true,
   encoding: 'utf8', timeout: 120000, env: { SystemRoot: systemRoot, WINDIR: systemRoot,
     PATH: path.join(systemRoot, 'System32'), TEMP: process.env.TEMP, TMP: process.env.TMP, APPDATA: process.env.APPDATA } });
 const changedSources = sourceNames.filter(name => hash(path.join(source, name)) !== sourceIdentities[name]);
 const runtimeChanged = hash(library) !== runtimeSha256;
 const report = { schema: 1, boundary: 'actual Rime and encrypted provider; no TSF or installed editor dispatch',
-  binarySha256: hash(binary), runtimeSha256, profile, sourceIdentities, changedSources, runtimeChanged,
+  fixtureIdentities: Object.fromEntries(fixtures.map(file=>[path.basename(file),hash(file)])), binarySha256: hash(binary), runtimeSha256, profile, sourceIdentities, changedSources, runtimeChanged,
   status: execution.status, error: execution.error?.message, stdout: execution.stdout, stderr: execution.stderr };
 const reportPath = path.join(runDirectory, 'report.json');
 writeFileSync(reportPath, JSON.stringify(report, null, 2) + '\n');

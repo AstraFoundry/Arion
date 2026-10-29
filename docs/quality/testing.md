@@ -10,6 +10,8 @@
 - `make bench-run CONFIG=benchmarks/configs/desktop-models.json …`: real-time model comparison through the production pipeline; `scripts/catalog-evaluation.mjs` records completed reports in the catalog.
 - Windows: `CGO_ENABLED=1 GOOS=windows GOARCH=amd64 CC=x86_64-w64-mingw32-gcc go vet ./...` and `go build` compile the app and native E2E test binary; execution needs Windows.
 
+Command references use Arion's Makefile and package scripts only for project-authored documentation. Frozen benchmark evidence retains its historical command context. Imported upstream Markdown listed as local source files in `scripts/keyboard-runtime.json` retains its upstream commands only while its bytes match the pinned SHA-256; changed notices fail the check. Link, JSON and project-command checks remain enabled.
+
 ## Required implementation evidence
 
 Core reducers need cancellation, stale generation/revision, audio discontinuity and uncertain insertion tests. Adapter integration tests use synthetic content and actual OS permission/host ranges. IMK/TSF registration/deactivation and UTF-16/Unicode ownership tests require the target OS, not mocks alone.

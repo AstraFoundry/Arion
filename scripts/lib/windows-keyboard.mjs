@@ -5,6 +5,7 @@ import { isDeepStrictEqual } from 'node:util';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { verifyWindowsPEDependencies, windowsPEImports } from './windows-pe.mjs';
+import { keyboardProfileFiles, englishLexiconFile, verifyEnglishProfile } from './keyboard-data.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
@@ -39,6 +40,7 @@ export function verifyWindowsKeyboardRuntime(directory, { requireModule = true }
     if (!isDeepStrictEqual(runtime[key], value)) throw new Error(`Windows keyboard identity mismatch: ${key}`);
   }
   if (runtime.build?.compilerTarget !== 'x86_64-w64-mingw32' || runtime.build?.logging !== false || runtime.build?.dbVisibilityPatch !== 3 || runtime.build?.emojiVisibilityPatch !== 1 || runtime.build?.openccCxx17Patch !== 1) throw new Error('Windows keyboard private SDK ABI provenance is missing.');
+  if (!isDeepStrictEqual(runtime.build.correctionIdentity,pins.patches.correctionIdentity)) throw new Error('Windows keyboard correction identity patch provenance is missing.');
   const sources = { rime: pins.archives.source, boost: pins.archives.boost, ...pins.windows.dependencies };
   if (!isDeepStrictEqual(runtime.build.sources, sources)) throw new Error('Windows keyboard source pins differ from reviewed dependencies.');
   if (!runtime.files || typeof runtime.files !== 'object' || Array.isArray(runtime.files)) throw new Error('Windows keyboard file manifest is missing.');
@@ -46,7 +48,8 @@ export function verifyWindowsKeyboardRuntime(directory, { requireModule = true }
     'data/pinyin_simp.schema.yaml', 'data/pinyin_simp.dict.yaml', 'data/arion_pinyin.schema.yaml', 'data/build/default.yaml',
     'data/build/arion_pinyin.schema.yaml', 'data/build/pinyin_simp.table.bin', 'data/build/pinyin_simp.prism.bin', 'data/build/pinyin_simp.reverse.bin',
     'licenses/keyboard-runtime.json', 'licenses/boost-LICENSE', 'licenses/darts-clone-COPYING', 'licenses/utf8cpp-notice.h', 'licenses/Arion-profile-README.md',
-    ...pins.files.map(spec => spec.to), ...pins.windows.files.map(spec => spec.to)];
+    ...pins.files.map(spec => spec.to), ...pins.windows.files.map(spec => spec.to),
+    `data/${englishLexiconFile}`, ...keyboardProfileFiles.map(name => `data/${name}`)];
   if (requireModule) required.push('lib/ArionKeyboard.dll');
   for (const member of required) if (!Object.hasOwn(runtime.files, member)) throw new Error(`Windows keyboard manifest lacks required member: ${member}`);
   const seen = new Set();
@@ -81,11 +84,12 @@ export function verifyWindowsKeyboardRuntime(directory, { requireModule = true }
   for (const spec of [...pins.files, ...pins.windows.files]) requireHash(path.join(directory, safeMember(spec.to)), spec);
   const shippedPins = JSON.parse(readFileSync(path.join(directory, 'licenses/keyboard-runtime.json'), 'utf8'));
   if (!isDeepStrictEqual(shippedPins, pins)) throw new Error('Windows keyboard shipped pins differ from the reviewed manifest.');
-  for (const name of ['arion_pinyin.schema.yaml', 'default.custom.yaml']) {
+  for (const name of keyboardProfileFiles) {
     if (hash(readFileSync(path.join(directory, 'data', name))) !== hash(readFileSync(path.join(root, 'apps/desktop/ime/shared/keyboard-data', name)))) throw new Error(`Windows keyboard profile differs from shared source: ${name}`);
   }
   const schema = readFileSync(path.join(directory, 'data/build/arion_pinyin.schema.yaml'), 'utf8');
   if (!schema.includes('schema_id: arion_pinyin') || !schema.includes('db_class: arion_encrypted_userdb') || !schema.includes('page_size: 9')) throw new Error('Windows keyboard compiled schema lost its identity, encrypted learning or page size.');
+  verifyEnglishProfile(path.join(directory, 'data'));
   const binaries = [path.join(directory, 'lib/ArionRime.dll')];
   if (Object.hasOwn(runtime.files, 'lib/ArionKeyboard.dll')) {
     const module = path.join(directory, 'lib/ArionKeyboard.dll');

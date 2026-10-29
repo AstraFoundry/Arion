@@ -62,7 +62,12 @@ void arion_pinyin_set_options(RimeApi *api, uintptr_t session, int ascii, int fu
     api->set_option(session, "ascii_punct", english_punctuation != 0);
 }
 int arion_pinyin_process_key(RimeApi *api, uintptr_t session, int key, int modifiers) {
-    return session && key >= 0 && api->process_key(session, key, modifiers);
+    if (!session || key < 0) return 0;
+    int handled = api->process_key(session, key, modifiers);
+    /* Rime Escape can remove only the unfinished suffix after a selection.
+     * Arion cancellation discards the entire still-provisional composition. */
+    if (handled && key == 0xff1b && modifiers == 0) api->clear_composition(session);
+    return handled;
 }
 int arion_pinyin_commit_raw(RimeApi *api, uintptr_t session) {
     if (!session) return 0;

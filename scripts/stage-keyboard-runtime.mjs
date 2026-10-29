@@ -6,6 +6,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { pinnedFile } from './lib/pinned-file.mjs';
 import { stageKeyboardData } from './lib/keyboard-data.mjs';
+import { buildMacKeyboardRuntime } from './lib/keyboard-macos-runtime.mjs';
 
 if (process.platform === 'win32') {
   await import('./stage-keyboard-runtime-windows.mjs');
@@ -44,7 +45,8 @@ try {
   const runtime = path.join(work, 'release');
   rmSync(runtime, { recursive: true, force: true });
   extract(archives.runtime, runtime);
-  const library = path.join(runtime, 'dist/lib/librime.1.17.0.dylib');
+  const compiled = buildMacKeyboardRuntime({manifest,work,minimumSystemVersion:JSON.parse(readFileSync(path.join(root,'apps/desktop/desktop.json'),'utf8')).macos.minimumSystemVersion});
+  const library = compiled.library;
   const architectures = run('lipo', ['-archs', library], { encoding: 'utf8' }).trim().split(/\s+/).sort();
   if (JSON.stringify(architectures) !== JSON.stringify([...manifest.engine.architectures].sort())) throw new Error('Keyboard engine must include arm64 and x86_64.');
   const linkage = run('otool', ['-arch', 'all', '-L', library], { encoding: 'utf8' });
@@ -81,8 +83,8 @@ try {
   member(archives.dependencies, 'include/COPYING.darts-clone', path.join(staging, 'licenses/darts-clone-COPYING'));
   member(archives.dependencies, 'include/utf8.h', path.join(staging, 'licenses/utf8cpp-notice.h'));
   stageKeyboardData({ manifest, manifestPath, profile, staging, work,
-    deploy: args => run(path.join(runtime, 'dist/bin/rime_deployer'), args, {
-      env: { ...process.env, DYLD_LIBRARY_PATH: path.join(runtime, 'dist/lib'), GLOG_logtostderr: '1' },
+    deploy: args => run(compiled.deployer, args, {
+      env: { ...process.env, DYLD_LIBRARY_PATH: path.dirname(compiled.library), GLOG_logtostderr: '1' },
       stdio: ['ignore', 'ignore', 'pipe'], maxBuffer: 8 * 1024 * 1024,
     }),
   });
@@ -95,7 +97,7 @@ try {
     }
   };
   inventory(staging);
-  writeFileSync(path.join(staging, 'runtime.json'), `${JSON.stringify({ ...manifest.engine, files }, null, 2)}\n`);
+  writeFileSync(path.join(staging, 'runtime.json'), `${JSON.stringify({ ...manifest.engine, build: compiled.build, files }, null, 2)}\n`);
   rmSync(destination, { recursive: true, force: true });
   mkdirSync(path.dirname(destination), { recursive: true });
   renameSync(staging, destination);

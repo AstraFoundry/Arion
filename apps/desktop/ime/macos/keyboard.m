@@ -3,6 +3,9 @@
 #import <rime_api.h>
 #include "../shared/pinyin.h"
 #include "../shared/emoji.h"
+#include "../shared/spelling.h"
+#include "../shared/english.h"
+#include "../shared/personal_vocabulary_bridge.h"
 #include <limits.h>
 
 extern int32_t arion_keyboard_sha256(const void *, size_t, unsigned char *);
@@ -33,7 +36,8 @@ static BOOL verifyData(NSString *directory) {
         ![manifest[@"version"] isEqual:@"1.17.0"] || ![manifest[@"files"] isKindOfClass:NSDictionary.class]) return NO;
     NSDictionary *files = manifest[@"files"];
     for (NSString *required in @[@"data/build/default.yaml", @"data/build/arion_pinyin.schema.yaml",
-         @"data/build/pinyin_simp.table.bin", @"data/build/pinyin_simp.prism.bin", @"data/build/pinyin_simp.reverse.bin"]) {
+         @"data/build/pinyin_simp.table.bin", @"data/build/pinyin_simp.prism.bin", @"data/build/pinyin_simp.reverse.bin",
+         @"data/arion_english.lexicon"]) {
         if (![files[required] isKindOfClass:NSDictionary.class]) return NO;
     }
     for (id name in files) {
@@ -113,6 +117,12 @@ static BOOL verifyData(NSString *directory) {
     // Tests register the same backend with an injected key before this call.
     // Production uses the separate Keychain-backed registration above.
     self.api->initialize(&traits);
+    arion_spelling_register();
+    char englishError[256] = {0};
+    if (!arion_english_register(self.dataDirectory.fileSystemRepresentation, englishError, sizeof(englishError))) {
+        self.api->finalize();
+        return keyboardFailure(error, 2);
+    }
     if (ArionEncryptedLearningError()) {
         if (error) *error = ArionEncryptedLearningError();
         self.api->finalize();
@@ -157,6 +167,11 @@ static BOOL verifyData(NSString *directory) {
     if (!self.ready) return 0;
     uintptr_t session = arion_pinyin_create_session(self.api);
     if (!session) return 0;
+    uint64_t personalRevision = 0;
+    if (!arion_personal_vocabulary_restore(session, &personalRevision)) {
+        self.api->destroy_session(session);
+        return 0;
+    }
     [self applyOptions:session];
     return session;
 }

@@ -6,6 +6,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { pinnedFile } from './lib/pinned-file.mjs';
 import { stageKeyboardData } from './lib/keyboard-data.mjs';
+import { verifiedCorrectionIdentity } from './lib/keyboard-correction-patch.mjs';
 import { verifyWindowsPEDependencies } from './lib/windows-pe.mjs';
 import { verifyWindowsKeyboardRuntime } from './lib/windows-keyboard.mjs';
 
@@ -82,6 +83,10 @@ try {
   copy(path.join(openccBuild, 'src/Opencc_Export.h'), path.join(sdk, 'include/opencc/Opencc_Export.h'));
 
   const rime = source(manifest.archives.source, 'rime');
+  const correctionFile=path.join(rime,'src/rime/algo/syllabifier.cc');
+  const correctionSource=readFileSync(correctionFile,'utf8');
+  const correctedSource=verifiedCorrectionIdentity(correctionSource,manifest.patches.correctionIdentity);
+  if(correctedSource!==correctionSource)writeFileSync(correctionFile,correctedSource);
   // An extracted release has no Git identity. Do not inherit the enclosing
   // Arion checkout's branch/commit through Git's parent-directory discovery.
   replacePinned(path.join(rime, 'cmake/AddRCInfo.cmake'), 'find_program(git_executable git)', 'set(git_executable "")');
@@ -110,6 +115,19 @@ try {
   replacePinned(path.join(rime, 'src/rime/service.h'), '  Context* context() const;', '  RIME_DLL Context* context() const;');
   replacePinned(path.join(rime, 'src/rime/menu.h'), '  an<Candidate> GetCandidateAt(size_t index);', '  RIME_DLL an<Candidate> GetCandidateAt(size_t index);');
   replacePinned(path.join(rime, 'src/rime/translation.h'), 'class PrefetchTranslation : public Translation {', 'class RIME_DLL PrefetchTranslation : public Translation {');
+  // Spelling protection reads the engine's actual prism descriptors. Export
+  // only the accessor operations used by that adapter, with matching SDK declarations.
+  const prismHeader = path.join(rime, 'src/rime/dict/prism.h');
+  for (const declaration of ['SpellingAccessor QuerySpelling(SyllableId spelling_id);',
+    'bool Next();', 'bool exhausted() const;', 'SpellingProperties properties() const;']) {
+    replacePinned(prismHeader, `  ${declaration}`, `  RIME_DLL ${declaration}`);
+  }
+  // Share the upstream decoder and one learning owner while adjusting its
+  // protected search limits per query. Export its key function and RTTI in
+  // the engine; the private SDK receives identical declarations.
+  replacePinned(path.join(rime, 'src/rime/gear/script_translator.h'), 'class ScriptTranslator : public Translator,', 'class RIME_DLL ScriptTranslator : public Translator,');
+  replacePinned(path.join(rime, 'src/rime/gear/script_translator.h'), '  ScriptTranslator(const Ticket& ticket);', '  ScriptTranslator(const Ticket& ticket);\n  ~ScriptTranslator() override;');
+  replacePinned(path.join(rime, 'src/rime/gear/script_translator.cc'), 'an<Translation> ScriptTranslator::Query(', 'ScriptTranslator::~ScriptTranslator() = default;\n\nan<Translation> ScriptTranslator::Query(');
   // Upstream adds the dependency include directory before its own source.
   // Remove previous SDK output here so an incremental engine build cannot
   // accidentally compile against stale exported Rime headers in that prefix.
@@ -156,7 +174,7 @@ try {
     }
   }
   inventory(staging);
-  const buildIdentity = { compiler: compilerVersion, compilerTarget: triple, logging: false, dbVisibilityPatch: 3, emojiVisibilityPatch: 1, openccCxx17Patch: 1,
+  const buildIdentity = { correctionIdentity: manifest.patches.correctionIdentity, compiler: compilerVersion, compilerTarget: triple, logging: false, dbVisibilityPatch: 3, emojiVisibilityPatch: 1, openccCxx17Patch: 1,
     sources: { rime: manifest.archives.source, boost: manifest.archives.boost, ...manifest.windows.dependencies } };
   writeFileSync(path.join(staging, 'runtime.json'), `${JSON.stringify({ ...manifest.engine, architectures: manifest.windows.architectures, library: 'lib/ArionRime.dll', build: buildIdentity, files }, null, 2)}\n`);
   writeFileSync(path.join(sdk, 'build.json'), `${JSON.stringify(buildIdentity, null, 2)}\n`);

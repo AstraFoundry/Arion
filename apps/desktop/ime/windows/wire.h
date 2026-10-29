@@ -1,91 +1,52 @@
 #pragma once
-#include <string>
-#include <map>
-#include <cstdint>
-#include <windows.h>
+#include "json.h"
 
-inline std::wstring wide(const std::string &value) {
-    int count = MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, value.data(), static_cast<int>(value.size()), nullptr, 0);
-    if (count == 0 && !value.empty()) return {};
-    std::wstring result(count, L'\0');
-    MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, value.data(), static_cast<int>(value.size()), result.data(), count);
-    return result;
-}
-inline std::string utf8(const std::wstring &value) {
-    int count = WideCharToMultiByte(CP_UTF8, WC_ERR_INVALID_CHARS, value.data(), static_cast<int>(value.size()), nullptr, 0, nullptr, nullptr);
-    if (count == 0 && !value.empty()) return {};
-    std::string result(count, '\0');
-    WideCharToMultiByte(CP_UTF8, WC_ERR_INVALID_CHARS, value.data(), static_cast<int>(value.size()), result.data(), count, nullptr, nullptr);
-    return result;
-}
-inline std::string quoted(const std::wstring &value) {
-    std::string result = "\"";
-    for (unsigned char c : utf8(value)) {
-        if (c == '"' || c == '\\') { result += '\\'; result += c; }
-        else if (c < 32) { const char *hex = "0123456789abcdef"; result += "\\u00"; result += hex[c >> 4]; result += hex[c & 15]; }
-        else result += c;
-    }
-    return result + '"';
-}
-struct WireMessage { std::wstring op, activation, session, text; uint64_t revision = 0; };
+struct WireTerm { std::string id,text,reading; };
+struct WireMessage {
+    std::wstring op,activation,session,text;
+    uint64_t revision=0,request=0,vocabularyRevision=0;
+    std::vector<WireTerm> terms;
+};
 
-// The bridge accepts only a bounded flat JSON object. Decode Unicode escapes
-// into UTF-16 so emoji and combining sequences reach TSF without conversion loss.
-inline bool parseWire(const std::string &input, WireMessage &message) {
-    size_t i = 0;
-    auto space = [&] { while (i < input.size() && (input[i] == ' ' || input[i] == '\r' || input[i] == '\n' || input[i] == '\t')) ++i; };
-    auto string = [&](std::wstring &out) {
-        if (i >= input.size() || input[i++] != '"') return false;
-        std::string chunk;
-        auto flush = [&] { auto decoded = wide(chunk); if (decoded.empty() && !chunk.empty()) return false; out += decoded; chunk.clear(); return true; };
-        while (i < input.size()) {
-            unsigned char c = input[i++];
-            if (c == '"') return flush();
-            if (c < 32) return false;
-            if (c != '\\') { chunk += c; continue; }
-            if (!flush() || i == input.size()) return false;
-            c = input[i++];
-            if (c == 'u') {
-                if (i + 4 > input.size()) return false;
-                unsigned value = 0;
-                for (int n = 0; n < 4; ++n) {
-                    char h = input[i++]; int digit = h >= '0' && h <= '9' ? h - '0' : h >= 'a' && h <= 'f' ? h - 'a' + 10 : h >= 'A' && h <= 'F' ? h - 'A' + 10 : -1;
-                    if (digit < 0) return false;
-                    value = value * 16 + digit;
-                }
-                out += static_cast<wchar_t>(value);
-            } else {
-                switch(c) { case '"': case '\\': case '/': out += c; break; case 'n': out += L'\n'; break; case 'r': out += L'\r'; break; case 't': out += L'\t'; break; case 'b': out += L'\b'; break; case 'f': out += L'\f'; break; default: return false; }
-            }
-        }
-        return false;
+// Use the same strict bounded decoder as settings and manifests. Build a fresh
+// message so a rejected frame cannot partially mutate a previous request.
+inline bool parseWire(const std::string &input,WireMessage &message) {
+    if (input.size()>(1u<<20)) return false;
+    Json root;
+    if (!JsonReader(input).read(root) || root.type!=Json::Object) return false;
+    WireMessage next;
+    auto text=[&](const wchar_t *key,std::wstring &out) {
+        const auto value=root.get(key);
+        if (!value) return true;
+        if (value->type!=Json::String) return false;
+        out=value->string; return true;
     };
-    space(); if (i == input.size() || input[i++] != '{') return false;
-    std::map<std::wstring, std::wstring> fields;
-    for (;;) {
-        space(); if (i < input.size() && input[i] == '}') { ++i; break; }
-        std::wstring key, value;
-        if (!string(key)) return false;
-        space(); if (i == input.size() || input[i++] != ':') return false;
-        space();
-        if (key == L"revision") {
-            if (i == input.size() || input[i] < '0' || input[i] > '9') return false;
-            uint64_t revision = 0;
-            while (i < input.size() && input[i] >= '0' && input[i] <= '9') {
-                unsigned digit = input[i++] - '0';
-                if (revision > (UINT64_MAX - digit) / 10) return false;
-                revision = revision * 10 + digit;
+    auto number=[&](const wchar_t *key,uint64_t &out) {
+        const auto value=root.get(key);
+        if (!value) return true;
+        if (value->type!=Json::Number) return false;
+        out=value->number; return true;
+    };
+    if (!text(L"op",next.op) || next.op.empty() || !text(L"activation",next.activation) ||
+        !text(L"session",next.session) || !text(L"text",next.text) || !number(L"revision",next.revision) ||
+        !number(L"request",next.request) || !number(L"vocabularyRevision",next.vocabularyRevision)) return false;
+    if (next.op==L"vocabulary_query" || next.op==L"vocabulary_publish") {
+        if (!next.request || next.activation.empty()) return false;
+        if (next.op==L"vocabulary_publish") {
+            const auto terms=root.get(L"terms");
+            if (!next.vocabularyRevision || !terms || terms->type!=Json::Array || terms->array.size()>2000) return false;
+            for (const auto &item:terms->array) {
+                WireTerm term;
+                auto field=[&](const wchar_t *key,std::string &out,size_t limit) {
+                    const auto value=item.get(key);
+                    if (!value || value->type!=Json::String) return false;
+                    out=utf8(value->string);
+                    return !out.empty() && out.size()<=limit && out.find('\0')==std::string::npos;
+                };
+                if (!field(L"id",term.id,128) || !field(L"text",term.text,256) || !field(L"reading",term.reading,448)) return false;
+                next.terms.push_back(std::move(term));
             }
-            message.revision = revision;
-        } else {
-            if (!string(value) || fields.count(key)) return false;
-            fields[key] = value;
         }
-        space(); if (i == input.size()) return false;
-        if (input[i] == '}') { ++i; break; }
-        if (input[i++] != ',') return false;
     }
-    space(); if (i != input.size()) return false;
-    message.op = fields[L"op"]; message.activation = fields[L"activation"]; message.session = fields[L"session"]; message.text = fields[L"text"];
-    return !message.op.empty();
+    message=std::move(next); return true;
 }

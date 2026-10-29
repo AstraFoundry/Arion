@@ -1,0 +1,1389 @@
+{"sid":"S-1-5-21-399838505-1430754676-1685527644-1003","elevated":false,"integrity":8192,"session":2,"station":"WinSta0","desktop":"Default","gui":true,"tsf":true,"dpapi":true}
+Verified 1740 pinned Emoji mappings and 30 reviewed overrides.
+-- The CXX compiler identification is GNU 14.2.0
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: C:/mingw64/bin/g++.exe - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Configuring done (2.0s)
+-- Generating done (0.1s)
+-- Build files have been written to: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/build/yaml
+[0/2] Re-checking globbed directories...
+[1/34] Building CXX object CMakeFiles/yaml-cpp.dir/src/directives.cpp.obj
+[2/34] Building CXX object CMakeFiles/yaml-cpp.dir/src/binary.cpp.obj
+[3/34] Building CXX object CMakeFiles/yaml-cpp.dir/src/depthguard.cpp.obj
+[4/34] Building CXX object CMakeFiles/yaml-cpp.dir/src/contrib/graphbuilderadapter.cpp.obj
+[5/34] Building CXX object CMakeFiles/yaml-cpp.dir/src/contrib/graphbuilder.cpp.obj
+[6/34] Building CXX object CMakeFiles/yaml-cpp.dir/src/emit.cpp.obj
+[7/34] Building CXX object CMakeFiles/yaml-cpp.dir/src/emitfromevents.cpp.obj
+[8/34] Building CXX object CMakeFiles/yaml-cpp.dir/src/convert.cpp.obj
+[9/34] Building CXX object CMakeFiles/yaml-cpp.dir/src/emitter.cpp.obj
+[10/34] Building CXX object CMakeFiles/yaml-cpp.dir/src/emitterstate.cpp.obj
+[11/34] Building CXX object CMakeFiles/yaml-cpp.dir/src/exceptions.cpp.obj
+[12/34] Building CXX object CMakeFiles/yaml-cpp.dir/src/exp.cpp.obj
+[13/34] Building CXX object CMakeFiles/yaml-cpp.dir/src/node.cpp.obj
+[14/34] Building CXX object CMakeFiles/yaml-cpp.dir/src/fptostring.cpp.obj
+[15/34] Building CXX object CMakeFiles/yaml-cpp.dir/src/memory.cpp.obj
+[16/34] Building CXX object CMakeFiles/yaml-cpp.dir/src/null.cpp.obj
+[17/34] Building CXX object CMakeFiles/yaml-cpp.dir/src/node_data.cpp.obj
+[18/34] Building CXX object CMakeFiles/yaml-cpp.dir/src/nodeevents.cpp.obj
+[19/34] Building CXX object CMakeFiles/yaml-cpp.dir/src/nodebuilder.cpp.obj
+[20/34] Building CXX object CMakeFiles/yaml-cpp.dir/src/ostream_wrapper.cpp.obj
+[21/34] Building CXX object CMakeFiles/yaml-cpp.dir/src/regex_yaml.cpp.obj
+[22/34] Building CXX object CMakeFiles/yaml-cpp.dir/src/parser.cpp.obj
+[23/34] Building CXX object CMakeFiles/yaml-cpp.dir/src/parse.cpp.obj
+[24/34] Building CXX object CMakeFiles/yaml-cpp.dir/src/emitterutils.cpp.obj
+[25/34] Building CXX object CMakeFiles/yaml-cpp.dir/src/scanscalar.cpp.obj
+[26/34] Building CXX object CMakeFiles/yaml-cpp.dir/src/simplekey.cpp.obj
+[27/34] Building CXX object CMakeFiles/yaml-cpp.dir/src/scantag.cpp.obj
+[28/34] Building CXX object CMakeFiles/yaml-cpp.dir/src/stream.cpp.obj
+[29/34] Building CXX object CMakeFiles/yaml-cpp.dir/src/singledocparser.cpp.obj
+[30/34] Building CXX object CMakeFiles/yaml-cpp.dir/src/tag.cpp.obj
+[31/34] Building CXX object CMakeFiles/yaml-cpp.dir/src/scanner.cpp.obj
+[32/34] Building CXX object CMakeFiles/yaml-cpp.dir/src/scantoken.cpp.obj
+[33/34] Linking CXX static library libyaml-cpp.a
+-- Install configuration: "Release"
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/lib/libyaml-cpp.a
+-- Up-to-date: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/include
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/include/yaml-cpp
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/include/yaml-cpp/anchor.h
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/include/yaml-cpp/binary.h
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/include/yaml-cpp/contrib
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/include/yaml-cpp/contrib/anchordict.h
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/include/yaml-cpp/contrib/graphbuilder.h
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/include/yaml-cpp/depthguard.h
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/include/yaml-cpp/dll.h
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/include/yaml-cpp/emitfromevents.h
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/include/yaml-cpp/emitter.h
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/include/yaml-cpp/emitterdef.h
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/include/yaml-cpp/emittermanip.h
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/include/yaml-cpp/emitterstyle.h
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/include/yaml-cpp/eventhandler.h
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/include/yaml-cpp/exceptions.h
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/include/yaml-cpp/fptostring.h
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/include/yaml-cpp/mark.h
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/include/yaml-cpp/node
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/include/yaml-cpp/node/convert.h
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/include/yaml-cpp/node/detail
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/include/yaml-cpp/node/detail/impl.h
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/include/yaml-cpp/node/detail/iterator.h
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/include/yaml-cpp/node/detail/iterator_fwd.h
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/include/yaml-cpp/node/detail/memory.h
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/include/yaml-cpp/node/detail/node.h
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/include/yaml-cpp/node/detail/node_data.h
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/include/yaml-cpp/node/detail/node_iterator.h
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/include/yaml-cpp/node/detail/node_ref.h
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/include/yaml-cpp/node/emit.h
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/include/yaml-cpp/node/impl.h
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/include/yaml-cpp/node/iterator.h
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/include/yaml-cpp/node/node.h
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/include/yaml-cpp/node/parse.h
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/include/yaml-cpp/node/ptr.h
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/include/yaml-cpp/node/type.h
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/include/yaml-cpp/noexcept.h
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/include/yaml-cpp/null.h
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/include/yaml-cpp/ostream_wrapper.h
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/include/yaml-cpp/parser.h
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/include/yaml-cpp/stlemitter.h
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/include/yaml-cpp/traits.h
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/include/yaml-cpp/yaml.h
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/lib/cmake/yaml-cpp/yaml-cpp-targets.cmake
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/lib/cmake/yaml-cpp/yaml-cpp-targets-release.cmake
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/lib/cmake/yaml-cpp/yaml-cpp-config.cmake
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/lib/cmake/yaml-cpp/yaml-cpp-config-version.cmake
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/lib/pkgconfig/yaml-cpp.pc
+-- The C compiler identification is GNU 14.2.0
+-- The CXX compiler identification is GNU 14.2.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: C:/mingw64/bin/gcc.exe - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: C:/mingw64/bin/g++.exe - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Looking for unistd.h
+-- Looking for unistd.h - found
+-- Looking for malloc in tcmalloc
+-- Looking for malloc in tcmalloc - not found
+-- Looking for fdatasync
+-- Looking for fdatasync - not found
+-- Looking for F_FULLFSYNC
+-- Looking for F_FULLFSYNC - not found
+-- Looking for O_CLOEXEC
+-- Looking for O_CLOEXEC - not found
+-- Performing Test HAVE_CLANG_THREAD_SAFETY
+-- Performing Test HAVE_CLANG_THREAD_SAFETY - Failed
+-- Performing Test LEVELDB_HAVE_NO_MISSING_FIELD_INITIALIZERS
+-- Performing Test LEVELDB_HAVE_NO_MISSING_FIELD_INITIALIZERS - Success
+-- Performing Test HAVE_CXX17_HAS_INCLUDE
+-- Performing Test HAVE_CXX17_HAS_INCLUDE - Success
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+-- Found Threads: TRUE
+-- Configuring done (6.4s)
+-- Generating done (0.0s)
+-- Build files have been written to: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/build/leveldb
+[1/41] Building CXX object CMakeFiles/leveldb.dir/db/builder.cc.obj
+[2/41] Building CXX object CMakeFiles/leveldb.dir/db/c.cc.obj
+[3/41] Building CXX object CMakeFiles/leveldb.dir/db/dbformat.cc.obj
+[4/41] Building CXX object CMakeFiles/leveldb.dir/db/db_iter.cc.obj
+[5/41] Building CXX object CMakeFiles/leveldb.dir/db/log_writer.cc.obj
+[6/41] Building CXX object CMakeFiles/leveldb.dir/db/dumpfile.cc.obj
+[7/41] Building CXX object CMakeFiles/leveldb.dir/db/log_reader.cc.obj
+[8/41] Building CXX object CMakeFiles/leveldb.dir/db/filename.cc.obj
+[9/41] Building CXX object CMakeFiles/leveldb.dir/db/table_cache.cc.obj
+[10/41] Building CXX object CMakeFiles/leveldb.dir/db/memtable.cc.obj
+[11/41] Building CXX object CMakeFiles/leveldb.dir/db/version_edit.cc.obj
+[12/41] Building CXX object CMakeFiles/leveldb.dir/db/db_impl.cc.obj
+[13/41] Building CXX object CMakeFiles/leveldb.dir/db/repair.cc.obj
+[14/41] Building CXX object CMakeFiles/leveldb.dir/table/block_builder.cc.obj
+[15/41] Building CXX object CMakeFiles/leveldb.dir/db/write_batch.cc.obj
+[16/41] Building CXX object CMakeFiles/leveldb.dir/table/block.cc.obj
+[17/41] Building CXX object CMakeFiles/leveldb.dir/table/format.cc.obj
+[18/41] Building CXX object CMakeFiles/leveldb.dir/table/filter_block.cc.obj
+[19/41] Building CXX object CMakeFiles/leveldb.dir/table/iterator.cc.obj
+[20/41] Building CXX object CMakeFiles/leveldb.dir/table/two_level_iterator.cc.obj
+[21/41] Building CXX object CMakeFiles/leveldb.dir/table/merger.cc.obj
+[22/41] Building CXX object CMakeFiles/leveldb.dir/table/table_builder.cc.obj
+[23/41] Building CXX object CMakeFiles/leveldb.dir/db/version_set.cc.obj
+[24/41] Building CXX object CMakeFiles/leveldb.dir/table/table.cc.obj
+[25/41] Building CXX object CMakeFiles/leveldb.dir/util/arena.cc.obj
+[26/41] Building CXX object CMakeFiles/leveldb.dir/util/bloom.cc.obj
+[27/41] Building CXX object CMakeFiles/leveldb.dir/util/cache.cc.obj
+[28/41] Building CXX object CMakeFiles/leveldb.dir/util/comparator.cc.obj
+[29/41] Building CXX object CMakeFiles/leveldb.dir/util/coding.cc.obj
+[30/41] Building CXX object CMakeFiles/leveldb.dir/util/crc32c.cc.obj
+[31/41] Building CXX object CMakeFiles/leveldb.dir/util/filter_policy.cc.obj
+[32/41] Building CXX object CMakeFiles/leveldb.dir/util/options.cc.obj
+[33/41] Building CXX object CMakeFiles/leveldb.dir/util/hash.cc.obj
+[34/41] Building CXX object CMakeFiles/leveldb.dir/util/env.cc.obj
+[35/41] Building CXX object CMakeFiles/leveldb.dir/util/logging.cc.obj
+[36/41] Building CXX object CMakeFiles/leveldb.dir/util/status.cc.obj
+[37/41] Building CXX object CMakeFiles/leveldbutil.dir/db/leveldbutil.cc.obj
+[38/41] Building CXX object CMakeFiles/leveldb.dir/helpers/memenv/memenv.cc.obj
+[39/41] Building CXX object CMakeFiles/leveldb.dir/util/env_windows.cc.obj
+[40/41] Linking CXX static library libleveldb.a
+[41/41] Linking CXX executable leveldbutil.exe
+-- Install configuration: "Release"
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/lib/libleveldb.a
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/include/leveldb/c.h
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/include/leveldb/cache.h
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/include/leveldb/comparator.h
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/include/leveldb/db.h
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/include/leveldb/dumpfile.h
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/include/leveldb/env.h
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/include/leveldb/export.h
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/include/leveldb/filter_policy.h
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/include/leveldb/iterator.h
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/include/leveldb/options.h
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/include/leveldb/slice.h
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/include/leveldb/status.h
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/include/leveldb/table_builder.h
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/include/leveldb/table.h
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/include/leveldb/write_batch.h
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/lib/cmake/leveldb/leveldbTargets.cmake
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/lib/cmake/leveldb/leveldbTargets-release.cmake
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/lib/cmake/leveldb/leveldbConfig.cmake
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/lib/cmake/leveldb/leveldbConfigVersion.cmake
+-- The C compiler identification is GNU 14.2.0
+-- The CXX compiler identification is GNU 14.2.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: C:/mingw64/bin/gcc.exe - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: C:/mingw64/bin/g++.exe - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Configuring done (1.5s)
+-- Generating done (0.0s)
+-- Build files have been written to: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/build/marisa
+[1/10] Building CXX object CMakeFiles/marisa.dir/lib/marisa/grimoire/io/reader.cc.obj
+[2/10] Building CXX object CMakeFiles/marisa.dir/lib/marisa/grimoire/io/writer.cc.obj
+[3/10] Building CXX object CMakeFiles/marisa.dir/lib/marisa/agent.cc.obj
+[4/10] Building CXX object CMakeFiles/marisa.dir/lib/marisa/grimoire/trie/tail.cc.obj
+[5/10] Building CXX object CMakeFiles/marisa.dir/lib/marisa/grimoire/io/mapper.cc.obj
+[6/10] Building CXX object CMakeFiles/marisa.dir/lib/marisa/grimoire/vector/bit-vector.cc.obj
+[7/10] Building CXX object CMakeFiles/marisa.dir/lib/marisa/keyset.cc.obj
+[8/10] Building CXX object CMakeFiles/marisa.dir/lib/marisa/trie.cc.obj
+[9/10] Building CXX object CMakeFiles/marisa.dir/lib/marisa/grimoire/trie/louds-trie.cc.obj
+[10/10] Linking CXX static library libmarisa.a
+-- Install configuration: "Release"
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/lib/libmarisa.a
+-- Up-to-date: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/include
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/include/marisa
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/include/marisa/agent.h
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/include/marisa/base.h
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/include/marisa/iostream.h
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/include/marisa/key.h
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/include/marisa/keyset.h
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/include/marisa/query.h
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/include/marisa/stdio.h
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/include/marisa/trie.h
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/include/marisa.h
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/lib/cmake/Marisa/MarisaTargets.cmake
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/lib/cmake/Marisa/MarisaTargets-release.cmake
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/lib/cmake/Marisa/MarisaConfig.cmake
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/lib/cmake/Marisa/MarisaConfigVersion.cmake
+-- Installing: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/lib/pkgconfig/marisa.pc
+-- The CXX compiler identification is GNU 14.2.0
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: C:/mingw64/bin/g++.exe - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- libmarisa found: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/lib/libmarisa.a
+-- Performing Test COMPILER_HAS_DEPRECATED_ATTR
+-- Performing Test COMPILER_HAS_DEPRECATED_ATTR - Success
+-- Found PythonInterp: C:/hostedtoolcache/windows/Python/3.12.10/x64/python.exe (found version "3.12.10")
+-- Configuring done (2.1s)
+-- Generating done (0.1s)
+-- Build files have been written to: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/build/opencc
+[1/21] Building CXX object src/CMakeFiles/libopencc.dir/ConversionChain.cpp.obj
+In file included from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/ConversionChain.cpp:22:
+D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/Segments.hpp:56:32: warning: 'template<class _Category, class _Tp, class _Distance, class _Pointer, class _Reference> struct std::iterator' is deprecated [-Wdeprecated-declarations]
+   56 |   class iterator : public std::iterator<std::input_iterator_tag, const char*> {
+      |                                ^~~~~~~~
+In file included from C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/stl_algobase.h:65,
+                 from C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/list:62,
+                 from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/ConversionChain.cpp:19:
+C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/stl_iterator_base_types.h:127:34: note: declared here
+  127 |     struct _GLIBCXX17_DEPRECATED iterator
+      |                                  ^~~~~~~~
+[2/21] Building CXX object src/CMakeFiles/libopencc.dir/Dict.cpp.obj
+In file included from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/DictEntry.hpp:22,
+                 from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/Dict.hpp:22,
+                 from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/Dict.cpp:21:
+D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/Segments.hpp:56:32: warning: 'template<class _Category, class _Tp, class _Distance, class _Pointer, class _Reference> struct std::iterator' is deprecated [-Wdeprecated-declarations]
+   56 |   class iterator : public std::iterator<std::input_iterator_tag, const char*> {
+      |                                ^~~~~~~~
+In file included from C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/stl_algobase.h:65,
+                 from C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/algorithm:60,
+                 from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/Dict.cpp:19:
+C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/stl_iterator_base_types.h:127:34: note: declared here
+  127 |     struct _GLIBCXX17_DEPRECATED iterator
+      |                                  ^~~~~~~~
+[3/21] Building CXX object src/CMakeFiles/libopencc.dir/Converter.cpp.obj
+In file included from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/Converter.cpp:23:
+D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/Segments.hpp:56:32: warning: 'template<class _Category, class _Tp, class _Distance, class _Pointer, class _Reference> struct std::iterator' is deprecated [-Wdeprecated-declarations]
+   56 |   class iterator : public std::iterator<std::input_iterator_tag, const char*> {
+      |                                ^~~~~~~~
+In file included from C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/stl_algobase.h:65,
+                 from C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/list:62,
+                 from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/ConversionChain.hpp:21,
+                 from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/Converter.cpp:21:
+C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/stl_iterator_base_types.h:127:34: note: declared here
+  127 |     struct _GLIBCXX17_DEPRECATED iterator
+      |                                  ^~~~~~~~
+[4/21] Building CXX object src/CMakeFiles/libopencc.dir/DictConverter.cpp.obj
+In file included from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/DictEntry.hpp:22,
+                 from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/Dict.hpp:22,
+                 from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/SerializableDict.hpp:21,
+                 from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/MarisaDict.hpp:22,
+                 from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/DictConverter.cpp:20:
+D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/Segments.hpp:56:32: warning: 'template<class _Category, class _Tp, class _Distance, class _Pointer, class _Reference> struct std::iterator' is deprecated [-Wdeprecated-declarations]
+   56 |   class iterator : public std::iterator<std::input_iterator_tag, const char*> {
+      |                                ^~~~~~~~
+In file included from C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/stl_construct.h:61,
+                 from C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/stl_tempbuf.h:61,
+                 from C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/memory:66,
+                 from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/Common.hpp:27,
+                 from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/DictConverter.hpp:21,
+                 from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/DictConverter.cpp:19:
+C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/stl_iterator_base_types.h:127:34: note: declared here
+  127 |     struct _GLIBCXX17_DEPRECATED iterator
+      |                                  ^~~~~~~~
+[5/21] Building CXX object src/CMakeFiles/libopencc.dir/Conversion.cpp.obj
+In file included from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/DictEntry.hpp:22,
+                 from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/Dict.hpp:22,
+                 from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/Conversion.cpp:20:
+D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/Segments.hpp:56:32: warning: 'template<class _Category, class _Tp, class _Distance, class _Pointer, class _Reference> struct std::iterator' is deprecated [-Wdeprecated-declarations]
+   56 |   class iterator : public std::iterator<std::input_iterator_tag, const char*> {
+      |                                ^~~~~~~~
+In file included from C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/stl_construct.h:61,
+                 from C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/stl_tempbuf.h:61,
+                 from C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/memory:66,
+                 from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/Common.hpp:27,
+                 from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/Conversion.hpp:21,
+                 from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/Conversion.cpp:19:
+C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/stl_iterator_base_types.h:127:34: note: declared here
+  127 |     struct _GLIBCXX17_DEPRECATED iterator
+      |                                  ^~~~~~~~
+[6/21] Building CXX object src/CMakeFiles/libopencc.dir/DictEntry.cpp.obj
+In file included from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/DictEntry.hpp:22,
+                 from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/DictEntry.cpp:19:
+D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/Segments.hpp:56:32: warning: 'template<class _Category, class _Tp, class _Distance, class _Pointer, class _Reference> struct std::iterator' is deprecated [-Wdeprecated-declarations]
+   56 |   class iterator : public std::iterator<std::input_iterator_tag, const char*> {
+      |                                ^~~~~~~~
+In file included from C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/stl_construct.h:61,
+                 from C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/stl_tempbuf.h:61,
+                 from C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/memory:66,
+                 from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/Common.hpp:27,
+                 from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/DictEntry.hpp:21:
+C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/stl_iterator_base_types.h:127:34: note: declared here
+  127 |     struct _GLIBCXX17_DEPRECATED iterator
+      |                                  ^~~~~~~~
+[7/21] Building CXX object src/CMakeFiles/libopencc.dir/DictGroup.cpp.obj
+In file included from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/DictEntry.hpp:22,
+                 from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/Dict.hpp:22,
+                 from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/DictGroup.hpp:24,
+                 from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/DictGroup.cpp:22:
+D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/Segments.hpp:56:32: warning: 'template<class _Category, class _Tp, class _Distance, class _Pointer, class _Reference> struct std::iterator' is deprecated [-Wdeprecated-declarations]
+   56 |   class iterator : public std::iterator<std::input_iterator_tag, const char*> {
+      |                                ^~~~~~~~
+In file included from C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/stl_algobase.h:65,
+                 from C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/algorithm:60,
+                 from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/DictGroup.cpp:19:
+C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/stl_iterator_base_types.h:127:34: note: declared here
+  127 |     struct _GLIBCXX17_DEPRECATED iterator
+      |                                  ^~~~~~~~
+[8/21] Building CXX object src/CMakeFiles/libopencc.dir/MaxMatchSegmentation.cpp.obj
+In file included from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/DictEntry.hpp:22,
+                 from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/Dict.hpp:22,
+                 from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/DictGroup.hpp:24,
+                 from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/MaxMatchSegmentation.hpp:22,
+                 from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/MaxMatchSegmentation.cpp:19:
+D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/Segments.hpp:56:32: warning: 'template<class _Category, class _Tp, class _Distance, class _Pointer, class _Reference> struct std::iterator' is deprecated [-Wdeprecated-declarations]
+   56 |   class iterator : public std::iterator<std::input_iterator_tag, const char*> {
+      |                                ^~~~~~~~
+In file included from C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/stl_construct.h:61,
+                 from C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/stl_tempbuf.h:61,
+                 from C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/memory:66,
+                 from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/Common.hpp:27,
+                 from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/MaxMatchSegmentation.hpp:21:
+C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/stl_iterator_base_types.h:127:34: note: declared here
+  127 |     struct _GLIBCXX17_DEPRECATED iterator
+      |                                  ^~~~~~~~
+[9/21] Building CXX object src/CMakeFiles/libopencc.dir/Lexicon.cpp.obj
+In file included from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/DictEntry.hpp:22,
+                 from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/Lexicon.hpp:22,
+                 from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/Lexicon.cpp:21:
+D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/Segments.hpp:56:32: warning: 'template<class _Category, class _Tp, class _Distance, class _Pointer, class _Reference> struct std::iterator' is deprecated [-Wdeprecated-declarations]
+   56 |   class iterator : public std::iterator<std::input_iterator_tag, const char*> {
+      |                                ^~~~~~~~
+In file included from C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/stl_algobase.h:65,
+                 from C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/algorithm:60,
+                 from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/Lexicon.cpp:19:
+C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/stl_iterator_base_types.h:127:34: note: declared here
+  127 |     struct _GLIBCXX17_DEPRECATED iterator
+      |                                  ^~~~~~~~
+[10/21] Building CXX object src/CMakeFiles/libopencc.dir/Config.cpp.obj
+In file included from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/Config.cpp:23:
+D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/deps/rapidjson-1.1.0/rapidjson/document.h:102:19: warning: 'template<class _Category, class _Tp, class _Distance, class _Pointer, class _Reference> struct std::iterator' is deprecated [-Wdeprecated-declarations]
+  102 |     : public std::iterator<std::random_access_iterator_tag
+      |                   ^~~~~~~~
+In file included from C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/stl_iterator_base_funcs.h:66,
+                 from C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/string:47,
+                 from C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/locale_classes.h:40,
+                 from C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/ios_base.h:41,
+                 from C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/ios:44,
+                 from C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/istream:40,
+                 from C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/fstream:40,
+                 from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/Config.cpp:19:
+C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/stl_iterator_base_types.h:127:34: note: declared here
+  127 |     struct _GLIBCXX17_DEPRECATED iterator
+      |                                  ^~~~~~~~
+D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/deps/rapidjson-1.1.0/rapidjson/document.h:110:18: warning: 'template<class _Category, class _Tp, class _Distance, class _Pointer, class _Reference> struct std::iterator' is deprecated [-Wdeprecated-declarations]
+  110 |     typedef std::iterator<std::random_access_iterator_tag,ValueType> BaseType;
+      |                  ^~~~~~~~
+C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/stl_iterator_base_types.h:127:34: note: declared here
+  127 |     struct _GLIBCXX17_DEPRECATED iterator
+      |                                  ^~~~~~~~
+In file included from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/DictEntry.hpp:22,
+                 from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/Dict.hpp:22,
+                 from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/DictGroup.hpp:24,
+                 from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/Config.cpp:28:
+D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/Segments.hpp:56:32: warning: 'template<class _Category, class _Tp, class _Distance, class _Pointer, class _Reference> struct std::iterator' is deprecated [-Wdeprecated-declarations]
+   56 |   class iterator : public std::iterator<std::input_iterator_tag, const char*> {
+      |                                ^~~~~~~~
+C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/stl_iterator_base_types.h:127:34: note: declared here
+  127 |     struct _GLIBCXX17_DEPRECATED iterator
+      |                                  ^~~~~~~~
+D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/deps/rapidjson-1.1.0/rapidjson/document.h: In instantiation of 'void rapidjson::GenericValue<Encoding, Allocator>::SetObjectRaw(Member*, rapidjson::SizeType, Allocator&) [with Encoding = rapidjson::UTF8<>; Allocator = rapidjson::MemoryPoolAllocator<>; Member = rapidjson::GenericMember<rapidjson::UTF8<>, rapidjson::MemoryPoolAllocator<> >; rapidjson::SizeType = unsigned int]':
+D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/deps/rapidjson-1.1.0/rapidjson/document.h:2361:55:   required from 'bool rapidjson::GenericDocument<Encoding, Allocator, StackAllocator>::EndObject(rapidjson::SizeType) [with Encoding = rapidjson::UTF8<>; Allocator = rapidjson::MemoryPoolAllocator<>; StackAllocator = rapidjson::CrtAllocator; rapidjson::SizeType = unsigned int]'
+ 2361 |         stack_.template Top<ValueType>()->SetObjectRaw(members, memberCount, GetAllocator());
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/deps/rapidjson-1.1.0/rapidjson/reader.h:1736:40:   required from 'rapidjson::GenericReader<SourceEncoding, TargetEncoding, StackAllocator>::IterativeParsingState rapidjson::GenericReader<SourceEncoding, TargetEncoding, StackAllocator>::Transit(IterativeParsingState, Token, IterativeParsingState, InputStream&, Handler&) [with unsigned int parseFlags = 1; InputStream = rapidjson::GenericInsituStringStream<rapidjson::UTF8<> >; Handler = rapidjson::GenericDocument<rapidjson::UTF8<> >; SourceEncoding = rapidjson::UTF8<>; TargetEncoding = rapidjson::UTF8<>; StackAllocator = rapidjson::CrtAllocator]'
+ 1736 |             bool hr = handler.EndObject(c);
+      |                       ~~~~~~~~~~~~~~~~~^~~
+D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/deps/rapidjson-1.1.0/rapidjson/reader.h:1832:58:   required from 'rapidjson::ParseResult rapidjson::GenericReader<SourceEncoding, TargetEncoding, StackAllocator>::IterativeParse(InputStream&, Handler&) [with unsigned int parseFlags = 1; InputStream = rapidjson::GenericInsituStringStream<rapidjson::UTF8<> >; Handler = rapidjson::GenericDocument<rapidjson::UTF8<> >; SourceEncoding = rapidjson::UTF8<>; TargetEncoding = rapidjson::UTF8<>; StackAllocator = rapidjson::CrtAllocator]'
+ 1832 |             IterativeParsingState d = Transit<parseFlags>(state, t, n, is, handler);
+      |                                       ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~
+D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/deps/rapidjson-1.1.0/rapidjson/reader.h:487:46:   required from 'rapidjson::ParseResult rapidjson::GenericReader<SourceEncoding, TargetEncoding, StackAllocator>::Parse(InputStream&, Handler&) [with unsigned int parseFlags = 1; InputStream = rapidjson::GenericInsituStringStream<rapidjson::UTF8<> >; Handler = rapidjson::GenericDocument<rapidjson::UTF8<> >; SourceEncoding = rapidjson::UTF8<>; TargetEncoding = rapidjson::UTF8<>; StackAllocator = rapidjson::CrtAllocator]'
+  487 |             return IterativeParse<parseFlags>(is, handler);
+      |                    ~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~
+D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/deps/rapidjson-1.1.0/rapidjson/document.h:2157:57:   required from 'rapidjson::GenericDocument<Encoding, Allocator, StackAllocator>& rapidjson::GenericDocument<Encoding, Allocator, StackAllocator>::ParseStream(InputStream&) [with unsigned int parseFlags = 1; SourceEncoding = rapidjson::UTF8<>; InputStream = rapidjson::GenericInsituStringStream<rapidjson::UTF8<> >; Encoding = rapidjson::UTF8<>; Allocator = rapidjson::MemoryPoolAllocator<>; StackAllocator = rapidjson::CrtAllocator]'
+ 2157 |         parseResult_ = reader.template Parse<parseFlags>(is, *this);
+      |                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~
+D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/deps/rapidjson-1.1.0/rapidjson/document.h:2173:62:   required from 'rapidjson::GenericDocument<Encoding, Allocator, StackAllocator>& rapidjson::GenericDocument<Encoding, Allocator, StackAllocator>::ParseStream(InputStream&) [with unsigned int parseFlags = 1; InputStream = rapidjson::GenericInsituStringStream<rapidjson::UTF8<> >; Encoding = rapidjson::UTF8<>; Allocator = rapidjson::MemoryPoolAllocator<>; StackAllocator = rapidjson::CrtAllocator]'
+ 2173 |         return ParseStream<parseFlags, Encoding, InputStream>(is);
+      |                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/deps/rapidjson-1.1.0/rapidjson/document.h:2198:58:   required from 'rapidjson::GenericDocument<Encoding, Allocator, StackAllocator>& rapidjson::GenericDocument<Encoding, Allocator, StackAllocator>::ParseInsitu(Ch*) [with unsigned int parseFlags = 0; Encoding = rapidjson::UTF8<>; Allocator = rapidjson::MemoryPoolAllocator<>; StackAllocator = rapidjson::CrtAllocator; Ch = char]'
+ 2198 |         return ParseStream<parseFlags | kParseInsituFlag>(s);
+      |                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~
+D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/Config.cpp:279:21:   required from here
+  279 |   doc.ParseInsitu<0>(const_cast<char*>(json.c_str()));
+      |   ~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/deps/rapidjson-1.1.0/rapidjson/document.h:1950:24: warning: 'void* memcpy(void*, const void*, size_t)' writing to an object of type 'rapidjson::GenericValue<rapidjson::UTF8<> >::Member' {aka 'struct rapidjson::GenericMember<rapidjson::UTF8<>, rapidjson::MemoryPoolAllocator<> >'} with no trivial copy-assignment; use copy-assignment instead [-Wclass-memaccess]
+ 1950 |             std::memcpy(m, members, count * sizeof(Member));
+      |             ~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/deps/rapidjson-1.1.0/rapidjson/document.h:71:8: note: 'rapidjson::GenericValue<rapidjson::UTF8<> >::Member' {aka 'struct rapidjson::GenericMember<rapidjson::UTF8<>, rapidjson::MemoryPoolAllocator<> >'} declared here
+   71 | struct GenericMember {
+      |        ^~~~~~~~~~~~~
+D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/deps/rapidjson-1.1.0/rapidjson/document.h: In instantiation of 'void rapidjson::GenericValue<Encoding, Allocator>::SetArrayRaw(rapidjson::GenericValue<Encoding, Allocator>*, rapidjson::SizeType, Allocator&) [with Encoding = rapidjson::UTF8<>; Allocator = rapidjson::MemoryPoolAllocator<>; rapidjson::SizeType = unsigned int]':
+D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/deps/rapidjson-1.1.0/rapidjson/document.h:2369:54:   required from 'bool rapidjson::GenericDocument<Encoding, Allocator, StackAllocator>::EndArray(rapidjson::SizeType) [with Encoding = rapidjson::UTF8<>; Allocator = rapidjson::MemoryPoolAllocator<>; StackAllocator = rapidjson::CrtAllocator; rapidjson::SizeType = unsigned int]'
+ 2369 |         stack_.template Top<ValueType>()->SetArrayRaw(elements, elementCount, GetAllocator());
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/deps/rapidjson-1.1.0/rapidjson/reader.h:1766:39:   required from 'rapidjson::GenericReader<SourceEncoding, TargetEncoding, StackAllocator>::IterativeParsingState rapidjson::GenericReader<SourceEncoding, TargetEncoding, StackAllocator>::Transit(IterativeParsingState, Token, IterativeParsingState, InputStream&, Handler&) [with unsigned int parseFlags = 1; InputStream = rapidjson::GenericInsituStringStream<rapidjson::UTF8<> >; Handler = rapidjson::GenericDocument<rapidjson::UTF8<> >; SourceEncoding = rapidjson::UTF8<>; TargetEncoding = rapidjson::UTF8<>; StackAllocator = rapidjson::CrtAllocator]'
+ 1766 |             bool hr = handler.EndArray(c);
+      |                       ~~~~~~~~~~~~~~~~^~~
+D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/deps/rapidjson-1.1.0/rapidjson/reader.h:1832:58:   required from 'rapidjson::ParseResult rapidjson::GenericReader<SourceEncoding, TargetEncoding, StackAllocator>::IterativeParse(InputStream&, Handler&) [with unsigned int parseFlags = 1; InputStream = rapidjson::GenericInsituStringStream<rapidjson::UTF8<> >; Handler = rapidjson::GenericDocument<rapidjson::UTF8<> >; SourceEncoding = rapidjson::UTF8<>; TargetEncoding = rapidjson::UTF8<>; StackAllocator = rapidjson::CrtAllocator]'
+ 1832 |             IterativeParsingState d = Transit<parseFlags>(state, t, n, is, handler);
+      |                                       ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~
+D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/deps/rapidjson-1.1.0/rapidjson/reader.h:487:46:   required from 'rapidjson::ParseResult rapidjson::GenericReader<SourceEncoding, TargetEncoding, StackAllocator>::Parse(InputStream&, Handler&) [with unsigned int parseFlags = 1; InputStream = rapidjson::GenericInsituStringStream<rapidjson::UTF8<> >; Handler = rapidjson::GenericDocument<rapidjson::UTF8<> >; SourceEncoding = rapidjson::UTF8<>; TargetEncoding = rapidjson::UTF8<>; StackAllocator = rapidjson::CrtAllocator]'
+  487 |             return IterativeParse<parseFlags>(is, handler);
+      |                    ~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~
+D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/deps/rapidjson-1.1.0/rapidjson/document.h:2157:57:   required from 'rapidjson::GenericDocument<Encoding, Allocator, StackAllocator>& rapidjson::GenericDocument<Encoding, Allocator, StackAllocator>::ParseStream(InputStream&) [with unsigned int parseFlags = 1; SourceEncoding = rapidjson::UTF8<>; InputStream = rapidjson::GenericInsituStringStream<rapidjson::UTF8<> >; Encoding = rapidjson::UTF8<>; Allocator = rapidjson::MemoryPoolAllocator<>; StackAllocator = rapidjson::CrtAllocator]'
+ 2157 |         parseResult_ = reader.template Parse<parseFlags>(is, *this);
+      |                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~
+D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/deps/rapidjson-1.1.0/rapidjson/document.h:2173:62:   required from 'rapidjson::GenericDocument<Encoding, Allocator, StackAllocator>& rapidjson::GenericDocument<Encoding, Allocator, StackAllocator>::ParseStream(InputStream&) [with unsigned int parseFlags = 1; InputStream = rapidjson::GenericInsituStringStream<rapidjson::UTF8<> >; Encoding = rapidjson::UTF8<>; Allocator = rapidjson::MemoryPoolAllocator<>; StackAllocator = rapidjson::CrtAllocator]'
+ 2173 |         return ParseStream<parseFlags, Encoding, InputStream>(is);
+      |                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/deps/rapidjson-1.1.0/rapidjson/document.h:2198:58:   required from 'rapidjson::GenericDocument<Encoding, Allocator, StackAllocator>& rapidjson::GenericDocument<Encoding, Allocator, StackAllocator>::ParseInsitu(Ch*) [with unsigned int parseFlags = 0; Encoding = rapidjson::UTF8<>; Allocator = rapidjson::MemoryPoolAllocator<>; StackAllocator = rapidjson::CrtAllocator; Ch = char]'
+ 2198 |         return ParseStream<parseFlags | kParseInsituFlag>(s);
+      |                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~
+D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/Config.cpp:279:21:   required from here
+  279 |   doc.ParseInsitu<0>(const_cast<char*>(json.c_str()));
+      |   ~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/deps/rapidjson-1.1.0/rapidjson/document.h:1937:24: warning: 'void* memcpy(void*, const void*, size_t)' writing to an object of type 'class rapidjson::GenericValue<rapidjson::UTF8<> >' with no trivial copy-assignment; use copy-assignment or copy-initialization instead [-Wclass-memaccess]
+ 1937 |             std::memcpy(e, values, count * sizeof(GenericValue));
+      |             ~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/deps/rapidjson-1.1.0/rapidjson/document.h:538:7: note: 'class rapidjson::GenericValue<rapidjson::UTF8<> >' declared here
+  538 | class GenericValue {
+      |       ^~~~~~~~~~~~
+[11/21] Building CXX object src/CMakeFiles/libopencc.dir/Segmentation.cpp.obj
+[12/21] Building CXX object src/CMakeFiles/libopencc.dir/SimpleConverter.cpp.obj
+[13/21] Building CXX object src/CMakeFiles/libopencc.dir/MarisaDict.cpp.obj
+In file included from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/DictEntry.hpp:22,
+                 from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/Lexicon.hpp:22,
+                 from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/MarisaDict.cpp:25:
+D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/Segments.hpp:56:32: warning: 'template<class _Category, class _Tp, class _Distance, class _Pointer, class _Reference> struct std::iterator' is deprecated [-Wdeprecated-declarations]
+   56 |   class iterator : public std::iterator<std::input_iterator_tag, const char*> {
+      |                                ^~~~~~~~
+In file included from C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/stl_algobase.h:65,
+                 from C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/algorithm:60,
+                 from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/MarisaDict.cpp:19:
+C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/stl_iterator_base_types.h:127:34: note: declared here
+  127 |     struct _GLIBCXX17_DEPRECATED iterator
+      |                                  ^~~~~~~~
+[14/21] Building CXX object src/CMakeFiles/libopencc.dir/SerializedValues.cpp.obj
+In file included from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/DictEntry.hpp:22,
+                 from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/Lexicon.hpp:22,
+                 from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/SerializedValues.cpp:22:
+D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/Segments.hpp:56:32: warning: 'template<class _Category, class _Tp, class _Distance, class _Pointer, class _Reference> struct std::iterator' is deprecated [-Wdeprecated-declarations]
+   56 |   class iterator : public std::iterator<std::input_iterator_tag, const char*> {
+      |                                ^~~~~~~~
+In file included from C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/stl_construct.h:61,
+                 from C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/stl_tempbuf.h:61,
+                 from C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/memory:66,
+                 from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/Common.hpp:27,
+                 from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/Lexicon.hpp:21:
+C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/stl_iterator_base_types.h:127:34: note: declared here
+  127 |     struct _GLIBCXX17_DEPRECATED iterator
+      |                                  ^~~~~~~~
+[15/21] Building CXX object src/CMakeFiles/libopencc.dir/UTF8Util.cpp.obj
+[16/21] Building CXX object src/CMakeFiles/libopencc.dir/UTF8StringSlice.cpp.obj
+[17/21] Building CXX object src/CMakeFiles/libopencc.dir/TextDict.cpp.obj
+In file included from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/DictEntry.hpp:22,
+                 from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/Lexicon.hpp:22,
+                 from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/TextDict.cpp:22:
+D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/Segments.hpp:56:32: warning: 'template<class _Category, class _Tp, class _Distance, class _Pointer, class _Reference> struct std::iterator' is deprecated [-Wdeprecated-declarations]
+   56 |   class iterator : public std::iterator<std::input_iterator_tag, const char*> {
+      |                                ^~~~~~~~
+In file included from C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/stl_algobase.h:65,
+                 from C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/algorithm:60,
+                 from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/TextDict.cpp:19:
+C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/stl_iterator_base_types.h:127:34: note: declared here
+  127 |     struct _GLIBCXX17_DEPRECATED iterator
+      |                                  ^~~~~~~~
+[18/21] Building CXX object src/CMakeFiles/libopencc.dir/BinaryDict.cpp.obj
+In file included from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/DictEntry.hpp:22,
+                 from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/Dict.hpp:22,
+                 from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/SerializableDict.hpp:21,
+                 from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/BinaryDict.hpp:22,
+                 from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/BinaryDict.cpp:23:
+D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/Segments.hpp:56:32: warning: 'template<class _Category, class _Tp, class _Distance, class _Pointer, class _Reference> struct std::iterator' is deprecated [-Wdeprecated-declarations]
+   56 |   class iterator : public std::iterator<std::input_iterator_tag, const char*> {
+      |                                ^~~~~~~~
+In file included from C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/stl_algobase.h:65,
+                 from C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/algorithm:60,
+                 from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/BinaryDict.cpp:19:
+C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/stl_iterator_base_types.h:127:34: note: declared here
+  127 |     struct _GLIBCXX17_DEPRECATED iterator
+      |                                  ^~~~~~~~
+[19/21] Building CXX object src/CMakeFiles/libopencc.dir/PhraseExtract.cpp.obj
+[20/21] Building CXX object src/CMakeFiles/libopencc.dir/DartsDict.cpp.obj
+In file included from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/DictEntry.hpp:22,
+                 from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/Dict.hpp:22,
+                 from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/SerializableDict.hpp:21,
+                 from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/BinaryDict.hpp:22,
+                 from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/DartsDict.cpp:22:
+D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/Segments.hpp:56:32: warning: 'template<class _Category, class _Tp, class _Distance, class _Pointer, class _Reference> struct std::iterator' is deprecated [-Wdeprecated-declarations]
+   56 |   class iterator : public std::iterator<std::input_iterator_tag, const char*> {
+      |                                ^~~~~~~~
+In file included from C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/stl_algobase.h:65,
+                 from C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/algorithm:60,
+                 from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/opencc/src/DartsDict.cpp:19:
+C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/stl_iterator_base_types.h:127:34: note: declared here
+  127 |     struct _GLIBCXX17_DEPRECATED iterator
+      |                                  ^~~~~~~~
+[21/21] Linking CXX static library src\libopencc.a
+-- The C compiler identification is GNU 14.2.0
+-- The CXX compiler identification is GNU 14.2.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: C:/mingw64/bin/gcc.exe - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: C:/mingw64/bin/g++.exe - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Found Boost: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/boost (found suitable version "1.89.0", minimum required is "1.77.0")
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+-- Found Threads: TRUE
+-- Found yaml-cpp: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/lib/libyaml-cpp.a
+-- Found leveldb: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/lib/libleveldb.a
+-- Found marisa: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/lib/libmarisa.a
+-- Found opencc: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/lib/libopencc.a
+-- Found X11/keysym.h at D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/rime/include
+-- rime_plugins_libs: 
+-- rime_plugins_modules: 
+true
+-- Configuring done (2.4s)
+-- Generating done (0.1s)
+-- Build files have been written to: D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/build/rime
+[1/109] Building CXX object src/CMakeFiles/rime.dir/rime/candidate.cc.obj
+[2/109] Building CXX object src/CMakeFiles/rime.dir/rime/commit_history.cc.obj
+[3/109] Building CXX object src/CMakeFiles/rime.dir/rime/composition.cc.obj
+[4/109] Building CXX object src/CMakeFiles/rime.dir/rime_api.cc.obj
+[5/109] Building CXX object src/CMakeFiles/rime.dir/rime_api_stdbool.cc.obj
+[6/109] Building CXX object src/CMakeFiles/rime.dir/rime/context.cc.obj
+[7/109] Building CXX object src/CMakeFiles/rime.dir/rime/core_module.cc.obj
+[8/109] Building CXX object src/CMakeFiles/rime.dir/rime/key_table.cc.obj
+[9/109] Building CXX object src/CMakeFiles/rime.dir/rime/language.cc.obj
+[10/109] Building CXX object src/CMakeFiles/rime.dir/rime/key_event.cc.obj
+[11/109] Building CXX object src/CMakeFiles/rime.dir/rime/deployer.cc.obj
+[12/109] Building CXX object src/CMakeFiles/rime.dir/rime/menu.cc.obj
+[13/109] Building CXX object src/CMakeFiles/rime.dir/rime/module.cc.obj
+[14/109] Building CXX object src/CMakeFiles/rime.dir/rime/registry.cc.obj
+[15/109] Building CXX object src/CMakeFiles/rime.dir/rime/resource.cc.obj
+[16/109] Building CXX object src/CMakeFiles/rime.dir/rime/schema.cc.obj
+[17/109] Building CXX object src/CMakeFiles/rime.dir/rime/engine.cc.obj
+[18/109] Building CXX object src/CMakeFiles/rime.dir/rime/segmentation.cc.obj
+[19/109] Building CXX object src/CMakeFiles/rime.dir/rime/setup.cc.obj
+[20/109] Building CXX object src/CMakeFiles/rime.dir/rime/signature.cc.obj
+[21/109] Building CXX object src/CMakeFiles/rime.dir/rime/service.cc.obj
+[22/109] Building CXX object src/CMakeFiles/rime.dir/rime/switches.cc.obj
+[23/109] Building CXX object src/CMakeFiles/rime.dir/rime/ticket.cc.obj
+[24/109] Building CXX object src/CMakeFiles/rime.dir/rime/switcher.cc.obj
+[25/109] Building CXX object src/CMakeFiles/rime.dir/rime/translation.cc.obj
+[26/109] Building CXX object src/CMakeFiles/rime.dir/rime/config/auto_patch_config_plugin.cc.obj
+[27/109] Building CXX object src/CMakeFiles/rime.dir/rime/config/build_info_plugin.cc.obj
+[28/109] Building CXX object src/CMakeFiles/rime.dir/rime/config/config_component.cc.obj
+[29/109] Building CXX object src/CMakeFiles/rime.dir/rime/config/legacy_dictionary_config_plugin.cc.obj
+[30/109] Building CXX object src/CMakeFiles/rime.dir/rime/config/config_compiler.cc.obj
+[31/109] Building CXX object src/CMakeFiles/rime.dir/rime/config/config_types.cc.obj
+[32/109] Building CXX object src/CMakeFiles/rime.dir/rime/config/default_config_plugin.cc.obj
+[33/109] Building RC object src/CMakeFiles/rime.dir/rime.rc.obj
+[34/109] Building CXX object src/CMakeFiles/rime.dir/rime/config/config_data.cc.obj
+[35/109] Building CXX object src/CMakeFiles/rime.dir/rime/config/save_output_plugin.cc.obj
+[36/109] Building CXX object src/CMakeFiles/rime.dir/rime/config/legacy_preset_config_plugin.cc.obj
+[37/109] Building CXX object src/CMakeFiles/rime.dir/rime/algo/algebra.cc.obj
+[38/109] Building CXX object src/CMakeFiles/rime.dir/rime/algo/spelling.cc.obj
+[39/109] Building CXX object src/CMakeFiles/rime.dir/rime/algo/strings.cc.obj
+[40/109] Building CXX object src/CMakeFiles/rime.dir/rime/algo/utilities.cc.obj
+[41/109] Building CXX object src/CMakeFiles/rime.dir/rime/algo/syllabifier.cc.obj
+[42/109] Building CXX object src/CMakeFiles/rime.dir/rime/dict/db.cc.obj
+[43/109] Building CXX object src/CMakeFiles/rime.dir/rime/algo/calculus.cc.obj
+[44/109] Building CXX object src/CMakeFiles/rime.dir/rime/dict/db_utils.cc.obj
+[45/109] Building CXX object src/CMakeFiles/rime.dir/rime/algo/encoder.cc.obj
+[46/109] Building CXX object src/CMakeFiles/rime.dir/rime/dict/corrector.cc.obj
+[47/109] Building CXX object src/CMakeFiles/rime.dir/rime/dict/dict_compiler.cc.obj
+[48/109] Building CXX object src/CMakeFiles/rime.dir/rime/dict/dict_module.cc.obj
+[49/109] Building CXX object src/CMakeFiles/rime.dir/rime/dict/dict_settings.cc.obj
+[50/109] Building CXX object src/CMakeFiles/rime.dir/rime/dict/level_db.cc.obj
+[51/109] Building CXX object src/CMakeFiles/rime.dir/rime/dict/dictionary.cc.obj
+[52/109] Building CXX object src/CMakeFiles/rime.dir/rime/dict/preset_vocabulary.cc.obj
+[53/109] Building CXX object src/CMakeFiles/rime.dir/rime/dict/mapped_file.cc.obj
+[54/109] Building CXX object src/CMakeFiles/rime.dir/rime/dict/entry_collector.cc.obj
+[55/109] Building CXX object src/CMakeFiles/rime.dir/rime/dict/prism.cc.obj
+[56/109] Building CXX object src/CMakeFiles/rime.dir/rime/dict/string_table.cc.obj
+[57/109] Building CXX object src/CMakeFiles/rime.dir/rime/dict/reverse_lookup_dictionary.cc.obj
+[58/109] Building CXX object src/CMakeFiles/rime.dir/rime/dict/table.cc.obj
+[59/109] Building CXX object src/CMakeFiles/rime.dir/rime/dict/text_db.cc.obj
+[60/109] Building CXX object src/CMakeFiles/rime.dir/rime/dict/table_db.cc.obj
+[61/109] Building CXX object src/CMakeFiles/rime.dir/rime/dict/tsv.cc.obj
+[62/109] Building CXX object src/CMakeFiles/rime.dir/rime/dict/user_db.cc.obj
+[63/109] Building CXX object src/CMakeFiles/rime.dir/rime/dict/user_db_recovery_task.cc.obj
+[64/109] Building CXX object src/CMakeFiles/rime.dir/rime/gear/abc_segmentor.cc.obj
+[65/109] Building CXX object src/CMakeFiles/rime.dir/rime/dict/vocabulary.cc.obj
+[66/109] Building CXX object src/CMakeFiles/rime.dir/rime/gear/affix_segmentor.cc.obj
+[67/109] Building CXX object src/CMakeFiles/rime.dir/rime/dict/user_dictionary.cc.obj
+[68/109] Building CXX object src/CMakeFiles/rime.dir/rime/gear/ascii_segmentor.cc.obj
+[69/109] Building CXX object src/CMakeFiles/rime.dir/rime/gear/charset_filter.cc.obj
+[70/109] Building CXX object src/CMakeFiles/rime.dir/rime/gear/ascii_composer.cc.obj
+[71/109] Building CXX object src/CMakeFiles/rime.dir/rime/gear/echo_translator.cc.obj
+[72/109] Building CXX object src/CMakeFiles/rime.dir/rime/gear/contextual_translation.cc.obj
+[73/109] Building CXX object src/CMakeFiles/rime.dir/rime/gear/fallback_segmentor.cc.obj
+[74/109] Building CXX object src/CMakeFiles/rime.dir/rime/gear/chord_composer.cc.obj
+[75/109] Building CXX object src/CMakeFiles/rime.dir/rime/gear/editor.cc.obj
+[76/109] Building CXX object src/CMakeFiles/rime.dir/rime/gear/filter_commons.cc.obj
+[77/109] Building CXX object src/CMakeFiles/rime.dir/rime/gear/history_translator.cc.obj
+[78/109] Building CXX object src/CMakeFiles/rime.dir/rime/gear/gears_module.cc.obj
+[79/109] Building CXX object src/CMakeFiles/rime.dir/rime/gear/matcher.cc.obj
+[80/109] Building CXX object src/CMakeFiles/rime.dir/rime/gear/key_binder.cc.obj
+[81/109] Building CXX object src/CMakeFiles/rime.dir/rime/gear/punctuator.cc.obj
+[82/109] Building CXX object src/CMakeFiles/rime.dir/rime/gear/navigator.cc.obj
+[83/109] Building CXX object src/CMakeFiles/rime.dir/rime/gear/memory.cc.obj
+[84/109] Building CXX object src/CMakeFiles/rime.dir/rime/gear/poet.cc.obj
+[85/109] Building CXX object src/CMakeFiles/rime.dir/rime/gear/reverse_lookup_filter.cc.obj
+[86/109] Building CXX object src/CMakeFiles/rime.dir/rime/gear/schema_list_translator.cc.obj
+[87/109] Building CXX object src/CMakeFiles/rime.dir/rime/gear/reverse_lookup_translator.cc.obj
+[88/109] Building CXX object src/CMakeFiles/rime.dir/rime/gear/selector.cc.obj
+[89/109] Building CXX object src/CMakeFiles/rime.dir/rime/gear/shape.cc.obj
+[90/109] Building CXX object src/CMakeFiles/rime.dir/rime/gear/recognizer.cc.obj
+[91/109] Building CXX object src/CMakeFiles/rime.dir/rime/gear/script_translator.cc.obj
+[92/109] Building CXX object src/CMakeFiles/rime.dir/rime/gear/single_char_filter.cc.obj
+[93/109] Building CXX object src/CMakeFiles/rime.dir/rime/gear/simplifier.cc.obj
+In file included from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/include/opencc/DictEntry.hpp:22,
+                 from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/include/opencc/Dict.hpp:22,
+                 from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/rime/src/rime/gear/simplifier.cc:24:
+D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sdk/include/opencc/Segments.hpp:56:32: warning: 'template<class _Category, class _Tp, class _Distance, class _Pointer, class _Reference> struct std::iterator' is deprecated [-Wdeprecated-declarations]
+   56 |   class iterator : public std::iterator<std::input_iterator_tag, const char*> {
+      |                                ^~~~~~~~
+In file included from C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/stl_iterator_base_funcs.h:66,
+                 from C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/string:47,
+                 from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/boost/boost/algorithm/string/std/string_traits.hpp:15,
+                 from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/boost/boost/algorithm/string/std_containers_traits.hpp:19,
+                 from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/boost/boost/algorithm/string.hpp:18,
+                 from D:/a/Arion/Arion/.workspace/keyboard-runtime/windows/sources/rime/src/rime/gear/simplifier.cc:7:
+C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/stl_iterator_base_types.h:127:34: note: declared here
+  127 |     struct _GLIBCXX17_DEPRECATED iterator
+      |                                  ^~~~~~~~
+[94/109] Building CXX object src/CMakeFiles/rime.dir/rime/gear/switch_translator.cc.obj
+[95/109] Building CXX object src/CMakeFiles/rime.dir/rime/gear/uniquifier.cc.obj
+[96/109] Building CXX object src/CMakeFiles/rime.dir/rime/gear/table_translator.cc.obj
+[97/109] Building CXX object src/CMakeFiles/rime.dir/rime/gear/speller.cc.obj
+[98/109] Building CXX object src/CMakeFiles/rime.dir/rime/gear/unity_table_encoder.cc.obj
+[99/109] Building CXX object src/CMakeFiles/rime.dir/rime/lever/customizer.cc.obj
+[100/109] Building CXX object src/CMakeFiles/rime.dir/rime/lever/custom_settings.cc.obj
+[101/109] Building CXX object src/CMakeFiles/rime.dir/rime/lever/levers_stdbool.cc.obj
+[102/109] Building CXX object src/CMakeFiles/rime.dir/rime/lever/levers_module.cc.obj
+[103/109] Building CXX object src/CMakeFiles/rime.dir/rime/gear/translator_commons.cc.obj
+[104/109] Building CXX object src/CMakeFiles/rime.dir/rime/lever/switcher_settings.cc.obj
+[105/109] Building CXX object src/CMakeFiles/rime.dir/rime/lever/user_dict_manager.cc.obj
+[106/109] Building CXX object src/CMakeFiles/rime.dir/rime/lever/deployment_tasks.cc.obj
+[107/109] Linking CXX shared library bin\ArionRime.dll
+[108/109] Building CXX object tools/CMakeFiles/rime_deployer.dir/rime_deployer.cc.obj
+[109/109] Linking CXX executable bin\rime_deployer.exe
+Staged Windows x64 librime 1.17.0, encrypted-userdb schema and prebuilt dictionary.
+Build-only private SDK: D:\a\Arion\Arion\.workspace\keyboard-runtime\windows\sdk
+Built Windows x64 TSF host, encrypted keyboard module and complete runtime closure.
+g++ (x86_64-posix-seh-rev2, Built by MinGW-Builds project) 14.2.0
+Copyright (C) 2024 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+PASS: cached factory/facade reload, live-object and async cleanup pinning, server locks, explicit load failure, trusted path policy, production test-hook absence. No registration changed.
+PASS: protected version switch, current/legacy migration, selected/concurrent deferral, exact phase order and all rollback failures. No registration changed.
+PASS: locked/tampered closures preserve files; verified and legacy closures remove exactly owned files.
+Windows TSF loader evidence: D:\a\Arion\Arion\.workspace\tests\windows-tsf-loader\run-s9AhwU\report.json
+g++ (x86_64-posix-seh-rev2, Built by MinGW-Builds project) 14.2.0
+Copyright (C) 2024 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+PASS: exact owned registration and repair enable catalog by default; query requires both user and catalog enabled; native failure preserved. No registration changed.
+PASS: S_FALSE, native errors and unobserved/wrong profile are not selection success; exact owned profile required. No OS settings changed.
+PASS: exact owned TIP, install zero flags, uninstall one flag, native failure preserved; no input configuration changed.
+PASS: only keyboard/system-tray categories; symmetric removal; same-DLL repair; different DLL refused; native failures preserved. No registration changed.
+PASS: stable identity, dual-language discovery, migration refusal, exact legacy/current removal and unrelated-profile preservation. No OS registration changed.
+PASS: protected version switch, current/legacy migration, selected/concurrent deferral, exact phase order and all rollback failures. No registration changed.
+Windows IME registration evidence: D:\a\Arion\Arion\.workspace\tests\windows-ime-registration\run-rWnImI\report.json
+go version go1.27.1 windows/amd64
+{"Time":"2026-10-28T18:00:55.2914734Z","Action":"start","Package":"arion.local/desktop/infrastructure/imebridge"}
+{"Time":"2026-10-28T18:00:55.3497781Z","Action":"run","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestCaptureWaitsForNativeCompositionAcquisition"}
+{"Time":"2026-10-28T18:00:55.3497781Z","Action":"output","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestCaptureWaitsForNativeCompositionAcquisition","Output":"=== RUN   TestCaptureWaitsForNativeCompositionAcquisition\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:55.3724114Z","Action":"output","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestCaptureWaitsForNativeCompositionAcquisition","Output":"--- PASS: TestCaptureWaitsForNativeCompositionAcquisition (0.02s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:55.3724114Z","Action":"pass","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestCaptureWaitsForNativeCompositionAcquisition","Elapsed":0.02}
+{"Time":"2026-10-28T18:00:55.3724114Z","Action":"run","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestCaptureCancellationRevokesPendingNativeAcquisition"}
+{"Time":"2026-10-28T18:00:55.3724114Z","Action":"output","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestCaptureCancellationRevokesPendingNativeAcquisition","Output":"=== RUN   TestCaptureCancellationRevokesPendingNativeAcquisition\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:55.374439Z","Action":"output","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestCaptureCancellationRevokesPendingNativeAcquisition","Output":"--- PASS: TestCaptureCancellationRevokesPendingNativeAcquisition (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:55.374439Z","Action":"pass","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestCaptureCancellationRevokesPendingNativeAcquisition","Elapsed":0}
+{"Time":"2026-10-28T18:00:55.374439Z","Action":"run","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestVerifiedClientReplacementIsAtomicWithCapture"}
+{"Time":"2026-10-28T18:00:55.374439Z","Action":"output","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestVerifiedClientReplacementIsAtomicWithCapture","Output":"=== RUN   TestVerifiedClientReplacementIsAtomicWithCapture\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:55.3799514Z","Action":"output","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestVerifiedClientReplacementIsAtomicWithCapture","Output":"--- PASS: TestVerifiedClientReplacementIsAtomicWithCapture (0.01s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:55.3799514Z","Action":"pass","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestVerifiedClientReplacementIsAtomicWithCapture","Elapsed":0.01}
+{"Time":"2026-10-28T18:00:55.3799514Z","Action":"run","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestRejectedClientDiagnosticDoesNotBecomeMissingClient"}
+{"Time":"2026-10-28T18:00:55.3799514Z","Action":"output","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestRejectedClientDiagnosticDoesNotBecomeMissingClient","Output":"=== RUN   TestRejectedClientDiagnosticDoesNotBecomeMissingClient\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:55.3805516Z","Action":"output","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestRejectedClientDiagnosticDoesNotBecomeMissingClient","Output":"--- PASS: TestRejectedClientDiagnosticDoesNotBecomeMissingClient (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:55.3805516Z","Action":"pass","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestRejectedClientDiagnosticDoesNotBecomeMissingClient","Elapsed":0}
+{"Time":"2026-10-28T18:00:55.3805516Z","Action":"run","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestExitedVerifiedPeerCannotAcquireComposition"}
+{"Time":"2026-10-28T18:00:55.3805516Z","Action":"output","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestExitedVerifiedPeerCannotAcquireComposition","Output":"=== RUN   TestExitedVerifiedPeerCannotAcquireComposition\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:55.3835023Z","Action":"output","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestExitedVerifiedPeerCannotAcquireComposition","Output":"--- PASS: TestExitedVerifiedPeerCannotAcquireComposition (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:55.3835023Z","Action":"pass","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestExitedVerifiedPeerCannotAcquireComposition","Elapsed":0}
+{"Time":"2026-10-28T18:00:55.3835023Z","Action":"run","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestSlowEarlierVerificationCannotEvictNewerClient"}
+{"Time":"2026-10-28T18:00:55.3835023Z","Action":"output","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestSlowEarlierVerificationCannotEvictNewerClient","Output":"=== RUN   TestSlowEarlierVerificationCannotEvictNewerClient\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:55.3835023Z","Action":"run","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestSlowEarlierVerificationCannotEvictNewerClient/connected"}
+{"Time":"2026-10-28T18:00:55.3835023Z","Action":"output","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestSlowEarlierVerificationCannotEvictNewerClient/connected","Output":"=== RUN   TestSlowEarlierVerificationCannotEvictNewerClient/connected\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:55.3886131Z","Action":"output","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestSlowEarlierVerificationCannotEvictNewerClient/connected","Output":"--- PASS: TestSlowEarlierVerificationCannotEvictNewerClient/connected (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:55.3886131Z","Action":"pass","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestSlowEarlierVerificationCannotEvictNewerClient/connected","Elapsed":0}
+{"Time":"2026-10-28T18:00:55.3886131Z","Action":"run","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestSlowEarlierVerificationCannotEvictNewerClient/disconnected"}
+{"Time":"2026-10-28T18:00:55.3886131Z","Action":"output","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestSlowEarlierVerificationCannotEvictNewerClient/disconnected","Output":"=== RUN   TestSlowEarlierVerificationCannotEvictNewerClient/disconnected\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:55.3929929Z","Action":"output","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestSlowEarlierVerificationCannotEvictNewerClient/disconnected","Output":"--- PASS: TestSlowEarlierVerificationCannotEvictNewerClient/disconnected (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:55.3929929Z","Action":"pass","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestSlowEarlierVerificationCannotEvictNewerClient/disconnected","Elapsed":0}
+{"Time":"2026-10-28T18:00:55.3929929Z","Action":"output","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestSlowEarlierVerificationCannotEvictNewerClient","Output":"--- PASS: TestSlowEarlierVerificationCannotEvictNewerClient (0.01s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:55.3929929Z","Action":"pass","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestSlowEarlierVerificationCannotEvictNewerClient","Elapsed":0.01}
+{"Time":"2026-10-28T18:00:55.3929929Z","Action":"run","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestCaptureWaitsForPendingProofAndRespectsCancellation"}
+{"Time":"2026-10-28T18:00:55.3929929Z","Action":"output","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestCaptureWaitsForPendingProofAndRespectsCancellation","Output":"=== RUN   TestCaptureWaitsForPendingProofAndRespectsCancellation\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:55.4147548Z","Action":"output","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestCaptureWaitsForPendingProofAndRespectsCancellation","Output":"--- PASS: TestCaptureWaitsForPendingProofAndRespectsCancellation (0.02s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:55.4147548Z","Action":"pass","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestCaptureWaitsForPendingProofAndRespectsCancellation","Elapsed":0.02}
+{"Time":"2026-10-28T18:00:55.4147548Z","Action":"run","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestActivationRevokesOldSessionAndMessages"}
+{"Time":"2026-10-28T18:00:55.4147548Z","Action":"output","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestActivationRevokesOldSessionAndMessages","Output":"=== RUN   TestActivationRevokesOldSessionAndMessages\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:55.4181097Z","Action":"output","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestActivationRevokesOldSessionAndMessages","Output":"--- PASS: TestActivationRevokesOldSessionAndMessages (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:55.4181097Z","Action":"pass","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestActivationRevokesOldSessionAndMessages","Elapsed":0}
+{"Time":"2026-10-28T18:00:55.4181097Z","Action":"run","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestDisconnectInvalidatesAndNotifies"}
+{"Time":"2026-10-28T18:00:55.4181097Z","Action":"output","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestDisconnectInvalidatesAndNotifies","Output":"=== RUN   TestDisconnectInvalidatesAndNotifies\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:55.4217522Z","Action":"output","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestDisconnectInvalidatesAndNotifies","Output":"--- PASS: TestDisconnectInvalidatesAndNotifies (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:55.4217522Z","Action":"pass","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestDisconnectInvalidatesAndNotifies","Elapsed":0}
+{"Time":"2026-10-28T18:00:55.4217522Z","Action":"run","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestCommitAcknowledgementScopedAndExactlyOnce"}
+{"Time":"2026-10-28T18:00:55.4217522Z","Action":"output","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestCommitAcknowledgementScopedAndExactlyOnce","Output":"=== RUN   TestCommitAcknowledgementScopedAndExactlyOnce\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:55.4347316Z","Action":"output","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestCommitAcknowledgementScopedAndExactlyOnce","Output":"--- PASS: TestCommitAcknowledgementScopedAndExactlyOnce (0.01s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:55.4347316Z","Action":"pass","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestCommitAcknowledgementScopedAndExactlyOnce","Elapsed":0.01}
+{"Time":"2026-10-28T18:00:55.4347316Z","Action":"run","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestCancelledCommitRetiresCapability"}
+{"Time":"2026-10-28T18:00:55.4347316Z","Action":"output","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestCancelledCommitRetiresCapability","Output":"=== RUN   TestCancelledCommitRetiresCapability\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:55.437312Z","Action":"output","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestCancelledCommitRetiresCapability","Output":"--- PASS: TestCancelledCommitRetiresCapability (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:55.437312Z","Action":"pass","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestCancelledCommitRetiresCapability","Elapsed":0}
+{"Time":"2026-10-28T18:00:55.437312Z","Action":"run","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestRevisionAndIdentityValidation"}
+{"Time":"2026-10-28T18:00:55.437312Z","Action":"output","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestRevisionAndIdentityValidation","Output":"=== RUN   TestRevisionAndIdentityValidation\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:55.4396242Z","Action":"output","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestRevisionAndIdentityValidation","Output":"--- PASS: TestRevisionAndIdentityValidation (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:55.4397949Z","Action":"pass","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestRevisionAndIdentityValidation","Elapsed":0}
+{"Time":"2026-10-28T18:00:55.4397949Z","Action":"run","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestOldConnectionCannotDeactivateReplacement"}
+{"Time":"2026-10-28T18:00:55.4397949Z","Action":"output","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestOldConnectionCannotDeactivateReplacement","Output":"=== RUN   TestOldConnectionCannotDeactivateReplacement\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:55.4432742Z","Action":"output","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestOldConnectionCannotDeactivateReplacement","Output":"--- PASS: TestOldConnectionCannotDeactivateReplacement (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:55.4432742Z","Action":"pass","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestOldConnectionCannotDeactivateReplacement","Elapsed":0}
+{"Time":"2026-10-28T18:00:55.4432742Z","Action":"run","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestDictateIsActivationScoped"}
+{"Time":"2026-10-28T18:00:55.4432742Z","Action":"output","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestDictateIsActivationScoped","Output":"=== RUN   TestDictateIsActivationScoped\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:55.4521715Z","Action":"output","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestDictateIsActivationScoped","Output":"--- PASS: TestDictateIsActivationScoped (0.01s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:55.4521715Z","Action":"pass","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestDictateIsActivationScoped","Elapsed":0.01}
+{"Time":"2026-10-28T18:00:55.4521715Z","Action":"run","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestCancelledContextBeforeCommitDoesNotConsumeSession"}
+{"Time":"2026-10-28T18:00:55.4521715Z","Action":"output","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestCancelledContextBeforeCommitDoesNotConsumeSession","Output":"=== RUN   TestCancelledContextBeforeCommitDoesNotConsumeSession\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:55.4539564Z","Action":"output","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestCancelledContextBeforeCommitDoesNotConsumeSession","Output":"--- PASS: TestCancelledContextBeforeCommitDoesNotConsumeSession (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:55.4539564Z","Action":"pass","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestCancelledContextBeforeCommitDoesNotConsumeSession","Elapsed":0}
+{"Time":"2026-10-28T18:00:55.4539564Z","Action":"run","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestCloseRevokesAndStopsTransport"}
+{"Time":"2026-10-28T18:00:55.4545867Z","Action":"output","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestCloseRevokesAndStopsTransport","Output":"=== RUN   TestCloseRevokesAndStopsTransport\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:55.4557788Z","Action":"output","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestCloseRevokesAndStopsTransport","Output":"--- PASS: TestCloseRevokesAndStopsTransport (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:55.4557788Z","Action":"pass","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestCloseRevokesAndStopsTransport","Elapsed":0}
+{"Time":"2026-10-28T18:00:55.4557788Z","Action":"run","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestSocketLifecycleDoesNotReplaceExistingPath"}
+{"Time":"2026-10-28T18:00:55.4557788Z","Action":"output","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestSocketLifecycleDoesNotReplaceExistingPath","Output":"=== RUN   TestSocketLifecycleDoesNotReplaceExistingPath\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:55.4599995Z","Action":"output","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestSocketLifecycleDoesNotReplaceExistingPath","Output":"--- PASS: TestSocketLifecycleDoesNotReplaceExistingPath (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:55.4600355Z","Action":"pass","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestSocketLifecycleDoesNotReplaceExistingPath","Elapsed":0}
+{"Time":"2026-10-28T18:00:55.4600355Z","Action":"run","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestBlockedCommitHonorsContextAndReturnsUncertain"}
+{"Time":"2026-10-28T18:00:55.4600355Z","Action":"output","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestBlockedCommitHonorsContextAndReturnsUncertain","Output":"=== RUN   TestBlockedCommitHonorsContextAndReturnsUncertain\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:55.4824124Z","Action":"output","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestBlockedCommitHonorsContextAndReturnsUncertain","Output":"--- PASS: TestBlockedCommitHonorsContextAndReturnsUncertain (0.02s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:55.4824124Z","Action":"pass","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestBlockedCommitHonorsContextAndReturnsUncertain","Elapsed":0.02}
+{"Time":"2026-10-28T18:00:55.4824124Z","Action":"run","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestEscapeIsSessionScopedAndLeavesSourceActive"}
+{"Time":"2026-10-28T18:00:55.4824124Z","Action":"output","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestEscapeIsSessionScopedAndLeavesSourceActive","Output":"=== RUN   TestEscapeIsSessionScopedAndLeavesSourceActive\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:55.4861098Z","Action":"output","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestEscapeIsSessionScopedAndLeavesSourceActive","Output":"--- PASS: TestEscapeIsSessionScopedAndLeavesSourceActive (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:55.4861098Z","Action":"pass","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestEscapeIsSessionScopedAndLeavesSourceActive","Elapsed":0}
+{"Time":"2026-10-28T18:00:55.4861098Z","Action":"run","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestEmptyMarkAndCommitPreserveStringField"}
+{"Time":"2026-10-28T18:00:55.4861098Z","Action":"output","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestEmptyMarkAndCommitPreserveStringField","Output":"=== RUN   TestEmptyMarkAndCommitPreserveStringField\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:55.4886028Z","Action":"output","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestEmptyMarkAndCommitPreserveStringField","Output":"--- PASS: TestEmptyMarkAndCommitPreserveStringField (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:55.4886028Z","Action":"pass","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestEmptyMarkAndCommitPreserveStringField","Elapsed":0}
+{"Time":"2026-10-28T18:00:55.4886028Z","Action":"run","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestCancelledCancelDisconnectsToClearNativeOwnership"}
+{"Time":"2026-10-28T18:00:55.4886028Z","Action":"output","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestCancelledCancelDisconnectsToClearNativeOwnership","Output":"=== RUN   TestCancelledCancelDisconnectsToClearNativeOwnership\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:55.4907022Z","Action":"output","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestCancelledCancelDisconnectsToClearNativeOwnership","Output":"--- PASS: TestCancelledCancelDisconnectsToClearNativeOwnership (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:55.4907022Z","Action":"pass","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestCancelledCancelDisconnectsToClearNativeOwnership","Elapsed":0}
+{"Time":"2026-10-28T18:00:55.4907022Z","Action":"run","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestWriteKeyboardSettings"}
+{"Time":"2026-10-28T18:00:55.4907022Z","Action":"output","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestWriteKeyboardSettings","Output":"=== RUN   TestWriteKeyboardSettings\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:55.4960271Z","Action":"output","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestWriteKeyboardSettings","Output":"--- PASS: TestWriteKeyboardSettings (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:55.4960271Z","Action":"pass","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestWriteKeyboardSettings","Elapsed":0}
+{"Time":"2026-10-28T18:00:55.4960271Z","Action":"run","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestReadinessRequiresExpectedBuildAndReconnectsWithoutClient"}
+{"Time":"2026-10-28T18:00:55.4960271Z","Action":"output","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestReadinessRequiresExpectedBuildAndReconnectsWithoutClient","Output":"=== RUN   TestReadinessRequiresExpectedBuildAndReconnectsWithoutClient\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:55.5380964Z","Action":"output","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestReadinessRequiresExpectedBuildAndReconnectsWithoutClient","Output":"--- PASS: TestReadinessRequiresExpectedBuildAndReconnectsWithoutClient (0.04s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:55.5380964Z","Action":"pass","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestReadinessRequiresExpectedBuildAndReconnectsWithoutClient","Elapsed":0.04}
+{"Time":"2026-10-28T18:00:55.5380964Z","Action":"run","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestUpdateRejectsNewOwnedCapture"}
+{"Time":"2026-10-28T18:00:55.5380964Z","Action":"output","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestUpdateRejectsNewOwnedCapture","Output":"=== RUN   TestUpdateRejectsNewOwnedCapture\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:55.5397789Z","Action":"output","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestUpdateRejectsNewOwnedCapture","Output":"--- PASS: TestUpdateRejectsNewOwnedCapture (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:55.5397789Z","Action":"pass","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestUpdateRejectsNewOwnedCapture","Elapsed":0}
+{"Time":"2026-10-28T18:00:55.5397789Z","Action":"run","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestWindowsPipeProofUsesKernelClientAndHeldProcess"}
+{"Time":"2026-10-28T18:00:55.5397789Z","Action":"output","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestWindowsPipeProofUsesKernelClientAndHeldProcess","Output":"=== RUN   TestWindowsPipeProofUsesKernelClientAndHeldProcess\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:55.5409417Z","Action":"output","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestWindowsPipeProofUsesKernelClientAndHeldProcess","Output":"--- PASS: TestWindowsPipeProofUsesKernelClientAndHeldProcess (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:55.5409732Z","Action":"pass","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestWindowsPipeProofUsesKernelClientAndHeldProcess","Elapsed":0}
+{"Time":"2026-10-28T18:00:55.5409732Z","Action":"run","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestLowIntegrityDuplicateTokenIsRejected"}
+{"Time":"2026-10-28T18:00:55.5409732Z","Action":"output","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestLowIntegrityDuplicateTokenIsRejected","Output":"=== RUN   TestLowIntegrityDuplicateTokenIsRejected\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:55.5411946Z","Action":"output","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestLowIntegrityDuplicateTokenIsRejected","Output":"--- PASS: TestLowIntegrityDuplicateTokenIsRejected (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:55.5411946Z","Action":"pass","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestLowIntegrityDuplicateTokenIsRejected","Elapsed":0}
+{"Time":"2026-10-28T18:00:55.5411946Z","Action":"run","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestWindowsPipeUsesRealIOAndRefusesCompetingListener"}
+{"Time":"2026-10-28T18:00:55.5411946Z","Action":"output","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestWindowsPipeUsesRealIOAndRefusesCompetingListener","Output":"=== RUN   TestWindowsPipeUsesRealIOAndRefusesCompetingListener\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:55.5417552Z","Action":"output","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestWindowsPipeUsesRealIOAndRefusesCompetingListener","Output":"--- PASS: TestWindowsPipeUsesRealIOAndRefusesCompetingListener (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:55.5417552Z","Action":"pass","Package":"arion.local/desktop/infrastructure/imebridge","Test":"TestWindowsPipeUsesRealIOAndRefusesCompetingListener","Elapsed":0}
+{"Time":"2026-10-28T18:00:55.5417552Z","Action":"output","Package":"arion.local/desktop/infrastructure/imebridge","Output":"PASS\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:56.5528838Z","Action":"output","Package":"arion.local/desktop/infrastructure/imebridge","Output":"ok  \tarion.local/desktop/infrastructure/imebridge\t1.261s\n"}
+{"Time":"2026-10-28T18:00:56.5528838Z","Action":"pass","Package":"arion.local/desktop/infrastructure/imebridge","Elapsed":1.2610000000000001}
+{"Time":"2026-10-28T18:00:58.1853756Z","Action":"start","Package":"arion.local/desktop/infrastructure/tsf"}
+{"Time":"2026-10-28T18:00:58.2366502Z","Action":"run","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestCapturePreservesCurrentPayloadVerification"}
+{"Time":"2026-10-28T18:00:58.2366502Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestCapturePreservesCurrentPayloadVerification","Output":"=== RUN   TestCapturePreservesCurrentPayloadVerification\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2366502Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestCapturePreservesCurrentPayloadVerification","Output":"--- PASS: TestCapturePreservesCurrentPayloadVerification (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2366502Z","Action":"pass","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestCapturePreservesCurrentPayloadVerification","Elapsed":0}
+{"Time":"2026-10-28T18:00:58.2366502Z","Action":"run","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestRegistrationObservationWaitsForIndependentDiscovery"}
+{"Time":"2026-10-28T18:00:58.2366502Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestRegistrationObservationWaitsForIndependentDiscovery","Output":"=== RUN   TestRegistrationObservationWaitsForIndependentDiscovery\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.239527Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestRegistrationObservationWaitsForIndependentDiscovery","Output":"--- PASS: TestRegistrationObservationWaitsForIndependentDiscovery (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.239527Z","Action":"pass","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestRegistrationObservationWaitsForIndependentDiscovery","Elapsed":0}
+{"Time":"2026-10-28T18:00:58.239527Z","Action":"run","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestRegistrationObservationDoesNotHideNativeFailure"}
+{"Time":"2026-10-28T18:00:58.239527Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestRegistrationObservationDoesNotHideNativeFailure","Output":"=== RUN   TestRegistrationObservationDoesNotHideNativeFailure\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.239527Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestRegistrationObservationDoesNotHideNativeFailure","Output":"--- PASS: TestRegistrationObservationDoesNotHideNativeFailure (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.239527Z","Action":"pass","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestRegistrationObservationDoesNotHideNativeFailure","Elapsed":0}
+{"Time":"2026-10-28T18:00:58.239527Z","Action":"run","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestRegistrationObservationRefusesAnotherBuild"}
+{"Time":"2026-10-28T18:00:58.239527Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestRegistrationObservationRefusesAnotherBuild","Output":"=== RUN   TestRegistrationObservationRefusesAnotherBuild\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.240043Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestRegistrationObservationRefusesAnotherBuild","Output":"--- PASS: TestRegistrationObservationRefusesAnotherBuild (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2400994Z","Action":"pass","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestRegistrationObservationRefusesAnotherBuild","Elapsed":0}
+{"Time":"2026-10-28T18:00:58.2400994Z","Action":"run","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestRegistrationObservationDeadlineIdentifiesDiscoveryStage"}
+{"Time":"2026-10-28T18:00:58.2400994Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestRegistrationObservationDeadlineIdentifiesDiscoveryStage","Output":"=== RUN   TestRegistrationObservationDeadlineIdentifiesDiscoveryStage\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2453314Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestRegistrationObservationDeadlineIdentifiesDiscoveryStage","Output":"--- PASS: TestRegistrationObservationDeadlineIdentifiesDiscoveryStage (0.01s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2453314Z","Action":"pass","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestRegistrationObservationDeadlineIdentifiesDiscoveryStage","Elapsed":0.01}
+{"Time":"2026-10-28T18:00:58.2453314Z","Action":"run","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestEnablementWaitsForObservedUserState"}
+{"Time":"2026-10-28T18:00:58.2453314Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestEnablementWaitsForObservedUserState","Output":"=== RUN   TestEnablementWaitsForObservedUserState\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2475009Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestEnablementWaitsForObservedUserState","Output":"--- PASS: TestEnablementWaitsForObservedUserState (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2475009Z","Action":"pass","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestEnablementWaitsForObservedUserState","Elapsed":0}
+{"Time":"2026-10-28T18:00:58.2475009Z","Action":"run","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestEnablementRejectsChangedRegistration"}
+{"Time":"2026-10-28T18:00:58.2475009Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestEnablementRejectsChangedRegistration","Output":"=== RUN   TestEnablementRejectsChangedRegistration\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2475009Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestEnablementRejectsChangedRegistration","Output":"--- PASS: TestEnablementRejectsChangedRegistration (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2475009Z","Action":"pass","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestEnablementRejectsChangedRegistration","Elapsed":0}
+{"Time":"2026-10-28T18:00:58.2475009Z","Action":"run","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestEnablementDeadlineKeepsItsStage"}
+{"Time":"2026-10-28T18:00:58.2475009Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestEnablementDeadlineKeepsItsStage","Output":"=== RUN   TestEnablementDeadlineKeepsItsStage\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.252993Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestEnablementDeadlineKeepsItsStage","Output":"--- PASS: TestEnablementDeadlineKeepsItsStage (0.01s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.252993Z","Action":"pass","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestEnablementDeadlineKeepsItsStage","Elapsed":0.01}
+{"Time":"2026-10-28T18:00:58.252993Z","Action":"run","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestCancelledEnablementDoesNotQuery"}
+{"Time":"2026-10-28T18:00:58.252993Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestCancelledEnablementDoesNotQuery","Output":"=== RUN   TestCancelledEnablementDoesNotQuery\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.252993Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestCancelledEnablementDoesNotQuery","Output":"--- PASS: TestCancelledEnablementDoesNotQuery (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.252993Z","Action":"pass","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestCancelledEnablementDoesNotQuery","Elapsed":0}
+{"Time":"2026-10-28T18:00:58.252993Z","Action":"run","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestRegistrationRepairOnlyForOwnedDisabledProfile"}
+{"Time":"2026-10-28T18:00:58.2535147Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestRegistrationRepairOnlyForOwnedDisabledProfile","Output":"=== RUN   TestRegistrationRepairOnlyForOwnedDisabledProfile\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2536464Z","Action":"run","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestRegistrationRepairOnlyForOwnedDisabledProfile/enabled"}
+{"Time":"2026-10-28T18:00:58.2536464Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestRegistrationRepairOnlyForOwnedDisabledProfile/enabled","Output":"=== RUN   TestRegistrationRepairOnlyForOwnedDisabledProfile/enabled\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2536464Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestRegistrationRepairOnlyForOwnedDisabledProfile/enabled","Output":"--- PASS: TestRegistrationRepairOnlyForOwnedDisabledProfile/enabled (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2536464Z","Action":"pass","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestRegistrationRepairOnlyForOwnedDisabledProfile/enabled","Elapsed":0}
+{"Time":"2026-10-28T18:00:58.2536464Z","Action":"run","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestRegistrationRepairOnlyForOwnedDisabledProfile/legacy_disabled_registration"}
+{"Time":"2026-10-28T18:00:58.2536464Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestRegistrationRepairOnlyForOwnedDisabledProfile/legacy_disabled_registration","Output":"=== RUN   TestRegistrationRepairOnlyForOwnedDisabledProfile/legacy_disabled_registration\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2536464Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestRegistrationRepairOnlyForOwnedDisabledProfile/legacy_disabled_registration","Output":"--- PASS: TestRegistrationRepairOnlyForOwnedDisabledProfile/legacy_disabled_registration (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2536464Z","Action":"pass","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestRegistrationRepairOnlyForOwnedDisabledProfile/legacy_disabled_registration","Elapsed":0}
+{"Time":"2026-10-28T18:00:58.2542877Z","Action":"run","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestRegistrationRepairOnlyForOwnedDisabledProfile/different_executable"}
+{"Time":"2026-10-28T18:00:58.2542877Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestRegistrationRepairOnlyForOwnedDisabledProfile/different_executable","Output":"=== RUN   TestRegistrationRepairOnlyForOwnedDisabledProfile/different_executable\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2542877Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestRegistrationRepairOnlyForOwnedDisabledProfile/different_executable","Output":"--- PASS: TestRegistrationRepairOnlyForOwnedDisabledProfile/different_executable (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2542877Z","Action":"pass","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestRegistrationRepairOnlyForOwnedDisabledProfile/different_executable","Elapsed":0}
+{"Time":"2026-10-28T18:00:58.2542877Z","Action":"run","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestRegistrationRepairOnlyForOwnedDisabledProfile/legacy_language_with_matching_executable"}
+{"Time":"2026-10-28T18:00:58.2542877Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestRegistrationRepairOnlyForOwnedDisabledProfile/legacy_language_with_matching_executable","Output":"=== RUN   TestRegistrationRepairOnlyForOwnedDisabledProfile/legacy_language_with_matching_executable\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2542877Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestRegistrationRepairOnlyForOwnedDisabledProfile/legacy_language_with_matching_executable","Output":"--- PASS: TestRegistrationRepairOnlyForOwnedDisabledProfile/legacy_language_with_matching_executable (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2542877Z","Action":"pass","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestRegistrationRepairOnlyForOwnedDisabledProfile/legacy_language_with_matching_executable","Elapsed":0}
+{"Time":"2026-10-28T18:00:58.2542877Z","Action":"run","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestRegistrationRepairOnlyForOwnedDisabledProfile/migration_required_with_matching_executable"}
+{"Time":"2026-10-28T18:00:58.2542877Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestRegistrationRepairOnlyForOwnedDisabledProfile/migration_required_with_matching_executable","Output":"=== RUN   TestRegistrationRepairOnlyForOwnedDisabledProfile/migration_required_with_matching_executable\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2548795Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestRegistrationRepairOnlyForOwnedDisabledProfile/migration_required_with_matching_executable","Output":"--- PASS: TestRegistrationRepairOnlyForOwnedDisabledProfile/migration_required_with_matching_executable (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2548795Z","Action":"pass","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestRegistrationRepairOnlyForOwnedDisabledProfile/migration_required_with_matching_executable","Elapsed":0}
+{"Time":"2026-10-28T18:00:58.2548795Z","Action":"run","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestRegistrationRepairOnlyForOwnedDisabledProfile/removed"}
+{"Time":"2026-10-28T18:00:58.2548795Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestRegistrationRepairOnlyForOwnedDisabledProfile/removed","Output":"=== RUN   TestRegistrationRepairOnlyForOwnedDisabledProfile/removed\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2548795Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestRegistrationRepairOnlyForOwnedDisabledProfile/removed","Output":"--- PASS: TestRegistrationRepairOnlyForOwnedDisabledProfile/removed (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2548795Z","Action":"pass","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestRegistrationRepairOnlyForOwnedDisabledProfile/removed","Elapsed":0}
+{"Time":"2026-10-28T18:00:58.2548795Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestRegistrationRepairOnlyForOwnedDisabledProfile","Output":"--- PASS: TestRegistrationRepairOnlyForOwnedDisabledProfile (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2548795Z","Action":"pass","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestRegistrationRepairOnlyForOwnedDisabledProfile","Elapsed":0}
+{"Time":"2026-10-28T18:00:58.2548795Z","Action":"run","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestLegacyProfileCannotSatisfyInstallationOrEnablement"}
+{"Time":"2026-10-28T18:00:58.2548795Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestLegacyProfileCannotSatisfyInstallationOrEnablement","Output":"=== RUN   TestLegacyProfileCannotSatisfyInstallationOrEnablement\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2548795Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestLegacyProfileCannotSatisfyInstallationOrEnablement","Output":"--- PASS: TestLegacyProfileCannotSatisfyInstallationOrEnablement (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2548795Z","Action":"pass","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestLegacyProfileCannotSatisfyInstallationOrEnablement","Elapsed":0}
+{"Time":"2026-10-28T18:00:58.2554093Z","Action":"run","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestRegistrationRepairPreservesDenialAndCancellation"}
+{"Time":"2026-10-28T18:00:58.2554093Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestRegistrationRepairPreservesDenialAndCancellation","Output":"=== RUN   TestRegistrationRepairPreservesDenialAndCancellation\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2555375Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestRegistrationRepairPreservesDenialAndCancellation","Output":"--- PASS: TestRegistrationRepairPreservesDenialAndCancellation (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2555631Z","Action":"pass","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestRegistrationRepairPreservesDenialAndCancellation","Elapsed":0}
+{"Time":"2026-10-28T18:00:58.2556254Z","Action":"run","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestKeyboardTreeRejectsTamperingAndIncompleteClosures"}
+{"Time":"2026-10-28T18:00:58.2556254Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestKeyboardTreeRejectsTamperingAndIncompleteClosures","Output":"=== RUN   TestKeyboardTreeRejectsTamperingAndIncompleteClosures\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2557162Z","Action":"run","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestKeyboardTreeRejectsTamperingAndIncompleteClosures/valid"}
+{"Time":"2026-10-28T18:00:58.2557162Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestKeyboardTreeRejectsTamperingAndIncompleteClosures/valid","Output":"=== RUN   TestKeyboardTreeRejectsTamperingAndIncompleteClosures/valid\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2590783Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestKeyboardTreeRejectsTamperingAndIncompleteClosures/valid","Output":"--- PASS: TestKeyboardTreeRejectsTamperingAndIncompleteClosures/valid (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2590783Z","Action":"pass","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestKeyboardTreeRejectsTamperingAndIncompleteClosures/valid","Elapsed":0}
+{"Time":"2026-10-28T18:00:58.2590783Z","Action":"run","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestKeyboardTreeRejectsTamperingAndIncompleteClosures/changed"}
+{"Time":"2026-10-28T18:00:58.2590783Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestKeyboardTreeRejectsTamperingAndIncompleteClosures/changed","Output":"=== RUN   TestKeyboardTreeRejectsTamperingAndIncompleteClosures/changed\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2620475Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestKeyboardTreeRejectsTamperingAndIncompleteClosures/changed","Output":"--- PASS: TestKeyboardTreeRejectsTamperingAndIncompleteClosures/changed (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2620475Z","Action":"pass","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestKeyboardTreeRejectsTamperingAndIncompleteClosures/changed","Elapsed":0}
+{"Time":"2026-10-28T18:00:58.2625752Z","Action":"run","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestKeyboardTreeRejectsTamperingAndIncompleteClosures/missing"}
+{"Time":"2026-10-28T18:00:58.2626398Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestKeyboardTreeRejectsTamperingAndIncompleteClosures/missing","Output":"=== RUN   TestKeyboardTreeRejectsTamperingAndIncompleteClosures/missing\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2653955Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestKeyboardTreeRejectsTamperingAndIncompleteClosures/missing","Output":"--- PASS: TestKeyboardTreeRejectsTamperingAndIncompleteClosures/missing (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2653955Z","Action":"pass","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestKeyboardTreeRejectsTamperingAndIncompleteClosures/missing","Elapsed":0}
+{"Time":"2026-10-28T18:00:58.2653955Z","Action":"run","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestKeyboardTreeRejectsTamperingAndIncompleteClosures/unlisted"}
+{"Time":"2026-10-28T18:00:58.2653955Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestKeyboardTreeRejectsTamperingAndIncompleteClosures/unlisted","Output":"=== RUN   TestKeyboardTreeRejectsTamperingAndIncompleteClosures/unlisted\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2691837Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestKeyboardTreeRejectsTamperingAndIncompleteClosures/unlisted","Output":"--- PASS: TestKeyboardTreeRejectsTamperingAndIncompleteClosures/unlisted (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2691837Z","Action":"pass","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestKeyboardTreeRejectsTamperingAndIncompleteClosures/unlisted","Elapsed":0}
+{"Time":"2026-10-28T18:00:58.2698721Z","Action":"run","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestKeyboardTreeRejectsTamperingAndIncompleteClosures/empty-directory"}
+{"Time":"2026-10-28T18:00:58.2698721Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestKeyboardTreeRejectsTamperingAndIncompleteClosures/empty-directory","Output":"=== RUN   TestKeyboardTreeRejectsTamperingAndIncompleteClosures/empty-directory\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2735137Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestKeyboardTreeRejectsTamperingAndIncompleteClosures/empty-directory","Output":"--- PASS: TestKeyboardTreeRejectsTamperingAndIncompleteClosures/empty-directory (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.273555Z","Action":"pass","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestKeyboardTreeRejectsTamperingAndIncompleteClosures/empty-directory","Elapsed":0}
+{"Time":"2026-10-28T18:00:58.273555Z","Action":"run","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestKeyboardTreeRejectsTamperingAndIncompleteClosures/traversal"}
+{"Time":"2026-10-28T18:00:58.273555Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestKeyboardTreeRejectsTamperingAndIncompleteClosures/traversal","Output":"=== RUN   TestKeyboardTreeRejectsTamperingAndIncompleteClosures/traversal\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2747303Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestKeyboardTreeRejectsTamperingAndIncompleteClosures/traversal","Output":"--- PASS: TestKeyboardTreeRejectsTamperingAndIncompleteClosures/traversal (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2747303Z","Action":"pass","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestKeyboardTreeRejectsTamperingAndIncompleteClosures/traversal","Elapsed":0}
+{"Time":"2026-10-28T18:00:58.2747303Z","Action":"run","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestKeyboardTreeRejectsTamperingAndIncompleteClosures/case-alias"}
+{"Time":"2026-10-28T18:00:58.2747303Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestKeyboardTreeRejectsTamperingAndIncompleteClosures/case-alias","Output":"=== RUN   TestKeyboardTreeRejectsTamperingAndIncompleteClosures/case-alias\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2765421Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestKeyboardTreeRejectsTamperingAndIncompleteClosures/case-alias","Output":"--- PASS: TestKeyboardTreeRejectsTamperingAndIncompleteClosures/case-alias (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2770676Z","Action":"pass","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestKeyboardTreeRejectsTamperingAndIncompleteClosures/case-alias","Elapsed":0}
+{"Time":"2026-10-28T18:00:58.2771563Z","Action":"run","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestKeyboardTreeRejectsTamperingAndIncompleteClosures/manifest-alias"}
+{"Time":"2026-10-28T18:00:58.2771563Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestKeyboardTreeRejectsTamperingAndIncompleteClosures/manifest-alias","Output":"=== RUN   TestKeyboardTreeRejectsTamperingAndIncompleteClosures/manifest-alias\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2783399Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestKeyboardTreeRejectsTamperingAndIncompleteClosures/manifest-alias","Output":"--- PASS: TestKeyboardTreeRejectsTamperingAndIncompleteClosures/manifest-alias (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2783399Z","Action":"pass","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestKeyboardTreeRejectsTamperingAndIncompleteClosures/manifest-alias","Elapsed":0}
+{"Time":"2026-10-28T18:00:58.2783399Z","Action":"run","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestKeyboardTreeRejectsTamperingAndIncompleteClosures/trailing-dot"}
+{"Time":"2026-10-28T18:00:58.2783399Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestKeyboardTreeRejectsTamperingAndIncompleteClosures/trailing-dot","Output":"=== RUN   TestKeyboardTreeRejectsTamperingAndIncompleteClosures/trailing-dot\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.280039Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestKeyboardTreeRejectsTamperingAndIncompleteClosures/trailing-dot","Output":"--- PASS: TestKeyboardTreeRejectsTamperingAndIncompleteClosures/trailing-dot (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.280039Z","Action":"pass","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestKeyboardTreeRejectsTamperingAndIncompleteClosures/trailing-dot","Elapsed":0}
+{"Time":"2026-10-28T18:00:58.280039Z","Action":"run","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestKeyboardTreeRejectsTamperingAndIncompleteClosures/trailing-space"}
+{"Time":"2026-10-28T18:00:58.280039Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestKeyboardTreeRejectsTamperingAndIncompleteClosures/trailing-space","Output":"=== RUN   TestKeyboardTreeRejectsTamperingAndIncompleteClosures/trailing-space\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2815956Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestKeyboardTreeRejectsTamperingAndIncompleteClosures/trailing-space","Output":"--- PASS: TestKeyboardTreeRejectsTamperingAndIncompleteClosures/trailing-space (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2815956Z","Action":"pass","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestKeyboardTreeRejectsTamperingAndIncompleteClosures/trailing-space","Elapsed":0}
+{"Time":"2026-10-28T18:00:58.2815956Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestKeyboardTreeRejectsTamperingAndIncompleteClosures","Output":"--- PASS: TestKeyboardTreeRejectsTamperingAndIncompleteClosures (0.03s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2815956Z","Action":"pass","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestKeyboardTreeRejectsTamperingAndIncompleteClosures","Elapsed":0.03}
+{"Time":"2026-10-28T18:00:58.2815956Z","Action":"run","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestExplicitProtocolCompatibilityPolicy"}
+{"Time":"2026-10-28T18:00:58.2815956Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestExplicitProtocolCompatibilityPolicy","Output":"=== RUN   TestExplicitProtocolCompatibilityPolicy\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2815956Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestExplicitProtocolCompatibilityPolicy","Output":"--- PASS: TestExplicitProtocolCompatibilityPolicy (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2815956Z","Action":"pass","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestExplicitProtocolCompatibilityPolicy","Elapsed":0}
+{"Time":"2026-10-28T18:00:58.2815956Z","Action":"run","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestProtectedClientRejectsUserOwnedAndWrongVersionPaths"}
+{"Time":"2026-10-28T18:00:58.2815956Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestProtectedClientRejectsUserOwnedAndWrongVersionPaths","Output":"=== RUN   TestProtectedClientRejectsUserOwnedAndWrongVersionPaths\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2857647Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestProtectedClientRejectsUserOwnedAndWrongVersionPaths","Output":"--- PASS: TestProtectedClientRejectsUserOwnedAndWrongVersionPaths (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2857647Z","Action":"pass","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestProtectedClientRejectsUserOwnedAndWrongVersionPaths","Elapsed":0}
+{"Time":"2026-10-28T18:00:58.2857647Z","Action":"run","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestClientModuleClaimRemainsExactWithRetainedLegacyMapping"}
+{"Time":"2026-10-28T18:00:58.2857647Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestClientModuleClaimRemainsExactWithRetainedLegacyMapping","Output":"=== RUN   TestClientModuleClaimRemainsExactWithRetainedLegacyMapping\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2857647Z","Action":"run","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestClientModuleClaimRemainsExactWithRetainedLegacyMapping/current_with_cached_legacy"}
+{"Time":"2026-10-28T18:00:58.2857647Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestClientModuleClaimRemainsExactWithRetainedLegacyMapping/current_with_cached_legacy","Output":"=== RUN   TestClientModuleClaimRemainsExactWithRetainedLegacyMapping/current_with_cached_legacy\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2857647Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestClientModuleClaimRemainsExactWithRetainedLegacyMapping/current_with_cached_legacy","Output":"--- PASS: TestClientModuleClaimRemainsExactWithRetainedLegacyMapping/current_with_cached_legacy (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2857647Z","Action":"pass","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestClientModuleClaimRemainsExactWithRetainedLegacyMapping/current_with_cached_legacy","Elapsed":0}
+{"Time":"2026-10-28T18:00:58.2857647Z","Action":"run","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestClientModuleClaimRemainsExactWithRetainedLegacyMapping/current_before_cached_legacy"}
+{"Time":"2026-10-28T18:00:58.2857647Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestClientModuleClaimRemainsExactWithRetainedLegacyMapping/current_before_cached_legacy","Output":"=== RUN   TestClientModuleClaimRemainsExactWithRetainedLegacyMapping/current_before_cached_legacy\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2857647Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestClientModuleClaimRemainsExactWithRetainedLegacyMapping/current_before_cached_legacy","Output":"--- PASS: TestClientModuleClaimRemainsExactWithRetainedLegacyMapping/current_before_cached_legacy (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2857647Z","Action":"pass","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestClientModuleClaimRemainsExactWithRetainedLegacyMapping/current_before_cached_legacy","Elapsed":0}
+{"Time":"2026-10-28T18:00:58.2857647Z","Action":"run","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestClientModuleClaimRemainsExactWithRetainedLegacyMapping/claim_absent"}
+{"Time":"2026-10-28T18:00:58.2857647Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestClientModuleClaimRemainsExactWithRetainedLegacyMapping/claim_absent","Output":"=== RUN   TestClientModuleClaimRemainsExactWithRetainedLegacyMapping/claim_absent\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2857647Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestClientModuleClaimRemainsExactWithRetainedLegacyMapping/claim_absent","Output":"--- PASS: TestClientModuleClaimRemainsExactWithRetainedLegacyMapping/claim_absent (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2857647Z","Action":"pass","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestClientModuleClaimRemainsExactWithRetainedLegacyMapping/claim_absent","Elapsed":0}
+{"Time":"2026-10-28T18:00:58.2857647Z","Action":"run","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestClientModuleClaimRemainsExactWithRetainedLegacyMapping/different_advertised_hash"}
+{"Time":"2026-10-28T18:00:58.2857647Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestClientModuleClaimRemainsExactWithRetainedLegacyMapping/different_advertised_hash","Output":"=== RUN   TestClientModuleClaimRemainsExactWithRetainedLegacyMapping/different_advertised_hash\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2857647Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestClientModuleClaimRemainsExactWithRetainedLegacyMapping/different_advertised_hash","Output":"--- PASS: TestClientModuleClaimRemainsExactWithRetainedLegacyMapping/different_advertised_hash (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2857647Z","Action":"pass","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestClientModuleClaimRemainsExactWithRetainedLegacyMapping/different_advertised_hash","Elapsed":0}
+{"Time":"2026-10-28T18:00:58.2857647Z","Action":"run","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestClientModuleClaimRemainsExactWithRetainedLegacyMapping/different_root"}
+{"Time":"2026-10-28T18:00:58.2857647Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestClientModuleClaimRemainsExactWithRetainedLegacyMapping/different_root","Output":"=== RUN   TestClientModuleClaimRemainsExactWithRetainedLegacyMapping/different_root\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2857647Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestClientModuleClaimRemainsExactWithRetainedLegacyMapping/different_root","Output":"--- PASS: TestClientModuleClaimRemainsExactWithRetainedLegacyMapping/different_root (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2857647Z","Action":"pass","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestClientModuleClaimRemainsExactWithRetainedLegacyMapping/different_root","Elapsed":0}
+{"Time":"2026-10-28T18:00:58.2857647Z","Action":"run","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestClientModuleClaimRemainsExactWithRetainedLegacyMapping/ambiguous_claim"}
+{"Time":"2026-10-28T18:00:58.2857647Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestClientModuleClaimRemainsExactWithRetainedLegacyMapping/ambiguous_claim","Output":"=== RUN   TestClientModuleClaimRemainsExactWithRetainedLegacyMapping/ambiguous_claim\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2857647Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestClientModuleClaimRemainsExactWithRetainedLegacyMapping/ambiguous_claim","Output":"--- PASS: TestClientModuleClaimRemainsExactWithRetainedLegacyMapping/ambiguous_claim (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2857647Z","Action":"pass","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestClientModuleClaimRemainsExactWithRetainedLegacyMapping/ambiguous_claim","Elapsed":0}
+{"Time":"2026-10-28T18:00:58.2857647Z","Action":"run","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestClientModuleClaimRemainsExactWithRetainedLegacyMapping/invalid_identity"}
+{"Time":"2026-10-28T18:00:58.2857647Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestClientModuleClaimRemainsExactWithRetainedLegacyMapping/invalid_identity","Output":"=== RUN   TestClientModuleClaimRemainsExactWithRetainedLegacyMapping/invalid_identity\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2857647Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestClientModuleClaimRemainsExactWithRetainedLegacyMapping/invalid_identity","Output":"--- PASS: TestClientModuleClaimRemainsExactWithRetainedLegacyMapping/invalid_identity (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2857647Z","Action":"pass","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestClientModuleClaimRemainsExactWithRetainedLegacyMapping/invalid_identity","Elapsed":0}
+{"Time":"2026-10-28T18:00:58.2857647Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestClientModuleClaimRemainsExactWithRetainedLegacyMapping","Output":"--- PASS: TestClientModuleClaimRemainsExactWithRetainedLegacyMapping (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2857647Z","Action":"pass","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestClientModuleClaimRemainsExactWithRetainedLegacyMapping","Elapsed":0}
+{"Time":"2026-10-28T18:00:58.2857647Z","Action":"run","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestRetainedInstalledClientModuleProof"}
+{"Time":"2026-10-28T18:00:58.2857647Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestRetainedInstalledClientModuleProof","Output":"=== RUN   TestRetainedInstalledClientModuleProof\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2904101Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestRetainedInstalledClientModuleProof","Output":"    peer_windows_test.go:109: reviewed retained f9 fixture is not installed; no installation is performed\n"}
+{"Time":"2026-10-28T18:00:58.2927731Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestRetainedInstalledClientModuleProof","Output":"--- SKIP: TestRetainedInstalledClientModuleProof (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2927731Z","Action":"skip","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestRetainedInstalledClientModuleProof","Elapsed":0}
+{"Time":"2026-10-28T18:00:58.2927731Z","Action":"run","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestAutomaticUpgradePreservesUserChoiceAndCurrentInstallation"}
+{"Time":"2026-10-28T18:00:58.2927731Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestAutomaticUpgradePreservesUserChoiceAndCurrentInstallation","Output":"=== RUN   TestAutomaticUpgradePreservesUserChoiceAndCurrentInstallation\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2927731Z","Action":"run","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestAutomaticUpgradePreservesUserChoiceAndCurrentInstallation/absent"}
+{"Time":"2026-10-28T18:00:58.2927731Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestAutomaticUpgradePreservesUserChoiceAndCurrentInstallation/absent","Output":"=== RUN   TestAutomaticUpgradePreservesUserChoiceAndCurrentInstallation/absent\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2927731Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestAutomaticUpgradePreservesUserChoiceAndCurrentInstallation/absent","Output":"--- PASS: TestAutomaticUpgradePreservesUserChoiceAndCurrentInstallation/absent (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2927731Z","Action":"pass","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestAutomaticUpgradePreservesUserChoiceAndCurrentInstallation/absent","Elapsed":0}
+{"Time":"2026-10-28T18:00:58.2927731Z","Action":"run","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestAutomaticUpgradePreservesUserChoiceAndCurrentInstallation/disabled"}
+{"Time":"2026-10-28T18:00:58.2927731Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestAutomaticUpgradePreservesUserChoiceAndCurrentInstallation/disabled","Output":"=== RUN   TestAutomaticUpgradePreservesUserChoiceAndCurrentInstallation/disabled\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2933399Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestAutomaticUpgradePreservesUserChoiceAndCurrentInstallation/disabled","Output":"--- PASS: TestAutomaticUpgradePreservesUserChoiceAndCurrentInstallation/disabled (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2933399Z","Action":"pass","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestAutomaticUpgradePreservesUserChoiceAndCurrentInstallation/disabled","Elapsed":0}
+{"Time":"2026-10-28T18:00:58.2933399Z","Action":"run","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestAutomaticUpgradePreservesUserChoiceAndCurrentInstallation/selected"}
+{"Time":"2026-10-28T18:00:58.2933399Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestAutomaticUpgradePreservesUserChoiceAndCurrentInstallation/selected","Output":"=== RUN   TestAutomaticUpgradePreservesUserChoiceAndCurrentInstallation/selected\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2933399Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestAutomaticUpgradePreservesUserChoiceAndCurrentInstallation/selected","Output":"--- PASS: TestAutomaticUpgradePreservesUserChoiceAndCurrentInstallation/selected (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2933399Z","Action":"pass","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestAutomaticUpgradePreservesUserChoiceAndCurrentInstallation/selected","Elapsed":0}
+{"Time":"2026-10-28T18:00:58.2933399Z","Action":"run","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestAutomaticUpgradePreservesUserChoiceAndCurrentInstallation/editable_client"}
+{"Time":"2026-10-28T18:00:58.2933399Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestAutomaticUpgradePreservesUserChoiceAndCurrentInstallation/editable_client","Output":"=== RUN   TestAutomaticUpgradePreservesUserChoiceAndCurrentInstallation/editable_client\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2933399Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestAutomaticUpgradePreservesUserChoiceAndCurrentInstallation/editable_client","Output":"--- PASS: TestAutomaticUpgradePreservesUserChoiceAndCurrentInstallation/editable_client (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2933399Z","Action":"pass","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestAutomaticUpgradePreservesUserChoiceAndCurrentInstallation/editable_client","Elapsed":0}
+{"Time":"2026-10-28T18:00:58.2933399Z","Action":"run","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestAutomaticUpgradePreservesUserChoiceAndCurrentInstallation/current"}
+{"Time":"2026-10-28T18:00:58.2933399Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestAutomaticUpgradePreservesUserChoiceAndCurrentInstallation/current","Output":"=== RUN   TestAutomaticUpgradePreservesUserChoiceAndCurrentInstallation/current\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2933399Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestAutomaticUpgradePreservesUserChoiceAndCurrentInstallation/current","Output":"--- PASS: TestAutomaticUpgradePreservesUserChoiceAndCurrentInstallation/current (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2933399Z","Action":"pass","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestAutomaticUpgradePreservesUserChoiceAndCurrentInstallation/current","Elapsed":0}
+{"Time":"2026-10-28T18:00:58.2933399Z","Action":"run","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestAutomaticUpgradePreservesUserChoiceAndCurrentInstallation/disabled_current"}
+{"Time":"2026-10-28T18:00:58.2933399Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestAutomaticUpgradePreservesUserChoiceAndCurrentInstallation/disabled_current","Output":"=== RUN   TestAutomaticUpgradePreservesUserChoiceAndCurrentInstallation/disabled_current\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2933399Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestAutomaticUpgradePreservesUserChoiceAndCurrentInstallation/disabled_current","Output":"--- PASS: TestAutomaticUpgradePreservesUserChoiceAndCurrentInstallation/disabled_current (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2933399Z","Action":"pass","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestAutomaticUpgradePreservesUserChoiceAndCurrentInstallation/disabled_current","Elapsed":0}
+{"Time":"2026-10-28T18:00:58.2933399Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestAutomaticUpgradePreservesUserChoiceAndCurrentInstallation","Output":"--- PASS: TestAutomaticUpgradePreservesUserChoiceAndCurrentInstallation (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2933399Z","Action":"pass","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestAutomaticUpgradePreservesUserChoiceAndCurrentInstallation","Elapsed":0}
+{"Time":"2026-10-28T18:00:58.2933399Z","Action":"run","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestUpgradeUsesOneMachineTransactionThenOrdinaryUserMigration"}
+{"Time":"2026-10-28T18:00:58.2933399Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestUpgradeUsesOneMachineTransactionThenOrdinaryUserMigration","Output":"=== RUN   TestUpgradeUsesOneMachineTransactionThenOrdinaryUserMigration\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2933399Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestUpgradeUsesOneMachineTransactionThenOrdinaryUserMigration","Output":"--- PASS: TestUpgradeUsesOneMachineTransactionThenOrdinaryUserMigration (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2933399Z","Action":"pass","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestUpgradeUsesOneMachineTransactionThenOrdinaryUserMigration","Elapsed":0}
+{"Time":"2026-10-28T18:00:58.2933399Z","Action":"run","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestStableLoaderPublishesCoreWhileSelectedWithoutTogglingUserProfile"}
+{"Time":"2026-10-28T18:00:58.2933399Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestStableLoaderPublishesCoreWhileSelectedWithoutTogglingUserProfile","Output":"=== RUN   TestStableLoaderPublishesCoreWhileSelectedWithoutTogglingUserProfile\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2933399Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestStableLoaderPublishesCoreWhileSelectedWithoutTogglingUserProfile","Output":"--- PASS: TestStableLoaderPublishesCoreWhileSelectedWithoutTogglingUserProfile (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2933399Z","Action":"pass","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestStableLoaderPublishesCoreWhileSelectedWithoutTogglingUserProfile","Elapsed":0}
+{"Time":"2026-10-28T18:00:58.2933399Z","Action":"run","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestUpgradeApprovalFailureLeavesUserConfigurationUntouched"}
+{"Time":"2026-10-28T18:00:58.2933399Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestUpgradeApprovalFailureLeavesUserConfigurationUntouched","Output":"=== RUN   TestUpgradeApprovalFailureLeavesUserConfigurationUntouched\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2933399Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestUpgradeApprovalFailureLeavesUserConfigurationUntouched","Output":"--- PASS: TestUpgradeApprovalFailureLeavesUserConfigurationUntouched (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2933399Z","Action":"pass","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestUpgradeApprovalFailureLeavesUserConfigurationUntouched","Elapsed":0}
+{"Time":"2026-10-28T18:00:58.2933399Z","Action":"run","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestExplicitRetryCompletesUserEnablementWithoutAnotherUAC"}
+{"Time":"2026-10-28T18:00:58.2933399Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestExplicitRetryCompletesUserEnablementWithoutAnotherUAC","Output":"=== RUN   TestExplicitRetryCompletesUserEnablementWithoutAnotherUAC\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2933399Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestExplicitRetryCompletesUserEnablementWithoutAnotherUAC","Output":"--- PASS: TestExplicitRetryCompletesUserEnablementWithoutAnotherUAC (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2933399Z","Action":"pass","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestExplicitRetryCompletesUserEnablementWithoutAnotherUAC","Elapsed":0}
+{"Time":"2026-10-28T18:00:58.2933399Z","Action":"run","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestUpgradeRejectsInvalidOldBuildObservationAndCancellation"}
+{"Time":"2026-10-28T18:00:58.2933399Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestUpgradeRejectsInvalidOldBuildObservationAndCancellation","Output":"=== RUN   TestUpgradeRejectsInvalidOldBuildObservationAndCancellation\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2933399Z","Action":"run","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestUpgradeRejectsInvalidOldBuildObservationAndCancellation/invalid-build"}
+{"Time":"2026-10-28T18:00:58.2933399Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestUpgradeRejectsInvalidOldBuildObservationAndCancellation/invalid-build","Output":"=== RUN   TestUpgradeRejectsInvalidOldBuildObservationAndCancellation/invalid-build\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2933399Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestUpgradeRejectsInvalidOldBuildObservationAndCancellation/invalid-build","Output":"--- PASS: TestUpgradeRejectsInvalidOldBuildObservationAndCancellation/invalid-build (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2933399Z","Action":"pass","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestUpgradeRejectsInvalidOldBuildObservationAndCancellation/invalid-build","Elapsed":0}
+{"Time":"2026-10-28T18:00:58.2933399Z","Action":"run","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestUpgradeRejectsInvalidOldBuildObservationAndCancellation/native-query-failed"}
+{"Time":"2026-10-28T18:00:58.2933399Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestUpgradeRejectsInvalidOldBuildObservationAndCancellation/native-query-failed","Output":"=== RUN   TestUpgradeRejectsInvalidOldBuildObservationAndCancellation/native-query-failed\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2933399Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestUpgradeRejectsInvalidOldBuildObservationAndCancellation/native-query-failed","Output":"--- PASS: TestUpgradeRejectsInvalidOldBuildObservationAndCancellation/native-query-failed (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2933399Z","Action":"pass","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestUpgradeRejectsInvalidOldBuildObservationAndCancellation/native-query-failed","Elapsed":0}
+{"Time":"2026-10-28T18:00:58.2933399Z","Action":"run","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestUpgradeRejectsInvalidOldBuildObservationAndCancellation/cancelled"}
+{"Time":"2026-10-28T18:00:58.2933399Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestUpgradeRejectsInvalidOldBuildObservationAndCancellation/cancelled","Output":"=== RUN   TestUpgradeRejectsInvalidOldBuildObservationAndCancellation/cancelled\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2933399Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestUpgradeRejectsInvalidOldBuildObservationAndCancellation/cancelled","Output":"--- PASS: TestUpgradeRejectsInvalidOldBuildObservationAndCancellation/cancelled (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2933399Z","Action":"pass","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestUpgradeRejectsInvalidOldBuildObservationAndCancellation/cancelled","Elapsed":0}
+{"Time":"2026-10-28T18:00:58.2933399Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestUpgradeRejectsInvalidOldBuildObservationAndCancellation","Output":"--- PASS: TestUpgradeRejectsInvalidOldBuildObservationAndCancellation (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2933399Z","Action":"pass","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestUpgradeRejectsInvalidOldBuildObservationAndCancellation","Elapsed":0}
+{"Time":"2026-10-28T18:00:58.2933399Z","Action":"run","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestNativeSelectionRaceRefreshesObservedStateBeforeDeferral"}
+{"Time":"2026-10-28T18:00:58.2933399Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestNativeSelectionRaceRefreshesObservedStateBeforeDeferral","Output":"=== RUN   TestNativeSelectionRaceRefreshesObservedStateBeforeDeferral\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2933399Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestNativeSelectionRaceRefreshesObservedStateBeforeDeferral","Output":"--- PASS: TestNativeSelectionRaceRefreshesObservedStateBeforeDeferral (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:58.2933399Z","Action":"pass","Package":"arion.local/desktop/infrastructure/tsf","Test":"TestNativeSelectionRaceRefreshesObservedStateBeforeDeferral","Elapsed":0}
+{"Time":"2026-10-28T18:00:58.2950719Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Output":"PASS\n","OutputType":"frame"}
+{"Time":"2026-10-28T18:00:59.3129867Z","Action":"output","Package":"arion.local/desktop/infrastructure/tsf","Output":"ok  \tarion.local/desktop/infrastructure/tsf\t1.128s\n"}
+{"Time":"2026-10-28T18:00:59.3130063Z","Action":"pass","Package":"arion.local/desktop/infrastructure/tsf","Elapsed":1.1280000000000001}
+Client verification evidence: D:\a\Arion\Arion\.workspace\tests\windows-ime-client\run-WI2rZn\report.json
+g++ (x86_64-posix-seh-rev2, Built by MinGW-Builds project) 14.2.0
+Copyright (C) 2024 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+PASS: language bar COM identity, Windows input-mode metadata, native menu order/disabled/state, stale dispatch, notifications, reentrant sink, owned icons
+Windows language bar evidence: D:\a\Arion\Arion\.workspace\tests\windows-language-bar\run-mcsuCG\report.json
+✔ complete pinned ESDB 70 and CSpell vocabulary retains case, frequency-independent membership and all prefix matches (1772.8125ms)
+✔ canonical technical case, exact dedup and unseen words survive normalization (6.0745ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1888.6644
+PASS complete ranked English pagination, exact/case, independent cursors and malformed asset rejection
+Shared Pinyin ownership, UTF boundaries, commit consumption and key policy tests passed.
+g++ (x86_64-posix-seh-rev2, Built by MinGW-Builds project) 14.2.0
+Copyright (C) 2024 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+x86_64-w64-mingw32
+Python 3.12.10
+Shared ranking, 766 Unicode 17 grapheme cases and 1112064 Script scalar cases (103351 Han) passed.
+Shared codec, transactions and actual Windows DPAPI persistence passed.
+Independent plistlib mapping compatibility passed.
+Actual pinned Rime encrypted Db/cursor/transaction/context ABI passed.
+PASS two-process-pending-private-and-same-word-increments
+PASS abort-does-not-remove-peer-confirmation
+PASS process-kill-discards-private-pending-transaction
+PASS process-kill-releases-active-snapshot-write-lock
+PASS real-pinned-Rime-parallel-editors-count-clock-and-dynamic-weight
+PASS real-pinned-Rime-different-words-merge-and-fresh-process-reopen
+PASS real-pinned-Rime-unequal-editor-pace-and-pending-read-refresh
+PASS context-pair-clock-ranking-and-active-reset
+All owned multi-process encrypted learning checks passed.
+PASS actual options atomic toggles, failure preservation, private ACL/reparse checks and independent process updates.
+Shared keyboard learning evidence: D:\a\Arion\Arion\.workspace\tests\shared-keyboard-learning\run-LWRFti\report.json
+PASS full-pinyin-nihao
+PASS full-pinyin-zhongguo
+PASS english-space-engine-commit
+PASS english-sentence-case-engine-selection
+PASS english-candidates-in-chinese-mode
+PASS english-prefix-completion-in-chinese-mode
+PASS expanded-english-canonical-case
+PASS expanded-english-canonical-case
+PASS expanded-english-canonical-case
+PASS expanded-english-canonical-case
+PASS expanded-english-canonical-case
+ADMISSION	development-xin	5	新	心	信	欣	馨
+ADMISSION	development-shi	5	是	时	事	使	市
+ADMISSION	development-jian	5	见	间	建	件	剑
+ADMISSION	development-ni	5	你	拟	尼	呢	泥
+ADMISSION	development-dian	5	点	店	电	殿	垫
+ADMISSION	development-xing	5	行	性	型	星	姓
+ADMISSION	development-artifi	5	artificial	artificially	爱人提法	爱人	artifice
+ADMISSION	development-compu	5	computer	computers	compulsive	从猫扑	聪明
+ADMISSION	development-softw	5	software	softwood	搜房台湾	搜房	softwoods
+ADMISSION	development-hel	5	Hel	help	hello	hell	helped
+ADMISSION	development-can	5	惨	残	餐	can	Can
+ADMISSION	development-an	5	按	俺	安	an	An
+ADMISSION	development-you	5	有	又	由	you	You
+ADMISSION	development-github	5	GitHub	githubusercontent	个	给	过
+ADMISSION	development-api	5	api	API	Api	apiece	Apia
+ADMISSION	development-frontend	5	frontend	Frontend	繁荣特你的	繁荣	芙蓉
+ADMISSION	development-backend	5	backend	Backend	backends	八成肯定	八成
+ADMISSION	development-workflow	5	workflow	Workflow	workflows	我人口法律欧文	我
+ADMISSION	development-xinput	5	xinput	Xinput	新普通	新	心
+ADMISSION	development-javascript	5	JavaScript	JavaScriptReact	骄傲	煎熬	教案
+ADMISSION	development-xin	9	新	心	信	欣	馨	鑫	辛	芯	锌
+ADMISSION	development-shi	9	是	时	事	使	市	式	试	石	十
+ADMISSION	development-jian	9	见	间	建	件	剑	键	兼	减	贱
+ADMISSION	development-ni	9	你	拟	尼	呢	泥	妳	妮	腻	逆
+ADMISSION	development-dian	9	点	店	电	殿	垫	典	颠	掂	碘
+ADMISSION	development-xing	9	行	性	型	星	姓	醒	兴	形	幸
+ADMISSION	development-artifi	9	artificial	artificially	爱人提法	爱人	artifice	安然	黯然	artificer	矮人
+ADMISSION	development-compu	9	computer	computers	compulsive	从猫扑	聪明	compulsion	从没	匆忙	compute
+ADMISSION	development-softw	9	software	softwood	搜房台湾	搜房	softwoods	送饭	送	宋	松
+ADMISSION	development-hel	9	Hel	help	hello	hell	helped	held	Helen	helps	helmet
+ADMISSION	development-can	9	惨	残	餐	can	Can	参	灿	蚕	惭
+ADMISSION	development-an	9	按	俺	安	an	An	案	暗	岸	鞍
+ADMISSION	development-you	9	有	又	由	you	You	油	游	友	右
+ADMISSION	development-github	9	GitHub	githubusercontent	个	给	过	跟	更	该	高
+ADMISSION	development-api	9	api	API	Api	apiece	Apia	啊皮	啊	apis	阿
+ADMISSION	development-frontend	9	frontend	Frontend	繁荣特你的	繁荣	芙蓉	肥肉	夫人	否认	放入
+ADMISSION	development-backend	9	backend	Backend	backends	八成肯定	八成	把车	拔出	把持	八次
+ADMISSION	development-workflow	9	workflow	Workflow	workflows	我人口法律欧文	我	喔	窝	握	卧
+ADMISSION	development-xinput	9	xinput	Xinput	新普通	新	心	信	欣	馨	鑫
+ADMISSION	development-javascript	9	JavaScript	JavaScriptReact	骄傲	煎熬	教案	旧爱	结案	敬爱	静安
+ADMISSION	validation-hao	5	好	号	浩	豪	耗
+ADMISSION	validation-zhong	5	中	种	重	钟	仲
+ADMISSION	validation-shen	5	神	深	沈	身	甚
+ADMISSION	validation-zhi	5	之	只	至	值	指
+ADMISSION	validation-guan	5	管	关	官	观	馆
+ADMISSION	validation-chang	5	长	唱	常	厂	场
+ADMISSION	validation-devel	5	devel	Devel	developed	develop	developing
+ADMISSION	validation-netwo	5	network	networks	networking	呢替我	呢
+ADMISSION	validation-datab	5	database	databases	打他不	大厅	datable
+ADMISSION	validation-algor	5	algor	Algor	algorithm	algorithms	阿里工人
+ADMISSION	validation-typescript	5	TypeScript	typescript	typescripts	同样皮尔斯次日平台	同样
+ADMISSION	validation-python	5	python	Python	pythons	朋友通红	朋友
+ADMISSION	validation-docker	5	docker	Docker	dockers	动词客人	动词
+ADMISSION	validation-config	5	config	Config	configuration	丛飞	从
+ADMISSION	validation-plugin	5	plugin	Plugin	plugins	披露个	披露
+ADMISSION	validation-pin	5	品	拼	频	pin	PIN
+ADMISSION	validation-pan	5	盘	潘	判	pan	Pan
+ADMISSION	validation-hao	9	好	号	浩	豪	耗	郝	昊	皓	毫
+ADMISSION	validation-zhong	9	中	种	重	钟	仲	众	忠	终	肿
+ADMISSION	validation-shen	9	神	深	沈	身	甚	申	肾	伸	审
+ADMISSION	validation-zhi	9	之	只	至	值	指	知	直	制	纸
+ADMISSION	validation-guan	9	管	关	官	观	馆	灌	冠	罐	惯
+ADMISSION	validation-chang	9	长	唱	常	厂	场	昌	尝	肠	畅
+ADMISSION	validation-devel	9	devel	Devel	developed	develop	developing	develops	developer	development	的
+ADMISSION	validation-netwo	9	network	networks	networking	呢替我	呢	networked	女儿	哪儿	networker
+ADMISSION	validation-datab	9	database	databases	打他不	大厅	datable	打听	大腿	Databricks	大头
+ADMISSION	validation-algor	9	algor	Algor	algorithm	algorithms	阿里工人	阿里	algors	案例	阿拉
+ADMISSION	validation-typescript	9	TypeScript	typescript	typescripts	同样皮尔斯次日平台	同样	TypeScriptReact	统一	同意	天涯
+ADMISSION	validation-python	9	python	Python	pythons	朋友通红	朋友	pythoness	便宜	培养	pythonesses
+ADMISSION	validation-docker	9	docker	Docker	dockers	动词客人	动词	dockerd	东侧	东城	dockerenv
+ADMISSION	validation-config	9	config	Config	configuration	丛飞	从	configs	葱	聪	configure
+ADMISSION	validation-plugin	9	plugin	Plugin	plugins	披露个	披露	跑路	铺路	怕	跑
+ADMISSION	validation-pin	9	品	拼	频	pin	PIN	Pin	贫	聘	嫔
+ADMISSION	validation-pan	9	盘	潘	判	pan	Pan	盼	攀	畔	叛
+ADMISSION	holdout-shui	5	谁	水	睡	税	说
+ADMISSION	holdout-shu	5	书	数	树	输	属
+ADMISSION	holdout-tian	5	天	田	填	添	甜
+ADMISSION	holdout-cheng	5	成	称	城	呈	程
+ADMISSION	holdout-xue	5	学	血	雪	薛	穴
+ADMISSION	holdout-engin	5	engine	engineer	engines	engineers	engineered
+ADMISSION	holdout-electr	5	electricity	electric	electronic	electrical	electronics
+ADMISSION	holdout-hospit	5	hospital	hospitals	hospitality	hospitalized	hospitable
+ADMISSION	holdout-microph	5	microphone	microphones	米从容配合	米处	microphyte
+ADMISSION	holdout-fan	5	饭	反	烦	fan	Fan
+ADMISSION	holdout-map	5	map	Map	maps	maple	mapped
+ADMISSION	holdout-terminal	5	terminal	Terminal	terminally	胎儿米哪里	胎儿
+ADMISSION	holdout-shui	9	谁	水	睡	税	说	誰	氵	稅	涗
+ADMISSION	holdout-shu	9	书	数	树	输	属	熟	术	舒	鼠
+ADMISSION	holdout-tian	9	天	田	填	添	甜	舔	提案	恬	钿
+ADMISSION	holdout-cheng	9	成	称	城	呈	程	乘	撑	诚	承
+ADMISSION	holdout-xue	9	学	血	雪	薛	穴	靴	削	彐	學
+ADMISSION	holdout-engin	9	engine	engineer	engines	engineers	engineered	engineering	鞥	enginery	engineman
+ADMISSION	holdout-electr	9	electricity	electric	electronic	electrical	electronics	electrician	electrons	electrocuted	electron
+ADMISSION	holdout-hospit	9	hospital	hospitals	hospitality	hospitalized	hospitable	红色皮特	红色	hospitalization	后市
+ADMISSION	holdout-microph	9	microphone	microphones	米从容配合	米处	microphyte	迷彩	米	microphytes	迷
+ADMISSION	holdout-fan	9	饭	反	烦	fan	Fan	翻	凡	范	返
+ADMISSION	holdout-map	9	map	Map	maps	maple	mapped	马屁	马匹	mapping	吗
+ADMISSION	holdout-terminal	9	terminal	Terminal	terminally	胎儿米哪里	胎儿	terminals	头儿	特尔	特
+PASS english-admission-development-and-validation-five-nine-pages
+PASS apostrophe-syllable-boundary
+PASS abbreviated-pinyin
+PASS umlaut-v-spelling
+PASS literal-umlaut-shared-normalization
+PASS partial-selection-suffix-continuation
+PASS independent-sessions
+PASS escape-cancels-without-commit
+PASS backspace-reconverts
+PASS candidate-page-down
+PASS shared-configurable-menu-expansion-and-engine-index-selection
+PASS english-pass-through-with-full-width-preference
+PASS direct-chinese-punctuation
+PASS emoji-subdivision-flag-metadata-and-exact-commit
+PASS production-encrypted-learning-lifecycle
+Native Pinyin evidence: D:\a\Arion\Arion\.workspace\tests\windows-pinyin\run-FSjvX4\report.json
+PASS: restricted DLL load, shared clients, real conversion, thread serialization, Han-only learning/no-op ciphertext, invalid UTF-8 refusal, reset generation, peer-busy recovery, encrypted-profile reopen and tampered recovery refusal.
+PASS: locked/tampered closures preserve files; verified and legacy closures remove exactly owned files.
+Module evidence: D:\a\Arion\Arion\.workspace\tests\windows-keyboard-module\run-QOcSAF\report.json
+Windows keyboard host evidence: D:\a\Arion\Arion\.workspace\tests\windows-keyboard-host\run-ab2ng9\report.json
+PASS: native named keys/Shift sides and shared shortcut/mode policy; no engine processing or input injection.
+Observed native sequence support: omitted
+Observed native sequence support: supported
+Observed native sequence support: omitted
+Glyph centers at 14: 14, 14.5
+Glyph centers at 16: 15, 15.5
+Glyph centers at 20: 17.5, 17.5
+PASS: native system Emoji shaping, unsupported-sequence suppression, color pixels, themes, sizes and nonactivating candidate surface.
+PASS Native hello announces private-password-safe protocol 2
+PASS Chinese mode offers English words and commits their displayed identity through TSF
+PASS Typed native Emoji has protected text slots and commits exactly once without Chinese context learning
+PASS A selected Chinese prefix and Emoji suffix commit together without Chinese context learning
+PASS Space and engine punctuation commit the displayed Emoji identity
+PASS Middle caret suppresses Emoji and End restores it without changing the owned draft
+PASS Emoji preference refresh preserves text order and revokes canceled candidates
+PASS Real Pinyin nihao commits Chinese exactly once
+PASS Keyboard-focus receipt rebinds document without a new thread-focus callback
+PASS Chromium transitory editable store accepts Pinyin while protected fields remain refused
+PASS Transitory voice ownership requires explicit non-password scope
+PASS Escape restores originally selected Unicode text
+PASS Private Chromium password and PIN scopes refuse keys and voice ownership
+PASS Password and read-only contexts refuse engine ownership
+PASS Host composition refusal does not consume a key
+PASS Engine does not process a key before a granted write lock
+PASS User replacement survives stale composition cleanup
+PASS Focus loss restores only unchanged marked text
+PASS Zero-width caret anchors an actual nonactivating candidate window
+PASS Delayed browser layout restores each current candidate revision through read-only sessions
+PASS Layout changes reposition or suppress candidates without stale coordinates
+PASS Deferred layout cannot resurrect a canceled or focus-revoked composition
+PASS Number selection commits the TSF accessible candidate ordering
+PASS Expanded six-row native menu selects another row by mouse
+PASS Hidden stale native candidate click cannot insert
+PASS Return commits raw Pinyin rather than a candidate display string
+PASS Partial prefix remains provisional until suffix confirmation
+PASS Backspace rolls a selected prefix back into raw composition
+PASS Home End and middle edits preserve the original suffix
+PASS Forward Delete at Home removes only the engine caret character
+PASS Short Shift switches ASCII and another tap restores Chinese
+PASS Control and Super shortcuts cancel ownership and pass through
+PASS Interrupted Shift tap does not toggle Chinese mode
+PASS Duplicate Shift notifications retain one original tap deadline
+PASS Unambiguous anonymous Shift transitions use the shared tap state
+PASS Native full-width and punctuation choices persist exact shared options
+PASS Unsaved mode choice keeps existing draft and leaves no new ownership
+PASS Caret badge is 23 DIP, click-through, keeps focus and expires after one second
+PASS Missing caret suppresses the badge while retaining the mode switch
+PASS Width and punctuation affect actual commits while ASCII passes original events
+PASS Reset while marked restores original bytes and recreates sessions
+PASS Physical typing revokes voice and rejects its late commit
+PASS Voice takeover cancels typing before acquiring its own range
+PASS Keyboard-only focus loss restores drafts and refuses keys or voice until receipt
+PASS App bridge disconnect cannot erase a keyboard composition
+PASS Saved candidate preferences refresh without the desktop app
+TSF keyboard evidence: D:\a\Arion\Arion\.workspace\tests\windows-tsf-keyboard\run-cXZsn4\report.json
+?   	arion.local/desktop	[no test files]
+ok  	arion.local/desktop/bootstrap	2.527s
+?   	arion.local/desktop/cmd/arion-context-probe	[no test files]
+?   	arion.local/desktop/cmd/arion-icon	[no test files]
+?   	arion.local/desktop/cmd/arion-ime-rank-eval	[no test files]
+ok  	arion.local/desktop/cmd/arion-llm	0.964s
+?   	arion.local/desktop/cmd/arion-memory-bench	[no test files]
+ok  	arion.local/desktop/cmd/arion-memory-loop	0.026s
+?   	arion.local/desktop/cmd/arion-models	[no test files]
+?   	arion.local/desktop/cmd/arion-rewrite-bench	[no test files]
+?   	arion.local/desktop/cmd/arion-scene-bench	[no test files]
+ok  	arion.local/desktop/infrastructure/asr	1.583s
+ok  	arion.local/desktop/infrastructure/audio	0.336s
+ok  	arion.local/desktop/infrastructure/browser	0.032s
+ok  	arion.local/desktop/infrastructure/cloudpolish	3.736s
+ok  	arion.local/desktop/infrastructure/diagnostics	0.722s
+ok  	arion.local/desktop/infrastructure/holdkey	0.028s
+ok  	arion.local/desktop/infrastructure/imebridge	0.182s
+ok  	arion.local/desktop/infrastructure/keystore	0.022s
+ok  	arion.local/desktop/infrastructure/llm/client	0.239s
+?   	arion.local/desktop/infrastructure/llm/engine	[no test files]
+ok  	arion.local/desktop/infrastructure/llm/gguf	0.548s
+ok  	arion.local/desktop/infrastructure/llm/internal/subprocess	0.092s
+ok  	arion.local/desktop/infrastructure/llm/prompt	0.474s
+?   	arion.local/desktop/infrastructure/llm/protocol	[no test files]
+ok  	arion.local/desktop/infrastructure/llm/ranking	0.028s
+ok  	arion.local/desktop/infrastructure/llm/rewrite	0.437s
+ok  	arion.local/desktop/infrastructure/llm/spelling	0.472s
+ok  	arion.local/desktop/infrastructure/modelruntime	0.059s
+?   	arion.local/desktop/infrastructure/netproxy	[no test files]
+ok  	arion.local/desktop/infrastructure/productnotifications	0.948s
+ok  	arion.local/desktop/infrastructure/provision	0.177s
+ok  	arion.local/desktop/infrastructure/rewriting	0.079s
+?   	arion.local/desktop/infrastructure/secrets	[no test files]
+ok  	arion.local/desktop/infrastructure/settings	0.078s
+ok  	arion.local/desktop/infrastructure/tsf	0.154s
+ok  	arion.local/desktop/infrastructure/updatestate	0.043s
+ok  	arion.local/desktop/infrastructure/usage	0.101s
+ok  	arion.local/desktop/infrastructure/vocabulary	0.549s
+ok  	arion.local/desktop/infrastructure/windows	2.720s
+?   	arion.local/desktop/infrastructure/wordseg	[no test files]
+ok  	arion.local/desktop/internal/account	0.320s
+ok  	arion.local/desktop/internal/center	0.025s
+ok  	arion.local/desktop/internal/oauthloopback	0.053s
+ok  	arion.local/desktop/internal/productnotifications	0.164s
+ok  	arion.local/desktop/ui/app	206.931s
+ok  	arion.local/desktop/ui/entities/account	0.027s
+ok  	arion.local/desktop/ui/entities/dictation	0.026s
+ok  	arion.local/desktop/ui/entities/holdkey	0.026s
+?   	arion.local/desktop/ui/entities/model	[no test files]
+ok  	arion.local/desktop/ui/entities/onboarding	0.030s
+ok  	arion.local/desktop/ui/entities/vocabulary	0.028s
+?   	arion.local/desktop/ui/features/cloud	[no test files]
+?   	arion.local/desktop/ui/features/contributors	[no test files]
+?   	arion.local/desktop/ui/features/diagnostics	[no test files]
+?   	arion.local/desktop/ui/features/dictate	[no test files]
+ok  	arion.local/desktop/ui/features/holdkey	0.466s
+?   	arion.local/desktop/ui/features/keyboard	[no test files]
+?   	arion.local/desktop/ui/features/microphone	[no test files]
+?   	arion.local/desktop/ui/features/modelchoice	[no test files]
+?   	arion.local/desktop/ui/features/permissions	[no test files]
+?   	arion.local/desktop/ui/features/polish	[no test files]
+?   	arion.local/desktop/ui/features/provision	[no test files]
+?   	arion.local/desktop/ui/features/scene	[no test files]
+?   	arion.local/desktop/ui/features/signin	[no test files]
+?   	arion.local/desktop/ui/features/transcript	[no test files]
+?   	arion.local/desktop/ui/features/uilanguage	[no test files]
+?   	arion.local/desktop/ui/features/update	[no test files]
+?   	arion.local/desktop/ui/features/vocabulary	[no test files]
+?   	arion.local/desktop/ui/pages/guide	[no test files]
+?   	arion.local/desktop/ui/pages/menubar	[no test files]
+?   	arion.local/desktop/ui/pages/onboarding	[no test files]
+?   	arion.local/desktop/ui/pages/overlay	[no test files]
+ok  	arion.local/desktop/ui/pages/settings	0.082s
+?   	arion.local/desktop/ui/pages/trayhint	[no test files]
+?   	arion.local/desktop/ui/pages/updatereminder	[no test files]
+?   	arion.local/desktop/ui/shared/assets	[no test files]
+?   	arion.local/desktop/ui/shared/config	[no test files]
+ok  	arion.local/desktop/ui/shared/copy	0.109s
+?   	arion.local/desktop/ui/shared/icons	[no test files]
+?   	arion.local/desktop/ui/shared/iso	[no test files]
+ok  	arion.local/desktop/ui/shared/kit	0.542s
+ok  	arion.local/desktop/ui/shared/runtime	0.031s
+?   	arion.local/desktop/ui/shared/theme	[no test files]
+ok  	arion.local/desktop/ui/shared/typography	0.113s
+?   	arion.local/desktop/ui/widgets/capsule	[no test files]
+ok  	arion.local/desktop/ui/widgets/keyfigure	30.548s
+?   	arion.local/desktop/ui/widgets/modelcard	[no test files]
+?   	arion.local/desktop/ui/widgets/showcase	[no test files]
+?   	arion.local/desktop/ui/widgets/statusheader	[no test files]
+?   	arion.local/desktop/ui/widgets/stepper	[no test files]
+ok  	arion.local/desktop/ui/widgets/usage	0.063s

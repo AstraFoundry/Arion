@@ -365,6 +365,24 @@ func (x actions) AddReplacementVariants(froms []string, to string) error {
 	return nil
 }
 
+// SetKeyboardPinyin binds a reading to the exact currently approved spelling.
+func (x actions) SetKeyboardPinyin(id, spelling, reading string) error {
+	if err := domain.ValidateKeyboardPinyin(spelling, reading); err != nil {
+		return arion.ErrVocabularyInvalid
+	}
+	if x.a.vocab == nil {
+		return errVocabularyUnavailable
+	}
+	if _, err := x.a.vocab.SetKeyboardPinyin(id, spelling, reading); err != nil {
+		if errors.Is(err, vocabstore.ErrConflict) {
+			return arion.ErrVocabularyConflict
+		}
+		return err
+	}
+	x.a.loadVocabulary(false)
+	return nil
+}
+
 // AddHotword saves a standalone ASR spelling without a correction alias.
 func (x actions) AddHotword(text string) error {
 	if _, err := domain.NormalizeHotword(text); err != nil {

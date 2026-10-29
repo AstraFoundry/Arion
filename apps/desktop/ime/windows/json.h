@@ -1,5 +1,5 @@
 #pragma once
-#include "wire.h"
+#include "wire_text.h"
 #include <cstring>
 #include <map>
 #include <vector>

@@ -23,14 +23,15 @@ import (
 // Entry is a correction pair or a canonical-only hotword with local provenance. Files written
 // before learning existed load with zero counts and times.
 type Entry struct {
-	ID       string `json:"id"`
-	From     string `json:"from"`
-	To       string `json:"to"`
-	Approved bool   `json:"approved"`
-	Hotword  bool   `json:"hotword,omitempty"`
-	Origin   string `json:"origin"`
-	Uses     int    `json:"uses,omitempty"`
-	Recalls  int    `json:"recalls,omitempty"`
+	ID             string `json:"id"`
+	From           string `json:"from"`
+	To             string `json:"to"`
+	Approved       bool   `json:"approved"`
+	Hotword        bool   `json:"hotword,omitempty"`
+	KeyboardPinyin string `json:"keyboardPinyin,omitempty"`
+	Origin         string `json:"origin"`
+	Uses           int    `json:"uses,omitempty"`
+	Recalls        int    `json:"recalls,omitempty"`
 	// Created and Used are Unix seconds.
 	Created int64 `json:"created,omitempty"`
 	Used    int64 `json:"used,omitempty"`
@@ -42,12 +43,12 @@ func (e Entry) memory() domain.MemoryEntry {
 		origin = domain.OriginUser
 	}
 	return domain.MemoryEntry{ID: e.ID, From: e.From, To: e.To, Origin: origin, Hotword: e.Hotword || origin == domain.OriginEdit, Uses: e.Uses, Recalls: e.Recalls,
-		Created: time.Unix(e.Created, 0), Used: time.Unix(e.Used, 0)}
+		KeyboardPinyin: e.KeyboardPinyin, Created: time.Unix(e.Created, 0), Used: time.Unix(e.Used, 0)}
 }
 
 func entryOf(m domain.MemoryEntry) Entry {
 	return Entry{ID: m.ID, From: m.From, To: m.To, Approved: true, Origin: string(m.Origin), Hotword: m.Hotword, Uses: m.Uses, Recalls: m.Recalls,
-		Created: m.Created.Unix(), Used: m.Used.Unix()}
+		KeyboardPinyin: m.KeyboardPinyin, Created: m.Created.Unix(), Used: m.Used.Unix()}
 }
 
 // Memory converts entries for the domain's learning rules.

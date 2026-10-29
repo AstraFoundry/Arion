@@ -5,6 +5,7 @@ import { existsSync, lstatSync, readFileSync, readdirSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { isDeepStrictEqual } from 'node:util';
+import { keyboardProfileFiles, englishLexiconFile, verifyEnglishProfile } from './lib/keyboard-data.mjs';
 
 const repository = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const digest = file => createHash('sha256').update(readFileSync(file)).digest('hex');
@@ -87,12 +88,27 @@ export function verifyKeyboardBundle({ root = repository, bundle = path.join(roo
   const keyboard = path.join(resources, 'keyboard');
   const runtime = JSON.parse(readFileSync(path.join(keyboard, 'runtime.json'), 'utf8'));
   for (const [key, value] of Object.entries(pins.engine)) if (!isDeepStrictEqual(runtime[key], value)) throw new Error(`Keyboard runtime identity mismatch: ${key}`);
+  if (!isDeepStrictEqual(runtime.build?.correctionIdentity,pins.patches.correctionIdentity)) throw new Error('Keyboard correction identity patch provenance is missing.');
+  const expectedSources=Object.fromEntries(['source','dependencies','boost'].map(key=>[key,pins.archives[key]]));
+  if (!isDeepStrictEqual(runtime.build?.sources,expectedSources)) throw new Error('Keyboard source build pins differ.');
+  if (runtime.build?.builderSha256!==digest(path.join(root,'scripts/lib/keyboard-macos-runtime.mjs')) || runtime.build?.patcherSha256!==digest(path.join(root,'scripts/lib/keyboard-correction-patch.mjs'))) throw new Error('Keyboard source build recipe differs.');
+  const {fingerprint,outputs,...buildIdentity}=runtime.build;
+  if (fingerprint!==createHash('sha256').update(JSON.stringify(buildIdentity)).digest('hex') ||
+      !isDeepStrictEqual(buildIdentity.architectures,[...pins.engine.architectures].sort()) ||
+      buildIdentity.minimumSystemVersion!==config.macos.minimumSystemVersion ||
+      buildIdentity.logging!==true || buildIdentity.externalPlugins!==false)
+    throw new Error('Keyboard source build configuration or fingerprint differs.');
+  const libraryOutput=`build/lib/librime.${pins.engine.version}.dylib`;
+  if (!outputs || !isDeepStrictEqual(Object.keys(outputs).sort(),[libraryOutput,'build/bin/rime_deployer'].sort()) ||
+      !isDeepStrictEqual(outputs[libraryOutput],runtime.files?.['lib/librime.1.dylib']))
+    throw new Error('Keyboard source build output inventory differs.');
   if (!runtime.files || typeof runtime.files !== 'object' || Array.isArray(runtime.files)) throw new Error('Keyboard runtime hash manifest is missing.');
   const required = ['data/default.yaml', 'data/default.custom.yaml', 'data/key_bindings.yaml', 'data/punctuation.yaml', 'data/symbols.yaml',
     'data/pinyin_simp.schema.yaml', 'data/pinyin_simp.dict.yaml', 'data/arion_pinyin.schema.yaml',
     'data/build/default.yaml', 'data/build/arion_pinyin.schema.yaml', 'data/build/pinyin_simp.table.bin',
     'data/build/pinyin_simp.prism.bin', 'data/build/pinyin_simp.reverse.bin', 'licenses/keyboard-runtime.json',
-    'licenses/boost-LICENSE', 'licenses/darts-clone-COPYING', 'licenses/utf8cpp-notice.h', 'licenses/Arion-profile-README.md'];
+    'licenses/boost-LICENSE', 'licenses/darts-clone-COPYING', 'licenses/utf8cpp-notice.h', 'licenses/Arion-profile-README.md',
+    `data/${englishLexiconFile}`, ...keyboardProfileFiles.map(name => `data/${name}`)];
   for (const name of required) if (!Object.hasOwn(runtime.files, name)) throw new Error(`Keyboard runtime manifest lacks required member: ${name}`);
   for (const [name, expectedFile] of Object.entries(runtime.files)) {
     safeMember(name);
@@ -102,9 +118,10 @@ export function verifyKeyboardBundle({ root = repository, bundle = path.join(roo
   for (const spec of pins.files) requireHash(path.join(keyboard, safeMember(spec.to)), spec);
   const shippedPins = JSON.parse(readFileSync(path.join(keyboard, 'licenses/keyboard-runtime.json'), 'utf8'));
   if (!isDeepStrictEqual(shippedPins, pins)) throw new Error('Keyboard source/download pins differ from the reviewed manifest.');
-  for (const name of ['arion_pinyin.schema.yaml', 'default.custom.yaml']) if (digest(path.join(keyboard, 'data', name)) !== digest(path.join(source, '../shared/keyboard-data', name))) throw new Error(`Keyboard profile differs from reviewed source: ${name}`);
+  for (const name of keyboardProfileFiles) if (digest(path.join(keyboard, 'data', name)) !== digest(path.join(source, '../shared/keyboard-data', name))) throw new Error(`Keyboard profile differs from reviewed source: ${name}`);
   const schema = readFileSync(path.join(keyboard, 'data/build/arion_pinyin.schema.yaml'), 'utf8');
   if (!schema.includes('schema_id: arion_pinyin') || !schema.includes('db_class: arion_encrypted_userdb') || !schema.includes('page_size: 9')) throw new Error('Keyboard compiled schema identity, encrypted learning or page size is invalid.');
+  verifyEnglishProfile(path.join(keyboard, 'data'));
   const walk = directory => {
     for (const entry of readdirSync(directory, { withFileTypes: true })) {
       const file = path.join(directory, entry.name);
@@ -142,7 +159,7 @@ export function verifyKeyboardBundle({ root = repository, bundle = path.join(roo
     }
   }
   // codesign changes Mach-O bytes. Immutable data/licenses retain exact hashes;
-  // the dylib is identified by its staged pinned archive and inspected ABI here.
+  // the dylib is identified by its pinned source build and inspected ABI here.
   const signature = spawnSync('codesign', ['--display', '--verbose=2', bundle], { encoding: 'utf8' });
   const signatureText = `${signature.stdout ?? ''}${signature.stderr ?? ''}`;
   const sealed = existsSync(path.join(contents, '_CodeSignature/CodeResources')) || (signature.status === 0 && !signatureText.includes('Info.plist=not bound'));

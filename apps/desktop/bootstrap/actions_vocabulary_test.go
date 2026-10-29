@@ -9,6 +9,37 @@ import (
 	arion "arion.local/desktop/ui/shared/runtime"
 )
 
+func TestKeyboardReadingActionPreservesEntryAndRejectsStaleSpelling(t *testing.T) {
+	store, err := vocabulary.Open(filepath.Join(t.TempDir(), "vocabulary.enc"), make([]byte, 32))
+	if err != nil {
+		t.Fatal(err)
+	}
+	a := &App{vocab: store}
+	x := actions{a}
+	if err := x.AddHotword("星槎工坊"); err != nil {
+		t.Fatal(err)
+	}
+	entry := a.state.Vocabulary[0]
+	if err := x.SetKeyboardPinyin(entry.ID, entry.To, "xing cha gong fang"); err != nil {
+		t.Fatal(err)
+	}
+	if a.state.Vocabulary[0].KeyboardPinyin != "xing cha gong fang" || !a.state.Vocabulary[0].Hotword {
+		t.Fatal("reading was not projected without changing hotword ownership")
+	}
+	if err := x.SetKeyboardPinyin(entry.ID, "星茶工坊", "xing cha gong fang"); !errors.Is(err, arion.ErrVocabularyConflict) {
+		t.Fatal(err)
+	}
+	if err := x.SetKeyboardPinyin(entry.ID, entry.To, "Xing"); !errors.Is(err, arion.ErrVocabularyInvalid) {
+		t.Fatal(err)
+	}
+	if err := x.SetKeyboardPinyin(entry.ID, entry.To, ""); err != nil {
+		t.Fatal(err)
+	}
+	if len(a.state.Vocabulary) != 1 || a.state.Vocabulary[0].KeyboardPinyin != "" {
+		t.Fatal("clearing reading removed or retained the wrong data")
+	}
+}
+
 func TestVocabularyVariantsActionIsAtomic(t *testing.T) {
 	store, err := vocabulary.Open(filepath.Join(t.TempDir(), "vocabulary.enc"), make([]byte, 32))
 	if err != nil {

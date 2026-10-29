@@ -110,6 +110,8 @@
     "keyboard:stage": "node scripts/stage-keyboard-runtime.mjs",
     "contributors:update": "node scripts/update-contributors.mjs",
     "keyboard:check": "node scripts/check-keyboard.mjs",
+    "keyboard:publisher:check": "node scripts/test-ime-publisher.mjs",
+    "keyboard:vocabulary:check": "node scripts/test-ime-publisher.mjs --vocabulary",
     "keyboard:verify": "node scripts/verify-keyboard-bundle.mjs",
     "rewrite:packaging:build": "node scripts/rewrite-study-command.mjs packaging build",
     "rewrite:packaging:run": "node scripts/rewrite-study-command.mjs packaging run",

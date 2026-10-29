@@ -84,7 +84,35 @@ static bool reconnectRetiresAlreadyRemovedMessages(HWND window) {
     return good;
 }
 
+static bool vocabularyWireCases() {
+    WireMessage message;
+    if (!require(parseWire(R"({"op":"vocabulary_query","activation":"a","request":18446744073709551615})",message) && message.request==UINT64_MAX,"lossless vocabulary request")) return false;
+    if (!require(parseWire(R"({"op":"vocabulary_publish","activation":"a","request":1,"vocabularyRevision":2,"terms":[{"id":"term","text":"星槎","reading":"xing cha"}]})",message) && message.terms.size()==1 && message.terms[0].text==u8"星槎","decode bounded personal term")) return false;
+    if (!require(parseWire(R"({"op":"vocabulary_publish","activation":"a","request":2,"vocabularyRevision":3,"terms":[]})",message) && message.terms.empty(),"explicit empty snapshot clears prior terms")) return false;
+    const char *invalid[]={
+        R"({"op":"vocabulary_query","activation":"a","request":true})",
+        R"({"op":"vocabulary_query","activation":"a","request":1.0})",
+        R"({"op":"vocabulary_query","activation":"a","request":-1})",
+        R"({"op":"vocabulary_query","activation":"a","request":18446744073709551616})",
+        R"({"op":"vocabulary_query","activation":"a","request":1,"request":2})",
+        R"({"op":"vocabulary_query","activation":"a","request":01})",
+        R"({"op":"vocabulary_query","activation":"a","request":0})",
+        R"({"op":"vocabulary_publish","activation":"a","request":1,"vocabularyRevision":1})",
+        R"({"op":"vocabulary_publish","activation":"a","request":1,"vocabularyRevision":1,"terms":null})",
+        R"({"op":"vocabulary_publish","activation":"a","request":1,"vocabularyRevision":1,"terms":[{"id":"x\u0000y","text":"词","reading":"ci"}]})",
+        R"({"op":"mark","revision":1,"revision":2})",
+        R"({"op":"mark","text":"\ud800"})",
+        R"({"op":"mark",})"
+    };
+    for (const auto input:invalid) {
+        if (!require(!parseWire(input,message),"reject malformed wire fields")) return false;
+        if (!require(message.request==2 && message.vocabularyRevision==3 && message.terms.empty(),"invalid frame preserves prior message")) return false;
+    }
+    if (!require(parseWire(R"({"op":"mark","activation":"a","session":"s","revision":5,"text":"\ud83d\ude00"})",message) && utf8(message.text)==u8"😀","voice Unicode survives shared parser")) return false;
+    return true;
+}
 int main() {
+    if (!vocabularyWireCases()) return 1;
     if (!ordinaryHost()) {
         HANDLE diagnostic = nullptr; TOKEN_ELEVATION elevation{}; DWORD size = 0;
         bool opened = OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &diagnostic) != FALSE;
