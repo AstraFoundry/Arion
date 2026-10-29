@@ -19,7 +19,7 @@ make e2e
 
 ## Native desktop
 
-MyGo v0.4.6 requires Go 1.27.1. The workspace/tool directive uses Go automatic toolchain selection when available; a first native build may download it. Use an installed matching Go toolchain with `GOTOOLCHAIN=local` for explicitly offline development after dependencies are provisioned.
+MyGo v0.4.6 requires Go 1.27.1; the workspace selects the patched `go1.27.3` toolchain. The workspace/tool directive uses Go automatic toolchain selection when available; a first native build may download it. Use an installed matching Go toolchain with `GOTOOLCHAIN=local` for explicitly offline development after dependencies are provisioned.
 
 macOS packages require macOS 14 or later. Apple silicon speech recognition stages the native MLX worker with `xcodebuild` (`ArionASR`). That needs the full **Xcode 26.4.1** app, its Metal toolchain (`xcodebuild -downloadComponent MetalToolchain`) and Swift 6.3.1, not Command Line Tools alone: `xcode-select -p` must be `/Applications/Xcode.app/Contents/Developer`. Open Xcode once (or run `sudo xcodebuild -license accept && sudo xcodebuild -runFirstLaunch`). The first cold `ArionASR` build invokes `xcodebuild -quiet`, which fetches SwiftPM dependencies and compiles `mlx-swift` and Metal shaders for 2–5 minutes without per-line output before printing `Staged native ASR for darwin-arm64.`. The deployment target remains macOS 14.0. Rewriting stages llama.cpp as described in [local rewrite](local-rewrite.md). Windows builds must run on Windows with the native toolchain requirements declared by pinned MyGo. Check [MyGo research](../research/mygo.md) and inspect actual compiler errors rather than adding cross-platform stubs.
 

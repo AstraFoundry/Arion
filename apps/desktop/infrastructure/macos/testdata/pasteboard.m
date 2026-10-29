@@ -43,6 +43,7 @@ int main(void) {
         CHECK([[board.pasteboardItems[0] stringForType:NSPasteboardTypeString] isEqual:@"original"]);
         CHECK(arion_paste_stage((__bridge void *)tx) == ARION_PASTE_OK);
         CHECK([[board stringForType:NSPasteboardTypeString] isEqual:text]);
+        CHECK([board.pasteboardItems[0].types containsObject:transientPasteType]);
         CHECK(arion_paste_stage((__bridge void *)tx) == ARION_PASTE_FAILED);
         CHECK(arion_paste_post((__bridge void *)tx, NULL, NULL, 1) == ARION_PASTE_OK);
         CHECK(posts == 2);

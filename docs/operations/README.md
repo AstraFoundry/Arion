@@ -18,7 +18,7 @@ Use `make build <component>` with exactly one component per invocation:
 
 Both dispatch through `scripts/build.mjs`, also used by desktop CI. Missing, unsupported or extra components fail before building. Mobile and server builds are not registered yet. `make site-deploy` uses the same site build before deployment. The former `desktop-build` and `site-build` targets have been removed.
 
-The foundation uses Node 24 and pinned pnpm 10.33.0 for workspace/check/evaluation tooling, Go 1.25.7+ for isolated portable core checks, Go 1.27.1+ for the sync relay and MyGo desktop. Go automatic toolchain selection may download the pinned newer toolchain. Native shell compilation is distinct from functional speech/IME support.
+The foundation uses Node 24 and pinned pnpm 10.33.0 for workspace/check/evaluation tooling, Go 1.25.7+ for isolated portable core checks, Go 1.27.1+ for the sync relay and MyGo desktop. `go.work` and the desktop, sync and updates modules select the patched `go1.27.3` toolchain (standard-library security fixes); CI and the service images build with it. Go automatic toolchain selection may download the pinned newer toolchain. Native shell compilation is distinct from functional speech/IME support.
 
 The desktop shell does not need a database. The marketing site builds from committed public configuration (`apps/site/.env.production`); only `make site-deploy` needs Cloudflare credentials, supplied by the shell running it. The sync relay has its own PostgreSQL, configuration and runbook under [deploy/sync](../../deploy/sync/README.md). Do not point it at another product's database.
 

@@ -48,7 +48,7 @@ With `oidc`, `POST /v1/security-events` accepts `application/secevent+jwt` (RFC 
 
 ## Configuration
 
-`ARION_SYNC_*` environment variables. A `*_FILE` sibling supplies `ARION_SYNC_DATABASE_URL` and `ARION_SYNC_OIDC_ISSUER`; setting both the variable and the file is a startup error. Invalid gate, duration, size, log level or issuer URL fails the process. Logs are JSON and drop credential and ciphertext attribute names. The default quota is 1 GiB (`0` means unlimited). The rate limit is in-process, per device id.
+`ARION_SYNC_*` environment variables. A `*_FILE` sibling supplies `ARION_SYNC_DATABASE_URL` and `ARION_SYNC_OIDC_ISSUER`; setting both the variable and the file is a startup error. Invalid gate, duration, size, log level or issuer URL fails the process. Logs are JSON and drop credential and ciphertext attribute names. The default quota is 1 GiB (`0` means unlimited). The rate limit is in-process, per device id; malformed device headers are rejected before limiting and idle identities are forgotten after one minute.
 
 ```sh
 make sync-check
