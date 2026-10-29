@@ -48,7 +48,7 @@ Arion 以 AGPL-3.0 开源，你不必只相信这篇文章。从一份全新的�
 git clone https://github.com/AstraFoundry/Arion.git
 cd Arion
 make install
-make desktop-build
+make build desktop
 ```
 
 然后关掉 Wi-Fi 再听写。如果这里写的任何一点不再成立，那就是 bug；[隐私页面](/privacy/)和规范[^spec]会和代码在同一次变更里一起修改。

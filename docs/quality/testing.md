@@ -2,7 +2,7 @@
 
 ## Current checks
 
-- `pnpm check`: local docs links, configuration JSON, placeholders, Go package layering and JavaScript syntax.
+- `pnpm check`: local docs links, configuration JSON, placeholders, Go package layering, JavaScript syntax, and documentation consistency (documented commands exist, ADR numbers are unique and indexed, no unlinked docs, translated READMEs link what `README.md` links). The rules are tested in `scripts/lib/doc-consistency.test.mjs`.
 - `make core-check`: portable core and catalog tests, vet and formatting. Coordinator tests run under `-race`: exactly-once commit, cancellation during finalization, stale revisions, queue overflow, silence, secure/untrusted targets, missing model, unknown-outcome no-retry, mode switching and IME composition routing.
 - `make desktop-check`: desktop tests and vet with cgo: headless view tests for every window, encrypted vocabulary (ciphertext on disk, wrong key and tampering fail closed), replay audio.
 - `make e2e`: production windows on the real OS loop (overlay explicit failure without focus, settings and onboarding lifecycle).

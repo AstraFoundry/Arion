@@ -54,7 +54,7 @@ import { t } from 'shared/i18n';
 - ❌ Avoid: `bg-white`, `text-black`, `zinc-500`.
 - ✅ Prefer: `bg-bg`, `text-text`, `border-border`, `text-muted`.
 - Theme differences must live in one place (global theme file or CSS variables). Do not scatter `dark:` or media queries across components.
-- Arion: colors come only from `theme.Tokens` (`ui/shared/theme`), buttons from `kit.Button`/`kit.IconButton`, and no view calls `ui.RGB`, `ui.Hex` or `ui.Oklch`. See [design system](design-system.md).
+- Arion: colors come only from `theme.Tokens` (`ui/shared/theme`), buttons from `kit.Button`/`kit.IconButton`, and no view calls `ui.RGB`, `ui.Hex` or `ui.Oklch` for a design color; the one exception is `features/keyboard`, which renders the candidate highlight color the user chose. See [design system](design-system.md).
 
 ## Components are small and focused
 

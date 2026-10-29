@@ -2,6 +2,8 @@
 
 This section defines how the backend is organized using **Domain-Driven Design (DDD)** layered architecture.
 
+In Arion the layers are Go packages in `packages/core`, `services/sync` and `services/updates`, with the desktop's adapters in `apps/desktop/infrastructure`; the TypeScript snippets in the layer documents are illustrative. See [repository ownership](../project/repository.md).
+
 ## Documents
 
 - [`domain.md`](domain.md) — entities, value objects, aggregates, domain services, and domain events.
