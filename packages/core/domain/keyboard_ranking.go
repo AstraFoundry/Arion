@@ -1,25 +1,24 @@
 package domain
 
-import (
-	"errors"
-	"unicode/utf8"
-)
+import "errors"
 
-// KeyboardCandidate retains producer identity and optional consumed-input end.
-// End is a UTF-8 byte offset in the raw Pinyin input; zero means unavailable.
+// KeyboardCandidate retains producer identity and consumed-input byte range.
+// End zero means unavailable; unavailable ranges never authorize promotion.
 type KeyboardCandidate struct {
 	Candidate
-	End int `json:"end,omitempty"`
+	Start int `json:"start,omitempty"`
+	End   int `json:"end,omitempty"`
 }
 
 // KeyboardRankEligible preserves conversion coverage before semantic scoring.
-// Without producer spans, equal scalar length is a conservative compatibility
-// proxy, not proof that two candidates consume the same input.
+// Keeping the exact producer first choice is safe even without range metadata.
+// Different text lengths may consume the same input (for example xian).
 func KeyboardRankEligible(first, candidate KeyboardCandidate) bool {
-	if first.End > 0 || candidate.End > 0 {
-		return first.End > 0 && candidate.End == first.End
+	if first == candidate {
+		return true
 	}
-	return utf8.RuneCountInString(first.Text) == utf8.RuneCountInString(candidate.Text)
+	return first.Start >= 0 && first.End > first.Start &&
+		candidate.Start == first.Start && candidate.End == first.End
 }
 
 // PromoteKeyboardCandidate returns a full stable permutation, never new text.

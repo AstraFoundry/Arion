@@ -147,3 +147,5 @@ The [technical spelling follow-up](rewrite-technical-spelling-v1/README.md) chec
 - [Production ASR hotword probe](asr-hotwords-v1/README.md) — reference-free production-port driver, paired controlled development inputs, native worker context checks and replay.
 
 [PR 40 / PR 45 native comparison](ime-pr-comparison-v1/README.md) uses one reference-isolated driver, 113 shared authored inputs, alternating repetitions, actual AppKit commits and separate candidate/casing/mixed-input metrics.
+
+- [Span-aware keyboard LLM replay](llm-ime-alignment-v2/README.md) — exact input-range contracts, historical native snapshots and local inference with compact original-byte bundles.

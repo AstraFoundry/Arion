@@ -20,3 +20,7 @@ Per-key latency is `mach_absolute_time` immediately before production `processKe
 Type-7 p50/p95/p99 and maxima retain timing counts. Exploratory quality intervals resample authored input IDs with all repeats (2,000 draws, seed 83017). They describe variation within this synthetic mixture and do not estimate a user-population error rate. No release threshold, latency budget, held-out generalization, competitor parity, disk-cold claim or OS/end-to-end latency is inferred.
 
 Archive original completed/failed observations and matching sources under `benchmarks/runs/`; keep binaries, SDK and generated profiles in `.workspace/`. Replay evaluation without native dependencies using the archived run directory and its frozen corpus. Never overwrite recorded outputs.
+
+## Actual candidate coverage
+
+New runs declare `candidateRangeVersion: 1` and record the first page's producer type and consumed UTF-8 start/end after timing the final snapshot. Full-input hits are separate from matching words that leave a suffix. Historical no-range reports retain their original metrics. The reference-free driver also accepts explicit typo/fuzzy controls for [LLM request preparation](../llm-ime-alignment-v2/README.md); no context or answer labels enter the native process. Source and runtime/data hashes bind a prepared executable to its inputs.

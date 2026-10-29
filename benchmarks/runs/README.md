@@ -171,3 +171,7 @@ The actual production-cleanup source replay changes one36-case input; prior raw-
 - [PR 40 / PR 45 native comparison](ime-pr-comparison-v1/README.md) — 113 shared inputs, 1,476 alternating native observations, exact/folded candidate ranks, mixed commits, paced timing, profiler and model-free archive replay.
 
 - [PR 40 English integration](ime-english-integration-v1/README.md) — unchanged 113 inputs, preserved English/Chinese pages, case and mixed gains, correction/personal validation, retained failures and exact replay.
+
+- [Historical span-aware keyboard candidates](llm-ime-alignment-v2/README.md) and [local inference](llm-ime-alignment-v2-inference/README.md) — original PR 45 evidence, not current main quality.
+
+- [Post-rebase range preparation](ime-ranking-range-rebase-v1/README.md) — 101 actual main-based native processes, 202 reference-free requests and retained stale-runtime failure.

@@ -15,7 +15,7 @@ func (f keyboardRankFunc) RankKeyboard(c context.Context, r contracts.KeyboardRa
 	return f(c, r)
 }
 func keyRequest(rev uint64) contracts.KeyboardRankRequest {
-	return contracts.KeyboardRankRequest{Identity: contracts.Identity{SessionID: "keyboard", Generation: 1}, Revision: rev, Input: "shi", Candidates: []domain.KeyboardCandidate{{Candidate: domain.Candidate{ID: "c0", Text: "是", Source: "rime"}}, {Candidate: domain.Candidate{ID: "c1", Text: "时", Source: "rime"}}}}
+	return contracts.KeyboardRankRequest{Identity: contracts.Identity{SessionID: "keyboard", Generation: 1}, Revision: rev, Input: "shi", Candidates: []domain.KeyboardCandidate{{Candidate: domain.Candidate{ID: "c0", Text: "是", Source: "rime"}, End: 3}, {Candidate: domain.Candidate{ID: "c1", Text: "时", Source: "rime"}, End: 3}}}
 }
 func keyResult(req contracts.KeyboardRankRequest) contracts.KeyboardRankResult {
 	return contracts.KeyboardRankResult{Identity: req.Identity, Revision: req.Revision, Candidates: []domain.RankedCandidate{{ID: "c1"}, {ID: "c0"}}}
@@ -105,5 +105,30 @@ func TestKeyboardRankingDeadlineAndIdentityValidation(t *testing.T) {
 	defer s.Close()
 	if receiveRank(t, s.Submit(keyRequest(1))).Err == nil {
 		t.Fatal("stale result identity accepted")
+	}
+}
+
+func TestKeyboardRankingRejectsIncompatiblePromotion(t *testing.T) {
+	for _, test := range []struct {
+		name       string
+		start, end int
+	}{
+		{"partial", 0, 2}, {"different-start", 1, 3}, {"unknown", 0, 0},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			s, err := NewKeyboardRanking(keyboardRankFunc(func(_ context.Context, r contracts.KeyboardRankRequest) (contracts.KeyboardRankResult, error) {
+				return keyResult(r), nil
+			}), time.Second, 0)
+			if err != nil {
+				t.Fatal(err)
+			}
+			defer s.Close()
+			req := keyRequest(1)
+			req.Candidates[1].Start, req.Candidates[1].End = test.start, test.end
+			out := receiveRank(t, s.Submit(req))
+			if out.Err == nil || s.CanApply(out) {
+				t.Fatal("incompatible backend promotion accepted", out)
+			}
+		})
 	}
 }

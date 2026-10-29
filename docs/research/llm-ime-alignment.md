@@ -22,13 +22,15 @@ Competitor artifacts establish client call paths, not their model checkpoints, a
 
 ## Data and task boundary
 
-`contracts.KeyboardRankRequest` carries session/generation, composition revision, raw Pinyin input, approved preceding text, and up to 27 candidates. Each candidate has its producer ID/text/source and an optional `end` UTF-8 byte offset in the raw input. The start is implicitly the same active conversion segment. Scope IDs to the producer snapshot; an engine index alone is never a reusable cache key.
+`contracts.KeyboardRankRequest` carries session/generation, composition revision, raw Pinyin input, approved preceding text, and up to 27 candidates. Each candidate has its producer ID/text/source and actual `start` and `end` UTF-8 byte offsets in the raw input when available. Unknown ranges cannot authorize promotion. Scope IDs to the producer snapshot; an engine index alone is never a reusable cache key.
 
 The model sees only raw input, preceding text and eligible candidate IDs/text/source. Session bookkeeping and evaluator targets are not sent. Bounds are 256 input bytes, 2,048 context bytes, 256 text bytes per candidate and 64 bytes per ID/source. Invalid UTF-8, empty/duplicate IDs, control markers and incompatible consumed-input spans fail explicitly.
 
-Candidates can compete for first place only when their consumed-input end matches the producer's first choice. Current native snapshots do not expose these spans: equal Unicode scalar length is an explicitly recorded compatibility proxy. This differs from the native ranker's composed-character comparison and cannot prove identical Pinyin coverage. Export actual producer spans before a product rollout; test abbreviations, apostrophes, partial selections, mid-buffer edits, combining characters and mixed script separately.
+Current `ime-choice-v2` candidates can compete for first place only when their actual consumed-input start and end match the producer's first choice. The producer's original first choice can always remain first. Missing ranges no longer authorize promotion based on text length; fewer than two comparable candidates returns `abstained_no_comparable_candidates` without a model call. Both byte boundaries are validated against the input. The native shared menu now retains these ranges and producer types; the asynchronous Go snapshot transport remains to be wired. Before rollout, test abbreviations, apostrophes, partial selections, mid-buffer edits, combining characters and mixed script separately.
 
-The independent `ime-choice-v1` prompt asks for exactly `{"pick":"candidate ID"}`. The Go validator rejects unknown/duplicate fields, duplicate keys, trailing data, Markdown, invented IDs, incompatible candidates and incomplete responses. It creates a stable full permutation itself. No model-generated score is treated as a calibrated probability, and no model-generated word reaches the engine or editor.
+The archived `ime-choice-v1` pilot used equal Unicode scalar length when spans were absent. Its recorded scores remain historical evidence of that policy, not measurements of v2. Frozen reproduction sources are retained unchanged. The native personal ranker now receives an explicit same-input-range eligibility mask from the shared menu instead of comparing output text lengths. Both host adapters use that boundary; actual Windows execution remains a separate gate.
+
+The independent `ime-choice-v2` prompt asks for exactly `{"pick":"candidate ID"}`. The Go validator rejects unknown/duplicate fields, duplicate keys, trailing data, Markdown, invented IDs, incompatible candidates and incomplete responses. It creates a stable full permutation itself. No model-generated score is treated as a calibrated probability, and no model-generated word reaches the engine or editor.
 
 When preceding context is empty/whitespace, the adapter returns `abstained_no_context` with original order and makes no model call. `AllowWithoutContext` is an explicit diagnostic ablation. Cancellation and transport/protocol failures are errors, not successful original-order inference. The caller retains the already displayed local menu and exposes the capability/failure state without inserting text.
 
@@ -106,8 +108,14 @@ The real-time schedule uses 142 native prefix snapshots from 22 overlapping case
 | Native acceptance | Actual installed IMK in owned editors, app stopped and offline | Key-to-preedit and candidate-update p50/p95/p99; native event/UI observations |
 | Generalization | Independent reviewed dev/test sessions, ambiguous-label review, fixed policy before test | Clustered paired intervals; no tuning on held-out labels |
 
-Promotion-quality gates and latency thresholds must be fixed after development baselines and before held-out testing. Current eight breakages and absent native/cloud/concurrency evidence block default product enablement. Generated candidates require an independent experiment rather than weakening the permutation contract.
+Promotion-quality gates and latency thresholds must be fixed after development baselines and before held-out testing. The v1 pilot recorded eight breakages; the [historical span-aware v2 study](../../benchmarks/runs/llm-ime-alignment-v2-inference/README.md) recorded fourteen. These development failures and absent native/cloud/concurrency evidence block default product enablement. Generated candidates require an independent experiment rather than weakening the permutation contract.
 
 ## Reproduction
 
 See the [commands, source snapshots and verification procedure](../../benchmarks/reproduction/llm-ime-alignment-v1/README.md). `pnpm ime:align verify` replays archived reports without model/runtime dependencies; live runs require explicitly provisioned local artifacts or an explicitly supplied API key. Nothing changes the installed input method.
+
+## Residual scope after bilingual integration
+
+The main branch already includes typo/fuzzy settings, approved personal readings, encrypted delivery, actual native candidate ranges and ranked bilingual input (ADR 017, ADR 030). This change retains only the Go selector's exact-range eligibility and no-comparable-candidate abstention, corresponding scheduler regressions, and [span-aware reproduction](../../benchmarks/reproduction/llm-ime-alignment-v2/README.md). It does not replace the main English lexicon or candidate admission policy.
+
+The v2 bundles preserve the original PR 45 execution/source bytes. They are historical evidence, not measurements of the integrated main producer. Replaying their hashes and reports does not establish current inference quality, installed IMK/TSF dispatch or independent held-out acceptance. Model-backed native dispatch, English personal learning and automatic bilingual sentence disambiguation remain separate product work.

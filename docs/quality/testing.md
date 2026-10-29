@@ -21,3 +21,5 @@ ASR/rank/correction selection follows [evaluation](../research/evaluation.md), i
 Sync tests cover atomic outbox, operation deduplication, concurrent sibling revisions, tombstone retention, cursor expiry, revoked devices and tampered encryption metadata. Storage/log privacy tests inject synthetic canaries. Hardware, fixture consent/license and observed limits accompany results.
 
 Every new feature cites the stable acceptance IDs in [specs](../../specs/README.md). Write meaningful invariant/boundary tests, not tests that repeat the implementation or chase coverage percentages.
+
+Keyboard selector regression checks cover RNK-A06 at the domain, scheduler and completion adapter boundaries. `pnpm test` includes span-aware request/report rejection tests and historical bundle integrity/cleanup tests. The [v2 replay](../../benchmarks/reproduction/llm-ime-alignment-v2/README.md) reconstructs original requests and scores without loading a model; it does not establish current native dispatch or model quality.

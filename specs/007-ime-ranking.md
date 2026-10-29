@@ -62,7 +62,7 @@ KBD-11: Approved personal terms with explicit dictionary-resolvable readings ent
 
 RNK-01: Sources may be actual recognizer alternatives, a documented phonetic/lexicon engine, or approved dictionary-derived alternatives with explicit provenance. Their absence yields a one-item set; never invent ASR n-best or neural probabilities.
 
-RNK-02: Input carries session/generation, composition revision, exact candidate IDs/text/source, bounded approved context and language hint. Output is a permutation of the same IDs plus optional finite comparable scores. It cannot generate words or alter candidate text.
+RNK-02: Input carries session/generation, composition revision, exact candidate IDs/text/source, bounded approved context and language hint. Output is a permutation of the same IDs plus optional finite comparable scores. It cannot generate words or alter candidate text. Keyboard promotion requires the same actual consumed UTF-8 start/end as the producer first choice; missing ranges never authorize promotion by output length. With fewer than two comparable candidates, the experimental selector preserves the full producer order without calling the model.
 
 RNK-03: Scoring is cancellable, entirely local and triggered only for a supported composition revision. Stale results cannot reorder newer candidates or replace committed text. If unsupported/unavailable, preserve producer order and show capability state; this is an explicit mode outcome rather than hidden inference fallback.
 
@@ -101,6 +101,7 @@ RNK-05: Short candidate ranking must coexist with ASR without breaking audio dea
 | RNK-A03 | Older composition result arrives late → ignored |
 | RNK-A04 | Local Chinese homophone/name fixtures → measured accuracy against both baselines |
 | RNK-A05 | Missing model/unsupported set → producer order remains visibly available |
+| RNK-A06 | Equal output lengths with different or unknown input ranges → no promotion; different output lengths with the same actual range → eligible; invalid UTF-8 endpoints → reject; fewer than two comparable candidates → unchanged order without a model call, including diagnostic no-context mode |
 
 Voice IMK ownership is implemented; full-Pinyin keyboard implementation and host acceptance are in progress. Keyboard candidates have a local context ranker (ADR 017): a permutation of the engine's leading candidates by the user's own confirmed (previous word, word) pairs, never promoting a shorter prefix, with engine order when its store is unavailable. On authored context homophones it lifts later-occurrence top-1 from 32% to 89% against engine order with frequency learning ([results](../benchmarks/results/imk-context-v1/README.md)); that is RNK-A04 evidence for this producer only. A deployed learned (model) candidate ranker is not claimed. See [handoff](../docs/project/agent-handoff.md).
 
