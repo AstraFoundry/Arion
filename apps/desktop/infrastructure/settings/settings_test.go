@@ -101,3 +101,17 @@ func TestPrereleaseUpdatesPersistence(t *testing.T) {
 		t.Fatalf("round trip: %+v %v", got, err)
 	}
 }
+
+func TestCustomShortcutRoundTrip(t *testing.T) {
+	store := Store{Path: filepath.Join(t.TempDir(), "preferences.json")}
+	prefs := application.DefaultPreferences(runtime.GOOS)
+	prefs.ChooseHoldKey("ctrl+space")
+	prefs.ChooseTranslateKey(runtime.GOOS, "shift+f8")
+	if err := store.Save(prefs); err != nil {
+		t.Fatal(err)
+	}
+	loaded, repairs, err := store.Load()
+	if err != nil || len(repairs) != 0 || loaded.HoldKey != "ctrl+space" || loaded.TranslateKey != "shift+f8" {
+		t.Fatalf("restart: %+v %v %v", loaded, repairs, err)
+	}
+}

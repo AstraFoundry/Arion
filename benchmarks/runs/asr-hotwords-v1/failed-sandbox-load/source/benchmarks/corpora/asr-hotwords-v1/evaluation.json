@@ -1,0 +1,559 @@
+{
+  "version": 1,
+  "design": "paired-development-ablation",
+  "cases": [
+    {
+      "caseId": "arion-a",
+      "sourceCorpus": "benchmarks/corpora/user-modify-asr-v2/dev/corpus.json",
+      "sourceCorpusSha256": "fc19a31064627c97b5642f9acdbe96c0ccf2bad14786329a3cf12558a6137231",
+      "sourceSplit": "dev",
+      "developmentOnly": true,
+      "role": "relevant",
+      "hotwords": [
+        "Arion"
+      ],
+      "reference": "请打开Arion的设置页面。",
+      "unit": "mer",
+      "language": "mixed",
+      "speakerId": "tts-Tingting",
+      "sessionId": "current-arion-a",
+      "audio": {
+        "path": "arion-a.wav",
+        "sha256": "cba6cdecf5ece0eaa3918f8ce255ec28594d0c2f58ab588e4207d2fc7e5f81c1",
+        "durationMs": 2373.625
+      },
+      "audioPath": "benchmarks/corpora/user-modify-asr-v2/dev/arion-a.wav",
+      "origin": "synthetic macOS TTS",
+      "expectedCanonical": [
+        "Arion"
+      ],
+      "forbiddenInsertions": []
+    },
+    {
+      "caseId": "mygo-a",
+      "sourceCorpus": "benchmarks/corpora/user-modify-asr-v2/dev/corpus.json",
+      "sourceCorpusSha256": "fc19a31064627c97b5642f9acdbe96c0ccf2bad14786329a3cf12558a6137231",
+      "sourceSplit": "dev",
+      "developmentOnly": true,
+      "role": "relevant",
+      "hotwords": [
+        "MyGo"
+      ],
+      "reference": "这个窗口是用MyGo实现的。",
+      "unit": "mer",
+      "language": "mixed",
+      "speakerId": "tts-Tingting",
+      "sessionId": "current-mygo-a",
+      "audio": {
+        "path": "mygo-a.wav",
+        "sha256": "537bbbfa56ab2ca2fc56072753aa4d5aa99907b91a32879300e82341f2bb955a",
+        "durationMs": 2401.9375
+      },
+      "audioPath": "benchmarks/corpora/user-modify-asr-v2/dev/mygo-a.wav",
+      "origin": "synthetic macOS TTS",
+      "expectedCanonical": [
+        "MyGo"
+      ],
+      "forbiddenInsertions": []
+    },
+    {
+      "caseId": "redis-a",
+      "sourceCorpus": "benchmarks/corpora/user-modify-asr-v2/dev/corpus.json",
+      "sourceCorpusSha256": "fc19a31064627c97b5642f9acdbe96c0ccf2bad14786329a3cf12558a6137231",
+      "sourceSplit": "dev",
+      "developmentOnly": true,
+      "role": "relevant",
+      "hotwords": [
+        "Redis"
+      ],
+      "reference": "缓存服务使用Redis。",
+      "unit": "mer",
+      "language": "mixed",
+      "speakerId": "tts-Tingting",
+      "sessionId": "current-redis-a",
+      "audio": {
+        "path": "redis-a.wav",
+        "sha256": "66e5633cd432d88269579bb64bafba33f5918b60ecb9fc5061d2d6999ab51a9c",
+        "durationMs": 2089.3125
+      },
+      "audioPath": "benchmarks/corpora/user-modify-asr-v2/dev/redis-a.wav",
+      "origin": "synthetic macOS TTS",
+      "expectedCanonical": [
+        "Redis"
+      ],
+      "forbiddenInsertions": []
+    },
+    {
+      "caseId": "github-a",
+      "sourceCorpus": "benchmarks/corpora/user-modify-asr-v2/dev/corpus.json",
+      "sourceCorpusSha256": "fc19a31064627c97b5642f9acdbe96c0ccf2bad14786329a3cf12558a6137231",
+      "sourceSplit": "dev",
+      "developmentOnly": true,
+      "role": "relevant",
+      "hotwords": [
+        "GitHub"
+      ],
+      "reference": "把代码推送到GitHub。",
+      "unit": "mer",
+      "language": "mixed",
+      "speakerId": "tts-Tingting",
+      "sessionId": "current-github-a",
+      "audio": {
+        "path": "github-a.wav",
+        "sha256": "720e169a90e7e85a78b4e3d75887da5e2f614765d75a3929062352e7db31626f",
+        "durationMs": 2263.9375
+      },
+      "audioPath": "benchmarks/corpora/user-modify-asr-v2/dev/github-a.wav",
+      "origin": "synthetic macOS TTS",
+      "expectedCanonical": [
+        "GitHub"
+      ],
+      "forbiddenInsertions": []
+    },
+    {
+      "caseId": "codex-a",
+      "sourceCorpus": "benchmarks/corpora/user-modify-asr-v2/dev/corpus.json",
+      "sourceCorpusSha256": "fc19a31064627c97b5642f9acdbe96c0ccf2bad14786329a3cf12558a6137231",
+      "sourceSplit": "dev",
+      "developmentOnly": true,
+      "role": "relevant",
+      "hotwords": [
+        "Codex"
+      ],
+      "reference": "用Codex检查这个修改。",
+      "unit": "mer",
+      "language": "mixed",
+      "speakerId": "tts-Tingting",
+      "sessionId": "current-codex-a",
+      "audio": {
+        "path": "codex-a.wav",
+        "sha256": "5423ffc57e83bd5e00a53137e64033b0e7c30889af2cf85ee28eb9528941891d",
+        "durationMs": 2615.625
+      },
+      "audioPath": "benchmarks/corpora/user-modify-asr-v2/dev/codex-a.wav",
+      "origin": "synthetic macOS TTS",
+      "expectedCanonical": [
+        "Codex"
+      ],
+      "forbiddenInsertions": []
+    },
+    {
+      "caseId": "openai-a",
+      "sourceCorpus": "benchmarks/corpora/user-modify-asr-v2/dev/corpus.json",
+      "sourceCorpusSha256": "fc19a31064627c97b5642f9acdbe96c0ccf2bad14786329a3cf12558a6137231",
+      "sourceSplit": "dev",
+      "developmentOnly": true,
+      "role": "relevant",
+      "hotwords": [
+        "OpenAI"
+      ],
+      "reference": "We use OpenAI models for this project.",
+      "unit": "wer",
+      "language": "en",
+      "speakerId": "tts-Samantha",
+      "sessionId": "current-openai-a",
+      "audio": {
+        "path": "openai-a.wav",
+        "sha256": "a1fd05cb11d34fc38ba37e72e0f686795767e26d2bcc5745037b04addcb84197",
+        "durationMs": 2440.5
+      },
+      "audioPath": "benchmarks/corpora/user-modify-asr-v2/dev/openai-a.wav",
+      "origin": "synthetic macOS TTS",
+      "expectedCanonical": [
+        "OpenAI"
+      ],
+      "forbiddenInsertions": []
+    },
+    {
+      "caseId": "tts-dev-12-eddy",
+      "sourceCorpus": "benchmarks/corpora/asr-v1/corpus.json",
+      "sourceCorpusSha256": "a5d92468ac0c1ac740cf9685628d1d1c6540f70f4ace2d11c189bd7f78fee371",
+      "sourceSplit": "dev",
+      "developmentOnly": true,
+      "role": "relevant",
+      "hotwords": [
+        "Kubernetes"
+      ],
+      "reference": "我们用 Kubernetes 部署这个服务。",
+      "unit": "mer",
+      "language": "mixed",
+      "speakerId": "tts:eddy",
+      "sessionId": "tts:eddy:dev",
+      "audio": {
+        "path": "audio/tts-dev-12-eddy.wav",
+        "sha256": "0b9d404e574a0fb0022529ae64ed3f9fbeec6432beaa5fff88a555d9c324d402",
+        "durationMs": 2942.375
+      },
+      "audioPath": "benchmarks/corpora/asr-v1/audio/tts-dev-12-eddy.wav",
+      "origin": "synthetic macOS TTS",
+      "expectedCanonical": [
+        "Kubernetes"
+      ],
+      "forbiddenInsertions": []
+    },
+    {
+      "caseId": "tts-dev-22-flo",
+      "sourceCorpus": "benchmarks/corpora/asr-v1/corpus.json",
+      "sourceCorpusSha256": "a5d92468ac0c1ac740cf9685628d1d1c6540f70f4ace2d11c189bd7f78fee371",
+      "sourceSplit": "dev",
+      "developmentOnly": true,
+      "role": "relevant",
+      "hotwords": [
+        "TypeScript"
+      ],
+      "reference": "Typescript 的类型检查没有通过。",
+      "unit": "mer",
+      "language": "mixed",
+      "speakerId": "tts:flo",
+      "sessionId": "tts:flo:dev",
+      "audio": {
+        "path": "audio/tts-dev-22-flo.wav",
+        "sha256": "b7ba333c55e8e1b7b7c6a3adcb1de2e265ba3f27f55d51adae4cd3724a5f277c",
+        "durationMs": 3176.625
+      },
+      "audioPath": "benchmarks/corpora/asr-v1/audio/tts-dev-22-flo.wav",
+      "origin": "synthetic macOS TTS",
+      "expectedCanonical": [
+        "TypeScript"
+      ],
+      "forbiddenInsertions": []
+    },
+    {
+      "caseId": "tts-dev-04-flo",
+      "sourceCorpus": "benchmarks/corpora/asr-v1/corpus.json",
+      "sourceCorpusSha256": "a5d92468ac0c1ac740cf9685628d1d1c6540f70f4ace2d11c189bd7f78fee371",
+      "sourceSplit": "dev",
+      "developmentOnly": true,
+      "role": "relevant",
+      "hotwords": [
+        "API"
+      ],
+      "reference": "我们的 API 响应时间大概是两百毫秒。",
+      "unit": "mer",
+      "language": "mixed",
+      "speakerId": "tts:flo",
+      "sessionId": "tts:flo:dev",
+      "audio": {
+        "path": "audio/tts-dev-04-flo.wav",
+        "sha256": "dd80fe379c710751b6cab9705a13574de726091ef3465260422791e0497fd194",
+        "durationMs": 3406.375
+      },
+      "audioPath": "benchmarks/corpora/asr-v1/audio/tts-dev-04-flo.wav",
+      "origin": "synthetic macOS TTS",
+      "expectedCanonical": [
+        "API"
+      ],
+      "forbiddenInsertions": [],
+      "numericConcepts": [
+        {
+          "meaning": "two hundred milliseconds",
+          "acceptedSurfaceForms": [
+            "两百",
+            "二百",
+            "200"
+          ]
+        }
+      ]
+    },
+    {
+      "caseId": "ordinary-zh",
+      "sourceCorpus": "benchmarks/corpora/user-modify-asr-v2/dev/corpus.json",
+      "sourceCorpusSha256": "fc19a31064627c97b5642f9acdbe96c0ccf2bad14786329a3cf12558a6137231",
+      "sourceSplit": "dev",
+      "developmentOnly": true,
+      "role": "irrelevant",
+      "hotwords": [
+        "Arion",
+        "Kubernetes",
+        "OpenAI",
+        "Safari",
+        "SQL"
+      ],
+      "reference": "明天下午我们一起去公园散步。",
+      "unit": "cer",
+      "language": "zh",
+      "speakerId": "tts-Tingting",
+      "sessionId": "current-ordinary-zh",
+      "audio": {
+        "path": "ordinary-zh.wav",
+        "sha256": "ff857d2028a9e9b8df9482f617e5af23f8dcec40d9cec8eb24c2ca8181a02a74",
+        "durationMs": 2906.5
+      },
+      "audioPath": "benchmarks/corpora/user-modify-asr-v2/dev/ordinary-zh.wav",
+      "origin": "synthetic macOS TTS",
+      "expectedCanonical": [],
+      "forbiddenInsertions": [
+        "Arion",
+        "Kubernetes",
+        "OpenAI",
+        "Safari",
+        "SQL"
+      ]
+    },
+    {
+      "caseId": "ordinary-en",
+      "sourceCorpus": "benchmarks/corpora/user-modify-asr-v2/dev/corpus.json",
+      "sourceCorpusSha256": "fc19a31064627c97b5642f9acdbe96c0ccf2bad14786329a3cf12558a6137231",
+      "sourceSplit": "dev",
+      "developmentOnly": true,
+      "role": "irrelevant",
+      "hotwords": [
+        "Arion",
+        "Kubernetes",
+        "OpenAI",
+        "Safari",
+        "SQL"
+      ],
+      "reference": "Please close the window before you leave.",
+      "unit": "wer",
+      "language": "en",
+      "speakerId": "tts-Samantha",
+      "sessionId": "current-ordinary-en",
+      "audio": {
+        "path": "ordinary-en.wav",
+        "sha256": "ebc47292714395bcdc4c832f211acc5149ddcc8c58e4f06e0c4d220efff1e395",
+        "durationMs": 2076.25
+      },
+      "audioPath": "benchmarks/corpora/user-modify-asr-v2/dev/ordinary-en.wav",
+      "origin": "synthetic macOS TTS",
+      "expectedCanonical": [],
+      "forbiddenInsertions": [
+        "Arion",
+        "Kubernetes",
+        "OpenAI",
+        "Safari",
+        "SQL"
+      ]
+    },
+    {
+      "caseId": "sofa-a",
+      "sourceCorpus": "benchmarks/corpora/user-modify-asr-v2/dev/corpus.json",
+      "sourceCorpusSha256": "fc19a31064627c97b5642f9acdbe96c0ccf2bad14786329a3cf12558a6137231",
+      "sourceSplit": "dev",
+      "developmentOnly": true,
+      "role": "irrelevant",
+      "hotwords": [
+        "Arion",
+        "Kubernetes",
+        "OpenAI",
+        "Safari",
+        "SQL"
+      ],
+      "reference": "客厅的沙发需要清洗。",
+      "unit": "cer",
+      "language": "zh",
+      "speakerId": "tts-Tingting",
+      "sessionId": "current-sofa-a",
+      "audio": {
+        "path": "sofa-a.wav",
+        "sha256": "d9dd21e7b9c564261cd78d350d1e60fd05f72bab3a5fee0d7575b3bb65e32b9e",
+        "durationMs": 2023.3124999999998
+      },
+      "audioPath": "benchmarks/corpora/user-modify-asr-v2/dev/sofa-a.wav",
+      "origin": "synthetic macOS TTS",
+      "expectedCanonical": [],
+      "forbiddenInsertions": [
+        "Arion",
+        "Kubernetes",
+        "OpenAI",
+        "Safari",
+        "SQL"
+      ]
+    },
+    {
+      "caseId": "sequel-a",
+      "sourceCorpus": "benchmarks/corpora/user-modify-asr-v2/dev/corpus.json",
+      "sourceCorpusSha256": "fc19a31064627c97b5642f9acdbe96c0ccf2bad14786329a3cf12558a6137231",
+      "sourceSplit": "dev",
+      "developmentOnly": true,
+      "role": "irrelevant",
+      "hotwords": [
+        "Arion",
+        "Kubernetes",
+        "OpenAI",
+        "Safari",
+        "SQL"
+      ],
+      "reference": "The sequel to this movie was disappointing.",
+      "unit": "wer",
+      "language": "en",
+      "speakerId": "tts-Samantha",
+      "sessionId": "current-sequel-a",
+      "audio": {
+        "path": "sequel-a.wav",
+        "sha256": "254207e67f3746b6906591f8dbfa2e212ef287c191972bb37a9282ab8d570a05",
+        "durationMs": 2252.8125
+      },
+      "audioPath": "benchmarks/corpora/user-modify-asr-v2/dev/sequel-a.wav",
+      "origin": "synthetic macOS TTS",
+      "expectedCanonical": [],
+      "forbiddenInsertions": [
+        "Arion",
+        "Kubernetes",
+        "OpenAI",
+        "Safari",
+        "SQL"
+      ]
+    },
+    {
+      "caseId": "aishell-BAC009S0766W0137",
+      "sourceCorpus": "benchmarks/corpora/asr-v1/corpus.json",
+      "sourceCorpusSha256": "a5d92468ac0c1ac740cf9685628d1d1c6540f70f4ace2d11c189bd7f78fee371",
+      "sourceSplit": "dev",
+      "developmentOnly": true,
+      "role": "irrelevant",
+      "hotwords": [
+        "Arion",
+        "Kubernetes",
+        "OpenAI",
+        "Safari",
+        "SQL"
+      ],
+      "reference": "这成为今久转型的起点",
+      "unit": "cer",
+      "language": "zh",
+      "speakerId": "aishell1:S0766",
+      "sessionId": "aishell1:S0766",
+      "audio": {
+        "path": "audio/aishell-BAC009S0766W0137.wav",
+        "sha256": "8bc76e3746211962d65b47cfff79c6f18f6750b2cf1bfaf611330798495d11eb",
+        "durationMs": 3927.0
+      },
+      "audioPath": "benchmarks/corpora/asr-v1/audio/aishell-BAC009S0766W0137.wav",
+      "origin": "original public natural read speech",
+      "expectedCanonical": [],
+      "forbiddenInsertions": [
+        "Arion",
+        "Kubernetes",
+        "OpenAI",
+        "Safari",
+        "SQL"
+      ]
+    },
+    {
+      "caseId": "libri-3081-166546-0006",
+      "sourceCorpus": "benchmarks/corpora/asr-v1/corpus.json",
+      "sourceCorpusSha256": "a5d92468ac0c1ac740cf9685628d1d1c6540f70f4ace2d11c189bd7f78fee371",
+      "sourceSplit": "dev",
+      "developmentOnly": true,
+      "role": "irrelevant",
+      "hotwords": [
+        "Arion",
+        "Kubernetes",
+        "OpenAI",
+        "Safari",
+        "SQL"
+      ],
+      "reference": "the boys look wide awake enough if the father does not",
+      "unit": "wer",
+      "language": "en",
+      "speakerId": "librispeech:3081",
+      "sessionId": "librispeech:3081-166546",
+      "audio": {
+        "path": "audio/libri-3081-166546-0006.wav",
+        "sha256": "7fbd2304dafd34123c6d8ea16b3d79f681edda85dbc8560519729d277b079b5c",
+        "durationMs": 3775.0
+      },
+      "audioPath": "benchmarks/corpora/asr-v1/audio/libri-3081-166546-0006.wav",
+      "origin": "original public natural read speech",
+      "expectedCanonical": [],
+      "forbiddenInsertions": [
+        "Arion",
+        "Kubernetes",
+        "OpenAI",
+        "Safari",
+        "SQL"
+      ]
+    },
+    {
+      "caseId": "nonspeech-dev-0",
+      "sourceCorpus": "benchmarks/corpora/asr-v1/corpus.json",
+      "sourceCorpusSha256": "a5d92468ac0c1ac740cf9685628d1d1c6540f70f4ace2d11c189bd7f78fee371",
+      "sourceSplit": "dev",
+      "developmentOnly": true,
+      "role": "irrelevant",
+      "hotwords": [
+        "Arion",
+        "Kubernetes",
+        "OpenAI",
+        "Safari",
+        "SQL"
+      ],
+      "reference": "",
+      "unit": "cer",
+      "language": "zh",
+      "speakerId": "nonspeech:dev",
+      "sessionId": "nonspeech:dev:0",
+      "audio": {
+        "path": "audio/nonspeech-dev-0.wav",
+        "sha256": "20eaebffe1816e0ffa6f7f854f5ef4ea80d5349faaf0ce1fec1b713e7fde58fa",
+        "durationMs": 2000.0
+      },
+      "audioPath": "benchmarks/corpora/asr-v1/audio/nonspeech-dev-0.wav",
+      "origin": "generated nonspeech",
+      "expectedCanonical": [],
+      "forbiddenInsertions": [
+        "Arion",
+        "Kubernetes",
+        "OpenAI",
+        "Safari",
+        "SQL"
+      ]
+    }
+  ],
+  "warmups": 2,
+  "measuredRequests": 32,
+  "stateIsolationRequests": 4,
+  "referencePolicy": "All references, canonical term expectations, numeric concepts and forbidden-insertion checks are evaluator-only. Inference reads requests.json, which contains only case identities, original audio bytes/hash and explicitly controlled canonical spellings. No test corpus is read.",
+  "memorySource": {
+    "path": "benchmarks/corpora/user-modify-asr-v2/dev/memory.json",
+    "sha256": "919a3284bbe9dddb61026980c1c7f511ccfb1ef3894e72519028fe9bc90beab9",
+    "use": "Approved targets from already exposed development memory only; aliases never enter inference."
+  },
+  "manualControlledConfig": [
+    "API",
+    "Arion",
+    "Kubernetes",
+    "OpenAI",
+    "SQL",
+    "Safari",
+    "TypeScript"
+  ],
+  "limitations": [
+    "This small development diagnostic uses exposed fixtures and fixture-specific controlled hotwords; it is not held-out or production retrieval accuracy.",
+    "Synthetic transliterated term references encode desired approved spelling, not independently transcribed literal Chinese speech.",
+    "Natural-read references preserve original archived annotations without new independent review.",
+    "No source BF16 parity, real microphone, causal streaming or Windows claim."
+  ],
+  "sourceProvenance": [
+    {
+      "path": "benchmarks/corpora/user-modify-asr-v2/dev/corpus.json",
+      "sha256": "fc19a31064627c97b5642f9acdbe96c0ccf2bad14786329a3cf12558a6137231",
+      "license": "AGPL-3.0-only authored fixture text and scripts; audio synthesized locally by macOS system voices for this diagnostic",
+      "provenance": "Single developer-authored diagnostic. All memory predates this authored test set. TTS speech, not natural microphone speech. Independent annotations and source-checkpoint parity are absent. Transliterated term references encode approved spelling, not literal Chinese surface rendering. Reused exposed v1 fixtures as development data for v2.",
+      "synthesis": "macOS say Tingting/Samantha, rate 170; ffmpeg mono PCM16 16kHz; original AIFF retained"
+    },
+    {
+      "path": "benchmarks/corpora/asr-v1/corpus.json",
+      "sha256": "a5d92468ac0c1ac740cf9685628d1d1c6540f70f4ace2d11c189bd7f78fee371",
+      "license": "AISHELL-1 Apache-2.0 (OpenSLR SLR33; HF mirror AudioLLMs/aishell_1_zh_test@e73dc7f0, transcript AISHELL/AISHELL-1@bbe295d5); LibriSpeech CC-BY-4.0 (openslr/librispeech_asr@71cacbfb); synthetic macOS TTS prompts authored for Arion (CC0); generated nonspeech",
+      "provenance": {
+        "builder": "tools/evaluation/data/build_corpus.py",
+        "sources": {
+          "aishell-test-mirror-00000.parquet": "2466b1e851147943d4a2c46e1dddc8a70a45b733065c7f6a86e44bd88d5579c6",
+          "aishell_transcript_v0.8.txt": "b5f33b9e0b47548e20a5ea4e504297f80df41d559133924c4e5b7b544c15b5c4",
+          "test.clean.parquet": "7113aa4c3cf963fb54697145719a7725f984c8836d1c494a554cbb9f1a017df0",
+          "validation.clean.parquet": "c816e936fed8b83d5e3de28795bff1bcd3b46b3f1a5815bad4395d20186a9770"
+        },
+        "ffmpeg": "ffmpeg version 8.1.2 Copyright (c) 2000-2026 the FFmpeg developers",
+        "aishellSpeakerRecovery": {
+          "method": "unique transcript text match against official aishell_transcript_v0.8",
+          "unmatchedRows": 381
+        },
+        "aishellSplitNote": "Official AISHELL-1 test speakers are partitioned by speaker into Arion dev (S0764-S0766) and test (S0767-S0770)",
+        "syntheticNote": "TTS fixtures are a synthetic stress set; they are not natural speech"
+      },
+      "synthesis": null
+    }
+  ]
+}

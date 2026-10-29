@@ -1,6 +1,7 @@
 import type { PostMeta } from "@/entities/post";
 import { blogPostRoute } from "@/shared/config";
 import { formatDate, useCopy, useLocale } from "@/shared/i18n";
+import { cn } from "@/shared/lib";
 import { AppLink, Dateline } from "@/shared/ui";
 
 /**
@@ -12,7 +13,10 @@ export function FeaturedPost({ post }: { post: PostMeta }) {
   return (
     <AppLink
       href={blogPostRoute(post.slug)}
-      className="group grid items-center gap-8 rounded-3xl md:grid-cols-2 md:gap-12"
+      className={cn(
+        "group grid items-center gap-8 rounded-3xl md:gap-12",
+        post.image && "md:grid-cols-2",
+      )}
     >
       {post.image ? (
         // eslint-disable-next-line @next/next/no-img-element -- static export; a fixed 4:3 box reserves the space
@@ -26,7 +30,7 @@ export function FeaturedPost({ post }: { post: PostMeta }) {
       ) : null}
       <div className="flex flex-col gap-4">
         <Dateline date={post.date} label={blog.categories[post.category]} />
-        <h2 className="text-balance font-display text-3xl leading-[1.1] tracking-[-0.02em] underline decoration-transparent decoration-1 underline-offset-[0.18em] transition-colors group-hover:decoration-foreground/30 sm:text-4xl">
+        <h2 className="max-w-3xl text-balance font-display text-3xl leading-[1.1] tracking-[-0.02em] underline decoration-transparent decoration-1 underline-offset-[0.18em] transition-colors group-hover:decoration-foreground/30 sm:text-4xl">
           {post.title}
         </h2>
         <p className="max-w-xl text-pretty text-lg leading-relaxed text-muted-foreground">

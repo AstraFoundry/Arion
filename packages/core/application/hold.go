@@ -1,7 +1,7 @@
 package application
 
 import (
-	"slices"
+	"strconv"
 	"time"
 )
 
@@ -17,18 +17,35 @@ const (
 	HoldRightCommand HoldKey = "right_command"
 	HoldRightAlt     HoldKey = "right_alt"
 	HoldRightCtrl    HoldKey = "right_ctrl"
+	HoldLeftCtrl     HoldKey = "left_ctrl"
+	HoldLeftOption   HoldKey = "left_option"
+	HoldLeftCommand  HoldKey = "left_command"
+	HoldLeftAlt      HoldKey = "left_alt"
+	HoldLeftShift    HoldKey = "left_shift"
+	HoldRightShift   HoldKey = "right_shift"
+	HoldMenu         HoldKey = "menu"
 )
 
 // HoldKeysFor lists the keys a platform's adapter can observe alone.
 // Windows keyboards report no fn key to the OS.
 func HoldKeysFor(platform string) []HoldKey {
+	var keys []HoldKey
 	switch platform {
 	case "darwin":
-		return []HoldKey{HoldFn, HoldRightOption, HoldRightCommand}
+		keys = []HoldKey{HoldFn, HoldRightOption, HoldRightCommand, HoldLeftOption, HoldLeftCommand, HoldLeftCtrl, HoldRightCtrl, HoldLeftShift, HoldRightShift}
 	case "windows":
-		return []HoldKey{HoldRightAlt, HoldRightCtrl}
+		keys = []HoldKey{HoldRightAlt, HoldRightCtrl, HoldLeftAlt, HoldLeftCtrl, HoldLeftShift, HoldRightShift, HoldMenu}
+	default:
+		return nil
 	}
-	return nil
+	n := 20
+	if platform == "windows" {
+		n = 24
+	}
+	for i := 1; i <= n; i++ {
+		keys = append(keys, HoldKey("f"+strconv.Itoa(i)))
+	}
+	return keys
 }
 
 // TranslateKeysFor lists the translation hold-key choices for a platform,
@@ -66,39 +83,56 @@ func DefaultTranslateKey(platform string) HoldKey {
 }
 
 func knownHoldKey(platform string, key HoldKey) bool {
-	return key == DefaultHoldKey(platform) || slices.Contains(HoldKeysFor(platform), key)
+	if DefaultHoldKey(platform) == "" {
+		return key == ""
+	}
+	_, ok := ParseHoldShortcut(platform, key)
+	return ok
 }
 
 func knownTranslateKey(platform string, key HoldKey) bool {
 	if DefaultTranslateKey(platform) == "" {
 		return key == "" || key == HoldOff
 	}
-	return key == HoldOff || slices.Contains(HoldKeysFor(platform), key)
+	return key == HoldOff || knownHoldKey(platform, key)
 }
 
-// ChooseHoldKey records the dictation key. The translation shortcut turns
-// off when it would be the same key.
+// ChooseHoldKey records a dictation key only when translation does not conflict.
 func (p *Preferences) ChooseHoldKey(key HoldKey) {
-	if p.TranslateKey == key {
-		p.TranslateKey = HoldOff
+	if HoldKeysConflict(p.TranslateKey, key) {
+		return
 	}
 	p.HoldKey = key
 }
 
-// ChooseTranslateKey records the translation key. A collision moves the
-// dictation key to the previous translation key, otherwise the platform
-// default, otherwise the default translation key.
+// ChooseTranslateKey records a translation key only when dictation does not conflict.
 func (p *Preferences) ChooseTranslateKey(platform string, key HoldKey) {
-	if key != HoldOff && key == p.HoldKey {
-		if prev := p.TranslateKey; prev != "" && prev != HoldOff && prev != key {
-			p.HoldKey = prev
-		} else if alt := DefaultHoldKey(platform); alt != key {
-			p.HoldKey = alt
-		} else {
-			p.HoldKey = DefaultTranslateKey(platform)
-		}
+	if HoldKeysConflict(key, p.HoldKey) {
+		return
+	}
+	if key == HoldOff && p.TranslateKey != "" && p.TranslateKey != HoldOff {
+		p.PreviousTranslateKey = p.TranslateKey
 	}
 	p.TranslateKey = key
+}
+
+// EnableTranslationShortcut restores a disabled assignment if it remains
+// available, otherwise chooses a nonconflicting key without moving dictation.
+func (p *Preferences) EnableTranslationShortcut(platform string, enabled bool) {
+	if !enabled {
+		p.ChooseTranslateKey(platform, HoldOff)
+		return
+	}
+	if p.TranslateKey != "" && p.TranslateKey != HoldOff {
+		return
+	}
+	candidates := append([]HoldKey{p.PreviousTranslateKey, DefaultTranslateKey(platform)}, HoldKeysFor(platform)...)
+	for _, key := range candidates {
+		if knownHoldKey(platform, key) && !HoldKeysConflict(key, p.HoldKey) {
+			p.TranslateKey = key
+			return
+		}
+	}
 }
 
 // DefaultHoldThreshold separates a hold from a tap.

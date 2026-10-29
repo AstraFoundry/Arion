@@ -43,6 +43,8 @@ const (
 
 // Page keeps the flow's own state.
 type Page struct {
+	holdPicker       holdkey.PickerState
+	translatePicker  holdkey.PickerState
 	flow             onboarding.Flow
 	entered          time.Time
 	monitoring       bool
@@ -218,6 +220,13 @@ func (p *Page) sync(c *ui.Context, store runtime.Store, step onboarding.Step) {
 	if step == onboarding.Account {
 		signin.Check(store)
 	}
+	if step != onboarding.HoldKey {
+		p.holdPicker.Close(store)
+	}
+	if step != onboarding.TranslateKey {
+		p.translatePicker.Close(store)
+	}
+
 	key := testedKey(step, store.State)
 	testing := step == onboarding.HoldKey || step == onboarding.TranslateKey
 	// Another key starts the test over.
@@ -266,6 +275,8 @@ func (p *Page) heard(step onboarding.Step, state *runtime.State) time.Time {
 func (p *Page) Close(store runtime.Store) { p.release(store) }
 
 func (p *Page) release(store runtime.Store) {
+	p.holdPicker.Close(store)
+	p.translatePicker.Close(store)
 	store.Actions.CancelInputMethodSetup()
 	if p.monitoring {
 		p.monitoring = false
@@ -375,20 +386,24 @@ func (p *Page) step(c *ui.Context, store runtime.Store, tokens theme.Tokens, ste
 		heading(c, tokens, messages.Text(copy.OnbHoldKeyTitle), messages.Text(copy.OnbHoldKeyBody))
 		ui.Column(c).Gap(12).Children(func() {
 			// The figure beside the step shows the chosen key and each press.
-			ui.Row(c).Width(240).Children(func() { holdkey.Picker(c, store) })
-			if holdkey.HasNotes(store) {
-				holdkey.Notes(c, store, tokens)
-			}
+			ui.Row(c).Children(func() { holdkey.Picker(c, store, &p.holdPicker) })
+			holdkey.ListenerStatus(c, store, tokens)
 			p.tryKey(c, store, tokens, step)
 		})
 	case onboarding.Translate:
 		heading(c, tokens, messages.Text(copy.OnbTranslateTitle), messages.Text(copy.OnbTranslateBody))
-		ui.Row(c).Width(240).Children(func() { holdkey.TranslateLanguagePicker(c, store) })
+		ui.Column(c).Gap(12).Children(func() {
+			holdkey.TranslationToggle(c, store, &p.translatePicker)
+			if holdkey.TranslationEnabled(store) {
+				ui.Row(c).Children(func() { holdkey.TranslateLanguagePicker(c, store) })
+			}
+		})
 	case onboarding.TranslateKey:
 		heading(c, tokens, messages.Text(copy.OnbTranslateKeyTitle), messages.Text(copy.OnbTranslateKeyBody))
 		ui.Column(c).Gap(12).Children(func() {
-			// The dictation key is not offered, so the two never collide.
-			ui.Row(c).Width(240).Children(func() { holdkey.FreeTranslatePicker(c, store) })
+			// Recording refuses an assignment already used for dictation.
+			ui.Row(c).Children(func() { holdkey.FreeTranslatePicker(c, store, &p.translatePicker) })
+			holdkey.ListenerStatus(c, store, tokens)
 			if testedKey(step, state) != "" {
 				p.tryKey(c, store, tokens, step)
 			}

@@ -23,7 +23,7 @@ func (readinessAudio) Start(context.Context, contracts.Identity, ports.FrameSink
 
 type readinessRecognizer struct{}
 
-func (readinessRecognizer) NewRecognizer(ctx context.Context, _ contracts.Identity) (ports.Recognizer, error) {
+func (readinessRecognizer) NewRecognizer(ctx context.Context, _ ports.RecognitionRequest) (ports.Recognizer, error) {
 	<-ctx.Done()
 	return nil, ctx.Err()
 }

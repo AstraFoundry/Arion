@@ -13,7 +13,7 @@ static CFMachPortRef testCreate(CGEventTapLocation location, CGEventTapPlacement
     CGEventTapOptions options, CGEventMask mask, CGEventTapCallBack callback, void *info) {
     (void)callback; (void)info;
     assert(location == kCGSessionEventTap && placement == kCGHeadInsertEventTap && options == kCGEventTapOptionListenOnly);
-    assert(mask == (CGEventMaskBit(kCGEventKeyDown) | CGEventMaskBit(kCGEventFlagsChanged)));
+    assert(mask == (CGEventMaskBit(kCGEventKeyDown) | CGEventMaskBit(kCGEventKeyUp) | CGEventMaskBit(kCGEventFlagsChanged)));
     creates++;
     enabled = !disableOnCreate;
     return failCreate ? NULL : CFMachPortCreate(NULL, portCallback, NULL, NULL);

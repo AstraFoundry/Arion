@@ -14,6 +14,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"runtime"
+	"slices"
 	"strconv"
 	"sync"
 	"sync/atomic"
@@ -54,11 +55,33 @@ func Locate(resources string) string {
 }
 
 type message struct {
-	Type     string `json:"type"`
-	ID       string `json:"id,omitempty"`
-	Text     string `json:"text,omitempty"`
-	Stop     string `json:"stop,omitempty"`
-	Protocol int    `json:"protocol,omitempty"`
+	Type         string   `json:"type"`
+	ID           string   `json:"id,omitempty"`
+	Text         string   `json:"text,omitempty"`
+	Stop         string   `json:"stop,omitempty"`
+	Protocol     int      `json:"protocol,omitempty"`
+	Capabilities []string `json:"capabilities,omitempty"`
+	Model        struct {
+		Options []workerOption `json:"options"`
+	} `json:"model,omitempty"`
+}
+
+type workerOption struct {
+	Name   string `json:"name"`
+	Type   string `json:"type"`
+	Steers bool   `json:"steers"`
+}
+
+func (m message) supportsPrompt(kind Kind) bool {
+	if kind == QwenMLX {
+		return slices.Contains(m.Capabilities, "prompt")
+	}
+	for _, option := range m.Model.Options {
+		if option.Name == "prompt" && option.Type == "string" && option.Steers {
+			return true
+		}
+	}
+	return false
 }
 
 // engine serializes requests across process generations. Only a worker retired
@@ -81,15 +104,16 @@ type engine struct {
 // workerProcess owns one subprocess and its request stream. Progress is
 // nonterminal; cancellation drains its terminal acknowledgement before reuse.
 type workerProcess struct {
-	cmd     *exec.Cmd
-	stdin   io.WriteCloser
-	write   sync.Mutex
-	mu      sync.Mutex
-	pending map[string]chan message
-	ready   chan message
-	done    chan struct{}
-	next    atomic.Uint64
-	once    sync.Once
+	cmd             *exec.Cmd
+	stdin           io.WriteCloser
+	write           sync.Mutex
+	mu              sync.Mutex
+	pending         map[string]chan message
+	ready           chan message
+	done            chan struct{}
+	next            atomic.Uint64
+	promptSupported bool
+	once            sync.Once
 }
 
 func load(ctx context.Context, spec Spec) (*engine, error) {
@@ -151,6 +175,7 @@ func (e *engine) start(ctx context.Context) error {
 	select {
 	case m := <-p.ready:
 		if m.Type == "ready" && m.Protocol == 3 {
+			p.promptSupported = m.supportsPrompt(e.spec.Kind)
 			if ctx.Err() != nil {
 				p.close()
 				return ctx.Err()
@@ -247,7 +272,7 @@ func (e *workerProcess) send(m any) error {
 	_, err = e.stdin.Write(append(data, '\n'))
 	return err
 }
-func (e *engine) decode(ctx context.Context, samples []float32) (string, error) {
+func (e *engine) decode(ctx context.Context, samples []float32, hotwords ...string) (string, error) {
 	select {
 	case e.serial <- struct{}{}:
 	case <-ctx.Done():
@@ -291,7 +316,14 @@ func (e *engine) decode(ctx context.Context, samples []float32) (string, error) 
 		p = e.current
 		e.mu.Unlock()
 	}
-	text, err, retired := p.decode(ctx, samples, e.cancelGrace)
+	prompt, err := domain.ASRContext(hotwords)
+	if err != nil {
+		return "", domain.Fail(domain.CodeContractUnsupported, "invalid ASR hotword context")
+	}
+	if prompt != "" && !p.promptSupported {
+		return "", domain.Fail(domain.CodeModelUnsupported, "native ASR worker does not support hotword context")
+	}
+	text, err, retired := p.decode(ctx, samples, e.cancelGrace, prompt)
 	if retired {
 		e.mu.Lock()
 		if e.current == p {
@@ -303,7 +335,7 @@ func (e *engine) decode(ctx context.Context, samples []float32) (string, error) 
 	return text, err
 }
 
-func (e *workerProcess) decode(ctx context.Context, samples []float32, cancelGrace time.Duration) (string, error, bool) {
+func (e *workerProcess) decode(ctx context.Context, samples []float32, cancelGrace time.Duration, prompt string) (string, error, bool) {
 	select {
 	case <-e.done:
 		return "", domain.Fail(domain.CodeModelUnsupported, "native ASR worker exited"), false
@@ -329,7 +361,7 @@ func (e *workerProcess) decode(ctx context.Context, samples []float32, cancelGra
 	if err := e.send(map[string]any{"type": "chunk", "id": id, "seq": 0, "pcm": base64.StdEncoding.EncodeToString(pcm)}); err != nil {
 		return "", err, false
 	}
-	if err := e.send(map[string]any{"type": "transcribe", "id": id, "sample_rate": 16000}); err != nil {
+	if err := e.send(map[string]any{"type": "transcribe", "id": id, "sample_rate": 16000, "prompt": prompt}); err != nil {
 		return "", err, false
 	}
 	select {

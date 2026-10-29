@@ -86,7 +86,7 @@ The current profile-bearing macOS arm64 canonical build completes Developer ID s
 
 ## Releases and updates
 
-Windows installers use `Arion-<version>-windows-x64-setup.exe`, and update archives use `arion-<version>-windows-x64.tar.gz`. The shared build entry point renames MyGo's generated files and updates the archive URL in its manifest before verification and release collection; staging, checksums and GitHub downloads use the same names. Archive bytes and their Ed25519 signatures remain unchanged. The x64 label covers both Intel and AMD processors. Internal platform keys, manifest names (`update-windows-amd64.json`) and delta names retain `windows-amd64`; previous-version URLs remain intact. Existing published assets keep their original names. The update client follows the manifest URL, and the center redirects the requested filename to the corresponding bucket object.
+Release assets retain MyGo's native architecture names. Windows installers build as `Arion Setup <version> amd64.exe` and are uploaded as `Arion.Setup.<version>.amd64.exe`; macOS installers build as `Arion <version> arm64.dmg` and are uploaded as `Arion.<version>.arm64.dmg`. Update archives use `arion-<version>-windows-amd64.tar.gz` and `arion-<version>-darwin-arm64.tar.gz`, with `update-windows-amd64.json` and `update-darwin-arm64.json`. The build does not rename update archives or rewrite manifest URLs. GitHub Releases and download pages should describe these targets as **Windows x64 (Intel / AMD)** and **macOS Apple Silicon (M series)**. Existing published assets keep their original names.
 
 The app checks the Arion center's `stable` channel, or `beta` with **Allow beta updates** on, at `https://api.arion.astrafoundry.si/v1/updates` (`desktop.json` `updates.url`, [ADR 019](../decisions/019-center-update-channels.md)); no client request reaches the GitHub API. With `MYGO_UPDATER_PRIVATE_KEY` set, `mygo build` also writes the signed update archive and `update-<os>-<arch>.json`, whose URLs point at the center.
 
@@ -132,6 +132,8 @@ make site-deploy  # build apps/site/out, then wrangler deploy
 ## Native ASR migration
 
 [ADR 020](../decisions/020-native-qwen-asr.md) defines the platform packages and open native-host gates. Apple silicon includes the Swift compatibility library closure collected by `swift-stdlib-tool`, colocated Metal shaders and SwiftPM resource bundles. The verifier rejects ONNX/sherpa/X-ASR runtime files in the final package. Runtime source and model provenance are pinned separately; model downloads remain outside the signed application.
+
+Packages with ASR hotword support must include the rebuilt `arion-mlx-2` worker, which advertises the additive protocol-3 `prompt` capability. Rebuilding only the Go shell leaves nonempty hotword requests unsupported. The existing pinned Windows CPU/Vulkan workers expose the corresponding steering string `prompt` option in their model capability metadata; this change does not replace their pinned binaries. Runtime capability checks reject missing support before submitting contextual audio. The [Apple Silicon smoke archive](../../benchmarks/reproduction/asr-hotwords-v1/runtime-smoke/README.md) verifies native capability, per-request empty-context reuse and context-limit refusal; actual Windows inference and packaged-host acceptance remain separate gates.
 
 ### Windows speech typography
 

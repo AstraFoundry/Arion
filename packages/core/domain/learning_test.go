@@ -98,7 +98,7 @@ func TestVocabularyTermsRelevantAndBounded(t *testing.T) {
 	reps = append(reps, Replacement{From: "杰森", To: "JSON"}, Replacement{From: "jason", To: "Jayson"})
 	v := NewVocabulary(reps)
 	terms := v.Terms("打开JSON文件，问 Jayson", MaxRecallTerms)
-	if len(terms) != 2 || terms[0] != "杰森 → JSON" || terms[1] != "jason → Jayson" {
+	if len(terms) != 2 || terms[0] != "JSON" || terms[1] != "Jayson" {
 		t.Fatalf("terms %v", terms)
 	}
 	if got := v.Terms("nothing relevant", MaxRecallTerms); got != nil {

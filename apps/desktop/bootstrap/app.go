@@ -138,6 +138,7 @@ type App struct {
 	// holdGeneration rejects queued events from a retired native listener.
 	holdGeneration uint64
 	holdKey        application.HoldKey
+	holdPending    *deferredHold
 
 	// Snapshot read by worker goroutines (correction policy, delivery).
 	snapshot    sync.Mutex
@@ -146,12 +147,13 @@ type App struct {
 	replaces    []domain.Replacement
 	// vocabulary indexes replaces once per change; memory is vocab for
 	// worker goroutines (edit learning, recall counts).
-	vocabulary *domain.Vocabulary
-	memory     *vocabulary.Store
-	edits      *application.EditTracker
-	queueMu    sync.Mutex
-	queue      []func()
-	queueReady chan struct{}
+	asrHotwords []string
+	vocabulary  *domain.Vocabulary
+	memory      *vocabulary.Store
+	edits       *application.EditTracker
+	queueMu     sync.Mutex
+	queue       []func()
+	queueReady  chan struct{}
 
 	accounts           *account.Service
 	accountMaintenance accountMaintenance
@@ -253,7 +255,7 @@ func New(opts Options) (*App, error) {
 	if a.ime != nil {
 		deps.IMETargets, deps.IMEInput, deps.Composition = a.ime, a.ime, a.ime
 	}
-	a.core, err = application.NewCoordinator(deps, application.Options{AutoCommit: true, Correction: true, Policy: a.policy,
+	a.core, err = application.NewCoordinator(deps, application.Options{AutoCommit: true, Correction: true, Policy: a.policy, Hotwords: a.recognitionHotwords,
 		Rewrite: a.rewritePolicy, Learning: a.learning, Recalled: a.recalled})
 	if err != nil {
 		return nil, err
@@ -302,6 +304,13 @@ func (a *App) policy() domain.CorrectionPolicy {
 	defer a.snapshot.Unlock()
 	return domain.CorrectionPolicy{LatinCase: a.manager.LatinCase(),
 		Replacements: a.replaces, Vocabulary: a.vocabulary}
+}
+
+// recognitionHotwords snapshots approved canonical terms independently of polish.
+func (a *App) recognitionHotwords() []string {
+	a.snapshot.Lock()
+	defer a.snapshot.Unlock()
+	return append([]string(nil), a.asrHotwords...)
 }
 
 // rewritePolicy is read when a session starts and preserves the user's
@@ -498,8 +507,8 @@ func (a *App) ready() {
 	a.runResource(func() { a.activate(a.state.Preferences.ModelOverride) })
 	go a.pollPermissions()
 	go a.refreshDevicesAsync()
-	mygo.Power.OnSuspend(func() { a.record("power_suspend", nil); a.core.Cancel() })
-	mygo.Power.OnLockScreen(func() { a.record("screen_locked", nil); a.core.Cancel() })
+	mygo.Power.OnSuspend(func() { a.record("power_suspend", nil); a.resetHoldGesture(); a.core.Cancel() })
+	mygo.Power.OnLockScreen(func() { a.record("screen_locked", nil); a.resetHoldGesture(); a.core.Cancel() })
 	if !a.state.Preferences.OnboardingCompleted && !a.opts.SkipOnboarding {
 		a.openOnboarding()
 	} else if !a.scripted() {
@@ -898,14 +907,18 @@ func (a *App) loadVocabulary(create bool) {
 	a.state.Vocabulary = a.state.Vocabulary[:0]
 	var replaces []domain.Replacement
 	for _, entry := range entries {
-		a.state.Vocabulary = append(a.state.Vocabulary, arion.Replacement{ID: entry.ID, From: entry.From, To: entry.To})
-		if entry.Approved {
+		if !entry.Approved {
+			continue
+		}
+		a.state.Vocabulary = append(a.state.Vocabulary, arion.Replacement{ID: entry.ID, From: entry.From, To: entry.To, Hotword: domain.ASRHotwordEligible(domain.MemoryEntry{To: entry.To, Hotword: entry.Hotword, Origin: domain.MemoryOrigin(entry.Origin)})})
+		if entry.From != "" {
 			replaces = append(replaces, domain.Replacement{From: entry.From, To: entry.To})
 		}
 	}
 	index := domain.NewVocabulary(replaces)
 	a.snapshot.Lock()
 	a.replaces, a.vocabulary, a.memory = replaces, index, a.vocab
+	a.asrHotwords = domain.ASRHotwords(vocabulary.Memory(entries))
 	a.snapshot.Unlock()
 }
 

@@ -14,6 +14,7 @@ Session states: `idle → preparing → capturing → finalizing → reviewing �
 
 [Domain-owned ports](../packages/core/domain/ports/ports.go) define recognizer, finalizer, rewriter, keyboard ranker and input-target operations. They accept `context.Context`, carry session/revision identity and return explicit errors. Dictation correction is `domain.Correct`. The concrete adapter defines microphone/VAD and model lifecycle while preserving the core contract.
 
+- `RecognitionRequest` carries session identity and an owned `Hotwords` slice. `FinalizeRequest` carries the same session snapshot for segment and full-audio recognition. Adapters must copy retained slices; mutating a request must not alter another stage's context. Native capability negotiation is described in [ADR 020](../docs/decisions/020-native-qwen-asr.md).
 - A `TargetSnapshot` taken at session start carries the opaque token, a `sensitive` flag for known secure fields, and the application, field and site used for local policy. Context is read through `ReadContext`. Owned composition is `CompositionTarget`. An unsupported operation returns an explicit error from the method that would perform it.
 - `TargetToken` is opaque. OS-native handles and editor pointers must not appear in JSON or core DTOs.
 - Text offsets in portable DTOs count Unicode scalar values in the exact source text. Convert explicitly to UTF-16, byte offsets or host ranges inside the OS adapter; include source revision to prevent index drift.

@@ -14,8 +14,7 @@ const PopupHeight = 256
 func Select[T comparable](c *ui.Context, selected *T, options []T, label func(T) string, lead func(T)) ui.Element {
 	t := c.Theme()
 	sel := ui.SelectBase(c, selected)
-	trigger := sel.Trigger.Padding(t.Space(1.5), t.Space(3.5)).Gap(t.Space(1.5)).Radius(t.Radius).
-		AlignItems(ui.Center).MinWidth(t.Space(35)).Border(1, t.Border).TextColor(t.Text)
+	trigger := ControlFrame(c, sel.Trigger)
 	switch {
 	case trigger.Pressed():
 		trigger.Background(t.SurfacePressed)

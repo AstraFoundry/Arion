@@ -4,6 +4,7 @@
 package runtime
 
 import (
+	"errors"
 	"time"
 
 	"arion.local/core/application"
@@ -23,6 +24,8 @@ type (
 	Delivery            = application.Delivery
 	UILanguage          = application.UILanguage
 	HoldKey             = application.HoldKey
+	KeyModifiers        = application.KeyModifiers
+	Shortcut            = application.Shortcut
 	KeyboardPreferences = application.KeyboardPreferences
 	CandidateSize       = application.CandidateSize
 	CandidateAppearance = application.CandidateAppearance
@@ -78,6 +81,17 @@ const (
 	TargetRussian            = domain.TargetRussian
 	TargetArabic             = domain.TargetArabic
 
+	KeyCtrl          = application.KeyCtrl
+	KeyAlt           = application.KeyAlt
+	KeyShift         = application.KeyShift
+	KeySuper         = application.KeySuper
+	HoldLeftCtrl     = application.HoldLeftCtrl
+	HoldLeftOption   = application.HoldLeftOption
+	HoldLeftCommand  = application.HoldLeftCommand
+	HoldLeftAlt      = application.HoldLeftAlt
+	HoldLeftShift    = application.HoldLeftShift
+	HoldRightShift   = application.HoldRightShift
+	HoldMenu         = application.HoldMenu
 	HoldOff          = application.HoldOff
 	HoldFn           = application.HoldFn
 	HoldRightOption  = application.HoldRightOption
@@ -321,12 +335,19 @@ type Device struct {
 	Default bool
 }
 
-// Replacement is one approved vocabulary correction.
+// Replacement is an approved correction or a correct-only recognition hotword.
 type Replacement struct {
-	ID   string
-	From string
-	To   string
+	Hotword bool
+	ID      string
+	From    string
+	To      string
 }
+
+// Vocabulary errors distinguish actionable edits from storage failures.
+var (
+	ErrVocabularyInvalid  = errors.New("invalid vocabulary edit")
+	ErrVocabularyConflict = errors.New("vocabulary variant belongs to another term")
+)
 
 // Learned is a vocabulary entry just learned from the user's correction.
 type Learned struct {
@@ -356,6 +377,11 @@ const (
 
 // Hold is the hold key's listener, the only global dictation activation.
 type Hold struct {
+	// Recording identifies the field that owns the temporary keyboard capture.
+	Recording                      string
+	RecordedKey                    HoldKey
+	RecordedSeq                    uint64
+	RecordInvalid, RecordCancelled bool
 	// Pressed is when a listened key last went down, and PressedKey which
 	// one, for the onboarding test.
 	Pressed    time.Time
@@ -552,12 +578,16 @@ type Actions interface {
 	// SetTranslateKey chooses the translation key, or HoldOff to disable it.
 	SetTranslateKey(key HoldKey)
 	RequestInputMonitoring()
+	// RetryShortcutListener restarts shared dictation and translation listening.
+	RetryShortcutListener()
 	// RequestScreenRecording retains the legacy screen-capture consent action.
 	RequestScreenRecording()
 	// CloseGuide dismisses the consent guide and returns to Arion.
 	CloseGuide()
 	// CloseTrayHint dismisses the hint beside the tray icon.
 	CloseTrayHint()
+	// RecordShortcut starts native capture for owner, or restores activation for an empty owner.
+	RecordShortcut(owner string)
 	// TestHoldKey makes hold key presses only report Hold.Pressed, for
 	// the onboarding check, instead of starting dictation.
 	TestHoldKey(testing bool)
@@ -570,6 +600,10 @@ type Actions interface {
 	OpenInputMethodSettings() error
 	RemoveInputMethod() error
 	AddReplacement(from, to string) error
+	// AddReplacementVariants saves all variants for one correct term atomically.
+	AddReplacementVariants(froms []string, to string) error
+	// AddHotword saves a canonical ASR term independently of correction pairs.
+	AddHotword(text string) error
 	RemoveReplacement(id string)
 	// UndoLearned forgets the entry just learned and dismisses its notice.
 	UndoLearned(id string)
@@ -666,3 +700,19 @@ func DecideScene(h SceneHints, o SceneOverrides) SceneDecision { return domain.D
 
 // SceneKey names the place a choice applies to.
 func SceneKey(h SceneHints) string { return domain.SceneKey(h) }
+
+// ShortcutKeysFor lists the custom shortcut triggers for a platform.
+func ShortcutKeysFor(platform string) []HoldKey { return application.ShortcutKeysFor(platform) }
+
+// HoldShortcut constructs a validated shortcut.
+func HoldShortcut(platform string, mods KeyModifiers, key HoldKey) (HoldKey, bool) {
+	return application.HoldShortcut(platform, mods, key)
+}
+
+// ParseHoldShortcut separates a shortcut's modifiers and trigger.
+func ParseHoldShortcut(platform string, key HoldKey) (Shortcut, bool) {
+	return application.ParseHoldShortcut(platform, key)
+}
+
+// HoldKeysConflict reports overlapping dictation and translation keys.
+func HoldKeysConflict(a, b HoldKey) bool { return application.HoldKeysConflict(a, b) }

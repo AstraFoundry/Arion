@@ -109,11 +109,35 @@ static NSString *applyKeyboardSettings(ArionTyping *typing, ArionCandidatePanel 
 // The Voice Input item's title names the dictation key with the app's copy
 // for it; an absent or unknown key leaves the key out (IME-06).
 static NSString *voiceInputTitle(NSString *dictationKey) {
-    NSDictionary *names = @{@"fn": @"HoldKeyFn", @"right_option": @"HoldKeyRightOption", @"right_command": @"HoldKeyRightCommand"};
-    NSString *name = dictationKey ? names[dictationKey] : nil;
-    if (!name) return NSLocalizedString(@"KeyboardVoiceInput", nil);
+    NSDictionary *names = @{
+        @"fn": @"HoldKeyFn", @"right_option": @"HoldKeyRightOption", @"right_command": @"HoldKeyRightCommand",
+        @"left_option": @"HoldKeyLeftOption", @"left_command": @"HoldKeyLeftCommand",
+        @"left_ctrl": @"HoldKeyLeftCtrl", @"right_ctrl": @"HoldKeyRightCtrl",
+        @"left_shift": @"HoldKeyLeftShift", @"right_shift": @"HoldKeyRightShift",
+        @"space": @"HoldKeySpace", @"enter": @"HoldKeyEnter", @"tab": @"HoldKeyTab",
+        @"backspace": @"HoldKeyBackspace", @"delete": @"HoldKeyDelete", @"home": @"HoldKeyHome", @"end": @"HoldKeyEnd",
+        @"page_up": @"HoldKeyPageUp", @"page_down": @"HoldKeyPageDown",
+        @"left": @"HoldKeyLeft", @"right": @"HoldKeyRight", @"up": @"HoldKeyUp", @"down": @"HoldKeyDown"
+    };
+    NSDictionary *legends = @{
+        @"ctrl": @"Ctrl", @"alt": @"Option", @"shift": @"Shift", @"super": @"Command",
+        @"minus": @"-", @"equal": @"=", @"comma": @",", @"period": @".", @"slash": @"/", @"semicolon": @";",
+        @"quote": @"'", @"bracket_left": @"[", @"bracket_right": @"]", @"backslash": @"\\", @"grave": @"`"
+    };
+    NSMutableArray<NSString *> *labels = [NSMutableArray array];
+    for (NSString *part in [dictationKey componentsSeparatedByString:@"+"]) {
+        NSString *name = names[part];
+        if (name) [labels addObject:NSLocalizedString(name, nil)];
+        else if (legends[part]) [labels addObject:legends[part]];
+        else {
+            NSRange range = [part rangeOfString:@"^([a-z0-9]|f([1-9]|1[0-9]|20))$" options:NSRegularExpressionSearch];
+            if (range.location == NSNotFound) return NSLocalizedString(@"KeyboardVoiceInput", nil);
+            [labels addObject:part.uppercaseString];
+        }
+    }
+    if (!labels.count) return NSLocalizedString(@"KeyboardVoiceInput", nil);
     return [NSLocalizedString(@"KeyboardVoiceInputKey", nil) stringByReplacingOccurrencesOfString:@"{key}"
-                                                                                     withString:NSLocalizedString(name, nil)];
+        withString:[labels componentsJoinedByString:@"+"]];
 }
 
 @implementation ArionBridge

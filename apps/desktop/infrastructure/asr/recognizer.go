@@ -30,14 +30,15 @@ func LoadStreamingContext(ctx context.Context, spec Spec) (*Streaming, error) {
 	return &Streaming{engine: e, rate: spec.SampleRate, silence: int(spec.EndpointSilence * float32(spec.SampleRate))}, nil
 }
 func (s *Streaming) Close() { s.engine.close() }
-func (s *Streaming) NewRecognizer(ctx context.Context, id contracts.Identity) (ports.Recognizer, error) {
+func (s *Streaming) NewRecognizer(ctx context.Context, request ports.RecognitionRequest) (ports.Recognizer, error) {
 	ctx, cancel := context.WithCancel(ctx)
-	r := &session{engine: s.engine, rate: s.rate, silence: s.silence, id: id, ctx: ctx, cancel: cancel, wake: make(chan struct{}, 1), done: make(chan struct{})}
+	r := &session{engine: s.engine, rate: s.rate, silence: s.silence, id: request.Identity, hotwords: append([]string(nil), request.Hotwords...), ctx: ctx, cancel: cancel, wake: make(chan struct{}, 1), done: make(chan struct{})}
 	go r.preview()
 	return r, nil
 }
 
 type session struct {
+	hotwords  []string
 	engine    *engine
 	rate      int
 	silence   int
@@ -130,7 +131,7 @@ func (s *session) preview() {
 		samples := append([]float32(nil), s.samples[:n]...)
 		s.mu.Unlock()
 		start := time.Now()
-		text, err := s.engine.decode(s.ctx, samples)
+		text, err := s.engine.decode(s.ctx, samples, s.hotwords...)
 		elapsed := time.Since(start)
 		s.mu.Lock()
 		s.compute += elapsed
@@ -199,7 +200,7 @@ func (s *session) Finish(ctx context.Context) (contracts.Draft, error) {
 		var parts []string
 		for _, samples := range SplitAtQuiet(s.samples, s.rate, 25) {
 			start := time.Now()
-			text, err := s.engine.decode(ctx, samples)
+			text, err := s.engine.decode(ctx, samples, s.hotwords...)
 			s.compute += time.Since(start)
 			if err != nil {
 				return contracts.Draft{}, err
@@ -245,7 +246,7 @@ func (o *Offline) Finalize(ctx context.Context, r ports.FinalizeRequest) (string
 	}
 	var parts []string
 	for _, samples := range SplitAtQuiet(r.Samples, o.rate, 25) {
-		text, err := o.engine.decode(ctx, samples)
+		text, err := o.engine.decode(ctx, samples, r.Hotwords...)
 		if err != nil {
 			return "", err
 		}

@@ -1,0 +1,408 @@
+[
+  {
+    "id": "tts-train-00-grandpa-warmup",
+    "caseId": "tts-train-00-grandpa",
+    "purpose": "warmup",
+    "arm": "empty",
+    "audioPath": "benchmarks/corpora/asr-v1/audio/tts-train-00-grandpa.wav",
+    "audioSha256": "b5123c7bae57b825518a5037d056fb51cdf7bbb9d88e5f0a47a2f8682f6d2051",
+    "hotwords": []
+  },
+  {
+    "id": "tts-train-01-grandpa-warmup",
+    "caseId": "tts-train-01-grandpa",
+    "purpose": "warmup",
+    "arm": "empty",
+    "audioPath": "benchmarks/corpora/asr-v1/audio/tts-train-01-grandpa.wav",
+    "audioSha256": "5b09ad0149ccc0dde5b086f4268772e32ee45c4303dd529052860945741609f9",
+    "hotwords": []
+  },
+  {
+    "id": "arion-a-empty",
+    "caseId": "arion-a",
+    "purpose": "measured",
+    "arm": "empty",
+    "audioPath": "benchmarks/corpora/user-modify-asr-v2/dev/arion-a.wav",
+    "audioSha256": "cba6cdecf5ece0eaa3918f8ce255ec28594d0c2f58ab588e4207d2fc7e5f81c1",
+    "hotwords": []
+  },
+  {
+    "id": "arion-a-canonical",
+    "caseId": "arion-a",
+    "purpose": "measured",
+    "arm": "canonical",
+    "audioPath": "benchmarks/corpora/user-modify-asr-v2/dev/arion-a.wav",
+    "audioSha256": "cba6cdecf5ece0eaa3918f8ce255ec28594d0c2f58ab588e4207d2fc7e5f81c1",
+    "hotwords": [
+      "Arion"
+    ]
+  },
+  {
+    "id": "mygo-a-canonical",
+    "caseId": "mygo-a",
+    "purpose": "measured",
+    "arm": "canonical",
+    "audioPath": "benchmarks/corpora/user-modify-asr-v2/dev/mygo-a.wav",
+    "audioSha256": "537bbbfa56ab2ca2fc56072753aa4d5aa99907b91a32879300e82341f2bb955a",
+    "hotwords": [
+      "MyGo"
+    ]
+  },
+  {
+    "id": "mygo-a-empty",
+    "caseId": "mygo-a",
+    "purpose": "measured",
+    "arm": "empty",
+    "audioPath": "benchmarks/corpora/user-modify-asr-v2/dev/mygo-a.wav",
+    "audioSha256": "537bbbfa56ab2ca2fc56072753aa4d5aa99907b91a32879300e82341f2bb955a",
+    "hotwords": []
+  },
+  {
+    "id": "redis-a-empty",
+    "caseId": "redis-a",
+    "purpose": "measured",
+    "arm": "empty",
+    "audioPath": "benchmarks/corpora/user-modify-asr-v2/dev/redis-a.wav",
+    "audioSha256": "66e5633cd432d88269579bb64bafba33f5918b60ecb9fc5061d2d6999ab51a9c",
+    "hotwords": []
+  },
+  {
+    "id": "redis-a-canonical",
+    "caseId": "redis-a",
+    "purpose": "measured",
+    "arm": "canonical",
+    "audioPath": "benchmarks/corpora/user-modify-asr-v2/dev/redis-a.wav",
+    "audioSha256": "66e5633cd432d88269579bb64bafba33f5918b60ecb9fc5061d2d6999ab51a9c",
+    "hotwords": [
+      "Redis"
+    ]
+  },
+  {
+    "id": "github-a-canonical",
+    "caseId": "github-a",
+    "purpose": "measured",
+    "arm": "canonical",
+    "audioPath": "benchmarks/corpora/user-modify-asr-v2/dev/github-a.wav",
+    "audioSha256": "720e169a90e7e85a78b4e3d75887da5e2f614765d75a3929062352e7db31626f",
+    "hotwords": [
+      "GitHub"
+    ]
+  },
+  {
+    "id": "github-a-empty",
+    "caseId": "github-a",
+    "purpose": "measured",
+    "arm": "empty",
+    "audioPath": "benchmarks/corpora/user-modify-asr-v2/dev/github-a.wav",
+    "audioSha256": "720e169a90e7e85a78b4e3d75887da5e2f614765d75a3929062352e7db31626f",
+    "hotwords": []
+  },
+  {
+    "id": "codex-a-empty",
+    "caseId": "codex-a",
+    "purpose": "measured",
+    "arm": "empty",
+    "audioPath": "benchmarks/corpora/user-modify-asr-v2/dev/codex-a.wav",
+    "audioSha256": "5423ffc57e83bd5e00a53137e64033b0e7c30889af2cf85ee28eb9528941891d",
+    "hotwords": []
+  },
+  {
+    "id": "codex-a-canonical",
+    "caseId": "codex-a",
+    "purpose": "measured",
+    "arm": "canonical",
+    "audioPath": "benchmarks/corpora/user-modify-asr-v2/dev/codex-a.wav",
+    "audioSha256": "5423ffc57e83bd5e00a53137e64033b0e7c30889af2cf85ee28eb9528941891d",
+    "hotwords": [
+      "Codex"
+    ]
+  },
+  {
+    "id": "openai-a-canonical",
+    "caseId": "openai-a",
+    "purpose": "measured",
+    "arm": "canonical",
+    "audioPath": "benchmarks/corpora/user-modify-asr-v2/dev/openai-a.wav",
+    "audioSha256": "a1fd05cb11d34fc38ba37e72e0f686795767e26d2bcc5745037b04addcb84197",
+    "hotwords": [
+      "OpenAI"
+    ]
+  },
+  {
+    "id": "openai-a-empty",
+    "caseId": "openai-a",
+    "purpose": "measured",
+    "arm": "empty",
+    "audioPath": "benchmarks/corpora/user-modify-asr-v2/dev/openai-a.wav",
+    "audioSha256": "a1fd05cb11d34fc38ba37e72e0f686795767e26d2bcc5745037b04addcb84197",
+    "hotwords": []
+  },
+  {
+    "id": "tts-dev-12-eddy-empty",
+    "caseId": "tts-dev-12-eddy",
+    "purpose": "measured",
+    "arm": "empty",
+    "audioPath": "benchmarks/corpora/asr-v1/audio/tts-dev-12-eddy.wav",
+    "audioSha256": "0b9d404e574a0fb0022529ae64ed3f9fbeec6432beaa5fff88a555d9c324d402",
+    "hotwords": []
+  },
+  {
+    "id": "tts-dev-12-eddy-canonical",
+    "caseId": "tts-dev-12-eddy",
+    "purpose": "measured",
+    "arm": "canonical",
+    "audioPath": "benchmarks/corpora/asr-v1/audio/tts-dev-12-eddy.wav",
+    "audioSha256": "0b9d404e574a0fb0022529ae64ed3f9fbeec6432beaa5fff88a555d9c324d402",
+    "hotwords": [
+      "Kubernetes"
+    ]
+  },
+  {
+    "id": "tts-dev-22-flo-canonical",
+    "caseId": "tts-dev-22-flo",
+    "purpose": "measured",
+    "arm": "canonical",
+    "audioPath": "benchmarks/corpora/asr-v1/audio/tts-dev-22-flo.wav",
+    "audioSha256": "b7ba333c55e8e1b7b7c6a3adcb1de2e265ba3f27f55d51adae4cd3724a5f277c",
+    "hotwords": [
+      "TypeScript"
+    ]
+  },
+  {
+    "id": "tts-dev-22-flo-empty",
+    "caseId": "tts-dev-22-flo",
+    "purpose": "measured",
+    "arm": "empty",
+    "audioPath": "benchmarks/corpora/asr-v1/audio/tts-dev-22-flo.wav",
+    "audioSha256": "b7ba333c55e8e1b7b7c6a3adcb1de2e265ba3f27f55d51adae4cd3724a5f277c",
+    "hotwords": []
+  },
+  {
+    "id": "tts-dev-04-flo-empty",
+    "caseId": "tts-dev-04-flo",
+    "purpose": "measured",
+    "arm": "empty",
+    "audioPath": "benchmarks/corpora/asr-v1/audio/tts-dev-04-flo.wav",
+    "audioSha256": "dd80fe379c710751b6cab9705a13574de726091ef3465260422791e0497fd194",
+    "hotwords": []
+  },
+  {
+    "id": "tts-dev-04-flo-canonical",
+    "caseId": "tts-dev-04-flo",
+    "purpose": "measured",
+    "arm": "canonical",
+    "audioPath": "benchmarks/corpora/asr-v1/audio/tts-dev-04-flo.wav",
+    "audioSha256": "dd80fe379c710751b6cab9705a13574de726091ef3465260422791e0497fd194",
+    "hotwords": [
+      "API"
+    ]
+  },
+  {
+    "id": "ordinary-zh-canonical",
+    "caseId": "ordinary-zh",
+    "purpose": "measured",
+    "arm": "canonical",
+    "audioPath": "benchmarks/corpora/user-modify-asr-v2/dev/ordinary-zh.wav",
+    "audioSha256": "ff857d2028a9e9b8df9482f617e5af23f8dcec40d9cec8eb24c2ca8181a02a74",
+    "hotwords": [
+      "Arion",
+      "Kubernetes",
+      "OpenAI",
+      "Safari",
+      "SQL"
+    ]
+  },
+  {
+    "id": "ordinary-zh-empty",
+    "caseId": "ordinary-zh",
+    "purpose": "measured",
+    "arm": "empty",
+    "audioPath": "benchmarks/corpora/user-modify-asr-v2/dev/ordinary-zh.wav",
+    "audioSha256": "ff857d2028a9e9b8df9482f617e5af23f8dcec40d9cec8eb24c2ca8181a02a74",
+    "hotwords": []
+  },
+  {
+    "id": "ordinary-en-empty",
+    "caseId": "ordinary-en",
+    "purpose": "measured",
+    "arm": "empty",
+    "audioPath": "benchmarks/corpora/user-modify-asr-v2/dev/ordinary-en.wav",
+    "audioSha256": "ebc47292714395bcdc4c832f211acc5149ddcc8c58e4f06e0c4d220efff1e395",
+    "hotwords": []
+  },
+  {
+    "id": "ordinary-en-canonical",
+    "caseId": "ordinary-en",
+    "purpose": "measured",
+    "arm": "canonical",
+    "audioPath": "benchmarks/corpora/user-modify-asr-v2/dev/ordinary-en.wav",
+    "audioSha256": "ebc47292714395bcdc4c832f211acc5149ddcc8c58e4f06e0c4d220efff1e395",
+    "hotwords": [
+      "Arion",
+      "Kubernetes",
+      "OpenAI",
+      "Safari",
+      "SQL"
+    ]
+  },
+  {
+    "id": "sofa-a-canonical",
+    "caseId": "sofa-a",
+    "purpose": "measured",
+    "arm": "canonical",
+    "audioPath": "benchmarks/corpora/user-modify-asr-v2/dev/sofa-a.wav",
+    "audioSha256": "d9dd21e7b9c564261cd78d350d1e60fd05f72bab3a5fee0d7575b3bb65e32b9e",
+    "hotwords": [
+      "Arion",
+      "Kubernetes",
+      "OpenAI",
+      "Safari",
+      "SQL"
+    ]
+  },
+  {
+    "id": "sofa-a-empty",
+    "caseId": "sofa-a",
+    "purpose": "measured",
+    "arm": "empty",
+    "audioPath": "benchmarks/corpora/user-modify-asr-v2/dev/sofa-a.wav",
+    "audioSha256": "d9dd21e7b9c564261cd78d350d1e60fd05f72bab3a5fee0d7575b3bb65e32b9e",
+    "hotwords": []
+  },
+  {
+    "id": "sequel-a-empty",
+    "caseId": "sequel-a",
+    "purpose": "measured",
+    "arm": "empty",
+    "audioPath": "benchmarks/corpora/user-modify-asr-v2/dev/sequel-a.wav",
+    "audioSha256": "254207e67f3746b6906591f8dbfa2e212ef287c191972bb37a9282ab8d570a05",
+    "hotwords": []
+  },
+  {
+    "id": "sequel-a-canonical",
+    "caseId": "sequel-a",
+    "purpose": "measured",
+    "arm": "canonical",
+    "audioPath": "benchmarks/corpora/user-modify-asr-v2/dev/sequel-a.wav",
+    "audioSha256": "254207e67f3746b6906591f8dbfa2e212ef287c191972bb37a9282ab8d570a05",
+    "hotwords": [
+      "Arion",
+      "Kubernetes",
+      "OpenAI",
+      "Safari",
+      "SQL"
+    ]
+  },
+  {
+    "id": "aishell-BAC009S0766W0137-canonical",
+    "caseId": "aishell-BAC009S0766W0137",
+    "purpose": "measured",
+    "arm": "canonical",
+    "audioPath": "benchmarks/corpora/asr-v1/audio/aishell-BAC009S0766W0137.wav",
+    "audioSha256": "8bc76e3746211962d65b47cfff79c6f18f6750b2cf1bfaf611330798495d11eb",
+    "hotwords": [
+      "Arion",
+      "Kubernetes",
+      "OpenAI",
+      "Safari",
+      "SQL"
+    ]
+  },
+  {
+    "id": "aishell-BAC009S0766W0137-empty",
+    "caseId": "aishell-BAC009S0766W0137",
+    "purpose": "measured",
+    "arm": "empty",
+    "audioPath": "benchmarks/corpora/asr-v1/audio/aishell-BAC009S0766W0137.wav",
+    "audioSha256": "8bc76e3746211962d65b47cfff79c6f18f6750b2cf1bfaf611330798495d11eb",
+    "hotwords": []
+  },
+  {
+    "id": "libri-3081-166546-0006-empty",
+    "caseId": "libri-3081-166546-0006",
+    "purpose": "measured",
+    "arm": "empty",
+    "audioPath": "benchmarks/corpora/asr-v1/audio/libri-3081-166546-0006.wav",
+    "audioSha256": "7fbd2304dafd34123c6d8ea16b3d79f681edda85dbc8560519729d277b079b5c",
+    "hotwords": []
+  },
+  {
+    "id": "libri-3081-166546-0006-canonical",
+    "caseId": "libri-3081-166546-0006",
+    "purpose": "measured",
+    "arm": "canonical",
+    "audioPath": "benchmarks/corpora/asr-v1/audio/libri-3081-166546-0006.wav",
+    "audioSha256": "7fbd2304dafd34123c6d8ea16b3d79f681edda85dbc8560519729d277b079b5c",
+    "hotwords": [
+      "Arion",
+      "Kubernetes",
+      "OpenAI",
+      "Safari",
+      "SQL"
+    ]
+  },
+  {
+    "id": "nonspeech-dev-0-canonical",
+    "caseId": "nonspeech-dev-0",
+    "purpose": "measured",
+    "arm": "canonical",
+    "audioPath": "benchmarks/corpora/asr-v1/audio/nonspeech-dev-0.wav",
+    "audioSha256": "20eaebffe1816e0ffa6f7f854f5ef4ea80d5349faaf0ce1fec1b713e7fde58fa",
+    "hotwords": [
+      "Arion",
+      "Kubernetes",
+      "OpenAI",
+      "Safari",
+      "SQL"
+    ]
+  },
+  {
+    "id": "nonspeech-dev-0-empty",
+    "caseId": "nonspeech-dev-0",
+    "purpose": "measured",
+    "arm": "empty",
+    "audioPath": "benchmarks/corpora/asr-v1/audio/nonspeech-dev-0.wav",
+    "audioSha256": "20eaebffe1816e0ffa6f7f854f5ef4ea80d5349faaf0ce1fec1b713e7fde58fa",
+    "hotwords": []
+  },
+  {
+    "id": "arion-a-isolation-0",
+    "caseId": "arion-a",
+    "purpose": "state-isolation",
+    "arm": "canonical",
+    "audioPath": "benchmarks/corpora/user-modify-asr-v2/dev/arion-a.wav",
+    "audioSha256": "cba6cdecf5ece0eaa3918f8ce255ec28594d0c2f58ab588e4207d2fc7e5f81c1",
+    "hotwords": [
+      "Arion"
+    ]
+  },
+  {
+    "id": "arion-a-isolation-1",
+    "caseId": "arion-a",
+    "purpose": "state-isolation",
+    "arm": "empty",
+    "audioPath": "benchmarks/corpora/user-modify-asr-v2/dev/arion-a.wav",
+    "audioSha256": "cba6cdecf5ece0eaa3918f8ce255ec28594d0c2f58ab588e4207d2fc7e5f81c1",
+    "hotwords": []
+  },
+  {
+    "id": "arion-a-isolation-2",
+    "caseId": "arion-a",
+    "purpose": "state-isolation",
+    "arm": "canonical",
+    "audioPath": "benchmarks/corpora/user-modify-asr-v2/dev/arion-a.wav",
+    "audioSha256": "cba6cdecf5ece0eaa3918f8ce255ec28594d0c2f58ab588e4207d2fc7e5f81c1",
+    "hotwords": [
+      "Arion"
+    ]
+  },
+  {
+    "id": "arion-a-isolation-3",
+    "caseId": "arion-a",
+    "purpose": "state-isolation",
+    "arm": "empty",
+    "audioPath": "benchmarks/corpora/user-modify-asr-v2/dev/arion-a.wav",
+    "audioSha256": "cba6cdecf5ece0eaa3918f8ce255ec28594d0c2f58ab588e4207d2fc7e5f81c1",
+    "hotwords": []
+  }
+]

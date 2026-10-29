@@ -171,7 +171,14 @@ static NSArray<NSString *> *sharedMenuTexts(const ArionPinyinMenu *menu, NSUInte
                                       NSEventModifierFlagOption | NSEventModifierFlagCapsLock | NSEventModifierFlagFunction)) != 0;
         BOOL toggle = arion_shift_transition(&_shiftTap, shiftKey, shift, anonymous ? 0 : keyCode,
             otherModifiers, flags == previousFlags, event.timestamp);
-        if (toggle) [self toggleASCII];
+        if (toggle) {
+            if (!self.ascii && self.composing) {
+                uintptr_t session = self.session;
+                if (!arion_pinyin_commit_raw(self.engine.api, session)) { NSBeep(); return YES; }
+                if (![self refresh:nil] || !self.live || self.session != session) return YES;
+            }
+            [self toggleASCII];
+        }
         return toggle;
     }
     if (event.type != NSEventTypeKeyDown) return NO;

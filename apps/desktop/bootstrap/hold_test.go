@@ -112,9 +112,9 @@ func (p *multiHoldPlatform) StartHoldKeys(keys []application.HoldKey, sink func(
 	return p.failure
 }
 
-func TestTranslateKeyRegistersAlongsideHoldKeyAndResolvesConflicts(t *testing.T) {
+func TestTranslateKeyRegistersAlongsideHoldKeyAndRejectsConflicts(t *testing.T) {
 	p := &multiHoldPlatform{}
-	a := &App{platform: p, prefStore: settings.Store{Path: filepath.Join(t.TempDir(), "preferences.json")}}
+	a := &App{platform: p, core: &application.Coordinator{}, prefStore: settings.Store{Path: filepath.Join(t.TempDir(), "preferences.json")}}
 	a.prefs = application.DefaultPreferences(runtime.GOOS)
 	a.state.Preferences = a.prefs
 	a.startHoldKey()
@@ -123,17 +123,86 @@ func TestTranslateKeyRegistersAlongsideHoldKeyAndResolvesConflicts(t *testing.T)
 	if len(p.keys) != 2 || p.keys[0] != wantHold || p.keys[1] != wantTranslate {
 		t.Fatalf("expected both HoldKey and TranslateKey registered, got %v", p.keys)
 	}
-	// Choosing the current HoldKey as TranslateKey swaps HoldKey to the previous TranslateKey.
+	starts := p.starts
+	before := a.state.Preferences
 	(actions{a}).SetTranslateKey(wantHold)
-	if a.state.Preferences.TranslateKey != wantHold || a.state.Preferences.HoldKey != wantTranslate {
-		t.Fatalf("expected keys to swap, got hold=%q translate=%q", a.state.Preferences.HoldKey, a.state.Preferences.TranslateKey)
+	(actions{a}).SetHoldKey(wantTranslate)
+	if a.state.Preferences.HoldKey != before.HoldKey || a.state.Preferences.TranslateKey != before.TranslateKey {
+		t.Fatalf("conflicting selection changed assignments: %+v", a.state.Preferences)
 	}
-	// Choosing the current TranslateKey as HoldKey turns TranslateKey off.
-	(actions{a}).SetHoldKey(wantHold)
-	if a.state.Preferences.HoldKey != wantHold || a.state.Preferences.TranslateKey != application.HoldOff {
-		t.Fatalf("expected TranslateKey off on HoldKey conflict, got hold=%q translate=%q", a.state.Preferences.HoldKey, a.state.Preferences.TranslateKey)
+	if p.starts != starts || len(p.keys) != 2 || p.keys[0] != wantHold || p.keys[1] != wantTranslate {
+		t.Fatal("conflicting selection replaced the listener")
 	}
-	if len(p.keys) != 1 || p.keys[0] != wantHold {
-		t.Fatalf("expected only HoldKey registered when TranslateKey is off, got %v", p.keys)
+}
+
+func TestChangingShortcutCancelsPreparationBeforeListenerReplacement(t *testing.T) {
+	for _, translate := range []bool{false, true} {
+		a := readinessApp(t)
+		p := &multiHoldPlatform{}
+		a.platform = p
+		a.prefStore = settings.Store{Path: filepath.Join(t.TempDir(), "preferences.json")}
+		a.prefs = application.DefaultPreferences(runtime.GOOS)
+		a.state.Preferences = a.prefs
+		a.core.Start()
+		if a.core.Snapshot().State != domain.Preparing {
+			t.Fatal("not preparing")
+		}
+		// UI state has not received the preparing event yet. Cancellation must
+		// use the coordinator rather than a stale rendered snapshot.
+		if translate {
+			(actions{a}).SetTranslateKey("ctrl+f8")
+		} else {
+			(actions{a}).SetHoldKey("ctrl+space")
+		}
+		if a.core.Snapshot().Active {
+			t.Fatal("old shortcut session survived replacement")
+		}
+	}
+}
+
+func TestShortcutRecordingReplacesActivationAndRetiresCallbacks(t *testing.T) {
+	a := readinessApp(t)
+	p := &multiHoldPlatform{}
+	a.platform = p
+	a.state.Preferences = application.DefaultPreferences(runtime.GOOS)
+	a.core.Start()
+	(actions{a}).RecordShortcut("field")
+	if a.core.Snapshot().Active || len(p.keys) != 1 || p.keys[0] != holdkey.RecordKeys {
+		t.Fatal("activation not replaced with recording")
+	}
+	p.multiSink("ctrl+shift+k", holdkey.Recorded)
+	a.queue[0]()
+	a.queue = nil
+	if a.state.Hold.RecordedKey != "ctrl+shift+k" || a.state.Hold.RecordedSeq != 1 || a.core.Snapshot().Active {
+		t.Fatal("recording started dictation or lost the key")
+	}
+	previous := p.multiSink
+	(actions{a}).RecordShortcut("")
+	previous("f8", holdkey.Recorded)
+	a.queue[0]()
+	if a.state.Hold.RecordedKey != "" || a.state.Hold.Recording != "" || p.keys[0] != a.state.Preferences.HoldKey {
+		t.Fatal("stale capture survived restoration")
+	}
+}
+
+func TestShortcutListenerRetryPreservesAssignments(t *testing.T) {
+	a := readinessApp(t)
+	p := &multiHoldPlatform{failure: domain.Fail(domain.CodeDeviceUnavailable, "fixture listener failure")}
+	a.platform = p
+	a.prefs = application.DefaultPreferences(runtime.GOOS)
+	a.state.Preferences = a.prefs
+	a.startHoldKey()
+	if a.state.Hold.Active {
+		t.Fatal("failed listener reported success")
+	}
+	p.failure = nil
+	before := a.state.Preferences
+	(actions{a}).RetryShortcutListener()
+	if !a.state.Hold.Active || a.state.Hold.Failure != "" || p.starts != 2 {
+		t.Fatal("retry did not recover shared listening")
+	}
+	if a.state.Preferences.HoldKey != before.HoldKey || a.state.Preferences.TranslateKey != before.TranslateKey ||
+		a.state.Preferences.PreviousTranslateKey != before.PreviousTranslateKey || a.state.Preferences.TranslateLanguage != before.TranslateLanguage {
+		t.Fatal("retry changed shortcut preferences")
 	}
 }

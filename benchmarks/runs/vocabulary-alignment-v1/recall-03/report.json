@@ -1,0 +1,1036 @@
+{
+  "schema": "vocabulary-recall-evaluation-v1",
+  "execution": "Actual production Go deterministic correction/recall; no ASR, OCR or LLM inference",
+  "population": "Assistant-authored controlled synthetic acceptance fixtures; not held-out speech or model quality",
+  "timing": "100 warmed repetitions per case of Correct plus TermsForSources; index construction, compilation and process startup excluded; Go monotonic time.Now/time.Since; baseline runs before candidate",
+  "baseline": "git HEAD vocabulary.go with frozen historical application termsForFinal adapter; policy static Terms empty; raw From → To terms retained",
+  "candidateAcceptancePassed": true,
+  "metrics": {
+    "baseline": {
+      "cases": 16,
+      "exactCorrected": 16,
+      "exactTerms": 3,
+      "canonicalExactTerms": 15,
+      "expectedCanonicalTerms": 25,
+      "recalledExpectedCanonicalTerms": 24,
+      "unexpectedCanonicalTerms": 0,
+      "aliasExposingTermSlots": 32,
+      "duplicateCanonicalBudgetSlots": 8,
+      "returnedTermSlots": 32,
+      "maxTermSlots": 8,
+      "budgetViolations": 0,
+      "canonicalRecall": 0.96,
+      "latencyUs": {
+        "p50": 1.708,
+        "p95": 3.709,
+        "p99": 4.834
+      },
+      "largeVocabularyLatencyUs": {
+        "p50": 1.834,
+        "p95": 2.167,
+        "p99": 3.25
+      }
+    },
+    "candidate": {
+      "cases": 16,
+      "exactCorrected": 16,
+      "exactTerms": 16,
+      "canonicalExactTerms": 16,
+      "expectedCanonicalTerms": 25,
+      "recalledExpectedCanonicalTerms": 25,
+      "unexpectedCanonicalTerms": 0,
+      "aliasExposingTermSlots": 0,
+      "duplicateCanonicalBudgetSlots": 0,
+      "returnedTermSlots": 25,
+      "maxTermSlots": 8,
+      "budgetViolations": 0,
+      "canonicalRecall": 1,
+      "latencyUs": {
+        "p50": 3.959,
+        "p95": 8.084,
+        "p99": 10.5
+      },
+      "largeVocabularyLatencyUs": {
+        "p50": 4.125,
+        "p95": 4.916,
+        "p99": 6.709
+      }
+    }
+  },
+  "cases": {
+    "baseline": [
+      {
+        "id": "alias-latin",
+        "corrected": "Open Claude Code.",
+        "terms": [
+          "cloud code → Claude Code"
+        ],
+        "expected": {
+          "id": "alias-latin",
+          "corrected": "Open Claude Code.",
+          "terms": [
+            "Claude Code"
+          ]
+        },
+        "correctedExact": true,
+        "termsExact": false,
+        "uniqueCanonical": [
+          "Claude Code"
+        ],
+        "canonicalTermsExact": true,
+        "expectedCanonicalRecalled": 1,
+        "unexpectedCanonical": [],
+        "aliasExposingTermSlots": 1,
+        "duplicateCanonicalBudgetSlots": 0,
+        "latencyUs": {
+          "p50": 1.583,
+          "p95": 3.125,
+          "p99": 17.667
+        }
+      },
+      {
+        "id": "alias-second",
+        "corrected": "Open Claude Code.",
+        "terms": [
+          "cloud code → Claude Code"
+        ],
+        "expected": {
+          "id": "alias-second",
+          "corrected": "Open Claude Code.",
+          "terms": [
+            "Claude Code"
+          ]
+        },
+        "correctedExact": true,
+        "termsExact": false,
+        "uniqueCanonical": [
+          "Claude Code"
+        ],
+        "canonicalTermsExact": true,
+        "expectedCanonicalRecalled": 1,
+        "unexpectedCanonical": [],
+        "aliasExposingTermSlots": 1,
+        "duplicateCanonicalBudgetSlots": 0,
+        "latencyUs": {
+          "p50": 1.5,
+          "p95": 2.75,
+          "p99": 3.458
+        }
+      },
+      {
+        "id": "alias-cjk",
+        "corrected": "打开Claude Code。",
+        "terms": [
+          "cloud code → Claude Code"
+        ],
+        "expected": {
+          "id": "alias-cjk",
+          "corrected": "打开Claude Code。",
+          "terms": [
+            "Claude Code"
+          ]
+        },
+        "correctedExact": true,
+        "termsExact": false,
+        "uniqueCanonical": [
+          "Claude Code"
+        ],
+        "canonicalTermsExact": true,
+        "expectedCanonicalRecalled": 1,
+        "unexpectedCanonical": [],
+        "aliasExposingTermSlots": 1,
+        "duplicateCanonicalBudgetSlots": 0,
+        "latencyUs": {
+          "p50": 1.042,
+          "p95": 1.125,
+          "p99": 1.666
+        }
+      },
+      {
+        "id": "aliases-one-budget",
+        "corrected": "Claude Code Claude Code Claude Code Arion",
+        "terms": [
+          "cloud code → Claude Code",
+          "阿里昂 → Arion"
+        ],
+        "expected": {
+          "id": "aliases-one-budget",
+          "corrected": "Claude Code Claude Code Claude Code Arion",
+          "terms": [
+            "Claude Code",
+            "Arion"
+          ]
+        },
+        "correctedExact": true,
+        "termsExact": false,
+        "uniqueCanonical": [
+          "Claude Code",
+          "Arion"
+        ],
+        "canonicalTermsExact": true,
+        "expectedCanonicalRecalled": 2,
+        "unexpectedCanonical": [],
+        "aliasExposingTermSlots": 2,
+        "duplicateCanonicalBudgetSlots": 0,
+        "latencyUs": {
+          "p50": 3.041,
+          "p95": 4.583,
+          "p99": 4.625
+        }
+      },
+      {
+        "id": "canonical-already-correct",
+        "corrected": "Open Claude Code.",
+        "terms": [
+          "cloud code → Claude Code"
+        ],
+        "expected": {
+          "id": "canonical-already-correct",
+          "corrected": "Open Claude Code.",
+          "terms": [
+            "Claude Code"
+          ]
+        },
+        "correctedExact": true,
+        "termsExact": false,
+        "uniqueCanonical": [
+          "Claude Code"
+        ],
+        "canonicalTermsExact": true,
+        "expectedCanonicalRecalled": 1,
+        "unexpectedCanonical": [],
+        "aliasExposingTermSlots": 1,
+        "duplicateCanonicalBudgetSlots": 0,
+        "latencyUs": {
+          "p50": 1.625,
+          "p95": 1.958,
+          "p99": 2.875
+        }
+      },
+      {
+        "id": "case-insensitive",
+        "corrected": "Open Claude Code.",
+        "terms": [
+          "cloud code → Claude Code"
+        ],
+        "expected": {
+          "id": "case-insensitive",
+          "corrected": "Open Claude Code.",
+          "terms": [
+            "Claude Code"
+          ]
+        },
+        "correctedExact": true,
+        "termsExact": false,
+        "uniqueCanonical": [
+          "Claude Code"
+        ],
+        "canonicalTermsExact": true,
+        "expectedCanonicalRecalled": 1,
+        "unexpectedCanonical": [],
+        "aliasExposingTermSlots": 1,
+        "duplicateCanonicalBudgetSlots": 0,
+        "latencyUs": {
+          "p50": 1.584,
+          "p95": 1.917,
+          "p99": 2.959
+        }
+      },
+      {
+        "id": "latin-word-boundary",
+        "corrected": "cloud coder clod codes",
+        "terms": [],
+        "expected": {
+          "id": "latin-word-boundary",
+          "corrected": "cloud coder clod codes",
+          "terms": []
+        },
+        "correctedExact": true,
+        "termsExact": true,
+        "uniqueCanonical": [],
+        "canonicalTermsExact": true,
+        "expectedCanonicalRecalled": 0,
+        "unexpectedCanonical": [],
+        "aliasExposingTermSlots": 0,
+        "duplicateCanonicalBudgetSlots": 0,
+        "latencyUs": {
+          "p50": 2.042,
+          "p95": 2.459,
+          "p99": 3.459
+        }
+      },
+      {
+        "id": "unrelated",
+        "corrected": "Keep the original wording.",
+        "terms": [],
+        "expected": {
+          "id": "unrelated",
+          "corrected": "Keep the original wording.",
+          "terms": []
+        },
+        "correctedExact": true,
+        "termsExact": true,
+        "uniqueCanonical": [],
+        "canonicalTermsExact": true,
+        "expectedCanonicalRecalled": 0,
+        "unexpectedCanonical": [],
+        "aliasExposingTermSlots": 0,
+        "duplicateCanonicalBudgetSlots": 0,
+        "latencyUs": {
+          "p50": 2.291,
+          "p95": 2.792,
+          "p99": 3.708
+        }
+      },
+      {
+        "id": "previous-alias",
+        "corrected": "Check the result.",
+        "terms": [
+          "clod code → Claude Code"
+        ],
+        "expected": {
+          "id": "previous-alias",
+          "corrected": "Check the result.",
+          "terms": [
+            "Claude Code"
+          ]
+        },
+        "correctedExact": true,
+        "termsExact": false,
+        "uniqueCanonical": [
+          "Claude Code"
+        ],
+        "canonicalTermsExact": true,
+        "expectedCanonicalRecalled": 1,
+        "unexpectedCanonical": [],
+        "aliasExposingTermSlots": 1,
+        "duplicateCanonicalBudgetSlots": 0,
+        "latencyUs": {
+          "p50": 1.709,
+          "p95": 2.291,
+          "p99": 3.209
+        }
+      },
+      {
+        "id": "cross-source-dedup",
+        "corrected": "Open Claude Code.",
+        "terms": [
+          "cloud code → Claude Code",
+          "clod code → Claude Code",
+          "阿里昂 → Arion"
+        ],
+        "expected": {
+          "id": "cross-source-dedup",
+          "corrected": "Open Claude Code.",
+          "terms": [
+            "Claude Code",
+            "Arion"
+          ]
+        },
+        "correctedExact": true,
+        "termsExact": false,
+        "uniqueCanonical": [
+          "Claude Code",
+          "Arion"
+        ],
+        "canonicalTermsExact": true,
+        "expectedCanonicalRecalled": 2,
+        "unexpectedCanonical": [],
+        "aliasExposingTermSlots": 3,
+        "duplicateCanonicalBudgetSlots": 1,
+        "latencyUs": {
+          "p50": 1.709,
+          "p95": 2.167,
+          "p99": 3.25
+        }
+      },
+      {
+        "id": "longest-match",
+        "corrected": "Claude Code Cloud",
+        "terms": [
+          "cloud code → Claude Code",
+          "cloud → Cloud"
+        ],
+        "expected": {
+          "id": "longest-match",
+          "corrected": "Claude Code Cloud",
+          "terms": [
+            "Claude Code",
+            "Cloud"
+          ]
+        },
+        "correctedExact": true,
+        "termsExact": false,
+        "uniqueCanonical": [
+          "Claude Code",
+          "Cloud"
+        ],
+        "canonicalTermsExact": true,
+        "expectedCanonicalRecalled": 2,
+        "unexpectedCanonical": [],
+        "aliasExposingTermSlots": 2,
+        "duplicateCanonicalBudgetSlots": 0,
+        "latencyUs": {
+          "p50": 1.542,
+          "p95": 2.084,
+          "p99": 3.042
+        }
+      },
+      {
+        "id": "no-chain",
+        "corrected": "Beta",
+        "terms": [
+          "alpha → Beta"
+        ],
+        "expected": {
+          "id": "no-chain",
+          "corrected": "Beta",
+          "terms": [
+            "Beta"
+          ]
+        },
+        "correctedExact": true,
+        "termsExact": false,
+        "uniqueCanonical": [
+          "Beta"
+        ],
+        "canonicalTermsExact": true,
+        "expectedCanonicalRecalled": 1,
+        "unexpectedCanonical": [],
+        "aliasExposingTermSlots": 1,
+        "duplicateCanonicalBudgetSlots": 0,
+        "latencyUs": {
+          "p50": 0.583,
+          "p95": 0.667,
+          "p99": 0.958
+        }
+      },
+      {
+        "id": "unseen-alias",
+        "corrected": "Open claud cod.",
+        "terms": [],
+        "expected": {
+          "id": "unseen-alias",
+          "corrected": "Open claud cod.",
+          "terms": []
+        },
+        "correctedExact": true,
+        "termsExact": true,
+        "uniqueCanonical": [],
+        "canonicalTermsExact": true,
+        "expectedCanonicalRecalled": 0,
+        "unexpectedCanonical": [],
+        "aliasExposingTermSlots": 0,
+        "duplicateCanonicalBudgetSlots": 0,
+        "latencyUs": {
+          "p50": 1.459,
+          "p95": 1.583,
+          "p99": 3
+        }
+      },
+      {
+        "id": "bounded-current-first",
+        "corrected": "Brand0 Brand1 Brand2 Brand3 Brand4",
+        "terms": [
+          "alias0 → Brand0",
+          "alias1 → Brand1",
+          "alias2 → Brand2",
+          "alias3 → Brand3",
+          "alias4 → Brand4",
+          "alias5 → Brand5",
+          "alias6 → Brand6",
+          "alias7 → Brand7"
+        ],
+        "expected": {
+          "id": "bounded-current-first",
+          "corrected": "Brand0 Brand1 Brand2 Brand3 Brand4",
+          "terms": [
+            "Brand0",
+            "Brand1",
+            "Brand2",
+            "Brand3",
+            "Brand4",
+            "Brand5",
+            "Brand6",
+            "Brand7"
+          ]
+        },
+        "correctedExact": true,
+        "termsExact": false,
+        "uniqueCanonical": [
+          "Brand0",
+          "Brand1",
+          "Brand2",
+          "Brand3",
+          "Brand4",
+          "Brand5",
+          "Brand6",
+          "Brand7"
+        ],
+        "canonicalTermsExact": true,
+        "expectedCanonicalRecalled": 8,
+        "unexpectedCanonical": [],
+        "aliasExposingTermSlots": 8,
+        "duplicateCanonicalBudgetSlots": 0,
+        "latencyUs": {
+          "p50": 3.75,
+          "p95": 5.125,
+          "p99": 10.917
+        }
+      },
+      {
+        "id": "large-2000",
+        "corrected": "打开Claude Code，测试Arion。",
+        "terms": [
+          "cloud code → Claude Code",
+          "阿里昂 → Arion"
+        ],
+        "expected": {
+          "id": "large-2000",
+          "corrected": "打开Claude Code，测试Arion。",
+          "terms": [
+            "Claude Code",
+            "Arion"
+          ]
+        },
+        "correctedExact": true,
+        "termsExact": false,
+        "uniqueCanonical": [
+          "Claude Code",
+          "Arion"
+        ],
+        "canonicalTermsExact": true,
+        "expectedCanonicalRecalled": 2,
+        "unexpectedCanonical": [],
+        "aliasExposingTermSlots": 2,
+        "duplicateCanonicalBudgetSlots": 0,
+        "latencyUs": {
+          "p50": 1.834,
+          "p95": 2.167,
+          "p99": 3.25
+        }
+      },
+      {
+        "id": "previous-alias-budget",
+        "corrected": "Check the result.",
+        "terms": [
+          "heard0 → Claude Code",
+          "heard1 → Claude Code",
+          "heard2 → Claude Code",
+          "heard3 → Claude Code",
+          "heard4 → Claude Code",
+          "heard5 → Claude Code",
+          "heard6 → Claude Code",
+          "heard7 → Claude Code"
+        ],
+        "expected": {
+          "id": "previous-alias-budget",
+          "corrected": "Check the result.",
+          "terms": [
+            "Claude Code",
+            "Arion"
+          ]
+        },
+        "correctedExact": true,
+        "termsExact": false,
+        "uniqueCanonical": [
+          "Claude Code"
+        ],
+        "canonicalTermsExact": false,
+        "expectedCanonicalRecalled": 1,
+        "unexpectedCanonical": [],
+        "aliasExposingTermSlots": 8,
+        "duplicateCanonicalBudgetSlots": 7,
+        "latencyUs": {
+          "p50": 2.333,
+          "p95": 3.542,
+          "p99": 4
+        }
+      }
+    ],
+    "candidate": [
+      {
+        "id": "alias-latin",
+        "corrected": "Open Claude Code.",
+        "terms": [
+          "Claude Code"
+        ],
+        "expected": {
+          "id": "alias-latin",
+          "corrected": "Open Claude Code.",
+          "terms": [
+            "Claude Code"
+          ]
+        },
+        "correctedExact": true,
+        "termsExact": true,
+        "uniqueCanonical": [
+          "Claude Code"
+        ],
+        "canonicalTermsExact": true,
+        "expectedCanonicalRecalled": 1,
+        "unexpectedCanonical": [],
+        "aliasExposingTermSlots": 0,
+        "duplicateCanonicalBudgetSlots": 0,
+        "latencyUs": {
+          "p50": 4.042,
+          "p95": 7.417,
+          "p99": 8.541
+        }
+      },
+      {
+        "id": "alias-second",
+        "corrected": "Open Claude Code.",
+        "terms": [
+          "Claude Code"
+        ],
+        "expected": {
+          "id": "alias-second",
+          "corrected": "Open Claude Code.",
+          "terms": [
+            "Claude Code"
+          ]
+        },
+        "correctedExact": true,
+        "termsExact": true,
+        "uniqueCanonical": [
+          "Claude Code"
+        ],
+        "canonicalTermsExact": true,
+        "expectedCanonicalRecalled": 1,
+        "unexpectedCanonical": [],
+        "aliasExposingTermSlots": 0,
+        "duplicateCanonicalBudgetSlots": 0,
+        "latencyUs": {
+          "p50": 3.916,
+          "p95": 4.916,
+          "p99": 6.667
+        }
+      },
+      {
+        "id": "alias-cjk",
+        "corrected": "打开Claude Code。",
+        "terms": [
+          "Claude Code"
+        ],
+        "expected": {
+          "id": "alias-cjk",
+          "corrected": "打开Claude Code。",
+          "terms": [
+            "Claude Code"
+          ]
+        },
+        "correctedExact": true,
+        "termsExact": true,
+        "uniqueCanonical": [
+          "Claude Code"
+        ],
+        "canonicalTermsExact": true,
+        "expectedCanonicalRecalled": 1,
+        "unexpectedCanonical": [],
+        "aliasExposingTermSlots": 0,
+        "duplicateCanonicalBudgetSlots": 0,
+        "latencyUs": {
+          "p50": 2.75,
+          "p95": 3,
+          "p99": 5.75
+        }
+      },
+      {
+        "id": "aliases-one-budget",
+        "corrected": "Claude Code Claude Code Claude Code Arion",
+        "terms": [
+          "Claude Code",
+          "Arion"
+        ],
+        "expected": {
+          "id": "aliases-one-budget",
+          "corrected": "Claude Code Claude Code Claude Code Arion",
+          "terms": [
+            "Claude Code",
+            "Arion"
+          ]
+        },
+        "correctedExact": true,
+        "termsExact": true,
+        "uniqueCanonical": [
+          "Claude Code",
+          "Arion"
+        ],
+        "canonicalTermsExact": true,
+        "expectedCanonicalRecalled": 2,
+        "unexpectedCanonical": [],
+        "aliasExposingTermSlots": 0,
+        "duplicateCanonicalBudgetSlots": 0,
+        "latencyUs": {
+          "p50": 7.916,
+          "p95": 10.541,
+          "p99": 11.166
+        }
+      },
+      {
+        "id": "canonical-already-correct",
+        "corrected": "Open Claude Code.",
+        "terms": [
+          "Claude Code"
+        ],
+        "expected": {
+          "id": "canonical-already-correct",
+          "corrected": "Open Claude Code.",
+          "terms": [
+            "Claude Code"
+          ]
+        },
+        "correctedExact": true,
+        "termsExact": true,
+        "uniqueCanonical": [
+          "Claude Code"
+        ],
+        "canonicalTermsExact": true,
+        "expectedCanonicalRecalled": 1,
+        "unexpectedCanonical": [],
+        "aliasExposingTermSlots": 0,
+        "duplicateCanonicalBudgetSlots": 0,
+        "latencyUs": {
+          "p50": 4.125,
+          "p95": 4.917,
+          "p99": 6.834
+        }
+      },
+      {
+        "id": "case-insensitive",
+        "corrected": "Open Claude Code.",
+        "terms": [
+          "Claude Code"
+        ],
+        "expected": {
+          "id": "case-insensitive",
+          "corrected": "Open Claude Code.",
+          "terms": [
+            "Claude Code"
+          ]
+        },
+        "correctedExact": true,
+        "termsExact": true,
+        "uniqueCanonical": [
+          "Claude Code"
+        ],
+        "canonicalTermsExact": true,
+        "expectedCanonicalRecalled": 1,
+        "unexpectedCanonical": [],
+        "aliasExposingTermSlots": 0,
+        "duplicateCanonicalBudgetSlots": 0,
+        "latencyUs": {
+          "p50": 3.459,
+          "p95": 4.291,
+          "p99": 5.666
+        }
+      },
+      {
+        "id": "latin-word-boundary",
+        "corrected": "cloud coder clod codes",
+        "terms": [],
+        "expected": {
+          "id": "latin-word-boundary",
+          "corrected": "cloud coder clod codes",
+          "terms": []
+        },
+        "correctedExact": true,
+        "termsExact": true,
+        "uniqueCanonical": [],
+        "canonicalTermsExact": true,
+        "expectedCanonicalRecalled": 0,
+        "unexpectedCanonical": [],
+        "aliasExposingTermSlots": 0,
+        "duplicateCanonicalBudgetSlots": 0,
+        "latencyUs": {
+          "p50": 4.417,
+          "p95": 5.292,
+          "p99": 6.542
+        }
+      },
+      {
+        "id": "unrelated",
+        "corrected": "Keep the original wording.",
+        "terms": [],
+        "expected": {
+          "id": "unrelated",
+          "corrected": "Keep the original wording.",
+          "terms": []
+        },
+        "correctedExact": true,
+        "termsExact": true,
+        "uniqueCanonical": [],
+        "canonicalTermsExact": true,
+        "expectedCanonicalRecalled": 0,
+        "unexpectedCanonical": [],
+        "aliasExposingTermSlots": 0,
+        "duplicateCanonicalBudgetSlots": 0,
+        "latencyUs": {
+          "p50": 4.917,
+          "p95": 5.833,
+          "p99": 7.167
+        }
+      },
+      {
+        "id": "previous-alias",
+        "corrected": "Check the result.",
+        "terms": [
+          "Claude Code"
+        ],
+        "expected": {
+          "id": "previous-alias",
+          "corrected": "Check the result.",
+          "terms": [
+            "Claude Code"
+          ]
+        },
+        "correctedExact": true,
+        "termsExact": true,
+        "uniqueCanonical": [
+          "Claude Code"
+        ],
+        "canonicalTermsExact": true,
+        "expectedCanonicalRecalled": 1,
+        "unexpectedCanonical": [],
+        "aliasExposingTermSlots": 0,
+        "duplicateCanonicalBudgetSlots": 0,
+        "latencyUs": {
+          "p50": 3.625,
+          "p95": 4.208,
+          "p99": 5.958
+        }
+      },
+      {
+        "id": "cross-source-dedup",
+        "corrected": "Open Claude Code.",
+        "terms": [
+          "Claude Code",
+          "Arion"
+        ],
+        "expected": {
+          "id": "cross-source-dedup",
+          "corrected": "Open Claude Code.",
+          "terms": [
+            "Claude Code",
+            "Arion"
+          ]
+        },
+        "correctedExact": true,
+        "termsExact": true,
+        "uniqueCanonical": [
+          "Claude Code",
+          "Arion"
+        ],
+        "canonicalTermsExact": true,
+        "expectedCanonicalRecalled": 2,
+        "unexpectedCanonical": [],
+        "aliasExposingTermSlots": 0,
+        "duplicateCanonicalBudgetSlots": 0,
+        "latencyUs": {
+          "p50": 3.791,
+          "p95": 5.375,
+          "p99": 6
+        }
+      },
+      {
+        "id": "longest-match",
+        "corrected": "Claude Code Cloud",
+        "terms": [
+          "Claude Code",
+          "Cloud"
+        ],
+        "expected": {
+          "id": "longest-match",
+          "corrected": "Claude Code Cloud",
+          "terms": [
+            "Claude Code",
+            "Cloud"
+          ]
+        },
+        "correctedExact": true,
+        "termsExact": true,
+        "uniqueCanonical": [
+          "Claude Code",
+          "Cloud"
+        ],
+        "canonicalTermsExact": true,
+        "expectedCanonicalRecalled": 2,
+        "unexpectedCanonical": [],
+        "aliasExposingTermSlots": 0,
+        "duplicateCanonicalBudgetSlots": 0,
+        "latencyUs": {
+          "p50": 3.417,
+          "p95": 4.208,
+          "p99": 5.667
+        }
+      },
+      {
+        "id": "no-chain",
+        "corrected": "Beta",
+        "terms": [
+          "Beta"
+        ],
+        "expected": {
+          "id": "no-chain",
+          "corrected": "Beta",
+          "terms": [
+            "Beta"
+          ]
+        },
+        "correctedExact": true,
+        "termsExact": true,
+        "uniqueCanonical": [
+          "Beta"
+        ],
+        "canonicalTermsExact": true,
+        "expectedCanonicalRecalled": 1,
+        "unexpectedCanonical": [],
+        "aliasExposingTermSlots": 0,
+        "duplicateCanonicalBudgetSlots": 0,
+        "latencyUs": {
+          "p50": 1.292,
+          "p95": 1.459,
+          "p99": 3.584
+        }
+      },
+      {
+        "id": "unseen-alias",
+        "corrected": "Open claud cod.",
+        "terms": [],
+        "expected": {
+          "id": "unseen-alias",
+          "corrected": "Open claud cod.",
+          "terms": []
+        },
+        "correctedExact": true,
+        "termsExact": true,
+        "uniqueCanonical": [],
+        "canonicalTermsExact": true,
+        "expectedCanonicalRecalled": 0,
+        "unexpectedCanonical": [],
+        "aliasExposingTermSlots": 0,
+        "duplicateCanonicalBudgetSlots": 0,
+        "latencyUs": {
+          "p50": 3.125,
+          "p95": 3.791,
+          "p99": 5.5
+        }
+      },
+      {
+        "id": "bounded-current-first",
+        "corrected": "Brand0 Brand1 Brand2 Brand3 Brand4",
+        "terms": [
+          "Brand0",
+          "Brand1",
+          "Brand2",
+          "Brand3",
+          "Brand4",
+          "Brand5",
+          "Brand6",
+          "Brand7"
+        ],
+        "expected": {
+          "id": "bounded-current-first",
+          "corrected": "Brand0 Brand1 Brand2 Brand3 Brand4",
+          "terms": [
+            "Brand0",
+            "Brand1",
+            "Brand2",
+            "Brand3",
+            "Brand4",
+            "Brand5",
+            "Brand6",
+            "Brand7"
+          ]
+        },
+        "correctedExact": true,
+        "termsExact": true,
+        "uniqueCanonical": [
+          "Brand0",
+          "Brand1",
+          "Brand2",
+          "Brand3",
+          "Brand4",
+          "Brand5",
+          "Brand6",
+          "Brand7"
+        ],
+        "canonicalTermsExact": true,
+        "expectedCanonicalRecalled": 8,
+        "unexpectedCanonical": [],
+        "aliasExposingTermSlots": 0,
+        "duplicateCanonicalBudgetSlots": 0,
+        "latencyUs": {
+          "p50": 8.125,
+          "p95": 10.542,
+          "p99": 14.916
+        }
+      },
+      {
+        "id": "large-2000",
+        "corrected": "打开Claude Code，测试Arion。",
+        "terms": [
+          "Claude Code",
+          "Arion"
+        ],
+        "expected": {
+          "id": "large-2000",
+          "corrected": "打开Claude Code，测试Arion。",
+          "terms": [
+            "Claude Code",
+            "Arion"
+          ]
+        },
+        "correctedExact": true,
+        "termsExact": true,
+        "uniqueCanonical": [
+          "Claude Code",
+          "Arion"
+        ],
+        "canonicalTermsExact": true,
+        "expectedCanonicalRecalled": 2,
+        "unexpectedCanonical": [],
+        "aliasExposingTermSlots": 0,
+        "duplicateCanonicalBudgetSlots": 0,
+        "latencyUs": {
+          "p50": 4.125,
+          "p95": 4.916,
+          "p99": 6.709
+        }
+      },
+      {
+        "id": "previous-alias-budget",
+        "corrected": "Check the result.",
+        "terms": [
+          "Claude Code",
+          "Arion"
+        ],
+        "expected": {
+          "id": "previous-alias-budget",
+          "corrected": "Check the result.",
+          "terms": [
+            "Claude Code",
+            "Arion"
+          ]
+        },
+        "correctedExact": true,
+        "termsExact": true,
+        "uniqueCanonical": [
+          "Claude Code",
+          "Arion"
+        ],
+        "canonicalTermsExact": true,
+        "expectedCanonicalRecalled": 2,
+        "unexpectedCanonical": [],
+        "aliasExposingTermSlots": 0,
+        "duplicateCanonicalBudgetSlots": 0,
+        "latencyUs": {
+          "p50": 3.959,
+          "p95": 5.75,
+          "p99": 6.5
+        }
+      }
+    ]
+  }
+}

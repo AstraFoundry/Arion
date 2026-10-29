@@ -68,7 +68,7 @@ try {
     const catalog = JSON.parse(readFileSync(path.join(desktop, 'ui/shared/copy/locales', `${locale}.json`), 'utf8'));
     const strings = ['KeyboardModeChinese', 'KeyboardModeEnglish', 'KeyboardSwitchChinese', 'KeyboardSwitchEnglish', 'KeyboardUnavailable', 'KeyboardResetLearning', 'KeyboardCopyPending', 'KeyboardOpenApp',
       'KeyboardUseFullWidth', 'KeyboardUseHalfWidth', 'KeyboardUseEnglishPunctuation', 'KeyboardUseChinesePunctuation', 'KeyboardModeFullWidth', 'KeyboardModeHalfWidth', 'KeyboardModeEnglishPunctuation', 'KeyboardModeChinesePunctuation',
-      'KeyboardVoiceInput', 'KeyboardVoiceInputKey', 'HoldKeyFn', 'HoldKeyRightOption', 'HoldKeyRightCommand'].map(key => {
+      'KeyboardVoiceInput', 'KeyboardVoiceInputKey', ...Object.keys(catalog).filter(key => key.startsWith('HoldKey'))].map(key => {
       if (!catalog[key]) throw new Error(`Missing keyboard copy: ${locale}/${key}`);
       return `${JSON.stringify(key)} = ${JSON.stringify(catalog[key])};`;
     });

@@ -42,7 +42,7 @@ func (a *gatewayAudio) push() {
 
 type gatewayRecognition struct{}
 
-func (gatewayRecognition) NewRecognizer(context.Context, contracts.Identity) (ports.Recognizer, error) {
+func (gatewayRecognition) NewRecognizer(context.Context, ports.RecognitionRequest) (ports.Recognizer, error) {
 	return gatewayRecognition{}, nil
 }
 func (gatewayRecognition) Accept(context.Context, contracts.Frame) error { return nil }

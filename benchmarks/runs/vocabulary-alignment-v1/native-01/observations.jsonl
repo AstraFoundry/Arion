@@ -1,0 +1,2 @@
+{"cases":"/Users/steven/code/Arion/benchmarks/runs/vocabulary-alignment-v1/native-01/cases.json","config":{"ModelDir":"/Users/steven/code/Arion/.workspace/rewrite-small-models-v1","Threads":4,"MaxLength":4096,"MaxNewTokens":256},"formatOnly":false,"kind":"start","runtime":"/Users/steven/code/Arion/.workspace/rewrite-small-models-v1/runtime/llama-b11734"}
+{"error":"GGUF runtime exited during load","kind":"load-error"}

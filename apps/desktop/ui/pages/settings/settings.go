@@ -66,9 +66,11 @@ const (
 
 // Page keeps the window's own state.
 type Page struct {
-	Section    string
-	monitoring bool
-	draft      vocabulary.Draft
+	holdPicker      holdkey.PickerState
+	translatePicker holdkey.PickerState
+	Section         string
+	monitoring      bool
+	draft           vocabulary.Draft
 	// model is the page shown under Model; cloud is where the cloud
 	// model's pages are.
 	model    modelPage
@@ -98,6 +100,10 @@ func (p *Page) Render(c *ui.Context, store runtime.Store) {
 		signin.Check(store)
 	}
 	if p.Section != p.shown {
+		if p.shown == Dictation {
+			p.holdPicker.Close(store)
+			p.translatePicker.Close(store)
+		}
 		if p.shown == Keyboard {
 			store.Actions.CancelInputMethodSetup()
 		}
@@ -139,7 +145,7 @@ func (p *Page) Render(c *ui.Context, store runtime.Store) {
 					key += "/" + string(p.model) + "/" + p.cloud.Provider + "/" + string(p.about)
 				}
 				content := ui.Column(c.Key(key)).Gap(theme.GapGroup).Padding(8, theme.Gutter, theme.Gutter, theme.Gutter).
-					Transition(ui.ElementTransition{Animation: &theme.Settle, Enter: &ui.Motion{Y: 8}})
+					Transition(ui.ElementTransition{Animation: &theme.Settle, Position: true, Enter: &ui.Motion{Y: 8}})
 				content.Children(func() {
 					p.section(c, store, tokens)
 				})
@@ -168,6 +174,8 @@ func (p *Page) syncMonitor(store runtime.Store) {
 
 // Close releases resources the page holds.
 func (p *Page) Close(store runtime.Store) {
+	p.holdPicker.Close(store)
+	p.translatePicker.Close(store)
 	if p.Section == Keyboard {
 		store.Actions.CancelInputMethodSetup()
 	}
@@ -223,23 +231,18 @@ func (p *Page) section(c *ui.Context, store runtime.Store, tokens theme.Tokens) 
 			})
 		})
 	case Dictation:
-		kit.Card(c, tokens).Children(func() {
-			kit.TipRow(c, tokens, messages.Text(copy.HoldKeyLabel), messages.Text(copy.HoldKeyDetail), func() {
-				holdkey.Picker(c, store)
-			})
-			if holdkey.HasNotes(store) {
-				ui.Column(c).Padding(0, 16, 12, 16).Children(func() { holdkey.Notes(c, store, tokens) })
-			}
+		holdkey.ListenerStatus(c, store, tokens)
+		kit.Card(c.Key("dictation-shortcut"), tokens).Children(func() {
+			holdkey.Setting(c, store, &p.holdPicker)
 		})
-		kit.Group(c, tokens, messages.Text(copy.TranslateGroup), func() {
-			kit.Card(c, tokens).Children(func() {
-				kit.TipRow(c, tokens, messages.Text(copy.TranslateKeyLabel), messages.Text(copy.TranslateKeyDetail), func() {
-					holdkey.TranslatePicker(c, store)
-				})
+
+		kit.Card(c.Key("translation-settings"), tokens).Children(func() {
+			ui.Column(c).Padding(12, 16).Children(func() { holdkey.TranslationToggle(c, store, &p.translatePicker) })
+			kit.Disclosure(c.Key("translation-details"), holdkey.TranslationEnabled(store), func() {
 				kit.Divider(c, tokens)
-				kit.Row(c, tokens, messages.Text(copy.TranslateLanguageLabel), "", func() {
-					holdkey.TranslateLanguagePicker(c, store)
-				})
+				holdkey.TranslateSetting(c, store, &p.translatePicker)
+				kit.Divider(c, tokens)
+				kit.Row(c, tokens, messages.Text(copy.TranslateLanguageLabel), "", func() { holdkey.TranslateLanguagePicker(c, store) })
 			})
 		})
 	case Keyboard:

@@ -73,6 +73,8 @@ func (a *App) recalled(fired []domain.Replacement) {
 	if store := a.memoryStore(); store != nil {
 		if err := store.Recall(fired, time.Now()); err != nil {
 			a.record("vocabulary_recall", err)
+		} else {
+			a.post(func() { a.loadVocabulary(false) })
 		}
 	}
 }

@@ -16,8 +16,7 @@ func (a *App) startHoldKey() {
 	a.holdGeneration++
 	generation := a.holdGeneration
 	a.platform.StopHoldKey()
-	a.hold.Reset()
-	a.holdKey = ""
+	a.resetHoldGesture()
 	a.state.Hold.Active, a.state.Hold.Failure, a.state.Hold.Holding = false, "", false
 	key := a.state.Preferences.HoldKey
 	if key == "" {
@@ -27,6 +26,9 @@ func (a *App) startHoldKey() {
 	keys := []application.HoldKey{key}
 	if t := a.state.Preferences.TranslateKey; t != "" && t != application.HoldOff && t != key {
 		keys = append(keys, t)
+	}
+	if a.state.Hold.Recording != "" {
+		keys = []application.HoldKey{holdkey.RecordKeys}
 	}
 	err := a.platform.StartHoldKeys(keys, func(k application.HoldKey, e holdkey.Event) {
 		now := time.Now()
@@ -62,6 +64,27 @@ func (a *App) holdSession() application.HoldSession {
 }
 
 func (a *App) onHoldKeyEvent(key application.HoldKey, e holdkey.Event, at time.Time) {
+	if a.state.Hold.Recording != "" {
+		if e == holdkey.Recorded || e == holdkey.RecordInvalid || e == holdkey.RecordCancelled {
+			a.state.Hold.RecordedSeq++
+			a.state.Hold.RecordedKey = key
+			a.state.Hold.RecordInvalid = e == holdkey.RecordInvalid
+			a.state.Hold.RecordCancelled = e == holdkey.RecordCancelled
+			a.invalidate()
+		}
+		return
+	}
+	if e == holdkey.Pending {
+		a.deferHold(key, at)
+		return
+	}
+	if pending := a.holdPending; pending != nil {
+		a.clearDeferredHold()
+		if e == holdkey.Up && key == pending.key {
+			// A quick standalone tap starts on release, never on its prefix.
+			a.onHoldKeyEvent(key, holdkey.Down, pending.at)
+		}
+	}
 	if a.testingHold {
 		if e == holdkey.Down {
 			if key == "" {
@@ -74,6 +97,15 @@ func (a *App) onHoldKeyEvent(key application.HoldKey, e holdkey.Event, at time.T
 	}
 	if e == holdkey.Up && a.holdKey != "" && key != "" && key != a.holdKey {
 		return
+	}
+	if e == holdkey.Down && a.holdKey != "" && key != a.holdKey {
+		// A chord entered after the solo hold threshold takes over without
+		// committing the provisional single-key session.
+		if a.hold.Other() == application.HoldCancel {
+			a.core.Cancel()
+		}
+		a.hold.Reset()
+		a.state.Hold.Holding = false
 	}
 	var action application.HoldAction
 	switch e {
@@ -130,7 +162,7 @@ func (a *App) refreshHoldConsent(previous arion.Consent) {
 	if a.state.Permissions.InputMonitoring != arion.ConsentGranted && a.state.Hold.Active {
 		a.holdGeneration++
 		a.platform.StopHoldKey()
-		a.hold.Reset()
+		a.resetHoldGesture()
 		a.state.Hold.Active, a.state.Hold.Holding = false, false
 		a.state.Hold.Failure = domain.CodePermissionDenied
 		a.core.Cancel()

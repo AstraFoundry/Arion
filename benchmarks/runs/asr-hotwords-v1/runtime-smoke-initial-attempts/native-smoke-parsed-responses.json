@@ -1,0 +1,26 @@
+[
+  {
+    "capabilities": [
+      "prompt"
+    ],
+    "protocol": 3,
+    "version": "arion-mlx-2",
+    "type": "ready"
+  },
+  {
+    "id": "contextual",
+    "type": "end",
+    "stop": "complete",
+    "text": "部署前先做回归测试，不通过就不要发布。"
+  },
+  {
+    "id": "empty",
+    "type": "end",
+    "stop": "complete",
+    "text": "部署前先做回归测试，不通过就不要发布。"
+  },
+  {
+    "id": "overflow",
+    "type": "error"
+  }
+]

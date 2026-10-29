@@ -91,11 +91,13 @@ type Tokens struct {
 	Subtle     ui.Color // coss bg-muted: quiet fills such as keycaps
 	Faint      ui.Color
 
-	Accent     ui.Color // the yellow fill of primary actions and marks
-	AccentText ui.Color // ink on the accent
-	AccentSoft ui.Color // hover and selection wash
-	AccentInk  ui.Color // the accent as text or a line on a surface
-	OnFill     ui.Color // marks on saturated semantic fills (success, live)
+	Accent        ui.Color // the yellow fill of primary actions and marks
+	AccentText    ui.Color // ink on the accent
+	AccentSoft    ui.Color // hover and selection wash
+	AccentInk     ui.Color // the accent as text or a line on a surface
+	RecordingInk  ui.Color // focused shortcut capture
+	RecordingSoft ui.Color
+	OnFill        ui.Color // marks on saturated semantic fills (success, live)
 
 	Live     ui.Color // an open microphone
 	LiveSoft ui.Color
@@ -119,32 +121,34 @@ type Tokens struct {
 // Resolve returns the tokens for an appearance.
 func Resolve(dark bool) Tokens {
 	t := Tokens{
-		Dark:        false,
-		Canvas:      ink50,
-		Card:        white,
-		CardBorder:  ink200,
-		Hairline:    ink100,
-		Text:        ink900,
-		Muted:       ink500,
-		Subtle:      ink100,
-		Faint:       ink400,
-		Accent:      yellow500,
-		AccentText:  ink900,
-		AccentSoft:  yellow100,
-		AccentInk:   yellow700,
-		OnFill:      white,
-		Live:        danger500,
-		LiveSoft:    danger500.Alpha(0.14),
-		Success:     success500,
-		Warning:     warning500,
-		Danger:      danger500,
-		Shade:       ink900,
-		Highlight:   white.Alpha(0.16),
-		Scrim:       ink900,
-		PillSurface: substrate.Alpha(0.94),
-		PillText:    ink50,
-		PillMuted:   ink50.Alpha(0.62),
-		PillBorder:  substrateLine,
+		Dark:          false,
+		Canvas:        ink50,
+		Card:          white,
+		CardBorder:    ink200,
+		Hairline:      ink100,
+		Text:          ink900,
+		Muted:         ink500,
+		Subtle:        ink100,
+		Faint:         ink400,
+		Accent:        yellow500,
+		AccentText:    ink900,
+		AccentSoft:    yellow100,
+		AccentInk:     yellow700,
+		RecordingInk:  ui.Hex("#0866ff"),
+		RecordingSoft: ui.Hex("#f1f5ff"),
+		OnFill:        white,
+		Live:          danger500,
+		LiveSoft:      danger500.Alpha(0.14),
+		Success:       success500,
+		Warning:       warning500,
+		Danger:        danger500,
+		Shade:         ink900,
+		Highlight:     white.Alpha(0.16),
+		Scrim:         ink900,
+		PillSurface:   substrate.Alpha(0.94),
+		PillText:      ink50,
+		PillMuted:     ink50.Alpha(0.62),
+		PillBorder:    substrateLine,
 	}
 	if dark {
 		t.Dark = true
@@ -158,6 +162,8 @@ func Resolve(dark bool) Tokens {
 		t.Faint = ink400
 		t.AccentSoft = yellow500.Alpha(0.14)
 		t.AccentInk = yellow400
+		t.RecordingInk = ui.Hex("#8bb5ff")
+		t.RecordingSoft = ui.Hex("#142441")
 		t.Live = danger400
 		t.LiveSoft = danger400.Alpha(0.16)
 		t.Success = success400

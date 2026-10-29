@@ -2,7 +2,6 @@ package app
 
 import (
 	"bytes"
-	"errors"
 	"fmt"
 	"image/png"
 	"os"
@@ -31,8 +30,9 @@ import (
 
 // recorder implements runtime.Actions for view tests.
 type recorder struct {
-	calls []string
-	state *runtime.State
+	calls      []string
+	state      *runtime.State
+	vocabError error
 }
 
 func (r *recorder) call(name string)           { r.calls = append(r.calls, name) }
@@ -44,6 +44,7 @@ func (r *recorder) RequestAccessibility()      { r.call("request-ax") }
 func (r *recorder) OpenMicrophoneSettings()    { r.call("open-mic") }
 func (r *recorder) OpenAccessibilitySettings() { r.call("open-ax") }
 func (r *recorder) RetryModel()                { r.call("retry") }
+func (r *recorder) RetryShortcutListener()     { r.call("retry-shortcuts") }
 func (r *recorder) RetryPolish()               { r.call("retry-polish") }
 func (r *recorder) DownloadPolish()            { r.call("download-polish") }
 func (r *recorder) UseBundle(id string)        { r.call("use:" + id) }
@@ -70,24 +71,32 @@ func (r *recorder) ListCloudModels() { r.call("cloud-models") }
 func (r *recorder) ConnectCloudKey(provider, key string) {
 	r.call("cloud-key:" + provider + ":" + key)
 }
-func (r *recorder) Quit()                       { r.call("quit") }
-func (r *recorder) TestHoldKey(testing bool)    { r.call("test-hold") }
-func (r *recorder) RemoveReplacement(id string) { r.call("remove:" + id) }
-func (r *recorder) UndoLearned(id string)       { r.call("undo:" + id) }
-func (r *recorder) RequestInputMonitoring()     { r.call("request-monitoring") }
-func (r *recorder) CloseGuide()                 { r.call("close-guide") }
-func (r *recorder) CloseTrayHint()              { r.call("close-tray-hint") }
-func (r *recorder) CheckForUpdates()            { r.call("check-update") }
-func (r *recorder) InstallUpdate()              { r.call("install-update") }
-func (r *recorder) RestartToUpdate()            { r.call("restart-update") }
-func (r *recorder) CancelUpdateRestart()        { r.call("cancel-update-restart") }
-func (r *recorder) LaterUpdate()                { r.call("later-update") }
-func (r *recorder) DismissUpdateReminder()      { r.call("dismiss-update-reminder") }
+func (r *recorder) Quit()                    { r.call("quit") }
+func (r *recorder) TestHoldKey(testing bool) { r.call("test-hold") }
+func (r *recorder) RemoveReplacement(id string) {
+	r.call("remove:" + id)
+	r.state.Vocabulary = slices.DeleteFunc(r.state.Vocabulary, func(entry runtime.Replacement) bool { return entry.ID == id })
+}
+func (r *recorder) UndoLearned(id string)   { r.call("undo:" + id) }
+func (r *recorder) RequestInputMonitoring() { r.call("request-monitoring") }
+func (r *recorder) CloseGuide()             { r.call("close-guide") }
+func (r *recorder) CloseTrayHint()          { r.call("close-tray-hint") }
+func (r *recorder) CheckForUpdates()        { r.call("check-update") }
+func (r *recorder) InstallUpdate()          { r.call("install-update") }
+func (r *recorder) RestartToUpdate()        { r.call("restart-update") }
+func (r *recorder) CancelUpdateRestart()    { r.call("cancel-update-restart") }
+func (r *recorder) LaterUpdate()            { r.call("later-update") }
+func (r *recorder) DismissUpdateReminder()  { r.call("dismiss-update-reminder") }
 
 func (r *recorder) OpenUpdate() {
 	r.call("open-update")
 	r.state.Focus = runtime.SettingsFocus{Section: settings.About, Seq: r.state.Focus.Seq + 1}
 }
+func (r *recorder) RecordShortcut(owner string) {
+	r.call("record:" + owner)
+	r.state.Hold.Recording = owner
+}
+
 func (r *recorder) SetHoldKey(key runtime.HoldKey) {
 	r.call("hold:" + string(key))
 	r.state.Preferences.ChooseHoldKey(key)
@@ -120,11 +129,26 @@ func (r *recorder) UpdatePreferences(change func(*runtime.Preferences)) {
 	r.call("prefs")
 }
 func (r *recorder) AddReplacement(from, to string) error {
-	if from == "" || to == "" {
-		return errors.New("invalid")
+	return r.AddReplacementVariants([]string{from}, to)
+}
+
+func (r *recorder) AddReplacementVariants(froms []string, to string) error {
+	if r.vocabError != nil {
+		return r.vocabError
 	}
-	r.state.Vocabulary = append(r.state.Vocabulary, runtime.Replacement{ID: from, From: from, To: to})
+	for _, from := range froms {
+		r.state.Vocabulary = append(r.state.Vocabulary, runtime.Replacement{ID: from, From: from, To: to})
+	}
 	r.call("add")
+	return nil
+}
+
+func (r *recorder) AddHotword(text string) error {
+	if r.vocabError != nil {
+		return r.vocabError
+	}
+	r.state.Vocabulary = append(r.state.Vocabulary, runtime.Replacement{ID: text, To: text, Hotword: true})
+	r.call("add-hotword")
 	return nil
 }
 
@@ -972,21 +996,21 @@ func TestChineseSettingsAndTransientErrors(t *testing.T) {
 		t.Fatal(err)
 	}
 	settle(tt)
-	if !hasText(tt, "请填写两个输入框") {
+	if !hasText(tt, copy.For(copy.SimplifiedChinese).Text(copy.VocabInvalid)) {
 		t.Fatalf("missing localized validation: %q", tt.Texts())
 	}
 	state.Preferences.UILanguage = runtime.LanguageEnglish
 	settle(tt)
-	if !hasText(tt, "Both fields are needed") || hasText(tt, "请填写两个输入框") {
+	if !hasText(tt, copy.For(copy.English).Text(copy.VocabInvalid)) || hasText(tt, copy.For(copy.SimplifiedChinese).Text(copy.VocabInvalid)) {
 		t.Fatalf("stale validation after switch: %q", tt.Texts())
 	}
 
 	// A draft entered in English survives the language change and is saved verbatim.
-	if err := tt.Click("Heard as"); err != nil {
+	if err := tt.Click(copy.For(copy.English).Text(copy.VocabFromLabel)); err != nil {
 		t.Fatal(err)
 	}
 	tt.Type("阿里昂 {value}")
-	if err := tt.Click("Write as"); err != nil {
+	if err := tt.Click(copy.For(copy.English).Text(copy.VocabToLabel)); err != nil {
 		t.Fatal(err)
 	}
 	tt.Type("Arion {value}")
@@ -1051,14 +1075,13 @@ func TestHoldKeySettingsAndPill(t *testing.T) {
 		t.Fatalf("hold row missing: %q", tt.Texts())
 	}
 	keys := runtime.HoldKeysFor(platform.GOOS)
-	choice := keys[len(keys)-1]
-	if err := tt.Click(holdname.Name(en, state.Preferences.HoldKey)); err != nil {
+	choice := keys[0]
+	if err := tt.Click(en.Text(copy.HoldKeyEdit)); err != nil {
 		t.Fatal(err)
 	}
 	settle(tt)
-	if err := tt.Click(holdname.Name(en, choice)); err != nil {
-		t.Fatal(err)
-	}
+	state.Hold.RecordedKey = choice
+	state.Hold.RecordedSeq++
 	settle(tt)
 	if !actions.called("hold:"+string(choice)) || state.Preferences.HoldKey != choice {
 		t.Fatalf("hold key not chosen: %v", actions.calls)
@@ -1105,24 +1128,35 @@ func TestTranslationSettingsAndPill(t *testing.T) {
 	page.Section = settings.Dictation
 	tt := ui.NewTester(func(c *ui.Context) { page.Render(c, store) }, SettingsWidth, SettingsHeight)
 	settle(tt)
+	if hasText(tt, en.Text(copy.TranslateKeyLabel)) || hasText(tt, en.Text(copy.TranslateLanguageLabel)) {
+		t.Fatal("disabled translation retained settings")
+	}
+	if err := tt.Click(en.Text(copy.TranslateEnabled)); err != nil {
+		t.Fatal(err)
+	}
+	settle(tt)
 	for _, key := range []copy.Key{copy.TranslateGroup, copy.TranslateKeyLabel, copy.TranslateLanguageLabel, copy.TranslateEnglish} {
 		if !hasText(tt, en.Text(key)) {
-			t.Fatalf("missing translation control %s: %q", key, tt.Texts())
+			t.Fatalf("missing translation control %s", key)
 		}
 	}
-	// Select a translation key.
 	tKey := runtime.DefaultTranslateKey(platform.GOOS)
-	if err := tt.Click(en.Text(copy.HoldKeyOff)); err != nil {
-		t.Fatal(err)
-	}
-	settle(tt)
-	if err := tt.Click(holdname.Name(en, tKey)); err != nil {
-		t.Fatal(err)
-	}
-	settle(tt)
 	if !actions.called("translate-hold:"+string(tKey)) || state.Preferences.TranslateKey != tKey {
-		t.Fatalf("translation key not chosen: %v (got %q)", actions.calls, state.Preferences.TranslateKey)
+		t.Fatal("translation not enabled")
 	}
+	// Record a replacement using the same native capture projection as dictation.
+	if err := tt.Click(en.Text(copy.TranslateKeyEdit)); err != nil {
+		t.Fatal(err)
+	}
+	settle(tt)
+	tKey = "shift+f8"
+	state.Hold.RecordedKey = tKey
+	state.Hold.RecordedSeq++
+	settle(tt)
+	if state.Preferences.TranslateKey != tKey {
+		t.Fatal("translation key not recorded")
+	}
+
 	// Select Simplified Chinese as the translation target language.
 	if err := tt.Click(en.Text(copy.TranslateEnglish)); err != nil {
 		t.Fatal(err)

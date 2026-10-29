@@ -46,6 +46,8 @@ func TestSharedStagesIsolateContextAndPreserveEarlierSource(t *testing.T) {
 	}
 	request := engine.Request{Scene: "prompt", Text: "检查 write value。", PreviousText: "之前 writeValue。",
 		Terms: []string{"writeValue"}, Context: domain.RewriteContext{Before: "CURSOR_BEFORE", After: "CURSOR_AFTER", Screen: "writeValue SCREEN_CANARY", History: []string{"HISTORY_CANARY"}}}
+	vocabulary := domain.NewVocabulary([]domain.Replacement{{From: "wrongValue", To: "writeValue"}, {From: "writeValley", To: "writeValue"}})
+	request.Terms = vocabulary.TermsForSources(domain.MaxRecallTerms, request.Text, request.PreviousText)
 	calls := 0
 	result, err := pipeline.Run(context.Background(), request, func(_ context.Context, chat prompt.ChatRequest, prefill bool) (engine.Result, error) {
 		calls++

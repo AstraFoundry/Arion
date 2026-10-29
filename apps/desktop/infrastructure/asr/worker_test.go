@@ -12,9 +12,14 @@ import (
 	"time"
 
 	"arion.local/core/contracts"
+	"arion.local/core/domain/ports"
 )
 
 func TestMain(m *testing.M) {
+	if os.Getenv("ARION_ASR_HOTWORDS_WORKER") != "" {
+		hotwordProtocolWorker()
+		os.Exit(0)
+	}
 	if os.Getenv("ARION_ASR_LIFECYCLE_WORKER") == "1" {
 		lifecycleWorker()
 		os.Exit(0)
@@ -58,7 +63,7 @@ func TestNativeChunkedTailAndIdentity(t *testing.T) {
 	}
 	defer stream.Close()
 	id := contracts.Identity{SessionID: "test", Generation: 2}
-	r, err := stream.NewRecognizer(ctx, id)
+	r, err := stream.NewRecognizer(ctx, ports.RecognitionRequest{Identity: id})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -97,7 +102,7 @@ func TestNativeStableChunksPreserveAllAudio(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer stream.Close()
-	r, err := stream.NewRecognizer(ctx, contracts.Identity{SessionID: "chunks"})
+	r, err := stream.NewRecognizer(ctx, ports.RecognitionRequest{Identity: contracts.Identity{SessionID: "chunks"}})
 	if err != nil {
 		t.Fatal(err)
 	}
