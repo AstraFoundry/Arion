@@ -38,10 +38,23 @@ $references = @([System.Windows.Automation.AutomationElement].Assembly.Location,
 Add-Type -ReferencedAssemblies $references -TypeDefinition @'
 using System;
 using System.Collections.Generic;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Windows.Automation;
 public sealed class ArionContextReader {
  private int count, length;
  private readonly List<string> lines = new List<string>();
+ // Moves first-use costs out of the traversal budget without inspecting the
+ // target: JIT for the traversal methods, the UI Automation client connection
+ // and the pattern, walker and control-type statics that Visit uses.
+ public static void Warm() {
+  RuntimeHelpers.PrepareMethod(typeof(ArionContextReader).GetMethod("Read").MethodHandle);
+  RuntimeHelpers.PrepareMethod(typeof(ArionContextReader).GetMethod("Visit", BindingFlags.NonPublic | BindingFlags.Instance).MethodHandle);
+  GC.KeepAlive(AutomationElement.RootElement);
+  GC.KeepAlive(TreeWalker.ControlViewWalker);
+  GC.KeepAlive(TextPattern.Pattern);
+  GC.KeepAlive(ControlType.Text);
+ }
  public static string Read(long handle) {
   var root = AutomationElement.FromHandle(new IntPtr(handle));
   if (root == null) throw new InvalidOperationException("Window unavailable");
@@ -75,6 +88,7 @@ public sealed class ArionContextReader {
  }
 }
 '@
+[ArionContextReader]::Warm()
 [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)
 [Console]::Out.WriteLine('ARION_CONTEXT_READY')
 [Console]::Out.Flush()
