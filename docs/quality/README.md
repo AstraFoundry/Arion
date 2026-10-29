@@ -11,6 +11,7 @@ This section defines testing strategy, code-review expectations, and quality gat
 - [Update validation](update-validation.md) — staged update, reminder and notification checks with native platform limits.
 - [Foundation validation](validation.md) — actual local results and remaining coverage.
 - [macOS keyboard shortcut incident](keyboard-shortcut-incident.md) — Shift and Right Option root causes, repairs and acceptance evidence.
+- [Security review](security-review.md) — findings with severity and status, fixes made and open owner decisions.
 - [`code-review.md`](code-review.md) — code-review checklist.
 - [`agent-skills.md`](agent-skills.md) — installed Agent Skills for UI craft and anti-slop.
 

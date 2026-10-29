@@ -11,7 +11,7 @@
 #include <cctype>
 
 struct TypingCommand {
-    enum Kind { Key,Choose,Previous,Next,Inspect,ToggleASCII,TogglePunctuation,ToggleWidth } kind=Key;
+    enum Kind { Key,Choose,Previous,Next,Inspect,ToggleASCII,ShiftASCII,TogglePunctuation,ToggleWidth } kind=Key;
     NativeKey key;
     size_t engineIndex=0;
     uint64_t revision=0;
@@ -336,7 +336,7 @@ public:
             }
             settingsChanged=false; return S_OK;
         }
-        if (command.kind!=TypingCommand::Key && command.kind!=TypingCommand::ToggleASCII && command.kind!=TypingCommand::TogglePunctuation && command.kind!=TypingCommand::ToggleWidth && command.revision!=revision) return S_FALSE;
+        if (command.kind!=TypingCommand::Key && command.kind!=TypingCommand::ToggleASCII && command.kind!=TypingCommand::ShiftASCII && command.kind!=TypingCommand::TogglePunctuation && command.kind!=TypingCommand::ToggleWidth && command.revision!=revision) return S_FALSE;
         if (composition && !same(cookie)) { invalidate(); return S_FALSE; }
         if (settingsChanged) {
             applyEmojiPreference(); settingsChanged=false;
@@ -349,8 +349,13 @@ public:
         }
         ArionKeyAction action=arion_key_action(command.key.symbol,command.key.modifiers,ascii);
         if (command.kind==TypingCommand::Key && action==ARION_KEY_PASS) { cancel(cookie); return S_OK; }
-        if (command.kind==TypingCommand::ToggleASCII || action==ARION_KEY_TOGGLE_ASCII) {
+        if (command.kind==TypingCommand::ToggleASCII || command.kind==TypingCommand::ShiftASCII || action==ARION_KEY_TOGGLE_ASCII) {
             if (!available() || !allowed(cookie)) return E_ACCESSDENIED;
+            if (command.kind==TypingCommand::ShiftASCII && !ascii && composition) {
+                if (!arion_pinyin_commit_raw(runtime.api(),session)) return E_FAIL;
+                HRESULT committed=publish(cookie);
+                if (FAILED(committed)) { healthy=false; cancel(cookie); return committed; }
+            }
             cancel(cookie); previousCommit.clear(); ascii=!ascii;
             if (session) arion_pinyin_set_options(runtime.api(),session,ascii,fullWidth,englishPunctuation);
             handled=true; modeChanged(cookie,ascii?NativeCopy::EnglishBadge:NativeCopy::ChineseBadge); return S_OK;

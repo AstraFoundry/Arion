@@ -6,6 +6,9 @@
 #include "native.h"
 
 static NSString *const pasteMarkerType = @"si.astrafoundry.arion.commit-token";
+// The nspasteboard.org convention for content that is restored shortly:
+// clipboard managers and history tools do not record it.
+static NSString *const transientPasteType = @"org.nspasteboard.TransientType";
 
 @interface ArionPasteTransaction : NSObject
 @property(strong) NSPasteboard *board;
@@ -48,7 +51,8 @@ static ArionPasteTransaction *begin_paste(NSString *text, NSPasteboard *board) {
     tx.saved = saved;
     tx.item = [NSPasteboardItem new];
     if (![tx.item setString:text forType:NSPasteboardTypeString] ||
-        ![tx.item setString:NSUUID.UUID.UUIDString forType:pasteMarkerType]) return nil;
+        ![tx.item setString:NSUUID.UUID.UUIDString forType:pasteMarkerType] ||
+        ![tx.item setData:[NSData data] forType:transientPasteType]) return nil;
     CGEventSourceRef source = CGEventSourceCreate(kCGEventSourceStateHIDSystemState);
     if (!source) return nil;
     tx.down = CGEventCreateKeyboardEvent(source, kVK_ANSI_V, true);
