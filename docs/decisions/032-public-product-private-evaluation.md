@@ -18,7 +18,7 @@ Private execution selects a public repository and exact commit through `product.
 
 Preserve the original byte, hash, path-map, split-isolation and failure-status requirements of EVAL-A03 through EVAL-A08. Small fixtures extracted for public regression tests retain their provenance and existing exposure. Private runs record both product and evaluator identities; published summaries bind to the evaluated code and artifacts.
 
-Public product, signing and release CI remains public. Internal study CI and its raw evidence belong to the private repository. Keep privileged data access separate from execution of unreviewed public code.
+Public product, signing and release CI remains public. Private archive checks, report replay and studies run locally. Keep GitHub Actions disabled in the private repository and store no workflow files there. Keep private evidence separate from execution of unreviewed public code.
 
 ## Consequences
 

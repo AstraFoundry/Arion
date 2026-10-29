@@ -18,6 +18,29 @@ Private research code depends on a selected public product revision. Public inst
 
 Small public regression inputs retain their source paths, hashes, licenses and provenance. They protect product behavior; they are not new held-out evaluation data. Moving an exposed test set does not make it unseen again.
 
+## Local checkouts and agent entry point
+
+Keep the repositories as sibling directories when practical:
+
+```text
+projects/
+├── Arion/                  # Product development and its AGENTS.md
+└── Arion-evaluation/       # Private studies and its AGENTS.md
+```
+
+Open Arion for ordinary agent-assisted development. Its `AGENTS.md` mirrors `CLAUDE.md` and remains the product entry point. A parent-level instruction file is not required. If the agent tool restricts access to the project directory, add the private checkout as a second workspace directory.
+
+From an existing Arion checkout, clone the private repository beside it:
+
+```sh
+cd ..
+git clone git@github.com:AstraFoundry/Arion-evaluation.git
+```
+
+Before crossing into the private checkout, read its `AGENTS.md` and `README.md` explicitly. Run commands from the repository that owns them and commit the two repositories separately. A different private checkout location is supported when its path is explicit.
+
+The private archive already contains the previously committed benchmarks. Preserve local changes before updating the public checkout to main. Git removes the migrated tracked files during that update. Back up untracked or uncommitted local research separately before deciding how to archive it.
+
 ## Public development
 
 Use the commands in [local development](../operations/local-dev.md). Ordinary product and driver checks use only the public checkout. Product tests stay beside the implementation they protect. Native IMK, TSF, signing and model checks keep their actual OS, credential and explicit provisioning requirements.
@@ -29,6 +52,8 @@ The public model catalog retains approved provenance and measured summaries. Pri
 ## Internal execution
 
 Follow the private repository's README for study commands and exact arguments. Its `product.lock.json` pins the public repository and full commit. `ARION_CODE_ROOT` selects an explicit product checkout; the documented product-checkout command can prepare the pinned revision under the private workspace. A missing or mismatched checkout fails explicitly.
+
+The sibling product checkout is not selected automatically. For a new product revision, commit and push the product branch, update and commit the private product lock, and prepare the selected product with `pnpm --dir /path/to/Arion-evaluation product:prepare`. The default preparation fetches that revision into `.workspace/product`. Keep product development in Arion rather than editing this prepared checkout. Both repositories must be clean before a recorded study invocation.
 
 The private workspace can create ignored links to the selected public product paths so historical reproduction code resolves its recorded layout. These links do not create a second maintained product implementation. Setup must validate the selected revision and must not overwrite private-owned files.
 
@@ -44,6 +69,6 @@ Archive verification and report-only replay run in the private repository. They 
 
 ## CI and repository history
 
-Public CI runs portable and actual-platform product checks and development packaging. Public release and signing workflows retain their existing ownership and credential boundaries. Private CI selects an explicit public commit and corpus, then validates or runs the internal study. Unreviewed public PR code does not automatically gain access to internal data or a privileged persistent runner.
+Public CI runs portable and actual-platform product checks and development packaging. Public release and signing workflows retain their existing ownership and credential boundaries. Private archive checks, report replay and model studies run locally. Keep GitHub Actions disabled in Arion-evaluation and store no workflow files there. Public CI does not check out private data or execute private studies.
 
 The initial split changes current repository trees. It does not rewrite shared Git history. Original source revisions, signed-release provenance and archive manifests remain distinguishable from later commits. Historical public references can still expose previously published content. Any later history filtering requires a separate verified backup, old-to-new commit map and decision covering every public branch and tag.

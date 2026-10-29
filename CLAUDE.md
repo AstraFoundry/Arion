@@ -13,6 +13,17 @@
 
 ---
 
+## Working across repositories
+
+- Start product development in this public Arion checkout and read its `AGENTS.md`, which mirrors this file. No parent-level instruction file is required.
+- Prefer a sibling private checkout at `../Arion-evaluation`. If it lives elsewhere, resolve its actual path before running commands. Keep it outside the public repository.
+- Before working in the private repository, explicitly read its `AGENTS.md` and `README.md`. Do not assume this session loaded another repository's instructions.
+- Run product commands in Arion and evaluation commands in Arion-evaluation. Commit each repository's changes separately. Follow the [repository split](docs/project/repository-split.md) for ownership and setup.
+- Product development belongs in this checkout. Treat the private `.workspace/product` checkout and its generated links as prepared evaluation inputs. Follow the private version-lock procedure before evaluating a new product commit.
+- Private evaluations and archive checks run locally. Keep GitHub Actions disabled in Arion-evaluation and do not add workflow files there.
+
+If an agent tool restricts access to the current project, add the private checkout as a second workspace directory. Keep Arion as the product-development entry point.
+
 ## Documentation map
 
 ### Understand the project
