@@ -1,6 +1,0 @@
-{
-  "status": "failed",
-  "failed": "2026-10-27T16:59:32.832Z",
-  "error": "Error: A Go arm failed; partial JSONL/stderr/status retained\n    at run (file:///Users/steven/code/Arion/scripts/vocabulary-bench-command.mjs:224:23)\n    at async file:///Users/steven/code/Arion/scripts/vocabulary-bench-command.mjs:272:30",
-  "inference": false
-}

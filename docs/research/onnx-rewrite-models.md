@@ -1,6 +1,6 @@
 # ONNX models for local scenario rewriting
 
-This document records the initial source/artifact metadata study, before weight provisioning or inference. Follow-up [Qwen development diagnostics](qwen-pipeline-diagnostics.md) execute selected CPU packages and retain their measured aggregates separately; they do not establish production packaging or semantic quality. The accompanying [candidate catalog](../../benchmarks/catalogs/rewrite-model-candidates.json) is research metadata, not the production model registry. All candidates remain unapproved.
+This document records the initial source/artifact metadata study, before weight provisioning or inference. Follow-up [Qwen development diagnostics](qwen-pipeline-diagnostics.md) execute selected CPU packages and retain their measured aggregates separately; they do not establish production packaging or semantic quality. The accompanying [candidate catalog](https://github.com/AstraFoundry/Arion-evaluation) (`benchmarks/catalogs/rewrite-model-candidates.json`) is research metadata, not the production model registry. All candidates remain unapproved.
 
 ## What realtime means here
 

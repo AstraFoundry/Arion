@@ -1,7 +1,0 @@
-# arion.local/desktop/bootstrap.test
-ld: warning: ignoring duplicate libraries: '-lobjc'
-ok  	arion.local/desktop/infrastructure/cloudpolish	5.230s
-ok  	arion.local/desktop/infrastructure/llm/rewrite	2.279s
-ok  	arion.local/desktop/infrastructure/llm/gguf	1.665s
-ok  	arion.local/core/application	5.698s
-ok  	arion.local/desktop/bootstrap	2.921s

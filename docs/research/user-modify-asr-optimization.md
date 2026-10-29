@@ -1,6 +1,6 @@
 # Optimizing recognition-stage vocabulary recall
 
-The [v1 experiment](../../benchmarks/results/user-modify-asr-v1/README.md) exposed inconsistent correction-pair recall. The [v2 measured comparison](../../benchmarks/results/user-modify-asr-v2/README.md) implements a compact spelling context retrieved from the first-pass transcript, then re-decodes the original audio with the same Qwen3-ASR-1.7B checkpoint. It performs no transcript replacement and no model training.
+The [v1 experiment](https://github.com/AstraFoundry/Arion-evaluation) (`benchmarks/results/user-modify-asr-v1/README.md`) exposed inconsistent correction-pair recall. The [v2 measured comparison](https://github.com/AstraFoundry/Arion-evaluation) (`benchmarks/results/user-modify-asr-v2/README.md`) implements a compact spelling context retrieved from the first-pass transcript, then re-decodes the original audio with the same Qwen3-ASR-1.7B checkpoint. It performs no transcript replacement and no model training.
 
 ## What the papers explain
 
@@ -33,6 +33,6 @@ Pinyin is derived from recognized text and adds no independent acoustic evidence
 
 ## Evidence and remaining work
 
-The exposed v1 corpus became development data. New utterances with different TTS voices and separate natural-read regression controls were frozen before tuning. The selected policy and its source hashes were frozen before the single final test. [The v2 report](../../benchmarks/results/user-modify-asr-v2/README.md) contains all scores, raw outputs, source identities and replay instructions.
+The exposed v1 corpus became development data. New utterances with different TTS voices and separate natural-read regression controls were frozen before tuning. The selected policy and its source hashes were frozen before the single final test. [The v2 report](https://github.com/AstraFoundry/Arion-evaluation) (`benchmarks/results/user-modify-asr-v2/README.md`) contains all scores, raw outputs, source identities and replay instructions.
 
 Further prompt tuning requires another test set. Training a pronunciation-aware/acoustic retriever or a context-aware adapter requires its own data and training experiment. Natural recurring names across real user sessions, independent annotations, BF16 parity, causal streaming and native insertion remain open gates. Production vocabulary behavior and the default recognition bundle are unchanged.

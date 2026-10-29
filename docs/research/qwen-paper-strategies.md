@@ -4,7 +4,7 @@
 
 Prioritize **streaming ASR, acoustic finalization, bounded approved vocabulary, and one local non-thinking editing proposal**. Investigate a task-trained small Qwen editor and overlap fixed-prefix computation with capture. This is an Arion research recommendation, not a checkpoint approval or a measured improvement from new training.
 
-This review separates paper mechanisms, [executed Arion diagnostics](../../benchmarks/results/qwen-pipeline-diagnostic-v1/README.md), and proposed experiments. It does not establish Typeless parity. [008](../../specs/008-evaluation.md) and [009](../../specs/009-contextual-rewrite.md) remain normative. Paper versions below are the versions inspected; third-party evaluations are not Qwen release guarantees. Paper scores use their own datasets, hardware and normalization.
+This review separates paper mechanisms, [executed Arion diagnostics](https://github.com/AstraFoundry/Arion-evaluation) (`benchmarks/results/qwen-pipeline-diagnostic-v1/README.md`), and proposed experiments. It does not establish Typeless parity. [008](../../specs/008-evaluation.md) and [009](../../specs/009-contextual-rewrite.md) remain normative. Paper versions below are the versions inspected; third-party evaluations are not Qwen release guarantees. Paper scores use their own datasets, hardware and normalization.
 
 ## Qwen mechanisms and their limits
 
@@ -68,7 +68,7 @@ The reported distillation efficiency comparison concerns math/code on an 8B mode
 
 ## Fit to the executed diagnostics
 
-The public [development report](../../benchmarks/results/qwen-pipeline-diagnostic-v1/README.md) supports these engineering questions, not population conclusions:
+The public [development report](https://github.com/AstraFoundry/Arion-evaluation) (`benchmarks/results/qwen-pipeline-diagnostic-v1/README.md`) supports these engineering questions, not population conclusions:
 
 - Original 4B intent and two-pass formatting achieved 17/24 and 19/24 lexical constraint passes on authored text. On 56 frozen actual-ASR inputs both achieved 15/56; the second pass had materially higher generation latency. Joint task training is a research alternative to serial calls, but may introduce task interference.
 - The dedicated prose-context/terminology cases failed even with 4B. Test retrieval provenance and actual recognizer bias before attributing this to insufficient model size. Large language-model plausibility cannot restore acoustic evidence that is absent from its input.

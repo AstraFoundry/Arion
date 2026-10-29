@@ -1,10 +1,12 @@
 # General LLM alignment for keyboard candidates
 
+Research commands qualified with `/path/to/Arion-evaluation` run in the private [Arion evaluation repository](https://github.com/AstraFoundry/Arion-evaluation). Product checks run in this public checkout.
+
 ## Decision and current scope
 
 Implement a separate, bounded candidate-selection task over the existing LLM transport. Keep Rime conversion and the native personal context ranker as the immediate path. The Go selector is connected to native snapshots and an explicit default-off setting under [ADR 031](../decisions/031-local-keyboard-neural-ranking.md). It reuses only the local polishing worker; this does not claim competitor-equivalent quality.
 
-The [measured pilot](../../benchmarks/results/llm-ime-alignment-v1/README.md) improves authored top-1 from 56/100 to 68/100 after a no-context abstention gate, but breaks eight previously correct cases. Actual resident model calls take approximately 404 ms p50 / 515 ms p95. These results do not authorize enabling automatic promotion by default. Generic LLM selection and IME-specific LM scoring remain different approaches.
+The [measured pilot](https://github.com/AstraFoundry/Arion-evaluation) (`benchmarks/results/llm-ime-alignment-v1/README.md`) improves authored top-1 from 56/100 to 68/100 after a no-context abstention gate, but breaks eight previously correct cases. Actual resident model calls take approximately 404 ms p50 / 515 ms p95. These results do not authorize enabling automatic promotion by default. Generic LLM selection and IME-specific LM scoring remain different approaches.
 
 ## Alignment with observed competitors
 
@@ -108,14 +110,14 @@ The real-time schedule uses 142 native prefix snapshots from 22 overlapping case
 | Native acceptance | Actual installed IMK in owned editors, app stopped and offline | Key-to-preedit and candidate-update p50/p95/p99; native event/UI observations |
 | Generalization | Independent reviewed dev/test sessions, ambiguous-label review, fixed policy before test | Clustered paired intervals; no tuning on held-out labels |
 
-Promotion-quality gates and latency thresholds must be fixed after development baselines and before held-out testing. The v1 pilot recorded eight breakages; the [historical span-aware v2 study](../../benchmarks/runs/llm-ime-alignment-v2-inference/README.md) recorded fourteen. These development failures and absent native/cloud/concurrency evidence block default product enablement. Generated candidates require an independent experiment rather than weakening the permutation contract.
+Promotion-quality gates and latency thresholds must be fixed after development baselines and before held-out testing. The v1 pilot recorded eight breakages; the [historical span-aware v2 study](https://github.com/AstraFoundry/Arion-evaluation) (`benchmarks/runs/llm-ime-alignment-v2-inference/README.md`) recorded fourteen. These development failures and absent native/cloud/concurrency evidence block default product enablement. Generated candidates require an independent experiment rather than weakening the permutation contract.
 
 ## Reproduction
 
-See the [commands, source snapshots and verification procedure](../../benchmarks/reproduction/llm-ime-alignment-v1/README.md). `pnpm ime:align verify` replays archived reports without model/runtime dependencies; live runs require explicitly provisioned local artifacts or an explicitly supplied API key. Nothing changes the installed input method.
+See the [commands, source snapshots and verification procedure](https://github.com/AstraFoundry/Arion-evaluation) (`benchmarks/reproduction/llm-ime-alignment-v1/README.md`). `pnpm --dir /path/to/Arion-evaluation ime:align verify` replays archived reports without model/runtime dependencies; live runs require explicitly provisioned local artifacts or an explicitly supplied API key. Nothing changes the installed input method.
 
 ## Residual scope after bilingual integration
 
-The main branch already includes typo/fuzzy settings, approved personal readings, encrypted delivery, actual native candidate ranges and ranked bilingual input (ADR 017, ADR 030). The rebased change retains exact-range eligibility and no-comparable-candidate abstention, adds default-off native integration under ADR 031, and preserves [span-aware reproduction](../../benchmarks/reproduction/llm-ime-alignment-v2/README.md). It does not replace the main English lexicon or candidate admission policy.
+The main branch already includes typo/fuzzy settings, approved personal readings, encrypted delivery, actual native candidate ranges and ranked bilingual input (ADR 017, ADR 030). The rebased change retains exact-range eligibility and no-comparable-candidate abstention, adds default-off native integration under ADR 031, and preserves [span-aware reproduction](https://github.com/AstraFoundry/Arion-evaluation) (`benchmarks/reproduction/llm-ime-alignment-v2/README.md`). It does not replace the main English lexicon or candidate admission policy.
 
 The v2 bundles preserve the original PR 45 execution/source bytes. They are historical evidence, not measurements of the integrated main producer. Replaying their hashes and reports does not establish current inference quality, installed IMK/TSF dispatch or independent held-out acceptance. Model-backed native dispatch, English personal learning and automatic bilingual sentence disambiguation remain separate product work.

@@ -1,8 +1,0 @@
-{
-  "cpu": "Apple M4",
-  "memoryBytes": 34359738368,
-  "arm64Supported": "1",
-  "nativeBinaries": "/Users/steven/code/Arion/.workspace/rewrite-entity-evidence-v1/arion-ocr: Mach-O 64-bit executable arm64\n/Users/steven/code/Arion/.workspace/rewrite-packaging-v1/build/worker:    Mach-O 64-bit executable arm64",
-  "pythonMachine": "x86_64",
-  "note": "Python reports its Rosetta interpreter architecture. CPU evidence is Apple M4 and both native OCR/LLM executables are arm64; no physical x86 macOS claim."
-}

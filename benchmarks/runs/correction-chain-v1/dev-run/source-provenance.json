@@ -1,4 +1,0 @@
-{
-  "source": "Recovered dev-run-v2 byte-verified sources; runner unchanged between interpreter-only attempts",
-  "limitation": "The first interpreter failure did not capture source hashes before failing"
-}

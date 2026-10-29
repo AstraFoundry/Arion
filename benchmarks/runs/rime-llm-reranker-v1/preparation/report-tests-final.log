@@ -1,9 +1,0 @@
-
-> arion-monorepo@0.0.0 ime:rerank /Users/steven/code/Arion
-> node scripts/rime-rerank-command.mjs test
-
-.....
-----------------------------------------------------------------------
-Ran 5 tests in 0.021s
-
-OK

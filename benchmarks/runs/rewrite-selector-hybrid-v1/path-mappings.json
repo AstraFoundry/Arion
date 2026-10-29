@@ -1,9 +1,0 @@
-{
-  "source": ".workspace/rewrite-selector-hybrid-v1",
-  "published": "benchmarks/runs/rewrite-selector-hybrid-v1",
-  "privateExcluded": [
-    "weights",
-    "runtime environments",
-    "native executable"
-  ]
-}

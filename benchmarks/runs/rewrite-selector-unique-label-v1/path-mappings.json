@@ -1,9 +1,0 @@
-{
-  "source": ".workspace/rewrite-selector-unique-label-v1",
-  "published": "benchmarks/runs/rewrite-selector-unique-label-v1",
-  "privateExcluded": [
-    "weights",
-    "runtime binaries",
-    "Go cleanup executable"
-  ]
-}

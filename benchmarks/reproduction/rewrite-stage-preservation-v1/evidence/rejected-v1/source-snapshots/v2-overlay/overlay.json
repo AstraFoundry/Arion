@@ -1,6 +1,0 @@
-{
-  "Replace": {
-    "/Users/steven/code/Arion/apps/desktop/infrastructure/llm/prompt/selected.go": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/v2-overlay/selected.go",
-    "/Users/steven/code/Arion/packages/core/domain/spelling.go": "/Users/steven/code/Arion/.workspace/rewrite-stage-preservation/v2-overlay/spelling.go"
-  }
-}

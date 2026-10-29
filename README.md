@@ -69,7 +69,7 @@ See [Release Status](docs/operations/release-status.md), [Agent Handoff](docs/pr
 
 ```sh
 make install        # install the pinned pnpm workspace (--frozen-lockfile)
-make check          # docs, JSON, Go layer boundaries, workflow lint, and core/sync/updates/i18n/evaluation tests
+make check          # docs, JSON, Go layer boundaries, workflow lint, and core/sync/updates/i18n/public driver tests
 make desktop-check  # desktop tests, keyboard checks, and go vet (cgo)
 make desktop-dev    # stage native runtimes and launch Arion Dev in dev mode
 make build desktop  # package Arion.app + DMG (macOS) or NSIS installer (Windows) under apps/desktop/build/
@@ -88,7 +88,9 @@ On first launch, `make desktop-dev` opens onboarding, requests microphone and Ac
 | **Architecture & Specs** | [Architecture (`docs/project/architecture.md`)](docs/project/architecture.md) · [Repository Ownership (`docs/project/repository.md`)](docs/project/repository.md) · [Specifications (`specs/README.md`)](specs/README.md) · [ADRs (`docs/decisions/README.md`)](docs/decisions/README.md) |
 | **Frontend & Backend** | [Frontend FSD (`docs/frontend/README.md`)](docs/frontend/README.md) · [UI Localization (`docs/frontend/i18n.md`)](docs/frontend/i18n.md) · [Backend DDD (`docs/backend/README.md`)](docs/backend/README.md) |
 | **Operations & Deployment** | [Local Development (`docs/operations/local-dev.md`)](docs/operations/local-dev.md) · [Deployment (`docs/operations/deployment.md`)](docs/operations/deployment.md) · [Release Status (`docs/operations/release-status.md`)](docs/operations/release-status.md) · [Arion Center (`deploy/center/README.md`)](deploy/center/README.md) · [Sync Relay (`deploy/sync/README.md`)](deploy/sync/README.md) |
-| **Quality & Benchmarks** | [Quality & Testing (`docs/quality/README.md`)](docs/quality/README.md) · [Native E2E (`docs/quality/e2e.md`)](docs/quality/e2e.md) · [Research (`docs/research/README.md`)](docs/research/README.md) · [Evaluation Runners (`tools/evaluation/README.md`)](tools/evaluation/README.md) · [Benchmark Results (`benchmarks/README.md`)](benchmarks/README.md) |
+| **Quality & Benchmarks** | [Quality & Testing (`docs/quality/README.md`)](docs/quality/README.md) · [Native E2E (`docs/quality/e2e.md`)](docs/quality/e2e.md) · [Research (`docs/research/README.md`)](docs/research/README.md) · [Product Drivers (`tools/driver/README.md`)](tools/driver/README.md) · [Benchmark Results (`benchmarks/README.md`)](https://github.com/AstraFoundry/Arion-evaluation) (`benchmarks/README.md`) |
+
+Repository ownership and internal evidence are documented in [the two-repository guide](docs/project/repository-split.md).
 
 ## Contributors
 

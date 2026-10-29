@@ -1,8 +1,0 @@
-{
-  "id": 1,
-  "ok": true,
-  "loadMs": 6706.147,
-  "promptId": "scene-alignment-v1",
-  "prefixTokens": 551,
-  "peakRssBytes": 2907078656
-}

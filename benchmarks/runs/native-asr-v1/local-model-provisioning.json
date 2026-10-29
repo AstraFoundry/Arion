@@ -1,7 +1,0 @@
-{
-  "status": "verified",
-  "artifact": "qwen3-asr-1.7b-mlx-8bit",
-  "method": "digest-checked local import followed by offline ensure",
-  "existingCachesEvicted": false,
-  "location": "standard per-user Arion model store"
-}

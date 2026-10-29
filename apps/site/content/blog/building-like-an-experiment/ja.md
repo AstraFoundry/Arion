@@ -111,8 +111,8 @@ AI コーディングエージェントとの開発では、こうした見落�
 ベンチマークのコーパス、ケースごとの生出力、ウォームアップ、失敗した試行、録音した音声、正確なスクリプトとプロンプトはすべてリポジトリの `benchmarks/` にバイト単位の SHA-256 識別子付きで置いてあります。1,062 ファイル、約 98 MB の証拠です（モデルの重みと個人の録音は含みません）。[^archive] モデルを読み込まずにアーカイブを検証し、レポートを再構築できます。
 
 ```sh
-pnpm bench:archive:verify
-pnpm bench:archive:report --out .workspace/archive-report-repeat
+pnpm --dir /path/to/Arion-evaluation bench:archive:verify
+pnpm --dir /path/to/Arion-evaluation bench:archive:report --out .workspace/archive-report-repeat
 ```
 
 評価プロトコルは、放っておくと実行ごとにずれていく統計上の細部も固定しています。一つのテキスト正規化、総誤り数を総参照単位で割るコーパス誤り率、話者クラスター単位の対応付きブートストラップ区間です。テストの正解は推論にも記憶にもコンテキストにも入らず、テストデータから学んだ記憶はそのまま拒否されます（`EVAL-A04`）。[^method]
@@ -145,18 +145,18 @@ pnpm bench:archive:report --out .workspace/archive-report-repeat
 
 ローカルモデルとコーディングエージェントでプロダクトをつくるなら、ボトルネックはもうコードではありません。つくる前に「良くなった」とは何かを決め、ホールドアウトセットをハッシュで凍結してください。一度に一つの要因だけを変え、新しいモデルを使わない対照を残してください。成功と同じくらい丁寧に失敗を記録し、決定は次のエージェントが読む場所に書き、古い決定は消さずに新しい決定で置き換えてください。それだけでプロダクトが良くなるわけではありませんが、自分をだますことはずっと難しくなります。
 
-[^live]: [ライブ書き換えパイプラインの結果（v1）](https://github.com/AstraFoundry/Arion/blob/main/benchmarks/results/live-rewrite-v1/README.md)と [ADR 011](https://github.com/AstraFoundry/Arion/blob/main/docs/decisions/011-live-local-rewriting.md)。
+[^live]: [ライブ書き換えパイプラインの結果（v1）](https://github.com/AstraFoundry/Arion/blob/43586d3277719eec7ebdfcaa377fbfd4b649bd81/benchmarks/results/live-rewrite-v1/README.md)と [ADR 011](https://github.com/AstraFoundry/Arion/blob/main/docs/decisions/011-live-local-rewriting.md)。
 
-[^context]: [書き換えコンテキストのアブレーション（v1）](https://github.com/AstraFoundry/Arion/blob/main/benchmarks/results/context-ablation-v1/README.md)と [ADR 013](https://github.com/AstraFoundry/Arion/blob/main/docs/decisions/013-rewrite-context-on-device.md)。
+[^context]: [書き換えコンテキストのアブレーション（v1）](https://github.com/AstraFoundry/Arion/blob/43586d3277719eec7ebdfcaa377fbfd4b649bd81/benchmarks/results/context-ablation-v1/README.md)と [ADR 013](https://github.com/AstraFoundry/Arion/blob/main/docs/decisions/013-rewrite-context-on-device.md)。
 
-[^phonetic]: [発音情報のアブレーション](https://github.com/AstraFoundry/Arion/blob/main/benchmarks/results/phonetic-asr-1.7b-v2/README.md)。
+[^phonetic]: [発音情報のアブレーション](https://github.com/AstraFoundry/Arion/blob/43586d3277719eec7ebdfcaa377fbfd4b649bd81/benchmarks/results/phonetic-asr-1.7b-v2/README.md)。
 
 [^eval]: [仕様 008：評価と自動化](https://github.com/AstraFoundry/Arion/blob/main/specs/008-evaluation.md)。
 
-[^rime]: [Rime LLM リランカーの再現](https://github.com/AstraFoundry/Arion/blob/main/benchmarks/results/rime-llm-reranker-v1/README.md)。
+[^rime]: [Rime LLM リランカーの再現](https://github.com/AstraFoundry/Arion/blob/43586d3277719eec7ebdfcaa377fbfd4b649bd81/benchmarks/results/rime-llm-reranker-v1/README.md)。
 
-[^archive]: [ベンチマーク研究アーカイブ](https://github.com/AstraFoundry/Arion/blob/main/benchmarks/migration/README.md)。
+[^archive]: [ベンチマーク研究アーカイブ](https://github.com/AstraFoundry/Arion/blob/43586d3277719eec7ebdfcaa377fbfd4b649bd81/benchmarks/migration/README.md)。
 
 [^method]: [ベンチマークの方法論](https://github.com/AstraFoundry/Arion/blob/main/docs/research/benchmark-methodology.md)。
 
-[^imk]: [文脈ランキングの結果](https://github.com/AstraFoundry/Arion/blob/main/benchmarks/results/imk-context-v1/README.md)。
+[^imk]: [文脈ランキングの結果](https://github.com/AstraFoundry/Arion/blob/43586d3277719eec7ebdfcaa377fbfd4b649bd81/benchmarks/results/imk-context-v1/README.md)。

@@ -1,8 +1,0 @@
-{
-  "id": 1,
-  "ok": true,
-  "loadMs": 3948.043,
-  "promptId": "entity-evidence-v1-exact-work",
-  "prefixTokens": 609,
-  "peakRssBytes": 3691593728
-}

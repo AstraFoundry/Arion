@@ -1,9 +1,0 @@
-{
-  "provenance": "Locally authored before inference; eight fixed utterances across four screen conditions. Inputs/evaluator/README pre-inference identities pinned in freeze.json. Preparation source retains original bytes.",
-  "files": {
-    "evaluator.json": "02edbe79094f80ac6abfb3a0fbe01d1ca4118d13e2825d74d9aa00f61300f884",
-    "README.md": "ea6e6c3d08536280beb8391751cc22c9292ff3fed4bcccf013be739e84b4b210",
-    "original-preparation.py.txt": "bcca455b9f27c7bef4b8e3072c91d2b94d8174922fb1c80d30947efd59d6df24",
-    "inputs.json": "a487a7b5e59ce122589c9b66bae74043b24cfd2837c64ac6e7cd2a11c5472061"
-  }
-}

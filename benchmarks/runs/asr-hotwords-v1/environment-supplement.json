@@ -1,9 +1,0 @@
-{
-  "node": "v24.14.0",
-  "pnpm": "10.33.0",
-  "workerArchitecture": "Mach-O 64-bit executable arm64",
-  "driverArchitecture": "Mach-O 64-bit executable arm64",
-  "capture": "file command on the same pinned driver and worker after completed inference",
-  "sourceSnapshotBoundary": "Each run source/ directory retains exact source bytes captured before inference. The compiled driver and worker are independently hash-bound. Later test-only production corrections are outside this inference source snapshot.",
-  "buildDetails": "Native exact Release arm64 build command, deployment target14.0 and resolved-package-only option are retained in runtime-smoke-initial-attempts/attempts.json; original output capture limitations are explicit there."
-}

@@ -1,4 +1,0 @@
-{"version":"arion-mlx-2","protocol":3,"type":"ready","capabilities":["prompt"]}
-{"id":"contextual","stop":"complete","type":"end","text":"部署前先做回归测试，不通过就不要发布。"}
-{"id":"empty","stop":"complete","type":"end","text":"部署前先做回归测试，不通过就不要发布。"}
-{"id":"overflow","type":"error"}

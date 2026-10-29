@@ -1,0 +1,172 @@
+{
+  "schema": 1,
+  "sourceRepository": "https://github.com/AstraFoundry/Arion",
+  "sourceRevision": "43586d3277719eec7ebdfcaa377fbfd4b649bd81",
+  "preservation": "Original fixture, provenance and README bytes are unchanged. Original paths and relative strings identify historical archive locations; current license paths are explicit below. Exposed fixtures remain regression data.",
+  "fixtures": [
+    {
+      "path": "apps/desktop/infrastructure/llm/prompt/testdata/payload-parity.json",
+      "originalPath": "benchmarks/reproduction/rewrite-product-integration-v1/payload-parity.json",
+      "sha256": "161e9554734628f1c068fa78fcad74e315d5cd9113e37212f3b068e12a020a39",
+      "sizeBytes": 944508,
+      "licensePath": "LICENSE"
+    },
+    {
+      "path": "apps/desktop/infrastructure/llm/spelling/testdata/producer-parity.json",
+      "originalPath": "benchmarks/reproduction/rewrite-product-integration-v1/producer-parity.json",
+      "sha256": "a15a689386953360a06fb8fac8b4992c27dcd0d37f0a6aa87252990c6b2b50b1",
+      "sizeBytes": 130587,
+      "licensePath": "LICENSE"
+    },
+    {
+      "path": "apps/desktop/infrastructure/llm/prompt/testdata/baseline-prompts.json",
+      "originalPath": "benchmarks/reproduction/rewrite-selector-screen-v1/templates/baseline/prompts.json",
+      "sha256": "992e89acfa462c54fa893e8319b6e031fa01dcb454ab166651abc834d2c4c35a",
+      "sizeBytes": 3557,
+      "licensePath": "LICENSE"
+    },
+    {
+      "path": "apps/desktop/infrastructure/llm/gguf/testdata/windows-local-rewrite-cases.json",
+      "originalPath": "benchmarks/reproduction/windows-local-rewrite-v1/cases.json",
+      "sha256": "aa259066112429c4bcdf76aed491b30ebb693e7a239f8ac21e3ba74280094153",
+      "sizeBytes": 468,
+      "licensePath": "LICENSE"
+    },
+    {
+      "path": "apps/desktop/infrastructure/llm/gguf/testdata/numeric-filler-cases.json",
+      "originalPath": "benchmarks/reproduction/rewrite-numeric-filler-v1/cases.json",
+      "sha256": "4fcfcad9c7109a8acc28d4219b255d7c337bc2365fccea2d09b41a0b3c14f606",
+      "sizeBytes": 2894,
+      "licensePath": "LICENSE"
+    },
+    {
+      "path": "apps/desktop/infrastructure/llm/gguf/testdata/technical-spelling-cases.json",
+      "originalPath": "benchmarks/reproduction/rewrite-technical-spelling-v1/cases.json",
+      "sha256": "19d4e16cf4691898768a2e7943dd2ff5f3e0bffa27ea8f8cac3194d84bb5e6b1",
+      "sizeBytes": 2206,
+      "licensePath": "LICENSE"
+    },
+    {
+      "path": "apps/desktop/e2e/testdata/libri-251-137823-0017.wav",
+      "originalPath": "benchmarks/corpora/asr-v1/audio/libri-251-137823-0017.wav",
+      "sha256": "5f0ef6809a5fcd07764139cfe5b7d67a27a6cd0045dcd48109f1c717d40b66e1",
+      "sizeBytes": 123404,
+      "license": "CC-BY-4.0",
+      "source": "https://www.openslr.org/12",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "attribution": "LibriSpeech, speaker 251, chapter 137823, utterance 0017; original archived development WAV bytes copied unchanged",
+      "datasetRevision": "openslr/librispeech_asr@71cacbfb"
+    },
+    {
+      "path": "apps/desktop/e2e/testdata/nonspeech-dev-0.wav",
+      "originalPath": "benchmarks/corpora/asr-v1/audio/nonspeech-dev-0.wav",
+      "sha256": "20eaebffe1816e0ffa6f7f854f5ef4ea80d5349faaf0ce1fec1b713e7fde58fa",
+      "sizeBytes": 64044,
+      "licensePath": "LICENSE"
+    },
+    {
+      "path": "apps/desktop/ime/shared/testdata/ime-learning-v1/GraphemeBreakTest-17.0.0.txt",
+      "originalPath": "benchmarks/corpora/ime-learning-v1/GraphemeBreakTest-17.0.0.txt",
+      "sha256": "e2d134d2c52919bace503ebb6a551c1855fe1a1faec18478c78fff254a1793ec",
+      "sizeBytes": 126570,
+      "license": "Unicode-3.0",
+      "licensePath": "apps/desktop/ime/shared/ranking_unicode_LICENSE.txt"
+    },
+    {
+      "path": "apps/desktop/ime/shared/testdata/ime-learning-v1/Scripts-17.0.0.txt",
+      "originalPath": "benchmarks/corpora/ime-learning-v1/Scripts-17.0.0.txt",
+      "sha256": "9f5e50d3abaee7d6ce09480f325c706f485ae3240912527e651954d2d6b035bf",
+      "sizeBytes": 192460,
+      "license": "Unicode-3.0",
+      "licensePath": "apps/desktop/ime/shared/ranking_unicode_LICENSE.txt"
+    },
+    {
+      "path": "apps/desktop/ime/shared/testdata/ime-learning-v1/legacy-nsdata-pairs.bplist",
+      "originalPath": "benchmarks/corpora/ime-learning-v1/legacy-nsdata-pairs.bplist",
+      "sha256": "b61531266aa0de3ef6eb50e351f1d83cda89fd2874e8dfc833d052d6898ac064",
+      "sizeBytes": 114,
+      "licensePath": "LICENSE"
+    },
+    {
+      "path": "apps/desktop/ime/shared/testdata/ime-learning-v1/provenance.json",
+      "originalPath": "benchmarks/corpora/ime-learning-v1/provenance.json",
+      "sha256": "683e96bd2bf7f350e167ae9a08d72a4e6f1164a22deef161f1f457de92eaf4e3",
+      "sizeBytes": 1111,
+      "licensePath": "LICENSE"
+    },
+    {
+      "path": "apps/desktop/ime/shared/testdata/ime-learning-v1/README.md",
+      "originalPath": "benchmarks/corpora/ime-learning-v1/README.md",
+      "sha256": "6d944e035d7efa34d4628dd96871094a0c1373e6b28772f5907a06c3fa5d1fc8",
+      "sizeBytes": 4044,
+      "licensePath": "LICENSE"
+    },
+    {
+      "path": "apps/desktop/ime/shared/testdata/english-admission-v1/development.tsv",
+      "originalPath": "benchmarks/corpora/ime-english-admission-v1/development.tsv",
+      "sha256": "e213f6b55ee713d764d42a5754685bd6a7bb71c8bf382ec690968f3518771509",
+      "sizeBytes": 735,
+      "licensePath": "LICENSE"
+    },
+    {
+      "path": "apps/desktop/ime/shared/testdata/english-admission-v1/validation.tsv",
+      "originalPath": "benchmarks/corpora/ime-english-admission-v1/validation.tsv",
+      "sha256": "aa9b77dbe9687c31262b1ad7a9dd9878464ff224a0e3415fc9afd0aaebd639f7",
+      "sizeBytes": 620,
+      "licensePath": "LICENSE"
+    },
+    {
+      "path": "apps/desktop/ime/shared/testdata/english-admission-v1/holdout.tsv",
+      "originalPath": "benchmarks/corpora/ime-english-admission-v1/holdout.tsv",
+      "sha256": "10f75ca72d41a02fd21182564dde3b28815a57fc1bea8305be61730f9633d900",
+      "sizeBytes": 410,
+      "licensePath": "LICENSE"
+    },
+    {
+      "path": "apps/desktop/ime/shared/testdata/english-admission-v1/provenance.json",
+      "originalPath": "benchmarks/corpora/ime-english-admission-v1/provenance.json",
+      "sha256": "f85738caf0e024f27c4d2ca68b42407816f5f0c1ffc6459d9cc7e8f4751673c4",
+      "sizeBytes": 1282,
+      "licensePath": "LICENSE"
+    },
+    {
+      "path": "apps/desktop/ime/shared/testdata/english-admission-v1/README.md",
+      "originalPath": "benchmarks/corpora/ime-english-admission-v1/README.md",
+      "sha256": "e5ec220e407d501e79be2b09c122371ffeba8ff3850c86515e85d7f55f61d403",
+      "sizeBytes": 1263,
+      "licensePath": "LICENSE"
+    },
+    {
+      "path": "scripts/testdata/ime-spelling-reference-v1/upstream-syllabifier.cc",
+      "originalPath": "benchmarks/corpora/ime-spelling-reference-v1/upstream-syllabifier.cc",
+      "sha256": "477bc49a5349da2be6bef8424f6ad95293720f2b152f4b2717c8535a49aaaf2d",
+      "sizeBytes": 10982,
+      "license": "BSD-3-Clause",
+      "licensePath": "scripts/testdata/ime-spelling-reference-v1/LICENSE",
+      "source": "https://github.com/rime/librime/blob/33e78140250125871856cdc5b42ddc6a5fcd3cd4/src/rime/algo/syllabifier.cc"
+    },
+    {
+      "path": "scripts/testdata/ime-spelling-reference-v1/provenance.json",
+      "originalPath": "benchmarks/corpora/ime-spelling-reference-v1/provenance.json",
+      "sha256": "3eeca89a1feac74b6243ece23e2f518b235c6d32f821986978c1be6ab4e694d3",
+      "sizeBytes": 419,
+      "licensePath": "LICENSE"
+    },
+    {
+      "path": "scripts/testdata/ime-spelling-reference-v1/README.md",
+      "originalPath": "benchmarks/corpora/ime-spelling-reference-v1/README.md",
+      "sha256": "4017c424b4e6ca182088ce29b03e11224ab9752cf31d48cf2b8f0e9c415d5fe6",
+      "sizeBytes": 497,
+      "licensePath": "LICENSE"
+    }
+  ],
+  "notices": [
+    {
+      "path": "scripts/testdata/ime-spelling-reference-v1/LICENSE",
+      "sha256": "f67d27a6d2d586fcfed4b4c886a83747095396a39b6641e18e855086be2ec400",
+      "sizeBytes": 1513,
+      "source": "https://raw.githubusercontent.com/rime/librime/33e78140250125871856cdc5b42ddc6a5fcd3cd4/LICENSE",
+      "license": "BSD-3-Clause"
+    }
+  ]
+}

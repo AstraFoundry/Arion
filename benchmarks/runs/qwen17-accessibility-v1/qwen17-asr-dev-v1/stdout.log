@@ -1,5 +1,0 @@
-
-> arion-monorepo@0.0.0 bench:run /Users/steven/code/Arion
-> node tools/evaluation/cli.mjs run --config benchmarks/configs/qwen17-accessibility-asr.json --corpus benchmarks/corpora/asr-v1/corpus.json --driver .workspace/qwen17/driver-clean.json --out .workspace/qwen17/asr-clean
-
-Completed 236 live observations. Run report separately.

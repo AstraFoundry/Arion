@@ -1,5 +1,0 @@
-cmake_minimum_required(VERSION 3.20)
-project(ArionOpenMPProbe LANGUAGES C)
-find_package(OpenMP REQUIRED)
-add_executable(openmp-probe main.c)
-target_link_libraries(openmp-probe PRIVATE OpenMP::OpenMP_C)

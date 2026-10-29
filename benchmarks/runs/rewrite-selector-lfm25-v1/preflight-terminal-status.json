@@ -1,1 +1,0 @@
-{"command": ["python3", "benchmarks/reproduction/rewrite-selector-lfm25-v1/preflight.py", "--out", ".workspace/rewrite-selector-lfm25-v1/preflight"], "exitCode": 0}

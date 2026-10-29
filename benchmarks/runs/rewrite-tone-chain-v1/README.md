@@ -1,3 +1,0 @@
-# Complete tone-insensitive chain evidence
-
-538 actual outputs, all personally reviewed:89 choices/449 bodies, candidate401 history+24 controls and paired baseline24 controls. Source attempts449, unique source/context/scene cases425. Historical bodies400 confirmed/1 ASR-source uncertainty/344 useful. Eight reviewed typo controls gain2→3 repairs but introduce a wrong-domain ordinary-word substitution, so the candidate is rejected. All raw/failed derived-build/initial-label/amendment/reference evidence retained. [Reproduction](../../reproduction/rewrite-tone-chain-v1/README.md). No production/native/min16 acceptance.

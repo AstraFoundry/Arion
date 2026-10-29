@@ -10,7 +10,7 @@ import (
 )
 
 func TestEvaluatedProducerParity(t *testing.T) {
-	data, err := os.ReadFile("../../../../../benchmarks/reproduction/rewrite-product-integration-v1/producer-parity.json")
+	data, err := os.ReadFile("testdata/producer-parity.json")
 	if err != nil {
 		t.Fatal(err)
 	}

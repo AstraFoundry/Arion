@@ -61,7 +61,7 @@ SYNC-11: Standard desktop packages embed the AstraFoundry center (`https://api.a
 | MEM-A07 | Invalid tag/key epoch/unknown schema → explicit failure, no plaintext downgrade |
 | MEM-A08 | Tampered routing metadata or replayed envelope → authentication/replay check rejects |
 | MEM-A09 | Correct a dictated word in a field → the pair is learned, shown with an undo, and corrects the next dictation; undo or correcting it back removes it (`TestExtractCorrections`, `TestLearnRules`, `TestLearnedNoticeUndo`) |
-| MEM-A10 | Continued typing, deletions, punctuation, changed numbers or a rewrite → nothing learned ([edit-learning-v1](../benchmarks/results/edit-learning-v1/README.md)) |
+| MEM-A10 | Continued typing, deletions, punctuation, changed numbers or a rewrite → nothing learned ([edit-learning-v1](https://github.com/AstraFoundry/Arion-evaluation) (`benchmarks/results/edit-learning-v1/README.md`)) |
 | MEM-A11 | Secure field, learning off, IME composition or Windows → the field is never followed or read (`TestCoordinatorNeverFollowsSensitiveOrWhenOff`) |
 | MEM-A12 | Hung host, corrupt/truncated/wrong-key file, read-only directory or crash leftover → dictation unaffected, memory file unchanged or explicitly unavailable (`TestEditTrackerAbandonsHungHost`, `TestCorruptFileFailsClosed`, edit-learning-v1 faults) |
 | MEM-A13 | `noop` relay → enroll, push and pull with device authentication only; no token, account table or events endpoint |

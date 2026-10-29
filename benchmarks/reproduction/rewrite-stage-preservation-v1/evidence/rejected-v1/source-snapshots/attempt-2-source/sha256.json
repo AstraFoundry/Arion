@@ -1,7 +1,0 @@
-{
-  "packages/core/domain/spelling.go": "816f0be0ab3b62afa685a94bae1cfa022ca1307928dc238172658296666a1e55",
-  "packages/core/domain/rewrite_layout.go": "cef0fb5d204c5ab3c7de41a29ce521eec3cd9f7ca192b83511d12a67e8fbc748",
-  "apps/desktop/infrastructure/llm/gguf/engine.go": "7b899c25a470a795181515438fad49e4e2e32c50f6c7f0bab0fb1a0374199f81",
-  "apps/desktop/infrastructure/llm/gguf/stage_native_test.go": "8660720bc5dce3233ecdce5d2d1c7fe691a16c60853e6bc17cc92fd32c4c9ce4",
-  "apps/desktop/infrastructure/llm/prompt/selected.go": "9a472d38401f23702b017f582c2a581b590f1b9e630cce13a889991939648e4e"
-}

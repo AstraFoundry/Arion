@@ -80,3 +80,9 @@ __pycache__/
 
 # Go test binaries from profiling
 *.test
+
+# Product smoke audio remains independently testable.
+!/apps/desktop/e2e/testdata/*.wav
+
+# Full research archives belong to the private evaluation repository.
+/benchmarks/

@@ -1,6 +1,0 @@
-{'request': {'version': 2, 'id': 1, 'op': 'load', 'runtime': '/Users/steven/code/Arion/apps/desktop/resources/darwin-arm64/llm', 'model': '/Users/steven/code/Arion/.workspace/rewrite-small-models-v1', 'threads': 4, 'maxLength': 4096, 'maxNewTokens': 256}, 'response': {'id': 1, 'ok': True, 'loadMs': 8931.867, 'promptId': 'selector-screen-v1-baseline+work-scope-v4', 'peakRssBytes': 81297408}, 'elapsedMs': 9392.105834092945}
-{'request': {'version': 2, 'id': 2, 'op': 'rewrite', 'session': 'integration-smoke', 'scene': 'work', 'text': '小陈负责设计，小刘负责测试，设计稿周三交，测试周五完成。'}, 'response': {'id': 2, 'ok': False, 'error': 'private GGUF request failed: HTTP 501'}, 'elapsedMs': 0.2024171408265829}
-Traceback (most recent call last):
-  File "/Users/steven/code/Arion/.workspace/rewrite-product-integration/smoke.py", line 25, in <module>
-    if not r['ok']:raise RuntimeError(r)
-RuntimeError: {'id': 2, 'ok': False, 'error': 'private GGUF request failed: HTTP 501'}

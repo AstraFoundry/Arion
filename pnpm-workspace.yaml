@@ -1,6 +1,6 @@
 packages:
   - apps/site
-  - tools/*
+  - tools/driver
 
 packageManagerStrict: true
 packageManagerStrictVersion: true

@@ -86,7 +86,7 @@ Implementation order after a candidate passes development selection:
 
 ## Frozen experiment
 
-[`protocol.json`](../../benchmarks/reproduction/scene-rewrite-alignment-v1/protocol.json)
+[`protocol.json`](https://github.com/AstraFoundry/Arion-evaluation) (`benchmarks/reproduction/scene-rewrite-alignment-v1/protocol.json`)
 is the pre-generation treatment and gate declaration. The experiment uses the
 same provisioned Qwen3 1.7B INT4 weights, tokenizer, CPU provider, four threads,
 greedy generation and production engine. An isolated Go build overlay supplies
@@ -153,7 +153,7 @@ P0: replay the frozen verifier calibration and paired text generation; verify
 asset/source/fixture/row hashes, coverage and every retained failure. Run the
 existing core lifecycle tests to establish the unchanged foundation's behavior,
 not to claim the research policy is integrated. Commands and raw observations
-are linked from the [reproduction workflow](../../benchmarks/reproduction/scene-rewrite-alignment-v1/README.md).
+are linked from the [reproduction workflow](https://github.com/AstraFoundry/Arion-evaluation) (`benchmarks/reproduction/scene-rewrite-alignment-v1/README.md`).
 
 P0: before production adoption, build independently reviewed natural-dictation
 and frozen-ASR corpora, split by speaker/session/content family, with unchanged
@@ -179,7 +179,7 @@ adoption gates have evidence.
 
 ## Completed experiment
 
-[The completed study](../../benchmarks/results/scene-rewrite-alignment-v1/README.md)
+[The completed study](https://github.com/AstraFoundry/Arion-evaluation) (`benchmarks/results/scene-rewrite-alignment-v1/README.md`)
 retains 96 actual generation and 113 verifier calls, full planned coverage and
 the development-frozen no-promotion decision. Scene/envelope raises the frozen
 test content-and-layout proxy from 10/24 to 18/24 but permits concrete unsafe
@@ -195,7 +195,7 @@ independent meaning review, and native lifecycle/latency acceptance.
 
 ## Focused prompt v2 follow-up
 
-[The completed v2 study](../../benchmarks/results/scene-rewrite-prompt-v2/README.md)
+[The completed v2 study](https://github.com/AstraFoundry/Arion-evaluation) (`benchmarks/results/scene-rewrite-prompt-v2/README.md`)
 adds an explicit output language and isolates demonstrations by actual scene and
 language. Development selected the demonstration variant before 32 fresh cases
 and 24 previous-test regressions were evaluated against production. Every one
@@ -216,7 +216,7 @@ followed by fresh test data and the independent/native acceptance above.
 The user-selected examples establish a concrete style preference: group an
 owner with the matching task/date, separate an email salutation from its body,
 and preserve concise natural wording instead of forced headings or formal
-phrases. [The structural/context follow-up](../../benchmarks/results/context-repair-v1/README.md)
+phrases. [The structural/context follow-up](https://github.com/AstraFoundry/Arion-evaluation) (`benchmarks/results/context-repair-v1/README.md`)
 retains 16 structural and 72 context-conditioned outputs with complete assistant
 review. The two user-selected pairs are exposed demonstrations, not test data.
 
@@ -238,7 +238,7 @@ behavior remains unchanged; independent and native release gates still apply.
 
 ## Complete text-validator removal experiment
 
-[The validator-ablation study](../../benchmarks/results/rewrite-no-validator-v1/README.md)
+[The validator-ablation study](https://github.com/AstraFoundry/Arion-evaluation) (`benchmarks/results/rewrite-no-validator-v1/README.md`)
 compares two prompt candidates in development, freezes the selected candidate
 for diagnosis, and compares it with the previous candidate composite on 24
 known context regressions and 24 newly authored inputs. All 128 raw proposals
@@ -258,7 +258,7 @@ calibrated replacement, while wholesale removal fails this experiment.
 
 ## Orthographic alignment prompt follow-up
 
-[The OCR-alignment rerun](../../benchmarks/results/ocr-alignment-v2/README.md)
+[The OCR-alignment rerun](https://github.com/AstraFoundry/Arion-evaluation) (`benchmarks/results/ocr-alignment-v2/README.md`)
 separates different ASR/OCR spelling from conflicting facts, teaches complete
 identifier/name copying for a unique relevant phonetic match, and explicitly
 preserves source dates/amounts/status and all restrictions. Two wording variants
@@ -283,19 +283,19 @@ source-based diagnosis and this negative parity evidence.
 
 ## Fixed-model input packaging follow-up
 
-The [packaging comparison](../../benchmarks/results/rewrite-packaging-v1/README.md)
+The [packaging comparison](https://github.com/AstraFoundry/Arion-evaluation) (`benchmarks/results/rewrite-packaging-v1/README.md`)
 compares XML/JSON/labeled sections with identical models, prompts, demonstrations
 and absolute decoding budget. All 150 outputs were inspected. Labeled sections
 improve raw fidelity from 17/24 to 22/24 on old regressions and 17/24 to 20/24 on
 new probes, but required fresh repairs only improve from 3/7 to 4/7. Ambiguous
 spelling guesses and missing task grouping remain failures. It is a development
 baseline, not a release decision. No production integration is claimed. The
-[offline report and rebuild instructions](../../benchmarks/results/rewrite-release/README.md) consolidates
+[offline report and rebuild instructions](https://github.com/AstraFoundry/Arion-evaluation) (`benchmarks/results/rewrite-release/README.md`) consolidates
 reviewed iterations and explicitly tracks remaining macOS release evidence.
 
 The clean-demonstration / instruction-language development follow-up reviewed
 54 outputs: both alternatives fell from 16/18 faithful to 14/18, so evaluation
-was not run. The [scene-task wrapper](../../benchmarks/results/rewrite-task-wrapper-v1/README.md)
+was not run. The [scene-task wrapper](https://github.com/AstraFoundry/Arion-evaluation) (`benchmarks/results/rewrite-task-wrapper-v1/README.md`)
 then reviewed 132 outputs with matched models/templates: new scene-ready outputs
 improved 14→16/24, but old fidelity declined 22→21/24 and request p95 increased
 1150→1590 ms. A question became an assertion and passed strict validation. Neither
@@ -303,7 +303,7 @@ follow-up replaces the labeled development baseline or qualifies for production.
 
 ## Entity evidence and actual Vision follow-up
 
-The [entity-policy diagnostic](../../benchmarks/results/rewrite-entity-evidence-v1/README.md)
+The [entity-policy diagnostic](https://github.com/AstraFoundry/Arion-evaluation) (`benchmarks/results/rewrite-entity-evidence-v1/README.md`)
 reviewed 100 native LLM outputs and 24 actual macOS Vision observations on 12
 authored images. An explicit exact-match-first rule did not improve development:
 both policies preserve 5/8 correct-source controls and repair 3/5 required terms.
@@ -315,27 +315,27 @@ unique phonetic match alone cannot establish truth. OCR correction remains in
 scope; stronger source/context evidence and natural-data validation are needed.
 
 The original alignment-v1 96 generations and 113 audit outputs now also have
-[complete retrospective review](../../benchmarks/reproduction/rewrite-retrospective-v1/README.md).
+[complete retrospective review](https://github.com/AstraFoundry/Arion-evaluation) (`benchmarks/reproduction/rewrite-retrospective-v1/README.md`).
 This adds current assistant judgments without altering original observations,
 selection or proxy scores. The HTML distinguishes the evidence and includes
 all original audit outputs separately from rewriting totals.
 
 ## Completed model and packaging diagnostics
 
-The [checkpoint screen](../../benchmarks/runs/rewrite-model-screen-v1/report/review.md), [serializer screen](../../benchmarks/runs/rewrite-4b-packaging-v1/report/review.md) and [entity follow-up](../../benchmarks/runs/rewrite-4b-entity-v1/report/review.md) retain 56 personally inspected generations completed before the user excluded further 4B testing. On eight exposed work/email probes, larger-checkpoint fidelity stayed6/8; JSON reached7/8 but missed the recipient repair; exact-match priority fell7→6/8. No candidate qualified, and the16 frozen follow-up probes were not generated. These checkpoint/export comparisons do not isolate parameter count or quantization.
+The [checkpoint screen](https://github.com/AstraFoundry/Arion-evaluation) (`benchmarks/runs/rewrite-model-screen-v1/report/review.md`), [serializer screen](https://github.com/AstraFoundry/Arion-evaluation) (`benchmarks/runs/rewrite-4b-packaging-v1/report/review.md`) and [entity follow-up](https://github.com/AstraFoundry/Arion-evaluation) (`benchmarks/runs/rewrite-4b-entity-v1/report/review.md`) retain 56 personally inspected generations completed before the user excluded further 4B testing. On eight exposed work/email probes, larger-checkpoint fidelity stayed6/8; JSON reached7/8 but missed the recipient repair; exact-match priority fell7→6/8. No candidate qualified, and the16 frozen follow-up probes were not generated. These checkpoint/export comparisons do not isolate parameter count or quantization.
 
 Subsequent inference must prioritize the latest model generations at <=2B; do not rerun4B or older Qwen generations. Historical1.7B observations remain reference evidence. Candidate acquisition must pin revisions, licenses, actual tensor/model counts and runtime bytes. Cross-runtime timings are not a model-only causal comparison.
 
 ## Latest <=2B generation screen
 
-The [latest small-model screen](../../benchmarks/runs/rewrite-small-models-v1/README.md) reviewed48 unfiltered outputs from Qwen3.5-0.8B/2B text-only Q4_K_M bundles (actual tensors0.752B/1.882B). Both use the same pinned llama.cpp CPU4/GPU0/non-thinking configuration and24 fixed cases. Meaning is retained22/24 vs23/24; useful scene output20/24 vs23/24. Both match four known-answer repairs but still guess an ambiguous function;0.8B also replaces one dictated message with an OCR list.2B groups both owner/deadline probes. Cosmetic single bullets are reported separately from semantic failures. No model is promoted.
+The [latest small-model screen](https://github.com/AstraFoundry/Arion-evaluation) (`benchmarks/runs/rewrite-small-models-v1/README.md`) reviewed48 unfiltered outputs from Qwen3.5-0.8B/2B text-only Q4_K_M bundles (actual tensors0.752B/1.882B). Both use the same pinned llama.cpp CPU4/GPU0/non-thinking configuration and24 fixed cases. Meaning is retained22/24 vs23/24; useful scene output20/24 vs23/24. Both match four known-answer repairs but still guess an ambiguous function;0.8B also replaces one dictated message with an OCR list.2B groups both owner/deadline probes. Cosmetic single bullets are reported separately from semantic failures. No model is promoted.
 
 Without prompt caching, request p95 is2029/4466ms, maximum sampled RSS1.65/3.16GB. These are M4 diagnostic observations, not weak-machine acceptance, peak RSS or stop-to-insertion latency. Historical ONNX calls used prefix caching and are not a causal speed comparison. Continue0.8B prompt/cache work for constrained devices;2B remains a quality comparator. No older-Qwen or4B inference was added.
 
 ## Latest0.8B prompt and cache follow-ups
 
-The [four-scene prompt package](../../benchmarks/runs/rewrite-small-prompt-v1/README.md) reviewed32 development outputs. Both packages retain meaning14/16; useful scene organization improves10→11/16, but the candidate loses getProfile repair, still guesses readCash and splits owners from deadlines. The predeclared development gate fails; frozen fresh24 are not generated. Numeric paraphrases are judged by meaning, not literal overlap:4 seconds preserves the correction away from40. No candidate is promoted.
+The [four-scene prompt package](https://github.com/AstraFoundry/Arion-evaluation) (`benchmarks/runs/rewrite-small-prompt-v1/README.md`) reviewed32 development outputs. Both packages retain meaning14/16; useful scene organization improves10→11/16, but the candidate loses getProfile repair, still guesses readCash and splits owners from deadlines. The predeclared development gate fails; frozen fresh24 are not generated. Numeric paraphrases are judged by meaning, not literal overlap:4 seconds preserves the correction away from40. No candidate is promoted.
 
-The [default-batch cache screen](../../benchmarks/runs/rewrite-small-cache-v1/README.md) reviewed40 outputs:32 measured requests plus8 warmups over8 exposed probes, two cache policies and two orders. Actual prefix hits551/572 tokens reduce request p95≈2644→701ms, but raw cache parity is14/16. Both alternatives preserve meaning; this still fails the existing exact-greedy-output requirement. Order parity is16/16; synthetic warmup canaries do not appear in later bodies, which is not a general privacy proof.
+The [default-batch cache screen](https://github.com/AstraFoundry/Arion-evaluation) (`benchmarks/runs/rewrite-small-cache-v1/README.md`) reviewed40 outputs:32 measured requests plus8 warmups over8 exposed probes, two cache policies and two orders. Actual prefix hits551/572 tokens reduce request p95≈2644→701ms, but raw cache parity is14/16. Both alternatives preserve meaning; this still fails the existing exact-greedy-output requirement. Order parity is16/16; synthetic warmup canaries do not appear in later bodies, which is not a general privacy proof.
 
-A [logical-batch1 attempt](../../benchmarks/runs/rewrite-small-cache-parity-v1/README.md) fails before generation: the pinned native capability probe needs2 tokens. Failed status, original log, environment and corresponding source are retained. A separate [physical-microbatch1 screen](../../benchmarks/runs/rewrite-small-cache-parity-v2/README.md) retains normal logical capacity and reviews another40 outputs. Cache parity and order parity are16/16 each on this subset, but cached request p95≈1614ms; forward/reverse cached p95≈921/1614ms show substantial timing drift. Uncached p95≈9845ms and cold prefix warmups remain explicit. The drift cause is unproven. This is not stop-to-insertion latency or low-end/concurrent-ASR acceptance, and neither cache policy is activated in production.
+A [logical-batch1 attempt](https://github.com/AstraFoundry/Arion-evaluation) (`benchmarks/runs/rewrite-small-cache-parity-v1/README.md`) fails before generation: the pinned native capability probe needs2 tokens. Failed status, original log, environment and corresponding source are retained. A separate [physical-microbatch1 screen](https://github.com/AstraFoundry/Arion-evaluation) (`benchmarks/runs/rewrite-small-cache-parity-v2/README.md`) retains normal logical capacity and reviews another40 outputs. Cache parity and order parity are16/16 each on this subset, but cached request p95≈1614ms; forward/reverse cached p95≈921/1614ms show substantial timing drift. Uncached p95≈9845ms and cold prefix warmups remain explicit. The drift cause is unproven. This is not stop-to-insertion latency or low-end/concurrent-ASR acceptance, and neither cache policy is activated in production.

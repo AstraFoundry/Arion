@@ -69,7 +69,7 @@
 
 ```sh
 make install        # 安装锁定版本的 pnpm 工作区依赖 (--frozen-lockfile)
-make check          # 文档、JSON、Go 分层边界、工作流检查，以及 core/sync/updates/i18n/评测测试
+make check          # 文档、JSON、Go 分层边界、工作流检查，以及 core/sync/updates/i18n/公开 Driver 测试
 make desktop-check  # 桌面端测试、键盘检查与 go vet (cgo)
 make desktop-dev    # 准备原生运行时并以开发模式启动 Arion Dev
 make build desktop  # 在 apps/desktop/build/ 下打包 Arion.app + DMG (macOS) 或 NSIS 安装包 (Windows)
@@ -88,7 +88,9 @@ make site-check     # 宣传站点 (apps/site)：i18n、类型、lint、测试�
 | **架构与规范** | [系统架构 (`docs/project/architecture.md`)](docs/project/architecture.md) · [仓库职责划分 (`docs/project/repository.md`)](docs/project/repository.md) · [产品规范 (`specs/README.md`)](specs/README.md) · [架构决策记录 (`docs/decisions/README.md`)](docs/decisions/README.md) |
 | **前端与后端** | [前端 FSD 规范 (`docs/frontend/README.md`)](docs/frontend/README.md) · [界面本地化 (`docs/frontend/i18n.md`)](docs/frontend/i18n.md) · [后端 DDD 规范 (`docs/backend/README.md`)](docs/backend/README.md) |
 | **运维与部署** | [本地开发 (`docs/operations/local-dev.md`)](docs/operations/local-dev.md) · [部署与发布门禁 (`docs/operations/deployment.md`)](docs/operations/deployment.md) · [发布状态 (`docs/operations/release-status.md`)](docs/operations/release-status.md) · [Arion 中心服务 (`deploy/center/README.md`)](deploy/center/README.md) · [同步中继运维 (`deploy/sync/README.md`)](deploy/sync/README.md) |
-| **质量与评测** | [质量与测试 (`docs/quality/README.md`)](docs/quality/README.md) · [原生 E2E (`docs/quality/e2e.md`)](docs/quality/e2e.md) · [研究证据 (`docs/research/README.md`)](docs/research/README.md) · [评测运行器 (`tools/evaluation/README.md`)](tools/evaluation/README.md) · [基准测试结果 (`benchmarks/README.md`)](benchmarks/README.md) |
+| **质量与评测** | [质量与测试 (`docs/quality/README.md`)](docs/quality/README.md) · [原生 E2E (`docs/quality/e2e.md`)](docs/quality/e2e.md) · [研究证据 (`docs/research/README.md`)](docs/research/README.md) · [产品 Driver (`tools/driver/README.md`)](tools/driver/README.md) · [基准测试结果 (`benchmarks/README.md`)](https://github.com/AstraFoundry/Arion-evaluation) (`benchmarks/README.md`) |
+
+公开产品仓与内部评估仓的职责见[双仓说明](docs/project/repository-split.md)。
 
 ## 贡献者
 

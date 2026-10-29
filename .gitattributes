@@ -18,3 +18,6 @@ scripts/licenses/GPL-3.0.txt -text !eol
 
 # Pinned English word lists and notices retain their original upstream bytes.
 scripts/data/english/** -text !eol -whitespace
+
+# Reviewed public regression fixtures retain their original bytes.
+**/testdata/** -text !eol -whitespace

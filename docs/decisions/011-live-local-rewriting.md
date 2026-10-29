@@ -8,9 +8,9 @@ Accepted (product decision). Supersedes the review-before-insert rule of [ADR 00
 
 ## Context
 
-Typeless, Doubao and Chatterfly show text being corrected while the user is still speaking, and insert a polished result when they stop ([competitor research](../research/competitor-rewrite.md)). Arion's earlier Qwen diagnostics ([report](../../benchmarks/results/qwen-pipeline-diagnostic-v1/README.md)) measured 0.6B–4B checkpoints in a Python worker that recomputed the whole prompt per request: 4B took 6–15 s, too slow for interactive use, and smaller checkpoints rarely applied spoken self-corrections.
+Typeless, Doubao and Chatterfly show text being corrected while the user is still speaking, and insert a polished result when they stop ([competitor research](../research/competitor-rewrite.md)). Arion's earlier Qwen diagnostics ([report](https://github.com/AstraFoundry/Arion-evaluation) (`benchmarks/results/qwen-pipeline-diagnostic-v1/README.md`)) measured 0.6B–4B checkpoints in a Python worker that recomputed the whole prompt per request: 4B took 6–15 s, too slow for interactive use, and smaller checkpoints rarely applied spoken self-corrections.
 
-Reusing the KV state of a fixed instruction-and-demonstration prefix, and extending it as the transcript grows, removes most of that cost. Measured on Apple M4 CPU (see the [live pipeline report](../../benchmarks/results/live-rewrite-v1/README.md)), a final Qwen3 1.7B rewrite takes 0.5 s at the median after stop, so a small local model can preview edits during speech and deliver one validated rewrite after stop.
+Reusing the KV state of a fixed instruction-and-demonstration prefix, and extending it as the transcript grows, removes most of that cost. Measured on Apple M4 CPU (see the [live pipeline report](https://github.com/AstraFoundry/Arion-evaluation) (`benchmarks/results/live-rewrite-v1/README.md`)), a final Qwen3 1.7B rewrite takes 0.5 s at the median after stop, so a small local model can preview edits during speech and deliver one validated rewrite after stop.
 
 ## Decision
 
@@ -38,5 +38,5 @@ Reusing the KV state of a fixed instruction-and-demonstration prefix, and extend
 ## References
 
 - [009 Contextual rewriting](../../specs/009-contextual-rewrite.md), [002 Speech pipeline](../../specs/002-speech-pipeline.md).
-- [Live pipeline benchmark report](../../benchmarks/results/live-rewrite-v1/README.md) and [methodology](../research/live-rewrite-benchmark.md).
+- [Live pipeline benchmark report](https://github.com/AstraFoundry/Arion-evaluation) (`benchmarks/results/live-rewrite-v1/README.md`) and [methodology](../research/live-rewrite-benchmark.md).
 - [Qwen pipeline diagnostics](../research/qwen-pipeline-diagnostics.md), [paper strategies](../research/qwen-paper-strategies.md).

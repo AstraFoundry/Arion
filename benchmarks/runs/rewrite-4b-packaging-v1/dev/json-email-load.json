@@ -1,8 +1,0 @@
-{
-  "id": 1,
-  "ok": true,
-  "loadMs": 6836.995,
-  "promptId": "ocr-alignment-v2-aligned-email-zh",
-  "prefixTokens": 528,
-  "peakRssBytes": 4949458944
-}

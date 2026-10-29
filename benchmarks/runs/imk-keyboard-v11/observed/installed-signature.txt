@@ -1,9 +1,0 @@
-Executable=/Users/steven/Library/Input Methods/ArionInput.app/Contents/MacOS/ArionInput
-Identifier=si.astrafoundry.inputmethod.arion
-Format=app bundle with Mach-O universal (x86_64 arm64)
-CodeDirectory v=20400 size=602 flags=0x2(adhoc) hashes=12+3 location=embedded
-Signature=adhoc
-Info.plist entries=18
-TeamIdentifier=not set
-Sealed Resources version=2 rules=13 files=37
-Internal requirements count=0 size=12

@@ -1,8 +1,0 @@
-{
-  "id": 1,
-  "ok": true,
-  "loadMs": 7055.44,
-  "promptId": "4b-json-entity-priority-v1-work",
-  "prefixTokens": 545,
-  "peakRssBytes": 4970921984
-}

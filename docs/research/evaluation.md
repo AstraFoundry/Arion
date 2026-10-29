@@ -1,6 +1,8 @@
 # Evaluation procedure
 
-Model-comparison runs measure Arion's production pipeline on device (see [benchmark results](../../benchmarks/README.md)); their aggregates select the default bundle. Budgets in [006 Models](../../specs/006-models.md) remain provisional engineering gates.
+Research commands qualified with `/path/to/Arion-evaluation` run in the private [Arion evaluation repository](https://github.com/AstraFoundry/Arion-evaluation). Product checks run in this public checkout.
+
+Model-comparison runs measure Arion's production pipeline on device (see [benchmark results](https://github.com/AstraFoundry/Arion-evaluation) (`benchmarks/README.md`)); their aggregates select the default bundle. Budgets in [006 Models](../../specs/006-models.md) remain provisional engineering gates.
 
 ## Record each run
 
@@ -29,6 +31,6 @@ Installed-package evidence cannot prove latency, server models, traffic or succe
 
 ## Executable automation
 
-The [evaluation workspace](../../tools/evaluation/README.md) implements plans, corpus/hash validation, a live driver protocol, metric reports and paired bootstrap. See [paper methodology](benchmark-methodology.md), [streaming dataset research](streaming-datasets.md) and [008 Evaluation](../../specs/008-evaluation.md). `make ablation-plan` and `make stream-plan` perform no inference; `make bench-run`/`make stream-bench` require provisioned audio/models and a reviewed driver.
+The private [evaluation workspace](https://github.com/AstraFoundry/Arion-evaluation) implements plans, corpus/hash validation, metric reports and paired bootstrap. It reuses the public [driver contract](../../tools/driver/README.md) for live product transport. See [paper methodology](benchmark-methodology.md), [streaming dataset research](streaming-datasets.md) and [008 Evaluation](../../specs/008-evaluation.md). `make -C /path/to/Arion-evaluation ablation-plan` and `make -C /path/to/Arion-evaluation stream-plan` perform no inference; `make -C /path/to/Arion-evaluation bench-run`/`make -C /path/to/Arion-evaluation stream-bench` require provisioned audio/models and a reviewed driver.
 
 The [rewrite chain](rewrite-evaluation.md) adds optional scene-aware LLM experiments with evaluator-only intent labels and blind human rating export/import. No ONNX candidate is selected by a plan, a file inventory or a synthetic protocol test.

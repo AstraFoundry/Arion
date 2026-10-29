@@ -1,4 +1,0 @@
-=== RUN   TestCleanupReuseParity
---- PASS: TestCleanupReuseParity (39.13s)
-PASS
-ok  	arion.local/desktop/infrastructure/llm/engine	41.133s

@@ -1,9 +1,0 @@
-{
-  "selected": null,
-  "qualifiedForFresh": false,
-  "promotion": false,
-  "freezeSha256": "67dbcc69a0637ee4d9def051833f19d6b909b6c4de9aece576a2be3311fec235",
-  "devResultsSha256": "25489fcf0116e4dcfabaf9dd343e1d3e7578e181dae148a8e6dbc23ffa61a98f",
-  "devReviewSha256": "b3a2d0115ab4e95e2068b6e19e41ae3e5f9a3c58601720780a837076305537cc",
-  "reason": "Labeled6/8, JSON7/8 and XML5/8 faithful. No format meets the frozen8/8 and both-repairs development gate. Fresh16 remains ungenerated; no format promotion."
-}

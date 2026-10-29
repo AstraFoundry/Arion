@@ -1,0 +1,17 @@
+{
+  "name": "@arion/driver",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./protocol": "./src/protocol.mjs",
+    "./artifacts": "./src/artifacts.mjs",
+    "./e2e": "./src/e2e.mjs"
+  },
+  "scripts": {
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

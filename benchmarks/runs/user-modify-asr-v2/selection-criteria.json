@@ -1,8 +1,0 @@
-{
-  "status": "frozen_before_development_results",
-  "candidates": ["retrieved_exact", "retrieved_fuzzy", "retrieved_hint"],
-  "eligibility": "No added wrong-entity cases, no regression of baseline-zero-error speech and no nonspeech emissions versus empty-context baseline on exposed development data",
-  "order": ["maximize primaryEntityHits", "minimize all speech worsened cases", "minimize pipeline p95", "prefer exact then fuzzy then hint on exact ties"],
-  "ifNoCandidateEligible": "Record failure to qualify; pick the least harmful candidate for a labelled diagnostic test comparison without adoption claims",
-  "testUse": "One frozen test run; no post-test tuning. Test audio, references and voices were frozen before development inference."
-}

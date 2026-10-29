@@ -1,5 +1,0 @@
-
-> arion-monorepo@0.0.0 rewrite:release:test /Users/steven/code/Arion
-> node scripts/rewrite-study-command.mjs release test
-
- ELIFECYCLE  Command failed with exit code 1.

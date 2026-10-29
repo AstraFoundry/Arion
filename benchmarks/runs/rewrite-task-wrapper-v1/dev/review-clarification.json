@@ -1,9 +1,0 @@
-{
-  "reviewSha256": "ce34469e7ef5b4a5571f27904463bc70f641501b8f67eecec365be8c5d16d40b",
-  "correction": {
-    "variant": "tasked",
-    "id": "owner-anchor",
-    "removeIssue": "missing_requested_grouping"
-  },
-  "reason": "The success note and both faithful/scene-useful ratings are correct. A stale issue tag was retained when adapting the row review; remove that tag for display only. No scores, source/output or frozen selection are changed."
-}

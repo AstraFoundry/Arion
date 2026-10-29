@@ -1,6 +1,0 @@
-
-> arion-monorepo@0.0.0 check /Users/steven/code/Arion
-> node scripts/check-repository.mjs
-
-benchmarks/reproduction/qwen17-accessibility-v1/README.md: missing local target ../../corpora/asr-v1/README.md
- ELIFECYCLE  Command failed with exit code 1.

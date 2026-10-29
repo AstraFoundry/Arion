@@ -151,7 +151,7 @@
       "evaluations": [
         {
           "runId": "native-asr-v1-pipeline",
-          "report": "benchmarks/runs/native-asr-v1/pipeline-v2/summary.json",
+          "report": "models/evaluations/native-asr-v1-pipeline.json",
           "hardware": "darwin-arm64",
           "split": "dev",
           "errorRates": {

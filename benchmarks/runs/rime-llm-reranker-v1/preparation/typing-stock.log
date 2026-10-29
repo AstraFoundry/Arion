@@ -1,6 +1,0 @@
-
-> arion-monorepo@0.0.0 ime:rerank /Users/steven/code/Arion
-> node scripts/rime-rerank-command.mjs run --workspace .workspace/rime-llm-reranker-v1 --candidates .workspace/rime-llm-reranker-v1/candidates --mode typing --out .workspace/rime-llm-reranker-v1/typing-stock
-
-Completed 10/22 typing fixtures
-Completed 20/22 typing fixtures

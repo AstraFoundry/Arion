@@ -1,6 +1,0 @@
-{
-  "reason": "Add replay-verified supplementary choice-direction/token observations to summary; no raw, meaning, usefulness or selection label changes.",
-  "initialSummarySha256": "63c38992bc894f34a4703f1328148fb993b5a8c4f781ff4403edaa98a0fc4a9a",
-  "currentSummarySha256": "de21a1dea2627a6526d7f2037d59371b66b4ff7d681cb0bebb91d9c517e362fa",
-  "newModelGenerations": 0
-}

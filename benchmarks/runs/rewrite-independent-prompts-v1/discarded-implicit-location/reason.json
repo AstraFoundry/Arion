@@ -1,4 +1,0 @@
-{
-  "disposition": "discarded",
-  "reason": "Initial CLI launches did not bind an isolated session location; their session pointed to Arion. Neither draft nor revision was supplied to the accepted fresh session."
-}

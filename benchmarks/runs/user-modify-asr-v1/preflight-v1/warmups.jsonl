@@ -1,5 +1,0 @@
-{"arm": "none", "text": "The meeting room is ready for the next discussion.", "elapsedMs": 3383.8187500368804, "promptTokens": 49, "generationTokens": 13}
-{"arm": "destinations", "text": "The meeting room is ready for the next discussion.", "elapsedMs": 582.4515419080853, "promptTokens": 64, "generationTokens": 13}
-{"arm": "pairs", "text": "The meeting room is ready for the next discussion.", "elapsedMs": 1533.874582964927, "promptTokens": 98, "generationTokens": 13}
-{"arm": "tagged_pairs", "text": "The meeting room is ready for the next discussion.", "elapsedMs": 1688.8728751800954, "promptTokens": 108, "generationTokens": 13}
-{"arm": "all_pairs", "text": "The meeting room is ready for the next discussion.", "elapsedMs": 861.9762919843197, "promptTokens": 136, "generationTokens": 13}

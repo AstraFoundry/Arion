@@ -1,6 +1,6 @@
 # Closed-loop memory and contextual disambiguation
 
-The earlier [35% to 55% diagnostic](../../benchmarks/results/user-modify-asr-v2/README.md) uses authored prior pairs. It does not measure how those pairs were acquired. The [new audio study](../../benchmarks/results/user-modify-asr-v3/README.md) begins with an empty encrypted vocabulary, recognizes earlier-session audio, applies authored user corrections through production extraction/persistence, reopens the file and tests different later utterances. The separate [context probe](../../benchmarks/results/context-memory-v1/README.md) investigates ordinary-word ambiguity with actual text-model inference.
+The earlier [35% to 55% diagnostic](https://github.com/AstraFoundry/Arion-evaluation) (`benchmarks/results/user-modify-asr-v2/README.md`) uses authored prior pairs. It does not measure how those pairs were acquired. The [new audio study](https://github.com/AstraFoundry/Arion-evaluation) (`benchmarks/results/user-modify-asr-v3/README.md`) begins with an empty encrypted vocabulary, recognizes earlier-session audio, applies authored user corrections through production extraction/persistence, reopens the file and tests different later utterances. The separate [context probe](https://github.com/AstraFoundry/Arion-evaluation) (`benchmarks/results/context-memory-v1/README.md`) investigates ordinary-word ambiguity with actual text-model inference.
 
 ## Primary research
 
