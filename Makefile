@@ -1,7 +1,7 @@
 .DEFAULT_GOAL := help
 SUITE ?= tests/e2e/desktop-scenarios.json
 export SUITE DRIVER OUT
-.PHONY: build check contributors-update core-check desktop-check desktop-dev desktop-libs docs e2e e2e-macos e2e-paste e2e-scenarios format help i18n-check install keyboard-check keyboard-publisher-check keyboard-stage keyboard-verify keyboard-vocabulary-check lint notifications-check notifications-prepare reset rewrite-e2e site-assets site-check site-deploy sync-check sync-integration test tooling-test updater-check updater-e2e updates-check workflows-check
+.PHONY: build check contributors-update core-check desktop-check desktop-dev desktop-production desktop-status desktop-libs docs e2e e2e-macos e2e-paste e2e-scenarios format help i18n-check install keyboard-check keyboard-publisher-check keyboard-stage keyboard-verify keyboard-vocabulary-check lint notifications-check notifications-prepare reset rewrite-e2e site-assets site-check site-deploy sync-check sync-integration test tooling-test updater-check updater-e2e updates-check workflows-check
 
 # Make treats the component as a second goal; validate before any recipes run.
 ifneq ($(filter build,$(MAKECMDGOALS)),)
@@ -77,8 +77,14 @@ desktop-libs: ## Stage speech runtimes, the LLM worker, localized permission cop
 build: ## Build a component: make build desktop | make build site (desktop signing follows ENV)
 	@node scripts/build.mjs $(word 2,$(MAKECMDGOALS))
 
-desktop-dev: ## Launch the native app in development mode
+desktop-dev: ## Launch an exclusive development session with persistent macOS signing
 	@node scripts/desktop-command.mjs dev
+
+desktop-production: ## Open the installed signed macOS release after quitting development
+	@node scripts/desktop-session.mjs production
+
+desktop-status: ## Print actual macOS desktop executable paths and hashes
+	@node scripts/desktop-session.mjs status
 
 reset: ## Reset local data and system state; append keep-models or other keep-* suffixes; DRY_RUN=1 previews
 ifeq ($(MAKECMDGOALS),reset desktop onboarding)
@@ -155,4 +161,4 @@ notifications-prepare: ## Build an isolated native notification consent probe
 	pnpm notifications:prepare
 
 
-.PHONY: build check contributors-update core-check desktop-check desktop-dev desktop-libs docs e2e e2e-macos e2e-paste e2e-scenarios format help i18n-check install keyboard-check keyboard-publisher-check keyboard-stage keyboard-verify keyboard-vocabulary-check lint notifications-check notifications-prepare reset rewrite-e2e site-assets site-check site-deploy sync-check sync-integration test tooling-test updater-check updater-e2e updates-check workflows-check
+.PHONY: build check contributors-update core-check desktop-check desktop-dev desktop-production desktop-status desktop-libs docs e2e e2e-macos e2e-paste e2e-scenarios format help i18n-check install keyboard-check keyboard-publisher-check keyboard-stage keyboard-verify keyboard-vocabulary-check lint notifications-check notifications-prepare reset rewrite-e2e site-assets site-check site-deploy sync-check sync-integration test tooling-test updater-check updater-e2e updates-check workflows-check

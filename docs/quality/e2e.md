@@ -160,3 +160,9 @@ The validated DLL tests read actual typed candidate metadata and confirm caret s
 ## Custom shortcut hooks
 
 The Windows native suite also runs `TestWindowsCustomShortcutHook` for F8 and Ctrl+F8, both release orders and immediate hook teardown. `TestWindowsModifierPrefixChordHook` configures Right Ctrl alongside Ctrl+F8 and requires a pending modifier, chord activation and exactly one chord release in either release order, without a trailing solo activation. It requires the interactive Windows desktop; pure cross-platform interpretation tests do not substitute for this native check. See [shortcut configuration](../project/dictation-shortcuts.md).
+
+The local product-harness check can replay a licensed public WAV through the packaged development app and its actual recognizer and rewriter. Use the existing `ARION_E2E_CONTROL` interface with an isolated data directory, an independent verified model copy, and the owned editor fixture. Activate that fixture through LaunchServices before capture; launching both applications in the background does not establish real editor focus. Require the actual editor edit count, commit outcome, processed clipboard contents, and clipboard restoration. This check needs no separate Accessibility grant for a test runner when the signed development app already owns its permissions.
+
+## Development session identity
+
+DSK-A23 follows the [local switching workflow](../operations/local-dev.md#switch-between-the-release-and-development). Record actual executable paths and hashes before each shortcut run. Rebuild twice with the same persistent signing identity and verify the real OS permission state, then return to the installed release and compare its saved profile and update state. Script preflight, bootstrap recovery, and credential namespace tests do not replace native permission continuity.
