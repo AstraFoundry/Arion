@@ -38,6 +38,7 @@
 - [`docs/frontend/public-api.md`](docs/frontend/public-api.md) — public API and re-export rules.
 - [`docs/frontend/import-rules.md`](docs/frontend/import-rules.md) — cross-layer and cross-slice import rules.
 - [`docs/frontend/i18n.md`](docs/frontend/i18n.md) — interface languages, typed copy keys, formatting and completeness gates.
+- [`docs/frontend/site.md`](docs/frontend/site.md) and [`docs/frontend/blog.md`](docs/frontend/blog.md) — the `apps/site` marketing site (the only TypeScript/React code) and its blog.
 - [`docs/frontend/ui-patterns.md`](docs/frontend/ui-patterns.md) — semantic styling, no hardcoded copy, no redundant copy.
 - [`docs/quality/agent-skills.md`](docs/quality/agent-skills.md) — Agent Skills for UI craft, motion, and anti-slop. Apply them when writing or reviewing UI.
 
@@ -58,7 +59,7 @@
 - [`tools/evaluation/README.md`](tools/evaluation/README.md) — pnpm/Make evaluation commands and live driver protocol.
 - [`docs/quality/e2e.md`](docs/quality/e2e.md) — actual native window and product OS scenarios.
 - [`docs/quality/README.md`](docs/quality/README.md) — testing strategy and code-review expectations.
-- [`docs/quality/agent-skills.md`](docs/quality/agent-skills.md) — installed Agent Skills (`.agents/skills/`).
+- [`docs/quality/agent-skills.md`](docs/quality/agent-skills.md) — installed Agent Skills (canonical `.claude/skills/`; `.agents` is a symlink to `.claude`).
 - [`docs/decisions/README.md`](docs/decisions/README.md) — architecture decision records (ADRs).
 
 ---
@@ -95,7 +96,7 @@
 - An entity owns domain data and rules (e.g., `User`, `Order`). It has no UI and no HTTP client logic.
 - `shared` contains framework-agnostic utilities, UI primitives, and configuration that can be used by any layer.
 - Imports go only downward: `app` → `pages` → `widgets` → `features` → `entities` → `shared`.
-- Each Go UI slice exposes exported symbols from its package; any future TypeScript slice uses `index.ts`. Do not import internals of another slice.
+- Each Go UI slice exposes exported symbols from its package; each TypeScript slice in `apps/site` uses `index.ts`. Do not import internals of another slice.
 
 See [`docs/frontend/`](docs/frontend/README.md) for the full rules.
 
@@ -130,6 +131,12 @@ After completing a task, update the documentation if the task has changed any of
 2. If no doc exists for the new topic, create one under the correct `docs/` subdomain and add it to the nearest `README.md`.
 3. Keep docs concise, factual, and example-driven. Avoid future dates, day estimates, and speculative language.
 4. Do not let implementation and documentation drift.
+5. When you rename, remove or change a command, `pnpm` script, `make` target, test, setting, user-visible control, default or version identifier, search `docs/`, `specs/`, every README (including `README.zh-CN.md` and `README.ja.md`), `tools/evaluation/README.md` and `apps/site/content` for the old name or value, and fix every hit in the same change. Frozen evidence under `benchmarks/` and dated research records keep what they recorded.
+6. State a volatile fact (a test or case count, a version, a size, a default) in one owning document and link to it from the others, so there is one place to update.
+7. Give an ADR the next unused number and add it to [`docs/decisions/README.md`](docs/decisions/README.md); never reuse a number. Index every new document in its directory `README.md`.
+8. `README.md`, `README.zh-CN.md` and `README.ja.md` carry the same facts and the same local links; change them together. `AGENTS.md` mirrors this file, so edit only `CLAUDE.md`.
+9. A document written for a generic stack (TypeScript examples) must open with its Arion mapping, as [`docs/frontend/layers.md`](docs/frontend/layers.md) and [`docs/backend/README.md`](docs/backend/README.md) do.
+10. Run `pnpm check` before committing documentation: it rejects broken links, documented `pnpm` scripts and `make` targets that do not exist, unlinked documents, duplicate or unindexed ADR numbers and translated READMEs whose links differ from `README.md`.
 
 ---
 

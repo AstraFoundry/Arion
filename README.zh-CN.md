@@ -33,10 +33,10 @@
 
 ## 核心特性
 
-- **按住说话与原生系统输入法** — 在任意焦点编辑器中按住全局听写键（macOS 默认右 `⌥`，Windows 默认右 `Alt`）即可识别普通话、英语及中英混杂的技术表达（如 *“把这个 PR merge 到 main 之前，先跑一下 CI”*），松开一次性上屏；轻按一下则持续听写直至再次按下（`Esc` 取消）。同时内置原生系统输入法宿主（macOS `ArionInput.app` 与 Windows `ArionTSF.dll`），支持离线简体中文全拼输入与 `Shift` 中英切换。
+- **按住说话与原生系统输入法** — 在任意焦点编辑器中按住全局听写快捷键（macOS 默认右 `⌥`，Windows 默认右 `Alt`；可在设置中录制其他单键或修饰键组合，参阅[听写快捷键](docs/project/dictation-shortcuts.md)）即可识别普通话、英语及中英混杂的技术表达（如 *“把这个 PR merge 到 main 之前，先跑一下 CI”*），松开一次性上屏；轻按一下则持续听写直至再次按下（`Esc` 取消）。同时内置原生系统输入法宿主（macOS `ArionInput.app` 与 Windows `ArionTSF.dll`），支持离线简体中文全拼输入与 `Shift` 中英切换。
 - **端侧原生语音识别** — 在 Apple silicon 上通过原生 Swift MLX（8-bit）、在 Windows x64 上通过原生 `speech.cpp`（Q8_0，CPU/Vulkan）本地运行 Qwen3-ASR 1.7B（[ADR 020](docs/decisions/020-native-qwen-asr.md)）。模型下载并通过 SHA-256 校验后即可完全离线运行；麦克风音频仅驻留当次会话内存，自动跳过密码框，并内置分档软件输入增益（`−6 dB` 至 `+12 dB`）以支持开放办公区低声口述。
 - **改词自学习与草稿隔离** — 说话期间流式草稿仅保留在悬浮胶囊内，松开按键后才一次性提交至编辑器。本地自动应用确定性清理规则与个人词库；在 macOS 原生编辑器中，文字上屏后若手动修改了误识别词，系统会在端侧自动学习并支持一键撤销（[ADR 014](docs/decisions/014-edit-learning.md)）。
-- **两阶段上下文智能润色** — 松开听写键后可选执行一次两阶段润色（[ADR 023](docs/decisions/023-final-only-polishing.md)），剔除口语停顿词、合并句内自我更正，结合当前窗口/光标附近的可见术语消歧（[ADR 013](docs/decisions/013-rewrite-context-on-device.md)），并按当前应用自动排版（**匹配当前应用**，[ADR 012](docs/decisions/012-context-scene-selection.md)）。支持在 macOS Apple silicon 与 Windows x64 上通过 `llama.cpp` 本地运行 Qwen3.5-2B（`Q4_K_M` GGUF，[ADR 018](docs/decisions/018-staged-gguf-rewriting.md)、[ADR 025](docs/decisions/025-windows-local-polishing.md)），或显式接入云端模型（ChatGPT 登录或 OpenAI、Anthropic、Gemini、DeepSeek、OpenRouter API Key），原始音频始终留在本地（[ADR 022](docs/decisions/022-cloud-polishing.md)）。
+- **两阶段上下文智能润色** — 松开听写键后可选执行一次两阶段润色（[ADR 023](docs/decisions/023-final-only-polishing.md)），剔除口语停顿词、合并句内自我更正，结合当前窗口/光标附近的可见术语消歧（[ADR 013](docs/decisions/013-rewrite-context-on-device.md)），并按当前应用自动排版（**匹配当前应用**，[ADR 012](docs/decisions/012-context-scene-selection.md)）。可选的第二个快捷键可边听写边翻译为 12 种目标语言。支持在 macOS Apple silicon 与 Windows x64 上通过 `llama.cpp` 本地运行 Qwen3.5-2B（`Q4_K_M` GGUF，[ADR 018](docs/decisions/018-staged-gguf-rewriting.md)、[ADR 025](docs/decisions/025-windows-local-polishing.md)），或显式接入云端模型（ChatGPT 登录或 OpenAI、Anthropic、Gemini、DeepSeek、OpenRouter API Key），原始音频始终留在本地（[ADR 022](docs/decisions/022-cloud-polishing.md)）。
 - **原生 Go 桌面外壳** — 基于 [MyGo](https://github.com/egoist/mygo)（`v0.4.6`）并在 Go 中采用功能切片设计（FSD）构建，无 Electron 或 WebView（[ADR 001](docs/decisions/001-desktop-native-boundaries.md)、[ADR 007](docs/decisions/007-sunbeam-design-system.md)）。常驻菜单栏/系统托盘，悬浮胶囊支持跨全屏空间展示与点击穿透，不抢占编辑器焦点，支持中英文界面实时切换（[i18n](docs/frontend/i18n.md)）。
 - **零知识加密同步与签名更新** — 个人词库使用存储在 macOS Keychain 或 Windows DPAPI 中的密钥进行本地 AES-256-GCM 加密（[ADR 005](docs/decisions/005-local-encryption.md)）。仓库内置支持 Docker 自托管且不持有解密密钥的 Go 密文中继服务 `services/sync`（[ADR 015](docs/decisions/015-hosted-relay-account-authorization.md)），以及提供 Ed25519 签名 `stable`/`beta` 通道的更新服务 `services/updates`（[ADR 019](docs/decisions/019-center-update-channels.md)）。
 
@@ -69,7 +69,7 @@
 
 ```sh
 make install        # 安装锁定版本的 pnpm 工作区依赖 (--frozen-lockfile)
-make check          # 文档、JSON、Go 分层边界、core/sync 与评测测试
+make check          # 文档、JSON、Go 分层边界、工作流检查，以及 core/sync/updates/i18n/评测测试
 make desktop-check  # 桌面端测试、键盘检查与 go vet (cgo)
 make desktop-dev    # 准备原生运行时并以开发模式启动 Arion Dev
 make build desktop  # 在 apps/desktop/build/ 下打包 Arion.app + DMG (macOS) 或 NSIS 安装包 (Windows)

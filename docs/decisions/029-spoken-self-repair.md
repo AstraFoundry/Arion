@@ -1,4 +1,4 @@
-# ADR 026: Spoken self-repair collapses before polish
+# ADR 029: Spoken self-repair collapses before polish
 
 ## Status
 

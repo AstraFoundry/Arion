@@ -38,6 +38,7 @@ var (
 	procGetClipboardData         = user32.NewProc("GetClipboardData")
 	procSetClipboardData         = user32.NewProc("SetClipboardData")
 	procGetClipboardSequence     = user32.NewProc("GetClipboardSequenceNumber")
+	procRegisterClipboardFormatW = user32.NewProc("RegisterClipboardFormatW")
 	procGlobalAlloc              = kernel32.NewProc("GlobalAlloc")
 	procGlobalLock               = kernel32.NewProc("GlobalLock")
 	procGlobalUnlock             = kernel32.NewProc("GlobalUnlock")
@@ -55,7 +56,13 @@ const (
 	vkV              = 0x56
 	cfUnicodeText    = 13
 	gmemMoveable     = 0x0002
+	gmemZeroInit     = 0x0040
 )
+
+// clipboardHistoryExclusion is the registered clipboard format whose presence
+// keeps Windows clipboard history and cloud clipboard sync from recording
+// the content (https://learn.microsoft.com/windows/win32/dataxchg/clipboard-formats#cloud-clipboard-and-clipboard-history-formats).
+const clipboardHistoryExclusion = "ExcludeClipboardContentFromMonitorProcessing"
 
 type guiThreadInfo struct {
 	Size        uint32
@@ -414,6 +421,25 @@ func writeClipboardText(text string) bool {
 	return ok != 0
 }
 
+// excludeFromClipboardHistory marks the content written in the current
+// clipboard session. The caller holds the clipboard open.
+func excludeFromClipboardHistory() bool {
+	name, err := syscall.UTF16PtrFromString(clipboardHistoryExclusion)
+	if err != nil {
+		return false
+	}
+	format, _, _ := procRegisterClipboardFormatW.Call(uintptr(unsafe.Pointer(name)))
+	if format == 0 {
+		return false
+	}
+	handle, _, _ := procGlobalAlloc.Call(gmemMoveable|gmemZeroInit, 4)
+	if handle == 0 {
+		return false
+	}
+	ok, _, _ := procSetClipboardData.Call(format, handle)
+	return ok != 0
+}
+
 // publishClipboard leaves text on the clipboard and does not paste it.
 func publishClipboard(text string) bool {
 	if text == "" {
@@ -429,13 +455,22 @@ func publishClipboard(text string) bool {
 
 // paste writes the text, sends Ctrl+V and restores the previous text only
 // if no other program changed the clipboard meanwhile (DSK-A05). Only the
-// Unicode text format is preserved on Windows.
+// Unicode text format is preserved on Windows. The transient text is
+// excluded from clipboard history and cloud clipboard; when that mark cannot
+// be set, the previous text is put back and the paste fails.
 func paste(text string) bool {
 	if ok, _, _ := procOpenClipboard.Call(0); ok == 0 {
 		return false
 	}
 	previous, hadText := readClipboardText()
 	written := writeClipboardText(text)
+	if written && !excludeFromClipboardHistory() {
+		procEmptyClipboard.Call()
+		if hadText {
+			writeClipboardText(previous)
+		}
+		written = false
+	}
 	procCloseClipboard.Call()
 	if !written {
 		return false

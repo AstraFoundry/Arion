@@ -48,7 +48,7 @@ Arion is open source under AGPL-3.0, so you do not have to take this post's word
 git clone https://github.com/AstraFoundry/Arion.git
 cd Arion
 make install
-make desktop-build
+make build desktop
 ```
 
 Then turn off Wi-Fi and dictate. If anything here stops being true, it is a bug, and the [privacy page](/privacy/) and the specification[^spec] change in the same change set as the code.

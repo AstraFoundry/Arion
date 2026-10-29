@@ -19,4 +19,4 @@ Secrets may be supplied as `ARION_SYNC_DATABASE_URL_FILE` instead of `ARION_SYNC
 
 Revocation bumps the key epoch. Clients re-encrypt live records; this process stores ciphertext and cannot erase plaintext a device already decrypted. A non-empty `recovery` field on enrollment is rejected.
 
-The in-process rate limit is per device id and is not shared across replicas.
+The in-process rate limit is per device id and is not shared across replicas. It runs before request authentication: a malformed `X-Arion-Device-Id` is rejected as unauthorized, and identities idle for a full minute are forgotten.

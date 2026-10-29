@@ -1,7 +1,9 @@
 import { spawnSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import { readdir, readFile, stat } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { decisionErrors, makeTargets, missingTranslatedLinks, unknownCommands } from './lib/doc-consistency.mjs';
 import { markdownAnchors } from './lib/markdown-anchors.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -20,7 +22,7 @@ async function walk(relative) {
   }
 }
 await Promise.all(trees.map(walk));
-files.push('README.md', 'CLAUDE.md', 'package.json');
+files.push('README.md', 'README.zh-CN.md', 'README.ja.md', 'CLAUDE.md', 'package.json');
 
 // Blog posts link with site URLs (`/privacy/`, `/blog/<slug>/chart.webp`):
 // each must be a static file in the site's public/ or an English route.
@@ -43,8 +45,11 @@ async function siteTargetExists(url) {
 }
 
 const markdown = new Map();
+const rawMarkdown = new Map();
+const linked = new Set();
 for (const name of files.filter(name => name.endsWith('.md'))) {
   const source = await readFile(path.join(root, name), 'utf8');
+  rawMarkdown.set(name, source);
   markdown.set(name, source.replace(/^\s*(`{3,}|~{3,})[^\n]*\n[\s\S]*?^\s*\1\s*$/gm, ''));
 }
 
@@ -61,6 +66,7 @@ for (const [name, source] of markdown) {
     const resolved = file ? path.resolve(root, path.dirname(name), decodeURIComponent(file)) : path.join(root, name);
     try {
       const info = await stat(resolved);
+      if (info.isFile() && resolved !== path.join(root, name)) linked.add(path.relative(root, resolved).split(path.sep).join('/'));
       if (fragment && info.isFile() && resolved.endsWith('.md')) {
         const text = await readFile(resolved, 'utf8');
         if (!markdownAnchors(text).has(decodeURIComponent(fragment))) errors.push(`${name}: missing anchor ${target}`);
@@ -81,6 +87,41 @@ for (const name of files.filter(name => name.endsWith('.json'))) {
 const rootPackage = JSON.parse(await readFile(path.join(root, 'package.json'), 'utf8'));
 if (!/^pnpm@\d+\.\d+\.\d+$/.test(rootPackage.packageManager)) errors.push('Root packageManager must pin an exact pnpm version');
 if (rootPackage.scripts && Object.values(rootPackage.scripts).some(command => /\b(npm|npx)\s/.test(command))) errors.push('Project scripts must use pnpm');
+
+// Documented commands must exist. Frozen research evidence under benchmarks/
+// and hash-pinned upstream notices retain their original command context.
+const targets = makeTargets(await readFile(path.join(root, 'Makefile'), 'utf8'));
+const keyboardManifest = JSON.parse(await readFile(path.join(root, 'scripts/keyboard-runtime.json'), 'utf8'));
+const upstreamDocuments = new Map(keyboardManifest.files
+  .filter(file => typeof file.path === 'string' && file.path.endsWith('.md') && file.source && file.sha256)
+  .map(file => [file.path, file.sha256]));
+for (const [name, source] of rawMarkdown) {
+  if (name.startsWith('benchmarks' + path.sep)) continue;
+  const upstreamHash = upstreamDocuments.get(name.split(path.sep).join('/'));
+  if (upstreamHash) {
+    const actual = createHash('sha256').update(await readFile(path.join(root, name))).digest('hex');
+    if (actual !== upstreamHash) errors.push(`${name}: upstream documentation differs from its pinned bytes`);
+    continue;
+  }
+  errors.push(...unknownCommands(name, source, rootPackage.scripts, targets));
+}
+
+// Every document under docs/ is reachable from another document, and ADR
+// numbers are unique and indexed.
+for (const name of files.filter(name => name.endsWith('.md') && name.startsWith('docs' + path.sep))) {
+  const normalized = name.split(path.sep).join('/');
+  if (!linked.has(normalized)) errors.push(`${name}: not linked from any other Markdown document`);
+}
+const decisionNames = (await readdir(path.join(root, 'docs', 'decisions'))).filter(name => /^\d{3}-/.test(name));
+errors.push(...decisionErrors(decisionNames, rawMarkdown.get(path.join('docs', 'decisions', 'README.md'))));
+
+// The translated READMEs state the same facts: same local links as README.md.
+for (const name of ['README.zh-CN.md', 'README.ja.md']) {
+  errors.push(...missingTranslatedLinks(name, rawMarkdown.get(name), 'README.md', rawMarkdown.get('README.md')));
+}
+// AGENTS.md mirrors CLAUDE.md: a symlink, or on checkouts without symlink support a copy.
+const agents = (await readFile(path.join(root, 'AGENTS.md'), 'utf8')).trim();
+if (agents !== 'CLAUDE.md' && agents !== (await readFile(path.join(root, 'CLAUDE.md'), 'utf8')).trim()) errors.push('AGENTS.md must be a symlink to CLAUDE.md or an identical copy');
 
 for (const name of files.filter(name => name.endsWith('.mjs'))) {
   const checked = spawnSync(process.execPath, ['--check', path.join(root, name)], { encoding: 'utf8' });

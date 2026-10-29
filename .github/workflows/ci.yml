@@ -43,7 +43,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4.3.0
         with:
           run_install: false
       - uses: actions/setup-node@v4
@@ -73,7 +73,7 @@ jobs:
       CGO_ENABLED: '1'
     steps:
       - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4.3.0
         with:
           run_install: false
       - uses: actions/setup-node@v4
@@ -83,7 +83,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - uses: actions/setup-go@v5
         with:
-          go-version: '1.27.1'
+          go-version: '1.27.3'
           cache-dependency-path: apps/desktop/go.sum
       - name: Require native MLX toolchain
         if: matrix.platform == 'darwin-arm64'

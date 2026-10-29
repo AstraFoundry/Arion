@@ -7,6 +7,7 @@ Research separates **observed shipped artifacts**, **static inferences**, **vend
 - [Typeless](typeless.md) — installed Electron artifact and audio/context/delivery surfaces.
 - [Doubao](doubao.md) — installed native IMK artifact, online/offline ASR and composition surfaces.
 - [Doubao iOS](doubao-ios.md) — App Store IPA voice/keyboard split, permission and account synchronization declarations, native typing engine and FairPlay evidence limits.
+- [UX reference](ux-reference.md) — Typeless and Doubao IME onboarding, menu bar presence, settings structure, floating dictation surface, model management and insertion observations, kept apart from Arion design choices.
 - [Chatterfly](chatterfly.md) — installer payload and native scenario-aware post-processing paths.
 - [Rewrite stage preservation](rewrite-stage-preservation.md) — revalidated competitor stage boundaries, a real preview-to-final regression, and paired native pipeline diagnostics.
 - [Keyboard input methods](keyboard-ime.md) — Doubao/Chatterfly native Pinyin decoding, local candidate ranking, conditional model/cloud enhancement and composition/commit evidence.

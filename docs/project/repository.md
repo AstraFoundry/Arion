@@ -7,7 +7,7 @@
 | `apps/desktop` | Separate Go module; MyGo lifecycle and FSD native UI; depends on core |
 | `apps/desktop/ui` | `app → pages → widgets → features → entities → shared` Go packages; same-layer slices isolated; shared segments may import each other |
 | `apps/desktop/bootstrap` | Composition root: wiring, windows, tray, hotkeys, main-thread state, E2E control mode |
-| `apps/desktop/infrastructure` | OS input/capture/context and model/storage adapters; implements domain-owned ports |
+| `apps/desktop/infrastructure` | OS input/capture/context and model/storage adapters; implements domain-owned ports (package list in the [desktop README](../../apps/desktop/README.md)) |
 | `apps/desktop/internal/center` | Compiled public center profile, validation and fingerprint; no runtime ENV or credential access |
 | `apps/desktop/internal/account` | OIDC public client for hosted sync: loopback PKCE, in-memory access token, refresh rotation, waitlist join ([account sign-in](account-signin.md)) |
 | `apps/desktop/internal/productnotifications` | Account-scoped inbox validation, native submission dedupe and authorized action policy ([product notifications](product-notifications.md)) |
@@ -29,7 +29,7 @@
 | `services/sync` | Go DDD relay; account-unaware core, `AccountGate` port with `noop` and `oidc` adapters ([ADR 015](../decisions/015-hosted-relay-account-authorization.md)) |
 | `deploy` | Relay images, self-host compose and the hosted relay's compose stack with its own PostgreSQL |
 | `models` | Go module embedding the reviewed catalog: provenance, digests, licenses, bundles, evaluation summaries; no weights |
-| `third_party/mygo` | Maintained MyGo v0.4.6 snapshot with update, signing and Windows native transparency patches; original hashes and licence retained |
+| `third_party/mygo` | Maintained MyGo v0.4.6 snapshot with prerelease/URL-channel and staged-update, Windows rollback, signing-metadata, native-notification and Windows native-transparency patches ([third_party](../../third_party/README.md)); original hashes and licence retained |
 | `scripts` | Dependency-free repository checks and platform-neutral workflow entry points |
 | `tools/evaluation` | pnpm workspace: metrics, driver protocols, real-run orchestration and isolated Python development inference adapters |
 | `benchmarks` | Versioned research corpora/audio, raw observations, reproduction sources, provenance and reports; no weights/runtime environments or personal recordings |

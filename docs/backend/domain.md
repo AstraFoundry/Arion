@@ -1,4 +1,5 @@
 # Domain Layer
+Arion native mapping: layers are Go packages, and the TypeScript examples below are illustrative. `packages/core` (`domain`, `contracts`, `application`) and `services/sync` / `services/updates` (`domain`, `application`, `infrastructure`, `interfaces`, `cmd`) follow this layering, and the desktop's `infrastructure/` adapters implement core ports from the `bootstrap` composition root. See [repository ownership](../project/repository.md); `pnpm check` enforces the import direction.
 
 The domain layer contains the business rules of the system. It has no dependencies on frameworks, databases, or transport details.
 
@@ -14,7 +15,7 @@ The domain layer contains the business rules of the system. It has no dependenci
 ## Rules
 
 - The domain layer must not import from `application`, `infrastructure`, or `interfaces`.
-- Domain code must be pure JavaScript/TypeScript or the equivalent in your language. No HTTP, no SQL, no framework annotations.
+- Domain code is pure Go: the standard library only, without OS or transport packages, in `packages/core/domain` and `services/*/domain` (`pnpm check` rejects other imports). No HTTP, no SQL, no framework annotations.
 - Validation of business invariants happens here.
 - Use rich domain models when the rules are complex. Use anemic models with domain services only when the rules are trivial.
 
